@@ -344,6 +344,8 @@ f9
 Fertility Map
 [Flag Defaults]
 Flag Defaults
+[flag settings explanation]
+The default radius of the flag
 [food]
 Food
 [forbidden area]
@@ -392,6 +394,8 @@ Happiness
 Hard Pause
 [Harvest]
 Harvest
+[high priority]
+high
 [hints]
 Hints
 [home]
@@ -490,6 +494,8 @@ Login
 Lost: %0 has more prestige than you
 [Lost : your colony is dead]
 Lost: your colony is dead
+[low priority]
+low
 [lowquality]
 Low quality
 [Magic At. Air]
@@ -532,6 +538,8 @@ fruits with others
 Allows the exchange of
 [market]
 Market
+[medium priority]
+mid
 [meta %0]
 meta-%0
 [Min required level:]
@@ -638,6 +646,8 @@ Prestige
 Primary
 [print screen]
 print screen
+[priority]
+Priority
 [Prune]
 Plum
 [quit the editor]

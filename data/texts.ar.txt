@@ -134,54 +134,6 @@ Available local games
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 يبنى
 [Building Defaults]
@@ -254,8 +206,6 @@ Clearing flag
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Connect
 [connecting to]
@@ -298,12 +248,6 @@ Damaged Map
 units or buildings
 [defencetower explanation]
 هجمات العدو القريب
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 برج الدفاع
 [Defense Map]
@@ -404,6 +348,8 @@ Explorer Ratio
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 الطعام
 [forbidden area]
@@ -452,6 +398,8 @@ Handmade map
 
 [Harvest]
 يحصد
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +432,6 @@ Hitpoint
  
 [inn explanation]
 اغذيه االوحدات
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 كوخ
 [insert]
@@ -556,6 +498,8 @@ ar
 Lost: %0 has more prestige than you
 [Lost : your colony is dead]
 Lost: your colony is dead
+[low priority]
+
 [lowquality]
 Low quality
 [Magic At. Air]
@@ -567,8 +511,6 @@ Ground dmg.
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Map name: %0.
@@ -592,18 +534,16 @@ Map height
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 Mark Map For Allies
 [market explanation 2]
 الفواكه مع الآخري
 [market explanation]
 يسمح بتبادل
-[market level 0]
-
 [market]
 السوق
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +651,8 @@ Press space to continue.
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Prune
@@ -926,8 +868,6 @@ Server hostname
  
 [swarm explanation]
 انشاء وحدات جديدة
-[swarm level 0]
-
 [swarm]
 حشد
 [Swim]

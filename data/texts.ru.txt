@@ -248,8 +248,6 @@ caps lock
 Вычисление плодородия
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Подключиться
 [connecting to]
@@ -400,6 +398,8 @@ f9
 Карта плодородия
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Еда
 [forbidden area]
@@ -448,6 +448,8 @@ Ok
 "Полная" пауза
 [Harvest]
 Собирает
+[high priority]
+
 [hints]
 
 [home]
@@ -554,6 +556,8 @@ left
 Поражение: У %0 больший престиж, чем у Вас.
 [Lost : your colony is dead]
 Поражение: Ваша колония мертва.
+[low priority]
+
 [lowquality]
 Низкое качество
 [Magic At. Air]
@@ -565,8 +569,6 @@ left
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Название карты: %0.
@@ -598,10 +600,10 @@ left
 фруктами с другими
 [market explanation]
 Позволяет меняться
-[market level 0]
-
 [market]
 Рынок
+[medium priority]
+
 [meta %0]
 meta-%0
 [Min required level:]
@@ -708,6 +710,8 @@ power
 
 [print screen]
 print screen
+[priority]
+
 [Prune]
 Сливы
 [quit the editor]

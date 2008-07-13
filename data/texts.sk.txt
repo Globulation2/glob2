@@ -134,54 +134,6 @@ veľkosť pláže
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Stavanie
 [Building Defaults]
@@ -254,8 +206,6 @@ Kopilovať skript
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Pripojiť
 [connecting to]
@@ -298,12 +248,6 @@ Poškodenie
 a budovy nepriateľa
 [defencetower explanation]
 Útočí na blízke jednotky
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Obr. veža
 [Defense Map]
@@ -404,6 +348,8 @@ prázdne ostrovy
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Jedlo
 [forbidden area]
@@ -452,6 +398,8 @@ Ručná mapa
 
 [Harvest]
 Ťažba
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +432,6 @@ Na ceste
  
 [inn explanation]
 Kŕmi jednotky
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Jedáleň
 [insert]
@@ -556,6 +498,8 @@ Prihlásenie
 Prehra: %0 má väčšiu prestíž ako ty
 [Lost : your colony is dead]
 Prehra: Tvoja kolónia vymrela
+[low priority]
+
 [lowquality]
 Znížená kvalita
 [Magic At. Air]
@@ -567,8 +511,6 @@ Zem
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Názov mapy: %0.
@@ -592,18 +534,16 @@ Výška mapy
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 Označiť mapu
 [market explanation 2]
 s ostatnými hráčmi
 [market explanation]
 Umožnňuje výmenu ovocia
-[market level 0]
-
 [market]
 Trhovisko
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +651,8 @@ Prestíž
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Slivka
@@ -926,8 +868,6 @@ Močiar
  
 [swarm explanation]
 Produkuje nové jednotky
-[swarm level 0]
-
 [swarm]
 Hniezdo
 [Swim]

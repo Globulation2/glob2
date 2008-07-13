@@ -254,8 +254,6 @@ AIWarrush
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 連線
 [connecting to]
@@ -404,6 +402,8 @@ AIWarrush
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 食物
 [forbidden area]
@@ -452,6 +452,8 @@ AIWarrush
 
 [Harvest]
 採收
+[high priority]
+
 [hints]
 
 [home]
@@ -556,6 +558,8 @@ zh-tw
 輸: %0 的聲望比你還高
 [Lost : your colony is dead]
 輸: 你的殖民地已被摧毀
+[low priority]
+
 [lowquality]
 低畫質
 [Magic At. Air]
@@ -567,8 +571,6 @@ Air dmg.
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 地圖名稱: %0。
@@ -600,10 +602,10 @@ Air dmg.
 和他人交易水果
 [market explanation]
 允許交易的資源
-[market level 0]
-
 [market]
 市場
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +713,8 @@ Air dmg.
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 梅乾

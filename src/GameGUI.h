@@ -219,6 +219,7 @@ private:
 	void drawValueAlignedRight(int y, int v);
 	void drawCosts(int ressources[BASIC_COUNT], Font *font);
 	void drawCheckButton(int x, int y, const char* caption, bool isSet);
+	void drawRadioButton(int x, int y, bool isSet);
 
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);

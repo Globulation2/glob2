@@ -148,10 +148,12 @@ public:
 	void step(void);
 	///This function subscribes any building that needs ressources carried to it with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
-	void subscribeToBringRessourcesStep(void);
+	///Returns true if a unit was hired
+	bool subscribeToBringRessourcesStep(void);
 	///This function subscribes any flag that needs units for a with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
-	void subscribeForFlagingStep();
+	///Returns true if a unit was hired
+	bool subscribeForFlagingStep();
 	/// Subscribes a unit to go inside the building.
 	void subscribeUnitForInside(Unit* unit);
 	/// This is a step for swarms. Swarms heal themselves and create new units
@@ -254,6 +256,11 @@ public:
 	Sint32 maxUnitInside;
 	///This counts the number of units that failed the requirements for the building, but where free
 	std::list<Unit *> unitsInside;
+	///This stores the priority of the building, 0 is normal, -1 is low, +1 is high
+	Sint32 priority;
+	Sint32 priorityLocal;
+	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
+	Sint32 oldPriority;
 	
 	// optimisation and consistency
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}

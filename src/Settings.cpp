@@ -58,6 +58,7 @@ Settings::Settings()
 	
 	scrollWheelEnabled=true;
 	resetDefaultUnitsAssigned();
+	resetDefaultFlagRadius();
 	
 	cloudPatchSize=16;//the bigger the faster the uglier
 	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
@@ -133,6 +134,13 @@ void Settings::load(const char *filename)
 			}
 		}
 
+		for(int n=0; n<3; ++n)
+		{
+			std::string keyname="defaultFlagRadius["+boost::lexical_cast<std::string>(n)+"]";
+			if(parsed.find(keyname)!=parsed.end())
+				defaultFlagRadius[n] = boost::lexical_cast<int>(parsed[keyname]);
+		}
+
 		READ_PARSED_INT(cloudPatchSize);
 		READ_PARSED_INT(cloudMaxAlpha);
 		READ_PARSED_INT(cloudMaxSpeed);
@@ -182,6 +190,12 @@ void Settings::save(const char *filename)
 				std::string keyname="defaultUnitsAssigned["+boost::lexical_cast<std::string>(n)+"]["+boost::lexical_cast<std::string>(t)+"]";
 				Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultUnitsAssigned[n][t]);
 			}
+		}
+
+		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
+		{
+			std::string keyname = "defaultFlagRadius["+boost::lexical_cast<std::string>(n)+"]";
+			Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultFlagRadius[n]);
 		}
 
 		Utilities::streamprintf(stream, "cloudPatchSize=%d\n",	cloudPatchSize);
@@ -240,5 +254,14 @@ void Settings::resetDefaultUnitsAssigned()
 	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5] = 2;
 	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
 	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
+}
+
+
+
+void Settings::resetDefaultFlagRadius()
+{
+	defaultFlagRadius[0] = 10;
+	defaultFlagRadius[1] = 4;
+	defaultFlagRadius[2] = 3;
 }
 

@@ -78,6 +78,9 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingPrevious = 0;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
+	priority = 0;
+	priorityLocal = 0;
+	oldPriority = 0;
 
 	// position
 	posX=x;
@@ -214,6 +217,20 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	else
 		underAttackTimer = 0;
 
+	// priority
+	if(versionMinor>=79)
+	{
+		priority = stream->readSint32("priority");
+		priorityLocal = stream->readSint32("priorityLocal");
+		oldPriority = priority;
+	}
+	else
+	{
+		priority = 0;
+		priorityLocal = 0;
+		oldPriority = 0;
+	}
+
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
 	unitStayRangeLocal = unitStayRange;
@@ -331,6 +348,10 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(posY, "posY");
 
 	stream->writeUint8(underAttackTimer, "underAttackTimer");
+
+	// priority
+	stream->writeSint32(priority, "priority");
+	stream->writeSint32(priorityLocal, "priorityLocal");
 
 	// Flag specific
 	stream->writeUint32(unitStayRange, "unitStayRange");
@@ -791,8 +812,9 @@ void Building::updateCallLists(void)
 		// remove me
 		if(callListState != 0)
 		{
-			owner->remove_building_needing_work(this);
+			owner->remove_building_needing_work(this, oldPriority);
 			callListState=0;
+			oldPriority = priority;
 		}
 	}
 	
@@ -803,8 +825,16 @@ void Building::updateCallLists(void)
 			// I need units, if I am not in the call lists, add me
 			if(callListState != 1)
 			{
-				owner->add_building_needing_work(this);
+				owner->add_building_needing_work(this, priority);
 				callListState = 1;
+				oldPriority = priority;
+			}
+			// if i am in the call lists, update my then my position will need to be updated
+			else if(callListState == 1 && oldPriority == priority)
+			{
+				owner->remove_building_needing_work(this, oldPriority);
+				owner->add_building_needing_work(this, priority);
+				oldPriority = priority;
 			}
 		}
 	}
@@ -812,8 +842,9 @@ void Building::updateCallLists(void)
 	{
 		if(callListState != 0)
 		{
-			owner->remove_building_needing_work(this);
+			owner->remove_building_needing_work(this, oldPriority);
 			callListState=0;
+			oldPriority = priority;
 		}
 	}
 
@@ -1347,17 +1378,18 @@ void Building::step(void)
 }
 
 
-void Building::subscribeToBringRessourcesStep()
+bool Building::subscribeToBringRessourcesStep()
 {
 	for(int i=0; i<UnitCantWorkReasonSize; ++i)
 	{
 		unitsFailingRequirements[i]=0;
 	}
 	if (buildingState==DEAD)
-		return;
+		return false;
 	if (verbose)
 		printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
-	
+
+	bool hired=false;	
 	if (((Sint32)unitsWorking.size()<desiredMaxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
 	{
 		Unit *choosen=NULL;
@@ -1641,6 +1673,7 @@ void Building::subscribeToBringRessourcesStep()
 		{
 			unitsWorking.push_back(choosen);
 			choosen->subscriptionSuccess(this, false);
+			hired=true;
 		}
 	}
 	
@@ -1648,13 +1681,15 @@ void Building::subscribeToBringRessourcesStep()
 
 	if (verbose)
 		printf(" ...done\n");
+	return hired;
 }
 
-void Building::subscribeForFlagingStep()
+bool Building::subscribeForFlagingStep()
 {
 	if (buildingState==DEAD)
-		return;
+		return false;
 	
+	bool hired=false;
 	subscriptionWorkingTimer++;
 	if (subscriptionWorkingTimer>32)
 	{
@@ -1766,6 +1801,7 @@ void Building::subscribeForFlagingStep()
 			{
 				unitsWorking.push_back(choosen);
 				choosen->subscriptionSuccess(this, false);
+				hired=true;
 			}
 			else
 				break;
@@ -1775,6 +1811,7 @@ void Building::subscribeForFlagingStep()
 
 		subscriptionWorkingTimer=0;
 	}
+	return hired;
 }
 
 

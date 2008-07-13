@@ -235,6 +235,11 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber, oc->unitWorking, oc->unitWorkingFuture);
 				if (b)
 				{
+					if(isVirtual)
+					{
+						b->unitStayRange = oc->flagRadius;
+						b->unitStayRangeLocal = oc->flagRadius;
+					}
 					fprintf(logFile, "ORDER_CREATE (%d, %d, %d)", posX, posY, bt->shortTypeNum);
 					b->owner->addToStaticAbilitiesLists(b);
 					b->update();
@@ -644,6 +649,21 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 					int range=b->unitStayRange;
 					map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
 				}
+			}
+		}
+		break;
+		case ORDER_CHANGE_PRIORITY:
+		{
+			Uint16 gid=boost::static_pointer_cast<OrderChangePriority>(order)->gid;
+			Sint32 priority=boost::static_pointer_cast<OrderChangePriority>(order)->priority;
+			int team=Building::GIDtoTeam(gid);
+			int id=Building::GIDtoID(gid);
+			Building *b=teams[team]->myBuildings[id];
+			if (b)
+			{
+				fprintf(logFile, "ORDER_CHANGE_PRIORITY");
+				b->priority = priority;
+				b->updateCallLists();
 			}
 		}
 		break;

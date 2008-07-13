@@ -23,7 +23,7 @@
 // This is the version of map and savegame format, and all of the recorded datas on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 77
+#define VERSION_MINOR 79
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -92,6 +92,8 @@
 // version 75 added description to Campaign, GameObjectives to Game, and removed campaignText from Game
 // version 76 added mission complete/incomplete to Campaigns, added mission brieifing, added mission hints, added ability to fail game objective
 // version 77 removed unitsFailingRequrements, expanding it into more requirements
+// version 78 added defaultFlagRadius to the Order class
+// version 79 added priority to the Building class
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above
