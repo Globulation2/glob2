@@ -134,54 +134,6 @@ Strandbreite
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Bauen
 [Building Defaults]
@@ -248,8 +200,6 @@ Skript kompilieren
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Verbinden
 [connecting to]
@@ -292,12 +242,6 @@ Schaden
 bäude und Einheiten an
 [defencetower explanation]
 Greift Feindliche Ge-
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Panzerturm
 [Defense Map]
@@ -398,6 +342,8 @@ leere Inseln
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Nahrung
 [forbidden area]
@@ -446,6 +392,8 @@ Zufriedenheit
 
 [Harvest]
 Ernten
+[high priority]
+
 [hints]
 
 [home]
@@ -478,12 +426,6 @@ Unterwegs
 
 [inn explanation]
 Ernährt Ihre Einheiten
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Gasthof
 [insert]
@@ -550,6 +492,8 @@ Login
 Verloren: %0 hat mehr Prestige als Sie
 [Lost : your colony is dead]
 Verloren: Ihre Kolonie ist tot
+[low priority]
+
 [lowquality]
 Niedrige Qualität
 [Magic At. Air]
@@ -561,8 +505,6 @@ Kampfstärke/Boden
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Karte: %0.
@@ -586,18 +528,16 @@ Höhe der Karte
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 Karte markieren
 [market explanation 2]
 Früchten
 [market explanation]
 Erlaubt den Handel mit
-[market level 0]
-
 [market]
 Markt
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -703,6 +643,8 @@ Prestige
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Pflaumen
@@ -918,8 +860,6 @@ Sumpflandschaft
 
 [swarm explanation]
 Erstellt neue Einheiten
-[swarm level 0]
-
 [swarm]
 Stock
 [Swim]

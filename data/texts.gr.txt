@@ -254,8 +254,6 @@ caps lock
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Σύνδεση
 [connecting to]
@@ -406,6 +404,8 @@ f9
 Χάρτης Γονιμότητας
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Τροφή
 [forbidden area]
@@ -454,6 +454,8 @@ Ok
 Σκληρή Παύση
 [Harvest]
 Συγκομιδή
+[high priority]
+
 [hints]
 
 [home]
@@ -558,6 +560,8 @@ Anastasios M. Pingios
 Χαμένος: %0 έχει περισσότερο κύρος από εσάς
 [Lost : your colony is dead]
 Χαμμένος: η αποικία σας είναι νεκρή
+[low priority]
+
 [lowquality]
 Χαμηλή ποιότητα
 [Magic At. Air]
@@ -569,8 +573,6 @@ Anastasios M. Pingios
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Όνομα χάρτη: %0.
@@ -602,10 +604,10 @@ Anastasios M. Pingios
 φρούτα με άλλους
 [market explanation]
 Επιτρέπει την ανταλλαγή
-[market level 0]
-
 [market]
 Αγορά
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -714,6 +716,8 @@ page up
 
 [print screen]
 print screen
+[priority]
+
 [Prune]
 Κλάδεμα
 [quit the editor]
