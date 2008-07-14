@@ -235,7 +235,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				Building *b=addBuilding(posX, posY, oc->typeNum, oc->teamNumber, oc->unitWorking, oc->unitWorkingFuture);
 				if (b)
 				{
-					if(isVirtual)
+					if(isVirtual && oc->flagRadius>=0)
 					{
 						b->unitStayRange = oc->flagRadius;
 						b->unitStayRangeLocal = oc->flagRadius;
