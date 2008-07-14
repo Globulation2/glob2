@@ -134,54 +134,6 @@ Tamany de la platja
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Construir
 [Building Defaults]
@@ -254,8 +206,6 @@ Compilar el script
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Conectat
 [connecting to]
@@ -298,12 +248,6 @@ mal
 
 [defencetower explanation]
 Ataca els globuls enemics
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Torre
 [Defense Map]
@@ -404,6 +348,8 @@ illes buides
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Menjar
 [forbidden area]
@@ -452,6 +398,8 @@ Felicitat
 
 [Harvest]
 Recolectar
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +432,6 @@ en camí
 teus globuls
 [inn explanation]
 Per alimentar a tots els
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Despensa
 [insert]
@@ -556,6 +498,8 @@ Conectar
 Perdedor: %0 te més prestigi que tú
 [Lost : your colony is dead]
 Perdedor: La teva colonia ha sigut exterminada
+[low priority]
+
 [lowquality]
 Qualitat Baixa
 [Magic At. Air]
@@ -567,8 +511,6 @@ dany terrestre
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Nom del mapa: %0.
@@ -592,18 +534,16 @@ Altura del mapa
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 
 [market explanation 2]
 fruits amb altres
 [market explanation]
 Per intercambiar fruita amb
-[market level 0]
-
 [market]
 Mercat
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +651,8 @@ Prestigi
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Passes
@@ -926,8 +868,6 @@ pantà
 exploradors i guerrers
 [swarm explanation]
 Produeix globuls treballadors,
-[swarm level 0]
-
 [swarm]
 Granja
 [Swim]

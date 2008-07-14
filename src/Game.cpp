@@ -652,6 +652,21 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			}
 		}
 		break;
+		case ORDER_CHANGE_PRIORITY:
+		{
+			Uint16 gid=boost::static_pointer_cast<OrderChangePriority>(order)->gid;
+			Sint32 priority=boost::static_pointer_cast<OrderChangePriority>(order)->priority;
+			int team=Building::GIDtoTeam(gid);
+			int id=Building::GIDtoID(gid);
+			Building *b=teams[team]->myBuildings[id];
+			if (b)
+			{
+				fprintf(logFile, "ORDER_CHANGE_PRIORITY");
+				b->priority = priority;
+				b->updateCallLists();
+			}
+		}
+		break;
 		case ORDER_CANCEL_DELETE:
 		{
 			Uint16 gid=boost::static_pointer_cast<OrderCancelDelete>(order)->gid;

@@ -254,8 +254,6 @@ Compôr
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Conectar
 [connecting to]
@@ -406,6 +404,8 @@ f9
 Mapa de Fertilidade
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Comida
 [forbidden area]
@@ -454,6 +454,8 @@ Felicidade
 Hard Pause
 [Harvest]
 Coletar
+[high priority]
+
 [hints]
 
 [home]
@@ -558,6 +560,8 @@ Login
 Perdeu: %0 tem mais prestígio que você
 [Lost : your colony is dead]
 Perdeu: Sua colônia já era
+[low priority]
+
 [lowquality]
 Qualidade baixa
 [Magic At. Air]
@@ -569,8 +573,6 @@ Dano terrestre
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Nome do mapa: %0.
@@ -602,10 +604,10 @@ Marcar mapa para aliados
 frutas com os outros
 [market explanation]
 Possibilita a troca de
-[market level 0]
-
 [market]
 Mercado
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -714,6 +716,8 @@ Prestígio
 
 [print screen]
 print screen
+[priority]
+
 [Prune]
 Ameixa
 [quit the editor]

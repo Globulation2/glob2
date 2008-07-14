@@ -134,54 +134,6 @@ Velikost pláží
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Stavba
 [Building Defaults]
@@ -205,12 +157,6 @@ Nová hra
 [Can't join game, game has started]
 
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-
-[Can't join game, timeout]
-
-[Can't join game, wrong game version]
 
 [cancel destroy]
 Stornuj zničeni
@@ -254,8 +200,6 @@ Sestavit skript
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Připojit
 [connecting to]
@@ -298,12 +242,6 @@ Poškození
 
 [defencetower explanation]
 Zaútoč na blízkého nepřítele
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Obranná věž
 [Defense Map]
@@ -404,6 +342,8 @@ průzkumníci
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Potrava
 [forbidden area]
@@ -452,6 +392,8 @@ Zadostiučinění
 
 [Harvest]
 Těžba
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +426,6 @@ Na cestě
 
 [inn explanation]
 Potrava tvých jednotek
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Hospoda
 [insert]
@@ -556,6 +492,8 @@ Přihlásit
 %0 má větší prestiž než Ty ...
 [Lost : your colony is dead]
 Tvoje kolonie je zničená ...
+[low priority]
+
 [lowquality]
 Nízká kvalita
 [Magic At. Air]
@@ -567,8 +505,6 @@ Nízká kvalita
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Jméno mapy: %0.
@@ -592,18 +528,16 @@ Výška mapy
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 
 [market explanation 2]
 
 [market explanation]
 Povolení vyměnit ovoce
-[market level 0]
-
 [market]
 Tržiště
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +645,8 @@ Prestiž
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Švestky
@@ -926,8 +862,6 @@ Server hostname
 
 [swarm explanation]
 Vytvoř nové jednotky
-[swarm level 0]
-
 [swarm]
 Úl
 [Swim]

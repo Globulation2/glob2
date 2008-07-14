@@ -1960,6 +1960,39 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
+
+		// priorities
+		if(selBuild->type->maxUnitWorking)
+		{
+			if (((selBuild->owner->allies)&(1<<localTeamNo))
+				&& my>ypos+16
+				&& my<ypos+16+12
+				&& selBuild->buildingState==Building::ALIVE)
+			{
+				const char *lowstr = Toolkit::getStringTable()->getString("[low priority]");
+				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
+				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
+				const int lenLow = globalContainer->littleFont->getStringWidth(lowstr);
+				const int lenMid = globalContainer->littleFont->getStringWidth(medstr);
+				const int lenHigh = globalContainer->littleFont->getStringWidth(highstr);
+				if(mx>=(8+lenLow) && mx<=(8+lenLow+12))
+				{
+					orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, -1)));
+					selBuild->priorityLocal = -1;
+				}
+				else if(mx>=(48+lenMid) && mx<(48+lenMid+12))
+				{
+					orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 0)));
+					selBuild->priorityLocal = 0;
+				}
+				else if(mx>=(88+lenHigh) && mx<=(88+lenHigh+12))
+				{
+					orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 1)));
+					selBuild->priorityLocal = 1;
+				}
+			}
+			ypos += YOFFSET_BAR;
+		}
 		
 		// flag range bar
 		if (buildingType->defaultUnitStayRange)
@@ -2683,6 +2716,19 @@ void GameGUI::drawCheckButton(int x, int y, const char* caption, bool isSet)
 	globalContainer->gfx->drawString(x+20, y, globalContainer->littleFont, caption); 
 }
 
+
+void GameGUI::drawRadioButton(int x, int y, bool isSet)
+{
+	if(isSet)
+	{
+		globalContainer->gfx->drawSprite(x, y, globalContainer->gamegui, 20);
+	}
+	else
+	{
+		globalContainer->gfx->drawSprite(x, y, globalContainer->gamegui, 19);
+	}
+}
+
 void GameGUI::drawBuildingInfos(void)
 {
 	Building* selBuild = selection.building;
@@ -2859,6 +2905,35 @@ void GameGUI::drawBuildingInfos(void)
 			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-128-36, ypos+6, 38));
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
+	}
+	// priority buttons
+	if(buildingType->maxUnitWorking)
+	{
+		if((selBuild->owner->allies)&(1<<localTeamNo))
+		{
+			if(selBuild->buildingState==Building::ALIVE)
+			{
+				const char *prioritystr = Toolkit::getStringTable()->getString("[priority]");
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, prioritystr);
+
+				const char *lowstr = Toolkit::getStringTable()->getString("[low priority]");
+				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
+				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
+				const int lenLow = globalContainer->littleFont->getStringWidth(lowstr);
+				const int lenMid = globalContainer->littleFont->getStringWidth(medstr);
+				const int lenHigh = globalContainer->littleFont->getStringWidth(highstr);
+
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos+12, globalContainer->littleFont, lowstr);
+				drawRadioButton(globalContainer->gfx->getW()-128+8+lenLow, ypos+12+4, (selBuild->priorityLocal==-1));
+				
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+44, ypos+12, globalContainer->littleFont, medstr);
+				drawRadioButton(globalContainer->gfx->getW()-128+48+lenMid, ypos+12+4, (selBuild->priorityLocal==0));
+
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+84, ypos+12, globalContainer->littleFont, highstr);
+				drawRadioButton(globalContainer->gfx->getW()-128+88+lenHigh, ypos+12+4, (selBuild->priorityLocal==1));
+				ypos += 30;
+			}
+		}
 	}
 	
 	// flag range bar

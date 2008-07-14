@@ -134,54 +134,6 @@ strandstorlek
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Bygga
 [Building Defaults]
@@ -254,8 +206,6 @@ Kompilera skript
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Anslut
 [connecting to]
@@ -298,12 +248,6 @@ Skadekarta
 enheter eller byggnader
 [defencetower explanation]
 Attackerar fientliga
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Försvarstorn
 [Defense Map]
@@ -404,6 +348,8 @@ tomma öar
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Mat
 [forbidden area]
@@ -452,6 +398,8 @@ Glädje
 
 [Harvest]
 Skörda
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +432,6 @@ På väg
  
 [inn explanation]
 Utfodrar dina enheter
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Värdshus
 [insert]
@@ -556,6 +498,8 @@ Logga in
 Förlust: %0 har mer prestige än dig
 [Lost : your colony is dead]
 Förlust: Din koloni är död
+[low priority]
+
 [lowquality]
 Låg kvalitet
 [Magic At. Air]
@@ -567,8 +511,6 @@ Markskada
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Kartnamn: %0.
@@ -600,10 +542,10 @@ Markera Karta För Allierade
 frukt med andra
 [market explanation]
 Tillåter utbyte av 
-[market level 0]
-
 [market]
 Marknad
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +653,8 @@ Prestige
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Sviskon
@@ -926,8 +870,6 @@ Träsk
  
 [swarm explanation]
 Skapar nya enheter
-[swarm level 0]
-
 [swarm]
 Svärm
 [Swim]
