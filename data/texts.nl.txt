@@ -254,8 +254,6 @@ Compileer script
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Verbinden
 [connecting to]
@@ -404,6 +402,8 @@ Lege eilanden
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Voedsel
 [forbidden area]
@@ -452,6 +452,8 @@ Tevreden
 
 [Harvest]
 Verzamelen
+[high priority]
+
 [hints]
 
 [home]
@@ -556,6 +558,8 @@ Aanmelden
 Verloren: %0 heeft meer roem dan jou
 [Lost : your colony is dead]
 Verloren: je kolonie is dood
+[low priority]
+
 [lowquality]
 Lage kwaliteit
 [Magic At. Air]
@@ -567,8 +571,6 @@ Grondschade
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Naam speelveld: %0.
@@ -600,10 +602,10 @@ Markeer speelveld voor bondgenoten
 met anderen
 [market explanation]
 Verhandel fruit
-[market level 0]
-
 [market]
 Markt
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +713,8 @@ Roem
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Pruimen

@@ -134,54 +134,6 @@ mărimea plajei
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Construieşte
 [Building Defaults]
@@ -205,12 +157,6 @@ Campanie
 [Can't join game, game has started]
 
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-
-[Can't join game, timeout]
-
-[Can't join game, wrong game version]
 
 [cancel destroy]
 Anulează distrugerea
@@ -254,8 +200,6 @@ Compilează scriptul
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Conectează
 [connecting to]
@@ -298,12 +242,6 @@ Lovire
 din vecinătate
 [defencetower explanation]
 Atacă unitaţile inamice
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Turn de-apărare
 [Defense Map]
@@ -404,6 +342,8 @@ exploratori
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Mâncare
 [forbidden area]
@@ -452,6 +392,8 @@ Bucurie
 
 [Harvest]
 Recoltează
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +426,6 @@ Pe drum
 
 [inn explanation]
 Vă hrăneşte unitaţile
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Popas
 [insert]
@@ -556,6 +492,8 @@ Login
 Pierdut : %0 are un prestigiu mai mare
 [Lost : your colony is dead]
 Pierdut : colonia voastră este moartă
+[low priority]
+
 [lowquality]
 Calitate scăzută
 [Magic At. Air]
@@ -567,8 +505,6 @@ Calitate scăzută
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Hartă: %0.
@@ -592,18 +528,16 @@ Lărgimea hărţii
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 
 [market explanation 2]
 cu ceilalţi
 [market explanation]
 Permite schimbul de fructe
-[market level 0]
-
 [market]
 Piată
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +645,8 @@ Prestigiu
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Prună
@@ -926,8 +862,6 @@ Numele servărului gazdă
 
 [swarm explanation]
 Crează unităţi noi
-[swarm level 0]
-
 [swarm]
 Stup
 [Swim]

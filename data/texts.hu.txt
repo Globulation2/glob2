@@ -134,54 +134,6 @@ a partok méretei
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Épít
 [Building Defaults]
@@ -205,12 +157,6 @@ Hadjárat
 [Can't join game, game has started]
 
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-
-[Can't join game, timeout]
-
-[Can't join game, wrong game version]
 
 [cancel destroy]
 Megsemmisítés megszakítása
@@ -254,8 +200,6 @@ Szkript fordítása
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Kapcsolódás
 [connecting to]
@@ -298,12 +242,6 @@ Kár
 ellenséges egységeket
 [defencetower explanation]
 Megtámadja a közeli
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Páncéltorony
 [Defense Map]
@@ -404,6 +342,8 @@ felderítők
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Élelmiszer
 [forbidden area]
@@ -452,6 +392,8 @@ Boldogság
 
 [Harvest]
 Betakarít
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +426,6 @@ Játék hostolása
 
 [inn explanation]
 Egységek élelmezése
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Étkezde
 [insert]
@@ -556,6 +492,8 @@ Bejelentkezés
 Veszítettél: %0 -nak nagyobb a presztízse mint neked.
 [Lost : your colony is dead]
 A kolóniád megsemmisült.
+[low priority]
+
 [lowquality]
 Alacsony képminőség
 [Magic At. Air]
@@ -567,8 +505,6 @@ Alacsony képminőség
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 A térkép neve: %0.
@@ -592,18 +528,16 @@ Térkép hosszúsága
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 
 [market explanation 2]
 gyümölcs árucserét
 [market explanation]
 Lehetővé teszi az
-[market level 0]
-
 [market]
 Piac
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +645,8 @@ Presztízs
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Szilva
@@ -926,8 +862,6 @@ A játékszerver neve
 
 [swarm explanation]
 Új egységek létrehozása
-[swarm level 0]
-
 [swarm]
 Raj
 [Swim]

@@ -112,9 +112,9 @@ public:
 	///than the rhs building and returns true.
 	static bool prioritize_building(Building* lhs, Building* rhs);
 	///This function adds the given building to the needing-unit call lists
-	void add_building_needing_work(Building* b);
+	void add_building_needing_work(Building* b, Sint32 priority);
 	///This function removes the given building from the needing-unit call lists
-	void remove_building_needing_work(Building* b);
+	void remove_building_needing_work(Building* b, Sint32 priority);
 	///This function updates all of the buildings in order of highest priority to lowest
 	void updateAllBuildingTasks();
 
@@ -147,8 +147,8 @@ public:
 	
 	Building *myBuildings[1024]; //That's right, you can't build two walls all the way across a 512x512 map.
 
-	///This stores the buildings that need units. They are sorted based on priority.
-	std::vector<Building*> buildingsNeedingUnits;
+	///This stores the buildings that need units, listed into their hard priorities. They are sorted based on priority.
+	std::map<int, std::vector<Building*>, std::greater<int> > buildingsNeedingUnits;
 
 	// thoses where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
 	std::list<Building *> upgrade[NB_ABILITY]; //to upgrade the units' abilities.
