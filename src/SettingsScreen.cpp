@@ -756,6 +756,10 @@ void SettingsScreen::activateDefaultAssignedGroupNumber(int group)
 				flagRadiusTexts[i]->visible=false;
 		}
 	}
+	if(group == 4)
+		flagSettingsExplanation->visible=true;
+	else
+		flagSettingsExplanation->visible=false;
 }
 
 
