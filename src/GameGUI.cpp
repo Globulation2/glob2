@@ -3026,6 +3026,7 @@ void GameGUI::drawBuildingInfos(void)
 			else
 				spriteId = 19;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+10, ypos+2, globalContainer->gamegui, spriteId);
+			ypos += YOFFSET_TEXT_PARA;
 		}
 	}
 
