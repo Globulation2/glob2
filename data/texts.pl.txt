@@ -134,54 +134,6 @@ Wielkość plaż
 
 [build %0 level %1]
 
-[build barracks level 0]
-
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
-
 [Build]
 Buduje
 [Building Defaults]
@@ -205,12 +157,6 @@ Kampania
 [Can't join game, game has started]
 
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-
-[Can't join game, timeout]
-
-[Can't join game, wrong game version]
 
 [cancel destroy]
 Przerwij niszczenie
@@ -254,8 +200,6 @@ Kompiluj skrypt
 
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Łączę
 [connecting to]
@@ -298,12 +242,6 @@ Uszkodzenia
 jednostki i budynki
 [defencetower explanation]
 Atakuje wrogie
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Wieża obronna
 [Defense Map]
@@ -404,6 +342,8 @@ Odkrywcy
 
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Jedzenie
 [forbidden area]
@@ -452,6 +392,8 @@ Satysfakcja
 
 [Harvest]
 Zbiera
+[high priority]
+
 [hints]
 
 [home]
@@ -484,12 +426,6 @@ W drodze
 jednostkom
 [inn explanation]
 Dostarcza żywność
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Gospoda
 [insert]
@@ -556,6 +492,8 @@ Login
 Przegrałeś: %0 ma większy prestiż od Twojego
 [Lost : your colony is dead]
 Przegrałeś: Twoja kolonia została wybita.
+[low priority]
+
 [lowquality]
 Niska jakość
 [Magic At. Air]
@@ -567,8 +505,6 @@ Niska jakość
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Nazwa mapy: %0.
@@ -592,18 +528,16 @@ Wysokość mapy
 
 [Map Upload: Waiting for reply]
 
-[maps available]
-
 [mark map]
 
 [market explanation 2]
 owoców z innymi
 [market explanation]
 Umożliwia wymianę
-[market level 0]
-
 [market]
 Bazar
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -711,6 +645,8 @@ Prestiż
 [Primary Objectives]
 
 [print screen]
+
+[priority]
 
 [Prune]
 Śliwki
@@ -926,8 +862,6 @@ Nazwa hosta
 jednostek
 [swarm explanation]
 Umożliwia produkcję
-[swarm level 0]
-
 [swarm]
 Rój
 [Swim]

@@ -758,6 +758,9 @@ Building *Team::findBestUpgrade(Unit *unit)
 
 bool Team::prioritize_building(Building* lhs, Building* rhs)
 {
+	if(lhs->priority != rhs->priority)
+		return lhs->priority > rhs->priority;
+
 	int priority_lhs=0;
 	if(lhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !lhs->type->isBuildingSite)
 		priority_lhs=2+lhs->type->level*10;
@@ -799,39 +802,61 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 }
 
 
-void Team::add_building_needing_work(Building* b)
+void Team::add_building_needing_work(Building* b, Sint32 priority)
 {
 	bool did_find_position=false;
-	for(unsigned i=0; i<buildingsNeedingUnits.size(); ++i)
+	Sint32 p = priority;
+	for(unsigned i=0; i<buildingsNeedingUnits[p].size(); ++i)
 	{
-		if(prioritize_building(b, buildingsNeedingUnits[i]))
+		if(prioritize_building(b, buildingsNeedingUnits[p][i]))
 		{
-			buildingsNeedingUnits.insert(buildingsNeedingUnits.begin() + i, b);
+			buildingsNeedingUnits[p].insert(buildingsNeedingUnits[p].begin() + i, b);
 			did_find_position=true;
 			break;
 		}
 	}
 	if(!did_find_position)
-		buildingsNeedingUnits.push_back(b);
+		buildingsNeedingUnits[p].push_back(b);
 }
 
 
-void Team::remove_building_needing_work(Building* b)
+void Team::remove_building_needing_work(Building* b, Sint32 priority)
 {
-	buildingsNeedingUnits.erase(std::find(buildingsNeedingUnits.begin(), buildingsNeedingUnits.end(), b));
+	Sint32 p = priority;
+	buildingsNeedingUnits[p].erase(std::find(buildingsNeedingUnits[p].begin(), buildingsNeedingUnits[p].end(), b));
 }
 
 
 
 void Team::updateAllBuildingTasks()
 {
-	std::sort(buildingsNeedingUnits.begin(), buildingsNeedingUnits.end(), Team::prioritize_building);
-	for(unsigned i=0; i<buildingsNeedingUnits.size(); ++i)
+	std::cout<<"updating"<<std::endl;
+	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
-		if(buildingsNeedingUnits[i]->type->isVirtual)
-			buildingsNeedingUnits[i]->subscribeForFlagingStep();
-		else
-			buildingsNeedingUnits[i]->subscribeToBringRessourcesStep();
+		std::sort(i->second.begin(), i->second.end(), Team::prioritize_building);
+		std::cout<<"Priority "<<i->first<<" has "<<i->second.size()<<" buildings"<<std::endl;
+		bool cont=true;
+		std::vector<bool> foundPer(i->second.size(), true);
+		while(cont)
+		{
+			bool found=false;
+			for(unsigned j=0; j<(i->second.size()); ++j)
+			{
+				if(foundPer[j])
+				{
+					std::cout<<"evaluating type "<<i->second[j]->shortTypeNum<<" of gid "<<i->second[j]->gid<<std::endl;
+					bool thisFound=false;
+					if(i->second[j]->type->isVirtual)
+						thisFound |= (i->second)[j]->subscribeForFlagingStep();
+					else
+						thisFound |= (i->second)[j]->subscribeToBringRessourcesStep();
+					found |= thisFound;
+					foundPer[j] = thisFound;
+				}
+			}
+			if(!found)
+				cont = false;
+		}
 	}
 }
 

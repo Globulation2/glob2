@@ -88,6 +88,10 @@ boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength
 	{
 		return boost::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1, versionMinor));
 	}
+	case ORDER_CHANGE_PRIORITY:
+	{
+		return boost::shared_ptr<Order>(new OrderChangePriority(netData+1, netDataLength-1, versionMinor));
+	}
 	case ORDER_ALTERATE_FORBIDDEN:
 	{
 		return boost::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1, versionMinor));
@@ -591,6 +595,40 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMin
 	x=getSint32(data, 2);
 	y=getSint32(data, 6);
 	drop=(bool)getUint8(data, 10);
+	return true;
+}
+// OrderCancelConstruction's code
+
+OrderChangePriority::OrderChangePriority(const Uint8 *data, int dataLength, Uint32 versionMinor)
+:Order()
+{
+	assert(dataLength==6);
+	bool good=setData(data, dataLength, versionMinor);
+	assert(good);
+}
+
+OrderChangePriority::OrderChangePriority(Uint16 gid, Sint32 priority)
+{
+	assert(gid<32768);
+	this->gid=gid;
+	this->priority=priority;
+}
+
+Uint8 *OrderChangePriority::getData(void)
+{
+	assert(sizeof(data) == getDataLength());
+	addUint16(data, this->gid, 0);
+	addSint32(data, this->priority, 2);
+	return data;
+}
+
+bool OrderChangePriority::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	if (dataLength!=getDataLength())
+		return false;
+	this->gid=getUint16(data, 0);
+	this->priority=getUint32(data, 2);
+	memcpy(this->data, data, dataLength);
 	return true;
 }
 

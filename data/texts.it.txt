@@ -248,8 +248,6 @@ componi
 Calcolando la fertilità
 [concrete islands terrain]
 
-[concrete islands]
-
 [connect]
 Connesso
 [connecting to]
@@ -398,6 +396,8 @@ f9
 Mappa della fertilità
 [Flag Defaults]
 
+[flag settings explanation]
+
 [food]
 Cibo
 [forbidden area]
@@ -446,6 +446,8 @@ Soddisfazione
 Pausa forte
 [Harvest]
 Raccogliere
+[high priority]
+
 [hints]
 
 [home]
@@ -550,6 +552,8 @@ Login
 Hai perso: %0 ha più prestigio di te
 [Lost : your colony is dead]
 Hai perso: la tua colonia è morta.
+[low priority]
+
 [lowquality]
 Bassa qualità
 [Magic At. Air]
@@ -561,8 +565,6 @@ Danno a terra
 [Map Discovered]
 
 [Map download failure: lost connection]
-
-[Map fownload failure: lost connection]
 
 [Map name: %0]
 Nome della mappa: %0.
@@ -594,10 +596,10 @@ Segna la mappa per gli Alleati
 frutta con gli altri
 [market explanation]
 Permette lo scambio di
-[market level 0]
-
 [market]
 Mercato
+[medium priority]
+
 [meta %0]
 meta-%0
 [Min required level:]
@@ -704,6 +706,8 @@ Prestigio
 
 [print screen]
 stamp
+[priority]
+
 [Prune]
 Prugne
 [quit the editor]
