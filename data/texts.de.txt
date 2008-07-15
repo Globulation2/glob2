@@ -1011,9 +1011,17 @@ Einheitliche Landschaft
 [Unit editor]
 Einheiteneditor
 [unit settings explanation]
+<<<<<<< /home/leo/test.leowandersleb.de/website/translation/glob2/data/texts.de.txt.orig.1879022446
 Standardeinheitenanzahl
 [unit settings]
 Einheiten
+||||||| /tmp/texts.de.txt~base.UM3gz0
+
+[unit settings]
+Einheiten
+=======
+
+>>>>>>> /tmp/texts.de.txt~other.lPEetu
 [units working]
 Einheiten arbeiten
 [Units]

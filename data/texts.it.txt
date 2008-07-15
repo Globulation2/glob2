@@ -186,6 +186,8 @@ Costruisci piscina liv. 2
 Costruisci
 [Building Defaults]
 
+[building settings]
+Impostazioni unità
 [building site]
 Struttura in costruzione
 [Buildings]
@@ -1076,8 +1078,6 @@ Terreno uniforme
 Editor di unità
 [unit settings explanation]
 Il numero default di unità assegnate
-[unit settings]
-Impostazioni unità
 [units working]
 Unità al lavoro
 [Units]

@@ -545,5 +545,24 @@ private:
 	Uint8 data[4];
 };
 
+
+class AdjustLatency:public MiscOrder
+{
+public:
+	AdjustLatency(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	AdjustLatency(Uint16 latencyAdjustment);
+	virtual ~AdjustLatency(void) { }
+
+	Uint8 getOrderType(void) { return ORDER_ADJUST_LATENCY; }
+	Uint8 *getData(void);
+	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	int getDataLength(void) { return 2; }
+	
+	Uint16 latencyAdjustment;
+	
+private:
+	Uint8 data[2];
+};
+
 #endif
  

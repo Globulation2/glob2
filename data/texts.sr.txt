@@ -138,6 +138,8 @@ AIWarrush
 Гради
 [Building Defaults]
 
+[building settings]
+
 [building site]
 Градилиште
 [Buildings]
@@ -1013,8 +1015,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [Unit editor]
 
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  јединица у послу

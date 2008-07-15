@@ -186,6 +186,8 @@ Bouw Zwembad 2
 Bouwen
 [Building Defaults]
 
+[building settings]
+Gebouwen
 [building site]
 bouwplaats
 [Buildings]
@@ -1084,8 +1086,6 @@ Effen terrein
 Eenheid bewerken
 [unit settings explanation]
 
-[unit settings]
-Gebouwen
 [units working]
  werkende eenheden
 [Units]

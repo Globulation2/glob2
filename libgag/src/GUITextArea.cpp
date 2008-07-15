@@ -57,6 +57,8 @@ namespace GAGGUI
 		cursorPosY = 0;
 		cursorScreenPosY = 0;
 		
+		activated=false;
+		
 		this->text = text;
 		
 		if (spritelocation)
@@ -91,6 +93,8 @@ namespace GAGGUI
 		cursorPosY = 0;
 		cursorScreenPosY = 0;
 		
+		activated=false;
+		
 		this->text = text;
 		
 		if (spritelocation)
@@ -107,134 +111,92 @@ namespace GAGGUI
 	void TextArea::onSDLKeyDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_KEYDOWN);
-		SDLKey sym=event->key.keysym.sym;
-		SDLMod mod=event->key.keysym.mod;
 		
-		switch (sym)
+		if(activated)
 		{
-			case SDLK_DELETE:
-			if (!readOnly)
-			{
-				if (cursorPos < text.length())
-				{
-					size_t len=getNextUTF8Char(text.c_str(), cursorPos);
-					remText(cursorPos, len-cursorPos);
-					parent->onAction(this, TEXT_MODIFIED, 0, 0);
-				}
-			}
-			break;
+			SDLKey sym=event->key.keysym.sym;
+			SDLMod mod=event->key.keysym.mod;
 			
-			case SDLK_BACKSPACE:
-			if (!readOnly)
+			switch (sym)
 			{
-				if (cursorPos)
+				case SDLK_DELETE:
+				if (!readOnly)
 				{
-					size_t newPos=getPrevUTF8Char(text.c_str(), cursorPos);
-					size_t len=cursorPos-newPos;
-					cursorPos=newPos;
-					remText(newPos, len);
-					parent->onAction(this, TEXT_MODIFIED, 0, 0);
-				}
-			}
-			break;
-			
-			case SDLK_HOME:
-			{
-				if (SDL_GetModState() & KMOD_CTRL)
-				{
-					cursorPos=0;
-				}
-				else
-				{
-					cursorPos=lines[cursorPosY];
-				}
-				compute();
-				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-			}
-			break;
-			
-			case SDLK_END:
-			{
-				if (SDL_GetModState() & KMOD_CTRL)
-				{
-					cursorPos=text.length();
-				}
-				else
-				{
-					if (cursorPosY<lines.size()-1)
-						cursorPos=lines[cursorPosY+1]-1;
-					else
-						cursorPos=text.length();
-				}
-				compute();
-				parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-			}
-			break;
-			
-			case SDLK_PAGEUP:
-			{
-				if (areaPos>0)
-				{
-					assert(lines.size()>areaHeight);
-					
-					// compute new areaPos
-					areaPos-=MIN(areaPos, areaHeight);
-
-					// if in edit mode, replace cursor
-					if (!readOnly)
+					if (cursorPos < text.length())
 					{
-						// TODO : UTF8 clean cursor displacement in text
-						size_t cursorPosX=cursorPos-lines[cursorPosY];
-						size_t newPosY=cursorPosY>areaPos+areaHeight-2 ? areaPos+areaHeight-2 : cursorPosY;
-						if (newPosY!=cursorPosY)
-						{
-							size_t newLineLen=lines[cursorPosY]-lines[newPosY];
-
-							if (cursorPosX<newLineLen)
-							{
-								cursorPos=lines[newPosY]+cursorPosX;
-							}
-							else
-							{
-								cursorPos=lines[newPosY]+newLineLen-1;
-							}
-
-							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-						}
+						size_t len=getNextUTF8Char(text.c_str(), cursorPos);
+						remText(cursorPos, len-cursorPos);
+						parent->onAction(this, TEXT_MODIFIED, 0, 0);
 					}
-
-					compute();
 				}
-			}
-			break;
-			
-			case SDLK_PAGEDOWN:
-			{
-				if (lines.size()>=areaHeight)
+				break;
+				
+				case SDLK_BACKSPACE:
+				if (!readOnly)
 				{
-					if (areaPos<lines.size()-areaHeight)
+					if (cursorPos)
 					{
-						// compute new areaPos
-						areaPos+=std::min(lines.size()-areaHeight-areaPos, areaHeight);
+						size_t newPos=getPrevUTF8Char(text.c_str(), cursorPos);
+						size_t len=cursorPos-newPos;
+						cursorPos=newPos;
+						remText(newPos, len);
+						parent->onAction(this, TEXT_MODIFIED, 0, 0);
+					}
+				}
+				break;
+				
+				case SDLK_HOME:
+				{
+					if (SDL_GetModState() & KMOD_CTRL)
+					{
+						cursorPos=0;
+					}
+					else
+					{
+						cursorPos=lines[cursorPosY];
+					}
+					compute();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+				}
+				break;
+				
+				case SDLK_END:
+				{
+					if (SDL_GetModState() & KMOD_CTRL)
+					{
+						cursorPos=text.length();
+					}
+					else
+					{
+						if (cursorPosY<lines.size()-1)
+							cursorPos=lines[cursorPosY+1]-1;
+						else
+							cursorPos=text.length();
+					}
+					compute();
+					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+				}
+				break;
+				
+				case SDLK_PAGEUP:
+				{
+					if (areaPos>0)
+					{
+						assert(lines.size()>areaHeight);
 						
+						// compute new areaPos
+						areaPos-=MIN(areaPos, areaHeight);
+	
 						// if in edit mode, replace cursor
 						if (!readOnly)
 						{
 							// TODO : UTF8 clean cursor displacement in text
 							size_t cursorPosX=cursorPos-lines[cursorPosY];
-							size_t newPosY=cursorPosY<areaPos+1 ? areaPos+1 : cursorPosY;
+							size_t newPosY=cursorPosY>areaPos+areaHeight-2 ? areaPos+areaHeight-2 : cursorPosY;
 							if (newPosY!=cursorPosY)
 							{
-								size_t newLineLen;
-								if (newPosY==lines.size()-1)
-								{
-									newLineLen=text.length()-lines[newPosY];
-								}
-								else
-								{
-									newLineLen=lines[newPosY+1]-lines[newPosY]-1;
-								}
-								
+								size_t newLineLen=lines[cursorPosY]-lines[newPosY];
+	
 								if (cursorPosX<newLineLen)
 								{
 									cursorPos=lines[newPosY]+cursorPosX;
@@ -243,184 +205,230 @@ namespace GAGGUI
 								{
 									cursorPos=lines[newPosY]+newLineLen-1;
 								}
-								
+	
 								parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 							}
 						}
-						
+	
 						compute();
 					}
 				}
-			}
-			break;
-			
-			case SDLK_UP:
-			{
-				if ((!readOnly) && (cursorPosY>0))
+				break;
+				
+				case SDLK_PAGEDOWN:
 				{
-					// TODO : UTF8 clean cursor displacement in text
-					size_t cursorPosX=cursorPos-lines[cursorPosY];
-					size_t newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
-					
-					if (cursorPosX<newLineLen)
+					if (lines.size()>=areaHeight)
 					{
-						cursorPos=lines[cursorPosY-1]+cursorPosX;
-					}
-					else
-					{
-						cursorPos=lines[cursorPosY]-1;
-					}
-					
-					compute();
-					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-				}
-			}
-			break;
-
-			case SDLK_DOWN:
-			{
-				if ((!readOnly) && (cursorPosY+1<lines.size()))
-				{
-					// TODO : UTF8 clean cursor displacement in text
-					size_t cursorPosX=cursorPos-lines[cursorPosY];
-					size_t newLineLen;
-					
-					if (cursorPosY==lines.size()-2)
-					{
-						newLineLen=text.length()-lines[cursorPosY+1];
-					}
-					else
-					{
-						newLineLen=lines[cursorPosY+2]-lines[cursorPosY+1]-1;
-					}
-					
-					if (cursorPosX < newLineLen)
-					{
-						cursorPos=lines[cursorPosY+1]+cursorPosX;
-					}
-					else
-					{
-						cursorPos=lines[cursorPosY+1]+newLineLen;
-					}
-
-					compute();
-					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
-				}
-			}
-			break;
-			
-			case SDLK_LEFT:
-			if (!readOnly)
-			{
-				if (mod&KMOD_CTRL)
-				{
-					bool cont=true;
-					while ((cursorPos>0) && cont)
-					{
-						cursorPos=getPrevUTF8Char(text.c_str(), cursorPos);
-						switch (text[cursorPos])
+						if (areaPos<lines.size()-areaHeight)
 						{
-							case '.':
-							case ' ':
-							case '\t':
-							case ',':
-							case '\'':
-							case '\r':
-							case '\n':
-							cont=false;
-							default:
-							break;
+							// compute new areaPos
+							areaPos+=std::min(lines.size()-areaHeight-areaPos, areaHeight);
+							
+							// if in edit mode, replace cursor
+							if (!readOnly)
+							{
+								// TODO : UTF8 clean cursor displacement in text
+								size_t cursorPosX=cursorPos-lines[cursorPosY];
+								size_t newPosY=cursorPosY<areaPos+1 ? areaPos+1 : cursorPosY;
+								if (newPosY!=cursorPosY)
+								{
+									size_t newLineLen;
+									if (newPosY==lines.size()-1)
+									{
+										newLineLen=text.length()-lines[newPosY];
+									}
+									else
+									{
+										newLineLen=lines[newPosY+1]-lines[newPosY]-1;
+									}
+									
+									if (cursorPosX<newLineLen)
+									{
+										cursorPos=lines[newPosY]+cursorPosX;
+									}
+									else
+									{
+										cursorPos=lines[newPosY]+newLineLen-1;
+									}
+									
+									parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+								}
+							}
+							
+							compute();
 						}
 					}
-					compute();
-					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
-				else
+				break;
+				
+				case SDLK_UP:
 				{
-					if (cursorPos>0)
+					if ((!readOnly) && (cursorPosY>0))
 					{
-						cursorPos=getPrevUTF8Char(text.c_str(), cursorPos);
+						// TODO : UTF8 clean cursor displacement in text
+						size_t cursorPosX=cursorPos-lines[cursorPosY];
+						size_t newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
+						
+						if (cursorPosX<newLineLen)
+						{
+							cursorPos=lines[cursorPosY-1]+cursorPosX;
+						}
+						else
+						{
+							cursorPos=lines[cursorPosY]-1;
+						}
+						
 						compute();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 				}
-			}
-			break;
-		
-			case SDLK_RIGHT:
-			if (!readOnly)
-			{
-				if (cursorPos<text.length())
+				break;
+	
+				case SDLK_DOWN:
+				{
+					if ((!readOnly) && (cursorPosY+1<lines.size()))
+					{
+						// TODO : UTF8 clean cursor displacement in text
+						size_t cursorPosX=cursorPos-lines[cursorPosY];
+						size_t newLineLen;
+						
+						if (cursorPosY==lines.size()-2)
+						{
+							newLineLen=text.length()-lines[cursorPosY+1];
+						}
+						else
+						{
+							newLineLen=lines[cursorPosY+2]-lines[cursorPosY+1]-1;
+						}
+						
+						if (cursorPosX < newLineLen)
+						{
+							cursorPos=lines[cursorPosY+1]+cursorPosX;
+						}
+						else
+						{
+							cursorPos=lines[cursorPosY+1]+newLineLen;
+						}
+	
+						compute();
+						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+					}
+				}
+				break;
+				
+				case SDLK_LEFT:
+				if (!readOnly)
 				{
 					if (mod&KMOD_CTRL)
 					{
 						bool cont=true;
-						while (cont)
+						while ((cursorPos>0) && cont)
 						{
-							assert(cursorPos < text.length());
-							cursorPos=getNextUTF8Char(text.c_str(), cursorPos);
-							if (cursorPos < text.length())
+							cursorPos=getPrevUTF8Char(text.c_str(), cursorPos);
+							switch (text[cursorPos])
 							{
-								switch (text[cursorPos])
-								{
-									case '.':
-									case ' ':
-									case '\t':
-									case ',':
-									case '\'':
-									case '\r':
-									case '\n':
-									cont = false;
-									default:
-									break;
-								}
+								case '.':
+								case ' ':
+								case '\t':
+								case ',':
+								case '\'':
+								case '\r':
+								case '\n':
+								cont=false;
+								default:
+								break;
 							}
-							else
-								cont = false;
 						}
 						compute();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 					else
-					{	
-						cursorPos=getNextUTF8Char(text.c_str(), cursorPos);
-						compute();
-						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+					{
+						if (cursorPos>0)
+						{
+							cursorPos=getPrevUTF8Char(text.c_str(), cursorPos);
+							compute();
+							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+						}
 					}
 				}
-			}
-			break;
+				break;
 			
-			case SDLK_ESCAPE:
-			parent->onAction(this, TEXT_CANCELED, 0, 0);
-			break;
-			
-			case SDLK_TAB:
-			{
-				parent->onAction(this, TEXT_TABBED, 0, 0);
-			}
-			break;
-			
-			case SDLK_RETURN:
-			if (!readOnly)
-			{
-				addChar('\n');
-			}
-			break;
-		
-			default:
-			if (!readOnly)
-			{
-				Uint16 c=event->key.keysym.unicode;
-				if (c)
+				case SDLK_RIGHT:
+				if (!readOnly)
 				{
-					char utf8text[4];
-					UCS16toUTF8(c, utf8text);
-					addText(utf8text);
-					parent->onAction(this, TEXT_MODIFIED, 0, 0);
+					if (cursorPos<text.length())
+					{
+						if (mod&KMOD_CTRL)
+						{
+							bool cont=true;
+							while (cont)
+							{
+								assert(cursorPos < text.length());
+								cursorPos=getNextUTF8Char(text.c_str(), cursorPos);
+								if (cursorPos < text.length())
+								{
+									switch (text[cursorPos])
+									{
+										case '.':
+										case ' ':
+										case '\t':
+										case ',':
+										case '\'':
+										case '\r':
+										case '\n':
+										cont = false;
+										default:
+										break;
+									}
+								}
+								else
+									cont = false;
+							}
+							compute();
+							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+						}
+						else
+						{	
+							cursorPos=getNextUTF8Char(text.c_str(), cursorPos);
+							compute();
+							parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
+						}
+					}
 				}
+				break;
+				
+				case SDLK_ESCAPE:
+				parent->onAction(this, TEXT_CANCELED, 0, 0);
+				break;
+				
+				case SDLK_TAB:
+				{
+					parent->onAction(this, TEXT_TABBED, 0, 0);
+				}
+				break;
+				
+				case SDLK_RETURN:
+				if (!readOnly)
+				{
+					addChar('\n');
+				}
+				break;
+			
+				default:
+				if (!readOnly)
+				{
+					Uint16 c=event->key.keysym.unicode;
+					if (c)
+					{
+						char utf8text[4];
+						UCS16toUTF8(c, utf8text);
+						addText(utf8text);
+						parent->onAction(this, TEXT_MODIFIED, 0, 0);
+					}
+				}
+				break;
 			}
-			break;
 		}
 	}
 
@@ -429,13 +437,21 @@ namespace GAGGUI
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		if (isOnWidget(event->button.x, event->button.y))
 		{
-			if (event->button.button == 4)
+			if(activated)
 			{
-				scrollUp();
+				if (event->button.button == 4)
+				{
+					scrollUp();
+				}
+				else if (event->button.button == 5)
+				{
+					scrollDown();
+				}
 			}
-			else if (event->button.button == 5)
+			else if(!activated && event->button.button == SDL_BUTTON_LEFT)
 			{
-				scrollDown();
+				activated=true;
+				parent->onAction(this, TEXT_ACTIVATED, 0, 0);
 			}
 		}
 		/* Junk from older event handling system
@@ -514,7 +530,7 @@ namespace GAGGUI
 			}
 		}
 	
-		if (!readOnly)
+		if (!readOnly && activated)
 		{
 			int xPos = x+4+cursorScreenPosY;
 			int yPos = y+4+(charHeight*(cursorPosY-areaPos));

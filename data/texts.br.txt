@@ -186,6 +186,8 @@ Construir Piscina 3
 Contruir
 [Building Defaults]
 
+[building settings]
+Ajustes de unidade
 [building site]
 Construindo...
 [Buildings]
@@ -1086,8 +1088,6 @@ Terreno uniforme
 Editor de unidades
 [unit settings explanation]
 
-[unit settings]
-Ajustes de unidade
 [units working]
 unidades trabalhando
 [Units]
