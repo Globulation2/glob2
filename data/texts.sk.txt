@@ -138,6 +138,8 @@ veľkosť pláže
 Stavanie
 [Building Defaults]
 
+[building settings]
+Jednotky
 [building site]
 stavenisko
 [Buildings]
@@ -1020,8 +1022,6 @@ Jednotný povrch
 Editor jedotiek
 [unit settings explanation]
 
-[unit settings]
-Jednotky
 [units working]
  jednotiek pracuje
 [Units]

@@ -138,6 +138,8 @@ Strandbreite
 Bauen
 [Building Defaults]
 
+[building settings]
+Einheiten
 [building site]
 Baustelle
 [Buildings]
@@ -1012,8 +1014,6 @@ Einheitliche Landschaft
 Einheiteneditor
 [unit settings explanation]
 
-[unit settings]
-Einheiten
 [units working]
 Einheiten arbeiten
 [Units]

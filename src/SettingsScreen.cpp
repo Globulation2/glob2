@@ -46,7 +46,7 @@ SettingsScreen::SettingsScreen()
 	old_settings=globalContainer->settings;
 	
 	generalGroup = addGroup(Toolkit::getStringTable()->getString("[general settings]"));
-	unitGroup = addGroup(Toolkit::getStringTable()->getString("[unit settings]"));
+	unitGroup = addGroup(Toolkit::getStringTable()->getString("[building settings]"));
 	keyboardGroup = addGroup(Toolkit::getStringTable()->getString("[keyboard settings]"));
 
 	// Screen entry/quit part
@@ -150,7 +150,7 @@ SettingsScreen::SettingsScreen()
 	
 	
 
-	
+	//This is all the second tab, the default values for various buildings
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
 		for(int l=0; l<6; ++l)
@@ -164,7 +164,7 @@ SettingsScreen::SettingsScreen()
 	int group_current_column_x=20;
 	int group_widest_element=0;
 	
-	///First group is fully constructed buildings sites
+	//First group is fully constructed buildings sites
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
 		if(t==IntBuildingType::EXPLORATION_FLAG || t==IntBuildingType::WAR_FLAG || t==IntBuildingType::CLEARING_FLAG)
@@ -259,7 +259,7 @@ SettingsScreen::SettingsScreen()
 	
 	for(int t=IntBuildingType::EXPLORATION_FLAG; t<=IntBuildingType::CLEARING_FLAG; ++t)
 	{
-		int size = addDefaultFlagRadiusWidget(t, group_current_column_x, 140 + 40*group_row, 4);
+		int size = addDefaultFlagRadiusWidget(t, group_current_column_x, 130 + 40*group_row, 4);
 		group_widest_element = std::max(group_widest_element, size);
 		
 		group_row += 1;
@@ -285,10 +285,10 @@ SettingsScreen::SettingsScreen()
 	addWidgetToGroup(flags, unitGroup);
 	addWidgetToGroup(flagSettingsExplanation, unitGroup);
 
-	//shortcuts part
-	game_shortcuts=new TextButton( 100, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
+	// This is the third tab, the keyboard shortcuts
+	game_shortcuts=new TextButton( 10, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
 
-	editor_shortcuts=new TextButton( 230, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
+	editor_shortcuts=new TextButton( 140, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
 
 	shortcut_list = new List(20, 110, 325, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	action_list = new List(365, 110 , 265, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");

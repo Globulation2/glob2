@@ -138,6 +138,8 @@ Available local games
 يبنى
 [Building Defaults]
 
+[building settings]
+اعدادت الوحده
 [building site]
 موقع اﻷنشاء
 [Buildings]
@@ -1020,8 +1022,6 @@ Uniform terrain
 محرر الوحده
 [unit settings explanation]
 
-[unit settings]
-اعدادت الوحده
 [units working]
 وحدات العمل
 [Units]

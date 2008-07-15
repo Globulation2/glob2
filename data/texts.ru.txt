@@ -186,6 +186,8 @@ break
 Строит
 [Building Defaults]
 
+[building settings]
+Юниты
 [building site]
 стройка
 [Buildings]
@@ -1082,8 +1084,6 @@ tab
 Редактор юнитов
 [unit settings explanation]
 Количество назначеных юнитов по умолчанию
-[unit settings]
-Юниты
 [units working]
  юнитов работает
 [Units]

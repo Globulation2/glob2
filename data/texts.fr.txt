@@ -138,6 +138,8 @@ casser
 Construit
 [Building Defaults]
 
+[building settings]
+Réglages de l'unité
 [building site]
 chantier
 [Buildings]
@@ -1022,8 +1024,6 @@ Terrain uniforme
 Éditeur d'unité
 [unit settings explanation]
 
-[unit settings]
-Réglages de l'unité
 [units working]
  unités travaillent
 [Units]
