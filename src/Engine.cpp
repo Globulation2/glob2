@@ -260,6 +260,7 @@ int Engine::run(void)
 		Sint32 needToBeTime = 0;
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
+		bool sendBumpUp=false;
 
 		while (gui.isRunning)
 		{
@@ -338,6 +339,7 @@ int Engine::run(void)
 
 				if(networkReadyToExecute)
 				{
+					sendBumpUp=false;
 					if(!net->matchCheckSums())
 					{	
 						std::cout<<"Game desychronized."<<std::endl;
@@ -354,6 +356,11 @@ int Engine::run(void)
 						}
 						net->clearTopOrders();
 					}
+				}
+				else if(!sendBumpUp)
+				{
+					sendBumpUp=true;
+					net->increaseLatencyAdjustment();
 				}
 
 				// here we do the real work
