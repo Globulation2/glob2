@@ -80,6 +80,9 @@ public:
 	///Checks the checksums of all players for this step.
 	///returns false if they don't match
 	bool matchCheckSums();
+
+	///This sends an order through the network that causes the latency adjustment to be increased
+	void increaseLatencyAdjustment();
 	
 private:
 
@@ -95,6 +98,7 @@ private:
 	int localPlayer;
 	boost::shared_ptr<NetConnection> router;
 	int networkOrderRate;
+	int currentLatency;
 };
 
 
