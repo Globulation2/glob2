@@ -1,25 +1,25 @@
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0 level %1]
-
+%0 Level %1
 [%0 units can't access building]
-
+%0 Einheiten können das Gebäude nicht betreten
 [%0 units can't access fruit]
-
+%0 Einheiten können die Früchte nicht erreichen
 [%0 units can't access resource]
-
+%0 Einheiten können die Resource nicht erreichen
 [%0 units not available]
-
+%0 Einheiten nicht verfügbar
 [%0 units too far from building]
-
+%0 Einheiten zu weit  vom Gebäude entfernt
 [%0 units too far from fruit]
-
+%0 Einheiten zu weit von den Früchten entfernt
 [%0 units too far from resource]
-
+%0 Einheiten zu weit von der Ressource entfernt
 [%0 units too low level]
-
+%0 Einheiten mit unzureichender Bildung
 [%0% Uploaded]
-
+%0% hochgeladen
 [%0's game]
 Spiel von %0
 [%0's team unit got converted to your team]
@@ -39,23 +39,23 @@ Karte hinzufügen
 [add shortcut]
 Shortcut hinzufügen
 [Add]
-
+Hinzzufügen
 [AI Descriptions]
-
+KI-Beschreibungen
 [AI]
 KI
 [ai]
 KI
 [AICastor-Description]
-
+Castor ist eine mittelstarke KI, die nicht versucht zu konvertieren oder aus der Luft angreift.
 [AICastor]
 Castor
 [AINicowar-Description]
-
+Nicowar greift bevorzugt seinen stärksten Gegner als erstes an und zieht alle Register - von Konvertierung mit Früchten bis zu Luftangriffen darf man mit allem rechnen.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+KINone tut nichts und kommt eigentlich nur in Zusammenhang mit Skripten zum Einsatz.
 [AINone]
 KINone
 [AINumbi-Description]
@@ -81,7 +81,7 @@ Algen
 [alliances]
 Allianzen
 [alt %0]
-
+Alt-%0
 [and]
 und
 [any explorer]
