@@ -186,6 +186,8 @@ AIWarrush
 建造
 [Building Defaults]
 
+[building settings]
+單位設定
 [building site]
 建築地點
 [Buildings]
@@ -1084,8 +1086,6 @@ V: 持鍵以傳送訊息
 單位編輯器
 [unit settings explanation]
 
-[unit settings]
-單位設定
 [units working]
 單位工作
 [Units]

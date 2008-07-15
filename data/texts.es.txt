@@ -138,6 +138,8 @@ Tamaño de la Playa
 Edificar
 [Building Defaults]
 
+[building settings]
+
 [building site]
 Sitio de Construcción
 [Buildings]
@@ -1019,8 +1021,6 @@ Terreno Uniforme
 [Unit editor]
 Editor de unidad
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
 Unidades Operando
