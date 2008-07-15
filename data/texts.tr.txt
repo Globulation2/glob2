@@ -138,6 +138,8 @@ sahil boyutu
 Insaa et
 [Building Defaults]
 
+[building settings]
+
 [building site]
 insaa alani
 [Buildings]
@@ -1019,8 +1021,6 @@ Tekbicimli saha
 [Unit editor]
 Birim editoru
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  calisan birimler

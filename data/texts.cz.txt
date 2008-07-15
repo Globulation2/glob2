@@ -138,6 +138,8 @@ Velikost pláží
 Stavba
 [Building Defaults]
 
+[building settings]
+
 [building site]
 staveniště
 [Buildings]
@@ -1013,8 +1015,6 @@ Jednotná krajina
 [Unit editor]
 
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  jednotek pracuje
