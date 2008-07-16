@@ -144,11 +144,14 @@ public:
 	///This sets the game result for the local player
 	void setGameResult(YOGGameResult result);
 	
-	///Retursn true if the given player is ready to start
+	///Returns true if the given player is ready to start
 	bool isReadyToStart(int playerID);
 	
 	///Sets whether the player (as in the actual person) is ready, usually by clicking a check box
 	void setHumanReady(bool isReady);
+	
+	///This is true if the map and game headers have been recieved and the game is connected to the game router
+	bool isFullyInGame();
 protected:
 	friend class YOGClient;
 

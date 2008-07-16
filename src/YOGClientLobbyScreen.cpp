@@ -40,6 +40,7 @@
 #include "YOGClient.h"
 #include "YOGClientLobbyScreen.h"
 #include "YOGClientPlayerListManager.h"
+#include "YOGClientGameConnectionDialog.h"
 #include "YOGMessage.h"
 
 YOGClientPlayerList::YOGClientPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
@@ -363,11 +364,16 @@ void YOGClientLobbyScreen::joinGame()
 			}
 		}
 		game->joinGame(id);
-		MultiplayerGameScreen* mgs = new MultiplayerGameScreen(parent, game, client, ircChat);
-		gameScreen = mgs->getTabNumber();
-		updateButtonVisibility();
-		parent->activateGroup(gameScreen);
-
+		YOGClientGameConnectionDialog dialog(globalContainer->gfx, game);
+		dialog.execute();
+		int result = dialog.endValue;
+		if(result == YOGClientGameConnectionDialog::Success)
+		{
+			MultiplayerGameScreen* mgs = new MultiplayerGameScreen(parent, game, client, ircChat);
+			gameScreen = mgs->getTabNumber();
+			updateButtonVisibility();
+			parent->activateGroup(gameScreen);
+		}
 	}
 }
 
