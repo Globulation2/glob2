@@ -709,3 +709,14 @@ void MultiplayerGame::setHumanReady(bool isReady)
 }
 
 
+bool MultiplayerGame::isFullyInGame()
+{
+	if(gjcState != JoinedGame && gjcState != HostingGame)
+		return false;
+	if(!client->getGameConnection() || !client->getGameConnection()->isConnected())
+		return false;
+	if(gjcState == JoinedGame && (!haveMapHeader || !haveGameHeader))
+		return false;
+	return true;
+}
+
