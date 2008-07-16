@@ -5,6 +5,7 @@
 [%0 units can't access resource]
 [%0 units not available]
 [%0 units too far from building]
+[connecting to game]
 [%0 units too far from fruit]
 [%0 units too far from resource]
 [%0 units too low level]
