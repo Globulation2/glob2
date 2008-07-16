@@ -138,6 +138,8 @@ hondar tamaina
 Eraiki
 [Building Defaults]
 
+[building settings]
+Unitate ezarpenak
 [building site]
 eraikitzen
 [Buildings]
@@ -1022,8 +1024,6 @@ Lurzoru uniformea
 Unitate editorea
 [unit settings explanation]
 
-[unit settings]
-Unitate ezarpenak
 [units working]
  unitate lanean
 [Units]

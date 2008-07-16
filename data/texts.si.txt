@@ -138,6 +138,8 @@ velikost obal
 Zgradi
 [Building Defaults]
 
+[building settings]
+
 [building site]
 gradbišče
 [Buildings]
@@ -1013,8 +1015,6 @@ Obleči teren?
 [Unit editor]
 
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  enot dela

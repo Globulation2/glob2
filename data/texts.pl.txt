@@ -138,6 +138,8 @@ Wielkość plaż
 Buduje
 [Building Defaults]
 
+[building settings]
+
 [building site]
 plac budowy
 [Buildings]
@@ -1013,8 +1015,6 @@ Rodzaj terenu
 [Unit editor]
 
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  jednostek pracujących

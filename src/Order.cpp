@@ -132,6 +132,10 @@ boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength
 	{
 		return boost::shared_ptr<Order>(new PlayerQuitsGameOrder(netData+1, netDataLength-1, versionMinor));
 	}
+	case ORDER_ADJUST_LATENCY :
+	{
+		return boost::shared_ptr<Order>(new AdjustLatency(netData+1, netDataLength-1, versionMinor));
+	}
 	default:
 		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
 		
@@ -144,7 +148,7 @@ boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength
 OrderCreate::OrderCreate(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :Order()
 {
-	assert(dataLength==24);//if changed don't forget order.h update
+	assert(dataLength==28);//if changed don't forget order.h update
 	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
@@ -987,6 +991,41 @@ bool PlayerQuitsGameOrder::setData(const Uint8 *data, int dataLength, Uint32 ver
 		return false;
 
 	this->player=getUint32(data, 0);
+	
+	memcpy(this->data, data, dataLength);
+	
+	return true;
+}
+
+
+// PlayerQuitsGameOrder code
+
+AdjustLatency::AdjustLatency(const Uint8 *data, int dataLength, Uint32 versionMinor)
+:MiscOrder()
+{
+	assert(dataLength==2);
+	bool good=setData(data, dataLength, versionMinor);
+	assert(good);
+}
+
+AdjustLatency::AdjustLatency(Uint16 latencyAdjustment)
+{
+	this->latencyAdjustment=latencyAdjustment;
+}
+
+Uint8 *AdjustLatency::getData(void)
+{
+	assert(sizeof(data) == getDataLength());
+	addUint16(data, this->latencyAdjustment, 0);
+	return data;
+}
+
+bool AdjustLatency::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	if(dataLength!=getDataLength())
+		return false;
+
+	this->latencyAdjustment=getUint16(data, 0);
 	
 	memcpy(this->data, data, dataLength);
 	

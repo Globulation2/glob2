@@ -138,6 +138,8 @@ strandstorlek
 Bygga
 [Building Defaults]
 
+[building settings]
+Enheter
 [building site]
 byggarbetsplats
 [Buildings]
@@ -1022,8 +1024,6 @@ Enhetlig terräng
 Enhetseditor
 [unit settings explanation]
 
-[unit settings]
-Enheter
 [units working]
  arbetande enheter
 [Units]

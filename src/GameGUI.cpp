@@ -2090,6 +2090,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			ypos += YOFFSET_TOWER;
 		ypos += YOFFSET_B_SEP;
 
+		//Exchannge building
+		//Exchanging as a feature is broken
+		/*
 		if (selBuild->type->canExchange && ((selBuild->owner->allies)&(1<<localTeamNo)))
 		{
 			int startY = ypos+YOFFSET_TEXT_PARA;
@@ -2126,6 +2129,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				}
 			}
 		}
+		*/
 
 		if (selBuild->type->unitProductionTime)
 		{
@@ -3026,6 +3030,7 @@ void GameGUI::drawBuildingInfos(void)
 			else
 				spriteId = 19;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-128+10, ypos+2, globalContainer->gamegui, spriteId);
+			ypos += YOFFSET_TEXT_PARA;
 		}
 	}
 
@@ -3105,12 +3110,13 @@ void GameGUI::drawBuildingInfos(void)
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[market]"));
 		globalContainer->littleFont->popStyle();
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36-3, ypos+1, globalContainer->gamegui, EXCHANGE_BUILDING_ICONS);
+		//globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36-3, ypos+1, globalContainer->gamegui, EXCHANGE_BUILDING_ICONS);
 		ypos += YOFFSET_TEXT_PARA;
 		for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-128+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(getRessourceName(i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
 
+			/*
 			int inId, outId;
 			if (selBuild->receiveRessourceMaskLocal & (1<<i))
 				inId = 20;
@@ -3122,6 +3128,7 @@ void GameGUI::drawBuildingInfos(void)
 				outId = 19;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36, ypos+2, globalContainer->gamegui, inId);
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-18, ypos+2, globalContainer->gamegui, outId);
+			*/
 
 			ypos += YOFFSET_TEXT_PARA;
 		}
