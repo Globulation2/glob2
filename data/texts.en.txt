@@ -10,6 +10,8 @@
 %0 units can't access resource
 [%0 units not available]
 %0 units not available
+[connecting to game]
+Connecting To Game
 [%0 units too far from building]
 %0 units too far from building
 [%0 units too far from fruit]
