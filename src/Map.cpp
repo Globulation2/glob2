@@ -3871,7 +3871,9 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 					gradient[wyx] = 0;
 				else if(immobileUnits[wyx] != 255)
 					gradient[wyx] = 0;
-				else if (!canSwim && isWater(x, y))
+				//Clearing flags don't consider water an obstacle so long as that piece of
+				//water is under the flag, like algae
+				else if (!canSwim && isWater(x, y) && (!isClearingFlag || gradient[wyx] != 255))
 					gradient[wyx] = 0;
 			}
 			else

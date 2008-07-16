@@ -138,6 +138,8 @@ mărimea plajei
 Construieşte
 [Building Defaults]
 
+[building settings]
+
 [building site]
 şantier
 [Buildings]
@@ -1013,8 +1015,6 @@ Teren uniform
 [Unit editor]
 
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  unităţi lucrează

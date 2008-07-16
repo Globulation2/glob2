@@ -193,7 +193,7 @@ def main():
         print "No compiler found in PATH. Please install gcc or another compiler."
         Exit(1)
 	
-    env["VERSION"] = "0.9.3"
+    env["VERSION"] = "0.9.4"
     establish_options(env)
     #Add the paths to important mingw libraries
     if env['mingw'] or isWindowsPlatform:

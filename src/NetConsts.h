@@ -57,6 +57,8 @@ enum OrderTypes
 
 	ORDER_MAP_MARK=74,
 
+	ORDER_ADJUST_LATENCY=100,
+
 };
 
 #endif 

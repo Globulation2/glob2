@@ -138,6 +138,8 @@ Tamanho da praia
 Construir
 [Building Defaults]
 
+[building settings]
+
 [building site]
 Sítio de constr.
 [Buildings]
@@ -1019,8 +1021,6 @@ Terreno uniforme
 [Unit editor]
 
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  unid. trabalhando

@@ -186,6 +186,8 @@ Byg Svømmepøl 3
 Byg
 [Building Defaults]
 
+[building settings]
+Enheder
 [building site]
 bygningssted
 [Buildings]
@@ -1084,8 +1086,6 @@ Uniform terraing
 Rediger Enhed
 [unit settings explanation]
 
-[unit settings]
-Enheder
 [units working]
 Enheder der arbejder
 [Units]

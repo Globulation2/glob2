@@ -186,6 +186,8 @@ backspace
 Κτίσμα
 [Building Defaults]
 
+[building settings]
+Ρυθμίσεις Μονάδας
 [building site]
 τόπος κατασκευής
 [Buildings]
@@ -1088,8 +1090,6 @@ Tutorial
 Επεξεργαστής μονάδας
 [unit settings explanation]
 
-[unit settings]
-Ρυθμίσεις Μονάδας
 [units working]
  εργαζόμενες μονάδες
 [Units]
