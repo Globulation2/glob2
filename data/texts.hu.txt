@@ -138,6 +138,8 @@ a partok méretei
 Épít
 [Building Defaults]
 
+[building settings]
+
 [building site]
 építési terület
 [Buildings]
@@ -1013,8 +1015,6 @@ Egységes térkép
 [Unit editor]
 
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  az egységek dolgoznak

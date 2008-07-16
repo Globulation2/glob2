@@ -1047,7 +1047,14 @@ void Building::updateUnitsWorking(void)
 					int r=(*it)->caryedRessource;
 					if (r<0)
 					{
-						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+						int tx = posX;
+						int ty = posY;
+						if((*it)->targetX != -1)
+						{
+							tx = (*it)->targetX;
+							ty = (*it)->targetY;
+						}
+						int newDistSquare=distSquare((*it)->posX, (*it)->posY, tx, ty);
 						if (newDistSquare<minDistSquare)
 						{
 							minDistSquare=newDistSquare;
@@ -1687,14 +1694,102 @@ bool Building::subscribeToBringRessourcesStep()
 bool Building::subscribeForFlagingStep()
 {
 	if (buildingState==DEAD)
+	{
+		for(int i=0; i<UnitCantWorkReasonSize; ++i)
+		{
+			unitsFailingRequirements[i]=0;
+		}
 		return false;
+	}
 	
 	bool hired=false;
 	subscriptionWorkingTimer++;
 	if (subscriptionWorkingTimer>32)
 	{
+		for(int i=0; i<UnitCantWorkReasonSize; ++i)
+		{
+			unitsFailingRequirements[i]=0;
+		}
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
 		{
+			for(int i=0; i<UnitCantWorkReasonSize; ++i)
+			{
+				unitsFailingRequirements[i]=0;
+			}
+
+			//Generate the list of possible units
+			Unit* possibleUnits[1024];
+			int distances[1024];
+			int teamNumber=owner->teamNumber;
+			for(int n=0; n<1024; ++n)
+			{
+				possibleUnits[n]=NULL;
+				distances[n] = 0;
+				Unit* unit=owner->myUnits[n];
+				if(unit)
+				{
+					if(unit->attachedBuilding == this)
+					{
+						continue;
+					}
+					else if(type->zonable[EXPLORER] && unit->typeNum != EXPLORER)
+					{
+						continue;
+					}
+					else if(type->zonable[WORKER] && unit->typeNum != WORKER)
+					{
+						continue;
+					}
+					else if(type->zonable[WARRIOR] && unit->typeNum != WARRIOR)
+					{
+						continue;
+					}
+					else if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+					{
+						unitsFailingRequirements[UnitNotAvailable] += 1;
+					}
+					else if(!canUnitWorkHere(unit))
+					{
+						unitsFailingRequirements[UnitTooLowLevel] += 1;
+					}
+					else if(type->zonable[WARRIOR] && unit->movement == Unit::MOV_ATTACKING_TARGET)
+					{
+						unitsFailingRequirements[UnitNotAvailable] += 1;
+					}
+					else
+					{
+						int distBuilding=0;
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+						int directdist=owner->map->warpDistSquare(unit->posX, unit->posY, posX, posY);
+						bool canSwim=unit->performance[SWIM];
+						if(type->zonable[EXPLORER] && timeLeft < directdist)
+						{
+							unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+						}
+						else if(!type->zonable[EXPLORER] && !owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+						{
+							unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+						}
+						else if(!type->zonable[EXPLORER] && distBuilding >= timeLeft)
+						{
+							unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+						}
+						else if(type->zonable[WORKER] && anyRessourceToClear[canSwim]==2)
+						{
+							unitsFailingRequirements[UnitCantAccessResource] += 1;
+						}
+						else
+						{
+							if(type->zonable[EXPLORER])
+								distances[n]=directdist;
+							else
+								distances[n]=distBuilding;
+							possibleUnits[n]=unit;
+						}
+					}
+				}
+			}
+			
 			int minValue=INT_MAX;
 			int minLevel=INT_MAX;
 			int maxLevel=-INT_MAX;
@@ -1710,29 +1805,24 @@ bool Building::subscribeForFlagingStep()
 			{
 				for(int n=0; n<1024; ++n)
 				{
-					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+					Unit* unit=possibleUnits[n];
+					if(unit==NULL)
 						continue;
-			  	 	if(!canUnitWorkHere(unit))
-			  		  	continue;
 
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					timeLeft*=timeLeft;
 					hp*=hp;
-					int dist=map->warpDistSquare(unit->posX, unit->posY, posX, posY);
-					if (dist<timeLeft)
+					int dist=distances[n];
+					//Use explorers without ground attack first before ones with, so that ground attacking explorers
+					//are available for more important jobs
+					int value=dist-2*timeLeft-2*hp;
+					int level = unit->level[MAGIC_ATTACK_GROUND];
+					if ((level < minLevel) || (level==minLevel && value<minValue))
 					{
-						//Use explorers without ground attack first before ones with, so that ground attacking explorers
-						//are available for more important jobs
-						int value=dist-2*timeLeft-2*hp;
-						int level = unit->level[MAGIC_ATTACK_GROUND];
-						if ((level < minLevel) || (level==minLevel && value<minValue))
-						{
-							minValue=value;
-							minLevel=level;
-							choosen=unit;
-						}
+						minValue=value;
+						minLevel=level;
+						choosen=unit;
 					}
 				}
 			}
@@ -1740,26 +1830,21 @@ bool Building::subscribeForFlagingStep()
 			{
 				for(int n=0; n<1024; ++n)
 				{
-					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || unit->movement == Unit::MOV_ATTACKING_TARGET)
+					Unit* unit=possibleUnits[n];
+					if(unit==NULL)
 						continue;
-			  	 	if(!canUnitWorkHere(unit))
-			  		  	continue;
 
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
-					int dist;
-					if (map->buildingAvailable(this, (unit->performance[SWIM]>0 ? true : false), unit->posX, unit->posY, &dist) && (dist<timeLeft))
+					int dist = distances[n];
+					int value=dist-2*timeLeft-2*hp;
+					//We want to maximize the attack level, use higher level soldeirs first
+					int level=unit->performance[ATTACK_SPEED]*unit->getRealAttackStrength();
+					if ((level > maxLevel) || (level==maxLevel && value<minValue))
 					{
-						int value=dist-2*timeLeft-2*hp;
-						//We want to maximize the attack level, use higher level soldeirs first
-						int level=unit->performance[ATTACK_SPEED]*unit->getRealAttackStrength();
-						if ((level > maxLevel) || (level==maxLevel && value<minValue))
-						{
-							minValue=value;
-							maxLevel=level;
-							choosen=unit;
-						}
+						minValue=value;
+						maxLevel=level;
+						choosen=unit;
 					}
 				}
 			}
@@ -1767,30 +1852,23 @@ bool Building::subscribeForFlagingStep()
 			{
 				for(int n=0; n<1024; ++n)
 				{
-					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+					Unit* unit=possibleUnits[n];
+					if(unit==NULL)
 						continue;
-			  	 	if(!canUnitWorkHere(unit))
-			  		  	continue;
 
 					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
-					int dist;
+					int dist = distances[n];
 					bool canSwim=unit->performance[SWIM];
-					if (anyRessourceToClear[canSwim]!=2
-						&& map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &dist)
-						&& (dist<timeLeft))
+					int value=dist-timeLeft-hp;
+					int level = unit->level[HARVEST];
+					//We want to minimize the level of harvesting units, so that the higher level
+					//units are available for more important work.
+					if ((level < minLevel) || (level==minLevel && value<minValue))
 					{
-						int value=dist-timeLeft-hp;
-						int level = unit->level[HARVEST];
-						//We want to minimize the level of harvesting units, so that the higher level
-						//units are available for more important work.
-						if ((level < minLevel) || (level==minLevel && value<minValue))
-						{
-							minValue=value;
-							minLevel=level;
-							choosen=unit;
-						}
+						minValue=value;
+						minLevel=level;
+						choosen=unit;
 					}
 				}
 			}

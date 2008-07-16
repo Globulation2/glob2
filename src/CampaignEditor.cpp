@@ -239,6 +239,13 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 			endExecute(CANCEL);
 		}
 	}
+	else if(action == TEXT_ACTIVATED)
+	{
+		if(source == nameEditor)
+			descriptionEditor->deactivate();
+		else if(source == descriptionEditor)
+			nameEditor->deactivate();
+	}
 }
 
 

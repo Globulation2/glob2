@@ -140,6 +140,8 @@ Construct %0 Level %1
 Build
 [Building Defaults]
 Building Defaults
+[building settings]
+Building Settings
 [building site]
 construction site
 [Buildings]
@@ -1018,8 +1020,6 @@ Uniform terrain
 Unit editor
 [unit settings explanation]
 The default number of units assigned
-[unit settings]
-Unit Settings
 [units working]
  units working
 [Units]

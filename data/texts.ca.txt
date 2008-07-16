@@ -138,6 +138,8 @@ Tamany de la platja
 Construir
 [Building Defaults]
 
+[building settings]
+
 [building site]
 Construint
 [Buildings]
@@ -1019,8 +1021,6 @@ Terreny uniforme
 [Unit editor]
 
 [unit settings explanation]
-
-[unit settings]
 
 [units working]
  Unitats treballant

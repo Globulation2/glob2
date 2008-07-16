@@ -830,11 +830,9 @@ void Team::remove_building_needing_work(Building* b, Sint32 priority)
 
 void Team::updateAllBuildingTasks()
 {
-	std::cout<<"updating"<<std::endl;
 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
 		std::sort(i->second.begin(), i->second.end(), Team::prioritize_building);
-		std::cout<<"Priority "<<i->first<<" has "<<i->second.size()<<" buildings"<<std::endl;
 		bool cont=true;
 		std::vector<bool> foundPer(i->second.size(), true);
 		while(cont)
@@ -844,7 +842,6 @@ void Team::updateAllBuildingTasks()
 			{
 				if(foundPer[j])
 				{
-					std::cout<<"evaluating type "<<i->second[j]->shortTypeNum<<" of gid "<<i->second[j]->gid<<std::endl;
 					bool thisFound=false;
 					if(i->second[j]->type->isVirtual)
 						thisFound |= (i->second)[j]->subscribeForFlagingStep();
