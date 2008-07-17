@@ -199,6 +199,13 @@ void NetGamePlayerManager::setReteamingInformation(const NetReteamingInformation
 
 
 
+const NetReteamingInformation& NetGamePlayerManager::getReteamingInformation() const
+{
+	return reteamInfo;
+}
+
+
+
 int NetGamePlayerManager::chooseTeamNumber()
 {
 	//Find a spare team number to give to the player. If there aren't any, recycle a number that has the fewest number of attached players
