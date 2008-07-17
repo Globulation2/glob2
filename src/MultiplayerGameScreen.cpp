@@ -44,7 +44,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
 	{
-		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
+		if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 		{
 			TextButton *button = new TextButton(20, 400-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", AI::getAIText(i).c_str(), ADD_AI+i);
 			button->visible = false;
@@ -54,7 +54,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	}
 	
 	bool isHost = true;
-	if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
+	if(game->getMultiplayerMode() == MultiplayerGame::JoinedGame)
 		isHost = false;
 	
 	startButton=new TextButton(20, 455, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Start]"), START);
@@ -73,7 +73,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	addWidget(otherOptions);
 	otherOptions->visible=false;
 	
-	if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
+	if(game->getMultiplayerMode() == MultiplayerGame::JoinedGame)
 	{
 		isReadyText = new Text(50, 440, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[ready?]"));
 		isReady = new OnOffButton(20, 445, 20, 20, ALIGN_RIGHT, ALIGN_TOP, false, READY);
@@ -81,7 +81,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		addWidget(isReady);
 	}
 
-	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForCreateReply)
+	if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 	{
 		cancelButton = new TextButton(20, 505, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
 	}
@@ -170,7 +170,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		else if(par1 == OTHEROPTIONS)
 		{
 			bool readOnly = true;
-			if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+			if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 				readOnly = false;
 			CustomGameOtherOptions settings(game->getGameHeader(), game->getMapHeader(), readOnly);
 			int rc = settings.execute(globalContainer->gfx, 40);
@@ -307,7 +307,7 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 		for (int j=0; j<mh.getNumberOfTeams(); j++)
 			color[i]->addColor(mh.getBaseTeam(j).color);
 			
-		if(game->getGameJoinCreationState() == MultiplayerGame::JoinedGame || game->getGameJoinCreationState() == MultiplayerGame::WaitingForJoinReply)
+		if(game->getMultiplayerMode() == MultiplayerGame::JoinedGame)
 			color[i]->setClickable(false);
 		else
 			color[i]->setClickable(true);
@@ -321,7 +321,7 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 			text[i]->visible=isActivated();
 			text[i]->setText(bp.name);
 			color[i]->visible=isActivated();
-			if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame && bp.number != game->getLocalPlayerNumber())
+			if(game->getMultiplayerMode() == MultiplayerGame::HostingGame && bp.number != game->getLocalPlayerNumber())
 				kickButton[i]->visible=isActivated();
 			else
 				kickButton[i]->visible=false;
@@ -369,7 +369,7 @@ void MultiplayerGameScreen::updateVisibleButtons()
 	
 	if(game->isGameReadyToStart())
 	{
-		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 		{
 			if(game->isGameStarting())
 			{
@@ -392,11 +392,11 @@ void MultiplayerGameScreen::updateVisibleButtons()
 		notReadyText->visible=isActivated();
 	}
 	
-	if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame || game->getGameJoinCreationState() == MultiplayerGame::JoinedGame)
+	if(game->getGameJoinCreationState() == MultiplayerGame::ReadyToGo)
 	{
 		cancelButton->visible=isActivated();
 		gameChat->setChannelID(game->getChatChannel());
-		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 		{
 			for (size_t i=1; i<AI::SIZE; i++)
 			{
@@ -408,7 +408,7 @@ void MultiplayerGameScreen::updateVisibleButtons()
 	{	
 		cancelButton->visible=false;
 		gameChat->setChannelID(game->getChatChannel());
-		if(game->getGameJoinCreationState() == MultiplayerGame::HostingGame)
+		if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 		{
 			for (size_t i=1; i<AI::SIZE; i++)
 			{
