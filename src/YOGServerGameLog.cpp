@@ -79,6 +79,8 @@ void YOGServerGameLog::save()
 	std::stringstream s;
 	s<<"logs/gamelog";
 	s<<hour;
+	s<<".log";
+	std::cout<<s.str()<<std::endl;
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(s.str()));
 	
 	stream->writeUint32(VERSION_MINOR, "version");
@@ -98,6 +100,7 @@ void YOGServerGameLog::load()
 	std::stringstream s;
 	s<<"logs/gamelog";
 	s<<hour;
+	s<<".log";
 	StreamBackend* backend = Toolkit::getFileManager()->openInputStreamBackend(s.str());
 	if(!backend->isEndOfStream())
 	{
