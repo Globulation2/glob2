@@ -545,6 +545,7 @@ private:
 	UnitSelector* worker;
 	UnitSelector* explorer;
 	UnitSelector* warrior;
+	BlueButton* deleteButton;
 	TeamColorSelector* flag_view_tcs;
 	SingleLevelSelector* flag_view_level1;
 	SingleLevelSelector* flag_view_level2;
@@ -565,7 +566,6 @@ private:
 	TerrainSelector* orange;
 	TerrainSelector* cherry;
 	TerrainSelector* prune;
-	BlueButton* deleteButton;
 	BlueButton* noRessourceGrowthButton;
 	BlueButton* areasButton;
 	NumberCycler* areaNumber;

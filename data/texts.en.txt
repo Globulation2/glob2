@@ -256,8 +256,6 @@ Defense
 Delete the selected game
 [delete]
 Delete
-[delete]
-delete
 [desert]
 desert
 [destroy building]
