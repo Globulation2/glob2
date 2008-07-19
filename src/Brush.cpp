@@ -53,7 +53,8 @@ void BrushTool::handleClick(int x, int y)
 {
 	if (mode == MODE_NONE)
 		mode = MODE_ADD;
-	if (y>0)
+	if (y>0 && x>0 && x<128)
+	{
 		if (y<36)
 		{
 			if(addRemoveEnabled)
@@ -64,6 +65,7 @@ void BrushTool::handleClick(int x, int y)
 			y -= 36;
 			figure = (y/32)*4 + ((x/32)%4);
 		}
+	}
 }
 
 

@@ -189,7 +189,6 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 	}
 	else if(mode == PlaceZone)
 	{
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 		/* Instead of using a dimmer intensity to indicate
 			removing of areas, this should rather use dashed
 			lines.  (The intensities used below are 2/3 as
@@ -606,7 +605,6 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	
 	// Draw the building
 	sprite->setBaseColor(game.teams[localteam]->color);
-	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
 	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, hilightStrength));
 	globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
 
