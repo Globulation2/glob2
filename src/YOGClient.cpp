@@ -409,6 +409,13 @@ void YOGClient::update()
 
 
 
+const std::string& YOGClient::getIPAddress() const
+{
+	return nc.getIPAddress();
+}
+
+
+
 YOGClient::ConnectionState YOGClient::getConnectionState() const
 {
 	return connectionState;
