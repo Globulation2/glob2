@@ -807,7 +807,7 @@ void Checkbox::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
-  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
+  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 128, 14,14, Minimap::ShowFOW)
 {
 	doQuit=false;
 	doFullQuit=false;
