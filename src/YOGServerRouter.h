@@ -38,6 +38,9 @@ class YOGServerRouter
 public:
 	///This constructs a router
 	YOGServerRouter();
+	
+	///This constructs a router with a specific ip address of the server
+	YOGServerRouter(const std::string& yogip);
 
 	///This updates the router
 	void update();
