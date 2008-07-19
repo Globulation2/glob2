@@ -71,6 +71,11 @@ void MultiplayerGame::update()
 	
 	if(state == ConnectingToGameRouter)
 	{
+		//This is a special case, it means the router ip is the same as the yog ip
+		if(gameRouterIP == "YOGIP")
+		{
+			gameRouterIP = 	client->getIPAddress();
+		}
 		if(!client->getGameConnection())
 		{
 			client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(gameRouterIP, YOG_ROUTER_PORT)));
