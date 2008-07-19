@@ -3058,6 +3058,10 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 			mo=new ChangeFlagPosition;
 			mo->load(stream, player, versionMinor);
 			break;
+		case MAdjustPriority:
+			mo=new AdjustPriority;
+			mo->load(stream, player, versionMinor);
+			break;
 	}
 	return mo;
 }
@@ -3607,6 +3611,82 @@ void ChangeFlagPosition::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(building_id, "building_id");
 	stream->writeUint32(x, "x");
 	stream->writeUint32(y, "y");
+	stream->writeLeaveSection();
+}
+
+
+
+AdjustPriority::AdjustPriority(int building_id, AdjustPriority::BuildingPriority priority)
+	: building_id(building_id), priority(priority)
+{
+
+}
+
+
+void AdjustPriority::modify(Echo& echo)
+{
+	int p=0;
+	if(priority == Low)
+		p=-1;
+	else if(priority == Medium)
+		p=0;
+	else if(priority == High)
+		p=1;
+	echo.push_order(shared_ptr<Order>(new OrderChangePriority(echo.get_building_register().get_building(building_id)->gid, p)));
+}
+
+
+
+boost::logic::tribool AdjustPriority::wait(Echo& echo)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
+}
+
+
+
+ManagementOrderType AdjustPriority::get_type()
+{
+	return MAdjustPriority;
+}
+
+
+
+bool AdjustPriority::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("AdjustPriority");
+	ManagementOrder::load(stream, player, versionMinor);
+	building_id=stream->readUint32("building_id");
+	int p = stream->readSint32("p");
+	if(p==-1)
+		priority = Low;
+	else if(p==0)
+		priority = Medium;
+	else if(p==1)
+		priority = High;
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void AdjustPriority::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("AdjustPriority");
+	ManagementOrder::save(stream);
+	stream->writeUint32(building_id, "building_id");
+	int p=0;
+	if(priority == Low)
+		p=-1;
+	else if(priority == Medium)
+		p=0;
+	else if(priority == High)
+		p=1;
+	stream->writeSint32(p, "priority");
 	stream->writeLeaveSection();
 }
 
