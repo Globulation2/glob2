@@ -487,7 +487,7 @@ Charger jeu
 [load map]
 Charger la carte
 [load script]
-
+Charger le script
 [load]
 Charger
 [loading map list]
