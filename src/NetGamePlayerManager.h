@@ -52,6 +52,8 @@ public:
 	///game in YOG, and if the same players join, they are automatically set to
 	///the team they where in the save game
 	void setReteamingInformation(const NetReteamingInformation& information);
+	///This returns the reteaming information
+	const NetReteamingInformation& getReteamingInformation() const;
 private:
 	///Chooses a team number that has the fewest attached players
 	int chooseTeamNumber();
