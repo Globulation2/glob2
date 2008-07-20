@@ -39,6 +39,15 @@ YOGServerRouter::YOGServerRouter()
 
 
 
+YOGServerRouter::YOGServerRouter(const std::string& yogip)
+	: nl(YOG_ROUTER_PORT), admin(this)
+{
+	new_connection.reset(new NetConnection);
+	yog_connection.reset(new NetConnection(yogip, YOG_SERVER_ROUTER_PORT));
+}
+
+
+
 void YOGServerRouter::update()
 {
 	//First attempt connections with new players

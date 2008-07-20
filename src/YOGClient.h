@@ -65,6 +65,9 @@ public:
 	///Updates the client. This parses and interprets any incoming messages.
 	void update();
 	
+	///This returns the current ip address
+	const std::string& getIPAddress() const;
+	
 	///This defines the current state of the connection. There are many states,
 	///due to the asychronous design.
 	enum ConnectionState

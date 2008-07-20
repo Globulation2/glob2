@@ -807,7 +807,7 @@ void Checkbox::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
-  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 14, Minimap::ShowFOW)
+  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 128, 14,14, Minimap::ShowFOW)
 {
 	doQuit=false;
 	doFullQuit=false;
@@ -878,10 +878,11 @@ MapEdit::MapEdit()
 	forbiddenZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 216, 32, 32), "flag view", "forbidden zone", "select forbidden zone", ZoneSelector::ForbiddenZone);
 	guardZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8+40, 216, 32, 32), "flag view", "guard zone", "select guard zone", ZoneSelector::GuardingZone);
 	clearingZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8+80, 216, 32, 32), "flag view", "clearing zone", "select clearing zone", ZoneSelector::ClearingZone);
-	zoneBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 216+40, 128, 96), "flag view", "zone brush selector", "handle zone click", brush);
-	worker = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 360, 38, 38), "flag view", "worker selector", "select worker", WORKER);
-	explorer = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+48, 360, 38, 38), "flag view", "explorer selector", "select explorer", EXPLORER);
-	warrior = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+88, 360, 38, 38), "flag view", "warrior selector", "select warrior", WARRIOR);
+	deleteButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 216+40, 112, 16), "flag view", "delete button", "select delete objects", "[delete]");
+	zoneBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 216+65, 128, 96), "flag view", "zone brush selector", "handle zone click", brush);
+	worker = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 385, 38, 38), "flag view", "worker selector", "select worker", WORKER);
+	explorer = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+48, 385, 38, 38), "flag view", "explorer selector", "select explorer", EXPLORER);
+	warrior = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+88, 385, 38, 38), "flag view", "warrior selector", "select warrior", WARRIOR);
 	flag_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 16, globalContainer->gfx->getH()-74, 96, 32 ), "flag view", "flag view team selector", "select active team");
 	flag_view_level1 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 1", "select unit level 1", 1, placingUnitLevel);
 	flag_view_level2 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+32, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 2", "select unit level 2", 2, placingUnitLevel);
@@ -893,6 +894,7 @@ MapEdit::MapEdit()
 	addWidget(forbiddenZone);
 	addWidget(guardZone);
 	addWidget(clearingZone);
+	addWidget(deleteButton);
 	addWidget(zoneBrushSelector);
 	addWidget(worker);
 	addWidget(warrior);
@@ -914,13 +916,12 @@ MapEdit::MapEdit()
 	orange = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 248, 32, 32), "terrain view", "orange selector", "select orange tree", TerrainSelector::OrangeTree);
 	cherry = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+32, 248, 32, 32), "terrain view", "cherry selector", "select cherry tree", TerrainSelector::CherryTree);
 	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+64, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
-	deleteButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 294, 112, 16), "terrain view", "delete button", "select delete objects", "[delete]");
-	noRessourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 320, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
-	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 346, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
-	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 362, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
-	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-128+24, 362, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
-	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 388, 128, 96), "terrain view", "terrain brush selector", "handle terrain click", brush);
-	showFertilityOverlay = new Checkbox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 492, 128, 16), "terrain view", "fertility checkbox", "compute fertility", "[Fertility Map]", isFertilityOn);
+	noRessourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 294, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
+	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 320, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
+	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 336, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
+	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-128+24, 336, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
+	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 362, 128, 96), "terrain view", "terrain brush selector", "handle terrain click", brush);
+	showFertilityOverlay = new Checkbox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 466, 128, 16), "terrain view", "fertility checkbox", "compute fertility", "[Fertility Map]", isFertilityOn);
 	addWidget(grass);
 	addWidget(sand);
 	addWidget(water);
@@ -932,7 +933,6 @@ MapEdit::MapEdit()
 	addWidget(orange);
 	addWidget(cherry);
 	addWidget(prune);
-	addWidget(deleteButton);
 	addWidget(noRessourceGrowthButton);
 	addWidget(areasButton);
 	addWidget(areaNumber);

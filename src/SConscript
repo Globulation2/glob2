@@ -44,6 +44,7 @@ YOGServerFileDistributor.cpp          YOGServerGame.cpp                         
 YOGServerMapDatabank.cpp              YOGServerPasswordRegistry.cpp             YOGServerPlayer.cpp                YOGServerPlayerScoreCalculator.cpp
 YOGServerPlayerStoredInfoManager.cpp  YOGServerRouterAdministratorCommands.cpp  YOGServerRouterAdministrator.cpp   YOGServerRouter.cpp
 YOGServerRouterManager.cpp            YOGServerRouterPlayer.cpp
+YOGClientGameConnectionDialog.cpp
 
 """)
 
