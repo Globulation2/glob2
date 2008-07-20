@@ -297,7 +297,7 @@ int Engine::run(void)
 	
 			if (!gui.hardPause)
 			{
-				if(multiplayer && !multiplayer->isStillConnected())
+				if(multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
 				{
 					gui.isRunning = false;
 				}

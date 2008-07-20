@@ -1103,6 +1103,7 @@ namespace AIEcho
 			MUpgradeRepair,
 			MSendMessage,
 			MChangeFlagPosition,
+			MAdjustPriority,
 		};
 
 
@@ -1318,6 +1319,30 @@ namespace AIEcho
 			int building_id;
 		};
 
+		///This order adjusts the priority on a building
+		class AdjustPriority : public ManagementOrder
+		{
+		public:
+			enum BuildingPriority
+			{
+				Low,
+				Medium,
+				High,
+			};
+			
+			AdjustPriority() : building_id(0) {}
+			AdjustPriority(int building_id, BuildingPriority priority);
+		protected:
+			void modify(Echo& echo);
+			boost::logic::tribool wait(Echo& echo);
+			ManagementOrderType get_type();
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream);
+		private:
+			int building_id;
+			BuildingPriority priority;
+		};
+
 		enum AreaType
 		{
 			ClearingArea,
@@ -1406,11 +1431,12 @@ namespace AIEcho
 		private:
 			int id;
 		};
-
-		///This sends a message to the AI's handle_message function.
+		
 		#ifdef SendMessage
 		#undef SendMessage
- 		#endif
+		#endif
+
+		///This sends a message to the AI's handle_message function.
 		class SendMessage : public ManagementOrder
 		{
 		public:

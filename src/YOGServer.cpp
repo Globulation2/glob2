@@ -28,7 +28,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), maps(this), scoreCalculator(this)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), router("localhost"), maps(this), scoreCalculator(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
@@ -317,6 +317,9 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
 	std::string routerip = routerManager.chooseYOGRouter()->getIPAddress();
+	if(routerip == "127.0.0.1")
+		routerip = "YOGIP";
+	
 	gameList.push_back(YOGGameInfo(name, newID));
 	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, routerip, *this));
 	return newID;
