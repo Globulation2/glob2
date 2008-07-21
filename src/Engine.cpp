@@ -250,6 +250,11 @@ int Engine::run(void)
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
 	}
 	
+	if(!globalContainer->runNoX)
+	{
+		SDL_EnableKeyRepeat(0,0);
+	}
+	
 	while (doRunOnceAgain)
 	{
 		const int speed=40;
@@ -489,6 +494,11 @@ int Engine::run(void)
 				doRunOnceAgain=true;
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
 		}
+	}
+	
+	if(!globalContainer->runNoX)
+	{
+		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	}
 	
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
