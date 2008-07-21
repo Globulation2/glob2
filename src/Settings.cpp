@@ -32,7 +32,7 @@ using namespace GAGCore;
 Settings::Settings()
 {
 	// set default values in settings or load them
-	char *newUsername;
+	const char *newUsername;
 
 #	ifdef WIN32
 		newUsername=getenv("USERNAME");
@@ -44,60 +44,22 @@ Settings::Settings()
 	username=newUsername;
 
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
-	screenWidth = 640;
-	screenHeight = 480;
+	screenWidth = 800;
+	screenHeight = 600;
 	optionFlags = 0;
-	defaultLanguage = 0;
-	musicVolume = 255;
+	language = "en";
+	musicVolume = 190;
+	voiceVolume = 190;
 	mute = 0;
 	rememberUnit = 1;
 	tempUnit = 1;
 	tempUnitFuture = 1;
-
-	scrollWheelEnabled=true;
+	version = 0;
 	
-	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
-	{
-		for(int t=0; t<6; ++t)
-		{
-			defaultUnitsAssigned[n][t] = 0;
-		}
-	}
-	defaultUnitsAssigned[IntBuildingType::WAR_FLAG][0] = 20;
-	defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][0] = 2;
-	defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][0] = 1;
-	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0] = 7;
-	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1] = 4;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1] = 2;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][3] = 3;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][4] = 15;
-	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][5] = 8;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][0] = 2;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][2] = 4;
-	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][4] = 6;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][2] = 7;
-	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][4] = 12;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][0] = 2;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][4] = 12;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2] = 6;
-	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][4] = 9;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][0] = 5;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][2] = 10;
-	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][4] = 20;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][0] = 3;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][1] = 2;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][2] = 5;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][3] = 2;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][4] = 8;
-	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5] = 2;
-	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
-	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
-
+	scrollWheelEnabled=true;
+	resetDefaultUnitsAssigned();
+	resetDefaultFlagRadius();
+	
 	cloudPatchSize=16;//the bigger the faster the uglier
 	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
 	cloudMaxSpeed=3;
@@ -146,6 +108,7 @@ void Settings::load(const char *filename)
 			if (token)
 				parsed[varname] = token;
 		}
+		
 
 		// read values
 		READ_PARSED_STRING(username);
@@ -154,8 +117,9 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(optionFlags);
-		READ_PARSED_INT(defaultLanguage);
-		READ_PARSED_INT(musicVolume);		
+		READ_PARSED_STRING(language);
+		READ_PARSED_INT(musicVolume);
+		READ_PARSED_INT(voiceVolume);
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
@@ -170,6 +134,13 @@ void Settings::load(const char *filename)
 			}
 		}
 
+		for(int n=0; n<3; ++n)
+		{
+			std::string keyname="defaultFlagRadius["+boost::lexical_cast<std::string>(n)+"]";
+			if(parsed.find(keyname)!=parsed.end())
+				defaultFlagRadius[n] = boost::lexical_cast<int>(parsed[keyname]);
+		}
+
 		READ_PARSED_INT(cloudPatchSize);
 		READ_PARSED_INT(cloudMaxAlpha);
 		READ_PARSED_INT(cloudMaxSpeed);
@@ -177,8 +148,15 @@ void Settings::load(const char *filename)
 		READ_PARSED_INT(cloudStability);
 		READ_PARSED_INT(cloudSize);
 		READ_PARSED_INT(cloudHeight);
+		
+		READ_PARSED_INT(version);
 	}
 	delete stream;
+	
+	if(version < SETTINGS_VERSION)
+	{
+		resetDefaultUnitsAssigned();
+	}
 }
 
 void Settings::save(const char *filename)
@@ -198,8 +176,9 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
-		Utilities::streamprintf(stream, "defaultLanguage=%d\n", defaultLanguage);
+		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
+		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
@@ -213,6 +192,12 @@ void Settings::save(const char *filename)
 			}
 		}
 
+		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
+		{
+			std::string keyname = "defaultFlagRadius["+boost::lexical_cast<std::string>(n)+"]";
+			Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultFlagRadius[n]);
+		}
+
 		Utilities::streamprintf(stream, "cloudPatchSize=%d\n",	cloudPatchSize);
 		Utilities::streamprintf(stream, "cloudMaxAlpha=%d\n",	cloudMaxAlpha);
 		Utilities::streamprintf(stream, "cloudMaxSpeed=%d\n",	cloudMaxSpeed);
@@ -220,6 +205,63 @@ void Settings::save(const char *filename)
 		Utilities::streamprintf(stream, "cloudStability=%d\n",	cloudStability);
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
+		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
 	}
 	delete stream;
 }
+
+
+void Settings::resetDefaultUnitsAssigned()
+{
+	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
+	{
+		for(int t=0; t<6; ++t)
+		{
+			defaultUnitsAssigned[n][t] = 0;
+		}
+	}
+	defaultUnitsAssigned[IntBuildingType::WAR_FLAG][1] = 10;
+	defaultUnitsAssigned[IntBuildingType::CLEARING_FLAG][1] = 5;
+	defaultUnitsAssigned[IntBuildingType::EXPLORATION_FLAG][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][0] = 7;
+	defaultUnitsAssigned[IntBuildingType::SWARM_BUILDING][1] = 4;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][3] = 3;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][4] = 15;
+	defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][5] = 8;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][0] = 2;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][2] = 4;
+	defaultUnitsAssigned[IntBuildingType::HEAL_BUILDING][4] = 6;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][2] = 7;
+	defaultUnitsAssigned[IntBuildingType::WALKSPEED_BUILDING][4] = 12;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][0] = 2;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::SWIMSPEED_BUILDING][4] = 12;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2] = 6;
+	defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][4] = 9;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][0] = 5;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][2] = 10;
+	defaultUnitsAssigned[IntBuildingType::SCIENCE_BUILDING][4] = 20;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][1] = 2;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][2] = 5;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][3] = 2;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][4] = 8;
+	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5] = 2;
+	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
+	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
+}
+
+
+
+void Settings::resetDefaultFlagRadius()
+{
+	defaultFlagRadius[0] = 10;
+	defaultFlagRadius[1] = 4;
+	defaultFlagRadius[2] = 3;
+}
+

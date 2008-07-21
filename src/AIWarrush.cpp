@@ -453,14 +453,14 @@ boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 				}
 				if(!keep)
 				{
-					acc.applyBrush(map,BrushApplication(x,y,0));
+					acc.applyBrush(BrushApplication(x,y,0), map);
 				}
 			}
 		}
 	}
 	if(acc.getApplicationCount())
 	{
-		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc));
+		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc,map));
 	}
 	else return shared_ptr<Order>(new NullOrder);
 }
@@ -501,7 +501,7 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 							{
 								for(int y = 0; y < bt->height; y++)
 								{
-									guard_add_acc.applyBrush(map,BrushApplication(b->posX+x,b->posY+y,6));
+									guard_add_acc.applyBrush(BrushApplication((b->posX+x) % map->getW(), (b->posY+y) & map->getH(),6), map);
 								}
 							}
 						}
@@ -513,7 +513,7 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	
 	if(guard_add_acc.getApplicationCount())
 	{
-		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc));
+		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc, map));
 	}
 	else return shared_ptr<Order>(new NullOrder);
 }
@@ -562,14 +562,14 @@ boost::shared_ptr<Order> AIWarrush::farm()
 						&& !map->isRessourceTakeable(x, y, PRUNE)
 						)
 					{
-						del_acc.applyBrush(map, BrushApplication(x, y, 0));
+						del_acc.applyBrush(BrushApplication(x, y, 0), map);
 					}
 				}
 			}
 			
 			if(map->isForbidden(x, y, team->me) && map->isClearArea(x, y, team->me))
 			{
-				del_acc.applyBrush(map, BrushApplication(x, y, 0));
+				del_acc.applyBrush(BrushApplication(x, y, 0), map);
 			}
 			
 			//we never clear anything but wood
@@ -577,7 +577,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 			{
 				if(map->isClearArea(x, y, team->me))
 				{
-					clr_del_acc.applyBrush(map, BrushApplication(x, y, 0));
+					clr_del_acc.applyBrush(BrushApplication(x, y, 0), map);
 				}
 			}
 
@@ -594,7 +594,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
 									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
 							{
-								clr_add_acc.applyBrush(map, BrushApplication(x, y, 0));
+								clr_add_acc.applyBrush(BrushApplication(x, y, 0), map);
 								goto doublebreak;
 							}
 						}
@@ -611,7 +611,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 				{
 					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
 					{	
-						add_acc.applyBrush(map, BrushApplication(x, y, 0));
+						add_acc.applyBrush(BrushApplication(x, y, 0), map);
 					}
 				}
 			}
@@ -621,8 +621,8 @@ boost::shared_ptr<Order> AIWarrush::farm()
 				if(map->isRessourceTakeable(x, y, CORN))
 				{
 					if(!map->isForbidden(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
-					{	
-						add_acc.applyBrush(map, BrushApplication(x, y, 0));
+					{
+						add_acc.applyBrush(BrushApplication(x, y, 0), map);
 					}
 				}
 			}
@@ -636,20 +636,20 @@ boost::shared_ptr<Order> AIWarrush::farm()
 				&& map->isMapDiscovered(x, y, team->me)
 					)
 			{
-				add_acc.applyBrush(map, BrushApplication(x, y, 0));
+				add_acc.applyBrush(BrushApplication(x, y, 0), map);
 			}
 
 		}
 	}
 
 	if(del_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc));
+		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc, map));
 	if(add_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc));
+		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc, map));
 	if(clr_del_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc));
+		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc, map));
 	if(clr_add_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc));
+		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map));
 
 	//nothing to do...
 	return shared_ptr<Order>(new NullOrder());

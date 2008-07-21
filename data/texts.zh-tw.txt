@@ -1,7 +1,25 @@
-[%0 has been deconnected of the game]
-%0 以失去連線
 [%0 has left the game]
 %0 已離開遊戲
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -16,28 +34,44 @@ fV: 顯示客棧 (以招降敵人單位)
 mV: 顯示市場 (以交換水果)
 [abreaviation explanation V]
 V: 顯示所有建築物
-[Add AI]
-新增 AI
 [add map]
 新增地圖
 [add shortcut]
+
+[Add]
+
+[AI Descriptions]
 
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -46,6 +80,8 @@ AIWarrush
 海藻
 [alliances]
 聯盟
+[alt %0]
+
 [and]
 而且
 [any explorer]
@@ -66,8 +102,6 @@ AIWarrush
 攻擊速度
 [At. strength]
 攻擊強度
-[attack speed]
-攻擊速度
 [Attack]
 攻擊
 [audio]
@@ -80,10 +114,10 @@ AIWarrush
 正等待的玩家
 [away:]
 離至:
+[Back]
+
 [backspace]
 
-[bad error in connection system]
-連線系統錯誤
 [barracks explanation 2]
 你的士兵的等級
 [barracks explanation]
@@ -92,7 +126,13 @@ AIWarrush
 兵營
 [beach size]
 海灘大小
+[Blocked Players]
+
 [break]
+
+[briefing]
+
+[build %0 level %1]
 
 [build barracks level 0]
 建造兵營 1
@@ -144,12 +184,10 @@ AIWarrush
 建造游泳池 3
 [Build]
 建造
-[Building name]
-建築物名稱
-[Building short explanation 2]
-建立簡短註釋 2 (最多24字元)
-[Building short explanation]
-建立簡短註釋 (最多24字元)
+[Building Defaults]
+
+[building settings]
+單位設定
 [building site]
 建築地點
 [Buildings]
@@ -190,8 +228,6 @@ AIWarrush
 搬運:
 [Change Area Name]
 更改區域名稱
-[checksum sent]
-傳送總檢 ...
 [Cherry]
 櫻桃
 [choose campaign]
@@ -202,8 +238,6 @@ AIWarrush
 選擇一個地圖
 [clear area]
 清除區
-[clear]
-
 [Clearing:]
 清除:
 [clearingflag explanation 2]
@@ -212,30 +246,26 @@ AIWarrush
 清除資源
 [clearingflag]
 清除旗幟
-[close]
-關閉
 [closed]
 已關閉
 [compile]
 收集語法
 [compose]
 
+[Computing Fertility]
+
+[concrete islands terrain]
+
 [connect]
 連線
-[connected to all players]
-已連線至所有玩家
-[connected to server]
-連線至伺服器 ...
-[connecting to all players]
-正連線至所有玩家
 [connecting to]
 連線至
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 繼續遊戲
+[control %0]
+
 [Corn]
 小麥
 [crater density]
@@ -248,6 +278,8 @@ AIWarrush
 創造地圖
 [credits]
 幕後人員
+[ctrl - line]
+
 [current speed]
 目前速度
 [custom game]
@@ -258,12 +290,10 @@ AIWarrush
 傷害
 [Damaged Map]
 傷患地圖
-[dblbuff]
-加倍緩衝存儲器
 [decrease units working]
 
-[default terrain]
-預設地形
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 單位或建築物
 [defencetower explanation]
@@ -290,8 +320,6 @@ AIWarrush
 摧毀已選擇建築物
 [destroy]
 摧毀
-[Disconnect]
-失聯
 [display]
 顯示
 [do nothing]
@@ -300,12 +328,14 @@ AIWarrush
 沒有在搬運任何東西
 [down]
 
-[download finished]
-下載完成
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
 
-[downloaded at]
-以下載在
+[downloading map]
+
 [edit map]
 編輯地圖
 [editing map]
@@ -372,8 +402,10 @@ AIWarrush
 
 [Fertility Map]
 
-[food left]
-食物剩餘
+[Flag Defaults]
+
+[flag settings explanation]
+
 [food]
 食物
 [forbidden area]
@@ -394,9 +426,7 @@ AIWarrush
 遊戲已滿
 [game shortcuts]
 遊戲快捷鍵
-[game speed]
-遊戲速度
-[Games]
+[Game]
 
 [general settings]
 基本設定
@@ -424,13 +454,9 @@ AIWarrush
 
 [Harvest]
 採收
-[has joined]
-已加入
-[has quit]
-已退出
-[heal]
-健康
-[help]
+[high priority]
+
+[hints]
 
 [home]
 
@@ -440,22 +466,20 @@ AIWarrush
 治療你的單位
 [hospital]
 醫院
-[Host has cancelled the game]
-
 [host]
 開始一局新遊戲
 [hp]
 HP
 [hp]
 生命值
+[Human]
+
 [human]
 人類玩家
 [hungry]
 挨餓
 [hungryness]
 飢餓度
-[hwaccel]
-硬體加速度
 [In way]
 在路上
 [increase units working]
@@ -480,6 +504,8 @@ HP
 島嶼大小
 [islands terrain]
 島嶼
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -502,8 +528,6 @@ zh-tw
 語言
 [language]
 繁體中文
-[large]
-大
 [Leave Game]
 
 [left meta]
@@ -522,32 +546,56 @@ zh-tw
 載入遊戲
 [load map]
 載入遊戲
+[load script]
+
 [load]
 載入
-[loading glob2]
-載入 Globulation 2
+[loading map list]
+
+[Lobby]
+
 [login]
 登入
 [Lost : %0 has more prestige than you]
 輸: %0 的聲望比你還高
 [Lost : your colony is dead]
 輸: 你的殖民地已被摧毀
+[low priority]
+
 [lowquality]
 低畫質
 [Magic At. Air]
 Air dmg.
 [Magic At. Ground]
 地面攻擊
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 地圖名稱: %0。
 [map name]
 名稱
+[map rated]
+
+[map script]
+
 [map size x]
 地圖寬度
 [map size y]
 地圖高度
-[mapGenerationDescriptor Methodes]
-隨機製造地圖設定
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 可用的地圖
 [mark map]
@@ -558,9 +606,9 @@ Air dmg.
 允許交易的資源
 [market]
 市場
-[medium]
-中
-[menu]
+[medium priority]
+
+[meta %0]
 
 [Min required level:]
 最小等級需求:
@@ -572,22 +620,24 @@ Air dmg.
 
 [mute]
 沉默
-[network latency]
-連線潛在因素
 [new campaign]
 新戰役
 [new map]
 新的
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 非成長區域
 [No]
 否
-[not connected]
-沒有連線
+[Not Enough Ratings]
+
 [not ready]
 還沒準備好
 [number of players: %0 (%1 AI)]
@@ -600,6 +650,8 @@ Air dmg.
 隊伍數量
 [numlock]
 
+[objectives]
+
 [of which]
 他們是
 [ok]
@@ -608,10 +660,12 @@ Air dmg.
 古老隨機島嶼
 [old random terrain]
 古老隨機地形
+[on press]
+
 [On the spot]
 在這裡
-[one player]
-一個玩家已經加入。
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -620,12 +674,18 @@ Air dmg.
 開啟儲存選單
 [open script editor]
 開啟語法編輯器
+[open teams editor]
+
 [open]
 開啟
+[Options]
+
 [options]
 選項
 [Orange]
 柳橙
+[Other Options]
+
 [page down]
 
 [page up]
@@ -638,23 +698,25 @@ Air dmg.
 
 [Paused]
 暫停
-[percent]
-%
 [player name]
 玩家名稱
-[player]
-玩家
+[player rating %0]
+
 [please wait]
 請稍等
 [power]
 
-[presence request sent]
-傳送前至要求 ...
 [press space]
 按下空白鍵以繼續
+[Prestige Win Enabled]
+
 [Prestige]
 聲望
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 梅乾
@@ -670,12 +732,16 @@ Air dmg.
 增加行走速度
 [racetrack]
 跑道
-[random terrain]
-隨機地形
 [range]
 射程
+[Rated %0]
+
 [ratios]
 比例
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
 [remember unit]
@@ -686,14 +752,14 @@ Air dmg.
 移除地圖
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 開始/停止 修復
 [repair]
 修復
 [repeat area]
 在相同地景的時間
-[ressources]
-資源
 [restore default shortcuts]
 還原預設鍵盤快捷鍵
 [return to editor]
@@ -720,6 +786,8 @@ Air dmg.
 儲存遊戲
 [save map]
 儲存地圖
+[save script]
+
 [Save]
 儲存
 [school explanation 2]
@@ -733,6 +801,8 @@ Air dmg.
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 正在找尋工作
@@ -761,6 +831,8 @@ Air dmg.
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 選擇探索旗幟
@@ -796,10 +868,10 @@ Air dmg.
 選擇牆
 [select warflag]
 選擇攻擊旗幟
-[session request sent]
-傳送時間要求 ...
 [settings]
 設定
+[shift %0]
+
 [shortcut explanation enter]
 Enter: 傳送訊息
 [shortcut explanation v]
@@ -808,30 +880,28 @@ V: 持鍵以傳送訊息
 
 [skin]
 顯示
-[small]
-小
 [smoothing]
 平整度
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
-[speed]
-速度
 [start mission]
 開始任務
 [start new campaign]
 開始新戰役
 [Start]
 開始
-[STARTING GAME ...]
-開始遊戲... 
 [Starving Map]
 飢餓地圖
 [starving]
 飢餓
-[stat]
-統計
-[state]
-狀態
 [Statistics]
 統計
 [Still (i)]
@@ -852,6 +922,8 @@ V: 持鍵以傳送訊息
 消極防禦
 [stonewall]
 石牆
+[submit rating]
+
 [svr hostname]
 伺服器主機名稱
 [swamp terrain]
@@ -903,6 +975,10 @@ V: 持鍵以傳送訊息
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
 團隊
@@ -990,10 +1066,16 @@ V: 持鍵以傳送訊息
 聲望總計達到
 [Total]
 總共
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 教學指導
-[unassigned]
-未分配
 [Uncontrolled]
 未控制
 [undo]
@@ -1004,36 +1086,36 @@ V: 持鍵以傳送訊息
 單位編輯器
 [unit settings explanation]
 
-[unit settings]
-單位設定
-[Unit type]
-單位種類
-[units type]
-單位種類
 [units working]
 單位工作
 [Units]
 單位
+[unlocked at start]
+
 [unlocked by]
 解除由
 [Unnamed Area]
 {未命名區域}
 [up]
 
-[update list]
-更新清單
 [upgrade building]
 開始/停止 升級
+[Upgrade Defaults]
+
 [upgrade]
 升級
+[Upload Map]
+
+[upload map]
+
 [username]
 用戶名
 [Version]
 版本
 [view history]
 
-[wait destroy]
-等待摧毀
+[Voice volume]
+
 [waiting for %0]
 等待 %0
 [waiting for key]
@@ -1056,10 +1138,6 @@ V: 持鍵以傳送訊息
 士兵
 [warriors]
 士兵
-[was AI]
-曾為 AI
-[was]
-曾
 [water]
 水面
 [Wheat]
@@ -1090,50 +1168,48 @@ V: 持鍵以傳送訊息
 受傷
 [Yes]
 是
-[YESTS_BAD]
-連接時系統協調錯誤
 [YESTS_CONNECTING]
 確定連接至YOG meta伺服器中 ...
 [YESTS_CONNECTION_LOST]
 至YOG的連線已消失。
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG meta伺服器拒絕連線因為傳輸協定錯誤。你早已被確認，請於45秒後再嘗試一次。
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 YOG meta伺服器拒絕連線因為你的用戶名已被使用。請重新選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG meta伺服器拒絕連線因為你的密碼錯誤。
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG meta伺服器拒絕連線因為你沒有密碼。請選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG meta伺服器拒絕連線因為傳輸協定錯誤因為你尚未連線卻已被確認，請回報這個問題。
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG meta伺服器拒絕連線而沒有任何解釋!!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG meta伺服器拒絕連線因為你的用戶名已被使用。
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 連線系統已準備連接YOG meta伺服器。
-[YESTS_DECONNECTING]
-從YOG meta伺服器失連...
 [YESTS_UNABLE_TO_CONNECT]
 無法連接。 YOG meta伺服器已關閉。
-[YESTS_YOG_KILLED]
-YOG meta伺服器已被管理員關閉。
-[yog-chat]
-#yog-en
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon 線上遊戲
-[YOG_HELP]
-YOG 通訊系統有兩種指令， "msg"和"away"輸入"/help <command>"以獲得更多資訊。
-[YOG_HELP_AWAY]
-"/away (<message>)"可以讓其他YOG用戶知道你為離線狀態 ，也可以附加一些註釋，例如 "/away 我正在吃漢堡，我在一點鐘後會回來". Alias "/a"
-[YOG_HELP_MSG]
-"/msg <name> <message>" 這指令會將私人訊息傳至指定用戶，例如 "/msg Jonh ,你好嗎?".  Alias "/m".
-[You are no more marked as away]
-你已經沒有被顯示離線
-[You are now marked as away]
-你已被顯示離線。
 [you have lost]
 你輸了!!
 [you have won]
@@ -1142,5 +1218,9 @@ YOG 通訊系統有兩種指令， "msg"和"away"輸入"/help <command>"以獲�
 
 [Your %0 are under attack]
 你的 %0 正遭受攻擊
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 你的單位遭 %0 招降
+[Your username was banned]
+

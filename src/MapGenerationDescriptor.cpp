@@ -55,8 +55,6 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	
 	nbWorkers=4;
 	nbTeams=4;
-	
-	randa=randb=randc=0;
 }
 
 
@@ -92,19 +90,15 @@ Uint8 *MapGenerationDescriptor::getData()
 
 	addUint32(data, nbWorkers, 64);
 	addUint32(data, nbTeams, 68);
-
-	addUint32(data, randa, 72);
-	addUint32(data, randb, 76);
-	addUint32(data, randc, 80);
 	
-	addUint32(data, oldIslandSize, 84);
-	addUint32(data, oldBeach, 88);
-	addUint32(data, fruitRatio, 92);
+	addUint32(data, oldIslandSize, 72);
+	addUint32(data, oldBeach, 76);
+	addUint32(data, fruitRatio, 80);
 
-	addUint32(data, logRepeatAreaTimes, 96);
+	addUint32(data, logRepeatAreaTimes, 84);
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		addSint32(data, ressource[i], 100+i*4);
+		addSint32(data, ressource[i], 88+i*4);
 
 	return data;
 }
@@ -138,19 +132,15 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 
 	nbWorkers=getSint32(data, 64);
 	nbTeams=getSint32(data, 68);
-
-	randa=getSint32(data, 72);
-	randb=getSint32(data, 76);
-	randc=getSint32(data, 80);
 	
-	oldIslandSize=getSint32(data, 84);
-	oldBeach=getSint32(data, 88);
+	oldIslandSize=getSint32(data, 72);
+	oldBeach=getSint32(data, 76);
 	
-	fruitRatio = getSint32(data, 92);
-	logRepeatAreaTimes = getSint32(data, 96);
+	fruitRatio = getSint32(data, 80);
+	logRepeatAreaTimes = getSint32(data, 84);
 
 	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		ressource[i]=getSint32(data, 100+i*4);
+		ressource[i]=getSint32(data, 88+i*4);
 
 	bool good=true;
 	if (getDataLength()!=dataLength)
@@ -240,33 +230,7 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs=(cs<<31)|(cs>>1);
 	cs^=nbWorkers;
 	cs^=nbTeams<<5;
-
-	cs=(cs<<31)|(cs>>1);
-	cs^=randa%randb;
-	cs^=randb%randc;
-	cs^=randc%randa;
 	
 	return cs;
 }
 
-void MapGenerationDescriptor::saveSyncronization(void)
-{
-	randa=getSyncRandSeedA();
-	randb=getSyncRandSeedB();
-	randc=getSyncRandSeedC();
-}
-
-void MapGenerationDescriptor::loadSyncronization(void)
-{
-	setSyncRandSeedA(randa);
-	setSyncRandSeedB(randb);
-	setSyncRandSeedC(randc);
-}
-
-void MapGenerationDescriptor::synchronizeNow(void)
-{
-	if (randa|randb|randc)
-		loadSyncronization();
-	else
-		saveSyncronization();
-}

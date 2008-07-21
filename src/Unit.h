@@ -217,7 +217,7 @@ public:
 	bool validTarget;
 	Sint32 magicActionTimeout;
 
-	// Timer counts down 5 frames after last attacked
+	// Timer counts down 240 frames after being attacked
 	Uint8 underAttackTimer;
 
 	// trigger parameters
@@ -252,6 +252,11 @@ public:
 	// gui
 	int levelUpAnimation;
 	int magicActionAnimation;
+	
+	// These store the previous clearing area target cordinates
+	Uint32 previousClearingAreaX;
+	Uint32 previousClearingAreaY;
+	Uint32 previousClearingAreaDistance;
 	
 public:
 	// optimisation cached values

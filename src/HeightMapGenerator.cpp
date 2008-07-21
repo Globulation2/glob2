@@ -171,9 +171,9 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 	pn.reseed();
 	int * centerX = new int[count];
 	int * centerY = new int[count];
-	float mindist=sqrt(_w*_h/count)/4.0-1.0;
+	float mindist=sqrt(_w*_h/count)/2.0;
 	assert(mindist>0);
-	makeStamp((unsigned int)(mindist*4));
+	makeStamp((unsigned int)(mindist*2));
 	centerX[0]=rand()%_w;centerY[0]=rand()%_h;
 	/// find spots with distance>min. distance
 	for (unsigned int i=1; i<count; i++)
@@ -187,9 +187,12 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 			newPosY=rand()%_h;
 			tries++;
 			foundSpot=true;
-			for (unsigned int j=0; j<i; j++)
-				if(abs(newPosX-centerX[j])<mindist || abs(newPosY-centerY[j]) < mindist || (_w-abs(newPosX-centerX[j]))<mindist || (_h-abs(newPosY-centerY[j])) < mindist)
+			for (unsigned int j=0; j<i; j++) {
+				int distX=(abs(newPosX-centerX[j])<_w-abs(newPosX-centerX[j])?abs(newPosX-centerX[j]):_w-abs(newPosX-centerX[j]));
+				int distY=(abs(newPosY-centerY[j])<_h-abs(newPosY-centerY[j])?abs(newPosY-centerY[j]):_h-abs(newPosY-centerY[j]));
+				if(	distX<mindist && distY<mindist)
 					foundSpot=false;
+			}
 		} while (!foundSpot && tries<count*count*_w*_h);
 		if(!foundSpot)
 		{
@@ -293,6 +296,17 @@ void HeightMap::makeCraters(unsigned int craterCount, unsigned int craterRadius,
 	addNoise(.8,smoothingFactor);
 	normalize();
 }
+
+
+
+void HeightMap::makePlain(float smoothingFactor)
+{
+	operator=(1.0);
+	addNoise(.99,smoothingFactor);
+	normalize();
+}
+
+
 
 void HeightMap::makeSwamp(float smoothingFactor)
 {

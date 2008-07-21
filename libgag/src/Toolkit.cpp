@@ -20,20 +20,25 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <FileManager.h>
-#include <GraphicContext.h>
 #include <assert.h>
 #include <iostream>
 #ifndef DX9_BACKEND	// TODO:Die!
 #include "TrueTypeFont.h"
 #endif
 
+#ifndef YOG_SERVER_ONLY
+#include <GraphicContext.h>
+#endif
+
 namespace GAGCore
 {
+	#ifndef YOG_SERVER_ONLY
 	Toolkit::SpriteMap Toolkit::spriteMap;
 	Toolkit::FontMap Toolkit::fontMap;
+	GraphicContext *Toolkit::gc = NULL;
+	#endif
 	FileManager *Toolkit::fileManager = NULL;
 	StringTable *Toolkit::strings = NULL;
-	GraphicContext *Toolkit::gc = NULL;
 	
 	void Toolkit::init(const char *gameName)
 	{
@@ -46,20 +51,24 @@ namespace GAGCore
 			assert(false);
 	}
 	
-	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags)
+	#ifndef YOG_SERVER_ONLY
+	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags, const char *title, const char *icon)
 	{
-		gc = new GraphicContext(w, h, flags);
+		gc = new GraphicContext(w, h, flags, title, icon);
 		return gc;
 	}
+	#endif
 	
 	void Toolkit::close(void)
 	{
+		#ifndef YOG_SERVER_ONLY
 		for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
 			delete (*it).second;
 		spriteMap.clear();
 		for (FontMap::iterator it=fontMap.begin(); it!=fontMap.end(); ++it)
 			delete (*it).second;
 		fontMap.clear();
+		#endif
 		
 		if (fileManager)
 		{
@@ -69,13 +78,16 @@ namespace GAGCore
 			strings = NULL;
 		}
 		
+		#ifndef YOG_SERVER_ONLY
 		if (gc)
 		{
 			delete gc;
 			gc = NULL;
 		}
+		#endif
 	}
 	
+		#ifndef YOG_SERVER_ONLY
 	Sprite *Toolkit::getSprite(const char *name)
 	{
 		assert(name);
@@ -151,6 +163,7 @@ namespace GAGCore
 		delete (*it).second;
 		fontMap.erase(it);
 	}
+	#endif
 }
 
 

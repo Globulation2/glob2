@@ -54,6 +54,7 @@ public:
 	}
 	void mapOutput(char * filename); /// generates the file ~/.glob2/filename and writes the raw 0..255 values of map to it. to see it, use convert -size [width]x[height] -depth 8 gray:[filename] test.png
 
+	void makePlain(float smoothingFactor); /// a plain perlin height field
 	void makeSwamp(float smoothingFactor); /// a plain perlin height field
 	void makeIslands(unsigned int count, float smoothingFactor); /// generates a 'swamp' with count hills
 	void makeRiver(unsigned int maxDiameter, float smoothingFactor); /// generates a 'swamp' with a river based on a random walk. 

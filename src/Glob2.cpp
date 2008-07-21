@@ -20,9 +20,11 @@
 
 #include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
+#include "CampaignMainMenu.h"
 #include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
 #include "CreditScreen.h"
+#include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Game.h"
 #include "Glob2.h"
@@ -39,8 +41,10 @@
 #include <StringTable.h>
 #include "Utilities.h"
 #include "YOGClient.h"
-#include "YOGGameServer.h"
 #include "YOGLoginScreen.h"
+#include "YOGServer.h"
+#include "YOGServerRouter.h"
+#include "YOGClientRouterAdministrator.h"
 
 
 #include <Stream.h>
@@ -116,7 +120,7 @@ void Glob2::mutiplayerYOG(void)
 
 int Glob2::runNoX()
 {
-	printf("nox::running %d times %d steps:\n", globalContainer->runNoXCountRuns, globalContainer->runNoXCountSteps);
+	printf("nox::running %d times %d steps:\n", globalContainer->runNoXCountRuns, globalContainer->automaticEndingSteps);
 	for (int runNoXCount = 0; runNoXCount < globalContainer->runNoXCountRuns; runNoXCount++)
 	{
 		Engine engine;
@@ -127,132 +131,24 @@ int Glob2::runNoX()
 	return 0;
 }
 
-int Glob2::runHostServer()
+
+
+int Glob2::runTestGames()
 {
-/*
-	if (verbose)
-		std::cout << "Glob2::runHostServer():connecting to YOG as %s" << globalContainer->getUsername() << std::endl;
-	yog->enableConnection(globalContainer->hostServerUserName, globalContainer->hostServerPassWord, false);
-	
-	while(yog->yogGlobalState==YOG::YGS_CONNECTING)
+	globalContainer->automaticEndingSteps=90000;
+	while(true)
 	{
-		yog->step();
-		SDL_Delay(40);
+		long t = time(NULL);
+		setSyncRandSeed(t);
+		std::cout<<"Random Seed initial: "<<t<<std::endl;
+		Engine engine;
+		engine.createRandomGame();
+		engine.run();
 	}
-	if (yog->yogGlobalState<YOG::YGS_CONNECTED)
-	{
-		printf("Glob2::failed to connect to YOG!.\n");
-		return 1;
-	}
-	
-	SessionInfo sessionInfo;
-	
-	char *mapName=globalContainer->hostServerMapName;
-	
-	if (verbose)
-		printf("Glob2::runHostServer():Loading map '%s' ...\n", mapName);
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
-	if (stream->isEndOfStream())
-	{
-		std::cerr << "Glob2::runHostServer() : error, can't open map " << mapName << std::endl;
-		delete stream;
-		return 1;
-	}
-	else
-	{
-		bool validSessionInfo = sessionInfo.load(stream);
-		delete stream;
-		if (!validSessionInfo)
-		{
-			printf("Glob2::runHostServer():Warning, Error during map load.\n");
-			return 1;
-		}
-	}
-
-	printf("Glob2::runHostServer():sharing the game...\n");
-	MultiplayersHost *multiplayersHost=new MultiplayersHost(&sessionInfo, true, NULL);
-	// TODO : let the user choose the name of the shared game
-	yog->shareGame(sessionInfo.getMapNameC());
-	
-	Uint32 frameStartTime;
-	Sint32 frameWaitTime;
-	Sint32 stepLength=50;
-	
-	bool running=true;
-	char s[32];
-	while (running)
-	{
-		// get first timer
-		frameStartTime=SDL_GetTicks();
-		
-		multiplayersHost->onTimer(frameStartTime, NULL);
-		
-		fd_set rfds;
-		struct timeval tv;
-		int retval;
-		
-		// Watch stdin (fd 0) to see when it has input.
-		FD_ZERO(&rfds);
-		FD_SET(0, &rfds);
-		// Wait up to one second.
-		tv.tv_sec = 0;
-		tv.tv_usec = 0;
-		
-		retval = select(1, &rfds, NULL, NULL, &tv);
-		// Don't rely on the value of tv now!
-		
-		if (retval)
-		{
-			fgets(s, 32, stdin);
-			size_t l=strlen(s);
-			if ((l>1)&&(s[l-1]=='\n'))
-				s[l-1]=0;
-			
-			if (strncmp(s, "start", 5)==0)
-			{
-				multiplayersHost->startGame();
-			}
-			else if ((strncmp(s, "quit", 4)==0) || (strncmp(s, "exit", 4)==0) || (strncmp(s, "bye", 4)==0))
-			{
-				multiplayersHost->stopHosting();
-				running=false;
-			}
-			else
-				printf("Glob2::runHostServer():not understood (%s).\n", s);
-		}
-		
-		if (multiplayersHost->hostGlobalState>=MultiplayersHost::HGS_PLAYING_COUNTER)
-		{
-			printf("Glob2::runHostServer():state high enough.\n");
-			running=false;
-		}
-
-		frameWaitTime=SDL_GetTicks()-frameStartTime;
-		frameWaitTime=stepLength-frameWaitTime;
-		if (frameWaitTime>0)
-			SDL_Delay(frameWaitTime);
-	}
-
-	yog->unshareGame();
-
-	delete multiplayersHost;
-
-	if (verbose)
-		printf("Glob2::runHostServer(): disconnecting YOG.\n");
-
-	yog->deconnect();
-	while(yog->yogGlobalState==YOG::YGS_DECONNECTING)
-	{
-		yog->step();
-		SDL_Delay(50);
-	}
-
-	if (verbose)
-		printf("Glob2::runHostServer():end.\n");
-
 	return 0;
-	*/
 }
+
+
 
 int Glob2::run(int argc, char *argv[])
 {
@@ -269,24 +165,30 @@ int Glob2::run(int argc, char *argv[])
 	}
 	atexit(SDLNet_Quit);
 
-/*
-	yog=new YOG();
-	
-	// TODO : this structure is ugly, do we have to keep hostServer ?
 	if (globalContainer->hostServer)
 	{
-		int ret=runHostServer();
-		delete yog;
-		delete globalContainer;
-		return ret;
-	}
-	*/
-	
-	if (globalContainer->hostServer)
-	{
-		YOGGameServer server(YOGRequirePassword, YOGMultipleGames);
+		YOGServer server(YOGRequirePassword, YOGMultipleGames);
 		int rc = server.run();
 		return rc;	
+	}
+
+	if (globalContainer->hostRouter)
+	{
+		YOGServerRouter router;
+		int rc = router.run();
+		return rc;	
+	}
+	if(globalContainer->adminRouter)
+	{
+		YOGClientRouterAdministrator admin;
+		return admin.execute();
+	}
+	
+	if (globalContainer->runTestGames)
+	{
+		int ret=runTestGames();
+		delete globalContainer;
+		return ret;
 	}
 	
 	
@@ -309,62 +211,9 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::CAMPAIGN:
 			{
-				CampaignChoiceScreen ccs;
+				CampaignMainMenu ccs;
 				int rccs=ccs.execute(globalContainer->gfx, 40);
-				if(rccs==CampaignChoiceScreen::NEWCAMPAIGN)
-				{
-					CampaignSelectorScreen css;
-					int rc_css=css.execute(globalContainer->gfx, 40);
-					if(rc_css==CampaignSelectorScreen::OK)
-					{
-						CampaignMenuScreen cms(css.getCampaignName());
-						cms.setNewCampaign();
-						int rc_cms=cms.execute(globalContainer->gfx, 40);
-						if(rc_cms==CampaignMenuScreen::EXIT)
-						{
-						}
-						else if(rc_cms == -1)
-						{
-							isRunning = false;
-						}
-					}
-					else if(rc_css==CampaignSelectorScreen::CANCEL)
-					{
-					}
-					else if(rc_css == -1)
-					{
-						isRunning = false;
-					}
-				}
-				else if(rccs==CampaignChoiceScreen::LOADCAMPAIGN)
-				{
-					CampaignSelectorScreen css(true);
-					int rc_css=css.execute(globalContainer->gfx, 40);
-					if(rc_css==CampaignSelectorScreen::OK)
-					{
-						CampaignMenuScreen cms(css.getCampaignName());
-						int rc_cms=cms.execute(globalContainer->gfx, 40);
-						if(rc_cms==CampaignMenuScreen::EXIT)
-						{
-						}
-						else if(rc_cms == -1)
-						{
-							isRunning = false;
-						}
-					}
-					else if(rc_css==CampaignSelectorScreen::CANCEL)
-					{
-					}
-					else if(rc_css == -1)
-					{
-						isRunning = false;
-					}
-				}
-				else if(rccs == CampaignChoiceScreen::CANCEL)
-				{
-				
-				}
-				else if(rccs == -1)
+				if(rccs == -1)
 				{
 					isRunning = false;
 				}
@@ -373,7 +222,7 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::TUTORIAL:
 			{
 				Campaign campaign;
-				if(campaign.load("games/tutorial.txt"))
+				if(campaign.load("games/Tutorial_Campaign.txt"))
 				{
 					CampaignMenuScreen cms("games/Tutorial_Campaign.txt");
 					int rc_cms=cms.execute(globalContainer->gfx, 40);
@@ -446,99 +295,12 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::EDITOR:
 			{
-				HowNewMapScreen howNewMapScreen;
-				int rc=howNewMapScreen.execute(globalContainer->gfx, 40);
-				if (rc==HowNewMapScreen::NEWMAP)
-				{
-					bool retryNewMapScreen=true;
-					while (retryNewMapScreen)
-					{
-						NewMapScreen newMapScreen;
-						int rc_nms = newMapScreen.execute(globalContainer->gfx, 40);
-						if (rc_nms==NewMapScreen::OK)
-						{
-							MapEdit mapEdit;
-							//mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
-							setRandomSyncRandSeed();
-							if (mapEdit.game.generateMap(newMapScreen.descriptor))
-							{
-								mapEdit.mapHasBeenModiffied(); // make all map as modified by default
-								if (mapEdit.run()==-1)
-									isRunning=false;
-								retryNewMapScreen=false;
-							}
-							else
-							{
-								//TODO: popup a widow to explain that the generateMap() has failed.
-								retryNewMapScreen=true;
-							}
-						}
-						else if(rc_nms == -1)
-						{
-							isRunning = false;
-							retryNewMapScreen=false;
-						}
-						else
-						{
-							retryNewMapScreen=false;
-						}
-					}
-				}
-				else if (rc==HowNewMapScreen::LOADMAP)
-				{
-					ChooseMapScreen chooseMapScreen("maps", "map", false, "games", "game", false);
-					int rc=chooseMapScreen.execute(globalContainer->gfx, 40);
-					if (rc==ChooseMapScreen::OK)
-					{
-						MapEdit mapEdit;
-						std::string filename = chooseMapScreen.getMapHeader().getFileName();
-						mapEdit.load(filename.c_str());
-						if (mapEdit.run()==-1)
-							isRunning=false;
-					}
-					else if (rc==-1)
-						isRunning=false;
-				}
-				else if (rc==HowNewMapScreen::NEWCAMPAIGN)
-				{
-					CampaignEditor ce("");
-					int rc=ce.execute(globalContainer->gfx, 40);
-					if(rc == -1)
-						isRunning=false;
-
-				}
-				else if (rc==HowNewMapScreen::LOADCAMPAIGN)
-				{
-					CampaignSelectorScreen css;
-					int rc_css=css.execute(globalContainer->gfx, 40);
-					if(rc_css==CampaignSelectorScreen::OK)
-					{
-						CampaignEditor ce(css.getCampaignName());
-						int rc_ce=ce.execute(globalContainer->gfx, 40);
-						if(rc_ce == -1)
-						{
-							isRunning=false;
-						}
-					}
-					else if(rc_css==CampaignSelectorScreen::CANCEL)
-					{
-					}
-					else if(rc_css == -1)
-					{
-						isRunning=false;
-					}
-				}
-				else if (rc==HowNewMapScreen::CANCEL)
-				{
-					// Let's sing.
-				}
-				else if (rc==-1)
+				EditorMainMenu editorMainMenu;
+				int rc=editorMainMenu.execute(globalContainer->gfx, 40);
+				if (rc==-1)
 				{
 					isRunning=false;
 				}
-				else
-					assert(false);
-
 			}
 			break;
 			case MainMenuScreen::CREDITS:

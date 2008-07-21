@@ -284,14 +284,14 @@ void TeamStats::step(Team *team, bool reloaded)
 		stat.totalNeededPerLevel[k]=maxStat.totalNeededPerLevel[k];
 }
 
-void TeamStats::drawText(int pos)
+void TeamStats::drawText(int posx, int posy)
 {
 	// local variable to speed up access
 	GraphicContext *gfx=globalContainer->gfx;
 	Font *font=globalContainer->littleFont;
 	StringTable *strings=Toolkit::getStringTable();
-	int textStartPosX=gfx->getW()-124;
-	int textStartPosY=pos;
+	int textStartPosX=posx+4;
+	int textStartPosY=posy;
 	
 	TeamStat &newStats=stats[statsIndex];
 	
@@ -347,7 +347,7 @@ void TeamStats::drawText(int pos)
 	}
 }
 
-void TeamStats::drawStat(int pos)
+void TeamStats::drawStat(int posx, int posy)
 {
 	assert(STATS_SIZE==128);// We have graphical constraints
 	
@@ -355,8 +355,8 @@ void TeamStats::drawStat(int pos)
 	GraphicContext *gfx=globalContainer->gfx;
 	Font *font=globalContainer->littleFont;
 	StringTable *strings=Toolkit::getStringTable();
-	int textStartPos=gfx->getW()-124;
-	int startPoxY=pos;
+	int textStartPos=posx+4;
+	int startPoxY=posy;
 	
 	// compute total units
 	/*int maxUnit=0;
@@ -457,9 +457,9 @@ void TeamStats::drawStat(int pos)
 		int nbSeeking=(seeking*64)/maxWorker;
 		int nbTotal=(stats[index].numberUnitPerType[WORKER]*64)/maxWorker;
 		
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 34, 66, 163);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 36 +64-nbFree-nbSeeking, nbFree, 22, 229, 40);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 36 +64-nbSeeking, nbSeeking, 150, 50, 50);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 34, 66, 163);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 36 +64-nbFree-nbSeeking, nbFree, 22, 229, 40);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 36 +64-nbSeeking, nbSeeking, 150, 50, 50);
 
 		int nbOk, nbNeedFood, nbNeedFoodCritical, nbNeedHeal;
 		if (stats[index].totalUnit)
@@ -497,10 +497,10 @@ void TeamStats::drawStat(int pos)
 		{
 			nbOk=nbNeedFood=nbNeedHeal=nbNeedFoodCritical=0;
 		}
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120+12  +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);
-		globalContainer->gfx->drawVertLine(globalContainer->gfx->getW()-128+i, startPoxY+ 120+12 +64-nbNeedHeal, nbNeedHeal, 250, 25, 25);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12  +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal, nbNeedHeal, 250, 25, 25);
 	}
 }
 

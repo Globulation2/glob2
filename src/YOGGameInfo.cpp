@@ -17,8 +17,8 @@
 */
 
 #include "YOGGameInfo.h"
-#include "SDL_net.h"
 #include <iostream>
+#include "Stream.h"
 
 YOGGameInfo::YOGGameInfo()
 {

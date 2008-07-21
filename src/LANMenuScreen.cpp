@@ -19,18 +19,19 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "LANMenuScreen.h"
-#include "GlobalContainer.h"
-#include <GUIButton.h>
-#include <GUIText.h>
-#include <GraphicContext.h>
-#include <Toolkit.h>
-#include <StringTable.h>
-#include "LANFindScreen.h"
-#include "MultiplayerGameScreen.h"
 #include "ChooseMapScreen.h"
 #include "FormatableString.h"
+#include "GlobalContainer.h"
+#include <GraphicContext.h>
+#include <GUIButton.h>
 #include "GUIMessageBox.h"
+#include <GUIText.h>
+#include "LANFindScreen.h"
+#include "LANMenuScreen.h"
+#include "MultiplayerGameScreen.h"
+#include <StringTable.h>
+#include <Toolkit.h>
+#include "YOGServer.h"
 
 LANMenuScreen::LANMenuScreen()
 {
@@ -66,7 +67,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if(rc == ChooseMapScreen::OK)
 			{
 				shared_ptr<YOGClient> client(new YOGClient);
-				shared_ptr<YOGGameServer> server(new YOGGameServer(YOGAnonymousLogin, YOGSingleGame));
+				shared_ptr<YOGServer> server(new YOGServer(YOGAnonymousLogin, YOGSingleGame));
 				if(!server->isListening())
 				{
 					MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, FormatableString(Toolkit::getStringTable()->getString("[Can't host game, port %0 in use]")).arg(YOG_SERVER_PORT).c_str(), Toolkit::getStringTable()->getString("[ok]"));
@@ -90,13 +91,15 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 					game->setMapHeader(cms.getMapHeader());
 
 					///Fix this! While this is technically right, the chat channel should be given by the server
-					MultiplayerGameScreen mgs(game, client);
-					int rc = mgs.execute(globalContainer->gfx, 40);
+					Glob2TabScreen screen(true);
+					MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client);
+					int rc = screen.execute(globalContainer->gfx, 40);
 					client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 					if(rc == -1)
 						endExecute(-1);
 					else
 						endExecute(HostedGame);
+					delete mgs;
 				}
 			}
 			else if(rc == -1)

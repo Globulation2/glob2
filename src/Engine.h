@@ -67,6 +67,9 @@ public:
 	/// Initiate a game with the given MultiplayerGame
 	int initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, boost::shared_ptr<YOGClient> client, int localPlayer);
 
+	//! This function creates a game with a random map and random AI for every team
+	void createRandomGame();
+	
 	///Tells whether a map matching mapHeader is located on this system
 	bool haveMap(const MapHeader& mapHeader);
 
@@ -85,6 +88,12 @@ public:
 		//! no suitable player found in the map
 		EE_CANT_FIND_PLAYER=4
 	};
+
+	///This will load the map header of the game with the given filename
+	static MapHeader loadMapHeader(const std::string &filename);
+
+	///This will load the game header of the game with the given filename
+	static GameHeader loadGameHeader(const std::string &filename);
 	
 private:
 	/// Initiates a game, provided the map and game header. This initiates the net
@@ -92,7 +101,7 @@ private:
 	/// one loaded with the map. When ignore GUI info is set, the game will ignore
 	/// GameGUI data in the file, such as viewport position and localTeam. This is
 	/// needed for when your loading a save game over the internet
-	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false);
+	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false);
 
 	/// Prepares a GameHeader for the given mapHeader as a campaign map
 	/// Campaign maps have one player per team, and the player can be
@@ -106,11 +115,11 @@ private:
 	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
 	void finalAdjustements(void);
 
-	///This will load the map header of the game with the given filename
-	MapHeader loadMapHeader(const std::string &filename);
-
-	///This will load the game header of the game with the given filename
-	GameHeader loadGameHeader(const std::string &filename);
+	///This function will choose a random map from the available maps
+	MapHeader chooseRandomMap();
+	
+	///This function prepares a random set of AI's in a GameHeader, first player is always human + ai team
+	GameHeader createRandomGame(int numberOfTeams);
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;
@@ -121,7 +130,7 @@ private:
 
 	CPUStatisticsManager cpuStats;
 
-	Sint32 noxStartTick, noxEndTick;
+	Sint32 automaticGameStartTick, automaticGameEndTick;
 
 	FILE *logFile;
 

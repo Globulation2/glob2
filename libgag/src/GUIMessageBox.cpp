@@ -38,7 +38,7 @@ namespace GAGGUI
 	};
 	
 	MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
-	:OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 100)
+	:OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 110)
 	{
 		addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, font, title));
 	
@@ -49,7 +49,7 @@ namespace GAGGUI
 			dec=20;
 		for (int i=0; i<captionCount; i++)
 		{
-			addWidget(new TextButton(dec, 50, captionWidth[i], 30, ALIGN_LEFT, ALIGN_LEFT, font, captionArray[i], i));
+			addWidget(new TextButton(dec, 53, captionWidth[i], 40, ALIGN_LEFT, ALIGN_LEFT, font, captionArray[i], i));
 			dec+=20 + captionWidth[i];
 		}
 		dispatchInit();
@@ -78,24 +78,24 @@ namespace GAGGUI
 		if (caption3!=NULL)
 		{
 			captionCount = 3;
-			captionWidth[2] = fontPtr->getStringWidth(captionArray[2])+10;
-			captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+10;
-			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
+			captionWidth[2] = fontPtr->getStringWidth(captionArray[2])+40;
+			captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+40;
+			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+40;
 		}
 		else if (caption2!=NULL)
 		{
 			captionCount = 2;
-			captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+10;
-			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
+			captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+40;
+			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+40;
 		}
 		else
 		{
 			captionCount = 1;
-			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+10;
+			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+40;
 		}
 	
 		int totCaptionWidth = captionWidth[0]+captionWidth[1]+captionWidth[2]+(captionCount-1)*20+40;
-		int titleWidth =  fontPtr->getStringWidth(title)+10;
+		int titleWidth =  fontPtr->getStringWidth(title)+20;
 	
 		MessageBoxScreen *mbs = new MessageBoxScreen(parentCtx, font, type, title, titleWidth, totCaptionWidth, captionCount, captionWidth, captionArray);
 	

@@ -29,25 +29,6 @@ using namespace GAGCore;
 #include <GUIList.h>
 using namespace GAGGUI;
 
-HowNewMapScreen::HowNewMapScreen()
-{
-	addWidget(new TextButton(0,  70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new map]"), NEWMAP, 13));
-	addWidget(new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load map]"), LOADMAP));
-	addWidget(new TextButton(0, 190, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new campaign]"), NEWCAMPAIGN));
-	addWidget(new TextButton(0, 250, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load campaign]"), LOADCAMPAIGN));
-	addWidget(new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27));
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor]")));
-}
-
-void HowNewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if ((par1==NEWMAP)||(par1==LOADMAP)||(par1==CANCEL) || (par1==NEWCAMPAIGN) || (par1==LOADCAMPAIGN))
-			endExecute(par1);
-	}
-}
-
 
 NewMapScreen::NewMapScreen()
 {
@@ -85,6 +66,8 @@ NewMapScreen::NewMapScreen()
 	methodes->addText(Toolkit::getStringTable()->getString("[river terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[concrete islands terrain]"));
+	methodes->addText(Toolkit::getStringTable()->getString("[isles terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[old random terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
 	methodes->setSelectionIndex(0);
@@ -114,10 +97,12 @@ NewMapScreen::NewMapScreen()
 	nbTeams->add(10);
 	nbTeams->add(11);
 	nbTeams->add(12);
+	/*
 	nbTeams->add(13);
 	nbTeams->add(14);
 	nbTeams->add(15);
 	nbTeams->add(16);
+	*/
 	nbTeams->setNth(descriptor.nbTeams-1);
 	nbTeams->visible=false;
 	addWidget(nbTeams);
@@ -436,6 +421,10 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						fruitRatio->visible=fruitText->visible=
 						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
+						break;
+					case  MapGenerationDescriptor::eCONCRETEISLANDS:
+						break;
+					case  MapGenerationDescriptor::eISLES:
 						break;
 					case  MapGenerationDescriptor::eOLDRANDOM:
 						ratioText->visible=

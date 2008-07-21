@@ -50,6 +50,12 @@ protected:
 	//! Returns the value at the given point, by interpolating
 	double getValue(double position, int team, int type);
 
+	//! Returns the text for a particular time from seconds
+	std::string getTimeText(int seconds);
+	
+	//! Returns the text for the right-scale
+	std::string getRightScaleText(int value, int digits);
+
 	//! the type of the stat beeing drawn
 	EndOfGameStat::Type type;
 	//! Pointer to game, used for drawing
@@ -64,17 +70,17 @@ protected:
 
 struct TeamEntry
 {
-	std::string name;
 	int teamNum;
 	int endVal[EndOfGameStat::TYPE_NB_STATS];
 	GAGCore::Color color;
+	std::string name;
 };
 
 class EndGameScreen : public Glob2Screen
 {
 protected:
+	std::vector<Text*> names;
 	std::vector<TeamEntry> teams;
-	std::vector<Text *> names;
 	std::vector<OnOffButton *> team_enabled_buttons;
 	EndGameStat *statWidget;
 	Text* graphLabel;

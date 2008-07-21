@@ -47,10 +47,10 @@ void Mark::draw(int x, int y, float scale)
 	int line_length = static_cast<int>(8 * scale);
 	int line_pos = static_cast<int>(4 * scale);
 	globalContainer->gfx->drawCircle(x, y, pixel_ray, color);
-	globalContainer->gfx->drawHorzLine(x + pixel_ray-line_pos+1, y, line_length, color);
-	globalContainer->gfx->drawHorzLine(x-pixel_ray-line_pos, y, line_length, color);
-	globalContainer->gfx->drawVertLine(x, y+pixel_ray-line_pos+1, line_length, color);
-	globalContainer->gfx->drawVertLine(x, y-pixel_ray-line_pos, line_length, color);
+	globalContainer->gfx->drawHorzLine(x + pixel_ray-line_pos+1, y, line_length, color.r, color.g, color.b);
+	globalContainer->gfx->drawHorzLine(x-pixel_ray-line_pos, y, line_length, color.r, color.g, color.b);
+	globalContainer->gfx->drawVertLine(x, y+pixel_ray-line_pos+1, line_length, color.r, color.g, color.b);
+	globalContainer->gfx->drawVertLine(x, y-pixel_ray-line_pos, line_length, color.r, color.g, color.b);
 }
 
 

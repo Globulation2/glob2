@@ -30,13 +30,13 @@
 
 using namespace GAGCore;
 
-Minimap::Minimap(bool nox, int px, int py, int size, int border, MinimapMode minimap_mode)
-	: noX(nox), px(px), py(py), size(size), border(border), minimap_mode(minimap_mode)
+Minimap::Minimap(bool nox, int px, int py, int sizew, int sizeh, int leftborder, int topborder, MinimapMode minimap_mode)
+	: noX(nox), px(px), py(py), sizew(sizew), sizeh(sizeh), leftborder(leftborder), topborder(topborder), minimap_mode(minimap_mode)
 {
 	if (nox) return;
 
 	update_row = -1;
-	surface=new DrawableSurface(size - border * 2, size - border * 2);
+	surface=new DrawableSurface(sizew - leftborder * 2, sizeh - topborder * 2);
 }
 
 
@@ -80,13 +80,13 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		borderB = 40;
 		borderA = 180;
 	}
-	globalContainer->gfx->drawFilledRect(px, py, size, border, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px, py + size - border, size, border, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px, py + border, border, size - border*2, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px + size - border, py + border, border, size-border*2, borderR, borderG, borderB, borderA);
+	globalContainer->gfx->drawFilledRect(px, py, sizew, topborder, borderR, borderG, borderB, borderA);
+	globalContainer->gfx->drawFilledRect(px, py + sizeh - topborder, sizew, topborder, borderR, borderG, borderB, borderA);
+	globalContainer->gfx->drawFilledRect(px, py + topborder, leftborder, sizeh - topborder*2, borderR, borderG, borderB, borderA);
+	globalContainer->gfx->drawFilledRect(px + sizew - leftborder, py + topborder, leftborder, sizeh-topborder*2, borderR, borderG, borderB, borderA);
 
 	///Draw a 1 pixel hilight arround the minimap
-	globalContainer->gfx->drawRect(px + border - 1, py + border - 1, size - border * 2 + 2, size - border * 2 + 2, 200, 200, 200);
+	globalContainer->gfx->drawRect(px + leftborder - 1, py + topborder - 1, sizew - leftborder * 2 + 2, sizeh - topborder * 2 + 2, 200, 200, 200);
 
 	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
 	offset_y = game->teams[localteam]->startPosY - game->map.getH() / 2;
@@ -97,7 +97,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	//Render the colorMap and blit the surface
 	if(update_row == -1)
 	{
-		surface->drawFilledRect(0, 0, size - border * 2, size - border * 2, 0,0,0,Color::ALPHA_OPAQUE);
+		surface->drawFilledRect(0, 0, sizew - leftborder * 2, sizeh - topborder * 2, 0,0,0,Color::ALPHA_OPAQUE);
 		update_row = 0;
 		refreshPixelRows(0, mini_h, localteam);
 	}
@@ -112,7 +112,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		line_row = update_row;
 	}
 	//Draw the surface
-	globalContainer->gfx->drawSurface(px + border, py + border, surface);
+	globalContainer->gfx->drawSurface(px + leftborder, py + topborder, surface);
 
 	//Draw the viewport square, taking into account that it may
 	//wrap arround the sides of the minimap
@@ -185,28 +185,36 @@ void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 
 
 
+void Minimap::resetMinimapDrawing()
+{
+	update_row = -1;
+}
+	
+
+
 void Minimap::computeMinimapPositioning()
 {
 	if (noX) return;
 
-	int msize = size - border*2;
+	int msizew = sizew - leftborder*2;
+	int msizeh = sizeh - topborder*2;
 	if(game->map.getW() > game->map.getH())
 	{
-		mini_w = msize;
-		mini_h = (game->map.getH() * msize) / game->map.getW();
+		mini_w = msizew;
+		mini_h = (game->map.getH() * msizeh) / game->map.getW();
 		mini_offset_x = 0;
-		mini_offset_y = (msize - mini_h)/2;
-		mini_x = px + border + mini_offset_x;
-		mini_y = py + border + mini_offset_y;
+		mini_offset_y = (msizeh - mini_h)/2;
+		mini_x = px + leftborder + mini_offset_x;
+		mini_y = py + topborder + mini_offset_y;
 	}
 	else
 	{
-		mini_w = (game->map.getW() * msize) / game->map.getH();
-		mini_h = msize;
-		mini_offset_x = (msize - mini_w)/2;
+		mini_w = (game->map.getW() * msizew) / game->map.getH();
+		mini_h = msizeh;
+		mini_offset_x = (msizew - mini_w)/2;
 		mini_offset_y = 0;
-		mini_x = px + border + mini_offset_x;
-		mini_y = py + border + mini_offset_y;
+		mini_x = px + leftborder + mini_offset_x;
+		mini_y = py + topborder + mini_offset_y;
 	}
 }
 

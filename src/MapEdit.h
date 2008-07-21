@@ -28,25 +28,12 @@
 #include "GUIBase.h"
 #include "KeyboardManager.h"
 #include <map>
+#include "MapEditDialog.h"
+#include "Minimap.h"
+#include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
 #include <string>
 #include <vector>
-#include "Minimap.h"
-#include "OverlayAreas.h"
-
-namespace GAGCore
-{
-	class Sprite;
-	class Font;
-}
-using namespace GAGCore;
-namespace GAGGUI
-{
-	class OverlayScreen;
-}
-using namespace GAGGUI;
-class Unit;
-
 
 ///A generic rectangle structure used for a variety of purposes, but mainly for the convience of the widget system
 struct widgetRectangle
@@ -60,50 +47,6 @@ struct widgetRectangle
 	int width;
 	int height;
 };
-
-
-///This is the map editor menu screen. It has 5 buttons. Its very similair to the in-game main menu
-class MapEditMenuScreen : public OverlayScreen
-{
-public:
-	MapEditMenuScreen();
-	virtual ~MapEditMenuScreen() { }
-	void onAction(Widget *source, Action action, int par1, int par2);
-
-	enum
-	{
-		LOAD_MAP,
-		SAVE_MAP,
-		OPEN_SCRIPT_EDITOR,
-		RETURN_EDITOR,
-		QUIT_EDITOR
-	};
-};
-
-
-///This is a text info box. It is used primarily for entering the names of the script areas,
-///however it is generic enough to be recycled for other purposes.
-class AskForTextInput : public OverlayScreen
-{
-public:
-	enum
-	{
-		OK,
-		CANCEL
-	};
-	AskForTextInput(const std::string& label, const std::string& current);
-	void onAction(Widget *source, Action action, int par1, int par2);
-	std::string getText();
-private:
-	TextInput* textEntry;
-	TextButton* ok;
-	TextButton* cancel;
-	Text* label;
-	std::string labelText;
-	std::string currentText;
-};
-
-
 
 class MapEdit;
 
@@ -306,24 +249,6 @@ public:
 };
 
 
-///This is a single team info, that only draws itself and handles clicks when there is a team with its number in the game. It shows
-///the color of the team, and allows for selecting between various strings of options for the team (right now only one string is
-///present, "human", more may be added later)
-class TeamInfo : public MapEditorWidget
-{
-public:
-	TeamInfo(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int teamNum, std::vector<std::string>& options);
-	void draw();
-	void handleClick(int relMouseX, int relMouseY);
-	void setSelectionPos(int pos) { selectorPos=pos; }
-	int getSelectionPos() { return selectorPos; }
-private:
-	int teamNum;
-	int selectorPos;
-	std::vector<std::string>& options;
-};
-
-
 
 ///This is the title shown when you select a unit for editing. It is just text.
 class UnitInfoTitle : public MapEditorWidget
@@ -480,6 +405,9 @@ public:
 	int run(void);
 	
 	void mapHasBeenModiffied(void) { hasMapBeenModified=true; }
+	
+	///This function regenerates a game header for use in campaigns
+	void regenerateGameHeader();
 
 	Game game;
 	friend class MapEditorWidget;
@@ -507,6 +435,8 @@ private:
 	bool doQuit;
 	///If this is set, the map editor will do a full quit, from glob2 entirely
 	bool doFullQuit;
+	///Tells whether the game should quit after the load/save menu closes
+	bool doQuitAfterLoadSave;
 
 	///This draws the map and various on-map elements
 	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode);
@@ -535,7 +465,7 @@ private:
 	void drawBuildingSelectionOnMap();
 
 	///This proccesses an event from the SDL
-	int processEvent(SDL_Event& event);
+	void processEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
 	void handleKeyPressed(SDL_keysym key, bool pressed);
 	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large
@@ -615,6 +545,7 @@ private:
 	UnitSelector* worker;
 	UnitSelector* explorer;
 	UnitSelector* warrior;
+	BlueButton* deleteButton;
 	TeamColorSelector* flag_view_tcs;
 	SingleLevelSelector* flag_view_level1;
 	SingleLevelSelector* flag_view_level2;
@@ -635,7 +566,6 @@ private:
 	TerrainSelector* orange;
 	TerrainSelector* cherry;
 	TerrainSelector* prune;
-	BlueButton* deleteButton;
 	BlueButton* noRessourceGrowthButton;
 	BlueButton* areasButton;
 	NumberCycler* areaNumber;
@@ -648,18 +578,7 @@ private:
 	///@{
 	PlusIcon* increaseTeams;
 	MinusIcon* decreaseTeams;
-	TeamInfo* teamInfo1;
-	TeamInfo* teamInfo2;
-	TeamInfo* teamInfo3;
-	TeamInfo* teamInfo4;
-	TeamInfo* teamInfo5;
-	TeamInfo* teamInfo6;
-	TeamInfo* teamInfo7;
-	TeamInfo* teamInfo8;
-	TeamInfo* teamInfo9;
-	TeamInfo* teamInfo10;
-	TeamInfo* teamInfo11;
-	TeamInfo* teamInfo12;
+	TeamColorSelector* team_view_tcs;
 	///@}
 
 	///Unit editor view
@@ -763,6 +682,10 @@ private:
 	int lastPlacementX;
 	///This is the last placement of terrain, zones, or else, so that the game doesn't use allot of cpu by small mouse movements
 	int lastPlacementY;
+	///This is the first placement of terrain, zones or else
+	int firstPlacementX;
+	///This is the first placement of terrain, zones, or else
+	int firstPlacementY;
 
 	///Tells whether the menu screen is being drawn right now
 	bool showingMenuScreen;
@@ -777,6 +700,10 @@ private:
 	///Tells whether the script editor is being drawn
 	bool showingScriptEditor;
 	ScriptEditorScreen* scriptEditor;
+	
+	///Tells whether the teams editor is being drawn
+	bool showingTeamsEditor;
+	TeamsEditor* teamsEditor;
 
 
 	///The various types of brushes for placing a zone

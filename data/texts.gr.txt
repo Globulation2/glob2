@@ -1,7 +1,25 @@
-[%0 has been deconnected of the game]
-%0 έχει αποσυνδεθεί.
 [%0 has left the game]
 %0 έχει τερματίσει το παιχνίδι.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 %0 του Παιχνιδιού
 [%0's team unit got converted to your team]
@@ -16,28 +34,44 @@ fV: Εμφάνιση όρασης για τα Πανδοχεία (για κλο�
 mV: Εμφάνιση όρασης για τα κτίρια Αγορών (για ανταλλαγές φρούτων)
 [abreaviation explanation V]
 V: Εμφάνιση όρασης για όλα τα κτίρια
-[Add AI]
-Προσθήκη AI
 [add map]
 Προσθήκη χάρτη
 [add shortcut]
 Προσθήκη Συντόμευσης
+[Add]
+
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ΦτάσεΣτοΆπειρο
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -46,6 +80,8 @@ Algae
 algae
 [alliances]
 Συμμαχίες
+[alt %0]
+
 [and]
 και
 [any explorer]
@@ -66,8 +102,6 @@ algae
 Ταχύτητα Επ.
 [At. strength]
 Δύναμη Επ.
-[attack speed]
-Ταχύτητα επίθεσης
 [Attack]
 Επίθεση
 [audio]
@@ -80,10 +114,10 @@ algae
 Αναμένοντας παίκτες
 [away:]
 εκτός:
+[Back]
+
 [backspace]
 backspace
-[bad error in connection system]
-Πρόβλημα στο σύστημα σύνδεσης
 [barracks explanation 2]
 επίπεδο των πολεμιστών σου
 [barracks explanation]
@@ -92,8 +126,14 @@ backspace
 Στρατώνες
 [beach size]
 μέγεθως παραλίας
+[Blocked Players]
+
 [break]
 διακοπή
+[briefing]
+
+[build %0 level %1]
+
 [build barracks level 0]
 Κατασκευή Στρατώνων 1
 [build barracks level 1]
@@ -144,12 +184,10 @@ backspace
 Κατασκευή Πισίνας 3
 [Build]
 Κτίσμα
-[Building name]
-Όνομα κτιρίου
-[Building short explanation 2]
-Σύντομη περιγραφή κτιρίου 2 (μέγιστο 24 χαρακτήρες)
-[Building short explanation]
-Σύντομη περιγραφή κτιρίου (μέγιστο 24 χαρακτήρες)
+[Building Defaults]
+
+[building settings]
+Ρυθμίσεις Μονάδας
 [building site]
 τόπος κατασκευής
 [Buildings]
@@ -190,8 +228,6 @@ caps lock
 Μεταφορά:
 [Change Area Name]
 Αλλαγή Ονόματος Περιοχής
-[checksum sent]
-Checksum εστάλει ...
 [Cherry]
 Κεράσι
 [choose campaign]
@@ -202,8 +238,6 @@ Checksum εστάλει ...
 Επιλέξτε ένα χάρτη
 [clear area]
 Καθαρισμός περιοχής
-[clear]
-καθαρισμός
 [Clearing:]
 Καθαρισμός:
 [clearingflag explanation 2]
@@ -212,30 +246,26 @@ Checksum εστάλει ...
 Καθαρισμός Πόρων
 [clearingflag]
 Καθαρισμός Flag
-[close]
-Κλείσιμο
 [closed]
 Κλειστό
 [compile]
 Μεταγλώττιση script
 [compose]
 
+[Computing Fertility]
+
+[concrete islands terrain]
+
 [connect]
 Σύνδεση
-[connected to all players]
-Συνδεδεμένος με όλους τους παίκτες
-[connected to server]
-Συνδεδεμένος στον εξυπηρετητή
-[connecting to all players]
-Σύνδεση με όλους τους παίκτες
 [connecting to]
 Σύνδεση στο
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Συνέχεια
+[control %0]
+
 [Corn]
 Σιτάρι
 [crater density]
@@ -248,6 +278,8 @@ Crater Lakes
 Δημιουργία χάρτη
 [credits]
 Εύσημα
+[ctrl - line]
+
 [current speed]
 Τωρινή ταχύτητα
 [custom game]
@@ -258,12 +290,10 @@ Crater Lakes
 Ζημιά
 [Damaged Map]
 Κατεστραμένος Χάρτης
-[dblbuff]
-Διπλό buffering
 [decrease units working]
 Μείωση Εργαζόμενων Μονάδων
-[default terrain]
-Προκαθορισμένο έδαφος
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 μονάδες ή κτίρια
 [defencetower explanation]
@@ -292,8 +322,6 @@ Crater Lakes
 Καταστροφή Επιλεγμένου Κτιρίου
 [destroy]
 Καταστροφή
-[Disconnect]
-Αποσύνδεση
 [display]
 Εμφάνιση
 [do nothing]
@@ -302,12 +330,14 @@ Crater Lakes
 Δεν μεταφέρει τίποτα
 [down]
 κάτω
-[download finished]
-Το Download ολοκληρώθηκε
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
 
-[downloaded at]
-Κατέβηκε στο 
+[downloading map]
+
 [edit map]
 Επεξεργασία Χάρτη
 [editing map]
@@ -374,8 +404,10 @@ f8
 f9
 [Fertility Map]
 Χάρτης Γονιμότητας
-[food left]
-Εναπομείναν τροφή
+[Flag Defaults]
+
+[flag settings explanation]
+
 [food]
 Τροφή
 [forbidden area]
@@ -396,9 +428,7 @@ Ok
 Πλήρης παιχνίδι
 [game shortcuts]
 Συντομεύσεις παιχνιδιού
-[game speed]
-Ταχύτητα παιχνιδιού
-[Games]
+[Game]
 
 [general settings]
 Γενικές Ρυθμίσεις
@@ -426,14 +456,10 @@ Ok
 Σκληρή Παύση
 [Harvest]
 Συγκομιδή
-[has joined]
-συνδέθηκε
-[has quit]
-αποσυνδέθηκε
-[heal]
-Υγεία
-[help]
-Βοήθεια
+[high priority]
+
+[hints]
+
 [home]
 σπίτι
 [hospital explanation 2]
@@ -442,22 +468,20 @@ Ok
 Γιαίνει τις μονάδες
 [hospital]
 Νοσοκομείο
-[Host has cancelled the game]
-
 [host]
 Παροχή ενός παιχνιδιού
 [hp]
 HP
 [hp]
 Hitpoint
+[Human]
+
 [human]
 άνθρωπος
 [hungry]
 πείνα
 [hungryness]
 Κορεσμός
-[hwaccel]
-Επιτάχυνση υλικού
 [In way]
 Στον δρόμο
 [increase units working]
@@ -482,6 +506,8 @@ Hitpoint
 μέγεθος νησιού
 [islands terrain]
 Νησιά
+[isles terrain]
+
 [iterate selection]
 Προχώρησε στην Επόμενη Επιλογή
 [jobs]
@@ -497,15 +523,13 @@ Kick
 [lan]
 LAN Game
 [language incomplete]
-
+Ελληνικά - Incomplete
 [language-code]
 gr
 [language-tr]
 Anastasios M. Pingios
 [language]
 Ελληνικά
-[large]
-μεγάλο
 [Leave Game]
 Έξοδος από το παιχνίδι
 [left meta]
@@ -524,32 +548,56 @@ Anastasios M. Pingios
 Φόρτωση παιχνιδιού
 [load map]
 Φόρτωση χάρτη
+[load script]
+
 [load]
 Φόρτωση
-[loading glob2]
-Φόρτωση Globulation 2
+[loading map list]
+
+[Lobby]
+
 [login]
 Σύνδεση
 [Lost : %0 has more prestige than you]
 Χαμένος: %0 έχει περισσότερο κύρος από εσάς
 [Lost : your colony is dead]
 Χαμμένος: η αποικία σας είναι νεκρή
+[low priority]
+
 [lowquality]
 Χαμηλή ποιότητα
 [Magic At. Air]
 Εναέρια dmg.
 [Magic At. Ground]
 Επίγεια dmg.
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Όνομα χάρτη: %0.
 [map name]
 Όνομα
+[map rated]
+
+[map script]
+
 [map size x]
 Πλάτος χάρτη
 [map size y]
 Μήκος χάρτη
-[mapGenerationDescriptor Methodes]
-Μέθοδοι τυχαίων χαρτών
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Διαθέσιμοι Χάρτες
 [mark map]
@@ -560,10 +608,10 @@ Anastasios M. Pingios
 Επιτρέπει την ανταλλαγή
 [market]
 Αγορά
-[medium]
-μέσο
-[menu]
-μενού
+[medium priority]
+
+[meta %0]
+
 [Min required level:]
 Ελάχιστο απαιτούμενο επίπεδο:
 [Minimum Level To Flag]
@@ -574,22 +622,24 @@ Anastasios M. Pingios
 
 [mute]
 σίγαση
-[network latency]
-Καθυστέρηση δικτύου
 [new campaign]
 Νέα Εκστρατεία
 [new map]
 Νέα
 [nick taken]
 Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG
+[No Hints]
+
 [no key]
 κανένα κλειδί ακόμα
+[No Objectives]
+
 [no ressources growth areas]
 Καμία Περιοχή Ανάπτυξης
 [No]
 Όχι
-[not connected]
-Μη συνδεδεμένος
+[Not Enough Ratings]
+
 [not ready]
 Μη έτοιμος
 [number of players: %0 (%1 AI)]
@@ -602,6 +652,8 @@ Anastasios M. Pingios
 αριθμός των ομάδων
 [numlock]
 numlock
+[objectives]
+
 [of which]
 υπάρχουν
 [ok]
@@ -610,10 +662,12 @@ Ok
 παλιά τυχαία νησιά
 [old random terrain]
 παλιά τυχαία πεδία
+[on press]
+
 [On the spot]
 Εδώ
-[one player]
-Ένας παίκτης συνδέθηκε.
+[on unpress]
+
 [open chat box]
 Άνοιγμα παραθύρου chat
 [open load menu]
@@ -622,12 +676,18 @@ Ok
 Άνοιγμα Μενού Αποθήκευσης
 [open script editor]
 Άνοιγμα Επεξεργαστή Script
+[open teams editor]
+
 [open]
 άνοιγμα
+[Options]
+
 [options]
 Επιλογές
 [Orange]
 Πορτοκαλι
+[Other Options]
+
 [page down]
 page down
 [page up]
@@ -640,24 +700,26 @@ page up
 παύση
 [Paused]
 Σταματημένο
-[percent]
-  τις εκατό
 [player name]
 Όνομα παίκτη
-[player]
-Παίκτης
+[player rating %0]
+
 [please wait]
 Παρακαλώ περιμένετε
 [power]
 ενέργεια
-[presence request sent]
-Αίτημα παρουσίας εστάλει ...
 [press space]
 Πατήστε space για να συνεχίσετε.
+[Prestige Win Enabled]
+
 [Prestige]
 Κύρος
+[Primary Objectives]
+
 [print screen]
 print screen
+[priority]
+
 [Prune]
 Κλάδεμα
 [quit the editor]
@@ -672,12 +734,16 @@ print screen
 Βελτιώνει το περπάτημα
 [racetrack]
 Ιππόδρομος
-[random terrain]
-Τυχαίο πεδίο
 [range]
 Εύρος
+[Rated %0]
+
 [ratios]
 Αναλογίες
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Καταχωρήστε ένα νέο YOG χρήστη με κωδικό. (μη ασφαλές)
 [remember unit]
@@ -688,14 +754,14 @@ print screen
 Αφαίρεση Χάρτη
 [remove shortcut]
 Αφαίρεση Συντόμευσης
+[Remove]
+
 [repair building]
 Εκκίνηση/Παύση Επιδιόρθωσης
 [repair]
 Επιδιόρθωση
 [repeat area]
 φορές το ίδιο περιβάλλον
-[ressources]
-Πόροι
 [restore default shortcuts]
 Επαναφορά Προκαθορισμένων Συντομεύσεων Πληκτρολογίου
 [return to editor]
@@ -722,6 +788,8 @@ enter
 Αποθήκευση παιχνιδιού
 [save map]
 Αποθήκευση χάρτη
+[save script]
+
 [Save]
 Αποθήκευση
 [school explanation 2]
@@ -736,6 +804,8 @@ enter
 scroll lock
 [scroll wheel enabled]
 Scroll Wheel Ενεργοποιημένο
+[Secondary Objectives]
+
 [seeking a job]
 ψάχνοντας για εργασία
 [seeking]
@@ -764,6 +834,8 @@ Scroll Wheel Ενεργοποιημένο
 Επιλογή Κατασκευή Σμήνους
 [select construct swimmingpool]
 Επιλογή Κατασκευή Πισίνας
+[select delete tool]
+
 [select explorationflag]
 Επιλογή explorationflag
 [select hospital building]
@@ -798,10 +870,10 @@ Scroll Wheel Ενεργοποιημένο
 Επιλογή τείχους
 [select warflag]
 Επιλογή warflag
-[session request sent]
-Αίτημα συνόδου εστάλει ...
 [settings]
 Ρυθμίσεις
+[shift %0]
+
 [shortcut explanation enter]
 Enter: στείλτε ένα chat μύνημα
 [shortcut explanation v]
@@ -810,30 +882,28 @@ V: κρατήστε για να μιλίσετε
 Εμφάνιση Κυρίως Μενού
 [skin]
 Εμφάνιση
-[small]
-μικρό
 [smoothing]
 Πιο ομαλό
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 κενό
-[speed]
-Ταχύτητα
 [start mission]
 Εκκίνηση Αποστολής
 [start new campaign]
 Εκκίνηση Νέας Εκστρατείας
 [Start]
 Εκκίνηση
-[STARTING GAME ...]
-Εκκίνηση Παιχνιδιού... 
 [Starving Map]
 Χάρτης Λιμοκτονούντων
 [starving]
 λιμοκτονούν
-[stat]
-Στατιστικά
-[state]
-κατάσταση
 [Statistics]
 Στατιστικά
 [Still (i)]
@@ -854,6 +924,8 @@ V: κρατήστε για να μιλίσετε
 Παθητική άμυνα
 [stonewall]
 Πέτρινο Τείχος
+[submit rating]
+
 [svr hostname]
 Όνομα εξυπηρετητή
 [swamp terrain]
@@ -906,6 +978,10 @@ V: κρατήστε για να μιλίσετε
 sys req
 [tab]
 tab
+[teams editor]
+
+[Teams Fixed]
+
 [teams]
  ομάδες
 [the barracks is finished]
@@ -994,10 +1070,16 @@ tab
 Συνολικό ρεκοπ κύρους
 [Total]
 Σύνολο
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Tutorial
-[unassigned]
-Μη Ορισμένο
 [Uncontrolled]
 Εκτός Ελέγχου
 [undo]
@@ -1008,36 +1090,36 @@ Tutorial
 Επεξεργαστής μονάδας
 [unit settings explanation]
 
-[unit settings]
-Ρυθμίσεις Μονάδας
-[Unit type]
-Τύπος μονάδας
-[units type]
-τύπος μονάδας
 [units working]
  εργαζόμενες μονάδες
 [Units]
 Μονάδες
+[unlocked at start]
+
 [unlocked by]
 Ξεκλειδώθηκε από
 [Unnamed Area]
 {Ανώμυμη Περιοχή}
 [up]
 πάνω
-[update list]
-Λίστα αναβαθμίσεων
 [upgrade building]
 Εκκίνηση/Παύση Αναβάθμισης
+[Upgrade Defaults]
+
 [upgrade]
 Αναβάθμιση
+[Upload Map]
+
+[upload map]
+
 [username]
 Όνομα Χρήστη
 [Version]
 Έκδοση
 [view history]
 Εμφάνιση Ιστορικού
-[wait destroy]
-Αναμονή καταστροφής
+[Voice volume]
+
 [waiting for %0]
 Αναμονή για %0
 [waiting for key]
@@ -1060,10 +1142,6 @@ Tutorial
 Πολεμιστής
 [warriors]
 πολεμιστές
-[was AI]
-ηταν AI
-[was]
-ηταν
 [water]
 Νερό
 [Wheat]
@@ -1092,50 +1170,48 @@ Tutorial
 πληγωμένος
 [Yes]
 Ναι
-[YESTS_BAD]
-Εσωτερικό πρόβλημα συνέπειας κατά την σύνδεση.
 [YESTS_CONNECTING]
 Ξεκινά η σύνδεση με τον YOG metaserver...
 [YESTS_CONNECTION_LOST]
 Η σύνδεση με το YOG χάθηκε.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-Ο YOG metaserver αρνήθηκε την σύνδεση γιατί ένα λάθος πρωτοκόλλου δημιουργήθικε:  Είστε ήδη πιστοποιηένος.  Δοκιμάστε ξανά σε 45 δευτερόλεπτα.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί αυτό το όνομα χρήστη είναι ήδη καταχωρημένο.  Εαν είναι δικό σας, απενεργοποιήστε την επιλογή "Καταχωρήστε νέου YOG χρήστη με κωδικό".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί ο κωδικός που δώσατε ήταν λάνθασμενος.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη δεν έχει ακόμα κωδικό. Πιθανόν θέλετε να καταχωρήσετε αυτό το όνομα χρήστη με αυτό τον κωδικό. Γι' αυτό, ενεργοποιήστε την επιλογή "Καταχώρηση νέου YOG χρήστη με κωδικό" πριν συνδεθείτε. Θα πρέπει να ενεργοποιήσετε αυτή την επιλογή μόνο μία φορά.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-Ο YOG metaserver αρνήθηκε την σύνδεση γιατί ένα εσωτερικό πρόβλημα πρωτοκόλλου δημιουργήθικε: δεν είστε συνδεδεμένος ακόμα κατά την πιστοποίηση. Παρακαλούμε αναφέρετε αυτό το πρόβλημα.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το globulation2 client σας είναι παλιό.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Ο YOG metaserver αρνήθηκε την σύνδεση χωρίς εξήγηση!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη είναι ήδη σε χρήση από κάποιον άλλον.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Το σύστημα σύνδεσης είναι έτοιμο για επαφή με τον YOG metaserver για σύνδεση.
-[YESTS_DECONNECTING]
-Αποσύνδεση από το YOG metaserver...
 [YESTS_UNABLE_TO_CONNECT]
 Αδύνατη η σύνδεση. Προφανώς ο YOG metaserver δεν λειτουργεί.
-[YESTS_YOG_KILLED]
-Ένας administrator μόλις σταμάτησε τον YOG metaserver.
-[yog-chat]
-#yog-en
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
-[YOG_HELP]
-Το σύστημα μυνημάτων YOG έχει δύο εντολές, "msg" και "away". Πατήστε "/help <εντολή>" για να μάθετε περισσότερα για την κάθε μία.
-[YOG_HELP_AWAY]
-Η εντολή "/away (<message>)" σας επιτρέπει να κάνετε γνωστό στους άλλους χρήστες του YOG ότι είστε προσωρινά εκτός.  Μπορείτε να προσθέσετε μια μικρή εξήγηση.  Για παράδειγμα "/away Τρώω ένα hamburger και θα είμαι πίσω στη 1 ακριβώς." Συντόμευση "/a"
-[YOG_HELP_MSG]
-Η εντολή "/msg <name> <message>" στέλνει ένα προσωπικό μύνημα.  Για παράδειγμα, "/msg John Hi John, πως είσαι;."  Συντόμευση "/m"
-[You are no more marked as away]
-Δεν είστε πια σημαδεμένος ως away.
-[You are now marked as away]
-Είστε σημαδεμένος ως away.
 [you have lost]
 Χάσατε!
 [you have won]
@@ -1144,5 +1220,9 @@ Ysagoon Online Gaming
 
 [Your %0 are under attack]
 Το %0 δέχετε επίθεση
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Η μονάδα σας άλλαξε σε %0 ομάδα
+[Your username was banned]
+

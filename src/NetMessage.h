@@ -19,18 +19,22 @@
 #ifndef __NetMessage_h
 #define __NetMessage_h
 
+#include <boost/shared_ptr.hpp>
+#include "GameHeader.h"
+#include "MapHeader.h"
+#include "MapThumbnail.h"
+#include "NetReteamingInformation.h"
 #include "Order.h"
+#include "Player.h"
 #include "Stream.h"
-#include "YOGConsts.h"
-#include "YOGGameInfo.h"
-#include "YOGPlayerInfo.h"
-#include "YOGMessage.h"
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
-#include "MapHeader.h"
-#include "GameHeader.h"
-#include "Player.h"
+#include "YOGConsts.h"
+#include "YOGGameInfo.h"
+#include "YOGDownloadableMapInfo.h"
+#include "YOGMessage.h"
+#include "YOGPlayerSessionInfo.h"
+#include "YOGAfterJoinGameInformation.h"
 
 
 using namespace boost;
@@ -38,48 +42,71 @@ using namespace boost;
 ///This is the enum of message types
 enum NetMessageType
 {
+	///These must be kept in this order to maintain compatibility with future versions of glob2
 	MNetAcceptRegistration,
-	MNetAddAI,
-	MNetAttemptJoinGame,
 	MNetAttemptLogin,
 	MNetAttemptRegistration,
+	MNetDisconnect,
+	MNetLoginSuccessful,
+	MNetPing,
+	MNetPingReply,
+	MNetRefuseLogin,
+	MNetRefuseRegistration,
+	MNetSendClientInformation,
+	MNetSendServerInformation,
+	
+	//These are all glob2 version dependent and can be kept in any order	
+	MNetAcknowledgeRouter,
+	MNetAddAI,
+	MNetAttemptJoinGame,
 	MNetChangePlayersTeam,
 	MNetCreateGame,
 	MNetCreateGameAccepted,
 	MNetCreateGameRefused,
-	MNetDisconnect,
-	MNetEveryoneReadyToLaunch,
 	MNetGameJoinAccepted,
 	MNetGameJoinRefused,
+	MNetIPIsBanned,
 	MNetKickPlayer,
 	MNetLeaveGame,
-	MNetLoginSuccessful,
-	MNetNotEveryoneReadyToLaunch,
 	MNetNotReadyToLaunch,
-	MNetPing,
-	MNetPingReply,
+	MNetPlayerIsBanned,
 	MNetPlayerJoinsGame,
 	MNetReadyToLaunch,
 	MNetRefuseGameStart,
-	MNetRefuseLogin,
-	MNetRefuseRegistration,
+	MNetRegisterRouter,
 	MNetRemoveAI,
 	MNetRequestGameStart,
-	MNetRequestMap,
-	MNetRequestNextChunk,
-	MNetSendClientInformation,
+	MNetRequestFile,
+	MNetRouterAdministratorLogin,
+	MNetRouterAdministratorLoginAccepted,
+	MNetRouterAdministratorLoginRefused,
+	MNetRouterAdministratorSendCommand,
+	MNetRouterAdministratorSendText,
+	MNetSendAfterJoinGameInformation,
 	MNetSendFileChunk,
 	MNetSendFileInformation,
 	MNetSendGameHeader,
 	MNetSendGamePlayerInfo,
+	MNetSendGameResult,
 	MNetSendMapHeader,
 	MNetSendOrder,
-	MNetSendServerInformation,
+	MNetSendReteamingInformation,
 	MNetSendYOGMessage,
+	MNetSetGameInRouter,
 	MNetSetLatencyMode,
 	MNetStartGame,
 	MNetUpdateGameList,
 	MNetUpdatePlayerList,
+	MNetDownloadableMapInfos,
+	MNetRequestDownloadableMapList,
+	MNetRequestMapUpload,
+	MNetAcceptMapUpload,
+	MNetRefuseMapUpload,
+	MNetCancelSendingFile,
+	MNetCancelRecievingFile,
+	MNetRequestMapThumbnail,
+	MNetSendMapThumbnail,
+	MNetSubmitRatingOnMap,
 	//type_append_marker
 };
 
@@ -519,7 +546,7 @@ public:
 	NetUpdatePlayerList();
 
 	///This computes the differences between the two lists of players. These can be of any container,
-	///so long as they store YOGPlayerInfo
+	///so long as they store YOGPlayerSessionInfo
 	template<typename container> void updateDifferences(const container& original, const container& updated);
 
 	///Returns MNetUpdatePlayerList
@@ -543,7 +570,7 @@ public:
 
 private:
 	std::vector<Uint16> removedPlayers;
-	std::vector<YOGPlayerInfo> updatedPlayers;
+	std::vector<YOGPlayerSessionInfo> updatedPlayers;
 };
 
 
@@ -661,7 +688,7 @@ class NetGameJoinRefused : public NetMessage
 {
 public:
 	///Creates a NetGameJoinRefused message
-	NetGameJoinRefused(YOGGameJoinRefusalReason reason);
+	NetGameJoinRefused(YOGServerGameJoinRefusalReason reason);
 
 	///Creates a NetGameJoinRefused message
 	NetGameJoinRefused();
@@ -683,9 +710,9 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 	
 	///Returns the reason why the player could not join the game.
-	YOGGameJoinRefusalReason getRefusalReason() const;
+	YOGServerGameJoinRefusalReason getRefusalReason() const;
 private:
-	YOGGameJoinRefusalReason reason;
+	YOGServerGameJoinRefusalReason reason;
 };
 
 
@@ -759,7 +786,7 @@ public:
 	///Returns the map header
 	const MapHeader& getMapHeader() const;
 private:
-	mutable MapHeader mapHeader;
+	MapHeader mapHeader;
 };
 
 
@@ -773,7 +800,7 @@ public:
 	NetCreateGameAccepted();
 
 	///Creates a NetCreateGameAccepted message with the chat channel for the new game
-	NetCreateGameAccepted(Uint32 chatChannel);
+	NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP, Uint16 fileID);
 
 	///Returns MNetCreateGameAccepted
 	Uint8 getMessageType() const;
@@ -794,8 +821,19 @@ public:
 	///Retrieves the chat channel for the new game
 	Uint32 getChatChannel() const;
 
+	///Retrivees the game id for the new game
+	Uint16 getGameID() const;
+	
+	///Retrieves the game-router ip address
+	const std::string getGameRouterIP() const;
+
+	///Retrieves the fileID for this games map
+	Uint16 getFileID() const;
 private:
 	Uint32 chatChannel;
+	Uint16 gameID;
+	std::string routerIP;
+	Uint16 fileID;
 };
 
 
@@ -809,7 +847,7 @@ public:
 	NetCreateGameRefused();
 
 	///Creates a NetCreateGameRefused message
-	NetCreateGameRefused(YOGGameCreateRefusalReason reason);
+	NetCreateGameRefused(YOGServerGameCreateRefusalReason reason);
 
 	///Returns MNetCreateGameRefused
 	Uint8 getMessageType() const;
@@ -828,9 +866,9 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 	
 	///Returns the reason why the player could not join the game.
-	YOGGameCreateRefusalReason getRefusalReason() const;
+	YOGServerGameCreateRefusalReason getRefusalReason() const;
 private:
-	YOGGameCreateRefusalReason reason;
+	YOGServerGameCreateRefusalReason reason;
 };
 
 
@@ -935,14 +973,17 @@ public:
 
 
 
-///NetRequestMap
-class NetRequestMap : public NetMessage
+///NetRequestFile
+class NetRequestFile : public NetMessage
 {
 public:
-	///Creates a NetRequestMap message
-	NetRequestMap();
+	///Creates a NetRequestFile message
+	NetRequestFile();
+	
+	///Creates a NetRequestFile message for the given fileID
+	NetRequestFile(Uint16 fileID);
 
-	///Returns MNetRequestMap
+	///Returns MNetRequestFile
 	Uint8 getMessageType() const;
 
 	///Encodes the data
@@ -951,12 +992,17 @@ public:
 	///Decodes the data
 	void decodeData(GAGCore::InputStream* stream);
 
-	///Formats the NetRequestMap message with a small amount
+	///Formats the NetRequestFile message with a small amount
 	///of information.
 	std::string format() const;
 
-	///Compares with another NetRequestMap
+	///Compares with another NetRequestFile
 	bool operator==(const NetMessage& rhs) const;
+	
+	///Returns the fileID of the file being requested
+	Uint16 getFileID();
+private:
+	Uint16 fileID;
 };
 
 
@@ -969,8 +1015,8 @@ public:
 	///Creates a NetSendFileInformation message
 	NetSendFileInformation();
 
-	///Creates a NetSendFileInformation message with the given file size
-	NetSendFileInformation(Uint32 filesize);
+	///Creates a NetSendFileInformation message with the given file size for the given fileID
+	NetSendFileInformation(Uint32 filesize, Uint16 fileID);
 
 	///Returns MNetSendFileInformation
 	Uint8 getMessageType() const;
@@ -990,8 +1036,12 @@ public:
 	
 	///Returns the file size
 	Uint32 getFileSize() const;
+	
+	///Returns the file size
+	Uint16 getFileID() const;
 private:
 	Uint32 size;
+	Uint16 fileID;
 };
 
 
@@ -1006,7 +1056,7 @@ public:
 
 	///Creates a NetSendFileChunk message to read off of the given stream,
 	///either untill the stream ends or the chunk size limit is reached
-	NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream);
+	NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID);
 
 	///Returns MNetSendFileChunk
 	Uint8 getMessageType() const;
@@ -1029,36 +1079,13 @@ public:
 	
 	///Returns the chunk size
 	Uint32 getChunkSize() const;
+	
+	///Returns the fileID
+	Uint16 getFileID() const;
 private:
 	Uint32 size;
 	Uint8 data[4096];
-};
-
-
-
-
-///NetRequestNextChunk
-class NetRequestNextChunk : public NetMessage
-{
-public:
-	///Creates a NetRequestNextChunk message
-	NetRequestNextChunk();
-
-	///Returns MNetRequestNextChunk
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetRequestNextChunk message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetRequestNextChunk
-	bool operator==(const NetMessage& rhs) const;
+	Uint16 fileID;
 };
 
 
@@ -1201,60 +1228,6 @@ private:
 
 
 
-///NetEveryoneReadyToLaunch
-class NetEveryoneReadyToLaunch : public NetMessage
-{
-public:
-	///Creates a NetEveryoneReadyToLaunch message
-	NetEveryoneReadyToLaunch();
-
-	///Returns MNetEveryoneReadyToLaunch
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetEveryoneReadyToLaunch message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetEveryoneReadyToLaunch
-	bool operator==(const NetMessage& rhs) const;
-};
-
-
-
-
-///NetNotEveryoneReadyToLaunch
-class NetNotEveryoneReadyToLaunch : public NetMessage
-{
-public:
-	///Creates a NetNotEveryoneReadyToLaunch message
-	NetNotEveryoneReadyToLaunch();
-
-	///Returns MNetNotEveryoneReadyToLaunch
-	Uint8 getMessageType() const;
-
-	///Encodes the data
-	void encodeData(GAGCore::OutputStream* stream) const;
-
-	///Decodes the data
-	void decodeData(GAGCore::InputStream* stream);
-
-	///Formats the NetNotEveryoneReadyToLaunch message with a small amount
-	///of information.
-	std::string format() const;
-
-	///Compares with another NetNotEveryoneReadyToLaunch
-	bool operator==(const NetMessage& rhs) const;
-};
-
-
-
-
 ///NetRemoveAI
 class NetRemoveAI : public NetMessage
 {
@@ -1366,7 +1339,7 @@ public:
 	NetRefuseGameStart();
 
 	///Creates a NetRefuseGameStart message
-	NetRefuseGameStart(YOGGameStartRefusalReason refusalReason);
+	NetRefuseGameStart(YOGServerGameStartRefusalReason refusalReason);
 
 	///Returns MNetRefuseGameStart
 	Uint8 getMessageType() const;
@@ -1385,10 +1358,10 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 
 	///Retrieves refusalReason
-	YOGGameStartRefusalReason getRefusalReason() const;
+	YOGServerGameStartRefusalReason getRefusalReason() const;
 private:
 private:
-	YOGGameStartRefusalReason refusalReason;
+	YOGServerGameStartRefusalReason refusalReason;
 };
 
 
@@ -1559,6 +1532,788 @@ private:
 
 
 
+
+///NetSendReteamingInformation
+class NetSendReteamingInformation : public NetMessage
+{
+public:
+	///Creates a NetSendReteamingInformation message
+	NetSendReteamingInformation();
+
+	///Creates a NetSendReteamingInformation message
+	NetSendReteamingInformation(NetReteamingInformation reteamingInfo);
+
+	///Returns MNetSendReteamingInformation
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendReteamingInformation message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendReteamingInformation
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves reteamingInfo
+	NetReteamingInformation getReteamingInfo() const;
+private:
+private:
+	NetReteamingInformation reteamingInfo;
+};
+
+
+
+
+///NetSendGameResult
+class NetSendGameResult : public NetMessage
+{
+public:
+	///Creates a NetSendGameResult message
+	NetSendGameResult();
+
+	///Creates a NetSendGameResult message
+	NetSendGameResult(YOGGameResult result);
+
+	///Returns MNetSendGameResult
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendGameResult message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendGameResult
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves result
+	YOGGameResult getGameResult() const;
+private:
+private:
+	YOGGameResult result;
+};
+
+
+
+
+///NetPlayerIsBanned this bassically tells the client that their username was banned by the administrators
+class NetPlayerIsBanned : public NetMessage
+{
+public:
+	///Creates a NetPlayerIsBanned message
+	NetPlayerIsBanned();
+
+	///Returns MNetPlayerIsBanned
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetPlayerIsBanned message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetPlayerIsBanned
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetIPIsBanned
+class NetIPIsBanned : public NetMessage
+{
+public:
+	///Creates a NetIPIsBanned message
+	NetIPIsBanned();
+
+	///Returns MNetIPIsBanned
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetIPIsBanned message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetIPIsBanned
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRegisterRouter
+class NetRegisterRouter : public NetMessage
+{
+public:
+	///Creates a NetRegisterRouter message
+	NetRegisterRouter();
+
+	///Returns MNetRegisterRouter
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRegisterRouter message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRegisterRouter
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetAcknowledgeRouter
+class NetAcknowledgeRouter : public NetMessage
+{
+public:
+	///Creates a NetAcknowledgeRouter message
+	NetAcknowledgeRouter();
+
+	///Returns MNetAcknowledgeRouter
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetAcknowledgeRouter message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetAcknowledgeRouter
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetSetGameInRouter
+class NetSetGameInRouter : public NetMessage
+{
+public:
+	///Creates a NetSetGameInRouter message
+	NetSetGameInRouter();
+
+	///Creates a NetSetGameInRouter message
+	NetSetGameInRouter(Uint16 gameID);
+
+	///Returns MNetSetGameInRouter
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSetGameInRouter message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSetGameInRouter
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves gameID
+	Uint16 getGameID() const;
+private:
+private:
+	Uint16 gameID;
+};
+
+
+
+
+///NetSendAfterJoinGameInformation
+class NetSendAfterJoinGameInformation : public NetMessage
+{
+public:
+	///Creates a NetSendAfterJoinGameInformation message
+	NetSendAfterJoinGameInformation();
+
+	///Creates a NetSendAfterJoinGameInformation message
+	NetSendAfterJoinGameInformation(YOGAfterJoinGameInformation info);
+
+	///Returns MNetSendAfterJoinGameInformation
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendAfterJoinGameInformation message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendAfterJoinGameInformation
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves info
+	YOGAfterJoinGameInformation getAfterJoinGameInformation() const;
+private:
+private:
+	YOGAfterJoinGameInformation info;
+};
+
+
+
+
+///NetRouterAdministratorLogin
+class NetRouterAdministratorLogin : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorLogin message
+	NetRouterAdministratorLogin();
+
+	///Creates a NetRouterAdministratorLogin message
+	NetRouterAdministratorLogin(std::string password);
+
+	///Returns MNetRouterAdministratorLogin
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorLogin message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorLogin
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves password
+	std::string getPassword() const;
+private:
+private:
+	std::string password;
+};
+
+
+
+
+///NetRouterAdministratorSendCommand
+class NetRouterAdministratorSendCommand : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorSendCommand message
+	NetRouterAdministratorSendCommand();
+
+	///Creates a NetRouterAdministratorSendCommand message
+	NetRouterAdministratorSendCommand(std::string command);
+
+	///Returns MNetRouterAdministratorSendCommand
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorSendCommand message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorSendCommand
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves command
+	std::string getCommand() const;
+private:
+private:
+	std::string command;
+};
+
+
+
+
+///NetRouterAdministratorSendText
+class NetRouterAdministratorSendText : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorSendText message
+	NetRouterAdministratorSendText();
+
+	///Creates a NetRouterAdministratorSendText message
+	NetRouterAdministratorSendText(std::string text);
+
+	///Returns MNetRouterAdministratorSendText
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorSendText message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorSendText
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves text
+	std::string getText() const;
+private:
+private:
+	std::string text;
+};
+
+
+
+
+///NetRouterAdministratorLoginAccepted
+class NetRouterAdministratorLoginAccepted : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorLoginAccepted message
+	NetRouterAdministratorLoginAccepted();
+
+	///Returns MNetRouterAdministratorLoginAccepted
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorLoginAccepted message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorLoginAccepted
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRouterAdministratorLoginRefused
+class NetRouterAdministratorLoginRefused : public NetMessage
+{
+public:
+	///Creates a NetRouterAdministratorLoginRefused message
+	NetRouterAdministratorLoginRefused();
+
+	///Creates a NetRouterAdministratorLoginRefused message
+	NetRouterAdministratorLoginRefused(YOGRouterAdministratorLoginRefusalReason reason);
+
+	///Returns MNetRouterAdministratorLoginRefused
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRouterAdministratorLoginRefused message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRouterAdministratorLoginRefused
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves reason
+	YOGRouterAdministratorLoginRefusalReason getReason() const;
+private:
+private:
+	YOGRouterAdministratorLoginRefusalReason reason;
+};
+
+
+
+
+///NetDownloadableMapInfos
+class NetDownloadableMapInfos : public NetMessage
+{
+public:
+	///Creates a NetDownloadableMapInfos message
+	NetDownloadableMapInfos();
+
+	///Creates a NetDownloadableMapInfos message
+	NetDownloadableMapInfos(std::vector<YOGDownloadableMapInfo> maps);
+
+	///Returns MNetDownloadableMapInfos
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetDownloadableMapInfos message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetDownloadableMapInfos
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves maps
+	std::vector<YOGDownloadableMapInfo> getMaps() const;
+private:
+private:
+	std::vector<YOGDownloadableMapInfo> maps;
+};
+
+
+
+
+///NetRequestDownloadableMapList
+class NetRequestDownloadableMapList : public NetMessage
+{
+public:
+	///Creates a NetRequestDownloadableMapList message
+	NetRequestDownloadableMapList();
+
+	///Returns MNetRequestDownloadableMapList
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestDownloadableMapList message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestDownloadableMapList
+	bool operator==(const NetMessage& rhs) const;
+};
+
+
+
+
+///NetRequestMapUpload
+class NetRequestMapUpload : public NetMessage
+{
+public:
+	///Creates a NetRequestMapUpload message
+	NetRequestMapUpload();
+
+	///Creates a NetRequestMapUpload message
+	NetRequestMapUpload(YOGDownloadableMapInfo mapInfo);
+
+	///Returns MNetRequestMapUpload
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestMapUpload message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestMapUpload
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves mapInfo
+	YOGDownloadableMapInfo getMapInfo() const;
+private:
+private:
+	YOGDownloadableMapInfo mapInfo;
+};
+
+
+
+
+///NetAcceptMapUpload
+class NetAcceptMapUpload : public NetMessage
+{
+public:
+	///Creates a NetAcceptMapUpload message
+	NetAcceptMapUpload();
+
+	///Creates a NetAcceptMapUpload message
+	NetAcceptMapUpload(Uint16 fileID);
+
+	///Returns MNetAcceptMapUpload
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetAcceptMapUpload message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetAcceptMapUpload
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves fileID
+	Uint16 getFileID() const;
+private:
+private:
+	Uint16 fileID;
+};
+
+
+
+
+///NetRefuseMapUpload
+class NetRefuseMapUpload : public NetMessage
+{
+public:
+	///Creates a NetRefuseMapUpload message
+	NetRefuseMapUpload();
+
+	///Creates a NetRefuseMapUpload message
+	NetRefuseMapUpload(YOGMapUploadRefusalReason reason);
+
+	///Returns MNetRefuseMapUpload
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRefuseMapUpload message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRefuseMapUpload
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves reason
+	YOGMapUploadRefusalReason getReason() const;
+private:
+private:
+	YOGMapUploadRefusalReason reason;
+};
+
+
+
+
+///NetCancelSendingFile
+class NetCancelSendingFile : public NetMessage
+{
+public:
+	///Creates a NetCancelSendingFile message
+	NetCancelSendingFile();
+
+	///Creates a NetCancelSendingFile message
+	NetCancelSendingFile(Uint16 fileID);
+
+	///Returns MNetCancelSendingFile
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetCancelSendingFile message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetCancelSendingFile
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves fileID
+	Uint16 getFileID() const;
+private:
+private:
+	Uint16 fileID;
+};
+
+
+
+
+///NetCancelRecievingFile
+class NetCancelRecievingFile : public NetMessage
+{
+public:
+	///Creates a NetCancelRecievingFile message
+	NetCancelRecievingFile();
+
+	///Creates a NetCancelRecievingFile message
+	NetCancelRecievingFile(Uint16 fileID);
+
+	///Returns MNetCancelRecievingFile
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetCancelRecievingFile message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetCancelRecievingFile
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves fileID
+	Uint16 getFileID() const;
+private:
+private:
+	Uint16 fileID;
+};
+
+
+
+
+///NetRequestMapThumbnail
+class NetRequestMapThumbnail : public NetMessage
+{
+public:
+	///Creates a NetRequestMapThumbnail message
+	NetRequestMapThumbnail();
+
+	///Creates a NetRequestMapThumbnail message
+	NetRequestMapThumbnail(Uint16 mapID);
+
+	///Returns MNetRequestMapThumbnail
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetRequestMapThumbnail message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetRequestMapThumbnail
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves mapID
+	Uint16 getMapID() const;
+private:
+private:
+	Uint16 mapID;
+};
+
+
+
+
+///NetSendMapThumbnail
+class NetSendMapThumbnail : public NetMessage
+{
+public:
+	///Creates a NetSendMapThumbnail message
+	NetSendMapThumbnail();
+
+	///Creates a NetSendMapThumbnail message
+	NetSendMapThumbnail(Uint16 mapID, MapThumbnail thumbnail);
+
+	///Returns MNetSendMapThumbnail
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSendMapThumbnail message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSendMapThumbnail
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves mapID
+	Uint16 getMapID() const;
+
+	///Retrieves thumbnail
+	MapThumbnail getThumbnail() const;
+private:
+private:
+	Uint16 mapID;
+	MapThumbnail thumbnail;
+};
+
+
+
+
+///NetSubmitRatingOnMap
+class NetSubmitRatingOnMap : public NetMessage
+{
+public:
+	///Creates a NetSubmitRatingOnMap message
+	NetSubmitRatingOnMap();
+
+	///Creates a NetSubmitRatingOnMap message
+	NetSubmitRatingOnMap(Uint16 mapID, Uint8 rating);
+
+	///Returns MNetSubmitRatingOnMap
+	Uint8 getMessageType() const;
+
+	///Encodes the data
+	void encodeData(GAGCore::OutputStream* stream) const;
+
+	///Decodes the data
+	void decodeData(GAGCore::InputStream* stream);
+
+	///Formats the NetSubmitRatingOnMap message with a small amount
+	///of information.
+	std::string format() const;
+
+	///Compares with another NetSubmitRatingOnMap
+	bool operator==(const NetMessage& rhs) const;
+
+	///Retrieves mapName
+	Uint16 getMapID() const;
+
+	///Retrieves rating
+	Uint8 getRating() const;
+private:
+private:
+	Uint16 mapID;
+	Uint8 rating;
+};
+
+
+
 //message_append_marker
 
 #include <iostream>
@@ -1719,7 +2474,7 @@ template<typename container> void NetUpdatePlayerList::applyDifferences(containe
 	}
 	
 	//Change and/or add the players that are updated
-	for(std::vector<YOGPlayerInfo>::const_iterator i=updatedPlayers.begin(); i!=updatedPlayers.end(); ++i)
+	for(std::vector<YOGPlayerSessionInfo>::const_iterator i=updatedPlayers.begin(); i!=updatedPlayers.end(); ++i)
 	{
 		bool found=false;
 		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)

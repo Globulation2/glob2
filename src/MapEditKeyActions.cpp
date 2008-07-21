@@ -86,6 +86,9 @@ namespace MapEditKeyActions
 	
 		names[ToggleMenuScreen] = "toggle menu screen";
 		keys["toggle menu screen"] = ToggleMenuScreen;
+	
+		names[SelectDeleteTool] = "select delete tool";
+		keys["select delete tool"] = SelectDeleteTool;
 		
 	}
 

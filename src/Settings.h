@@ -28,21 +28,30 @@
 class Settings
 {
 public:
+	Settings();
+	void load(const char *filename="preferences.txt");
+	void save(const char *filename="preferences.txt");
+
+public:
 	std::string username;
 	std::string password;
 	int screenWidth;
 	int screenHeight;
 	Uint32 screenFlags;
 	Uint32 optionFlags;
-	Uint32 defaultLanguage;
+	std::string language;
 	Uint32 musicVolume;
+	Uint32 voiceVolume;
 	int mute;
+	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
 	
 	///Levels are from 0 to 5, where even numbers are building
 	///under construction and odd ones are completed buildings.
 	int defaultUnitsAssigned[IntBuildingType::NB_BUILDING][6];
+	///Default radius of flags, 0 for exploration, 1 for war flag, 2 for clearing flag
+	int defaultFlagRadius[3];
 
 	int cloudPatchSize;//the bigger the faster the uglier
 	int cloudMaxAlpha;//the higher the nicer the clouds the harder the units are visible
@@ -55,10 +64,11 @@ public:
 	int tempUnit;
 	int tempUnitFuture;
 
-public:
-	void load(const char *filename="preferences.txt");
-	void save(const char *filename="preferences.txt");
-	Settings();
+	void resetDefaultUnitsAssigned();
+	void resetDefaultFlagRadius();
 };
+
+//Version 1 - Resets default units assigned and keyboard shortcuts
+#define SETTINGS_VERSION 1
 
 #endif

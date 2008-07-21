@@ -20,8 +20,13 @@
 #define __YOGMessage_h
 
 #include <string>
-#include "Stream.h"
 #include "YOGConsts.h"
+
+namespace GAGCore
+{
+	class OutputStream;
+	class InputStream;
+}
 
 ///This class generically represents a message sent in YOG. This kind of message
 ///can be for any purpose, including administrator messages, private messages,

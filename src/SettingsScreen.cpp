@@ -38,21 +38,16 @@
 #include "boost/lexical_cast.hpp"
 #include "GameGUIKeyActions.h"
 #include "MapEditKeyActions.h"
+#include "FormatableString.h"
 
 SettingsScreen::SettingsScreen()
- : mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
+ : Glob2TabScreen(false, true), mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
 {
 	old_settings=globalContainer->settings;
-	//following are standard choices for all screens
-	//tab choices
-	generalsettings=new TextButton( 10, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[general settings]"), GENERALSETTINGS);
-	addWidget(generalsettings);
-
-	unitsettings=new TextButton( 220, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[unit settings]"), UNITSETTINGS);
-	addWidget(unitsettings);
-
-	keyboardsettings=new TextButton( 430, 10, 200, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[keyboard settings]"), KEYBOARDSETTINGS);
-	addWidget(keyboardsettings);
+	
+	generalGroup = addGroup(Toolkit::getStringTable()->getString("[general settings]"));
+	unitGroup = addGroup(Toolkit::getStringTable()->getString("[building settings]"));
+	keyboardGroup = addGroup(Toolkit::getStringTable()->getString("[keyboard settings]"));
 
 	// Screen entry/quit part
 	ok=new TextButton( 230, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK);
@@ -63,7 +58,7 @@ SettingsScreen::SettingsScreen()
 	//following are all general settings
 	// language part
 	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
-	addWidget(language);
+	addWidgetToGroup(language, generalGroup);
 	languageList=new List(20, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 	{
@@ -72,13 +67,13 @@ SettingsScreen::SettingsScreen()
 		else
 			languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
 	}
-	addWidget(languageList);
+	addWidgetToGroup(languageList, generalGroup);
 
 	// graphics part
 	display=new Text(230, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[display]"));
-	addWidget(display);
+	addWidgetToGroup(display, generalGroup);
 	actDisplay = new Text(440, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", actDisplayModeToString().c_str());
-	addWidget(actDisplay);
+	addWidgetToGroup(actDisplay, generalGroup);
 	modeList=new List(440, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	globalContainer->gfx->beginVideoModeListing();
 	int w, h;
@@ -89,40 +84,38 @@ SettingsScreen::SettingsScreen()
 		if (!modeList->isText(ost.str().c_str()))
 			modeList->addText(ost.str().c_str());
 	}
-	addWidget(modeList);
+	addWidgetToGroup(modeList, generalGroup);
 	
 	fullscreen=new OnOffButton(230, 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::FULLSCREEN, FULLSCREEN);
-	addWidget(fullscreen);
+	addWidgetToGroup(fullscreen, generalGroup);
 	fullscreenText=new Text(260, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 180);
-	addWidget(fullscreenText);
+	addWidgetToGroup(fullscreenText, generalGroup);
 	
 	#ifdef HAVE_OPENGL
 	#endif
 	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
-	addWidget(usegpu);
+	addWidgetToGroup(usegpu, generalGroup);
 	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "OpenGL", 180);
-	addWidget(usegpuText);
+	addWidgetToGroup(usegpuText, generalGroup);
 	
 	lowquality=new OnOffButton(230, 90 + 60, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
-	addWidget(lowquality);
+	addWidgetToGroup(lowquality, generalGroup);
 	lowqualityText=new Text(260, 90 + 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 180);
-	addWidget(lowqualityText);
+	addWidgetToGroup(lowqualityText, generalGroup);
 
 	customcur=new OnOffButton(230, 90 + 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::CUSTOMCURSOR, CUSTOMCUR);
-	addWidget(customcur);
+	addWidgetToGroup(customcur, generalGroup);
 	customcurText=new Text(260, 90 + 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[customcur]"), 180);
-	addWidget(customcurText);
+	addWidgetToGroup(customcurText, generalGroup);
 	rememberUnitButton=new OnOffButton(230, 90 + 120, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.rememberUnit, REMEMBERUNIT);
-	addWidget(rememberUnitButton);
+	addWidgetToGroup(rememberUnitButton, generalGroup);
 	rememberUnitText=new Text(260, 90 + 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remember unit]"), 180);
-	addWidget(rememberUnitText);
+	addWidgetToGroup(rememberUnitText, generalGroup);
 
 	scrollwheel=new OnOffButton(230, 90 + 150, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.scrollWheelEnabled, SCROLLWHEEL);
-	addWidget(scrollwheel);
+	addWidgetToGroup(scrollwheel, generalGroup);
 	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
-	addWidget(scrollwheelText);
-
-
+	addWidgetToGroup(scrollwheelText, generalGroup);
 
 	
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
@@ -134,33 +127,30 @@ SettingsScreen::SettingsScreen()
 
 	// Username part
 	userName=new TextInput(20, 360, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), true, 32);
-	addWidget(userName);
+	addWidgetToGroup(userName, generalGroup);
 	usernameText=new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[username]"));
-	addWidget(usernameText);
+	addWidgetToGroup(usernameText, generalGroup);
 
 	// Audio part
 	audio=new Text(230, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[audio]"), 300);
-	addWidget(audio);
-	audioMute=new OnOffButton(230, 360, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.mute, MUTE);
-	addWidget(audioMute);
-	audioMuteText=new Text(260, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
-	addWidget(audioMuteText);
-	musicVol=new Selector(320, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.musicVolume, 256, true);
-	addWidget(musicVol);
+	addWidgetToGroup(audio, generalGroup);
+	audioMute=new OnOffButton(230, 365, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.mute, MUTE);
+	addWidgetToGroup(audioMute, generalGroup);
+	audioMuteText=new Text(260, 365, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
+	addWidgetToGroup(audioMuteText, generalGroup);
+	musicVol=new Selector(320, 350, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.musicVolume, 256, true);
+	addWidgetToGroup(musicVol, generalGroup);
+	voiceVol=new Selector(320, 385, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.voiceVolume, 256, true);
+	addWidgetToGroup(voiceVol, generalGroup);
 	musicVolText=new Text(320, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Music volume]"), 300);
-	addWidget(musicVolText);
+	addWidgetToGroup(musicVolText, generalGroup);
+	voiceVolText=new Text(320, 365, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Voice volume]"), 300);
+	addWidgetToGroup(voiceVolText, generalGroup);
 	setVisibilityFromAudioSettings();
 	
 	
-	int first_group_row=0;
-	int first_group_current_column_x=20;
-	int first_group_widest_element=0;
-	
-	int second_group_row=1;
-	int second_group_first_row_x=170;
-	int second_group_current_column_x=170;
-	int second_group_widest_element=0;
-	
+
+	//This is all the second tab, the default values for various buildings
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
 		for(int l=0; l<6; ++l)
@@ -170,117 +160,165 @@ SettingsScreen::SettingsScreen()
 		}
 	}
 	
-	///First group are completed buildings, Inn, Swarm and Defence tower
+	int group_row=0;
+	int group_current_column_x=20;
+	int group_widest_element=0;
+	
+	//First group is fully constructed buildings sites
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
+		if(t==IntBuildingType::EXPLORATION_FLAG || t==IntBuildingType::WAR_FLAG || t==IntBuildingType::CLEARING_FLAG)
+			continue;
 		std::string name=IntBuildingType::typeFromShortNumber(t);
 		for(int l=0; l<3; ++l)
 		{
-			if(globalContainer->buildingsTypes.getByType(name, l, false) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l*2+1]>0)
+			BuildingType* type = globalContainer->buildingsTypes.getByType(name, l, false);
+			if(type != NULL && (type->foodable || type->fillable))
 			{
-				int size = addDefaultUnitAssignmentWidget(t, l*2+1, first_group_current_column_x, 100 + 40*first_group_row);
-				first_group_widest_element = std::max(first_group_widest_element, size);
+				int size = addDefaultUnitAssignmentWidget(t, l*2+1, group_current_column_x, 100 + 40*group_row, 1);
+				group_widest_element = std::max(group_widest_element, size);
 				
-				first_group_row += 1;
-				if(first_group_row == 8)
+				group_row += 1;
+				if(group_row == 4)
 				{
-					first_group_row = 0;
-					first_group_current_column_x += first_group_widest_element;
-					first_group_widest_element = 0;
+					group_row = 0;
+					group_current_column_x += group_widest_element + 10;
+					group_widest_element = 0;
 				}
 			}
 		}	
 	}
 	
-	///Second group, at the top is Swarm, Wall, Market, the rest follow horizontally
-	for(int l=0; l<3; ++l)
+	group_row=0;
+	group_current_column_x=20;
+	group_widest_element=0;	
+	///Second group, new construction
+	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
+	{
+		std::string name=IntBuildingType::typeFromShortNumber(t);
+		//Even numbers represent under-construction, whereas odd numbers represent completed buildings		
+		if(globalContainer->buildingsTypes.getByType(name, 0, true) != NULL)
+		{
+			int size = addDefaultUnitAssignmentWidget(t, 0, group_current_column_x, 100 + 40*group_row, 2);
+			group_widest_element = std::max(group_widest_element, size);
+			
+			group_row += 1;
+			if(group_row == 6)
+			{
+				group_row = 0;
+				group_current_column_x += group_widest_element + 10;
+				group_widest_element = 0;
+			}
+		}
+	}
+	
+	///Third group, upgrades
+	group_row=0;
+	group_current_column_x=20;
+	group_widest_element=0;
+	for(int l=1; l<3; ++l)
 	{
 		for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 		{
 			std::string name=IntBuildingType::typeFromShortNumber(t);
 			//Even numbers represent under-construction, whereas odd numbers represent completed buildings		
-			if(globalContainer->buildingsTypes.getByType(name, l, true) != NULL && globalContainer->settings.defaultUnitsAssigned[t][l*2]>0)
+			if(globalContainer->buildingsTypes.getByType(name, l, true) != NULL)
 			{
-				int this_row = second_group_row;
-				int this_x = second_group_current_column_x;
-				if(t == IntBuildingType::SWARM_BUILDING || t == IntBuildingType::STONE_WALL || t == IntBuildingType::MARKET_BUILDING)
-				{
-					this_row = 0;
-					this_x = second_group_first_row_x;
-					second_group_first_row_x += 180;
-				}
-				else
-				{
-					second_group_row += 1;
-				}
+				int size = addDefaultUnitAssignmentWidget(t, l*2, group_current_column_x, 100 + 40*group_row, 3);
+				group_widest_element = std::max(group_widest_element, size);
 				
-				int size = addDefaultUnitAssignmentWidget(t, l*2, this_x, 100 + 40*this_row);
-				second_group_widest_element = std::max(second_group_widest_element, size);
-				
-				if(second_group_row == 8)
+				group_row += 1;
+				if(group_row == 7)
 				{
-					second_group_row = 1;
-					second_group_current_column_x += 180;
-					second_group_widest_element = 0;
+					group_row = 0;
+					group_current_column_x += group_widest_element + 10;
+					group_widest_element = 0;
 				}
 			}
 		}
 	}
 	
-	unitSettingsExplanation = new Text( 100, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[unit settings explanation]"));
-	unitSettingsHeading1 = new Text( 160, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[construction and upgrades]"));
-	unitSettingsHeading2 = new Text( 10, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[constructed buildings]"));
+	group_row=0;
+	group_current_column_x=20;
+	group_widest_element=0;
+	///On the fourth screen, flags
+	for(int t=IntBuildingType::EXPLORATION_FLAG; t<=IntBuildingType::CLEARING_FLAG; ++t)
+	{
+		int size = addDefaultUnitAssignmentWidget(t, 1, group_current_column_x, 100 + 40*group_row, 4, true);
+		group_widest_element = std::max(group_widest_element, size);
+		
+		group_row += 1;
+		if(group_row == 8)
+		{
+			group_row = 0;
+			group_current_column_x += group_widest_element + 10;
+			group_widest_element = 0;
+		}
+	}
+	flagSettingsExplanation = new Text( 10, 100+40*3+10, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[flag settings explanation]"));
+	
+	for(int t=IntBuildingType::EXPLORATION_FLAG; t<=IntBuildingType::CLEARING_FLAG; ++t)
+	{
+		int size = addDefaultFlagRadiusWidget(t, group_current_column_x, 130 + 40*group_row, 4);
+		group_widest_element = std::max(group_widest_element, size);
+		
+		group_row += 1;
+		if(group_row == 8)
+		{
+			group_row = 0;
+			group_current_column_x += group_widest_element + 10;
+			group_widest_element = 0;
+		}
+	}
+	
+	buildings = new TextButton( 10, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Building Defaults]"), BUILDINGSETTINGS);
+	constructionsites = new TextButton( 140, 60, 220, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Construction Site Defaults]"), CONSTRUCTIONSITES);
+	upgrades = new TextButton( 370, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Upgrade Defaults]"), UPGRADES);
+	flags = new TextButton( 500, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Flag Defaults]"), FLAGSETTINGS);
 
+	unitSettingsExplanation = new Text( 10, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[unit settings explanation]"));
 
-	unitSettingsExplanation->visible = false;
-	unitSettingsHeading1->visible = false;
-	unitSettingsHeading2->visible = false;
+	addWidgetToGroup(unitSettingsExplanation, unitGroup);
+	addWidgetToGroup(buildings, unitGroup);
+	addWidgetToGroup(constructionsites, unitGroup);
+	addWidgetToGroup(upgrades, unitGroup);
+	addWidgetToGroup(flags, unitGroup);
+	addWidgetToGroup(flagSettingsExplanation, unitGroup);
 
-	addWidget(unitSettingsExplanation);
-	addWidget(unitSettingsHeading1);
-	addWidget(unitSettingsHeading2);
+	// This is the third tab, the keyboard shortcuts
+	game_shortcuts=new TextButton( 10, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
 
-	//shortcuts part
-	game_shortcuts=new TextButton( 100, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
-	game_shortcuts->visible=false;
-
-	editor_shortcuts=new TextButton( 230, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
-	editor_shortcuts->visible=false;
+	editor_shortcuts=new TextButton( 140, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
 
 	shortcut_list = new List(20, 110, 325, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	action_list = new List(365, 110 , 265, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	select_key_1 = new KeySelector(20, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
-	key_2_active = new OnOffButton(170, 275, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
-	select_key_2 = new KeySelector(200, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 145, 25);
+	select_key_1 = new KeySelector(20, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 100, 25);
+	key_2_active = new OnOffButton(125, 275, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
+	select_key_2 = new KeySelector(155, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 100, 25);
+	pressedUnpressedSelector = new MultiTextButton(260, 275, 80, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", PRESSEDSELECTOR);
 	add_shortcut = new TextButton(20, 305, 158, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[add shortcut]"), ADDSHORTCUT);
 	remove_shortcut = new TextButton(188, 305, 157, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remove shortcut]"), REMOVESHORTCUT);
 	restore_default_shortcuts = new TextButton(365, 305, 265, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
 
-	
-	game_shortcuts->visible = false;
-	editor_shortcuts->visible = false;
-	restore_default_shortcuts->visible = false;
-	shortcut_list->visible = false;
-	action_list->visible = false;
-	select_key_1->visible = false;
-	key_2_active->visible = false;
-	select_key_2->visible = false;
-	add_shortcut->visible = false;
-	remove_shortcut->visible = false;
-	restore_default_shortcuts->visible=false;
+	pressedUnpressedSelector->clearTexts();
+	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
+	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
 		
-	addWidget(game_shortcuts);
-	addWidget(editor_shortcuts);
-	addWidget(shortcut_list);
-	addWidget(action_list);
-	addWidget(select_key_1);
-	addWidget(key_2_active);
-	addWidget(select_key_2);
-	addWidget(add_shortcut);
-	addWidget(remove_shortcut);
-	addWidget(restore_default_shortcuts);
+	addWidgetToGroup(game_shortcuts, keyboardGroup);
+	addWidgetToGroup(editor_shortcuts, keyboardGroup);
+	addWidgetToGroup(shortcut_list, keyboardGroup);
+	addWidgetToGroup(action_list, keyboardGroup);
+	addWidgetToGroup(select_key_1, keyboardGroup);
+	addWidgetToGroup(key_2_active, keyboardGroup);
+	addWidgetToGroup(select_key_2, keyboardGroup);
+	addWidgetToGroup(pressedUnpressedSelector, keyboardGroup);
+	addWidgetToGroup(add_shortcut, keyboardGroup);
+	addWidgetToGroup(remove_shortcut, keyboardGroup);
+	addWidgetToGroup(restore_default_shortcuts, keyboardGroup);
 
 	currentMode = GameGUIShortcuts;
+
+	activateGroup(generalGroup);
 
 	gfxAltered = false;
 }
@@ -297,12 +335,13 @@ void SettingsScreen::addNumbersFor(int low, int high, Number* widget)
 
 void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	TabScreen::onAction(source, action, par1, par2);
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==OK)
 		{
 			globalContainer->setUserName(userName->getText());
-			globalContainer->settings.defaultLanguage = Toolkit::getStringTable()->getLang();
+			globalContainer->settings.language = Toolkit::getStringTable()->getStringInLang("[language-code]", Toolkit::getStringTable()->getLang());
 			globalContainer->settings.save();
 			mapeditKeyboardManager.saveKeyboardLayout();
 			guiKeyboardManager.saveKeyboardLayout();
@@ -314,191 +353,12 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if (gfxAltered)
 				updateGfxCtx();
 
-			Toolkit::getStringTable()->setLang(globalContainer->settings.defaultLanguage);
+			Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(globalContainer->settings.language));
 
 			///Send the old volume to the mixer
-			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
+			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
 
 			endExecute(par1);
-		}
-		else if (par1==GENERALSETTINGS)	
-		{
-			language->visible=true;
-			languageList->visible=true;
-			display->visible=true;
-			actDisplay->visible=true;
-			modeList->visible=true;
-			fullscreen->visible=true;
-			fullscreenText->visible=true;
-			usegpu->visible=true;
-			usegpuText->visible=true;
-			lowquality->visible=true;
-			lowqualityText->visible=true;
-			customcur->visible=true;
-			customcurText->visible=true;
-			userName->visible=true;
-			usernameText->visible=true;
-			audio->visible=true;
-			audioMuteText->visible=true;
-			audioMute->visible=true;
-			musicVol->visible=true;
-			musicVolText->visible=true;
-			rememberUnitButton->visible=true;
-			rememberUnitText->visible=true;
-			scrollwheel->visible=true;
-			scrollwheelText->visible=true;
-			
-			
-			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
-			{
-				for(int l=0; l<6; ++l)
-				{
-					if(unitRatios[t][l])
-					{
-						unitRatios[t][l]->visible=false;
-						unitRatioTexts[t][l]->visible=false;
-					}
-				}
-			}
-			
-			
-			unitSettingsExplanation->visible=false;
-			unitSettingsHeading1->visible=false;
-			unitSettingsHeading2->visible=false;
-
-			game_shortcuts->visible=false;
-			editor_shortcuts->visible=false;
-			select_key_1->visible=false;
-			key_2_active->visible=false;
-			select_key_2->visible=false;
-			shortcut_list->visible=false;
-			action_list->visible=false;
-			add_shortcut->visible=false;
-			remove_shortcut->visible=false;
-			restore_default_shortcuts->visible=false;
-			setVisibilityFromAudioSettings();
-		}
-
-		
-		else if (par1==UNITSETTINGS)
-		{
-			language->visible=false;
-			languageList->visible=false;
-			display->visible=false;
-			actDisplay->visible=false;
-			modeList->visible=false;
-			fullscreen->visible=false;
-			fullscreenText->visible=false;
-			usegpu->visible=false;
-			usegpuText->visible=false;
-			lowquality->visible=false;
-			lowqualityText->visible=false;
-			customcur->visible=false;
-			customcurText->visible=false;
-			userName->visible=false;
-			usernameText->visible=false;
-			audio->visible=false;
-			audioMuteText->visible=false;
-			audioMute->visible=false;
-			musicVol->visible=false;
-			musicVolText->visible=false;
-			rememberUnitButton->visible=false;
-			rememberUnitText->visible=false;
-			scrollwheel->visible=false;
-			scrollwheelText->visible=false;
-			
-			
-			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
-			{
-				for(int l=0; l<6; ++l)
-				{
-					if(unitRatios[t][l])
-					{
-						unitRatios[t][l]->visible=true;
-						unitRatioTexts[t][l]->visible=true;
-					}
-				}
-			}
-			
-			unitSettingsExplanation->visible=true;
-			unitSettingsHeading1->visible=true;
-			unitSettingsHeading2->visible=true;
-	
-			game_shortcuts->visible=false;
-			editor_shortcuts->visible=false;
-			select_key_1->visible=false;
-			key_2_active->visible=false;
-			select_key_2->visible=false;
-			shortcut_list->visible=false;
-			action_list->visible=false;
-			add_shortcut->visible=false;
-			remove_shortcut->visible=false;
-			restore_default_shortcuts->visible=false;
-		}
-
-		else if (par1==KEYBOARDSETTINGS)
-		{
-			language->visible=false;
-			languageList->visible=false;
-			display->visible=false;
-			actDisplay->visible=false;
-			modeList->visible=false;
-			fullscreen->visible=false;
-			fullscreenText->visible=false;
-			usegpu->visible=false;
-			usegpuText->visible=false;
-			lowquality->visible=false;
-			lowqualityText->visible=false;
-			customcur->visible=false;
-			customcurText->visible=false;
-			userName->visible=false;
-			usernameText->visible=false;
-			audio->visible=false;
-			audioMuteText->visible=false;
-			audioMute->visible=false;
-			musicVol->visible=false;
-			musicVolText->visible=false;
-			rememberUnitButton->visible=false;
-			rememberUnitText->visible=false;
-			scrollwheel->visible=false;
-			scrollwheelText->visible=false;
-			
-			
-			for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
-			{
-				for(int l=0; l<6; ++l)
-				{
-					if(unitRatios[t][l])
-					{
-						unitRatios[t][l]->visible=false;
-						unitRatioTexts[t][l]->visible=false;
-					}
-				}
-			}
-			
-			
-			unitSettingsExplanation->visible=false;
-			unitSettingsHeading1->visible=false;
-			unitSettingsHeading2->visible=false;
-	
-			game_shortcuts->visible=true;
-			editor_shortcuts->visible=true;
-			select_key_1->visible=true;
-			key_2_active->visible=true;
-			select_key_2->visible=true;
-			shortcut_list->visible=true;
-			action_list->visible=true;
-			add_shortcut->visible=true;
-			remove_shortcut->visible=true;
-			restore_default_shortcuts->visible=true;
-			currentMode = GameGUIShortcuts;
-			updateShortcutList();
-			if(shortcut_list->getCount() == 0)
-				shortcut_list->setSelectionIndex(-1);
-			else
-				shortcut_list->setSelectionIndex(0);
-			updateActionList();
-			updateShortcutInfoFromSelection();
 		}
 		else if (par1==RESTOREDEFAULTSHORTCUTS)
 		{
@@ -526,6 +386,9 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			updateActionList();
 			updateShortcutInfoFromSelection();
 		}
+		else if(par1==PRESSEDSELECTOR)
+		{
+		}
 		else if(par1==ADDSHORTCUT)
 		{
 			addNewShortcut();
@@ -533,6 +396,22 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if(par1==REMOVESHORTCUT)
 		{
 			removeShortcut();
+		}
+		else if(par1==BUILDINGSETTINGS)
+		{
+			activateDefaultAssignedGroupNumber(1);
+		}
+		else if(par1==CONSTRUCTIONSITES)
+		{
+			activateDefaultAssignedGroupNumber(2);
+		}
+		else if(par1==UPGRADES)
+		{
+			activateDefaultAssignedGroupNumber(3);
+		}
+		else if(par1==FLAGSETTINGS)
+		{
+			activateDefaultAssignedGroupNumber(4);
 		}
 	}
 	else if (action==NUMBER_ELEMENT_SELECTED)
@@ -547,6 +426,13 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 						unitRatios[t][l]->setNth(1);
 					globalContainer->settings.defaultUnitsAssigned[t][l]=unitRatios[t][l]->getNth();
 				}
+			}
+		}
+		for(int t=0; t<3; ++t)
+		{
+			if(flagRadii[t])
+			{
+				globalContainer->settings.defaultFlagRadius[t] = flagRadii[t]->getNth()+1;
 			}
 		}
 	}
@@ -573,10 +459,31 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
 			customcurText->setText(Toolkit::getStringTable()->getString("[customcur]"));
 
+
+			rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
+			scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
+
 			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
 			audioMuteText->setText(Toolkit::getStringTable()->getString("[mute]"));
 			
 			rebootWarning->setText(Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
+			
+			unitSettingsExplanation->setText(Toolkit::getStringTable()->getString("[unit settings explanation]"));
+			buildings->setText(Toolkit::getStringTable()->getString("[Building Defaults]"));
+			flags->setText(Toolkit::getStringTable()->getString("[Flag Defaults]"));
+			constructionsites->setText(Toolkit::getStringTable()->getString("[Construction Site Defaults]"));
+			upgrades->setText(Toolkit::getStringTable()->getString("[Upgrade Defaults]"));
+			setLanguageTextsForDefaultAssignmentWidgets();
+			
+			game_shortcuts->setText(Toolkit::getStringTable()->getString("[game shortcuts]"));
+			editor_shortcuts->setText(Toolkit::getStringTable()->getString("[editor shortcuts]"));
+			restore_default_shortcuts->setText(Toolkit::getStringTable()->getString("[restore default shortcuts]"));
+			add_shortcut->setText(Toolkit::getStringTable()->getString("[add shortcut]"));
+			remove_shortcut->setText(Toolkit::getStringTable()->getString("[remove shortcut]"));
+			
+			pressedUnpressedSelector->clearTexts();
+			pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
+			pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
 		}
 		else if (source==modeList)
 		{
@@ -598,7 +505,8 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==VALUE_CHANGED)
 	{
 		globalContainer->settings.musicVolume = musicVol->getValue();
-		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
+		globalContainer->settings.voiceVolume = voiceVol->getValue();
+		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
@@ -655,7 +563,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source==audioMute)
 		{
 			globalContainer->settings.mute = audioMute->getState();
-			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);
+		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
 			setVisibilityFromAudioSettings();
 		}
 		else if (source==key_2_active)
@@ -688,6 +596,8 @@ void SettingsScreen::setVisibilityFromAudioSettings(void)
 {
 	musicVol->visible = !globalContainer->settings.mute;
 	musicVolText->visible = !globalContainer->settings.mute;
+	voiceVol->visible = !globalContainer->settings.mute;
+	voiceVolText->visible = !globalContainer->settings.mute;
 }
 
 void SettingsScreen::updateGfxCtx(void)
@@ -712,28 +622,169 @@ std::string SettingsScreen::actDisplayModeToString(void)
 
 
 
-int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, int y)
-{	
-	std::string name=IntBuildingType::typeFromShortNumber(type);
-
+int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, int y, int group, bool flag)
+{
 	unitRatios[type][level] = new Number(x, y+20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	addNumbersFor(0, 20, unitRatios[type][level]);
 	unitRatios[type][level]->setNth(globalContainer->settings.defaultUnitsAssigned[type][level]);
 	unitRatios[type][level]->visible=false;
-	addWidget(unitRatios[type][level]);
+	addWidgetToGroup(unitRatios[type][level], unitGroup);
 
-	std::string keyname="[";
-	if((level+1)%2)
-		keyname+="build ";
-	keyname+=name + " level " + boost::lexical_cast<std::string>(level/2) + "]";
-	unitRatioTexts[type][level]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString(keyname.c_str()));
-	addWidget(unitRatioTexts[type][level]);
+	std::string text=getDefaultUnitAssignmentText(type, level, flag);
+	unitRatioTexts[type][level]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", text);
+	
+	addWidgetToGroup(unitRatioTexts[type][level], unitGroup);
 	unitRatioTexts[type][level]->visible=false;
+	unitRatioGroupNumbers[type][level] = group;
 
 	return std::max(unitRatioTexts[type][level]->getWidth(), unitRatios[type][level]->getWidth());
 }
 
 
+
+int SettingsScreen::addDefaultFlagRadiusWidget(int type, int x, int y, int group)
+{
+	int n = type - IntBuildingType::EXPLORATION_FLAG;
+	flagRadii[n] = new Number(x, y+20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	addNumbersFor(1, 20, flagRadii[n]);
+	flagRadii[n]->setNth(globalContainer->settings.defaultFlagRadius[n]-1);
+	flagRadii[n]->visible=false;
+	addWidgetToGroup(flagRadii[n], unitGroup);
+
+	std::string text=getDefaultUnitAssignmentText(type, 1, true);
+	flagRadiusTexts[n]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", text);
+	
+	addWidgetToGroup(flagRadiusTexts[n], unitGroup);
+	flagRadiusTexts[n]->visible=false;
+	flagRadiusGroupNumbers[n] = group;
+
+	return std::max(flagRadiusTexts[n]->getWidth(), flagRadii[n]->getWidth());
+}
+
+
+
+std::string SettingsScreen::getDefaultUnitAssignmentText(int type, int level, bool flag)
+{
+	std::string name="[" + IntBuildingType::typeFromShortNumber(type) + "]";
+	std::string tname = Toolkit::getStringTable()->getString(name.c_str());
+
+	std::string value;
+	if(flag)
+	{
+		value = tname;
+	}
+	else if(level%2 == 0)
+	{
+		value = FormatableString(Toolkit::getStringTable()->getString("[build %0 level %1]")).arg(tname).arg(level/2 + 1);
+	}
+	else if(level == 1 && globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(type), level+1, false) == NULL)
+	{
+		value = tname;
+	}
+	else
+	{
+		value = FormatableString(Toolkit::getStringTable()->getString("[%0 level %1]")).arg(tname).arg(level/2+1);
+	}
+	return value;
+}
+
+
+
+void SettingsScreen::setLanguageTextsForDefaultAssignmentWidgets()
+{
+	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
+	{
+		bool flag = false;
+		if(t == IntBuildingType::EXPLORATION_FLAG || t == IntBuildingType::WAR_FLAG || t == IntBuildingType::CLEARING_FLAG)
+			flag = true;
+		for(int l=0; l<6; ++l)
+		{
+			if(unitRatioTexts[t][l])
+			{
+				unitRatioTexts[t][l]->setText(getDefaultUnitAssignmentText(t, l, flag));
+			}
+		}
+	}
+	for(int t=0; t<3; ++t)
+	{
+		if(flagRadiusTexts[t])
+		{
+			flagRadiusTexts[t]->setText(getDefaultUnitAssignmentText(t+IntBuildingType::EXPLORATION_FLAG, 1, true));
+		}
+	}
+}
+
+
+
+void SettingsScreen::activateDefaultAssignedGroupNumber(int group)
+{
+	for(int i=0; i<IntBuildingType::NB_BUILDING; ++i)
+	{
+		for(int j=0; j<6; ++j)
+		{
+			if(unitRatioGroupNumbers[i][j] == group)
+			{
+				if(unitRatios[i][j])
+					unitRatios[i][j]->visible=true;
+				if(unitRatioTexts[i][j])
+					unitRatioTexts[i][j]->visible=true;
+			}
+			else
+			{
+				if(unitRatios[i][j])
+					unitRatios[i][j]->visible=false;
+				if(unitRatioTexts[i][j])
+					unitRatioTexts[i][j]->visible=false;
+			}
+		}
+	}
+	for(int i=0; i<3; ++i)
+	{
+
+		if(flagRadiusGroupNumbers[i] == group)
+		{
+			if(flagRadii[i])
+				flagRadii[i]->visible=true;
+			if(flagRadiusTexts[i])
+				flagRadiusTexts[i]->visible=true;
+		}
+		else
+		{
+			if(flagRadii[i])
+				flagRadii[i]->visible=false;
+			if(flagRadiusTexts[i])
+				flagRadiusTexts[i]->visible=false;
+		}
+	}
+	if(group == 4)
+		flagSettingsExplanation->visible=true;
+	else
+		flagSettingsExplanation->visible=false;
+}
+
+
+void SettingsScreen::onGroupActivated(int group_n)
+{
+	if(group_n == generalGroup)
+	{
+		setVisibilityFromAudioSettings();
+	}
+	else if(group_n == unitGroup)
+	{
+		activateDefaultAssignedGroupNumber(1);
+	}
+	else if(group_n == keyboardGroup)
+	{
+		currentMode = GameGUIShortcuts;
+		updateShortcutList();
+		if(shortcut_list->getCount() == 0)
+			shortcut_list->setSelectionIndex(-1);
+		else
+			shortcut_list->setSelectionIndex(0);
+		updateActionList();
+		updateShortcutInfoFromSelection();
+	}
+}
 
 void SettingsScreen::updateShortcutList(int an)
 {
@@ -825,6 +876,11 @@ void SettingsScreen::updateShortcutInfoFromSelection()
 			select_key_2->visible=true;
 		}
 
+		if(i->getKeyPress(0).getPressed())
+			pressedUnpressedSelector->setIndex(0);
+		else
+			pressedUnpressedSelector->setIndex(1);
+
 		action_list->setSelectionIndex(i->getAction());
 		action_list->centerOnItem(action_list->getSelectionIndex());
 	}
@@ -848,9 +904,13 @@ void SettingsScreen::updateKeyboardManagerFromShortcutInfo()
 		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
 		std::advance(i, selection_n);
 		KeyboardShortcut new_shortcut;
-		new_shortcut.addKeyPress(select_key_1->getKey());
+		
+		KeyPress first = KeyPress(select_key_1->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
+		KeyPress second = KeyPress(select_key_2->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
+		
+		new_shortcut.addKeyPress(first);
 		if(key_2_active->getState())
-			new_shortcut.addKeyPress(select_key_2->getKey());
+			new_shortcut.addKeyPress(second);
 		new_shortcut.setAction(action_list->getSelectionIndex());
 		(*i) = new_shortcut;
 		updateShortcutList(selection_n);
@@ -925,3 +985,4 @@ int SettingsScreen::menu(void)
 {
 	return SettingsScreen().execute(globalContainer->gfx, 30);
 }
+	std::string value;

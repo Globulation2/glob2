@@ -93,7 +93,7 @@ public:
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
-	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false);
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const char *name);
@@ -125,6 +125,53 @@ public:
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
+	
+	///This is an enum for the current hilight object. The hilighted object is shown with a large arrow.
+	///This is primarily for tutorials
+	enum HilightObject
+	{
+		///This causes the main menu icon to be hilighted
+		HilightMainMenuIcon=1,
+		///This causes all workers on the map to be hilighted
+		HilightWorkers=2,
+		///This causes all explorers on the map to be hilighted
+		HilightExplorers=3,
+		///This causes all warriors on the map to be hilighted
+		HilightWarriors=4,
+		///This causes the right-side menu to be hilighted
+		HilightRightSidePanel=5,
+		///This causes the minimap icons to be hilighted
+		HilightUnderMinimapIcon=6,
+		///This causes the units working bar to be hilighted
+		HilightUnitsAssignedBar=7,
+		///This causes the worker/explorer/warrior ratio bars on a swarm to be hilighted
+		HilightRatioBar=8,
+		
+		///Anything above this number causes a particular building on the right side menu to be hilighted,
+		///the value is HilightBuilding+IntBuildingType
+		HilightBuildingOnPanel=50,
+		///Anything above this number causes the particular building on the actual map to be hilighted
+		///the value is HilightBuilding+IntBuildingType
+		HilightBuildingOnMap=100,
+	};
+	
+	///Stores the currently hilighted elements
+	std::set<int> hilights;
+	
+	struct HilightArrowPosition
+	{
+		HilightArrowPosition(int x, int y, int sprite) : x(x), y(y), sprite(sprite) {}
+		int x;
+		int y;
+		int sprite;
+	};
+	///The arrows must be the last things to be drawn,
+	///So there positions are stored during the drawing
+	///proccess, and they are drawn last
+	std::vector<HilightArrowPosition> arrowPositions;
+	
+	///This sends the hilight values to the Game class, setting Game::hilightBuildingType and Game::hilightUnitType
+	void updateHilightInGame();
 	
 	KeyboardManager keyboardManager;
 public:
@@ -172,6 +219,7 @@ private:
 	void drawValueAlignedRight(int y, int v);
 	void drawCosts(int ressources[BASIC_COUNT], Font *font);
 	void drawCheckButton(int x, int y, const char* caption, bool isSet);
+	void drawRadioButton(int x, int y, bool isSet);
 
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
@@ -251,6 +299,9 @@ private:
 	void clearSelection(void) { setSelection(NO_SELECTION); }
 	void checkSelection(void);
 	
+	/// This function causes all information about the selected unit to be dumped
+	void dumpUnitInformation(void);
+	
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;
@@ -272,6 +323,8 @@ private:
 
 	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" (ignore) it
 	bool swallowSpaceKey;
+	//! Set to the SGSL display text of the previous frame. This is so the system knows when the text changes.
+	std::string previousSGSLText;
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
@@ -318,6 +371,7 @@ private:
 		IGM_SAVE,
 		IGM_OPTION,
 		IGM_ALLIANCE,
+		IGM_OBJECTIVES,
 		IGM_END_OF_GAME
 	} inGameMenu;
 	OverlayScreen *gameMenuScreen;
@@ -332,7 +386,7 @@ private:
 	InGameScrollableHistory* scrollableText;
 
 	/// Add a message to the list of messages
-	void addMessage(const GAGCore::Color& color, const std::string &msgText);
+	void addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat);
 
 	// Message stuff
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
@@ -340,7 +394,7 @@ private:
 	int eventGoTypeIterator; //!< iterator to iter on ctrl + space press
 	
 	//! Transform a text to multi line according to screen width
-	void setMultiLine(const std::string &input, std::vector<std::string> *output);
+	void setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent="");
 	
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;

@@ -24,6 +24,7 @@ Kevin Clement <donkjunk at softhome dot net> (improved settings menu & bugfixes)
 Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (Perlin-noise based map generation)
 Martin Nyffenegger <barock at ysagoon dot com> (SGSL)
 Martin Voelkle <marv at chaoides dot org> (GUI, bugfixes and more)
+Martin Pool <mbp sourcefrog net> (natsort)
 
 *
 Graphics
@@ -48,6 +49,7 @@ Jacques-Paul Grivaz <>
 Translations
 
 Adam Olausson <gobbladox at hotmail dot com> (Swedish)
+Anastasios Pingios <anastasios dot pingios at gmail dot com> (Greek)
 Anonymous <> (Spanish)
 Áttila Leães Rodrigues <attila.leaes at gmail dot com> (Português do Brasil)
 christooss <christooss at gmail dot com> (Slovene)
@@ -61,6 +63,7 @@ Erik Lai <katostelo at gmail dot com> (Chinese(T))
 Federico Massi <federicomassi at tim dot it> (Italian)
 Fernando J. Rodríguez <groucho at lugmen dot org dot ar> (Portuguese, Spanish)
 Heine Laursen <maillist at gozar dot dynu dot com> (Danish)
+Igor Murzov <igor at gplsoft dot org> (Russian)
 Igor TAmara <igor at tamarapatino dot org> (Spanish)
 Julia Schmitt <zwarntje at gmail dot com> (Deutsch)
 Łukasz Demianiuk <ldemianiuk at gmail dot com> (Polish)
@@ -73,6 +76,7 @@ Michal Turek <bastard dot user dot from dot hell at seznam dot cz> (Czech)
 Muhammet Kara <> (Turkish)
 Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm> (Romanian)
 Osoitz Elkorobarrutia <oelkoro at gmail dot com> (Basque)
+piglet (Italian)
 Przemyslaw Kaminski <daemon42 at gazeta dot pl> (Polish)
 Raoul Verveer <lazy-r at zonnet dot nl> (Nederlands)
 samaritan <> (Serbian)
@@ -81,8 +85,6 @@ Stefan Kangas <stefan dot kangas at ungvanster dot se> (Swedish)
 Tobe Deprez <tobedeprez at scarlet dot be> (Dutch)
 Vakvarju <vakvarju at spektrum-3d dot hu> (Hungarian)
 White Raven <glob at wra dot visitors dot sk> (Slovensky)
-Anastasios Pingios <anastasios dot pingios at gmail dot com> (Greek)
-
 
 *
 Maps and campaign
