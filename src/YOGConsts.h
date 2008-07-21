@@ -24,8 +24,10 @@
 #include "SDL_net.h"
 
 ///New YOG constants
-const Uint16 YOG_SERVER_PORT = 7486;
-const std::string YOG_SERVER_IP = "yog.globulation2.org";
+extern const Uint16 YOG_SERVER_PORT;
+extern const Uint16 YOG_SERVER_ROUTER_PORT;
+extern const Uint16 YOG_ROUTER_PORT;
+extern const std::string YOG_SERVER_IP;
 //const std::string YOG_SERVER_IP = "127.0.0.1";
 
 #define IRC_CHAN "#glob2"
@@ -79,24 +81,30 @@ enum YOGLoginState
 	YOGClientVersionTooOld,
 	///This means that this username is already logged in
 	YOGAlreadyAuthenticated,
+	///This means that this username is banned
+	YOGUsernameBanned,
+	///This means that this ip address is temporarily banned
+	YOGIPAddressBanned,
+	///This means that the username provided contains either spaces or special characters and is not allowed, !@#$%^&*()+-=[]{}:";'<>\|
+	YOGNameInvalidSpecialCharacters,
 };
 
 ///This represents the reason why the player could not join a game.
-enum YOGGameJoinRefusalReason
+enum YOGServerGameJoinRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGJoinRefusalUnknown,
 	///This occurs when the game has started already
-	YOGGameHasAlreadyStarted,
+	YOGServerGameHasAlreadyStarted,
 	///This occurs when the game has the maximum number of players
-	YOGGameIsFull,
+	YOGServerGameIsFull,
 	///This represents the game not existing, it may have been closed
 	///in the time that the message took to arrive at the server
-	YOGGameDoesntExist,
+	YOGServerGameDoesntExist,
 };
 
 ///This represents the reason why the player could not join a game.
-enum YOGGameCreateRefusalReason
+enum YOGServerGameCreateRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGCreateRefusalUnknown,
@@ -112,7 +120,7 @@ enum YOGMessageType
 	///This means an administrator message sent by YOG
 	YOGAdministratorMessage,
 	///This is a message sent only to members of the same game
-	YOGGameMessage,
+	YOGServerGameMessage,
 };
 
 ///This is used to represent the various reasons a player may be
@@ -129,7 +137,7 @@ enum YOGKickReason
 
 ///This is used to represent the various reasons the server may refuse to start
 ///a game.
-enum YOGGameStartRefusalReason
+enum YOGServerGameStartRefusalReason
 {
 	///This represents an unknown reason
 	YOGUnknownStartRefusalReason,
@@ -138,117 +146,35 @@ enum YOGGameStartRefusalReason
 };
 
 
-/*
-
-#define YOG_SERVER_IP "yog.globulation2.org"
-#define YOG_SERVER_PORT 7486
-
-// 1s-4s-7.5s-14.5s-22s
-#ifndef SECOND_TIMEOUT
-
-#define SECOND_TIMEOUT 25
-#define SHORT_NETWORK_TIMEOUT 75
-#define DEFAULT_NETWORK_TIMEOUT 175
-#define LONG_NETWORK_TIMEOUT 350
-#define MAX_NETWORK_TIMEOUT 550
-
-#define DEFAULT_NETWORK_TOTL 3
-#endif
-
-
-//We allways have:
-// 512 char max local messages size,
-// 256 char max messages size,
-//  64 char max games name size,
-//  64 char max map name size,
-//  32 char max userName size.
-
-//Max size is defined by games lists. (4+2+4+2+4+4+64)*16+4=1348
-//or clients (4+32+2)*32+1=1217
-#define YOG_MAX_PACKET_SIZE 1348
-#define YOG_PROTOCOL_VERSION 5
-
-enum clientUpdateChange
+///This is used to represent the a players success state after a game,
+enum YOGGameResult
 {
-	CUP_BAD=0,
-	CUP_LEFT=1,
-	CUP_PLAYING=2,
-	CUP_NOT_PLAYING=4,
-	CUP_AWAY=8,
-	CUP_NOT_AWAY=16
+	///This represents when the player in question has won the game
+	YOGGameResultWonGame,
+	///This resprsents when the player in question has lost the game
+	YOGGameResultLostGame,
+	///This represents when the player in question has quit its last game
+	YOGGameResultQuitGame,
+	///This reprsents when the player in question lost connection
+	YOGGameResultConnectionLost,
+	///This represents when the game result is unknown
+	YOGGameResultUnknown,
 };
 
-// Those are the messages identifiers inside YOG-client.
-// It has to guarantee the binnary compatibility with YOGMessageType,
-// except for inside YOG-client only messages.
-enum YOGClientMessageType
+enum YOGRouterAdministratorLoginRefusalReason
 {
-	YCMT_BAD=0,
-	YCMT_EVENT_MESSAGE=8,
-	YCMT_MESSAGE=12,
-	YCMT_PRIVATE_MESSAGE=14,
-	YCMT_PRIVATE_RECEIPT=16,
-	YCMT_PRIVATE_RECEIPT_BUT_AWAY=18,
-	YCMT_ADMIN_MESSAGE=20,
+	///This means the wrong password for the YOG router was given
+	YOGRouterLoginWrongPassword,
+	///This represents an unknown reason
+	YOGRouterLoginUnknown,
 };
 
-// data[4] of a YMT_CONNECTION_REFUSED message:
-enum YogConnectionRefusedType
+enum YOGMapUploadRefusalReason
 {
-	YCRT_NOTHING=0,
-	YCRT_PROTOCOL_TOO_OLD=10,
-	YCRT_USERNAME_ALLREADY_USED=20,
-	YCRT_BAD_PASSWORD=30,
-	YCRT_BAD_PASSWORD_NON_ZERO=34,
-	YCRT_ALREADY_PASSWORD=40,
-	YCRT_ALREADY_AUTHENTICATED=50,
-	YCRT_NOT_CONNECTED_YET=60
+	///This means a map with the same name already exists
+	YOGMapUploadReasonMapNameAlreadyExists,
+	///This represent an unknown reas
+	YOGMapUploadReasonUnknown,
 };
-
-// Those are all the possible UDP packet identifier,
-// used to communicate betweem the YOG-client and the YOG-metaserver.
-enum YOGMessageType
-{
-	YMT_BAD=0,
-	
-	YMT_BROADCAST_LAN_GAME_HOSTING=1,
-	YMT_BROADCAST_REQUEST=2,
-	YMT_BROADCAST_RESPONSE_LAN=3,
-	YMT_BROADCAST_RESPONSE_YOG=4,
-	
-	YMT_GAME_INFO_FROM_HOST=5,
-	
-	YMT_CONNECTING=6,
-	YMT_AUTHENTICATING=7,
-	YMT_CONNECTION_REFUSED=8,
-	YMT_DECONNECTING=9,
-	
-	YMT_SEND_MESSAGE=10,
-	YMT_MESSAGE=12,
-	YMT_PRIVATE_MESSAGE=14,
-	YMT_PRIVATE_RECEIPT=16,
-	YMT_ADMIN_MESSAGE=20,
-	
-	YMT_SHARING_GAME=22,
-	YMT_STOP_SHARING_GAME=24,
-	YMT_STOP_PLAYING_GAME=26,
-	
-	YMT_HOST_GAME_SOCKET=30,
-	YMT_JOIN_GAME_SOCKET=32,
-	
-	YMT_GAMES_LIST=40,
-	YMT_UNSHARED_LIST=42,
-	
-	YMT_CLIENTS_LIST=50,
-	YMT_UPDATE_CLIENTS_LIST=52,
-	
-	YMT_CONNECTION_PRESENCE=80,
-	
-	YMT_PLAYERS_WANTS_TO_JOIN=100,
-	
-	YMT_FLUSH_FILES=126,
-	YMT_CLOSE_YOG=127
-};
-*/
 
 #endif 

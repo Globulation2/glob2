@@ -97,17 +97,14 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetStartGame:
 		message.reset(new NetStartGame);
 		break;
-		case MNetRequestMap:
-		message.reset(new NetRequestMap);
+		case MNetRequestFile:
+		message.reset(new NetRequestFile);
 		break;
 		case MNetSendFileInformation:
 		message.reset(new NetSendFileInformation);
 		break;
 		case MNetSendFileChunk:
 		message.reset(new NetSendFileChunk);
-		break;
-		case MNetRequestNextChunk:
-		message.reset(new NetRequestNextChunk);
 		break;
 		case MNetKickPlayer:
 		message.reset(new NetKickPlayer);
@@ -123,12 +120,6 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		break;
 		case MNetSendGamePlayerInfo:
 		message.reset(new NetSendGamePlayerInfo);
-		break;
-		case MNetEveryoneReadyToLaunch:
-		message.reset(new NetEveryoneReadyToLaunch);
-		break;
-		case MNetNotEveryoneReadyToLaunch:
-		message.reset(new NetNotEveryoneReadyToLaunch);
 		break;
 		case MNetRemoveAI:
 		message.reset(new NetRemoveAI);
@@ -156,6 +147,75 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		break;
 		case MNetAddAI:
 		message.reset(new NetAddAI);
+		break;
+		case MNetSendReteamingInformation:
+		message.reset(new NetSendReteamingInformation);
+		break;
+		case MNetSendGameResult:
+		message.reset(new NetSendGameResult);
+		break;
+		case MNetPlayerIsBanned:
+		message.reset(new NetPlayerIsBanned);
+		break;
+		case MNetIPIsBanned:
+		message.reset(new NetIPIsBanned);
+		break;
+		case MNetRegisterRouter:
+		message.reset(new NetRegisterRouter);
+		break;
+		case MNetAcknowledgeRouter:
+		message.reset(new NetAcknowledgeRouter);
+		break;
+		case MNetSetGameInRouter:
+		message.reset(new NetSetGameInRouter);
+		break;
+		case MNetSendAfterJoinGameInformation:
+		message.reset(new NetSendAfterJoinGameInformation);
+		break;
+		case MNetRouterAdministratorLogin:
+		message.reset(new NetRouterAdministratorLogin);
+		break;
+		case MNetRouterAdministratorSendCommand:
+		message.reset(new NetRouterAdministratorSendCommand);
+		break;
+		case MNetRouterAdministratorSendText:
+		message.reset(new NetRouterAdministratorSendText);
+		break;
+		case MNetRouterAdministratorLoginAccepted:
+		message.reset(new NetRouterAdministratorLoginAccepted);
+		break;
+		case MNetRouterAdministratorLoginRefused:
+		message.reset(new NetRouterAdministratorLoginRefused);
+		break;
+		case MNetDownloadableMapInfos:
+		message.reset(new NetDownloadableMapInfos);
+		break;
+		case MNetRequestDownloadableMapList:
+		message.reset(new NetRequestDownloadableMapList);
+		break;
+		case MNetRequestMapUpload:
+		message.reset(new NetRequestMapUpload);
+		break;
+		case MNetAcceptMapUpload:
+		message.reset(new NetAcceptMapUpload);
+		break;
+		case MNetRefuseMapUpload:
+		message.reset(new NetRefuseMapUpload);
+		break;
+		case MNetCancelSendingFile:
+		message.reset(new NetCancelSendingFile);
+		break;
+		case MNetCancelRecievingFile:
+		message.reset(new NetCancelRecievingFile);
+		break;
+		case MNetRequestMapThumbnail:
+		message.reset(new NetRequestMapThumbnail);
+		break;
+		case MNetSendMapThumbnail:
+		message.reset(new NetSendMapThumbnail);
+		break;
+		case MNetSubmitRatingOnMap:
+		message.reset(new NetSubmitRatingOnMap);
 		break;
 		///append_create_point
 	}
@@ -228,7 +288,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	stream->read(buffer, size, "data");
 	stream->readLeaveSection();
 	
-	order = Order::getOrder(buffer, size);
+	order = Order::getOrder(buffer, size, VERSION_MINOR);
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
 	
@@ -1301,7 +1361,7 @@ NetGameJoinRefused::NetGameJoinRefused()
 
 
 
-NetGameJoinRefused::NetGameJoinRefused(YOGGameJoinRefusalReason reason)
+NetGameJoinRefused::NetGameJoinRefused(YOGServerGameJoinRefusalReason reason)
 	: reason(reason)
 {
 
@@ -1328,7 +1388,7 @@ void NetGameJoinRefused::encodeData(GAGCore::OutputStream* stream) const
 void NetGameJoinRefused::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetGameJoinRefused");
-	reason=static_cast<YOGGameJoinRefusalReason>(stream->readUint8("reason"));
+	reason=static_cast<YOGServerGameJoinRefusalReason>(stream->readUint8("reason"));
 	stream->readLeaveSection();
 }
 
@@ -1360,7 +1420,7 @@ bool NetGameJoinRefused::operator==(const NetMessage& rhs) const
 
 
 
-YOGGameJoinRefusalReason NetGameJoinRefused::getRefusalReason() const
+YOGServerGameJoinRefusalReason NetGameJoinRefused::getRefusalReason() const
 {
 	return reason;
 }
@@ -1524,11 +1584,14 @@ const MapHeader& NetSendMapHeader::getMapHeader() const
 NetCreateGameAccepted::NetCreateGameAccepted()
 {
 	chatChannel = 0;
+	gameID = 0;
+	routerIP = "";
+	fileID = 0;
 }
 
 
-NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel)
-	: chatChannel(chatChannel)
+NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP, Uint16 fileID)
+	: chatChannel(chatChannel), gameID(gameID), routerIP(routerIP), fileID(fileID)
 {
 
 }
@@ -1546,6 +1609,9 @@ void NetCreateGameAccepted::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetCreateGameAccepted");
 	stream->writeUint32(chatChannel, "chatChannel");
+	stream->writeUint16(gameID, "gameID");
+	stream->writeText(routerIP, "routerIP");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
@@ -1555,6 +1621,9 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCreateGameAccepted");
 	chatChannel = stream->readUint32("chatChannel");
+	gameID = stream->readUint16("gameID");
+	routerIP = stream->readText("routerIP");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
@@ -1563,7 +1632,7 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 std::string NetCreateGameAccepted::format() const
 {
 	std::ostringstream s;
-	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<")";
+	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<",gameID="<<gameID<<",routerIP="<<routerIP<<",fileID="<<fileID<<")";
 	return s.str();
 }
 
@@ -1574,7 +1643,7 @@ bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetCreateGameAccepted))
 	{
 		const NetCreateGameAccepted& r = dynamic_cast<const NetCreateGameAccepted&>(rhs);
-		if(chatChannel != r.chatChannel)
+		if(chatChannel != r.chatChannel || gameID != r.gameID || routerIP != r.routerIP || fileID != r.fileID)
 		{
 			return false;
 		}
@@ -1592,6 +1661,27 @@ Uint32 NetCreateGameAccepted::getChatChannel() const
 
 
 
+Uint16 NetCreateGameAccepted::getGameID() const
+{
+	return gameID;
+}
+
+
+
+const std::string NetCreateGameAccepted::getGameRouterIP() const
+{
+	return routerIP;
+}
+
+
+
+Uint16 NetCreateGameAccepted::getFileID() const
+{
+	return fileID;
+}
+
+
+
 NetCreateGameRefused::NetCreateGameRefused()
 {
 	reason = YOGCreateRefusalUnknown;
@@ -1599,7 +1689,7 @@ NetCreateGameRefused::NetCreateGameRefused()
 
 
 
-NetCreateGameRefused::NetCreateGameRefused(YOGGameCreateRefusalReason reason)
+NetCreateGameRefused::NetCreateGameRefused(YOGServerGameCreateRefusalReason reason)
 	: reason(reason)
 {
 
@@ -1626,7 +1716,7 @@ void NetCreateGameRefused::encodeData(GAGCore::OutputStream* stream) const
 void NetCreateGameRefused::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCreateGameRefused");
-	reason = static_cast<YOGGameCreateRefusalReason>(stream->readUint8("reason"));
+	reason = static_cast<YOGServerGameCreateRefusalReason>(stream->readUint8("reason"));
 	stream->readLeaveSection();
 }
 
@@ -1653,7 +1743,7 @@ bool NetCreateGameRefused::operator==(const NetMessage& rhs) const
 }
 
 
-YOGGameCreateRefusalReason NetCreateGameRefused::getRefusalReason() const
+YOGServerGameCreateRefusalReason NetCreateGameRefused::getRefusalReason() const
 {
 	return reason;
 }
@@ -1874,66 +1964,85 @@ bool NetStartGame::operator==(const NetMessage& rhs) const
 
 
 
-NetRequestMap::NetRequestMap()
+NetRequestFile::NetRequestFile()
+	: fileID(0)
 {
 
 }
 
 
 
-Uint8 NetRequestMap::getMessageType() const
+NetRequestFile::NetRequestFile(Uint16 fileID)
+	: fileID(fileID)
 {
-	return MNetRequestMap;
+
 }
 
 
 
-void NetRequestMap::encodeData(GAGCore::OutputStream* stream) const
+Uint8 NetRequestFile::getMessageType() const
 {
-	stream->writeEnterSection("NetRequestMap");
+	return MNetRequestFile;
+}
+
+
+
+void NetRequestFile::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestFile");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
 
 
-void NetRequestMap::decodeData(GAGCore::InputStream* stream)
+void NetRequestFile::decodeData(GAGCore::InputStream* stream)
 {
-	stream->readEnterSection("NetRequestMap");
+	stream->readEnterSection("NetRequestFile");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
 
 
-std::string NetRequestMap::format() const
+std::string NetRequestFile::format() const
 {
 	std::ostringstream s;
-	s<<"NetRequestMap()";
+	s<<"NetRequestFile(fileID="<<fileID<<")";
 	return s.str();
 }
 
 
 
-bool NetRequestMap::operator==(const NetMessage& rhs) const
+bool NetRequestFile::operator==(const NetMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NetRequestMap))
+	if(typeid(rhs)==typeid(NetRequestFile))
 	{
-		//const NetRequestMap& r = dynamic_cast<const NetRequestMap&>(rhs);
-		return true;
+		const NetRequestFile& r = dynamic_cast<const NetRequestFile&>(rhs);
+		if(fileID == r.fileID)
+			return true;
 	}
 	return false;
 }
 
 
 
+Uint16 NetRequestFile::getFileID()
+{
+	return fileID;
+}
+
+
+
 NetSendFileInformation::NetSendFileInformation()
-	: size(0)
+	: size(0), fileID(0)
 {
 
 }
 
 
-NetSendFileInformation::NetSendFileInformation(Uint32 filesize)
-	: size(filesize)
+NetSendFileInformation::NetSendFileInformation(Uint32 filesize, Uint16 fileID)
+	: size(filesize), fileID(fileID)
 {
 }
 
@@ -1950,6 +2059,7 @@ void NetSendFileInformation::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendFileInformation");
 	stream->writeUint32(size, "size");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
@@ -1959,6 +2069,7 @@ void NetSendFileInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendFileInformation");
 	size = stream->readUint32("size");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
@@ -1967,7 +2078,7 @@ void NetSendFileInformation::decodeData(GAGCore::InputStream* stream)
 std::string NetSendFileInformation::format() const
 {
 	std::ostringstream s;
-	s<<"NetSendFileInformation(size="<<size<<")";
+	s<<"NetSendFileInformation(size="<<size<<",fileID="<<fileID<<")";
 	return s.str();
 }
 
@@ -1978,7 +2089,7 @@ bool NetSendFileInformation::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSendFileInformation))
 	{
 		const NetSendFileInformation& r = dynamic_cast<const NetSendFileInformation&>(rhs);
-		if(r.size == size)
+		if(r.size == size && r.fileID == fileID)
 			return true;
 	}
 	return false;
@@ -1993,15 +2104,24 @@ Uint32 NetSendFileInformation::getFileSize() const
 
 
 
-NetSendFileChunk::NetSendFileChunk()
+Uint16 NetSendFileInformation::getFileID() const
 {
-	std::fill(data, data+4096, 0);
-	size=0;
+	return fileID;
 }
 
 
 
-NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream)
+NetSendFileChunk::NetSendFileChunk()
+{
+	std::fill(data, data+4096, 0);
+	size=0;
+	fileID=0;
+}
+
+
+
+NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID)
+	: fileID(fileID)
 {
 	size=0;
 	int pos=0;
@@ -2031,6 +2151,7 @@ void NetSendFileChunk::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("NetSendFileChunk");
 	stream->writeUint32(size, "size");
 	stream->write(data, size, "data");
+	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
@@ -2041,6 +2162,7 @@ void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("NetSendFileChunk");
 	size = stream->readUint32("size");
 	stream->read(data, size, "data");
+	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
@@ -2049,7 +2171,7 @@ void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 std::string NetSendFileChunk::format() const
 {
 	std::ostringstream s;
-	s<<"NetSendFileChunk(size="<<size<<")";
+	s<<"NetSendFileChunk(size="<<size<<",fileID="<<fileID<<")";
 	return s.str();
 }
 
@@ -2065,6 +2187,8 @@ bool NetSendFileChunk::operator==(const NetMessage& rhs) const
 			if(data[i] != r.data[i])
 				return false;
 		}
+		if(fileID != r.fileID)
+			return false;
 		return true;
 	}
 	return false;
@@ -2086,53 +2210,9 @@ Uint32 NetSendFileChunk::getChunkSize() const
 
 
 
-NetRequestNextChunk::NetRequestNextChunk()
+Uint16 NetSendFileChunk::getFileID() const
 {
-
-}
-
-
-
-Uint8 NetRequestNextChunk::getMessageType() const
-{
-	return MNetRequestNextChunk;
-}
-
-
-
-void NetRequestNextChunk::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetRequestNextChunk");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetRequestNextChunk::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetRequestNextChunk");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetRequestNextChunk::format() const
-{
-	std::ostringstream s;
-	s<<"NetRequestNextChunk()";
-	return s.str();
-}
-
-
-
-bool NetRequestNextChunk::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetRequestNextChunk))
-	{
-		//const NetRequestNextChunk& r = dynamic_cast<const NetRequestNextChunk&>(rhs);
-		return true;
-	}
-	return false;
+	return fileID;
 }
 
 
@@ -2403,109 +2483,6 @@ Uint16 NetNotReadyToLaunch::getPlayerID() const
 
 
 
-
-NetEveryoneReadyToLaunch::NetEveryoneReadyToLaunch()
-{
-
-}
-
-
-
-Uint8 NetEveryoneReadyToLaunch::getMessageType() const
-{
-	return MNetEveryoneReadyToLaunch;
-}
-
-
-
-void NetEveryoneReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetEveryoneReadyToLaunch");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetEveryoneReadyToLaunch::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetEveryoneReadyToLaunch");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetEveryoneReadyToLaunch::format() const
-{
-	std::ostringstream s;
-	s<<"NetEveryoneReadyToLaunch()";
-	return s.str();
-}
-
-
-
-bool NetEveryoneReadyToLaunch::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetEveryoneReadyToLaunch))
-	{
-		//const NetEveryoneReadyToLaunch& r = dynamic_cast<const NetEveryoneReadyToLaunch&>(rhs);
-		return true;
-	}
-	return false;
-}
-
-
-
-NetNotEveryoneReadyToLaunch::NetNotEveryoneReadyToLaunch()
-{
-
-}
-
-
-
-Uint8 NetNotEveryoneReadyToLaunch::getMessageType() const
-{
-	return MNetNotEveryoneReadyToLaunch;
-}
-
-
-
-void NetNotEveryoneReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
-{
-	stream->writeEnterSection("NetNotEveryoneReadyToLaunch");
-	stream->writeLeaveSection();
-}
-
-
-
-void NetNotEveryoneReadyToLaunch::decodeData(GAGCore::InputStream* stream)
-{
-	stream->readEnterSection("NetNotEveryoneReadyToLaunch");
-	stream->readLeaveSection();
-}
-
-
-
-std::string NetNotEveryoneReadyToLaunch::format() const
-{
-	std::ostringstream s;
-	s<<"NetNotEveryoneReadyToLaunch()";
-	return s.str();
-}
-
-
-
-bool NetNotEveryoneReadyToLaunch::operator==(const NetMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(NetNotEveryoneReadyToLaunch))
-	{
-		//const NetNotEveryoneReadyToLaunch& r = dynamic_cast<const NetNotEveryoneReadyToLaunch&>(rhs);
-		return true;
-	}
-	return false;
-}
-
-
-
 NetRemoveAI::NetRemoveAI()
 	: playerNum(0)
 {
@@ -2712,7 +2689,7 @@ NetRefuseGameStart::NetRefuseGameStart()
 
 
 
-NetRefuseGameStart::NetRefuseGameStart(YOGGameStartRefusalReason refusalReason)
+NetRefuseGameStart::NetRefuseGameStart(YOGServerGameStartRefusalReason refusalReason)
 	:refusalReason(refusalReason)
 {
 }
@@ -2738,7 +2715,7 @@ void NetRefuseGameStart::encodeData(GAGCore::OutputStream* stream) const
 void NetRefuseGameStart::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRefuseGameStart");
-	refusalReason = static_cast<YOGGameStartRefusalReason>(stream->readUint8("refusalReason"));
+	refusalReason = static_cast<YOGServerGameStartRefusalReason>(stream->readUint8("refusalReason"));
 	stream->readLeaveSection();
 }
 
@@ -2765,7 +2742,7 @@ bool NetRefuseGameStart::operator==(const NetMessage& rhs) const
 }
 
 
-YOGGameStartRefusalReason NetRefuseGameStart::getRefusalReason() const
+YOGServerGameStartRefusalReason NetRefuseGameStart::getRefusalReason() const
 {
 	return refusalReason;
 }
@@ -2918,7 +2895,7 @@ void NetSetLatencyMode::decodeData(GAGCore::InputStream* stream)
 std::string NetSetLatencyMode::format() const
 {
 	std::ostringstream s;
-	s<<"NetSetLatencyMode("<<"latencyAdjustment="<<latencyAdjustment<<"; "<<")";
+	s<<"NetSetLatencyMode("<<"latencyAdjustment="<<static_cast<int>(latencyAdjustment)<<"; "<<")";
 	return s.str();
 }
 
@@ -3086,6 +3063,1519 @@ bool NetAddAI::operator==(const NetMessage& rhs) const
 Uint8 NetAddAI::getType() const
 {
 	return type;
+}
+
+
+
+
+NetSendReteamingInformation::NetSendReteamingInformation()
+{
+
+}
+
+
+
+NetSendReteamingInformation::NetSendReteamingInformation(NetReteamingInformation reteamingInfo)
+	:reteamingInfo(reteamingInfo)
+{
+}
+
+
+
+Uint8 NetSendReteamingInformation::getMessageType() const
+{
+	return MNetSendReteamingInformation;
+}
+
+
+
+void NetSendReteamingInformation::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendReteamingInformation");
+	reteamingInfo.encodeData(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendReteamingInformation::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendReteamingInformation");
+	reteamingInfo.decodeData(stream);
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendReteamingInformation::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendReteamingInformation()";
+	return s.str();
+}
+
+
+
+bool NetSendReteamingInformation::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendReteamingInformation))
+	{
+		const NetSendReteamingInformation& r = dynamic_cast<const NetSendReteamingInformation&>(rhs);
+		if(r.reteamingInfo == reteamingInfo)
+			return true;
+	}
+	return false;
+}
+
+
+NetReteamingInformation NetSendReteamingInformation::getReteamingInfo() const
+{
+	return reteamingInfo;
+}
+
+
+
+
+NetSendGameResult::NetSendGameResult()
+	: result(YOGGameResultUnknown)
+{
+
+}
+
+
+
+NetSendGameResult::NetSendGameResult(YOGGameResult result)
+	:result(result)
+{
+}
+
+
+
+Uint8 NetSendGameResult::getMessageType() const
+{
+	return MNetSendGameResult;
+}
+
+
+
+void NetSendGameResult::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendGameResult");
+	stream->writeUint8(static_cast<Uint8>(result), "result");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendGameResult::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendGameResult");
+	result = static_cast<YOGGameResult>(stream->readUint8("result"));
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendGameResult::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendGameResult("<<"result="<<result<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSendGameResult::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendGameResult))
+	{
+		const NetSendGameResult& r = dynamic_cast<const NetSendGameResult&>(rhs);
+		if(r.result == result)
+			return true;
+	}
+	return false;
+}
+
+
+YOGGameResult NetSendGameResult::getGameResult() const
+{
+	return result;
+}
+
+
+
+
+NetPlayerIsBanned::NetPlayerIsBanned()
+{
+
+}
+
+
+
+Uint8 NetPlayerIsBanned::getMessageType() const
+{
+	return MNetPlayerIsBanned;
+}
+
+
+
+void NetPlayerIsBanned::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetPlayerIsBanned");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetPlayerIsBanned::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetPlayerIsBanned");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetPlayerIsBanned::format() const
+{
+	std::ostringstream s;
+	s<<"NetPlayerIsBanned()";
+	return s.str();
+}
+
+
+
+bool NetPlayerIsBanned::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetPlayerIsBanned))
+	{
+		//const NetPlayerIsBanned& r = dynamic_cast<const NetPlayerIsBanned&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetIPIsBanned::NetIPIsBanned()
+{
+
+}
+
+
+
+Uint8 NetIPIsBanned::getMessageType() const
+{
+	return MNetIPIsBanned;
+}
+
+
+
+void NetIPIsBanned::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetIPIsBanned");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetIPIsBanned::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetIPIsBanned");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetIPIsBanned::format() const
+{
+	std::ostringstream s;
+	s<<"NetIPIsBanned()";
+	return s.str();
+}
+
+
+
+bool NetIPIsBanned::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetIPIsBanned))
+	{
+		//const NetIPIsBanned& r = dynamic_cast<const NetIPIsBanned&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetRegisterRouter::NetRegisterRouter()
+{
+
+}
+
+
+
+Uint8 NetRegisterRouter::getMessageType() const
+{
+	return MNetRegisterRouter;
+}
+
+
+
+void NetRegisterRouter::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRegisterRouter");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRegisterRouter::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRegisterRouter");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRegisterRouter::format() const
+{
+	std::ostringstream s;
+	s<<"NetRegisterRouter()";
+	return s.str();
+}
+
+
+
+bool NetRegisterRouter::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRegisterRouter))
+	{
+		//const NetRegisterRouter& r = dynamic_cast<const NetRegisterRouter&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetAcknowledgeRouter::NetAcknowledgeRouter()
+{
+
+}
+
+
+
+Uint8 NetAcknowledgeRouter::getMessageType() const
+{
+	return MNetAcknowledgeRouter;
+}
+
+
+
+void NetAcknowledgeRouter::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetAcknowledgeRouter");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetAcknowledgeRouter::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetAcknowledgeRouter");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetAcknowledgeRouter::format() const
+{
+	std::ostringstream s;
+	s<<"NetAcknowledgeRouter()";
+	return s.str();
+}
+
+
+
+bool NetAcknowledgeRouter::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetAcknowledgeRouter))
+	{
+		//const NetAcknowledgeRouter& r = dynamic_cast<const NetAcknowledgeRouter&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetSetGameInRouter::NetSetGameInRouter()
+	: gameID(0)
+{
+
+}
+
+
+
+NetSetGameInRouter::NetSetGameInRouter(Uint16 gameID)
+	:gameID(gameID)
+{
+}
+
+
+
+Uint8 NetSetGameInRouter::getMessageType() const
+{
+	return MNetSetGameInRouter;
+}
+
+
+
+void NetSetGameInRouter::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSetGameInRouter");
+	stream->writeUint16(gameID, "gameID");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSetGameInRouter::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSetGameInRouter");
+	gameID = stream->readUint16("gameID");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSetGameInRouter::format() const
+{
+	std::ostringstream s;
+	s<<"NetSetGameInRouter("<<"gameID="<<gameID<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSetGameInRouter::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSetGameInRouter))
+	{
+		const NetSetGameInRouter& r = dynamic_cast<const NetSetGameInRouter&>(rhs);
+		if(r.gameID == gameID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetSetGameInRouter::getGameID() const
+{
+	return gameID;
+}
+
+
+
+
+NetSendAfterJoinGameInformation::NetSendAfterJoinGameInformation()
+	: info()
+{
+
+}
+
+
+
+NetSendAfterJoinGameInformation::NetSendAfterJoinGameInformation(YOGAfterJoinGameInformation info)
+	:info(info)
+{
+}
+
+
+
+Uint8 NetSendAfterJoinGameInformation::getMessageType() const
+{
+	return MNetSendAfterJoinGameInformation;
+}
+
+
+
+void NetSendAfterJoinGameInformation::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendAfterJoinGameInformation");
+	info.encodeData(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendAfterJoinGameInformation::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendAfterJoinGameInformation");
+	info.decodeData(stream);
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendAfterJoinGameInformation::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendAfterJoinGameInformation("<<"="<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSendAfterJoinGameInformation::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendAfterJoinGameInformation))
+	{
+		const NetSendAfterJoinGameInformation& r = dynamic_cast<const NetSendAfterJoinGameInformation&>(rhs);
+		if(r.info == info)
+			return true;
+	}
+	return false;
+}
+
+
+YOGAfterJoinGameInformation NetSendAfterJoinGameInformation::getAfterJoinGameInformation() const
+{
+	return info;
+}
+
+
+
+
+NetRouterAdministratorLogin::NetRouterAdministratorLogin()
+	: password()
+{
+
+}
+
+
+
+NetRouterAdministratorLogin::NetRouterAdministratorLogin(std::string password)
+	:password(password)
+{
+}
+
+
+
+Uint8 NetRouterAdministratorLogin::getMessageType() const
+{
+	return MNetRouterAdministratorLogin;
+}
+
+
+
+void NetRouterAdministratorLogin::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRouterAdministratorLogin");
+	stream->writeText(password, "password");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRouterAdministratorLogin::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRouterAdministratorLogin");
+	password = stream->readText("password");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRouterAdministratorLogin::format() const
+{
+	std::ostringstream s;
+	s<<"NetRouterAdministratorLogin("<<"password="<<password<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRouterAdministratorLogin::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRouterAdministratorLogin))
+	{
+		const NetRouterAdministratorLogin& r = dynamic_cast<const NetRouterAdministratorLogin&>(rhs);
+		if(r.password == password)
+			return true;
+	}
+	return false;
+}
+
+
+std::string NetRouterAdministratorLogin::getPassword() const
+{
+	return password;
+}
+
+
+
+
+NetRouterAdministratorSendCommand::NetRouterAdministratorSendCommand()
+	: command("")
+{
+
+}
+
+
+
+NetRouterAdministratorSendCommand::NetRouterAdministratorSendCommand(std::string command)
+	:command(command)
+{
+}
+
+
+
+Uint8 NetRouterAdministratorSendCommand::getMessageType() const
+{
+	return MNetRouterAdministratorSendCommand;
+}
+
+
+
+void NetRouterAdministratorSendCommand::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRouterAdministratorSendCommand");
+	stream->writeText(command, "command");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRouterAdministratorSendCommand::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRouterAdministratorSendCommand");
+	command = stream->readText("command");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRouterAdministratorSendCommand::format() const
+{
+	std::ostringstream s;
+	s<<"NetRouterAdministratorSendCommand("<<"command="<<command<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRouterAdministratorSendCommand::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRouterAdministratorSendCommand))
+	{
+		const NetRouterAdministratorSendCommand& r = dynamic_cast<const NetRouterAdministratorSendCommand&>(rhs);
+		if(r.command == command)
+			return true;
+	}
+	return false;
+}
+
+
+std::string NetRouterAdministratorSendCommand::getCommand() const
+{
+	return command;
+}
+
+
+
+
+NetRouterAdministratorSendText::NetRouterAdministratorSendText()
+	: text("")
+{
+
+}
+
+
+
+NetRouterAdministratorSendText::NetRouterAdministratorSendText(std::string text)
+	:text(text)
+{
+}
+
+
+
+Uint8 NetRouterAdministratorSendText::getMessageType() const
+{
+	return MNetRouterAdministratorSendText;
+}
+
+
+
+void NetRouterAdministratorSendText::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRouterAdministratorSendText");
+	stream->writeText(text, "text");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRouterAdministratorSendText::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRouterAdministratorSendText");
+	text = stream->readText("text");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRouterAdministratorSendText::format() const
+{
+	std::ostringstream s;
+	s<<"NetRouterAdministratorSendText("<<"text="<<text<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRouterAdministratorSendText::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRouterAdministratorSendText))
+	{
+		const NetRouterAdministratorSendText& r = dynamic_cast<const NetRouterAdministratorSendText&>(rhs);
+		if(r.text == text)
+			return true;
+	}
+	return false;
+}
+
+
+std::string NetRouterAdministratorSendText::getText() const
+{
+	return text;
+}
+
+
+
+
+NetRouterAdministratorLoginAccepted::NetRouterAdministratorLoginAccepted()
+{
+
+}
+
+
+
+Uint8 NetRouterAdministratorLoginAccepted::getMessageType() const
+{
+	return MNetRouterAdministratorLoginAccepted;
+}
+
+
+
+void NetRouterAdministratorLoginAccepted::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRouterAdministratorLoginAccepted");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRouterAdministratorLoginAccepted::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRouterAdministratorLoginAccepted");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRouterAdministratorLoginAccepted::format() const
+{
+	std::ostringstream s;
+	s<<"NetRouterAdministratorLoginAccepted()";
+	return s.str();
+}
+
+
+
+bool NetRouterAdministratorLoginAccepted::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRouterAdministratorLoginAccepted))
+	{
+		//const NetRouterAdministratorLoginAccepted& r = dynamic_cast<const NetRouterAdministratorLoginAccepted&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetRouterAdministratorLoginRefused::NetRouterAdministratorLoginRefused()
+	: reason(YOGRouterLoginUnknown)
+{
+
+}
+
+
+
+NetRouterAdministratorLoginRefused::NetRouterAdministratorLoginRefused(YOGRouterAdministratorLoginRefusalReason reason)
+	:reason(reason)
+{
+}
+
+
+
+Uint8 NetRouterAdministratorLoginRefused::getMessageType() const
+{
+	return MNetRouterAdministratorLoginRefused;
+}
+
+
+
+void NetRouterAdministratorLoginRefused::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRouterAdministratorLoginRefused");
+	stream->writeUint8(reason, "reason");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRouterAdministratorLoginRefused::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRouterAdministratorLoginRefused");
+	reason = static_cast<YOGRouterAdministratorLoginRefusalReason>(stream->readUint8("reason"));
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRouterAdministratorLoginRefused::format() const
+{
+	std::ostringstream s;
+	s<<"NetRouterAdministratorLoginRefused("<<"reason="<<reason<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRouterAdministratorLoginRefused::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRouterAdministratorLoginRefused))
+	{
+		const NetRouterAdministratorLoginRefused& r = dynamic_cast<const NetRouterAdministratorLoginRefused&>(rhs);
+		if(r.reason == reason)
+			return true;
+	}
+	return false;
+}
+
+
+YOGRouterAdministratorLoginRefusalReason NetRouterAdministratorLoginRefused::getReason() const
+{
+	return reason;
+}
+
+
+
+
+NetDownloadableMapInfos::NetDownloadableMapInfos()
+	: maps()
+{
+
+}
+
+
+
+NetDownloadableMapInfos::NetDownloadableMapInfos(std::vector<YOGDownloadableMapInfo> maps)
+	:maps(maps)
+{
+}
+
+
+
+Uint8 NetDownloadableMapInfos::getMessageType() const
+{
+	return MNetDownloadableMapInfos;
+}
+
+
+
+void NetDownloadableMapInfos::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetDownloadableMapInfos");
+	stream->writeEnterSection("maps");
+	stream->writeUint32(maps.size(), "size");
+	for(int i=0; i<maps.size(); ++i)
+	{
+		stream->writeEnterSection(i);
+		maps[i].encodeData(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+
+
+void NetDownloadableMapInfos::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetDownloadableMapInfos");
+	stream->readEnterSection("maps");
+	Uint32 size = stream->readUint32("maps");
+	maps.resize(size);
+	for(int i=0; i<size; ++i)
+	{
+		stream->readEnterSection(i);
+		maps[i].decodeData(stream, VERSION_MINOR);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetDownloadableMapInfos::format() const
+{
+	std::ostringstream s;
+	s<<"NetDownloadableMapInfos(maps.size()="<<maps.size()<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetDownloadableMapInfos::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetDownloadableMapInfos))
+	{
+		const NetDownloadableMapInfos& r = dynamic_cast<const NetDownloadableMapInfos&>(rhs);
+		if(r.maps == maps)
+			return true;
+	}
+	return false;
+}
+
+
+std::vector<YOGDownloadableMapInfo> NetDownloadableMapInfos::getMaps() const
+{
+	return maps;
+}
+
+
+
+
+NetRequestDownloadableMapList::NetRequestDownloadableMapList()
+{
+
+}
+
+
+
+Uint8 NetRequestDownloadableMapList::getMessageType() const
+{
+	return MNetRequestDownloadableMapList;
+}
+
+
+
+void NetRequestDownloadableMapList::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestDownloadableMapList");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestDownloadableMapList::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestDownloadableMapList");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestDownloadableMapList::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestDownloadableMapList()";
+	return s.str();
+}
+
+
+
+bool NetRequestDownloadableMapList::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestDownloadableMapList))
+	{
+		//const NetRequestDownloadableMapList& r = dynamic_cast<const NetRequestDownloadableMapList&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetRequestMapUpload::NetRequestMapUpload()
+	: mapInfo()
+{
+
+}
+
+
+
+NetRequestMapUpload::NetRequestMapUpload(YOGDownloadableMapInfo mapInfo)
+	:mapInfo(mapInfo)
+{
+}
+
+
+
+Uint8 NetRequestMapUpload::getMessageType() const
+{
+	return MNetRequestMapUpload;
+}
+
+
+
+void NetRequestMapUpload::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestMapUpload");
+	mapInfo.encodeData(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestMapUpload::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestMapUpload");
+	mapInfo.decodeData(stream, VERSION_MINOR);
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestMapUpload::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestMapUpload("<<"""="<<""<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRequestMapUpload::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestMapUpload))
+	{
+		const NetRequestMapUpload& r = dynamic_cast<const NetRequestMapUpload&>(rhs);
+		if(r.mapInfo == mapInfo)
+			return true;
+	}
+	return false;
+}
+
+
+YOGDownloadableMapInfo NetRequestMapUpload::getMapInfo() const
+{
+	return mapInfo;
+}
+
+
+
+
+NetAcceptMapUpload::NetAcceptMapUpload()
+	: fileID(0)
+{
+
+}
+
+
+
+NetAcceptMapUpload::NetAcceptMapUpload(Uint16 fileID)
+	:fileID(fileID)
+{
+}
+
+
+
+Uint8 NetAcceptMapUpload::getMessageType() const
+{
+	return MNetAcceptMapUpload;
+}
+
+
+
+void NetAcceptMapUpload::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetAcceptMapUpload");
+	stream->writeUint16(fileID, "fileID");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetAcceptMapUpload::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetAcceptMapUpload");
+	fileID = stream->readUint16("fileID");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetAcceptMapUpload::format() const
+{
+	std::ostringstream s;
+	s<<"NetAcceptMapUpload("<<"fileID="<<fileID<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetAcceptMapUpload::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetAcceptMapUpload))
+	{
+		const NetAcceptMapUpload& r = dynamic_cast<const NetAcceptMapUpload&>(rhs);
+		if(r.fileID == fileID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetAcceptMapUpload::getFileID() const
+{
+	return fileID;
+}
+
+
+
+
+NetRefuseMapUpload::NetRefuseMapUpload()
+	: reason(YOGMapUploadReasonUnknown)
+{
+
+}
+
+
+
+NetRefuseMapUpload::NetRefuseMapUpload(YOGMapUploadRefusalReason reason)
+	:reason(reason)
+{
+}
+
+
+
+Uint8 NetRefuseMapUpload::getMessageType() const
+{
+	return MNetRefuseMapUpload;
+}
+
+
+
+void NetRefuseMapUpload::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRefuseMapUpload");
+	stream->writeUint8(static_cast<Uint8>(reason), "reason");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRefuseMapUpload::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRefuseMapUpload");
+	reason = static_cast<YOGMapUploadRefusalReason>(stream->readUint8("reason"));
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRefuseMapUpload::format() const
+{
+	std::ostringstream s;
+	s<<"NetRefuseMapUpload("<<"reason="<<reason<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRefuseMapUpload::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRefuseMapUpload))
+	{
+		const NetRefuseMapUpload& r = dynamic_cast<const NetRefuseMapUpload&>(rhs);
+		if(r.reason == reason)
+			return true;
+	}
+	return false;
+}
+
+
+YOGMapUploadRefusalReason NetRefuseMapUpload::getReason() const
+{
+	return reason;
+}
+
+
+
+
+NetCancelSendingFile::NetCancelSendingFile()
+	: fileID(0)
+{
+
+}
+
+
+
+NetCancelSendingFile::NetCancelSendingFile(Uint16 fileID)
+	:fileID(fileID)
+{
+}
+
+
+
+Uint8 NetCancelSendingFile::getMessageType() const
+{
+	return MNetCancelSendingFile;
+}
+
+
+
+void NetCancelSendingFile::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetCancelSendingFile");
+	stream->writeUint16(fileID, "fileID");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetCancelSendingFile::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetCancelSendingFile");
+	fileID = stream->readUint16("fileID");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetCancelSendingFile::format() const
+{
+	std::ostringstream s;
+	s<<"NetCancelSendingFile("<<"fileID="<<fileID<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetCancelSendingFile::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetCancelSendingFile))
+	{
+		const NetCancelSendingFile& r = dynamic_cast<const NetCancelSendingFile&>(rhs);
+		if(r.fileID == fileID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetCancelSendingFile::getFileID() const
+{
+	return fileID;
+}
+
+
+
+
+NetCancelRecievingFile::NetCancelRecievingFile()
+	: fileID(0)
+{
+
+}
+
+
+
+NetCancelRecievingFile::NetCancelRecievingFile(Uint16 fileID)
+	:fileID(fileID)
+{
+}
+
+
+
+Uint8 NetCancelRecievingFile::getMessageType() const
+{
+	return MNetCancelRecievingFile;
+}
+
+
+
+void NetCancelRecievingFile::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetCancelRecievingFile");
+	stream->writeUint16(fileID, "fileID");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetCancelRecievingFile::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetCancelRecievingFile");
+	fileID = stream->readUint16("fileID");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetCancelRecievingFile::format() const
+{
+	std::ostringstream s;
+	s<<"NetCancelRecievingFile("<<"fileID="<<fileID<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetCancelRecievingFile::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetCancelRecievingFile))
+	{
+		const NetCancelRecievingFile& r = dynamic_cast<const NetCancelRecievingFile&>(rhs);
+		if(r.fileID == fileID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetCancelRecievingFile::getFileID() const
+{
+	return fileID;
+}
+
+
+
+
+NetRequestMapThumbnail::NetRequestMapThumbnail()
+	: mapID(0)
+{
+
+}
+
+
+
+NetRequestMapThumbnail::NetRequestMapThumbnail(Uint16 mapID)
+	: mapID(mapID)
+{
+}
+
+
+
+Uint8 NetRequestMapThumbnail::getMessageType() const
+{
+	return MNetRequestMapThumbnail;
+}
+
+
+
+void NetRequestMapThumbnail::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetRequestMapThumbnail");
+	stream->writeUint16(mapID, "mapID");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetRequestMapThumbnail::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetRequestMapThumbnail");
+	mapID = stream->readUint16("mapID");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetRequestMapThumbnail::format() const
+{
+	std::ostringstream s;
+	s<<"NetRequestMapThumbnail("<<"mapID="<<mapID<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetRequestMapThumbnail::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetRequestMapThumbnail))
+	{
+		const NetRequestMapThumbnail& r = dynamic_cast<const NetRequestMapThumbnail&>(rhs);
+		if(r.mapID == mapID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetRequestMapThumbnail::getMapID() const
+{
+	return mapID;
+}
+
+
+
+
+NetSendMapThumbnail::NetSendMapThumbnail()
+	: mapID(0), thumbnail()
+{
+
+}
+
+
+
+NetSendMapThumbnail::NetSendMapThumbnail(Uint16 mapID, MapThumbnail thumbnail)
+	:mapID(mapID), thumbnail(thumbnail)
+{
+}
+
+
+
+Uint8 NetSendMapThumbnail::getMessageType() const
+{
+	return MNetSendMapThumbnail;
+}
+
+
+
+void NetSendMapThumbnail::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendMapThumbnail");
+	stream->writeUint16(mapID, "mapID");
+	thumbnail.encodeData(stream);
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendMapThumbnail::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendMapThumbnail");
+	mapID = stream->readUint16("mapID");
+	thumbnail.decodeData(stream, VERSION_MINOR);
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSendMapThumbnail::format() const
+{
+	std::ostringstream s;
+	s<<"NetSendMapThumbnail("<<"mapID="<<mapID<<"; "<<"="<<""<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSendMapThumbnail::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendMapThumbnail))
+	{
+		const NetSendMapThumbnail& r = dynamic_cast<const NetSendMapThumbnail&>(rhs);
+		if(r.mapID == mapID)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetSendMapThumbnail::getMapID() const
+{
+	return mapID;
+}
+
+
+
+MapThumbnail NetSendMapThumbnail::getThumbnail() const
+{
+	return thumbnail;
+}
+
+
+
+
+NetSubmitRatingOnMap::NetSubmitRatingOnMap()
+	: mapID(0), rating(0)
+{
+
+}
+
+
+
+NetSubmitRatingOnMap::NetSubmitRatingOnMap(Uint16 mapID, Uint8 rating)
+	:mapID(mapID), rating(rating)
+{
+}
+
+
+
+Uint8 NetSubmitRatingOnMap::getMessageType() const
+{
+	return MNetSubmitRatingOnMap;
+}
+
+
+
+void NetSubmitRatingOnMap::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSubmitRatingOnMap");
+	stream->writeUint16(mapID, "mapID");
+	stream->writeUint8(rating, "rating");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSubmitRatingOnMap::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSubmitRatingOnMap");
+	mapID = stream->readUint16("mapID");
+	rating = stream->readUint8("rating");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSubmitRatingOnMap::format() const
+{
+	std::ostringstream s;
+	s<<"NetSubmitRatingOnMap("<<"mapID="<<mapID<<"; "<<"rating="<<rating<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSubmitRatingOnMap::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSubmitRatingOnMap))
+	{
+		const NetSubmitRatingOnMap& r = dynamic_cast<const NetSubmitRatingOnMap&>(rhs);
+		if(r.mapID == mapID && r.rating == rating)
+			return true;
+	}
+	return false;
+}
+
+
+Uint16 NetSubmitRatingOnMap::getMapID() const
+{
+	return mapID;
+}
+
+
+
+Uint8 NetSubmitRatingOnMap::getRating() const
+{
+	return rating;
 }
 
 

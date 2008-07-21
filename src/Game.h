@@ -28,6 +28,8 @@
 #include <valarray>
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "GameObjectives.h"
+#include "GameHints.h"
 
 namespace GAGCore
 {
@@ -51,6 +53,9 @@ public:
 
 	///Loads data from a stream
 	bool load(GAGCore::InputStream *stream);
+	
+	//! Check some available integrity constraints
+	void integrity(void);
 
 	///Saves data to a stream
 	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);
@@ -82,12 +87,12 @@ public:
 	
 	/// This method will prepare the game with the provided gameHeader,
 	/// including initiating the Players
-	void setGameHeader(const GameHeader& gameHeader);
+	void setGameHeader(const GameHeader& gameHeader, bool saveAI=false);
 	
-	///Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
+	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	void executeOrder(boost::shared_ptr<Order> order, int localPlayer);
 
-	///Makes a step for building projects that are waiting for the areas to clear of units.
+	/// Makes a step for building projects that are waiting for the areas to clear of units.
 	void buildProjectSyncStep(Sint32 localTeam);
 
 	/// Check and update winning conditions
@@ -95,6 +100,9 @@ public:
 
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();
+	
+	/// Updates total prestige stats
+	void prestigeSyncStep();
 
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
 	/// internal proccessing.
@@ -157,9 +165,6 @@ private:
 	///Clears existing game information, deleting the teams and players, in preperation of a new game.
 	void clearGame();
 
-	//! return true if all human are allied together, flase otherwise
-	bool isHumanAllAllied(void);
-
 public:
 	bool anyPlayerWaited;
 	int anyPlayerWaitedTimeFor;
@@ -168,7 +173,13 @@ public:
 public:
 
 private:
-	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2);
+	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2)
+	{
+		drawPointBar(x, y, orientation, maxLength, actLength, 0, r, g, b, r, g, b, barWidth);
+	}
+
+	//Point bars can have 2 sections of actLength and secondActLength, followed by black until maxLength. r/g/b is for the first section, r2/g2/b2 for the second
+	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2, int barWidth=2);
 	inline void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	inline void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
@@ -181,12 +192,15 @@ private:
 	inline void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	inline void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	inline void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
 	static float interpolateValues(float a, float b, float x);
+	inline bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
 public:
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
 	
-	//! ally or disally AI following human alliances
-	void setAIAlliance(void);
+	/// Sets the alliances from the GameHeader alliance teams
+	void setAlliances(void);
 	
 public:
 	///This is a static header for a map. It remains the same in between games on the same map.
@@ -198,7 +212,9 @@ public:
 	Player *players[32];
 	Map map;
 	Mapscript script;
-	std::string campaignText;
+	GameObjectives objectives;
+	GameHints gameHints;
+	std::string missionBriefing;
 	GameGUI *gui;
 	MapEdit *edit;
 	std::list<BuildProject> buildProjects;
@@ -217,8 +233,16 @@ public:
 	int prestigeToReach;
 	bool totalPrestigeReached;
 	bool isGameEnded;
+	///This is the IntBuildingType of a building type to be hilighted. All buildings of this type will be drawn
+	///With an arrow pointed at them. This is primarily for tutorials and is linked through the script system
+	///This is a mask, where 1<<typenum is the buildings to be hilighted
+	Uint32 hilightBuildingType;
+	///Similar to above, but for units
+	Uint32 hilightUnitType;
+	
 	
 	Team *getTeamWithMostPrestige(void);
+	bool isPrestigeWinCondition(void);
 	
 public:
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
@@ -229,11 +253,5 @@ protected:
 	FILE *logFile;
 	int ticksGameSum[32];
 };
-
-//! extract the user-visible name from a glob2 map filename, return empty string if filename is an invalid glob2 map
-std::string glob2FilenameToName(const std::string& filename);
-//! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
-std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension="");
-
 
 #endif

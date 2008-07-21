@@ -18,6 +18,8 @@
 
 #include "MapHeader.h"
 #include "Game.h"
+#include <algorithm>
+#include "FileManager.h"
 
 MapHeader::MapHeader()
 {
@@ -34,6 +36,7 @@ void MapHeader::reset()
 	mapName = "";
 	mapOffset = 0;
 	isSavedGame=false;
+	resetGameSHA1();
 }
 
 
@@ -58,6 +61,14 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	numberOfTeams = stream->readSint32("numberOfTeams");
 	mapOffset = stream->readUint32("mapOffset");
 	isSavedGame = stream->readUint8("isSavedGame");
+	if(versionMinor==67)
+		stream->readUint32("checksum");
+	
+	if(versionMinor>=68)
+	{
+		stream->read(SHA1, 20, "SHA1");
+	}
+	
 	stream->readEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -72,18 +83,16 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 
 
 	
-void MapHeader::save(GAGCore::OutputStream *stream)
+void MapHeader::save(GAGCore::OutputStream *stream) const
 {
-	///Update version major and minor
-	versionMajor = VERSION_MAJOR;
-	versionMinor = VERSION_MINOR;
 	stream->writeEnterSection("MapHeader");
 	stream->writeText(mapName, "mapName");
-	stream->writeSint32(versionMajor, "versionMajor");
-	stream->writeSint32(versionMinor, "versionMinor");
+	stream->writeSint32(VERSION_MAJOR, "versionMajor");
+	stream->writeSint32(VERSION_MINOR, "versionMinor");
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
 	stream->writeUint32(mapOffset, "mapOffset");
 	stream->writeUint8(isSavedGame, "isSavedGame");
+	stream->write(SHA1, 20, "SHA1");
 	stream->writeEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -194,6 +203,30 @@ void MapHeader::setIsSavedGame(bool newIsSavedGame)
 }
 
 
+
+void MapHeader::setGameSHA1(Uint8 SHA1sum[20])
+{
+	for(int i=0; i<20; ++i)
+		SHA1[i] = SHA1sum[i];
+}
+
+
+
+Uint8* MapHeader::getGameSHA1()
+{
+	return SHA1;
+}
+
+
+
+void MapHeader::resetGameSHA1()
+{
+	for(int i=0; i<20; ++i)
+		SHA1[i] = 0;
+}
+
+
+
 Uint32 MapHeader::checkSum() const
 {
 	Sint32 cs = 0;
@@ -211,10 +244,66 @@ bool MapHeader::operator!=(const MapHeader& rhs) const
 	if( rhs.numberOfTeams != numberOfTeams ||
 		rhs.mapOffset != mapOffset ||
 		rhs.isSavedGame != isSavedGame ||
-		rhs.mapName != mapName)
+		rhs.mapName != mapName ||
+		!std::equal(SHA1, SHA1+20, rhs.SHA1))
 		return true;
 	return false;
 }
 
 
+
+bool MapHeader::operator==(const MapHeader& rhs) const
+{
+	if( rhs.numberOfTeams == numberOfTeams &&
+		rhs.mapOffset == mapOffset &&
+		rhs.isSavedGame == isSavedGame &&
+		rhs.mapName == mapName &&
+		std::equal(SHA1, SHA1+20, rhs.SHA1)==0)
+		return true;
+	return false;
+}
+
+
+std::string glob2FilenameToName(const std::string& filename)
+{
+	std::string mapName;
+	if(filename.find(".game")!=std::string::npos)
+		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
+	else
+		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
+	size_t pos = mapName.find("_");
+	while(pos != std::string::npos)
+	{
+		mapName.replace(pos, 1, " ");
+		pos = mapName.find("_");
+	}
+	return mapName;
+}
+
+template<typename It, typename T>
+class contains: std::unary_function<T, bool>
+{
+public:
+	contains(const It from, const It to) : from(from), to(to) {}
+	bool operator()(T d) { return (std::find(from, to, d) != to); }
+private:
+	const It from;
+	const It to;
+};
+
+std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension)
+{
+	const char* pattern = " \t";
+	const char* endPattern = strchr(pattern, '\0');
+	std::string fileName = name;
+	std::replace_if(fileName.begin(), fileName.end(), contains<const char*, char>(pattern, endPattern), '_');
+	std::string fullFileName = dir;
+	fullFileName += DIR_SEPARATOR + fileName;
+	if (extension != "" && extension != "\0")
+	{
+		fullFileName += '.';
+		fullFileName += extension;
+	}
+	return fullFileName;
+}
 

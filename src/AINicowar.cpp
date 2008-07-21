@@ -91,6 +91,11 @@ void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(fruit_phase_extra_number_of_explorers, "fruit_phase_extra_number_of_explorers");
 	configBlock->load(base_swarm_explorer_ratio, "base_swarm_explorer_ratio");
 	configBlock->load(war_preperation_swarm_warrior_ratio, "war_preperation_swarm_warrior_ratio");
+	configBlock->load(defense_explorer_population_percent, "defense_explorer_population_percent");
+	configBlock->load(offense_explorer_number, "offense_explorer_number");
+	configBlock->load(offense_explorer_minimum, "offense_explorer_minimum");
+	configBlock->load(offense_explorer_flag_number, "offense_explorer_flag_number");
+	configBlock->load(offense_explorer_flag_assigned, "offense_explorer_flag_assigned");
 	configBlock->load(upgrading_phase_1_inn_chance, "upgrading_phase_1_inn_chance");
 	configBlock->load(upgrading_phase_1_hospital_chance, "upgrading_phase_1_hospital_chance");
 	configBlock->load(upgrading_phase_1_racetrack_chance, "upgrading_phase_1_racetrack_chance");
@@ -166,6 +171,9 @@ NewNicowar::NewNicowar()
 	starving_recovery=false;
 	no_workers_phase=false;
 	can_swim=false;
+	defend_explorers=false;
+	explorer_attack_preperation_phase=false;
+	explorer_attack_phase=false;
 	starving_recovery_inns = 0;
 	exploration_on_fruit=false;
 	for(int n=0; n<PlacementSize; ++n)
@@ -248,6 +256,31 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		}
 		stream->readLeaveSection();
 
+		if(versionMinor >= 66)
+		{
+			stream->readEnterSection("defense_flags");
+			size = stream->readUint16("size");
+			for(size_t n = 0; n<size; ++n)
+			{
+				stream->readEnterSection(n);
+				int flag = stream->readUint32("flag");
+				defense_flags.push_back(flag);
+				stream->readLeaveSection();
+			}
+			stream->readLeaveSection();
+			
+			stream->readEnterSection("explorer_attack_flags");
+			size = stream->readUint16("size");
+			for(size_t n = 0; n<size; ++n)
+			{
+				stream->readEnterSection(n);
+				int flag = stream->readUint32("flag");
+				explorer_attack_flags.push_back(flag);
+				stream->readLeaveSection();
+			}
+			stream->readLeaveSection();
+		}
+
 		exploration_on_fruit=stream->readUint8("exploration_on_fruit");
 		stream->readLeaveSection();
 	}
@@ -314,6 +347,26 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeLeaveSection();
 
+	stream->writeEnterSection("defense_flags");
+	stream->writeUint16(defense_flags.size(), "size");
+	for(n = 0; n<defense_flags.size(); ++n)
+	{
+		stream->writeEnterSection(n);
+		stream->writeUint32(defense_flags[n], "flag");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	stream->writeEnterSection("explorer_attack_flags");
+	stream->writeUint16(explorer_attack_flags.size(), "size");
+	for(n = 0; n<explorer_attack_flags.size(); ++n)
+	{
+		stream->writeEnterSection(n);
+		stream->writeUint32(explorer_attack_flags[n], "flag");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
 	stream->writeUint8(exploration_on_fruit, "exploration_on_fruit");
 	stream->writeLeaveSection();
 }
@@ -324,6 +377,7 @@ void NewNicowar::tick(Echo& echo)
 	timer++;
 	if(timer==1)
 	{
+		selectStrategy();
 		check_phases(echo);
 		initialize(echo);
 	}
@@ -331,30 +385,39 @@ void NewNicowar::tick(Echo& echo)
 	{
 		queue_buildings(echo);
 	}
-	if(timer%100 == 20)
+	if(timer%100 == 17)
 	{
 		check_phases(echo);
 	}
-	if(timer%100 == 40)
+	if(timer%100 == 33)
 	{
 		manage_buildings(echo);
 	}
-	if(timer%100 == 60)
+	if(timer%100 == 50)
 	{
 		upgrade_buildings(echo);
 	}
-	if(timer%100 == 80)
+	if(timer%100 == 67)
 	{
 		control_attacks(echo);
+	}
+	if(timer%100 == 84)
+	{
+		compute_defense_flag_positioning(echo);
 	}
 	if(timer%250 == 0)
 	{
 		update_farming(echo);
 	}
-	if(timer%250 ==125)
+	if(timer%250 == 85)
 	{
 		update_fruit_flags(echo);
 	}
+	if(timer%1000 == 570)
+	{
+		compute_explorer_flag_attack_positioning(echo);
+	}
+	
 	order_buildings(echo);
 }
 
@@ -367,10 +430,10 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 		buildings_under_construction-=1;
 		buildings_under_construction_per_type[placement_num]-=1;
 	}
-	if(message.substr(0,21) == "update clearing zone ")
+	if(message.substr(0,22) == "update clearing zone1 ")
 	{
 		MapInfo mi(echo);
-		int id=boost::lexical_cast<int>(message.substr(21, message.size()-1));
+		int id=boost::lexical_cast<int>(message.substr(22, message.size()-1));
 		Building* b = echo.get_building_register().get_building(id);		
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
@@ -384,6 +447,25 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 					mo_clearing->add_location(b->posX+nx, b->posY+ny);
 					mo_remove_clearing->add_location(b->posX+nx, b->posY+ny);
 				}
+			}
+		}
+		echo.add_management_order(mo_clearing);
+		echo.add_management_order(mo_remove_clearing);
+	}
+	if(message.substr(0,22) == "update clearing zone2 ")
+	{
+		MapInfo mi(echo);
+		int id=boost::lexical_cast<int>(message.substr(22, message.size()-1));
+		Building* b = echo.get_building_register().get_building(id);		
+		AddArea* mo_clearing=new AddArea(ClearingArea);
+		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
+		mo_remove_clearing->add_condition(new BuildingDestroyed(id));
+		for(int nx=-1; nx<b->type->width+1; ++nx)
+		{
+			for(int ny=-1; ny<b->type->height+1; ++ny)
+			{
+				mo_clearing->add_location(b->posX+nx, b->posY+ny);
+				mo_remove_clearing->add_location(b->posX+nx, b->posY+ny);
 			}
 		}
 		echo.add_management_order(mo_clearing);
@@ -403,6 +485,16 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 	{
 		int id=boost::lexical_cast<int>(message.substr(16, message.size()-1));
 		attack_flags.erase(std::find(attack_flags.begin(), attack_flags.end(), id));
+	}
+	if(message.substr(0,19)  == "guard flag deleted ")
+	{
+		int id=boost::lexical_cast<int>(message.substr(19, message.size()-1));
+		defense_flags.erase(std::find(defense_flags.begin(), defense_flags.end(), id));
+	}
+	if(message.substr(0,29)  == "explorer attack flag deleted ")
+	{
+		int id=boost::lexical_cast<int>(message.substr(29, message.size()-1));
+		explorer_attack_flags.erase(std::find(explorer_attack_flags.begin(), explorer_attack_flags.end(), id));
 	}
 	if(message == "finished digging out")
 	{
@@ -427,8 +519,6 @@ void NewNicowar::selectStrategy()
 
 void NewNicowar::initialize(Echo& echo)
 {
-	selectStrategy();
-
 	BuildingSearch bs(echo);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{	
@@ -605,7 +695,7 @@ void NewNicowar::check_phases(Echo& echo)
 		no_workers_phase=false;
 	}
 	
-	///Qualifications for the can swim phacose:
+	///Qualifications for the can swim phase:
 	///1) Atleast one worker that can swim
 	int total_can_swim=0;
 	for(int i=0; i<4; ++i)
@@ -617,6 +707,39 @@ void NewNicowar::check_phases(Echo& echo)
 	else
 	{
 		can_swim=false;
+	}
+	
+	///Qualifications for the defend explorers phase
+	///1) Prestige, not counting this teams prestige, is more than 0, indicating that ground attacking explorers are being created
+	if(echo.player->game->totalPrestige - echo.player->team->prestige > 0)
+	{
+		defend_explorers=true;
+	}
+	else
+	{
+		defend_explorers=false;
+	}
+	
+	///Qualifications for the explorer attack preperation phase
+	//1) This teams prestige greater than 0
+	if(echo.player->team->prestige > 0)
+	{
+		explorer_attack_preperation_phase = true;
+	}
+	else
+	{
+		explorer_attack_preperation_phase = false;
+	}
+	
+	///Qualifications for the explorer attack phase
+	//1) The minimum number of trained explorers is greater than offense_explorer_minimum
+	if(stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][3] > strategy.offense_explorer_minimum)
+	{
+		explorer_attack_phase = true;
+	}
+	else
+	{
+		explorer_attack_phase = false;
 	}
 }
 
@@ -868,6 +991,7 @@ void NewNicowar::order_buildings(Echo& echo)
 			mo_completion_message->add_condition(new EitherCondition(
 			                             new ParticularBuilding(new NotUnderConstruction, id),
 			                             new BuildingDestroyed(id)));
+			echo.add_management_order(mo_completion_message);
 		}
 		if(b==RegularSwarm)
 		{
@@ -901,10 +1025,18 @@ void NewNicowar::order_buildings(Echo& echo)
 		                             new ParticularBuilding(new NotUnderConstruction, id),
 		                             new BuildingDestroyed(id)));
 		echo.add_management_order(mo_completion_message);
-		
-		ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone "+boost::lexical_cast<std::string>(int(id)));
-		mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
-		echo.add_management_order(mo_construction_completion_message);
+		if(b == RegularInn || b==RegularSwarm)
+		{		
+			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone1 "+boost::lexical_cast<std::string>(int(id)));
+			mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_construction_completion_message);
+		}
+		else
+		{
+			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone2 "+boost::lexical_cast<std::string>(int(id)));
+			mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
+			echo.add_management_order(mo_construction_completion_message);
+		}
 	}
 }
 
@@ -937,7 +1069,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
-	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
 	///Add constraints for all enemy teams to keep distance
 	AIEcho::Gradients::GradientInfo gi_enemy;
@@ -1343,6 +1475,10 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 	int needed_explorers=std::min(strategy.base_number_of_explorers, stat->totalUnit/10+1);
 	if(fruit_phase)
 		needed_explorers+=strategy.fruit_phase_extra_number_of_explorers;
+	if(defend_explorers)
+		needed_explorers+=(stat->totalUnit * strategy.defense_explorer_population_percent) / 100;
+	if(explorer_attack_preperation_phase)
+		needed_explorers+=strategy.offense_explorer_number;
 
 	if(total_explorers<needed_explorers)
 		explorer_ratio=strategy.base_swarm_explorer_ratio;
@@ -1647,7 +1783,7 @@ void NewNicowar::control_attacks(Echo& echo)
 
 	if(target!=-1)
 	{
-		int number_attacks=0;
+		unsigned number_attacks=0;
 		if(war)
 		{
 			number_attacks=strategy.war_phase_num_attack_flags;
@@ -1663,13 +1799,23 @@ void NewNicowar::control_attacks(Echo& echo)
 	bs_pool.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
 	int num_pool=bs_pool.count_buildings();
 	
-	for(int i=0; i<attack_flags.size(); ++i)
+	AIEcho::Gradients::GradientInfo gi_building;
+	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+	gi_building.add_obstacle(new Entities::AnyRessource);
+	if(num_pool == 0)
+		gi_building.add_obstacle(new Entities::Water);
+	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
+	
+	for(unsigned i=0; i<attack_flags.size(); ++i)
 	{
-		Building* b = echo.get_building_register().get_building(attack_flags[i]);
-		if(b && (num_pool && b->locked[true]) || (num_pool==0 && b->locked[false]))
+		if(echo.get_building_register().is_building_found(attack_flags[i]))
 		{
-			ManagementOrder* mo_destroy=new DestroyBuilding(attack_flags[i]);
-			echo.add_management_order(mo_destroy);
+			Building* b = echo.get_building_register().get_building(attack_flags[i]);
+			if(b && gradient.get_height(b->posX, b->posY) == -2)
+			{
+				ManagementOrder* mo_destroy=new DestroyBuilding(attack_flags[i]);
+				echo.add_management_order(mo_destroy);
+			}
 		}
 	}
 }
@@ -1728,6 +1874,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	std::vector<int> buildings_to_attack;
 	buildings_to_attack.reserve(100);
 
+	MapInfo mi(echo);
+
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyRessource);
@@ -1736,7 +1884,9 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
 		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
-		if(gradient.get_height(b->posX, b->posY) == -2)
+		int bx = (b->posX + mi.get_width()) % mi.get_width();
+		int by = (b->posY + mi.get_height()) % mi.get_height(); 
+		if(gradient.get_height(bx, by) == -2)
 			buildings_to_attack.push_back(*ebi);
 	}
 
@@ -1747,8 +1897,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 
 
 	int building=buildings_to_attack[num];
-	const int bx=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX;
-	const int by=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY;
+	const int bx=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
+	const int by=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
 
 	AIEcho::Gradients::GradientInfo gi_pathfind;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
@@ -1756,7 +1906,6 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	Gradient& gradient_pathfind=echo.get_gradient_manager().get_gradient(gi_pathfind);
 
 	///Next, find the closest point manhattan distance wise, to the building that is accessible
-	MapInfo mi(echo);
 	int closest_x=0;
 	int closest_y=0;
 	int closest_distance=10000;
@@ -1797,6 +1946,9 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		int dy=(ypos+1+h) % h;
 		int uy=(ypos-1+h) % h;
 		int lowest_entity=gradient_pathfind.get_height(xpos, ypos)+2;
+
+		if(lowest_entity == 0)
+			break;
 
 		//Test diagnols first, then the horizontals and verticals.
 		if(gradient_pathfind.get_height(lx, uy) < lowest_entity && gradient_pathfind.get_height(lx, uy)>=0)
@@ -1887,6 +2039,489 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 
 
 
+void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
+{
+	//This algorithm works by finding all units and buildings under attack, and creating a potential
+	//field by adding 1 to all squares within range of the units or buildings under attack. The result
+	//will be that the highest square will have the largest number of buildings or units that need
+	//defending within range. A flag is put onto the highest square, and the same concept is repeated,
+	//except that all under-attack units or buildings that are within range of a placed defense flag
+	//are ignored.
+	
+	//This algorithm does that, except optimized. A list is maintained to keep track of squares
+	//that have a value other than 0 as these are the only ones we want to place a flag on, and
+	//when a defense flag position is chosen, all units or buildings within range of the flag
+	//have all squares within their range -1, effectivly doing the same as recalculating all
+	//squares excluding those units now covered by a defense flag
+	MapInfo mi(echo);
+	const int w = mi.get_width();
+	const int h = mi.get_height();
+	
+	Uint16* counts = new Uint16[w * h];
+	Uint16* buildingGID = new Uint16[w * h];
+	Uint16* unitGID = new Uint16[w * h];
+	memset(counts, 0, sizeof(Uint16) * w * h);
+	memset(buildingGID, NOGBID, sizeof(Uint16) * w * h);
+	memset(unitGID, NOGUID, sizeof(Uint16) * w * h);
+	std::list<int> locations;
+	
+	//For every unit thats under attack, increment in the squares surrounding it.
+	//Use the 'locations' list to keep track of non-zero squares
+	for(int i=0; i<1024; ++i)
+	{
+		Unit* unit = echo.player->team->myUnits[i];
+		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[unit->posX * h + unit->posY] == NOGUID)
+		{
+			unitGID[unit->posX * h + unit->posY] = unit->gid;
+			modify_points(counts, w, h, unit->posX, unit->posY, 4, 1, locations);
+		}
+	}
+	for(int i=0; i<1024; ++i)
+	{
+		Building* building = echo.player->team->myBuildings[i];
+		if(building && building->underAttackTimer && buildingGID[building->posX * h + building->posY] == NOGBID)
+		{
+			int nx = (building->posX - building->type->decLeft + w) %w;
+			int ny = (building->posY - building->type->decTop + h) %h;
+			buildingGID[building->posX * h + building->posY] = building->gid;
+			modify_points(counts, w, h, nx, ny, 4, 1, locations);
+		}
+	}
+	
+	///Choose the highest location, remove all units and buildings within a flags radius of that location,
+	///and add that location to the list
+	std::vector<int> flagLocations;
+	std::vector<int> enemyUnits;
+	while(!locations.empty())
+	{
+		//Find the square with the highest value, a flag is put here
+		int max = 0;
+		int maxPos = 0;
+		for(std::list<int>::iterator i = locations.begin(); i!=locations.end(); ++i)
+		{
+			int pos = *i;
+			int n = counts[pos];
+			if(n > max)
+			{
+				maxPos = pos;
+				max = n;
+			}
+		}
+		
+		flagLocations.push_back(maxPos);
+		
+		int max_x = maxPos / h;
+		int max_y = maxPos % h;
+
+		//test(echo, counts, w, h, squareProtected, locations);
+		
+		//For all units and buildings that are under attack and within the radius of the flag, 
+		//decrement the values surrounding them. At the same time, count the number of enemy
+		//warriors in this zone
+		int enemy_count = 0;
+		for(int px = -3; px <= 3; ++px)
+		{
+			int nx = (max_x + px + w)%w;
+			for(int py = -3; py<=3; ++py)
+			{
+				int ny = (max_y + py + h)%h;
+				if(unitGID[nx * h + ny] != NOGUID)
+				{
+					Unit* unit = echo.player->team->myUnits[Unit::GIDtoID(unitGID[nx * h + ny])];
+					modify_points(counts, w, h, unit->posX, unit->posY, 4, -1, locations);
+					unitGID[nx * h + ny] = NOGUID;
+				}
+				if(buildingGID[nx * h + ny] != NOGBID)
+				{
+					Building* building = echo.player->team->myBuildings[Building::GIDtoID(buildingGID[nx * h + ny])];
+					int nx2 = (building->posX - building->type->decLeft + w) %w;
+					int ny2 = (building->posY - building->type->decTop + h) %h;
+					modify_points(counts, w, h, nx2, ny2, 4, -1, locations);
+					buildingGID[nx * h + ny] = NOGBID;
+				}
+				
+				Uint16 guid = echo.player->map->getGroundUnit(nx, ny);
+				if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & echo.player->team->enemies)
+				{
+					Unit* unit = echo.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
+					if(unit->typeNum == WARRIOR)
+					{
+						enemy_count += 1;
+					}
+				}
+			}
+		}
+		enemyUnits.push_back(std::min(20, enemy_count));
+	}
+	
+	//Remove all flags with an enemy_count of 0
+	for(std::vector<int>::iterator i=flagLocations.begin(); i!=flagLocations.end();)
+	{
+		int n = i-flagLocations.begin();
+		if(enemyUnits[n] == 0)
+		{
+			i = flagLocations.erase(i);
+			enemyUnits.erase(enemyUnits.begin() + n);
+		}
+		else
+		{
+			++i;
+		}
+	}
+
+	//Take all existing defense flags, and move them to the nearest new flag position
+	std::vector<int> existing_defense_flags(defense_flags);
+	while(!existing_defense_flags.empty())
+	{
+		int min_dist = INT_MAX;
+		int min_flag = 0;
+		int min_pos = 0;
+		int min_pos_x = 0;
+		int min_pos_y = 0;
+		int min_enemy = 0;
+		///Choose the flag <-> flag location combination that has the lowest distance, start from it
+		for(std::vector<int>::iterator i = existing_defense_flags.begin(); i!=existing_defense_flags.end(); ++i)
+		{
+			if(echo.get_building_register().is_building_found(*i))
+			{
+				Building* b = echo.get_building_register().get_building(*i);
+				for(std::vector<int>::iterator j = flagLocations.begin(); j!=flagLocations.end(); ++j)
+				{
+					int flag_x = (*j) / h;
+					int flag_y = (*j) % h;
+					int d = echo.player->map->warpDistSquare(flag_x, flag_y, b->posX, b->posY);
+					if(d < min_dist)
+					{
+						min_dist = d;
+						min_flag = i - existing_defense_flags.begin();
+						min_pos = j - flagLocations.begin();
+						min_pos_x = flag_x;
+						min_pos_y = flag_y;
+						min_enemy = enemyUnits[j - flagLocations.begin()];
+					}
+				}
+			}
+		}
+		//Don't move flags more than 8 squares
+		if(min_dist < (8*8))
+		{
+			int id_flag = existing_defense_flags[min_flag];
+			existing_defense_flags.erase(existing_defense_flags.begin() + min_flag);
+			flagLocations.erase(flagLocations.begin() + min_pos);
+			enemyUnits.erase(enemyUnits.begin() + min_pos);
+			
+			if(min_dist>0)
+			{
+				ManagementOrder* mo_move=new ChangeFlagPosition(min_pos_x, min_pos_y, id_flag);
+				echo.add_management_order(mo_move);
+			}
+			if(min_enemy != echo.get_building_register().get_assigned(id_flag))
+			{
+				ManagementOrder* mo_assign=new AssignWorkers(min_enemy, id_flag);
+				echo.add_management_order(mo_assign);
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	//If there are remaining flags, its because these flags don't have a new position
+	//on the map to go to, so delete them
+	for(std::vector<int>::iterator i = existing_defense_flags.begin(); i!=existing_defense_flags.end(); ++i)
+	{
+		if(echo.get_building_register().is_building_found(*i))
+		{
+		    Building* b = echo.get_building_register().get_building(*i);
+		    int enemy_count = 0;
+		    for(int px = -3; px <= 3; ++px)
+		    {
+		            int nx = (b->posX + px + w)%w;
+		            for(int py = -3; py<=3; ++py)
+		            {
+		                    int ny = (b->posY + py + h)%h;
+		                    Uint16 guid = echo.player->map->getGroundUnit(nx, ny);
+		                    if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & echo.player->team->enemies)
+		                    {
+		                            Unit* unit = echo.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
+		                            if(unit->typeNum == WARRIOR)
+		                            {
+		                                    enemy_count += 1;
+		                            }
+		                    }
+		            }
+		    }
+		    if(enemy_count == 0)
+		    {
+		            ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
+		            echo.add_management_order(mo_destroyed);
+		    }
+		    else
+		    {
+		            if(enemy_count != echo.get_building_register().get_assigned(*i))
+		            {
+		                    ManagementOrder* mo_assign=new AssignWorkers(enemy_count, *i);
+		                    echo.add_management_order(mo_assign);
+		            }
+		    }
+		}
+	}
+	
+	//If there are remaining positions on the map, it is because we didn't have enough existing
+	//flags to cover them, so create new ones
+	for(std::vector<int>::iterator i = flagLocations.begin(); i!=flagLocations.end(); ++i)
+	{
+		int enemy = enemyUnits[i - flagLocations.begin()];
+		int flag_x = *i / h;
+		int flag_y = *i % h;
+
+		//The main order for the war flag
+		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::WAR_FLAG, enemy);
+		bo_flag->add_constraint(new Construction::SinglePosition(flag_x, flag_y));
+		unsigned int id_flag=echo.add_building_order(bo_flag);
+		defense_flags.push_back(id_flag);
+
+		ManagementOrder* mo_completion=new ChangeFlagSize(4, id_flag);
+		echo.add_management_order(mo_completion);
+		
+		ManagementOrder* mo_destroyed=new SendMessage("guard flag deleted " + boost::lexical_cast<std::string>(id_flag));
+		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
+		echo.add_management_order(mo_destroyed);
+	}
+	
+	delete[] counts;
+	delete[] unitGID;
+	delete[] buildingGID;
+}
+
+
+
+void NewNicowar::modify_points(Uint16* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations)
+{
+	for(int px = -dist; px <= dist; ++px)
+	{
+		int nx = (x + px + w)%w;
+		for(int py = -dist; py <= dist; ++py)
+		{
+			int ny = (y + py + h)%h;
+			if(px * px + py * py <= dist * dist)
+			{
+				Uint8 d = (dist-std::max(std::abs(px), std::abs(py)));
+				if(d != 0)
+				{
+					if(value>0)
+					{
+						if(counts[nx * h + ny] == 0)
+							locations.push_back(nx * h + ny);
+						counts[nx * h + ny] += d;
+					}
+					else if(value<0)
+					{
+						counts[nx * h + ny] -= d;
+						if(counts[nx * h + ny] == 0)
+							locations.remove(nx * h + ny);
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
+{
+	//The algorithm here is interesting. Bassically, an enemy unit is selected. Every enemy unit within 4 squares of this unit
+	//is counted as part of the larger group, and every unit 4 squares from those and so on, as long as it doesn't go past
+	//6 squares from the average. Flags are put on the average x and y of largest groups
+	MapInfo mi(echo);
+	const int w = mi.get_width();
+	const int h = mi.get_height();
+
+	std::vector<boost::tuple<int, int, int> > groups;
+	
+	if(explorer_attack_phase && target!=-1)
+	{
+		Unit** units = new Unit*[1024];
+		Unit* first = NULL;
+		for(int i=0; i<1024; ++i)
+		{
+			Unit* unit = echo.player->game->teams[target]->myUnits[i];
+			if(unit && mi.is_discovered(unit->posX, unit->posY) && unit->typeNum != EXPLORER && unit->activity != Unit::ACT_UPGRADING)
+			{
+				if(!first)
+					first = unit;
+				units[i] = unit;
+			}
+			else
+			{
+				units[i] = NULL;
+			}
+		}
+		
+		while(true)
+		{
+			int group_x = 0;
+			int group_y = 0;
+			int group_size = 0;
+		
+			std::queue<Unit*> proccess;
+			std::queue<int> xposs;
+			std::queue<int> yposs;
+			for(int i=0; i<1024; ++i)
+			{
+				if(units[i])
+				{
+					group_x += units[i]->posX;
+					group_y += units[i]->posY;
+					proccess.push(units[i]);
+					xposs.push(units[i]->posX);
+					yposs.push(units[i]->posY);
+					units[i] = NULL;
+					group_size+=1;
+					break;
+				}
+			}
+			
+			if(group_size == 0)
+				break;
+			
+			while(!proccess.empty())
+			{
+				Unit* top = proccess.front();
+				int ix = xposs.front();
+				int iy = yposs.front();
+				proccess.pop();
+				xposs.pop();
+				yposs.pop();
+				for(int dx = -4; dx<=4; ++dx)
+				{
+					int nx = (top->posX + dx + w) % w;
+					for(int dy = -4; dy<=4; ++dy)
+					{
+						int ny = (top->posY + dy + h) % h;
+						if(echo.player->map->warpDistSquare(group_x / group_size, group_y / group_size, nx, ny) < (6*6))
+						{
+							Uint16 guid = echo.player->map->getGroundUnit(nx, ny);
+							if(guid != NOGUID && Unit::GIDtoTeam(guid) == target)
+							{
+								int id = Unit::GIDtoID(guid);
+								if(units[id])
+								{
+									group_x += ix + dx;
+									group_y += iy + dy;
+									proccess.push(units[id]);
+									xposs.push(ix + dx);
+									yposs.push(iy + dy);
+									units[id] = NULL;
+									group_size+=1;
+								}
+							}
+						}
+					}
+				}
+			}
+			group_x = (group_x / group_size + w)%w;
+			group_y = (group_y / group_size + h)%h;
+			
+			groups.push_back(boost::make_tuple(group_size, group_x, group_y));
+		}
+	}
+	
+	std::sort(groups.begin(), groups.end(), std::greater<boost::tuple<int, int, int> >());
+	int total_attacks = strategy.offense_explorer_flag_number;
+	if(!explorer_attack_phase)
+		total_attacks = 0;
+	
+	//Go through existing flags and see if they can be moved to be on top of new groups
+	std::vector<int> existing_explorer_attack_flags(explorer_attack_flags);
+	while(total_attacks && !existing_explorer_attack_flags.empty())
+	{
+		int min_dist = INT_MAX;
+		int min_flag = 0;
+		int min_pos = 0;
+		int min_pos_x = 0;
+		int min_pos_y = 0;
+		///Choose the flag <-> flag location combination that has the lowest distance, start from it
+		for(std::vector<int>::iterator i = existing_explorer_attack_flags.begin(); i!=existing_explorer_attack_flags.end(); ++i)
+		{
+			if(echo.get_building_register().is_building_found(*i))
+			{
+				Building* b = echo.get_building_register().get_building(*i);
+				for(std::vector<boost::tuple<int, int, int> >::iterator j = groups.begin(); j!=groups.end(); ++j)
+				{
+					int flag_x = j->get<1>();
+					int flag_y = j->get<2>();
+					int d = echo.player->map->warpDistSquare(flag_x, flag_y, b->posX, b->posY);
+					if(d < min_dist)
+					{
+						min_dist = d;
+						min_flag = i - existing_explorer_attack_flags.begin();
+						min_pos = j - groups.begin();
+						min_pos_x = flag_x;
+						min_pos_y = flag_y;
+					}
+				}
+			}
+		}
+		
+		if(min_dist != INT_MAX)
+		{
+			total_attacks-=1;
+			int id_flag = existing_explorer_attack_flags[min_flag];
+
+			existing_explorer_attack_flags.erase(existing_explorer_attack_flags.begin() + min_flag);
+			groups.erase(groups.begin() + min_pos);
+			
+			if(min_dist != 0)
+			{
+				ManagementOrder* mo_move=new ChangeFlagPosition(min_pos_x, min_pos_y, id_flag);
+				echo.add_management_order(mo_move);
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	
+	//If there are remaining flags, its because these flags don't have a new position
+	//on the map to go to, so delete them
+	for(std::vector<int>::iterator i = existing_explorer_attack_flags.begin(); i!=existing_explorer_attack_flags.end(); ++i)
+	{
+		if(echo.get_building_register().is_building_found(*i))
+		{
+			ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
+			echo.add_management_order(mo_destroyed);
+		}
+	}
+	
+	while(total_attacks && !groups.empty())
+	{
+		boost::tuple<int, int, int> groupInfo = *groups.begin();
+		groups.erase(groups.begin());
+		total_attacks -= 1;
+			
+		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, strategy.offense_explorer_flag_assigned);
+		bo_flag->add_constraint(new Construction::SinglePosition(groupInfo.get<1>(), groupInfo.get<2>()));
+		unsigned int id_flag=echo.add_building_order(bo_flag);
+
+		ManagementOrder* mo_completion=new ChangeFlagSize(6, id_flag);
+		echo.add_management_order(mo_completion);
+
+		ManagementOrder* mo_level=new ChangeFlagMinimumLevel(4, id_flag);
+		echo.add_management_order(mo_level);
+		
+		explorer_attack_flags.push_back(id_flag);
+		
+		ManagementOrder* mo_destroyed=new SendMessage("explorer attack flag deleted " + boost::lexical_cast<std::string>(id_flag));
+		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
+		echo.add_management_order(mo_destroyed);
+	}
+}
+
+
+
 void NewNicowar::update_farming(Echo& echo)
 {
 	//Farming wheat and wood near water
@@ -1910,7 +2545,8 @@ void NewNicowar::update_farming(Echo& echo)
 						mo_farming->add_location(x, y);
 				}
 				else */if((x%2==1 && y%2==1) &&
-						gradient.get_height(x, y)<(mi.is_ressource(x, y, WOOD) ? 6 : 10))
+						gradient.get_height(x, y)<(mi.is_ressource(x, y, WOOD) ? 6 : 10) &&
+						!mi.is_clearing_area(x, y))
 				{
 					if(!mi.is_forbidden_area(x, y))
 						mo_farming->add_location(x, y);

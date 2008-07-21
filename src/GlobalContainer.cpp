@@ -30,6 +30,7 @@
 #include "GlobalContainer.h"
 #include "Header.h"
 #include "IntBuildingType.h"
+#include "KeyboardManager.h"
 #include "LogFileManager.h"
 #include "MapEditKeyActions.h"
 #include "NonANSICStdWrapper.h"
@@ -63,6 +64,8 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("campaigns");
+	fileManager->addWriteSubdir("thumbnails");
+	fileManager->addWriteSubdir("gamelog ");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
@@ -74,9 +77,15 @@ GlobalContainer::GlobalContainer(void)
 	runNoX = false;
 	
 	hostServer = false;
+	hostRouter = false;
+	adminRouter = false;
 	hostServerMapName[0] = 0;
 	hostServerUserName[0] = 0;
 	hostServerPassWord[0] = 0;
+	
+	runTestGames=false;
+	automaticEndingGame=false;
+	automaticEndingSteps=-1;
 	
 	gfx = NULL;
 	mix = NULL;
@@ -92,6 +101,7 @@ GlobalContainer::GlobalContainer(void)
 	littleFont = NULL;
 	
 	voiceRecorder = NULL;
+	automaticGameGlobalEndConditions=false;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
@@ -113,6 +123,9 @@ GlobalContainer::~GlobalContainer(void)
 	
 	if (voiceRecorder)
 		delete voiceRecorder;
+	
+	// delete title image
+	delete title;
 	
 	// release ressources
 	Toolkit::close();
@@ -148,7 +161,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			{
 				runNoXGameName = argv[i + 1];
 				runNoX = true;
-				good &= (sscanf(argv[i + 2], "%d", &runNoXCountSteps) == 1);
+				automaticEndingGame = true;
+				good &= (sscanf(argv[i + 2], "%d", &automaticEndingSteps) == 1);
 				good &= (sscanf(argv[i + 3], "%d", &runNoXCountRuns) == 1);
 				i += 3;
 			}
@@ -168,6 +182,33 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			runNoX=true;
 			hostServer=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-router")==0)
+		{
+			runNoX=true;
+			hostRouter=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-admin-router")==0)
+		{
+			runNoX=true;
+			adminRouter=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-test-games")==0)
+		{
+			runTestGames=true;
+			automaticEndingGame = true;
+			automaticGameGlobalEndConditions=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-test-games-nox")==0)
+		{
+			runTestGames=true;
+			automaticEndingGame = true;
+			runNoX=true;
+			automaticGameGlobalEndConditions=true;
 			continue;
 		}
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
@@ -319,6 +360,9 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-daemon\t runs the YOG server\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
+			printf("-test-games\tCreates random games with AI and tests them");
+			printf("-test-games-nox\tCreates random games with AI and tests them, without gui");
+			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);
@@ -401,31 +445,30 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	}
 }
 
-struct ProgressBar
+void GlobalContainer::updateLoadProgressScreen(int value)
 {
-	DrawableSurface *s;
-} progress;
-
-void GlobalContainer::updateLoadProgressBar(int value)
-{
-	gfx->drawSurface((gfx->getW()-progress.s->getW())>>1, (gfx->getH()-progress.s->getH())>>1, progress.s);
-	gfx->drawFilledRect(((gfx->getW()-400)>>1), (gfx->getH()>>1)+11+180, (value)<<2, 20, 10, 50, 255, 80);
+	unsigned randomSeed = 1;
+	unsigned columnCount = gfx->getW() / 32;
+	unsigned limit = (value * columnCount) / 100;
+	for (int y = 0; y < gfx->getH(); y += 32)
+		for (int x = 0; x < gfx->getW(); x += 32)
+		{
+			randomSeed = randomSeed * 69069;
+			unsigned index;
+			if (x/32 < limit)
+				index = ((randomSeed >> 16) & 0xF);
+			else if (x/32 == limit)
+				index = ((randomSeed >> 16) & 0x7) + 64;
+			else
+				index = ((randomSeed >> 16) & 0xF) + 128;
+			gfx->drawSprite(x, y, terrain, index);
+		}
+	//gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color::black);
+	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title);
+	//gfx->drawFilledRect(((gfx->getW()-400)>>1), (gfx->getH()>>1)+11+180, (value)<<2, 20, 10, 50, 255, 80);
 	gfx->nextFrame();
 }
 
-void GlobalContainer::initProgressBar(void)
-{
-	progress.s = new DrawableSurface("data/gfx/IntroMN.png");
-	gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color::black);
-	progress.s->drawRect((progress.s->getW()-402)>>1, (progress.s->getH()>>1)+10+180, 402, 22, 180, 180, 180);
-	gfx->drawSurface((gfx->getW()-progress.s->getW())>>1, (gfx->getH()-progress.s->getH())>>1, progress.s);
-	gfx->nextFrame();
-}
-
-void GlobalContainer::destroyProgressBar(void)
-{
-	delete progress.s;
-}
 
 void GlobalContainer::load(void)
 {
@@ -444,23 +487,23 @@ void GlobalContainer::load(void)
 		exit(-1);
 	}
 	
-	Toolkit::getStringTable()->setLang(settings.defaultLanguage);
+	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
+		
 
 	if (!runNoX)
 	{
 		// create graphic context
-		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags);
+		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
 		gfx->setMinRes(640, 480);
 		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
-		gfx->setCaption("Globulation 2", "glob 2");
-	}
-	
-	if (!runNoX)
-	{
-		initProgressBar();
+		
+		// load data required for drawing progress screen
+		title = new DrawableSurface("data/gfx/title.png");
+		terrain = Toolkit::getSprite("data/gfx/terrain");
+		updateLoadProgressScreen(0);
 		
 		// create mixer
-		mix = new SoundMixer(settings.musicVolume, settings.mute);
+		mix = new SoundMixer(settings.musicVolume, settings.voiceVolume, settings.mute);
 		mix->loadTrack("data/zik/intro.ogg");
 		mix->loadTrack("data/zik/menu.ogg");
 		mix->loadTrack("data/zik/a1.ogg");
@@ -472,12 +515,18 @@ void GlobalContainer::load(void)
 		// create voice recorder
 		voiceRecorder = new VoiceRecorder();
 		
-		updateLoadProgressBar(10);
+		updateLoadProgressScreen(15);
 	}
 	
 	// load buildings types
 	buildingsTypes.load();
 	IntBuildingType::init();
+	
+	if (!runNoX)
+	{
+		updateLoadProgressScreen(35);
+	}
+	
 	// load default unit types
 	Race::loadDefault();
 	// load ressources types
@@ -487,9 +536,20 @@ void GlobalContainer::load(void)
 	GameGUIKeyActions::init();
 	MapEditKeyActions::init();
 	
+	if (settings.version < 1)
+	{
+		KeyboardManager game(GameGUIShortcuts);
+		game.loadDefaultShortcuts();
+		game.saveKeyboardLayout();
+
+		KeyboardManager edit(MapEditShortcuts);
+		edit.loadDefaultShortcuts();
+		edit.saveKeyboardLayout();
+	}
+	
 	if (!runNoX)
 	{
-		updateLoadProgressBar(35);
+		updateLoadProgressScreen(40);
 		
 		// load fonts
 		Toolkit::loadFont("data/fonts/sans.ttf", 20, "menu");
@@ -502,9 +562,9 @@ void GlobalContainer::load(void)
 		littleFont = Toolkit::getFont("little");
 		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 
-		updateLoadProgressBar(45);
+		updateLoadProgressScreen(50);
 		// load terrain data
-		terrain = Toolkit::getSprite("data/gfx/terrain");
+		//terrain = Toolkit::getSprite("data/gfx/terrain"); // terrain is already loaded as it is required to display progress screen
 		terrainWater = Toolkit::getSprite("data/gfx/water");
 		terrainCloud = Toolkit::getSprite("data/gfx/cloud");
 		
@@ -514,7 +574,7 @@ void GlobalContainer::load(void)
 		// load shader for unvisible terrain
 		terrainShader = Toolkit::getSprite("data/gfx/shade");
 		
-		updateLoadProgressBar(65);
+		updateLoadProgressScreen(60);
 		// load ressources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
@@ -523,12 +583,12 @@ void GlobalContainer::load(void)
 		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
 		deathAnimation = Toolkit::getSprite("data/gfx/death"); 
 
-		updateLoadProgressBar(70);
+		updateLoadProgressScreen(70);
 		// load units
 		units = Toolkit::getSprite("data/gfx/unit");
 		unitsSkins = new UnitsSkins();
 
-		updateLoadProgressBar(90);
+		updateLoadProgressScreen(90);
 		// load graphics for gui
 		unitmini = Toolkit::getSprite("data/gfx/unitmini");
 		gamegui = Toolkit::getSprite("data/gfx/gamegui");
@@ -539,8 +599,7 @@ void GlobalContainer::load(void)
 		// use custom style
 		Style::style = new Glob2Style;
 
-		updateLoadProgressBar(100);
-		destroyProgressBar();
+		updateLoadProgressScreen(100);
 	}
 };
 

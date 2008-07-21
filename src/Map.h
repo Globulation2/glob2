@@ -60,12 +60,13 @@ struct Case
 	Uint32 forbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 	///The difference between forbidden zone and hidden forbidden zone is that hidden forbidden zone
 	///is put there by the game engine and is not draw to the screen.
-	Uint32 hiddenForbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 	Uint32 guardArea; // This is a mask, one bit by team, 1=guard area, 0=normal
 	Uint32 clearArea; // This is a mask, one bit by team, 1=clear area, 0=normal
 
 	Uint16 scriptAreas; // This is also a mask. A single bit represents an area #n, on or off for the square
 	Uint8 canRessourcesGrow; // This is a boolean, it represents whether ressources are allowed to grow into this location.
+	
+	Uint16 fertility; // This is a value that represents the fertility of this square, the chance that wheat will grow on it
 };
 
 
@@ -75,7 +76,7 @@ struct Case
 */
 class Map
 {
-	static const bool verbose = true;
+	static const bool verbose = false;
 public:
 	//! Type of terrain (used for undermap)
 
@@ -134,17 +135,13 @@ public:
 	///Returns a normalized version of the x cordinate, taking into account that x cordinates wrap arround
 	int normalizeX(int x)
 	{
-		if(x<0)
-			return (x%w) + w;
-		return x%w;
+		return (x + w) & wMask;
 	}
 	
 	///Returns a normalized version of the y cordinate, taking into account that y cordinates wrap arround
 	int normalizeY(int y)
 	{
-		if(y<0)
-			return (y%h) + h;
-		return y%h;
+		return (y + h) & hMask;
 	}
 
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
@@ -216,6 +213,12 @@ public:
 	bool isMapDiscovered(int x, int y, Uint32 visionMask)
 	{
 		return ((mapDiscovered[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
+	}
+	
+	//! Sets all map for all teams to discovered state
+	void setMapDiscovered(void)
+	{
+		memset(mapDiscovered, ~0u, w*h*sizeof(Uint32));
 	}
 
 	//! Returs true if map is currently discovered at position (x,y) for a given vision mask.
@@ -318,7 +321,7 @@ public:
 	//Returns the combined forbidden and hidden foribidden masks
 	Uint32 getForbidden(int x, int y)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden | cases[((y&hMask)<<wDec)+(x&wMask)].hiddenForbidden;
+		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden;
 	}
 	
 	Uint8 getExplored(int x, int y, int team)
@@ -349,19 +352,19 @@ public:
 	void removeForbidden(int x, int y, Uint32 teamNum)
 	{
 		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
-		c.hiddenForbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
+		c.forbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
 	}
 	
-	void addHiddenForbidden(int x, int y, Uint32 teamNum)
+	void addClearArea(int x, int y, Uint32 teamNum)
 	{
-		cases[((y&hMask)<<wDec)+(x&wMask)].hiddenForbidden |= Team::teamNumberToMask(teamNum);
+		cases[((y&hMask)<<wDec)+(x&wMask)].clearArea |=  Team::teamNumberToMask(teamNum);
+	}
+	
+	void addGuardArea(int x, int y, Uint32 teamNum)
+	{
+		cases[((y&hMask)<<wDec)+(x&wMask)].guardArea |=  Team::teamNumberToMask(teamNum);
 	}
 
-	void removeHiddenForbidden(int x, int y, Uint32 teamNum)
-	{
-		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
-		c.hiddenForbidden ^= c.hiddenForbidden &  Team::teamNumberToMask(teamNum);
-	}
 	
 	bool isWater(int x, int y)
 	{
@@ -378,6 +381,11 @@ public:
 	bool isGrass(int x, int y)
 	{
 		return (getTerrain(x, y)<16);
+	}
+	
+	bool isGrass(unsigned pos)
+	{
+		return  (getTerrain(pos)<16);
 	}
 	
 	bool isSand(int x, int y)
@@ -461,6 +469,22 @@ public:
 	//! Return true if unit has contact with enemy. If true, put contact direction in dx, dy
 	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
 
+	//! Sets this particular clearing area location as claimed
+	void setClearingAreaClaimed(int x, int y, int teamNumber, int gid);
+	//! Sets this particular clearing area location as unclaimed
+	void setClearingAreaUnclaimed(int x, int y, int teamNumber);
+	//! Returns the gid if this clearing area is claimed, NOGUID otherwise
+	int isClearingAreaClaimed(int x, int y, int teamNumber);
+
+	//! Marks a particular square as containing an immobile unit
+	void markImmobileUnit(int x, int y, int teamNumber);
+	//! Clears a particular square of having an immobile unit
+	void clearImmobileUnit(int x, int y);
+	//! Returns true if theres an immobile unit on the square
+	bool isImmobileUnit(int x, int y);
+	//! Returns the team number of the immobile unit on the given square, 255 for none
+	Uint8 getImmobileUnit(int x, int y);
+
 	//! Return GID
 	Uint16 getGroundUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].groundUnit; }
 	Uint16 getAirUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].airUnit; }
@@ -532,7 +556,8 @@ public:
 		GT_BUILDING = 2,
 		GT_FORBIDDEN = 3,
 		GT_GUARD_AREA = 4,
-		GT_SIZE = 5
+		GT_CLEAR_AREA=5,
+		GT_SIZE = 6
 	};
 	
 	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
@@ -545,6 +570,13 @@ public:
 	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
 	{
 		Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
+		assert(gradient);
+		return gradient[((y&hMask)<<wDec)+(x&wMask)];
+	}
+	
+	Uint8 getClearingGradient(int teamNumber, bool canSwim, int x, int y)
+	{
+		Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
 		assert(gradient);
 		return gradient[((y&hMask)<<wDec)+(x&wMask)];
 	}
@@ -585,6 +617,8 @@ public:
 	bool pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
 	//! Find the best direction toward gaurd area, return true if one has been found, false otherwise
 	bool pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	//! Find the best direction toward clearing area, return true if one has been found, false otherwise
+	bool pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
 	template<typename Tint> void updateForbiddenGradient(int teamNumber, bool canSwim);
@@ -595,6 +629,14 @@ public:
 	template<typename Tint> void updateGuardAreasGradient(int teamNumber, bool canSwim);
 	void updateGuardAreasGradient(int teamNumber);
 	void updateGuardAreasGradient();
+	//! Update the clear area gradient
+	void updateClearAreasGradient(int teamNumber, bool canSwim);
+	template<typename Tint> void updateClearAreasGradient(int teamNumber, bool canSwim);
+	void updateClearAreasGradient(int teamNumber);
+	void updateClearAreasGradient();
+	
+	///Implements A* algorithm for point to point pathfinding. Does not cache path, designed to be fast
+	bool pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength);
 	
 	void initExploredArea(int teamNumber);
 	void makeDiscoveredAreasExplored(int teamNumber);
@@ -712,6 +754,9 @@ public:
 	//! true = clear area
 	Utilities::BitArray localClearAreaMap;
 	
+	///This is the maximum fertility of any point on the map
+	Uint16 fertilityMaximum;
+	
 public:
 	// Used to go to ressources
 	//TODO: make the 32 into a variable TEAM_COUNT to save memory in almost all cases
@@ -723,18 +768,37 @@ public:
 	//[int team][bool unitCanSwim]
 	Uint8 *forbiddenGradient[32][2];
 	
-	// Used to attrack idle warriors into guard areas
+	// Used to attract idle warriors into guard areas
 	//[int team][bool unitCanSwim]
 	Uint8 *guardAreasGradient[32][2];
+	
+	// Used to attract idle workers into clearing
+	// areas that aren't clear
+	Uint8 *clearAreasGradient[32][2];
 	
 	// Used to guide explorers
 	//[int team]
 	// 0=unexplored, 255=just explored
 	Uint8 *exploredArea[32];
 	
+	/// This shows how many "claims" there are on a particular ressource square
+	/// This is so that not all 150 free units go after one piece of wood
+	/// Each square is the gid of the claiming unit
+	Uint16 *clearingAreaClaims[32];
+	
+	/// These are integers that tell whether an immobile unit is standing on the
+	/// square, and if so, what team number it is. In terms of the engine, these
+	/// are treated like forbidden areas
+	Uint8 *immobileUnits;
+	
 protected:
 	//Used for scheduling computation time.
 	bool gradientUpdated[32][MAX_NB_RESSOURCES][2];
+	//Used for scheduling computation time on the guard area gradients
+	bool guardGradientUpdated[32][2];
+	//Used for scheduling computation time on the clear area gradients
+	bool clearGradientUpdated[32][2];
+	
 	Uint8 *undermap;
 	Uint8 **listedAddr;
 	size_t size;
@@ -743,11 +807,50 @@ protected:
 	Sint32 wSector, hSector;
 	int sizeSector;
 	
+	
+	///This is a single point in the array used for A* algorithm
+	struct AStarAlgorithmPoint
+	{
+		AStarAlgorithmPoint() : x(-1), y(-1), dx(-1), dy(-1), moveCost(static_cast<Uint16>(-1)), totalCost(static_cast<Uint16>(-1)), isClosed(false) { }
+		AStarAlgorithmPoint(Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Uint16 moveCost, Uint16 totalCost, bool isClosed) : x(x), y(y), dx(dx), dy(dy), moveCost(moveCost), totalCost(totalCost), isClosed(isClosed) {}
+		//Pos x
+		Sint16 x;
+		//Pos y
+		Sint16 y;
+		//The direction from the starting point that leads to this path
+		Sint16 dx;
+		//The direction from the starting point that leads to this path
+		Sint16 dy;
+		//Cost to get to square x
+		Uint16 moveCost;
+		//Cost to get to square x + estimate to get to the end
+		Uint16 totalCost;
+		//Whether this cell has been examined
+		bool isClosed;
+	};
+	
+	///This is a function-object that compares two points based on their total score in the A* algorithm
+	struct AStarComparator
+	{
+		AStarComparator(const AStarAlgorithmPoint* points) : points(points) {}
+		bool operator()(int lhs, int rhs)
+		{
+			if(points[lhs].totalCost > points[rhs].totalCost)
+				return true;
+			return false;
+		}
+		const AStarAlgorithmPoint* points;
+	};
+	
+	//This array is kept and re-used for every point-to-point pathfind call
+	AStarAlgorithmPoint* astarpoints;
+	std::vector<int> astarExaminedPoints;
 
 public:
 	Uint32 checkSum(bool heavy);
 	Sint32 warpDistSquare(int px, int py, int qx, int qy); //!< The distance between (px, py) and (qx, qy), warp-safe, but not rooted.
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
+	Sint32 warpDistSum(int px, int py, int qx, int qy); //!< The combined distance on x and r y axis, between (px, py) and (qx, qy), warp-safe.
 	bool isInLocalGradient(int ux, int uy, int bx, int by); //!< Return true if the unit @(ux, uy) is close enough of building @(bx, by).
 	void dumpGradient(Uint8 *gradient, const char *filename = "gradient.dump.pgm");
 

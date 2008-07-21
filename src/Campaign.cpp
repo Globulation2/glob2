@@ -31,6 +31,7 @@ using namespace GAGCore;
 CampaignMapEntry::CampaignMapEntry()
 {
 	isLocked=false;
+	completed=false;
 }
 
 
@@ -92,6 +93,34 @@ bool CampaignMapEntry::isUnlocked()
 
 
 
+bool CampaignMapEntry::isCompleted()
+{
+	return completed;
+}
+
+
+
+void CampaignMapEntry::setCompleted(bool ncompleted)
+{
+	completed = ncompleted;
+}
+
+
+
+const std::string& CampaignMapEntry::getDescription() const
+{
+	return description;
+}
+
+
+
+void CampaignMapEntry::setDescription(const std::string& ndescription)
+{
+	description=ndescription;
+}
+
+
+
 std::vector<std::string>& CampaignMapEntry::getUnlockedByMaps()
 {
 	return unlockedBy;
@@ -115,6 +144,14 @@ bool CampaignMapEntry::load(InputStream* stream, Uint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if(versionMinor>=75)
+	{
+		description = stream->readText("description");
+	}
+	if(versionMinor>=76)
+	{
+		completed = stream->readUint8("completed");
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -136,6 +173,8 @@ void CampaignMapEntry::save(OutputStream* stream)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	stream->writeText(description, "description");
+	stream->writeUint8(completed, "completed");
 	stream->writeLeaveSection();
 }
 
@@ -161,6 +200,7 @@ bool Campaign::load(const std::string& fileName)
 	else
 	{
 		TextInputStream* stream = new TextInputStream(backend);
+		Uint32 versionMinor = stream->readUint32("versionMinor");
 		name = stream->readText("campaignName");
 		playerName = stream->readText("playerName");
 		stream->readEnterSection("maps");
@@ -169,7 +209,7 @@ bool Campaign::load(const std::string& fileName)
 		for(Uint32 n=0; n<size; ++n)
 		{
 			stream->readEnterSection(n);
-			maps[n].load(stream, VERSION_MINOR);
+			maps[n].load(stream, versionMinor);
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
@@ -188,6 +228,7 @@ void Campaign::save(bool isGameSave)
 	else
 		filename = glob2NameToFilename("games", name.c_str(), "txt");
 	TextOutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+	stream->writeUint32(VERSION_MINOR, "versionMinor");
 	stream->writeText(name, "campaignName");
 	stream->writeText(playerName, "playerName");
 	stream->writeEnterSection("maps");
@@ -232,10 +273,12 @@ void Campaign::removeMap(unsigned n)
 
 
 
-void Campaign::unlockAllFrom(const std::string& map)
+void Campaign::setCompleted(const std::string& map)
 {
 	for(unsigned n=0; n<maps.size(); ++n)
 	{
+		if(maps[n].getMapName() == map)
+			maps[n].setCompleted(true);
 		for(unsigned i=0; i<maps[n].getUnlockedByMaps().size(); ++i)
 		{
 			if(maps[n].getUnlockedByMaps()[i] == map)

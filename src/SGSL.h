@@ -48,6 +48,9 @@ struct Token
 		INT,
 		STRING,
 		LANG,
+		
+		// Generic language stuff
+		FUNC_CALL=10,
 
 		// Syntaxic token
 		S_PAROPEN=20,
@@ -139,6 +142,26 @@ struct Token
 	static const char *getNameByType(TokenType type);
 };
 
+// generic functions
+
+class Story;
+class Mapscript;
+class GameGUI;
+class Game;
+
+//! The implementation of a generic function
+typedef void (Story::*FunctionImplementation)(GameGUI*);
+
+//! The description of one function argument
+struct FunctionArgumentDescription
+{
+	const int argRangeFirst;	//!< first valid token type for argument, if < 0 invalid argument description
+	const int argRangeLast; //!< last valid token type for argument, if < 0 invalid argument description
+};
+
+//! All known functions
+typedef std::map<std::string, std::pair<const FunctionArgumentDescription*, FunctionImplementation> > Functions;
+
 struct ErrorReport
 {
 	enum ErrorType
@@ -158,6 +181,7 @@ struct ErrorReport
 		ET_INVALID_ALLIANCE_LEVEL,
 		ET_NOT_VALID_LANG_ID,
 		ET_INVALID_ONLY,
+		ET_WRONG_FUNCTION_ARGUMENT,
 		ET_UNKNOWN,
 		ET_NB_ET,
 	} type;
@@ -176,7 +200,7 @@ struct ErrorReport
 class Aquisition
 {
 public:
-	Aquisition(void);
+	Aquisition(const Functions& functions);
 	virtual ~Aquisition(void);
 
 public:
@@ -191,6 +215,7 @@ public:
 	virtual int ungetChar(char c) = 0;
 
 private:
+	const Functions& functions;
 	Token token;
 	unsigned actLine, actCol, actPos, lastLine, lastCol, lastPos;
 	bool newLine;
@@ -200,7 +225,7 @@ private:
 class FileAquisition: public Aquisition
 {
 public:
-	FileAquisition() { fp=NULL; }
+	FileAquisition(const Functions& functions) : Aquisition(functions) { fp=NULL; }
 	virtual ~FileAquisition() { if (fp) fclose(fp); }
 	bool open(const char *filename);
 
@@ -215,7 +240,7 @@ private:
 class StringAquisition: public Aquisition
 {
 public:
-	StringAquisition();
+	StringAquisition(const Functions& functions);
 	virtual ~StringAquisition();
 	void open(const char *text);
 
@@ -226,10 +251,6 @@ private:
 	char *buffer;
 	int pos;
 };
-
-class Mapscript;
-class GameGUI;
-class Game;
 
 // Independant story line
 class Story
@@ -249,8 +270,29 @@ public:
 	Sint32 checkSum() { return lineSelector; }
 
 	void sendSpace() { recievedSpace=true; }
+	
+	
 private:
+	friend class Mapscript;
 	bool conditionTester(const Game *game, int pc, bool readLevel, bool only);
+	void toto(GameGUI* gui);
+	void objectiveHidden(GameGUI* gui);
+	void objectiveVisible(GameGUI* gui);
+	void objectiveComplete(GameGUI* gui);
+	void objectiveFailed(GameGUI* gui);
+	void hintHidden(GameGUI* gui);
+	void hintVisible(GameGUI* gui);
+	void hilightItem(GameGUI* gui);
+	void unhilightItem(GameGUI* gui);
+	void hilightUnits(GameGUI* gui);
+	void unhilightUnits(GameGUI* gui);
+	void hilightBuildings(GameGUI* gui);
+	void unhilightBuildings(GameGUI* gui);
+	void hilightBuildingOnPanel(GameGUI* gui);
+	void unhilightBuildingOnPanel(GameGUI* gui);
+	void resetAI(GameGUI* gui);
+	
+	
 	bool testCondition(GameGUI *gui);
 	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
 	
@@ -290,6 +332,12 @@ public:
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
 	int getMainTimer(void) { return mainTimer; }
+	
+	/// Adds a team
+	void addTeam();
+	
+	/// Removes the team
+	void removeTeam(int n);
 
 	void reset(void);
 	bool isTextShown;
@@ -303,6 +351,8 @@ private:
 
 	ErrorReport parseScript(Aquisition *donnees, Game *game);
 	bool testMainTimer(void);
+
+	Functions functions;
 
 	int mainTimer;
 	std::vector<bool> hasWon, hasLost;

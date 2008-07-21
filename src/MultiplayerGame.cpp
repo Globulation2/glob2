@@ -19,31 +19,39 @@
 #include "MultiplayerGame.h"
 #include <iostream>
 #include "Engine.h"
-#include "MapAssembler.h"
+#include "YOGClientFileAssembler.h"
 #include "FormatableString.h"
 #include "Toolkit.h"
 #include "StringTable.h"
+#include "NetMessage.h"
+#include "YOGClientGameListManager.h"
 
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
-	: client(client), gjcState(NothingYet), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)
+	: client(client), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)
 {
 	netEngine=NULL;
+	mode = NoMode;
+	state = NothingYet;
 	kickReason = YOGUnknownKickReason;
-	haveMapHeader = false;
-	haveGameHeader = false;
+	
+	gameID=0;
+	fileID=0;
+	chatChannel=0;
+	
 	wasReadyToStart=false;
 	sentReadyToStart=false;
-	isEveryoneReadyToGo=false;
-	chatChannel=0;
+	humanReadyToStart=false;
+	
+	isStarting=false;
+	needToSendMapHeader=false;
 	previousPercentage = 255;
+	numberOfConnectionAttempts=0;
 }
 
 
 
 MultiplayerGame::~MultiplayerGame()
 {
-	if(assembler)
-		client->setMapAssembler(boost::shared_ptr<MapAssembler>());
 }
 
 
@@ -55,39 +63,85 @@ void MultiplayerGame::update()
 	{
 		shared_ptr<MGServerDisconnected> event(new MGServerDisconnected);
 		sendToListeners(event);
+		mode = NoMode;
+		state=NothingYet;
+		if(client->getGameConnection())
+			client->getGameConnection()->closeConnection();
 	}
-
-	if(assembler)
-		assembler->update();
-
-	if(isGameReadyToStart() && !wasReadyToStart)
+	
+	if(state == ConnectingToGameRouter)
+	{
+		//This is a special case, it means the router ip is the same as the yog ip
+		if(gameRouterIP == "YOGIP")
+		{
+			gameRouterIP = 	client->getIPAddress();
+		}
+		if(!client->getGameConnection())
+		{
+			client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(gameRouterIP, YOG_ROUTER_PORT)));
+		}
+		if(!client->getGameConnection()->isConnected() && !client->getGameConnection()->isConnecting())
+		{
+			numberOfConnectionAttempts+=1;
+			if(numberOfConnectionAttempts == 3)
+			{
+				leaveGame();
+			}
+			else
+			{
+				client->getGameConnection()->openConnection(gameRouterIP, YOG_ROUTER_PORT);
+			}
+		}
+		if(client->getGameConnection()->isConnected())
+		{
+			state = ReadyToGo;
+			shared_ptr<NetSetGameInRouter> message(new NetSetGameInRouter(gameID));
+			client->getGameConnection()->sendMessage(message);
+		}
+		
+	}
+	
+	if(state == SendingGameInformation)
+	{
+		if(needToSendMapHeader)
+		{
+			shared_ptr<NetSendReteamingInformation> message(new NetSendReteamingInformation(playerManager.getReteamingInformation()));
+			client->sendNetMessage(message);
+	
+			shared_ptr<NetSendMapHeader> message2(new NetSendMapHeader(mapHeader));
+			client->sendNetMessage(message2);
+			
+			state = ConnectingToGameRouter;
+		}
+	}
+	
+	updateReadyState();
+	if(playerManager.isReadyToGo(client->getPlayerID()) && !wasReadyToStart)
 	{
 		shared_ptr<MGReadyToStartEvent> event(new MGReadyToStartEvent);
 		sendToListeners(event);
-		if(gjcState == JoinedGame)
-		{
-			shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
-			client->sendNetMessage(message);
-		}
+		shared_ptr<MGPlayerReadyStatusChanged> event2(new MGPlayerReadyStatusChanged(client->getPlayerID()));
+		sendToListeners(event2);
+		shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(client->getPlayerID()));
+		client->sendNetMessage(message);
 		wasReadyToStart=true;
 	}
-	else if (!isGameReadyToStart() && wasReadyToStart)
+	else if (!playerManager.isReadyToGo(client->getPlayerID()) && wasReadyToStart)
 	{
 		shared_ptr<MGNotReadyToStartEvent> event(new MGNotReadyToStartEvent);
 		sendToListeners(event);
-		if(gjcState == JoinedGame)
-		{
-			shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(client->getPlayerID()));
-			client->sendNetMessage(message);
-		}
+		shared_ptr<MGPlayerReadyStatusChanged> event2(new MGPlayerReadyStatusChanged(client->getPlayerID()));
+		sendToListeners(event2);
+		shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(client->getPlayerID()));
+		client->sendNetMessage(message);
 		wasReadyToStart=false;
 	}
 
-	if(gjcState == JoinedGame && assembler && assembler->getPercentage() != previousPercentage)
+	if(mode == JoinedGame && client->getYOGClientFileAssembler(fileID) && client->getYOGClientFileAssembler(fileID)->getPercentage() != previousPercentage)
 	{
-		previousPercentage = assembler->getPercentage();
+		previousPercentage = client->getYOGClientFileAssembler(fileID)->getPercentage();
 		
-		shared_ptr<MGDownloadPercentUpdate> event(new MGDownloadPercentUpdate(assembler->getPercentage()));
+		shared_ptr<MGDownloadPercentUpdate> event(new MGDownloadPercentUpdate(client->getYOGClientFileAssembler(fileID)->getPercentage()));
 		sendToListeners(event);
 	}
 }
@@ -99,17 +153,20 @@ void MultiplayerGame::createNewGame(const std::string& name)
 {
 	shared_ptr<NetCreateGame> message(new NetCreateGame(name));
 	client->sendNetMessage(message);
-	gjcState=WaitingForCreateReply;
+	state=WaitingForInitialReply;
+	mode = HostingGame;
 	setDefaultGameHeaderValues();
 }
 
 
 
-void MultiplayerGame::joinGame(Uint16 gameID)
+void MultiplayerGame::joinGame(Uint16 ngameID)
 {
+	gameID=ngameID;
 	shared_ptr<NetAttemptJoinGame> message(new NetAttemptJoinGame(gameID));
 	client->sendNetMessage(message);
-	gjcState=WaitingForJoinReply;
+	state=WaitingForInitialReply;
+	mode = JoinedGame;
 }
 
 
@@ -118,18 +175,31 @@ void MultiplayerGame::leaveGame()
 {	
 	shared_ptr<NetLeaveGame> message(new NetLeaveGame);
 	client->sendNetMessage(message);
+	
+	if(client->getGameConnection())
+		client->getGameConnection()->closeConnection();
+		
+	mode = NoMode;
+	state=NothingYet;
+}
+
+
+
+MultiplayerGame::MultiplayerMode MultiplayerGame::getMultiplayerMode() const
+{
+	return mode;	
 }
 
 
 
 MultiplayerGame::GameJoinCreationState MultiplayerGame::getGameJoinCreationState() const
 {
-	return gjcState;
+	return state;
 }
 
 
 
-YOGGameCreateRefusalReason MultiplayerGame::getGameCreationState()
+YOGServerGameCreateRefusalReason MultiplayerGame::getGameCreationState()
 {
 	return creationState;
 }
@@ -137,7 +207,7 @@ YOGGameCreateRefusalReason MultiplayerGame::getGameCreationState()
 
 
 
-YOGGameJoinRefusalReason MultiplayerGame::getGameJoinState()
+YOGServerGameJoinRefusalReason MultiplayerGame::getGameJoinState()
 {
 	return joinState;
 }
@@ -147,10 +217,11 @@ YOGGameJoinRefusalReason MultiplayerGame::getGameJoinState()
 void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 {
 	mapHeader = nmapHeader;
-	shared_ptr<NetSendMapHeader> message(new NetSendMapHeader(mapHeader));
-	client->sendNetMessage(message);
 
+	NetReteamingInformation info = constructReteamingInformation(mapHeader.getFileName());
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
+	playerManager.setReteamingInformation(info);
+	needToSendMapHeader=true;
 }
 
 
@@ -158,13 +229,6 @@ void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 MapHeader& MultiplayerGame::getMapHeader()
 {
 	return mapHeader;
-}
-
-
-
-bool MultiplayerGame::isStillConnected() const
-{
-	return client->isConnected();
 }
 
 
@@ -204,6 +268,7 @@ void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
 
 void MultiplayerGame::startGame()
 {
+	isStarting=true;
 	//make sure the game headers are synced!
 	updateGameHeader();
 	shared_ptr<NetRequestGameStart> message(new NetRequestGameStart);
@@ -214,25 +279,45 @@ void MultiplayerGame::startGame()
 
 bool MultiplayerGame::isGameReadyToStart()
 {
-	if(gjcState == WaitingForCreateReply || gjcState == WaitingForJoinReply)
+	if(state != ReadyToGo)
 		return false;
-
-	if(gjcState == HostingGame)
+	
+	if(mode == HostingGame)
 	{
-		if(!isEveryoneReadyToGo)
+		if(!playerManager.isEveryoneReadyToGo())
 			return false;
 	}
 
-	if(gjcState == JoinedGame && (!haveMapHeader || !haveGameHeader))
-		return false;
-
-	if(assembler)
+	if(!playerManager.isReadyToGo(client->getPlayerID()))
 	{
-		if(assembler->getPercentage() == 100)
-			return true;
 		return false;
 	}
+	
 	return true;
+}
+
+
+
+void MultiplayerGame::updateReadyState()
+{
+	bool ready=true;
+	
+	if(state != ReadyToGo)
+		ready = false;
+	
+	if(!client->getGameConnection() || !client->getGameConnection()->isConnected())
+		ready = false;
+
+	if(client->getYOGClientFileAssembler(fileID))
+	{
+		if(client->getYOGClientFileAssembler(fileID)->getPercentage() != 100)
+			ready = false;
+	}
+	
+	if(mode == JoinedGame && !humanReadyToStart)
+		ready = false;
+		
+	playerManager.setReadyToGo(client->getPlayerID(), ready);
 }
 
 
@@ -280,18 +365,7 @@ void MultiplayerGame::changeTeam(int playerNum, int teamNum)
 	client->sendNetMessage(message);
 }
 
-/*
 
-void MultiplayerGame::sendMessage(const std::string& message)
-{
-	boost::shared_ptr<YOGMessage> tmessage(new YOGMessage);
-	tmessage->setSender(client->getUsername());
-	tmessage->setMessage(message);
-	tmessage->setMessageType(YOGGameMessage);
-	client->sendMessage(tmessage);
-}
-
-*/
 
 YOGKickReason MultiplayerGame::getKickReason() const
 {
@@ -328,9 +402,13 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	if(type==MNetCreateGameAccepted)
 	{
 		shared_ptr<NetCreateGameAccepted> info = static_pointer_cast<NetCreateGameAccepted>(message);
+		
+		state = SendingGameInformation;
+
+		gameID=info->getGameID();
+		fileID = info->getFileID();
+		gameRouterIP = info->getGameRouterIP();
 		chatChannel = info->getChatChannel();
-		gjcState = HostingGame;
-		updateGameHeader();
 		
 		shared_ptr<MGGameHostJoinAccepted> event(new MGGameHostJoinAccepted);
 		sendToListeners(event);
@@ -338,66 +416,84 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	if(type==MNetCreateGameRefused)
 	{
 		shared_ptr<NetCreateGameRefused> info = static_pointer_cast<NetCreateGameRefused>(message);
-		gjcState = NothingYet;
+		state = NothingYet;
 		creationState = info->getRefusalReason();
 		
 		shared_ptr<MGGameRefusedEvent> event(new MGGameRefusedEvent);
 		sendToListeners(event);
 	}
-	//This recieves responces to joining a game
 	if(type==MNetGameJoinAccepted)
 	{
 		shared_ptr<NetGameJoinAccepted> info = static_pointer_cast<NetGameJoinAccepted>(message);
-		chatChannel = info->getChatChannel();
-		gjcState = JoinedGame;
 		
+		state = WaitingForGameInformation;
+		chatChannel = info->getChatChannel();
+
 		shared_ptr<MGGameHostJoinAccepted> event(new MGGameHostJoinAccepted);
 		sendToListeners(event);
 	}
 	if(type==MNetGameJoinRefused)
 	{ 
 		shared_ptr<NetGameJoinRefused> info = static_pointer_cast<NetGameJoinRefused>(message);
-		gjcState = NothingYet;
+		
+		state = NothingYet;
 		joinState = info->getRefusalReason();
 		
 		shared_ptr<MGGameRefusedEvent> event(new MGGameRefusedEvent);
 		sendToListeners(event);
 	}
-	if(type==MNetSendMapHeader)
-	{
-		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
-		mapHeader = info->getMapHeader();
-
-		playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
-
-		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
-		sendToListeners(event);
-
-		Engine engine;
-		if(!engine.haveMap(mapHeader))
-		{
-			shared_ptr<NetRequestMap> message(new NetRequestMap);
-			client->sendNetMessage(message);
-			assembler.reset(new MapAssembler(client));
-			assembler->startRecievingFile(mapHeader.getFileName());
-			client->setMapAssembler(assembler);
-		}
-		haveMapHeader = true;
-	}
 	if(type==MNetSendGameHeader)
 	{
 		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
+		
 		info->downloadToGameHeader(gameHeader);
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
-		
-		haveGameHeader = true;
 	}
 	if(type==MNetSendGamePlayerInfo)
 	{
 		shared_ptr<NetSendGamePlayerInfo> info = static_pointer_cast<NetSendGamePlayerInfo>(message);
+		
 		info->downloadToGameHeader(gameHeader);
+		
+		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
+		sendToListeners(event);
+	}
+	if(type==MNetSendAfterJoinGameInformation)
+	{
+		shared_ptr<NetSendAfterJoinGameInformation> info = static_pointer_cast<NetSendAfterJoinGameInformation>(message);
+		const YOGAfterJoinGameInformation& i = info->getAfterJoinGameInformation();
+		//Change the state
+		state = ConnectingToGameRouter;
+		
+		//Set game header
+		gameHeader = i.getGameHeader();
+		
+		//Set file id
+		fileID = i.getMapFileID();
+		
+		//Set map header
+		mapHeader = i.getMapHeader();
+		playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
+		Engine engine;
+		if(!engine.haveMap(mapHeader))
+		{
+			shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
+			client->sendNetMessage(message);
+			boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
+			assembler->startRecievingFile(mapHeader.getFileName());
+			client->setYOGClientFileAssembler(fileID, assembler);
+		}
+		
+		//Set reteam info
+		playerManager.setReteamingInformation(i.getReteamingInformation());
+		
+		//Set latency
+		gameHeader.setGameLatency(i.getLatencyAdjustment());
+		
+		//Connect to router ip
+		gameRouterIP = i.getGameRouterIP();
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
@@ -410,6 +506,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	if(type==MNetRefuseGameStart)
 	{
 		//shared_ptr<NetRefuseGameStart> info = static_pointer_cast<NetRefuseGameStart>(message);
+		isStarting=false;
 		
 		shared_ptr<MGGameStartRefused> event(new MGGameStartRefused);
 		sendToListeners(event);
@@ -424,15 +521,15 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
 			shared_ptr<Order> order = info->getOrder();
 			if(order->getOrderType() == ORDER_PLAYER_QUIT_GAME)
-				order->gameCheckSum = -1;
+				order->gameCheckSum = static_cast<unsigned int>(-1);
 			netEngine->pushOrder(order, order->sender, false);
 		}
 	}
-	if(type==MNetRequestMap)
+	if(type==MNetRequestFile)
 	{
-		assembler.reset(new MapAssembler(client));
+		boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 		assembler->startSendingFile(mapHeader.getFileName());
-		client->setMapAssembler(assembler);
+		client->setYOGClientFileAssembler(fileID,assembler);
 	}
 	if(type==MNetKickPlayer)
 	{
@@ -441,7 +538,8 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		if(info->getPlayerID() == client->getPlayerID())
 		{
 			kickReason = info->getReason();
-			gjcState = NothingYet;
+			state = NothingYet;
+			mode = NoMode;
 			
 			if(kickReason == YOGKickedByHost)
 			{
@@ -462,18 +560,25 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			sendToListeners(event);
 		}
 	}
-	if(type==MNetEveryoneReadyToLaunch)
+	if(type==MNetReadyToLaunch)
 	{
-		isEveryoneReadyToGo = true;
+		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
+		playerManager.setReadyToGo(info->getPlayerID(), true);
+		shared_ptr<MGPlayerReadyStatusChanged> event(new MGPlayerReadyStatusChanged(info->getPlayerID()));
+		sendToListeners(event);
 	}
-	if(type==MNetNotEveryoneReadyToLaunch)
+	if(type==MNetNotReadyToLaunch)
 	{
-		isEveryoneReadyToGo = false;
+		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
+		playerManager.setReadyToGo(info->getPlayerID(), false);
+		shared_ptr<MGPlayerReadyStatusChanged> event(new MGPlayerReadyStatusChanged(info->getPlayerID()));
+		sendToListeners(event);
 	}
 	if(type==MNetSetLatencyMode)
 	{
 		shared_ptr<NetSetLatencyMode> info = static_pointer_cast<NetSetLatencyMode>(message);
 		gameHeader.setGameLatency(info->getLatencyAdjustment());
+		//std::cout<<"info->getLatencyAdjustment()="<<(int)(info->getLatencyAdjustment())<<std::endl;
 	}
 	if(type==MNetPlayerJoinsGame)
 	{
@@ -506,6 +611,11 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
+	}
+	if(type==MNetSendReteamingInformation)
+	{
+		shared_ptr<NetSendReteamingInformation> info = static_pointer_cast<NetSendReteamingInformation>(message);
+		playerManager.setReteamingInformation(info->getReteamingInfo());
 	}
 }
 
@@ -560,6 +670,22 @@ void MultiplayerGame::sendToListeners(boost::shared_ptr<MultiplayerGameEvent> ev
 
 
 
+NetReteamingInformation MultiplayerGame::constructReteamingInformation(const std::string& file)
+{
+	NetReteamingInformation info;
+	GameHeader game = Engine::loadGameHeader(file);
+	for(int i=0; i<32; ++i)
+	{
+		if(game.getBasePlayer(i).type == Player::P_IP)
+		{
+			info.setPlayerToTeam(game.getBasePlayer(i).name, game.getBasePlayer(i).teamNumber);
+		}
+	}
+	return info;
+}
+
+
+
 int MultiplayerGame::getLocalPlayer()
 {
 	for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
@@ -569,6 +695,7 @@ int MultiplayerGame::getLocalPlayer()
 			return gameHeader.getBasePlayer(i).number;
 		}
 	}
+	return -1;
 }
 
 
@@ -589,10 +716,44 @@ Uint32 MultiplayerGame::getChatChannel() const
 
 Uint8 MultiplayerGame::percentageDownloadFinished()
 {
-	return assembler->getPercentage();
+	if(!client->getYOGClientFileAssembler(fileID))
+		return 100;
+	return client->getYOGClientFileAssembler(fileID)->getPercentage();
 }
 
 
 
+bool MultiplayerGame::isGameStarting()
+{
+	return isStarting;
+}
 
+
+
+void MultiplayerGame::setGameResult(YOGGameResult result)
+{
+	shared_ptr<NetSendGameResult> message(new NetSendGameResult(result));
+	client->sendNetMessage(message);
+}
+
+
+
+bool MultiplayerGame::isReadyToStart(int playerID)
+{
+	return playerManager.isReadyToGo(playerID);
+}
+
+
+void MultiplayerGame::setHumanReady(bool isReady)
+{
+	humanReadyToStart=isReady;
+}
+
+
+bool MultiplayerGame::isFullyInGame()
+{
+	if(state != ReadyToGo)
+		return false;
+	return true;
+}
 

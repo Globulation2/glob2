@@ -37,6 +37,7 @@ enum MultiplayerGameEventType
 	MGEGameStartRefused,
 	MGEGameHostJoinAccepted,
 	MGEDownloadPercentUpdate,
+	MGEPlayerReadyStatusChanged,
 	//type_append_marker
 };
 
@@ -320,6 +321,31 @@ public:
 	Uint8 getPercentFinished() const;
 private:
 	Uint8 percent;
+};
+
+
+
+
+///MGPlayerReadyStatusChanged
+class MGPlayerReadyStatusChanged : public MultiplayerGameEvent
+{
+public:
+	///Creates a MGPlayerReadyStatusChanged event
+	MGPlayerReadyStatusChanged(Uint16 playerID);
+
+	///Returns MGEPlayerReadyStatusChanged
+	Uint8 getEventType() const;
+
+	///Returns a formatted version of the event
+	std::string format() const;
+	
+	///Compares two MultiplayerGameEvent
+	bool operator==(const MultiplayerGameEvent& rhs) const;
+
+	///Retrieves playerID
+	Uint16 getPlayerID() const;
+private:
+	Uint16 playerID;
 };
 
 

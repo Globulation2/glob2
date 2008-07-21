@@ -46,7 +46,7 @@ public:
 protected:
 	unsigned figure;
 	Mode mode;
-	
+	bool addRemoveEnabled;
 public:
 	BrushTool();
 	//! Draw the brush tool and its actual state at a given coordinate 
@@ -59,8 +59,8 @@ public:
 	void defaultSelection(void) { mode = MODE_ADD; }
 
 	//! Draw the actual brush (not the brush tool)
-	void drawBrush(int x, int y, bool onlines=false);
-	void drawBrush(int x, int y, GAGCore::Color c, bool onlines=false);
+	void drawBrush(int x, int y, int viewportX, int viewportY, int originalX=-1, int originalY=-1, bool onlines=false);
+	void drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, int originalX=-1, int originalY=-1, bool onlines=false);
 	//! Return the mode of the brush
 	unsigned getType(void) { return static_cast<unsigned>(mode); }
 	//! Set the mode of the brush
@@ -74,12 +74,19 @@ public:
 	static int getBrushWidth(unsigned figure);
 	//! Return the full height of a brush
 	static int getBrushHeight(unsigned figure);
-	//! Return the half width minus 1 of a brush (its "ray" in x)
-	static int getBrushDimX(unsigned figure);
-	//! Return the half height minus 1 of a brush (its "ray" in y)
-	static int getBrushDimY(unsigned figure);
-	//! Return the value of a pixel of a given brush
-	static bool getBrushValue(unsigned figure, int x, int y);
+	
+	//! This enables or disables the ability to select add / remove. Used by the map editor because logically you can't "remove" Terrain and such.
+	void setAddRemoveEnabledState(bool value);
+	//! Return the left extend of the brush (not counting its center cell)
+	static int getBrushDimXMinus(unsigned figure);
+	//! Return the right extend of the brush (not counting its center cell)
+	static int getBrushDimXPlus(unsigned figure);
+	//! Return the bottom extend of the brush (not counting its center cell)
+	static int getBrushDimYMinus(unsigned figure);
+	//! Return the top extend of the brush (not counting its center cell)
+	static int getBrushDimYPlus(unsigned figure);
+	//! Return the value of a pixel of a given brush, also pass the x and y coordinates for alignment
+	static bool getBrushValue(unsigned figure, int x, int y, int centerX, int centerY, int originalX=0, int originalY=0);
 };
 
 namespace Utilities
@@ -93,6 +100,8 @@ class Map;
 class BrushAccumulator
 {
 public:
+	BrushAccumulator();
+
 	//! Dimension of the resulting bitmap
 	struct AreaDimensions
 	{
@@ -102,8 +111,8 @@ public:
 		AreaDimensions() { minX = minY = maxX = maxY = centerX = centerY = 0; }
 	};
 	
-	// FIXME : handle wrap !!!!!!!!!!
-	
+	int firstX;
+	int firstY;
 protected:
 	//! The list of brush applications
 	std::vector<BrushApplication> applications;
@@ -112,11 +121,11 @@ protected:
 	
 public:
 	//! Apply this brush to the brush application vector and extend dim as required
-	void applyBrush(const Map *map, const BrushApplication &brush);
+	void applyBrush(const BrushApplication &brush, const Map* map);
 	//! Clear the vector of brush applications
 	void clear(void) { applications.clear(); }
 	//! Return a bitmap which is the result of the fusion of all accumulated brush applications
-	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim);
+	bool getBitmap(Utilities::BitArray *array, AreaDimensions *dim, const Map *map);
 	//! Return the area surface
 	unsigned getAreaSurface(void);
 	//! Return the number of brush applied

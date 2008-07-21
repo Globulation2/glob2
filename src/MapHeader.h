@@ -21,7 +21,7 @@
 
 #include "Stream.h"
 #include "Version.h"
-#include "Team.h"
+#include "BaseTeam.h"
 
 ///This is the map header. It is static with the map, and does not change from game to game if
 ///the user is playing on the same map. It holds small details about a map that aren't placed
@@ -39,7 +39,7 @@ public:
 	bool load(GAGCore::InputStream *stream);
 	
 	/// Saves map header information to the stream.
-	void save(GAGCore::OutputStream *stream);
+	void save(GAGCore::OutputStream *stream) const;
 
 	/// Returns the version major
 	Sint32 getVersionMajor() const;
@@ -85,11 +85,21 @@ public:
 	/// Sets whether or no this header represents a saved game
 	void setIsSavedGame(bool isSavedGame);
 
+	/// Sets the complete game checksum
+	void setGameSHA1(Uint8 SHA1sum[20]);
+	
+	/// Returns the complete game checksum
+	Uint8* getGameSHA1();
+	
+	/// Returns the complete game checksum
+	void resetGameSHA1();
+
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
 	
 	///Comparison does *not* count file version numbers
 	bool operator!=(const MapHeader& rhs) const;
+	bool operator==(const MapHeader& rhs) const;
 private:
 	/// Major map version. Changes only with structural modification
 	Sint32 versionMajor;
@@ -102,14 +112,23 @@ private:
 	/// the complete file.
 	Uint32 mapOffset;
 	
-	///The teams in the map. BaseTeam is used to allow access to information like team numbers and
-	///team colors without loading the entire game.
+	/// The teams in the map. BaseTeam is used to allow access to information like team numbers and
+	/// team colors without loading the entire game.
 	BaseTeam teams[32];
 	
-	///If this is true, this map header represents a saved game, rather than a new map
+	/// If this is true, this map header represents a saved game, rather than a new map
 	bool isSavedGame;
+	
+	/// Set to the complete files SHA1
+	Uint8 SHA1[20];
 
 	std::string mapName;
 };
+
+
+//! extract the user-visible name from a glob2 map filename, return empty string if filename is an invalid glob2 map
+std::string glob2FilenameToName(const std::string& filename);
+//! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
+std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension="");
 
 #endif

@@ -32,6 +32,7 @@ namespace GAGCore
 	class FileManager;
 	class GraphicContext;
 	class Sprite;
+	class DrawableSurface;
 	class Font;
 }
 using namespace GAGCore;
@@ -48,9 +49,7 @@ public:
 	enum { OPTION_LOW_SPEED_GFX=0x1 };
 
 private:
-	void initProgressBar(void);
-	void updateLoadProgressBar(int value);
-	void destroyProgressBar(void);
+	void updateLoadProgressScreen(int value);
 
 	std::string userName;
 	
@@ -74,6 +73,8 @@ public:
 	GraphicContext *gfx;
 	SoundMixer *mix;
 	VoiceRecorder *voiceRecorder;
+	
+	DrawableSurface *title;
 	
 	Sprite *terrain;
 	Sprite *terrainWater;
@@ -108,9 +109,15 @@ public:
 	bool runNoX;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
-	int runNoXCountSteps; //!< The number of steps you want the no X game to run
+	bool automaticEndingGame;
+	int automaticEndingSteps;
+	bool automaticGameGlobalEndConditions; //! Set false if the automatic game will end if the local team wins/loses, true to wait for the entire game to finish
+	
+	bool runTestGames; //! runs test games
 	
 	bool hostServer;
+	bool hostRouter;
+	bool adminRouter;
 	char hostServerMapName[32];
 	char hostServerUserName[32];
 	char hostServerPassWord[32];

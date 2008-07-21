@@ -28,124 +28,6 @@
 #include "Team.h"
 #include "Utilities.h"
 
-BasePlayer::BasePlayer()
-{
-	init();
-};
-
-BasePlayer::BasePlayer(Sint32 number, const std::string& nname, Sint32 teamNumber, PlayerType type)
-{
-	init();
-	
-	assert(number>=0);
-	assert(number<32);
-	assert(teamNumber>=0);
-	assert(teamNumber<32);
-	assert(nname.size());
-
-	setNumber(number);
-	setTeamNumber(teamNumber);
-
-	name=nname;
-
-	this->type=type;
-};
-
-void BasePlayer::init()
-{
-	type=P_NONE;
-	number=0;
-	numberMask=0;
-	name = "Debug Player";
-	teamNumber=0;
-	teamNumberMask=0;
-	playerID=0;
-
-	quitting=false;
-	quitUStep=0;
-	lastUStepToExecute=0;
-	
-	disableRecursiveDestruction=false;
-	
-	logFile=globalContainer->logFileManager->getFile("Player.log");
-	assert(logFile);
-}
-
-BasePlayer::~BasePlayer(void)
-{
-}
-
-void BasePlayer::setNumber(Sint32 number)
-{
-	this->number=number;
-	this->numberMask=1<<number;
-};
-
-void BasePlayer::setTeamNumber(Sint32 teamNumber)
-{
-	this->teamNumber=teamNumber;
-	this->teamNumberMask=1<<teamNumber;
-};
-
-bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
-{
-	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
-	stream->readEnterSection("BasePlayer");
-	type = (PlayerType)stream->readUint32("type");
-	number = stream->readSint32("number");
-	numberMask = stream->readUint32("numberMask");
-	playerID = stream->readUint16("playerID");
-	name = stream->readText("name");
-	teamNumber = stream->readSint32("teamNumber");
-	teamNumberMask = stream->readUint32("teamNumberMask");
-	stream->readLeaveSection();
-	return true;
-}
-
-void BasePlayer::save(GAGCore::OutputStream *stream) const
-{
-	stream->writeEnterSection("BasePlayer");
-	stream->writeUint32((Uint32)type, "type");
-	stream->writeSint32(number, "number");
-	stream->writeUint32(numberMask, "numberMask");
-	stream->writeUint16(playerID, "playerID");
-	stream->writeText(name, "name");
-	stream->writeSint32(teamNumber, "teamNumber");
-	stream->writeUint32(teamNumberMask, "teamNumberMask");
-	stream->writeLeaveSection();
-}
-
-
-Uint32 BasePlayer::checkSum()
-{
-	Uint32 cs=0;
-
-	cs^=number;
-	cs^=numberMask;
-	cs^=teamNumber;
-	cs^=teamNumberMask;
-	//Uint32 netHost=SDL_SwapBE32(ip.host);
-	//Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
-	//cs^=netHost;
-	// IP adress can't stay in checksum, because:
-	// We now support NAT or IP may simply be differents between computers
-	// And we uses checkSum in network.
-	// (we could uses two differents check sums, but the framework would be heavier)
-	//cs^=netPort;
-
-	for (int i=0; i<name.size(); i++)
-		cs^=name[i];
-	
-	return cs;
-}
-
-
-void BasePlayer::makeItAI(AI::ImplementitionID aiType)
-{
-	type=(PlayerType)(P_AI+aiType);
-}
-
-
 Player::Player()
 :BasePlayer()
 {
@@ -159,11 +41,6 @@ Player::Player(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMino
 :BasePlayer()
 {
 	bool success=load(stream, teams, versionMinor);
-	if (success)
-	{
-		fprintf(logFile, "!success\n");
-		fflush(logFile);
-	}
 	assert(success);
 }
 
@@ -246,7 +123,6 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionM
 	if (memcmp(signature,"PLYb",4)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
-		fprintf(logFile, "Player::load: Signature missmatch at begin of Player\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -264,7 +140,6 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionM
 	if (!success)
 	{
 		fprintf(stderr, "Player::load: Error during BasePlayer load\n");
-		fprintf(logFile, "Player::load: Error during BasePlayer load\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -279,7 +154,6 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionM
 		if (!ai->load(stream, versionMinor))
 		{
 			fprintf(stderr, "Player::load: Error during AI load\n");
-			fprintf(logFile, "Player::load: Error during AI load\n");
 			stream->readLeaveSection();
 			return false;
 		}
@@ -294,7 +168,6 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionM
 	if (memcmp(signature,"PLYe",4)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
-		fprintf(logFile, "Player::load: Signature missmatch at end of Player\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -324,6 +197,8 @@ void Player::save(GAGCore::OutputStream  *stream)
 void Player::makeItAI(AI::ImplementitionID aiType)
 {
 	BasePlayer::makeItAI(aiType);
+	if(ai)
+		delete ai;
 	ai=new AI(aiType, this);
 }
 

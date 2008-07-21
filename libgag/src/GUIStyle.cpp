@@ -42,10 +42,29 @@ namespace GAGGUI
 		drawFrame(target, x, y, w, h, highlight);
 		if (state)
 		{
-			target->drawLine(x+(w/5)+1, y+(h/2), x+(w/2), y+4*(w/5)-1, 0, 255, 0);
-			target->drawLine(x+(w/5), y+(h/2), x+(w/2), y+4*(w/5), 0, 255, 0);
-			target->drawLine(x+(w/2), y+4*(w/5)-1, x+4*(w/5), y+(w/5), 0, 255, 0);
-			target->drawLine(x+(w/2), y+4*(w/5), x+4*(w/5)-1, y+(w/5), 0, 255, 0);
+			target->drawLine(x+(w/5)+1, y+(h/2),     x+(w/2),     y+4*(h/5)-1, 0, 255, 0);
+			target->drawLine(x+(w/5),   y+(h/2),     x+(w/2),     y+4*(h/5), 0, 255, 0);
+			target->drawLine(x+(w/2),   y+4*(w/5)-1, x+4*(w/5),   y+(h/5), 0, 255, 0);
+			target->drawLine(x+(w/2),   y+4*(w/5),   x+4*(w/5)-1, y+(h/5), 0, 255, 0);
+		}
+	}
+	
+	void Style::drawTriButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, Uint8 state)
+	{
+		drawFrame(target, x, y, w, h, highlight);
+		if (state==1)
+		{
+			target->drawLine(x+(w/5)+1, y+(h/2),     x+(w/2),     y+4*(h/5)-1, 0, 255, 0);
+			target->drawLine(x+(w/5),   y+(h/2),     x+(w/2),     y+4*(h/5), 0, 255, 0);
+			target->drawLine(x+(w/2),   y+4*(w/5)-1, x+4*(w/5),   y+(h/5), 0, 255, 0);
+			target->drawLine(x+(w/2),   y+4*(w/5),   x+4*(w/5)-1, y+(h/5), 0, 255, 0);
+		}
+		else if (state==2)
+		{
+			target->drawLine(x+(w/5),     y+(h/5), x+w-(w/5)-1, y+4*(h/5), 255, 64, 0);
+			target->drawLine(x+w-(w/5)-1, y+(h/5), x+(w/5),     y+4*(h/5), 255, 64, 0);
+			target->drawLine(x+(w/5)+1,   y+(h/5), x+w-(w/5)-2, y+4*(h/5), 255, 64, 0);
+			target->drawLine(x+w-(w/5)-2, y+(h/5), x+(w/5)+1,   y+4*(h/5), 255, 64, 0);
 		}
 	}
 	
@@ -86,6 +105,18 @@ namespace GAGGUI
 		target->drawRect(x+1, y+22+blockPos, 17, blockLength, Style::style->highlightColor);
 	}
 	
+	void Style::drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range)
+	{
+		int h = getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
+		drawFrame(target, x, y, w, h, Color::ALPHA_OPAQUE);
+		x += getStyleMetric(STYLE_METRIC_FRAME_LEFT_WIDTH);
+		y += getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT);
+		w -= getStyleMetric(STYLE_METRIC_FRAME_LEFT_WIDTH) + getStyleMetric(STYLE_METRIC_FRAME_RIGHT_WIDTH);
+		h -= getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT) + getStyleMetric(STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
+		int len = (value*w)/range;
+		target->drawFilledRect(x, y, len, h, listSelectedElementColor);
+	}
+	
 	int Style::getStyleMetric(StyleMetrics metric)
 	{
 		switch (metric)
@@ -97,6 +128,7 @@ namespace GAGGUI
 			case STYLE_METRIC_LIST_SCROLLBAR_WIDTH: return 22;
 			case STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH: return 22;
 			case STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH: return 22;
+			case STYLE_METRIC_PROGRESS_BAR_HEIGHT:return 22;
 			default: return 0;
 		}
 	}

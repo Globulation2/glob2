@@ -60,17 +60,25 @@ public:
 	///Constructs a GameGUIMessageManager
 	GameGUIMessageManager();
 	
-	///Add a message to the history
-	void addMessage(const InGameMessage& message);
+	///Add a message to the history of game messages
+	void addGameMessage(const InGameMessage& message);
+	
+	///Add a message to the history of chat messages
+	void addChatMessage(const InGameMessage& message);
+	
 
 	///Draws all messages that need to be drawn starting at x,y
-	void drawAllMessages(int x, int y);
+	void drawAllGameMessages(int x, int y);
+	
+	///Draws all chat messages that need to be drawn starting at x,y
+	void drawAllChatMessages(int x, int y);
 
 	///Creates an InGameScrollableHistory, does not take ownership for it
 	InGameScrollableHistory* createScrollableHistoryScreen();
 private:
 
-	std::list<InGameMessage> history;
+	std::list<InGameMessage> historyGame;
+	std::list<InGameMessage> historyChat;
 };
 
 

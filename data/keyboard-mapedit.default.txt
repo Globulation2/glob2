@@ -17,3 +17,4 @@
 <space>-<c>=select clearingflag
 <space>-<e>=select explorationflag
 <space>-<q>=select warflag
+<d>=select delete tool

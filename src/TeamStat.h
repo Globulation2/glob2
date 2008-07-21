@@ -105,8 +105,8 @@ public:
 	
 	void step(Team *team, bool reloaded = false);
 
-	void drawText(int pos);
-	void drawStat(int pos);
+	void drawText(int posx, int posy);
+	void drawStat(int posx, int posy);
 	int getFreeUnits(int type);
 	int getTotalUnits(int type);
 	int getWorkersNeeded();

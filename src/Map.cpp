@@ -28,13 +28,14 @@
 #include <algorithm>
 #include <valarray>
 #include <Stream.h>
+#include <queue>
 
 
 #if defined( LOG_GRADIENT_LINE_GRADIENT )
 #include <map>
 #endif
 
-#define UPDATE_MAX(max,value) { Uint8 tmp = value; if (value>(max)) (max)=value; }
+#define UPDATE_MAX(max,value) { if (value>(max)) (max)=value; }
 
 // use deltaOne for first perpendicular direction
 static const int deltaOne[8][2]={
@@ -87,6 +88,7 @@ Map::Map()
 	fogOfWar=NULL;
 	fogOfWarA=NULL;
 	fogOfWarB=NULL;
+	astarpoints = NULL;
 	cases=NULL;
 	for (int t=0; t<32; t++)
 		for (int r=0; r<MAX_NB_RESSOURCES; r++)
@@ -100,6 +102,9 @@ Map::Map()
 		{
 			forbiddenGradient[t][s] = NULL;
 			guardAreasGradient[t][s] = NULL;
+			clearAreasGradient[t][s] = NULL;
+			guardGradientUpdated[t][s] = false;
+			clearGradientUpdated[t][s] = false;
 		}
 	for (int t = 0; t < 32; t++)
 		exploredArea[t] = NULL;
@@ -108,6 +113,8 @@ Map::Map()
 	sectors=NULL;
 	listedAddr=NULL;
 	
+	for (int t = 0; t < 32; t++)
+		clearingAreaClaims[t] = NULL;
 	w=0;
 	h=0;
 	size=0;
@@ -118,6 +125,8 @@ Map::Map()
 	wSector=0;
 	hSector=0;
 	sizeSector=0;
+	
+	immobileUnits=NULL;
 	
 	//Gradients stats:
 	for (int t=0; t<16; t++)
@@ -209,6 +218,8 @@ Map::Map()
 	std::fill(incRessourceLog, incRessourceLog + 16, 0);
 
 	areaNames.resize(9);
+	
+	fertilityMaximum = 0;
 }
 
 Map::~Map(void)
@@ -263,6 +274,12 @@ void Map::clear()
 					assert(guardAreasGradient[t][s]);
 					delete[] guardAreasGradient[t][s];
 					guardAreasGradient[t][s] = NULL;
+					assert(clearAreasGradient[t][s]);
+					delete[] clearAreasGradient[t][s];
+					clearAreasGradient[t][s] = NULL;
+					
+					guardGradientUpdated[t][s] = false;
+					clearGradientUpdated[t][s] = false;
 				}
 		
 		for (int t=0; t<32; t++)
@@ -284,6 +301,24 @@ void Map::clear()
 		assert(listedAddr);
 		delete[] listedAddr;
 		listedAddr=NULL;
+		
+		assert(astarpoints);
+		delete[] astarpoints;
+		astarpoints=NULL;
+
+		for (int t=0; t<32; t++)
+		{
+			if (clearingAreaClaims[t])
+			{
+				assert(clearingAreaClaims[t]);
+				delete[] clearingAreaClaims[t];
+				clearingAreaClaims[t]=NULL;
+			}
+		}
+		
+		assert(immobileUnits);
+		delete[] immobileUnits;
+		immobileUnits=NULL;
 
 		arraysBuilt=false;
 	}
@@ -303,9 +338,12 @@ void Map::clear()
 			{
 				assert(forbiddenGradient[t][s] == NULL);
 				assert(guardAreasGradient[t][s] == NULL);
+				assert(clearAreasGradient[t][s] == NULL);
 			}
 		for (int t=0; t<32; t++)
 			assert(exploredArea[t] == NULL);
+		for (int t=0; t<32; t++)
+			assert(clearingAreaClaims[t] == NULL);
 		
 		assert(undermap==NULL);
 		assert(sectors==NULL);
@@ -938,11 +976,11 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	initCase.groundUnit = NOGUID;
 	initCase.airUnit = NOGUID;
 	initCase.forbidden = 0;
-	initCase.hiddenForbidden = 0;
 	initCase.guardArea = 0;
 	initCase.clearArea = 0;
 	initCase.scriptAreas = 0;
 	initCase.canRessourcesGrow = 1;
+	initCase.fertility = 0;
 	
 	for (size_t i=0; i<size; i++)
 		cases[i]=initCase;
@@ -963,6 +1001,11 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	if(sectors)
 		delete[] sectors;
 	sectors=new Sector[sizeSector];
+
+	astarpoints=new AStarAlgorithmPoint[w*h];
+
+
+	immobileUnits = new Uint8[w*h];
 
 	arraysBuilt=true;
 	
@@ -1041,6 +1084,9 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	cases = new Case[size];
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
+	astarpoints=new AStarAlgorithmPoint[size];
+	immobileUnits = new Uint8[size];
+	memset(immobileUnits, 255, size*sizeof(Uint8));
 	
 	#ifdef check_disorderable_gradient_error_probability
 	for (int i = 0; i < GT_SIZE; i++)
@@ -1067,11 +1113,15 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		cases[i].groundUnit = stream->readUint16("groundUnit");
 		cases[i].airUnit = stream->readUint16("airUnit");
 		cases[i].forbidden = stream->readUint32("forbidden");
-		cases[i].hiddenForbidden = stream->readUint32("hiddenForbidden");
+		if(versionMinor < 62)
+			stream->readUint32("hiddenForbidden");
 		cases[i].guardArea = stream->readUint32("guardArea");
 		cases[i].clearArea = stream->readUint32("clearArea");
 		cases[i].scriptAreas = stream->readUint16("scriptAreas");
 		cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
+		if(versionMinor >= 63)
+			cases[i].fertility = stream->readUint16("fertility");
+		fertilityMaximum = std::max(fertilityMaximum, cases[i].fertility);
 
 		stream->readLeaveSection();
 	}
@@ -1111,16 +1161,27 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 				assert(forbiddenGradient[t][s] == NULL);
 				forbiddenGradient[t][s] = new Uint8[size];
 				updateForbiddenGradient(t, s);
+				
 				assert(guardAreasGradient[t][s] == NULL);
 				guardAreasGradient[t][s] = new Uint8[size];
 				updateGuardAreasGradient(t, s);
+			
+				assert(clearAreasGradient[t][s] == NULL);
+				clearAreasGradient[t][s] = new Uint8[size];
+				updateClearAreasGradient(t, s);
+				
+				guardGradientUpdated[t][s] = false;
+				clearGradientUpdated[t][s] = false;
 			}
 		for (int t=0; t<header.getNumberOfTeams(); t++)
 		{
 			assert(exploredArea[t] == NULL);
 			exploredArea[t] = new Uint8[size];
 			initExploredArea(t);
-                        makeDiscoveredAreasExplored(t);
+			makeDiscoveredAreasExplored(t);
+			
+			clearingAreaClaims[t] = new Uint16[size];
+			memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
 		}
 	}
 
@@ -1130,6 +1191,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
+	
 	arraysBuilt = true;
 	
 	stream->readEnterSection("sectors");
@@ -1206,11 +1268,11 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint16(cases[i].groundUnit, "groundUnit");
 		stream->writeUint16(cases[i].airUnit, "airUnit");
 		stream->writeUint32(cases[i].forbidden, "forbidden");
-		stream->writeUint32(cases[i].hiddenForbidden, "hiddenForbidden");
 		stream->writeUint32(cases[i].guardArea, "guardArea");
 		stream->writeUint32(cases[i].clearArea, "clearArea");
 		stream->writeUint16(cases[i].scriptAreas, "scriptAreas");
 		stream->writeUint8(cases[i].canRessourcesGrow, "canRessourcesGrow");
+		stream->writeUint16(cases[i].fertility, "fertility");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -1271,11 +1333,18 @@ void Map::addTeam(void)
 		assert(guardAreasGradient[t][s] == NULL);
 		guardAreasGradient[t][s] = new Uint8[size];
 		updateGuardAreasGradient(t, s);
+		assert(clearAreasGradient[t][s] == NULL);
+		clearAreasGradient[t][s] = new Uint8[size];
+		updateClearAreasGradient(t, s);
 	}
 	
 	assert(exploredArea[t] == NULL);
 	exploredArea[t] = new Uint8[size];
 	initExploredArea(t);
+	
+	assert(clearingAreaClaims[t] == NULL);
+	clearingAreaClaims[t] = new Uint16[size];
+	memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
 }
 
 void Map::removeTeam(void)
@@ -1311,12 +1380,19 @@ void Map::removeTeam(void)
 		assert(guardAreasGradient[t][s] != NULL);
 		delete[] guardAreasGradient[t][s];
 		guardAreasGradient[t][s]=NULL;
+		assert(clearAreasGradient[t][s] != NULL);
+		delete[] clearAreasGradient[t][s];
+		clearAreasGradient[t][s]=NULL;
 	}
 
 	
 	assert(exploredArea[t] != NULL);
 	delete[] exploredArea[t];
 	exploredArea[t]=NULL;
+	
+	assert(clearingAreaClaims[t] != NULL);
+	delete[] clearingAreaClaims[t];
+	clearingAreaClaims[t]=NULL;
 }
 
 // TODO: completely recreate:
@@ -1356,6 +1432,11 @@ void Map::growRessources(void)
 					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
 				else if (r.type == CORN)
 					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
+
+				// Growth rate of corn is 1/3
+				if(r.type == CORN && expand)
+					if(syncRand() % 3 != 0)
+						expand = false;
 
 				if (expand)
 				{
@@ -1409,9 +1490,33 @@ void Map::syncStep(Uint32 stepCounter)
 						return;
 					}
 		for (int t=0; t<numberOfTeam; t++)
+			for(int s=0; s<2; s++)
+				if(!guardGradientUpdated[t][s])
+				{
+					updateGuardAreasGradient(t, (bool)s);
+					guardGradientUpdated[t][s]=true;
+					return;
+				}
+		for (int t=0; t<numberOfTeam; t++)
+			for(int s=0; s<2; s++)
+				if(!clearGradientUpdated[t][s])
+				{
+					updateClearAreasGradient(t, (bool)s);
+					clearGradientUpdated[t][s]=true;
+					return;
+				}
+				
+
+		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
 					gradientUpdated[t][r][s]=false;
+		for (int t=0; t<numberOfTeam; t++)
+			for(int s=0; s<2; s++)
+			{
+				guardGradientUpdated[t][s]=false;
+				clearGradientUpdated[t][s]=false;
+			}
 	}
 }
 
@@ -1823,6 +1928,55 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
+
+
+void Map::setClearingAreaClaimed(int x, int y, int teamNumber, int gid)
+{
+	clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)] = gid;
+}
+
+
+
+void Map::setClearingAreaUnclaimed(int x, int y, int teamNumber)
+{
+	clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)]=NOGUID;
+}
+
+
+
+int Map::isClearingAreaClaimed(int x, int y, int teamNumber)
+{
+	return clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)];
+}
+
+
+
+void Map::markImmobileUnit(int x, int y, int teamNumber)
+{
+	immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] = teamNumber;
+}
+
+
+void Map::clearImmobileUnit(int x, int y)
+{
+	immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] = 255;
+}
+
+
+bool Map::isImmobileUnit(int x, int y)
+{
+	return immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] != 255;
+}
+
+
+
+Uint8 Map::getImmobileUnit(int x, int y)
+{
+	return immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)];
+}
+
+
+
 void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
@@ -1959,7 +2113,7 @@ void Map::setRessource(int x, int y, int type, int l)
 
 bool Map::isRessourceAllowed(int x, int y, int type)
 {
-	return (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
+	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
 }
 
 bool Map::isPointSet(int n, int x, int y)
@@ -1989,8 +2143,8 @@ void Map::setAreaName(int n, std::string name)
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
 {
-	int x = (mx - viewportX) & wMask;
-	int y = (my - viewportY) & hMask;
+	int x = (mx - viewportX + w) & wMask;
+	int y = (my - viewportY + h) & hMask;
 	if (x > (w - 16))
 		x-=w;
 	if (y > (h - 16))
@@ -2001,11 +2155,11 @@ void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, 
 
 void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH)
 {
-	int x = (mx - viewportX) & wMask;
-	int y = (my - viewportY) & hMask;
-	if (x > (w/2 + screenW/2))
+	int x = (mx - viewportX + w) & wMask;
+	int y = (my - viewportY + h) & hMask;
+	if (x > (w/2 + (screenW/64)))
 		x-=w;
-	if (y > (h/2 + screenH/2))
+	if (y > (h/2 + (screenH/64)))
 		y-=h;
 	*px=x<<5;
 	*py=y<<5;
@@ -2844,6 +2998,11 @@ template<typename Tint> void Map::updateGlobalGradient(
 				// fastest one here
 			break;
 			
+			case GT_CLEAR_AREA:
+				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
+				// fastest one here
+			break;
+			
 			default:
 				assert(false);
 				abort();
@@ -2875,7 +3034,9 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 	for (size_t i=0; i<size; i++)
 	{
 		Case& c=cases[i];
-		if ((c.forbidden|c.hiddenForbidden)&teamMask)
+		if (c.forbidden & teamMask)
+			gradient[i]=0;
+		else if(immobileUnits[i] != 255)
 			gradient[i]=0;
 		else if (c.ressource.type==NO_RES_TYPE)
 		{
@@ -2987,7 +3148,6 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	if (max && max!=255)
 	{
 		max=1;
-		Uint8 side[3];
 		UPDATE_MAX(max,miniGrad[0+1*5]);
 		UPDATE_MAX(max,miniGrad[0+2*5]);
 		UPDATE_MAX(max,miniGrad[0+3*5]);
@@ -2996,10 +3156,11 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	
 	int centerg=miniGrad[2+2*5];
 	centerg=(centerg<<8)|centerg;
-	int maxg=centerg;
+	int maxg=0;
 	int maxd=8;
 	bool good=false;
 	if (strict)
+	{
 		for (int d=0; d<8; d++)
 		{
 			int g=maxs[d];
@@ -3011,7 +3172,9 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 				maxd=d;
 			}
 		}
+	}
 	else
+	{
 		for (int d=0; d<8; d++)
 		{
 			int g=maxs[d];
@@ -3023,6 +3186,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 				maxd=d;
 			}
 		}
+	}
 	
 	if (verbose)
 	{
@@ -3203,7 +3367,7 @@ void Map::pathfindRandom(Unit *unit, bool verbose)
 		printf("pathfindRandom()\n");
 	int x=unit->posX;
 	int y=unit->posY;
-	if ((cases[x+(y<<wDec)].forbidden|cases[x+(y<<wDec)].hiddenForbidden)&unit->owner->me)
+	if ((cases[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
 		if (verbose)
 			printf(" forbidden\n");
@@ -3308,7 +3472,6 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	//printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
 	assert(building->type);
-	bool wasDirty = building->dirtyLocalGradient[canSwim];
 	building->dirtyLocalGradient[canSwim]=false;
 	int posX=building->posX;
 	int posY=building->posY;
@@ -3325,19 +3488,62 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	// 1a. Set all values to 1 (meaning 'far away, but not inaccessable').
 	memset(gradient, 1, 1024);
 
+	bool isWarFlag=false;
+	bool isClearingFlag=false;
+	if(building->type->isVirtual && building->type->zonable[WARRIOR])
+		isWarFlag=true;
+	if(building->type->isVirtual && building->type->zonable[WORKER])
+		isClearingFlag=true;
+
 	// 1b. Set values at target building to 255 (meaning 'very close'/'at destination').
-	if (building->type->isVirtual)
+	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
 		assert(!building->type->zonableForbidden);
 		int r=building->unitStayRange;
-		fillGradientCircle(gradient, r);
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			int yyi=clip_0_31(15+yi);
+			for (int xi=-r; xi<=r; xi++)
+			{
+				if (yi2+(xi*xi)<=r2)
+				{
+					int xxi=clip_0_31(15+xi);
+					gradient[xxi+(yyi<<5)]=255;
+				}
+			}
+		}
+	}
+	else if (building->type->isVirtual && building->type->zonable[WORKER])
+	{
+		assert(!building->type->zonableForbidden);
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			int yyi=clip_0_31(15+yi);
+			for (int xi=-r; xi<=r; xi++)
+			{
+				if (yi2+(xi*xi)<=r2)
+				{
+					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					if(cases[addr].ressource.type != NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
+					{
+						int xxi=clip_0_31(15+xi);
+						gradient[xxi+(yyi<<5)]=255;
+					}
+				}
+			}
+		}
 	}
 	else
 		fillGradientRectangle(gradient, posW, posH);
 
 	// 1c. Set values at inaccessible areas to 0 (meaning, well, 'inaccessible').
 	// Here g=Global(map axis), l=Local(map axis)
-
+	
 	for (int yl=0; yl<32; yl++)
 	{
 		int wyl=(yl<<5);
@@ -3347,27 +3553,32 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 		{
 			int xg=(xl+posX-15)&wMask;
 			const Case& c=cases[wyg+xg];
-			int addrl=wyl+xl;
-			if (gradient[addrl]!=255)
+			int wyx=wyl+xl;
+			
+			if (c.building==NOGBID)
 			{
-				if (c.ressource.type!=NO_RES_TYPE)
-					gradient[addrl]=0;
-				else if (c.building!=NOGBID && c.building!=bgid)
-					gradient[addrl]=0;
-				else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
-					gradient[addrl]=0;
+				if (c.forbidden&teamMask)
+					gradient[wyx] = 0;
+				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
+					gradient[wyx] = 0;
+				else if(immobileUnits[wyx] != 255)
+					gradient[wyx] = 0;
 				else if (!canSwim && isWater(xg, yg))
-					gradient[addrl]=0;
+					gradient[wyx] = 0;
+			}
+			else
+			{
+				if (c.building==bgid)
+				{
+					gradient[wyx] = 255;
+				}
+				//Warflags don't consider enemy buildings an obstacle
+				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
+					gradient[wyx] = 0;
+				else if(gradient[wyx]!=255)
+					gradient[wyx] = 1;
 			}
 		}
-	}
-	
-	// 1d. Set values at target building to 255 if this is not a building,
-	// but e.g. a flag (which has a circular area):
-	if (building->type->zonable[WORKER])
-	{
-		int r=building->unitStayRange;
-		fillGradientCircle(gradient, r);
 	}
 	
 	// 2. NEED TO UPDATE? Check boundary conditions to see if they have changed.
@@ -3594,6 +3805,11 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	Tint *listedAddr = new Tint[size];
 	size_t listCountWrite = 0;
 
+	bool isClearingFlag=false;
+	bool isWarFlag=false;
+	if (building->type->isVirtual && building->type->zonable[WARRIOR])
+		isWarFlag=true;
+	
 	memset(gradient, 1, size);
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
@@ -3604,11 +3820,38 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		{
 			int yi2=(yi*yi);
 			for (int xi=-r; xi<=r; xi++)
-				if (yi2+(xi*xi)<r2)
+				if (yi2+(xi*xi)<=r2)
 				{
 					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
-					gradient[addr] = 255;
-					listedAddr[listCountWrite++] = addr;
+					if(gradient[addr] == 1)
+					{
+						gradient[addr] = 255;
+						listedAddr[listCountWrite++] = addr;
+					}
+				}
+		}
+	}
+	else if (building->type->isVirtual && building->type->zonable[WORKER])
+	{
+		assert(!building->type->zonableForbidden);
+		isClearingFlag=true;
+		int r=building->unitStayRange;
+		int r2=r*r;
+		for (int yi=-r; yi<=r; yi++)
+		{
+			int yi2=(yi*yi);
+			for (int xi=-r; xi<=r; xi++)
+				if (yi2+(xi*xi)<=r2)
+				{
+					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					if(cases[addr].ressource.type!=NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
+					{
+						if(gradient[addr] == 1)
+						{
+							gradient[addr] = 255;
+							listedAddr[listCountWrite++] = addr;
+						}
+					}
 				}
 		}
 	}
@@ -3622,11 +3865,15 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			Case& c=cases[wyx];
 			if (c.building==NOGBID)
 			{
-				if (c.ressource.type!=NO_RES_TYPE)
+				if (c.forbidden&teamMask)
 					gradient[wyx] = 0;
-				else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
+				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
 					gradient[wyx] = 0;
-				else if (!canSwim && isWater(x, y))
+				else if(immobileUnits[wyx] != 255)
+					gradient[wyx] = 0;
+				//Clearing flags don't consider water an obstacle so long as that piece of
+				//water is under the flag, like algae
+				else if (!canSwim && isWater(x, y) && (!isClearingFlag || gradient[wyx] != 255))
 					gradient[wyx] = 0;
 			}
 			else
@@ -3636,28 +3883,12 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 					gradient[wyx] = 255;
 					listedAddr[listCountWrite++] = wyx;
 				}
-				else
+				//Warflags don't consider enemy buildings an obstacle
+				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 					gradient[wyx] = 0;
+				else if(gradient[wyx]!=255)
+					gradient[wyx] = 1;
 			}
-		}
-	}
-	
-	if (building->type->zonable[WORKER])
-	{
-		assert(!building->type->zonableForbidden);
-		int r=building->unitStayRange;
-		int r2=r*r;
-		for (int yi=-r; yi<=r; yi++)
-		{
-			int yi2=(yi*yi);
-			for (int xi=-r; xi<=r; xi++)
-				if (yi2+(xi*xi)<=r2)
-				{
-					// TODO: check if this is really the ressource we are meant to remove
-					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
-					gradient[addr] = 255;
-					listedAddr[listCountWrite++] = addr;
-				}
 		}
 	}
 	
@@ -3758,7 +3989,9 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 			int dist2=(xl-15)*(xl-15)+dyl2;
 			if (dist2<=range2)
 			{
-				if (c.ressource.type!=NO_RES_TYPE)
+				if (c.forbidden&teamMask)
+					gradient[addrl]=0;
+				else if (c.ressource.type!=NO_RES_TYPE)
 				{
 					Sint8 t=c.ressource.type;
 					if (t<BASIC_COUNT && clearingRessources[t])
@@ -3771,7 +4004,7 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 				}
 				else if (c.building!=NOGBID)
 					gradient[addrl]=0;
-				else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
+				else if(immobileUnits[wyg+xg] != 255)
 					gradient[addrl]=0;
 				else if (!canSwim && isWater(xg, yg))
 					gradient[addrl]=0;
@@ -3965,6 +4198,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 				return true;
 			}
 			else
+			{
 				for (int d=0; d<8; d++)
 				{
 					int ddx, ddy;
@@ -3979,6 +4213,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 						return true;
 					}
 				}
+			}
 		}
 		
 		updateLocalGradient(building, canSwim);
@@ -4000,6 +4235,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 			return true;
 		}
 		else
+		{
 			for (int d=0; d<8; d++)
 			{
 				int ddx, ddy;
@@ -4014,11 +4250,14 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 					return true;
 				}
 			}
+		}
 		buildingAvailableCountCloseFailureEnd++;
+		return false;
 	}
 	else
 		buildingAvailableCountIsFar++;
 	buildingAvailableCountFar++;
+	
 	
 	gradient=building->globalGradient[canSwim];
 	if (gradient==NULL)
@@ -4128,7 +4367,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	assert(x>=0);
 	assert(y>=0);
 	Uint32 teamMask=building->owner->me;
-	if (((cases[x+y*w].forbidden | cases[x+y*w].hiddenForbidden) & teamMask)!=0)
+	if (((cases[x+y*w].forbidden) & teamMask)!=0)
 	{
 		int teamNumber=building->owner->teamNumber;
 		if (verbose)
@@ -4550,20 +4789,9 @@ bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 	bool found = false;
 	
 	// we look around us, searching for a usable position with a bigger gradient value 
-	for (int di=0; di<8; di++)
+	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true, verbose))
 	{
-		int ddx = deltaOne[di][0];
-		int ddy = deltaOne[di][1];
-		int xg = (x+ddx) & wMask;
-		int yg = (y+ddy) & hMask;
-		Uint8 g = gradient[xg+(yg<<wDec)];
-		if (g>max && isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
-		{
-			max = g;
-			*dx = ddx;
-			*dy = ddy;
-			found = true;
-		}
+		found = true;
 	}
 	
 	// we are in a blocked situation, so we have to regenerate the forbidden gradient
@@ -4572,6 +4800,33 @@ bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 	
 	return found;
 }
+
+
+
+bool Map::pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+{
+	Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
+	Uint8 max = gradient[x + (y<<wDec)];
+	if (max == 255)
+		return false; // we already are in an area.
+	if (max < 2)
+		return false; // any existing area are too far away.
+	bool found = false;
+	
+	// we look around us, searching for a usable position with a bigger gradient value 
+	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true, verbose))
+	{
+		found = true;
+	}
+	
+	// we are in a blocked situation, so we have to regenerate the forbidden gradient
+	if (!found)
+		updateClearAreasGradient(teamNumber, canSwim);
+	
+	return found;
+}
+
+
 
 void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 {
@@ -4604,7 +4859,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 		{
 			gradient[i] = 0;
 		}
-		else if ((c.forbidden | c.hiddenForbidden) & teamMask)
+		else if ((c.forbidden) & teamMask)
 		{
 			// we compute the 8 addresses around i:
 			// (a stands for address, u for up, d for down, l for left, r for right, m for middle)
@@ -4617,21 +4872,21 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			size_t adl = (i - 1 + w) & (size - 1);
 			size_t aml = (i - 1    ) & (size - 1);
 			
-			if( ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aul].forbidden | cases[aul].hiddenForbidden) &teamMask)
+			if( ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aul].forbidden) &teamMask)
 				|| (cases[aul].building!=NOGBID) || (!canSwim && isWater(aul))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aum].forbidden | cases[aum].hiddenForbidden) &teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aum].forbidden) &teamMask)
 			    || (cases[aum].building!=NOGBID) || (!canSwim && isWater(aum))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aur].forbidden | cases[aur].hiddenForbidden) &teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aur].forbidden) &teamMask)
 			    || (cases[aur].building!=NOGBID) || (!canSwim && isWater(aur))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[amr].forbidden | cases[amr].hiddenForbidden) &teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[amr].forbidden) &teamMask)
 			    || (cases[amr].building!=NOGBID) || (!canSwim && isWater(amr))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adr].forbidden | cases[adr].hiddenForbidden) &teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adr].forbidden) &teamMask)
 			    || (cases[adr].building!=NOGBID) || (!canSwim && isWater(adr))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adm].forbidden | cases[adm].hiddenForbidden) &teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adm].forbidden) &teamMask)
 			    || (cases[adm].building!=NOGBID) || (!canSwim && isWater(adm))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adl].forbidden | cases[adl].hiddenForbidden) &teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[adl].forbidden) &teamMask)
 			    || (cases[adl].building!=NOGBID) || (!canSwim && isWater(adl))) &&
-			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aml].forbidden | cases[aml].hiddenForbidden) &teamMask)
+			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aml].forbidden) &teamMask)
 			    || (cases[aml].building!=NOGBID) || (!canSwim && isWater(aml))) )
 			{
 				gradient[i]= 1;
@@ -4666,7 +4921,9 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			testgradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			testgradient[i] = 0;
-		else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
+		else if(immobileUnits[i] != 255)
+			testgradient[i]=0;
+		else if (c.forbidden&teamMask)
 		{
 			testgradient[i]= 1;  // Later: check if we can set it to 254.
 			listedAddr[listCountWriteInit++] = i;  // Remember this field.
@@ -4731,7 +4988,9 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			gradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			gradient[i] = 0;
-		else if (c.forbidden&teamMask || c.hiddenForbidden&teamMask)
+		else if(immobileUnits[i] != 255)
+			gradient[i]=0;
+		else if (c.forbidden&teamMask)
 			gradient[i]= 1;
 		else
 		{
@@ -4780,11 +5039,13 @@ template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool 
 	for (size_t i=0; i<size; i++)
 	{
 		const Case& c=cases[i];
-		if (c.forbidden & teamMask || c.hiddenForbidden & teamMask)
+		if (c.forbidden & teamMask)
 			gradient[i] = 0;
+		else if(immobileUnits[i] != 255)
+			gradient[i]=0;
 		else if (c.ressource.type != NO_RES_TYPE)
 			gradient[i] = 0;
-		else if (c.building != NOGBID)
+		else if (c.building != NOGBID && (1<<Building::GIDtoTeam(c.building)) & (game->teams[teamNumber]->allies))
 			gradient[i] = 0;
 		else if (!canSwim && isWater(i))
 			gradient[i] = 0;
@@ -4813,6 +5074,171 @@ void Map::updateGuardAreasGradient()
 	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 		updateGuardAreasGradient(i);
 }
+
+void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
+{
+	if (size <= 65536)
+		updateClearAreasGradient<Uint16>(teamNumber, canSwim);
+	else
+		updateClearAreasGradient<Uint32>(teamNumber, canSwim);
+}
+
+template<typename Tint> void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
+{
+	Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
+	assert(gradient);
+	Tint *listedAddr = new Tint[size];
+	size_t listCountWrite = 0;
+	
+	// We set the obstacle and free places
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	for (size_t i=0; i<size; i++)
+	{
+		const Case& c=cases[i];
+		if (c.forbidden & teamMask)
+			gradient[i] = 0;
+		else if(c.clearArea & teamMask && (c.ressource.type == WOOD || c.ressource.type == CORN || c.ressource.type == PAPYRUS || c.ressource.type == ALGA))
+		{
+			gradient[i] = 255;
+			listedAddr[listCountWrite++] = i;
+		}
+		else if(immobileUnits[i] != 255)
+			gradient[i]=0;
+		else if (c.ressource.type != NO_RES_TYPE)
+			gradient[i] = 0;
+		else if (c.building != NOGBID)
+			gradient[i] = 0;
+		else if (!canSwim && isWater(i))
+			gradient[i] = 0;
+		else
+			gradient[i] = 1;
+	}
+	
+	// Then we propagate the gradient
+	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_CLEAR_AREA, canSwim);
+	delete[] listedAddr;
+}
+
+void Map::updateClearAreasGradient(int teamNumber)
+{
+	for (int i=0; i<2; i++)
+		updateClearAreasGradient(teamNumber, i);
+}
+
+void Map::updateClearAreasGradient()
+{
+	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
+		updateClearAreasGradient(i);
+}
+
+bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength)
+{
+	//This implements a fairly standard A* algorithm, except that each node does not store the location
+	//of the node that lead to it, thus, you can't trace backwards to the starting point to get the path.
+	//Instead, each node holds the direction that you left from the initial node that lead to it, so you
+	//can't trace backwards to find the path, but you can instantly find the direction you need to go from
+	//the initial node, a small optimization since we don't need the whole path
+	targetX = (targetX + w) & wMask;
+	targetY = (targetY + h) & hMask;
+	
+	AStarComparator compare(astarpoints);
+	
+	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
+	std::priority_queue<int, std::vector<int>, AStarComparator> openList(compare);
+	openList.push((x << hDec) + y);
+	astarpoints[(x << hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
+	
+	//These are all the examined points, so that these positions on astarponts
+	//Can be reset later. Why not reset or re-allocate the whole thing every
+	//call? Its slow! Use reserve to avoid doing this multiple times
+	astarExaminedPoints.reserve(maximumLength*2 + 6);
+	astarExaminedPoints.push_back((x << hDec) + y);
+	
+	while(!openList.empty())
+	{
+		///Get the smallest from the heap
+		int position = openList.top();
+		openList.pop();
+
+		AStarAlgorithmPoint& pos = astarpoints[position];
+		pos.isClosed = true;
+				
+		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumLength))
+		{
+			break;
+		}
+		
+		for(int lx=-1; lx<=1; ++lx)
+		{
+			for(int ly=-1; ly<=1; ++ly)
+			{
+				int nx = (pos.x + lx + w) & wMask;
+				int ny = (pos.y + ly + h) & hMask;
+				int n = (nx << hDec) + ny;
+				AStarAlgorithmPoint& npos = astarpoints[n];
+				if(npos.isClosed)
+				{
+					continue;
+				}
+				else
+				{
+					int moveCost = pos.moveCost + 1;
+					int totalCost = moveCost +  warpDistMax(targetX, targetY, nx, ny);
+					
+					//If this cell hasn't been examined at all yet
+					if(npos.x == -1)
+					{
+						if(isFreeForGroundUnit(nx, ny, canSwim, teamMask) || (nx == targetX && ny == targetY))
+						{
+							//If the parent cell is the starting cell, add in the starting direction
+							if(pos.dx == 0 && pos.dy == 0)
+							{
+								npos = AStarAlgorithmPoint(nx, ny, lx, ly, moveCost, totalCost, false);
+								openList.push(n);
+							}
+							//Else, the direction is the same as the parents node
+							else
+							{
+								npos = AStarAlgorithmPoint(nx, ny, pos.dx, pos.dy, moveCost, totalCost, false);
+								openList.push(n);
+							}
+							astarExaminedPoints.push_back(n);
+						}
+					}
+					//Check if we can improve this cells value by taking this route
+					else if(npos.moveCost > moveCost)
+					{
+						npos.moveCost = moveCost;
+						npos.totalCost = totalCost;
+						npos.dx = pos.dx;
+						npos.dy = pos.dy;
+					}
+				}
+			}
+		}
+	}
+	
+	AStarAlgorithmPoint final = astarpoints[(targetX << hDec) + targetY];
+
+	//Clear all of the examined points for the next call to this algorithm
+	for(unsigned i=0; i<astarExaminedPoints.size(); ++i)
+	{
+		astarpoints[astarExaminedPoints[i]] = AStarAlgorithmPoint();
+	}
+	
+	astarExaminedPoints.clear();
+
+	//It was never examined, thus there is no paths
+	if(final.x == -1)
+		return false;
+	
+	//Input direction of the final square to the unit
+	*dx = final.dx;
+	*dy = final.dy;
+	return true;
+}
+
+
 
 void Map::initExploredArea(int teamNumber)
 {
@@ -4979,7 +5405,6 @@ Uint32 Map::checkSum(bool heavy)
 				c->groundUnit +
 				c->airUnit +
 				c->forbidden +
-				c->hiddenForbidden +
 				c->scriptAreas;
 			cs=(cs<<1)|(cs>>31);
 		}
@@ -5016,6 +5441,20 @@ Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
 	else
 		return dy;
 }
+
+Sint32 Map::warpDistSum(int px, int py, int qx, int qy)
+{
+	Sint32 dx=abs(px-qx);
+	Sint32 dy=abs(py-qy);
+	dx&=wMask;
+	dy&=hMask;
+	if (dx>(w>>1))
+		dx=abs(w-dx);
+	if (dy>(h>>1))
+		dy=abs(h-dy);
+	return dx + dy;
+}
+
 
 bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 {

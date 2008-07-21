@@ -71,6 +71,7 @@ namespace GAGGUI
 		TEXT_VALIDATED,
 		TEXT_CANCELED,
 		TEXT_SET,
+		TEXT_TABBED,
 	
 		LIST_ELEMENT_SELECTED,
 	
@@ -79,6 +80,7 @@ namespace GAGGUI
 		VALUE_CHANGED,
 		
 		KEY_CHANGED,
+		
 	};
 	
 	class Screen;
@@ -154,6 +156,7 @@ namespace GAGGUI
 		virtual bool isOnWidget(int x, int y) = 0;
 	protected:
 		friend class Screen;
+		friend class Panel;
 		Screen *parent;
 		/*! Called when an SDL_MOUSEMOTION event occurs.
 		 * As timertick, this is a template method,
@@ -233,6 +236,9 @@ namespace GAGGUI
 		
 		//! Returns width of widget
 		Sint32 getWidth() const { return w; }
+		
+		//! Sets the screen position
+		virtual void setScreenPosition(int nx, int ny) { x = nx; y = ny; }
 	
 	protected:
 		//! Compute the actual position from the layout informations

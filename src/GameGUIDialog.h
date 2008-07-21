@@ -21,14 +21,18 @@
 #define __GAME_GUI_DIALOG_H
 
 #include <GUIBase.h>
+
+
 using namespace GAGGUI;
 namespace GAGGUI
 {
 	class OnOffButton;
+	class TriButton;
 	class Selector;
 	class Text;
 }
 class GameGUI;
+class GameHeader;
 
 class InGameMainScreen:public OverlayScreen
 {
@@ -39,8 +43,9 @@ public:
 		SAVE_GAME = 1,
 		OPTIONS = 2,
 		ALLIANCES = 3,
-		RETURN_GAME = 4,
-		QUIT_GAME = 5
+		OBJECTIVES = 4,
+		RETURN_GAME = 5,
+		QUIT_GAME = 6
 	};
 public:
 	InGameMainScreen(bool showAlliance);
@@ -78,6 +83,7 @@ public:
 	};
 
 public:
+	Text *texts[16];
 	OnOffButton *alliance[16];
 	OnOffButton *normalVision[16];
 	OnOffButton *foodVision[16];
@@ -89,6 +95,7 @@ public:
 	InGameAllianceScreen(GameGUI *gameGUI);
 	virtual ~InGameAllianceScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	int countNumberPlayersForLocalTeam(GameHeader& gameHeader, int localteam);
 	Uint32 getAlliedMask(void);
 	Uint32 getEnemyMask(void);
 	Uint32 getExchangeVisionMask(void);
@@ -111,12 +118,41 @@ public:
 
 public:
 	Selector *musicVol;
+	Selector *voiceVol;
 	OnOffButton* mute;
 	Text *musicVolText;
+	Text *voiceVolText;
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
-	virtual ~InGameOptionScreen() { }
+	~InGameOptionScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
+};
+
+
+///This screen shows the current objectives of the mission, a mission briefing, and
+///hints as the mission goes along
+class InGameObjectivesScreen:public OverlayScreen
+{
+public:
+	enum
+	{
+		OBJECTIVES = 1,
+		BRIEFING = 2,
+		HINTS = 3,
+		OK = 4,
+	};
+public:
+	//If show briefing is enabled, then the briefing tab will be shown rather than the objectives tab
+	InGameObjectivesScreen(GameGUI* gui, bool showBriefing);
+	virtual ~InGameObjectivesScreen() { }
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	
+	Text* objectives;
+	Text* briefing;
+	Text* hints;
+	std::vector<Widget*> objectivesWidgets;
+	std::vector<Widget*> briefingWidgets;
+	std::vector<Widget*> hintsWidgets;
 };
 
 

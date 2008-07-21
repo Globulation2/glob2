@@ -18,7 +18,9 @@
 
 #include "NetGamePlayerManager.h"
 #include "FormatableString.h"
-#include "YOGGame.h"
+#include "YOGServerGame.h"
+#include "Player.h"
+#include "AINames.h"
 
 using namespace GAGCore;
 
@@ -34,7 +36,16 @@ NetGamePlayerManager::NetGamePlayerManager(GameHeader& gameHeader)
 
 void NetGamePlayerManager::addPerson(Uint16 playerID, const std::string& name)
 {
-	int team_number = chooseTeamNumber();
+	int team_number;
+	if(reteamInfo.doesPlayerHaveTeam(name))
+	{
+		team_number = reteamInfo.getPlayersTeam(name);
+	}
+	else
+	{
+		team_number = chooseTeamNumber();
+	}
+
 
 	//Add the player into the first spare slot
 	for(int x=0; x<32; ++x)
@@ -66,7 +77,7 @@ void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 			if(bp.type == BasePlayer::P_NONE)
 			{
 				FormatableString name("%0 %1");
-				name.arg(AI::getAIText(type)).arg(x+1);
+				name.arg(AINames::getAIText(type)).arg(x+1);
 				bp = BasePlayer(x, name, team_number, Player::playerTypeFromImplementitionID(type));
 				readyToStart[x] = true;
 				break;
@@ -107,7 +118,7 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 			if(bp.type >= Player::P_AI)
 			{
 				FormatableString name("%0 %1");
-				name.arg(AI::getAIText(bp.type - (int)Player::P_AI)).arg(bp.number+1);
+				name.arg(AINames::getAIText(bp.type - (int)Player::P_AI)).arg(bp.number+1);
 				bp.name = name;
 			}
 
@@ -117,6 +128,7 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 			readyToStart[x] = true;
 		}
 	}
+	readyToStart[playerNumber] = true;
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() - 1);
 }
 
@@ -159,9 +171,37 @@ bool NetGamePlayerManager::isEveryoneReadyToGo()
 
 
 
+bool NetGamePlayerManager::isReadyToGo(int playerID)
+{
+	for(int x=0; x<32; ++x)
+	{
+		BasePlayer& bp = gameHeader.getBasePlayer(x);
+		if(bp.playerID == playerID)
+		{
+			return readyToStart[x];
+		}
+	}
+}
+
+
+
 void NetGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
 {
 	numberOfTeams = nnumberOfTeams;
+}
+
+
+
+void NetGamePlayerManager::setReteamingInformation(const NetReteamingInformation& information)
+{
+	reteamInfo = information;
+}
+
+
+
+const NetReteamingInformation& NetGamePlayerManager::getReteamingInformation() const
+{
+	return reteamInfo;
 }
 
 
