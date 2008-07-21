@@ -1,27 +1,27 @@
 [%0 has left the game]
 %0 heeft het spel verlaten
 [%0 level %1]
-
+%0 niveau %1
 [%0 units can't access building]
-
+%0 globs kunnen het gebouw niet bereiken
 [%0 units can't access fruit]
-
+%0 globs kunnen het fruit niet bereiken
 [%0 units can't access resource]
-
+%0 globs kunnen de bron niet bereiken
 [%0 units not available]
-
+%0 globs zijn niet beschikbaar
 [%0 units too far from building]
-
+%0 globs zijn te ver van het gebouw
 [%0 units too far from fruit]
-
+%0 globs zijn te ver van fruit
 [%0 units too far from resource]
-
+%0 globs zijn te ver van de bron
 [%0 units too low level]
-
+%0 globs hebben te laag niveau
 [%0% Uploaded]
 
 [%0's game]
-
+%0's spel
 [%0's team unit got converted to your team]
 Een eenheid van %0's team is overgelopen naar jou
 [abreaviation explanation A]
@@ -35,43 +35,43 @@ mV: Toon een visioen van alle Markten (handel)
 [abreaviation explanation V]
 V: Toon een visioen voor alle gebouwen
 [add map]
-Toevoegen
+map toevoegen
 [add shortcut]
-
+sneltoets toevoegen
 [Add]
-
+Toevoegen
 [AI Descriptions]
-
+AI beschrijvingen
 [AI]
 AI
 [ai]
 AI
 [AICastor-Description]
-
+Castor: beschrijving
 [AICastor]
 Castor
 [AINicowar-Description]
-
+Nicowar: beschrijving
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Geen AI: beschrijving
 [AINone]
 Geen AI
 [AINumbi-Description]
-
+Numbi: beschrijving
 [AINumbi]
 Numbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity: beschrijving
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib-Description]
-
+Toubib: beschrijving
 [AIToubib]
 Toubib
 [AIWarrush-Description]
-
+Warrush: beschrijving
 [AIWarrush]
 Warrush
 [Alga]
@@ -115,7 +115,7 @@ Wacht op spelers
 [away:]
 weg:
 [Back]
-
+Terug
 [backspace]
 
 [barracks explanation 2]
@@ -127,13 +127,13 @@ Kazerne
 [beach size]
 Strand grootte
 [Blocked Players]
-
+Geblokkeerde spelers
 [break]
 
 [briefing]
 
 [build %0 level %1]
-
+bouw %0 niveau %1
 [build barracks level 0]
 Bouw Kazerne 0
 [build barracks level 1]
@@ -199,15 +199,15 @@ Campagne bewerken
 [campaign]
 Campagne
 [Can't connect, can't find host]
-
+Kan niet verbinden, kan host niet vinden
 [Can't host game, port %0 in use]
-
+Kan geen spel maken, poort %0 in gebruik
 [Can't join game, game doesn't exist]
-
+Kan niet deelnemen aan spel, spel bestaat niet
 [Can't join game, game has started]
-
+Kan niet deelnemen aan spel, spel is reeds gestart
 [Can't join game, game is full]
-
+Kan niet deelnemen aan spel, spel is vol
 [Can't join game, missmatching game parameters]
 Kan niet deelnemen aan het spel: parmaters tussen beiden partijen verschillen.
 [Can't join game, timeout]
@@ -251,9 +251,9 @@ Gesloten
 [compile]
 Compileer script
 [compose]
-
+stel samen
 [Computing Fertility]
-
+Vruchtbaarheid aan het berekenen
 [concrete islands terrain]
 
 [connect]
@@ -323,19 +323,19 @@ Vernietig
 [display]
 Beeld
 [do nothing]
-
+doe niets
 [don't carry anything]
 Draagt niets
 [down]
-
+beneden
 [Download Map]
 
 [Download Maps]
 
 [downloaded %0]
-
+%0 gedownload
 [downloading map]
-
+map aan het downloaden
 [edit map]
 Bewerken
 [editing map]
@@ -345,7 +345,7 @@ Bewerker toetsen
 [editor]
 Bewerker
 [end]
-
+einde
 [Enter your nickname :]
 Voer gebruikersnaam in:
 [Enter your password :]
@@ -353,7 +353,7 @@ Voer wachtwoord in:
 [enter]
 
 [equals]
-
+is gelijk aan
 [escape]
 
 [explorationflag explanation 2]
