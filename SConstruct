@@ -174,6 +174,11 @@ def configure(env):
     if conf.CheckLib('fribidi') and conf.CheckCXXHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
+
+    #Do checks for portaudio
+    if conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
+        configfile.add("HAVE_PORTAUDIO ", "Defined when Port Audio support is present and compiled")
+        env.Append(LIBS=['portaudio'])
         
     if missing:
         for t in missing:
