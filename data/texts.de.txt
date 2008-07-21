@@ -279,7 +279,7 @@ Karte bearbeiten
 [editing map]
 bearbeite Karte
 [editor shortcuts]
-Editor-Tastenkürzel
+Editor-Tasten
 [editor]
 Editor
 [end]
@@ -363,7 +363,7 @@ Vollbild
 [game full]
 Spiel voll
 [game shortcuts]
-Spiel-Tastenkürzel
+Spiel-Tasten
 [Game]
 Spiel
 [general settings]
@@ -589,7 +589,7 @@ alte Inselzufallskarte
 [old random terrain]
 alte Zufallskarte
 [on press]
-Bei Tastendruck
+Bei Taste
 [On the spot]
 Vor Ort
 [on unpress]
@@ -1011,17 +1011,9 @@ Einheitliche Landschaft
 [Unit editor]
 Einheiteneditor
 [unit settings explanation]
-<<<<<<< /home/leo/test.leowandersleb.de/website/translation/glob2/data/texts.de.txt.orig.1879022446
 Standardeinheitenanzahl
 [unit settings]
 Einheiten
-||||||| /tmp/texts.de.txt~base.UM3gz0
-
-[unit settings]
-Einheiten
-=======
-
->>>>>>> /tmp/texts.de.txt~other.lPEetu
 [units working]
 Einheiten arbeiten
 [Units]
@@ -1158,5 +1150,5 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
-[Leo: nur ein erster Test]
-test2asdfasdfasdf
+[building settings]
+Gebäude
