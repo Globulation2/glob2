@@ -26,6 +26,13 @@
 #include <SDL.h>
 #include <SDL_thread.h>
 #include <boost/shared_ptr.hpp>
+#include "config.h"
+
+#ifdef HAVE_PORTAUDIO
+#include "portaudio.h"
+#endif
+
+#include <speex/speex.h>
 
 class OrderVoiceData;
 
@@ -36,6 +43,8 @@ public:
 	// Those variables are public because of C thread API. do not access them ouside VoiceRecorder.cpp
 	//! pointer to the structure holding the speex encoder
 	void *speexEncoderState;
+	// Bits for speex encoding
+	SpeexBits bits;
 	//! Size of one frame of encoding
 	int frameSize;
 	//! thread used for recording
@@ -44,12 +53,21 @@ public:
 	SDL_mutex *ordersMutex;
 	//! Queue of orders to be sent through the network
 	std::queue<boost::shared_ptr<OrderVoiceData> > orders;
-	//! True when record thread is running
-	bool recordThreadRun;
 	//! True when recording
 	bool recordingNow;
+	
+	#ifdef HAVE_PORTAUDIO
+	PaStream *stream;
+	int frameCount;
+	short* buffer;
+	#else
+	//! True when record thread is running
+	bool recordThreadRun;
 	//! When recordingNow is set to false, get decrement
 	int stopRecordingTimeout;
+	#endif
+	
+	
 	
 public:
 	//! Constructor
