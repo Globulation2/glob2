@@ -180,14 +180,21 @@ struct NativeMethod: ScopePrototype
 	virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
 };
 
-struct Function: Value
+struct MetaPrototype: Value
+{
+	typedef ScopePrototype Prototype;
+
+	MetaPrototype(Heap* heap, Prototype* prototype, Value* outer);
+	
+	Prototype* prototype; // this is the prototype of the target, not of this meta object
+	Value* outer;
+};
+
+struct Function: MetaPrototype
 {
 	typedef ScopePrototype Prototype;
 
 	Function(Heap* heap, Prototype* prototype, Value* outer);
-	
-	Prototype* prototype;
-	Value* outer;
 };
 
 struct Integer: Value
