@@ -1,7 +1,25 @@
-[%0 has been deconnected of the game]
-%0 s'est fait déconnecté de la partie.
 [%0 has left the game]
 %0 a quitté la partie.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 jeu de %0
 [%0's team unit got converted to your team]
@@ -16,28 +34,44 @@ fV : Montrer toutes les auberges (pour voler des unités)
 mV : Montrer tous les marchés (pour échanger des fruits)
 [abreaviation explanation V]
 V : Montrer tous les batiments
-[Add AI]
-Ajouter IA
 [add map]
 Ajouter carte
 [add shortcut]
 Ajouter raccourcis
+[Add]
+
+[AI Descriptions]
+
 [AI]
 IA
 [ai]
 IA
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -46,6 +80,8 @@ Algue
 Algues
 [alliances]
 Alliances
+[alt %0]
+
 [and]
 et
 [any explorer]
@@ -66,8 +102,6 @@ assigné
 Vitesse at.
 [At. strength]
 Force at.
-[attack speed]
-Vitesse d'attaque
 [Attack]
 Attaque
 [audio]
@@ -80,10 +114,10 @@ Parties locales disponibles
 En attente des joueurs
 [away:]
 absent:
+[Back]
+
 [backspace]
 retour arrière
-[bad error in connection system]
-Mauvaise erreur dans le système de connexion
 [barracks explanation 2]
 d'attaque de vos guerrières
 [barracks explanation]
@@ -92,64 +126,20 @@ Améliore le niveau d'attaque
 Camp d'entraînement
 [beach size]
 taille de la plage
+[Blocked Players]
+
 [break]
 casser
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 Construit
-[Building name]
-Nom du bâtiment
-[Building short explanation 2]
-Courte explication 2 du bâtiment  (24 caractères max.)
-[Building short explanation]
-Courte explication du bâtiment  (24 caractères max)
+[Building Defaults]
+
+[building settings]
+Réglages de l'unité
 [building site]
 chantier
 [Buildings]
@@ -190,8 +180,6 @@ verouillage majuscule
 Transporte :
 [Change Area Name]
 Changer le nom de la zone
-[checksum sent]
-Somme de contrôle envoyée ...
 [Cherry]
 Cerise
 [choose campaign]
@@ -202,8 +190,6 @@ Choisir une partie
 Choisir une carte
 [clear area]
 Zone de défrichage
-[clear]
-Défricher
 [Clearing:]
 Défrichage de:
 [clearingflag explanation 2]
@@ -212,30 +198,26 @@ Défrichage de:
 Enlève les ressources
 [clearingflag]
 Drapeau de défrichage
-[close]
-Fermer
 [closed]
 Fermé
 [compile]
 Compiler le script
 [compose]
 
+[Computing Fertility]
+
+[concrete islands terrain]
+
 [connect]
 Connecter
-[connected to all players]
-Connecté avec tous les joueurs
-[connected to server]
-Connecté au serveur
-[connecting to all players]
-En train de se connecter avec les joueurs
 [connecting to]
 Connection à
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuer à jouer
+[control %0]
+
 [Corn]
 Blé
 [crater density]
@@ -248,6 +230,8 @@ Créer partie
 Créer carte
 [credits]
 Crédits
+[ctrl - line]
+
 [current speed]
 Vitesse actuelle
 [custom game]
@@ -258,22 +242,14 @@ Curseur personalisé
 Dommages
 [Damaged Map]
 Carte endomagée
-[dblbuff]
-Double-tampon
 [decrease units working]
 Diminuer le nombre d'unité travaillant
-[default terrain]
-Terrain par défaut
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 avoisinantes
 [defencetower explanation]
 Attaque les unités ennemies
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Tourelle
 [Defense Map]
@@ -290,8 +266,6 @@ Désert
 Détruire batiment
 [destroy]
 Détruire
-[Disconnect]
-Déconnecter
 [display]
 Affichage
 [do nothing]
@@ -300,12 +274,14 @@ Ne fait rien
 Ne transporte rien
 [down]
 Bas
-[download finished]
-Téléchargement terminé
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
 
-[downloaded at]
-Téléchargé à 
+[downloading map]
+
 [edit map]
 Editer la carte
 [editing map]
@@ -372,8 +348,10 @@ F8
 F9
 [Fertility Map]
 Carte de fertilité
-[food left]
-Nourriture
+[Flag Defaults]
+
+[flag settings explanation]
+
 [food]
 Nourriture
 [forbidden area]
@@ -394,9 +372,7 @@ Plein écran
 Jeu complet
 [game shortcuts]
 Raccourcis du jeu
-[game speed]
-Vitesse du jeu
-[Games]
+[Game]
 
 [general settings]
 Réglages généraux
@@ -424,14 +400,10 @@ Satisfaction
 Pause dur
 [Harvest]
 Récolte
-[has joined]
-a rejoint
-[has quit]
-a quitté
-[heal]
-Santé
-[help]
-Aide
+[high priority]
+
+[hints]
+
 [home]
 Maison
 [hospital explanation 2]
@@ -440,22 +412,20 @@ Maison
 Soigne vos unités 
 [hospital]
 Hôpital
-[Host has cancelled the game]
-
 [host]
 Héberger une partie
 [hp]
 Point de vie
 [hp]
 Pts vie
+[Human]
+
 [human]
 Humain
 [hungry]
 faim
 [hungryness]
 Conso. nourriture
-[hwaccel]
-Accélération matérielle
 [In way]
 En chemin
 [increase units working]
@@ -464,12 +434,6 @@ Augmenter le nombre d'unité travaillant
  
 [inn explanation]
 Nourrit vos unités
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Auberge
 [insert]
@@ -480,6 +444,8 @@ Dedans
 taille des îles
 [islands terrain]
 Iles
+[isles terrain]
+
 [iterate selection]
 Itérer la séléction
 [jobs]
@@ -502,8 +468,6 @@ fr
 Langue
 [language]
 Français
-[large]
-grand
 [Leave Game]
 Quitter le jeu
 [left meta]
@@ -522,32 +486,56 @@ Charger la campagne
 Charger jeu
 [load map]
 Charger la carte
+[load script]
+Charger le script
 [load]
 Charger
-[loading glob2]
-Chargement de Globulation 2
+[loading map list]
+
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
 Perdu : %0 a plus de prestige que vous
 [Lost : your colony is dead]
 Perdu : votre colonie est morte
+[low priority]
+
 [lowquality]
 Basse qualité
 [Magic At. Air]
 Dmg. air
 [Magic At. Ground]
 Dmg. sol
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Carte: %0.
 [map name]
 Nom de la carte
+[map rated]
+
+[map script]
+
 [map size x]
 Largeur de la carte
 [map size y]
 Hauteur de la carte
-[mapGenerationDescriptor Methodes]
-Méthodes de génération de cartes aléatoires
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Carte disponible
 [mark map]
@@ -558,10 +546,10 @@ fruits avec les autres
 Permet d'échanger des ressources
 [market]
 Marché
-[medium]
-moyen
-[menu]
-Menu
+[medium priority]
+
+[meta %0]
+
 [Min required level:]
 Niveau minimum requis:
 [Minimum Level To Flag]
@@ -572,22 +560,24 @@ Volume (musique)
 
 [mute]
 muet
-[network latency]
-Latence du réseau
 [new campaign]
 Nouvelle campagne
 [new map]
 Nouveau
 [nick taken]
 Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG
+[No Hints]
+
 [no key]
 Aucune touche
+[No Objectives]
+
 [no ressources growth areas]
 Aucune zone de croissance de resources
 [No]
 Non
-[not connected]
-Non connecté
+[Not Enough Ratings]
+
 [not ready]
 pas prêt
 [number of players: %0 (%1 AI)]
@@ -600,6 +590,8 @@ pas prêt
 nombre d'équipes
 [numlock]
 Verouillage du pavé numérique
+[objectives]
+
 [of which]
 dont
 [ok]
@@ -608,10 +600,12 @@ Accepter
 Ancien terrain d'île
 [old random terrain]
 Ancien terrain aléatoire
+[on press]
+
 [On the spot]
 Sur place
-[one player]
-Un joueur présent.
+[on unpress]
+
 [open chat box]
 Ouvrir boîte de discussion
 [open load menu]
@@ -620,12 +614,18 @@ Ouvrir menu de chargement
 Ouvrir menu de sauvegarde
 [open script editor]
 Ouvrir éditeur de script
+[open teams editor]
+
 [open]
 ouvert
+[Options]
+
 [options]
 Options
 [Orange]
 Orange
+[Other Options]
+
 [page down]
 Page suivante
 [page up]
@@ -638,24 +638,26 @@ Mettre le jeu en pause
 Pause
 [Paused]
 Pause
-[percent]
-  pourcent
 [player name]
 Nom du joueur
-[player]
-Joueur
+[player rating %0]
+
 [please wait]
 Attendre SVP
 [power]
 Puissance
-[presence request sent]
-Requête pour présence envoyée ...
 [press space]
 Appuyer sur espace pour continuer.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
+[Primary Objectives]
+
 [print screen]
 Impriment l'écran
+[priority]
+
 [Prune]
 Prune
 [quit the editor]
@@ -670,12 +672,16 @@ marche de vos unités
 Améliore la vitesse de marche
 [racetrack]
 Piste de course
-[random terrain]
-Terrain aléatoire
 [range]
 Portée
+[Rated %0]
+
 [ratios]
 Proportions
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 [remember unit]
@@ -686,14 +692,14 @@ Mémoriser le mot de passe localement. (non sécurisé)
 Enlever la carte
 [remove shortcut]
 Enlever le raccourcis
+[Remove]
+
 [repair building]
 Réparer la bâtiment
 [repair]
 Réparer
 [repeat area]
 Répéter la zone
-[ressources]
-Ressources
 [restore default shortcuts]
 Restaurer les raccourcis par défaut
 [return to editor]
@@ -720,6 +726,8 @@ Voulez-vous sauver avant de quitter ?
 Sauvegarder jeu
 [save map]
 Sauvegarder la carte
+[save script]
+
 [Save]
 Sauvegarder
 [school explanation 2]
@@ -734,6 +742,8 @@ Zones du script
 Verouillage de défilement
 [scroll wheel enabled]
 Roulette de la souris activée
+[Secondary Objectives]
+
 [seeking a job]
 cherchent du travail
 [seeking]
@@ -761,6 +771,8 @@ recherche
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 
@@ -796,10 +808,10 @@ recherche
 
 [select warflag]
 
-[session request sent]
-Requête pour la session envoyée ...
 [settings]
 Paramètres
+[shift %0]
+
 [shortcut explanation enter]
 touche enter : envoyer un message
 [shortcut explanation v]
@@ -808,30 +820,28 @@ touche v : presser pour parler
 Montrer le menu principal
 [skin]
 Affichage
-[small]
-faible
 [smoothing]
 Lissage
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 Espace
-[speed]
-Vitesse
 [start mission]
 Démarrer la mission
 [start new campaign]
 Démarrer la campagne
 [Start]
 Départ
-[STARTING GAME ...]
-Début du jeu... 
 [Starving Map]
 Carte de famine
 [starving]
 trop faim
-[stat]
-Statistiques
-[state]
-état
 [Statistics]
 Statistiques
 [Still (i)]
@@ -852,6 +862,8 @@ Pierre
 Elément passif de défense
 [stonewall]
 Mur de pierre
+[submit rating]
+
 [svr hostname]
 Nom du serveur hôte
 [swamp terrain]
@@ -860,8 +872,6 @@ Marais
  
 [swarm explanation]
 Crée de nouvelles unités
-[swarm level 0]
-
 [swarm]
 Ruche
 [Swim]
@@ -904,6 +914,10 @@ Changer vers la vue du terrain
 Sys Req
 [tab]
 Tab
+[teams editor]
+
+[Teams Fixed]
+
 [teams]
  équipes
 [the barracks is finished]
@@ -990,10 +1004,16 @@ Basculer la transmission de la voix
 Le prestige total a été atteint
 [Total]
 Total
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Didacticiel
-[unassigned]
-Non assigné
 [Uncontrolled]
 Incontrôlé
 [undo]
@@ -1004,36 +1024,36 @@ Terrain uniforme
 Éditeur d'unité
 [unit settings explanation]
 
-[unit settings]
-Réglages de l'unité
-[Unit type]
-Type d'unité
-[units type]
-type d'unités
 [units working]
  unités travaillent
 [Units]
 Unités
+[unlocked at start]
+
 [unlocked by]
 Dévérouille par
 [Unnamed Area]
 Zone sans nom
 [up]
 Haut
-[update list]
-Mettre à jour
 [upgrade building]
 Améliorer le bâtiment
+[Upgrade Defaults]
+
 [upgrade]
 Améliorer
+[Upload Map]
+
+[upload map]
+
 [username]
 Nom d'utilisateur
 [Version]
 Version
 [view history]
 Voir l'historique
-[wait destroy]
-En attente de destruction
+[Voice volume]
+
 [waiting for %0]
 Attente de %0
 [waiting for key]
@@ -1056,10 +1076,6 @@ Rapport des guerrières
 Guerrière
 [warriors]
 guerrières
-[was AI]
-auparavant IA
-[was]
-auparavant
 [water]
 Eau
 [Wheat]
@@ -1090,50 +1106,48 @@ Travaillant
 blessées
 [Yes]
 Oui
-[YESTS_BAD]
-Erreur de cohérence interne lors de la connexion.
 [YESTS_CONNECTING]
 Etablissement de la connexion au metaserveur YOG...
 [YESTS_CONNECTION_LOST]
 La connexion à YOG à été perdue.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-Le metaserveur YOG a refusé pour une erreur de protocole: vous êtes déjà authentifié. Réessayez dans 45 secondes.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Le metaserveur YOG a refusé la connexion car ce nom d'utilisateur a déjà été enregistré avec un mot de passe. Si c'est vous qui l'avez enregistré, désactivez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Le metaserveur YOG a refusé la connexion car le mot de passe est faux.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Le metaserveur YOG a refusé la connexion car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregistrer votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-Le metaserveur YOG a refusé pour une erreur interne de protocole: vous n'êtes pas connecté lors de la phase d'authentification. Veuillez reporter cette erreur.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connexion car votre version de globulation2 est trop ancienne pour communiquer avec.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Le metaserveur YOG a refusé la connexion pour une raison inconnue!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connexion car votre nom d'utilisateur est déjà utilisé par une autre personne.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Le système de connexion est prêt à contacter le metaserveur YOG pour se connecter.
-[YESTS_DECONNECTING]
-Déconnection du metaserveur YOG...
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
-[YESTS_YOG_KILLED]
-Un administrateur vient d'arrêter le metaserveur YOG.
-[yog-chat]
-#yog-fr
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Jeu en ligne (Ysagoon)
-[YOG_HELP]
-Le système de messages YOG dispose de deux commandes, "msg" et "away". Tappez "/help <commande>" pour en savoir plus.
-[YOG_HELP_AWAY]
-La commande "/away (<message>)" vous permet d'indiquer aux autres utilisateurs de YOG que vous-êtes momentanément absent. Vous avez en plus la possibilité de mettre un petit message d'explication. Par exemple "/away Je mange un fromage et je revient pour 13h14". Alias "/a".
-[YOG_HELP_MSG]
-La commande "/msg <nom> <message>" vous permet d'envoyer un message à une seule personne. Exemple "/msg Jean-Paul Salut JP, comment se passent tes croisades ?". Alias "/m".
-[You are no more marked as away]
-Vous êtes à nouveau considéré comme étant présent.
-[You are now marked as away]
-Vous êtes désormais considéré comme étant absent.
 [you have lost]
 Vous avez perdu!
 [you have won]
@@ -1142,5 +1156,9 @@ Vous avez gagné!
 
 [Your %0 are under attack]
 Vos %0 sont attaquées
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Votre unité est passée à l'équipe %0
+[Your username was banned]
+

@@ -23,6 +23,7 @@
 #include <GUIBase.h>
 #include "MapGenerationDescriptor.h"
 #include <string>
+#include "MapThumbnail.h"
 
 namespace GAGCore
 {
@@ -49,20 +50,20 @@ public:
 	virtual ~MapPreview();
 	virtual void paint(void);
 	//! Reload thumbnail for a new map
-	virtual void setMapThumbnail(const char *mapName=NULL);
+	virtual void setMapThumbnail(const std::string& mapName);
+	//! Load from a given thumbnail
+	virtual void setMapThumbnail(MapThumbnail thumbnail);
 	//! Returns last map width
-	int getLastWidth(void) { return lastW; }
+	int getLastWidth(void) { return thumbnail.getMapWidth(); }
 	//! Returns last map height
-	int getLastHeight(void) { return lastH; }
+	int getLastHeight(void) { return thumbnail.getMapHeight(); }
 	const char *getMethode(void);
+	//! Returns true if the thumbnail is laoded, false otherwise
+	bool isThumbnailLoaded();
 	
 protected:
-	//! map last size
-	int lastW, lastH;
-	//! map thumbnail (128x128)
-	DrawableSurface *mapThumbnail;
-	bool randomGenerated;
-	MapGenerationDescriptor::Methode lastRandomGenerationMethode;
+	MapThumbnail thumbnail;
+	DrawableSurface* surface;
 };
 
 #endif

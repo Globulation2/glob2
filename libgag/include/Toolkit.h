@@ -41,12 +41,14 @@ namespace GAGCore
 	public:
 		//! Initialize gag, must be called before any call to GAG
 		static void init(const char *gameName);
-		//! Initialize the graphic part
-		static GraphicContext *initGraphic(int w, int h, unsigned int flags);
-	
 		//! Close gag, must be called after any call to GAG
 		static void close(void);
-	
+		
+		#ifndef YOG_SERVER_ONLY
+		//! Initialize the graphic part
+		static GraphicContext *initGraphic(int w, int h, unsigned int flags, const char *title = NULL, const char *icon = NULL);
+		
+		
 		static Sprite *getSprite(const char *name);
 		static Sprite *getSprite(const std::string &name);
 		static void releaseSprite(const char *name);
@@ -56,10 +58,12 @@ namespace GAGCore
 		static Font *getFont(const char *name);
 		static void releaseFont(const char *name);
 		
+		#endif
 		static FileManager *getFileManager(void) { return fileManager; }
 		static StringTable *const getStringTable(void) { return strings; }
 		
 	protected:
+		#ifndef YOG_SERVER_ONLY
 		friend class Sprite;
 		
 		typedef std::map<std::string, Sprite *> SpriteMap;
@@ -69,12 +73,13 @@ namespace GAGCore
 		static SpriteMap spriteMap;
 		//! All loaded fonts
 		static FontMap fontMap;
+		//! The actual graphic context
+		static GraphicContext *gc;
+		#endif
 		//! The virtual file system
 		static FileManager *fileManager;
 		//! The table of strings
 		static StringTable *strings;
-		//! The actual graphic context
-		static GraphicContext *gc;
 	};
 }
 

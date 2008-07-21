@@ -37,7 +37,6 @@
 #include <iterator>
 #include <set>
 
-
 namespace AIEcho
 {
 	class position;
@@ -709,8 +708,8 @@ namespace AIEcho
 			void set_upgrading(unsigned int id);
 			void tick();
 
-			typedef std::map<int, boost::tuple<int, int, int, int, bool> >::iterator pending_iterator;
-			typedef std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool, bool> >::iterator found_iterator;
+			typedef std::map<int, boost::tuple<int, int, int, int> >::iterator pending_iterator;
+			typedef std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> >::iterator found_iterator;
 
 			found_iterator begin() { return found_buildings.begin(); }
 			found_iterator end() { return found_buildings.end(); }
@@ -718,8 +717,8 @@ namespace AIEcho
 			///that pending_buildings[id] may create a new object, and the system can't tell the difference between it and something
 			///real. So bassically, the last variable is set to true when the object is supposed to be there, false is
 			///the default value if its accidentilly created.
-			std::map<int, boost::tuple<int, int, int, int, bool> > pending_buildings;
-			std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool, bool> > found_buildings;
+			std::map<int, boost::tuple<int, int, int, int> > pending_buildings;
+			std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
 			unsigned int building_id;
 			Player* player;
 			Echo& echo;
@@ -1103,6 +1102,8 @@ namespace AIEcho
 			MChangeAlliances,
 			MUpgradeRepair,
 			MSendMessage,
+			MChangeFlagPosition,
+			MAdjustPriority,
 		};
 
 
@@ -1300,6 +1301,48 @@ namespace AIEcho
 			int building_id;
 		};
 
+		///This changes a flags position
+		class ChangeFlagPosition : public ManagementOrder
+		{
+		public:
+			ChangeFlagPosition() : x(0), y(0), building_id(0) {}
+			explicit ChangeFlagPosition(int x, int y, int building_id); 
+		protected:
+			void modify(Echo& echo);
+			boost::logic::tribool wait(Echo& echo);
+			ManagementOrderType get_type();
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream);
+		private:
+			int x;
+			int y;
+			int building_id;
+		};
+
+		///This order adjusts the priority on a building
+		class AdjustPriority : public ManagementOrder
+		{
+		public:
+			enum BuildingPriority
+			{
+				Low,
+				Medium,
+				High,
+			};
+			
+			AdjustPriority() : building_id(0) {}
+			AdjustPriority(int building_id, BuildingPriority priority);
+		protected:
+			void modify(Echo& echo);
+			boost::logic::tribool wait(Echo& echo);
+			ManagementOrderType get_type();
+			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+			void save(GAGCore::OutputStream *stream);
+		private:
+			int building_id;
+			BuildingPriority priority;
+		};
+
 		enum AreaType
 		{
 			ClearingArea,
@@ -1388,11 +1431,12 @@ namespace AIEcho
 		private:
 			int id;
 		};
-
-		///This sends a message to the AI's handle_message function.
+		
 		#ifdef SendMessage
 		#undef SendMessage
- 		#endif
+		#endif
+
+		///This sends a message to the AI's handle_message function.
 		class SendMessage : public ManagementOrder
 		{
 		public:

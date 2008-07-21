@@ -25,7 +25,9 @@
 #include <iostream>
 #include <cctype>
 
+#ifndef YOG_SERVER_ONLY
 #include <SDLGraphicContext.h>
+#endif
 
 namespace GAGCore
 {
@@ -229,6 +231,11 @@ namespace GAGCore
 			}
 		}
 		
+		for(unsigned i=0; i<translations.size(); ++i)
+		{
+			languageCodes[getStringInLang("[language-code]", i)] = i;
+		}
+		
 		return true;
 	}
 	
@@ -254,8 +261,10 @@ namespace GAGCore
 			if (accessIt == stringAccess.end())
 			{
 				std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, no such key." << std::endl;
+				#ifndef YOG_SERVER_ONLY
 				if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
 					GAGCore::DrawableSurface::texts[std::string(stringname)]=key;
+			    #endif
 				return stringname;
 			}
 			else
@@ -269,14 +278,18 @@ namespace GAGCore
 				std::string &s = strings[accessIt->second+dec]->data[actLang];
 				if (s.length() == 0)
 				{
+					#ifndef YOG_SERVER_ONLY
 					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
 						GAGCore::DrawableSurface::texts[strings[accessIt->second+dec]->data[defaultLang]]=key;
+					#endif
 					return strings[accessIt->second+dec]->data[defaultLang].c_str();
 				}
 				else
 				{
+					#ifndef YOG_SERVER_ONLY
 					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
 						GAGCore::DrawableSurface::texts[s]=key;
+					#endif
 					return s.c_str();
 				}
 			}

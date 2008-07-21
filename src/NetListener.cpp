@@ -41,26 +41,29 @@ NetListener::~NetListener()
 
 
 
-void NetListener::startListening(Uint16 port)
+void NetListener::startListening(Uint16 nport)
 {
 	if(!listening)
 	{
 		IPaddress address;
-		if(SDLNet_ResolveHost(&address, NULL, port) == -1)
+		if(SDLNet_ResolveHost(&address, NULL, nport) == -1)
 		{
-			std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
+			if(verbose)
+				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
 			listening=false;
 		}
 		
 		socket=SDLNet_TCP_Open(&address);
 		if(!socket)
 		{
-			std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
+			if(verbose)
+				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
 			listening=false;
 		}
 		else
 		{
 			listening=true;
+			port = nport;
 		}
 	}
 	
@@ -89,15 +92,8 @@ bool NetListener::attemptConnection(NetConnection& connection)
 {
 	if(listening)
 	{
-		connection.attemptConnection(socket);
-		if(connection.isConnected())
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		bool accepted = connection.attemptConnection(socket);
+		return accepted;
 	}
 	else
 	{

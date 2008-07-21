@@ -1645,7 +1645,7 @@ void BuildingRegister::initiate()
 		Building* b=player->team->myBuildings[i];
 		if(b!=NULL)
 		{
-			found_buildings[building_id++]=boost::make_tuple(b->posX, b->posY, b->type->shortTypeNum, b->gid, false, true);
+			found_buildings[building_id++]=boost::make_tuple(b->posX, b->posY, b->type->shortTypeNum, b->gid, false);
 		}
 	}
 }
@@ -1654,7 +1654,7 @@ void BuildingRegister::initiate()
 
 unsigned int BuildingRegister::register_building()
 {
-	pending_buildings[building_id]=boost::make_tuple(-1, -1, -1, -1, true);
+	pending_buildings[building_id]=boost::make_tuple(-1, -1, -1, -1);
 	return building_id++;
 }
 
@@ -1662,7 +1662,7 @@ unsigned int BuildingRegister::register_building()
 
 void BuildingRegister::issue_order(int id, int x, int y, int building_type)
 {
-	pending_buildings[id]=boost::make_tuple(x, y, building_type, 0, true);
+	pending_buildings[id]=boost::make_tuple(x, y, building_type, 0);
 }
 
 
@@ -1688,7 +1688,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 y=stream->readSint32("ypos");
 		Uint32 type=stream->readSint32("building_type");
 		Uint32 ticks=stream->readSint32("ticks_since_registered");
-		pending_buildings[id]=boost::make_tuple(x, y, type, ticks, true);
+		pending_buildings[id]=boost::make_tuple(x, y, type, ticks);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1711,7 +1711,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 			t=true;
 		else
 			t=indeterminate;
-		found_buildings[id]=boost::make_tuple(xpos, ypos, building_type, gid, t, true);
+		found_buildings[id]=boost::make_tuple(xpos, ypos, building_type, gid, t);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1783,15 +1783,6 @@ void BuildingRegister::tick()
 {
 	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end();)
 	{
-		//Ignore this, its not supposed to be there
-		if( !(i->second.get<4>()))
-		{
-			pending_iterator current=i;
-			++i;
-			pending_buildings.erase(current);
-			continue;
-		}
-
 		//When get<3>() is -1, it means that the building order hasen't been sent to the glob2 engine yet.
 		//This is used when the building is registered, but awaiting conditions to be satisfied.
 		if(i->second.get<3>()!=-1)
@@ -1819,7 +1810,7 @@ void BuildingRegister::tick()
 				{
 					echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), gbid);
 				}
-				found_buildings[i->first]=boost::make_tuple(i->second.get<0>(), i->second.get<1>(), i->second.get<2>(), gbid, false, true);
+				found_buildings[i->first]=boost::make_tuple(i->second.get<0>(), i->second.get<1>(), i->second.get<2>(), gbid, false);
 				pending_iterator current=i;
 				++i;
 				pending_buildings.erase(current);
@@ -1830,15 +1821,6 @@ void BuildingRegister::tick()
 	}
 	for(found_iterator i = found_buildings.begin(); i!=found_buildings.end();)
 	{
-		///Ignore this, its not supposed to be there
-		if(! i->second.get<5>())
-		{
-			found_iterator current=i;
-			++i;
-			found_buildings.erase(current);
-			continue;
-		}
-
 		if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
 		{
 			if(echo.get_flag_map().get_flag(i->second.get<0>(), i->second.get<1>())==NOGBID)
@@ -1905,7 +1887,7 @@ void BuildingRegister::tick()
 
 bool BuildingRegister::is_building_pending(unsigned int id)
 {
-	if(pending_buildings.find(id)!=pending_buildings.end() && pending_buildings[id].get<4>())
+	if(pending_buildings.find(id)!=pending_buildings.end())
 	{
 		return true;
 	}
@@ -1916,7 +1898,7 @@ bool BuildingRegister::is_building_pending(unsigned int id)
 
 bool BuildingRegister::is_building_found(unsigned int id)
 {
-	if(found_buildings.find(id)!=found_buildings.end() && found_buildings[id].get<5>())
+	if(found_buildings.find(id)!=found_buildings.end())
 	{
 		return true;
 	}
@@ -1928,6 +1910,11 @@ bool BuildingRegister::is_building_found(unsigned int id)
 
 bool BuildingRegister::is_building_upgrading(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return false;
+	}
+	
 	tribool v=found_buildings[id].get<4>();
 	if(v)
 		return true;
@@ -1940,6 +1927,10 @@ bool BuildingRegister::is_building_upgrading(unsigned int id)
 
 Building* BuildingRegister::get_building(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return NULL;
+	}
 	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())];
 }
 
@@ -1947,6 +1938,10 @@ Building* BuildingRegister::get_building(unsigned int id)
 
 BuildingType* BuildingRegister::get_building_type(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return NULL;
+	}
 	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())]->type;
 }
 
@@ -1954,6 +1949,10 @@ BuildingType* BuildingRegister::get_building_type(unsigned int id)
 
 int BuildingRegister::get_type(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return found_buildings[id].get<2>();
 }
 
@@ -1961,6 +1960,10 @@ int BuildingRegister::get_type(unsigned int id)
 
 int BuildingRegister::get_level(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return get_building(id)->type->level+1;
 }
 
@@ -1968,6 +1971,10 @@ int BuildingRegister::get_level(unsigned int id)
 
 int BuildingRegister::get_assigned(unsigned int id)
 {
+	if(found_buildings.find(id)==found_buildings.end())
+	{
+		return 0;
+	}
 	return get_building(id)->maxUnitWorking;
 }
 
@@ -3047,6 +3054,14 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 			mo=new SendMessage;
 			mo->load(stream, player, versionMinor);
 			break;
+		case MChangeFlagPosition:
+			mo=new ChangeFlagPosition;
+			mo->load(stream, player, versionMinor);
+			break;
+		case MAdjustPriority:
+			mo=new AdjustPriority;
+			mo->load(stream, player, versionMinor);
+			break;
 	}
 	return mo;
 }
@@ -3543,6 +3558,141 @@ void ChangeFlagMinimumLevel::save(GAGCore::OutputStream *stream)
 
 
 
+ChangeFlagPosition::ChangeFlagPosition(int x, int y, int building_id)
+	: x(x), y(y), building_id(building_id)
+{
+
+}
+
+
+void ChangeFlagPosition::modify(Echo& echo)
+{
+	echo.push_order(shared_ptr<Order>(new OrderMoveFlag(echo.get_building_register().get_building(building_id)->gid, x, y, true)));
+}
+
+
+
+boost::logic::tribool ChangeFlagPosition::wait(Echo& echo)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
+}
+
+
+
+ManagementOrderType ChangeFlagPosition::get_type()
+{
+	return MChangeFlagPosition;
+}
+
+
+
+bool ChangeFlagPosition::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ChangeFlagPosition");
+	ManagementOrder::load(stream, player, versionMinor);
+	building_id=stream->readUint32("building_id");
+	x=stream->readUint32("x");
+	y=stream->readUint32("y");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void ChangeFlagPosition::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ChangeFlagPosition");
+	ManagementOrder::save(stream);
+	stream->writeUint32(building_id, "building_id");
+	stream->writeUint32(x, "x");
+	stream->writeUint32(y, "y");
+	stream->writeLeaveSection();
+}
+
+
+
+AdjustPriority::AdjustPriority(int building_id, AdjustPriority::BuildingPriority priority)
+	: building_id(building_id), priority(priority)
+{
+
+}
+
+
+void AdjustPriority::modify(Echo& echo)
+{
+	int p=0;
+	if(priority == Low)
+		p=-1;
+	else if(priority == Medium)
+		p=0;
+	else if(priority == High)
+		p=1;
+	echo.push_order(shared_ptr<Order>(new OrderChangePriority(echo.get_building_register().get_building(building_id)->gid, p)));
+}
+
+
+
+boost::logic::tribool AdjustPriority::wait(Echo& echo)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
+}
+
+
+
+ManagementOrderType AdjustPriority::get_type()
+{
+	return MAdjustPriority;
+}
+
+
+
+bool AdjustPriority::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("AdjustPriority");
+	ManagementOrder::load(stream, player, versionMinor);
+	building_id=stream->readUint32("building_id");
+	int p = stream->readSint32("p");
+	if(p==-1)
+		priority = Low;
+	else if(p==0)
+		priority = Medium;
+	else if(p==1)
+		priority = High;
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void AdjustPriority::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("AdjustPriority");
+	ManagementOrder::save(stream);
+	stream->writeUint32(building_id, "building_id");
+	int p=0;
+	if(priority == Low)
+		p=-1;
+	else if(priority == Medium)
+		p=0;
+	else if(priority == High)
+		p=1;
+	stream->writeSint32(p, "priority");
+	stream->writeLeaveSection();
+}
+
+
+
+
 AddArea::AddArea(AreaType areatype) : areatype(areatype)
 {
 
@@ -3562,20 +3712,20 @@ void AddArea::modify(Echo& echo)
 	BrushAccumulator acc;
 	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
 	{
-		acc.applyBrush(echo.player->map, BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0));
+		acc.applyBrush(BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0), echo.player->map);
 	}
 	if(acc.getApplicationCount()>0)
 	{
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 		}
 	}
@@ -3650,20 +3800,20 @@ void RemoveArea::modify(Echo& echo)
 	BrushAccumulator acc;
 	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
 	{
-		acc.applyBrush(echo.player->map, BrushApplication(i->x, i->y, 0));
+		acc.applyBrush(BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0), echo.player->map);
 	}
 	if(acc.getApplicationCount()>0)
 	{
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 		}
 	}
@@ -4036,7 +4186,7 @@ void building_search_iterator::set_to_next()
 	}
 	else
 		position++;
-	for(; position!=search->echo.get_building_register().end() && (!position->second.get<5>() || !search->passes_conditions(position->first)); position++)
+	for(; position!=search->echo.get_building_register().end() && !search->passes_conditions(position->first); position++)
 	{
 	}
 	if(position==search->echo.get_building_register().end())
@@ -4073,7 +4223,7 @@ int BuildingSearch::count_buildings()
 	int count=0;
 	for(Construction::BuildingRegister::found_iterator i=echo.get_building_register().begin(); i!=echo.get_building_register().end(); ++i)
 	{
-		if(i->second.get<5>() && passes_conditions(i->first))
+		if(passes_conditions(i->first))
 		{
 			count++;
 		}
@@ -4420,8 +4570,10 @@ void Echo::update_management_orders()
 		boost::logic::tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
 		{
+			size_t pos = i - management_orders.begin();
 			(*i)->modify(*this);
-			i=management_orders.erase(i);
+			management_orders.erase(management_orders.begin() + pos);
+			i = management_orders.begin() + pos;
 			continue;
 		}
 		else if(!passes)
@@ -4429,7 +4581,9 @@ void Echo::update_management_orders()
 		}
 		else
 		{
-			i=management_orders.erase(i);
+			size_t pos = i - management_orders.begin();
+			management_orders.erase(i);
+			i = management_orders.begin() + pos;
 			continue;
 		}
 		++i;
@@ -4593,8 +4747,8 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 		stream->readEnterSection(ordersIndex);
 		size_t size=stream->readUint32("size");
 		Uint8* buffer = new Uint8[size+1];
-		stream->read(buffer, size, "data");
-		orders.push_back(Order::getOrder(buffer, size+1));
+		stream->read(buffer, size+1, "data");
+		orders.push_back(Order::getOrder(buffer, size+1, versionMinor));
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
 	}
@@ -4701,7 +4855,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("EchoAI");
 
 	signature_write(stream);
-
+		
 	stream->writeEnterSection("orders");
 	stream->writeUint32((Uint32)orders.size(), "size");
 	Uint32 ordersIndex = 0;
@@ -4827,7 +4981,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 	{
 		gm.reset(new GradientManager(player->map));
 		update_gm=true;
-		for(int x=0; x<32; ++x)
+		for(int x=0; x<player->team->game->gameHeader.getNumberOfPlayers(); ++x)
 		{
 			if(player->team->game->players[x]!=NULL)
 			{
@@ -4870,7 +5024,6 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 		orders.erase(orders.begin());
 		return order;
 	}
-
 	if(update_gm)
 		gm->update();
 	br.tick();

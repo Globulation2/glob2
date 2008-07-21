@@ -36,46 +36,15 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "BaseTeam.h"
+#include "WinningConditions.h"
+
 class Building;
 class BuildingsTypes;
 class Map;
 class Unit;
 
-class BaseTeam
-{
-public:
-	enum TeamType
-	{
-		T_HUMAN,
-		T_AI,
-		// Note : T_AI + n is AI type n
-	};
 
-	BaseTeam();
-	virtual ~BaseTeam(void) { }
-
-	TeamType type;
-	Sint32 teamNumber; // index of the current team in the game::teams[] array.
-	Sint32 numberOfPlayer; // number of controling players
-	GAGCore::Color color;
-	Uint32 playersMask;
-	Race race;
-	
-public:
-	bool disableRecursiveDestruction;
-	
-private:
-	Uint8 data[16];
-
-public:
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	void save(GAGCore::OutputStream *stream);
-
-	Uint8 *getData();
-	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength();
-	Uint32 checkSum();
-};
 
 class Game;
 
@@ -143,16 +112,16 @@ public:
 	///than the rhs building and returns true.
 	static bool prioritize_building(Building* lhs, Building* rhs);
 	///This function adds the given building to the needing-unit call lists
-	void add_building_needing_work(Building* b);
+	void add_building_needing_work(Building* b, Sint32 priority);
 	///This function removes the given building from the needing-unit call lists
-	void remove_building_needing_work(Building* b);
+	void remove_building_needing_work(Building* b, Sint32 priority);
 	///This function updates all of the buildings in order of highest priority to lowest
 	void updateAllBuildingTasks();
 
 	//! Return the maximum build level (need at least 1 unit of this level)
 	int maxBuildLevel(void);
 
-	// Pathfinding related methods:
+	//! Pathfinding related methods:
 	void computeForbiddenArea();
 	void dirtyGlobalGradient();
 	void dirtyWarFlagGradient();
@@ -162,6 +131,9 @@ public:
 	
 	//! Return the name of the first player in the team
 	std::string getFirstPlayerName(void) const;
+	
+	//!  This checks all of the win conditions and updates hasWon, hasLost and winCondition
+	void checkWinConditions();
 	
 private:
 	void init(void);
@@ -175,8 +147,8 @@ public:
 	
 	Building *myBuildings[1024]; //That's right, you can't build two walls all the way across a 512x512 map.
 
-	///This stores the buildings that need units. They are sorted based on priority.
-	std::vector<Building*> buildingsNeedingUnits;
+	///This stores the buildings that need units, listed into their hard priorities. They are sorted based on priority.
+	std::map<int, std::vector<Building*>, std::greater<int> > buildingsNeedingUnits;
 
 	// thoses where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
 	std::list<Building *> upgrade[NB_ABILITY]; //to upgrade the units' abilities.
@@ -228,13 +200,21 @@ private:
 	
 	
 public:
+	///This is the teams race, which defines its properties
+	Race race;
 	//! If you try to build buildings in the ennemy territory, you will be prevented to build any new buildings for a given time.
 	//! This is the time left you can't build for. time in ticks.
 	int noMoreBuildingSitesCountdown;
 	static const int noMoreBuildingSitesCountdownMax=200; // We set 5s as default
+	//! Represents if this team is alive or not
 	bool isAlive;
-	//! called by game, set to true if all others team has lost or if script has forced
+	//! Set to true if this team has won
 	bool hasWon;
+	//! Set to true if this team has lost
+	bool hasLost;
+	///This is the winningCondition that caused thist team to win/lose
+	WinningConditionType winCondition;
+	
 	//! the stat for this team. It is computed every step, so it is always updated.
 	// TeamStat latestStat; this has been moved to *stats.getLatestStat();
 	TeamStats stats;

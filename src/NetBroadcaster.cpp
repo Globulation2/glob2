@@ -22,32 +22,22 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include <iostream>
+#include "boost/lexical_cast.hpp"
+
 using namespace GAGCore;
 
 
 NetBroadcaster::NetBroadcaster(LANGameInformation& info)
 	: info(info), timer(10)
 {
-	socket=SDLNet_UDP_Open(0);
-	if(!socket)
-	{
-		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
-		exit(2);
-	}
-	IPaddress address;
-	//SDLNet_ResolveHost(&address, "127.0.0.1", LAN_BROADCAST_PORT);
-	address.host = INADDR_BROADCAST;
-	address.port = LAN_BROADCAST_PORT;
-	SDLNet_UDP_Bind(socket, 0, &address);
-	lastTime = SDL_GetTicks();
+	enableBroadcasting();
 }
 
 
 	
 NetBroadcaster::~NetBroadcaster()
 {
-	SDLNet_UDP_Unbind(socket, 0);
-	SDLNet_UDP_Close(socket);
+	disableBroadcasting();
 }
 
 
@@ -61,31 +51,83 @@ void NetBroadcaster::broadcast(LANGameInformation& ainfo)
 	
 void NetBroadcaster::update()
 {
-	Uint32 time = SDL_GetTicks();
-	if((time - lastTime) >= 500 )
+	if(socket)
 	{
-		MemoryStreamBackend* msb = new MemoryStreamBackend;
-		BinaryOutputStream* bos = new BinaryOutputStream(msb);
-		info.encodeData(bos);
-		
-		msb->seekFromEnd(0);
-		Uint32 length = msb->getPosition();
-		msb->seekFromStart(0);
-
-		UDPpacket* packet = SDLNet_AllocPacket(length+2);
-		packet->len = length+2;
-		SDLNet_Write16(length, packet->data);
-		msb->read(packet->data+2, length);
-		int result = SDLNet_UDP_Send(socket, 0, packet);
-		if(!result)
+		Uint32 time = SDL_GetTicks();
+		if((time - lastTime) >= 500 )
 		{
-			printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
-		}
+			MemoryStreamBackend* msb = new MemoryStreamBackend;
+			BinaryOutputStream* bos = new BinaryOutputStream(msb);
+			info.encodeData(bos);
+			
+			msb->seekFromEnd(0);
+			Uint32 length = msb->getPosition();
+			msb->seekFromStart(0);
 
-		delete bos;
-		SDLNet_FreePacket(packet);
-		
-		lastTime = lastTime + 500;
-		timer -= 1;
+			UDPpacket* packet = SDLNet_AllocPacket(length+2);
+			packet->len = length+2;
+			SDLNet_Write16(length, packet->data);
+			msb->read(packet->data+2, length);
+			int result = SDLNet_UDP_Send(socket, 0, packet);
+			if(!result)
+			{
+				printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
+			}
+			
+			result = SDLNet_UDP_Send(localsocket, 0, packet);
+			if(!result)
+			{
+				printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
+			}
+			
+
+			delete bos;
+			SDLNet_FreePacket(packet);
+			
+			lastTime = lastTime + 500;
+			timer -= 1;
+		}
 	}
 }
+
+
+
+void NetBroadcaster::disableBroadcasting()
+{
+	SDLNet_UDP_Unbind(socket, 0);
+	SDLNet_UDP_Close(socket);
+	
+	SDLNet_UDP_Unbind(localsocket, 0);
+	SDLNet_UDP_Close(localsocket);
+}
+
+
+
+void NetBroadcaster::enableBroadcasting()
+{
+	socket=SDLNet_UDP_Open(0);
+	if(!socket)
+	{
+		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+		exit(2);
+	}
+	localsocket=SDLNet_UDP_Open(0);
+	if(!localsocket)
+	{
+		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+		exit(2);
+	}
+	IPaddress address;
+	address.port = LAN_BROADCAST_PORT;
+	//192.168.255.255
+	address.host = 0xFFFFA8C0;
+	SDLNet_UDP_Bind(socket, 0, &address);
+	
+	IPaddress localaddress;
+	SDLNet_ResolveHost(&localaddress, "127.0.0.1", LAN_BROADCAST_PORT);
+	SDLNet_UDP_Bind(localsocket, 0, &localaddress);
+	
+	lastTime = SDL_GetTicks();
+}
+
+

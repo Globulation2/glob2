@@ -29,40 +29,26 @@
 #include <Types.h>
 #endif
 
+#include <boost/random/mersenne_twister.hpp>
+
 namespace GAGCore
 {
 	class InputStream;
 	class OutputStream;
 }
 
-extern Uint32 randa;
-extern Uint32 randb;
-extern Uint32 randc;
+//Mersenne twister implementation
+extern boost::mt19937 randomGenerator;
 
 inline Uint32 syncRand(void)
 {
-	randa+=0x13573DC1;
-	randb+=0x7B717315;
-
-	randc+=(randa&randb)^0x00000001;
-	randc=(randc<<1)|((randc>>29)&0x1);
-
-	//return (randc>>3)|((randa^randb)&0xE0000000);
-	//return randc;
-	
-	//printf("syncRand (%d, %d, %d).\n", randa, randb, randc);
-	
-	return (randc>>1)|((randa^randb)&0x80000000);
+	return randomGenerator();
 }
 
+///The actual random seeds are stored in GameHeader, which automatically randomizes them
 void setSyncRandSeed();
-void setSyncRandSeedA(Uint32 seed);
-void setSyncRandSeedB(Uint32 seed);
-void setSyncRandSeedC(Uint32 seed);
-void setRandomSyncRandSeed(void);
-Uint32 getSyncRandSeedA(void);
-Uint32 getSyncRandSeedB(void);
-Uint32 getSyncRandSeedC(void);
+void setSyncRandSeed(Uint32 seed);
+void setRandomSyncRandSeed();
 
 int distSquare(int x1, int y1, int x2, int y2);
 #define SIGN(s) ((s) == 0 ? 0 : ((s)>0 ? 1 : -1) )

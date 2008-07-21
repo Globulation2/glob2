@@ -68,7 +68,7 @@ static void initInterpolationTable(void)
 	}
 }
 
-void SoundMixer::handleVoiceInsertion(int *outputSample)
+void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
 {
 	// if no more voice
 	if (voices.empty())
@@ -106,6 +106,7 @@ void SoundMixer::handleVoiceInsertion(int *outputSample)
 	// saturate
 	value = std::min(value, 32767.0f);
 	value = std::max(value, -32767.0f);
+	value = (value * voicevol)/256;
 	// write sample
 	*outputSample = (static_cast<int>(3.0f * (value)) + (*outputSample)) / 4;
 }
@@ -115,7 +116,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 	SoundMixer *mixer = static_cast<SoundMixer *>(voidMixer);
 	unsigned nsamples = static_cast<unsigned>(len) >> 1;
 	Sint16 *mix = reinterpret_cast<Sint16 *>(stream);
-	int vol = static_cast<int>(mixer->volume);
+	int musicvol = static_cast<int>(mixer->musicVolume);
+	int voicevol = static_cast<int>(mixer->voiceVolume);
 
 	assert(mixer->actTrack >= 0);
 	assert(mixer->mode != SoundMixer::MODE_STOPPED);
@@ -181,8 +183,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			int t1 = track1[i];
 			int intI = interpolationTable[i];
 			int val = (intI*t1+((INTERPOLATION_RANGE-intI)*t0))>>INTERPOLATION_BITS;
-			val = (val * vol)>>8;
-			mixer->handleVoiceInsertion(&val);
+			val = (val * musicvol)>>8;
+			mixer->handleVoiceInsertion(&val, voicevol);
 			mix[i] = val;
 		}
 
@@ -217,12 +219,12 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		// volume & fading
 		if (mixer->mode == SoundMixer::MODE_NORMAL)
 		{
-			if (vol != 255)
+			if (musicvol != 255)
 				for (unsigned i=0; i<nsamples; i++)
 				{
 					int t = mix[i];
-					t = (t * vol) >> 8;
-					mixer->handleVoiceInsertion(&t);
+					t = (t * musicvol) >> 8;
+					mixer->handleVoiceInsertion(&t, voicevol);
 					mix[i] = t;
 				}
 		}
@@ -232,8 +234,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			{
 				int t = mix[i];
 				t = (interpolationTable[i]*t) >> INTERPOLATION_BITS;
-				t = (t * vol) >> 8;
-				mixer->handleVoiceInsertion(&t);
+				t = (t * musicvol) >> 8;
+				mixer->handleVoiceInsertion(&t, voicevol);
 				mix[i] = t;
 			}
 			mixer->mode = SoundMixer::MODE_NORMAL;
@@ -245,8 +247,8 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 				int t = mix[i];
 				int intI = interpolationTable[i];
 				t = ((INTERPOLATION_RANGE-intI)*t) >> INTERPOLATION_BITS;
-				t = (t * vol) >> 8;
-				mixer->handleVoiceInsertion(&t);
+				t = (t * musicvol) >> 8;
+				mixer->handleVoiceInsertion(&t, voicevol);
 				mix[i] = t;
 			}
 			mixer->mode = SoundMixer::MODE_STOPPED;
@@ -286,11 +288,12 @@ void SoundMixer::openAudio(void)
 	
 }
 
-SoundMixer::SoundMixer(unsigned volume, bool mute)
+SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 {
 	actTrack = -1;
 	nextTrack = -1;
-	this->volume = volume;
+	this->musicVolume = musicvol;
+	this->voiceVolume = voicevol;
 	mode = MODE_STOPPED;
 	speexDecoderState = NULL;
 	
@@ -298,7 +301,8 @@ SoundMixer::SoundMixer(unsigned volume, bool mute)
 		
 	if (mute)
 	{
-		this->volume = 0;
+		this->musicVolume = 0;
+		this->voiceVolume = 0;
 	}
 	openAudio();
 /*
@@ -382,30 +386,52 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	}
 }
 
-void SoundMixer::setVolume(unsigned volume, bool mute)
+void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute)
 {
 	if (!soundEnabled)
 	{
 		if (!mute)
 		{
 			openAudio();
-			this->volume = volume;
+			this->musicVolume = musicVolume;
+			this->voiceVolume = voiceVolume;
 		}
 		else
+		{
 			return;
+		}
 	}
 	else if (mute)
 	{
-		this->volume = 0;
+		this->musicVolume = 0;
+		this->voiceVolume = 0;
 	}
 	else
-		this->volume = volume;
+	{
+		this->musicVolume = musicVolume;
+		this->voiceVolume = voiceVolume;
+	}
 }
 
 void SoundMixer::stopMusic(void)
 {
 	mode = MODE_STOP;
 }
+
+
+
+bool SoundMixer::isPlayerTransmittingVoice(int player)
+{
+	SDL_LockAudio();
+	if(voices.find(player) != voices.end())
+	{
+		SDL_UnlockAudio();
+		return true;
+	}
+	SDL_UnlockAudio();
+	return false;
+}
+
 
 void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
 {

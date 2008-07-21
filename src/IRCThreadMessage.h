@@ -40,13 +40,15 @@ enum IRCThreadMessageType
 class IRCThreadMessage
 {
 public:
+	virtual ~IRCThreadMessage() {}
+
 	///Returns the event type
 	virtual Uint8 getMessageType() const = 0;
 	
 	///Returns a formatted version of the event
 	virtual std::string format() const = 0;
 	
-	///Compares two MultiplayerGameEvent
+	///Compares two IRCThreadMessageType
 	virtual bool operator==(const IRCThreadMessage& rhs) const = 0;
 };
 

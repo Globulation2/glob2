@@ -27,10 +27,10 @@
 Order::Order(void)
 {
 	sender=-1;
-	gameCheckSum=-1;
+	gameCheckSum=static_cast<unsigned int>(-1);
 }
 
-boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength)
+boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)
 {
 	if (netDataLength<1)
 		return boost::shared_ptr<Order>();
@@ -42,63 +42,67 @@ boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength
 
 	case ORDER_CREATE:
 	{
-		return boost::shared_ptr<Order>(new OrderCreate(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderCreate(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_DELETE:
 	{
-		return boost::shared_ptr<Order>(new OrderDelete(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderDelete(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_CANCEL_DELETE:
 	{
-		return boost::shared_ptr<Order>(new OrderCancelDelete(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderCancelDelete(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_CONSTRUCTION:
 	{
-		return boost::shared_ptr<Order>(new OrderConstruction(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderConstruction(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_CANCEL_CONSTRUCTION:
 	{
-		return boost::shared_ptr<Order>(new OrderCancelConstruction(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderCancelConstruction(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_MODIFY_BUILDING:
 	{
-		return boost::shared_ptr<Order>(new OrderModifyBuilding(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderModifyBuilding(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_MODIFY_EXCHANGE:
 	{
-		return boost::shared_ptr<Order>(new OrderModifyExchange(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderModifyExchange(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_MODIFY_SWARM:
 	{
-		return boost::shared_ptr<Order>(new OrderModifySwarm(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderModifySwarm(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_MODIFY_FLAG:
 	{
-		return boost::shared_ptr<Order>(new OrderModifyFlag(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderModifyFlag(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_MODIFY_CLEARING_FLAG:
 	{
-		return boost::shared_ptr<Order>(new OrderModifyClearingFlag(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderModifyClearingFlag(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
 	{
-		return boost::shared_ptr<Order>(new OrderModifyMinLevelToFlag(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderModifyMinLevelToFlag(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_MOVE_FLAG:
 	{
-		return boost::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1, versionMinor));
+	}
+	case ORDER_CHANGE_PRIORITY:
+	{
+		return boost::shared_ptr<Order>(new OrderChangePriority(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_ALTERATE_FORBIDDEN:
 	{
-		return boost::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_ALTERATE_GUARD_AREA:
 	{
-		return boost::shared_ptr<Order>(new OrderAlterateGuardArea(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderAlterateGuardArea(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_ALTERATE_CLEAR_AREA:
 	{
-		return boost::shared_ptr<Order>(new OrderAlterateClearArea(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderAlterateClearArea(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_NULL:
 	{
@@ -106,27 +110,31 @@ boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength
 	}
 	case ORDER_TEXT_MESSAGE:
 	{
-		return boost::shared_ptr<Order>(new MessageOrder(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new MessageOrder(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_VOICE_DATA:
 	{
-		return boost::shared_ptr<Order>(new OrderVoiceData(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new OrderVoiceData(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_SET_ALLIANCE:
 	{
-		return boost::shared_ptr<Order>(new SetAllianceOrder(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new SetAllianceOrder(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_MAP_MARK:
 	{
-		return boost::shared_ptr<Order>(new MapMarkOrder(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new MapMarkOrder(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_PAUSE_GAME:
 	{
-		return boost::shared_ptr<Order>(new PauseGameOrder(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new PauseGameOrder(netData+1, netDataLength-1, versionMinor));
 	}
 	case ORDER_PLAYER_QUIT_GAME :
 	{
-		return boost::shared_ptr<Order>(new PlayerQuitsGameOrder(netData+1, netDataLength-1));
+		return boost::shared_ptr<Order>(new PlayerQuitsGameOrder(netData+1, netDataLength-1, versionMinor));
+	}
+	case ORDER_ADJUST_LATENCY :
+	{
+		return boost::shared_ptr<Order>(new AdjustLatency(netData+1, netDataLength-1, versionMinor));
 	}
 	default:
 		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
@@ -137,15 +145,15 @@ boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength
 
 // OrderCreate's code
 
-OrderCreate::OrderCreate(const Uint8 *data, int dataLength)
+OrderCreate::OrderCreate(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :Order()
 {
-	assert(dataLength==24);//if changed don't forget order.h update
-	bool good=setData(data, dataLength);
+	assert(dataLength==28);//if changed don't forget order.h update
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
-OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture)
+OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, Sint32 flagRadius)
 {
 	this->teamNumber=teamNumber;
 	this->posX=posX;
@@ -153,6 +161,7 @@ OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typ
 	this->typeNum=typeNum;
 	this->unitWorking=unitWorking;
 	this->unitWorkingFuture=unitWorkingFuture;
+	this->flagRadius=flagRadius;
 }
 
 Uint8 *OrderCreate::getData(void)
@@ -165,13 +174,16 @@ Uint8 *OrderCreate::getData(void)
 	addSint32(data, this->typeNum, 12);
 	addSint32(data, this->unitWorking, 16);
 	addSint32(data, this->unitWorkingFuture, 20);
+	addSint32(data, this->flagRadius, 24);
 	
 	return data;
 }
 
-bool OrderCreate::setData(const Uint8 *data, int dataLength)
+bool OrderCreate::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	if (dataLength!=getDataLength())
+	if(versionMinor<=77 && dataLength!=20)
+		return false;
+	else if (versionMinor>=78 && dataLength!=getDataLength())
 		return false;
 	
 	this->teamNumber=getSint32(data, 0);
@@ -180,6 +192,8 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength)
 	this->typeNum=getSint32(data, 12);
 	this->unitWorking=getSint32(data, 16);
 	this->unitWorkingFuture=getSint32(data, 20);
+	if(versionMinor>=78)
+		this->flagRadius=getSint32(data, 24);
 	
 	memcpy(this->data, data, dataLength);
 	
@@ -188,11 +202,11 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength)
 
 // OrderDelete's code
 
-OrderDelete::OrderDelete(const Uint8 *data, int dataLength)
+OrderDelete::OrderDelete(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :Order()
 {
 	assert(dataLength==2);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -209,7 +223,7 @@ Uint8 *OrderDelete::getData(void)
 	return data;
 }
 
-bool OrderDelete::setData(const Uint8 *data, int dataLength)
+bool OrderDelete::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=getDataLength())
 		return false;
@@ -220,10 +234,10 @@ bool OrderDelete::setData(const Uint8 *data, int dataLength)
 
 // OrderCancelDelete's code
 
-OrderCancelDelete::OrderCancelDelete(const Uint8 *data, int dataLength)
+OrderCancelDelete::OrderCancelDelete(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	assert(dataLength==2);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -240,7 +254,7 @@ Uint8 *OrderCancelDelete::getData(void)
 	return data;
 }
 
-bool OrderCancelDelete::setData(const Uint8 *data, int dataLength)
+bool OrderCancelDelete::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if(dataLength != getDataLength())
 		return false;
@@ -251,11 +265,11 @@ bool OrderCancelDelete::setData(const Uint8 *data, int dataLength)
 
 // OrderConstruction's code
 
-OrderConstruction::OrderConstruction(const Uint8 *data, int dataLength)
+OrderConstruction::OrderConstruction(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :Order()
 {
 	assert(dataLength==10);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -276,7 +290,7 @@ Uint8 *OrderConstruction::getData(void)
 	return data;
 }
 
-bool OrderConstruction::setData(const Uint8 *data, int dataLength)
+bool OrderConstruction::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=getDataLength())
 		return false;
@@ -289,11 +303,11 @@ bool OrderConstruction::setData(const Uint8 *data, int dataLength)
 
 // OrderCancelConstruction's code
 
-OrderCancelConstruction::OrderCancelConstruction(const Uint8 *data, int dataLength)
+OrderCancelConstruction::OrderCancelConstruction(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :Order()
 {
 	assert(dataLength==6);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -312,7 +326,7 @@ Uint8 *OrderCancelConstruction::getData(void)
 	return data;
 }
 
-bool OrderCancelConstruction::setData(const Uint8 *data, int dataLength)
+bool OrderCancelConstruction::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=getDataLength())
 		return false;
@@ -331,11 +345,11 @@ OrderModify::OrderModify()
 
 // OrderModifyBuildings' code
 
-OrderModifyBuilding::OrderModifyBuilding(const Uint8 *data, int dataLength)
+OrderModifyBuilding::OrderModifyBuilding(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
 	assert(dataLength==4);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -354,7 +368,7 @@ Uint8 *OrderModifyBuilding::getData(void)
 	return data;
 }
 
-bool OrderModifyBuilding::setData(const Uint8 *data, int dataLength)
+bool OrderModifyBuilding::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=4)
 		return false;
@@ -365,11 +379,11 @@ bool OrderModifyBuilding::setData(const Uint8 *data, int dataLength)
 
 // OrderModifyExchange' code
 
-OrderModifyExchange::OrderModifyExchange(const Uint8 *data, int dataLength)
+OrderModifyExchange::OrderModifyExchange(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
 	assert(dataLength==10);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -389,7 +403,7 @@ Uint8 *OrderModifyExchange::getData(void)
 	return data;
 }
 
-bool OrderModifyExchange::setData(const Uint8 *data, int dataLength)
+bool OrderModifyExchange::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=10)
 		return false;
@@ -401,11 +415,11 @@ bool OrderModifyExchange::setData(const Uint8 *data, int dataLength)
 
 // OrderModifySwarm's code
 
-OrderModifySwarm::OrderModifySwarm(const Uint8 *data, int dataLength)
+OrderModifySwarm::OrderModifySwarm(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
 	assert(dataLength == getDataLength());
-	bool good = setData(data, dataLength);
+	bool good = setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -424,7 +438,7 @@ Uint8 *OrderModifySwarm::getData(void)
 	return data;
 }
 
-bool OrderModifySwarm::setData(const Uint8 *data, int dataLength)
+bool OrderModifySwarm::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength != getDataLength())
 		return false;
@@ -436,11 +450,11 @@ bool OrderModifySwarm::setData(const Uint8 *data, int dataLength)
 
 // OrderModifyFlag' code
 
-OrderModifyFlag::OrderModifyFlag(const Uint8 *data, int dataLength)
+OrderModifyFlag::OrderModifyFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
 	assert(dataLength==6);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -458,7 +472,7 @@ Uint8 *OrderModifyFlag::getData(void)
 	return data;
 }
 
-bool OrderModifyFlag::setData(const Uint8 *data, int dataLength)
+bool OrderModifyFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=6)
 		return false;
@@ -469,12 +483,12 @@ bool OrderModifyFlag::setData(const Uint8 *data, int dataLength)
 
 // OrderModifyClearingFlags' code
 
-OrderModifyClearingFlag::OrderModifyClearingFlag(const Uint8 *data, int dataLength)
+OrderModifyClearingFlag::OrderModifyClearingFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
 	this->data=NULL;
 	assert(dataLength==2+BASIC_COUNT);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -501,7 +515,7 @@ Uint8 *OrderModifyClearingFlag::getData(void)
 	return data;
 }
 
-bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength)
+bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=getDataLength())
 		return false;
@@ -514,11 +528,11 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength)
 
 // OrderModifyMinLevelToFlag's code
 
-OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(const Uint8 *data, int dataLength)
+OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
 	assert(dataLength==4);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -540,7 +554,7 @@ Uint8 *OrderModifyMinLevelToFlag::getData(void)
 	return data;
 }
 
-bool OrderModifyMinLevelToFlag::setData(const Uint8 *data, int dataLength)
+bool OrderModifyMinLevelToFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=getDataLength())
 		return false;
@@ -551,11 +565,11 @@ bool OrderModifyMinLevelToFlag::setData(const Uint8 *data, int dataLength)
 
 // OrderMoveFlags' code
 
-OrderMoveFlag::OrderMoveFlag(const Uint8 *data, int dataLength)
+OrderMoveFlag::OrderMoveFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
 	assert(dataLength==11);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -577,7 +591,7 @@ Uint8 *OrderMoveFlag::getData(void)
 	return data;
 }
 
-bool OrderMoveFlag::setData(const Uint8 *data, int dataLength)
+bool OrderMoveFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength!=11)
 		return false;
@@ -587,24 +601,59 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength)
 	drop=(bool)getUint8(data, 10);
 	return true;
 }
+// OrderCancelConstruction's code
 
-// OrderAlterateArea's code
-
-OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength)
+OrderChangePriority::OrderChangePriority(const Uint8 *data, int dataLength, Uint32 versionMinor)
+:Order()
 {
-	_data = NULL;
-	
-	bool good=setData(data, dataLength);
+	assert(dataLength==6);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
-OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc)
+OrderChangePriority::OrderChangePriority(Uint16 gid, Sint32 priority)
+{
+	assert(gid<32768);
+	this->gid=gid;
+	this->priority=priority;
+}
+
+Uint8 *OrderChangePriority::getData(void)
+{
+	assert(sizeof(data) == getDataLength());
+	addUint16(data, this->gid, 0);
+	addSint32(data, this->priority, 2);
+	return data;
+}
+
+bool OrderChangePriority::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	if (dataLength!=getDataLength())
+		return false;
+	this->gid=getUint16(data, 0);
+	this->priority=getUint32(data, 2);
+	memcpy(this->data, data, dataLength);
+	return true;
+}
+
+// OrderAlterateArea's code
+
+OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	_data = NULL;
+	
+	bool good=setData(data, dataLength, versionMinor);
+	assert(good);
+}
+
+#ifndef YOG_SERVER_ONLY
+OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map)
 {
 	assert(acc);
 	_data = NULL;
 	
 	BrushAccumulator::AreaDimensions dim;
-	acc->getBitmap(&mask, &dim);
+	acc->getBitmap(&mask, &dim, map);
 	this->teamNumber = teamNumber;
 	this->type = type;
 	centerX = dim.centerX;
@@ -616,6 +665,7 @@ OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumula
 	assert(maxX-minX <= 512);
 	assert(maxY-minY <= 512);
 }
+#endif
 
 OrderAlterateArea::~OrderAlterateArea(void)
 {
@@ -642,7 +692,7 @@ Uint8 *OrderAlterateArea::getData(void)
 	return _data;
 }
 
-bool OrderAlterateArea::setData(const Uint8 *data, int dataLength)
+bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength < 14)
 	{
@@ -690,12 +740,12 @@ NullOrder::NullOrder()
 
 // MessageOrder's code
 
-MessageOrder::MessageOrder(const Uint8 *data, int dataLength)
+MessageOrder::MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :MiscOrder()
 {
 	this->data=NULL;
 	assert(dataLength>=9);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -723,7 +773,7 @@ Uint8 *MessageOrder::getData(void)
 	return data;
 }
 
-bool MessageOrder::setData(const Uint8 *data, int dataLength)
+bool MessageOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength<9)
 		return false;
@@ -746,12 +796,12 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength)
 
 // OrderVoiceData's code
 
-OrderVoiceData::OrderVoiceData(const Uint8 *data, int dataLength)
+OrderVoiceData::OrderVoiceData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :MiscOrder()
 {
 	this->data = NULL;
 	assert(dataLength >= 5);
-	bool good = setData(data, dataLength);
+	bool good = setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -779,7 +829,7 @@ Uint8 *OrderVoiceData::getData(void)
 	return data;
 }
 
-bool OrderVoiceData::setData(const Uint8 *data, int dataLength)
+bool OrderVoiceData::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	assert(dataLength >= 5);
 	if (dataLength<5)
@@ -798,11 +848,11 @@ bool OrderVoiceData::setData(const Uint8 *data, int dataLength)
 
 // SetAllianceOrder's code
 
-SetAllianceOrder::SetAllianceOrder(const Uint8 *data, int dataLength)
+SetAllianceOrder::SetAllianceOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :MiscOrder()
 {
 	assert(dataLength==24);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -828,7 +878,7 @@ Uint8 *SetAllianceOrder::getData(void)
 	return data;
 }
 
-bool SetAllianceOrder::setData(const Uint8 *data, int dataLength)
+bool SetAllianceOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -844,11 +894,11 @@ bool SetAllianceOrder::setData(const Uint8 *data, int dataLength)
 
 // MapMarkOrder's code
 
-MapMarkOrder::MapMarkOrder(const Uint8 *data, int dataLength)
+MapMarkOrder::MapMarkOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :MiscOrder()
 {
 	assert(dataLength==12);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -868,7 +918,7 @@ Uint8 *MapMarkOrder::getData(void)
 	return data;
 }
 
-bool MapMarkOrder::setData(const Uint8 *data, int dataLength)
+bool MapMarkOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -884,11 +934,11 @@ bool MapMarkOrder::setData(const Uint8 *data, int dataLength)
 
 // PauseGameOrder's code
 
-PauseGameOrder::PauseGameOrder(const Uint8 *data, int dataLength)
+PauseGameOrder::PauseGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :MiscOrder()
 {
 	assert(dataLength==1);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -904,7 +954,7 @@ Uint8 *PauseGameOrder::getData(void)
 	return data;
 }
 
-bool PauseGameOrder::setData(const Uint8 *data, int dataLength)
+bool PauseGameOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if(dataLength!=getDataLength())
 		return false;
@@ -915,11 +965,11 @@ bool PauseGameOrder::setData(const Uint8 *data, int dataLength)
 
 // PlayerQuitsGameOrder code
 
-PlayerQuitsGameOrder::PlayerQuitsGameOrder(const Uint8 *data, int dataLength)
+PlayerQuitsGameOrder::PlayerQuitsGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :MiscOrder()
 {
 	assert(dataLength==4);
-	bool good=setData(data, dataLength);
+	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
 
@@ -935,12 +985,47 @@ Uint8 *PlayerQuitsGameOrder::getData(void)
 	return data;
 }
 
-bool PlayerQuitsGameOrder::setData(const Uint8 *data, int dataLength)
+bool PlayerQuitsGameOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if(dataLength!=getDataLength())
 		return false;
 
 	this->player=getUint32(data, 0);
+	
+	memcpy(this->data, data, dataLength);
+	
+	return true;
+}
+
+
+// PlayerQuitsGameOrder code
+
+AdjustLatency::AdjustLatency(const Uint8 *data, int dataLength, Uint32 versionMinor)
+:MiscOrder()
+{
+	assert(dataLength==2);
+	bool good=setData(data, dataLength, versionMinor);
+	assert(good);
+}
+
+AdjustLatency::AdjustLatency(Uint16 latencyAdjustment)
+{
+	this->latencyAdjustment=latencyAdjustment;
+}
+
+Uint8 *AdjustLatency::getData(void)
+{
+	assert(sizeof(data) == getDataLength());
+	addUint16(data, this->latencyAdjustment, 0);
+	return data;
+}
+
+bool AdjustLatency::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	if(dataLength!=getDataLength())
+		return false;
+
+	this->latencyAdjustment=getUint16(data, 0);
 	
 	memcpy(this->data, data, dataLength);
 	

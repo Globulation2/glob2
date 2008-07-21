@@ -44,6 +44,7 @@ namespace GAGCore
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/direction_l"));
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/wait"));
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/mark"));
+		setDefaultColor();
 	}
 	
 	void CursorManager::nextTypeFromMouse(DrawableSurface *ds, int x, int y, bool button)
@@ -96,6 +97,24 @@ namespace GAGCore
 	{
 		nextType = type;
 	}
+	
+	
+	void CursorManager::setDrawColor(const Color& color)
+	{
+		for(unsigned i = 0; i<cursors.size(); ++i)
+		{
+			cursors[i]->setBaseColor(color);
+		}
+	}
+	
+	
+	
+	void CursorManager::setDefaultColor()
+	{
+		setDrawColor(Color(255, 0, 0));
+	}
+	
+	
 	
 	void CursorManager::draw(DrawableSurface *ds, int x, int y)
 	{

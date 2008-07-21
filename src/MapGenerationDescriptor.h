@@ -42,9 +42,6 @@ public:
 	void save(GAGCore::OutputStream *stream);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	Uint32 checkSum();
-	void saveSyncronization(void);
-	void loadSyncronization(void);
-	void synchronizeNow(void);
 
 public:
 	TerrainType terrainType;
@@ -56,8 +53,10 @@ public:
 		eRIVER=2,
 		eISLANDS=3,
 		eCRATERLAKES=4,
-		eOLDRANDOM=5,
-		eOLDISLANDS=6
+		eCONCRETEISLANDS=5,
+		eISLES=6,
+		eOLDRANDOM=7,
+		eOLDISLANDS=8
 	};
 
 	Methode methode;
@@ -73,8 +72,6 @@ public:
 	Uint32 logRepeatAreaTimes;
 
 	Sint32 nbTeams, nbWorkers;
-	
-	Uint32 randa, randb, randc;
 public:
 	// Thoses may not be in data
 	Sint32 bootX[32];

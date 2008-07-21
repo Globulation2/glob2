@@ -1,7 +1,25 @@
-[%0 has been deconnected of the game]
-%0 bol odpojený.
 [%0 has left the game]
 %0 odišiel z hry.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -16,28 +34,44 @@ fV: Ukáž jedálne (na kradnutie jedotiek)
 mV: Ukáž Trhoviská (na výmenu ovocia)
 [abreaviation explanation V]
 V: Ukáž, čo vidia budovy
-[Add AI]
-Pridaj UI
 [add map]
 
 [add shortcut]
+
+[Add]
+
+[AI Descriptions]
 
 [AI]
 UI
 [ai]
 UI
+[AICastor-Description]
+
 [AICastor]
 UICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 UINone
+[AINumbi-Description]
+
 [AINumbi]
 UINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 UIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 UIWarrush
 [Alga]
@@ -46,6 +80,8 @@ Riasy
 riesy
 [alliances]
 Aliancie
+[alt %0]
+
 [and]
 a
 [any explorer]
@@ -66,8 +102,6 @@ Pancier
 Rýchl. út.
 [At. strength]
 Sila út.
-[attack speed]
-Rýchlosť útoku
 [Attack]
 Útok
 [audio]
@@ -80,10 +114,10 @@ Dostupné lokálne hry
 Čaká sa na hráčov
 [away:]
 preč:
+[Back]
+
 [backspace]
 
-[bad error in connection system]
-Chyba v systéme pripojenia
 [barracks explanation 2]
 tvojich Bojovníkov
 [barracks explanation]
@@ -92,64 +126,20 @@ Učí lepšie bojovať
 Kasárne
 [beach size]
 veľkosť pláže
+[Blocked Players]
+
 [break]
 
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 Stavanie
-[Building name]
-Názov budovy
-[Building short explanation 2]
-Krátky popis budovy 2 (max 24 znakov)
-[Building short explanation]
-Krátky popis budovy (max 24 znakov)
+[Building Defaults]
+
+[building settings]
+Jednotky
 [building site]
 stavenisko
 [Buildings]
@@ -190,8 +180,6 @@ Zrušiť
 Nesie:
 [Change Area Name]
 
-[checksum sent]
-Poslaný kontrolný súčet ...
 [Cherry]
 Čerešňa
 [choose campaign]
@@ -202,8 +190,6 @@ Vyber si hru
 Vyber si mapu
 [clear area]
 Čistenie
-[clear]
-
 [Clearing:]
 Čistenie:
 [clearingflag explanation 2]
@@ -212,30 +198,26 @@ Vyber si mapu
 Čistí suroviny
 [clearingflag]
 Vlajka čistenia
-[close]
-Zavrieť
 [closed]
 Uzavreté
 [compile]
 Kopilovať skript
 [compose]
 
+[Computing Fertility]
+
+[concrete islands terrain]
+
 [connect]
 Pripojiť
-[connected to all players]
-Pripojené ku všetkým hráčom
-[connected to server]
-Pripojené k serveru
-[connecting to all players]
-Pripája sa k hráčom
 [connecting to]
 Pripája sa ku
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Pokračovať
+[control %0]
+
 [Corn]
 Pšenica
 [crater density]
@@ -248,6 +230,8 @@ Vytvoriť hru
 Vytvor mapu
 [credits]
 Kredity
+[ctrl - line]
+
 [current speed]
 Súčasná rýchlosť
 [custom game]
@@ -258,22 +242,14 @@ Voliteľná hra
 Poškodenie
 [Damaged Map]
 
-[dblbuff]
-Double Buffering
 [decrease units working]
 
-[default terrain]
-Základný povrch
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 a budovy nepriateľa
 [defencetower explanation]
 Útočí na blízke jednotky
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Obr. veža
 [Defense Map]
@@ -290,8 +266,6 @@ púšť
 Zničiť vybranú budovu
 [destroy]
 Zničiť
-[Disconnect]
-Odpojiť
 [display]
 Zobrazenie
 [do nothing]
@@ -300,12 +274,14 @@ Zobrazenie
 Nič nenesie
 [down]
 
-[download finished]
-Stiahnuté
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
 
-[downloaded at]
-Stiahnutých 
+[downloading map]
+
 [edit map]
 
 [editing map]
@@ -372,8 +348,10 @@ prázdne ostrovy
 
 [Fertility Map]
 
-[food left]
-Jedla
+[Flag Defaults]
+
+[flag settings explanation]
+
 [food]
 Jedlo
 [forbidden area]
@@ -394,9 +372,7 @@ Celá obrazovka
 Plné
 [game shortcuts]
 
-[game speed]
-Rýchlosť hry
-[Games]
+[Game]
 
 [general settings]
 Základ
@@ -424,13 +400,9 @@ Ručná mapa
 
 [Harvest]
 Ťažba
-[has joined]
-sa pridal
-[has quit]
-odišiel
-[heal]
-Zdravie
-[help]
+[high priority]
+
+[hints]
 
 [home]
 
@@ -440,22 +412,20 @@ Zdravie
 Lieči jednotky
 [hospital]
 Nemocnica
-[Host has cancelled the game]
-
 [host]
 Vytvor hru
 [hp]
 HP
 [hp]
 Zdravie
+[Human]
+
 [human]
 
 [hungry]
 hladní
 [hungryness]
 Hlad
-[hwaccel]
-Hardvérová akcelerácia
 [In way]
 Na ceste
 [increase units working]
@@ -464,12 +434,6 @@ Na ceste
  
 [inn explanation]
 Kŕmi jednotky
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Jedáleň
 [insert]
@@ -480,6 +444,8 @@ Vovnútri
 veľkosť ostrovu
 [islands terrain]
 Ostrovy
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -502,8 +468,6 @@ sk
 Jazyk
 [language]
 Slovensky
-[large]
-veľká
 [Leave Game]
 
 [left meta]
@@ -522,33 +486,55 @@ veľká
 Nahrať hru
 [load map]
 
+[load script]
+
 [load]
 Nahrať
-[loading glob2]
-Nahráva sa Globulation 2
+[loading map list]
+
+[Lobby]
+
 [login]
 Prihlásenie
 [Lost : %0 has more prestige than you]
 Prehra: %0 má väčšiu prestíž ako ty
 [Lost : your colony is dead]
 Prehra: Tvoja kolónia vymrela
+[low priority]
+
 [lowquality]
 Znížená kvalita
 [Magic At. Air]
 Vzduch
 [Magic At. Ground]
 Zem
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Názov mapy: %0.
 [map name]
+
+[map rated]
+
+[map script]
 
 [map size x]
 Šírka mapy
 [map size y]
 Výška mapy
-[mapGenerationDescriptor Methodes]
-Metódy náhodného generovania máp
-[maps available]
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
 
 [mark map]
 Označiť mapu
@@ -558,9 +544,9 @@ s ostatnými hráčmi
 Umožnňuje výmenu ovocia
 [market]
 Trhovisko
-[medium]
-stredná
-[menu]
+[medium priority]
+
+[meta %0]
 
 [Min required level:]
 Najnižšia potrebná úroveň:
@@ -572,22 +558,24 @@ Hlasitosť (hudba)
 
 [mute]
 Stlmiť
-[network latency]
-Latencia siete
 [new campaign]
 
 [new map]
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 
 [No]
 Nie
-[not connected]
-Nepripojené
+[Not Enough Ratings]
+
 [not ready]
 nepripravený
 [number of players: %0 (%1 AI)]
@@ -600,6 +588,8 @@ Tímov: %0
 počet tímov
 [numlock]
 
+[objectives]
+
 [of which]
 z nich
 [ok]
@@ -608,10 +598,12 @@ Ok
 staré náhodné ostrovy
 [old random terrain]
 starý náhodný terén
+[on press]
+
 [On the spot]
 Tu
-[one player]
-Pripojil sa hráč.
+[on unpress]
+
 [open chat box]
 
 [open load menu]
@@ -620,12 +612,18 @@ Pripojil sa hráč.
 
 [open script editor]
 
+[open teams editor]
+
 [open]
 otvorené
+[Options]
+
 [options]
 Nastavenia
 [Orange]
 Pomaranč
+[Other Options]
+
 [page down]
 
 [page up]
@@ -638,23 +636,25 @@ Pozastaviť hru
 
 [Paused]
 Zastavené
-[percent]
-  percent
 [player name]
 Meno hráča
-[player]
-Hráč
+[player rating %0]
+
 [please wait]
 Čakaj, prosím
 [power]
 
-[presence request sent]
-Poslaná požiadavka na prítomnosť ...
 [press space]
 Pre pokračovanie stlač medzeru
+[Prestige Win Enabled]
+
 [Prestige]
 Prestíž
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Slivka
@@ -670,12 +670,16 @@ Koniec
 Zvyšuje rýchlosť kráčania
 [racetrack]
 Bežecká dráha
-[random terrain]
-Náhodný povrch
 [range]
 Dosah
+[Rated %0]
+
 [ratios]
 Proporcie
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Zaregistrovať nové YOG meno s heslom. (nezabezpečené)
 [remember unit]
@@ -686,14 +690,14 @@ Zapamätať si heslo. (nezabezpečené)
 
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 Spust./zast. opravu
 [repair]
 Opraviť
 [repeat area]
 
-[ressources]
-Suroviny
 [restore default shortcuts]
 Pôvodné nastavenia klávesnice
 [return to editor]
@@ -720,6 +724,8 @@ Chceš pred ukončením uložiť zmeny?
 Uložiť hru
 [save map]
 
+[save script]
+
 [Save]
 Uložiť
 [school explanation 2]
@@ -733,6 +739,8 @@ Učí lepšie stavať
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 hľadajú prácu
@@ -761,6 +769,8 @@ hľadajú
 [select construct swarm]
 
 [select construct swimmingpool]
+
+[select delete tool]
 
 [select explorationflag]
 
@@ -796,10 +806,10 @@ hľadajú
 
 [select warflag]
 
-[session request sent]
-Poslaná požiadavka na sedenie ...
 [settings]
 Nastavenia
+[shift %0]
+
 [shortcut explanation enter]
 Enter: Pošli správu
 [shortcut explanation v]
@@ -808,30 +818,28 @@ V: Drž a rozprávaj
 
 [skin]
 Povrch
-[small]
-malá
 [smoothing]
 Vyhľadenie
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
-[speed]
-Rýchlosť
 [start mission]
 
 [start new campaign]
 
 [Start]
 Štart
-[STARTING GAME ...]
-Začína hra... 
 [Starving Map]
 
 [starving]
 trpia
-[stat]
-Štatistiky
-[state]
-stav
 [Statistics]
 Štatistiky
 [Still (i)]
@@ -852,6 +860,8 @@ kamene
 Pasívna obrana
 [stonewall]
 Hradba
+[submit rating]
+
 [svr hostname]
 Názov servera
 [swamp terrain]
@@ -860,8 +870,6 @@ Močiar
  
 [swarm explanation]
 Produkuje nové jednotky
-[swarm level 0]
-
 [swarm]
 Hniezdo
 [Swim]
@@ -903,6 +911,10 @@ Bazén
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
  tímy
@@ -990,10 +1002,16 @@ Spustiť nahrávanie zvuku
 Dosiahnutá úroveň prestíže
 [Total]
 Spolu
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
 [tutorial]
 Kurz
-[unassigned]
-Nepriradené
 [Uncontrolled]
 Neobsadené
 [undo]
@@ -1004,36 +1022,36 @@ Jednotný povrch
 Editor jedotiek
 [unit settings explanation]
 
-[unit settings]
-Jednotky
-[Unit type]
-Typ jednotky
-[units type]
-typ jednotky
 [units working]
  jednotiek pracuje
 [Units]
 Jednotky
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
 
 [up]
 
-[update list]
-Aktualizovať
 [upgrade building]
 Spust./zast. zdokonaľovanie
+[Upgrade Defaults]
+
 [upgrade]
 Zdokonaliť
+[Upload Map]
+
+[upload map]
+
 [username]
 Meno hráča
 [Version]
 Verzia
 [view history]
 
-[wait destroy]
-Čakajúce na zničenie
+[Voice volume]
+
 [waiting for %0]
 Čaká sa na %0
 [waiting for key]
@@ -1056,10 +1074,6 @@ Pozor, aby sa prejavili zmeny, je potrebné hru reštartovať!
 Bojovník
 [warriors]
 bojovníci
-[was AI]
-bol UI
-[was]
-bol
 [water]
 Voda
 [Wheat]
@@ -1090,50 +1104,48 @@ Precuje
 zranení
 [Yes]
 Áno
-[YESTS_BAD]
-Chyba vnútornej konzistenice.
 [YESTS_CONNECTING]
 Pripája sa ku YOG metaserveru...
 [YESTS_CONNECTION_LOST]
 Spojenie s YOG stratené.
-[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]
-YOG metaserver odmietol spojenie, pretože nastala chyba protokolu: Už si autentifikovaný. Počkaj 45 sekúnd a skús znovu.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 YOG metaserver odmietol spojenie, pretože toto meno a heslo sú už zaregistrované. Ak je toto meno tvoje, deaktivuj možnosť "Zaregistrovať nové YOG meno s heslom".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metaserver odmietol spojenie, pretože bolo zadané zlé heslo.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver odmietol spojenie, pretože toto meno ešte nemá nastavené heslo. Najprv je potrebné meno a heslo zaregistrovať. Preto aktivuj možnosť  "Zaregistrovať nové YOG meno s heslom" a až potom sa pokús pripojiť. Toto je potrebné swpraviť len raz.
-[YESTS_CONNECTION_REFUSED_NOT_CONNECTED_YET]
-YOG metaserver odmietol spojenie, pretože nastala chyba protokolu: Ešte nie si pripojený a už sa autentifikuješ. Prosím, ohláste túto chybu.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver odmietol spojenie, pretože je tvoj Globulation 2 klient zastaralý.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver odmietol spojenie bez vysvetlenia!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Systém pripojenia je pripravený kontaktovať YOG metaserver.
-[YESTS_DECONNECTING]
-Odpája sa od YOG metaservera...
 [YESTS_UNABLE_TO_CONNECT]
 Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
-[YESTS_YOG_KILLED]
-Administrátor práve zastavil YOG metaserver.
-[yog-chat]
-#yog-en
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
-[YOG_HELP]
-YOG systém správ má dva príkazy - "msg" a "away". Ak o nich chceš vedieť viac, napíš "/help <príkaz>".
-[YOG_HELP_AWAY]
-Príkaz "/away (<správa>)" umožňuje ostatným užívateľom YOG vedieť, že si dočasne preč od PC. Môžše napísať krátke vysvetlenie.  Napríklad "/away Obedujem. Vrátim sa o jednej.". Alias "/a"
-[YOG_HELP_MSG]
-Príkaz "/msg <meno> <správa>" umožňuje poslať súkromnú správu konkrétnemu užívateľovi. Napríklad "/msg Jano Čau, ako žiješ?".  Alias "/m".
-[You are no more marked as away]
-Vrátil si sa ku klávesnici.
-[You are now marked as away]
-Si preč od klávesnice.
 [you have lost]
 Prehral(a) si!
 [you have won]
@@ -1142,5 +1154,9 @@ Vyhral(a) si!
 
 [Your %0 are under attack]
 Tvoji %0 čelia útoku
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Tvoja jednotka konvertovala k tímu %0
+[Your username was banned]
+

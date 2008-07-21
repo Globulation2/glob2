@@ -18,6 +18,10 @@
 */
 
 #include "YOGServerChatChannel.h"
+#include "YOGServerPlayer.h"
+#include "YOGMessage.h"
+#include "NetMessage.h"
+
 
 YOGServerChatChannel::YOGServerChatChannel(Uint32 channel)
 :	channel(channel)
@@ -27,24 +31,24 @@ YOGServerChatChannel::YOGServerChatChannel(Uint32 channel)
 
 
 
-void YOGServerChatChannel::addPlayer(boost::shared_ptr<YOGPlayer> player)
+void YOGServerChatChannel::addPlayer(boost::shared_ptr<YOGServerPlayer> player)
 {
 	players.push_back(player);
 }
 
 
 
-void YOGServerChatChannel::removePlayer(boost::shared_ptr<YOGPlayer> player)
+void YOGServerChatChannel::removePlayer(boost::shared_ptr<YOGServerPlayer> player)
 {
 	players.remove(player);
 }
 
 
 
-void YOGServerChatChannel::routeMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGPlayer> sender)
+void YOGServerChatChannel::routeMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGServerPlayer> sender)
 {
 	boost::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channel, message));
-	for(std::list<boost::shared_ptr<YOGPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::list<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(*i != sender)
 			(*i)->sendMessage(netmessage);

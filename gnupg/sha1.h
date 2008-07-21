@@ -12,7 +12,7 @@
 # define _SHA1_H
 
 #ifndef DX9_BACKEND	// TODO:Die!
-#include <SDL.h>
+#include <SDL_net.h>
 
 typedef Uint32 uint32_t;
 #else

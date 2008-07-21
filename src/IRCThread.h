@@ -19,12 +19,13 @@
 #ifndef IRCThread_h
 #define IRCThread_h
 
-#include "IRCThreadMessage.h"
 #include "IRC.h"
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <queue>
+
+class IRCThreadMessage;
 
 ///IRC thread manages IRC
 class IRCThread
@@ -45,12 +46,13 @@ private:
 	void sendToMainThread(boost::shared_ptr<IRCThreadMessage> message);
 
 	IRC irc;
+	std::string channel;
+	
 	std::queue<boost::shared_ptr<IRCThreadMessage> > incoming;
 	std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing;
 	boost::recursive_mutex incomingMutex;
 	boost::recursive_mutex& outgoingMutex;
 	bool hasExited;
-	std::string channel;
 };
 
 #endif

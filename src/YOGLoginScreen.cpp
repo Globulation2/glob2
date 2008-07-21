@@ -19,19 +19,24 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include <GUIText.h>
-#include <GUITextInput.h>
-#include <GUITextArea.h>
-#include <GUIButton.h>
-#include <GUIText.h>
-#include <GUIAnimation.h>
-#include <Toolkit.h>
-#include <StringTable.h>
-#include <GraphicContext.h>
 
 #include "GlobalContainer.h"
+#include <GraphicContext.h>
+#include <GUIAnimation.h>
+#include <GUIButton.h>
+#include <GUITextArea.h>
+#include <GUIText.h>
+#include <GUIText.h>
+#include <GUITextInput.h>
 #include "Settings.h"
-#include "YOGScreen.h"
+#include <StringTable.h>
+#include <Toolkit.h>
+#include "YOGClientEvent.h"
+#include "YOGClient.h"
+#include "YOGClientLobbyScreen.h"
+#include "YOGClientLobbyScreen.h"
+#include "YOGClientMapDownloadScreen.h"
+#include "YOGClientOptionsScreen.h"
 #include "YOGLoginScreen.h"
 
 YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
@@ -61,18 +66,22 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	addWidget(rememberYogPassword);
 	addWidget(rememberYogPasswordText);
 	
-	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true, Toolkit::getStringTable()->getString("[YESTS_CREATED]"));
 	addWidget(statusText);
 	
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
 	
-	client->setEventListener(this);
+	wasConnecting = false;
+	
+	client->addEventListener(this);
+	changeTabAgain=true;
 }
 
 YOGLoginScreen::~YOGLoginScreen()
 {
+	client->removeEventListener(this);
 	Toolkit::releaseSprite("data/gfx/rotatingEarth");
 	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 }
@@ -87,13 +96,13 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1==LOGIN)
 		{
+			//Update the gui
+			animation->show();
+			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
+			
 			client->connect(YOG_SERVER_IP);
-			client->setEventListener(this);
-			if(!client->isConnected())
-			{
-				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
-			}
+			wasConnecting = true;
 		}
 	}
 	if (action==TEXT_ACTIVATED)
@@ -103,16 +112,42 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source==password)
 			login->deactivate();
 	}
+	if (action==TEXT_TABBED)
+	{
+		if (login->isActivated() && changeTabAgain)
+		{
+			login->deactivate();
+			password->activate();
+			changeTabAgain=false;
+		}
+		else if (password->isActivated() && changeTabAgain)
+		{
+			password->deactivate();
+			login->activate();
+			changeTabAgain=false;
+		}
+	}
 }
 
 void YOGLoginScreen::onTimer(Uint32 tick)
 {
+	if(wasConnecting && !client->isConnecting())
+	{
+		if(!client->isConnected())
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
+			animation->visible=false;
+		}
+		wasConnecting = false;
+	}
+
 	client->update();
+	changeTabAgain=true;
 }
 
 
 
-void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
+void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
 {
 	//std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
@@ -134,10 +169,13 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 	{
 		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
 		animation->visible=false;
-		YOGScreen screen(client);
+		
+		Glob2TabScreen screen(true);
+		YOGClientLobbyScreen lobby(&screen, client);
+		YOGClientOptionsScreen options(&screen, client);
+		YOGClientMapDownloadScreen maps(&screen, client);
 		int rc = screen.execute(globalContainer->gfx, 40);
-		client->setEventListener(this);
-		if(rc == YOGScreen::ConnectionLost)
+		if(rc == YOGClientLobbyScreen::ConnectionLost)
 			endExecute(ConnectionLost);
 		else if(rc == -1)
 			endExecute(-1);
@@ -155,7 +193,7 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 		}
 		else if(reason == YOGUsernameAlreadyUsed)
 		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]"));
 		}
 		else if(reason == YOGUserNotRegistered)
 		{
@@ -167,7 +205,23 @@ void YOGLoginScreen::handleYOGEvent(boost::shared_ptr<YOGEvent> event)
 		}
 		else if(reason == YOGAlreadyAuthenticated)
 		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_AUTHENTICATED]"));
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
+		}
+		else if(reason == YOGUsernameBanned)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]"));
+		}
+		else if(reason == YOGIPAddressBanned)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]"));
+		}
+		else if(reason == YOGNameInvalidSpecialCharacters)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]"));
+		}
+		else if(reason == YOGLoginUnknown)
+		{
+			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_UNEXPLAINED]"));
 		}
 		client->disconnect();
 	}
@@ -184,10 +238,6 @@ void YOGLoginScreen::attemptLogin()
 		globalContainer->settings.username=login->getText();
 		globalContainer->settings.save();
 	}
-	//Update the gui
-	animation->show();
-	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-	statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 	//Attempt the login
 	client->attemptLogin(login->getText(), password->getText());
 }
@@ -203,10 +253,6 @@ void YOGLoginScreen::attemptRegistration()
 		globalContainer->settings.username=login->getText();
 		globalContainer->settings.save();
 	}
-	//Update the gui
-	animation->show();
-	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-	statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 	//Attempt the registration
 	client->attemptRegistration(login->getText(), password->getText());
 }

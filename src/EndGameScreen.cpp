@@ -71,8 +71,6 @@ void EndGameStat::paint(void)
 	assert(parent);
 	assert(parent->getSurface());
 	
-	// draw background
-	parent->getSurface()->drawRect(x, y, w, h, Style::style->frameColor);
 	
 	if(game->teams[0]->stats.endOfGameStats.size()==0)
 		return;
@@ -86,55 +84,68 @@ void EndGameStat::paint(void)
 	///You can't draw anything if the game ended so quickly that there wheren't two recorded values to draw a line between
 	if(game->teams[0]->stats.endOfGameStats.size() >= 2)
 	{
-		//Calculate the maximum width of the numbers so they can be lined up
+		//Calculate the number of digits used by the max value when rounded up to the nearest 10
 		int num=10;
 		maxValue+=num-(maxValue%num);
 		std::stringstream maxstr;
 		maxstr<<maxValue<<std::endl;
 		int max_digit_count=maxstr.str().size();
+		
+		//Compute the maximum width used by the right-scale
 		int max_width=-1;
-		double line_seperate=double(h)/double(num);
-		double value_seperate=double(maxValue)/double(h);
 		for(int n=0; n<num; ++n)
 		{
-			int pos=int(double(n)*line_seperate+0.5);
-			int value=maxValue-int(double(pos)*value_seperate+0.5);
-			std::stringstream str;
-			str<<value<<std::endl;
-			int width=globalContainer->littleFont->getStringWidth(str.str().c_str());
+			int value=maxValue - (maxValue*n)/num;
+			std::string valueText = getRightScaleText(value, max_digit_count-1);
+			int width=globalContainer->littleFont->getStringWidth(valueText.c_str());
 			max_width=std::max(width, max_width);
 		}
+		
+		//Compute the maximum height used by the time-scale
+		int time_period=(game->teams[0]->stats.endOfGameStats.size()*512)/25;
+		int max_height = 0;
+		for(int n=1; n<16; ++n)
+		{
+			int time = (time_period * n) / 15;
+			std::string timeText = getTimeText(time);
+			int height=globalContainer->littleFont->getStringHeight(timeText.c_str());
+			max_height = std::max(height, max_height);
+		}
+		
+		///Effective width and height
+		int e_width = w - max_width - 8;
+		int e_height = h - max_height - 8;
 
 		//Draw horizontal lines to given the scale of the graphs values.
+		double line_seperate=double(e_height)/double(num);
 		for(int n=0; n<num; ++n)
 		{
 			int pos=int(double(n)*line_seperate+0.5);
-			int value=maxValue-int(double(pos)*value_seperate+0.5);
+			int value=maxValue - (maxValue*n)/num;
 			if(n!=0)
-				parent->getSurface()->drawHorzLine(x+w-5, y+pos, 10, 255, 255, 255);
-			std::stringstream str;
-			str<<std::setw(max_digit_count-1)<<std::setfill('0')<<value<<std::endl;
-			int height=globalContainer->littleFont->getStringHeight(str.str().c_str());
-			parent->getSurface()->drawString(x+w-max_width-8, y+pos-height/2, globalContainer->littleFont, str.str().c_str());
+				parent->getSurface()->drawHorzLine(x+e_width-5, y+pos, 10, 255, 255, 255);
+			std::string valueText = getRightScaleText(value, max_digit_count-1);
+			int height=globalContainer->littleFont->getStringHeight(valueText.c_str());
+			parent->getSurface()->drawString(x+e_width+8, y+pos-height/2, globalContainer->littleFont, valueText.c_str());
 		}
 
 		///Draw vertical lines to give the timescale
-		double time_line_seperate=double(w)/double(15);
-		int time_period=(game->teams[0]->stats.endOfGameStats.size()*512/250)*10;
-		double time_value_seperate=double(time_period)/double(15);
+		double time_line_seperate=double(e_width)/double(15);
 		for(int n=1; n<16; ++n)
 		{
-			if(n!=16)
-				parent->getSurface()->drawVertLine(int(double(x)+time_line_seperate*double(n)+0.5), y+h-5, 10, 255, 255, 255);
-			std::stringstream str;
-			int min=int(double(n)*time_value_seperate+0.5)/60;
-			int sec=int(double(n)*time_value_seperate+0.5)%60;
-			str<<min<<":"<<std::setw(2)<<std::setfill('0')<<sec<<std::endl;
-			int width=globalContainer->littleFont->getStringWidth(str.str().c_str());
-			parent->getSurface()->drawString(int(double(x)+time_line_seperate*double(n)+0.5)-width/2, y+h-30, globalContainer->littleFont, str.str().c_str());
+			int pos = int(double(x)+time_line_seperate*double(n)+0.5);
+			int time = (time_period * n) / 15;
+			if(n!=15)
+				parent->getSurface()->drawVertLine(pos, y+e_height-5, 10, 255, 255, 255);
+			std::string timeText = getTimeText(time);
+			int width=globalContainer->littleFont->getStringWidth(timeText.c_str());
+			parent->getSurface()->drawString(pos-width/2, y+e_height+8, globalContainer->littleFont, timeText);
 		}
 
-		int closest_position = 1681;
+		// draw background
+		parent->getSurface()->drawRect(x, y, e_width, e_height, Style::style->frameColor);
+
+		int closest_position = 1601;
 		int circle_position_value=-1;
 		int circle_position_x=-1;
 		int circle_position_y=-1;
@@ -151,12 +162,12 @@ void EndGameStat::paint(void)
 				}
 				const Color& color = game->teams[team]->color;
 
-				int previous_y = h - int(double(h) * getValue(0, team, type) / double(maxValue));
+				int previous_y = e_height - int(double(e_height) * getValue(0, team, type) / double(maxValue));
 				
-				for(int px=0; px<(w-2); ++px)
+				for(int px=0; px<(e_width-2); ++px)
 				{
-					double value = getValue(double(px) / double(w-2), team, type);
-					int ny = h - int(double(h) * value / double(maxValue));
+					double value = getValue(double(px) / double(e_width-2), team, type);
+					int ny = e_height - int(double(e_height) * value / double(maxValue));
 					parent->getSurface()->drawLine(x + px + 1, y + previous_y, x + px, y + ny, color);
 					previous_y = ny;
 					int dist = (mouse_y-ny)*(mouse_y-ny) + (mouse_x-px-1)*(mouse_x-px-1);
@@ -177,6 +188,11 @@ void EndGameStat::paint(void)
 			str<<circle_position_value;
 			parent->getSurface()->drawString(circle_position_x+10, circle_position_y+10, globalContainer->littleFont, str.str());
 		}
+	}
+	else
+	{
+		// draw background
+		parent->getSurface()->drawRect(x, y, w, h, Style::style->frameColor);
 	}
 }
 
@@ -215,6 +231,26 @@ double EndGameStat::getValue(double position, int team, int type)
 	
 
 
+std::string EndGameStat::getTimeText(int seconds)
+{
+	int min=int(seconds)/60;
+	int sec=int(seconds)%60;
+	std::stringstream str;
+	str<<min<<":"<<std::setw(2)<<std::setfill('0')<<sec<<std::endl;
+	return str.str();
+}
+
+
+
+std::string EndGameStat::getRightScaleText(int value, int digits)
+{
+	std::stringstream str;
+	str<<std::setw(digits)<<std::setfill('0')<<value<<std::endl;
+	return str.str();
+}
+
+
+
 void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 {
 	int x, y, w, h;
@@ -237,7 +273,16 @@ void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 struct MoreScore : public std::binary_function<const TeamEntry&, const TeamEntry&, bool>
 {
 	EndOfGameStat::Type type;
-	bool operator()(const TeamEntry& t1, const TeamEntry& t2) { return t1.endVal[type] > t2.endVal[type]; }
+	bool operator()(const TeamEntry& t1, const TeamEntry& t2)
+	{
+		if(t1.endVal[type] == t2.endVal[type])
+		{
+			if(t1.teamNum == t2.teamNum)
+				return t1.name > t2.name;
+			return t1.teamNum > t2.teamNum;
+		}
+		return t1.endVal[type] > t2.endVal[type];
+	}
 };
 
 
@@ -246,7 +291,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	// title & graph
 	std::string titleText;
 	
-	if (gui->game.totalPrestigeReached)
+	if (gui->game.totalPrestigeReached && gui->game.isPrestigeWinCondition())
 	{
 		Team *t=gui->game.getTeamWithMostPrestige();
 		assert(t);
@@ -267,17 +312,17 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 			titleText = strText;
 		}
 	}
-	else if (!gui->getLocalTeam()->isAlive)
+	else if(gui->getLocalTeam()->hasWon)
+	{
+		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
+	}
+	else if (gui->getLocalTeam()->hasLost)
 	{
 		titleText=Toolkit::getStringTable()->getString("[Lost : your colony is dead]");
 	}
 	else if (!gui->game.isGameEnded)
 	{
 		titleText=Toolkit::getStringTable()->getString("[The game has not been finished]");
-	}
-	else
-	{
-		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
 	}
 	
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText.c_str()));
@@ -301,23 +346,18 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	int inc = (gui->game.mapHeader.getNumberOfTeams() <= 16) ? 20 : 10;
 
 	// set teams entries for later sort
-	for (int i=0; i<gui->game.mapHeader.getNumberOfTeams(); i++)
+	for (int i=0; i<gui->game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		Team *t=gui->game.teams[i];
-		if(t->numberOfPlayer)
+		struct TeamEntry entry;
+		entry.name=gui->game.gameHeader.getBasePlayer(i).name;
+		entry.teamNum=gui->game.gameHeader.getBasePlayer(i).teamNumber;
+		entry.color=gui->game.teams[entry.teamNum]->color;
+		int endIndex=gui->game.teams[entry.teamNum]->stats.endOfGameStats.size()-1;
+		for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
 		{
-			int endIndex=t->stats.endOfGameStats.size()-1;
-
-			struct TeamEntry entry;
-			entry.name=t->getFirstPlayerName();
-			entry.teamNum=i;
-			entry.color=t->color;
-			for (int j=0; j<EndOfGameStat::TYPE_NB_STATS; j++)
-			{
-				entry.endVal[j]=t->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
-			}
-			teams.push_back(entry);
+			entry.endVal[j]=gui->game.teams[entry.teamNum]->stats.endOfGameStats[endIndex].value[(EndOfGameStat::Type)j];
 		}
+		teams.push_back(entry);
 	}
 
 	// add widgets
@@ -326,6 +366,15 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		OnOffButton* enabled_button = new OnOffButton(10, 80+(i*inc), inc, inc, ALIGN_RIGHT, ALIGN_TOP, true, 6+i);
 		team_enabled_buttons.push_back(enabled_button);
 		addWidget(enabled_button);
+		
+		if((i>0 && teams[i-1].teamNum != teams[i].teamNum) || i==0)
+		{
+			team_enabled_buttons[i]->visible=true;
+		}
+		else
+		{
+			team_enabled_buttons[i]->visible=false;
+		}
 		
 		text=new Text(10+inc, 80+(i*inc), ALIGN_RIGHT, ALIGN_TOP, "standard", "", 140);
 		names.push_back(text);
@@ -368,6 +417,13 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			int n=par1-6;
 			statWidget->setEnabledState(teams[n].teamNum, team_enabled_buttons[n]->getState());
+			for (unsigned i=0; i<teams.size(); i++)
+			{
+				if(teams[i].teamNum == teams[n].teamNum)
+				{
+					team_enabled_buttons[i]->setState(team_enabled_buttons[n]->getState());
+				}
+			}
 		}
 	}
 }
@@ -379,23 +435,38 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 	MoreScore moreScore;
 	moreScore.type=type;
 	std::sort(teams.begin(), teams.end(), moreScore);
-
+	
 	int prev_num=1;
 	for (unsigned i=0; i<teams.size(); i++)
 	{
 		std::stringstream str;
-		if(i>0 && teams[i].endVal[type] == teams[i-1].endVal[type])
+		if(i>0 && teams[i].teamNum == teams[i-1].teamNum)
 		{
-			str<<"#"<<prev_num<<": "<<teams[i].name.c_str()<<std::endl;
+			str<<"    "<<teams[i].name;
+		}
+		else if(i>0 && teams[i].endVal[type] == teams[i-1].endVal[type])
+		{
+			str<<"#"<<prev_num<<": "<<teams[i].name;
 		}
 		else
 		{
-			str<<"#"<<i+1<<": "<<teams[i].name.c_str()<<std::endl;
+			str<<"#"<<i+1<<": "<<teams[i].name;
 			prev_num=i+1;
 		}
 	
 		names[i]->setText(str.str().c_str());
 		names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
-		team_enabled_buttons[i]->returnCode=6+i;
+		if(team_enabled_buttons[i])
+			team_enabled_buttons[i]->returnCode=6+i;
+		
+		
+		if((i>0 && teams[i-1].teamNum != teams[i].teamNum) || i==0)
+		{
+			team_enabled_buttons[i]->visible=true;
+		}
+		else
+		{
+			team_enabled_buttons[i]->visible=false;
+		}
 	}
 }

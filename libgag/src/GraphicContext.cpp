@@ -1703,7 +1703,7 @@ namespace GAGCore
 			for (int dy=0; dy < mapH-1; dy++)
 			{
 				int midy = y + dy * cellH + cellH/2;
-				for (int dx=0; dx < mapW; dx++)
+				for (int dx=0; dx < mapW-1; dx++)
 				{
 					glBegin(GL_TRIANGLE_FAN);
 					//This interpolates to find the center color, then fans out to the four corners.
@@ -1743,10 +1743,10 @@ namespace GAGCore
 			
 			glState.doBlend(1);
 			glState.doTexture(0);
-			for (int dy=0; dy < mapH/*-1*/; dy++)
+			for (int dy=0; dy < mapH-1; dy++)
 			{
 				int midy = y + dy * cellH + cellH/2;
-				for (int dx=0; dx < mapW; dx++)
+				for (int dx=0; dx < mapW-1; dx++)
 				{
 
 					glBegin(GL_TRIANGLE_FAN);
@@ -1845,6 +1845,11 @@ namespace GAGCore
 				int nh = (*modes)->h;
 				modes++;
 				
+				if(nw < 800 || nh<600)
+				{
+					continue;
+				}
+				
 				if ( ((minW == 0) || (nw >= minW))
 					&& ((minH == 0) || (nh >= minH)))
 				{
@@ -1857,7 +1862,7 @@ namespace GAGCore
 		return false;
 	}
 	
-	GraphicContext::GraphicContext(int w, int h, Uint32 flags)
+	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const char *title, const char *icon)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -1883,7 +1888,16 @@ namespace GAGCore
 		
 		TTF_Init();
 		
-		setRes(w, h, flags);
+		if (title && icon)
+			SDL_WM_SetCaption(title, icon);
+		
+		///If setting the given resolution fails, default to 800x600
+		if(!setRes(w, h, flags))
+		{
+			fprintf(stderr, "Toolkit : Can't set screen resolution, resetting to default of 800x600\n");
+			setRes(800,600,flags);
+		}
+		
 	}
 	
 	GraphicContext::~GraphicContext(void)

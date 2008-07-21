@@ -148,10 +148,12 @@ public:
 	void step(void);
 	///This function subscribes any building that needs ressources carried to it with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
-	void subscribeToBringRessourcesStep(void);
+	///Returns true if a unit was hired
+	bool subscribeToBringRessourcesStep(void);
 	///This function subscribes any flag that needs units for a with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
-	void subscribeForFlagingStep();
+	///Returns true if a unit was hired
+	bool subscribeForFlagingStep();
 	/// Subscribes a unit to go inside the building.
 	void subscribeUnitForInside(Unit* unit);
 	/// This is a step for swarms. Swarms heal themselves and create new units
@@ -227,7 +229,6 @@ public:
 	std::list<Order *> orderQueue;
 	
 	static std::string getBuildingName(int type);
-	
 public:
 	// type
 	Sint32 typeNum; // number in BuildingTypes
@@ -244,6 +245,7 @@ public:
 	Sint32 maxUnitWorking;  // (Uint16)
 	Sint32 maxUnitWorkingFuture;
 	Sint32 maxUnitWorkingPreferred;
+	Sint32 maxUnitWorkingPrevious;
 	///This is a constantly updated number that indicates the buildings desired number of units,
 	///say for example that the building is full, it needs no units, so this is 0
 	Sint32 desiredMaxUnitWorking;
@@ -252,8 +254,13 @@ public:
 	///The subscribeToBringRessourcesStep and subscribeForFlagingStep operate every 32 ticks
 	Sint32 subscriptionWorkingTimer;
 	Sint32 maxUnitInside;
+	///This counts the number of units that failed the requirements for the building, but where free
 	std::list<Unit *> unitsInside;
-	Sint32 clearingFlagUpdateTimer;
+	///This stores the priority of the building, 0 is normal, -1 is low, +1 is high
+	Sint32 priority;
+	Sint32 priorityLocal;
+	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
+	Sint32 oldPriority;
 	
 	// optimisation and consistency
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
@@ -272,7 +279,7 @@ public:
 	Sint32 posX, posY; // (Uint16)
 	Sint32 posXLocal, posYLocal;
 
-	// Timer counts down 5 frames after last attacked
+	// Counts down 240 frames from when a unit was attacked
 	Uint8 underAttackTimer;
 
 
@@ -330,6 +337,22 @@ public:
 	Uint32 lastShootStep;
 	Sint32 lastShootSpeedX;
 	Sint32 lastShootSpeedY;
+	
+	
+	enum UnitCantWorkReason
+	{
+		UnitNotAvailable=0,
+		UnitTooLowLevel=1,
+		UnitCantAccessBuilding=2,
+		UnitTooFarFromBuilding=3,
+		UnitCantAccessResource=4,
+		UnitCantAccessFruit=5,
+		UnitTooFarFromResource=6,
+		UnitTooFarFromFruit=7,
+		UnitCantWorkReasonSize,
+	};
+	
+	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
 
 protected:
 	FILE *logFile;

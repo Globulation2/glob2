@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat, Luc-Olivier de Charrière
+  Copyright (C) 2001-2008 Stephane Magnenat, Luc-Olivier de Charrière
   and Martin S. Nyffenegger
   for any question or comment contact us at <stephane at magnenat dot net>, <NuageBleu at gmail dot com>
   or barock@ysagoon.com
@@ -35,16 +35,19 @@
 #include <Stream.h>
 
 #include "GameGUI.h"
+#include "Player.h"
 #include "GlobalContainer.h"
 #include "SGSL.h"
 #include "Unit.h"
 #include "Utilities.h"
+
 
 Token::TokenSymbolLookupTable Token::table[] =
 {
 	{ INT, "int" },
 	{ STRING, "string" },
 	{ LANG, "lang" },
+	{ FUNC_CALL, "function call" },
 
 	{ S_PAROPEN, "("},
 	{ S_PARCLOSE, ")"},
@@ -248,6 +251,313 @@ bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 	}
 }
 
+void Story::toto(GameGUI* gui)
+{
+	std::cout << "toto func : ";
+	std::cout << Token::getNameByType(line[++lineSelector].type) << " ";
+	std::cout << line[++lineSelector].value << "\n";
+}
+
+
+
+void Story::objectiveHidden(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.getScriptNumber(i) == n)
+		{
+			gui->game.objectives.setObjectiveHidden(i);
+			break;
+		}
+	}
+}
+
+
+
+void Story::objectiveVisible(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.getScriptNumber(i) == n)
+		{
+			gui->game.objectives.setObjectiveVisible(i);
+			break;
+		}
+	}
+}
+
+
+
+void Story::objectiveComplete(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.getScriptNumber(i) == n)
+		{
+			gui->game.objectives.setObjectiveComplete(i);
+			break;
+		}
+	}
+}
+
+
+
+void Story::objectiveFailed(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	{
+		if(gui->game.objectives.getScriptNumber(i) == n)
+		{
+			gui->game.objectives.setObjectiveFailed(i);
+			break;
+		}
+	}
+}
+
+
+
+void Story::hintHidden(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
+	{
+		if(gui->game.gameHints.getScriptNumber(i) == n)
+		{
+			gui->game.gameHints.setHintHidden(i);
+			break;
+		}
+	}
+}
+
+
+
+void Story::hintVisible(GameGUI* gui)
+{
+	int n = line[++lineSelector].value;
+	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
+	{
+		if(gui->game.gameHints.getScriptNumber(i) == n)
+		{
+			gui->game.gameHints.setHintVisible(i);
+			break;
+		}
+	}
+}
+
+
+
+void Story::hilightItem(GameGUI* gui)
+{
+	std::string n = line[++lineSelector].msg;
+	int t=0;
+	if(n=="main menu icon")
+	{
+		t=GameGUI::HilightMainMenuIcon;
+	}
+	else if(n=="right side panel")
+	{
+		t=GameGUI::HilightRightSidePanel;
+	}
+	else if(n=="under minimap icons")
+	{
+		t=GameGUI::HilightUnderMinimapIcon;
+	}
+	else if(n=="units assigned bar")
+	{
+		t=GameGUI::HilightUnitsAssignedBar;
+	}
+	else if(n=="units ratio bar")
+	{
+		t=GameGUI::HilightRatioBar;
+	}
+	
+	if(t!=0)
+	{
+		gui->hilights.insert(t);
+	}
+}
+
+
+
+void Story::unhilightItem(GameGUI* gui)
+{
+	std::string n = line[++lineSelector].msg;
+	int t=0;
+	if(n=="main menu icon")
+	{
+		t=GameGUI::HilightMainMenuIcon;
+	}
+	else if(n=="right side panel")
+	{
+		t=GameGUI::HilightRightSidePanel;
+	}
+	else if(n=="under minimap icons")
+	{
+		t=GameGUI::HilightUnderMinimapIcon;
+	}
+	else if(n=="units assigned bar")
+	{
+		t=GameGUI::HilightUnitsAssignedBar;
+	}
+	else if(n=="units ratio bar")
+	{
+		t=GameGUI::HilightRatioBar;
+	}
+	
+	if(t!=0)
+	{
+		gui->hilights.erase(t);
+	}
+}
+
+
+
+void Story::hilightUnits(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_WORKER;
+	gui->hilights.insert(GameGUI::HilightWorkers+n);
+}
+
+
+
+void Story::unhilightUnits(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_WORKER;
+	gui->hilights.erase(GameGUI::HilightWorkers+n);
+}
+
+
+
+void Story::hilightBuildings(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	gui->hilights.insert(GameGUI::HilightBuildingOnMap+n);
+}
+
+
+
+void Story::unhilightBuildings(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	gui->hilights.erase(GameGUI::HilightBuildingOnMap+n);
+}
+
+
+
+void Story::hilightBuildingOnPanel(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	gui->hilights.insert(GameGUI::HilightBuildingOnPanel+n);
+}
+
+
+
+void Story::unhilightBuildingOnPanel(GameGUI* gui)
+{
+	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	gui->hilights.erase(GameGUI::HilightBuildingOnPanel+n);
+}
+
+
+
+void Story::resetAI(GameGUI* gui)
+{
+	int player = line[++lineSelector].value;
+	int aitype = line[++lineSelector].value;
+	if(gui->game.players[player])
+	{
+		gui->game.players[player]->makeItAI(static_cast<AI::ImplementitionID>(aitype));
+	}
+}
+
+
+static const FunctionArgumentDescription totoDescription[] = {
+	{ Token::S_WIN, Token::S_LOOSE },
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription objectiveCompleteDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription objectiveHiddenDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription objectiveVisibleDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription objectiveFailedDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hintHiddenDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hintVisibleDescription[] = {
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hilightItemDescription[] = {
+	{ Token::STRING, Token::STRING },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription unhilightItemDescription[] = {
+	{ Token::STRING, Token::STRING },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hilightUnitsDescription[] = {
+	{ Token::S_WORKER, Token::S_WARRIOR },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription unhilightUnitsDescription[] = {
+	{ Token::S_WORKER, Token::S_WARRIOR },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hilightBuildingsDescription[] = {
+	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription unhilightBuildingsDescription[] = {
+	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription hilightBuildingOnPanelDescription[] = {
+	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription unhilightBuildingOnPanelDescription[] = {
+	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ -1, -1}
+};
+
+static const FunctionArgumentDescription resetAIDescription[] = {
+	{ Token::INT, Token::INT },
+	{ Token::INT, Token::INT },
+	{ -1, -1}
+};
+
+
 
 //main step-by-step machine
 bool Story::testCondition(GameGUI *gui)
@@ -262,12 +572,20 @@ bool Story::testCondition(GameGUI *gui)
 				return false;
 			}
 			
+			case (Token::FUNC_CALL):
+			{
+				Functions::const_iterator fIt = mapscript->functions.find(line[lineSelector].msg);
+				assert(fIt != mapscript->functions.end());
+				(this->*(fIt->second.second))(gui);
+				return true;
+			}
+			
 			case (Token::S_SHOW):
 			{
 				unsigned lsInc=0;
 				if (line[lineSelector+2].type == Token::LANG)
 				{
-					if (line[lineSelector+2].value != static_cast<int>(globalContainer->settings.defaultLanguage))
+					if (line[lineSelector+2].msg != globalContainer->settings.language)
 					{
 						lineSelector += 2;
 						return true;
@@ -416,32 +734,63 @@ bool Story::testCondition(GameGUI *gui)
 				int type = line[++lineSelector].type - Token::S_WORKER;
 				int level = line[++lineSelector].value;
 				int team = line[++lineSelector].value;
+				
+				int areaN=-1;
+				//First, check if there is a script area in the map with the same name
+				for(int n=0; n<9; ++n)
+				{
+					if(game->map.getAreaName(n)==areaName)
+					{
+						areaN=n;
+						break;
+					}
+				}
+				//There isn't a map script area with the same name, try the old map scripts
+				if(areaN==-1)
+				{
+					AreaMap::const_iterator fi;
+					if ((fi = mapscript->areas.find(areaName)) != mapscript->areas.end())
+					{
+						int number = globulesAmount;
+						int maxTest = number * 3;
 
-				AreaMap::const_iterator fi;
-				if ((fi = mapscript->areas.find(areaName)) != mapscript->areas.end())
+						while ((number>0) && (maxTest>0))
+						{
+							int x = fi->second.x;
+							int y = fi->second.y;
+							int r = fi->second.r;
+							int dx=(syncRand()%(2*r))+1;
+							int dy=(syncRand()%(2*r))+1;
+							dx-=r;
+							dy-=r;
+
+							if (dx*dx+dy*dy<r*r)
+							{
+								if (game->addUnit(x+dx, y+dy, team, type, level, 0, 0, 0))
+								{
+									number --;
+								}
+							}
+
+							maxTest--;
+						}
+					}
+				}
+				else
 				{
 					int number = globulesAmount;
-					int maxTest = number * 3;
-
-					while ((number>0) && (maxTest>0))
+					for(int x=0; x<game->map.getW() && number; ++x)
 					{
-						int x = fi->second.x;
-						int y = fi->second.y;
-						int r = fi->second.r;
-						int dx=(syncRand()%(2*r))+1;
-						int dy=(syncRand()%(2*r))+1;
-						dx-=r;
-						dy-=r;
-
-						if (dx*dx+dy*dy<r*r)
+						for(int y=0; y<game->map.getH() && number; ++y)
 						{
-							if (game->addUnit(x+dx, y+dy, team, type, level, 0, 0, 0))
+							if(game->map.isPointSet(areaN, x, y))
 							{
-								number --;
+								if (game->addUnit(x, y, team, type, level, 0, 0, 0))
+								{
+									number --;
+								}
 							}
 						}
-
-						maxTest--;
 					}
 				}
 				return true;
@@ -737,6 +1086,7 @@ const char *ErrorReport::getErrorString(void)
 		"Invalid alliance level. Level must be between 0 and 3",
 		"Not a valid language identifier",
 		"Summing of a specific level is only valid for buildings",
+		"The type of the argument to the function is wrong",
 		"Unknown error"
 	};
 	assert(type >= 0);
@@ -751,7 +1101,8 @@ Aquisition::~Aquisition(void)
 
 }
 
-Aquisition::Aquisition(void)
+Aquisition::Aquisition(const Functions& functions) :
+	functions(functions)
 {
 	token.type=Token::NIL;
 	actLine=0;
@@ -886,6 +1237,15 @@ void Aquisition::nextToken()
 		}
 		else
 		{
+			// is it a function call ?
+			Functions::const_iterator fIt = functions.find(word);
+			if (fIt != functions.end())
+			{
+				token.type = Token::FUNC_CALL;
+				token.msg = word;
+				return;
+			}
+			
 			// is it a language ?
 			for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 			{
@@ -893,6 +1253,7 @@ void Aquisition::nextToken()
 				{
 					token.type = Token::LANG;
 					token.value = i;
+					token.msg = word;
 					return;
 				}
 			}
@@ -918,7 +1279,8 @@ bool FileAquisition::open(const char *filename)
 }
 
 
-StringAquisition::StringAquisition()
+StringAquisition::StringAquisition(const Functions& functions) :
+	Aquisition(functions)
 {
 	buffer=NULL;
 	pos=0;
@@ -966,7 +1328,22 @@ int StringAquisition::ungetChar(char c)
 
 Mapscript::Mapscript()
 {
-	reset();
+	functions["toto"] = std::make_pair(totoDescription, &Story::toto);
+	functions["objectiveHidden"] = std::make_pair(objectiveHiddenDescription, &Story::objectiveHidden);
+	functions["objectiveVisible"] = std::make_pair(objectiveVisibleDescription, &Story::objectiveVisible);
+	functions["objectiveComplete"] = std::make_pair(objectiveCompleteDescription, &Story::objectiveComplete);
+	functions["objectiveFailed"] = std::make_pair(objectiveFailedDescription, &Story::objectiveFailed);
+	functions["hintHidden"] = std::make_pair(hintHiddenDescription, &Story::hintHidden);
+	functions["hintVisible"] = std::make_pair(hintVisibleDescription, &Story::hintVisible);
+	functions["hilightItem"] = std::make_pair(hilightItemDescription, &Story::hilightItem);
+	functions["unhilightItem"] = std::make_pair(unhilightItemDescription, &Story::unhilightItem);
+	functions["hilightUnits"] = std::make_pair(hilightUnitsDescription, &Story::hilightUnits);
+	functions["unhilightUnits"] = std::make_pair(unhilightUnitsDescription, &Story::unhilightUnits);
+	functions["hilightBuildings"] = std::make_pair(hilightBuildingsDescription, &Story::hilightBuildings);
+	functions["unhilightBuildings"] = std::make_pair(unhilightBuildingsDescription, &Story::unhilightBuildings);
+	functions["hilightBuildingOnPanel"] = std::make_pair(hilightBuildingOnPanelDescription, &Story::hilightBuildingOnPanel);
+	functions["unhilightBuildingOnPanel"] = std::make_pair(unhilightBuildingOnPanelDescription, &Story::unhilightBuildingOnPanel);
+	functions["resetAI"] = std::make_pair(resetAIDescription, &Story::resetAI);
 }
 
 Mapscript::~Mapscript(void)
@@ -976,8 +1353,6 @@ Mapscript::~Mapscript(void)
 
 bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 {
-	int versionMinor = game->mapHeader.getVersionMinor();
-
 	stream->readEnterSection("SGSL");
 	
 	// load source code
@@ -1161,7 +1536,7 @@ Sint32 Mapscript::checkSum()
 
 ErrorReport Mapscript::compileScript(Game *game, const char *script)
 {
-	StringAquisition aquisition;
+	StringAquisition aquisition(functions);
 	aquisition.open(script);
 	return parseScript(&aquisition, game);
 }
@@ -1173,7 +1548,7 @@ ErrorReport Mapscript::compileScript(Game *game)
 
 ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 {
-	FileAquisition aquisition;
+	FileAquisition aquisition(functions);
 	if (aquisition.open(filename))
 		return parseScript(&aquisition, game);
 	else
@@ -1199,7 +1574,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		if (donnees->getToken()->type != Token::S_PAROPEN) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_PAROPEN; \
-			break; \
+			return er; \
 		} \
 	}
 
@@ -1210,7 +1585,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		if (donnees->getToken()->type != Token::S_PARCLOSE) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_PARCLOSE; \
-			break; \
+			return er; \
 		} \
 	}
 
@@ -1221,7 +1596,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		if (donnees->getToken()->type != Token::S_SEMICOL) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_SEMICOL; \
-			break; \
+			return er; \
 		} \
 	}
 
@@ -1231,7 +1606,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 		if (donnees->getToken()->type == Token::S_PARCLOSE || donnees->getToken()->type == Token::S_SEMICOL) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_ARGUMENT; \
-			break; \
+			return er; \
 		} \
 	}
 
@@ -1264,6 +1639,44 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 			// Grammar check
 			switch (donnees->getToken()->type)
 			{
+				// function call
+				case (Token::FUNC_CALL):
+				{
+					thisone.line.push_back(*donnees->getToken());
+					
+					Functions::const_iterator fIt = functions.find(donnees->getToken()->msg);
+					assert(fIt != functions.end());
+					const FunctionArgumentDescription *argument = fIt->second.first;
+					
+					CHECK_PAROPEN;
+					NEXT_TOKEN; 
+					
+					while (true)
+					{
+						CHECK_ARGUMENT;
+						
+						int argumentTokenType = donnees->getToken()->type;
+						if ((argumentTokenType < argument->argRangeFirst) || (argumentTokenType > argument->argRangeLast))
+						{
+							er.type=ErrorReport::ET_WRONG_FUNCTION_ARGUMENT;
+							return er;
+						}
+						
+						thisone.line.push_back(*donnees->getToken());
+						
+						argument++;
+						if (argument->argRangeFirst<0)
+							break;
+						
+						CHECK_SEMICOL;
+						NEXT_TOKEN;
+					}
+					
+					CHECK_PARCLOSE;
+					NEXT_TOKEN;
+				}
+				break;
+				
 				// summonUnits(flag_name , globules_amount , globule_type , globule_level , team_int)
 				case (Token::S_SUMMONUNITS):
 				{
@@ -1278,7 +1691,20 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					else if (areas.find(donnees->getToken()->msg) == areas.end())
+					
+					std::string areaName=donnees->getToken()->msg;
+					int areaN=-1;
+					//Check if there is a script area in the map with the same name
+					for(int n=0; n<9; ++n)
+					{
+						if(game->map.getAreaName(n)==areaName)
+						{
+							areaN=n;
+							break;
+						}
+					}
+					
+					if (areaN == -1 && areas.find(areaName) == areas.end())
 					{
 						er.type=ErrorReport::ET_UNDEFINED_AREA_NAME;
 						break;
@@ -2011,3 +2437,20 @@ bool Mapscript::hasTeamLost(unsigned teamNumber)
 		return hasLost.at(teamNumber);
 	return false;
 }
+
+
+
+void Mapscript::addTeam()
+{
+	hasWon.push_back(false);
+	hasLost.push_back(false);
+}
+
+
+
+void Mapscript::removeTeam(int n)
+{
+	hasWon.erase(hasWon.begin()+n);
+	hasLost.erase(hasLost.begin()+n);
+}
+

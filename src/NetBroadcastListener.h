@@ -40,6 +40,12 @@ public:
 
 	///Gets the IP address for the given lan game
 	std::string getIPAddress(size_t num);
+	
+	///Enables listening
+	void enableListening();
+	
+	///Disables listening
+	void disableListening();
 private:
 	UDPsocket socket;
 	std::vector<LANGameInformation> games;

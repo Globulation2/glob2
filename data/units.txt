@@ -17,7 +17,7 @@
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 
-hungryness = 700;
+hungryness = 425;
 
 baseWorker
 {
@@ -71,7 +71,7 @@ worker
 	}
 	1 : baseWorker
 	{
-		walkSpeed = 24;
+		walkSpeed = 21;
 		swimSpeed = 10;
 		
 		buildSpeed = 12;
@@ -79,16 +79,16 @@ worker
 	}
 	2 : baseWorker
 	{
-		walkSpeed = 32;
-		swimSpeed = 25;
+		walkSpeed = 26;
+		swimSpeed = 20;
 		
 		buildSpeed = 16;
 		harvestSpeed = 10;
 	}
 	3 : baseWorker
 	{
-		walkSpeed = 40;
-		swimSpeed = 40;
+		walkSpeed = 30;
+		swimSpeed = 30;
 		
 		buildSpeed = 20;
 		harvestSpeed = 11;
@@ -124,7 +124,7 @@ baseExplorer
 	attackForce = 0;
 	
 	armor = 0;
-	hpMax = 50;
+	hpMax = 38;
 	
 	hungryness = 350;
 	harvestDamage = 0;
@@ -137,7 +137,7 @@ explorer
 {
 	0 : baseExplorer
 	{
-		magicAttackAir = 8;
+		magicAttackAir = 6;
 		magicAttackGround = 0;
 		magicCreateWood = 0;
 		magicCreateCorn = 0;
@@ -148,7 +148,7 @@ explorer
 	// this level can only be set in editor
 	1 : baseExplorer
 	{
-		magicAttackAir = 8;
+		magicAttackAir = 6;
 		magicAttackGround = 0;
 		magicCreateWood = 4;
 		magicCreateCorn = 4;
@@ -159,7 +159,7 @@ explorer
 	// this level can only be set in editor
 	2 : baseExplorer
 	{
-		magicAttackAir = 8;
+		magicAttackAir = 6;
 		magicAttackGround = 0;
 		magicCreateWood = 3;
 		magicCreateCorn = 3;
@@ -169,8 +169,8 @@ explorer
 	}
 	3 : baseExplorer
 	{
-		magicAttackAir = 8;
-		magicAttackGround = 25;
+		magicAttackAir = 6;
+		magicAttackGround = 8;
 		magicCreateWood = 2;
 		magicCreateCorn = 2;
 		magicCreateAlga = 2;
@@ -225,32 +225,32 @@ warrior
 		walkSpeed = 16;
 		swimSpeed = 0;
 		
-		attackSpeed = 11;
-		attackForce = 8;
+		attackSpeed = 12;
+		attackForce = 13;
 	}
 	1 : baseWarrior
 	{
-		walkSpeed = 24;
-		swimSpeed = 10;
+		walkSpeed = 21;
+		swimSpeed = 8;
 		
-		attackSpeed = 18;
-		attackForce = 16;
+		attackSpeed = 16;
+		attackForce = 14;
 	}
 	2 : baseWarrior
 	{
-		walkSpeed = 32;
-		swimSpeed = 20;
+		walkSpeed = 26;
+		swimSpeed = 16;
 		
-		attackSpeed = 25;
-		attackForce = 24;
+		attackSpeed = 22;
+		attackForce = 15;
 	}
 	3 : baseWarrior
 	{
-		walkSpeed = 40;
-		swimSpeed = 30;
+		walkSpeed = 30;
+		swimSpeed = 24;
 		
-		attackSpeed = 32;
-		attackForce = 32;
+		attackSpeed = 28;
+		attackForce = 16;
 	}
 }
 

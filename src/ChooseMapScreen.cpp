@@ -29,6 +29,8 @@
 #include <Stream.h>
 #include <BinaryStream.h>
 
+#include "Game.h"
+
 ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, bool recurse, const char* alternateDirectory, const char* alternateExtension, const char* alternateRecurse)
 {
 	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
@@ -93,26 +95,27 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 {
 	if (action == LIST_ELEMENT_SELECTED)
 	{
-		std::string mapFileName;
-		if(currentDirectoryMode == DisplayRegular)
-			mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
-		else
-			mapFileName = alternateFileList->listToFile(alternateFileList->getText(par1).c_str());
-		
-		mapPreview->setMapThumbnail(mapFileName.c_str());
-		InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
-		if (stream->isEndOfStream())
+		if((currentDirectoryMode == DisplayRegular && fileList->getSelectionIndex() != -1) || (currentDirectoryMode == DisplayAlternate && alternateFileList->getSelectionIndex() != -1))
 		{
-			std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
-		}
-		else
-		{
-			if (verbose)
-				std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
-			validMapSelected = mapHeader.load(stream);
-			if (validMapSelected)
+			std::string mapFileName;
+			if(currentDirectoryMode == DisplayRegular)
+				mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
+			else
+				mapFileName = alternateFileList->listToFile(alternateFileList->getText(par1).c_str());
+			
+			mapPreview->setMapThumbnail(mapFileName.c_str());
+
+			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+			if (stream->isEndOfStream())
 			{
-				validMapSelected = gameHeader.load(stream, mapHeader.getVersionMinor());
+				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
+			}
+			else
+			{
+				if (verbose)
+					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+				validMapSelected = mapHeader.load(stream);
+				mapHeader.setMapName(glob2FilenameToName(mapFileName));
 				if (validMapSelected)
 				{
 					updateMapInformation();
@@ -121,12 +124,20 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 					mapDate->setText(ctime(&mtime));
 				}
 				else
-					std::cerr << "ChooseMapScreen::onAction : invalid game header for map " << mapFileName << std::endl;
+					std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
 			}
-			else
-				std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
+			delete stream;
 		}
-		delete stream;
+		else 
+		{
+			mapDate->setText("");
+			mapVersion->setText("");
+			mapInfo->setText("");
+			mapSize->setText("");
+			mapName->setText("");
+			mapPreview->setMapThumbnail("");
+			validMapSelected = false;
+		}
 	}
 	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{
@@ -145,9 +156,13 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			// if a valid file is selected, delete it
 			if (fileList->getSelectionIndex() >= 0)
 			{
+				size_t i = fileList->getSelectionIndex();
 				std::string mapFileName = fileList->listToFile(fileList->get().c_str());
 				Toolkit::getFileManager()->remove(mapFileName);
 				fileList->generateList();
+				
+				fileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
+				fileList->selectionChanged();
 			}
 		}
 		else if (source == switchType)
@@ -158,6 +173,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				fileList->visible=false;
 				alternateFileList->visible=true;
 				switchType->setText(Toolkit::getStringTable()->getString("[the maps]"));
+				alternateFileList->selectionChanged();
 			}
 			else
 			{
@@ -165,6 +181,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				fileList->visible=true;
 				alternateFileList->visible=false;
 				switchType->setText(Toolkit::getStringTable()->getString("[the games]"));
+				fileList->selectionChanged();
 			}
 		}
 	}

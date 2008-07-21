@@ -37,7 +37,7 @@ namespace GAGGUI
 class Glob2FileList;
 class MapPreview;
 
-const int NumberOfPlayerSelectors=16;
+const int NumberOfPlayerSelectors=12;
 
 //! This screen is used to setup a custom game. AI can be set. Map choosing functionnalities are inherited from ChooseMapScreen
 class CustomGameScreen : public ChooseMapScreen
@@ -58,6 +58,8 @@ public:
 	int getSelectedColor(int i);
 
 private:
+
+
 	///Updates the gameHeader with the chosen players for the map
 	void updatePlayers();
 
@@ -69,6 +71,10 @@ private:
 	Text *closedText[NumberOfPlayerSelectors];
 	//! Multi-text button containing names of availables Player
 	MultiTextButton *aiSelector[NumberOfPlayerSelectors];
+	//! Text button that links to the custom game other settings screen
+	TextButton* otherOptions;
+	//! Text button that links to the ai descriptions
+	TextButton* aiDescriptions;
 
 };
 

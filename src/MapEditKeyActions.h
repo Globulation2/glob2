@@ -55,6 +55,7 @@ namespace MapEditKeyActions
 		SelectWarFlag,
 		SelectClearingFlag,
 		ToggleMenuScreen,
+		SelectDeleteTool,
 		ActionSize,
 	};
 

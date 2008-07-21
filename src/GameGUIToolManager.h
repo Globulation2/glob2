@@ -91,6 +91,13 @@ private:
 
 	///Flushes an order for the current brush accumulator
 	void flushBrushOrders(int localteam);
+	///Places a building at pos x,y
+	void placeBuildingAt(int mapx, int mapy, int localteam);
+	///Draws a building at pos x,y
+	void drawBuildingAt(int mapx, int mapy, int localteam, int viewportX, int viewportY);
+
+	int firstPlacementX;
+	int firstPlacementY;
 
 	Game& game;
 	BrushTool& brush;

@@ -35,12 +35,13 @@ namespace GAGGUI
 	class TextInput;
 	class TextButton;
 	class OnOffButton;
+	class MultiTextButton;
 	class Text;
 	class Selector;
 	class Number;
 }
 
-class SettingsScreen : public Glob2Screen
+class SettingsScreen : public Glob2TabScreen
 {
 public:
 	enum
@@ -60,9 +61,14 @@ public:
 		GAMESHORTCUTS=13,
 		EDITORSHORTCUTS=14,
 		SECONDKEY=15,
+		PRESSEDSELECTOR=15,
 		ADDSHORTCUT=16,
 		REMOVESHORTCUT=17,
 		SCROLLWHEEL=18,
+		BUILDINGSETTINGS=19,
+		CONSTRUCTIONSITES=20,
+		UPGRADES=21,
+		FLAGSETTINGS=22,
 	};
 private:
 	Settings old_settings;
@@ -71,14 +77,20 @@ private:
 	TextInput *userName;
 	
 	TextButton *ok, *cancel, *generalsettings, *unitsettings, *keyboardsettings;
+	TextButton *buildings, *flags, *constructionsites, *upgrades;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
 	Selector *musicVol;
+	Selector *voiceVol;
 	OnOffButton *audioMute, *rememberUnitButton;
 	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
 	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
+	int unitRatioGroupNumbers[IntBuildingType::NB_BUILDING][6];
+	Number* flagRadii[3];
+	Text* flagRadiusTexts[3];
+	int flagRadiusGroupNumbers[3];
 //	Text *title;
 	Text *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *rememberUnitText, *scrollwheelText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
 	Text *actDisplay;
 	Text *rebootWarning;
 
@@ -92,13 +104,13 @@ private:
 	KeySelector* select_key_1;
 	OnOffButton *key_2_active;
 	KeySelector* select_key_2;
+	MultiTextButton* pressedUnpressedSelector;
 	List* action_list;
 	TextButton* add_shortcut;
 	TextButton* remove_shortcut;
 	
 	Text* unitSettingsExplanation;
-	Text* unitSettingsHeading1;
-	Text* unitSettingsHeading2;
+	Text* flagSettingsExplanation;
 	
 	bool gfxAltered;
 	
@@ -117,9 +129,24 @@ private:
 	///Holds the keyboard layout for the game gui
 	KeyboardManager guiKeyboardManager;
 public:
+	int generalGroup;
+	int unitGroup;
+	int keyboardGroup;
+
 	ShortcutMode currentMode;
 	///Quick code that adds in a default unit assignment widget pair at the specific position, and returns the width.
-	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y);
+	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y, int group, bool flag=false);
+	///Quick code that adds in a default flag radius widget pair at the specific position, and returns the width.
+	int addDefaultFlagRadiusWidget(int type, int x, int y, int group);
+	///Activates the given group number for default assignment widgets
+	void activateDefaultAssignedGroupNumber(int group);
+	///Returns the default unit assignment text
+	std::string getDefaultUnitAssignmentText(int type, int level, bool flag);
+	///Sets the texts for all default unit assignment widgets
+	void setLanguageTextsForDefaultAssignmentWidgets();
+	
+	
+	virtual void onGroupActivated(int group_n);
 	
 	///Update shortcut_list, if n is not -1, just update that specific entry
 	void updateShortcutList(int n=-1);

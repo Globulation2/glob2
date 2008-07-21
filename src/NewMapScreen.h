@@ -31,28 +31,6 @@ namespace GAGGUI
 	class List;
 }
 
-//! This screen allows to choose how to make a new map
-class HowNewMapScreen : public Glob2Screen
-{
-public:
-	enum
-	{
-		NEWMAP = 1,
-		LOADMAP = 2,
-		CANCEL = 3,
-		NEWCAMPAIGN = 4,
-		LOADCAMPAIGN = 5,
-	};
-
-public:
-	//! Constructor
-	HowNewMapScreen();
-	//! Destructor
-	virtual ~HowNewMapScreen() { }
-	//! Action handler
-	void onAction(Widget *source, Action action, int par1, int par2);
-};
-
 //! This screen allows to choose the size of the map and the default background
 class NewMapScreen : public Glob2Screen
 {
