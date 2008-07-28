@@ -2137,12 +2137,27 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 		}
 		*/
+		// ressources in
+		unsigned j = 0;
+		for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
+		{
+			if (buildingType->maxRessource[i])
+			{
+				j++;
+				ypos += 11;
+			}
+		}
+		if (buildingType->maxBullets)
+		{
+			j++;
+		}
+		ypos+=5;
 
 		if (selBuild->type->unitProductionTime)
 		{
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
-				if ((my>256+90+(i*20)+12)&&(my<256+90+(i*20)+16+12)&&(mx<128))
+				if ((my>ypos+(i*20)+12)&&(my<ypos+(i*20)+16+12)&&(mx<128))
 				{
 					if (mx<18)
 					{
