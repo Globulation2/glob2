@@ -138,6 +138,11 @@ namespace GAGGUI
 			return group_n;
 		}
 
+		void TabScreen::modifyTitle(int group_n, const std::string& title)
+		{
+			static_cast<TextButton*>(groupButtons[group_n])->setText(title);
+		}
+
 		void TabScreen::removeGroup(int group_n)
 		{
 			for(std::vector<Widget*>::iterator j = groups[group_n].begin(); j!=groups[group_n].end(); ++j)

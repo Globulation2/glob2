@@ -76,7 +76,7 @@ private:
 	List *modeList;
 	TextInput *userName;
 	
-	TextButton *ok, *cancel, *generalsettings, *unitsettings, *keyboardsettings;
+	TextButton *ok, *cancel;
 	TextButton *buildings, *flags, *constructionsites, *upgrades;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
 	Selector *musicVol;

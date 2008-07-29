@@ -444,15 +444,15 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			ok->setText(Toolkit::getStringTable()->getString("[ok]"));
 			cancel->setText(Toolkit::getStringTable()->getString("[Cancel]"));
 
+			modifyTitle(generalGroup, Toolkit::getStringTable()->getString("[general settings]"));
+			modifyTitle(unitGroup, Toolkit::getStringTable()->getString("[building settings]"));
+			modifyTitle(keyboardGroup, Toolkit::getStringTable()->getString("[keyboard settings]"));
+
 //;			title->setText(Toolkit::getStringTable()->getString("[settings]"));
 			language->setText(Toolkit::getStringTable()->getString("[language-tr]"));
 			display->setText(Toolkit::getStringTable()->getString("[display]"));
 			usernameText->setText(Toolkit::getStringTable()->getString("[username]"));
 			audio->setText(Toolkit::getStringTable()->getString("[audio]"));
-
-			generalsettings->setText(Toolkit::getStringTable()->getString("[general settings]"));
-			unitsettings->setText(Toolkit::getStringTable()->getString("[unit settings]"));
-			keyboardsettings->setText(Toolkit::getStringTable()->getString("[keyboard settings]"));
 
 			fullscreenText->setText(Toolkit::getStringTable()->getString("[fullscreen]"));
 			//usegpuText->setText(Toolkit::getStringTable()->getString("[opengl]"));
