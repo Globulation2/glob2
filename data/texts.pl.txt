@@ -115,7 +115,7 @@ Oczekuj graczy
 [away:]
 zajęty:
 [Back]
-dostępny:
+Powrót
 [backspace]
 backspace
 [barracks explanation 2]
@@ -449,7 +449,7 @@ Przyłącz się do gry
 [join]
 Przyłącz się
 [keyboard settings]
-Ustawienia Klawiatury
+Ust. Klawiatury
 [kick]
 Wykop
 [lan]
@@ -693,7 +693,7 @@ Napraw
 [repeat area]
 razy ten sam teren
 [restore default shortcuts]
-Przywróć Domyślne Skróty Klawiaturowe
+Przywróć Domyślne Skróty
 [return to editor]
 Powróć do edytora
 [return to game]
@@ -1025,7 +1025,7 @@ Odblokowane na Początku
 [unlocked by]
 Odblokowane Przez
 [Unnamed Area]
-{Nienazwany Teren}
+{Teren bez Nazwy}
 [up]
 góra
 [upgrade building]
@@ -1152,3 +1152,5 @@ Twój adres IP został zablokowany. Proszę cierpliwie czekać aż zostanie odbl
 Twoja jednostka została przeciągnięta na stronę wroga %0
 [Your username was banned]
 Twoja imię gracza zostało zablokowane. Skontaktuj się z administratorami aby to zmienić.
+[connecting to game]
+Łączę z grą
