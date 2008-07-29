@@ -44,6 +44,7 @@ show("Het zal je al opgevallen zijn dat er een groep bomen onder de steengroeve 
 show("Вы, возможно, также заметили, что чуть ниже каменоломни есть несколько деревьев. Однако они выглядят не так как обычные деревья. Если Вы щелкните по ним, то справа Вы увидите, что эти деревья это апельсиновые деревья! Вы, возможно, удивитесь зачем эти апельсиновые деревья нужны. Мы выясним это позже. А пока давайте сосредоточимся на Рое.",ru)
 space
 
+hilightBuildings(Swarm)
 show("Right now, your Swarm should be constructing workers and only workers. If it is not, you may want to set it to be constructing workers now.")
 show("Dès maintenant, votre Ruche devrait construire des ouvrières et uniquement des ouvrières. Si ce n'est pas le cas, vous devriez faire ce qu'il faut pour cela", fr)
 show("Im Augenblick sollte dein Stock Arbeiter und nichts als Arbeiter erschaffen. Falls das nicht so ist, ändere das ab.",de)
@@ -59,6 +60,7 @@ show("Las unidades salen de la colmena lentamente. Sería bueno que fuera más r
 show("De eenheden komen nu in een zeer langzaam tempo uit je Zwerm. Dat willen we sneller zien! In een regulier spel is het hebben van drie of vier werkers niet afdoende, selecteer daarom de Zwerm en wijs er zes eenheden aan toe. Wees niet verrast. Het lijken er misschien veel, maar al snel zullen we er zoveel hebben. Door het aantal nu op zes te zetten, besparen we ons later de moeite.",nl)
 show("Юниты как будто появляются из Роя с довольно маленькой скоростью. Мы хотим маленько увеличить её! Иметь всего лишь 3 или 4 рабочих не очень-то удобно в обычной игре, поэтому выберите Рой, и назначьте 6 рабочих работать на него. Не удивляйтесь. Это возможно большое количество рабочих, но скоро у нас будет столько, и установка числа рабочих в 6 сейчас спасёт нас от проблем с изменением этого числа в будущем.",ru)
 space
+unhilightBuildings(Swarm)
 
 show("Once we have about 8 workers, we will slow things down, and start some new tasks. But for now, we have to wait some more. Don't be disappointed. Most of the game is not spent waiting.")
 show("Une fois que nous disposons d'environ 8 ouvrières, nous allons ralentire un peut et commencer de nouvelles activités. Mais pour l'instant, nous devons attendre encore un peu. Ne soyez pas déçu, on ne passe pas la majorité du jeu à attendre.", fr)
@@ -70,6 +72,7 @@ space
 hide
 wait(Worker(0) > 3)
 
+hilightBuildings(Swarm)
 show("We are making progress towards our goal. The Swarm now has several units assigned to it. This is good. The rest of the units should come out quickly.")
 show("Nous nous acheminons doucement vers notre but. La ruche occupe maintenant plusieurs unités. C'est une bonne chose, le reste des unités devrait etre pret bientôt", fr)
 show("Wir machen Fortschritte auf dem Weg zu unserem Ziel. Dem Stock sind nun mehrere Arbeiter zugewiesen. Die restlichen Arbeiter sollten schnell erstellt sein.",de)
@@ -86,8 +89,10 @@ show("Het kost vijf graan om een werker te produceren in de Zwerm en het neemt f
 show("Создание нового рабочего в Рое требует 5 единиц зерна, и проходит много времени пока зерно будет принесено с поля слева к Рою справа. Заметьте, что Вы можете заполнить Кабак зерном с помощью всего 1 рабочего, но для поддержания Роя полным требуется много рабочих. Во время игры старайтесь сделать так, чтобы здания требующие зерно находились ближе к полям с зерном.",ru)
 space
 hide
+unhilightBuildings(Swarm)
 wait(Worker(0) > 7)
 
+hilightBuildings(Swarm)
 show("Well, we have reached our goal. Now it's time to start experimenting. But first, let's slow down the rate at which the Swarm creates units so we don't get overloaded with units in a moment. Click on the Swarm and set it so that only 1 worker is assigned to it.")
 show("Bien, nous avons atteint notre objectif. Il est temps de commencer à découvrir d'autres choses. Mais, tout d'abord, diminuons la vitesse de production de la Ruche sous peine d'etre rapidement surchargés d'unités. Cliquez sur la Ruche et assignez-lui une seule unité", fr)
 show("So, das erste Ziel ist erreicht. Nun ist es an der Zeit zu experimentieren. Aber lass uns zuerst die Rate senken, mit welcher der Stock Arbeiter produziert, damit wir nicht mit Einheiten überschwemmt werden. Klicke auf den Stock und setze den 'An der Arbeit'-Balken so, dass nur 1 Arbeiter am Stock arbeitet.",de)
@@ -95,16 +100,22 @@ show("Hemos alcanzado nuestra meta. Ahora llegó el momento de experimentar. Per
 show("Okay, we hebben ons doel bereikt. Nu is het tijd om te expirimenteren. Maar laten we eerst de snelheid waarmee de Zwerm eenheden produceert verlagen, zodat we straks niet overspoeld worden door eenheden. Klik op de Zwerm en zorg ervoor dat er maar één werker aan is toegewezen.",nl)
 show("Хорошо, мы достигли нашей цели. Теперь время начать экспериментировать. Но сначала, давайте замедлим скорость, с которой Рой создаёт юниты, чтобы не переборщить с юнитами в данный момент. Щелкните по Рою и сделайте так, чтобы в него был назначен только один рабочий.",ru)
 space
+unhilightBuildings(Swarm)
 
+hilightBuildingOnPanel(Inn)
+hilightItem("under minimap icons")
 show("Very good. We are making excellent progress with our colony. We need to start expanding, but first, we should put ourselves on a solid footing. With all these units floating around, I don't think one Inn is enough anymore, so using the same procedure as you did earlier, build another Inn, just north of our existing Inn.")
 show("Très bien. Notre colonie progresse très bien. Nous allons devoir nous étendre, mais avant tout, nous devons créer des bases solides. Avec toutes ces unités aux alentours, je ne pense pas qu'une seule auberge soit suffisante, aussi, comme précédemment, construisez une autre auberge, à proximité de la première.", fr)
 show("Sehr gut! Wir machen gute Fortschritte mit unserer Kolonie. Wir müssen sie vergrößern, aber zuerst sollten wir uns um genug Nahrung kümmern. Mit all diesen umherwuselnden Einheiten denke ich nicht, dass ein einziger Gasthof genügt. Baue einen neuen Gasthof nördlich von deinem bereits existierenden.",de)
 show("Muy bien. Nuestra colonia está progresando. Ahora viene la expansión, pero primero, fortalezcamos lo que ya es nuestro.  Con todas esas unidades por ahí. No creo que una taberna sea suficiente, crea una nueva, al norte de la que ya está, con el mismo procedimiento que llevaste a cabo antes",es)
 show("Heel goed. We maken nu een geweldige vooruitgang met onze kolonie. We zullen straks moeten uitbreiden. Maar we gaan eerst een solide basis neerzetten. Met al die ronddwarrelende eenheden is één Herberg niet meer voldoende. Bouw nog een Herberg, volgens dezelfde werkwijze die je eerder hebt gebruikt, net ten noorden van je bestaande Herberg.",nl)
 show("Отлично. Мы делаем большие успехи с нашей колонией. Нам нужно начать расширяться, но сначала, нам самим надо крепко встать на ноги. Со всеми этими перебегающими с места на место юнитами, не думаю, что одного Кабака будет достаточно, поэтому, используя ту же процедуру, что и раньше, постройте ещё один Кабак севернее уже построенного Кабака.",ru)
-wait(Inn(0,0) > 0)
+wait(Inn(0,0) > 1)
 hide
+unhilightBuildingOnPanel(Inn)
+unhilightItem("under minimap icons")
 
+hilightBuildings(Inn)
 show("We have several free workers, so feel free to assign as many workers as you want to the Inn to get it constructed fast. Keep in mind, though, that the Inn only needs three logs of wood, so assigning any more than 3 workers to the Inn will prove to be a waste of time.")
 show("Nous disposons de plusieurs ouvrières libres, sentez-vous libre d'en assigner autant que vous voulez à la construction de l'auberge pour qu'elle soit rapidement terminée. Gardez tout demêmeà l'esprit que l'auberge n'a besoin que de trois unités de bois, donc lui assigner plus de 3 ouvrières serait une perte de temps", fr)
 show("Du hast einige Arbeiter, die nichts zu tun haben, deshalb kannst du so viele  wie du möchtest zum Bau des Gastshofs abkommandieren. Beachte aber, dass die Gaststätte nur 3 Holzeinheiten benötigt - und somit eine Zuteilung von mehr als 3 Arbeitern sinnlos wäre.",de)
@@ -122,6 +133,7 @@ show("Perfecto.  Reduce a 1 el número de trabajadores asignados en la nueva tab
 show("Geweldig. Merk op dat het aantal werkers dat is toegewezen aan de Herberg automatisch is teruggezet naar één. Je hebt er niet meer nodig alleen om graan te verzamelen.",nl)
 show("Отлично. Заметьте, что количество рабочих назначенных в только-что законченый Кабак автоматически уменьшено до 1, так как нам не нужно много рабочих, чтобы просто собирать зерно для Кабака.",ru)
 space
+unhilightBuildings(Inn)
 
 show("It's about time to introduce something new. Our workers seem to walk fairly slowly. We would prefer them to go a little bit faster so that they can do more things sooner. If you think the problem is hopeless, think again! This is exactly the purpose of the Racetrack.")
 show("Il est temps maintenant d'introduire un nouvel élément. Nos ouvrières marchent assez lentement, il serait préférable qu'elles aillent un peu plus vite, afin de pouvoir bientôt faire plus de choses. Si vous pensez que le problème est insoluble, repensez-y ! C'est également le but de la Piste de Course.", fr)
@@ -131,6 +143,8 @@ show("Het is tijd om aan iets nieuws te beginnen. Onze werkers lopen nogal langz
 show("Уже почти настало время ввести кое-что новое. Наши рабочие кажется двигаются довольно медленно. Мы бы хотели, чтобы они двигались чуть-чуть быстрее так, чтобы они могли делать больше вещей быстрее. Если Вы думаете, что это безнадежно, подумайте ещё раз! Эта проблема это именно то для чего нужен Стадион.",ru)
 space
 
+hilightBuildingOnPanel(Racetrack)
+hilightItem("under minimap icons")
 GuiEnable(Racetrack)
 show("The Racetrack is a really big building. A lot larger than our Inn or our Swarm. Lets try to construct one. Remember to click the first icon under the minimap to give you the selection of buildings. But first, we should find out what resources are needed to construct a Racetrack, so move your mouse pointer over the Racetrack icon on the right, but don't select a Racetrack just yet. Now look at the bottom of the right hand side menu. It tells us about the Racetrack.")
 show("La piste de course est un très grand bâtiment. Beaucoup plus que notre auberge ou notre ruche. Souvenez-vous que cliquer sur la premiere icone sous la mini-carte vous donne accès à la construction de bâtiments. Mais avant tout, nous devons savoir quelles sont les ressources nécessaires à la construction d'une piste de course. Placez donc votre curseur au-dessus de l'icone de la piste de course sur la droite, sans la sélectionner. Observez maintenant le bas du panneau latéral, vous y trouverez des informations sur la piste de course", fr)
@@ -156,7 +170,10 @@ show("Bouw nu een Racebaan. Je kan hem bouwen waar je wilt, maar mijn persoonlij
 show("Теперь постройте Стадион. Вы можете построить его там где вы хотите, но мой личный совет построить его ниже Роя. Однако есть одна важная вещь, которую нужно помнить во время постройки Стадиона. Необходимо оставить зазор вокруг края Стадиона, по причинам, которые мы выясним позже.",ru)
 wait(Racetrack(0, 0) > 0)
 hide
+unhilightBuildingOnPanel(Racetrack)
+unhilightItem("under minimap icons")
 
+hilightBuildings(Racetrack)
 show("Good. Now we should make use of our large amount of free workers to put this Racetrack up quickly. Assign between 5 and 7 workers to construct the Racetrack, seeing as it needs 7 resources to complete.")
 show("Bien. Maintenant, nous devrions utiliser nos nombreuses ouvrières innocupées pour construire cette Piste de Course rapidement. Assignez 5 à 7 ouvrières à la construction de la Piste de Course, étant donné qu'elle nécessite 7 ressources", fr)
 show("Gut. Nun solltest du deine freien Arbeiter dazu nutzen, die Rennstrecke schnell zu bauen. Teile der Rennstrecke 5 bis 7 Arbeiter zu, da 7 Ressourcen gebraucht werden.",de)
@@ -164,6 +181,7 @@ show("Bien. Empleemos a esa cantidad de trabajadores en la pista de carreras. As
 show("Mooi. Het is een goed idee om een grote hoeveelheid werkers toe te wijzen aan de Racebaan zodat hij snel af is. Wijs tussen de vijf en zeven werkers toe om de Racebaan te bouwen, omdat er zeven grondstoffen nodig zijn om hem te voltooien",nl)
 show("Отлично. Теперь мы должны использовать наше большое количество свободных рабочих, чтобы построить Стадион быстро. Назначьте 5-7 рабочих на постройку Стадиона, поскольку для завершения ему требуется 7 единиц ресурсов.",ru)
 space
+unhilightBuildings(Racetrack)
 
 show("Unlike the Inn and Swarm, the Racetrack does not need a constant supply of wood or wheat to keep it going. Once constructed, it will train the units without needing any further management.")
 show("Contrairement à l'auberge et à la ruche, la Piste de Course ne demande pas un approvisionnement constant en blé ou en bois pour fonctionner. Une fois construite, elle entrainera les unités sans qu'il n'y ait besoin d'intervention supplémentaire", fr)
@@ -184,6 +202,7 @@ show("Cool! Je ziet nu als het goed is een aantal globules naar de Racebaan gaan
 show("Превосходно. Сейчас Вы должны увидеть как несколько глобул направляются в Стадион. Это хорошие новости. Глобулы собираются начать тренироваться, и когда они выйдут, они будут намного быстрее.",ru)
 space
 
+hilightBuildings(Racetrack)
 show("We can examine their progress easily. Click on the Racetrack. You will see a bar on the right hand side menu. There is a bunch of small blue lines slowly making their way along the bar. Those represent your globules, and the closer a globule's line is to the end, the closer it is to being finished with its training. The units will be done with their training very soon.")
 show("Il est facile d'observer leurs progrès. Cliquez sur la Piste de Course. Vous verrez une barre dans le menu latéral. Des lignes bleues parcourent lentement la barre. Elles représentent vos globule et plus la ligne d'un globule est proche de l'extrémité de la barre, plus le globule est proche de la fin de son entrainement. Les unités auront fini leur entrainement très bientôt.", fr)
 show("Du kannst ihren Fortschritt leicht überwachen. Klick auf die Rennstrecke. Du wirst einen schmalen Balken auf der rechten Seite sehen. In dem Balken laufen blaue Linien von links nach rechts. Diese blauen Linien repräsentieren deine Einheiten. Und je weiter rechts die Einheiten sind desto weiter fortgeschritten ist ihr Training. Die in der Rennstrecke befindlichen Einheiten werden bald fertig sein.",de)
@@ -191,6 +210,7 @@ show("Podemos examinar su progreso fácilmente. Elije la pista de carreras.  Ver
 show("We kunnen hun vooruitgang makkelijk bekijken. Klik op de Racebaan. In het menu aan de rechterkant zul je een balk zien. Er lopen en aantal kleine blauwe lijnen van links naar rechts over die balk. Die lijnen representeren je globules. Hoe dichter een lijn bij het einde komt, des te eerder je globule klaar is met zijn training. Alle eenheden zullen spoedig klaar zijn met hun training.",nl)
 show("Мы легко можем проверить их продвижение. Щелкните по Стадиону. Вы увидите полоску на меню справа. Там несколько маленьких синих линий медленно двигающихся вдоль полосы. Они представляют Ваших глобул, и чем ближе линия глобулы к концу, тем раньше глобула закончит свою тренировку. Юниты закончат свою тренировку очень скоро.",ru)
 space
+unhilightBuildings(Racetrack)
 
 show("Haha! Our new super-workers are fit and ready for work! Your workers now go a lot faster. They will certainly be a useful attribute to our colony. However, although these units go faster, they will consume food faster, so it's a trade-off, but certainly one that is greatly to your advantage, because although they eat faster, they collect wheat faster too.")
 show("Haha ! Nos nouvelles super-ouvrières sont pretes à travailler ! Nos ouvrières se déplacent maintenant beaucoup plus vite, elles seront certainement un atout précieux pour notre colonie. Toutefois, bien que ces unités aillent plus vite, elles consomment leur nourriture plus vite. Il s'agit donc d'un comprimis mais il est certainement grandement à votre avantage, car bien qu'ils mangent plus vite, ils récoltent le blé plus rapidement également", fr)
@@ -200,6 +220,8 @@ show("Haha! Onze nieuwe superwerkers zijn fit en klaar om te werken! je werkers 
 show("Ха-ха! Наши новые супер-рабочие готовы работать! Ваши рабочие теперь двигаются гораздо быстрее. Они несомненно станут полезным атрибутом нашей колонии. Однако, хотя эти рабочие передвигаются быстрее, они будут потреблять пищу чаще, поэтому это компромисс. Но конечно одно это уже большое преимущество потому, что хотя они едят чаще, они также быстрее собирают зерно.",ru)
 space
 
+
+hilightItem("workers working free stat")
 show("Look at the very top of the screen on the left-hand side. You should see two numbers. These numbers represent your workers. The first one tells you how many workers you have free, doing nothing. In general, you should be using as many of your workers as possible without overloading them with work. This gives you the best bang for your buck. The second number tells you the total number of workers you have. It has certainly risen a bit since we had only 8 workers.")
 show("Observez la partie supérieure de l'écran, à gauche. Vous devriez y voir deux nombres. Ils représentent vos ouvrières. Le premier vous indiquent combien sont innoccupées. En général, vous devriez exploiter un maximum d'ouvrière sans toutefois les surcharger de travail. Le second chiffre vous indique le nombre total d'ouvrières dont vous disposez. Il a certainement augmenté depuis le moment où nous avions seulement 8 ouvrières", fr)
 show("Schaue auf den oberen Teil deines Bildschirms, ganz auf der linken Seite. Du solltest 2 Zahlen sehen. Diese Zahlen repräsentieren deine Arbeiter. Die erste zeigt dir die Zahl der Arbeitern an, die  faul sind und nichts tun. Normalerweise solltest du so viele Arbeiter wie möglich nutzen, ohne sie jedoch zu überlasten. Das gibt deiner Kolonie den letzten Schliff. Die zweite Zahl gibt Auskunft über die Gesamtzahl deiner Arbeiter. Sie ist doch etwas gewachsen seit wir nur 8 Arbeiter hatten.",de)
@@ -207,7 +229,10 @@ show("Mira la parte superior de la pantalla, al lado izquierdo. Hay dos números
 show("Kijk nu bovenin het scherm, aan de linkerkant. Je ziet twee getallen. Deze getallen representeren je werkers. Het eerste getal geeft aan hoeveel werkers er vrij zijn. Over het algemeen gebruik je zoveel werkers als mogelijk, zonder ze te overladen met werk. Het aatal is waarschijnlijk iets gestegen, omdat we eerst maar acht werkers hadden.",nl)
 show("Посмотрите на самый верх экрана слева. Вы должны увидеть два числа. Эти числа соответствуют Вашим рабочим. Первое сколько у Вас свободных рабочих, которые ничем не заняты. Вообще, следует использовать столько рабочих сколько возможно не перегружая их работой. Это даст наилучший результат при ваших возможностях. Второе число показывает общее число имеющихся рабочих. Оно несомненно выросло с момента, когда было всего 8 рабочих.",ru)
 space
+unhilightItem("workers working free stat")
 
+hilightItem("warriors working free stat")
+hilightItem("explorers working free stat")
 show("Please note that besides the number of workers, you can also see the number of explorers and warriors next to it. Those numbers are very useful. Remember them for later.")
 show("Ces nombres sont très utiles, souvenez-vous en.", fr)
 show("Diese Zahlen sind sehr wichtig. Merke sie dir für später!",de)
@@ -215,6 +240,8 @@ show("Esas cifras son muy útiles, haz uso de ellas.",es)
 show("Merk op dat behalve het aantal werkers, je ernaast ook het aantal verkenners en soldaten kunt zien. Deze getallen zijn erg nuttig. Onthoud ze voor later.",nl)
 show("Заметьте, что сразу после количества рабочих идёт числа разведчиков и число воинов. Эти числа очень полезны. Запомните их на будущее.",ru)
 space
+unhilightItem("warriors working free stat")
+unhilightItem("explorers working free stat")
 
 show("In fact, I think these numbers are getting a bit too big! Do you think we can handle this many workers? Well, we have 2 Inns. Each Inn has a place for 4 units. If we think of the worst case scenario, at most 8 of our units can get hungry at the same time.")
 show("En fait, je pense que ces nombres sont en train de devenir trop grands ! Pensez-vous que nous puissions gérer autant d'ouvrières ? Et bien, nous disposont de 2 auberges, chaque auberge a de la place pour 4 unités. En considérant le pire des scénarios, 8 unités au maximum peuvent avoir faim simultanément.", fr)
@@ -232,6 +259,8 @@ show("Twee Herbergen is nu voldoende, maar al snel niet meer. Als we ons de moei
 show("2 Кабака уже недостаточно для нас, и это не заняло много времени. Если мы не хотим добавить себе работы позже, такой как борьбы с голодом, то следует построить больше Кабаков и забыть об этой проблеме до тех пор пока наша колония не станет значительно больше.",ru)
 space
 
+hilightBuildingOnPanel(Inn)
+hilightItem("under minimap icons")
 show("Let's build 3 more Inns. Food is very important, so remember to manage your Inns well whenever you're playing a game. If a worker can not get any food, it will no longer do any work, and in fact, it will die of starvation. By now, you should be fairly comfortable with constructing buildings, and it should be no problem for you to construct a few more. Try to keep them alongside the wheat, and assign as many workers as you want to each of them.")
 show("Construisons trois auberges supplémentaires. La nourriture est très importante, pensez à bien gérer vos auberges lorsque vous jouez. Si une ouvrière ne peut pas trouver de quoi se nourrir, il ne travaillera plus et, en fait, mourra de dénutrition. Maintenant, vous devriez etre familier avec la construction de bâtiments, et l'ajout de nouvelles auberges ne devrait pas etre un problème. Essayez de les placer près du blé et assignez-y autant d'ouvrières que vous le désirez.", fr)
 show("Bau jetzt noch 3 Gasthöfe. Nahrung ist sehr wichtig, darum führe deine Gasthöfe gut, wenn du spielst. Wenn ein Arbeiter keine Nahrung bekommt, wird er keine Arbeit mehr verrichten und letztendlich verhungern. Mittlerweile solltest du mit der Errichtung von Gebäuden vertraut sein, es sollte kein Problem für dich sein ein paar mehr zu errichten. Versuche die Gasthöfe in der Nähe des Weizenfeldes zu bauen und lasse so viele Arbeiter daran arbeiten wie du möchtest.",de)
@@ -247,6 +276,8 @@ show("Construyamos 3 tabernas más.",es)
 show("Bouw drie extra Herbergen.",nl)
 show("Постройте ещё 3 Кабака.",ru)
 wait(Inn(0, 1) > 4)
+unhilightBuildingOnPanel(Inn)
+unhilightItem("under minimap icons")
 
 show("Good work. Again, the amount of workers assigned to the newly build Inns is automatically set back to one unit. They don't need many workers to keep them full of wheat, especially considering how fast our new workers can collect wheat.")
 show("Bon boulot, réduisez maintenant à un le nombre d'ouvrières assignées aux auberges, elles n'en n'ont pas besoin de beaucoup pour maintenir leurs stocks au maximum, en particulier si l'on regarde la vitesse à laquelle les ouvrières peuvent récolter le blé.", fr)
@@ -265,6 +296,8 @@ show("Наша колония становится довольно большо
 space
 
 GuiEnable(Pool)
+hilightBuildingOnPanel(Pool)
+hilightItem("under minimap icons")
 show("Swimming can be learned at the Swimming Pool. Constructing a Swimming Pool is as easy as constructing a Racetrack, and they are about the same size. Remember to leave a fairly large gap around the edge of the Swimming Pool, even larger when you place it close to resources, because the resources can grow into that gap you left.")
 show("La nage peut etre apprise à la Piscine. La construction d'une piscine est aussi simple que celle d'une Piste de Course et les deux bâtiments font à peu près lamêmetaille. Souvenez-vous de laisser un espace autour de la Piscine, d'autant plus large qu'elle est pret des ressources, puisque celles-ci peuvent se développer dans les espaces au vous avez laissé.", fr)
 show("Schwimmen kann man in einem Schwimmbad lernen. Baue ein Schwimmbad, es ist genauso einfach wie der Bau der Rennstrecke. Es hat auch ungefähr die selbe Größe. Erinnere dich daran einen schmalen Rand um das Schwimmbad zu lassen. Lass einen sehr viel größeren Rand, wenn dein Schwimmbad in der Nähe von Ressourcen steht, da diese sonst in diesen Rand hinein wachsen können.",de)
@@ -281,6 +314,8 @@ show("Als we de gegevens van het Zwembad er op na slaan, ontdekken we dat er vee
 show("Если прочитать данные о Бассейне, то мы узнаем, что он требует много дерева, но не требует ничего другого. Поэтому мы ищем большое расчищенное место возле леса. Мне кажется я вижу одно из таких как раз на северо-востоке от нашей главной базы, чуть выше камня. Давайте построим наш новый Бассейн здесь. Не забудьте использовать большое количество свободных рабочих, чтобы построить Бассейн быстро.",ru)
 wait(Pool(0, 0) > 0)
 hide
+unhilightBuildingOnPanel(Pool)
+unhilightItem("under minimap icons")
 wait(Pool(0, 1) > 0)
 
 show("Wow! What a large, wondrous Pool you have constructed. You should already see your globules heading in to learn a new skill!")
@@ -291,6 +326,7 @@ show("Wauw! Wat een groot en prachtig Zwembad heb je gebouwd. Als het goed is zi
 show("Поразительно! Что за изумительный большой Бассейн Вы построили. Вы должны уже увидеть как Ваши глобулы начинают изучать новое умение в нём!",ru)
 space
 
+hilightBuildings(Pool)
 show("Let's keep track of the progress, shall we? Click on the Swimming Pool now, and look at the right-hand side menu. Like on the Racetrack, there is a long bar, and small, vertical, blue bars travelling along it. However, unlike the Racetrack, only 3 globules may train at a Swimming Pool at any one time.")
 show("Si nous jetions un oeil aux progrès de nos globules ? Cliquez sur  la Piscine et observez le menu latéral. Comme pour la Piste de Course, il y a une longue barre et de petites barres latérales qui se déplacent dessus. Cependant, contrairement à la Piste de Course, seuls trois globulent peuvent s'entrainer simultanément.", fr)
 show("Verfolge doch mal den Fortschritt im Schwimmbad. Klicke dazu auf das Schwimmbad und schaue auf das Menü auf der rechten Seite. Wie in der Rennstrecke gibt es einen langen horizontalen Balken und kleine vertikale blaue Balken, die ihn entlanglaufen. Im Gegensatz zur Rennstrecke können im Schwimmbad nur 3 Einheiten trainieren.",de)
@@ -298,6 +334,7 @@ show("Revisemos el progreso, lo hacemos?  Selecciona la piscina, y mira en el me
 show("Laten we de vooruitgang eens in de gaten houden. Klik op het Zwembad en kijk naar het menu aan de rechterkant. Net als bij de Racebaan is er een lange balk en kleine blauwe verticale balkjes die eroverheen bewegen. Alleen mogen er in het Zwembad maar drie globules tegelijkertijd trainen.",nl)
 show("Давайте проследим за продвижением. Щелкните по Бассейну и посмотрите на меню справа. Как и у Стадиона, здесь есть длинная полоса и маленькие синие линии движущиеся вдоль неё. Однако, в отличие от Стадиона, только 3 глобулы могут тренироваться в Бассейне одновременно.",ru)
 space
+unhilightBuildings(Pool)
 
 show("Our globules are now first class swimmers! But we won't see them doing much swimming just yet. We need to do something that calls upon their newly learned swimming skills.")
 show("Nos globules sont maintenant des nageurs de premier ordre ! Mais cela ne leur sert pas à grand chose pour l'instant, nous devons faire quelque chsoe faisant appel à leurs nouvelles compétences.", fr)
@@ -307,6 +344,7 @@ show("Onze globules zijn nu eersteklas zwemmers! Maar we hebben ze nog niet veel
 show("Наши глобулы теперь первоклассные пловцы! Но мы пока не увидим их много плавающими. Нам нужно сделать что-нибудь такое, что будет обращаться к их новым выученным навыкам плавания.",ru)
 space
 
+hilightItem("main menu icon")
 show("There will be plenty of things that will make swimming useful, so don't quit out yet. There is still a lot to learn. If you don't have enough time to continue, remember that you can save at anytime using the menu icon, which is on the upper-left hand corner of the mini-map.")
 show("Il y a plein de choses qui peuvent rendre la nage utile. Ne quittez pas la partie pour l'instant, il reste beaucoup à apprendre. Si vous n'avez pas assez de temps pour finir, souvenez vous que vous pouvez sauvegarder à n'importe quel moment en utilisant l'icone de menu dans le coin supérieur gauche de la mini-carte", fr)
 show("Es wird eine Menge Situationen geben, in denen schwimmen nützlich sein wird. Deshalb höre jetzt nicht auf - es gibt noch viel zu lernen. Wenn du nicht genug Zeit hast jetzt weiter zu spielen, kannst du dein Spiel jederzeit speichern und später fortsetzen. Der Menü-Button ist in der oberen linken Ecke der Minikarte.",de)
@@ -314,6 +352,7 @@ show("Habrá muchas cosas que demostrarán la utilidad de nadar. Así que no des
 show("Er zijn talloze dingen waarbij zwemmen nuttig is. Dus stop nog niet: er is nog veel te leren. Als je niet genoeg tijd hebt om verder te spelen, onthoud dan dat je je vorderingen kunt opslaan via het menu icoon, links van de minikaart.",nl)
 show("Тут будет множество вещей, которые сделают плавание полезным, поэтому не выходите пока. Есть ещё много чему научиться. Если у Вас нет времени, чтобы продолжить, помните, что Вы в любое время можете сохранить игру используя иконку меню в левом-верхнем углу мини-карты.",ru)
 space
+unhilightItem("main menu icon")
 
 show("Our empire is becoming more stable. Our globules are becoming better athletes. What we need is to teach our globules to use their brains. What we need is a School!")
 show("Notre empire devient plus stable. Nos globules deviennent des athlètes. Ce dont nous avons besoin est de leur apprendre à utiliser leur cerveau. Ce dont nous avons besoin c'est d'une École !", fr)
@@ -324,6 +363,8 @@ show("Наша империя становится более прочной. Н
 space
 
 GuiEnable(School)
+hilightBuildingOnPanel(School)
+hilightItem("under minimap icons")
 show("A School will teach our globs to harvest better and build better buildings. A School needs a few things to be constructed, most importantly, algae. This is where our swimmers are going to come in handy, as the algae only grows on water.")
 show("Une école apprendra à nos globule comment mieux récolter et mieux construire. Pour construire une école, nous avons besoin de quelques éléments, en particulier d'algues. C'est là que nos nageurs vont se révéler utiles, car les algues ne poussent que dans l'eau", fr)
 show("Eine Schule wird deinen Einheiten beibringen bessere Sammler zu werden und bessere Gebäude zu bauen. Eine Schule braucht ein paar Dinge um gebaut zu werden, wichtig sind vor allem Algen. An diesem Punkt werden deine Schwimmer wichtig, weil Algen nur auf dem Wasser wachsen.",de)
@@ -347,6 +388,8 @@ show("Te sugerimos que construyas tu escuela justo detrás de tu piscina, pero s
 show("Ik stel voor om de School verdekt op te stellen achter het Zwembad. Echter, als je het gevoel hebt dat je School veiliger is ten zuid-westen van de Zwerm, naast de Racebaan, of op elke andere plek, wees dan zo vrij om hem daar te bouwen. Je zal inmiddels wel voldoende eenheden hebben, dus verzeker jezelf ervan dat je deze ten volle benut.",nl)
 show("Я предлагаю Вам построить Школу спрятанной за Бассейном. Однако, если Вы думаете, что она может быть будет лучше защищена на юго-западе от Роя за Стадионом или в любой другой точке оп Вашему выбору, пожалуйста, стройте там. У Вас наверно уже множество юнитов, поэтому убедитесь, что используете их по полной.",ru)
 wait(School(0, 0) > 0)
+unhilightBuildingOnPanel(School)
+unhilightItem("under minimap icons")
 hide
 wait(8)
 
