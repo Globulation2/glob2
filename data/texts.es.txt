@@ -618,6 +618,8 @@ Aquí
 
 [open]
 Abierto
+[OpenGL]
+
 [Options]
 
 [options]

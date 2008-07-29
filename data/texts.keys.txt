@@ -305,6 +305,7 @@
 [open script editor]
 [open teams editor]
 [open]
+[OpenGL]
 [Options]
 [options]
 [Orange]

@@ -612,6 +612,8 @@ Tukaj
 
 [open]
 odpri
+[OpenGL]
+
 [Options]
 
 [options]

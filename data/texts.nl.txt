@@ -680,6 +680,8 @@ Open scriptbewerker
 
 [open]
 Open
+[OpenGL]
+
 [Options]
 
 [options]

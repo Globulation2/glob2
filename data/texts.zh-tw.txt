@@ -680,6 +680,8 @@ Air dmg.
 
 [open]
 開啟
+[OpenGL]
+
 [Options]
 
 [options]

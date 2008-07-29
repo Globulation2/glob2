@@ -682,6 +682,8 @@ Ok
 
 [open]
 άνοιγμα
+[OpenGL]
+
 [Options]
 
 [options]

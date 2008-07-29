@@ -676,6 +676,8 @@ Ok
 
 [open]
 открыто
+[OpenGL]
+
 [Options]
 
 [options]

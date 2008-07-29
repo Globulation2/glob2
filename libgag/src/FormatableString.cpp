@@ -32,8 +32,14 @@ namespace GAGCore {
 		std::ostringstream search;
 		search << "%" << this->argLevel;
 		std::string::size_type pos = this->find(search.str(), 0);
-		assert(pos != std::string::npos);
-		this->replace(pos, search.str().length(), replacement);
+		if(pos == std::string::npos)
+		{
+			this->append(replacement);
+		}
+		else
+		{
+			this->replace(pos, search.str().length(), replacement);
+		}
 		++argLevel;
 	}
 	
