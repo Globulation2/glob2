@@ -58,6 +58,9 @@ namespace GAGGUI
 		///This sets the title of the group. This must be done before any widgets are added to it, returning the group number
 		int addGroup(const std::string& title);
 
+		///This sets the title of of a given group
+		void modifyTitle(int group, const std::string& title);
+
 		///This removes a title for a group, removing the group and any widgets in it
 		void removeGroup(int group_n);
 		
