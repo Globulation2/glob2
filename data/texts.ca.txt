@@ -210,6 +210,8 @@ Compilar el script
 
 [connect]
 Conectat
+[connecting to game]
+
 [connecting to]
 Conectant a
 [Construction Site Defaults]
