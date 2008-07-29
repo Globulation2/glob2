@@ -612,6 +612,8 @@ Helyszínen van
 
 [open]
 nyitva
+[OpenGL]
+
 [Options]
 
 [options]

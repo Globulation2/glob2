@@ -618,6 +618,8 @@ Tu
 
 [open]
 otvorené
+[OpenGL]
+
 [Options]
 
 [options]

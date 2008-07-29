@@ -612,6 +612,8 @@ Otwórz Edytor Skryptów
 Otwórz Edytor Zespołów
 [open]
 otwarty
+[OpenGL]
+
 [Options]
 Opcje
 [options]

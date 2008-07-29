@@ -612,6 +612,8 @@ Aici
 
 [open]
 deschis
+[OpenGL]
+
 [Options]
 
 [options]

@@ -620,6 +620,8 @@ Ireki Script editorea
 
 [open]
 ireki
+[OpenGL]
+
 [Options]
 
 [options]

@@ -620,6 +620,8 @@ Ouvrir éditeur de script
 
 [open]
 ouvert
+[OpenGL]
+
 [Options]
 
 [options]

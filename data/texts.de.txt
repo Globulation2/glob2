@@ -610,6 +610,8 @@ Beim Loslassen
 Öffne "Teams"
 [open]
 offen
+[OpenGL]
+
 [Options]
 Einstellungen
 [options]

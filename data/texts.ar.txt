@@ -618,6 +618,8 @@ Open Save Menu
 
 [open]
 افتح
+[OpenGL]
+
 [Options]
 
 [options]

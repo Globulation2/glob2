@@ -620,6 +620,8 @@ Här
 
 [open]
 öppna
+[OpenGL]
+
 [Options]
 
 [options]

@@ -618,6 +618,8 @@ Aqui
 
 [open]
 Obrir
+[OpenGL]
+
 [Options]
 
 [options]
