@@ -1854,7 +1854,7 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 		break;
 		case MapEditKeyActions::SelectDeleteTool:
 		{
-			performAction("switch to terrain view&select delete objects");
+			performAction("switch to flag view&select delete objects");
 		}
 		break;
 	}
@@ -3130,20 +3130,20 @@ void MapEdit::handleMapScroll()
 		ySpeed = yMotion;
 	}
 	
-	if(globalContainer->gfx->getW()-mouseX<15)
+	if(globalContainer->gfx->getW()-mouseX<10)
 	{
 		xSpeed = 1;
 	}
-	else if(mouseX<15)
+	else if(mouseX<10)
 	{
 		xSpeed = -1;
 	}
 
-	if(globalContainer->gfx->getH()-mouseY<15)
+	if(globalContainer->gfx->getH()-mouseY<10)
 	{
 		ySpeed = 1;
 	}
-	else if(mouseY<15)
+	else if(mouseY<10)
 	{
 		ySpeed = -1;
 	}
