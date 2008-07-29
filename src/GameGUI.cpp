@@ -1965,6 +1965,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
 
+		
 		// priorities
 		if(selBuild->type->maxUnitWorking)
 		{
@@ -2040,11 +2041,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			&& mx>10
 			&& mx<22)
 		{
-			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			
 			// cleared ressources for clearing flags:
 			if (buildingType->type == "clearingflag")
 			{
+				ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 				int j=0;
 				for (int i=0; i<BASIC_COUNT; i++)
 					if (i!=STONE)
@@ -2061,6 +2062,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 			
 			if (buildingType->type == "warflag")
+			{
+				ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 				for (int i=0; i<4; i++)
 				{
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
@@ -2071,12 +2074,16 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					
 					ypos+=YOFFSET_TEXT_PARA;
 				}
+			
+			}
 				
 			if (buildingType->type == "explorationflag")
+			{
 				// we use minLevelToFlag as an int which says what magic effect at minimum an explorer
 				// must be able to do to be accepted at this flag
 				// 0 == any explorer
 				// 1 == must be able to attack ground
+				ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 				for (int i=0; i<2; i++)
 				{
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
@@ -2087,8 +2094,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					
 					ypos+=YOFFSET_TEXT_PARA;
 				}
+			}
 		}
-		
+
 		if (buildingType->armor)
 			ypos+=YOFFSET_TEXT_LINE;
 		if (buildingType->maxUnitInside)
@@ -2150,14 +2158,16 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		if (buildingType->maxBullets)
 		{
 			j++;
+			ypos += 11;
 		}
 		ypos+=5;
 
 		if (selBuild->type->unitProductionTime)
 		{
+			ypos+=15;
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
-				if ((my>ypos+(i*20)+12)&&(my<ypos+(i*20)+16+12)&&(mx<128))
+				if ((my>ypos+(i*20))&&(my<ypos+(i*20)+16)&&(mx<128))
 				{
 					if (mx<18)
 					{
@@ -3193,6 +3203,7 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[Bullets]")).arg(selBuild->bullets).arg(buildingType->maxBullets).c_str());
 				j++;
+				ypos += 11;
 			}
 			ypos+=5;
 		}
@@ -3547,6 +3558,21 @@ void GameGUI::drawTopScreenBar(void)
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
 		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, FormatableString("%0 / %1").arg(free).arg(tot).c_str());
 		globalContainer->littleFont->popStyle();
+		
+		if(i==WORKER && hilights.find(HilightWorkersWorkingFreeStat) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
+		}
+		
+		else if(i==WARRIOR && hilights.find(HilightExplorersWorkingFreeStat) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
+		}
+		
+		else if(i==EXPLORER && hilights.find(HilightWarriorsWorkingFreeStat) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
+		}
 
 		dec += 70;
 	}
