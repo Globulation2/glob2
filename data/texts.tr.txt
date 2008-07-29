@@ -193,7 +193,7 @@ Temizlik bolgesi
 [Clearing:]
 Aciklik:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Kaynaklari temizler
 [clearingflag]
@@ -210,6 +210,8 @@ Script derle
 
 [connect]
 Baglan
+[connecting to game]
+
 [connecting to]
 Suraya baglaniyor:
 [Construction Site Defaults]
@@ -303,7 +305,7 @@ Sifrenizi girin:
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Kasifleri ceker
 [explorationflag]
@@ -407,7 +409,7 @@ Hasat et
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Birimlerinizi iyilestirir
 [hospital]
@@ -431,7 +433,7 @@ Yolda
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Birimlerinizi besler
 [inn]
@@ -843,7 +845,7 @@ cok ac
 [Statistics]
 Istatistikler
 [Still (i)]
-Hala 
+Hala
 [still (w)]
 Hala
 [still one unit working]
@@ -867,7 +869,7 @@ Sunucu adi
 [swamp terrain]
 Bataklik
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Yeni birimler olusturur
 [swarm]
@@ -1061,7 +1063,7 @@ bekleniyor: %0
 [Walk]
 Yuru
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Savascilari ceker
 [warflag]

@@ -235,7 +235,7 @@ caps lock
 [Clearing:]
 Очистка:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Очистка ресурсов
 [clearingflag]
@@ -252,6 +252,8 @@ caps lock
 
 [connect]
 Подключиться
+[connecting to game]
+
 [connecting to]
 Подключение к
 [Construction Site Defaults]
@@ -353,7 +355,7 @@ enter
 [escape]
 escape
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Привлекает разведчиков
 [explorationflag]
@@ -457,7 +459,7 @@ Ok
 [home]
 home
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Лечение юнитов
 [hospital]
@@ -481,7 +483,7 @@ home
 [increase units working]
 Увеличить количество рабочих
 [inn explanation 2]
- 
+
 [inn explanation]
 Кормит юнитов
 [inn level 0]
@@ -913,7 +915,7 @@ space
 [stone]
 камень
 [stonewall explanation 2]
- 
+
 [stonewall explanation]
 Пассивная защита
 [stonewall]
@@ -925,7 +927,7 @@ space
 [swamp terrain]
 Болото
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Создаёт новые юниты
 [swarm level 0]
@@ -1123,7 +1125,7 @@ up
 [Walk]
 Идёт
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Привлекает воинов
 [warflag]

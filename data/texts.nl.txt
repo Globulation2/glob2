@@ -258,6 +258,8 @@ Vruchtbaarheid aan het berekenen
 
 [connect]
 Verbinden
+[connecting to game]
+
 [connecting to]
 Verbinden met
 [Construction Site Defaults]

@@ -204,6 +204,8 @@ Compilează scriptul
 
 [connect]
 Conectează
+[connecting to game]
+
 [connecting to]
 Conectare la
 [Construction Site Defaults]

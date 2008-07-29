@@ -204,8 +204,10 @@ AIWarrush
 
 [connect]
 Прикључи се
+[connecting to game]
+
 [connecting to]
-Повезивање са: 
+Повезивање са:
 [Construction Site Defaults]
 
 [Continue playing]
