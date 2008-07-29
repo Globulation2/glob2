@@ -682,6 +682,8 @@ Abrir editor de script
 
 [open]
 Abrir
+[OpenGL]
+
 [Options]
 
 [options]

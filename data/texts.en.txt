@@ -612,6 +612,8 @@ Open Script Editor
 Open Teams Editor
 [open]
 open
+[OpenGL]
+OpenGL
 [Options]
 Options
 [options]

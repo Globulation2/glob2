@@ -95,7 +95,7 @@ SettingsScreen::SettingsScreen()
 	#endif
 	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
 	addWidgetToGroup(usegpu, generalGroup);
-	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "OpenGL", 180);
+	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[OpenGL]"), 180);
 	addWidgetToGroup(usegpuText, generalGroup);
 	
 	lowquality=new OnOffButton(230, 90 + 60, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
@@ -455,7 +455,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			audio->setText(Toolkit::getStringTable()->getString("[audio]"));
 
 			fullscreenText->setText(Toolkit::getStringTable()->getString("[fullscreen]"));
-			//usegpuText->setText(Toolkit::getStringTable()->getString("[opengl]"));
+			usegpuText->setText(Toolkit::getStringTable()->getString("[OpenGL]"));
 			lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
 			customcurText->setText(Toolkit::getStringTable()->getString("[customcur]"));
 

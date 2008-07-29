@@ -612,6 +612,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [open]
 отвори
+[OpenGL]
+
 [Options]
 
 [options]

@@ -680,6 +680,8 @@ Her
 
 [open]
 Åben
+[OpenGL]
+
 [Options]
 
 [options]
