@@ -1152,3 +1152,5 @@ Megtámadták a %0 -t
 Az egységedet az ellenség elfogta %0
 [Your username was banned]
 
+[connecting to game]
+
