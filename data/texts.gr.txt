@@ -241,7 +241,7 @@ caps lock
 [Clearing:]
 Καθαρισμός:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Καθαρισμός Πόρων
 [clearingflag]
@@ -258,6 +258,8 @@ caps lock
 
 [connect]
 Σύνδεση
+[connecting to game]
+
 [connecting to]
 Σύνδεση στο
 [Construction Site Defaults]
@@ -359,7 +361,7 @@ Crater Lakes
 [escape]
 έξοδος
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Έλκει εξερευνητές
 [explorationflag]
@@ -463,7 +465,7 @@ Ok
 [home]
 σπίτι
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Γιαίνει τις μονάδες
 [hospital]
@@ -487,7 +489,7 @@ Hitpoint
 [increase units working]
 Αύξηση Εργαζόμενων Μονάδων
 [inn explanation 2]
- 
+
 [inn explanation]
 Ταϊζει τις μονάδες σας
 [inn level 0]
@@ -907,7 +909,7 @@ V: κρατήστε για να μιλίσετε
 [Statistics]
 Στατιστικά
 [Still (i)]
-Ακόμα 
+Ακόμα
 [still (w)]
 Ακόμα
 [still one unit working]
@@ -931,7 +933,7 @@ V: κρατήστε για να μιλίσετε
 [swamp terrain]
 Βάλτος
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Δημιουργεί νέες μονάδες
 [swarm level 0]
@@ -969,7 +971,7 @@ V: κρατήστε για να μιλίσετε
 [switch to flag view]
 Αλλαγή σε εμφάνιση σημαιών
 [switch to removing areas]
-Αλλαγή Σε Αφαίρεση Περιοχών 
+Αλλαγή Σε Αφαίρεση Περιοχών
 [switch to teams view]
 Αλλαγή Σε Εμφάνιση Ομάδων
 [switch to terrain view]
@@ -1129,7 +1131,7 @@ Tutorial
 [Walk]
 Περπάτα
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Έλκει πολεμιστές
 [warflag]

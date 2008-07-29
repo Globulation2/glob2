@@ -210,6 +210,8 @@ Compilar Script
 
 [connect]
 Connectar
+[connecting to game]
+
 [connecting to]
 Conectando a
 [Construction Site Defaults]

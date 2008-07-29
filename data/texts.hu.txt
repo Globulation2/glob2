@@ -185,7 +185,7 @@ Válassz egy térképet
 [clear area]
 
 [Clearing:]
-Tisztítás: 
+Tisztítás:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
@@ -204,6 +204,8 @@ Szkript fordítása
 
 [connect]
 Kapcsolódás
+[connecting to game]
+
 [connecting to]
 Kapcsolódás
 [Construction Site Defaults]

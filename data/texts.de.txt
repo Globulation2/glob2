@@ -138,6 +138,8 @@ Baue %0 Level %1
 Bauen
 [Building Defaults]
 Gebäudestandards
+[building settings]
+Gebäude
 [building site]
 Baustelle
 [Buildings]
@@ -202,6 +204,8 @@ Berechne Fruchtbarkeit der Böden.
 Befestigte Inseln
 [connect]
 Verbinden
+[connecting to game]
+
 [connecting to]
 Verbinden mit
 [Construction Site Defaults]
@@ -1150,5 +1154,3 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
-[building settings]
-Gebäude
