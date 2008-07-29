@@ -193,7 +193,7 @@ Vyber si mapu
 [Clearing:]
 Čistenie:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Čistí suroviny
 [clearingflag]
@@ -210,6 +210,8 @@ Kopilovať skript
 
 [connect]
 Pripojiť
+[connecting to game]
+
 [connecting to]
 Pripája sa ku
 [Construction Site Defaults]
@@ -303,7 +305,7 @@ Zadaj heslo:
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Priťahuje Prieskumníkov
 [explorationflag]
@@ -407,7 +409,7 @@ Ručná mapa
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Lieči jednotky
 [hospital]
@@ -431,7 +433,7 @@ Na ceste
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Kŕmi jednotky
 [inn]
@@ -616,6 +618,8 @@ Tu
 
 [open]
 otvorené
+[OpenGL]
+
 [Options]
 
 [options]
@@ -843,7 +847,7 @@ trpia
 [Statistics]
 Štatistiky
 [Still (i)]
-Ešte 
+Ešte
 [still (w)]
 Ešte
 [still one unit working]
@@ -867,7 +871,7 @@ Názov servera
 [swamp terrain]
 Močiar
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Produkuje nové jednotky
 [swarm]
@@ -1061,7 +1065,7 @@ Verzia
 [Walk]
 Kráčanie
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Priťahuje Bojovníkov
 [warflag]

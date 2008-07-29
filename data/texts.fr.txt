@@ -193,7 +193,7 @@ Zone de défrichage
 [Clearing:]
 Défrichage de:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Enlève les ressources
 [clearingflag]
@@ -210,6 +210,8 @@ Compiler le script
 
 [connect]
 Connecter
+[connecting to game]
+
 [connecting to]
 Connection à
 [Construction Site Defaults]
@@ -259,7 +261,7 @@ Défense
 [Delete game]
 Effacer le jeu séléctionné
 [delete]
-Effacer 
+Effacer
 [desert]
 Désert
 [destroy building]
@@ -303,7 +305,7 @@ Egal
 [escape]
 Echapement
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Attire des exploratrices
 [explorationflag]
@@ -407,9 +409,9 @@ Récolte
 [home]
 Maison
 [hospital explanation 2]
- 
+
 [hospital explanation]
-Soigne vos unités 
+Soigne vos unités
 [hospital]
 Hôpital
 [host]
@@ -431,7 +433,7 @@ En chemin
 [increase units working]
 Augmenter le nombre d'unité travaillant
 [inn explanation 2]
- 
+
 [inn explanation]
 Nourrit vos unités
 [inn]
@@ -618,6 +620,8 @@ Ouvrir éditeur de script
 
 [open]
 ouvert
+[OpenGL]
+
 [Options]
 
 [options]
@@ -845,9 +849,9 @@ trop faim
 [Statistics]
 Statistiques
 [Still (i)]
-Encore 
+Encore
 [still (w)]
-Encore 
+Encore
 [still one unit working]
 Une unité travaille encore
 [Still one]
@@ -857,7 +861,7 @@ Pierre
 [stone]
 Pierre
 [stonewall explanation 2]
- 
+
 [stonewall explanation]
 Elément passif de défense
 [stonewall]
@@ -869,7 +873,7 @@ Nom du serveur hôte
 [swamp terrain]
 Marais
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Crée de nouvelles unités
 [swarm]
@@ -1063,7 +1067,7 @@ Attend une touche
 [Walk]
 Marche
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Attire des guerrières
 [warflag]

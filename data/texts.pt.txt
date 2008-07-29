@@ -210,6 +210,8 @@ Compilar script
 
 [connect]
 Conectar
+[connecting to game]
+
 [connecting to]
 Conectando-se a
 [Construction Site Defaults]
@@ -616,6 +618,8 @@ Aqui
 
 [open]
 aberto
+[OpenGL]
+
 [Options]
 
 [options]
@@ -843,9 +847,9 @@ morrendo
 [Statistics]
 Estadísticas
 [Still (i)]
-Ainda 
+Ainda
 [still (w)]
-Ainda 
+Ainda
 [still one unit working]
 Ainda uma unid. trabalhando
 [Still one]

@@ -10,8 +10,6 @@
 %0 units can't access resource
 [%0 units not available]
 %0 units not available
-[connecting to game]
-Connecting To Game
 [%0 units too far from building]
 %0 units too far from building
 [%0 units too far from fruit]
@@ -189,7 +187,7 @@ Clearing area
 [Clearing:]
 Clearing:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Clears resources
 [clearingflag]
@@ -206,6 +204,8 @@ Computing Fertility
 Concrete Islands
 [connect]
 Connect
+[connecting to game]
+Connecting To Game
 [connecting to]
 Connecting to
 [Construction Site Defaults]
@@ -299,7 +299,7 @@ equals
 [escape]
 escape
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Attracts explorers
 [explorationflag]
@@ -403,7 +403,7 @@ Hints
 [home]
 home
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Heals your units
 [hospital]
@@ -427,7 +427,7 @@ On the way
 [increase units working]
 Increase Units Working
 [inn explanation 2]
- 
+
 [inn explanation]
 Foods your units
 [inn]
@@ -472,6 +472,8 @@ left meta
 left windows key
 [left]
 left
+[Leo: nur ein erster Test]
+test
 [level]
 Level
 [levels]
@@ -610,6 +612,8 @@ Open Script Editor
 Open Teams Editor
 [open]
 open
+[OpenGL]
+OpenGL
 [Options]
 Options
 [options]
@@ -837,7 +841,7 @@ starving
 [Statistics]
 Statistics
 [Still (i)]
-Still 
+Still
 [still (w)]
 Still
 [still one unit working]
@@ -861,7 +865,7 @@ Server hostname
 [swamp terrain]
 Swamp
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Creates new units
 [swarm]
@@ -1057,7 +1061,7 @@ Waiting
 [Walk]
 Walk
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Attracts warriors
 [warflag]
@@ -1154,5 +1158,3 @@ Your IP address was temporarily banned. Please wait patiently until it is unbann
 Your unit got converted to %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
-[Leo: nur ein erster Test]
-test

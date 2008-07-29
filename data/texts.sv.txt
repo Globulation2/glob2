@@ -193,7 +193,7 @@ Röjningsområde
 [Clearing:]
 Röjning:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Röjer resurser
 [clearingflag]
@@ -210,6 +210,8 @@ Kompilera skript
 
 [connect]
 Anslut
+[connecting to game]
+
 [connecting to]
 Ansluter till
 [Construction Site Defaults]
@@ -303,7 +305,7 @@ Skriv in ditt lösenord:
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Attraherar utforskare
 [explorationflag]
@@ -407,7 +409,7 @@ Skörda
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Helar dina enheter
 [hospital]
@@ -431,7 +433,7 @@ På väg
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Utfodrar dina enheter
 [inn]
@@ -543,7 +545,7 @@ Markera Karta För Allierade
 [market explanation 2]
 frukt med andra
 [market explanation]
-Tillåter utbyte av 
+Tillåter utbyte av
 [market]
 Marknad
 [medium priority]
@@ -618,6 +620,8 @@ Här
 
 [open]
 öppna
+[OpenGL]
+
 [Options]
 
 [options]
@@ -845,7 +849,7 @@ svälter
 [Statistics]
 Statistik
 [Still (i)]
-Ännu 
+Ännu
 [still (w)]
 Ännu
 [still one unit working]
@@ -857,7 +861,7 @@ Sten
 [stone]
 sten
 [stonewall explanation 2]
- 
+
 [stonewall explanation]
 Passivt försvarselement
 [stonewall]
@@ -869,7 +873,7 @@ Server värdnamn
 [swamp terrain]
 Träsk
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Skapar nya enheter
 [swarm]
@@ -1063,7 +1067,7 @@ Väntar på %0
 [Walk]
 Gå
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Attraherar krigare
 [warflag]

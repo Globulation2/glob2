@@ -204,6 +204,8 @@ Sestavit skript
 
 [connect]
 Připojit
+[connecting to game]
+
 [connecting to]
 Připojuji se k
 [Construction Site Defaults]
@@ -610,6 +612,8 @@ Na místě
 
 [open]
 Otevřít
+[OpenGL]
+
 [Options]
 
 [options]
@@ -837,9 +841,9 @@ Umírá hlady
 [Statistics]
 Statistiky
 [Still (i)]
-Dosud 
+Dosud
 [still (w)]
-Dosud 
+Dosud
 [still one unit working]
 Ještě 1 jednotka pracuje
 [Still one]

@@ -2137,12 +2137,27 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 		}
 		*/
+		// ressources in
+		unsigned j = 0;
+		for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
+		{
+			if (buildingType->maxRessource[i])
+			{
+				j++;
+				ypos += 11;
+			}
+		}
+		if (buildingType->maxBullets)
+		{
+			j++;
+		}
+		ypos+=5;
 
 		if (selBuild->type->unitProductionTime)
 		{
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
-				if ((my>256+90+(i*20)+12)&&(my<256+90+(i*20)+16+12)&&(mx<128))
+				if ((my>ypos+(i*20)+12)&&(my<ypos+(i*20)+16+12)&&(mx<128))
 				{
 					if (mx<18)
 					{
@@ -2518,17 +2533,17 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
 					if (bt)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, buildingInfoStart+6, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxRessource[0]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, buildingInfoStart+17, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxRessource[3]).c_str());
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64, buildingInfoStart+6, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxRessource[4]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64, buildingInfoStart+17, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxRessource[1]).c_str());
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, buildingInfoStart+28, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+28, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxRessource[2]).c_str());
 					}
 				}

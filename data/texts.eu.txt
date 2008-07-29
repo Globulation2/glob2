@@ -27,7 +27,7 @@
 [abreaviation explanation A]
 A: Aliatuak
 [abreaviation explanation C]
-C: Txat mezuak bidali honi: 
+C: Txat mezuak bidali honi:
 [abreaviation explanation fV]
 fV: Bistaratu ostatuen ikuspegia (unitateak lapurtzeko)
 [abreaviation explanation mV]
@@ -193,7 +193,7 @@ Garbiketa zonaldea
 [Clearing:]
 Garbitu:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Baliabideak garbitzeko
 [clearingflag]
@@ -210,6 +210,8 @@ Konpilatu script-a
 
 [connect]
 Konektatu
+[connecting to game]
+
 [connecting to]
 Hona konektatzen:
 [Construction Site Defaults]
@@ -303,7 +305,7 @@ Pasahitza sartu:
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Miatzaileak erakartzeko
 [explorationflag]
@@ -407,7 +409,7 @@ Uzta bildu
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Unitateak sendatzeko
 [hospital]
@@ -431,7 +433,7 @@ Bidean
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Unitateak elikatzeko
 [inn]
@@ -443,7 +445,7 @@ Barruan
 [islands size]
 irla tamaina
 [islands terrain]
-IrlakYOG 
+IrlakYOG
 [isles terrain]
 
 [iterate selection]
@@ -543,7 +545,7 @@ Markatu mapa aliatuentzat
 [market explanation 2]
 fruta
 [market explanation]
-Trukea baimentzen du: 
+Trukea baimentzen du:
 [market]
 Merkatua
 [medium priority]
@@ -618,6 +620,8 @@ Ireki Script editorea
 
 [open]
 ireki
+[OpenGL]
+
 [Options]
 
 [options]
@@ -777,7 +781,7 @@ Garbiketa bandera aukeratu
 [select explorationflag]
 Miatze bandera aukeratu
 [select hospital building]
-Hospitala aukeratu 
+Hospitala aukeratu
 [select inn building]
 Ostatua aukeratu
 [select market building]
@@ -845,7 +849,7 @@ gosez hiltzen
 [Statistics]
 Estatistikak
 [Still (i)]
-Still 
+Still
 [still (w)]
 Still
 [still one unit working]
@@ -869,7 +873,7 @@ Zerbitzari izena
 [swamp terrain]
 Aintzira
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Unitate berriak sortzeko
 [swarm]
@@ -1063,7 +1067,7 @@ Bertsioa
 [Walk]
 Ibili
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Soldaduak erakartzeko
 [warflag]
