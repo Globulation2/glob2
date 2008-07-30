@@ -36,6 +36,7 @@
 #include "MainMenuScreen.h"
 #include "MapEdit.h"
 #include "NetBroadcastListener.h"
+#include "MapGenerator.h"
 #include "NewMapScreen.h"
 #include "SettingsScreen.h"
 #include <StringTable.h>
@@ -150,6 +151,58 @@ int Glob2::runTestGames()
 
 
 
+int Glob2::runTestMapGeneration()
+{
+	long t = time(NULL);
+	setSyncRandSeed(t);
+	while(true)
+	{
+		MapGenerationDescriptor descriptor;
+		
+		int type = (syncRand() % 7) + 1;
+		int wDec = (syncRand() % 4) + 6;
+		int hDec = (syncRand() % 4) + 6;
+		int teams = (syncRand() % 12) + 1;
+		int workers = (syncRand() % 8) + 1;
+		int repeat = (syncRand() % 5);
+		int smooth = (syncRand() % 8) + 1;
+		
+		int oldBeach = (syncRand() % 4);
+		
+		descriptor.methode = static_cast<MapGenerationDescriptor::Methode>(type);
+		descriptor.nbTeams = teams;
+		descriptor.wDec=wDec;
+		descriptor.hDec=hDec;
+		descriptor.smooth = smooth;
+		descriptor.oldBeach=oldBeach;
+		descriptor.nbWorkers=workers;
+		descriptor.logRepeatAreaTimes = repeat;
+		
+		descriptor.waterRatio=syncRand() % 100;
+		descriptor.sandRatio=syncRand() % 100;
+		descriptor.grassRatio=syncRand() % 100;
+		descriptor.desertRatio=syncRand() % 100;
+		descriptor.wheatRatio=syncRand() % 100;
+		descriptor.woodRatio=syncRand() % 100;
+		descriptor.algaeRatio=syncRand() % 100;
+		descriptor.stoneRatio=syncRand() % 100;
+		descriptor.fruitRatio=syncRand() % 100;
+		descriptor.riverDiameter=syncRand() % 100;
+		descriptor.craterDensity=syncRand() % 100;
+		descriptor.extraIslands=syncRand() % 9;
+		//eISLANDS
+		descriptor.oldIslandSize=syncRand() % 74;
+		
+
+		std::cout<<"Generating Map"<<std::endl;		
+		MapGenerator generator;
+		Game game(NULL);
+		generator.generateMap(game, descriptor);
+	}
+	return 0;
+}
+
+
 int Glob2::run(int argc, char *argv[])
 {
 	srand(time(NULL));
@@ -191,6 +244,10 @@ int Glob2::run(int argc, char *argv[])
 		return ret;
 	}
 	
+	if(globalContainer->runTestMapGeneration)
+	{
+		runTestMapGeneration();
+	}
 	
 	if (globalContainer->runNoX)
 	{
