@@ -21,11 +21,18 @@
 
 #include "Stream.h"
 
+MapScript::MapScript()
+{
+	mode = USL;
+}
+
+
 
 void MapScript::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("MapScript");
 	stream->writeText(script, "script");
+	stream->writeUint8(static_cast<Uint8>(mode), "mode");
 	stream->writeLeaveSection();
 }
 
@@ -35,6 +42,7 @@ void MapScript::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
 	stream->readEnterSection("MapScript");
 	script = stream->readText("script");
+	mode = static_cast<MapScriptMode>(stream->readUint8("mode"));
 	stream->readLeaveSection();
 }
 
@@ -47,10 +55,21 @@ const std::string& MapScript::getMapScript() const
 
 
 
-void MapScript::setMapScript(const std::string& nscript)
+void MapScript::setMapScript(const std::string& newScript)
 {
-	script = nscript;
+	script = newScript;
 }
 
+
+MapScript::MapScriptMode MapScript::getMapScriptMode() const
+{
+	return mode;
+}
+
+	
+void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode)
+{
+	mode = newMode;
+}
 
 

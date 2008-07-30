@@ -36,20 +36,36 @@ namespace GAGCore
 class MapScript
 {
 public:
-	///Encodes this YOGPlayerStoredInfo into a bit stream
+	///Enumerates the different modes the map script may be
+	enum MapScriptMode
+	{
+		USL=1,
+	};
+
+	///Constructs the MapScript
+	MapScript();
+
+	///Encodes this MapScript into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
-	///Decodes this YOGPlayerStoredInfo from a bit stream
+	///Decodes this MapScript from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
 
 	///This returns the string representing the mapscript
 	const std::string& getMapScript() const;
 	
 	///This sets the string representing the mapscript
-	void setMapScript(const std::string& script);
+	void setMapScript(const std::string& newScript);
+	
+	///This returns the current map script mode
+	MapScriptMode getMapScriptMode() const;
+	
+	///This sets the current map script mode
+	void setMapScriptMode(MapScriptMode newMode);
 
 private:
 	std::string script;
+	MapScriptMode mode;
 };
 
 #endif
