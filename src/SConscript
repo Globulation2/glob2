@@ -65,8 +65,9 @@ Import('env')
 local = env.Clone()
 if env["mingw"] or env['PLATFORM'] == 'win32':
     source_files.extend(["C:/msys/1.0/local/lib/libvorbisfile.a", "C:/msys/1.0/local/lib/libvorbis.a", "C:/msys/1.0/local/lib/libogg.a"])
-#Add libgag, not as a library, but as an object
+#Add libgag and USL, not as a library, but as an object
 source_files.append("#libgag//src/libgag.a")
+source_files.append("#libusl//src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
 #Add libgag, not as a library, but as an object
