@@ -386,6 +386,22 @@ void Story::hilightItem(GameGUI* gui)
 	{
 		t=GameGUI::HilightWarriorsWorkingFreeStat;
 	}
+	else if(n=="forbidden zone on panel")
+	{
+		t=GameGUI::HilightWorkersWorkingFreeStat;
+	}
+	else if(n=="guard zone on panel")
+	{
+		t=GameGUI::HilightGuardZoneOnPanel;
+	}
+	else if(n=="clearing zone on panel")
+	{
+		t=GameGUI::HilightClearingZoneOnPanel;
+	}
+	else if(n=="brush selector")
+	{
+		t=GameGUI::HilightBrushSelector;
+	}
 	
 	if(t!=0)
 	{
@@ -430,6 +446,22 @@ void Story::unhilightItem(GameGUI* gui)
 	else if(n=="warriors working free stat")
 	{
 		t=GameGUI::HilightWarriorsWorkingFreeStat;
+	}
+	else if(n=="forbidden zone on panel")
+	{
+		t=GameGUI::HilightWorkersWorkingFreeStat;
+	}
+	else if(n=="guard zone on panel")
+	{
+		t=GameGUI::HilightGuardZoneOnPanel;
+	}
+	else if(n=="clearing zone on panel")
+	{
+		t=GameGUI::HilightClearingZoneOnPanel;
+	}
+	else if(n=="brush selector")
+	{
+		t=GameGUI::HilightBrushSelector;
 	}
 	
 	if(t!=0)

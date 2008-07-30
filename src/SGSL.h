@@ -102,12 +102,13 @@ struct Token
 		S_ATTACK_B,
 		S_SCIENCE_B,
 		S_DEFENCE_B,
-		S_WALL_B=S_SWARM_B+IntBuildingType::STONE_WALL,
-		S_MARKET_B,
 
-		S_EXPLOR_F,
+		S_EXPLOR_F=S_SWARM_B+IntBuildingType::EXPLORATION_FLAG,
 		S_FIGHT_F,
 		S_CLEARING_F,
+		
+		S_WALL_B=S_SWARM_B+IntBuildingType::STONE_WALL,
+		S_MARKET_B,
 
 		// GUI elements that can be disabled or enabled
 		S_BUILDINGTAB,
