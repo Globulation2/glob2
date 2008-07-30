@@ -2076,6 +2076,11 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
 		
+		for (int i=0; i<game.mapHeader.getNumberOfTeams(); ++i)
+		{
+			game.mapHeader.getBaseTeam(i)=*game.teams[i];
+		}
+		
 		teamsEditor=new TeamsEditor(&game);
 		showingTeamsEditor=true;
 		hasMapBeenModified=true;
