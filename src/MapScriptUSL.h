@@ -16,15 +16,17 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#ifndef MapScriptUSL_h
+#define MapScriptUSL_h
 
-
-#ifndef MapScript_h
-#define MapScript_h
+#include "parser.h"
+#include "types.h"
+#include "debug.h"
+#include "code.h"
+#include "interpreter.h"
+#include "error.h"
 
 #include "SDL.h"
-#include <string>
-#include "MapScriptUSL.h"
-
 
 namespace GAGCore
 {
@@ -32,47 +34,38 @@ namespace GAGCore
 	class InputStream;
 }
 
-///This class represents the script of the map
-class MapScript
+
+///This represents a USL based map script
+class MapScriptUSL
 {
 public:
-	///Enumerates the different modes the map script may be
-	enum MapScriptMode
-	{
-		USL=1,
-	};
-
-	///Constructs the MapScript
-	MapScript();
+	///Construct a map script
+	MapScriptUSL();
+	
+	///Destruct a map script
+	~MapScriptUSL();
 
 	///Encodes this MapScript into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
 	///Decodes this MapScript from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
-
-	///This returns the string representing the mapscript
-	const std::string& getMapScript() const;
 	
-	///This sets the string representing the mapscript
-	void setMapScript(const std::string& newScript);
+	///This compiles the code, returning an error code of -1 on failure
+	int compileCode(const std::string& code);
 	
-	///This returns the current map script mode
-	MapScriptMode getMapScriptMode() const;
-	
-	///This sets the current map script mode
-	void setMapScriptMode(MapScriptMode newMode);
-	
-	///This compiles the code and returns the error
-	int compileCode();
-	
-	///This test compiles the code and returns the error
-	int testCompileCode(const std::string& testScript);
-
 private:
-	std::string script;
-	MapScriptMode mode;
-	MapScriptUSL usl;
+	///This resets the interpreter
+	void reset();
+	//Initializes the compiler
+	void initialize();
+
+	Heap* heap;
+	DebugInfo* debug;
+	ExecutionBlock* block;
+	ScopePrototype* scope;
 };
+
+
 
 #endif
