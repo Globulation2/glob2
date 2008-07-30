@@ -143,6 +143,8 @@ ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 
 bool ScriptEditorScreen::testCompile(void)
 {
+	mapScript->setMapScript(scriptEditor->getText());
+	mapScript->compileCode();
 /*
 	mapScript->reset();
 	ErrorReport er=mapScript->compileScript(game, scriptEditor->getText());
@@ -456,7 +458,7 @@ std::string filenameToName(const std::string& fullfilename)
 {
 	std::string filename = fullfilename;
 	filename.erase(0, 8);
-	filename.erase(filename.find(".sgsl"));
+	filename.erase(filename.find(".usl"));
 	std::replace(filename.begin(), filename.end(), '_', ' ');
 	return filename;
 }
