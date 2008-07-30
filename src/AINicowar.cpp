@@ -2260,7 +2260,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		    {
 		            if(enemy_count != echo.get_building_register().get_assigned(*i))
 		            {
-		                    ManagementOrder* mo_assign=new AssignWorkers(enemy_count, *i);
+		                    ManagementOrder* mo_assign=new AssignWorkers(std::min(20, enemy_count), *i);
 		                    echo.add_management_order(mo_assign);
 		            }
 		    }
