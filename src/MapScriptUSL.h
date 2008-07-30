@@ -26,6 +26,7 @@
 #include "interpreter.h"
 #include "error.h"
 
+#include "MapScriptError.h"
 #include "SDL.h"
 
 namespace GAGCore
@@ -51,8 +52,11 @@ public:
 	///Decodes this MapScript from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
 	
-	///This compiles the code, returning an error code of -1 on failure
-	int compileCode(const std::string& code);
+	///This compiles the code, returns false on failure
+	bool compileCode(const std::string& code);
+	
+	///This returns the error of the most recent compile
+	const MapScriptError& getError() const;
 	
 private:
 	///This resets the interpreter
@@ -64,6 +68,7 @@ private:
 	DebugInfo* debug;
 	ExecutionBlock* block;
 	ScopePrototype* scope;
+	MapScriptError error;
 };
 
 

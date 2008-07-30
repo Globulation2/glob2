@@ -144,12 +144,7 @@ ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 bool ScriptEditorScreen::testCompile(void)
 {
 	mapScript->setMapScript(scriptEditor->getText());
-	mapScript->compileCode();
-/*
-	mapScript->reset();
-	ErrorReport er=mapScript->compileScript(game, scriptEditor->getText());
-
-	if (er.type==ErrorReport::ET_OK)
+	if(mapScript->compileCode())
 	{
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 100, 255, 100));
 		compilationResult->setText("Compilation success");
@@ -157,12 +152,11 @@ bool ScriptEditorScreen::testCompile(void)
 	}
 	else
 	{
+		MapScriptError error = mapScript->getError();
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-		compilationResult->setText(FormatableString("Compilation failure : %0:%1:(%2):%3").arg(er.line+1).arg(er.col).arg(er.pos).arg(er.getErrorString()).c_str());
-		scriptEditor->setCursorPos(er.pos);
+		compilationResult->setText(FormatableString("Compilation failure : %0:%1:%2").arg(error.getLine()+1).arg(error.getColumn()).arg(error.getMessage()).c_str());
 		return false;
 	}
-*/
 }
 
 void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int par2)

@@ -52,7 +52,7 @@ void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 
 
 
-int MapScriptUSL::compileCode(const std::string& code)
+bool MapScriptUSL::compileCode(const std::string& code)
 {
 	reset();
 	initialize();
@@ -63,8 +63,8 @@ int MapScriptUSL::compileCode(const std::string& code)
 	}
 	catch(Exception& e)
 	{
-		std::cout << "Error parsing: " << e.position << ":" << e.what() << std::endl;
-		return -1;
+		error = MapScriptError(e.position.line, e.position.column, e.what());
+		return false;
 	}
 	
 	try
@@ -74,9 +74,16 @@ int MapScriptUSL::compileCode(const std::string& code)
 	}
 	catch(Exception& e)
 	{
-		std::cout << "Error generating: " << e.position << ":" << e.what() << std::endl;
-		return -1;
+		error = MapScriptError(e.position.line, e.position.column, e.what());
+		return false;
 	}
+	return true;
+}
+
+
+const MapScriptError& MapScriptUSL::getError() const
+{
+	return error;
 }
 
 
