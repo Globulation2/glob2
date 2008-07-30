@@ -84,6 +84,7 @@ GlobalContainer::GlobalContainer(void)
 	hostServerPassWord[0] = 0;
 	
 	runTestGames=false;
+	runTestMapGeneration=false;
 	automaticEndingGame=false;
 	automaticEndingSteps=-1;
 	
@@ -209,6 +210,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			automaticEndingGame = true;
 			runNoX=true;
 			automaticGameGlobalEndConditions=true;
+			continue;
+		}
+		if (strcmp(argv[i], "-test-map-gen")==0)
+		{
+			runTestMapGeneration = true;
+			runNoX=true;
 			continue;
 		}
 		if (strcmp(argv[i], "-host")==0 || strcmp(argv[i], "--host")==0)
@@ -362,6 +369,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-test-games\tCreates random games with AI and tests them");
 			printf("-test-games-nox\tCreates random games with AI and tests them, without gui");
+			printf("-test-map-gen\tGenerates random maps endlessly, without gui");
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
