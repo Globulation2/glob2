@@ -18,7 +18,6 @@
 */
 
 #include "ScriptEditorScreen.h"
-#include "SGSL.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUILoadSave.h"
@@ -36,11 +35,13 @@ using namespace GAGCore;
 #include <GUITextInput.h>
 using namespace GAGGUI;
 
+#include "MapScript.h"
+
 #include <algorithm>
 #include "boost/lexical_cast.hpp"
 
 
-ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
+ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 :OverlayScreen(globalContainer->gfx, 600, 400)
 {
 	this->mapScript=mapScript;
@@ -56,7 +57,7 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	addWidget(mode);
 
 	//These are for the script tab
-	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, mapScript->sourceCode.c_str());
+	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, mapScript->getMapScript().c_str());
 	scriptWidgets.push_back(scriptEditor);
 	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_TOP, "standard");
 	scriptWidgets.push_back(compilationResult);
@@ -142,6 +143,7 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 
 bool ScriptEditorScreen::testCompile(void)
 {
+/*
 	mapScript->reset();
 	ErrorReport er=mapScript->compileScript(game, scriptEditor->getText());
 
@@ -158,6 +160,7 @@ bool ScriptEditorScreen::testCompile(void)
 		scriptEditor->setCursorPos(er.pos);
 		return false;
 	}
+*/
 }
 
 void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -169,7 +172,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			//Load the script
 			if (testCompile())
 			{
-				mapScript->sourceCode = scriptEditor->getText();
+				mapScript->setMapScript(scriptEditor->getText());
 				endValue=par1;
 			}
 			
@@ -250,11 +253,11 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == LOAD)
 		{
-			loadSave(true, "scripts", "sgsl");
+			loadSave(true, "scripts", "usl");
 		}
 		else if (par1 == SAVE)
 		{
-			loadSave(false, "scripts", "sgsl");
+			loadSave(false, "scripts", "usl");
 		}
 		else if (par1 == TAB_SCRIPT)
 		{
