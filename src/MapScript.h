@@ -25,6 +25,7 @@
 #include <string>
 #include "MapScriptUSL.h"
 
+#include "MapScriptError.h"
 
 namespace GAGCore
 {
@@ -63,11 +64,14 @@ public:
 	///This sets the current map script mode
 	void setMapScriptMode(MapScriptMode newMode);
 	
-	///This compiles the code and returns the error
-	int compileCode();
+	///This compiles the code and returns false on error
+	bool compileCode();
 	
-	///This test compiles the code and returns the error
-	int testCompileCode(const std::string& testScript);
+	///This test compiles the code and returns false on error
+	bool testCompileCode(const std::string& testScript);
+	
+	///This returns the error
+	const MapScriptError& getError() const;
 
 private:
 	std::string script;

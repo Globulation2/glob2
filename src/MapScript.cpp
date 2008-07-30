@@ -76,16 +76,23 @@ void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode)
 
 
 
-int MapScript::compileCode()
+bool MapScript::compileCode()
 {
 	if(mode == USL)
 		return usl.compileCode(script);
 }
 
 
-int MapScript::testCompileCode(const std::string& testScript)
+bool MapScript::testCompileCode(const std::string& testScript)
 {
 	if(mode == USL)
 		return usl.compileCode(testScript);
 }
+
+
+const MapScriptError& MapScript::getError() const
+{
+	return usl.getError();
+}
+
 
