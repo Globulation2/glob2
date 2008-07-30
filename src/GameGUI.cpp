@@ -3475,8 +3475,27 @@ void GameGUI::drawPanel(void)
 			int decX = 8 + ((int)toolManager.getZoneType()) * 40 + dec;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
 		}
+		if(hilights.find(HilightForbiddenZoneOnPanel) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		}
+		if(hilights.find(HilightGuardZoneOnPanel) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		}
+		if(hilights.find(HilightClearingZoneOnPanel) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		}
+		
 		// draw brush
 		brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40);
+		
+		if(hilights.find(HilightBrushSelector) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40+30, 38));
+		}
+		
 		// draw brush help text
 		if ((mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
 		{
@@ -3518,7 +3537,6 @@ void GameGUI::drawPanel(void)
 	}
 }
 
-int intSquare(int i) { return i*i; }
 
 void GameGUI::drawTopScreenBar(void)
 {
