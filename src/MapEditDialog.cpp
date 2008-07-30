@@ -31,7 +31,7 @@
 #include "StringTable.h"
 #include "Toolkit.h"
 
-MapEditMenuScreen::MapEditMenuScreen() : OverlayScreen(globalContainer->gfx, 370, 260)
+MapEditMenuScreen::MapEditMenuScreen() : OverlayScreen(globalContainer->gfx, 370, 310)
 {
 	addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load map]"), LOAD_MAP));
 	addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save map]"), SAVE_MAP));
