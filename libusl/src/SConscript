@@ -1,10 +1,6 @@
 usl_sources = Split("""
-code.cpp         lexer.cpp     token.cpp      types.cpp
-code.h           lexer.h       token.h        types.h
-debug.cpp        memory.cpp    tokenizer.cpp  usl.cpp
-debug.h          memory.h      tokenizer.h
-interpreter.cpp  position.cpp  tree.cpp
-interpreter.h    position.h    tree.h""")
+code.cpp      debug.cpp  interpreter.cpp  lexer.cpp  memory.cpp  parser.cpp
+position.cpp  token.cpp  tokenizer.cpp    tree.cpp   types.cpp   """)
     
 Import("env")
 Import("PackTar")
