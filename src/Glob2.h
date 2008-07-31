@@ -34,6 +34,8 @@ public:
 	int runNoX();
 	///Runs random games non stop until the game crashes
 	int runTestGames();
+	///Generates random maps non stop until the game crashes
+	int runTestMapGeneration();
 	int run(int argc, char *argv[]);
 };
 
