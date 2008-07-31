@@ -787,8 +787,6 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
-			lhs->computeWishedRessources();
-			rhs->computeWishedRessources();
 			int ratio_lhs_ressource = lhs->totalWishedRessource();
 			int ratio_rhs_ressource = rhs->totalWishedRessource();
 			return ratio_lhs_ressource > ratio_rhs_ressource;
@@ -806,11 +804,12 @@ void Team::add_building_needing_work(Building* b, Sint32 priority)
 {
 	bool did_find_position=false;
 	Sint32 p = priority;
-	for(unsigned i=0; i<buildingsNeedingUnits[p].size(); ++i)
+	std::vector<Building*>& blist = buildingsNeedingUnits[p];
+	for(unsigned i=0; i<blist.size(); ++i)
 	{
-		if(prioritize_building(b, buildingsNeedingUnits[p][i]))
+		if(prioritize_building(b, blist[i]))
 		{
-			buildingsNeedingUnits[p].insert(buildingsNeedingUnits[p].begin() + i, b);
+			buildingsNeedingUnits[p].insert(blist.begin() + i, b);
 			did_find_position=true;
 			break;
 		}
