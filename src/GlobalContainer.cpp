@@ -365,11 +365,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-y\tspecify an alternative hostname for YOG server\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
 			printf("-daemon\t runs the YOG server\n");
+			printf("-router\t runs the YOG game router\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
-			printf("-test-games\tCreates random games with AI and tests them");
-			printf("-test-games-nox\tCreates random games with AI and tests them, without gui");
-			printf("-test-map-gen\tGenerates random maps endlessly, without gui");
+			printf("-test-games\tCreates random games with AI and tests them\n");
+			printf("-test-games-nox\tCreates random games with AI and tests them, without gui\n");
+			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
