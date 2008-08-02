@@ -190,6 +190,8 @@ backspace
 Ρυθμίσεις Μονάδας
 [building site]
 τόπος κατασκευής
+[Building Tool Line Explanation]
+
 [Buildings]
 Κτίρια
 [Bullets]

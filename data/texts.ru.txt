@@ -190,6 +190,8 @@ break
 Юниты
 [building site]
 стройка
+[Building Tool Line Explanation]
+
 [Buildings]
 Здания
 [Bullets]

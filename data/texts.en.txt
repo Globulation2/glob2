@@ -142,6 +142,8 @@ Building Defaults
 Building Settings
 [building site]
 construction site
+[Building Tool Line Explanation]
+Ctrl + Drag = Line
 [Buildings]
 Buildings
 [Bullets]

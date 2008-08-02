@@ -142,6 +142,8 @@ Budynki
 Wł. Budynków
 [building site]
 plac budowy
+[Building Tool Line Explanation]
+
 [Buildings]
 Budowle
 [Bullets]

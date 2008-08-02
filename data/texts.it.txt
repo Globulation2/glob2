@@ -190,6 +190,8 @@ Costruisci
 Impostazioni unità
 [building site]
 Struttura in costruzione
+[Building Tool Line Explanation]
+
 [Buildings]
 Costruzioni
 [Bullets]

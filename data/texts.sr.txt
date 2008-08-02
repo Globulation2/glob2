@@ -142,6 +142,8 @@ AIWarrush
 
 [building site]
 Градилиште
+[Building Tool Line Explanation]
+
 [Buildings]
 Зграде
 [Bullets]

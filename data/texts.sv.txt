@@ -142,6 +142,8 @@ Bygga
 Enheter
 [building site]
 byggarbetsplats
+[Building Tool Line Explanation]
+
 [Buildings]
 Byggnader
 [Bullets]

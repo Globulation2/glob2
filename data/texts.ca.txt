@@ -142,6 +142,8 @@ Construir
 
 [building site]
 Construint
+[Building Tool Line Explanation]
+
 [Buildings]
 Edificis
 [Bullets]

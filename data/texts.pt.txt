@@ -142,6 +142,8 @@ Construir
 
 [building site]
 Sítio de constr.
+[Building Tool Line Explanation]
+
 [Buildings]
 Prédios
 [Bullets]

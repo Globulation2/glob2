@@ -190,6 +190,8 @@ Byg
 Enheder
 [building site]
 bygningssted
+[Building Tool Line Explanation]
+
 [Buildings]
 Bygninger
 [Bullets]
