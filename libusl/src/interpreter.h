@@ -3,6 +3,7 @@
 
 #include <stack>
 #include <vector>
+#include <string>
 
 struct Thunk;
 struct Scope;

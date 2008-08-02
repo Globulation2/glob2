@@ -682,6 +682,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [Register a new YOG user with password]
 Пријави новог корисника на YOG са лозинком. (није шифровано)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -697,6 +699,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [repair]
 Поправи
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -1126,6 +1130,8 @@ YOG мета-сервер је одбио везу јер корисничко �
 
 [YESTS_CREATED]
 Подсистем за повезивање је спреман за контакт са YOG метасервером.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Грешка при прикључењу. Изгледа да YOG сервер није покренут.
 [yog block command help]

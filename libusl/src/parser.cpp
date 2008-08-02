@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "types.h"
 #include "error.h"
+#include <memory>
 
 using namespace std;
 

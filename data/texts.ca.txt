@@ -688,6 +688,8 @@ Proporció
 
 [Register a new YOG user with password]
 Registrar un nou jugador YOG amb contrasenya (insegur)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -703,6 +705,8 @@ Recordar la contrasenya (insegur)
 [repair]
 Reparar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -1134,6 +1138,8 @@ No es pot conectar al metaservidor YOG. Nom d'usuari en ús
 
 [YESTS_CREATED]
 El sistema de conexió està llest per contactar amb el metaservidor YOG
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposible conectar. Metaservidor YOG esta caigut
 [yog block command help]
