@@ -1537,7 +1537,7 @@ void MapEdit::drawMenuEyeCandy()
 
 	// draw window bar
 	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32;
-	for (int i=0; i<pos; i+=32)
+	for (int i=0; i<=pos; i+=32)
 	{
 		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
 	}
