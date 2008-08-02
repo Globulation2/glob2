@@ -190,6 +190,8 @@ AIWarrush
 單位設定
 [building site]
 建築地點
+[Building Tool Line Explanation]
+
 [Buildings]
 建築物
 [Bullets]

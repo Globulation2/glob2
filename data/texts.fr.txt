@@ -142,6 +142,8 @@ Construit
 Réglages de l'unité
 [building site]
 chantier
+[Building Tool Line Explanation]
+
 [Buildings]
 Bâtiments
 [Bullets]

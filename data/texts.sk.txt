@@ -142,6 +142,8 @@ Stavanie
 Jednotky
 [building site]
 stavenisko
+[Building Tool Line Explanation]
+
 [Buildings]
 Budovy
 [Bullets]

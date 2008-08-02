@@ -74,6 +74,11 @@ void GameGUIToolManager::deactivateTool()
 		flushBrushOrders(game.gui->localTeamNo);
 		brush.unselect();
 	}
+	if(mode == PlaceBuilding)
+	{
+		building = "";
+	}
+	mode = NoTool;
 }
 
 

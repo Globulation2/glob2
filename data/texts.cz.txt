@@ -142,6 +142,8 @@ Stavba
 
 [building site]
 staveniště
+[Building Tool Line Explanation]
+
 [Buildings]
 Budovy
 [Bullets]

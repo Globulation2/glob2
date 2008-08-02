@@ -3770,11 +3770,12 @@ void GameGUI::drawOverlayInfos(void)
 	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+14, 14, 100, viewportX, viewportY, game);
 
 	// display text if placing a building 
-	/*
-	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255,0)));
-	globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[ctrl - line]"));
-	globalContainer->standardFont->popStyle();
-	*/
+	if(selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
+	{
+		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255)));
+		globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[Building Tool Line Explanation]"), 0, 75);
+		globalContainer->standardFont->popStyle();
+	}
 
 	// Draw icon if trasmitting
 	if (globalContainer->voiceRecorder->recordingNow)
@@ -4335,6 +4336,10 @@ void GameGUI::cleanOldSelection(void)
 		game.selectedUnit=NULL;
 	}
 	else if (selectionMode==BRUSH_SELECTION)
+	{
+		toolManager.deactivateTool();
+	}
+	else if (selectionMode==TOOL_SELECTION)
 	{
 		toolManager.deactivateTool();
 	}

@@ -142,6 +142,8 @@ Construieşte
 
 [building site]
 şantier
+[Building Tool Line Explanation]
+
 [Buildings]
 Clădiri
 [Bullets]
