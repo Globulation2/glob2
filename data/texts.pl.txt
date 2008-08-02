@@ -680,6 +680,8 @@ gotowy?
 Odśwież Listę Map
 [Register a new YOG user with password]
 Rejestruj nowego użytkownika YOG z hasłem. (niebezpieczne)
+[Register]
+
 [remember unit]
 Zapamiętaj Jednostkę
 [Remember YOG password localy]
@@ -696,6 +698,8 @@ Wznów/Zatrzymaj Naprawę
 Napraw
 [repeat area]
 razy ten sam teren
+[Repeat your password :]
+
 [restore default shortcuts]
 Przywróć Domyślne Skróty Klawiaturowe
 [return to editor]
@@ -1124,6 +1128,8 @@ Metaserwer YOG odmówił połączenia, ponieważ Twoje imię gracza jest zabloko
 Metaserwer YOG odmówił połączenia, ponieważ podane imię gracza jest niepoprawne. Imiona graczy mogą się składać tylko z liter, liczb i podkreślników.
 [YESTS_CREATED]
 System jest gotowy do połączenia z metaserwerem YOG.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
 [yog block command help]

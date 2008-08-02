@@ -688,6 +688,8 @@ Proportions
 
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
+[Register]
+
 [remember unit]
 Se rappeler l'unité
 [Remember YOG password localy]
@@ -704,6 +706,8 @@ Réparer la bâtiment
 Réparer
 [repeat area]
 Répéter la zone
+[Repeat your password :]
+
 [restore default shortcuts]
 Restaurer les raccourcis par défaut
 [return to editor]
@@ -1134,6 +1138,8 @@ Le metaserveur YOG a refusé la connexion car votre nom d'utilisateur est déjà
 
 [YESTS_CREATED]
 Le système de connexion est prêt à contacter le metaserveur YOG pour se connecter.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 [yog block command help]
