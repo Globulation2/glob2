@@ -748,6 +748,8 @@ Air dmg.
 
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
+[Register]
+
 [remember unit]
 記錄單位
 [Remember YOG password localy]
@@ -764,6 +766,8 @@ Air dmg.
 修復
 [repeat area]
 在相同地景的時間
+[Repeat your password :]
+
 [restore default shortcuts]
 還原預設鍵盤快捷鍵
 [return to editor]
@@ -1196,6 +1200,8 @@ YOG meta伺服器拒絕連線因為你的用戶名已被使用。
 
 [YESTS_CREATED]
 連線系統已準備連接YOG meta伺服器。
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 無法連接。 YOG meta伺服器已關閉。
 [yog block command help]

@@ -678,6 +678,8 @@ Bereit?
 Kartenliste aktualisieren
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
+[Register]
+
 [remember unit]
 Arbeiterzahlen merken
 [Remember YOG password localy]
@@ -694,6 +696,8 @@ Reparieren / Abbrechen
 Reparieren
 [repeat area]
 mal die selbe Landschaft
+[Repeat your password :]
+
 [restore default shortcuts]
 Standardtastenkürzel wiederherstellen
 [return to editor]
@@ -1124,6 +1128,8 @@ Der YOG-Metaserver hat die Verbindung verweigert, da der Benutzername gesperrt w
 Der YOG-Metaserver hat die Verbindung verweigert weil der Benutzername ungültig ist.
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 [yog block command help]

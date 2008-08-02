@@ -748,6 +748,8 @@ Afmetingen
 
 [Register a new YOG user with password]
 Registreer nieuwe gebruiker met wachtwoord (onveilig)
+[Register]
+
 [remember unit]
 Onthoud eenheid
 [Remember YOG password localy]
@@ -764,6 +766,8 @@ Start/Stop repareren
 Repareren
 [repeat area]
 Herhaling van speelveld
+[Repeat your password :]
+
 [restore default shortcuts]
 Herstel standaard toetsbindingen
 [return to editor]
@@ -1196,6 +1200,8 @@ De verbinding met de YOG server is geweigerd omdat uw gebruikersnaam al bestaat.
 
 [YESTS_CREATED]
 Je kunt nu met de YOG server verbinden. Log in met een reeds geregistreerde gebruikersnaam, of registreer een nieuwe gebruikersnaam door een vinkje te zetten voor "Registreer nieuwe gebruiker met wachtwoord".
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Kan geen verbinding maken. Waarschijnlijk werkt de YOG server niet.
 [yog block command help]

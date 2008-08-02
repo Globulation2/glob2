@@ -686,6 +686,8 @@ Oranlar
 
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -701,6 +703,8 @@ Parolayi yerel olarak animsa. (guvenli degil)
 [repair]
 Onar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -1132,6 +1136,8 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
 
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
 [yog block command help]

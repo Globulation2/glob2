@@ -1,8 +1,5 @@
 /*
-  Copyright (C) 2007 Bradley Arsenault
-
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+  Copyright (C) 2008 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,128 +16,66 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-
-#include "GlobalContainer.h"
-#include <GraphicContext.h>
-#include <GUIAnimation.h>
-#include <GUIButton.h>
-#include <GUITextArea.h>
-#include <GUIText.h>
-#include <GUIText.h>
-#include <GUITextInput.h>
-#include "Settings.h"
-#include <StringTable.h>
-#include <Toolkit.h>
-#include "YOGClientEvent.h"
-#include "YOGClient.h"
-#include "YOGClientLobbyScreen.h"
-#include "YOGClientLobbyScreen.h"
-#include "YOGClientMapDownloadScreen.h"
-#include "YOGClientOptionsScreen.h"
-#include "YOGLoginScreen.h"
 #include "YOGRegisterScreen.h"
 
-YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
+#include "YOGClientEvent.h"
+#include "YOGClient.h"
+
+
+#include "GUIButton.h"
+#include "GUITextArea.h"
+#include "GUIText.h"
+#include "GUITextInput.h"
+#include "GUIAnimation.h"
+#include "StringTable.h"
+#include "Toolkit.h"
+#include "GlobalContainer.h"
+
+
+
+YOGRegisterScreen::YOGRegisterScreen(boost::shared_ptr<YOGClient> client)
 	: client(client)
 {
+	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]")));
+	
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
-	addWidget(new TextButton(440, 300, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]"), REGISTER, 13));
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[yog]")));
-
-	addWidget(new Text(20, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
-	login=new TextInput(20, 290, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), false, 32);
-	addWidget(login);
-	
-	addWidget(new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
-	password=new TextInput(20, 360, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.password.c_str(), true, 32, true);
-	addWidget(password);
-	
-	rememberYogPassword=new OnOffButton(20, 400, 21, 21, ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED, password->getText().length() > 0, NEW_USER);
-	rememberYogPasswordText=new Text(47, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
-		Toolkit::getStringTable()->getString("[Remember YOG password localy]"));
-	addWidget(rememberYogPassword);
-	addWidget(rememberYogPasswordText);
+	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]"), REGISTER, 13));
 	
 	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true, Toolkit::getStringTable()->getString("[YESTS_CREATED]"));
 	addWidget(statusText);
+	
+	addWidget(new Text(20, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
+	login=new TextInput(20, 290, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), true, 32);
+	addWidget(login);
+	
+	addWidget(new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
+	password=new TextInput(20, 360, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", false, 32, true);
+	addWidget(password);
+	
+	addWidget(new Text(20, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Repeat your password :]")));
+	passwordRepeat=new TextInput(20, 430, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", false, 32, true);
+	addWidget(passwordRepeat);
 	
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
 	
-	wasConnecting = false;
+	wasConnecting=false;
 	changeTabAgain=true;
 	
 	client->addEventListener(this);
 }
 
-YOGLoginScreen::~YOGLoginScreen()
+
+
+YOGRegisterScreen::~YOGRegisterScreen()
 {
 	client->removeEventListener(this);
-	Toolkit::releaseSprite("data/gfx/rotatingEarth");
-	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 }
 
-void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (par1==CANCEL)
-		{
-			endExecute(Cancelled);
-		}
-		else if (par1==LOGIN)
-		{
-			//Update the gui
-			animation->show();
-			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
-			
-			client->connect(YOG_SERVER_IP);
-			wasConnecting = true;
-		}
-		else if (par1==REGISTER)
-		{
-			client->removeEventListener(this);
-			YOGRegisterScreen screen(client);
-			int rc = screen.execute(globalContainer->gfx, 40);
-			client->addEventListener(this);
-			if(rc == -1)
-			{
-				endExecute(-1);
-			}
-			else if(rc == YOGRegisterScreen::Connected)
-			{
-				runLobby();
-			}
-		}
-	}
-	if (action==TEXT_ACTIVATED)
-	{
-		if (source==login)
-			password->deactivate();
-		else if (source==password)
-			login->deactivate();
-	}
-	if (action==TEXT_TABBED)
-	{
-		if (login->isActivated() && changeTabAgain)
-		{
-			login->deactivate();
-			password->activate();
-			changeTabAgain=false;
-		}
-		else if (password->isActivated() && changeTabAgain)
-		{
-			password->deactivate();
-			login->activate();
-			changeTabAgain=false;
-		}
-	}
-}
 
-void YOGLoginScreen::onTimer(Uint32 tick)
+
+void YOGRegisterScreen::onTimer(Uint32 tick)
 {
 	if(wasConnecting && !client->isConnecting())
 	{
@@ -158,13 +93,82 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 
 
 
-void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
+void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int par2)
+{
+	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	{
+		if (par1==CANCEL)
+		{
+			endExecute(Cancelled);
+		}
+		else if (par1==REGISTER)
+		{
+			if(password->getText() != passwordRepeat->getText())
+			{
+				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_PASSWORDS_DONT_MATCH]"));
+			}
+			else
+			{
+				//Update the gui
+				animation->show();
+				globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
+				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
+				
+				client->connect(YOG_SERVER_IP);
+				wasConnecting = true;
+			}
+		}
+	}
+	if (action==TEXT_ACTIVATED)
+	{
+		if (source==login)
+		{
+			password->deactivate();
+			passwordRepeat->deactivate();
+		}
+		else if (source==password)
+		{
+			login->deactivate();
+			passwordRepeat->deactivate();
+		}
+		else if (passwordRepeat==password)
+		{
+			login->deactivate();
+			password->deactivate();
+		}
+	}
+	if (action==TEXT_TABBED)
+	{
+		if (login->isActivated() && changeTabAgain)
+		{
+			login->deactivate();
+			password->activate();
+			changeTabAgain=false;
+		}
+		else if (password->isActivated() && changeTabAgain)
+		{
+			password->deactivate();
+			passwordRepeat->activate();
+			changeTabAgain=false;
+		}
+		else if (passwordRepeat->isActivated() && changeTabAgain)
+		{
+			passwordRepeat->deactivate();
+			login->activate();
+			changeTabAgain=false;
+		}
+	}
+}
+
+
+
+void YOGRegisterScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
 {
 	//std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
 	if(type == YEConnected)
 	{
-		attemptLogin();
+		attemptRegistration();
 	}
 	else if(type == YEConnectionLost)
 	{ 
@@ -176,7 +180,8 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 	{
 		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
 		animation->visible=false;
-		runLobby();
+		
+		endExecute(Connected);
 	}
 	else if(type == YELoginRefused)
 	{
@@ -221,38 +226,16 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 		}
 		client->disconnect();
 	}
+
 }
 
 
 
-void YOGLoginScreen::attemptLogin()
+void YOGRegisterScreen::attemptRegistration()
 {
-	//Save the password
-	if(rememberYogPassword->getState())
-	{
-		globalContainer->settings.password=password->getText();
-		globalContainer->settings.username=login->getText();
-		globalContainer->settings.save();
-	}
-	//Attempt the login
-	client->attemptLogin(login->getText(), password->getText());
+	//Attempt the registration
+	client->attemptRegistration(login->getText(), password->getText());
 }
 
-
-
-void YOGLoginScreen::runLobby()
-{
-	Glob2TabScreen screen(true);
-	YOGClientLobbyScreen lobby(&screen, client);
-	YOGClientOptionsScreen options(&screen, client);
-	YOGClientMapDownloadScreen maps(&screen, client);
-	int rc = screen.execute(globalContainer->gfx, 40);
-	if(rc == YOGClientLobbyScreen::ConnectionLost)
-		endExecute(ConnectionLost);
-	else if(rc == -1)
-		endExecute(-1);
-	else
-		endExecute(LoggedIn);
-}
 
 
