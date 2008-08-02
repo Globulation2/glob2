@@ -919,11 +919,17 @@ bool Game::load(GAGCore::InputStream *stream)
 	// Check integrity of loaded game
 	integrity();
 	
-	// Now load the map script
+	// Now load the old map script
 	if (!script.load(stream, this))
 	{
 		stream->readLeaveSection();
 		return false;
+	}
+	
+	if(versionMinor >= 80)
+	{
+		// This is the new map script system
+		mapscript.decodeData(stream, mapHeader.getVersionMinor());
 	}
 	
 	///Load the campaign text for the game.
@@ -1064,8 +1070,11 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	stream->writeLeaveSection();
 	stream->write("GaPl", 4, "signatureAfterPlayers");
 
-	///Save the map script state
+	// Save the old map script state
 	script.save(stream, this);
+	
+	// This is the new map script system
+	mapscript.encodeData(stream);
 
 	///Save game objectives
 	objectives.encodeData(stream);

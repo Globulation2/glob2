@@ -686,6 +686,8 @@ Proporcie
 
 [Register a new YOG user with password]
 Zaregistrovať nové YOG meno s heslom. (nezabezpečené)
+[Register]
+
 [remember unit]
 Uložiť jednotku
 [Remember YOG password localy]
@@ -701,6 +703,8 @@ Spust./zast. opravu
 [repair]
 Opraviť
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 Pôvodné nastavenia klávesnice
@@ -1132,6 +1136,8 @@ YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
 
 [YESTS_CREATED]
 Systém pripojenia je pripravený kontaktovať YOG metaserver.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
 [yog block command help]

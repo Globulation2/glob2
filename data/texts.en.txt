@@ -678,8 +678,8 @@ Proportions
 ready?
 [refresh map list]
 Refresh Map List
-[Register a new YOG user with password]
-Register a new YOG user with a password. (insecure)
+[Register]
+Register
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
@@ -696,6 +696,8 @@ Start/Stop Repair
 Repair
 [repeat area]
 times the same landscape
+[Repeat your password :]
+Repeat your password:
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [return to editor]
@@ -1126,6 +1128,8 @@ The YOG metaserver has refused the connection because this username is banned. P
 The YOG metaserver has refused the connection because the username given is invalid. Usernames can only contain letters, numbers, and underscores.
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+The provided passwords don't match. Please retype them.
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
 [yog block command help]
