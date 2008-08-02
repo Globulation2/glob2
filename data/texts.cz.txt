@@ -680,6 +680,8 @@ Poměry
 
 [Register a new YOG user with password]
 Registrace nového YOG uživatele s heslem. (nejisté)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -695,6 +697,8 @@ Zapamatovat si heslo lokálně? (nejisté)
 [repair]
 Opravit
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -1124,6 +1128,8 @@ YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jin
 
 [YESTS_CREATED]
 Systém připojení je připraven na kontakt s YOG metaserverem.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 [yog block command help]

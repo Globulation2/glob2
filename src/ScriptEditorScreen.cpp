@@ -18,7 +18,6 @@
 */
 
 #include "ScriptEditorScreen.h"
-#include "SGSL.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUILoadSave.h"
@@ -36,11 +35,13 @@ using namespace GAGCore;
 #include <GUITextInput.h>
 using namespace GAGGUI;
 
+#include "MapScript.h"
+
 #include <algorithm>
 #include "boost/lexical_cast.hpp"
 
 
-ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
+ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 :OverlayScreen(globalContainer->gfx, 600, 400)
 {
 	this->mapScript=mapScript;
@@ -56,7 +57,7 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 	addWidget(mode);
 
 	//These are for the script tab
-	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, mapScript->sourceCode.c_str());
+	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, mapScript->getMapScript().c_str());
 	scriptWidgets.push_back(scriptEditor);
 	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_TOP, "standard");
 	scriptWidgets.push_back(compilationResult);
@@ -142,10 +143,8 @@ ScriptEditorScreen::ScriptEditorScreen(Mapscript *mapScript, Game *game)
 
 bool ScriptEditorScreen::testCompile(void)
 {
-	mapScript->reset();
-	ErrorReport er=mapScript->compileScript(game, scriptEditor->getText());
-
-	if (er.type==ErrorReport::ET_OK)
+	mapScript->setMapScript(scriptEditor->getText());
+	if(mapScript->compileCode())
 	{
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 100, 255, 100));
 		compilationResult->setText("Compilation success");
@@ -153,9 +152,9 @@ bool ScriptEditorScreen::testCompile(void)
 	}
 	else
 	{
+		MapScriptError error = mapScript->getError();
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-		compilationResult->setText(FormatableString("Compilation failure : %0:%1:(%2):%3").arg(er.line+1).arg(er.col).arg(er.pos).arg(er.getErrorString()).c_str());
-		scriptEditor->setCursorPos(er.pos);
+		compilationResult->setText(FormatableString("Compilation failure : %0:%1:%2").arg(error.getLine()+1).arg(error.getColumn()).arg(error.getMessage()).c_str());
 		return false;
 	}
 }
@@ -169,7 +168,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			//Load the script
 			if (testCompile())
 			{
-				mapScript->sourceCode = scriptEditor->getText();
+				mapScript->setMapScript(scriptEditor->getText());
 				endValue=par1;
 			}
 			
@@ -250,11 +249,11 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == LOAD)
 		{
-			loadSave(true, "scripts", "sgsl");
+			loadSave(true, "scripts", "usl");
 		}
 		else if (par1 == SAVE)
 		{
-			loadSave(false, "scripts", "sgsl");
+			loadSave(false, "scripts", "usl");
 		}
 		else if (par1 == TAB_SCRIPT)
 		{
@@ -453,7 +452,7 @@ std::string filenameToName(const std::string& fullfilename)
 {
 	std::string filename = fullfilename;
 	filename.erase(0, 8);
-	filename.erase(filename.find(".sgsl"));
+	filename.erase(filename.find(".usl"));
 	std::replace(filename.begin(), filename.end(), '_', ' ');
 	return filename;
 }
