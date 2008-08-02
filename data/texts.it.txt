@@ -740,6 +740,8 @@ Razioni
 
 [Register a new YOG user with password]
 Registra un nuovo utente YOG con una passord. (non sicuro)
+[Register]
+
 [remember unit]
 Ricorda Unità
 [Remember YOG password localy]
@@ -756,6 +758,8 @@ Inizia/Ferma Riparazione
 Ripara
 [repeat area]
 volte lo stesso terreno
+[Repeat your password :]
+
 [restore default shortcuts]
 Ripristina le scorciatoie da tastiera originali
 [return to editor]
@@ -1186,6 +1190,8 @@ Il metaserver YOG ha rifiutato la tua connessione perchè il tuo username è gi�
 
 [YESTS_CREATED]
 Il sistema di connessione è in attesa del metaserver YOG per la connessione.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Non mi riesco a connettere, apparentemente il master server YOG è offline.
 [yog block command help]

@@ -750,6 +750,8 @@ print screen
 
 [Register a new YOG user with password]
 Καταχωρήστε ένα νέο YOG χρήστη με κωδικό. (μη ασφαλές)
+[Register]
+
 [remember unit]
 Να Θυμάσαι την Μονάδα
 [Remember YOG password localy]
@@ -766,6 +768,8 @@ print screen
 Επιδιόρθωση
 [repeat area]
 φορές το ίδιο περιβάλλον
+[Repeat your password :]
+
 [restore default shortcuts]
 Επαναφορά Προκαθορισμένων Συντομεύσεων Πληκτρολογίου
 [return to editor]
@@ -1198,6 +1202,8 @@ Tutorial
 
 [YESTS_CREATED]
 Το σύστημα σύνδεσης είναι έτοιμο για επαφή με τον YOG metaserver για σύνδεση.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Αδύνατη η σύνδεση. Προφανώς ο YOG metaserver δεν λειτουργεί.
 [yog block command help]
