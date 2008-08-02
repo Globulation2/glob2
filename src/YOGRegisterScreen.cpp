@@ -107,7 +107,7 @@ void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int pa
 			{
 				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_PASSWORDS_DONT_MATCH]"));
 			}
-			else
+			else if(password->getText() != "")
 			{
 				//Update the gui
 				animation->show();
@@ -131,7 +131,7 @@ void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int pa
 			login->deactivate();
 			passwordRepeat->deactivate();
 		}
-		else if (passwordRepeat==password)
+		else if (source==passwordRepeat)
 		{
 			login->deactivate();
 			password->deactivate();
