@@ -26,6 +26,7 @@
 #include "YOGServerGameRouter.h"
 #include "YOGServerRouter.h"
 #include "YOGServerRouterPlayer.h"
+#include <sstream>
 
 using namespace boost;
 using namespace GAGCore;
@@ -35,6 +36,7 @@ YOGServerRouter::YOGServerRouter()
 {
 	new_connection.reset(new NetConnection);
 	yog_connection.reset(new NetConnection(YOG_SERVER_IP, YOG_SERVER_ROUTER_PORT));
+	shutdownMode=false;
 }
 
 
@@ -44,6 +46,7 @@ YOGServerRouter::YOGServerRouter(const std::string& yogip)
 {
 	new_connection.reset(new NetConnection);
 	yog_connection.reset(new NetConnection(yogip, YOG_SERVER_ROUTER_PORT));
+	shutdownMode=false;
 }
 
 
@@ -114,10 +117,10 @@ void YOGServerRouter::update()
 			yog_connection->sendMessage(reg);
 		}
 	}
-	if(!yog_connection->isConnected() && !yog_connection->isConnecting())
+	if(!yog_connection->isConnected() && !yog_connection->isConnecting() && !shutdownMode)
 	{
 		std::cout<<"Router lost connection."<<std::endl;
-		nl.stopListening();
+		shutdownMode=true;
 	}
 }
 
@@ -135,6 +138,12 @@ int YOGServerRouter::run()
 		endTick=SDL_GetTicks();
 		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
+		
+		if(shutdownMode)
+		{
+			if(games.size() == 0 && players.size() == 0)
+				break;
+		}
 	}
 	return 0;
 }
@@ -167,4 +176,35 @@ YOGServerRouterAdministrator& YOGServerRouter::getAdministrator()
 {
 	return admin;
 }
+
+
+void YOGServerRouter::enterShutdownMode()
+{
+	shutdownMode=true;
+	yog_connection->closeConnection();
+}
+
+
+std::string YOGServerRouter::getStatusReport()
+{
+	std::stringstream s;
+	s<<"Status Report: "<<std::endl;
+	s<<"\t"<<games.size()<<" active games"<<std::endl;
+	s<<"\t"<<players.size()<<" connected players"<<std::endl;
+	
+	int count_admin=0;
+	for(int i=0; i<players.size(); ++i)
+	{
+		if(players[i]->isAdministrator())
+			count_admin+=1;
+	}
+	s<<"\t"<<count_admin<<" authenticed admins"<<std::endl;
+	
+	if(shutdownMode)
+		s<<"\tServer is currently in shutdown mode"<<std::endl;
+	else
+		s<<"\tServer is currently in operating mode"<<std::endl;
+	return s.str();
+}
+
 

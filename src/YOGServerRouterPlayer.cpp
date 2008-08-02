@@ -103,3 +103,9 @@ bool YOGServerRouterPlayer::isConnected()
 	return connection->isConnected();
 }
 
+
+bool YOGServerRouterPlayer::isAdministrator()
+{
+	return isAdmin;
+}
+

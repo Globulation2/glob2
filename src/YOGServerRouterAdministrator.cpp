@@ -30,6 +30,8 @@ YOGServerRouterAdministrator::YOGServerRouterAdministrator(YOGServerRouter* rout
 	: router(router)
 {
 	commands.push_back(new YOGServerRouterShutdownCommand);
+	commands.push_back(new YOGServerRouterAbortCommand);
+	commands.push_back(new YOGServerRouterStatusCommand);
 }
 
 
