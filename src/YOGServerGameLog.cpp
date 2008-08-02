@@ -80,7 +80,6 @@ void YOGServerGameLog::save()
 	s<<"logs/gamelog";
 	s<<hour;
 	s<<".log";
-	std::cout<<s.str()<<std::endl;
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(s.str()));
 	
 	stream->writeUint32(VERSION_MINOR, "version");

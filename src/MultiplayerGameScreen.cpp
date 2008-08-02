@@ -212,6 +212,7 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	if(type == MGEPlayerListChanged)
 	{
 		updateJoinedPlayers();
+		updateVisibleButtons();
 	}
 	else if(type == MGEReadyToStart)
 	{
@@ -292,6 +293,7 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 				}
 			}
 		}
+		updateVisibleButtons();
 	}
 }
 
