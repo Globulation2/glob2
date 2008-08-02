@@ -190,6 +190,8 @@ Contruir
 Ajustes de unidade
 [building site]
 Construindo...
+[Building Tool Line Explanation]
+
 [Buildings]
 Construções
 [Bullets]

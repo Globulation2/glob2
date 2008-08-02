@@ -142,6 +142,8 @@ Available local games
 اعدادت الوحده
 [building site]
 موقع اﻷنشاء
+[Building Tool Line Explanation]
+
 [Buildings]
 المباني
 [Bullets]

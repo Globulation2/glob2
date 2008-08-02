@@ -142,6 +142,8 @@ Eraiki
 Unitate ezarpenak
 [building site]
 eraikitzen
+[Building Tool Line Explanation]
+
 [Buildings]
 Eraikuntzak
 [Bullets]

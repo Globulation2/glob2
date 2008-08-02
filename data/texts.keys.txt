@@ -70,6 +70,7 @@
 [Building Defaults]
 [building settings]
 [building site]
+[Building Tool Line Explanation]
 [Buildings]
 [Bullets]
 [campaign editor]

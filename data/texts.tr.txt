@@ -142,6 +142,8 @@ Insaa et
 
 [building site]
 insaa alani
+[Building Tool Line Explanation]
+
 [Buildings]
 Binalar
 [Bullets]

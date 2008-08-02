@@ -142,6 +142,8 @@ Zgradi
 
 [building site]
 gradbišče
+[Building Tool Line Explanation]
+
 [Buildings]
 Stavbe
 [Bullets]

@@ -142,6 +142,8 @@ Gebäudestandards
 Gebäude
 [building site]
 Baustelle
+[Building Tool Line Explanation]
+
 [Buildings]
 Gebäude
 [Bullets]
