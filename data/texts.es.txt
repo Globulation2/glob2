@@ -142,6 +142,8 @@ Edificar
 
 [building site]
 Sitio de Construcción
+[Building Tool Line Explanation]
+
 [Buildings]
 Construcciones
 [Bullets]

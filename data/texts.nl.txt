@@ -190,6 +190,8 @@ Bouwen
 Gebouwen
 [building site]
 bouwplaats
+[Building Tool Line Explanation]
+
 [Buildings]
 Gebouwen
 [Bullets]

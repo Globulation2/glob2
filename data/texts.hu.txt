@@ -142,6 +142,8 @@ a partok méretei
 
 [building site]
 építési terület
+[Building Tool Line Explanation]
+
 [Buildings]
 Épületek
 [Bullets]
