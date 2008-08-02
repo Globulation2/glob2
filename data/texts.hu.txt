@@ -682,6 +682,8 @@ Arányok
 
 [Register a new YOG user with password]
 Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -697,6 +699,8 @@ A jleszót helyileg tárolja. (nem biztonságos)
 [repair]
 Megjavítani
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -1126,6 +1130,8 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevede
 
 [YESTS_CREATED]
 A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
 [yog block command help]

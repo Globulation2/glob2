@@ -4,6 +4,8 @@
 #include "memory.h"
 
 #include <cassert>
+#include <algorithm>
+#include <typeinfo>
 #include <iterator>
 #include <map>
 #include <ostream>

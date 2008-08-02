@@ -30,6 +30,7 @@
 #include "GameHeader.h"
 #include "GameObjectives.h"
 #include "GameHints.h"
+#include "MapScript.h"
 
 namespace GAGCore
 {
@@ -215,6 +216,7 @@ public:
 	GameObjectives objectives;
 	GameHints gameHints;
 	std::string missionBriefing;
+	MapScript mapscript;
 	GameGUI *gui;
 	MapEdit *edit;
 	std::list<BuildProject> buildProjects;
