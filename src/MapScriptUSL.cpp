@@ -66,17 +66,21 @@ bool MapScriptUSL::compileCode(const std::string& code)
 	
 	try
 	{
-		// todo: scan data/usl/RunTime
 		if (Toolkit::getFileManager()->initDirectoryListing("data/usl/Language/Runtime", "usl"))
 		{
 			const char* fileName;
 			while ((fileName = Toolkit::getFileManager()->getNextDirectoryEntry()) != NULL)
 			{
-				cerr << "* Loading " << fileName << endl;
-				ifstream file(fileName);
-				if (file.good())
+				std::string fullFileName = string("data/usl/Language/Runtime") + DIR_SEPARATOR + fileName;
+				auto_ptr<ifstream> file(Toolkit::getFileManager()->openIFStream(fullFileName));
+				if (file.get())
 				{
-					usl.includeScript(fileName, file);
+					cerr << "* Loading " << fullFileName << endl;
+					usl.includeScript(fileName, *file.get());
+				}
+				else
+				{
+					cerr << "* Failed to load " << fullFileName << endl;
 				}
 			}
 		}

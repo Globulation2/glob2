@@ -8,29 +8,6 @@
 
 using namespace std;
 
-/*
-Thread::RuntimeValues::RuntimeValues():
-	trueValue(0),
-	falseValue(0)
-{}
-
-Value* Thread::getRuntimeValue(Value*& cachedValue, const std::string& name)
-{
-	if (cachedValue == 0)
-		cachedValue = getRootLocal(name);
-	return cachedValue;
-}
-
-Value* Thread::getRootLocal(const std::string& name)
-{
-	ScopePrototype* rootPrototype = root->scopePrototype();
-	ScopePrototype::Locals::const_iterator it = find(rootPrototype->locals.begin(), rootPrototype->locals.end(), name);
-	assert(it != rootPrototype->locals.end());
-	size_t index = it - rootPrototype->locals.begin();
-	return root->locals[index];
-}
-*/
-
 bool Thread::step()
 {
 	if (state == RUN)

@@ -20,12 +20,14 @@ struct Usl
 	virtual std::ifstream* openFile(const std::string& name);
 	
 	typedef std::map<std::string, Value*> Cache;
+	typedef std::map<std::string, Value*> RuntimeValues;
 	typedef std::vector<Thread> Threads;
 	
 	DebugInfo debug;
 	Heap heap;
 	Scope* root;
 	Cache cache;
+	RuntimeValues runtimeValues;
 	Threads threads;
 	
 	/// Run one thread (round-robin over all threads) for a maximum of steps bytecodes executions
