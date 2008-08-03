@@ -68,7 +68,8 @@ struct FileLoad: NativeMethod
 } load;
 
 
-Usl::Usl()
+Usl::Usl() :
+	threadRoundRobinIndex(0)
 {
 	ScopePrototype* prototype = new ScopePrototype(&heap, 0);
 	prototype->members["load"] = nativeMethodMember(&load);
@@ -78,12 +79,9 @@ Usl::Usl()
 
 void Usl::includeScript(const std::string& name, std::istream& stream)
 {
-	Thread* thread = createThread(name, stream);
-	Value* result = thread->run();
-	delete thread;
-	
-	Scope* scope = dynamic_cast<Scope*>(result);
-	assert(scope);
+	Scope* scope = compile(name, stream);
+	Thread* thread = createThread(scope);
+	thread->run();
 	
 	ScopePrototype* rootPrototype = root->scopePrototype();
 	size_t index = rootPrototype->locals.size();
@@ -104,9 +102,13 @@ void Usl::includeScript(const std::string& name, std::istream& stream)
 	}
 }
 
-Thread* Usl::createThread(const std::string& name, std::istream& stream)
+void Usl::createThread(const std::string& name, std::istream& stream)
 {
-	Scope* scope = compile(name, stream);
+	createThread(compile(name, stream));
+}
+
+Thread* Usl::createThread(Scope* scope)
+{
 	threads.push_back(this);
 	Thread* thread = &threads.back();
 	thread->frames.push_back(Thread::Frame(scope));
@@ -140,17 +142,18 @@ ifstream* Usl::openFile(const string& name)
 	return new ifstream(name.c_str());
 }
 
-bool Usl::run(size_t& steps)
+void Usl::run(size_t& steps)
 {
-	Threads::iterator it = threads.begin();
-	while (steps)
-	{
-		it->run(steps);
-		++it;
-		if (it == threads.end())
-			it = threads.begin();
-	}
-	return true;
+	if (threads.empty())
+		return;
+	
+	if (threadRoundRobinIndex >= threads.size())
+		threadRoundRobinIndex = 0;
+	
+	threads[threadRoundRobinIndex].run(steps);
+	threadRoundRobinIndex++;
+	
+	// TODO: garbageCollect
 }
 
 /*

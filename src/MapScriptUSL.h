@@ -30,6 +30,7 @@ namespace GAGCore
 	class InputStream;
 }
 
+class GameGUI;
 
 ///This represents a USL based map script
 class MapScriptUSL
@@ -52,6 +53,9 @@ public:
 	
 	///This returns the error of the most recent compile
 	const MapScriptError& getError() const;
+	
+	///Execute a step of script corresponding to a step of the game engine
+	void syncStep(GameGUI *gui);
 	
 private:
 	
