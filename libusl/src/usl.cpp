@@ -139,6 +139,20 @@ ifstream* Usl::openFile(const string& name)
 {
 	return new ifstream(name.c_str());
 }
+
+bool Usl::run(size_t& steps)
+{
+	Threads::iterator it = threads.begin();
+	while (steps)
+	{
+		it->run(steps);
+		++it;
+		if (it == threads.end())
+			it = threads.begin();
+	}
+	return true;
+}
+
 /*
 int main(int argc, char** argv)
 {
@@ -180,4 +194,5 @@ int main(int argc, char** argv)
 	}
 	
 	return 0;
-}*/
+}
+*/
