@@ -6,10 +6,8 @@
 #include <string>
 
 struct Thunk;
-struct Scope;
 struct Value;
-struct Heap;
-struct DebugInfo;
+struct Usl;
 
 struct Thread
 {
@@ -29,29 +27,19 @@ struct Thread
 		
 		void markForGC();
 	};
-	struct RuntimeValues
-	{
-		RuntimeValues();
-		Value* trueValue;
-		Value* falseValue;
-	};
 	
 	typedef std::vector<Frame> Frames;
 	
-	Heap* heap;
-	DebugInfo* debugInfo;
-	Scope* root;
-	RuntimeValues runtimeValues;
+	Usl* usl;
 	Frames frames;
 	
-	Thread(Heap* heap, DebugInfo* debugInfo, Scope* root):
-		heap(heap),
-		debugInfo(debugInfo),
-		root(root)
+	Thread(Usl* usl):
+		usl(usl)
 	{}
 	
-	Value* getRuntimeValue(Value*& cachedValue, const std::string& name);
-	Value* getRootLocal(const std::string& name);
+	Value* run();
+	Value* run(size_t& steps);
+	Value* step();
 	
 	void markForGC();
 };
