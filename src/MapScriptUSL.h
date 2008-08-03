@@ -19,13 +19,8 @@
 #ifndef MapScriptUSL_h
 #define MapScriptUSL_h
 
-#include "parser.h"
-#include "types.h"
-#include "debug.h"
-#include "code.h"
+#include "usl.h"
 #include "interpreter.h"
-#include "error.h"
-
 #include "MapScriptError.h"
 #include "SDL.h"
 
@@ -35,6 +30,7 @@ namespace GAGCore
 	class InputStream;
 }
 
+class GameGUI;
 
 ///This represents a USL based map script
 class MapScriptUSL
@@ -58,16 +54,12 @@ public:
 	///This returns the error of the most recent compile
 	const MapScriptError& getError() const;
 	
+	///Execute a step of script corresponding to a step of the game engine
+	void syncStep(GameGUI *gui);
+	
 private:
-	///This resets the interpreter
-	void reset();
-	//Initializes the compiler
-	void initialize();
-
-	Heap* heap;
-	DebugInfo* debug;
-	ExecutionBlock* block;
-	ScopePrototype* scope;
+	
+	Usl usl;
 	MapScriptError error;
 };
 

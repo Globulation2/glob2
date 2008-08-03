@@ -217,4 +217,22 @@ struct Integer: Value
 	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
 };
 
+struct String: Value
+{
+	struct StringPrototype: Prototype
+	{
+		StringPrototype();
+	};
+	static StringPrototype stringPrototype;
+	
+	std::string value;
+	
+	String(Heap* heap, const std::string& value):
+		Value(heap, &stringPrototype),
+		value(value)
+	{}
+	
+	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
+};
+
 #endif // ndef TYPES_H

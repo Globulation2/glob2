@@ -61,7 +61,9 @@ ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 	scriptWidgets.push_back(scriptEditor);
 	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_TOP, "standard");
 	scriptWidgets.push_back(compilationResult);
-	scriptWidgets.push_back(new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
+	cursorPosition=new Text(230, 370, ALIGN_LEFT, ALIGN_TOP, "standard", "Line:1 Col:1");
+	scriptWidgets.push_back(cursorPosition);
+	//scriptWidgets.push_back(new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
 	scriptWidgets.push_back(new TextButton(370, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD));
 	scriptWidgets.push_back(new TextButton(480, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE));
 
@@ -154,7 +156,7 @@ bool ScriptEditorScreen::testCompile(void)
 	{
 		MapScriptError error = mapScript->getError();
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-		compilationResult->setText(FormatableString("Compilation failure : %0:%1:%2").arg(error.getLine()+1).arg(error.getColumn()).arg(error.getMessage()).c_str());
+		compilationResult->setText(FormatableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
 		return false;
 	}
 }
@@ -435,6 +437,28 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			changeTabAgain=false;
 		}
 	}
+	else if(action == TEXT_MODIFIED)
+	{
+		// on typing compilation
+		if (source == scriptEditor)
+		{
+			testCompile();
+			unsigned line;
+			unsigned column;
+			scriptEditor->getCursorPos(line, column);
+			cursorPosition->setText(FormatableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
+		}
+	}
+	else if (action == TEXT_CURSOR_MOVED)
+	{
+		if (source == scriptEditor)
+		{
+			unsigned line;
+			unsigned column;
+			scriptEditor->getCursorPos(line, column);
+			cursorPosition->setText(FormatableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
+		}
+	}
 }
 
 void ScriptEditorScreen::onSDLEvent(SDL_Event *event)
@@ -497,6 +521,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 					compilationResult->setText(FormatableString("Loading script from %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
+				else
+					testCompile();
 			}
 			else
 			{
