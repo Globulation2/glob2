@@ -44,6 +44,7 @@ void MapScript::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 	stream->readEnterSection("MapScript");
 	script = stream->readText("script");
 	mode = static_cast<MapScriptMode>(stream->readUint8("mode"));
+	usl.compileCode(script);
 	usl.decodeData(stream, versionMinor);
 	stream->readLeaveSection();
 }
@@ -93,6 +94,11 @@ bool MapScript::testCompileCode(const std::string& testScript)
 const MapScriptError& MapScript::getError() const
 {
 	return usl.getError();
+}
+
+void MapScript::syncStep(GameGUI *gui)
+{
+	usl.syncStep(gui);
 }
 
 

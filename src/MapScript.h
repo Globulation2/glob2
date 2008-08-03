@@ -33,6 +33,8 @@ namespace GAGCore
 	class InputStream;
 }
 
+class GameGUI;
+
 ///This class represents the script of the map
 class MapScript
 {
@@ -72,6 +74,9 @@ public:
 	
 	///This returns the error
 	const MapScriptError& getError() const;
+	
+	///Execute a step of script corresponding to a step of the game engine
+	void syncStep(GameGUI *gui);
 
 private:
 	std::string script;

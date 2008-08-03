@@ -1187,6 +1187,7 @@ void Game::scriptSyncStep()
 {
 	// do a script step
 	script.syncStep(gui);
+	mapscript.syncStep(gui);
 }
 
 

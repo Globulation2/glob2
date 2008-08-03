@@ -37,9 +37,9 @@ struct Thread
 		usl(usl)
 	{}
 	
-	Value* run();
-	Value* run(size_t& steps);
-	Value* step();
+	void run();
+	void run(size_t& steps);
+	bool step();
 	
 	void markForGC();
 };

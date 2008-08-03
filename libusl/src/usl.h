@@ -15,7 +15,7 @@ struct Usl
 	virtual ~Usl() {}
 	
 	void includeScript(const std::string& name, std::istream& source);
-	Thread* createThread(const std::string& name, std::istream& source);
+	void createThread(const std::string& name, std::istream& source);
 	
 	virtual std::ifstream* openFile(const std::string& name);
 	
@@ -27,12 +27,14 @@ struct Usl
 	Scope* root;
 	Cache cache;
 	Threads threads;
+	size_t threadRoundRobinIndex;
 	
-	void run();
-	bool run(size_t& steps);
+	/// Run one thread (round-robin over all threads) for a maximum of steps bytecodes executions
+	void run(size_t& steps);
 	
 private:
 	Scope* compile(const std::string& name, std::istream& source);
+	Thread* createThread(Scope* scope);
 	friend struct FileLoad;
 };
 
