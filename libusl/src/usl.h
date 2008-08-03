@@ -27,10 +27,9 @@ struct Usl
 	Scope* root;
 	Cache cache;
 	Threads threads;
-	size_t threadRoundRobinIndex;
 	
 	/// Run one thread (round-robin over all threads) for a maximum of steps bytecodes executions
-	void run(size_t& steps);
+	size_t run(size_t steps);
 	
 private:
 	Scope* compile(const std::string& name, std::istream& source);

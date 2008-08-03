@@ -28,17 +28,26 @@ struct Thread
 		void markForGC();
 	};
 	
+	enum State {
+		RUN,
+		YIELD,
+		STOP
+	};
+	
 	typedef std::vector<Frame> Frames;
 	
 	Usl* usl;
+	State state;
 	Frames frames;
 	
-	Thread(Usl* usl):
-		usl(usl)
-	{}
+	Thread(Usl* usl, Thunk* thunk):
+		usl(usl), state(RUN)
+	{
+		frames.push_back(thunk);
+	}
 	
-	void run();
-	void run(size_t& steps);
+	size_t run();
+	size_t run(size_t steps);
 	bool step();
 	
 	void markForGC();
