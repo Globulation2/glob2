@@ -1,29 +1,61 @@
 #include "code.h"
 #include "interpreter.h"
+#include "tree.h"
+#include "debug.h"
+#include "error.h"
 
-ScopePrototype* thisMember(Prototype* outer)
+#include <sstream>
+
+using namespace std;
+
+ThunkPrototype* thisMember(Prototype* outer)
 {
-	ScopePrototype* thunk = new ScopePrototype(0, outer); // TODO: GC
-	thunk->body.push_back(new ScopeCode());
+	ThunkPrototype* thunk = new ThunkPrototype(0, outer); // TODO: GC
+	thunk->body.push_back(new ThunkCode());
 	thunk->body.push_back(new ParentCode());
-	thunk->body.push_back(new ReturnCode());
 	return thunk;
 }
-
-ScopePrototype* nativeMethodMember(Method* method)
+/*
+struct ScopeGet: NativeMethod
 {
-	ScopePrototype* thunk = new ScopePrototype(0, method->outer); // TODO: GC
-	thunk->body.push_back(new ScopeCode());
+	ScopeGet(Prototype* outer):
+		NativeMethod(outer, "Scope::get", new ValPatternNode(Position(), "index"))
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		Scope* scope = dynamic_cast<Scope*>(receiver);
+		Integer* index = dynamic_cast<Integer*>(argument);
+		
+		assert(scope);
+		assert(index);
+		
+		assert(index->value >= 0);
+		assert(size_t(index->value) < scope->locals.size());
+		// TODO get a thunk
+		
+		return scope->locals[index->value];
+	}
+};
+
+ScopePrototype* getMember(Prototype* outer)
+{
+	return nativeMethodMember(new ScopeGet(outer));
+}
+*/
+ThunkPrototype* nativeMethodMember(NativeMethod* method)
+{
+	ThunkPrototype* thunk = new ThunkPrototype(0, method->outer); // TODO: GC
+	thunk->body.push_back(new ThunkCode());
 	thunk->body.push_back(new ParentCode());
-	thunk->body.push_back(new FunCode(method));
-	thunk->body.push_back(new ReturnCode());
+	thunk->body.push_back(new CreateCode<Function>(method));
 	return thunk;
 }
 
 
 void Code::dump(std::ostream &stream) const
 {
-	stream << typeid(*this).name();
+	stream << unmangle(typeid(*this).name());
 	dumpSpecific(stream);
 }
 
@@ -71,20 +103,18 @@ void EvalCode::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
 	Thread::Frame::Stack& stack = frames.back().stack;
-	
 	assert(stack.size() >= 1);
 	
-	// get the function
+	// get the thunk
 	Thunk* thunk = dynamic_cast<Thunk*>(stack.back());
 	stack.pop_back();
 	
-	assert(thunk != 0);
-	
-	// create a new scope
-	Scope* scope = new Scope(thread->heap, thunk->method, thunk->receiver);
+	if (frames.back().nextInstr == frames.back().thunk->thunkPrototype()->body.size())
+		frames.pop_back();
 	
 	// push a new frame
-	frames.push_back(scope);
+	assert(thunk != 0); // TODO: This assert can be triggered by the user
+	frames.push_back(thunk);
 }
 
 
@@ -101,17 +131,22 @@ void SelectCode::execute(Thread* thread)
 	stack.pop_back();
 	
 	// get definition
-	ScopePrototype* def = receiver->prototype->lookup(name);
-	assert(def != 0);
+	ThunkPrototype* def = receiver->prototype->lookup(name);
+	if (def == 0)
+	{
+		const Thread::Frame& frame = thread->frames.back();
+		ostringstream message;
+		message << "member <" << name << "> not found in ";
+		receiver->dump(message);
+		message << "(" << receiver->prototype << ")";
+		throw Exception(thread->debugInfo->find(frame.thunk->thunkPrototype(), frame.nextInstr), message.str());
+	}
 	
 	// create a thunk
-	Thunk* thunk = new Thunk(thread->heap, receiver, def);
+	Thunk* thunk = new Thunk(thread->heap, def, receiver);
 	
 	// put the thunk on the stack
 	stack.push_back(thunk);
-	
-	// evaluate the thunk
-	EvalCode::execute(thread);
 }
 
 void SelectCode::dumpSpecific(std::ostream &stream) const
@@ -124,28 +159,52 @@ void ApplyCode::execute(Thread* thread)
 {
 	Thread::Frames& frames = thread->frames;
 	Thread::Frame::Stack& stack = frames.back().stack;
+	assert(stack.size() >= 2);
 	
 	// get argument
 	Value* argument = stack.back();
 	stack.pop_back();
 	
+	// get the function
+	Function* function = dynamic_cast<Function*>(stack.back());
+	assert(function != 0); // TODO: This assert can be triggered by the user
+	stack.pop_back();
+	
+	if (frames.back().nextInstr == frames.back().thunk->thunkPrototype()->body.size())
+		frames.pop_back();
+
 	// push a new frame
-	EvalCode::execute(thread);
+	Scope* scope = new Scope(thread->heap, function->prototype, function->outer);
+	frames.push_back(scope);
 	
 	// put the argument on the stack
 	frames.back().stack.push_back(argument);
 }
 
 
+ValCode::ValCode(size_t index):
+	index(index)
+{}
+
 void ValCode::execute(Thread* thread)
 {
 	assert(thread->frames.size() > 0);
-	assert(thread->frames.back().stack.size() > 0);
 	
 	Thread::Frame& frame = thread->frames.back();
 	Thread::Frame::Stack& stack = frame.stack;
-	frame.scope->locals.push_back(stack.back());
+	Scope* scope = dynamic_cast<Scope*>(frame.thunk);
+	
+	assert(stack.size() > 0);
+	assert(scope);
+	assert(scope->locals.size() > index);
+	
+	scope->locals[index] = stack.back();
 	stack.pop_back();
+}
+
+void ValCode::dumpSpecific(std::ostream &stream) const
+{
+	stream << " " << index;
 }
 
 
@@ -156,10 +215,10 @@ void ParentCode::execute(Thread* thread)
 	Value* value = stack.back();
 	stack.pop_back();
 	
-	Scope* scope = dynamic_cast<Scope*>(value);
-	assert(scope != 0); // Should not fail if the parser is bug-free
+	Thunk* thunk = dynamic_cast<Thunk*>(value);
+	assert(thunk != 0); // Should not fail if the parser is bug-free
 	
-	stack.push_back(scope->outer);
+	stack.push_back(thunk->outer);
 }
 
 
@@ -176,46 +235,38 @@ void DupCode::execute(Thread* thread)
 }
 
 
-void ScopeCode::execute(Thread* thread)
+void ThunkCode::execute(Thread* thread)
 {
 	Thread::Frame& frame = thread->frames.back();
-	frame.stack.push_back(frame.scope);
+	frame.stack.push_back(frame.thunk);
 }
 
 
-void ReturnCode::execute(Thread* thread)
-{
-	Value* value = thread->frames.back().stack.back();
-	thread->frames.pop_back();
-	thread->frames.back().stack.push_back(value);
-}
-
-
-ArrayCode::ArrayCode(size_t size):
-	size(size)
+NativeThunkCode::NativeThunkCode(NativeThunk* thunk):
+	thunk(thunk)
 {}
 
-void ArrayCode::execute(Thread* thread)
+void NativeThunkCode::execute(Thread* thread)
 {
-	Array* array = new Array(thread->heap);
-	Thread::Frame::Stack &stack = thread->frames.back().stack;
-	Thread::Frame::Stack::const_iterator stackEnd = stack.end();
-	std::copy(stackEnd - size, stackEnd, std::back_inserter(array->values));
-	stack.resize(stack.size() - size);
-	stack.push_back(array);
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	
+	Value* receiver = stack.back();
+	stack.pop_back();
+	
+	stack.push_back(thunk->execute(thread, receiver));
 }
 
-void ArrayCode::dumpSpecific(std::ostream &stream) const
+void NativeThunkCode::dumpSpecific(std::ostream &stream) const
 {
-	stream << " " << size;
+	stream << " " << thunk->name;
 }
 
 
-NativeCode::NativeCode(NativeMethod* method):
+NativeMethodCode::NativeMethodCode(NativeMethod* method):
 	method(method)
 {}
 
-void NativeCode::execute(Thread* thread)
+void NativeMethodCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
@@ -227,17 +278,19 @@ void NativeCode::execute(Thread* thread)
 	stack.push_back(method->execute(thread, receiver, argument));
 }
 
-void NativeCode::dumpSpecific(std::ostream &stream) const
+void NativeMethodCode::dumpSpecific(std::ostream &stream) const
 {
 	stream << " " << method->name;
 }
 
 
-DefRefCode::DefRefCode(ScopePrototype* def):
-	def(def)
+template <typename ThunkType>
+CreateCode<ThunkType>::CreateCode(typename ThunkType::Prototype* prototype):
+	prototype(prototype)
 {}
 
-void DefRefCode::execute(Thread* thread)
+template <typename ThunkType>
+void CreateCode<ThunkType>::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
 	
@@ -245,38 +298,22 @@ void DefRefCode::execute(Thread* thread)
 	Value* receiver = stack.back();
 	stack.pop_back();
 	
-	assert(def->outer == receiver->prototype); // Should not fail if the parser is bug-free
+	assert(prototype->outer == 0 || prototype->outer == receiver->prototype); // Should not fail if the parser is bug-free
 	
 	// create a thunk
-	Thunk* thunk = new Thunk(thread->heap, receiver, def);
+	ThunkType* thunk = new ThunkType(thread->heap, prototype, receiver);
 	
-	// put the function on the stack
+	// put the thunk on the stack
 	stack.push_back(thunk);
 }
 
-void DefRefCode::dumpSpecific(std::ostream &stream) const
+template <typename ThunkType>
+void CreateCode<ThunkType>::dumpSpecific(std::ostream &stream) const
 {
-	stream << " " << def;
+	stream << " " << prototype;
 }
 
+template struct CreateCode<Thunk>;
+template struct CreateCode<Scope>;
+template struct CreateCode<Function>;
 
-FunCode::FunCode(Method* method):
-	method(method)
-{}
-
-void FunCode::execute(Thread* thread)
-{
-	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	
-	// get receiver
-	Value* receiver = stack.back();
-	stack.pop_back();
-	
-	assert(method->outer == receiver->prototype); // Should not fail if the parser is bug-free
-	
-	// create a function
-	Function* function = new Function(thread->heap, receiver, method);
-	
-	// put the function on the stack
-	stack.push_back(function);
-}

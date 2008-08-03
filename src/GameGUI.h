@@ -146,6 +146,20 @@ public:
 		HilightUnitsAssignedBar=7,
 		///This causes the worker/explorer/warrior ratio bars on a swarm to be hilighted
 		HilightRatioBar=8,
+		///This causes the workers working/free statistic to be hilighted
+		HilightWorkersWorkingFreeStat=9,
+		///This causes the exploresrs working/free statistic to be hilighted
+		HilightExplorersWorkingFreeStat=10,
+		///This causes the warriors working/free statistic to be hilighted
+		HilightWarriorsWorkingFreeStat=11,
+		///This causes the forbidden zone to be hilighted
+		HilightForbiddenZoneOnPanel=12,
+		///This causes the defense zone to be hilighted
+		HilightGuardZoneOnPanel=13,
+		///This causes the clearing zone to be hilighted
+		HilightClearingZoneOnPanel=14,
+		///This causes the brush selector to be hilighted
+		HilightBrushSelector=15,
 		
 		///Anything above this number causes a particular building on the right side menu to be hilighted,
 		///the value is HilightBuilding+IntBuildingType

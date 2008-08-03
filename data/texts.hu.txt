@@ -185,7 +185,7 @@ Válassz egy térképet
 [clear area]
 
 [Clearing:]
-Tisztítás: 
+Tisztítás:
 [clearingflag explanation 2]
 
 [clearingflag explanation]

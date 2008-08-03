@@ -280,7 +280,9 @@ void MultiplayerGame::startGame()
 bool MultiplayerGame::isGameReadyToStart()
 {
 	if(state != ReadyToGo)
+	{
 		return false;
+	}
 	
 	if(mode == HostingGame)
 	{

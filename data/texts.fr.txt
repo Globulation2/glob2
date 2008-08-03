@@ -142,6 +142,8 @@ Construit
 Réglages de l'unité
 [building site]
 chantier
+[Building Tool Line Explanation]
+
 [Buildings]
 Bâtiments
 [Bullets]
@@ -193,7 +195,7 @@ Zone de défrichage
 [Clearing:]
 Défrichage de:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Enlève les ressources
 [clearingflag]
@@ -210,6 +212,8 @@ Compiler le script
 
 [connect]
 Connecter
+[connecting to game]
+
 [connecting to]
 Connection à
 [Construction Site Defaults]
@@ -259,7 +263,7 @@ Défense
 [Delete game]
 Effacer le jeu séléctionné
 [delete]
-Effacer 
+Effacer
 [desert]
 Désert
 [destroy building]
@@ -303,7 +307,7 @@ Egal
 [escape]
 Echapement
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Attire des exploratrices
 [explorationflag]
@@ -407,9 +411,9 @@ Récolte
 [home]
 Maison
 [hospital explanation 2]
- 
+
 [hospital explanation]
-Soigne vos unités 
+Soigne vos unités
 [hospital]
 Hôpital
 [host]
@@ -431,7 +435,7 @@ En chemin
 [increase units working]
 Augmenter le nombre d'unité travaillant
 [inn explanation 2]
- 
+
 [inn explanation]
 Nourrit vos unités
 [inn]
@@ -618,6 +622,8 @@ Ouvrir éditeur de script
 
 [open]
 ouvert
+[OpenGL]
+
 [Options]
 
 [options]
@@ -684,6 +690,8 @@ Proportions
 
 [Register a new YOG user with password]
 Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
+[Register]
+
 [remember unit]
 Se rappeler l'unité
 [Remember YOG password localy]
@@ -700,6 +708,8 @@ Réparer la bâtiment
 Réparer
 [repeat area]
 Répéter la zone
+[Repeat your password :]
+
 [restore default shortcuts]
 Restaurer les raccourcis par défaut
 [return to editor]
@@ -845,9 +855,9 @@ trop faim
 [Statistics]
 Statistiques
 [Still (i)]
-Encore 
+Encore
 [still (w)]
-Encore 
+Encore
 [still one unit working]
 Une unité travaille encore
 [Still one]
@@ -857,7 +867,7 @@ Pierre
 [stone]
 Pierre
 [stonewall explanation 2]
- 
+
 [stonewall explanation]
 Elément passif de défense
 [stonewall]
@@ -869,7 +879,7 @@ Nom du serveur hôte
 [swamp terrain]
 Marais
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Crée de nouvelles unités
 [swarm]
@@ -1063,7 +1073,7 @@ Attend une touche
 [Walk]
 Marche
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Attire des guerrières
 [warflag]
@@ -1130,6 +1140,8 @@ Le metaserveur YOG a refusé la connexion car votre nom d'utilisateur est déjà
 
 [YESTS_CREATED]
 Le système de connexion est prêt à contacter le metaserveur YOG pour se connecter.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 [yog block command help]

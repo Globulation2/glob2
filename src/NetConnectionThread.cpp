@@ -48,11 +48,21 @@ void NetConnectionThread::operator()()
 		SDL_Delay(20);
 		{
 			//First parse incoming thread messages
-			boost::recursive_mutex::scoped_lock lock(incomingMutex);
-			while(!incoming.empty())
+			while(true)
 			{
-				boost::shared_ptr<NetConnectionThreadMessage> message = incoming.front();
-				incoming.pop();
+				boost::shared_ptr<NetConnectionThreadMessage> message;
+				{
+					boost::recursive_mutex::scoped_lock lock(incomingMutex);
+					if(!incoming.empty())
+					{
+						message = incoming.front();
+						incoming.pop();
+					}
+					else
+					{
+						break;
+					}
+				}
 				Uint8 type = message->getMessageType();
 				switch(type)
 				{

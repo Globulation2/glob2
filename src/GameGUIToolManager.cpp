@@ -74,6 +74,11 @@ void GameGUIToolManager::deactivateTool()
 		flushBrushOrders(game.gui->localTeamNo);
 		brush.unselect();
 	}
+	if(mode == PlaceBuilding)
+	{
+		building = "";
+	}
+	mode = NoTool;
 }
 
 
@@ -101,8 +106,6 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		///This allows the drag-placing of walls
 		else
 		{
-			int bw = 0;
-			int bh = 0;
 		
 			int startx = firstPlacementX;
 			int endx = mapX;
@@ -124,7 +127,9 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				diry = -diry;
 				disty = game.map.getH() -  disty;
 			}
-					
+			
+			int bw = 0;
+			int bh = 0;
 			if(distx > disty)
 			{
 				int px = 0;
@@ -132,25 +137,25 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				int y = starty;
 				for(int x=startx; x!=endx;)
 				{
+					bw-=1;
 					px+=1;
-					if(bw == 0)
+					if(bw <= 0)
 					{
 						drawBuildingAt(x, y, localteam, viewportX, viewportY);
 						bw = bt->width;
 						bh = bt->height;
 					}
-					bw-=1;
 					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
 					{
 						y=game.map.normalizeY(y+diry);
-						if(bh == 0)
+						bh-=1;
+						py+=1;
+						if(bh <= 0)
 						{
 							drawBuildingAt(x, y, localteam, viewportX, viewportY);
 							bw = bt->width;
 							bh = bt->height;
 						}
-						bh-=1;
-						py+=1;
 					}
 					x=game.map.normalizeX(x+dirx);
 				}
@@ -162,29 +167,32 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				int x = startx;
 				for(int y=starty; y!=endy;)
 				{
+					bh-=1;
 					py+=1;
-					if(bh == 0)
+					if(bh <= 0)
 					{
 						drawBuildingAt(x, y, localteam, viewportX, viewportY);
 						bw = bt->width;
 						bh = bt->height;
 					}
-					bh-=1;
 					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
 					{
 						x=game.map.normalizeX(x+dirx);
-						if(bw == 0)
+						bw-=1;
+						px+=1;
+						if(bw <= 0)
 						{
 							drawBuildingAt(x, y, localteam, viewportX, viewportY);
 							bw = bt->width;
 							bh = bt->height;
 						}
-						bw-=1;
-						px+=1;
 					}
 					y=game.map.normalizeY(y+diry);
 				}
 			}
+			if(bt->width == 1 && bt->height==1)
+				drawBuildingAt(endx, endy, localteam, viewportX, viewportY);
+				
 		}
 	}
 	else if(mode == PlaceZone)

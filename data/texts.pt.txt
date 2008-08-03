@@ -142,6 +142,8 @@ Construir
 
 [building site]
 Sítio de constr.
+[Building Tool Line Explanation]
+
 [Buildings]
 Prédios
 [Bullets]
@@ -210,6 +212,8 @@ Compilar script
 
 [connect]
 Conectar
+[connecting to game]
+
 [connecting to]
 Conectando-se a
 [Construction Site Defaults]
@@ -616,6 +620,8 @@ Aqui
 
 [open]
 aberto
+[OpenGL]
+
 [Options]
 
 [options]
@@ -682,6 +688,8 @@ Proporções
 
 [Register a new YOG user with password]
 Registrar um novo usuário de YOG com contrasenha. (inseguro)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -697,6 +705,8 @@ Lembrar a contrasenha localmente. (inseguro)
 [repair]
 Arrumar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -843,9 +853,9 @@ morrendo
 [Statistics]
 Estadísticas
 [Still (i)]
-Ainda 
+Ainda
 [still (w)]
-Ainda 
+Ainda
 [still one unit working]
 Ainda uma unid. trabalhando
 [Still one]
@@ -1126,6 +1136,8 @@ O metaservidor YOG tem rejeitado a conexão porque o nome de usuário está em u
 
 [YESTS_CREATED]
 O sistema de conexão está pronto para contactar-se com o metaservidor YOG.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposível conectar-se. Parece que o metaservidor YOG está caido.
 [yog block command help]

@@ -142,6 +142,8 @@ Insaa et
 
 [building site]
 insaa alani
+[Building Tool Line Explanation]
+
 [Buildings]
 Binalar
 [Bullets]
@@ -193,7 +195,7 @@ Temizlik bolgesi
 [Clearing:]
 Aciklik:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Kaynaklari temizler
 [clearingflag]
@@ -210,6 +212,8 @@ Script derle
 
 [connect]
 Baglan
+[connecting to game]
+
 [connecting to]
 Suraya baglaniyor:
 [Construction Site Defaults]
@@ -303,7 +307,7 @@ Sifrenizi girin:
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Kasifleri ceker
 [explorationflag]
@@ -407,7 +411,7 @@ Hasat et
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Birimlerinizi iyilestirir
 [hospital]
@@ -431,7 +435,7 @@ Yolda
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Birimlerinizi besler
 [inn]
@@ -616,6 +620,8 @@ Burada
 
 [open]
 Ac
+[OpenGL]
+
 [Options]
 
 [options]
@@ -682,6 +688,8 @@ Oranlar
 
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -697,6 +705,8 @@ Parolayi yerel olarak animsa. (guvenli degil)
 [repair]
 Onar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -843,7 +853,7 @@ cok ac
 [Statistics]
 Istatistikler
 [Still (i)]
-Hala 
+Hala
 [still (w)]
 Hala
 [still one unit working]
@@ -867,7 +877,7 @@ Sunucu adi
 [swamp terrain]
 Bataklik
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Yeni birimler olusturur
 [swarm]
@@ -1061,7 +1071,7 @@ bekleniyor: %0
 [Walk]
 Yuru
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Savascilari ceker
 [warflag]
@@ -1128,6 +1138,8 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
 
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
 [yog block command help]

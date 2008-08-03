@@ -174,6 +174,11 @@ def configure(env):
     if conf.CheckLib('fribidi') and conf.CheckCXXHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
+
+    #Do checks for portaudio
+    if conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
+        configfile.add("HAVE_PORTAUDIO ", "Defined when Port Audio support is present and compiled")
+        env.Append(LIBS=['portaudio'])
         
     if missing:
         for t in missing:
@@ -201,6 +206,7 @@ def main():
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
+    env.Append(CPPPATH=['#libusl/src', '#'])
     if env['release']:
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS=' -O2')

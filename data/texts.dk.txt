@@ -121,7 +121,7 @@ er væk:
 [barracks explanation 2]
 Af dine krigere
 [barracks explanation]
-Forbedre militærenheder 
+Forbedre militærenheder
 [barracks]
 Kaserne
 [beach size]
@@ -190,6 +190,8 @@ Byg
 Enheder
 [building site]
 bygningssted
+[Building Tool Line Explanation]
+
 [Buildings]
 Bygninger
 [Bullets]
@@ -241,7 +243,7 @@ Ophæv areal
 [Clearing:]
 Rydning:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Fjern ressourcer
 [clearingflag]
@@ -258,6 +260,8 @@ Kompilere skript
 
 [connect]
 Forbinder
+[connecting to game]
+
 [connecting to]
 Forbinder til
 [Construction Site Defaults]
@@ -357,7 +361,7 @@ Skriv din adgangskode :
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Angrib udforskere
 [explorationflag]
@@ -461,7 +465,7 @@ Høst
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Kurere dine enheder
 [hospital]
@@ -485,7 +489,7 @@ Er på vej
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Fodre dine enheder
 [inn level 0]
@@ -678,6 +682,8 @@ Her
 
 [open]
 Åben
+[OpenGL]
+
 [Options]
 
 [options]
@@ -744,6 +750,8 @@ Proportioner
 
 [Register a new YOG user with password]
 Register en ny YOG bruger med adgangskode. (usikker)
+[Register]
+
 [remember unit]
 Husk enhed
 [Remember YOG password localy]
@@ -760,6 +768,8 @@ Start/Stop Reparation
 Reparere
 [repeat area]
 antal gange det samme landskab
+[Repeat your password :]
+
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
@@ -929,7 +939,7 @@ Serverens maskinnavn
 [swamp terrain]
 Sump
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Byg en ny enhed
 [swarm level 0]
@@ -1125,7 +1135,7 @@ Vænter på %0
 [Walk]
 Gå
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Angrib krigere
 [warflag]
@@ -1192,6 +1202,8 @@ YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i br
 
 [YESTS_CREATED]
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
 [yog block command help]

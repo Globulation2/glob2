@@ -45,7 +45,7 @@ Spreobrnil si enoto druge ekipe %0
 [AI]
 UI
 [ai]
-UI 
+UI
 [AICastor-Description]
 
 [AICastor]
@@ -142,6 +142,8 @@ Zgradi
 
 [building site]
 gradbišče
+[Building Tool Line Explanation]
+
 [Buildings]
 Stavbe
 [Bullets]
@@ -187,7 +189,7 @@ Izberi mapo
 [Clearing:]
 Brisanje:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Razkreije surovine
 [clearingflag]
@@ -204,6 +206,8 @@ Zgradi skripto
 
 [connect]
 Vspostavi povezavo
+[connecting to game]
+
 [connecting to]
 Povezujem na
 [Construction Site Defaults]
@@ -297,7 +301,7 @@ Vnesi svoje geslo :
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Prevlači raziskovalce
 [explorationflag]
@@ -401,7 +405,7 @@ Poberi
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Zdravi tvoje enote
 [hospital]
@@ -425,7 +429,7 @@ Na poti
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Nahranjuje tvoje enote
 [inn]
@@ -610,6 +614,8 @@ Tukaj
 
 [open]
 odpri
+[OpenGL]
+
 [Options]
 
 [options]
@@ -676,6 +682,8 @@ Razmerja
 
 [Register a new YOG user with password]
 Prijavi novega YOG uporabnika z geslom. (Ni varno!)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -691,6 +699,8 @@ Zapomni si YOG geslo lokalno. (Ni varno)
 [repair]
 Popravi
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -837,7 +847,7 @@ lačen
 [Statistics]
 Statistika
 [Still (i)]
-Še vedno 
+Še vedno
 [still (w)]
 Še vedno
 [still one unit working]
@@ -849,7 +859,7 @@ Kamenje
 [stone]
 
 [stonewall explanation 2]
- 
+
 [stonewall explanation]
 Pasiven obrambni sistem
 [stonewall]
@@ -861,7 +871,7 @@ Strežnikovo ime
 [swamp terrain]
 
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Ustvarja nove enote
 [swarm]
@@ -959,7 +969,7 @@ Tržnica je napadena
 [the racetrack is finished]
 Tekaška steza je zgrajena
 [the racetrack is under attack]
-Tekaška steza je napadena 
+Tekaška steza je napadena
 [the school is finished]
 Šola je zgrajena
 [the school is under attack]
@@ -1055,7 +1065,7 @@ Različica
 [Walk]
 Hodi
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Privlači vojake
 [warflag]
@@ -1120,6 +1130,8 @@ YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
 [yog block command help]

@@ -4,7 +4,7 @@ changes={"" : ""}
 def translation_check(filename, keys):
     print "Examining %s" % (filename)
     f=open(filename)
-    lines = [x.replace("\n", "") for x in f.readlines()]
+    lines = [x.rstrip() for x in f.readlines()]
     f.close()
     n = 0
     expect_type="key"
@@ -52,7 +52,7 @@ def main():
     keyf=open("texts.keys.txt")
     keys=[]
     for line in keyf:
-        line=line.replace("\n", "")
+        line=line.rstrip()
         keys.append(changes.get(line, line))
     keyf.close()
     nkeys = [(s.lower(), s) for s in keys]
@@ -62,7 +62,7 @@ def main():
         keyf.write(key[1] + "\n")
     keyf.close()
     for t in translations:
-    	nt = t.replace("data/", "").replace("\n", "")
+    	nt = t.replace("data/", "").rstrip()
         if len(sys.argv)==1 or sys.argv[1]==nt:
             if nt != "texts.keys.txt":
                 translation_check(nt, keys) 
