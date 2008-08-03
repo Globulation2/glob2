@@ -33,7 +33,7 @@ Value* Thread::getRootLocal(const std::string& name)
 
 bool Thread::step()
 {
-	if (!frames.empty())
+	if (state == RUN)
 	{
 		Thread::Frame& frame = frames.back();
 		ThunkPrototype* thunk = frame.thunk->thunkPrototype();
@@ -54,7 +54,7 @@ bool Thread::step()
 		{
 			Thread::Frame& frame = frames.back();
 			if (frame.nextInstr < frame.thunk->thunkPrototype()->body.size())
-				return true;
+				break;
 			Value* retVal = frame.stack.back();
 			frames.pop_back();
 			if (!frames.empty())
@@ -63,9 +63,11 @@ bool Thread::step()
 			}
 			else
 			{
-				return true;
+				state = STOP;
+				break;
 			}
 		}
+		return true;
 	}
 	else
 	{
@@ -73,18 +75,26 @@ bool Thread::step()
 	}
 }
 
-void Thread::run(size_t& steps)
+size_t Thread::run(size_t maxSteps)
 {
-	while (steps && step())
+	size_t steps;
+	for (steps = 0; steps < maxSteps; ++steps)
 	{
-		--steps;
+		if (!step())
+			break;
 	}
+	return steps;
 }
 
-void Thread::run()
+size_t Thread::run()
 {
-	while (step())
-		;
+	size_t steps;
+	for (steps = 0; true; ++steps)
+	{
+		if (!step())
+			break;
+	}
+	return steps;
 }
 
 void Thread::markForGC()
