@@ -61,7 +61,7 @@ ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 	scriptWidgets.push_back(scriptEditor);
 	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_TOP, "standard");
 	scriptWidgets.push_back(compilationResult);
-	scriptWidgets.push_back(new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
+	//scriptWidgets.push_back(new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
 	scriptWidgets.push_back(new TextButton(370, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD));
 	scriptWidgets.push_back(new TextButton(480, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE));
 
@@ -434,6 +434,12 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			}
 			changeTabAgain=false;
 		}
+	}
+	else if(action == TEXT_MODIFIED)
+	{
+		// on typing compilation
+		if (source == scriptEditor)
+			testCompile();
 	}
 }
 
