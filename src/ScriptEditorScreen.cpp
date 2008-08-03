@@ -521,6 +521,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 					compilationResult->setText(FormatableString("Loading script from %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
+				else
+					testCompile();
 			}
 			else
 			{
