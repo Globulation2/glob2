@@ -4,6 +4,7 @@
 #include "interpreter.h"
 #include "tree.h"
 #include "debug.h"
+#include "usl.h"
 
 #include <cassert>
 #include <algorithm>
@@ -42,7 +43,7 @@ struct ScopeSize: NativeThunk
 	{
 		Scope* scope = dynamic_cast<Scope*>(receiver);
 		assert(scope);
-		return new Integer(thread->heap, scope->locals.size());
+		return new Integer(&thread->usl->heap, scope->locals.size());
 	}
 } scopeSize;
 
@@ -79,7 +80,7 @@ struct ScopeMetaPrototype: NativeThunk
 	{
 		Scope* scope = dynamic_cast<Scope*>(receiver);
 		assert(scope);
-		return new MetaPrototype(thread->heap, scope->scopePrototype(), scope->outer);
+		return new MetaPrototype(&thread->usl->heap, scope->scopePrototype(), scope->outer);
 	}
 } scopeMetaPrototype;
 
@@ -145,7 +146,7 @@ struct PrototypeWith: NativeMethod
 		{
 			Scope* scope = dynamic_cast<Scope*>(argument);
 			assert(scope); // TODO: exception
-			thatProt = new MetaPrototype(thread->heap, scope->scopePrototype(), scope->outer);
+			thatProt = new MetaPrototype(&thread->usl->heap, scope->scopePrototype(), scope->outer);
 		}
 		assert(thatProt);
 
@@ -159,11 +160,11 @@ struct PrototypeWith: NativeMethod
 		
 		if (dynamic_cast<Function*>(thatProt))
 		{
-			return new Function(thread->heap, target, thatProt->outer);
+			return new Function(&thread->usl->heap, target, thatProt->outer);
 		}
 		else
 		{
-			return new Scope(thread->heap, target, thatProt->outer);
+			return new Scope(&thread->usl->heap, target, thatProt->outer);
 		}
 	}
 } prototypeWith;
@@ -204,7 +205,7 @@ struct IntegerAdd: NativeMethod
 		assert(thisInt);
 		assert(thatInt);
 		
-		return new Integer(thread->heap, thisInt->value + thatInt->value);
+		return new Integer(&thread->usl->heap, thisInt->value + thatInt->value);
 	}
 } integerAdd;
 
@@ -222,7 +223,7 @@ struct IntegerSub: NativeMethod
 		assert(thisInt);
 		assert(thatInt);
 		
-		return new Integer(thread->heap, thisInt->value - thatInt->value);
+		return new Integer(&thread->usl->heap, thisInt->value - thatInt->value);
 	}
 } integerSub;
 
@@ -241,9 +242,9 @@ struct IntegerLessThan: NativeMethod
 		assert(thatInt);
 		
 		bool result = thisInt->value < thatInt->value;
-		string resultName(result ? "true" : "false");
+		string resultName(result ? "true" : "false");/*
 		Value*& resultValue(result ? thread->runtimeValues.trueValue : thread->runtimeValues.falseValue);
-		return thread->getRuntimeValue(resultValue, resultName);
+		return thread->getRuntimeValue(resultValue, resultName);*/ assert(false);
 	}
 } integerLessThan;
 
@@ -256,4 +257,12 @@ Integer::IntegerPrototype::IntegerPrototype():
 }
 
 Integer::IntegerPrototype Integer::integerPrototype;
+
+
+String::StringPrototype::StringPrototype():
+	Prototype(0)
+{
+}
+
+String::StringPrototype String::stringPrototype;
 
