@@ -129,7 +129,13 @@ void Usl::includeScript(const std::string& name, std::istream& stream)
 		getter->body.push_back(new ValRefCode(index));
 		getter->body.push_back(new SelectCode(name));
 		getter->body.push_back(new EvalCode());
-		root->scopePrototype()->members[name] = getter;
+		root->prototype->members[name] = getter;
+	}
+	
+	ScopePrototype* scopePrototype = scope->scopePrototype();
+	for (size_t i = 0; i < scopePrototype->locals.size(); ++i)
+	{
+		runtimeValues[scopePrototype->locals[i]] = scope->locals[i];
 	}
 }
 
