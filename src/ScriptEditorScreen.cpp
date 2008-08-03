@@ -61,7 +61,7 @@ ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 	scriptWidgets.push_back(scriptEditor);
 	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_TOP, "standard");
 	scriptWidgets.push_back(compilationResult);
-	cursorPosition=new Text(230, 370, ALIGN_LEFT, ALIGN_TOP, "standard");
+	cursorPosition=new Text(230, 370, ALIGN_LEFT, ALIGN_TOP, "standard", "Line:1 Col:1");
 	scriptWidgets.push_back(cursorPosition);
 	//scriptWidgets.push_back(new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
 	scriptWidgets.push_back(new TextButton(370, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD));
