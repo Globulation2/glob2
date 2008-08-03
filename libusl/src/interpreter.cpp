@@ -31,61 +31,60 @@ Value* Thread::getRootLocal(const std::string& name)
 }
 */
 
-Value* Thread::step()
+bool Thread::step()
 {
-	Thread::Frame& frame = frames.back();
-	ThunkPrototype* thunk = frame.thunk->thunkPrototype();
-	size_t nextInstr = frame.nextInstr;
-	Code* code = thunk->body[nextInstr];
-	frame.nextInstr++;
-	
-	cout << thunk;
-	for (size_t i = 0; i < frames.size(); ++i)
-		cout << "[" << frames[i].stack.size() << "]";
-	cout << " " << usl->debug.find(thunk, nextInstr) << ": ";
-	code->dump(cout);
-	cout << endl;
-	
-	code->execute(this);
-	
-	while (true)
+	if (!frames.empty())
 	{
 		Thread::Frame& frame = frames.back();
-		if (frame.nextInstr < frame.thunk->thunkPrototype()->body.size())
-			return 0;
-		Value* retVal = frame.stack.back();
-		frames.pop_back();
-		if (!frames.empty())
+		ThunkPrototype* thunk = frame.thunk->thunkPrototype();
+		size_t nextInstr = frame.nextInstr;
+		Code* code = thunk->body[nextInstr];
+		frame.nextInstr++;
+		
+		cout << thunk;
+		for (size_t i = 0; i < frames.size(); ++i)
+			cout << "[" << frames[i].stack.size() << "]";
+		cout << " " << usl->debug.find(thunk, nextInstr) << ": ";
+		code->dump(cout);
+		cout << endl;
+		
+		code->execute(this);
+		
+		while (true)
 		{
-			frames.back().stack.push_back(retVal);
+			Thread::Frame& frame = frames.back();
+			if (frame.nextInstr < frame.thunk->thunkPrototype()->body.size())
+				return true;
+			Value* retVal = frame.stack.back();
+			frames.pop_back();
+			if (!frames.empty())
+			{
+				frames.back().stack.push_back(retVal);
+			}
+			else
+			{
+				return true;
+			}
 		}
-		else
-		{
-			return retVal;
-		}
+	}
+	else
+	{
+		return false;
 	}
 }
 
-Value* Thread::run(size_t& steps)
+void Thread::run(size_t& steps)
 {
-	while (steps)
+	while (steps && step())
 	{
-		Value* result = step();
 		--steps;
-		if (result)
-			return result;
 	}
-	return 0;
 }
 
-Value* Thread::run()
+void Thread::run()
 {
-	while (true)
-	{
-		Value* result = step();
-		if (result)
-			return result;
-	}
+	while (step())
+		;
 }
 
 void Thread::markForGC()

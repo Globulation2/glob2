@@ -37,17 +37,16 @@ MapScriptUSL::MapScriptUSL()
 }
 
 
-
 MapScriptUSL::~MapScriptUSL()
 {
 	
 }
 
 
-
 void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("MapScriptUSL");
+	// TODO: serialize state
 	stream->writeLeaveSection();
 }
 
@@ -56,9 +55,9 @@ void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
 	stream->readEnterSection("MapScriptUSL");
+	// TODO: deserialize state if version do match
 	stream->readLeaveSection();
 }
-
 
 
 bool MapScriptUSL::compileCode(const std::string& code)
@@ -107,8 +106,20 @@ bool MapScriptUSL::compileCode(const std::string& code)
 	return true;
 }
 
-
 const MapScriptError& MapScriptUSL::getError() const
 {
 	return error;
 }
+
+
+void MapScriptUSL::syncStep(GameGUI *gui)
+{
+	const size_t stepsMax = 10000;
+	size_t stepsCount = stepsMax;
+	usl.run(stepsCount);
+	if (stepsCount == 0)
+		cerr << "* Warning: USL script ate all its steps this time" << endl;
+	else
+		cerr << "* USL executed " << (stepsMax - stepsCount) << " steps" << endl;
+}
+
