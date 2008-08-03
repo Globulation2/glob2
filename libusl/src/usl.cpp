@@ -55,7 +55,7 @@ struct FileLoad: NativeMethod
 		
 		Value* value = usl->cache[filename];
 		if (value == 0)
-		{
+		{ // FIXME
 			auto_ptr<ifstream> stream(usl->openFile(filename));
 			Scope* scope = usl->compile(filename, *stream);
 			return scope;
@@ -68,11 +68,40 @@ struct FileLoad: NativeMethod
 } load;
 
 
-Usl::Usl() :
-	threadRoundRobinIndex(0)
+struct Yield: NativeMethod
+{
+	Yield():
+		NativeMethod(0, "Thread::Yield", new NilPatternNode(Position()))
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		thread->state = Thread::YIELD;
+	}
+} yield;
+
+
+struct Print: NativeMethod
+{
+	Print():
+		NativeMethod(0, "Debug::Print", new ValPatternNode(Position(), "text"))
+	{}
+	
+	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	{
+		String* string = dynamic_cast<String*>(argument);
+		std::cout << string->value << std::endl;
+		return argument;
+	}
+} print;
+
+
+Usl::Usl()
 {
 	ScopePrototype* prototype = new ScopePrototype(&heap, 0);
 	prototype->members["load"] = nativeMethodMember(&load);
+	prototype->members["yield"] = nativeMethodMember(&yield);
+	prototype->members["print"] = nativeMethodMember(&print);
 	
 	root = new Scope(&heap, prototype, 0);
 }
@@ -109,7 +138,7 @@ void Usl::createThread(const std::string& name, std::istream& stream)
 
 Thread* Usl::createThread(Scope* scope)
 {
-	threads.push_back(this);
+	threads.push_back(Thread(this, scope));
 	Thread* thread = &threads.back();
 	thread->frames.push_back(Thread::Frame(scope));
 	return thread;
@@ -142,18 +171,20 @@ ifstream* Usl::openFile(const string& name)
 	return new ifstream(name.c_str());
 }
 
-void Usl::run(size_t& steps)
+size_t Usl::run(size_t steps)
 {
-	if (threads.empty())
-		return;
+	size_t total = 0;
 	
-	if (threadRoundRobinIndex >= threads.size())
-		threadRoundRobinIndex = 0;
-	
-	threads[threadRoundRobinIndex].run(steps);
-	threadRoundRobinIndex++;
+	for (Threads::iterator it = threads.begin(); it != threads.end(); ++it)
+	{
+		if (it->state == Thread::YIELD)
+			it->state = Thread::RUN;
+		total += it->run(steps);
+	}
 	
 	// TODO: garbageCollect
+	
+	return total;
 }
 
 /*
