@@ -156,7 +156,7 @@ bool ScriptEditorScreen::testCompile(void)
 	{
 		MapScriptError error = mapScript->getError();
 		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-		compilationResult->setText(FormatableString("Error at %0:%1: %2").arg(error.getLine()+1).arg(error.getColumn()).arg(error.getMessage()).c_str());
+		compilationResult->setText(FormatableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
 		return false;
 	}
 }
