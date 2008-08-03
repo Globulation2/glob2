@@ -232,6 +232,8 @@ ExpressionNode* Parser::pathExpression(ExpressionNode* first)
 		case LPAR:
 		case LBRACE:
 		case LBRACK:
+		case NUM:
+		case STR:
 		{
 			ExpressionNode* argument = simpleExpression();
 			node.reset(new ApplyNode(position, node.release(), argument));
@@ -255,13 +257,15 @@ ExpressionNode* Parser::simpleExpression()
 		}
 	case NUM:
 		{
-			string str = identifier();
+			string str = token.string();
+			next();
 			int value = atoi(str.c_str());
 			return new ConstNode(position, new Integer(heap, value));
 		}
 	case STR:
 		{
-			string value = identifier();
+			string value = token.string();
+			next();
 			return new ConstNode(position, new String(heap, value));
 		}
 	case LPAR:

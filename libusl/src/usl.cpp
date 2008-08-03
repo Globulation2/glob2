@@ -5,6 +5,7 @@
 #include "interpreter.h"
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 using namespace std;
 
@@ -140,9 +141,7 @@ void Usl::createThread(const std::string& name, std::istream& stream)
 Thread* Usl::createThread(Scope* scope)
 {
 	threads.push_back(Thread(this, scope));
-	Thread* thread = &threads.back();
-	thread->frames.push_back(Thread::Frame(scope));
-	return thread;
+	return &threads.back();
 }
 
 Scope* Usl::compile(const std::string& name, std::istream& stream)
