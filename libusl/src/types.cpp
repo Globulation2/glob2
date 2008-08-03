@@ -242,9 +242,8 @@ struct IntegerLessThan: NativeMethod
 		assert(thatInt);
 		
 		bool result = thisInt->value < thatInt->value;
-		string resultName(result ? "true" : "false");/*
-		Value*& resultValue(result ? thread->runtimeValues.trueValue : thread->runtimeValues.falseValue);
-		return thread->getRuntimeValue(resultValue, resultName);*/ assert(false);
+		string resultName(result ? "true" : "false");
+		return thread->usl->runtimeValues[resultName];
 	}
 } integerLessThan;
 
