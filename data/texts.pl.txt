@@ -115,7 +115,7 @@ Oczekuj graczy
 [away:]
 zajęty:
 [Back]
-dostępny:
+Powrót
 [backspace]
 backspace
 [barracks explanation 2]
@@ -142,8 +142,6 @@ Budynki
 Wł. Budynków
 [building site]
 plac budowy
-[Building Tool Line Explanation]
-
 [Buildings]
 Budowle
 [Bullets]
@@ -206,8 +204,6 @@ Obliczam Urodzajność
 Betonowe Wyspy
 [connect]
 Połącz
-[connecting to game]
-
 [connecting to]
 Łączę z
 [Construction Site Defaults]
@@ -453,7 +449,7 @@ Przyłącz się do gry
 [join]
 Przyłącz się
 [keyboard settings]
-Ustawienia Klawiatury
+Ust. Klawiatury
 [kick]
 Wykop
 [lan]
@@ -614,8 +610,6 @@ Otwórz Edytor Skryptów
 Otwórz Edytor Zespołów
 [open]
 otwarty
-[OpenGL]
-
 [Options]
 Opcje
 [options]
@@ -682,8 +676,6 @@ gotowy?
 Odśwież Listę Map
 [Register a new YOG user with password]
 Rejestruj nowego użytkownika YOG z hasłem. (niebezpieczne)
-[Register]
-
 [remember unit]
 Zapamiętaj Jednostkę
 [Remember YOG password localy]
@@ -700,10 +692,8 @@ Wznów/Zatrzymaj Naprawę
 Napraw
 [repeat area]
 razy ten sam teren
-[Repeat your password :]
-
 [restore default shortcuts]
-Przywróć Domyślne Skróty Klawiaturowe
+Przywróć Domyślne Skróty
 [return to editor]
 Powróć do edytora
 [return to game]
@@ -847,9 +837,9 @@ umierających z głodu
 [Statistics]
 Statystyka
 [Still (i)]
-Wciąż
+Wciąż 
 [still (w)]
-Ciągle
+Ciągle 
 [still one unit working]
 Jeszcze 1 jednostka pracująca
 [Still one]
@@ -959,7 +949,7 @@ Gospoda została zaatakowana
 [the maps]
 Mapy
 [the market is finished]
-Zbudowano bazar
+Zbudowano bazar 
 [the market is under attack]
 Bazar został zaatakowany
 [The player %0 has joined YOG]
@@ -1035,7 +1025,7 @@ Odblokowane na Początku
 [unlocked by]
 Odblokowane Przez
 [Unnamed Area]
-{Nienazwany Teren}
+{Teren bez Nazwy}
 [up]
 góra
 [upgrade building]
@@ -1130,8 +1120,6 @@ Metaserwer YOG odmówił połączenia, ponieważ Twoje imię gracza jest zabloko
 Metaserwer YOG odmówił połączenia, ponieważ podane imię gracza jest niepoprawne. Imiona graczy mogą się składać tylko z liter, liczb i podkreślników.
 [YESTS_CREATED]
 System jest gotowy do połączenia z metaserwerem YOG.
-[YESTS_PASSWORDS_DONT_MATCH]
-
 [YESTS_UNABLE_TO_CONNECT]
 Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
 [yog block command help]
@@ -1164,3 +1152,5 @@ Twój adres IP został zablokowany. Proszę cierpliwie czekać aż zostanie odbl
 Twoja jednostka została przeciągnięta na stronę wroga %0
 [Your username was banned]
 Twoja imię gracza zostało zablokowane. Skontaktuj się z administratorami aby to zmienić.
+[connecting to game]
+Łączę z grą

@@ -142,8 +142,6 @@ a partok méretei
 
 [building site]
 építési terület
-[Building Tool Line Explanation]
-
 [Buildings]
 Épületek
 [Bullets]
@@ -206,8 +204,6 @@ Szkript fordítása
 
 [connect]
 Kapcsolódás
-[connecting to game]
-
 [connecting to]
 Kapcsolódás
 [Construction Site Defaults]
@@ -614,8 +610,6 @@ Helyszínen van
 
 [open]
 nyitva
-[OpenGL]
-
 [Options]
 
 [options]
@@ -682,8 +676,6 @@ Arányok
 
 [Register a new YOG user with password]
 Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
-[Register]
-
 [remember unit]
 
 [Remember YOG password localy]
@@ -699,8 +691,6 @@ A jleszót helyileg tárolja. (nem biztonságos)
 [repair]
 Megjavítani
 [repeat area]
-
-[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -1130,8 +1120,6 @@ A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevede
 
 [YESTS_CREATED]
 A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
-[YESTS_PASSWORDS_DONT_MATCH]
-
 [YESTS_UNABLE_TO_CONNECT]
 A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
 [yog block command help]
@@ -1163,4 +1151,6 @@ Megtámadták a %0 -t
 [Your unit got converted to %0's team]
 Az egységedet az ellenség elfogta %0
 [Your username was banned]
+
+[connecting to game]
 
