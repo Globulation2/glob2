@@ -1377,6 +1377,8 @@ int Building::desiredNumberOfWorkers(void)
 
 void Building::step(void)
 {
+	computeWishedRessources();
+	
 	updateCallLists();
 	if(underAttackTimer>0)
 		underAttackTimer-=1;

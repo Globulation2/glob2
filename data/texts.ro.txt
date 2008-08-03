@@ -142,6 +142,8 @@ Construieşte
 
 [building site]
 şantier
+[Building Tool Line Explanation]
+
 [Buildings]
 Clădiri
 [Bullets]
@@ -204,6 +206,8 @@ Compilează scriptul
 
 [connect]
 Conectează
+[connecting to game]
+
 [connecting to]
 Conectare la
 [Construction Site Defaults]
@@ -610,6 +614,8 @@ Aici
 
 [open]
 deschis
+[OpenGL]
+
 [Options]
 
 [options]
@@ -676,6 +682,8 @@ Proportii
 
 [Register a new YOG user with password]
 Înregistrează noul jucător YOG cu parola. (nesecurizat)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -691,6 +699,8 @@ Memorează parola local. (nesecurizat)
 [repair]
 Repară
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -1120,6 +1130,8 @@ Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de util
 
 [YESTS_CREATED]
 Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
 [yog block command help]

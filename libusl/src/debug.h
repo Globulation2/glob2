@@ -6,9 +6,9 @@
 #include <map>
 #include <vector>
 
-struct ScopePrototype;
+struct ThunkPrototype;
 
-struct ScopeDebugInfo
+struct ThunkDebugInfo
 {
 	// maps between program counter's upper bound and source code positions
 	typedef std::map<size_t, Position> Address2Source;
@@ -20,27 +20,16 @@ struct ScopeDebugInfo
 	const Position& find(size_t address) const;
 };
 
-struct FileDebugInfo
+struct DebugInfo
 {
-	typedef std::map<ScopePrototype*, ScopeDebugInfo> Scopes;
+	typedef std::map<ThunkPrototype*, ThunkDebugInfo> Thunks;
 	
-	Scopes scopes;
+	Thunks thunks;
 	
-	ScopeDebugInfo* get(ScopePrototype* scope) { return &scopes[scope]; }
-	const Position& find(ScopePrototype* scope, size_t address);
+	ThunkDebugInfo* get(ThunkPrototype* thunk) { return &thunks[thunk]; }
+	const Position& find(ThunkPrototype* thunk, size_t address);
 };
 
-struct ProgramDebugInfo
-{
-	typedef std::map<std::string, FileDebugInfo> Files;
-	typedef std::map<ScopePrototype*, Files::iterator> Scopes;
-	
-	Files files;
-	Scopes scopes;
-	
-	FileDebugInfo* get(const std::string& file) { return &files[file]; }
-	FilePosition find(ScopePrototype* scope, size_t address);
-	void buildScopes();
-};
+std::string unmangle(const std::string& name);
 
 #endif // ndef DEBUG_H

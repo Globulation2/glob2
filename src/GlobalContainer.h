@@ -115,6 +115,8 @@ public:
 	
 	bool runTestGames; //! runs test games
 	
+	bool runTestMapGeneration; //! runs test map generation
+	
 	bool hostServer;
 	bool hostRouter;
 	bool adminRouter;

@@ -175,7 +175,7 @@ public:
 	Uint8 getOrderType(void) { return ORDER_CHANGE_PRIORITY; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 2; }
+	int getDataLength(void) { return 6; }
 
 	Uint16 gid;
 	Sint32 priority;

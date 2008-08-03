@@ -1965,6 +1965,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
 
+		
 		// priorities
 		if(selBuild->type->maxUnitWorking)
 		{
@@ -2040,11 +2041,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			&& mx>10
 			&& mx<22)
 		{
-			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			
 			// cleared ressources for clearing flags:
 			if (buildingType->type == "clearingflag")
 			{
+				ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 				int j=0;
 				for (int i=0; i<BASIC_COUNT; i++)
 					if (i!=STONE)
@@ -2061,6 +2062,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 			
 			if (buildingType->type == "warflag")
+			{
+				ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 				for (int i=0; i<4; i++)
 				{
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
@@ -2071,12 +2074,16 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					
 					ypos+=YOFFSET_TEXT_PARA;
 				}
+			
+			}
 				
 			if (buildingType->type == "explorationflag")
+			{
 				// we use minLevelToFlag as an int which says what magic effect at minimum an explorer
 				// must be able to do to be accepted at this flag
 				// 0 == any explorer
 				// 1 == must be able to attack ground
+				ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 				for (int i=0; i<2; i++)
 				{
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
@@ -2087,8 +2094,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					
 					ypos+=YOFFSET_TEXT_PARA;
 				}
+			}
 		}
-		
+
 		if (buildingType->armor)
 			ypos+=YOFFSET_TEXT_LINE;
 		if (buildingType->maxUnitInside)
@@ -2137,12 +2145,29 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 		}
 		*/
+		// ressources in
+		unsigned j = 0;
+		for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
+		{
+			if (buildingType->maxRessource[i])
+			{
+				j++;
+				ypos += 11;
+			}
+		}
+		if (buildingType->maxBullets)
+		{
+			j++;
+			ypos += 11;
+		}
+		ypos+=5;
 
 		if (selBuild->type->unitProductionTime)
 		{
+			ypos+=15;
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
-				if ((my>256+90+(i*20)+12)&&(my<256+90+(i*20)+16+12)&&(mx<128))
+				if ((my>ypos+(i*20))&&(my<ypos+(i*20)+16)&&(mx<128))
 				{
 					if (mx<18)
 					{
@@ -2518,17 +2543,17 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
 					if (bt)
 					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, buildingInfoStart+6, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxRessource[0]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, buildingInfoStart+17, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxRessource[3]).c_str());
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64, buildingInfoStart+6, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxRessource[4]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64, buildingInfoStart+17, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxRessource[1]).c_str());
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, buildingInfoStart+28, globalContainer->littleFont,
+						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+28, globalContainer->littleFont,
 							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxRessource[2]).c_str());
 					}
 				}
@@ -3178,6 +3203,7 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[Bullets]")).arg(selBuild->bullets).arg(buildingType->maxBullets).c_str());
 				j++;
+				ypos += 11;
 			}
 			ypos+=5;
 		}
@@ -3449,8 +3475,27 @@ void GameGUI::drawPanel(void)
 			int decX = 8 + ((int)toolManager.getZoneType()) * 40 + dec;
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
 		}
+		if(hilights.find(HilightForbiddenZoneOnPanel) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		}
+		if(hilights.find(HilightGuardZoneOnPanel) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		}
+		if(hilights.find(HilightClearingZoneOnPanel) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		}
+		
 		// draw brush
 		brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40);
+		
+		if(hilights.find(HilightBrushSelector) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40+30, 38));
+		}
+		
 		// draw brush help text
 		if ((mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
 		{
@@ -3492,7 +3537,6 @@ void GameGUI::drawPanel(void)
 	}
 }
 
-int intSquare(int i) { return i*i; }
 
 void GameGUI::drawTopScreenBar(void)
 {
@@ -3532,6 +3576,21 @@ void GameGUI::drawTopScreenBar(void)
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
 		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, FormatableString("%0 / %1").arg(free).arg(tot).c_str());
 		globalContainer->littleFont->popStyle();
+		
+		if(i==WORKER && hilights.find(HilightWorkersWorkingFreeStat) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
+		}
+		
+		else if(i==WARRIOR && hilights.find(HilightExplorersWorkingFreeStat) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
+		}
+		
+		else if(i==EXPLORER && hilights.find(HilightWarriorsWorkingFreeStat) != hilights.end())
+		{
+			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
+		}
 
 		dec += 70;
 	}
@@ -3711,11 +3770,12 @@ void GameGUI::drawOverlayInfos(void)
 	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+14, 14, 100, viewportX, viewportY, game);
 
 	// display text if placing a building 
-	/*
-	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255,0)));
-	globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[ctrl - line]"));
-	globalContainer->standardFont->popStyle();
-	*/
+	if(selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
+	{
+		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255)));
+		globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[Building Tool Line Explanation]"), 0, 75);
+		globalContainer->standardFont->popStyle();
+	}
 
 	// Draw icon if trasmitting
 	if (globalContainer->voiceRecorder->recordingNow)
@@ -4276,6 +4336,10 @@ void GameGUI::cleanOldSelection(void)
 		game.selectedUnit=NULL;
 	}
 	else if (selectionMode==BRUSH_SELECTION)
+	{
+		toolManager.deactivateTool();
+	}
+	else if (selectionMode==TOOL_SELECTION)
 	{
 		toolManager.deactivateTool();
 	}

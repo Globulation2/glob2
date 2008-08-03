@@ -142,6 +142,8 @@ Available local games
 اعدادت الوحده
 [building site]
 موقع اﻷنشاء
+[Building Tool Line Explanation]
+
 [Buildings]
 المباني
 [Bullets]
@@ -193,7 +195,7 @@ Clearing area
 [Clearing:]
 تبادل:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Clears resources
 [clearingflag]
@@ -210,6 +212,8 @@ Clearing flag
 
 [connect]
 Connect
+[connecting to game]
+
 [connecting to]
 Connecting to
 [Construction Site Defaults]
@@ -303,7 +307,7 @@ Editor Shortcuts
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 يجذب المستكشفون
 [explorationflag]
@@ -407,7 +411,7 @@ Handmade map
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 يشفى لكم الوحدات
 [hospital]
@@ -431,7 +435,7 @@ Hitpoint
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 اغذيه االوحدات
 [inn]
@@ -465,7 +469,7 @@ LAN Game
 [language-code]
 ar
 [language-tr]
-اللغة 
+اللغة
 [language]
 العربيه
 [Leave Game]
@@ -616,6 +620,8 @@ Open Save Menu
 
 [open]
 افتح
+[OpenGL]
+
 [Options]
 
 [options]
@@ -682,6 +688,8 @@ Proportions
 
 [Register a new YOG user with password]
 Register a new YOG user with a password. (insecure)
+[Register]
+
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
@@ -697,6 +705,8 @@ Start/Stop Repair
 [repair]
 تصليح
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
@@ -843,7 +853,7 @@ Starving Map
 [Statistics]
 احصائيات
 [Still (i)]
-ما زال 
+ما زال
 [still (w)]
 ما زال
 [still one unit working]
@@ -867,7 +877,7 @@ Server hostname
 [swamp terrain]
 المستنقع
 [swarm explanation 2]
- 
+
 [swarm explanation]
 انشاء وحدات جديدة
 [swarm]
@@ -1061,7 +1071,7 @@ Start/Stop Upgrade
 [Walk]
 يمشى
 [warflag explanation 2]
- 
+
 [warflag explanation]
 يجذب المحاربون
 [warflag]
@@ -1128,6 +1138,8 @@ The YOG metaserver has refused the connection because your username is already u
 
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
 [yog block command help]

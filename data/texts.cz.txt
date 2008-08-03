@@ -142,6 +142,8 @@ Stavba
 
 [building site]
 staveniště
+[Building Tool Line Explanation]
+
 [Buildings]
 Budovy
 [Bullets]
@@ -204,6 +206,8 @@ Sestavit skript
 
 [connect]
 Připojit
+[connecting to game]
+
 [connecting to]
 Připojuji se k
 [Construction Site Defaults]
@@ -610,6 +614,8 @@ Na místě
 
 [open]
 Otevřít
+[OpenGL]
+
 [Options]
 
 [options]
@@ -676,6 +682,8 @@ Poměry
 
 [Register a new YOG user with password]
 Registrace nového YOG uživatele s heslem. (nejisté)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -691,6 +699,8 @@ Zapamatovat si heslo lokálně? (nejisté)
 [repair]
 Opravit
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -837,9 +847,9 @@ Umírá hlady
 [Statistics]
 Statistiky
 [Still (i)]
-Dosud 
+Dosud
 [still (w)]
-Dosud 
+Dosud
 [still one unit working]
 Ještě 1 jednotka pracuje
 [Still one]
@@ -1120,6 +1130,8 @@ YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jin
 
 [YESTS_CREATED]
 Systém připojení je připraven na kontakt s YOG metaserverem.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 [yog block command help]
