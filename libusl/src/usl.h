@@ -4,7 +4,7 @@
 #include "memory.h"
 #include "debug.h"
 
-#include <iostream>
+#include <istream>
 
 struct Thread;
 struct Scope;
@@ -20,12 +20,13 @@ struct Usl
 	virtual std::ifstream* openFile(const std::string& name);
 	
 	typedef std::map<std::string, Value*> Cache;
+	typedef std::vector<Thread> Threads;
 	
 	DebugInfo debug;
 	Heap heap;
 	Scope* root;
 	Cache cache;
-	std::vector<Thread> threads;
+	Threads threads;
 	
 	void run();
 	bool run(size_t& steps);
