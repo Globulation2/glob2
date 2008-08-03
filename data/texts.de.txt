@@ -1160,3 +1160,5 @@ Eine Deiner Einheiten wurde von %0 übernommen.
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
 [Leo: nur ein erster Test]
 test2asdfasdfasdf
+[connecting to game]
+Verbinde zu Spiel
