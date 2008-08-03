@@ -489,6 +489,29 @@ namespace GAGGUI
 		compute();
 	}
 	
+	void TextArea::getCursorPos(unsigned &pos)
+	{
+		pos = cursorPos;
+	}
+	
+	void TextArea::getCursorPos(unsigned &line, unsigned &column)
+	{
+		line = 0;
+		column = 0;
+		unsigned p = 0;
+		while (p < cursorPos)
+		{
+			if (text[p] == '\n')
+			{
+				line++;
+				column = 0;
+			}
+			else
+				column++;
+			p++;
+		}
+	}
+	
 	void TextArea::internalInit(void)
 	{
 		layout();

@@ -56,6 +56,7 @@ protected:
 	MapScript *mapScript;
 	Game *game;
 	Text *mode;
+	Text *cursorPosition;
 	TextInput *primaryObjectives[8];
 	TextInput *secondaryObjectives[8];
 	Text *primaryObjectiveLabels[8];
