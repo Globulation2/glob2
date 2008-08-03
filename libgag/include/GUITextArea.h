@@ -83,8 +83,9 @@ namespace GAGGUI
 		virtual void scrollUp(void);
 		virtual void scrollToBottom(void);
 		virtual void setCursorPos(unsigned pos);
-		virtual void getCursorPos(unsigned &pos);
-		virtual void getCursorPos(unsigned &line, unsigned &column);
+		virtual void setCursorPos(unsigned line, unsigned column);
+		virtual void getCursorPos(unsigned &pos) const ;
+		virtual void getCursorPos(unsigned &line, unsigned &column) const;
 		//! load content from filename
 		virtual bool load(const char *filename);
 		//! save content to filename. If file exists, it is overriden
