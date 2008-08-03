@@ -28,6 +28,7 @@ using namespace GAGCore;
 #include "Stream.h"
 #include <iostream>
 #include <sstream>
+#include <memory>
 
 using namespace std;
 
