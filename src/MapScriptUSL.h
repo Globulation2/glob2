@@ -19,13 +19,8 @@
 #ifndef MapScriptUSL_h
 #define MapScriptUSL_h
 
-#include "parser.h"
-#include "types.h"
-#include "debug.h"
-#include "code.h"
+#include "usl.h"
 #include "interpreter.h"
-#include "error.h"
-
 #include "MapScriptError.h"
 #include "SDL.h"
 
@@ -59,15 +54,8 @@ public:
 	const MapScriptError& getError() const;
 	
 private:
-	///This resets the interpreter
-	void reset();
-	//Initializes the compiler
-	void initialize();
-
-	Heap* heap;
-	DebugInfo* debug;
-	ExecutionBlock* block;
-	ScopePrototype* scope;
+	
+	Usl usl;
 	MapScriptError error;
 };
 
