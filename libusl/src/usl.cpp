@@ -139,7 +139,7 @@ ifstream* Usl::openFile(const string& name)
 {
 	return new ifstream(name.c_str());
 }
-
+/*
 int main(int argc, char** argv)
 {
 	if (argc < 2)
@@ -180,4 +180,4 @@ int main(int argc, char** argv)
 	}
 	
 	return 0;
-}
+}*/
