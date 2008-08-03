@@ -77,6 +77,7 @@ struct Yield: NativeMethod
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
 	{
 		thread->state = Thread::YIELD;
+		return argument;
 	}
 } yield;
 

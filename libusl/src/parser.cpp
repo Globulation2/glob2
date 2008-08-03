@@ -255,15 +255,14 @@ ExpressionNode* Parser::simpleExpression()
 		}
 	case NUM:
 		{
-			string str = token.string();
-			next();
+			string str = identifier();
 			int value = atoi(str.c_str());
 			return new ConstNode(position, new Integer(heap, value));
 		}
 	case STR:
 		{
-			// TODO: implements strings
-			assert(false);
+			string value = identifier();
+			return new ConstNode(position, new String(heap, value));
 		}
 	case LPAR:
 		{
