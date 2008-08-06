@@ -683,7 +683,7 @@ Her
 [open]
 Åben
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
