@@ -621,7 +621,7 @@ Tu
 [open]
 otvorené
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
