@@ -675,7 +675,7 @@ Apri l'Editor di Script
 [open]
 Apri
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]

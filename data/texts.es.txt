@@ -621,7 +621,7 @@ Aquí
 [open]
 Abierto
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]

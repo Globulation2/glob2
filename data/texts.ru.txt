@@ -679,7 +679,7 @@ Ok
 [open]
 открыто
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
