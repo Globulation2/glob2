@@ -48,13 +48,13 @@ class Game
 public:
 	///Constructor. GUI can be NULL
 	Game(GameGUI *gui, MapEdit* edit=NULL);
-	
+
 	///Clears all memory that Game uses
 	virtual ~Game();
 
 	///Loads data from a stream
 	bool load(GAGCore::InputStream *stream);
-	
+
 	//! Check some available integrity constraints
 	void integrity(void);
 
@@ -69,7 +69,7 @@ public:
 		DEL_UNIT=0x6,
 		DEL_FLAG=0x8
 	};
-	
+
 	enum DrawOption
 	{
 		DRAW_HEALTH_FOOD_BAR = 0x1,
@@ -85,11 +85,11 @@ public:
 
 	/// This method will prepare the game with this mapHeader
 	void setMapHeader(const MapHeader& mapHeader);
-	
+
 	/// This method will prepare the game with the provided gameHeader,
 	/// including initiating the Players
 	void setGameHeader(const GameHeader& gameHeader, bool saveAI=false);
-	
+
 	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	void executeOrder(boost::shared_ptr<Order> order, int localPlayer);
 
@@ -101,14 +101,14 @@ public:
 
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();
-	
+
 	/// Updates total prestige stats
 	void prestigeSyncStep();
 
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
 	/// internal proccessing.
 	void syncStep(Sint32 localTeam);
-	
+
 	void dirtyWarFlagGradient();
 
 	// Editor stuff
@@ -138,7 +138,7 @@ public:
 
 	///Sets the mask respresenting which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
-	
+
 	///This dumps all data in text form to the given file
 	void dumpAllData(const std::string& file);
 private:
@@ -149,7 +149,7 @@ private:
 		TOP_TO_BOTTOM,
 		BOTTOM_TO_TOP
 	};
-	
+
 	struct BuildProject
 	{
 		int posX;
@@ -159,7 +159,7 @@ private:
 		int unitWorking;
 		int unitWorkingFuture;
 	};
-	
+
 	///Initiates Game
 	void init(GameGUI *gui, MapEdit* edit);
 
@@ -188,6 +188,7 @@ private:
 	inline void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings);
 	inline void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	inline void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int), int areaAnimationTick, int baseFrame, GAGCore::Color c);
 	inline void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
 	inline void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
@@ -199,10 +200,10 @@ private:
 	inline bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
 public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
-	
+
 	/// Sets the alliances from the GameHeader alliance teams
 	void setAlliances(void);
-	
+
 public:
 	///This is a static header for a map. It remains the same in between games on the same map.
 	MapHeader mapHeader;
@@ -229,7 +230,7 @@ public:
 	Unit *mouseUnit;
 	Unit *selectedUnit;
 	Building *selectedBuilding;
-	
+
 	Uint32 stepCounter;
 	int totalPrestige;
 	int prestigeToReach;
@@ -241,11 +242,11 @@ public:
 	Uint32 hilightBuildingType;
 	///Similar to above, but for units
 	Uint32 hilightUnitType;
-	
-	
+
+
 	Team *getTeamWithMostPrestige(void);
 	bool isPrestigeWinCondition(void);
-	
+
 public:
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);

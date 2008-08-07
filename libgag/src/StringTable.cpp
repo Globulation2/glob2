@@ -236,6 +236,8 @@ namespace GAGCore
 			languageCodes[getStringInLang("[language-code]", i)] = i;
 		}
 		
+		defaultLang = getLangCode("en");
+		
 		return true;
 	}
 	
