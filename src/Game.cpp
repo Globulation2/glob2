@@ -1822,15 +1822,12 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 			if (
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY-1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY-1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY-1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[localTeam]->me)) ||
+					map.isMapPartiallyDiscovered(
+							x+viewportX-1,
+							y+viewportY-1,
+							x+viewportX+1,
+							y+viewportY+1,
+							teams[localTeam]->me) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				// draw terrain
@@ -1856,15 +1853,12 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 			if (
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY-1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY-1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY-1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX-1, y+viewportY+1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX, y+viewportY+1,  teams[localTeam]->me)) ||
-				(map.isMapDiscovered(x+viewportX+1, y+viewportY+1,  teams[localTeam]->me)) ||
+				map.isMapPartiallyDiscovered(
+						x+viewportX-1,
+						y+viewportY-1,
+						x+viewportX+1,
+						y+viewportY+1,
+						teams[localTeam]->me) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				Ressource r=map.getRessource(x+viewportX, y+viewportY);
