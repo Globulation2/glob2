@@ -1476,6 +1476,15 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 	int grassRatio=(int)(baseGrass*((double)totalRatio));
 	totalRatio=waterRatio+sandRatio+grassRatio;
 	
+	if(totalRatio==0)
+	{
+		waterRatio = 1;
+		sandRatio = 1;
+		grassRatio = 1;
+		totalRatio = 3;
+	}
+	
+	
 	/// First, we create a fully random patchwork:
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -2153,7 +2162,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	HeightMap hm(wHeightMap,hHeightMap);
 	/// 1 to avoid division by zero, 
 	unsigned int tmpTotal=1+descriptor.waterRatio+descriptor.grassRatio;
-	unsigned int sectionIslandCount=static_cast<unsigned int>((descriptor.nbTeams+descriptor.extraIslands)/pow(2,power2Divider));
+	unsigned int sectionIslandCount=std::max(1u, static_cast<unsigned int>((descriptor.nbTeams+descriptor.extraIslands)/pow(2,power2Divider)));
 	switch (descriptor.methode)
 	{
 		case MapGenerationDescriptor::eSWAMP:
@@ -2248,10 +2257,10 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	//Now, we have to find suitable places for teams:
 	int nbTeams=descriptor.nbTeams;
 	int minDistSquare=(int)((double)w*h/(double)nbTeams/5);
-	std::cout << "minDistSquare=" << minDistSquare << " (" << sqrt((double)minDistSquare) << ").\n";
+	//std::cout << "minDistSquare=" << minDistSquare << " (" << sqrt((double)minDistSquare) << ").\n";
 	if (minDistSquare<=0)
 	{
-		std::cout << "debugoutput 1\n";
+		//std::cout << "debugoutput 1\n";
 		return false;
 	}
 	assert(minDistSquare>0);
@@ -2313,7 +2322,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		
 		if (maxSurface<=0)
 		{
-			std::cout << "debugoutput 2\n";
+			//std::cout << "debugoutput 2\n";
 			return false;
 		}
 		assert(maxSurface);

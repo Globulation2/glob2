@@ -216,7 +216,7 @@ bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 			val += valueOfVariable(game, type, teamNumber, i);
 	else
 		val = valueOfVariable(game, type, teamNumber, level);
-	
+		
 	switch (operation)
 	{
 		case (Token::S_HIGHER):
@@ -374,6 +374,34 @@ void Story::hilightItem(GameGUI* gui)
 	{
 		t=GameGUI::HilightRatioBar;
 	}
+	else if(n=="workers working free stat")
+	{
+		t=GameGUI::HilightWorkersWorkingFreeStat;
+	}
+	else if(n=="explorers working free stat")
+	{
+		t=GameGUI::HilightExplorersWorkingFreeStat;
+	}
+	else if(n=="warriors working free stat")
+	{
+		t=GameGUI::HilightWarriorsWorkingFreeStat;
+	}
+	else if(n=="forbidden zone on panel")
+	{
+		t=GameGUI::HilightWorkersWorkingFreeStat;
+	}
+	else if(n=="guard zone on panel")
+	{
+		t=GameGUI::HilightGuardZoneOnPanel;
+	}
+	else if(n=="clearing zone on panel")
+	{
+		t=GameGUI::HilightClearingZoneOnPanel;
+	}
+	else if(n=="brush selector")
+	{
+		t=GameGUI::HilightBrushSelector;
+	}
 	
 	if(t!=0)
 	{
@@ -406,6 +434,34 @@ void Story::unhilightItem(GameGUI* gui)
 	else if(n=="units ratio bar")
 	{
 		t=GameGUI::HilightRatioBar;
+	}
+	else if(n=="workers working free stat")
+	{
+		t=GameGUI::HilightWorkersWorkingFreeStat;
+	}
+	else if(n=="explorers working free stat")
+	{
+		t=GameGUI::HilightExplorersWorkingFreeStat;
+	}
+	else if(n=="warriors working free stat")
+	{
+		t=GameGUI::HilightWarriorsWorkingFreeStat;
+	}
+	else if(n=="forbidden zone on panel")
+	{
+		t=GameGUI::HilightWorkersWorkingFreeStat;
+	}
+	else if(n=="guard zone on panel")
+	{
+		t=GameGUI::HilightGuardZoneOnPanel;
+	}
+	else if(n=="clearing zone on panel")
+	{
+		t=GameGUI::HilightClearingZoneOnPanel;
+	}
+	else if(n=="brush selector")
+	{
+		t=GameGUI::HilightBrushSelector;
 	}
 	
 	if(t!=0)
@@ -1003,7 +1059,7 @@ bool Story::testCondition(GameGUI *gui)
 					case (Token::S_EXPLORER):
 					case (Token::S_WARRIOR):
 					{
-						bool conditionResult = conditionTester(game, execLine, false, false);
+						bool conditionResult = conditionTester(game, execLine, false, true);
 						conditionResult ^= negate;
 						if (conditionResult)
 						{

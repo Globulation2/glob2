@@ -39,6 +39,9 @@
 #include "GUIMessageBox.h"
 
 
+#define RIGHT_MENU_WIDTH 160
+#define RIGHT_MENU_OFFSET (160-128)/2
+
 
 MapEditorWidget::MapEditorWidget(MapEdit& me, const widgetRectangle& rectangle, const std::string& group, const std::string& name, const std::string& action)
 	: me(me), area(rectangle), group(group), name(name), action(action), enabled(false)
@@ -807,7 +810,7 @@ void Checkbox::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
-  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-128, 0, 128, 128, 14,14, Minimap::ShowFOW)
+  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 0, RIGHT_MENU_WIDTH, 128, RIGHT_MENU_OFFSET+14,14, Minimap::ShowFOW)
 {
 	doQuit=false;
 	doFullQuit=false;
@@ -833,31 +836,33 @@ MapEdit::MapEdit()
 
 	selectionMode=PlaceNothing;
 
+	int decX = RIGHT_MENU_OFFSET;
+
 	panelMode=AddBuildings;
-	buildingView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-128, 128, 32, 32), "any", "building view icon", "switch to building view", 0, AddBuildings);
-	flagsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-96, 128, 32, 32), "any", "flag view icon", "switch to flag view", 28, AddFlagsAndZones);
-	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-64, 128, 32, 32), "any", "terrain view icon", "switch to terrain view", 31, Terrain);
-	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-32, 128, 32, 32), "any", "teams view icon", "switch to teams view", 33, Teams);
-	menuIcon = new MenuIcon(*this, widgetRectangle(globalContainer->gfx->getW()-160, 0, 32, 32), "any", "menu icon", "open menu screen");
+	buildingView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 128, 32, 32), "any", "building view icon", "switch to building view", 0, AddBuildings);
+	flagsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 128, 32, 32), "any", "flag view icon", "switch to flag view", 28, AddFlagsAndZones);
+	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 128, 32, 32), "any", "terrain view icon", "switch to terrain view", 31, Terrain);
+	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, 128, 32, 32), "any", "teams view icon", "switch to teams view", 33, Teams);
+	menuIcon = new MenuIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+decX, 0, 32, 32), "any", "menu icon", "open menu screen");
 	addWidget(buildingView);
 	addWidget(flagsView);
 	addWidget(terrainView);
 	addWidget(teamsView);
 	addWidget(menuIcon);
-	swarm = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+12, 128+32+6, 40, 40), "building view", "swarm", "set place building selection swarm", "swarm", true);
-	inn = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+64+12, 128+32+6, 40, 40), "building view", "inn", "set place building selection inn", "inn", true);
-	hospital = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+12, 128+32+46*1+6, 40, 40), "building view", "hospital", "set place building selection hospital", "hospital", true);
-	racetrack = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+64+12, 128+32+46*1+6, 40, 40), "building view", "racetrack", "set place building selection racetrack", "racetrack", true);
-	swimmingpool = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+12, 128+32+46*2+6, 40, 40), "building view", "swimmingpool", "set place building selection swimmingpool", "swimmingpool", true);
-	barracks = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+64+12, 128+32+46*2+6, 40, 40), "building view", "barracks", "set place building selection barracks", "barracks", true);
-	school = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+12, 128+32+46*3+6, 40, 40), "building view", "school", "set place building selection school", "school", true);
-	defencetower = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+64+12, 128+32+46*3+6, 40, 40), "building view", "defencetower", "set place building selection defencetower", "defencetower", true);
-	stonewall = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+12, 128+32+46*4+6, 40, 40), "building view", "stonewall", "set place building selection stonewall", "stonewall", true);
-	market = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+64+12, 128+32+46*4+6, 40, 40), "building view", "market", "set place building selection market", "market", true);
-	building_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 16, globalContainer->gfx->getH()-74, 96, 32 ), "building view", "building view team selector", "select active team");
-	building_view_level1 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 1", "switch to building level 1", 1, buildingLevel);
-	building_view_level2 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+32, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 2", "switch to building level 2", 2, buildingLevel);
-	building_view_level3 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+64, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 3", "switch to building level 3", 3, buildingLevel);
+	swarm = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12+decX, 128+32+6, 40, 40), "building view", "swarm", "set place building selection swarm", "swarm", true);
+	inn = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+12+decX, 128+32+6, 40, 40), "building view", "inn", "set place building selection inn", "inn", true);
+	hospital = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12+decX, 128+32+46*1+6, 40, 40), "building view", "hospital", "set place building selection hospital", "hospital", true);
+	racetrack = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+12+decX, 128+32+46*1+6, 40, 40), "building view", "racetrack", "set place building selection racetrack", "racetrack", true);
+	swimmingpool = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12+decX, 128+32+46*2+6, 40, 40), "building view", "swimmingpool", "set place building selection swimmingpool", "swimmingpool", true);
+	barracks = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+12+decX, 128+32+46*2+6, 40, 40), "building view", "barracks", "set place building selection barracks", "barracks", true);
+	school = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12+decX, 128+32+46*3+6, 40, 40), "building view", "school", "set place building selection school", "school", true);
+	defencetower = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+12+decX, 128+32+46*3+6, 40, 40), "building view", "defencetower", "set place building selection defencetower", "defencetower", true);
+	stonewall = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12+decX, 128+32+46*4+6, 40, 40), "building view", "stonewall", "set place building selection stonewall", "stonewall", true);
+	market = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+12+decX, 128+32+46*4+6, 40, 40), "building view", "market", "set place building selection market", "market", true);
+	building_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 16+decX, globalContainer->gfx->getH()-74, 96, 32 ), "building view", "building view team selector", "select active team");
+	building_view_level1 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 1", "switch to building level 1", 1, buildingLevel);
+	building_view_level2 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 2", "switch to building level 2", 2, buildingLevel);
+	building_view_level3 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, globalContainer->gfx->getH()-36, 32, 32), "building view", "building view level 3", "switch to building level 3", 3, buildingLevel);
 	addWidget(swarm);
 	addWidget(inn);
 	addWidget(hospital);
@@ -872,22 +877,22 @@ MapEdit::MapEdit()
 	addWidget(building_view_level1);
 	addWidget(building_view_level2);
 	addWidget(building_view_level3);
-	explorationflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+5, 128+32+7, 32, 32), "flag view", "explorationflag", "set place building selection explorationflag", "explorationflag", false);
-	warflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+5+42, 128+32+7, 32, 32), "flag view", "warflag", "set place building selection warflag", "warflag", false);
-	clearingflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-128+5+84, 128+32+7, 32, 32), "flag view", "clearingflag", "set place building selection clearingflag", "clearingflag", false);
-	forbiddenZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 216, 32, 32), "flag view", "forbidden zone", "select forbidden zone", ZoneSelector::ForbiddenZone);
-	guardZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8+40, 216, 32, 32), "flag view", "guard zone", "select guard zone", ZoneSelector::GuardingZone);
-	clearingZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8+80, 216, 32, 32), "flag view", "clearing zone", "select clearing zone", ZoneSelector::ClearingZone);
-	deleteButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 216+40, 112, 16), "flag view", "delete button", "select delete objects", "[delete]");
-	zoneBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 216+65, 128, 96), "flag view", "zone brush selector", "handle zone click", brush);
-	worker = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 385, 38, 38), "flag view", "worker selector", "select worker", WORKER);
-	explorer = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+48, 385, 38, 38), "flag view", "explorer selector", "select explorer", EXPLORER);
-	warrior = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+88, 385, 38, 38), "flag view", "warrior selector", "select warrior", WARRIOR);
-	flag_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 16, globalContainer->gfx->getH()-74, 96, 32 ), "flag view", "flag view team selector", "select active team");
-	flag_view_level1 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 1", "select unit level 1", 1, placingUnitLevel);
-	flag_view_level2 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+32, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 2", "select unit level 2", 2, placingUnitLevel);
-	flag_view_level3 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+64, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 3", "select unit level 3", 3, placingUnitLevel);
-	flag_view_level4 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+96, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 3", "select unit level 4", 4, placingUnitLevel);
+	explorationflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+5+decX, 128+32+7, 32, 32), "flag view", "explorationflag", "set place building selection explorationflag", "explorationflag", false);
+	warflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+5+42+decX, 128+32+7, 32, 32), "flag view", "warflag", "set place building selection warflag", "warflag", false);
+	clearingflag = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+5+84+decX, 128+32+7, 32, 32), "flag view", "clearingflag", "set place building selection clearingflag", "clearingflag", false);
+	forbiddenZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 216, 32, 32), "flag view", "forbidden zone", "select forbidden zone", ZoneSelector::ForbiddenZone);
+	guardZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+40+decX, 216, 32, 32), "flag view", "guard zone", "select guard zone", ZoneSelector::GuardingZone);
+	clearingZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+80+decX, 216, 32, 32), "flag view", "clearing zone", "select clearing zone", ZoneSelector::ClearingZone);
+	deleteButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 216+40, 112, 16), "flag view", "delete button", "select delete objects", "[delete]");
+	zoneBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 216+65, 128, 96), "flag view", "zone brush selector", "handle zone click", brush);
+	worker = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 385, 38, 38), "flag view", "worker selector", "select worker", WORKER);
+	explorer = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+decX, 385, 38, 38), "flag view", "explorer selector", "select explorer", EXPLORER);
+	warrior = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+88+decX, 385, 38, 38), "flag view", "warrior selector", "select warrior", WARRIOR);
+	flag_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 16+decX, globalContainer->gfx->getH()-74, 96, 32 ), "flag view", "flag view team selector", "select active team");
+	flag_view_level1 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 1", "select unit level 1", 1, placingUnitLevel);
+	flag_view_level2 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 2", "select unit level 2", 2, placingUnitLevel);
+	flag_view_level3 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 3", "select unit level 3", 3, placingUnitLevel);
+	flag_view_level4 = new SingleLevelSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, globalContainer->gfx->getH()-36, 32, 32), "flag view", "flag view level 3", "select unit level 4", 4, placingUnitLevel);
 	addWidget(warflag);
 	addWidget(explorationflag);
 	addWidget(clearingflag);
@@ -905,23 +910,23 @@ MapEdit::MapEdit()
 	addWidget(flag_view_level3);
 	addWidget(flag_view_level4);
 
-	grass = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 172, 32, 32), "terrain view", "grass selector", "select grass", TerrainSelector::Grass);
-	sand = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+32, 172, 32, 32), "terrain view", "sand selector", "select sand", TerrainSelector::Sand);
-	water = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+64, 172, 32, 32), "terrain view", "water selector", "select water", TerrainSelector::Water);
-	wheat = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+96, 172, 32, 32), "terrain view", "wheat selector", "select wheat", TerrainSelector::Wheat);
-	trees = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 210, 32, 32), "terrain view", "trees selector", "select trees", TerrainSelector::Trees);
-	stone = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+32, 210, 32, 32), "terrain view", "stone selector", "select stone", TerrainSelector::Stone);
-	algae = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+64, 210, 32, 32), "terrain view", "algae selector", "select algae", TerrainSelector::Algae);
-	papyrus = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+96, 210, 32, 32), "terrain view", "papyrus selector", "select papyrus", TerrainSelector::Papyrus);
-	orange = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 248, 32, 32), "terrain view", "orange selector", "select orange tree", TerrainSelector::OrangeTree);
-	cherry = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+32, 248, 32, 32), "terrain view", "cherry selector", "select cherry tree", TerrainSelector::CherryTree);
-	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128+64, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
-	noRessourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 294, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
-	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 8, 320, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
-	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 336, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
-	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-128+24, 336, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
-	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128, 362, 128, 96), "terrain view", "terrain brush selector", "handle terrain click", brush);
-	showFertilityOverlay = new Checkbox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 466, 128, 16), "terrain view", "fertility checkbox", "compute fertility", "[Fertility Map]", isFertilityOn);
+	grass = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 172, 32, 32), "terrain view", "grass selector", "select grass", TerrainSelector::Grass);
+	sand = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 172, 32, 32), "terrain view", "sand selector", "select sand", TerrainSelector::Sand);
+	water = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 172, 32, 32), "terrain view", "water selector", "select water", TerrainSelector::Water);
+	wheat = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, 172, 32, 32), "terrain view", "wheat selector", "select wheat", TerrainSelector::Wheat);
+	trees = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 210, 32, 32), "terrain view", "trees selector", "select trees", TerrainSelector::Trees);
+	stone = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 210, 32, 32), "terrain view", "stone selector", "select stone", TerrainSelector::Stone);
+	algae = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 210, 32, 32), "terrain view", "algae selector", "select algae", TerrainSelector::Algae);
+	papyrus = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, 210, 32, 32), "terrain view", "papyrus selector", "select papyrus", TerrainSelector::Papyrus);
+	orange = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 248, 32, 32), "terrain view", "orange selector", "select orange tree", TerrainSelector::OrangeTree);
+	cherry = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 248, 32, 32), "terrain view", "cherry selector", "select cherry tree", TerrainSelector::CherryTree);
+	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
+	noRessourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
+	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 320, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
+	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 336, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
+	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24+decX, 336, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
+	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 362, 128, 96), "terrain view", "terrain brush selector", "handle terrain click", brush);
+	showFertilityOverlay = new Checkbox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 466, 128, 16), "terrain view", "fertility checkbox", "compute fertility", "[Fertility Map]", isFertilityOn);
 	addWidget(grass);
 	addWidget(sand);
 	addWidget(water);
@@ -940,31 +945,31 @@ MapEdit::MapEdit()
 	addWidget(terrainBrushSelector);
 	addWidget(showFertilityOverlay);
 
-	increaseTeams = new PlusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-128, 408, 32, 32), "teams view", "increase teams", "add team");
-	decreaseTeams = new MinusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-128+40, 408, 32, 32), "teams view", "decrease teams", "remove team");
-	team_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-128 + 16, 168, 96, 32 ), "teams view", "team view team selector", "select active team");
+	increaseTeams = new PlusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 408, 32, 32), "teams view", "increase teams", "add team");
+	decreaseTeams = new MinusIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+40+decX, 408, 32, 32), "teams view", "decrease teams", "remove team");
+	team_view_tcs = new TeamColorSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 16+decX, 168, 96, 32 ), "teams view", "team view team selector", "select active team");
 	addWidget(increaseTeams);
 	addWidget(decreaseTeams);
 	addWidget(team_view_tcs);
 
-	unitInfoTitle = new UnitInfoTitle(*this, widgetRectangle(globalContainer->gfx->getW()-128, 173, 128, 16), "unit editor", "unit editor title", "", NULL);
-	unitPicture = new UnitPicture(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 203, 40, 40), "unit editor", "unit editor picture", "", NULL);
-	unitHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "unit editor", "unit editor hp label", "update unit", "[hp]", NULL, static_cast<Sint32*>(NULL));
-	unitHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 112, 16), "unit editor", "unit editor hp scroll box", "", NULL, static_cast<Sint32*>(NULL));
-	unitWalkLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 284, 128, 16), "unit editor", "unit editor walk level label", "", "[Walk]", NULL, 3);
-	unitWalkLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 300, 112, 16), "unit editor", "unit editor walk level scroll box", "update unit walk level", NULL, 3);
-	unitSwimLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 316, 128, 16), "unit editor", "unit editor swim level label", "", "[Swim]", NULL, 3);
-	unitSwimLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 332, 112, 16), "unit editor", "unit editor swim level scroll box", "update unit swim level", NULL, 3);
-	unitHarvestLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 348, 128, 16), "unit editor", "unit editor harvest level label", "", "[Harvest]", NULL, 3);
-	unitHarvestLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 364, 112, 16), "unit editor", "unit editor harvest level scroll box", "update unit harvest level", NULL, 3);
-	unitBuildLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 380, 128, 16), "unit editor", "unit editor build level label", "", "[Build]", NULL, 3);
-	unitBuildLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 396, 112, 16), "unit editor", "unit editor build level scroll box", "update unit build level", NULL, 3);
-	unitAttackSpeedLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 348, 128, 16), "unit editor", "unit editor attack speed level label", "", "[At. speed]", NULL, 3);
-	unitAttackSpeedLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 364, 112, 16), "unit editor", "unit editor attack speed level scroll box", "update unit attack speed level", NULL, 3);
-	unitAttackStrengthLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 380, 128, 16), "unit editor", "unit editor attack strength level label", "", "[At. strength]", NULL, 3);
-	unitAttackStrengthLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 396, 112, 16), "unit editor", "unit editor attack strength level scroll box", "update unit attack strength level", NULL, 3);
-	unitMagicGroundAttackLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 284, 128, 16), "unit editor", "unit editor ground attack level label", "", "[Magic At. Ground]", NULL, 3);
-	unitMagicGroundAttackLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 300, 112, 16), "unit editor", "unit editor magic ground attack level scroll box", "update unit magic ground attack level", NULL, 3);
+	unitInfoTitle = new UnitInfoTitle(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 173, 128, 16), "unit editor", "unit editor title", "", NULL);
+	unitPicture = new UnitPicture(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+decX, 203, 40, 40), "unit editor", "unit editor picture", "", NULL);
+	unitHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "unit editor", "unit editor hp label", "update unit", "[hp]", NULL, static_cast<Sint32*>(NULL));
+	unitHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 112, 16), "unit editor", "unit editor hp scroll box", "", NULL, static_cast<Sint32*>(NULL));
+	unitWalkLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 284, 128, 16), "unit editor", "unit editor walk level label", "", "[Walk]", NULL, 3);
+	unitWalkLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 300, 112, 16), "unit editor", "unit editor walk level scroll box", "update unit walk level", NULL, 3);
+	unitSwimLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 316, 128, 16), "unit editor", "unit editor swim level label", "", "[Swim]", NULL, 3);
+	unitSwimLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 332, 112, 16), "unit editor", "unit editor swim level scroll box", "update unit swim level", NULL, 3);
+	unitHarvestLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 348, 128, 16), "unit editor", "unit editor harvest level label", "", "[Harvest]", NULL, 3);
+	unitHarvestLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 364, 112, 16), "unit editor", "unit editor harvest level scroll box", "update unit harvest level", NULL, 3);
+	unitBuildLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 380, 128, 16), "unit editor", "unit editor build level label", "", "[Build]", NULL, 3);
+	unitBuildLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 396, 112, 16), "unit editor", "unit editor build level scroll box", "update unit build level", NULL, 3);
+	unitAttackSpeedLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 348, 128, 16), "unit editor", "unit editor attack speed level label", "", "[At. speed]", NULL, 3);
+	unitAttackSpeedLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 364, 112, 16), "unit editor", "unit editor attack speed level scroll box", "update unit attack speed level", NULL, 3);
+	unitAttackStrengthLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 380, 128, 16), "unit editor", "unit editor attack strength level label", "", "[At. strength]", NULL, 3);
+	unitAttackStrengthLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 396, 112, 16), "unit editor", "unit editor attack strength level scroll box", "update unit attack strength level", NULL, 3);
+	unitMagicGroundAttackLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 284, 128, 16), "unit editor", "unit editor ground attack level label", "", "[Magic At. Ground]", NULL, 3);
+	unitMagicGroundAttackLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 300, 112, 16), "unit editor", "unit editor magic ground attack level scroll box", "update unit magic ground attack level", NULL, 3);
 	addWidget(unitInfoTitle);
 	addWidget(unitPicture);
 	addWidget(unitHPLabel);
@@ -984,34 +989,34 @@ MapEdit::MapEdit()
 	addWidget(unitMagicGroundAttackLevelLabel);
 	addWidget(unitMagicGroundAttackLevelScrollBox);
 
-	buildingInfoTitle = new BuildingInfoTitle(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 173, 128, 16), "building editor", "building editor info title", "", NULL);
-	buildingPicture = new BuildingPicture(*this, widgetRectangle(globalContainer->gfx->getW()-128+2, 203, 56, 46), "building editor", "building editor picture", "", NULL);
-	buildingHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor hp label", "", "[hp]", NULL, static_cast<Sint32*>(NULL));
-	buildingHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor hp scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
-	buildingFoodQuantityLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor food label", "", "[Wheat]", NULL, static_cast<Sint32*>(NULL));
-	buildingFoodQuantityScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor food scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
-	buildingAssignedLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor assigned label", "", "[assigned]", NULL, 20);
-	buildingAssignedScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor assigned scroll box", "", NULL, 20);
-	buildingWorkerRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor worker ratio label", "", "[Worker Ratio]", NULL, 16);
-	buildingWorkerRatioScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor worker ratio scroll box", "", NULL, 20);
-	buildingExplorerRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor explorer ratio label", "", "[Explorer Ratio]", NULL, 16);
-	buildingExplorerRatioScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor explorer ratio scroll box", "", NULL, 20);
-	buildingWarriorRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor warrior ratio label", "", "[Warrior Ratio]", NULL, 16);
-	buildingWarriorRatioScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor warrior ratio scroll box", "", NULL, 20);
-	buildingCherryLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor cherry label", "", "[Cherry]", NULL, static_cast<Sint32*>(NULL));
-	buildingCherryScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor cherry scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
-	buildingOrangeLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor orange label", "", "[Orange]", NULL, static_cast<Sint32*>(NULL));
-	buildingOrangeScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor orange scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
-	buildingPruneLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor prune label", "", "[Prune]", NULL, static_cast<Sint32*>(NULL));
-	buildingPruneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor prune scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
-	buildingStoneLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor stone label", "", "[Stone]", NULL, static_cast<Sint32*>(NULL));
-	buildingStoneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor stone scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
-	buildingBulletsLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor bullets label", "", "[Bullets]", NULL, static_cast<Sint32*>(NULL));
-	buildingBulletsScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor bullets scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
-	buildingMinimumLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor minimum level to flag label", "", "[Minimum Level To Flag]", NULL, 3);
-	buildingMinimumLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor minimum level to flag scroll box", "update building", NULL, 3);
-	buildingRadiusLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 252, 128, 16), "building editor", "building editor range label", "", "[range]", NULL, static_cast<Sint32*>(NULL));
-	buildingRadiusScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-128+8, 268, 128, 16), "building editor", "building editor range scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
+	buildingInfoTitle = new BuildingInfoTitle(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+decX, 173, 128, 16), "building editor", "building editor info title", "", NULL);
+	buildingPicture = new BuildingPicture(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+decX, 203, 56, 46), "building editor", "building editor picture", "", NULL);
+	buildingHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor hp label", "", "[hp]", NULL, static_cast<Sint32*>(NULL));
+	buildingHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor hp scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
+	buildingFoodQuantityLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor food label", "", "[Wheat]", NULL, static_cast<Sint32*>(NULL));
+	buildingFoodQuantityScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor food scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
+	buildingAssignedLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor assigned label", "", "[assigned]", NULL, 20);
+	buildingAssignedScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor assigned scroll box", "", NULL, 20);
+	buildingWorkerRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor worker ratio label", "", "[Worker Ratio]", NULL, 16);
+	buildingWorkerRatioScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor worker ratio scroll box", "", NULL, 20);
+	buildingExplorerRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor explorer ratio label", "", "[Explorer Ratio]", NULL, 16);
+	buildingExplorerRatioScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor explorer ratio scroll box", "", NULL, 20);
+	buildingWarriorRatioLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor warrior ratio label", "", "[Warrior Ratio]", NULL, 16);
+	buildingWarriorRatioScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor warrior ratio scroll box", "", NULL, 20);
+	buildingCherryLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor cherry label", "", "[Cherry]", NULL, static_cast<Sint32*>(NULL));
+	buildingCherryScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor cherry scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
+	buildingOrangeLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor orange label", "", "[Orange]", NULL, static_cast<Sint32*>(NULL));
+	buildingOrangeScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor orange scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
+	buildingPruneLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor prune label", "", "[Prune]", NULL, static_cast<Sint32*>(NULL));
+	buildingPruneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor prune scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
+	buildingStoneLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor stone label", "", "[Stone]", NULL, static_cast<Sint32*>(NULL));
+	buildingStoneScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor stone scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
+	buildingBulletsLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor bullets label", "", "[Bullets]", NULL, static_cast<Sint32*>(NULL));
+	buildingBulletsScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor bullets scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
+	buildingMinimumLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor minimum level to flag label", "", "[Minimum Level To Flag]", NULL, 3);
+	buildingMinimumLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor minimum level to flag scroll box", "update building", NULL, 3);
+	buildingRadiusLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor range label", "", "[range]", NULL, static_cast<Sint32*>(NULL));
+	buildingRadiusScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor range scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
 	addWidget(buildingInfoTitle);
 	addWidget(buildingPicture);
 	addWidget(buildingHPLabel);
@@ -1182,7 +1187,7 @@ int MapEdit::run(void)
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
 	drawMenu();
-	drawMap(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH(), true, true);
+	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), true, true);
 	drawMiniMap();
 	
 	
@@ -1358,7 +1363,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		if(selectionMode==EditingBuilding)
 		{
 			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
-			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
+			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 			int centerX, centerY;
 			game.map.buildingPosToCursor(selBuild->posXLocal, selBuild->posYLocal,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
 			if (selBuild->owner->teamNumber==team)
@@ -1384,7 +1389,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 void MapEdit::drawMiniMap(void)
 {
-	minimap.draw(team, viewportX, viewportY, (globalContainer->gfx->getW()-128)/32, globalContainer->gfx->getH()/32 );
+	minimap.draw(team, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );
 // 	paintCoordinates();
 }
 
@@ -1392,13 +1397,13 @@ void MapEdit::drawMiniMap(void)
 
 void MapEdit::drawMenu(void)
 {
- 	int menuStartW=globalContainer->gfx->getW()-128;
+ 	int menuStartW=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
 	int yposition=128;
 
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(menuStartW, yposition, 128, globalContainer->gfx->getH()-128, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(menuStartW, yposition, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(menuStartW, yposition, 128, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
+		globalContainer->gfx->drawFilledRect(menuStartW, yposition, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
 	drawMenuEyeCandy();
 }
@@ -1440,7 +1445,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 		
 		// we draw the building
 		sprite->setBaseColor(game.teams[team]->color);
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-128, globalContainer->gfx->getH());
+		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 // 		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
 	 	int spriteIntensity = 127;
 		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
@@ -1526,13 +1531,13 @@ void MapEdit::drawMenuEyeCandy()
 
 	// bar background 
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-128, 16, 0, 0, 40, 180);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 40, 180);
 
 	// draw window bar
-	int pos=globalContainer->gfx->getW()-128-32;
-	for (int i=0; i<pos; i+=32)
+	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32;
+	for (int i=0; i<=pos; i+=32)
 	{
 		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
 	}
@@ -1636,12 +1641,12 @@ void MapEdit::processEvent(SDL_Event& event)
 		}
 		else if(isDraggingZone)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("zone drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingTerrain)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("terrain drag motion", relMouseX, relMouseY);
 		}
 		else if(isScrollDragging)
@@ -1663,7 +1668,7 @@ void MapEdit::processEvent(SDL_Event& event)
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
-		if(!findAction(event.button.x, event.button.y) && widgetRectangle(0, 16, globalContainer->gfx->getW()-128, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
+		if(!findAction(event.button.x, event.button.y) && widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
 			//The button wasn't clicked in any registered area
 			if(selectionMode==PlaceBuilding)
@@ -1686,7 +1691,7 @@ void MapEdit::processEvent(SDL_Event& event)
 				performAction("select map building");
 			}
 		}
-		else if(widgetRectangle(globalContainer->gfx->getW()-128+14, 14, 100, 100).is_in(mouseX, mouseY))
+		else if(widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
 			performAction("minimap drag start");
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_RIGHT)
@@ -1854,7 +1859,7 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 		break;
 		case MapEditKeyActions::SelectDeleteTool:
 		{
-			performAction("switch to terrain view&select delete objects");
+			performAction("switch to flag view&select delete objects");
 		}
 		break;
 	}
@@ -1954,11 +1959,11 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	else if(action=="minimap drag start")
 	{
 		isDraggingMinimap=true;
-		minimapMouseToPos(mouseX-globalContainer->gfx->getW()+128, mouseY, &viewportX, &viewportY, true);
+		minimapMouseToPos(mouseX-globalContainer->gfx->getW()+RIGHT_MENU_WIDTH-RIGHT_MENU_OFFSET, mouseY, &viewportX, &viewportY, true);
 	}
 	else if(action=="minimap drag motion")
 	{
-		minimapMouseToPos(mouseX-globalContainer->gfx->getW()+128, mouseY, &viewportX, &viewportY, true);
+		minimapMouseToPos(mouseX-globalContainer->gfx->getW()+RIGHT_MENU_WIDTH-RIGHT_MENU_OFFSET, mouseY, &viewportX, &viewportY, true);
 	}
 	else if(action=="minimap drag stop")
 	{
@@ -2075,6 +2080,11 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
+		
+		for (int i=0; i<game.mapHeader.getNumberOfTeams(); ++i)
+		{
+			game.mapHeader.getBaseTeam(i)=*game.teams[i];
+		}
 		
 		teamsEditor=new TeamsEditor(&game);
 		showingTeamsEditor=true;
@@ -3073,7 +3083,7 @@ void MapEdit::handleMapScroll()
 				good to subtract 1 so that there would be a small
 				overlap between what is viewable both before and
 				after the motion.) */
-			xMotion = ((globalContainer->gfx->getW()-128)>>6);
+			xMotion = ((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
 			yMotion = ((globalContainer->gfx->getH())>>6);
 		}
 		else
@@ -3130,20 +3140,20 @@ void MapEdit::handleMapScroll()
 		ySpeed = yMotion;
 	}
 	
-	if(globalContainer->gfx->getW()-mouseX<15)
+	if(globalContainer->gfx->getW()-mouseX<10)
 	{
 		xSpeed = 1;
 	}
-	else if(mouseX<15)
+	else if(mouseX<10)
 	{
 		xSpeed = -1;
 	}
 
-	if(globalContainer->gfx->getH()-mouseY<15)
+	if(globalContainer->gfx->getH()-mouseY<10)
 	{
 		ySpeed = 1;
 	}
-	else if(mouseY<15)
+	else if(mouseY<10)
 	{
 		ySpeed = -1;
 	}
@@ -3214,7 +3224,7 @@ void MapEdit::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 	*cy+=game.teams[team]->startPosY-(game.map.getH()/2);
 	if (forScreenViewport)
 	{
-		*cx-=((globalContainer->gfx->getW()-128)>>6);
+		*cx-=((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
 		*cy-=((globalContainer->gfx->getH())>>6);
 	}
 

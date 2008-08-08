@@ -56,6 +56,12 @@ public:
 
 	///Returns the router administrator
 	YOGServerRouterAdministrator& getAdministrator();
+	
+	///This puts the router into shutdown mode, disconnecting from YOG and turning off once all clients disconnect
+	void enterShutdownMode();
+	
+	///This prints a status report of the router
+	std::string getStatusReport();
 
 private:
 	NetListener nl;
@@ -64,6 +70,7 @@ private:
 	std::map<Uint16, boost::shared_ptr<YOGServerGameRouter> > games;
 	std::vector<boost::shared_ptr<YOGServerRouterPlayer> > players;
 	YOGServerRouterAdministrator admin;
+	bool shutdownMode;
 };
 
 #endif

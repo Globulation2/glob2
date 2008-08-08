@@ -190,6 +190,8 @@ Bouwen
 Gebouwen
 [building site]
 bouwplaats
+[Building Tool Line Explanation]
+
 [Buildings]
 Gebouwen
 [Bullets]
@@ -258,6 +260,8 @@ Vruchtbaarheid aan het berekenen
 
 [connect]
 Verbinden
+[connecting to game]
+
 [connecting to]
 Verbinden met
 [Construction Site Defaults]
@@ -678,6 +682,8 @@ Open scriptbewerker
 
 [open]
 Open
+[OpenGL]
+
 [Options]
 
 [options]

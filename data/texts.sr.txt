@@ -142,6 +142,8 @@ AIWarrush
 
 [building site]
 Градилиште
+[Building Tool Line Explanation]
+
 [Buildings]
 Зграде
 [Bullets]
@@ -204,8 +206,10 @@ AIWarrush
 
 [connect]
 Прикључи се
+[connecting to game]
+
 [connecting to]
-Повезивање са: 
+Повезивање са:
 [Construction Site Defaults]
 
 [Continue playing]
@@ -610,6 +614,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [open]
 отвори
+[OpenGL]
+
 [Options]
 
 [options]

@@ -142,6 +142,8 @@ Construir
 
 [building site]
 Construint
+[Building Tool Line Explanation]
+
 [Buildings]
 Edificis
 [Bullets]
@@ -210,6 +212,8 @@ Compilar el script
 
 [connect]
 Conectat
+[connecting to game]
+
 [connecting to]
 Conectant a
 [Construction Site Defaults]
@@ -616,6 +620,8 @@ Aqui
 
 [open]
 Obrir
+[OpenGL]
+
 [Options]
 
 [options]

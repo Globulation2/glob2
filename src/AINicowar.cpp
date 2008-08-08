@@ -2070,10 +2070,10 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	for(int i=0; i<1024; ++i)
 	{
 		Unit* unit = echo.player->team->myUnits[i];
-		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[unit->posX * h + unit->posY] == NOGUID)
+		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] == NOGUID)
 		{
-			unitGID[unit->posX * h + unit->posY] = unit->gid;
-			modify_points(counts, w, h, unit->posX, unit->posY, 4, 1, locations);
+			unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] = unit->gid;
+			modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, 4, 1, locations);
 		}
 	}
 	for(int i=0; i<1024; ++i)
@@ -2128,7 +2128,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 				if(unitGID[nx * h + ny] != NOGUID)
 				{
 					Unit* unit = echo.player->team->myUnits[Unit::GIDtoID(unitGID[nx * h + ny])];
-					modify_points(counts, w, h, unit->posX, unit->posY, 4, -1, locations);
+					modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, 4, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
@@ -2260,7 +2260,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		    {
 		            if(enemy_count != echo.get_building_register().get_assigned(*i))
 		            {
-		                    ManagementOrder* mo_assign=new AssignWorkers(enemy_count, *i);
+		                    ManagementOrder* mo_assign=new AssignWorkers(std::min(20, enemy_count), *i);
 		                    echo.add_management_order(mo_assign);
 		            }
 		    }

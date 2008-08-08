@@ -142,6 +142,8 @@ Construieşte
 
 [building site]
 şantier
+[Building Tool Line Explanation]
+
 [Buildings]
 Clădiri
 [Bullets]
@@ -204,6 +206,8 @@ Compilează scriptul
 
 [connect]
 Conectează
+[connecting to game]
+
 [connecting to]
 Conectare la
 [Construction Site Defaults]
@@ -610,6 +614,8 @@ Aici
 
 [open]
 deschis
+[OpenGL]
+
 [Options]
 
 [options]

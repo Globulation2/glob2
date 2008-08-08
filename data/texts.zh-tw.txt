@@ -190,6 +190,8 @@ AIWarrush
 單位設定
 [building site]
 建築地點
+[Building Tool Line Explanation]
+
 [Buildings]
 建築物
 [Bullets]
@@ -241,7 +243,7 @@ AIWarrush
 [Clearing:]
 清除:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 清除資源
 [clearingflag]
@@ -258,6 +260,8 @@ AIWarrush
 
 [connect]
 連線
+[connecting to game]
+
 [connecting to]
 連線至
 [Construction Site Defaults]
@@ -357,7 +361,7 @@ AIWarrush
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 招集探索者
 [explorationflag]
@@ -678,6 +682,8 @@ Air dmg.
 
 [open]
 開啟
+[OpenGL]
+
 [Options]
 
 [options]
@@ -905,7 +911,7 @@ V: 持鍵以傳送訊息
 [Statistics]
 統計
 [Still (i)]
-仍在 
+仍在
 [still (w)]
 仍在
 [still one unit working]
@@ -1125,7 +1131,7 @@ V: 持鍵以傳送訊息
 [Walk]
 行走
 [warflag explanation 2]
- 
+
 [warflag explanation]
 招集士兵
 [warflag]

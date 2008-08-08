@@ -142,6 +142,8 @@ Budynki
 Wł. Budynków
 [building site]
 plac budowy
+[Building Tool Line Explanation]
+
 [Buildings]
 Budowle
 [Bullets]
@@ -204,6 +206,8 @@ Obliczam Urodzajność
 Betonowe Wyspy
 [connect]
 Połącz
+[connecting to game]
+
 [connecting to]
 Łączę z
 [Construction Site Defaults]
@@ -610,6 +614,8 @@ Otwórz Edytor Skryptów
 Otwórz Edytor Zespołów
 [open]
 otwarty
+[OpenGL]
+
 [Options]
 Opcje
 [options]
@@ -837,9 +843,9 @@ umierających z głodu
 [Statistics]
 Statystyka
 [Still (i)]
-Wciąż 
+Wciąż
 [still (w)]
-Ciągle 
+Ciągle
 [still one unit working]
 Jeszcze 1 jednostka pracująca
 [Still one]
@@ -949,7 +955,7 @@ Gospoda została zaatakowana
 [the maps]
 Mapy
 [the market is finished]
-Zbudowano bazar 
+Zbudowano bazar
 [the market is under attack]
 Bazar został zaatakowany
 [The player %0 has joined YOG]

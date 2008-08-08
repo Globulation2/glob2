@@ -85,7 +85,7 @@ alt-%0
 [and]
 e
 [any explorer]
-qualunque esploratore 
+qualunque esploratore
 [are dying hungry]
 stanno morendo di fame
 [are hungry]
@@ -190,6 +190,8 @@ Costruisci
 Impostazioni unità
 [building site]
 Struttura in costruzione
+[Building Tool Line Explanation]
+
 [Buildings]
 Costruzioni
 [Bullets]
@@ -252,6 +254,8 @@ Calcolando la fertilità
 
 [connect]
 Connesso
+[connecting to game]
+
 [connecting to]
 Mi sto connettendo a
 [Construction Site Defaults]
@@ -455,7 +459,7 @@ Raccogliere
 [home]
 home
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Cura le unità
 [hospital]
@@ -479,7 +483,7 @@ Sulla strada
 [increase units working]
 aumenta unità lavorative
 [inn explanation 2]
- 
+
 [inn explanation]
 Approvvigiona le unità
 [inn level 0]
@@ -670,6 +674,8 @@ Apri l'Editor di Script
 
 [open]
 Apri
+[OpenGL]
+
 [Options]
 
 [options]
@@ -721,7 +727,7 @@ Esci
 [racetrack explanation 2]
 terreno delle unità
 [racetrack explanation]
-Migliora la velocità su 
+Migliora la velocità su
 [racetrack]
 Circuito
 [range]
@@ -921,7 +927,7 @@ Nome del server
 [swamp terrain]
 Palude
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Crea nuove unità
 [swarm level 0]
@@ -1117,7 +1123,7 @@ Aspettando
 [Walk]
 Camminare
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Richiama i guerrieri
 [warflag]

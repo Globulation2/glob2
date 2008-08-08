@@ -57,7 +57,7 @@ namespace GAGGUI
 	
 	void MessageBoxScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
-		if (action==BUTTON_PRESSED)
+		if (action==BUTTON_RELEASED)
 			endValue=par1;
 	}
 	

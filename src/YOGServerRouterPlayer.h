@@ -45,8 +45,11 @@ public:
 	///Updates this player
 	void update();
 	
-	//Returns true if this player is still connected
+	///Returns true if this player is still connected
 	bool isConnected();
+	
+	///Returns true if this player is an admin
+	bool isAdministrator();
 
 private:
 	boost::shared_ptr<NetConnection> connection;
