@@ -3,6 +3,7 @@
 #include "parser.h"
 #include "error.h"
 #include "interpreter.h"
+#include "native.h"
 #include <iostream>
 #include <fstream>
 #include <memory>
@@ -37,12 +38,22 @@ void dumpCode(Heap* heap, DebugInfo* debug, ostream& stream)
 }
 
 
-struct FileLoad: NativeMethod
+struct FileLoad: NativeCode
 {
 	FileLoad():
-		NativeMethod(0, "File::load", new ValPatternNode(Position(), "filename"))
+		NativeCode("File::load")
+	{}
+	
+	void execute(Thread* thread)
 	{
-		body.push_back(new EvalCode());
+		Thread::Frame::Stack& stack = thread->frames.back().stack;
+		Value* receiver = stack.back();
+		stack.pop_back();
+		Value* argument = stack.back();
+		stack.pop_back();
+	
+		Value* result = execute(thread, receiver, argument);
+		stack.push_back(result);
 	}
 	
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
@@ -69,11 +80,23 @@ struct FileLoad: NativeMethod
 } load;
 
 
-struct Yield: NativeMethod
+struct Yield: NativeCode
 {
 	Yield():
-		NativeMethod(0, "Thread::Yield", new NilPatternNode(Position()))
+		NativeCode("Thread::Yield")
 	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame::Stack& stack = thread->frames.back().stack;
+		Value* receiver = stack.back();
+		stack.pop_back();
+		Value* argument = stack.back();
+		stack.pop_back();
+	
+		Value* result = execute(thread, receiver, argument);
+		stack.push_back(result);
+	}
 	
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
 	{
@@ -82,28 +105,46 @@ struct Yield: NativeMethod
 	}
 } yield;
 
-
-struct Print: NativeMethod
+/*
+struct Print: NativeCode
 {
 	Print():
-		NativeMethod(0, "Debug::Print", new ValPatternNode(Position(), "text"))
+		NativeCode("print")
 	{}
+	
+	void execute(Thread* thread)
+	{
+		Thread::Frame::Stack& stack = thread->frames.back().stack;
+		Value* receiver = stack.back();
+		stack.pop_back();
+		Value* argument = stack.back();
+		stack.pop_back();
+	
+		Value* result = execute(thread, receiver, argument);
+		stack.push_back(result);
+	}
 	
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
 	{
-		String* string = dynamic_cast<String*>(argument);
-		std::cout << string->value << std::endl;
+		argument->dump(std::cout);
+		std::cout << std::endl;
 		return argument;
 	}
 } print;
-
+*/
+void print(Value* value)
+{
+	value->dump(cout);
+	cout << endl;
+	//return value;
+}
 
 Usl::Usl()
 {
 	ScopePrototype* prototype = new ScopePrototype(&heap, 0);
-	prototype->members["load"] = nativeMethodMember(&load);
-	prototype->members["yield"] = nativeMethodMember(&yield);
-	prototype->members["print"] = nativeMethodMember(&print);
+	prototype->addMethod(&load);
+	prototype->addMethod(&yield);
+	prototype->addMethod(new NativeFunction<void, Value*>("print", print));
 	
 	root = new Scope(&heap, prototype, 0);
 }
@@ -193,7 +234,7 @@ size_t Usl::run(size_t steps)
 	return total;
 }
 
-/*
+
 int main(int argc, char** argv)
 {
 	if (argc < 2)
@@ -218,14 +259,11 @@ int main(int argc, char** argv)
 		
 		const char* name = argv[i];
 		stream.open(name);
-		Thread* thread = usl.createThread(name, stream);
+		usl.createThread(name, stream);
 		stream.close();
 		
 		size_t steps = 1000000;
-		Value* result = thread->run(steps);
-		cout << endl;
-		result->dump(cout);
-		cout << endl;
+		usl.run(steps);
 	}
 	catch(Exception& e)
 	{
@@ -235,4 +273,4 @@ int main(int argc, char** argv)
 	
 	return 0;
 }
-*/
+
