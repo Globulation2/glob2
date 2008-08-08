@@ -51,6 +51,7 @@ struct Value
 extern Value nil;
 
 struct ThunkPrototype;
+struct NativeCode;
 struct Prototype: Value
 {
 	typedef std::map<std::string, ThunkPrototype*> Members;
@@ -58,6 +59,8 @@ struct Prototype: Value
 	Members members;
 	
 	Prototype(Heap* heap);
+	
+	void addMethod(NativeCode* native);
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
@@ -167,21 +170,6 @@ struct Scope: Thunk
 	}
 };
 
-struct NativeThunk: ThunkPrototype
-{
-	std::string name;
-	NativeThunk(Prototype* outer, const std::string& name);
-	virtual Value* execute(Thread* thread, Value* receiver) = 0;
-};
-
-struct PatternNode;
-struct NativeMethod: ScopePrototype
-{
-	std::string name;
-	NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument);
-	virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
-};
-
 struct MetaPrototype: Value
 {
 	typedef ScopePrototype Prototype;
@@ -197,42 +185,6 @@ struct Function: MetaPrototype
 	typedef ScopePrototype Prototype;
 
 	Function(Heap* heap, Prototype* prototype, Value* outer);
-};
-
-struct Integer: Value
-{
-	struct IntegerPrototype: Prototype
-	{
-		IntegerPrototype();
-	};
-	static IntegerPrototype integerPrototype;
-	
-	int value;
-	
-	Integer(Heap* heap, int value):
-		Value(heap, &integerPrototype),
-		value(value)
-	{}
-	
-	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
-};
-
-struct String: Value
-{
-	struct StringPrototype: Prototype
-	{
-		StringPrototype();
-	};
-	static StringPrototype stringPrototype;
-	
-	std::string value;
-	
-	String(Heap* heap, const std::string& value):
-		Value(heap, &stringPrototype),
-		value(value)
-	{}
-	
-	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
 };
 
 #endif // ndef TYPES_H

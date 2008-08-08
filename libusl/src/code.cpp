@@ -1,4 +1,5 @@
 #include "code.h"
+#include "native.h"
 #include "interpreter.h"
 #include "tree.h"
 #include "debug.h"
@@ -16,37 +17,10 @@ ThunkPrototype* thisMember(Prototype* outer)
 	thunk->body.push_back(new ParentCode());
 	return thunk;
 }
-/*
-struct ScopeGet: NativeMethod
-{
-	ScopeGet(Prototype* outer):
-		NativeMethod(outer, "Scope::get", new ValPatternNode(Position(), "index"))
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		Scope* scope = dynamic_cast<Scope*>(receiver);
-		Integer* index = dynamic_cast<Integer*>(argument);
-		
-		assert(scope);
-		assert(index);
-		
-		assert(index->value >= 0);
-		assert(size_t(index->value) < scope->locals.size());
-		// TODO get a thunk
-		
-		return scope->locals[index->value];
-	}
-};
 
-ScopePrototype* getMember(Prototype* outer)
+ThunkPrototype* methodMember(ScopePrototype* method)
 {
-	return nativeMethodMember(new ScopeGet(outer));
-}
-*/
-ThunkPrototype* nativeMethodMember(NativeMethod* method)
-{
-	ThunkPrototype* thunk = new ThunkPrototype(0, method->outer); // TODO: GC
+	ThunkPrototype* thunk = new ThunkPrototype(0, method->outer);
 	thunk->body.push_back(new ThunkCode());
 	thunk->body.push_back(new ParentCode());
 	thunk->body.push_back(new CreateCode<Function>(method));
@@ -243,45 +217,13 @@ void ThunkCode::execute(Thread* thread)
 }
 
 
-NativeThunkCode::NativeThunkCode(NativeThunk* thunk):
-	thunk(thunk)
+NativeCode::NativeCode(const string& name):
+	name(name)
 {}
 
-void NativeThunkCode::execute(Thread* thread)
+void NativeCode::dumpSpecific(std::ostream &stream) const
 {
-	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	
-	Value* receiver = stack.back();
-	stack.pop_back();
-	
-	stack.push_back(thunk->execute(thread, receiver));
-}
-
-void NativeThunkCode::dumpSpecific(std::ostream &stream) const
-{
-	stream << " " << thunk->name;
-}
-
-
-NativeMethodCode::NativeMethodCode(NativeMethod* method):
-	method(method)
-{}
-
-void NativeMethodCode::execute(Thread* thread)
-{
-	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	
-	Value* argument = stack.back();
-	stack.pop_back();
-	Value* receiver = stack.back();
-	stack.pop_back();
-	
-	stack.push_back(method->execute(thread, receiver, argument));
-}
-
-void NativeMethodCode::dumpSpecific(std::ostream &stream) const
-{
-	stream << " " << method->name;
+	stream << " " << name;
 }
 
 

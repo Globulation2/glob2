@@ -2,9 +2,9 @@
 
 #include "code.h"
 #include "interpreter.h"
-#include "tree.h"
 #include "debug.h"
 #include "usl.h"
+#include "native.h"
 
 #include <cassert>
 #include <algorithm>
@@ -26,13 +26,24 @@ Prototype::Prototype(Heap* heap):
 	Value(heap, 0)
 {}
 
+void Prototype::addMethod(NativeCode* native)
+{
+	ScopePrototype* scope = new ScopePrototype(static_cast<Heap*>(0), this); // TODO: GC
+	scope->body.push_back(new EvalCode()); // evaluate the argument
+	scope->body.push_back(new ThunkCode()); // get the current thunk
+	scope->body.push_back(new ParentCode()); // get the parent value
+	scope->body.push_back(native); // run the method
+	
+	members[native->name] = methodMember(scope);
+}
+
 
 ThunkPrototype::ThunkPrototype(Heap* heap, Prototype* outer):
 	Prototype(heap),
 	outer(outer)
 {}
 
-
+/*
 struct ScopeSize: NativeThunk
 {
 	ScopeSize():
@@ -83,13 +94,13 @@ struct ScopeMetaPrototype: NativeThunk
 		return new MetaPrototype(&thread->usl->heap, scope->scopePrototype(), scope->outer);
 	}
 } scopeMetaPrototype;
-
+*/
 ScopePrototype::ScopePrototype(Heap* heap, Prototype* outer):
 	ThunkPrototype(heap, outer)
 {
-	members["size"] = &scopeSize;
-	members["at"] = nativeMethodMember(&scopeAt);
-	members["prototype"] = &scopeMetaPrototype;	
+//	members["size"] = &scopeSize;
+//	members["at"] = nativeMethodMember(&scopeAt);
+//	members["prototype"] = &scopeMetaPrototype;	
 }
 
 ScopePrototype::~ScopePrototype()
@@ -104,7 +115,7 @@ Scope::Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
 	locals(prototype->locals.size(), 0)
 {}
 	
-
+/*
 NativeThunk::NativeThunk(Prototype* outer, const std::string& name):
 	ThunkPrototype(0, outer),
 	name(name)
@@ -156,7 +167,7 @@ struct PrototypeWith: NativeMethod
 		std::copy(thisProt->prototype->body.begin(), thisProt->prototype->body.end(), std::back_inserter(target->body));
 		/*foreach var in this
 			copy var in composedThunk
-		return composedThunk;*/
+		return composedThunk;/
 		
 		if (dynamic_cast<Function*>(thatProt))
 		{
@@ -168,13 +179,13 @@ struct PrototypeWith: NativeMethod
 		}
 	}
 } prototypeWith;
-
+*/
 struct MetaPrototypePrototype: Prototype
 {
 	MetaPrototypePrototype():
 		Prototype(0)
 	{
-		members["with"] = nativeMethodMember(&prototypeWith);
+//		members["with"] = nativeMethodMember(&prototypeWith);
 	}
 } metaPrototypePrototype;
 
@@ -189,79 +200,4 @@ MetaPrototype::MetaPrototype(Heap* heap, Prototype* prototype, Value* outer):
 Function::Function(Heap* heap, Prototype* prototype, Value* outer):
 	MetaPrototype(heap, prototype, outer)
 {}
-
-
-struct IntegerAdd: NativeMethod
-{
-	IntegerAdd():
-		NativeMethod(&Integer::integerPrototype, "Integer::+", new ValPatternNode(Position(), "that"))
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		Integer* thisInt = dynamic_cast<Integer*>(receiver);
-		Integer* thatInt = dynamic_cast<Integer*>(argument);
-		
-		assert(thisInt);
-		assert(thatInt);
-		
-		return new Integer(&thread->usl->heap, thisInt->value + thatInt->value);
-	}
-} integerAdd;
-
-struct IntegerSub: NativeMethod
-{
-	IntegerSub():
-		NativeMethod(&Integer::integerPrototype, "Integer::-", new ValPatternNode(Position(), "that"))
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		Integer* thisInt = dynamic_cast<Integer*>(receiver);
-		Integer* thatInt = dynamic_cast<Integer*>(argument);
-		
-		assert(thisInt);
-		assert(thatInt);
-		
-		return new Integer(&thread->usl->heap, thisInt->value - thatInt->value);
-	}
-} integerSub;
-
-struct IntegerLessThan: NativeMethod
-{
-	IntegerLessThan():
-		NativeMethod(&Integer::integerPrototype, "Integer::<", new ValPatternNode(Position(), "that"))
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		Integer* thisInt = dynamic_cast<Integer*>(receiver);
-		Integer* thatInt = dynamic_cast<Integer*>(argument);
-		
-		assert(thisInt);
-		assert(thatInt);
-		
-		bool result = thisInt->value < thatInt->value;
-		string resultName(result ? "true" : "false");
-		return thread->usl->runtimeValues[resultName];
-	}
-} integerLessThan;
-
-Integer::IntegerPrototype::IntegerPrototype():
-	Prototype(0)
-{
-	members["+"] = nativeMethodMember(&integerAdd);
-	members["-"] = nativeMethodMember(&integerSub);
-	members["<"] = nativeMethodMember(&integerLessThan);
-}
-
-Integer::IntegerPrototype Integer::integerPrototype;
-
-
-String::StringPrototype::StringPrototype():
-	Prototype(0)
-{
-}
-
-String::StringPrototype String::stringPrototype;
 
