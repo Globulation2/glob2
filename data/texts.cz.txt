@@ -615,7 +615,7 @@ Na místě
 [open]
 Otevřít
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]

@@ -29,7 +29,6 @@ Ext.onReady(function() {
 	CMInitializer[0].hidden=false;
 	CMInitializer[0].width=80;
 	CMInitializer[0].editor='';
-	//Ext.Msg.alert("",CMInitializer[0].header);
 	var CM = new Ext.grid.ColumnModel(CMInitializer);
 	var Reader= new Ext.data.JsonReader({
 			root: 'rows',
@@ -49,7 +48,7 @@ Ext.onReady(function() {
 		Store.proxy=new Ext.data.HttpProxy({
 			url: '/translation/getTranslations.php?languages=' + languages.join(',')
 		});
-		Store.reload();//load({params:{start:0, limit:25}});
+		Store.reload();
 	}
 	var GP = new Ext.grid.EditorGridPanel({
 		stripeRows: true,
@@ -75,8 +74,6 @@ Ext.onReady(function() {
 				new Ext.PagingToolbar({
 					pageSize: 25,
 					store: Store,
-					//displayInfo: true,
-					//displayMsg: 'Displaying keys {0} - {1} of {2}',
 					emptyMsg: "No keys to display"
 				})
 			,'->'
@@ -193,100 +190,4 @@ Ext.onReady(function() {
 		refreshStore();
 	}
 	refreshStore();
-});
-
-imgReload = function() {
-    Ext.StoreMgr.lookup('imgStore').load();
-}
-
-openImageList = function() {
-    if(Ext.type(imgDialog) === false) {
-	    imgDialog = new Ext.Window({
-	        layout: 'fit',
-	        height: 500,
-	        width: 800,
-	        minHeight: 250,
-	        minWidth: 250,
-	        modal: true,
-	        shadow: true,
-	        collapsible: false,
-	        closable: true,
-	        title: 'Pick an image',
-	        resizable: false,
-	        bodyBorder: false,
-	        items: [
-                imgPanel
-            ],
-	        listeners: {
-	            beforeclose: function() {
-	            	if(!imgDialog.hidden) {
-                        imgDialog.hide();
-                        return false;
-		            }
-		        }
-	        }
-	    });
-    }
-    wiki_imgDialog.show();
-}
-
-// ImgViewer, das die Bilderliste enth�lt und die Bildauswahl (click) verarbeitet
-imgPanel = new Ext.Panel({
-    titlebar: false,
-    id: 'imgPanel',
-    border:false,
-    frame: false,
-    layout: 'fit',
-    items: new Ext.DataView({
-        store: new Ext.data.Store({
-            id: 'imgStore',
-            proxy: new Ext.data.HttpProxy({
-                url: 'getmedialist.php',
-                method: 'POST'
-            }),
-            reader: new Ext.data.JsonReader({
-                root: 'results',
-                totalProperty: 'total',
-                id: 'name'
-            }, [
-                {name: 'name'},
-                {name: 'size'},
-                {name: 'file_name'}
-            ])
-        }),
-        tpl: new Ext.XTemplate(
-            '<tpl for=".">',
-                '<div class="thumb-wrap" id="{name}">',
-                '<div class="thumb"><img src="{fileName}" width="50" title="{name}"></div>',
-                '<span class="x-editable">{shortName}</span></div>',
-                '</tpl>',
-            '<div class="x-clear"></div>'
-        ),
-        autoHeight: true,
-        multiSelect: false,
-        overClass: 'x-view-over',
-        itemSelector: 'div.thumb-wrap',
-        emptyText: 'No images to display',
-/*        plugins: [
-            new Ext.DataView.DragSelector(),
-            new Ext.DataView.LabelEditor({dataIndex: 'name'})
-        ],*/
-        prepareData: function(data){
-            data.shortName = Ext.util.Format.ellipsis(data.name, 15);
-            data.sizeString = Ext.util.Format.fileSize(data.size);
-            data.fileName = 'media/' + data.name;
-            return data;
-        },
-        listeners: {
-            'dblclick': function(view, index, node, e) {
-                imgName = view.store.getAt(index).get('name');
-                tinyMCE.activeEditor.execCommand('mceInsertContent', false,
-                    '<img src="' + baseUrl + '/wiki/media/index'
-                    + '/page_name/' + page_name 
-                    + '/name/' + imgName + '" />'
-                );
-                imgDialog.hide();
-            }
-        }
-    })
 });
