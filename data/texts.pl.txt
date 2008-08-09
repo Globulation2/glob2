@@ -1154,3 +1154,5 @@ Twoja jednostka została przeciągnięta na stronę wroga %0
 Twoja imię gracza zostało zablokowane. Skontaktuj się z administratorami aby to zmienić.
 [connecting to game]
 Łączę z grą
+[OpenGL]
+OpenGL

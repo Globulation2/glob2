@@ -621,7 +621,7 @@ Aqui
 [open]
 Obrir
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
