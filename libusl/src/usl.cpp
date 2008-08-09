@@ -38,114 +38,81 @@ void dumpCode(Heap* heap, DebugInfo* debug, ostream& stream)
 }
 
 
-struct FileLoad: NativeCode
+struct Load: NativeCode
 {
-	FileLoad():
-		NativeCode("File::load")
+	Load():
+		NativeCode("load")
 	{}
 	
+	void prologue(ThunkPrototype* thunk)
+	{
+		thunk->body.push_back(new EvalCode()); // evaluate the argument
+	}
+
 	void execute(Thread* thread)
 	{
-		Thread::Frame::Stack& stack = thread->frames.back().stack;
-		Value* receiver = stack.back();
-		stack.pop_back();
+		Thread::Frame& frame = thread->frames.back();
+		Thread::Frame::Stack& stack = frame.stack;
+		
 		Value* argument = stack.back();
 		stack.pop_back();
 	
-		Value* result = execute(thread, receiver, argument);
-		stack.push_back(result);
-	}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		String* string = dynamic_cast<String*>(argument);
-		assert(string); // TODO: throw
-		
-		const std::string& filename = string->value;
+		const string& filename = unbox<string>(thread, argument);
 		
 		Usl* usl = thread->usl;
 		
 		Value* value = usl->cache[filename];
 		if (value == 0)
-		{ // FIXME
+		{
 			auto_ptr<ifstream> stream(usl->openFile(filename));
 			Scope* scope = usl->compile(filename, *stream);
-			return scope;
+			if (frame.nextInstr >= frame.thunk->thunkPrototype()->body.size())
+				thread->frames.pop_back(); // tail-call optimisation
+			thread->frames.push_back(scope);
 		}
 		else
 		{
-			return value;
+			stack.push_back(value);
 		}
 	}
-} load;
+};
 
 
 struct Yield: NativeCode
 {
 	Yield():
-		NativeCode("Thread::Yield")
+		NativeCode("yield")
 	{}
 	
-	void execute(Thread* thread)
+	void prologue(ThunkPrototype* thunk)
 	{
-		Thread::Frame::Stack& stack = thread->frames.back().stack;
-		Value* receiver = stack.back();
-		stack.pop_back();
-		Value* argument = stack.back();
-		stack.pop_back();
-	
-		Value* result = execute(thread, receiver, argument);
-		stack.push_back(result);
+		thunk->body.push_back(new PopCode()); // ignore the argument
 	}
 	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
+	void epilogue(ThunkPrototype* thunk)
+	{
+		thunk->body.push_back(new ConstCode(&nil)); // return nil
+	}
+	
+	void execute(Thread* thread)
 	{
 		thread->state = Thread::YIELD;
-		return argument;
 	}
-} yield;
+};
 
-/*
-struct Print: NativeCode
-{
-	Print():
-		NativeCode("print")
-	{}
-	
-	void execute(Thread* thread)
-	{
-		Thread::Frame::Stack& stack = thread->frames.back().stack;
-		Value* receiver = stack.back();
-		stack.pop_back();
-		Value* argument = stack.back();
-		stack.pop_back();
-	
-		Value* result = execute(thread, receiver, argument);
-		stack.push_back(result);
-	}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		argument->dump(std::cout);
-		std::cout << std::endl;
-		return argument;
-	}
-} print;
-*/
 void print(Value* value)
 {
 	value->dump(cout);
 	cout << endl;
-	//return value;
 }
 
 Usl::Usl()
 {
 	ScopePrototype* prototype = new ScopePrototype(&heap, 0);
-	prototype->addMethod(&load);
-	prototype->addMethod(&yield);
-	prototype->addMethod(new NativeFunction<void, Value*>("print", print));
-	
+	prototype->addMethod(new Load());
+	prototype->addMethod(new Yield());
+	prototype->addMethod(new NativeFunction<void(Value*)>("print", print));
+
 	root = new Scope(&heap, prototype, 0);
 }
 
@@ -234,7 +201,7 @@ size_t Usl::run(size_t steps)
 	return total;
 }
 
-
+/*
 int main(int argc, char** argv)
 {
 	if (argc < 2)
@@ -273,4 +240,4 @@ int main(int argc, char** argv)
 	
 	return 0;
 }
-
+*/

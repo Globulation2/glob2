@@ -9,7 +9,6 @@ class Value;
 class Prototype;
 class ThunkPrototype;
 class ScopePrototype;
-class Native;
 
 ThunkPrototype* thisMember(Prototype* outer);
 ThunkPrototype* methodMember(ScopePrototype* method);
@@ -96,6 +95,8 @@ struct NativeCode: Code
 {
 	NativeCode(const std::string& name);
 	
+	virtual void prologue(ThunkPrototype* thunk) {}
+	virtual void epilogue(ThunkPrototype* thunk) {}
 	virtual void dumpSpecific(std::ostream &stream) const;
 	
 	std::string name;
