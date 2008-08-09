@@ -29,10 +29,28 @@ Prototype::Prototype(Heap* heap):
 void Prototype::addMethod(NativeCode* native)
 {
 	ScopePrototype* scope = new ScopePrototype(static_cast<Heap*>(0), this); // TODO: GC
-	scope->body.push_back(new EvalCode()); // evaluate the argument
-	scope->body.push_back(new ThunkCode()); // get the current thunk
-	scope->body.push_back(new ParentCode()); // get the parent value
+	/*
+	if (arguments > 0)
+	{
+		scope->body.push_back(new EvalCode()); // evaluate the argument
+		if (arguments > 1)
+		{
+			assert(false); // TODO
+		}
+	}
+	else
+	{
+		scope->body.push_back(new PopCode()); // dump the argument
+	}
+	if (receiver)
+	{
+		scope->body.push_back(new ThunkCode()); // get the current thunk
+		scope->body.push_back(new ParentCode()); // get the parent value
+	}
+	*/
+	native->prologue(scope);
 	scope->body.push_back(native); // run the method
+	native->epilogue(scope);
 	
 	members[native->name] = methodMember(scope);
 }

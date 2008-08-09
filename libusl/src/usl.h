@@ -36,7 +36,7 @@ struct Usl
 private:
 	Scope* compile(const std::string& name, std::istream& source);
 	Thread* createThread(Scope* scope);
-	friend struct FileLoad;
+	friend struct Load;
 };
 
 #endif // ndef USL_H

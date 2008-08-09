@@ -6,30 +6,22 @@
 #include "code.h"
 #include "types.h"
 
-#include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
+#include <boost/mpl/assert.hpp>
 
-template<typename Result, typename Argument>
+template<typename Function>
 struct NativeFunction: NativeCode
 {
-	typedef boost::function<Result (Argument)> Function;
-	Function function;
+	typedef boost::function<Function> BoostFunction;
+	BoostFunction function;
 
-	NativeFunction(const std::string& name, const Function& function);
+	NativeFunction(const std::string& name, const BoostFunction& function, bool receiver = false);
 	
+	void prologue(ThunkPrototype* thunk);
 	void execute(Thread* thread);
-};
-
-template<typename Result, typename Receiver, typename Argument>
-struct NativeMethod: NativeCode
-{
-	typedef boost::function<Result (Receiver, Argument)> Function;
-	Function function;
-
-	NativeMethod(const std::string& name, const Function& function);
 	
-	void execute(Thread* thread);
+	bool receiver;
 };
 
 template<typename This>
@@ -45,10 +37,11 @@ private:
 	void initialize()
 	{}
 	
-	template<typename Result, typename Argument>
-	void addMethod(const std::string& name, boost::function<Result (This, Argument)> function)
+	template<typename Function>
+	void addMethod(const std::string& name, const boost::function<Function>& function)
 	{
-		NativeCode* native = new NativeMethod<Result, This, Argument>(name, function);
+		BOOST_MPL_ASSERT(( boost::is_same<This, typename boost::function<Function>::arg1_type> ));
+		NativeCode* native = new NativeFunction<Function>(name, function, true);
 		Prototype::addMethod(native);
 	}
 };
@@ -90,6 +83,15 @@ inline Value*const& unbox<Value*>(Thread* thread, Value*& value) // ugly referen
 	return value;
 }
 
+template<typename T>
+inline const T& pop(Thread* thread)
+{
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	Value* value = stack.back();
+	stack.pop_back();
+	return unbox<T>(thread, value);
+}
+
 
 template<typename T>
 inline Value* box(Thread* thread, const T& t)
@@ -110,77 +112,88 @@ inline Value* box<bool>(Thread* thread, const bool& value)
 	return thread->usl->runtimeValues[name];
 }
 
+template<typename T>
+inline void push(Thread* thread, const T& t)
+{
+	Thread::Frame::Stack& stack = thread->frames.back().stack;
+	Value* value = box(thread, t);
+	stack.push_back(value);
+}
+
 
 template<typename Result, typename Argument>
-Value* execute(const boost::function<Result(Argument)>& function, Thread* thread, Value* value)
+void execute(const boost::function<Result(Argument)>& function, Thread* thread)
 {
-	const Argument& argument = unbox<Argument>(thread, value);
-	Result result = function(argument);
-	return box(thread, result);
+	const Argument& argument = pop<Argument>(thread);
+	const Result& result = function(argument);
+	push(thread, box(thread, result));
 }
 
 template<typename Argument>
-Value* execute(const boost::function<void(Argument)>& function, Thread* thread, Value* value)
+void execute(const boost::function<void(Argument)>& function, Thread* thread)
 {
-	const Argument& argument = unbox<Argument>(thread, value);
+	const Argument& argument = pop<Argument>(thread);
 	function(argument);
-	return thread->usl->runtimeValues["nil"];
+	push(thread, thread->usl->runtimeValues["nil"]);
 }
 
 
 template<typename Result, typename Argument1, typename Argument2>
-Value* execute(const boost::function<Result(Argument1, Argument2)>& function, Thread* thread, Value* value1, Value* value2)
+void execute(const boost::function<Result(Argument1, Argument2)>& function, Thread* thread)
 {
-	const Argument1& argument1 = unbox<Argument1>(thread, value1);
-	const Argument2& argument2 = unbox<Argument2>(thread, value2);
-	Result result = function(argument1, argument2);
-	return box(thread, result);
+	const Argument1& argument1 = pop<Argument1>(thread);
+	const Argument2& argument2 = pop<Argument2>(thread);
+	const Result& result = function(argument1, argument2);
+	push(thread, box(thread, result));
 }
 
 template<typename Argument1, typename Argument2>
-Value* execute(const boost::function<void(Argument1, Argument2)>& function, Thread* thread, Value* value1, Value* value2)
+void execute(const boost::function<void(Argument1, Argument2)>& function, Thread* thread)
 {
-	const Argument1& argument1 = unbox<Argument1>(thread, value1);
-	const Argument2& argument2 = unbox<Argument2>(thread, value2);
+	const Argument1& argument1 = pop<Argument1>(thread);
+	const Argument2& argument2 = pop<Argument2>(thread);
 	function(argument1, argument2);
-	return thread->usl->runtimeValues["nil"];
+	push(thread, thread->usl->runtimeValues["nil"]);
 }
 
 
-template<typename Result, typename Argument>
-NativeFunction<Result, Argument>::NativeFunction(const std::string& name, const Function& function):
+template<typename Function>
+NativeFunction<Function>::NativeFunction(const std::string& name, const BoostFunction& function, bool receiver):
 	NativeCode(name),
-	function(function)
+	function(function),
+	receiver(receiver)
 {}
 
-template<typename Result, typename Argument>
-void NativeFunction<Result, Argument>::execute(Thread* thread)
+template<typename Function>
+void NativeFunction<Function>::prologue(ThunkPrototype* thunk)
 {
-	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	stack.pop_back(); // ignore the receiver
-	Value* argument = stack.back();
-	stack.pop_back();
-	Value* resultValue = ::execute(function, thread, argument);
-	stack.push_back(resultValue);
+	size_t arguments = BoostFunction::arity;
+	if (receiver)
+		--arguments;
+	
+	if (arguments > 0)
+	{
+		thunk->body.push_back(new EvalCode()); // evaluate the argument
+		if (arguments > 1)
+		{
+			assert(false); // TODO
+		}
+	}
+	else
+	{
+		thunk->body.push_back(new PopCode()); // dump the argument
+	}
+	if (receiver)
+	{
+		thunk->body.push_back(new ThunkCode()); // get the current thunk
+		thunk->body.push_back(new ParentCode()); // get the parent value
+	}
 }
 
-
-template<typename Result, typename Receiver, typename Argument>
-NativeMethod<Result, Receiver, Argument>::NativeMethod(const std::string& name, const Function& function):
-	NativeCode(name),
-	function(function)
-{}
-
-template<typename Result, typename Receiver, typename Argument>
-void NativeMethod<Result, Receiver, Argument>::execute(Thread* thread)
+template<typename Function>
+void NativeFunction<Function>::execute(Thread* thread)
 {
-	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	Value* receiver = stack.back();
-	stack.pop_back();
-	Value* argument = stack.back();
-	stack.pop_back();
-	Value* resultValue = ::execute(function, thread, receiver, argument);
-	stack.push_back(resultValue);
+	::execute(function, thread);
 }
 
 
