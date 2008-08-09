@@ -143,7 +143,7 @@ Gebäude
 [building site]
 Baustelle
 [Building Tool Line Explanation]
-
+Strg+Ziehen=Linie
 [Buildings]
 Gebäude
 [Bullets]
@@ -611,7 +611,7 @@ Beim Loslassen
 [open]
 offen
 [OpenGL]
-
+OpenGL
 [Options]
 Einstellungen
 [options]
@@ -679,7 +679,7 @@ Kartenliste aktualisieren
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 [Register]
-
+Register
 [remember unit]
 Arbeiterzahlen merken
 [Remember YOG password localy]
@@ -697,7 +697,7 @@ Reparieren
 [repeat area]
 mal die selbe Landschaft
 [Repeat your password :]
-
+Wiederhole Dein Passwort
 [restore default shortcuts]
 Standardtastenkürzel wiederherstellen
 [return to editor]
@@ -1129,7 +1129,7 @@ Der YOG-Metaserver hat die Verbindung verweigert weil der Benutzername ungültig
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Die eingegebenen Passwörter stimmen nicht überein.
 [YESTS_UNABLE_TO_CONNECT]
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 [yog block command help]

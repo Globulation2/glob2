@@ -3465,3 +3465,5 @@ Az egységedet az ellenség elfogta %0
 
 [connecting to game]
 
+[OpenGL]
+OpenGL
