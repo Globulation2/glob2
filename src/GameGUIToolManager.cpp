@@ -135,8 +135,13 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				int px = 0;
 				int py = 0;
 				int y = starty;
-				for(int x=startx; x!=endx;)
+				bool didBuilding=false;
+				bool finishing=false;
+				for(int x=startx; (!finishing && x!=endx) || !didBuilding;)
 				{
+					if(x == endx)
+						finishing=true;
+ 					didBuilding=false;
 					bw-=1;
 					px+=1;
 					if(bw <= 0)
@@ -144,6 +149,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 						drawBuildingAt(x, y, localteam, viewportX, viewportY);
 						bw = bt->width;
 						bh = bt->height;
+						didBuilding=true;
 					}
 					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
 					{
@@ -155,6 +161,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 							drawBuildingAt(x, y, localteam, viewportX, viewportY);
 							bw = bt->width;
 							bh = bt->height;
+							didBuilding=true;
 						}
 					}
 					x=game.map.normalizeX(x+dirx);
@@ -165,8 +172,13 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 				int px = 0;
 				int py = 0;
 				int x = startx;
-				for(int y=starty; y!=endy;)
+				bool didBuilding=false;
+				bool finishing=false;
+				for(int y=starty; (!finishing && y!=endy) || !didBuilding;)
 				{
+					if(y == endy)
+						finishing=true;
+					didBuilding=false;
 					bh-=1;
 					py+=1;
 					if(bh <= 0)
@@ -174,6 +186,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 						drawBuildingAt(x, y, localteam, viewportX, viewportY);
 						bw = bt->width;
 						bh = bt->height;
+						didBuilding=true;
 					}
 					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
 					{
@@ -185,6 +198,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 							drawBuildingAt(x, y, localteam, viewportX, viewportY);
 							bw = bt->width;
 							bh = bt->height;
+							didBuilding=true;
 						}
 					}
 					y=game.map.normalizeY(y+diry);
@@ -338,9 +352,6 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		///This allows the drag-placing of walls
 		else
 		{
-			int bw=0;
-			int bh=0;
-			
 			int startx = firstPlacementX;
 			int endx = mapX;
 			int starty = firstPlacementY;
@@ -361,35 +372,44 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 				diry = -diry;
 				disty = game.map.getH() -  disty;
 			}
-					
+			
+			int bw = 0;
+			int bh = 0;
 			if(distx > disty)
 			{
 				int px = 0;
 				int py = 0;
 				int y = starty;
-				for(int x=startx; x!=endx;)
+				bool didBuilding=false;
+				bool finishing=false;
+				for(int x=startx; (!finishing && x!=endx) || !didBuilding;)
 				{
+					if(x == endx)
+						finishing=true;
+ 					didBuilding=false;
+					bw-=1;
 					px+=1;
-					if(bw == 0)
+					if(bw <= 0)
 					{
 						placeBuildingAt(x, y, localteam);
 						bw = bt->width;
 						bh = bt->height;
+						didBuilding=true;
 					}
-					bw-=1;
 					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
 					{
 						y=game.map.normalizeY(y+diry);
-						if(bh == 0)
+						bh-=1;
+						py+=1;
+						if(bh <= 0)
 						{
 							placeBuildingAt(x, y, localteam);
 							bw = bt->width;
 							bh = bt->height;
+							didBuilding=true;
 						}
-						bh-=1;
-						py+=1;
 					}
-					x=game.map.normalizeY(x+dirx);
+					x=game.map.normalizeX(x+dirx);
 				}
 			}
 			else
@@ -397,31 +417,40 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 				int px = 0;
 				int py = 0;
 				int x = startx;
-				for(int y=starty; y!=endy;)
+				bool didBuilding=false;
+				bool finishing=false;
+				for(int y=starty; (!finishing && y!=endy) || !didBuilding;)
 				{
+					if(y == endy)
+						finishing=true;
+					didBuilding=false;
+					bh-=1;
 					py+=1;
-					if(bw == 0)
+					if(bh <= 0)
 					{
 						placeBuildingAt(x, y, localteam);
 						bw = bt->width;
 						bh = bt->height;
+						didBuilding=true;
 					}
-					bw-=1;
 					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
 					{
-						x=game.map.normalizeY(x+dirx);
-						if(bh == 0)
+						x=game.map.normalizeX(x+dirx);
+						bw-=1;
+						px+=1;
+						if(bw <= 0)
 						{
 							placeBuildingAt(x, y, localteam);
 							bw = bt->width;
 							bh = bt->height;
+							didBuilding=true;
 						}
-						bh-=1;
-						px+=1;
 					}
 					y=game.map.normalizeY(y+diry);
 				}
 			}
+			if(bt->width == 1 && bt->height==1)
+				placeBuildingAt(endx, endy, localteam);
 		}
 	}
 	firstPlacementX=-1;
