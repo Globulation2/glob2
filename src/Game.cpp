@@ -1668,8 +1668,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
 	imgid=unit->skin->startImage[unit->action];
-	int px, py;
-	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+	int px=(x<<5), py=(y<<5);
+	//map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
@@ -2008,9 +2008,177 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 	}
 }
 
+inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
+	Building *building = teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
+	assert(building);
+	BuildingType *type=building->type;
+	Team *team=building->owner;
+	
+	int imgid;
+	if (type->crossConnectMultiImage)
+	{
+		int add = 0;
+		Uint16 b;
+		// Up
+		b = map.getBuilding(building->posXLocal, building->posYLocal-1);
+		if ((b != NOGBID) &&
+			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+			add |= (1<<3);
+		// Bottom
+		b = map.getBuilding(building->posXLocal, building->posYLocal+building->type->height);
+		if ((b != NOGBID) &&
+			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+			add |= (1<<2);
+		// Left
+		b = map.getBuilding(building->posXLocal-1, building->posYLocal);
+		if ((b != NOGBID) &&
+			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+			add |= (1<<1);
+		// Right
+		b = map.getBuilding(building->posXLocal+building->type->width, building->posYLocal);
+		if ((b != NOGBID) &&
+			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+			add |= (1<<0);
+		imgid = type->gameSpriteImage + add;
+	}
+	else
+	{
+		// FIXME : why building->hp is > type->hpMax ?
+		int hp = std::min(building->hp, type->hpMax);
+		int damageImgShift = type->gameSpriteCount - ((hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
+		assert(damageImgShift >= 0);
+		imgid = type->gameSpriteImage + damageImgShift;
+	}
+//	int x, y;
+	int dx, dy;
+	
+//	map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
+	
+	// select buildings and set the team colors
+	Sprite *buildingSprite = type->gameSpritePtr;
+	dx = (type->width<<5)-buildingSprite->getW(imgid);
+	dy = (type->height<<5)-buildingSprite->getH(imgid);
+	buildingSprite->setBaseColor(team->color);
+	
+	// draw building
+	globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	
+	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
+	{
+		int batW=(type->width )<<5;
+		int batH=(type->height)<<5;
+		int typeNum=building->typeNum;
+		globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
+	
+		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
+		int lastTypeNum=typeNum;
+		int max=0;
+		while(lastbt->nextLevel>=0)
+		{
+			lastTypeNum=lastbt->nextLevel;
+			lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
+			if (max++>200)
+			{
+				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
+				assert(false);
+				break;
+			}
+		}
+		int exBatX=x+((lastbt->decLeft-type->decLeft)<<5);
+		int exBatY=y+((lastbt->decTop-type->decTop)<<5);
+		int exBatW=(lastbt->width)<<5;
+		int exBatH=(lastbt->height)<<5;
+	
+		globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
+	}
+	
+	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & teams[localTeam]->me))
+	{
+		//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
+		// TODO : find better color for this
+		// health
+		if (type->hpMax)
+		{
+			int maxWidth, actWidth, addDec;
+			float hpRatio=(float)building->hp/(float)type->hpMax;
+			if (type->width==1)
+			{
+				maxWidth=8;
+				actWidth=1+(int)(7.0f*hpRatio);
+				addDec=2;
+			}
+			else
+			{
+				maxWidth=16;
+				actWidth=1+(int)(15.0f*hpRatio);
+				addDec=7;
+			}
+			int decy=(type->height*32);
+			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
+	
+			if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
+			{
+				if (hpRatio>0.6)
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
+				else if (hpRatio>0.3)
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
+				else
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
+			}
+		}
+	
+		// units
+		if (building->maxUnitInside>0)
+			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+		if (building->maxUnitWorking>0)
+			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
+	
+		// food (for inns)
+		if ((type->canFeedUnit) || (type->unitProductionTime))
+		{
+			// compute bar size, prevent oversize
+			int bDiv=1;
+			assert(type->height!=0);
+			while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
+				bDiv++;
+			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+		}
+		
+		// bullets (for defence towers)
+		if (type->maxBullets)
+		{
+			// compute bar size, prevent oversize
+			int bDiv=1;
+			assert(type->height!=0);
+			while ( ((type->maxBullets*3+1)/bDiv)>((type->height*32)-10))
+				bDiv++;
+			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxBullets/bDiv, building->bullets/bDiv, 200, 200, 200, 1+bDiv);
+		}
+	}
+	
+	if (drawOptions & DRAW_ACCESSIBILITY)
+	{
+		std::ostringstream oss;
+		oss << building->owner->teamNumber;
+		int accessW = globalContainer->littleFont->getStringWidth(oss.str().c_str());
+		int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
+		int accessX = x+(((type->width<<5)-accessW)>>1);
+		int accessY = y+(((type->height<<5)-accessH)>>1);
+		globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, 127));
+		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
+		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
+	}
+	
+	if(hilightBuildingType & (1<<building->shortTypeNum))
+	{
+		globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
+	}
+}
+
+
 inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
 {
-	std::set<Building *, BuildingPosComp> buildingList;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -2024,185 +2192,21 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 				int team = Building::GIDtoTeam(gid);
 
 				Building *building=teams[team]->myBuildings[id];
-				assert(building); // if this fails, and unwanted garbage-UID is on the ground.
-				if (((drawOptions & DRAW_WHOLE_MAP) != 0)
-					|| Building::GIDtoTeam(gid)==localTeam
-					|| (building->seenByMask & teams[localTeam]->me)
-					|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))
+				if(map.normalizeX(building->posX) == map.normalizeX(x+viewportX) && map.normalizeY(building->posY) == map.normalizeY(y+viewportY))
 				{
-					buildingList.insert(building);
-					if (visibleBuildings)
-						visibleBuildings->insert(building);
+					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
+					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
+						|| Building::GIDtoTeam(gid)==localTeam
+						|| (building->seenByMask & teams[localTeam]->me)
+						|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))
+					{
+					 	drawMapBuilding((x<<5), (y<<5), gid, viewportX, viewportY, localTeam, drawOptions);
+						if (visibleBuildings)
+							visibleBuildings->insert(building);
+					}
 				}
 			}
 		}
-	
-	for (std::set <Building *, BuildingPosComp>::iterator it=buildingList.begin(); it!=buildingList.end(); ++it)
-	{
-		Building *building = *it;
-		assert(building);
-		BuildingType *type=building->type;
-		Team *team=building->owner;
-
-		int imgid;
-		if (type->crossConnectMultiImage)
-		{
-			int add = 0;
-			Uint16 b;
-			// Up
-			b = map.getBuilding(building->posXLocal, building->posYLocal-1);
-			if ((b != NOGBID) &&
-				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
-				add |= (1<<3);
-			// Bottom
-			b = map.getBuilding(building->posXLocal, building->posYLocal+building->type->height);
-			if ((b != NOGBID) &&
-				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
-				add |= (1<<2);
-			// Left
-			b = map.getBuilding(building->posXLocal-1, building->posYLocal);
-			if ((b != NOGBID) &&
-				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
-				add |= (1<<1);
-			// Right
-			b = map.getBuilding(building->posXLocal+building->type->width, building->posYLocal);
-			if ((b != NOGBID) &&
-				(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
-				add |= (1<<0);
-			imgid = type->gameSpriteImage + add;
-		}
-		else
-		{
-			// FIXME : why building->hp is > type->hpMax ?
-			int hp = std::min(building->hp, type->hpMax);
-			int damageImgShift = type->gameSpriteCount - ((hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
-			assert(damageImgShift >= 0);
-			imgid = type->gameSpriteImage + damageImgShift;
-		}
-		int x, y;
-		int dx, dy;
-		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
-
-		// select buildings and set the team colors
-		Sprite *buildingSprite = type->gameSpritePtr;
-		dx = (type->width<<5)-buildingSprite->getW(imgid);
-		dy = (type->height<<5)-buildingSprite->getH(imgid);
-		buildingSprite->setBaseColor(team->color);
-
-		// draw building
-		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
-
-		if ((drawOptions & DRAW_BUILDING_RECT) != 0)
-		{
-			int batW=(type->width )<<5;
-			int batH=(type->height)<<5;
-			int typeNum=building->typeNum;
-			globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
-
-			BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
-			int lastTypeNum=typeNum;
-			int max=0;
-			while(lastbt->nextLevel>=0)
-			{
-				lastTypeNum=lastbt->nextLevel;
-				lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
-				if (max++>200)
-				{
-					printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
-					assert(false);
-					break;
-				}
-			}
-			int exBatX=x+((lastbt->decLeft-type->decLeft)<<5);
-			int exBatY=y+((lastbt->decTop-type->decTop)<<5);
-			int exBatW=(lastbt->width)<<5;
-			int exBatH=(lastbt->height)<<5;
-
-			globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
-		}
-
-		if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & teams[localTeam]->me))
-		{
-			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
-			// TODO : find better color for this
-			// health
-			if (type->hpMax)
-			{
-				int maxWidth, actWidth, addDec;
-				float hpRatio=(float)building->hp/(float)type->hpMax;
-				if (type->width==1)
-				{
-					maxWidth=8;
-					actWidth=1+(int)(7.0f*hpRatio);
-					addDec=2;
-				}
-				else
-				{
-					maxWidth=16;
-					actWidth=1+(int)(15.0f*hpRatio);
-					addDec=7;
-				}
-				int decy=(type->height*32);
-				int healDecx=(type->width-(maxWidth>>3))*16+addDec;
-
-				if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
-				{
-					if (hpRatio>0.6)
-						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
-					else if (hpRatio>0.3)
-						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
-					else
-						drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
-				}
-			}
-
-			// units
-			if (building->maxUnitInside>0)
-				drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
-			if (building->maxUnitWorking>0)
-				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
-
-			// food (for inns)
-			if ((type->canFeedUnit) || (type->unitProductionTime))
-			{
-				// compute bar size, prevent oversize
-				int bDiv=1;
-				assert(type->height!=0);
-				while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
-					bDiv++;
-				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
-			}
-			
-			// bullets (for defence towers)
-			if (type->maxBullets)
-			{
-				// compute bar size, prevent oversize
-				int bDiv=1;
-				assert(type->height!=0);
-				while ( ((type->maxBullets*3+1)/bDiv)>((type->height*32)-10))
-					bDiv++;
-				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxBullets/bDiv, building->bullets/bDiv, 200, 200, 200, 1+bDiv);
-			}
-		}
-		
-		if (drawOptions & DRAW_ACCESSIBILITY)
-		{
-			std::ostringstream oss;
-			oss << building->owner->teamNumber;
-			int accessW = globalContainer->littleFont->getStringWidth(oss.str().c_str());
-			int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
-			int accessX = x+(((type->width<<5)-accessW)>>1);
-			int accessY = y+(((type->height<<5)-accessH)>>1);
-			globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, 127));
-			globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
-			globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
-		}
-		
-		if(hilightBuildingType & (1<<building->shortTypeNum))
-		{
-			globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
-		}
-	}
 }
 
 inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
