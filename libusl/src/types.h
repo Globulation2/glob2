@@ -4,6 +4,8 @@
 #include "memory.h"
 
 #include <cassert>
+#include <algorithm>
+#include <typeinfo>
 #include <iterator>
 #include <map>
 #include <ostream>
@@ -209,6 +211,24 @@ struct Integer: Value
 	
 	Integer(Heap* heap, int value):
 		Value(heap, &integerPrototype),
+		value(value)
+	{}
+	
+	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
+};
+
+struct String: Value
+{
+	struct StringPrototype: Prototype
+	{
+		StringPrototype();
+	};
+	static StringPrototype stringPrototype;
+	
+	std::string value;
+	
+	String(Heap* heap, const std::string& value):
+		Value(heap, &stringPrototype),
 		value(value)
 	{}
 	

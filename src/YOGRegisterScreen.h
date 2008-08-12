@@ -1,8 +1,5 @@
 /*
-  Copyright (C) 2007 Bradley Arsenault
-
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+  Copyright (C) 2008 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,11 +16,12 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGLoginScreen_h
-#define __YOGLoginScreen_h
+#ifndef YOGRegisterScreen_h
+#define YOGRegisterScreen_h
 
 #include "Glob2Screen.h"
 #include "YOGClientEventListener.h"
+
 
 namespace GAGGUI
 {
@@ -36,37 +34,26 @@ namespace GAGGUI
 
 class YOGClient;
 
-///This handles with connecting the user to YOG and logging them in.
-///This assumes the client has not yet connected with YOG
-class YOGLoginScreen : public Glob2Screen, public YOGClientEventListener
+class YOGRegisterScreen : public Glob2Screen, public YOGClientEventListener
 {
 public:
 	///Construct with the given YOG client.
 	///The provided client should not yet be connected to YOG.
-	YOGLoginScreen(boost::shared_ptr<YOGClient> client);
-	virtual ~YOGLoginScreen();
-
+	YOGRegisterScreen(boost::shared_ptr<YOGClient> client);
+	///Destroy the screen
+	~YOGRegisterScreen();
 	enum
 	{
 		Cancelled,
-		LoggedIn,
-		ConnectionLost,
+		Connected,
 	};
+
 
 private:
 	enum
 	{
-		EXECUTING=0,
-		LOGIN=1,
-		CANCEL=2,
-		REGISTER=3,
-		NEW_USER=10
-	};
-
-	enum
-	{
-		WAITING=1,
-		STARTED=2
+		CANCEL,
+		REGISTER,
 	};
 
 	void onTimer(Uint32 tick);
@@ -75,22 +62,18 @@ private:
 	///Responds to YOG events
 	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
 
-	///Attempt a login with the entered information
-	void attemptLogin();
-	
-	///Opens the lobby screen
-	void runLobby();
 
-	TextInput *login, *password;
-	OnOffButton *rememberYogPassword;
-	Text *rememberYogPasswordText;
+	///Attempt a registration with the entered information
+	void attemptRegistration();
+
 	TextArea *statusText;
+	TextInput *login, *password, *passwordRepeat;
 	Animation *animation;
-	
 	bool wasConnecting;
-	
-	boost::shared_ptr<YOGClient> client;
 	bool changeTabAgain;
+	
+
+	boost::shared_ptr<YOGClient> client;
 };
 
 #endif

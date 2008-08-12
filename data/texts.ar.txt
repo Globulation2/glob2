@@ -688,6 +688,8 @@ Proportions
 
 [Register a new YOG user with password]
 Register a new YOG user with a password. (insecure)
+[Register]
+
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
@@ -703,6 +705,8 @@ Start/Stop Repair
 [repair]
 تصليح
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
@@ -1134,6 +1138,8 @@ The YOG metaserver has refused the connection because your username is already u
 
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
 [yog block command help]
