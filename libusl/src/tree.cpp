@@ -291,7 +291,6 @@ void DefLookupNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap
 		if (prototype == 0)
 		{
 			ostringstream message;
-			message << "Program error @" << position << ":" << endl;
 			message << "Declaration not found: " << name << endl;
 			throw Exception(position, message.str());
 		}
