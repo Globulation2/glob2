@@ -3,6 +3,7 @@
 #include "tree.h"
 #include "debug.h"
 #include "error.h"
+#include "usl.h"
 
 #include <sstream>
 
@@ -139,11 +140,11 @@ void SelectCode::execute(Thread* thread)
 		message << "member <" << name << "> not found in ";
 		receiver->dump(message);
 		message << "(" << receiver->prototype << ")";
-		throw Exception(thread->debugInfo->find(frame.thunk->thunkPrototype(), frame.nextInstr), message.str());
+		throw Exception(thread->usl->debug.find(frame.thunk->thunkPrototype(), frame.nextInstr), message.str());
 	}
 	
 	// create a thunk
-	Thunk* thunk = new Thunk(thread->heap, def, receiver);
+	Thunk* thunk = new Thunk(&thread->usl->heap, def, receiver);
 	
 	// put the thunk on the stack
 	stack.push_back(thunk);
@@ -174,7 +175,7 @@ void ApplyCode::execute(Thread* thread)
 		frames.pop_back();
 
 	// push a new frame
-	Scope* scope = new Scope(thread->heap, function->prototype, function->outer);
+	Scope* scope = new Scope(&thread->usl->heap, function->prototype, function->outer);
 	frames.push_back(scope);
 	
 	// put the argument on the stack
@@ -301,7 +302,7 @@ void CreateCode<ThunkType>::execute(Thread* thread)
 	assert(prototype->outer == 0 || prototype->outer == receiver->prototype); // Should not fail if the parser is bug-free
 	
 	// create a thunk
-	ThunkType* thunk = new ThunkType(thread->heap, prototype, receiver);
+	ThunkType* thunk = new ThunkType(&thread->usl->heap, prototype, receiver);
 	
 	// put the thunk on the stack
 	stack.push_back(thunk);
