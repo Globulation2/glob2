@@ -143,7 +143,7 @@ Gebäude
 [building site]
 Baustelle
 [Building Tool Line Explanation]
-
+Strg+Ziehen=Linie
 [Buildings]
 Gebäude
 [Bullets]
@@ -206,8 +206,6 @@ Berechne Fruchtbarkeit der Böden.
 Befestigte Inseln
 [connect]
 Verbinden
-[connecting to game]
-
 [connecting to]
 Verbinden mit
 [Construction Site Defaults]
@@ -613,7 +611,7 @@ Beim Loslassen
 [open]
 offen
 [OpenGL]
-
+OpenGL
 [Options]
 Einstellungen
 [options]
@@ -680,6 +678,8 @@ Bereit?
 Kartenliste aktualisieren
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
+[Register]
+Register
 [remember unit]
 Arbeiterzahlen merken
 [Remember YOG password localy]
@@ -696,6 +696,8 @@ Reparieren / Abbrechen
 Reparieren
 [repeat area]
 mal die selbe Landschaft
+[Repeat your password :]
+Wiederhole Dein Passwort
 [restore default shortcuts]
 Standardtastenkürzel wiederherstellen
 [return to editor]
@@ -1126,6 +1128,8 @@ Der YOG-Metaserver hat die Verbindung verweigert, da der Benutzername gesperrt w
 Der YOG-Metaserver hat die Verbindung verweigert weil der Benutzername ungültig ist.
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
+[YESTS_PASSWORDS_DONT_MATCH]
+Die eingegebenen Passwörter stimmen nicht überein.
 [YESTS_UNABLE_TO_CONNECT]
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 [yog block command help]
@@ -1158,3 +1162,5 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
+[connecting to game]
+Verbinde zu Spiel

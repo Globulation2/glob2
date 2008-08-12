@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "types.h"
 #include "error.h"
+#include <memory>
 
 using namespace std;
 
@@ -231,6 +232,8 @@ ExpressionNode* Parser::pathExpression(ExpressionNode* first)
 		case LPAR:
 		case LBRACE:
 		case LBRACK:
+		case NUM:
+		case STR:
 		{
 			ExpressionNode* argument = simpleExpression();
 			node.reset(new ApplyNode(position, node.release(), argument));
@@ -261,8 +264,9 @@ ExpressionNode* Parser::simpleExpression()
 		}
 	case STR:
 		{
-			// TODO: implements strings
-			assert(false);
+			string value = token.string();
+			next();
+			return new ConstNode(position, new String(heap, value));
 		}
 	case LPAR:
 		{

@@ -32,8 +32,8 @@ static string getName(ThunkPrototype* thunk)
 		}
 	}
 	
-	assert(nativeMethod);
-	return "";
+	//assert(nativeMethod);
+	return "???";
 }
 
 
