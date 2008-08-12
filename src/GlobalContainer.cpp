@@ -560,10 +560,12 @@ void GlobalContainer::load(void)
 	{
 		updateLoadProgressScreen(40);
 		
-		// load fonts
-		Toolkit::loadFont("data/fonts/cyberbit.ttf", 20, "menu");
-		Toolkit::loadFont("data/fonts/cyberbit.ttf", 13, "standard");
-		Toolkit::loadFont("data/fonts/cyberbit.ttf", 10, "little");
+		// load fontss
+		std::string fontfile = "data/fonts/";
+		fontfile+=+PRIMARY_FONT;
+		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
+		Toolkit::loadFont(fontfile.c_str(), 13, "standard");
+		Toolkit::loadFont(fontfile.c_str(), 10, "little");
 		menuFont = Toolkit::getFont("menu");
 		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		standardFont = Toolkit::getFont("standard");
