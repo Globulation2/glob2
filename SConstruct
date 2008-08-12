@@ -212,6 +212,7 @@ def main():
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
+    env.Append(CPPPATH=['#libusl/src', '#'])
     if env['release']:
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS=' -O2')
