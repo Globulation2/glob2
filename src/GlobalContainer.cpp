@@ -65,7 +65,8 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("campaigns");
 	fileManager->addWriteSubdir("thumbnails");
-	fileManager->addWriteSubdir("gamelog ");
+	fileManager->addWriteSubdir(YOG_SERVER_FOLDER);
+	fileManager->addWriteSubdir(YOG_SERVER_FOLDER+"gamelog");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
