@@ -27,6 +27,7 @@
 #include "Toolkit.h"
 #include "Version.h"
 #include "YOGServerBannedIPListManager.h"
+#include "YOGConsts.h"
 
 using namespace GAGCore;
 
@@ -92,7 +93,7 @@ bool YOGServerBannedIPListManager::isIPBanned(const std::string& bannedIP)
 
 void YOGServerBannedIPListManager::saveBannedIPList()
 {
-	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("bannedips"));
+	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(YOG_SERVER_FOLDER+"bannedips"));
 	stream->writeUint32(VERSION_MINOR, "version");
 	stream->writeUint32(bannedIPs.size(), "size");
 	for(std::map<std::string, boost::posix_time::ptime>::iterator i = bannedIPs.begin(); i!=bannedIPs.end(); ++i)
@@ -109,7 +110,7 @@ void YOGServerBannedIPListManager::saveBannedIPList()
 
 void YOGServerBannedIPListManager::loadBannedIPList()
 {
-	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("bannedips"));
+	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(YOG_SERVER_FOLDER+"bannedips"));
 	if(!stream->isEndOfStream())
 	{
 		Uint32 dataVersionMinor = stream->readUint32("version");

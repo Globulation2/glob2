@@ -86,6 +86,7 @@ namespace GAGCore
 		std::string getDir(unsigned index) const { if (index < getDirCount()) return dirList[index]; else return std::string(); }
 		//! Add a new subdir (create it if needed) which will be used to open file in write mode in it
 		void addWriteSubdir(const char *subdir);
+		void addWriteSubdir(const std::string& s) { addWriteSubdir(s.c_str()); }
 	
 		//! Remove a file or a directory in the virtual filesystem, const char *version
 		void remove(const char *filename);
