@@ -77,7 +77,7 @@ void YOGServerGameLog::update()
 void YOGServerGameLog::save()
 {
 	std::stringstream s;
-	s<<"logs/gamelog";
+	s<<YOG_SERVER_FOLDER+"gamelog/gamelog";
 	s<<hour;
 	s<<".log";
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(s.str()));
@@ -97,7 +97,7 @@ void YOGServerGameLog::load()
 {
 	games.clear();
 	std::stringstream s;
-	s<<"logs/gamelog";
+	s<<YOG_SERVER_FOLDER+"gamelog/gamelog";
 	s<<hour;
 	s<<".log";
 	StreamBackend* backend = Toolkit::getFileManager()->openInputStreamBackend(s.str());
