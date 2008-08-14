@@ -109,7 +109,7 @@ std::list<std::string> YOGServerPlayerStoredInfoManager::getBannedPlayers()
 
 void YOGServerPlayerStoredInfoManager::savePlayerInfos()
 {
-	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("playerinfo"));
+	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(YOG_SERVER_FOLDER+"playerinfo"));
 	stream->writeUint32(VERSION_MINOR, "version");
 	stream->writeUint32(playerInfos.size(), "size");
 	for(std::map<std::string, YOGPlayerStoredInfo>::iterator i = playerInfos.begin(); i!=playerInfos.end(); ++i)
@@ -124,7 +124,7 @@ void YOGServerPlayerStoredInfoManager::savePlayerInfos()
 
 void YOGServerPlayerStoredInfoManager::loadPlayerInfos()
 {
-	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("playerinfo"));
+	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(YOG_SERVER_FOLDER+"playerinfo"));
 	if(!stream->isEndOfStream())
 	{
 		Uint32 dataVersionMinor = stream->readUint32("version");

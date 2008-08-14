@@ -22,6 +22,7 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include <iostream>
+#include "YOGConsts.h"
 
 using namespace GAGCore;
 
@@ -60,7 +61,7 @@ void YOGServerAdministratorList::removeAdministrator(const std::string& playerNa
 
 void YOGServerAdministratorList::save()
 {
-	OutputLineStream* stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend("admins.txt"));
+	OutputLineStream* stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend(YOG_SERVER_FOLDER+"admins.txt"));
 	for(std::set<std::string>::iterator i=admins.begin(); i!=admins.end(); ++i)
 	{
 		if(*i != "")
@@ -75,7 +76,7 @@ void YOGServerAdministratorList::save()
 
 void YOGServerAdministratorList::load()
 {
-	InputLineStream* stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend("admins.txt"));
+	InputLineStream* stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(YOG_SERVER_FOLDER+"admins.txt"));
 	while(!stream->isEndOfStream())
 	{
 		std::string name = stream->readLine();
