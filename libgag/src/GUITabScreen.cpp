@@ -273,13 +273,15 @@ namespace GAGGUI
 		{
 			int x=0;
 			int w = (longerButtons ? 210 : 190);
+			int y = 10;
+			if(fullScreen)
+				y = 70;
 			for(std::map<int, Widget*>::iterator i=groupButtons.begin(); i!=groupButtons.end(); ++i)
 			{
-				if(fullScreen)
-					static_cast<TextButton*>(i->second)->setScreenPosition(10 + w * x, 70);
-				else
-					static_cast<TextButton*>(i->second)->setScreenPosition(10 + w * x, 10);
+				static_cast<TextButton*>(i->second)->setScreenPosition(10 + w * x, y);
 				x++;
+				if((10 + w * x + w) > gfx->getW())
+					y += 50;
 			}
 		}
 };
