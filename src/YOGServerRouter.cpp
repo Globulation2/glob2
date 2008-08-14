@@ -160,7 +160,7 @@ boost::shared_ptr<YOGServerGameRouter> YOGServerRouter::getGame(Uint16 gameID)
 
 bool YOGServerRouter::isAdministratorPasswordCorrect(const std::string& password)
 {
-	InputLineStream* stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend("routerpassword.txt"));
+	InputLineStream* stream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(YOG_SERVER_FOLDER+"routerpassword.txt"));
 	if(!stream->isEndOfStream())
 	{
 		std::string pass = stream->readLine();
