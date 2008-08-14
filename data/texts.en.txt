@@ -144,6 +144,8 @@ Building Settings
 construction site
 [Building Tool Line Explanation]
 Ctrl + Drag = Line
+[Building Tool Box Explanation]
+Shift + Drag = Box
 [Buildings]
 Buildings
 [Bullets]

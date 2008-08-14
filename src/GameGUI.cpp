@@ -3774,6 +3774,7 @@ void GameGUI::drawOverlayInfos(void)
 	{
 		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255)));
 		globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[Building Tool Line Explanation]"), 0, 75);
+		globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100+12, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[Building Tool Box Explanation]"), 0, 75);
 		globalContainer->standardFont->popStyle();
 	}
 
