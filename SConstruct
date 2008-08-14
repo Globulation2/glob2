@@ -26,7 +26,7 @@ def establish_options(env):
     opts.Add(BoolOption("profile", "Build with profiling on", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
     opts.Add(BoolOption("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
-    opts.Add(BoolOption("freefont", "Build the game without the Bitstream Cyberbit font (required for some languages), and instead with a generic sans font", 0))
+    opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save("options_cache.py", env)
@@ -62,10 +62,7 @@ def configure(env):
         configfile.add("USE_OSX", "Set when this build is OSX")
     if isWindowsPlatform:
         configfile.add("USE_WIN32", "Set when this build is Win32")
-    if env['freefont']:
-	    configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"sans.ttf\"")
-    else:
-	    configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"cyberbit.ttf\"")
+	configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
 
         
     server_only=False
