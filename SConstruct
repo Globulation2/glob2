@@ -112,6 +112,10 @@ def configure(env):
         else:
             print "Could not find libz or zlib1.dll"
             missing.append("zlib")
+    
+    if not conf.CheckCXXHeader("regex.h"):
+			print "Could not find regex.h"
+			missing.append("regex")
 
     boost_thread = ''
     if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
@@ -224,7 +228,7 @@ def main():
     if env['mingw'] or isWindowsPlatform:
         #These four options must be present before the object files when compiling in mingw
         env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
-        env.Append(LIBS=['wsock32', 'winmm'])
+        env.Append(LIBS=['wsock32', 'winmm', 'gnurx'])
         env.ParseConfig("sh sdl-config --cflags")
         env.ParseConfig("sh sdl-config --libs")
     else:
