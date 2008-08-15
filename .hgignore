@@ -7,4 +7,4 @@ src/glob2
 .sconf_temp
 .sconsign.dblite
 src/*.o
-
+*~
