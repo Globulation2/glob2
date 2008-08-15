@@ -221,16 +221,16 @@ using namespace boost::lambda;
 template<>
 inline void NativeValuePrototype<int>::initialize()
 {
-	addMethod<int (int     )>("_-",    -  _1);
-	addMethod<int (int, int)>("+" , _1 +  _2);
-	addMethod<int (int, int)>("-" , _1 -  _2);
-	addMethod<int (int, int)>("*" , _1 *  _2);
-	addMethod<bool(int, int)>("<" , _1 <  _2);
-	addMethod<bool(int, int)>(">" , _1 >  _2);
-	addMethod<bool(int, int)>("<=", _1 <= _2);
-	addMethod<bool(int, int)>(">=", _1 >= _2);
-	addMethod<bool(int, int)>("=" , _1 == _2);
-	addMethod<bool(int, int)>("!=", _1 != _2);
+	addMethod<int (int     )>("_-",                   -  boost::lambda::_1);
+	addMethod<int (int, int)>("+" , boost::lambda::_1 +  boost::lambda::_2);
+	addMethod<int (int, int)>("-" , boost::lambda::_1 -  boost::lambda::_2);
+	addMethod<int (int, int)>("*" , boost::lambda::_1 *  boost::lambda::_2);
+	addMethod<bool(int, int)>("<" , boost::lambda::_1 <  boost::lambda::_2);
+	addMethod<bool(int, int)>(">" , boost::lambda::_1 >  boost::lambda::_2);
+	addMethod<bool(int, int)>("<=", boost::lambda::_1 <= boost::lambda::_2);
+	addMethod<bool(int, int)>(">=", boost::lambda::_1 >= boost::lambda::_2);
+	addMethod<bool(int, int)>("=" , boost::lambda::_1 == boost::lambda::_2);
+	addMethod<bool(int, int)>("!=", boost::lambda::_1 != boost::lambda::_2);
 }
 
 #endif // ndef NATIVE_H

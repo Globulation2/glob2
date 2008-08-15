@@ -1,8 +1,7 @@
 usl_sources = Split("""
 code.cpp	debug.cpp	interpreter.cpp	lexer.cpp	
-memory.cpp	parser.cpp	native.cpp	position.cpp	
-token.cpp	tokenizer.cpp	tree.cpp	types.cpp	
-usl.cpp
+memory.cpp	parser.cpp	position.cpp	token.cpp	
+tokenizer.cpp	tree.cpp	types.cpp	usl.cpp
 """)
     
 Import("env")
