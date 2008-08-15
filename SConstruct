@@ -17,7 +17,7 @@ def establish_options(env):
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-    	opts.Add(PathOption("INSTALLDIR", "Installation Directory", "./"))
+        opts.Add(PathOption("INSTALLDIR", "Installation Directory", "./"))
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
@@ -50,7 +50,7 @@ def configure(env):
     configfile.add("PACKAGE", "Name of package", "\"glob2\"")
     configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
     if isDarwinPlatform:
-    	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
+        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
     else:
     	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
@@ -62,7 +62,7 @@ def configure(env):
         configfile.add("USE_OSX", "Set when this build is OSX")
     if isWindowsPlatform:
         configfile.add("USE_WIN32", "Set when this build is Win32")
-	configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
+    configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
 
         
     server_only=False
@@ -143,8 +143,8 @@ def configure(env):
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
     if isDarwinPlatform and not server_only:
-    	print "Using Apple's OpenGL framework"
-    	env.Append(FRAMEWORKS="OpenGL")
+        print "Using Apple's OpenGL framework"
+        env.Append(FRAMEWORKS="OpenGL")
     elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h") and not server_only:
         gl_libraries.append("GL")
     elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h") and not server_only:
@@ -157,8 +157,8 @@ def configure(env):
 
     #Do checks for GLU, which is different on every system
     if isDarwinPlatform and not server_only:
-    	print "Using Apple's GLUT framework"
-    	env.Append(FRAMEWORKS="GLUT")
+        print "Using Apple's GLUT framework"
+        env.Append(FRAMEWORKS="GLUT")
     elif conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h") and not server_only:
         gl_libraries.append("GLU")
     elif conf.CheckLib('GLU') and conf.CheckCXXHeader("OpenGL/glu.h") and not server_only:
@@ -187,7 +187,7 @@ def configure(env):
         for t in missing:
             print "Missing %s" % t
         Exit(1)
-   		
+       
     conf.Finish()
 
 def main():
@@ -200,7 +200,7 @@ def main():
     if not env['CC']:
         print "No compiler found in PATH. Please install gcc or another compiler."
         Exit(1)
-	
+    
     env["VERSION"] = "0.9.4"
     establish_options(env)
     #Add the paths to important mingw libraries
@@ -233,38 +233,38 @@ def main():
     env.Alias("dist", env["TARFILE"])
     
     def PackTar(target, source):
-    	if "dist" in COMMAND_LINE_TARGETS:
-		    if not list(source) == source:
-		        source = [source]
-		        
-		    for s in source:
-		        if env.File(s).path.find("/") != -1:
-		            new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
-		            f = env.Install(new_dir + env.File(s).path[:env.File(s).path.rfind("/")], s)
-		            env.Tar(target, f)
-		        else:
-		            new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
-		            f = env.Install(new_dir, s)
-		            env.Tar(target, f)
+        if "dist" in COMMAND_LINE_TARGETS:
+            if not list(source) == source:
+                source = [source]
+                
+            for s in source:
+                if env.File(s).path.find("/") != -1:
+                    new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
+                    f = env.Install(new_dir + env.File(s).path[:env.File(s).path.rfind("/")], s)
+                    env.Tar(target, f)
+                else:
+                    new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
+                    f = env.Install(new_dir, s)
+                    env.Tar(target, f)
               
     PackTar(env["TARFILE"], Split("AUTHORS COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     #packaging for apple
     if isDarwinPlatform and env["release"]:
-		bundle.generate(env)
-		dmg.generate(env)
-		env.Replace( 
-			BUNDLE_NAME="Glob2", 
-			BUNDLE_BINARIES=["src/glob2"],
-			BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
-			BUNDLE_PLIST="darwin/Info.plist",
-			BUNDLE_ICON="darwin/Glob2.icns" )
-		bundle.createBundle(os.getcwd(), os.getcwd(), env)
-		dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
-		 
-		#TODO mac_bundle should be dependency of Dmg:	
-		arch = os.popen("uname -p").read().strip()
-#		mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
-#		env.Alias("package", mac_packages)
+        bundle.generate(env)
+        dmg.generate(env)
+        env.Replace( 
+            BUNDLE_NAME="Glob2", 
+            BUNDLE_BINARIES=["src/glob2"],
+            BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
+            BUNDLE_PLIST="darwin/Info.plist",
+            BUNDLE_ICON="darwin/Glob2.icns" )
+        bundle.createBundle(os.getcwd(), os.getcwd(), env)
+        dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
+         
+        #TODO mac_bundle should be dependency of Dmg:    
+        arch = os.popen("uname -p").read().strip()
+#        mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
+#        env.Alias("package", mac_packages)
 
     Export('env')
     Export('PackTar')
