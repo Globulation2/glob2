@@ -121,12 +121,26 @@ inline void push(Thread* thread, const T& t)
 }
 
 
+template<typename Result>
+void execute(const boost::function<Result(void)>& function, Thread* thread)
+{
+	const Result& result = function();
+	push(thread, result);
+}
+
+inline void execute(const boost::function<void(void)>& function, Thread* thread)
+{
+	function();
+	push(thread, &nil);
+}
+
+
 template<typename Result, typename Argument>
 void execute(const boost::function<Result(Argument)>& function, Thread* thread)
 {
 	const Argument& argument = pop<Argument>(thread);
 	const Result& result = function(argument);
-	push(thread, box(thread, result));
+	push(thread, result);
 }
 
 template<typename Argument>
@@ -134,7 +148,7 @@ void execute(const boost::function<void(Argument)>& function, Thread* thread)
 {
 	const Argument& argument = pop<Argument>(thread);
 	function(argument);
-	push(thread, thread->usl->runtimeValues["nil"]);
+	push(thread, &nil);
 }
 
 
@@ -144,7 +158,7 @@ void execute(const boost::function<Result(Argument1, Argument2)>& function, Thre
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
 	const Result& result = function(argument1, argument2);
-	push(thread, box(thread, result));
+	push(thread, result);
 }
 
 template<typename Argument1, typename Argument2>
@@ -153,7 +167,7 @@ void execute(const boost::function<void(Argument1, Argument2)>& function, Thread
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
 	function(argument1, argument2);
-	push(thread, thread->usl->runtimeValues["nil"]);
+	push(thread, &nil);
 }
 
 
@@ -183,6 +197,7 @@ void NativeFunction<Function>::prologue(ThunkPrototype* thunk)
 	{
 		thunk->body.push_back(new PopCode()); // dump the argument
 	}
+	
 	if (receiver)
 	{
 		thunk->body.push_back(new ThunkCode()); // get the current thunk
@@ -199,5 +214,23 @@ void NativeFunction<Function>::execute(Thread* thread)
 
 typedef NativeValue<int> Integer;
 typedef NativeValue<std::string> String;
+
+
+using namespace boost::lambda;
+
+template<>
+inline void NativeValuePrototype<int>::initialize()
+{
+	addMethod<int (int     )>("_-",    -  _1);
+	addMethod<int (int, int)>("+" , _1 +  _2);
+	addMethod<int (int, int)>("-" , _1 -  _2);
+	addMethod<int (int, int)>("*" , _1 *  _2);
+	addMethod<bool(int, int)>("<" , _1 <  _2);
+	addMethod<bool(int, int)>(">" , _1 >  _2);
+	addMethod<bool(int, int)>("<=", _1 <= _2);
+	addMethod<bool(int, int)>(">=", _1 >= _2);
+	addMethod<bool(int, int)>("=" , _1 == _2);
+	addMethod<bool(int, int)>("!=", _1 != _2);
+}
 
 #endif // ndef NATIVE_H
