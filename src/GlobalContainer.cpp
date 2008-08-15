@@ -65,7 +65,8 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("campaigns");
 	fileManager->addWriteSubdir("thumbnails");
-	fileManager->addWriteSubdir("gamelog ");
+	fileManager->addWriteSubdir(YOG_SERVER_FOLDER);
+	fileManager->addWriteSubdir(YOG_SERVER_FOLDER+"gamelog");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
@@ -560,10 +561,12 @@ void GlobalContainer::load(void)
 	{
 		updateLoadProgressScreen(40);
 		
-		// load fonts
-		Toolkit::loadFont("data/fonts/sans.ttf", 20, "menu");
-		Toolkit::loadFont("data/fonts/sans.ttf", 13, "standard");
-		Toolkit::loadFont("data/fonts/sans.ttf", 10, "little");
+		// load fontss
+		std::string fontfile = "data/fonts/";
+		fontfile+=+PRIMARY_FONT;
+		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
+		Toolkit::loadFont(fontfile.c_str(), 13, "standard");
+		Toolkit::loadFont(fontfile.c_str(), 10, "little");
 		menuFont = Toolkit::getFont("menu");
 		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		standardFont = Toolkit::getFont("standard");

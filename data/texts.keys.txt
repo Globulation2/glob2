@@ -71,6 +71,7 @@
 [building settings]
 [building site]
 [Building Tool Line Explanation]
+[Building Tool Box Explanation]
 [Buildings]
 [Bullets]
 [campaign editor]
