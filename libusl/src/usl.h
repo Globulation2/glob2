@@ -16,6 +16,8 @@ struct Usl
 	
 	void includeScript(const std::string& name, std::istream& source);
 	void createThread(const std::string& name, std::istream& source);
+	void addGlobal(const std::string& name, Value* value);
+	Value* getGlobal(const std::string& name);
 	
 	virtual std::ifstream* openFile(const std::string& name);
 	
