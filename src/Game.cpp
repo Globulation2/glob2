@@ -2499,13 +2499,20 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 
 inline void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	for(int i=0; i<1024; ++i)
+	if ((drawOptions & DRAW_PATH_LINE) != 0)
 	{
-		Unit *unit=teams[localTeam]->myUnits[i];
-		if (unit)
+		for(int i=0; i<1024; ++i)
 		{
-			drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, unit);
+			Unit *unit=teams[localTeam]->myUnits[i];
+			if (unit)
+			{
+				drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, unit);
+			}
 		}
+	}
+	if(selectedUnit != NULL)
+	{
+		drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, selectedUnit);
 	}
 }
 
@@ -2513,7 +2520,7 @@ inline void Game::drawUnitPathLines(int left, int top, int right, int bot, int s
 
 inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit)
 {
-	if (((drawOptions & DRAW_PATH_LINE) != 0) && (unit->owner->sharedVisionOther & teams[localTeam]->me))
+	if(unit->owner->sharedVisionOther & teams[localTeam]->me)
 	{
 		if (unit->validTarget)
 		{
@@ -2527,8 +2534,8 @@ inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw
 					px-=(unit->dx*deltaLeft)>>3;
 					py-=(unit->dy*deltaLeft)>>3;
 				}
-
-
+	
+	
 				int lsx, lsy, ldx, ldy;
 				map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, sw, sh);
 				lsx=px+16;
