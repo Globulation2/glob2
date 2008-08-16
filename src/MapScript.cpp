@@ -21,7 +21,8 @@
 
 #include "Stream.h"
 
-MapScript::MapScript()
+MapScript::MapScript(GameGUI* gui):
+	usl(gui)
 {
 	mode = USL;
 }
