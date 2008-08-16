@@ -158,6 +158,35 @@ Thread* Usl::createThread(Scope* scope)
 	return &threads.back();
 }
 
+void Usl::addGlobal(const std::string& name, Value* value)
+{
+	ScopePrototype* prototype = root->scopePrototype();
+	size_t index = prototype->locals.size();
+	prototype->locals.push_back(name);
+	
+	root->locals.push_back(value);
+	
+	ThunkPrototype* getter = new ThunkPrototype(&heap, prototype);
+	getter->body.push_back(new ThunkCode());
+	getter->body.push_back(new ParentCode());
+	getter->body.push_back(new ValRefCode(index));
+	prototype->members[name] = getter;
+}
+
+Value* Usl::getGlobal(const std::string& name)
+{
+	ScopePrototype::Locals& locals = root->scopePrototype()->locals;
+	for(ScopePrototype::Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
+	{
+		if (*it == name)
+		{
+			size_t index = it - locals.begin();
+			return root->locals[index];
+		}
+	}
+	return 0;
+}
+
 Scope* Usl::compile(const std::string& name, std::istream& stream)
 {
 	string source;

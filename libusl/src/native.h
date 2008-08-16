@@ -34,6 +34,7 @@ struct NativeValuePrototype: Prototype
 	}
 	
 private:
+	/// specialize this method to add members to a native value prototype
 	void initialize()
 	{}
 	
@@ -215,8 +216,6 @@ void NativeFunction<Function>::execute(Thread* thread)
 typedef NativeValue<int> Integer;
 typedef NativeValue<std::string> String;
 
-
-using namespace boost::lambda;
 
 template<>
 inline void NativeValuePrototype<int>::initialize()

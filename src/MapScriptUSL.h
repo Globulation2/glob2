@@ -37,7 +37,7 @@ class MapScriptUSL
 {
 public:
 	///Construct a map script
-	MapScriptUSL();
+	MapScriptUSL(GameGUI* gui);
 	
 	///Destruct a map script
 	~MapScriptUSL();
