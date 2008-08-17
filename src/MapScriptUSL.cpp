@@ -22,19 +22,41 @@
 using namespace GAGCore;
 
 #include "MapScriptUSL.h"
+#include "GameGUI.h"
 
 #include "error.h"
+#include "native.h"
 
 #include "Stream.h"
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <boost/functional.hpp>
 
 using namespace std;
 
-MapScriptUSL::MapScriptUSL()
+
+template<>
+inline void NativeValuePrototype<GameGUI*>::initialize()
 {
-	
+	addMethod<void(GameGUI*,string)>("enableBuildingsChoice", &GameGUI::enableBuildingsChoice);
+	addMethod<void(GameGUI*,string)>("disableBuildingsChoice", &GameGUI::disableBuildingsChoice);
+	addMethod<bool(GameGUI*,string)>("isBuildingEnabled", &GameGUI::isBuildingEnabled);
+	addMethod<void(GameGUI*,string)>("enableFlagsChoice", &GameGUI::enableFlagsChoice);
+	addMethod<void(GameGUI*,string)>("disableFlagsChoice", &GameGUI::disableFlagsChoice);
+	addMethod<bool(GameGUI*,string)>("isFlagEnabled", &GameGUI::isFlagEnabled);
+	addMethod<void(GameGUI*,int)>("enableGUIElement", &GameGUI::enableGUIElement);
+	addMethod<void(GameGUI*,int)>("disableGUIElement", &GameGUI::disableGUIElement);
+	addMethod<bool(GameGUI*)>("isSpaceSet", &GameGUI::isSpaceSet);
+	addMethod<void(GameGUI*,bool)>("setIsSpaceSet", &GameGUI::setIsSpaceSet);
+	addMethod<bool(GameGUI*)>("isSwallowSpaceKey", &GameGUI::isSwallowSpaceKey);
+	addMethod<void(GameGUI*,bool)>("setSwallowSpaceKey", &GameGUI::setSwallowSpaceKey);
+}
+
+
+MapScriptUSL::MapScriptUSL(GameGUI* gui)
+{
+	usl.addGlobal("gameGUI", new NativeValue<GameGUI*>(&usl.heap, gui));
 }
 
 
@@ -63,7 +85,9 @@ void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 
 bool MapScriptUSL::compileCode(const std::string& code)
 {
+	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getGlobal("gameGUI"))->value;
 	usl = Usl();
+	usl.addGlobal("gameGUI", new NativeValue<GameGUI*>(&usl.heap, gui));
 	
 	try
 	{
