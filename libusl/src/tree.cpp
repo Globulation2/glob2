@@ -2,6 +2,7 @@
 #include "code.h"
 #include "debug.h"
 #include "error.h"
+#include "types.h"
 #include <sstream>
 
 using namespace std;

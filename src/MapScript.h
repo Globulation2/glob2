@@ -46,7 +46,7 @@ public:
 	};
 
 	///Constructs the MapScript
-	MapScript();
+	MapScript(GameGUI* gui);
 
 	///Encodes this MapScript into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;

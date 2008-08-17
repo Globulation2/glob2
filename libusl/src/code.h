@@ -3,19 +3,15 @@
 
 #include <cassert>
 #include <ostream>
-#include "types.h"
 
 class Thread;
 class Value;
-class ScopePrototype;
 class Prototype;
-class Operation;
-
+class ThunkPrototype;
+class ScopePrototype;
 
 ThunkPrototype* thisMember(Prototype* outer);
-ScopePrototype* getMember(Prototype* outer);
-ThunkPrototype* nativeMethodMember(NativeMethod* method);
-
+ThunkPrototype* methodMember(ScopePrototype* method);
 
 struct Code
 {
@@ -95,24 +91,15 @@ struct ThunkCode: Code
 	virtual void execute(Thread* thread);
 };
 
-struct NativeThunkCode: Code
+struct NativeCode: Code
 {
-	NativeThunkCode(NativeThunk* thunk);
+	NativeCode(const std::string& name);
 	
-	virtual void execute(Thread* thread);
+	virtual void prologue(ThunkPrototype* thunk) {}
+	virtual void epilogue(ThunkPrototype* thunk) {}
 	virtual void dumpSpecific(std::ostream &stream) const;
 	
-	NativeThunk* thunk;
-};
-
-struct NativeMethodCode: Code
-{
-	NativeMethodCode(NativeMethod* method);
-	
-	virtual void execute(Thread* thread);
-	virtual void dumpSpecific(std::ostream &stream) const;
-	
-	NativeMethod* method;
+	std::string name;
 };
 
 template<typename ThunkType>

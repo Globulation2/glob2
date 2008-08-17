@@ -40,6 +40,8 @@ bool Thread::step()
 			}
 			else
 			{
+				retVal->dump(cout);
+				cout << endl;
 				state = STOP;
 				break;
 			}
