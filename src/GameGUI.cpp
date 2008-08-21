@@ -87,6 +87,7 @@
 #define YOFFSET_BRUSH 56
 
 #define RIGHT_MENU_WIDTH 160
+#define RIGHT_MENU_OFFSET (160-128)/2
 
 using namespace boost;
 
@@ -613,24 +614,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					return true;
 				}
 				break;
-				case InGameMainScreen::ALLIANCES:
-				{
-					delete gameMenuScreen;
-					gameMenuScreen=NULL;
-					inGameMenu=IGM_ALLIANCE;
-					gameMenuScreen = new InGameAllianceScreen(this);
-					return true;
-				}
-				break;
-				case InGameMainScreen::OBJECTIVES:
-				{
-					delete gameMenuScreen;
-					gameMenuScreen=NULL;
-					inGameMenu=IGM_OBJECTIVES;
-					gameMenuScreen = new InGameObjectivesScreen(this, false);
-					return true;
-				}
-				break;
 				case InGameMainScreen::OPTIONS:
 				{
 					delete gameMenuScreen;
@@ -873,6 +856,70 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 	}
 	
+	if (event->type==SDL_MOUSEBUTTONDOWN)
+	{
+		int button=event->button.button;
+		if (button==SDL_BUTTON_LEFT)
+		{
+			// NOTE : if there is more than this, move to a func
+			if ((event->button.y<34) && (event->button.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+16) && (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+16))
+			{
+				if(inGameMenu!=IGM_NONE)
+				{
+					delete gameMenuScreen;
+					gameMenuScreen=NULL;
+				}
+				if(inGameMenu==IGM_MAIN)
+				{
+					inGameMenu=IGM_NONE;
+				}
+				else
+				{
+					gameMenuScreen=new InGameMainScreen;
+					inGameMenu=IGM_MAIN;
+				}
+			}
+			// NOTE : if there is more than this, move to a func
+			if ((event->button.y>36) && (event->button.y<70) && (event->button.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+16) && (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+16))
+			{
+				if(inGameMenu!=IGM_NONE)
+				{
+					delete gameMenuScreen;
+					gameMenuScreen=NULL;
+				}
+				if(inGameMenu==IGM_ALLIANCE)
+				{
+					inGameMenu=IGM_NONE;
+				}
+				else
+				{
+					gameMenuScreen=new InGameAllianceScreen(this);
+					inGameMenu=IGM_ALLIANCE;
+				}
+			}
+
+			// NOTE : if there is more than this, move to a func
+			if ((event->button.y>72) && (event->button.y<106) && (event->button.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+16) && (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+16))
+			{
+				if(inGameMenu!=IGM_NONE)
+				{
+					delete gameMenuScreen;
+					gameMenuScreen=NULL;
+				}
+				if(inGameMenu==IGM_OBJECTIVES)
+				{
+					inGameMenu=IGM_NONE;
+				}
+				else
+				{
+					gameMenuScreen=new InGameObjectivesScreen(this, false);
+					inGameMenu=IGM_OBJECTIVES;
+				}
+			}
+		}
+	}
+	
+	
 	// if there is a menu he get events first
 	if (inGameMenu)
 	{
@@ -909,24 +956,6 @@ void GameGUI::processEvent(SDL_Event *event)
 					handleMenuClick(event->button.x-globalContainer->gfx->getW()+RIGHT_MENU_WIDTH, event->button.y, event->button.button);
 				else
 					handleMapClick(event->button.x, event->button.y, event->button.button);
-
-				// NOTE : if there is more than this, move to a func
-				if ((event->button.y<34) && (event->button.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2) && (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32))
-				{
-					if (inGameMenu==IGM_NONE)
-					{
-						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
-						inGameMenu=IGM_MAIN;
-					}
-					// the following is commented becase we don't get click event while in menu.
-					// if this change uncomment the following code :
-					/*else
-					{
-						delete gameMenuScreen;
-						gameMenuScreen=NULL;
-						inGameMenu=IGM_NONE;
-					}*/
-				}
 			}
 			else if (button==SDL_BUTTON_MIDDLE)
 			{
@@ -1120,7 +1149,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				{
 					if (inGameMenu==IGM_NONE)
 					{
-						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
+						gameMenuScreen=new InGameMainScreen;
 						inGameMenu=IGM_MAIN;
 					}
 				}
@@ -1889,7 +1918,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 void GameGUI::handleMenuClick(int mx, int my, int button)
 {
 	// handle minimap
-	if (my<128)
+	if (my<128 && mx > (RIGHT_MENU_OFFSET) && mx < RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 	{
 		if (putMark)
 		{
@@ -3625,21 +3654,33 @@ void GameGUI::drawTopScreenBar(void)
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
 	
 	// draw window bar
-	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32;
+	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-16;
 	for (int i=0; i<pos; i+=32)
 	{
 		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
 	}
 	for (int i=16; i<globalContainer->gfx->getH(); i+=32)
 	{
-		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
+		globalContainer->gfx->drawSprite(pos+12, i, globalContainer->gamegui, 17);
 	}
 
 	// draw main menu button
-	if (gameMenuScreen)
+	if (inGameMenu==IGM_MAIN)
 		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 7);
 	else
 		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 6);
+
+	// draw alliance button
+	if (inGameMenu==IGM_ALLIANCE)
+		globalContainer->gfx->drawSprite(pos, 36, globalContainer->gamegui, 44);
+	else
+		globalContainer->gfx->drawSprite(pos, 36, globalContainer->gamegui, 45);
+
+	// draw objectives button
+	if (inGameMenu==IGM_OBJECTIVES)
+		globalContainer->gfx->drawSprite(pos, 72, globalContainer->gamegui, 46);
+	else
+		globalContainer->gfx->drawSprite(pos, 72, globalContainer->gamegui, 47);
 	
 	if(hilights.find(HilightMainMenuIcon) != hilights.end())
 	{
