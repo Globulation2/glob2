@@ -59,6 +59,8 @@ private:
 	Button* removeMap;
 	/// Text editor changes the name of the campaign
 	TextInput* nameEditor;
+	/// Text editor for description
+	TextArea* description;
 
 	///Adds all of the maps in the campaign to the mapList
 	void syncMapList();
