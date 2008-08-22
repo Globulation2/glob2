@@ -2544,8 +2544,8 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 		else
 			globalContainer->gfx->drawSprite(x+decX, y+4, globalContainer->gamegui, 23);
 	}
-
-	// draw infos
+	
+	int toDrawInfoFor = -1;
 	if (mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)
 	{
 		if (mouseY>pos)
@@ -2555,37 +2555,56 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 			int id=yNum*numberPerLine+xNum;
 			if (id<count)
 			{
-				std::string &type = types[id];
-				if (states[id])
-				{
-					int buildingInfoStart=globalContainer->gfx->getH()-50;
+				toDrawInfoFor = id;
+			}
+		}
+	}
+	if(toDrawInfoFor == -1)
+	{
+		if(toolManager.getBuildingName() != "")
+		{
+			std::vector<std::string>::iterator i = std::find(types.begin(), types.end(), toolManager.getBuildingName());
+			if(i != types.end())
+			{
+				toDrawInfoFor = i - types.begin();	
+			}
+		}
+	}
 
-					std::string key = "[" + type + "]";
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, key.c_str());
-					
-					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
-					key = "[" + type + " explanation]";
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-20, key.c_str());
-					key = "[" + type + " explanation 2]";
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-8, key.c_str());
-					globalContainer->littleFont->popStyle();
-					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
-					if (bt)
-					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxRessource[0]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxRessource[3]).c_str());
+	// draw infos
+	if (toDrawInfoFor != -1)
+	{
+		int id = toDrawInfoFor;
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxRessource[4]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxRessource[1]).c_str());
+		std::string &type = types[id];
+		if (states[id])
+		{
+			int buildingInfoStart=globalContainer->gfx->getH()-50;
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+28, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxRessource[2]).c_str());
-					}
-				}
+			std::string key = "[" + type + "]";
+			drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, key.c_str());
+			
+			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
+			key = "[" + type + " explanation]";
+			drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-20, key.c_str());
+			key = "[" + type + " explanation 2]";
+			drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-8, key.c_str());
+			globalContainer->littleFont->popStyle();
+			BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
+			if (bt)
+			{
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxRessource[0]).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxRessource[3]).c_str());
+
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxRessource[4]).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxRessource[1]).c_str());
+
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+28, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxRessource[2]).c_str());
 			}
 		}
 	}
