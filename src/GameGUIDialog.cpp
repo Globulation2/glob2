@@ -405,18 +405,20 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 :OverlayScreen(globalContainer->gfx, 470, 390)
 {
-	addWidget(new TextButton(10, 40, 143, 25, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[objectives]"), OBJECTIVES));
 
+	int second_offset = 0;
 	int hints_x = 317;
 	if(gui->game.missionBriefing.empty())
 	{
 		hints_x = 163;
+		second_offset = 163/2;
 	}
 	else
 	{
-		addWidget(new TextButton(163, 40, 144, 25, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[briefing]"), BRIEFING));
+		addWidget(new TextButton(163, 40, 144, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[briefing]"), BRIEFING));
 	}
-	addWidget(new TextButton(hints_x, 40, 143, 25, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[hints]"), HINTS));
+	addWidget(new TextButton(second_offset+10, 40, 143, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[objectives]"), OBJECTIVES));
+	addWidget(new TextButton(second_offset+hints_x, 40, 143, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hints]"), HINTS));
 	
 	
 	
