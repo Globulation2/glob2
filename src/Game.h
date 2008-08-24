@@ -112,10 +112,12 @@ public:
 	void dirtyWarFlagGradient();
 
 	// Script interface
+	int teamsCount() { return mapHeader.getNumberOfTeams(); }
+	int isTeamAlive(int team);
 	int unitsCount(int team, int type);
 	int buildingsCount(int team, int type, int level);
 	int unitsUpgradesCount(int team, int type, int ability, int level);
-	int isTeamAlive(int team);
+	
 
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator
