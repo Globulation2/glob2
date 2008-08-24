@@ -197,6 +197,7 @@ private:
 	inline void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
+	inline void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, Unit* unit, Uint32 drawOptions);
 	static float interpolateValues(float a, float b, float x);
 	inline bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
 public:
