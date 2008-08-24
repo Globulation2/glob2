@@ -9,6 +9,17 @@ def Warrior := 2
 
 def unitsCount := game.unitsCount
 
+def AbilityWalk := 3
+def AbilitySwim := 4
+def AbilityFly := 5
+def AbilityBuild := 6
+def AbilityHarvest := 7
+def AbilityAttackSpeed := 8
+def AbilityAttackStrength := 9
+def AbilityMagicAttackAir := 10
+def AbilityMagicAttackGround := 11
+
+def unitsUpgradeCount := game.unitsUpgradesCount
 
 \# buildings getter
 
@@ -22,7 +33,21 @@ def School := 6
 def Tower := 7
 def Wall := 11
 
+def Level0Construction := 0
+def Level0Completed := 1
+def Level1Construction := 2
+def Level1Completed := 3
+def Level2Construction := 4
+def Level2Completed := 5
+
 def buildingsCount := game.buildingsCount
+
+\# general team getter
+
+def isAlive := game.isTeamAlive
+
+\# general game getter
+
 
 
 \# game gui
