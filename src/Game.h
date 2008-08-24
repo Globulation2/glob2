@@ -111,6 +111,10 @@ public:
 
 	void dirtyWarFlagGradient();
 
+	// Script interface
+	int unitsCount(int player, int type);
+	int buildingsCount(int player, int type, int level);
+
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator
 	void addTeam(int pos=-1);
