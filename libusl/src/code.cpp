@@ -203,10 +203,14 @@ void PopCode::execute(Thread* thread)
 }
 
 
+DupCode::DupCode(size_t index):
+	index(index)
+{}
+
 void DupCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	stack.push_back(stack.back());
+	stack.push_back(*(stack.rbegin() + index));
 }
 
 
