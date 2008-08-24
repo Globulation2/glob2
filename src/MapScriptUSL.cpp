@@ -39,6 +39,7 @@ using namespace std;
 template<>
 inline void NativeValuePrototype<GameGUI*>::initialize()
 {
+	// For network safeness, this interface is not allowed to read user-defined variables
 	addMethod<void(GameGUI*,string)>("enableBuildingsChoice", &GameGUI::enableBuildingsChoice);
 	addMethod<void(GameGUI*,string)>("disableBuildingsChoice", &GameGUI::disableBuildingsChoice);
 	addMethod<bool(GameGUI*,string)>("isBuildingEnabled", &GameGUI::isBuildingEnabled);
@@ -47,19 +48,27 @@ inline void NativeValuePrototype<GameGUI*>::initialize()
 	addMethod<bool(GameGUI*,string)>("isFlagEnabled", &GameGUI::isFlagEnabled);
 	addMethod<void(GameGUI*,int)>("enableGUIElement", &GameGUI::enableGUIElement);
 	addMethod<void(GameGUI*,int)>("disableGUIElement", &GameGUI::disableGUIElement);
-	addMethod<bool(GameGUI*)>("isSpaceSet", &GameGUI::isSpaceSet);
-	addMethod<void(GameGUI*,bool)>("setIsSpaceSet", &GameGUI::setIsSpaceSet);
-	addMethod<bool(GameGUI*)>("isSwallowSpaceKey", &GameGUI::isSwallowSpaceKey);
-	addMethod<void(GameGUI*,bool)>("setSwallowSpaceKey", &GameGUI::setSwallowSpaceKey);
+	
+	//addMethod<bool(GameGUI*)>("isSpaceSet", &GameGUI::isSpaceSet);
+	//addMethod<void(GameGUI*,bool)>("setIsSpaceSet", &GameGUI::setIsSpaceSet);
+	//addMethod<bool(GameGUI*)>("isSwallowSpaceKey", &GameGUI::isSwallowSpaceKey);
+	//addMethod<void(GameGUI*,bool)>("setSwallowSpaceKey", &GameGUI::setSwallowSpaceKey);
+	
 	addMethod<void(GameGUI*,string)>("showScriptText", &GameGUI::showScriptText);
-	//addMethod<void(GameGUI*,string,string)>("showScriptTextTr", &GameGUI::showScriptTextTr);
+	addMethod<void(GameGUI*,string,string)>("showScriptTextTr", &GameGUI::showScriptTextTr);
 	addMethod<void(GameGUI*)>("hideScriptText", &GameGUI::hideScriptText);
+}
+
+template<>
+inline void NativeValuePrototype<Game*>::initialize()
+{
 }
 
 
 MapScriptUSL::MapScriptUSL(GameGUI* gui)
 {
 	usl.addGlobal("gameGUI", new NativeValue<GameGUI*>(&usl.heap, gui));
+	usl.addGlobal("game", new NativeValue<Game*>(&usl.heap, &(gui->game)));
 }
 
 
@@ -91,6 +100,7 @@ bool MapScriptUSL::compileCode(const std::string& code)
 	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getGlobal("gameGUI"))->value;
 	usl = Usl();
 	usl.addGlobal("gameGUI", new NativeValue<GameGUI*>(&usl.heap, gui));
+	usl.addGlobal("game", new NativeValue<Game*>(&usl.heap, &(gui->game)));
 	
 	const char* dirsToLoad[] = { "data/usl/Language/Runtime" , "data/usl/Glob2/Runtime", 0 };
 	const char** dir = dirsToLoad;
@@ -130,8 +140,6 @@ bool MapScriptUSL::compileCode(const std::string& code)
 		}
 		++dir;
 	}
-	
-	
 	
 	try
 	{
