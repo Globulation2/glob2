@@ -118,6 +118,10 @@ public:
 	void setIsSpaceSet(bool value) { hasSpaceBeenClicked=value; }
 	bool isSwallowSpaceKey() { return swallowSpaceKey; }
 	void setSwallowSpaceKey(bool value) { swallowSpaceKey=value; }
+	
+	void showScriptText(const std::string &text);
+	void showScriptTextTr(const std::string &text, const std::string &lang);
+	void hideScriptText();
 
 	// Stats for engine
 	void setCpuLoad(int s);
@@ -339,6 +343,10 @@ private:
 	bool swallowSpaceKey;
 	//! Set to the SGSL display text of the previous frame. This is so the system knows when the text changes.
 	std::string previousSGSLText;
+	//! USL script text
+	std::string scriptText;
+	//! whether script text was updated in last step, required because of our translation override common text mechanism
+	bool scriptTextUpdated;
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;
