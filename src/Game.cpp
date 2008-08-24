@@ -1265,6 +1265,17 @@ void Game::dirtyWarFlagGradient(void)
 }
 
 // Script interface
+
+int Game::isTeamAlive(int team)
+{
+	if (
+		(team >= 0) && (team < mapHeader.getNumberOfTeams())
+	)
+		return teams[team]->isAlive;
+	else
+		return false;
+}
+
 int Game::unitsCount(int team, int type)
 {
 	if (
@@ -1299,16 +1310,6 @@ int Game::buildingsCount(int team, int type, int level)
 		return teams[team]->stats.getLatestStat()->numberBuildingPerTypePerLevel[type][level];
 	else
 		return 0;
-}
-
-int Game::isTeamAlive(int team)
-{
-	if (
-		(team >= 0) && (team < mapHeader.getNumberOfTeams())
-	)
-		return teams[team]->isAlive;
-	else
-		return false;
 }
 
 
