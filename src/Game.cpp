@@ -2552,6 +2552,102 @@ inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw
 
 
 
+inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, Unit* unit, Uint32 drawOptions)
+{
+	// Get the direction to the unit
+	int px, py;
+	map.mapCaseToDisplayableVector(unit->posX, unit->posY, &px, &py, viewportX, viewportY, sw, sh);
+	int deltaLeft=255-unit->delta;
+	if (unit->action<BUILD)
+	{
+		px-=(unit->dx*deltaLeft)>>3;
+		py-=(unit->dy*deltaLeft)>>3;
+	}
+	
+	// To get the center of the unit
+	px+=16;
+	py+=16;
+	
+	// Place the internal box dimensions
+	int i_sx = sx + 20;
+	int i_sy = sy + 20;
+	int i_sw = sw - 40;
+	int i_sh = sh - 40;
+	
+	// The units draw position releative to the center of the internal square
+	int rel_cx = px - i_sx - i_sw/2;
+	int rel_cy = py - i_sy - i_sh/2;
+	if(rel_cx == 0)
+		rel_cx = 1;
+	if(rel_cy == 0)
+		rel_cy = 1;
+	
+	//globalContainer->gfx->drawLine(sx + sw/2, sy + sh/2, px, py, Color::white);
+	
+	// Decide which edge of the screen the box is on, and compute its center cordinates
+	int bx = 0;
+	int by = 0;
+	float slope = float(rel_cy) / float(rel_cx);
+	float screen=float(i_sh) / float(i_sw);
+	if(rel_cx > 0 && std::abs(slope) <= std::abs(screen))
+	{
+		bx = i_sx + i_sw;
+		by = i_sy + (i_sh/2) + int(slope * float(i_sw/2));
+	}
+	else if(rel_cx < 0 && std::abs(slope) <= std::abs(screen))
+	{
+		bx = i_sx;
+		by = i_sy + (i_sh/2) - int(slope * float(i_sw/2));
+	}
+	else if(rel_cy > 0 && std::abs(slope) >= std::abs(screen))
+	{
+		bx = i_sx + (i_sw/2) + int(float(i_sh/2) / slope);
+		by = i_sy + i_sh;
+	}
+	else if(rel_cy < 0 && std::abs(slope) >= std::abs(screen))
+	{
+		bx = i_sx + (i_sw/2) - int(float(i_sh/2) / slope);
+		by = i_sy;
+	}
+	
+	bx -= 20;
+	by -= 20;
+	
+	// draw unit's image
+	int imgid;
+	UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
+	assert(unit->action>=0);
+	
+	assert(unit->action<NB_MOVE);
+	imgid=ut->startImage[unit->action];
+
+	int dir=unit->direction;
+	int delta=unit->delta;
+	assert(dir>=0);
+	assert(dir<9);
+	assert(delta>=0);
+	assert(delta<256);
+	if (dir==8)
+	{
+		imgid+=8*(delta>>5);
+	}
+	else
+	{
+		imgid+=8*dir;
+		imgid+=(delta>>5);
+	}
+
+	Sprite *unitSprite=globalContainer->units;
+	unitSprite->setBaseColor(unit->owner->color);
+	int decX = (32-unitSprite->getW(imgid))>>1;
+	int decY = (32-unitSprite->getH(imgid))>>1;
+
+	// Draw the code
+	globalContainer->gfx->drawFilledRect(bx, by, 40, 40, 0,0,0,128);
+	globalContainer->gfx->drawSprite(bx+decX+4, by+decY+4, unitSprite, imgid);
+}
+
+
 float Game::interpolateValues(float a, float b, float x)
 {
 	float ft = 3.141592653f * x;
@@ -2617,6 +2713,20 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	// draw cloud overlay if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 		ds.renderOverlay(globalContainer->gfx, sw, sh);
+
+	// Draw units that are off the screen for the selected building
+	
+	if(selectedBuilding != NULL && selectedBuilding->owner->sharedVisionOther & teams[localTeam]->me)
+	{
+		for(std::list<Unit*>::iterator i = selectedBuilding->unitsWorking.begin(); i!=selectedBuilding->unitsWorking.end(); ++i)
+		{
+			Unit* unit = *i;
+			if(!isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY))
+			{
+				drawUnitOffScreen(0, 16, sw - 160, sh-16, viewportX, viewportY, unit, drawOptions);
+			}
+		}
+	}
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
