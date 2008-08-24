@@ -51,6 +51,9 @@ inline void NativeValuePrototype<GameGUI*>::initialize()
 	addMethod<void(GameGUI*,bool)>("setIsSpaceSet", &GameGUI::setIsSpaceSet);
 	addMethod<bool(GameGUI*)>("isSwallowSpaceKey", &GameGUI::isSwallowSpaceKey);
 	addMethod<void(GameGUI*,bool)>("setSwallowSpaceKey", &GameGUI::setSwallowSpaceKey);
+	addMethod<void(GameGUI*,string)>("showScriptText", &GameGUI::showScriptText);
+	//addMethod<void(GameGUI*,string,string)>("showScriptTextTr", &GameGUI::showScriptTextTr);
+	addMethod<void(GameGUI*)>("hideScriptText", &GameGUI::hideScriptText);
 }
 
 
@@ -89,37 +92,46 @@ bool MapScriptUSL::compileCode(const std::string& code)
 	usl = Usl();
 	usl.addGlobal("gameGUI", new NativeValue<GameGUI*>(&usl.heap, gui));
 	
-	try
+	const char* dirsToLoad[] = { "data/usl/Language/Runtime" , "data/usl/Glob2/Runtime", 0 };
+	const char** dir = dirsToLoad;
+	
+	while (*(dir) != 0)
 	{
-		if (Toolkit::getFileManager()->initDirectoryListing("data/usl/Language/Runtime", "usl"))
+		try
 		{
-			const char* fileName;
-			while ((fileName = Toolkit::getFileManager()->getNextDirectoryEntry()) != NULL)
+			if (Toolkit::getFileManager()->initDirectoryListing(*dir, "usl"))
 			{
-				std::string fullFileName = string("data/usl/Language/Runtime") + DIR_SEPARATOR + fileName;
-				auto_ptr<ifstream> file(Toolkit::getFileManager()->openIFStream(fullFileName));
-				if (file.get())
+				const char* fileName;
+				while ((fileName = Toolkit::getFileManager()->getNextDirectoryEntry()) != NULL)
 				{
-					cerr << "* Loading " << fullFileName << endl;
-					usl.includeScript(fileName, *file.get());
-				}
-				else
-				{
-					cerr << "* Failed to load " << fullFileName << endl;
+					std::string fullFileName = string(*dir) + DIR_SEPARATOR + fileName;
+					auto_ptr<ifstream> file(Toolkit::getFileManager()->openIFStream(fullFileName));
+					if (file.get())
+					{
+						cerr << "* Loading " << fullFileName << endl;
+						usl.includeScript(fileName, *file.get());
+					}
+					else
+					{
+						cerr << "* Failed to load " << fullFileName << endl;
+					}
 				}
 			}
+			else
+			{
+				cerr << "MapScriptUSL::compileCode(): Cannot open script directory " << *dir << endl;
+				return false;
+			}
 		}
-		else
+		catch(Exception& e)
 		{
-			cerr << "MapScriptUSL::compileCode(): Cannot open Runtime directory" << endl;
+			cerr << "MapScriptUSL::compileCode(): Error in usl runtime file " << e.position << " : " << e.what() << endl;
 			return false;
 		}
+		++dir;
 	}
-	catch(Exception& e)
-	{
-		cerr << "MapScriptUSL::compileCode(): Error in usl runtime file " << e.position << " : " << e.what() << endl;
-		return false;
-	}
+	
+	
 	
 	try
 	{
