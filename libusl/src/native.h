@@ -6,11 +6,10 @@
 #include "code.h"
 #include "types.h"
 
+#include <sstream>
 #include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/mpl/assert.hpp>
-
-#include <sstream>
 
 template<typename Function>
 struct NativeFunction: NativeCode
@@ -216,12 +215,12 @@ void NativeFunction<Function>::prologue(ThunkPrototype* thunk)
 		thunk->body.push_back(new EvalCode()); // evaluate the argument
 		if (arguments > 1)
 		{
-			for (int i = 0; i < arguments; ++i)
+			for (int i = arguments - 1; i >= 0; --i)
 			{
 				std::ostringstream str;
 				str << i;
-				if (i < arguments - 1)
-					thunk->body.push_back(new DupCode());
+
+				thunk->body.push_back(new DupCode(arguments - i - 1));
 				thunk->body.push_back(new SelectCode(str.str()));
 				thunk->body.push_back(new EvalCode());
 			}
