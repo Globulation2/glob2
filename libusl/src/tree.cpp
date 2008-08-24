@@ -150,7 +150,7 @@ void DecNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
 			scope->locals.push_back(name);
 			
 			body->generate(scope, debug, heap);
-			Node::generate(scope, debug, new DupCode());
+			Node::generate(scope, debug, new DupCode(0));
 			Node::generate(scope, debug, new ValCode(index));
 			
 			ThunkPrototype* getter = scope->members[name];
@@ -384,7 +384,7 @@ void TuplePatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* h
 		stringstream str;
 		str << index;
 
-		Node::generate(scope, debug, new DupCode());
+		Node::generate(scope, debug, new DupCode(0));
 		Node::generate(scope, debug, new SelectCode(str.str()));
 		(*it)->generate(scope, debug, heap);
 		++index;
