@@ -1,0 +1,10 @@
+\# wrappers around native interface to get shorter calls
+
+def show := gameGUI.showScriptText
+def showTr := gameGUI.showScriptTextTr
+def hide := gameGUI.hideScriptText
+
+def wait(x) := if (x > 0) {
+	yield()
+	wait(x - 1)
+}

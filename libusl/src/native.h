@@ -172,6 +172,29 @@ void execute(const boost::function<void(Argument1, Argument2)>& function, Thread
 }
 
 
+template<typename Result, typename Argument1, typename Argument2, typename Argument3>
+void execute(const boost::function<Result(Argument1, Argument2, Argument3)>& function, Thread* thread)
+{
+	const Argument1& argument1 = pop<Argument1>(thread);
+	const Argument2& argument2 = pop<Argument2>(thread);
+	const Argument3& argument3 = pop<Argument3>(thread);
+	const Result& result = function(argument1, argument2, argument3);
+	push(thread, result);
+}
+
+template<typename Argument1, typename Argument2, typename Argument3>
+void execute(const boost::function<void(Argument1, Argument2, Argument3)>& function, Thread* thread)
+{
+	const Argument1& argument1 = pop<Argument1>(thread);
+	const Argument2& argument2 = pop<Argument2>(thread);
+	const Argument3& argument3 = pop<Argument3>(thread);
+	function(argument1, argument2, argument3);
+	push(thread, &nil);
+}
+
+
+
+
 template<typename Function>
 NativeFunction<Function>::NativeFunction(const std::string& name, const BoostFunction& function, bool receiver):
 	NativeCode(name),
