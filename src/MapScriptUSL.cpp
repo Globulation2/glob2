@@ -62,6 +62,8 @@ inline void NativeValuePrototype<GameGUI*>::initialize()
 template<>
 inline void NativeValuePrototype<Game*>::initialize()
 {
+	addMethod<int(Game*,int,int)>("unitsCount", &Game::unitsCount);
+	addMethod<int(Game*,int,int,int)>("buildingsCount", &Game::buildingsCount);
 }
 
 

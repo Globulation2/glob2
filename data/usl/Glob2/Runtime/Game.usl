@@ -1,8 +1,38 @@
 \# wrappers around native interface to get shorter calls
 
+
+\# units getter
+
+def Worker := 0
+def Explorer := 1
+def Warrior := 2
+
+def unitsCount := game.unitsCount
+
+
+\# buildings getter
+
+def Swarm := 0
+def Inn := 1
+def Hospital := 2
+def Racetrack := 3
+def Pool := 4
+def Camp := 5
+def School := 6
+def Tower := 7
+def Wall := 11
+
+def buildingsCount := game.buildingsCount
+
+
+\# game gui
+
 def show := gameGUI.showScriptText
 def showTr := gameGUI.showScriptTextTr
 def hide := gameGUI.hideScriptText
+
+
+\# wait on game variables
 
 def wait(x) := if (x > 0) {
 	yield()

@@ -1264,6 +1264,30 @@ void Game::dirtyWarFlagGradient(void)
 		teams[i]->dirtyWarFlagGradient();
 }
 
+// Script interface
+int Game::unitsCount(int team, int type)
+{
+	if (
+		(team >= 0) && (team < mapHeader.getNumberOfTeams()) &&
+		(type >= 0) && (type < NB_UNIT_TYPE)
+		)
+		return teams[team]->stats.getLatestStat()->numberUnitPerType[type];
+	else
+		return 0;
+}
+
+int Game::buildingsCount(int team, int type, int level)
+{
+	if (
+		(team >= 0) && (team < mapHeader.getNumberOfTeams()) &&
+		(type >= 0) && (type < IntBuildingType::NB_BUILDING) &&
+		(level >= 0) && (level < 6)
+		)
+		return teams[team]->stats.getLatestStat()->numberBuildingPerTypePerLevel[type][level];
+	else
+		return 0;
+}
+
 void Game::addTeam(int pos)
 {
 	if(pos==-1)
