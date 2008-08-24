@@ -18,12 +18,13 @@ bool Thread::step()
 		Code* code = thunk->body[nextInstr];
 		frame.nextInstr++;
 		
-		cout << thunk;
+		// Uncomment to get *verbose* debug info on scripting
+		/*cout << thunk;
 		for (size_t i = 0; i < frames.size(); ++i)
 			cout << "[" << frames[i].stack.size() << "]";
 		cout << " " << usl->debug.find(thunk, nextInstr) << ": ";
 		code->dump(cout);
-		cout << endl;
+		cout << endl;*/
 		
 		code->execute(this);
 		

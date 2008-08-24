@@ -171,6 +171,7 @@ void GameGUI::init()
 	chatMask=0xFFFFFFFF;
 	hasSpaceBeenClicked=false;
 	swallowSpaceKey=false;
+	scriptTextUpdated = false;
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
@@ -467,6 +468,7 @@ void GameGUI::step(void)
 		orderQueue.push_back(orderVoiceData);
 	}
 	
+	// TODO: die with SGSL
 	// Check if the text being displayed has changed, and if it has, add it to the history box
 	if(game.script.isTextShown && game.script.textShown != previousSGSLText)
 	{
@@ -482,6 +484,23 @@ void GameGUI::step(void)
 		}
 		
 		previousSGSLText = game.script.textShown;
+	}
+	
+	// Check if the text being displayed has changed, and if it has, add it to the history box
+	if (scriptTextUpdated)
+	{
+		// Split into one per line
+		std::vector<std::string> messages;
+		setMultiLine(scriptText, &messages, "    ");
+	
+		// Add each line as a seperate message to the message manager.
+		// Must be done backwards to appear in the right order
+		for (int i=messages.size()-1; i>=0; i--)
+		{
+			messageManager.addChatMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
+		}
+		
+		scriptTextUpdated = false;
 	}
 	
 	// music step
@@ -3792,6 +3811,7 @@ void GameGUI::drawOverlayInfos(void)
 		int ymesg = 32;
 		int yinc = 0;
 
+		// TODO: die with SGSL
 		// show script text
 		if (game.script.isTextShown)
 		{
@@ -3811,6 +3831,19 @@ void GameGUI::drawOverlayInfos(void)
 				yinc += 20;
 			}
 			yinc += 8;
+		}
+		
+		// show script text
+		if (!scriptText.empty())
+		{
+			std::vector<std::string> lines;
+			setMultiLine(scriptText, &lines);
+			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
+			for (unsigned i=0; i<lines.size(); i++)
+			{
+				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
+				yinc += 20;
+			}
 		}
 
 		// show script counter
@@ -4670,6 +4703,25 @@ void GameGUI::disableGUIElement(int id)
 	hiddenGUIElements |= (1<<id);
 	if (displayMode==id)
 		nextDisplayMode();
+}
+
+void GameGUI::showScriptText(const std::string &text)
+{
+	scriptText = text;
+	scriptTextUpdated = true;
+}
+
+void GameGUI::showScriptTextTr(const std::string &text, const std::string &lang)
+{
+	if (lang == globalContainer->settings.language)
+		showScriptText(text);
+}
+
+void GameGUI::hideScriptText()
+{
+	scriptText.clear();
+	std::cerr << "hide\n";
+	abort();
 }
 
 void GameGUI::setCpuLoad(int s)
