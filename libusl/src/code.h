@@ -83,7 +83,11 @@ struct PopCode: Code
 
 struct DupCode: Code
 {
+	DupCode(size_t index);
+
 	virtual void execute(Thread* thread);
+	
+	size_t index;
 };
 
 struct ThunkCode: Code
