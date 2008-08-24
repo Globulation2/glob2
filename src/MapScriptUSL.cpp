@@ -63,7 +63,11 @@ template<>
 inline void NativeValuePrototype<Game*>::initialize()
 {
 	addMethod<int(Game*,int,int)>("unitsCount", &Game::unitsCount);
+	addMethod<int(Game*,int,int,int,int)>("unitsUpgradesCount", &Game::unitsUpgradesCount);
 	addMethod<int(Game*,int,int,int)>("buildingsCount", &Game::buildingsCount);
+	// TODO: if required, add more from teamStats, maybe amount of unit starving can be usefull
+	addMethod<bool(Game*,int)>("isTeamAlive", &Game::isTeamAlive);
+
 }
 
 
