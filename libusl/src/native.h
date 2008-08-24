@@ -194,6 +194,28 @@ void execute(const boost::function<void(Argument1, Argument2, Argument3)>& funct
 }
 
 
+template<typename Result, typename Argument1, typename Argument2, typename Argument3, typename Argument4>
+void execute(const boost::function<Result(Argument1, Argument2, Argument3, Argument4)>& function, Thread* thread)
+{
+	const Argument1& argument1 = pop<Argument1>(thread);
+	const Argument2& argument2 = pop<Argument2>(thread);
+	const Argument3& argument3 = pop<Argument3>(thread);
+	const Argument4& argument4 = pop<Argument4>(thread);
+	const Result& result = function(argument1, argument2, argument3, argument4);
+	push(thread, result);
+}
+
+template<typename Argument1, typename Argument2, typename Argument3, typename Argument4>
+void execute(const boost::function<void(Argument1, Argument2, Argument3, Argument4)>& function, Thread* thread)
+{
+	const Argument1& argument1 = pop<Argument1>(thread);
+	const Argument2& argument2 = pop<Argument2>(thread);
+	const Argument3& argument3 = pop<Argument3>(thread);
+	const Argument4& argument4 = pop<Argument4>(thread);
+	function(argument1, argument2, argument3, argument4);
+	push(thread, &nil);
+}
+
 
 
 template<typename Function>
