@@ -4720,8 +4720,6 @@ void GameGUI::showScriptTextTr(const std::string &text, const std::string &lang)
 void GameGUI::hideScriptText()
 {
 	scriptText.clear();
-	std::cerr << "hide\n";
-	abort();
 }
 
 void GameGUI::setCpuLoad(int s)
