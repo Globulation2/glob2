@@ -1,25 +1,25 @@
 [%0 has left the game]
 %0 saiu do jogo.
 [%0 level %1]
-
+%0 nível %1
 [%0 units can't access building]
-
+%0 unidades não conseguem acesso à construção
 [%0 units can't access fruit]
-
+%0 unidades não conseguem acesso às frutas
 [%0 units can't access resource]
-
+%0 unidades não conseguem acesso aos recursos
 [%0 units not available]
-
+%0 unidades não disponíveis
 [%0 units too far from building]
-
+%0 unidades muito longes da construção
 [%0 units too far from fruit]
-
+%0 unidades muito longe das frutas
 [%0 units too far from resource]
-
+%0 unidades muito longe dos recursos
 [%0 units too low level]
-
+%0 unidades com nível muito baixo
 [%0% Uploaded]
-
+%0% Transferido
 [%0's game]
 jogo do %0
 [%0's team unit got converted to your team]
@@ -39,41 +39,41 @@ Adicionar mapa
 [add shortcut]
 Adicionar atalho
 [Add]
-
+Adicionar
 [AI Descriptions]
-
+Descrição das IA's
 [AI]
 IA
 [ai]
 IA
 [AICastor-Description]
-
+A Ai Castor tem um comportamento conservador e tem bom desempenho em mapas com poucos recursos. Dificuldade Média.
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
-
+Nicowar tem comportamento agressivo, cresce muito e rápido enquanto joga enormes exércitos contra seus adversários. Dificuldade Difícil
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+None -
 [AINone]
 AINone
 [AINumbi-Description]
-
+Numbi - Expande levemente com rapidez. Dificuldade Fácil.
 [AINumbi]
-AINumbi
+Numbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity - Não ataca. Porém constrói enormes bases e tenta converter muitas unidades. Dificuldade Fácil.
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib-Description]
-
+Toubib
 [AIToubib]
-AIToubib
+Toubib
 [AIWarrush-Description]
-
+Warrush - Ataca rápido e com força, costuma fazer com que o jogador defensor seja levado ao limite. Dificuldade Média.
 [AIWarrush]
-AIWarrush
+Warrush
 [Alga]
 Alga
 [algae]
@@ -81,7 +81,7 @@ alga
 [alliances]
 Alianças
 [alt %0]
-
+alt-%0
 [and]
 e
 [any explorer]
@@ -115,7 +115,7 @@ Esperando jogadores
 [away:]
 distante:
 [Back]
-
+Volta
 [backspace]
 backspace
 [barracks explanation 2]
@@ -127,71 +127,25 @@ Barracks
 [beach size]
 Tamanho da praia
 [Blocked Players]
-
+Jogadores Bloqueados
 [break]
 break
 [briefing]
-
+Briefing
 [build %0 level %1]
-
-[build barracks level 0]
-Construir Barracks 1
-[build barracks level 1]
-Construir Barracks 1
-[build barracks level 2]
-Construir Barracks 1
-[build defencetower level 0]
-Construir Torre de defesa 1
-[build defencetower level 1]
-Construir Torre de defesa 2
-[build defencetower level 2]
-Construir Torre de defesa 3
-[build hospital level 0]
-Construir Hospital 1
-[build hospital level 1]
-Construir Hospital 2
-[build hospital level 2]
-Construir Hospital 3
-[build inn level 0]
-Construir Taverna 1
-[build inn level 1]
-Construir Taverna 2
-[build inn level 2]
-Constuir Taverna 3
-[build market level 0]
-Construir Mercado
-[build racetrack level 0]
-Construir Pista de corrida 1
-[build racetrack level 1]
-Construir Pista de corrida 2
-[build racetrack level 2]
-Construir Pista de corrida 3
-[build school level 0]
-Construir Escola 1
-[build school level 1]
-Construir Escola 2
-[build school level 2]
-Construir Escola 3
-[build stonewall level 0]
-Construir Parede de pedra
-[build swarm level 0]
-Construir Núcleo de reprodução
-[build swimmingpool level 0]
-Construir Piscina 1
-[build swimmingpool level 1]
-Construir Piscina 2
-[build swimmingpool level 2]
-Construir Piscina 3
+Construir %0 Level %1
 [Build]
 Contruir
 [Building Defaults]
-
+Padrões das construções
 [building settings]
 Ajustes de unidade
 [building site]
 Construindo...
+[Building Tool Box Explanation]
+Shift + Arrastar = Caixa
 [Building Tool Line Explanation]
-
+Ctrl + Arrastar = Linha
 [Buildings]
 Construções
 [Bullets]
@@ -201,21 +155,15 @@ Editor de campanha
 [campaign]
 Campanha
 [Can't connect, can't find host]
-
+Sem conexão, servidor não foi localizado.
 [Can't host game, port %0 in use]
-
+Não é possível servir o jogo, a porta %0 está sendo usada.
 [Can't join game, game doesn't exist]
-
+Não é possível conectar-se ao jogo, ele não existe.
 [Can't join game, game has started]
-
+Não é possível conectar-se ao jogo, o jogo já começou.
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-Sem possibilidade de juntar-se ao jogo, parâmetros do jogo conflitantes
-[Can't join game, timeout]
-Sem possibilidade de juntar-se ao jogo, tempo esgotado
-[Can't join game, wrong game version]
-Sem possibilidade de juntar-se ao jogo, versão errada do jogo
+Não é possível conectar-se ao jogo, o jogo está cheio (de outros jogadores).
 [cancel destroy]
 Cancelar destruição
 [cancel repair]
@@ -255,21 +203,21 @@ Compilar script
 [compose]
 Compôr
 [Computing Fertility]
-
+Calculando Fertilidade
 [concrete islands terrain]
-
+Ilhas-concreto ?
 [connect]
 Conectar
 [connecting to game]
-
+Conectando ao jogo
 [connecting to]
 Conectando a
 [Construction Site Defaults]
-
+Padrões do lugar de construção
 [Continue playing]
 Continuar jogando
 [control %0]
-
+ctrl-%0
 [Corn]
 Milho
 [crater density]
@@ -283,7 +231,7 @@ Criar mapa
 [credits]
 Créditos
 [ctrl - line]
-
+Ctrl-line
 [current speed]
 Velocidade corrente
 [custom game]
@@ -297,17 +245,11 @@ Mapa de dano
 [decrease units working]
 Diminuir unidades trabalhando
 [Defeat Your Oppenents]
-
+Derrote seus adversários
 [defencetower explanation 2]
 unidades ou construções
 [defencetower explanation]
 Atacar inimigos próximos
-[defencetower level 0]
-Torre de defesa 1
-[defencetower level 1]
-Torre de defesa 2
-[defencetower level 2]
-Torre de defesa 3
 [defencetower]
 Torre de defesa
 [Defense Map]
@@ -335,13 +277,13 @@ Está carregando nada
 [down]
 baixo
 [Download Map]
-
+Baixar Mapa
 [Download Maps]
-
+Baixar Mapas
 [downloaded %0]
-
+baixado %0
 [downloading map]
-
+Baixando mapa
 [edit map]
 Editar mapa
 [editing map]
@@ -409,9 +351,9 @@ f9
 [Fertility Map]
 Mapa de Fertilidade
 [Flag Defaults]
-
+Padrões das bandeiras
 [flag settings explanation]
-
+Raio padrão da bandeira
 [food]
 Comida
 [forbidden area]
@@ -433,7 +375,7 @@ Jogo cheio
 [game shortcuts]
 Atalhos do jogo
 [Game]
-
+Jogo
 [general settings]
 Ajustes gerais
 [go to event]
@@ -461,9 +403,9 @@ Hard Pause
 [Harvest]
 Coletar
 [high priority]
-
+prioridade alta
 [hints]
-
+dicas
 [home]
 home
 [hospital explanation 2]
@@ -479,7 +421,7 @@ Vida
 [hp]
 Vida
 [Human]
-
+Humano
 [human]
 humano
 [hungry]
@@ -494,12 +436,6 @@ aumentar unidades trabalhando
 
 [inn explanation]
 Alimenta as suas unidades
-[inn level 0]
-Taverna 1
-[inn level 1]
-Taverna 2
-[inn level 2]
-Taverna 3
 [inn]
 Taverna
 [insert]
@@ -511,7 +447,7 @@ Tamanho da ilha
 [islands terrain]
 Ilhas
 [isles terrain]
-
+Ilhas
 [iterate selection]
 Vai para a próxima unidade
 [jobs]
@@ -527,7 +463,7 @@ Kickar
 [lan]
 Jogo em LAN
 [language incomplete]
-Português do Brasil - Incomplete
+Português do Brasil - Incompleto
 [language-code]
 br
 [language-tr]
@@ -553,13 +489,13 @@ Carregar jogo
 [load map]
 Carregar mapa
 [load script]
-
+carregar script
 [load]
 Carrregar
 [loading map list]
-
+carregando lista de mapas
 [Lobby]
-
+?
 [login]
 Login
 [Lost : %0 has more prestige than you]
@@ -567,7 +503,7 @@ Perdeu: %0 tem mais prestígio que você
 [Lost : your colony is dead]
 Perdeu: Sua colônia já era
 [low priority]
-
+prioridade baixa
 [lowquality]
 Qualidade baixa
 [Magic At. Air]
@@ -575,35 +511,33 @@ Dano aéreo
 [Magic At. Ground]
 Dano terrestre
 [map description]
-
+Descrição do mapa
 [Map Discovered]
-
+Mapa
 [Map download failure: lost connection]
-
+<<<<<<< /media/disk-2/attila/glob2/data/texts.br.txt
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
 Nome
 [map rated]
-
+avaliação do mapa
 [map script]
-
+script do mapa
 [map size x]
 Largura do mapa
 [map size y]
 Altura do mapa
 [Map upload failure: connection lost]
-
+Falha no upload do mapa: conexão perdida
 [Map upload failure: map name in use]
-
+Falha no upload do mapa: nome do mapa existente
 [Map upload failure: unknown reason]
-
+Falha no upload do mapa: razão desconhecida
 [Map Upload: Author Name]
-
+Upload de mapa: Nome do author
 [Map Upload: Waiting for reply]
-
-[maps available]
-Mapas disponíveis
+Upload de mapa: Esperando por resposta
 [mark map]
 Marcar mapa para aliados
 [market explanation 2]
@@ -613,9 +547,9 @@ Possibilita a troca de
 [market]
 Mercado
 [medium priority]
-
+prioridade média
 [meta %0]
-
+meta-%0
 [Min required level:]
 Nível mínimo requerido:
 [Minimum Level To Flag]
@@ -623,7 +557,7 @@ Minimum Flag Level
 [Music volume]
 Volume (música)
 [Mute]
-
+Mudo
 [mute]
 mudo
 [new campaign]
@@ -633,31 +567,33 @@ Novo
 [nick taken]
 Lamentamos mas o nome que você escolheu já existe na freenode, você poderá falar somente pelo YOG
 [No Hints]
-
+Sem dicas
 [no key]
 sem tecla ainda
 [No Objectives]
-
+Sem objetivos
 [no ressources growth areas]
 Nenhuma área de crescimento
 [No]
 Não
 [Not Enough Ratings]
-
+Número de avaliações insuficiente
 [not ready]
 não pronto
+[Number Of Buildings]
+Número de construções
 [number of players: %0 (%1 AI)]
-
-[number of players: %0]
-%0 jogadores estão presentes.
+número de jogadores: %0 (%1 IA)]
 [number of teams: %0]
 %0 times.
 [number of teams]
 Número de times
+[Number Of Units]
+Número de unidades
 [numlock]
 numlock
 [objectives]
-
+objetivos
 [of which]
 os quais
 [ok]
@@ -667,11 +603,11 @@ velhas ilhas aleatórias
 [old random terrain]
 velho terreno aleatório
 [on press]
-
+ao pressionar
 [On the spot]
 Aqui
 [on unpress]
-
+ao soltar
 [open chat box]
 Abrir janela de chat
 [open load menu]
@@ -681,19 +617,19 @@ Abrir Menu de Gravação
 [open script editor]
 Abrir editor de script
 [open teams editor]
-
+abrir editor de times
 [open]
 Abrir
 [OpenGL]
-
+OpenGL
 [Options]
-
+Opções
 [options]
 Opções
 [Orange]
 Laranja
 [Other Options]
-
+Outras opções
 [page down]
 page down
 [page up]
@@ -709,23 +645,25 @@ Pausado
 [player name]
 Nome do jogador
 [player rating %0]
-
+Avaliação de jogador %0
 [please wait]
 Por favor espere
 [power]
 liga
 [press space]
 Aperte barra de espaço para continuar
+[Prestige Score]
+Pontuação de prestígio
 [Prestige Win Enabled]
-
+Habilitar vitória por prestígio
 [Prestige]
 Prestígio
 [Primary Objectives]
-
+Objetivos principais
 [print screen]
 print screen
 [priority]
-
+prioridade
 [Prune]
 Ameixa
 [quit the editor]
@@ -743,17 +681,15 @@ Pista de corrida
 [range]
 Alcance
 [Rated %0]
-
+Avaliado %0
 [ratios]
 Proporções
 [ready?]
-
+Pronto?
 [refresh map list]
-
-[Register a new YOG user with password]
-Registrar um novo usuário YOG com uma senha. (inseguro)
+Recarregar lista de mapas
 [Register]
-
+Registro
 [remember unit]
 Lembrar a unidade
 [Remember YOG password localy]
@@ -763,7 +699,7 @@ Remover mapa
 [remove shortcut]
 Remover atalho
 [Remove]
-
+Remover
 [repair building]
 Começar/Parar Repair
 [repair]
@@ -771,7 +707,7 @@ Reparo
 [repeat area]
 vezes a mesma paisagem
 [Repeat your password :]
-
+Digite sua senha novamente:
 [restore default shortcuts]
 Restaurar atalhos de teclado padrões
 [return to editor]
@@ -799,7 +735,7 @@ Gravar Jogo
 [save map]
 Gravar mapa
 [save script]
-
+Gravar script
 [Save]
 Gravar
 [school explanation 2]
@@ -815,7 +751,7 @@ scroll lock
 [scroll wheel enabled]
 Roda do mouse ativada
 [Secondary Objectives]
-
+Objetivos secundários
 [seeking a job]
 procurando trabalho
 [seeking]
@@ -845,7 +781,7 @@ Selecionar construção de Núcleo de Repr.
 [select construct swimmingpool]
 Selecioner construção de Piscina
 [select delete tool]
-
+Selecionar ferramenta de apagar
 [select explorationflag]
 Selecionar Bandeira de exploração
 [select hospital building]
@@ -883,7 +819,7 @@ Selecionar Bandeira de guerra
 [settings]
 Ajustes
 [shift %0]
-
+shift %0
 [shortcut explanation enter]
 Enter: manda uma mensagem via chat
 [shortcut explanation v]
@@ -895,13 +831,13 @@ Exposição
 [smoothing]
 Alisar
 [sort by name]
-
+ordenar por nome
 [sort by rating]
-
+ordenar por avaliação
 [sort by size]
-
+ordenar por tamanho
 [Sort By]
-
+Ordenar por
 [space]
 barra de espaço
 [start mission]
@@ -935,7 +871,7 @@ Defesa passiva
 [stonewall]
 Parede de pedra
 [submit rating]
-
+enviar avaliação
 [svr hostname]
 Nome do servidor
 [swamp terrain]
@@ -944,8 +880,6 @@ Pântano
 
 [swarm explanation]
 Criar novas unidade
-[swarm level 0]
-Núcleo de reprodução
 [swarm]
 Núcleo de reprod.
 [Swim]
@@ -989,9 +923,9 @@ sys req
 [tab]
 tab
 [teams editor]
-
+editor de times
 [Teams Fixed]
-
+Times fixos
 [teams]
 times
 [the barracks is finished]
@@ -1023,11 +957,11 @@ O Hospital está pronto
 [the hospital is under attack]
 O Hospital está sendo atacado
 [The host has cancelled the game]
-
+O servidor cancelou o jogo
 [the inn is finished]
-The Taverna is finished
+A Taverna está terminada
 [the inn is under attack]
-The Taverna is under attack
+Uma Taverna está sobre ataque
 [the maps]
 Mapas
 [the market is finished]
@@ -1062,6 +996,8 @@ A Piscina está sendo atacada
 ?? War flag finished ??
 [the warflag is under attack]
 ?? Bandeira de guerra sobre ataque ??
+[time]
+tempo
 [to:]
 para:
 [toggle draw accessibility aids]
@@ -1074,18 +1010,24 @@ Desenhar caminhos das unidades
 Tela de menu
 [toggle recording voice]
 Iniciar gravação de voz
+[Total Attack Power]
+Poder de ataque total
+[Total Defence Power]
+Poder de defesa total
+[Total Hitpoints]
+Pontos de vida totais
 [Total prestige reached]
 Prestígio total alcançado
 [Total]
 Total
 [tutorial text 1]
-
+Bem-vindo ao primeiro tutorial do Globulation 2! Este tutorial vai explicar desde a construção de estalagens, zonas de exploração e como derrotar os inimigos!
 [tutorial text 2]
-
+Agora que você já aprendeu o básico, é hora de aprender sobre outras construções como a Pista de Corrida, Piscinas e Escolas.
 [tutorial text 3]
-
+Você foi bem até agora para chegar aqui. Agora o nosso tópico é Guerreiros, Campo de Treinamento e Upgrades.
 [tutorial text 4]
-
+Você está quase no fim. Falta só bandeiras e ataque. Depois você estará preparado para desafiar o computador na seção Jogo Customizado e jogar online com outros jogadores de Globulation 2.
 [tutorial]
 Tutorial
 [Uncontrolled]
@@ -1097,13 +1039,13 @@ Terreno uniforme
 [Unit editor]
 Editor de unidades
 [unit settings explanation]
-
+Número padrão de unidades designadas
 [units working]
 unidades trabalhando
 [Units]
 Unidades
 [unlocked at start]
-
+destravados no começo
 [unlocked by]
 Destravado por
 [Unnamed Area]
@@ -1113,13 +1055,13 @@ cima
 [upgrade building]
 Começar/Parar Upgrade
 [Upgrade Defaults]
-
+Padrões de upgrade
 [upgrade]
 Upgrade
 [Upload Map]
-
+Enviar mapa
 [upload map]
-
+enviar mapa
 [username]
 Nome de usuário
 [Version]
@@ -1127,13 +1069,13 @@ Versão
 [view history]
 Ver histórico de mensagens
 [Voice volume]
-
+Volume de voz
 [waiting for %0]
 Esperando por %0
 [waiting for key]
 Esperando por uma tecla
 [Waiting]
-
+Esperando
 [Walk]
 Caminhar
 [warflag explanation 2]
@@ -1179,7 +1121,7 @@ machucada
 [Yes]
 Sim
 [YESTS_CONNECTING]
-Estabelecendo conexão com o metaservidor YOG...er...
+Estabelecendo conexão com o metaservidor YOG...
 [YESTS_CONNECTION_LOST]
 A conexão com o YOG foi perdida.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
@@ -1189,7 +1131,7 @@ O metaservidor YOG recusou a sua conexão porque a senha estava incorreta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 O metaservidor YOG recusou a sua conexão porque este nome de usuário não tem senha ainda. Provavelmente você quer registrar o seu nome de usuário com esta senha. Logo, ative a opção "Registrar um novo usuário YOG com uma senha" antes de conectar. Você precisa ativar esta opção somente uma vez.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+O metaservidor YOG recusou a sua conexão porque este ip está temporariamente banido. Você pode esperar até ele ser desbloqueado ou entre em contato com os administradores.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 O metaservidor YOG recusou a sua conexão porque o cliente globulation2 está obsoleto.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1197,29 +1139,29 @@ O metaservidor YOG recusou a conexão sem explicação alguma!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 O metaservidor YOG recusou a sua conexão porque este nome de usuário está sendo usado por outro.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+O metaservidor YOG recusou a sua conexão porque este nome de usuário está banido. Por favor contate os administradores.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+O metaservidor YOG recusou a sua conexão porque este nome de usuário é inválido. Nomes de usuários podem conter somente letras, números e o caractere _
 [YESTS_CREATED]
 O sistema de conexão está pronto para contatar o metaservidor YOG para conexão.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+As senhas fornecidas não conferem. Por favor redigite-as.
 [YESTS_UNABLE_TO_CONNECT]
 Não é possível conectar. Aparentemente o metaservidor YOG está desligado.
 [yog block command help]
-
+/block <nome do jogador>     Bloqueia um jogador, você não verá mais suas mensagens
 [yog block command player %0 already blocked]
-
+Jogador %0 já está bloqueado
 [yog block command player %0 blocked]
-
+Jogador %0 bloqueado
 [yog block command player %0 not found]
-
+Jogador %0 não foi encontrado
 [yog command header]
-
+A lista de comandos do cliente YOG é:
 [yog command unknown]
-
+Comando desconhecido.
 [yog help command help]
-
+/help    Mostra esta mensagem de ajuda
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1227,12 +1169,12 @@ Você perdeu!
 [you have won]
 Você ganhou!
 [You where kicked from the game]
-
+Você foi expulso do jogo
 [Your %0 are under attack]
 Seus %0 estão sendo atacados
 [Your IP address was temporarily banned]
-
+Seu número ip foi temporariamente banido
 [Your unit got converted to %0's team]
 Sua unidade foi convertido para o time do %0
 [Your username was banned]
-
+Seu nome de usuário foi banido
