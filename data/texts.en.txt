@@ -681,11 +681,11 @@ ready?
 [refresh map list]
 Refresh Map List
 [Register a new YOG user with password]
-Register a new YOG user with a password. (insecure)
+Register a new YOG user with a password.
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
-Remember the password locally. (insecure)
+Remember the password locally.
 [remove map]
 Remove Map
 [remove shortcut]
