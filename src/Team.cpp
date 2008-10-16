@@ -805,11 +805,11 @@ void Team::add_building_needing_work(Building* b, Sint32 priority)
 	bool did_find_position=false;
 	Sint32 p = priority;
 	std::vector<Building*>& blist = buildingsNeedingUnits[p];
-	for(unsigned i=0; i<blist.size(); ++i)
+	for(std::vector<Building*>::iterator i=blist.begin(); i!=blist.end(); ++i)
 	{
-		if(prioritize_building(b, blist[i]))
+		if(prioritize_building(b, *i))
 		{
-			buildingsNeedingUnits[p].insert(blist.begin() + i, b);
+			buildingsNeedingUnits[p].insert(i, b);
 			did_find_position=true;
 			break;
 		}

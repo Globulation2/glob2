@@ -588,22 +588,22 @@ static const FunctionArgumentDescription unhilightUnitsDescription[] = {
 };
 
 static const FunctionArgumentDescription hilightBuildingsDescription[] = {
-	{ SGSLToken::S_SWARM_B, SGSLToken::S_CLEARING_F },
+	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription unhilightBuildingsDescription[] = {
-	{ SGSLToken::S_SWARM_B, SGSLToken::S_CLEARING_F },
+	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription hilightBuildingOnPanelDescription[] = {
-	{ SGSLToken::S_SWARM_B, SGSLToken::S_CLEARING_F },
+	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription unhilightBuildingOnPanelDescription[] = {
-	{ SGSLToken::S_SWARM_B, SGSLToken::S_CLEARING_F },
+	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
