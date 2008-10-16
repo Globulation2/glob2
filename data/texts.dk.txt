@@ -683,7 +683,7 @@ Her
 [open]
 Åben
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -750,6 +750,8 @@ Proportioner
 
 [Register a new YOG user with password]
 Register en ny YOG bruger med adgangskode. (usikker)
+[Register]
+
 [remember unit]
 Husk enhed
 [Remember YOG password localy]
@@ -766,6 +768,8 @@ Start/Stop Reparation
 Reparere
 [repeat area]
 antal gange det samme landskab
+[Repeat your password :]
+
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
@@ -1198,6 +1202,8 @@ YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i br
 
 [YESTS_CREATED]
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
 [yog block command help]
