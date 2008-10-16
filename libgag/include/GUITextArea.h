@@ -81,6 +81,8 @@ namespace GAGGUI
 		virtual void remText(unsigned pos, unsigned len);
 		virtual void scrollDown(void);
 		virtual void scrollUp(void);
+		virtual void scrollCursorDownLine(void);
+		virtual void scrollCursorUpLine(void);
 		virtual void scrollToBottom(void);
 		virtual void setCursorPos(unsigned pos);
 		virtual void setCursorPos(unsigned line, unsigned column);
