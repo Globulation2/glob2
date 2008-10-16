@@ -1094,6 +1094,7 @@ void Building::updateUnitsWorking(void)
 
 void Building::update(void)
 {
+	computeWishedRessources();
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
