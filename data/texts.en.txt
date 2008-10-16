@@ -701,7 +701,7 @@ Register
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
-Remember the password locally. (insecure)
+Remember the password locally.
 [remove map]
 Remove Map
 [remove shortcut]
