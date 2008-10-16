@@ -124,6 +124,16 @@ def configure(env):
         missing.append("libboost_thread")
     env.Append(LIBS=[boost_thread])
     
+    boost_date_time = ''
+    if conf.CheckLib("boost_date_time") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
+        boost_thread="boost_thread"
+    elif conf.CheckLib("boost_date_time-mt") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
+        boost_thread="boost_thread-mt"
+    else:
+        print "Could not find libboost_date_time or libboost_date_time-mt or boost/thread/thread.hpp"
+        missing.append("libboost_date_time")
+    env.Append(LIBS=[boost_date_time])
+    
 
     if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
         print "Could not find boost/shared_ptr.hpp"
@@ -140,9 +150,6 @@ def configure(env):
     if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
         print "Could not find boost/lexical_cast.hpp"
         missing.append("boost/lexical_cast.hpp")
-    if not conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        print "Could not find boost/date_time/posix_time/posix_time.hpp"
-        missing.append("boost/date_time/posix_time/posix_time.hpp")
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
