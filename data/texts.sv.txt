@@ -623,7 +623,7 @@ Här
 [open]
 öppna
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -690,6 +690,8 @@ Proportioner
 
 [Register a new YOG user with password]
 Registrera en ny YOG-användare med lösenord. (osäkert)
+[Register]
+
 [remember unit]
 Kom Ihåg Enhet
 [Remember YOG password localy]
@@ -706,6 +708,8 @@ Starta/Stoppa Reparation
 Reparera
 [repeat area]
 gånger samma landskap
+[Repeat your password :]
+
 [restore default shortcuts]
 Återställ Till Ursprungliga Tangentbordsgenvägar
 [return to editor]
@@ -1136,6 +1140,8 @@ YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
 
 [YESTS_CREATED]
 Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
 [yog block command help]

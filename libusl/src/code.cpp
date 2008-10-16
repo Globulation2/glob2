@@ -1,8 +1,10 @@
 #include "code.h"
+#include "native.h"
 #include "interpreter.h"
 #include "tree.h"
 #include "debug.h"
 #include "error.h"
+#include "usl.h"
 
 #include <sstream>
 
@@ -15,37 +17,10 @@ ThunkPrototype* thisMember(Prototype* outer)
 	thunk->body.push_back(new ParentCode());
 	return thunk;
 }
-/*
-struct ScopeGet: NativeMethod
-{
-	ScopeGet(Prototype* outer):
-		NativeMethod(outer, "Scope::get", new ValPatternNode(Position(), "index"))
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		Scope* scope = dynamic_cast<Scope*>(receiver);
-		Integer* index = dynamic_cast<Integer*>(argument);
-		
-		assert(scope);
-		assert(index);
-		
-		assert(index->value >= 0);
-		assert(size_t(index->value) < scope->locals.size());
-		// TODO get a thunk
-		
-		return scope->locals[index->value];
-	}
-};
 
-ScopePrototype* getMember(Prototype* outer)
+ThunkPrototype* methodMember(ScopePrototype* method)
 {
-	return nativeMethodMember(new ScopeGet(outer));
-}
-*/
-ThunkPrototype* nativeMethodMember(NativeMethod* method)
-{
-	ThunkPrototype* thunk = new ThunkPrototype(0, method->outer); // TODO: GC
+	ThunkPrototype* thunk = new ThunkPrototype(0, method->outer);
 	thunk->body.push_back(new ThunkCode());
 	thunk->body.push_back(new ParentCode());
 	thunk->body.push_back(new CreateCode<Function>(method));
@@ -139,11 +114,11 @@ void SelectCode::execute(Thread* thread)
 		message << "member <" << name << "> not found in ";
 		receiver->dump(message);
 		message << "(" << receiver->prototype << ")";
-		throw Exception(thread->debugInfo->find(frame.thunk->thunkPrototype(), frame.nextInstr), message.str());
+		throw Exception(thread->usl->debug.find(frame.thunk->thunkPrototype(), frame.nextInstr), message.str());
 	}
 	
 	// create a thunk
-	Thunk* thunk = new Thunk(thread->heap, def, receiver);
+	Thunk* thunk = new Thunk(&thread->usl->heap, def, receiver);
 	
 	// put the thunk on the stack
 	stack.push_back(thunk);
@@ -174,7 +149,7 @@ void ApplyCode::execute(Thread* thread)
 		frames.pop_back();
 
 	// push a new frame
-	Scope* scope = new Scope(thread->heap, function->prototype, function->outer);
+	Scope* scope = new Scope(&thread->usl->heap, function->prototype, function->outer);
 	frames.push_back(scope);
 	
 	// put the argument on the stack
@@ -228,10 +203,14 @@ void PopCode::execute(Thread* thread)
 }
 
 
+DupCode::DupCode(size_t index):
+	index(index)
+{}
+
 void DupCode::execute(Thread* thread)
 {
 	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	stack.push_back(stack.back());
+	stack.push_back(*(stack.rbegin() + index));
 }
 
 
@@ -242,45 +221,13 @@ void ThunkCode::execute(Thread* thread)
 }
 
 
-NativeThunkCode::NativeThunkCode(NativeThunk* thunk):
-	thunk(thunk)
+NativeCode::NativeCode(const string& name):
+	name(name)
 {}
 
-void NativeThunkCode::execute(Thread* thread)
+void NativeCode::dumpSpecific(std::ostream &stream) const
 {
-	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	
-	Value* receiver = stack.back();
-	stack.pop_back();
-	
-	stack.push_back(thunk->execute(thread, receiver));
-}
-
-void NativeThunkCode::dumpSpecific(std::ostream &stream) const
-{
-	stream << " " << thunk->name;
-}
-
-
-NativeMethodCode::NativeMethodCode(NativeMethod* method):
-	method(method)
-{}
-
-void NativeMethodCode::execute(Thread* thread)
-{
-	Thread::Frame::Stack& stack = thread->frames.back().stack;
-	
-	Value* argument = stack.back();
-	stack.pop_back();
-	Value* receiver = stack.back();
-	stack.pop_back();
-	
-	stack.push_back(method->execute(thread, receiver, argument));
-}
-
-void NativeMethodCode::dumpSpecific(std::ostream &stream) const
-{
-	stream << " " << method->name;
+	stream << " " << name;
 }
 
 
@@ -301,7 +248,7 @@ void CreateCode<ThunkType>::execute(Thread* thread)
 	assert(prototype->outer == 0 || prototype->outer == receiver->prototype); // Should not fail if the parser is bug-free
 	
 	// create a thunk
-	ThunkType* thunk = new ThunkType(thread->heap, prototype, receiver);
+	ThunkType* thunk = new ThunkType(&thread->usl->heap, prototype, receiver);
 	
 	// put the thunk on the stack
 	stack.push_back(thunk);
