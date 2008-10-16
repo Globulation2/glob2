@@ -55,6 +55,9 @@ protected:
 	
 	//! Returns the text for the right-scale
 	std::string getRightScaleText(int value, int digits);
+	
+	/// Get the label of the end game stat
+	std::string getStatLabel();
 
 	//! the type of the stat beeing drawn
 	EndOfGameStat::Type type;

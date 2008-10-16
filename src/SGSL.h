@@ -39,7 +39,7 @@ namespace GAGCore
 	class OutputStream;
 }
 
-struct Token
+struct SGSLToken
 {
 	enum TokenType
 	{
@@ -128,10 +128,10 @@ struct Token
 	std::string msg;
 
 	//! Constructor, set logic default values
-	Token() { type=NIL; value=0; }
+	SGSLToken() { type=NIL; value=0; }
 	
 	//! Constructor, create a token of type t
-	Token(TokenType t) { type=t; value=0; }
+	SGSLToken(TokenType t) { type=t; value=0; }
 
 	//! This table is a map table between token type and token names
 	static TokenSymbolLookupTable table[];
@@ -205,7 +205,7 @@ public:
 	virtual ~Aquisition(void);
 
 public:
-	const Token *getToken() { return &token; }
+	const SGSLToken *getToken() { return &token; }
 	void nextToken();
 	bool newFile(const char*);
 	unsigned getLine(void) { return lastLine; }
@@ -217,7 +217,7 @@ public:
 
 private:
 	const Functions& functions;
-	Token token;
+	SGSLToken token;
 	unsigned actLine, actCol, actPos, lastLine, lastCol, lastPos;
 	bool newLine;
 };
@@ -262,7 +262,7 @@ public:
 	virtual ~Story();
 
 public:
-	std::vector<Token> line;
+	std::vector<SGSLToken> line;
 	std::map<std::string, int> labels;
 	int lineSelector; //!< PC : Program Counter
 	int internTimer;
@@ -295,7 +295,7 @@ private:
 	
 	
 	bool testCondition(GameGUI *gui);
-	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
+	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
 	
 	Mapscript *mapscript;
 	bool recievedSpace;

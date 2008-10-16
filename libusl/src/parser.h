@@ -20,6 +20,7 @@ private:
 	Node* statement();
 	DecNode* declaration(DecNode::Type type);
 	DecNode* declaration(const Position& position, DecNode::Type type, const std::string& name);
+	ExpressionNode* declaration2(const Position& position);
 	PatternNode* pattern();
 	void expressions(BlockNode* block);
 	ExpressionNode* expression();
