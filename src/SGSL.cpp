@@ -588,22 +588,22 @@ static const FunctionArgumentDescription unhilightUnitsDescription[] = {
 };
 
 static const FunctionArgumentDescription hilightBuildingsDescription[] = {
-	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ Token::S_SWARM_B, Token::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription unhilightBuildingsDescription[] = {
-	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ Token::S_SWARM_B, Token::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription hilightBuildingOnPanelDescription[] = {
-	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ Token::S_SWARM_B, Token::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription unhilightBuildingOnPanelDescription[] = {
-	{ Token::S_SWARM_B, Token::S_CLEARING_F },
+	{ Token::S_SWARM_B, Token::S_MARKET_B },
 	{ -1, -1}
 };
 
