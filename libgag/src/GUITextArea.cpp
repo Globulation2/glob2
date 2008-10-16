@@ -265,20 +265,7 @@ namespace GAGGUI
 				{
 					if ((!readOnly) && (cursorPosY>0))
 					{
-						// TODO : UTF8 clean cursor displacement in text
-						size_t cursorPosX=cursorPos-lines[cursorPosY];
-						size_t newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
-						
-						if (cursorPosX<newLineLen)
-						{
-							cursorPos=lines[cursorPosY-1]+cursorPosX;
-						}
-						else
-						{
-							cursorPos=lines[cursorPosY]-1;
-						}
-						
-						compute();
+						scrollCursorUpLine();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 				}
@@ -288,29 +275,7 @@ namespace GAGGUI
 				{
 					if ((!readOnly) && (cursorPosY+1<lines.size()))
 					{
-						// TODO : UTF8 clean cursor displacement in text
-						size_t cursorPosX=cursorPos-lines[cursorPosY];
-						size_t newLineLen;
-						
-						if (cursorPosY==lines.size()-2)
-						{
-							newLineLen=text.length()-lines[cursorPosY+1];
-						}
-						else
-						{
-							newLineLen=lines[cursorPosY+2]-lines[cursorPosY+1]-1;
-						}
-						
-						if (cursorPosX < newLineLen)
-						{
-							cursorPos=lines[cursorPosY+1]+cursorPosX;
-						}
-						else
-						{
-							cursorPos=lines[cursorPosY+1]+newLineLen;
-						}
-	
-						compute();
+						scrollCursorDownLine();
 						parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 					}
 				}
@@ -826,7 +791,7 @@ namespace GAGGUI
 			if (areaPos<lines.size()-areaHeight-1)
 			{
 				areaPos++;
-				compute();
+				scrollCursorDownLine();
 			}
 		}
 	}
@@ -838,9 +803,54 @@ namespace GAGGUI
 			if (areaPos>0)
 			{
 				areaPos--;
-				compute();
+				scrollCursorUpLine();
 			}
 		}
+	}
+	
+	void TextArea::scrollCursorDownLine(void)
+	{
+		// TODO : UTF8 clean cursor displacement in text
+		size_t cursorPosX=cursorPos-lines[cursorPosY];
+		size_t newLineLen;
+		
+		if (cursorPosY==lines.size()-2)
+		{
+			newLineLen=text.length()-lines[cursorPosY+1];
+		}
+		else
+		{
+			newLineLen=lines[cursorPosY+2]-lines[cursorPosY+1]-1;
+		}
+		
+		if (cursorPosX < newLineLen)
+		{
+			cursorPos=lines[cursorPosY+1]+cursorPosX;
+		}
+		else
+		{
+			cursorPos=lines[cursorPosY+1]+newLineLen;
+		}
+
+		compute();
+	}
+
+	void TextArea::scrollCursorUpLine(void)
+	{
+		// TODO : UTF8 clean cursor displacement in text
+		size_t cursorPosX=cursorPos-lines[cursorPosY];
+		size_t newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
+		
+		if (cursorPosX<newLineLen)
+		{
+			cursorPos=lines[cursorPosY-1]+cursorPosX;
+		}
+		else
+		{
+			cursorPos=lines[cursorPosY]-1;
+		}
+		
+		compute();
 	}
 	
 	void TextArea::scrollToBottom(void)
