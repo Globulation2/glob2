@@ -443,7 +443,7 @@ int Engine::run(void)
 			int time = gui.game.stepCounter;
 			int seconds = (time / 25) % 60;
 			int minutes = (time / 25) / 60;
-			std::cout<< "automaticEndingGame ended: "<<time<<" ticks, "<<seconds<<" seconds, "<<minutes<<" minutes"<<std::endl;
+			std::cout<< "automaticEndingGame ended: "<<time<<" ticks, "<<minutes<<" minutes, "<<seconds<<" seconds"<<std::endl;
 		}
 
 		cpuStats.format();
