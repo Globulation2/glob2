@@ -679,7 +679,7 @@ Ok
 [open]
 открыто
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -746,6 +746,8 @@ print screen
 
 [Register a new YOG user with password]
 Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
+[Register]
+
 [remember unit]
 Запомнить юнит
 [Remember YOG password localy]
@@ -762,6 +764,8 @@ print screen
 Починка
 [repeat area]
 количество повторений ландшафта
+[Repeat your password :]
+
 [restore default shortcuts]
 Восстановить значения по умолчанию
 [return to editor]
@@ -1194,6 +1198,8 @@ up
 
 [YESTS_CREATED]
 Система соединения готова обратиться к метасерверу YOG за подключением.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Невозможно соединиться. Очевидно, метасервер YOG не работает.
 [yog block command help]
