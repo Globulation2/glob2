@@ -230,11 +230,11 @@ def main():
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS='-O2')
     if env['mingw'] or isWindowsPlatform:
-        #These four options must be present before the object files when compiling in mingw
-        env.Append(LINKFLAGS="-lmingw32 -lSDLmain -lSDL -mwindows")
-        env.Append(LIBS=['wsock32', 'winmm', 'gnurx'])
-        env.ParseConfig("sh sdl-config --cflags")
-        env.ParseConfig("sh sdl-config --libs")
+        env.Append(LIBPATH=['/usr/local/lib'])
+        env.Append(LIBS=['wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
+        env.Append(LINKFLAGS=['-mwindows'])
+        env.Append(CPPPATH=['/usr/local/include/SDL'])
+        env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
