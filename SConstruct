@@ -109,6 +109,10 @@ def configure(env):
         else:
             print "Could not find libz or zlib1.dll"
             missing.append("zlib")
+    
+    if not conf.CheckCXXHeader("regex.h"):
+			print "Could not find regex.h"
+			missing.append("regex")
 
     boost_thread = ''
     if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
@@ -216,6 +220,7 @@ def main():
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
+    env.Append(CPPPATH=['#libusl/src', '#'])
     if env['release']:
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS=' -O2')
