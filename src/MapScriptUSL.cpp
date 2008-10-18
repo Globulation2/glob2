@@ -57,6 +57,11 @@ inline void NativeValuePrototype<GameGUI*>::initialize()
 	addMethod<void(GameGUI*,string)>("showScriptText", &GameGUI::showScriptText);
 	addMethod<void(GameGUI*,string,string)>("showScriptTextTr", &GameGUI::showScriptTextTr);
 	addMethod<void(GameGUI*)>("hideScriptText", &GameGUI::hideScriptText);
+	
+	addMethod<int(GameGUI*)>("hintsCount", &GameGUI::hintsCount);
+	addMethod<void(GameGUI*,int)>("showHint", &GameGUI::showHint);
+	addMethod<void(GameGUI*,int)>("hideHint", &GameGUI::hideHint);
+	addMethod<bool(GameGUI*,int)>("isHintVisible", &GameGUI::isHintVisible);
 }
 
 template<>
