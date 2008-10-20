@@ -34,6 +34,8 @@ enum FertilityCalculatorThreadMessageType
 class FertilityCalculatorThreadMessage
 {
 public:
+	virtual ~FertilityCalculatorThreadMessage() {}
+
 	///Returns the event type
 	virtual Uint8 getMessageType() const = 0;
 	

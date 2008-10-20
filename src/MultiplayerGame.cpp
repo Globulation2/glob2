@@ -600,6 +600,7 @@ int MultiplayerGame::getLocalPlayer()
 			return gameHeader.getBasePlayer(i).number;
 		}
 	}
+	return -1;
 }
 
 

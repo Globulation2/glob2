@@ -631,7 +631,7 @@ namespace GAGGUI
 					{
 						if(actWordLength+spaceLength >= length)
 						{
-							for(int c=0; c<lastWord.size(); ++c)
+							for(unsigned c=0; c<lastWord.size(); ++c)
 							{
 								lastLine += lastWord[c];
 								int actLineLength = getStringWidth(lastLine);
@@ -672,7 +672,7 @@ namespace GAGGUI
 					{
 						if(actWordLength+spaceLength >= length)
 						{
-							for(int c=0; c<lastWord.size(); ++c)
+							for(unsigned c=0; c<lastWord.size(); ++c)
 							{
 								lastLine += lastWord[c];
 								int actLineLength = getStringWidth(lastLine);
