@@ -19,7 +19,7 @@
 #include "FertilityCalculatorThreadMessage.h"
 
 #include <sstream>
-
+#include <typeinfo>
 FCTUpdateCompletionPercent::FCTUpdateCompletionPercent(float percent)
 	: percent(percent)
 {
