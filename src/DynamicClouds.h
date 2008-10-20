@@ -101,11 +101,11 @@ public:
 	virtual ~DynamicClouds() { }
 	/**
 	 * updates alphaMap
-	 * /param viewPortX x-coordinate of the viewport
-	 * /param viewPortY y-coordinate of the viewport
-	 * /param w width of the alphaMap
-	 * /param h height of the alphaMap
-	 * /param time time
+	 * @param viewPortX x-coordinate of the viewport
+	 * @param viewPortY y-coordinate of the viewport
+	 * @param w width of the alphaMap
+	 * @param h height of the alphaMap
+	 * @param time time
 	 */
 	void compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeght, const int time);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
