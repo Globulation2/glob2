@@ -41,14 +41,14 @@ void YOGClientPlayerListManager::recieveMessage(boost::shared_ptr<NetMessage> me
 
 
 	
-const std::list<YOGPlayerInfo>& YOGClientPlayerListManager::getPlayerList() const
+const std::list<YOGPlayerSessionInfo>& YOGClientPlayerListManager::getPlayerList() const
 {
 	return players;
 }
 
 
 	
-std::list<YOGPlayerInfo>& YOGClientPlayerListManager::getPlayerList()
+std::list<YOGPlayerSessionInfo>& YOGClientPlayerListManager::getPlayerList()
 {
 	return players;
 }
@@ -71,7 +71,7 @@ void YOGClientPlayerListManager::removeListener(YOGClientPlayerListListener* lis
 
 std::string YOGClientPlayerListManager::findPlayerName(Uint16 playerID)
 {
-	for(std::list<YOGPlayerInfo>::iterator i = players.begin(); i != players.end(); ++i)
+	for(std::list<YOGPlayerSessionInfo>::iterator i = players.begin(); i != players.end(); ++i)
 	{
 		if(i->getPlayerID() == playerID)
 			return i->getPlayerName();

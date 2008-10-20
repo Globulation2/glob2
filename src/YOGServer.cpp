@@ -27,7 +27,7 @@
 #include "YOGServerPlayer.h"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
@@ -103,6 +103,8 @@ void YOGServer::update()
 		info.getGameInformation() = *gameList.begin();
 		broadcaster.reset(new NetBroadcaster(info));
 	}
+	
+	playerInfos.update();
 }
 
 
@@ -182,7 +184,7 @@ const std::list<YOGGameInfo>& YOGServer::getGameList() const
 }
 
 	
-const std::list<YOGPlayerInfo>& YOGServer::getPlayerList() const
+const std::list<YOGPlayerSessionInfo>& YOGServer::getPlayerList() const
 {
 	return playerList;
 }
@@ -191,8 +193,9 @@ const std::list<YOGPlayerInfo>& YOGServer::getPlayerList() const
 
 void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 {
-	playerList.push_back(YOGPlayerInfo(username, id));
+	playerList.push_back(YOGPlayerSessionInfo(username, id));
 	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
+	playerInfos.insureStoredInfoExists(username);
 }
 
 
@@ -200,7 +203,7 @@ void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 void YOGServer::playerHasLoggedOut(Uint16 playerID)
 {
 	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->removePlayer(getPlayer(playerID));
-	for(std::list<YOGPlayerInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
+	for(std::list<YOGPlayerSessionInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
 	{
 		if(i->getPlayerID() == playerID)
 		{
@@ -314,6 +317,27 @@ YOGGameInfo& YOGServer::getGameInfo(Uint16 gameID)
 			return *i;
 		}
 	}
+}
+
+
+
+YOGServerAdministratorList& YOGServer::getAdministratorList()
+{
+	return adminList;
+}
+
+
+
+YOGServerAdministrator& YOGServer::getAdministrator()
+{
+	return administrator;
+}
+
+
+
+YOGServerPlayerStoredInfoManager& YOGServer::getPlayerStoredInfoManager()
+{
+	return playerInfos;
 }
 
 

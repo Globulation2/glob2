@@ -16,21 +16,27 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "P2PConnection.h"
-#include "YOGClient.h"
-#include "NetMessage.h"
+#ifndef __YOGServerAdministrator_h
+#define __YOGServerAdministrator_h
 
+#include <string>
 
-P2PConnection::P2PConnection(boost::weak_ptr<YOGClient> client)
-	: client(client)
+class YOGServer;
+
+///This governs the system of administrative commands to the YOG server
+class YOGServerAdministrator
 {
-}
+public:
+	///Constructs the administration engine
+	YOGServerAdministrator(YOGServer* server);
+	
+	///Interprets whether the given message is an administrative command,
+	///and if so, executes it. If it was, returns true, otherwise, returns
+	///false
+	bool executeAdministrativeCommand(const std::string& message);
 
+private:
+	YOGServer* server;
+};
 
-
-void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
-{
-	//Uint8 type = message->getMessageType();
-	boost::shared_ptr<YOGClient> nclient(client);
-}
-
+#endif

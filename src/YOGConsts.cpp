@@ -1,5 +1,6 @@
 /*
-  Copyright (C) 2008 Bradley Arsenault
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,21 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "P2PConnection.h"
-#include "YOGClient.h"
-#include "NetMessage.h"
+#include "YOGConsts.h"
 
-
-P2PConnection::P2PConnection(boost::weak_ptr<YOGClient> client)
-	: client(client)
-{
-}
-
-
-
-void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
-{
-	//Uint8 type = message->getMessageType();
-	boost::shared_ptr<YOGClient> nclient(client);
-}
+const Uint16 YOG_SERVER_PORT = 7488;
+const std::string YOG_SERVER_IP = "yog.globulation2.org";
+//const std::string YOG_SERVER_IP = "127.0.0.1";
 

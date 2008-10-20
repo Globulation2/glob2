@@ -16,19 +16,19 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "YOGPlayerInfo.h"
+#include "YOGPlayerSessionInfo.h"
 #include "SDL_net.h"
 #include "Stream.h"
 
 
-YOGPlayerInfo::YOGPlayerInfo()
+YOGPlayerSessionInfo::YOGPlayerSessionInfo()
 {
 	playerID=0;
 }
 
 
 
-YOGPlayerInfo::YOGPlayerInfo(const std::string& playerName, Uint16 playerID)
+YOGPlayerSessionInfo::YOGPlayerSessionInfo(const std::string& playerName, Uint16 playerID)
 	: playerID(playerID), playerName(playerName)
 {
 
@@ -36,37 +36,37 @@ YOGPlayerInfo::YOGPlayerInfo(const std::string& playerName, Uint16 playerID)
 
 
 
-void YOGPlayerInfo::setPlayerName(const std::string& newPlayerName)
+void YOGPlayerSessionInfo::setPlayerName(const std::string& newPlayerName)
 {
 	playerName = newPlayerName;
 }
 
 
 	
-std::string YOGPlayerInfo::getPlayerName() const
+std::string YOGPlayerSessionInfo::getPlayerName() const
 {
 	return playerName;
 }
 
 
 
-void YOGPlayerInfo::setPlayerID(Uint16 id)
+void YOGPlayerSessionInfo::setPlayerID(Uint16 id)
 {
 	playerID=id;
 }
 
 
 
-Uint16 YOGPlayerInfo::getPlayerID() const
+Uint16 YOGPlayerSessionInfo::getPlayerID() const
 {
 	return playerID;
 }
 
 
 
-void YOGPlayerInfo::encodeData(GAGCore::OutputStream* stream) const
+void YOGPlayerSessionInfo::encodeData(GAGCore::OutputStream* stream) const
 {
-	stream->writeEnterSection("YOGPlayerInfo");
+	stream->writeEnterSection("YOGPlayerSessionInfo");
 	stream->writeUint16(playerID, "playerID");
 	stream->writeText(playerName, "playerName");
 	stream->writeLeaveSection();
@@ -74,9 +74,9 @@ void YOGPlayerInfo::encodeData(GAGCore::OutputStream* stream) const
 
 
 
-void YOGPlayerInfo::decodeData(GAGCore::InputStream* stream)
+void YOGPlayerSessionInfo::decodeData(GAGCore::InputStream* stream)
 {
-	stream->readEnterSection("YOGPlayerInfo");
+	stream->readEnterSection("YOGPlayerSessionInfo");
 	playerID=stream->readUint16("playerID");
 	playerName=stream->readText("playerName");
 	stream->readLeaveSection();
@@ -84,7 +84,7 @@ void YOGPlayerInfo::decodeData(GAGCore::InputStream* stream)
 
 
 	
-bool YOGPlayerInfo::operator==(const YOGPlayerInfo& rhs) const
+bool YOGPlayerSessionInfo::operator==(const YOGPlayerSessionInfo& rhs) const
 {
 	if(playerName == rhs.playerName)
 	{
@@ -99,7 +99,7 @@ bool YOGPlayerInfo::operator==(const YOGPlayerInfo& rhs) const
 
 	
 	
-bool YOGPlayerInfo::operator!=(const YOGPlayerInfo& rhs) const
+bool YOGPlayerSessionInfo::operator!=(const YOGPlayerSessionInfo& rhs) const
 {
 	if(playerName != rhs.playerName)
 	{

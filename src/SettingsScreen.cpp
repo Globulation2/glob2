@@ -309,7 +309,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		if (par1==OK)
 		{
 			globalContainer->setUserName(userName->getText());
-			globalContainer->settings.defaultLanguage = Toolkit::getStringTable()->getLang();
+			globalContainer->settings.language = Toolkit::getStringTable()->getStringInLang("[language-code]", Toolkit::getStringTable()->getLang());
 			globalContainer->settings.save();
 			mapeditKeyboardManager.saveKeyboardLayout();
 			guiKeyboardManager.saveKeyboardLayout();
@@ -321,7 +321,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			if (gfxAltered)
 				updateGfxCtx();
 
-			Toolkit::getStringTable()->setLang(globalContainer->settings.defaultLanguage);
+			Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(globalContainer->settings.language));
 
 			///Send the old volume to the mixer
 			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.mute);

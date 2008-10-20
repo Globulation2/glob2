@@ -267,7 +267,7 @@ bool Story::testCondition(GameGUI *gui)
 				unsigned lsInc=0;
 				if (line[lineSelector+2].type == Token::LANG)
 				{
-					if (line[lineSelector+2].value != static_cast<int>(globalContainer->settings.defaultLanguage))
+					if (line[lineSelector+2].msg != globalContainer->settings.language)
 					{
 						lineSelector += 2;
 						return true;
@@ -924,6 +924,7 @@ void Aquisition::nextToken()
 				{
 					token.type = Token::LANG;
 					token.value = i;
+					token.msg = word;
 					return;
 				}
 			}
@@ -1007,8 +1008,6 @@ Mapscript::~Mapscript(void)
 
 bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 {
-	int versionMinor = game->mapHeader.getVersionMinor();
-
 	stream->readEnterSection("SGSL");
 	
 	// load source code
@@ -2055,3 +2054,20 @@ bool Mapscript::hasTeamLost(unsigned teamNumber)
 		return hasLost.at(teamNumber);
 	return false;
 }
+
+
+
+void Mapscript::addTeam()
+{
+	hasWon.push_back(false);
+	hasLost.push_back(false);
+}
+
+
+
+void Mapscript::removeTeam(int n)
+{
+	hasWon.erase(hasWon.begin()+n);
+	hasLost.erase(hasLost.begin()+n);
+}
+

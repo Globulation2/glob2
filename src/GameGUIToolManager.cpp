@@ -90,6 +90,9 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 			isRoom = game.checkRoomForBuilding(building_x, building_y, bt, &mapX, &mapY, localteam);
 		else
 			isRoom = game.checkHardRoomForBuilding(building_x, building_y, bt, &mapX, &mapY);
+		
+		if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
+			isRoom = false;
 			
 		// Increase/Decrease hilight strength, given whether there is room or not
 		if (isRoom)
@@ -259,6 +262,10 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 				isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
 			else
 				isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
+				
+		
+			if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
+				isRoom = false;
 			
 			int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
 			int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
@@ -277,7 +284,6 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		//incorrect areas can be adjusted easily
 		int mapX, mapY;
 		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
-		int fig = brush.getFigure();
 		
 		if(firstPlacementX == -1)
 		{
