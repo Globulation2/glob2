@@ -340,14 +340,14 @@ void YOGClientLobbyScreen::updatePlayerList(void)
 //	boost::shared_ptr<IRC> irc = ircChat->getIRC();
 	// update YOG one
 	playerList->clear();
-	for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
+	for (std::list<YOGPlayerSessionInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
 	{
 		std::string listEntry = player->getPlayerName();
 		playerList->addPlayer(listEntry, YOGClientPlayerList::YOG_NETWORK);
 	}
 
 	// update irc entries, remove one already on YOG
-	for(int i=0; i<ircChat->getUsers().size(); ++i)
+	for(unsigned i=0; i<ircChat->getUsers().size(); ++i)
 	{
 		const std::string &user = ircChat->getUsers()[i];
 		if (user.compare(0, 5, "[YOG]") != 0)
@@ -362,7 +362,6 @@ void YOGClientLobbyScreen::updateGameInfo()
 {
 	if (gameList->getSelectionIndex() != -1)
 	{
-		Uint16 id = 0;
 		for (std::list<YOGGameInfo>::const_iterator game=client->getGameListManager()->getGameList().begin(); game!=client->getGameListManager()->getGameList().end(); ++game)
 		{
 			if(gameList->get() == game->getGameName())
@@ -408,7 +407,7 @@ void YOGClientLobbyScreen::autoCompleteNick()
 
 	if( beginningOfNick.compare("") != 0 )
 	{
-		for (std::list<YOGPlayerInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
+		for (std::list<YOGPlayerSessionInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
 		{
 			const std::string &user = (std::string)player->getPlayerName();
 			if( user.find(beginningOfNick) == 0 )
@@ -422,7 +421,7 @@ void YOGClientLobbyScreen::autoCompleteNick()
 
 		if(found == 0)
 		{
-			for(int i=0; i<ircChat->getUsers().size(); ++i)
+			for(unsigned i=0; i<ircChat->getUsers().size(); ++i)
 			{
 				const std::string &user = ircChat->getUsers()[i];
 				if( user.find(beginningOfNick) == 0 )

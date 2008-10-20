@@ -79,7 +79,7 @@ void LANFindScreen::onTimer(Uint32 tick)
 
 	lanServers->clear();
 	const std::vector<LANGameInformation>& games = listener.getLANGames();
-	for(int i=0; i<games.size(); ++i)
+	for(unsigned i=0; i<games.size(); ++i)
 	{
 		lanServers->addText(games[i].getGameInformation().getGameName());
 	}

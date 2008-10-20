@@ -28,6 +28,8 @@ class YOGMessage;
 class YOGClientChatListener
 {
 public:
+	virtual ~YOGClientChatListener() {}
+
 	///Recieves a text message
 	virtual void recieveTextMessage(boost::shared_ptr<YOGMessage> message)=0;
 };

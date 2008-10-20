@@ -86,8 +86,8 @@ public:
 	///Tests the YOGMessage class and its serialization
 	int testYOGMessage();
 
-	///Tests the YOGPlayerInfo class and its serialization
-	int testYOGPlayerInfo();
+	///Tests the YOGPlayerSessionInfo class and its serialization
+	int testYOGPlayerSessionInfo();
 	
 	///Tests the NetReteamingInformation class and its serialization
 	int testNetReteamingInformation();

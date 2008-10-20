@@ -34,7 +34,7 @@ YOGServerMapDistributor::YOGServerMapDistributor(boost::shared_ptr<YOGServerGame
 
 void YOGServerMapDistributor::update()
 {
-	for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, int, int> >::iterator i = players.begin(); i!=players.end();)
+	for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, unsigned, int> >::iterator i = players.begin(); i!=players.end();)
 	{
 		if(!i->get<0>()->isConnected())
 		{
@@ -74,7 +74,7 @@ void YOGServerMapDistributor::addMapRequestee(boost::shared_ptr<YOGServerPlayer>
 
 void YOGServerMapDistributor::removeMapRequestee(boost::shared_ptr<YOGServerPlayer> player)
 {
-	for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, unsigned, int> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(i->get<0>() == player)
 		{
@@ -104,7 +104,7 @@ void YOGServerMapDistributor::handleMessage(boost::shared_ptr<NetMessage> messag
 	}
 	else if(messageType == MNetRequestNextChunk)
 	{
-		for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, int, int> >::iterator i = players.begin(); i!=players.end(); ++i)
+		for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, unsigned, int> >::iterator i = players.begin(); i!=players.end(); ++i)
 		{
 			if(i->get<0>() == player)
 			{

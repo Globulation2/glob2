@@ -43,7 +43,7 @@ AIWarrush
 [alliances]
 Союзы
 [alt %0]
-
+alt-%0
 [and]
 и
 [any explorer]
@@ -77,7 +77,7 @@ ok
 [away:]
 отсутствует:
 [Back]
-
+Назад
 [backspace]
 backspace
 [barracks explanation 2]
@@ -149,7 +149,7 @@ break
 [campaign editor]
 Редактор Кампаний
 [campaign text]
-
+Текст кампании
 [campaign]
 Кампания
 [Can't connect, can't find host]
@@ -213,7 +213,7 @@ caps lock
 [Continue playing]
 Продолжить игру
 [control %0]
-
+control-%0
 [Corn]
 Зерно
 [crater density]
@@ -493,7 +493,7 @@ left
 [map name]
 Название
 [map script]
-
+Скрипт карты
 [map size x]
 Ширина карты
 [map size y]
@@ -509,7 +509,7 @@ left
 [market]
 Рынок
 [meta %0]
-
+meta-%0
 [Min required level:]
 Мин. необходимый уровень:
 [Minimum Level To Flag]
@@ -551,11 +551,11 @@ Ok
 [old random terrain]
 старый случайный ландшафт
 [on press]
-
+По нажатию
 [On the spot]
 На месте
 [on unpress]
-
+По отжатию
 [open chat box]
 Открыть чат
 [open load menu]
@@ -587,7 +587,7 @@ pause
 [please wait]
 Пожалуйста, подождите
 [power]
-
+power
 [press space]
 Нажмите пробел для продолжения
 [Prestige]
@@ -735,7 +735,7 @@ scroll lock
 [settings]
 Настройки
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 Enter: Отправить сообщение в чате
 [shortcut explanation v]
@@ -1021,7 +1021,7 @@ up
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Метасервер YOG отказал в соединении, потому что данному имени пользователя ещё не соответствует пароль. Вероятно, Вы хотите зарегистрировать это имя с этим паролем. Поэтому, активируйте опцию "Зарегистрировать нового пользователя YOG с паролем" перед тем, как соединяться. Вам придётся сделать это только один раз.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Метасервер YOG отказал в соединении, потому что Ваша версия globulation2 слишком старая, чтобы с ней соединяться.
+Метасервер YOG отказал в соединении, потому что Ваша версия Globulation 2 устарела. Пожалуйста, возьмите последнюю версию с www.globulation2.org чтобы сыграть online.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Метасервер YOG отказал в соединении без объяснения причин!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]

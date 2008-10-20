@@ -948,9 +948,8 @@ bool Game::load(GAGCore::InputStream *stream)
 		teams[i]->update();
 	}
 	
-	///Check teams integrity
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		teams[i]->integrity();
+	// Check integrity of loaded game
+	integrity();
 	
 	// Now load the map script
 	if (!script.load(stream, this))
@@ -988,6 +987,38 @@ bool Game::load(GAGCore::InputStream *stream)
 	return true;
 }
 
+void Game::integrity(void)
+{
+	///Check teams integrity
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+		teams[i]->integrity();
+	
+	///Check that all ID do point to existing objects
+	for (int y=0; y<map.getH(); y++)
+		for (int x=0; x<map.getW(); x++)
+		{
+			Case& c = map.getCase(x, y);
+			if (c.building != NOGBID)
+			{
+				int tid = Building::GIDtoTeam(c.building);
+				assert(teams[tid]);
+				assert(teams[tid]->myBuildings[Building::GIDtoID(c.building)]);
+			}
+			if (c.groundUnit != NOGUID)
+			{
+				int tid = Unit::GIDtoTeam(c.groundUnit);
+				assert(teams[tid]);
+				assert(teams[tid]->myUnits[Unit::GIDtoID(c.groundUnit)]);
+			}
+			if (c.airUnit != NOGUID)
+			{
+				int tid = Unit::GIDtoTeam(c.airUnit);
+				assert(teams[tid]);
+				assert(teams[tid]->myUnits[Unit::GIDtoID(c.airUnit)]);
+			}
+		}
+}
+
 void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name)
 {
 	assert(stream);
@@ -998,6 +1029,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
+	mapHeader.setGameChecksum(checkSum(NULL, NULL, NULL, true));
 	
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
@@ -1261,6 +1293,8 @@ void Game::addTeam(int pos)
 		prestigeToReach = std::max(MIN_MAX_PRESIGE, pos*TEAM_MAX_PRESTIGE);
 		
 		map.addTeam();
+		
+		script.addTeam();
 	}
 	else
 		assert(false);
@@ -1286,6 +1320,7 @@ void Game::removeTeam(int pos)
 			teams[i]->setCorrectColor(((float)i*360.0f)/(float)mapHeader.getNumberOfTeams());
 
 		map.removeTeam();
+		script.removeTeam(pos);
 		teams[pos]=NULL;
 	}
 }
@@ -1559,8 +1594,6 @@ Unit* Game::getUnit(int guid)
 	return teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
 }
 
-
-
 void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth)
 {
 	assert(maxLength>=0);
@@ -1621,6 +1654,11 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	}
 	else
 		assert(false);
+}
+
+void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Color c, int barWidth)
+{
+	drawPointBar(x,y,orientation,maxLength,actLength,c.r,c.g,c.b,barWidth);
 }
 
 void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions)
@@ -2613,12 +2651,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			if (type->hpMax)
 			{
 				float hpRatio=(float)building->hp/(float)type->hpMax;
+				Color cHP;
 				if (hpRatio>0.6)
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
+					cHP=Color(78,197,78);
 				else if (hpRatio>0.3)
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
+					cHP=Color(255,255,0);
 				else
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
+					cHP=Color(255,0,0);
+				drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), cHP);
 			}
 
 			// units
@@ -2708,7 +2748,7 @@ void Game::dumpAllData(const std::string& file)
 
 
 
-Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)
+Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy)
 {
 	Uint32 cs=0;
 
@@ -2745,13 +2785,14 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	
 	cs=(cs<<31)|(cs>>1);
 	
-	bool heavy=false;
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	{
 		if (players[i]->type==BasePlayer::P_IP)
 		{
 			heavy=true;
 			break;
 		}
+	}
 	Uint32 mapCs=map.checkSum(heavy);
 	cs^=mapCs;
 	if (checkSumsVector)
@@ -2786,20 +2827,18 @@ Team *Game::getTeamWithMostPrestige(void)
 
 std::string glob2FilenameToName(const std::string& filename)
 {
-	GAGCore::InputStream *stream = new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(filename.c_str()));
-	if (stream->isEndOfStream())
-	{
-		delete stream;
-	}
+	std::string mapName;
+	if(filename.find(".game")!=std::string::npos)
+		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
 	else
+		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
+	size_t pos = mapName.find("_");
+	while(pos != std::string::npos)
 	{
-		MapHeader tempHeader;
-		bool res = tempHeader.load(stream);
-		delete stream;
-		if (res)
-			return tempHeader.getMapName();
+		mapName.replace(pos, 1, " ");
+		pos = mapName.find("_");
 	}
-	return "";
+	return mapName;
 }
 
 template<typename It, typename T>

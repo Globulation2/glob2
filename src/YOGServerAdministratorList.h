@@ -16,21 +16,24 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "P2PConnection.h"
-#include "YOGClient.h"
-#include "NetMessage.h"
+#ifndef YOGServerAdministratorList_h
+#define YOGServerAdministratorList_h
 
+#include <set>
+#include <string>
 
-P2PConnection::P2PConnection(boost::weak_ptr<YOGClient> client)
-	: client(client)
+///This class reads the administrator list
+class YOGServerAdministratorList
 {
-}
+public:
+	///This will read the administrator list
+	YOGServerAdministratorList();
+	
+	///Returns true if the given username is an administrator, false otherwise
+	bool isAdministrator(const std::string& playerName);
+private:
+	std::set<std::string> admins;
+};
 
 
-
-void P2PConnection::recieveMessage(boost::shared_ptr<NetMessage> message)
-{
-	//Uint8 type = message->getMessageType();
-	boost::shared_ptr<YOGClient> nclient(client);
-}
-
+#endif

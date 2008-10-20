@@ -3054,6 +3054,10 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 			mo=new SendMessage;
 			mo->load(stream, player, versionMinor);
 			break;
+		case MChangeFlagPosition:
+			mo=new ChangeFlagPosition;
+			mo->load(stream, player, versionMinor);
+			break;
 	}
 	return mo;
 }
@@ -3547,6 +3551,65 @@ void ChangeFlagMinimumLevel::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(building_id, "building_id");
 	stream->writeLeaveSection();
 }
+
+
+
+ChangeFlagPosition::ChangeFlagPosition(int x, int y, int building_id)
+	: x(x), y(y), building_id(building_id)
+{
+
+}
+
+
+void ChangeFlagPosition::modify(Echo& echo)
+{
+	echo.push_order(shared_ptr<Order>(new OrderMoveFlag(echo.get_building_register().get_building(building_id)->gid, x, y, true)));
+}
+
+
+
+boost::logic::tribool ChangeFlagPosition::wait(Echo& echo)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+		return true;
+	else if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	else
+		return indeterminate;
+}
+
+
+
+ManagementOrderType ChangeFlagPosition::get_type()
+{
+	return MChangeFlagPosition;
+}
+
+
+
+bool ChangeFlagPosition::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+{
+	stream->readEnterSection("ChangeFlagPosition");
+	ManagementOrder::load(stream, player, versionMinor);
+	building_id=stream->readUint32("building_id");
+	x=stream->readUint32("x");
+	y=stream->readUint32("y");
+	stream->readLeaveSection();
+	return true;
+}
+
+
+
+void ChangeFlagPosition::save(GAGCore::OutputStream *stream)
+{
+	stream->writeEnterSection("ChangeFlagPosition");
+	ManagementOrder::save(stream);
+	stream->writeUint32(building_id, "building_id");
+	stream->writeUint32(x, "x");
+	stream->writeUint32(y, "y");
+	stream->writeLeaveSection();
+}
+
 
 
 
@@ -4834,7 +4897,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 	{
 		gm.reset(new GradientManager(player->map));
 		update_gm=true;
-		for(int x=0; x<32; ++x)
+		for(int x=0; x<player->team->game->gameHeader.getNumberOfPlayers(); ++x)
 		{
 			if(player->team->game->players[x]!=NULL)
 			{

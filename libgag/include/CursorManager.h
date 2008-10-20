@@ -26,6 +26,7 @@ namespace GAGCore
 {
 	class Sprite;
 	class DrawableSurface;
+	class Color;
 	
 	//! A support class to manage cursors
 	class CursorManager
@@ -70,6 +71,10 @@ namespace GAGCore
 		void nextTypeFromMouse(DrawableSurface *ds, int x, int y, bool button);
 		//! Manually set the next type
 		void setNextType(CursorType type);
+		//! Sets the draw color of the custom cursor
+		void setDrawColor(const Color& color);
+		//! Sets the default draw color
+		void setDefaultColor();
 		//! Draw the current cursor with its current frame at a given pos
 		void draw(DrawableSurface *ds, int x, int y);
 	};
