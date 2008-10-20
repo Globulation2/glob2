@@ -60,7 +60,7 @@ def configure(env):
     configfile.add("AUDIO_RECORDER_OSS", "Set the audio input type to OSS; the UNIX Open Sound System")
     if isDarwinPlatform:
         configfile.add("USE_OSX", "Set when this build is OSX")
-    if isWindowsPlatform:
+    if env['mingw'] or isWindowsPlatform:
         configfile.add("USE_WIN32", "Set when this build is Win32")
     configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
 
@@ -187,8 +187,14 @@ def configure(env):
 
     #Do checks for portaudio
     if conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
-        configfile.add("HAVE_PORTAUDIO ", "Defined when Port Audio support is present and compiled")
-        env.Append(LIBS=['portaudio'])
+        if env['mingw'] or isWindowsPlatform:
+            print "--------"
+            print "NOTE: It appears you are compiling under Windows. At this stage, PortAudio crashes Globulation 2 when voice chat is used."
+            print "NOTE: Disabling PortAudio in this build (you will be unable to use Voice Chat ingame)."
+            print "--------"
+        else:
+            configfile.add("HAVE_PORTAUDIO ", "Defined when Port Audio support is present and compiled")
+            env.Append(LIBS=['portaudio'])
         
     if missing:
         for t in missing:
