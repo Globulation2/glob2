@@ -199,7 +199,7 @@ def configure(env):
         else:
             configfile.add("HAVE_PORTAUDIO ", "Defined when Port Audio support is present and compiled")
             env.Append(LIBS=['portaudio'])
-
+            
     if missing:
         for t in missing:
             print "Missing %s" % t

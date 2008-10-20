@@ -2233,6 +2233,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 
 inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
 {
+	std::set<Building*> drawnBuildings;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -2246,7 +2247,7 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 				int team = Building::GIDtoTeam(gid);
 
 				Building *building=teams[team]->myBuildings[id];
-				if(map.normalizeX(building->posX) == map.normalizeX(x+viewportX) && map.normalizeY(building->posY) == map.normalizeY(y+viewportY))
+				if(drawnBuildings.find(building)==drawnBuildings.end())
 				{
 					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
@@ -2254,13 +2255,16 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 						|| (building->seenByMask & teams[localTeam]->me)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))
 					{
-					 	drawMapBuilding((x<<5), (y<<5), gid, viewportX, viewportY, localTeam, drawOptions);
-						if (visibleBuildings)
-							visibleBuildings->insert(building);
+						int px,py;					
+						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
+					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						drawnBuildings.insert(building);
 					}
 				}
 			}
 		}
+	if(visibleBuildings)
+		*visibleBuildings = drawnBuildings;
 }
 /**
  * Draws the visible (viewport) part of the given map
