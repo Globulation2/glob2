@@ -2068,7 +2068,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 	assert(building);
 	BuildingType *type=building->type;
 	Team *team=building->owner;
-	
+
 	int imgid;
 	if (type->crossConnectMultiImage)
 	{
@@ -2106,25 +2106,25 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 	}
 //	int x, y;
 	int dx, dy;
-	
+
 //	map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
-	
+
 	// select buildings and set the team colors
 	Sprite *buildingSprite = type->gameSpritePtr;
 	dx = (type->width<<5)-buildingSprite->getW(imgid);
 	dy = (type->height<<5)-buildingSprite->getH(imgid);
 	buildingSprite->setBaseColor(team->color);
-	
+
 	// draw building
 	globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
-	
+
 	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
 	{
 		int batW=(type->width )<<5;
 		int batH=(type->height)<<5;
 		int typeNum=building->typeNum;
 		globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
-	
+
 		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
 		int lastTypeNum=typeNum;
 		int max=0;
@@ -2143,10 +2143,10 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 		int exBatY=y+((lastbt->decTop-type->decTop)<<5);
 		int exBatW=(lastbt->width)<<5;
 		int exBatH=(lastbt->height)<<5;
-	
+
 		globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 	}
-	
+
 	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & teams[localTeam]->me))
 	{
 		//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
@@ -2170,7 +2170,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 			}
 			int decy=(type->height*32);
 			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
-	
+
 			if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
 			{
 				if (hpRatio>0.6)
@@ -2181,13 +2181,13 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
 			}
 		}
-	
+
 		// units
 		if (building->maxUnitInside>0)
 			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
 		if (building->maxUnitWorking>0)
 			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
-	
+
 		// food (for inns)
 		if ((type->canFeedUnit) || (type->unitProductionTime))
 		{
@@ -2198,7 +2198,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 				bDiv++;
 			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
 		}
-		
+
 		// bullets (for defence towers)
 		if (type->maxBullets)
 		{
@@ -2210,7 +2210,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxBullets/bDiv, building->bullets/bDiv, 200, 200, 200, 1+bDiv);
 		}
 	}
-	
+
 	if (drawOptions & DRAW_ACCESSIBILITY)
 	{
 		std::ostringstream oss;
@@ -2223,7 +2223,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 	}
-	
+
 	if(hilightBuildingType & (1<<building->shortTypeNum))
 	{
 		globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
@@ -2584,8 +2584,8 @@ inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw
 					px-=(unit->dx*deltaLeft)>>3;
 					py-=(unit->dy*deltaLeft)>>3;
 				}
-	
-	
+
+
 				int lsx, lsy, ldx, ldy;
 				map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, sw, sh);
 				lsx=px+16;
@@ -2612,17 +2612,17 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 		px-=(unit->dx*deltaLeft)>>3;
 		py-=(unit->dy*deltaLeft)>>3;
 	}
-	
+
 	// To get the center of the unit
 	px+=16;
 	py+=16;
-	
+
 	// Place the internal box dimensions
 	int i_sx = sx + 20;
 	int i_sy = sy + 20;
 	int i_sw = sw - 40;
 	int i_sh = sh - 40;
-	
+
 	// The units draw position releative to the center of the internal square
 	int rel_cx = px - i_sx - i_sw/2;
 	int rel_cy = py - i_sy - i_sh/2;
@@ -2630,9 +2630,9 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 		rel_cx = 1;
 	if(rel_cy == 0)
 		rel_cy = 1;
-	
+
 	//globalContainer->gfx->drawLine(sx + sw/2, sy + sh/2, px, py, Color::white);
-	
+
 	// Decide which edge of the screen the box is on, and compute its center cordinates
 	int bx = 0;
 	int by = 0;
@@ -2658,15 +2658,15 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 		bx = i_sx + (i_sw/2) - int(float(i_sh/2) / slope);
 		by = i_sy;
 	}
-	
+
 	bx -= 20;
 	by -= 20;
-	
+
 	// draw unit's image
 	int imgid;
 	UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
 	assert(unit->action>=0);
-	
+
 	assert(unit->action<NB_MOVE);
 	imgid=ut->startImage[unit->action];
 
@@ -2751,7 +2751,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
 		ds.compute(viewportX, viewportY, sw, sh, time);
-		ds.renderShadow(globalContainer->gfx, sw, sh);
+		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
@@ -2761,10 +2761,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 	// draw cloud overlay if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
-		ds.renderOverlay(globalContainer->gfx, sw, sh);
+		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
 
 	// Draw units that are off the screen for the selected building
-	
+
 	if(selectedBuilding != NULL && selectedBuilding->owner->sharedVisionOther & teams[localTeam]->me)
 	{
 		for(std::list<Unit*>::iterator i = selectedBuilding->unitsWorking.begin(); i!=selectedBuilding->unitsWorking.end(); ++i)
