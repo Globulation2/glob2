@@ -810,44 +810,50 @@ namespace GAGGUI
 	
 	void TextArea::scrollCursorDownLine(void)
 	{
-		// TODO : UTF8 clean cursor displacement in text
-		size_t cursorPosX=cursorPos-lines[cursorPosY];
-		size_t newLineLen;
-		
-		if (cursorPosY==lines.size()-2)
+		if(cursorPosY < lines.size()-1)
 		{
-			newLineLen=text.length()-lines[cursorPosY+1];
-		}
-		else
-		{
-			newLineLen=lines[cursorPosY+2]-lines[cursorPosY+1]-1;
-		}
-		
-		if (cursorPosX < newLineLen)
-		{
-			cursorPos=lines[cursorPosY+1]+cursorPosX;
-		}
-		else
-		{
-			cursorPos=lines[cursorPosY+1]+newLineLen;
-		}
+			// TODO : UTF8 clean cursor displacement in text
+			size_t cursorPosX=cursorPos-lines[cursorPosY];
+			size_t newLineLen;
+			
+			if (cursorPosY==lines.size()-2)
+			{
+				newLineLen=text.length()-lines[cursorPosY+1];
+			}
+			else
+			{
+				newLineLen=lines[cursorPosY+2]-lines[cursorPosY+1]-1;
+			}
+			
+			if (cursorPosX < newLineLen)
+			{
+				cursorPos=lines[cursorPosY+1]+cursorPosX;
+			}
+			else
+			{
+				cursorPos=lines[cursorPosY+1]+newLineLen;
+			}
 
-		compute();
+			compute();
+		}
 	}
 
 	void TextArea::scrollCursorUpLine(void)
 	{
-		// TODO : UTF8 clean cursor displacement in text
-		size_t cursorPosX=cursorPos-lines[cursorPosY];
-		size_t newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
-		
-		if (cursorPosX<newLineLen)
+		if(cursorPosY>0)
 		{
-			cursorPos=lines[cursorPosY-1]+cursorPosX;
-		}
-		else
-		{
-			cursorPos=lines[cursorPosY]-1;
+			// TODO : UTF8 clean cursor displacement in text
+			size_t cursorPosX=cursorPos-lines[cursorPosY];
+			size_t newLineLen=lines[cursorPosY]-lines[cursorPosY-1];
+			
+			if (cursorPosX<newLineLen)
+			{
+				cursorPos=lines[cursorPosY-1]+cursorPosX;
+			}
+			else
+			{
+				cursorPos=lines[cursorPosY]-1;
+			}
 		}
 		
 		compute();
