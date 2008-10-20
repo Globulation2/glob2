@@ -348,8 +348,8 @@ int record(void *pointer)
 	
 abortRecordThread:
 	
-	// release buffers
-	speex_bits_destroy(&bits);
+	// release buffers, no will be released in the descructor
+	// speex_bits_destroy(&bits);
 	return 0;
 }
 #endif

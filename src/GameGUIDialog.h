@@ -42,13 +42,11 @@ public:
 		LOAD_GAME = 0,
 		SAVE_GAME = 1,
 		OPTIONS = 2,
-		ALLIANCES = 3,
-		OBJECTIVES = 4,
 		RETURN_GAME = 5,
 		QUIT_GAME = 6
 	};
 public:
-	InGameMainScreen(bool showAlliance);
+	InGameMainScreen();
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };

@@ -1,6 +1,7 @@
 #include "debug.h"
 
 #include "code.h"
+#include "native.h"
 
 using namespace std;
 
@@ -14,26 +15,16 @@ const Position& ThunkDebugInfo::find(size_t address) const
 
 static string getName(ThunkPrototype* thunk)
 {
-	NativeThunk* nativeThunk = dynamic_cast<NativeThunk*>(thunk);
-	if (nativeThunk != 0)
-		return nativeThunk->name;
-	
-	NativeMethod* nativeMethod = dynamic_cast<NativeMethod*>(thunk);
-	if (nativeMethod != 0)
-		return nativeMethod->name;
-
 	for (ThunkPrototype::Body::const_iterator it = thunk->body.begin(); it != thunk->body.end(); ++it)
 	{
-		CreateCode<Function>* createCode = dynamic_cast<CreateCode<Function>*>(*it);
-		if (createCode != 0)
+		NativeCode* nativeCode = dynamic_cast<NativeCode*>(*it);
+		if (nativeCode != 0)
 		{
-			nativeMethod = dynamic_cast<NativeMethod*>(createCode->prototype);
-			return nativeMethod->name + "::getter";
+			return nativeCode->name;
 		}
 	}
 	
-	assert(nativeMethod);
-	return "";
+	return "???";
 }
 
 

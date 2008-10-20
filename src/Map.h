@@ -215,6 +215,17 @@ public:
 		return ((mapDiscovered[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
 	}
 	
+	//! Returs true if map is discovered at position (x1..x2,y1..y2) for a given vision mask.
+	//! This mask represents which team's part of map we are allowed to see.
+	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask)
+	{
+		assert(x1<x2 && y1<y2);
+		for(int x=x1;x<=x2;x++)
+			for(int y=y1;y<=y2;y++)
+				if(isMapDiscovered(x,y,visionMask))
+					return true;
+		return false;
+	}
 	//! Sets all map for all teams to discovered state
 	void setMapDiscovered(void)
 	{
