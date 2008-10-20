@@ -23,3 +23,4 @@ data/texts.sr.txt
 data/texts.sv.txt
 data/texts.tr.txt
 data/texts.zh-tw.txt
+data/texts.zh-cn.txt
