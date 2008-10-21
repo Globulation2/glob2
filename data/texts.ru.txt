@@ -1,27 +1,41 @@
 [%0 has left the game]
 %0 покинул игру.
 [%0 level %1]
-
+%0 уровня %1
 [%0 units can't access building]
-
+%0 юнитов не могут достичь здания
 [%0 units can't access fruit]
-
+%0 юнитов не могут достичь фруктов
 [%0 units can't access resource]
-
+%0 юнитво не могут достичь ресурса
 [%0 units not available]
-
+%0 юнитов недоступны
 [%0 units too far from building]
-
+%0 юнитво слишком далеки от здания
 [%0 units too far from fruit]
-
+%0 юнитов слишком далеки от фруктов
 [%0 units too far from resource]
-
+%0 юнитво слишком далеки от ресурса
 [%0 units too low level]
-
+%0 юнитов слишком низкого уровня
 [%0% Uploaded]
-
+%0% загружено
 [%0's game]
 игра %0'а
+[Number Of Units]
+Количество юнитов
+[Number Of Buildings]
+Количество зданий
+[Prestige Score]
+Очки престижа
+[Total Hitpoints]
+Общее здоровье
+[Total Attack Power]
+Общая атака
+[Total Defence Power]
+Общая защита
+[time]
+Время
 [%0's team unit got converted to your team]
 Юнит из команды %0 перешёл в вашу команду.
 [abreaviation explanation A]
@@ -39,41 +53,41 @@ V: Показ поля зрения для всех зданий
 [add shortcut]
 Доб. гор. клавишу
 [Add]
-
+Добавить
 [AI Descriptions]
-
+Описание AI
 [AI]
 AI
 [ai]
 AI
 [AICastor-Description]
-
+Castor играет в оборонительную игру. Хорош на картах с ограниченными ресурсами. Средняя сложность.
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
-
+Nicowar действует агрессивно, быстро отстраивается и бросает огромные армии на соперников. Высокий уровень сложности.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+None - ничего не делает.
 [AINone]
-AINone
+None
 [AINumbi-Description]
-
+Numbi - растёт необдуманно и быстро. Сложность лёгкая.
 [AINumbi]
-AINumbi
+Numbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity - Не атакует, но строит гигантские базы и агрессивно переманивает юниты. Сложность лёгкая.
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib-Description]
-
+Toubib
 [AIToubib]
-AIToubib
+Toubib
 [AIWarrush-Description]
-
+Warrush - Атакует быстро и беспощадно. Часто подталкивает играющих в оборонительную игру к наступлению развязки. Средняя сложность.
 [AIWarrush]
-AIWarrush
+Warrush
 [Alga]
 Водоросли
 [algae]
@@ -127,71 +141,25 @@ backspace
 [beach size]
 размер пляжей
 [Blocked Players]
-
+Блокированные игроки
 [break]
 break
 [briefing]
-
+Брифинг
 [build %0 level %1]
-
-[build barracks level 0]
-Построить Казармы 1
-[build barracks level 1]
-Построить Казармы 2
-[build barracks level 2]
-Построить Казармы 3
-[build defencetower level 0]
-Построить Защитную башню 1
-[build defencetower level 1]
-Построить Защитную башню 2
-[build defencetower level 2]
-Построить Защитную башню 3
-[build hospital level 0]
-Построить Госпиталь 1
-[build hospital level 1]
-Построить Госпиталь 2
-[build hospital level 2]
-Построить Госпиталь 3
-[build inn level 0]
-Построить Кабак 1
-[build inn level 1]
-Построить Кабак 2
-[build inn level 2]
-Построить Кабак 3
-[build market level 0]
-Построить Рынок
-[build racetrack level 0]
-Построить Стадион 1
-[build racetrack level 1]
-Построить Стадион 2
-[build racetrack level 2]
-Построить Стадион 3
-[build school level 0]
-Построить Школу 1
-[build school level 1]
-Построить Школу 2
-[build school level 2]
-Построить Школу 3
-[build stonewall level 0]
-Построить каменную стену
-[build swarm level 0]
-Построить Рой
-[build swimmingpool level 0]
-Построить Бассейн 1
-[build swimmingpool level 1]
-Построить Бассейн 2
-[build swimmingpool level 2]
-Построить Бассейн 3
+Построить %0 уровня %1
 [Build]
 Строит
 [Building Defaults]
-
+Здания
 [building settings]
 Юниты
 [building site]
 стройка
 [Building Tool Line Explanation]
-
+Ctrl + Тянуть = Линия
+[Building Tool Box Explanation]
+Shift + Тянуть = Рамка
 [Buildings]
 Здания
 [Bullets]
@@ -251,15 +219,15 @@ caps lock
 [Computing Fertility]
 Вычисление плодородия
 [concrete islands terrain]
-
+Бетонные острова
 [connect]
 Подключиться
 [connecting to game]
-
+Подкючение к игре
 [connecting to]
 Подключение к
 [Construction Site Defaults]
-
+Стройка
 [Continue playing]
 Продолжить игру
 [control %0]
@@ -277,7 +245,7 @@ control-%0
 [credits]
 Благодарности
 [ctrl - line]
-
+Ctrl - Линия
 [current speed]
 Текущая скорость
 [custom game]
@@ -291,17 +259,11 @@ control-%0
 [decrease units working]
 Уменьшить количество работающих
 [Defeat Your Oppenents]
-
+Победить соперников
 [defencetower explanation 2]
 строения и юниты
 [defencetower explanation]
 Атакует близких врагов
-[defencetower level 0]
-Защитная башня 1
-[defencetower level 1]
-Защитная башня 2
-[defencetower level 2]
-Защитная башня 3
 [defencetower]
 Оборонительная башня
 [Defense Map]
@@ -310,8 +272,6 @@ control-%0
 Оборона
 [Delete game]
 Удалить выбранную игру
-[delete]
-delete
 [delete]
 Удалить
 [desert]
@@ -329,13 +289,13 @@ delete
 [down]
 down
 [Download Map]
-
+Скачать карту
 [Download Maps]
-
+Скачать карты
 [downloaded %0]
 %0 скачано
 [downloading map]
-
+Скачивание карты
 [edit map]
 Ред. карту
 [editing map]
@@ -403,9 +363,9 @@ f9
 [Fertility Map]
 Карта плодородия
 [Flag Defaults]
-
+Флаги
 [flag settings explanation]
-
+Радиус флага по умолчанию
 [food]
 Еда
 [forbidden area]
@@ -427,7 +387,7 @@ Ok
 [game shortcuts]
 Игра
 [Game]
-
+Игра
 [general settings]
 Общие
 [go to event]
@@ -455,9 +415,9 @@ Ok
 [Harvest]
 Собирает
 [high priority]
-
+выс.
 [hints]
-
+Указания
 [home]
 home
 [hospital explanation 2]
@@ -473,7 +433,7 @@ home
 [hp]
 Здоровье
 [Human]
-
+Человек
 [human]
 человек
 [hungry]
@@ -488,12 +448,6 @@ home
 
 [inn explanation]
 Кормит юнитов
-[inn level 0]
-Кабак 1
-[inn level 1]
-Кабак 2
-[inn level 2]
-Кабак 3
 [inn]
 Кабак
 [insert]
@@ -505,7 +459,7 @@ insert
 [islands terrain]
 Острова
 [isles terrain]
-
+Острова
 [iterate selection]
 Перейти к следующему
 [jobs]
@@ -533,9 +487,11 @@ ru
 [left meta]
 left meta
 [left super]
-left windows key
+левая клавиша windows
 [left]
 left
+[Leo: nur ein erster Test]
+факмоймоск
 [level]
 Уровень
 [levels]
@@ -550,12 +506,10 @@ left
 Загр. скрипт
 [load]
 Загрузить
-[load]
-Загрузить карту
 [loading map list]
-
+Загрузка списка карт...
 [Lobby]
-
+Lobby
 [login]
 Вход
 [Lost : %0 has more prestige than you]
@@ -563,7 +517,7 @@ left
 [Lost : your colony is dead]
 Поражение: Ваша колония мертва.
 [low priority]
-
+низ.
 [lowquality]
 Низкое качество
 [Magic At. Air]
@@ -571,17 +525,17 @@ left
 [Magic At. Ground]
 Урон (земля)
 [map description]
-
+Описание
 [Map Discovered]
-
+Карта раскрыта
 [Map download failure: lost connection]
-
+Не удалось скачать карту: потеряно соединение с YOG
 [Map name: %0]
 Название карты: %0.
 [map name]
 Название
 [map rated]
-
+Рейтинг карты
 [map script]
 Скрипт карты
 [map size x]
@@ -589,17 +543,15 @@ left
 [map size y]
 Высота карты
 [Map upload failure: connection lost]
-
+Ошибка загрузки карты. Потеряно соединение с YOG.
 [Map upload failure: map name in use]
-
+Ошибка загрузки карты. Такое название карты уже используется.
 [Map upload failure: unknown reason]
-
+Ошибка загрузки карты. Причина неизвестна.
 [Map Upload: Author Name]
-
+Автор
 [Map Upload: Waiting for reply]
-
-[maps available]
-Доступные Карты
+Ожидание ответа
 [mark map]
 Пометить карту для союзников
 [market explanation 2]
@@ -609,7 +561,7 @@ left
 [market]
 Рынок
 [medium priority]
-
+срд.
 [meta %0]
 meta-%0
 [Min required level:]
@@ -629,17 +581,17 @@ meta-%0
 [nick taken]
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
 [No Hints]
-
+Нет указаний
 [no key]
 пока нет клавиши
 [No Objectives]
-
+Нет целей
 [no ressources growth areas]
 Нет зон роста
 [No]
 Нет
 [Not Enough Ratings]
-
+Не достаточный рейтинг
 [not ready]
 не готов
 [number of players: %0 (%1 AI)]
@@ -651,7 +603,7 @@ meta-%0
 [numlock]
 numlock
 [objectives]
-
+Цели
 [of which]
 из которых
 [ok]
@@ -673,21 +625,21 @@ Ok
 [open save menu]
 Открыть меню сохранения
 [open script editor]
-Открыть редактор скриптов
+Редактор скриптов
 [open teams editor]
-
+Редактор команд
 [open]
 открыто
 [OpenGL]
-
+OpenGL
 [Options]
-
+Настройки
 [options]
 Настройки
 [Orange]
 Апельсины
 [Other Options]
-
+Другие опции
 [page down]
 page down
 [page up]
@@ -703,7 +655,7 @@ pause
 [player name]
 Имя игрока
 [player rating %0]
-
+Рейтинг игрока: %0
 [please wait]
 Пожалуйста, подождите
 [power]
@@ -711,15 +663,15 @@ power
 [press space]
 Нажмите пробел для продолжения
 [Prestige Win Enabled]
-
+Победа по престижу
 [Prestige]
 Престиж
 [Primary Objectives]
-
+Основные
 [print screen]
 print screen
 [priority]
-
+Приоритет
 [Prune]
 Сливы
 [quit the editor]
@@ -737,31 +689,33 @@ print screen
 [range]
 Расстояние
 [Rated %0]
-
+Рейтинг %0
 [ratios]
 Пропорции
 [ready?]
-
+готов?
 [refresh map list]
-
-[Register a new YOG user with password]
-Зарегистрировать нового пользователя YOG с паролем. (небезопасно)
+Обновить список карт
+[Register]
+Регистрация
 [remember unit]
 Запомнить юнит
 [Remember YOG password localy]
-Запомнить пароль локально. (небезопасно)
+Запомнить пароль локально.
 [remove map]
 Удал. карту
 [remove shortcut]
 Удал. гор. клавишу
 [Remove]
-
+Удалить
 [repair building]
 Начать/Остановить Починку
 [repair]
 Починка
 [repeat area]
 количество повторений ландшафта
+[Repeat your password :]
+Повторите пароль:
 [restore default shortcuts]
 Восстановить значения по умолчанию
 [return to editor]
@@ -805,7 +759,7 @@ scroll lock
 [scroll wheel enabled]
 Включить колесо прокрутки
 [Secondary Objectives]
-
+Второстепенные
 [seeking a job]
 ищет работу
 [seeking]
@@ -885,13 +839,13 @@ V: зажать для речевой связи
 [smoothing]
 Сглаживание
 [sort by name]
-
+Имя
 [sort by rating]
-
+Рейтинг
 [sort by size]
-
+Размер
 [Sort By]
-
+Осортировать по
 [space]
 space
 [start mission]
@@ -919,13 +873,13 @@ space
 [stone]
 камень
 [stonewall explanation 2]
-
+ 
 [stonewall explanation]
 Пассивная защита
 [stonewall]
 Каменная стена
 [submit rating]
-
+Опубликовать рейтинг
 [svr hostname]
 Имя хоста
 [swamp terrain]
@@ -934,8 +888,6 @@ space
 
 [swarm explanation]
 Создаёт новые юниты
-[swarm level 0]
-Рой
 [swarm]
 Рой
 [Swim]
@@ -979,9 +931,9 @@ sys req
 [tab]
 tab
 [teams editor]
-
+Редактор команд
 [Teams Fixed]
-
+Команды фиксированы
 [teams]
  команды
 [the barracks is finished]
@@ -1095,9 +1047,9 @@ tab
 [Units]
 Юниты
 [unlocked at start]
-
+Открыта сначала
 [unlocked by]
-Открываетс после
+Открывается после
 [Unnamed Area]
 {Без имени}
 [up]
@@ -1105,13 +1057,13 @@ up
 [upgrade building]
 Начать/Остановить улучшение
 [Upgrade Defaults]
-
+Улучшения
 [upgrade]
 Улучшение
 [Upload Map]
-
+Загрузить карту
 [upload map]
-
+Загрузить карту
 [username]
 Имя пользователя
 [Version]
@@ -1181,7 +1133,7 @@ up
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Метасервер YOG отказал в соединении, потому что данному имени пользователя ещё не соответствует пароль. Вероятно, Вы хотите зарегистрировать это имя с этим паролем. Поэтому, активируйте опцию "Зарегистрировать нового пользователя YOG с паролем" перед тем, как соединяться. Вам придётся сделать это только один раз.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+Метасервер YOG отклонил соединение, так как этот IP адрес времено запрещен. Вам надо подождать пока он не будет разблокирован или связаться с администраторами.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Метасервер YOG отказал в соединении, потому что Ваша версия Globulation 2 устарела. Пожалуйста, возьмите последнюю версию с www.globulation2.org чтобы сыграть online.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1189,27 +1141,29 @@ up
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Метасервер YOG отказал в соединении, потому что ваше имя уже используется кем-то ещё.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+Метасервер YOG отклонил соединение, так как такое имя пользователя запрещено. Пожалуйста, свяжитесь с администраторами.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+Метасервер YOG отклонил соединение, так как данное имя пользователя неверно. Имя пользователя может содержать только буквы, цифры и нижние подчёркивания.
 [YESTS_CREATED]
 Система соединения готова обратиться к метасерверу YOG за подключением.
+[YESTS_PASSWORDS_DONT_MATCH]
+Введён неверный пароль. Наберите снова.
 [YESTS_UNABLE_TO_CONNECT]
 Невозможно соединиться. Очевидно, метасервер YOG не работает.
 [yog block command help]
-
+/block <имя игрока>    Блокирует игрока, вы больше не увидите его сообщения
 [yog block command player %0 already blocked]
-
+Игрок %0 уже заблокирован
 [yog block command player %0 blocked]
-
+Игрок %0 заблокирован
 [yog block command player %0 not found]
-
+Игрок %0 не найден
 [yog command header]
-
+Текущий список команд YOG клиента:
 [yog command unknown]
-
+Неизвестная команда
 [yog help command help]
-
+/help    Показывает эту справку
 [yog]
 Ysagoon-игра в Интернете
 [you have lost]
@@ -1221,8 +1175,8 @@ Ysagoon-игра в Интернете
 [Your %0 are under attack]
 %0 под ударом
 [Your IP address was temporarily banned]
-
+Ваш IP-адрес временно запрещён. Вам надо подождать пока он не будет разблокирован или связаться с администраторами.
 [Your unit got converted to %0's team]
 Ваш юнит перешёл к врагу %0
 [Your username was banned]
-
+Ваше имя пользователя запрещено. Пожалуйста свяжитесь с администраторами, чтобы это изменить.
