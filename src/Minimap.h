@@ -42,7 +42,7 @@ public:
 
 	///Construct a minimap to be drawn at the given cordinates, and the given size, provided that
 	///some of that size is a border
-	Minimap(bool nox, int px, int py, int size, int border, MinimapMode minimap_mode);
+	Minimap(bool nox, int px, int py, int sizew, int sizeh, int leftborder, int topborder, MinimapMode minimap_mode);
 
 	~Minimap();
 
@@ -78,8 +78,10 @@ private:
 	bool noX;
 	int px;
 	int py;
-	int size;
-	int border;
+	int sizew;
+	int sizeh;
+	int leftborder;
+	int topborder;
 	int update_row;
 	int offset_x;
 	int offset_y;

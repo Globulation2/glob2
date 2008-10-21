@@ -1,410 +1,272 @@
-#include "debug.h"
-#include "lexer.h"
-#include "tree.h"
+#include "usl.h"
 #include "code.h"
-#include "memory.h"
+#include "parser.h"
+#include "error.h"
 #include "interpreter.h"
-#include <cassert>
-#include <memory>
-#include <vector>
-#include <string>
+#include "native.h"
 #include <iostream>
 #include <fstream>
-#include <iterator>
-#include <algorithm>
-#include <functional>
-#include <ext/functional>
-#include <utility>
-#include <stack>
+#include <memory>
 
 using namespace std;
 
-struct Parser: Lexer
+void dumpCode(ThunkPrototype* thunk, ThunkDebugInfo* debug, ostream& stream)
 {
-	Parser(const char* src, Heap* heap):
-		Lexer(src),
-		heap(heap)
-	{}
-	
-	BlockNode* parse()
+	stream << thunk << " ";
+	thunk->dump(stream);
+	stream << '\n';
+	for (size_t i = 0; i < thunk->body.size(); ++i)
 	{
-		return statements(Position());
-	}
-	
-	BlockNode* statements(const Position& position)
-	{
-		newlines();
-		auto_ptr<BlockNode> block(new BlockNode(position));
-		
-		while (true)
-		{
-			switch (tokenType())
-			{
-			case END:
-			case RBRACE:
-				return block.release();
-			default:
-				block->statements.push_back(statement());
-				newlines();
-			}
-		}
-	}
-	
-	Node* statement()
-	{
-		switch (tokenType())
-		{
-		case VAL:
-			{
-				Position position = token.position;
-				next();
-				string name = identifier();
-				accept(ASSIGN);
-				newlines();
-				return new ValNode(position, name, expression());
-			}
-		case DEF:
-			{
-				Position position = token.position;
-				next();
-				string name = identifier();
-				ExpressionNode* body;
-				switch (tokenType())
-				{
-				case LPAR:
-					{
-						Position position = token.position;
-						auto_ptr<PatternNode> arg(pattern());
-						accept(ASSIGN);
-						newlines();
-						body = expression();
-						body = new FunNode(position, arg.release(), body);
-					}
-					break;
-				case ASSIGN:
-					next();
-					newlines();
-					body = expression();
-					break;
-				default:
-					assert(false);
-				}
-				return new DefNode(position, name, body);
-			}
-		default:
-			return expression();
-		}
-	}
-	
-	PatternNode* pattern()
-	{
-		Position position = token.position;
-		switch (tokenType())
-		{
-		case LPAR:
-			next();
-			if (tokenType() == RPAR)
-			{
-				return new NilPatternNode(position);
-			}
-			else
-			{
-				auto_ptr<TuplePatternNode> tuple(new TuplePatternNode(position));
-				tuple->members.push_back(pattern());
-				while (tokenType() == COMMA)
-				{
-					next();
-					tuple->members.push_back(pattern());
-				}
-				accept(RPAR);
-				if (tuple->members.size() > 1)
-					return tuple.release();
-				else
-				{
-					PatternNode* pattern = tuple->members.back();
-					tuple->members.pop_back();
-					return pattern;
-				}
-			}
-		case ID:
-			{
-				string name = identifier();
-				return new ValPatternNode(position, name);
-			}
-		case DEF:
-			{
-				next();
-				string name = identifier();
-				return new DefPatternNode(position, name);
-			}
-		case WILDCARD:
-			next();
-			return new IgnorePatternNode(position);
-		default:
-			assert(false);
-		}
-	}
-	
-	ExpressionNode* expression()
-	{
-		auto_ptr<ExpressionNode> node(simple());
-		while (true)
-		{
-			switch (tokenType())
-			{
-			case ID:
-				{
-					Position position = token.position;
-					node.reset(selectAndApply(position, node, identifier()));
-				}
-				break;
-			case LPAR:
-			case LBRACE:
-			case DOT:
-				{
-					Position position = token.position;
-					node.reset(selectAndApply(position, node, "apply"));
-				}
-				break;
-			default:
-				return node.release();
-			}
-		}
-	}
-	
-	ApplyNode* selectAndApply(const Position& position, auto_ptr<ExpressionNode> receiver, const string& method)
-	{
-		ExpressionNode* argument = simple();
-		return new ApplyNode(position, new SelectNode(position, receiver.release(), method), argument);
-	}
-	
-	ExpressionNode* expressions()
-	{
-		Position position = token.position;
-		next();
-		newlines();
-		auto_ptr<ArrayNode> tuple(new ArrayNode(position));
-		while (true)
-		{
-			switch (tokenType())
-			{
-			case ID:
-			case NUM:
-			case LPAR:
-			case LBRACE:
-			case DOT:
-				tuple->elements.push_back(expression());
-				newlines();
-				break;
-			
-			case COMMA:
-				next();
-				newlines();
-				break;
-			
-			case RPAR:
-				{
-					Position position = token.position;
-					next();
-					switch (tuple->elements.size())
-					{
-					case 0:
-						return new ConstNode(position, &nil);
-					case 1:
-						{
-							ExpressionNode* element = tuple->elements[0];
-							tuple->elements.clear();
-							return element;
-						}
-					default:
-						return tuple.release();
-					}
-				}
-			default:
-				assert(false);
-			}
-		}
-	}
-	
-	ExpressionNode* simple()
-	{
-		switch (tokenType())
-		{
-		case ID:
-			{
-				return new DefLookupNode(token.position, identifier());
-			}
-		case NUM:
-			{
-				Position position = token.position;
-				string str = token.string();
-				next();
-				int value = atoi(str.c_str());
-				return new ConstNode(position, new Integer(heap, value));
-			}
-		case LPAR:
-			{
-				return expressions();
-			}
-		case LBRACE:
-			{
-				Position position = token.position;
-				next();
-				auto_ptr<ExpressionNode> block(statements(position));
-				accept(RBRACE);
-				return block.release();
-			}
-		case DOT:
-			{
-				Position position = token.position;
-				next();
-				return new ConstNode(position, &nil);
-			}
-		default:
-			assert(false);
-		}
-	}
-	
-	void newlines()
-	{
-		while (tokenType() == NL)
-		{
-			next();
-		}
-	}
-	
-	string identifier()
-	{
-		if (tokenType() == ID)
-		{
-			string id = token.string();
-			next();
-			return id;
-		}
-		else
-		{
-			cout << token.position.line << ":" << token.position.column << ": ";
-			cout << "expecting " << getType(ID)->desc << ", found " << token.type->desc << "\n";
-			assert(false);
-		}
-	}
-	
-	void accept(TokenType type)
-	{
-		if (tokenType() == type)
-		{
-			next();
-		}
-		else
-		{
-			cout << token.position.line << ":" << token.position.column << ": ";
-			cout << "expecting " << getType(type)->desc << ", found " << token.type->desc << "\n";
-			assert(false);
-		}
-	}
-	
-	Heap* heap;
-};
-
-
-void dumpCode(ScopePrototype* scope, FileDebugInfo* debug, ostream& stream)
-{
-	stream << scope << '\n';
-	for (size_t i = 0; i < scope->body.size(); ++i)
-	{
-		Position pos = debug->find(scope, i);
-		stream << pos.line << ":" << pos.column << ": ";
-		scope->body[i]->dump(stream);
+		stream << debug->find(i) << ": ";
+		thunk->body[i]->dump(stream);
 		stream << '\n';
 	}
 	stream << '\n';
 }
 
-void dumpCode(Heap* heap, FileDebugInfo* debug, ostream& stream)
+void dumpCode(Heap* heap, DebugInfo* debug, ostream& stream)
 {
 	for (Heap::Values::iterator values = heap->values.begin(); values != heap->values.end(); ++values)
 	{
-		ScopePrototype* scope = dynamic_cast<ScopePrototype*>(*values);
-		if (scope != 0)
-			dumpCode(scope, debug, stream);
+		ThunkPrototype* thunk = dynamic_cast<ThunkPrototype*>(*values);
+		if (thunk != 0)
+		{
+			ThunkDebugInfo* thunkDebug = debug->get(thunk);
+			dumpCode(thunk, thunkDebug, stream);
+		}
 	}
 }
 
 
+struct Load: NativeCode
+{
+	Load():
+		NativeCode("load")
+	{}
+	
+	void prologue(ThunkPrototype* thunk)
+	{
+		thunk->body.push_back(new EvalCode()); // evaluate the argument
+	}
+
+	void execute(Thread* thread)
+	{
+		Thread::Frame& frame = thread->frames.back();
+		Thread::Frame::Stack& stack = frame.stack;
+		
+		Value* argument = stack.back();
+		stack.pop_back();
+	
+		const string& filename = unbox<string>(thread, argument);
+		
+		Usl* usl = thread->usl;
+		
+		Value* value = usl->cache[filename];
+		if (value == 0)
+		{
+			auto_ptr<ifstream> stream(usl->openFile(filename));
+			Scope* scope = usl->compile(filename, *stream);
+			if (frame.nextInstr >= frame.thunk->thunkPrototype()->body.size())
+				thread->frames.pop_back(); // tail-call optimisation
+			thread->frames.push_back(scope);
+		}
+		else
+		{
+			stack.push_back(value);
+		}
+	}
+};
+
+
+struct Yield: NativeCode
+{
+	Yield():
+		NativeCode("yield")
+	{}
+	
+	void prologue(ThunkPrototype* thunk)
+	{
+		thunk->body.push_back(new PopCode()); // ignore the argument
+	}
+	
+	void epilogue(ThunkPrototype* thunk)
+	{
+		thunk->body.push_back(new ConstCode(&nil)); // return nil
+	}
+	
+	void execute(Thread* thread)
+	{
+		thread->state = Thread::YIELD;
+	}
+};
+
+void print(Value* value)
+{
+	value->dump(cout);
+	cout << endl;
+}
+
+Usl::Usl()
+{
+	ScopePrototype* prototype = new ScopePrototype(&heap, 0);
+	prototype->addMethod(new Load());
+	prototype->addMethod(new Yield());
+	prototype->addMethod(new NativeFunction<void(Value*)>("print", print));
+
+	root = new Scope(&heap, prototype, 0);
+}
+
+void Usl::includeScript(const std::string& name, std::istream& stream)
+{
+	Scope* scope = compile(name, stream);
+	Thread* thread = createThread(scope);
+	thread->run();
+	
+	ScopePrototype* rootPrototype = root->scopePrototype();
+	size_t index = rootPrototype->locals.size();
+	rootPrototype->locals.push_back(name);
+	root->locals.push_back(scope);
+	
+	Prototype::Members& members = scope->prototype->members;
+	for (Prototype::Members::const_iterator it = members.begin(); it != members.end(); ++it)
+	{
+		const string& name = it->first;
+		ThunkPrototype* getter = new ThunkPrototype(&heap, root->prototype);
+		getter->body.push_back(new ThunkCode());
+		getter->body.push_back(new ParentCode());
+		getter->body.push_back(new ValRefCode(index));
+		getter->body.push_back(new SelectCode(name));
+		getter->body.push_back(new EvalCode());
+		root->prototype->members[name] = getter;
+	}
+	
+	ScopePrototype* scopePrototype = scope->scopePrototype();
+	for (size_t i = 0; i < scopePrototype->locals.size(); ++i)
+	{
+		runtimeValues[scopePrototype->locals[i]] = scope->locals[i];
+	}
+}
+
+void Usl::createThread(const std::string& name, std::istream& stream)
+{
+	createThread(compile(name, stream));
+}
+
+Thread* Usl::createThread(Scope* scope)
+{
+	threads.push_back(Thread(this, scope));
+	return &threads.back();
+}
+
+void Usl::addGlobal(const std::string& name, Value* value)
+{
+	ScopePrototype* prototype = root->scopePrototype();
+	size_t index = prototype->locals.size();
+	prototype->locals.push_back(name);
+	
+	root->locals.push_back(value);
+	
+	ThunkPrototype* getter = new ThunkPrototype(&heap, prototype);
+	getter->body.push_back(new ThunkCode());
+	getter->body.push_back(new ParentCode());
+	getter->body.push_back(new ValRefCode(index));
+	prototype->members[name] = getter;
+}
+
+Value* Usl::getGlobal(const std::string& name)
+{
+	ScopePrototype::Locals& locals = root->scopePrototype()->locals;
+	for(ScopePrototype::Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
+	{
+		if (*it == name)
+		{
+			size_t index = it - locals.begin();
+			return root->locals[index];
+		}
+	}
+	return 0;
+}
+
+Scope* Usl::compile(const std::string& name, std::istream& stream)
+{
+	string source;
+	char c;
+	while (stream.get(c))
+		source += c;
+	
+	Parser parser(name, source.c_str(), &heap);
+	cout << source << endl;
+	
+	ExecutionBlock block = ExecutionBlock(Position());
+	parser.parse(&block);
+	block.dump(cout);
+	cout << endl;
+	
+	ScopePrototype* prototype = new ScopePrototype(&heap, root->prototype);
+	block.generateMembers(prototype, &debug, &heap);
+	
+	Scope* scope = new Scope(&heap, prototype, root);
+	return scope;
+}
+
+ifstream* Usl::openFile(const string& name)
+{
+	return new ifstream(name.c_str());
+}
+
+size_t Usl::run(size_t steps)
+{
+	size_t total = 0;
+	
+	for (Threads::iterator it = threads.begin(); it != threads.end(); ++it)
+	{
+		if (it->state == Thread::YIELD)
+			it->state = Thread::RUN;
+		total += it->run(steps);
+	}
+	
+	// TODO: garbageCollect
+	
+	return total;
+}
+
+/*
 int main(int argc, char** argv)
 {
-	if (argc != 2)
+	if (argc < 2)
 	{
 		cerr << "Wrong number of arguments" << endl;
 		return 1;
 	}
 	
-	string file = argv[1];
+	Usl usl;
 	
-	ifstream ifs(file.c_str());
-	if (!ifs.good())
+	try
 	{
-		cerr << "Can't open file " << file << endl;
-		return 2;
+		int i;
+		ifstream stream;
+		for (i = 1; i < argc - 1; ++i)
+		{
+			const char* name = argv[i];
+			stream.open(name);
+			usl.includeScript(name, stream);
+			stream.close();
+		}
+		
+		const char* name = argv[i];
+		stream.open(name);
+		usl.createThread(name, stream);
+		stream.close();
+		
+		size_t steps = 1000000;
+		usl.run(steps);
+	}
+	catch(Exception& e)
+	{
+		cout << e.position << ":" << e.what() << endl;
+		return -1;
 	}
 	
-	cout << "Testing " << argv[1] << "\n\n";
-	
-	string source;
-	while (true)
-	{
-		char c = ifs.get();
-		if (ifs.eof() || !ifs.good())
-			break;
-		source += c;
-	}
-	ifs.close();
-	
-	cout << "* source:\n" << source << "\n";
-
-	Heap heap;
-	ScopePrototype* root = new ScopePrototype(&heap, 0);
-	ProgramDebugInfo debug;
-	
-	Parser parser(source.c_str(), &heap);
-	Node* node = parser.parse();
-	node->dump(cout);
-	node->generate(root, debug.get(file), &heap);
-	delete node;
-	
-	cout << '\n';
-	dumpCode(&heap, debug.get(file), cout);
-	
-	Thread thread(&heap);
-	thread.frames.push_back(Thread::Frame(new Scope(&heap, root, 0)));
-	
-	int instCount = 0;
-	while (thread.frames.size() > 1 || thread.frames.front().nextInstr < root->body.size())
-	{
-		Thread::Frame& frame = thread.frames.back();
-		ScopePrototype* scope = frame.scope->def();
-		
-		for (size_t i = 0; i < thread.frames.size(); ++i)
-			cout << "[" << thread.frames[i].scope->locals.size() << "," << thread.frames[i].stack.size() << "]";
-		
-		FilePosition position = debug.find(scope, frame.nextInstr);
-		cout << " " << position.file << ":" << position.position.line << ":" << position.position.column << ": ";
-		
-		Code* code = scope->body[frame.nextInstr++];
-		code->dump(cout);
-		cout << endl;
-		code->execute(&thread);
-		
-		instCount++;
-	}
-	cout << "\n\n* result:\n";
-	thread.frames.back().stack.back()->dump(cout);
-	cout << endl;
-	
-	thread.frames.pop_back();
-	
-	cout << "\n* stats:\n";
-	cout << "heap size: " << heap.values.size() << "\tinst count: " << instCount << "\n";
-	heap.garbageCollect(&thread);
-	//cerr << "heap size: " << heap.values.size() << "\n";
+	return 0;
 }
+*/

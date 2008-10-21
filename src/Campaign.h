@@ -45,6 +45,15 @@ public:
 	void unlockMap();
 	///Returns true if the map is unlocked
 	bool isUnlocked();
+	///Returns true if the map is completed
+	bool isCompleted();
+	///Sets whether the map has been completed
+	void setCompleted(bool completed);
+	
+	///Returns the description of this map in the campaign
+	const std::string& getDescription() const;
+	///Sets the description of this map in the campaign
+	void setDescription(const std::string& description);
 
 	///Gets the vector holding the list of unlocked by maps
 	std::vector<std::string>& getUnlockedByMaps();
@@ -53,7 +62,9 @@ private:
 	std::string mapName;
 	std::string mapFileName;
 	bool isLocked;
+	bool completed;
 	std::vector<std::string> unlockedBy;
+	std::string description;
 };
 
 
@@ -77,8 +88,8 @@ public:
 	///Removes map n
 	void removeMap(unsigned n);
 
-	///Unlocks all the maps that are unlocked by this "played" map
-	void unlockAllFrom(const std::string& map);
+	///Sets a particular map as completed and unlocks all the maps that are unlocked by this "played" map
+	void setCompleted(const std::string& map);
 
 	///Sets the name
 	void setName(const std::string& campaignName);
@@ -89,11 +100,17 @@ public:
 	void setPlayerName(const std::string& playerName);
 	///Retrieves the player name
 	const std::string& getPlayerName() const;
+	
+	///Sets the description of the campaign
+	void setDescription(const std::string& description);
+	///Retrieves the description
+	const std::string& getDescription() const;
 
 private:
 	std::vector<CampaignMapEntry> maps;
 	std::string name;
 	std::string playerName;
+	std::string description;
 };
 
 

@@ -1,6 +1,7 @@
 #include "token.h"
 #include <cassert>
 #include <regex.h>
+#include <stdlib.h> 
 
 struct Token::Type::Regexp
 {
@@ -11,14 +12,17 @@ struct Token::Type::Regexp
 
 Token::Type::Regexp::Regexp(const char* pattern, int cflags)
 {
+#ifdef NDEBUG
+	regcomp(&regex, pattern, cflags);
+#else
 	int result = regcomp(&regex, pattern, cflags);
-#ifndef NDEBUG
 	if (result != 0)
 	{
 		size_t length = regerror(result, &regex, 0, 0);
-		char* error = static_cast<char*>(alloca(length));
+		char* error = static_cast<char*>(malloc(length));
 		regerror(result, &regex, error, length);
 		fprintf(stderr, "regcomp error in '%s': %s\n", pattern, error);
+		free(error);
 		assert(false);
 	}
 #endif

@@ -58,7 +58,8 @@ namespace GAGGUI
 		size_t cursorPosY;
 		// this one can be anything
 		unsigned int cursorScreenPosY;
-	
+		// set to true if this is activated, false otherwise
+		bool activated;
 	public:
 		TextArea() { font=NULL; }
 		TextArea(const std::string &tooltip, const std::string &tooltipFont) : HighlightableWidget(tooltip, tooltipFont) { font=NULL; }
@@ -80,12 +81,19 @@ namespace GAGGUI
 		virtual void remText(unsigned pos, unsigned len);
 		virtual void scrollDown(void);
 		virtual void scrollUp(void);
+		virtual void scrollCursorDownLine(void);
+		virtual void scrollCursorUpLine(void);
 		virtual void scrollToBottom(void);
 		virtual void setCursorPos(unsigned pos);
+		virtual void setCursorPos(unsigned line, unsigned column);
+		virtual void getCursorPos(unsigned &pos) const ;
+		virtual void getCursorPos(unsigned &line, unsigned &column) const;
 		//! load content from filename
 		virtual bool load(const char *filename);
 		//! save content to filename. If file exists, it is overriden
 		virtual bool save(const char *filename);
+		void deactivate(void) { activated = false; }
+		void activate(void) { activated = true; }
 	
 	protected:
 		//! Lookup a string in cache for its size

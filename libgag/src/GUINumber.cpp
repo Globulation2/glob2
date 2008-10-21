@@ -84,30 +84,55 @@ namespace GAGGUI
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+		bool inc = false;
+		bool dec = false;
+		
+		
 		// We can't use isOnWidget since x, y, w, h are needed
 		// out of the test
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 		{
-			if (event->button.x-x<m)
+			if(event->button.button == SDL_BUTTON_LEFT)
 			{
-				// a "Less" click
-				if (nth>0)
+				if (event->button.x-x<m)
 				{
-					nth--;
-					if (numbers.size()>0)
-					{
-						parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
-					}
+					dec = true;
 				}
-			}
-			else if (x+w-event->button.x<m)
-			{
-				// a "More" click
-				if (nth<((int)numbers.size()-1))
+				else if (x+w-event->button.x<m)
 				{
-					nth++;
+					inc = true;
+				}
+			
+			}
+			else if(event->button.button == SDL_BUTTON_WHEELUP)
+			{
+				inc = true;
+			}
+			else if(event->button.button == SDL_BUTTON_WHEELDOWN)
+			{
+				dec = true;
+			}
+		}
+		
+		if (dec)
+		{
+			// a "Less" click
+			if (nth>0)
+			{
+				nth--;
+				if (numbers.size()>0)
+				{
 					parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
 				}
+			}
+		}
+		else if (inc)
+		{
+			// a "More" click
+			if (nth<((int)numbers.size()-1))
+			{
+				nth++;
+				parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
 			}
 		}
 	}

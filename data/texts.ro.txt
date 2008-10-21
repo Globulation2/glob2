@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 a părăsit jocul.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@ O unitate %0 a trecut de partea voastră
 
 [add shortcut]
 
+[Add]
+
+[AI Descriptions]
+
 [AI]
 IA
 [ai]
 IA
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar (unstable)
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -88,69 +126,29 @@ Vă ameliorează
 Câmp de-antrenament
 [beach size]
 mărimea plajei
+[Blocked Players]
+
 [break]
 
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 Construieşte
-[Building Settings]
+[Building Defaults]
+
+[building settings]
 
 [building site]
 şantier
+[Building Tool Line Explanation]
+
 [Buildings]
 Clădiri
 [Bullets]
 Gloanţe
 [campaign editor]
-
-[campaign text]
 
 [campaign]
 Campanie
@@ -163,12 +161,6 @@ Campanie
 [Can't join game, game has started]
 
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-
-[Can't join game, timeout]
-
-[Can't join game, wrong game version]
 
 [cancel destroy]
 Anulează distrugerea
@@ -210,13 +202,15 @@ Compilează scriptul
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 Conectează
+[connecting to game]
+
 [connecting to]
 Conectare la
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuă jocul
@@ -234,6 +228,8 @@ Crează joc
 Crează hartă
 [credits]
 Credite
+[ctrl - line]
+
 [current speed]
 Viteză actuală
 [custom game]
@@ -246,16 +242,12 @@ Lovire
 
 [decrease units working]
 
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 din vecinătate
 [defencetower explanation]
 Atacă unitaţile inamice
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Turn de-apărare
 [Defense Map]
@@ -280,7 +272,13 @@ Afişaj
 Nu transportă nimic
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -348,7 +346,9 @@ exploratori
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 Mâncare
@@ -369,6 +369,8 @@ Ecran întreg
 [game full]
 Joc complet
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -396,6 +398,10 @@ Bucurie
 
 [Harvest]
 Recoltează
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -410,6 +416,8 @@ Găzduiţi un joc
 Punct de viaţă
 [hp]
 Viata
+[Human]
+
 [human]
 
 [hungry]
@@ -424,12 +432,6 @@ Pe drum
 
 [inn explanation]
 Vă hrăneşte unitaţile
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Popas
 [insert]
@@ -440,6 +442,8 @@ Popas
 mărimea insulelor
 [islands terrain]
 Teren cu insule
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -484,21 +488,35 @@ Nivele
 
 [load]
 Încarcă
+[loading map list]
+
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
 Pierdut : %0 are un prestigiu mai mare
 [Lost : your colony is dead]
 Pierdut : colonia voastră este moartă
+[low priority]
+
 [lowquality]
 Calitate scăzută
 [Magic At. Air]
 
 [Magic At. Ground]
 
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Hartă: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -506,7 +524,15 @@ Hartă: %0.
 Lărgimea hărţii
 [map size y]
 Înălţimea hărţii
-[maps available]
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
 
 [mark map]
 
@@ -516,6 +542,8 @@ cu ceilalţi
 Permite schimbul de fructe
 [market]
 Piată
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +562,18 @@ Volum  (muzică)
 Nou
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 
 [No]
 Nu
+[Not Enough Ratings]
+
 [not ready]
 nu-i gata
 [number of players: %0 (%1 AI)]
@@ -551,6 +585,8 @@ nu-i gata
 [number of teams]
 numărul echipelor
 [numlock]
+
+[objectives]
 
 [of which]
 dintre care
@@ -574,12 +610,20 @@ Aici
 
 [open script editor]
 
+[open teams editor]
+
 [open]
 deschis
+[OpenGL]
+OpenGL
+[Options]
+
 [options]
 Opţiuni
 [Orange]
 Portocală
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +638,23 @@ Papirus
 Pauză
 [player name]
 Numele jucătorului
+[player rating %0]
+
 [please wait]
 Vă rugăm aşteptaţi
 [power]
 
 [press space]
 
+[Prestige Win Enabled]
+
 [Prestige]
 Prestigiu
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Prună
@@ -620,10 +672,18 @@ Ameliorează viteza de mers
 Pistă raliu
 [range]
 Întindere
+[Rated %0]
+
 [ratios]
 Proportii
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Înregistrează noul jucător YOG cu parola. (nesecurizat)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -632,11 +692,15 @@ Memorează parola local. (nesecurizat)
 
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 
 [repair]
 Repară
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -679,6 +743,8 @@ Vă ameliorează
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 caută de lucru
@@ -758,6 +824,14 @@ Setări
 
 [smoothing]
 Lisaj
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -790,6 +864,8 @@ Piatră
 Element pasiv de apărare
 [stonewall]
 Zid de piatră
+[submit rating]
+
 [svr hostname]
 Numele servărului gazdă
 [swamp terrain]
@@ -798,8 +874,6 @@ Numele servărului gazdă
 
 [swarm explanation]
 Crează unităţi noi
-[swarm level 0]
-
 [swarm]
 Stup
 [Swim]
@@ -841,6 +915,10 @@ Piscină
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
  echipe
@@ -948,12 +1026,12 @@ Teren uniform
 
 [unit settings explanation]
 
-[unit settings]
-
 [units working]
  unităţi lucrează
 [Units]
 Unităţi
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
@@ -962,8 +1040,14 @@ Unităţi
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Ameliorează
+[Upload Map]
+
+[upload map]
+
 [username]
 Numele utilizatorului
 [Version]
@@ -1032,16 +1116,38 @@ Metaserverul YOG a refuzat sa vă conectaţi din motiv că qcest nume de utiliza
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că parola este falsă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că acest utilizator nu are înca o parola in baza de date.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că versiunea de globulation2 pe care o folosiţi este prea veche pentru a se putea comunica corect.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 Metaserverul YOG a refuzat sa vă conectaţi dintr-un motiv necunoscut.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de utilizator este deja utilizat de către o altă persoană.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Jocul în retea prin Ysagoon
 [you have lost]
@@ -1052,5 +1158,9 @@ Aţi câştigat!
 
 [Your %0 are under attack]
 %0 voastre sunt atacate
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Unitatea voastră a trecut de partea %0
+[Your username was banned]
+

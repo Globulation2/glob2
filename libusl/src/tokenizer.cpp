@@ -1,11 +1,12 @@
 #include "tokenizer.h"
-#include <cassert>
+#include "error.h"
 
-Tokenizer::Tokenizer(const Token::Type *tokenTypes, const size_t tokenTypesSize, const char* text):
+Tokenizer::Tokenizer(const Token::Type *tokenTypes, const size_t tokenTypesSize, 
+                     const std::string& filename, const char* text):
 	tokenTypes(tokenTypes),
 	tokenTypesSize(tokenTypesSize),
 	text(text),
-	position(1, 1)
+	position(filename, 1, 1)
 { }
 
 const Token Tokenizer::next()
@@ -23,7 +24,7 @@ const Token Tokenizer::next()
 		}
 	}
 	if (length == -1)
-		assert(false);
+		throw Exception(position, "syntax error");
 	Token token(position, type, text, length);
 	position.move(text, length);
 	text += length;

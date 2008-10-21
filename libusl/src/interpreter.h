@@ -3,10 +3,11 @@
 
 #include <stack>
 #include <vector>
+#include <string>
 
-struct Scope;
+struct Thunk;
 struct Value;
-struct Heap;
+struct Usl;
 
 struct Thread
 {
@@ -14,12 +15,12 @@ struct Thread
 	{
 		typedef std::vector<Value*> Stack;
 	
-		Scope* scope;
+		Thunk* thunk;
 		Stack stack;
 		size_t nextInstr;
 		
-		Frame(Scope* scope):
-			scope(scope)
+		Frame(Thunk* thunk):
+			thunk(thunk)
 		{
 			nextInstr = 0;
 		}
@@ -27,14 +28,27 @@ struct Thread
 		void markForGC();
 	};
 	
+	enum State {
+		RUN,
+		YIELD,
+		STOP
+	};
+	
 	typedef std::vector<Frame> Frames;
 	
-	Heap* heap;
+	Usl* usl;
+	State state;
 	Frames frames;
 	
-	Thread(Heap* heap):
-		heap(heap)
-	{}
+	Thread(Usl* usl, Thunk* thunk):
+		usl(usl), state(RUN)
+	{
+		frames.push_back(thunk);
+	}
+	
+	size_t run();
+	size_t run(size_t steps);
+	bool step();
 	
 	void markForGC();
 };

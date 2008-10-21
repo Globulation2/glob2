@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 已離開遊戲
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@ V: 顯示所有建築物
 新增地圖
 [add shortcut]
 
+[Add]
+
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -88,7 +126,13 @@ AIWarrush
 兵營
 [beach size]
 海灘大小
+[Blocked Players]
+
 [break]
+
+[briefing]
+
+[build %0 level %1]
 
 [build barracks level 0]
 建造兵營 1
@@ -140,18 +184,20 @@ AIWarrush
 建造游泳池 3
 [Build]
 建造
-[Building Settings]
+[Building Defaults]
 
+[building settings]
+單位設定
 [building site]
 建築地點
+[Building Tool Line Explanation]
+
 [Buildings]
 建築物
 [Bullets]
 彈藥
 [campaign editor]
 戰役編輯器
-[campaign text]
-
 [campaign]
 戰役
 [Can't connect, can't find host]
@@ -197,7 +243,7 @@ AIWarrush
 [Clearing:]
 清除:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 清除資源
 [clearingflag]
@@ -210,13 +256,15 @@ AIWarrush
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 連線
+[connecting to game]
+
 [connecting to]
 連線至
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 繼續遊戲
@@ -234,6 +282,8 @@ AIWarrush
 創造地圖
 [credits]
 幕後人員
+[ctrl - line]
+
 [current speed]
 目前速度
 [custom game]
@@ -245,6 +295,8 @@ AIWarrush
 [Damaged Map]
 傷患地圖
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 單位或建築物
@@ -280,7 +332,13 @@ AIWarrush
 沒有在搬運任何東西
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 編輯地圖
@@ -303,7 +361,7 @@ AIWarrush
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 招集探索者
 [explorationflag]
@@ -348,7 +406,9 @@ AIWarrush
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 食物
@@ -370,6 +430,8 @@ AIWarrush
 遊戲已滿
 [game shortcuts]
 遊戲快捷鍵
+[Game]
+
 [general settings]
 基本設定
 [go to event]
@@ -396,6 +458,10 @@ AIWarrush
 
 [Harvest]
 採收
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -410,6 +476,8 @@ AIWarrush
 HP
 [hp]
 生命值
+[Human]
+
 [human]
 人類玩家
 [hungry]
@@ -440,6 +508,8 @@ HP
 島嶼大小
 [islands terrain]
 島嶼
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -484,28 +554,52 @@ zh-tw
 
 [load]
 載入
+[loading map list]
+
+[Lobby]
+
 [login]
 登入
 [Lost : %0 has more prestige than you]
 輸: %0 的聲望比你還高
 [Lost : your colony is dead]
 輸: 你的殖民地已被摧毀
+[low priority]
+
 [lowquality]
 低畫質
 [Magic At. Air]
 Air dmg.
 [Magic At. Ground]
 地面攻擊
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 地圖名稱: %0。
 [map name]
 名稱
+[map rated]
+
 [map script]
 
 [map size x]
 地圖寬度
 [map size y]
 地圖高度
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 可用的地圖
 [mark map]
@@ -516,6 +610,8 @@ Air dmg.
 允許交易的資源
 [market]
 市場
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +630,18 @@ Air dmg.
 新的
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 非成長區域
 [No]
 否
+[Not Enough Ratings]
+
 [not ready]
 還沒準備好
 [number of players: %0 (%1 AI)]
@@ -551,6 +653,8 @@ Air dmg.
 [number of teams]
 隊伍數量
 [numlock]
+
+[objectives]
 
 [of which]
 他們是
@@ -574,12 +678,20 @@ Air dmg.
 開啟儲存選單
 [open script editor]
 開啟語法編輯器
+[open teams editor]
+
 [open]
 開啟
+[OpenGL]
+
+[Options]
+
 [options]
 選項
 [Orange]
 柳橙
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +706,23 @@ Air dmg.
 暫停
 [player name]
 玩家名稱
+[player rating %0]
+
 [please wait]
 請稍等
 [power]
 
 [press space]
 按下空白鍵以繼續
+[Prestige Win Enabled]
+
 [Prestige]
 聲望
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 梅乾
@@ -620,10 +740,18 @@ Air dmg.
 跑道
 [range]
 射程
+[Rated %0]
+
 [ratios]
 比例
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
+[Register]
+
 [remember unit]
 記錄單位
 [Remember YOG password localy]
@@ -632,12 +760,16 @@ Air dmg.
 移除地圖
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 開始/停止 修復
 [repair]
 修復
 [repeat area]
 在相同地景的時間
+[Repeat your password :]
+
 [restore default shortcuts]
 還原預設鍵盤快捷鍵
 [return to editor]
@@ -679,6 +811,8 @@ Air dmg.
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 正在找尋工作
@@ -758,6 +892,14 @@ V: 持鍵以傳送訊息
 顯示
 [smoothing]
 平整度
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -773,7 +915,7 @@ V: 持鍵以傳送訊息
 [Statistics]
 統計
 [Still (i)]
-仍在 
+仍在
 [still (w)]
 仍在
 [still one unit working]
@@ -790,6 +932,8 @@ V: 持鍵以傳送訊息
 消極防禦
 [stonewall]
 石牆
+[submit rating]
+
 [svr hostname]
 伺服器主機名稱
 [swamp terrain]
@@ -841,6 +985,10 @@ V: 持鍵以傳送訊息
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
 團隊
@@ -948,12 +1096,12 @@ V: 持鍵以傳送訊息
 單位編輯器
 [unit settings explanation]
 
-[unit settings]
-單位設定
 [units working]
 單位工作
 [Units]
 單位
+[unlocked at start]
+
 [unlocked by]
 解除由
 [Unnamed Area]
@@ -962,8 +1110,14 @@ V: 持鍵以傳送訊息
 
 [upgrade building]
 開始/停止 升級
+[Upgrade Defaults]
+
 [upgrade]
 升級
+[Upload Map]
+
+[upload map]
+
 [username]
 用戶名
 [Version]
@@ -981,7 +1135,7 @@ V: 持鍵以傳送訊息
 [Walk]
 行走
 [warflag explanation 2]
- 
+
 [warflag explanation]
 招集士兵
 [warflag]
@@ -1034,16 +1188,38 @@ YOG meta伺服器拒絕連線因為你的用戶名已被使用。請重新選擇
 YOG meta伺服器拒絕連線因為你的密碼錯誤。
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG meta伺服器拒絕連線因為你沒有密碼。請選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG meta伺服器拒絕連線而沒有任何解釋!!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG meta伺服器拒絕連線因為你的用戶名已被使用。
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 連線系統已準備連接YOG meta伺服器。
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 無法連接。 YOG meta伺服器已關閉。
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon 線上遊戲
 [you have lost]
@@ -1054,5 +1230,9 @@ Ysagoon 線上遊戲
 
 [Your %0 are under attack]
 你的 %0 正遭受攻擊
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 你的單位遭 %0 招降
+[Your username was banned]
+

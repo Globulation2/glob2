@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 ha marxat
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@ V : Mostra la visio de totes les construccions
 
 [add shortcut]
 
+[Add]
+
+[AI Descriptions]
+
 [AI]
 IA
 [ai]
 IA
+[AICastor-Description]
+
 [AICastor]
 IACastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 IANone
+[AINumbi-Description]
+
 [AINumbi]
 IANumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -88,69 +126,29 @@ Per augmentar el poder d' atac
 Cuartell
 [beach size]
 Tamany de la platja
+[Blocked Players]
+
 [break]
 
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 Construir
-[Building Settings]
+[Building Defaults]
+
+[building settings]
 
 [building site]
 Construint
+[Building Tool Line Explanation]
+
 [Buildings]
 Edificis
 [Bullets]
 Bales
 [campaign editor]
-
-[campaign text]
 
 [campaign]
 Campanya
@@ -210,13 +208,15 @@ Compilar el script
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 Conectat
+[connecting to game]
+
 [connecting to]
 Conectant a
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuar jugant
@@ -234,6 +234,8 @@ Crear joc
 Crear mapa
 [credits]
 Crèdits
+[ctrl - line]
+
 [current speed]
 Velocitat actual
 [custom game]
@@ -246,16 +248,12 @@ mal
 
 [decrease units working]
 
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 
 [defencetower explanation]
 Ataca els globuls enemics
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Torre
 [Defense Map]
@@ -280,7 +278,13 @@ Visualitzador
 No Transporta res
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -348,7 +352,9 @@ illes buides
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 Menjar
@@ -369,6 +375,8 @@ Pantalla Completa
 [game full]
 Partida Completa
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -396,6 +404,10 @@ Felicitat
 
 [Harvest]
 Recolectar
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -410,6 +422,8 @@ Servir una partida
 Vida
 [hp]
 Vida
+[Human]
+
 [human]
 
 [hungry]
@@ -424,12 +438,6 @@ en camí
 teus globuls
 [inn explanation]
 Per alimentar a tots els
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Despensa
 [insert]
@@ -440,6 +448,8 @@ Dins
 Tamany de les illes
 [islands terrain]
 Illes
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -484,21 +494,35 @@ Cargar partida
 
 [load]
 Carregar
+[loading map list]
+
+[Lobby]
+
 [login]
 Conectar
 [Lost : %0 has more prestige than you]
 Perdedor: %0 te més prestigi que tú
 [Lost : your colony is dead]
 Perdedor: La teva colonia ha sigut exterminada
+[low priority]
+
 [lowquality]
 Qualitat Baixa
 [Magic At. Air]
 dany aeri
 [Magic At. Ground]
 dany terrestre
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Nom del mapa: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -506,7 +530,15 @@ Nom del mapa: %0.
 Amplada del mapa
 [map size y]
 Altura del mapa
-[maps available]
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
 
 [mark map]
 
@@ -516,6 +548,8 @@ fruits amb altres
 Per intercambiar fruita amb
 [market]
 Mercat
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +568,18 @@ Silenci
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 
 [No]
 No
+[Not Enough Ratings]
+
 [not ready]
 sense preparar
 [number of players: %0 (%1 AI)]
@@ -551,6 +591,8 @@ sense preparar
 [number of teams]
 Nombre d' equips
 [numlock]
+
+[objectives]
 
 [of which]
 dels quals
@@ -574,12 +616,20 @@ Aqui
 
 [open script editor]
 
+[open teams editor]
+
 [open]
 Obrir
+[OpenGL]
+OpenGL
+[Options]
+
 [options]
 Opcions
 [Orange]
 Taronja
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +644,23 @@ Papir
 Pausat
 [player name]
 Nom del jugador
+[player rating %0]
+
 [please wait]
 Esperi un moment
 [power]
 
 [press space]
 
+[Prestige Win Enabled]
+
 [Prestige]
 Prestigi
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Passes
@@ -620,10 +678,18 @@ Per augmentar la velocitat dels
 Poliesportiu
 [range]
 Rang
+[Rated %0]
+
 [ratios]
 Proporció
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Registrar un nou jugador YOG amb contrasenya (insegur)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -632,11 +698,15 @@ Recordar la contrasenya (insegur)
 
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 
 [repair]
 Reparar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -679,6 +749,8 @@ Escola
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 buscant feina
@@ -758,6 +830,14 @@ key v : Presiona per parlar
 
 [smoothing]
 Pla
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -790,6 +870,8 @@ element
 Bloqueja els globuls enemics
 [stonewall]
 Mur de pedra
+[submit rating]
+
 [svr hostname]
 Nom del servidor
 [swamp terrain]
@@ -798,8 +880,6 @@ pantà
 exploradors i guerrers
 [swarm explanation]
 Produeix globuls treballadors,
-[swarm level 0]
-
 [swarm]
 Granja
 [Swim]
@@ -841,6 +921,10 @@ Piscina
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
  Equips
@@ -948,12 +1032,12 @@ Terreny uniforme
 
 [unit settings explanation]
 
-[unit settings]
-
 [units working]
  Unitats treballant
 [Units]
 Unitats
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
@@ -962,8 +1046,14 @@ Unitats
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Millorar
+[Upload Map]
+
+[upload map]
+
 [username]
 Nom d' usuari
 [Version]
@@ -1034,16 +1124,38 @@ Nom d'usuari ja registrat. Proba amb un altre
 No es pot conectar al metaservidor YOG. Contrassenya Incorrecta
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 El metaservidor YOG ha rebutjat la conexió per que  usuari no te contrasenya encara, activa l' opció: Registrar un nou usuari YOG amb contrasenya
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 No es pot conectar al metaservidor YOG, el teu client Globulation2 està obsolet
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 El servidor YOG ha rebutjat la conexió inexplicablement.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 No es pot conectar al metaservidor YOG. Nom d'usuari en ús
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 El sistema de conexió està llest per contactar amb el metaservidor YOG
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposible conectar. Metaservidor YOG esta caigut
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Joc en linea amb Ysagoon
 [you have lost]
@@ -1054,5 +1166,9 @@ Has guanyat
 
 [Your %0 are under attack]
 El teu %0  està sent atacat
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Una unitat teva s'ha convertit a l'equip de %0
+[Your username was banned]
+

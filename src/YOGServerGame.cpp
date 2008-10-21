@@ -21,11 +21,12 @@
 #include "YOGServerChatChannel.h"
 #include "YOGServerGame.h"
 #include "YOGServer.h"
-#include "YOGServerMapDistributor.h"
+#include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
+#include "YOGAfterJoinGameInformation.h"
 
-YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& server)
-	: gameID(gameID), chatChannel(chatChannel), server(server), playerManager(gameHeader)
+YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::string& routerIP, YOGServer& server)
+	: playerManager(gameHeader), gameID(gameID), chatChannel(chatChannel), routerIP(routerIP), server(server)
 {
 	requested=false;
 	gameStarted=false;
@@ -35,6 +36,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& serve
 	latencyMode = 0;
 	latencyUpdateTimer = SDL_GetTicks();
 	aiNum = 0;
+	mapFile = server.getFileDistributionManager().allocateFileDistributor();
 }
 
 
@@ -79,23 +81,6 @@ void YOGServerGame::update()
 			i++;
 		}
 	}
-	if(distributor)
-		distributor->update();
-	if(gameStarted == false)
-	{
-		if(playerManager.isEveryoneReadyToGo() && !oldReadyToLaunch)
-		{
-			shared_ptr<NetEveryoneReadyToLaunch> readyToLaunch(new NetEveryoneReadyToLaunch);
-			host->sendMessage(readyToLaunch);
-			oldReadyToLaunch=true;
-		}
-		else if(!playerManager.isEveryoneReadyToGo() && oldReadyToLaunch)
-		{
-			shared_ptr<NetNotEveryoneReadyToLaunch> notReadyToLaunch(new NetNotEveryoneReadyToLaunch);
-			host->sendMessage(notReadyToLaunch);
-			oldReadyToLaunch=false;
-		}
-	}
 }
 
 void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
@@ -106,16 +91,15 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 	}
 	else
 	{
-		shared_ptr<NetSendMapHeader> header1(new NetSendMapHeader(mapHeader));
-		shared_ptr<NetSendGameHeader> header2(new NetSendGameHeader(gameHeader));
-		shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
-		boost::shared_ptr<NetSetLatencyMode> latency(new NetSetLatencyMode(latencyMode));
-		shared_ptr<NetSendReteamingInformation> reteaming(new NetSendReteamingInformation(reteamingInfo));
-		player->sendMessage(reteaming);
-		player->sendMessage(header1);
-		player->sendMessage(header2);
-		player->sendMessage(sendGamePlayerInfo);
-		player->sendMessage(latency);
+		YOGAfterJoinGameInformation info;
+		info.setMapHeader(mapHeader);
+		info.setGameHeader(gameHeader);
+		info.setLatencyAdjustment(latencyMode);
+		info.setReteamingInformation(reteamingInfo);
+		info.setGameRouterIP(routerIP);
+		info.setMapFileID(mapFile);
+		shared_ptr<NetSendAfterJoinGameInformation> afterjoin(new NetSendAfterJoinGameInformation(info));
+		player->sendMessage(afterjoin);
 		///If its the host, we don't add them until we've recieved the NetReteamingInformation
 		playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
 	}
@@ -172,6 +156,10 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 			}
 		}
 	}
+	else
+	{
+		setPlayerGameResult(player, YOGGameResultConnectionLost);
+	}
 
 	//Remove the player from the chat channel
 	server.getChatChannelManager().getChannel(chatChannel)->removePlayer(player);
@@ -179,8 +167,7 @@ void YOGServerGame::removePlayer(shared_ptr<YOGServerPlayer> player)
 	shared_ptr<NetSendGamePlayerInfo> sendGamePlayerInfo(new NetSendGamePlayerInfo(gameHeader));
 	routeMessage(sendGamePlayerInfo);
 
-	if(distributor)
-		distributor->removeMapRequestee(player);
+	server.getFileDistributionManager().getDistributor(mapFile)->removeMapRequestee(player);
 
 	chooseLatencyMode();
 
@@ -227,6 +214,7 @@ void YOGServerGame::setMapHeader(const MapHeader& nmapHeader)
 	server.getGameInfo(gameID).setMapName(mapHeader.getMapName());
 	server.getGameInfo(gameID).setNumberOfTeams(mapHeader.getNumberOfTeams());
 	recievedMapHeader=true;
+	server.getFileDistributionManager().getDistributor(mapFile)->loadFromPlayer(host);
 }
 
 
@@ -263,29 +251,6 @@ void YOGServerGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGS
 
 
 
-void YOGServerGame::routeOrder(shared_ptr<NetSendOrder> order, shared_ptr<YOGServerPlayer> sender)
-{
-	for(std::vector<shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
-	{
-		if((*i) != sender)
-			(*i)->sendMessage(order);
-	}
-}
-
-
-
-shared_ptr<YOGServerMapDistributor> YOGServerGame::getMapDistributor()
-{
-	if(!distributor)
-	{
-		//clever trick to get a shared_ptr to this
-		distributor.reset(new YOGServerMapDistributor(host->getGame(), host));
-	}
-	return distributor;
-}
-
-
-
 void YOGServerGame::kickPlayer(shared_ptr<NetKickPlayer> message)
 {
 	routeMessage(message, host);	
@@ -318,6 +283,12 @@ Uint16 YOGServerGame::getGameID() const
 void YOGServerGame::setReadyToStart(int playerID)
 {
 	playerManager.setReadyToGo(playerID, true);
+	boost::shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(playerID));
+	for(std::vector<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		if((*i)->getPlayerID() != playerID)
+			(*i)->sendMessage(message);
+	}
 }
 
 
@@ -325,6 +296,12 @@ void YOGServerGame::setReadyToStart(int playerID)
 void YOGServerGame::setNotReadyToStart(int playerID)
 {
 	playerManager.setReadyToGo(playerID, false);
+	boost::shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(playerID));
+	for(std::vector<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		if((*i)->getPlayerID() != playerID)
+			(*i)->sendMessage(message);
+	}
 }
 
 
@@ -398,10 +375,9 @@ void YOGServerGame::chooseLatencyMode()
 	}
 
 	//Add 5% to both pings. The given pings are such that 99.7% of all pings will
-	//be under those amounts, provided pings are normally distributed, which they
-	//usually are
+	//be under those amounts, provided pings are normally distributed
 	int total_allocation = (highest * 105 + second_highest * 105) / 100;
-	int latency_adjustment = (total_allocation+39) / 40;
+	int latency_adjustment = std::min(255, (total_allocation+39) / 40);
 
 	if(latency_adjustment != latencyMode && !gameStarted)
 	{
@@ -411,5 +387,36 @@ void YOGServerGame::chooseLatencyMode()
 	}
 }
 
+
+void YOGServerGame::setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result)
+{
+	if(gameResults.getGameResultState(sender->getPlayerName()) == YOGGameResultUnknown)
+	{
+		gameResults.setGameResultState(sender->getPlayerName(), result);
+	}
+}
+
+
+
+void YOGServerGame::sendGameResultsToGameLog()
+{
+	if(gameStarted)
+	{
+		server.getGameLog().addGameResults(gameResults);
+		server.getPlayerScoreCalculator().proccessResults(gameResults, gameHeader);
+	}
+}
+
+
+const std::string YOGServerGame::getRouterIP() const
+{
+	return routerIP;
+}
+
+
+Uint16 YOGServerGame::getFileID() const
+{
+	return mapFile;
+}
 
 

@@ -1,4 +1,4 @@
-glob2 (0.9.3) hardy; urgency=low
+glob2 (0.9.3.post~20080519.8276878d95c3) hardy; urgency=low
 
   * Resurected debian package
 

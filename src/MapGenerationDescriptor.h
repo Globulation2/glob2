@@ -53,8 +53,10 @@ public:
 		eRIVER=2,
 		eISLANDS=3,
 		eCRATERLAKES=4,
-		eOLDRANDOM=5,
-		eOLDISLANDS=6
+		eCONCRETEISLANDS=5,
+		eISLES=6,
+		eOLDRANDOM=7,
+		eOLDISLANDS=8
 	};
 
 	Methode methode;

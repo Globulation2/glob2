@@ -160,4 +160,70 @@ YOGLoginState YOGLoginRefusedEvent::getReason() const
 	return reason;
 }
 
+YOGPlayerBannedEvent::YOGPlayerBannedEvent()
+{
+}
+
+
+
+Uint8 YOGPlayerBannedEvent::getEventType() const
+{
+	return YEPlayerBanned;
+}
+
+
+
+std::string YOGPlayerBannedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGPlayerBannedEvent()";
+	return s.str();
+}
+
+
+
+bool YOGPlayerBannedEvent::operator==(const YOGClientEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGPlayerBannedEvent))
+	{
+		//const YOGPlayerBannedEvent& r = dynamic_cast<const YOGPlayerBannedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+YOGIPBannedEvent::YOGIPBannedEvent()
+{
+}
+
+
+
+Uint8 YOGIPBannedEvent::getEventType() const
+{
+	return YEIPBanned;
+}
+
+
+
+std::string YOGIPBannedEvent::format() const
+{
+	std::ostringstream s;
+	s<<"YOGIPBannedEvent()";
+	return s.str();
+}
+
+
+
+bool YOGIPBannedEvent::operator==(const YOGClientEvent& rhs) const
+{
+	if(typeid(rhs)==typeid(YOGIPBannedEvent))
+	{
+		//const YOGIPBannedEvent& r = dynamic_cast<const YOGIPBannedEvent&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
 //code_append_marker

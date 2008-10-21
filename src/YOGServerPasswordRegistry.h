@@ -48,7 +48,8 @@ private:
 	///This performs a one way transformation (whatever it be) on the given username and password
 	///for security reasons. Most likely to be a hash of some sort
 	std::string transform(const std::string& username, const std::string& password);
-	std::map<std::string, std::string> passwords;	
+	std::map<std::string, std::string> passwords;
+	std::string invalidChars;
 };
 
 

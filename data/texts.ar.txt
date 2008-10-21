@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 تركو اللعبه.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@ V: Show vision for all buildings
 
 [add shortcut]
 
+[Add]
+
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -88,69 +126,29 @@ Available local games
 ثكنه
 [beach size]
 حجم الشاطىء
+[Blocked Players]
+
 [break]
 
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 يبنى
-[Building Settings]
+[Building Defaults]
 
+[building settings]
+اعدادت الوحده
 [building site]
 موقع اﻷنشاء
+[Building Tool Line Explanation]
+
 [Buildings]
 المباني
 [Bullets]
 الرصاص
 [campaign editor]
-
-[campaign text]
 
 [campaign]
 الحملة
@@ -197,7 +195,7 @@ Clearing area
 [Clearing:]
 تبادل:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Clears resources
 [clearingflag]
@@ -210,13 +208,15 @@ Clearing flag
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 Connect
+[connecting to game]
+
 [connecting to]
 Connecting to
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 تابع اللعب
@@ -234,6 +234,8 @@ Crater Lakes
 Create map
 [credits]
 Credits
+[ctrl - line]
+
 [current speed]
 السرعه الحاليه
 [custom game]
@@ -246,16 +248,12 @@ Custom cursor
 Damaged Map
 [decrease units working]
 
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 units or buildings
 [defencetower explanation]
 هجمات العدو القريب
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 برج الدفاع
 [Defense Map]
@@ -280,7 +278,13 @@ Delete the selected game
 لايحمل شىء
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -303,7 +307,7 @@ Editor Shortcuts
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 يجذب المستكشفون
 [explorationflag]
@@ -348,7 +352,9 @@ Explorer Ratio
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 الطعام
@@ -370,6 +376,8 @@ Explorer Ratio
 Game full
 [game shortcuts]
 Game Shortcuts
+[Game]
+
 [general settings]
 اعدادات عامه
 [go to event]
@@ -396,10 +404,14 @@ Handmade map
 
 [Harvest]
 يحصد
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 يشفى لكم الوحدات
 [hospital]
@@ -410,6 +422,8 @@ Host a game
 HP
 [hp]
 Hitpoint
+[Human]
+
 [human]
 الأنسان
 [hungry]
@@ -421,15 +435,9 @@ Hitpoint
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 اغذيه االوحدات
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 كوخ
 [insert]
@@ -440,6 +448,8 @@ Hitpoint
 حجم الجزيره
 [islands terrain]
 جزر
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -459,7 +469,7 @@ LAN Game
 [language-code]
 ar
 [language-tr]
-اللغة 
+اللغة
 [language]
 العربيه
 [Leave Game]
@@ -484,21 +494,35 @@ ar
 
 [load]
 تحميل
+[loading map list]
+
+[Lobby]
+
 [login]
 اتصال
 [Lost : %0 has more prestige than you]
 Lost: %0 has more prestige than you
 [Lost : your colony is dead]
 Lost: your colony is dead
+[low priority]
+
 [lowquality]
 Low quality
 [Magic At. Air]
 Air dmg.
 [Magic At. Ground]
 Ground dmg.
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Map name: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -506,7 +530,15 @@ Map name: %0.
 Map width
 [map size y]
 Map height
-[maps available]
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
 
 [mark map]
 Mark Map For Allies
@@ -516,6 +548,8 @@ Mark Map For Allies
 يسمح بتبادل
 [market]
 السوق
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +568,18 @@ Minimum Flag Level
 جديد
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 No Growth Areas
 [No]
 لا
+[Not Enough Ratings]
+
 [not ready]
 غير جاهز
 [number of players: %0 (%1 AI)]
@@ -551,6 +591,8 @@ No Growth Areas
 [number of teams]
 number of teams
 [numlock]
+
+[objectives]
 
 [of which]
 هنالك
@@ -574,12 +616,20 @@ Open Load Menu
 Open Save Menu
 [open script editor]
 فتح محرر الكتابة
+[open teams editor]
+
 [open]
 افتح
+[OpenGL]
+
+[Options]
+
 [options]
 خيارات
 [Orange]
 البرتقال
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +644,23 @@ Pause Game
 Paused
 [player name]
 اسم الاعب
+[player rating %0]
+
 [please wait]
 Please wait
 [power]
 
 [press space]
 Press space to continue.
+[Prestige Win Enabled]
+
 [Prestige]
 سمعه
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Prune
@@ -620,10 +678,18 @@ Prune
 مضمار السباق
 [range]
 المدى
+[Rated %0]
+
 [ratios]
 Proportions
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Register a new YOG user with a password. (insecure)
+[Register]
+
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
@@ -632,11 +698,15 @@ Remember the password locally. (insecure)
 
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 Start/Stop Repair
 [repair]
 تصليح
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
@@ -679,6 +749,8 @@ Script Areas
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 يبحث عن العمل
@@ -758,6 +830,14 @@ V: hold to speak
 Display
 [smoothing]
 صقل
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -773,7 +853,7 @@ Starving Map
 [Statistics]
 احصائيات
 [Still (i)]
-ما زال 
+ما زال
 [still (w)]
 ما زال
 [still one unit working]
@@ -790,16 +870,16 @@ Starving Map
 الدفاع السلبي
 [stonewall]
 Stone wall
+[submit rating]
+
 [svr hostname]
 Server hostname
 [swamp terrain]
 المستنقع
 [swarm explanation 2]
- 
+
 [swarm explanation]
 انشاء وحدات جديدة
-[swarm level 0]
-
 [swarm]
 حشد
 [Swim]
@@ -841,6 +921,10 @@ Switch to Terrain view
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
  فريق
@@ -948,12 +1032,12 @@ Uniform terrain
 محرر الوحده
 [unit settings explanation]
 
-[unit settings]
-اعدادت الوحده
 [units working]
 وحدات العمل
 [Units]
 الوحدات
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
@@ -962,8 +1046,14 @@ Uniform terrain
 
 [upgrade building]
 Start/Stop Upgrade
+[Upgrade Defaults]
+
 [upgrade]
 ترقية
+[Upload Map]
+
+[upload map]
+
 [username]
 اسم المستخدم
 [Version]
@@ -981,7 +1071,7 @@ Start/Stop Upgrade
 [Walk]
 يمشى
 [warflag explanation 2]
- 
+
 [warflag explanation]
 يجذب المحاربون
 [warflag]
@@ -1034,16 +1124,38 @@ The YOG metaserver has refused connection because this username has already been
 The YOG metaserver has refused connection because the supplied password was incorrect.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 The YOG metaserver has refused connection because your globulation2 client is obsolete.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1054,5 +1166,9 @@ Ysagoon Online Gaming
 
 [Your %0 are under attack]
 %0 تحت الهجوم
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
+[Your username was banned]
+

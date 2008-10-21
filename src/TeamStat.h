@@ -38,7 +38,7 @@ struct TeamStat
 	int totalFree;
 	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
-	int totalNeededPerLevel[4];
+	int totalNeededPerLevel[NB_UNIT_LEVELS];
 
 	int totalBuilding; // Note that this is the total number of *finished* buildings, building sites are ignored
 	int numberBuildingPerType[IntBuildingType::NB_BUILDING];
@@ -50,8 +50,8 @@ struct TeamStat
 	int needFood;
 	int needHeal;
 	int needNothing;
-	int upgradeState[NB_ABILITY][4];
-	int upgradeStatePerType[NB_UNIT_TYPE][NB_ABILITY][4];
+	int upgradeState[NB_ABILITY][NB_UNIT_LEVELS];
+	int upgradeStatePerType[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS];
 
 	int totalFood;
 	int totalFoodCapacity;
@@ -105,8 +105,8 @@ public:
 	
 	void step(Team *team, bool reloaded = false);
 
-	void drawText(int pos);
-	void drawStat(int pos);
+	void drawText(int posx, int posy);
+	void drawStat(int posx, int posy);
 	int getFreeUnits(int type);
 	int getTotalUnits(int type);
 	int getWorkersNeeded();

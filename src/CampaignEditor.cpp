@@ -23,6 +23,7 @@
 #include "Game.h"
 #include <set>
 #include <algorithm>
+#include "GUICheckList.h"
 
 
 CampaignEditor::CampaignEditor(const std::string& name)
@@ -38,6 +39,7 @@ CampaignEditor::CampaignEditor(const std::string& name)
 	nameEditor = new TextInput(320, 60, 310, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", campaign.getName());
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);
 	cancel = new TextButton(450, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL);
+	description = new TextArea(320, 90, 310, 225, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false, campaign.getDescription().c_str());
 	addWidget(title);
 	addWidget(mapList);
 	addWidget(addMap);
@@ -46,6 +48,7 @@ CampaignEditor::CampaignEditor(const std::string& name)
 	addWidget(nameEditor);
 	addWidget(ok);
 	addWidget(cancel);
+	addWidget(description);
 	syncMapList();
 }
 
@@ -138,6 +141,10 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			campaign.setName(nameEditor->getText());
 		}
+		if(source==description)
+		{
+			campaign.setDescription(description->getText());
+		}
 	}
 }
 
@@ -156,41 +163,45 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 {
 	StringTable& table=*Toolkit::getStringTable();
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", table.getString("[editing map]"));
-	mapsUnlockedBy = new List(10, 80, 150, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	mapsAvailable = new List(230, 80, 150, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	mapsUnlockedBy = new CheckList(10, 80, 150, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false);
 	mapsUnlockedByLabel = new Text(10, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[unlocked by]"));
-	mapsAvailableLabel = new Text(230, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[maps available]"));
-	nameEditor=new TextInput(420, 105, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", entry.getMapName());
 	nameEditorLabel = new Text(405, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map name]"));
+	nameEditor=new TextInput(420, 105, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", entry.getMapName());
+	isUnlockedLabel = new Text(430, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[unlocked at start]"));
+	isUnlocked = new OnOffButton(405, 140, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, entry.isUnlocked(), ISLOCKED);
+	descriptionEditorLabel = new Text(405, 170, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map description]"));
+	descriptionEditor = new TextArea(420, 195, 180, 225, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false, entry.getDescription().c_str());
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);
 	cancel = new TextButton(450, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL);
-	addToUnlocked = new TextButton(170, 150, 50, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "<", ADDTOUNLOCKED);
-	removeFromUnlocked = new TextButton(170, 210, 50, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", ">", REMOVEFROMUNLOCKED);
+
 	std::set<std::string> unlockedBy;
 	for(unsigned n=0; n<entry.getUnlockedByMaps().size(); ++n)
 	{
-		mapsUnlockedBy->addText(entry.getUnlockedByMaps()[n]);
 		unlockedBy.insert(entry.getUnlockedByMaps()[n]);
 	}
 	for(unsigned n=0; n<campaign.getMapCount(); ++n)
 	{
-		if(unlockedBy.find(campaign.getMap(n).getMapName())==unlockedBy.end())
+		if(campaign.getMap(n).getMapName() != entry.getMapName())
 		{
-			if(campaign.getMap(n).getMapName() != entry.getMapName())
+			if(unlockedBy.find(campaign.getMap(n).getMapName())==unlockedBy.end())
 			{
-				mapsAvailable->addText(campaign.getMap(n).getMapName());
+				mapsUnlockedBy->addItem(campaign.getMap(n).getMapName(), false);
+			}
+			else
+			{
+				mapsUnlockedBy->addItem(campaign.getMap(n).getMapName(), true);
 			}
 		}
 	}
 	addWidget(title);
 	addWidget(mapsUnlockedBy);
-	addWidget(mapsAvailable);
 	addWidget(mapsUnlockedByLabel);
-	addWidget(mapsAvailableLabel);
-	addWidget(addToUnlocked);
-	addWidget(removeFromUnlocked);
-	addWidget(nameEditor);
 	addWidget(nameEditorLabel);
+	addWidget(nameEditor);
+	addWidget(isUnlockedLabel);
+	addWidget(isUnlocked);
+	addWidget(descriptionEditorLabel);
+	addWidget(descriptionEditor);
 	addWidget(ok);
 	addWidget(cancel);
 }
@@ -213,12 +224,17 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 				}
 			}
 			entry.setMapName(nameEditor->getText());
+			entry.setDescription(descriptionEditor->getText());
 			entry.getUnlockedByMaps().clear();
-			for(unsigned n=0; n<mapsUnlockedBy->getCount(); ++n)
+			for(unsigned i=0; i<mapsUnlockedBy->getCount(); ++i)
 			{
-				entry.getUnlockedByMaps().push_back(mapsUnlockedBy->getText(n));
+				if(mapsUnlockedBy->isChecked(i))
+				{
+					entry.getUnlockedByMaps().push_back(mapsUnlockedBy->getText(i));
+				}
 			}
-			if(entry.getUnlockedByMaps().size()>0)
+			
+			if(!isUnlocked->getState())
 				entry.lockMap();
 			else
 				entry.unlockMap();
@@ -228,22 +244,13 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 		{
 			endExecute(CANCEL);
 		}
-		else if (source == addToUnlocked)
-		{
-			if(mapsAvailable->getSelectionIndex()!=-1)
-			{
-				mapsUnlockedBy->addText(mapsAvailable->get());
-				mapsAvailable->removeText(mapsAvailable->getSelectionIndex());
-			}
-		}
-		else if (source == removeFromUnlocked)
-		{
-			if(mapsUnlockedBy->getSelectionIndex()!=-1)
-			{
-				mapsAvailable->addText(mapsUnlockedBy->get());
-				mapsUnlockedBy->removeText(mapsUnlockedBy->getSelectionIndex());
-			}
-		}
+	}
+	else if(action == TEXT_ACTIVATED)
+	{
+		if(source == nameEditor)
+			descriptionEditor->deactivate();
+		else if(source == descriptionEditor)
+			nameEditor->deactivate();
 	}
 }
 

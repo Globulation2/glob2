@@ -39,7 +39,7 @@ public:
 	bool load(GAGCore::InputStream *stream);
 	
 	/// Saves map header information to the stream.
-	void save(GAGCore::OutputStream *stream);
+	void save(GAGCore::OutputStream *stream) const;
 
 	/// Returns the version major
 	Sint32 getVersionMajor() const;
@@ -99,6 +99,7 @@ public:
 	
 	///Comparison does *not* count file version numbers
 	bool operator!=(const MapHeader& rhs) const;
+	bool operator==(const MapHeader& rhs) const;
 private:
 	/// Major map version. Changes only with structural modification
 	Sint32 versionMajor;
@@ -123,5 +124,11 @@ private:
 
 	std::string mapName;
 };
+
+
+//! extract the user-visible name from a glob2 map filename, return empty string if filename is an invalid glob2 map
+std::string glob2FilenameToName(const std::string& filename);
+//! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
+std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension="");
 
 #endif

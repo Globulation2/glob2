@@ -91,6 +91,17 @@ private:
 
 	///Flushes an order for the current brush accumulator
 	void flushBrushOrders(int localteam);
+	///Places a building at pos x,y
+	void placeBuildingAt(int mapx, int mapy, int localteam);
+	///Draws a building at pos x,y
+	void drawBuildingAt(int mapx, int mapy, int localteam, int viewportX, int viewportY);
+	///Computes a line going from sx,sy to ex,ey of the current building
+	///if mode is 1, it will draw the buildings, if mode is 2, it will place them
+	void computeBuildingLine(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode);
+	///Computes  a box going from sx,sy to ex,ey of the current building
+	///if mode is 1, it will draw the buildings, if mode is 2, it will place them
+	void computeBuildingBox(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode);
+
 
 	int firstPlacementX;
 	int firstPlacementY;

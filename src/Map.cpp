@@ -1433,6 +1433,11 @@ void Map::growRessources(void)
 				else if (r.type == CORN)
 					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
 
+				// Growth rate of corn is 1/3
+				if(r.type == CORN && expand)
+					if(syncRand() % 3 != 0)
+						expand = false;
+
 				if (expand)
 				{
 					if (r.amount<=(syncRand()&7))
@@ -3804,43 +3809,8 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	bool isWarFlag=false;
 	if (building->type->isVirtual && building->type->zonable[WARRIOR])
 		isWarFlag=true;
-
-	memset(gradient, 1, size);
 	
-	for (int y=0; y<h; y++)
-	{
-		int wy=w*y;
-		for (int x=0; x<w; x++)
-		{
-			int wyx=wy+x;
-			Case& c=cases[wyx];
-			if (c.building==NOGBID)
-			{
-				if (c.forbidden&teamMask)
-					gradient[wyx] = 0;
-				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
-					gradient[wyx] = 0;
-				else if(immobileUnits[wyx] != 255)
-					gradient[wyx] = 0;
-				else if (!canSwim && isWater(x, y))
-					gradient[wyx] = 0;
-			}
-			else
-			{
-				if (c.building==bgid)
-				{
-					gradient[wyx] = 255;
-					listedAddr[listCountWrite++] = wyx;
-				}
-				//Warflags don't consider enemy buildings an obstacle
-				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
-					gradient[wyx] = 0;
-				else if(gradient[wyx]!=255)
-					gradient[wyx] = 1;
-			}
-		}
-	}
-
+	memset(gradient, 1, size);
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
 		assert(!building->type->zonableForbidden);
@@ -3883,6 +3853,42 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 						}
 					}
 				}
+		}
+	}
+
+	for (int y=0; y<h; y++)
+	{
+		int wy=w*y;
+		for (int x=0; x<w; x++)
+		{
+			int wyx=wy+x;
+			Case& c=cases[wyx];
+			if (c.building==NOGBID)
+			{
+				if (c.forbidden&teamMask)
+					gradient[wyx] = 0;
+				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==255))
+					gradient[wyx] = 0;
+				else if(immobileUnits[wyx] != 255)
+					gradient[wyx] = 0;
+				//Clearing flags don't consider water an obstacle so long as that piece of
+				//water is under the flag, like algae
+				else if (!canSwim && isWater(x, y) && (!isClearingFlag || gradient[wyx] != 255))
+					gradient[wyx] = 0;
+			}
+			else
+			{
+				if (c.building==bgid)
+				{
+					gradient[wyx] = 255;
+					listedAddr[listCountWrite++] = wyx;
+				}
+				//Warflags don't consider enemy buildings an obstacle
+				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
+					gradient[wyx] = 0;
+				else if(gradient[wyx]!=255)
+					gradient[wyx] = 1;
+			}
 		}
 	}
 	
@@ -4251,6 +4257,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 	else
 		buildingAvailableCountIsFar++;
 	buildingAvailableCountFar++;
+	
 	
 	gradient=building->globalGradient[canSwim];
 	if (gradient==NULL)
@@ -5434,6 +5441,20 @@ Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
 	else
 		return dy;
 }
+
+Sint32 Map::warpDistSum(int px, int py, int qx, int qy)
+{
+	Sint32 dx=abs(px-qx);
+	Sint32 dy=abs(py-qy);
+	dx&=wMask;
+	dy&=hMask;
+	if (dx>(w>>1))
+		dx=abs(w-dx);
+	if (dy>(h>>1))
+		dy=abs(h-dy);
+	return dx + dy;
+}
+
 
 bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 {

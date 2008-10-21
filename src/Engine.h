@@ -101,7 +101,7 @@ private:
 	/// one loaded with the map. When ignore GUI info is set, the game will ignore
 	/// GameGUI data in the file, such as viewport position and localTeam. This is
 	/// needed for when your loading a save game over the internet
-	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false);
+	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false);
 
 	/// Prepares a GameHeader for the given mapHeader as a campaign map
 	/// Campaign maps have one player per team, and the player can be

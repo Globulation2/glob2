@@ -28,11 +28,12 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), router("localhost"), maps(this), scoreCalculator(this)
 {
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
 	organizedGameBroadcastTime=0;
+	maps.load();
 }
 
 
@@ -86,6 +87,7 @@ void YOGServer::update()
 	{
 		if(i->second->isEmpty())
 		{
+			i->second->sendGameResultsToGameLog();
 			removeGameInfo(i->second->getGameID());
 			std::map<Uint16, shared_ptr<YOGServerGame> >::iterator to_erase=i;
 			i++;
@@ -107,15 +109,21 @@ void YOGServer::update()
 	}
 	
 	playerInfos.update();
+	bannedIPs.update();
+	gameLog.update();
+	routerManager.update();
+	router.update();
+	maps.update();
+	fileDistributionManager.update();
 	
 	int t = SDL_GetTicks();
 	if(organizedGameTimeEnabled)
 	{
 		if(t > organizedGameBroadcastTime)
 		{
-			organizedGameBroadcastTime = t + 30000;
+			organizedGameBroadcastTime = t + 60000;
 			boost::posix_time::time_duration organized_game_time = boost::posix_time::second_clock::local_time().time_of_day();
-			organized_game_time = boost::posix_time::seconds(organized_game_time.total_seconds() % 7200);
+			organized_game_time = boost::posix_time::seconds(7200 - organized_game_time.total_seconds() % 7200);
 			std::stringstream s;
 			s << "An organized game will occur in "<<boost::lexical_cast<std::string>(organized_game_time.hours())<<" hours and "<<boost::lexical_cast<std::string>(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
 			boost::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
@@ -148,6 +156,7 @@ int YOGServer::run()
 		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
 	}
+	std::cout<<nl.isListening()<<std::endl;
 	return 0;
 }
 
@@ -167,12 +176,25 @@ YOGGamePolicy YOGServer::getGamePolicy() const
 
 
 
-YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, const std::string& password, Uint16 version)
+YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version)
 {
 	if(version < NET_PROTOCOL_VERSION)
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
+	
+	///check if the player is banned
+	if(playerInfos.doesStoredInfoExist(username))
+	{
+		if(playerInfos.getPlayerStoredInfo(username).isBanned())
+		{
+			return YOGUsernameBanned;
+		}
+	}
+	if(bannedIPs.isIPBanned(ip))
+	{
+		return YOGIPAddressBanned;
+	}
 
 	///check if the player is already logged in
 	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
@@ -188,12 +210,17 @@ YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, con
 
 
 
-YOGLoginState YOGServer::registerInformation(const std::string& username, const std::string& password, Uint16 version)
+YOGLoginState YOGServer::registerInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version)
 {
 	if(version < NET_PROTOCOL_VERSION)
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
+	
+	if(bannedIPs.isIPBanned(ip))
+	{
+		return YOGIPAddressBanned;
+	}
 	return registry.registerInformation(username, password);
 }
 
@@ -212,11 +239,27 @@ const std::list<YOGPlayerSessionInfo>& YOGServer::getPlayerList() const
 
 
 
+void YOGServer::setPlayerStoredInfo(const std::string& name, const YOGPlayerStoredInfo& info)
+{
+	for(std::list<YOGPlayerSessionInfo>::iterator i = playerList.begin(); i!=playerList.end(); ++i)
+	{
+		if(i->getPlayerName() == name)
+		{
+			i->setPlayerStoredInfo(info);
+			break;
+		}
+	}
+}
+
+
+
 void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 {
-	playerList.push_back(YOGPlayerSessionInfo(username, id));
-	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
 	playerInfos.insureStoredInfoExists(username);
+	YOGPlayerSessionInfo info(username, id);
+	info.setPlayerStoredInfo(playerInfos.getPlayerStoredInfo(username));
+	playerList.push_back(info);
+	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->addPlayer(getPlayer(id));
 }
 
 
@@ -273,8 +316,12 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 			break;
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
+	std::string routerip = routerManager.chooseYOGRouter()->getIPAddress();
+	if(routerip == "127.0.0.1")
+		routerip = "YOGIP";
+	
 	gameList.push_back(YOGGameInfo(name, newID));
-	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, *this));
+	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, routerip, *this));
 	return newID;
 }
 
@@ -304,6 +351,20 @@ shared_ptr<YOGServerGame> YOGServer::getGame(Uint16 gameID)
 shared_ptr<YOGServerPlayer> YOGServer::getPlayer(Uint16 playerID)
 {
 	return players[playerID];
+}
+
+
+
+boost::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
+{
+	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	{
+		if(i->second->getPlayerName() == name)
+		{
+			return i->second;
+		}
+	}
+	return boost::shared_ptr<YOGServerPlayer>();
 }
 
 
@@ -366,6 +427,48 @@ YOGServerPlayerStoredInfoManager& YOGServer::getPlayerStoredInfoManager()
 YOGServerPasswordRegistry& YOGServer::getServerPasswordRegistry()
 {
 	return registry;
+}
+
+
+
+YOGServerBannedIPListManager& YOGServer::getServerBannedIPListManager()
+{
+	return bannedIPs;
+}
+
+
+
+YOGServerRouterManager& YOGServer::getRouterManager()
+{
+	return routerManager;
+}
+
+
+
+YOGServerMapDatabank& YOGServer::getMapDatabank()
+{
+	return maps;
+}
+
+
+
+YOGServerFileDistributationManager& YOGServer::getFileDistributionManager()
+{
+	return fileDistributionManager;
+}
+
+
+
+YOGServerPlayerScoreCalculator& YOGServer::getPlayerScoreCalculator()
+{
+	return scoreCalculator;
+}
+
+
+
+YOGServerGameLog& YOGServer::getGameLog()
+{
+	return gameLog;
 }
 
 

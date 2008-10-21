@@ -1,0 +1,43 @@
+def fib(x) := {
+	if (x < 2) {
+		1
+	} else {
+		fib(x-1) + fib(x-2)
+	}
+}
+
+\*
+def fib(x) := {
+	def fibAcc(x, i, acc0, acc1) := {
+		if (i < x) {
+			fibAcc(x, i + 1, acc0 + acc1, acc1) \# TODO
+		}
+	}
+}
+\*
+
+\#fib(7)
+
+def sigma(x) := {
+	if (x < 1) {
+		x
+	} else {
+		x + sigma(x - 1)
+	}
+}
+
+\*
+def sigma(x) := {
+	def sigmaAcc(x, result) := {
+		if (x < 1) {
+			result
+		} else {
+			sigmaAcc(x - 1, result + x)
+		}
+	}
+	sigmaAcc(x, 0)
+}
+\*
+
+sigma(8)
+

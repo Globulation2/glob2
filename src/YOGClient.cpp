@@ -17,22 +17,27 @@
 */
 
 #include <iostream>
-#include "MapAssembler.h"
 #include "MultiplayerGame.h"
 #include "NetMessage.h"
+#include "YOGClientBlockedList.h"
 #include "YOGClientChatChannel.h"
-#include "YOGClientEventListener.h"
+#include "YOGClientCommandManager.h"
+#include "YOGClientDownloadableMapList.h"
 #include "YOGClientEvent.h"
+#include "YOGClientEventListener.h"
+#include "YOGClientFileAssembler.h"
 #include "YOGClientGameListManager.h"
 #include "YOGClient.h"
+#include "YOGClientMapUploader.h"
 #include "YOGClientPlayerListManager.h"
+#include "YOGClientRatedMapList.h"
 #include "YOGMessage.h"
 #include "YOGServer.h"
 
 YOGClient::YOGClient(const std::string& server)
 {
+	initialize();
 	connect(server);
-	
 }
 
 
@@ -57,6 +62,10 @@ void YOGClient::initialize()
 	//By default, the client creates its own game list manager and player list manager
 	gameListManager.reset(new YOGClientGameListManager(this));
 	playerListManager.reset(new YOGClientPlayerListManager(this));
+	commands.reset(new YOGClientCommandManager(this));
+	downloadableMapList.reset(new YOGClientDownloadableMapList(this));
+	uploader = NULL;
+	downloader = NULL;
 }
 
 
@@ -92,6 +101,9 @@ void YOGClient::update()
 	if(server)
 		server->update();
 
+	if(gameConnection)
+		gameConnection->update();
+	
 	if(!nc.isConnecting() && wasConnecting)
 	{
 		if(nc.isConnected())
@@ -113,20 +125,18 @@ void YOGClient::update()
 		wasConnected=false;
 	}
 
-	if(nc.isConnected())
+	//If we need to send client information, send it
+	if(connectionState == NeedToSendClientInformation)
 	{
-		//If we need to send client information, send it
-		if(connectionState == NeedToSendClientInformation)
-		{
-			shared_ptr<NetSendClientInformation> message(new NetSendClientInformation);
-			nc.sendMessage(message);
-			connectionState = WaitingForServerInformation;
-		}
+		shared_ptr<NetSendClientInformation> message(new NetSendClientInformation);
+		nc.sendMessage(message);
+		connectionState = WaitingForServerInformation;
+	}
 
-		//Parse incoming messages and generate events
-		shared_ptr<NetMessage> message = nc.getMessage();
-		if(!message)
-			return;
+	//Parse incoming messages and generate events
+	shared_ptr<NetMessage> message = nc.getMessage();
+	while(message)
+	{
 		Uint8 type = message->getMessageType();
 		//This recieves the server information
 		if(type==MNetSendServerInformation)
@@ -145,6 +155,8 @@ void YOGClient::update()
 			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
+			ratedMapList = boost::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
+			blocked = boost::shared_ptr<YOGClientBlockedList>(new YOGClientBlockedList(username));
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
@@ -163,6 +175,8 @@ void YOGClient::update()
 			shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
+			ratedMapList = boost::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
+			blocked = boost::shared_ptr<YOGClientBlockedList>(new YOGClientBlockedList(username));
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
@@ -193,7 +207,10 @@ void YOGClient::update()
 			shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
 			if(chatChannels.find(yogmessage->getChannel()) != chatChannels.end())
 			{
-				chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
+				if(!blocked->isPlayerBlocked(yogmessage->getMessage()->getSender()))
+				{
+					chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
+				}
 			}
 			else
 			{
@@ -231,6 +248,11 @@ void YOGClient::update()
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
 		}
+		if(type==MNetSendAfterJoinGameInformation)
+		{
+			if(joinedGame)
+				joinedGame->recieveMessage(message);
+		}
 		if(type==MNetSendGamePlayerInfo)
 		{
 			if(joinedGame)
@@ -254,7 +276,7 @@ void YOGClient::update()
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
 		}
-		if(type==MNetRequestMap)
+		if(type==MNetRequestFile)
 		{
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
@@ -269,12 +291,7 @@ void YOGClient::update()
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
 		}
-		if(type==MNetEveryoneReadyToLaunch)
-		{
-			if(joinedGame)
-				joinedGame->recieveMessage(message);
-		}
-		if(type==MNetNotEveryoneReadyToLaunch)
+		if(type==MNetNotReadyToLaunch)
 		{
 			if(joinedGame)
 				joinedGame->recieveMessage(message);
@@ -311,25 +328,90 @@ void YOGClient::update()
 		}
 		if(type==MNetSendFileInformation)
 		{
-			if(assembler)
-				assembler->handleMessage(message);
-		}
-		if(type==MNetRequestNextChunk)
-		{
-			if(assembler)
-				assembler->handleMessage(message);
+			shared_ptr<NetSendFileInformation> info = static_pointer_cast<NetSendFileInformation>(message);
+			if(assembler[info->getFileID()])
+				assembler[info->getFileID()]->handleMessage(message);
 		}
 		if(type==MNetSendFileChunk)
 		{
-			if(assembler)
-				assembler->handleMessage(message);
+			shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
+			if(assembler[info->getFileID()])
+				assembler[info->getFileID()]->handleMessage(message);
 		}
 		if(type == MNetPing)
 		{
 			shared_ptr<NetPingReply> event(new NetPingReply);
 			nc.sendMessage(event);
 		}
+		if(type == MNetPlayerIsBanned)
+		{
+			shared_ptr<YOGPlayerBannedEvent> event(new YOGPlayerBannedEvent);
+			sendToListeners(event);
+		}
+		if(type == MNetIPIsBanned)
+		{
+			shared_ptr<YOGIPBannedEvent> event(new YOGIPBannedEvent);
+			sendToListeners(event);
+		}
+		if(type == MNetAcceptMapUpload)
+		{
+			if(uploader)
+				uploader->recieveMessage(message);
+		}
+		if(type == MNetRefuseMapUpload)
+		{
+			if(uploader)
+				uploader->recieveMessage(message);
+		}
+		if(type == MNetDownloadableMapInfos)
+		{
+			downloadableMapList->recieveMessage(message);
+		}
+		if(type == MNetSendMapThumbnail)
+		{
+			downloadableMapList->recieveMessage(message);
+		}
+		message = nc.getMessage();
 	}
+
+	if(gameConnection)
+	{		
+		shared_ptr<NetMessage> message = gameConnection->getMessage();
+		while(message)
+		{
+			Uint8 type = message->getMessageType();
+			if(type==MNetSendOrder)
+			{
+				//ignore orders for when there is no joined game,
+				//say, the leftover orders in transit after a player
+				//quits a game
+				if(joinedGame)
+					joinedGame->recieveMessage(message);
+			}
+			message = gameConnection->getMessage();
+		}
+	}
+	for(std::map<Uint16, boost::shared_ptr<YOGClientFileAssembler> >::iterator i = assembler.begin(); i!=assembler.end();)
+	{
+		if(i->second)
+		{
+			i->second->update();
+			++i;
+		}
+		else
+		{
+			std::map<Uint16, boost::shared_ptr<YOGClientFileAssembler> >::iterator to_erase = i;
+			i++;
+			assembler.erase(to_erase);
+		}
+	}
+}
+
+
+
+const std::string& YOGClient::getIPAddress() const
+{
+	return nc.getIPAddress();
 }
 
 
@@ -458,16 +540,16 @@ void YOGClient::sendToListeners(boost::shared_ptr<YOGClientEvent> event)
 
 
 
-void YOGClient::setMapAssembler(boost::shared_ptr<MapAssembler> nassembler)
+void YOGClient::setYOGClientFileAssembler(Uint16 fileID, boost::shared_ptr<YOGClientFileAssembler> nassembler)
 {
-	assembler=nassembler;
+	assembler[fileID]=nassembler;
 }
 
 
 
-boost::shared_ptr<MapAssembler> YOGClient::getMapAssembler()
+boost::shared_ptr<YOGClientFileAssembler> YOGClient::getYOGClientFileAssembler(Uint16 fileID)
 {
-	return assembler;
+	return assembler[fileID];
 }
 
 
@@ -482,6 +564,76 @@ void YOGClient::addEventListener(YOGClientEventListener* listener)
 void YOGClient::removeEventListener(YOGClientEventListener* listener)
 {
 	listeners.remove(listener);
+}
+
+
+
+void YOGClient::setGameConnection(boost::shared_ptr<NetConnection> ngameConnection)
+{
+	gameConnection = ngameConnection;
+}
+
+
+
+boost::shared_ptr<NetConnection> YOGClient::getGameConnection()
+{
+	return gameConnection;
+}
+
+
+
+boost::shared_ptr<YOGClientBlockedList> YOGClient::getBlockedList()
+{
+	return blocked;
+}
+
+
+
+boost::shared_ptr<YOGClientCommandManager> YOGClient::getCommandManager()
+{
+	return commands;
+}
+
+
+
+YOGClientMapUploader* YOGClient::getMapUploader()
+{
+	return uploader;
+}
+
+
+
+void YOGClient::setMapUploader(YOGClientMapUploader* nuploader)
+{
+	uploader = nuploader;
+}
+
+
+
+boost::shared_ptr<YOGClientDownloadableMapList> YOGClient::getDownloadableMapList()
+{
+	return downloadableMapList;
+}
+
+
+
+boost::shared_ptr<YOGClientRatedMapList> YOGClient::getRatedMapList()
+{
+	return ratedMapList;
+}
+
+
+
+void YOGClient::setMapDownloader(YOGClientMapDownloader* ndownloader)
+{
+	downloader = ndownloader;
+}
+
+
+	
+YOGClientMapDownloader* YOGClient::getMapDownloader()
+{
+	return downloader;
 }
 
 

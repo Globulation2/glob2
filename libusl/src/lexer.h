@@ -11,8 +11,11 @@ public:
 		SPACE,
 		VAL,
 		DEF,
-		ASSIGN,
+		FUN,
+		ARROW,
+		EQUALS,
 		COLON,
+		COLONEQ,
 		WILDCARD,
 		DOT,
 		ID,
@@ -22,7 +25,10 @@ public:
 		RPAR,
 		LBRACE,
 		RBRACE,
+		LBRACK,
+		RBRACK,
 		COMMA,
+		PREFIX,
 		COMMENT,
 		NL,
 		END,
@@ -41,8 +47,8 @@ public:
 		return 0;
 	}
 
-	Lexer(const char* text):
-		Tokenizer(tokenTypes, TOKENTYPES, text),
+	Lexer(const std::string& filename, const char* text):
+		Tokenizer(tokenTypes, TOKENTYPES, filename, text),
 		token(_next())
 	{ }
 	
@@ -56,6 +62,9 @@ public:
 	{
 		return (TokenType) token.type->id;
 	}
+	
+protected:
+	void fail(const std::string& expected) const __attribute__((noreturn));
 	
 private:
 	Token _next();

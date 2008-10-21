@@ -1,0 +1,4 @@
+def abstract := () \# TODO: throw an exception
+
+def interface(singleton) := singleton.prototype
+

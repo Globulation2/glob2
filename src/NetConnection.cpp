@@ -1,4 +1,4 @@
-/*
+ /*
   Copyright (C) 2007 Bradley Arsenault
 
   This program is free software; you can redistribute it and/or modify
@@ -30,12 +30,12 @@ using namespace GAGCore;
 //Uint32 NetConnection::lastTime = 0;
 //Uint32 NetConnection::amount = 0;
 
-NetConnection::NetConnection(const std::string& address, Uint16 port)
+NetConnection::NetConnection(const std::string& naddress, Uint16 port)
 	: connect(incoming, incomingMutex)
 {
 	boost::thread thread(boost::ref(connect));
-	openConnection(address, port);
 	connecting=false;
+	openConnection(naddress, port);
 }
 
 
@@ -59,6 +59,7 @@ NetConnection::~NetConnection()
 	
 void NetConnection::openConnection(const std::string& connectaddress, Uint16 port)
 {
+	address = connectaddress;
 	connecting=true;
 	boost::shared_ptr<NTConnect> toconnect(new NTConnect(connectaddress, port));
 	connect.sendMessage(toconnect);
@@ -108,6 +109,7 @@ void NetConnection::update()
 			case NTMConnected:
 			{
 				boost::shared_ptr<NTConnected> info = static_pointer_cast<NTConnected>(message);
+				address = info->getIPAddress();
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 				connecting=false;
 			}
@@ -160,10 +162,30 @@ void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 }
 
 
-	
-void NetConnection::attemptConnection(TCPsocket& serverSocket)
+
+const std::string& NetConnection::getIPAddress() const
 {
-	boost::shared_ptr<NTAttemptConnection> close(new NTAttemptConnection(serverSocket));
-	connect.sendMessage(close);
-	connecting=true;
+	return address;
+}
+
+
+
+bool NetConnection::attemptConnection(TCPsocket& serverSocket)
+{
+	TCPsocket socket=NULL;
+	socket=SDLNet_TCP_Accept(serverSocket);
+	if(socket)
+	{
+		IPaddress ip = *SDLNet_TCP_GetPeerAddress(socket);
+		address = boost::lexical_cast<std::string>((ip.host >> 0 ) & 0xff) + "." +
+		                 boost::lexical_cast<std::string>((ip.host >> 8 ) & 0xff) + "." +
+		                 boost::lexical_cast<std::string>((ip.host >> 16) & 0xff) + "." +
+		                 boost::lexical_cast<std::string>((ip.host >> 24) & 0xff);
+		boost::shared_ptr<NTAcceptConnection> accept(new NTAcceptConnection(socket));
+		connect.sendMessage(accept);
+		while(connect.isConnected() == false)
+			SDL_Delay(5);
+		return true;
+	}
+	return false;
 }

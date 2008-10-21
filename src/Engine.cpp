@@ -38,7 +38,6 @@
 #include "Utilities.h"
 #include "YOGClientLobbyScreen.h"
 #include "SoundMixer.h"
-#include "CampaignScreen.h"
 #include "Player.h"
 #include "AIEcho.h"
 
@@ -68,7 +67,19 @@ Engine::~Engine()
 int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName)
 {
 	MapHeader mapHeader = loadMapHeader(mapName);
-	GameHeader gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
+	GameHeader gameHeader = loadGameHeader(mapName);
+	if(gameHeader.getNumberOfPlayers() == 0)
+	{
+		gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
+	}
+	else
+	{
+		gui.localPlayer = 0;
+		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
+	}
+	
+	gameHeader.getBasePlayer(0).name = campaign.getPlayerName();
+	
 	int end=initGame(mapHeader, gameHeader);
 	gui.setCampaignGame(campaign, missionName);
 	return end;
@@ -79,7 +90,16 @@ int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const s
 int Engine::initCampaign(const std::string &mapName)
 {
 	MapHeader mapHeader = loadMapHeader(mapName);
-	GameHeader gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
+	GameHeader gameHeader = loadGameHeader(mapName);
+	if(gameHeader.getNumberOfPlayers() == 0)
+	{
+		gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
+	}
+	else
+	{
+		gui.localPlayer = 0;
+		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
+	}
 	int end=initGame(mapHeader, gameHeader);
 	return end;
 }
@@ -107,9 +127,6 @@ int Engine::initCustom(void)
 	else if(ret == -1)
 		return -1;
 
-	// set the correct alliance
-	gui.game.setAIAlliance();
-
 	return EE_NO_ERROR;
 }
 
@@ -131,14 +148,11 @@ int Engine::initCustom(const std::string &gameName)
 		}
 	}
 
-	int ret = initGame(mapHeader, gameHeader, true);
+	int ret = initGame(mapHeader, gameHeader, true, false, true);
 	if(ret != EE_NO_ERROR)
 		return EE_CANT_LOAD_MAP;
 	else if(ret == -1)
 		return -1;
-
-	// set the correct alliance
-	gui.game.setAIAlliance();
 
 	return EE_NO_ERROR;
 }
@@ -173,7 +187,7 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 		}
 	}
 
-	net->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client);
+	net->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client->getGameConnection());
 
 	return Engine::EE_NO_ERROR;
 }
@@ -197,9 +211,6 @@ void Engine::createRandomGame()
 	gui.localTeamNo=0;
 	
 	initGame(map, game);
-
-	// set the correct alliance
-	gui.game.setAIFFA();
 }
 
 
@@ -242,6 +253,11 @@ int Engine::run(void)
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
 	}
 	
+	if(!globalContainer->runNoX)
+	{
+		SDL_EnableKeyRepeat(0,0);
+	}
+	
 	while (doRunOnceAgain)
 	{
 		const int speed=40;
@@ -252,6 +268,7 @@ int Engine::run(void)
 		Sint32 needToBeTime = 0;
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
+		bool sendBumpUp=false;
 
 		while (gui.isRunning)
 		{
@@ -288,7 +305,7 @@ int Engine::run(void)
 	
 			if (!gui.hardPause)
 			{
-				if(multiplayer && !multiplayer->isStillConnected())
+				if(multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
 				{
 					gui.isRunning = false;
 				}
@@ -330,6 +347,7 @@ int Engine::run(void)
 
 				if(networkReadyToExecute)
 				{
+					sendBumpUp=false;
 					if(!net->matchCheckSums())
 					{	
 						std::cout<<"Game desychronized."<<std::endl;
@@ -346,6 +364,11 @@ int Engine::run(void)
 						}
 						net->clearTopOrders();
 					}
+				}
+				else if(!sendBumpUp)
+				{
+					sendBumpUp=true;
+					net->increaseLatencyAdjustment();
 				}
 
 				// here we do the real work
@@ -420,10 +443,42 @@ int Engine::run(void)
 			int time = gui.game.stepCounter;
 			int seconds = (time / 25) % 60;
 			int minutes = (time / 25) / 60;
-			std::cout<< "automaticEndingGame ended: "<<time<<" ticks, "<<seconds<<" seconds, "<<minutes<<" minutes"<<std::endl;
+			std::cout<< "automaticEndingGame ended: "<<time<<" ticks, "<<minutes<<" minutes, "<<seconds<<" seconds"<<std::endl;
 		}
 
 		cpuStats.format();
+		
+		if(multiplayer)
+		{
+			if (gui.game.totalPrestigeReached)
+			{
+				Team *t=gui.game.getTeamWithMostPrestige();
+				assert(t);
+				if (t==gui.getLocalTeam())
+				{
+					multiplayer->setGameResult(YOGGameResultWonGame);
+				}
+				else
+				{
+					if ((t->allies) & (gui.getLocalTeam()->me))
+						multiplayer->setGameResult(YOGGameResultWonGame);
+					else
+						multiplayer->setGameResult(YOGGameResultLostGame);
+				}
+			}
+			else if(gui.getLocalTeam()->hasWon)
+			{
+				multiplayer->setGameResult(YOGGameResultWonGame);
+			}
+			else if (!gui.getLocalTeam()->isAlive)
+			{
+				multiplayer->setGameResult(YOGGameResultLostGame);
+			}
+			else if (!gui.game.isGameEnded)
+			{
+				multiplayer->setGameResult(YOGGameResultQuitGame);
+			}
+		}
 
 		delete net;
 		net=NULL;
@@ -442,6 +497,11 @@ int Engine::run(void)
 				doRunOnceAgain=true;
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
 		}
+	}
+	
+	if(!globalContainer->runNoX)
+	{
+		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	}
 	
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
@@ -533,21 +593,10 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 
 
 
-int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData)
+int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
 {
-	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData))
+	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
 		return EE_CANT_LOAD_MAP;
-
-	// if this has campaign text information, show a screen for it.
-	if (gui.game.campaignText.length() > 0)
-	{
-		CampaignScreen campaignScreen(gui.game.campaignText);
-		int retVal = campaignScreen.execute(globalContainer->gfx, 40);
-		if (retVal == 1)
-			return EE_CANCEL;
-		else if(retVal == -1)
-			return -1;
-	}
 	
 	// We remove uncontrolled stuff from map
 	gui.game.clearingUncontrolledTeams();
@@ -672,6 +721,7 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 			name.arg(AI::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 		}
+		gameHeader.setAllyTeamNumber(teamColor, teamColor);
 		count+=1;
 	}
 	gameHeader.setNumberOfPlayers(count);
@@ -687,4 +737,5 @@ void Engine::finalAdjustements(void)
 	{
 		gui.adjustInitialViewport();
 	}
+	gui.game.setAlliances();
 }

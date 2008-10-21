@@ -50,15 +50,27 @@ public:
 	///Leaves the game you currently occupy
 	void leaveGame();
 
-	///Represents the state of joining or creating a game	
+	///This is the mode
+	enum MultiplayerMode
+	{
+		NoMode,
+		JoinedGame,
+		HostingGame	
+	};
+
+	///Represents the current step the system is on with regards to joining or creating a game
 	enum GameJoinCreationState
 	{
-		HostingGame,
-		JoinedGame,
-		WaitingForCreateReply,
-		WaitingForJoinReply,
 		NothingYet,
+		WaitingForInitialReply,
+		WaitingForGameInformation,
+		SendingGameInformation,
+		ConnectingToGameRouter,
+		ReadyToGo,
 	};
+	
+	///This returns the current mode
+	MultiplayerMode getMultiplayerMode() const;
 	
 	///Returns the current state of joining or creating a game
 	GameJoinCreationState getGameJoinCreationState() const;
@@ -69,14 +81,11 @@ public:
 	///Returns the reason the joining of a game was refused
 	YOGServerGameJoinRefusalReason getGameJoinState();
 
-	///Sets the map header
+	///Sets the map header for this game, only for when hosting a game
 	void setMapHeader(MapHeader& mapHeader);
 
-	///Returns the map header
+	///Returns the map header of this game
 	MapHeader& getMapHeader();
-	
-	///Tells whether the game is still connected to the server
-	bool isStillConnected() const;
 
 	///Returns the game header. It can be modified. After modifying it,
 	///one must call updateGameHeader(). At no point should any changes
@@ -89,9 +98,6 @@ public:
 	///Call this to send the the player-changes to the server
 	void updatePlayerChanges();
 	
-	///Tells whether the list of players has changed since the last call to this function
-	bool hasPlayersChanged();
-	
 	///Sets the assocciatted net engine to push recieved orders into
 	void setNetEngine(NetEngine* engine);
 	
@@ -100,6 +106,9 @@ public:
 	
 	///This says whether the game is ready to start
 	bool isGameReadyToStart();
+	
+	///This updates the local players ready state
+	void updateReadyState();
 	
 	///This is intended to add an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
@@ -133,6 +142,22 @@ public:
 	
 	///Returns the percentage finished for the downloaded
 	Uint8 percentageDownloadFinished();
+	
+	///Returns true if the MultiplayerGame is waiting for a reply from the server
+	///to start the game
+	bool isGameStarting();
+	
+	///This sets the game result for the local player
+	void setGameResult(YOGGameResult result);
+	
+	///Returns true if the given player is ready to start
+	bool isReadyToStart(int playerID);
+	
+	///Sets whether the player (as in the actual person) is ready, usually by clicking a check box
+	void setHumanReady(bool isReady);
+	
+	///This is true if the map and game headers have been recieved and the game is connected to the game router
+	bool isFullyInGame();
 protected:
 	friend class YOGClient;
 
@@ -154,24 +179,40 @@ protected:
 	int getLocalPlayer();
 private:
 	boost::shared_ptr<YOGClient> client;
-	GameJoinCreationState gjcState;
+	
+	//These are various states of the system
+	MultiplayerMode mode;
+	GameJoinCreationState state;
 	YOGServerGameCreateRefusalReason creationState;
 	YOGServerGameJoinRefusalReason joinState;
 	YOGKickReason kickReason;
-	MapHeader mapHeader;
+	
+	//The id of the game, the id of the file (for transfering the map to clients), the ip of the router, and the id of the chat channel
+	Uint16 gameID;
+	Uint16 fileID;
+	Uint32 chatChannel;
+	std::string gameRouterIP;
+	
+	//This is information about the game
 	GameHeader gameHeader;
-	NetEngine* netEngine;
-	boost::shared_ptr<MapAssembler> assembler;
-	bool haveMapHeader;
-	bool haveGameHeader;
+	MapHeader mapHeader;
+	
+	//This is for if whether the player is ready to start or not (all factors considered like all information recieved,
+	//map downloaded if need be etc..)
 	bool wasReadyToStart;
 	bool sentReadyToStart;
-	std::list<MultiplayerGameEventListener*> listeners;
-	Uint32 chatChannel;
-	bool isEveryoneReadyToGo;
+	bool humanReadyToStart;
+	
+	//Miscalaneous
+	bool isStarting;
+	bool needToSendMapHeader;
 	Uint8 previousPercentage;
+	Uint8 numberOfConnectionAttempts;
 
+	//API/engine stuff
+	NetEngine* netEngine;
 	NetGamePlayerManager playerManager;
+	std::list<MultiplayerGameEventListener*> listeners;
 };
 
 
