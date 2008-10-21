@@ -8,3 +8,5 @@ src/glob2
 .sconsign.dblite
 src/*.o
 *~
+.directory
+scons/*.pyc
