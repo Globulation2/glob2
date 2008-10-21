@@ -132,9 +132,12 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			game->joinGame((*client->getGameListManager()->getGameList().begin()).getGameID());
 
-			MultiplayerGameScreen mgs(game, client);
+			Glob2TabScreen screen(true);
+			MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client);
+			
+			
 			listener.disableListening();
-			int rc = mgs.execute(globalContainer->gfx, 40);
+			int rc = screen.execute(globalContainer->gfx, 40);
 			listener.enableListening();
 			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 			if(rc == -1)

@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 har forladt spillet
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 %0s spil
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@ V : Vis alle dine bygninger
 Tilføj kort
 [add shortcut]
 Tilf�j genvejstast
+[Add]
+
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -83,12 +121,18 @@ er væk:
 [barracks explanation 2]
 Af dine krigere
 [barracks explanation]
-Forbedre militærenheder 
+Forbedre militærenheder
 [barracks]
 Kaserne
 [beach size]
 Strandstørrelse
+[Blocked Players]
+
 [break]
+
+[briefing]
+
+[build %0 level %1]
 
 [build barracks level 0]
 Byg Kaserne niv. 0
@@ -140,18 +184,20 @@ Byg Svømmepøl 2
 Byg Svømmepøl 3
 [Build]
 Byg
-[Building Settings]
+[Building Defaults]
 
+[building settings]
+Enheder
 [building site]
 bygningssted
+[Building Tool Line Explanation]
+
 [Buildings]
 Bygninger
 [Bullets]
 Kugler
 [campaign editor]
 Kampagne redigator
-[campaign text]
-
 [campaign]
 Kampagne
 [Can't connect, can't find host]
@@ -197,7 +243,7 @@ Ophæv areal
 [Clearing:]
 Rydning:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Fjern ressourcer
 [clearingflag]
@@ -210,13 +256,15 @@ Kompilere skript
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 Forbinder
+[connecting to game]
+
 [connecting to]
 Forbinder til
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Fortsæt spillet
@@ -234,6 +282,8 @@ Lav spil
 Lav et kort
 [credits]
 Credit
+[ctrl - line]
+
 [current speed]
 Nuværende hastighed
 [custom game]
@@ -245,6 +295,8 @@ Skade
 [Damaged Map]
 Skade-kort
 [decrease units working]
+
+[Defeat Your Oppenents]
 
 [defencetower explanation 2]
 enheder eller bygninger
@@ -280,7 +332,13 @@ Opløsning
 Bægere ikke på noget
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 Rediger kort
@@ -303,7 +361,7 @@ Skriv din adgangskode :
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Angrib udforskere
 [explorationflag]
@@ -348,7 +406,9 @@ Tom ø
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 Mad
@@ -370,6 +430,8 @@ Fuld skærm tilstand
 Spillet er fyldt op.
 [game shortcuts]
 Gem genveje
+[Game]
+
 [general settings]
 Generelt
 [go to event]
@@ -396,10 +458,14 @@ Antal lykkelige
 
 [Harvest]
 Høst
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Kurere dine enheder
 [hospital]
@@ -410,6 +476,8 @@ Opret et spil
 HP
 [hp]
 Liv point
+[Human]
+
 [human]
 menneskelig
 [hungry]
@@ -421,7 +489,7 @@ Er på vej
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Fodre dine enheder
 [inn level 0]
@@ -440,6 +508,8 @@ Indenfor
 Ø størrelse
 [islands terrain]
 Øer
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -484,28 +554,52 @@ Hent bane
 
 [load]
 hent
+[loading map list]
+
+[Lobby]
+
 [login]
 Log ind
 [Lost : %0 has more prestige than you]
 Tabt : %0 har mere prestige end du har
 [Lost : your colony is dead]
 Tabt : Din koloni er død
+[low priority]
+
 [lowquality]
 Lav kvalitet
 [Magic At. Air]
 Luft skade.
 [Magic At. Ground]
 Jord skade.
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Kort navn: %0.
 [map name]
 Navn
+[map rated]
+
 [map script]
 
 [map size x]
 Kort bredte
 [map size y]
 Kort højde
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Tilgængelige kort
 [mark map]
@@ -516,6 +610,8 @@ Frugt med andre
 Tillader at bytte frugt
 [market]
 Market
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +630,18 @@ Ny Kampagne
 Ny
 [nick taken]
 Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 Ingen vækstområde
 [No]
 Nej
+[Not Enough Ratings]
+
 [not ready]
 ikke klar
 [number of players: %0 (%1 AI)]
@@ -551,6 +653,8 @@ ikke klar
 [number of teams]
 antal af hold
 [numlock]
+
+[objectives]
 
 [of which]
 hvilke af
@@ -574,12 +678,20 @@ Her
 Åben gem menu
 [open script editor]
 Åben Script Editor
+[open teams editor]
+
 [open]
 Åben
+[OpenGL]
+OpenGL
+[Options]
+
 [options]
 Indstillinger
 [Orange]
 Appelsin
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +706,23 @@ Pause spillet
 Pause
 [player name]
 Spillernavn
+[player rating %0]
+
 [please wait]
 Vent venligst
 [power]
 
 [press space]
 Tryk på mellemrum for at fortsætte
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Prune
@@ -620,10 +740,18 @@ Forbedre gåhastighed
 Træningsbane
 [range]
 Afstand
+[Rated %0]
+
 [ratios]
 Proportioner
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Register en ny YOG bruger med adgangskode. (usikker)
+[Register]
+
 [remember unit]
 Husk enhed
 [Remember YOG password localy]
@@ -632,12 +760,16 @@ Husk adgangskoden lokalt. (usikker)
 Fjern Kort
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 Start/Stop Reparation
 [repair]
 Reparere
 [repeat area]
 antal gange det samme landskab
+[Repeat your password :]
+
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
@@ -679,6 +811,8 @@ Script Områder
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 leder efter et job
@@ -758,6 +892,14 @@ tast v : hold v nede for at snakke
 Opløsning
 [smoothing]
 Udglatning
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -790,12 +932,14 @@ element
 Passivt forsvarselement
 [stonewall]
 Stenvæg
+[submit rating]
+
 [svr hostname]
 Serverens maskinnavn
 [swamp terrain]
 Sump
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Byg en ny enhed
 [swarm level 0]
@@ -841,6 +985,10 @@ Skift til terring visning
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
  hold
@@ -948,12 +1096,12 @@ Uniform terraing
 Rediger Enhed
 [unit settings explanation]
 
-[unit settings]
-Enheder
 [units working]
 Enheder der arbejder
 [Units]
 Enheder
+[unlocked at start]
+
 [unlocked by]
 Låst op af
 [Unnamed Area]
@@ -962,8 +1110,14 @@ Låst op af
 
 [upgrade building]
 Start/Stop Opgradering
+[Upgrade Defaults]
+
 [upgrade]
 Opgradere
+[Upload Map]
+
+[upload map]
+
 [username]
 Brugernavn
 [Version]
@@ -981,7 +1135,7 @@ Vænter på %0
 [Walk]
 Gå
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Angrib krigere
 [warflag]
@@ -1034,16 +1188,38 @@ YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn er allerede reg
 YOG-metaserveren har afbrudt forbindelsen fordi den indtastede adgangskode er forkert.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn har
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG-metaserveren har afbrudt forbindelsen, fordi din Globulation2-klient er forældet.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG-metaserveren har afbrudt forbindelsen uden en forklaring!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i brug af en anden.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1054,5 +1230,9 @@ Du har vundet!
 
 [Your %0 are under attack]
 Dine %0 er under angreb
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 En af dine enheder blev konverteret til et %0 hold
+[Your username was banned]
+

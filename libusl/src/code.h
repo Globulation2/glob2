@@ -1,20 +1,17 @@
-#ifndef BYTECODE_H
-#define BYTECODE_H
+#ifndef CODE_H
+#define CODE_H
 
 #include <cassert>
 #include <ostream>
-#include "types.h"
 
 class Thread;
 class Value;
-class ScopePrototype;
 class Prototype;
-class Operation;
+class ThunkPrototype;
+class ScopePrototype;
 
-
-ScopePrototype* thisMember(Prototype* outer);
-ScopePrototype* nativeMethodMember(Method* method);
-
+ThunkPrototype* thisMember(Prototype* outer);
+ThunkPrototype* methodMember(ScopePrototype* method);
 
 struct Code
 {
@@ -49,7 +46,7 @@ struct EvalCode: Code
 	virtual void execute(Thread* thread);
 };
 
-struct SelectCode: EvalCode
+struct SelectCode: Code
 {
 	SelectCode(const std::string& name);
 	
@@ -59,14 +56,19 @@ struct SelectCode: EvalCode
 	std::string name;
 };
 
-struct ApplyCode: EvalCode
+struct ApplyCode: Code
 {
 	virtual void execute(Thread* thread);
 };
 
 struct ValCode: Code
 {
+	ValCode(size_t index);
+
 	virtual void execute(Thread* thread);
+	virtual void dumpSpecific(std::ostream &stream) const;
+	
+	size_t index;
 };
 
 struct ParentCode: Code
@@ -81,56 +83,38 @@ struct PopCode: Code
 
 struct DupCode: Code
 {
-	virtual void execute(Thread* thread);
-};
+	DupCode(size_t index);
 
-struct ScopeCode: Code
-{
 	virtual void execute(Thread* thread);
-};
-
-struct ReturnCode: Code
-{
-	virtual void execute(Thread* thread);
-};
-
-struct ArrayCode: Code
-{
-	ArrayCode(size_t size);
 	
+	size_t index;
+};
+
+struct ThunkCode: Code
+{
 	virtual void execute(Thread* thread);
-	virtual void dumpSpecific(std::ostream &stream) const;
-	
-	size_t size;
 };
 
 struct NativeCode: Code
 {
-	NativeCode(NativeMethod* method);
+	NativeCode(const std::string& name);
+	
+	virtual void prologue(ThunkPrototype* thunk) {}
+	virtual void epilogue(ThunkPrototype* thunk) {}
+	virtual void dumpSpecific(std::ostream &stream) const;
+	
+	std::string name;
+};
+
+template<typename ThunkType>
+struct CreateCode: Code
+{
+	CreateCode(typename ThunkType::Prototype* prototype);
 	
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
 	
-	NativeMethod* method;
+	typename ThunkType::Prototype* prototype;
 };
 
-struct DefRefCode: Code
-{
-	DefRefCode(ScopePrototype* def);
-	
-	virtual void execute(Thread* thread);
-	virtual void dumpSpecific(std::ostream &stream) const;
-	
-	ScopePrototype* def;
-};
-
-struct FunCode: Code
-{
-	FunCode(Method* method);
-	
-	virtual void execute(Thread* thread);
-	
-	Method* method;
-};
-
-#endif // ndef BYTECODE_H
+#endif // ndef CODE_H

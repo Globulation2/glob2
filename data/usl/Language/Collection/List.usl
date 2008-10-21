@@ -1,37 +1,40 @@
-import Language.FlowControl.if as if
-
-// An immutable, single linked list.
-// Stephane Magnenat <stephane at magnenat dot net> - 2008
-// Martin Voelkle <martin voelkle@gmail com> - 2008
-
-// the interface
-List := interface (
+\*
+ An immutable, single linked list.
+ Stephane Magnenat <stephane at magnenat dot net> - 2008
+ Martin Voelkle <martin voelkle@gmail com> - 2008
+\*
+\*
+\# the interface
+list := interface [
 	def isEmpty := abstract
 
-	// Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
-	def prepend(x) := Cons(x, this)
+	\# Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
+	def prepend(x) := cons(x, this)
 	
-	// Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
+	\# Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
 	def append(x) := {
-		if (isEmpty)
-			Cons(x, Nil)
-		else
-			Cons(this.head, this.tail append x)
+		if (isEmpty) {
+			cons(x, nil)
+		} else {
+			cons(this.head, this.tail append x)
+		}
 	}
 	
-	// Returns a list resulting from the concatenation of list x at the end of this list
-	def concat (x:List) := {
-		if (isEmpty)
+	\# Returns a list resulting from the concatenation of list x at the end of this list
+	def concat (x:list) := {
+		if (isEmpty) {
 			x
-		else
-			Cons(this.head, this.tail concat x)
+		} else {
+			cons(this.head, this.tail concat x)
+		}
 	}
 
 	def map(function) := {
-		if (this.isEmpty)
-			Nil
-		else
-			Cons(function(this.head), this.tail map function)
+		if (isEmpty) {
+			nil
+		} else {
+			cons(function(this.head), this.tail map function)
+		}
 	}
 	
 	def foreach(function) := if (!isEmpty) {
@@ -40,46 +43,106 @@ List := interface (
 	}
 	
 	def contains(x) := {
-		if (isEmpty)
-			False
-		else
+		if (isEmpty) {
+			false
+		} else {
 			(this.head == x) || (this.tail contains x)
+		}
 	}
 
-	// Returns a list containing the elements of this list in the reverse order
+	\# Returns a list containing the elements of this list in the reverse order
 	def reverse := {
 		def reverse(source, result) := {
-			if (source.isEmpty)
+			if (source.isEmpty) {
 				result
-			else
-				reverse(source.tail, List(source.head, result))
+			} else {
+				reverse(source.tail, list(source.head, result))
+			}
 		}
-		reverse(this, Nil)
+		reverse(this, nil)
 	}
 
 	def zip(that) := abstract
-)
+]
 
-// the empty list
-Nil := List with (
-	def isEmpty := True
-)
+\# the empty list
+nil := list with [
+	def isEmpty := true
+]
 
-// a non-empty list
-Cons := List with fun (head, tail) => (
-	def isEmpty := False
-)
+\# a non-empty list
+cons := list with fun (head, tail) => [
+	def isEmpty := false
+]
+\*
+
+nil := [
+	def isEmpty := true
+
+	\# Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
+	def prepend(x) := cons(x, this)
+	
+	\# Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
+	def append(x) := cons(x, nil)
+	
+	\# Returns a list resulting from the concatenation of list x at the end of this list
+	def concat(x) := x
+
+	def map(function) := nil
+	
+	def foreach(function) := if (!isEmpty) {
+		function(this.head)
+		this.tail foreach function
+	}
+	
+	def contains(x) := false
+
+	\# Returns a list containing the elements of this list in the reverse order
+	def reverse := nil
+]
+
+cons := fun (head, tail) => [
+	def isEmpty := false
+
+	\# Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
+	def prepend(x) := cons(x, this)
+	
+	\# Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
+	def append(x) := cons(this.head, this.tail append x)
+	
+	\# Returns a list resulting from the concatenation of list x at the end of this list
+	def concat(x) := cons(this.head, this.tail concat x)
+
+	def map(function) := cons(function(this.head), this.tail map function)
+	
+	def foreach(function) := {
+		function(head)
+		tail foreach function
+	}
+	
+	def contains(x) := (head == x) || (tail contains x)
+
+	\# Returns a list containing the elements of this list in the reverse order
+	def reverse := {
+		def reverse(source, result) := {
+			if (source.isEmpty) {
+				result
+			} else {
+				reverse(source.tail, cons(source.head, result))
+			}
+		}
+		reverse(this, nil)
+	}
+]
 
 def list(elements: Array) := {
 	def build(i, l) := {
-		if (i < 0)
+		if (i < 0) {
 			l
-		else
-			build(i - 1, Cons(elements at i, l))
+		} else {
+			build(i - 1, cons(elements at i, l))
+		}
 	}
-	build(elements.size - 1, Nil)
+	build(elements.size - 1, nil)
 }
-
-// we should be able to write:
-val a := list [1, 2, 3, 4]
 

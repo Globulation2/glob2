@@ -25,6 +25,8 @@
 #include <FormatableString.h>
 #include <GUIButton.h>
 #include <GUIText.h>
+#include <GUIImage.h>
+#include <GUIProgressBar.h>
 using namespace GAGGUI;
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -62,7 +64,7 @@ MainMenuScreen::MainMenuScreen()
 	
 	addWidget(new Text(3, 0, ALIGN_LEFT, ALIGN_BOTTOM, "standard", PACKAGE_VERSION));
 	
-	Text *title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", "Globulation 2");
+	Image *title = new Image(0, 18, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->title);
 	addWidget(title);
 }
 

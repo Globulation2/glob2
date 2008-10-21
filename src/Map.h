@@ -214,6 +214,23 @@ public:
 	{
 		return ((mapDiscovered[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
 	}
+	
+	//! Returs true if map is discovered at position (x1..x2,y1..y2) for a given vision mask.
+	//! This mask represents which team's part of map we are allowed to see.
+	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask)
+	{
+		assert(x1<x2 && y1<y2);
+		for(int x=x1;x<=x2;x++)
+			for(int y=y1;y<=y2;y++)
+				if(isMapDiscovered(x,y,visionMask))
+					return true;
+		return false;
+	}
+	//! Sets all map for all teams to discovered state
+	void setMapDiscovered(void)
+	{
+		memset(mapDiscovered, ~0u, w*h*sizeof(Uint32));
+	}
 
 	//! Returs true if map is currently discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's units and buildings we are allowed to see.
@@ -348,6 +365,16 @@ public:
 		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
 		c.forbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
 	}
+	
+	void addClearArea(int x, int y, Uint32 teamNum)
+	{
+		cases[((y&hMask)<<wDec)+(x&wMask)].clearArea |=  Team::teamNumberToMask(teamNum);
+	}
+	
+	void addGuardArea(int x, int y, Uint32 teamNum)
+	{
+		cases[((y&hMask)<<wDec)+(x&wMask)].guardArea |=  Team::teamNumberToMask(teamNum);
+	}
 
 	
 	bool isWater(int x, int y)
@@ -365,6 +392,11 @@ public:
 	bool isGrass(int x, int y)
 	{
 		return (getTerrain(x, y)<16);
+	}
+	
+	bool isGrass(unsigned pos)
+	{
+		return  (getTerrain(pos)<16);
 	}
 	
 	bool isSand(int x, int y)
@@ -829,6 +861,7 @@ public:
 	Uint32 checkSum(bool heavy);
 	Sint32 warpDistSquare(int px, int py, int qx, int qy); //!< The distance between (px, py) and (qx, qy), warp-safe, but not rooted.
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
+	Sint32 warpDistSum(int px, int py, int qx, int qy); //!< The combined distance on x and r y axis, between (px, py) and (qx, qy), warp-safe.
 	bool isInLocalGradient(int ux, int uy, int bx, int by); //!< Return true if the unit @(ux, uy) is close enough of building @(bx, by).
 	void dumpGradient(Uint8 *gradient, const char *filename = "gradient.dump.pgm");
 

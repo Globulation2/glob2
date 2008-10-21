@@ -25,6 +25,8 @@
 #include "GUIButton.h"
 #include "GUIList.h"
 #include "GUITextInput.h"
+#include "GUITextArea.h"
+#include "GUICheckList.h"
 
 class CampaignEditor : public Glob2Screen
 {
@@ -57,6 +59,8 @@ private:
 	Button* removeMap;
 	/// Text editor changes the name of the campaign
 	TextInput* nameEditor;
+	/// Text editor for description
+	TextArea* description;
 
 	///Adds all of the maps in the campaign to the mapList
 	void syncMapList();
@@ -72,8 +76,7 @@ public:
 	{
 		OK,
 		CANCEL,
-		ADDTOUNLOCKED,
-		REMOVEFROMUNLOCKED,
+		ISLOCKED,
 	};
 private:
 	CampaignMapEntry& entry;
@@ -85,21 +88,21 @@ private:
 	/// The cancel button
 	Button *cancel;
 	/// List of maps that unlock the map thats being edited
-	List* mapsUnlockedBy;
+	CheckList* mapsUnlockedBy;
 	/// The label for mapsUnlockedBy
 	Text *mapsUnlockedByLabel;
-	/// List of maps available to be added to the unlocked by maps list
-	List* mapsAvailable;
-	/// The label for mapsAvailable
-	Text *mapsAvailableLabel;
-	/// This button adds a map from the available maps list to the unlocked by maps list
-	Button *addToUnlocked;
-	/// This button removes a map from the unlocked by list and replaces it in the available maps list
-	Button *removeFromUnlocked;
 	/// Text editor changes the name of the map in the campaign
 	TextInput* nameEditor;
 	/// The label for nameEditor
 	Text *nameEditorLabel;
+	/// The text editor for the description
+	TextArea *descriptionEditor;
+	/// The label for the descriptionEditor
+	Text *descriptionEditorLabel;
+	/// The button that says whether this entry is unlocked by default
+	OnOffButton* isUnlocked;
+	/// The is locked label
+	Text *isUnlockedLabel;
 };
 
 #endif

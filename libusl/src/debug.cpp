@@ -1,67 +1,87 @@
 #include "debug.h"
 
 #include "code.h"
+#include "native.h"
 
-static const Position invalidPosition;
-static const FilePosition invalidFilePosition("???", invalidPosition);
+using namespace std;
 
-const Position& ScopeDebugInfo::find(size_t address) const
+const Position& ThunkDebugInfo::find(size_t address) const
 {
 	Address2Source::const_iterator it = address2Source.upper_bound(address);
-	if (it != address2Source.end())
-		return it->second;
-	else
-		return invalidPosition;
+	assert(it != address2Source.end());
+	return it->second;
 }
 
 
-const Position& FileDebugInfo::find(ScopePrototype* scope, size_t address)
+static string getName(ThunkPrototype* thunk)
 {
-	Scopes::const_iterator it = scopes.find(scope);
-	if (it != scopes.end())
+	for (ThunkPrototype::Body::const_iterator it = thunk->body.begin(); it != thunk->body.end(); ++it)
+	{
+		NativeCode* nativeCode = dynamic_cast<NativeCode*>(*it);
+		if (nativeCode != 0)
+		{
+			return nativeCode->name;
+		}
+	}
+	
+	return "???";
+}
+
+
+const Position& DebugInfo::find(ThunkPrototype* thunk, size_t address)
+{
+	Thunks::const_iterator it = thunks.find(thunk);
+	if (it != thunks.end())
 		return it->second.find(address);
 	else
-		return invalidPosition;
+	{
+		string name = "<";
+		name += getName(thunk);
+		name += ">";
+		Position nativePosition(name, 0, 0);
+		ThunkDebugInfo& debug = thunks[thunk];
+		size_t lastAddr = thunk->body.size();
+		debug.address2Source[lastAddr] = nativePosition;
+		debug.source2Address[nativePosition] = lastAddr;
+		return debug.address2Source[lastAddr];
+	}
+	
 }
 
-
-FilePosition ProgramDebugInfo::find(ScopePrototype* scope, size_t address)
+string unmangle(const string& name)
 {
-	if (scopes.size() == 0)
-		buildScopes();
-	
-	Scopes::iterator scopeIt = scopes.find(scope);
-	if (scopeIt != scopes.end())
+	string clear;
+	int counter = 0;
+	for (string::const_iterator it = name.begin(); it != name.end(); ++it)
 	{
-		Files::iterator fileIt = scopeIt->second;
-		const std::string& file = fileIt->first;
-		const Position& position = fileIt->second.find(scope, address);
-		return FilePosition(file, position);
-	}
-	else
-	{
-		NativeMethod* native = dynamic_cast<NativeMethod*>(scope);
-		if (native != 0)
+		string::value_type c = *it;
+		if (isdigit(c))
 		{
-			std::string name = "<";
-			name += native->name;
-			name += ">";
-			return FilePosition(name, invalidPosition);
+			counter *= 10;
+			counter += (c - '0');
+		}
+		else if (counter != 0)
+		{
+			for (int i = 0; i < counter; ++i)
+			{
+				clear += *it;
+				if (i < counter - 1)
+					++it;
+			}
+			counter = 0;
+		}
+		else if (c == 'I')
+		{
+			clear += '<';
+		}
+		else if (c == 'E')
+		{
+			clear += '>';
 		}
 		else
-			return invalidFilePosition;
-	}
-	
-}
-
-void ProgramDebugInfo::buildScopes()
-{
-	for(Files::iterator fileIt = files.begin(); fileIt != files.end(); ++fileIt)
-	{
-		const FileDebugInfo::Scopes& scopes = fileIt->second.scopes;
-		for(FileDebugInfo::Scopes::const_iterator scopeIt = scopes.begin(); scopeIt != scopes.end(); ++scopeIt)
 		{
-			this->scopes[scopeIt->first] = fileIt;
+			clear += c;
 		}
 	}
+	return clear;
 }

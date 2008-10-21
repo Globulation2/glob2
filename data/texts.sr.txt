@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 напусти игру.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@
 
 [add shortcut]
 
+[Add]
+
+[AI Descriptions]
+
 [AI]
 ВИ
 [ai]
 ВИ
+[AICastor-Description]
+
 [AICastor]
 ВИКастор
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 НикогоВИћ
+[AINumbi-Description]
+
 [AINumbi]
 ГлупаВИ
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -88,69 +126,29 @@ AIWarrush
 Касарна
 [beach size]
 Величина плажа
+[Blocked Players]
+
 [break]
 
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 Гради
-[Building Settings]
+[Building Defaults]
+
+[building settings]
 
 [building site]
 Градилиште
+[Building Tool Line Explanation]
+
 [Buildings]
 Зграде
 [Bullets]
 Муниција
 [campaign editor]
-
-[campaign text]
 
 [campaign]
 Кампања
@@ -163,12 +161,6 @@ AIWarrush
 [Can't join game, game has started]
 
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-
-[Can't join game, timeout]
-
-[Can't join game, wrong game version]
 
 [cancel destroy]
 Заустави уништење
@@ -210,13 +202,15 @@ AIWarrush
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 Прикључи се
-[connecting to]
-Повезивање са: 
-[constructed buildings]
+[connecting to game]
 
-[construction and upgrades]
+[connecting to]
+Повезивање са:
+[Construction Site Defaults]
 
 [Continue playing]
 Настави игру
@@ -234,6 +228,8 @@ AIWarrush
 Направи мапу
 [credits]
 Заслуге
+[ctrl - line]
+
 [current speed]
 Тренутна брзина
 [custom game]
@@ -246,16 +242,12 @@ AIWarrush
 
 [decrease units working]
 
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 
 [defencetower explanation]
 Стражара служи за осматрање.
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Стражара
 [Defense Map]
@@ -280,7 +272,13 @@ AIWarrush
 Не носи ништа
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -348,7 +346,9 @@ AIWarrush
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 Храна
@@ -369,6 +369,8 @@ AIWarrush
 [game full]
 Потпуна игра
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -396,6 +398,10 @@ AIWarrush
 
 [Harvest]
 Жањи
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -410,6 +416,8 @@ AIWarrush
 Живот
 [hp]
 Здравље
+[Human]
+
 [human]
 
 [hungry]
@@ -424,12 +432,6 @@ AIWarrush
 
 [inn explanation]
 Зграда у којој се скупља храна.
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Гостионица
 [insert]
@@ -440,6 +442,8 @@ AIWarrush
 Величина острва
 [islands terrain]
 Острвско земљиште
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -484,21 +488,35 @@ sr
 
 [load]
 Учитај
+[loading map list]
+
+[Lobby]
+
 [login]
 Пријава
 [Lost : %0 has more prestige than you]
 Пораз : %0 је остварио већи престиж од Вас.
 [Lost : your colony is dead]
 Пораз : Ваша колонија је мртва
+[low priority]
+
 [lowquality]
 Низак квалитет
 [Magic At. Air]
 
 [Magic At. Ground]
 
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Име мапе: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -506,7 +524,15 @@ sr
 Ширина мапе
 [map size y]
 Висина мапе
-[maps available]
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
 
 [mark map]
 
@@ -516,6 +542,8 @@ sr
 Пијаца служи за
 [market]
 Пијаца
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +562,18 @@ sr
 Нова
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 
 [No]
 Не
+[Not Enough Ratings]
+
 [not ready]
 није спреман
 [number of players: %0 (%1 AI)]
@@ -551,6 +585,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [number of teams]
 Број тимова
 [numlock]
+
+[objectives]
 
 [of which]
 од чега
@@ -574,12 +610,20 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [open script editor]
 
+[open teams editor]
+
 [open]
 отвори
+[OpenGL]
+OpenGL
+[Options]
+
 [options]
 Избори
 [Orange]
 Наранџе
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +638,23 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Пауза
 [player name]
 Име играча
+[player rating %0]
+
 [please wait]
 Молим сачекајте
 [power]
 
 [press space]
 
+[Prestige Win Enabled]
+
 [Prestige]
 Престиж
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Шљиве
@@ -620,10 +672,18 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Стадион
 [range]
 Домет
+[Rated %0]
+
 [ratios]
 Односи
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Пријави новог корисника на YOG са лозинком. (није шифровано)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -632,11 +692,15 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 
 [repair]
 Поправи
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -679,6 +743,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 траже посао
@@ -758,6 +824,14 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [smoothing]
 Умекшавање
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -790,6 +864,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Камени зид служи за...
 [stonewall]
 Камени зид
+[submit rating]
+
 [svr hostname]
 Име сервера
 [swamp terrain]
@@ -798,8 +874,6 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [swarm explanation]
 Зграда за ројење.
-[swarm level 0]
-
 [swarm]
 Рој
 [Swim]
@@ -841,6 +915,10 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
  екипа
@@ -948,12 +1026,12 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [unit settings explanation]
 
-[unit settings]
-
 [units working]
  јединица у послу
 [Units]
 Јединице
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
@@ -962,8 +1040,14 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Догради
+[Upload Map]
+
+[upload map]
+
 [username]
 Корисничко име
 [Version]
@@ -1032,16 +1116,38 @@ YOG мета-сервер је одбио везу јер је ово корис
 YOG мета-сервер је одбио везу јер лозинка коју сте уписали није исправна.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG мета-сервер је одбио везу јер ваше корисничко име нема одређену лозинку. Морате регистровати ваше име и изабрати лозинку.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG мета-сервер је прекинуо везу јер је ваше издање Глобулације2 престаро.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG мета-сервер је одбио везу али није назначио разлог.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG мета-сервер је одбио везу јер корисничко име које сте изабрали неко већ користи.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Подсистем за повезивање је спреман за контакт са YOG метасервером.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Грешка при прикључењу. Изгледа да YOG сервер није покренут.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Игра преко мреже (Ysagoon)
 [you have lost]
@@ -1052,5 +1158,9 @@ YOG мета-сервер је одбио везу јер корисничко �
 
 [Your %0 are under attack]
 Нападнута јединица: %0
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Ваша јединица је пребегла %0
+[Your username was banned]
+

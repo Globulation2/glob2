@@ -4,6 +4,8 @@
 #include "memory.h"
 
 #include <cassert>
+#include <algorithm>
+#include <typeinfo>
 #include <iterator>
 #include <map>
 #include <ostream>
@@ -29,7 +31,7 @@ struct Value
 	
 	virtual ~Value() { }
 	
-	void dump(std::ostream &stream) const { stream << typeid(*this).name() << " "; dumpSpecific(stream); }
+	void dump(std::ostream &stream) const;
 	
 	virtual void dumpSpecific(std::ostream &stream) const { }
 	
@@ -48,17 +50,17 @@ struct Value
 };
 extern Value nil;
 
-struct ScopePrototype;
+struct ThunkPrototype;
+struct NativeCode;
 struct Prototype: Value
 {
-	typedef std::map<std::string, ScopePrototype*> Members;
+	typedef std::map<std::string, ThunkPrototype*> Members;
 	
 	Members members;
 	
-	Prototype(Heap* heap):
-		Value(heap, 0)
-	{ // TODO: MetaPrototype
-	}
+	Prototype(Heap* heap);
+	
+	void addMethod(NativeCode* native);
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
@@ -75,7 +77,7 @@ struct Prototype: Value
 		for_each(members.begin(), members.end(), compose1(mem_fun(&Value::markForGC), select2nd<Members::value_type>()));
 	}
 	
-	virtual ScopePrototype* lookup(const std::string& name) const
+	virtual ThunkPrototype* lookup(const std::string& name) const
 	{
 		Members::const_iterator method = members.find(name);
 		if (method != members.end())
@@ -86,19 +88,14 @@ struct Prototype: Value
 };
 
 struct Code;
-struct ScopePrototype: Prototype
+struct ThunkPrototype: Prototype
 {
-	typedef std::vector<std::string> Locals;
 	typedef std::vector<Code*> Body;
-	
+
 	Prototype* outer;
-	Locals locals;
 	Body body;
-	
-	ScopePrototype(Heap* heap, Prototype* outer):
-		Prototype(heap),
-		outer(outer)
-	{}
+
+	ThunkPrototype(Heap* heap, Prototype* outer);
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
@@ -113,26 +110,50 @@ struct ScopePrototype: Prototype
 	}
 };
 
-struct Scope: Value
+struct Thunk: Value
 {
-	typedef std::vector<Value*> Locals;
-	
+	typedef ThunkPrototype Prototype;
 	Value* outer;
-	Locals locals;
-	
-	Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
+
+	Thunk(Heap* heap, ThunkPrototype* prototype, Value* outer):
 		Value(heap, prototype),
 		outer(outer)
 	{}
+
+	ThunkPrototype* thunkPrototype()
+	{
+		return static_cast<ThunkPrototype*>(prototype);
+	}
+};
+
+struct ScopePrototype: ThunkPrototype
+{
+	typedef std::vector<std::string> Locals;
+	
+	Locals locals;
+	
+	ScopePrototype(Heap* heap, Prototype* outer);
+	virtual ~ScopePrototype();
+};
+
+struct Scope: Thunk
+{
+	typedef ScopePrototype Prototype;
+	typedef std::vector<Value*> Locals;
+	
+	Locals locals;
+	
+	Scope(Heap* heap, ScopePrototype* prototype, Value* outer);
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
-		using namespace std;
-		using namespace __gnu_cxx;
 		for(Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
 		{
 			const Value* local = *it;
-			local->dump(stream);
+			if (local == 0)
+				stream << "0(" << scopePrototype()->locals[it - locals.begin()] << ")";
+			else
+				local->dump(stream);
 		}
 	}
 	
@@ -143,104 +164,27 @@ struct Scope: Value
 		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
 	}
 	
-	ScopePrototype* def()
+	ScopePrototype* scopePrototype() const
 	{
 		return static_cast<ScopePrototype*>(prototype);
 	}
 };
 
-struct PatternNode;
-struct Method: ScopePrototype
+struct MetaPrototype: Value
 {
-	Method(Heap* heap, Prototype* outer);
+	typedef ScopePrototype Prototype;
+
+	MetaPrototype(Heap* heap, Prototype* prototype, Value* outer);
+	
+	Prototype* prototype; // this is the prototype of the target, not of this meta object
+	Value* outer;
 };
 
-struct NativeMethod: Method
+struct Function: MetaPrototype
 {
-	NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument);
-	std::string name;
-	virtual Value* execute(Thread* thread, Value* receiver, Value* argument) = 0;
-};
+	typedef ScopePrototype Prototype;
 
-struct Thunk: Value
-{
-	Value* receiver;
-	ScopePrototype* method;
-	
-	Thunk(Heap* heap, Value* receiver, ScopePrototype* method):
-		Value(heap, 0),
-		receiver(receiver),
-		method(method)
-	{}
-	
-protected:
-	Thunk(Heap* heap, Prototype* prototype, Value* receiver, ScopePrototype* method):
-		Value(heap, prototype),
-		receiver(receiver),
-		method(method)
-	{
-		assert(method->outer == receiver->prototype);
-	}
-};
-
-struct Function: Thunk
-{
-	struct FunctionPrototype: Prototype
-	{
-		FunctionPrototype();
-	};
-	static FunctionPrototype functionPrototype;
-	
-	Function(Heap* heap, Value* receiver, ScopePrototype* method):
-		Thunk(heap, &functionPrototype, receiver, method)
-	{}
-};
-
-struct Integer: Value
-{
-	struct IntegerPrototype: Prototype
-	{
-		IntegerPrototype();
-	};
-	static IntegerPrototype integerPrototype;
-	
-	int value;
-	
-	Integer(Heap* heap, int value):
-		Value(heap, &integerPrototype),
-		value(value)
-	{}
-	
-	virtual void dumpSpecific(std::ostream& stream) const { stream << "= " << value; }
-};
-
-
-struct Array: Value
-{
-	struct ArrayPrototype: Prototype
-	{
-		ArrayPrototype();
-	};
-	static ArrayPrototype arrayPrototype;
-	
-	typedef std::vector<Value*> Values;
-	
-	Values values;
-	
-	Array(Heap* heap):
-		Value(heap, &arrayPrototype)
-	{ }
-	
-	virtual void dumpSpecific(std::ostream& stream) const
-	{
-		stream << values.size() << " values";
-	}
-	
-	virtual void propagateMarkForGC()
-	{
-		using namespace std;
-		for_each(values.begin(), values.end(), mem_fun(&Value::markForGC));
-	}
+	Function(Heap* heap, Prototype* prototype, Value* outer);
 };
 
 #endif // ndef TYPES_H

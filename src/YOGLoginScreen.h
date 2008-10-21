@@ -59,6 +59,7 @@ private:
 		EXECUTING=0,
 		LOGIN=1,
 		CANCEL=2,
+		REGISTER=3,
 		NEW_USER=10
 	};
 
@@ -68,7 +69,7 @@ private:
 		STARTED=2
 	};
 
-	virtual void onTimer(Uint32 tick);
+	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	
 	///Responds to YOG events
@@ -76,18 +77,20 @@ private:
 
 	///Attempt a login with the entered information
 	void attemptLogin();
-	///Attempt a registration with the entered information
-	void attemptRegistration();
+	
+	///Opens the lobby screen
+	void runLobby();
 
 	TextInput *login, *password;
-	OnOffButton *newYogPassword, *rememberYogPassword;
-	Text *newYogPasswordText, *rememberYogPasswordText;
+	OnOffButton *rememberYogPassword;
+	Text *rememberYogPasswordText;
 	TextArea *statusText;
 	Animation *animation;
 	
 	bool wasConnecting;
 	
 	boost::shared_ptr<YOGClient> client;
+	bool changeTabAgain;
 };
 
 #endif

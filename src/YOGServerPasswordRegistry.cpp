@@ -22,14 +22,18 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include "../gnupg/sha1.c"
+#include "Version.h"
 
 #include <boost/lexical_cast.hpp>
+
+#include <iostream>
 
 using namespace GAGCore;
 
 YOGServerPasswordRegistry::YOGServerPasswordRegistry()
 {
 	readPasswords();
+	invalidChars="!@#$%^&*()-+={}[]:\";'>?./<,|\\ \n\t\r";
 }
 
 
@@ -49,6 +53,12 @@ YOGLoginState YOGServerPasswordRegistry::registerInformation(const std::string& 
 {
 	if(passwords[username] != "")
 		return YOGUsernameAlreadyUsed;
+	
+	for(int i=0; i<invalidChars.size(); ++i)
+		if(username.find(invalidChars[i]) != std::string::npos)
+			return YOGNameInvalidSpecialCharacters;
+	
+		
 	passwords[username] = transform(username, password);
 	flushPasswords();
 	return YOGLoginSuccessful;
@@ -66,7 +76,8 @@ void YOGServerPasswordRegistry::resetPlayersPassword(const std::string& username
 
 void YOGServerPasswordRegistry::flushPasswords()
 {
-	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("registry"));
+	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(YOG_SERVER_FOLDER+"registry"));
+	stream->writeUint32(VERSION_MINOR, "version");
 	stream->writeUint32(passwords.size(), "size");
 	for(std::map<std::string, std::string>::iterator i = passwords.begin(); i!=passwords.end(); ++i)
 	{
@@ -80,9 +91,10 @@ void YOGServerPasswordRegistry::flushPasswords()
 
 void YOGServerPasswordRegistry::readPasswords()
 {
-	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("registry"));
+	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(YOG_SERVER_FOLDER+"registry"));
 	if(stream->isEndOfStream())
 		return;
+	Uint32 dataVersionMinor = stream->readUint32("version");
 	Uint32 size = stream->readUint32("size");
 	for(unsigned i=0; i<size; ++i)
 	{

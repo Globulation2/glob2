@@ -65,12 +65,15 @@ public:
 	
 	///Sends a message across the connection.
 	void sendMessage(shared_ptr<NetMessage> message);
+	
+	///Returns the IP address
+	const std::string& getIPAddress() const;
 protected:
 	friend class NetListener;
 
 	///This function attempts a connection using the provided TCP server socket.
 	///One can use isConnected to test for success.
-	void attemptConnection(TCPsocket& serverSocket);
+	bool attemptConnection(TCPsocket& serverSocket);
 	
 private:
 	NetConnectionThread connect;
@@ -79,6 +82,7 @@ private:
 	boost::recursive_mutex incomingMutex;
 	std::queue<shared_ptr<NetMessage> > recieved;
 	
+	std::string address;
 	bool connecting;
 };
 

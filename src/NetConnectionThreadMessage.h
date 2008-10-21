@@ -35,7 +35,7 @@ enum NetConnectionThreadMessageType
 	NTMLostConnection,
 	NTMRecievedMessage,
 	NTMSendMessage,
-	NTMAttemptConnection,
+	NTMAcceptConnection,
 	NTMExitThread,
 	//type_append_marker
 };
@@ -119,7 +119,7 @@ class NTConnected : public NetConnectionThreadMessage
 {
 public:
 	///Creates a NTConnected event
-	NTConnected();
+	NTConnected(const std::string& ip);
 
 	///Returns NTMConnected
 	Uint8 getMessageType() const;
@@ -129,6 +129,11 @@ public:
 	
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
+	
+	///Returns the ip address of the connection
+	const std::string& getIPAddress();
+private:
+	std::string ip;
 };
 
 
@@ -229,14 +234,14 @@ private:
 
 
 
-///NTAttemptConnection
-class NTAttemptConnection : public NetConnectionThreadMessage
+///NTAcceptConnection
+class NTAcceptConnection : public NetConnectionThreadMessage
 {
 public:
-	///Creates a NTAttemptConnection event
-	NTAttemptConnection(TCPsocket& socket);
+	///Creates a NTAcceptConnection event
+	NTAcceptConnection(TCPsocket& socket);
 
-	///Returns NTMAttemptConnection
+	///Returns NTMAcceptConnection
 	Uint8 getMessageType() const;
 
 	///Returns a formatted version of the event
@@ -246,9 +251,9 @@ public:
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
 	///Retrieves socket
-	TCPsocket& getSocket() const;
+	TCPsocket getSocket() const;
 private:
-	TCPsocket& socket;
+	TCPsocket socket;
 };
 
 

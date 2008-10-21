@@ -22,9 +22,10 @@
 #include "Campaign.h"
 #include "Glob2Screen.h"
 #include "GUIButton.h"
-#include "GUIList.h"
+#include "GUICheckList.h"
 #include "GUIText.h"
 #include "GUITextInput.h"
+#include "GUITextArea.h"
 
 class MapPreview;
 
@@ -55,7 +56,10 @@ private:
 	TextInput* playerName;
 
 	/// The list of missions that are currently unlocked
-	List* availableMissions;
+	CheckList* availableMissions;
+	
+	/// Map description
+	TextArea* description;
 	
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;

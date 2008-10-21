@@ -467,7 +467,7 @@ void Unit::syncStep(void)
 				degats=1;
 			enemy->hp-=degats;
 			
-			enemy->underAttackTimer = 256/speed + 1;
+			enemy->underAttackTimer = 240;
 
 			boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
 			enemy->owner->pushGameEvent(event);
@@ -487,7 +487,7 @@ void Unit::syncStep(void)
 					degats=1;
 				enemy->hp-=degats;
 			
-				enemy->underAttackTimer = 256/speed + 1;
+				enemy->underAttackTimer = 240;
 
 				boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
 				enemy->owner->pushGameEvent(event);
@@ -1086,7 +1086,6 @@ void Unit::handleDisplacement(void)
 						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurprose, targetBuilding->gid, targetBuilding->ressources[caryedRessource]);
 					targetBuilding->addRessourceIntoBuilding(caryedRessource);
 					caryedRessource=-1;
-
 				}
 				
 				if (!loopMove && !exchangeReady)
@@ -1106,7 +1105,6 @@ void Unit::handleDisplacement(void)
 						///Find a ressource that the building wants and a location to get it from
 						///The location may be a market, or the harvesting the ressource from the
 						///map.
-						attachedBuilding->update();
 						int needs[MAX_NB_RESSOURCES];
 						attachedBuilding->wishedRessources(needs);
 						int teamNumber=owner->teamNumber;

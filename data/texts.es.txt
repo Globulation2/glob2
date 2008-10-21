@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 ha Abandonado el Juego.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@ V: Mostrar vista de todos los edificios
 
 [add shortcut]
 
+[Add]
+
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -88,69 +126,29 @@ Mejora el Combate
 Barracas
 [beach size]
 Tamaño de la Playa
+[Blocked Players]
+
 [break]
 
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 Edificar
-[Building Settings]
+[Building Defaults]
+
+[building settings]
 
 [building site]
 Sitio de Construcción
+[Building Tool Line Explanation]
+
 [Buildings]
 Construcciones
 [Bullets]
 Municiones
 [campaign editor]
-
-[campaign text]
 
 [campaign]
 Campaña
@@ -210,13 +208,15 @@ Compilar Script
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 Connectar
+[connecting to game]
+
 [connecting to]
 Conectando a
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Continuar jugando
@@ -234,6 +234,8 @@ Crear juego
 Generar mapa
 [credits]
 Créditos
+[ctrl - line]
+
 [current speed]
 Velocidad Actual
 [custom game]
@@ -246,16 +248,12 @@ Daño
 
 [decrease units working]
 
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 Unidades o Edificios
 [defencetower explanation]
 Ataca al Enemigo Próximo
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Torre de defensa
 [Defense Map]
@@ -280,7 +278,13 @@ Desplegar
 No Portando Nada
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -348,7 +352,9 @@ islas desiertas
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 Alimento
@@ -369,6 +375,8 @@ Pantalla completa
 [game full]
 Juego Lleno
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -396,6 +404,10 @@ Felicidad
 
 [Harvest]
 Cosecha
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
@@ -410,6 +422,8 @@ Administra un Juego
 HP
 [hp]
 Puntuación
+[Human]
+
 [human]
 
 [hungry]
@@ -424,12 +438,6 @@ Sobre el Camino
 
 [inn explanation]
 Abastece a tus Unidades
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Posada
 [insert]
@@ -440,6 +448,8 @@ Interior
 Tamaño de la Isla
 [islands terrain]
 Islas
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -484,21 +494,35 @@ Cargar Juego
 
 [load]
 Cargar
+[loading map list]
+
+[Lobby]
+
 [login]
 Login
 [Lost : %0 has more prestige than you]
 Derrota: %0 tiene más prestigio que tú
 [Lost : your colony is dead]
 Derrota: tu colonia ha sido destruída
+[low priority]
+
 [lowquality]
 Baja Calidad
 [Magic At. Air]
 Daño Aéreo
 [Magic At. Ground]
 Daño Terrestre
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Nombre del Mapa: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -506,7 +530,15 @@ Nombre del Mapa: %0.
 Ancho del Mapa
 [map size y]
 Largo del Mapa
-[maps available]
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
 
 [mark map]
 
@@ -516,6 +548,8 @@ Frutas con otros
 Permite el Intercambio de
 [market]
 Mercado
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +568,18 @@ Mudo
 Nuevo
 [nick taken]
 Lo sentimos mucho pero el nombre que escogistes ha sido utilizado en freenode, solamente  podrás hablar a través de YOG
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 
 [No]
 No
+[Not Enough Ratings]
+
 [not ready]
 No Listo
 [number of players: %0 (%1 AI)]
@@ -551,6 +591,8 @@ No Listo
 [number of teams]
 Número de Equipos
 [numlock]
+
+[objectives]
 
 [of which]
 existen
@@ -574,12 +616,20 @@ Aquí
 
 [open script editor]
 
+[open teams editor]
+
 [open]
 Abierto
+[OpenGL]
+OpenGL
+[Options]
+
 [options]
 Opciones
 [Orange]
 Naranja
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +644,23 @@ Papiro
 Detenido
 [player name]
 Nombre del jugador
+[player rating %0]
+
 [please wait]
 Espere por favor
 [power]
 
 [press space]
 Presiona la barra espaciadora (space) para continuar
+[Prestige Win Enabled]
+
 [Prestige]
 Prestigio
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Ciruela Pasa
@@ -620,10 +678,18 @@ Mejora la Marcha
 Circuito de Carreras
 [range]
 Rango
+[Rated %0]
+
 [ratios]
 Proporciones
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Registra un Nuevo Usuario YOG con una Contraseña. (Inseguro)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -632,11 +698,15 @@ Recordar Contraseña Localmente. (Inseguro)
 
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 
 [repair]
 Reparar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -679,6 +749,8 @@ Escuela
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 Buscando Trabajo
@@ -758,6 +830,14 @@ V: asegurar para hablar
 Desplegar
 [smoothing]
 Nivelación
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -790,6 +870,8 @@ Elemento
 Defensa Pasiva
 [stonewall]
 Muralla
+[submit rating]
+
 [svr hostname]
 Nombre del Servidor Alojador
 [swamp terrain]
@@ -798,8 +880,6 @@ Pantano
 
 [swarm explanation]
 Crea Nuevas Unidades
-[swarm level 0]
-
 [swarm]
 Conglomerado
 [Swim]
@@ -841,6 +921,10 @@ Alberca de natación
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
 Equipos
@@ -948,12 +1032,12 @@ Terreno Uniforme
 Editor de unidad
 [unit settings explanation]
 
-[unit settings]
-
 [units working]
 Unidades Operando
 [Units]
 Unidades
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
@@ -962,8 +1046,14 @@ Unidades
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Remodelar
+[Upload Map]
+
+[upload map]
+
 [username]
 Nombre de usuario
 [Version]
@@ -1034,16 +1124,38 @@ YOG metaserver ha rechazado la conección porque este nombre de usuario ya ha si
 YOG metaserver ha rechazado la conección porque la contraseña es incorrecta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver ha rechazado la conección porque este nombre de usuario aún no tiene una contraseña. Probablemente deseas registrar tu nombre de Usuario con esta Contraseña. Por lo Tanto, Activa la Opción "Registrar a un Nuevo Usuario YOG con Contraseña"( "Register a new YOG user with password") Antes de Conectarse. Necesitarás Activar Está Opción Solamente una Vez.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver ha rechazado  la conección porque tu cliente globulation 2 es obsoleto.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver ha rechazado la conección sin explicación!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG ha rechazado  la conección porque tu nombre de usuario ya ha sido utilizado por alguien más.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 La Conección del Sistema  está lista para contactar al YOG metaserver para la conección.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Incapaz de Conectar. Aparentemente el  YOG Metaserver Está Caído.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon Juegos en línea(online)
 [you have lost]
@@ -1054,5 +1166,9 @@ Has ganado!
 
 [Your %0 are under attack]
 Tu %0 están bajo ataque
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Tu unidad fué convertida a %0 del equipo
+[Your username was banned]
+

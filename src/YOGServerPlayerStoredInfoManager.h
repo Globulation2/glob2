@@ -24,13 +24,16 @@
 #include <string>
 #include <map>
 #include "SDL_net.h"
+#include <list>
+
+class YOGServer;
 
 ///This class stores and records YOGPlayerStoredInfo for the server
 class YOGServerPlayerStoredInfoManager
 {
 public:
 	///Constructs a YOGServerPlayerStoredInfoManager, reads from the database
-	YOGServerPlayerStoredInfoManager();
+	YOGServerPlayerStoredInfoManager(YOGServer* server);
 
 	///Updates this YOGServerPlayerStoredInfoManager, periodically saving
 	void update();
@@ -42,8 +45,14 @@ public:
 	bool doesStoredInfoExist(const std::string& username);
 	
 	///Returns the player info
-	YOGPlayerStoredInfo& getPlayerStoredInfo(const std::string& username);
+	const YOGPlayerStoredInfo& getPlayerStoredInfo(const std::string& username);
 
+	///Sets the player info
+	void setPlayerStoredInfo(const std::string& username, const YOGPlayerStoredInfo& info);
+
+	///Returns a list of the banned players
+	std::list<std::string> getBannedPlayers();
+	
 	///This stores the player infos in a file
 	void savePlayerInfos();
 
@@ -53,6 +62,7 @@ private:
 	bool modified;
 	int saveCountdown;
 	std::map<std::string, YOGPlayerStoredInfo> playerInfos;
+	YOGServer* server;
 };
 
 

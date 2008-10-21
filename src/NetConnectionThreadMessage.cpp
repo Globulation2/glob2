@@ -113,7 +113,8 @@ std::string NTCouldNotConnect::getError() const
 
 
 
-NTConnected::NTConnected()
+NTConnected::NTConnected(const std::string& ip)
+	: ip(ip)
 {
 }
 
@@ -129,8 +130,15 @@ Uint8 NTConnected::getMessageType() const
 std::string NTConnected::format() const
 {
 	std::ostringstream s;
-	s<<"NTConnected()";
+	s<<"NTConnected(ip="<<ip<<";)";
 	return s.str();
+}
+
+
+
+const std::string& NTConnected::getIPAddress()
+{
+	return ip;
 }
 
 
@@ -305,34 +313,34 @@ boost::shared_ptr<NetMessage> NTSendMessage::getMessage() const
 
 
 
-NTAttemptConnection::NTAttemptConnection(TCPsocket& socket)
+NTAcceptConnection::NTAcceptConnection(TCPsocket& socket)
 	: socket(socket)
 {
 }
 
 
 
-Uint8 NTAttemptConnection::getMessageType() const
+Uint8 NTAcceptConnection::getMessageType() const
 {
-	return NTMAttemptConnection;
+	return NTMAcceptConnection;
 }
 
 
 
-std::string NTAttemptConnection::format() const
+std::string NTAcceptConnection::format() const
 {
 	std::ostringstream s;
-	s<<"NTAttemptConnection()";
+	s<<"NTAcceptConnection()";
 	return s.str();
 }
 
 
 
-bool NTAttemptConnection::operator==(const NetConnectionThreadMessage& rhs) const
+bool NTAcceptConnection::operator==(const NetConnectionThreadMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NTAttemptConnection))
+	if(typeid(rhs)==typeid(NTAcceptConnection))
 	{
-		const NTAttemptConnection& r = dynamic_cast<const NTAttemptConnection&>(rhs);
+		const NTAcceptConnection& r = dynamic_cast<const NTAcceptConnection&>(rhs);
 		if(r.socket == socket)
 			return true;
 	}
@@ -340,7 +348,7 @@ bool NTAttemptConnection::operator==(const NetConnectionThreadMessage& rhs) cons
 }
 
 
-TCPsocket& NTAttemptConnection::getSocket() const
+TCPsocket NTAcceptConnection::getSocket() const
 {
 	return socket;
 }

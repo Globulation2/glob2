@@ -1,0 +1,5 @@
+add := fun (a, b) => a + b
+x := 1
+y := 2
+z := add (x, y)
+print(z)

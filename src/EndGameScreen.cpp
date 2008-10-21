@@ -188,6 +188,15 @@ void EndGameStat::paint(void)
 			str<<circle_position_value;
 			parent->getSurface()->drawString(circle_position_x+10, circle_position_y+10, globalContainer->littleFont, str.str());
 		}
+		
+		// Draw labels
+		std::string label = Toolkit::getStringTable()->getString("[time]");
+		int textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
+		parent->getSurface()->drawString(x - textwidth/2 + e_width/2, y+e_height-20, globalContainer->standardFont, label);
+		
+		label = getStatLabel();
+		textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
+		parent->getSurface()->drawString(x + e_width - textwidth - 4, y + e_height/2, globalContainer->standardFont, label);
 	}
 	else
 	{
@@ -251,6 +260,25 @@ std::string EndGameStat::getRightScaleText(int value, int digits)
 
 
 
+std::string EndGameStat::getStatLabel()
+{
+	if(type == EndOfGameStat::TYPE_UNITS)
+		return Toolkit::getStringTable()->getString("[Number Of Units]");
+	if(type == EndOfGameStat::TYPE_BUILDINGS)
+		return Toolkit::getStringTable()->getString("[Number Of Buildings]");
+	if(type == EndOfGameStat::TYPE_PRESTIGE)
+		return Toolkit::getStringTable()->getString("[Prestige Score]");
+	if(type == EndOfGameStat::TYPE_HP)
+		return Toolkit::getStringTable()->getString("[Total Hitpoints]");
+	if(type == EndOfGameStat::TYPE_ATTACK)
+		return Toolkit::getStringTable()->getString("[Total Attack Power]");
+	if(type == EndOfGameStat::TYPE_DEFENSE)
+		return Toolkit::getStringTable()->getString("[Total Defence Power]");
+		
+}
+
+
+
 void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 {
 	int x, y, w, h;
@@ -291,7 +319,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	// title & graph
 	std::string titleText;
 	
-	if (gui->game.totalPrestigeReached)
+	if (gui->game.totalPrestigeReached && gui->game.isPrestigeWinCondition())
 	{
 		Team *t=gui->game.getTeamWithMostPrestige();
 		assert(t);
@@ -316,7 +344,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	{
 		titleText=Toolkit::getStringTable()->getString("[Won : you defeated your opponents]");
 	}
-	else if (!gui->getLocalTeam()->isAlive)
+	else if (gui->getLocalTeam()->hasLost)
 	{
 		titleText=Toolkit::getStringTable()->getString("[Lost : your colony is dead]");
 	}

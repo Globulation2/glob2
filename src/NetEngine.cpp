@@ -21,20 +21,21 @@
 #include "NetMessage.h"
 
 
-NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<YOGClient> client)
-	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), client(client), networkOrderRate(networkOrderRate)
+NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<NetConnection> router)
+	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), router(router), networkOrderRate(networkOrderRate)
 {
 	step=0;
 	orders.resize(numberOfPlayers);
 	localOrderSendCountdown = 0;
+	currentLatency = 0;
 }
 
 
 
-void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<YOGClient> nclient)
+void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<NetConnection> nrouter)
 {
 	networkOrderRate = nnetworkOrderRate;
-	client = nclient;
+	router = nrouter;
 }
 
 
@@ -57,11 +58,11 @@ void NetEngine::advanceStep(Uint32 checksum)
 		}
 
 		localOrder->gameCheckSum = checksum;
-		if(client)
+		if(router)
 		{
 			localOrder->sender = localPlayer;
 			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
-			client->sendNetMessage(message);
+			router->sendMessage(message);
 		}
 		pushOrder(localOrder, localPlayer, false);
 		localOrderSendCountdown = networkOrderRate - 1;
@@ -78,6 +79,24 @@ void NetEngine::clearTopOrders()
 {
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
+		boost::shared_ptr<Order> o = orders[p].front();
+		///Handle latency adjustment order
+		if(o->getOrderType() == ORDER_ADJUST_LATENCY)
+		{
+			boost::shared_ptr<AdjustLatency> al = boost::static_pointer_cast<AdjustLatency>(o);
+			int diff = (al->latencyAdjustment) - currentLatency;
+			if(diff>0)
+			{
+				for(int i=0; i<diff; ++i)
+				{
+					for(int p=0; p<orders.size(); ++p)
+					{
+						pushOrder(boost::shared_ptr<Order>(new NullOrder), p, true);
+					}
+				}
+			}
+			currentLatency = al->latencyAdjustment;
+		}
 		orders[p].pop();
 	}
 }
@@ -151,11 +170,11 @@ void NetEngine::flushAllOrders()
 		outgoing.pop();
 		localOrder->gameCheckSum = static_cast<unsigned int>(-1);
 
-		if(client)
+		if(router)
 		{
 			localOrder->sender = localPlayer;
 			shared_ptr<NetSendOrder> message(new NetSendOrder(localOrder));
-			client->sendNetMessage(message);
+			router->sendMessage(message);
 		}
 		pushOrder(localOrder, localPlayer, false);
 
@@ -167,6 +186,7 @@ void NetEngine::flushAllOrders()
 
 void NetEngine::prepareForLatency(int playerNumber, int latency)
 {
+	currentLatency = latency;
 	for(int s=0; s<latency; ++s)
 	{
 		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber, true);
@@ -221,3 +241,10 @@ bool NetEngine::matchCheckSums()
 	return true;
 }
 
+
+
+void NetEngine::increaseLatencyAdjustment()
+{
+	boost::shared_ptr<AdjustLatency> latency(new AdjustLatency(currentLatency+1));
+	addLocalOrder(latency);
+}

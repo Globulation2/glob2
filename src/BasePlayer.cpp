@@ -63,9 +63,6 @@ void BasePlayer::init()
 	lastUStepToExecute=0;
 	
 	disableRecursiveDestruction=false;
-	
-	logFile=globalContainer->logFileManager->getFile("Player.log");
-	assert(logFile);
 }
 
 BasePlayer::~BasePlayer(void)
@@ -86,7 +83,6 @@ void BasePlayer::setTeamNumber(Sint32 teamNumber)
 
 bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	fprintf(logFile, "versionMinor=%d.\n", versionMinor);
 	stream->readEnterSection("BasePlayer");
 	type = (PlayerType)stream->readUint32("type");
 	number = stream->readSint32("number");

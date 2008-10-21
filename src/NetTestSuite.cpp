@@ -305,7 +305,7 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetCreateGameAccepted>())
 		return 50;
 
-	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted(35));
+	shared_ptr<NetCreateGameAccepted> createGameAccepted1(new NetCreateGameAccepted(35, 72, "127.0.0.1", 27));
 	if(!testSerialize(createGameAccepted1))
 		return 51;
 		
@@ -335,11 +335,11 @@ int NetTestSuite::testNetMessages()
 	if(!testSerialize(startGame1))
 		return 63;
 
-	//Test NetRequestMap
-	if(!testInitial<NetRequestMap>())
+	//Test NetRequestFile
+	if(!testInitial<NetRequestFile>())
 		return 64;
 
-	shared_ptr<NetRequestMap> requestMap1(new NetRequestMap);
+	shared_ptr<NetRequestFile> requestMap1(new NetRequestFile);
 	if(!testSerialize(requestMap1))
 		return 65;
 
@@ -347,21 +347,13 @@ int NetTestSuite::testNetMessages()
 	if(!testInitial<NetSendFileInformation>())
 		return 66;
 
-	shared_ptr<NetSendFileInformation> sendFileInformation1(new NetSendFileInformation(14194));
+	shared_ptr<NetSendFileInformation> sendFileInformation1(new NetSendFileInformation(14194, 10));
 	if(!testSerialize(sendFileInformation1))
 		return 67;
 		
 	//Test NetSendFileChunk
 	if(!testInitial<NetSendFileChunk>())
 		return 68;
-		
-	//Test NetRequestNextChunk
-	if(!testInitial<NetRequestNextChunk>())
-		return 69;
-
-	shared_ptr<NetRequestNextChunk> requestChunk1(new NetRequestNextChunk);
-	if(!testSerialize(requestChunk1))
-		return 70;
 		
 	//Test NetKickPlayer
 	if(!testInitial<NetKickPlayer>())
@@ -652,12 +644,12 @@ int NetTestSuite::testNetReteamingInformation()
 
 int NetTestSuite::testListenerConnection()
 {
-	//Creates the NetListener at port 7485
+	//Creates the NetListener at port 7480
 	NetListener nl;
-	nl.startListening(7485);
+	nl.startListening(7480);
 	//Creates a NetConnection representing the client
 	NetConnection nc_client;
-	nc_client.openConnection("127.0.0.1", 7485);
+	nc_client.openConnection("127.0.0.1", 7480);
 	//Give it time to proccess the request
 	SDL_Delay(40);
 	//The server connection
@@ -683,7 +675,10 @@ int NetTestSuite::testListenerConnection()
 	shared_ptr<NetLoginSuccessful> netSendLogin1(new NetLoginSuccessful);
 	nc_client.sendMessage(netSendLogin1);
 	//Allow time for the request to be proccessed
-	SDL_Delay(40);
+	SDL_Delay(100);
+	
+	nc_client.update();
+	nc_server.update();
 	
 	//Recieves the message on the other end
 	shared_ptr<NetMessage> netSendLogin2 = nc_server.getMessage();

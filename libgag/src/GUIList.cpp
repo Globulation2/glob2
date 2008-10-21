@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
+#include "TextSort.h"
 
 using namespace GAGCore;
 
@@ -116,6 +117,7 @@ namespace GAGGUI
 		int scrollBarX = x + w - scrollBarW;
 		int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
 		int scrollBarBottomH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH);
+		int frameLeftWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_LEFT_WIDTH);
 		if (strings.size() > count)
 		{
 			if (isPtInRect(event->button.x, event->button.y, scrollBarX, y, scrollBarW, scrollBarTopH))
@@ -171,6 +173,7 @@ namespace GAGGUI
 						nth=id;
 						this->selectionChanged();
 					}
+					this->handleItemClick(nth, event->button.x - frameLeftWidth * 2 - x, event->button.y - y - 2 - (nth - disp) * textHeight);
 				}
 			}
 		}
@@ -309,6 +312,11 @@ namespace GAGGUI
 		parent->getSurface()->drawString(x, y, fontPtr, (strings[element]).c_str());
 	}
 	
+	void List::handleItemClick(size_t element, int mx, int my)
+	{
+		
+	}
+	
 	void List::addText(const std::string &text, size_t pos)
 	{
 		if (pos < strings.size())
@@ -328,7 +336,7 @@ namespace GAGGUI
 	
 	void List::sort(void)
 	{
-		std::sort(strings.begin(), strings.end());
+		std::sort(strings.begin(), strings.end(), GAGCore::naturalStringSort);
 	}
 	
 	void List::removeText(size_t pos)

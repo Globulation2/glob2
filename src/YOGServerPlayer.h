@@ -32,6 +32,7 @@ using namespace boost;
 class YOGServer;
 class YOGServerGame;
 class NetMessage;
+class P2PManager;
 
 ///This represents a connected user on the YOG server.
 class YOGServerPlayer
@@ -63,6 +64,9 @@ public:
 	///Returns the name of the player, or blank if they haven't logged in
 	std::string getPlayerName();
 
+	///Returns the ip address of the player
+	std::string getPlayerIP();
+
 	///Returns the game the player is connected to
 	boost::shared_ptr<YOGServerGame> getGame();
 
@@ -70,6 +74,12 @@ public:
 	///would be under this amount, so long as pings are normally distributed, which I've
 	///found that they are
 	unsigned getAveragePing() const;
+	
+	///This returns the port for the p2p connection client end on this player
+	int getP2PPort();
+	
+	///Tells this YOGServerPlayer to close connection
+	void closeConnection();
 private:
 	///This enum represents the state machine of the initial connection
 	enum ConnectionState
@@ -139,7 +149,9 @@ private:
 	Uint16 playerID;
 	///the name of the player after logging in
 	std::string playerName;
-
+	///This is the local p2p port that the player is using for incoming p2p connections
+	int port;	
+	
 	///Tells what game the player is currently a part of
 	Uint16 gameID;
 	///Links to the connected game

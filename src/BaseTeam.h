@@ -25,9 +25,6 @@
 #include "Stream.h"
 #include "GUIBase.h"
 
-#include "Race.h"
-
-
 class BaseTeam
 {
 public:
@@ -46,7 +43,6 @@ public:
 	Sint32 numberOfPlayer; // number of controling players
 	GAGCore::Color color;
 	Uint32 playersMask;
-	Race race;
 	
 public:
 	bool disableRecursiveDestruction;
@@ -56,7 +52,7 @@ private:
 
 public:
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	void save(GAGCore::OutputStream *stream);
+	void save(GAGCore::OutputStream *stream) const;
 
 	Uint8 *getData();
 	bool setData(const Uint8 *data, int dataLength);

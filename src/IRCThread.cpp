@@ -128,7 +128,7 @@ void IRCThread::operator()()
 				break;
 				
 				case IRC::IRC_MSG_QUIT:
-				message += " has quitted irc, reason";
+				message += " has quit irc, reason";
 				break;
 				
 				case IRC::IRC_MSG_MODE:

@@ -26,10 +26,11 @@ namespace GAGGUI
 	class TextArea;
 	class Text;
 	class TextButton;
+	class TextInput;
 }
 using namespace GAGGUI;
 class Game;
-class Mapscript;
+class MapScript;
 
 class ScriptEditorScreen:public OverlayScreen
 {
@@ -42,28 +43,44 @@ public:
 		LOAD,
 		SAVE,
 		TAB_SCRIPT = 10,
-		TAB_CAMPAIGN_TEXT
+		TAB_OBJECTIVES = 11,
+		TAB_BRIEFING = 12,
+		TAB_HINTS = 13,
+		TAB_PRIMARY = 14,
+		TAB_SECONDARY = 15,
 	};
 	
 protected:
 	TextArea *scriptEditor;
-	TextArea *campaignTextEditor;
 	Text *compilationResult;
-	Mapscript *mapScript;
+	MapScript *mapScript;
 	Game *game;
 	Text *mode;
-	TextButton *compileButton;
-	TextButton *loadButton;
-	TextButton *saveButton;
+	Text *cursorPosition;
+	TextInput *primaryObjectives[8];
+	TextInput *secondaryObjectives[8];
+	Text *primaryObjectiveLabels[8];
+	Text *secondaryObjectiveLabels[8];
+	TextArea* missionBriefing;
+	TextInput *hints[8];
+	Text *hintLabels[8];
 	
+	std::vector<Widget*> scriptWidgets;
+	std::vector<Widget*> objectivesWidgets;
+	std::vector<Widget*> briefingWidgets;
+	std::vector<Widget*> hintWidgets;
+	
+	
+	bool changeTabAgain;
 protected:
 	bool testCompile(void);
 	
 public:
-	ScriptEditorScreen(Mapscript *mapScript, Game *game);
+	ScriptEditorScreen(MapScript *mapScript, Game *game);
 	virtual ~ScriptEditorScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
+	virtual void onTimer(Uint32 tick);
 
 private:
 	void loadSave(bool isLoad, const char *dir, const char *ext);

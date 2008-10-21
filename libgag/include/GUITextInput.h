@@ -89,12 +89,15 @@ namespace GAGGUI
 		// cursor / activation
 		void setCursorPos(size_t pos){ cursPos = pos;};
 		void deactivate(void) { activated = false; recomputeTextInfos(); }
+		void activate(void) { activated = true; recomputeTextInfos(); }
 		
 		// autocompletion
 		void addAutoCompletableWord(const std::string &word);
 		void removeAutoCompletableWord(const std::string &word);
 		bool getAutoCompleteSuggestion(const std::string & word, std::vector<std::string> & wordlist);
 		std::string getAutoComplete(const std::string & word, int n);
+		
+		bool isActivated(void) { return activated; } 
 
 	protected:
 		void constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, size_t maxLength, bool password);

@@ -20,7 +20,6 @@
 #define __MultiplayerGameScreen_h
 
 #include <vector>
-#include "Glob2Screen.h"
 #include "MultiplayerGame.h"
 #include "AI.h"
 #include "MapHeader.h"
@@ -28,6 +27,7 @@
 #include "YOGClientChatListener.h"
 #include "MultiplayerGameEventListener.h"
 #include "IRCTextMessageHandler.h"
+#include "GUITabScreenWindow.h"
 
 namespace GAGGUI
 {
@@ -36,17 +36,20 @@ namespace GAGGUI
 	class TextInput;
 	class TextButton;
 	class ColorButton;
+	class OnOffButton;
 }
+
+using namespace GAGGUI;
 
 ///This screen is the setup screen for a multiplayer game. It functions both for the host
 ///and the joined player. It uses the information it gets from the given MultiplayerGame.
 ///This doesn't continue dispaying irc, it merely keeps it up to date and turns it on/off
 ///when starting and finishing games
-class MultiplayerGameScreen : public Glob2Screen, public YOGClientChatListener, public MultiplayerGameEventListener
+class MultiplayerGameScreen : public TabScreenWindow, public YOGClientChatListener, public MultiplayerGameEventListener
 {
 public:
 	///The screen must be provided with the client, the irc connection and the multiplayer game
-	MultiplayerGameScreen(boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat = boost::shared_ptr<IRCTextMessageHandler>());
+	MultiplayerGameScreen(TabScreen* parent, boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat = boost::shared_ptr<IRCTextMessageHandler>());
 	virtual ~MultiplayerGameScreen();
 
 	enum
@@ -64,10 +67,13 @@ private:
 	{
 		START = 1,
 		CANCEL = 2,
-		STARTED=11,
+		STARTED=3,
+		OTHEROPTIONS=4,
+		READY=5,
 		
 		COLOR_BUTTONS=32,
 		CLOSE_BUTTONS=64,
+		
 		
 		ADD_AI = 100
 	};
@@ -83,6 +89,9 @@ private:
 
 	///This function will update the list of joined players
 	void updateJoinedPlayers();
+	void updateVisibleButtons();
+	
+	virtual void onActivated();
 
 	TextButton *startButton;
 	TextButton *cancelButton;
@@ -91,15 +100,18 @@ private:
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
 	Text *percentDownloaded;
+	TextButton *otherOptions;
 
 	TextInput *textInput;
 	TextArea *chatWindow;
+	
+	OnOffButton *isReady;
+	Text *isReadyText;
 
 	boost::shared_ptr<MultiplayerGame> game;
 
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
-	Text *gameFullText;
 	Text *gameStartWaitingText;
 
 	boost::shared_ptr<YOGClientChatChannel> gameChat;

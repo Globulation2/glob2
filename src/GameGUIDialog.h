@@ -27,6 +27,7 @@ using namespace GAGGUI;
 namespace GAGGUI
 {
 	class OnOffButton;
+	class TriButton;
 	class Selector;
 	class Text;
 }
@@ -41,12 +42,11 @@ public:
 		LOAD_GAME = 0,
 		SAVE_GAME = 1,
 		OPTIONS = 2,
-		ALLIANCES = 3,
-		RETURN_GAME = 4,
-		QUIT_GAME = 5
+		RETURN_GAME = 5,
+		QUIT_GAME = 6
 	};
 public:
-	InGameMainScreen(bool showAlliance);
+	InGameMainScreen();
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
@@ -124,6 +124,33 @@ public:
 	InGameOptionScreen(GameGUI *gameGUI);
 	~InGameOptionScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
+};
+
+
+///This screen shows the current objectives of the mission, a mission briefing, and
+///hints as the mission goes along
+class InGameObjectivesScreen:public OverlayScreen
+{
+public:
+	enum
+	{
+		OBJECTIVES = 1,
+		BRIEFING = 2,
+		HINTS = 3,
+		OK = 4,
+	};
+public:
+	//If show briefing is enabled, then the briefing tab will be shown rather than the objectives tab
+	InGameObjectivesScreen(GameGUI* gui, bool showBriefing);
+	virtual ~InGameObjectivesScreen() { }
+	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	
+	Text* objectives;
+	Text* briefing;
+	Text* hints;
+	std::vector<Widget*> objectivesWidgets;
+	std::vector<Widget*> briefingWidgets;
+	std::vector<Widget*> hintsWidgets;
 };
 
 

@@ -1,7 +1,41 @@
 [%0 has left the game]
 %0 has quit the game.
+[%0 level %1]
+%0 Level %1
+[%0 units can't access building]
+%0 units can't access building
+[%0 units can't access fruit]
+%0 units can't access fruit
+[%0 units can't access resource]
+%0 units can't access resource
+[%0 units not available]
+%0 units not available
+[%0 units too far from building]
+%0 units too far from building
+[%0 units too far from fruit]
+%0 units too far from fruit
+[%0 units too far from resource]
+%0 units too far from resource
+[%0 units too low level]
+%0 units too low level
+[%0% Uploaded]
+%0% uploaded
 [%0's game]
 %0's Game
+[Number Of Units]
+Number Of Units
+[Number Of Buildings]
+Number Of Buildings
+[Prestige Score]
+Prestige Score
+[Total Hitpoints]
+Total Hitpoints
+[Total Attack Power]
+Total Attack Power
+[Total Defence Power]
+Total Defence Power
+[time]
+Time
 [%0's team unit got converted to your team]
 %0's team unit got converted to your team
 [abreaviation explanation A]
@@ -18,22 +52,40 @@ V: Show vision for all buildings
 Add map
 [add shortcut]
 Add Shortcut
+[Add]
+Add
+[AI Descriptions]
+AI Descriptions
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+Castor plays a conservative game and does very well on maps with few ressources. Medium Difficulty.
 [AICastor]
 Castor
+[AINicowar-Description]
+Nicowar plays aggressivly, grows large fast and throws huge armies at its opponents. Hard Difficulty.
 [AINicowar]
 Nicowar
+[AINone-Description]
+None - Doesn't do anything.
 [AINone]
 None
+[AINumbi-Description]
+Numbi - Expands lightly, and swiftly. Easy Difficulty.
 [AINumbi]
 Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity - Does not attack, but builds monstrous bases and aggressivly converts units. Easy Difficulty.
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+Toubib
 [AIToubib]
 Toubib
+[AIWarrush-Description]
+Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]
 Warrush
 [Alga]
@@ -88,70 +140,32 @@ Improves the fighting
 Barracks
 [beach size]
 beach size
+[Blocked Players]
+Blocked Players
 [break]
 break
-[build barracks level 0]
-Construct Barracks 1
-[build barracks level 1]
-Construct Barracks 2
-[build barracks level 2]
-Construct Barracks 3
-[build defencetower level 0]
-Construct Defence Tower 1
-[build defencetower level 1]
-Construct Defence Tower 2
-[build defencetower level 2]
-Construct Defence Tower 3
-[build hospital level 0]
-Construct Hospital 1
-[build hospital level 1]
-Construct Hospital 2
-[build hospital level 2]
-Construct Hospital 3
-[build inn level 0]
-Construct Inn 1
-[build inn level 1]
-Construct Inn 2
-[build inn level 2]
-Constuct Inn 3
-[build market level 0]
-Construct Market
-[build racetrack level 0]
-Construct Racetrack 1
-[build racetrack level 1]
-Construct Racetrack 2
-[build racetrack level 2]
-Construct Racetrack 3
-[build school level 0]
-Construct School 1
-[build school level 1]
-Construct School 2
-[build school level 2]
-Construct School 3
-[build stonewall level 0]
-Construct Stone Wall
-[build swarm level 0]
-Construct Swarm
-[build swimmingpool level 0]
-Construct Swimmingpool 1
-[build swimmingpool level 1]
-Construct Swimmingpool 2
-[build swimmingpool level 2]
-Construct Swimmingpool 3
+[briefing]
+Briefing
+[build %0 level %1]
+Construct %0 Level %1
 [Build]
 Build
-[Building Settings]
+[Building Defaults]
+Building Defaults
+[building settings]
 Building Settings
 [building site]
 construction site
+[Building Tool Line Explanation]
+Ctrl + Drag = Line
+[Building Tool Box Explanation]
+Shift + Drag = Box
 [Buildings]
 Buildings
 [Bullets]
 Bullets
 [campaign editor]
 Campaign Editor
-[campaign text]
-Campaign Text
 [campaign]
 Campaign
 [Can't connect, can't find host]
@@ -191,7 +205,7 @@ Clearing area
 [Clearing:]
 Clearing:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Clears resources
 [clearingflag]
@@ -204,14 +218,16 @@ Compile script
 compose
 [Computing Fertility]
 Computing Fertility
+[concrete islands terrain]
+Concrete Islands
 [connect]
 Connect
+[connecting to game]
+Connecting To Game
 [connecting to]
 Connecting to
-[constructed buildings]
-Constructed Buildings
-[construction and upgrades]
-Construction and Upgrades
+[Construction Site Defaults]
+Construction Site Defaults
 [Continue playing]
 Continue playing
 [control %0]
@@ -228,6 +244,8 @@ Create game
 Create map
 [credits]
 Credits
+[ctrl - line]
+Ctrl - Line
 [current speed]
 Current speed
 [custom game]
@@ -240,16 +258,12 @@ Damage
 Damaged Map
 [decrease units working]
 Decrease Units Working
+[Defeat Your Oppenents]
+Defeat Your Oppenents
 [defencetower explanation 2]
 units or buildings
 [defencetower explanation]
 Attacks nearby enemy
-[defencetower level 0]
-Defence Tower 1
-[defencetower level 1]
-Defence Tower 2
-[defencetower level 2]
-Defence Tower 3
 [defencetower]
 Defense Tower
 [Defense Map]
@@ -260,8 +274,6 @@ Defense
 Delete the selected game
 [delete]
 Delete
-[delete]
-delete
 [desert]
 desert
 [destroy building]
@@ -271,13 +283,19 @@ Destroy
 [display]
 Display
 [do nothing]
-Do Nothings
+Do Nothing
 [don't carry anything]
 Not carrying anything
 [down]
 down
+[Download Map]
+Download Map
+[Download Maps]
+Download Maps
 [downloaded %0]
 downloaded %0
+[downloading map]
+Downloading Map
 [edit map]
 Edit Map
 [editing map]
@@ -299,7 +317,7 @@ equals
 [escape]
 escape
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Attracts explorers
 [explorationflag]
@@ -344,8 +362,10 @@ f8
 f9
 [Fertility Map]
 Fertility Map
-[Flag Settings]
-Flag Settings
+[Flag Defaults]
+Flag Defaults
+[flag settings explanation]
+The default radius of the flag
 [food]
 Food
 [forbidden area]
@@ -366,6 +386,8 @@ Fullscreen
 Game full
 [game shortcuts]
 Game Shortcuts
+[Game]
+Game
 [general settings]
 General Settings
 [go to event]
@@ -392,10 +414,14 @@ Happiness
 Hard Pause
 [Harvest]
 Harvest
+[high priority]
+high
+[hints]
+Hints
 [home]
 home
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Heals your units
 [hospital]
@@ -406,6 +432,8 @@ Host a game
 HP
 [hp]
 Hitpoint
+[Human]
+Human
 [human]
 human
 [hungry]
@@ -417,15 +445,9 @@ On the way
 [increase units working]
 Increase Units Working
 [inn explanation 2]
- 
+
 [inn explanation]
 Foods your units
-[inn level 0]
-Inn 1
-[inn level 1]
-Inn 2
-[inn level 2]
-Inn 3
 [inn]
 Inn
 [insert]
@@ -436,6 +458,8 @@ Inside
 island size
 [islands terrain]
 Islands
+[isles terrain]
+Isles
 [iterate selection]
 Iterate to Next Selection
 [jobs]
@@ -466,6 +490,8 @@ left meta
 left windows key
 [left]
 left
+[Leo: nur ein erster Test]
+test
 [level]
 Level
 [levels]
@@ -480,30 +506,52 @@ Load Map
 Load Script
 [load]
 Load
+[loading map list]
+Loading Map List...
+[Lobby]
+Lobby
 [login]
 Login
 [Lost : %0 has more prestige than you]
 Lost: %0 has more prestige than you
 [Lost : your colony is dead]
 Lost: your colony is dead
+[low priority]
+low
 [lowquality]
 Low quality
 [Magic At. Air]
 Air dmg.
 [Magic At. Ground]
 Ground dmg.
+[map description]
+Description
+[Map Discovered]
+Map Discovered
+[Map download failure: lost connection]
+Map Download Failed: Connection to YOG lost
 [Map name: %0]
 Map name: %0.
 [map name]
 Name
+[map rated]
+Map Rated
 [map script]
 Map Script
 [map size x]
 Map width
 [map size y]
 Map height
-[maps available]
-Maps Available
+[Map upload failure: connection lost]
+Map upload failed: Connection to YOG lost
+[Map upload failure: map name in use]
+Map upload failed. Map name is in use.
+[Map upload failure: unknown reason]
+Map upload failed. Unknown reason.
+[Map Upload: Author Name]
+Author Name
+[Map Upload: Waiting for reply]
+Waiting for reply
 [mark map]
 Mark Map For Allies
 [market explanation 2]
@@ -512,6 +560,8 @@ fruits with others
 Allows the exchange of
 [market]
 Market
+[medium priority]
+mid
 [meta %0]
 meta-%0
 [Min required level:]
@@ -530,12 +580,18 @@ New Campaign
 New Map
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[No Hints]
+No Hints
 [no key]
 no key yet
+[No Objectives]
+No Objectives
 [no ressources growth areas]
 No Growth Areas
 [No]
 No
+[Not Enough Ratings]
+Not Enough Ratings
 [not ready]
 not ready
 [number of players: %0 (%1 AI)]
@@ -546,6 +602,8 @@ not ready
 number of teams
 [numlock]
 numlock
+[objectives]
+Objectives
 [of which]
 there are
 [ok]
@@ -568,12 +626,20 @@ Open Load Menu
 Open Save Menu
 [open script editor]
 Open Script Editor
+[open teams editor]
+Open Teams Editor
 [open]
 open
+[OpenGL]
+OpenGL
+[Options]
+Options
 [options]
 Options
 [Orange]
 Orange
+[Other Options]
+Other Options
 [page down]
 page down
 [page up]
@@ -588,16 +654,24 @@ pause
 Paused
 [player name]
 Player name
+[player rating %0]
+Player Rating: %0
 [please wait]
 Please wait
 [power]
 power
 [press space]
 Press space to continue.
+[Prestige Win Enabled]
+Prestige Win Enabled
 [Prestige]
 Prestige
+[Primary Objectives]
+Primary
 [print screen]
 print screen
+[priority]
+Priority
 [Prune]
 Plum
 [quit the editor]
@@ -614,24 +688,34 @@ Improves the walking
 Racetrack
 [range]
 Range
+[Rated %0]
+Rated %0
 [ratios]
 Proportions
-[Register a new YOG user with password]
-Register a new YOG user with a password. (insecure)
+[ready?]
+ready?
+[refresh map list]
+Refresh Map List
+[Register]
+Register
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
-Remember the password locally. (insecure)
+Remember the password locally.
 [remove map]
 Remove Map
 [remove shortcut]
 Remove Shortcut
+[Remove]
+Remove
 [repair building]
 Start/Stop Repair
 [repair]
 Repair
 [repeat area]
 times the same landscape
+[Repeat your password :]
+Repeat your password:
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [return to editor]
@@ -674,6 +758,8 @@ Script Areas
 scroll lock
 [scroll wheel enabled]
 Scroll Wheel Enabled
+[Secondary Objectives]
+Secondary
 [seeking a job]
 seeking a job
 [seeking]
@@ -752,6 +838,14 @@ Show Main Menu
 Display
 [smoothing]
 Smoothing
+[sort by name]
+Name
+[sort by rating]
+Rating
+[sort by size]
+Size
+[Sort By]
+Sort By
 [space]
 space
 [start mission]
@@ -767,7 +861,7 @@ starving
 [Statistics]
 Statistics
 [Still (i)]
-Still 
+Still
 [still (w)]
 Still
 [still one unit working]
@@ -784,16 +878,16 @@ element
 Passive defense
 [stonewall]
 Stone Wall
+[submit rating]
+Submit Rating
 [svr hostname]
 Server hostname
 [swamp terrain]
 Swamp
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Creates new units
-[swarm level 0]
-Swarm
 [swarm]
 Swarm
 [Swim]
@@ -836,6 +930,10 @@ Switch to Terrain view
 sys req
 [tab]
 tab
+[teams editor]
+Teams Editor
+[Teams Fixed]
+Teams Fixed
 [teams]
  teams
 [the barracks is finished]
@@ -944,12 +1042,12 @@ Uniform terrain
 Unit editor
 [unit settings explanation]
 The default number of units assigned
-[unit settings]
-Unit Settings
 [units working]
  units working
 [Units]
 Units
+[unlocked at start]
+Unlocked At Start
 [unlocked by]
 Unlocked By
 [Unnamed Area]
@@ -958,8 +1056,14 @@ Unlocked By
 up
 [upgrade building]
 Start/Stop Upgrade
+[Upgrade Defaults]
+Upgrade Defaults
 [upgrade]
 Upgrade
+[Upload Map]
+Upload Map
+[upload map]
+Upload Map
 [username]
 Username
 [Version]
@@ -977,7 +1081,7 @@ Waiting
 [Walk]
 Walk
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Attracts warriors
 [warflag]
@@ -1028,16 +1132,38 @@ The YOG metaserver has refused connection because this username has already been
 The YOG metaserver has refused connection because the supplied password was incorrect.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+The YOG metaserver has refused the connection because this IP address is temporarily banned. You will have to wait patiently until it is unbanned or contact the administrators.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 The YOG metaserver has refused the connection because your username is already used by someone else.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+The YOG metaserver has refused the connection because this username is banned. Please contact the administrators.
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+The YOG metaserver has refused the connection because the username given is invalid. Usernames can only contain letters, numbers, and underscores.
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+The provided passwords don't match. Please retype them.
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
+[yog block command help]
+/block <playername>    Blocks a player, you will no longer see his text
+[yog block command player %0 already blocked]
+Player %0 already blocked
+[yog block command player %0 blocked]
+Player %0 blocked
+[yog block command player %0 not found]
+Player %0 not found
+[yog command header]
+The current list of YOG Client Commands are:
+[yog command unknown]
+Unknown Command.
+[yog help command help]
+/help    Shows this help message
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1048,5 +1174,9 @@ You have won!
 You where kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
+[Your IP address was temporarily banned]
+Your IP address was temporarily banned. Please wait patiently until it is unbanned or contact the administrators.
 [Your unit got converted to %0's team]
 Your unit got converted to %0's team
+[Your username was banned]
+Your username was banned. Please contact the administrators to have this changed.

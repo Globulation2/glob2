@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 oyundan cikti.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@ V: Butun binalari goster
 
 [add shortcut]
 
+[Add]
+
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AINone
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -88,69 +126,29 @@ Savasmayi gelistirir
 Kisla
 [beach size]
 sahil boyutu
+[Blocked Players]
+
 [break]
 
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 Insaa et
-[Building Settings]
+[Building Defaults]
+
+[building settings]
 
 [building site]
 insaa alani
+[Building Tool Line Explanation]
+
 [Buildings]
 Binalar
 [Bullets]
 Mermiler
 [campaign editor]
-
-[campaign text]
 
 [campaign]
 Senaryo
@@ -197,7 +195,7 @@ Temizlik bolgesi
 [Clearing:]
 Aciklik:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Kaynaklari temizler
 [clearingflag]
@@ -210,13 +208,15 @@ Script derle
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 Baglan
+[connecting to game]
+
 [connecting to]
 Suraya baglaniyor:
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Oyuna devam et
@@ -234,6 +234,8 @@ Yeni oyun
 Yeni harita
 [credits]
 Hakkinda
+[ctrl - line]
+
 [current speed]
 Mevcut hiz
 [custom game]
@@ -246,16 +248,12 @@ Hasar
 
 [decrease units working]
 
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 birimler yada binalar
 [defencetower explanation]
 Yakindaki dusmana saldirir
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Savunma Kulesi
 [Defense Map]
@@ -280,7 +278,13 @@ Gorunum
 Hicbirsey tasimiyor
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 
@@ -303,7 +307,7 @@ Sifrenizi girin:
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Kasifleri ceker
 [explorationflag]
@@ -348,7 +352,9 @@ bos adalar
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 Besin
@@ -369,6 +375,8 @@ Tam ekran
 [game full]
 Oyun dolu
 [game shortcuts]
+
+[Game]
 
 [general settings]
 
@@ -396,10 +404,14 @@ Mutluluk
 
 [Harvest]
 Hasat et
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Birimlerinizi iyilestirir
 [hospital]
@@ -410,6 +422,8 @@ Oyun Sunucusu ol
 CAN
 [hp]
 Can
+[Human]
+
 [human]
 
 [hungry]
@@ -421,15 +435,9 @@ Yolda
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Birimlerinizi besler
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Otel
 [insert]
@@ -440,6 +448,8 @@ Icerde
 ada boyutu
 [islands terrain]
 Adalar
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -484,21 +494,35 @@ Oyun yukle
 
 [load]
 Yukle
+[loading map list]
+
+[Lobby]
+
 [login]
 Giris
 [Lost : %0 has more prestige than you]
 Yenilgi: %0 'nin prestiji sizinkinden daha fazla
 [Lost : your colony is dead]
 Yenilgi: koloniniz oldu
+[low priority]
+
 [lowquality]
 Dusuk kalite
 [Magic At. Air]
 Hava hasari
 [Magic At. Ground]
 Yer hasari
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Harita adi: %0.
 [map name]
+
+[map rated]
 
 [map script]
 
@@ -506,7 +530,15 @@ Harita adi: %0.
 Harita genisligi
 [map size y]
 Harita yuksekligi
-[maps available]
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
 
 [mark map]
 
@@ -516,6 +548,8 @@ baskalariyla alisveris yapar
 Sunun takasina izin verir:
 [market]
 Market
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +568,18 @@ sessiz
 Yeni
 [nick taken]
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 
 [No]
 Hayir
+[Not Enough Ratings]
+
 [not ready]
 hazir degil
 [number of players: %0 (%1 AI)]
@@ -551,6 +591,8 @@ hazir degil
 [number of teams]
 takim sayisi
 [numlock]
+
+[objectives]
 
 [of which]
 ayrintilar:
@@ -574,12 +616,20 @@ Burada
 
 [open script editor]
 
+[open teams editor]
+
 [open]
 Ac
+[OpenGL]
+OpenGL
+[Options]
+
 [options]
 Secenekler
 [Orange]
 Portakal
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +644,23 @@ Papirus
 Duraklatildi
 [player name]
 Oyuncu adi
+[player rating %0]
+
 [please wait]
 Lutfen bekleyin
 [power]
 
 [press space]
 Devam etmek icin bosluk tusuna basin.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestij
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Cir
@@ -620,10 +678,18 @@ Yurumeyi gelistirir
 Kosuyolu
 [range]
 Menzil
+[Rated %0]
+
 [ratios]
 Oranlar
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -632,11 +698,15 @@ Parolayi yerel olarak animsa. (guvenli degil)
 
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 
 [repair]
 Onar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -679,6 +749,8 @@ Akademi
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 tanesi is ariyor
@@ -758,6 +830,14 @@ V: konusmak icin basili tut
 Gorunum
 [smoothing]
 Duzeltme
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -773,7 +853,7 @@ cok ac
 [Statistics]
 Istatistikler
 [Still (i)]
-Hala 
+Hala
 [still (w)]
 Hala
 [still one unit working]
@@ -790,16 +870,16 @@ bilesen
 Pasif savunma
 [stonewall]
 Tas duvar
+[submit rating]
+
 [svr hostname]
 Sunucu adi
 [swamp terrain]
 Bataklik
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Yeni birimler olusturur
-[swarm level 0]
-
 [swarm]
 Yuva
 [Swim]
@@ -841,6 +921,10 @@ Yuzme havuzu
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
  takimlar
@@ -948,12 +1032,12 @@ Tekbicimli saha
 Birim editoru
 [unit settings explanation]
 
-[unit settings]
-
 [units working]
  calisan birimler
 [Units]
 Birimler
+[unlocked at start]
+
 [unlocked by]
 
 [Unnamed Area]
@@ -962,8 +1046,14 @@ Birimler
 
 [upgrade building]
 
+[Upgrade Defaults]
+
 [upgrade]
 Gelistir
+[Upload Map]
+
+[upload map]
+
 [username]
 Kullanici adi
 [Version]
@@ -981,7 +1071,7 @@ bekleniyor: %0
 [Walk]
 Yuru
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Savascilari ceker
 [warflag]
@@ -1034,16 +1124,38 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi zaten kayitli.  Eg
 YOG onsunucusu baglantiyi reddetti. Gerekce: Girdiginiz sifre yanlis.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adinin henuz bir parolasi yok. Muhtemelen kullanici adinizi bu parola ile kaydetmek istiyorsunuz. O halde, baglanmadan once "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini aktiflestirin. Bu secenegi yalnizca bir kez aktiflestirmeniz yeterli olacaktir.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Oyun versiyonunuz cok eski.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1054,5 +1166,9 @@ Kazandiniz!
 
 [Your %0 are under attack]
 %0 'leriniz saldiri altinda
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Bir biriminiz %0 'nin tarafina gecti
+[Your username was banned]
+

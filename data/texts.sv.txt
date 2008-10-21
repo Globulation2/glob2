@@ -1,5 +1,25 @@
 [%0 has left the game]
 %0 har lämnat spelet.
+[%0 level %1]
+
+[%0 units can't access building]
+
+[%0 units can't access fruit]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units too far from building]
+
+[%0 units too far from fruit]
+
+[%0 units too far from resource]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
 [%0's game]
 
 [%0's team unit got converted to your team]
@@ -18,22 +38,40 @@ V: Visa synfält för alla byggnader
 Lägg till karta
 [add shortcut]
 
+[Add]
+
+[AI Descriptions]
+
 [AI]
 AI
 [ai]
 AI
+[AICastor-Description]
+
 [AICastor]
 AICastor
+[AINicowar-Description]
+
 [AINicowar]
 Nicowar
+[AINone-Description]
+
 [AINone]
 AIIngen
+[AINumbi-Description]
+
 [AINumbi]
 AINumbi
+[AIReachToInfinity-Description]
+
 [AIReachToInfinity]
 ReachToInfinity
+[AIToubib-Description]
+
 [AIToubib]
 AIToubib
+[AIWarrush-Description]
+
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -88,70 +126,30 @@ Förbättrar stridsnivån
 Barrack
 [beach size]
 strandstorlek
+[Blocked Players]
+
 [break]
 
-[build barracks level 0]
+[briefing]
 
-[build barracks level 1]
-
-[build barracks level 2]
-
-[build defencetower level 0]
-
-[build defencetower level 1]
-
-[build defencetower level 2]
-
-[build hospital level 0]
-
-[build hospital level 1]
-
-[build hospital level 2]
-
-[build inn level 0]
-
-[build inn level 1]
-
-[build inn level 2]
-
-[build market level 0]
-
-[build racetrack level 0]
-
-[build racetrack level 1]
-
-[build racetrack level 2]
-
-[build school level 0]
-
-[build school level 1]
-
-[build school level 2]
-
-[build stonewall level 0]
-
-[build swarm level 0]
-
-[build swimmingpool level 0]
-
-[build swimmingpool level 1]
-
-[build swimmingpool level 2]
+[build %0 level %1]
 
 [Build]
 Bygga
-[Building Settings]
+[Building Defaults]
 
+[building settings]
+Enheter
 [building site]
 byggarbetsplats
+[Building Tool Line Explanation]
+
 [Buildings]
 Byggnader
 [Bullets]
 Kulor
 [campaign editor]
 Kampanj Editor
-[campaign text]
-
 [campaign]
 Kampanj
 [Can't connect, can't find host]
@@ -197,7 +195,7 @@ Röjningsområde
 [Clearing:]
 Röjning:
 [clearingflag explanation 2]
- 
+
 [clearingflag explanation]
 Röjer resurser
 [clearingflag]
@@ -210,13 +208,15 @@ Kompilera skript
 
 [Computing Fertility]
 
+[concrete islands terrain]
+
 [connect]
 Anslut
+[connecting to game]
+
 [connecting to]
 Ansluter till
-[constructed buildings]
-
-[construction and upgrades]
+[Construction Site Defaults]
 
 [Continue playing]
 Fortsätt spela
@@ -234,6 +234,8 @@ Skapa spel
 Skapa karta
 [credits]
 Credits
+[ctrl - line]
+
 [current speed]
 Nuvarande hastighet
 [custom game]
@@ -246,16 +248,12 @@ Skada
 Skadekarta
 [decrease units working]
 
+[Defeat Your Oppenents]
+
 [defencetower explanation 2]
 enheter eller byggnader
 [defencetower explanation]
 Attackerar fientliga
-[defencetower level 0]
-
-[defencetower level 1]
-
-[defencetower level 2]
-
 [defencetower]
 Försvarstorn
 [Defense Map]
@@ -280,7 +278,13 @@ Bildskärm
 Bär ingenting
 [down]
 
+[Download Map]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloading map]
 
 [edit map]
 Editera Karta
@@ -303,7 +307,7 @@ Skriv in ditt lösenord:
 [escape]
 
 [explorationflag explanation 2]
- 
+
 [explorationflag explanation]
 Attraherar utforskare
 [explorationflag]
@@ -348,7 +352,9 @@ tomma öar
 
 [Fertility Map]
 
-[Flag Settings]
+[Flag Defaults]
+
+[flag settings explanation]
 
 [food]
 Mat
@@ -370,6 +376,8 @@ Fullskärm
 Spelet är fullt
 [game shortcuts]
 Spelgenvägar
+[Game]
+
 [general settings]
 Allmänt
 [go to event]
@@ -396,10 +404,14 @@ Glädje
 
 [Harvest]
 Skörda
+[high priority]
+
+[hints]
+
 [home]
 
 [hospital explanation 2]
- 
+
 [hospital explanation]
 Helar dina enheter
 [hospital]
@@ -410,6 +422,8 @@ Var värd för ett spel
 HP
 [hp]
 Hälsopoäng
+[Human]
+
 [human]
 mänsklig
 [hungry]
@@ -421,15 +435,9 @@ På väg
 [increase units working]
 
 [inn explanation 2]
- 
+
 [inn explanation]
 Utfodrar dina enheter
-[inn level 0]
-
-[inn level 1]
-
-[inn level 2]
-
 [inn]
 Värdshus
 [insert]
@@ -440,6 +448,8 @@ Inuti
 östorlek
 [islands terrain]
 Öar
+[isles terrain]
+
 [iterate selection]
 
 [jobs]
@@ -484,28 +494,52 @@ Ladda Karta
 
 [load]
 Ladda
+[loading map list]
+
+[Lobby]
+
 [login]
 Logga in
 [Lost : %0 has more prestige than you]
 Förlust: %0 har mer prestige än dig
 [Lost : your colony is dead]
 Förlust: Din koloni är död
+[low priority]
+
 [lowquality]
 Låg kvalitet
 [Magic At. Air]
 Luftskada
 [Magic At. Ground]
 Markskada
+[map description]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
 [Map name: %0]
 Kartnamn: %0.
 [map name]
 Namn
+[map rated]
+
 [map script]
 
 [map size x]
 Kartbredd
 [map size y]
 Karthöjd
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: unknown reason]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
 [maps available]
 Tillgängliga Kartor
 [mark map]
@@ -513,9 +547,11 @@ Markera Karta För Allierade
 [market explanation 2]
 frukt med andra
 [market explanation]
-Tillåter utbyte av 
+Tillåter utbyte av
 [market]
 Marknad
+[medium priority]
+
 [meta %0]
 
 [Min required level:]
@@ -534,12 +570,18 @@ Ny Kampanj
 Ny
 [nick taken]
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
+[No Hints]
+
 [no key]
+
+[No Objectives]
 
 [no ressources growth areas]
 Inga Odlingsområden
 [No]
 Nej
+[Not Enough Ratings]
+
 [not ready]
 inte redo
 [number of players: %0 (%1 AI)]
@@ -551,6 +593,8 @@ inte redo
 [number of teams]
 antal lag
 [numlock]
+
+[objectives]
 
 [of which]
 av vilka
@@ -574,12 +618,20 @@ Här
 Öppna Spara Meny
 [open script editor]
 Öppna Skript Editor
+[open teams editor]
+
 [open]
 öppna
+[OpenGL]
+OpenGL
+[Options]
+
 [options]
 Alternativ
 [Orange]
 Apelsin
+[Other Options]
+
 [page down]
 
 [page up]
@@ -594,15 +646,23 @@ Pausa Spel
 Pausat
 [player name]
 Spelarnamn
+[player rating %0]
+
 [please wait]
 Var god vänta
 [power]
 
 [press space]
 Tryck mellanslag för att forsätta.
+[Prestige Win Enabled]
+
 [Prestige]
 Prestige
+[Primary Objectives]
+
 [print screen]
+
+[priority]
 
 [Prune]
 Sviskon
@@ -620,10 +680,18 @@ hos dina enheter
 Löparbana
 [range]
 Räckvidd
+[Rated %0]
+
 [ratios]
 Proportioner
+[ready?]
+
+[refresh map list]
+
 [Register a new YOG user with password]
 Registrera en ny YOG-användare med lösenord. (osäkert)
+[Register]
+
 [remember unit]
 Kom Ihåg Enhet
 [Remember YOG password localy]
@@ -632,12 +700,16 @@ Kom ihåg mitt lösenord lokalt. (osäkert)
 Ta Bort Karta
 [remove shortcut]
 
+[Remove]
+
 [repair building]
 Starta/Stoppa Reparation
 [repair]
 Reparera
 [repeat area]
 gånger samma landskap
+[Repeat your password :]
+
 [restore default shortcuts]
 Återställ Till Ursprungliga Tangentbordsgenvägar
 [return to editor]
@@ -679,6 +751,8 @@ Skript Områden
 [scroll lock]
 
 [scroll wheel enabled]
+
+[Secondary Objectives]
 
 [seeking a job]
 söker efter arbete
@@ -758,6 +832,14 @@ V: håll för att prata
 Display
 [smoothing]
 Uppmjukning
+[sort by name]
+
+[sort by rating]
+
+[sort by size]
+
+[Sort By]
+
 [space]
 
 [start mission]
@@ -773,7 +855,7 @@ svälter
 [Statistics]
 Statistik
 [Still (i)]
-Ännu 
+Ännu
 [still (w)]
 Ännu
 [still one unit working]
@@ -785,21 +867,21 @@ Sten
 [stone]
 sten
 [stonewall explanation 2]
- 
+
 [stonewall explanation]
 Passivt försvarselement
 [stonewall]
 Stenmur
+[submit rating]
+
 [svr hostname]
 Server värdnamn
 [swamp terrain]
 Träsk
 [swarm explanation 2]
- 
+
 [swarm explanation]
 Skapar nya enheter
-[swarm level 0]
-
 [swarm]
 Svärm
 [Swim]
@@ -841,6 +923,10 @@ Byt till Terrängvy
 [sys req]
 
 [tab]
+
+[teams editor]
+
+[Teams Fixed]
 
 [teams]
  lag
@@ -948,12 +1034,12 @@ Enhetlig terräng
 Enhetseditor
 [unit settings explanation]
 
-[unit settings]
-Enheter
 [units working]
  arbetande enheter
 [Units]
 Enheter
+[unlocked at start]
+
 [unlocked by]
 Upplåst Av
 [Unnamed Area]
@@ -962,8 +1048,14 @@ Upplåst Av
 
 [upgrade building]
 Starta/Stoppa Uppgradering
+[Upgrade Defaults]
+
 [upgrade]
 Uppgradera
+[Upload Map]
+
+[upload map]
+
 [username]
 Användarnamn
 [Version]
@@ -981,7 +1073,7 @@ Väntar på %0
 [Walk]
 Gå
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Attraherar krigare
 [warflag]
@@ -1034,16 +1126,38 @@ YOG metaserver vägrar anslutning därför att användarnamnet redan är registr
 YOG metaserver låter dig inte ansluta eftersom du har angett ett felaktigt lösenord.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver vägrar anslutning därför att det här användarnamnet inte har ett lösenord. Du vill förmodligen registrera ditt användarnamn med det här lösenordet. Aktivera därför inställningen "Registrera en ny YOG-användare med lösenord" innan du ansluter. Du måste bara aktivera den inställningen en gång.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gammal.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver vägrar anslutning utan att lämna förklaring!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
 [YESTS_CREATED]
 Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 blocked]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command unknown]
+
+[yog help command help]
+
 [yog]
 Ysagoon Online Spel
 [you have lost]
@@ -1054,5 +1168,9 @@ Du har vunnit!
 
 [Your %0 are under attack]
 Din %0 är under attack
+[Your IP address was temporarily banned]
+
 [Your unit got converted to %0's team]
 Din enhet blev omvänd till %0s lag
+[Your username was banned]
+

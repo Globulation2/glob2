@@ -87,6 +87,8 @@ void Team::init(void)
 
 	isAlive=true;
 	hasWon=false;
+	hasLost=false;
+	winCondition = WCUnknown;
 	prestige=0;
 	unitConversionLost = 0;
 	unitConversionGained = 0;
@@ -107,7 +109,6 @@ void Team::setBaseTeam(const BaseTeam *initial)
 	teamNumber=initial->teamNumber;
 	numberOfPlayer=initial->numberOfPlayer;
 	playersMask=initial->playersMask;
-	race=initial->race;
 	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
 
 	setCorrectColor(initial->color);
@@ -239,6 +240,19 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		return false;
 	}
 	stats.step(this, true);
+	
+	if(versionMinor >= 73)
+	{
+		if(!race.load(stream, versionMinor))
+		{
+			stream->readLeaveSection();
+			return false;
+		}
+	}
+	else
+	{
+		race.load();
+	}
 
 	isAlive = true;
 
@@ -338,6 +352,7 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 
 	stats.save(stream);
+	race.save(stream);
 
 	stream->writeLeaveSection();
 }
@@ -743,6 +758,9 @@ Building *Team::findBestUpgrade(Unit *unit)
 
 bool Team::prioritize_building(Building* lhs, Building* rhs)
 {
+	if(lhs->priority != rhs->priority)
+		return lhs->priority > rhs->priority;
+
 	int priority_lhs=0;
 	if(lhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !lhs->type->isBuildingSite)
 		priority_lhs=2+lhs->type->level*10;
@@ -769,8 +787,6 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
-			lhs->computeWishedRessources();
-			rhs->computeWishedRessources();
 			int ratio_lhs_ressource = lhs->totalWishedRessource();
 			int ratio_rhs_ressource = rhs->totalWishedRessource();
 			return ratio_lhs_ressource > ratio_rhs_ressource;
@@ -784,39 +800,59 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 }
 
 
-void Team::add_building_needing_work(Building* b)
+void Team::add_building_needing_work(Building* b, Sint32 priority)
 {
 	bool did_find_position=false;
-	for(unsigned i=0; i<buildingsNeedingUnits.size(); ++i)
+	Sint32 p = priority;
+	std::vector<Building*>& blist = buildingsNeedingUnits[p];
+	for(std::vector<Building*>::iterator i=blist.begin(); i!=blist.end(); ++i)
 	{
-		if(prioritize_building(b, buildingsNeedingUnits[i]))
+		if(prioritize_building(b, *i))
 		{
-			buildingsNeedingUnits.insert(buildingsNeedingUnits.begin() + i, b);
+			buildingsNeedingUnits[p].insert(i, b);
 			did_find_position=true;
 			break;
 		}
 	}
 	if(!did_find_position)
-		buildingsNeedingUnits.push_back(b);
+		buildingsNeedingUnits[p].push_back(b);
 }
 
 
-void Team::remove_building_needing_work(Building* b)
+void Team::remove_building_needing_work(Building* b, Sint32 priority)
 {
-	buildingsNeedingUnits.erase(std::find(buildingsNeedingUnits.begin(), buildingsNeedingUnits.end(), b));
+	Sint32 p = priority;
+	buildingsNeedingUnits[p].erase(std::find(buildingsNeedingUnits[p].begin(), buildingsNeedingUnits[p].end(), b));
 }
 
 
 
 void Team::updateAllBuildingTasks()
 {
-	std::sort(buildingsNeedingUnits.begin(), buildingsNeedingUnits.end(), Team::prioritize_building);
-	for(unsigned i=0; i<buildingsNeedingUnits.size(); ++i)
+	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
-		if(buildingsNeedingUnits[i]->type->isVirtual)
-			buildingsNeedingUnits[i]->subscribeForFlagingStep();
-		else
-			buildingsNeedingUnits[i]->subscribeToBringRessourcesStep();
+		std::sort(i->second.begin(), i->second.end(), Team::prioritize_building);
+		bool cont=true;
+		std::vector<bool> foundPer(i->second.size(), true);
+		while(cont)
+		{
+			bool found=false;
+			for(unsigned j=0; j<(i->second.size()); ++j)
+			{
+				if(foundPer[j])
+				{
+					bool thisFound=false;
+					if(i->second[j]->type->isVirtual)
+						thisFound |= (i->second)[j]->subscribeForFlagingStep();
+					else
+						thisFound |= (i->second)[j]->subscribeToBringRessourcesStep();
+					found |= thisFound;
+					foundPer[j] = thisFound;
+				}
+			}
+			if(!found)
+				cont = false;
+		}
 	}
 }
 
@@ -1255,3 +1291,34 @@ std::string Team::getFirstPlayerName(void) const
 	}
 	return Toolkit::getStringTable()->getString("[Uncontrolled]");
 }
+
+
+
+void Team::checkWinConditions()
+{
+	std::list<boost::shared_ptr<WinningCondition> >& conditions = game->gameHeader.getWinningConditions();
+	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
+	{
+		if((*i)->hasTeamWon(teamNumber, game))
+		{
+			hasWon=true;
+			hasLost=false;
+			winCondition = (*i)->getType();
+			break;
+		}
+		else if((*i)->hasTeamLost(teamNumber, game))
+		{
+			hasWon=false;
+			hasLost=true;
+			winCondition = (*i)->getType();
+			break;
+		}
+		else
+		{
+			hasWon=false;
+			hasLost=false;
+			winCondition = WCUnknown;
+		}
+	}
+}
+

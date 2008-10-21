@@ -20,6 +20,7 @@
 #include "StreamBackend.h"
 #include "BinaryStream.h"
 #include "NetMessage.h"
+#include "boost/lexical_cast.hpp"
 
 using namespace GAGCore;
 
@@ -47,11 +48,21 @@ void NetConnectionThread::operator()()
 		SDL_Delay(20);
 		{
 			//First parse incoming thread messages
-			boost::recursive_mutex::scoped_lock lock(incomingMutex);
-			while(!incoming.empty())
+			while(true)
 			{
-				boost::shared_ptr<NetConnectionThreadMessage> message = incoming.front();
-				incoming.pop();
+				boost::shared_ptr<NetConnectionThreadMessage> message;
+				{
+					boost::recursive_mutex::scoped_lock lock(incomingMutex);
+					if(!incoming.empty())
+					{
+						message = incoming.front();
+						incoming.pop();
+					}
+					else
+					{
+						break;
+					}
+				}
 				Uint8 type = message->getMessageType();
 				switch(type)
 				{
@@ -79,7 +90,7 @@ void NetConnectionThread::operator()()
 								{
 									SDLNet_TCP_AddSocket(set, socket);
 									connected=true;
-									boost::shared_ptr<NTConnected> connected(new NTConnected);
+									boost::shared_ptr<NTConnected> connected(new NTConnected(info->getServer()));
 									sendToMainThread(connected);
 								}
 							}
@@ -100,8 +111,8 @@ void NetConnectionThread::operator()()
 						boost::shared_ptr<NTSendMessage> info = static_pointer_cast<NTSendMessage>(message);
 						if(connected)
 						{
-							//std::cout<<"Sending: "<<message->format()<<std::endl;
 							boost::shared_ptr<NetMessage> message = info->getMessage();
+							//std::cout<<"Sending: "<<message->format()<<std::endl;
 							MemoryStreamBackend* msb = new MemoryStreamBackend;
 							BinaryOutputStream* bos = new BinaryOutputStream(msb);
 							bos->writeUint8(message->getMessageType(), "messageType");
@@ -139,25 +150,15 @@ void NetConnectionThread::operator()()
 						}
 					}
 					break;
-					case NTMAttemptConnection:
+					case NTMAcceptConnection:
 					{
-						boost::shared_ptr<NTAttemptConnection> info = static_pointer_cast<NTAttemptConnection>(message);
+						boost::shared_ptr<NTAcceptConnection> info = static_pointer_cast<NTAcceptConnection>(message);
 						if(!connected)
 						{
-							socket=SDLNet_TCP_Accept(info->getSocket());
-							if(!socket)
-							{
-								boost::shared_ptr<NTCouldNotConnect> error(new NTCouldNotConnect(SDLNet_GetError()));
-								sendToMainThread(error);
-							}
-							else
-							{
-								connected=true;
-								address = *SDLNet_TCP_GetPeerAddress(socket);
-								SDLNet_TCP_AddSocket(set, socket);
-								boost::shared_ptr<NTConnected> connected(new NTConnected);
-								sendToMainThread(connected);
-							}
+							connected=true;
+							socket=info->getSocket();
+							address = *SDLNet_TCP_GetPeerAddress(socket);
+							SDLNet_TCP_AddSocket(set, socket);
 						}
 					}
 					break;
@@ -174,9 +175,10 @@ void NetConnectionThread::operator()()
 				}
 			}
 			
-			while (true)
+			while (connected)
 			{
-				int numReady = SDLNet_CheckSockets(set, 0);	
+				SDL_Delay(50);
+				int numReady = SDLNet_CheckSockets(set, 0);
 				//This checks if there are any active sockets.
 				//SDLNet_CheckSockets is used because it is non-blocking
 				if(numReady==-1)
@@ -227,6 +229,7 @@ void NetConnectionThread::operator()()
 								amount = 0;
 							}
 						*/
+										
 							MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
 							msb->seekFromStart(0);
 							BinaryInputStream* bis = new BinaryInputStream(msb);

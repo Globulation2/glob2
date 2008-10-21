@@ -19,21 +19,21 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "EditorMainMenu.h"
-
-#include <GUIButton.h>
-#include <GUIText.h>
-#include <StringTable.h>
-#include <Toolkit.h>
-
-#include "NewMapScreen.h"
-#include "ChooseMapScreen.h"
 #include "CampaignEditor.h"
 #include "CampaignSelectorScreen.h"
+#include "ChooseMapScreen.h"
+#include "EditorMainMenu.h"
+#include "GlobalContainer.h"
+#include <GUIButton.h>
+#include <GUIText.h>
 #include "MapEdit.h"
+#include "MapGenerator.h"
+#include "NewMapScreen.h"
+#include <StringTable.h>
+#include <Toolkit.h>
 #include "Utilities.h"
 
-#include "GlobalContainer.h"
+
 
 using namespace GAGGUI;
 
@@ -61,11 +61,12 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 				if (rc_nms==NewMapScreen::OK)
 				{
 					MapEdit mapEdit;
-					//mapEdit.resize(newMapScreen.sizeX, newMapScreen.sizeY);
+					MapGenerator generator;
 					setRandomSyncRandSeed();
-					if (mapEdit.game.generateMap(newMapScreen.descriptor))
+					if (generator.generateMap(mapEdit.game, newMapScreen.descriptor))
 					{
 						mapEdit.mapHasBeenModiffied(); // make all map as modified by default
+						mapEdit.regenerateGameHeader();
 						if (mapEdit.run()==-1)
 							endExecute(-1);
 						retryNewMapScreen=false;

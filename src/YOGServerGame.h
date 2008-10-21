@@ -23,12 +23,13 @@
 #include <boost/shared_ptr.hpp>
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
+#include "YOGGameResults.h"
 
 class NetKickPlayer;
 class NetSendOrder;
 class YOGServer;
 class YOGServerGamePlayerManager;
-class YOGServerMapDistributor;
+class YOGServerFileDistributor;
 class YOGServerPlayer;
 class NetMessage;
 
@@ -38,7 +39,7 @@ class YOGServerGame
 {
 public:
 	///Constructs a new YOG game
-	YOGServerGame(Uint16 gameID, Uint32 chatChannel, YOGServer& server);
+	YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::string& routerIP, YOGServer& server);
 
 	///Updates the game
 	void update();
@@ -74,12 +75,6 @@ public:
 	///unless sender is null
 	void routeMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
 	
-	///Routes the given order to all players except the sender. Sender can be null
-	void routeOrder(boost::shared_ptr<NetSendOrder> order, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
-	
-	///Returns the map distributor
-	boost::shared_ptr<YOGServerMapDistributor> getMapDistributor();
-	
 	///Kicks the player and sends a kick message to the player
 	void kickPlayer(boost::shared_ptr<NetKickPlayer> message);
 	
@@ -114,26 +109,39 @@ public:
 
 	///This chooses a latency mode and sends it to all the players
 	void chooseLatencyMode();
+	
+	///This sets a players game result
+	void setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result);
 
+	///This sends the games results to the game log, if this game actually went through
+	void sendGameResultsToGameLog();
+	
+	///Returns the router ip address for this game
+	const std::string getRouterIP() const;
+	
+	///Returns the file transfer id for the map of this game
+	Uint16 getFileID() const;
 private:
-	bool recievedMapHeader;
-	bool hasAddedHost;
-	bool requested;
 	bool gameStarted;
+	bool hasAddedHost;
 	bool oldReadyToLaunch;
+	bool recievedMapHeader;
+	bool requested;
+	boost::shared_ptr<YOGServerPlayer> host;
+	GameHeader gameHeader;
 	int latencyMode;
 	int latencyUpdateTimer;
+	Uint32 mapFile;
 	MapHeader mapHeader;
-	GameHeader gameHeader;
+	NetGamePlayerManager playerManager;
+	NetReteamingInformation reteamingInfo;
+	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
 	Uint16 gameID;
 	Uint32 chatChannel;
-	boost::shared_ptr<YOGServerPlayer> host;
-	boost::shared_ptr<YOGServerMapDistributor> distributor;
-	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
-	YOGServer& server;
-	NetGamePlayerManager playerManager;
 	Uint8 aiNum;
-	NetReteamingInformation reteamingInfo;
+	std::string routerIP;
+	YOGServer& server;
+	YOGGameResults gameResults;
 };
 
 

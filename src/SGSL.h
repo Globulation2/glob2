@@ -39,7 +39,7 @@ namespace GAGCore
 	class OutputStream;
 }
 
-struct Token
+struct SGSLToken
 {
 	enum TokenType
 	{
@@ -48,6 +48,9 @@ struct Token
 		INT,
 		STRING,
 		LANG,
+		
+		// Generic language stuff
+		FUNC_CALL=10,
 
 		// Syntaxic token
 		S_PAROPEN=20,
@@ -99,12 +102,13 @@ struct Token
 		S_ATTACK_B,
 		S_SCIENCE_B,
 		S_DEFENCE_B,
-		S_WALL_B=S_SWARM_B+IntBuildingType::STONE_WALL,
-		S_MARKET_B,
 
-		S_EXPLOR_F,
+		S_EXPLOR_F=S_SWARM_B+IntBuildingType::EXPLORATION_FLAG,
 		S_FIGHT_F,
 		S_CLEARING_F,
+		
+		S_WALL_B=S_SWARM_B+IntBuildingType::STONE_WALL,
+		S_MARKET_B,
 
 		// GUI elements that can be disabled or enabled
 		S_BUILDINGTAB,
@@ -124,10 +128,10 @@ struct Token
 	std::string msg;
 
 	//! Constructor, set logic default values
-	Token() { type=NIL; value=0; }
+	SGSLToken() { type=NIL; value=0; }
 	
 	//! Constructor, create a token of type t
-	Token(TokenType t) { type=t; value=0; }
+	SGSLToken(TokenType t) { type=t; value=0; }
 
 	//! This table is a map table between token type and token names
 	static TokenSymbolLookupTable table[];
@@ -138,6 +142,26 @@ struct Token
 	//! Returns the name a of given type (debug & script recreation phase)
 	static const char *getNameByType(TokenType type);
 };
+
+// generic functions
+
+class Story;
+class Mapscript;
+class GameGUI;
+class Game;
+
+//! The implementation of a generic function
+typedef void (Story::*FunctionImplementation)(GameGUI*);
+
+//! The description of one function argument
+struct FunctionArgumentDescription
+{
+	const int argRangeFirst;	//!< first valid token type for argument, if < 0 invalid argument description
+	const int argRangeLast; //!< last valid token type for argument, if < 0 invalid argument description
+};
+
+//! All known functions
+typedef std::map<std::string, std::pair<const FunctionArgumentDescription*, FunctionImplementation> > Functions;
 
 struct ErrorReport
 {
@@ -158,6 +182,7 @@ struct ErrorReport
 		ET_INVALID_ALLIANCE_LEVEL,
 		ET_NOT_VALID_LANG_ID,
 		ET_INVALID_ONLY,
+		ET_WRONG_FUNCTION_ARGUMENT,
 		ET_UNKNOWN,
 		ET_NB_ET,
 	} type;
@@ -176,11 +201,11 @@ struct ErrorReport
 class Aquisition
 {
 public:
-	Aquisition(void);
+	Aquisition(const Functions& functions);
 	virtual ~Aquisition(void);
 
 public:
-	const Token *getToken() { return &token; }
+	const SGSLToken *getToken() { return &token; }
 	void nextToken();
 	bool newFile(const char*);
 	unsigned getLine(void) { return lastLine; }
@@ -191,7 +216,8 @@ public:
 	virtual int ungetChar(char c) = 0;
 
 private:
-	Token token;
+	const Functions& functions;
+	SGSLToken token;
 	unsigned actLine, actCol, actPos, lastLine, lastCol, lastPos;
 	bool newLine;
 };
@@ -200,7 +226,7 @@ private:
 class FileAquisition: public Aquisition
 {
 public:
-	FileAquisition() { fp=NULL; }
+	FileAquisition(const Functions& functions) : Aquisition(functions) { fp=NULL; }
 	virtual ~FileAquisition() { if (fp) fclose(fp); }
 	bool open(const char *filename);
 
@@ -215,7 +241,7 @@ private:
 class StringAquisition: public Aquisition
 {
 public:
-	StringAquisition();
+	StringAquisition(const Functions& functions);
 	virtual ~StringAquisition();
 	void open(const char *text);
 
@@ -227,10 +253,6 @@ private:
 	int pos;
 };
 
-class Mapscript;
-class GameGUI;
-class Game;
-
 // Independant story line
 class Story
 {
@@ -240,7 +262,7 @@ public:
 	virtual ~Story();
 
 public:
-	std::vector<Token> line;
+	std::vector<SGSLToken> line;
 	std::map<std::string, int> labels;
 	int lineSelector; //!< PC : Program Counter
 	int internTimer;
@@ -249,10 +271,31 @@ public:
 	Sint32 checkSum() { return lineSelector; }
 
 	void sendSpace() { recievedSpace=true; }
+	
+	
 private:
+	friend class Mapscript;
 	bool conditionTester(const Game *game, int pc, bool readLevel, bool only);
+	void toto(GameGUI* gui);
+	void objectiveHidden(GameGUI* gui);
+	void objectiveVisible(GameGUI* gui);
+	void objectiveComplete(GameGUI* gui);
+	void objectiveFailed(GameGUI* gui);
+	void hintHidden(GameGUI* gui);
+	void hintVisible(GameGUI* gui);
+	void hilightItem(GameGUI* gui);
+	void unhilightItem(GameGUI* gui);
+	void hilightUnits(GameGUI* gui);
+	void unhilightUnits(GameGUI* gui);
+	void hilightBuildings(GameGUI* gui);
+	void unhilightBuildings(GameGUI* gui);
+	void hilightBuildingOnPanel(GameGUI* gui);
+	void unhilightBuildingOnPanel(GameGUI* gui);
+	void resetAI(GameGUI* gui);
+	
+	
 	bool testCondition(GameGUI *gui);
-	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
+	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
 	
 	Mapscript *mapscript;
 	bool recievedSpace;
@@ -309,6 +352,8 @@ private:
 
 	ErrorReport parseScript(Aquisition *donnees, Game *game);
 	bool testMainTimer(void);
+
+	Functions functions;
 
 	int mainTimer;
 	std::vector<bool> hasWon, hasLost;

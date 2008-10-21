@@ -33,7 +33,6 @@
 #include "Unit.h"
 #include "Utilities.h"
 
-
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<2; i++)
@@ -79,6 +78,9 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingPrevious = 0;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
+	priority = 0;
+	priorityLocal = 0;
+	oldPriority = 0;
 
 	// position
 	posX=x;
@@ -157,6 +159,11 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	lastShootStep = 0xFFFFFFFF;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
+	
+	for(int i=0; i<UnitCantWorkReasonSize; ++i)
+	{
+		unitsFailingRequirements[i]=0;
+	}
 }
 
 Building::~Building()
@@ -209,6 +216,20 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		underAttackTimer = stream->readUint8("underAttackTimer");
 	else
 		underAttackTimer = 0;
+
+	// priority
+	if(versionMinor>=79)
+	{
+		priority = stream->readSint32("priority");
+		priorityLocal = stream->readSint32("priorityLocal");
+		oldPriority = priority;
+	}
+	else
+	{
+		priority = 0;
+		priorityLocal = 0;
+		oldPriority = 0;
+	}
 
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
@@ -302,6 +323,12 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	lastShootStep = 0xFFFFFFFF;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
+	
+	
+	for(int i=0; i<UnitCantWorkReasonSize; ++i)
+	{
+		unitsFailingRequirements[i]=0;
+	}
 }
 
 void Building::save(GAGCore::OutputStream *stream)
@@ -321,6 +348,10 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(posY, "posY");
 
 	stream->writeUint8(underAttackTimer, "underAttackTimer");
+
+	// priority
+	stream->writeSint32(priority, "priority");
+	stream->writeSint32(priorityLocal, "priorityLocal");
 
 	// Flag specific
 	stream->writeUint32(unitStayRange, "unitStayRange");
@@ -409,6 +440,22 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	maxUnitWorkingLocal = maxUnitWorking;
 	desiredMaxUnitWorking = maxUnitWorking;
 	
+	if(versionMinor>=74 && versionMinor<77)
+	{
+		stream->readSint32("unitsFailingRequirements");
+	}
+	else if(versionMinor>=77)
+	{
+		stream->readEnterSection("unitsFailingRequirements");
+		for(int i=0; i<UnitCantWorkReasonSize; ++i)
+		{
+			stream->readEnterSection(i);
+			unitsFailingRequirements[i]=stream->readUint32("unitsFailingRequirements");
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+	}
+	
 	unsigned nbInside = stream->readUint32("nbInside");
 	fprintf(logFile, " nbInside=%d\n", nbInside);
 	unitsInside.clear();
@@ -454,6 +501,16 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
 	stream->writeSint32(maxUnitWorkingPrevious, "maxUnitWorkingPrevious");
 	stream->writeSint32(maxUnitWorkingFuture, "maxUnitWorkingFuture");
+	
+	stream->writeEnterSection("unitsFailingRequirements");
+	for(int i=0; i<UnitCantWorkReasonSize; ++i)
+	{
+		stream->writeEnterSection(i);
+		stream->writeUint32(unitsFailingRequirements[i], "unitsFailingRequirements");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	
 	
 	stream->writeUint32(unitsInside.size(), "nbInside");
 	fprintf(logFile, " nbInside=%zd\n", unitsInside.size());
@@ -755,8 +812,9 @@ void Building::updateCallLists(void)
 		// remove me
 		if(callListState != 0)
 		{
-			owner->remove_building_needing_work(this);
+			owner->remove_building_needing_work(this, oldPriority);
 			callListState=0;
+			oldPriority = priority;
 		}
 	}
 	
@@ -767,8 +825,16 @@ void Building::updateCallLists(void)
 			// I need units, if I am not in the call lists, add me
 			if(callListState != 1)
 			{
-				owner->add_building_needing_work(this);
+				owner->add_building_needing_work(this, priority);
 				callListState = 1;
+				oldPriority = priority;
+			}
+			// if i am in the call lists, update my then my position will need to be updated
+			else if(callListState == 1 && oldPriority == priority)
+			{
+				owner->remove_building_needing_work(this, oldPriority);
+				owner->add_building_needing_work(this, priority);
+				oldPriority = priority;
 			}
 		}
 	}
@@ -776,8 +842,9 @@ void Building::updateCallLists(void)
 	{
 		if(callListState != 0)
 		{
-			owner->remove_building_needing_work(this);
+			owner->remove_building_needing_work(this, oldPriority);
 			callListState=0;
+			oldPriority = priority;
 		}
 	}
 
@@ -980,7 +1047,14 @@ void Building::updateUnitsWorking(void)
 					int r=(*it)->caryedRessource;
 					if (r<0)
 					{
-						int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+						int tx = posX;
+						int ty = posY;
+						if((*it)->targetX != -1)
+						{
+							tx = (*it)->targetX;
+							ty = (*it)->targetY;
+						}
+						int newDistSquare=distSquare((*it)->posX, (*it)->posY, tx, ty);
 						if (newDistSquare<minDistSquare)
 						{
 							minDistSquare=newDistSquare;
@@ -1020,6 +1094,7 @@ void Building::updateUnitsWorking(void)
 
 void Building::update(void)
 {
+	computeWishedRessources();
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
@@ -1303,24 +1378,36 @@ int Building::desiredNumberOfWorkers(void)
 
 void Building::step(void)
 {
+	computeWishedRessources();
+	
 	updateCallLists();
-	if(underAttackTimer > 0)
+	if(underAttackTimer>0)
 		underAttackTimer-=1;
 
 	// NOTE : Unit needs to update itself when it is in a building
 }
 
 
-void Building::subscribeToBringRessourcesStep()
+bool Building::subscribeToBringRessourcesStep()
 {
+	for(int i=0; i<UnitCantWorkReasonSize; ++i)
+	{
+		unitsFailingRequirements[i]=0;
+	}
 	if (buildingState==DEAD)
-		return;
+		return false;
 	if (verbose)
 		printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
+
+	bool hired=false;	
 	if (((Sint32)unitsWorking.size()<desiredMaxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
 	{
 		Unit *choosen=NULL;
 		Map *map=owner->map;
+		for(int i=0; i<UnitCantWorkReasonSize; ++i)
+		{
+			unitsFailingRequirements[i]=0;
+		}
 		/* To choose a good unit, we get a composition of things:
 		1-the closest the unit is, the better it is.
 		2-the less the unit is hungry, the better it is.
@@ -1392,34 +1479,150 @@ void Building::subscribeToBringRessourcesStep()
 			}
 		}
 */
+		// Compute the list of candidate units
+		Unit* possibleUnits[1024];
+		int distances[1024];
+		int resource[1024];
+		int teamNumber=owner->teamNumber;
+		for(int n=0; n<1024; ++n)
+		{
+			possibleUnits[n]=NULL;
+			distances[n] = 0;
+			resource[n] = -1;
+			Unit* unit=owner->myUnits[n];
+			if(unit)
+			{
+				if(!unit->performance[HARVEST])
+				{
+					continue;
+				}
+				else if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
+				{
+					continue;
+				}
+				else if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+				{
+					unitsFailingRequirements[UnitNotAvailable] += 1;
+				}
+				else if(!canUnitWorkHere(unit))
+				{
+					unitsFailingRequirements[UnitTooLowLevel] += 1;
+				}
+				else
+				{
+					int distBuilding=0;
+					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+					bool canSwim=unit->performance[SWIM];
+					if(!map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+					{
+						unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+					}
+					else if(distBuilding >= timeLeft)
+					{
+						unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+					}
+					else
+					{
+						int unitr = unit->caryedRessource;
+						if((unitr>=0) && neededRessource(unitr))
+						{
+							possibleUnits[n] = unit;
+							distances[n] = distBuilding;
+							resource[n] = unitr;
+						}
+						else
+						{
+							int bestDist = 100000;
+							int bestResource = -1;
+							bool regularFound=false;
+							bool fruitFound=false;
+							bool regularFoundTooFar=false;
+							bool fruitFoundTooFar=false;
+							int x=unit->posX;
+							int y=unit->posY;
+							for(int r=0; r<MAX_NB_RESSOURCES; ++r)
+							{
+								int need = neededRessource(r);
+								if(need>0)
+								{
+									if(r<BASIC_COUNT)
+										regularFound=true;
+									else
+										fruitFound=true;
+									int distResource = 0;
+									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distResource))
+									{
+										if(distResource<timeLeft)
+										{
+											int dist = (distBuilding + distResource)<<8;
+											int value = dist / need;
+											if(value < bestDist)
+											{
+												bestDist = value;
+												bestResource=r;
+											}
+										}
+										else
+										{
+											if(r<BASIC_COUNT)
+												regularFoundTooFar=true;
+											else
+												fruitFoundTooFar=true;
+										}
+									}
+								}
+							}
+							if(bestResource == -1)
+							{
+								if(regularFound)
+								{
+									if(regularFoundTooFar)
+										unitsFailingRequirements[UnitTooFarFromResource] += 1;
+									else
+										unitsFailingRequirements[UnitCantAccessResource] += 1;
+								}
+								else if(fruitFound)
+								{
+									if(fruitFoundTooFar)
+										unitsFailingRequirements[UnitCantAccessFruit] += 1;
+									else
+										unitsFailingRequirements[UnitTooFarFromFruit] += 1;
+								}
+							}
+							else
+							{
+								resource[n] = bestResource;
+								distances[n] = bestDist;
+								possibleUnits[n]=unit;
+							}
+						}
+					}
+				}
+			}
+		}
+
 		int maxLevel = -1;
 		int minValue = INT_MAX;
 		//First: we look only for units with a needed resource:
 		for(int n=0; n<1024; ++n)
 		{
-			Unit* unit=owner->myUnits[n];
-			if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || !unit->performance[HARVEST])
-				continue;
-			if(!canUnitWorkHere(unit))
+			Unit* unit=possibleUnits[n];
+			if(unit==NULL)
 				continue;
 
 			int r=unit->caryedRessource;
 			int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 			if ((r>=0) && neededRessource(r))
 			{
-				int dist;
-				if (map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist) && dist<timeLeft)
+				int dist = distances[n];
+				int value=dist-(timeLeft>>1);
+				int level = unit->level[HARVEST]*10 + unit->level[WALK];
+				unit->destinationPurprose=r;
+				if ((level>maxLevel) || (level==maxLevel && value<minValue))
 				{
-					int value=dist-(timeLeft>>1);
-					int level = unit->level[HARVEST]*10 + unit->level[WALK];
-					unit->destinationPurprose=r;
-					fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-					if ((level>maxLevel) || (level==maxLevel && value<minValue))
-					{
-						minValue=value;
-						maxLevel=level;
-						choosen=unit;
-					}
+					minValue=value;
+					maxLevel=level;
+					choosen=unit;
 				}
 			}
 		}
@@ -1427,108 +1630,60 @@ void Building::subscribeToBringRessourcesStep()
 		//Second: we look for an unit who is not carying a ressource:
 		if (choosen==NULL)
 		{
-			int needs[MAX_NB_RESSOURCES];
-			wishedRessources(needs);
 			int teamNumber=owner->teamNumber;
 			for(int n=0; n<1024; ++n)
 			{
-				Unit* unit=owner->myUnits[n];
-				if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || !unit->performance[HARVEST])
-					continue;
-				if(!canUnitWorkHere(unit))
+				Unit* unit=possibleUnits[n];
+				if(unit==NULL)
 					continue;
 
 				if (unit->caryedRessource<0)
 				{
-					int x=unit->posX;
-					int y=unit->posY;
-					bool canSwim=unit->performance[SWIM];
-					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-					int distUnitBuilding;
-					if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+					int r = resource[n];
+					int value=distances[n];
+					int level = unit->level[HARVEST]*10 + unit->level[WALK];
+					if ((level>maxLevel) || (level==maxLevel && value<minValue))
 					{
-						for (int r=0; r<MAX_RESSOURCES; r++)
-						{
-							int need=neededRessource(r);
-							if (need>0)
-							{
-								int distUnitRessource;
-								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
-								{
-									int value=((distUnitRessource+distUnitBuilding)<<8)/need;
-									int level = unit->level[HARVEST]*10 + unit->level[WALK];
-									if ((level>maxLevel) || (level==maxLevel && value<minValue))
-									{
-										unit->destinationPurprose=r;
-										fprintf(logFile, "[%d] bdp2 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-										minValue=value;
-										maxLevel=level;
-										choosen=unit;
-										if (verbose)
-											printf(" guid=%5d, distUnitRessource=%d, distUnitBuilding=%d, need=%d, value=%d\n", choosen->gid, distUnitRessource, distUnitBuilding, need, value);
-									}
-								}
-							}
-						}
+						minValue=value;
+						maxLevel=level;
+						choosen=unit;
+						unit->destinationPurprose=r;
 					}
 				}
 			}
 		}
 
-		//Third: we look for an unit who is carying an unwanted resource:
+		//Third: we look for an unit who is carrying an unwanted resource:
 		if (choosen==NULL)
 		{
-			int needs[MAX_NB_RESSOURCES];
-			wishedRessources(needs);
 			int teamNumber=owner->teamNumber;
 			for(int n=0; n<1024; ++n)
 			{
-				Unit* unit=owner->myUnits[n];
-				if(owner->myUnits[n]==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || !unit->performance[HARVEST])
-					continue;
-				if(!canUnitWorkHere(unit))
+				Unit* unit=possibleUnits[n];
+				if(unit==NULL)
 					continue;
 
-				if (unit->caryedRessource>=0)
+				int r2=unit->caryedRessource;
+				if ((r2>=0) && !neededRessource(r2))
 				{
-					int x=unit->posX;
-					int y=unit->posY;
-					bool canSwim=unit->performance[SWIM];
-					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-					int distUnitBuilding;
-					if (map->buildingAvailable(this, canSwim, x, y, &distUnitBuilding) && distUnitBuilding<timeLeft)
+					int r = resource[n];
+					int value=distances[n];
+					int level = unit->level[HARVEST]*10 + unit->level[WALK];
+					if ((level>maxLevel) || (level==maxLevel && value<minValue))
 					{
-						for (int r=0; r<MAX_RESSOURCES; r++)
-						{
-							int need=neededRessource(r);
-							if (need>0)
-							{
-								int distUnitRessource;
-								if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distUnitRessource) && (distUnitRessource<timeLeft))
-								{
-									int value=((distUnitRessource+distUnitBuilding)<<8)/need;
-									int level = unit->level[HARVEST]*10 + unit->level[WALK];
-									if ((level>maxLevel) || (level==maxLevel && value<minValue))
-									{
-										unit->destinationPurprose=r;
-										fprintf(logFile, "[%d] bdp4 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
-										minValue=value;
-										maxLevel=level;
-										choosen=unit;
-									}
-								}
-							}
-						}
+						minValue=value;
+						maxLevel=level;
+						choosen=unit;
+						unit->destinationPurprose=r;
 					}
 				}
 			}
 		}
 		if (choosen)
 		{
-			if (verbose)
-				printf(" unit %d choosen.\n", choosen->gid);
 			unitsWorking.push_back(choosen);
 			choosen->subscriptionSuccess(this, false);
+			hired=true;
 		}
 	}
 	
@@ -1536,18 +1691,108 @@ void Building::subscribeToBringRessourcesStep()
 
 	if (verbose)
 		printf(" ...done\n");
+	return hired;
 }
 
-void Building::subscribeForFlagingStep()
+bool Building::subscribeForFlagingStep()
 {
 	if (buildingState==DEAD)
-		return;
+	{
+		for(int i=0; i<UnitCantWorkReasonSize; ++i)
+		{
+			unitsFailingRequirements[i]=0;
+		}
+		return false;
+	}
 	
+	bool hired=false;
 	subscriptionWorkingTimer++;
 	if (subscriptionWorkingTimer>32)
 	{
+		for(int i=0; i<UnitCantWorkReasonSize; ++i)
+		{
+			unitsFailingRequirements[i]=0;
+		}
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
 		{
+			for(int i=0; i<UnitCantWorkReasonSize; ++i)
+			{
+				unitsFailingRequirements[i]=0;
+			}
+
+			//Generate the list of possible units
+			Unit* possibleUnits[1024];
+			int distances[1024];
+			int teamNumber=owner->teamNumber;
+			for(int n=0; n<1024; ++n)
+			{
+				possibleUnits[n]=NULL;
+				distances[n] = 0;
+				Unit* unit=owner->myUnits[n];
+				if(unit)
+				{
+					if(unit->attachedBuilding == this)
+					{
+						continue;
+					}
+					else if(type->zonable[EXPLORER] && unit->typeNum != EXPLORER)
+					{
+						continue;
+					}
+					else if(type->zonable[WORKER] && unit->typeNum != WORKER)
+					{
+						continue;
+					}
+					else if(type->zonable[WARRIOR] && unit->typeNum != WARRIOR)
+					{
+						continue;
+					}
+					else if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+					{
+						unitsFailingRequirements[UnitNotAvailable] += 1;
+					}
+					else if(!canUnitWorkHere(unit))
+					{
+						unitsFailingRequirements[UnitTooLowLevel] += 1;
+					}
+					else if(type->zonable[WARRIOR] && unit->movement == Unit::MOV_ATTACKING_TARGET)
+					{
+						unitsFailingRequirements[UnitNotAvailable] += 1;
+					}
+					else
+					{
+						int distBuilding=0;
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+						int directdist=owner->map->warpDistSquare(unit->posX, unit->posY, posX, posY);
+						bool canSwim=unit->performance[SWIM];
+						if(type->zonable[EXPLORER] && timeLeft < directdist)
+						{
+							unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+						}
+						else if(!type->zonable[EXPLORER] && !owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+						{
+							unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+						}
+						else if(!type->zonable[EXPLORER] && distBuilding >= timeLeft)
+						{
+							unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+						}
+						else if(type->zonable[WORKER] && anyRessourceToClear[canSwim]==2)
+						{
+							unitsFailingRequirements[UnitCantAccessResource] += 1;
+						}
+						else
+						{
+							if(type->zonable[EXPLORER])
+								distances[n]=directdist;
+							else
+								distances[n]=distBuilding;
+							possibleUnits[n]=unit;
+						}
+					}
+				}
+			}
+			
 			int minValue=INT_MAX;
 			int minLevel=INT_MAX;
 			int maxLevel=-INT_MAX;
@@ -1563,29 +1808,24 @@ void Building::subscribeForFlagingStep()
 			{
 				for(int n=0; n<1024; ++n)
 				{
-					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+					Unit* unit=possibleUnits[n];
+					if(unit==NULL)
 						continue;
-			  	 	if(!canUnitWorkHere(unit))
-			  		  	continue;
 
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					timeLeft*=timeLeft;
 					hp*=hp;
-					int dist=map->warpDistSquare(unit->posX, unit->posY, posX, posY);
-					if (dist<timeLeft)
+					int dist=distances[n];
+					//Use explorers without ground attack first before ones with, so that ground attacking explorers
+					//are available for more important jobs
+					int value=dist-2*timeLeft-2*hp;
+					int level = unit->level[MAGIC_ATTACK_GROUND];
+					if ((level < minLevel) || (level==minLevel && value<minValue))
 					{
-						//Use explorers without ground attack first before ones with, so that ground attacking explorers
-						//are available for more important jobs
-						int value=dist-2*timeLeft-2*hp;
-						int level = unit->level[MAGIC_ATTACK_GROUND];
-						if ((level < minLevel) || (level==minLevel && value<minValue))
-						{
-							minValue=value;
-							minLevel=level;
-							choosen=unit;
-						}
+						minValue=value;
+						minLevel=level;
+						choosen=unit;
 					}
 				}
 			}
@@ -1593,26 +1833,21 @@ void Building::subscribeForFlagingStep()
 			{
 				for(int n=0; n<1024; ++n)
 				{
-					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE || unit->movement == Unit::MOV_ATTACKING_TARGET)
+					Unit* unit=possibleUnits[n];
+					if(unit==NULL)
 						continue;
-			  	 	if(!canUnitWorkHere(unit))
-			  		  	continue;
 
 					int timeLeft=unit->hungry/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
-					int dist;
-					if (map->buildingAvailable(this, (unit->performance[SWIM]>0 ? true : false), unit->posX, unit->posY, &dist) && (dist<timeLeft))
+					int dist = distances[n];
+					int value=dist-2*timeLeft-2*hp;
+					//We want to maximize the attack level, use higher level soldeirs first
+					int level=unit->performance[ATTACK_SPEED]*unit->getRealAttackStrength();
+					if ((level > maxLevel) || (level==maxLevel && value<minValue))
 					{
-						int value=dist-2*timeLeft-2*hp;
-						//We want to maximize the attack level, use higher level soldeirs first
-						int level=unit->performance[ATTACK_SPEED]*unit->getRealAttackStrength();
-						if ((level > maxLevel) || (level==maxLevel && value<minValue))
-						{
-							minValue=value;
-							maxLevel=level;
-							choosen=unit;
-						}
+						minValue=value;
+						maxLevel=level;
+						choosen=unit;
 					}
 				}
 			}
@@ -1620,30 +1855,23 @@ void Building::subscribeForFlagingStep()
 			{
 				for(int n=0; n<1024; ++n)
 				{
-					Unit* unit=owner->myUnits[n];
-					if(unit==NULL || unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+					Unit* unit=possibleUnits[n];
+					if(unit==NULL)
 						continue;
-			  	 	if(!canUnitWorkHere(unit))
-			  		  	continue;
 
-					int timeLeft=unit->hungry/unit->race->hungryness;
+					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
-					int dist;
+					int dist = distances[n];
 					bool canSwim=unit->performance[SWIM];
-					if (anyRessourceToClear[canSwim]!=2
-						&& map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &dist)
-						&& (dist<timeLeft))
+					int value=dist-timeLeft-hp;
+					int level = unit->level[HARVEST];
+					//We want to minimize the level of harvesting units, so that the higher level
+					//units are available for more important work.
+					if ((level < minLevel) || (level==minLevel && value<minValue))
 					{
-						int value=dist-timeLeft-hp;
-						int level = unit->level[HARVEST];
-						//We want to minimize the level of harvesting units, so that the higher level
-						//units are available for more important work.
-						if ((level < minLevel) || (level==minLevel && value<minValue))
-						{
-							minValue=value;
-							minLevel=level;
-							choosen=unit;
-						}
+						minValue=value;
+						minLevel=level;
+						choosen=unit;
 					}
 				}
 			}
@@ -1654,6 +1882,7 @@ void Building::subscribeForFlagingStep()
 			{
 				unitsWorking.push_back(choosen);
 				choosen->subscriptionSuccess(this, false);
+				hired=true;
 			}
 			else
 				break;
@@ -1663,6 +1892,7 @@ void Building::subscribeForFlagingStep()
 
 		subscriptionWorkingTimer=0;
 	}
+	return hired;
 }
 
 
@@ -2453,6 +2683,7 @@ void Building::computeFlagStatLocal(int *goingTo, int *onSpot)
 			(*goingTo)++;
 	}
 }
+
 
 Uint32 Building::eatOnce(Uint32 *mask)
 {

@@ -30,6 +30,8 @@
 #include <Stream.h>
 #include <FormatableString.h>
 #include "Player.h"
+#include "CustomGameOtherOptions.h"
+#include "AIDescriptionScreen.h"
 
 CustomGameScreen::CustomGameScreen() :
 	ChooseMapScreen("maps", "map", true)
@@ -62,6 +64,12 @@ CustomGameScreen::CustomGameScreen() :
 			aiSelector[i]->setIndex(AI::NUMBI);
 		}
 	}
+	otherOptions = new TextButton(230, 420, 170, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Other Options]"), 0);
+	addWidget(otherOptions);
+	aiDescriptions = new TextButton(230, 370, 170, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[AI Descriptions]"), 0);
+	addWidget(aiDescriptions);
+	
+	otherOptions->visible=false;
 }
 
 
@@ -112,6 +120,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 		closedText[i]->show();
 	}
 	updatePlayers();
+	otherOptions->visible=true;
 }
 
 
@@ -144,6 +153,23 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 		}
 		updatePlayers();
 	}
+	if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
+	{
+		if(source == otherOptions)
+		{
+			CustomGameOtherOptions settings(gameHeader, mapHeader, false);
+			int rc = settings.execute(globalContainer->gfx, 40);
+			if(rc == -1)
+				endExecute(-1);
+		}
+		if(source == aiDescriptions)
+		{
+			AIDescriptionScreen descriptions;
+			int rc = descriptions.execute(globalContainer->gfx, 40);
+			if(rc == -1)
+				endExecute(-1);
+		}
+	}
 }
 
 
@@ -172,6 +198,7 @@ int CustomGameScreen::getSelectedColor(int i)
 void CustomGameScreen::updatePlayers()
 {
 	int count = 0;
+	int humanColor = 0;
 	for (int i=0; i<NumberOfPlayerSelectors; i++)
 	{
 		if (isActive(i))
@@ -180,6 +207,8 @@ void CustomGameScreen::updatePlayers()
 			if (i==0)
 			{
 				gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+				humanColor = teamColor;
+				gameHeader.setAllyTeamNumber(teamColor, 1);
 			}
 			else
 			{
@@ -187,6 +216,8 @@ void CustomGameScreen::updatePlayers()
 				FormatableString name("%0 %1");
 				name.arg(AI::getAIText(iid)).arg(i-1);
 				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+				if(teamColor != humanColor)
+					gameHeader.setAllyTeamNumber(teamColor, 2);
 			}
 			count+=1;
 		}
