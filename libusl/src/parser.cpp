@@ -1,6 +1,7 @@
 #include "parser.h"
-#include "types.h"
+#include "native.h"
 #include "error.h"
+#include <memory>
 
 using namespace std;
 
@@ -68,14 +69,10 @@ DecNode* Parser::declaration(DecNode::Type type) {
 }
 
 DecNode* Parser::declaration(const Position& position, DecNode::Type type, const std::string& name) {
-	auto_ptr<PatternNode> arg;
-	switch (tokenType()) {
-	case COLON:
-	case COLONEQ:
-		break;
-	default:
-		arg.reset(pattern());
-	}
+	return new DecNode(position, type, name, declaration2(position));
+}
+
+ExpressionNode* Parser::declaration2(const Position& position) {
 	switch (tokenType()) {
 	case COLON:
 		next();
@@ -86,13 +83,12 @@ DecNode* Parser::declaration(const Position& position, DecNode::Type type, const
 		next();
 		break;
 	default:
-		fail(getType(COLON)->desc);
+		auto_ptr<PatternNode> argument(pattern());
+		ExpressionNode* body = declaration2(position);
+		return new FunNode(position, argument.release(), body);
 	}
 	newlines();
-	ExpressionNode* expr = expression();
-	if (arg.get())
-		expr = new FunNode(position, arg.release(), expr);
-	return new DecNode(position, type, name, expr);
+	return expression();
 }
 
 PatternNode* Parser::pattern()
@@ -231,6 +227,8 @@ ExpressionNode* Parser::pathExpression(ExpressionNode* first)
 		case LPAR:
 		case LBRACE:
 		case LBRACK:
+		case NUM:
+		case STR:
 		{
 			ExpressionNode* argument = simpleExpression();
 			node.reset(new ApplyNode(position, node.release(), argument));
@@ -261,8 +259,9 @@ ExpressionNode* Parser::simpleExpression()
 		}
 	case STR:
 		{
-			// TODO: implements strings
-			assert(false);
+			string value = token.string();
+			next();
+			return new ConstNode(position, new String(heap, value));
 		}
 	case LPAR:
 		{

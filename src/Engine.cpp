@@ -77,6 +77,9 @@ int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const s
 		gui.localPlayer = 0;
 		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
 	}
+	
+	gameHeader.getBasePlayer(0).name = campaign.getPlayerName();
+	
 	int end=initGame(mapHeader, gameHeader);
 	gui.setCampaignGame(campaign, missionName);
 	return end;

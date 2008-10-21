@@ -690,6 +690,8 @@ Proportzioak
 
 [Register a new YOG user with password]
 YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
+[Register]
+
 [remember unit]
 Gogoratu unitatea
 [Remember YOG password localy]
@@ -706,6 +708,8 @@ Konponketa hasi/gelditu
 Konpondu
 [repeat area]
 aldiz lurzoru bera
+[Repeat your password :]
+
 [restore default shortcuts]
 Lehenetsitako teklak berezarri
 [return to editor]
@@ -1136,6 +1140,8 @@ YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek due
 
 [YESTS_CREATED]
 Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
 [yog block command help]
