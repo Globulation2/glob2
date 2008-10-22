@@ -92,7 +92,7 @@ if 'dist' or 'install' in COMMAND_LINE_TARGETS:
 
     PackTar(env["TARFILE"], "SConscript")
 
-    SConscript("AI/SConscript")
+    SConscript("ai/SConscript")
     SConscript("gnupg/SConscript")
     SConscript("libgag/SConscript")
     SConscript("libusl/SConscript")
