@@ -1,7 +1,5 @@
 source_files = Split("""
-AICastor.cpp                            AI.cpp                                AIDescriptionScreen.cpp                   AIEcho.cpp
-AINames.cpp                             AINicowar.cpp                         AINull.cpp                                AINumbi.cpp
-AIToubib.cpp                            AIWarrush.cpp                         BasePlayer.cpp                            BaseTeam.cpp
+BasePlayer.cpp                          BaseTeam.cpp
 BitArray.cpp                            Brush.cpp                             Building.cpp                              BuildingsTypes.cpp
 BuildingType.cpp                        Bullet.cpp                            Campaign.cpp                              CampaignEditor.cpp
 CampaignMainMenu.cpp                    CampaignMenuScreen.cpp                CampaignSelectorScreen.cpp                ChooseMapScreen.cpp
@@ -36,7 +34,7 @@ YOGClientDownloadableMapListener.cpp    YOGClientDownloadingMapScreen.cpp     YO
 YOGClientFileAssembler.cpp              YOGClientGameConnectionDialog.cpp     YOGClientGameListListener.cpp             YOGClientGameListManager.cpp
 YOGClientLobbyScreen.cpp                YOGClientMapDownloader.cpp            YOGClientMapDownloadScreen.cpp            YOGClientMapUploader.cpp
 YOGClientMapUploadScreen.cpp            YOGClientOptionsScreen.cpp            YOGClientPlayerListListener.cpp           YOGClientPlayerListManager.cpp
-YOGClientRatedMapList.cpp               YOGClientRouterAdministrator.cpp      YOGConsts.cpp                             
+YOGClientRatedMapList.cpp               YOGClientRouterAdministrator.cpp      YOGConsts.cpp
 YOGDownloadableMapInfo.cpp              YOGGameInfo.cpp                       YOGGameResults.cpp                        YOGLoginScreen.cpp
 YOGMessage.cpp                          YOGPlayerPrivateInfo.cpp              YOGPlayerSessionInfo.cpp                  YOGPlayerStoredInfo.cpp
 YOGRegisterScreen.cpp                   YOGServerAdministratorCommands.cpp    YOGServerAdministrator.cpp                YOGServerAdministratorList.cpp
@@ -48,8 +46,8 @@ YOGServerRouter.cpp                     YOGServerRouterManager.cpp            YO
 """)
 
 server_source_files = Split("""
-AINames.cpp                     BasePlayer.cpp                   BaseTeam.cpp                BitArray.cpp
-            GameHeader.cpp                   LANGameInformation.cpp      LogFileManager.cpp
+BasePlayer.cpp                  BaseTeam.cpp                     BitArray.cpp
+GameHeader.cpp                  LANGameInformation.cpp           LogFileManager.cpp
 MapHeader.cpp                   NetBroadcaster.cpp               NetConnection.cpp           NetConnectionThread.cpp
 NetConnectionThreadMessage.cpp  NetGamePlayerManager.cpp         NetListener.cpp             NetMessage.cpp
 NetReteamingInformation.cpp     NetTestSuite.cpp                 Order.cpp                   P2PConnectionEvent.cpp
@@ -82,15 +80,20 @@ else:
 
 Import('env')
 Import("PackTar")
-    
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     env.Install(env["BINDIR"], "glob2")
     env.Alias("install", env["BINDIR"])
-    
+
     import os
     for file in os.listdir("."):
         if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
             PackTar(env["TARFILE"], file)
-    
+
     PackTar(env["TARFILE"], "SConscript")
 
+    SConscript("AI/SConscript")
+    SConscript("gnupg/SConscript")
+    SConscript("libgag/SConscript")
+    SConscript("libusl/SConscript")
+    SConscript("natsort/SConscript")
