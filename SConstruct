@@ -226,7 +226,7 @@ def main():
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     configure(env)
     env.Append(CPPPATH=['#src', '#'])
-    env.Append(CPPPATH=['#src/AI', '#'])
+    env.Append(CPPPATH=['#src/ai', '#'])
     env.Append(CPPPATH=['#src/gnupg', '#'])
     env.Append(CPPPATH=['#src/libwee', '#'])
     env.Append(CPPPATH=['#src/natsort', '#'])
