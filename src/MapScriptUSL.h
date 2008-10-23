@@ -41,6 +41,9 @@ public:
 	
 	///Destruct a map script
 	~MapScriptUSL();
+	
+	///Construct all the global (from USL POV) values that reference glob2 objects
+	void addGlob2Values(GameGUI* gui);
 
 	///Encodes this MapScript into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;

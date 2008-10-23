@@ -57,11 +57,6 @@ inline void NativeValuePrototype<GameGUI*>::initialize()
 	addMethod<void(GameGUI*,string)>("showScriptText", &GameGUI::showScriptText);
 	addMethod<void(GameGUI*,string,string)>("showScriptTextTr", &GameGUI::showScriptTextTr);
 	addMethod<void(GameGUI*)>("hideScriptText", &GameGUI::hideScriptText);
-	
-	addMethod<int(GameGUI*)>("hintsCount", &GameGUI::hintsCount);
-	addMethod<void(GameGUI*,int)>("showHint", &GameGUI::showHint);
-	addMethod<void(GameGUI*,int)>("hideHint", &GameGUI::hideHint);
-	addMethod<bool(GameGUI*,int)>("isHintVisible", &GameGUI::isHintVisible);
 }
 
 template<>
@@ -73,14 +68,53 @@ inline void NativeValuePrototype<Game*>::initialize()
 	addMethod<int(Game*,int,int)>("unitsCount", &Game::unitsCount);
 	addMethod<int(Game*,int,int,int,int)>("unitsUpgradesCount", &Game::unitsUpgradesCount);
 	addMethod<int(Game*,int,int,int)>("buildingsCount", &Game::buildingsCount);
+	
 	// TODO: if required, add more from teamStats, maybe amount of unit starving can be usefull
+}
+
+template<>
+inline void NativeValuePrototype<GameHints*>::initialize()
+{
+	addMethod<int(GameHints*)>("count", &GameHints::getNumberOfHints);
+	
+	addMethod<void(GameHints*,int)>("show", &GameHints::setHintVisible);
+	addMethod<void(GameHints*,int)>("hide", &GameHints::setHintHidden);
+	
+	addMethod<bool(GameHints*,int)>("isVisible", &GameHints::isHintVisible);
+}
+
+template<>
+inline void NativeValuePrototype<GameObjectives*>::initialize()
+{
+	addMethod<int(GameObjectives*)>("count", &GameObjectives::getNumberOfObjectives);
+	
+	addMethod<void(GameObjectives*,int)>("setComplete", &GameObjectives::setObjectiveComplete);
+    addMethod<void(GameObjectives*,int)>("setIncomplete", &GameObjectives::setObjectiveIncomplete);
+    addMethod<void(GameObjectives*,int)>("setFailed", &GameObjectives::setObjectiveFailed);
+    addMethod<void(GameObjectives*,int)>("setHidden", &GameObjectives::setObjectiveHidden);
+    addMethod<void(GameObjectives*,int)>("setVisible", &GameObjectives::setObjectiveVisible);
+
+    addMethod<bool(GameObjectives*,int)>("isVisible", &GameObjectives::isObjectiveVisible);
+	addMethod<bool(GameObjectives*,int)>("isComplete", &GameObjectives::isObjectiveComplete);
+	addMethod<bool(GameObjectives*,int)>("isFailed", &GameObjectives::isObjectiveFailed);
+	
+	addMethod<string(GameObjectives*,int)>("getText", &GameObjectives::getGameObjectiveText);
+	addMethod<int(GameObjectives*,int)>("getType", &GameObjectives::getObjectiveType);
+}
+
+
+void MapScriptUSL::addGlob2Values(GameGUI* gui)
+{
+	usl.addGlobal("gui", new NativeValue<GameGUI*>(&usl.heap, gui));
+	usl.addGlobal("engine", new NativeValue<Game*>(&usl.heap, &(gui->game)));
+	usl.addGlobal("hints", new NativeValue<GameHints*>(&usl.heap, &(gui->game.gameHints)));
+	usl.addGlobal("objectives", new NativeValue<GameObjectives*>(&usl.heap, &(gui->game.objectives)));
 }
 
 
 MapScriptUSL::MapScriptUSL(GameGUI* gui)
 {
-	usl.addGlobal("gameGUI", new NativeValue<GameGUI*>(&usl.heap, gui));
-	usl.addGlobal("game", new NativeValue<Game*>(&usl.heap, &(gui->game)));
+	addGlob2Values(gui);
 }
 
 
@@ -98,7 +132,6 @@ void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 }
 
 
-
 void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
 	stream->readEnterSection("MapScriptUSL");
@@ -109,10 +142,9 @@ void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 
 bool MapScriptUSL::compileCode(const std::string& code)
 {
-	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getGlobal("gameGUI"))->value;
+	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getGlobal("gui"))->value;
 	usl = Usl();
-	usl.addGlobal("gameGUI", new NativeValue<GameGUI*>(&usl.heap, gui));
-	usl.addGlobal("game", new NativeValue<Game*>(&usl.heap, &(gui->game)));
+	addGlob2Values(gui);
 	
 	const char* dirsToLoad[] = { "data/usl/Language/Runtime" , "data/usl/Glob2/Runtime", 0 };
 	const char** dir = dirsToLoad;
