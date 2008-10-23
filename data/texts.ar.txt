@@ -614,7 +614,7 @@ old random terrain
 Open Load Menu
 [open save menu]
 Open Save Menu
-[open script editor]
+[open scenario editor]
 فتح محرر الكتابة
 [open teams editor]
 
