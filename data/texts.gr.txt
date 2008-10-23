@@ -678,7 +678,7 @@ Ok
 Άνοιγμα Μενού Φόρτωσης
 [open save menu]
 Άνοιγμα Μενού Αποθήκευσης
-[open script editor]
+[open scenario editor]
 Άνοιγμα Επεξεργαστή Script
 [open teams editor]
 

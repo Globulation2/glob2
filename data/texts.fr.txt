@@ -616,8 +616,8 @@ Ouvrir boîte de discussion
 Ouvrir menu de chargement
 [open save menu]
 Ouvrir menu de sauvegarde
-[open script editor]
-Ouvrir éditeur de script
+[open scenario editor]
+Ouvrir éditeur de scénario
 [open teams editor]
 Ouvrir l'éditeur d'équipes
 [open]

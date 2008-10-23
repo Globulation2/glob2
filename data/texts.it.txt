@@ -668,7 +668,7 @@ apri chat
 Apri Carica Menù
 [open save menu]
 Apri Salva Menù
-[open script editor]
+[open scenario editor]
 Apri l'Editor di Script
 [open teams editor]
 

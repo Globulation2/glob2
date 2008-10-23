@@ -614,7 +614,7 @@ Abrir janela de chat
 Abrir Menu de carregamento
 [open save menu]
 Abrir Menu de Gravação
-[open script editor]
+[open scenario editor]
 Abrir editor de script
 [open teams editor]
 abrir editor de times

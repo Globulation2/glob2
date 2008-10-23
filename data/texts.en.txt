@@ -624,8 +624,8 @@ Open Chat Box
 Open Load Menu
 [open save menu]
 Open Save Menu
-[open script editor]
-Open Script Editor
+[open scenario editor]
+Open Scenario Editor
 [open teams editor]
 Open Teams Editor
 [open]
