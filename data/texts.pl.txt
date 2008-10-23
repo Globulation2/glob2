@@ -608,7 +608,7 @@ Otwórz Okno Rozmowy
 Otwórz Menu Wczytywania
 [open save menu]
 Otwórz Menu Zapisu
-[open script editor]
+[open scenario editor]
 Otwórz Edytor Skryptów
 [open teams editor]
 Otwórz Edytor Zespołów

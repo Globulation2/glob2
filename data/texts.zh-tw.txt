@@ -676,7 +676,7 @@ Air dmg.
 開啟載入選單
 [open save menu]
 開啟儲存選單
-[open script editor]
+[open scenario editor]
 開啟語法編輯器
 [open teams editor]
 
