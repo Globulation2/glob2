@@ -296,7 +296,8 @@ void TeamStats::drawText(int posx, int posy)
 	TeamStat &newStats=stats[statsIndex];
 	
 	// general
-	gfx->drawString(textStartPosX, textStartPosY, font, strings->getString("[Statistics]"));
+	//gfx->drawString(textStartPosX, textStartPosY, font, strings->getString("[Statistics]"));
+	textStartPosY -= 5; // this is to correct for the removal of the title
 	gfx->drawString(textStartPosX, textStartPosY+15, font, FormatableString("%0 %1").arg(newStats.totalUnit).arg(strings->getString("[Units]")).c_str());
 	if (newStats.totalUnit)
 	{
@@ -376,8 +377,9 @@ void TeamStats::drawStat(int posx, int posy)
 
 	// captions
 	{
-		gfx->drawString(textStartPos, startPoxY, font, strings->getString("[Statistics]"));
-
+		//gfx->drawString(textStartPos, startPoxY, font, strings->getString("[Statistics]"));
+		startPoxY -= 10; // this is to correct for the removal of the title
+		
 		int dec=0;
 		const char *Total=strings->getString("[Total]");
 		const char *free=strings->getString("[free]");
