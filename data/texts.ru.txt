@@ -22,20 +22,6 @@
 %0% загружено
 [%0's game]
 игра %0'а
-[Number Of Units]
-Количество юнитов
-[Number Of Buildings]
-Количество зданий
-[Prestige Score]
-Очки престижа
-[Total Hitpoints]
-Общее здоровье
-[Total Attack Power]
-Общая атака
-[Total Defence Power]
-Общая защита
-[time]
-Время
 [%0's team unit got converted to your team]
 Юнит из команды %0 перешёл в вашу команду.
 [abreaviation explanation A]
@@ -156,10 +142,10 @@ break
 Юниты
 [building site]
 стройка
-[Building Tool Line Explanation]
-Ctrl + Тянуть = Линия
 [Building Tool Box Explanation]
 Shift + Тянуть = Рамка
+[Building Tool Line Explanation]
+Ctrl + Тянуть = Линия
 [Buildings]
 Здания
 [Bullets]
@@ -594,12 +580,16 @@ meta-%0
 Не достаточный рейтинг
 [not ready]
 не готов
+[Number Of Buildings]
+Количество зданий
 [number of players: %0 (%1 AI)]
 %0 игроков (%1 AI)
 [number of teams: %0]
 %0 команд
 [number of teams]
 число команд
+[Number Of Units]
+Количество юнитов
 [numlock]
 numlock
 [objectives]
@@ -662,6 +652,8 @@ pause
 power
 [press space]
 Нажмите пробел для продолжения
+[Prestige Score]
+Очки престижа
 [Prestige Win Enabled]
 Победа по престижу
 [Prestige]
@@ -873,7 +865,7 @@ space
 [stone]
 камень
 [stonewall explanation 2]
- 
+
 [stonewall explanation]
 Пассивная защита
 [stonewall]
@@ -1004,6 +996,8 @@ tab
 ?? Флаг войны установлен ??
 [the warflag is under attack]
 ?? Флаг войны атакован ??
+[time]
+Время
 [to:]
 к:
 [toggle draw accessibility aids]
@@ -1018,6 +1012,12 @@ tab
 Записать голос
 [toggle recording voice]
 Начать запись голоса
+[Total Attack Power]
+Общая атака
+[Total Defence Power]
+Общая защита
+[Total Hitpoints]
+Общее здоровье
 [Total prestige reached]
 Общий достигнутый престиж
 [Total]

@@ -142,6 +142,8 @@ Bygga
 Enheter
 [building site]
 byggarbetsplats
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -584,6 +586,8 @@ Nej
 
 [not ready]
 inte redo
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -592,6 +596,8 @@ inte redo
 %0 lag.
 [number of teams]
 antal lag
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -654,6 +660,8 @@ Var god vänta
 
 [press space]
 Tryck mellanslag för att forsätta.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -998,6 +1006,8 @@ Simbassängen är under attack
 ?? Krigsflaggan är klar ??
 [the warflag is under attack]
 ?? Krigsflaggan är under attack ??
+[time]
+
 [to:]
 till:
 [toggle draw accessibility aids]
@@ -1010,6 +1020,12 @@ Växla Visa Enhetsdestinationer
 
 [toggle recording voice]
 Initiera röstinspelning
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Total prestige uppnådd
 [Total]

@@ -190,6 +190,8 @@ Costruisci
 Impostazioni unità
 [building site]
 Struttura in costruzione
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -638,12 +640,16 @@ No
 
 [not ready]
 non pronto
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 numero di giocatori: %0 (%1 IA)
 [number of teams: %0]
 %0 numero di sqadre.
 [number of teams]
 Numero di squadre
+[Number Of Units]
+
 [numlock]
 BLOC NUM
 [objectives]
@@ -706,6 +712,8 @@ Aspetta un momento
 potenza
 [press space]
 Premi spazio per continuare.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -1052,6 +1060,8 @@ La piscina è sotto attacco
 ?? La bandiera da guerra finita ??
 [the warflag is under attack]
 ?? La bandiera da guerra è sotto attacco ??
+[time]
+
 [to:]
 a:
 [toggle draw accessibility aids]
@@ -1064,6 +1074,12 @@ Toggle Draw Unit Paths ???
 Apri menu
 [toggle recording voice]
 Inizia Registrazione Vocale
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Totale prestigio raggiunto
 [Total]

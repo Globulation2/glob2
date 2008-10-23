@@ -190,6 +190,8 @@ AIWarrush
 單位設定
 [building site]
 建築地點
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -644,6 +646,8 @@ Air dmg.
 
 [not ready]
 還沒準備好
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -652,6 +656,8 @@ Air dmg.
 %0 隊伍.
 [number of teams]
 隊伍數量
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -714,6 +720,8 @@ Air dmg.
 
 [press space]
 按下空白鍵以繼續
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -1060,6 +1068,8 @@ V: 持鍵以傳送訊息
 ?? 攻擊旗幟已完成 ??
 [the warflag is under attack]
 ?? 攻擊旗幟正遭受攻擊 ??
+[time]
+
 [to:]
 前往:
 [toggle draw accessibility aids]
@@ -1072,6 +1082,12 @@ V: 持鍵以傳送訊息
 
 [toggle recording voice]
 開始錄音
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 聲望總計達到
 [Total]

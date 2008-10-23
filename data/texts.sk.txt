@@ -142,6 +142,8 @@ Stavanie
 Jednotky
 [building site]
 stavenisko
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -582,6 +584,8 @@ Nie
 
 [not ready]
 nepripravený
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +594,8 @@ Počet hráčov: %0
 Tímov: %0
 [number of teams]
 počet tímov
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -652,6 +658,8 @@ Meno hráča
 
 [press space]
 Pre pokračovanie stlač medzeru
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -996,6 +1004,8 @@ Bazén dokončený
 ?? Vlajka vojny dokončená ??
 [the warflag is under attack]
 ?? Vlajka vojny čelí útoku ??
+[time]
+
 [to:]
 pre:
 [toggle draw accessibility aids]
@@ -1008,6 +1018,12 @@ Zobraziť/skryť cesty
 
 [toggle recording voice]
 Spustiť nahrávanie zvuku
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Dosiahnutá úroveň prestíže
 [Total]

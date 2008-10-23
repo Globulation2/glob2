@@ -142,6 +142,8 @@ Eraiki
 Unitate ezarpenak
 [building site]
 eraikitzen
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -584,6 +586,8 @@ Ez
 
 [not ready]
 itxaron...
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -592,6 +596,8 @@ itxaron...
 %0 talde.
 [number of teams]
 talde kopurua
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -654,6 +660,8 @@ Mesedez itxaron
 
 [press space]
 Zanpatu espazio barra jarraitzeko
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -998,6 +1006,8 @@ Igerilekua erasopean dago
 ?? War flag finished ??
 [the warflag is under attack]
 ?? War flag under attack ??
+[time]
+
 [to:]
 nori:
 [toggle draw accessibility aids]
@@ -1010,6 +1020,12 @@ Unitate ibilibidea marraztu
 
 [toggle recording voice]
 Hasi ahots grabaketa
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Gehienezko izen ona lortuta
 [Total]

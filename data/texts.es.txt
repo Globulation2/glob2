@@ -142,6 +142,8 @@ Edificar
 
 [building site]
 Sitio de Construcción
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -582,6 +584,8 @@ No
 
 [not ready]
 No Listo
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +594,8 @@ No Listo
 %0 de los Equipos.
 [number of teams]
 Número de Equipos
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -652,6 +658,8 @@ Espere por favor
 
 [press space]
 Presiona la barra espaciadora (space) para continuar
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -996,6 +1004,8 @@ La Alberca de Natación está bajo Ataque
 ?? Bandera de Guerra Finalizada ??
 [the warflag is under attack]
 ?? Bandera de Guerra bajo Ataque??
+[time]
+
 [to:]
 hacia:
 [toggle draw accessibility aids]
@@ -1007,6 +1017,12 @@ hacia:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Prestigio total alcanzado

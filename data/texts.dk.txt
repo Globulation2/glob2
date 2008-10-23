@@ -190,6 +190,8 @@ Byg
 Enheder
 [building site]
 bygningssted
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -644,6 +646,8 @@ Nej
 
 [not ready]
 ikke klar
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -652,6 +656,8 @@ ikke klar
 %0 hold.
 [number of teams]
 antal af hold
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -714,6 +720,8 @@ Vent venligst
 
 [press space]
 Tryk på mellemrum for at fortsætte
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -1060,6 +1068,8 @@ Svømme pølen er under angreb
 ?? Krigs flaget er færdig ??
 [the warflag is under attack]
 ?? Krigs flaget er under angreb ??
+[time]
+
 [to:]
 til:
 [toggle draw accessibility aids]
@@ -1072,6 +1082,12 @@ Vælg tegn endhd router
 
 [toggle recording voice]
 Start volkal optagelse
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Total prestige opnået
 [Total]

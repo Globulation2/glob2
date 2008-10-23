@@ -142,6 +142,8 @@ Stavba
 
 [building site]
 staveniště
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -576,6 +578,8 @@ Ne
 
 [not ready]
 nepřipraven
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +588,8 @@ nepřipraven
 %0 týmů.
 [number of teams]
 Počet hráčů
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -645,6 +651,8 @@ Jméno
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -990,6 +998,8 @@ Koupaliště je pod útokem
 ?? Válečná prapor připraven ??
 [the warflag is under attack]
 ?? Válečná prapor v obležení nepřátel ??
+[time]
+
 [to:]
 pro:
 [toggle draw accessibility aids]
@@ -1001,6 +1011,12 @@ pro:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Dosažená celková prestiž

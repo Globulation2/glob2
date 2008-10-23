@@ -142,6 +142,8 @@ Available local games
 اعدادت الوحده
 [building site]
 موقع اﻷنشاء
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -582,6 +584,8 @@ No Growth Areas
 
 [not ready]
 غير جاهز
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +594,8 @@ No Growth Areas
 %0 teams.
 [number of teams]
 number of teams
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -652,6 +658,8 @@ Please wait
 
 [press space]
 Press space to continue.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -996,6 +1004,8 @@ The game has not been finished
 ?? War flag finished ??
 [the warflag is under attack]
 ?? War flag under attack ??
+[time]
+
 [to:]
 الى:
 [toggle draw accessibility aids]
@@ -1008,6 +1018,12 @@ Toggle Draw Unit Paths
 
 [toggle recording voice]
 Initiate Voice Recording
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 بلغ من هيبة
 [Total]
