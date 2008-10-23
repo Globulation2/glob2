@@ -624,7 +624,7 @@ Ok
 Открыть меню загрузки
 [open save menu]
 Открыть меню сохранения
-[open script editor]
+[open scenario editor]
 Редактор скриптов
 [open teams editor]
 Редактор команд

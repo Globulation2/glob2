@@ -616,7 +616,7 @@ Här
 Öppna Ladda Meny
 [open save menu]
 Öppna Spara Meny
-[open script editor]
+[open scenario editor]
 Öppna Skript Editor
 [open teams editor]
 

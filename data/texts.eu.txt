@@ -616,7 +616,7 @@ Bertan
 Ireki kargatzeko menua
 [open save menu]
 Ireki gordetzeko menua
-[open script editor]
+[open scenario editor]
 Ireki Script editorea
 [open teams editor]
 
