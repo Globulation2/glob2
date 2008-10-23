@@ -62,21 +62,23 @@
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
 
+// these values are manually layouted for cuteste perception
 #define YPOS_BASE_DEFAULT 160
-#define YPOS_BASE_BUILDING YPOS_BASE_DEFAULT
-#define YPOS_BASE_FLAG YPOS_BASE_DEFAULT
+#define YPOS_BASE_CONSTRUCTION (YPOS_BASE_DEFAULT + 5)
+#define YPOS_BASE_FLAG (YPOS_BASE_DEFAULT + 5)
 #define YPOS_BASE_STAT YPOS_BASE_DEFAULT
-#define YPOS_BASE_UNIT YPOS_BASE_DEFAULT
+#define YPOS_BASE_BUILDING (YPOS_BASE_DEFAULT + 10)
+#define YPOS_BASE_UNIT (YPOS_BASE_DEFAULT + 10)
 #define YPOS_BASE_RESSOURCE YPOS_BASE_DEFAULT
 
 #define YOFFSET_NAME 28
 #define YOFFSET_ICON 52
 #define YOFFSET_CARYING 34
-#define YOFFSET_BAR 30
+#define YOFFSET_BAR 32
 #define YOFFSET_INFOS 12
 #define YOFFSET_TOWER 22
 
-#define YOFFSET_B_SEP 3
+#define YOFFSET_B_SEP 6
 
 #define YOFFSET_TEXT_BAR 16
 #define YOFFSET_TEXT_PARA 14
@@ -87,6 +89,9 @@
 #define YOFFSET_BRUSH 56
 
 #define RIGHT_MENU_WIDTH 160
+#define RIGHT_MENU_HALF_WIDTH (RIGHT_MENU_WIDTH / 2)
+#define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
+#define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 
 using namespace boost;
 
@@ -159,7 +164,7 @@ void GameGUI::init()
 	viewportY=0;
 	mouseX=0;
 	mouseY=0;
-	displayMode=BUILDING_VIEW;
+	displayMode=CONSTRUCTION_VIEW;
 	selectionMode=NO_SELECTION;
 	selectionPushed=false;
 	selection.building = NULL;
@@ -1302,7 +1307,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("inn")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("inn"));
 					}
 				}
@@ -1312,7 +1317,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("swarm")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("swarm"));
 					}
 				}
@@ -1322,7 +1327,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("hospital")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("hospital"));
 					}
 				}
@@ -1332,7 +1337,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("racetrack")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("racetrack"));
 					}
 				}
@@ -1342,7 +1347,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("swimmingpool")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("swimmingpool"));
 					}
 				}
@@ -1352,7 +1357,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("barracks")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("barracks"));
 					}
 				}
@@ -1362,7 +1367,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("school")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("school"));
 					}
 				}
@@ -1372,7 +1377,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("defencetower")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("defencetower"));
 					}
 				}
@@ -1382,7 +1387,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("stonewall")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("stonewall"));
 					}
 				}
@@ -1392,7 +1397,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 					clearSelection();
 					if (isBuildingEnabled(std::string("market")))
 					{
-						displayMode = BUILDING_VIEW;
+						displayMode = CONSTRUCTION_VIEW;
 						setSelection(TOOL_SELECTION, (void *)("market"));
 					}
 				}
@@ -1926,6 +1931,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			return;
 		int ypos = YPOS_BASE_BUILDING +  YOFFSET_NAME + YOFFSET_ICON + YOFFSET_B_SEP;
 		BuildingType *buildingType = selBuild->type;
+		int lmx = mx - RIGHT_MENU_OFFSET; // local mx
 	
 		// working bar
 		if (selBuild->type->maxUnitWorking)
@@ -1934,10 +1940,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				&& my>ypos+YOFFSET_TEXT_BAR
 				&& my<ypos+YOFFSET_TEXT_BAR+16
 				&& selBuild->buildingState==Building::ALIVE
-				&& mx < 128)
+				&& lmx < 128)
 			{
 				int nbReq;
-				if (mx<18)
+				if (lmx<18)
 				{
 					if(selBuild->maxUnitWorkingLocal>0)
 					{
@@ -1946,9 +1952,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				        defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 					}
 				}
-				else if (mx<(128-18))
+				else if (lmx<(128-18))
 				{
-					nbReq=selBuild->maxUnitWorkingLocal=((mx-18)*MAX_UNIT_WORKING)/(128-36);
+					nbReq=selBuild->maxUnitWorkingLocal=((lmx-18)*MAX_UNIT_WORKING)/(128-36);
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 		        	defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 				}
@@ -1964,41 +1970,38 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 			ypos += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
-
 		
 		// priorities
 		if(selBuild->type->maxUnitWorking)
 		{
+			ypos += YOFFSET_B_SEP;
 			if (((selBuild->owner->allies)&(1<<localTeamNo))
 				&& my>ypos+16
 				&& my<ypos+16+12
-				&& selBuild->buildingState==Building::ALIVE
-				&& mx < 128)
+				&& selBuild->buildingState==Building::ALIVE)
 			{
 				int width = (128 - 8)/3;
 				const char *lowstr = Toolkit::getStringTable()->getString("[low priority]");
 				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
 				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
-				const int lenLow = globalContainer->littleFont->getStringWidth(lowstr);
-				const int lenMid = globalContainer->littleFont->getStringWidth(medstr);
-				const int lenHigh = globalContainer->littleFont->getStringWidth(highstr);
-				if(mx>=(8+lenLow) && mx<=(8+lenLow+12))
+
+				if(lmx>=0 && lmx<=12)
 				{
 					orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, -1)));
 					selBuild->priorityLocal = -1;
 				}
-				else if(mx>=(8+width+lenMid) && mx<(8+width+lenMid+12))
+				else if(lmx>=(width) && lmx<(width+12))
 				{
 					orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 0)));
 					selBuild->priorityLocal = 0;
 				}
-				else if(mx>=(8+width*2+lenHigh) && mx<=(8+width*2+lenHigh+12))
+				else if(lmx>=(width*2) && lmx<=(width*2+12))
 				{
 					orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 1)));
 					selBuild->priorityLocal = 1;
 				}
 			}
-			ypos += YOFFSET_BAR;
+			ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 		}
 		
 		// flag range bar
@@ -2007,10 +2010,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (((selBuild->owner->allies)&(1<<localTeamNo))
 				&& (my>ypos+YOFFSET_TEXT_BAR)
 				&& (my<ypos+YOFFSET_TEXT_BAR+16)
-				&& (mx < 128))
+				&& (lmx < 128))
 			{
 				int nbReq;
-				if (mx<18)
+				if (lmx<18)
 				{
 					if(selBuild->unitStayRangeLocal>0)
 					{
@@ -2018,9 +2021,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 					}
 				}
-				else if (mx<RIGHT_MENU_WIDTH-18)
+				else if (lmx<RIGHT_MENU_WIDTH-18)
 				{
-					nbReq=selBuild->unitStayRangeLocal=((mx-18)*(unsigned)selBuild->type->maxUnitStayRange)/(128-36);
+					nbReq=selBuild->unitStayRangeLocal=((lmx-18)*(unsigned)selBuild->type->maxUnitStayRange)/(128-36);
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 				}
 				else
@@ -2038,8 +2041,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		
 		// flags specific options:
 		if (((selBuild->owner->allies)&(1<<localTeamNo))
-			&& mx>10
-			&& mx<22)
+			&& lmx>10
+			&& lmx<22)
 		{
 			
 			// cleared ressources for clearing flags:
@@ -2115,7 +2118,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if ((my>startY) && (my<endY))
 			{
 				int r = (my-startY)/YOFFSET_TEXT_PARA;
-				if ((mx>92) && (mx<104))
+				if ((lmx>92) && (lmx<104))
 				{
 					if (selBuild->receiveRessourceMask & (1<<r))
 					{
@@ -2129,7 +2132,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
 				}
 
-				if ((mx>110) && (mx<122))
+				if ((lmx>110) && (lmx<122))
 				{
 					if (selBuild->sendRessourceMask & (1<<r))
 					{
@@ -2167,9 +2170,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			ypos+=15;
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
-				if ((my>ypos+(i*20))&&(my<ypos+(i*20)+16)&&(mx<128))
+				if ((my>ypos+(i*20))&&(my<ypos+(i*20)+16)&&(lmx<128))
 				{
-					if (mx<18)
+					if (lmx<18)
 					{
 						if (selBuild->ratioLocal[i]>0)
 						{
@@ -2177,9 +2180,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 						}
 					}
-					else if (mx<(128-18))
+					else if (lmx<(128-18))
 					{
-						selBuild->ratioLocal[i]=((mx-18)*MAX_RATIO_RANGE)/(128-36);
+						selBuild->ratioLocal[i]=((lmx-18)*MAX_RATIO_RANGE)/(128-36);
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 					}
 					else
@@ -2248,10 +2251,10 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		printf(" destinationPurprose=%d\n", selUnit->destinationPurprose);
 		printf(" caryedRessource=%d\n", selUnit->caryedRessource);
 	}
-	else if (displayMode==BUILDING_VIEW)
+	else if (displayMode==CONSTRUCTION_VIEW)
 	{
 		int xNum=mx/(RIGHT_MENU_WIDTH/2);
-		int yNum=(my-YPOS_BASE_BUILDING)/46;
+		int yNum=(my-YPOS_BASE_CONSTRUCTION)/46;
 		int id=yNum*2+xNum;
 		if (id<(int)buildingsChoiceName.size())
 			if (buildingsChoiceState[id])
@@ -2403,7 +2406,7 @@ void GameGUI::drawPanelButtons(int pos)
 	// draw buttons
 	if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
 	{
-		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==BUILDING_VIEW))
+		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==CONSTRUCTION_VIEW))
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, pos, globalContainer->gamegui, 1);
 		else
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, pos, globalContainer->gamegui, 0);
@@ -2463,7 +2466,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 			int x, y;
 
 			x=((i % numberPerLine)*width)+globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-			y=((i / numberPerLine)*46)+128+32;
+			y=((i / numberPerLine)*46)+pos;
 			globalContainer->gfx->setClipRect(x, y, 64, 46);
 
 			Sprite *buildingSprite;
@@ -2506,7 +2509,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 		
 		assert(sel>=0);
 		int x=((sel  % numberPerLine)*width)+globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-		int y=((sel / numberPerLine)*46)+128+32;
+		int y=((sel / numberPerLine)*46)+pos;
 		
 		int decX = (width - sw) / 2;
 		
@@ -2624,12 +2627,13 @@ void GameGUI::drawUnitInfos(void)
 	unitSprite->setBaseColor(unit->owner->color);
 	int decX = (32-unitSprite->getW(imgid))>>1;
 	int decY = (32-unitSprite->getH(imgid))>>1;
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+14+decX, ypos+7+4+decY, unitSprite, imgid);
+	int ddx = (RIGHT_MENU_HALF_WIDTH - 56) / 2 + 2;
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx+12+decX, ypos+7+4+decY, unitSprite, imgid);
 	
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2, ypos+4, globalContainer->gamegui, 18);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx, ypos+4, globalContainer->gamegui, 18);
 
 	// draw HP
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+60, ypos, globalContainer->littleFont, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[hp]")).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos, globalContainer->littleFont, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[hp]")).c_str());
 
 	if (selUnit->hp<=selUnit->trigHP)
 		{ r=255; g=0; b=0; }
@@ -2637,10 +2641,10 @@ void GameGUI::drawUnitInfos(void)
 		{ r=0; g=255; b=0; }
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+62, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0/%1").arg(selUnit->hp).arg(selUnit->performance[HP]).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0/%1").arg(selUnit->hp).arg(selUnit->performance[HP]).c_str());
 	globalContainer->littleFont->popStyle();
 
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+60, ypos+YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[food]")).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[food]")).c_str());
 
 	// draw food
 	if (selUnit->isUnitHungry())
@@ -2649,7 +2653,7 @@ void GameGUI::drawUnitInfos(void)
 		{ r=0; g=255; b=0; }
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+62, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormatableString("%0 % (%1)").arg(((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX, 0, 0).arg(selUnit->fruitCount).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormatableString("%0 % (%1)").arg(((float)selUnit->hungry*100.0f)/(float)Unit::HUNGRY_MAX, 0, 0).arg(selUnit->fruitCount).c_str());
 	globalContainer->littleFont->popStyle();
 
 	ypos += YOFFSET_ICON+10;
@@ -2662,17 +2666,17 @@ void GameGUI::drawUnitInfos(void)
 		{
 			const RessourceType* r = globalContainer->ressourcesTypes.get(selUnit->caryedRessource);
 			unsigned resImg = r->gfxId + r->sizesCount - 1;
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8-rdec, ypos, globalContainer->ressources, resImg);
 		}
 		else
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[don't carry anything]"));
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[don't carry anything]"));
 		}
 	}
 	ypos += YOFFSET_CARYING+10;
 
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[current speed]")).arg(selUnit->speed).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[current speed]")).arg(selUnit->speed).c_str());
 	ypos += YOFFSET_TEXT_PARA+10;
 	
 	if (selUnit->performance[ARMOR])
@@ -2681,59 +2685,59 @@ void GameGUI::drawUnitInfos(void)
 		int realArmor = selUnit->performance[ARMOR] - selUnit->fruitCount * armorReductionPerHappyness;
 		if (realArmor < 0)
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1 = %2 - %3 * %4").arg(Toolkit::getStringTable()->getString("[armor]")).arg(realArmor).arg(selUnit->performance[ARMOR]).arg(selUnit->fruitCount).arg(armorReductionPerHappyness).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1 = %2 - %3 * %4").arg(Toolkit::getStringTable()->getString("[armor]")).arg(realArmor).arg(selUnit->performance[ARMOR]).arg(selUnit->fruitCount).arg(armorReductionPerHappyness).c_str());
 		if (realArmor < 0)
 			globalContainer->littleFont->popStyle();
 	}
 	ypos += YOFFSET_TEXT_PARA;
 
 	if (selUnit->typeNum!=EXPLORER)
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[levels]")).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[levels]")).c_str());
 	ypos += YOFFSET_TEXT_PARA;
 
 	if (selUnit->performance[WALK])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Walk]")).arg((1+selUnit->level[WALK])).arg(selUnit->performance[WALK]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Walk]")).arg((1+selUnit->level[WALK])).arg(selUnit->performance[WALK]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[SWIM])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Swim]")).arg(selUnit->level[SWIM]).arg(selUnit->performance[SWIM]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Swim]")).arg(selUnit->level[SWIM]).arg(selUnit->performance[SWIM]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[BUILD])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Build]")).arg(1+selUnit->level[BUILD]).arg(selUnit->performance[BUILD]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Build]")).arg(1+selUnit->level[BUILD]).arg(selUnit->performance[BUILD]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[HARVEST])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Harvest]")).arg(1+selUnit->level[HARVEST]).arg(selUnit->performance[HARVEST]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Harvest]")).arg(1+selUnit->level[HARVEST]).arg(selUnit->performance[HARVEST]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[ATTACK_SPEED])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[At. speed]")).arg(1+selUnit->level[ATTACK_SPEED]).arg(selUnit->performance[ATTACK_SPEED]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[At. speed]")).arg(1+selUnit->level[ATTACK_SPEED]).arg(selUnit->performance[ATTACK_SPEED]).c_str());
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[ATTACK_STRENGTH])
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[At. strength]")).arg(1+selUnit->level[ATTACK_STRENGTH]).arg(selUnit->experienceLevel).arg(selUnit->performance[ATTACK_STRENGTH]).arg(selUnit->experienceLevel).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[At. strength]")).arg(1+selUnit->level[ATTACK_STRENGTH]).arg(selUnit->experienceLevel).arg(selUnit->performance[ATTACK_STRENGTH]).arg(selUnit->experienceLevel).c_str());
 		
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
 	
 	if (selUnit->performance[MAGIC_ATTACK_AIR])
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[Magic At. Air]")).arg(1+selUnit->level[MAGIC_ATTACK_AIR]).arg(selUnit->experienceLevel).arg(selUnit->performance[MAGIC_ATTACK_AIR]).arg(selUnit->experienceLevel).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[Magic At. Air]")).arg(1+selUnit->level[MAGIC_ATTACK_AIR]).arg(selUnit->experienceLevel).arg(selUnit->performance[MAGIC_ATTACK_AIR]).arg(selUnit->experienceLevel).c_str());
 		
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
 	
 	if (selUnit->performance[MAGIC_ATTACK_GROUND])
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[Magic At. Ground]")).arg(1+selUnit->level[MAGIC_ATTACK_GROUND]).arg(selUnit->experienceLevel).arg(selUnit->performance[MAGIC_ATTACK_GROUND]).arg(selUnit->experienceLevel).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[Magic At. Ground]")).arg(1+selUnit->level[MAGIC_ATTACK_GROUND]).arg(selUnit->experienceLevel).arg(selUnit->performance[MAGIC_ATTACK_GROUND]).arg(selUnit->experienceLevel).c_str());
 		
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
 	
 	if (selUnit->performance[ATTACK_STRENGTH] || selUnit->performance[MAGIC_ATTACK_AIR] || selUnit->performance[MAGIC_ATTACK_GROUND])
-		drawXPProgressBar(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, ypos, selUnit->experience, selUnit->getNextLevelThreshold());
+		drawXPProgressBar(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selUnit->experience, selUnit->getNextLevelThreshold());
 }
 
 void GameGUI::drawValueAlignedRight(int y, int v)
@@ -2857,15 +2861,16 @@ void GameGUI::drawBuildingInfos(void)
 	}
 	int dx = (56-miniSprite->getW(imgid))>>1;
 	int dy = (46-miniSprite->getH(imgid))>>1;
+	int ddx = (RIGHT_MENU_HALF_WIDTH - 56) / 2 + 2;
 	miniSprite->setBaseColor(selBuild->owner->color);
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+dx, ypos+4+dy, miniSprite, imgid);
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2, ypos+4, globalContainer->gamegui, 18);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx+dx, ypos+4+dy, miniSprite, imgid);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx, ypos+4, globalContainer->gamegui, 18);
 
 	// draw HP
 	if (buildingType->hpMax)
 	{
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+60, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[hp]"));
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[hp]"));
 		globalContainer->littleFont->popStyle();
 
 		if (selBuild->hp <= buildingType->hpMax/5)
@@ -2874,7 +2879,7 @@ void GameGUI::drawBuildingInfos(void)
 			{ r=0; g=255; b=0; }
 
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+62, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0/%1").arg(selBuild->hp).arg(buildingType->hpMax).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0/%1").arg(selBuild->hp).arg(buildingType->hpMax).c_str());
 		globalContainer->littleFont->popStyle();
 	}
 
@@ -2882,21 +2887,21 @@ void GameGUI::drawBuildingInfos(void)
 	if (buildingType->maxUnitInside && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+60, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE, globalContainer->littleFont, Toolkit::getStringTable()->getString("[inside]"));
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE, globalContainer->littleFont, Toolkit::getStringTable()->getString("[inside]"));
 		globalContainer->littleFont->popStyle();
 		if (selBuild->buildingState==Building::ALIVE)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+62, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0/%1").arg(selBuild->unitsInside.size()).arg(selBuild->maxUnitInside).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0/%1").arg(selBuild->unitsInside.size()).arg(selBuild->maxUnitInside).c_str());
 		}
 		else
 		{
 			if (selBuild->unitsInside.size()>1)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+62, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0%1").arg(Toolkit::getStringTable()->getString("[Still (i)]")).arg(selBuild->unitsInside.size()).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0%1").arg(Toolkit::getStringTable()->getString("[Still (i)]")).arg(selBuild->unitsInside.size()).c_str());
 			}
 			else if (selBuild->unitsInside.size()==1)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+62, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont,
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont,
 					Toolkit::getStringTable()->getString("[Still one]") );
 			}
 		}
@@ -2910,14 +2915,14 @@ void GameGUI::drawBuildingInfos(void)
 		selBuild->computeFlagStatLocal(&goingTo, &onSpot);
 		// display flag stat
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+60, ypos, globalContainer->littleFont, FormatableString("%0").arg(Toolkit::getStringTable()->getString("[In way]")).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos, globalContainer->littleFont, FormatableString("%0").arg(Toolkit::getStringTable()->getString("[In way]")).c_str());
 		globalContainer->littleFont->popStyle();
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+62, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0").arg(goingTo).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0").arg(goingTo).c_str());
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+60, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE,
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE,
 		globalContainer->littleFont, FormatableString(Toolkit::getStringTable()->getString("[On the spot]")).c_str());
 		globalContainer->littleFont->popStyle();
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+62, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0").arg(onSpot).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-+RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, globalContainer->littleFont, FormatableString("%0").arg(onSpot).c_str());
 	}
 
 	ypos += YOFFSET_ICON+YOFFSET_B_SEP;
@@ -2932,20 +2937,20 @@ void GameGUI::drawBuildingInfos(void)
 				const char *working = Toolkit::getStringTable()->getString("[working]");
 				const int len = globalContainer->littleFont->getStringWidth(working)+4;
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, working);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, working);
 				globalContainer->littleFont->popStyle();
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+len, ypos, globalContainer->littleFont, FormatableString("%0/%1").arg((int)selBuild->unitsWorking.size()).arg(selBuild->maxUnitWorkingLocal).c_str());
-				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, ypos+YOFFSET_TEXT_BAR, selBuild->maxUnitWorkingLocal, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0/%1").arg((int)selBuild->unitsWorking.size()).arg(selBuild->maxUnitWorkingLocal).c_str());
+				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->maxUnitWorkingLocal, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 			}
 			else
 			{
 				if (selBuild->unitsWorking.size()>1)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0%1%2").arg(Toolkit::getStringTable()->getString("[still (w)]")).arg(selBuild->unitsWorking.size()).arg(Toolkit::getStringTable()->getString("[units working]")).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0%1%2").arg(Toolkit::getStringTable()->getString("[still (w)]")).arg(selBuild->unitsWorking.size()).arg(Toolkit::getStringTable()->getString("[units working]")).c_str());
 				}
 				else if (selBuild->unitsWorking.size()==1)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont,
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
 						Toolkit::getStringTable()->getString("[still one unit working]") );
 				}
 			}
@@ -2956,6 +2961,7 @@ void GameGUI::drawBuildingInfos(void)
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 	}
+	
 	// priority buttons
 	if(buildingType->maxUnitWorking)
 	{
@@ -2963,26 +2969,26 @@ void GameGUI::drawBuildingInfos(void)
 		{
 			if(selBuild->buildingState==Building::ALIVE)
 			{
-				int width = (128 - 8)/3;
+				ypos += YOFFSET_B_SEP;
+				
+				int width = 128/3;
 				const char *prioritystr = Toolkit::getStringTable()->getString("[priority]");
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, prioritystr);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, prioritystr);
 
 				const char *lowstr = Toolkit::getStringTable()->getString("[low priority]");
 				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
 				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
-				const int lenLow = globalContainer->littleFont->getStringWidth(lowstr);
-				const int lenMid = globalContainer->littleFont->getStringWidth(medstr);
-				const int lenHigh = globalContainer->littleFont->getStringWidth(highstr);
-
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos+12, globalContainer->littleFont, lowstr);
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+lenLow, ypos+12+4, (selBuild->priorityLocal==-1));
 				
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+width, ypos+12, globalContainer->littleFont, medstr);
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+width+lenMid, ypos+12+4, (selBuild->priorityLocal==0));
-
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+width*2, ypos+12, globalContainer->littleFont, highstr);
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+width*2+lenHigh, ypos+12+4, (selBuild->priorityLocal==1));
-				ypos += 30;
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+12+4, (selBuild->priorityLocal==-1));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14, ypos+12+2, globalContainer->littleFont, lowstr);
+				
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width, ypos+12+4, (selBuild->priorityLocal==0));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width, ypos+12+2, globalContainer->littleFont, medstr);
+				
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width*2, ypos+12+4, (selBuild->priorityLocal==1));
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width*2, ypos+12+2, globalContainer->littleFont, highstr);
+				
+				ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 			}
 		}
 	}
@@ -2995,10 +3001,10 @@ void GameGUI::drawBuildingInfos(void)
 			const char *range = Toolkit::getStringTable()->getString("[range]");
 			const int len = globalContainer->littleFont->getStringWidth(range)+4;
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, range);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, range);
 			globalContainer->littleFont->popStyle();
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+len, ypos, globalContainer->littleFont, FormatableString("%0").arg(selBuild->unitStayRange).c_str());
-			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, selBuild->type->maxUnitStayRange);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0").arg(selBuild->unitStayRange).c_str());
+			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, selBuild->type->maxUnitStayRange);
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 	}
@@ -3010,21 +3016,21 @@ void GameGUI::drawBuildingInfos(void)
 		if (buildingType->type == "clearingflag")
 		{
 			ypos += YOFFSET_B_SEP;
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont,
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
 				Toolkit::getStringTable()->getString("[Clearing:]"));
 			ypos += YOFFSET_TEXT_PARA;
 			int j=0;
 			for (int i=0; i<BASIC_COUNT; i++)
 				if (i!=STONE)
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+28, ypos, globalContainer->littleFont,
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,
 						getRessourceName(i));
 					int spriteId;
 					if (selBuild->clearingRessourcesLocal[i])
 						spriteId=20;
 					else
 						spriteId=19;
-					globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos+2, globalContainer->gamegui, spriteId);
+					globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
 					
 					ypos+=YOFFSET_TEXT_PARA;
 					j++;
@@ -3034,18 +3040,18 @@ void GameGUI::drawBuildingInfos(void)
 		else if (buildingType->type == "warflag")
 		{
 			ypos += YOFFSET_B_SEP;
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont,
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
 				Toolkit::getStringTable()->getString("[Min required level:]"));
 			ypos += YOFFSET_TEXT_PARA;
 			for (int i=0; i<4; i++)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+28, ypos, globalContainer->littleFont, 1+i);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont, 1+i);
 				int spriteId;
 				if (i==selBuild->minLevelToFlagLocal)
 					spriteId=20;
 				else
 					spriteId=19;
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos+2, globalContainer->gamegui, spriteId);
+				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
 				
 				ypos+=YOFFSET_TEXT_PARA;
 			}
@@ -3055,7 +3061,7 @@ void GameGUI::drawBuildingInfos(void)
 			int spriteId;
 			
 			ypos += YOFFSET_B_SEP;
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont,
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
 				Toolkit::getStringTable()->getString("[Min required level:]"));
 			ypos += YOFFSET_TEXT_PARA;
 			
@@ -3063,20 +3069,20 @@ void GameGUI::drawBuildingInfos(void)
 			// must be able to do to be accepted at this flag
 			// 0 == any explorer
 			// 1 == must be able to attack ground
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[any explorer]"));
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[any explorer]"));
 			if (selBuild->minLevelToFlagLocal == 0)
 				spriteId = 20;
 			else
 				spriteId = 19;
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos+2, globalContainer->gamegui, spriteId);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
 			
 			ypos += YOFFSET_TEXT_PARA;
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[ground attack]"));
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[ground attack]"));
 			if (selBuild->minLevelToFlagLocal == 1)
 				spriteId = 20;
 			else
 				spriteId = 19;
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos+2, globalContainer->gamegui, spriteId);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
 			ypos += YOFFSET_TEXT_PARA;
 		}
 	}
@@ -3084,15 +3090,15 @@ void GameGUI::drawBuildingInfos(void)
 	// other infos
 	if (buildingType->armor)
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[armor]")).arg(buildingType->armor).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[armor]")).arg(buildingType->armor).c_str());
 		ypos+=YOFFSET_TEXT_LINE;
 	}
 	if (buildingType->maxUnitInside)
 		ypos += YOFFSET_INFOS;
 	if (buildingType->shootDamage)
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos+1, globalContainer->littleFont, FormatableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[damage]")).arg(buildingType->shootDamage).c_str());
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos+12, globalContainer->littleFont, FormatableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[range]")).arg(buildingType->shootingRange).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+1, globalContainer->littleFont, FormatableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[damage]")).arg(buildingType->shootDamage).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+12, globalContainer->littleFont, FormatableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[range]")).arg(buildingType->shootingRange).c_str());
 		ypos += YOFFSET_TOWER;
 	}
 
@@ -3109,10 +3115,10 @@ void GameGUI::drawBuildingInfos(void)
 			for (int i=0; i<NB_ABILITY; i++)
 				if (buildingType->upgradeTime[i])
 					maxTimeTo=std::max(maxTimeTo, buildingType->upgradeTime[i]);
-		int dec = (RIGHT_MENU_WIDTH-128);
+		int dec = (RIGHT_MENU_RIGHT_OFFSET-128);
 		if (maxTimeTo)
 		{
-			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, ypos, 128, 7, 168, 150, 90);
+			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, 128, 7, 168, 150, 90);
 			for (std::list<Unit *>::iterator it=selBuild->unitsInside.begin(); it!=selBuild->unitsInside.end(); ++it)
 			{
 				Unit *u=*it;
@@ -3156,13 +3162,13 @@ void GameGUI::drawBuildingInfos(void)
 	if (buildingType->canExchange && ((selBuild->owner->sharedVisionExchange)&(1<<localTeamNo)))
 	{
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[market]"));
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[market]"));
 		globalContainer->littleFont->popStyle();
 		//globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-36-3, ypos+1, globalContainer->gamegui, EXCHANGE_BUILDING_ICONS);
 		ypos += YOFFSET_TEXT_PARA;
 		for (unsigned i=0; i<HAPPYNESS_COUNT; i++)
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(getRessourceName(i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(getRessourceName(i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
 
 			/*
 			int inId, outId;
@@ -3194,14 +3200,14 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				if (buildingType->maxRessource[i])
 				{
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(getRessourceName(i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(getRessourceName(i)).arg(selBuild->ressources[i]).arg(buildingType->maxRessource[i]).c_str());
 					j++;
 					ypos += 11;
 				}
 			}
 			if (buildingType->maxBullets)
 			{
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[Bullets]")).arg(selBuild->bullets).arg(buildingType->maxBullets).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[Bullets]")).arg(selBuild->bullets).arg(buildingType->maxBullets).c_str());
 				j++;
 				ypos += 11;
 			}
@@ -3212,18 +3218,18 @@ void GameGUI::drawBuildingInfos(void)
 		{
 			int left=(selBuild->productionTimeout*128)/buildingType->unitProductionTime;
 			int elapsed=128-left;
-			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, ypos, elapsed, 7, 100, 100, 255);
-			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+elapsed, ypos, left, 7, 128, 128, 128);
+			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, elapsed, 7, 100, 100, 255);
+			globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+elapsed, ypos, left, 7, 128, 128, 128);
 
 			ypos+=15;
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
-				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, ypos, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24, ypos, globalContainer->littleFont, getUnitName(i));
+				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+24, ypos, globalContainer->littleFont, getUnitName(i));
 				
 				if(i==1 && hilights.find(HilightRatioBar) != hilights.end())
 				{
-					arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, ypos-8, 38));
+					arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET-36, ypos-8, 38));
 				}
 				
 				ypos+=20;
@@ -3263,7 +3269,7 @@ void GameGUI::drawBuildingInfos(void)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access fruit]")).arg(n);
 					else if(j == Building::UnitTooFarFromFruit)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from fruit]")).arg(n);
-					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, ypos, globalContainer->littleFont, s.c_str());
+					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos, globalContainer->littleFont, s.c_str());
 					ypos+=11;
 				}
 			}
@@ -3276,14 +3282,14 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				if (buildingType->isBuildingSite)
 					assert(buildingType->nextLevel!=-1);
-				drawBlueButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-48, "[cancel repair]");
+				drawBlueButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, globalContainer->gfx->getH()-48, "[cancel repair]");
 			}
 			else if (selBuild->constructionResultState==Building::UPGRADE)
 			{
 				assert(buildingType->nextLevel!=-1);
 				if (buildingType->isBuildingSite)
 					assert(buildingType->prevLevel!=-1);
-				drawBlueButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-48, "[cancel upgrade]");
+				drawBlueButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, globalContainer->gfx->getH()-48, "[cancel upgrade]");
 			}
 			else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
 			{
@@ -3292,8 +3298,8 @@ void GameGUI::drawBuildingInfos(void)
 					// repair
 					if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && localTeam->maxBuildLevel()>=buildingType->level)
 					{
-						drawBlueButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-48, "[repair]");
-						if ( mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12 && mouseX<globalContainer->gfx->getW()-12
+						drawBlueButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, globalContainer->gfx->getH()-48, "[repair]");
+						if ( mouseX>globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+12 && mouseX<globalContainer->gfx->getW()-12
 							&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
 							{
 								globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
@@ -3309,8 +3315,8 @@ void GameGUI::drawBuildingInfos(void)
 					// upgrade
 					if (selBuild->isHardSpaceForBuildingSite(Building::UPGRADE) && (localTeam->maxBuildLevel()>buildingType->level))
 					{
-						drawBlueButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-48, "[upgrade]");
-						if ( mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12 && mouseX<globalContainer->gfx->getW()-12
+						drawBlueButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, globalContainer->gfx->getH()-48, "[upgrade]");
+						if ( mouseX>globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+12 && mouseX<globalContainer->gfx->getW()-12
 							&& mouseY>globalContainer->gfx->getH()-48 && mouseY<globalContainer->gfx->getH()-48+16 )
 							{
 								globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
@@ -3337,7 +3343,7 @@ void GameGUI::drawBuildingInfos(void)
 								if (bt->armor)
 								{
 									if (!buildingType->armor)
-										globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4, blueYpos-1, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
+										globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, blueYpos-1, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
 									drawValueAlignedRight(blueYpos-1, bt->armor);
 									blueYpos+=YOFFSET_TEXT_LINE;
 								}
@@ -3377,11 +3383,11 @@ void GameGUI::drawBuildingInfos(void)
 			// building destruction
 			if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 			{
-				drawRedButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-24, "[cancel destroy]");
+				drawRedButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, globalContainer->gfx->getH()-24, "[cancel destroy]");
 			}
 			else if (selBuild->buildingState==Building::ALIVE)
 			{
-				drawRedButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-24, "[destroy]");
+				drawRedButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, globalContainer->gfx->getH()-24, "[destroy]");
 			}
 		}
 	}
@@ -3457,15 +3463,16 @@ void GameGUI::drawPanel(void)
 	{
 		drawRessourceInfos();
 	}
-	else if (displayMode==BUILDING_VIEW)
+	else if (displayMode==CONSTRUCTION_VIEW)
 	{
-		drawChoice(YPOS_BASE_BUILDING, buildingsChoiceName, buildingsChoiceState);
+		drawChoice(YPOS_BASE_CONSTRUCTION, buildingsChoiceName, buildingsChoiceState);
 	}
 	else if (displayMode==FLAG_VIEW)
 	{
 		int dec = (RIGHT_MENU_WIDTH - 128)/2;
 		// draw flags
 		drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
+		
 		// draw choice of area
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
@@ -3525,11 +3532,11 @@ void GameGUI::drawPanel(void)
 	}
 	else if (displayMode==STAT_TEXT_VIEW)
 	{
-		teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, YPOS_BASE_STAT);
+		teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
 	}
 	else if (displayMode==STAT_GRAPH_VIEW)
 	{
-		teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, YPOS_BASE_STAT);
+		teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
 		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
 		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
 		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
@@ -3767,7 +3774,7 @@ void GameGUI::drawOverlayInfos(void)
 
 	// display map mark
 	globalContainer->gfx->setClipRect();
-	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+14, 14, 100, viewportX, viewportY, game);
+	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+30, 14, 100, viewportX, viewportY, game);
 
 	// display text if placing a building 
 	if(selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
