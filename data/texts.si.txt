@@ -142,6 +142,8 @@ Zgradi
 
 [building site]
 gradbišče
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -576,6 +578,8 @@ Ne
 
 [not ready]
 ni pripravljen
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +588,8 @@ ni pripravljen
 %0 ekip.
 [number of teams]
 Število ekip
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -645,6 +651,8 @@ Prosim počakaj
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -990,6 +998,8 @@ Bazen je napaden
 Vojaška zastava je zgrajena
 [the warflag is under attack]
 Vojaška zastava je napadena
+[time]
+
 [to:]
 za:
 [toggle draw accessibility aids]
@@ -1001,6 +1011,12 @@ za:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Najvišji dosežen ugled

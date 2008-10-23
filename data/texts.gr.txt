@@ -190,6 +190,8 @@ backspace
 Ρυθμίσεις Μονάδας
 [building site]
 τόπος κατασκευής
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -646,6 +648,8 @@ Anastasios M. Pingios
 
 [not ready]
 Μη έτοιμος
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -654,6 +658,8 @@ Anastasios M. Pingios
 %0 ομάδες.
 [number of teams]
 αριθμός των ομάδων
+[Number Of Units]
+
 [numlock]
 numlock
 [objectives]
@@ -716,6 +722,8 @@ page up
 ενέργεια
 [press space]
 Πατήστε space για να συνεχίσετε.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -1062,6 +1070,8 @@ tab
 ?? warflag ολοκληρώθηκε ??
 [the warflag is under attack]
 ?? warflag δέχετε επίθεση ??
+[time]
+
 [to:]
 στο:
 [toggle draw accessibility aids]
@@ -1076,6 +1086,12 @@ tab
 Έναρξη Ηχογράφησης Φωνής
 [toggle recording voice]
 Εναλλαγή Εγγραφής Φωνής
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Συνολικό ρεκοπ κύρους
 [Total]

@@ -190,6 +190,8 @@ Bouwen
 Gebouwen
 [building site]
 bouwplaats
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -644,6 +646,8 @@ Nee
 
 [not ready]
 Niet klaar
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -652,6 +656,8 @@ Er zijn %0 spelers aanwezig.
 %0 teams.
 [number of teams]
 Aantal teams
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -714,6 +720,8 @@ Even geduld alsjeblieft
 
 [press space]
 Druk op spatie om verder te gaan
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -1060,6 +1068,8 @@ Het zwembad wordt aangevallen
 ?? De oorlogsvlag is klaar ??
 [the warflag is under attack]
 ?? De oorlogsvlag wordt aangevallen ??
+[time]
+
 [to:]
 aan:
 [toggle draw accessibility aids]
@@ -1072,6 +1082,12 @@ Paden van eenheden aan/uitschakelen
 
 [toggle recording voice]
 Spraak opname
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Totaal verworven roem
 [Total]

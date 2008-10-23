@@ -2069,7 +2069,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		showingScriptEditor=true;
 		hasMapBeenModified=true;
 	}
-	else if(action=="close script editor")
+	else if(action=="close scenario editor")
 	{
 		delete scriptEditor;
 		showingScriptEditor=false;
@@ -3024,7 +3024,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			case ScriptEditorScreen::OK:
 			case ScriptEditorScreen::CANCEL:
 			{
-				performAction("close script editor");
+				performAction("close scenario editor");
 			}
 		}
 	}

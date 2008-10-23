@@ -142,6 +142,8 @@ Construir
 
 [building site]
 Sítio de constr.
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -582,6 +584,8 @@ Não
 
 [not ready]
 não pronto
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +594,8 @@ não pronto
 %0 times.
 [number of teams]
 Número de bandos
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -652,6 +658,8 @@ Espere por favor
 
 [press space]
 Pressione espaço para continuar.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -996,6 +1004,8 @@ A piscina está sendo atacada
 ?? Bandeira de guerra finalizada ??
 [the warflag is under attack]
 ?? A bandeira de guerra está sendo atacada ??
+[time]
+
 [to:]
 a:
 [toggle draw accessibility aids]
@@ -1007,6 +1017,12 @@ a:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Prestígio total atingido

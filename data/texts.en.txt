@@ -22,20 +22,6 @@
 %0% uploaded
 [%0's game]
 %0's Game
-[Number Of Units]
-Number Of Units
-[Number Of Buildings]
-Number Of Buildings
-[Prestige Score]
-Prestige Score
-[Total Hitpoints]
-Total Hitpoints
-[Total Attack Power]
-Total Attack Power
-[Total Defence Power]
-Total Defence Power
-[time]
-Time
 [%0's team unit got converted to your team]
 %0's team unit got converted to your team
 [abreaviation explanation A]
@@ -156,10 +142,10 @@ Building Defaults
 Building Settings
 [building site]
 construction site
-[Building Tool Line Explanation]
-Ctrl + Drag = Line
 [Building Tool Box Explanation]
 Shift + Drag = Box
+[Building Tool Line Explanation]
+Ctrl + Drag = Line
 [Buildings]
 Buildings
 [Bullets]
@@ -594,12 +580,16 @@ No
 Not Enough Ratings
 [not ready]
 not ready
+[Number Of Buildings]
+Number Of Buildings
 [number of players: %0 (%1 AI)]
 %0 players (%1 AI)
 [number of teams: %0]
 %0 teams
 [number of teams]
 number of teams
+[Number Of Units]
+Number Of Units
 [numlock]
 numlock
 [objectives]
@@ -662,6 +652,8 @@ Please wait
 power
 [press space]
 Press space to continue.
+[Prestige Score]
+Prestige Score
 [Prestige Win Enabled]
 Prestige Win Enabled
 [Prestige]
@@ -1004,6 +996,8 @@ The swimming pool is under attack
 ?? warflag finished ??
 [the warflag is under attack]
 ?? warflag under attack ??
+[time]
+Time
 [to:]
 to:
 [toggle draw accessibility aids]
@@ -1018,6 +1012,12 @@ Toggle Menu Screen
 Initiate Voice Recording
 [toggle recording voice]
 Toggle Recording Voice
+[Total Attack Power]
+Total Attack Power
+[Total Defence Power]
+Total Defence Power
+[Total Hitpoints]
+Total Hitpoints
 [Total prestige reached]
 Total prestige reached
 [Total]

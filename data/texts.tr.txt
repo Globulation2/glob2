@@ -142,6 +142,8 @@ Insaa et
 
 [building site]
 insaa alani
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -582,6 +584,8 @@ Hayir
 
 [not ready]
 hazir degil
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +594,8 @@ hazir degil
 %0 takim var.
 [number of teams]
 takim sayisi
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -652,6 +658,8 @@ Lutfen bekleyin
 
 [press space]
 Devam etmek icin bosluk tusuna basin.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -996,6 +1004,8 @@ Yuzme havuzu saldiri altinda
 ?? Savas bayragi tamamlandi ??
 [the warflag is under attack]
 ?? Savas bayragi saldiri altinda ??
+[time]
+
 [to:]
 suraya:
 [toggle draw accessibility aids]
@@ -1007,6 +1017,12 @@ suraya:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Kazanilan toplam prestij
