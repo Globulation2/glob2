@@ -142,6 +142,8 @@ Construire
 Réglages de l'unité
 [building site]
 chantier
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -584,6 +586,8 @@ Non
 Pas assez d'évalution
 [not ready]
 pas prêt
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 Nombre de joueurs: %0 (%1 IA)
 [number of players: %0]
@@ -592,6 +596,8 @@ Nombre de joueurs: %0 (%1 IA)
 %0 équipes.
 [number of teams]
 nombre d'équipes
+[Number Of Units]
+
 [numlock]
 Verouillage du pavé numérique
 [objectives]
@@ -654,6 +660,8 @@ Attendre SVP
 Puissance
 [press space]
 Appuyer sur espace pour continuer.
+[Prestige Score]
+
 [Prestige Win Enabled]
 Victoire par préstige activée
 [Prestige]
@@ -998,6 +1006,8 @@ La piscine est attaquée
 ?? Drapeau de guerre terminé ??
 [the warflag is under attack]
 ?? Drapeau de guerre attaqué ??
+[time]
+
 [to:]
 à:
 [toggle draw accessibility aids]
@@ -1010,6 +1020,12 @@ Basculer l'affichage du chemin des unités
 Basculer l'écran du menu
 [toggle recording voice]
 Basculer la transmission de la voix
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Le prestige total a été atteint
 [Total]

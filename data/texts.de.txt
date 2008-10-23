@@ -142,6 +142,8 @@ Gebäudestandards
 Gebäude
 [building site]
 Baustelle
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 Strg+Ziehen=Linie
 [Buildings]
@@ -206,6 +208,8 @@ Berechne Fruchtbarkeit der Böden.
 Befestigte Inseln
 [connect]
 Verbinden
+[connecting to game]
+Verbinde zu Spiel
 [connecting to]
 Verbinden mit
 [Construction Site Defaults]
@@ -574,12 +578,16 @@ Nein
 Zu wenige Bewertungen
 [not ready]
 nicht bereit
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 %0 Spieler (%1 KI)
 [number of teams: %0]
 %0 Mannschaften
 [number of teams]
 Mannschaften
+[Number Of Units]
+
 [numlock]
 Numlock
 [objectives]
@@ -642,6 +650,8 @@ Bitte warten
 Kraft
 [press space]
 Leertaste drücken, um fortzufahren.
+[Prestige Score]
+
 [Prestige Win Enabled]
 Sieg durch Prestige aktivieren
 [Prestige]
@@ -986,6 +996,8 @@ Das Schwimmbecken wird angegriffen
 ?? Kriegsflagge fertig ??
 [the warflag is under attack]
 ?? Kriegsflagge wird angegriffen ??
+[time]
+
 [to:]
 auf:
 [toggle draw accessibility aids]
@@ -998,6 +1010,12 @@ Wege zeigen an/aus
 Schalte Menü an/aus
 [toggle recording voice]
 Mikrofon ein-/ausschalten
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Höchstmögliches Prestige erreicht
 [Total]
@@ -1162,5 +1180,3 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
-[connecting to game]
-Verbinde zu Spiel

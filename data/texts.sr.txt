@@ -142,6 +142,8 @@ AIWarrush
 
 [building site]
 Градилиште
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -576,6 +578,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [not ready]
 није спреман
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +588,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Број екипа: %0.
 [number of teams]
 Број тимова
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -645,6 +651,8 @@ OpenGL
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -990,6 +998,8 @@ OpenGL
 ?? Ратна застава је завршена ??
 [the warflag is under attack]
 ?? Ратна застава је нападнута ??
+[time]
+
 [to:]
 ка:
 [toggle draw accessibility aids]
@@ -1001,6 +1011,12 @@ OpenGL
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Укупан постигнут престиж

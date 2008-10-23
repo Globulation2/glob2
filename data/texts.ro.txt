@@ -142,6 +142,8 @@ Construieşte
 
 [building site]
 şantier
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -576,6 +578,8 @@ Nu
 
 [not ready]
 nu-i gata
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +588,8 @@ nu-i gata
 %0 echipe.
 [number of teams]
 numărul echipelor
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -645,6 +651,8 @@ Vă rugăm aşteptaţi
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -990,6 +998,8 @@ Piscina este atacată
 ?? Steag de război terminat ??
 [the warflag is under attack]
 ?? Steagul de luptă este atacat ??
+[time]
+
 [to:]
 către:
 [toggle draw accessibility aids]
@@ -1001,6 +1011,12 @@ către:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Prestigiul total a fost atins
