@@ -7,7 +7,7 @@ def Worker := 0
 def Explorer := 1
 def Warrior := 2
 
-def unitsCount := game.unitsCount
+def unitsCount := engine.unitsCount
 
 def AbilityWalk := 3
 def AbilitySwim := 4
@@ -19,7 +19,7 @@ def AbilityAttackStrength := 9
 def AbilityMagicAttackAir := 10
 def AbilityMagicAttackGround := 11
 
-def unitsUpgradeCount := game.unitsUpgradesCount
+def unitsUpgradeCount := engine.unitsUpgradesCount
 
 \# buildings getter
 
@@ -40,12 +40,18 @@ def Level1Completed := 3
 def Level2Construction := 4
 def Level2Completed := 5
 
-def buildingsCount := game.buildingsCount
+def buildingsCount := engine.buildingsCount
 
 \# general team getter
 
-def teamsCount := game.teamsCount
-def isAlive := game.isTeamAlive
+def teamsCount := engine.teamsCount
+def isAlive := engine.isTeamAlive
+
+\# more defines for engine
+
+def PrimaryObjective := 0
+def SecondaryObjective := 1
+def InvalidObjective := 2
 
 \# general game getter
 
@@ -53,9 +59,10 @@ def isAlive := game.isTeamAlive
 
 \# game gui
 
-def show := gameGUI.showScriptText
-def showTr := gameGUI.showScriptTextTr
-def hide := gameGUI.hideScriptText
+def show := gui.showScriptText
+def showTr := gui.showScriptTextTr
+def hide := gui.hideScriptText
+
 
 
 \# wait on game variables
