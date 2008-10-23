@@ -35,7 +35,7 @@ MapEditMenuScreen::MapEditMenuScreen() : OverlayScreen(globalContainer->gfx, 370
 {
 	addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load map]"), LOAD_MAP));
 	addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save map]"), SAVE_MAP));
-	addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[open script editor]"), OPEN_SCRIPT_EDITOR, 27));
+	addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[open scenario editor]"), OPEN_SCRIPT_EDITOR, 27));
 	addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[open teams editor]"), OPEN_TEAMS_EDITOR, 27));
 	addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the editor]"), QUIT_EDITOR));
 	addWidget(new TextButton(0, 260, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to editor]"), RETURN_EDITOR, 27));

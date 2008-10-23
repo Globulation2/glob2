@@ -616,7 +616,7 @@ Ouvrir boîte de discussion
 Ouvrir menu de chargement
 [open save menu]
 Ouvrir menu de sauvegarde
-[open script editor]
+[open scenario editor]
 Ouvrir éditeur de script
 [open teams editor]
 

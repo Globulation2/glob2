@@ -303,7 +303,7 @@
 [open chat box]
 [open load menu]
 [open save menu]
-[open script editor]
+[open scenario editor]
 [open teams editor]
 [open]
 [OpenGL]
