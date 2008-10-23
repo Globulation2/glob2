@@ -604,7 +604,7 @@ Beim Loslassen
 Öffne "Laden"
 [open save menu]
 Öffne "Speichern"
-[open script editor]
+[open scenario editor]
 Öffne "Skript"
 [open teams editor]
 Öffne "Teams"

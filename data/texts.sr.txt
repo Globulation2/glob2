@@ -608,7 +608,7 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [open save menu]
 
-[open script editor]
+[open scenario editor]
 
 [open teams editor]
 

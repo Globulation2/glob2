@@ -612,7 +612,7 @@ on unpress 松弛
 开启载入选单
 [open save menu]
 开启储存选单
-[open script editor]
+[open scenario editor]
 开启语法编辑器
 [open teams editor]
 打开队伍编辑器

@@ -2060,7 +2060,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		showingSave=false;
 		loadSaveScreen=NULL;
 	}
-	else if(action=="open script editor")
+	else if(action=="open scenario editor")
 	{
 		performAction("unselect");
 		performAction("scroll horizontal stop");
@@ -2960,7 +2960,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			case MapEditMenuScreen::OPEN_SCRIPT_EDITOR:
 			{
 				performAction("close menu screen");
-				performAction("open script editor");
+				performAction("open scenario editor");
 			}
 			break;
 			case MapEditMenuScreen::OPEN_TEAMS_EDITOR:

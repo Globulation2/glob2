@@ -604,7 +604,7 @@ Helyszínen van
 
 [open save menu]
 
-[open script editor]
+[open scenario editor]
 
 [open teams editor]
 
@@ -1760,7 +1760,7 @@ Helyszínen van
 
 [open save menu]
 
-[open script editor]
+[open scenario editor]
 
 [open teams editor]
 
@@ -2915,7 +2915,7 @@ Helyszínen van
 
 [open save menu]
 
-[open script editor]
+[open scenario editor]
 
 [open teams editor]
 
