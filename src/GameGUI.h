@@ -123,12 +123,6 @@ public:
 	void showScriptText(const std::string &text);
 	void showScriptTextTr(const std::string &text, const std::string &lang);
 	void hideScriptText();
-	
-	int hintsCount() { return game.gameHints.getNumberOfHints(); }
-	void showHint(int n) { if (n < game.gameHints.getNumberOfHints()) game.gameHints.setHintVisible(n); }
-	void hideHint(int n) { if (n < game.gameHints.getNumberOfHints()) game.gameHints.setHintHidden(n); }
-	bool isHintVisible(int n) { if (n < game.gameHints.getNumberOfHints()) return game.gameHints.isHintVisible(n); else return false; }
-	
 
 	// Stats for engine
 	void setCpuLoad(int s);
