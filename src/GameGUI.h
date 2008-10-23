@@ -278,7 +278,7 @@ private:
 	//! Display mode
 	enum DisplayMode
 	{
-		BUILDING_VIEW=0,
+		CONSTRUCTION_VIEW=0,
 		FLAG_VIEW,
 		STAT_TEXT_VIEW,
 		STAT_GRAPH_VIEW,
