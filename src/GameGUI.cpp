@@ -63,7 +63,7 @@
 #define TYPING_INPUT_MAX_POS 46
 
 // these values are manually layouted for cuteste perception
-#define YPOS_BASE_DEFAULT 160
+#define YPOS_BASE_DEFAULT 180
 #define YPOS_BASE_CONSTRUCTION (YPOS_BASE_DEFAULT + 5)
 #define YPOS_BASE_FLAG (YPOS_BASE_DEFAULT + 5)
 #define YPOS_BASE_STAT YPOS_BASE_DEFAULT
@@ -142,7 +142,7 @@ GameGUI::GameGUI()
 	         RIGHT_MENU_WIDTH, // width of the menu
 	         globalContainer->gfx->getW(), // width of the screen
 	         20, // x offset
-	         5, // y offset
+	         10, // y offset
 	         128, // width
 	         128, //height
 	         Minimap::HideFOW), // minimap mode
@@ -3875,7 +3875,7 @@ void GameGUI::drawOverlayInfos(void)
 
 	// display map mark
 	globalContainer->gfx->setClipRect();
-	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+30, 14, 100, viewportX, viewportY, game);
+	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, game);
 
 	// display text if placing a building 
 	if(selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
