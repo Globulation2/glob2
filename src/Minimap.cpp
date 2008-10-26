@@ -30,13 +30,13 @@
 
 using namespace GAGCore;
 
-Minimap::Minimap(bool nox, int px, int py, int sizew, int sizeh, int leftborder, int topborder, MinimapMode minimap_mode)
-	: noX(nox), px(px), py(py), sizew(sizew), sizeh(sizeh), leftborder(leftborder), topborder(topborder), minimap_mode(minimap_mode)
+Minimap::Minimap(bool nox, int menuWidth, int gameWidth, int xOffset, int yOffset, int width, int height, MinimapMode minimapMode)
+	: noX(nox), menuWidth(menuWidth), gameWidth(gameWidth), xOffset(xOffset), yOffset(yOffset), width(width), height(height), minimapMode(minimapMode)
 {
 	if (nox) return;
 
 	update_row = -1;
-	surface=new DrawableSurface(sizew - leftborder * 2, sizeh - topborder * 2);
+	surface=new DrawableSurface(width, height);
 }
 
 
@@ -59,6 +59,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 {
 	if (noX) return;
 
+  // Compute the position of the minimap if it needs to be scaled
 	computeMinimapPositioning();
 
 	Uint8 borderR;
@@ -80,14 +81,24 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		borderB = 40;
 		borderA = 180;
 	}
-	globalContainer->gfx->drawFilledRect(px, py, sizew, topborder, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px, py + sizeh - topborder, sizew, topborder, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px, py + topborder, leftborder, sizeh - topborder*2, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px + sizew - leftborder, py + topborder, leftborder, sizeh-topborder*2, borderR, borderG, borderB, borderA);
+	// Fill the 4 sides of the menu around the minimap with the color above
+	// left side
+	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth, 0, xOffset, height+yOffset, borderR, borderG, borderB, borderA);
+	// right side
+	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset+width, 0, menuWidth-xOffset-width, height+yOffset, borderR, borderG, borderB, borderA);
+	// top side
+	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, 0, width, yOffset, borderR, borderG, borderB, borderA);
+	// bottom side not needed, because the menu draws up to it
+	//globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, yOffset+height, width, 0, borderR, borderG, borderB, borderA);
 
-	///Draw a 1 pixel hilight arround the minimap
-	globalContainer->gfx->drawRect(px + leftborder - 1, py + topborder - 1, sizew - leftborder * 2 + 2, sizeh - topborder * 2 + 2, 200, 200, 200);
-
+	///Draw a 1 pixel border arround the minimap
+	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
+	                               yOffset-1, 
+	                               width+2, 
+	                               height+2, 
+	                               200, 200, 200);
+  
+  // calculate the offset for the viewport square
 	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
 	offset_y = game->teams[localteam]->startPosY - game->map.getH() / 2;
 
@@ -97,7 +108,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	//Render the colorMap and blit the surface
 	if(update_row == -1)
 	{
-		surface->drawFilledRect(0, 0, sizew - leftborder * 2, sizeh - topborder * 2, 0,0,0,Color::ALPHA_OPAQUE);
+		surface->drawFilledRect(0, 0, width, height, 0, 0, 0, Color::ALPHA_OPAQUE);
 		update_row = 0;
 		refreshPixelRows(0, mini_h, localteam);
 	}
@@ -112,7 +123,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		line_row = update_row;
 	}
 	//Draw the surface
-	globalContainer->gfx->drawSurface(px + leftborder, py + topborder, surface);
+	globalContainer->gfx->drawSurface(gameWidth-menuWidth+xOffset, yOffset, surface);
 
 	//Draw the viewport square, taking into account that it may
 	//wrap arround the sides of the minimap
@@ -143,7 +154,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	globalContainer->gfx->drawPixel(endx, endy, 255, 255, 255);
 
 	///Draw the line that shows where the minimap is currently updating
-	if(minimap_mode == HideFOW)
+	if(minimapMode == HideFOW)
 		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
 }
 
@@ -195,26 +206,30 @@ void Minimap::resetMinimapDrawing()
 void Minimap::computeMinimapPositioning()
 {
 	if (noX) return;
-
-	int msizew = sizew - leftborder*2;
-	int msizeh = sizeh - topborder*2;
+	
 	if(game->map.getW() > game->map.getH())
 	{
-		mini_w = msizew;
-		mini_h = (game->map.getH() * msizeh) / game->map.getW();
+	  // If the width is greater than the height, normal width but shrink the height
+		mini_w = width;
+		mini_h = (game->map.getH()*height) / game->map.getW();
+		// Once the minimap has been scaled, center it on the minimap
 		mini_offset_x = 0;
-		mini_offset_y = (msizeh - mini_h)/2;
-		mini_x = px + leftborder + mini_offset_x;
-		mini_y = py + topborder + mini_offset_y;
+		mini_offset_y = (height-mini_h)/2;
+		// Now set the position of it on the whole screen
+		mini_x = gameWidth-menuWidth+xOffset+mini_offset_x;
+		mini_y = yOffset + mini_offset_y;
 	}
 	else
 	{
-		mini_w = (game->map.getW() * msizew) / game->map.getH();
-		mini_h = msizeh;
-		mini_offset_x = (msizew - mini_w)/2;
+	  // Height is greater than width
+		mini_w = (game->map.getW()*width) / game->map.getH();
+		mini_h = height;
+		// Center it..
+		mini_offset_x = (width - mini_w)/2;
 		mini_offset_y = 0;
-		mini_x = px + leftborder + mini_offset_x;
-		mini_y = py + topborder + mini_offset_y;
+		// And set the position for the screen!
+		mini_x = gameWidth-menuWidth+xOffset+mini_offset_x;
+		mini_y = yOffset + mini_offset_y;
 	}
 }
 
@@ -272,7 +287,7 @@ void Minimap::computeColors(int row, int localTeam)
 	const int dMy = ((game->map.getH())<<16) / (mini_h);
 	const int decSPX=offset_x<<16, decSPY=offset_y<<16;
 
-	bool useMapDiscovered = minimap_mode == ShowFOW;
+	bool useMapDiscovered = minimapMode == ShowFOW;
 
 	const int dy = row;
 	for (int dx=0; dx<szX; dx++)

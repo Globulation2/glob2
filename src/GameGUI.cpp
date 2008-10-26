@@ -138,7 +138,15 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 
 GameGUI::GameGUI()
 	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
-	  minimap(globalContainer->runNoX, (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-RIGHT_MENU_WIDTH), 0, RIGHT_MENU_WIDTH, 128, (RIGHT_MENU_WIDTH-100)/2, 14, Minimap::HideFOW),
+	  minimap(globalContainer->runNoX, 
+	         RIGHT_MENU_WIDTH, // width of the menu
+	         globalContainer->gfx->getW(), // width of the screen
+	         20, // x offset
+	         5, // y offset
+	         128, // width
+	         128, //height
+	         Minimap::HideFOW), // minimap mode
+	  
 	  ghostManager(game)
 {
 }
@@ -1960,7 +1968,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 		}
 	}
-	else if (my<128+32)
+	// Check if one of the panel buttons has been clicked
+	else if (my<YPOS_BASE_DEFAULT)
 	{
 		int dec = (RIGHT_MENU_WIDTH-128)/2;
 		int dm=(mx-dec)/32;
@@ -2544,7 +2553,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 128, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128);
 
-	// draw selection if needed
+	// draw building selection if needed
 	if (selectionMode == TOOL_SELECTION)
 	{
 		int sw;
@@ -3505,17 +3514,17 @@ void GameGUI::drawPanel(void)
 
 	// draw menu background, black if low speed graphics, transparent otherwise
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 128, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 133, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 128, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 133, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
 	if(hilights.find(HilightRightSidePanel) != hilights.end())
 	{
 		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, globalContainer->gfx->getH()/2, 38));
 	}
 
-	// draw the buttons in the panel
-	drawPanelButtons(128);
+	// draw the panel selection buttons
+	drawPanelButtons(YPOS_BASE_DEFAULT-32);
 
 	if (selectionMode==BUILDING_SELECTION)
 	{
