@@ -30,12 +30,24 @@
 
 using namespace GAGCore;
 
+
+// Creates a minimap of specified values
+// nox - no graphics
+// menuWidth - width of the menu the minimap is placed in
+// gameWidth - width of the game screen
+// xOffset - offset from the left side of the menu
+// yOffset - offset from the top
+// width & height - size of the minimap graphic
+// minimapMode - to draw fog of war, or not to draw!
+
 Minimap::Minimap(bool nox, int menuWidth, int gameWidth, int xOffset, int yOffset, int width, int height, MinimapMode minimapMode)
 	: noX(nox), menuWidth(menuWidth), gameWidth(gameWidth), xOffset(xOffset), yOffset(yOffset), width(width), height(height), minimapMode(minimapMode)
 {
 	if (nox) return;
 
+  // since the update loop goes by row store that row so we gan draw the gray "radar" line 
 	update_row = -1;
+	// The actual minimap picture to be drawn to.
 	surface=new DrawableSurface(width, height);
 }
 
@@ -59,7 +71,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 {
 	if (noX) return;
 
-  // Compute the position of the minimap if it needs to be scaled
+  // Compute the position of the minimap if it needs to be scaled & centered
 	computeMinimapPositioning();
 
 	Uint8 borderR;
@@ -81,6 +93,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		borderB = 40;
 		borderA = 180;
 	}
+	
 	// Fill the 4 sides of the menu around the minimap with the color above
 	// left side
 	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth, 0, xOffset, height+yOffset, borderR, borderG, borderB, borderA);
@@ -102,19 +115,20 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
 	offset_y = game->teams[localteam]->startPosY - game->map.getH() / 2;
 
-	///What row the scan-line is to be drawn at
+	///What row the scan-line ("radar") is to be drawn at
 	int line_row = 0;
 
 	//Render the colorMap and blit the surface
 	if(update_row == -1)
 	{
+	  // clear the minimap by drawing a black rect over it
 		surface->drawFilledRect(0, 0, width, height, 0, 0, 0, Color::ALPHA_OPAQUE);
 		update_row = 0;
 		refreshPixelRows(0, mini_h, localteam);
 	}
 	else
 	{
-		///Render four rows at a time
+		///Render 1/25th of the rows at a time
 		const int rows_to_render = std::max(1, mini_h/25);
 		
 		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localteam);
@@ -286,7 +300,6 @@ void Minimap::computeColors(int row, int localTeam)
 	const int dMx = ((game->map.getW())<<16) / (mini_w);
 	const int dMy = ((game->map.getH())<<16) / (mini_h);
 	const int decSPX=offset_x<<16, decSPY=offset_y<<16;
-
 	bool useMapDiscovered = minimapMode == ShowFOW;
 
 	const int dy = row;
