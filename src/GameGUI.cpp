@@ -2522,7 +2522,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 			int x, y;
 
 			x=((i % numberPerLine)*width)+globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-			y=((i / numberPerLine)*46)+pos;
+			y=((i / numberPerLine)*46)+YPOS_BASE_BUILDING;
 			globalContainer->gfx->setClipRect(x, y, 64, 46);
 
 			Sprite *buildingSprite;
@@ -2562,10 +2562,10 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 		else
 			sw = globalContainer->gamegui->getW(23);
 			
-		
+	  
 		assert(sel>=0);
 		int x=((sel  % numberPerLine)*width)+globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-		int y=((sel / numberPerLine)*46)+pos;
+		int y=((sel / numberPerLine)*46)+YPOS_BASE_BUILDING;
 		
 		int decX = (width - sw) / 2;
 		
