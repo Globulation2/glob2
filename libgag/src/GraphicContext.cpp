@@ -952,6 +952,16 @@ namespace GAGCore
 		drawRect(static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2), color);
 	}
 
+	void DrawableSurface::drawVertLine(int x, int y, int l, const Color& color)
+	{
+		 _drawVertLine(x, y, l, color);
+	}
+	
+	void DrawableSurface::drawHorzLine(int x, int y, int l, const Color& color)
+	{
+		_drawHorzLine(x, y, l, color);
+	}
+	
 	// compat
 	void DrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
@@ -1687,7 +1697,7 @@ namespace GAGCore
 			DrawableSurface::drawSurface(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), surface, sx, sy, sw, sh, alpha);
 	}
 
-	bool EXPERIMENTAL=true;//EXPERIMENTAL is a bit buggy and !EXPERIMENTAL is bugfree but slow
+	bool EXPERIMENTAL=false;//EXPERIMENTAL is a bit buggy and !EXPERIMENTAL is bugfree but slow
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 	#ifdef HAVE_OPENGL
@@ -1871,6 +1881,16 @@ namespace GAGCore
 		#endif
 			 _drawVertLine(x, y, l, Color(r, g, b, a));
 	}
+	
+	void GraphicContext::drawVertLine(int x, int y, int l, const Color& color)
+	{
+		#ifdef HAVE_OPENGL
+		if (optionFlags & GraphicContext::USEGPU)
+			drawLine(x, y, x, y+l, color);
+		else
+		#endif
+			 _drawVertLine(x, y, l, color);
+	}
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
@@ -1880,6 +1900,16 @@ namespace GAGCore
 		else
 		#endif
 			_drawHorzLine(x, y, l, Color(r, g, b, a));
+	}
+	
+	void GraphicContext::drawHorzLine(int x, int y, int l, const Color& color)
+	{
+		#ifdef HAVE_OPENGL
+		if (optionFlags & GraphicContext::USEGPU)
+			drawLine(x, y, x+l, y, color);
+		else
+		#endif
+			_drawHorzLine(x, y, l, color);
 	}
 
 	void GraphicContext::drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
