@@ -4,6 +4,8 @@
 %0 уровня %1
 [%0 units can't access building]
 %0 юнитов не могут достичь здания
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 юнитов не могут достичь фруктов
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 юнитов недоступны
 [%0 units too far from building]
 %0 юнитво слишком далеки от здания
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 юнитов слишком далеки от фруктов
 [%0 units too far from resource]

@@ -3,21 +3,25 @@
 [%0 level %1]
 %0 niveau %1
 [%0 units can't access building]
-%0 unitées ne peuvent accéder au bâtiment
+%0 unités ne peuvent accéder au bâtiment
+[%0 units can't access flag]
+%0 unités ne peuvent accéder au drapeau
 [%0 units can't access fruit]
-%0 unitées ne peuvent accéder au fruit
+%0 unités ne peuvent accéder au fruit
 [%0 units can't access resource]
-%0 unitées ne peuvent accéder aux ressources
+%0 unités ne peuvent accéder aux ressources
 [%0 units not available]
-%0 unitées non disponible
+%0 unités non disponible
 [%0 units too far from building]
-%0 unitées trop loin de bâtiment
+%0 unités trop loin de bâtiment
+[%0 units too far from flag]
+%0 unités trop loin du drapeau
 [%0 units too far from fruit]
-%0 unitées trop loin de fruit
+%0 unités trop loin de fruit
 [%0 units too far from resource]
-%0 unitées trop loin de ressource
+%0 unités trop loin de ressource
 [%0 units too low level]
-%0 unitées niveau trop bas
+%0 unités niveau trop bas
 [%0% Uploaded]
 %0% envoyer
 [%0's game]

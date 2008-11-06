@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 

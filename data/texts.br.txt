@@ -4,6 +4,8 @@
 %0 nível %1
 [%0 units can't access building]
 %0 unidades não conseguem acesso à construção
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 unidades não conseguem acesso às frutas
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 unidades não disponíveis
 [%0 units too far from building]
 %0 unidades muito longes da construção
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 unidades muito longe das frutas
 [%0 units too far from resource]
