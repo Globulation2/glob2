@@ -4,6 +4,8 @@
 %0 Level %1
 [%0 units can't access building]
 %0 Einheiten können das Gebäude nicht betreten
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 Einheiten können die Früchte nicht erreichen
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 Einheiten nicht verfügbar
 [%0 units too far from building]
 %0 Einheiten zu weit  vom Gebäude entfernt
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 Einheiten zu weit von den Früchten entfernt
 [%0 units too far from resource]

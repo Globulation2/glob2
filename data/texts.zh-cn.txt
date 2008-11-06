@@ -4,6 +4,8 @@
 %0 级别为 %1
 [%0 units can't access building]
 %0 单位无法进入建筑物
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 单位无法得到水果
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 单位没空
 [%0 units too far from building]
 %0 单位远离建筑
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 单位远离水果
 [%0 units too far from resource]

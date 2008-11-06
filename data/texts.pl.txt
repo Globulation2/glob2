@@ -4,6 +4,8 @@
 %0 Poziom %1
 [%0 units can't access building]
 %0 j. nie może się dost. do bud.
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 j. nie może się dost. do owo.
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 jednostek nie dost.
 [%0 units too far from building]
 %0 j. za daleko od bud.
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 j. za daleko od owo.
 [%0 units too far from resource]
