@@ -3333,9 +3333,19 @@ void GameGUI::drawBuildingInfos(void)
 					if(j == Building::UnitTooLowLevel)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too low level]")).arg(n);
 					else if(j == Building::UnitCantAccessBuilding)
-						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access building]")).arg(n);
+					{
+						if (buildingType->isVirtual)
+							s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access flag]")).arg(n);
+						else
+							s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access building]")).arg(n);
+					}
 					else if(j == Building::UnitTooFarFromBuilding)
-						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from building]")).arg(n);
+					{
+						if (buildingType->isVirtual)
+							s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from flag]")).arg(n);
+						else
+							s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from building]")).arg(n);
+					}
 					else if(j == Building::UnitCantAccessResource)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access resource]")).arg(n);
 					else if(j == Building::UnitCantAccessFruit)
