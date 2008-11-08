@@ -51,31 +51,31 @@ IA
 [ai]
 IA
 [AICastor-Description]
-
+Description d'AICastor
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Description de Nicowar
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Description de AINone
 [AINone]
 AINone
 [AINumbi-Description]
-
+Description de AINumbi
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+Description de ReachToInfinity
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib-Description]
-
+Description d'AIToubib
 [AIToubib]
 AIToubib
 [AIWarrush-Description]
-
+Description d'AICastor
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -85,7 +85,7 @@ Algues
 [alliances]
 Alliances
 [alt %0]
-
+alt %0
 [and]
 et
 [any explorer]
@@ -135,21 +135,21 @@ Joueurs bloqué
 [break]
 casser
 [briefing]
-
+briefing
 [build %0 level %1]
 construire %0 niveau %1
 [Build]
 Construire
 [Building Defaults]
-
+Défauts des bâtiments
 [building settings]
-Réglages de l'unité
+Réglages unités
 [building site]
 chantier
 [Building Tool Box Explanation]
-
+explication de la boîte d'outils des bâtiments
 [Building Tool Line Explanation]
-
+explication de la ligne d'outils des bâtiments
 [Buildings]
 Bâtiments
 [Bullets]
@@ -211,11 +211,11 @@ Fermé
 [compile]
 Compiler le script
 [compose]
-
+composer
 [Computing Fertility]
 Fertilité Informatique
 [concrete islands terrain]
-
+Iles et rivières
 [connect]
 Connecter
 [connecting to game]
@@ -223,7 +223,7 @@ connection au jeu
 [connecting to]
 Connection à
 [Construction Site Defaults]
-
+Défauts des chantiers
 [Continue playing]
 Continuer à jouer
 [control %0]
@@ -241,7 +241,7 @@ Créer carte
 [credits]
 Crédits
 [ctrl - line]
-
+Ctrl - ligne
 [current speed]
 Vitesse actuelle
 [custom game]
@@ -359,9 +359,9 @@ F9
 [Fertility Map]
 Carte de fertilité
 [Flag Defaults]
-
+Défauts des drapeaux
 [flag settings explanation]
-
+Le rayon par défaut du drapeau
 [food]
 Nourriture
 [forbidden area]
@@ -385,7 +385,7 @@ Raccourcis du jeu
 [Game]
 Jeu
 [general settings]
-Réglages généraux
+Réglages globaux
 [go to event]
 Aller à l'évenement
 [go to home]
@@ -411,9 +411,9 @@ Pause dur
 [Harvest]
 Récolte
 [high priority]
-
+haute priorité
 [hints]
-
+astuces
 [home]
 Maison
 [hospital explanation 2]
@@ -429,9 +429,9 @@ Point de vie
 [hp]
 Pts vie
 [Human]
-
-[human]
 Humain
+[human]
+humain
 [hungry]
 faim
 [hungryness]
@@ -453,9 +453,9 @@ Dedans
 [islands size]
 taille des îles
 [islands terrain]
-Iles
+Iles de type 1
 [isles terrain]
-
+Iles de type 2
 [iterate selection]
 Itérer la séléction
 [jobs]
@@ -465,7 +465,7 @@ Joindre une partie
 [join]
 Joindre
 [keyboard settings]
-Réglages du clavier
+Réglages clavier
 [kick]
 Ejecter
 [lan]
@@ -511,7 +511,7 @@ Perdu : %0 a plus de prestige que vous
 [Lost : your colony is dead]
 Perdu : votre colonie est morte
 [low priority]
-
+basse priorité
 [lowquality]
 Basse qualité
 [Magic At. Air]
@@ -531,7 +531,7 @@ Nom de la carte
 [map rated]
 carte évalué
 [map script]
-
+Script de la carte
 [map size x]
 Largeur de la carte
 [map size y]
@@ -557,9 +557,9 @@ Permet d'échanger des ressources
 [market]
 Marché
 [medium priority]
-
+priorité moyenne
 [meta %0]
-
+meta-%0
 [Min required level:]
 Niveau minimum requis:
 [Minimum Level To Flag]
@@ -567,7 +567,7 @@ Niveau minimum au drapeau
 [Music volume]
 Volume (musique)
 [Mute]
-
+Mute
 [mute]
 muet
 [new campaign]
@@ -591,7 +591,7 @@ Pas assez d'évalution
 [not ready]
 pas prêt
 [Number Of Buildings]
-
+Nombre de bâtiments
 [number of players: %0 (%1 AI)]
 Nombre de joueurs: %0 (%1 IA)
 [number of players: %0]
@@ -601,7 +601,7 @@ Nombre de joueurs: %0 (%1 IA)
 [number of teams]
 nombre d'équipes
 [Number Of Units]
-
+Nombre d'unités
 [numlock]
 Verouillage du pavé numérique
 [objectives]
@@ -615,11 +615,11 @@ Ancien terrain d'île
 [old random terrain]
 Ancien terrain aléatoire
 [on press]
-
+sur appuyer
 [On the spot]
 Sur place
 [on unpress]
-
+sur relacher
 [open chat box]
 Ouvrir boîte de discussion
 [open load menu]
@@ -635,9 +635,9 @@ ouvert
 [OpenGL]
 OpenGL
 [Options]
-
-[options]
 Options
+[options]
+options
 [Orange]
 Orange
 [Other Options]
@@ -665,7 +665,7 @@ Puissance
 [press space]
 Appuyer sur espace pour continuer.
 [Prestige Score]
-
+Résultat du prestige
 [Prestige Win Enabled]
 Victoire par préstige activée
 [Prestige]
@@ -765,59 +765,59 @@ Verouillage de défilement
 [scroll wheel enabled]
 Roulette de la souris activée
 [Secondary Objectives]
-
+Objectifs secondaires
 [seeking a job]
 cherchent du travail
 [seeking]
 recherche
 [select barracks building]
-
+Choisir camp d'entraînement
 [select clearingflag]
-
+Choisir drapeau de défrichage
 [select construct barracks]
-
+Choisir construire un camp d'entraînement
 [select construct defencetower]
-
+Choisir construire une tourelle
 [select construct hospital]
-
+Choisir construire un hôpital
 [select construct inn]
-
+Choisir construire une auberge
 [select construct market]
-
+Choisir construire un marché
 [select construct racetrack]
-
+Choisir construire une piste de course
 [select construct school]
-
+Choisir construire une école
 [select construct stonewall]
-
+Choisir construire un mur de pierre
 [select construct swarm]
-
+Choisir construire une ruche
 [select construct swimmingpool]
-
+Choisir construire une piscine
 [select delete tool]
-
+Choisir outil d'effacement
 [select explorationflag]
-
+Choisir drapeau d'exploration
 [select hospital building]
-
+Choisir hôpital
 [select inn building]
-
+Choisir auberge
 [select market building]
-
+Choisir marché
 [select place clearing area]
-
+Choisir placer une zone de défrichage
 [select place clearingflag]
-
+Choisir placer un drapeau de défrichage
 [select place explorationflag]
-
+Choisir placer un drapeau d'exploration
 [select place forbidden area]
-
+Choisir placer une zone d'interdiction
 [select place guard area]
-
+Choisir placer une zone de garde
 [select place warflag]
-
+Choisir placer un drapeau de guerre
 [select racetrack building]
-
+Choisir placer un camp d'entraînement
 [select school building]
 Selectionner construction d'une école
 [select swarm building]
@@ -833,7 +833,7 @@ Selectionner drapeau de guerre
 [settings]
 Paramètres
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 touche enter : envoyer un message
 [shortcut explanation v]
@@ -905,33 +905,33 @@ Améliore la vitesse de nage
 [swimmingpool]
 Piscine
 [switch to adding areas]
-Changer vers l'ajout de zones
+Passer à l'ajout de zones
 [switch to area brush 1]
-
+Passer à la brosse de zone 1
 [switch to area brush 2]
-
+Passer à la brosse de zone 2
 [switch to area brush 3]
-
+Passer à la brosse de zone 3
 [switch to area brush 4]
-
+Passer à la brosse de zone 4
 [switch to area brush 5]
-
+Passer à la brosse de zone 5
 [switch to area brush 6]
-
+Passer à la brosse de zone 6
 [switch to area brush 7]
-
+Passer à la brosse de zone 7
 [switch to area brush 8]
-
+Passer à la brosse de zone 8
 [switch to building view]
-Changer vers la vue bâtiment
+Passer à la vue bâtiment
 [switch to flag view]
-Changer vers la vue drapeau
+Passer à la vue drapeau
 [switch to removing areas]
-Changer vers la suppression des zones
+Passer à la suppression des zones
 [switch to teams view]
-Changer vers la vue des équipes
+Passer à la vue des équipes
 [switch to terrain view]
-Changer vers la vue du terrain
+Passer à la vue du terrain
 [sys req]
 Sys Req
 [tab]
@@ -939,7 +939,7 @@ Tab
 [teams editor]
 Editeur d'équipe
 [Teams Fixed]
-
+Equipes fixes
 [teams]
  équipes
 [the barracks is finished]
@@ -1011,7 +1011,7 @@ La piscine est attaquée
 [the warflag is under attack]
 ?? Drapeau de guerre attaqué ??
 [time]
-
+temps
 [to:]
 à:
 [toggle draw accessibility aids]
@@ -1025,23 +1025,15 @@ Basculer l'écran du menu
 [toggle recording voice]
 Basculer la transmission de la voix
 [Total Attack Power]
-
+Total de la force d'attaque
 [Total Defence Power]
-
+Total de la force de défense
 [Total Hitpoints]
-
+Total des points de vie
 [Total prestige reached]
 Le prestige total a été atteint
 [Total]
 Total
-[tutorial text 1]
-
-[tutorial text 2]
-
-[tutorial text 3]
-
-[tutorial text 4]
-
 [tutorial]
 Didacticiel
 [Uncontrolled]
@@ -1069,13 +1061,13 @@ Haut
 [upgrade building]
 Améliorer le bâtiment
 [Upgrade Defaults]
-
+Défauts des amélioration
 [upgrade]
 Améliorer
 [Upload Map]
-
+Envoyer la carte
 [upload map]
-
+envoyer la carte
 [username]
 Nom d'utilisateur
 [Version]
@@ -1147,7 +1139,7 @@ Le metaserveur YOG a refusé la connexion car le mot de passe est faux.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Le metaserveur YOG a refusé la connexion car cet utilisateur n'a pas encore de mot de passe. Vous voulez probablement enregistrer votre utilisateur avec ce mot de passe. Pour cela, activez l'option "Enregistrer le nouvel utilisateur YOG avec mot de passe" ci-dessous avant de vous connecter. Vous n'avez besoin d'activer cette option qu'une seule fois.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+Le metaserveur YOG a refusé la connection car votre IP est temporairement banie.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Le metaserveur YOG a refusé la connexion car votre version de globulation2 est trop ancienne pour communiquer avec.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1155,29 +1147,29 @@ Le metaserveur YOG a refusé la connexion pour une raison inconnue!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Le metaserveur YOG a refusé la connexion car votre nom d'utilisateur est déjà utilisé par une autre personne.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+Le metaserveur YOG a refusé la connection car votre IP est définitivement banie.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+Le metaserveur YOG a refusé la connection car nom d'utilisateur contient des charactères spéciaux invalides
 [YESTS_CREATED]
 Le système de connexion est prêt à contacter le metaserveur YOG pour se connecter.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Vos mots de passe YOG ne correspondent pas.
 [YESTS_UNABLE_TO_CONNECT]
 Impossible de se connecter. Apparemment le metaserveur YOG n'est pas disponible.
 [yog block command help]
-
+/block <nomdujoueur>    Bloque un jouuer, vous ne verrez plus ce qu'il écrit
 [yog block command player %0 already blocked]
-
+Le joueur %0 est déjà bloqué
 [yog block command player %0 blocked]
-
+Le joueur %0 est bloqué
 [yog block command player %0 not found]
-
+Le joueur %0 n'est pas présent
 [yog command header]
-
+Les commandes YOG disponibles sont :
 [yog command unknown]
 yog commande inconnue
 [yog help command help]
-
+/help    Affiche ce message d'aide
 [yog]
 Jeu en ligne (Ysagoon)
 [you have lost]
