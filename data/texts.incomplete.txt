@@ -7,7 +7,7 @@
 data/texts.en.txt
 *data/texts.es.txt
 *data/texts.eu.txt
-*data/texts.fr.txt
+data/texts.fr.txt
 *data/texts.gr.txt
 *data/texts.hu.txt
 data/texts.it.txt
