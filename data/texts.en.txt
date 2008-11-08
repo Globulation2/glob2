@@ -629,7 +629,7 @@ OpenGL
 [Options]
 Options
 [options]
-Options
+options
 [Orange]
 Orange
 [Other Options]
