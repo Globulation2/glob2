@@ -272,7 +272,7 @@ void Minimap::computeColors(int row, int localTeam)
 	if (noX) return;
 
 	assert(localTeam>=0);
-	assert(localTeam<32);
+	assert(localTeam<Team::MAX_COUNT);
 
 	const int terrainColor[3][3] = {
 		{ 0, 40, 120 }, // Water
@@ -333,7 +333,7 @@ void Minimap::computeColors(int row, int localTeam)
 				}
 				if (gid!=NOGUID)
 				{
-					int teamId=gid/1024;
+					int teamId=gid/Unit::MAX_COUNT;
 					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))
 					{
 						if (teamId==localTeam)

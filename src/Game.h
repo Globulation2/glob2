@@ -220,8 +220,8 @@ public:
 	///This is a game header. It contains all the settings for a particular game, from AI's to Alliances to victory conditions.
 	GameHeader gameHeader;
 
-	Team *teams[32];
-	Player *players[32];
+	Team ** teams;
+	Player ** players;
 	Map map;
 	Mapscript script;
 	GameObjectives objectives;
@@ -264,7 +264,7 @@ public:
 
 protected:
 	FILE *logFile;
-	int ticksGameSum[32];
+	int * ticksGameSum;
 };
 
 #endif

@@ -69,16 +69,16 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 Game::~Game()
 {
 	int sum=0;
-	for (int i=0; i<32; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 		sum+=ticksGameSum[i];
 	if (sum)
 	{
 		fprintf(logFile, "(sync)stepCounter=%d\n", stepCounter);
 		fprintf(logFile, "execution time of Game::step: sum=%d\n", sum);
-		for (int i=0; i<32; i++)
+		for (int i=0; i<Team::MAX_COUNT; i++)
 			fprintf(logFile, "ticksGameSum[%2d]=%8d, (%f %%)\n", i, ticksGameSum[i], (float)ticksGameSum[i]*100./(float)sum);
 		fprintf(logFile, "\n");
-		for (int i=0; i<32; i++)
+		for (int i=0; i<Team::MAX_COUNT; i++)
 		{
 			fprintf(logFile, "ticksGameSum[%2d]=", i);
 			for (int j=0; j<(int)(0.5+(float)ticksGameSum[i]*100./(float)sum); j++)
@@ -101,7 +101,9 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	mapHeader.reset();
 	gameHeader.reset();
 
-	for (int i=0; i<32; i++)
+	teams=new Team*[Team::MAX_COUNT];
+	players=new Player*[Team::MAX_COUNT];
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		teams[i]=NULL;
 		players[i]=NULL;
@@ -114,8 +116,9 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 
 	stepCounter=0;
 	prestigeToReach=0;
-
-	for (int i=0; i<32; i++)
+	
+	ticksGameSum=new int[Team::MAX_COUNT];
+	for (int i=0; i<Team::MAX_COUNT; i++)
 		ticksGameSum[i]=0;
 
 	anyPlayerWaitedTimeFor = 0;
@@ -207,7 +210,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 {
 	anyPlayerWaited=false;
 	assert(order->sender>=0);
-	assert(order->sender<32);
+	assert(order->sender<Team::MAX_COUNT);
 	assert(order->sender < gameHeader.getNumberOfPlayers());
 	Team *team=players[order->sender]->team;
 	assert(team);
@@ -733,7 +736,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			boost::shared_ptr<PlayerQuitsGameOrder> pqgo=boost::static_pointer_cast<PlayerQuitsGameOrder>(order);
 
 			bool found = false;
-			for(int i=0; i<32; ++i)
+			for(int i=0; i<Team::MAX_COUNT; ++i)
 			{
 				if(i!=pqgo->player && players[i])
 				{
@@ -1226,7 +1229,7 @@ void Game::syncStep(Sint32 localTeam)
 		{
 			map.switchFogOfWar();
 			for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
-				for (int i=0; i<1024; i++)
+				for (int i=0; i<Building::MAX_COUNT; i++)
 				{
 					Building *b=teams[t]->myBuildings[i];
 					if (b)
@@ -1315,29 +1318,25 @@ int Game::buildingsCount(int team, int type, int level)
 
 void Game::addTeam(int pos)
 {
+	assert(mapHeader.getNumberOfTeams()<Team::MAX_COUNT);
 	if(pos==-1)
 		pos=mapHeader.getNumberOfTeams();
-	if (mapHeader.getNumberOfTeams()<32)
-	{
-		teams[pos]=new Team(this);
-		teams[pos]->teamNumber=mapHeader.getNumberOfTeams();
-		teams[pos]->race.load();
-		teams[pos]->setCorrectMasks();
+	teams[pos]=new Team(this);
+	teams[pos]->teamNumber=mapHeader.getNumberOfTeams();
+	teams[pos]->race.load();
+	teams[pos]->setCorrectMasks();
 
-		pos=mapHeader.getNumberOfTeams();
-		pos+=1;
-		mapHeader.setNumberOfTeams(pos);
-		for (int i=0; i<pos; i++)
-			teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
+	pos=mapHeader.getNumberOfTeams();
+	pos+=1;
+	mapHeader.setNumberOfTeams(pos);
+	for (int i=0; i<pos; i++)
+		teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
 
-		prestigeToReach = std::max(MIN_MAX_PRESIGE, pos*TEAM_MAX_PRESTIGE);
+	prestigeToReach = std::max(MIN_MAX_PRESIGE, pos*TEAM_MAX_PRESTIGE);
 
-		map.addTeam();
+	map.addTeam();
 
-		script.addTeam();
-	}
-	else
-		assert(false);
+	script.addTeam();
 }
 
 void Game::removeTeam(int pos)
@@ -1385,7 +1384,7 @@ void Game::regenerateDiscoveryMap(void)
 	map.unsetMapDiscovered();
 	for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
 	{
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Unit::MAX_COUNT; i++)
 		{
 			Unit *u=teams[t]->myUnits[i];
 			if (u)
@@ -1393,7 +1392,7 @@ void Game::regenerateDiscoveryMap(void)
 				map.setMapDiscovered(u->posX-1, u->posY-1, 3, 3, teams[t]->sharedVisionOther);
 			}
 		}
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b=teams[t]->myBuildings[i];
 			if (b)
@@ -1423,7 +1422,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 		return NULL;
 
 	int id=-1;
-	for (int i=0; i<1024; i++)//we search for a free place for a unit.
+	for (int i=0; i<Unit::MAX_COUNT; i++)//we search for a free place for a unit.
 		if (teams[team]->myUnits[i]==NULL)
 		{
 			id=i;
@@ -1454,7 +1453,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	assert(team);
 
 	int id=-1;
-	for (int i=0; i<1024; i++)//we search for a free place for a building.
+	for (int i=0; i<Building::MAX_COUNT; i++)//we search for a free place for a building.
 		if (team->myBuildings[i]==NULL)
 		{
 			id=i;
@@ -2555,7 +2554,7 @@ inline void Game::drawUnitPathLines(int left, int top, int right, int bot, int s
 {
 	if ((drawOptions & DRAW_PATH_LINE) != 0)
 	{
-		for(int i=0; i<1024; ++i)
+		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
 			Unit *unit=teams[localTeam]->myUnits[i];
 			if (unit)

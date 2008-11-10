@@ -1416,7 +1416,7 @@ bool Building::subscribeToBringRessourcesStep()
 		*/
 		/*
 		int maxValue=-INT_MAX;
-		for(int n=0; n<1024; ++n)
+		for(int n=0; n<Building::MAX_COUNT; ++n)
 		{
 			Unit* unit=owner->myUnits[n];
 			if(unit==NULL
@@ -1477,11 +1477,11 @@ bool Building::subscribeToBringRessourcesStep()
 		}
 */
 		// Compute the list of candidate units
-		Unit* possibleUnits[1024];
-		int distances[1024];
-		int resource[1024];
+		Unit* possibleUnits[Unit::MAX_COUNT];
+		int distances[Unit::MAX_COUNT];
+		int resource[Unit::MAX_COUNT];
 		int teamNumber=owner->teamNumber;
-		for(int n=0; n<1024; ++n)
+		for(int n=0; n<Unit::MAX_COUNT; ++n)
 		{
 			possibleUnits[n]=NULL;
 			distances[n] = 0;
@@ -1601,7 +1601,7 @@ bool Building::subscribeToBringRessourcesStep()
 		int maxLevel = -1;
 		int minValue = INT_MAX;
 		//First: we look only for units with a needed resource:
-		for(int n=0; n<1024; ++n)
+		for(int n=0; n<Unit::MAX_COUNT; ++n)
 		{
 			Unit* unit=possibleUnits[n];
 			if(unit==NULL)
@@ -1628,7 +1628,7 @@ bool Building::subscribeToBringRessourcesStep()
 		if (choosen==NULL)
 		{
 			int teamNumber=owner->teamNumber;
-			for(int n=0; n<1024; ++n)
+			for(int n=0; n<Unit::MAX_COUNT; ++n)
 			{
 				Unit* unit=possibleUnits[n];
 				if(unit==NULL)
@@ -1654,7 +1654,7 @@ bool Building::subscribeToBringRessourcesStep()
 		if (choosen==NULL)
 		{
 			int teamNumber=owner->teamNumber;
-			for(int n=0; n<1024; ++n)
+			for(int n=0; n<Unit::MAX_COUNT; ++n)
 			{
 				Unit* unit=possibleUnits[n];
 				if(unit==NULL)
@@ -1718,10 +1718,10 @@ bool Building::subscribeForFlagingStep()
 			}
 
 			//Generate the list of possible units
-			Unit* possibleUnits[1024];
-			int distances[1024];
+			Unit* possibleUnits[Unit::MAX_COUNT];
+			int distances[Unit::MAX_COUNT];
 			int teamNumber=owner->teamNumber;
-			for(int n=0; n<1024; ++n)
+			for(int n=0; n<Unit::MAX_COUNT; ++n)
 			{
 				possibleUnits[n]=NULL;
 				distances[n] = 0;
@@ -1803,7 +1803,7 @@ bool Building::subscribeForFlagingStep()
 			*/
 			if (type->zonable[EXPLORER])
 			{
-				for(int n=0; n<1024; ++n)
+				for(int n=0; n<Unit::MAX_COUNT; ++n)
 				{
 					Unit* unit=possibleUnits[n];
 					if(unit==NULL)
@@ -1828,7 +1828,7 @@ bool Building::subscribeForFlagingStep()
 			}
 			else if (type->zonable[WARRIOR])
 			{
-				for(int n=0; n<1024; ++n)
+				for(int n=0; n<Unit::MAX_COUNT; ++n)
 				{
 					Unit* unit=possibleUnits[n];
 					if(unit==NULL)
@@ -1850,7 +1850,7 @@ bool Building::subscribeForFlagingStep()
 			}
 			else if (type->zonable[WORKER])
 			{
-				for(int n=0; n<1024; ++n)
+				for(int n=0; n<Unit::MAX_COUNT; ++n)
 				{
 					Unit* unit=possibleUnits[n];
 					if(unit==NULL)
@@ -2717,27 +2717,27 @@ int Building::availableHappynessLevel()
 
 Sint32 Building::GIDtoID(Uint16 gid)
 {
-	assert(gid<32768);
-	return gid%1024;
+	assert(gid<Building::MAX_COUNT*Team::MAX_COUNT);
+	return gid%Building::MAX_COUNT;
 }
 
 Sint32 Building::GIDtoTeam(Uint16 gid)
 {
-	assert(gid<32768);
-	return gid/1024;
+	assert(gid<Building::MAX_COUNT*Team::MAX_COUNT);
+	return gid/Building::MAX_COUNT;
 }
 
 Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
 {
-	assert(id<1024);
-	assert(team<32);
-	return id+team*1024;
+	assert(id<Building::MAX_COUNT);
+	assert(team<Team::MAX_COUNT);
+	return id+team*Building::MAX_COUNT;
 }
 
 void Building::integrity()
 {
 	assert(unitsWorking.size()>=0);
-	assert(unitsWorking.size()<=1024);
+	assert(unitsWorking.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);
@@ -2746,7 +2746,7 @@ void Building::integrity()
 	}
 
 	assert(unitsInside.size()>=0);
-	assert(unitsInside.size()<=1024);
+	assert(unitsInside.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		assert(*it);
