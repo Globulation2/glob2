@@ -43,6 +43,7 @@ class BuildingsTypes;
 class Building
 {
 public:
+	static const int MAX_COUNT=1024;
 	///This is the buildings basic state of existance.
 	enum BuildingState
 	{

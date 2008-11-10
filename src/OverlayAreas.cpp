@@ -47,7 +47,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 	{
 		std::fill(overlay.begin(), overlay.end(), 0);
 		overlaymax = 0;
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Unit::MAX_COUNT; i++)
 		{
 			Unit *u=game.teams[localteam]->myUnits[i];
 			if (u && u->activity != Unit::ACT_UPGRADING)
@@ -67,7 +67,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 	{
 		std::fill(overlay.begin(), overlay.end(), 0);
 		overlaymax = 0;
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b = game.teams[localteam]->myBuildings[i];
 			if (b)
