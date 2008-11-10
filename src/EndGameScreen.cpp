@@ -31,6 +31,7 @@
 #include <sstream>
 #include <iomanip>
 #include "GlobalContainer.h"
+#include "Team.h"
 
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
@@ -45,7 +46,8 @@ EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlig
 	
 	this->game = game;
 
-	for(int x=0; x<32; ++x)
+	isTeamEnabled=new bool[Team::MAX_COUNT];
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 		isTeamEnabled[x]=true;
 	
 	this->type = EndOfGameStat::TYPE_UNITS;

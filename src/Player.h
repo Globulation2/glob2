@@ -50,14 +50,14 @@ class Player:public BasePlayer
 {
 public:
 	Player();
-	Player(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor);
+	Player(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor);
 	Player(Sint32 number, const std::string& name, Team *team, PlayerType type);
 	virtual ~Player(void);
 
 	void setTeam(Team *team);
-	void setBasePlayer(const BasePlayer *initial, Team *teams[32]);
+	void setBasePlayer(const BasePlayer *initial, Team *teams[Team::MAX_COUNT]);
 
-	bool load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor);
+	bool load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor);
 	void save(GAGCore::OutputStream  *stream);
 
 	void makeItAI(AI::ImplementitionID aiType);

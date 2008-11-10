@@ -242,9 +242,9 @@ void GameGUI::init()
 void GameGUI::adjustLocalTeam()
 {
 	assert(localTeamNo>=0);
-	assert(localTeamNo<32);
+	assert(localTeamNo<Team::MAX_COUNT);
 	assert(game.gameHeader.getNumberOfPlayers()>0);
-	assert(game.gameHeader.getNumberOfPlayers()<32);
+	assert(game.gameHeader.getNumberOfPlayers()<Team::MAX_COUNT);
 	assert(localTeamNo<game.mapHeader.getNumberOfTeams());
 
 	localTeam = game.teams[localTeamNo];
@@ -3902,7 +3902,7 @@ void GameGUI::drawOverlayInfos(void)
 
 	// Draw which players are transmitting voice
 	int xinc = 42;
-	for(int p=0; p<32; ++p)
+	for(int p=0; p<Team::MAX_COUNT; ++p)
 	{
 		if(globalContainer->mix->isPlayerTransmittingVoice(p))
 		{
@@ -4144,7 +4144,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 				{
 					Uint32 rm=mo->recepientsMask;
 					int k;
-					for (k=0; k<32; k++)
+					for (k=0; k<Team::MAX_COUNT; k++)
 						if (rm==1)
 						{
 							addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
@@ -4152,7 +4152,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 						}
 						else
 							rm=rm>>1;
-					assert(k<32);
+					assert(k<Team::MAX_COUNT);
 				}
 			}
 			else
@@ -4542,10 +4542,10 @@ void GameGUI::iterateSelection(void)
 		int i=pos;
 		if (team==localTeamNo)
 		{
-			while (i<pos+1024)
+			while (i<pos+Building::MAX_COUNT)
 			{
 				i++;
-				Building *b=game.teams[team]->myBuildings[i&0x1FF];
+				Building *b=game.teams[team]->myBuildings[i % Building::MAX_COUNT];
 				if (b && b->typeNum==selBuild->typeNum)
 				{
 					setSelection(BUILDING_SELECTION, b);
@@ -4558,7 +4558,7 @@ void GameGUI::iterateSelection(void)
 	else if (selectionMode==TOOL_SELECTION)
 	{
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(toolManager.getBuildingName(), 0, false);
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b=game.teams[localTeamNo]->myBuildings[i];
 			if (b && b->typeNum==typeNum)
@@ -4579,16 +4579,12 @@ void GameGUI::iterateSelection(void)
 			one of our pieces of same type, otherwise start at the
 			beginning of our pieces of that type. */
 		Sint32 id = ((Unit::GIDtoTeam(gid) == localTeamNo) ? Unit::GIDtoID(gid) : 0);
-		/* It violates good abstraction principles that we know
-			that the size of the myUnits array is 1024.  This
-			information should be abstracted by some method that we
-			call instead to get the next unit. */
-		id %= 1024; /* just in case! */
+		id %= Unit::MAX_COUNT; /* just in case! */
 		// std::cerr << "starting id: " << id << std::endl;
 		Sint32 i = id;
 		while (1)
 		{
-			i = ((i + 1) % 1024);
+			i = ((i + 1) % Unit::MAX_COUNT);
 			if (i == id) break;
 			// std::cerr << "trying id: " << i << std::endl;
 			Unit * u = game.teams[localTeamNo]->myUnits[i];
