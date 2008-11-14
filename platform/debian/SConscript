@@ -1,0 +1,16 @@
+Import('env')
+Import("PackTar")
+
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    PackTar(env["TARFILE"], "changelog")
+    PackTar(env["TARFILE"], "compat")
+    PackTar(env["TARFILE"], "control")
+    PackTar(env["TARFILE"], "copyright")
+    PackTar(env["TARFILE"], "dirs")
+    PackTar(env["TARFILE"], "docs")
+    PackTar(env["TARFILE"], "glob2.6")
+    PackTar(env["TARFILE"], "glob2.sgml")
+    PackTar(env["TARFILE"], "README.Debian")
+    PackTar(env["TARFILE"], "rules")
+
+    PackTar(env["TARFILE"], "SConscript")

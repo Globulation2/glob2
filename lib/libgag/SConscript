@@ -1,0 +1,34 @@
+import os
+Import("env")
+Import("PackTar")
+
+libgag_sources = Split("""
+BinaryStream.cpp    CursorManager.cpp     FileManager.cpp   FormatableString.cpp
+GraphicContext.cpp  GUIAnimation.cpp      GUIBase.cpp       GUIButton.cpp
+GUIFileList.cpp     GUIKeySelector.cpp    GUIList.cpp       GUIMessageBox.cpp
+GUINumber.cpp       GUIRatio.cpp          GUISelector.cpp   GUIStyle.cpp
+GUITextArea.cpp     GUIText.cpp           GUITextInput.cpp  GUIImage.cpp
+GUIProgressBar.cpp  KeyPress.cpp          Sprite.cpp        StreamBackend.cpp
+Stream.cpp          StreamFilter.cpp      StringTable.cpp   SupportFunctions.cpp
+TextStream.cpp      Toolkit.cpp           TrueTypeFont.cpp  win32_dirent.cpp
+GUITabScreen.cpp    GUITabScreenWindow.cpp  TextSort.cpp    GUICheckList.cpp  
+""")
+l1 = env.StaticLibrary("gag", libgag_sources)
+
+#libgag_just_server = Split("""
+#""")
+#l2 = env.StaticLibrary("gag_server", libgag_just_server)
+
+#if not env['server']:
+#    Default(l1)
+#else:
+#    Default(l2)
+
+Default(l1)
+
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    for file in os.listdir("."):
+        if file.find(".cpp") != -1 or file.find(".h") != -1:
+            PackTar(env["TARFILE"], file)
+
+    PackTar(env["TARFILE"], "SConscript")
