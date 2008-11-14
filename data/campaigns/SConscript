@@ -8,9 +8,9 @@ if 'dist' or 'install' in COMMAND_LINE_TARGETS:
         if file.find(".txt") != -1 or file.find(".map") != -1:
             any=True
             PackTar(env["TARFILE"], file)
-            env.Install(env["INSTALLDIR"]+"/glob2/campaigns", file)
+            env.Install(env["INSTALLDIR"]+"/glob2/data/campaigns", file)
 
     if any:
-        env.Alias("install", env["INSTALLDIR"]+"/glob2/campaigns")
+        env.Alias("install", env["INSTALLDIR"]+"/glob2/data/campaigns")
 
     PackTar(env["TARFILE"], "SConscript")
