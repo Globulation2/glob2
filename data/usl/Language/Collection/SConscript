@@ -4,10 +4,10 @@ Import("PackTar")
 
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
-        if file.find(".sgsl") != -1:
+        if file.find(".usl") != -1:
             PackTar(env["TARFILE"], file)
-            env.Install(env["INSTALLDIR"]+"/glob2/data/scripts", file)
+            env.Install(env["INSTALLDIR"]+"/glob2/data/usl/Language/Collection", file)
 
-    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/scripts")
+    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/usl/Language/Collection")
 
     PackTar(env["TARFILE"], "SConscript")

@@ -1,7 +1,8 @@
-Import("env")
+Import('env')
 Import("PackTar")
 
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
-    PackTar(env["TARFILE"], "glob2.spec")
-
     PackTar(env["TARFILE"], "SConscript")
+
+SConscript("Glob2/SConscript")
+SConscript("Language/SConscript")

@@ -1,7 +1,0 @@
-Import("env")
-Import("PackTar")
-    
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
-    PackTar(env["TARFILE"], "sha1.c")
-    PackTar(env["TARFILE"], "sha1.h")
-    PackTar(env["TARFILE"], "SConscript")

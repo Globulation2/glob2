@@ -1,0 +1,12 @@
+Import("env")
+Import("PackTar")
+
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    PackTar(env["TARFILE"], "SConscript")
+
+SConscript("gnupg/SConscript")
+SConscript("libgag/SConscript")
+SConscript("libusl/SConscript")
+SConscript("libwee/SConscript")
+SConscript("mksprite/SConscript")
+SConscript("natsort/SConscript")

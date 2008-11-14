@@ -3,9 +3,11 @@ import sys
 import os
 import glob
 sys.path.append( os.path.abspath("scons") )
-import bundle
-import dmg
-import nsis
+
+#Mac Bundle Related Code (outdated, unfinished)
+#import bundle
+#import dmg
+#import nsis
 
 isWindowsPlatform = sys.platform=='win32'
 isLinuxPlatform = sys.platform=='linux2'
@@ -217,7 +219,7 @@ def main():
     if not env['CC']:
         print "No compiler found in PATH. Please install gcc or another compiler."
         Exit(1)
-    
+
     env["VERSION"] = "0.9.4"
     establish_options(env)
     #Add the paths to important mingw libraries
@@ -225,13 +227,30 @@ def main():
         env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     configure(env)
+
+    env.Append(CPPPATH=['#lib/gnupg', '#'])
+    env.Append(CPPPATH=['#lib/libgag', '#'])
+    env.Append(CPPPATH=['#lib/libusl/src', '#'])
+    env.Append(CPPPATH=['#lib/libwee', '#'])
+    env.Append(CPPPATH=['#lib/mksprite', '#'])
+    env.Append(CPPPATH=['#lib/natsort', '#'])
+
     env.Append(CPPPATH=['#src', '#'])
     env.Append(CPPPATH=['#src/ai', '#'])
-    env.Append(CPPPATH=['#src/gnupg', '#'])
-    env.Append(CPPPATH=['#src/libwee', '#'])
-    env.Append(CPPPATH=['#src/natsort', '#'])
-    env.Append(CPPPATH=['#src/libgag', '#'])
-    env.Append(CPPPATH=['#src/libusl/src', '#'])
+    env.Append(CPPPATH=['#src/campaign', '#'])
+    env.Append(CPPPATH=['#src/game', '#'])
+    env.Append(CPPPATH=['#src/irc', '#'])
+    env.Append(CPPPATH=['#src/lan', '#'])
+    env.Append(CPPPATH=['#src/map', '#'])
+    env.Append(CPPPATH=['#src/multiplayer', '#'])
+    env.Append(CPPPATH=['#src/net', '#'])
+    env.Append(CPPPATH=['#src/testing', '#'])
+    env.Append(CPPPATH=['#src/unit', '#'])
+    env.Append(CPPPATH=['#src/yog', '#'])
+    env.Append(CPPPATH=['#src/yog/client', '#'])
+    env.Append(CPPPATH=['#src/yog/router', '#'])
+    env.Append(CPPPATH=['#src/yog/server', '#'])
+
     if env['release']:
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS=' -O2')
@@ -269,30 +288,33 @@ def main():
                     new_dir = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + "/"
                     f = env.Install(new_dir, s)
                     env.Tar(target, f)
-              
-    PackTar(env["TARFILE"], Split("AUTHORS COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
+
+    PackTar(env["TARFILE"], Split("AUTHORS COPYING Doxyfile gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
+
+    #Mac Bundle Related Code (outdated, unfinished)
     #packaging for apple
-    if isDarwinPlatform and env["release"]:
-        bundle.generate(env)
-        dmg.generate(env)
-        env.Replace( 
-            BUNDLE_NAME="Glob2", 
-            BUNDLE_BINARIES=["src/glob2"],
-            BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
-            BUNDLE_PLIST="darwin/Info.plist",
-            BUNDLE_ICON="darwin/Glob2.icns" )
-        bundle.createBundle(os.getcwd(), os.getcwd(), env)
-        dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
-         
-        #TODO mac_bundle should be dependency of Dmg:    
-        arch = os.popen("uname -p").read().strip()
-#        mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
-#        env.Alias("package", mac_packages)
+    #if isDarwinPlatform and env["release"]:
+    #    bundle.generate(env)
+    #    dmg.generate(env)
+    #    env.Replace( 
+    #        BUNDLE_NAME="Glob2", 
+    #        BUNDLE_BINARIES=["src/glob2"],
+    #        BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
+    #        BUNDLE_PLIST="darwin/Info.plist",
+    #        BUNDLE_ICON="darwin/Glob2.icns" )
+    #    bundle.createBundle(os.getcwd(), os.getcwd(), env)
+    #    dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
+    #     
+    #    #TODO mac_bundle should be dependency of Dmg:    
+    #    arch = os.popen("uname -p").read().strip()
+    #     mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
+    #     env.Alias("package", mac_packages)
 
     Export('env')
     Export('PackTar')
+
     SConscript("data/SConscript")
-    SConscript("scons/SConscript")
+    SConscript("lib/SConscript")
+    SConscript("platform/SConscript")
     SConscript("src/SConscript")
-    SConscript("tools/SConscript")
 main()
