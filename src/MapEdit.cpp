@@ -3144,7 +3144,7 @@ void MapEdit::handleMapScroll()
 	}
 	if (keystate[SDLK_KP3])
 	{
-		xSpeed = -xMotion;
+		xSpeed = xMotion;
 		ySpeed = yMotion;
 	}
 	
