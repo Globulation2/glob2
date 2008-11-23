@@ -3062,8 +3062,6 @@ void MapEdit::delegateMenu(SDL_Event& event)
 	}
 }
 
-
-
 void MapEdit::handleMapScroll()
 {
 	xSpeed = 0;
