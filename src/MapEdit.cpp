@@ -3054,12 +3054,11 @@ void MapEdit::delegateMenu(SDL_Event& event)
 	}
 }
 
-
-
 void MapEdit::handleMapScroll()
 {
 	xSpeed = 0;
 	ySpeed = 0;
+	int scrollAreaWidth=10; // if the cursor is that close to the border the viewport will scroll
 
 	SDL_PumpEvents();
 	Uint8 *keystate = SDL_GetKeyState(NULL);
@@ -3101,65 +3100,43 @@ void MapEdit::handleMapScroll()
 		xMotion = 0;
 		yMotion = 0; 
 	}
-	// int oldViewportX = viewportX;
-	// int oldViewportY = viewportY;
-	if (keystate[SDLK_UP])
-		ySpeed = -yMotion;
-	if (keystate[SDLK_KP8])
-		ySpeed = -yMotion;
-	if (keystate[SDLK_DOWN])
-		ySpeed = yMotion;
-	if (keystate[SDLK_KP2])
-		ySpeed = yMotion;
-	if ((keystate[SDLK_LEFT]))
-		xSpeed = -xMotion;
-	if (keystate[SDLK_KP4])
-		xSpeed = -xMotion;
-	if ((keystate[SDLK_RIGHT]))
-		xSpeed = xMotion;
-	if (keystate[SDLK_KP6])
-		xSpeed = xMotion;
-	if (keystate[SDLK_KP7])
+	if (
+			keystate[SDLK_UP] ||
+			keystate[SDLK_KP7] ||
+			keystate[SDLK_KP8] ||
+			keystate[SDLK_KP9] ||
+			mouseY<scrollAreaWidth)
 	{
-		xSpeed = -xMotion;
-		ySpeed = -yMotion;
+		ySpeed += -yMotion;
 	}
-	if (keystate[SDLK_KP9])
+	if (
+			keystate[SDLK_DOWN] ||
+			keystate[SDLK_KP1] || 
+			keystate[SDLK_KP2] || 
+			keystate[SDLK_KP3] ||
+			globalContainer->gfx->getH()-mouseY<scrollAreaWidth)
 	{
-		xSpeed = xMotion;
-		ySpeed = -yMotion;
+		ySpeed += yMotion;
 	}
-	if (keystate[SDLK_KP1])
+	if (
+			keystate[SDLK_LEFT] || 
+			keystate[SDLK_KP1] || 
+			keystate[SDLK_KP4] || 
+			keystate[SDLK_KP7] ||
+			mouseX<scrollAreaWidth)
 	{
-		xSpeed = -xMotion;
-		ySpeed = yMotion;
+		xSpeed += -xMotion;
 	}
-	if (keystate[SDLK_KP3])
+	if (
+			keystate[SDLK_RIGHT] || 
+			keystate[SDLK_KP3] || 
+			keystate[SDLK_KP6] || 
+			keystate[SDLK_KP9] ||
+			globalContainer->gfx->getW()-mouseX<scrollAreaWidth)
 	{
-		xSpeed = -xMotion;
-		ySpeed = yMotion;
-	}
-	
-	if(globalContainer->gfx->getW()-mouseX<10)
-	{
-		xSpeed = 1;
-	}
-	else if(mouseX<10)
-	{
-		xSpeed = -1;
-	}
-
-	if(globalContainer->gfx->getH()-mouseY<10)
-	{
-		ySpeed = 1;
-	}
-	else if(mouseY<10)
-	{
-		ySpeed = -1;
+		xSpeed += xMotion;
 	}
 }
-
-
 
 void MapEdit::addWidget(MapEditorWidget* widget)
 {
