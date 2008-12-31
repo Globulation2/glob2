@@ -87,7 +87,7 @@ public:
 private:
 
 	///This stores the queues with the orders from each player
-	std::vector<std::queue<boost::shared_ptr<Order> > > orders;
+	std::vector<std::vector<boost::shared_ptr<Order> > > orders;
 	///This queue stores all of the local orders that have to be sent out
 	///on their turn
 	std::queue<boost::shared_ptr<Order> > outgoing;

@@ -91,13 +91,15 @@ void NetEngine::clearTopOrders()
 				{
 					for(int p=0; p<orders.size(); ++p)
 					{
-						pushOrder(boost::shared_ptr<Order>(new NullOrder), p, true);
+						boost::shared_ptr<Order> order = boost::shared_ptr<Order>(new NullOrder);
+						order->sender=p;
+						orders[p].insert(orders[p].begin(), order);
 					}
 				}
 			}
 			currentLatency = al->latencyAdjustment;
 		}
-		orders[p].pop();
+		orders[p].erase(orders[p].begin());
 	}
 }
 
@@ -107,7 +109,7 @@ void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool
 {
 	assert(playerNumber>=0);
 	order->sender=playerNumber;
-	orders[playerNumber].push(order);
+	orders[playerNumber].push_back(order); 
 
 	///The local player and network players all have padding arround their order
 	if(! isAI)
@@ -116,7 +118,7 @@ void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool
 		{
 			shared_ptr<Order> norder(new NullOrder);
 			norder->sender=playerNumber;
-			orders[playerNumber].push(norder);
+			orders[playerNumber].push_back(norder);
 		}
 	}
 }
@@ -125,7 +127,7 @@ void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool
 
 boost::shared_ptr<Order> NetEngine::retrieveOrder(int playerNumber)
 {
-	return orders[playerNumber].front();
+  return *orders[playerNumber].begin();
 }
 
 
