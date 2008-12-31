@@ -220,6 +220,9 @@ def main():
     if env['mingw'] or isWindowsPlatform:
         env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
+    if isDarwinPlatform:
+        env.Append(LIBPATH=["/sw/lib"])
+        env.Append(CPPPATH=["/sw/include"])
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
     if env['release']:
