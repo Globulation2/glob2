@@ -311,6 +311,7 @@ namespace GAGCore
 			DEFAULT = 0,
 			USEGPU = 1,
 			FULLSCREEN = 2,
+			//TODO: either implement "resizable" as a resizable gui or explain what this does
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
 		};
