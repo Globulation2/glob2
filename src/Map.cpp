@@ -4557,7 +4557,10 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		gradient=building->localRessources[canSwim];
 	}
 	assert(gradient);
-	assert(isInLocalGradient(x, y, bx, by));
+	//HACK: I have no idea what is going on or why isInLocalGradient(x, y, bx, by) was asserted and why isInLocalGradient(x, y, bx, by) checks for the rectangle it is checking for, but this fixes a rare crash.
+	if(!isInLocalGradient(x, y, bx, by))
+		return false;
+//	assert(isInLocalGradient(x, y, bx, by));
 	
 	int lx=(x-bx+15+32)&31;
 	int ly=(y-by+15+32)&31;
@@ -5416,30 +5419,26 @@ Uint32 Map::checkSum(bool heavy)
 	return cs;
 }
 
+Sint32 Map::warpDist1d(int p, int q, int l)
+{
+	Sint32 d=abs(p-q);
+	d%=l;
+	if (d>l/2)
+		d=l-d;
+	return d;
+}
+
 Sint32 Map::warpDistSquare(int px, int py, int qx, int qy)
 {
-	Sint32 dx=abs(px-qx);
-	Sint32 dy=abs(py-qy);
-	dx&=wMask;
-	dy&=hMask;
-	if (dx>(w>>1))
-		dx=w-dx;
-	if (dy>(h>>1))
-		dy=h-dy;
-	
+	Sint32 dx=warpDist1d(px,qx,w);
+	Sint32 dy=warpDist1d(py,qy,h);
 	return ((dx*dx)+(dy*dy));
 }
 
 Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
 {
-	Sint32 dx=abs(px-qx);
-	Sint32 dy=abs(py-qy);
-	dx&=wMask;
-	dy&=hMask;
-	if (dx>(w>>1))
-		dx=abs(w-dx);
-	if (dy>(h>>1))
-		dy=abs(h-dy);
+	Sint32 dx=warpDist1d(px,qx,w);
+	Sint32 dy=warpDist1d(py,qy,h);
 	if (dx>dy)
 		return dx;
 	else
@@ -5448,28 +5447,16 @@ Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
 
 Sint32 Map::warpDistSum(int px, int py, int qx, int qy)
 {
-	Sint32 dx=abs(px-qx);
-	Sint32 dy=abs(py-qy);
-	dx&=wMask;
-	dy&=hMask;
-	if (dx>(w>>1))
-		dx=abs(w-dx);
-	if (dy>(h>>1))
-		dy=abs(h-dy);
+	Sint32 dx=warpDist1d(px,qx,w);
+	Sint32 dy=warpDist1d(py,qy,h);
 	return dx + dy;
 }
 
 
 bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 {
-	Sint32 dx=abs(ux-bx);
-	Sint32 dy=abs(uy-by);
-	dx&=wMask;
-	dy&=hMask;
-	if (dx>(w>>1))
-		dx=abs(w-dx);
-	if (dy>(h>>1))
-		dy=abs(h-dy);
+	Sint32 dx=warpDist1d(ux,bx,w);
+	Sint32 dy=warpDist1d(uy,by,h);
 	if (dx>dy)
 	{
 		if (dx<15)

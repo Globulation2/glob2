@@ -2236,20 +2236,20 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		    int enemy_count = 0;
 		    for(int px = -3; px <= 3; ++px)
 		    {
-		            int nx = (b->posX + px + w)%w;
-		            for(int py = -3; py<=3; ++py)
-		            {
-		                    int ny = (b->posY + py + h)%h;
-		                    Uint16 guid = echo.player->map->getGroundUnit(nx, ny);
-		                    if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & echo.player->team->enemies)
-		                    {
-		                            Unit* unit = echo.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
-		                            if(unit->typeNum == WARRIOR)
-		                            {
-		                                    enemy_count += 1;
-		                            }
-		                    }
-		            }
+				int nx = (b->posX + px + w)%w;
+				for(int py = -3; py<=3; ++py)
+				{
+						int ny = (b->posY + py + h)%h;
+						Uint16 guid = echo.player->map->getGroundUnit(nx, ny);
+						if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & echo.player->team->enemies)
+						{
+								Unit* unit = echo.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
+								if(unit->typeNum == WARRIOR)
+								{
+										enemy_count += 1;
+								}
+						}
+				}
 		    }
 		    if(enemy_count == 0)
 		    {
