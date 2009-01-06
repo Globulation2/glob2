@@ -18,6 +18,7 @@
 
 #include "GameHints.h"
 #include "Stream.h"
+#include <cassert>
 
 GameHints::GameHints()
 {
@@ -53,6 +54,7 @@ void GameHints::removeHint(int n)
 
 void GameHints::setGameHintText(int n, const std::string& hint)
 {
+	assert (n < texts.size());
 	texts[n]=hint;
 }
 
@@ -60,6 +62,7 @@ void GameHints::setGameHintText(int n, const std::string& hint)
 
 const std::string& GameHints::getGameHintText(int n)
 {
+	assert (n < texts.size());
 	return texts[n];
 }
 
@@ -67,27 +70,33 @@ const std::string& GameHints::getGameHintText(int n)
 
 void GameHints::setHintHidden(int n)
 {
-	hidden[n]=true;
+	if (n >= 0 && n < hidden.size())
+		hidden[n]=true;
 }
 
 
 
 void GameHints::setHintVisible(int n)
 {
-	hidden[n]=false;
+	if (n >= 0 && n < hidden.size())
+		hidden[n]=false;
 }
 
 
 
 bool GameHints::isHintVisible(int n)
 {
-	return !hidden[n];
+	if (n >= 0 && n < hidden.size())
+		return !hidden[n];
+	else
+		return false;
 }
 
 
 
 void GameHints::setScriptNumber(int n, int scriptNumber)
 {
+	assert(n < scriptNumbers.size());
 	scriptNumbers[n]=scriptNumber;
 }
 
@@ -95,6 +104,7 @@ void GameHints::setScriptNumber(int n, int scriptNumber)
 
 int GameHints::getScriptNumber(int n)
 {
+	assert(n < scriptNumbers.size());
 	return scriptNumbers[n];
 }
 

@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -190,6 +194,8 @@ AIWarrush
 單位設定
 [building site]
 建築地點
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -644,6 +650,8 @@ Air dmg.
 
 [not ready]
 還沒準備好
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -652,6 +660,8 @@ Air dmg.
 %0 隊伍.
 [number of teams]
 隊伍數量
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -714,6 +724,8 @@ Air dmg.
 
 [press space]
 按下空白鍵以繼續
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -750,6 +762,8 @@ Air dmg.
 
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
+[Register]
+
 [remember unit]
 記錄單位
 [Remember YOG password localy]
@@ -766,6 +780,8 @@ Air dmg.
 修復
 [repeat area]
 在相同地景的時間
+[Repeat your password :]
+
 [restore default shortcuts]
 還原預設鍵盤快捷鍵
 [return to editor]
@@ -1056,6 +1072,8 @@ V: 持鍵以傳送訊息
 ?? 攻擊旗幟已完成 ??
 [the warflag is under attack]
 ?? 攻擊旗幟正遭受攻擊 ??
+[time]
+
 [to:]
 前往:
 [toggle draw accessibility aids]
@@ -1068,6 +1086,12 @@ V: 持鍵以傳送訊息
 
 [toggle recording voice]
 開始錄音
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 聲望總計達到
 [Total]
@@ -1198,6 +1222,8 @@ YOG meta伺服器拒絕連線因為你的用戶名已被使用。
 
 [YESTS_CREATED]
 連線系統已準備連接YOG meta伺服器。
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 無法連接。 YOG meta伺服器已關閉。
 [yog block command help]

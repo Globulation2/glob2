@@ -176,7 +176,7 @@ void MapHeader::setMapOffset(Uint32 newMapOffset)
 
 BaseTeam& MapHeader::getBaseTeam(const int n)
 {
-	assert(n>=0 && n<32);
+	assert(n>=0 && n<Team::MAX_COUNT);
 	return teams[n];
 }
 
@@ -184,7 +184,7 @@ BaseTeam& MapHeader::getBaseTeam(const int n)
 
 const BaseTeam& MapHeader::getBaseTeam(const int n) const
 {
-	assert(n>=0 && n<32);
+	assert(n>=0 && n<Team::MAX_COUNT);
 	return teams[n];
 }
 

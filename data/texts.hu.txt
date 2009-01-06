@@ -1,1160 +1,3496 @@
 [%0 has left the game]
 %0 kilépett a játékból.
+[%0 has left the game]
+%0 kilépett a játékból.
+[%0 has left the game]
+%0 kilépett a játékból.
+[%0 level %1]
+
+[%0 level %1]
+
 [%0 level %1]
 
 [%0 units can't access building]
+
+[%0 units can't access building]
+
+[%0 units can't access building]
+
+[%0 units can't access flag]
+
+[%0 units can't access fruit]
+
+[%0 units can't access fruit]
 
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
 
+[%0 units can't access resource]
+
+[%0 units can't access resource]
+
+[%0 units not available]
+
+[%0 units not available]
+
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from building]
+
+[%0 units too far from building]
+
+[%0 units too far from flag]
+
+[%0 units too far from fruit]
+
+[%0 units too far from fruit]
 
 [%0 units too far from fruit]
 
 [%0 units too far from resource]
 
+[%0 units too far from resource]
+
+[%0 units too far from resource]
+
 [%0 units too low level]
+
+[%0 units too low level]
+
+[%0 units too low level]
+
+[%0% Uploaded]
+
+[%0% Uploaded]
 
 [%0% Uploaded]
 
 [%0's game]
 
+[%0's game]
+
+[%0's game]
+
+[%0's team unit got converted to your team]
+Elfogtad az ellenség egységét %0
+[%0's team unit got converted to your team]
+Elfogtad az ellenség egységét %0
 [%0's team unit got converted to your team]
 Elfogtad az ellenség egységét %0
 [abreaviation explanation A]
+
+[abreaviation explanation A]
+
+[abreaviation explanation A]
+
+[abreaviation explanation C]
+
+[abreaviation explanation C]
 
 [abreaviation explanation C]
 
 [abreaviation explanation fV]
 
+[abreaviation explanation fV]
+
+[abreaviation explanation fV]
+
 [abreaviation explanation mV]
+
+[abreaviation explanation mV]
+
+[abreaviation explanation mV]
+
+[abreaviation explanation V]
+
+[abreaviation explanation V]
 
 [abreaviation explanation V]
 
 [add map]
 
+[add map]
+
+[add map]
+
 [add shortcut]
+
+[add shortcut]
+
+[add shortcut]
+
+[Add]
+
+[Add]
 
 [Add]
 
 [AI Descriptions]
 
+[AI Descriptions]
+
+[AI Descriptions]
+
 [AI]
+MI
+[AI]
+MI
+[AI]
+MI
+[ai]
+MI
+[ai]
 MI
 [ai]
 MI
 [AICastor-Description]
 
+[AICastor-Description]
+
+[AICastor-Description]
+
+[AICastor]
+MICastor
+[AICastor]
+MICastor
 [AICastor]
 MICastor
 [AINicowar-Description]
 
+[AINicowar-Description]
+
+[AINicowar-Description]
+
+[AINicowar]
+Nicowar
+[AINicowar]
+Nicowar
 [AINicowar]
 Nicowar
 [AINone-Description]
 
+[AINone-Description]
+
+[AINone-Description]
+
+[AINone]
+MINone
+[AINone]
+MINone
 [AINone]
 MINone
 [AINumbi-Description]
 
+[AINumbi-Description]
+
+[AINumbi-Description]
+
+[AINumbi]
+MINumbi
+[AINumbi]
+MINumbi
 [AINumbi]
 MINumbi
 [AIReachToInfinity-Description]
 
+[AIReachToInfinity-Description]
+
+[AIReachToInfinity-Description]
+
+[AIReachToInfinity]
+ReachToInfinity
+[AIReachToInfinity]
+ReachToInfinity
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib-Description]
 
+[AIToubib-Description]
+
+[AIToubib-Description]
+
+[AIToubib]
+MIToubib
+[AIToubib]
+MIToubib
 [AIToubib]
 MIToubib
 [AIWarrush-Description]
 
+[AIWarrush-Description]
+
+[AIWarrush-Description]
+
+[AIWarrush]
+MIWarrush
+[AIWarrush]
+MIWarrush
 [AIWarrush]
 MIWarrush
 [Alga]
 Alga
+[Alga]
+Alga
+[Alga]
+Alga
+[algae]
+
+[algae]
+
 [algae]
 
 [alliances]
 Szövetségek
+[alliances]
+Szövetségek
+[alliances]
+Szövetségek
+[alt %0]
+
+[alt %0]
+
 [alt %0]
 
 [and]
 és
+[and]
+és
+[and]
+és
+[any explorer]
+
+[any explorer]
+
 [any explorer]
 
 [are dying hungry]
 éhen hal
+[are dying hungry]
+éhen hal
+[are dying hungry]
+éhen hal
+[are hungry]
+éhes
+[are hungry]
+éhes
 [are hungry]
 éhes
 [are ok]
 rendben van
+[are ok]
+rendben van
+[are ok]
+rendben van
+[are wonded]
+megsebesült
+[are wonded]
+megsebesült
 [are wonded]
 megsebesült
 [armor]
 Páncél
+[armor]
+Páncél
+[armor]
+Páncél
+[assigned]
+
+[assigned]
+
 [assigned]
 
 [At. speed]
 Támadási sebesség
+[At. speed]
+Támadási sebesség
+[At. speed]
+Támadási sebesség
+[At. strength]
+Támadási erő
+[At. strength]
+Támadási erő
 [At. strength]
 Támadási erő
 [Attack]
 Támadás
+[Attack]
+Támadás
+[Attack]
+Támadás
+[audio]
+Audió
+[audio]
+Audió
 [audio]
 Audió
 [auto save]
 Automatikus mentés
+[auto save]
+Automatikus mentés
+[auto save]
+Automatikus mentés
+[available lan games]
+Elérhető hálózati játékok
+[available lan games]
+Elérhető hálózati játékok
 [available lan games]
 Elérhető hálózati játékok
 [awaiting players]
 Játékosokra várva
+[awaiting players]
+Játékosokra várva
+[awaiting players]
+Játékosokra várva
+[away:]
+távol van:
+[away:]
+távol van:
 [away:]
 távol van:
 [Back]
+
+[Back]
+
+[Back]
+
+[backspace]
+
+[backspace]
 
 [backspace]
 
 [barracks explanation 2]
 fejlesztése
+[barracks explanation 2]
+fejlesztése
+[barracks explanation 2]
+fejlesztése
+[barracks explanation]
+Támadóképesség
+[barracks explanation]
+Támadóképesség
 [barracks explanation]
 Támadóképesség
 [barracks]
 Laktanya
+[barracks]
+Laktanya
+[barracks]
+Laktanya
+[beach size]
+a partok méretei
+[beach size]
+a partok méretei
 [beach size]
 a partok méretei
 [Blocked Players]
+
+[Blocked Players]
+
+[Blocked Players]
+
+[break]
+
+[break]
 
 [break]
 
 [briefing]
 
+[briefing]
+
+[briefing]
+
+[build %0 level %1]
+
+[build %0 level %1]
+
 [build %0 level %1]
 
 [Build]
 Épít
+[Build]
+Épít
+[Build]
+Épít
 [Building Defaults]
+
+[Building Defaults]
+
+[Building Defaults]
+
+[building settings]
+
+[building settings]
 
 [building settings]
 
 [building site]
 építési terület
+[building site]
+építési terület
+[building site]
+építési terület
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
 Épületek
+[Buildings]
+Épületek
+[Buildings]
+Épületek
+[Bullets]
+Lőszer
+[Bullets]
+Lőszer
 [Bullets]
 Lőszer
 [campaign editor]
 
+[campaign editor]
+
+[campaign editor]
+
+[campaign]
+Hadjárat
+[campaign]
+Hadjárat
 [campaign]
 Hadjárat
 [Can't connect, can't find host]
+
+[Can't connect, can't find host]
+
+[Can't connect, can't find host]
+
+[Can't host game, port %0 in use]
+
+[Can't host game, port %0 in use]
 
 [Can't host game, port %0 in use]
 
 [Can't join game, game doesn't exist]
 
+[Can't join game, game doesn't exist]
+
+[Can't join game, game doesn't exist]
+
 [Can't join game, game has started]
+
+[Can't join game, game has started]
+
+[Can't join game, game has started]
+
+[Can't join game, game is full]
+
+[Can't join game, game is full]
 
 [Can't join game, game is full]
 
 [cancel destroy]
 Megsemmisítés megszakítása
+[cancel destroy]
+Megsemmisítés megszakítása
+[cancel destroy]
+Megsemmisítés megszakítása
+[cancel repair]
+Javítás megszakítása
+[cancel repair]
+Javítás megszakítása
 [cancel repair]
 Javítás megszakítása
 [cancel upgrade]
 Fejlesztés megszakítása
+[cancel upgrade]
+Fejlesztés megszakítása
+[cancel upgrade]
+Fejlesztés megszakítása
+[Cancel]
+Mégsem
+[Cancel]
+Mégsem
 [Cancel]
 Mégsem
 [caps lock]
 
+[caps lock]
+
+[caps lock]
+
+[carry]
+Szállít :
+[carry]
+Szállít :
 [carry]
 Szállít :
 [Change Area Name]
 
+[Change Area Name]
+
+[Change Area Name]
+
+[Cherry]
+Cseresznye
+[Cherry]
+Cseresznye
 [Cherry]
 Cseresznye
 [choose campaign]
 
+[choose campaign]
+
+[choose campaign]
+
+[choose game]
+Válassz egy játékot
+[choose game]
+Válassz egy játékot
 [choose game]
 Válassz egy játékot
 [choose map]
 Válassz egy térképet
+[choose map]
+Válassz egy térképet
+[choose map]
+Válassz egy térképet
+[clear area]
+
+[clear area]
+
 [clear area]
 
 [Clearing:]
 Tisztítás:
+[Clearing:]
+Tisztítás:
+[Clearing:]
+Tisztítás:
+[clearingflag explanation 2]
+
+[clearingflag explanation 2]
+
 [clearingflag explanation 2]
 
 [clearingflag explanation]
 Erőforrások feltárása
+[clearingflag explanation]
+Erőforrások feltárása
+[clearingflag explanation]
+Erőforrások feltárása
+[clearingflag]
+Tisztítás zászló
+[clearingflag]
+Tisztítás zászló
 [clearingflag]
 Tisztítás zászló
 [closed]
 Zárva
+[closed]
+Zárva
+[closed]
+Zárva
+[compile]
+Szkript fordítása
+[compile]
+Szkript fordítása
 [compile]
 Szkript fordítása
 [compose]
+
+[compose]
+
+[compose]
+
+[Computing Fertility]
+
+[Computing Fertility]
 
 [Computing Fertility]
 
 [concrete islands terrain]
 
+[concrete islands terrain]
+
+[concrete islands terrain]
+
+[connect]
+Kapcsolódás
+[connect]
+Kapcsolódás
 [connect]
 Kapcsolódás
 [connecting to game]
 
+[connecting to game]
+
+[connecting to]
+Kapcsolódás
+[connecting to]
+Kapcsolódás
 [connecting to]
 Kapcsolódás
 [Construction Site Defaults]
 
+[Construction Site Defaults]
+
+[Construction Site Defaults]
+
+[Continue playing]
+Játék folytatása
+[Continue playing]
+Játék folytatása
 [Continue playing]
 Játék folytatása
 [control %0]
 
+[control %0]
+
+[control %0]
+
+[Corn]
+Búza
+[Corn]
+Búza
 [Corn]
 Búza
 [crater density]
+
+[crater density]
+
+[crater density]
+
+[crater lakes terrain]
+
+[crater lakes terrain]
 
 [crater lakes terrain]
 
 [create game]
 Új játék
+[create game]
+Új játék
+[create game]
+Új játék
+[create map]
+Térkép készítése
+[create map]
+Térkép készítése
 [create map]
 Térkép készítése
 [credits]
 Szerzők
+[credits]
+Szerzők
+[credits]
+Szerzők
+[ctrl - line]
+
+[ctrl - line]
+
 [ctrl - line]
 
 [current speed]
 Aktuális sebesség
+[current speed]
+Aktuális sebesség
+[current speed]
+Aktuális sebesség
+[custom game]
+Szabadjáték
+[custom game]
+Szabadjáték
 [custom game]
 Szabadjáték
 [customcur]
 
+[customcur]
+
+[customcur]
+
+[damage]
+Kár
+[damage]
+Kár
 [damage]
 Kár
 [Damaged Map]
+
+[Damaged Map]
+
+[Damaged Map]
+
+[decrease units working]
+
+[decrease units working]
 
 [decrease units working]
 
 [Defeat Your Oppenents]
 
+[Defeat Your Oppenents]
+
+[Defeat Your Oppenents]
+
+[defencetower explanation 2]
+ellenséges egységeket
+[defencetower explanation 2]
+ellenséges egységeket
 [defencetower explanation 2]
 ellenséges egységeket
 [defencetower explanation]
 Megtámadja a közeli
+[defencetower explanation]
+Megtámadja a közeli
+[defencetower explanation]
+Megtámadja a közeli
+[defencetower]
+Páncéltorony
+[defencetower]
+Páncéltorony
 [defencetower]
 Páncéltorony
 [Defense Map]
 
+[Defense Map]
+
+[Defense Map]
+
+[Defense]
+Védelem
+[Defense]
+Védelem
 [Defense]
 Védelem
 [Delete game]
+
+[Delete game]
+
+[Delete game]
+
+[delete]
+
+[delete]
 
 [delete]
 
 [desert]
 
+[desert]
+
+[desert]
+
+[destroy building]
+
+[destroy building]
+
 [destroy building]
 
 [destroy]
 Megsemmisít
+[destroy]
+Megsemmisít
+[destroy]
+Megsemmisít
+[display]
+Kijelző
+[display]
+Kijelző
 [display]
 Kijelző
 [do nothing]
 
+[do nothing]
+
+[do nothing]
+
+[don't carry anything]
+Nem szállít semmit
+[don't carry anything]
+Nem szállít semmit
 [don't carry anything]
 Nem szállít semmit
 [down]
+
+[down]
+
+[down]
+
+[Download Map]
+
+[Download Map]
 
 [Download Map]
 
 [Download Maps]
 
+[Download Maps]
+
+[Download Maps]
+
 [downloaded %0]
+
+[downloaded %0]
+
+[downloaded %0]
+
+[downloading map]
+
+[downloading map]
 
 [downloading map]
 
 [edit map]
 
+[edit map]
+
+[edit map]
+
 [editing map]
+
+[editing map]
+
+[editing map]
+
+[editor shortcuts]
+
+[editor shortcuts]
 
 [editor shortcuts]
 
 [editor]
 Editor
+[editor]
+Editor
+[editor]
+Editor
+[end]
+
+[end]
+
 [end]
 
 [Enter your nickname :]
 Add meg a nevedet :
+[Enter your nickname :]
+Add meg a nevedet :
+[Enter your nickname :]
+Add meg a nevedet :
+[Enter your password :]
+Add meg a jelszavadat :
+[Enter your password :]
+Add meg a jelszavadat :
 [Enter your password :]
 Add meg a jelszavadat :
 [enter]
+
+[enter]
+
+[enter]
+
+[equals]
+
+[equals]
 
 [equals]
 
 [escape]
 
+[escape]
+
+[escape]
+
+[explorationflag explanation 2]
+felderítőket
+[explorationflag explanation 2]
+felderítőket
 [explorationflag explanation 2]
 felderítőket
 [explorationflag explanation]
 Összevonja a
+[explorationflag explanation]
+Összevonja a
+[explorationflag explanation]
+Összevonja a
+[explorationflag]
+Felderítő zászló
+[explorationflag]
+Felderítő zászló
 [explorationflag]
 Felderítő zászló
 [Explorer Ratio]
 
+[Explorer Ratio]
+
+[Explorer Ratio]
+
+[Explorer]
+Felderítő
+[Explorer]
+Felderítő
 [Explorer]
 Felderítő
 [explorers]
 felderítők
+[explorers]
+felderítők
+[explorers]
+felderítők
 [extra islands]
+
+[extra islands]
+
+[extra islands]
+
+[f10]
+
+[f10]
 
 [f10]
 
 [f11]
 
+[f11]
+
+[f11]
+
 [f12]
+
+[f12]
+
+[f12]
+
+[f13]
+
+[f13]
 
 [f13]
 
 [f14]
 
+[f14]
+
+[f14]
+
 [f15]
+
+[f15]
+
+[f15]
+
+[f1]
+
+[f1]
 
 [f1]
 
 [f2]
 
+[f2]
+
+[f2]
+
 [f3]
+
+[f3]
+
+[f3]
+
+[f4]
+
+[f4]
 
 [f4]
 
 [f5]
 
+[f5]
+
+[f5]
+
 [f6]
+
+[f6]
+
+[f6]
+
+[f7]
+
+[f7]
 
 [f7]
 
 [f8]
 
+[f8]
+
+[f8]
+
 [f9]
+
+[f9]
+
+[f9]
+
+[Fertility Map]
+
+[Fertility Map]
 
 [Fertility Map]
 
 [Flag Defaults]
 
+[Flag Defaults]
+
+[Flag Defaults]
+
+[flag settings explanation]
+
+[flag settings explanation]
+
 [flag settings explanation]
 
 [food]
 Élelmiszer
+[food]
+Élelmiszer
+[food]
+Élelmiszer
 [forbidden area]
 
+[forbidden area]
+
+[forbidden area]
+
+[Free]
+Szabad
+[Free]
+Szabad
 [Free]
 Szabad
 [free]
 szabad
 [free]
 szabad
+[free]
+szabad
+[free]
+szabad
+[free]
+szabad
+[free]
+szabad
+[from:]
+honnan:
+[from:]
+honnan:
 [from:]
 honnan:
 [fruit]
 
+[fruit]
+
+[fruit]
+
+[fullscreen]
+Teljes képernyő
+[fullscreen]
+Teljes képernyő
 [fullscreen]
 Teljes képernyő
 [game full]
 A játék megtelt
+[game full]
+A játék megtelt
+[game full]
+A játék megtelt
 [game shortcuts]
+
+[game shortcuts]
+
+[game shortcuts]
+
+[Game]
+
+[Game]
 
 [Game]
 
 [general settings]
 
+[general settings]
+
+[general settings]
+
 [go to event]
+
+[go to event]
+
+[go to event]
+
+[go to home]
+
+[go to home]
 
 [go to home]
 
 [goto main menu]
 Vissza a főmenübe
+[goto main menu]
+Vissza a főmenübe
+[goto main menu]
+Vissza a főmenübe
+[grass]
+Fű
+[grass]
+Fű
 [grass]
 Fű
 [ground attack]
+
+[ground attack]
+
+[ground attack]
+
+[guard area]
+
+[guard area]
 
 [guard area]
 
 [GUIMapPreview text 0]
 
+[GUIMapPreview text 0]
+
+[GUIMapPreview text 0]
+
+[GUIMapPreview text 1]
+
+[GUIMapPreview text 1]
+
 [GUIMapPreview text 1]
 
 [handmade map]
 Saját készítésű térkép
+[handmade map]
+Saját készítésű térkép
+[handmade map]
+Saját készítésű térkép
+[Happyness]
+Boldogság
+[Happyness]
+Boldogság
 [Happyness]
 Boldogság
 [hard pause]
 
+[hard pause]
+
+[hard pause]
+
+[Harvest]
+Betakarít
+[Harvest]
+Betakarít
 [Harvest]
 Betakarít
 [high priority]
+
+[high priority]
+
+[high priority]
+
+[hints]
+
+[hints]
 
 [hints]
 
 [home]
 
+[home]
+
+[home]
+
+[hospital explanation 2]
+
+[hospital explanation 2]
+
 [hospital explanation 2]
 
 [hospital explanation]
 Egységek gyógyítása
+[hospital explanation]
+Egységek gyógyítása
+[hospital explanation]
+Egységek gyógyítása
 [hospital]
 Kórház
+[hospital]
+Kórház
+[hospital]
+Kórház
+[host]
+Játék hostolása
+[host]
+Játék hostolása
 [host]
 Játék hostolása
 [hp]
 Életpont
 [hp]
 Életpont
+[hp]
+Életpont
+[hp]
+Életpont
+[hp]
+Életpont
+[hp]
+Életpont
 [Human]
+
+[Human]
+
+[Human]
+
+[human]
+
+[human]
 
 [human]
 
 [hungry]
 éhes
+[hungry]
+éhes
+[hungry]
+éhes
+[hungryness]
+
+[hungryness]
+
 [hungryness]
 
 [In way]
 Úton van
+[In way]
+Úton van
+[In way]
+Úton van
 [increase units working]
+
+[increase units working]
+
+[increase units working]
+
+[inn explanation 2]
+
+[inn explanation 2]
 
 [inn explanation 2]
 
 [inn explanation]
 Egységek élelmezése
+[inn explanation]
+Egységek élelmezése
+[inn explanation]
+Egységek élelmezése
+[inn]
+Étkezde
+[inn]
+Étkezde
 [inn]
 Étkezde
 [insert]
 
+[insert]
+
+[insert]
+
+[inside]
+Belül
+[inside]
+Belül
 [inside]
 Belül
 [islands size]
 a szigetek mérete
+[islands size]
+a szigetek mérete
+[islands size]
+a szigetek mérete
+[islands terrain]
+Szigetek
+[islands terrain]
+Szigetek
 [islands terrain]
 Szigetek
 [isles terrain]
+
+[isles terrain]
+
+[isles terrain]
+
+[iterate selection]
+
+[iterate selection]
 
 [iterate selection]
 
 [jobs]
 
+[jobs]
+
+[jobs]
+
+[join a game]
+Csatlakozás egy játékhoz
+[join a game]
+Csatlakozás egy játékhoz
 [join a game]
 Csatlakozás egy játékhoz
 [join]
 Csatlakozás
+[join]
+Csatlakozás
+[join]
+Csatlakozás
 [keyboard settings]
+
+[keyboard settings]
+
+[keyboard settings]
+
+[kick]
+
+[kick]
 
 [kick]
 
 [lan]
 Játék a helyi hálózaton
+[lan]
+Játék a helyi hálózaton
+[lan]
+Játék a helyi hálózaton
+[language incomplete]
+Magyar - Incomplete
+[language incomplete]
+Magyar - Incomplete
 [language incomplete]
 Magyar - Incomplete
 [language-code]
 hu
+[language-code]
+hu
+[language-code]
+hu
+[language-tr]
+Nyelv
+[language-tr]
+Nyelv
 [language-tr]
 Nyelv
 [language]
 Magyar
+[language]
+Magyar
+[language]
+Magyar
 [Leave Game]
+
+[Leave Game]
+
+[Leave Game]
+
+[left meta]
+
+[left meta]
 
 [left meta]
 
 [left super]
 
+[left super]
+
+[left super]
+
+[left]
+
+[left]
+
 [left]
 
 [level]
 Szint
+[level]
+Szint
+[level]
+Szint
+[levels]
+Szintek
+[levels]
+Szintek
 [levels]
 Szintek
 [load campaign]
 
+[load campaign]
+
+[load campaign]
+
+[load game]
+Játék betöltése
+[load game]
+Játék betöltése
 [load game]
 Játék betöltése
 [load map]
+
+[load map]
+
+[load map]
+
+[load script]
+
+[load script]
 
 [load script]
 
 [load]
 Betölt
+[load]
+Betölt
+[load]
+Betölt
 [loading map list]
+
+[loading map list]
+
+[loading map list]
+
+[Lobby]
+
+[Lobby]
 
 [Lobby]
 
 [login]
 Bejelentkezés
+[login]
+Bejelentkezés
+[login]
+Bejelentkezés
+[Lost : %0 has more prestige than you]
+Veszítettél: %0 -nak nagyobb a presztízse mint neked.
+[Lost : %0 has more prestige than you]
+Veszítettél: %0 -nak nagyobb a presztízse mint neked.
 [Lost : %0 has more prestige than you]
 Veszítettél: %0 -nak nagyobb a presztízse mint neked.
 [Lost : your colony is dead]
 A kolóniád megsemmisült.
+[Lost : your colony is dead]
+A kolóniád megsemmisült.
+[Lost : your colony is dead]
+A kolóniád megsemmisült.
+[low priority]
+
+[low priority]
+
 [low priority]
 
 [lowquality]
 Alacsony képminőség
+[lowquality]
+Alacsony képminőség
+[lowquality]
+Alacsony képminőség
 [Magic At. Air]
+
+[Magic At. Air]
+
+[Magic At. Air]
+
+[Magic At. Ground]
+
+[Magic At. Ground]
 
 [Magic At. Ground]
 
 [map description]
 
+[map description]
+
+[map description]
+
 [Map Discovered]
+
+[Map Discovered]
+
+[Map Discovered]
+
+[Map download failure: lost connection]
+
+[Map download failure: lost connection]
 
 [Map download failure: lost connection]
 
 [Map name: %0]
 A térkép neve: %0.
+[Map name: %0]
+A térkép neve: %0.
+[Map name: %0]
+A térkép neve: %0.
 [map name]
+
+[map name]
+
+[map name]
+
+[map rated]
+
+[map rated]
 
 [map rated]
 
 [map script]
 
+[map script]
+
+[map script]
+
+[map size x]
+Térkép szélessége
+[map size x]
+Térkép szélessége
 [map size x]
 Térkép szélessége
 [map size y]
 Térkép hosszúsága
+[map size y]
+Térkép hosszúsága
+[map size y]
+Térkép hosszúsága
 [Map upload failure: connection lost]
+
+[Map upload failure: connection lost]
+
+[Map upload failure: connection lost]
+
+[Map upload failure: map name in use]
+
+[Map upload failure: map name in use]
 
 [Map upload failure: map name in use]
 
 [Map upload failure: unknown reason]
 
+[Map upload failure: unknown reason]
+
+[Map upload failure: unknown reason]
+
 [Map Upload: Author Name]
+
+[Map Upload: Author Name]
+
+[Map Upload: Author Name]
+
+[Map Upload: Waiting for reply]
+
+[Map Upload: Waiting for reply]
 
 [Map Upload: Waiting for reply]
 
 [mark map]
 
+[mark map]
+
+[mark map]
+
+[market explanation 2]
+gyümölcs árucserét
+[market explanation 2]
+gyümölcs árucserét
 [market explanation 2]
 gyümölcs árucserét
 [market explanation]
 Lehetővé teszi az
+[market explanation]
+Lehetővé teszi az
+[market explanation]
+Lehetővé teszi az
+[market]
+Piac
+[market]
+Piac
 [market]
 Piac
 [medium priority]
+
+[medium priority]
+
+[medium priority]
+
+[meta %0]
+
+[meta %0]
 
 [meta %0]
 
 [Min required level:]
 Minimális szükséges szint:
+[Min required level:]
+Minimális szükséges szint:
+[Min required level:]
+Minimális szükséges szint:
+[Minimum Level To Flag]
+
+[Minimum Level To Flag]
+
 [Minimum Level To Flag]
 
 [Music volume]
 Hangerősség (zene)
+[Music volume]
+Hangerősség (zene)
+[Music volume]
+Hangerősség (zene)
 [Mute]
+
+[Mute]
+
+[Mute]
+
+[mute]
+
+[mute]
 
 [mute]
 
 [new campaign]
 
+[new campaign]
+
+[new campaign]
+
+[new map]
+Új
+[new map]
+Új
 [new map]
 Új
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[nick taken]
+We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[nick taken]
+We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [No Hints]
+
+[No Hints]
+
+[No Hints]
+
+[no key]
+
+[no key]
 
 [no key]
 
 [No Objectives]
 
+[No Objectives]
+
+[No Objectives]
+
+[no ressources growth areas]
+
+[no ressources growth areas]
+
 [no ressources growth areas]
 
 [No]
 Nem
+[No]
+Nem
+[No]
+Nem
+[Not Enough Ratings]
+
+[Not Enough Ratings]
+
 [Not Enough Ratings]
 
 [not ready]
 nincs készen
+[not ready]
+nincs készen
+[not ready]
+nincs készen
+[Number Of Buildings]
+
+[number of players: %0 (%1 AI)]
+
+[number of players: %0 (%1 AI)]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
 %0 játékos van jelen.
+[number of players: %0]
+%0 játékos van jelen.
+[number of players: %0]
+%0 játékos van jelen.
+[number of teams: %0]
+%0 csapat
+[number of teams: %0]
+%0 csapat
 [number of teams: %0]
 %0 csapat
 [number of teams]
 Csapatok száma
+[number of teams]
+Csapatok száma
+[number of teams]
+Csapatok száma
+[Number Of Units]
+
 [numlock]
+
+[numlock]
+
+[numlock]
+
+[objectives]
+
+[objectives]
 
 [objectives]
 
 [of which]
 amelyik
+[of which]
+amelyik
+[of which]
+amelyik
+[ok]
+Rendben
+[ok]
+Rendben
 [ok]
 Rendben
 [old islands terrain]
+
+[old islands terrain]
+
+[old islands terrain]
+
+[old random terrain]
+
+[old random terrain]
 
 [old random terrain]
 
 [on press]
 
+[on press]
+
+[on press]
+
+[On the spot]
+Helyszínen van
+[On the spot]
+Helyszínen van
 [On the spot]
 Helyszínen van
 [on unpress]
+
+[on unpress]
+
+[on unpress]
+
+[open chat box]
+
+[open chat box]
 
 [open chat box]
 
 [open load menu]
 
+[open load menu]
+
+[open load menu]
+
 [open save menu]
+
+[open save menu]
+
+[open save menu]
+
+[open scenario editor]
+
+[open scenario editor]
 
 [open scenario editor]
 
 [open teams editor]
 
+[open teams editor]
+
+[open teams editor]
+
+[open]
+nyitva
+[open]
+nyitva
 [open]
 nyitva
 [OpenGL]
+OpenGL
+[Options]
+
+[Options]
 
 [Options]
 
 [options]
 Opciók
+[options]
+Opciók
+[options]
+Opciók
+[Orange]
+Narancs
+[Orange]
+Narancs
 [Orange]
 Narancs
 [Other Options]
+
+[Other Options]
+
+[Other Options]
+
+[page down]
+
+[page down]
 
 [page down]
 
 [page up]
 
+[page up]
+
+[page up]
+
+[Papyrus]
+Papírusz
+[Papyrus]
+Papírusz
 [Papyrus]
 Papírusz
 [pause game]
+
+[pause game]
+
+[pause game]
+
+[pause]
+
+[pause]
 
 [pause]
 
 [Paused]
 Szünet
+[Paused]
+Szünet
+[Paused]
+Szünet
+[player name]
+A játékos neve
+[player name]
+A játékos neve
 [player name]
 A játékos neve
 [player rating %0]
 
+[player rating %0]
+
+[player rating %0]
+
+[please wait]
+Kérem várjon
+[please wait]
+Kérem várjon
 [please wait]
 Kérem várjon
 [power]
 
+[power]
+
+[power]
+
 [press space]
+
+[press space]
+
+[press space]
+
+[Prestige Score]
+
+[Prestige Win Enabled]
+
+[Prestige Win Enabled]
 
 [Prestige Win Enabled]
 
 [Prestige]
 Presztízs
+[Prestige]
+Presztízs
+[Prestige]
+Presztízs
 [Primary Objectives]
+
+[Primary Objectives]
+
+[Primary Objectives]
+
+[print screen]
+
+[print screen]
 
 [print screen]
 
 [priority]
 
+[priority]
+
+[priority]
+
+[Prune]
+Szilva
+[Prune]
+Szilva
 [Prune]
 Szilva
 [quit the editor]
 
+[quit the editor]
+
+[quit the editor]
+
+[quit the game]
+Kilépés a játékból
+[quit the game]
+Kilépés a játékból
 [quit the game]
 Kilépés a játékból
 [quit]
 Kilépés
+[quit]
+Kilépés
+[quit]
+Kilépés
+[racetrack explanation 2]
+fejlesztése
+[racetrack explanation 2]
+fejlesztése
 [racetrack explanation 2]
 fejlesztése
 [racetrack explanation]
 Haladási sebesség
+[racetrack explanation]
+Haladási sebesség
+[racetrack explanation]
+Haladási sebesség
+[racetrack]
+Versenypálya
+[racetrack]
+Versenypálya
 [racetrack]
 Versenypálya
 [range]
 Hatótávolság
+[range]
+Hatótávolság
+[range]
+Hatótávolság
+[Rated %0]
+
+[Rated %0]
+
 [Rated %0]
 
 [ratios]
 Arányok
+[ratios]
+Arányok
+[ratios]
+Arányok
 [ready?]
+
+[ready?]
+
+[ready?]
+
+[refresh map list]
+
+[refresh map list]
 
 [refresh map list]
 
 [Register a new YOG user with password]
 Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
+[Register a new YOG user with password]
+Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
+[Register a new YOG user with password]
+Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
+[Register]
+
+[remember unit]
+
+[remember unit]
+
 [remember unit]
 
 [Remember YOG password localy]
 A jleszót helyileg tárolja. (nem biztonságos)
+[Remember YOG password localy]
+A jleszót helyileg tárolja. (nem biztonságos)
+[Remember YOG password localy]
+A jleszót helyileg tárolja. (nem biztonságos)
 [remove map]
+
+[remove map]
+
+[remove map]
+
+[remove shortcut]
+
+[remove shortcut]
 
 [remove shortcut]
 
 [Remove]
 
+[Remove]
+
+[Remove]
+
+[repair building]
+
+[repair building]
+
 [repair building]
 
 [repair]
 Megjavítani
+[repair]
+Megjavítani
+[repair]
+Megjavítani
 [repeat area]
+
+[repeat area]
+
+[repeat area]
+
+[Repeat your password :]
+
+[restore default shortcuts]
+
+[restore default shortcuts]
 
 [restore default shortcuts]
 
 [return to editor]
 
+[return to editor]
+
+[return to editor]
+
+[return to game]
+Visszalépés a játékba
+[return to game]
+Visszalépés a játékba
 [return to game]
 Visszalépés a játékba
 [return]
+
+[return]
+
+[return]
+
+[right meta]
+
+[right meta]
 
 [right meta]
 
 [right super]
 
+[right super]
+
+[right super]
+
 [right]
+
+[right]
+
+[right]
+
+[river diameter]
+
+[river diameter]
 
 [river diameter]
 
 [river terrain]
 
+[river terrain]
+
+[river terrain]
+
+[sand]
+Homok
+[sand]
+Homok
 [sand]
 Homok
 [save before quit?]
 El kívánod a játékot menteni kilépés előtt?
+[save before quit?]
+El kívánod a játékot menteni kilépés előtt?
+[save before quit?]
+El kívánod a játékot menteni kilépés előtt?
+[save game]
+Játék elmentése
+[save game]
+Játék elmentése
 [save game]
 Játék elmentése
 [save map]
+
+[save map]
+
+[save map]
+
+[save script]
+
+[save script]
 
 [save script]
 
 [Save]
 Mentés
+[Save]
+Mentés
+[Save]
+Mentés
+[school explanation 2]
+sebességének fejlesztése
+[school explanation 2]
+sebességének fejlesztése
 [school explanation 2]
 sebességének fejlesztése
 [school explanation]
 A dolgozók építési
+[school explanation]
+A dolgozók építési
+[school explanation]
+A dolgozók építési
+[school]
+Iskola
+[school]
+Iskola
 [school]
 Iskola
 [Script Areas]
+
+[Script Areas]
+
+[Script Areas]
+
+[scroll lock]
+
+[scroll lock]
 
 [scroll lock]
 
 [scroll wheel enabled]
 
+[scroll wheel enabled]
+
+[scroll wheel enabled]
+
+[Secondary Objectives]
+
+[Secondary Objectives]
+
 [Secondary Objectives]
 
 [seeking a job]
 munkát keres
+[seeking a job]
+munkát keres
+[seeking a job]
+munkát keres
+[seeking]
+keresés
+[seeking]
+keresés
 [seeking]
 keresés
 [select barracks building]
+
+[select barracks building]
+
+[select barracks building]
+
+[select clearingflag]
+
+[select clearingflag]
 
 [select clearingflag]
 
 [select construct barracks]
 
+[select construct barracks]
+
+[select construct barracks]
+
 [select construct defencetower]
+
+[select construct defencetower]
+
+[select construct defencetower]
+
+[select construct hospital]
+
+[select construct hospital]
 
 [select construct hospital]
 
 [select construct inn]
 
+[select construct inn]
+
+[select construct inn]
+
 [select construct market]
+
+[select construct market]
+
+[select construct market]
+
+[select construct racetrack]
+
+[select construct racetrack]
 
 [select construct racetrack]
 
 [select construct school]
 
+[select construct school]
+
+[select construct school]
+
 [select construct stonewall]
+
+[select construct stonewall]
+
+[select construct stonewall]
+
+[select construct swarm]
+
+[select construct swarm]
 
 [select construct swarm]
 
 [select construct swimmingpool]
 
+[select construct swimmingpool]
+
+[select construct swimmingpool]
+
 [select delete tool]
+
+[select delete tool]
+
+[select delete tool]
+
+[select explorationflag]
+
+[select explorationflag]
 
 [select explorationflag]
 
 [select hospital building]
 
+[select hospital building]
+
+[select hospital building]
+
 [select inn building]
+
+[select inn building]
+
+[select inn building]
+
+[select market building]
+
+[select market building]
 
 [select market building]
 
 [select place clearing area]
 
+[select place clearing area]
+
+[select place clearing area]
+
 [select place clearingflag]
+
+[select place clearingflag]
+
+[select place clearingflag]
+
+[select place explorationflag]
+
+[select place explorationflag]
 
 [select place explorationflag]
 
 [select place forbidden area]
 
+[select place forbidden area]
+
+[select place forbidden area]
+
 [select place guard area]
+
+[select place guard area]
+
+[select place guard area]
+
+[select place warflag]
+
+[select place warflag]
 
 [select place warflag]
 
 [select racetrack building]
 
+[select racetrack building]
+
+[select racetrack building]
+
 [select school building]
+
+[select school building]
+
+[select school building]
+
+[select swarm building]
+
+[select swarm building]
 
 [select swarm building]
 
 [select swimmingpool building]
 
+[select swimmingpool building]
+
+[select swimmingpool building]
+
 [select tower building]
+
+[select tower building]
+
+[select tower building]
+
+[select wall building]
+
+[select wall building]
 
 [select wall building]
 
 [select warflag]
 
+[select warflag]
+
+[select warflag]
+
+[settings]
+Beállítások
+[settings]
+Beállítások
 [settings]
 Beállítások
 [shift %0]
+
+[shift %0]
+
+[shift %0]
+
+[shortcut explanation enter]
+
+[shortcut explanation enter]
 
 [shortcut explanation enter]
 
 [shortcut explanation v]
 
+[shortcut explanation v]
+
+[shortcut explanation v]
+
 [show main menu]
+
+[show main menu]
+
+[show main menu]
+
+[skin]
+
+[skin]
 
 [skin]
 
 [smoothing]
 Simítás
+[smoothing]
+Simítás
+[smoothing]
+Simítás
 [sort by name]
+
+[sort by name]
+
+[sort by name]
+
+[sort by rating]
+
+[sort by rating]
 
 [sort by rating]
 
 [sort by size]
 
+[sort by size]
+
+[sort by size]
+
 [Sort By]
+
+[Sort By]
+
+[Sort By]
+
+[space]
+
+[space]
 
 [space]
 
 [start mission]
 
+[start mission]
+
+[start mission]
+
+[start new campaign]
+
+[start new campaign]
+
 [start new campaign]
 
 [Start]
 Kezdés
+[Start]
+Kezdés
+[Start]
+Kezdés
+[Starving Map]
+
+[Starving Map]
+
 [Starving Map]
 
 [starving]
 éhezik
+[starving]
+éhezik
+[starving]
+éhezik
+[Statistics]
+Statisztika
+[Statistics]
+Statisztika
 [Statistics]
 Statisztika
 [Still (i)]
+Még mindig
+[Still (i)]
+Még mindig
+[Still (i)]
+Még mindig
+[still (w)]
+Még mindig
+[still (w)]
 Még mindig
 [still (w)]
 Még mindig
 [still one unit working]
 Egy egység dolgozik
+[still one unit working]
+Egy egység dolgozik
+[still one unit working]
+Egy egység dolgozik
+[Still one]
+Még egy
+[Still one]
+Még egy
 [Still one]
 Még egy
 [Stone]
 Kő
+[Stone]
+Kő
+[Stone]
+Kő
 [stone]
+
+[stone]
+
+[stone]
+
+[stonewall explanation 2]
+
+[stonewall explanation 2]
 
 [stonewall explanation 2]
 
 [stonewall explanation]
 Passzív védelmi elem
+[stonewall explanation]
+Passzív védelmi elem
+[stonewall explanation]
+Passzív védelmi elem
+[stonewall]
+Kőfal
+[stonewall]
+Kőfal
 [stonewall]
 Kőfal
 [submit rating]
 
+[submit rating]
+
+[submit rating]
+
+[svr hostname]
+A játékszerver neve
+[svr hostname]
+A játékszerver neve
 [svr hostname]
 A játékszerver neve
 [swamp terrain]
+
+[swamp terrain]
+
+[swamp terrain]
+
+[swarm explanation 2]
+
+[swarm explanation 2]
 
 [swarm explanation 2]
 
 [swarm explanation]
 Új egységek létrehozása
+[swarm explanation]
+Új egységek létrehozása
+[swarm explanation]
+Új egységek létrehozása
+[swarm]
+Raj
+[swarm]
+Raj
 [swarm]
 Raj
 [Swim]
 Úszik
+[Swim]
+Úszik
+[Swim]
+Úszik
+[swimmingpool explanation 2]
+fejlesztése
+[swimmingpool explanation 2]
+fejlesztése
 [swimmingpool explanation 2]
 fejlesztése
 [swimmingpool explanation]
 Úszási sebesség
+[swimmingpool explanation]
+Úszási sebesség
+[swimmingpool explanation]
+Úszási sebesség
+[swimmingpool]
+Úszómedence
+[swimmingpool]
+Úszómedence
 [swimmingpool]
 Úszómedence
 [switch to adding areas]
+
+[switch to adding areas]
+
+[switch to adding areas]
+
+[switch to area brush 1]
+
+[switch to area brush 1]
 
 [switch to area brush 1]
 
 [switch to area brush 2]
 
+[switch to area brush 2]
+
+[switch to area brush 2]
+
 [switch to area brush 3]
+
+[switch to area brush 3]
+
+[switch to area brush 3]
+
+[switch to area brush 4]
+
+[switch to area brush 4]
 
 [switch to area brush 4]
 
 [switch to area brush 5]
 
+[switch to area brush 5]
+
+[switch to area brush 5]
+
 [switch to area brush 6]
+
+[switch to area brush 6]
+
+[switch to area brush 6]
+
+[switch to area brush 7]
+
+[switch to area brush 7]
 
 [switch to area brush 7]
 
 [switch to area brush 8]
 
+[switch to area brush 8]
+
+[switch to area brush 8]
+
 [switch to building view]
+
+[switch to building view]
+
+[switch to building view]
+
+[switch to flag view]
+
+[switch to flag view]
 
 [switch to flag view]
 
 [switch to removing areas]
 
+[switch to removing areas]
+
+[switch to removing areas]
+
 [switch to teams view]
+
+[switch to teams view]
+
+[switch to teams view]
+
+[switch to terrain view]
+
+[switch to terrain view]
 
 [switch to terrain view]
 
 [sys req]
 
+[sys req]
+
+[sys req]
+
 [tab]
+
+[tab]
+
+[tab]
+
+[teams editor]
+
+[teams editor]
 
 [teams editor]
 
 [Teams Fixed]
 
+[Teams Fixed]
+
+[Teams Fixed]
+
+[teams]
+ csapatok
+[teams]
+ csapatok
 [teams]
  csapatok
 [the barracks is finished]
 A laktanya elkészült
+[the barracks is finished]
+A laktanya elkészült
+[the barracks is finished]
+A laktanya elkészült
+[the barracks is under attack]
+Megtámadták a laktanyát
+[the barracks is under attack]
+Megtámadták a laktanyát
 [the barracks is under attack]
 Megtámadták a laktanyát
 [the building is finished]
 Az épület elkészült
+[the building is finished]
+Az épület elkészült
+[the building is finished]
+Az épület elkészült
+[the building is under attack]
+Megtámadták az épületet
+[the building is under attack]
+Megtámadták az épületet
 [the building is under attack]
 Megtámadták az épületet
 [the clearingflag is finished]
 ?? A tisztító zászló elkészült ??
+[the clearingflag is finished]
+?? A tisztító zászló elkészült ??
+[the clearingflag is finished]
+?? A tisztító zászló elkészült ??
+[the clearingflag is under attack]
+?? Megtámadták a tisztító zászlót ??
+[the clearingflag is under attack]
+?? Megtámadták a tisztító zászlót ??
 [the clearingflag is under attack]
 ?? Megtámadták a tisztító zászlót ??
 [the defencetower is finished]
 A páncéltorony elkészült
+[the defencetower is finished]
+A páncéltorony elkészült
+[the defencetower is finished]
+A páncéltorony elkészült
+[the defencetower is under attack]
+Megtámadták az erődítményeket
+[the defencetower is under attack]
+Megtámadták az erődítményeket
 [the defencetower is under attack]
 Megtámadták az erődítményeket
 [the explorationflag is finished]
 ?? A felderítőzászló elkészült ??
+[the explorationflag is finished]
+?? A felderítőzászló elkészült ??
+[the explorationflag is finished]
+?? A felderítőzászló elkészült ??
+[the explorationflag is under attack]
+?? Megtámadták a felderítózászlót ??
+[the explorationflag is under attack]
+?? Megtámadták a felderítózászlót ??
 [the explorationflag is under attack]
 ?? Megtámadták a felderítózászlót ??
 [The game has not been finished]
 A játék nem fejeződött be
+[The game has not been finished]
+A játék nem fejeződött be
+[The game has not been finished]
+A játék nem fejeződött be
+[the games]
+Játékok
+[the games]
+Játékok
 [the games]
 Játékok
 [the hospital is finished]
 A kórház elkészült
+[the hospital is finished]
+A kórház elkészült
+[the hospital is finished]
+A kórház elkészült
+[the hospital is under attack]
+Megtámadták a kórházat
+[the hospital is under attack]
+Megtámadták a kórházat
 [the hospital is under attack]
 Megtámadták a kórházat
 [The host has cancelled the game]
 
+[The host has cancelled the game]
+
+[The host has cancelled the game]
+
+[the inn is finished]
+Az étkezde elkészült
+[the inn is finished]
+Az étkezde elkészült
 [the inn is finished]
 Az étkezde elkészült
 [the inn is under attack]
 Megtámadták az étkezdét
+[the inn is under attack]
+Megtámadták az étkezdét
+[the inn is under attack]
+Megtámadták az étkezdét
+[the maps]
+Térképek
+[the maps]
+Térképek
 [the maps]
 Térképek
 [the market is finished]
 A piac elkészült
+[the market is finished]
+A piac elkészült
+[the market is finished]
+A piac elkészült
+[the market is under attack]
+Megtámadták a piacot
+[the market is under attack]
+Megtámadták a piacot
 [the market is under attack]
 Megtámadták a piacot
 [The player %0 has joined YOG]
 A %0 játékos csatlakozott a YOG-hoz.
+[The player %0 has joined YOG]
+A %0 játékos csatlakozott a YOG-hoz.
+[The player %0 has joined YOG]
+A %0 játékos csatlakozott a YOG-hoz.
+[The player %0 has left YOG]
+A %0 játékos kilépett a YOG-ból.
+[The player %0 has left YOG]
+A %0 játékos kilépett a YOG-ból.
 [The player %0 has left YOG]
 A %0 játékos kilépett a YOG-ból.
 [the racetrack is finished]
 A versenypálya elkészült
+[the racetrack is finished]
+A versenypálya elkészült
+[the racetrack is finished]
+A versenypálya elkészült
+[the racetrack is under attack]
+Megtámadták a versenypályát
+[the racetrack is under attack]
+Megtámadták a versenypályát
 [the racetrack is under attack]
 Megtámadták a versenypályát
 [the school is finished]
 Az iskola elkészült
+[the school is finished]
+Az iskola elkészült
+[the school is finished]
+Az iskola elkészült
+[the school is under attack]
+Megtámadták az iskolát
+[the school is under attack]
+Megtámadták az iskolát
 [the school is under attack]
 Megtámadták az iskolát
 [the stonewall is finished]
 A kőfal elkészült
+[the stonewall is finished]
+A kőfal elkészült
+[the stonewall is finished]
+A kőfal elkészült
+[the stonewall is under attack]
+Az ellenség a falak előtt áll
+[the stonewall is under attack]
+Az ellenség a falak előtt áll
 [the stonewall is under attack]
 Az ellenség a falak előtt áll
 [the swarm is finished]
 A raj elkészült
+[the swarm is finished]
+A raj elkészült
+[the swarm is finished]
+A raj elkészült
+[the swarm is under attack]
+Megtámadták a rajt
+[the swarm is under attack]
+Megtámadták a rajt
 [the swarm is under attack]
 Megtámadták a rajt
 [the swimmingpool is finished]
 At úszómedence elkészült
+[the swimmingpool is finished]
+At úszómedence elkészült
+[the swimmingpool is finished]
+At úszómedence elkészült
+[the swimmingpool is under attack]
+Megtámadták az úszómedencét
+[the swimmingpool is under attack]
+Megtámadták az úszómedencét
 [the swimmingpool is under attack]
 Megtámadták az úszómedencét
 [the warflag is finished]
 ?? A hadizászló elkészült ??
+[the warflag is finished]
+?? A hadizászló elkészült ??
+[the warflag is finished]
+?? A hadizászló elkészült ??
 [the warflag is under attack]
 ?? Megtámadták a hadizászlót ??
+[the warflag is under attack]
+?? Megtámadták a hadizászlót ??
+[the warflag is under attack]
+?? Megtámadták a hadizászlót ??
+[time]
+
+[to:]
+hová:
+[to:]
+hová:
 [to:]
 hová:
 [toggle draw accessibility aids]
+
+[toggle draw accessibility aids]
+
+[toggle draw accessibility aids]
+
+[toggle draw information]
+
+[toggle draw information]
 
 [toggle draw information]
 
 [toggle draw unit paths]
 
+[toggle draw unit paths]
+
+[toggle draw unit paths]
+
+[toggle menu screen]
+
+[toggle menu screen]
+
 [toggle menu screen]
 
 [toggle recording voice]
 
+[toggle recording voice]
+
+[toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
+[Total prestige reached]
+Elérted a legmagasabb presztízs szintet
+[Total prestige reached]
+Elérted a legmagasabb presztízs szintet
 [Total prestige reached]
 Elérted a legmagasabb presztízs szintet
 [Total]
 Összesen
+[Total]
+Összesen
+[Total]
+Összesen
 [tutorial text 1]
+
+[tutorial text 1]
+
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 2]
 
 [tutorial text 2]
 
 [tutorial text 3]
 
+[tutorial text 3]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
+[tutorial text 4]
+
 [tutorial text 4]
 
 [tutorial]
 Gyakorlás
+[tutorial]
+Gyakorlás
+[tutorial]
+Gyakorlás
+[Uncontrolled]
+Független
+[Uncontrolled]
+Független
 [Uncontrolled]
 Független
 [undo]
 
+[undo]
+
+[undo]
+
+[uniform terrain]
+Egységes térkép
+[uniform terrain]
+Egységes térkép
 [uniform terrain]
 Egységes térkép
 [Unit editor]
+
+[Unit editor]
+
+[Unit editor]
+
+[unit settings explanation]
+
+[unit settings explanation]
 
 [unit settings explanation]
 
 [units working]
  az egységek dolgoznak
+[units working]
+ az egységek dolgoznak
+[units working]
+ az egységek dolgoznak
+[Units]
+Egységek
+[Units]
+Egységek
 [Units]
 Egységek
 [unlocked at start]
+
+[unlocked at start]
+
+[unlocked at start]
+
+[unlocked by]
+
+[unlocked by]
 
 [unlocked by]
 
 [Unnamed Area]
 
+[Unnamed Area]
+
+[Unnamed Area]
+
 [up]
+
+[up]
+
+[up]
+
+[upgrade building]
+
+[upgrade building]
 
 [upgrade building]
 
 [Upgrade Defaults]
 
+[Upgrade Defaults]
+
+[Upgrade Defaults]
+
+[upgrade]
+Fejleszteni
+[upgrade]
+Fejleszteni
 [upgrade]
 Fejleszteni
 [Upload Map]
+
+[Upload Map]
+
+[Upload Map]
+
+[upload map]
+
+[upload map]
 
 [upload map]
 
 [username]
 Felhasználónév
+[username]
+Felhasználónév
+[username]
+Felhasználónév
+[Version]
+Verzió
+[Version]
+Verzió
 [Version]
 Verzió
 [view history]
+
+[view history]
+
+[view history]
+
+[Voice volume]
+
+[Voice volume]
 
 [Voice volume]
 
 [waiting for %0]
 %0 -ra várva
+[waiting for %0]
+%0 -ra várva
+[waiting for %0]
+%0 -ra várva
 [waiting for key]
+
+[waiting for key]
+
+[waiting for key]
+
+[Waiting]
+
+[Waiting]
 
 [Waiting]
 
 [Walk]
 megy
+[Walk]
+megy
+[Walk]
+megy
+[warflag explanation 2]
+harcosokat
+[warflag explanation 2]
+harcosokat
 [warflag explanation 2]
 harcosokat
 [warflag explanation]
 Összevonja a
+[warflag explanation]
+Összevonja a
+[warflag explanation]
+Összevonja a
+[warflag]
+Hadizászló
+[warflag]
+Hadizászló
 [warflag]
 Hadizászló
 [Warning, you need to reboot the game for changes to take effect]
+
+[Warning, you need to reboot the game for changes to take effect]
+
+[Warning, you need to reboot the game for changes to take effect]
+
+[Warrior Ratio]
+
+[Warrior Ratio]
 
 [Warrior Ratio]
 
 [Warrior]
 Harcos
+[Warrior]
+Harcos
+[Warrior]
+Harcos
+[warriors]
+harcosok
+[warriors]
+harcosok
 [warriors]
 harcosok
 [water]
 Víz
+[water]
+Víz
+[water]
+Víz
+[Wheat]
+
+[Wheat]
+
 [Wheat]
 
 [Won : you defeated your opponents]
 Nyertél: legyőzted az ellenfeleidet.
+[Won : you defeated your opponents]
+Nyertél: legyőzted az ellenfeleidet.
+[Won : you defeated your opponents]
+Nyertél: legyőzted az ellenfeleidet.
+[Won : you have the most prestige]
+Nyertél: neked van a legnagyobb presztízsed.
+[Won : you have the most prestige]
+Nyertél: neked van a legnagyobb presztízsed.
 [Won : you have the most prestige]
 Nyertél: neked van a legnagyobb presztízsed.
 [Won : your ally %0 has the most prestige]
 Nyertél: a szövetségesed %0 elérte a legnagyobb presztízs szintet.
+[Won : your ally %0 has the most prestige]
+Nyertél: a szövetségesed %0 elérte a legnagyobb presztízs szintet.
+[Won : your ally %0 has the most prestige]
+Nyertél: a szövetségesed %0 elérte a legnagyobb presztízs szintet.
+[Wood]
+Fa
+[Wood]
+Fa
 [Wood]
 Fa
 [wood]
 
+[wood]
+
+[wood]
+
 [Worker Ratio]
 
+[Worker Ratio]
+
+[Worker Ratio]
+
+[Worker]
+Dolgozó
+[Worker]
+Dolgozó
 [Worker]
 Dolgozó
 [workers]
 dolgozók
 [workers]
 dolgozók
+[workers]
+dolgozók
+[workers]
+dolgozók
+[workers]
+dolgozók
+[workers]
+dolgozók
+[working]
+Dolgozik
+[working]
+Dolgozik
 [working]
 Dolgozik
 [wounded]
 sebesült
+[wounded]
+sebesült
+[wounded]
+sebesült
+[Yes]
+Igen
+[Yes]
+Igen
 [Yes]
 Igen
 [YESTS_CONNECTING]
 A kapcsolat felvétele a YOG metaszerverrel.
+[YESTS_CONNECTING]
+A kapcsolat felvétele a YOG metaszerverrel.
+[YESTS_CONNECTING]
+A kapcsolat felvétele a YOG metaszerverrel.
+[YESTS_CONNECTION_LOST]
+A kapcsolat a YOG metaszerverrel megszakadt.
+[YESTS_CONNECTION_LOST]
+A kapcsolat a YOG metaszerverrel megszakadt.
 [YESTS_CONNECTION_LOST]
 A kapcsolat a YOG metaszerverrel megszakadt.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév már be lett regisztrálva. Ha ez a felhasználónév a tiéd, akkor kapcsold ki az "Új YOG felhasználó regisztrálása jelszóval" opciót.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév már be lett regisztrálva. Ha ez a felhasználónév a tiéd, akkor kapcsold ki az "Új YOG felhasználó regisztrálása jelszóval" opciót.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév már be lett regisztrálva. Ha ez a felhasználónév a tiéd, akkor kapcsold ki az "Új YOG felhasználó regisztrálása jelszóval" opciót.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
 
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
 
 [YESTS_CREATED]
 A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
+[YESTS_CREATED]
+A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
+[YESTS_CREATED]
+A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
+[YESTS_PASSWORDS_DONT_MATCH]
+
+[YESTS_UNABLE_TO_CONNECT]
+A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
+[YESTS_UNABLE_TO_CONNECT]
+A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
 [YESTS_UNABLE_TO_CONNECT]
 A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
 [yog block command help]
+
+[yog block command help]
+
+[yog block command help]
+
+[yog block command player %0 already blocked]
+
+[yog block command player %0 already blocked]
 
 [yog block command player %0 already blocked]
 
 [yog block command player %0 blocked]
 
+[yog block command player %0 blocked]
+
+[yog block command player %0 blocked]
+
 [yog block command player %0 not found]
+
+[yog block command player %0 not found]
+
+[yog block command player %0 not found]
+
+[yog command header]
+
+[yog command header]
 
 [yog command header]
 
 [yog command unknown]
 
+[yog command unknown]
+
+[yog command unknown]
+
+[yog help command help]
+
+[yog help command help]
+
 [yog help command help]
 
 [yog]
 Ysagoon Online Játék
+[yog]
+Ysagoon Online Játék
+[yog]
+Ysagoon Online Játék
+[you have lost]
+Elvesztetted a játékot!
+[you have lost]
+Elvesztetted a játékot!
 [you have lost]
 Elvesztetted a játékot!
 [you have won]
 Megnyerted a játékot!
+[you have won]
+Megnyerted a játékot!
+[you have won]
+Megnyerted a játékot!
+[You where kicked from the game]
+
+[You where kicked from the game]
+
 [You where kicked from the game]
 
 [Your %0 are under attack]
 Megtámadták a %0 -t
+[Your %0 are under attack]
+Megtámadták a %0 -t
+[Your %0 are under attack]
+Megtámadták a %0 -t
+[Your IP address was temporarily banned]
+
+[Your IP address was temporarily banned]
+
 [Your IP address was temporarily banned]
 
 [Your unit got converted to %0's team]
 Az egységedet az ellenség elfogta %0
+[Your unit got converted to %0's team]
+Az egységedet az ellenség elfogta %0
+[Your unit got converted to %0's team]
+Az egységedet az ellenség elfogta %0
+[Your username was banned]
+
+[Your username was banned]
+
 [Your username was banned]
 

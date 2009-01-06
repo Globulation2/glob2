@@ -90,14 +90,14 @@ Map::Map()
 	fogOfWarB=NULL;
 	astarpoints = NULL;
 	cases=NULL;
-	for (int t=0; t<32; t++)
+	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_NB_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 			{
 				ressourcesGradient[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
 			}
-	for (int t=0; t<32; t++)
+	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int s=0; s<2; s++)
 		{
 			forbiddenGradient[t][s] = NULL;
@@ -106,14 +106,14 @@ Map::Map()
 			guardGradientUpdated[t][s] = false;
 			clearGradientUpdated[t][s] = false;
 		}
-	for (int t = 0; t < 32; t++)
+	for (int t = 0; t < Team::MAX_COUNT; t++)
 		exploredArea[t] = NULL;
 	
 	undermap=NULL;
 	sectors=NULL;
 	listedAddr=NULL;
 	
-	for (int t = 0; t < 32; t++)
+	for (int t = 0; t < Team::MAX_COUNT; t++)
 		clearingAreaClaims[t] = NULL;
 	w=0;
 	h=0;
@@ -254,7 +254,7 @@ void Map::clear()
 		assert(cases);
 		delete[] cases;
 		cases=NULL;
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (ressourcesGradient[t][0][0])
 				for (int r=0; r<MAX_RESSOURCES; r++)
 					for (int s=0; s<2; s++)
@@ -264,7 +264,7 @@ void Map::clear()
 						ressourcesGradient[t][r][s] = NULL;
 					}
 		
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (forbiddenGradient[t][0])
 				for (int s=0; s<2; s++)
 				{
@@ -282,7 +282,7 @@ void Map::clear()
 					clearGradientUpdated[t][s] = false;
 				}
 		
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (exploredArea[t])
 			{
 				assert(exploredArea[t]);
@@ -306,7 +306,7 @@ void Map::clear()
 		delete[] astarpoints;
 		astarpoints=NULL;
 
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 		{
 			if (clearingAreaClaims[t])
 			{
@@ -329,20 +329,20 @@ void Map::clear()
 		assert(fogOfWarA==NULL);
 		assert(fogOfWarB==NULL);
 		assert(cases==NULL);
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
 					assert(ressourcesGradient[t][r][s]==NULL);
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			for (int s=0; s<2; s++)
 			{
 				assert(forbiddenGradient[t][s] == NULL);
 				assert(guardAreasGradient[t][s] == NULL);
 				assert(clearAreasGradient[t][s] == NULL);
 			}
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			assert(exploredArea[t] == NULL);
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			assert(clearingAreaClaims[t] == NULL);
 		
 		assert(undermap==NULL);
@@ -368,7 +368,7 @@ void Map::clear()
 	wSector=hSector=0;
 	sizeSector=0;
 	
-	for (int t=0; t<32; t++)
+	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				gradientUpdated[t][r][s]=false;
@@ -1006,6 +1006,10 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 
 	immobileUnits = new Uint8[w*h];
+	for (int i=0; i<w*h; i++) 
+	{
+		immobileUnits[i]=0;
+	}
 
 	arraysBuilt=true;
 	
@@ -1150,7 +1154,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 					ressourcesGradient[t][r][s]=new Uint8[size];
 					updateRessourcesGradient(t, r, (bool)s);
 				}
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<1; s++)
 					gradientUpdated[t][r][s]=false;
@@ -1311,7 +1315,7 @@ void Map::addTeam(void)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				assert(ressourcesGradient[t][r][s]);
-	for (int t=oldNumberOfTeam; t<32; t++)
+	for (int t=oldNumberOfTeam; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				assert(ressourcesGradient[t][r][s]==NULL);
@@ -1351,13 +1355,13 @@ void Map::removeTeam(void)
 {
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 //	int oldNumberOfTeam=numberOfTeam+1;
-	assert(numberOfTeam<32);
+	assert(numberOfTeam<Team::MAX_COUNT);
 	
 //	for (int t=0; t<oldNumberOfTeam; t++)
 //		for (int r=0; r<MAX_RESSOURCES; r++)
 //			for (int s=0; s<2; s++)
 //				assert(ressourcesGradient[t][r][s]);
-//	for (int t=oldNumberOfTeam; t<32; t++)
+//	for (int t=oldNumberOfTeam; t<Team::MAX_COUNT; t++)
 //		for (int r=0; r<MAX_RESSOURCES; r++)
 //			for (int s=0; s<2; s++)
 //				assert(ressourcesGradient[t][r][s]==NULL);
