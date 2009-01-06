@@ -2087,8 +2087,8 @@ void Unit::handleAction(void)
 			// NOTE : this is a hack : We don't delete the unit on the map
 			// because we have to draw it while it is entering.
 			// owner->map->setUnit(posX, posY, NOUID);
-			posX+=dx;
-			posY+=dy;
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
 			directionFromDxDy();
 			selectPreferedMovement();
 			speed=performance[action];

@@ -352,11 +352,14 @@ int Engine::run(void)
 						net->clearTopOrders();
 					}
 				}
+				/*
+				//The network latency bump-up has been disabled for beta 4 release
 				else if(!sendBumpUp)
 				{
 					sendBumpUp=true;
 					net->increaseLatencyAdjustment();
 				}
+				*/
 
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
