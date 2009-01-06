@@ -113,7 +113,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	percentDownloaded=new Text(20, 430, ALIGN_RIGHT, ALIGN_TOP, "menu", "");
+	percentDownloaded=new Text(20, 425, ALIGN_RIGHT, ALIGN_TOP, "menu", "");
 	addWidget(percentDownloaded);
 
 	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard");
