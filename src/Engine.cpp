@@ -231,27 +231,17 @@ bool Engine::haveMap(const MapHeader& mapHeader)
 int Engine::run(void)
 {
 	bool doRunOnceAgain=true;
-	
-	// Stop menu music, load game music
 	if (globalContainer->runNoX)
+	{
 		assert(globalContainer->mix==NULL);
-	else
-	{
-		globalContainer->mix->setNextTrack(2, true);
-	}
-	if (globalContainer->runNoX)
-	{
 		printf("nox::game started\n");
 		automaticGameStartTick = SDL_GetTicks();
 	}
-	
-	if(!globalContainer->runNoX)
+	else
 	{
+		// Stop menu music, load game music
+		globalContainer->mix->setNextTrack(2, true);
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
-	}
-	
-	if(!globalContainer->runNoX)
-	{
 		SDL_EnableKeyRepeat(0,0);
 	}
 	
@@ -503,7 +493,6 @@ int Engine::run(void)
 	
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
 	{
-
 		if(!globalContainer->runNoX)
 			globalContainer->gfx->cursorManager.setDefaultColor();
 		return -1;
@@ -525,8 +514,6 @@ int Engine::run(void)
 		return (result == -1) ? -1 : EE_NO_ERROR;
 	}
 }
-
-
 
 MapHeader Engine::loadMapHeader(const std::string &filename)
 {
