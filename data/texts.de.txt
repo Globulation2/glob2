@@ -4,6 +4,8 @@
 %0 Level %1
 [%0 units can't access building]
 %0 Einheiten können das Gebäude nicht betreten
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 Einheiten können die Früchte nicht erreichen
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 Einheiten nicht verfügbar
 [%0 units too far from building]
 %0 Einheiten zu weit  vom Gebäude entfernt
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 Einheiten zu weit von den Früchten entfernt
 [%0 units too far from resource]
@@ -142,8 +146,10 @@ Gebäudestandards
 Gebäude
 [building site]
 Baustelle
-[Building Tool Line Explanation]
+[Building Tool Box Explanation]
 
+[Building Tool Line Explanation]
+Strg+Ziehen=Linie
 [Buildings]
 Gebäude
 [Bullets]
@@ -207,7 +213,7 @@ Befestigte Inseln
 [connect]
 Verbinden
 [connecting to game]
-
+Verbinde zu Spiel
 [connecting to]
 Verbinden mit
 [Construction Site Defaults]
@@ -576,12 +582,16 @@ Nein
 Zu wenige Bewertungen
 [not ready]
 nicht bereit
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 %0 Spieler (%1 KI)
 [number of teams: %0]
 %0 Mannschaften
 [number of teams]
 Mannschaften
+[Number Of Units]
+
 [numlock]
 Numlock
 [objectives]
@@ -613,7 +623,7 @@ Beim Loslassen
 [open]
 offen
 [OpenGL]
-
+OpenGL
 [Options]
 Einstellungen
 [options]
@@ -644,6 +654,8 @@ Bitte warten
 Kraft
 [press space]
 Leertaste drücken, um fortzufahren.
+[Prestige Score]
+
 [Prestige Win Enabled]
 Sieg durch Prestige aktivieren
 [Prestige]
@@ -680,6 +692,8 @@ Bereit?
 Kartenliste aktualisieren
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
+[Register]
+Register
 [remember unit]
 Arbeiterzahlen merken
 [Remember YOG password localy]
@@ -696,6 +710,8 @@ Reparieren / Abbrechen
 Reparieren
 [repeat area]
 mal die selbe Landschaft
+[Repeat your password :]
+Wiederhole Dein Passwort
 [restore default shortcuts]
 Standardtastenkürzel wiederherstellen
 [return to editor]
@@ -984,6 +1000,8 @@ Das Schwimmbecken wird angegriffen
 ?? Kriegsflagge fertig ??
 [the warflag is under attack]
 ?? Kriegsflagge wird angegriffen ??
+[time]
+
 [to:]
 auf:
 [toggle draw accessibility aids]
@@ -996,6 +1014,12 @@ Wege zeigen an/aus
 Schalte Menü an/aus
 [toggle recording voice]
 Mikrofon ein-/ausschalten
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Höchstmögliches Prestige erreicht
 [Total]
@@ -1126,6 +1150,8 @@ Der YOG-Metaserver hat die Verbindung verweigert, da der Benutzername gesperrt w
 Der YOG-Metaserver hat die Verbindung verweigert weil der Benutzername ungültig ist.
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
+[YESTS_PASSWORDS_DONT_MATCH]
+Die eingegebenen Passwörter stimmen nicht überein.
 [YESTS_UNABLE_TO_CONNECT]
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 [yog block command help]

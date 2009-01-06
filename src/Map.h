@@ -162,7 +162,7 @@ public:
 	}
 
 	//! Make the building at (x, y) visible for all teams in sharedVision (mask).
-	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[32])
+	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
 	{
 		Uint16 bgid = (cases+((y&hMask)<<wDec)+(x&wMask))->building;
 		if (bgid != NOGBID)
@@ -170,15 +170,15 @@ public:
 			int id = Building::GIDtoID(bgid);
 			int team = Building::GIDtoTeam(bgid);
 			assert(id>=0);
-			assert(id<1024);
+			assert(id<Building::MAX_COUNT);
 			assert(team>=0);
-			assert(team<32);
+			assert(team<Team::MAX_COUNT);
 			teams[team]->myBuildings[id]->seenByMask|=sharedVision;
 		}
 	}
 
 	//! Make the building at rect (x, y, w, h) visible for all teams in sharedVision (mask).
-	void setMapBuildingsDiscovered(int x, int y, int w, int h, Uint32 sharedVision, Team *teams[32])
+	void setMapBuildingsDiscovered(int x, int y, int w, int h, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
 	{
 		for (int dx=x; dx<x+w; dx++)
 			for (int dy=y; dy<y+h; dy++)
@@ -215,6 +215,17 @@ public:
 		return ((mapDiscovered[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
 	}
 	
+	//! Returs true if map is discovered at position (x1..x2,y1..y2) for a given vision mask.
+	//! This mask represents which team's part of map we are allowed to see.
+	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask)
+	{
+		assert(x1<x2 && y1<y2);
+		for(int x=x1;x<=x2;x++)
+			for(int y=y1;y<=y2;y++)
+				if(isMapDiscovered(x,y,visionMask))
+					return true;
+		return false;
+	}
 	//! Sets all map for all teams to discovered state
 	void setMapDiscovered(void)
 	{
@@ -759,32 +770,31 @@ public:
 	
 public:
 	// Used to go to ressources
-	//TODO: make the 32 into a variable TEAM_COUNT to save memory in almost all cases
 	//[int team][int ressourceNumber][bool unitCanSwim]
 	//255=ressource, 0=obstacle, the higher it is, the closer it is to the ressouce.
-	Uint8 *ressourcesGradient[32][MAX_NB_RESSOURCES][2];
+	Uint8 *ressourcesGradient[Team::MAX_COUNT][MAX_NB_RESSOURCES][2];
 	
 	// Used to go out of forbidden areas
 	//[int team][bool unitCanSwim]
-	Uint8 *forbiddenGradient[32][2];
+	Uint8 *forbiddenGradient[Team::MAX_COUNT][2];
 	
 	// Used to attract idle warriors into guard areas
 	//[int team][bool unitCanSwim]
-	Uint8 *guardAreasGradient[32][2];
+	Uint8 *guardAreasGradient[Team::MAX_COUNT][2];
 	
 	// Used to attract idle workers into clearing
 	// areas that aren't clear
-	Uint8 *clearAreasGradient[32][2];
+	Uint8 *clearAreasGradient[Team::MAX_COUNT][2];
 	
 	// Used to guide explorers
 	//[int team]
 	// 0=unexplored, 255=just explored
-	Uint8 *exploredArea[32];
+	Uint8 *exploredArea[Team::MAX_COUNT];
 	
 	/// This shows how many "claims" there are on a particular ressource square
 	/// This is so that not all 150 free units go after one piece of wood
 	/// Each square is the gid of the claiming unit
-	Uint16 *clearingAreaClaims[32];
+	Uint16 *clearingAreaClaims[Team::MAX_COUNT];
 	
 	/// These are integers that tell whether an immobile unit is standing on the
 	/// square, and if so, what team number it is. In terms of the engine, these
@@ -793,11 +803,11 @@ public:
 	
 protected:
 	//Used for scheduling computation time.
-	bool gradientUpdated[32][MAX_NB_RESSOURCES][2];
+	bool gradientUpdated[Team::MAX_COUNT][MAX_NB_RESSOURCES][2];
 	//Used for scheduling computation time on the guard area gradients
-	bool guardGradientUpdated[32][2];
+	bool guardGradientUpdated[Team::MAX_COUNT][2];
 	//Used for scheduling computation time on the clear area gradients
-	bool clearGradientUpdated[32][2];
+	bool clearGradientUpdated[Team::MAX_COUNT][2];
 	
 	Uint8 *undermap;
 	Uint8 **listedAddr;

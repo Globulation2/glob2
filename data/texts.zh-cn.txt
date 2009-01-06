@@ -1,0 +1,1182 @@
+[%0 has left the game]
+%0 离开了游戏
+[%0 level %1]
+%0 级别为 %1
+[%0 units can't access building]
+%0 单位无法进入建筑物
+[%0 units can't access flag]
+
+[%0 units can't access fruit]
+%0 单位无法得到水果
+[%0 units can't access resource]
+%0 单位无法得到资源
+[%0 units not available]
+%0 单位没空
+[%0 units too far from building]
+%0 单位远离建筑
+[%0 units too far from flag]
+
+[%0 units too far from fruit]
+%0 单位远离水果
+[%0 units too far from resource]
+%0单位距离资源太远
+[%0 units too low level]
+%0 单位等级太低
+[%0% Uploaded]
+%0 上传
+[%0's game]
+%0 的游戏
+[%0's team unit got converted to your team]
+%0 的单位入你麾下
+[abreaviation explanation A]
+A: 盟友
+[abreaviation explanation C]
+C: 传送讯息至
+[abreaviation explanation fV]
+fV: 显示食堂 (以招降敌人单位)
+[abreaviation explanation mV]
+mV: 显示市场 (以交换水果)
+[abreaviation explanation V]
+V: 显示所有建筑物
+[add map]
+新增地图
+[add shortcut]
+添加快捷键
+[Add]
+添加
+[AI Descriptions]
+AI 说明
+[AI]
+AI
+[ai]
+ai
+[AICastor-Description]
+AICastor-描述
+[AICastor]
+AICastor
+[AINicowar-Description]
+AINicowar-描述
+[AINicowar]
+AINicowar
+[AINone-Description]
+AINone-描述
+[AINone]
+AINone
+[AINumbi-Description]
+AINumbi-描述
+[AINumbi]
+AINumbi
+[AIReachToInfinity-Description]
+AIReachToInfinity-描述
+[AIReachToInfinity]
+AIReachToInfinity
+[AIToubib-Description]
+AIToubib-描述
+[AIToubib]
+AIToubib
+[AIWarrush-Description]
+AIWarrush-描述
+[AIWarrush]
+AIWarrush
+[Alga]
+海藻
+[algae]
+海藻
+[alliances]
+联盟
+[alt %0]
+Alt %0
+[and]
+而且
+[any explorer]
+任何探索者
+[are dying hungry]
+饥肠辘辘
+[are hungry]
+挨饿
+[are ok]
+正常
+[are wonded]
+受伤
+[armor]
+护甲
+[assigned]
+已分配工作
+[At. speed]
+攻击速度
+[At. strength]
+攻击强度
+[Attack]
+攻击
+[audio]
+音效
+[auto save]
+自动储存
+[available lan games]
+可用的局域网游戏
+[awaiting players]
+正等待的玩家
+[away:]
+离开:
+[Back]
+后退
+[backspace]
+后退
+[barracks explanation 2]
+兵营 lv2
+[barracks explanation]
+兵营 lv1
+[barracks]
+兵营 lv0
+[beach size]
+海滩大小
+[Blocked Players]
+被屏蔽的玩家
+[break]
+破坏
+[briefing]
+简报
+[build %0 level %1]
+建造 %0 级别 %1
+[Build]
+建造
+[Building Defaults]
+建造默认值
+[building settings]
+单位设定
+[building site]
+建筑地点
+[Building Tool Box Explanation]
+建造工具箱扩展
+[Building Tool Line Explanation]
+建造工具线扩展
+[Buildings]
+建筑物
+[Bullets]
+弹药
+[campaign editor]
+战役编辑器
+[campaign]
+战役
+[Can't connect, can't find host]
+不能连接，找不到主机
+[Can't host game, port %0 in use]
+无法建立游戏，端口 %0 正在使用
+[Can't join game, game doesn't exist]
+无法加入游戏，不存在
+[Can't join game, game has started]
+无法加入游戏，已开始
+[Can't join game, game is full]
+无法加入游戏，已满
+[cancel destroy]
+取消自毁
+[cancel repair]
+取消修复
+[cancel upgrade]
+取消升级
+[Cancel]
+取消
+[caps lock]
+caps lock
+[carry]
+搬运:
+[Change Area Name]
+更改区域名称
+[Cherry]
+樱桃
+[choose campaign]
+选择一个战役
+[choose game]
+选择一个游戏
+[choose map]
+选择一个地图
+[clear area]
+清除区域
+[Clearing:]
+清除中:
+[clearingflag explanation 2]
+清除令旗 lv2
+[clearingflag explanation]
+清除令旗 lv1
+[clearingflag]
+清除令旗 lv0
+[closed]
+已关闭
+[compile]
+编译
+[compose]
+编写
+[Computing Fertility]
+计算力剩余
+[concrete islands terrain]
+接合岛屿地形
+[connect]
+连线
+[connecting to game]
+连线到游戏
+[connecting to]
+连线至
+[Construction Site Defaults]
+默认建造场所
+[Continue playing]
+继续游戏
+[control %0]
+控制 %0
+[Corn]
+小麦
+[crater density]
+破碎程度
+[crater lakes terrain]
+破碎湖泊
+[create game]
+创造游戏
+[create map]
+创造地图
+[credits]
+贡献者
+[ctrl - line]
+ctrl - line
+[current speed]
+目前速度
+[custom game]
+自定义游戏
+[customcur]
+自定义光标
+[damage]
+伤害
+[Damaged Map]
+伤患地图
+[decrease units working]
+减少工作单位
+[Defeat Your Oppenents]
+消灭对手
+[defencetower explanation 2]
+单位或建筑物
+[defencetower explanation]
+攻击附近敌人
+[defencetower]
+防御塔
+[Defense Map]
+防御地图
+[Defense]
+防御
+[Delete game]
+删除游戏
+[delete]
+删除
+[desert]
+沙漠
+[destroy building]
+建筑物自毁
+[destroy]
+自毁
+[display]
+显示
+[do nothing]
+什么都不做
+[don't carry anything]
+不搬运任何东西
+[down]
+下
+[Download Map]
+下载地图
+[Download Maps]
+下载地图
+[downloaded %0]
+下载 %0
+[downloading map]
+下载中
+[edit map]
+编辑地图
+[editing map]
+编辑地图
+[editor shortcuts]
+编辑器快捷键
+[editor]
+编辑器
+[end]
+结束
+[Enter your nickname :]
+输入你的昵称:
+[Enter your password :]
+输入你的密码:
+[enter]
+输入
+[equals]
+相当于
+[escape]
+ESC 退出
+[explorationflag explanation 2]
+探索令旗 lv2
+[explorationflag explanation]
+探索令旗 lv1
+[explorationflag]
+探索令旗 lv0
+[Explorer Ratio]
+探索者比例
+[Explorer]
+探索者
+[explorers]
+探索者
+[extra islands]
+空闲岛屿
+[f10]
+f10
+[f11]
+f11
+[f12]
+f12
+[f13]
+f13
+[f14]
+f14
+[f15]
+f15
+[f1]
+f1
+[f2]
+f2
+[f3]
+f3
+[f4]
+f4
+[f5]
+f5
+[f6]
+f6
+[f7]
+f7
+[f8]
+f8
+[f9]
+f9
+[Fertility Map]
+富裕地图
+[Flag Defaults]
+默认令旗
+[flag settings explanation]
+令旗设置说明
+[food]
+食物
+[forbidden area]
+禁区
+[Free]
+自由
+[free]
+自由
+[free]
+自由
+[from:]
+来自:
+[fruit]
+水果
+[fullscreen]
+全屏幕
+[game full]
+游戏已满
+[game shortcuts]
+游戏快捷键
+[Game]
+游戏
+[general settings]
+基本设定
+[go to event]
+事件
+[go to home]
+home
+[goto main menu]
+回到主选单
+[grass]
+草原
+[ground attack]
+地面攻击
+[guard area]
+守卫区
+[GUIMapPreview text 0]
+请选择
+[GUIMapPreview text 1]
+一个地图
+[handmade map]
+手工地图
+[Happyness]
+幸福
+[hard pause]
+困难暂停
+[Harvest]
+采收
+[high priority]
+高优先级
+[hints]
+暗示
+[home]
+家
+[hospital explanation 2]
+医院 lv2
+[hospital explanation]
+医院 lv1
+[hospital]
+医院 lv0
+[host]
+建立游戏
+[hp]
+HP
+[hp]
+生命值
+[Human]
+人类玩家
+[human]
+人类玩家
+[hungry]
+挨饿
+[hungryness]
+饥饿度
+[In way]
+在路上
+[increase units working]
+增加工人
+[inn explanation 2]
+食堂 lv2
+[inn explanation]
+食堂 lv1
+[inn]
+食堂 lv0
+[insert]
+插入
+[inside]
+内部
+[islands size]
+岛屿大小
+[islands terrain]
+岛屿
+[isles terrain]
+岛屿地形
+[iterate selection]
+重复选择
+[jobs]
+工作
+[join a game]
+加入一局游戏
+[join]
+加入
+[keyboard settings]
+键盘设定
+[kick]
+踢出
+[lan]
+LAN 游戏
+[language incomplete]
+繁体中文 - Incomplete
+[language-code]
+zh-tw
+[language-tr]
+语言
+[language]
+繁体中文
+[Leave Game]
+离开游戏
+[left meta]
+
+[left super]
+
+[left]
+
+[level]
+等级
+[levels]
+等级
+[load campaign]
+载入战役
+[load game]
+载入游戏
+[load map]
+载入游戏
+[load script]
+载入脚本
+[load]
+载入
+[loading map list]
+读取地图列表
+[Lobby]
+大厅
+[login]
+登入
+[Lost : %0 has more prestige than you]
+败: %0 的声望比你还高
+[Lost : your colony is dead]
+败: 你的殖民地已被摧毁
+[low priority]
+低优先级
+[lowquality]
+低画质
+[Magic At. Air]
+飞行魔法攻击
+[Magic At. Ground]
+地面魔法攻击
+[map description]
+地图描述
+[Map Discovered]
+发现地图
+[Map download failure: lost connection]
+地图下载错误：失去连接
+[Map name: %0]
+地图名称: %0。
+[map name]
+名称
+[map rated]
+地图评价
+[map script]
+地图脚本
+[map size x]
+地图宽度
+[map size y]
+地图高度
+[Map upload failure: connection lost]
+地图上传失败：失去连接
+[Map upload failure: map name in use]
+地图上传失败：名称已经使用
+[Map upload failure: unknown reason]
+地图上传失败：未知原因
+[Map Upload: Author Name]
+地图上传：作者名
+[Map Upload: Waiting for reply]
+地图上传：等待回应
+[mark map]
+为盟友标示地图
+[market explanation 2]
+和他人交易水果
+[market explanation]
+允许交易的资源
+[market]
+市场
+[medium priority]
+中等优先级
+[meta %0]
+meta %0
+[Min required level:]
+最小等级需求:
+[Minimum Level To Flag]
+令旗最小等级(lv)
+[Music volume]
+音量 (音乐)
+[Mute]
+静音
+[mute]
+静音
+[new campaign]
+新战役
+[new map]
+地图
+[nick taken]
+我们非常抱歉但是你的选的名字已经在freenode上被用过，你将只能透过 YOG 交谈
+[No Hints]
+没有提示
+[no key]
+没有重要事件
+[No Objectives]
+没有游戏目标
+[no ressources growth areas]
+非能源成长地带
+[No]
+否
+[Not Enough Ratings]
+评分不够
+[not ready]
+还没准备好
+[Number Of Buildings]
+建筑物数量
+[number of players: %0 (%1 AI)]
+%0 玩家在线 (%1 AI)
+[number of teams: %0]
+%0 队伍
+[number of teams]
+队伍数量
+[Number Of Units]
+单位数量
+[numlock]
+numlock
+[objectives]
+目标
+[of which]
+是
+[ok]
+确定
+[old islands terrain]
+古代岛屿地形
+[old random terrain]
+古代随机地形
+[on press]
+高压
+[On the spot]
+On the spot 焦点
+[on unpress]
+on unpress 松弛
+[open chat box]
+打开聊天框
+[open load menu]
+开启载入选单
+[open save menu]
+开启储存选单
+[open scenario editor]
+开启语法编辑器
+[open teams editor]
+打开队伍编辑器
+[open]
+开启
+[OpenGL]
+OpenGL
+[Options]
+选项
+[options]
+选项
+[Orange]
+橙
+[Other Options]
+其他选项
+[page down]
+向下翻页
+[page up]
+向上翻页
+[Papyrus]
+草纸
+[pause game]
+暂停游戏
+[pause]
+暂停
+[Paused]
+暂停
+[player name]
+玩家名称
+[player rating %0]
+玩家评价 %0
+[please wait]
+请稍等
+[power]
+能量
+[press space]
+按下空白键以继续
+[Prestige Score]
+声望值
+[Prestige Win Enabled]
+开启声望获胜
+[Prestige]
+声望
+[Primary Objectives]
+首要目标
+[print screen]
+截屏
+[priority]
+优先
+[Prune]
+梅干
+[quit the editor]
+离开编辑器
+[quit the game]
+离开游戏
+[quit]
+离开
+[racetrack explanation 2]
+你的单位的速度
+[racetrack explanation]
+增加行走速度
+[racetrack]
+跑道
+[range]
+射程
+[Rated %0]
+评为 %0
+[ratios]
+比例
+[ready?]
+准备好了？
+[refresh map list]
+刷新地图列表
+[Register]
+注册
+[remember unit]
+记录单位
+[Remember YOG password localy]
+记住密码
+[remove map]
+移除地图
+[remove shortcut]
+移除快捷键
+[Remove]
+移除
+[repair building]
+开始/停止 修复
+[repair]
+修复
+[repeat area]
+在相同地景的时间
+[Repeat your password :]
+重复你的密码：
+[restore default shortcuts]
+还原预设键盘快捷键
+[return to editor]
+返回编辑器
+[return to game]
+返回游戏
+[return]
+返回
+[right meta]
+
+[right super]
+
+[right]
+
+[river diameter]
+河流宽度
+[river terrain]
+河流
+[sand]
+沙砾
+[save before quit?]
+你在离开前要先储存吗?
+[save game]
+储存游戏
+[save map]
+储存地图
+[save script]
+保存脚本
+[Save]
+储存
+[school explanation 2]
+你的工人的等级
+[school explanation]
+升级建筑物
+[school]
+学校
+[Script Areas]
+语法区域
+[scroll lock]
+滚动锁定
+[scroll wheel enabled]
+滚轮开启
+[Secondary Objectives]
+次要目标
+[seeking a job]
+正在找寻工作
+[seeking]
+等待
+[select barracks building]
+选择兵营
+[select clearingflag]
+选择清除令旗
+[select construct barracks]
+选择修建兵营
+[select construct defencetower]
+选择修建防御塔
+[select construct hospital]
+选择修建医院
+[select construct inn]
+选择修建食堂
+[select construct market]
+选择修建市场
+[select construct racetrack]
+选择修建跑道
+[select construct school]
+选择修建学校
+[select construct stonewall]
+选择修建石墙
+[select construct swarm]
+选择修建孢子堆
+[select construct swimmingpool]
+选择修建游泳池
+[select delete tool]
+选取删除工具
+[select explorationflag]
+选择探索令旗
+[select hospital building]
+选择医院
+[select inn building]
+选择食堂
+[select market building]
+选择市场
+[select place clearing area]
+选择需要清除的区域
+[select place clearingflag]
+选择地方放置清除令旗
+[select place explorationflag]
+选择地方放置探索令旗
+[select place forbidden area]
+选择地方放置禁止令旗
+[select place guard area]
+选择地方放置守卫令旗
+[select place warflag]
+选择地方放置战争令旗
+[select racetrack building]
+选择跑道
+[select school building]
+选择学校
+[select swarm building]
+选择孢子堆
+[select swimmingpool building]
+选择游泳池
+[select tower building]
+选择塔
+[select wall building]
+选择墙
+[select warflag]
+选择战争令旗
+[settings]
+设定
+[shift %0]
+变化 %0
+[shortcut explanation enter]
+Enter: 传送讯息
+[shortcut explanation v]
+V: 持键以传送讯息
+[show main menu]
+显示主菜单
+[skin]
+显示
+[smoothing]
+平整
+[sort by name]
+按名称分类
+[sort by rating]
+按评价分类
+[sort by size]
+按大小分类
+[Sort By]
+按分类凭据...
+[space]
+空白区域
+[start mission]
+开始任务
+[start new campaign]
+开始新战役
+[Start]
+开始
+[Starving Map]
+饥饿地图
+[starving]
+饥饿
+[Statistics]
+统计
+[Still (i)]
+仍在
+[still (w)]
+仍在
+[still one unit working]
+仍有一个单位正在工作
+[Still one]
+剩下一个
+[Stone]
+石头
+[stone]
+石头
+[stonewall explanation 2]
+石墙 lv2
+[stonewall explanation]
+石墙 lv1
+[stonewall]
+石墙 lv0
+[submit rating]
+上传评价
+[svr hostname]
+伺服器主机名称
+[swamp terrain]
+沼泽
+[swarm explanation 2]
+孢子堆 lv2
+[swarm explanation]
+孢子堆 lv1
+[swarm]
+孢子堆 lv0
+[Swim]
+游泳
+[swimmingpool explanation 2]
+你的单位的速度
+[swimmingpool explanation]
+增加游泳速度
+[swimmingpool]
+游泳池
+[switch to adding areas]
+切换至添加工具
+[switch to area brush 1]
+切换至刷子1
+[switch to area brush 2]
+切换至刷子2
+[switch to area brush 3]
+切换至刷子3
+[switch to area brush 4]
+切换至刷子4
+[switch to area brush 5]
+切换至刷子5
+[switch to area brush 6]
+切换至刷子6
+[switch to area brush 7]
+切换至刷子7
+[switch to area brush 8]
+切换至刷子8
+[switch to building view]
+切换至建筑物视野
+[switch to flag view]
+切换至令旗视野
+[switch to removing areas]
+切换至移除工具
+[switch to teams view]
+切换至团队视野
+[switch to terrain view]
+切换至地形视野
+[sys req]
+系统要求
+[tab]
+tab
+[teams editor]
+团队编辑器
+[Teams Fixed]
+团队修复了
+[teams]
+团队
+[the barracks is finished]
+训练营已完成
+[the barracks is under attack]
+训练营正遭受攻击
+[the building is finished]
+建筑物已完成
+[the building is under attack]
+建筑物正遭受攻击
+[the clearingflag is finished]
+清除令旗已完成
+[the clearingflag is under attack]
+清除令旗正遭受攻击
+[the defencetower is finished]
+防御塔已完成
+[the defencetower is under attack]
+你的防御正遭受攻击
+[the explorationflag is finished]
+探索令旗已完成
+[the explorationflag is under attack]
+探索令旗正遭受攻击
+[The game has not been finished]
+游戏尚未结束
+[the games]
+游戏
+[the hospital is finished]
+医院已完成
+[the hospital is under attack]
+医院正遭受攻击
+[The host has cancelled the game]
+主机取消了游戏
+[the inn is finished]
+食堂已完成
+[the inn is under attack]
+食堂正遭受攻击
+[the maps]
+地图
+[the market is finished]
+市场已完成
+[the market is under attack]
+市场正遭受攻击
+[The player %0 has joined YOG]
+%0 已加入 YOG。
+[The player %0 has left YOG]
+%0 已离开 YOG。
+[the racetrack is finished]
+跑道已完成
+[the racetrack is under attack]
+跑道正遭受攻击
+[the school is finished]
+学校已完成
+[the school is under attack]
+学校正遭受攻击
+[the stonewall is finished]
+一段石墙已完成
+[the stonewall is under attack]
+敌人已在墙下
+[the swarm is finished]
+孢子堆已完成
+[the swarm is under attack]
+孢子堆正遭受攻击
+[the swimmingpool is finished]
+游泳池已完成
+[the swimmingpool is under attack]
+游泳池正遭受攻击
+[the warflag is finished]
+令旗已完成
+[the warflag is under attack]
+令旗正遭受攻击
+[time]
+时间
+[to:]
+前往:
+[toggle draw accessibility aids]
+显至最近支援
+[toggle draw information]
+显示资讯
+[toggle draw unit paths]
+显示单位动向
+[toggle menu screen]
+切换到菜单
+[toggle recording voice]
+开始录音
+[Total Attack Power]
+总体进攻力量
+[Total Defence Power]
+总体防御力量
+[Total Hitpoints]
+总体生命值
+[Total prestige reached]
+声望总计达到
+[Total]
+总共
+[tutorial text 1]
+
+[tutorial text 2]
+
+[tutorial text 3]
+
+[tutorial text 4]
+
+[tutorial]
+教学指导
+[Uncontrolled]
+未被控制的
+[undo]
+恢复步骤
+[uniform terrain]
+标准地形
+[Unit editor]
+单位编辑器
+[unit settings explanation]
+单位扩展设定
+[units working]
+单位工作
+[Units]
+单位
+[unlocked at start]
+开始时即解除
+[unlocked by]
+解除
+[Unnamed Area]
+{未命名区域}
+[up]
+上
+[upgrade building]
+开始/停止 建造
+[Upgrade Defaults]
+默认升级
+[upgrade]
+升级
+[Upload Map]
+上传地图
+[upload map]
+上传地图
+[username]
+用户名
+[Version]
+版本
+[view history]
+查看历史
+[Voice volume]
+语音音量
+[waiting for %0]
+等待 %0
+[waiting for key]
+等待键入
+[Waiting]
+等待
+[Walk]
+行走
+[warflag explanation 2]
+战争令旗 lv2
+[warflag explanation]
+战争令旗 lv1
+[warflag]
+战争令旗 lv0
+[Warning, you need to reboot the game for changes to take effect]
+注意，你需要重新启动游戏以便更改
+[Warrior Ratio]
+士兵比例
+[Warrior]
+士兵
+[warriors]
+士兵
+[water]
+水
+[Wheat]
+粮
+[Won : you defeated your opponents]
+胜: 你打败了对手
+[Won : you have the most prestige]
+胜: 你的声望最高
+[Won : your ally %0 has the most prestige]
+赢: 你的队伍 %0 得到了最多的声望
+[Wood]
+木材
+[wood]
+木材
+[Worker Ratio]
+工人比例
+[Worker]
+工人
+[workers]
+工人
+[workers]
+工人
+[working]
+工作中
+[wounded]
+受伤
+[Yes]
+是
+[YESTS_CONNECTING]
+确定连接至YOG meta伺服器中 ...
+[YESTS_CONNECTION_LOST]
+至YOG的连线已消失。
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG meta伺服器拒绝连线因为你的用户名已被使用。请重新选择"注册一个新 YOG 帐号和密码"以登入，你只需要注册一次。
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+YOG meta伺服器拒绝连线因为你的密码错误。
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+YOG meta伺服器拒绝连线因为你没有密码。请选择"注册一个新 YOG 帐号和密码"以登入，你只需要注册一次。
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+YOG meta伺服器拒绝连线因为你被暂时屏蔽。
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG meta伺服器拒绝连线因为你的globulation2版本已过时。
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+YOG meta伺服器拒绝连线而没有任何解释!!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG meta伺服器拒绝连线因为你的用户名已被使用。
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+YOG meta伺服器拒绝连线因为你的用户名已被屏蔽。
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+YOG meta伺服器拒绝连线因为你的用户名有特殊字符。
+[YESTS_CREATED]
+连线系统已准备连接YOG meta伺服器。
+[YESTS_PASSWORDS_DONT_MATCH]
+密码不吻合
+[YESTS_UNABLE_TO_CONNECT]
+无法连接。 YOG meta伺服器已关闭。
+[yog block command help]
+yog 屏蔽命令帮助
+[yog block command player %0 already blocked]
+yog  %0 已经屏蔽
+[yog block command player %0 blocked]
+yog 屏蔽 %0
+[yog block command player %0 not found]
+yog 未发现要屏蔽的 %0
+[yog command header]
+yog 命令头
+[yog command unknown]
+yog 命令未知
+[yog help command help]
+yog 帮助命令求助
+[yog]
+Ysagoon 线上游戏
+[you have lost]
+你输了!!
+[you have won]
+你赢了!!
+[You where kicked from the game]
+你被踢出来了
+[Your %0 are under attack]
+你的 %0 正遭受攻击
+[Your IP address was temporarily banned]
+你的IP地址暂时被屏蔽
+[Your unit got converted to %0's team]
+你的单位被 %0  转化为敌人
+[Your username was banned]
+你的用户名被禁用

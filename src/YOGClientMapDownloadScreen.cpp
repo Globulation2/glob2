@@ -275,8 +275,6 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 	}
 }
 
-
-
 void YOGClientMapDownloadScreen::updateVisibility()
 {
 	if(client->getDownloadableMapList()->waitingForListFromServer())
