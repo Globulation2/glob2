@@ -1668,8 +1668,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
 	imgid=unit->skin->startImage[unit->action];
-	int px=(x<<5), py=(y<<5);
-	//map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+	int px, py;
+	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
