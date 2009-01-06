@@ -74,6 +74,7 @@ private:
 	Settings old_settings;
 	List *languageList;
 	List *modeList;
+	Text *modeListNote;
 	TextInput *userName;
 	
 	TextButton *ok, *cancel;
@@ -122,7 +123,8 @@ private:
 	void updateGfxCtx(void);
 	//! Return a string representing the actual display mode
 	std::string actDisplayModeToString(void);
-
+	///processes a potential change in the selected fullscreen state
+	void setFullscreen(void);
 
 	///Holds the keyboard layout for the map editor
 	KeyboardManager mapeditKeyboardManager;

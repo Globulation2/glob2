@@ -1184,3 +1184,5 @@ Your IP address was temporarily banned. Please wait patiently until it is unbann
 Your unit got converted to %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
+[no fullscreen]
+* only in windowed mode
