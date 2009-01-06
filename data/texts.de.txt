@@ -1158,3 +1158,5 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
+[no fullscreen]
+* nicht im Vollbildmodus verfügbar
