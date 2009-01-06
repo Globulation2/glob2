@@ -74,9 +74,11 @@ SettingsScreen::SettingsScreen()
 	addWidgetToGroup(display, generalGroup);
 	actDisplay = new Text(440, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", actDisplayModeToString().c_str());
 	addWidgetToGroup(actDisplay, generalGroup);
-	modeList=new List(440, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	modeList=new List(440, 90, 180, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	globalContainer->gfx->beginVideoModeListing();
 	int w, h;
+	const int standardResolutionsCount=5;
+	int standardResolutions[standardResolutionsCount][2]={{640,480},{800,600},{1024,768},{1280,1024},{1600,1200}};
 	while(globalContainer->gfx->getNextVideoMode(&w, &h))
 	{
 		std::ostringstream ost;
@@ -84,7 +86,20 @@ SettingsScreen::SettingsScreen()
 		if (!modeList->isText(ost.str().c_str()))
 			modeList->addText(ost.str().c_str());
 	}
+	for(int i=0; i<standardResolutionsCount; i++)
+	{
+		std::ostringstream ost;
+		ost << standardResolutions[i][0] << "x" << standardResolutions[i][1];
+		if (!modeList->isText(ost.str().c_str()))
+		{
+			ost << " *";
+			modeList->addText(ost.str().c_str());
+		}
+		
+	}
 	addWidgetToGroup(modeList, generalGroup);
+	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"));
+	addWidgetToGroup(modeListNote, generalGroup);
 	
 	fullscreen=new OnOffButton(230, 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::FULLSCREEN, FULLSCREEN);
 	addWidgetToGroup(fullscreen, generalGroup);
@@ -119,6 +134,7 @@ SettingsScreen::SettingsScreen()
 
 	
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
+	//TODO: warning style should be defined centrally.
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
 	addWidget(rebootWarning);
 	
@@ -333,6 +349,18 @@ void SettingsScreen::addNumbersFor(int low, int high, Number* widget)
 }
 
 
+void SettingsScreen::setFullscreen()
+{
+    if(fullscreen->getState()){
+        globalContainer->settings.screenFlags |= GraphicContext::FULLSCREEN;
+        globalContainer->settings.screenFlags &= ~(GraphicContext::RESIZABLE);
+    }else{
+        globalContainer->settings.screenFlags &= ~(GraphicContext::FULLSCREEN);
+        globalContainer->settings.screenFlags |= GraphicContext::RESIZABLE;
+    }
+    updateGfxCtx();
+}
+
 void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	TabScreen::onAction(source, action, par1, par2);
@@ -448,7 +476,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 			modifyTitle(unitGroup, Toolkit::getStringTable()->getString("[building settings]"));
 			modifyTitle(keyboardGroup, Toolkit::getStringTable()->getString("[keyboard settings]"));
 
-//;			title->setText(Toolkit::getStringTable()->getString("[settings]"));
+			modeListNote->setText(Toolkit::getStringTable()->getString("[no fullscreen]"));
 			language->setText(Toolkit::getStringTable()->getString("[language-tr]"));
 			display->setText(Toolkit::getStringTable()->getString("[display]"));
 			usernameText->setText(Toolkit::getStringTable()->getString("[username]"));
@@ -488,10 +516,22 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source==modeList)
 		{
 			int w, h;
-			sscanf(modeList->getText(par1).c_str(), "%dx%d", &w, &h);
+			char fso; //full screen only
+			sscanf(modeList->getText(par1).c_str(), "%dx%d %c", &w, &h, &fso);
 			globalContainer->settings.screenWidth=w;
 			globalContainer->settings.screenHeight=h;
-			updateGfxCtx();
+			if(fso=='*')
+			{
+				fullscreen->setState(false);
+				fullscreen->setClickable(false);
+				modeListNote->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
+			}
+			else
+			{
+				fullscreen->setClickable(true);
+				modeListNote->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 255, 255));
+			}
+		    setFullscreen();
 		}
 		else if (source == shortcut_list)
 		{
@@ -524,17 +564,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (source==fullscreen)
 		{
-			if (fullscreen->getState())
-			{
-				globalContainer->settings.screenFlags |= GraphicContext::FULLSCREEN;
-				globalContainer->settings.screenFlags &= ~(GraphicContext::RESIZABLE);
-			}
-			else
-			{
-				globalContainer->settings.screenFlags &= ~(GraphicContext::FULLSCREEN);
-				globalContainer->settings.screenFlags |= GraphicContext::RESIZABLE;
-			}
-			updateGfxCtx();
+		    setFullscreen();
 		}
 		else if (source==usegpu)
 		{

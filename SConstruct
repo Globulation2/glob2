@@ -193,8 +193,24 @@ def configure(env):
             print "NOTE: Disabling PortAudio in this build (you will be unable to use Voice Chat ingame)."
             print "--------"
         else:
-            configfile.add("HAVE_PORTAUDIO ", "Defined when Port Audio support is present and compiled")
-            env.Append(LIBS=['portaudio'])
+            if GetOption('portaudio'):
+                print "trying to use portaudio"
+                configfile.add("HAVE_PORTAUDIO ", "Defined when Port Audio support is present and compiled")
+                env.Append(LIBS=['portaudio'])
+            else:
+                print "         no portaudio"
+                print "         no portaudio"
+                print "         no portaudio - although portaudio was found to be installed, you have "
+                print "         no portaudio - to explicitly activate it using"
+                print "         no portaudio - $ scons --portaudio=true"
+                print "         no portaudio - sorry but i don't know how to check for the right"
+                print "         no portaudio - version of portaudio :/"
+                print "         no portaudio"
+                print "         no portaudio - if you know a better solution, let me know at"
+                print "         no portaudio - https://savannah.nongnu.org/bugs/index.php?24668"
+                print "         no portaudio - google was not my friend in houres."
+                print "         no portaudio"
+                print "         no portaudio"
         
     if missing:
         for t in missing:
@@ -204,6 +220,13 @@ def configure(env):
     conf.Finish()
 
 def main():
+    AddOption('--portaudio',
+              dest='portaudio',
+              type='string',
+              nargs=1,
+              action='store',
+              metavar='portaudio',
+              help='should portaudio be used')
     env = Environment()
     try:
         env.Clone()
