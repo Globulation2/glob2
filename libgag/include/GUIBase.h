@@ -235,7 +235,16 @@ namespace GAGGUI
 		virtual bool isOnWidget(int x, int y);
 		
 		//! Returns width of widget
+		Sint32 getLeft() const { return x; }
+		
+		//! Returns width of widget
+		Sint32 getTop() const { return y; }
+		
+		//! Returns width of widget
 		Sint32 getWidth() const { return w; }
+		
+		//! Returns width of widget
+		Sint32 getHeight() const { return h; }
 		
 		//! Sets the screen position
 		virtual void setScreenPosition(int nx, int ny) { x = nx; y = ny; }
