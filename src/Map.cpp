@@ -3971,7 +3971,6 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 	
 	memset(gradient, 1, 1024);
 	int range=building->unitStayRange;
-	assert(range<=15);
 	if (range>15)
 		range=15;
 	int range2=range*range;
