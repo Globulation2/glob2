@@ -284,7 +284,7 @@ public:
 
 
 	// Flag usefull :
-	Sint32 unitStayRange; // (Uint8)
+	Sint32 unitStayRange;
 	Sint32 unitStayRangeLocal;
 	bool clearingRessources[BASIC_COUNT]; // true if the ressource has to be cleared.
 	bool clearingRessourcesLocal[BASIC_COUNT];
