@@ -723,10 +723,10 @@ Building *Team::findBestUpgrade(Unit *unit)
 	Sint32 score=0x7FFFFFFF;
 	int x=unit->posX;
 	int y=unit->posY;
+	//TODO: This is bad code. If WALK ever ceases to be the first ability or ARMOR ever ceases
+	//to be the last, this code willl fail.
 	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
 	{
-		//This is bad code. If WALK ever ceases to be the first ability or ARMOR ever ceases
-		// to be the last, this code willl fail.
 		if (unit->canLearn[ability])
 		{
 			if (unit->verbose)
