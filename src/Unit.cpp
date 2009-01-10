@@ -1142,12 +1142,12 @@ void Unit::handleDisplacement(void)
 												int buildingDist;
 												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
 												{
-													int value=(buildingDist<<1)/need; // We double the cost to get a ressource in an exchange building.
+													// We increase the cost to get a ressource in an exchange building to reflect the costs to get the ressources to the exchange building.
+													int value=(buildingDist<<1)/need;
 													if (value<minValue)
 													{
 														bestRessource=r;
 														minValue=value;
-
 														ownExchangeBuilding=*bi;
 														targetBuilding=*bi;
 														takeInExchangeBuilding=true;

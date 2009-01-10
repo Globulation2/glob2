@@ -2306,6 +2306,7 @@ void Building::kill(void)
 	fprintf(logFile, " still %zd unitsInside\n", unitsInside.size());
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
+		//TODO: We should somehow try to save their lives. In training buildings they should just drop out untrained etc.
 		Unit *u=*it;
 		fprintf(logFile, "  guid=%d\n", u->gid);
 		if (u->displacement==Unit::DIS_INSIDE)
