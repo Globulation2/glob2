@@ -31,6 +31,7 @@
 #include <GUITextArea.h>
 #include <GUITextInput.h>
 #include <GUIButton.h>
+#include <GUIProgressBar.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 
@@ -113,7 +114,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	percentDownloaded=new Text(20, 430, ALIGN_RIGHT, ALIGN_TOP, "menu", "");
+	percentDownloaded=new ProgressBar(20, 430, 180, ALIGN_RIGHT, ALIGN_TOP, 100, 0, "standard", Toolkit::getStringTable()->getString("[Downloading %0 %]"));
 	addWidget(percentDownloaded);
 
 	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard");
@@ -268,10 +269,8 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	else if(type == MGEDownloadPercentUpdate)
 	{
 		shared_ptr<MGDownloadPercentUpdate> info = static_pointer_cast<MGDownloadPercentUpdate>(event);
-		if(info->getPercentFinished() != 100)
-		{
-			percentDownloaded->setText(FormatableString(Toolkit::getStringTable()->getString("[downloaded %0]")).arg((int)info->getPercentFinished()));
-		}
+		if (info->getPercentFinished() != 100)
+			percentDownloaded->setValue(info->getPercentFinished());
 		updateVisibleButtons();
 	}
 	else if(type == MGEPlayerReadyStatusChanged)

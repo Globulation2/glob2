@@ -184,6 +184,7 @@ public:
 	
 	/// This function removes the unit from the list of units harvesting from the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
+	/// It is safe to call this function even if the unit is not harvesting at the building.
 	void removeUnitFromHarvesting(Unit* unit);
 
 	/// Remove unit from inside. This function removes the unit from being inside the building. Like removeUnitFromWorking,

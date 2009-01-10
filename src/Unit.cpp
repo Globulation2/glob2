@@ -619,7 +619,7 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	
 	attachedBuilding->removeUnitFromWorking(this);
 	attachedBuilding=NULL;
-	if (targetBuilding && (targetBuilding->type->canExchange))
+	if (targetBuilding)
 		targetBuilding->removeUnitFromHarvesting(this);
 	targetBuilding=NULL;
 	ownExchangeBuilding=NULL;
@@ -775,10 +775,12 @@ void Unit::handleMedical(void)
 				attachedBuilding->removeUnitFromWorking(this);
 				attachedBuilding->removeUnitFromInside(this);
 				attachedBuilding=NULL;
-				if (targetBuilding && (targetBuilding->type->canExchange))
-					targetBuilding->removeUnitFromHarvesting(this);
-				targetBuilding=NULL;
 				ownExchangeBuilding=NULL;
+			}
+			if (targetBuilding)
+			{
+				targetBuilding->removeUnitFromHarvesting(this);
+				targetBuilding=NULL;
 			}
 			
 			activity=ACT_RANDOM;
@@ -877,6 +879,7 @@ void Unit::handleActivity(void)
 	}
 	else if (needToRecheckMedical)
 	{
+		// disconnect from building
 		if (attachedBuilding)
 		{
 			if (verbose)
@@ -884,10 +887,12 @@ void Unit::handleActivity(void)
 			attachedBuilding->removeUnitFromWorking(this);
 			attachedBuilding->removeUnitFromInside(this);
 			attachedBuilding=NULL;
-			if (targetBuilding && (targetBuilding->type->canExchange))
-				targetBuilding->removeUnitFromHarvesting(this);
-			targetBuilding=NULL;
 			ownExchangeBuilding=NULL;
+		}
+		if (targetBuilding) 
+		{
+			targetBuilding->removeUnitFromHarvesting(this);
+			targetBuilding=NULL;
 		}
 		
 		if (medical==MED_HUNGRY)
@@ -1080,6 +1085,7 @@ void Unit::handleDisplacement(void)
 						caryedRessource=destinationPurprose;
 						fprintf(logFile, "[%d] sdp6 destinationPurprose=%d\n", gid, destinationPurprose);
 						
+						targetBuilding->removeUnitFromHarvesting(this);
 						targetBuilding=attachedBuilding;
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
