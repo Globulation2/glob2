@@ -31,7 +31,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	ProgressBar::ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range, int value, const char* font)
+	ProgressBar::ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range, int value, const char* font, const char* format)
 	{
 		this->x = x;
 		this->y = y;
@@ -46,6 +46,7 @@ namespace GAGGUI
 		fontPtr = 0;
 		if (font)
 			this->font = font;
+		this->format = format;
 	}
 	
 	void ProgressBar::internalInit(void)
