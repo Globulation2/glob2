@@ -619,6 +619,8 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	
 	attachedBuilding->removeUnitFromWorking(this);
 	attachedBuilding=NULL;
+	if (targetBuilding && (targetBuilding->type->canExchange))
+		targetBuilding->removeUnitFromHarvesting(this);
 	targetBuilding=NULL;
 	ownExchangeBuilding=NULL;
 	assert(needToRecheckMedical);
@@ -723,23 +725,26 @@ void Unit::handleMagic(void)
 
 void Unit::handleMedical(void)
 {
-        /* Make sure explorers try to immediately feed after healing to increase their range. */
-        if ((typeNum == EXPLORER)
-            && (displacement == DIS_EXITING_BUILDING)) {
-          medical=MED_FREE;
-          if ((destinationPurprose == HEAL)
-              && (hungry < ((HUNGRY_MAX * 9) / 10))) {
-            // fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
-            needToRecheckMedical = 1;
-            medical = MED_HUNGRY;
-            return; }
-          else if ((destinationPurprose == FEED)
-                   && (hp < (((performance[HP]) * 9) / 10))) {
-            // fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
-            needToRecheckMedical = 1;
-            medical = MED_DAMAGED;
-            return; }}
-
+	/* Make sure explorers try to immediately feed after healing to increase their range. */
+	if ((typeNum == EXPLORER) && (displacement == DIS_EXITING_BUILDING))
+	{
+		medical=MED_FREE;
+		if ((destinationPurprose == HEAL) && (hungry < ((HUNGRY_MAX * 9) / 10)))
+		{
+			// fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
+			needToRecheckMedical = 1;
+			medical = MED_HUNGRY;
+			return;
+		}
+		else if ((destinationPurprose == FEED) && (hp < (((performance[HP]) * 9) / 10)))
+		{
+			// fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
+			needToRecheckMedical = 1;
+			medical = MED_DAMAGED;
+			return;
+		}
+	}
+	
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
 	
@@ -770,6 +775,8 @@ void Unit::handleMedical(void)
 				attachedBuilding->removeUnitFromWorking(this);
 				attachedBuilding->removeUnitFromInside(this);
 				attachedBuilding=NULL;
+				if (targetBuilding && (targetBuilding->type->canExchange))
+					targetBuilding->removeUnitFromHarvesting(this);
 				targetBuilding=NULL;
 				ownExchangeBuilding=NULL;
 			}
@@ -877,18 +884,21 @@ void Unit::handleActivity(void)
 			attachedBuilding->removeUnitFromWorking(this);
 			attachedBuilding->removeUnitFromInside(this);
 			attachedBuilding=NULL;
+			if (targetBuilding && (targetBuilding->type->canExchange))
+				targetBuilding->removeUnitFromHarvesting(this);
 			targetBuilding=NULL;
 			ownExchangeBuilding=NULL;
 		}
-
+		
 		if (medical==MED_HUNGRY)
 		{
 			Building *b;
 			b=owner->findNearestFood(this);
-                        if (typeNum == EXPLORER) {
-                          // fprintf (stderr, "gid: %d, b: %x\n", gid, b);
-                        }
-
+			if (typeNum == EXPLORER)
+			{
+				// fprintf (stderr, "gid: %d, b: %x\n", gid, b);
+			}
+			
 			if (b!=NULL)
 			{
 				Team *currentTeam=owner;
@@ -1170,6 +1180,7 @@ void Unit::handleDisplacement(void)
 									displacement=DIS_GOING_TO_BUILDING;
 									targetX=targetBuilding->getMidX();
 									targetY=targetBuilding->getMidY();
+									targetBuilding->insertUnitToHarvesting(this);
 									validTarget=true;
 								}
 								else

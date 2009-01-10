@@ -648,23 +648,6 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 					teams[team]->dirtyGlobalGradient();
 					int range=b->unitStayRange;
 					map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
-				} else if (b->type->canExchange) {
-					for(int i=0; i<32; i++)
-					{
-						Team * t=teams[i];
-						if(t)
-						{
-							for(int j=0; j<1024; j++)
-							{
-								Unit * u = t->myUnits[j];
-								if (u && (u->targetBuilding == b) && (u->attachedBuilding != b))
-								{
-									u->attachedBuilding->removeUnitFromWorking(u);
-									u->standardRandomActivity();
-								}
-							}
-						}
-					}
 				}
 			}
 		}
