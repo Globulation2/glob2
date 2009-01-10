@@ -114,7 +114,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	percentDownloaded=new ProgressBar(20, 430, 180, ALIGN_RIGHT, ALIGN_TOP, 100, 0, "standard", Toolkit::getStringTable()->getString("[Downloading %0 %]"));
+	percentDownloaded=new ProgressBar(20, 430, 180, ALIGN_RIGHT, ALIGN_TOP, 100, 0, "standard", Toolkit::getStringTable()->getString("[downloaded %0]"));
 	addWidget(percentDownloaded);
 
 	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard");

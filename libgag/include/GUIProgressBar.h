@@ -37,7 +37,7 @@ namespace GAGGUI
 		GAGCore::Font *fontPtr; //!< pointer to font, this is a cache
 		
 	public:
-		ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range = 100, int value = 0, const char* font = 0, const char* format = "%0 %");
+		ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range = 100, int value = 0, const char* font = 0, const char* format = "%0");
 		virtual ~ProgressBar() { }
 		
 		void setValue(int value) { this->value = value; }
