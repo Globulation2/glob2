@@ -885,9 +885,9 @@ void Unit::handleActivity(void)
 		{
 			Building *b;
 			b=owner->findNearestFood(this);
-                        if (typeNum == EXPLORER) {
-                          // fprintf (stderr, "gid: %d, b: %x\n", gid, b);
-                        }
+                        /*if (typeNum == EXPLORER) {
+                           fprintf (stderr, "gid: %d, b: %x\n", gid, b);
+                        }*/
 
 			if (b!=NULL)
 			{
@@ -1271,7 +1271,6 @@ void Unit::handleDisplacement(void)
 					{
 						hungry=HUNGRY_MAX;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask);
-						//printf("I'm not hungry any more :-)\n");
 						needToRecheckMedical=true;
 					}
 					else if (destinationPurprose==HEAL)
