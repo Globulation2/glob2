@@ -184,6 +184,11 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	else
 		underAttackTimer = 0;
 
+	// under attack timer
+	if(versionMinor >= 81)
+		canNotConvertUnitTimer = stream->readUint8("canNotConvertUnitTimer");
+	else
+		canNotConvertUnitTimer = 150;
 
 	// trigger parameters
 	hp = stream->readSint32("hp");
@@ -269,6 +274,8 @@ void Unit::save(GAGCore::OutputStream *stream)
 
 	// attack timer
 	stream->writeUint8(underAttackTimer, "underAttackTimer");
+
+	stream->writeUint8(canNotConvertUnitTimer, "canNotConvertUnitTimer");
 
 	// trigger parameters
 	stream->writeSint32(hp, "hp");
