@@ -612,8 +612,12 @@ Building *Team::findNearestFood(Unit *unit)
 				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
 					Sint32 dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
-					if (dist >= maxDist)
+					if (dist >= maxDist
+						|| !(*bi)->canConvertUnit()
+						)
+					{
 						continue;
+					}
 					int happyness = (*bi)->availableHappynessLevel();
 					if (happyness > bestEnemyHappyness)
 					{
@@ -643,8 +647,12 @@ Building *Team::findNearestFood(Unit *unit)
 				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
 					int dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX, unit->posY, (*bi)->posX, (*bi)->posY));
-					if (dist >= maxDist)
+					if (dist >= maxDist
+						|| !(*bi)->canConvertUnit()
+						)
+					{
 						continue;
+					}
 					if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist))
 						continue;
 					if (dist >= maxDist)

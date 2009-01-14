@@ -231,6 +231,10 @@ public:
 	/// units that are already in it.
 	int availableHappynessLevel();
 
+	/// Returns if this Building (Inn) can convert a hostile Unit. To avoid conversion
+	/// once the capacities of the own inns are hit, conversion is limited.
+	bool canConvertUnit(void);
+	
 	static Sint32 GIDtoID(Uint16 gid);
 	static Sint32 GIDtoTeam(Uint16 gid);
 	static Uint16 GIDfrom(Sint32 id, Sint32 team);
@@ -278,6 +282,7 @@ public:
 	
 	// optimisation and consistency
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
+	Uint8 canNotConvertUnitTimer; //counts down 150 frames after the building was last unable to feed a unit
 	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit}
 	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
 	/// This variable indicates whether this building is already in the team call list

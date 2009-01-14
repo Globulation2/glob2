@@ -1288,7 +1288,6 @@ void Unit::handleDisplacement(void)
 					{
 						hungry=HUNGRY_MAX;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask);
-						//printf("I'm not hungry any more :-)\n");
 						needToRecheckMedical=true;
 					}
 					else if (destinationPurprose==HEAL)
