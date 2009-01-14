@@ -47,7 +47,7 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	logFile = globalContainer->logFileManager->getFile("Building.log");
-	
+
 	// identity
 	this->gid=gid;
 	owner=team;
@@ -88,7 +88,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	posXLocal=posX;
 	posYLocal=posY;
 
-	underAttackTimer = 0;
+	underAttackTimer=0;
+	canNotConvertUnitTimer=0;
 
 	// flag usefull :
 	unitStayRange=type->defaultUnitStayRange;
@@ -211,6 +212,12 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	posY = stream->readSint32("posY");
 	posXLocal = posX;
 	posYLocal = posY;
+
+	if(versionMinor>=61)
+		underAttackTimer = stream->readUint8("underAttackTimer");
+	else
+		underAttackTimer = 0;
+
 
 	if(versionMinor>=61)
 		underAttackTimer = stream->readUint8("underAttackTimer");
