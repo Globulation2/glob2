@@ -218,11 +218,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	else
 		underAttackTimer = 0;
 
-
-	if(versionMinor>=61)
-		underAttackTimer = stream->readUint8("underAttackTimer");
+	if(versionMinor>=81)
+		canNotConvertUnitTimer = stream->readUint8("canNotConvertUnitTimer");
 	else
-		underAttackTimer = 0;
+		canNotConvertUnitTimer = 150;
 
 	// priority
 	if(versionMinor>=79)
@@ -355,6 +354,8 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(posY, "posY");
 
 	stream->writeUint8(underAttackTimer, "underAttackTimer");
+
+	stream->writeUint8(canNotConvertUnitTimer, "canNotConvertUnitTimer");
 
 	// priority
 	stream->writeSint32(priority, "priority");
