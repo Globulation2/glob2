@@ -895,6 +895,8 @@ void Building::updateCallLists(void)
 				if (canFeedUnit!=1)
 				{
 					owner->canFeedUnit.push_front(this);
+					//A Building newly getting available to feed is locked to conversion for 150 frames
+					canNotConvertUnitTimer=150;
 					canFeedUnit=1;
 				}
 			}
@@ -1433,8 +1435,9 @@ void Building::step(void)
 	
 	updateCallLists();
 	if(underAttackTimer>0)
-		underAttackTimer-=1;
-
+		underAttackTimer--;
+	if(canNotConvertUnitTimer>0)
+		canNotConvertUnitTimer--;
 	// NOTE : Unit needs to update itself when it is in a building
 }
 
@@ -2782,6 +2785,15 @@ int Building::availableHappynessLevel()
 		if (ressources[i + HAPPYNESS_BASE]  >inside)
 			happyness++;
 	return happyness;
+}
+
+bool Building::canConvertUnit(void)
+{
+	assert(type->canFeedUnit);
+	return
+			canNotConvertUnitTimer<=0 &&
+			(unitsInside.size()<ressources[CORN]) && 
+			(unitsInside.size()<maxUnitInside);
 }
 
 Sint32 Building::GIDtoID(Uint16 gid)
