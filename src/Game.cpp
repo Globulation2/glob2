@@ -2274,15 +2274,15 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 	const int clearingAreaBaseFrame = 0;
 	const int guardAreaBaseFrame = 8;
 	const int forbiddenAreaBaseFrame = 16;
-
-    typedef bool (Map::*MapIsFP)(int, int);
-    MapIsFP mapIs;
-
+	
+	typedef bool (Map::*MapIsFP)(int, int);
+	MapIsFP mapIs;
+	
 	if ((drawOptions & DRAW_AREA) != 0)
 	{
-		mapIs=&Map::isForbiddenLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, forbiddenAreaBaseFrame, GAGCore::Color(255,0,0));
-		mapIs=&Map::isGuardAreaLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, guardAreaBaseFrame, GAGCore::Color(0,0,255));
-		mapIs=&Map::isClearAreaLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, clearingAreaBaseFrame, GAGCore::Color(255,255,0));
+		mapIs=&Map::isForbiddenLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, ForbiddenArea);
+		mapIs=&Map::isGuardAreaLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, GuardArea);
+		mapIs=&Map::isClearAreaLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, ClearingArea);
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
@@ -2316,8 +2316,17 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 inline void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 		int sh, int viewportX, int viewportY, int localTeam,
 		Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int), int areaAnimationTick,
-		int baseFrame, GAGCore::Color c)
+		AreaType areaType)
 {
+	Sprite* sprite;
+	GAGCore::Color c;
+	switch (areaType)
+	{
+		case ClearingArea: sprite = globalContainer->areaClearing; c = GAGCore::Color(255,255,0); break;
+		case ForbiddenArea: sprite = globalContainer->areaForbidden; c = GAGCore::Color(255,0,0); break;
+		case GuardArea: sprite = globalContainer->areaGuard; c = GAGCore::Color(0,0,255); break;
+		default: assert(false);
+	}
 	for (int y=top; y<bot; y++)
 	{
 		for (int x=left; x<right; x++)
@@ -2325,8 +2334,8 @@ inline void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 			if ((map->*mapIs)(x+viewportX, y+viewportY))
 			{
 				int randId = (x+viewportX) * 7919 + (y+viewportY) * 17;
-				int frame = ((randId + areaAnimationTick) % 16) / 2;
-				globalContainer->gfx->drawSprite((x<<5), (y<<5), globalContainer->areas, baseFrame + frame);
+				int frame = ((randId + areaAnimationTick) % (sprite->getFrameCount() * 2)) / 2;
+				globalContainer->gfx->drawSprite((x<<5), (y<<5), sprite, frame);
 
 				if (!(map->*mapIs)(x+viewportX, y+viewportY-1))
 					globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, c);
