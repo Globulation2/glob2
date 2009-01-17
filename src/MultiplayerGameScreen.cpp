@@ -66,7 +66,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	addWidget(gameStartWaitingText);
 	gameStartWaitingText->visible = false;
 
-	notReadyText=new Text(20, (isHost ? 455 : 395), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
+	notReadyText=new Text(20, (isHost ? 455 : 385), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
 	notReadyText->visible=isActivated();
 	addWidget(notReadyText);
 
@@ -114,7 +114,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	percentDownloaded=new ProgressBar(20, 430, 180, ALIGN_RIGHT, ALIGN_TOP, 100, 0, "standard", Toolkit::getStringTable()->getString("[downloaded %0]"));
+	percentDownloaded=new ProgressBar(20, 415, 180, ALIGN_RIGHT, ALIGN_TOP, 100, 0, "standard", Toolkit::getStringTable()->getString("[downloaded %0]"));
 	addWidget(percentDownloaded);
 
 	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard");
