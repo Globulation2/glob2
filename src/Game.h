@@ -197,7 +197,7 @@ private:
 	inline void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings);
 	inline void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	inline void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int), int areaAnimationTick, int baseFrame, GAGCore::Color c);
+	inline void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int), int areaAnimationTick, AreaType areaType);
 	inline void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
 	inline void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);

@@ -69,6 +69,14 @@ struct Case
 	Uint16 fertility; // This is a value that represents the fertility of this square, the chance that wheat will grow on it
 };
 
+/// Types of areas
+enum AreaType
+{
+	ClearingArea = 0,
+	ForbiddenArea,
+	GuardArea
+};
+
 
 /*! Map, handle all physical localisations
 	All size are given in 32x32 pixel cell, which is the basic game measurement unit.
