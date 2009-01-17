@@ -114,8 +114,13 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	percentDownloaded=new ProgressBar(20, 415, 180, ALIGN_RIGHT, ALIGN_TOP, 100, 0, "standard", Toolkit::getStringTable()->getString("[downloaded %0]"));
-	addWidget(percentDownloaded);
+	if (!isHost)
+	{
+		percentDownloaded = new ProgressBar(20, 415, 180, ALIGN_RIGHT, ALIGN_TOP, 100, 0, "standard", Toolkit::getStringTable()->getString("[downloaded %0]"));
+		addWidget(percentDownloaded);
+	}
+	else
+		percentDownloaded = 0;
 
 	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
@@ -269,7 +274,8 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	else if(type == MGEDownloadPercentUpdate)
 	{
 		shared_ptr<MGDownloadPercentUpdate> info = static_pointer_cast<MGDownloadPercentUpdate>(event);
-		percentDownloaded->setValue(info->getPercentFinished());
+		if (percentDownloaded)
+			percentDownloaded->setValue(info->getPercentFinished());
 		updateVisibleButtons();
 	}
 	else if(type == MGEPlayerReadyStatusChanged)
@@ -416,14 +422,15 @@ void MultiplayerGameScreen::updateVisibleButtons()
 			}
 		}
 	}
-	if(game->percentageDownloadFinished() >= 0 && game->percentageDownloadFinished() < 100)
-	{
-		percentDownloaded->visible = isActivated();
-	}
-	else
-	{
-		percentDownloaded->visible=false;
-	}
+	if (percentDownloaded)
+		if(game->percentageDownloadFinished() >= 0 && game->percentageDownloadFinished() < 100)
+		{
+			percentDownloaded->visible = isActivated();
+		}
+		else
+		{
+			percentDownloaded->visible=false;
+		}
 }
 
 
