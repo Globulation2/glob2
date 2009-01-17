@@ -269,8 +269,7 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	else if(type == MGEDownloadPercentUpdate)
 	{
 		shared_ptr<MGDownloadPercentUpdate> info = static_pointer_cast<MGDownloadPercentUpdate>(event);
-		if (info->getPercentFinished() != 100)
-			percentDownloaded->setValue(info->getPercentFinished());
+		percentDownloaded->setValue(info->getPercentFinished());
 		updateVisibleButtons();
 	}
 	else if(type == MGEPlayerReadyStatusChanged)
@@ -417,9 +416,9 @@ void MultiplayerGameScreen::updateVisibleButtons()
 			}
 		}
 	}
-	if(game->percentageDownloadFinished() != 100)
+	if(game->percentageDownloadFinished() >= 0 && game->percentageDownloadFinished() < 100)
 	{
-		percentDownloaded->visible=isActivated();
+		percentDownloaded->visible = isActivated();
 	}
 	else
 	{
