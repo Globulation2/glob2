@@ -259,7 +259,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("* Network Protocol version %d\n", NET_PROTOCOL_VERSION);
 			printf("This program and all related materials are GPL, see COPYING for details.\n");
 			printf("(C) 2001-2007 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
-			printf("See AUTHORS for a full list.\n\n");
+			printf("See data/authors.txt for a full list.\n\n");
 			printf("Type %s --help for a list of command line options.\n\n", argv[0]);
 			exit(0);
 		}
