@@ -59,6 +59,9 @@ namespace GAGCore
 	// static local pointer to the actual graphic context
 	static GraphicContext *_gc = NULL;
 	static SDL_PixelFormat _glFormat;
+	//EXPERIMENTAL is a bit buggy and "not EXPERIMENTAL" is bugfree but slow
+	//when rendering clouds or other density layers (GraphicContext::drawAlphaMap).
+	static const bool EXPERIMENTAL=false;
 
 	// Color
 	Uint32 Color::pack() const
@@ -1697,7 +1700,6 @@ namespace GAGCore
 			DrawableSurface::drawSurface(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), surface, sx, sy, sw, sh, alpha);
 	}
 
-	bool EXPERIMENTAL=false;//EXPERIMENTAL is a bit buggy and !EXPERIMENTAL is bugfree but slow
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 	#ifdef HAVE_OPENGL
