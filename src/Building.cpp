@@ -88,7 +88,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	posXLocal=posX;
 	posYLocal=posY;
 
-	underAttackTimer = 0;
+	underAttackTimer=0;
+	canNotConvertUnitTimer=0;
 
 	// flag usefull :
 	unitStayRange=type->defaultUnitStayRange;
@@ -216,6 +217,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		underAttackTimer = stream->readUint8("underAttackTimer");
 	else
 		underAttackTimer = 0;
+	if(versionMinor>=81)
+		canNotConvertUnitTimer = stream->readUint8("canNotConvertUnitTimer");
+	else
+		canNotConvertUnitTimer = 150;
 
 	// priority
 	if(versionMinor>=79)
@@ -348,6 +353,7 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(posY, "posY");
 
 	stream->writeUint8(underAttackTimer, "underAttackTimer");
+	stream->writeUint8(canNotConvertUnitTimer, "canNotConvertUnitTimer");
 
 	// priority
 	stream->writeSint32(priority, "priority");
@@ -467,6 +473,21 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		assert(unit);
 		unitsInside.push_front(unit);
 	}
+	
+	if (versionMinor>=80)
+	{
+		unsigned nbHarvesting = stream->readUint32("nbHarvesting");
+		fprintf(logFile, " nbHarvesting=%d\n", nbHarvesting);
+		unitsHarvesting.clear();
+		for (unsigned i=0; i<nbHarvesting; i++)
+		{
+			std::ostringstream oss;
+			oss << "unitsHarvesting[" << i << "]";
+			Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
+			assert(unit);
+			unitsHarvesting.push_front(unit);
+		}
+	}
 
 	stream->readLeaveSection();
 }
@@ -521,6 +542,17 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
 		std::ostringstream oss;
 		oss << "unitsInside[" << i++ << "]";
+		stream->writeUint16((*it)->gid, oss.str().c_str());
+	}
+	
+	stream->writeUint32(unitsHarvesting.size(), "nbHarvesting");
+	fprintf(logFile, " nbHarvesting=%zd\n", unitsHarvesting.size());
+	i = 0;
+	for (std::list<Unit *>::iterator  it=unitsHarvesting.begin(); it!=unitsHarvesting.end(); ++it)
+	{
+		assert(*it);
+		std::ostringstream oss;
+		oss << "unitsHarvesting[" << i++ << "]";
 		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
 
@@ -657,6 +689,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		maxUnitInside=0;
 		updateCallLists();
 		updateUnitsWorking(); // To remove all units working.
+		updateUnitsHarvesting(); // To remove all units working.
 		//following reassigns units to work on upgrade, certain buildings will
 		//glitch if units are not unassigned and then reassigned like this
 		maxUnitWorking = unitWorking;
@@ -740,6 +773,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();
+	// no unit harvesting at that point
 
 	if (hp>=type->hpInit)
 		hp=type->hpInit;
@@ -781,6 +815,7 @@ void Building::launchDelete(void)
 		desiredMaxUnitWorking = 0;
 		updateCallLists();
 		updateUnitsWorking();
+		updateUnitsHarvesting();
 		owner->buildingsWaitingForDestruction.push_front(this);
 	}
 }
@@ -793,6 +828,7 @@ void Building::cancelDelete(void)
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();
+	// we do not update units harvesting because there is none at this point
 	// we do not update owner->buildingsWaitingForDestruction because Team::syncStep will remove this building from the list
 }
 
@@ -999,6 +1035,7 @@ void Building::updateBuildingSite(void)
 		// we need to do an update again
 		updateCallLists();
 		updateUnitsWorking();
+		// no unit harvesting at that point
 	}
 }
 
@@ -1091,6 +1128,24 @@ void Building::updateUnitsWorking(void)
 	}
 }
 
+void Building::updateUnitsHarvesting(void)
+{
+	// if we are not alive or has not vision, remove all units harvesting from this building
+	for (std::list<Unit *>::iterator it=unitsHarvesting.begin(); it!=unitsHarvesting.end();)
+	{
+		std::list<Unit *>::iterator thisIt = it;
+		Unit* u = *thisIt;
+		++it;
+		
+		if ((buildingState != ALIVE) || (owner->sharedVisionExchange & u->owner->me == 0))
+		{
+			u->attachedBuilding->removeUnitFromWorking(u);
+			u->standardRandomActivity();
+			unitsHarvesting.erase(thisIt);
+		}
+	}
+}
+
 void Building::update(void)
 {
 	computeWishedRessources();
@@ -1099,6 +1154,7 @@ void Building::update(void)
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
 	updateCallLists();
 	updateUnitsWorking();
+	updateUnitsHarvesting();
 	updateConstructionState();
 	if (type->isBuildingSite)
 		updateBuildingSite();
@@ -1229,6 +1285,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		maxUnitInside=type->maxUnitInside;
 		updateCallLists();
 		updateUnitsWorking();
+		// no unit harvesting at that point
 
 		// position
 		posX=newPosX;
@@ -2306,6 +2363,7 @@ void Building::kill(void)
 	fprintf(logFile, " still %zd unitsInside\n", unitsInside.size());
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
+		//TODO: We should somehow try to save their lives. In training buildings they should just drop out untrained etc.
 		Unit *u=*it;
 		fprintf(logFile, "  guid=%d\n", u->gid);
 		if (u->displacement==Unit::DIS_INSIDE)
@@ -2362,6 +2420,9 @@ void Building::kill(void)
 	}
 
 	buildingState=DEAD;
+	
+	updateUnitsHarvesting();
+	
 	owner->prestige-=type->prestige;
 
 	owner->buildingsToBeDestroyed.push_front(this);
@@ -2412,6 +2473,16 @@ void Building::removeUnitFromWorking(Unit* unit)
 	updateCallLists();
 }
 
+void Building::insertUnitToHarvesting(Unit* unit)
+{
+	unitsHarvesting.push_front(unit);
+}
+
+
+void Building::removeUnitFromHarvesting(Unit* unit)
+{
+	unitsHarvesting.remove(unit);
+}
 
 
 void Building::removeUnitFromInside(Unit* unit)
@@ -2765,6 +2836,11 @@ void Building::integrity()
 		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
 		assert((*it)->attachedBuilding==this);
 	}
+	for (std::list<Unit *>::iterator  it=unitsHarvesting.begin(); it!=unitsHarvesting.end(); ++it)
+	{
+		assert(*it);
+		assert((*it)->targetBuilding==this);
+	}
 }
 
 Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
@@ -2883,5 +2959,10 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [24]
 
+	
+	cs^=unitsHarvesting.size();
+	if (checkSumsVector)
+		checkSumsVector->push_back(cs);// [25]
+	
 	return cs;
 }

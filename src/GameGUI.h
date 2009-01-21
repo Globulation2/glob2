@@ -231,7 +231,7 @@ private:
 	// Drawing support functions
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawXPProgressBar(int x, int y, int act, int max);
-	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
+	void drawButton(int x, int y, const char *caption, int r=128, int g=128, int b=128, bool doLanguageLookup=true);
 	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, const char *caption);

@@ -628,6 +628,7 @@ public:
 	void expandLocalGradient(Uint8 *gradient);
 	
 	bool buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist);
+	//!requests the next step (dx, dy) to take to get to the building from (x,y) provided the unit canSwim.
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
 	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all ressources mixed in clearing flags.
 	

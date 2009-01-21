@@ -119,6 +119,8 @@ public:
 	///This function updates the units working at this building. If there are too many units, it
 	///fires some.
 	void updateUnitsWorking(void);
+	///This function updates the units harvesting at this building. In particular, it unsubscribe them when the building is being destroyed
+	void updateUnitsHarvesting(void);
 	///This function is called after important events in order to update the building
 	void update(void);
 
@@ -186,6 +188,15 @@ public:
 	/// This function removes the unit from the list of units working on the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
 	void removeUnitFromWorking(Unit* unit);
+	
+	/// Insert into the harvesting unit, when the unit has decided to do so.
+	/// This does not handle units state, just the buildings.
+	void insertUnitToHarvesting(Unit* unit);
+	
+	/// This function removes the unit from the list of units harvesting from the building. Units will remove themselves
+	/// when they run out of food, for example. This does not handle units state, just the buildings.
+	/// It is safe to call this function even if the unit is not harvesting at the building.
+	void removeUnitFromHarvesting(Unit* unit);
 
 	/// Remove unit from inside. This function removes the unit from being inside the building. Like removeUnitFromWorking,
 	/// it does not update the units state.
@@ -197,6 +208,7 @@ public:
 
 	/// This function is called when a Unit places a ressource into the building.
 	void addRessourceIntoBuilding(int ressourceType);
+	
 	/// This function is called when a Unit takes a ressource from a building, such as a market
 	void removeRessourceFromBuilding(int ressourceType);
 
@@ -277,6 +289,9 @@ public:
 	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
 	Sint32 oldPriority;
 
+	///This is the list of units harvesting from the building (if it is a market for instance)
+	std::list<Unit *> unitsHarvesting;
+	
 	// optimisation and consistency
 	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
 	Uint8 canNotConvertUnitTimer; //counts down 150 frames after the building was last unable to feed a unit
