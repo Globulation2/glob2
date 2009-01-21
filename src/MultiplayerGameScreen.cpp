@@ -82,14 +82,16 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		addWidget(isReady);
 	}
 
+	const char * cancelText;
 	if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 	{
-		cancelButton = new TextButton(20, 505, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
+		cancelText = Toolkit::getStringTable()->getString("[Cancel]");
 	}
 	else
 	{
-		cancelButton = new TextButton(20, 505, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Leave Game]"), CANCEL);
+		cancelText = Toolkit::getStringTable()->getString("[Leave Game]");
 	}
+	cancelButton = new TextButton(20, 505, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", cancelText, CANCEL);
 	cancelButton->visible=false;
 	addWidget(cancelButton);
 
