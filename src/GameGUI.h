@@ -114,10 +114,15 @@ public:
 	bool isFlagEnabled(const std::string &name);
 	void enableGUIElement(int id);
 	void disableGUIElement(int id);
+	
 	bool isSpaceSet() { return hasSpaceBeenClicked; }
 	void setIsSpaceSet(bool value) { hasSpaceBeenClicked=value; }
 	bool isSwallowSpaceKey() { return swallowSpaceKey; }
 	void setSwallowSpaceKey(bool value) { swallowSpaceKey=value; }
+	
+	void showScriptText(const std::string &text);
+	void showScriptTextTr(const std::string &text, const std::string &lang);
+	void hideScriptText();
 
 	// Stats for engine
 	void setCpuLoad(int s);
@@ -226,7 +231,7 @@ private:
 	// Drawing support functions
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawXPProgressBar(int x, int y, int act, int max);
-	void drawButton(int x, int y, const char *caption, bool doLanguageLookup=true);
+	void drawButton(int x, int y, const char *caption, int r=128, int g=128, int b=128, bool doLanguageLookup=true);
 	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, const char *caption);
@@ -339,6 +344,10 @@ private:
 	bool swallowSpaceKey;
 	//! Set to the SGSL display text of the previous frame. This is so the system knows when the text changes.
 	std::string previousSGSLText;
+	//! USL script text
+	std::string scriptText;
+	//! whether script text was updated in last step, required because of our translation override common text mechanism
+	bool scriptTextUpdated;
 
 	//! True if the mouse's button way never relased since selection.
 	bool selectionPushed;

@@ -27,7 +27,6 @@
 #endif
 
 #include <boost/shared_ptr.hpp>
-
 namespace GAGCore
 {
 	class InputStream;
@@ -36,51 +35,55 @@ namespace GAGCore
 class Player;
 class Order;
 class AIImplementation;
-
+/*
+ * AI is the base class for the AI-implementations
+ */
 class AI
 {
 public:
+	///TODO: Explain
 	enum ImplementitionID
 	{
+		///Reference to AINull
 		NONE=0,
+		///Reference to AINumbi
 		NUMBI=1,
+		///Reference to AICastor
 		CASTOR=2,
+		///Reference to AIWarrush
 		WARRUSH=3,
+		///Reference to the AIEcho based AIReachToInfinity
 		REACHTOINFINITY=4,
+		///Reference to the AIEcho based AINicowar
 		NICOWAR=5,
 
 		SIZE,
 		TOUBIB,
-		
+
 		EXPERIMENTAL_SIZE
 	};
 	static const ImplementitionID toggleAI=CASTOR;
-	
+
 public:
 	//AI(Player *player); //TODO: remove this constructor, and choose the AI the user wants.
 	AI(ImplementitionID implementitionID, Player *player);
 	AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AI();
 	//void init(ImplementitionID ImplementitionID, Player *player);
-	
+
 	AIImplementation *aiImplementation;
 	ImplementitionID implementitionID;
-	
+
 	Player *player;
-	
+
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-	
+
 	static std::string getAIText(int id);
-	
+
 	boost::shared_ptr<Order> getOrder(bool paused);
-	
+
 	Uint32 step;
 };
 
-
-
 #endif
-
- 
-

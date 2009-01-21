@@ -47,6 +47,7 @@ namespace GAGCore
 class Unit
 {
 public:
+	static const int MAX_COUNT=1024;
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void) { }
@@ -122,7 +123,9 @@ public:
 		DIS_HARVESTING=2,
 		
 		DIS_FILLING_BUILDING=4,
-		DIS_EMPTYING_BUILDING=6,
+//NOT USED:
+//		//!Markets can get emptied
+//		DIS_EMPTYING_BUILDING=6,
 		
 		DIS_GOING_TO_FLAG=8,
 		DIS_ATTACKING_AROUND=10,
@@ -239,8 +242,9 @@ public:
 	Sint32 experience;
 	Sint32 experienceLevel;
 	
-	// building attraction handling
+	//! building the Unit is working for
 	Building *attachedBuilding;
+	//! building the Unit is going to
 	Building *targetBuilding;
 	Building *ownExchangeBuilding;
 	Sint32 destinationPurprose;

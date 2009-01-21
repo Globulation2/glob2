@@ -100,11 +100,17 @@ public:
 	void setPlayerName(const std::string& playerName);
 	///Retrieves the player name
 	const std::string& getPlayerName() const;
+	
+	///Sets the description of the campaign
+	void setDescription(const std::string& description);
+	///Retrieves the description
+	const std::string& getDescription() const;
 
 private:
 	std::vector<CampaignMapEntry> maps;
 	std::string name;
 	std::string playerName;
+	std::string description;
 };
 
 

@@ -32,11 +32,12 @@ namespace GAGGUI
 		int value; //!< current value, between 0 and range
 		int range; //!< value should be between 0 and range
 		std::string font; //!< the name of the used font
+		std::string format; //!< the format used for text replacement
 		
 		GAGCore::Font *fontPtr; //!< pointer to font, this is a cache
 		
 	public:
-		ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range = 100, int value = 0, const char* font = 0);
+		ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range = 100, int value = 0, const char* font = 0, const char* format = "%0");
 		virtual ~ProgressBar() { }
 		
 		void setValue(int value) { this->value = value; }

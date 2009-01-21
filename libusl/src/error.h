@@ -8,7 +8,8 @@
 struct Exception: std::runtime_error
 {
 	Exception(const Position& position, const std::string& message): std::runtime_error(message), position(position) {}
-	const Position& position;
+	~Exception() throw() {}
+	Position position;
 };
 
 #endif // ndef ERROR_H

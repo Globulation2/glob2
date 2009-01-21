@@ -37,6 +37,7 @@ namespace GAGGUI
 	class TextButton;
 	class ColorButton;
 	class OnOffButton;
+	class ProgressBar;
 }
 
 using namespace GAGGUI;
@@ -99,7 +100,7 @@ private:
 	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
 	Text *text[MAX_NUMBER_OF_PLAYERS];
 	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
-	Text *percentDownloaded;
+	ProgressBar *percentDownloaded;
 	TextButton *otherOptions;
 
 	TextInput *textInput;

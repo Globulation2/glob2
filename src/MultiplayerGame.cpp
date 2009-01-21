@@ -676,7 +676,7 @@ NetReteamingInformation MultiplayerGame::constructReteamingInformation(const std
 {
 	NetReteamingInformation info;
 	GameHeader game = Engine::loadGameHeader(file);
-	for(int i=0; i<32; ++i)
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		if(game.getBasePlayer(i).type == Player::P_IP)
 		{
