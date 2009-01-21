@@ -3,12 +3,11 @@
 
 #include <stack>
 #include <vector>
+#include <string>
 
 struct Thunk;
-struct Scope;
 struct Value;
-struct Heap;
-struct DebugInfo;
+struct Usl;
 
 struct Thread
 {
@@ -28,29 +27,28 @@ struct Thread
 		
 		void markForGC();
 	};
-	struct RuntimeValues
-	{
-		RuntimeValues();
-		Value* trueValue;
-		Value* falseValue;
+	
+	enum State {
+		RUN,
+		YIELD,
+		STOP
 	};
 	
 	typedef std::vector<Frame> Frames;
 	
-	Heap* heap;
-	DebugInfo* debugInfo;
-	Scope* root;
-	RuntimeValues runtimeValues;
+	Usl* usl;
+	State state;
 	Frames frames;
 	
-	Thread(Heap* heap, DebugInfo* debugInfo, Scope* root):
-		heap(heap),
-		debugInfo(debugInfo),
-		root(root)
-	{}
+	Thread(Usl* usl, Thunk* thunk):
+		usl(usl), state(RUN)
+	{
+		frames.push_back(thunk);
+	}
 	
-	Value* getRuntimeValue(Value*& cachedValue, const std::string& name);
-	Value* getRootLocal(const std::string& name);
+	size_t run();
+	size_t run(size_t steps);
+	bool step();
 	
 	void markForGC();
 };

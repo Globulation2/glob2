@@ -619,6 +619,8 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	
 	attachedBuilding->removeUnitFromWorking(this);
 	attachedBuilding=NULL;
+	if (targetBuilding)
+		targetBuilding->removeUnitFromHarvesting(this);
 	targetBuilding=NULL;
 	ownExchangeBuilding=NULL;
 	assert(needToRecheckMedical);
@@ -723,23 +725,26 @@ void Unit::handleMagic(void)
 
 void Unit::handleMedical(void)
 {
-        /* Make sure explorers try to immediately feed after healing to increase their range. */
-        if ((typeNum == EXPLORER)
-            && (displacement == DIS_EXITING_BUILDING)) {
-          medical=MED_FREE;
-          if ((destinationPurprose == HEAL)
-              && (hungry < ((HUNGRY_MAX * 9) / 10))) {
-            // fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
-            needToRecheckMedical = 1;
-            medical = MED_HUNGRY;
-            return; }
-          else if ((destinationPurprose == FEED)
-                   && (hp < (((performance[HP]) * 9) / 10))) {
-            // fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
-            needToRecheckMedical = 1;
-            medical = MED_DAMAGED;
-            return; }}
-
+	/* Make sure explorers try to immediately feed after healing to increase their range. */
+	if ((typeNum == EXPLORER) && (displacement == DIS_EXITING_BUILDING))
+	{
+		medical=MED_FREE;
+		if ((destinationPurprose == HEAL) && (hungry < ((HUNGRY_MAX * 9) / 10)))
+		{
+			// fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
+			needToRecheckMedical = 1;
+			medical = MED_HUNGRY;
+			return;
+		}
+		else if ((destinationPurprose == FEED) && (hp < (((performance[HP]) * 9) / 10)))
+		{
+			// fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
+			needToRecheckMedical = 1;
+			medical = MED_DAMAGED;
+			return;
+		}
+	}
+	
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
 	
@@ -770,7 +775,13 @@ void Unit::handleMedical(void)
 				attachedBuilding->removeUnitFromWorking(this);
 				attachedBuilding->removeUnitFromInside(this);
 				attachedBuilding=NULL;
+				ownExchangeBuilding=NULL;
+			}
+			if (targetBuilding)
+			{
+				targetBuilding->removeUnitFromHarvesting(this);
 				targetBuilding=NULL;
+                //TODO: in beta4 this line was ommitted. delete?
 				ownExchangeBuilding=NULL;
 			}
 			
@@ -870,6 +881,7 @@ void Unit::handleActivity(void)
 	}
 	else if (needToRecheckMedical)
 	{
+		// disconnect from building
 		if (attachedBuilding)
 		{
 			if (verbose)
@@ -877,17 +889,21 @@ void Unit::handleActivity(void)
 			attachedBuilding->removeUnitFromWorking(this);
 			attachedBuilding->removeUnitFromInside(this);
 			attachedBuilding=NULL;
-			targetBuilding=NULL;
 			ownExchangeBuilding=NULL;
+		}
+		if (targetBuilding) 
+		{
+			targetBuilding->removeUnitFromHarvesting(this);
+			targetBuilding=NULL;
 		}
 
 		if (medical==MED_HUNGRY)
 		{
 			Building *b;
 			b=owner->findNearestFood(this);
-                        if (typeNum == EXPLORER) {
-                          // fprintf (stderr, "gid: %d, b: %x\n", gid, b);
-                        }
+                        /*if (typeNum == EXPLORER) {
+                           fprintf (stderr, "gid: %d, b: %x\n", gid, b);
+                        }*/
 
 			if (b!=NULL)
 			{
@@ -908,7 +924,7 @@ void Unit::handleActivity(void)
 					
 					// Find free slot in other team
 					int targetID=-1;
-					for (int i=0; i<1024; i++)//we search for a free place for a unit.
+					for (int i=0; i<Unit::MAX_COUNT; i++)//we search for a free place for a unit.
 						if (targetTeam->myUnits[i]==NULL)
 						{
 							targetID=i;
@@ -1070,6 +1086,7 @@ void Unit::handleDisplacement(void)
 						caryedRessource=destinationPurprose;
 						fprintf(logFile, "[%d] sdp6 destinationPurprose=%d\n", gid, destinationPurprose);
 						
+						targetBuilding->removeUnitFromHarvesting(this);
 						targetBuilding=attachedBuilding;
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
@@ -1142,7 +1159,8 @@ void Unit::handleDisplacement(void)
 												int buildingDist;
 												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
 												{
-													int value=(buildingDist<<1)/need; // We double the cost to get a ressource in an exchange building.
+													// We increase the cost to get a ressource in an exchange building to reflect the costs to get the ressources to the exchange building.
+													int value=(buildingDist<<1)/need;
 													if (value<minValue)
 													{
 														bestRessource=r;
@@ -1170,6 +1188,7 @@ void Unit::handleDisplacement(void)
 									displacement=DIS_GOING_TO_BUILDING;
 									targetX=targetBuilding->getMidX();
 									targetY=targetBuilding->getMidY();
+									targetBuilding->insertUnitToHarvesting(this);
 									validTarget=true;
 								}
 								else
@@ -1271,7 +1290,6 @@ void Unit::handleDisplacement(void)
 					{
 						hungry=HUNGRY_MAX;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask);
-						//printf("I'm not hungry any more :-)\n");
 						needToRecheckMedical=true;
 					}
 					else if (destinationPurprose==HEAL)
@@ -1385,12 +1403,12 @@ void Unit::handleDisplacement(void)
 bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 {
 	//TODO: totally fix this totally hacky implementation.
-	for(int i=0;i<32;i++)
+	for(int i=0;i<Team::MAX_COUNT;i++)
 	{
 		Team *t = owner->game->teams[i];
 		if((t)&&(owner->enemies & t->me))
 		{
-			for(int j=0;j<1024;j++)
+			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
 				if((b)&&(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)&&(owner->map->warpDistMax(b->posX,b->posY,posX,posY) <= b->type->shootingRange + 1))return true;
@@ -2395,23 +2413,23 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 
 Sint32 Unit::GIDtoID(Uint16 gid)
 {
-	assert(gid<32768);
-	return (gid%1024);
+	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
+	return (gid%Unit::MAX_COUNT);
 }
 
 Sint32 Unit::GIDtoTeam(Uint16 gid)
 {
-	assert(gid<32768);
-	return (gid/1024);
+	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
+	return (gid/Unit::MAX_COUNT);
 }
 
 Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 {
 	assert(id>=0);
-	assert(id<1024);
+	assert(id<Unit::MAX_COUNT);
 	assert(team>=0);
-	assert(team<32);
-	return id+team*1024;
+	assert(team<Team::MAX_COUNT);
+	return id+team*Unit::MAX_COUNT;
 }
 
 //! Return the real armor, taking into account the reduction due to fruits

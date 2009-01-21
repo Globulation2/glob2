@@ -143,7 +143,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	// handle in game stat step
 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
 	smoothedStat.reset();
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=team->myUnits[i];
 		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
@@ -153,7 +153,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 	
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b = team->myBuildings[i];
 		if (b)
@@ -200,7 +200,7 @@ void TeamStats::step(Team *team, bool reloaded)
 
 	stat.reset();
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=team->myUnits[i];
 		if (u)
@@ -258,7 +258,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b = team->myBuildings[i];
 		if (b)

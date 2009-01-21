@@ -259,7 +259,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("* Network Protocol version %d\n", NET_PROTOCOL_VERSION);
 			printf("This program and all related materials are GPL, see COPYING for details.\n");
 			printf("(C) 2001-2007 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
-			printf("See AUTHORS for a full list.\n\n");
+			printf("See data/authors.txt for a full list.\n\n");
 			printf("Type %s --help for a list of command line options.\n\n", argv[0]);
 			exit(0);
 		}
@@ -590,7 +590,9 @@ void GlobalContainer::load(void)
 		// load ressources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
-		areas = Toolkit::getSprite("data/gfx/area");
+		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
+		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
+		areaGuard = Toolkit::getSprite("data/gfx/area-guard");
 		bullet = Toolkit::getSprite("data/gfx/bullet");
 		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
 		deathAnimation = Toolkit::getSprite("data/gfx/death"); 

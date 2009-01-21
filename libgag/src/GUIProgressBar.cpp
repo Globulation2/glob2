@@ -31,7 +31,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	ProgressBar::ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range, int value, const char* font)
+	ProgressBar::ProgressBar(int x, int y, int w, Uint32 hAlign, Uint32 vAlign, int range, int value, const char* font, const char* format)
 	{
 		this->x = x;
 		this->y = y;
@@ -46,6 +46,7 @@ namespace GAGGUI
 		fontPtr = 0;
 		if (font)
 			this->font = font;
+		this->format = format;
 	}
 	
 	void ProgressBar::internalInit(void)
@@ -74,7 +75,7 @@ namespace GAGGUI
 		Style::style->drawProgressBar(parent->getSurface(), x, y+hDec, w, value, range);
 		if (fontPtr)
 		{
-			FormatableString text = FormatableString("%0 %1").arg((value*100)/range).arg("%");
+			FormatableString text = FormatableString(format).arg((value*100)/range);
 			int textW = fontPtr->getStringWidth(text.c_str());
 			int textH = fontPtr->getStringHeight(text.c_str());
 			parent->getSurface()->drawString(x + ((w-textW) >> 1), y + ((h-textH) >> 1), fontPtr, text);
