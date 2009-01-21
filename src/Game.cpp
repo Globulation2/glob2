@@ -1460,7 +1460,10 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 			break;
 		}
 	if (id==-1)
+	{
+		//TODO:Building limit reached!
 		return NULL;
+	}
 
 	//ok, now we can safely deposite an building.
 	int gid=Building::GIDfrom(id, teamNumber);

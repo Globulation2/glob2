@@ -31,6 +31,7 @@
 #include <GUITextArea.h>
 #include <GUITextInput.h>
 #include <GUIButton.h>
+#include <GUIProgressBar.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 
@@ -65,7 +66,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	addWidget(gameStartWaitingText);
 	gameStartWaitingText->visible = false;
 
-	notReadyText=new Text(20, (isHost ? 455 : 395), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
+	notReadyText=new Text(20, (isHost ? 455 : 385), ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[not ready]"), 180, 30);
 	notReadyText->visible=isActivated();
 	addWidget(notReadyText);
 
@@ -113,8 +114,13 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		color[i]->visible=false;
 		kickButton[i]->visible=false;
 	}
-	percentDownloaded=new Text(20, 430, ALIGN_RIGHT, ALIGN_TOP, "menu", "");
-	addWidget(percentDownloaded);
+	if (!isHost)
+	{
+		percentDownloaded = new ProgressBar(20, 415, 180, ALIGN_RIGHT, ALIGN_TOP, 100, 0, "standard", Toolkit::getStringTable()->getString("[downloaded %0]"));
+		addWidget(percentDownloaded);
+	}
+	else
+		percentDownloaded = 0;
 
 	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
@@ -268,10 +274,8 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<Multipl
 	else if(type == MGEDownloadPercentUpdate)
 	{
 		shared_ptr<MGDownloadPercentUpdate> info = static_pointer_cast<MGDownloadPercentUpdate>(event);
-		if(info->getPercentFinished() != 100)
-		{
-			percentDownloaded->setText(FormatableString(Toolkit::getStringTable()->getString("[downloaded %0]")).arg((int)info->getPercentFinished()));
-		}
+		if (percentDownloaded)
+			percentDownloaded->setValue(info->getPercentFinished());
 		updateVisibleButtons();
 	}
 	else if(type == MGEPlayerReadyStatusChanged)
@@ -418,14 +422,15 @@ void MultiplayerGameScreen::updateVisibleButtons()
 			}
 		}
 	}
-	if(game->percentageDownloadFinished() != 100)
-	{
-		percentDownloaded->visible=isActivated();
-	}
-	else
-	{
-		percentDownloaded->visible=false;
-	}
+	if (percentDownloaded)
+		if(game->percentageDownloadFinished() >= 0 && game->percentageDownloadFinished() < 100)
+		{
+			percentDownloaded->visible = isActivated();
+		}
+		else
+		{
+			percentDownloaded->visible=false;
+		}
 }
 
 

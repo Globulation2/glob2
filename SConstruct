@@ -203,17 +203,15 @@ def configure(env):
                 env.Append(LIBS=['portaudio'])
             else:
                 print "         no portaudio"
-                print "         no portaudio"
                 print "         no portaudio - although portaudio was found to be installed, you have "
-                print "         no portaudio - to explicitly activate it using"
+                print "         no portaudio - to explicitly activate it using: "
                 print "         no portaudio - $ scons --portaudio=true"
-                print "         no portaudio - sorry but i don't know how to check for the right"
-                print "         no portaudio - version of portaudio :/"
+                print "         no portaudio - this may not work properly if the version of portaudio"
+                print "         no portaudio - is wrong. portaudio is used to allow communicating over VOIP"
                 print "         no portaudio"
-                print "         no portaudio - if you know a better solution, let me know at"
+                print "         no portaudio - if you know of a solution to detect portaudio version"
+                print "         no portaudio - let us know at:"
                 print "         no portaudio - https://savannah.nongnu.org/bugs/index.php?24668"
-                print "         no portaudio - google was not my friend in houres."
-                print "         no portaudio"
                 print "         no portaudio"
     if missing:
         for t in missing:
