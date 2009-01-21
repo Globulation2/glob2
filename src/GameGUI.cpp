@@ -4342,12 +4342,10 @@ void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 	stream->writeLeaveSection();
 }
 
-// TODO : merge thoses 3 functions into one
-
-void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLookup)
+void GameGUI::drawButton(int x, int y, const char *caption, int r, int g, int b, bool doLanguageLookup)
 {
 	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
-	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, 128, 128, 128);
+	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, r, g, b);
 
 	const char *textToDraw;
 	if (doLanguageLookup)
@@ -4361,32 +4359,12 @@ void GameGUI::drawButton(int x, int y, const char *caption, bool doLanguageLooku
 
 void GameGUI::drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
-	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
-	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, 128, 128, 192);
-
-	const char *textToDraw;
-	if (doLanguageLookup)
-		textToDraw=Toolkit::getStringTable()->getString(caption);
-	else
-		textToDraw=caption;
-	int len=globalContainer->littleFont->getStringWidth(textToDraw);
-	int h=globalContainer->littleFont->getStringHeight(textToDraw);
-	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
+	drawButton(x,y,caption,128,128,192,doLanguageLookup);
 }
 
 void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLookup)
 {
-	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
-	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, 192, 128, 128);
-
-	const char *textToDraw;
-	if (doLanguageLookup)
-		textToDraw=Toolkit::getStringTable()->getString(caption);
-	else
-		textToDraw=caption;
-	int len=globalContainer->littleFont->getStringWidth(textToDraw);
-	int h=globalContainer->littleFont->getStringHeight(textToDraw);
-	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
+	drawButton(x,y,caption,192,128,128,doLanguageLookup);
 }
 
 void GameGUI::drawTextCenter(int x, int y, const char *caption)
@@ -4400,35 +4378,21 @@ void GameGUI::drawTextCenter(int x, int y, const char *caption)
 
 void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, int max)
 {
+	//scrollbar borders
 	globalContainer->gfx->setClipRect(x+8, y, 112, 16);
 	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 9);
 
+	//localBar
 	int size=(valueLocal*92)/max;
 	globalContainer->gfx->setClipRect(x+18, y, size, 16);
 	globalContainer->gfx->drawSprite(x+18, y+3, globalContainer->gamegui, 10);
 	
+	//actualBar
 	size=(act*92)/max;
 	globalContainer->gfx->setClipRect(x+18, y, size, 16);
 	globalContainer->gfx->drawSprite(x+18, y+4, globalContainer->gamegui, 11);
 	
 	globalContainer->gfx->setClipRect();
-	/*globalContainer->gfx->drawFilledRect(x, y, 128, 16, 128, 128, 128);
-	globalContainer->gfx->drawHorzLine(x, y, 128, 200, 200, 200);
-	globalContainer->gfx->drawHorzLine(x, y+16, 128, 28, 28, 28);
-	globalContainer->gfx->drawVertLine(x, y, 16, 200, 200, 200);
-	globalContainer->gfx->drawVertLine(x+16, y, 16, 200, 200, 200);
-	globalContainer->gfx->drawVertLine(x+16+96, y, 16, 200, 200, 200);
-	globalContainer->gfx->drawVertLine(x+15, y, 16, 28, 28, 28);
-	globalContainer->gfx->drawVertLine(x+16+95, y, 16, 28, 28, 28);
-	globalContainer->gfx->drawVertLine(x+16+96+15, y, 16, 28, 28, 28);
-	globalContainer->gfx->drawString(x+6, y+1, globalContainer->littleFont, "-");
-	globalContainer->gfx->drawString(x+96+16+6, y+1, globalContainer->littleFont, "+");
-	int size=(valueLocal*94)/max;
-	globalContainer->gfx->drawFilledRect(x+16+1, y+1, size, 14, 100, 100, 200);
-	size=(value*94)/max;
-	globalContainer->gfx->drawFilledRect(x+16+1, y+3, size, 10, 28, 28, 200);
-	size=(act*94)/max;
-	globalContainer->gfx->drawFilledRect(x+16+1, y+5, size, 6, 28, 200, 28);*/
 }
 
 void GameGUI::drawXPProgressBar(int x, int y, int act, int max)

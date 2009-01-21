@@ -247,7 +247,6 @@ bool NetEngine::matchCheckSums()
 
 void NetEngine::increaseLatencyAdjustment()
 {
-	std::cout << "increaseLatencyAdjustment(). currentLatency is " << currentLatency  << std::endl;
-	boost::shared_ptr<AdjustLatency> latency(new AdjustLatency(std::min(currentLatency+1,30)));
+	boost::shared_ptr<AdjustLatency> latency(new AdjustLatency(currentLatency+1));
 	addLocalOrder(latency);
 }

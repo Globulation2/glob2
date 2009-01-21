@@ -619,6 +619,8 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	
 	attachedBuilding->removeUnitFromWorking(this);
 	attachedBuilding=NULL;
+	if (targetBuilding)
+		targetBuilding->removeUnitFromHarvesting(this);
 	targetBuilding=NULL;
 	ownExchangeBuilding=NULL;
 	assert(needToRecheckMedical);
@@ -723,23 +725,26 @@ void Unit::handleMagic(void)
 
 void Unit::handleMedical(void)
 {
-        /* Make sure explorers try to immediately feed after healing to increase their range. */
-        if ((typeNum == EXPLORER)
-            && (displacement == DIS_EXITING_BUILDING)) {
-          medical=MED_FREE;
-          if ((destinationPurprose == HEAL)
-              && (hungry < ((HUNGRY_MAX * 9) / 10))) {
-            // fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
-            needToRecheckMedical = 1;
-            medical = MED_HUNGRY;
-            return; }
-          else if ((destinationPurprose == FEED)
-                   && (hp < (((performance[HP]) * 9) / 10))) {
-            // fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
-            needToRecheckMedical = 1;
-            medical = MED_DAMAGED;
-            return; }}
-
+	/* Make sure explorers try to immediately feed after healing to increase their range. */
+	if ((typeNum == EXPLORER) && (displacement == DIS_EXITING_BUILDING))
+	{
+		medical=MED_FREE;
+		if ((destinationPurprose == HEAL) && (hungry < ((HUNGRY_MAX * 9) / 10)))
+		{
+			// fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
+			needToRecheckMedical = 1;
+			medical = MED_HUNGRY;
+			return;
+		}
+		else if ((destinationPurprose == FEED) && (hp < (((performance[HP]) * 9) / 10)))
+		{
+			// fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
+			needToRecheckMedical = 1;
+			medical = MED_DAMAGED;
+			return;
+		}
+	}
+	
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
 	
@@ -770,7 +775,13 @@ void Unit::handleMedical(void)
 				attachedBuilding->removeUnitFromWorking(this);
 				attachedBuilding->removeUnitFromInside(this);
 				attachedBuilding=NULL;
+				ownExchangeBuilding=NULL;
+			}
+			if (targetBuilding)
+			{
+				targetBuilding->removeUnitFromHarvesting(this);
 				targetBuilding=NULL;
+                //TODO: in beta4 this line was ommitted. delete?
 				ownExchangeBuilding=NULL;
 			}
 			
@@ -870,6 +881,7 @@ void Unit::handleActivity(void)
 	}
 	else if (needToRecheckMedical)
 	{
+		// disconnect from building
 		if (attachedBuilding)
 		{
 			if (verbose)
@@ -877,8 +889,12 @@ void Unit::handleActivity(void)
 			attachedBuilding->removeUnitFromWorking(this);
 			attachedBuilding->removeUnitFromInside(this);
 			attachedBuilding=NULL;
-			targetBuilding=NULL;
 			ownExchangeBuilding=NULL;
+		}
+		if (targetBuilding) 
+		{
+			targetBuilding->removeUnitFromHarvesting(this);
+			targetBuilding=NULL;
 		}
 
 		if (medical==MED_HUNGRY)
@@ -1070,6 +1086,7 @@ void Unit::handleDisplacement(void)
 						caryedRessource=destinationPurprose;
 						fprintf(logFile, "[%d] sdp6 destinationPurprose=%d\n", gid, destinationPurprose);
 						
+						targetBuilding->removeUnitFromHarvesting(this);
 						targetBuilding=attachedBuilding;
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
@@ -1142,7 +1159,8 @@ void Unit::handleDisplacement(void)
 												int buildingDist;
 												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
 												{
-													int value=(buildingDist<<1)/need; // We double the cost to get a ressource in an exchange building.
+													// We increase the cost to get a ressource in an exchange building to reflect the costs to get the ressources to the exchange building.
+													int value=(buildingDist<<1)/need;
 													if (value<minValue)
 													{
 														bestRessource=r;
@@ -1170,6 +1188,7 @@ void Unit::handleDisplacement(void)
 									displacement=DIS_GOING_TO_BUILDING;
 									targetX=targetBuilding->getMidX();
 									targetY=targetBuilding->getMidY();
+									targetBuilding->insertUnitToHarvesting(this);
 									validTarget=true;
 								}
 								else
@@ -2086,8 +2105,8 @@ void Unit::handleAction(void)
 			// NOTE : this is a hack : We don't delete the unit on the map
 			// because we have to draw it while it is entering.
 			// owner->map->setUnit(posX, posY, NOUID);
-			posX+=dx;
-			posY+=dy;
+			posX=(posX+dx)&(owner->map->getMaskW());
+			posY=(posY+dy)&(owner->map->getMaskH());
 			directionFromDxDy();
 			selectPreferedMovement();
 			speed=performance[action];
