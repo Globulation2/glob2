@@ -284,7 +284,7 @@ def main():
                     f = env.Install(new_dir, s)
                     env.Tar(target, f)
               
-    PackTar(env["TARFILE"], Split("AUTHORS COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
+    PackTar(env["TARFILE"], Split("COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     #packaging for apple
     if isDarwinPlatform and env["release"]:
         bundle.generate(env)
