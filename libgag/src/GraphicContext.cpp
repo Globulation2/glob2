@@ -108,9 +108,9 @@ namespace GAGCore
 	static struct GLState
 	{
 		static const bool verbose = false;
-		int _doBlend;
-		int _doTexture;
-		int _doScissor;
+		bool _doBlend;
+		bool _doTexture;
+		bool _doScissor;
 		GLint _texture;
 		GLenum _sfactor, _dfactor;
 		bool isTextureSRectangle;
@@ -127,9 +127,9 @@ namespace GAGCore
 
 		void resetCache(void)
 		{
-			_doBlend = -1;
-			_doTexture = -1;
-			_doScissor = -1;
+			_doBlend = true;
+			_doTexture = true;
+			_doScissor = true;
 			_texture = -1;
 			_sfactor = 0xffffffff;
 			_dfactor = 0xffffffff;
@@ -153,22 +153,24 @@ namespace GAGCore
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension not present, power of two texture will be used" << std::endl;
 		}
 
-		void doBlend(int on)
+		bool doBlend(bool on)
 		{
 			if (_doBlend == on)
-				return;
+				return on;
 
+			bool oldBlend=_doBlend;
 			if (on)
 				glEnable(GL_BLEND);
 			else
 				glDisable(GL_BLEND);
 			_doBlend = on;
+			return !on;
 		}
 
-		void doTexture(int on)
+		bool doTexture(bool on)
 		{
 			if (_doTexture == on)
-				return;
+				return on;
 
 			GLenum cap;
 			if (isTextureSRectangle)
@@ -181,6 +183,7 @@ namespace GAGCore
 			else
 				glDisable(cap);
 			_doTexture = on;
+			return !on;
 		}
 
 		void setTexture(int tex)
@@ -199,16 +202,17 @@ namespace GAGCore
 			_texture = tex;
 		}
 
-		void doScissor(int on)
+		bool doScissor(bool on)
 		{
 			if (_doScissor == on)
-				return;
+				return on;
 
 			if (on)
 				glEnable(GL_SCISSOR_TEST);
 			else
 				glDisable(GL_SCISSOR_TEST);
 			_doScissor = on;
+			return !on;
 		}
 
 		void blendFunc(GLenum sfactor, GLenum dfactor)
@@ -1421,7 +1425,7 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
-			glState.doScissor(1);
+			glState.doScissor(true);
 			glScissor(clipRect.x, getH() - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
 		}
 		#endif
@@ -1432,7 +1436,7 @@ namespace GAGCore
 		DrawableSurface::setClipRect();
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
-			glState.doScissor(0);
+			glState.doScissor(false);
 		#endif
 	}
 
@@ -1476,8 +1480,8 @@ namespace GAGCore
 		{
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(1);
-			glState.doTexture(0);
+			glState.doBlend(true);
+			glState.doTexture(false);
 
 			// draw
 			glBegin(GL_LINES);
@@ -1514,10 +1518,10 @@ namespace GAGCore
 		{
 			// state change
 			if (color.a < 255)
-				glState.doBlend(1);
+				glState.doBlend(true);
 			else
-				glState.doBlend(0);
-			glState.doTexture(0);
+				glState.doBlend(false);
+			glState.doTexture(false);
 
 			// draw
 			glBegin(GL_QUADS);
@@ -1554,8 +1558,8 @@ namespace GAGCore
 		{
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(1);
-			glState.doTexture(0);
+			glState.doBlend(true);
+			glState.doTexture(false);
 
 			// draw
 			glBegin(GL_LINES);
@@ -1588,8 +1592,8 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
-			glState.doBlend(1);
-			glState.doTexture(0);
+			glState.doBlend(true);
+			glState.doTexture(false);
 			glLineWidth(2);
 
 			double tot = radius;
@@ -1678,8 +1682,8 @@ namespace GAGCore
 
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(1);
-			glState.doTexture(1);
+			glState.doBlend(true);
+			glState.doTexture(true);
 			glColor4ub(255, 255, 255, alpha);
 
 			// draw
@@ -1739,8 +1743,8 @@ namespace GAGCore
 				if(!old_texture_2d)
 					glDisable(GL_TEXTURE_2D);
 			} else {
-				glState.doBlend(1);
-				glState.doTexture(0);
+				glState.doBlend(true);
+				glState.doTexture(false);
 				for (int dy=0; dy < mapH-1; dy++)
 				{
 					int midy = y + dy * cellH + cellH/2;
@@ -1783,40 +1787,38 @@ namespace GAGCore
 		{
 			assert(mapW * mapH <= static_cast<int>(map.size()));
 			if(EXPERIMENTAL) {
-				GLuint texture[1];
-				//glState.resetCache();
-				//glState.doBlend(1);
-				//glState.doTexture(1);
-				GLboolean old_blend;
-				GLboolean old_texture_2d;
-				glGetBooleanv(GL_BLEND,&old_blend);
-				glGetBooleanv(GL_TEXTURE_2D,&old_texture_2d);
+				glPushMatrix();
 				glEnable(GL_BLEND);
 				glEnable(GL_TEXTURE_2D);
+/*				glState.resetCache();
+				bool oldBlend=glState.doBlend(true);
+				bool oldTexture=glState.doTexture(true);*/
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 				GLubyte image[mapW*mapH];
 				for (int i=0; i<mapH; i++)
 					for (int j=0; j<mapW;j++)
 						image[i*mapW+j]=map[mapW*i+j];
 				glColor4ub(color.r, color.g, color.b, color.a);
+				GLuint texture[1];
 				glGenTextures(1, &texture[0]);
 				glBindTexture(GL_TEXTURE_2D, texture[0]);
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, image);
-				glBindTexture( GL_TEXTURE_2D, texture[0] );
 				glBegin(GL_QUADS);
-				glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+0);
-				glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+0         ,y+0);
-				glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+0         ,y+mapH*cellH);
-				glTexCoord2f( 1.0f, 1.0f ); glVertex2f(x+mapW*cellW,y+mapH*cellH);
+					glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+0);
+					glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+0         ,y+0);
+					glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+0         ,y+mapH*cellH);
+					glTexCoord2f( 1.0f, 1.0f ); glVertex2f(x+mapW*cellW,y+mapH*cellH);
 				glEnd( );
-				if(!old_blend)
-					glDisable(GL_BLEND);
-				if(!old_texture_2d)
-					glDisable(GL_TEXTURE_2D);
+				glPopMatrix();
+				//uploadToTexture();
+//				glState.doBlend(oldBlend);
+//				glState.doTexture(oldTexture);
 			} else {
-				glState.doBlend(1);
-				glState.doTexture(0);
+				glState.doBlend(true);
+				glState.doTexture(false);
 				for (int dy=0; dy < mapH-1; dy++)
 				{
 					int midy = y + dy * cellH + cellH/2;
@@ -2120,7 +2122,7 @@ namespace GAGCore
 				gluOrtho2D(0, w, h, 0);
 				glEnable(GL_LINE_SMOOTH);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-				glState.doTexture(1);
+				glState.doTexture(true);
 				glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			}
 			#endif
