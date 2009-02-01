@@ -254,6 +254,7 @@ void Settings::resetDefaultUnitsAssigned()
 	defaultUnitsAssigned[IntBuildingType::DEFENSE_BUILDING][5] = 2;
 	defaultUnitsAssigned[IntBuildingType::STONE_WALL][0] = 1;
 	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][0] = 3;
+	defaultUnitsAssigned[IntBuildingType::MARKET_BUILDING][1] = 3;
 }
 
 
