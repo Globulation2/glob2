@@ -127,9 +127,9 @@ namespace GAGCore
 
 		void resetCache(void)
 		{
-			_doBlend = true;
-			_doTexture = true;
-			_doScissor = true;
+			_doBlend = false;
+			_doTexture = false;
+			_doScissor = false;
 			_texture = -1;
 			_sfactor = 0xffffffff;
 			_dfactor = 0xffffffff;
@@ -157,8 +157,6 @@ namespace GAGCore
 		{
 			if (_doBlend == on)
 				return on;
-
-			bool oldBlend=_doBlend;
 			if (on)
 				glEnable(GL_BLEND);
 			else
@@ -171,7 +169,6 @@ namespace GAGCore
 		{
 			if (_doTexture == on)
 				return on;
-
 			GLenum cap;
 			if (isTextureSRectangle)
 				cap = GL_TEXTURE_RECTANGLE_NV;
