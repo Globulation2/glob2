@@ -583,7 +583,11 @@ bool Unit::isUnitHungry(void)
 void Unit::standardRandomActivity()
 {
 	attachedBuilding=NULL;
-	targetBuilding=NULL;
+	if(targetBuilding!=NULL)
+	{
+		targetBuilding->removeUnitFromHarvesting(this);
+		targetBuilding=NULL;
+	}
 	ownExchangeBuilding=NULL;
 	activity=Unit::ACT_RANDOM;
 	displacement=Unit::DIS_RANDOM;
