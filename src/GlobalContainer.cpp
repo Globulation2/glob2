@@ -590,7 +590,9 @@ void GlobalContainer::load(void)
 		// load ressources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
-		areas = Toolkit::getSprite("data/gfx/area");
+		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
+		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
+		areaGuard = Toolkit::getSprite("data/gfx/area-guard");
 		bullet = Toolkit::getSprite("data/gfx/bullet");
 		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
 		deathAnimation = Toolkit::getSprite("data/gfx/death"); 

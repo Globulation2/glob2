@@ -109,6 +109,10 @@ def configure(env):
         else:
             print "Could not find libz or zlib1.dll"
             missing.append("zlib")
+    
+    if ((env['mingw'] or isWindowsPlatform) and not conf.CheckLib("regex")) or not conf.CheckCXXHeader("regex.h"):
+			print "Could not find regex.h"
+			missing.append("regex")
 
     boost_thread = ''
     if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
@@ -209,7 +213,6 @@ def configure(env):
                 print "         no portaudio - let us know at:"
                 print "         no portaudio - https://savannah.nongnu.org/bugs/index.php?24668"
                 print "         no portaudio"
-        
     if missing:
         for t in missing:
             print "Missing %s" % t
@@ -246,6 +249,7 @@ def main():
         env.Append(CPPPATH=["/sw/include"])
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
+    env.Append(CPPPATH=['#libusl/src', '#'])
     if env['release']:
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS=' -O2')
@@ -256,7 +260,7 @@ def main():
         env.Append(LINKFLAGS='-O2')
     if env['mingw'] or isWindowsPlatform:
         env.Append(LIBPATH=['/usr/local/lib'])
-        env.Append(LIBS=['wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
+        env.Append(LIBS=['regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
         env.Append(LINKFLAGS=['-mwindows'])
         env.Append(CPPPATH=['/usr/local/include/SDL'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])

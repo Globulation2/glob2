@@ -18,11 +18,12 @@
 
 #include "GameObjectives.h"
 #include "Stream.h"
-
+#include <cassert>
 #include <iostream>
 
 
-GameObjectives::GameObjectives()
+GameObjectives::GameObjectives() :
+	invalidText("invalid")
 {
 	texts.push_back("[Defeat Your Oppenents]");
 	hidden.push_back(false);
@@ -67,6 +68,7 @@ void GameObjectives::removeObjective(int n)
 
 void GameObjectives::setGameObjectiveText(int n, const std::string& objective)
 {
+	assert(n < texts.size());
 	texts[n] = objective;
 }
 
@@ -74,28 +76,36 @@ void GameObjectives::setGameObjectiveText(int n, const std::string& objective)
 
 const std::string& GameObjectives::getGameObjectiveText(int n)
 {
-	return texts[n];
+	if (n >= 0 && n < texts.size())
+		return texts[n];
+	else
+		return invalidText;
 }
 
 
 
 void GameObjectives::setObjectiveHidden(int n)
 {
-	hidden[n]=true;
+	if (n >= 0 && n < hidden.size())
+		hidden[n]=true;
 }
 
 
 
 void GameObjectives::setObjectiveVisible(int n)
 {
-	hidden[n]=false;
+	if (n >= 0 && n < hidden.size())
+		hidden[n]=false;
 }
 
 
 
 bool GameObjectives::isObjectiveVisible(int n)
 {
-	return !hidden[n];
+	if (n >= 0 && n < hidden.size())
+		return !hidden[n];
+	else
+		return false;
 }
 
 
@@ -103,44 +113,63 @@ bool GameObjectives::isObjectiveVisible(int n)
 
 void GameObjectives::setObjectiveComplete(int n)
 {
-	completed[n]=true;
-	failed[n]=false;
+	assert(completed.size() == failed.size());
+	if (n >= 0 && n < completed.size())
+	{
+		completed[n]=true;
+		failed[n]=false;
+	}
 }
 
 
 
 void GameObjectives::setObjectiveIncomplete(int n)
 {
-	completed[n]=false;
-	failed[n]=false;
+	assert(completed.size() == failed.size());
+	if (n >= 0 && n < completed.size())
+	{
+		completed[n]=false;
+		failed[n]=false;
+	}
 }
 
 
 
 void GameObjectives::setObjectiveFailed(int n)
 {
-	completed[n]=false;
-	failed[n]=true;
+	assert(completed.size() == failed.size());
+	if (n >= 0 && n < completed.size())
+	{
+		completed[n]=false;
+		failed[n]=true;
+	}
 }
 
 
 
 bool GameObjectives::isObjectiveComplete(int n)
 {
-	return completed[n];
+	if (n >= 0 && n < completed.size())
+		return completed[n];
+	else
+		return false;
 }
 
 
 
 bool GameObjectives::isObjectiveFailed(int n)
 {
-	return failed[n];
+	if (n >= 0 && n < failed.size())
+		return failed[n];
+	else
+		return false;
 }
 
 
 
 void GameObjectives::setObjectiveType(int n, GameObjectiveType type)
 {
+	assert(n < types.size());
 	types[n] = type;
 }
 
@@ -148,13 +177,17 @@ void GameObjectives::setObjectiveType(int n, GameObjectiveType type)
 
 GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
 {
-	return types[n];
+	if (n >= 0 && n < types.size())
+		return types[n];
+	else
+		return Invalid;
 }
 
 
 
 void GameObjectives::setScriptNumber(int n, int scriptNumber)
 {
+	assert(n < scriptNumbers.size());
 	scriptNumbers[n] = scriptNumber;
 }
 
@@ -162,6 +195,7 @@ void GameObjectives::setScriptNumber(int n, int scriptNumber)
 
 int GameObjectives::getScriptNumber(int n)
 {
+	assert(n < scriptNumbers.size());
 	return scriptNumbers[n];
 }
 

@@ -32,7 +32,7 @@ class GameHeader
 public:
 	///Gives default values to all entries
 	GameHeader();
-		
+
 	///Resets the GameHeader to a "blank" state with default values
 	void reset();	
 
@@ -118,10 +118,10 @@ private:
 	Uint8 orderRate;
 
 	///Represents the basic player information in the game
-	BasePlayer players[32];
+	BasePlayer * players;
 	
 	///Represents the ally team numbers
-	Uint8 allyTeamNumbers[32];
+	Uint8 * allyTeamNumbers;
 	
 	///Represents whether the ally-teams are fixed for the whole game, so no allying/unallying can take place
 	bool allyTeamsFixed;

@@ -184,6 +184,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	else
 		underAttackTimer = 0;
 
+
 	// trigger parameters
 	hp = stream->readSint32("hp");
 	trigHP = stream->readSint32("trigHP");
@@ -784,6 +785,8 @@ void Unit::handleMedical(void)
 			{
 				targetBuilding->removeUnitFromHarvesting(this);
 				targetBuilding=NULL;
+                //TODO: in beta4 this line was ommitted. delete?
+				ownExchangeBuilding=NULL;
 			}
 			
 			activity=ACT_RANDOM;
@@ -897,16 +900,15 @@ void Unit::handleActivity(void)
 			targetBuilding->removeUnitFromHarvesting(this);
 			targetBuilding=NULL;
 		}
-		
+
 		if (medical==MED_HUNGRY)
 		{
 			Building *b;
 			b=owner->findNearestFood(this);
-			if (typeNum == EXPLORER)
-			{
-				// fprintf (stderr, "gid: %d, b: %x\n", gid, b);
-			}
-			
+                        /*if (typeNum == EXPLORER) {
+                           fprintf (stderr, "gid: %d, b: %x\n", gid, b);
+                        }*/
+
 			if (b!=NULL)
 			{
 				Team *currentTeam=owner;
@@ -926,7 +928,7 @@ void Unit::handleActivity(void)
 					
 					// Find free slot in other team
 					int targetID=-1;
-					for (int i=0; i<1024; i++)//we search for a free place for a unit.
+					for (int i=0; i<Unit::MAX_COUNT; i++)//we search for a free place for a unit.
 						if (targetTeam->myUnits[i]==NULL)
 						{
 							targetID=i;
@@ -1167,6 +1169,7 @@ void Unit::handleDisplacement(void)
 													{
 														bestRessource=r;
 														minValue=value;
+
 														ownExchangeBuilding=*bi;
 														targetBuilding=*bi;
 														takeInExchangeBuilding=true;
@@ -1404,12 +1407,12 @@ void Unit::handleDisplacement(void)
 bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 {
 	//TODO: totally fix this totally hacky implementation.
-	for(int i=0;i<32;i++)
+	for(int i=0;i<Team::MAX_COUNT;i++)
 	{
 		Team *t = owner->game->teams[i];
 		if((t)&&(owner->enemies & t->me))
 		{
-			for(int j=0;j<1024;j++)
+			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
 				if((b)&&(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)&&(owner->map->warpDistMax(b->posX,b->posY,posX,posY) <= b->type->shootingRange + 1))return true;
@@ -2414,23 +2417,23 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 
 Sint32 Unit::GIDtoID(Uint16 gid)
 {
-	assert(gid<32768);
-	return (gid%1024);
+	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
+	return (gid%Unit::MAX_COUNT);
 }
 
 Sint32 Unit::GIDtoTeam(Uint16 gid)
 {
-	assert(gid<32768);
-	return (gid/1024);
+	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
+	return (gid/Unit::MAX_COUNT);
 }
 
 Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 {
 	assert(id>=0);
-	assert(id<1024);
+	assert(id<Unit::MAX_COUNT);
 	assert(team>=0);
-	assert(team<32);
-	return id+team*1024;
+	assert(team<Team::MAX_COUNT);
+	return id+team*Unit::MAX_COUNT;
 }
 
 //! Return the real armor, taking into account the reduction due to fruits

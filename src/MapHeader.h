@@ -22,6 +22,7 @@
 #include "Stream.h"
 #include "Version.h"
 #include "BaseTeam.h"
+#include "Team.h"
 
 ///This is the map header. It is static with the map, and does not change from game to game if
 ///the user is playing on the same map. It holds small details about a map that aren't placed
@@ -114,7 +115,7 @@ private:
 	
 	/// The teams in the map. BaseTeam is used to allow access to information like team numbers and
 	/// team colors without loading the entire game.
-	BaseTeam teams[32];
+	BaseTeam teams[Team::MAX_COUNT];
 	
 	/// If this is true, this map header represents a saved game, rather than a new map
 	bool isSavedGame;

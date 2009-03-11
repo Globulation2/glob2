@@ -35,9 +35,9 @@ BasePlayer::BasePlayer(Sint32 number, const std::string& nname, Sint32 teamNumbe
 	init();
 	
 	assert(number>=0);
-	assert(number<32);
+	assert(number<Team::MAX_COUNT);
 	assert(teamNumber>=0);
-	assert(teamNumber<32);
+	assert(teamNumber<Team::MAX_COUNT);
 	assert(nname.size());
 
 	setNumber(number);

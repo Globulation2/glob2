@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -190,6 +194,8 @@ Byg
 Enheder
 [building site]
 bygningssted
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -644,6 +650,8 @@ Nej
 
 [not ready]
 ikke klar
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -652,6 +660,8 @@ ikke klar
 %0 hold.
 [number of teams]
 antal af hold
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -683,7 +693,7 @@ Her
 [open]
 Åben
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -714,6 +724,8 @@ Vent venligst
 
 [press space]
 Tryk på mellemrum for at fortsætte
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -750,6 +762,8 @@ Proportioner
 
 [Register a new YOG user with password]
 Register en ny YOG bruger med adgangskode. (usikker)
+[Register]
+
 [remember unit]
 Husk enhed
 [Remember YOG password localy]
@@ -766,6 +780,8 @@ Start/Stop Reparation
 Reparere
 [repeat area]
 antal gange det samme landskab
+[Repeat your password :]
+
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
@@ -1056,6 +1072,8 @@ Svømme pølen er under angreb
 ?? Krigs flaget er færdig ??
 [the warflag is under attack]
 ?? Krigs flaget er under angreb ??
+[time]
+
 [to:]
 til:
 [toggle draw accessibility aids]
@@ -1068,6 +1086,12 @@ Vælg tegn endhd router
 
 [toggle recording voice]
 Start volkal optagelse
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Total prestige opnået
 [Total]
@@ -1198,6 +1222,8 @@ YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i br
 
 [YESTS_CREATED]
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
 [yog block command help]
