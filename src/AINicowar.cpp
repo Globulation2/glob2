@@ -2067,7 +2067,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	
 	//For every unit thats under attack, increment in the squares surrounding it.
 	//Use the 'locations' list to keep track of non-zero squares
-	for(int i=0; i<1024; ++i)
+	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
 		Unit* unit = echo.player->team->myUnits[i];
 		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] == NOGUID)
@@ -2076,7 +2076,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 			modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, 4, 1, locations);
 		}
 	}
-	for(int i=0; i<1024; ++i)
+	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
 		Building* building = echo.player->team->myBuildings[i];
 		if(building && building->underAttackTimer && buildingGID[building->posX * h + building->posY] == NOGBID)
@@ -2342,9 +2342,9 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 	
 	if(explorer_attack_phase && target!=-1)
 	{
-		Unit** units = new Unit*[1024];
+		Unit** units = new Unit*[Unit::MAX_COUNT];
 		Unit* first = NULL;
-		for(int i=0; i<1024; ++i)
+		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
 			Unit* unit = echo.player->game->teams[target]->myUnits[i];
 			if(unit && mi.is_discovered(unit->posX, unit->posY) && unit->typeNum != EXPLORER && unit->activity != Unit::ACT_UPGRADING)
@@ -2368,7 +2368,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 			std::queue<Unit*> proccess;
 			std::queue<int> xposs;
 			std::queue<int> yposs;
-			for(int i=0; i<1024; ++i)
+			for(int i=0; i<Unit::MAX_COUNT; ++i)
 			{
 				if(units[i])
 				{

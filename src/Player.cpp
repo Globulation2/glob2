@@ -37,7 +37,7 @@ Player::Player()
 	ai=NULL;
 }
 
-Player::Player(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor)
+Player::Player(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor)
 :BasePlayer()
 {
 	bool success=load(stream, teams, versionMinor);
@@ -86,7 +86,7 @@ void Player::setTeam(Team *team)
 	}
 }
 
-void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
+void Player::setBasePlayer(const BasePlayer *initial, Team *teams[Team::MAX_COUNT])
 {
 	assert(initial);
 
@@ -115,7 +115,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[32])
 	}
 };
 
-bool Player::load(GAGCore::InputStream *stream, Team *teams[32], Sint32 versionMinor)
+bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor)
 {
 	stream->readEnterSection("Player");
 	char signature[4];

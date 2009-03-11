@@ -31,6 +31,7 @@
 #include <sstream>
 #include <iomanip>
 #include "GlobalContainer.h"
+#include "Team.h"
 
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
@@ -45,7 +46,8 @@ EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlig
 	
 	this->game = game;
 
-	for(int x=0; x<32; ++x)
+	isTeamEnabled=new bool[Team::MAX_COUNT];
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 		isTeamEnabled[x]=true;
 	
 	this->type = EndOfGameStat::TYPE_UNITS;
@@ -188,6 +190,15 @@ void EndGameStat::paint(void)
 			str<<circle_position_value;
 			parent->getSurface()->drawString(circle_position_x+10, circle_position_y+10, globalContainer->littleFont, str.str());
 		}
+		
+		// Draw labels
+		std::string label = Toolkit::getStringTable()->getString("[time]");
+		int textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
+		parent->getSurface()->drawString(x - textwidth/2 + e_width/2, y+e_height-20, globalContainer->standardFont, label);
+		
+		label = getStatLabel();
+		textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
+		parent->getSurface()->drawString(x + e_width - textwidth - 4, y + e_height/2, globalContainer->standardFont, label);
 	}
 	else
 	{
@@ -247,6 +258,25 @@ std::string EndGameStat::getRightScaleText(int value, int digits)
 	std::stringstream str;
 	str<<std::setw(digits)<<std::setfill('0')<<value<<std::endl;
 	return str.str();
+}
+
+
+
+std::string EndGameStat::getStatLabel()
+{
+	if(type == EndOfGameStat::TYPE_UNITS)
+		return Toolkit::getStringTable()->getString("[Number Of Units]");
+	if(type == EndOfGameStat::TYPE_BUILDINGS)
+		return Toolkit::getStringTable()->getString("[Number Of Buildings]");
+	if(type == EndOfGameStat::TYPE_PRESTIGE)
+		return Toolkit::getStringTable()->getString("[Prestige Score]");
+	if(type == EndOfGameStat::TYPE_HP)
+		return Toolkit::getStringTable()->getString("[Total Hitpoints]");
+	if(type == EndOfGameStat::TYPE_ATTACK)
+		return Toolkit::getStringTable()->getString("[Total Attack Power]");
+	if(type == EndOfGameStat::TYPE_DEFENSE)
+		return Toolkit::getStringTable()->getString("[Total Defence Power]");
+		
 }
 
 

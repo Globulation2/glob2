@@ -25,8 +25,6 @@ GameHeader::GameHeader()
 	reset();
 }
 
-
-
 void GameHeader::reset()
 {
 	//These are the default game options
@@ -38,7 +36,9 @@ void GameHeader::reset()
 	//If needed, seed can be fixed, default value, 5489
 	//seed = 5489;
 	
-	for(int i=0; i<32; ++i)
+	players=new BasePlayer[Team::MAX_COUNT];
+	allyTeamNumbers=new Uint8[Team::MAX_COUNT];
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		allyTeamNumbers[i] = i+1;
 	}
@@ -56,7 +56,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	orderRate = stream->readUint8("orderRate");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	stream->readEnterSection("players");
-	for(int i=0; i<32; ++i)
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		stream->readEnterSection(i);
 		players[i].load(stream, versionMinor);
@@ -66,7 +66,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	if(versionMinor >= 71)
 	{
 		stream->readEnterSection("allyTeamNumbers");
-		for(int i=0; i<32; ++i)
+		for(int i=0; i<Team::MAX_COUNT; ++i)
 		{
 			allyTeamNumbers[i] = stream->readUint8("allyTeamNumber");
 		}
@@ -101,7 +101,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(orderRate, "orderRate");
 	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeEnterSection("players");
-	for(int i=0; i<32; ++i)
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		stream->writeEnterSection(i);
 		players[i].save(stream);
@@ -109,7 +109,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	}
 	stream->writeLeaveSection();
 	stream->writeEnterSection("allyTeamNumbers");
-	for(int i=0; i<32; ++i)
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		stream->writeUint8(allyTeamNumbers[i], "allyTeamNumber");
 	}
@@ -141,7 +141,7 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	if(versionMinor >= 71)
 	{
 		stream->readEnterSection("allyTeamNumbers");
-		for(int i=0; i<32; ++i)
+		for(int i=0; i<Team::MAX_COUNT; ++i)
 		{
 			allyTeamNumbers[i] = stream->readUint8("allyTeamNumber");
 		}
@@ -175,7 +175,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeSint32(gameLatency, "gameLatency");
 	stream->writeUint8(orderRate, "orderRate");
 	stream->writeEnterSection("allyTeamNumbers");
-	for(int i=0; i<32; ++i)
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		stream->writeUint8(allyTeamNumbers[i], "allyTeamNumber");
 	}
@@ -204,7 +204,7 @@ bool GameHeader::loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMino
 	stream->readEnterSection("GameHeader");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	stream->readEnterSection("players");
-	for(int i=0; i<32; ++i)
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		stream->readEnterSection(i);
 		players[i].load(stream, versionMinor);
@@ -222,7 +222,7 @@ void GameHeader::savePlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("GameHeader");
 	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeEnterSection("players");
-	for(int i=0; i<32; ++i)
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		stream->writeEnterSection(i);
 		players[i].save(stream);
@@ -278,7 +278,7 @@ void GameHeader::setOrderRate(Uint8 aorderRate)
 
 BasePlayer& GameHeader::getBasePlayer(const int n)
 {
-	assert(n<32 && n>=0);
+	assert(n<Team::MAX_COUNT && n>=0);
 	return players[n];
 }
 
@@ -286,7 +286,7 @@ BasePlayer& GameHeader::getBasePlayer(const int n)
 
 const BasePlayer& GameHeader::getBasePlayer(const int n) const
 {
-	assert(n<32 && n>=0);
+	assert(n<Team::MAX_COUNT && n>=0);
 	return players[n];
 }
 
