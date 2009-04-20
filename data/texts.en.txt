@@ -1175,7 +1175,7 @@ You have lost!
 [you have won]
 You have won!
 [You where kicked from the game]
-You where kicked from the game
+You were kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
 [Your IP address was temporarily banned]
