@@ -164,7 +164,7 @@ struct PrototypeWith: NativeMethod
 		ScopePrototype* target = new ScopePrototype(*thatProt->prototype);
 		target->body.push_back(new PopCode());
 		std::copy(thisProt->prototype->body.begin(), thisProt->prototype->body.end(), std::back_inserter(target->body));
-		/*foreach var in this
+		foreach var in this
 			copy var in composedThunk
 		return composedThunk;/
 		

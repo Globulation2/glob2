@@ -465,9 +465,9 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 		{
 			randomSeed = randomSeed * 69069;
 			unsigned index;
-			if (x/32 < limit)
+			if (x/32 < (int)limit)
 				index = ((randomSeed >> 16) & 0xF);
-			else if (x/32 == limit)
+			else if (x/32 == (int)limit)
 				index = ((randomSeed >> 16) & 0x7) + 64;
 			else
 				index = ((randomSeed >> 16) & 0xF) + 128;

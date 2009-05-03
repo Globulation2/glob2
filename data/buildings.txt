@@ -109,7 +109,7 @@ miniSpriteImage 0
 
 foodable 1
 canFeedUnit 1
-timeToFeedUnit 8
+timeToFeedUnit 24
 
 width 2
 height 2
@@ -164,7 +164,7 @@ miniSpriteImage 0
 
 foodable 1
 canFeedUnit 1
-timeToFeedUnit 5
+timeToFeedUnit 15
 
 width 2
 height 2
@@ -221,7 +221,7 @@ miniSpriteImage 0
 
 foodable 1
 canFeedUnit 1
-timeToFeedUnit 3
+timeToFeedUnit 9
 
 width 3
 height 3
@@ -276,7 +276,7 @@ miniSprite data/gfx/minihosp0b
 miniSpriteImage 0
 
 canHealUnit 1
-timeToHealUnit 10
+timeToHealUnit 30
 
 width 2
 height 2
@@ -325,7 +325,7 @@ miniSprite data/gfx/minihosp1b
 miniSpriteImage 0
 
 canHealUnit 1
-timeToHealUnit 6
+timeToHealUnit 18
 
 width 2
 height 2
@@ -376,7 +376,7 @@ miniSprite data/gfx/minihosp2b
 miniSpriteImage 0
 
 canHealUnit 1
-timeToHealUnit 2
+timeToHealUnit 6
 
 width 2
 height 2
@@ -428,7 +428,7 @@ miniSprite data/gfx/miniracetrack0b
 miniSpriteImage 0
 
 upgradeWalk 1
-upgradeTimeWalk 7
+upgradeTimeWalk 21
 
 width 4
 height 4
@@ -480,7 +480,7 @@ miniSprite data/gfx/miniracetrack1b
 miniSpriteImage 0
 
 upgradeWalk 1
-upgradeTimeWalk 7
+upgradeTimeWalk 21
 
 width 6
 height 6
@@ -531,7 +531,7 @@ miniSprite data/gfx/miniracetrack2b
 miniSpriteImage 0
 
 upgradeWalk 1
-upgradeTimeWalk 8
+upgradeTimeWalk 24
 
 width 6
 height 6
@@ -582,7 +582,7 @@ miniSprite data/gfx/minipool0b
 miniSpriteImage 0
 
 upgradeSwim 1
-upgradeTimeSwim 7
+upgradeTimeSwim 21
 
 width 4
 height 4
@@ -633,7 +633,7 @@ miniSprite data/gfx/minipool1b
 miniSpriteImage 0
 
 upgradeSwim 1
-upgradeTimeSwim 7
+upgradeTimeSwim 21
 
 width 6
 height 6
@@ -686,7 +686,7 @@ miniSprite data/gfx/minipool2b
 miniSpriteImage 0
 
 upgradeSwim 1
-upgradeTimeSwim 8
+upgradeTimeSwim 24
 
 width 6
 height 6
@@ -736,9 +736,9 @@ miniSprite data/gfx/minibarracks0b
 miniSpriteImage 0
 
 upgradeAttackStrength 1
-upgradeTimeAttackStrength 7
+upgradeTimeAttackStrength 21
 upgradeAttackSpeed 1
-upgradeTimeAttackSpeed 7
+upgradeTimeAttackSpeed 21
 upgradeInParallel 1
 
 width 4
@@ -790,9 +790,9 @@ miniSprite data/gfx/minibarracks1b
 miniSpriteImage 0
 
 upgradeAttackStrength 1
-upgradeTimeAttackStrength 10
+upgradeTimeAttackStrength 30
 upgradeAttackSpeed 1
-upgradeTimeAttackSpeed 10
+upgradeTimeAttackSpeed 30
 upgradeInParallel 1
 
 width 4
@@ -844,9 +844,9 @@ miniSprite data/gfx/minibarracks2b
 miniSpriteImage 0
 
 upgradeAttackStrength 1
-upgradeTimeAttackStrength 14
+upgradeTimeAttackStrength 42
 upgradeAttackSpeed 1
-upgradeTimeAttackSpeed 14
+upgradeTimeAttackSpeed 42
 upgradeInParallel 1
 
 width 4
@@ -899,9 +899,9 @@ miniSprite data/gfx/minischool0b
 miniSpriteImage 0
 
 upgradeBuild 1
-upgradeTimeBuild 7
+upgradeTimeBuild 21
 upgradeHarvest 1
-upgradeTimeHarvest 7
+upgradeTimeHarvest 21
 upgradeInParallel 1
 
 width 2
@@ -955,9 +955,9 @@ miniSprite data/gfx/minischool1b
 miniSpriteImage 0
 
 upgradeBuild 1
-upgradeTimeBuild 19
+upgradeTimeBuild 33
 upgradeHarvest 1
-upgradeTimeHarvest 19
+upgradeTimeHarvest 33
 upgradeInParallel 1
 
 width 2
@@ -1011,11 +1011,11 @@ miniSprite data/gfx/minischool2b
 miniSpriteImage 0
 
 upgradeBuild 1
-upgradeTimeBuild 14
+upgradeTimeBuild 42
 upgradeHarvest 1
-upgradeTimeHarvest 14
+upgradeTimeHarvest 42
 upgradeMagicAttackGround 1
-upgradeTimeMagicAttackGround 14
+upgradeTimeMagicAttackGround 42
 upgradeInParallel 1
 
 width 2

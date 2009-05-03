@@ -82,6 +82,7 @@ bool MapScript::compileCode()
 {
 	if(mode == USL)
 		return usl.compileCode(script);
+	//TODO: return something
 }
 
 
@@ -89,6 +90,7 @@ bool MapScript::testCompileCode(const std::string& testScript)
 {
 	if(mode == USL)
 		return usl.compileCode(testScript);
+	//TODO: return something
 }
 
 

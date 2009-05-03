@@ -90,7 +90,6 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		// Get the type and sprite
 		int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-		Sprite *sprite = bt->gameSpritePtr;
 		
 		// Translate the mouse position to a building position, and check if there is room
 		// on the map
@@ -515,7 +514,6 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 	// Get the type and sprite
 	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
 	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-	Sprite *sprite = bt->gameSpritePtr;
 		
 	int startx = sx;
 	int endx = ex;
@@ -627,10 +625,16 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 		}
 	}
 	if(bt->width == 1 && bt->height==1)
+	{
 		if(mode == 1)
+		{
 			drawBuildingAt(endx, endy, localteam, viewportX, viewportY);
+		}
 		else if(mode == 2)
+		{
 			placeBuildingAt(endx, endy, localteam);
+		}
+	}
 }
 
 void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode)
