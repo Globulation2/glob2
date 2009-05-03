@@ -250,6 +250,7 @@ namespace GAGGUI
 	
 	void List::paint(void)
 	{
+		// this code is required for layouting
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		
