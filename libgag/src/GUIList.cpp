@@ -287,7 +287,7 @@ namespace GAGGUI
 		int nextSize = textHeight;
 		size_t i = 0;
 		
-		while ((nextSize < elementsHeight) && (i < strings.size()))
+		while ((nextSize < elementsHeight) && (i+disp < strings.size()))
 		{
 			drawItem(x + frameLeftWidth * 2, yPos, static_cast<size_t>(i+disp));
 			if (static_cast<int>(i + disp) == nth)
@@ -309,6 +309,8 @@ namespace GAGGUI
 	
 	void List::drawItem(int x, int y, size_t element)
 	{
+		assert(element < strings.size());
+		assert(strings[element].c_str());
 		parent->getSurface()->drawString(x, y, fontPtr, (strings[element]).c_str());
 	}
 	
