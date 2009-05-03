@@ -250,6 +250,8 @@ def main():
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
+    env.Append(CXXFLAGS=' -Wall')
+    env.Append(LINKFLAGS=' -Wall')
     if env['release']:
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS=' -O2')
