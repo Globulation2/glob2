@@ -147,7 +147,7 @@ void NetGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.playerID == playerID)
+		if((int)bp.playerID == playerID)
 		{
 			readyToStart[x] = isReady;
 			break;
@@ -176,11 +176,12 @@ bool NetGamePlayerManager::isReadyToGo(int playerID)
 	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.playerID == playerID)
+		if((int)bp.playerID == playerID)
 		{
 			return readyToStart[x];
 		}
 	}
+	return false;//to satisfy -Wall
 }
 
 

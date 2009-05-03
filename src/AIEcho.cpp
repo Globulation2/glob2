@@ -1640,7 +1640,7 @@ BuildingRegister::BuildingRegister(Player* player, Echo& echo) : building_id(0),
 
 void BuildingRegister::initiate()
 {
-	for(unsigned int i=0; i<Building::MAX_COUNT; ++i)
+	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
 		Building* b=player->team->myBuildings[i];
 		if(b!=NULL)

@@ -260,11 +260,27 @@ std::string EndGameStat::getRightScaleText(int value, int digits)
 	return str.str();
 }
 
-
-
 std::string EndGameStat::getStatLabel()
 {
-	if(type == EndOfGameStat::TYPE_UNITS)
+	switch(type)
+	{
+		case EndOfGameStat::TYPE_UNITS:
+			return Toolkit::getStringTable()->getString("[Number Of Units]");
+		case EndOfGameStat::TYPE_BUILDINGS:
+			return Toolkit::getStringTable()->getString("[Number Of Buildings]");
+		case EndOfGameStat::TYPE_PRESTIGE:
+			return Toolkit::getStringTable()->getString("[Prestige Score]");
+		case EndOfGameStat::TYPE_HP:
+			return Toolkit::getStringTable()->getString("[Total Hitpoints]");
+		case EndOfGameStat::TYPE_ATTACK:
+			return Toolkit::getStringTable()->getString("[Total Attack Power]");
+		case EndOfGameStat::TYPE_DEFENSE:
+			return Toolkit::getStringTable()->getString("[Total Defence Power]");
+		default:
+			assert(false);
+			return "No clue how we got here.";
+	}
+	/*if(type == EndOfGameStat::TYPE_UNITS)
 		return Toolkit::getStringTable()->getString("[Number Of Units]");
 	if(type == EndOfGameStat::TYPE_BUILDINGS)
 		return Toolkit::getStringTable()->getString("[Number Of Buildings]");
@@ -275,11 +291,8 @@ std::string EndGameStat::getStatLabel()
 	if(type == EndOfGameStat::TYPE_ATTACK)
 		return Toolkit::getStringTable()->getString("[Total Attack Power]");
 	if(type == EndOfGameStat::TYPE_DEFENSE)
-		return Toolkit::getStringTable()->getString("[Total Defence Power]");
-		
+		return Toolkit::getStringTable()->getString("[Total Defence Power]");*/
 }
-
-
 
 void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 {

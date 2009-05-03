@@ -181,7 +181,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 			if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 				readOnly = false;
 			CustomGameOtherOptions settings(game->getGameHeader(), game->getMapHeader(), readOnly);
-			int rc = settings.execute(globalContainer->gfx, 40);
+			settings.execute(globalContainer->gfx, 40);
 			game->updateGameHeader();
 		}
 	}
@@ -425,6 +425,7 @@ void MultiplayerGameScreen::updateVisibleButtons()
 		}
 	}
 	if (percentDownloaded)
+	{
 		if(game->percentageDownloadFinished() >= 0 && game->percentageDownloadFinished() < 100)
 		{
 			percentDownloaded->visible = isActivated();
@@ -433,6 +434,7 @@ void MultiplayerGameScreen::updateVisibleButtons()
 		{
 			percentDownloaded->visible=false;
 		}
+	}
 }
 
 

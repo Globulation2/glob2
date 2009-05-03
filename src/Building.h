@@ -64,6 +64,14 @@ public:
 		REPAIR=3
 	};
 
+	///The state of a unit in certain lists.
+	enum InListState
+	{
+		UNKNOWN=0,
+		IN=1,
+		OUT=2
+	};
+
 public:
 	Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture);
@@ -292,16 +300,18 @@ public:
 	///This is the list of units harvesting from the building (if it is a market for instance)
 	std::list<Unit *> unitsHarvesting;
 	
+private:
 	// optimisation and consistency
-	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
+	InListState inCanFeedUnit;
 	Uint8 canNotConvertUnitTimer; //counts down 150 frames after the building was last unable to feed a unit
-	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit}
-	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
+	InListState inCanHealUnit;
+	InListState inUpgrade[NB_ABILITY];
 	/// This variable indicates whether this building is already in the team call list
 	/// to recieve units. A 1 indicates its already in the call list, and 0 indicates
 	/// that it is not.
 	Uint8 callListState;
 
+public:
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;

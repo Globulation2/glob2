@@ -147,10 +147,14 @@ namespace GAGCore
 				useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
 
 			if (verbose)
+			{
 				if (isTextureSRectangle)
+				{
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
-				else
+				} else {
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension not present, power of two texture will be used" << std::endl;
+				}
+			}
 		}
 
 		bool doBlend(bool on)

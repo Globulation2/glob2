@@ -414,16 +414,30 @@ void Team::clearMap(void)
 	assert(map);
 
 	for (int i=0; i<Unit::MAX_COUNT; ++i)
+	{
 		if (myUnits[i])
+		{
 			if (myUnits[i]->performance[FLY])
+			{
 				map->setAirUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
-	else
-		map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+			}
+			else
+			{
+				map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+			}
+		}
+	}
 
 	for (int i=0; i<Building::MAX_COUNT; ++i)
+	{
 		if (myBuildings[i])
+		{
 			if (!myBuildings[i]->type->isVirtual)
+			{
 				map->setBuilding(myBuildings[i]->posX, myBuildings[i]->posY, myBuildings[i]->type->width, myBuildings[i]->type->height, NOGBID);
+			}
+		}
+	}
 
 }
 
@@ -433,16 +447,20 @@ void Team::clearMap(void)
 void Team::clearMem(void)
 {
 	for (int i=0; i<Unit::MAX_COUNT; ++i)
-		if (myUnits[i])
 	{
-		delete myUnits[i];
-		myUnits[i] = NULL;
+		if (myUnits[i])
+		{
+			delete myUnits[i];
+			myUnits[i] = NULL;
+		}
 	}
 	for (int i=0; i<Building::MAX_COUNT; ++i)
-		if (myBuildings[i])
 	{
-		delete myBuildings[i];
-		myBuildings[i] = NULL;
+		if (myBuildings[i])
+		{
+			delete myBuildings[i];
+			myBuildings[i] = NULL;
+		}
 	}
 }
 

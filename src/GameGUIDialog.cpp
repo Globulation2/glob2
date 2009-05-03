@@ -523,17 +523,17 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 	}
 	
 	//Add the widgets to the menu
-	for(int i=0; i<objectivesWidgets.size(); i++)
+	for(unsigned int i=0; i<objectivesWidgets.size(); i++)
 	{
 		objectivesWidgets[i]->visible=!showBriefing;
 		addWidget(objectivesWidgets[i]);
 	}
-	for(int i=0; i<briefingWidgets.size(); i++)
+	for(unsigned int i=0; i<briefingWidgets.size(); i++)
 	{
 		briefingWidgets[i]->visible=showBriefing;
 		addWidget(briefingWidgets[i]);
 	}
-	for(int i=0; i<hintsWidgets.size(); i++)
+	for(unsigned int i=0; i<hintsWidgets.size(); i++)
 	{
 		hintsWidgets[i]->visible=false;
 		addWidget(hintsWidgets[i]);
@@ -556,45 +556,45 @@ void InGameObjectivesScreen::onAction(Widget *source, Action action, int par1, i
 		}
 		else if(par1 == OBJECTIVES)
 		{
-			for(int i=0; i<objectivesWidgets.size(); i++)
+			for(unsigned int i=0; i<objectivesWidgets.size(); i++)
 			{
 				objectivesWidgets[i]->visible=true;
 			}
-			for(int i=0; i<briefingWidgets.size(); i++)
+			for(unsigned int i=0; i<briefingWidgets.size(); i++)
 			{
 				briefingWidgets[i]->visible=false;
 			}
-			for(int i=0; i<hintsWidgets.size(); i++)
+			for(unsigned int i=0; i<hintsWidgets.size(); i++)
 			{
 				hintsWidgets[i]->visible=false;
 			}
 		}
 		else if(par1 == BRIEFING)
 		{
-			for(int i=0; i<objectivesWidgets.size(); i++)
+			for(unsigned int i=0; i<objectivesWidgets.size(); i++)
 			{
 				objectivesWidgets[i]->visible=false;
 			}
-			for(int i=0; i<briefingWidgets.size(); i++)
+			for(unsigned int i=0; i<briefingWidgets.size(); i++)
 			{
 				briefingWidgets[i]->visible=true;
 			}
-			for(int i=0; i<hintsWidgets.size(); i++)
+			for(unsigned int i=0; i<hintsWidgets.size(); i++)
 			{
 				hintsWidgets[i]->visible=false;
 			}
 		}
 		else if(par1 == HINTS)
 		{
-			for(int i=0; i<objectivesWidgets.size(); i++)
+			for(unsigned int i=0; i<objectivesWidgets.size(); i++)
 			{
 				objectivesWidgets[i]->visible=false;
 			}
-			for(int i=0; i<briefingWidgets.size(); i++)
+			for(unsigned int i=0; i<briefingWidgets.size(); i++)
 			{
 				briefingWidgets[i]->visible=false;
 			}
-			for(int i=0; i<hintsWidgets.size(); i++)
+			for(unsigned int i=0; i<hintsWidgets.size(); i++)
 			{
 				hintsWidgets[i]->visible=true;
 			}

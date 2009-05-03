@@ -133,8 +133,6 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			game->joinGame((*client->getGameListManager()->getGameList().begin()).getGameID());
 
 			Glob2TabScreen screen(true);
-			MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client);
-			
 			
 			listener.disableListening();
 			int rc = screen.execute(globalContainer->gfx, 40);
