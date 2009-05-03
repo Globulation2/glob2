@@ -2124,7 +2124,6 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				{
 					bool enter = false;
 					bool negate = false;
-					bool atmin = false;
 					thisone.line.push_back(*donnees->getToken());
 					CHECK_PAROPEN;
 					NEXT_TOKEN;

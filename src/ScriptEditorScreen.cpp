@@ -101,21 +101,21 @@ ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 	}	
 	
 	//Add all the widgets
-	for(int i=0; i<scriptWidgets.size(); ++i)
+	for(unsigned int i=0; i<scriptWidgets.size(); ++i)
 	{
 		addWidget(scriptWidgets[i]);
 	}
-	for(int i=0; i<objectivesWidgets.size(); ++i)
+	for(unsigned int i=0; i<objectivesWidgets.size(); ++i)
 	{
 		objectivesWidgets[i]->visible=false;
 		addWidget(objectivesWidgets[i]);
 	}
-	for(int i=0; i<briefingWidgets.size(); ++i)
+	for(unsigned int i=0; i<briefingWidgets.size(); ++i)
 	{
 		briefingWidgets[i]->visible=false;
 		addWidget(briefingWidgets[i]);
 	}
-	for(int i=0; i<hintWidgets.size(); ++i)
+	for(unsigned int i=0; i<hintWidgets.size(); ++i)
 	{
 		hintWidgets[i]->visible=false;
 		addWidget(hintWidgets[i]);
@@ -259,19 +259,19 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == TAB_SCRIPT)
 		{
-			for(int i=0; i<scriptWidgets.size(); ++i)
+			for(unsigned int i=0; i<scriptWidgets.size(); ++i)
 			{
 				scriptWidgets[i]->visible=true;
 			}
-			for(int i=0; i<objectivesWidgets.size(); ++i)
+			for(unsigned int i=0; i<objectivesWidgets.size(); ++i)
 			{
 				objectivesWidgets[i]->visible=false;
 			}
-			for(int i=0; i<briefingWidgets.size(); ++i)
+			for(unsigned int i=0; i<briefingWidgets.size(); ++i)
 			{
 				briefingWidgets[i]->visible=false;
 			}
-			for(int i=0; i<hintWidgets.size(); ++i)
+			for(unsigned int i=0; i<hintWidgets.size(); ++i)
 			{
 				hintWidgets[i]->visible=false;
 			}
@@ -280,19 +280,19 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == TAB_OBJECTIVES)
 		{
-			for(int i=0; i<scriptWidgets.size(); ++i)
+			for(unsigned int i=0; i<scriptWidgets.size(); ++i)
 			{
 				scriptWidgets[i]->visible=false;
 			}
-			for(int i=0; i<objectivesWidgets.size(); ++i)
+			for(unsigned int i=0; i<objectivesWidgets.size(); ++i)
 			{
 				objectivesWidgets[i]->visible=true;
 			}
-			for(int i=0; i<briefingWidgets.size(); ++i)
+			for(unsigned int i=0; i<briefingWidgets.size(); ++i)
 			{
 				briefingWidgets[i]->visible=false;
 			}
-			for(int i=0; i<hintWidgets.size(); ++i)
+			for(unsigned int i=0; i<hintWidgets.size(); ++i)
 			{
 				hintWidgets[i]->visible=false;
 			}
@@ -307,19 +307,19 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == TAB_BRIEFING)
 		{
-			for(int i=0; i<scriptWidgets.size(); ++i)
+			for(unsigned int i=0; i<scriptWidgets.size(); ++i)
 			{
 				scriptWidgets[i]->visible=false;
 			}
-			for(int i=0; i<objectivesWidgets.size(); ++i)
+			for(unsigned int i=0; i<objectivesWidgets.size(); ++i)
 			{
 				objectivesWidgets[i]->visible=false;
 			}
-			for(int i=0; i<briefingWidgets.size(); ++i)
+			for(unsigned int i=0; i<briefingWidgets.size(); ++i)
 			{
 				briefingWidgets[i]->visible=true;
 			}
-			for(int i=0; i<hintWidgets.size(); ++i)
+			for(unsigned int i=0; i<hintWidgets.size(); ++i)
 			{
 				hintWidgets[i]->visible=false;
 			}
@@ -328,19 +328,19 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == TAB_HINTS)
 		{
-			for(int i=0; i<scriptWidgets.size(); ++i)
+			for(unsigned int i=0; i<scriptWidgets.size(); ++i)
 			{
 				scriptWidgets[i]->visible=false;
 			}
-			for(int i=0; i<objectivesWidgets.size(); ++i)
+			for(unsigned int i=0; i<objectivesWidgets.size(); ++i)
 			{
 				objectivesWidgets[i]->visible=false;
 			}
-			for(int i=0; i<briefingWidgets.size(); ++i)
+			for(unsigned int i=0; i<briefingWidgets.size(); ++i)
 			{
 				briefingWidgets[i]->visible=false;
 			}
-			for(int i=0; i<hintWidgets.size(); ++i)
+			for(unsigned int i=0; i<hintWidgets.size(); ++i)
 			{
 				hintWidgets[i]->visible=true;
 			}

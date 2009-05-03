@@ -68,7 +68,7 @@ void GameObjectives::removeObjective(int n)
 
 void GameObjectives::setGameObjectiveText(int n, const std::string& objective)
 {
-	assert(n < texts.size());
+	assert(n < (int)texts.size());
 	texts[n] = objective;
 }
 
@@ -76,7 +76,7 @@ void GameObjectives::setGameObjectiveText(int n, const std::string& objective)
 
 const std::string& GameObjectives::getGameObjectiveText(int n)
 {
-	if (n >= 0 && n < texts.size())
+	if (n >= 0 && n < (int)texts.size())
 		return texts[n];
 	else
 		return invalidText;
@@ -86,7 +86,7 @@ const std::string& GameObjectives::getGameObjectiveText(int n)
 
 void GameObjectives::setObjectiveHidden(int n)
 {
-	if (n >= 0 && n < hidden.size())
+	if (n >= 0 && n < (int)hidden.size())
 		hidden[n]=true;
 }
 
@@ -94,7 +94,7 @@ void GameObjectives::setObjectiveHidden(int n)
 
 void GameObjectives::setObjectiveVisible(int n)
 {
-	if (n >= 0 && n < hidden.size())
+	if (n >= 0 && n < (int)hidden.size())
 		hidden[n]=false;
 }
 
@@ -102,7 +102,7 @@ void GameObjectives::setObjectiveVisible(int n)
 
 bool GameObjectives::isObjectiveVisible(int n)
 {
-	if (n >= 0 && n < hidden.size())
+	if (n >= 0 && n < (int)hidden.size())
 		return !hidden[n];
 	else
 		return false;
@@ -114,7 +114,7 @@ bool GameObjectives::isObjectiveVisible(int n)
 void GameObjectives::setObjectiveComplete(int n)
 {
 	assert(completed.size() == failed.size());
-	if (n >= 0 && n < completed.size())
+	if (n >= 0 && n < (int)completed.size())
 	{
 		completed[n]=true;
 		failed[n]=false;
@@ -126,7 +126,7 @@ void GameObjectives::setObjectiveComplete(int n)
 void GameObjectives::setObjectiveIncomplete(int n)
 {
 	assert(completed.size() == failed.size());
-	if (n >= 0 && n < completed.size())
+	if (n >= 0 && n < (int)completed.size())
 	{
 		completed[n]=false;
 		failed[n]=false;
@@ -138,7 +138,7 @@ void GameObjectives::setObjectiveIncomplete(int n)
 void GameObjectives::setObjectiveFailed(int n)
 {
 	assert(completed.size() == failed.size());
-	if (n >= 0 && n < completed.size())
+	if (n >= 0 && n < (int)completed.size())
 	{
 		completed[n]=false;
 		failed[n]=true;
@@ -149,7 +149,7 @@ void GameObjectives::setObjectiveFailed(int n)
 
 bool GameObjectives::isObjectiveComplete(int n)
 {
-	if (n >= 0 && n < completed.size())
+	if (n >= 0 && n < (int)completed.size())
 		return completed[n];
 	else
 		return false;
@@ -159,7 +159,7 @@ bool GameObjectives::isObjectiveComplete(int n)
 
 bool GameObjectives::isObjectiveFailed(int n)
 {
-	if (n >= 0 && n < failed.size())
+	if (n >= 0 && n < (int)failed.size())
 		return failed[n];
 	else
 		return false;
@@ -169,7 +169,7 @@ bool GameObjectives::isObjectiveFailed(int n)
 
 void GameObjectives::setObjectiveType(int n, GameObjectiveType type)
 {
-	assert(n < types.size());
+	assert(n < (int)types.size());
 	types[n] = type;
 }
 
@@ -177,7 +177,7 @@ void GameObjectives::setObjectiveType(int n, GameObjectiveType type)
 
 GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
 {
-	if (n >= 0 && n < types.size())
+	if (n >= 0 && n < (int)types.size())
 		return types[n];
 	else
 		return Invalid;
@@ -187,7 +187,7 @@ GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
 
 void GameObjectives::setScriptNumber(int n, int scriptNumber)
 {
-	assert(n < scriptNumbers.size());
+	assert(n < (int)scriptNumbers.size());
 	scriptNumbers[n] = scriptNumber;
 }
 
@@ -195,7 +195,7 @@ void GameObjectives::setScriptNumber(int n, int scriptNumber)
 
 int GameObjectives::getScriptNumber(int n)
 {
-	assert(n < scriptNumbers.size());
+	assert(n < (int)scriptNumbers.size());
 	return scriptNumbers[n];
 }
 
@@ -205,7 +205,7 @@ void GameObjectives::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("GameObjectives");
 	stream->writeUint32(texts.size(), "size");
-	for(int i=0; i<texts.size(); ++i)
+	for(unsigned int i=0; i<texts.size(); ++i)
 	{
 		stream->writeEnterSection(i);
 		stream->writeText(texts[i], "text");
@@ -231,7 +231,7 @@ void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMino
 	scriptNumbers.clear();
 	stream->readEnterSection("GameObjectives");
 	Uint32 size = stream->readUint32("size");
-	for(int i=0; i<size; ++i)
+	for(unsigned int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
 		texts.push_back(stream->readText("text"));

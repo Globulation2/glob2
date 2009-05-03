@@ -348,7 +348,6 @@ void GameGUI::step(void)
 	bool wasWindowEvent=false;
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
-	SDLMod modState = SDL_GetModState();
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type==SDL_MOUSEMOTION)
@@ -397,14 +396,14 @@ void GameGUI::step(void)
 			wasMouseMotion=true;
 		}
 #		ifdef USE_OSX
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
 		}
 #		endif
 #		ifdef USE_WIN32
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
@@ -2037,9 +2036,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				&& selBuild->buildingState==Building::ALIVE)
 			{
 				int width = (128 - 8)/3;
-				const char *lowstr = Toolkit::getStringTable()->getString("[low priority]");
-				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
-				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
 
 				if(lmx>=0 && lmx<=12)
 				{
@@ -3325,7 +3321,7 @@ void GameGUI::drawBuildingInfos(void)
 			for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
 			{
 				int n = selBuild->unitsFailingRequirements[j];
-				if(n>0 && selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
+				if(n>0 && (int)selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
 				{
 					std::string s;
 					if(j == Building::UnitNotAvailable)
@@ -4073,7 +4069,7 @@ void GameGUI::drawAll(int team)
 		drawInGameScrollableText();
 		
 	// draw the hilight arrows
-	for(int i=0; i<arrowPositions.size(); ++i)
+	for(int i=0; i<(int)arrowPositions.size(); ++i)
 	{
 		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
 		

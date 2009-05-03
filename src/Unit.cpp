@@ -647,8 +647,9 @@ void Unit::handleMagic(void)
 	{
 		std::set<Uint16> damagedBuildings;
 		damagedBuildings.insert(NOGBID);
-		for (int yi=posY-3; yi<=posY+3; yi++)
-			for (int xi=posX-3; xi<=posX+3; xi++)
+		int ATTACK_RANGE=3;
+		for (int yi=posY-ATTACK_RANGE; yi<=posY+ATTACK_RANGE; yi++)
+			for (int xi=posX-ATTACK_RANGE; xi<=posX+ATTACK_RANGE; xi++)
 			{
 				// damaging enemy units:
 				for (int altitude=0; altitude<2; altitude++)
@@ -680,7 +681,6 @@ void Unit::handleMagic(void)
 							{
 								enemyUnit->hp -= damage;
 								
-			
 								boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
 								enemyUnit->owner->pushGameEvent(event);
 								
@@ -693,32 +693,6 @@ void Unit::handleMagic(void)
 				}
 				
 				// damaging enemy buildings: this has been removed for balance purposes
-				
-				/*if (performance[MAGIC_ATTACK_GROUND])
-				{
-					Uint16 targetGBID = map->getBuilding(xi, yi);
-					if (damagedBuildings.insert(targetGBID).second)
-					{
-						Sint32 targetTeam = Building::GIDtoTeam(targetGBID);
-						Uint16 targetID = Building::GIDtoID(targetGBID);
-						Uint32 targetTeamMask = 1<<targetTeam;
-						if (owner->enemies & targetTeamMask)
-						{
-							Building *enemyBuilding = teams[targetTeam]->myBuildings[targetID];
-							Sint32 damage = performance[MAGIC_ATTACK_GROUND] + experienceLevel - enemyBuilding->type->armor;
-							if (damage > 0)
-							{
-								enemyBuilding->hp -= damage;
-								enemyBuilding->owner->setEvent(xi, yi, Team::BUILDING_UNDER_ATTACK_EVENT, targetGBID, targetTeam);
-								if (enemyBuilding->hp <= 0)
-									enemyBuilding->kill();
-								incrementExperience(damage);
-								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
-								hasUsedMagicAction = true;
-							}
-						}
-					}
-				}*/
 			}
 		
 		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
@@ -798,7 +772,7 @@ void Unit::handleMedical(void)
 			else
 				owner->map->setGroundUnit(posX, posY, NOGUID);
 			
-			if(previousClearingAreaX!=-1)
+			if(previousClearingAreaX!=static_cast<unsigned int>(-1))
 			{
 				owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
 			}
@@ -1277,8 +1251,9 @@ void Unit::handleDisplacement(void)
 				}
 				else
 				{
+					int levelsToBeUpgraded=attachedBuilding->type->level+1-level[destinationPurprose];
 					insideTimeout=-attachedBuilding->type->upgradeTime[destinationPurprose];
-					speed=attachedBuilding->type->insideSpeed;
+					speed=attachedBuilding->type->insideSpeed/levelsToBeUpgraded;
 				}
 			}
 			else if (displacement==DIS_INSIDE)
@@ -2165,6 +2140,7 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			action=HARVEST;
 			speed=performance[action];
+			//TODO: WTH???
 			if(speed==0)
 				speed/=speed;
 			break;

@@ -135,12 +135,12 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	seenByMask=0;
 
-	canFeedUnit=0;
-	canHealUnit=0;
+	inCanFeedUnit=UNKNOWN;
+	inCanHealUnit=UNKNOWN;
 	callListState=0;
 
 	for (int i=0; i<NB_ABILITY; i++)
-		upgrade[i]=0;
+		inUpgrade[i]=UNKNOWN;
 
 	for (int i=0; i<2; i++)
 	{
@@ -313,12 +313,12 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	seenByMask = stream->readUint32("seenByMaskk");
 
-	canFeedUnit = 0;
-	canHealUnit = 0;
+	inCanFeedUnit=UNKNOWN;
+	inCanHealUnit=UNKNOWN;
 	callListState = 0;
 
 	for (int i=0; i<NB_ABILITY; i++)
-		upgrade[i] = 0;
+		inUpgrade[i] = UNKNOWN;
 
 	freeGradients();
 
@@ -885,59 +885,61 @@ void Building::updateCallLists(void)
 	{
 		// Add itself in the right "call-lists":
 		for (int i=0; i<NB_ABILITY; i++)
-			if (upgrade[i]!=1 && type->upgrade[i])
+			if (inUpgrade[i]!=IN && type->upgrade[i])
 			{
 				owner->upgrade[i].push_front(this);
-				upgrade[i]=1;
+				inUpgrade[i]=IN;
 			}
 
 		// this is for food handling
 		if (type->canFeedUnit)
+		{
 			if (ressources[CORN]>(int)unitsInside.size())
 			{
-				if (canFeedUnit!=1)
+				if (inCanFeedUnit!=IN)
 				{
 					owner->canFeedUnit.push_front(this);
 					//A Building newly getting available to feed is locked to conversion for 150 frames
 					canNotConvertUnitTimer=150;
-					canFeedUnit=1;
+					inCanFeedUnit=IN;
 				}
 			}
 			else
 			{
-				if (canFeedUnit!=2)
+				if (inCanFeedUnit!=OUT)
 				{
 					owner->canFeedUnit.remove(this);
-					canFeedUnit=2;
+					inCanFeedUnit=OUT;
 				}
 			}
+		}
 
 		// this is for Unit healing
-		if (type->canHealUnit && canHealUnit!=1)
+		if (type->canHealUnit && inCanHealUnit!=IN)
 		{
 			owner->canHealUnit.push_front(this);
-			canHealUnit=1;
+			inCanHealUnit=IN;
 		}
 	}
 	else
 	{
 		// delete itself from all Call lists
 		for (int i=0; i<NB_ABILITY; i++)
-			if (upgrade[i]!=2 && type->upgrade[i])
+			if (inUpgrade[i]!=OUT && type->upgrade[i])
 			{
 				owner->upgrade[i].remove(this);
-				upgrade[i]=2;
+				inUpgrade[i]=OUT;
 			}
 
-		if (type->canFeedUnit && canFeedUnit!=2)
+		if (type->canFeedUnit && inCanFeedUnit!=OUT)
 		{
 			owner->canFeedUnit.remove(this);
-			canFeedUnit=2;
+			inCanFeedUnit=OUT;
 		}
-		if (type->canHealUnit && canHealUnit!=2)
+		if (type->canHealUnit && inCanHealUnit!=OUT)
 		{
 			owner->canHealUnit.remove(this);
-			canHealUnit=2;
+			inCanHealUnit=OUT;
 		}
 	}
 }
@@ -1137,7 +1139,7 @@ void Building::updateUnitsHarvesting(void)
 		Unit* u = *thisIt;
 		++it;
 		
-		if ((buildingState != ALIVE) || (owner->sharedVisionExchange & u->owner->me == 0))
+		if ((buildingState != ALIVE) || ((owner->sharedVisionExchange & u->owner->me) == 0))
 		{
 			u->attachedBuilding->removeUnitFromWorking(u);
 			u->standardRandomActivity();
@@ -1687,7 +1689,6 @@ bool Building::subscribeToBringRessourcesStep()
 		//Second: we look for an unit who is not carying a ressource:
 		if (choosen==NULL)
 		{
-			int teamNumber=owner->teamNumber;
 			for(int n=0; n<Unit::MAX_COUNT; ++n)
 			{
 				Unit* unit=possibleUnits[n];
@@ -1713,7 +1714,6 @@ bool Building::subscribeToBringRessourcesStep()
 		//Third: we look for an unit who is carrying an unwanted resource:
 		if (choosen==NULL)
 		{
-			int teamNumber=owner->teamNumber;
 			for(int n=0; n<Unit::MAX_COUNT; ++n)
 			{
 				Unit* unit=possibleUnits[n];
@@ -1780,7 +1780,6 @@ bool Building::subscribeForFlagingStep()
 			//Generate the list of possible units
 			Unit* possibleUnits[Unit::MAX_COUNT];
 			int distances[Unit::MAX_COUNT];
-			int teamNumber=owner->teamNumber;
 			for(int n=0; n<Unit::MAX_COUNT; ++n)
 			{
 				possibleUnits[n]=NULL;
@@ -1854,7 +1853,6 @@ bool Building::subscribeForFlagingStep()
 			int minLevel=INT_MAX;
 			int maxLevel=-INT_MAX;
 			Unit *choosen=NULL;
-			Map *map=owner->map;
 
 			/* To choose a good unit, we get a composition of things:
 			1-the closer the unit is, the better it is.
@@ -1919,7 +1917,6 @@ bool Building::subscribeForFlagingStep()
 					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist = distances[n];
-					bool canSwim=unit->performance[SWIM];
 					int value=dist-timeLeft-hp;
 					int level = unit->level[HARVEST];
 					//We want to minimize the level of harvesting units, so that the higher level
@@ -2298,26 +2295,16 @@ void Building::turretStep(Uint32 stepCounter)
 			mdp=abs(dpx);
 			speedX=((dpx*type->shootSpeed)/(mdp<<8));
 			speedY=((dpy*type->shootSpeed)/(mdp<<8));
-			if (speedX)
-				ticksLeft=abs(mdp/speedX);
-			else
-			{
-				assert(false);
-				return;
-			}
+			assert(speedX!=0);
+			ticksLeft=abs(mdp/speedX);
 		}
 		else
 		{
 			mdp=abs(dpy);
 			speedX=((dpx*type->shootSpeed)/(mdp<<8));
 			speedY=((dpy*type->shootSpeed)/(mdp<<8));
-			if (speedY)
-				ticksLeft=abs(mdp/speedY);
-			else
-			{
-				assert(false);
-				return;
-			}
+			assert(speedY!=0);
+			ticksLeft=abs(mdp/speedY);
 		}
 
 		if (ticksLeft < bestTicks)
@@ -2794,8 +2781,8 @@ bool Building::canConvertUnit(void)
 	assert(type->canFeedUnit);
 	return
 			canNotConvertUnitTimer<=0 &&
-			(unitsInside.size()<ressources[CORN]) && 
-			(unitsInside.size()<maxUnitInside);
+			((int)unitsInside.size()<ressources[CORN]) && 
+			((int)unitsInside.size()<maxUnitInside);
 }
 
 Sint32 Building::GIDtoID(Uint16 gid)
@@ -2820,7 +2807,7 @@ Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
 void Building::integrity()
 {
 	assert(unitsWorking.size()>=0);
-	assert(unitsWorking.size()<=Unit::MAX_COUNT);
+	assert((int)unitsWorking.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);
@@ -2829,7 +2816,7 @@ void Building::integrity()
 	}
 
 	assert(unitsInside.size()>=0);
-	assert(unitsInside.size()<=Unit::MAX_COUNT);
+	assert((int)unitsInside.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		assert(*it);

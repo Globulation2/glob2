@@ -76,7 +76,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readEnterSection("winningConditions");
 		winningConditions.clear();
 		Uint32 size = stream->readUint32("size");
-		for(int i=0; i<size; ++i)
+		for(unsigned int i=0; i<size; ++i)
 		{
 			stream->readEnterSection(i);
 			winningConditions.push_back(WinningCondition::getWinningCondition(stream, versionMinor));
@@ -151,7 +151,7 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		stream->readEnterSection("winningConditions");
 		winningConditions.clear();
 		Uint32 size = stream->readUint32("size");
-		for(int i=0; i<size; ++i)
+		for(unsigned int i=0; i<size; ++i)
 		{
 			stream->readEnterSection(i);
 			winningConditions.push_back(WinningCondition::getWinningCondition(stream, versionMinor));

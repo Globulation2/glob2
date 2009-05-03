@@ -1170,7 +1170,10 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 
 void Game::wonSyncStep(void)
 {
-	std::list<boost::shared_ptr<WinningCondition> >& conditions = gameHeader.getWinningConditions();
+	//TODO: sideeffects? 
+	//std::list<boost::shared_ptr<WinningCondition> >& conditions = 
+	gameHeader.getWinningConditions();
+
 	bool areAllDecided=true;
 	//We do this twice, because some win conditions depend on other win conditions
 	for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)
@@ -1988,8 +1991,8 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 					{
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY));
-						int lx=(x+viewportX-b->posX+15+32)&31;
-						int ly=(y+viewportY-b->posY+15+32)&31;
+						//int lx=(x+viewportX-b->posX+15+32)&31;
+						//int ly=(y+viewportY-b->posY+15+32)&31;
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[1][lx+ly*32]);
 						if(b->globalGradient[1])
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->globalGradient[1][(x+viewportX) + (y+viewportY)*map.w]);
@@ -2274,9 +2277,6 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	static int areaAnimationTick = 0;
-	const int clearingAreaBaseFrame = 0;
-	const int guardAreaBaseFrame = 8;
-	const int forbiddenAreaBaseFrame = 16;
 	
 	typedef bool (Map::*MapIsFP)(int, int);
 	MapIsFP mapIs;
