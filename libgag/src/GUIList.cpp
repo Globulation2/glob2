@@ -79,9 +79,11 @@ namespace GAGGUI
 	
 	void List::onTimer(Uint32 tick)
 	{
+		// this code is required for layouting
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		unsigned count = (h-4) / textHeight;
+		
+		const unsigned count = (h-4) / textHeight;
 		switch (selectionState)
 		{
 			case UP_ARROW_PRESSED:
@@ -109,15 +111,18 @@ namespace GAGGUI
 	void List::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
+		
+		// this code is required for layouting
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		unsigned count = (h-4) / textHeight;
+		
+		const unsigned count = (h-4) / textHeight;
 		unsigned wSel;
-		int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
-		int scrollBarX = x + w - scrollBarW;
-		int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
-		int scrollBarBottomH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH);
-		int frameLeftWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_LEFT_WIDTH);
+		const int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
+		const int scrollBarX = x + w - scrollBarW;
+		const int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
+		const int scrollBarBottomH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH);
+		const int frameLeftWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_LEFT_WIDTH);
 		if (strings.size() > count)
 		{
 			if (isPtInRect(event->button.x, event->button.y, scrollBarX, y, scrollBarW, scrollBarTopH))
@@ -206,17 +211,25 @@ namespace GAGGUI
 	
 	void List::onSDLMouseMotion(SDL_Event *event)
 	{
+		// this code is required for layouting
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		
 		assert(event->type == SDL_MOUSEMOTION);
 		HighlightableWidget::onSDLMouseMotion(event);
 		if (selectionState == HANDLE_PRESSED)
 		{
-			int count = (h-4) / textHeight;
-			int newPos = event->motion.y - mouseDragStartPos;
-			int newDisp = mouseDragStartDisp + (newPos * (int)(strings.size() - count)) / (int)((h - 43) - blockLength);
+			const int visibleCount = (h-4) / textHeight;
+			const int newPos = event->motion.y - mouseDragStartPos;
+			const int hiddenCount = (int)(strings.size() - visibleCount);
+			const int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
+			const int scrollBarBottomH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH);
+			const int slideSpace = h - scrollBarTopH - scrollBarBottomH - blockLength;
+			const int newDisp = mouseDragStartDisp + (newPos * hiddenCount) / slideSpace;
 			if (newDisp < 0)
 				disp = 0;
-			else if (newDisp > (int)(strings.size() - count))
-				disp = strings.size() - count;
+			else if (newDisp > hiddenCount)
+				disp = hiddenCount;
 			else
 				disp = newDisp;
 		}
@@ -243,23 +256,23 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
-		int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
-		int scrollBarX = x + w - scrollBarW;
-		int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
-		int scrollBarBottomH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH);
-		int frameTopHeight = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_TOP_HEIGHT);
-		int frameLeftWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_LEFT_WIDTH);
-		int frameRightWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_RIGHT_WIDTH);
-		int frameBottomHeight = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
+		const int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
+		const int scrollBarX = x + w - scrollBarW;
+		const int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
+		const int scrollBarBottomH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH);
+		const int frameTopHeight = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_TOP_HEIGHT);
+		const int frameLeftWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_LEFT_WIDTH);
+		const int frameRightWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_RIGHT_WIDTH);
+		const int frameBottomHeight = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
 		
-		int elementsHeight = h - frameTopHeight - frameBottomHeight;
-		int count = elementsHeight / textHeight;
+		const int elementsHeight = h - frameTopHeight - frameBottomHeight;
+		const int count = elementsHeight / textHeight;
 		int elementLength;
 
 		if (static_cast<int>(strings.size()) > count)
 		{
 			// recompute slider informations
-			int leftSpace = h - scrollBarTopH - scrollBarBottomH;
+			const int leftSpace = h - scrollBarTopH - scrollBarBottomH;
 			if (leftSpace)
 			{
 				blockLength = (count * leftSpace) / strings.size();
@@ -349,7 +362,7 @@ namespace GAGGUI
 			if (static_cast<int>(pos) < nth)
 				nth--;
 		}
-		int count = (h-4) / textHeight;
+		const int count = (h-4) / textHeight;
 		if(disp + count > strings.size())
 			disp-=1;
 	}
@@ -406,7 +419,7 @@ namespace GAGGUI
 	
 	void List::centerOnItem(int index)
 	{
-		int count = (h-4) / textHeight;
+		const int count = (h-4) / textHeight;
 		disp = std::max(std::min(index - count/2, int(strings.size() - count)), 0);
 	}
 }
