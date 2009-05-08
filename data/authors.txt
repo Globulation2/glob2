@@ -53,6 +53,10 @@ English
 
 David Barnett <davidbarnett at letu dot edu>
 
+*Finnish
+
+Tapani Honkanen <>
+
 *
 Swedish
 
