@@ -2335,7 +2335,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	{
 		for (unsigned x=0; x<wHeightMap; x++)
 		{
-			int tmpRessource=-12;//sorry! is there some NONE?
+			int tmpRessource=-12;//TODO: sorry! is there some NONE?
 			if(hm(x+wHeightMap*y)<algaeLevel)
 			{
 				tmpRessource=ALGA;
@@ -2402,7 +2402,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			{
 				case 0: fruit = CHERRY; break;
 				case 1: fruit = ORANGE; break;
-				case 2: fruit = PRUNE; break;
+				case 2:
 				default: fruit = PRUNE; break;
 			}
 			//choose coordinate where there is grass but no ressource yet
