@@ -21,7 +21,7 @@
 [%0 units too far from resource]
 %0 yksikköä liian kaukana resurssista
 [%0 units too low level]
-%0 yksikön taso liian matala
+%0:n yksikön taso liian matala
 [%0% Uploaded]
 %0% ladattu
 [%0's game]
@@ -95,7 +95,7 @@ nääntyvää
 [are hungry]
 nälkäistä
 [are ok]
-ok
+kunnossa
 [are wonded]
 haavoittunutta
 [armor]
@@ -119,13 +119,13 @@ Odotetaan pelaajia
 [away:]
 poissa:
 [Back]
-Back
+Takaisin
 [backspace]
-backspace
+askelpalautin
 [barracks explanation 2]
-sotilaitesi taso
+taistelukykyä
 [barracks explanation]
-Parantaa taistelukykyä
+Parantaa sotureitesi
 [barracks]
 Parakki
 [beach size]
@@ -135,7 +135,7 @@ Estetyt pelaajat
 [break]
 break
 [briefing]
-Briefing
+Ohjeistaminen
 [build %0 level %1]
 Rakentaminen: %0 Taso %1
 [Build]
@@ -153,7 +153,7 @@ Ctrl + Raahaus = Viiva
 [Buildings]
 Rakennuksia
 [Bullets]
-Luotia
+Luotien määrä
 [campaign editor]
 Kampanjaeditori
 [campaign]
@@ -181,11 +181,11 @@ caps lock
 [carry]
 Kuljettamassa:
 [Change Area Name]
-Vaihda Alueen Nimi
+Vaihda alueen nimi
 [Cherry]
 Kirsikka
 [choose campaign]
-Valitse kamppanja
+Valitse kampanja
 [choose game]
 Valitse peli
 [choose map]
@@ -195,21 +195,21 @@ Keräämisalue
 [Clearing:]
 Keräämässä:
 [clearingflag explanation 2]
-
+resurssien keräyspaikan
 [clearingflag explanation]
-Kerää resursseja
+Asettaa pääasiallisen
 [clearingflag]
 Keräämislippu
 [closed]
-Closed
+Ei käytössä
 [compile]
-Compile script
+Kääntämisskripti
 [compose]
 compose
 [Computing Fertility]
-Computing Fertility
+Lasketaan hedelmällisyyttä
 [concrete islands terrain]
-Concrete Islands
+Betonisaaret
 [connect]
 Yhdistä
 [connecting to game]
@@ -217,7 +217,7 @@ Otetaan yhteyttä peliin
 [connecting to]
 Otetaan yhteyttä:
 [Construction Site Defaults]
-Rakennuspaikka-asetukset
+Rakentamisasetukset
 [Continue playing]
 Continue playing
 [control %0]
@@ -235,35 +235,35 @@ Luo kartta
 [credits]
 Tekijät
 [ctrl - line]
-Ctrl - Line
+Ctrl - Viiva
 [current speed]
-Current speed
+Nykyinen nopeus
 [custom game]
 Tavallinen peli
 [customcur]
 Muokattu kursori
 [damage]
-Damage
+Vahinko
 [Damaged Map]
-Damaged Map
+Vahinkokartta
 [decrease units working]
 Laske työskentelevien määrää
 [Defeat Your Oppenents]
-Defeat Your Oppenents
+Kukista vastustajasi.
 [defencetower explanation 2]
 vihollisrakennuksia tai -yksiköitä
 [defencetower explanation]
 Hyökkää lähellä olevia
 [defencetower]
-puolustustorni
+Puolustustorni
 [Defense Map]
-Defense Map
+Puolustuskartta
 [Defense]
 Puolustus
 [Delete game]
 Poista valittu peli
 [delete]
-Delete
+Poista
 [desert]
 aavikko
 [destroy building]
@@ -271,11 +271,11 @@ Tuhoa valittu rakennus
 [destroy]
 Tuhoa
 [display]
-Display
+Näyttö
 [do nothing]
 Do Nothing
 [don't carry anything]
-Not carrying anything
+Ei kanna mitään
 [down]
 down
 [Download Map]
@@ -287,9 +287,9 @@ Ladattu %0
 [downloading map]
 Ladataan karttaa
 [edit map]
-Muokka
+Muokkaa
 [editing map]
-Editing Map
+Muokataan karttaa
 [editor shortcuts]
 Editori
 [editor]
@@ -313,7 +313,7 @@ Houkuttelee tiedustelijoita
 [explorationflag]
 Tiedustelulippu
 [Explorer Ratio]
-Explorer Ratio
+Tiedustelijoiden suhde
 [Explorer]
 Tiedustelija
 [explorers]
@@ -351,7 +351,7 @@ f8
 [f9]
 f9
 [Fertility Map]
-Fertility Map
+Hedelmällisyys
 [Flag Defaults]
 Lippuasetukset
 [flag settings explanation]
@@ -363,9 +363,9 @@ Kielletty alue
 [Free]
 Ok
 [free]
-free
+vapaana
 [free]
-free
+on vapaana
 [from:]
 from:
 [fruit]
@@ -377,13 +377,13 @@ Game full
 [game shortcuts]
 Peli
 [Game]
-Game
+Peli
 [general settings]
 Perusasetukset
 [go to event]
 Mene tapahtumapaikalle
 [go to home]
-Go To Home
+Keskitä karttaa Pesään
 [goto main menu]
 Takaisin päävalikkoon
 [grass]
@@ -391,7 +391,7 @@ ruoho
 [ground attack]
 maahyökkäys
 [guard area]
-Guard area
+Vartioitava alue
 [GUIMapPreview text 0]
 Please choose
 [GUIMapPreview text 1]
@@ -401,11 +401,11 @@ Handmade map
 [Happyness]
 Onnellisuus
 [hard pause]
-Hard Pause
+Vahva pelin pysäytys
 [Harvest]
-Harvest
+Kerääminen
 [high priority]
-high
+ylin
 [hints]
 Vihjeitä
 [home]
@@ -433,7 +433,7 @@ Nälkäisyys
 [In way]
 Matkalla
 [increase units working]
-Kasvattaa työskentelevien määrää
+Kasvata työskentelevien määrää
 [inn explanation 2]
 
 [inn explanation]
@@ -453,7 +453,7 @@ Isles
 [iterate selection]
 Siirrä valinta rakennuksesta toiseen
 [jobs]
-jobs
+työt
 [join a game]
 Liity peliin
 [join]
@@ -473,19 +473,19 @@ Kieli
 [language]
 Suomi
 [Leave Game]
-Leave Game
+Poistu pelistä
 [left meta]
-left meta
+vasen meta
 [left super]
-left windows key
+vasen windows-näppäin
 [left]
-left
+vasen
 [Leo: nur ein erster Test]
-test
+testi
 [level]
-Level
+Tason
 [levels]
-Levels
+Kokemustasot
 [load campaign]
 Jatka kampanjaa
 [load game]
@@ -493,9 +493,9 @@ Lataa tallennettu peli
 [load map]
 Avaa kartta
 [load script]
-Load Script
+Avaa skripti
 [load]
-Load
+Avaa
 [loading map list]
 Ladataan karttalistaa...
 [Lobby]
@@ -507,17 +507,17 @@ Hävisit: %0:lla on enemmän Mainetta, kuin sinulla
 [Lost : your colony is dead]
 Hävisit: sinun siirtokuntasi on tuhottu
 [low priority]
-matala
+alin
 [lowquality]
 Matala laatu
 [Magic At. Air]
-Air dmg.
+Hyök. ilmaan:
 [Magic At. Ground]
-Ground dmg.
+Hyök. maahan:
 [map description]
 Kuvaus
 [Map Discovered]
-Map Discovered
+Kartta paljastettu
 [Map download failure: lost connection]
 Kartan lataus epäonnistui: Yhteys YOG:iin menetetty.
 [Map name: %0]
@@ -527,7 +527,7 @@ Nimi
 [map rated]
 Map Rated
 [map script]
-Map Script
+Karttaskripti
 [map size x]
 Kartan leveys
 [map size y]
@@ -551,7 +551,7 @@ Mahdollistaa hedelmien
 [market]
 Kauppa
 [medium priority]
-keskitaso
+keski
 [meta %0]
 meta-%0
 [Min required level:]
@@ -559,7 +559,7 @@ Alin vaadittu taso:
 [Minimum Level To Flag]
 Alin Lipun taso
 [Music volume]
-Voimakkuus (musiikki)
+musiikin voimakkuus
 [Mute]
 Mykistä
 [mute]
@@ -577,19 +577,19 @@ no key yet
 [No Objectives]
 Ei Tavoitteita
 [no ressources growth areas]
-No Growth Areas
+Ei kasvualueita
 [No]
-No
+Ei
 [Not Enough Ratings]
-Not Enough Ratings
+Ei tarpeeksi arvioita
 [not ready]
-not ready
+ei valmis
 [Number Of Buildings]
 Rakennusten Määrä:
 [number of players: %0 (%1 AI)]
 %0 pelaajaa (%1 AI)
 [number of teams: %0]
-%0 joukkuetta
+Joukkueiden määrä: %0 
 [number of teams]
 joukkueiden määrä
 [Number Of Units]
@@ -599,7 +599,7 @@ numlock
 [objectives]
 Tavoitteet
 [of which]
-there are
+joista
 [ok]
 Ok
 [old islands terrain]
@@ -609,7 +609,7 @@ vanhat satunnaiset maastot
 [on press]
 Painaessa
 [On the spot]
-Here
+Paikalla
 [on unpress]
 Vapauttaessa
 [open chat box]
@@ -629,7 +629,7 @@ OpenGL
 [Options]
 Asetukset
 [options]
-asetukset
+Asetukset
 [Orange]
 Appelsiini
 [Other Options]
@@ -641,7 +641,7 @@ page up
 [Papyrus]
 Papyrus
 [pause game]
-Pysäytä peli
+Pelin pysäytys
 [pause]
 pause
 [Paused]
@@ -667,7 +667,7 @@ Ensisijaiset
 [print screen]
 print screen
 [priority]
-Priority
+Tärkeys
 [Prune]
 Luumu
 [quit the editor]
@@ -749,13 +749,13 @@ Parantaa työläistesi
 [school]
 Koulu
 [Script Areas]
-Script Areas
+Skriptialueet
 [scroll lock]
 scroll lock
 [scroll wheel enabled]
 Vieritysrulla käytössä
 [Secondary Objectives]
-Secondary
+Toissijaiset
 [seeking a job]
 etsimässä työtä
 [seeking]
@@ -803,7 +803,7 @@ Valitse Aseta tiedustelulippu
 [select place forbidden area]
 Valitse Aseta kielletty alue
 [select place guard area]
-Valitse Aseta vartiointialue
+Valitse Aseta vartioitava alue
 [select place warflag]
 Valitse Aseta sotalippu
 [select racetrack building]
@@ -849,21 +849,21 @@ Aloita tehtävä
 [start new campaign]
 Aloita uusi kampanja
 [Start]
-Start
+Aloita
 [Starving Map]
-Starving Map
+Ruokatilannekartta
 [starving]
-starving
+nälissään
 [Statistics]
 Tilastot
 [Still (i)]
-Still
+Vielä 
 [still (w)]
 Still
 [still one unit working]
 Yksi yksikkö työskentelee yhä
 [Still one]
-Yksi vielä
+Vielä yksi
 [Stone]
 Kivi
 [stone]
@@ -873,7 +873,7 @@ läpikulun
 [stonewall explanation]
 Estää
 [stonewall]
-kivimuuri
+Kivimuuri
 [submit rating]
 Lähetä arvio
 [svr hostname]
@@ -895,29 +895,29 @@ Parantaa yksiköittesi
 [swimmingpool]
 Uima-allas
 [switch to adding areas]
-Switch To Adding Areas
+Vaihda alueiden lisäämistoimintoon
 [switch to area brush 1]
-Switch To Area Brush 1
+Vaihda alueenmerkintäkuvioon 1
 [switch to area brush 2]
-Switch To Area Brush 2
+Vaihda alueenmerkintäkuvioon 2
 [switch to area brush 3]
-Switch To Area Brush 3
+Vaihda alueenmerkintäkuvioon 3
 [switch to area brush 4]
-Switch To Area Brush 4
+Vaihda alueenmerkintäkuvioon 4
 [switch to area brush 5]
-Switch To Area Brush 5
+Vaihda alueenmerkintäkuvioon 5
 [switch to area brush 6]
-Switch To Area Brush 6
+Vaihda alueenmerkintäkuvioon 6
 [switch to area brush 7]
-Switch To Area Brush 7
+Vaihda alueenmerkintäkuvioon 7
 [switch to area brush 8]
-Switch To Area Brush 8
+Vaihda alueenmerkintäkuvioon 8
 [switch to building view]
-Switch To Building view
+Vaihda rakennusnäkymään
 [switch to flag view]
 Vaihda lippunäkymään
 [switch to removing areas]
-Switch To Removing Areas
+Vaihda alueiden poistamistoimintoon
 [switch to teams view]
 Vaihda joukkuenäkymään
 [switch to terrain view]
@@ -927,15 +927,15 @@ sys req
 [tab]
 tab
 [teams editor]
-Teams Editor
+Joukkue-editori
 [Teams Fixed]
 Teams Fixed
 [teams]
- teams
+ joukkuetta
 [the barracks is finished]
-Harjoituskenttä on valmis
+Parakki on valmis
 [the barracks is under attack]
-Harjoituskenttäsi kimppuun hyökätään
+Parakkisi kimppuun hyökätään
 [the building is finished]
 Rakennus on valmis
 [the building is under attack]
@@ -953,9 +953,9 @@ Puolustuksesi kimppuun hyökätään.
 [the explorationflag is under attack]
 ?? tiedustelulippusi kimppuun hyökätään ??
 [The game has not been finished]
-The game has not been finished
+Peliä ei pelattu loppuun saakka
 [the games]
-Pelit
+Tallennukset
 [the hospital is finished]
 Sairaala on valmis
 [the hospital is under attack]
@@ -1005,9 +1005,9 @@ Aika
 [to:]
 to:
 [toggle draw accessibility aids]
-Toggle Draw Accessibility Aids
+Näytä yksiköiden/rakennusten joukkueen numero
 [toggle draw information]
-Toggle Draw Information
+Näytä yksiköiden status-palkit
 [toggle draw unit paths]
 Piirrä yksiköiden polut
 [toggle menu screen]
@@ -1015,7 +1015,7 @@ Toggle Menu Screen
 [toggle recording voice]
 Initiate Voice Recording
 [toggle recording voice]
-Toggle Recording Voice
+Käynnistä äänen nauhoitus
 [Total Attack Power]
 Total Attack Power
 [Total Defence Power]
@@ -1031,7 +1031,7 @@ Tervetuloa Globulation 2:n tutoriaalin! Tämä tutoriaali kattaa muun muassa maj
 [tutorial text 2]
 Nyt kun hallitset perusasiat, on aika tutustua muihin rakennuksiin, kuten Kilparatoihin, Altaisiin ja Kouluihin.
 [tutorial text 3]
-Olet pärjännyt hyvin tähän asti. Nyt on vuoro keskittyä Sotilaisiin, Harjoitusleireihin, ja Päivityksiin.
+Olet pärjännyt hyvin tähän asti. Nyt on vuoro keskittyä Sotureihin, Parakkeihin, ja Päivityksiin.
 [tutorial text 4]
 Olet melkein valmis. Vain Liput ja hyökkääminen jäljellä. Sitten tiedät tarpeeksi keskittyäksesi tavallisiin peleihin ja lopulta internet-peleihin pelaten Globulation 2:n parhaimpia pelaajia vastaan.
 [tutorial]
@@ -1039,7 +1039,7 @@ Tutoriaali
 [Uncontrolled]
 Uncontrolled
 [undo]
-undo
+peru
 [uniform terrain]
 Yhdenmukainen maasto
 [Unit editor]
@@ -1069,7 +1069,7 @@ Päivitä
 [Upload Map]
 Julkaise kartta
 [upload map]
-Julkaise Kartta
+Julkaise kartta
 [username]
 Käyttäjänimi
 [Version]
@@ -1077,33 +1077,33 @@ Versio
 [view history]
 Näytä historia
 [Voice volume]
-Voimakkuus (äänet)
+Ääniefektien voimakkuus
 [waiting for %0]
 Odotetaan %0:ta
 [waiting for key]
-waiting for key...
+odotetaan näppäintä...
 [Waiting]
-Waiting
+Odotetaan
 [Walk]
 Kävely
 [warflag explanation 2]
-
+ 
 [warflag explanation]
-Houkuttelee sotilaita.
+Houkuttelee sotureita.
 [warflag]
 Sotalippu
 [Warning, you need to reboot the game for changes to take effect]
 Varoitus, sinun pitää käynnistää peli uudelleen, että muutokset astuvat voimaan.
 [Warrior Ratio]
-Warrior Ratio
+Sotureiden suhde
 [Warrior]
-sotilas
+Soturi
 [warriors]
-sotilasta
+soturia
 [water]
 vesi
 [Wheat]
-vilja
+Vilja
 [Won : you defeated your opponents]
 Voitit: kukistit vastustajasi
 [Won : you have the most prestige]
@@ -1115,7 +1115,7 @@ Puu
 [wood]
 puu
 [Worker Ratio]
-Worker Ratio
+Työläisten suhde
 [Worker]
 Työläinen
 [workers]
@@ -1171,13 +1171,13 @@ Tuntematon komento.
 [yog help command help]
 /help    Näyttää tämän apuviestin
 [yog]
-Ysagoon online-pelaaminen
+YOG-moninpeliserveri
 [you have lost]
 Olet hävinnyt pelin!
 [you have won]
 Olet voittanut pelin!
 [You where kicked from the game]
-Sinut on heitetty pois pelistä.
+Sinut on poistettu pelistä.
 [Your %0 are under attack]
 %0 on hyökkäyksen kohteena
 [Your IP address was temporarily banned]
