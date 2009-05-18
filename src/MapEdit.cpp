@@ -1739,20 +1739,10 @@ void MapEdit::processEvent(SDL_Event& event)
 
 void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 {
-	if(key.sym == SDLK_i && pressed)
-	{
-		//performAction(globalContainer->settings.editor_keyboard_shortcuts["ikey"]);
-		game.map.loadTransitional();
-		return;
-	}
-
 	Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
 	switch(action_t)
 	{
 		case MapEditKeyActions::DoNothing:
-		{
-		
-		}
 		break;
 		case MapEditKeyActions::SwitchToBuildingView:
 		{
@@ -1821,7 +1811,7 @@ void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
 		break;
 		case MapEditKeyActions::SelectTower:
 		{
-			performAction("unselect&switch to building view&set place building selection tower");
+			performAction("unselect&switch to building view&set place building selection defencetower");
 		}
 		break;
 		case MapEditKeyActions::SelectStonewall:
