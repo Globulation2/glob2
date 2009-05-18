@@ -28,10 +28,16 @@ using namespace GAGCore;
 
 std::string getUnitName(int type)
 {
-	if(type == WORKER)
+	switch(type)
+	{
+	case WORKER:
 		return Toolkit::getStringTable()->getString("[Worker]");
-	if(type == WARRIOR)
+	case WARRIOR:
 		return Toolkit::getStringTable()->getString("[Warrior]");
-	if(type == EXPLORER)
+	case EXPLORER:
 		return Toolkit::getStringTable()->getString("[Explorer]");
+	default:
+		assert(false);
+		return "";//to satisfy -Wall
+	}
 }

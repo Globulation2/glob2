@@ -55,13 +55,16 @@ protected:
 	
 	//! Returns the text for the right-scale
 	std::string getRightScaleText(int value, int digits);
+	
+	/// Get the label of the end game stat
+	std::string getStatLabel();
 
 	//! the type of the stat beeing drawn
 	EndOfGameStat::Type type;
 	//! Pointer to game, used for drawing
 	Game *game;
 	//! List of true/false values for each team's enabled status
-	bool isTeamEnabled[32];
+	bool * isTeamEnabled;
 	//! This moves the circle indicating the score at the current mouse position.
 	virtual void onSDLMouseMotion(SDL_Event* event);
 	int mouse_x;

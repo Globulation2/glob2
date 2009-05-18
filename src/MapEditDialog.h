@@ -109,15 +109,15 @@ private:
 	Game* game;
 	
 	//! Player enable/disable buttons
-	OnOffButton *isPlayerActive[32];
+	OnOffButton *isPlayerActive[Team::MAX_COUNT];
 	///List of the player names
-	Text* playerName[32];
+	Text* playerName[Team::MAX_COUNT];
 	//! Player colors
-	ColorButton *color[32];
+	ColorButton *color[Team::MAX_COUNT];
 	//! Player ally temas
-	MultiTextButton *allyTeamNumbers[32];
+	MultiTextButton *allyTeamNumbers[Team::MAX_COUNT];
 	//! Multi-text button containing an aiSelector
-	MultiTextButton *aiSelector[32];
+	MultiTextButton *aiSelector[Team::MAX_COUNT];
 };
 
 #endif
