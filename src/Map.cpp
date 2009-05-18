@@ -1223,30 +1223,6 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	return true;
 }
 
-
-void Map::loadTransitional()
-{
-	std::string fileName = glob2NameToFilename("maps", "output", "");
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName));
-	stream->read(undermap, size, "undermap");
-	for (size_t i=0; i<size ;i++)
-	{
-		cases[i].terrain = stream->readUint16("terrain");
-		stream->read(&(cases[i].ressource), 4, "ressource");
-		cases[i].scriptAreas = stream->readUint16("scriptAreas");
-		cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
-	}
-	//Load area names
-	for(int n=0; n<9; ++n)
-	{
-		stream->readEnterSection(n);
-		setAreaName(n, stream->readText("areaname"));
-		stream->readLeaveSection();
-	}
-	delete stream;
-}
-	
-
 void Map::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("Map");
