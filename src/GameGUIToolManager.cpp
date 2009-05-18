@@ -90,7 +90,6 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		// Get the type and sprite
 		int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-		Sprite *sprite = bt->gameSpritePtr;
 		
 		// Translate the mouse position to a building position, and check if there is room
 		// on the map
@@ -99,114 +98,19 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		
 		
 		SDLMod modState = SDL_GetModState();
-		if(!(modState & KMOD_CTRL) || firstPlacementX==-1)
+		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || firstPlacementX==-1)
 		{
 			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
 		}
 		///This allows the drag-placing of walls
-		else
+		else if(modState & KMOD_CTRL)
 		{
-		
-			int startx = firstPlacementX;
-			int endx = mapX;
-			int starty = firstPlacementY;
-			int endy = mapY;
-			
-			int dirx = (endx > startx ? 1 : -1);
-			int distx = std::abs(endx - startx);
-			if(distx > game.map.getW()/2)
-			{
-				dirx = -dirx;
-				distx = game.map.getW() -  distx;
-			}
-					
-			int diry = (endy > starty ? 1 : -1);
-			int disty = std::abs(endy - starty);
-			if(disty > game.map.getH()/2)
-			{
-				diry = -diry;
-				disty = game.map.getH() -  disty;
-			}
-			
-			int bw = 0;
-			int bh = 0;
-			if(distx > disty)
-			{
-				int px = 0;
-				int py = 0;
-				int y = starty;
-				bool didBuilding=false;
-				bool finishing=false;
-				for(int x=startx; (!finishing && x!=endx) || !didBuilding;)
-				{
-					if(x == endx)
-						finishing=true;
- 					didBuilding=false;
-					bw-=1;
-					px+=1;
-					if(bw <= 0)
-					{
-						drawBuildingAt(x, y, localteam, viewportX, viewportY);
-						bw = bt->width;
-						bh = bt->height;
-						didBuilding=true;
-					}
-					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
-					{
-						y=game.map.normalizeY(y+diry);
-						bh-=1;
-						py+=1;
-						if(bh <= 0)
-						{
-							drawBuildingAt(x, y, localteam, viewportX, viewportY);
-							bw = bt->width;
-							bh = bt->height;
-							didBuilding=true;
-						}
-					}
-					x=game.map.normalizeX(x+dirx);
-				}
-			}
-			else
-			{
-				int px = 0;
-				int py = 0;
-				int x = startx;
-				bool didBuilding=false;
-				bool finishing=false;
-				for(int y=starty; (!finishing && y!=endy) || !didBuilding;)
-				{
-					if(y == endy)
-						finishing=true;
-					didBuilding=false;
-					bh-=1;
-					py+=1;
-					if(bh <= 0)
-					{
-						drawBuildingAt(x, y, localteam, viewportX, viewportY);
-						bw = bt->width;
-						bh = bt->height;
-						didBuilding=true;
-					}
-					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
-					{
-						x=game.map.normalizeX(x+dirx);
-						bw-=1;
-						px+=1;
-						if(bw <= 0)
-						{
-							drawBuildingAt(x, y, localteam, viewportX, viewportY);
-							bw = bt->width;
-							bh = bt->height;
-							didBuilding=true;
-						}
-					}
-					y=game.map.normalizeY(y+diry);
-				}
-			}
-			if(bt->width == 1 && bt->height==1)
-				drawBuildingAt(endx, endy, localteam, viewportX, viewportY);
-				
+			computeBuildingLine(firstPlacementX, firstPlacementY, mapX, mapY, localteam, viewportX, viewportY, 1);
+		}
+		///This allows the placing of a square of buildings
+		else if(modState & KMOD_SHIFT)
+		{
+			computeBuildingBox(firstPlacementX, firstPlacementY, mapX, mapY, localteam, viewportX, viewportY, 1);
 		}
 	}
 	else if(mode == PlaceZone)
@@ -345,112 +249,19 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
 		SDLMod modState = SDL_GetModState();
-		if(!(modState & KMOD_CTRL) || firstPlacementX==-1)
+		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || firstPlacementX==-1)
 		{
 			placeBuildingAt(mapX, mapY, localteam);
 		}
-		///This allows the drag-placing of walls
-		else
+		///This allows the placing of a line of buildings
+		else if(modState & KMOD_CTRL)
 		{
-			int startx = firstPlacementX;
-			int endx = mapX;
-			int starty = firstPlacementY;
-			int endy = mapY;
-			
-			int dirx = (endx > startx ? 1 : -1);
-			int distx = std::abs(endx - startx);
-			if(distx > game.map.getW()/2)
-			{
-				dirx = -dirx;
-				distx = game.map.getW() -  distx;
-			}
-					
-			int diry = (endy > starty ? 1 : -1);
-			int disty = std::abs(endy - starty);
-			if(disty > game.map.getH()/2)
-			{
-				diry = -diry;
-				disty = game.map.getH() -  disty;
-			}
-			
-			int bw = 0;
-			int bh = 0;
-			if(distx > disty)
-			{
-				int px = 0;
-				int py = 0;
-				int y = starty;
-				bool didBuilding=false;
-				bool finishing=false;
-				for(int x=startx; (!finishing && x!=endx) || !didBuilding;)
-				{
-					if(x == endx)
-						finishing=true;
- 					didBuilding=false;
-					bw-=1;
-					px+=1;
-					if(bw <= 0)
-					{
-						placeBuildingAt(x, y, localteam);
-						bw = bt->width;
-						bh = bt->height;
-						didBuilding=true;
-					}
-					if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
-					{
-						y=game.map.normalizeY(y+diry);
-						bh-=1;
-						py+=1;
-						if(bh <= 0)
-						{
-							placeBuildingAt(x, y, localteam);
-							bw = bt->width;
-							bh = bt->height;
-							didBuilding=true;
-						}
-					}
-					x=game.map.normalizeX(x+dirx);
-				}
-			}
-			else
-			{
-				int px = 0;
-				int py = 0;
-				int x = startx;
-				bool didBuilding=false;
-				bool finishing=false;
-				for(int y=starty; (!finishing && y!=endy) || !didBuilding;)
-				{
-					if(y == endy)
-						finishing=true;
-					didBuilding=false;
-					bh-=1;
-					py+=1;
-					if(bh <= 0)
-					{
-						placeBuildingAt(x, y, localteam);
-						bw = bt->width;
-						bh = bt->height;
-						didBuilding=true;
-					}
-					if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
-					{
-						x=game.map.normalizeX(x+dirx);
-						bw-=1;
-						px+=1;
-						if(bw <= 0)
-						{
-							placeBuildingAt(x, y, localteam);
-							bw = bt->width;
-							bh = bt->height;
-							didBuilding=true;
-						}
-					}
-					y=game.map.normalizeY(y+diry);
-				}
-			}
-			if(bt->width == 1 && bt->height==1)
-				placeBuildingAt(endx, endy, localteam);
+			computeBuildingLine(firstPlacementX, firstPlacementY, mapX, mapY, localteam, viewportX, viewportY, 2);
+		}
+		///This allows the placing of a square of buildings
+		else if(modState & KMOD_SHIFT)
+		{
+			computeBuildingBox(firstPlacementX, firstPlacementY, mapX, mapY, localteam, viewportX, viewportY, 2);
 		}
 	}
 	firstPlacementX=-1;
@@ -698,3 +509,186 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	}
 }
 
+void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode)
+{
+	// Get the type and sprite
+	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
+		
+	int startx = sx;
+	int endx = ex;
+	int starty = sy;
+	int endy = ey;
+	
+	int dirx = (endx > startx ? 1 : -1);
+	int distx = std::abs(endx - startx);
+	if(distx > game.map.getW()/2)
+	{
+		dirx = -dirx;
+		distx = game.map.getW() -  distx;
+	}
+			
+	int diry = (endy > starty ? 1 : -1);
+	int disty = std::abs(endy - starty);
+	if(disty > game.map.getH()/2)
+	{
+		diry = -diry;
+		disty = game.map.getH() -  disty;
+	}
+	
+	int bw = 0;
+	int bh = 0;
+	if(distx > disty)
+	{
+		int px = 0;
+		int py = 0;
+		int y = starty;
+		bool didBuilding=false;
+		bool finishing=false;
+		for(int x=startx; (!finishing && x!=endx) || !didBuilding;)
+		{
+			if(x == endx)
+				finishing=true;
+			didBuilding=false;
+			bw-=1;
+			px+=1;
+			if(bw <= 0)
+			{
+				if(mode == 1)
+					drawBuildingAt(x, y, localteam, viewportX, viewportY);
+				else if(mode == 2)
+					placeBuildingAt(x, y, localteam);
+				bw = bt->width;
+				bh = bt->height;
+				didBuilding=true;
+			}
+			if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
+			{
+				y=game.map.normalizeY(y+diry);
+				bh-=1;
+				py+=1;
+				if(bh <= 0)
+				{
+					if(mode == 1)
+						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+					else if(mode == 2)
+						placeBuildingAt(x, y, localteam);
+					bw = bt->width;
+					bh = bt->height;
+					didBuilding=true;
+				}
+			}
+			x=game.map.normalizeX(x+dirx);
+		}
+	}
+	else
+	{
+		int px = 0;
+		int py = 0;
+		int x = startx;
+		bool didBuilding=false;
+		bool finishing=false;
+		for(int y=starty; (!finishing && y!=endy) || !didBuilding;)
+		{
+			if(y == endy)
+				finishing=true;
+			didBuilding=false;
+			bh-=1;
+			py+=1;
+			if(bh <= 0)
+			{
+				if(mode == 1)
+					drawBuildingAt(x, y, localteam, viewportX, viewportY);
+				else if(mode == 2)
+					placeBuildingAt(x, y, localteam);
+				bw = bt->width;
+				bh = bt->height;
+				didBuilding=true;
+			}
+			if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
+			{
+				x=game.map.normalizeX(x+dirx);
+				bw-=1;
+				px+=1;
+				if(bw <= 0)
+				{
+					if(mode == 1)
+						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+					else if(mode == 2)
+						placeBuildingAt(x, y, localteam);
+					bw = bt->width;
+					bh = bt->height;
+					didBuilding=true;
+				}
+			}
+			y=game.map.normalizeY(y+diry);
+		}
+	}
+	if(bt->width == 1 && bt->height==1)
+	{
+		if(mode == 1)
+		{
+			drawBuildingAt(endx, endy, localteam, viewportX, viewportY);
+		}
+		else if(mode == 2)
+		{
+			placeBuildingAt(endx, endy, localteam);
+		}
+	}
+}
+
+void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode)
+{
+	// Get the type and sprite
+	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
+	
+	int startx = sx;
+	int endx = ex;
+	int starty = sy;
+	int endy = ey;
+	
+	int dirx = (endx > startx ? 1 : -1);
+	int distx = std::abs(endx - startx);
+	if(distx > game.map.getW()/2)
+	{
+		dirx = -dirx;
+		distx = game.map.getW() -  distx;
+	}
+			
+	int diry = (endy > starty ? 1 : -1);
+	int disty = std::abs(endy - starty);
+	if(disty > game.map.getH()/2)
+	{
+		diry = -diry;
+		disty = game.map.getH() -  disty;
+	}
+	
+	endx = game.map.normalizeX(endx + (distx % bt->width + 1) * dirx);
+	endy = game.map.normalizeY(endy + (disty % bt->height + 1) * diry);
+	
+	int bx=0;
+	for(int x=startx; x!=endx;)
+	{
+		bx-=1;
+		if(bx <= 0)
+		{
+			int by=0;
+			for(int y=starty; y!=endy;)
+			{
+				by -= 1;
+				if(by <= 0)
+				{
+					if(mode == 1)
+						drawBuildingAt(x, y, localteam, viewportX, viewportY);
+					else if(mode == 2)
+						placeBuildingAt(x, y, localteam);
+					by = bt->height;
+				}
+				y=game.map.normalizeY(y+diry);
+			}
+			bx = bt->width;	
+		}	
+		x=game.map.normalizeX(x+dirx);
+	}
+}

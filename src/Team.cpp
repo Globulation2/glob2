@@ -76,10 +76,12 @@ Team::~Team()
 
 void Team::init(void)
 {
-	for (int i=0; i<1024; i++)
+	myUnits = new Unit*[Unit::MAX_COUNT];
+	myBuildings = new Building*[Building::MAX_COUNT];
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 		myUnits[i]=NULL;
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 		myBuildings[i]=NULL;
 
 	startPosX=startPosY=0;
@@ -132,7 +134,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 
 	// normal load
 	stream->readEnterSection("myUnits");
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		if (myUnits[i])
 			delete myUnits[i];
@@ -155,7 +157,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 
 	prestige = 0;
 	stream->readEnterSection("myBuildings");
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		if (myBuildings[i])
 			delete myBuildings[i];
@@ -184,7 +186,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 
 	// resolve cross reference
 	stream->readEnterSection("myUnits");
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		if (myUnits[i])
 		{
@@ -196,7 +198,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	stream->readLeaveSection();
 
 	stream->readEnterSection("myBuildings");
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		if (myBuildings[i])
 		{
@@ -272,7 +274,7 @@ void Team::save(GAGCore::OutputStream *stream)
 
 	// saving team
 	stream->writeEnterSection("myUnits");
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		stream->writeEnterSection(i);
 		if (myUnits[i])
@@ -289,7 +291,7 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 
 	stream->writeEnterSection("myBuildings");
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		stream->writeEnterSection(i);
 		if (myBuildings[i])
@@ -307,7 +309,7 @@ void Team::save(GAGCore::OutputStream *stream)
 
 	// save cross reference
 	stream->writeEnterSection("myUnits");
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		if (myUnits[i])
 		{
@@ -319,7 +321,7 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 
 	stream->writeEnterSection("myBuildings");
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		if (myBuildings[i])
 		{
@@ -370,7 +372,7 @@ void Team::createLists(void)
 	turrets.clear();
 	virtualBuildings.clear();
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 		if (myBuildings[i])
 	{
 		if (myBuildings[i]->type->unitProductionTime)
@@ -411,17 +413,31 @@ void Team::clearMap(void)
 {
 	assert(map);
 
-	for (int i=0; i<1024; ++i)
+	for (int i=0; i<Unit::MAX_COUNT; ++i)
+	{
 		if (myUnits[i])
+		{
 			if (myUnits[i]->performance[FLY])
+			{
 				map->setAirUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
-	else
-		map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+			}
+			else
+			{
+				map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+			}
+		}
+	}
 
-	for (int i=0; i<1024; ++i)
+	for (int i=0; i<Building::MAX_COUNT; ++i)
+	{
 		if (myBuildings[i])
+		{
 			if (!myBuildings[i]->type->isVirtual)
+			{
 				map->setBuilding(myBuildings[i]->posX, myBuildings[i]->posY, myBuildings[i]->type->width, myBuildings[i]->type->height, NOGBID);
+			}
+		}
+	}
 
 }
 
@@ -430,17 +446,21 @@ void Team::clearMap(void)
 
 void Team::clearMem(void)
 {
-	for (int i=0; i<1024; ++i)
+	for (int i=0; i<Unit::MAX_COUNT; ++i)
+	{
 		if (myUnits[i])
-	{
-		delete myUnits[i];
-		myUnits[i] = NULL;
+		{
+			delete myUnits[i];
+			myUnits[i] = NULL;
+		}
 	}
-	for (int i=0; i<1024; ++i)
-		if (myBuildings[i])
+	for (int i=0; i<Building::MAX_COUNT; ++i)
 	{
-		delete myBuildings[i];
-		myBuildings[i] = NULL;
+		if (myBuildings[i])
+		{
+			delete myBuildings[i];
+			myBuildings[i] = NULL;
+		}
 	}
 }
 
@@ -450,7 +470,7 @@ void Team::clearMem(void)
 void Team::integrity(void)
 {
 	assert(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
-	for (int id=0; id<1024; id++)
+	for (int id=0; id<Building::MAX_COUNT; id++)
 	{
 		Building *b=myBuildings[id];
 		if (b)
@@ -471,7 +491,7 @@ void Team::integrity(void)
 		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u)
@@ -512,7 +532,7 @@ void Team::setCorrectColor(float value)
 
 void Team::update()
 {
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 		if (myBuildings[i])
 			myBuildings[i]->update();
 }
@@ -869,7 +889,7 @@ void Team::updateAllBuildingTasks()
 int Team::maxBuildLevel(void)
 {
 	int maxLevel=0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u && u->performance[BUILD])
@@ -943,7 +963,7 @@ void Team::syncStep(void)
 
 	int nbUsefullUnits = 0;
 	int nbUsefullUnitsAlone = 0;
-	for (int i = 0; i < 1024; i++)
+	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		Unit *u = myUnits[i];
 		if (u)
@@ -1036,7 +1056,7 @@ void Team::syncStep(void)
 
 	bool isEnoughFoodInSwarm=false;
 
-	for (int i=0; i<1024; ++i)
+	for (int i=0; i<Building::MAX_COUNT; ++i)
 	{
 		if(myBuildings[i])
 		{
@@ -1154,7 +1174,7 @@ bool Team::wasRecentEvent(GameEventType type)
 void Team::dirtyGlobalGradient()
 {
 	game->dirtyWarFlagGradient();
-	for (int id=0; id<1024; id++)
+	for (int id=0; id<Building::MAX_COUNT; id++)
 	{
 		Building *b=myBuildings[id];
 		if (b)
@@ -1194,7 +1214,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [1+t*20]
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 		if (myUnits[i])
 	{
 		cs^=myUnits[i]->checkSum(checkSumsVectorForUnits);
@@ -1203,7 +1223,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [2+t*20]
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 		if (myBuildings[i])
 	{
 		cs^=myBuildings[i]->checkSum(checkSumsVectorForBuildings);

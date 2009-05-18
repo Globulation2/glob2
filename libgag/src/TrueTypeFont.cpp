@@ -230,10 +230,10 @@ namespace GAGCore
 		char		*utf8str = new char[4*len + 1];	//assume worst case here (all 4 Byte characters)
 		FriBidiCharType	base_dir = FRIBIDI_TYPE_ON;
 		int n;
-		n = fribidi_charset_to_unicode (fribidi_parse_charset ("UTF-8"),c_str, len, bidi_logical);
+		n = fribidi_charset_to_unicode (fribidi_parse_charset ((char*)"UTF-8"),c_str, len, bidi_logical);
 		fribidi_log2vis(bidi_logical, n, &base_dir, bidi_visual, NULL, NULL, NULL);
 		n =  fribidi_remove_bidi_marks (bidi_visual, n, NULL, NULL, NULL);
-		fribidi_unicode_to_charset (fribidi_parse_charset ("UTF-8"),bidi_visual, n, utf8str);
+		fribidi_unicode_to_charset (fribidi_parse_charset ((char*)"UTF-8"),bidi_visual, n, utf8str);
 		delete []bidi_logical;
 		delete []bidi_visual;
 		return utf8str;	

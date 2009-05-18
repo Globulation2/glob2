@@ -1,5 +1,5 @@
 #include "tokenizer.h"
-#include <cassert>
+#include "error.h"
 
 Tokenizer::Tokenizer(const Token::Type *tokenTypes, const size_t tokenTypesSize, 
                      const std::string& filename, const char* text):
@@ -24,7 +24,7 @@ const Token Tokenizer::next()
 		}
 	}
 	if (length == -1)
-		assert(false);
+		throw Exception(position, "syntax error");
 	Token token(position, type, text, length);
 	position.move(text, length);
 	text += length;

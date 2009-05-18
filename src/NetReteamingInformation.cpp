@@ -77,7 +77,7 @@ void NetReteamingInformation::decodeData(GAGCore::InputStream* stream)
 	teams.clear();
 	stream->readEnterSection("teams");
 	Uint32 size=stream->readUint32("size");
-	for(int i=0; i<size; ++i)
+	for(unsigned int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
 		std::string playerName = stream->readText("playerName");

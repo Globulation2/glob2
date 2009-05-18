@@ -47,6 +47,7 @@ namespace GAGCore
 class Unit
 {
 public:
+	static const int MAX_COUNT=1024;
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void) { }

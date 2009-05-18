@@ -38,7 +38,7 @@ YOGServerRouterAdministrator::YOGServerRouterAdministrator(YOGServerRouter* rout
 
 YOGServerRouterAdministrator::~YOGServerRouterAdministrator()
 {
-	for(int i=0; i<commands.size(); ++i)
+	for(unsigned int i=0; i<commands.size(); ++i)
 	{
 		delete commands[i];
 	}
@@ -52,7 +52,7 @@ bool YOGServerRouterAdministrator::executeAdministrativeCommand(const std::strin
 	std::vector<std::string> tokens;
 	std::string token;
 	bool isQuotes=false;
-	for(int i=0; i<message.size(); ++i)
+	for(unsigned int i=0; i<message.size(); ++i)
 	{
 		if(message[i]==' ' && !isQuotes)
 		{
@@ -92,7 +92,7 @@ bool YOGServerRouterAdministrator::executeAdministrativeCommand(const std::strin
 	if(tokens[0] == "help")
 	{
 		sendTextMessage("The current list of YOG Router Administrative Commands are: ", player);
-		for(int i=0; i<commands.size(); ++i)
+		for(unsigned int i=0; i<commands.size(); ++i)
 		{
 			sendTextMessage(commands[i]->getHelpMessage(), player);
 		}
@@ -102,7 +102,7 @@ bool YOGServerRouterAdministrator::executeAdministrativeCommand(const std::strin
 	}
 	else
 	{
-		for(int i=0; i<commands.size(); ++i)
+		for(unsigned int i=0; i<commands.size(); ++i)
 		{
 			if(tokens[0] == commands[i]->getCommandName())
 			{

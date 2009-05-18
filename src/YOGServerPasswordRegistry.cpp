@@ -54,7 +54,7 @@ YOGLoginState YOGServerPasswordRegistry::registerInformation(const std::string& 
 	if(passwords[username] != "")
 		return YOGUsernameAlreadyUsed;
 	
-	for(int i=0; i<invalidChars.size(); ++i)
+	for(unsigned int i=0; i<invalidChars.size(); ++i)
 		if(username.find(invalidChars[i]) != std::string::npos)
 			return YOGNameInvalidSpecialCharacters;
 	
@@ -94,7 +94,7 @@ void YOGServerPasswordRegistry::readPasswords()
 	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(YOG_SERVER_FOLDER+"registry"));
 	if(stream->isEndOfStream())
 		return;
-	Uint32 dataVersionMinor = stream->readUint32("version");
+	stream->readUint32("version");
 	Uint32 size = stream->readUint32("size");
 	for(unsigned i=0; i<size; ++i)
 	{

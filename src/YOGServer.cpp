@@ -399,6 +399,7 @@ YOGGameInfo& YOGServer::getGameInfo(Uint16 gameID)
 			return *i;
 		}
 	}
+	assert(false);
 }
 
 

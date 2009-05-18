@@ -447,7 +447,7 @@ void AINumbi::nextMainBuilding(const int buildingType)
 	Building *b=myBuildings[mainBuilding[buildingType]];
 	if (b==NULL)
 	{
-		for (int i=1; i<1024; i++)
+		for (int i=1; i<Building::MAX_COUNT; i++)
 			if ((myBuildings[i])/*&&((myBuildings[i]->type->shortTypeNum==buildingType)||(myBuildings[i]->type->shortTypeNum==0))*/)
 			{
 				b=myBuildings[i];
@@ -465,7 +465,7 @@ void AINumbi::nextMainBuilding(const int buildingType)
 	{
 		//printf("AI: nextMainBuilding uid=%d\n", b->UID);
 		int id=Building::GIDtoID(b->gid);
-		for (int i=1; i<1024; i++)
+		for (int i=1; i<Building::MAX_COUNT; i++)
 			if ((myBuildings[(i+id)&0xFF])/*&&((myBuildings[(i+id)&0xFF]->type->shortTypeNum==buildingType)||(myBuildings[(i+id)&0xFF]->type->shortTypeNum==0))*/)
 			{
 				b=myBuildings[(i+id)&0xFF];
@@ -775,7 +775,7 @@ boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeo
 {
 	Unit **myUnits=team->myUnits;
 	int ft=0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 		if ((myUnits[i])&&(myUnits[i]->performance[ATTACK_SPEED])&&(myUnits[i]->medical==0))
 			ft++;
 
@@ -833,7 +833,7 @@ boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeo
 		int ex=-1, ey=-1;
 		int count=0;
 		bool found=false;
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b=game->teams[e]->myBuildings[i];
 			if (b)
@@ -902,7 +902,7 @@ boost::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int nu
 	//Unit **myUnits=player->team->myUnits;
 	int fb=0;
 	
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if ((b)&&(b->type->shortTypeNum==buildingType))
@@ -945,7 +945,7 @@ boost::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int wo
 	
 	Building **myBuildings=team->myBuildings;
 	int ss=0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if ((b)&&(b->type->shortTypeNum==0))
@@ -993,7 +993,7 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 	int numberUpgradingDefense[4]={0, 0, 0, 0}; // number of upgrading Science buildings
 	Building *defenseBuilding[4]={0, 0, 0, 0};
 	
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if (b)
@@ -1062,7 +1062,7 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 	int wun[4]={0, 0, 0, 0};//working units
 	int fun[4]={0, 0, 0, 0};//free units
 	{
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Unit::MAX_COUNT; i++)
 		{
 			Unit *u=myUnits[i];
 			if (u)

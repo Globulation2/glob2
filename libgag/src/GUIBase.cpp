@@ -479,10 +479,9 @@ namespace GAGGUI
 					break;
 					case SDL_KEYDOWN:
 					{
-						SDLMod modState = SDL_GetModState();
 						//Manual integration of cmd+q and alt f4
 #						ifdef USE_OSX
-						if(event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+						if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
 						{
 							run=false;
 							returnCode=-1;
@@ -490,7 +489,7 @@ namespace GAGGUI
 						}
 #						endif
 #						ifdef USE_WIN32
-						if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+						if(event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 						{
 							run=false;
 							returnCode=-1;
