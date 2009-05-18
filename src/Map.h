@@ -99,10 +99,6 @@ public:
 	//! Save a map
 	void save(GAGCore::OutputStream *stream);
 	
-	/// Load transitional map data. This is temporary map information that was saved by
-	/// the alpha 23 patch for transfering between map formats
-	void loadTransitional();
-	
 	// add & remove teams, used by the map editor and the random map generator
 	// Have to be called *after* session.numberOfTeam has been changed.
 	void addTeam(void);
