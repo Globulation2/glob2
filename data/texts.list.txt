@@ -7,7 +7,9 @@ data/texts.de.txt
 data/texts.dk.txt
 data/texts.en.txt
 data/texts.es.txt
+data/texts.eo.txt
 data/texts.eu.txt
+data/texts.fa.txt
 data/texts.fr.txt
 data/texts.gr.txt
 data/texts.hu.txt
