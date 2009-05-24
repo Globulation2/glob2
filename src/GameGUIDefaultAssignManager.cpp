@@ -88,7 +88,7 @@ void GameGUIDefaultAssignManager::load(GAGCore::InputStream* stream, Sint32 vers
 	stream->readEnterSection("unitCount");
 	Uint32 size = stream->readUint32("size");
 	unitCount.clear();
-	for(int i=0; i<size; ++i)
+	for(int i=0; i<(int)size; ++i)
 	{
 		stream->readEnterSection(i);
 		int f = stream->readSint32("building_type");

@@ -302,7 +302,7 @@ void YOGClientLobbyScreen::recieveInternalMessage(const std::string& message)
 	chatWindow->addText(message);
 	chatWindow->addText("\n");
 	chatWindow->addImage(-1);
-	for(int c=0; c<message.size(); ++c)
+	for(unsigned int c=0; c<message.size(); ++c)
 		if(message[c] == '\n')
 			chatWindow->addImage(-1);
 	chatWindow->scrollToBottom();

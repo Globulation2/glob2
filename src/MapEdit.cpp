@@ -812,7 +812,15 @@ void Checkbox::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
-  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 0, RIGHT_MENU_WIDTH, 128, RIGHT_MENU_OFFSET+14,14, Minimap::ShowFOW)
+  : game(NULL, this), keyboardManager(MapEditShortcuts), 
+    minimap(globalContainer->runNoX,
+            RIGHT_MENU_WIDTH, // menu width
+            globalContainer->gfx->getW(), // game width
+            20, // x offset
+            5, // y offset
+            128, // width
+            128, // height
+            Minimap::ShowFOW)
 {
 	doQuit=false;
 	doFullQuit=false;
@@ -841,10 +849,10 @@ MapEdit::MapEdit()
 	int decX = RIGHT_MENU_OFFSET;
 
 	panelMode=AddBuildings;
-	buildingView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 128, 32, 32), "any", "building view icon", "switch to building view", 0, AddBuildings);
-	flagsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 128, 32, 32), "any", "flag view icon", "switch to flag view", 28, AddFlagsAndZones);
-	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 128, 32, 32), "any", "terrain view icon", "switch to terrain view", 31, Terrain);
-	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, 128, 32, 32), "any", "teams view icon", "switch to teams view", 33, Teams);
+	buildingView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 136, 32, 32), "any", "building view icon", "switch to building view", 0, AddBuildings);
+	flagsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 136, 32, 32), "any", "flag view icon", "switch to flag view", 28, AddFlagsAndZones);
+	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 136, 32, 32), "any", "terrain view icon", "switch to terrain view", 31, Terrain);
+	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, 136, 32, 32), "any", "teams view icon", "switch to teams view", 33, Teams);
 	menuIcon = new MenuIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+decX, 0, 32, 32), "any", "menu icon", "open menu screen");
 	addWidget(buildingView);
 	addWidget(flagsView);
@@ -1188,9 +1196,9 @@ int MapEdit::run(void)
 		
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
-	drawMenu();
 	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), true, true);
 	drawMiniMap();
+	drawMenu();
 	
 	
 	if(game.gameHeader.getNumberOfPlayers() == 0)
@@ -1400,7 +1408,7 @@ void MapEdit::drawMiniMap(void)
 void MapEdit::drawMenu(void)
 {
  	int menuStartW=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-	int yposition=128;
+	int yposition=133;
 
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(menuStartW, yposition, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
@@ -1606,19 +1614,18 @@ void MapEdit::drawPlacingUnitOnMap()
 
 void MapEdit::processEvent(SDL_Event& event)
 {
-	SDLMod modState = SDL_GetModState();
 	if (event.type==SDL_QUIT)
 	{
 		doFullQuit=true;
 	}
 #	ifdef USE_OSX
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
 	{
 		doFullQuit=true;
 	}
 #	endif
 #	ifdef USE_WIN32
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 	{
 		doFullQuit=true;
 	}
@@ -2057,7 +2064,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		scriptEditor=new ScriptEditorScreen(&game.script, &game);
+		scriptEditor=new ScriptEditorScreen(&game.mapscript, &game);
 		showingScriptEditor=true;
 		hasMapBeenModified=true;
 	}
@@ -3134,8 +3141,6 @@ void MapEdit::addWidget(MapEditorWidget* widget)
 {
 	mew.push_back(widget);
 }
-
-
 
 bool MapEdit::findAction(int x, int y)
 {

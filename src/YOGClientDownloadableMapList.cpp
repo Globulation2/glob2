@@ -62,7 +62,7 @@ void YOGClientDownloadableMapList::recieveMessage(boost::shared_ptr<NetMessage> 
 	if(type == MNetSendMapThumbnail)
 	{
 		boost::shared_ptr<NetSendMapThumbnail> info = static_pointer_cast<NetSendMapThumbnail>(message);
-		for(int i=0; i<maps.size(); ++i)
+		for(unsigned int i=0; i<maps.size(); ++i)
 		{
 			if(maps[i].getMapID() == info->getMapID())
 			{
@@ -91,6 +91,8 @@ YOGDownloadableMapInfo YOGClientDownloadableMapList::getMap(const std::string& n
 			return *i;
 		}
 	}
+	assert(false);
+//	return YOGDownloadableMapInfo();//to satisfy -Wall
 }
 
 
@@ -118,6 +120,8 @@ MapThumbnail& YOGClientDownloadableMapList::getMapThumbnail(const std::string& n
 			return thumbnails[i - maps.begin()];
 		}
 	}
+	assert(false);
+//	return thumbnails[0];//to satisfy -Wall
 }
 
 

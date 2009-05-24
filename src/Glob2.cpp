@@ -321,12 +321,24 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::CUSTOM:
 			{
-				Engine engine;
-				int rc_e = engine.initCustom();
-				if (rc_e ==  Engine::EE_NO_ERROR)
-					isRunning = (engine.run() != -1);
-				else if(rc_e == -1)
-					isRunning = false;
+				bool cont=true;
+				while(cont && isRunning)
+				{
+					Engine engine;
+					int rc_e = engine.initCustom();
+					if (rc_e ==  Engine::EE_NO_ERROR)
+					{
+						isRunning = (engine.run() != -1);
+					}
+					else if(rc_e == -1)
+					{
+						isRunning = false;
+					}
+					else
+					{
+						cont=false;	
+					}
+				}
 			}
 			break;
 			case MainMenuScreen::MULTIPLAYERS_YOG:

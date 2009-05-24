@@ -82,7 +82,7 @@ canFeedUnit 0
 timeToFeedUnit 0
 canHealUnit 0
 timeToHealUnit 0
-insideSpeed 4
+insideSpeed 12
 canExchange 0
 useTeamRessources 0
 

@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ AIWarrush
 
 [building site]
 Градилиште
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -576,6 +582,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [not ready]
 није спреман
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +592,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 Број екипа: %0.
 [number of teams]
 Број тимова
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -615,7 +625,7 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [open]
 отвори
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -645,6 +655,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -682,6 +694,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 
 [Register a new YOG user with password]
 Пријави новог корисника на YOG са лозинком. (није шифровано)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -697,6 +711,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [repair]
 Поправи
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -986,6 +1002,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 ?? Ратна застава је завршена ??
 [the warflag is under attack]
 ?? Ратна застава је нападнута ??
+[time]
+
 [to:]
 ка:
 [toggle draw accessibility aids]
@@ -997,6 +1015,12 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Укупан постигнут престиж
@@ -1126,6 +1150,8 @@ YOG мета-сервер је одбио везу јер корисничко �
 
 [YESTS_CREATED]
 Подсистем за повезивање је спреман за контакт са YOG метасервером.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Грешка при прикључењу. Изгледа да YOG сервер није покренут.
 [yog block command help]

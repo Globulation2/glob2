@@ -89,7 +89,7 @@ void NetEngine::clearTopOrders()
 			{
 				for(int i=0; i<diff; ++i)
 				{
-					for(int p=0; p<orders.size(); ++p)
+					for(unsigned int p=0; p<orders.size(); ++p)
 					{
 						boost::shared_ptr<Order> order = boost::shared_ptr<Order>(new NullOrder);
 						order->sender=p;

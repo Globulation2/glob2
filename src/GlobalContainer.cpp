@@ -465,9 +465,9 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 		{
 			randomSeed = randomSeed * 69069;
 			unsigned index;
-			if (x/32 < limit)
+			if (x/32 < (int)limit)
 				index = ((randomSeed >> 16) & 0xF);
-			else if (x/32 == limit)
+			else if (x/32 == (int)limit)
 				index = ((randomSeed >> 16) & 0x7) + 64;
 			else
 				index = ((randomSeed >> 16) & 0xF) + 128;
@@ -590,7 +590,9 @@ void GlobalContainer::load(void)
 		// load ressources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
-		areas = Toolkit::getSprite("data/gfx/area");
+		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
+		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
+		areaGuard = Toolkit::getSprite("data/gfx/area-guard");
 		bullet = Toolkit::getSprite("data/gfx/bullet");
 		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
 		deathAnimation = Toolkit::getSprite("data/gfx/death"); 

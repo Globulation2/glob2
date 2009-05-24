@@ -4,6 +4,8 @@
 %0 Poziom %1
 [%0 units can't access building]
 %0 j. nie może się dost. do bud.
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 j. nie może się dost. do owo.
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 jednostek nie dost.
 [%0 units too far from building]
 %0 j. za daleko od bud.
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 j. za daleko od owo.
 [%0 units too far from resource]
@@ -115,7 +119,7 @@ Oczekuj graczy
 [away:]
 zajęty:
 [Back]
-dostępny:
+Powrót
 [backspace]
 backspace
 [barracks explanation 2]
@@ -142,6 +146,8 @@ Budynki
 Wł. Budynków
 [building site]
 plac budowy
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -207,7 +213,7 @@ Betonowe Wyspy
 [connect]
 Połącz
 [connecting to game]
-
+Łączę z grą
 [connecting to]
 Łączę z
 [Construction Site Defaults]
@@ -453,7 +459,7 @@ Przyłącz się do gry
 [join]
 Przyłącz się
 [keyboard settings]
-Ustawienia Klawiatury
+Ust. Klawiatury
 [kick]
 Wykop
 [lan]
@@ -576,6 +582,8 @@ Nie
 Za Mało Ocen
 [not ready]
 nie gotowy
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 %0 graczy (%1 Wszystkich)
 [number of players: %0]
@@ -584,6 +592,8 @@ nie gotowy
 %0 drużyny
 [number of teams]
 Ilość drużyn
+[Number Of Units]
+
 [numlock]
 numlock
 [objectives]
@@ -615,7 +625,7 @@ Otwórz Edytor Zespołów
 [open]
 otwarty
 [OpenGL]
-
+OpenGL
 [Options]
 Opcje
 [options]
@@ -646,6 +656,8 @@ Proszę czekaj
 moc
 [press space]
 Naciśnij spację aby kontynuować
+[Prestige Score]
+
 [Prestige Win Enabled]
 Prestyżowa Wygrana Aktywna
 [Prestige]
@@ -682,6 +694,8 @@ gotowy?
 Odśwież Listę Map
 [Register a new YOG user with password]
 Rejestruj nowego użytkownika YOG z hasłem. (niebezpieczne)
+[Register]
+
 [remember unit]
 Zapamiętaj Jednostkę
 [Remember YOG password localy]
@@ -698,8 +712,10 @@ Wznów/Zatrzymaj Naprawę
 Napraw
 [repeat area]
 razy ten sam teren
+[Repeat your password :]
+
 [restore default shortcuts]
-Przywróć Domyślne Skróty Klawiaturowe
+Przywróć Domyślne Skróty
 [return to editor]
 Powróć do edytora
 [return to game]
@@ -986,6 +1002,8 @@ Basen został zaatakowany
 Postawiono flagę wojenną
 [the warflag is under attack]
 Flaga wojenna została zaatakowana
+[time]
+
 [to:]
 do:
 [toggle draw accessibility aids]
@@ -998,6 +1016,12 @@ Przełącz Rysowanie Dróg Jednostek
 Przełącz Ekran Menu
 [toggle recording voice]
 Przełącz Nagrywanie Dźwięku
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Osiągnięty prestiż
 [Total]
@@ -1031,7 +1055,7 @@ Odblokowane na Początku
 [unlocked by]
 Odblokowane Przez
 [Unnamed Area]
-{Nienazwany Teren}
+{Teren bez Nazwy}
 [up]
 góra
 [upgrade building]
@@ -1126,6 +1150,8 @@ Metaserwer YOG odmówił połączenia, ponieważ Twoje imię gracza jest zabloko
 Metaserwer YOG odmówił połączenia, ponieważ podane imię gracza jest niepoprawne. Imiona graczy mogą się składać tylko z liter, liczb i podkreślników.
 [YESTS_CREATED]
 System jest gotowy do połączenia z metaserwerem YOG.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
 [yog block command help]

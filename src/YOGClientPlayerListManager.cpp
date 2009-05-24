@@ -100,6 +100,7 @@ YOGPlayerSessionInfo& YOGClientPlayerListManager::getPlayerInfo(const std::strin
 		if(i->getPlayerName() == name)
 			return *i;
 	}
+	assert(false);
 }
 
 
