@@ -4,6 +4,8 @@
 %0 Level %1
 [%0 units can't access building]
 %0 units can't access building
+[%0 units can't access flag]
+%0 units can't access flag
 [%0 units can't access fruit]
 %0 units can't access fruit
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 units not available
 [%0 units too far from building]
 %0 units too far from building
+[%0 units too far from flag]
+%0 units too far from flag
 [%0 units too far from fruit]
 %0 units too far from fruit
 [%0 units too far from resource]
@@ -142,6 +146,8 @@ Building Defaults
 Building Settings
 [building site]
 construction site
+[Building Tool Box Explanation]
+Shift + Drag = Box
 [Building Tool Line Explanation]
 Ctrl + Drag = Line
 [Buildings]
@@ -578,12 +584,16 @@ No
 Not Enough Ratings
 [not ready]
 not ready
+[Number Of Buildings]
+Number Of Buildings
 [number of players: %0 (%1 AI)]
 %0 players (%1 AI)
 [number of teams: %0]
 %0 teams
 [number of teams]
 number of teams
+[Number Of Units]
+Number Of Units
 [numlock]
 numlock
 [objectives]
@@ -619,7 +629,7 @@ OpenGL
 [Options]
 Options
 [options]
-Options
+options
 [Orange]
 Orange
 [Other Options]
@@ -646,6 +656,8 @@ Please wait
 power
 [press space]
 Press space to continue.
+[Prestige Score]
+Prestige Score
 [Prestige Win Enabled]
 Prestige Win Enabled
 [Prestige]
@@ -680,8 +692,8 @@ Proportions
 ready?
 [refresh map list]
 Refresh Map List
-[Register a new YOG user with password]
-Register a new YOG user with a password.
+[Register]
+Register
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
@@ -698,6 +710,8 @@ Start/Stop Repair
 Repair
 [repeat area]
 times the same landscape
+[Repeat your password :]
+Repeat your password:
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [return to editor]
@@ -986,6 +1000,8 @@ The swimming pool is under attack
 ?? warflag finished ??
 [the warflag is under attack]
 ?? warflag under attack ??
+[time]
+Time
 [to:]
 to:
 [toggle draw accessibility aids]
@@ -1000,6 +1016,12 @@ Toggle Menu Screen
 Initiate Voice Recording
 [toggle recording voice]
 Toggle Recording Voice
+[Total Attack Power]
+Total Attack Power
+[Total Defence Power]
+Total Defence Power
+[Total Hitpoints]
+Total Hitpoints
 [Total prestige reached]
 Total prestige reached
 [Total]
@@ -1128,6 +1150,8 @@ The YOG metaserver has refused the connection because this username is banned. P
 The YOG metaserver has refused the connection because the username given is invalid. Usernames can only contain letters, numbers, and underscores.
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+The provided passwords don't match. Please retype them.
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
 [yog block command help]
@@ -1151,7 +1175,7 @@ You have lost!
 [you have won]
 You have won!
 [You where kicked from the game]
-You where kicked from the game
+You were kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
 [Your IP address was temporarily banned]

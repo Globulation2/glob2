@@ -4,10 +4,12 @@
  * The algorithm is described in detail here:
  * http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
  *
- * Author: Erik Søe Sørensen
+ * Author: Erik Sï¿½e Sï¿½rensen
  */
 
 #define PERMUTATION_SIZE 256
+
+#include <assert.h>
 
 namespace SimplexNoise {
 	static const unsigned char perm[PERMUTATION_SIZE] = {
@@ -181,6 +183,8 @@ namespace SimplexNoise {
 		case 14: return  z + y;
 		case 15: return y-z;// - y;
 		}//switch
+		assert(false);
+		return 0;//to satisfy -Wall
 	}
 
 	int hashGridPoint(int gx, int gy, int gz) {

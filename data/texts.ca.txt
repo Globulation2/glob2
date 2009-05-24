@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Construir
 
 [building site]
 Construint
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -582,6 +588,8 @@ No
 
 [not ready]
 sense preparar
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +598,8 @@ sense preparar
 %0 nombre d' equips
 [number of teams]
 Nombre d' equips
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -621,7 +631,7 @@ Aqui
 [open]
 Obrir
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -651,6 +661,8 @@ Esperi un moment
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -688,6 +700,8 @@ Proporció
 
 [Register a new YOG user with password]
 Registrar un nou jugador YOG amb contrasenya (insegur)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -703,6 +717,8 @@ Recordar la contrasenya (insegur)
 [repair]
 Reparar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -992,6 +1008,8 @@ La Piscina està sent atacada
 ?? Bandera de Guerra finalizada ??
 [the warflag is under attack]
 ?? La bandera de Guerra està sent atacada ??
+[time]
+
 [to:]
 a:
 [toggle draw accessibility aids]
@@ -1003,6 +1021,12 @@ a:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Prestigi total alcanzat
@@ -1134,6 +1158,8 @@ No es pot conectar al metaservidor YOG. Nom d'usuari en ús
 
 [YESTS_CREATED]
 El sistema de conexió està llest per contactar amb el metaservidor YOG
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposible conectar. Metaservidor YOG esta caigut
 [yog block command help]

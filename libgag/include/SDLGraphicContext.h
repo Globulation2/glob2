@@ -264,9 +264,9 @@ namespace GAGCore
 		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
-		virtual void drawVertLine(int x, int y, int l, const Color& color) { _drawVertLine(x, y, l, color); }
+		virtual void drawVertLine(int x, int y, int l, const Color& color);
 		virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
-		virtual void drawHorzLine(int x, int y, int l, const Color& color) { _drawHorzLine(x, y, l, color); }
+		virtual void drawHorzLine(int x, int y, int l, const Color& color);
 		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawString(int x, int y, Font *font, int i);
@@ -311,6 +311,7 @@ namespace GAGCore
 			DEFAULT = 0,
 			USEGPU = 1,
 			FULLSCREEN = 2,
+			//TODO: either implement "resizable" as a resizable gui or explain what this does
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
 		};
@@ -381,9 +382,9 @@ namespace GAGCore
 		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
-		virtual void drawVertLine(int x, int y, int l, const Color& color) { _drawVertLine(x, y, l, color); }
+		virtual void drawVertLine(int x, int y, int l, const Color& color);
 		virtual void drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
-		virtual void drawHorzLine(int x, int y, int l, const Color& color) { _drawHorzLine(x, y, l, color); }
+		virtual void drawHorzLine(int x, int y, int l, const Color& color);
 		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		

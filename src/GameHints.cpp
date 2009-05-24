@@ -18,6 +18,7 @@
 
 #include "GameHints.h"
 #include "Stream.h"
+#include <cassert>
 
 GameHints::GameHints()
 {
@@ -53,6 +54,7 @@ void GameHints::removeHint(int n)
 
 void GameHints::setGameHintText(int n, const std::string& hint)
 {
+	assert (n < (int)texts.size());
 	texts[n]=hint;
 }
 
@@ -60,6 +62,7 @@ void GameHints::setGameHintText(int n, const std::string& hint)
 
 const std::string& GameHints::getGameHintText(int n)
 {
+	assert (n < (int)texts.size());
 	return texts[n];
 }
 
@@ -67,27 +70,33 @@ const std::string& GameHints::getGameHintText(int n)
 
 void GameHints::setHintHidden(int n)
 {
-	hidden[n]=true;
+	if (n >= 0 && n < (int)hidden.size())
+		hidden[n]=true;
 }
 
 
 
 void GameHints::setHintVisible(int n)
 {
-	hidden[n]=false;
+	if (n >= 0 && n < (int)hidden.size())
+		hidden[n]=false;
 }
 
 
 
 bool GameHints::isHintVisible(int n)
 {
-	return !hidden[n];
+	if (n >= 0 && n < (int)hidden.size())
+		return !hidden[n];
+	else
+		return false;
 }
 
 
 
 void GameHints::setScriptNumber(int n, int scriptNumber)
 {
+	assert(n < (int)scriptNumbers.size());
 	scriptNumbers[n]=scriptNumber;
 }
 
@@ -95,6 +104,7 @@ void GameHints::setScriptNumber(int n, int scriptNumber)
 
 int GameHints::getScriptNumber(int n)
 {
+	assert(n < (int)scriptNumbers.size());
 	return scriptNumbers[n];
 }
 
@@ -104,7 +114,7 @@ void GameHints::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("GameHints");
 	stream->writeUint32(texts.size(), "size");
-	for(int i=0; i<texts.size(); ++i)
+	for(unsigned int i=0; i<texts.size(); ++i)
 	{
 		stream->writeEnterSection(i);
 		stream->writeText(texts[i], "text");
@@ -124,7 +134,7 @@ void GameHints::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 	scriptNumbers.clear();
 	stream->readEnterSection("GameHints");
 	Uint32 size = stream->readUint32("size");
-	for(int i=0; i<size; ++i)
+	for(unsigned int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
 		texts.push_back(stream->readText("text"));
