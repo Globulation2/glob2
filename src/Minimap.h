@@ -42,7 +42,7 @@ public:
 
 	///Construct a minimap to be drawn at the given cordinates, and the given size, provided that
 	///some of that size is a border
-	Minimap(bool nox, int px, int py, int sizew, int sizeh, int leftborder, int topborder, MinimapMode minimap_mode);
+	Minimap(bool nox, int menuWidth, int gameWidth, int xOffset, int yOffset, int width, int height, MinimapMode minimapMode);
 
 	~Minimap();
 
@@ -76,12 +76,12 @@ private:
 	void computeColors(int row, int localteam);
 	
 	bool noX;
-	int px;
-	int py;
-	int sizew;
-	int sizeh;
-	int leftborder;
-	int topborder;
+	int menuWidth;
+	int gameWidth;
+	int xOffset;
+	int yOffset;
+	int width;
+	int height;
 	int update_row;
 	int offset_x;
 	int offset_y;
@@ -91,7 +91,7 @@ private:
 	int mini_h;
 	int mini_offset_x;
 	int mini_offset_y;
-	MinimapMode minimap_mode;
+	MinimapMode minimapMode;
 	
 	Game* game;
 

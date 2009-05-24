@@ -65,7 +65,7 @@ namespace GAGGUI
 		if(!readOnly)
 		{
 			int spriteYShift = (textHeight-16) >> 1;
-			if(mx >= 0 && mx <= 16 && my>=spriteYShift && my<=(textHeight-spriteYShift))
+			if(mx >= 0 && mx <= 16 && my>=spriteYShift && my<=((int)textHeight-spriteYShift))
 			{
 				checks[element] = !checks[element];
 			}

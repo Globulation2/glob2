@@ -30,11 +30,6 @@ boost::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCor
 	
 	switch (type)
 	{
-		case WCUnknown:
-		{
-			assert(false);
-		}
-		break;
 		case WCDeath:
 		{
 			boost::shared_ptr<WinningConditionDeath> condition(new WinningConditionDeath);
@@ -70,7 +65,12 @@ boost::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCor
 			return condition;
 		}
 		break;
+		case WCUnknown:
+		default:
+			break;
 	}
+	assert(false);
+	return boost::shared_ptr<WinningCondition>();//to satisfy -Wall
 }
 
 

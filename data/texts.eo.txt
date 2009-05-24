@@ -1,0 +1,1188 @@
+[%0 has left the game]
+%0 forlasis la ludon.
+[%0 level %1]
+%0, %1a nivelo
+[%0 units can't access building]
+%0 da globuloj ne povas atingi la konstruaĵon
+[%0 units can't access flag]
+%0 da globuloj ne povas atingi la markilon
+[%0 units can't access fruit]
+%0 da globuloj ne povas atingi la frukton
+[%0 units can't access resource]
+%0 da globuloj ne povas atingi la rezervaĵon
+[%0 units not available]
+%0 da globuloj ne estas disponeblaj
+[%0 units too far from building]
+%0 da globuloj estas tro malproksime de la konstruaĵo
+[%0 units too far from flag]
+%0 da globuloj estas tro malproksime de la markilo
+[%0 units too far from fruit]
+%0 da globuloj estas tro malproksime de la frukto
+[%0 units too far from resource]
+%0 da globuloj estas tro malproksime de la rezervaĵo
+[%0 units too low level]
+%0 da globuloj havas tre malgrandajn nivelojn
+[%0% Uploaded]
+%0% jam alŝutita
+[%0's game]
+Ludo de %0
+[%0's team unit got converted to your team]
+Vi konvertigis globulon de teamo %0 al via.
+[abreaviation explanation A]
+A (Allies): Kunpacanoj
+[abreaviation explanation C]
+C (Chat): Ebligi babiladon
+[abreaviation explanation fV]
+fV (FoodVision): Doni Vidon al Manĝejoj (por ŝteli globulojn)
+[abreaviation explanation mV]
+mV (MarketVision): Doni Vidon al Vendejoj (por interŝanĝi fruktojn)
+[abreaviation explanation V]
+V (Vision): Doni Vidon al ĉiuj konstruaĵoj
+[add map]
+Aldoni Karton
+[add shortcut]
+Aldoni Taskklavon
+[Add]
+Aldoni
+[AI Descriptions]
+Priskriboj de AI-oj
+[AI]
+AI
+[ai]
+AI
+[AICastor-Description]
+Kastoro ludas singardeme, kaj faras tre bone sur kartoj kiuj havas malmultajn da rezervaĵojn. Ĝi mezfacilas.
+[AICastor]
+Kastoro
+[AINicowar-Description]
+Nicowar ludas kvereleme, kreskas rapide, kaj sendas grandegajn armeojn al siaj kontraŭanoj. Ĝi malfacilas.
+[AINicowar]
+Nicowar
+[AINone-Description]
+Nenio; Nenion faras!
+[AINone]
+Nenio
+[AINumbi-Description]
+Numbi Etendas singarde kaj rapide. Ĝi facilas.
+[AINumbi]
+Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity ne atakas, sed konstruas monstrajn fundojn kaj avide konvertigas globulojn. Ĝi facilas.
+[AIReachToInfinity]
+ReachToInfinity
+[AIToubib-Description]
+Tubibo
+[AIToubib]
+Tubibo
+[AIWarrush-Description]
+Warrush atakas rapide kaj sovaĝe, kaj ofte puŝas denendanta ludanto al la bordo de sia ludo. Ĝi mezfacilas.
+[AIWarrush]
+Warrush
+[Alga]
+Algo
+[algae]
+algo
+[alliances]
+Kunpacado
+[alt %0]
+alt-%0
+[and]
+kaj
+[any explorer]
+iu ajn esploristo
+[are dying hungry]
+malsatega(j)
+[are hungry]
+malsata(j)
+[are ok]
+Estas bona(j)
+[are wonded]
+vundita(j)
+[armor]
+Defendpovo
+[assigned]
+Atribuita(j)
+[At. speed]
+Rapideco de Atako
+[At. strength]
+Fortece de Atako
+[Attack]
+Atakado
+[audio]
+Aŭdaĵo
+[auto save]
+Memkonservita
+[available lan games]
+Lokaj ludoj disponeblaj
+[awaiting players]
+Ludantoj atendantaj
+[away:]
+fora(j):
+[Back]
+Reen
+[backspace]
+retroklavo
+[barracks explanation 2]
+batalnivelon de viaj militistoj
+[barracks explanation]
+Tiu konstruaĵo plibonigas la
+[barracks]
+Militistejo
+[beach size]
+Larĝeco de Marbordo
+[Blocked Players]
+Blokigitaj Ludantoj
+[break]
+rompklavo
+[briefing]
+Resumo
+[build %0 level %1]
+Konstruado de %0 je %1a nivelo
+[Build]
+Konstruado
+[Building Defaults]
+Antaŭemetaĵoj pri Konstruaĵoj
+[building settings]
+Konstruaĵoj
+[building site]
+konstruejo
+[Building Tool Box Explanation]
+Tenu na Majuskl suben kaj tiru la montrilon por konstrui kiel kadro
+[Building Tool Line Explanation]
+Tenu na Ktrl suben kaj tiru la montrilon por konstrui kiel linio
+[Buildings]
+Konstruaĵoj
+[Bullets]
+Kugloj
+[campaign editor]
+Redakti Kampanjon
+[campaign]
+Kampanjo
+[Can't connect, can't find host]
+Ne eblas kontakti: Gastiganto ne troviĝis!
+[Can't host game, port %0 in use]
+Ne eblas gastigi ludon: La konektejo %0 jam estas uzata!
+[Can't join game, game doesn't exist]
+Ne eblas aliĝi ludon: La ludo ne ekzistas!
+[Can't join game, game has started]
+Ne eblas aliĝi ludon: La ludo jam komencis!
+[Can't join game, game is full]
+Ne eblas aliĝi ludon: La ludo jam estas plena!
+[cancel destroy]
+Nuligi la detruadon
+[cancel repair]
+Nuligi la rebonigadon
+[cancel upgrade]
+Nuligi la plibonigadon
+[Cancel]
+Nuligi
+[caps lock]
+caps lock
+[carry]
+Portante na:
+[Change Area Name]
+Ŝanĝi la Areonomon
+[Cherry]
+Ĉerizo
+[choose campaign]
+Elektu kampanjon
+[choose game]
+Elektu ludon
+[choose map]
+Elektu karton
+[clear area]
+Elviŝata areo
+[Clearing:]
+Viŝante na:
+[clearingflag explanation 2]
+viŝi la rezervaĵojn
+[clearingflag explanation]
+Vokas laboristojn por
+[clearingflag]
+Viŝmarkilo
+[closed]
+Fermita
+[compile]
+Skripton Kompili
+[compose]
+`
+[Computing Fertility]
+Kalkulante la Fekundecon...
+[concrete islands terrain]
+Konkretinsuloj
+[connect]
+Kontakti
+[connecting to game]
+Kontaktante al Ludo
+[connecting to]
+Kontaktante al
+[Construction Site Defaults]
+Antaŭemetaĵoj pri Konstruejoj
+[Continue playing]
+Daŭrigi Ludon
+[control %0]
+ktrl-%0
+[Corn]
+Tritiko
+[crater density]
+Nombro de Krateroj
+[crater lakes terrain]
+Kraterlagoj
+[create game]
+Krei ludon
+[create map]
+Fari Karton
+[credits]
+Kunfarantoj
+[ctrl - line]
+Ktrl - Linio
+[current speed]
+Nuna Rapideco
+[custom game]
+Liberludo
+[customcur]
+Speciala Montrilo
+[damage]
+Difekto
+[Damaged Map]
+Karto de Difekto
+[decrease units working]
+Malpliigi je globuloj laborantaj
+[Defeat Your Oppenents]
+Venku via(j)n kontraŭano(j)n
+[defencetower explanation 2]
+globulojn aŭ konstruaĵojn de kontraŭanoj
+[defencetower explanation]
+Tiu konstruaĵo atakas proksimajn
+[defencetower]
+Defendturo
+[Defense Map]
+Karto de Defendo
+[Defense]
+Defendado
+[Delete game]
+Forviŝi la elektitan ludon
+[delete]
+viŝklavo
+[desert]
+Dezerto
+[destroy building]
+Detruadi elektitan konstruaĵon
+[destroy]
+Detrui
+[display]
+Vidaĵo
+[do nothing]
+Nenion fari
+[don't carry anything]
+Portante nenion
+[down]
+malsuprenklavo
+[Download Map]
+Elŝuti karton
+[Download Maps]
+Elŝuti kartojn
+[downloaded %0]
+jam elŝutis %0
+[downloading map]
+Elŝutante karton...
+[edit map]
+Redakti Karton
+[editing map]
+Redaktante Karton
+[editor shortcuts]
+Taskklavoj en Redaktilo
+[editor]
+Redaktilo
+[end]
+finklavo
+[Enter your nickname :]
+Enigu vian kromnomon:
+[Enter your password :]
+Enigu vian pasvorton:
+[enter]
+enigklavo de numerklavaro
+[equals]
+egalas je
+[escape]
+eskapklavo
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+Vokas esploristojn
+[explorationflag]
+Esplormarkilo
+[Explorer Ratio]
+Esploristprocento
+[Explorer]
+Esploristo
+[explorers]
+esploristoj
+[extra islands]
+Malplenaj Insuloj
+[f10]
+F10
+[f11]
+F11
+[f12]
+F12
+[f13]
+F13
+[f14]
+F14
+[f15]
+F15
+[f1]
+F1
+[f2]
+F2
+[f3]
+F3
+[f4]
+F4
+[f5]
+F5
+[f6]
+F6
+[f7]
+F7
+[f8]
+F8
+[f9]
+F9
+[Fertility Map]
+Karto de Fekundeco
+[Flag Defaults]
+Antaŭemetaĵoj pri Markiloj
+[flag settings explanation]
+Antaŭemetita radiuso de Markilo
+[food]
+Nutraĵo
+[forbidden area]
+Malpermesata areo
+[Free]
+sana
+[free]
+libera
+[free]
+libera(j)
+[from:]
+de:
+[fruit]
+frukto
+[fullscreen]
+Plenekrana
+[game full]
+La ludo jam estas plena!
+[game shortcuts]
+Enludaj Taskklavoj
+[Game]
+Ludo
+[general settings]
+Ĝeneralaj
+[go to event]
+Aliri okazen
+[go to home]
+Aliri hejmen
+[goto main menu]
+Reen al ĉefmenuon
+[grass]
+Gazono
+[ground attack]
+Alteratako
+[guard area]
+Defendata areo
+[GUIMapPreview text 0]
+Bv. elekti
+[GUIMapPreview text 1]
+karton
+[handmade map]
+Manefarita karto
+[Happyness]
+Feliĉeco
+[hard pause]
+Durpaŭzi
+[Harvest]
+Rikoltado
+[high priority]
+multa
+[hints]
+Konsiletoj
+[home]
+hejmklavo
+[hospital explanation 2]
+la globulojn
+[hospital explanation]
+Tiu konstruaĵo resanigas
+[hospital]
+Malsanejo
+[host]
+Gastigi Ludon
+[hp]
+VPo
+[hp]
+Vivpunkto
+[Human]
+Homo
+[human]
+homo
+[hungry]
+malsata
+[hungryness]
+Malsateco
+[In way]
+Jam venante
+[increase units working]
+Pliigi je globuloj laborantaj
+[inn explanation 2]
+la globulojn
+[inn explanation]
+Tiu konstruaĵo nutras
+[inn]
+Manĝejo
+[insert]
+enmetklavo
+[inside]
+Ene
+[islands size]
+Grandeco de Insulo
+[islands terrain]
+Insuloj
+[isles terrain]
+Insuletoj
+[iterate selection]
+Pasi al la sekva elekto
+[jobs]
+laboroj
+[join a game]
+Aliĝi Ludon
+[join]
+Aliĝi
+[keyboard settings]
+Klavaro
+[kick]
+Elĵeti
+[lan]
+Loka Ludo
+[language incomplete]
+Esperanto - Nekompleta
+[language-code]
+eo
+[language-tr]
+Lingvo
+[language]
+Esperanto
+[Leave Game]
+Forlasi la Ludon
+[left meta]
+maldekstra metaklavo
+[left super]
+maldekstra vindozklavo
+[left]
+maldekstrenklavo
+[Leo: nur ein erster Test]
+test
+[level]
+Nivelo
+[levels]
+Niveloj
+[load campaign]
+Ŝargi Kampanjon
+[load game]
+Ŝargi Ludon
+[load map]
+Ŝargi Karton
+[load script]
+Ŝargi Skripton
+[load]
+Ŝargi
+[loading map list]
+Ŝargante la Kartliston...
+[Lobby]
+Atendejo
+[login]
+Eniri
+[Lost : %0 has more prestige than you]
+Vi malgajnis: %0a prestiĝo estas pli ol via!
+[Lost : your colony is dead]
+Vi malgajnis: via kolonio estas ekstermita!
+[low priority]
+malmulta
+[lowquality]
+Malaltkvalita
+[Magic At. Air]
+Aera Difekto
+[Magic At. Ground]
+Altera Difekto
+[map description]
+Priskribo
+[Map Discovered]
+Karto esti Malkovrita
+[Map download failure: lost connection]
+Elŝuto de karto malsukcesis: Konekto al YOG perdiĝis!
+[Map name: %0]
+Titolo de Karto: %0.
+[map name]
+Titolo
+[map rated]
+Karto taksiĝis.
+[map script]
+Kartskripto
+[map size x]
+Larĝeco de Karto
+[map size y]
+Alteco de Karto
+[Map upload failure: connection lost]
+Alŝuto de karto malsukcesis: Konekto al YOG perdiĝis!
+[Map upload failure: map name in use]
+Alŝuto de karto malsukcesis: La titolo de karto jam estas uzita!
+[Map upload failure: unknown reason]
+Alŝuto de karto malsukcesis: Kialo nekonata!
+[Map Upload: Author Name]
+Verkisto
+[Map Upload: Waiting for reply]
+Atendante respondon...
+[mark map]
+Marki karton por kunpacanoj
+[market explanation 2]
+komerci fruktojn kun aliaj
+[market explanation]
+Tiu konstruaĵo ebligas
+[market]
+Komercejo
+[medium priority]
+meza
+[meta %0]
+metaklavo-%0
+[Min required level:]
+Minimuma bezonata nivelo:
+[Minimum Level To Flag]
+Minimuma nivelo de markilo
+[Music volume]
+Laŭteco de Muziko
+[Mute]
+Silenta
+[mute]
+Silenta
+[new campaign]
+Novan Kampanjon
+[new map]
+Novan Karton
+[nick taken]
+Pardonu! Sed la nomo kiun vi elektis estas jam prenita ĉe freenode. Vi nur povas bablili en YOG.
+[No Hints]
+Neniu Konsileto
+[no key]
+Jam neniu klavo
+[No Objectives]
+Neniu Celtabulo
+[no ressources growth areas]
+Malfekundaj Areoj
+[No]
+Ne
+[Not Enough Ratings]
+Taksigoj ne sufiĉas!
+[not ready]
+ne preta
+[Number Of Buildings]
+Nombro de Konstruaĵoj
+[number of players: %0 (%1 AI)]
+%0 da ludantoj (%1 da AI-oj)
+[number of teams: %0]
+%0 da teamoj
+[number of teams]
+Nombro de Teamoj
+[Number Of Units]
+Nombro de Globuloj
+[numlock]
+numerŝlosklavo
+[objectives]
+Celtabulo
+[of which]
+da kiuj, estas
+[ok]
+Bone!
+[old islands terrain]
+Insuloj, Hazarde
+[old random terrain]
+Tereno, Hazarde
+[on press]
+Kiam Premita
+[On the spot]
+Ĉi tie
+[on unpress]
+Kiam Malpremita
+[open chat box]
+Malfermi Babilkadron
+[open load menu]
+Malfermi Ŝargmenuon
+[open save menu]
+Malfermi Konservmenuon
+[open scenario editor]
+Redakti Scenaron
+[open teams editor]
+Redakti Teamojn
+[open]
+nefermita
+[OpenGL]
+uzi na OpenGL
+[Options]
+Elektaĵoj
+[options]
+Elektaĵoj
+[Orange]
+Oranĝo
+[Other Options]
+Pluaj Elektaĵoj
+[page down]
+paĝonmalsuprenklavo
+[page up]
+paĝonsuprenklavo
+[Papyrus]
+Papiruso
+[pause game]
+Paŭzi ludon
+[pause]
+paŭzklavo
+[Paused]
+Paŭzita
+[player name]
+Ludantnomo
+[player rating %0]
+Taksigo de Ludanto: %0
+[please wait]
+Bv. atendi...
+[power]
+povo
+[press space]
+Premu spacklavon por daŭrigi.
+[Prestige Score]
+Prestiĝo
+[Prestige Win Enabled]
+Ebligi gajnon per Prestiĝo
+[Prestige]
+Prestiĝo
+[Primary Objectives]
+Unue:
+[print screen]
+ekranfotklavo
+[priority]
+Antaŭeco
+[Prune]
+Pruno
+[quit the editor]
+Eliri la Redaktilon
+[quit the game]
+Eliri la Ludon
+[quit]
+Eliri
+[racetrack explanation 2]
+movrapidecon de viaj globuloj
+[racetrack explanation]
+Tiu konstruaĵo plibonigas la
+[racetrack]
+Kuregejo
+[range]
+Atingopovo
+[Rated %0]
+Taksigita %0
+[ratios]
+Rilatumoj
+[ready?]
+preta?
+[refresh map list]
+Refreŝigi Kartliston
+[Register]
+Enskribi
+[remember unit]
+Memori Globulojn
+[Remember YOG password localy]
+Memori la pasvorton enloke.
+[remove map]
+Viŝi Karton
+[remove shortcut]
+Viŝi Taskklavon
+[Remove]
+Viŝi
+[repair building]
+Komenci/halti je rebonigo
+[repair]
+Rebonigi
+[repeat area]
+-oble la saman pejzaĝon
+[Repeat your password :]
+Reenigu vian pasvorton:
+[restore default shortcuts]
+Remeti antaŭemetitajn Taskklavojn
+[return to editor]
+Reveni al Redaktilon
+[return to game]
+Reveni Luden
+[return]
+enigklavo
+[right meta]
+dekstra metaklavo
+[right super]
+dekstra vindozklavo
+[right]
+dekstrenklavo
+[river diameter]
+Larĝeco de Rivero
+[river terrain]
+Rivero
+[sand]
+Sablo
+[save before quit?]
+Ĉu konservi antaŭ eliri?
+[save game]
+Konservi ludon
+[save map]
+Konservi Karton
+[save script]
+Konservi Skripton
+[Save]
+Konservi
+[school explanation 2]
+konstrunivelon de viaj laboristoj
+[school explanation]
+Tiu konstruaĵo plibonigas la
+[school]
+Lernejo
+[Script Areas]
+SkriptAreoj
+[scroll lock]
+rulŝlosklavo
+[scroll wheel enabled]
+Ebligi Musradon
+[Secondary Objectives]
+Due:
+[seeking a job]
+Serĉanta(j) laboron
+[seeking]
+serĉantaj
+[select barracks building]
+Elekti Militistejon
+[select clearingflag]
+Elekti Viŝmarkilon
+[select construct barracks]
+Elekti je konstruado de Militistejo
+[select construct defencetower]
+Elekti je konstruado de Defendturo
+[select construct hospital]
+Elekti je konstruado de Malsanejo
+[select construct inn]
+Elekti je konstruado de Manĝejo
+[select construct market]
+Elekti je konstruado de Komercejo
+[select construct racetrack]
+Elekti je konstruado de Kuregejo
+[select construct school]
+Elekti je konstruado de Lernejo
+[select construct stonewall]
+Elekti je konstruado de Ŝtonmuro
+[select construct swarm]
+Elekti je konstruado de Globulejo
+[select construct swimmingpool]
+Elekti je konstruado de Naĝejo
+[select delete tool]
+Elekti viŝilon
+[select explorationflag]
+Elekti Esplormarkilon
+[select hospital building]
+Elekti Malsanejon
+[select inn building]
+Elekti Manĝejon
+[select market building]
+Elekti Komercejon
+[select place clearing area]
+Elekti je metado de Elviŝata areo
+[select place clearingflag]
+Elekti je metado de Viŝmarkilo
+[select place explorationflag]
+Elekti je metado de Esplormarkilo
+[select place forbidden area]
+Elekti je metado de Malpermesata areo
+[select place guard area]
+Elekti je metado de Defendata areo
+[select place warflag]
+Elekti je metado de Militmarkilo
+[select racetrack building]
+Elekti Kuregejon
+[select school building]
+Elekti Lernejon
+[select swarm building]
+Elekti Globulejon
+[select swimmingpool building]
+Elekti Naĝejon
+[select tower building]
+Elekti Defendturon
+[select wall building]
+Elekti Ŝtonmuron
+[select warflag]
+Elekti Militmarkilon
+[settings]
+Elektaĵoj
+[shift %0]
+majuskl-%0
+[shortcut explanation enter]
+Uzu enigklavon por babili.
+[shortcut explanation v]
+Tenu na V suben por paroli.
+[show main menu]
+Montri ĉefmenuon
+[skin]
+Vidaĵo
+[smoothing]
+Glatigi
+[sort by name]
+Titolo
+[sort by rating]
+Taksigo
+[sort by size]
+Grandeco
+[Sort By]
+Ordigi laŭ
+[space]
+spacklavo
+[start mission]
+Komenci Mision
+[start new campaign]
+Komenci Novan Kampanjon
+[Start]
+Komenci
+[Starving Map]
+Karto de Malsateco
+[starving]
+malsatega
+[Statistics]
+Statistiko
+[Still (i)]
+Jam
+[still (w)]
+Jam
+[still one unit working]
+Unu globulo jam laboras
+[Still one]
+Jam unu
+[Stone]
+Ŝtono
+[stone]
+ŝtono
+[stonewall explanation 2]
+defendas vian teritorion
+[stonewall explanation]
+Tiu konstruaĵo paceme
+[stonewall]
+Ŝtonmuro
+[submit rating]
+Sendi Taksigon
+[svr hostname]
+Gastigantnomo de Servilo
+[swamp terrain]
+Marĉo
+[swarm explanation 2]
+novajn globulojn
+[swarm explanation]
+Tiu konstruaĵo kreas
+[swarm]
+Globulejo
+[Swim]
+Naĝado
+[swimmingpool explanation 2]
+naĝrapidecon de viaj globuloj
+[swimmingpool explanation]
+Tiu konstruaĵo plibonigas la
+[swimmingpool]
+Naĝejo
+[switch to adding areas]
+Ŝanĝi al metado de areoj
+[switch to area brush 1]
+Ŝanĝi al areobroso 1a formo
+[switch to area brush 2]
+Ŝanĝi al areobroso 2a formo
+[switch to area brush 3]
+Ŝanĝi al areobroso 3a formo
+[switch to area brush 4]
+Ŝanĝi al areobroso 4a formo
+[switch to area brush 5]
+Ŝanĝi al areobroso 5a formo
+[switch to area brush 6]
+Ŝanĝi al areobroso 6a formo
+[switch to area brush 7]
+Ŝanĝi al areobroso 7a formo
+[switch to area brush 8]
+Ŝanĝi al areobroso 8a formo
+[switch to building view]
+Ŝanĝi al vido de Konstruaĵoj
+[switch to flag view]
+Ŝanĝi al vido de Markiloj
+[switch to removing areas]
+Ŝanĝi al viŝado de areoj
+[switch to teams view]
+Ŝanĝi al vido de Teamoj
+[switch to terrain view]
+Ŝanĝi al vido de Terenoj
+[sys req]
+sys-req-klavo
+[tab]
+tabklavo
+[teams editor]
+Redakti Teamojn
+[Teams Fixed]
+Teamoj esti fiksaj
+[teams]
+ teamoj
+[the barracks is finished]
+La militistejo ĵus finiĝis.
+[the barracks is under attack]
+La militistejo estas atakata!
+[the building is finished]
+La konstruaĵo ĵus finiĝis.
+[the building is under attack]
+La konstruaĵo estas atakata!
+[the clearingflag is finished]
+La viŝmarkilo ĵus finiĝis.
+[the clearingflag is under attack]
+?? La viŝmarkilo estas atakata! ??
+[the defencetower is finished]
+La defendturo ĵus finiĝis.
+[the defencetower is under attack]
+La defendturo estas atakata!
+[the explorationflag is finished]
+?? La esplormarkilo ĵus finiĝis. ??
+[the explorationflag is under attack]
+?? La esplormarkilo estas atakata! ??
+[The game has not been finished]
+La ludo jam ne finiĝis.
+[the games]
+Ludoj
+[the hospital is finished]
+La malsanejo ĵus finiĝis.
+[the hospital is under attack]
+La malsanejo estas atakata!
+[The host has cancelled the game]
+La gastiganto nuligis la ludon!
+[the inn is finished]
+La manĝejo ĵus finiĝis.
+[the inn is under attack]
+La manĝejo estas atakata!
+[the maps]
+Kartoj
+[the market is finished]
+La komercejo ĵus finiĝis.
+[the market is under attack]
+La komercejo estas atakata!
+[The player %0 has joined YOG]
+%0 Aliĝis je YOG.
+[The player %0 has left YOG]
+%0 Eliris je YOG.
+[the racetrack is finished]
+La kuregejo ĵus finiĝis.
+[the racetrack is under attack]
+La kuregejo estas atakata!
+[the school is finished]
+La lernejo ĵus finiĝis.
+[the school is under attack]
+La lernejo estas atakata!
+[the stonewall is finished]
+Parto de la muro ĵus finiĝis.
+[the stonewall is under attack]
+La muroj estas atakataj!
+[the swarm is finished]
+La globulejo ĵus finiĝis.
+[the swarm is under attack]
+La globulejo estas atakata!
+[the swimmingpool is finished]
+La naĝejo ĵus finiĝis.
+[the swimmingpool is under attack]
+La naĝejo estas atakata!
+[the warflag is finished]
+?? La militmarkilo ĵus finiĝis. ??
+[the warflag is under attack]
+?? La militmarkilo estas atakata! ??
+[time]
+Tempo
+[to:]
+al:
+[toggle draw accessibility aids]
+Montri/kaŝi alireblecasistojn
+[toggle draw information]
+Montri/kaŝi informaĵon
+[toggle draw unit paths]
+Montri/kaŝi irvojojn de globuloj
+[toggle menu screen]
+Montri/kaŝi ĉefmenuon
+[toggle recording voice]
+Ŝalti mikrofonon
+[toggle recording voice]
+Ŝalti/malŝalti mikrofonon
+[Total Attack Power]
+Tuta Atakpovo
+[Total Defence Power]
+Tuta Defendpovo
+[Total Hitpoints]
+Tutaj Vivpunktoj
+[Total prestige reached]
+Tuta Prestiĝo atingita
+[Total]
+ĉiuj
+[tutorial text 1]
+Bonvenon al la elementa lernludejo de Globulation2! Ĉi tiu lernludo enhavos ĉion kiel konstrui manĝejojn, esplori terzonojn, kaj detrui la kontraŭanojn. Estas neniu manko de utilaj sciindaĵoj tien!
+[tutorial text 2]
+Nun ke vi superis la principaĵojn, estas tempo konatiĝi al la aliaj konstraĵoj kiel la kuregejoj, la naĝejoj, kaj la lernejoj.
+[tutorial text 3]
+Vi ja faris bone atingi tien ĉi. Nun ni iru al la militistoj, la militistejoj, kaj la plibonigadoj.
+[tutorial text 4]
+Vi preskaŭ faris la tutan! Nur restas la markiloj kaj la atakado. Poste, vi sufiĉe scios por daŭri al la liberludoj, kaj finfine ludi surrete kontraŭ la plej bonaj ludantoj de Globulation2!
+[tutorial]
+Lernludo
+[Uncontrolled]
+Nekontrolata
+[undo]
+malfari
+[uniform terrain]
+Tereno Unuforma
+[Unit editor]
+Globulredaktilo
+[unit settings explanation]
+Antaŭemetitaj nombro da Globuloj atribuitaj
+[units working]
+ globuloj laboras
+[Units]
+Globuloj
+[unlocked at start]
+Malŝlosita ĉe Komenco
+[unlocked by]
+Malŝlosita per
+[Unnamed Area]
+{Sennoma Areo}
+[up]
+suprenklavo
+[upgrade building]
+Komenci/halti je plibonigo
+[Upgrade Defaults]
+Antaŭemetaĵoj pri Plibonigado
+[upgrade]
+Plibonigi
+[Upload Map]
+Alŝuti Karton
+[upload map]
+Alŝuti Karton
+[username]
+Uzulnomo
+[Version]
+Versio
+[view history]
+Rigardi antaŭajn mesaĝojn
+[Voice volume]
+Laŭteco de Voĉo
+[waiting for %0]
+Atendante je %0
+[waiting for key]
+Atendante klavon...
+[Waiting]
+Atendante...
+[Walk]
+Movado
+[warflag explanation 2]
+
+[warflag explanation]
+Vokas militistojn
+[warflag]
+Militmarkilo
+[Warning, you need to reboot the game for changes to take effect]
+Averton: vi devas rekomenci la ludon por ke la ŝanĝoj estu aplikataj.
+[Warrior Ratio]
+Militistprocento
+[Warrior]
+Militisto
+[warriors]
+militistoj
+[water]
+Akvo
+[Wheat]
+Tritiko
+[Won : you defeated your opponents]
+Vi gajnis: Vi venkis via(j)n kontraŭano(j)n.
+[Won : you have the most prestige]
+Vi gajnis: Vi havas la plej multan prestiĝon.
+[Won : your ally %0 has the most prestige]
+Vi gajnis: Via kunpacano %0 havas la plej multan prestiĝon.
+[Wood]
+Ligno
+[wood]
+ligno
+[Worker Ratio]
+Laboristprocento
+[Worker]
+Laboristo
+[workers]
+Laboristoj
+[workers]
+laboristoj
+[working]
+Laboranta(j)
+[wounded]
+vundita
+[Yes]
+Jes
+[YESTS_CONNECTING]
+Establante konekton al YOG-superservilon...
+[YESTS_CONNECTION_LOST]
+La konekto al YOG perdiĝis.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo jam estas enskribita. Se tiu uzulnomo estas via, provu malaktivigi la elektaĵon na "Enskribi" (aŭ na "Enskribi novan YOG-uzulon kun pasvorton").
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+La YOG-superservilo malakceptis la konekton, ĉar la pasvorto enigita estis malĝusta.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo jam ne havas pasvorton. Vi eble volus enskribi vian uzulnomon kun tiun pasvorton. Do, antaŭ rekontakti, aktivigu la elektaĵon na "Enskribi" (aŭ na "Enskribi novan YOG-uzulon kun pasvorton"). Vi nur unufoje bezonas aktivigi ĝin.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+La YOG-superservilo malakceptis la konekton, ĉar tiu IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus aŭ kontakti la administristojn.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+La YOG-superservilo malakceptis la konekton, ĉar via Globulation2-kliento estas tro malnova. Bv. preni la plej novan version el www.globulation2.org por ke vi povus ludi surrete.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+La YOG-superservilo malakceptis la konekton sen klarigo!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo jam estas uzata per alia persono.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo estas malpermesata. Bv. kontakti la administristojn.
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+La YOG-superservilo malakceptis la konekton, ĉar la uzulnomo enigita ne estas akceptebla. Uzulnomoj nur povas enhavi literojn, numerojn, kaj la substrekon.
+[YESTS_CREATED]
+La kontaktsistemo pretas por kontakti al YOG-superservilon por konekto.
+[YESTS_PASSWORDS_DONT_MATCH]
+La pasvortoj enigitaj ne estas samaj. Bv. reenigi tiujn.
+[YESTS_UNABLE_TO_CONNECT]
+Ne eblas kontakti. Ŝajne la YOG-superservilo estas malaktiva.
+[yog block command help]
+/block <ludantnomo>    Blokigas ludanton, kaj vi ne plu vidos riajn tekstojn.
+[yog block command player %0 already blocked]
+Ludanto %0 jam blokiĝis!
+[yog block command player %0 blocked]
+Ludanto %0 blokiĝis.
+[yog block command player %0 not found]
+Ludanto %0 ne troviĝis!
+[yog command header]
+La nuna listo de komandoj de YOG-kliento estas kiel:
+[yog command unknown]
+Komando Nekonata!
+[yog help command help]
+/help    Montras ĉi tiun helppaĝon.
+[yog]
+Surreta Ludo ĉe Ysagoon
+[you have lost]
+Vi malgajnis!
+[you have won]
+Vi gajnis!
+[You where kicked from the game]
+Vi ĵetiĝis el la ludo.
+[Your %0 are under attack]
+Viaj %0 estas atakataj!
+[Your IP address was temporarily banned]
+Via IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus aŭ kontakti la administristojn.
+[Your unit got converted to %0's team]
+Teamo %0 konvertigis globulon de vi al sia!
+[Your username was banned]
+Via uzulnomo estas malpermesata. Bv. kontakti la administristojn.
+[no fullscreen]
+* Nur kiel fenestro

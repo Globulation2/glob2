@@ -80,7 +80,7 @@ int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int
 {
 	Unit **myUnits=team->myUnits;
 	int count = 0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if ((u)&&(u->performance[skill]>value))
@@ -95,7 +95,7 @@ int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int val
 {
 	Unit **myUnits=team->myUnits;
 	int count = 0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if ((u)&&(u->performance[skill]==value))
@@ -109,7 +109,7 @@ int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int val
 bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 {
 	Unit **myUnits=team->myUnits;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if ((u)&&(u->hungry<(Unit::HUNGRY_MAX/2))) //Yeah, it's a half, not a third. Weird huh? :P
@@ -123,7 +123,7 @@ bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 Building *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int explorerRatio, const int warriorRatio)const
 {
 	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if (	(b)
@@ -141,7 +141,7 @@ Building *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int ex
 Building *AIWarrush::getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int num_workers)const
 {
 	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if (	(b)
@@ -161,7 +161,7 @@ Building *AIWarrush::getSwarmAtRandom()const
 	Building **myBuildings=team->myBuildings;
 	int swarmsfound = 0;
 	Building *chosen_swarm = NULL;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if ((b) && (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING))
@@ -179,7 +179,7 @@ Building *AIWarrush::getSwarmAtRandom()const
 bool AIWarrush::allOfBuildingTypeAreCompleted(Sint32 shortTypeNum)const
 {
 	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if (
@@ -200,7 +200,7 @@ bool AIWarrush::allOfBuildingTypeAreCompleted(Sint32 shortTypeNum)const
 bool AIWarrush::allOfBuildingTypeAreFull(Sint32 shortTypeNum)const
 {
 	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if (
@@ -221,7 +221,7 @@ int AIWarrush::numberOfBuildingsOfType(Sint32 shortTypeNum)const
 {
 	Building **myBuildings=team->myBuildings;
 	int count = 0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if((b)&&(
@@ -236,7 +236,7 @@ int AIWarrush::numberOfExtraBuildings()const
 {
 	Building **myBuildings=team->myBuildings;
 	int count = 0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if((b)&&(
@@ -253,7 +253,7 @@ int AIWarrush::numberOfExtraBuildings()const
 bool AIWarrush::allOfBuildingTypeAreFullyWorked(Sint32 shortTypeNum)const
 {
 	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if((b)&&(b->shortTypeNum == shortTypeNum))
@@ -275,7 +275,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 	Building **myBuildings=team->myBuildings;
 	int num_buildings = 0;
 	int num_worked_buildings = 0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if((b)&&(b->shortTypeNum != IntBuildingType::WAR_FLAG)&&(b->shortTypeNum != IntBuildingType::EXPLORATION_FLAG)&&(b->shortTypeNum != IntBuildingType::CLEARING_FLAG))
@@ -469,12 +469,12 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 {
 	BrushAccumulator guard_add_acc;
 	//Place guard area on an enemy building if there is one...
-	for(int i=0;i<32;i++)
+	for(int i=0;i<Team::MAX_COUNT;i++)
 	{
 		Team *t = game->teams[i];
 		if((t)&&(team->enemies & t->me))
 		{
-			for(int j=0;j<1024;j++)
+			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
 				if ((b)&&(b->buildingState != Building::DEAD)&&(b->hp != 1 || b->constructionResultState == Building::NO_CONSTRUCTION)&&(b->shortTypeNum != IntBuildingType::WAR_FLAG)&&(b->shortTypeNum != IntBuildingType::EXPLORATION_FLAG)&&(b->shortTypeNum != IntBuildingType::CLEARING_FLAG))
@@ -659,7 +659,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 boost::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 {
 	if(verbose)std::cout << "looking for swarms:\n";
-	for(int j=0;j<1024;j++)
+	for(int j=0;j<Building::MAX_COUNT;j++)
 	{
 		Building *b = enemy_team->myBuildings[j];
 		if((b)&&(b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)&&(b->constructionResultState == Building::NO_CONSTRUCTION))
@@ -670,7 +670,7 @@ boost::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 	}
 	if(verbose)std::cout << "No swarms found\n";
 	//what, they have no swarm? o_O Find any building:
-	for(int j=0;j<1024;j++)
+	for(int j=0;j<Building::MAX_COUNT;j++)
 	{
 		Building *b = enemy_team->myBuildings[j];
 		if(b)
@@ -681,7 +681,7 @@ boost::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 	}
 	if(verbose)std::cout << "No buildings found\n";
 	//what, they have no buildings? o_O Find any unit:
-	for(int j=0;j<1024;j++)
+	for(int j=0;j<Unit::MAX_COUNT;j++)
 	{
 		Unit *u = enemy_team->myUnits[j];
 		if(u)

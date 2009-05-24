@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Insaa et
 
 [building site]
 insaa alani
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -582,6 +588,8 @@ Hayir
 
 [not ready]
 hazir degil
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +598,8 @@ hazir degil
 %0 takim var.
 [number of teams]
 takim sayisi
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -621,7 +631,7 @@ Burada
 [open]
 Ac
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -652,6 +662,8 @@ Lutfen bekleyin
 
 [press space]
 Devam etmek icin bosluk tusuna basin.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -688,6 +700,8 @@ Oranlar
 
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -703,6 +717,8 @@ Parolayi yerel olarak animsa. (guvenli degil)
 [repair]
 Onar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -992,6 +1008,8 @@ Yuzme havuzu saldiri altinda
 ?? Savas bayragi tamamlandi ??
 [the warflag is under attack]
 ?? Savas bayragi saldiri altinda ??
+[time]
+
 [to:]
 suraya:
 [toggle draw accessibility aids]
@@ -1003,6 +1021,12 @@ suraya:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Kazanilan toplam prestij
@@ -1134,6 +1158,8 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
 
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
 [yog block command help]

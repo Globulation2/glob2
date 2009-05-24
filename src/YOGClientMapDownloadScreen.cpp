@@ -200,7 +200,7 @@ void YOGClientMapDownloadScreen::mapListUpdated()
 	mapList->clear();
 	std::vector<YOGDownloadableMapInfo> maps = client->getDownloadableMapList()->getDownloadableMapList();
 	std::sort(maps.begin(), maps.end(), MapListSorter(static_cast<MapListSorter::SortMethod>(sortMethod->getIndex())));
-	for(int i=0; i<maps.size(); ++i)
+	for(unsigned int i=0; i<maps.size(); ++i)
 	{
 		mapList->addText(maps[i].getMapHeader().getMapName());
 	}
@@ -275,8 +275,6 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 	}
 }
 
-
-
 void YOGClientMapDownloadScreen::updateVisibility()
 {
 	if(client->getDownloadableMapList()->waitingForListFromServer())
@@ -345,56 +343,51 @@ MapListSorter::MapListSorter(SortMethod sortMethod)
 
 bool MapListSorter::operator()(const YOGDownloadableMapInfo& lhs, const YOGDownloadableMapInfo& rhs)
 {
-	if(sortMethod == Name)
+	switch(sortMethod)
 	{
+	default:
+	case Name:
 		return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
-	}
-	else if(sortMethod == Size)
-	{
-		int lw = lhs.getWidth();
-		int lh = lhs.getHeight();
-		int rw = rhs.getWidth();
-		int rh = rhs.getHeight();
-		
-		
-		if((lw * lh) == (rw * rh))
+	case Size:
 		{
-			if(lw == rw)
+			int lw = lhs.getWidth();
+			int lh = lhs.getHeight();
+			int la = lw*lh;
+			int rw = rhs.getWidth();
+			int rh = rhs.getHeight();
+			int ra = lw*rh;
+			
+			if(la==ra)
 			{
-				return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
+				if(lw == rw)
+				{
+					return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
+				}
+				else
+				{
+					return lw > rw;
+				}
 			}
 			else
 			{
-				return lw > rw;
+				return la > ra;
 			}
 		}
-		else
+	case Rating:
 		{
-			return (lw*lh) > (rw * rh);
-		}
-	}
-	else if(sortMethod == Rating)
-	{
-		int lt = lhs.getRatingTotal();
-		int ln = lhs.getNumberOfRatings();
-		int rt = rhs.getRatingTotal();
-		int rn = rhs.getNumberOfRatings();
-		
-		
-		if(lt > 5 && rt > 5)
-		{
-			if(lt/ln == rt/rn)
-			{
-				return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
-			}
-			else
+			int lt = lhs.getRatingTotal();
+			int ln = lhs.getNumberOfRatings();
+			int rt = rhs.getRatingTotal();
+			int rn = rhs.getNumberOfRatings();
+			
+			if(lt>5 && rt>5 && lt/ln!=rt/rn)
 			{
 				return lt/ln > rt/rn;
 			}
-		}
-		else
-		{
-			return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
+			else
+			{
+				return GAGCore::naturalStringSort(lhs.getMapHeader().getMapName(), rhs.getMapHeader().getMapName());
+			}
 		}
 	}
 }

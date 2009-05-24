@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Stavba
 
 [building site]
 staveniště
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -576,6 +582,8 @@ Ne
 
 [not ready]
 nepřipraven
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +592,8 @@ nepřipraven
 %0 týmů.
 [number of teams]
 Počet hráčů
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -615,7 +625,7 @@ Na místě
 [open]
 Otevřít
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -645,6 +655,8 @@ Jméno
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -682,6 +694,8 @@ Poměry
 
 [Register a new YOG user with password]
 Registrace nového YOG uživatele s heslem. (nejisté)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -697,6 +711,8 @@ Zapamatovat si heslo lokálně? (nejisté)
 [repair]
 Opravit
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -986,6 +1002,8 @@ Koupaliště je pod útokem
 ?? Válečná prapor připraven ??
 [the warflag is under attack]
 ?? Válečná prapor v obležení nepřátel ??
+[time]
+
 [to:]
 pro:
 [toggle draw accessibility aids]
@@ -997,6 +1015,12 @@ pro:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Dosažená celková prestiž
@@ -1126,6 +1150,8 @@ YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jin
 
 [YESTS_CREATED]
 Systém připojení je připraven na kontakt s YOG metaserverem.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 [yog block command help]
