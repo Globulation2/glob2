@@ -23,6 +23,7 @@
 #include "GUIText.h"
 #include "GUIButton.h"
 #include "GUIFileList.h"
+#include "GUITextArea.h"
 
 #include <string>
 
@@ -49,6 +50,8 @@ private:
 	Button *cancel;
 	/// The list of campaigns
 	FileList *fileList;
+	/// The description
+	TextArea* description;
 };
 
 

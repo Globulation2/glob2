@@ -45,7 +45,7 @@ YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 
 YOGServerAdministrator::~YOGServerAdministrator()
 {
-	for(int i=0; i<commands.size(); ++i)
+	for(unsigned int i=0; i<commands.size(); ++i)
 	{
 		delete commands[i];
 	}
@@ -58,7 +58,7 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 	std::vector<std::string> tokens;
 	std::string token;
 	bool isQuotes=false;
-	for(int i=0; i<message.size(); ++i)
+	for(unsigned int i=0; i<message.size(); ++i)
 	{
 		if(message[i]==' ' && !isQuotes)
 		{
@@ -99,7 +99,7 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 			sendTextMessage("The current list of YOG Administrative Commands available for moderators are: ", player);
 		else
 			sendTextMessage("The current list of YOG Administrative Commands are: ", player);
-		for(int i=0; i<commands.size(); ++i)
+		for(unsigned int i=0; i<commands.size(); ++i)
 		{
 			if(!moderator || commands[i]->allowedForModerator())
 			{
@@ -110,7 +110,7 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 	}
 	else
 	{
-		for(int i=0; i<commands.size(); ++i)
+		for(unsigned int i=0; i<commands.size(); ++i)
 		{
 			if(!moderator || commands[i]->allowedForModerator())
 			{

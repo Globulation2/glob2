@@ -22,6 +22,7 @@
 
 #include "Ressource.h"
 #include "TerrainType.h"
+#include "Team.h"
 
 namespace GAGCore
 {
@@ -74,8 +75,8 @@ public:
 	Sint32 nbTeams, nbWorkers;
 public:
 	// Thoses may not be in data
-	Sint32 bootX[32];
-	Sint32 bootY[32];
+	Sint32 bootX[Team::MAX_COUNT];
+	Sint32 bootY[Team::MAX_COUNT];
 public:
 	enum {DATA_SIZE=100+MAX_NB_RESSOURCES*4};
 protected:
