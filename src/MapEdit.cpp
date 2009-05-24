@@ -3331,50 +3331,50 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					switch(terrainType)
 					{
 					case TerrainSelector::Grass:
-							game.removeUnitAndBuildingAndFlags(x, y, 3, Game::DEL_BUILDING | Game::DEL_UNIT);
-							game.map.setNoRessource(x, y, 3);
-							game.map.setUMatPos(x, y, GRASS, 1);
-							break;
+						game.removeUnitAndBuildingAndFlags(x, y, 3, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.map.setNoRessource(x, y, 3);
+						game.map.setUMatPos(x, y, GRASS, 1);
+						break;
 					case TerrainSelector::Sand:
-							game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
-							game.map.setNoRessource(x, y, 3);
-							game.map.setUMatPos(x, y, SAND, 1);
-							break;
+						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.map.setNoRessource(x, y, 3);
+						game.map.setUMatPos(x, y, SAND, 1);
+						break;
 					case TerrainSelector::Water:
-							game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
-							game.map.setNoRessource(x, y, 5);
-							game.map.setUMatPos(x, y, WATER, 1);
-							break;
+						game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.map.setNoRessource(x, y, 5);
+						game.map.setUMatPos(x, y, WATER, 1);
+						break;
 					case TerrainSelector::Wheat:
-							resToSet=CORN;
-							break;
+						resToSet=CORN;
+						break;
 					case TerrainSelector::Trees:
-							resToSet=WOOD;
-							break;
+						resToSet=WOOD;
+						break;
 					case TerrainSelector::Stone:
-							resToSet=STONE;
-							break;
+						resToSet=STONE;
+						break;
 					case TerrainSelector::Algae:
-							resToSet=ALGA;
-							break;
+						resToSet=ALGA;
+						break;
 					case TerrainSelector::Papyrus:
-							resToSet=PAPYRUS;
-							break;
+						resToSet=PAPYRUS;
+						break;
 					case TerrainSelector::CherryTree:
-							resToSet=CHERRY;
-							break;
+						resToSet=CHERRY;
+						break;
 					case TerrainSelector::OrangeTree:
-							resToSet=ORANGE;
-							break;
+						resToSet=ORANGE;
+						break;
 					case TerrainSelector::PruneTree:
-							resToSet=PRUNE;
-							break;
+						resToSet=PRUNE;
+						break;
 					case TerrainSelector::NoTerrain:
-							break;
+						break;
 					}
 					if(resToSet!=-1 && game.map.isRessourceAllowed(x, y, resToSet))
 					{
-							game.map.setRessource(x, y, resToSet, 1);
+						game.map.setRessource(x, y, resToSet, 1);
 					}
 				}
 			}
@@ -3386,40 +3386,44 @@ void MapEdit::handleTerrainClick(int mx, int my)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
-					if (terrainType == TerrainSelector::Sand || terrainType == TerrainSelector::Water)
+					switch(terrainType)
 					{
+					case TerrainSelector::Sand:
+					case TerrainSelector::Water:
 						game.map.setUMatPos(x, y, GRASS, 1);
 						game.map.setNoRessource(x, y, 3);
-					}
-					else if (terrainType == TerrainSelector::Wheat)
-					{
+						break;
+					case TerrainSelector::Wheat:
 						if(game.map.isRessourceTakeable(x, y, CORN))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::Trees)
-					{
+						break;
+					case TerrainSelector::Trees:
 						if(game.map.isRessourceTakeable(x, y, WOOD))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::Stone)
-					{
+						break;
+					case TerrainSelector::Stone:
 						if(game.map.isRessourceTakeable(x, y, STONE))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::Algae)
-					{
+						break;
+					case TerrainSelector::Algae:
 						if(game.map.isRessourceTakeable(x, y, ALGA))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::Papyrus)
-					{
+						break;
+					case TerrainSelector::Papyrus:
 						if(game.map.isRessourceTakeable(x, y, PAPYRUS))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::CherryTree || terrainType == TerrainSelector::OrangeTree || terrainType == TerrainSelector::PruneTree)
-					{
-						if(game.map.isRessourceTakeable(x, y, CHERRY) || game.map.isRessourceTakeable(x, y, ORANGE) || game.map.isRessourceTakeable(x, y, PRUNE))
+						break;
+					case TerrainSelector::CherryTree:
+					case TerrainSelector::OrangeTree:
+					case TerrainSelector::PruneTree:
+						if(game.map.isRessourceTakeable(x, y, CHERRY)
+						|| game.map.isRessourceTakeable(x, y, ORANGE)
+						|| game.map.isRessourceTakeable(x, y, PRUNE))
 							game.map.setNoRessource(x, y, 1);
+						break;
+					case TerrainSelector::Grass:
+					case TerrainSelector::NoTerrain:
+						break;
 					}
 				}
 	}
