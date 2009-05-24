@@ -582,14 +582,16 @@ ValueScrollBox::~ValueScrollBox()
 
 void ValueScrollBox::draw()
 {
-	globalContainer->gfx->setClipRect(area.x, area.y, 112, 16);
-	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 9);
-
-	int size=((*value)*92)/(*max);
-	globalContainer->gfx->setClipRect(area.x+10, area.y, size, 16);
-	globalContainer->gfx->drawSprite(area.x+10, area.y+3, globalContainer->gamegui, 10);
-	
-	globalContainer->gfx->setClipRect();
+	//Sometimes a scrollbox gets initiated with max-value 0. A turret construction site has 0/0 stone and 0/0 shots. To not run into arithmetic exceptions those cases are treated here.
+	if((*max) != 0)
+	{
+		globalContainer->gfx->setClipRect(area.x, area.y, 112, 16);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 9);
+		int size=((*value)*92)/(*max);
+		globalContainer->gfx->setClipRect(area.x+10, area.y, size, 16);
+		globalContainer->gfx->drawSprite(area.x+10, area.y+3, globalContainer->gamegui, 10);
+		globalContainer->gfx->setClipRect();
+	}
 }
 
 
