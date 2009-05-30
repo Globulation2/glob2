@@ -22,6 +22,10 @@
 #ifndef __GAME_H
 #define __GAME_H
 
+#include <iostream>
+#include "Stream.h"
+#include "BinaryStream.h"
+
 #include "Map.h"
 #include "SGSL.h"
 #include <string>
@@ -269,6 +273,7 @@ public:
 
 protected:
 	FILE *logFile;
+	OutputStream * replay;
 	int * ticksGameSum;
 };
 
