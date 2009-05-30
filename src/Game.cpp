@@ -17,6 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <iostream>
+#include <fstream>
+
 #include "AICastor.h"
 #include "AINicowar.h"
 
@@ -63,6 +66,8 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	mapscript(gui)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
+	replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("game.replay"));
+	//replay.open ("game.replay", ios::out | ios::binary);// = globalContainer->logFileManager->getFile("Replay.log");
 	init(gui, edit);
 }
 
@@ -90,6 +95,8 @@ Game::~Game()
 	overlayAlphas.resize(0);
 
 	clearGame();
+
+	delete replay;
 }
 
 void Game::init(GameGUI *gui, MapEdit* edit)
@@ -204,10 +211,26 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	anyPlayerWaited=false;
 }
 
-
-
+Uint32 emptyMessageCounter=0;
 void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 {
+	
+	if(order->getDataLength()==0)
+	{
+		emptyMessageCounter++;
+	}
+	else
+	{
+		std::cout << " emptyMessageCounter: " << emptyMessageCounter;
+		std::cout << " order->getDataLength(): " << order->getDataLength();
+		std::cout << " order->getData(): " << order->getData() << std::endl;
+		replay->writeUint32(emptyMessageCounter, "emptyMessageCounter");
+		replay->write(order->getData(),order->getDataLength(), "data");
+		emptyMessageCounter=0;
+		// replay << order.getData();
+		// replay.write(order.getData(),order.getDataLength()];
+	}
+	
 	anyPlayerWaited=false;
 	assert(order->sender>=0);
 	assert(order->sender<Team::MAX_COUNT);
