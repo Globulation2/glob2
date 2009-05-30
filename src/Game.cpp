@@ -35,8 +35,6 @@
 
 #include <FileManager.h>
 #include <GraphicContext.h>
-#include <Stream.h>
-#include <BinaryStream.h>
 
 #include "BuildingType.h"
 #include "Game.h"
