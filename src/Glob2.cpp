@@ -257,6 +257,18 @@ int Glob2::run(int argc, char *argv[])
 	}
 
 	isRunning=true;
+
+	// Replay the game specified by the command line
+	if (globalContainer->replaying)
+	{
+		Engine engine;
+		int rc_e = engine.loadReplay(globalContainer->replayFileName);
+		if (rc_e == Engine::EE_NO_ERROR)
+			isRunning = (engine.run() != -1);
+		else if(rc_e == -1)
+			isRunning = false;
+	}
+ 
 	while (isRunning)
 	{
 		switch (MainMenuScreen::menu())

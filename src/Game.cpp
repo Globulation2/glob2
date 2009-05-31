@@ -55,6 +55,8 @@
 #include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 
+#include "NetMessage.h"
+
 #define BULLET_IMGID 0
 
 #define MIN_MAX_PRESIGE 500
@@ -64,8 +66,15 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	mapscript(gui)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
-	replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("game.replay"));
-	//replay.open ("game.replay", ios::out | ios::binary);// = globalContainer->logFileManager->getFile("Replay.log");
+	
+	isRecordingReplay = !globalContainer->replaying; // TODO: provide an option for this
+	
+	if (isRecordingReplay)
+	{
+		replayStepCounter = 0;
+		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("games/replay.game"));
+	}
+	
 	init(gui, edit);
 }
 
@@ -94,7 +103,10 @@ Game::~Game()
 
 	clearGame();
 
-	delete replay;
+	if (isRecordingReplay)
+	{
+		delete replay;
+	}
 }
 
 void Game::init(GameGUI *gui, MapEdit* edit)
@@ -209,30 +221,29 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	anyPlayerWaited=false;
 }
 
-Uint32 emptyMessageCounter=0;
 void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 {
-	
-	if(order->getDataLength()==0)
-	{
-		emptyMessageCounter++;
-	}
-	else
-	{
-		std::cout << " emptyMessageCounter: " << emptyMessageCounter;
-		std::cout << " order->getDataLength(): " << order->getDataLength();
-		std::cout << " order->getData(): " << order->getData() << std::endl;
-		replay->writeUint32(emptyMessageCounter, "emptyMessageCounter");
-		replay->write(order->getData(),order->getDataLength(), "data");
-		emptyMessageCounter=0;
-		// replay << order.getData();
-		// replay.write(order.getData(),order.getDataLength()];
-	}
-	
-	anyPlayerWaited=false;
 	assert(order->sender>=0);
 	assert(order->sender<Team::MAX_COUNT);
 	assert(order->sender < gameHeader.getNumberOfPlayers());
+
+	if (isRecordingReplay)
+	{
+		assert(replay);
+
+		// Steps since last order
+
+		replay->writeUint32(replayStepCounter, "replayStepCounter" );
+		replayStepCounter=0;
+
+		// Write actual order to replay
+
+		NetSendOrder* msg = new NetSendOrder(order);
+		msg->encodeData(replay);
+		delete msg;
+	}
+	
+	anyPlayerWaited=false;
 	Team *team=players[order->sender]->team;
 	assert(team);
 	bool isPlayerAlive=team->isAlive;
@@ -805,11 +816,10 @@ void Game::setAlliances(void)
 	}
 }
 
-
-
 bool Game::load(GAGCore::InputStream *stream)
 {
 	assert(stream);
+
 	stream->readEnterSection("Game");
 
 	///Clears any previous game
@@ -1238,6 +1248,8 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam)
 {
+	if (isRecordingReplay) replayStepCounter++;
+
 	if (!anyPlayerWaited)
 	{
 		Sint32 startTick=SDL_GetTicks();
@@ -3053,3 +3065,7 @@ bool Game::isPrestigeWinCondition(void)
 	return false;
 }
 
+OutputStream *Game::getReplayStream()
+{
+	return replay;
+}

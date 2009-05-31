@@ -25,6 +25,7 @@ Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (map generators, clouds, basic
 Martin Nyffenegger <barock at ysagoon dot com> (SGSL)
 Martin Voelkle <marv at chaoides dot org> (GUI, bugfixes and more)
 Martin Pool <mbp sourcefrog net> (natsort)
+Michiel De Muynck <michieldemuynck at gmail dot com> (replay feature)
 
 *
 Graphics

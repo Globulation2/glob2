@@ -127,6 +127,9 @@ public:
 	char hostServerPassWord[32];
 	//! hostname for YOG, can be set by cmd line to override default
 	std::string yogHostName;
+
+	bool replaying;
+	std::string replayFileName;
 	
 public:
 	Uint32 getConfigCheckSum();
