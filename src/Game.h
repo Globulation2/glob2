@@ -271,10 +271,15 @@ public:
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool generateMap(MapGenerationDescriptor &descriptor);
 
+	bool isRecordingReplay;
+	OutputStream * getReplayStream();
+
 protected:
 	FILE *logFile;
-	OutputStream * replay;
 	int * ticksGameSum;
+
+	OutputStream * replay;
+	Uint32 replayStepCounter;
 };
 
 #endif

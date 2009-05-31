@@ -347,7 +347,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings.mute = 0;
 			continue;
 		}
-
+		if (strcmp(argv[i], "-replay")==0)
+		{
+			replaying=true;
+			replayFileName=argv[i+1];
+			continue;
+		}
 		if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
@@ -375,6 +380,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
+			printf("-replay <replay file name>\t replay the game stored in te specified file.\n");
 			exit(0);
 		}
 

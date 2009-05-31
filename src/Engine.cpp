@@ -39,7 +39,8 @@
 #include "YOGClientLobbyScreen.h"
 #include "SoundMixer.h"
 #include "Player.h"
-#include "AIEcho.h"
+//#include "AIEcho.h"
+#include "NetMessage.h"
 
 #include <iostream>
 
@@ -247,6 +248,28 @@ int Engine::run(void)
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
 		SDL_EnableKeyRepeat(0,0);
 	}
+
+	InputStream *replay = NULL;
+	if (globalContainer->replaying)
+	{
+		//replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("orders.replay"));
+		replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(globalContainer->replayFileName));
+		
+		// Get to the right position (readEnterSection doesn't work)
+		GameGUI gui;
+		gui.load(replay);
+
+		assert(replay);
+	}
+
+	Uint32 replayStepCounter;
+
+	if (globalContainer->replaying)
+	{
+		replayStepCounter = replay->readUint32("replayStepCounter");
+		//std::cout << replayStepCounter << std::endl;
+		//assert(false);
+	}
 	
 	while (doRunOnceAgain)
 	{
@@ -350,7 +373,7 @@ int Engine::run(void)
 						for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 						{
 							shared_ptr<Order> order=net->retrieveOrder(i);
-							gui.executeOrder(order);
+							if (!globalContainer->replaying) gui.executeOrder(order);
 						}
 						net->clearTopOrders();
 					}
@@ -428,6 +451,33 @@ int Engine::run(void)
 				gui.isRunning=false;
 				net->flushAllOrders();
 				break;
+			}
+
+			if (globalContainer->replaying)
+			{
+				if (!replay->isEndOfStream())
+				{
+					while (replayStepCounter == 0)
+					{
+						assert(replay);
+
+						NetSendOrder* msg = new NetSendOrder();
+						msg->decodeData(replay);
+						shared_ptr<Order> order = msg->getOrder();
+						gui.executeOrder(order);
+						delete msg;
+
+						replayStepCounter = replay->readUint32("replayStepCounter");
+					}
+					
+					replayStepCounter--;
+				}
+				else
+				{
+					// TODO: put up a nice graphical message for this
+					std::cout << "Replay ended.\n";
+					globalContainer->replaying = false;
+				}
 			}
 		}
 
@@ -597,6 +647,12 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// we create the net game
 	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
+	// Save the game for replays
+	if (gui.game.isRecordingReplay)
+	{
+		gui.save(gui.game.getReplayStream(),"header");
+	}
+
 	return EE_NO_ERROR;
 }
 
@@ -718,7 +774,25 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 	return gameHeader;
 }
 
+int Engine::loadReplay(const std::string &fileName)
+{
+	MapHeader mapHeader = loadMapHeader(fileName);
+	GameHeader gameHeader = loadGameHeader(fileName);
 
+	// Set all players to a AINone
+	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
+	{
+		gameHeader.getBasePlayer(p).makeItAI(AI::NONE);
+	}
+
+	int ret = initGame(mapHeader, gameHeader, true, false, true);
+	if(ret != EE_NO_ERROR)
+		return EE_CANT_LOAD_MAP;
+	else if(ret == -1)
+		return -1;
+
+	return EE_NO_ERROR;
+}
 
 void Engine::finalAdjustements(void)
 {
