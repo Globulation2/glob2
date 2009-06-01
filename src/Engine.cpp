@@ -252,12 +252,11 @@ int Engine::run(void)
 	InputStream *replay = NULL;
 	if (globalContainer->replaying)
 	{
-		//replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend("orders.replay"));
 		replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(globalContainer->replayFileName));
 		
 		// Get to the right position (readEnterSection doesn't work)
-		GameGUI gui;
-		gui.load(replay);
+		GameGUI tempGui;
+		tempGui.load(replay);
 
 		assert(replay);
 	}
@@ -267,8 +266,6 @@ int Engine::run(void)
 	if (globalContainer->replaying)
 	{
 		replayStepCounter = replay->readUint32("replayStepCounter");
-		//std::cout << replayStepCounter << std::endl;
-		//assert(false);
 	}
 	
 	while (doRunOnceAgain)
@@ -373,7 +370,15 @@ int Engine::run(void)
 						for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 						{
 							shared_ptr<Order> order=net->retrieveOrder(i);
-							if (!globalContainer->replaying) gui.executeOrder(order);
+							if (!globalContainer->replaying)
+							{
+								gui.executeOrder(order);
+							}
+							else if (order->getOrderType() == ORDER_PLAYER_QUIT_GAME ||
+							         order->getOrderType() == ORDER_PAUSE_GAME)
+							{
+								gui.executeOrder(order);
+							}
 						}
 						net->clearTopOrders();
 					}
@@ -386,6 +391,40 @@ int Engine::run(void)
 					net->increaseLatencyAdjustment();
 				}
 				*/
+
+				// Load the replay's orders
+				if (globalContainer->replaying)
+				{
+					if (!replay->isEndOfStream())
+					{
+						while (replayStepCounter == 0)
+						{
+							assert(replay);
+
+							NetSendOrder* msg = new NetSendOrder();
+							msg->decodeData(replay);
+							shared_ptr<Order> order = msg->getOrder();
+
+							if (order->getOrderType() != ORDER_PLAYER_QUIT_GAME &&
+							order->getOrderType() != ORDER_PAUSE_GAME)
+							{
+								gui.executeOrder(order);
+							}
+
+							delete msg;
+							replayStepCounter = replay->readUint32("replayStepCounter");
+						}
+					
+						if (!gui.gamePaused && !gui.hardPause)
+							replayStepCounter--;
+					}
+					else
+					{
+						// TODO: put up a nice graphical message for this
+						std::cout << "Replay ended.\n";
+						globalContainer->replaying = false;
+					}
+				}
 
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
@@ -451,33 +490,6 @@ int Engine::run(void)
 				gui.isRunning=false;
 				net->flushAllOrders();
 				break;
-			}
-
-			if (globalContainer->replaying)
-			{
-				if (!replay->isEndOfStream())
-				{
-					while (replayStepCounter == 0)
-					{
-						assert(replay);
-
-						NetSendOrder* msg = new NetSendOrder();
-						msg->decodeData(replay);
-						shared_ptr<Order> order = msg->getOrder();
-						gui.executeOrder(order);
-						delete msg;
-
-						replayStepCounter = replay->readUint32("replayStepCounter");
-					}
-					
-					replayStepCounter--;
-				}
-				else
-				{
-					// TODO: put up a nice graphical message for this
-					std::cout << "Replay ended.\n";
-					globalContainer->replaying = false;
-				}
 			}
 		}
 
