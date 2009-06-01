@@ -106,6 +106,11 @@ GlobalContainer::GlobalContainer(void)
 	voiceRecorder = NULL;
 	automaticGameGlobalEndConditions=false;
 
+	replaying = false;
+	replayFileName = "";
+	replayViewMap = -1;
+	replayShowActions = false;
+
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
 
