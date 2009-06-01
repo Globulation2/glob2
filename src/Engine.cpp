@@ -406,7 +406,7 @@ int Engine::run(void)
 							shared_ptr<Order> order = msg->getOrder();
 
 							if (order->getOrderType() != ORDER_PLAYER_QUIT_GAME &&
-							order->getOrderType() != ORDER_PAUSE_GAME)
+							    order->getOrderType() != ORDER_PAUSE_GAME)
 							{
 								gui.executeOrder(order);
 							}

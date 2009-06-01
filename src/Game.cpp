@@ -72,7 +72,7 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	if (isRecordingReplay)
 	{
 		replayStepCounter = 0;
-		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("games/replay.game"));
+		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.replay"));
 	}
 	
 	init(gui, edit);
@@ -227,7 +227,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	assert(order->sender<Team::MAX_COUNT);
 	assert(order->sender < gameHeader.getNumberOfPlayers());
 
-	if (isRecordingReplay)
+	if (isRecordingReplay && order->getOrderType() != ORDER_VOICE_DATA) // TODO: optionally save VOIP
 	{
 		assert(replay);
 
