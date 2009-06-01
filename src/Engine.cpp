@@ -803,6 +803,10 @@ int Engine::loadReplay(const std::string &fileName)
 	else if(ret == -1)
 		return -1;
 
+	// Set player whose actions are shown
+	// gui.localPlayer = 1;
+	// gui.localTeamNo = 1;
+
 	return EE_NO_ERROR;
 }
 

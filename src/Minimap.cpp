@@ -302,6 +302,9 @@ void Minimap::computeColors(int row, int localTeam)
 	const int decSPX=offset_x<<16, decSPY=offset_y<<16;
 	bool useMapDiscovered = minimapMode == ShowFOW;
 
+	Uint32 me = game->teams[localTeam]->me;
+	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+
 	const int dy = row;
 	for (int dx=0; dx<szX; dx++)
 	{
@@ -325,7 +328,7 @@ void Minimap::computeColors(int row, int localTeam)
 					gid=game->map.getBuilding(minidx, minidy);
 					if (gid!=NOGUID)
 					{
-						if (game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & game->teams[localTeam]->me)
+						if (game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & me)
 						{
 							seenUnderFOW = true;
 						}
@@ -334,11 +337,11 @@ void Minimap::computeColors(int row, int localTeam)
 				if (gid!=NOGUID)
 				{
 					int teamId=gid/Unit::MAX_COUNT;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))
+					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, me))
 					{
 						if (teamId==localTeam)
 							UnitOrBuildingIndex = 0;
-						else if ((game->teams[localTeam]->allies) & (game->teams[teamId]->me))
+						else if ((game->teams[localTeam]->allies) & me)
 							UnitOrBuildingIndex = 1;
 						else
 							UnitOrBuildingIndex = 2;
@@ -348,7 +351,7 @@ void Minimap::computeColors(int row, int localTeam)
 					{
 						if (teamId==localTeam)
 							UnitOrBuildingIndex = 3;
-						else if ((game->teams[localTeam]->allies) & (game->teams[teamId]->me))
+						else if ((game->teams[localTeam]->allies) & me)
 							UnitOrBuildingIndex = 4;
 						else
 							UnitOrBuildingIndex = 5;
@@ -356,7 +359,7 @@ void Minimap::computeColors(int row, int localTeam)
 					}
 				}
 				
-				if (useMapDiscovered || game->map.isMapDiscovered(minidx, minidy, game->teams[localTeam]->me))
+				if (useMapDiscovered || game->map.isMapDiscovered(minidx, minidy, me))
 				{
 					// get color to add
 					int pcolIndex;
@@ -372,7 +375,7 @@ void Minimap::computeColors(int row, int localTeam)
 					
 					// get weight to add
 					int pcolAddValue;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))
+					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, me))
 						pcolAddValue=5;
 					else
 						pcolAddValue=3;
