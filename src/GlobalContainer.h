@@ -130,6 +130,8 @@ public:
 
 	bool replaying;
 	std::string replayFileName;
+	Uint32 replayViewMap; //! A map of which players should be shown in the replay. Can be edited real-time.
+	bool replayShowActions; //! Show actions of gui.localPlayer or not. Can be edited real-time.
 	
 public:
 	Uint32 getConfigCheckSum();
