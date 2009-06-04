@@ -738,6 +738,8 @@ Do you want to save before quitting?
 Save game
 [save map]
 Save Map
+[save replay]
+Save Replay
 [save script]
 Save Script
 [Save]

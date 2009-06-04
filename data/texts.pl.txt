@@ -740,6 +740,8 @@ Czy chcesz zapisać stan gry przed zakończeniem?
 Zapisz grę
 [save map]
 Sapisz Mapę
+[save replay]
+
 [save script]
 Sapisz skrypt
 [Save]

@@ -738,6 +738,8 @@ Möchtest Du vor dem Beenden speichern?
 Spiel speichern
 [save map]
 Karte speichern
+[save replay]
+
 [save script]
 Skript speichern
 [Save]

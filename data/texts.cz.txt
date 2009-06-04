@@ -740,6 +740,8 @@ Chceš uložit před odchodem ?
 Uložit hru
 [save map]
 
+[save replay]
+
 [save script]
 
 [Save]

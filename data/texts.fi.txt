@@ -738,6 +738,8 @@ Haluatko tallentaa ennen poistumista?
 Tallenna peli
 [save map]
 Tallenna kartta
+[save replay]
+
 [save script]
 Tallenna skripti
 [Save]

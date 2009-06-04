@@ -736,6 +736,8 @@ OpenGL
 储存游戏
 [save map]
 储存地图
+[save replay]
+
 [save script]
 保存脚本
 [Save]

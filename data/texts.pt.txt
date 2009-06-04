@@ -746,6 +746,8 @@ Guardar antes de sair?
 Salvar partida
 [save map]
 
+[save replay]
+
 [save script]
 
 [Save]
