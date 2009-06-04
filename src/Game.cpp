@@ -1758,11 +1758,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int dx=unit->dx;
 	int dy=unit->dy;
 
-	Uint32 me = teams[localTeam]->me;
-	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
-		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, me))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, me)))
+		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
 			return;
 
 	int imgid;
@@ -1850,7 +1850,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		}
 	}
 
-	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, me))||(Unit::GIDtoTeam(gid)==localTeam)))
+	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
 		mouseUnit=unit;
 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
@@ -1909,8 +1909,8 @@ inline void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int
 
 inline void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	Uint32 me = teams[localTeam]->me;
-	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
@@ -1921,7 +1921,7 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 							y+viewportY-1,
 							x+viewportX+1,
 							y+viewportY+1,
-							me) ||
+							visibleTeams) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				// draw terrain
@@ -1944,8 +1944,8 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 
 inline void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	Uint32 me = teams[localTeam]->me;
-	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
@@ -1955,7 +1955,7 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 						y+viewportY-1,
 						x+viewportX+1,
 						y+viewportY+1,
-						me) ||
+						visibleTeams) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				Ressource r=map.getRessource(x+viewportX, y+viewportY);
@@ -2194,10 +2194,10 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 		globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 	}
 
-	Uint32 me = teams[localTeam]->me;
-	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & me))
+	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & visibleTeams))
 	{
 		//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 		// TODO : find better color for this
@@ -2283,8 +2283,8 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 
 inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
 {
-	Uint32 me = teams[localTeam]->me;
-	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 	std::set<Building*> drawnBuildings;
 	for (int y=top-1; y<=bot; y++)
@@ -2305,8 +2305,8 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
 						|| Building::GIDtoTeam(gid)==localTeam
-						|| (building->seenByMask & me)
-						|| map.isFOWDiscovered(x+viewportX, y+viewportY, me))
+						|| (building->seenByMask & visibleTeams)
+						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
 						int px,py;					
 						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
@@ -2445,8 +2445,8 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 	Sprite *bulletSprite = globalContainer->bullet;
 	// FIXME : have team in bullets to have the correct color
 
-	Uint32 me = teams[localTeam]->me;
-	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 	int mapPixW=(map.getW())<<5;
 	int mapPixH=(map.getH())<<5;
@@ -2485,7 +2485,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 		// explosions
 		for (std::list<BulletExplosion *>::iterator it=s->explosions.begin();it!=s->explosions.end();it++)
 		{
-			if (map.isFOWDiscovered((*it)->x, (*it)->y, me))
+			if (map.isFOWDiscovered((*it)->x, (*it)->y, visibleTeams))
 			{
 				int x, y;
 				map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
@@ -2498,7 +2498,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 		// death animations
 		for (std::list<UnitDeathAnimation *>::iterator it=s->deathAnimations.begin();it!=s->deathAnimations.end();++it)
 		{
-			if (map.isFOWDiscovered((*it)->x, (*it)->y, me))
+			if (map.isFOWDiscovered((*it)->x, (*it)->y, visibleTeams))
 			{
 				int x, y;
 				map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
@@ -2533,14 +2533,14 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 					globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrainShader, 0);
 				}*/
 
-				Uint32 me = teams[localTeam]->me;
-				if (globalContainer->replaying) me = globalContainer->replayViewMap;
+				Uint32 visibleTeams = teams[localTeam]->me;
+				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 				// first draw black
-				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, me) ? 1 : 0;
-				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, me) ? 1 : 0;
-				i2=!map.isMapDiscovered(x+viewportX+1, y+viewportY, me) ? 1 : 0;
-				i3=!map.isMapDiscovered(x+viewportX, y+viewportY, me) ? 1 : 0;
+				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
+				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
+				i2=!map.isMapDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
+				i3=!map.isMapDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
 				unsigned blackValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 				if (blackValue==15)
 					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0);
@@ -2550,10 +2550,10 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 				// then if it isn't full black, draw shade
 				if (blackValue!=15)
 				{
-					i0=!map.isFOWDiscovered(x+viewportX+1, y+viewportY+1, me) ? 1 : 0;
-					i1=!map.isFOWDiscovered(x+viewportX, y+viewportY+1, me) ? 1 : 0;
-					i2=!map.isFOWDiscovered(x+viewportX+1, y+viewportY, me) ? 1 : 0;
-					i3=!map.isFOWDiscovered(x+viewportX, y+viewportY, me) ? 1 : 0;
+					i0=!map.isFOWDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
+					i1=!map.isFOWDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
+					i2=!map.isFOWDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
+					i3=!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
 					unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 
 					if (shadeValue==15)
@@ -2593,12 +2593,12 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		{
 			for (int x=0; x<width; x++)
 			{
-				Uint32 me = teams[localTeam]->me;
-				if (globalContainer->replaying) me = globalContainer->replayViewMap;
+				Uint32 visibleTeams = teams[localTeam]->me;
+				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 				int rx=(x+viewportX-1+map.getW())%map.getW();
 				int ry=(y+viewportY-1+map.getH())%map.getH();
-				if(!edit && !map.isMapDiscovered(rx, ry, me))
+				if(!edit && !map.isMapDiscovered(rx, ry, visibleTeams))
 					continue;
 				if(overlays->getValue(rx, ry))
 				{
@@ -2642,10 +2642,10 @@ inline void Game::drawUnitPathLines(int left, int top, int right, int bot, int s
 
 inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit)
 {
-	Uint32 me = teams[localTeam]->me;
-	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if(unit->owner->sharedVisionOther & me)
+	if(unit->owner->sharedVisionOther & visibleTeams)
 	{
 		if (unit->validTarget)
 		{
@@ -2861,10 +2861,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 	// Draw units that are off the screen for the selected building
 
-	Uint32 me = teams[localTeam]->me;
-	if (globalContainer->replaying) me = globalContainer->replayViewMap;
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if(selectedBuilding != NULL && (selectedBuilding->owner->sharedVisionOther & me))
+	if(selectedBuilding != NULL && (selectedBuilding->owner->sharedVisionOther & visibleTeams))
 	{
 		for(std::list<Unit*>::iterator i = selectedBuilding->unitsWorking.begin(); i!=selectedBuilding->unitsWorking.end(); ++i)
 		{
