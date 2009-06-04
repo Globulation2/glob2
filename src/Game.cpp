@@ -67,13 +67,7 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
 	
-	isRecordingReplay = !globalContainer->replaying; // TODO: provide an option for this
-	
-	if (isRecordingReplay)
-	{
-		replayStepCounter = 0;
-		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.replay"));
-	}
+	isRecordingReplay = false;
 	
 	init(gui, edit);
 }
@@ -126,7 +120,6 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 		players[i]=NULL;
 	}
 	clearGame();
-
 
 	mouseX=0;
 	mouseY=0;
@@ -819,6 +812,14 @@ void Game::setAlliances(void)
 bool Game::load(GAGCore::InputStream *stream)
 {
 	assert(stream);
+
+	// Initialize the replay
+	isRecordingReplay = !globalContainer->replaying; // TODO: provide an option for this
+	if (isRecordingReplay)
+	{
+		replayStepCounter = 0;
+		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.replay"));
+	}
 
 	stream->readEnterSection("Game");
 
