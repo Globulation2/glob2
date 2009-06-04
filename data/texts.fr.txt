@@ -748,6 +748,8 @@ Voulez-vous sauver avant de quitter ?
 Sauvegarder jeu
 [save map]
 Sauvegarder la carte
+[save replay]
+
 [save script]
 Sauvegarder le script
 [Save]

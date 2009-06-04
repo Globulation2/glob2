@@ -810,6 +810,8 @@ enter
 Αποθήκευση παιχνιδιού
 [save map]
 Αποθήκευση χάρτη
+[save replay]
+
 [save script]
 
 [Save]

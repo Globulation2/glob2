@@ -740,6 +740,8 @@ Pesek
 Shrani igro
 [save map]
 
+[save replay]
+
 [save script]
 
 [Save]

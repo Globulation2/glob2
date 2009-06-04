@@ -740,6 +740,8 @@ OpenGL
 Сними игру
 [save map]
 
+[save replay]
+
 [save script]
 
 [Save]
