@@ -808,6 +808,8 @@ Vil du gemme for du afslutter?
 Gemme spil
 [save map]
 Gem bane
+[save replay]
+
 [save script]
 
 [Save]
