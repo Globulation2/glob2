@@ -32,7 +32,8 @@
 #include <iomanip>
 #include "GlobalContainer.h"
 #include "Team.h"
-
+#include "GameGUILoadSave.h"
+#include "StreamBackend.h"
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -369,20 +370,21 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	}
 	
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText.c_str()));
-	statWidget=new EndGameStat(20, 80, 180, 150, ALIGN_FILL, ALIGN_FILL, &(gui->game));
+	statWidget=new EndGameStat(20, 80, 180, 120, ALIGN_FILL, ALIGN_FILL, &(gui->game));
 	addWidget(statWidget);
 
 	graphLabel=new Text(25, 85, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Units]"));
 	addWidget(graphLabel);
 	
 	// add buttons
-	addWidget(new TextButton(90, 90, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
-	addWidget(new TextButton(190, 90, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
-	addWidget(new TextButton(290, 90, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
-	addWidget(new TextButton(90, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[hp]"), 3, '4'));
-	addWidget(new TextButton(190, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Attack]"), 4, '5'));
-	addWidget(new TextButton(290, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Defense]"), 5, '6'));
-	addWidget(new TextButton(0, 5, 300, 40, ALIGN_CENTERED, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[ok]"), 38, 13));
+	addWidget(new TextButton(90, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
+	addWidget(new TextButton(190, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
+	addWidget(new TextButton(290, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
+	addWidget(new TextButton(90, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[hp]"), 3, '4'));
+	addWidget(new TextButton(190, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Attack]"), 4, '5'));
+	addWidget(new TextButton(290, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Defense]"), 5, '6'));
+	addWidget(new TextButton(15, 65, 260, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's')); // FIXME: magic numbers!
+	addWidget(new TextButton(15, 15, 260, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
 	
 	// add players name
 	Text *text;
@@ -432,12 +434,11 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if(par1==38)
+		{
 			endExecute(par1);
-	}
-	if ((action==BUTTON_PRESSED) || (action==BUTTON_SHORTCUT))
-	{
+		}
 		///This is a change in the graph type
-		if (par1<6)
+		else if (par1<6)
 		{
 			EndOfGameStat::Type type = (EndOfGameStat::Type)par1;
 			statWidget->setStatType(type);
@@ -468,6 +469,12 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 				}
 			}
 		}
+		/// The "Save Replay" button was pressed
+		else if (par1 == 39)
+		{
+			loadSave("replays","replay");
+		}
+		else assert(false);
 	}
 }
 
@@ -512,4 +519,70 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 			team_enabled_buttons[i]->visible=false;
 		}
 	}
+}
+
+std::string replayFilenameToName(const std::string& fullfilename)
+{
+	std::string filename = fullfilename;
+	filename.erase(0, 8);
+	filename.erase(filename.find(".replay"));
+	std::replace(filename.begin(), filename.end(), '_', ' ');
+	return filename;
+}
+
+void EndGameScreen::loadSave(const char *dir, const char *ext)
+{
+	// create dialog box
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, false, std::string(Toolkit::getStringTable()->getString("[save replay]")), "", replayFilenameToName, glob2NameToFilename);
+	loadSaveScreen->dispatchPaint();
+
+	// save screen
+	globalContainer->gfx->setClipRect();
+	
+	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	background->drawSurface(0, 0, globalContainer->gfx);
+
+	SDL_Event event;
+	while(loadSaveScreen->endValue<0)
+	{
+		int time = SDL_GetTicks();
+		while (SDL_PollEvent(&event))
+		{
+			loadSaveScreen->translateAndProcessEvent(&event);
+		}
+		loadSaveScreen->dispatchPaint();
+		
+		globalContainer->gfx->drawSurface(0, 0, background);
+		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
+		globalContainer->gfx->nextFrame();
+		int ntime = SDL_GetTicks();
+		SDL_Delay(std::max(0, 40 - ntime + time));
+	}
+
+	if (loadSaveScreen->endValue==0)
+	{
+		if (loadSaveScreen->getFileName() == "replays/last_game.replay") return;
+
+		StreamBackend* in = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.replay");
+		StreamBackend* out = Toolkit::getFileManager()->openOutputStreamBackend(loadSaveScreen->getFileName());
+
+		assert(in->isValid());
+		assert(out->isValid());
+
+		while (!in->isEndOfStream())
+		{
+			int c = in->getc();
+			if (in->isEndOfStream()) break;
+			out->putc(c);
+		}
+
+		delete in;
+		delete out;
+	}
+
+	// clean up
+	delete loadSaveScreen;
+	
+	// destroy temporary surface
+	delete background;
 }
