@@ -984,6 +984,8 @@ The market is under attack
 The racetrack is finished
 [the racetrack is under attack]
 The racetrack is under attack
+[the replays]
+Replays
 [the school is finished]
 The school is finished
 [the school is under attack]
