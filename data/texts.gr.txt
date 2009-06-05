@@ -638,6 +638,8 @@ Anastasios M. Pingios
 Νέα
 [nick taken]
 Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -810,6 +812,8 @@ enter
 Αποθήκευση παιχνιδιού
 [save map]
 Αποθήκευση χάρτη
+[save replay]
+
 [save script]
 
 [Save]

@@ -568,6 +568,8 @@ Glasnost glasbe
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -739,6 +741,8 @@ Pesek
 [save game]
 Shrani igro
 [save map]
+
+[save replay]
 
 [save script]
 

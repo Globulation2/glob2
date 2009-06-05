@@ -568,6 +568,8 @@ Volum  (muzică)
 Nou
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -739,6 +741,8 @@ Vreţi să salvaţi înainte de a ieşi?
 [save game]
 Salvează joc
 [save map]
+
+[save replay]
 
 [save script]
 

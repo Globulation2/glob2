@@ -363,9 +363,9 @@ Kielletty alue
 [Free]
 Ok
 [free]
-vapaana
-[free]
 on vapaana
+[free]
+vapaana
 [from:]
 from:
 [fruit]
@@ -437,7 +437,7 @@ Kasvata työskentelevien määrää
 [inn explanation 2]
 
 [inn explanation]
-Ruokkii yksiköitäsi. 
+Ruokkii yksiköitäsi.
 [inn]
 Majatalo
 [insert]
@@ -570,6 +570,8 @@ Uusi kampanja
 Uusi kartta
 [nick taken]
 Olemme pahoillamme, mutta valitsemasi nimi on jo varattu Freenode-verkossa. Pystyt keskustelemaan vain YOG:n kautta.
+[no fullscreen]
+* vain ikkunatilassa
 [No Hints]
 Ei Vihjeitä
 [no key]
@@ -589,7 +591,7 @@ Rakennusten Määrä:
 [number of players: %0 (%1 AI)]
 %0 pelaajaa (%1 AI)
 [number of teams: %0]
-Joukkueiden määrä: %0 
+Joukkueiden määrä: %0
 [number of teams]
 joukkueiden määrä
 [Number Of Units]
@@ -738,6 +740,8 @@ Haluatko tallentaa ennen poistumista?
 Tallenna peli
 [save map]
 Tallenna kartta
+[save replay]
+
 [save script]
 Tallenna skripti
 [Save]
@@ -857,7 +861,7 @@ nälissään
 [Statistics]
 Tilastot
 [Still (i)]
-Vielä 
+Vielä
 [still (w)]
 Still
 [still one unit working]
@@ -1087,7 +1091,7 @@ Odotetaan
 [Walk]
 Kävely
 [warflag explanation 2]
- 
+
 [warflag explanation]
 Houkuttelee sotureita.
 [warflag]
@@ -1186,5 +1190,3 @@ IP-osoitteesi on väliaikisesti estetty. Odottakaa kärsivällisesti, kunnes est
 Yksikkösi siirtyi %0:n joukkueeseen.
 [Your username was banned]
 Käyttäjänimesi on estetty. Ota yhteys ylläpitäjiin.
-[no fullscreen]
-* vain ikkunatilassa

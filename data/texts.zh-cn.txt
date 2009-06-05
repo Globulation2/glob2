@@ -568,6 +568,8 @@ meta %0
 地图
 [nick taken]
 我们非常抱歉但是你的选的名字已经在freenode上被用过，你将只能透过 YOG 交谈
+[no fullscreen]
+
 [No Hints]
 没有提示
 [no key]
@@ -736,6 +738,8 @@ OpenGL
 储存游戏
 [save map]
 储存地图
+[save replay]
+
 [save script]
 保存脚本
 [Save]

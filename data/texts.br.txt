@@ -570,6 +570,8 @@ Nova campanha
 Novo
 [nick taken]
 Lamentamos mas o nome que você escolheu já existe na freenode, você poderá falar somente pelo YOG
+[no fullscreen]
+
 [No Hints]
 Sem dicas
 [no key]
@@ -738,6 +740,8 @@ Você quer gravar antes de sair?
 Gravar Jogo
 [save map]
 Gravar mapa
+[save replay]
+
 [save script]
 Gravar script
 [Save]

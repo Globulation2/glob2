@@ -574,6 +574,8 @@ sessiz
 Yeni
 [nick taken]
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -745,6 +747,8 @@ Cikmadan once kaydetmek istiyor musunuz?
 [save game]
 Oyun kaydet
 [save map]
+
+[save replay]
 
 [save script]
 

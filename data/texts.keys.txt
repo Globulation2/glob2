@@ -284,6 +284,7 @@
 [new campaign]
 [new map]
 [nick taken]
+[no fullscreen]
 [No Hints]
 [no key]
 [No Objectives]
@@ -587,4 +588,3 @@
 [Your IP address was temporarily banned]
 [Your unit got converted to %0's team]
 [Your username was banned]
-[no fullscreen]

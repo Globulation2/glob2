@@ -630,6 +630,8 @@ nuova campagna
 Nuovo
 [nick taken]
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -800,6 +802,8 @@ Voui salvare prima di uscire?
 Salva partita
 [save map]
 Salva Mappa
+[save replay]
+
 [save script]
 
 [Save]
