@@ -636,6 +636,8 @@ Air dmg.
 新的
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -808,6 +810,8 @@ Air dmg.
 儲存遊戲
 [save map]
 儲存地圖
+[save replay]
+
 [save script]
 
 [Save]

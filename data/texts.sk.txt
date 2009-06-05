@@ -574,6 +574,8 @@ Stlmiť
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -745,6 +747,8 @@ Chceš pred ukončením uložiť zmeny?
 [save game]
 Uložiť hru
 [save map]
+
+[save replay]
 
 [save script]
 
