@@ -574,6 +574,8 @@ Silenci
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -745,6 +747,8 @@ Vols desar abans de sortir?
 [save game]
 Desar partida
 [save map]
+
+[save replay]
 
 [save script]
 

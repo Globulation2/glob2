@@ -570,6 +570,8 @@ New Campaign
 New Map
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+* only in windowed mode
 [No Hints]
 No Hints
 [no key]
@@ -1186,5 +1188,3 @@ Your IP address was temporarily banned. Please wait patiently until it is unbann
 Your unit got converted to %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
-[no fullscreen]
-* only in windowed mode

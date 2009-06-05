@@ -570,6 +570,8 @@ meta-%0
 نقشه‌ی جدید
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+*فقط در حالت پنجره
 [No Hints]
 -هیچ راهنمایی‌ای داده‌نشده-
 [no key]
@@ -738,6 +740,8 @@ windows راست
 ذخیره‌ی بازی
 [save map]
 ذخیره‌ی نقشه
+[save replay]
+
 [save script]
 ذخیره‌ی برنامه
 [Save]
@@ -1117,9 +1121,9 @@ tab
 [Worker]
 کارگر
 [workers]
-کارگرها
-[workers]
 کارگر
+[workers]
+کارگرها
 [working]
 درحال کار
 [wounded]
@@ -1184,5 +1188,3 @@ tab
 یکی از افراد تو جزو تیم %0 شد.
 [Your username was banned]
 این نام‌کاربری تحریم شده! میتوانی با مدیران ایساگون تماس بگیری.
-[no fullscreen]
-*فقط در حالت پنجره

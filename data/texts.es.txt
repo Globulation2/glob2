@@ -4,6 +4,8 @@
 %0 Nivel %1
 [%0 units can't access building]
 %0 unidades sin acceso
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 unidades sin acceso
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 unidades no disponibles
 [%0 units too far from building]
 %0 unidades demasiado lejos del edificio
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 unidades demasiado lejos de las frutas
 [%0 units too far from resource]
@@ -142,6 +146,8 @@ Por defecto
 Edificios
 [building site]
 sitio de construcción
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 Ctrl + Arrastrar = Línea
 [Buildings]
@@ -564,6 +570,8 @@ Nueva Campaña
 Nuevo Mapa
 [nick taken]
 Lo sentimos pero su nombre ya está elegido en frenode, solamente podrá hablar a través de YOG
+[no fullscreen]
+* solo en modo ventana
 [No Hints]
 Sin Daños
 [no key]
@@ -578,18 +586,22 @@ No
 No hay suficiente radio
 [not ready]
 no listo
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 %0 jugadores (%1 AI)
 [number of teams: %0]
 %0 equipos
 [number of teams]
 número de equipos
+[Number Of Units]
+
 [numlock]
 Bloq Num
 [objectives]
 Objetivos
 [of which]
- 
+
 [ok]
 Aceptar
 [old islands terrain]
@@ -646,6 +658,8 @@ Por favor espere
 poder
 [press space]
 Presione la barra espaciadora para continuar.
+[Prestige Score]
+
 [Prestige Win Enabled]
 Victoria por Prestigio Activado
 [Prestige]
@@ -682,6 +696,8 @@ Promedios
 Actualizar Lista de Mapas
 [Register a new YOG user with password]
 Registrar un nuevo nombre de usuario YOG.
+[Register]
+
 [remember unit]
 Recordar unidad
 [Remember YOG password localy]
@@ -698,6 +714,8 @@ Empezar/Parar Reparación
 Reparar
 [repeat area]
 veces el mismo camino
+[Repeat your password :]
+
 [restore default shortcuts]
 Restaurar Atajos del Teclado
 [return to editor]
@@ -724,6 +742,8 @@ Arena
 Guardar partida
 [save map]
 Guardar Mapa
+[save replay]
+
 [save script]
 Guardar Script
 [Save]
@@ -986,6 +1006,8 @@ La piscina está siendo atacada
 ?? bandera de guerra finalizada ??
 [the warflag is under attack]
 ?? la bandera de guerra está siendo atacada ??
+[time]
+
 [to:]
 hacia:
 [toggle draw accessibility aids]
@@ -997,9 +1019,15 @@ Activar Mostrar Caminos de Unidades
 [toggle menu screen]
 Activar Menu Pantalla
 [toggle recording voice]
-Iniciar Grabación de Voz
-[toggle recording voice]
 Activar Grabación de Voz
+[toggle recording voice]
+Iniciar Grabación de Voz
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Total de prestigio necesario alcanzado
 [Total]
@@ -1128,6 +1156,8 @@ YOG ha rechazado la conexión por que el nombre de usuaro elegido está baneado.
 YOG ha rechazado la conexión por que  el nombre de usuario elegido es inválido. Los nombres de usuario solo pueden tener letras, números y barra-baja.
 [YESTS_CREATED]
 El sistema de conexión está preparado.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 No se pudo conectar. Aparentemente el servidor YOG está caido.
 [yog block command help]
@@ -1160,5 +1190,3 @@ Tu dirección IP está baneada temporalmente. Espere o contacte con los administ
 Tu unidad ha sido convertida por el jugador %0
 [Your username was banned]
 Tu nombre de usuario ha sido baneado. Contacte con los administradores.
-[no fullscreen]
-* solo en modo ventana

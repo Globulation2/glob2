@@ -576,6 +576,8 @@ Ny Kampanj
 Ny
 [nick taken]
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -748,6 +750,8 @@ Vill du spara innan du avslutar?
 Spara spel
 [save map]
 Spara Karta
+[save replay]
+
 [save script]
 
 [Save]

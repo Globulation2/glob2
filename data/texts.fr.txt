@@ -576,6 +576,8 @@ Nouvelle campagne
 Nouveau
 [nick taken]
 Nous somme désolé mais le nom que vous avez choisi est déjà pris sur freenode, vous ne pourrez discuter qu'au sein de YOG
+[no fullscreen]
+
 [No Hints]
 Pas d'allusions
 [no key]
@@ -748,6 +750,8 @@ Voulez-vous sauver avant de quitter ?
 Sauvegarder jeu
 [save map]
 Sauvegarder la carte
+[save replay]
+
 [save script]
 Sauvegarder le script
 [Save]
