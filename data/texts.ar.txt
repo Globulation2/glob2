@@ -574,6 +574,8 @@ Minimum Flag Level
 جديد
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -746,6 +748,8 @@ Do you want to save before quitting?
 حفظ اللعبه
 [save map]
 حفظ الخريطه
+[save replay]
+
 [save script]
 
 [Save]

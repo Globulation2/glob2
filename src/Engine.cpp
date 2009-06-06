@@ -160,17 +160,23 @@ int Engine::initCustom(const std::string &gameName)
 
 int Engine::initLoadGame()
 {
-	ChooseMapScreen loadGameScreen("games", "game", true);;
+	ChooseMapScreen loadGameScreen("games", "game", true, "replays", "replay", false);
 	int lgs = loadGameScreen.execute(globalContainer->gfx, 40);
 	if (lgs == ChooseMapScreen::CANCEL)
 		return EE_CANCEL;
 	else if(lgs == -1)
 		return -1;
 
-	return initCustom(loadGameScreen.getMapHeader().getFileName());
+	assert(loadGameScreen.getSelectedType() != ChooseMapScreen::NONE);
+	assert(loadGameScreen.getSelectedType() != ChooseMapScreen::MAP);
+
+	if (loadGameScreen.getSelectedType() == ChooseMapScreen::GAME)
+		return initCustom(loadGameScreen.getMapHeader().getFileName());
+	else if (loadGameScreen.getSelectedType() == ChooseMapScreen::REPLAY)
+		return loadReplay(loadGameScreen.getMapHeader().getFileName(false,true));
+	else
+		assert(false);
 }
-
-
 
 int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, boost::shared_ptr<YOGClient> client, int localPlayer)
 {
@@ -788,6 +794,9 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 
 int Engine::loadReplay(const std::string &fileName)
 {
+	globalContainer->replaying = true;
+	globalContainer->replayFileName = fileName;
+
 	MapHeader mapHeader = loadMapHeader(fileName);
 	GameHeader gameHeader = loadGameHeader(fileName);
 

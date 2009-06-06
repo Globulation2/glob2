@@ -570,6 +570,8 @@ meta-%0
 Новая карта
 [nick taken]
 К сожалению, выбранное имя уже занято на freenode, взаимодействие возможно только посредством YOG
+[no fullscreen]
+
 [No Hints]
 Нет указаний
 [no key]
@@ -738,6 +740,8 @@ right
 Сохранить игру
 [save map]
 Сохранить карту
+[save replay]
+
 [save script]
 Сохр. cкрипт
 [Save]

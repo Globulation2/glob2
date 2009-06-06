@@ -1690,6 +1690,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+
 [No Hints]
 
 [No Hints]
@@ -2181,6 +2183,8 @@ Játék elmentése
 [save map]
 
 [save map]
+
+[save replay]
 
 [save script]
 

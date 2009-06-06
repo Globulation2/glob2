@@ -568,6 +568,8 @@ Neuer Feldzug
 Neue Karte
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
+[no fullscreen]
+* nicht im Vollbildmodus verfügbar
 [No Hints]
 Keine Hinweise
 [no key]
@@ -738,6 +740,8 @@ Möchtest Du vor dem Beenden speichern?
 Spiel speichern
 [save map]
 Karte speichern
+[save replay]
+
 [save script]
 Skript speichern
 [Save]
@@ -1184,5 +1188,3 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
-[no fullscreen]
-* nicht im Vollbildmodus verfügbar
