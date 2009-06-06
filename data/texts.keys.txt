@@ -368,6 +368,7 @@
 [save before quit?]
 [save game]
 [save map]
+[save replay]
 [save script]
 [Save]
 [school explanation 2]
