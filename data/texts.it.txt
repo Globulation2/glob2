@@ -800,8 +800,6 @@ Voui salvare prima di uscire?
 Salva partita
 [save map]
 Salva Mappa
-[save replay]
-
 [save script]
 
 [Save]

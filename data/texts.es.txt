@@ -724,8 +724,6 @@ Arena
 Guardar partida
 [save map]
 Guardar Mapa
-[save replay]
-
 [save script]
 Guardar Script
 [Save]
