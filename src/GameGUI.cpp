@@ -808,6 +808,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				gameMenuScreen=NULL;
+				gamePaused = false; //!< At the end of replays, the game is paused.
 				return true;
 
 				default:
@@ -4124,6 +4125,8 @@ void GameGUI::checkWonConditions(void)
 
 void GameGUI::showEndOfReplayScreen()
 {
+	gamePaused = true;
+
 	globalContainer->replaying = false;
 	hasEndOfGameDialogBeenShown = true;
 
