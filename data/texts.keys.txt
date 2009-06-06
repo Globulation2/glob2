@@ -355,6 +355,7 @@
 [repair]
 [repeat area]
 [Repeat your password :]
+[replay ended]
 [restore default shortcuts]
 [return to editor]
 [return to game]
