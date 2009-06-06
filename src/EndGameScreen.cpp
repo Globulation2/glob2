@@ -383,9 +383,17 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	addWidget(new TextButton(90, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[hp]"), 3, '4'));
 	addWidget(new TextButton(190, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Attack]"), 4, '5'));
 	addWidget(new TextButton(290, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Defense]"), 5, '6'));
-	addWidget(new TextButton(15, 65, 260, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's')); // FIXME: magic numbers!
-	addWidget(new TextButton(15, 15, 260, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
-	
+
+	if (gui->game.isRecordingReplay)
+	{
+		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's')); // FIXME: magic numbers!
+		addWidget(new TextButton(15, 15, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
+	}
+	else
+	{
+		addWidget(new TextButton(15, 40, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
+	}
+
 	// add players name
 	Text *text;
 	int inc = (gui->game.mapHeader.getNumberOfTeams() <= 16) ? 20 : 10;
