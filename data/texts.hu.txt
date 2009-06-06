@@ -2182,8 +2182,6 @@ Játék elmentése
 
 [save map]
 
-[save replay]
-
 [save script]
 
 [save script]

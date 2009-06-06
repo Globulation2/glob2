@@ -808,8 +808,6 @@ Air dmg.
 儲存遊戲
 [save map]
 儲存地圖
-[save replay]
-
 [save script]
 
 [Save]

@@ -738,8 +738,6 @@ right
 Сохранить игру
 [save map]
 Сохранить карту
-[save replay]
-
 [save script]
 Сохр. cкрипт
 [Save]

@@ -738,8 +738,6 @@ Você quer gravar antes de sair?
 Gravar Jogo
 [save map]
 Gravar mapa
-[save replay]
-
 [save script]
 Gravar script
 [Save]

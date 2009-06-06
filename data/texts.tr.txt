@@ -746,8 +746,6 @@ Cikmadan once kaydetmek istiyor musunuz?
 Oyun kaydet
 [save map]
 
-[save replay]
-
 [save script]
 
 [Save]

@@ -746,8 +746,6 @@ Do you want to save before quitting?
 حفظ اللعبه
 [save map]
 حفظ الخريطه
-[save replay]
-
 [save script]
 
 [Save]
