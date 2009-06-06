@@ -808,8 +808,6 @@ Wil je spel opslaan voordat je aflsuiten?
 Opslaan
 [save map]
 Speelveld opslaan
-[save replay]
-Opname opslaan
 [save script]
 
 [Save]

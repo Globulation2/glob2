@@ -738,8 +738,6 @@ Sablo
 Konservi ludon
 [save map]
 Konservi Karton
-[save replay]
-
 [save script]
 Konservi Skripton
 [Save]

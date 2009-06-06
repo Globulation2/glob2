@@ -738,8 +738,6 @@ windows راست
 ذخیره‌ی بازی
 [save map]
 ذخیره‌ی نقشه
-[save replay]
-
 [save script]
 ذخیره‌ی برنامه
 [Save]

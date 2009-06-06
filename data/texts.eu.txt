@@ -748,8 +748,6 @@ Partida gorde irten aurretik?
 Gorde partida
 [save map]
 Gorde mapa
-[save replay]
-
 [save script]
 
 [Save]

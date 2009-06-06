@@ -57,11 +57,10 @@ public:
 	enum
 	{
 		QUIT = 0,
-		CONTINUE = 1,
-		SAVE_REPLAY = 2
+		CONTINUE = 1
 	};
 public:
-	InGameEndOfGameScreen(const char *title, bool canContinue, bool canSaveReplay);
+	InGameEndOfGameScreen(const char *title, bool canContinue);
 	virtual ~InGameEndOfGameScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
