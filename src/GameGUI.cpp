@@ -2453,47 +2453,53 @@ void GameGUI::drawParticles(void)
 	}
 }
 
-void GameGUI::drawPanelButtons(int pos)
+void GameGUI::drawPanelButtons(int y)
 {
-	int dec = (RIGHT_MENU_WIDTH-128)/2;
-	// draw buttons
+	int numButtons = 4;
+
 	if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
 	{
 		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==CONSTRUCTION_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, pos, globalContainer->gamegui, 1);
+			drawPanelButton(y, 0, numButtons, 1);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, pos, globalContainer->gamegui, 0);
+			drawPanelButton(y, 0, numButtons, 0);
 	}
 
 	if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
 	{
 		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+32, pos, globalContainer->gamegui, 29);
+			drawPanelButton(y, 1, numButtons, 29);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+32, pos, globalContainer->gamegui, 28);
+			drawPanelButton(y, 1, numButtons, 28);
 	}
 
 	if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
 	{
 		if ((selectionMode==NO_SELECTION) && (displayMode==STAT_TEXT_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+64, pos, globalContainer->gamegui, 3);
+			drawPanelButton(y, 2, numButtons, 3);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+64, pos, globalContainer->gamegui, 2);
+			drawPanelButton(y, 2, numButtons, 2);
 	}
 
 	if (!(hiddenGUIElements & HIDABLE_GFX_STAT))
 	{
 		if ((selectionMode==NO_SELECTION) && (displayMode==STAT_GRAPH_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+96, pos, globalContainer->gamegui, 5);
+			drawPanelButton(y, 3, numButtons, 5);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+96, pos, globalContainer->gamegui, 4);
+			drawPanelButton(y, 3, numButtons, 4);
 	}
 
 	if(hilights.find(HilightUnderMinimapIcon) != hilights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, pos, 38));
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, y, 38));
 	}
-	// draw decoration
+}
+
+void GameGUI::drawPanelButton(int y, int pos, int numButtons, int sprite)
+{
+	int dec = (RIGHT_MENU_WIDTH - numButtons*32)/2;
+
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + dec + pos*32, y, globalContainer->gamegui, sprite);
 }
 
 void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine)

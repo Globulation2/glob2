@@ -254,7 +254,9 @@ private:
 	//! Draw the panel
 	void drawPanel(void);
 	//! Draw the buttons associated to the panel
-	void drawPanelButtons(int pos);
+	void drawPanelButtons(int y);
+	//! Draw a single button of the panel
+	void drawPanelButton(int y, int pos, int numButtons, int sprite);
 	//! Draw a choice of buildings or flags
 	void drawChoice(int pos, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine = 2);
 	//! Draw the infos from a unit
