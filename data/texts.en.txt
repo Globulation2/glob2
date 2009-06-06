@@ -714,6 +714,8 @@ Repair
 times the same landscape
 [Repeat your password :]
 Repeat your password:
+[replay ended]
+Replay Ended
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [return to editor]
