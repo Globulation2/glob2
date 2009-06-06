@@ -4078,7 +4078,7 @@ void GameGUI::drawAll(int team)
 
 void GameGUI::checkWonConditions(void)
 {
-	if (hasEndOfGameDialogBeenShown)
+	if (hasEndOfGameDialogBeenShown || globalContainer->replaying)
 		return;
 	
 	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
@@ -4115,6 +4115,16 @@ void GameGUI::checkWonConditions(void)
 			miniMapPushed=false;
 		}
 	}
+}
+
+void GameGUI::showEndOfReplayScreen()
+{
+	globalContainer->replaying = false;
+	hasEndOfGameDialogBeenShown = true;
+
+	inGameMenu=IGM_END_OF_GAME;
+	gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true);
+	miniMapPushed=false;
 }
 
 void GameGUI::executeOrder(boost::shared_ptr<Order> order)
