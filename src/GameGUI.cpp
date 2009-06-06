@@ -3551,68 +3551,7 @@ void GameGUI::drawPanel(void)
 			drawChoice(YPOS_BASE_CONSTRUCTION, buildingsChoiceName, buildingsChoiceState);
 			break;
 		case FLAG_VIEW:
-			{
-				int dec = (RIGHT_MENU_WIDTH - 128)/2;
-				// draw flags
-				drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
-				
-				// draw choice of area
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
-				globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 25);
-				if (brush.getType() != BrushTool::MODE_NONE)
-				{
-					int decX = 8 + ((int)toolManager.getZoneType()) * 40 + dec;
-					globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
-				}
-				if(hilights.find(HilightForbiddenZoneOnPanel) != hilights.end())
-				{
-					arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
-				}
-				if(hilights.find(HilightGuardZoneOnPanel) != hilights.end())
-				{
-					arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
-				}
-				if(hilights.find(HilightClearingZoneOnPanel) != hilights.end())
-				{
-					arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
-				}
-				
-				// draw brush
-				brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40);
-				
-				if(hilights.find(HilightBrushSelector) != hilights.end())
-				{
-					arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40+30, 38));
-				}
-				
-				// draw brush help text
-				if ((mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
-				{
-					int buildingInfoStart = globalContainer->gfx->getH()-50;
-					if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+40)
-					{
-						int panelMouseX = mouseX - globalContainer->gfx->getW() + RIGHT_MENU_WIDTH;
-						if (panelMouseX < 44)
-							drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
-						else if (panelMouseX < 84)
-							drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
-						else
-							drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
-					}
-					else
-					{
-						if (toolManager.getZoneType() == GameGUIToolManager::Forbidden)
-							drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
-						else if (toolManager.getZoneType() == GameGUIToolManager::Guard)
-							drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
-						else if (toolManager.getZoneType() == GameGUIToolManager::Clearing)
-							drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
-						else
-							assert(false);
-					}
-				}
-			}
+			drawFlagView();
 			break;
 		case STAT_TEXT_VIEW:
 			teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
@@ -3631,6 +3570,69 @@ void GameGUI::drawPanel(void)
 	}
 }
 
+void GameGUI::drawFlagView(void)                                                                                                                                                        
+{
+	int dec = (RIGHT_MENU_WIDTH - 128)/2;
+	// draw flags
+	drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
+	
+	// draw choice of area
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 25);
+	if (brush.getType() != BrushTool::MODE_NONE)
+	{
+		int decX = 8 + ((int)toolManager.getZoneType()) * 40 + dec;
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
+	}
+	if(hilights.find(HilightForbiddenZoneOnPanel) != hilights.end())
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+	}
+	if(hilights.find(HilightGuardZoneOnPanel) != hilights.end())
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+	}
+	if(hilights.find(HilightClearingZoneOnPanel) != hilights.end())
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+	}
+	
+	// draw brush
+	brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40);
+	
+	if(hilights.find(HilightBrushSelector) != hilights.end())
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40+30, 38));
+	}
+	
+	// draw brush help text
+	if ((mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
+	{
+		int buildingInfoStart = globalContainer->gfx->getH()-50;
+		if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+40)
+		{
+			int panelMouseX = mouseX - globalContainer->gfx->getW() + RIGHT_MENU_WIDTH;
+			if (panelMouseX < 44)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
+			else if (panelMouseX < 84)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
+			else
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
+		}
+		else
+		{
+			if (toolManager.getZoneType() == GameGUIToolManager::Forbidden)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
+			else if (toolManager.getZoneType() == GameGUIToolManager::Guard)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
+			else if (toolManager.getZoneType() == GameGUIToolManager::Clearing)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
+			else
+				assert(false);
+		}
+	}
+}
 
 void GameGUI::drawTopScreenBar(void)
 {
