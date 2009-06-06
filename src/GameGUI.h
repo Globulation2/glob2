@@ -130,6 +130,8 @@ public:
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
+	/// Show the dialog that says that the replay ended
+	void showEndOfReplayScreen();
 	
 	///This is an enum for the current hilight object. The hilighted object is shown with a large arrow.
 	///This is primarily for tutorials

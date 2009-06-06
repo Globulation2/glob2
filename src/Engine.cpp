@@ -39,8 +39,8 @@
 #include "YOGClientLobbyScreen.h"
 #include "SoundMixer.h"
 #include "Player.h"
-//#include "AIEcho.h"
 #include "NetMessage.h"
+#include "GameGUIDialog.h"
 
 #include <iostream>
 
@@ -427,8 +427,9 @@ int Engine::run(void)
 					else
 					{
 						// TODO: put up a nice graphical message for this
-						std::cout << "Replay ended.\n";
+						//std::cout << "Replay ended.\n";
 						globalContainer->replaying = false;
+						gui.showEndOfReplayScreen();
 					}
 				}
 
