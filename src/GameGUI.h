@@ -267,6 +267,8 @@ private:
 	void drawBuildingInfos(void);
 	//! Draw the infos about a ressource on map (type and number left)
 	void drawRessourceInfos(void);
+	//! Draw the replay panel
+	void drawReplayPanel(void);
 
 	//! Draw the menu during game
 	void drawInGameMenu(void);
@@ -295,6 +297,15 @@ private:
 		STAT_GRAPH_VIEW,
 		NB_VIEWS,
 	} displayMode;
+
+	//! Display modes in replays
+	enum ReplayDisplayMode
+	{
+		RDM_REPLAY_VIEW,
+		RDM_STAT_TEXT_VIEW,
+		RDM_STAT_GRAPH_VIEW,
+		RDM_NB_VIEWS,
+	} replayDisplayMode;
 
 	//! Selection mode
 	enum SelectionMode
