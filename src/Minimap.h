@@ -65,6 +65,10 @@ public:
 	
 	///This resest the minimap drawing
 	void resetMinimapDrawing();
+
+	///Enable or disable fog of war
+	void setMinimapMode(MinimapMode mode);
+
 private:
 	///Computes the minimap positioning
 	void computeMinimapPositioning();

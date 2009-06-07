@@ -130,6 +130,7 @@ public:
 
 	bool replaying;
 	std::string replayFileName;
+	bool replayShowFog;
 	Uint32 replayVisibleTeams; //! A mask of which teams can be seen in the replay. Can be edited real-time.
 	bool replayShowActions; //! Show actions of gui.localPlayer or not. Can be edited real-time.
 	
