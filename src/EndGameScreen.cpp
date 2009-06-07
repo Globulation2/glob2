@@ -332,6 +332,9 @@ struct MoreScore : public std::binary_function<const TeamEntry&, const TeamEntry
 
 EndGameScreen::EndGameScreen(GameGUI *gui)
 {
+	// We're no longer replaying a game
+	globalContainer->replaying = false;
+
 	// title & graph
 	std::string titleText;
 	
