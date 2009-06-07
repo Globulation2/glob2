@@ -173,6 +173,7 @@ void GameGUI::init()
 	mouseX=0;
 	mouseY=0;
 	displayMode=CONSTRUCTION_VIEW;
+	replayDisplayMode=RDM_REPLAY_VIEW;
 	selectionMode=NO_SELECTION;
 	selectionPushed=false;
 	selection.building = NULL;
@@ -1107,6 +1108,12 @@ void GameGUI::handleRightClick(void)
 
 void GameGUI::nextDisplayMode(void)
 {
+	if (globalContainer->replaying)
+	{
+		replayDisplayMode=ReplayDisplayMode((replayDisplayMode + 1) % RDM_NB_VIEWS);
+		return;
+	}
+
 	int t=0;
 	do
 	{
@@ -1971,11 +1978,22 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	// Check if one of the panel buttons has been clicked
 	else if (my<YPOS_BASE_DEFAULT)
 	{
-		int dec = (RIGHT_MENU_WIDTH-128)/2;
-		int dm=(mx-dec)/32;
-		if (!((1<<dm) & hiddenGUIElements))
+		if (!globalContainer->replaying)
 		{
-			displayMode=DisplayMode(dm);
+			int dec = (RIGHT_MENU_WIDTH-128)/2;
+			int dm=(mx-dec)/32;
+			if (!((1<<dm) & hiddenGUIElements))
+			{
+				displayMode=DisplayMode(dm);
+				clearSelection();
+			}
+		}
+		else
+		{
+			int dec = (RIGHT_MENU_WIDTH-96)/2;
+			int dm=(mx-dec)/32;
+			
+			replayDisplayMode=ReplayDisplayMode(dm);
 			clearSelection();
 		}
 	}
@@ -2304,7 +2322,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		printf(" destinationPurprose=%d\n", selUnit->destinationPurprose);
 		printf(" caryedRessource=%d\n", selUnit->caryedRessource);
 	}
-	else if (displayMode==CONSTRUCTION_VIEW)
+	else if ((displayMode==CONSTRUCTION_VIEW && !globalContainer->replaying))
 	{
 		int xNum=mx/(RIGHT_MENU_WIDTH/2);
 		int yNum=(my-YPOS_BASE_CONSTRUCTION)/46;
@@ -2313,7 +2331,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (buildingsChoiceState[id])
 				setSelection(TOOL_SELECTION, (void *)buildingsChoiceName[id].c_str());
 	}
-	else if (displayMode==FLAG_VIEW)
+	else if ((displayMode==FLAG_VIEW && !globalContainer->replaying))
 	{
 		int dec = (RIGHT_MENU_WIDTH - 128)/2;
 		my -= YPOS_BASE_FLAG;
@@ -2346,7 +2364,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					setSelection(TOOL_SELECTION, (void*)flagsChoiceName[id].c_str());
 		}
 	}
-	else if (displayMode==STAT_GRAPH_VIEW)
+	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->replaying) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->replaying))
 	{
 		if(mx > 8 && mx < 24)
 		{
@@ -2455,38 +2473,60 @@ void GameGUI::drawParticles(void)
 
 void GameGUI::drawPanelButtons(int y)
 {
-	int numButtons = 4;
-
-	if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
+	if (!globalContainer->replaying)
 	{
-		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==CONSTRUCTION_VIEW))
+		int numButtons = 4;
+
+		if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
+		{
+			if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==CONSTRUCTION_VIEW))
+				drawPanelButton(y, 0, numButtons, 1);
+			else
+				drawPanelButton(y, 0, numButtons, 0);
+		}
+
+		if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
+		{
+			if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
+				drawPanelButton(y, 1, numButtons, 29);
+			else
+				drawPanelButton(y, 1, numButtons, 28);
+		}
+
+		if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
+		{
+			if ((selectionMode==NO_SELECTION) && (displayMode==STAT_TEXT_VIEW))
+				drawPanelButton(y, 2, numButtons, 3);
+			else
+				drawPanelButton(y, 2, numButtons, 2);
+		}
+
+		if (!(hiddenGUIElements & HIDABLE_GFX_STAT))
+		{
+			if ((selectionMode==NO_SELECTION) && (displayMode==STAT_GRAPH_VIEW))
+				drawPanelButton(y, 3, numButtons, 5);
+			else
+				drawPanelButton(y, 3, numButtons, 4);
+		}
+	}
+	else
+	{
+		int numButtons = 3;
+
+		if (replayDisplayMode==RDM_REPLAY_VIEW)
 			drawPanelButton(y, 0, numButtons, 1);
 		else
 			drawPanelButton(y, 0, numButtons, 0);
-	}
 
-	if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
-	{
-		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
-			drawPanelButton(y, 1, numButtons, 29);
+		if (replayDisplayMode==RDM_STAT_TEXT_VIEW)
+			drawPanelButton(y, 1, numButtons, 3);
 		else
-			drawPanelButton(y, 1, numButtons, 28);
-	}
+			drawPanelButton(y, 1, numButtons, 2);
 
-	if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
-	{
-		if ((selectionMode==NO_SELECTION) && (displayMode==STAT_TEXT_VIEW))
-			drawPanelButton(y, 2, numButtons, 3);
+		if (replayDisplayMode==RDM_STAT_GRAPH_VIEW)
+			drawPanelButton(y, 2, numButtons, 5);
 		else
-			drawPanelButton(y, 2, numButtons, 2);
-	}
-
-	if (!(hiddenGUIElements & HIDABLE_GFX_STAT))
-	{
-		if ((selectionMode==NO_SELECTION) && (displayMode==STAT_GRAPH_VIEW))
-			drawPanelButton(y, 3, numButtons, 5);
-		else
-			drawPanelButton(y, 3, numButtons, 4);
+			drawPanelButton(y, 2, numButtons, 4);
 	}
 
 	if(hilights.find(HilightUnderMinimapIcon) != hilights.end())
@@ -3517,6 +3557,12 @@ void GameGUI::drawRessourceInfos(void)
 	}
 }
 
+void GameGUI::drawReplayPanel(void)
+{
+	Font *font=globalContainer->littleFont;
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-128, 200, font, "Under Construction");
+}
+
 void GameGUI::drawPanel(void)
 {
 	// ensure we have a valid selection and associate pointers
@@ -3551,27 +3597,52 @@ void GameGUI::drawPanel(void)
 		drawRessourceInfos();
 		break;
 	default:
-		switch(displayMode)
+		if (!globalContainer->replaying)
 		{
-		case CONSTRUCTION_VIEW:
-			drawChoice(YPOS_BASE_CONSTRUCTION, buildingsChoiceName, buildingsChoiceState);
-			break;
-		case FLAG_VIEW:
-			drawFlagView();
-			break;
-		case STAT_TEXT_VIEW:
-			teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
-			break;
-		case STAT_GRAPH_VIEW:
-			teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
-			drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
-			drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
-			drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
-			drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
-			break;
-		default:
-			std::cout << "Was not expecting displayMode" << displayMode;
-			assert(false);
+			switch(displayMode)
+			{
+			case CONSTRUCTION_VIEW:
+				drawChoice(YPOS_BASE_CONSTRUCTION, buildingsChoiceName, buildingsChoiceState);
+				break;
+			case FLAG_VIEW:
+				drawFlagView();
+				break;
+			case STAT_TEXT_VIEW:
+				teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
+				break;
+			case STAT_GRAPH_VIEW:
+				teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
+				break;
+			default:
+				std::cout << "Was not expecting displayMode" << displayMode;
+				assert(false);
+			}
+		}
+		else
+		{
+			switch(replayDisplayMode)
+			{
+			case RDM_REPLAY_VIEW:
+				drawReplayPanel();
+				break;
+			case RDM_STAT_TEXT_VIEW:
+				teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
+				break;
+			case RDM_STAT_GRAPH_VIEW:
+				teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
+				break;
+			default:
+				std::cout << "Was not expecting replayDisplayMode" << replayDisplayMode;
+				assert(false);
+			}
 		}
 	}
 }
@@ -4712,6 +4783,8 @@ void GameGUI::enableGUIElement(int id)
 
 void GameGUI::disableGUIElement(int id)
 {
+	if (globalContainer->replaying) return;
+
 	hiddenGUIElements |= (1<<id);
 	if (displayMode==id)
 		nextDisplayMode();
