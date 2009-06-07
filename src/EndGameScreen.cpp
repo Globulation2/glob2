@@ -483,7 +483,7 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 		/// The "Save Replay" button was pressed
 		else if (par1 == 39)
 		{
-			loadSave("replays","replay");
+			saveReplay("replays","replay");
 		}
 		else assert(false);
 	}
@@ -541,7 +541,7 @@ std::string replayFilenameToName(const std::string& fullfilename)
 	return filename;
 }
 
-void EndGameScreen::loadSave(const char *dir, const char *ext)
+void EndGameScreen::saveReplay(const char *dir, const char *ext)
 {
 	// create dialog box
 	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, false, std::string(Toolkit::getStringTable()->getString("[save replay]")), "", replayFilenameToName, glob2NameToFilename);
@@ -572,7 +572,7 @@ void EndGameScreen::loadSave(const char *dir, const char *ext)
 
 	if (loadSaveScreen->endValue==0)
 	{
-		if (loadSaveScreen->getFileName() == "replays/last_game.replay") return;
+		if (std::string(loadSaveScreen->getFileName()) == "replays/last_game.replay") return;
 
 		StreamBackend* in = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.replay");
 		StreamBackend* out = Toolkit::getFileManager()->openOutputStreamBackend(loadSaveScreen->getFileName());

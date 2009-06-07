@@ -98,7 +98,7 @@ public:
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 
 private:
-	void loadSave(const char *dir, const char *ext);
+	void saveReplay(const char *dir, const char *ext);
 };
 
 #endif
