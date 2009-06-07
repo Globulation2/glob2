@@ -202,6 +202,8 @@ Clears resources
 Clearing Flag
 [closed]
 Closed
+[combined vision]
+Combined vision
 [compile]
 Compile script
 [compose]
@@ -356,6 +358,8 @@ Fertility Map
 Flag Defaults
 [flag settings explanation]
 The default radius of the flag
+[fog of war]
+Fog of war
 [food]
 Food
 [forbidden area]
@@ -648,6 +652,8 @@ Pause Game
 pause
 [Paused]
 Paused
+[players]
+Players
 [player name]
 Player name
 [player rating %0]
@@ -834,6 +840,8 @@ shift-%0
 Enter: send a chat message
 [shortcut explanation v]
 V: hold to speak
+[show actions]
+Show actions
 [show main menu]
 Show Main Menu
 [skin]
@@ -1084,6 +1092,8 @@ Version
 View History
 [Voice volume]
 Volume (voice)
+[watching:]
+Watching:
 [waiting for %0]
 Waiting for %0
 [waiting for key]

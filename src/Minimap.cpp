@@ -214,7 +214,14 @@ void Minimap::resetMinimapDrawing()
 {
 	update_row = -1;
 }
-	
+
+
+
+void Minimap::setMinimapMode(MinimapMode mode)
+{
+	minimapMode = mode;
+}
+
 
 
 void Minimap::computeMinimapPositioning()
@@ -300,7 +307,7 @@ void Minimap::computeColors(int row, int localTeam)
 	const int dMx = ((game->map.getW())<<16) / (mini_w);
 	const int dMy = ((game->map.getH())<<16) / (mini_h);
 	const int decSPX=offset_x<<16, decSPY=offset_y<<16;
-	bool useMapDiscovered = minimapMode == ShowFOW;
+	bool useMapDiscovered = (minimapMode == HideFOW);
 
 	Uint32 visibleTeams = game->teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
