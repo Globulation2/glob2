@@ -145,7 +145,7 @@ GameGUI::GameGUI()
 	         10, // y offset
 	         128, // width
 	         128, //height
-	         Minimap::HideFOW), // minimap mode
+	         Minimap::ShowFOW), // minimap mode
 	  
 	  ghostManager(game)
 {
@@ -2368,7 +2368,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		if(mx > 8 && mx < 24)
 		{
-			if(my > YPOS_BASE_STAT+140+64 && my < YPOS_BASE_STAT+140+80)
+			// In replays, this menu bar is 15 pixels lower than usual to show "Watching: player-name"
+			int inc;
+
+			if (globalContainer->replaying) inc = 15;
+			else inc = 0;
+
+			if(my > YPOS_BASE_STAT+140+inc+64 && my < YPOS_BASE_STAT+140+inc+80)
 			{
 				showDamagedMap=false;
 				showDefenseMap=false;
@@ -2377,7 +2383,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				overlay.compute(game, OverlayArea::Starving, localTeamNo);
 			}
 
-			if(my > YPOS_BASE_STAT+140+88 && my < YPOS_BASE_STAT+140+104)
+			if(my > YPOS_BASE_STAT+140+inc+88 && my < YPOS_BASE_STAT+140+inc+104)
 			{
 				showDamagedMap=!showDamagedMap;
 				showStarvingMap=false;
@@ -2386,7 +2392,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				overlay.compute(game, OverlayArea::Damage, localTeamNo);
 			}
 
-			if(my > YPOS_BASE_STAT+140+112 && my < YPOS_BASE_STAT+140+128)
+			if(my > YPOS_BASE_STAT+140+inc+112 && my < YPOS_BASE_STAT+140+inc+128)
 			{
 				showDefenseMap=!showDefenseMap;
 				showStarvingMap=false;
@@ -2395,13 +2401,71 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				overlay.compute(game, OverlayArea::Defence, localTeamNo);
 			}
 
-			if(my > YPOS_BASE_STAT+140+136 && my < YPOS_BASE_STAT+140+152)
+			if(my > YPOS_BASE_STAT+140+inc+136 && my < YPOS_BASE_STAT+140+inc+152)
 			{
 				showFertilityMap=!showFertilityMap;
 				showDefenseMap=false;
 				showStarvingMap=false;
 				showDamagedMap=false;
 				overlay.compute(game, OverlayArea::Fertility, localTeamNo);
+			}
+		}
+	}
+	else if (replayDisplayMode==RDM_REPLAY_VIEW && globalContainer->replaying)
+	{
+		int x = 25;
+		int y = YPOS_BASE_STAT+10;
+		int inc = 22;
+		int playerListYOffset = 4*inc+5;
+
+		if (mx > x && mx < x+20 && my > y+1*inc && my < y+1*inc + 20)
+		{
+			// Disable/show fog of war
+			globalContainer->replayShowFog = !globalContainer->replayShowFog;
+
+			if (globalContainer->replayShowFog) minimap.setMinimapMode( Minimap::ShowFOW );
+			else minimap.setMinimapMode( Minimap::HideFOW );
+		}
+		if (mx > x && mx < x+20 && my > y+2*inc && my < y+2*inc + 20)
+		{
+			// Disable/enable combined vision
+			if (globalContainer->replayVisibleTeams == 0xFFFFFFFF)
+			{
+				globalContainer->replayVisibleTeams = localTeam->me;
+			}
+			else
+			{
+				globalContainer->replayVisibleTeams = 0xFFFFFFFF;
+			}
+		}
+		if (mx > x && mx < x+20 && my > y+3*inc && my < y+3*inc + 20)
+		{
+			// Show/hide player's actions
+			globalContainer->replayShowActions = !globalContainer->replayShowActions;
+		}
+
+		for (int i = 0; i < game.teamsCount(); i++)
+		{
+			if (mx > x && mx < x+20 && my > y+playerListYOffset+(i+1)*inc && my < y+playerListYOffset+(i+1)*inc + 20)
+			{
+				localTeamNo = i;
+				localTeam = game.teams[i];
+
+				// Update localPlayer to the first player of this team
+				for (int j=0; j<game.gameHeader.getNumberOfPlayers(); j++)
+				{
+					if (game.players[j]->teamNumber == localTeamNo)
+					{
+						localPlayer = j;
+						break;
+					}
+				}
+
+				// Update the visible players unless all players are visible
+				if (globalContainer->replayVisibleTeams != 0xFFFFFFFF)
+				{
+					globalContainer->replayVisibleTeams = localTeam->me;
+				}
 			}
 		}
 	}
@@ -3560,7 +3624,24 @@ void GameGUI::drawRessourceInfos(void)
 void GameGUI::drawReplayPanel(void)
 {
 	Font *font=globalContainer->littleFont;
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-128, 200, font, "Under Construction");
+
+	int x = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+25;
+	int y = YPOS_BASE_STAT+10;
+	int inc = 22;
+	int playerListYOffset = 4*inc+5;
+
+	globalContainer->gfx->drawString(x, y, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[Options]")));
+
+	drawCheckButton(x, y + 1*inc, Toolkit::getStringTable()->getString("[fog of war]"), globalContainer->replayShowFog);
+	drawCheckButton(x, y + 2*inc, Toolkit::getStringTable()->getString("[combined vision]"), (globalContainer->replayVisibleTeams == 0xFFFFFFFF));
+	drawCheckButton(x, y + 3*inc, Toolkit::getStringTable()->getString("[show actions]"), (globalContainer->replayShowActions));
+
+	globalContainer->gfx->drawString(x, y + playerListYOffset, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
+
+	for (int i = 0; i < game.teamsCount(); i++)
+	{
+		drawCheckButton(x, y + playerListYOffset + (i+1)*inc, game.teams[i]->getFirstPlayerName().c_str(), localTeamNo == i);
+	}
 }
 
 void GameGUI::drawPanel(void)
@@ -3630,14 +3711,16 @@ void GameGUI::drawPanel(void)
 				drawReplayPanel();
 				break;
 			case RDM_STAT_TEXT_VIEW:
-				teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(localTeam->getFirstPlayerName()).c_str());
+				teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
 				break;
 			case RDM_STAT_GRAPH_VIEW:
-				teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
-				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
-				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
-				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
-				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(localTeam->getFirstPlayerName()).c_str());
+				teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
 				break;
 			default:
 				std::cout << "Was not expecting replayDisplayMode" << replayDisplayMode;
@@ -4087,6 +4170,7 @@ void GameGUI::drawAll(int team)
 								((showDamagedMap) ? Game::DRAW_OVERLAY : 0) |
 								((showDefenseMap) ? Game::DRAW_OVERLAY : 0) |
 								((showFertilityMap) ? Game::DRAW_OVERLAY : 0) |
+								((globalContainer->replaying && !globalContainer->replayShowFog) ? Game::DRAW_WHOLE_MAP : 0) |
 								Game::DRAW_AREA;
 	
 	updateHilightInGame();
