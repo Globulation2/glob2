@@ -95,8 +95,10 @@
 // version 78 added defaultFlagRadius to the Order class
 // version 79 added priority to the Building class
 //TODO: verion conflicts in beta4 and default??
+//default:
 // version 80 added unitsHarvesting list to the Building class
 // version 81 added canNotConvertUnitTimer to the Building class
+//beta4:
 // version 80 integrated new map script system
 // version 81 added a description to campaigns
 

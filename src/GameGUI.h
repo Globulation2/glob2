@@ -259,6 +259,8 @@ private:
 	void drawPanelButton(int y, int pos, int numButtons, int sprite);
 	//! Draw a choice of buildings or flags
 	void drawChoice(int pos, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine = 2);
+	//! Draw a choice of flags
+	void drawFlagView(void);
 	//! Draw the infos from a unit
 	void drawUnitInfos(void);
 	//! Draw the infos and actions from a building
