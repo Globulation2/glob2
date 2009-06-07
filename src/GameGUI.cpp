@@ -93,6 +93,11 @@
 #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
 #define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 
+#define REPLAY_PANEL_XOFFSET 25
+#define REPLAY_PANEL_YOFFSET (YPOS_BASE_STAT+10)
+#define REPLAY_PANEL_SPACE_BETWEEN_OPTIONS 22
+#define REPLAY_PANEL_PLAYERLIST_YOFFSET (4*REPLAY_PANEL_SPACE_BETWEEN_OPTIONS+5)
+
 using namespace boost;
 
 enum GameGUIGfxId
@@ -2413,10 +2418,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if (replayDisplayMode==RDM_REPLAY_VIEW && globalContainer->replaying)
 	{
-		int x = 25;
-		int y = YPOS_BASE_STAT+10;
-		int inc = 22;
-		int playerListYOffset = 4*inc+5;
+		int x = REPLAY_PANEL_XOFFSET;
+		int y = REPLAY_PANEL_YOFFSET;
+		int inc = REPLAY_PANEL_SPACE_BETWEEN_OPTIONS;
 
 		if (mx > x && mx < x+20 && my > y+1*inc && my < y+1*inc + 20)
 		{
@@ -2446,7 +2450,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 
 		for (int i = 0; i < game.teamsCount(); i++)
 		{
-			if (mx > x && mx < x+20 && my > y+playerListYOffset+(i+1)*inc && my < y+playerListYOffset+(i+1)*inc + 20)
+			if (mx > x && mx < x+20 && my > y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc && my < y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc + 20)
 			{
 				localTeamNo = i;
 				localTeam = game.teams[i];
@@ -3625,10 +3629,9 @@ void GameGUI::drawReplayPanel(void)
 {
 	Font *font=globalContainer->littleFont;
 
-	int x = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+25;
-	int y = YPOS_BASE_STAT+10;
-	int inc = 22;
-	int playerListYOffset = 4*inc+5;
+	int x = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + REPLAY_PANEL_XOFFSET;
+	int y = REPLAY_PANEL_YOFFSET;
+	int inc = REPLAY_PANEL_SPACE_BETWEEN_OPTIONS;
 
 	globalContainer->gfx->drawString(x, y, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[Options]")));
 
@@ -3636,11 +3639,11 @@ void GameGUI::drawReplayPanel(void)
 	drawCheckButton(x, y + 2*inc, Toolkit::getStringTable()->getString("[combined vision]"), (globalContainer->replayVisibleTeams == 0xFFFFFFFF));
 	drawCheckButton(x, y + 3*inc, Toolkit::getStringTable()->getString("[show actions]"), (globalContainer->replayShowActions));
 
-	globalContainer->gfx->drawString(x, y + playerListYOffset, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
+	globalContainer->gfx->drawString(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
 
 	for (int i = 0; i < game.teamsCount(); i++)
 	{
-		drawCheckButton(x, y + playerListYOffset + (i+1)*inc, game.teams[i]->getFirstPlayerName().c_str(), localTeamNo == i);
+		drawCheckButton(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, game.teams[i]->getFirstPlayerName().c_str(), localTeamNo == i);
 	}
 }
 
