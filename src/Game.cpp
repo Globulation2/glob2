@@ -484,7 +484,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 					}
 				}
 
-				if (order->sender!=localPlayer)
+				if (order->sender!=localPlayer || globalContainer->replaying)
 				{
 					b->posXLocal=b->posX;
 					b->posYLocal=b->posY;

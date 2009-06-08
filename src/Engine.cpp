@@ -426,8 +426,6 @@ int Engine::run(void)
 					}
 					else
 					{
-						// TODO: put up a nice graphical message for this
-						//std::cout << "Replay ended.\n";
 						globalContainer->replaying = false;
 						gui.showEndOfReplayScreen();
 					}
