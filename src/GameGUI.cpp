@@ -279,6 +279,8 @@ void GameGUI::adjustInitialViewport()
 
 void GameGUI::moveFlag(int mx, int my, bool drop)
 {
+	if (globalContainer->replaying) return;
+
 	int posX, posY;
 	Building* selBuild=selection.building;
 	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
