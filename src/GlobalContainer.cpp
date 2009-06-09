@@ -110,7 +110,8 @@ GlobalContainer::GlobalContainer(void)
 	replayFileName = "";
 	replayShowFog = true;
 	replayVisibleTeams = 0xFFFFFFFF;
-	replayShowActions = false;
+	replayShowAreas = false;
+	replayShowFlags = true;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }

@@ -796,6 +796,11 @@ int Engine::loadReplay(const std::string &fileName)
 	globalContainer->replaying = true;
 	globalContainer->replayFileName = fileName;
 
+	// Reset the replay's options
+	gui.localPlayer = 0;
+	gui.localTeamNo = 0;
+	globalContainer->replayVisibleTeams = 0xFFFFFFFF;
+
 	MapHeader mapHeader = loadMapHeader(fileName);
 	GameHeader gameHeader = loadGameHeader(fileName);
 
@@ -810,10 +815,6 @@ int Engine::loadReplay(const std::string &fileName)
 		return EE_CANT_LOAD_MAP;
 	else if(ret == -1)
 		return -1;
-
-	// Set player whose actions are shown
-	// gui.localPlayer = 1;
-	// gui.localTeamNo = 1;
 
 	return EE_NO_ERROR;
 }

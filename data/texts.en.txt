@@ -840,8 +840,10 @@ shift-%0
 Enter: send a chat message
 [shortcut explanation v]
 V: hold to speak
-[show actions]
-Show actions
+[show areas]
+Show areas
+[show flags]
+Show flags
 [show main menu]
 Show Main Menu
 [skin]
