@@ -128,11 +128,12 @@ public:
 	//! hostname for YOG, can be set by cmd line to override default
 	std::string yogHostName;
 
-	bool replaying;
-	std::string replayFileName;
-	bool replayShowFog;
+	bool replaying; //! Whether the current game is a replay or a usual game
+	std::string replayFileName; //! The name of the replay file.
+	bool replayShowFog; //! Draw the fog of war or draw the entire map. Can be edited real-time.
 	Uint32 replayVisibleTeams; //! A mask of which teams can be seen in the replay. Can be edited real-time.
-	bool replayShowActions; //! Show actions of gui.localPlayer or not. Can be edited real-time.
+	bool replayShowAreas; //! Show areas of gui.localPlayer or not. Can be edited real-time.
+	bool replayShowFlags; //! Show all flags or show none. Can be edited real-time.
 	
 public:
 	Uint32 getConfigCheckSum();

@@ -2330,7 +2330,7 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 	typedef bool (Map::*MapIsFP)(int, int);
 	MapIsFP mapIs;
 	
-	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->replaying || globalContainer->replayShowActions))
+	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->replaying || globalContainer->replayShowAreas))
 	{
 		mapIs=&Map::isForbiddenLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, ForbiddenArea);
 		mapIs=&Map::isGuardAreaLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, GuardArea);
@@ -2879,66 +2879,87 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
-	if (!globalContainer->replaying || globalContainer->replayShowActions)
+	if (!globalContainer->replaying || globalContainer->replayShowFlags)
 	{
-		for (std::list<Building *>::iterator virtualIt=teams[localTeam]->virtualBuildings.begin();
-			virtualIt!=teams[localTeam]->virtualBuildings.end(); ++virtualIt)
+		// In replays we want to show the flags of all players, so we build a list of whose buildings to show
+		std::list<Team *> teamsToShow;
+
+		if (!globalContainer->replaying)
 		{
-			Building *building=*virtualIt;
-			BuildingType *type=building->type;
-
-			int team = building->owner->teamNumber;
-
-			int imgid = type->gameSpriteImage;
-
-			int x, y;
-			map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
-
-			// all flags are hued:
-			Sprite *buildingSprite = type->gameSpritePtr;
-			buildingSprite->setBaseColor(teams[team]->color);
-			globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
-
-			// flag circle:
-			if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==selectedBuilding))
-				globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
-
-			// FIXME : ugly copy past
-			if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
+			// Only add the local team
+			teamsToShow.push_back(teams[localTeam]);
+		}
+		else
+		{
+			// Add all teams
+			for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			{
-				int decy=(type->height*32);
-				int healDecx=(type->width-2)*16+1;
-				//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
+				teamsToShow.push_back(teams[i]);
+			}
+		}
 
-				// TODO : find better color for this
-				// health
-				if (type->hpMax)
+		// now cycle through all added teams
+		for (std::list<Team *>::iterator teamsIt=teamsToShow.begin(); teamsIt!=teamsToShow.end(); ++teamsIt)
+		{
+			for (std::list<Building *>::iterator virtualIt=(*teamsIt)->virtualBuildings.begin();
+				virtualIt!=(*teamsIt)->virtualBuildings.end(); ++virtualIt)
+			{
+				Building *building=*virtualIt;
+				BuildingType *type=building->type;
+
+				int team = building->owner->teamNumber;
+
+				int imgid = type->gameSpriteImage;
+
+				int x, y;
+				map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
+
+				// all flags are hued:
+				Sprite *buildingSprite = type->gameSpritePtr;
+				buildingSprite->setBaseColor(teams[team]->color);
+				globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+
+				// flag circle:
+				if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==selectedBuilding))
+					globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
+
+				// FIXME : ugly copy past
+				if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
 				{
-					float hpRatio=(float)building->hp/(float)type->hpMax;
-					if (hpRatio>0.6)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
-					else if (hpRatio>0.3)
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
-					else
-						drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
-				}
+					int decy=(type->height*32);
+					int healDecx=(type->width-2)*16+1;
+					//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 
-				// units
+					// TODO : find better color for this
+					// health
+					if (type->hpMax)
+					{
+						float hpRatio=(float)building->hp/(float)type->hpMax;
+						if (hpRatio>0.6)
+							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
+						else if (hpRatio>0.3)
+							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
+						else
+							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
+					}
 
-				if (building->maxUnitInside>0)
-					drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
-				if (building->maxUnitWorking>0)
-					drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+					// units
 
-				// food
-				if ((type->canFeedUnit) || (type->unitProductionTime))
-				{
-					// compute bar size, prevent oversize
-					int bDiv=1;
-					assert(type->height!=0);
-					while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
-						bDiv++;
-					drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+					if (building->maxUnitInside>0)
+						drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+					if (building->maxUnitWorking>0)
+						drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+
+					// food
+					if ((type->canFeedUnit) || (type->unitProductionTime))
+					{
+						// compute bar size, prevent oversize
+						int bDiv=1;
+						assert(type->height!=0);
+						while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
+							bDiv++;
+						drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+					}
 				}
 			}
 		}

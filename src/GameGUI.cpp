@@ -96,7 +96,7 @@
 #define REPLAY_PANEL_XOFFSET 25
 #define REPLAY_PANEL_YOFFSET (YPOS_BASE_STAT+10)
 #define REPLAY_PANEL_SPACE_BETWEEN_OPTIONS 22
-#define REPLAY_PANEL_PLAYERLIST_YOFFSET (4*REPLAY_PANEL_SPACE_BETWEEN_OPTIONS+5)
+#define REPLAY_PANEL_PLAYERLIST_YOFFSET (5*REPLAY_PANEL_SPACE_BETWEEN_OPTIONS+5)
 
 using namespace boost;
 
@@ -2446,8 +2446,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		}
 		if (mx > x && mx < x+20 && my > y+3*inc && my < y+3*inc + 20)
 		{
-			// Show/hide player's actions
-			globalContainer->replayShowActions = !globalContainer->replayShowActions;
+			// Show/hide player's areas
+			globalContainer->replayShowAreas = !globalContainer->replayShowAreas;
+		}
+		if (mx > x && mx < x+20 && my > y+4*inc && my < y+4*inc + 20)
+		{
+			// Show/hide flags
+			globalContainer->replayShowFlags = !globalContainer->replayShowFlags;
 		}
 
 		for (int i = 0; i < game.teamsCount(); i++)
@@ -3639,13 +3644,17 @@ void GameGUI::drawReplayPanel(void)
 
 	drawCheckButton(x, y + 1*inc, Toolkit::getStringTable()->getString("[fog of war]"), globalContainer->replayShowFog);
 	drawCheckButton(x, y + 2*inc, Toolkit::getStringTable()->getString("[combined vision]"), (globalContainer->replayVisibleTeams == 0xFFFFFFFF));
-	drawCheckButton(x, y + 3*inc, Toolkit::getStringTable()->getString("[show actions]"), (globalContainer->replayShowActions));
+	drawCheckButton(x, y + 3*inc, Toolkit::getStringTable()->getString("[show areas]"), (globalContainer->replayShowAreas));
+	drawCheckButton(x, y + 4*inc, Toolkit::getStringTable()->getString("[show flags]"), (globalContainer->replayShowFlags));
 
 	globalContainer->gfx->drawString(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
 
 	for (int i = 0; i < game.teamsCount(); i++)
 	{
-		drawCheckButton(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, game.teams[i]->getFirstPlayerName().c_str(), localTeamNo == i);
+		// I know this is a matter of taste, but I prefer checkboxes here. Radio buttons are a totally different style
+		//drawRadioButton(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, game.teams[i]->getFirstPlayerName().c_str(), localTeamNo == i);
+		drawRadioButton(x + 1, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc + 1, localTeamNo == i);
+		globalContainer->gfx->drawString(x + 20, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, font, game.teams[i]->getFirstPlayerName().c_str());
 	}
 }
 
@@ -4199,7 +4208,7 @@ void GameGUI::drawAll(int team)
 	}
 
 	///Draw ghost buildings
-	if (!globalContainer->replaying || globalContainer->replayShowActions) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 	
 	// if paused, tint the game area
 	if (gamePaused)
