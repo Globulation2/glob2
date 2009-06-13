@@ -112,6 +112,10 @@ GlobalContainer::GlobalContainer(void)
 	replayVisibleTeams = 0xFFFFFFFF;
 	replayShowAreas = false;
 	replayShowFlags = true;
+	replayStepsProcessed = 0;
+	replayStepsTotal = -1;
+	replayOrdersProcessed = 0;
+	replayOrdersTotal = -1;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
