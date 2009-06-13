@@ -99,7 +99,10 @@ Game::~Game()
 
 	if (isRecordingReplay)
 	{
-		delete replay;
+		for (size_t i = 0; i < replayOutputStreams.size(); i++)
+		{
+			delete replayOutputStreams[i];
+		}
 	}
 }
 
@@ -220,20 +223,28 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	assert(order->sender<Team::MAX_COUNT);
 	assert(order->sender < gameHeader.getNumberOfPlayers());
 
-	if (isRecordingReplay && order->getOrderType() != ORDER_VOICE_DATA) // TODO: optionally save VOIP
+	if (isRecordingReplay && order->getOrderType() != ORDER_VOICE_DATA && order->getOrderType() != ORDER_NULL) // TODO: optionally save VOIP
 	{
 		assert(replay);
-
-		// Steps since last order
-
-		replay->writeUint32(replayStepCounter, "replayStepCounter" );
-		replayStepCounter=0;
-
-		// Write actual order to replay
-
+		
+		replayOrderCount++;
 		NetSendOrder* msg = new NetSendOrder(order);
-		msg->encodeData(replay);
+		
+		for (std::vector<OutputStream *>::iterator out = replayOutputStreams.begin(); out != replayOutputStreams.end(); out++)
+		{
+			// Steps since last order
+
+			(*out)->writeUint32(replayStepsSinceLastOrder, "replayStepsSinceLastOrder" );
+
+			// Write actual order to replay
+
+			msg->encodeData( *out );
+
+			(*out)->flush();
+		}
+		
 		delete msg;
+		replayStepsSinceLastOrder=0;
 	}
 	
 	anyPlayerWaited=false;
@@ -817,8 +828,14 @@ bool Game::load(GAGCore::InputStream *stream)
 	isRecordingReplay = !globalContainer->replaying; // TODO: provide an option for this
 	if (isRecordingReplay)
 	{
-		replayStepCounter = 0;
+		replayStepCount = 0;
+		replayOrderCount = 0;
+		replayStepsSinceLastOrder = 0;
+
 		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.replay"));
+		
+		replayOutputStreams.push_back(replay);
+		replayOutputStreams.push_back(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.orders")));
 	}
 
 	stream->readEnterSection("Game");
@@ -1249,7 +1266,11 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam)
 {
-	if (isRecordingReplay) replayStepCounter++;
+	if (isRecordingReplay) 
+	{
+		replayStepCount++;
+		replayStepsSinceLastOrder++;
+	}
 
 	if (!anyPlayerWaited)
 	{
@@ -3122,4 +3143,19 @@ bool Game::isPrestigeWinCondition(void)
 OutputStream *Game::getReplayStream()
 {
 	return replay;
+}
+
+void Game::addReplayOutputStream( OutputStream *stream )
+{
+	replayOutputStreams.push_back(stream);
+}
+
+Uint32 Game::getReplayOrderCount()
+{
+	return replayOrderCount;
+}
+
+Uint32 Game::getReplayStepCount()
+{
+	return replayStepCount;
 }

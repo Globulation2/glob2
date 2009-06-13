@@ -269,6 +269,8 @@ private:
 	void drawRessourceInfos(void);
 	//! Draw the replay panel
 	void drawReplayPanel(void);
+	//! Draw the bottom bar with the replay's time bar
+	void drawReplayProgressBar(void);
 
 	//! Draw the menu during game
 	void drawInGameMenu(void);

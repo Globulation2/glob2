@@ -437,6 +437,9 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		addWidget(text);
 	}
 	
+	// Save the step and order count
+	game = &(gui->game);
+	
 	sortAndSet(EndOfGameStat::TYPE_UNITS);
 }
 
@@ -572,23 +575,39 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 
 	if (loadSaveScreen->endValue==0)
 	{
-		if (std::string(loadSaveScreen->getFileName()) == "replays/last_game.replay") return;
+		StreamBackend* header = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.header");
+		StreamBackend* orders = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.orders");
+		StreamBackend* outBackend = Toolkit::getFileManager()->openOutputStreamBackend(loadSaveScreen->getFileName());
 
-		StreamBackend* in = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.replay");
-		StreamBackend* out = Toolkit::getFileManager()->openOutputStreamBackend(loadSaveScreen->getFileName());
+		assert(header->isValid());
+		assert(orders->isValid());
+		assert(outBackend->isValid());
 
-		assert(in->isValid());
-		assert(out->isValid());
+		BinaryOutputStream *out = new BinaryOutputStream(outBackend);
 
-		while (!in->isEndOfStream())
+		while (!header->isEndOfStream())
 		{
-			int c = in->getc();
-			if (in->isEndOfStream()) break;
-			out->putc(c);
+			int c = header->getc();
+			if (header->isEndOfStream()) break;
+			outBackend->putc(c);
 		}
 
-		delete in;
-		delete out;
+		out->writeUint32(game->getReplayStepCount(),"stepcount");
+		out->writeUint32(game->getReplayOrderCount(),"ordercount");
+
+		while (!orders->isEndOfStream())
+		{
+			int c = orders->getc();
+			if (orders->isEndOfStream()) break;
+			outBackend->putc(c);
+		}
+
+		delete header;
+		delete orders;
+		
+		// Make any remaining orders also written to this filename
+		// Game will take care of the delete
+		game->addReplayOutputStream( out );
 	}
 
 	// clean up

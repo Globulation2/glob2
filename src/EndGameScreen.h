@@ -92,6 +92,9 @@ protected:
 	//! resort players
 	void sortAndSet(EndOfGameStat::Type type);
 	
+	//! pointer to the game, necessary for correctly saving replays
+	Game *game;
+	
 public:
 	EndGameScreen(GameGUI *gui);
 	virtual ~EndGameScreen() { }
