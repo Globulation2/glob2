@@ -152,6 +152,16 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 			}
 			n+=1;
 		}
+		
+		// Disable these buttons if it's a replay
+		if (globalContainer->replaying)
+		{
+			alliance[i]->setClickable(false);
+			normalVision[i]->setClickable(false);
+			foodVision[i]->setClickable(false);
+			marketVision[i]->setClickable(false);
+			chat[i]->setClickable(false);
+		}
 	}
 	for (;i<16;i++)
 	{
