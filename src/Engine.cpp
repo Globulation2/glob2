@@ -411,7 +411,6 @@ int Engine::run(void)
 					
 					if (globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
 					{
-						globalContainer->replaying = false;
 						gui.showEndOfReplayScreen();
 					}
 				}

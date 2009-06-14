@@ -1302,7 +1302,7 @@ void Map::addTeam(void)
 		{
 			assert(ressourcesGradient[t][r][s]==NULL);
 			ressourcesGradient[t][r][s]=new Uint8[size];
-			updateRessourcesGradient(t, r, (bool)s);			
+			updateRessourcesGradient(t, r, (bool)s);
 		}
 	
 	for (int s=0; s<2; s++)

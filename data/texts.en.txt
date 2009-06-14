@@ -508,6 +508,8 @@ Loading Map List...
 Lobby
 [login]
 Login
+[look around]
+Look around
 [Lost : %0 has more prestige than you]
 Lost: %0 has more prestige than you
 [Lost : your colony is dead]
