@@ -61,7 +61,7 @@ void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par
 }
 
 InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue)
-:OverlayScreen(globalContainer->gfx, 320, 100 + (canContinue ? 50 : 0))
+:OverlayScreen(globalContainer->gfx, 320, 100 + (canContinue ? 50 : 0) + (globalContainer->replaying ? 50 : 0))
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", title));
 	addWidget(new TextButton(10, 50, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
@@ -70,11 +70,16 @@ InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue
 		if (globalContainer->replaying)
 		{
 			addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[look around]"), CONTINUE, 27));
+			addWidget(new TextButton(10, 150, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[watch again]"), WATCH_AGAIN, 27));
 		}
 		else
 		{
 			addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
 		}
+	}
+	else if (globalContainer->replaying)
+	{
+		addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[watch again]"), WATCH_AGAIN, 27));
 	}
 	dispatchInit();
 }
