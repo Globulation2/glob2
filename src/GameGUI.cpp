@@ -3714,6 +3714,12 @@ void GameGUI::drawReplayProgressBar(void)
 			.arg(time1_sec,2,10,'0')
 			.c_str());
 	}
+	
+	// Draw the filename of the replay
+	std::string replayName = glob2FilenameToName(globalContainer->replayFileName);
+	int stringWidth = globalContainer->littleFont->getStringWidth(replayName.c_str());
+	int pos = (globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH)/2 - stringWidth/2;
+	globalContainer->gfx->drawString(pos, globalContainer->settings.screenHeight-20, globalContainer->littleFont, replayName.c_str());
 
 	// Draw the border
 	for (int i=0; i<globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH; i+=32)
