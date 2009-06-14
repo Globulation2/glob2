@@ -641,7 +641,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen = new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+					if (globalContainer->replaying)
+						gameMenuScreen = new LoadSaveScreen("replays", "replay", true, std::string(Toolkit::getStringTable()->getString("[load replay]")), defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+					else
+						gameMenuScreen = new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -915,7 +918,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				}
 				else
 				{
-					gameMenuScreen=new InGameMainScreen;
+					gameMenuScreen=new InGameMainScreen(globalContainer->replaying);
 					inGameMenu=IGM_MAIN;
 				}
 			}
@@ -1195,7 +1198,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				{
 					if (inGameMenu==IGM_NONE)
 					{
-						gameMenuScreen=new InGameMainScreen;
+						gameMenuScreen=new InGameMainScreen(globalContainer->replaying);
 						inGameMenu=IGM_MAIN;
 					}
 				}
@@ -3681,12 +3684,12 @@ void GameGUI::drawReplayProgressBar(void)
 	// This is based on default speed 25 fps, not the actual Engine's speed
 	// because if we fast-forward we still want to see the old time
 	unsigned int time1_sec = (globalContainer->replayStepsProcessed/25)%60;
-	unsigned int time1_min = ((globalContainer->replayStepsProcessed/(25*60))*60)%60;
-	unsigned int time1_hour = ((globalContainer->replayStepsProcessed/(25*3600))*3600);
+	unsigned int time1_min = (globalContainer->replayStepsProcessed/(25*60))%60;
+	unsigned int time1_hour = (globalContainer->replayStepsProcessed/(25*3600));
 	
 	unsigned int time2_sec = (globalContainer->replayStepsTotal/25)%60;
-	unsigned int time2_min = ((globalContainer->replayStepsTotal/(25*60))*60)%60;
-	unsigned int time2_hour = ((globalContainer->replayStepsTotal/(25*3600))*3600);
+	unsigned int time2_min = (globalContainer->replayStepsTotal/(25*60))%60;
+	unsigned int time2_hour = (globalContainer->replayStepsTotal/(25*3600));
 
 	// Draw the time
 	if (time2_hour <= 99)
@@ -3711,6 +3714,12 @@ void GameGUI::drawReplayProgressBar(void)
 			.arg(time1_sec,2,10,'0')
 			.c_str());
 	}
+	
+	// Draw the filename of the replay
+	std::string replayName = glob2FilenameToName(globalContainer->replayFileName);
+	int stringWidth = globalContainer->littleFont->getStringWidth(replayName.c_str());
+	int pos = (globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH)/2 - stringWidth/2;
+	globalContainer->gfx->drawString(pos, globalContainer->settings.screenHeight-20, globalContainer->littleFont, replayName.c_str());
 
 	// Draw the border
 	for (int i=0; i<globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH; i+=32)
@@ -4370,6 +4379,8 @@ void GameGUI::showEndOfReplayScreen()
 
 	globalContainer->replaying = false;
 	hasEndOfGameDialogBeenShown = true;
+	
+	minimap.setMinimapMode( Minimap::ShowFOW );
 
 	inGameMenu=IGM_END_OF_GAME;
 	gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true);

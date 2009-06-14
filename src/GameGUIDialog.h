@@ -46,7 +46,7 @@ public:
 		QUIT_GAME = 6
 	};
 public:
-	InGameMainScreen();
+	InGameMainScreen(bool isReplay = false);
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
