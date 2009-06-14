@@ -115,7 +115,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 	}
 	else if(mode == PlaceZone)
 	{
-		Color c = Color(0,0,0);
+		Color c;
 		/* The following colors have been chosen to match the
 			colors in the .png files for the animations of
 			areas as of 2007-04-29.  If those .png files are
@@ -131,8 +131,6 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		case Clearing:
 			c = Color(251,206,0);
 			break;
-		default:
-			assert(false);
 		}
 		/* Instead of using a dimmer intensity to indicate
 			removing of areas, this should rather use dashed
@@ -142,13 +140,13 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 			in MapEdit.cpp to choose a color for those cases
 			where areas are being drawn. */
 		unsigned mode = brush.getType();
-		if (mode == BrushTool::MODE_DEL)
+		switch(mode)
 		{
+		case BrushTool::MODE_DEL:
 			c = Color(c.r*2/3,c.g*2/3,c.b*2/3);
-		}
-		else
-		{
-			assert(mode == BrushTool::MODE_ADD);
+			break;
+		case BrushTool::MODE_ADD:
+			break;
 		}
 		brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY, firstPlacementX, firstPlacementY);
 	}
