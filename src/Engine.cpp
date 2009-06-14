@@ -256,6 +256,8 @@ int Engine::run(void)
 	}
 
 	InputStream *replay = NULL;
+	Uint32 replayStepCounter;
+	
 	if (globalContainer->replaying)
 	{
 		replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(globalContainer->replayFileName));
@@ -263,15 +265,19 @@ int Engine::run(void)
 		// Get to the right position (readEnterSection doesn't work)
 		GameGUI tempGui;
 		tempGui.load(replay);
+		
+		// Read the total number of steps
+		globalContainer->replayStepsTotal = replay->readUint32("stepcount");
+		globalContainer->replayStepsProcessed = 0;
+		
+		// Read the total number of orders
+		globalContainer->replayOrdersTotal = replay->readUint32("ordercount");
+		globalContainer->replayOrdersProcessed = 0;
+		
+		// Read the number of steps until the next order
+		replayStepCounter = replay->readUint32("replayStepCounter");
 
 		assert(replay);
-	}
-
-	Uint32 replayStepCounter;
-
-	if (globalContainer->replaying)
-	{
-		replayStepCounter = replay->readUint32("replayStepCounter");
 	}
 	
 	while (doRunOnceAgain)
@@ -288,6 +294,8 @@ int Engine::run(void)
 
 		while (gui.isRunning)
 		{
+			if (globalContainer->replaying) globalContainer->replayStepsProcessed++;
+			
 			// We always allow the user to use the gui:
 			if (globalContainer->automaticEndingGame)
 			{
@@ -401,11 +409,13 @@ int Engine::run(void)
 				// Load the replay's orders
 				if (globalContainer->replaying)
 				{
-					if (!replay->isEndOfStream())
+					if (globalContainer->replayOrdersProcessed < globalContainer->replayOrdersTotal && !replay->isEndOfStream())
 					{
 						while (replayStepCounter == 0)
 						{
 							assert(replay);
+							
+							globalContainer->replayOrdersProcessed++;
 
 							NetSendOrder* msg = new NetSendOrder();
 							msg->decodeData(replay);
@@ -424,7 +434,8 @@ int Engine::run(void)
 						if (!gui.gamePaused && !gui.hardPause)
 							replayStepCounter--;
 					}
-					else
+					
+					if (globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
 					{
 						globalContainer->replaying = false;
 						gui.showEndOfReplayScreen();
@@ -668,6 +679,13 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	if (gui.game.isRecordingReplay)
 	{
 		gui.save(gui.game.getReplayStream(),"header");
+		gui.game.getReplayStream()->writeUint32(-1,"stepcount");
+		gui.game.getReplayStream()->writeUint32(-1,"ordercount");
+		
+		// Also save this game to last_game.header
+		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.header"));
+		gui.save(stream,"header");
+		delete stream;
 	}
 
 	return EE_NO_ERROR;

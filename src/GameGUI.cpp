@@ -28,6 +28,7 @@
 #include <FileManager.h>
 #include <GUITextInput.h>
 #include <GUIList.h>
+#include <GUIStyle.h>
 #include <GraphicContext.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
@@ -3658,6 +3659,66 @@ void GameGUI::drawReplayPanel(void)
 	}
 }
 
+void GameGUI::drawReplayProgressBar(void)
+{
+	// set the clipping rectangle
+	globalContainer->gfx->setClipRect( 0, globalContainer->settings.screenHeight-30, globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH, 30);
+
+	// draw menu background, black if low speed graphics, transparent otherwise
+	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+		globalContainer->gfx->drawFilledRect( 0, globalContainer->settings.screenHeight-28, globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH, 28, 0, 0, 0);
+	else
+		globalContainer->gfx->drawFilledRect( 0, globalContainer->settings.screenHeight-28, globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH, 28, 0, 0, 40, 180);
+
+	// Draw the actual progress bar
+	Style::style->drawProgressBar(globalContainer->gfx, 3, 
+		globalContainer->settings.screenHeight-23, 
+		globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH-10, 
+		globalContainer->replayStepsProcessed, 
+		globalContainer->replayStepsTotal);
+		
+	// Calculate the time
+	// This is based on default speed 25 fps, not the actual Engine's speed
+	// because if we fast-forward we still want to see the old time
+	unsigned int time1_sec = (globalContainer->replayStepsProcessed/25)%60;
+	unsigned int time1_min = ((globalContainer->replayStepsProcessed/(25*60))*60)%60;
+	unsigned int time1_hour = ((globalContainer->replayStepsProcessed/(25*3600))*3600);
+	
+	unsigned int time2_sec = (globalContainer->replayStepsTotal/25)%60;
+	unsigned int time2_min = ((globalContainer->replayStepsTotal/(25*60))*60)%60;
+	unsigned int time2_hour = ((globalContainer->replayStepsTotal/(25*3600))*3600);
+
+	// Draw the time
+	if (time2_hour <= 99)
+	{
+		globalContainer->gfx->drawString(10, globalContainer->settings.screenHeight-20, globalContainer->littleFont,
+			FormatableString("%0:%1:%2 / %3:%4:%5")
+			.arg(time1_hour)
+			.arg(time1_min,2,10,'0')
+			.arg(time1_sec,2,10,'0')
+			.arg(time2_hour)
+			.arg(time2_min,2,10,'0')
+			.arg(time2_sec,2,10,'0')
+			.c_str());
+	}
+	else
+	{
+		// Time did not get saved properly, don't show it
+		globalContainer->gfx->drawString(10, globalContainer->settings.screenHeight-20, globalContainer->littleFont,
+			FormatableString("%0:%1:%2")
+			.arg(time1_hour)
+			.arg(time1_min,2,10,'0')
+			.arg(time1_sec,2,10,'0')
+			.c_str());
+	}
+
+	// Draw the border
+	for (int i=0; i<globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH; i+=32)
+	{
+		globalContainer->gfx->drawSprite(i, globalContainer->settings.screenHeight-30, globalContainer->gamegui, 16);
+	}
+}
+
 void GameGUI::drawPanel(void)
 {
 	// ensure we have a valid selection and associate pointers
@@ -4231,6 +4292,9 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	minimap.draw(localTeamNo, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );
 
+	// draw the progress bar if this is a replay
+	if (globalContainer->replaying) drawReplayProgressBar();
+	
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
