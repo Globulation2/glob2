@@ -641,7 +641,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen = new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+					if (globalContainer->replaying)
+						gameMenuScreen = new LoadSaveScreen("replays", "replay", true, std::string(Toolkit::getStringTable()->getString("[load replay]")), defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+					else
+						gameMenuScreen = new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -915,7 +918,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				}
 				else
 				{
-					gameMenuScreen=new InGameMainScreen;
+					gameMenuScreen=new InGameMainScreen(globalContainer->replaying);
 					inGameMenu=IGM_MAIN;
 				}
 			}
@@ -1195,7 +1198,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				{
 					if (inGameMenu==IGM_NONE)
 					{
-						gameMenuScreen=new InGameMainScreen;
+						gameMenuScreen=new InGameMainScreen(globalContainer->replaying);
 						inGameMenu=IGM_MAIN;
 					}
 				}

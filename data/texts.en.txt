@@ -498,6 +498,8 @@ Load game
 Load Map
 [load script]
 Load Script
+[load replay]
+Load Replay
 [load]
 Load
 [loading map list]
@@ -682,6 +684,8 @@ Plum
 Quit the editor
 [quit the game]
 Quit the game
+[quit the replay]
+Quit the replay
 [quit]
 Quit
 [racetrack explanation 2]
@@ -728,6 +732,8 @@ Restore Default Keyboard Shortcuts
 Return to the editor
 [return to game]
 Return to game
+[return to replay]
+Return to the replay
 [return]
 enter
 [right meta]
