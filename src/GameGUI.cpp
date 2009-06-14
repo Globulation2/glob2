@@ -2465,7 +2465,9 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (mx > x && mx < x+20 && my > y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc && my < y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc + 20)
 			{
 				localTeamNo = i;
-				localTeam = game.teams[i];
+				
+				// Update everything to match this team number
+				adjustLocalTeam();
 
 				// Update localPlayer to the first player of this team
 				for (int j=0; j<game.gameHeader.getNumberOfPlayers(); j++)
@@ -2482,11 +2484,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				{
 					globalContainer->replayVisibleTeams = localTeam->me;
 				}
-				
-				// Update the areas
-				game.map.computeLocalForbidden( localTeamNo );
-				game.map.computeLocalClearArea( localTeamNo );
-				game.map.computeLocalGuardArea( localTeamNo );
 			}
 		}
 	}
