@@ -312,6 +312,10 @@ int Engine::run(void)
 				{
 					gui.syncStep();
 					
+					// The gui.localPlayer may have been updated (in replays)
+					// Keep them synchronized here
+					net->setLocalPlayer(gui.localPlayer);
+					
 					// We get and push local orders
 					shared_ptr<Order> localOrder = gui.getOrder();
 					net->addLocalOrder(localOrder);
