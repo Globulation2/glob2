@@ -778,6 +778,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					{
 						toLoadGameFileName = locationName;
 						orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+						flushOutgoingAndExit=true;
 					}
 					else
 					{
