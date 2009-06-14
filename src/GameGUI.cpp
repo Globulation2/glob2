@@ -3681,12 +3681,12 @@ void GameGUI::drawReplayProgressBar(void)
 	// This is based on default speed 25 fps, not the actual Engine's speed
 	// because if we fast-forward we still want to see the old time
 	unsigned int time1_sec = (globalContainer->replayStepsProcessed/25)%60;
-	unsigned int time1_min = ((globalContainer->replayStepsProcessed/(25*60))*60)%60;
-	unsigned int time1_hour = ((globalContainer->replayStepsProcessed/(25*3600))*3600);
+	unsigned int time1_min = (globalContainer->replayStepsProcessed/(25*60))%60;
+	unsigned int time1_hour = (globalContainer->replayStepsProcessed/(25*3600));
 	
 	unsigned int time2_sec = (globalContainer->replayStepsTotal/25)%60;
-	unsigned int time2_min = ((globalContainer->replayStepsTotal/(25*60))*60)%60;
-	unsigned int time2_hour = ((globalContainer->replayStepsTotal/(25*3600))*3600);
+	unsigned int time2_min = (globalContainer->replayStepsTotal/(25*60))%60;
+	unsigned int time2_hour = (globalContainer->replayStepsTotal/(25*3600));
 
 	// Draw the time
 	if (time2_hour <= 99)
