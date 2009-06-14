@@ -107,6 +107,7 @@ GlobalContainer::GlobalContainer(void)
 	automaticGameGlobalEndConditions=false;
 
 	replaying = false;
+	replay = NULL;
 	replayFileName = "";
 	replayShowFog = true;
 	replayVisibleTeams = 0xFFFFFFFF;
@@ -116,6 +117,7 @@ GlobalContainer::GlobalContainer(void)
 	replayStepsTotal = -1;
 	replayOrdersProcessed = 0;
 	replayOrdersTotal = -1;
+	replayStepCounter = -1;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
