@@ -294,8 +294,6 @@ int Engine::run(void)
 
 		while (gui.isRunning)
 		{
-			if (globalContainer->replaying) globalContainer->replayStepsProcessed++;
-			
 			// We always allow the user to use the gui:
 			if (globalContainer->automaticEndingGame)
 			{
@@ -441,10 +439,14 @@ int Engine::run(void)
 						gui.showEndOfReplayScreen();
 					}
 				}
-
+				
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
+				{
+					if (globalContainer->replaying) globalContainer->replayStepsProcessed++;
+					
 					gui.game.syncStep(gui.localTeamNo);
+				}
 			}
 
 			if (globalContainer->automaticEndingGame)
