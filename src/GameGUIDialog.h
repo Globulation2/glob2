@@ -57,7 +57,8 @@ public:
 	enum
 	{
 		QUIT = 0,
-		CONTINUE = 1
+		CONTINUE = 1,
+		WATCH_AGAIN = 2
 	};
 public:
 	InGameEndOfGameScreen(const char *title, bool canContinue);

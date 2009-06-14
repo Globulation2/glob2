@@ -1102,6 +1102,8 @@ Version
 View History
 [Voice volume]
 Volume (voice)
+[watch again]
+Watch again
 [watching:]
 Watching:
 [waiting for %0]

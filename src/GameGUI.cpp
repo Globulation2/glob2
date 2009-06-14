@@ -782,7 +782,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					else
 					{
-    					defualtGameSaveName=((LoadSaveScreen *)gameMenuScreen)->getName();
+						defualtGameSaveName=((LoadSaveScreen *)gameMenuScreen)->getName();
 						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
 						if (stream->isEndOfStream())
 						{
@@ -821,6 +821,16 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				gameMenuScreen=NULL;
+				return true;
+				
+				case InGameEndOfGameScreen::WATCH_AGAIN:
+				assert(globalContainer->replaying);
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				gameMenuScreen=NULL;
+				toLoadGameFileName = globalContainer->replayFileName;
+				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				flushOutgoingAndExit=true;
 				return true;
 
 				default:
