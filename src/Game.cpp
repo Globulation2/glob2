@@ -261,7 +261,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				break;
 
 			int posX=(oc->posX)&map.getMaskW();
-			int posY=(oc->posY)&map.getMaskH();;
+			int posY=(oc->posY)&map.getMaskH();
 			assert(oc->teamNumber==team->teamNumber);
 			BuildingType *bt=globalContainer->buildingsTypes.get(oc->typeNum);
 			bool isVirtual=bt->isVirtual;
