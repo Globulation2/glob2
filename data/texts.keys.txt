@@ -544,6 +544,7 @@
 [Version]
 [view history]
 [Voice volume]
+[watch again]
 [watching:]
 [waiting for %0]
 [waiting for key]
