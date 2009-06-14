@@ -2481,6 +2481,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				{
 					globalContainer->replayVisibleTeams = localTeam->me;
 				}
+				
+				// Update the areas
+				game.map.computeLocalForbidden( localTeamNo );
+				game.map.computeLocalClearArea( localTeamNo );
+				game.map.computeLocalGuardArea( localTeamNo );
 			}
 		}
 	}
