@@ -4370,6 +4370,8 @@ void GameGUI::showEndOfReplayScreen()
 
 	globalContainer->replaying = false;
 	hasEndOfGameDialogBeenShown = true;
+	
+	minimap.setMinimapMode( Minimap::ShowFOW );
 
 	inGameMenu=IGM_END_OF_GAME;
 	gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true);
