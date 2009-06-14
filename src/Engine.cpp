@@ -254,31 +254,6 @@ int Engine::run(void)
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
 		SDL_EnableKeyRepeat(0,0);
 	}
-
-	InputStream *replay = NULL;
-	Uint32 replayStepCounter;
-	
-	if (globalContainer->replaying)
-	{
-		replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(globalContainer->replayFileName));
-		
-		// Get to the right position (readEnterSection doesn't work)
-		GameGUI tempGui;
-		tempGui.load(replay);
-		
-		// Read the total number of steps
-		globalContainer->replayStepsTotal = replay->readUint32("stepcount");
-		globalContainer->replayStepsProcessed = 0;
-		
-		// Read the total number of orders
-		globalContainer->replayOrdersTotal = replay->readUint32("ordercount");
-		globalContainer->replayOrdersProcessed = 0;
-		
-		// Read the number of steps until the next order
-		replayStepCounter = replay->readUint32("replayStepCounter");
-
-		assert(replay);
-	}
 	
 	while (doRunOnceAgain)
 	{
@@ -407,16 +382,16 @@ int Engine::run(void)
 				// Load the replay's orders
 				if (globalContainer->replaying)
 				{
-					if (globalContainer->replayOrdersProcessed < globalContainer->replayOrdersTotal && !replay->isEndOfStream())
+					assert(globalContainer->replay);
+					
+					if (globalContainer->replayOrdersProcessed < globalContainer->replayOrdersTotal && !globalContainer->replay->isEndOfStream())
 					{
-						while (replayStepCounter == 0)
+						while (globalContainer->replayStepCounter == 0)
 						{
-							assert(replay);
-							
 							globalContainer->replayOrdersProcessed++;
 
 							NetSendOrder* msg = new NetSendOrder();
-							msg->decodeData(replay);
+							msg->decodeData(globalContainer->replay);
 							shared_ptr<Order> order = msg->getOrder();
 
 							if (order->getOrderType() != ORDER_PLAYER_QUIT_GAME &&
@@ -426,11 +401,8 @@ int Engine::run(void)
 							}
 
 							delete msg;
-							replayStepCounter = replay->readUint32("replayStepCounter");
+							globalContainer->replayStepCounter = globalContainer->replay->readUint32("replayStepCounter");
 						}
-					
-						if (!gui.gamePaused && !gui.hardPause)
-							replayStepCounter--;
 					}
 					
 					if (globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
@@ -443,7 +415,11 @@ int Engine::run(void)
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
 				{
-					if (globalContainer->replaying) globalContainer->replayStepsProcessed++;
+					if (globalContainer->replaying)
+					{
+						globalContainer->replayStepCounter--;
+						globalContainer->replayStepsProcessed++;
+					}
 					
 					gui.game.syncStep(gui.localTeamNo);
 				}
@@ -565,7 +541,11 @@ int Engine::run(void)
 		
 		if (gui.toLoadGameFileName[0])
 		{
-			int rv=initCustom(gui.toLoadGameFileName);
+			int rv;
+			
+			if (globalContainer->replaying) rv = loadReplay(gui.toLoadGameFileName);
+			else rv = initCustom(gui.toLoadGameFileName);
+			
 			if (rv==EE_NO_ERROR)
 				doRunOnceAgain=true;
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
@@ -813,14 +793,38 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 
 int Engine::loadReplay(const std::string &fileName)
 {
+	// Let globalContainer know what we are doing
 	globalContainer->replaying = true;
 	globalContainer->replayFileName = fileName;
-
+	
 	// Reset the replay's options
 	gui.localPlayer = 0;
 	gui.localTeamNo = 0;
 	globalContainer->replayVisibleTeams = 0xFFFFFFFF;
+	
+	// Load the replay file
+	globalContainer->replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName));
+	assert(globalContainer->replay);
+	
+	// Get to the right position (readEnterSection doesn't work)
+	GameGUI tempGui;
+	tempGui.load(globalContainer->replay);
+	
+	// Read the total number of steps
+	globalContainer->replayStepsTotal = globalContainer->replay->readUint32("stepcount");
+	globalContainer->replayStepsProcessed = 0;
+	
+	// Read the total number of orders
+	globalContainer->replayOrdersTotal = globalContainer->replay->readUint32("ordercount");
+	globalContainer->replayOrdersProcessed = 0;
+	
+	// Read the number of steps until the first order
+	if (globalContainer->replayOrdersTotal > 0)
+		globalContainer->replayStepCounter = globalContainer->replay->readUint32("replayStepCounter");
+	else
+		globalContainer->replayStepCounter = -1;
 
+	// Load the map and settings
 	MapHeader mapHeader = loadMapHeader(fileName);
 	GameHeader gameHeader = loadGameHeader(fileName);
 
@@ -830,6 +834,7 @@ int Engine::loadReplay(const std::string &fileName)
 		gameHeader.getBasePlayer(p).makeItAI(AI::NONE);
 	}
 
+	// Finally, initialise the Game
 	int ret = initGame(mapHeader, gameHeader, true, false, true);
 	if(ret != EE_NO_ERROR)
 		return EE_CANT_LOAD_MAP;
