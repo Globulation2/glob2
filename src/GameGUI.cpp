@@ -821,7 +821,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				gameMenuScreen=NULL;
-				gamePaused = false; //!< At the end of replays, the game is paused.
 				return true;
 
 				default:
@@ -4286,9 +4285,19 @@ void GameGUI::drawAll(int team)
 	// if paused, tint the game area
 	if (gamePaused)
 	{
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 0, 0, 20);
-		const char *s = Toolkit::getStringTable()->getString("[Paused]");
-		int x = (globalContainer->gfx->getW()-globalContainer->menuFont->getStringWidth(s))>>1;
+		const char *s;
+		
+		if (globalContainer->replaying && globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
+		{
+			s = Toolkit::getStringTable()->getString("[replay ended]");
+		}
+		else
+		{
+			globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 0, 0, 20);
+			s = Toolkit::getStringTable()->getString("[Paused]");
+		}
+		
+		int x = (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-globalContainer->menuFont->getStringWidth(s))/2;
 		globalContainer->gfx->drawString(x, globalContainer->gfx->getH()-80, globalContainer->menuFont, s);
 	}
 
@@ -4379,15 +4388,15 @@ void GameGUI::checkWonConditions(void)
 void GameGUI::showEndOfReplayScreen()
 {
 	gamePaused = true;
-
-	globalContainer->replaying = false;
-	hasEndOfGameDialogBeenShown = true;
 	
-	minimap.setMinimapMode( Minimap::ShowFOW );
+	if (!hasEndOfGameDialogBeenShown)
+	{
+		hasEndOfGameDialogBeenShown = true;
 
-	inGameMenu=IGM_END_OF_GAME;
-	gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true);
-	miniMapPushed=false;
+		inGameMenu=IGM_END_OF_GAME;
+		gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true);
+		miniMapPushed=false;
+	}
 }
 
 void GameGUI::executeOrder(boost::shared_ptr<Order> order)
