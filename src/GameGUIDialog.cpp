@@ -131,7 +131,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		normalVision[i]=new OnOffButton(196+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0, NORMAL_VISION+i);
 		addWidget(normalVision[i]);
 		
-		if(gameGUI->game.gameHeader.areAllyTeamsFixed())
+		if(gameGUI->game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying)
 		{
 			alliance[i]->visible=false;
 			normalVision[i]->visible=false;
@@ -188,7 +188,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	}
 	
 	//Put locks if needed
-	if(gameGUI->game.gameHeader.areAllyTeamsFixed())
+	if(gameGUI->game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying)
 	{
 		int np = std::max(2, gameGUI->game.gameHeader.getNumberOfPlayers() - countNumberPlayersForLocalTeam(gameGUI->game.gameHeader, gameGUI->localTeamNo));
 		//Although this is the animation widget, we are just using it to display a still frame
