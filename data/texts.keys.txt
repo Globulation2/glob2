@@ -252,6 +252,7 @@
 [loading map list]
 [Lobby]
 [login]
+[look around]
 [Lost : %0 has more prestige than you]
 [Lost : your colony is dead]
 [low priority]
