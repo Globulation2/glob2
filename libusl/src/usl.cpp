@@ -195,12 +195,16 @@ Scope* Usl::compile(const std::string& name, std::istream& stream)
 		source += c;
 	
 	Parser parser(name, source.c_str(), &heap);
-	cout << source << endl;
+	#ifdef DEBUG_USL
+		cout << source << endl;
+	#endif
 	
 	ExecutionBlock block = ExecutionBlock(Position());
 	parser.parse(&block);
-	block.dump(cout);
-	cout << endl;
+	#ifdef DEBUG_USL
+		block.dump(cout);
+		cout << endl;
+	#endif
 	
 	ScopePrototype* prototype = new ScopePrototype(&heap, root->prototype);
 	block.generateMembers(prototype, &debug, &heap);
