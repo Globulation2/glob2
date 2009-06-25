@@ -159,6 +159,9 @@ void Game::clearGame()
 			players[i]=NULL;
 		}
 	}
+	
+	// Clear build projects
+	buildProjects.clear();
 
 	///Clears prestige
 	totalPrestige=0;
@@ -1163,6 +1166,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 		int posX=bpi->posX&map.getMaskW();
 		int posY=bpi->posY&map.getMaskH();
 		int teamNumber=bpi->teamNumber;
+		assert(teamNumber <= teamsCount());
 		Sint32 typeNum=(bpi->typeNum);
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 		int w=bt->width;
