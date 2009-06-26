@@ -257,8 +257,12 @@ int Engine::run(void)
 	
 	while (doRunOnceAgain)
 	{
-		const int speed=40;
+		int speed=40;
 		bool networkReadyToExecute = true;
+		
+		// If playing in fast-forward, we process the GUI and draw everything only once every 3 game-steps
+		// This way, the overall fps stays about the same
+		int nextGuiStep = 1;
 		
 		cpuStats.reset(speed);
 		
@@ -269,6 +273,28 @@ int Engine::run(void)
 
 		while (gui.isRunning)
 		{
+			nextGuiStep--;
+			
+			// Set the replay speed
+			if (globalContainer->replaying)
+			{
+				if (globalContainer->replayFastForward && !gui.gamePaused)
+				{
+					speed = 12;
+					if (nextGuiStep < 0) nextGuiStep = 2;
+				}
+				else
+				{
+					speed = 40;
+					if (nextGuiStep < 0) nextGuiStep = 0;
+				}
+			}
+			else
+			{
+				// Process the GUI as usual, every step
+				nextGuiStep = 0;
+			}
+			
 			// We always allow the user to use the gui:
 			if (globalContainer->automaticEndingGame)
 			{
@@ -297,7 +323,7 @@ int Engine::run(void)
 					automaticGameEndTick = SDL_GetTicks();
 				}
 			}
-			if(!globalContainer->runNoX)
+			if(!globalContainer->runNoX && nextGuiStep == 0)
 				gui.step();
 	
 			if (!gui.hardPause)
@@ -439,9 +465,12 @@ int Engine::run(void)
 			}
 			if(!globalContainer->runNoX)
 			{
-				// we draw
-				gui.drawAll(gui.localTeamNo);
-				globalContainer->gfx->nextFrame();
+				if (nextGuiStep == 0)
+				{
+					// we draw
+					gui.drawAll(gui.localTeamNo);
+					globalContainer->gfx->nextFrame();
+				}
 				
 				// if required, save videoshot
 				if (!(globalContainer->videoshotName.empty()) && 
@@ -804,6 +833,7 @@ int Engine::loadReplay(const std::string &fileName)
 	gui.localPlayer = 0;
 	gui.localTeamNo = 0;
 	globalContainer->replayVisibleTeams = 0xFFFFFFFF;
+	globalContainer->replayFastForward = false;
 	
 	// Load the replay file
 	globalContainer->replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName));
