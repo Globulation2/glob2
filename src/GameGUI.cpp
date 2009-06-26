@@ -1007,6 +1007,8 @@ void GameGUI::processEvent(SDL_Event *event)
 			{
 				if (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)
 					handleMenuClick(event->button.x-globalContainer->gfx->getW()+RIGHT_MENU_WIDTH, event->button.y, event->button.button);
+				else if (globalContainer->replaying && event->button.y >= globalContainer->gfx->getH()-25)
+					handleReplayProgressBarClick(event->button.x, event->button.y, event->button.button);
 				else
 					handleMapClick(event->button.x, event->button.y, event->button.button);
 			}
@@ -2498,6 +2500,38 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 }
 
+void GameGUI::handleReplayProgressBarClick(int mx, int my, int button)
+{
+	// Check the play, pause and fast-forward buttons
+	if (globalContainer->replaying)
+	{
+		int x = globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 17;
+		int y = globalContainer->settings.screenHeight-23;
+		int inc = 15;
+		
+		if (my >= y && my <= y+20)
+		{
+			if (mx >= x-3*inc && mx <= x-2*inc)
+			{
+				// Play
+				gamePaused = false;
+				globalContainer->replayFastForward = false;
+			}
+			if (mx > x-2*inc && mx <= x-inc)
+			{
+				// Pause
+				gamePaused = true;
+			}
+			if (mx > x-inc && mx <= x)
+			{
+				// Fast-forward
+				gamePaused = false;
+				globalContainer->replayFastForward = true;
+			}
+		}
+	}
+}
+
 boost::shared_ptr<Order> GameGUI::getOrder(void)
 {
 	boost::shared_ptr<Order> order;
@@ -3688,10 +3722,16 @@ void GameGUI::drawReplayProgressBar(void)
 	// Draw the actual progress bar
 	Style::style->drawProgressBar(globalContainer->gfx, 3, 
 		globalContainer->settings.screenHeight-23, 
-		globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH-10, 
+		globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH-10-15*3-9, 
 		globalContainer->replayStepsProcessed, 
 		globalContainer->replayStepsTotal);
-		
+	
+	// Draw the buttons
+	globalContainer->gfx->drawSprite(globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 15*3 - 17, globalContainer->settings.screenHeight-23, globalContainer->gamegui, 51 - (!gamePaused && !globalContainer->replayFastForward ? 1:0));
+	globalContainer->gfx->drawSprite(globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 15*2 - 17, globalContainer->settings.screenHeight-23, globalContainer->gamegui, 53 - (gamePaused ? 1:0));
+	globalContainer->gfx->drawSprite(globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 15*1 - 17, globalContainer->settings.screenHeight-23, globalContainer->gamegui, 55 - (!gamePaused && globalContainer->replayFastForward ? 1:0));
+	globalContainer->gfx->drawSprite(globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 15*0 - 17, globalContainer->settings.screenHeight-23, globalContainer->gamegui, 56);
+	
 	// Calculate the time
 	// This is based on default speed 25 fps, not the actual Engine's speed
 	// because if we fast-forward we still want to see the old time
@@ -4256,7 +4296,6 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
-
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
