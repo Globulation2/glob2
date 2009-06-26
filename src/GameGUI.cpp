@@ -2605,9 +2605,9 @@ void GameGUI::drawPanelButtons(int y)
 		int numButtons = 3;
 
 		if (replayDisplayMode==RDM_REPLAY_VIEW)
-			drawPanelButton(y, 0, numButtons, 1);
+			drawPanelButton(y, 0, numButtons, 48);
 		else
-			drawPanelButton(y, 0, numButtons, 0);
+			drawPanelButton(y, 0, numButtons, 49);
 
 		if (replayDisplayMode==RDM_STAT_TEXT_VIEW)
 			drawPanelButton(y, 1, numButtons, 3);
