@@ -89,15 +89,40 @@
 
 #define YOFFSET_BRUSH 56
 
+// The sidebar on the right
 #define RIGHT_MENU_WIDTH 160
 #define RIGHT_MENU_HALF_WIDTH (RIGHT_MENU_WIDTH / 2)
 #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
 #define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 
+// Settings for the right sidebar in replays
 #define REPLAY_PANEL_XOFFSET 25
 #define REPLAY_PANEL_YOFFSET (YPOS_BASE_STAT+10)
 #define REPLAY_PANEL_SPACE_BETWEEN_OPTIONS 22
 #define REPLAY_PANEL_PLAYERLIST_YOFFSET (5*REPLAY_PANEL_SPACE_BETWEEN_OPTIONS+5)
+
+// The actual progress bar (including buttons)
+#define REPLAY_PROGRESS_BAR_X_OFFSET 4
+#define REPLAY_PROGRESS_BAR_Y_OFFSET 3
+#define REPLAY_PROGRESS_BAR_BUTTON_WIDTH 15
+#define REPLAY_PROGRESS_BAR_CAP_WIDTH 10
+#define REPLAY_PROGRESS_BAR_NUM_BUTTONS 3
+
+// The panel around the actual progress bar
+#define REPLAY_BAR_WIDTH (globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 4)
+#define REPLAY_BAR_HEIGHT (2*REPLAY_PROGRESS_BAR_Y_OFFSET + 20)
+#define REPLAY_BAR_Y (globalContainer->settings.screenHeight - REPLAY_BAR_HEIGHT)
+#define REPLAY_BAR_TIMER_X (REPLAY_PROGRESS_BAR_X_OFFSET + REPLAY_PROGRESS_BAR_CAP_WIDTH + 5)
+
+// Sprites for the replay bar
+#define REPLAY_BAR_LEFT_CAP_SPRITE 56
+#define REPLAY_BAR_RIGHT_CAP_SPRITE 57
+#define REPLAY_BAR_PLAY_BUTTON_SPRITE 51
+#define REPLAY_BAR_PLAY_BUTTON_ACTIVE_SPRITE 50
+#define REPLAY_BAR_PAUSE_BUTTON_SPRITE 53
+#define REPLAY_BAR_PAUSE_BUTTON_ACTIVE_SPRITE 52
+#define REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE 55
+#define REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE 54
 
 using namespace boost;
 
@@ -1007,7 +1032,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			{
 				if (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)
 					handleMenuClick(event->button.x-globalContainer->gfx->getW()+RIGHT_MENU_WIDTH, event->button.y, event->button.button);
-				else if (globalContainer->replaying && event->button.y >= globalContainer->gfx->getH()-25)
+				else if (globalContainer->replaying && event->button.y >= REPLAY_BAR_Y)
 					handleReplayProgressBarClick(event->button.x, event->button.y, event->button.button);
 				else
 					handleMapClick(event->button.x, event->button.y, event->button.button);
@@ -2505,9 +2530,9 @@ void GameGUI::handleReplayProgressBarClick(int mx, int my, int button)
 	// Check the play, pause and fast-forward buttons
 	if (globalContainer->replaying)
 	{
-		int x = globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 17;
-		int y = globalContainer->settings.screenHeight-23;
-		int inc = 15;
+		int x = REPLAY_BAR_WIDTH - REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_CAP_WIDTH;
+		int y = REPLAY_BAR_Y + REPLAY_PROGRESS_BAR_Y_OFFSET;
+		int inc = REPLAY_PROGRESS_BAR_BUTTON_WIDTH;
 		
 		if (my >= y && my <= y+20)
 		{
@@ -3708,29 +3733,47 @@ void GameGUI::drawReplayPanel(void)
 	}
 }
 
-void GameGUI::drawReplayProgressBar(void)
+void GameGUI::drawReplayProgressBar(bool drawBackground)
 {
 	// set the clipping rectangle
-	globalContainer->gfx->setClipRect( 0, globalContainer->settings.screenHeight-30, globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH, 30);
+	globalContainer->gfx->setClipRect( 0, REPLAY_BAR_Y - 4, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT + 4);
 
 	// draw menu background, black if low speed graphics, transparent otherwise
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect( 0, globalContainer->settings.screenHeight-28, globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH, 28, 0, 0, 0);
-	else
-		globalContainer->gfx->drawFilledRect( 0, globalContainer->settings.screenHeight-28, globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH, 28, 0, 0, 40, 180);
+	if (drawBackground)
+	{
+		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+			globalContainer->gfx->drawFilledRect( 0, REPLAY_BAR_Y, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT, 0, 0, 0);
+		else
+			globalContainer->gfx->drawFilledRect( 0, REPLAY_BAR_Y, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT, 0, 0, 40, 180);
+	}
+
+	// Progress bar y
+	int y = REPLAY_BAR_Y + REPLAY_PROGRESS_BAR_Y_OFFSET;
 
 	// Draw the actual progress bar
-	Style::style->drawProgressBar(globalContainer->gfx, 3, 
-		globalContainer->settings.screenHeight-23, 
-		globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH-10-15*3-9, 
+	Style::style->drawProgressBar(globalContainer->gfx, 
+		REPLAY_PROGRESS_BAR_X_OFFSET + REPLAY_PROGRESS_BAR_CAP_WIDTH - 1, y,
+		REPLAY_BAR_WIDTH - 2*REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_NUM_BUTTONS * REPLAY_PROGRESS_BAR_BUTTON_WIDTH - 2*REPLAY_PROGRESS_BAR_CAP_WIDTH + 2, 
 		globalContainer->replayStepsProcessed, 
 		globalContainer->replayStepsTotal);
 	
-	// Draw the buttons
-	globalContainer->gfx->drawSprite(globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 15*3 - 17, globalContainer->settings.screenHeight-23, globalContainer->gamegui, 51 - (!gamePaused && !globalContainer->replayFastForward ? 1:0));
-	globalContainer->gfx->drawSprite(globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 15*2 - 17, globalContainer->settings.screenHeight-23, globalContainer->gamegui, 53 - (gamePaused ? 1:0));
-	globalContainer->gfx->drawSprite(globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 15*1 - 17, globalContainer->settings.screenHeight-23, globalContainer->gamegui, 55 - (!gamePaused && globalContainer->replayFastForward ? 1:0));
-	globalContainer->gfx->drawSprite(globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 15*0 - 17, globalContainer->settings.screenHeight-23, globalContainer->gamegui, 56);
+	// Draw the round caps
+	globalContainer->gfx->drawSprite(
+		REPLAY_PROGRESS_BAR_X_OFFSET, y,
+		globalContainer->gamegui,
+		REPLAY_BAR_LEFT_CAP_SPRITE);
+	globalContainer->gfx->drawSprite(
+		REPLAY_BAR_WIDTH - REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_CAP_WIDTH, y,
+		globalContainer->gamegui,
+		REPLAY_BAR_RIGHT_CAP_SPRITE);
+	
+	// Draw the buttons for play, pause and fast-forward
+	int x = REPLAY_BAR_WIDTH - REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_CAP_WIDTH;
+	int inc = REPLAY_PROGRESS_BAR_BUTTON_WIDTH;
+	
+	globalContainer->gfx->drawSprite( x - inc*3, y, globalContainer->gamegui, (!gamePaused && !globalContainer->replayFastForward ? REPLAY_BAR_PLAY_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_PLAY_BUTTON_SPRITE));
+	globalContainer->gfx->drawSprite( x - inc*2, y, globalContainer->gamegui, (gamePaused ? REPLAY_BAR_PAUSE_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_PAUSE_BUTTON_SPRITE));
+	globalContainer->gfx->drawSprite( x - inc*1, y, globalContainer->gamegui, (!gamePaused && globalContainer->replayFastForward ? REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE));
 	
 	// Calculate the time
 	// This is based on default speed 25 fps, not the actual Engine's speed
@@ -3746,7 +3789,7 @@ void GameGUI::drawReplayProgressBar(void)
 	// Draw the time
 	if (time2_hour <= 99)
 	{
-		globalContainer->gfx->drawString(10, globalContainer->settings.screenHeight-20, globalContainer->littleFont,
+		globalContainer->gfx->drawString(REPLAY_BAR_TIMER_X, y+3, globalContainer->littleFont,
 			FormatableString("%0:%1:%2 / %3:%4:%5")
 			.arg(time1_hour)
 			.arg(time1_min,2,10,'0')
@@ -3759,7 +3802,7 @@ void GameGUI::drawReplayProgressBar(void)
 	else
 	{
 		// Time did not get saved properly, don't show it
-		globalContainer->gfx->drawString(10, globalContainer->settings.screenHeight-20, globalContainer->littleFont,
+		globalContainer->gfx->drawString(REPLAY_BAR_TIMER_X, y+3, globalContainer->littleFont,
 			FormatableString("%0:%1:%2")
 			.arg(time1_hour)
 			.arg(time1_min,2,10,'0')
@@ -3771,12 +3814,15 @@ void GameGUI::drawReplayProgressBar(void)
 	std::string replayName = glob2FilenameToName(globalContainer->replayFileName);
 	int stringWidth = globalContainer->littleFont->getStringWidth(replayName.c_str());
 	int pos = (globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH)/2 - stringWidth/2;
-	globalContainer->gfx->drawString(pos, globalContainer->settings.screenHeight-20, globalContainer->littleFont, replayName.c_str());
+	globalContainer->gfx->drawString(pos, y+3, globalContainer->littleFont, replayName.c_str());
 
 	// Draw the border
-	for (int i=0; i<globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH; i+=32)
+	if (drawBackground)
 	{
-		globalContainer->gfx->drawSprite(i, globalContainer->settings.screenHeight-30, globalContainer->gamegui, 16);
+		for (int i = 0; i < REPLAY_BAR_WIDTH; i += 32)
+		{
+			globalContainer->gfx->drawSprite(i, REPLAY_BAR_Y-4, globalContainer->gamegui, 16);
+		}
 	}
 }
 
