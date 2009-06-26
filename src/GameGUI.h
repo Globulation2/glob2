@@ -225,6 +225,7 @@ private:
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
+	void handleReplayProgressBarClick(int mx, int my, int button);
 
 	void handleActivation(Uint8 state, Uint8 gain);
 	void nextDisplayMode(void);

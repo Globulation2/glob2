@@ -109,6 +109,7 @@ GlobalContainer::GlobalContainer(void)
 	replaying = false;
 	replay = NULL;
 	replayFileName = "";
+	replayFastForward = false;
 	replayShowFog = true;
 	replayVisibleTeams = 0xFFFFFFFF;
 	replayShowAreas = false;
