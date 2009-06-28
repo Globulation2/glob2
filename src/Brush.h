@@ -21,7 +21,12 @@
 #define __BRUSH_H
 
 #include <vector>
-#include "GraphicContext.h" // just to get Color, really this should only be in GameGUI
+//#include "GraphicContext.h" // just to get Color, really this should only be in GameGUI
+
+namespace GAGCore
+{
+	class Color;
+}
 
 //! A click of the brush tool to the map
 struct BrushApplication
