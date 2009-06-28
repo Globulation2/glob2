@@ -820,7 +820,7 @@ MapEdit::MapEdit()
             5, // y offset
             128, // width
             128, // height
-            Minimap::ShowFOW)
+            Minimap::HideFOW)
 {
 	doQuit=false;
 	doFullQuit=false;
