@@ -1244,9 +1244,10 @@ int MapEdit::run(void)
 		}
 		
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
+		
+		drawMenu();
 		drawMiniMap();
 		wasMinimapRendered=false;
-		drawMenu();
 		drawWidgets();
 		if(showingMenuScreen)
 		{
