@@ -2386,6 +2386,8 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		int nmx = mx - dec;
 		if (my > YOFFSET_BRUSH)
 		{
+			// set the selection
+			setSelection(BRUSH_SELECTION);
 			// change the brush type (forbidden, guard, clear) if necessary
 			if (my < YOFFSET_BRUSH+40)
 			{
@@ -2398,8 +2400,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 			// anyway, update the tool
 			brush.handleClick(mx-dec, my-YOFFSET_BRUSH-40);
-			// set the selection
-			setSelection(BRUSH_SELECTION);
 			toolManager.activateZoneTool();
 		}
 		else
