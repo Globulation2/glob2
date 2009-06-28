@@ -103,13 +103,6 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, 0, width, yOffset, borderR, borderG, borderB, borderA);
 	// bottom side not needed, because the menu draws up to it
 	//globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, yOffset+height, width, 0, borderR, borderG, borderB, borderA);
-
-	///Draw a 1 pixel border arround the minimap
-	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
-	                               yOffset-1, 
-	                               width+2, 
-	                               height+2, 
-	                               200, 200, 200);
   
   // calculate the offset for the viewport square
 	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
@@ -170,6 +163,13 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	///Draw the line that shows where the minimap is currently updating
 	if(minimapMode == HideFOW)
 		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
+	
+	///Draw a 1 pixel border arround the minimap
+	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
+	                               yOffset-1, 
+	                               width+2, 
+	                               height+2, 
+	                               200, 200, 200);
 }
 
 
