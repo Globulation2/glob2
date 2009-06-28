@@ -205,6 +205,12 @@ namespace GAGCore
 
 		bool doScissor(bool on)
 		{
+			// The glIsEnabled is function is quite expensive. That's why we have a _doScissor variable.
+			// I'm quite sure that this assert should never fail, so I've outcommented it, partially
+			// because we don't do #define NDEBUG in most of our releases (so far).
+			
+			//assert(_doScissor == glIsEnabled(GL_SCISSOR_TEST));
+			
 			if (_doScissor == on)
 				return on;
 
@@ -384,7 +390,14 @@ namespace GAGCore
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
 			glState.alocatedTextureCount--;
-			glState.resetCache();
+			
+			// The next line causes a desynchronization between _doScissors and glIsEnabled(GL_SCISSOR_TEST),
+			// which causes the setClipRect() functions to not reset the clipping the way it should,  so many
+			// things don't get drawn properly and the game appears to "blink". Outcommenting it didn't cause
+			// any other problems.  If you think glState should be reset,  feel free to do so,  but also call
+			// functions like glDisable() as required.
+			
+			//glState.resetCache();
 		}
 		#endif
 	}
