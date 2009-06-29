@@ -2032,8 +2032,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int dm=(mx-dec)/32;
 			if (!((1<<dm) & hiddenGUIElements))
 			{
-				displayMode=DisplayMode(dm);
-				clearSelection();
+				if (dm < NB_VIEWS)
+				{
+					displayMode=DisplayMode(dm);
+					clearSelection();
+				}
 			}
 		}
 		else
@@ -2041,8 +2044,11 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int dec = (RIGHT_MENU_WIDTH-96)/2;
 			int dm=(mx-dec)/32;
 			
-			replayDisplayMode=ReplayDisplayMode(dm);
-			clearSelection();
+			if (dm < RDM_NB_VIEWS)
+			{
+				replayDisplayMode=ReplayDisplayMode(dm);
+				clearSelection();
+			}
 		}
 	}
 	else if (selectionMode==BUILDING_SELECTION)
@@ -2625,58 +2631,54 @@ void GameGUI::drawPanelButtons(int y)
 {
 	if (!globalContainer->replaying)
 	{
-		int numButtons = 4;
-
 		if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
 		{
 			if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==CONSTRUCTION_VIEW))
-				drawPanelButton(y, 0, numButtons, 1);
+				drawPanelButton(y, 0, NB_VIEWS, 1);
 			else
-				drawPanelButton(y, 0, numButtons, 0);
+				drawPanelButton(y, 0, NB_VIEWS, 0);
 		}
 
 		if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
 		{
 			if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
-				drawPanelButton(y, 1, numButtons, 29);
+				drawPanelButton(y, 1, NB_VIEWS, 29);
 			else
-				drawPanelButton(y, 1, numButtons, 28);
+				drawPanelButton(y, 1, NB_VIEWS, 28);
 		}
 
 		if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
 		{
 			if ((selectionMode==NO_SELECTION) && (displayMode==STAT_TEXT_VIEW))
-				drawPanelButton(y, 2, numButtons, 3);
+				drawPanelButton(y, 2, NB_VIEWS, 3);
 			else
-				drawPanelButton(y, 2, numButtons, 2);
+				drawPanelButton(y, 2, NB_VIEWS, 2);
 		}
 
 		if (!(hiddenGUIElements & HIDABLE_GFX_STAT))
 		{
 			if ((selectionMode==NO_SELECTION) && (displayMode==STAT_GRAPH_VIEW))
-				drawPanelButton(y, 3, numButtons, 5);
+				drawPanelButton(y, 3, NB_VIEWS, 5);
 			else
-				drawPanelButton(y, 3, numButtons, 4);
+				drawPanelButton(y, 3, NB_VIEWS, 4);
 		}
 	}
 	else
 	{
-		int numButtons = 3;
-
 		if (replayDisplayMode==RDM_REPLAY_VIEW)
-			drawPanelButton(y, 0, numButtons, 48);
+			drawPanelButton(y, 0, RDM_NB_VIEWS, 48);
 		else
-			drawPanelButton(y, 0, numButtons, 49);
+			drawPanelButton(y, 0, RDM_NB_VIEWS, 49);
 
 		if (replayDisplayMode==RDM_STAT_TEXT_VIEW)
-			drawPanelButton(y, 1, numButtons, 3);
+			drawPanelButton(y, 1, RDM_NB_VIEWS, 3);
 		else
-			drawPanelButton(y, 1, numButtons, 2);
+			drawPanelButton(y, 1, RDM_NB_VIEWS, 2);
 
 		if (replayDisplayMode==RDM_STAT_GRAPH_VIEW)
-			drawPanelButton(y, 2, numButtons, 5);
+			drawPanelButton(y, 2, RDM_NB_VIEWS, 5);
 		else
-			drawPanelButton(y, 2, numButtons, 4);
+			drawPanelButton(y, 2, RDM_NB_VIEWS, 4);
 	}
 
 	if(hilights.find(HilightUnderMinimapIcon) != hilights.end())
