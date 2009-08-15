@@ -7,10 +7,8 @@ if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
         if file.find(".ogg") != -1:
             PackTar(env["TARFILE"], file)
-            env.Install(env["INSTALLDIR"]+"/glob2/data/zik", file)
+            env.Install(env["INSTALLDIR"]+"/glob2/data/zik/original", file)
     
     
     PackTar(env["TARFILE"], "SConscript")
-    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/zik")
-
-SConscript("original/SConscript")
+    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/zik/original")

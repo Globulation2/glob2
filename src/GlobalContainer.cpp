@@ -516,9 +516,9 @@ void GlobalContainer::load(void)
 		mix = new SoundMixer(settings.musicVolume, settings.voiceVolume, settings.mute);
 		mix->loadTrack("data/zik/intro.ogg");
 		mix->loadTrack("data/zik/menu.ogg");
-		mix->loadTrack("data/zik/a1.ogg");
-		mix->loadTrack("data/zik/a2.ogg");
-		mix->loadTrack("data/zik/a3.ogg");
+		mix->loadTrack("data/zik/original/a1.ogg");
+		mix->loadTrack("data/zik/original/a2.ogg");
+		mix->loadTrack("data/zik/original/a3.ogg");
 		mix->setNextTrack(0);
 		mix->setNextTrack(1);
 		
