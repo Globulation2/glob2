@@ -17,6 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <iostream>
+#include <fstream>
+
 #include "AICastor.h"
 #include "AINicowar.h"
 
@@ -32,8 +35,6 @@
 
 #include <FileManager.h>
 #include <GraphicContext.h>
-#include <Stream.h>
-#include <BinaryStream.h>
 
 #include "BuildingType.h"
 #include "Game.h"
@@ -54,6 +55,8 @@
 #include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 
+#include "NetMessage.h"
+
 #define BULLET_IMGID 0
 
 #define MIN_MAX_PRESIGE 500
@@ -63,6 +66,9 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	mapscript(gui)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
+	
+	isRecordingReplay = false;
+	
 	init(gui, edit);
 }
 
@@ -90,6 +96,14 @@ Game::~Game()
 	overlayAlphas.resize(0);
 
 	clearGame();
+
+	if (isRecordingReplay)
+	{
+		for (size_t i = 0; i < replayOutputStreams.size(); i++)
+		{
+			delete replayOutputStreams[i];
+		}
+	}
 }
 
 void Game::init(GameGUI *gui, MapEdit* edit)
@@ -109,7 +123,6 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 		players[i]=NULL;
 	}
 	clearGame();
-
 
 	mouseX=0;
 	mouseY=0;
@@ -146,6 +159,9 @@ void Game::clearGame()
 			players[i]=NULL;
 		}
 	}
+	
+	// Clear build projects
+	buildProjects.clear();
 
 	///Clears prestige
 	totalPrestige=0;
@@ -204,14 +220,37 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	anyPlayerWaited=false;
 }
 
-
-
 void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 {
-	anyPlayerWaited=false;
 	assert(order->sender>=0);
 	assert(order->sender<Team::MAX_COUNT);
 	assert(order->sender < gameHeader.getNumberOfPlayers());
+
+	if (isRecordingReplay && order->getOrderType() != ORDER_VOICE_DATA && order->getOrderType() != ORDER_NULL) // TODO: optionally save VOIP
+	{
+		assert(replay);
+		
+		replayOrderCount++;
+		NetSendOrder* msg = new NetSendOrder(order);
+		
+		for (std::vector<OutputStream *>::iterator out = replayOutputStreams.begin(); out != replayOutputStreams.end(); out++)
+		{
+			// Steps since last order
+
+			(*out)->writeUint32(replayStepsSinceLastOrder, "replayStepsSinceLastOrder" );
+
+			// Write actual order to replay
+
+			msg->encodeData( *out );
+
+			(*out)->flush();
+		}
+		
+		delete msg;
+		replayStepsSinceLastOrder=0;
+	}
+	
+	anyPlayerWaited=false;
 	Team *team=players[order->sender]->team;
 	assert(team);
 	bool isPlayerAlive=team->isAlive;
@@ -225,7 +264,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				break;
 
 			int posX=(oc->posX)&map.getMaskW();
-			int posY=(oc->posY)&map.getMaskH();;
+			int posY=(oc->posY)&map.getMaskH();
 			assert(oc->teamNumber==team->teamNumber);
 			BuildingType *bt=globalContainer->buildingsTypes.get(oc->typeNum);
 			bool isVirtual=bt->isVirtual;
@@ -459,7 +498,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 					}
 				}
 
-				if (order->sender!=localPlayer)
+				if (order->sender!=localPlayer || globalContainer->replaying)
 				{
 					b->posXLocal=b->posX;
 					b->posYLocal=b->posY;
@@ -784,11 +823,24 @@ void Game::setAlliances(void)
 	}
 }
 
-
-
 bool Game::load(GAGCore::InputStream *stream)
 {
 	assert(stream);
+
+	// Initialize the replay
+	isRecordingReplay = !globalContainer->replaying; // TODO: provide an option for this
+	if (isRecordingReplay)
+	{
+		replayStepCount = 0;
+		replayOrderCount = 0;
+		replayStepsSinceLastOrder = 0;
+
+		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.replay"));
+		
+		replayOutputStreams.push_back(replay);
+		replayOutputStreams.push_back(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.orders")));
+	}
+
 	stream->readEnterSection("Game");
 
 	///Clears any previous game
@@ -1114,6 +1166,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 		int posX=bpi->posX&map.getMaskW();
 		int posY=bpi->posY&map.getMaskH();
 		int teamNumber=bpi->teamNumber;
+		assert(teamNumber <= teamsCount());
 		Sint32 typeNum=(bpi->typeNum);
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 		int w=bt->width;
@@ -1217,6 +1270,12 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam)
 {
+	if (isRecordingReplay) 
+	{
+		replayStepCount++;
+		replayStepsSinceLastOrder++;
+	}
+
 	if (!anyPlayerWaited)
 	{
 		Sint32 startTick=SDL_GetTicks();
@@ -1725,8 +1784,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int dx=unit->dx;
 	int dy=unit->dy;
 
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
-		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, teams[localTeam]->me)))
+		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
 			return;
 
 	int imgid;
@@ -1814,7 +1876,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		}
 	}
 
-	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))||(Unit::GIDtoTeam(gid)==localTeam)))
+	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
 		mouseUnit=unit;
 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
@@ -1873,6 +1935,9 @@ inline void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int
 
 inline void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
@@ -1882,7 +1947,7 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 							y+viewportY-1,
 							x+viewportX+1,
 							y+viewportY+1,
-							teams[localTeam]->me) ||
+							visibleTeams) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				// draw terrain
@@ -1905,6 +1970,9 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 
 inline void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 			if (
@@ -1913,7 +1981,7 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 						y+viewportY-1,
 						x+viewportX+1,
 						y+viewportY+1,
-						teams[localTeam]->me) ||
+						visibleTeams) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
 				Ressource r=map.getRessource(x+viewportX, y+viewportY);
@@ -2152,7 +2220,10 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 		globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 	}
 
-	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & teams[localTeam]->me))
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
+	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & visibleTeams))
 	{
 		//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 		// TODO : find better color for this
@@ -2238,6 +2309,9 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 
 inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
 {
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
 	std::set<Building*> drawnBuildings;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
@@ -2257,8 +2331,8 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
 						|| Building::GIDtoTeam(gid)==localTeam
-						|| (building->seenByMask & teams[localTeam]->me)
-						|| map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me))
+						|| (building->seenByMask & visibleTeams)
+						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
 						int px,py;					
 						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
@@ -2281,7 +2355,7 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 	typedef bool (Map::*MapIsFP)(int, int);
 	MapIsFP mapIs;
 	
-	if ((drawOptions & DRAW_AREA) != 0)
+	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->replaying || globalContainer->replayShowAreas))
 	{
 		mapIs=&Map::isForbiddenLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, ForbiddenArea);
 		mapIs=&Map::isGuardAreaLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, GuardArea);
@@ -2367,26 +2441,26 @@ inline void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw,
 
 inline void Game::drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY)
 {
-		for (int y=top; y<bot; y++)
-			for (int x=left; x<right; x++)
+	for (int y=top; y<bot; y++)
+		for (int x=left; x<right; x++)
+		{
+			std::stringstream str;
+			for(int n=0; n<9; ++n)
 			{
-				std::stringstream str;
-				for(int n=0; n<9; ++n)
+				if(map.isPointSet(n, x+viewportX, y+viewportY))
 				{
-					if(map.isPointSet(n, x+viewportX, y+viewportY))
-					{
-						str.str("");
-						str<<n+1;
-						globalContainer->gfx->drawString((x<<5)+(n%3)*10, (y<<5)+(n/3)*10, globalContainer->littleFont, str.str());
+					str.str("");
+					str<<n+1;
+					globalContainer->gfx->drawString((x<<5)+(n%3)*10, (y<<5)+(n/3)*10, globalContainer->littleFont, str.str());
 
-						globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 64, 255, 255);
-						globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 64, 255, 255);
+					globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 64, 255, 255);
+					globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 64, 255, 255);
 
-						globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 64, 255, 255);
-						globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 64, 255, 255);
-					}
+					globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 64, 255, 255);
+					globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 64, 255, 255);
 				}
 			}
+		}
 }
 
 inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
@@ -2396,6 +2470,9 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 
 	Sprite *bulletSprite = globalContainer->bullet;
 	// FIXME : have team in bullets to have the correct color
+
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 	int mapPixW=(map.getW())<<5;
 	int mapPixH=(map.getH())<<5;
@@ -2434,7 +2511,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 		// explosions
 		for (std::list<BulletExplosion *>::iterator it=s->explosions.begin();it!=s->explosions.end();it++)
 		{
-			if (map.isFOWDiscovered((*it)->x, (*it)->y, teams[localTeam]->me))
+			if (map.isFOWDiscovered((*it)->x, (*it)->y, visibleTeams))
 			{
 				int x, y;
 				map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
@@ -2447,7 +2524,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 		// death animations
 		for (std::list<UnitDeathAnimation *>::iterator it=s->deathAnimations.begin();it!=s->deathAnimations.end();++it)
 		{
-			if (map.isFOWDiscovered((*it)->x, (*it)->y, teams[localTeam]->me))
+			if (map.isFOWDiscovered((*it)->x, (*it)->y, visibleTeams))
 			{
 				int x, y;
 				map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
@@ -2482,11 +2559,14 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 					globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrainShader, 0);
 				}*/
 
+				Uint32 visibleTeams = teams[localTeam]->me;
+				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
 				// first draw black
-				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
-				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
-				i2=!map.isMapDiscovered(x+viewportX+1, y+viewportY, teams[localTeam]->me) ? 1 : 0;
-				i3=!map.isMapDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me) ? 1 : 0;
+				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
+				i1=!map.isMapDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
+				i2=!map.isMapDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
+				i3=!map.isMapDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
 				unsigned blackValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 				if (blackValue==15)
 					globalContainer->gfx->drawFilledRect((x<<5)+16, (y<<5)+16, 32, 32, 0, 0, 0);
@@ -2496,10 +2576,10 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 				// then if it isn't full black, draw shade
 				if (blackValue!=15)
 				{
-					i0=!map.isFOWDiscovered(x+viewportX+1, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
-					i1=!map.isFOWDiscovered(x+viewportX, y+viewportY+1, teams[localTeam]->me) ? 1 : 0;
-					i2=!map.isFOWDiscovered(x+viewportX+1, y+viewportY, teams[localTeam]->me) ? 1 : 0;
-					i3=!map.isFOWDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me) ? 1 : 0;
+					i0=!map.isFOWDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
+					i1=!map.isFOWDiscovered(x+viewportX, y+viewportY+1, visibleTeams) ? 1 : 0;
+					i2=!map.isFOWDiscovered(x+viewportX+1, y+viewportY, visibleTeams) ? 1 : 0;
+					i3=!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams) ? 1 : 0;
 					unsigned shadeValue = i0 + (i1<<1) + (i2<<2) + (i3<<3);
 
 					if (shadeValue==15)
@@ -2539,9 +2619,12 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		{
 			for (int x=0; x<width; x++)
 			{
+				Uint32 visibleTeams = teams[localTeam]->me;
+				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
 				int rx=(x+viewportX-1+map.getW())%map.getW();
 				int ry=(y+viewportY-1+map.getH())%map.getH();
-				if(!edit && !map.isMapDiscovered(rx, ry, teams[localTeam]->me))
+				if(!edit && !map.isMapDiscovered(rx, ry, visibleTeams))
 					continue;
 				if(overlays->getValue(rx, ry))
 				{
@@ -2585,7 +2668,10 @@ inline void Game::drawUnitPathLines(int left, int top, int right, int bot, int s
 
 inline void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit)
 {
-	if(unit->owner->sharedVisionOther & teams[localTeam]->me)
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
+	if(unit->owner->sharedVisionOther & visibleTeams)
 	{
 		if (unit->validTarget)
 		{
@@ -2801,7 +2887,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int righMargin, int topMargin
 
 	// Draw units that are off the screen for the selected building
 
-	if(selectedBuilding != NULL && selectedBuilding->owner->sharedVisionOther & teams[localTeam]->me)
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
+	if(selectedBuilding != NULL && (selectedBuilding->owner->sharedVisionOther & visibleTeams))
 	{
 		for(std::list<Unit*>::iterator i = selectedBuilding->unitsWorking.begin(); i!=selectedBuilding->unitsWorking.end(); ++i)
 		{
@@ -2815,66 +2904,89 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int righMargin, int topMargin
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
-	for (std::list<Building *>::iterator virtualIt=teams[localTeam]->virtualBuildings.begin();
-		virtualIt!=teams[localTeam]->virtualBuildings.end(); ++virtualIt)
+	if (!globalContainer->replaying || globalContainer->replayShowFlags)
 	{
-		Building *building=*virtualIt;
-		BuildingType *type=building->type;
+		// In replays we want to show the flags of all players, so we build a list of whose buildings to show
+		std::list<Team *> teamsToShow;
 
-		int team = building->owner->teamNumber;
-
-		int imgid = type->gameSpriteImage;
-
-		int x, y;
-		map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
-
-		// all flags are hued:
-		Sprite *buildingSprite = type->gameSpritePtr;
-		buildingSprite->setBaseColor(teams[team]->color);
-		globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
-
-		// flag circle:
-		if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==selectedBuilding))
-			globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
-
-		// FIXME : ugly copy past
-		if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
+		if (!globalContainer->replaying)
 		{
-			int decy=(type->height*32);
-			int healDecx=(type->width-2)*16+1;
-			//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
-
-			// TODO : find better color for this
-			// health
-			if (type->hpMax)
+			// Only add the local team
+			teamsToShow.push_back(teams[localTeam]);
+		}
+		else
+		{
+			// Add all teams
+			for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			{
-				float hpRatio=(float)building->hp/(float)type->hpMax;
-				if (hpRatio>0.6)
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
-				else if (hpRatio>0.3)
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
-				else
-					drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
+				teamsToShow.push_back(teams[i]);
 			}
+		}
 
-			// units
-
-			if (building->maxUnitInside>0)
-				drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
-			if (building->maxUnitWorking>0)
-				drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
-
-			// food
-			if ((type->canFeedUnit) || (type->unitProductionTime))
+		// now cycle through all added teams
+		for (std::list<Team *>::iterator teamsIt=teamsToShow.begin(); teamsIt!=teamsToShow.end(); ++teamsIt)
+		{
+			for (std::list<Building *>::iterator virtualIt=(*teamsIt)->virtualBuildings.begin();
+				virtualIt!=(*teamsIt)->virtualBuildings.end(); ++virtualIt)
 			{
-				// compute bar size, prevent oversize
-				int bDiv=1;
-				assert(type->height!=0);
-				while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
-					bDiv++;
-				drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
-			}
+				Building *building=*virtualIt;
+				BuildingType *type=building->type;
 
+				int team = building->owner->teamNumber;
+
+				int imgid = type->gameSpriteImage;
+
+				int x, y;
+				map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
+
+				// all flags are hued:
+				Sprite *buildingSprite = type->gameSpritePtr;
+				buildingSprite->setBaseColor(teams[team]->color);
+				globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+
+				// flag circle:
+				if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==selectedBuilding))
+					globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
+
+				// FIXME : ugly copy past
+				if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
+				{
+					int decy=(type->height*32);
+					int healDecx=(type->width-2)*16+1;
+					//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
+
+					// TODO : find better color for this
+					// health
+					if (type->hpMax)
+					{
+						float hpRatio=(float)building->hp/(float)type->hpMax;
+						if (hpRatio>0.6)
+							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
+						else if (hpRatio>0.3)
+							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
+						else
+							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
+					}
+
+					// units
+
+					if (building->maxUnitInside>0)
+						drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+					if (building->maxUnitWorking>0)
+						drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+
+					// food
+					if ((type->canFeedUnit) || (type->unitProductionTime))
+					{
+						// compute bar size, prevent oversize
+						int bDiv=1;
+						assert(type->height!=0);
+						while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
+							bDiv++;
+						drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+					}
+				}
+			}
 		}
 	}
 
@@ -3032,3 +3144,22 @@ bool Game::isPrestigeWinCondition(void)
 	return false;
 }
 
+OutputStream *Game::getReplayStream()
+{
+	return replay;
+}
+
+void Game::addReplayOutputStream( OutputStream *stream )
+{
+	replayOutputStreams.push_back(stream);
+}
+
+Uint32 Game::getReplayOrderCount()
+{
+	return replayOrderCount;
+}
+
+Uint32 Game::getReplayStepCount()
+{
+	return replayStepCount;
+}

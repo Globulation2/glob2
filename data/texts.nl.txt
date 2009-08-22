@@ -636,6 +636,8 @@ Nieuwe campagne
 Nieuw
 [nick taken]
 Het spijt ons, maar de naam die je gekozen hebt is al geregistreerd bij freenode. Je kan alleen maar praten via YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -808,6 +810,8 @@ Wil je spel opslaan voordat je aflsuiten?
 Opslaan
 [save map]
 Speelveld opslaan
+[save replay]
+
 [save script]
 
 [Save]

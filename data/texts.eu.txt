@@ -576,6 +576,8 @@ Kanpaina berria
 Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -748,6 +750,8 @@ Partida gorde irten aurretik?
 Gorde partida
 [save map]
 Gorde mapa
+[save replay]
+
 [save script]
 
 [Save]

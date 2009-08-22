@@ -570,6 +570,8 @@ Novan Kampanjon
 Novan Karton
 [nick taken]
 Pardonu! Sed la nomo kiun vi elektis estas jam prenita ĉe freenode. Vi nur povas bablili en YOG.
+[no fullscreen]
+* Nur kiel fenestro
 [No Hints]
 Neniu Konsileto
 [no key]
@@ -738,6 +740,8 @@ Sablo
 Konservi ludon
 [save map]
 Konservi Karton
+[save replay]
+
 [save script]
 Konservi Skripton
 [Save]
@@ -1184,5 +1188,3 @@ Via IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus 
 Teamo %0 konvertigis globulon de vi al sia!
 [Your username was banned]
 Via uzulnomo estas malpermesata. Bv. kontakti la administristojn.
-[no fullscreen]
-* Nur kiel fenestro

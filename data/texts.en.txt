@@ -202,6 +202,8 @@ Clears resources
 Clearing Flag
 [closed]
 Closed
+[combined vision]
+Combined vision
 [compile]
 Compile script
 [compose]
@@ -356,6 +358,8 @@ Fertility Map
 Flag Defaults
 [flag settings explanation]
 The default radius of the flag
+[fog of war]
+Fog of war
 [food]
 Food
 [forbidden area]
@@ -494,6 +498,8 @@ Load game
 Load Map
 [load script]
 Load Script
+[load replay]
+Load Replay
 [load]
 Load
 [loading map list]
@@ -502,6 +508,8 @@ Loading Map List...
 Lobby
 [login]
 Login
+[look around]
+Look around
 [Lost : %0 has more prestige than you]
 Lost: %0 has more prestige than you
 [Lost : your colony is dead]
@@ -570,6 +578,8 @@ New Campaign
 New Map
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+* only in windowed mode
 [No Hints]
 No Hints
 [no key]
@@ -646,6 +656,8 @@ Pause Game
 pause
 [Paused]
 Paused
+[players]
+Players
 [player name]
 Player name
 [player rating %0]
@@ -674,6 +686,8 @@ Plum
 Quit the editor
 [quit the game]
 Quit the game
+[quit the replay]
+Quit the replay
 [quit]
 Quit
 [racetrack explanation 2]
@@ -712,12 +726,16 @@ Repair
 times the same landscape
 [Repeat your password :]
 Repeat your password:
+[replay ended]
+Replay Ended
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [return to editor]
 Return to the editor
 [return to game]
 Return to game
+[return to replay]
+Return to the replay
 [return]
 enter
 [right meta]
@@ -738,6 +756,8 @@ Do you want to save before quitting?
 Save game
 [save map]
 Save Map
+[save replay]
+Save Replay
 [save script]
 Save Script
 [Save]
@@ -828,6 +848,10 @@ shift-%0
 Enter: send a chat message
 [shortcut explanation v]
 V: hold to speak
+[show areas]
+Show areas
+[show flags]
+Show flags
 [show main menu]
 Show Main Menu
 [skin]
@@ -980,6 +1004,8 @@ The market is under attack
 The racetrack is finished
 [the racetrack is under attack]
 The racetrack is under attack
+[the replays]
+Replays
 [the school is finished]
 The school is finished
 [the school is under attack]
@@ -1076,6 +1102,10 @@ Version
 View History
 [Voice volume]
 Volume (voice)
+[watch again]
+Watch again
+[watching:]
+Watching:
 [waiting for %0]
 Waiting for %0
 [waiting for key]
@@ -1184,5 +1214,3 @@ Your IP address was temporarily banned. Please wait patiently until it is unbann
 Your unit got converted to %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
-[no fullscreen]
-* only in windowed mode

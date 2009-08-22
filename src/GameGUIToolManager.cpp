@@ -115,6 +115,23 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 	}
 	else if(mode == PlaceZone)
 	{
+		Color c;
+		/* The following colors have been chosen to match the
+			colors in the .png files for the animations of
+			areas as of 2007-04-29.  If those .png files are
+			updated with different colors, then the following
+			code should change accordingly. */
+		switch(zoneType) {
+		case Forbidden:
+			c = Color(255,0,0);
+			break;
+		case Guard:
+			c = Color(27,0,255);
+			break;
+		case Clearing:
+			c = Color(251,206,0);
+			break;
+		}
 		/* Instead of using a dimmer intensity to indicate
 			removing of areas, this should rather use dashed
 			lines.  (The intensities used below are 2/3 as
@@ -123,45 +140,13 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 			in MapEdit.cpp to choose a color for those cases
 			where areas are being drawn. */
 		unsigned mode = brush.getType();
-		Color c = Color(0,0,0);
-		/* The following colors have been chosen to match the
-			colors in the .png files for the animations of
-			areas as of 2007-04-29.  If those .png files are
-			updated with different colors, then the following
-			code should change accordingly. */
-		if (zoneType == Forbidden)
+		switch(mode)
 		{
-			if (mode == BrushTool::MODE_ADD)
-			{
-				c = Color(255,0,0);
-			}
-			else
-			{
-				c = Color(170,0,0);
-			}
-		}
-		else if (zoneType == Guard)
-		{
-			if (mode == BrushTool::MODE_ADD)
-			{
-				c = Color(27,0,255);
-			}
-			else
-			{
-				c = Color(18,0,170);
-			}
-		}
-		else if (zoneType == Clearing)
-		{
-			if (mode == BrushTool::MODE_ADD)
-			{
-			/* some of the clearing area images use (252,207,0) instead */
-				c = Color(251,206,0);
-			}
-			else
-			{
-				c = Color(167,137,0);
-			}
+		case BrushTool::MODE_DEL:
+			c = Color(c.r*2/3,c.g*2/3,c.b*2/3);
+			break;
+		case BrushTool::MODE_ADD:
+			break;
 		}
 		brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY, firstPlacementX, firstPlacementY);
 	}

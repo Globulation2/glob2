@@ -64,6 +64,7 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("maps");
 	fileManager->addWriteSubdir("games");
 	fileManager->addWriteSubdir("campaigns");
+	fileManager->addWriteSubdir("replays");
 	fileManager->addWriteSubdir("thumbnails");
 	fileManager->addWriteSubdir(YOG_SERVER_FOLDER);
 	fileManager->addWriteSubdir(YOG_SERVER_FOLDER+"gamelog");
@@ -104,6 +105,20 @@ GlobalContainer::GlobalContainer(void)
 	
 	voiceRecorder = NULL;
 	automaticGameGlobalEndConditions=false;
+
+	replaying = false;
+	replay = NULL;
+	replayFileName = "";
+	replayFastForward = false;
+	replayShowFog = true;
+	replayVisibleTeams = 0xFFFFFFFF;
+	replayShowAreas = false;
+	replayShowFlags = true;
+	replayStepsProcessed = 0;
+	replayStepsTotal = -1;
+	replayOrdersProcessed = 0;
+	replayOrdersTotal = -1;
+	replayStepCounter = -1;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
@@ -347,7 +362,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings.mute = 0;
 			continue;
 		}
-
+		if (strcmp(argv[i], "-replay")==0)
+		{
+			replaying=true;
+			replayFileName=argv[i+1];
+			continue;
+		}
 		if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
@@ -375,6 +395,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-version\tprint the version and exit\n");
+			printf("-replay <replay file name>\t replay the game stored in te specified file.\n");
 			exit(0);
 		}
 

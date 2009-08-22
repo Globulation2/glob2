@@ -46,7 +46,7 @@ public:
 		QUIT_GAME = 6
 	};
 public:
-	InGameMainScreen();
+	InGameMainScreen(bool isReplay = false);
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
@@ -57,7 +57,8 @@ public:
 	enum
 	{
 		QUIT = 0,
-		CONTINUE = 1
+		CONTINUE = 1,
+		WATCH_AGAIN = 2
 	};
 public:
 	InGameEndOfGameScreen(const char *title, bool canContinue);

@@ -162,7 +162,9 @@ bool MapScriptUSL::compileCode(const std::string& code)
 					auto_ptr<ifstream> file(Toolkit::getFileManager()->openIFStream(fullFileName));
 					if (file.get())
 					{
-						cerr << "* Loading " << fullFileName << endl;
+						#ifdef DEBUG_USL
+							cout << "* Loading " << fullFileName << endl;
+						#endif
 						usl.includeScript(fileName, *file.get());
 					}
 					else
@@ -209,6 +211,9 @@ void MapScriptUSL::syncStep(GameGUI *gui)
 {
 	const size_t stepsMax = 10000;
 	size_t stepsCount = usl.run(stepsMax);
-	cerr << "* USL executed " << stepsCount << " steps" << endl;
+	
+	#ifdef DEBUG_USL
+		std::cout << "* USL executed " << stepsCount << " steps" << std::endl;
+	#endif
 }
 

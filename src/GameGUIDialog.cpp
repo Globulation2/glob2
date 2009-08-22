@@ -33,14 +33,24 @@
 
 
 //! Main menu screen
-InGameMainScreen::InGameMainScreen()
-:OverlayScreen(globalContainer->gfx, 320, 260)
+InGameMainScreen::InGameMainScreen(bool isReplay)
+:OverlayScreen(globalContainer->gfx, 320, (isReplay ? 210 : 260))
 {
-	addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
-	addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]"), SAVE_GAME));
-	addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Options]"), OPTIONS));
-	addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
-	addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
+	if (isReplay)
+	{
+		addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load replay]"), LOAD_GAME));
+		addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Options]"), OPTIONS));
+		addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the replay]"), QUIT_GAME));
+		addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to replay]"), RETURN_GAME, 27));
+	}
+	else
+	{
+		addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
+		addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]"), SAVE_GAME));
+		addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Options]"), OPTIONS));
+		addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
+		addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
+	}
 	dispatchInit();
 }
 
@@ -51,12 +61,26 @@ void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par
 }
 
 InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue)
-:OverlayScreen(globalContainer->gfx, 320, canContinue ? 150 : 100)
+:OverlayScreen(globalContainer->gfx, 320, 100 + (canContinue ? 50 : 0) + (globalContainer->replaying ? 50 : 0))
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", title));
 	addWidget(new TextButton(10, 50, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
 	if (canContinue)
-		addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
+	{
+		if (globalContainer->replaying)
+		{
+			addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[look around]"), CONTINUE, 27));
+			addWidget(new TextButton(10, 150, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[watch again]"), WATCH_AGAIN, 27));
+		}
+		else
+		{
+			addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
+		}
+	}
+	else if (globalContainer->replaying)
+	{
+		addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[watch again]"), WATCH_AGAIN, 27));
+	}
 	dispatchInit();
 }
 
@@ -107,7 +131,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		normalVision[i]=new OnOffButton(196+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0, NORMAL_VISION+i);
 		addWidget(normalVision[i]);
 		
-		if(gameGUI->game.gameHeader.areAllyTeamsFixed())
+		if(gameGUI->game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying)
 		{
 			alliance[i]->visible=false;
 			normalVision[i]->visible=false;
@@ -142,6 +166,16 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 			}
 			n+=1;
 		}
+		
+		// Disable these buttons if it's a replay
+		if (globalContainer->replaying)
+		{
+			alliance[i]->setClickable(false);
+			normalVision[i]->setClickable(false);
+			foodVision[i]->setClickable(false);
+			marketVision[i]->setClickable(false);
+			chat[i]->setClickable(false);
+		}
 	}
 	for (;i<16;i++)
 	{
@@ -154,7 +188,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	}
 	
 	//Put locks if needed
-	if(gameGUI->game.gameHeader.areAllyTeamsFixed())
+	if(gameGUI->game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying)
 	{
 		int np = std::max(2, gameGUI->game.gameHeader.getNumberOfPlayers() - countNumberPlayersForLocalTeam(gameGUI->game.gameHeader, gameGUI->localTeamNo));
 		//Although this is the animation widget, we are just using it to display a still frame

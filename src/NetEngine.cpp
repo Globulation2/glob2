@@ -250,3 +250,10 @@ void NetEngine::increaseLatencyAdjustment()
 	boost::shared_ptr<AdjustLatency> latency(new AdjustLatency(currentLatency+1));
 	addLocalOrder(latency);
 }
+
+
+
+void NetEngine::setLocalPlayer(int player)
+{
+	localPlayer = player;
+}

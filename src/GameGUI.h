@@ -130,6 +130,8 @@ public:
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
 	
+	/// Show the dialog that says that the replay ended
+	void showEndOfReplayScreen();
 	
 	///This is an enum for the current hilight object. The hilighted object is shown with a large arrow.
 	///This is primarily for tutorials
@@ -223,6 +225,7 @@ private:
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
+	void handleReplayProgressBarClick(int mx, int my, int button);
 
 	void handleActivation(Uint8 state, Uint8 gain);
 	void nextDisplayMode(void);
@@ -252,15 +255,23 @@ private:
 	//! Draw the panel
 	void drawPanel(void);
 	//! Draw the buttons associated to the panel
-	void drawPanelButtons(int pos);
+	void drawPanelButtons(int y);
+	//! Draw a single button of the panel
+	void drawPanelButton(int y, int pos, int numButtons, int sprite);
 	//! Draw a choice of buildings or flags
 	void drawChoice(int pos, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine = 2);
+	//! Draw a choice of flags
+	void drawFlagView(void);
 	//! Draw the infos from a unit
 	void drawUnitInfos(void);
 	//! Draw the infos and actions from a building
 	void drawBuildingInfos(void);
 	//! Draw the infos about a ressource on map (type and number left)
 	void drawRessourceInfos(void);
+	//! Draw the replay panel
+	void drawReplayPanel(void);
+	//! Draw the bottom bar with the replay's time bar
+	void drawReplayProgressBar(bool drawBackground = true);
 
 	//! Draw the menu during game
 	void drawInGameMenu(void);
@@ -289,6 +300,15 @@ private:
 		STAT_GRAPH_VIEW,
 		NB_VIEWS,
 	} displayMode;
+
+	//! Display modes in replays
+	enum ReplayDisplayMode
+	{
+		RDM_REPLAY_VIEW,
+		RDM_STAT_TEXT_VIEW,
+		RDM_STAT_GRAPH_VIEW,
+		RDM_NB_VIEWS,
+	} replayDisplayMode;
 
 	//! Selection mode
 	enum SelectionMode

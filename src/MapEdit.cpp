@@ -820,7 +820,7 @@ MapEdit::MapEdit()
             5, // y offset
             128, // width
             128, // height
-            Minimap::ShowFOW)
+            Minimap::HideFOW)
 {
 	doQuit=false;
 	doFullQuit=false;
@@ -1244,9 +1244,10 @@ int MapEdit::run(void)
 		}
 		
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
+		
+		drawMenu();
 		drawMiniMap();
 		wasMinimapRendered=false;
-		drawMenu();
 		drawWidgets();
 		if(showingMenuScreen)
 		{

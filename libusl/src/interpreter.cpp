@@ -41,8 +41,10 @@ bool Thread::step()
 			}
 			else
 			{
-				retVal->dump(cout);
-				cout << endl;
+				#ifdef DEBUG_USL
+					retVal->dump(cout);
+					cout << endl;
+				#endif
 				state = STOP;
 				break;
 			}
