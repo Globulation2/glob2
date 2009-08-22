@@ -4361,7 +4361,7 @@ void GameGUI::drawAll(int team)
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawOptions);
+		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);
 	}
 	else
 	{
@@ -4369,7 +4369,7 @@ void GameGUI::drawAll(int team)
 		
 		globalContainer->gfx->setClipRect();
 		
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
+		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
 		
 		// generate and draw particles
 		generateNewParticles(&visibleBuildings);

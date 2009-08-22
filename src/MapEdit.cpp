@@ -1355,7 +1355,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		drawOptions |= Game::DRAW_OVERLAY;
 	}
 
-	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team, drawOptions);
+	game.drawMap(sx, sy, sw, sh, RIGHT_MENU_WIDTH, 16, viewportX, viewportY, team, drawOptions);
 // 	if (doPaintEditMode)
 // 		paintEditMode(false, false);
 

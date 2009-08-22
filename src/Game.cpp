@@ -2848,7 +2848,7 @@ inline bool Game::isOnScreen(int left, int top, int right, int bot, int viewport
 
 
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
+void Game::drawMap(int sx, int sy, int sw, int sh, int righMargin, int topMargin, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
 {
 	static int time = 0;
 	static DynamicClouds ds(&globalContainer->settings);
@@ -2897,7 +2897,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY,
 			Unit* unit = *i;
 			if(!isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY))
 			{
-				drawUnitOffScreen(0, 16, sw - 160, sh-16, viewportX, viewportY, unit, drawOptions);
+				drawUnitOffScreen(0, topMargin, sw - righMargin, sh-topMargin, viewportX, viewportY, unit, drawOptions);
 			}
 		}
 	}
