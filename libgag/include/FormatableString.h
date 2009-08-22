@@ -108,6 +108,11 @@ namespace GAGCore {
 			* \param str New format string.
 			*/
 			FormatableString& operator=(const std::string& str) ;
+			
+			/*!
+			* Casts this string to a const char*
+			*/
+			operator const char*() { return this->c_str(); }
 	};
 }
 

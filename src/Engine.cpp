@@ -249,6 +249,35 @@ int Engine::run(void)
 	}
 	else
 	{
+		// look for all available musics
+		globalContainer->fileManager->initDirectoryListing("data/zik/", NULL, true);
+		const char *fileName;
+		std::vector<std::string> musicDirs;
+		while ((fileName = globalContainer->fileManager->getNextDirectoryEntry()) != 0) 
+		{
+			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(fileName)))
+			{
+				std::cerr << "music dir found: " << fileName << std::endl;
+				musicDirs.push_back(fileName);
+			}
+		}
+		
+		// select a music randomly
+		// FIXME: implement more intelligent music choosing policy
+		if (!musicDirs.empty())
+		{
+			size_t musicIndex(rand() % musicDirs.size());
+			const std::string& musicDir(musicDirs[musicIndex]);
+			std::cerr << "selecting music dir " << musicDir << std::endl;
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a1.ogg").arg(musicDir), 2);
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a2.ogg").arg(musicDir), 3);
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a3.ogg").arg(musicDir), 4);
+		}
+		else
+		{
+			std::cerr << "Warning, no music found!" << std::endl;
+		}
+		
 		// Stop menu music, load game music
 		globalContainer->mix->setNextTrack(2, true);
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
@@ -599,7 +628,7 @@ int Engine::run(void)
 	{
 		// Restart menu music
 		assert(globalContainer->mix);
-		globalContainer->mix->setNextTrack(1);
+		globalContainer->mix->setNextTrack(1, true);
 		
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
