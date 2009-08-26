@@ -17,20 +17,16 @@ struct Usl
 	void collectGarbage();
 	void includeScript(const std::string& name, std::istream& source);
 	void createThread(const std::string& name, std::istream& source);
-	void addGlobal(const std::string& name, Value* value);
-	Value* getGlobal(const std::string& name);
+	void setConstant(const std::string& name, Value* value);
+	Value* getConstant(const std::string& name);
 	
 	virtual std::ifstream* openFile(const std::string& name);
 	
-	typedef std::map<std::string, Value*> LoadedScripts;
-	typedef std::map<std::string, Value*> RuntimeValues;
 	typedef std::vector<Thread> Threads;
 	
 	DebugInfo debug;
 	Heap heap;
 	Scope* root;
-	LoadedScripts loadedScripts;
-	RuntimeValues runtimeValues;
 	Threads threads;
 	
 	/// Run one thread (round-robin over all threads) for a maximum of steps bytecodes executions

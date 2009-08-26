@@ -105,10 +105,10 @@ inline void NativeValuePrototype<GameObjectives*>::initialize()
 
 void MapScriptUSL::addGlob2Values(GameGUI* gui)
 {
-	usl.addGlobal("gui", new NativeValue<GameGUI*>(&usl.heap, gui));
-	usl.addGlobal("engine", new NativeValue<Game*>(&usl.heap, &(gui->game)));
-	usl.addGlobal("hints", new NativeValue<GameHints*>(&usl.heap, &(gui->game.gameHints)));
-	usl.addGlobal("objectives", new NativeValue<GameObjectives*>(&usl.heap, &(gui->game.objectives)));
+	usl.setConstant("gui", new NativeValue<GameGUI*>(&usl.heap, gui));
+	usl.setConstant("engine", new NativeValue<Game*>(&usl.heap, &(gui->game)));
+	usl.setConstant("hints", new NativeValue<GameHints*>(&usl.heap, &(gui->game.gameHints)));
+	usl.setConstant("objectives", new NativeValue<GameObjectives*>(&usl.heap, &(gui->game.objectives)));
 }
 
 
@@ -142,7 +142,7 @@ void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 
 bool MapScriptUSL::compileCode(const std::string& code)
 {
-	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getGlobal("gui"))->value;
+	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getConstant("gui"))->value;
 	usl = Usl();
 	addGlob2Values(gui);
 	

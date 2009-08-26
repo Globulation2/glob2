@@ -61,19 +61,11 @@ struct Load: NativeCode
 		
 		Usl* usl = thread->usl;
 		
-		Value* value = usl->loadedScripts[filename];
-		if (value == 0)
-		{
-			auto_ptr<ifstream> stream(usl->openFile(filename));
-			Scope* scope = usl->compile(filename, *stream);
-			if (frame.nextInstr >= frame.thunk->thunkPrototype()->body.size())
-				thread->frames.pop_back(); // tail-call optimisation
-			thread->frames.push_back(scope);
-		}
-		else
-		{
-			stack.push_back(value);
-		}
+		auto_ptr<ifstream> stream(usl->openFile(filename));
+		Scope* scope = usl->compile(filename, *stream);
+		if (frame.nextInstr >= frame.thunk->thunkPrototype()->body.size())
+			thread->frames.pop_back(); // tail-call optimisation
+		thread->frames.push_back(scope);
 	}
 };
 
@@ -129,6 +121,7 @@ void Usl::collectGarbage()
 void Usl::includeScript(const std::string& name, std::istream& stream)
 {
 	Scope* scope = compile(name, stream);
+	ScopePrototype* scopePrototype = scope->scopePrototype();
 	Thread* thread = createThread(scope);
 	thread->run();
 	
@@ -137,23 +130,21 @@ void Usl::includeScript(const std::string& name, std::istream& stream)
 	rootPrototype->locals.push_back(name);
 	root->locals.push_back(scope);
 	
-	Prototype::Members& members = scope->prototype->members;
-	for (Prototype::Members::const_iterator it = members.begin(); it != members.end(); ++it)
+	for (Prototype::Members::const_iterator it = scopePrototype->members.begin(); it != scopePrototype->members.end(); ++it)
 	{
 		const string& name = it->first;
-		ThunkPrototype* getter = new ThunkPrototype(&heap, root->prototype);
+		ThunkPrototype* getter = new ThunkPrototype(&heap, rootPrototype);
 		getter->body.push_back(new ThunkCode());
 		getter->body.push_back(new ParentCode());
 		getter->body.push_back(new ValRefCode(index));
 		getter->body.push_back(new SelectCode(name));
 		getter->body.push_back(new EvalCode());
-		root->prototype->members[name] = getter;
+		rootPrototype->members[name] = getter;
 	}
 	
-	ScopePrototype* scopePrototype = scope->scopePrototype();
 	for (size_t i = 0; i < scopePrototype->locals.size(); ++i)
 	{
-		runtimeValues[scopePrototype->locals[i]] = scope->locals[i];
+		setConstant(scopePrototype->locals[i], scope->locals[i]);
 	}
 }
 
@@ -168,33 +159,32 @@ Thread* Usl::createThread(Scope* scope)
 	return &threads.back();
 }
 
-void Usl::addGlobal(const std::string& name, Value* value)
+void Usl::setConstant(const std::string& name, Value* value)
 {
 	ScopePrototype* prototype = root->scopePrototype();
 	size_t index = prototype->locals.size();
+
 	prototype->locals.push_back(name);
-	
 	root->locals.push_back(value);
-	
-	ThunkPrototype* getter = new ThunkPrototype(&heap, prototype);
-	getter->body.push_back(new ThunkCode());
-	getter->body.push_back(new ParentCode());
-	getter->body.push_back(new ValRefCode(index));
-	prototype->members[name] = getter;
+
+	ThunkPrototype*& getter = prototype->members[name];
+	if (getter == 0)
+	{
+		getter = new ThunkPrototype(&heap, prototype);
+		getter->body.push_back(new ThunkCode());
+		getter->body.push_back(new ParentCode());
+		getter->body.push_back(new ValRefCode(index));
+	}
 }
 
-Value* Usl::getGlobal(const std::string& name)
+Value* Usl::getConstant(const std::string& name)
 {
 	ScopePrototype::Locals& locals = root->scopePrototype()->locals;
-	for(ScopePrototype::Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
-	{
-		if (*it == name)
-		{
-			size_t index = it - locals.begin();
-			return root->locals[index];
-		}
-	}
-	return 0;
+	ScopePrototype::Locals::const_iterator it = find(locals.begin(), locals.end(), name);
+	if (it == locals.end())
+		return 0;
+	size_t index = it - locals.begin();
+	return root->locals[index];
 }
 
 Scope* Usl::compile(const std::string& name, std::istream& stream)
