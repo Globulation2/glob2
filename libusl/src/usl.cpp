@@ -61,7 +61,7 @@ struct Load: NativeCode
 		
 		Usl* usl = thread->usl;
 		
-		Value* value = usl->cache[filename];
+		Value* value = usl->loadedScripts[filename];
 		if (value == 0)
 		{
 			auto_ptr<ifstream> stream(usl->openFile(filename));

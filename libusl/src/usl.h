@@ -21,14 +21,14 @@ struct Usl
 	
 	virtual std::ifstream* openFile(const std::string& name);
 	
-	typedef std::map<std::string, Value*> Cache;
+	typedef std::map<std::string, Value*> LoadedScripts;
 	typedef std::map<std::string, Value*> RuntimeValues;
 	typedef std::vector<Thread> Threads;
 	
 	DebugInfo debug;
 	Heap heap;
 	Scope* root;
-	Cache cache;
+	LoadedScripts loadedScripts;
 	RuntimeValues runtimeValues;
 	Threads threads;
 	
