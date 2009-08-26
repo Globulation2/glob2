@@ -1,4 +1,15 @@
-val true := 0 == 0
-
-val false := 0 == 1
-
+val true := [
+	def select (ifTrue, _) := ifTrue
+	def not := false
+	def and(that) := that
+	def or (_) := true
+	def xor (that) := that select (false, true)
+]
+ 
+val false := [
+	def select (_, ifFalse) := ifFalse
+	def not := true
+	def and (that) := false
+	def or (that) := that
+	def xor (that) := that select (true, false)
+]
