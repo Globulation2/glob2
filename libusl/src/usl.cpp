@@ -116,6 +116,16 @@ Usl::Usl()
 	root = new Scope(&heap, prototype, 0);
 }
 
+void Usl::collectGarbage()
+{
+	// mark
+	root->markForGC();
+	for_each(threads.begin(), threads.end(), mem_fun_ref(&Thread::markForGC));
+
+	// sweep
+	heap.collectGarbage();
+}
+
 void Usl::includeScript(const std::string& name, std::istream& stream)
 {
 	Scope* scope = compile(name, stream);
