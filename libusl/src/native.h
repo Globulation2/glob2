@@ -111,7 +111,7 @@ template<>
 inline Value* box<bool>(Thread* thread, const bool& value)
 {
 	std::string name = value ? "true" : "false";
-	return thread->usl->runtimeValues[name];
+	return thread->usl->getConstant(name);
 }
 
 template<typename T>
