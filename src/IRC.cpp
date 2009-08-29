@@ -266,8 +266,10 @@ void IRC::interpreteIRCMessage(const std::string &message)
 	}
 	else if (strcasecmp(cmd, "353")==0)
 	{
-		/*char *diffusion =*/ strtok(NULL, " ="); // strtok is used here for its side effects
-		char *chan = strtok(NULL, " :=*");
+		// strtok is used here for its side effects
+		strtok(NULL, " =");
+		strtok(NULL, " =");
+		char *chan = strtok(NULL, " :=");
 		char *user;
 		while ((user = strtok(NULL, " :")) != NULL)
 		{
