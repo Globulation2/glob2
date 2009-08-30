@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Construieşte
 
 [building site]
 şantier
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -562,6 +568,8 @@ Volum  (muzică)
 Nou
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -576,6 +584,8 @@ Nu
 
 [not ready]
 nu-i gata
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +594,8 @@ nu-i gata
 %0 echipe.
 [number of teams]
 numărul echipelor
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -615,7 +627,7 @@ Aici
 [open]
 deschis
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -645,6 +657,8 @@ Vă rugăm aşteptaţi
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -682,6 +696,8 @@ Proportii
 
 [Register a new YOG user with password]
 Înregistrează noul jucător YOG cu parola. (nesecurizat)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -697,6 +713,8 @@ Memorează parola local. (nesecurizat)
 [repair]
 Repară
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -723,6 +741,8 @@ Vreţi să salvaţi înainte de a ieşi?
 [save game]
 Salvează joc
 [save map]
+
+[save replay]
 
 [save script]
 
@@ -986,6 +1006,8 @@ Piscina este atacată
 ?? Steag de război terminat ??
 [the warflag is under attack]
 ?? Steagul de luptă este atacat ??
+[time]
+
 [to:]
 către:
 [toggle draw accessibility aids]
@@ -997,6 +1019,12 @@ către:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Prestigiul total a fost atins
@@ -1126,6 +1154,8 @@ Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de util
 
 [YESTS_CREATED]
 Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
 [yog block command help]

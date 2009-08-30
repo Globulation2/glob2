@@ -12,3 +12,5 @@ if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     
     PackTar(env["TARFILE"], "SConscript")
     env.Alias("install", env["INSTALLDIR"]+"/glob2/data/zik")
+
+SConscript("original/SConscript")

@@ -84,6 +84,9 @@ public:
 	///This sends an order through the network that causes the latency adjustment to be increased
 	void increaseLatencyAdjustment();
 	
+	///Set the localPlayer, only necessary in replays
+	void setLocalPlayer(int player);
+	
 private:
 
 	///This stores the queues with the orders from each player

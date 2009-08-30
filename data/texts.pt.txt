@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Construir
 
 [building site]
 Sítio de constr.
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -568,6 +574,8 @@ silêncio
 Novo
 [nick taken]
 Infelizmente o apelido que elegeu já está tomado em freenode. Só poderá falar através de YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -582,6 +590,8 @@ Não
 
 [not ready]
 não pronto
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +600,8 @@ não pronto
 %0 times.
 [number of teams]
 Número de bandos
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -621,7 +633,7 @@ Aqui
 [open]
 aberto
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -652,6 +664,8 @@ Espere por favor
 
 [press space]
 Pressione espaço para continuar.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -688,6 +702,8 @@ Proporções
 
 [Register a new YOG user with password]
 Registrar um novo usuário de YOG com contrasenha. (inseguro)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -703,6 +719,8 @@ Lembrar a contrasenha localmente. (inseguro)
 [repair]
 Arrumar
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -729,6 +747,8 @@ Guardar antes de sair?
 [save game]
 Salvar partida
 [save map]
+
+[save replay]
 
 [save script]
 
@@ -992,6 +1012,8 @@ A piscina está sendo atacada
 ?? Bandeira de guerra finalizada ??
 [the warflag is under attack]
 ?? A bandeira de guerra está sendo atacada ??
+[time]
+
 [to:]
 a:
 [toggle draw accessibility aids]
@@ -1003,6 +1025,12 @@ a:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Prestígio total atingido
@@ -1132,6 +1160,8 @@ O metaservidor YOG tem rejeitado a conexão porque o nome de usuário está em u
 
 [YESTS_CREATED]
 O sistema de conexão está pronto para contactar-se com o metaservidor YOG.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposível conectar-se. Parece que o metaservidor YOG está caido.
 [yog block command help]

@@ -88,7 +88,7 @@ inline void HeightMap::lower(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if(coordX!=oldX | coordY!=oldY) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
 	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
@@ -110,7 +110,7 @@ inline void HeightMap::maxRise(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if(coordX!=oldX | coordY!=oldY) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
 	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
@@ -131,7 +131,7 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if(coordX!=oldX | coordY!=oldY) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
 	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
@@ -149,7 +149,7 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 
 inline void HeightMap::addNoise(float weight, float smoothingFactor)
 {
-	assert(weight>0 & weight<=1.0);
+	assert((weight>0) && (weight<=1.0));
 	for (int x=0; (unsigned int)x<_w; x++)
 	{
 		for (int y=0; (unsigned int)y<_h; y++)
@@ -188,9 +188,9 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 			tries++;
 			foundSpot=true;
 			for (unsigned int j=0; j<i; j++) {
-				int distX=(abs(newPosX-centerX[j])<_w-abs(newPosX-centerX[j])?abs(newPosX-centerX[j]):_w-abs(newPosX-centerX[j]));
-				int distY=(abs(newPosY-centerY[j])<_h-abs(newPosY-centerY[j])?abs(newPosY-centerY[j]):_h-abs(newPosY-centerY[j]));
-				if(	distX<mindist && distY<mindist)
+				int distX=std::min(abs(newPosX-centerX[j]),(int)_w-abs(newPosX-centerX[j]));
+				int distY=std::min(abs(newPosY-centerY[j]),(int)_h-abs(newPosY-centerY[j]));
+				if(distX<mindist && distY<mindist)
 					foundSpot=false;
 			}
 		} while (!foundSpot && tries<count*count*_w*_h);

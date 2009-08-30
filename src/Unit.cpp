@@ -184,6 +184,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	else
 		underAttackTimer = 0;
 
+
 	// trigger parameters
 	hp = stream->readSint32("hp");
 	trigHP = stream->readSint32("trigHP");
@@ -646,8 +647,9 @@ void Unit::handleMagic(void)
 	{
 		std::set<Uint16> damagedBuildings;
 		damagedBuildings.insert(NOGBID);
-		for (int yi=posY-3; yi<=posY+3; yi++)
-			for (int xi=posX-3; xi<=posX+3; xi++)
+		int ATTACK_RANGE=3;
+		for (int yi=posY-ATTACK_RANGE; yi<=posY+ATTACK_RANGE; yi++)
+			for (int xi=posX-ATTACK_RANGE; xi<=posX+ATTACK_RANGE; xi++)
 			{
 				// damaging enemy units:
 				for (int altitude=0; altitude<2; altitude++)
@@ -679,7 +681,6 @@ void Unit::handleMagic(void)
 							{
 								enemyUnit->hp -= damage;
 								
-			
 								boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
 								enemyUnit->owner->pushGameEvent(event);
 								
@@ -692,32 +693,6 @@ void Unit::handleMagic(void)
 				}
 				
 				// damaging enemy buildings: this has been removed for balance purposes
-				
-				/*if (performance[MAGIC_ATTACK_GROUND])
-				{
-					Uint16 targetGBID = map->getBuilding(xi, yi);
-					if (damagedBuildings.insert(targetGBID).second)
-					{
-						Sint32 targetTeam = Building::GIDtoTeam(targetGBID);
-						Uint16 targetID = Building::GIDtoID(targetGBID);
-						Uint32 targetTeamMask = 1<<targetTeam;
-						if (owner->enemies & targetTeamMask)
-						{
-							Building *enemyBuilding = teams[targetTeam]->myBuildings[targetID];
-							Sint32 damage = performance[MAGIC_ATTACK_GROUND] + experienceLevel - enemyBuilding->type->armor;
-							if (damage > 0)
-							{
-								enemyBuilding->hp -= damage;
-								enemyBuilding->owner->setEvent(xi, yi, Team::BUILDING_UNDER_ATTACK_EVENT, targetGBID, targetTeam);
-								if (enemyBuilding->hp <= 0)
-									enemyBuilding->kill();
-								incrementExperience(damage);
-								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
-								hasUsedMagicAction = true;
-							}
-						}
-					}
-				}*/
 			}
 		
 		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
@@ -784,6 +759,8 @@ void Unit::handleMedical(void)
 			{
 				targetBuilding->removeUnitFromHarvesting(this);
 				targetBuilding=NULL;
+                //TODO: in beta4 this line was ommitted. delete?
+				ownExchangeBuilding=NULL;
 			}
 			
 			activity=ACT_RANDOM;
@@ -795,7 +772,7 @@ void Unit::handleMedical(void)
 			else
 				owner->map->setGroundUnit(posX, posY, NOGUID);
 			
-			if(previousClearingAreaX!=-1)
+			if(previousClearingAreaX!=static_cast<unsigned int>(-1))
 			{
 				owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
 			}
@@ -897,16 +874,15 @@ void Unit::handleActivity(void)
 			targetBuilding->removeUnitFromHarvesting(this);
 			targetBuilding=NULL;
 		}
-		
+
 		if (medical==MED_HUNGRY)
 		{
 			Building *b;
 			b=owner->findNearestFood(this);
-			if (typeNum == EXPLORER)
-			{
-				// fprintf (stderr, "gid: %d, b: %x\n", gid, b);
-			}
-			
+                        /*if (typeNum == EXPLORER) {
+                           fprintf (stderr, "gid: %d, b: %x\n", gid, b);
+                        }*/
+
 			if (b!=NULL)
 			{
 				Team *currentTeam=owner;
@@ -926,7 +902,7 @@ void Unit::handleActivity(void)
 					
 					// Find free slot in other team
 					int targetID=-1;
-					for (int i=0; i<1024; i++)//we search for a free place for a unit.
+					for (int i=0; i<Unit::MAX_COUNT; i++)//we search for a free place for a unit.
 						if (targetTeam->myUnits[i]==NULL)
 						{
 							targetID=i;
@@ -1167,6 +1143,7 @@ void Unit::handleDisplacement(void)
 													{
 														bestRessource=r;
 														minValue=value;
+
 														ownExchangeBuilding=*bi;
 														targetBuilding=*bi;
 														takeInExchangeBuilding=true;
@@ -1274,8 +1251,9 @@ void Unit::handleDisplacement(void)
 				}
 				else
 				{
+					int levelsToBeUpgraded=attachedBuilding->type->level+1-level[destinationPurprose];
 					insideTimeout=-attachedBuilding->type->upgradeTime[destinationPurprose];
-					speed=attachedBuilding->type->insideSpeed;
+					speed=attachedBuilding->type->insideSpeed/levelsToBeUpgraded;
 				}
 			}
 			else if (displacement==DIS_INSIDE)
@@ -1404,12 +1382,12 @@ void Unit::handleDisplacement(void)
 bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 {
 	//TODO: totally fix this totally hacky implementation.
-	for(int i=0;i<32;i++)
+	for(int i=0;i<Team::MAX_COUNT;i++)
 	{
 		Team *t = owner->game->teams[i];
 		if((t)&&(owner->enemies & t->me))
 		{
-			for(int j=0;j<1024;j++)
+			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
 				if((b)&&(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)&&(owner->map->warpDistMax(b->posX,b->posY,posX,posY) <= b->type->shootingRange + 1))return true;
@@ -2162,6 +2140,7 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			action=HARVEST;
 			speed=performance[action];
+			//TODO: WTH???
 			if(speed==0)
 				speed/=speed;
 			break;
@@ -2414,23 +2393,23 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 
 Sint32 Unit::GIDtoID(Uint16 gid)
 {
-	assert(gid<32768);
-	return (gid%1024);
+	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
+	return (gid%Unit::MAX_COUNT);
 }
 
 Sint32 Unit::GIDtoTeam(Uint16 gid)
 {
-	assert(gid<32768);
-	return (gid/1024);
+	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
+	return (gid/Unit::MAX_COUNT);
 }
 
 Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 {
 	assert(id>=0);
-	assert(id<1024);
+	assert(id<Unit::MAX_COUNT);
 	assert(team>=0);
-	assert(team<32);
-	return id+team*1024;
+	assert(team<Team::MAX_COUNT);
+	return id+team*Unit::MAX_COUNT;
 }
 
 //! Return the real armor, taking into account the reduction due to fruits

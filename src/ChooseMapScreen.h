@@ -67,6 +67,16 @@ public:
 		SWITCHTYPE = 4,
 	};
 
+	enum LoadableType
+	{
+		NONE,
+		GAME,
+		MAP,
+		REPLAY
+	};
+
+	/// Returns the type of the currently selected loadable (NONE, GAME, MAP or REPLAY)
+	LoadableType getSelectedType();
 
 protected:
 	/// Handle called when a valid map has been selected.
@@ -85,6 +95,8 @@ private:
 		DisplayRegular,
 		DisplayAlternate,
 	} currentDirectoryMode;
+
+	LoadableType selectedType;
 
 	//! Title of the screen, depends on the directory given in parameter
 	Text *title;
@@ -106,6 +118,10 @@ private:
 	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
 	//! True when the selected map is valid
 	bool validMapSelected;
+	//! Default type
+	LoadableType type1;
+	//! Alternate type
+	LoadableType type2;
 
 	/// Called after a new mapHeader and gameHeader have been loaded.
 	void updateMapInformation();

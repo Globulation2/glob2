@@ -55,13 +55,16 @@ protected:
 	
 	//! Returns the text for the right-scale
 	std::string getRightScaleText(int value, int digits);
+	
+	/// Get the label of the end game stat
+	std::string getStatLabel();
 
 	//! the type of the stat beeing drawn
 	EndOfGameStat::Type type;
 	//! Pointer to game, used for drawing
 	Game *game;
 	//! List of true/false values for each team's enabled status
-	bool isTeamEnabled[32];
+	bool * isTeamEnabled;
 	//! This moves the circle indicating the score at the current mouse position.
 	virtual void onSDLMouseMotion(SDL_Event* event);
 	int mouse_x;
@@ -89,10 +92,16 @@ protected:
 	//! resort players
 	void sortAndSet(EndOfGameStat::Type type);
 	
+	//! pointer to the game, necessary for correctly saving replays
+	Game *game;
+	
 public:
 	EndGameScreen(GameGUI *gui);
 	virtual ~EndGameScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
+
+private:
+	void saveReplay(const char *dir, const char *ext);
 };
 
 #endif

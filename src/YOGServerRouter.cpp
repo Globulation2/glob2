@@ -193,7 +193,7 @@ std::string YOGServerRouter::getStatusReport()
 	s<<"\t"<<players.size()<<" connected players"<<std::endl;
 	
 	int count_admin=0;
-	for(int i=0; i<players.size(); ++i)
+	for(unsigned int i=0; i<players.size(); ++i)
 	{
 		if(players[i]->isAdministrator())
 			count_admin+=1;

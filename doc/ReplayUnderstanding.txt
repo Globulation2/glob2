@@ -1,0 +1,37 @@
+This document will try to clarify how the replays do their magic. This is basically of lesser importance to you if you want to help develop Globulation, but if you want to tweak the replays or find stumble upon replay code which makes your face go o_O, read this first. If there are still any questions, feel free to jump in at #glob2-dev (irc.globulation2.org) or write a message to the mailing list.
+
+The most important bit here is that replays are just games like every other game. They've received no special class, and in my opinion don't need one.
+
+When a normal game starts, GlobalContainer::replaying is set to false and Game::isRecordingReplay is set to true. It will then open the file $GLOB2$/replays/last_game.replay and save the map and game settings to that file (using Gui::save()). At this point, it's still a regular saved game. But whenever a player makes an order, it saves the amount of orders since the last step and the order itself. It is basically the same information that is sent over the net in an online game (it even uses NetSendOrder).
+
+When Engine::loadReplay() is called, GlobalContainer::replaying is set to true and Game::isRecordingReplay is set to false. Then it loads the map and settings as if it were a regular game (everything is the same format), and it stops reading where Gui::save() stopped writing. If it now reads further, it reads the amount of steps before the next order and then the order itself. It reads those orders and executes them at the specified time, successfully reconstructing the game.
+
+Basically, the problem with this is that it's a game. The player can still make changes and interact with the game, potentially giving it an entirely different outcome. Even the slightest change might break synchronization and, according to chaos theory, also change the eventual outcome. So we have to block all new incoming orders. Only a PauseGameOrder can get through (and we block the pauses from the original game).
+
+Now the replay truly replays the entire game exactly as it was, without a way you could interfere with that. But there are several GUI elements that don't really represent the true gamestate but represent the game as the players wants it to be. For example, if you move a flag, it will first move the GUI flag to your mouse position, then send an order for the actual (invisible) flag to be moved to that position. So I had to block the local moving of flags and move them to their actual position. The same goes for editing priorities, unit counts, required level etc. This last thing still has to be done.
+
+Also, the drawing functions had to be updated. Only the local team used to be visible, but I've made a variable, GlobalContainer::replayVisibleTeams, which is a mask telling which teams should be visible in replays. It's all you need to change if you want for example two teams visible and not a third. There's also GlobalContainer::showFog, which makes the entire map visible if set to false.
+
+As I already said, replays get saved to $GLOB2$/replays/last_game.replay while the game progresses. At the end of a game, in the stats screen, players are given an option to save the replay. Actually the replay is already saved, but if they decide to "save" it to foobar.replay, then last_game.replay gets copied to foobar.replay.
+
+KNOWN BUGS
+
+1) Ant.
+
+2) Bee.
+
+3) Fly.
+
+Ok, seriously now:
+
+1) As already mentioned, unit counts, required level and priorities can still be edited by the user while he's watching replays. This has no effect on the replay, but it may be confusing nonetheless.
+
+2) If you switch which player you're watching in a replay, the areas don't get correctly updated. This is very confusing and needs to be fixed soon.
+
+3) Sometimes, the end of replays is corrupted, which results in a crash in either Boost::shared_ptr or in an assertion fail that says the order is from an invalid team. I've never experienced this when watching a last_game.replay, so this may be a bug in the copying of replays.
+
+4) Very short replays crash. I think this may be fixed by simply saving a NullOrder to the replay when it starts. Maybe fixing a forgotten check to replay->isEndOfStream() in Engine.cpp could also solve this.
+
+5) Shortcuts still work, even though the building/flags tabs are disabled.
+
+6) At the time of writing, there's no message when a player quits or is destroyed.

@@ -59,24 +59,27 @@ namespace GAGCore
 	// static local pointer to the actual graphic context
 	static GraphicContext *_gc = NULL;
 	static SDL_PixelFormat _glFormat;
-	
+	//EXPERIMENTAL is a bit buggy and "not EXPERIMENTAL" is bugfree but slow
+	//when rendering clouds or other density layers (GraphicContext::drawAlphaMap).
+	static const bool EXPERIMENTAL=false;
+
 	// Color
 	Uint32 Color::pack() const
 	{
 		return (SDL_MapRGB(&_glFormat, r, g, b) & 0x00ffffff) | (a << 24);
 	}
-	
+
 	void  Color::unpack(const Uint32 packedValue)
 	{
 		SDL_GetRGB(packedValue, &_glFormat, &r, &g, &b);
 		a = packedValue >> 24;
 	}
-	
+
 	void Color::getHSV(float *hue, float *sat, float *lum)
 	{
 		RGBtoHSV(static_cast<float>(r)/255.0f, static_cast<float>(g)/255.0f, static_cast<float>(b)/255.0f, hue, sat, lum);
 	}
-	
+
 	void Color::setHSV(float hue, float sat, float lum)
 	{
 		float fr, fg, fb;
@@ -85,8 +88,8 @@ namespace GAGCore
 		g = static_cast<Uint8>(255.0f*fg);
 		b = static_cast<Uint8>(255.0f*fb);
 	}
-	
-	Color Color::applyMultiplyAlpha(Uint8 _a) const 
+
+	Color Color::applyMultiplyAlpha(Uint8 _a) const
 	{
 		Color c;
 		c.r = r;
@@ -95,25 +98,25 @@ namespace GAGCore
 		c.a = _a;
 		return c;
 	}
-	
+
 	// Predefined colors
 	Color Color::black = Color(0, 0, 0);
 	Color Color::white = Color(255,255,255);
-	
+
 	#ifdef HAVE_OPENGL
 	// Cache for GL state, call gl only if necessary. GL optimisations
 	static struct GLState
 	{
 		static const bool verbose = false;
-		int _doBlend;
-		int _doTexture;
-		int _doScissor;
+		bool _doBlend;
+		bool _doTexture;
+		bool _doScissor;
 		GLint _texture;
 		GLenum _sfactor, _dfactor;
 		bool isTextureSRectangle;
 		bool useATIWorkaround;
 		unsigned alocatedTextureCount;
-	
+
 		GLState(void)
 		{
 			resetCache();
@@ -121,17 +124,17 @@ namespace GAGCore
 			useATIWorkaround = false;
 			alocatedTextureCount = 0;
 		}
-		
+
 		void resetCache(void)
 		{
-			_doBlend = -1;
-			_doTexture = -1;
-			_doScissor = -1;
+			_doBlend = false;
+			_doTexture = false;
+			_doScissor = false;
 			_texture = -1;
 			_sfactor = 0xffffffff;
 			_dfactor = 0xffffffff;
 		}
-		
+
 		void checkExtensions(void)
 		{
 			const char *glExtensions = (const char *)glGetString(GL_EXTENSIONS);
@@ -144,47 +147,51 @@ namespace GAGCore
 				useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
 
 			if (verbose)
+			{
 				if (isTextureSRectangle)
+				{
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension present, optimal texture size will be used" << std::endl;
-				else
+				} else {
 					std::cout << "Toolkit : GL_NV_texture_rectangle or GL_EXT_texture_rectangle extension not present, power of two texture will be used" << std::endl;
+				}
+			}
 		}
-		
-		void doBlend(int on)
+
+		bool doBlend(bool on)
 		{
 			if (_doBlend == on)
-				return;
-		
+				return on;
 			if (on)
 				glEnable(GL_BLEND);
 			else
 				glDisable(GL_BLEND);
 			_doBlend = on;
+			return !on;
 		}
-		
-		void doTexture(int on)
+
+		bool doTexture(bool on)
 		{
 			if (_doTexture == on)
-				return;
-		
+				return on;
 			GLenum cap;
 			if (isTextureSRectangle)
 				cap = GL_TEXTURE_RECTANGLE_NV;
 			else
 				cap = GL_TEXTURE_2D;
-			
+
 			if (on)
 				glEnable(cap);
 			else
 				glDisable(cap);
 			_doTexture = on;
+			return !on;
 		}
-		
+
 		void setTexture(int tex)
 		{
 			if (_texture == tex)
 				return;
-		
+
 			if (isTextureSRectangle)
 			{
 				if(useATIWorkaround)
@@ -195,32 +202,39 @@ namespace GAGCore
 				glBindTexture(GL_TEXTURE_2D, tex);
 			_texture = tex;
 		}
-		
-		void doScissor(int on)
+
+		bool doScissor(bool on)
 		{
+			// The glIsEnabled is function is quite expensive. That's why we have a _doScissor variable.
+			// I'm quite sure that this assert should never fail, so I've outcommented it, partially
+			// because we don't do #define NDEBUG in most of our releases (so far).
+			
+			//assert(_doScissor == glIsEnabled(GL_SCISSOR_TEST));
+			
 			if (_doScissor == on)
-				return;
-		
+				return on;
+
 			if (on)
 				glEnable(GL_SCISSOR_TEST);
 			else
 				glDisable(GL_SCISSOR_TEST);
 			_doScissor = on;
+			return !on;
 		}
-		
+
 		void blendFunc(GLenum sfactor, GLenum dfactor)
 		{
 			if ((sfactor == _sfactor) && (dfactor == _dfactor))
 				return;
-		
+
 			glBlendFunc(sfactor, dfactor);
-		
+
 			_sfactor = sfactor;
 			_dfactor = dfactor;
 		}
 	} glState;
 	#endif
-	
+
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
 		SDL_Surface *dest;
@@ -235,7 +249,7 @@ namespace GAGCore
 		assert(dest);
 		return dest;
 	}
-	
+
 	// Drawable surface
 	DrawableSurface::DrawableSurface(const char *imageFileName)
 	{
@@ -244,7 +258,7 @@ namespace GAGCore
 			setRes(0, 0);
 		allocateTexture();
 	}
-	
+
 	DrawableSurface::DrawableSurface(const std::string &imageFileName)
 	{
 		sdlsurface = NULL;
@@ -252,14 +266,14 @@ namespace GAGCore
 			setRes(0, 0);
 		allocateTexture();
 	}
-	
+
 	DrawableSurface::DrawableSurface(int w, int h)
 	{
 		sdlsurface = NULL;
 		setRes(w, h);
 		allocateTexture();
 	}
-	
+
 	DrawableSurface::DrawableSurface(const SDL_Surface *sourceSurface)
 	{
 		assert(sourceSurface);
@@ -270,18 +284,18 @@ namespace GAGCore
 		allocateTexture();
 		dirty = true;
 	}
-	
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
 		return new DrawableSurface(sdlsurface);
 	}
-	
+
 	DrawableSurface::~DrawableSurface(void)
 	{
 		SDL_FreeSurface(sdlsurface);
 		freeGPUTexture();
 	}
-	
+
 	template<typename T>
 	T getMinPowerOfTwo(T t)
 	{
@@ -290,7 +304,7 @@ namespace GAGCore
 			v *= 2;
 		return v;
 	}
-	
+
 	void DrawableSurface::allocateTexture(void)
 	{
 		#ifdef HAVE_OPENGL
@@ -302,7 +316,7 @@ namespace GAGCore
 		}
 		#endif
 	}
-	
+
 	void DrawableSurface::initTextureSize(void)
 	{
 		#ifdef HAVE_OPENGL
@@ -315,12 +329,12 @@ namespace GAGCore
 				glState.setTexture(texture);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-				
+
 				int w = getMinPowerOfTwo(sdlsurface->w);
 				int h = getMinPowerOfTwo(sdlsurface->h);
 				std::valarray<char> zeroBuffer((char)0, w * h * 4);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
-				
+
 				texMultX = 1.0f / static_cast<float>(w);
 				texMultY = 1.0f / static_cast<float>(h);
 			}
@@ -332,14 +346,14 @@ namespace GAGCore
 		}
 		#endif
 	}
-	
+
 	void DrawableSurface::uploadToTexture(void)
 	{
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glState.setTexture(texture);
-			
+
 			void *pixelsPtr;
 			GLenum pixelFormat;
 			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -368,7 +382,7 @@ namespace GAGCore
 		#endif
 		dirty = false;
 	}
-	
+
 	void DrawableSurface::freeGPUTexture(void)
 	{
 		#ifdef HAVE_OPENGL
@@ -376,60 +390,67 @@ namespace GAGCore
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
 			glState.alocatedTextureCount--;
-			glState.resetCache();
+			
+			// The next line causes a desynchronization between _doScissors and glIsEnabled(GL_SCISSOR_TEST),
+			// which causes the setClipRect() functions to not reset the clipping the way it should,  so many
+			// things don't get drawn properly and the game appears to "blink". Outcommenting it didn't cause
+			// any other problems.  If you think glState should be reset,  feel free to do so,  but also call
+			// functions like glDisable() as required.
+			
+			//glState.resetCache();
 		}
 		#endif
 	}
-	
+
 	void DrawableSurface::setRes(int w, int h)
 	{
 		if (sdlsurface)
 			SDL_FreeSurface(sdlsurface);
-		
+
 		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, _glFormat.Rmask, _glFormat.Gmask, _glFormat.Bmask, _glFormat.Amask);
 		assert(sdlsurface);
 		setClipRect();
 		initTextureSize();
 		dirty = true;
 	}
-	
+
 	void DrawableSurface::getClipRect(int *x, int *y, int *w, int *h)
 	{
 		assert(x);
 		assert(y);
 		assert(w);
 		assert(h);
-		
+
 		*x = clipRect.x;
 		*y = clipRect.y;
 		*w = clipRect.w;
 		*h = clipRect.h;
 	}
-	
+
 	void DrawableSurface::setClipRect(int x, int y, int w, int h)
 	{
 		assert(sdlsurface);
-		
+
 		clipRect.x = static_cast<Sint16>(x);
 		clipRect.y = static_cast<Sint16>(y);
 		clipRect.w = static_cast<Uint16>(w);
 		clipRect.h = static_cast<Uint16>(h);
-	
+
 		SDL_SetClipRect(sdlsurface, &clipRect);
 	}
-	
+
 	void DrawableSurface::setClipRect(void)
 	{
 		assert(sdlsurface);
-		
+
 		clipRect.x = 0;
 		clipRect.y = 0;
 		clipRect.w = static_cast<Uint16>(sdlsurface->w);
 		clipRect.h = static_cast<Uint16>(sdlsurface->h);
-	
+
 		SDL_SetClipRect(sdlsurface, &clipRect);
 	}
-	
+
 	bool DrawableSurface::loadImage(const char *name)
 	{
 		if (name)
@@ -454,12 +475,12 @@ namespace GAGCore
 		}
 		return false;
 	}
-	
+
 	bool DrawableSurface::loadImage(const std::string &name)
 	{
 		return loadImage(name.c_str());
 	}
-	
+
 	void DrawableSurface::shiftHSV(float hue, float sat, float lum)
 	{
 		Uint32 *mem = (Uint32 *)sdlsurface->pixels;
@@ -470,12 +491,12 @@ namespace GAGCore
 			Color c;
 			c.unpack(*mem);
 			c.getHSV(&h, &s, &v);
-			
+
 			// shift
 			h += hue;
 			s += sat;
 			v += lum;
-			
+
 			// wrap and saturate
 			if (h >= 360.0f)
 				h -= 360.0f;
@@ -485,7 +506,7 @@ namespace GAGCore
 			s = std::min(s, 1.0f);
 			v = std::max(v, 0.0f);
 			v = std::min(v, 1.0f);
-			
+
 			// set values
 			c.setHSV(h, s, v);
 			*mem = c.pack();
@@ -493,13 +514,13 @@ namespace GAGCore
 		}
 		dirty = true;
 	}
-	
+
 	void DrawableSurface::drawPixel(int x, int y, const Color& color)
 	{
 		// clip
 		if ((x<clipRect.x) || (x>=clipRect.x+clipRect.w) || (y<clipRect.y) || (y>=clipRect.y+clipRect.h))
 			return;
-		
+
 		// draw
 		if (color.a == Color::ALPHA_OPAQUE)
 		{
@@ -512,32 +533,32 @@ namespace GAGCore
 			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
-			
+
 			Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + y*(sdlsurface->pitch>>2) + x;
-			
+
 			Uint32 surfaceValue = *mem;
 			Uint32 surfacePreMult0 = (surfaceValue & 0x00FF00FF) * na;
 			Uint32 surfacePreMult1 = ((surfaceValue >> 8) & 0x00FF00FF) * na;
-			
+
 			surfacePreMult0 += colorPreMult0;
 			surfacePreMult1 += colorPreMult1;
-			
+
 			*mem = ((surfacePreMult0 >> 8) & 0x00FF00FF) | (surfacePreMult1 & 0xFF00FF00);
 		}
 		dirty = true;
 	}
-	
+
 	void DrawableSurface::drawPixel(float x, float y, const Color& color)
 	{
 		drawPixel(static_cast<int>(x), static_cast<int>(y), color);
 	}
-	
+
 	// compat
 	void DrawableSurface::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawPixel(x, y, Color(r, g, b, a));
 	}
-	
+
 	void DrawableSurface::drawRect(int x, int y, int w, int h, const Color& color)
 	{
 		_drawHorzLine(x, y, w, color);
@@ -545,18 +566,18 @@ namespace GAGCore
 		_drawVertLine(x, y, h, color);
 		_drawVertLine(x+w-1, y, h, color);
 	}
-	
+
 	void DrawableSurface::drawRect(float x, float y, float w, float h, const Color& color)
 	{
 		drawRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), color);
 	}
-	
+
 	// compat
 	void DrawableSurface::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawRect(x, y, w, h, Color(r, g, b, a));
 	}
-	
+
 	void DrawableSurface::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
 		// clip
@@ -580,7 +601,7 @@ namespace GAGCore
 		}
 		if ((w <= 0) || (h <= 0))
 			return;
-			
+
 		// draw
 		if (color.a == Color::ALPHA_OPAQUE)
 		{
@@ -603,7 +624,7 @@ namespace GAGCore
 			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
-			
+
 			for (int dy = y; dy < y + h; dy++)
 			{
 				Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + dy*(sdlsurface->pitch>>2) + x;
@@ -622,55 +643,55 @@ namespace GAGCore
 		}
 		dirty = true;
 	}
-	
+
 	void DrawableSurface::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
 		drawFilledRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), color);
 	}
-	
+
 	void DrawableSurface::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawFilledRect(x, y, w, h, Color(r, g, b, a));
 	}
-	
+
 	void DrawableSurface::_drawVertLine(int x, int y, int l, const Color& color)
 	{
 		// clip
 		// be sure we have to draw something
 		if ((x < clipRect.x) || (x >= clipRect.x + clipRect.w))
 			return;
-		
+
 		// set l positiv
 		if (l < 0)
 		{
 			y += l;
 			l = -l;
 		}
-	
+
 		// clip on y at top
 		if (y < clipRect.y)
 		{
 			l -= clipRect.y - y;
 			y = clipRect.y;
 		}
-	
+
 		// clip on y at bottom
 		if (y + l >= clipRect.y + clipRect.h)
 		{
 			l = clipRect.y + clipRect.h - y;
 		}
-	
+
 		// again, be sure we have to draw something
 		if (l <= 0)
 			return;
-			
+
 		// draw
 		int increment = sdlsurface->pitch >> 2;
 		Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + y*increment + x;
 		if (color.a == Color::ALPHA_OPAQUE)
 		{
 			Uint32 colorValue = color.pack();
-			
+
 			do
 			{
 				*mem = colorValue;
@@ -685,7 +706,7 @@ namespace GAGCore
 			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
-			
+
 			do
 			{
 				Uint32 surfaceValue = *mem;
@@ -700,44 +721,44 @@ namespace GAGCore
 		}
 		dirty = true;
 	}
-	
+
 	void DrawableSurface::_drawHorzLine(int x, int y, int l, const Color& color)
 	{
 		// clip
 		// be sure we have to draw something
 		if ((y < clipRect.y) || (y >= clipRect.y + clipRect.h))
 			return;
-		
+
 		// set l positiv
 		if (l < 0)
 		{
 			x += l;
 			l = -l;
 		}
-	
+
 		// clip on x at left
 		if (x < clipRect.x)
 		{
 			l -= clipRect.x - x;
 			x = clipRect.x;
 		}
-	
+
 		// clip on x at right
 		if ( x + l >= clipRect.x + clipRect.w)
 		{
 			l = clipRect.x + clipRect.w - x;
 		}
-	
+
 		// again, be sure we have to draw something
 		if (l <= 0)
 			return;
-		
+
 		// draw
 		Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + y*(sdlsurface->pitch >> 2) + x;
 		if (color.a == Color::ALPHA_OPAQUE)
 		{
 			Uint32 colorValue = color.pack();
-			
+
 			do
 			{
 				*mem++ = colorValue;
@@ -751,7 +772,7 @@ namespace GAGCore
 			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
-			
+
 			do
 			{
 				Uint32 surfaceValue = *mem;
@@ -765,12 +786,12 @@ namespace GAGCore
 		}
 		dirty = true;
 	}
-	
+
 	void DrawableSurface::drawLine(int x1, int y1, int x2, int y2, const Color& _color)
 	{
 		// we want to modify the color
 		Color color = _color;
-		
+
 		// compute deltas
 		int dx = x2 - x1;
 		if (dx == 0)
@@ -784,7 +805,7 @@ namespace GAGCore
 			_drawHorzLine(x1, y1, x2-x1, color);
 			return;
 		}
-		
+
 		// clip
 		int test = 1;
 		// Y clipping
@@ -796,7 +817,7 @@ namespace GAGCore
 			dx = -dx;
 			dy = -dy;
 		}
-		
+
 		// the 2 points are Y-sorted. (y1 <= y2)
 		if (y2 < clipRect.y)
 			return;
@@ -822,7 +843,7 @@ namespace GAGCore
 			_drawVertLine(x1, y1, y2-y1, color);
 			return;
 		}
-	
+
 		// X clipping
 		if (dx < 0)
 		{
@@ -852,15 +873,15 @@ namespace GAGCore
 			y2 = y1 - ( (x1 - (clipRect.x + clipRect.w))*(y1-y2) ) / (x1-x2);
 			x2 = (clipRect.x + clipRect.w - 1);
 		}
-	
+
 		// last return case
 		if (x1 >= (clipRect.x + clipRect.w) || y1 >= (clipRect.y + clipRect.h) || (x2 < clipRect.x) || (y2 < clipRect.y))
 			return;
-	
+
 		// recompute deltas after clipping
 		dx = x2-x1;
 		dy = y2-y1;
-		
+
 		// setup variable to draw alpha in the right direction
 		#define Sgn(x) (x>0 ? (x == 0 ? 0 : 1) : (x==0 ? 0 : -1))
 		Sint32 littleincx;
@@ -890,7 +911,7 @@ namespace GAGCore
 			alphadecx = 1;
 			alphadecy = 0;
 		}
-	
+
 		if (dx < 0)
 		{
 			dx = -dx;
@@ -900,12 +921,12 @@ namespace GAGCore
 			bigincy = -bigincy;
 			alphadecy = -alphadecy;
 		}
-	
+
 		// compute initial position
 		int px, py;
 		px = x1;
 		py = y1;
-	
+
 		// variable initialisation for bresenham algo
 		if (dx == 0)
 			return;
@@ -917,11 +938,11 @@ namespace GAGCore
 		int m = (abs(dy) << (Ibits+FIXED)) / abs(dx);
 		int w = (I << FIXED) - m;
 		int e = 1 << (FIXED-1);
-	
+
 		// first point
 		color.a = I - (e >> FIXED);
 		drawPixel(px, py, color);
-	
+
 		// main loop
 		int x = dx+1;
 		if (x <= 0)
@@ -946,10 +967,20 @@ namespace GAGCore
 			drawPixel(px + alphadecx, py + alphadecy, color);
 		}
 	}
-	
+
 	void DrawableSurface::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
 		drawRect(static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2), color);
+	}
+
+	void DrawableSurface::drawVertLine(int x, int y, int l, const Color& color)
+	{
+		 _drawVertLine(x, y, l, color);
+	}
+	
+	void DrawableSurface::drawHorzLine(int x, int y, int l, const Color& color)
+	{
+		_drawHorzLine(x, y, l, color);
 	}
 	
 	// compat
@@ -967,16 +998,16 @@ namespace GAGCore
 	{
 		drawLine(x1, y1, x2, y2, Color(r, g, b, a));
 	}
-	
+
 	void DrawableSurface::drawCircle(int x, int y, int radius, const Color& _color)
 	{
 		// we want to modify the color
 		Color color = _color;
-		
+
 		// clip
 		if ((x+radius < clipRect.x) || (x-radius >= clipRect.x+clipRect.w) || (y+radius < clipRect.y) || (y-radius >= clipRect.y+clipRect.h))
 			return;
-		
+
 		// draw
 		int dx, dy, d;
 		int rdx, rdy;
@@ -987,7 +1018,7 @@ namespace GAGCore
 			dx = 0;
 			dy = (radius<<1) + i;
 			d = 0;
-		
+
 			do
 			{
 				rdx = (dx>>1);
@@ -1014,38 +1045,38 @@ namespace GAGCore
 			while (dx <= dy);
 		}
 	}
-	
+
 	void DrawableSurface::drawCircle(float x, float y, float radius, const Color& color)
 	{
 		drawCircle(static_cast<int>(x), static_cast<int>(y), static_cast<int>(radius), color);
 	}
-	
+
 	// compat
 	void DrawableSurface::drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawCircle(x, y, radius, Color(r, g, b, a));
 	}
-	
+
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
 	}
-	
+
 	void DrawableSurface::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
 	}
-	
+
 	void DrawableSurface::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
 	}
-	
+
 	void DrawableSurface::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
 	}
-	
+
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		if (alpha == Color::ALPHA_OPAQUE)
@@ -1075,7 +1106,7 @@ namespace GAGCore
 							*destPtr++ = *srcPtr++;
 						#endif
 					}
-					
+
 				}
 				else
 				{
@@ -1097,7 +1128,7 @@ namespace GAGCore
 				dr.w = static_cast<Uint16>(sw);
 				dr.h = static_cast<Uint16>(sh);
 				SDL_BlitSurface(surface->sdlsurface, &sr, sdlsurface, &dr);
-			#ifdef HAVE_OPENGL	
+			#ifdef HAVE_OPENGL
 			}
 			#endif // HAVE_OPENGL
 		}
@@ -1108,13 +1139,13 @@ namespace GAGCore
 				std::cerr << "Blitting with alphablending from framebuffer in GL is forbidden" << std::endl;
 				assert(false);
 			}
-			
+
 			// check we assume the source rect is within the source surface
 			assert((sx >= 0) && (sx < surface->getW()));
 			assert((sy >= 0) && (sy < surface->getH()));
 			assert((sw > 0) && (sx + sw <= surface->getW()));
 			assert((sh > 0) && (sy + sh <= surface->getH()));
-			
+
 			// clip
 			if (x < clipRect.x)
 			{
@@ -1140,7 +1171,7 @@ namespace GAGCore
 			}
 			if ((sw <= 0) || (sh <= 0))
 				return;
-			
+
 			// draw
 			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
 			Uint32 alphaShift = 0;
@@ -1159,14 +1190,14 @@ namespace GAGCore
 					Uint32 destAlpha = 255 - srcAlpha;
 					Uint32 srcPreMult0 =  (srcValue & 0x00FF00FF) * srcAlpha;
 					Uint32 srcPreMult1 = ((srcValue >> 8) & 0x00FF00FF) * srcAlpha;
-					
+
 					Uint32 destValue = *memDest;
 					Uint32 destPreMult0 =  (destValue & 0x00FF00FF) * destAlpha;
 					Uint32 destPreMult1 = ((destValue >> 8) & 0x00FF00FF) * destAlpha;
-					
+
 					destPreMult0 += srcPreMult0;
 					destPreMult1 += srcPreMult1;
-					
+
 					*memDest++ = ((destPreMult0 >> 8) & 0x00FF00FF) | (destPreMult1 & 0xFF00FF00);
 				}
 				while (--dw);
@@ -1174,88 +1205,88 @@ namespace GAGCore
 		}
 		dirty = true;
 	}
-	
+
 	void DrawableSurface::drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		drawSurface(static_cast<int>(x), static_cast<int>(y), surface, sx, sy, sw, sh, alpha);
 	}
-	
+
 	void DrawableSurface::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha)
 	{
 		// TODO : Implement
 	}
-	
+
 	void DrawableSurface::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		drawSurface(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), surface, sx, sy, sw, sh, alpha);
 	}
-	
+
 	void DrawableSurface::drawSprite(int x, int y, Sprite *sprite, unsigned index,  Uint8 alpha)
 	{
 		// check bounds
 		assert(sprite);
 		if (!sprite->checkBound(index))
 			return;
-		
+
 		// draw background
 		if (sprite->images[index])
 			drawSurface(x, y, sprite->images[index], alpha);
-			
+
 		// draw rotation
 		if (sprite->rotated[index])
 			drawSurface(x, y, sprite->getRotatedSurface(index), alpha);
 	}
-	
+
 	void DrawableSurface::drawSprite(float x, float y, Sprite *sprite, unsigned index,  Uint8 alpha)
 	{
 		// check bounds
 		assert(sprite);
 		if (!sprite->checkBound(index))
 			return;
-		
+
 		// draw background
 		if (sprite->images[index])
 			drawSurface(x, y, sprite->images[index], alpha);
-			
+
 		// draw rotation
 		if (sprite->rotated[index])
 			drawSurface(x, y, sprite->getRotatedSurface(index), alpha);
 	}
-	
+
 	void DrawableSurface::drawSprite(int x, int y, int w, int h, Sprite *sprite, unsigned index, Uint8 alpha)
 	{
 		// check bounds
 		assert(sprite);
 		if (!sprite->checkBound(index))
 			return;
-		
+
 		// draw background
 		if (sprite->images[index])
 			drawSurface(x, y, w, h, sprite->images[index], alpha);
-			
+
 		// draw rotation
 		if (sprite->rotated[index])
 			drawSurface(x, y, w, h, sprite->getRotatedSurface(index), alpha);
 	}
-	
+
 	void DrawableSurface::drawSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha)
 	{
 		// check bounds
 		assert(sprite);
 		if (!sprite->checkBound(index))
 			return;
-		
+
 		// draw background
 		if (sprite->images[index])
 			drawSurface(x, y, w, h, sprite->images[index], alpha);
-			
+
 		// draw rotation
 		if (sprite->rotated[index])
 			drawSurface(x, y, w, h, sprite->getRotatedSurface(index), alpha);
 	}
-	
+
 	void DrawableSurface::drawString(int x, int y, Font *font, const char *msg, int w, Uint8 alpha)
-	{	
+	{
 		std::string output(msg);
 		std::string::size_type pos = output.find('\n', 0);
 		if(pos != std::string::npos)
@@ -1285,7 +1316,7 @@ namespace GAGCore
 			}
 		}
 	}
-	
+
 	void DrawableSurface::drawString(float x, float y, Font *font, const char *msg, float w, Uint8 alpha)
 	{
 		std::string output(msg);
@@ -1317,35 +1348,35 @@ namespace GAGCore
 		font->drawString(this, x, y, w, output.c_str(), alpha);
 
 	}
-	
+
 	void DrawableSurface::drawString(int x, int y, Font *font, const std::string &msg, int w, Uint8 alpha)
 	{
 		drawString(x, y, font, msg.c_str(), w, alpha);
 	}
-	
+
 	void DrawableSurface::drawString(float x, float y, Font *font, const std::string &msg, float w, Uint8 alpha)
 	{
 		drawString(x, y, font, msg.c_str(), w, alpha);
 	}
-	
+
 	void DrawableSurface::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 		assert(mapW * mapH <= static_cast<int>(map.size()));
-		
+
 		for (int dy=0; dy < mapH-1; dy++)
 			for (int dx=0; dx < mapW-1; dx++)
 				drawFilledRect(x + dx * cellW, y + dy * cellH, cellW, cellH, color.applyMultiplyAlpha((Uint8)(255.0f * map[mapW * dy + dx])));
 	}
-	
+
 	void DrawableSurface::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 		assert(mapW * mapH <= static_cast<int>(map.size()));
-		
+
 		for (int dy=0; dy < mapH-1; dy++)
 			for (int dx=0; dx < mapW-1; dx++)
 				drawFilledRect(x + dx * cellW, y + dy * cellH, cellW, cellH, color.applyMultiplyAlpha(map[mapW * dy + dx]));
 	}
-	
+
 	// compat
 	void DrawableSurface::drawString(int x, int y, Font *font, int i)
 	{
@@ -1353,7 +1384,7 @@ namespace GAGCore
 		str << i;
 		this->drawString(x, y, font, str.str());
 	}
-	
+
 	//This code is for the textshot code
 	std::map<std::string, std::string> DrawableSurface::texts;
 	std::set<std::string> DrawableSurface::wroteTexts;
@@ -1408,23 +1439,23 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
-			glState.doScissor(1);
+			glState.doScissor(true);
 			glScissor(clipRect.x, getH() - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
 		}
 		#endif
 	}
-	
+
 	void GraphicContext::setClipRect(void)
 	{
 		DrawableSurface::setClipRect();
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
-			glState.doScissor(0);
+			glState.doScissor(false);
 		#endif
 	}
-	
+
 	// drawing, reimplementation for GL
-	
+
 	void GraphicContext::drawPixel(int x, int y, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1434,7 +1465,7 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawPixel(x, y, color);
 	}
-	
+
 	void GraphicContext::drawPixel(float x, float y, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1444,8 +1475,8 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawPixel(static_cast<int>(x), static_cast<int>(y), color);
 	}
-	
-	
+
+
 	void GraphicContext::drawRect(int x, int y, int w, int h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1455,7 +1486,7 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawRect(x, y, w, h, color);
 	}
-	
+
 	void GraphicContext::drawRect(float x, float y, float w, float h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1463,9 +1494,9 @@ namespace GAGCore
 		{
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(1);
-			glState.doTexture(0);
-	
+			glState.doBlend(true);
+			glState.doTexture(false);
+
 			// draw
 			glBegin(GL_LINES);
 			if (color.a < 255)
@@ -1482,8 +1513,8 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), color);
 	}
-	
-	
+
+
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1493,7 +1524,7 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawFilledRect(x, y, w, h, color);
 	}
-	
+
 	void GraphicContext::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1501,11 +1532,11 @@ namespace GAGCore
 		{
 			// state change
 			if (color.a < 255)
-				glState.doBlend(1);
+				glState.doBlend(true);
 			else
-				glState.doBlend(0);
-			glState.doTexture(0);
-		
+				glState.doBlend(false);
+			glState.doTexture(false);
+
 			// draw
 			glBegin(GL_QUADS);
 			if (color.a < 255)
@@ -1522,8 +1553,8 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawFilledRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), color);
 	}
-	
-	
+
+
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1533,7 +1564,7 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawLine(x1, y1, x2, y2, color);
 	}
-	
+
 	void GraphicContext::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1541,9 +1572,9 @@ namespace GAGCore
 		{
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(1);
-			glState.doTexture(0);
-			
+			glState.doBlend(true);
+			glState.doTexture(false);
+
 			// draw
 			glBegin(GL_LINES);
 			if (color.a < 255)
@@ -1558,8 +1589,8 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawLine(static_cast<int>(x1), static_cast<int>(y1), static_cast<int>(x2), static_cast<int>(y2), color);
 	}
-	
-	
+
+
 	void GraphicContext::drawCircle(int x, int y, int radius, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
@@ -1569,21 +1600,21 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawCircle(x, y, radius, color);
 	}
-	
+
 	void GraphicContext::drawCircle(float x, float y, float radius, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
-			glState.doBlend(1);
-			glState.doTexture(0);
+			glState.doBlend(true);
+			glState.doTexture(false);
 			glLineWidth(2);
-		
+
 			double tot = radius;
 			double fx = x;
 			double fy = y;
 			double fray = radius;
-		
+
 			glBegin(GL_LINES);
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
@@ -1603,27 +1634,27 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawCircle(static_cast<int>(x), static_cast<int>(y), static_cast<int>(radius), color);
 	}
-	
+
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
 	}
-	
+
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
 	}
-	
+
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
 	}
-	
+
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
 		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
 	}
-	
+
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		#ifdef HAVE_OPENGL
@@ -1633,7 +1664,7 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawSurface(x, y, surface, sx, sy, sw, sh, alpha);
 	}
-	
+
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		#ifdef HAVE_OPENGL
@@ -1643,7 +1674,7 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawSurface(static_cast<int>(x), static_cast<int>(y), surface, sx, sy, sw, sh, alpha);
 	}
-	
+
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha)
 	{
 		#ifdef HAVE_OPENGL
@@ -1653,7 +1684,7 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawSurface(x, y, w, h, surface, sx, sy, sw, sh, alpha);
 	}
-	
+
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		#ifdef HAVE_OPENGL
@@ -1662,13 +1693,13 @@ namespace GAGCore
 			// upload
 			if (surface->dirty)
 				surface->uploadToTexture();
-			
+
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(1);
-			glState.doTexture(1);
+			glState.doBlend(true);
+			glState.doTexture(true);
 			glColor4ub(255, 255, 255, alpha);
-			
+
 			// draw
 			glState.setTexture(surface->texture);
 			glBegin(GL_QUADS);
@@ -1686,119 +1717,179 @@ namespace GAGCore
 		#endif
 			DrawableSurface::drawSurface(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), surface, sx, sy, sw, sh, alpha);
 	}
-	
+
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
-		#ifdef HAVE_OPENGL
+	#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			assert(mapW * mapH <= static_cast<int>(map.size()));
-			
 			float fr = 255.0f*(float)color.r;
 			float fg = 255.0f*(float)color.g;
 			float fb = 255.0f*(float)color.b;
-			
-			glState.doBlend(1);
-			glState.doTexture(0);
-			for (int dy=0; dy < mapH-1; dy++)
-			{
-				int midy = y + dy * cellH + cellH/2;
-				for (int dx=0; dx < mapW-1; dx++)
+			if (EXPERIMENTAL) {
+				GLuint texture[1];
+				GLboolean old_blend;                //var to store blend state
+				glGetBooleanv(GL_BLEND,&old_blend); //store blend state
+				glEnable(GL_BLEND);                 //enable blend
+				GLboolean old_texture_2d;
+				glGetBooleanv(GL_TEXTURE_2D,&old_texture_2d);
+				glEnable(GL_TEXTURE_2D);
+				GLfloat image[mapW*mapH];
+				for (int i=0; i<mapH; i++)
+					for (int j=0; j<mapW;j++)
+						image[i*mapW+j]=map[mapW*i+j];
+				glColor4ub(fr, fg, fb, 255);
+				glGenTextures(1, &texture[0]);
+				glBindTexture(GL_TEXTURE_2D, texture[0]);
+				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, image);
+				glBindTexture( GL_TEXTURE_2D, texture[0] );
+				glBegin(GL_QUADS);
+				glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+0);
+				glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+0         ,y+0);
+				glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+0         ,y+mapH*cellH);
+				glTexCoord2f( 1.0f, 1.0f ); glVertex2f(x+mapW*cellW,y+mapH*cellH);
+				glEnd( );
+				if(!old_blend)
+					glDisable(GL_BLEND);
+				if(!old_texture_2d)
+					glDisable(GL_TEXTURE_2D);
+			} else {
+				glState.doBlend(true);
+				glState.doTexture(false);
+				for (int dy=0; dy < mapH-1; dy++)
 				{
-					glBegin(GL_TRIANGLE_FAN);
-					//This interpolates to find the center color, then fans out to the four corners.
-					int midx = x + dx * cellW + cellW/2;
-					float mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-					float mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-					glColor4f(fr, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-					glVertex2f(midx, midy);
-					//Touch each of the four corners
-					glColor4f(fr, fg, fb, map[mapW * dy + dx]);
-					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx]);
-					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
+					int midy = y + dy * cellH + cellH/2;
+					for (int dx=0; dx < mapW-1; dx++)
+					{
+						glBegin(GL_TRIANGLE_FAN);
+						//This interpolates to find the center color, then fans out to the four corners.
+						int midx = x + dx * cellW + cellW/2;
+						float mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
+						float mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
+						glColor4f(fr, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
+						glVertex2f(midx, midy);
+						//Touch each of the four corners
+						glColor4f(fr, fg, fb, map[mapW * dy + dx]);
+						glVertex2f(x + dx * cellW, y + dy * cellH);
+						glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx]);
+						glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
 
-					glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx + 1]);
-					glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-					glColor4f(fr, fg, fb, map[mapW * dy + dx + 1]);
-					glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
+						glColor4f(fr, fg, fb, map[mapW * (dy + 1) + dx + 1]);
+						glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
+						glColor4f(fr, fg, fb, map[mapW * dy + dx + 1]);
+						glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
 
-					glColor4f(fr, fg, fb, map[mapW * dy + dx]);
-					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glEnd();
+						glColor4f(fr, fg, fb, map[mapW * dy + dx]);
+						glVertex2f(x + dx * cellW, y + dy * cellH);
+						glEnd();
+					}
 				}
 			}
 		}
 		else
-		#endif
+	#endif
 			DrawableSurface::drawAlphaMap(map, mapW, mapH, x, y, cellW, cellH, color);
 	}
-	
+
 	void GraphicContext::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
-		#ifdef HAVE_OPENGL
+	#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			assert(mapW * mapH <= static_cast<int>(map.size()));
-			
-			glState.doBlend(1);
-			glState.doTexture(0);
-			for (int dy=0; dy < mapH-1; dy++)
-			{
-				int midy = y + dy * cellH + cellH/2;
-				for (int dx=0; dx < mapW-1; dx++)
+			if(EXPERIMENTAL) {
+				glPushMatrix();
+				glEnable(GL_BLEND);
+				glEnable(GL_TEXTURE_2D);
+/*				glState.resetCache();
+				bool oldBlend=glState.doBlend(true);
+				bool oldTexture=glState.doTexture(true);*/
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+				GLubyte image[mapW*mapH];
+				for (int i=0; i<mapH; i++)
+					for (int j=0; j<mapW;j++)
+						image[i*mapW+j]=map[mapW*i+j];
+				glColor4ub(color.r, color.g, color.b, color.a);
+				GLuint texture[1];
+				glGenTextures(1, &texture[0]);
+				glBindTexture(GL_TEXTURE_2D, texture[0]);
+				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, image);
+				glBegin(GL_QUADS);
+					glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+0);
+					glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+0         ,y+0);
+					glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+0         ,y+mapH*cellH);
+					glTexCoord2f( 1.0f, 1.0f ); glVertex2f(x+mapW*cellW,y+mapH*cellH);
+				glEnd( );
+				glPopMatrix();
+				//uploadToTexture();
+//				glState.doBlend(oldBlend);
+//				glState.doTexture(oldTexture);
+			} else {
+				glState.doBlend(true);
+				glState.doTexture(false);
+				for (int dy=0; dy < mapH-1; dy++)
 				{
+					int midy = y + dy * cellH + cellH/2;
+					for (int dx=0; dx < mapW-1; dx++)
+					{
 
-					glBegin(GL_TRIANGLE_FAN);
-					//This interpolates to find the center color, then fans out to the four corners.
-					int midx = x + dx * cellW + cellW/2;
-					int mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-					int mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-					glColor4ub(color.r, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-					glVertex2f(midx, midy);
-					//Touch each of the four corners
-					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
-					glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
+						glBegin(GL_TRIANGLE_FAN);
+						//This interpolates to find the center color, then fans out to the four corners.
+						int midx = x + dx * cellW + cellW/2;
+						int mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
+						int mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
+						glColor4ub(color.r, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
+						glVertex2f(midx, midy);
+						//Touch each of the four corners
+						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
+						glVertex2f(x + dx * cellW, y + dy * cellH);
+						glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
+						glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
 
-					glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx + 1]);
-					glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx + 1]);
-					glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
+						glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx + 1]);
+						glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
+						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx + 1]);
+						glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
 
-					glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-					glVertex2f(x + dx * cellW, y + dy * cellH);
-					glEnd();
+						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
+						glVertex2f(x + dx * cellW, y + dy * cellH);
+						glEnd();
+					}
 				}
 			}
 		}
 		else
-		#endif
+	#endif
 			DrawableSurface::drawAlphaMap(map, mapW, mapH, x, y, cellW, cellH, color);
 	}
-	
+
 	// compat... this is there because it sems gcc is not able to do function overloading with several levels of inheritance
 	void GraphicContext::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawPixel(x, y, Color(r, g, b, a));
 	}
-	
+
 	void GraphicContext::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawRect(x, y, w, h, Color(r, g, b, a));
 	}
-	
+
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawFilledRect(x, y, w, h, Color(r, g, b, a));
 	}
-	
+
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawLine(x1, y1, x2, y2, Color(r, g, b, a));
 	}
-	
+
 	void GraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		#ifdef HAVE_OPENGL
@@ -1809,6 +1900,16 @@ namespace GAGCore
 			 _drawVertLine(x, y, l, Color(r, g, b, a));
 	}
 	
+	void GraphicContext::drawVertLine(int x, int y, int l, const Color& color)
+	{
+		#ifdef HAVE_OPENGL
+		if (optionFlags & GraphicContext::USEGPU)
+			drawLine(x, y, x, y+l, color);
+		else
+		#endif
+			 _drawVertLine(x, y, l, color);
+	}
+
 	void GraphicContext::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		#ifdef HAVE_OPENGL
@@ -1819,22 +1920,32 @@ namespace GAGCore
 			_drawHorzLine(x, y, l, Color(r, g, b, a));
 	}
 	
+	void GraphicContext::drawHorzLine(int x, int y, int l, const Color& color)
+	{
+		#ifdef HAVE_OPENGL
+		if (optionFlags & GraphicContext::USEGPU)
+			drawLine(x, y, x+l, y, color);
+		else
+		#endif
+			_drawHorzLine(x, y, l, color);
+	}
+
 	void GraphicContext::drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		drawCircle(x, y, radius, Color(r, g, b, a));
 	}
-	
+
 	void GraphicContext::setMinRes(int w, int h)
 	{
 		minW = w;
 		minH = h;
 	}
-	
+
 	void GraphicContext::beginVideoModeListing(void)
 	{
 		modes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
 	}
-	
+
 	bool GraphicContext::getNextVideoMode(int *w, int *h)
 	{
 		if (modes && (modes != (SDL_Rect **)-1))
@@ -1844,12 +1955,12 @@ namespace GAGCore
 				int nw = (*modes)->w;
 				int nh = (*modes)->h;
 				modes++;
-				
+
 				if(nw < 800 || nh<600)
 				{
 					continue;
 				}
-				
+
 				if ( ((minW == 0) || (nw >= minW))
 					&& ((minH == 0) || (nh >= minH)))
 				{
@@ -1861,16 +1972,16 @@ namespace GAGCore
 		}
 		return false;
 	}
-	
+
 	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const char *title, const char *icon)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
-		
+
 		minW = minH = 0;
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
-	
+
 		// Load the SDL library
 		if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER)<0 )
 		{
@@ -1882,24 +1993,24 @@ namespace GAGCore
 			if (verbose)
 				fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
 		}
-	
+
 		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 		SDL_EnableUNICODE(1);
-		
+
 		TTF_Init();
-		
+
 		if (title && icon)
 			SDL_WM_SetCaption(title, icon);
-		
+
 		///If setting the given resolution fails, default to 800x600
 		if(!setRes(w, h, flags))
 		{
 			fprintf(stderr, "Toolkit : Can't set screen resolution, resetting to default of 800x600\n");
 			setRes(800,600,flags);
 		}
-		
+
 	}
-	
+
 	GraphicContext::~GraphicContext(void)
 	{
 		TTF_Quit();
@@ -1909,7 +2020,7 @@ namespace GAGCore
 		if (verbose)
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
 	}
-	
+
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
 		// check dimension
@@ -1925,7 +2036,7 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Screen height %d is too small, set to min %d\n", h, minH);
 			h = minH;
 		}
-		
+
 		// set flags
 		optionFlags = flags;
 		Uint32 sdlFlags = 0;
@@ -1943,12 +2054,12 @@ namespace GAGCore
 		// remove GL from options
 		optionFlags &= ~USEGPU;
 		#endif
-		
+
 		// create surface
 		if (sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		sdlsurface = SDL_SetVideoMode(w, h, 32, sdlFlags);
-		
+
 		// check surface
 		if (!sdlsurface)
 		{
@@ -1959,7 +2070,7 @@ namespace GAGCore
 		else
 		{
 			_gc = this;
-			
+
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
 			{
@@ -1995,12 +2106,12 @@ namespace GAGCore
 			{
 				memcpy(&_glFormat, _gc->sdlsurface->format, sizeof(SDL_PixelFormat));
 			}
-			
+
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 				glState.checkExtensions();
 			#endif // HAVE_OPENGL
-			
+
 			setClipRect();
 			if (flags & CUSTOMCURSOR)
 			{
@@ -2011,29 +2122,29 @@ namespace GAGCore
 			}
 			else
 				SDL_ShowCursor(SDL_ENABLE);
-			
+
 			if (verbose)
 				fprintf(stderr,
 					(flags & FULLSCREEN)
 					?"Toolkit : Screen set to %dx%d at 32 bpp in fullscreen\n"
 					:"Toolkit : Screen set to %dx%d at 32 bpp in window\n",
 					w, h);
-			
+
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 			{
 				gluOrtho2D(0, w, h, 0);
 				glEnable(GL_LINE_SMOOTH);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-				glState.doTexture(1);
+				glState.doTexture(true);
 				glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			}
 			#endif
-			
+
 			return true;
 		}
 	}
-	
+
 	void GraphicContext::nextFrame(void)
 	{
 		DrawableSurface::nextFrame();
@@ -2047,7 +2158,7 @@ namespace GAGCore
 				setClipRect();
 				cursorManager.draw(this, mx, my);
 			}
-			
+
 			#ifdef HAVE_OPENGL
 			if (optionFlags & GraphicContext::USEGPU)
 			{
@@ -2061,11 +2172,11 @@ namespace GAGCore
 			}
 		}
 	}
-	
+
 	void GraphicContext::printScreen(const char *filename)
 	{
 		SDL_Surface *toPrintSurface = NULL;
-		
+
 		// Fetch the surface to print
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
@@ -2077,8 +2188,8 @@ namespace GAGCore
 		}
 		else
 		#endif
-			toPrintSurface = sdlsurface; 
-		
+			toPrintSurface = sdlsurface;
+
 		// Print it using virtual filesystem
 		if (toPrintSurface)
 		{
@@ -2090,30 +2201,30 @@ namespace GAGCore
 			}
 		}
 	}
-	
+
 	// Font stuff
-	
+
 	int Font::getStringWidth(const int i)
 	{
 		std::ostringstream temp;
 		temp << i;
 		return getStringWidth(temp.str().c_str());
 	}
-	
+
 	int Font::getStringWidth(const char *string, int len)
 	{
 		std::string temp;
 		temp.append(string, len);
 		return getStringWidth(temp.c_str());
 	}
-	
+
 	int Font::getStringHeight(const char *string, int len)
 	{
 		std::string temp;
 		temp.append(string, len);
 		return getStringHeight(temp.c_str());
 	}
-	
+
 	int Font::getStringHeight(const int i)
 	{
 		std::ostringstream temp;

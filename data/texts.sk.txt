@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Stavanie
 Jednotky
 [building site]
 stavenisko
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -568,6 +574,8 @@ Stlmiť
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -582,6 +590,8 @@ Nie
 
 [not ready]
 nepripravený
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +600,8 @@ Počet hráčov: %0
 Tímov: %0
 [number of teams]
 počet tímov
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -621,7 +633,7 @@ Tu
 [open]
 otvorené
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -652,6 +664,8 @@ Meno hráča
 
 [press space]
 Pre pokračovanie stlač medzeru
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -688,6 +702,8 @@ Proporcie
 
 [Register a new YOG user with password]
 Zaregistrovať nové YOG meno s heslom. (nezabezpečené)
+[Register]
+
 [remember unit]
 Uložiť jednotku
 [Remember YOG password localy]
@@ -703,6 +719,8 @@ Spust./zast. opravu
 [repair]
 Opraviť
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 Pôvodné nastavenia klávesnice
@@ -729,6 +747,8 @@ Chceš pred ukončením uložiť zmeny?
 [save game]
 Uložiť hru
 [save map]
+
+[save replay]
 
 [save script]
 
@@ -992,6 +1012,8 @@ Bazén dokončený
 ?? Vlajka vojny dokončená ??
 [the warflag is under attack]
 ?? Vlajka vojny čelí útoku ??
+[time]
+
 [to:]
 pre:
 [toggle draw accessibility aids]
@@ -1004,6 +1026,12 @@ Zobraziť/skryť cesty
 
 [toggle recording voice]
 Spustiť nahrávanie zvuku
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Dosiahnutá úroveň prestíže
 [Total]
@@ -1134,6 +1162,8 @@ YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
 
 [YESTS_CREATED]
 Systém pripojenia je pripravený kontaktovať YOG metaserver.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
 [yog block command help]
