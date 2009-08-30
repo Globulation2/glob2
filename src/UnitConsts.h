@@ -22,6 +22,7 @@
 #ifndef __UNIT_CONSTS_H
 #define __UNIT_CONSTS_H
 
+#include <assert.h>
 #include <string>
 
 enum Abilities

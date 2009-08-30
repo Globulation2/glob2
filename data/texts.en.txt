@@ -4,6 +4,8 @@
 %0 Level %1
 [%0 units can't access building]
 %0 units can't access building
+[%0 units can't access flag]
+%0 units can't access flag
 [%0 units can't access fruit]
 %0 units can't access fruit
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 units not available
 [%0 units too far from building]
 %0 units too far from building
+[%0 units too far from flag]
+%0 units too far from flag
 [%0 units too far from fruit]
 %0 units too far from fruit
 [%0 units too far from resource]
@@ -142,6 +146,8 @@ Building Defaults
 Building Settings
 [building site]
 construction site
+[Building Tool Box Explanation]
+Shift + Drag = Box
 [Building Tool Line Explanation]
 Ctrl + Drag = Line
 [Buildings]
@@ -196,6 +202,8 @@ Clears resources
 Clearing Flag
 [closed]
 Closed
+[combined vision]
+Combined vision
 [compile]
 Compile script
 [compose]
@@ -350,6 +358,8 @@ Fertility Map
 Flag Defaults
 [flag settings explanation]
 The default radius of the flag
+[fog of war]
+Fog of war
 [food]
 Food
 [forbidden area]
@@ -488,6 +498,8 @@ Load game
 Load Map
 [load script]
 Load Script
+[load replay]
+Load Replay
 [load]
 Load
 [loading map list]
@@ -496,6 +508,8 @@ Loading Map List...
 Lobby
 [login]
 Login
+[look around]
+Look around
 [Lost : %0 has more prestige than you]
 Lost: %0 has more prestige than you
 [Lost : your colony is dead]
@@ -564,6 +578,8 @@ New Campaign
 New Map
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+* only in windowed mode
 [No Hints]
 No Hints
 [no key]
@@ -578,12 +594,16 @@ No
 Not Enough Ratings
 [not ready]
 not ready
+[Number Of Buildings]
+Number Of Buildings
 [number of players: %0 (%1 AI)]
 %0 players (%1 AI)
 [number of teams: %0]
 %0 teams
 [number of teams]
 number of teams
+[Number Of Units]
+Number Of Units
 [numlock]
 numlock
 [objectives]
@@ -619,7 +639,7 @@ OpenGL
 [Options]
 Options
 [options]
-Options
+options
 [Orange]
 Orange
 [Other Options]
@@ -636,6 +656,8 @@ Pause Game
 pause
 [Paused]
 Paused
+[players]
+Players
 [player name]
 Player name
 [player rating %0]
@@ -646,6 +668,8 @@ Please wait
 power
 [press space]
 Press space to continue.
+[Prestige Score]
+Prestige Score
 [Prestige Win Enabled]
 Prestige Win Enabled
 [Prestige]
@@ -662,6 +686,8 @@ Plum
 Quit the editor
 [quit the game]
 Quit the game
+[quit the replay]
+Quit the replay
 [quit]
 Quit
 [racetrack explanation 2]
@@ -680,8 +706,8 @@ Proportions
 ready?
 [refresh map list]
 Refresh Map List
-[Register a new YOG user with password]
-Register a new YOG user with a password.
+[Register]
+Register
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
@@ -698,12 +724,18 @@ Start/Stop Repair
 Repair
 [repeat area]
 times the same landscape
+[Repeat your password :]
+Repeat your password:
+[replay ended]
+Replay Ended
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [return to editor]
 Return to the editor
 [return to game]
 Return to game
+[return to replay]
+Return to the replay
 [return]
 enter
 [right meta]
@@ -724,6 +756,8 @@ Do you want to save before quitting?
 Save game
 [save map]
 Save Map
+[save replay]
+Save Replay
 [save script]
 Save Script
 [Save]
@@ -814,6 +848,10 @@ shift-%0
 Enter: send a chat message
 [shortcut explanation v]
 V: hold to speak
+[show areas]
+Show areas
+[show flags]
+Show flags
 [show main menu]
 Show Main Menu
 [skin]
@@ -966,6 +1004,8 @@ The market is under attack
 The racetrack is finished
 [the racetrack is under attack]
 The racetrack is under attack
+[the replays]
+Replays
 [the school is finished]
 The school is finished
 [the school is under attack]
@@ -986,6 +1026,8 @@ The swimming pool is under attack
 ?? warflag finished ??
 [the warflag is under attack]
 ?? warflag under attack ??
+[time]
+Time
 [to:]
 to:
 [toggle draw accessibility aids]
@@ -1000,6 +1042,12 @@ Toggle Menu Screen
 Initiate Voice Recording
 [toggle recording voice]
 Toggle Recording Voice
+[Total Attack Power]
+Total Attack Power
+[Total Defence Power]
+Total Defence Power
+[Total Hitpoints]
+Total Hitpoints
 [Total prestige reached]
 Total prestige reached
 [Total]
@@ -1054,6 +1102,10 @@ Version
 View History
 [Voice volume]
 Volume (voice)
+[watch again]
+Watch again
+[watching:]
+Watching:
 [waiting for %0]
 Waiting for %0
 [waiting for key]
@@ -1128,6 +1180,8 @@ The YOG metaserver has refused the connection because this username is banned. P
 The YOG metaserver has refused the connection because the username given is invalid. Usernames can only contain letters, numbers, and underscores.
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+The provided passwords don't match. Please retype them.
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
 [yog block command help]
@@ -1151,7 +1205,7 @@ You have lost!
 [you have won]
 You have won!
 [You where kicked from the game]
-You where kicked from the game
+You were kicked from the game
 [Your %0 are under attack]
 Your %0 are under attack
 [Your IP address was temporarily banned]
@@ -1160,5 +1214,3 @@ Your IP address was temporarily banned. Please wait patiently until it is unbann
 Your unit got converted to %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
-[no fullscreen]
-* only in windowed mode

@@ -30,13 +30,25 @@
 
 using namespace GAGCore;
 
-Minimap::Minimap(bool nox, int px, int py, int sizew, int sizeh, int leftborder, int topborder, MinimapMode minimap_mode)
-	: noX(nox), px(px), py(py), sizew(sizew), sizeh(sizeh), leftborder(leftborder), topborder(topborder), minimap_mode(minimap_mode)
+
+// Creates a minimap of specified values
+// nox - no graphics
+// menuWidth - width of the menu the minimap is placed in
+// gameWidth - width of the game screen
+// xOffset - offset from the left side of the menu
+// yOffset - offset from the top
+// width & height - size of the minimap graphic
+// minimapMode - to draw fog of war, or not to draw!
+
+Minimap::Minimap(bool nox, int menuWidth, int gameWidth, int xOffset, int yOffset, int width, int height, MinimapMode minimapMode)
+	: noX(nox), menuWidth(menuWidth), gameWidth(gameWidth), xOffset(xOffset), yOffset(yOffset), width(width), height(height), minimapMode(minimapMode)
 {
 	if (nox) return;
 
+  // since the update loop goes by row store that row so we gan draw the gray "radar" line 
 	update_row = -1;
-	surface=new DrawableSurface(sizew - leftborder * 2, sizeh - topborder * 2);
+	// The actual minimap picture to be drawn to.
+	surface=new DrawableSurface(width, height);
 }
 
 
@@ -59,6 +71,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 {
 	if (noX) return;
 
+  // Compute the position of the minimap if it needs to be scaled & centered
 	computeMinimapPositioning();
 
 	Uint8 borderR;
@@ -80,30 +93,35 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		borderB = 40;
 		borderA = 180;
 	}
-	globalContainer->gfx->drawFilledRect(px, py, sizew, topborder, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px, py + sizeh - topborder, sizew, topborder, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px, py + topborder, leftborder, sizeh - topborder*2, borderR, borderG, borderB, borderA);
-	globalContainer->gfx->drawFilledRect(px + sizew - leftborder, py + topborder, leftborder, sizeh-topborder*2, borderR, borderG, borderB, borderA);
-
-	///Draw a 1 pixel hilight arround the minimap
-	globalContainer->gfx->drawRect(px + leftborder - 1, py + topborder - 1, sizew - leftborder * 2 + 2, sizeh - topborder * 2 + 2, 200, 200, 200);
-
+	
+	// Fill the 4 sides of the menu around the minimap with the color above
+	// left side
+	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth, 0, xOffset, height+yOffset, borderR, borderG, borderB, borderA);
+	// right side
+	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset+width, 0, menuWidth-xOffset-width, height+yOffset, borderR, borderG, borderB, borderA);
+	// top side
+	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, 0, width, yOffset, borderR, borderG, borderB, borderA);
+	// bottom side not needed, because the menu draws up to it
+	//globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, yOffset+height, width, 0, borderR, borderG, borderB, borderA);
+  
+  // calculate the offset for the viewport square
 	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
 	offset_y = game->teams[localteam]->startPosY - game->map.getH() / 2;
 
-	///What row the scan-line is to be drawn at
+	///What row the scan-line ("radar") is to be drawn at
 	int line_row = 0;
 
 	//Render the colorMap and blit the surface
 	if(update_row == -1)
 	{
-		surface->drawFilledRect(0, 0, sizew - leftborder * 2, sizeh - topborder * 2, 0,0,0,Color::ALPHA_OPAQUE);
+	  // clear the minimap by drawing a black rect over it
+		surface->drawFilledRect(0, 0, width, height, 0, 0, 0, Color::ALPHA_OPAQUE);
 		update_row = 0;
 		refreshPixelRows(0, mini_h, localteam);
 	}
 	else
 	{
-		///Render four rows at a time
+		///Render 1/25th of the rows at a time
 		const int rows_to_render = std::max(1, mini_h/25);
 		
 		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localteam);
@@ -112,7 +130,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		line_row = update_row;
 	}
 	//Draw the surface
-	globalContainer->gfx->drawSurface(px + leftborder, py + topborder, surface);
+	globalContainer->gfx->drawSurface(gameWidth-menuWidth+xOffset, yOffset, surface);
 
 	//Draw the viewport square, taking into account that it may
 	//wrap arround the sides of the minimap
@@ -143,8 +161,15 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	globalContainer->gfx->drawPixel(endx, endy, 255, 255, 255);
 
 	///Draw the line that shows where the minimap is currently updating
-	if(minimap_mode == HideFOW)
+	if(minimapMode == HideFOW)
 		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
+	
+	///Draw a 1 pixel border arround the minimap
+	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
+	                               yOffset-1, 
+	                               width+2, 
+	                               height+2, 
+	                               200, 200, 200);
 }
 
 
@@ -189,32 +214,43 @@ void Minimap::resetMinimapDrawing()
 {
 	update_row = -1;
 }
-	
+
+
+
+void Minimap::setMinimapMode(MinimapMode mode)
+{
+	minimapMode = mode;
+}
+
 
 
 void Minimap::computeMinimapPositioning()
 {
 	if (noX) return;
-
-	int msizew = sizew - leftborder*2;
-	int msizeh = sizeh - topborder*2;
+	
 	if(game->map.getW() > game->map.getH())
 	{
-		mini_w = msizew;
-		mini_h = (game->map.getH() * msizeh) / game->map.getW();
+	  // If the width is greater than the height, normal width but shrink the height
+		mini_w = width;
+		mini_h = (game->map.getH()*height) / game->map.getW();
+		// Once the minimap has been scaled, center it on the minimap
 		mini_offset_x = 0;
-		mini_offset_y = (msizeh - mini_h)/2;
-		mini_x = px + leftborder + mini_offset_x;
-		mini_y = py + topborder + mini_offset_y;
+		mini_offset_y = (height-mini_h)/2;
+		// Now set the position of it on the whole screen
+		mini_x = gameWidth-menuWidth+xOffset+mini_offset_x;
+		mini_y = yOffset + mini_offset_y;
 	}
 	else
 	{
-		mini_w = (game->map.getW() * msizew) / game->map.getH();
-		mini_h = msizeh;
-		mini_offset_x = (msizew - mini_w)/2;
+	  // Height is greater than width
+		mini_w = (game->map.getW()*width) / game->map.getH();
+		mini_h = height;
+		// Center it..
+		mini_offset_x = (width - mini_w)/2;
 		mini_offset_y = 0;
-		mini_x = px + leftborder + mini_offset_x;
-		mini_y = py + topborder + mini_offset_y;
+		// And set the position for the screen!
+		mini_x = gameWidth-menuWidth+xOffset+mini_offset_x;
+		mini_y = yOffset + mini_offset_y;
 	}
 }
 
@@ -243,7 +279,7 @@ void Minimap::computeColors(int row, int localTeam)
 	if (noX) return;
 
 	assert(localTeam>=0);
-	assert(localTeam<32);
+	assert(localTeam<Team::MAX_COUNT);
 
 	const int terrainColor[3][3] = {
 		{ 0, 40, 120 }, // Water
@@ -271,8 +307,10 @@ void Minimap::computeColors(int row, int localTeam)
 	const int dMx = ((game->map.getW())<<16) / (mini_w);
 	const int dMy = ((game->map.getH())<<16) / (mini_h);
 	const int decSPX=offset_x<<16, decSPY=offset_y<<16;
+	bool useMapDiscovered = (minimapMode == HideFOW);
 
-	bool useMapDiscovered = minimap_mode == ShowFOW;
+	Uint32 visibleTeams = game->teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 	const int dy = row;
 	for (int dx=0; dx<szX; dx++)
@@ -297,7 +335,7 @@ void Minimap::computeColors(int row, int localTeam)
 					gid=game->map.getBuilding(minidx, minidy);
 					if (gid!=NOGUID)
 					{
-						if (game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & game->teams[localTeam]->me)
+						if (game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & visibleTeams)
 						{
 							seenUnderFOW = true;
 						}
@@ -305,12 +343,12 @@ void Minimap::computeColors(int row, int localTeam)
 				}
 				if (gid!=NOGUID)
 				{
-					int teamId=gid/1024;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))
+					int teamId=gid/Unit::MAX_COUNT;
+					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, visibleTeams))
 					{
 						if (teamId==localTeam)
 							UnitOrBuildingIndex = 0;
-						else if ((game->teams[localTeam]->allies) & (game->teams[teamId]->me))
+						else if ((game->teams[localTeam]->allies) & visibleTeams)
 							UnitOrBuildingIndex = 1;
 						else
 							UnitOrBuildingIndex = 2;
@@ -320,7 +358,7 @@ void Minimap::computeColors(int row, int localTeam)
 					{
 						if (teamId==localTeam)
 							UnitOrBuildingIndex = 3;
-						else if ((game->teams[localTeam]->allies) & (game->teams[teamId]->me))
+						else if ((game->teams[localTeam]->allies) & visibleTeams)
 							UnitOrBuildingIndex = 4;
 						else
 							UnitOrBuildingIndex = 5;
@@ -328,7 +366,7 @@ void Minimap::computeColors(int row, int localTeam)
 					}
 				}
 				
-				if (useMapDiscovered || game->map.isMapDiscovered(minidx, minidy, game->teams[localTeam]->me))
+				if (useMapDiscovered || game->map.isMapDiscovered(minidx, minidy, visibleTeams))
 				{
 					// get color to add
 					int pcolIndex;
@@ -344,7 +382,7 @@ void Minimap::computeColors(int row, int localTeam)
 					
 					// get weight to add
 					int pcolAddValue;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, game->teams[localTeam]->me))
+					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, visibleTeams))
 						pcolAddValue=5;
 					else
 						pcolAddValue=3;

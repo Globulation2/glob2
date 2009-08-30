@@ -128,6 +128,7 @@ void BuildingsTypes::resolveUpgradeReferences(void)
 		{
 			BuildingType *bt2 = entries[j];
 			if (bt1 != bt2)
+			{
 				if (bt1->isBuildingSite)
 				{
 					if ((bt2->level == bt1->level) && (bt2->type  == bt1->type) && !(bt2->isBuildingSite))
@@ -146,6 +147,7 @@ void BuildingsTypes::resolveUpgradeReferences(void)
 						break;
 					}
 				}
+			}
 		}
 	}
 }

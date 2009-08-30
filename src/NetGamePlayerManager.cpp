@@ -27,7 +27,7 @@ using namespace GAGCore;
 NetGamePlayerManager::NetGamePlayerManager(GameHeader& gameHeader)
 	: gameHeader(gameHeader)
 {
-	for(int x=0; x<32; ++x)
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		readyToStart[x] = true;
 	}
@@ -48,7 +48,7 @@ void NetGamePlayerManager::addPerson(Uint16 playerID, const std::string& name)
 
 
 	//Add the player into the first spare slot
-	for(int x=0; x<32; ++x)
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.type == BasePlayer::P_NONE)
@@ -71,7 +71,7 @@ void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 	if(gameHeader.getNumberOfPlayers() < 16)
 	{
 		int team_number = chooseTeamNumber();
-		for(int x=0; x<32; ++x)
+		for(int x=0; x<Team::MAX_COUNT; ++x)
 		{
 			BasePlayer& bp = gameHeader.getBasePlayer(x);
 			if(bp.type == BasePlayer::P_NONE)
@@ -91,7 +91,7 @@ void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 
 void NetGamePlayerManager::removePerson(Uint16 playerID)
 {
-	for(int x=0; x<32; ++x)
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.playerID == playerID)
@@ -108,7 +108,7 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 {
 	//Remove the player. Any players that are after this player are moved backwards
 	gameHeader.getBasePlayer(playerNumber) = BasePlayer();
-	for(int x=playerNumber+1; x<32; ++x)
+	for(int x=playerNumber+1; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.type != Player::P_NONE)
@@ -144,10 +144,10 @@ void NetGamePlayerManager::changeTeamNumber(int playerNumber, int newTeamNumber)
 
 void NetGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 {
-	for(int x=0; x<32; ++x)
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.playerID == playerID)
+		if((int)bp.playerID == playerID)
 		{
 			readyToStart[x] = isReady;
 			break;
@@ -159,7 +159,7 @@ void NetGamePlayerManager::setReadyToGo(int playerID, bool isReady)
 
 bool NetGamePlayerManager::isEveryoneReadyToGo()
 {
-	for(int x=0; x<32; ++x)
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		if(readyToStart[x] == false)
 		{
@@ -173,14 +173,15 @@ bool NetGamePlayerManager::isEveryoneReadyToGo()
 
 bool NetGamePlayerManager::isReadyToGo(int playerID)
 {
-	for(int x=0; x<32; ++x)
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if(bp.playerID == playerID)
+		if((int)bp.playerID == playerID)
 		{
 			return readyToStart[x];
 		}
 	}
+	return false;//to satisfy -Wall
 }
 
 
@@ -210,8 +211,8 @@ int NetGamePlayerManager::chooseTeamNumber()
 {
 	//Find a spare team number to give to the player. If there aren't any, recycle a number that has the fewest number of attached players
 	//Count number of players for each team
-	std::vector<int> numberOfPlayersPerTeam(32, 0);
-	for(int x=0; x<32; ++x)
+	std::vector<int> numberOfPlayersPerTeam(Team::MAX_COUNT, 0);
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.type != BasePlayer::P_NONE)

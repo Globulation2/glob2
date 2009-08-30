@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Eraiki
 Unitate ezarpenak
 [building site]
 eraikitzen
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -570,6 +576,8 @@ Kanpaina berria
 Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -584,6 +592,8 @@ Ez
 
 [not ready]
 itxaron...
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -592,6 +602,8 @@ itxaron...
 %0 talde.
 [number of teams]
 talde kopurua
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -654,6 +666,8 @@ Mesedez itxaron
 
 [press space]
 Zanpatu espazio barra jarraitzeko
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -690,6 +704,8 @@ Proportzioak
 
 [Register a new YOG user with password]
 YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
+[Register]
+
 [remember unit]
 Gogoratu unitatea
 [Remember YOG password localy]
@@ -706,6 +722,8 @@ Konponketa hasi/gelditu
 Konpondu
 [repeat area]
 aldiz lurzoru bera
+[Repeat your password :]
+
 [restore default shortcuts]
 Lehenetsitako teklak berezarri
 [return to editor]
@@ -732,6 +750,8 @@ Partida gorde irten aurretik?
 Gorde partida
 [save map]
 Gorde mapa
+[save replay]
+
 [save script]
 
 [Save]
@@ -994,6 +1014,8 @@ Igerilekua erasopean dago
 ?? War flag finished ??
 [the warflag is under attack]
 ?? War flag under attack ??
+[time]
+
 [to:]
 nori:
 [toggle draw accessibility aids]
@@ -1006,6 +1028,12 @@ Unitate ibilibidea marraztu
 
 [toggle recording voice]
 Hasi ahots grabaketa
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Gehienezko izen ona lortuta
 [Total]
@@ -1136,6 +1164,8 @@ YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek due
 
 [YESTS_CREATED]
 Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
 [yog block command help]

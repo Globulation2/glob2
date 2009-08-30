@@ -34,7 +34,7 @@ YOGClientCommandManager::YOGClientCommandManager(YOGClient* client)
 	
 YOGClientCommandManager::~YOGClientCommandManager()
 {
-	for(int i=0; i<commands.size(); ++i)
+	for(unsigned int i=0; i<commands.size(); ++i)
 	{
 		delete commands[i];
 	}
@@ -47,7 +47,7 @@ std::string YOGClientCommandManager::executeClientCommand(const std::string& mes
 	std::vector<std::string> tokens;
 	std::string token;
 	bool isQuotes=false;
-	for(int i=0; i<message.size(); ++i)
+	for(unsigned int i=0; i<message.size(); ++i)
 	{
 		if(message[i]==' ' && !isQuotes)
 		{
@@ -86,7 +86,7 @@ std::string YOGClientCommandManager::executeClientCommand(const std::string& mes
 	{
 		text += Toolkit::getStringTable()->getString("[yog command header]");
 		text += "\n";
-		for(int i=0; i<commands.size(); ++i)
+		for(unsigned int i=0; i<commands.size(); ++i)
 		{
 			text += commands[i]->getHelpMessage() + '\n';
 		}
@@ -94,7 +94,7 @@ std::string YOGClientCommandManager::executeClientCommand(const std::string& mes
 	}
 	else
 	{
-		for(int i=0; i<commands.size(); ++i)
+		for(unsigned int i=0; i<commands.size(); ++i)
 		{
 			if(tokens[0] == commands[i]->getCommandName())
 			{

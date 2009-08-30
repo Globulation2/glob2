@@ -812,7 +812,15 @@ void Checkbox::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
-  : game(NULL, this), keyboardManager(MapEditShortcuts), minimap(globalContainer->runNoX, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 0, RIGHT_MENU_WIDTH, 128, RIGHT_MENU_OFFSET+14,14, Minimap::ShowFOW)
+  : game(NULL, this), keyboardManager(MapEditShortcuts), 
+    minimap(globalContainer->runNoX,
+            RIGHT_MENU_WIDTH, // menu width
+            globalContainer->gfx->getW(), // game width
+            20, // x offset
+            5, // y offset
+            128, // width
+            128, // height
+            Minimap::HideFOW)
 {
 	doQuit=false;
 	doFullQuit=false;
@@ -841,10 +849,10 @@ MapEdit::MapEdit()
 	int decX = RIGHT_MENU_OFFSET;
 
 	panelMode=AddBuildings;
-	buildingView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 128, 32, 32), "any", "building view icon", "switch to building view", 0, AddBuildings);
-	flagsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 128, 32, 32), "any", "flag view icon", "switch to flag view", 28, AddFlagsAndZones);
-	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 128, 32, 32), "any", "terrain view icon", "switch to terrain view", 31, Terrain);
-	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, 128, 32, 32), "any", "teams view icon", "switch to teams view", 33, Teams);
+	buildingView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 136, 32, 32), "any", "building view icon", "switch to building view", 0, AddBuildings);
+	flagsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 136, 32, 32), "any", "flag view icon", "switch to flag view", 28, AddFlagsAndZones);
+	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 136, 32, 32), "any", "terrain view icon", "switch to terrain view", 31, Terrain);
+	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, 136, 32, 32), "any", "teams view icon", "switch to teams view", 33, Teams);
 	menuIcon = new MenuIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+decX, 0, 32, 32), "any", "menu icon", "open menu screen");
 	addWidget(buildingView);
 	addWidget(flagsView);
@@ -1188,9 +1196,9 @@ int MapEdit::run(void)
 		
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
-	drawMenu();
 	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), true, true);
 	drawMiniMap();
+	drawMenu();
 	
 	
 	if(game.gameHeader.getNumberOfPlayers() == 0)
@@ -1236,9 +1244,10 @@ int MapEdit::run(void)
 		}
 		
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
+		
+		drawMenu();
 		drawMiniMap();
 		wasMinimapRendered=false;
-		drawMenu();
 		drawWidgets();
 		if(showingMenuScreen)
 		{
@@ -1346,7 +1355,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		drawOptions |= Game::DRAW_OVERLAY;
 	}
 
-	game.drawMap(sx, sy, sw, sh, viewportX, viewportY, team, drawOptions);
+	game.drawMap(sx, sy, sw, sh, RIGHT_MENU_WIDTH, 16, viewportX, viewportY, team, drawOptions);
 // 	if (doPaintEditMode)
 // 		paintEditMode(false, false);
 
@@ -1400,7 +1409,7 @@ void MapEdit::drawMiniMap(void)
 void MapEdit::drawMenu(void)
 {
  	int menuStartW=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-	int yposition=128;
+	int yposition=133;
 
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(menuStartW, yposition, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
@@ -1606,19 +1615,18 @@ void MapEdit::drawPlacingUnitOnMap()
 
 void MapEdit::processEvent(SDL_Event& event)
 {
-	SDLMod modState = SDL_GetModState();
 	if (event.type==SDL_QUIT)
 	{
 		doFullQuit=true;
 	}
 #	ifdef USE_OSX
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
 	{
 		doFullQuit=true;
 	}
 #	endif
 #	ifdef USE_WIN32
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 	{
 		doFullQuit=true;
 	}
@@ -2057,7 +2065,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		scriptEditor=new ScriptEditorScreen(&game.script, &game);
+		scriptEditor=new ScriptEditorScreen(&game.mapscript, &game);
 		showingScriptEditor=true;
 		hasMapBeenModified=true;
 	}
@@ -3135,8 +3143,6 @@ void MapEdit::addWidget(MapEditorWidget* widget)
 	mew.push_back(widget);
 }
 
-
-
 bool MapEdit::findAction(int x, int y)
 {
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
@@ -3326,50 +3332,50 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					switch(terrainType)
 					{
 					case TerrainSelector::Grass:
-							game.removeUnitAndBuildingAndFlags(x, y, 3, Game::DEL_BUILDING | Game::DEL_UNIT);
-							game.map.setNoRessource(x, y, 3);
-							game.map.setUMatPos(x, y, GRASS, 1);
-							break;
+						game.removeUnitAndBuildingAndFlags(x, y, 3, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.map.setNoRessource(x, y, 3);
+						game.map.setUMatPos(x, y, GRASS, 1);
+						break;
 					case TerrainSelector::Sand:
-							game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
-							game.map.setNoRessource(x, y, 3);
-							game.map.setUMatPos(x, y, SAND, 1);
-							break;
+						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.map.setNoRessource(x, y, 3);
+						game.map.setUMatPos(x, y, SAND, 1);
+						break;
 					case TerrainSelector::Water:
-							game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
-							game.map.setNoRessource(x, y, 5);
-							game.map.setUMatPos(x, y, WATER, 1);
-							break;
+						game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
+						game.map.setNoRessource(x, y, 5);
+						game.map.setUMatPos(x, y, WATER, 1);
+						break;
 					case TerrainSelector::Wheat:
-							resToSet=CORN;
-							break;
+						resToSet=CORN;
+						break;
 					case TerrainSelector::Trees:
-							resToSet=WOOD;
-							break;
+						resToSet=WOOD;
+						break;
 					case TerrainSelector::Stone:
-							resToSet=STONE;
-							break;
+						resToSet=STONE;
+						break;
 					case TerrainSelector::Algae:
-							resToSet=ALGA;
-							break;
+						resToSet=ALGA;
+						break;
 					case TerrainSelector::Papyrus:
-							resToSet=PAPYRUS;
-							break;
+						resToSet=PAPYRUS;
+						break;
 					case TerrainSelector::CherryTree:
-							resToSet=CHERRY;
-							break;
+						resToSet=CHERRY;
+						break;
 					case TerrainSelector::OrangeTree:
-							resToSet=ORANGE;
-							break;
+						resToSet=ORANGE;
+						break;
 					case TerrainSelector::PruneTree:
-							resToSet=PRUNE;
-							break;
+						resToSet=PRUNE;
+						break;
 					case TerrainSelector::NoTerrain:
-							break;
+						break;
 					}
 					if(resToSet!=-1 && game.map.isRessourceAllowed(x, y, resToSet))
 					{
-							game.map.setRessource(x, y, resToSet, 1);
+						game.map.setRessource(x, y, resToSet, 1);
 					}
 				}
 			}
@@ -3381,40 +3387,44 @@ void MapEdit::handleTerrainClick(int mx, int my)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
-					if (terrainType == TerrainSelector::Sand || terrainType == TerrainSelector::Water)
+					switch(terrainType)
 					{
+					case TerrainSelector::Sand:
+					case TerrainSelector::Water:
 						game.map.setUMatPos(x, y, GRASS, 1);
 						game.map.setNoRessource(x, y, 3);
-					}
-					else if (terrainType == TerrainSelector::Wheat)
-					{
+						break;
+					case TerrainSelector::Wheat:
 						if(game.map.isRessourceTakeable(x, y, CORN))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::Trees)
-					{
+						break;
+					case TerrainSelector::Trees:
 						if(game.map.isRessourceTakeable(x, y, WOOD))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::Stone)
-					{
+						break;
+					case TerrainSelector::Stone:
 						if(game.map.isRessourceTakeable(x, y, STONE))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::Algae)
-					{
+						break;
+					case TerrainSelector::Algae:
 						if(game.map.isRessourceTakeable(x, y, ALGA))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::Papyrus)
-					{
+						break;
+					case TerrainSelector::Papyrus:
 						if(game.map.isRessourceTakeable(x, y, PAPYRUS))
 							game.map.setNoRessource(x, y, 1);
-					}
-					else if (terrainType == TerrainSelector::CherryTree || terrainType == TerrainSelector::OrangeTree || terrainType == TerrainSelector::PruneTree)
-					{
-						if(game.map.isRessourceTakeable(x, y, CHERRY) || game.map.isRessourceTakeable(x, y, ORANGE) || game.map.isRessourceTakeable(x, y, PRUNE))
+						break;
+					case TerrainSelector::CherryTree:
+					case TerrainSelector::OrangeTree:
+					case TerrainSelector::PruneTree:
+						if(game.map.isRessourceTakeable(x, y, CHERRY)
+						|| game.map.isRessourceTakeable(x, y, ORANGE)
+						|| game.map.isRessourceTakeable(x, y, PRUNE))
 							game.map.setNoRessource(x, y, 1);
+						break;
+					case TerrainSelector::Grass:
+					case TerrainSelector::NoTerrain:
+						break;
 					}
 				}
 	}

@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Bygga
 Enheter
 [building site]
 byggarbetsplats
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -570,6 +576,8 @@ Ny Kampanj
 Ny
 [nick taken]
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -584,6 +592,8 @@ Nej
 
 [not ready]
 inte redo
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -592,6 +602,8 @@ inte redo
 %0 lag.
 [number of teams]
 antal lag
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -623,7 +635,7 @@ Här
 [open]
 öppna
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -654,6 +666,8 @@ Var god vänta
 
 [press space]
 Tryck mellanslag för att forsätta.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -690,6 +704,8 @@ Proportioner
 
 [Register a new YOG user with password]
 Registrera en ny YOG-användare med lösenord. (osäkert)
+[Register]
+
 [remember unit]
 Kom Ihåg Enhet
 [Remember YOG password localy]
@@ -706,6 +722,8 @@ Starta/Stoppa Reparation
 Reparera
 [repeat area]
 gånger samma landskap
+[Repeat your password :]
+
 [restore default shortcuts]
 Återställ Till Ursprungliga Tangentbordsgenvägar
 [return to editor]
@@ -732,6 +750,8 @@ Vill du spara innan du avslutar?
 Spara spel
 [save map]
 Spara Karta
+[save replay]
+
 [save script]
 
 [Save]
@@ -994,6 +1014,8 @@ Simbassängen är under attack
 ?? Krigsflaggan är klar ??
 [the warflag is under attack]
 ?? Krigsflaggan är under attack ??
+[time]
+
 [to:]
 till:
 [toggle draw accessibility aids]
@@ -1006,6 +1028,12 @@ Växla Visa Enhetsdestinationer
 
 [toggle recording voice]
 Initiera röstinspelning
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Total prestige uppnådd
 [Total]
@@ -1136,6 +1164,8 @@ YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
 
 [YESTS_CREATED]
 Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
 [yog block command help]

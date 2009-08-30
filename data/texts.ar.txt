@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Available local games
 اعدادت الوحده
 [building site]
 موقع اﻷنشاء
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -568,6 +574,8 @@ Minimum Flag Level
 جديد
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -582,6 +590,8 @@ No Growth Areas
 
 [not ready]
 غير جاهز
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +600,8 @@ No Growth Areas
 %0 teams.
 [number of teams]
 number of teams
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -652,6 +664,8 @@ Please wait
 
 [press space]
 Press space to continue.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -688,6 +702,8 @@ Proportions
 
 [Register a new YOG user with password]
 Register a new YOG user with a password. (insecure)
+[Register]
+
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
@@ -703,6 +719,8 @@ Start/Stop Repair
 [repair]
 تصليح
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
@@ -730,6 +748,8 @@ Do you want to save before quitting?
 حفظ اللعبه
 [save map]
 حفظ الخريطه
+[save replay]
+
 [save script]
 
 [Save]
@@ -992,6 +1012,8 @@ The game has not been finished
 ?? War flag finished ??
 [the warflag is under attack]
 ?? War flag under attack ??
+[time]
+
 [to:]
 الى:
 [toggle draw accessibility aids]
@@ -1004,6 +1026,12 @@ Toggle Draw Unit Paths
 
 [toggle recording voice]
 Initiate Voice Recording
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 بلغ من هيبة
 [Total]
@@ -1134,6 +1162,8 @@ The YOG metaserver has refused the connection because your username is already u
 
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
 [yog block command help]

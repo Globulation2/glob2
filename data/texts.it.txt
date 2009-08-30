@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -190,6 +194,8 @@ Costruisci
 Impostazioni unità
 [building site]
 Struttura in costruzione
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -624,6 +630,8 @@ nuova campagna
 Nuovo
 [nick taken]
 Siamo spiacenti, ma il nome scelto è stato già selezionato su freenode, potrai parlare solo tramite YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -638,12 +646,16 @@ No
 
 [not ready]
 non pronto
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 numero di giocatori: %0 (%1 IA)
 [number of teams: %0]
 %0 numero di sqadre.
 [number of teams]
 Numero di squadre
+[Number Of Units]
+
 [numlock]
 BLOC NUM
 [objectives]
@@ -675,7 +687,7 @@ Apri l'Editor di Script
 [open]
 Apri
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -706,6 +718,8 @@ Aspetta un momento
 potenza
 [press space]
 Premi spazio per continuare.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -742,6 +756,8 @@ Razioni
 
 [Register a new YOG user with password]
 Registra un nuovo utente YOG con una passord. (non sicuro)
+[Register]
+
 [remember unit]
 Ricorda Unità
 [Remember YOG password localy]
@@ -758,6 +774,8 @@ Inizia/Ferma Riparazione
 Ripara
 [repeat area]
 volte lo stesso terreno
+[Repeat your password :]
+
 [restore default shortcuts]
 Ripristina le scorciatoie da tastiera originali
 [return to editor]
@@ -784,6 +802,8 @@ Voui salvare prima di uscire?
 Salva partita
 [save map]
 Salva Mappa
+[save replay]
+
 [save script]
 
 [Save]
@@ -1048,6 +1068,8 @@ La piscina è sotto attacco
 ?? La bandiera da guerra finita ??
 [the warflag is under attack]
 ?? La bandiera da guerra è sotto attacco ??
+[time]
+
 [to:]
 a:
 [toggle draw accessibility aids]
@@ -1060,6 +1082,12 @@ Toggle Draw Unit Paths ???
 Apri menu
 [toggle recording voice]
 Inizia Registrazione Vocale
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Totale prestigio raggiunto
 [Total]
@@ -1188,6 +1216,8 @@ Il metaserver YOG ha rifiutato la tua connessione perchè il tuo username è gi�
 
 [YESTS_CREATED]
 Il sistema di connessione è in attesa del metaserver YOG per la connessione.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Non mi riesco a connettere, apparentemente il master server YOG è offline.
 [yog block command help]

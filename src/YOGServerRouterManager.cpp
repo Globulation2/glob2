@@ -83,7 +83,7 @@ void YOGServerRouterManager::update()
 boost::shared_ptr<NetConnection> YOGServerRouterManager::chooseYOGRouter()
 {
 	n+=1;
-	if(n == routers.size())
+	if(n == (int)routers.size())
 		n = 0;
 	return routers[n];
 }
