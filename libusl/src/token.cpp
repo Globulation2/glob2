@@ -1,7 +1,8 @@
 #include "token.h"
 #include <cassert>
 #include <regex.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <stdio.h>
 
 struct Token::Type::Regexp
 {
