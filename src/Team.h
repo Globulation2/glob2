@@ -44,14 +44,13 @@ class BuildingsTypes;
 class Map;
 class Unit;
 
-
-
 class Game;
 
 class Team:public BaseTeam
 {
 	static const bool verbose = false;
 public:
+	static const int MAX_COUNT=32;
 	Team(Game *game);
 	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 
@@ -143,9 +142,9 @@ public:
 	Game *game;
 	Map *map;
 	
-	Unit *myUnits[1024];
+	Unit **myUnits;
 	
-	Building *myBuildings[1024]; //That's right, you can't build two walls all the way across a 512x512 map.
+	Building **myBuildings;
 
 	///This stores the buildings that need units, listed into their hard priorities. They are sorted based on priority.
 	std::map<int, std::vector<Building*>, std::greater<int> > buildingsNeedingUnits;

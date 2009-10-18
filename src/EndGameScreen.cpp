@@ -31,7 +31,9 @@
 #include <sstream>
 #include <iomanip>
 #include "GlobalContainer.h"
-
+#include "Team.h"
+#include "GameGUILoadSave.h"
+#include "StreamBackend.h"
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -45,7 +47,8 @@ EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlig
 	
 	this->game = game;
 
-	for(int x=0; x<32; ++x)
+	isTeamEnabled=new bool[Team::MAX_COUNT];
+	for(int x=0; x<Team::MAX_COUNT; ++x)
 		isTeamEnabled[x]=true;
 	
 	this->type = EndOfGameStat::TYPE_UNITS;
@@ -188,6 +191,15 @@ void EndGameStat::paint(void)
 			str<<circle_position_value;
 			parent->getSurface()->drawString(circle_position_x+10, circle_position_y+10, globalContainer->littleFont, str.str());
 		}
+		
+		// Draw labels
+		std::string label = Toolkit::getStringTable()->getString("[time]");
+		int textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
+		parent->getSurface()->drawString(x - textwidth/2 + e_width/2, y+e_height-20, globalContainer->standardFont, label);
+		
+		label = getStatLabel();
+		textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
+		parent->getSurface()->drawString(x + e_width - textwidth - 4, y + e_height/2, globalContainer->standardFont, label);
 	}
 	else
 	{
@@ -249,7 +261,39 @@ std::string EndGameStat::getRightScaleText(int value, int digits)
 	return str.str();
 }
 
-
+std::string EndGameStat::getStatLabel()
+{
+	switch(type)
+	{
+		case EndOfGameStat::TYPE_UNITS:
+			return Toolkit::getStringTable()->getString("[Number Of Units]");
+		case EndOfGameStat::TYPE_BUILDINGS:
+			return Toolkit::getStringTable()->getString("[Number Of Buildings]");
+		case EndOfGameStat::TYPE_PRESTIGE:
+			return Toolkit::getStringTable()->getString("[Prestige Score]");
+		case EndOfGameStat::TYPE_HP:
+			return Toolkit::getStringTable()->getString("[Total Hitpoints]");
+		case EndOfGameStat::TYPE_ATTACK:
+			return Toolkit::getStringTable()->getString("[Total Attack Power]");
+		case EndOfGameStat::TYPE_DEFENSE:
+			return Toolkit::getStringTable()->getString("[Total Defence Power]");
+		default:
+			assert(false);
+			return "No clue how we got here.";
+	}
+	/*if(type == EndOfGameStat::TYPE_UNITS)
+		return Toolkit::getStringTable()->getString("[Number Of Units]");
+	if(type == EndOfGameStat::TYPE_BUILDINGS)
+		return Toolkit::getStringTable()->getString("[Number Of Buildings]");
+	if(type == EndOfGameStat::TYPE_PRESTIGE)
+		return Toolkit::getStringTable()->getString("[Prestige Score]");
+	if(type == EndOfGameStat::TYPE_HP)
+		return Toolkit::getStringTable()->getString("[Total Hitpoints]");
+	if(type == EndOfGameStat::TYPE_ATTACK)
+		return Toolkit::getStringTable()->getString("[Total Attack Power]");
+	if(type == EndOfGameStat::TYPE_DEFENSE)
+		return Toolkit::getStringTable()->getString("[Total Defence Power]");*/
+}
 
 void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 {
@@ -288,6 +332,9 @@ struct MoreScore : public std::binary_function<const TeamEntry&, const TeamEntry
 
 EndGameScreen::EndGameScreen(GameGUI *gui)
 {
+	// We're no longer replaying a game
+	globalContainer->replaying = false;
+
 	// title & graph
 	std::string titleText;
 	
@@ -326,21 +373,30 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	}
 	
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText.c_str()));
-	statWidget=new EndGameStat(20, 80, 180, 150, ALIGN_FILL, ALIGN_FILL, &(gui->game));
+	statWidget=new EndGameStat(20, 80, 180, 120, ALIGN_FILL, ALIGN_FILL, &(gui->game));
 	addWidget(statWidget);
 
 	graphLabel=new Text(25, 85, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Units]"));
 	addWidget(graphLabel);
 	
 	// add buttons
-	addWidget(new TextButton(90, 90, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
-	addWidget(new TextButton(190, 90, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
-	addWidget(new TextButton(290, 90, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
-	addWidget(new TextButton(90, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[hp]"), 3, '4'));
-	addWidget(new TextButton(190, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Attack]"), 4, '5'));
-	addWidget(new TextButton(290, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Defense]"), 5, '6'));
-	addWidget(new TextButton(0, 5, 300, 40, ALIGN_CENTERED, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[ok]"), 38, 13));
-	
+	addWidget(new TextButton(90, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
+	addWidget(new TextButton(190, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
+	addWidget(new TextButton(290, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
+	addWidget(new TextButton(90, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[hp]"), 3, '4'));
+	addWidget(new TextButton(190, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Attack]"), 4, '5'));
+	addWidget(new TextButton(290, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Defense]"), 5, '6'));
+
+	if (gui->game.isRecordingReplay)
+	{
+		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's')); // FIXME: magic numbers!
+		addWidget(new TextButton(15, 15, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
+	}
+	else
+	{
+		addWidget(new TextButton(15, 40, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
+	}
+
 	// add players name
 	Text *text;
 	int inc = (gui->game.mapHeader.getNumberOfTeams() <= 16) ? 20 : 10;
@@ -381,6 +437,9 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		addWidget(text);
 	}
 	
+	// Save the step and order count
+	game = &(gui->game);
+	
 	sortAndSet(EndOfGameStat::TYPE_UNITS);
 }
 
@@ -389,12 +448,11 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if(par1==38)
+		{
 			endExecute(par1);
-	}
-	if ((action==BUTTON_PRESSED) || (action==BUTTON_SHORTCUT))
-	{
+		}
 		///This is a change in the graph type
-		if (par1<6)
+		else if (par1<6)
 		{
 			EndOfGameStat::Type type = (EndOfGameStat::Type)par1;
 			statWidget->setStatType(type);
@@ -425,6 +483,12 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 				}
 			}
 		}
+		/// The "Save Replay" button was pressed
+		else if (par1 == 39)
+		{
+			saveReplay("replays","replay");
+		}
+		else assert(false);
 	}
 }
 
@@ -469,4 +533,86 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 			team_enabled_buttons[i]->visible=false;
 		}
 	}
+}
+
+std::string replayFilenameToName(const std::string& fullfilename)
+{
+	std::string filename = fullfilename;
+	filename.erase(0, 8);
+	filename.erase(filename.find(".replay"));
+	std::replace(filename.begin(), filename.end(), '_', ' ');
+	return filename;
+}
+
+void EndGameScreen::saveReplay(const char *dir, const char *ext)
+{
+	// create dialog box
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, false, std::string(Toolkit::getStringTable()->getString("[save replay]")), "", replayFilenameToName, glob2NameToFilename);
+	loadSaveScreen->dispatchPaint();
+
+	// save screen
+	globalContainer->gfx->setClipRect();
+	
+	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
+	background->drawSurface(0, 0, globalContainer->gfx);
+
+	SDL_Event event;
+	while(loadSaveScreen->endValue<0)
+	{
+		int time = SDL_GetTicks();
+		while (SDL_PollEvent(&event))
+		{
+			loadSaveScreen->translateAndProcessEvent(&event);
+		}
+		loadSaveScreen->dispatchPaint();
+		
+		globalContainer->gfx->drawSurface(0, 0, background);
+		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
+		globalContainer->gfx->nextFrame();
+		int ntime = SDL_GetTicks();
+		SDL_Delay(std::max(0, 40 - ntime + time));
+	}
+
+	if (loadSaveScreen->endValue==0)
+	{
+		StreamBackend* header = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.header");
+		StreamBackend* orders = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.orders");
+		StreamBackend* outBackend = Toolkit::getFileManager()->openOutputStreamBackend(loadSaveScreen->getFileName());
+
+		assert(header->isValid());
+		assert(orders->isValid());
+		assert(outBackend->isValid());
+
+		BinaryOutputStream *out = new BinaryOutputStream(outBackend);
+
+		while (!header->isEndOfStream())
+		{
+			int c = header->getChar();
+			if (header->isEndOfStream()) break;
+			outBackend->putc(c);
+		}
+
+		out->writeUint32(game->getReplayStepCount(),"stepcount");
+		out->writeUint32(game->getReplayOrderCount(),"ordercount");
+
+		while (!orders->isEndOfStream())
+		{
+			int c = orders->getChar();
+			if (orders->isEndOfStream()) break;
+			outBackend->putc(c);
+		}
+
+		delete header;
+		delete orders;
+		
+		// Make any remaining orders also written to this filename
+		// Game will take care of the delete
+		game->addReplayOutputStream( out );
+	}
+
+	// clean up
+	delete loadSaveScreen;
+	
+	// destroy temporary surface
+	delete background;
 }

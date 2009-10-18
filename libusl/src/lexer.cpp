@@ -39,18 +39,13 @@ Token Lexer::_next()
 	Token token = Tokenizer::next();
 	while ((token.type->id == SPACE) || (token.type->id == COMMENT))
 		token = Tokenizer::next();
-	if (token.type == 0)
-	{
-		assert(false); // TODO
-	}
 	return token;
 }
 
 void Lexer::fail(const string& expected) const
 {
 	ostringstream message;
-	message << "Syntax error @" << token.position << ":" << endl;
-	message << "Found: " << token.type->desc << endl;
-	message << "Expected: " << expected << endl;
+	message << "Syntax error: found " << token.type->desc;
+	message << ", expected: " << expected << endl;
 	throw Exception(token.position, message.str());
 }

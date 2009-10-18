@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Zgradi
 
 [building site]
 gradbišče
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -562,6 +568,8 @@ Glasnost glasbe
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -576,6 +584,8 @@ Ne
 
 [not ready]
 ni pripravljen
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +594,8 @@ ni pripravljen
 %0 ekip.
 [number of teams]
 Število ekip
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -615,7 +627,7 @@ Tukaj
 [open]
 odpri
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -645,6 +657,8 @@ Prosim počakaj
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -682,6 +696,8 @@ Razmerja
 
 [Register a new YOG user with password]
 Prijavi novega YOG uporabnika z geslom. (Ni varno!)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -697,6 +713,8 @@ Zapomni si YOG geslo lokalno. (Ni varno)
 [repair]
 Popravi
 [repeat area]
+
+[Repeat your password :]
 
 [restore default shortcuts]
 
@@ -723,6 +741,8 @@ Pesek
 [save game]
 Shrani igro
 [save map]
+
+[save replay]
 
 [save script]
 
@@ -986,6 +1006,8 @@ Bazen je napaden
 Vojaška zastava je zgrajena
 [the warflag is under attack]
 Vojaška zastava je napadena
+[time]
+
 [to:]
 za:
 [toggle draw accessibility aids]
@@ -997,6 +1019,12 @@ za:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Najvišji dosežen ugled
@@ -1126,6 +1154,8 @@ YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
 [yog block command help]

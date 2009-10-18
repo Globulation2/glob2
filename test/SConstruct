@@ -1,0 +1,15 @@
+import sys
+
+env = Environment()
+
+if sys.platform == "linux2":
+  ccflags = '-Wall -ansi -g'
+else:
+  ccflags = '/EHsc /MD /GR'
+
+env.Append(CCFLAGS = ccflags)
+
+sources = Split('TestsRunner.cpp MiniCppUnit.cpp PerlinNoiseTest.cpp ../src/PerlinNoise.cpp')
+
+env.Program( sources )
+

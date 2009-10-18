@@ -242,7 +242,7 @@ void YOGServerMapDatabank::save()
 	stream->writeUint16(currentMapID, "currentMapID");
 	stream->writeEnterSection("maps");
 	stream->writeUint32(maps.size(), "size");
-	for(int i=0; i<maps.size(); ++i)
+	for(unsigned int i=0; i<maps.size(); ++i)
 	{
 		stream->writeEnterSection(i);
 		maps[i].encodeData(stream);
