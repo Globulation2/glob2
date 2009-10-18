@@ -144,11 +144,17 @@ Building *AIWarrush::getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int 
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
-		if (	(b)
-				&& (b->type->shortTypeNum==shortTypeNum)
+		//TODO: b->type->shortTypeNum==shortTypeNum != IntBuildingType::HEAL_BUILDING looks fishy not only to g++
+		if (	(b != NULL)
+				&& (b->type->shortTypeNum == shortTypeNum)
 				&& (b->maxUnitWorking != num_workers)
-				&& (b->constructionResultState != Building::NO_CONSTRUCTION || (b->type->shortTypeNum==shortTypeNum != IntBuildingType::ATTACK_BUILDING && b->type->shortTypeNum==shortTypeNum != IntBuildingType::HEAL_BUILDING && b->type->shortTypeNum==shortTypeNum != IntBuildingType::WALKSPEED_BUILDING && b->type->shortTypeNum==shortTypeNum != IntBuildingType::SWIMSPEED_BUILDING && b->type->shortTypeNum==shortTypeNum != IntBuildingType::SCIENCE_BUILDING))
-					)
+				&& (b->constructionResultState != Building::NO_CONSTRUCTION
+					|| (b->type->shortTypeNum==shortTypeNum != IntBuildingType::ATTACK_BUILDING
+						&& b->type->shortTypeNum==shortTypeNum != IntBuildingType::HEAL_BUILDING
+						&& b->type->shortTypeNum==shortTypeNum != IntBuildingType::WALKSPEED_BUILDING
+						&& b->type->shortTypeNum==shortTypeNum != IntBuildingType::SWIMSPEED_BUILDING
+						&& b->type->shortTypeNum==shortTypeNum != IntBuildingType::SCIENCE_BUILDING
+			)))
 		{
 			return b;
 		}
