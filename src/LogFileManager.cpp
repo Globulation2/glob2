@@ -40,7 +40,10 @@ LogFileManager::~LogFileManager()
 
 FILE *LogFileManager::getFile(const char *fileName)
 {
-	///This is a hack to temporarilly disable log files
+	// This is a hack to temporarilly disable log files
+	//
+	// According to Bradley, logging causes crashes without this hack.
+	// A major cleanup is required prior to switching logging back on.
 	return stdout;
 
 	std::string logName = "logs/";
