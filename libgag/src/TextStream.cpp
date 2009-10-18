@@ -150,7 +150,7 @@ namespace GAGCore
 		
 		int nextChar(void)
 		{
-			next = stream->getc();
+			next = stream->getChar();
 			if 	(next == '\n')
 			{
 				column = 0;
