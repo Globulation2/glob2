@@ -75,9 +75,9 @@ namespace GAGCore
 		buffer->putc(c);
 	}
 	
-	int ZLibStreamBackend::getc(void)
+	int ZLibStreamBackend::getChar(void)
 	{
-		return buffer->getc();
+		return buffer->getChar();
 	}
 	
 	void ZLibStreamBackend::seekFromStart(int displacement)
@@ -147,7 +147,7 @@ namespace GAGCore
 		write(&ch, 1);
 	}
 	
-	int MemoryStreamBackend::getc(void)
+	int MemoryStreamBackend::getChar(void)
 	{
 		Uint8 ch;
 		read(&ch, 1);
