@@ -106,8 +106,6 @@ SettingsScreen::SettingsScreen()
 	fullscreenText=new Text(260, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 180);
 	addWidgetToGroup(fullscreenText, generalGroup);
 	
-	#ifdef HAVE_OPENGL
-	#endif
 	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
 	addWidgetToGroup(usegpu, generalGroup);
 	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[OpenGL]"), 180);

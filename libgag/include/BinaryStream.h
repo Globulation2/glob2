@@ -26,6 +26,9 @@
 
 namespace GAGCore
 {
+	/// This class compresses data in a binary format.
+	/// The name argument in most functions isn't used, and the writeEnterSection has no effect.
+	/// Only the order in which you write the data to the stream is important.
 	class BinaryOutputStream : public OutputStream
 	{
 	protected:
@@ -67,6 +70,9 @@ namespace GAGCore
 		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
 	};
 	
+	/// This class reads compressed data that was written by BinaryOutputStream.
+	/// The name argument in most functions isn't used, and the writeEnterSection has no effect.
+	/// Only the order in which you read the data to the stream is important.
 	class BinaryInputStream : public InputStream
 	{
 	private:

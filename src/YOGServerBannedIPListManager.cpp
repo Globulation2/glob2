@@ -113,7 +113,7 @@ void YOGServerBannedIPListManager::loadBannedIPList()
 	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(YOG_SERVER_FOLDER+"bannedips"));
 	if(!stream->isEndOfStream())
 	{
-		Uint32 dataVersionMinor = stream->readUint32("version");
+		stream->readUint32("version");
 		Uint32 size = stream->readUint32("size");
 		for(unsigned i=0; i<size; ++i)
 		{

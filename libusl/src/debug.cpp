@@ -1,6 +1,7 @@
 #include "debug.h"
 
 #include "code.h"
+#include "native.h"
 
 using namespace std;
 
@@ -14,26 +15,16 @@ const Position& ThunkDebugInfo::find(size_t address) const
 
 static string getName(ThunkPrototype* thunk)
 {
-	NativeThunk* nativeThunk = dynamic_cast<NativeThunk*>(thunk);
-	if (nativeThunk != 0)
-		return nativeThunk->name;
-	
-	NativeMethod* nativeMethod = dynamic_cast<NativeMethod*>(thunk);
-	if (nativeMethod != 0)
-		return nativeMethod->name;
-
 	for (ThunkPrototype::Body::const_iterator it = thunk->body.begin(); it != thunk->body.end(); ++it)
 	{
-		CreateCode<Function>* createCode = dynamic_cast<CreateCode<Function>*>(*it);
-		if (createCode != 0)
+		NativeCode* nativeCode = dynamic_cast<NativeCode*>(*it);
+		if (nativeCode != 0)
 		{
-			nativeMethod = dynamic_cast<NativeMethod*>(createCode->prototype);
-			return nativeMethod->name + "::getter";
+			return nativeCode->name;
 		}
 	}
 	
-	assert(nativeMethod);
-	return "";
+	return "???";
 }
 
 
@@ -57,40 +48,80 @@ const Position& DebugInfo::find(ThunkPrototype* thunk, size_t address)
 	
 }
 
-string unmangle(const string& name)
+string unmangle(string::const_iterator& begin, string::const_iterator end)
 {
-	string clear;
-	int counter = 0;
-	for (string::const_iterator it = name.begin(); it != name.end(); ++it)
+	string name;
+
+	if (isdigit(*begin))
 	{
-		string::value_type c = *it;
-		if (isdigit(c))
+		size_t counter(0);
+		do
 		{
 			counter *= 10;
-			counter += (c - '0');
+			counter += (*begin - '0');
+			++begin;
 		}
-		else if (counter != 0)
+		while (isdigit(*begin));
+	
+		for (size_t i = 0; i < counter; ++i)
 		{
-			for (int i = 0; i < counter; ++i)
-			{
-				clear += *it;
-				if (i < counter - 1)
-					++it;
-			}
-			counter = 0;
-		}
-		else if (c == 'I')
-		{
-			clear += '<';
-		}
-		else if (c == 'E')
-		{
-			clear += '>';
-		}
-		else
-		{
-			clear += c;
+			name += *begin;
+			++begin;
 		}
 	}
-	return clear;
+	else {
+		switch(*begin)
+		{
+		case 'i':
+			++begin;
+			name += "int";
+			break;
+		case 'b':
+			++begin;
+			name += "bool";
+			break;
+		case 'v':
+			++begin;
+			name += "void";
+			break;
+		case 'P':
+			++begin;
+			name += unmangle(begin, end);
+			name += '*';
+			break;
+		case 'F':
+			++begin;
+			name += unmangle(begin, end);
+			name += '(';
+			while (*begin != 'E')
+				name += unmangle(begin, end);
+			++begin;
+			name += ')';
+			break;
+		default:
+			name += *begin;
+		}
+	}
+	
+	if (begin != end)
+	{
+		switch(*begin)
+		{
+		case 'I':
+			++begin;
+			name += '<';
+			while (*begin != 'E')
+				name += unmangle(begin, end);
+			++begin;
+			name += '>';
+			break;
+		}
+	}
+	return name;
+}
+
+string unmangle(const string& name)
+{
+	string::const_iterator begin(name.begin());
+	return unmangle(begin, name.end());
 }

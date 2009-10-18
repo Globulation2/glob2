@@ -3901,7 +3901,7 @@ void NetDownloadableMapInfos::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("NetDownloadableMapInfos");
 	stream->writeEnterSection("maps");
 	stream->writeUint32(maps.size(), "size");
-	for(int i=0; i<maps.size(); ++i)
+	for(unsigned int i=0; i<maps.size(); ++i)
 	{
 		stream->writeEnterSection(i);
 		maps[i].encodeData(stream);
@@ -3919,7 +3919,7 @@ void NetDownloadableMapInfos::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("maps");
 	Uint32 size = stream->readUint32("maps");
 	maps.resize(size);
-	for(int i=0; i<size; ++i)
+	for(unsigned int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
 		maps[i].decodeData(stream, VERSION_MINOR);

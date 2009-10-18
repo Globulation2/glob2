@@ -21,10 +21,11 @@ Hein-Pieter van Braam <hp at syntomax dot com> (IRC patch, debugging)
 Joe LeBlanc <jdlspeedy@yahoo dot com> (YOG & IRC fixes and improvements)
 Kai Antweiler <> (gradient algorithms, bugfixes, ...)
 Kevin Clement <donkjunk at softhome dot net> (improved settings menu & bugfixes)
-Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (Perlin-noise based map generation)
+Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (map generators, clouds, basic ai, bugfixes)
 Martin Nyffenegger <barock at ysagoon dot com> (SGSL)
 Martin Voelkle <marv at chaoides dot org> (GUI, bugfixes and more)
 Martin Pool <mbp sourcefrog net> (natsort)
+Michiel De Muynck <michieldemuynck at gmail dot com> (replay feature)
 
 *
 Graphics
@@ -48,43 +49,155 @@ Jacques-Paul Grivaz <>
 *
 Translations
 
-Adam Olausson <gobbladox at hotmail dot com> (Swedish)
-Anastasios Pingios <anastasios dot pingios at gmail dot com> (Greek)
-Anonymous <> (Spanish)
-Áttila Leães Rodrigues <attila.leaes at gmail dot com> (Português do Brasil)
-christooss <christooss at gmail dot com> (Slovene)
-Daniel Nilsson <vq at telia dot com> (Swedish)
-David Barnett <davidbarnett at letu dot edu> (English)
-David Morán <> (Spanish)
-Denis Lianda <lianda at nm dot ru> (Russian)
-Elías Díaz Molins <gekko04 at gmail dot com> (Catalain - Català)
-Erik Blomqvist <> (Swedish)
-Erik Lai <katostelo at gmail dot com> (Chinese(T))
-Federico Massi <federicomassi at tim dot it> (Italian)
-Fernando J. Rodríguez <groucho at lugmen dot org dot ar> (Portuguese, Spanish)
-Heine Laursen <maillist at gozar dot dynu dot com> (Danish)
-Igor Murzov <igor at gplsoft dot org> (Russian)
-Igor TAmara <igor at tamarapatino dot org> (Spanish)
-Julia Schmitt <zwarntje at gmail dot com> (Deutsch)
-Łukasz Demianiuk <ldemianiuk at gmail dot com> (Polish)
-Manuel Soukup <linuxuser-sky at gmx dot de> (Deutsch)
-Martin Hinrichs <Mail at martinhinrichs dot net> (Deutsch)
-Martin Nyffenegger <barock at ysagoon dot com> (Deutsch)
-Matic Ahacic <christooss at gmail dot com> (Slovene)
-Matthias Warkus <mawarkus at gnome dot org> (Deutsch)
-Michal Turek <bastard dot user dot from dot hell at seznam dot cz> (Czech)
-Muhammet Kara <> (Turkish)
-Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm> (Romanian)
-Osoitz Elkorobarrutia <oelkoro at gmail dot com> (Basque)
-piglet (Italian)
-Przemyslaw Kaminski <daemon42 at gazeta dot pl> (Polish)
-Raoul Verveer <lazy-r at zonnet dot nl> (Nederlands)
-samaritan <> (Serbian)
-Sébastien Le Ray <Beuss at fr dot st> (French)
-Stefan Kangas <stefan dot kangas at ungvanster dot se> (Swedish)
-Tobe Deprez <tobedeprez at scarlet dot be> (Dutch)
-Vakvarju <vakvarju at spektrum-3d dot hu> (Hungarian)
-White Raven <glob at wra dot visitors dot sk> (Slovensky)
+*
+English
+
+David Barnett <davidbarnett at letu dot edu>
+
+*
+Esperanto
+
+etieffen <etieffen at gmail dot com>
+
+*
+Farsi
+
+etieffen <etieffen at gmail dot com>
+
+*
+Finnish
+
+Tapani Honkanen <>
+
+*
+Swedish
+
+Adam Olausson <gobbladox at hotmail dot com>
+Daniel Nilsson <vq at telia dot com>
+Stefan Kangas <stefan dot kangas at ungvanster dot se>
+Erik Blomqvist <>
+
+*
+Greek
+
+Anastasios Pingios <anastasios dot pingios at gmail dot com>
+
+* 
+Spanish
+
+Anonymous <>
+Igor TAmara <igor at tamarapatino dot org>
+Fernando J. Rodríguez <groucho at lugmen dot org dot ar> 
+David Morán <>
+Adrian <enarxe at gmail dot com>
+
+*
+Portuguese
+
+Fernando J. Rodríguez <groucho at lugmen dot org dot ar>
+Áttila Leães Rodrigues <attila.leaes at gmail dot com>
+
+*
+Slovene
+
+christooss <christooss at gmail dot com>
+Matic Ahacic <christooss at gmail dot com>
+
+*
+Russian
+
+Denis Lianda <lianda at nm dot ru>
+Igor Murzov <igor at gplsoft dot org>
+
+*
+Catalain - Català
+
+Elías Díaz Molins <gekko04 at gmail dot com>
+
+*
+Chinese(T)
+
+Erik Lai <katostelo at gmail dot com>
+
+*
+Chinese(S)
+
+Jie Luo <lililjlj at gmail dot com>
+
+*
+Italian
+
+Federico Massi <federicomassi at tim dot it>
+piglet
+
+*
+Danish
+
+Heine Laursen <maillist at gozar dot dynu dot com>
+
+*
+Deutsch
+
+Julia Schmitt <zwarntje at gmail dot com>
+Manuel Soukup <linuxuser-sky at gmx dot de>
+Martin Hinrichs <Mail at martinhinrichs dot net>
+Martin Nyffenegger <barock at ysagoon dot com>
+Matthias Warkus <mawarkus at gnome dot org>
+
+*
+Polish
+
+Łukasz Demianiuk <ldemianiuk at gmail dot com>
+Przemyslaw Kaminski <daemon42 at gazeta dot pl>
+
+*
+Czech
+
+Michal Turek <bastard dot user dot from dot hell at seznam dot cz>
+
+*
+Turkish
+Muhammet Kara <>
+
+*
+Romanian
+
+Munteanu Olimpiu Andrei <moa3333 at fastmail dot fm>
+
+*
+Basque
+
+Osoitz Elkorobarrutia <oelkoro at gmail dot com>
+
+*
+French
+
+Sébastien Le Ray <Beuss at fr dot st>
+
+*
+Nederlands
+
+Raoul Verveer <lazy-r at zonnet dot nl>
+
+*
+Serbian
+
+samaritan <>
+
+*
+Dutch
+
+Tobe Deprez <tobedeprez at scarlet dot be>
+
+*
+Hungarian
+
+Vakvarju <vakvarju at spektrum-3d dot hu>
+
+*
+Slovensky
+
+White Raven <glob at wra dot visitors dot sk>
 
 *
 Maps and campaign
@@ -120,7 +233,6 @@ Gabriel Walt <disney at ysagoon dot com> (hosting, old CMS, wiki, forum)
 Ghislain Leveque <court-jus at court-jus dot net>
 Kieran <kieran776 at hotmail dot com> (wiki, savannah, sourceforge, freshmeat)
 Kyle Lutze <kyle at randomvoids dot com> (hosting, phpbb/mediawiki integration)
-Leo Wandersleb <Leo dot Wandersleb at gmx dot de> (wiki)
 Loki Azgorodin <> (#glob2)
 Louis Gagnon <globulation2 dot org at louisgagnon dot com> (wiki)
 Luc-Olivier de Charrière <NuageBleu at gmail dot com> (yog metaserver)

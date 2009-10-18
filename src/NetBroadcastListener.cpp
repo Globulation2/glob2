@@ -58,7 +58,7 @@ void NetBroadcastListener::update()
 			info.decodeData(bis);
 			
 			bool found = false;
-			for(int i=0; i<addresses.size(); ++i)
+			for(unsigned int i=0; i<addresses.size(); ++i)
 			{
 				if(addresses[i].host == packet->address.host)
 				{
@@ -81,7 +81,7 @@ void NetBroadcastListener::update()
 		}
 		
 		int time = SDL_GetTicks() - lastTime;
-		for(int i=0; i<timeouts.size();)
+		for(unsigned int i=0; i<timeouts.size();)
 		{
 			timeouts[i] -= time;
 			if(timeouts[i] <= 0)

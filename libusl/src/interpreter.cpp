@@ -1,27 +1,83 @@
 #include "interpreter.h"
+
 #include "types.h"
+#include "usl.h"
+#include "code.h"
 
-Thread::RuntimeValues::RuntimeValues():
-	trueValue(0),
-	falseValue(0)
-{}
+#include <iostream>
 
-Value* Thread::getRuntimeValue(Value*& cachedValue, const std::string& name)
+using namespace std;
+
+bool Thread::step()
 {
-	if (cachedValue == 0)
-		cachedValue = getRootLocal(name);
-	return cachedValue;
+	if (state == RUN)
+	{
+		Thread::Frame& frame = frames.back();
+		ThunkPrototype* thunk = frame.thunk->thunkPrototype();
+		size_t nextInstr = frame.nextInstr;
+		Code* code = thunk->body[nextInstr];
+		frame.nextInstr++;
+		
+		// Uncomment to get *verbose* debug info on scripting
+		/*cout << thunk;
+		for (size_t i = 0; i < frames.size(); ++i)
+			cout << "[" << frames[i].stack.size() << "]";
+		cout << " " << usl->debug.find(thunk, nextInstr) << ": ";
+		code->dump(cout);
+		cout << endl;*/
+		
+		code->execute(this);
+		
+		while (true)
+		{
+			Thread::Frame& frame = frames.back();
+			if (frame.nextInstr < frame.thunk->thunkPrototype()->body.size())
+				break;
+			Value* retVal = frame.stack.back();
+			frames.pop_back();
+			if (!frames.empty())
+			{
+				frames.back().stack.push_back(retVal);
+			}
+			else
+			{
+				#ifdef DEBUG_USL
+					retVal->dump(cout);
+					cout << endl;
+				#endif
+				state = STOP;
+				break;
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-Value* Thread::getRootLocal(const std::string& name)
+size_t Thread::run(size_t maxSteps)
 {
-	ScopePrototype* rootPrototype = root->scopePrototype();
-	ScopePrototype::Locals::const_iterator it = find(rootPrototype->locals.begin(), rootPrototype->locals.end(), name);
-	assert(it != rootPrototype->locals.end());
-	size_t index = it - rootPrototype->locals.begin();
-	return root->locals[index];
+	size_t steps;
+	for (steps = 0; steps < maxSteps; ++steps)
+	{
+		if (!step())
+			break;
+	}
+	return steps;
 }
 
+size_t Thread::run()
+{
+	size_t steps;
+	for (steps = 0; true; ++steps)
+	{
+		if (!step())
+			break;
+	}
+	return steps;
+}
 
 void Thread::markForGC()
 {
