@@ -29,7 +29,7 @@ using namespace boost;
 using namespace GAGCore;
 
 YOGServerFileDistributor::YOGServerFileDistributor(Uint16 fileID)
-	: startedLoading(false), fileID(fileID), downloadFromPlayerCanceled(false)
+	: fileID(fileID), startedLoading(false), downloadFromPlayerCanceled(false)
 {
 
 }
