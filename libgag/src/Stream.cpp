@@ -60,7 +60,7 @@ namespace GAGCore
 		std::string s;
 		while (1)
 		{
-			int c = backend->getc();
+			int c = backend->getChar();
 			if(c=='\r')
 				continue;
 			if ((c >= 0) && (c != '\n'))
