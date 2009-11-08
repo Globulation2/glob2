@@ -1135,18 +1135,20 @@ void Building::updateUnitsWorking(void)
 
 void Building::updateUnitsHarvesting(void)
 {
-	// if we are not alive or has not vision, remove all units harvesting from this building
+	// double and triple-checked but the market-bug
+	// https://savannah.nongnu.org/bugs/?25731 is not caused by wrong
+	// iterator-removal-handling
 	for (std::list<Unit *>::iterator it=unitsHarvesting.begin(); it!=unitsHarvesting.end();)
 	{
-		std::list<Unit *>::iterator thisIt = it;
-		Unit* u = *thisIt;
+		std::list<Unit *>::iterator tmpIt = it;
+		Unit* u = *tmpIt;
 		++it;
 		
 		if ((buildingState != ALIVE) || (owner->sharedVisionExchange & u->owner->me == 0))
 		{
 			u->attachedBuilding->removeUnitFromWorking(u);
 			u->standardRandomActivity();
-			unitsHarvesting.erase(thisIt);
+			unitsHarvesting.erase(tmpIt);
 		}
 	}
 }
