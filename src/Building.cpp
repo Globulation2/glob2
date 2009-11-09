@@ -165,6 +165,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	{
 		unitsFailingRequirements[i]=0;
 	}
+	unitsHarvesting.clear();
 }
 
 Building::~Building()
@@ -2489,6 +2490,8 @@ void Building::insertUnitToHarvesting(Unit* unit)
 
 void Building::removeUnitFromHarvesting(Unit* unit)
 {
+	if(unitsHarvesting.empty())
+		return;
 	unitsHarvesting.remove(unit);
 }
 
