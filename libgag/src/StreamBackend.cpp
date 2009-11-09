@@ -147,6 +147,7 @@ namespace GAGCore
 		write(&ch, 1);
 	}
 	
+	//TODO: Why is the Uint8 ch returned as int?
 	int MemoryStreamBackend::getChar(void)
 	{
 		Uint8 ch;
