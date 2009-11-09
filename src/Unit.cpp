@@ -36,7 +36,8 @@
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
-	logFile = globalContainer->logFileManager->getFile("Unit.log");
+	*this=Unit(0,0,0,0,owner,0);
+//	logFile = globalContainer->logFileManager->getFile("Unit.log");
 	load(stream, owner, versionMinor);
 }
 
@@ -123,6 +124,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	attachedBuilding=NULL;
 	targetBuilding=NULL;
+//	setTargetBuilding(NULL);
 	ownExchangeBuilding=NULL;
 	destinationPurprose=-1;
 	caryedRessource=-1;
@@ -316,9 +318,9 @@ void Unit::loadCrossRef(GAGCore::InputStream *stream, Team *owner, Sint32 versio
 	
 	gbid = stream->readUint16("targetBuilding");
 	if (gbid == NOGBID)
-		targetBuilding = NULL;
+		targetBuilding=(NULL);
 	else
-		targetBuilding = owner->myBuildings[Building::GIDtoID(gbid)];
+		targetBuilding=(owner->myBuildings[Building::GIDtoID(gbid)]);
 		
 	gbid = stream->readUint16("ownExchangeBuilding");
 	if (gbid == NOGBID)
@@ -351,6 +353,20 @@ void Unit::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
+void Unit::setTargetBuilding(Building * b)
+{
+	if(targetBuilding!=NULL) {
+		targetBuilding->removeUnitFromHarvesting(this);
+	}
+	if(b!=NULL)
+	{
+		targetX=b->getMidX();
+		targetY=b->getMidY();
+	}
+//TODO: Deal with "validTarget=true;"
+    targetBuilding = b;
+}
+
 void Unit::subscriptionSuccess(Building* building, bool inside)
 {
 	Building* b=building;
@@ -361,7 +377,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 		fprintf(logFile, "[%d] sdp1 destinationPurprose=%d\n", gid, destinationPurprose);
 		activity=ACT_FLAG;
 		attachedBuilding=b;
-		targetBuilding=b;
+	    setTargetBuilding(b);
 		if (verbose)
 			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 	}
@@ -371,7 +387,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 		assert(b->neededRessource(destinationPurprose));
 		activity=ACT_FILLING;
 		attachedBuilding=b;
-		targetBuilding=NULL;
+		setTargetBuilding(NULL);
 		if (verbose)
 			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 	}
@@ -379,7 +395,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 	{
 		activity=ACT_UPGRADING;
 		attachedBuilding=b;
-		targetBuilding=b;
+		setTargetBuilding(b);
 		if (verbose)
 			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 	}
@@ -399,8 +415,8 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 				{
 					displacement=DIS_GOING_TO_FLAG;
 					assert(targetBuilding==attachedBuilding);
-					targetX=attachedBuilding->getMidX();
-					targetY=attachedBuilding->getMidY();
+					//targetX=attachedBuilding->getMidX();
+					//targetY=attachedBuilding->getMidY();
 					validTarget=true;
 				}
 				break;
@@ -408,8 +424,8 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 				{
 					displacement=DIS_GOING_TO_BUILDING;
 					assert(targetBuilding==attachedBuilding);
-					targetX=targetBuilding->getMidX();
-					targetY=targetBuilding->getMidY();
+					//targetX=targetBuilding->getMidX();
+					//targetY=targetBuilding->getMidY();
 					validTarget=true;
 				}
 				break;
@@ -419,15 +435,15 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					if (caryedRessource==destinationPurprose)
 					{
 						displacement=DIS_GOING_TO_BUILDING;
-						targetBuilding=attachedBuilding;
-						targetX=targetBuilding->getMidX();
-						targetY=targetBuilding->getMidY();
+						setTargetBuilding(attachedBuilding);
+						//targetX=targetBuilding->getMidX();
+						//targetY=targetBuilding->getMidY();
 						validTarget=true;
 					}
 					else
 					{
 						displacement=DIS_GOING_TO_RESSOURCE;
-						targetBuilding=NULL;
+						setTargetBuilding(NULL);
 						owner->map->ressourceAvailable(owner->teamNumber, destinationPurprose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 						validTarget=true;
 						//fprintf(logFile, "[%d] raa targetXY=(%d, %d)=%d\n", gid, targetX, targetY, rv);
@@ -582,11 +598,7 @@ bool Unit::isUnitHungry(void)
 void Unit::standardRandomActivity()
 {
 	attachedBuilding=NULL;
-	if(targetBuilding!=NULL)
-	{
-		targetBuilding->removeUnitFromHarvesting(this);
-		targetBuilding=NULL;
-	}
+	setTargetBuilding(NULL);
 	ownExchangeBuilding=NULL;
 	activity=Unit::ACT_RANDOM;
 	displacement=Unit::DIS_RANDOM;
@@ -622,9 +634,7 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	
 	attachedBuilding->removeUnitFromWorking(this);
 	attachedBuilding=NULL;
-	if (targetBuilding)
-		targetBuilding->removeUnitFromHarvesting(this);
-	targetBuilding=NULL;
+	setTargetBuilding(NULL);
 	ownExchangeBuilding=NULL;
 	assert(needToRecheckMedical);
 }
@@ -780,11 +790,7 @@ void Unit::handleMedical(void)
 				attachedBuilding=NULL;
 				ownExchangeBuilding=NULL;
 			}
-			if (targetBuilding)
-			{
-				targetBuilding->removeUnitFromHarvesting(this);
-				targetBuilding=NULL;
-			}
+			setTargetBuilding(NULL);
 			
 			activity=ACT_RANDOM;
 			validTarget=false;
@@ -847,7 +853,7 @@ void Unit::handleActivity(void)
 					assert(destinationPurprose<ARMOR);
 					activity=ACT_UPGRADING;
 					attachedBuilding=b;
-					targetBuilding=b;
+					setTargetBuilding(b);
 					if (verbose)
 						printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->subscribeUnitForInside(this);
@@ -865,7 +871,7 @@ void Unit::handleActivity(void)
 						fprintf(logFile, "[%d] sdp2 destinationPurprose=%d\n", gid, destinationPurprose);
 						activity=ACT_UPGRADING;
 						attachedBuilding=b;
-						targetBuilding=b;
+						setTargetBuilding(b);
 						needToRecheckMedical=false;
 						if (verbose)
 							printf("guid=(%d) Going to heal building\n", gid);
@@ -892,11 +898,7 @@ void Unit::handleActivity(void)
 			attachedBuilding=NULL;
 			ownExchangeBuilding=NULL;
 		}
-		if (targetBuilding) 
-		{
-			targetBuilding->removeUnitFromHarvesting(this);
-			targetBuilding=NULL;
-		}
+		setTargetBuilding(NULL);
 		
 		if (medical==MED_HUNGRY)
 		{
@@ -962,7 +964,7 @@ void Unit::handleActivity(void)
 				fprintf(logFile, "[%d] sdp3 destinationPurprose=%d\n", gid, destinationPurprose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
-				targetBuilding=b;
+				setTargetBuilding(b);
 				needToRecheckMedical=false;
 				if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
@@ -981,7 +983,7 @@ void Unit::handleActivity(void)
 				fprintf(logFile, "[%d] sdp4 destinationPurprose=%d\n", gid, destinationPurprose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
-				targetBuilding=b;
+				setTargetBuilding(b);
 				needToRecheckMedical=false;
 				if (verbose)
 					printf("guid=(%d) Subscribed to heal at building gbid=(%d)\n", gid, b->gid);
@@ -1039,7 +1041,7 @@ void Unit::handleDisplacement(void)
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to aditionaly decRessource() the same ressource.
 				
-				targetBuilding=attachedBuilding;
+				setTargetBuilding(attachedBuilding);
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					displacement=DIS_FILLING_BUILDING;
@@ -1088,11 +1090,8 @@ void Unit::handleDisplacement(void)
 						caryedRessource=destinationPurprose;
 						fprintf(logFile, "[%d] sdp6 destinationPurprose=%d\n", gid, destinationPurprose);
 						
-						targetBuilding->removeUnitFromHarvesting(this);
-						targetBuilding=attachedBuilding;
+						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
-						targetX=targetBuilding->getMidX();
-						targetY=targetBuilding->getMidY();
 						validTarget=true;
 						exchangeReady=true;
 						if (verbose)
@@ -1168,7 +1167,7 @@ void Unit::handleDisplacement(void)
 														bestRessource=r;
 														minValue=value;
 														ownExchangeBuilding=*bi;
-														targetBuilding=*bi;
+														setTargetBuilding(*bi);
 														takeInExchangeBuilding=true;
 													}
 												}
@@ -1933,7 +1932,7 @@ void Unit::handleMovement(void)
 				attachedBuilding->removeUnitFromInside(this);
 				attachedBuilding->updateConstructionState();
 				attachedBuilding=NULL;
-				targetBuilding=NULL;
+				setTargetBuilding(NULL);
 				assert(ownExchangeBuilding==NULL);
 				assert(needToRecheckMedical);
 			}

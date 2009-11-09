@@ -215,7 +215,9 @@ public:
 	Displacement displacement;
 	Movement movement;
 	Abilities action;
+	/// These coordinates are usef for target-lines only (Hotkey T in game)
 	Sint32 targetX, targetY;
+	/// Maybe this is also only for GUI to tag if a line may be drawn or not
 	bool validTarget;
 	Sint32 magicActionTimeout;
 
@@ -275,6 +277,7 @@ public:
 public:
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
+    void setTargetBuilding(Building * b);
 	bool verbose;
 	
 protected:
