@@ -165,6 +165,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	{
 		unitsFailingRequirements[i]=0;
 	}
+	unitsHarvesting.clear();
 }
 
 Building::~Building()
@@ -1142,13 +1143,20 @@ void Building::updateUnitsHarvesting(void)
 	{
 		std::list<Unit *>::iterator tmpIt = it;
 		Unit* u = *tmpIt;
-		++it;
+		it++;
 		
 		if ((buildingState != ALIVE) || (owner->sharedVisionExchange & u->owner->me == 0))
 		{
+			std::cout << "deleting" << std::endl;
 			u->attachedBuilding->removeUnitFromWorking(u);
 			u->standardRandomActivity();
-			unitsHarvesting.erase(tmpIt);
+			unitsHarvesting.remove(u);
+			// TODO: replacing the remove by an erase should be a lot faster but
+			// it causes the game to crash when a market gets destroyed. No idea
+			// why. Actually there's no point bothering about this here as this
+			// method is not performance critical but still it's weired to me
+			// why it doesn't work the other way round.
+			// unitsHarvesting.erase(tmpIt);
 		}
 	}
 }
@@ -2489,6 +2497,8 @@ void Building::insertUnitToHarvesting(Unit* unit)
 
 void Building::removeUnitFromHarvesting(Unit* unit)
 {
+	if(unitsHarvesting.empty())
+		return;
 	unitsHarvesting.remove(unit);
 }
 
