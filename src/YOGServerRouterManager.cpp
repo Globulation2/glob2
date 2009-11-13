@@ -22,7 +22,7 @@
 #include "NetMessage.h"
 
 YOGServerRouterManager::YOGServerRouterManager(YOGServer& server)
-	: server(server), listener(YOG_SERVER_ROUTER_PORT)
+	: listener(YOG_SERVER_ROUTER_PORT), server(server)
 {
 	new_connection.reset(new NetConnection);
 	n=0;

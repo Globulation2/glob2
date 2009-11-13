@@ -419,6 +419,7 @@ namespace GAGCore
 			~RotatedImage();
 		};
 	
+		std::string fileName;
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
 		Color actColor;
@@ -434,7 +435,7 @@ namespace GAGCore
 	
 	public:
 		//! Constructor
-		Sprite() { }
+		Sprite() : fileName("not loaded yet") { }
 		//! Destructor
 		virtual ~Sprite();
 		
