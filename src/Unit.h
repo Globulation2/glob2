@@ -46,6 +46,7 @@ namespace GAGCore
 // a unit
 class Unit
 {
+	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
