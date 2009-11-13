@@ -36,15 +36,19 @@
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
-	*this=Unit(0,0,0,0,owner,0);
-//	logFile = globalContainer->logFileManager->getFile("Unit.log");
+	init(0,0,0,0,owner,0);
 	load(stream, owner, versionMinor);
 }
 
 Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
+	init(x, y, gid, typeNum, team, level);
+}
+
+void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
+{
 	logFile = globalContainer->logFileManager->getFile("Unit.log");
-	
+
 	// unit specification
 	this->typeNum = typeNum;
 	defaultSkinNameFromType();
@@ -77,7 +81,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 		this->canLearn[i]=(bool)race->getUnitType(typeNum, 3)->performance[i]; //TODO: is is a better way to hack this?
 		// This hack prevent units from unlearning. Units level 3 must have all the abilities of all preceedings levels
 	}
-	
+
 	experience = 0;
 	experienceLevel = 0;
 
@@ -129,15 +133,15 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	destinationPurprose=-1;
 	caryedRessource=-1;
 	jobTimer = 0;
-	
+
 	previousClearingAreaX=static_cast<unsigned int>(-1);
 	previousClearingAreaY=static_cast<unsigned int>(-1);
 	previousClearingAreaDistance=0;
-	
+
 	// gui
 	levelUpAnimation = 0;
 	magicActionAnimation = 0;
-	
+
 	// debug vars:
 	verbose=false;
 }
