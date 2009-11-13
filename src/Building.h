@@ -127,7 +127,10 @@ public:
 	///This function updates the units working at this building. If there are too many units, it
 	///fires some.
 	void updateUnitsWorking(void);
-	///This function updates the units harvesting at this building. In particular, it unsubscribe them when the building is being destroyed
+	/// This function updates the units harvesting at this building. In
+	/// particular, it unsubscribes them when the building is being destroyed or
+	/// turns invisible when for example the other teams switches the view for
+	/// its markets.
 	void updateUnitsHarvesting(void);
 	///This function is called after important events in order to update the building
 	void update(void);
