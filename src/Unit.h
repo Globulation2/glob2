@@ -249,6 +249,7 @@ public:
 	Building *attachedBuilding;
 	//! building the Unit is going to
 	Building *targetBuilding;
+	//! no idea what this is. TODO: Explain
 	Building *ownExchangeBuilding;
 	Sint32 destinationPurprose;
 	int caryedRessource;
