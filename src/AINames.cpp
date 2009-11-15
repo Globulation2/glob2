@@ -29,67 +29,51 @@ namespace AINames
 {
 	std::string getAIText(int id)
 	{
-		if(id == AI::NONE)
+		std::string sAi;
+		switch(id)
 		{
-			return Toolkit::getStringTable()->getString("[AINone]");
+		case AI::NONE: sAi="[AINone]";
+			break;
+		case AI::NUMBI: sAi="[AINumbi]";
+			break;
+		case AI::CASTOR: sAi="[AICastor]";
+			break;
+		case AI::WARRUSH: sAi="[AIWarrush]";
+			break;
+		case AI::REACHTOINFINITY: sAi="[AIReachToInfinity]";
+			break;
+		case AI::NICOWAR: sAi="[AINicowar]";
+			break;
+		case AI::TOUBIB: sAi="[AIToubib]";
+			break;
+		default:
+			return "unknown AI";
 		}
-		else if(id == AI::NUMBI)
-		{
-			return Toolkit::getStringTable()->getString("[AINumbi]");
-		}
-		else if(id == AI::CASTOR)
-		{
-			return Toolkit::getStringTable()->getString("[AICastor]");
-		}
-		else if(id == AI::WARRUSH)
-		{
-			return Toolkit::getStringTable()->getString("[AIWarrush]");
-		}
-		else if(id == AI::REACHTOINFINITY)
-		{
-			return Toolkit::getStringTable()->getString("[AIReachToInfinity]");
-		}
-		else if(id == AI::NICOWAR)
-		{
-			return Toolkit::getStringTable()->getString("[AINicowar]");
-		}
-		else if(id == AI::TOUBIB)
-		{
-			return Toolkit::getStringTable()->getString("[AIToubib]");
-		}
-		return "";
+		return Toolkit::getStringTable()->getString(sAi);
 	}
 	
 	std::string getAIDescription(int id)
 	{
-		if(id == AI::NONE)
+		std::string sAi;
+		switch(id)
 		{
-			return Toolkit::getStringTable()->getString("[AINone-Description]");
+		case AI::NONE: sAi="[AINone-Description]";
+			break;
+		case AI::NUMBI: sAi="[AINumbi-Description]";
+			break;
+		case AI::CASTOR: sAi="[AICastor-Description]";
+			break;
+		case AI::WARRUSH: sAi="[AIWarrush-Description]";
+			break;
+		case AI::REACHTOINFINITY: sAi="[AIReachToInfinity-Description]";
+			break;
+		case AI::NICOWAR: sAi="[AINicowar-Description]";
+			break;
+		case AI::TOUBIB: sAi="[AIToubib-Description]";
+			break;
+		default:
+			return "unknown AI";
 		}
-		else if(id == AI::NUMBI)
-		{
-			return Toolkit::getStringTable()->getString("[AINumbi-Description]");
-		}
-		else if(id == AI::CASTOR)
-		{
-			return Toolkit::getStringTable()->getString("[AICastor-Description]");
-		}
-		else if(id == AI::WARRUSH)
-		{
-			return Toolkit::getStringTable()->getString("[AIWarrush-Description]");
-		}
-		else if(id == AI::REACHTOINFINITY)
-		{
-			return Toolkit::getStringTable()->getString("[AIReachToInfinity-Description]");
-		}
-		else if(id == AI::NICOWAR)
-		{
-			return Toolkit::getStringTable()->getString("[AINicowar-Description]");
-		}
-		else if(id == AI::TOUBIB)
-		{
-			return Toolkit::getStringTable()->getString("[AIToubib-Description]");
-		}
-		return "";
+		return Toolkit::getStringTable()->getString(sAi);
 	}
 }
