@@ -368,6 +368,16 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			replayFileName=argv[i+1];
 			continue;
 		}
+		if (strcmp(argv[i], "-ld")==0)
+		{
+			std::cout << "Glob2 will fuse the following directories into its virtual filesystem:\n";
+			const unsigned dirCount(fileManager->getDirCount());
+			for (unsigned i = 0; i < dirCount; ++i)
+			{
+				std::cout << i << "\t" << fileManager->getDir(i) << std::endl;
+			}
+			exit(0);
+		}
 		if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
@@ -382,6 +392,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-v\tset the music volume\n");
 			printf("-m/-M\tmute/unmute the sound (both music and speech)\n");
 			printf("-d\tadd a directory to the directory search list\n");
+			printf("-ld\tprint the directory search list\n");
 			printf("-u\tspecify a user name\n");
 			printf("-y\tspecify an alternative hostname for YOG server\n");
 			printf("-host <map file name> <YOG username> <YOG password>\t runs only as a YOG game host text-based server\n");
