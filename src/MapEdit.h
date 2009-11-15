@@ -736,6 +736,8 @@ private:
 	///Tells whether the delete tool is being dragged
 	bool isDraggingDelete;
 
+	void handleClick(int mx, int my, BrushTool::ClickType clickType);
+
 	///This vector of the keys on the team view. It allows one to choose between AI and human teams for campaign games
 	std::vector<std::string> teamViewSelectorKeys;
 
