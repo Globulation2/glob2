@@ -752,7 +752,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 	int x=unit->posX;
 	int y=unit->posY;
 	//TODO: This is bad code. If WALK ever ceases to be the first ability or ARMOR ever ceases
-	//to be the last, this code willl fail.
+	//to be the last, this code will fail.
 	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
 	{
 		if (unit->canLearn[ability])
