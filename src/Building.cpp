@@ -1142,7 +1142,8 @@ void Building::updateUnitsHarvesting(void)
 		Unit* u = *tmpIt;
 		it++;
 		
-		if ((buildingState != ALIVE) || ((owner->sharedVisionExchange & u->owner->me) == 0))
+		// if the building is not available to fetch from (invisible or broken)
+		if ((buildingState != ALIVE) || (owner->sharedVisionExchange & u->owner->me == 0))
 		{
 			std::cout << "deleting" << std::endl;
 			u->attachedBuilding->removeUnitFromWorking(u);
