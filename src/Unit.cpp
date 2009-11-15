@@ -322,9 +322,9 @@ void Unit::loadCrossRef(GAGCore::InputStream *stream, Team *owner, Sint32 versio
 	
 	gbid = stream->readUint16("targetBuilding");
 	if (gbid == NOGBID)
-		targetBuilding=(NULL);
+		targetBuilding=NULL;
 	else
-		targetBuilding=(owner->myBuildings[Building::GIDtoID(gbid)]);
+		targetBuilding=owner->myBuildings[Building::GIDtoID(gbid)];
 		
 	gbid = stream->readUint16("ownExchangeBuilding");
 	if (gbid == NOGBID)
@@ -2335,6 +2335,7 @@ void Unit::directionFromDxDy(void)
 
 void Unit::dxdyfromDirection(void)
 {
+	//TODO remove code duplication by calling dxdyfromDirection(int direction, int *dx, int *dy)
 	const int tab[9][2]={	{ -1, -1},
 							{ 0, -1},
 							{ 1, -1},
