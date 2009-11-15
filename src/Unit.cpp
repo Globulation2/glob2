@@ -1142,7 +1142,8 @@ void Unit::handleDisplacement(void)
 												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
 												{
 													// We increase the cost to get a ressource in an exchange building to reflect the costs to get the ressources to the exchange building.
-													int value=(buildingDist<<1)/need;
+													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
+													int value=(buildingDist+5)/need;
 													if (value<minValue)
 													{
 														bestRessource=r;
@@ -2315,6 +2316,7 @@ void Unit::directionFromDxDy(void)
 
 void Unit::dxdyfromDirection(void)
 {
+	//TODO remove code duplication by calling dxdyfromDirection(int direction, int *dx, int *dy)
 	const int tab[9][2]={	{ -1, -1},
 							{ 0, -1},
 							{ 1, -1},
