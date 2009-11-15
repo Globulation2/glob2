@@ -55,19 +55,14 @@ public:
 class YOGServerRestart : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
-	
-	///Returns the command name for this YOGServerAdministratorCommand
+
 	std::string getCommandName();
-	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
+
 	bool doesMatch(const std::vector<std::string>& tokens);
-	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
+
 	bool allowedForModerator();
-	
-	///Executes the code for the administrator command
+
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -77,19 +72,14 @@ public:
 class YOGMutePlayer : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -99,19 +89,14 @@ public:
 class YOGUnmutePlayer : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -121,19 +106,14 @@ public:
 class YOGResetPassword : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -143,19 +123,14 @@ public:
 class YOGBanPlayer : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -165,19 +140,14 @@ public:
 class YOGUnbanPlayer : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -187,19 +157,14 @@ public:
 class YOGShowBannedPlayers : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -209,19 +174,14 @@ public:
 class YOGBanIP : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -231,19 +191,14 @@ public:
 class YOGAddAdministrator : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -253,19 +208,14 @@ public:
 class YOGRemoveAdministrator : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -275,19 +225,14 @@ public:
 class YOGAddModerator : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
@@ -297,41 +242,31 @@ public:
 class YOGRemoveModerator : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
 
 
-///This removes a moderator
+///This deletes a map
 class YOGRemoveMap : public YOGServerAdministratorCommand
 {
 public:
-	///Returns this YOGServerAdministratorCommand help message
 	std::string getHelpMessage();
 	
-	///Returns the command name for this YOGServerAdministratorCommand
 	std::string getCommandName();
 	
-	///Returns true if the given set of tokens match whats required for this YOGServerAdministratorCommand
 	bool doesMatch(const std::vector<std::string>& tokens);
 	
-	///Returns true if this command can be executed by both moderators and administrators, false if it can only be executed by administrators
 	bool allowedForModerator();
 	
-	///Executes the code for the administrator command
 	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
 };
 
