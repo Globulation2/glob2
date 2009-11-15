@@ -2479,8 +2479,6 @@ void Building::insertUnitToHarvesting(Unit* unit)
 
 void Building::removeUnitFromHarvesting(Unit* unit)
 {
-	if(unitsHarvesting.empty())
-		return;
 	unitsHarvesting.remove(unit);
 }
 
