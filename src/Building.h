@@ -238,7 +238,18 @@ public:void addRessourceIntoBuilding(int ressourceType);
 	/// and provides the x and y cordinates, along with the direction the unit should be travelling
 	/// when it leaves.
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
-
+private:
+	/// checkstyle found this block of 26 lines being repeated 4 times.
+	void checkGroundExitQuality(
+		const int testX,
+		const int testY,
+		const int extraTestX,
+		const int extraTestY,
+		int & exitX,
+		int & exitY,
+		int & exitQuality,
+		int & oldQuality,
+		bool canSwim);
 	/// Returns the script level number. Construction sites are odd numbers and completed buildings
 	/// even, from 0 to 5
 public:int getLongLevel(void);
