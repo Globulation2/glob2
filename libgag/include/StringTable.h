@@ -45,6 +45,7 @@ namespace GAGCore
 		int getNumberOfLanguage(void) { return languageCount; }
 		bool loadIncompleteList(const char *filename);
 		bool load(const char *filename);
+		const std::string getString(const std::string stringname) const;
 		const char *getString(const char *stringname) const;
 		bool doesStringExist(const char *stringname) const;
 		const char *getStringInLang(const char *stringname, int lang) const;
