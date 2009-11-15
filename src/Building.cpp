@@ -1133,9 +1133,6 @@ void Building::updateUnitsWorking(void)
 
 void Building::updateUnitsHarvesting(void)
 {
-	// double and triple-checked but the market-bug
-	// https://savannah.nongnu.org/bugs/?25731 is not caused by wrong
-	// iterator-removal-handling
 	for (std::list<Unit *>::iterator it=unitsHarvesting.begin(); it!=unitsHarvesting.end();)
 	{
 		std::list<Unit *>::iterator tmpIt = it;
@@ -1145,10 +1142,12 @@ void Building::updateUnitsHarvesting(void)
 		// if the building is not available to fetch from (invisible or broken)
 		if ((buildingState != ALIVE) || (owner->sharedVisionExchange & u->owner->me == 0))
 		{
-			std::cout << "deleting" << std::endl;
-			u->attachedBuilding->removeUnitFromWorking(u);
-			u->standardRandomActivity();
-			unitsHarvesting.remove(u);
+			// cancel the task u were just doing
+		    u->attachedBuilding->removeUnitFromWorking(u);
+		    // cancel fetching resources here
+		    removeUnitFromHarvesting(u);
+		    // behave randomly
+		    u->standardRandomActivity();
 			// TODO: replacing the remove by an erase should be a lot faster but
 			// it causes the game to crash when a market gets destroyed. No idea
 			// why. Actually there's no point bothering about this here as this
