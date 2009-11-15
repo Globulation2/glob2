@@ -263,7 +263,8 @@ namespace GAGCore
 			{
 				std::cerr << "StringTable::getString(\"" << key << ", " << index << "\") : error, no such key." << std::endl;
 				#ifndef YOG_SERVER_ONLY
-				if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
+				if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() &&
+						GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
 					GAGCore::DrawableSurface::texts[key]=key;
 			    #endif
 				return key;
@@ -280,15 +281,17 @@ namespace GAGCore
 				if (s.length() == 0)
 				{
 					#ifndef YOG_SERVER_ONLY
-					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
+					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() &&
+							GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
 						GAGCore::DrawableSurface::texts[strings[accessIt->second+dec]->data[defaultLang]]=key;
 					#endif
-					return strings[accessIt->second+dec]->data[defaultLang].c_str();
+					return strings[accessIt->second+dec]->data[defaultLang];
 				}
 				else
 				{
 					#ifndef YOG_SERVER_ONLY
-					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
+					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() &&
+							GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
 						GAGCore::DrawableSurface::texts[s]=key;
 					#endif
 					return s;
