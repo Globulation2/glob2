@@ -2316,20 +2316,7 @@ void Unit::directionFromDxDy(void)
 
 void Unit::dxdyfromDirection(void)
 {
-	//TODO remove code duplication by calling dxdyfromDirection(int direction, int *dx, int *dy)
-	const int tab[9][2]={	{ -1, -1},
-							{ 0, -1},
-							{ 1, -1},
-							{ 1, 0},
-							{ 1, 1},
-							{ 0, 1},
-							{ -1, 1},
-							{ -1, 0},
-							{ 0, 0} };
-	assert(direction>=0);
-	assert(direction<=8);
-	dx=tab[direction][0];
-	dy=tab[direction][1];
+	dxdyfromDirection(direction,&dx,&dy);
 }
 
 int Unit::directionFromDxDy(int dx, int dy)
@@ -2343,23 +2330,6 @@ int Unit::directionFromDxDy(int dx, int dy)
 	assert(dy<=1);
 	return tab[dy+1][dx+1];
 }
-
-/*void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
-{
-	const int tab[9][2]={	{ -1, -1},
-							{ 0, -1},
-							{ 1, -1},
-							{ 1, 0},
-							{ 1, 1},
-							{ 0, 1},
-							{ -1, 1},
-							{ -1, 0},
-							{ 0, 0} };
-	assert(direction>=0);
-	assert(direction<=8);
-	*dx=tab[direction][0];
-	*dy=tab[direction][1];
-}*/
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
