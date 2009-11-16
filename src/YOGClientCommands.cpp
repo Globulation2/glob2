@@ -44,11 +44,7 @@ std::string YOGClientBlockPlayerCommand::getCommandName()
 
 bool YOGClientBlockPlayerCommand::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() == 2)
-	{
-		return true;
-	}
-	return false;
+	return tokens.size() == 2;
 }
 
 
