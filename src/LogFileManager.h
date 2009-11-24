@@ -40,7 +40,7 @@ using namespace GAGCore;
  * The returned "FILE*" is writeable, and stored in a place chosen by the
  * "FileManager*" policy.
  * The name of the file is the concathenation of the user name and the 
- * "const char *fileName" argument.
+ * "const std::string filename" argument.
  * This is usefull when you have to test multiple users on the same account
  * while debugging multiplayers games.
  * 
@@ -63,7 +63,7 @@ public:
 	typedef std::map<std::string, FILE *> NameFileMap;
 	NameFileMap logFileMap;
 	
-	FILE *getFile(const char *fileName);
+	FILE *getFile(const std::string filename);
 	
 	FileManager *fileManager;
 };

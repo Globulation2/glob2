@@ -148,7 +148,7 @@ public:
 	//! Return the text typed
 	std::string getText(void) const { return textInput->getText(); }
 	//! Set the text
-	void setText(const char *text) const { textInput->setText(text); }
+	void setText(const std::string text) const { textInput->setText(text); }
 };
 
 InGameTextInput::InGameTextInput(GraphicContext *parentCtx)
@@ -632,7 +632,7 @@ void GameGUI::syncStep(void)
 
 	if ((game.stepCounter&255) == 79)
 	{
-		const char *name = Toolkit::getStringTable()->getString("[auto save]");
+		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");
 		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(fileName));
 		if (stream->isEndOfStream())
@@ -815,8 +815,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						}
 						else
 						{
-							const char *name = ((LoadSaveScreen *)gameMenuScreen)->getName();
-							assert(name);
+							const std::string name = ((LoadSaveScreen *)gameMenuScreen)->getName();
+							assert(name.lenth()>=0);
 							save(stream, name);
 						}
 						delete stream;
@@ -3092,7 +3092,7 @@ void GameGUI::drawBuildingInfos(void)
 	title = "";
 	if ((buildingType->nextLevel>=0) ||  (buildingType->prevLevel>=0))
 	{
-		const char *textT = Toolkit::getStringTable()->getString("[level]");
+		const std::string textT = Toolkit::getStringTable()->getString("[level]");
 		title += FormatableString("%0 %1").arg(textT).arg(buildingType->level+1);
 	}
 	if (buildingType->isBuildingSite)
@@ -4685,7 +4685,7 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 	return true;
 }
 
-void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
+void GameGUI::save(GAGCore::OutputStream *stream, const std::string name)
 {
 	// Game is can't be no more automatically generated
 	game.save(stream, false, name);
@@ -4727,7 +4727,7 @@ void GameGUI::drawButton(int x, int y, const char *caption, int r, int g, int b,
 	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
 	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, r, g, b);
 
-	const char *textToDraw;
+	const std::string textToDraw;
 	if (doLanguageLookup)
 		textToDraw=Toolkit::getStringTable()->getString(caption);
 	else
@@ -4749,7 +4749,7 @@ void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLo
 
 void GameGUI::drawTextCenter(int x, int y, const char *caption)
 {
-	const char *text;
+	const std::string text;
 
 	text=Toolkit::getStringTable()->getString(caption);
 	int dec=(RIGHT_MENU_WIDTH-globalContainer->littleFont->getStringWidth(text))>>1;

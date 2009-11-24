@@ -63,18 +63,16 @@ namespace GAGGUI
 	public:
 		TextArea() { font=NULL; }
 		TextArea(const std::string &tooltip, const std::string &tooltipFont) : HighlightableWidget(tooltip, tooltipFont) { font=NULL; }
-		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly=true, const char *text="", const char *spritelocation=NULL);
-		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, bool readOnly=true, const char *text="", const char *spritelocation=NULL);
+		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, bool readOnly=true, const std::string text="", const char *spritelocation=NULL);
+		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, bool readOnly=true, const std::string text="", const char *spritelocation=NULL);
 		virtual ~TextArea();
 	
 		virtual void internalInit(void);
 		virtual void paint(void);
 	
-		virtual void setText(const char *text);
-		virtual const char *getText(void) { return text.c_str(); }
-		virtual void addText(const char *text);
-		// migration, const char * have to die at some point
-		void addText(const std::string &text) { addText(text.c_str()); }
+		virtual void setText(const std::string text);
+		virtual const std::string getText(void) { return text; }
+		virtual void addText(const std::string text);
 		virtual void addImage(int frame);
 		virtual void addNoImage();
 		virtual void addChar(const char c);
@@ -89,9 +87,9 @@ namespace GAGGUI
 		virtual void getCursorPos(unsigned &pos) const ;
 		virtual void getCursorPos(unsigned &line, unsigned &column) const;
 		//! load content from filename
-		virtual bool load(const char *filename);
+		virtual bool load(const std::string filename);
 		//! save content to filename. If file exists, it is overriden
-		virtual bool save(const char *filename);
+		virtual bool save(const std::string filename);
 		void deactivate(void) { activated = false; }
 		void activate(void) { activated = true; }
 	

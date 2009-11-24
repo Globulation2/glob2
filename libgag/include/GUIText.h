@@ -43,12 +43,11 @@ namespace GAGGUI
 		Text() { fontPtr = NULL; }
 		Text(const std::string &tooltip, const std::string &tooltipFont) : RectangularWidget(tooltip, tooltipFont) { fontPtr = NULL; }
 
-		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &text, int w=0, int h=0) { constructor(x, y, hAlign, vAlign, font, text.c_str(), w, h); }
-		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &text, const std::string &tooltip, const std::string &tooltipFont, int w=0, int h=0) 
+		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text="", int w=0, int h=0) { constructor(x, y, hAlign, vAlign, font, text, w, h); }
+		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string &text, const std::string &tooltip, const std::string &tooltipFont, int w=0, int h=0) 
 			: RectangularWidget(tooltip, tooltipFont)
 				{ constructor(x, y, hAlign, vAlign, font, text.c_str(), w, h); }
 
-		Text(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", int w=0, int h=0) { constructor(x, y, hAlign, vAlign, font, text, w, h); }
 		virtual ~Text() { }
 		
 		virtual void internalInit(void);
@@ -59,7 +58,7 @@ namespace GAGGUI
 		virtual void setStyle(GAGCore::Font::Style style);
 		
 	protected:
-		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h);
+		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int w, int h);
 	};
 }
 

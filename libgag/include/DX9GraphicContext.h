@@ -87,7 +87,7 @@ namespace GAGCore
 		
 	protected:
 		friend class DrawableSurface;
-		virtual void drawString(IDirect3DTexture9 *Surface, int x, int y, int w, const char *text, RECT *clip=NULL) = 0;
+		virtual void drawString(IDirect3DTexture9 *Surface, int x, int y, int w, const std::string text, RECT *clip=NULL) = 0;
 		virtual void pushStyle(Style style) = 0;
 		virtual void popStyle(void) = 0;
 	};
@@ -156,7 +156,7 @@ namespace GAGCore
 		virtual int getFlags(void) { return flags; }
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
-		virtual void loadImage(const char *name);
+		virtual void loadImage(const std::string name);
 		virtual void drawSprite(int x, int y, Sprite *sprite, int index=0);
 		virtual void drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 		virtual void drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
@@ -207,10 +207,10 @@ namespace GAGCore
 		virtual void beginVideoModeListing(void);
 		virtual bool getNextVideoMode(int *w, int *h);
 			
-		virtual void loadImage(const char *name);
+		virtual void loadImage(const std::string name);
 	
 		virtual void nextFrame(void);
-		virtual void printScreen(const char *filename);
+		virtual void printScreen(const std::string filename);
 	};
 	
 	union Color32
@@ -266,7 +266,7 @@ namespace GAGCore
 		virtual ~Sprite();
 		
 		//! Load a sprite from the file, return true if any frame have been loaded
-		bool load(const char *filename);
+		bool load(const std::string filename);
 	
 		//! Draw the sprite frame index at pos (x,y) on an SDL Surface with the clipping rect clip
 		virtual void draw(IDirect3DTexture9 *dest, const RECT *clip, int x, int y, int index);

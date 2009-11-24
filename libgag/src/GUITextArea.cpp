@@ -32,7 +32,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *text, const char *spritelocation)
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, bool readOnly, const std::string text, const char *spritelocation)
 	{
 		this->x = x;
 		this->y = y;
@@ -67,7 +67,7 @@ namespace GAGGUI
 			spriteWidth = sprite->getW(0);	
 	}
 	
-	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &tooltip, const std::string &tooltipFont, bool readOnly, const char *text, const char *spritelocation)
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string &tooltip, const std::string &tooltipFont, bool readOnly, const std::string text, const char *spritelocation)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
 		this->x = x;
@@ -770,7 +770,7 @@ namespace GAGGUI
 			cursorPosY = lines.size()-1;
 	}
 	
-	void TextArea::setText(const char *text)
+	void TextArea::setText(const std::string text)
 	{
 		this->text = text;
 		if (cursorPos>this->text.length())
@@ -779,13 +779,13 @@ namespace GAGGUI
 		compute();
 	}
 	
-	void TextArea::addText(const char *text)
+	void TextArea::addText(const std::string text)
 	{
-		assert(text);
+		assert(text.length()>=0);
 		assert(cursorPos <= this->text.length());
 		assert(cursorPos >= 0);
 	
-		if (text)
+		if (text.length()>0)
 		{
 			if (readOnly)
 			{
@@ -794,7 +794,7 @@ namespace GAGGUI
 			else
 			{
 				this->text.insert(cursorPos, text);
-				cursorPos += strlen(text);
+				cursorPos += text.length();
 			}
 			
 			layout();
@@ -917,7 +917,7 @@ namespace GAGGUI
 		compute();
 	}
 	
-	bool TextArea::load(const char *filename)
+	bool TextArea::load(const std::string filename)
 	{
 		StreamBackend *stream = Toolkit::getFileManager()->openInputStreamBackend(filename);
 		if (stream->isEndOfStream())
@@ -944,7 +944,7 @@ namespace GAGGUI
 		}
 	}
 	
-	bool TextArea::save(const char *filename)
+	bool TextArea::save(const std::string filename)
 	{
 		StreamBackend *stream = Toolkit::getFileManager()->openOutputStreamBackend(filename);
 		if (stream->isEndOfStream())

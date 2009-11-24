@@ -107,7 +107,7 @@ SGSLToken::TokenSymbolLookupTable SGSLToken::table[] =
 	{ NIL, NULL },
 };
 
-SGSLToken::TokenType SGSLToken::getTypeByName(const char *name)
+SGSLToken::TokenType SGSLToken::getTypeByName(const std::string name)
 {
 	int i = 0;
 	TokenType type=NIL;
@@ -130,7 +130,7 @@ SGSLToken::TokenType SGSLToken::getTypeByName(const char *name)
 const char *SGSLToken::getNameByType(SGSLToken::TokenType type)
 {
 	int i = 0;
-	const char *name=NULL;
+	const std::string name=NULL;
 
 	if (type != NIL)
 		while (table[i].name != NULL)
@@ -1322,7 +1322,7 @@ void Aquisition::nextToken()
 		token.type = SGSLToken::NIL;
 }
 
-bool FileAquisition::open(const char *filename)
+bool FileAquisition::open(const std::string filename)
 {
 	if (fp != NULL)
 		fclose(fp);
@@ -1348,14 +1348,14 @@ StringAquisition::~StringAquisition()
 		free(buffer);
 }
 
-void StringAquisition::open(const char *text)
+void StringAquisition::open(const std::string text)
 {
 	assert(text);
 
 	if (buffer)
 		free (buffer);
 
-	size_t len=strlen(text);
+	size_t len=text.length();
 	buffer=(char *)malloc(len+1);
 	memcpy(buffer, text, len+1);
 	pos=0;
@@ -1602,7 +1602,7 @@ ErrorReport Mapscript::compileScript(Game *game)
 	return compileScript(game, sourceCode.c_str());
 }
 
-ErrorReport Mapscript::loadScript(const char *filename, Game *game)
+ErrorReport Mapscript::loadScript(const std::string filename, Game *game)
 {
 	FileAquisition aquisition(functions);
 	if (aquisition.open(filename))

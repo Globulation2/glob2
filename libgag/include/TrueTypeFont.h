@@ -39,9 +39,9 @@ namespace GAGCore
 		static const bool verbose = false;
 	public:
 		TrueTypeFont();
-		TrueTypeFont(const char *filename, unsigned size);
+		TrueTypeFont(const std::string filename, unsigned size);
 		virtual ~TrueTypeFont();
-		bool load(const char *filename, unsigned size);
+		bool load(const std::string filename, unsigned size);
 		
 		//! Get the width of string with shape. Update cache
 		int getStringWidth(const char *string);
@@ -55,17 +55,17 @@ namespace GAGCore
 	protected:
 		//! Init internal variables
 		void init(void);
-		virtual void drawString(DrawableSurface *surface, int x, int y, int w, const char *text, Uint8 alpha);
-		virtual void drawString(DrawableSurface *surface, float x, float y, float w, const char *text, Uint8 alpha);
+		virtual void drawString(DrawableSurface *surface, int x, int y, int w, const std::string text, Uint8 alpha);
+		virtual void drawString(DrawableSurface *surface, float x, float y, float w, const std::string text, Uint8 alpha);
 		virtual void pushStyle(Style style);
 		virtual void popStyle(void);
 		
 		//! If text is cached, returns its surface. If it is not, create, cache and return surface
-		DrawableSurface *getStringCached(const char *text);
+		DrawableSurface *getStringCached(const std::string text);
 		//! If cache is too big, remove old entry
 		void cleanupCache(void);
 #ifdef HAVE_FRIBIDI 
-		char *getBIDIString (const char *text);
+		char *getBIDIString (const std::string text);
 #endif		
 	protected:
 		TTF_Font *font;

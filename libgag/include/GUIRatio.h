@@ -60,8 +60,8 @@ namespace GAGGUI
 	public:
 		Ratio() { fontPtr=NULL; }
 		Ratio(const std::string& tooltip, const std::string &tooltipFont) : HighlightableWidget(tooltip, tooltipFont) { fontPtr=NULL; }
-		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font);
-		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font, const std::string& tooltip, const std::string &tooltipFont);
+		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const std::string font);
+		Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const std::string font, const std::string& tooltip, const std::string &tooltipFont);
 		virtual ~Ratio();
 	
 		virtual void onTimer(Uint32 tick);

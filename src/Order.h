@@ -414,7 +414,7 @@ class MessageOrder:public MiscOrder
 {
 public:
 	MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char *text);
+	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const std::string text);
 	virtual ~MessageOrder(void);
 
 	Uint8 *getData(void);
