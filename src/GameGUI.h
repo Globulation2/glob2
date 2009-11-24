@@ -96,7 +96,7 @@ public:
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false);
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const char *name);
+	void save(GAGCore::OutputStream *stream, const std::string name);
 
 	void processEvent(SDL_Event *event);
 

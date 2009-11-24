@@ -29,7 +29,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
+	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
 										const char *dir,
 										const char *extension, const bool recurse)
 		: List(x, y, w, h, hAlign, vAlign, font),
@@ -42,7 +42,7 @@ namespace GAGGUI
 		//this->generateList();
 	}
 	
-	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
+	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
 										const char *dir, const std::string& tooltip, const std::string &tooltipFont,
 										const char *extension, const bool recurse)
 		: List(x, y, w, h, hAlign, vAlign, font, tooltip, tooltipFont),

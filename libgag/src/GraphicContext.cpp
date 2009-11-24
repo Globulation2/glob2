@@ -453,7 +453,7 @@ namespace GAGCore
 		SDL_SetClipRect(sdlsurface, &clipRect);
 	}
 
-	bool DrawableSurface::loadImage(const char *name)
+	bool DrawableSurface::loadImage(const std::string name)
 	{
 		if (name)
 		{
@@ -2181,7 +2181,7 @@ namespace GAGCore
 		}
 	}
 
-	void GraphicContext::printScreen(const char *filename)
+	void GraphicContext::printScreen(const std::string filename)
 	{
 		SDL_Surface *toPrintSurface = NULL;
 

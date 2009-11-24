@@ -96,7 +96,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 	{
 		std::string mapFileName = campaign.getMap(availableMissions->getSelectionIndex()).getMapFileName();
 		mapPreview->setMapThumbnail(mapFileName.c_str());
-		description->setText(Toolkit::getStringTable()->getString(campaign.getMap(availableMissions->getSelectionIndex()).getDescription().c_str()));
+		description->setText(Toolkit::getStringTable()->getString(campaign.getMap(availableMissions->getSelectionIndex()).getDescription()));
 	}
 }
 

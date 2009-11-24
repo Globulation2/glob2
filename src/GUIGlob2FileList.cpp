@@ -20,7 +20,7 @@
 #include "GUIGlob2FileList.h"
 #include "Game.h"
 
-Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
+Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
 														 const char *dir,
 														 const char *extension, const bool recurse)
 	: FileList(x, y, w, h, hAlign, vAlign, font, dir, extension, recurse)
@@ -28,7 +28,7 @@ Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	this->generateList();
 }
 
-Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
+Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
 														 const char *dir, const std::string& tooltip, const std::string &tooltipFont,
 														 const char *extension, const bool recurse)
 	: FileList(x, y, w, h, hAlign, vAlign, font, dir, tooltip, tooltipFont, extension, recurse)

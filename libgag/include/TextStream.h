@@ -41,7 +41,7 @@ namespace GAGCore
 		//! print levels of tabs
 		void printLevel(void);
 		//! print string to backend
-		void printString(const char *string);
+		void printString(const std::string string);
 		//! print a given type using ostringstream
 		template <class T>
 		void print(T v)
@@ -55,20 +55,20 @@ namespace GAGCore
 		TextOutputStream(StreamBackend *backend) { this->backend = backend; level=0; };
 		virtual ~TextOutputStream() { delete backend; }
 	
-		virtual void write(const void *data, const size_t size, const char *name);
+		virtual void write(const void *data, const size_t size, const std::string name);
 	
-		virtual void writeSint8(const Sint8 v, const char *name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
-		virtual void writeUint8(const Uint8 v, const char *name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
-		virtual void writeSint16(const Sint16 v, const char *name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
-		virtual void writeUint16(const Uint16 v, const char *name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
-		virtual void writeSint32(const Sint32 v, const char *name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeUint32(const Uint32 v, const char *name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeFloat(const float v, const char *name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeDouble(const double v, const char *name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeText(const std::string &v, const char *name);
+		virtual void writeSint8(const Sint8 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
+		virtual void writeUint8(const Uint8 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
+		virtual void writeSint16(const Sint16 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
+		virtual void writeUint16(const Uint16 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
+		virtual void writeSint32(const Sint32 v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeUint32(const Uint32 v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeFloat(const float v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeDouble(const double v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeText(const std::string &v, const std::string name);
 		virtual void flush(void) { backend->flush(); }
 		
-		virtual void writeEnterSection(const char *name);
+		virtual void writeEnterSection(const std::string name);
 		virtual void writeEnterSection(unsigned id);
 		virtual void writeLeaveSection(size_t count = 1);
 		
@@ -92,11 +92,11 @@ namespace GAGCore
 		std::string key;
 		
 		//! Read from table using keys key and name and put result to result
-		void readFromTableToString(const char *name, std::string *result);
+		void readFromTableToString(const std::string name, std::string *result);
 		
 		//! read from table and convert to type T using std::istringstream
 		template <class T>
-		T readFromTable(const char *name)
+		T readFromTable(const std::string name)
 		{
 			std::string s;
 			readFromTableToString(name, &s);
@@ -112,18 +112,18 @@ namespace GAGCore
 		//! Return all subsections of root
 		void getSubSections(const std::string &root, std::set<std::string> *sections);
 		
-		virtual void read(void *data, size_t size, const char *name);
-		virtual Sint8 readSint8(const char *name) { return static_cast<Sint8>(readFromTable<signed>(name)); }
-		virtual Uint8 readUint8(const char *name) { return static_cast<Uint8>(readFromTable<unsigned>(name)); }
-		virtual Sint16 readSint16(const char *name) { return static_cast<Sint16>(readFromTable<signed>(name)); }
-		virtual Uint16 readUint16(const char *name) { return static_cast<Uint16>(readFromTable<unsigned>(name)); }
-		virtual Sint32 readSint32(const char *name) { return readFromTable<Sint32>(name); }
-		virtual Uint32 readUint32(const char *name) { return readFromTable<Uint32>(name); }
-		virtual float readFloat(const char *name) { return readFromTable<float>(name); }
-		virtual double readDouble(const char *name) { return readFromTable<double>(name); }
-		virtual std::string readText(const char *name) { std::string s; readFromTableToString(name, &s); return s; }
+		virtual void read(void *data, size_t size, const std::string name);
+		virtual Sint8 readSint8(const std::string name) { return static_cast<Sint8>(readFromTable<signed>(name)); }
+		virtual Uint8 readUint8(const std::string name) { return static_cast<Uint8>(readFromTable<unsigned>(name)); }
+		virtual Sint16 readSint16(const std::string name) { return static_cast<Sint16>(readFromTable<signed>(name)); }
+		virtual Uint16 readUint16(const std::string name) { return static_cast<Uint16>(readFromTable<unsigned>(name)); }
+		virtual Sint32 readSint32(const std::string name) { return readFromTable<Sint32>(name); }
+		virtual Uint32 readUint32(const std::string name) { return readFromTable<Uint32>(name); }
+		virtual float readFloat(const std::string name) { return readFromTable<float>(name); }
+		virtual double readDouble(const std::string name) { return readFromTable<double>(name); }
+		virtual std::string readText(const std::string name) { std::string s; readFromTableToString(name, &s); return s; }
 		
-		virtual void readEnterSection(const char *name);
+		virtual void readEnterSection(const std::string name);
 		virtual void readEnterSection(unsigned id);
 		virtual void readLeaveSection(size_t count = 1);
 		

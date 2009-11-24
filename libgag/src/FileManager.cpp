@@ -170,7 +170,7 @@ namespace GAGCore
 		}
 	}
 	
-	SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
+	SDL_RWops *FileManager::openWithbackup(const std::string filename, const char *mode)
 	{
 		if (strchr(mode, 'w'))
 		{
@@ -181,7 +181,7 @@ namespace GAGCore
 		return SDL_RWFromFile(filename, mode);
 	}
 	
-	FILE *FileManager::openWithbackupFP(const char *filename, const char *mode)
+	FILE *FileManager::openWithbackupFP(const std::string filename, const char *mode)
 	{
 		if (strchr(mode, 'w'))
 		{
@@ -192,7 +192,7 @@ namespace GAGCore
 		return fopen(filename, mode);
 	}
 	
-	std::ofstream *FileManager::openWithbackupOFS(const char *filename, std::ofstream::openmode mode)
+	std::ofstream *FileManager::openWithbackupOFS(const std::string filename, std::ofstream::openmode mode)
 	{
 		if (mode & std::ios_base::out)
 		{
@@ -208,7 +208,7 @@ namespace GAGCore
 		return NULL;
 	}
 	
-	StreamBackend *FileManager::openOutputStreamBackend(const char *filename)
+	StreamBackend *FileManager::openOutputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -224,7 +224,7 @@ namespace GAGCore
 		return new FileStreamBackend(NULL);
 	}
 	
-	StreamBackend *FileManager::openInputStreamBackend(const char *filename)
+	StreamBackend *FileManager::openInputStreamBackend(const std::string filename)
 	{	
 	
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -241,7 +241,7 @@ namespace GAGCore
 		return new FileStreamBackend(NULL);
 	}
 	
-	StreamBackend *FileManager::openCompressedOutputStreamBackend(const char *filename)
+	StreamBackend *FileManager::openCompressedOutputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -261,7 +261,7 @@ namespace GAGCore
 		return new ZLibStreamBackend("", false);
 	}
 	
-	StreamBackend *FileManager::openCompressedInputStreamBackend(const char *filename)
+	StreamBackend *FileManager::openCompressedInputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -280,7 +280,7 @@ namespace GAGCore
 		return new ZLibStreamBackend("", false);
 	}
 	
-	SDL_RWops *FileManager::open(const char *filename, const char *mode)
+	SDL_RWops *FileManager::open(const std::string filename, const char *mode)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -297,7 +297,7 @@ namespace GAGCore
 		return NULL;
 	}
 	
-	FILE *FileManager::openFP(const char *filename, const char *mode)
+	FILE *FileManager::openFP(const std::string filename, const char *mode)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -331,7 +331,7 @@ namespace GAGCore
 		return NULL;
 	}
 	
-	Uint32 FileManager::checksum(const char *filename)
+	Uint32 FileManager::checksum(const std::string filename)
 	{
 		Uint32 cs = 0;
 		SDL_RWops *stream = open(filename);
@@ -358,7 +358,7 @@ namespace GAGCore
 		return cs;
 	}
 	
-	time_t FileManager::mtime(const char *filename)
+	time_t FileManager::mtime(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -374,7 +374,7 @@ namespace GAGCore
 		return 0;
 	}
 	
-	void FileManager::remove(const char *filename)
+	void FileManager::remove(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -385,7 +385,7 @@ namespace GAGCore
 		}
 	}
 	
-	bool FileManager::isDir(const char *filename)
+	bool FileManager::isDir(const std::string filename)
 	{
 		#ifdef WIN32
 		struct _stat s;

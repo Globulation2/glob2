@@ -30,14 +30,14 @@
 
 namespace GAGCore
 {
-	void BinaryOutputStream::write(const void *data, const size_t size, const char *name)
+	void BinaryOutputStream::write(const void *data, const size_t size, const std::string name)
 	{
 		if(doingSHA1)
 			SHA1Update(&sha1Context, (const Uint8*)data, size);
 		backend->write(data, size);
 	}
 	
-	void BinaryOutputStream::writeEndianIndependant(const void *v, const size_t size, const char *name)
+	void BinaryOutputStream::writeEndianIndependant(const void *v, const size_t size, const std::string name)
 	{
 		if (size==2)
 		{
@@ -59,7 +59,7 @@ namespace GAGCore
 		backend->write(v, size);
 	}
 	
-	void BinaryOutputStream::writeText(const std::string &v, const char *name)
+	void BinaryOutputStream::writeText(const std::string &v, const std::string name)
 	{
 		writeUint32(v.size(), NULL);
 		write(v.c_str(), v.size(), NULL); 
@@ -78,7 +78,7 @@ namespace GAGCore
 		SHA1Final(sha1, &sha1Context);
 	}
 	
-	void BinaryInputStream::readEndianIndependant(void *v, size_t size, const char *name)
+	void BinaryInputStream::readEndianIndependant(void *v, size_t size, const std::string name)
 	{
 		backend->read(v, size);
 		if (size==2)
@@ -98,7 +98,7 @@ namespace GAGCore
 			assert(false);
 	}
 	
-	std::string BinaryInputStream::readText(const char *name)
+	std::string BinaryInputStream::readText(const std::string name)
 	{
 		size_t len = readUint32(NULL);
 		std::valarray<char> buffer(len+1);

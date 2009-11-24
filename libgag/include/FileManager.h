@@ -66,11 +66,11 @@ namespace GAGCore
 		//! internal function that does the real listing job
 		bool addListingForDir(const char *realDir, const char *extension=NULL, const bool dirs=false);
 		//! open a file, if it is in writing, do a backup
-		SDL_RWops *openWithbackup(const char *filename, const char *mode);
+		SDL_RWops *openWithbackup(const std::string filename, const char *mode);
 		//! open a file, if it is in writing, do a backup, fopen version
-		FILE *openWithbackupFP(const char *filename, const char *mode);
+		FILE *openWithbackupFP(const std::string filename, const char *mode);
 		//! open a file, if it is in writing, do a backup, std::ofstream version
-		std::ofstream *openWithbackupOFS(const char *filename, std::ofstream::openmode mode);
+		std::ofstream *openWithbackupOFS(const std::string filename, std::ofstream::openmode mode);
 	
 	public:
 		//! FileManager constructor
@@ -85,15 +85,12 @@ namespace GAGCore
 		//! Return a direction in the search list from its index
 		std::string getDir(unsigned index) const { if (index < getDirCount()) return dirList[index]; else return std::string(); }
 		//! Add a new subdir (create it if needed) which will be used to open file in write mode in it
-		void addWriteSubdir(const char *subdir);
-		void addWriteSubdir(const std::string& s) { addWriteSubdir(s.c_str()); }
+		void addWriteSubdir(const std::string subdir);
 	
-		//! Remove a file or a directory in the virtual filesystem, const char *version
-		void remove(const char *filename);
 		//! Remove a file or a directory in the virtual filesystem, std::string version
-		void remove(const std::string &filename) { return remove(filename.c_str()); }
+		void remove(const std::string &filename);
 		//! Returns true if filename is a directory
-		bool isDir(const char *filename);
+		bool isDir(const std::string filename);
 		
 		//! Compress source to dest uzing gzip, returns true on success
 		bool gzip(const std::string &source, const std::string &dest);
@@ -101,42 +98,28 @@ namespace GAGCore
 		bool gunzip(const std::string &source, const std::string &dest);
 	
 		//! Open an output stream backend, use it to construct specific output streams, const char *version
-		StreamBackend *openOutputStreamBackend(const char *filename);
-		//! Open an output stream backend, use it to construct specific output streams, std::string version
-		StreamBackend *openOutputStreamBackend(const std::string &filename) { return openOutputStreamBackend(filename.c_str()); }
+		StreamBackend *openOutputStreamBackend(const std::string filename);
 		
 		//! Open an input stream backend, use it to construct specific input streams, const char *version
-		StreamBackend *openInputStreamBackend(const char *filename);
-		//! Open an input stream backend, use it to construct specific input streams, std::string version
-		StreamBackend *openInputStreamBackend(const std::string &filename) { return openInputStreamBackend(filename.c_str()); }
+		StreamBackend *openInputStreamBackend(const std::string filename);
 		
 		//! Open a compressed output stream backend, use it to construct specific output streams, const char *version
-		StreamBackend *openCompressedOutputStreamBackend(const char *filename);
-		//! Open a compressed output stream backend, use it to construct specific output streams, std::string version
-		StreamBackend *openCompressedOutputStreamBackend(const std::string &filename) { return openCompressedOutputStreamBackend(filename.c_str()); }
+		StreamBackend *openCompressedOutputStreamBackend(const std::string filename);
 		
 		//! Open a compressed input stream backend, use it to construct specific input streams, const char *version
-		StreamBackend *openCompressedInputStreamBackend(const char *filename);
-		//! Open a compressed input stream backend, use it to construct specific input streams, std::string version
-		StreamBackend *openCompressedInputStreamBackend(const std::string &filename) { return openCompressedInputStreamBackend(filename.c_str()); }
+		StreamBackend *openCompressedInputStreamBackend(const std::string filename);
 		
 		
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, const char *version
-		SDL_RWops *open(const char *filename, const char *mode="rb");
-		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, std::string version
-		SDL_RWops *open(const std::string &filename, const char *mode="rb") { return open(filename.c_str(), mode); }
+		SDL_RWops *open(const std::string filename, const char *mode="rb");
 		//! Open a file in the FILE* format
-		FILE *openFP(const char *filename, const char *mode="rb");
+		FILE *openFP(const std::string filename, const char *mode="rb");
 		//! Open a file in the c++ stream format for reading
 		std::ifstream *openIFStream(const std::string &fileName);
 		//! Return the checksum of a file, const char *version
-		Uint32 checksum(const char *filename);
-		//! Return the checksum of a file, std::string version
-		Uint32 checksum(const std::string &filename) { return checksum(filename.c_str()); }
+		Uint32 checksum(const std::string filename);
 		//! Return the modification date of a file, const char *version
-		time_t mtime(const char *filename);
-		//! Return the modification date of a file, std::string version
-		time_t mtime(const std::string &filename) { return mtime(filename.c_str()); }
+		time_t mtime(const std::string filename);
 	
 		// FIXME : the following functions are not thread-safe :
 		//! must be call before directory listening, return true if success

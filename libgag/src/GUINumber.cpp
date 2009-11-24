@@ -39,7 +39,7 @@ namespace GAGGUI
 		x = y = w = h = m = nth = 0;
 	}
 	
-	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font)
+	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font)
 	{
 		assert(font);
 		this->font = font;
@@ -56,7 +56,7 @@ namespace GAGGUI
 		nth=0;
 	}
 	
-	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font, const std::string &tooltip, const std::string &tooltipFont)
+	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font, const std::string &tooltip, const std::string &tooltipFont)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
 		assert(font);

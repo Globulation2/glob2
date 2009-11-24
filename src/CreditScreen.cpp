@@ -55,7 +55,7 @@ protected:
 	GAGCore::Font *fontPtr;
 
 public:
-	ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *filename);
+	ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string filename);
 	virtual ~ScrollingText() { }
 	virtual void internalInit(void);
 	virtual void paint(void);
@@ -68,7 +68,7 @@ public:
 ////////////////////////////////////////////////
 
 
-ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *filename)
+ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string filename)
 :RectangularWidget()
 {
 	this->x = x;
