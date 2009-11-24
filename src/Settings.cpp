@@ -84,7 +84,7 @@ Settings::Settings()
 		var = atoi(parsed[#var].c_str()); \
 }
 
-void Settings::load(const char *filename)
+void Settings::load(const std::string filename)
 {
 	std::map<std::string, std::string> parsed;
 
@@ -158,7 +158,7 @@ void Settings::load(const char *filename)
 	}
 }
 
-void Settings::save(const char *filename)
+void Settings::save(const std::string filename)
 {
 	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
 //	std::fstream f(filename);

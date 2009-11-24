@@ -252,7 +252,7 @@ int Engine::run(void)
 	{
 		// look for all available musics
 		globalContainer->fileManager->initDirectoryListing("data/zik/", NULL, true);
-		const char *fileName;
+		const std::string filename;
 		std::vector<std::string> musicDirs;
 		while ((fileName = globalContainer->fileManager->getNextDirectoryEntry()) != 0) 
 		{

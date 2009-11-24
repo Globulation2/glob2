@@ -88,14 +88,14 @@ namespace GAGGUI
 		}
 	}
 	
-	unsigned getNextUTF8Char(const char *text, unsigned pos)
+	unsigned getNextUTF8Char(const std::string text, unsigned pos)
 	{
 		unsigned next=pos+getNextUTF8Char(text[pos]);
-		assert(next<=strlen(text));
+		assert(next<=text.length());
 		return next;
 	}
 	
-	unsigned getPrevUTF8Char(const char *text, unsigned pos)
+	unsigned getPrevUTF8Char(const std::string text, unsigned pos)
 	{
 		// TODO : have a more efficient algo
 		unsigned last=0, i=0;

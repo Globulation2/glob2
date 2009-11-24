@@ -38,7 +38,7 @@ namespace GAGCore
 		init();
 	}
 	
-	TrueTypeFont::TrueTypeFont(const char *filename, unsigned size)
+	TrueTypeFont::TrueTypeFont(const std::string filename, unsigned size)
 	{
 		init();
 		load(filename, size);
@@ -77,7 +77,7 @@ namespace GAGCore
 		}
 	}
 	
-	bool TrueTypeFont::load(const char *filename, unsigned size)
+	bool TrueTypeFont::load(const std::string filename, unsigned size)
 	{
 		SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb");
 		if (fontStream)
@@ -162,7 +162,7 @@ namespace GAGCore
 		return styleStack.top();
 	}
 	
-	DrawableSurface *TrueTypeFont::getStringCached(const char *text)
+	DrawableSurface *TrueTypeFont::getStringCached(const std::string text)
 	{
 		assert(text);
 		assert(font);
@@ -221,7 +221,7 @@ namespace GAGCore
 		return s;
 	}
 #ifdef HAVE_FRIBIDI 
-	char *TrueTypeFont::getBIDIString (const char *text)
+	char *TrueTypeFont::getBIDIString (const std::string text)
 	{
 		char		*c_str = (char*) text;
 		int		len = strlen(c_str);
@@ -250,7 +250,7 @@ namespace GAGCore
 		}
 	}
 	
-	void TrueTypeFont::drawString(DrawableSurface *surface, int x, int y, int w, const char *text, Uint8 alpha)
+	void TrueTypeFont::drawString(DrawableSurface *surface, int x, int y, int w, const std::string text, Uint8 alpha)
 	{
 		// get
 		DrawableSurface *s = getStringCached(text);
@@ -275,7 +275,7 @@ namespace GAGCore
 		cleanupCache();
 	}
 	
-	void TrueTypeFont::drawString(DrawableSurface *surface, float x, float y, float w, const char *text, Uint8 alpha)
+	void TrueTypeFont::drawString(DrawableSurface *surface, float x, float y, float w, const std::string text, Uint8 alpha)
 	{
 		// get
 		DrawableSurface *s = getStringCached(text);

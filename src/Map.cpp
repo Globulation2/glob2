@@ -5228,7 +5228,7 @@ bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 	}
 }
 
-void Map::dumpGradient(Uint8 *gradient, const char *filename)
+void Map::dumpGradient(Uint8 *gradient, const std::string filename)
 {
 	FILE *fp = globalContainer->fileManager->openFP(filename, "wb");
 	if (fp)

@@ -1113,7 +1113,7 @@ MapEdit::~MapEdit()
 }
 
 
-bool MapEdit::load(const char *filename)
+bool MapEdit::load(const std::string filename)
 {
 	assert(filename);
 
@@ -1151,13 +1151,13 @@ bool MapEdit::load(const char *filename)
 
 
 
-bool MapEdit::save(const char *filename, const char *name)
+bool MapEdit::save(const std::string filename, const std::string name)
 {
 	FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
 	dialog.execute();
 
 	assert(filename);
-	assert(name);
+	assert(name.lenth()>=0);
 
 	hasMapBeenModified = false;
 

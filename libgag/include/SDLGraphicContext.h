@@ -146,8 +146,8 @@ namespace GAGCore
 		
 	protected:
 		friend class DrawableSurface;
-		virtual void drawString(DrawableSurface *Surface, int x, int y, int w, const char *text, Uint8 alpha) = 0;
-		virtual void drawString(DrawableSurface *Surface, float x, float y, float w, const char *text, Uint8 alpha) = 0;
+		virtual void drawString(DrawableSurface *Surface, int x, int y, int w, const std::string text, Uint8 alpha) = 0;
+		virtual void drawString(DrawableSurface *Surface, float x, float y, float w, const std::string text, Uint8 alpha) = 0;
 	};
 	
 	//! A surface on which we can draw
@@ -204,7 +204,7 @@ namespace GAGCore
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void) { flushTextPictures(); }
-		virtual bool loadImage(const char *name);
+		virtual bool loadImage(const std::string name);
 		virtual bool loadImage(const std::string &name);
 		virtual void shiftHSV(float hue, float sat, float lum);
 		
@@ -338,7 +338,7 @@ namespace GAGCore
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);
 		//! This function does not work for GraphicContext
-		virtual bool loadImage(const char *name) { return false; }
+		virtual bool loadImage(const std::string name) { return false; }
 		//! This function does not work for GraphicContext
 		virtual bool loadImage(const std::string &name) { return false; }
 		//! This function does not work for GraphicContext
@@ -399,7 +399,7 @@ namespace GAGCore
 		virtual bool getNextVideoMode(int *w, int *h);
 		
 		//! Save a bmp of the screen to a file, bypass virtual filesystem
-		virtual void printScreen(const char *filename);
+		virtual void printScreen(const std::string filename);
 		
 		//! Return the option flags
 		Uint32 getOptionFlags(void) { return optionFlags; }
@@ -440,7 +440,7 @@ namespace GAGCore
 		virtual ~Sprite();
 		
 		//! Load a sprite from the file, return true if any frame have been loaded
-		bool load(const char *filename);
+		bool load(const std::string filename);
 	
 		//! Set the (r,g,b) color to a sprite's base color
 		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor = Color(r, g, b); }

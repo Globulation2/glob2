@@ -32,12 +32,12 @@ namespace GAGGUI
 	class MessageBoxScreen:public OverlayScreen
 	{
 	public:
-		MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3]);
+		MessageBoxScreen(GraphicContext *parentCtx, const std::string font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3]);
 		virtual ~MessageBoxScreen() { }
 		virtual void onAction(Widget *source, Action action, int par1, int par2);
 	};
 	
-	MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
+	MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const std::string font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
 	:OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 110)
 	{
 		addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, font, title));
@@ -61,7 +61,7 @@ namespace GAGGUI
 			endValue=par1;
 	}
 	
-	int MessageBox(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2, const char *caption3)
+	int MessageBox(GraphicContext *parentCtx, const std::string font, MessageBoxType type, const char *title, const char *caption1, const char *caption2, const char *caption3)
 	{
 		// for passing captions to class
 		const char *captionArray[3]={

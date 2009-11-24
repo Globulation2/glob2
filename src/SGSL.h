@@ -121,7 +121,7 @@ struct SGSLToken
 	struct TokenSymbolLookupTable
 	{
 		TokenType type;
-		const char *name;
+		const std::string name;
 	};
 
 	int value;
@@ -137,7 +137,7 @@ struct SGSLToken
 	static TokenSymbolLookupTable table[];
 
 	//! Returns the type of a given name (parsing phase)
-	static TokenType getTypeByName(const char *name);
+	static TokenType getTypeByName(const std::string name);
 
 	//! Returns the name a of given type (debug & script recreation phase)
 	static const char *getNameByType(TokenType type);
@@ -228,7 +228,7 @@ class FileAquisition: public Aquisition
 public:
 	FileAquisition(const Functions& functions) : Aquisition(functions) { fp=NULL; }
 	virtual ~FileAquisition() { if (fp) fclose(fp); }
-	bool open(const char *filename);
+	bool open(const std::string filename);
 
 	virtual int getChar(void) { return ::fgetc(fp); }
 	virtual int ungetChar(char c) { return ::ungetc(c, fp); }
@@ -243,7 +243,7 @@ class StringAquisition: public Aquisition
 public:
 	StringAquisition(const Functions& functions);
 	virtual ~StringAquisition();
-	void open(const char *text);
+	void open(const std::string text);
 
 	virtual int getChar(void);
 	virtual int ungetChar(char c);
@@ -321,7 +321,7 @@ public:
 public:
 	ErrorReport compileScript(Game *game, const char *script);
 	ErrorReport compileScript(Game *game);
-	ErrorReport loadScript(const char *filename, Game *game);
+	ErrorReport loadScript(const std::string filename, Game *game);
 
 	//! Load a script, read source code
 	bool load(GAGCore::InputStream *stream, Game *game);
