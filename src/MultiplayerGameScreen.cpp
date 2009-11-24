@@ -83,7 +83,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		addWidget(isReady);
 	}
 
-	const char * cancelText;
+	std::string cancelText;
 	if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 	{
 		cancelText = Toolkit::getStringTable()->getString("[Cancel]");

@@ -74,11 +74,11 @@ namespace GAGCore
 		virtual ~Font() { }
 	
 		// width and height
-		virtual int getStringWidth(const char *string) const = 0;
-		virtual int getStringWidth(const char *string, int len) const;
+		virtual int getStringWidth(const std::string string) const = 0;
+		virtual int getStringWidth(const std::string string, int len) const;
 		virtual int getStringWidth(const int i) const;
-		virtual int getStringHeight(const char *string) const = 0;
-		virtual int getStringHeight(const char *string, int len) const;
+		virtual int getStringHeight(const std::string string) const = 0;
+		virtual int getStringHeight(const std::string string, int len) const;
 		virtual int getStringHeight(const int i) const;
 	
 		// Style and color

@@ -41,7 +41,7 @@ namespace GAGGUI
 	
 		internalInit();
 		assert(fontPtr);
-		assert(text);
+		assert(text.size() >= 0);
 		
 		// If w or h is specified it means that we want the text left/top aligned in a box that is not related to the length of this->text
 		if ((w) || (hAlignFlag==ALIGN_FILL))

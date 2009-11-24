@@ -234,13 +234,13 @@ private:
 	// Drawing support functions
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawXPProgressBar(int x, int y, int act, int max);
-	void drawButton(int x, int y, const char *caption, int r=128, int g=128, int b=128, bool doLanguageLookup=true);
-	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
-	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
-	void drawTextCenter(int x, int y, const char *caption);
+	void drawButton(int x, int y, std::string caption, int r=128, int g=128, int b=128, bool doLanguageLookup=true);
+	void drawBlueButton(int x, int y, std::string caption, bool doLanguageLookup=true);
+	void drawRedButton(int x, int y, std::string caption, bool doLanguageLookup=true);
+	void drawTextCenter(int x, int y, std::string caption);
 	void drawValueAlignedRight(int y, int v);
 	void drawCosts(int ressources[BASIC_COUNT], Font *font);
-	void drawCheckButton(int x, int y, const char* caption, bool isSet);
+	void drawCheckButton(int x, int y, std::string caption, bool isSet);
 	void drawRadioButton(int x, int y, bool isSet);
 
 	void iterateSelection(void);

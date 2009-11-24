@@ -38,7 +38,7 @@ LogFileManager::~LogFileManager()
 			fclose(logFileIt->second);
 }
 
-FILE *LogFileManager::getFile(const std::string filename)
+FILE *LogFileManager::getFile(const std::string fileName)
 {
 	// This is a hack to temporarilly disable log files
 	//

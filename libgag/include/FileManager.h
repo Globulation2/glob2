@@ -79,7 +79,7 @@ namespace GAGCore
 		virtual ~FileManager();
 	
 		//! Add a directory to the search list
-		void addDir(const char *dir);
+		void addDir(const std::string dir);
 		//! Return the number of directory in the search list
 		unsigned getDirCount(void) const { return dirList.size(); }
 		//! Return a direction in the search list from its index
@@ -88,7 +88,7 @@ namespace GAGCore
 		void addWriteSubdir(const std::string subdir);
 	
 		//! Remove a file or a directory in the virtual filesystem, std::string version
-		void remove(const std::string &filename);
+		void remove(const std::string filename);
 		//! Returns true if filename is a directory
 		bool isDir(const std::string filename);
 		
@@ -125,7 +125,7 @@ namespace GAGCore
 		//! must be call before directory listening, return true if success
 		bool initDirectoryListing(const char *virtualDir, const char *extension=NULL, const bool dirs=false);
 		//! get the next name, return NULL if none
-		const char *getNextDirectoryEntry(void);
+		const std::string getNextDirectoryEntry(void);
 	};
 }
 

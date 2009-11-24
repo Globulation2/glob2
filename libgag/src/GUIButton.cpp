@@ -88,7 +88,7 @@ namespace GAGGUI
 	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, Uint16 unicode) :
 		Button(x, y, w, h, hAlign, vAlign, returnCode, unicode)
 	{
-		assert(font);
+		assert(font.size() >= 0);
 		assert(text.size() >= 0);
 		this->font=font;
 		this->text=text;
@@ -98,7 +98,7 @@ namespace GAGGUI
 	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode) :
 		Button(x, y, w, h, hAlign, vAlign, returnCode, tooltip, tooltipFont, unicode)
 	{
-		assert(font);
+		assert(font.size()>=0);
 		assert(text.size() >= 0);
 		this->font=font;
 		this->text=text;
@@ -131,7 +131,7 @@ namespace GAGGUI
 	
 	void TextButton::setText(const std::string text)
 	{
-		assert(text);
+		assert(text.size() >= 0);
 		this->text=text;
 	}
 	

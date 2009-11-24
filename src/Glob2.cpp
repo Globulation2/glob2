@@ -88,7 +88,7 @@ void Glob2::drawYOGSplashScreen(void)
 	w=globalContainer->gfx->getW();
 	h=globalContainer->gfx->getH();
 	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
-	const std::string text[3];
+	std::string text[3];
 	text[0]=Toolkit::getStringTable()->getString("[connecting to]");
 	text[1]=Toolkit::getStringTable()->getString("[yog]");
 	text[2]=Toolkit::getStringTable()->getString("[please wait]");

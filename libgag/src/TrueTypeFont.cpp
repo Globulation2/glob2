@@ -92,7 +92,7 @@ namespace GAGCore
 		return false;
 	}
 	
-	int TrueTypeFont::getStringWidth(const char *string)
+	int TrueTypeFont::getStringWidth(const std::string string)
 	{
 		DrawableSurface *s = getStringCached(string);
 		int w;
@@ -106,10 +106,10 @@ namespace GAGCore
 		return w;
 	}
 	
-	int TrueTypeFont::getStringHeight(const char *string)
+	int TrueTypeFont::getStringHeight(const std::string string)
 	{
 		int h;
-		if (string)
+		if (string.size() >= 0)
 		{
 			DrawableSurface *s = getStringCached(string);
 			if (s)
@@ -164,7 +164,7 @@ namespace GAGCore
 	
 	DrawableSurface *TrueTypeFont::getStringCached(const std::string text)
 	{
-		assert(text);
+		assert(text.size() >= 0);
 		assert(font);
 		assert(styleStack.size()>0);
 		
@@ -189,7 +189,7 @@ namespace GAGCore
 			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, bidiStr, c);
 			delete []bidiStr;
 #else		
-			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text, c);
+			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text.c_str(), c);
 #endif
 			if (temp == NULL)
 				return NULL;
