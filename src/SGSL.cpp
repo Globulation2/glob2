@@ -104,7 +104,7 @@ SGSLToken::TokenSymbolLookupTable SGSLToken::table[] =
 	{ S_GFXSTATTAB, "GfxStatTab"},
 
 	// NIL must be at the end because it is a stop condition... not very clean
-	{ NIL, NULL },
+	{ NIL, "" },
 };
 
 SGSLToken::TokenType SGSLToken::getTypeByName(const std::string name)
@@ -114,10 +114,12 @@ SGSLToken::TokenType SGSLToken::getTypeByName(const std::string name)
 
 	//std::cout << "Getting token for " << name << std::endl;
 
-	if (name != NULL)
+	if (!name.empty())
 		while (table[i].type != NIL)
 		{
-			if (strcasecmp(name, table[i].name)==0)
+			//TODO: made case sensitive. was that ok??
+			//if (strcasecmp(name, table[i].name)==0)
+			if (name.compare(table[i].name) == 0)
 			{
 				type = table[i].type;
 				break;
@@ -127,13 +129,13 @@ SGSLToken::TokenType SGSLToken::getTypeByName(const std::string name)
 	return type;
 }
 
-const char *SGSLToken::getNameByType(SGSLToken::TokenType type)
+std::string SGSLToken::getNameByType(SGSLToken::TokenType type)
 {
 	int i = 0;
-	const std::string name=NULL;
+	std::string name="";
 
 	if (type != NIL)
-		while (table[i].name != NULL)
+		while (!table[i].name.empty())
 		{
 			if (type == table[i].type)
 			{
@@ -1124,9 +1126,9 @@ void Story::syncStep(GameGUI *gui)
 
 using namespace std;
 
-const char *ErrorReport::getErrorString(void)
+std::string ErrorReport::getErrorString(void)
 {
-	static const char *strings[]={
+	static const std::string strings[]={
 		"No error",
 		"Invalid Value ",
 		"Syntax error",
@@ -1326,9 +1328,9 @@ bool FileAquisition::open(const std::string filename)
 {
 	if (fp != NULL)
 		fclose(fp);
-	if ((fp = fopen(filename,"r")) == NULL)
+	if ((fp = fopen(filename.c_str(),"r")) == NULL)
 	{
-		fprintf(stderr,"SGSL : Can't open file %s\n", filename);
+		fprintf(stderr,"SGSL : Can't open file %s\n", filename.c_str());
 		return false;
 	}
 	return true;
@@ -1350,14 +1352,14 @@ StringAquisition::~StringAquisition()
 
 void StringAquisition::open(const std::string text)
 {
-	assert(text);
+	assert(text.size() >= 0);
 
 	if (buffer)
 		free (buffer);
 
 	size_t len=text.length();
 	buffer=(char *)malloc(len+1);
-	memcpy(buffer, text, len+1);
+	memcpy(buffer, text.c_str(), len+1);
 	pos=0;
 }
 
@@ -1418,7 +1420,10 @@ bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 	ErrorReport er = compileScript(game);
 	if (er.type != ErrorReport::ET_OK)
 	{
-		printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line+1, er.col);
+		std::cout << "SGSL : " << er.getErrorString()
+				<< " at line " << er.line+1
+				<< " on col " << er.col
+				<< std::endl;
 		stream->readLeaveSection();
 		return false;
 	}

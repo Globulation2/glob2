@@ -44,9 +44,9 @@ namespace GAGCore
 		bool load(const std::string filename, unsigned size);
 		
 		//! Get the width of string with shape. Update cache
-		int getStringWidth(const char *string);
+		int getStringWidth(const std::string string);
 		//! Get the height of string with shape. If string is NULL, return base value, else update cache
-		int getStringHeight(const char *string);
+		int getStringHeight(const std::string string);
 		
 		// Style and color
 		virtual void setStyle(Style style);

@@ -72,18 +72,18 @@ namespace GAGGUI
 		// we add the other files
 		if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
 		{
-			const char* fileName;
-			while ((fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())) != NULL)
+			std::string filename;
+			while (!(filename = Toolkit::getFileManager()->getNextDirectoryEntry()).empty())
 			{
-				std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
+				std::string fullFileName = fullDir + DIR_SEPARATOR + filename;
 				if (Toolkit::getFileManager()->isDir(fullFileName.c_str()))
 				{
-					std::string dirName = std::string(fileName) + DIR_SEPARATOR;
+					std::string dirName = std::string(filename) + DIR_SEPARATOR;
 					this->addText(dirName.c_str());
 				}
 				else
 				{
-					std::string listName = this->fileToList(fileName);
+					std::string listName = this->fileToList(filename);
 					if (listName.length())
 						this->addText(listName.c_str());
 				}
@@ -134,7 +134,7 @@ namespace GAGGUI
 		}
 	}
 	
-	std::string FileList::fileToList(const char* fileName) const
+	std::string FileList::fileToList(const std::string fileName) const
 	{
 		// this default behaviour is probably not what you want
 		//std::cout << "FileList::fileToList(\"" << fileName << "\") !" << std::endl;
@@ -144,7 +144,7 @@ namespace GAGGUI
 		return listName;
 	}
 	
-	std::string FileList::listToFile(const char* listName) const
+	std::string FileList::listToFile(const std::string listName) const
 	{
 		// this default behaviour is probably not what you want
 		//std::cout << "FileList::listToFile(\"" << listName << "\") !" << std::endl;
@@ -164,7 +164,7 @@ namespace GAGGUI
 		return fullDir.c_str();
 	}
 	
-	std::string FileList::fullName(const char* fileName) const
+	std::string FileList::fullName(const std::string fileName) const
 	{
 		std::string fullName = fullDir();
 		fullName += DIR_SEPARATOR;

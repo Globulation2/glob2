@@ -55,13 +55,13 @@ namespace GAGGUI
 		virtual ~FileList();
 	
 		//! converts file name to displayed name (default removes .extension)
-		virtual std::string fileToList(const char* fileName) const;
+		virtual std::string fileToList(const std::string fileName) const;
 		//! converts displayed name to file constname (default appends .extension)
-		virtual std::string listToFile(const char* listName) const;
+		virtual std::string listToFile(const std::string listName) const;
 		//! returns the current full directory name (dir/current)
 		std::string fullDir() const;
 		//! returns the full file name (by prepending fullDir()/)
-		std::string fullName(const char* fileName) const;
+		std::string fullName(const std::string fileName) const;
 	
 		//! Sorts the list (puts directories first)
 		virtual void sort(void); 

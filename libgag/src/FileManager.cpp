@@ -145,12 +145,12 @@ namespace GAGCore
 		fileListIndex = -1;
 	}
 	
-	void FileManager::addDir(const char *dir)
+	void FileManager::addDir(const std::string dir)
 	{
 		dirList.push_back(dir);
 	}
 	
-	void FileManager::addWriteSubdir(const char *subdir)
+	void FileManager::addWriteSubdir(const std::string subdir)
 	{
 		for (size_t i = 0; i < dirList.size(); i++)
 		{
@@ -176,9 +176,9 @@ namespace GAGCore
 		{
 			std::string backupName(filename);
 			backupName += '~';
-			rename(filename, backupName.c_str());
+			rename(filename.c_str(), backupName.c_str());
 		}
-		return SDL_RWFromFile(filename, mode);
+		return SDL_RWFromFile(filename.c_str(), mode);
 	}
 	
 	FILE *FileManager::openWithbackupFP(const std::string filename, const char *mode)
@@ -187,9 +187,9 @@ namespace GAGCore
 		{
 			std::string backupName(filename);
 			backupName += '~';
-			rename(filename, backupName.c_str());
+			rename(filename.c_str(), backupName.c_str());
 		}
-		return fopen(filename, mode);
+		return fopen(filename.c_str(), mode);
 	}
 	
 	std::ofstream *FileManager::openWithbackupOFS(const std::string filename, std::ofstream::openmode mode)
@@ -198,9 +198,9 @@ namespace GAGCore
 		{
 			std::string backupName(filename);
 			backupName += '~';
-			rename(filename, backupName.c_str());
+			rename(filename.c_str(), backupName.c_str());
 		}
-		std::ofstream *ofs = new std::ofstream(filename, mode);
+		std::ofstream *ofs = new std::ofstream(filename.c_str(), mode);
 		if (ofs->is_open())
 			return ofs;
 		
@@ -559,12 +559,12 @@ namespace GAGCore
 		return result;
 	}
 	
-	const char *FileManager::getNextDirectoryEntry(void)
+	const std::string FileManager::getNextDirectoryEntry(void)
 	{
 		if ((fileListIndex >= 0) && (fileListIndex < (int)fileList.size()))
 		{
-			return fileList[fileListIndex++].c_str();
+			return fileList[fileListIndex++];
 		}
-		return NULL;
+		return "";
 	}
 }

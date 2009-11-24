@@ -41,7 +41,7 @@ namespace GAGGUI
 	
 	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font)
 	{
-		assert(font);
+		assert(font.size()>=0);
 		this->font = font;
 		this->x=x;
 		this->y=y;
@@ -59,7 +59,7 @@ namespace GAGGUI
 	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font, const std::string &tooltip, const std::string &tooltipFont)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
-		assert(font);
+		assert(font.size()>=0);
 		this->font = font;
 		this->x=x;
 		this->y=y;
@@ -141,7 +141,7 @@ namespace GAGGUI
 	{
 		this->fontPtr=Toolkit::getFont(font.c_str());
 		assert(fontPtr);
-		textHeight=this->fontPtr->getStringHeight((const char *)NULL);
+		textHeight=this->fontPtr->getStringHeight("");
 		assert(textHeight > 0);
 	}
 	

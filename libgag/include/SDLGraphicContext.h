@@ -131,11 +131,11 @@ namespace GAGCore
 		virtual ~Font() { }
 	
 		// width and height
-		virtual int getStringWidth(const char *string) = 0;
-		virtual int getStringWidth(const char *string, int len);
+		virtual int getStringWidth(const std::string string) = 0;
+		virtual int getStringWidth(const std::string string, int len);
 		virtual int getStringWidth(const int i);
-		virtual int getStringHeight(const char *string) = 0;
-		virtual int getStringHeight(const char *string, int len);
+		virtual int getStringHeight(const std::string string) = 0;
+		virtual int getStringHeight(const std::string string, int len);
 		virtual int getStringHeight(const int i);
 	
 		// Style and color
@@ -205,7 +205,6 @@ namespace GAGCore
 		virtual void setClipRect(void);
 		virtual void nextFrame(void) { flushTextPictures(); }
 		virtual bool loadImage(const std::string name);
-		virtual bool loadImage(const std::string &name);
 		virtual void shiftHSV(float hue, float sat, float lum);
 		
 		// accessors

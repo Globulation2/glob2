@@ -816,7 +816,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						else
 						{
 							const std::string name = ((LoadSaveScreen *)gameMenuScreen)->getName();
-							assert(name.lenth()>=0);
+							assert(name.size()>=0);
 							save(stream, name);
 						}
 						delete stream;
@@ -3029,7 +3029,7 @@ void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
 	}
 }
 
-void GameGUI::drawCheckButton(int x, int y, const char* caption, bool isSet)
+void GameGUI::drawCheckButton(int x, int y, std::string caption, bool isSet)
 {
 	globalContainer->gfx->drawRect(x, y, 16, 16, Color::white);
 	if(isSet)
@@ -3204,7 +3204,7 @@ void GameGUI::drawBuildingInfos(void)
 		{
 			if (selBuild->buildingState==Building::ALIVE)
 			{
-				const char *working = Toolkit::getStringTable()->getString("[working]");
+				std::string working = Toolkit::getStringTable()->getString("[working]");
 				const int len = globalContainer->littleFont->getStringWidth(working)+4;
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, working);
@@ -3242,12 +3242,12 @@ void GameGUI::drawBuildingInfos(void)
 				ypos += YOFFSET_B_SEP;
 				
 				int width = 128/3;
-				const char *prioritystr = Toolkit::getStringTable()->getString("[priority]");
+				std::string prioritystr = Toolkit::getStringTable()->getString("[priority]");
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, prioritystr);
 
-				const char *lowstr = Toolkit::getStringTable()->getString("[low priority]");
-				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
-				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
+				std::string lowstr = Toolkit::getStringTable()->getString("[low priority]");
+				std::string medstr = Toolkit::getStringTable()->getString("[medium priority]");
+				std::string highstr = Toolkit::getStringTable()->getString("[high priority]");
 				
 				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+12+4, (selBuild->priorityLocal==-1));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14, ypos+12+2, globalContainer->littleFont, lowstr);
@@ -3268,7 +3268,7 @@ void GameGUI::drawBuildingInfos(void)
 	{
 		if ((selBuild->owner->allies)&(1<<localTeamNo))
 		{
-			const char *range = Toolkit::getStringTable()->getString("[range]");
+			std::string range = Toolkit::getStringTable()->getString("[range]");
 			const int len = globalContainer->littleFont->getStringWidth(range)+4;
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, range);
@@ -4382,7 +4382,7 @@ void GameGUI::drawAll(int team)
 	// if paused, tint the game area
 	if (gamePaused)
 	{
-		const char *s;
+		std::string s;
 		
 		if (globalContainer->replaying && globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
 		{
@@ -4722,12 +4722,12 @@ void GameGUI::save(GAGCore::OutputStream *stream, const std::string name)
 	stream->writeLeaveSection();
 }
 
-void GameGUI::drawButton(int x, int y, const char *caption, int r, int g, int b, bool doLanguageLookup)
+void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)
 {
 	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
 	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, r, g, b);
 
-	const std::string textToDraw;
+	std::string textToDraw;
 	if (doLanguageLookup)
 		textToDraw=Toolkit::getStringTable()->getString(caption);
 	else
@@ -4737,19 +4737,19 @@ void GameGUI::drawButton(int x, int y, const char *caption, int r, int g, int b,
 	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
 }
 
-void GameGUI::drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup)
+void GameGUI::drawBlueButton(int x, int y, std::string caption, bool doLanguageLookup)
 {
 	drawButton(x,y,caption,128,128,192,doLanguageLookup);
 }
 
-void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLookup)
+void GameGUI::drawRedButton(int x, int y, std::string caption, bool doLanguageLookup)
 {
 	drawButton(x,y,caption,192,128,128,doLanguageLookup);
 }
 
-void GameGUI::drawTextCenter(int x, int y, const char *caption)
+void GameGUI::drawTextCenter(int x, int y, std::string caption)
 {
-	const std::string text;
+	std::string text;
 
 	text=Toolkit::getStringTable()->getString(caption);
 	int dec=(RIGHT_MENU_WIDTH-globalContainer->littleFont->getStringWidth(text))>>1;
