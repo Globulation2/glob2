@@ -167,7 +167,7 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1 == OK)
 		{
-			if (fileName.length() > 0)
+			if (fileName.size() > 0)
 				endValue = OK;
 		}
 		else

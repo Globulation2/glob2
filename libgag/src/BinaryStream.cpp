@@ -61,8 +61,8 @@ namespace GAGCore
 	
 	void BinaryOutputStream::writeText(const std::string &v, const std::string name)
 	{
-		writeUint32(v.size(), NULL);
-		write(v.c_str(), v.size(), NULL); 
+		writeUint32(v.size(), "");
+		write(v.c_str(), v.size(), "");
 	}
 	
 	void BinaryOutputStream::enableSHA1()
@@ -100,9 +100,9 @@ namespace GAGCore
 	
 	std::string BinaryInputStream::readText(const std::string name)
 	{
-		size_t len = readUint32(NULL);
+		size_t len = readUint32("");
 		std::valarray<char> buffer(len+1);
-		read(&buffer[0], len, NULL);
+		read(&buffer[0], len, "");
 		buffer[len] = 0;
 		assert(len < 1024*1024);
 		return std::string(&buffer[0]);

@@ -41,7 +41,7 @@ namespace GAGCore
 		//! print levels of tabs
 		void printLevel(void);
 		//! print string to backend
-		void printString(const std::string string);
+		void printString(const std::string &string);
 		//! print a given type using ostringstream
 		template <class T>
 		void print(T v)

@@ -455,7 +455,7 @@ namespace GAGCore
 
 	bool DrawableSurface::loadImage(const std::string name)
 	{
-		if (name)
+		if (name.size()>=0)
 		{
 			SDL_RWops *imageStream;
 			if ((imageStream = Toolkit::getFileManager()->open(name, "rb")) != NULL)
@@ -476,11 +476,6 @@ namespace GAGCore
 			}
 		}
 		return false;
-	}
-
-	bool DrawableSurface::loadImage(const std::string &name)
-	{
-		return loadImage(name.c_str());
 	}
 
 	void DrawableSurface::shiftHSV(float hue, float sat, float lum)
@@ -2219,18 +2214,18 @@ namespace GAGCore
 		return getStringWidth(temp.str().c_str());
 	}
 
-	int Font::getStringWidth(const char *string, int len)
+	int Font::getStringWidth(const std::string string, int len)
 	{
 		std::string temp;
-		temp.append(string, len);
-		return getStringWidth(temp.c_str());
+		temp.append(string.c_str(), len);
+		return getStringWidth(temp);
 	}
 
-	int Font::getStringHeight(const char *string, int len)
+	int Font::getStringHeight(const std::string string, int len)
 	{
 		std::string temp;
-		temp.append(string, len);
-		return getStringHeight(temp.c_str());
+		temp.append(string.c_str(), len);
+		return getStringHeight(temp);
 	}
 
 	int Font::getStringHeight(const int i)

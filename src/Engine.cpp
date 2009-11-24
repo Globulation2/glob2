@@ -252,14 +252,14 @@ int Engine::run(void)
 	{
 		// look for all available musics
 		globalContainer->fileManager->initDirectoryListing("data/zik/", NULL, true);
-		const std::string filename;
+		std::string filename;
 		std::vector<std::string> musicDirs;
-		while ((fileName = globalContainer->fileManager->getNextDirectoryEntry()) != 0) 
+		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
 		{
-			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(fileName)))
+			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(filename)))
 			{
-				std::cerr << "music dir found: " << fileName << std::endl;
-				musicDirs.push_back(fileName);
+				std::cerr << "music dir found: " << filename << std::endl;
+				musicDirs.push_back(filename);
 			}
 		}
 		
@@ -813,8 +813,8 @@ MapHeader Engine::chooseRandomMap()
 	// we add the other files
 	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), "map", false))
 	{
-		const char* fileName;
-		while ((fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())) != NULL)
+		std::string fileName;
+		while (!(fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())).empty())
 		{
 			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
 			maps.push_back(fullFileName);

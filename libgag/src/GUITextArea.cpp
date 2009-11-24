@@ -47,8 +47,8 @@ namespace GAGGUI
 		// TODO : clean this and store text font
 		this->font = Toolkit::getFont(font);
 		assert(this->font);
-		assert(font);
-		charHeight = this->font->getStringHeight((const char *)NULL);
+		assert(font.size()>=0);
+		charHeight = this->font->getStringHeight("");
 		assert(charHeight);
 		areaHeight = (h-8)/charHeight;
 		areaPos=0;
@@ -83,8 +83,8 @@ namespace GAGGUI
 		// TODO : clean this and store text font
 		this->font = Toolkit::getFont(font);
 		assert(this->font);
-		assert(font);
-		charHeight = this->font->getStringHeight((const char *)NULL);
+		assert(font.size()>=0);
+		charHeight = this->font->getStringHeight("");
 		assert(charHeight);
 		areaHeight = (h-8)/charHeight;
 		areaPos=0;

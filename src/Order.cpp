@@ -697,7 +697,7 @@ MessageOrder::MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMino
 	assert(good);
 }
 
-MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const std::string text)
+MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text)
 {
 	length=Utilities::strmlen(text, 256)+9;
 	data=(Uint8 *)malloc(length);

@@ -140,7 +140,7 @@ struct SGSLToken
 	static TokenType getTypeByName(const std::string name);
 
 	//! Returns the name a of given type (debug & script recreation phase)
-	static const char *getNameByType(TokenType type);
+	static std::string getNameByType(TokenType type);
 };
 
 // generic functions
@@ -194,7 +194,7 @@ struct ErrorReport
 	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; pos=0; }
 	ErrorReport(ErrorType et) { type=et; line=0; col=0; pos=0; }
 
-	const char *getErrorString(void);
+	std::string getErrorString(void);
 };
 
 // Text parser, returns tokens
