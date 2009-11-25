@@ -39,9 +39,9 @@ namespace GAGGUI
 		x = y = w = h = m = nth = 0;
 	}
 	
-	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font)
+	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font)
 	{
-		assert(font);
+		assert(font.size());
 		this->font = font;
 		this->x=x;
 		this->y=y;
@@ -56,10 +56,10 @@ namespace GAGGUI
 		nth=0;
 	}
 	
-	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const char *font, const std::string &tooltip, const std::string &tooltipFont)
+	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font, const std::string &tooltip, const std::string &tooltipFont)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
-		assert(font);
+		assert(font.size());
 		this->font = font;
 		this->x=x;
 		this->y=y;
@@ -120,7 +120,7 @@ namespace GAGGUI
 			if (nth>0)
 			{
 				nth--;
-				if (numbers.size()>0)
+				if (numbers.size())
 				{
 					parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
 				}
@@ -141,7 +141,7 @@ namespace GAGGUI
 	{
 		this->fontPtr=Toolkit::getFont(font.c_str());
 		assert(fontPtr);
-		textHeight=this->fontPtr->getStringHeight((const char *)NULL);
+		textHeight=this->fontPtr->getStringHeight("");
 		assert(textHeight > 0);
 	}
 	

@@ -27,7 +27,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	void TextInput::constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, size_t maxLength, bool password)
+	void TextInput::constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, bool activated, size_t maxLength, bool password)
 	{
 		this->x=x;
 		this->y=y;

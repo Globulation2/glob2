@@ -85,21 +85,21 @@ namespace GAGGUI
 	}
 	
 	
-	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode, Uint16 unicode) :
+	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, Uint16 unicode) :
 		Button(x, y, w, h, hAlign, vAlign, returnCode, unicode)
 	{
-		assert(font);
-		assert(text);
+		assert(font.size());
+		assert(text.size());
 		this->font=font;
 		this->text=text;
 		fontPtr=NULL;
 	}
 
-	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode) :
+	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode) :
 		Button(x, y, w, h, hAlign, vAlign, returnCode, tooltip, tooltipFont, unicode)
 	{
-		assert(font);
-		assert(text);
+		assert(font.size());
+		assert(text.size());
 		this->font=font;
 		this->text=text;
 		fontPtr=NULL;
@@ -129,9 +129,9 @@ namespace GAGGUI
 		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, text.c_str());
 	}
 	
-	void TextButton::setText(const char *text)
+	void TextButton::setText(const std::string text)
 	{
-		assert(text);
+		assert(text.size());
 		this->text=text;
 	}
 	
@@ -346,12 +346,12 @@ namespace GAGGUI
 		HighlightableWidget::paint();
 	}
 	
-	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode, Uint16 unicode) :
+	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, Uint16 unicode) :
 		TextButton(x, y, w, h, hAlign, vAlign, font, text, returnCode, unicode)
 	{
 		textIndex = 0;
 	}
-	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode) :
+	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode) :
 		TextButton(x, y, w, h, hAlign, vAlign, font, text, returnCode, tooltip, tooltipFont, unicode)
 	{
 		textIndex = 0;
@@ -396,7 +396,7 @@ namespace GAGGUI
 		}
 	}
 	
-	void MultiTextButton::addText(const char *s)
+	void MultiTextButton::addText(const std::string s)
 	{
 		texts.push_back(s);
 	}
