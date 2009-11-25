@@ -47,7 +47,7 @@ namespace GAGGUI
 		// TODO : clean this and store text font
 		this->font = Toolkit::getFont(font);
 		assert(this->font);
-		assert(font.size()>=0);
+		assert(font.size());
 		charHeight = this->font->getStringHeight("");
 		assert(charHeight);
 		areaHeight = (h-8)/charHeight;
@@ -83,7 +83,7 @@ namespace GAGGUI
 		// TODO : clean this and store text font
 		this->font = Toolkit::getFont(font);
 		assert(this->font);
-		assert(font.size()>=0);
+		assert(font.size());
 		charHeight = this->font->getStringHeight("");
 		assert(charHeight);
 		areaHeight = (h-8)/charHeight;
@@ -419,33 +419,6 @@ namespace GAGGUI
 				parent->onAction(this, TEXT_ACTIVATED, 0, 0);
 			}
 		}
-		/* Junk from older event handling system
-		else if (event->type==SDL_MOUSEBUTTONDOWN)
-		{
-			if ((event->button.x>size.x+size.w+theme->xScroll) &&
-				(event->button.x<size.x+size.w+theme->xScroll+theme->scrollUp->getW()) &&
-				(event->button.y>size.y+theme->y1Scroll) &&
-				(event->button.y<size.y+theme->y1Scroll+theme->scrollUp->getH()))
-			{
-				if (areaPos>0)
-				{
-					areaPos--;
-				}
-				return true;
-			}
-			else if ((event->button.x>size.x+size.w+theme->xScroll) &&
-					(event->button.x<size.x+size.w+theme->xScroll+theme->scrollUp->getW()) &&
-					(event->button.y>size.y+size.h+theme->y2Scroll) &&
-					(event->button.y<size.y+size.h+theme->y2Scroll+theme->scrollUp->getH()))
-			{
-				if (areaPos<lines.size()-areaHeight-1)
-				{
-					areaPos++;
-				}
-				return true;
-			}
-		}*/
-		//return false;
 	}
 	
 	void TextArea::setCursorPos(unsigned pos)

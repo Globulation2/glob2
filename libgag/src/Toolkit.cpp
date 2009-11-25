@@ -90,7 +90,7 @@ namespace GAGCore
 		#ifndef YOG_SERVER_ONLY
 	Sprite *Toolkit::getSprite(const std::string name)
 	{
-		assert(name.size()>=0);
+		assert(name.size());
 		if (spriteMap.find(name) == spriteMap.end())
 		{
 			Sprite *sprite = new Sprite();
@@ -110,7 +110,7 @@ namespace GAGCore
 	
 	void Toolkit::releaseSprite(const std::string name)
 	{
-		assert(name.size()>=0);
+		assert(name.size());
 		SpriteMap::iterator it = spriteMap.find(name);
 		assert(it!=spriteMap.end());
 		delete (*it).second;
@@ -119,8 +119,8 @@ namespace GAGCore
 	
 	void Toolkit::loadFont(const std::string filename, unsigned size, const std::string name)
 	{
-		assert(filename.size()>=0);
-		assert(name.size()>=0);
+		assert(filename.size());
+		assert(name.size());
 		TrueTypeFont *ttf = new TrueTypeFont();
 		if (ttf->load(filename, size))
 		{
@@ -135,7 +135,7 @@ namespace GAGCore
 	
 	Font *Toolkit::getFont(const std::string name)
 	{
-		assert(name.size()>=0);
+		assert(name.size());
 		if (fontMap.find(name) == fontMap.end())
 		{
 			std::cerr << "GAG : Font " << name << " does not exists" << std::endl;
@@ -147,7 +147,7 @@ namespace GAGCore
 	
 	void Toolkit::releaseFont(const std::string name)
 	{
-		assert(name.size()>=0);
+		assert(name.size());
 		FontMap::iterator it = fontMap.find(name);
 		assert(it!=fontMap.end());
 		delete (*it).second;

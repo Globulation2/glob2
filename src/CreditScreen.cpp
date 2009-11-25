@@ -82,8 +82,8 @@ ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	imgid = 0;
 	imgid0 = 88;
 	
-	assert(font.size()>=0);
-	assert(filename.size()>=0);
+	assert(font.size());
+	assert(filename.size());
 	this->font = font;
 	this->filename = filename;
 	fontPtr = NULL;

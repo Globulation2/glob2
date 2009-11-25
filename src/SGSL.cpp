@@ -1352,7 +1352,7 @@ StringAquisition::~StringAquisition()
 
 void StringAquisition::open(const std::string text)
 {
-	assert(text.size() >= 0);
+	assert(text.size());
 
 	if (buffer)
 		free (buffer);

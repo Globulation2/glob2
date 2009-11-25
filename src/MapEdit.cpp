@@ -1115,7 +1115,7 @@ MapEdit::~MapEdit()
 
 bool MapEdit::load(const std::string filename)
 {
-	assert(filename.size()>=0);
+	assert(filename.size());
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
 	if (stream->isEndOfStream())
@@ -1156,8 +1156,8 @@ bool MapEdit::save(const std::string filename, const std::string name)
 	FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
 	dialog.execute();
 
-	assert(filename.size()>=0);
-	assert(name.size()>=0);
+	assert(filename.size());
+	assert(name.size());
 
 	hasMapBeenModified = false;
 

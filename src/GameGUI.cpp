@@ -816,7 +816,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						else
 						{
 							const std::string name = ((LoadSaveScreen *)gameMenuScreen)->getName();
-							assert(name.size()>=0);
+							assert(name.size());
 							save(stream, name);
 						}
 						delete stream;
