@@ -52,7 +52,7 @@ namespace GAGCore
 	}
 	
 	#ifndef YOG_SERVER_ONLY
-	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags, const char *title, const char *icon)
+	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags, const std::string title, const std::string icon)
 	{
 		gc = new GraphicContext(w, h, flags, title, icon);
 		return gc;

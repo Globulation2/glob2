@@ -46,7 +46,7 @@ namespace GAGCore
 		
 		#ifndef YOG_SERVER_ONLY
 		//! Initialize the graphic part
-		static GraphicContext *initGraphic(int w, int h, unsigned int flags, const char *title = NULL, const char *icon = NULL);
+		static GraphicContext *initGraphic(int w, int h, unsigned int flags, const std::string title = "", const std::string icon = "");
 		
 		
 		static Sprite *getSprite(const std::string name);

@@ -396,7 +396,7 @@ namespace GAGGUI
 		}
 	}
 	
-	void MultiTextButton::addText(const char *s)
+	void MultiTextButton::addText(const std::string s)
 	{
 		texts.push_back(s);
 	}

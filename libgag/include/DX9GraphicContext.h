@@ -166,8 +166,8 @@ namespace GAGCore
 		virtual void drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 		virtual void drawCircle(int x, int y, int ray, Uint8 r, Uint8 g, Uint8 b, Uint8 a=ALPHA_OPAQUE);
 		virtual void drawString(int x, int y, Font *font, int i);
-		virtual void drawString(int x, int y, Font *font, const char *msg);
-		virtual void drawString(int x, int y, int w, Font *font, const char *msg);
+		virtual void drawString(int x, int y, Font *font, std::string msg);
+		virtual void drawString(int x, int y, int w, Font *font, std::string msg);
 		virtual void drawSurface(int x, int y, DrawableSurface *surface);
 		virtual void pushFontStyle(Font *font, Font::Style style);
 		virtual void popFontStyle(Font *font);
@@ -203,7 +203,7 @@ namespace GAGCore
 		//! this must be called before any Drawable Surface method.
 		virtual bool setRes(int w, int h, int depth=32, Uint32 flags=DEFAULT, Uint32 type=GC_SDL);
 		virtual void setMinRes(int w=0, int h=0);
-		virtual void setCaption(const char *title, const char *icon) { SetWindowText(hWnd,title);  } // TODO: Ignore icon
+		virtual void setCaption(const std::string title, const std::string icon) { SetWindowText(hWnd,title);  } // TODO: Ignore icon
 		virtual void beginVideoModeListing(void);
 		virtual bool getNextVideoMode(int *w, int *h);
 			

@@ -251,7 +251,7 @@ int Engine::run(void)
 	else
 	{
 		// look for all available musics
-		globalContainer->fileManager->initDirectoryListing("data/zik/", NULL, true);
+		globalContainer->fileManager->initDirectoryListing("data/zik/", "", true);
 		std::string filename;
 		std::vector<std::string> musicDirs;
 		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
