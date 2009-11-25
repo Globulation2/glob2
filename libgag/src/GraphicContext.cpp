@@ -253,14 +253,6 @@ namespace GAGCore
 	}
 
 	// Drawable surface
-	DrawableSurface::DrawableSurface(const char *imageFileName)
-	{
-		sdlsurface = NULL;
-		if (!loadImage(imageFileName))
-			setRes(0, 0);
-		allocateTexture();
-	}
-
 	DrawableSurface::DrawableSurface(const std::string &imageFileName)
 	{
 		sdlsurface = NULL;
@@ -1282,7 +1274,7 @@ namespace GAGCore
 			drawSurface(x, y, w, h, sprite->getRotatedSurface(index), alpha);
 	}
 
-	void DrawableSurface::drawString(int x, int y, Font *font, const char *msg, int w, Uint8 alpha)
+	void DrawableSurface::drawString(int x, int y, Font *font, const std::string &msg, int w, Uint8 alpha)
 	{
 		std::string output(msg);
 		std::string::size_type pos = output.find('\n', 0);
@@ -1293,7 +1285,7 @@ namespace GAGCore
 		if(pos != std::string::npos)
 			output = output.substr(0, pos);
 
-		font->drawString(this, x, y, w, output.c_str(), alpha);
+		font->drawString(this, x, y, w, output, alpha);
 
 		///////////// The following code is for translation textshots ////////////
 		if(!translationPicturesDirectory.empty())
@@ -1314,7 +1306,7 @@ namespace GAGCore
 		}
 	}
 
-	void DrawableSurface::drawString(float x, float y, Font *font, const char *msg, float w, Uint8 alpha)
+	void DrawableSurface::drawString(float x, float y, Font *font, const std::string &msg, float w, Uint8 alpha)
 	{
 		std::string output(msg);
 		std::string::size_type pos = output.find('\n', 0);
@@ -1342,18 +1334,8 @@ namespace GAGCore
 				}
 			}
 		}
-		font->drawString(this, x, y, w, output.c_str(), alpha);
+		font->drawString(this, x, y, w, output, alpha);
 
-	}
-
-	void DrawableSurface::drawString(int x, int y, Font *font, const std::string &msg, int w, Uint8 alpha)
-	{
-		drawString(x, y, font, msg.c_str(), w, alpha);
-	}
-
-	void DrawableSurface::drawString(float x, float y, Font *font, const std::string &msg, float w, Uint8 alpha)
-	{
-		drawString(x, y, font, msg.c_str(), w, alpha);
 	}
 
 	void DrawableSurface::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
@@ -1970,7 +1952,7 @@ namespace GAGCore
 		return false;
 	}
 
-	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const char *title, const char *icon)
+	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -1996,8 +1978,8 @@ namespace GAGCore
 
 		TTF_Init();
 
-		if (title && icon)
-			SDL_WM_SetCaption(title, icon);
+		if (!title.empty() && !icon.empty())
+			SDL_WM_SetCaption(title.c_str(), icon.c_str());
 
 		///If setting the given resolution fails, default to 800x600
 		if(!setRes(w, h, flags))
@@ -2211,7 +2193,7 @@ namespace GAGCore
 	{
 		std::ostringstream temp;
 		temp << i;
-		return getStringWidth(temp.str().c_str());
+		return getStringWidth(temp.str());
 	}
 
 	int Font::getStringWidth(const std::string string, int len)
@@ -2232,6 +2214,6 @@ namespace GAGCore
 	{
 		std::ostringstream temp;
 		temp << i;
-		return getStringHeight(temp.str().c_str());
+		return getStringHeight(temp.str());
 	}
 }

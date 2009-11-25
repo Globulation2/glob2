@@ -109,7 +109,7 @@ namespace GAGCore
 	int TrueTypeFont::getStringHeight(const std::string string)
 	{
 		int h;
-		if (string.size() >= 0)
+		if (!string.empty())
 		{
 			DrawableSurface *s = getStringCached(string);
 			if (s)

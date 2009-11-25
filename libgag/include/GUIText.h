@@ -52,9 +52,8 @@ namespace GAGGUI
 		
 		virtual void internalInit(void);
 		virtual void paint(void);
-		virtual const char *getText() const { return text.c_str(); }
-		virtual void setText(const char *newText);
-		virtual void setText(const std::string &newText) { setText(newText.c_str()); }
+		virtual const std::string getText() const { return text; }
+		virtual void setText(const std::string newText);
 		virtual void setStyle(GAGCore::Font::Style style);
 		
 	protected:

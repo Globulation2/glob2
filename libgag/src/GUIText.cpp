@@ -99,7 +99,7 @@ namespace GAGGUI
 		fontPtr->popStyle();
 	}
 	
-	void Text::setText(const char *newText)
+	void Text::setText(const std::string newText)
 	{
 		if (this->text != newText)
 		{

@@ -158,7 +158,7 @@ namespace GAGGUI
 	void Widget::displayTooltip()
 	{
 		// We have a tooltip and the mouse is idle on our widget for some ticks (1 SDL tick = 1ms)
-		if(tooltipFontPtr != NULL && tooltip.length() && (currentTick - lastIdleTick) > 1000 && isOnWidget(mx, my))
+		if(tooltipFontPtr != NULL && !tooltip.empty() && (currentTick - lastIdleTick) > 1000 && isOnWidget(mx, my))
 		{
 			DrawableSurface *gfx = parent->getSurface();
 			assert(gfx);

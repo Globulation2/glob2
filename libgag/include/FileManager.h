@@ -64,17 +64,17 @@ namespace GAGCore
 		//! clear the list of file for directory listing
 		void clearFileList(void);
 		//! internal function that does the real listing job
-		bool addListingForDir(const char *realDir, const char *extension=NULL, const bool dirs=false);
+		bool addListingForDir(const std::string realDir, const std::string extension="", const bool dirs=false);
 		//! open a file, if it is in writing, do a backup
-		SDL_RWops *openWithbackup(const std::string filename, const char *mode);
+		SDL_RWops *openWithbackup(const std::string filename, const std::string mode);
 		//! open a file, if it is in writing, do a backup, fopen version
-		FILE *openWithbackupFP(const std::string filename, const char *mode);
+		FILE *openWithbackupFP(const std::string filename, const std::string mode);
 		//! open a file, if it is in writing, do a backup, std::ofstream version
 		std::ofstream *openWithbackupOFS(const std::string filename, std::ofstream::openmode mode);
 	
 	public:
 		//! FileManager constructor
-		FileManager(const char *gameName);
+		FileManager(const std::string gameName);
 		//! FileManager destructor
 		virtual ~FileManager();
 	
@@ -97,33 +97,33 @@ namespace GAGCore
 		//! Uncompress source to dest uzing gzip, returns true on success
 		bool gunzip(const std::string &source, const std::string &dest);
 	
-		//! Open an output stream backend, use it to construct specific output streams, const char *version
+		//! Open an output stream backend, use it to construct specific output streams
 		StreamBackend *openOutputStreamBackend(const std::string filename);
 		
-		//! Open an input stream backend, use it to construct specific input streams, const char *version
+		//! Open an input stream backend, use it to construct specific input streams
 		StreamBackend *openInputStreamBackend(const std::string filename);
 		
-		//! Open a compressed output stream backend, use it to construct specific output streams, const char *version
+		//! Open a compressed output stream backend, use it to construct specific output streams
 		StreamBackend *openCompressedOutputStreamBackend(const std::string filename);
 		
-		//! Open a compressed input stream backend, use it to construct specific input streams, const char *version
+		//! Open a compressed input stream backend, use it to construct specific input streams
 		StreamBackend *openCompressedInputStreamBackend(const std::string filename);
 		
 		
-		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends, const char *version
-		SDL_RWops *open(const std::string filename, const char *mode="rb");
+		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
+		SDL_RWops *open(const std::string filename, const std::string mode="rb");
 		//! Open a file in the FILE* format
-		FILE *openFP(const std::string filename, const char *mode="rb");
+		FILE *openFP(const std::string filename, const std::string mode="rb");
 		//! Open a file in the c++ stream format for reading
 		std::ifstream *openIFStream(const std::string &fileName);
-		//! Return the checksum of a file, const char *version
+		//! Return the checksum of a file
 		Uint32 checksum(const std::string filename);
-		//! Return the modification date of a file, const char *version
+		//! Return the modification date of a file
 		time_t mtime(const std::string filename);
 	
 		// FIXME : the following functions are not thread-safe :
 		//! must be call before directory listening, return true if success
-		bool initDirectoryListing(const char *virtualDir, const char *extension=NULL, const bool dirs=false);
+		bool initDirectoryListing(const std::string virtualDir, const std::string extension="", const bool dirs=false);
 		//! get the next name, return NULL if none
 		const std::string getNextDirectoryEntry(void);
 	};
