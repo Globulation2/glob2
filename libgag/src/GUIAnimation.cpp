@@ -38,7 +38,7 @@ namespace GAGGUI
 		pos=start;
 		durationLeft=duration;
 	
-		assert(!sprite.empty());
+		assert(sprite.length());
 		this->sprite=sprite;
 		archPtr=Toolkit::getSprite(sprite);
 		assert(archPtr);

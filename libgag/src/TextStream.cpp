@@ -37,14 +37,14 @@ namespace GAGCore
 	
 	void TextOutputStream::printString(const std::string &string)
 	{
-		assert(string.size() >= 0);
+		assert(string.size());
 		backend->write(string.c_str(), string.size());
 	}
 	
 	void TextOutputStream::write(const void *data, const size_t size, const std::string name)
 	{
 		printLevel();
-		if (name.size() >= 0);
+		if (name.size());
 		{
 			printString(name);
 			printString(" = ");
@@ -62,7 +62,7 @@ namespace GAGCore
 	void TextOutputStream::writeText(const std::string &v, const std::string name)
 	{
 		printLevel();
-		if (name.size() >= 0);
+		if (name.size());
 		{
 			printString(name);
 			printString(" = \"");
