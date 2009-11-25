@@ -45,7 +45,7 @@ namespace GAGCore
 			delete strings[i];
 	}
 	
-	bool StringTable::loadIncompleteList(const char *filename)
+	bool StringTable::loadIncompleteList(const std::string filename)
 	{
 		// Read index file
 		InputLineStream *inputLineStream= new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
@@ -76,7 +76,7 @@ namespace GAGCore
 		The key file contains all keys, each one on a different line
 		A translation file contains pair of key-value for the given translation
 	*/
-	bool StringTable::load(const char *filename)
+	bool StringTable::load(const std::string filename)
 	{
 		std::string keyFile;
 		std::vector<std::string> translationFiles;
@@ -304,13 +304,8 @@ namespace GAGCore
 			return std::string("ERROR, BAD LANG");
 		}
 	}
-	const char *StringTable::getString(const char *stringname) const
-	{
-		std::string key(stringname);
-		return getString(key).c_str();
-	}
 	
-	bool StringTable::doesStringExist(const char *stringname) const
+	bool StringTable::doesStringExist(const std::string stringname) const
 	{
 		std::string key(stringname);
 		std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
@@ -321,12 +316,11 @@ namespace GAGCore
 		return true;
 	}
 	
-	const char *StringTable::getStringInLang(const char *stringname, int lang) const
+	const std::string StringTable::getStringInLang(const std::string stringname, int lang) const
 	{
 		if ((lang < languageCount) && (lang >= 0))
 		{
-			std::string key(stringname);
-			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
+			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(stringname);
 			if (accessIt == stringAccess.end())
 			{
 				std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, no such key." << std::endl;
@@ -334,7 +328,7 @@ namespace GAGCore
 			}
 			else
 			{
-				return strings[accessIt->second]->data[lang].c_str();
+				return strings[accessIt->second]->data[lang];
 			}
 		}
 		else

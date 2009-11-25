@@ -38,7 +38,7 @@ namespace GAGCore
 		init();
 	}
 	
-	TrueTypeFont::TrueTypeFont(const char *filename, unsigned size)
+	TrueTypeFont::TrueTypeFont(const std::string filename, unsigned size)
 	{
 		init();
 		load(filename, size);
@@ -77,7 +77,7 @@ namespace GAGCore
 		}
 	}
 	
-	bool TrueTypeFont::load(const char *filename, unsigned size)
+	bool TrueTypeFont::load(const std::string filename, unsigned size)
 	{
 		SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb");
 		if (fontStream)
@@ -92,7 +92,7 @@ namespace GAGCore
 		return false;
 	}
 	
-	int TrueTypeFont::getStringWidth(const char *string)
+	int TrueTypeFont::getStringWidth(const std::string string)
 	{
 		DrawableSurface *s = getStringCached(string);
 		int w;
@@ -106,10 +106,10 @@ namespace GAGCore
 		return w;
 	}
 	
-	int TrueTypeFont::getStringHeight(const char *string)
+	int TrueTypeFont::getStringHeight(const std::string string)
 	{
 		int h;
-		if (string)
+		if (!string.empty())
 		{
 			DrawableSurface *s = getStringCached(string);
 			if (s)
@@ -162,9 +162,9 @@ namespace GAGCore
 		return styleStack.top();
 	}
 	
-	DrawableSurface *TrueTypeFont::getStringCached(const char *text)
+	DrawableSurface *TrueTypeFont::getStringCached(const std::string text)
 	{
-		assert(text);
+		assert(text.size());
 		assert(font);
 		assert(styleStack.size()>0);
 		
@@ -189,7 +189,7 @@ namespace GAGCore
 			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, bidiStr, c);
 			delete []bidiStr;
 #else		
-			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text, c);
+			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text.c_str(), c);
 #endif
 			if (temp == NULL)
 				return NULL;
@@ -221,7 +221,7 @@ namespace GAGCore
 		return s;
 	}
 #ifdef HAVE_FRIBIDI 
-	char *TrueTypeFont::getBIDIString (const char *text)
+	char *TrueTypeFont::getBIDIString (const std::string text)
 	{
 		char		*c_str = (char*) text;
 		int		len = strlen(c_str);
@@ -250,7 +250,7 @@ namespace GAGCore
 		}
 	}
 	
-	void TrueTypeFont::drawString(DrawableSurface *surface, int x, int y, int w, const char *text, Uint8 alpha)
+	void TrueTypeFont::drawString(DrawableSurface *surface, int x, int y, int w, const std::string text, Uint8 alpha)
 	{
 		// get
 		DrawableSurface *s = getStringCached(text);
@@ -275,7 +275,7 @@ namespace GAGCore
 		cleanupCache();
 	}
 	
-	void TrueTypeFont::drawString(DrawableSurface *surface, float x, float y, float w, const char *text, Uint8 alpha)
+	void TrueTypeFont::drawString(DrawableSurface *surface, float x, float y, float w, const std::string text, Uint8 alpha)
 	{
 		// get
 		DrawableSurface *s = getStringCached(text);

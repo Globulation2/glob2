@@ -29,7 +29,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	void Text::constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int w, int h)
+	void Text::constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int w, int h)
 	{
 		this->x=x;
 		this->y=y;
@@ -41,7 +41,7 @@ namespace GAGGUI
 	
 		internalInit();
 		assert(fontPtr);
-		assert(text);
+		assert(text.size());
 		
 		// If w or h is specified it means that we want the text left/top aligned in a box that is not related to the length of this->text
 		if ((w) || (hAlignFlag==ALIGN_FILL))
@@ -99,7 +99,7 @@ namespace GAGGUI
 		fontPtr->popStyle();
 	}
 	
-	void Text::setText(const char *newText)
+	void Text::setText(const std::string newText)
 	{
 		if (this->text != newText)
 		{

@@ -392,9 +392,9 @@ public:
 	MapEdit();
 	~MapEdit();
 	///Loads the game given by a particular file name
-	bool load(const char *filename);
+	bool load(const std::string filename);
 	///Saves the game to a particular file name
-	bool save(const char *filename, const char *name);
+	bool save(const std::string filename, const std::string name);
 
 	///Updates the editor after map generation
 	void update();
