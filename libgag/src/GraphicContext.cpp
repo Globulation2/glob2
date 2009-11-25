@@ -447,7 +447,7 @@ namespace GAGCore
 
 	bool DrawableSurface::loadImage(const std::string name)
 	{
-		if (name.size()>=0)
+		if (name.size())
 		{
 			SDL_RWops *imageStream;
 			if ((imageStream = Toolkit::getFileManager()->open(name, "rb")) != NULL)
