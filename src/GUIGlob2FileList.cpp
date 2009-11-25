@@ -21,16 +21,16 @@
 #include "Game.h"
 
 Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
-														 const char *dir,
-														 const char *extension, const bool recurse)
+														 const std::string dir,
+														 const std::string extension, const bool recurse)
 	: FileList(x, y, w, h, hAlign, vAlign, font, dir, extension, recurse)
 {
 	this->generateList();
 }
 
 Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
-														 const char *dir, const std::string& tooltip, const std::string &tooltipFont,
-														 const char *extension, const bool recurse)
+														 const std::string dir, const std::string& tooltip, const std::string &tooltipFont,
+														 const std::string extension, const bool recurse)
 	: FileList(x, y, w, h, hAlign, vAlign, font, dir, tooltip, tooltipFont, extension, recurse)
 {
 	this->generateList();
@@ -39,12 +39,12 @@ Glob2FileList::Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 Glob2FileList::~Glob2FileList()
 {}
 
-std::string Glob2FileList::fileToList(const char* fileName) const
+std::string Glob2FileList::fileToList(const std::string fileName) const
 {
-	return glob2FilenameToName(fullName(fileName).c_str());
+	return glob2FilenameToName(fullName(fileName));
 }
 
-std::string Glob2FileList::listToFile(const char* listName) const
+std::string Glob2FileList::listToFile(const std::string listName) const
 {
-	return glob2NameToFilename(fullDir().c_str(), listName, extension.c_str());
+	return glob2NameToFilename(fullDir(), listName, extension);
 }

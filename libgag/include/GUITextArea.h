@@ -63,8 +63,28 @@ namespace GAGGUI
 	public:
 		TextArea() { font=NULL; }
 		TextArea(const std::string &tooltip, const std::string &tooltipFont) : HighlightableWidget(tooltip, tooltipFont) { font=NULL; }
-		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, bool readOnly=true, const std::string text="", const char *spritelocation=NULL);
-		TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, bool readOnly=true, const std::string text="", const char *spritelocation=NULL);
+		TextArea(int x,
+				int y,
+				int w,
+				int h,
+				Uint32 hAlign,
+				Uint32 vAlign,
+				const std::string font,
+				bool readOnly=true,
+				const std::string text="",
+				const std::string spritelocation="");
+		TextArea(int x,
+				int y,
+				int w,
+				int h,
+				Uint32 hAlign,
+				Uint32 vAlign,
+				const std::string font,
+				const std::string& tooltip,
+				const std::string &tooltipFont,
+				bool readOnly=true,
+				const std::string text="",
+				const std::string spritelocation="");
 		virtual ~TextArea();
 	
 		virtual void internalInit(void);

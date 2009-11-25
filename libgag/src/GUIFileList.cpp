@@ -30,8 +30,8 @@ using namespace GAGCore;
 namespace GAGGUI
 {
 	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
-										const char *dir,
-										const char *extension, const bool recurse)
+										const std::string dir,
+										const std::string extension, const bool recurse)
 		: List(x, y, w, h, hAlign, vAlign, font),
 			dir(dir),
 			extension(extension), recurse(recurse), 
@@ -43,8 +43,8 @@ namespace GAGGUI
 	}
 	
 	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
-										const char *dir, const std::string& tooltip, const std::string &tooltipFont,
-										const char *extension, const bool recurse)
+										const std::string dir, const std::string& tooltip, const std::string &tooltipFont,
+										const std::string extension, const bool recurse)
 		: List(x, y, w, h, hAlign, vAlign, font, tooltip, tooltipFont),
 			dir(dir),
 			extension(extension), recurse(recurse), 
@@ -70,7 +70,7 @@ namespace GAGGUI
 			fullDir += DIR_SEPARATOR + this->current;
 		}
 		// we add the other files
-		if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), this->extension.c_str(), this->recurse))
+		if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), this->extension, this->recurse))
 		{
 			std::string filename;
 			while (!(filename = Toolkit::getFileManager()->getNextDirectoryEntry()).empty())

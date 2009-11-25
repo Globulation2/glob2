@@ -191,7 +191,6 @@ namespace GAGCore
 		// New API
 		
 		// constructors and destructor
-		DrawableSurface(const char *imageFileName);
 		DrawableSurface(const std::string &imageFileName);
 		DrawableSurface(int w, int h);
 		DrawableSurface(const SDL_Surface *sourceSurface);
@@ -248,12 +247,10 @@ namespace GAGCore
 		void drawSprite(int x, int y, int w, int h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		void drawSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
-		void drawString(int x, int y, Font *font, const char *msg, int w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
-		void drawString(float x, float y, Font *font, const char *msg, float w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
-		
 		void drawString(int x, int y, Font *font, const std::string &msg, int w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		void drawString(float x, float y, Font *font, const std::string &msg, float w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
+
 		//! Draw an alpha map of size mapW, mapH using a specific color at coordinantes x, y using cells of size cellW, cellH
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -326,7 +323,7 @@ namespace GAGCore
 		
 	public:
 		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)
-		GraphicContext(int w, int h, Uint32 flags, const char *title = NULL, const char *icon = NULL);
+		GraphicContext(int w, int h, Uint32 flags, const std::string title = "", const std::string icon = "");
 		//! Destructor
 		virtual ~GraphicContext(void);
 		

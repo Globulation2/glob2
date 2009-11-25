@@ -168,8 +168,7 @@ namespace GAGGUI
 		virtual ~MultiTextButton() { }
 	
 		
-		void addText(const char *s);
-		void addText(const std::string &s) { addText(s.c_str()); }
+		void addText(const std::string s);
 		const std::string &getText(void) const { return texts.at(textIndex); }
 		void clearTexts(void);
 		void setIndex(int i);
