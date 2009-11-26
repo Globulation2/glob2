@@ -164,7 +164,6 @@ namespace GAGCore
 	
 	DrawableSurface *TrueTypeFont::getStringCached(const std::string text)
 	{
-		assert(text.size());
 		assert(font);
 		assert(styleStack.size()>0);
 		
