@@ -350,9 +350,7 @@ void Story::hintVisible(GameGUI* gui)
 	}
 }
 
-
-
-void Story::hilightItem(GameGUI* gui)
+void Story::setHighlightItem(GameGUI* gui, bool doSet)
 {
 	std::string n = line[++lineSelector].msg;
 	int t=0;
@@ -404,72 +402,29 @@ void Story::hilightItem(GameGUI* gui)
 	{
 		t=GameGUI::HilightBrushSelector;
 	}
-	
 	if(t!=0)
 	{
-		gui->hilights.insert(t);
+		if(doSet)
+		{
+			gui->hilights.insert(t);
+		}
+		else
+		{
+			gui->hilights.erase(t);
+		}
 	}
+}
+
+void Story::hilightItem(GameGUI* gui)
+{
+	setHighlightItem(gui, true);
 }
 
 
 
 void Story::unhilightItem(GameGUI* gui)
 {
-	std::string n = line[++lineSelector].msg;
-	int t=0;
-	if(n=="main menu icon")
-	{
-		t=GameGUI::HilightMainMenuIcon;
-	}
-	else if(n=="right side panel")
-	{
-		t=GameGUI::HilightRightSidePanel;
-	}
-	else if(n=="under minimap icons")
-	{
-		t=GameGUI::HilightUnderMinimapIcon;
-	}
-	else if(n=="units assigned bar")
-	{
-		t=GameGUI::HilightUnitsAssignedBar;
-	}
-	else if(n=="units ratio bar")
-	{
-		t=GameGUI::HilightRatioBar;
-	}
-	else if(n=="workers working free stat")
-	{
-		t=GameGUI::HilightWorkersWorkingFreeStat;
-	}
-	else if(n=="explorers working free stat")
-	{
-		t=GameGUI::HilightExplorersWorkingFreeStat;
-	}
-	else if(n=="warriors working free stat")
-	{
-		t=GameGUI::HilightWarriorsWorkingFreeStat;
-	}
-	else if(n=="forbidden zone on panel")
-	{
-		t=GameGUI::HilightWorkersWorkingFreeStat;
-	}
-	else if(n=="guard zone on panel")
-	{
-		t=GameGUI::HilightGuardZoneOnPanel;
-	}
-	else if(n=="clearing zone on panel")
-	{
-		t=GameGUI::HilightClearingZoneOnPanel;
-	}
-	else if(n=="brush selector")
-	{
-		t=GameGUI::HilightBrushSelector;
-	}
-	
-	if(t!=0)
-	{
-		gui->hilights.erase(t);
-	}
+	setHighlightItem(gui, false);
 }
 
 
@@ -1352,8 +1307,6 @@ StringAquisition::~StringAquisition()
 
 void StringAquisition::open(const std::string text)
 {
-	assert(text.size());
-
 	if (buffer)
 		free (buffer);
 

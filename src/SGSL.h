@@ -283,6 +283,7 @@ private:
 	void objectiveFailed(GameGUI* gui);
 	void hintHidden(GameGUI* gui);
 	void hintVisible(GameGUI* gui);
+	void setHighlightItem(GameGUI* gui, bool doSet);
 	void hilightItem(GameGUI* gui);
 	void unhilightItem(GameGUI* gui);
 	void hilightUnits(GameGUI* gui);
