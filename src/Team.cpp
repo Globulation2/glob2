@@ -68,6 +68,8 @@ Team::~Team()
 	if (!disableRecursiveDestruction)
 	{
 		clearMem();
+		delete [] myUnits;
+		delete [] myBuildings;
 	}
 }
 
