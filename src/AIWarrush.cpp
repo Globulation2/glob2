@@ -148,16 +148,13 @@ Building *AIWarrush::getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int 
 		if (	(b != NULL)
 				&& (b->type->shortTypeNum == shortTypeNum)
 				&& (b->maxUnitWorking != num_workers)
-// TODO: Leo_ Unfortunately I have no idea what this is meant to do and in order
-// to both kill a warning and not kill too much functionality, AIWarrush is
-// still enabled but with this broken code removed.
-//				&& (b->constructionResultState != Building::NO_CONSTRUCTION
-//					|| (b->type->shortTypeNum==shortTypeNum != IntBuildingType::ATTACK_BUILDING
-//						&& b->type->shortTypeNum==shortTypeNum != IntBuildingType::HEAL_BUILDING
-//						&& b->type->shortTypeNum==shortTypeNum != IntBuildingType::WALKSPEED_BUILDING
-//						&& b->type->shortTypeNum==shortTypeNum != IntBuildingType::SWIMSPEED_BUILDING
-//						&& b->type->shortTypeNum==shortTypeNum != IntBuildingType::SCIENCE_BUILDING))
-				)
+				&& (b->constructionResultState != Building::NO_CONSTRUCTION
+					|| ((b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::ATTACK_BUILDING)
+						&& (b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::HEAL_BUILDING)
+						&& (b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::WALKSPEED_BUILDING)
+						&& (b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::SWIMSPEED_BUILDING)
+						&& (b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::SCIENCE_BUILDING)
+			)))
 		{
 			return b;
 		}

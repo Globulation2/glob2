@@ -454,7 +454,6 @@ void Team::clearMem(void)
 			myUnits[i] = NULL;
 		}
 	}
-	delete [] myUnits;
 	for (int i=0; i<Building::MAX_COUNT; ++i)
 	{
 		if (myBuildings[i])
@@ -463,7 +462,6 @@ void Team::clearMem(void)
 			myBuildings[i] = NULL;
 		}
 	}
-	delete [] myBuildings;
 }
 
 
