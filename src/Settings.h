@@ -29,8 +29,8 @@ class Settings
 {
 public:
 	Settings();
-	void load(const char *filename="preferences.txt");
-	void save(const char *filename="preferences.txt");
+	void load(const std::string filename="preferences.txt");
+	void save(const std::string filename="preferences.txt");
 
 public:
 	std::string username;
