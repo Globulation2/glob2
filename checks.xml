@@ -6,7 +6,7 @@
 	<property name="severity" value="warning"/>
 
 	<module name="StrictDuplicateCode">
-		<property name="min" value="8"/>
+		<property name="min" value="50"/>
 		<!-- due to the gpl-header this produces tons of output. to get
 		valuable output try something like: 
 		scons -c
