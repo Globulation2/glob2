@@ -66,13 +66,15 @@ namespace GAGCore
 	// Color
 	Uint32 Color::pack() const
 	{
-		return (SDL_MapRGB(&_glFormat, r, g, b) & 0x00ffffff) | (a << 24);
+		//return (SDL_MapRGB(&_glFormat, r, g, b) & 0x00ffffff) | (a << 24);
+		return SDL_MapRGBA(&_glFormat, r, g, b, a);
 	}
 
 	void  Color::unpack(const Uint32 packedValue)
 	{
-		SDL_GetRGB(packedValue, &_glFormat, &r, &g, &b);
-		a = packedValue >> 24;
+		//SDL_GetRGB(packedValue, &_glFormat, &r, &g, &b);
+		//a = packedValue >> 24;
+		SDL_GetRGBA(packedValue, &_glFormat, &r, &g, &b, &a);
 	}
 
 	void Color::getHSV(float *hue, float *sat, float *lum)
@@ -2105,6 +2107,12 @@ namespace GAGCore
 			else
 			{
 				memcpy(&_glFormat, _gc->sdlsurface->format, sizeof(SDL_PixelFormat));
+				unsigned alphaPos(24);
+				if ((_glFormat.Rshift == 24) || (_glFormat.Gshift == 24) || (_glFormat.Bshift == 24))
+					alphaPos = 0;
+				_glFormat.Amask = 0xff << alphaPos;
+				_glFormat.Ashift = alphaPos;
+				_glFormat.Aloss = 0;
 			}
 
 			#ifdef HAVE_OPENGL

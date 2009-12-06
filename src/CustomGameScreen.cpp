@@ -19,6 +19,7 @@
 
 #include "CustomGameScreen.h"
 #include "Utilities.h"
+#include "AINames.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "GUIGlob2FileList.h"
@@ -58,7 +59,7 @@ CustomGameScreen::CustomGameScreen() :
 			
 			aiSelector[i]=new MultiTextButton(300, 60+i*25, 100, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[AI]"), 300+i);
 			for (int aii=0; aii<AI::SIZE; aii++)
-				aiSelector[i]->addText(AI::getAIText(aii));
+				aiSelector[i]->addText(AINames::getAIText(aii));
 			addWidget(aiSelector[i]);
 			aiSelector[i]->hide();
 			aiSelector[i]->setIndex(AI::NUMBI);
@@ -214,7 +215,7 @@ void CustomGameScreen::updatePlayers()
 			{
 				AI::ImplementitionID iid=getAiImplementation(i);
 				FormatableString name("%0 %1");
-				name.arg(AI::getAIText(iid)).arg(i-1);
+				name.arg(AINames::getAIText(iid)).arg(i-1);
 				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 				if(teamColor != humanColor)
 					gameHeader.setAllyTeamNumber(teamColor, 2);

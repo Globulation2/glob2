@@ -29,6 +29,7 @@
 #include <BinaryStream.h>
 #include <FormatableString.h>
 
+#include "AINames.h"
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
@@ -842,7 +843,7 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		{
 			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
 			FormatableString name("%0 %1");
-			name.arg(AI::getAIText(iid)).arg(i-1);
+			name.arg(AINames::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 		}
 		gameHeader.setAllyTeamNumber(teamColor, teamColor);
