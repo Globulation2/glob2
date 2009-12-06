@@ -248,11 +248,7 @@ void GameGUI::init()
 	buildingsChoiceName.push_back("school");
 	buildingsChoiceName.push_back("defencetower");
 	buildingsChoiceName.push_back("stonewall");
-
-	//TODO 2009-12-06 giszmo Markets has been disabled as a bug was blocking
-	//the release of beta5 and with that also the replay feature for 3 months
-	//now.
-	// buildingsChoiceName.push_back("market");
+	buildingsChoiceName.push_back("market");
 
 	buildingsChoiceState.resize(buildingsChoiceName.size(), true);
 
