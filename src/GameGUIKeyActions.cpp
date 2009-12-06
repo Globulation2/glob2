@@ -108,8 +108,11 @@ namespace GameGUIKeyActions
 		names[SelectConstructStoneWall] = "select construct stonewall";
 		keys["select construct stonewall"] = SelectConstructStoneWall;
 		
-		names[SelectConstructMarket] = "select construct market";
-		keys["select construct market"] = SelectConstructMarket;
+		//TODO 2009-12-06 giszmo Markets has been disabled as a bug was blocking
+		//the release of beta5 and with that also the replay feature for 3 months
+		//now.
+//		names[SelectConstructMarket] = "select construct market";
+//		keys["select construct market"] = SelectConstructMarket;
 		
 		names[SelectPlaceExplorationFlag] = "select place explorationflag";
 		keys["select place explorationflag"] = SelectPlaceExplorationFlag;
