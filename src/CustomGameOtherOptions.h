@@ -101,10 +101,9 @@ private:
 	///This updates the screens winning conditions from the game header
 	void updateScreenWinningConditions();
 	
-	
-	MapHeader& mapHeader;
 	GameHeader& gameHeader;
 	GameHeader oldGameHeader;
+	MapHeader& mapHeader;
 };
 
 #endif
