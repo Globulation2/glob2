@@ -496,10 +496,10 @@ Load Campaign
 Load game
 [load map]
 Load Map
-[load script]
-Load Script
 [load replay]
 Load Replay
+[load script]
+Load Script
 [load]
 Load
 [loading map list]
@@ -656,12 +656,12 @@ Pause Game
 pause
 [Paused]
 Paused
-[players]
-Players
 [player name]
 Player name
 [player rating %0]
 Player Rating: %0
+[players]
+Players
 [please wait]
 Please wait
 [power]
@@ -1102,10 +1102,6 @@ Version
 View History
 [Voice volume]
 Volume (voice)
-[watch again]
-Watch again
-[watching:]
-Watching:
 [waiting for %0]
 Waiting for %0
 [waiting for key]
@@ -1128,6 +1124,10 @@ Warrior Ratio
 Warrior
 [warriors]
 warriors
+[watch again]
+Watch again
+[watching:]
+Watching:
 [water]
 Water
 [Wheat]

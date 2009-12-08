@@ -202,6 +202,8 @@ Limpa os recursos
 Clearing flag
 [closed]
 Fechado
+[combined vision]
+
 [compile]
 Compilar script
 [compose]
@@ -358,6 +360,8 @@ Mapa de Fertilidade
 Padrões das bandeiras
 [flag settings explanation]
 Raio padrão da bandeira
+[fog of war]
+
 [food]
 Comida
 [forbidden area]
@@ -492,6 +496,8 @@ Carregar campanha
 Carregar jogo
 [load map]
 Carregar mapa
+[load replay]
+
 [load script]
 carregar script
 [load]
@@ -502,6 +508,8 @@ carregando lista de mapas
 ?
 [login]
 Login
+[look around]
+
 [Lost : %0 has more prestige than you]
 Perdeu: %0 tem mais prestígio que você
 [Lost : your colony is dead]
@@ -652,6 +660,8 @@ Pausado
 Nome do jogador
 [player rating %0]
 Avaliação de jogador %0
+[players]
+
 [please wait]
 Por favor espere
 [power]
@@ -676,6 +686,8 @@ Ameixa
 Sair do editor
 [quit the game]
 Sair do jogo
+[quit the replay]
+
 [quit]
 Sair
 [racetrack explanation 2]
@@ -714,12 +726,16 @@ Reparo
 vezes a mesma paisagem
 [Repeat your password :]
 Digite sua senha novamente:
+[replay ended]
+
 [restore default shortcuts]
 Restaurar atalhos de teclado padrões
 [return to editor]
 Retornar ao editor
 [return to game]
 Retornar ao jogo
+[return to replay]
+
 [return]
 enter
 [right meta]
@@ -832,6 +848,10 @@ shift %0
 Enter: manda uma mensagem via chat
 [shortcut explanation v]
 V: pressione para falar
+[show areas]
+
+[show flags]
+
 [show main menu]
 Mostrar menu principal
 [skin]
@@ -984,6 +1004,8 @@ O Mercado está sendo atacado
 A Pista de corrida está pronta
 [the racetrack is under attack]
 A Pista de corrida está sendo atacado
+[the replays]
+
 [the school is finished]
 A Escola está pronta
 [the school is under attack]
@@ -1100,6 +1122,10 @@ Proporção de guerreiros
 Guerreiro
 [warriors]
 guerreiros
+[watch again]
+
+[watching:]
+
 [water]
 Água
 [Wheat]
