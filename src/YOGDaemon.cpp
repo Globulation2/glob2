@@ -52,6 +52,6 @@ int main(int argc, char** argv)
 		exit(-1);
 	}
 	
-	YOGServer server(YOGRequirePassword, YOGMultipleGames);;
+	YOGServer server(YOGRequirePassword, YOGMultipleGames);
 	server.run();
 }

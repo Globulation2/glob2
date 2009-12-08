@@ -208,6 +208,8 @@ Enlève les ressources
 Drapeau de défrichage
 [closed]
 Fermé
+[combined vision]
+
 [compile]
 Compiler le script
 [compose]
@@ -362,6 +364,8 @@ Carte de fertilité
 Défauts des drapeaux
 [flag settings explanation]
 Le rayon par défaut du drapeau
+[fog of war]
+
 [food]
 Nourriture
 [forbidden area]
@@ -496,6 +500,8 @@ Charger la campagne
 Charger jeu
 [load map]
 Charger la carte
+[load replay]
+
 [load script]
 Charger le script
 [load]
@@ -506,6 +512,8 @@ chargement de la liste de carte
 Vestibule
 [login]
 Login
+[look around]
+
 [Lost : %0 has more prestige than you]
 Perdu : %0 a plus de prestige que vous
 [Lost : your colony is dead]
@@ -660,6 +668,8 @@ Pause
 Nom du joueur
 [player rating %0]
 évalution du joueur %0
+[players]
+
 [please wait]
 Attendre SVP
 [power]
@@ -684,6 +694,8 @@ Prune
 Quitter l'éditeur
 [quit the game]
 Quitter le jeu
+[quit the replay]
+
 [quit]
 Quitter
 [racetrack explanation 2]
@@ -724,12 +736,16 @@ Réparer
 Répéter la zone
 [Repeat your password :]
 Retape ton mot de passe
+[replay ended]
+
 [restore default shortcuts]
 Restaurer les raccourcis par défaut
 [return to editor]
 Retourner à l'éditeur
 [return to game]
 Retour au jeu
+[return to replay]
+
 [return]
 Retour
 [right meta]
@@ -842,6 +858,10 @@ shift-%0
 touche enter : envoyer un message
 [shortcut explanation v]
 touche v : presser pour parler
+[show areas]
+
+[show flags]
+
 [show main menu]
 Montrer le menu principal
 [skin]
@@ -994,6 +1014,8 @@ Le joueur %0 a quitté YOG.
 La piste de course est terminée
 [the racetrack is under attack]
 La piste de course est attaquée
+[the replays]
+
 [the school is finished]
 L'école est terminée
 [the school is under attack]
@@ -1102,6 +1124,10 @@ Rapport des guerrières
 Guerrière
 [warriors]
 guerrières
+[watch again]
+
+[watching:]
+
 [water]
 Eau
 [Wheat]

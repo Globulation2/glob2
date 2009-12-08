@@ -249,6 +249,7 @@ void GameGUI::init()
 	buildingsChoiceName.push_back("defencetower");
 	buildingsChoiceName.push_back("stonewall");
 	buildingsChoiceName.push_back("market");
+
 	buildingsChoiceState.resize(buildingsChoiceName.size(), true);
 
 	flagsChoiceName.clear();
