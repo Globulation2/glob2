@@ -140,7 +140,7 @@ SettingsScreen::SettingsScreen()
 	rebootWarning->visible=false;
 
 	// Username part
-	userName=new TextInput(20, 360, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), true, 32);
+	userName=new TextInput(20, 360, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), true, 32);
 	addWidgetToGroup(userName, generalGroup);
 	usernameText=new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[username]"));
 	addWidgetToGroup(usernameText, generalGroup);
@@ -366,7 +366,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1==OK)
 		{
-			globalContainer->setUserName(userName->getText());
+			globalContainer->settings.setUsername(userName->getText());
 			globalContainer->settings.language = Toolkit::getStringTable()->getStringInLang("[language-code]", Toolkit::getStringTable()->getLang());
 			globalContainer->settings.save();
 			mapeditKeyboardManager.saveKeyboardLayout();
