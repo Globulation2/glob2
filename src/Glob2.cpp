@@ -69,7 +69,7 @@
 /*!	\mainpage Globulation 2 Reference documentation
 
 	\section intro Introduction
-	This is the documentation of Globulation 2 free
+	This is the documentation of Globulation 2, a free
 	software game. It covers Glob2 itself and
 	libgag (graphic and widget).
 	\section feedback Feedback
@@ -295,10 +295,7 @@ int Glob2::run(int argc, char *argv[])
 				{
 					CampaignMenuScreen cms("games/Tutorial_Campaign.txt");
 					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms==CampaignMenuScreen::EXIT)
-					{
-					}
-					else if(rc_cms == -1)
+					if(rc_cms == -1)
 					{
 						isRunning = false;
 					}
@@ -308,17 +305,11 @@ int Glob2::run(int argc, char *argv[])
 					CampaignMenuScreen cms("campaigns/Tutorial_Campaign.txt");
 					cms.setNewCampaign();
 					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms==CampaignMenuScreen::EXIT)
-					{
-					}
-					else if(rc_cms == -1)
+					if(rc_cms == -1)
 					{
 						isRunning = false;
 					}
 				}
-				//Engine engine;
-				//if (engine.initCampaign("maps/tutorial.map") == Engine::EE_NO_ERROR)
-					//isRunning = (engine.run() != -1);
 			}
 			break;
 			case MainMenuScreen::LOAD_GAME:
@@ -371,7 +362,9 @@ int Glob2::run(int argc, char *argv[])
 				SettingsScreen settingsScreen;
 				int rc_ss = settingsScreen.execute(globalContainer->gfx, 40);
 				if( rc_ss == -1)
+				{
 					isRunning=false;
+				}
 			}
 			break;
 			case MainMenuScreen::EDITOR:
@@ -412,7 +405,7 @@ int main(int argc, char *argv[])
 {
 #ifdef __APPLE__
 	/* SDL has this annoying "feature" of setting working directory to parent
-	   of bundle during static initalization.  We want to set it back to the
+	   of bundle during static initialization.  We want to set it back to the
 	   main bundle directory so we can find our Resources directory. */
 	CFBundleRef mainBundle = CFBundleGetMainBundle();
 	assert(mainBundle);

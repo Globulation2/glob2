@@ -1,6 +1,7 @@
 /*
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+  for any question or comment contact us at
+  <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,10 +22,7 @@
 #include "Utilities.h"
 #include <Stream.h>
 #include <BinaryStream.h>
-#include <stdlib.h>
 #include <GAG.h>
-#include <map>
-#include <fstream>
 #include "boost/lexical_cast.hpp"
 
 using namespace GAGCore;
@@ -36,11 +34,11 @@ Settings::Settings()
 
 #	ifdef WIN32
 		newUsername=getenv("USERNAME");
-#	else // angel > case of unix and MacIntosh Systems
+#	else // angel > case of Unix and MacIntosh Systems
 		newUsername=getenv("USER");		
 #	endif
 	if (!newUsername)
-		newUsername="player";	
+		newUsername="player";
 	username=newUsername;
 
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
@@ -83,6 +81,12 @@ Settings::Settings()
 	if (parsed.find(#var) != parsed.end()) \
 		var = atoi(parsed[#var].c_str()); \
 }
+
+
+std::string Settings::getUsername() { return username; }
+void Settings::setUsername(std::string s) { username.assign(s, 0, BasePlayer::MAX_NAME_LENGTH); }
+std::string Settings::getPasswd() { return password; }
+void Settings::setPasswd(std::string s) { password = s; }
 
 void Settings::load(const char *filename)
 {
@@ -158,6 +162,11 @@ void Settings::load(const char *filename)
 	}
 }
 
+/**
+ * saves all configuration settings to the specified file
+ *
+ * @param filename where the config settings will be saved
+ */
 void Settings::save(const char *filename)
 {
 	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
@@ -209,7 +218,9 @@ void Settings::save(const char *filename)
 	delete stream;
 }
 
-
+/**
+ * resets the default units assigned to all buildings
+ */
 void Settings::resetDefaultUnitsAssigned()
 {
 	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
@@ -257,7 +268,10 @@ void Settings::resetDefaultUnitsAssigned()
 }
 
 
-
+/**
+ * sets the radii of the clear, explore, and attack flags
+ * back to their default
+ */
 void Settings::resetDefaultFlagRadius()
 {
 	defaultFlagRadius[0] = 10;
