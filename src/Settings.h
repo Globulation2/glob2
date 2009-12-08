@@ -52,10 +52,32 @@ public:
 	bool rememberUnit;
 	bool scrollWheelEnabled;
 
-	// Getters and setters
+	/**
+	 * Returns the username variable in settings.
+	 * @return the username currently set.
+	 */
 	std::string getUsername();
+
+	/**
+	 * Sets the username in the settings object.
+	 * The provided new string is controlled so that is not to long before
+	 * the variable username is set with the new string.
+	 * @param s The new username.
+	 */
 	void setUsername(std::string);
+
+	/**
+	 * Sets the password in the Settings object.
+	 * Provided an arbitrary string the password in the settingsobject is set
+	 * to the given value.
+	 * @param s The new password to use.
+	 */
 	std::string getPasswd();
+
+	/**
+	 * Returns the current password held in the Settings object.
+	 * @return the currently held password.
+	 */
 	void setPasswd(std::string);
 	
 	///Levels are from 0 to 5, where even numbers are building
