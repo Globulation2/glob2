@@ -2141,7 +2141,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above grasslevel is desert
 	float waterLevel, sandLevel, grassLevel, wheatWoodLevel, algaeLevel, stoneLevel;
 	/// to influence the roughnes
-	float smoothingFactor=(float)(descriptor.smooth+4)*3;;
+	float smoothingFactor=(float)(descriptor.smooth+4)*3;
 	/// the proportions requested through the gui can directly be translated into tile counts of the undermap.
 	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
 	/// grass + sand + water + desert as from the gui

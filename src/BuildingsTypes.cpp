@@ -83,7 +83,7 @@ void BuildingsTypes::checkIntegrity(void)
 			int hpSum = bt->hpInit+resSum*bt->hpInc;
 			if (hpSum < bt->hpMax)
 			{
-				std::cerr << "BuildingsTypes::load() : warning : " << bt->type << " : hpSum(" << hpSum <<") < hpMax(" << bt->hpMax << ") with hpInit=" << bt->hpInit << ", hpInc=" << bt->hpInc << ", resSum=" << resSum << ". Make hpInc>=" << (bt->hpMax-bt->hpInit+resSum-1)/resSum << std::endl;;
+				std::cerr << "BuildingsTypes::load() : warning : " << bt->type << " : hpSum(" << hpSum <<") < hpMax(" << bt->hpMax << ") with hpInit=" << bt->hpInit << ", hpInc=" << bt->hpInc << ", resSum=" << resSum << ". Make hpInc>=" << (bt->hpMax-bt->hpInit+resSum-1)/resSum << std::endl;
 			}
 		}
 		
