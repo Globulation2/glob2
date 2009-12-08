@@ -208,6 +208,8 @@ Baliabideak garbitzeko
 Garbiketa bandera
 [closed]
 Itxita
+[combined vision]
+
 [compile]
 Konpilatu script-a
 [compose]
@@ -362,6 +364,8 @@ irla hutsak
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Janaria
 [forbidden area]
@@ -496,6 +500,8 @@ Kargatu kanpaina
 Kargatu partida
 [load map]
 Kargatu mapa
+[load replay]
+
 [load script]
 
 [load]
@@ -506,6 +512,8 @@ Kargatu
 
 [login]
 Saioa hasi
+[look around]
+
 [Lost : %0 has more prestige than you]
 Galdu duzu: %0 zuk baino izen on gehiago du
 [Lost : your colony is dead]
@@ -660,6 +668,8 @@ Geldituta
 Jokalari izena
 [player rating %0]
 
+[players]
+
 [please wait]
 Mesedez itxaron
 [power]
@@ -684,6 +694,8 @@ Arana
 Irten editoretik
 [quit the game]
 Irten partidatik
+[quit the replay]
+
 [quit]
 Irten
 [racetrack explanation 2]
@@ -724,12 +736,16 @@ Konpondu
 aldiz lurzoru bera
 [Repeat your password :]
 
+[replay ended]
+
 [restore default shortcuts]
 Lehenetsitako teklak berezarri
 [return to editor]
 Itzuli editorera
 [return to game]
 Itzuli partidara
+[return to replay]
+
 [return]
 
 [right meta]
@@ -842,6 +858,10 @@ Ezarpenak
 Enter: Txat mezua bidali
 [shortcut explanation v]
 V: mantendu hitzegiteko
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -994,6 +1014,8 @@ Merkatua erasopean dago
 Zirkuitoa bukatuta dago
 [the racetrack is under attack]
 Zirkuitoa erasopean dago
+[the replays]
+
 [the school is finished]
 Eskola bukatuta dago
 [the school is under attack]
@@ -1110,6 +1132,10 @@ Soldadu Ratioa
 Soldadua
 [warriors]
 soldadu
+[watch again]
+
+[watching:]
+
 [water]
 Ura
 [Wheat]

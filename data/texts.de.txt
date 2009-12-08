@@ -202,6 +202,8 @@ Rodet Ressourcen
 Rodungsflagge
 [closed]
 Geschlossen
+[combined vision]
+
 [compile]
 Skript kompilieren
 [compose]
@@ -356,6 +358,8 @@ Karte der Fruchtbarkeit des Bodens
 Flaggen Standards
 [flag settings explanation]
 Standardradius der Flagge
+[fog of war]
+
 [food]
 Nahrung
 [forbidden area]
@@ -490,6 +494,8 @@ Feldzug laden
 Spiel laden
 [load map]
 Karte laden
+[load replay]
+
 [load script]
 Script laden
 [load]
@@ -500,6 +506,8 @@ Lade Kartenauswahl
 Empfang
 [login]
 Login
+[look around]
+
 [Lost : %0 has more prestige than you]
 Verloren: %0 hat mehr Prestige als Du
 [Lost : your colony is dead]
@@ -650,6 +658,8 @@ Pause
 Spielername
 [player rating %0]
 Spielerbewertung: %0
+[players]
+
 [please wait]
 Bitte warten
 [power]
@@ -674,6 +684,8 @@ Pflaumen
 Editor verlassen
 [quit the game]
 Spiel beenden
+[quit the replay]
+
 [quit]
 Beenden
 [racetrack explanation 2]
@@ -714,12 +726,16 @@ Reparieren
 mal die selbe Landschaft
 [Repeat your password :]
 Wiederhole Dein Passwort
+[replay ended]
+
 [restore default shortcuts]
 Standardtastenkürzel wiederherstellen
 [return to editor]
 Zurück zum Editor
 [return to game]
 Zurück zum Spiel
+[return to replay]
+
 [return]
 Enter
 [right meta]
@@ -832,6 +848,10 @@ SHIFT-%0
 Enter: Chatnachricht senden
 [shortcut explanation v]
 V: gedrückt halten, um zu sprechen
+[show areas]
+
+[show flags]
+
 [show main menu]
 Zeige Hauptmenü
 [skin]
@@ -984,6 +1004,8 @@ Spieler %0 hat YOG verlassen.
 Die Rennbahn ist fertig
 [the racetrack is under attack]
 Die Rennbahn wird angegriffen
+[the replays]
+
 [the school is finished]
 Die Schule ist fertig
 [the school is under attack]
@@ -1102,6 +1124,10 @@ Kriegeranteil
 Krieger
 [warriors]
 Krieger
+[watch again]
+
+[watching:]
+
 [water]
 Wasser
 [Wheat]

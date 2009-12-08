@@ -202,6 +202,8 @@ Defrişare de:
 Steag de defrişare
 [closed]
 Închis
+[combined vision]
+
 [compile]
 Compilează scriptul
 [compose]
@@ -356,6 +358,8 @@ exploratori
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Mâncare
 [forbidden area]
@@ -490,6 +494,8 @@ Nivele
 Încarcă joc
 [load map]
 
+[load replay]
+
 [load script]
 
 [load]
@@ -500,6 +506,8 @@ Nivele
 
 [login]
 Login
+[look around]
+
 [Lost : %0 has more prestige than you]
 Pierdut : %0 are un prestigiu mai mare
 [Lost : your colony is dead]
@@ -652,6 +660,8 @@ Pauză
 Numele jucătorului
 [player rating %0]
 
+[players]
+
 [please wait]
 Vă rugăm aşteptaţi
 [power]
@@ -676,6 +686,8 @@ Prună
 
 [quit the game]
 Iesi din joc
+[quit the replay]
+
 [quit]
 Iesi
 [racetrack explanation 2]
@@ -716,12 +728,16 @@ Repară
 
 [Repeat your password :]
 
+[replay ended]
+
 [restore default shortcuts]
 
 [return to editor]
 
 [return to game]
 Înapoi la joc
+[return to replay]
+
 [return]
 
 [right meta]
@@ -833,6 +849,10 @@ Setări
 [shortcut explanation enter]
 
 [shortcut explanation v]
+
+[show areas]
+
+[show flags]
 
 [show main menu]
 
@@ -986,6 +1006,8 @@ Jucătorul %0 a iesit din YOG.
 Pista de raliu este terminată
 [the racetrack is under attack]
 Pista de cursă este atacată
+[the replays]
+
 [the school is finished]
 Şcoala este terminată
 [the school is under attack]
@@ -1102,6 +1124,10 @@ Atenţie, trebuie să reporniţi jocul pentru ca schimbările sa aibă efect
 Luptător
 [warriors]
 luptători
+[watch again]
+
+[watching:]
+
 [water]
 Apă
 [Wheat]
