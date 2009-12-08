@@ -84,6 +84,11 @@ Settings::Settings()
 		var = atoi(parsed[#var].c_str()); \
 }
 
+std::string Settings::getUsername() { return username; }
+void Settings::setUsername(std::string s) { username.assign(s, 0, BasePlayer::MAX_NAME_LENGTH); }
+std::string Settings::getPasswd() { return password; }
+void Settings::setPasswd(std::string s) { password = s; }
+
 void Settings::load(const char *filename)
 {
 	std::map<std::string, std::string> parsed;

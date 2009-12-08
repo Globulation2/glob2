@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "IntBuildingType.h"
+#include "BasePlayer.h" // for the MAX_NAME_LENGTH val.
 
 class Settings
 {
@@ -32,9 +33,13 @@ public:
 	void load(const char *filename="preferences.txt");
 	void save(const char *filename="preferences.txt");
 
-public:
+/* Started to successively move public things to private and 
+ * creating setter and getter functions */
+private:
 	std::string username;
 	std::string password;
+
+public:
 	int screenWidth;
 	int screenHeight;
 	Uint32 screenFlags;
@@ -46,6 +51,12 @@ public:
 	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
+
+	// Getters and setters
+	std::string getUsername();
+	void setUsername(std::string);
+	std::string getPasswd();
+	void setPasswd(std::string);
 	
 	///Levels are from 0 to 5, where even numbers are building
 	///under construction and odd ones are completed buildings.
