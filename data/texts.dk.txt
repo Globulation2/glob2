@@ -256,6 +256,8 @@ Fjern ressourcer
 Rydningsflag
 [closed]
 Lukket
+[combined vision]
+
 [compile]
 Kompilere skript
 [compose]
@@ -416,6 +418,8 @@ Tom ø
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Mad
 [forbidden area]
@@ -556,6 +560,8 @@ Hent Kampagne
 Hent spil
 [load map]
 Hent bane
+[load replay]
+
 [load script]
 
 [load]
@@ -566,6 +572,8 @@ hent
 
 [login]
 Log ind
+[look around]
+
 [Lost : %0 has more prestige than you]
 Tabt : %0 har mere prestige end du har
 [Lost : your colony is dead]
@@ -720,6 +728,8 @@ Pause
 Spillernavn
 [player rating %0]
 
+[players]
+
 [please wait]
 Vent venligst
 [power]
@@ -744,6 +754,8 @@ Prune
 Afslut editor
 [quit the game]
 Afslut spillet
+[quit the replay]
+
 [quit]
 Afslut
 [racetrack explanation 2]
@@ -784,12 +796,16 @@ Reparere
 antal gange det samme landskab
 [Repeat your password :]
 
+[replay ended]
+
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
 Tilbage til editor
 [return to game]
 Vend tilbage til spillet
+[return to replay]
+
 [return]
 
 [right meta]
@@ -902,6 +918,10 @@ Indstillinger
 tast enter : send en besked
 [shortcut explanation v]
 tast v : hold v nede for at snakke
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -1056,6 +1076,8 @@ Market er under angreb
 Raserbanen er fædtig gjort
 [the racetrack is under attack]
 Raserbanen er under angreb
+[the replays]
+
 [the school is finished]
 Skolen er færdig gjort
 [the school is under attack]
@@ -1172,6 +1194,10 @@ Kriger Ratio
 Krigere
 [warriors]
 krigere
+[watch again]
+
+[watching:]
+
 [water]
 Vand
 [Wheat]

@@ -202,6 +202,8 @@ caps lock
 清除令旗 lv0
 [closed]
 已关闭
+[combined vision]
+
 [compile]
 编译
 [compose]
@@ -356,6 +358,8 @@ f9
 默认令旗
 [flag settings explanation]
 令旗设置说明
+[fog of war]
+
 [food]
 食物
 [forbidden area]
@@ -490,6 +494,8 @@ zh-tw
 载入游戏
 [load map]
 载入游戏
+[load replay]
+
 [load script]
 载入脚本
 [load]
@@ -500,6 +506,8 @@ zh-tw
 大厅
 [login]
 登入
+[look around]
+
 [Lost : %0 has more prestige than you]
 败: %0 的声望比你还高
 [Lost : your colony is dead]
@@ -650,6 +658,8 @@ OpenGL
 玩家名称
 [player rating %0]
 玩家评价 %0
+[players]
+
 [please wait]
 请稍等
 [power]
@@ -674,6 +684,8 @@ OpenGL
 离开编辑器
 [quit the game]
 离开游戏
+[quit the replay]
+
 [quit]
 离开
 [racetrack explanation 2]
@@ -712,12 +724,16 @@ OpenGL
 在相同地景的时间
 [Repeat your password :]
 重复你的密码：
+[replay ended]
+
 [restore default shortcuts]
 还原预设键盘快捷键
 [return to editor]
 返回编辑器
 [return to game]
 返回游戏
+[return to replay]
+
 [return]
 返回
 [right meta]
@@ -830,6 +846,10 @@ OpenGL
 Enter: 传送讯息
 [shortcut explanation v]
 V: 持键以传送讯息
+[show areas]
+
+[show flags]
+
 [show main menu]
 显示主菜单
 [skin]
@@ -982,6 +1002,8 @@ tab
 跑道已完成
 [the racetrack is under attack]
 跑道正遭受攻击
+[the replays]
+
 [the school is finished]
 学校已完成
 [the school is under attack]
@@ -1098,6 +1120,10 @@ tab
 士兵
 [warriors]
 士兵
+[watch again]
+
+[watching:]
+
 [water]
 水
 [Wheat]

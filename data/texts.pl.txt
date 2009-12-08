@@ -202,6 +202,8 @@ Oczyszcza obszar
 Flaga oczyszczania
 [closed]
 Zamknięte
+[combined vision]
+
 [compile]
 Kompiluj skrypt
 [compose]
@@ -356,6 +358,8 @@ Mapa Urodzajności
 Flagi
 [flag settings explanation]
 Domyślny promień flagi
+[fog of war]
+
 [food]
 Jedzenie
 [forbidden area]
@@ -490,6 +494,8 @@ Wczytaj Kampanię
 Wczytaj Grę
 [load map]
 Wczytaj Mapę
+[load replay]
+
 [load script]
 Wczytaj Skrypt
 [load]
@@ -500,6 +506,8 @@ Wczytuję Listę Map...
 Korytarz
 [login]
 Login
+[look around]
+
 [Lost : %0 has more prestige than you]
 Przegrałeś: %0 ma większy prestiż od Twojego
 [Lost : your colony is dead]
@@ -652,6 +660,8 @@ Pauza
 Nazwa Gracza
 [player rating %0]
 Gracz, Ocena: %0
+[players]
+
 [please wait]
 Proszę czekaj
 [power]
@@ -676,6 +686,8 @@ Priorytet
 Zakończ edytor
 [quit the game]
 Zakończ grę
+[quit the replay]
+
 [quit]
 Zakończ
 [racetrack explanation 2]
@@ -716,12 +728,16 @@ Napraw
 razy ten sam teren
 [Repeat your password :]
 
+[replay ended]
+
 [restore default shortcuts]
 Przywróć Domyślne Skróty
 [return to editor]
 Powróć do edytora
 [return to game]
 Powrót do gry
+[return to replay]
+
 [return]
 enter
 [right meta]
@@ -834,6 +850,10 @@ shift-%0
 Enter: wyślij wiadomość
 [shortcut explanation v]
 V: przytrzymaj aby rozmawiać
+[show areas]
+
+[show flags]
+
 [show main menu]
 Pokaż Główne Menu
 [skin]
@@ -986,6 +1006,8 @@ Gracz %0 opuścił YOG.
 Zbudowano tor wyścigowy
 [the racetrack is under attack]
 Tor wyścigowy został zaatakowany
+[the replays]
+
 [the school is finished]
 Zbudowano szkołę
 [the school is under attack]
@@ -1102,6 +1124,10 @@ Współczynnik Wojowników
 Wojownik
 [warriors]
 Wojownicy
+[watch again]
+
+[watching:]
+
 [water]
 Woda
 [Wheat]

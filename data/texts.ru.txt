@@ -202,6 +202,8 @@ caps lock
 Флаг очистки
 [closed]
 Закрыто
+[combined vision]
+
 [compile]
 Компил. скрипт
 [compose]
@@ -356,6 +358,8 @@ f9
 Флаги
 [flag settings explanation]
 Радиус флага по умолчанию
+[fog of war]
+
 [food]
 Еда
 [forbidden area]
@@ -492,6 +496,8 @@ left
 Загрузить игру
 [load map]
 Загрузить карту
+[load replay]
+
 [load script]
 Загр. скрипт
 [load]
@@ -502,6 +508,8 @@ left
 Lobby
 [login]
 Вход
+[look around]
+
 [Lost : %0 has more prestige than you]
 Поражение: У %0 больший престиж, чем у Вас.
 [Lost : your colony is dead]
@@ -652,6 +660,8 @@ pause
 Имя игрока
 [player rating %0]
 Рейтинг игрока: %0
+[players]
+
 [please wait]
 Пожалуйста, подождите
 [power]
@@ -676,6 +686,8 @@ print screen
 Выйти из редактора
 [quit the game]
 Выйти из игры
+[quit the replay]
+
 [quit]
 Выход
 [racetrack explanation 2]
@@ -714,12 +726,16 @@ print screen
 количество повторений ландшафта
 [Repeat your password :]
 Повторите пароль:
+[replay ended]
+
 [restore default shortcuts]
 Восстановить значения по умолчанию
 [return to editor]
 Вернуться в редактор
 [return to game]
 Вернуться в игру
+[return to replay]
+
 [return]
 enter
 [right meta]
@@ -832,6 +848,10 @@ shift-%0
 Enter: Отправить сообщение в чате
 [shortcut explanation v]
 V: зажать для речевой связи
+[show areas]
+
+[show flags]
+
 [show main menu]
 Показать главное меню
 [skin]
@@ -984,6 +1004,8 @@ tab
 Стадион построен
 [the racetrack is under attack]
 Стадион атакован
+[the replays]
+
 [the school is finished]
 Школа построена
 [the school is under attack]
@@ -1102,6 +1124,10 @@ up
 Воин
 [warriors]
 воинов
+[watch again]
+
+[watching:]
+
 [water]
 Вода
 [Wheat]
