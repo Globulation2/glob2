@@ -256,6 +256,8 @@ caps lock
 Καθαρισμός Flag
 [closed]
 Κλειστό
+[combined vision]
+
 [compile]
 Μεταγλώττιση script
 [compose]
@@ -418,6 +420,8 @@ f9
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Τροφή
 [forbidden area]
@@ -558,6 +562,8 @@ Anastasios M. Pingios
 Φόρτωση παιχνιδιού
 [load map]
 Φόρτωση χάρτη
+[load replay]
+
 [load script]
 
 [load]
@@ -568,6 +574,8 @@ Anastasios M. Pingios
 
 [login]
 Σύνδεση
+[look around]
+
 [Lost : %0 has more prestige than you]
 Χαμένος: %0 έχει περισσότερο κύρος από εσάς
 [Lost : your colony is dead]
@@ -722,6 +730,8 @@ page up
 Όνομα παίκτη
 [player rating %0]
 
+[players]
+
 [please wait]
 Παρακαλώ περιμένετε
 [power]
@@ -746,6 +756,8 @@ print screen
 Τερματισμός επεξεργαστή
 [quit the game]
 Τερματισμός παιχνιδιού
+[quit the replay]
+
 [quit]
 Τερματισμός
 [racetrack explanation 2]
@@ -786,12 +798,16 @@ print screen
 φορές το ίδιο περιβάλλον
 [Repeat your password :]
 
+[replay ended]
+
 [restore default shortcuts]
 Επαναφορά Προκαθορισμένων Συντομεύσεων Πληκτρολογίου
 [return to editor]
 Επιστροφή στον Επεξεργαστή
 [return to game]
 Επιστροφή στο παιχνίδι
+[return to replay]
+
 [return]
 enter
 [right meta]
@@ -904,6 +920,10 @@ Scroll Wheel Ενεργοποιημένο
 Enter: στείλτε ένα chat μύνημα
 [shortcut explanation v]
 V: κρατήστε για να μιλίσετε
+[show areas]
+
+[show flags]
+
 [show main menu]
 Εμφάνιση Κυρίως Μενού
 [skin]
@@ -1058,6 +1078,8 @@ tab
 Ο ιππόδρομος ολοκληρώθηκε
 [the racetrack is under attack]
 Ο ιππόδρομος δέχετε επίθεση
+[the replays]
+
 [the school is finished]
 Το σχολείο ολοκληρώθηκε
 [the school is under attack]
@@ -1176,6 +1198,10 @@ Tutorial
 Πολεμιστής
 [warriors]
 πολεμιστές
+[watch again]
+
+[watching:]
+
 [water]
 Νερό
 [Wheat]

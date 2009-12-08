@@ -202,6 +202,8 @@ Vokas laboristojn por
 Viŝmarkilo
 [closed]
 Fermita
+[combined vision]
+
 [compile]
 Skripton Kompili
 [compose]
@@ -356,6 +358,8 @@ Karto de Fekundeco
 Antaŭemetaĵoj pri Markiloj
 [flag settings explanation]
 Antaŭemetita radiuso de Markilo
+[fog of war]
+
 [food]
 Nutraĵo
 [forbidden area]
@@ -492,6 +496,8 @@ Niveloj
 Ŝargi Ludon
 [load map]
 Ŝargi Karton
+[load replay]
+
 [load script]
 Ŝargi Skripton
 [load]
@@ -502,6 +508,8 @@ Niveloj
 Atendejo
 [login]
 Eniri
+[look around]
+
 [Lost : %0 has more prestige than you]
 Vi malgajnis: %0a prestiĝo estas pli ol via!
 [Lost : your colony is dead]
@@ -652,6 +660,8 @@ Paŭzita
 Ludantnomo
 [player rating %0]
 Taksigo de Ludanto: %0
+[players]
+
 [please wait]
 Bv. atendi...
 [power]
@@ -676,6 +686,8 @@ Pruno
 Eliri la Redaktilon
 [quit the game]
 Eliri la Ludon
+[quit the replay]
+
 [quit]
 Eliri
 [racetrack explanation 2]
@@ -714,12 +726,16 @@ Rebonigi
 -oble la saman pejzaĝon
 [Repeat your password :]
 Reenigu vian pasvorton:
+[replay ended]
+
 [restore default shortcuts]
 Remeti antaŭemetitajn Taskklavojn
 [return to editor]
 Reveni al Redaktilon
 [return to game]
 Reveni Luden
+[return to replay]
+
 [return]
 enigklavo
 [right meta]
@@ -832,6 +848,10 @@ majuskl-%0
 Uzu enigklavon por babili.
 [shortcut explanation v]
 Tenu na V suben por paroli.
+[show areas]
+
+[show flags]
+
 [show main menu]
 Montri ĉefmenuon
 [skin]
@@ -984,6 +1004,8 @@ La komercejo estas atakata!
 La kuregejo ĵus finiĝis.
 [the racetrack is under attack]
 La kuregejo estas atakata!
+[the replays]
+
 [the school is finished]
 La lernejo ĵus finiĝis.
 [the school is under attack]
@@ -1102,6 +1124,10 @@ Militistprocento
 Militisto
 [warriors]
 militistoj
+[watch again]
+
+[watching:]
+
 [water]
 Akvo
 [Wheat]
