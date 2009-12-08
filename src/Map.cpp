@@ -3460,6 +3460,8 @@ void propagateLocalGradients(Uint8* gradient) {
 										UPDATE_MAX(max,gradient[ypart+xpart]);
 									}
 								}
+								// TODO: checkstyle found very long code duplicaitons here
+								// src/Map.cpp:3463: warning: Found duplicate of 59 lines in src/Map.cpp, starting from line 3,858
 								assert(max);
 								if (max==1)
 									gradient[wy+x]=1;
@@ -5228,7 +5230,7 @@ bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 	}
 }
 
-void Map::dumpGradient(Uint8 *gradient, const char *filename)
+void Map::dumpGradient(Uint8 *gradient, const std::string filename)
 {
 	FILE *fp = globalContainer->fileManager->openFP(filename, "wb");
 	if (fp)

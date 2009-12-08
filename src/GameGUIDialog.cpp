@@ -60,7 +60,7 @@ void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par
 		endValue=par1;
 }
 
-InGameEndOfGameScreen::InGameEndOfGameScreen(const char *title, bool canContinue)
+InGameEndOfGameScreen::InGameEndOfGameScreen(std::string title, bool canContinue)
 :OverlayScreen(globalContainer->gfx, 320, 100 + (canContinue ? 50 : 0) + (globalContainer->replaying ? 50 : 0))
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", title));

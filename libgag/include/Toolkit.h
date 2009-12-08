@@ -46,17 +46,15 @@ namespace GAGCore
 		
 		#ifndef YOG_SERVER_ONLY
 		//! Initialize the graphic part
-		static GraphicContext *initGraphic(int w, int h, unsigned int flags, const char *title = NULL, const char *icon = NULL);
+		static GraphicContext *initGraphic(int w, int h, unsigned int flags, const std::string title = "", const std::string icon = "");
 		
 		
-		static Sprite *getSprite(const char *name);
-		static Sprite *getSprite(const std::string &name);
-		static void releaseSprite(const char *name);
-		static void releaseSprite(const std::string &name);
+		static Sprite *getSprite(const std::string name);
+		static void releaseSprite(const std::string name);
 		
-		static void loadFont(const char *filename, unsigned size, const char *name);
-		static Font *getFont(const char *name);
-		static void releaseFont(const char *name);
+		static void loadFont(const std::string filename, unsigned size, const std::string name);
+		static Font *getFont(const std::string name);
+		static void releaseFont(const std::string name);
 		
 		#endif
 		static FileManager *getFileManager(void) { return fileManager; }

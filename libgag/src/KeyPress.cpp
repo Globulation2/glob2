@@ -234,9 +234,9 @@ std::string KeyPress::getTranslated() const
 	StringTable* table = Toolkit::getStringTable();
 	std::string str;
 	std::string key_s = "[" + key + "]";
-	if(table->doesStringExist(key_s.c_str()))
+	if(table->doesStringExist(key_s))
 	{
-		str=table->getString(key_s.c_str());
+		str=table->getString(key_s);
 	}
 	else
 	{

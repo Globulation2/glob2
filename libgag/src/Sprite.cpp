@@ -40,7 +40,7 @@ namespace GAGCore
 		}
 	}
 	
-	bool Sprite::load(const char *filename)
+	bool Sprite::load(const std::string filename)
 	{
 		SDL_RWops *frameStream;
 		SDL_RWops *rotatedStream;

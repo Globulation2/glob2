@@ -43,25 +43,25 @@ namespace GAGGUI
 		//! Constructor
 		FileList():List() { }
 		//! Constructor, with arguments. x, y, w, h are the positional information. hAlign and vAlign the layouting flags. font the name of the font to use, dir is the initial directory in the CVS, extension is the extension to show, recurse is to allow subfolder entrance
-		FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
-						const char *dir,
-						const char *extension=NULL, const bool recurse=false);
+		FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
+						const std::string dir,
+						const std::string extension="", const bool recurse=false);
 		//!With a tooltip
 		FileList(const std::string& tooltip, const std::string &tooltipFont):List(tooltip, tooltipFont) { }
-		FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font,
-						const char *dir, const std::string& tooltip, const std::string &tooltipFont,
-						const char *extension=NULL, const bool recurse=false);
+		FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
+						const std::string dir, const std::string& tooltip, const std::string &tooltipFont,
+						const std::string extension="", const bool recurse=false);
 		//! Destructor
 		virtual ~FileList();
 	
 		//! converts file name to displayed name (default removes .extension)
-		virtual std::string fileToList(const char* fileName) const;
+		virtual std::string fileToList(const std::string fileName) const;
 		//! converts displayed name to file constname (default appends .extension)
-		virtual std::string listToFile(const char* listName) const;
+		virtual std::string listToFile(const std::string listName) const;
 		//! returns the current full directory name (dir/current)
 		std::string fullDir() const;
 		//! returns the full file name (by prepending fullDir()/)
-		std::string fullName(const char* fileName) const;
+		std::string fullName(const std::string fileName) const;
 	
 		//! Sorts the list (puts directories first)
 		virtual void sort(void); 
