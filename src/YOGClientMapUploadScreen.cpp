@@ -58,7 +58,7 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> 
 	addWidget(mapDate);
 	authorNameText=new Text(20, 60+150,  ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Map Upload: Author Name]"), 180);
 	addWidget(authorNameText);
-	authorName=new TextInput(173, 60+150, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.username, false, 255);
+	authorName=new TextInput(173, 60+150, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 255);
 	addWidget(authorName);
 	
 	//uploadStatus=new Text(248, 60+300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "", 180);

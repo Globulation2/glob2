@@ -75,7 +75,7 @@ GlobalContainer::GlobalContainer(void)
 	
 	// load user preference
 	settings.load();
-	userName = settings.username.c_str();
+	userName = settings.getUsername().c_str();
 	runNoX = false;
 	
 	hostServer = false;
@@ -153,8 +153,8 @@ GlobalContainer::~GlobalContainer(void)
 
 void GlobalContainer::setUserName(const std::string &name)
 {
-	settings.username.assign(name, 0, USERNAME_MAX_LENGTH);
-	userName = settings.username;
+	settings.setUsername(name);
+	userName = settings.getUsername();
 }
 
 void GlobalContainer::pushUserName(const std::string &name)
@@ -164,7 +164,7 @@ void GlobalContainer::pushUserName(const std::string &name)
 
 void GlobalContainer::popUserName()
 {
-	userName = settings.username;
+	userName = settings.getUsername();
 }
 
 void GlobalContainer::parseArgs(int argc, char *argv[])
