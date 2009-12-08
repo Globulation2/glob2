@@ -45,7 +45,7 @@ CustomGameScreen::CustomGameScreen() :
 		addWidget(color[i]);
 		if (i==0)
 		{
-			closedText[i]=new Text(300, 60+i*25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername());
+			closedText[i]=new Text(300, 60+i*25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername());
 			addWidget(closedText[i]);
 			
 			aiSelector[i]=NULL;
@@ -207,7 +207,7 @@ void CustomGameScreen::updatePlayers()
 			int teamColor=getSelectedColor(i);
 			if (i==0)
 			{
-				gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+				gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
 				humanColor = teamColor;
 				gameHeader.setAllyTeamNumber(teamColor, 1);
 			}

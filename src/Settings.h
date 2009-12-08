@@ -21,9 +21,8 @@
 #define __SETTINGS_H
 
 #include "Header.h"
-#include <string>
-#include <map>
 #include "IntBuildingType.h"
+#include "BasePlayer.h" // for the MAX_NAME_LENGTH val.
 
 class Settings
 {
@@ -31,10 +30,24 @@ public:
 	Settings();
 	void load(const char *filename="preferences.txt");
 	void save(const char *filename="preferences.txt");
+	void resetDefaultUnitsAssigned();
+	void resetDefaultFlagRadius();
 
-public:
+	// Getters and setters
+	std::string getUsername();
+	void setUsername(std::string);
+	std::string getPasswd();
+	void setPasswd(std::string);
+
+	/**
+	 * all variables shoudl really be private, we're working on it
+	 * TODO: make all variables private
+	 */
+private:
 	std::string username;
 	std::string password;
+
+public:
 	int screenWidth;
 	int screenHeight;
 	Uint32 screenFlags;
@@ -64,8 +77,7 @@ public:
 	int tempUnit;
 	int tempUnitFuture;
 
-	void resetDefaultUnitsAssigned();
-	void resetDefaultFlagRadius();
+
 };
 
 //Version 1 - Resets default units assigned and keyboard shortcuts
