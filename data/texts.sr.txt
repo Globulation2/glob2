@@ -202,6 +202,8 @@ AIWarrush
 Застава чишћења
 [closed]
 Затворен
+[combined vision]
+
 [compile]
 Преведи скрипт
 [compose]
@@ -356,6 +358,8 @@ AIWarrush
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Храна
 [forbidden area]
@@ -490,6 +494,8 @@ sr
 Учитај игру
 [load map]
 
+[load replay]
+
 [load script]
 
 [load]
@@ -500,6 +506,8 @@ sr
 
 [login]
 Пријава
+[look around]
+
 [Lost : %0 has more prestige than you]
 Пораз : %0 је остварио већи престиж од Вас.
 [Lost : your colony is dead]
@@ -652,6 +660,8 @@ OpenGL
 Име играча
 [player rating %0]
 
+[players]
+
 [please wait]
 Молим сачекајте
 [power]
@@ -676,6 +686,8 @@ OpenGL
 
 [quit the game]
 Напусти игру
+[quit the replay]
+
 [quit]
 Излаз
 [racetrack explanation 2]
@@ -716,12 +728,16 @@ OpenGL
 
 [Repeat your password :]
 
+[replay ended]
+
 [restore default shortcuts]
 
 [return to editor]
 
 [return to game]
 Повратак на игру
+[return to replay]
+
 [return]
 
 [right meta]
@@ -833,6 +849,10 @@ OpenGL
 [shortcut explanation enter]
 
 [shortcut explanation v]
+
+[show areas]
+
+[show flags]
 
 [show main menu]
 
@@ -986,6 +1006,8 @@ OpenGL
 Стадион је завршен
 [the racetrack is under attack]
 Стадион је нападнут
+[the replays]
+
 [the school is finished]
 Школа је завршена
 [the school is under attack]
@@ -1102,6 +1124,10 @@ OpenGL
 Ратник
 [warriors]
 Ратници
+[watch again]
+
+[watching:]
+
 [water]
 Вода
 [Wheat]

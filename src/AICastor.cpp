@@ -64,7 +64,7 @@ void AICastor::Project::init(const char *suffix)
 	
 	//printf("new project(%s)\n", debugName);
 	
-	subPhase=0;;
+	subPhase=0;
 	
 	successWait=0;
 	blocking=true;
