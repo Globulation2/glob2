@@ -120,7 +120,7 @@ std::string CampaignMenuScreen::getMissionName()
 
 void CampaignMenuScreen::setNewCampaign()
 {
-	campaign.setPlayerName(globalContainer->settings.username);
-	playerName->setText(globalContainer->settings.username);
+	campaign.setPlayerName(globalContainer->settings.getUsername());
+	playerName->setText(globalContainer->settings.getUsername());
 }
 
