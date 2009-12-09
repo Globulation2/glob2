@@ -21,10 +21,7 @@
 #include "Utilities.h"
 #include <Stream.h>
 #include <BinaryStream.h>
-#include <stdlib.h>
 #include <GAG.h>
-#include <map>
-#include <fstream>
 #include "boost/lexical_cast.hpp"
 
 using namespace GAGCore;
@@ -36,11 +33,11 @@ Settings::Settings()
 
 #	ifdef WIN32
 		newUsername=getenv("USERNAME");
-#	else // angel > case of unix and MacIntosh Systems
+#	else // angel > case of Unix and MacIntosh Systems
 		newUsername=getenv("USER");		
 #	endif
 	if (!newUsername)
-		newUsername="player";	
+		newUsername="player";
 	username=newUsername;
 
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
@@ -84,7 +81,13 @@ Settings::Settings()
 		var = atoi(parsed[#var].c_str()); \
 }
 
-void Settings::load(const std::string filename)
+
+std::string Settings::getUsername() { return username; }
+void Settings::setUsername(std::string s) { username.assign(s, 0, BasePlayer::MAX_NAME_LENGTH); }
+std::string Settings::getPasswd() { return password; }
+void Settings::setPasswd(std::string s) { password = s; }
+
+void Settings::load(std::string filename)
 {
 	std::map<std::string, std::string> parsed;
 
@@ -158,7 +161,12 @@ void Settings::load(const std::string filename)
 	}
 }
 
-void Settings::save(const std::string filename)
+/**
+ * saves all configuration settings to the specified file
+ *
+ * @param filename where the config settings will be saved
+ */
+void Settings::save(std::string filename)
 {
 	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
 //	std::fstream f(filename);
@@ -209,7 +217,9 @@ void Settings::save(const std::string filename)
 	delete stream;
 }
 
-
+/**
+ * resets the default units assigned to all buildings
+ */
 void Settings::resetDefaultUnitsAssigned()
 {
 	for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
@@ -257,7 +267,10 @@ void Settings::resetDefaultUnitsAssigned()
 }
 
 
-
+/**
+ * sets the radii of the clear, explore, and attack flags
+ * back to their default
+ */
 void Settings::resetDefaultFlagRadius()
 {
 	defaultFlagRadius[0] = 10;

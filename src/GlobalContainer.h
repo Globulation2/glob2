@@ -20,8 +20,6 @@
 #ifndef __GLOBALCONTAINER_H
 #define __GLOBALCONTAINER_H
 
-#include <string>
-
 #include "BuildingsTypes.h"
 #include "Header.h"
 #include "RessourcesTypes.h"
@@ -51,8 +49,6 @@ public:
 private:
 	void updateLoadProgressScreen(int value);
 
-	std::string userName;
-	
 public:
 	GlobalContainer(void);
 	virtual ~GlobalContainer(void);
@@ -60,10 +56,8 @@ public:
 	void parseArgs(int argc, char *argv[]);
 	void load(void);
 
-	void pushUserName(const std::string &name);
-	void popUserName();
-	void setUserName(const std::string &name);
-	const std::string &getUsername(void) { return userName; }
+	//void setUsername(const std::string &name);
+	//const std::string &getUsername(void) { return settings.getUsername(); }
 	const char *getComputerHostName(void);
 
 public:
@@ -122,9 +116,6 @@ public:
 	bool hostServer;
 	bool hostRouter;
 	bool adminRouter;
-	char hostServerMapName[32];
-	char hostServerUserName[32];
-	char hostServerPassWord[32];
 	//! hostname for YOG, can be set by cmd line to override default
 	std::string yogHostName;
 

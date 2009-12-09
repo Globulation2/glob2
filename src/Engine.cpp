@@ -837,7 +837,7 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		int teamColor=(i % numberOfTeams);
 		if (i==0)
 		{
-			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername(), teamColor, BasePlayer::P_LOCAL);
 		}
 		else
 		{

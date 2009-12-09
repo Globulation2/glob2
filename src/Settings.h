@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "IntBuildingType.h"
+#include "BasePlayer.h" // for the MAX_NAME_LENGTH val.
 
 class Settings
 {
@@ -32,9 +33,44 @@ public:
 	void load(const std::string filename="preferences.txt");
 	void save(const std::string filename="preferences.txt");
 
-public:
+	/**
+	 * Returns the username variable in settings.
+	 * @return the username currently set.
+	 */
+	std::string getUsername();
+
+	/**
+	 * Sets the username in the settings object.
+	 * The provided new string is controlled so that is not to long before
+	 * the variable username is set with the new string.
+	 * @param s The new username.
+	 */
+	void setUsername(std::string);
+
+	/**
+	 * Sets the password in the Settings object.
+	 * Provided an arbitrary string the password in the settingsobject is set
+	 * to the given value.
+	 * @param s The new password to use.
+	 */
+	std::string getPasswd();
+
+	/**
+	 * Returns the current password held in the Settings object.
+	 * @return the currently held password.
+	 */
+	void setPasswd(std::string);
+
+
+	/**
+	 * all variables shoudl really be private, we're working on it
+	 * TODO: make all variables private
+	 */
+private:
 	std::string username;
 	std::string password;
+
+public:
 	int screenWidth;
 	int screenHeight;
 	Uint32 screenFlags;
@@ -46,7 +82,9 @@ public:
 	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
+
 	
+
 	///Levels are from 0 to 5, where even numbers are building
 	///under construction and odd ones are completed buildings.
 	int defaultUnitsAssigned[IntBuildingType::NB_BUILDING][6];
