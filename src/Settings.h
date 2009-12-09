@@ -21,8 +21,6 @@
 #define __SETTINGS_H
 
 #include "Header.h"
-#include <string>
-#include <map>
 #include "IntBuildingType.h"
 #include "BasePlayer.h" // for the MAX_NAME_LENGTH val.
 
@@ -32,25 +30,8 @@ public:
 	Settings();
 	void load(const char *filename="preferences.txt");
 	void save(const char *filename="preferences.txt");
-
-/* Started to successively move public things to private and 
- * creating setter and getter functions */
-private:
-	std::string username;
-	std::string password;
-
-public:
-	int screenWidth;
-	int screenHeight;
-	Uint32 screenFlags;
-	Uint32 optionFlags;
-	std::string language;
-	Uint32 musicVolume;
-	Uint32 voiceVolume;
-	int mute;
-	int version;
-	bool rememberUnit;
-	bool scrollWheelEnabled;
+	void resetDefaultUnitsAssigned();
+	void resetDefaultFlagRadius();
 
 	/**
 	 * Returns the username variable in settings.
@@ -79,7 +60,31 @@ public:
 	 * @return the currently held password.
 	 */
 	void setPasswd(std::string);
+
+
+	/**
+	 * all variables shoudl really be private, we're working on it
+	 * TODO: make all variables private
+	 */
+private:
+	std::string username;
+	std::string password;
+
+public:
+	int screenWidth;
+	int screenHeight;
+	Uint32 screenFlags;
+	Uint32 optionFlags;
+	std::string language;
+	Uint32 musicVolume;
+	Uint32 voiceVolume;
+	int mute;
+	int version;
+	bool rememberUnit;
+	bool scrollWheelEnabled;
+
 	
+
 	///Levels are from 0 to 5, where even numbers are building
 	///under construction and odd ones are completed buildings.
 	int defaultUnitsAssigned[IntBuildingType::NB_BUILDING][6];
@@ -97,8 +102,6 @@ public:
 	int tempUnit;
 	int tempUnitFuture;
 
-	void resetDefaultUnitsAssigned();
-	void resetDefaultFlagRadius();
 };
 
 //Version 1 - Resets default units assigned and keyboard shortcuts
