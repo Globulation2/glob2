@@ -1,7 +1,6 @@
 /*
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at
-  <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -88,7 +87,7 @@ void Settings::setUsername(std::string s) { username.assign(s, 0, BasePlayer::MA
 std::string Settings::getPasswd() { return password; }
 void Settings::setPasswd(std::string s) { password = s; }
 
-void Settings::load(const char *filename)
+void Settings::load(std::string filename)
 {
 	std::map<std::string, std::string> parsed;
 
@@ -167,7 +166,7 @@ void Settings::load(const char *filename)
  *
  * @param filename where the config settings will be saved
  */
-void Settings::save(const char *filename)
+void Settings::save(std::string filename)
 {
 	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
 //	std::fstream f(filename);
