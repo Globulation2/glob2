@@ -126,8 +126,27 @@ MapScriptUSL::~MapScriptUSL()
 
 void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 {
+	usl.markGarbage();
 	stream->writeEnterSection("MapScriptUSL");
-	// TODO: serialize state
+
+	// serialize heap
+	stream->writeEnterSection("heap");
+	for (Heap::Values::size_type i = 0; i != usl.heap.values.size(); ++i) {
+		Value* value = usl.heap.values[i];
+		stream->writeEnterSection(i);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
+	// serialize threads
+	stream->writeEnterSection("threads");
+	for (Heap::Values::size_type i = 0; i != usl.threads.size(); ++i) {
+		const Thread* thread = &usl.threads[i];
+		stream->writeEnterSection(i);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+
 	stream->writeLeaveSection();
 }
 

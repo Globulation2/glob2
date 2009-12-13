@@ -108,11 +108,16 @@ Usl::Usl()
 	root = new Scope(&heap, prototype, 0);
 }
 
+void Usl::markGarbage() const
+{
+	root->markForGC();
+	for_each(threads.begin(), threads.end(), mem_fun_ref(&Thread::markForGC));
+}
+
 void Usl::collectGarbage()
 {
 	// mark
-	root->markForGC();
-	for_each(threads.begin(), threads.end(), mem_fun_ref(&Thread::markForGC));
+	markGarbage();
 
 	// sweep
 	heap.collectGarbage();
@@ -177,7 +182,7 @@ void Usl::setConstant(const std::string& name, Value* value)
 	}
 }
 
-Value* Usl::getConstant(const std::string& name)
+Value* Usl::getConstant(const std::string& name) const
 {
 	ScopePrototype::Locals& locals = root->scopePrototype()->locals;
 	ScopePrototype::Locals::const_iterator it = find(locals.begin(), locals.end(), name);
