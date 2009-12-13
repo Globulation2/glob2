@@ -14,11 +14,12 @@ struct Usl
 	Usl();
 	virtual ~Usl() {}
 	
+	void markGarbage() const;
 	void collectGarbage();
 	void includeScript(const std::string& name, std::istream& source);
 	void createThread(const std::string& name, std::istream& source);
 	void setConstant(const std::string& name, Value* value);
-	Value* getConstant(const std::string& name);
+	Value* getConstant(const std::string& name) const;
 	
 	virtual std::ifstream* openFile(const std::string& name);
 	
