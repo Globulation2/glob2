@@ -587,7 +587,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 
 		while (!header->isEndOfStream())
 		{
-			int c = header->getc();
+			int c = header->getChar();
 			if (header->isEndOfStream()) break;
 			outBackend->putc(c);
 		}
@@ -597,7 +597,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 
 		while (!orders->isEndOfStream())
 		{
-			int c = orders->getc();
+			int c = orders->getChar();
 			if (orders->isEndOfStream()) break;
 			outBackend->putc(c);
 		}

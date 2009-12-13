@@ -174,9 +174,9 @@ bool MapScriptUSL::compileCode(const std::string& code)
 		{
 			if (Toolkit::getFileManager()->initDirectoryListing(*dir, "usl"))
 			{
-				const char* fileName;
-				while ((fileName = Toolkit::getFileManager()->getNextDirectoryEntry()) != NULL)
-				{
+				std::string fileName;
+				do {
+					fileName = Toolkit::getFileManager()->getNextDirectoryEntry();
 					std::string fullFileName = string(*dir) + DIR_SEPARATOR + fileName;
 					auto_ptr<ifstream> file(Toolkit::getFileManager()->openIFStream(fullFileName));
 					if (file.get())
@@ -190,7 +190,7 @@ bool MapScriptUSL::compileCode(const std::string& code)
 					{
 						cerr << "* Failed to load " << fullFileName << endl;
 					}
-				}
+				} while (!fileName.empty());
 			}
 			else
 			{
@@ -229,10 +229,12 @@ const MapScriptError& MapScriptUSL::getError() const
 void MapScriptUSL::syncStep(GameGUI *gui)
 {
 	const size_t stepsMax = 10000;
-	size_t stepsCount = usl.run(stepsMax);
 	
 	#ifdef DEBUG_USL
+		size_t stepsCount = usl.run(stepsMax);
 		std::cout << "* USL executed " << stepsCount << " steps" << std::endl;
+	#else
+		usl.run(stepsMax);
 	#endif
 }
 

@@ -165,6 +165,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	{
 		unitsFailingRequirements[i]=0;
 	}
+	unitsHarvesting.clear();
 }
 
 Building::~Building()
@@ -1132,18 +1133,29 @@ void Building::updateUnitsWorking(void)
 
 void Building::updateUnitsHarvesting(void)
 {
-	// if we are not alive or has not vision, remove all units harvesting from this building
 	for (std::list<Unit *>::iterator it=unitsHarvesting.begin(); it!=unitsHarvesting.end();)
 	{
-		std::list<Unit *>::iterator thisIt = it;
-		Unit* u = *thisIt;
-		++it;
+		std::list<Unit *>::iterator tmpIt = it;
+		Unit* u = *tmpIt;
+		it++;
 		
-		if ((buildingState != ALIVE) || ((owner->sharedVisionExchange & u->owner->me) == 0))
+		// if the building is not available to fetch from (invisible or broken)
+		if (
+				(buildingState != ALIVE) ||
+				((owner->sharedVisionExchange & u->owner->me) == 0))
 		{
-			u->attachedBuilding->removeUnitFromWorking(u);
-			u->standardRandomActivity();
-			unitsHarvesting.erase(thisIt);
+			// cancel the task u were just doing
+		    u->attachedBuilding->removeUnitFromWorking(u);
+		    // cancel fetching resources here
+		    removeUnitFromHarvesting(u);
+		    // behave randomly
+		    u->standardRandomActivity();
+			// TODO: replacing the remove by an erase should be a lot faster but
+			// it causes the game to crash when a market gets destroyed. No idea
+			// why. Actually there's no point bothering about this here as this
+			// method is not performance critical but still it's weired to me
+			// why it doesn't work the other way round.
+			// unitsHarvesting.erase(tmpIt);
 		}
 	}
 }
@@ -2554,131 +2566,36 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	int exitQuality=0;
 	int oldQuality;
 	int exitX=0, exitY=0;
-	Uint32 me=owner->me;
 
-	//if (exitQuality<4)
+	// TODO: Introduce a border iterator for rectangles
+
+	// if (exitQuality<4)
 	{
 		testY=this->posY-1;
 		oldQuality=0;
-		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
-			{
-				if (owner->map->isFreeForGroundUnit(testX, testY-1, canSwim, me))
-					oldQuality++;
-				if (owner->map->isRessource(testX, testY-1))
-				{
-					if (exitQuality<1+oldQuality)
-					{
-						exitQuality=1+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=0;
-				}
-				else
-				{
-					if (exitQuality<2+oldQuality)
-					{
-						exitQuality=2+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=1;
-				}
-			}
+		for (testX=this->posX-1; testX<=this->posX+type->width ; testX++)
+			checkGroundExitQuality(testX,testY,testX,testY-1,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
 	if (exitQuality<4)
 	{
 		testY=this->posY+type->height;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
-			{
-				if (owner->map->isFreeForGroundUnit(testX, testY+1, canSwim, me))
-					oldQuality++;
-				if (owner->map->isRessource(testX, testY+1))
-				{
-					if (exitQuality<1+oldQuality)
-					{
-						exitQuality=1+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=0;
-				}
-				else
-				{
-					if (exitQuality<2+oldQuality)
-					{
-						exitQuality=2+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=1;
-				}
-			}
+			checkGroundExitQuality(testX,testY,testX,testY+1,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
 	if (exitQuality<4)
 	{
 		oldQuality=0;
 		testX=this->posX-1;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
-			{
-				if (owner->map->isFreeForGroundUnit(testX-1, testY, canSwim, me))
-					oldQuality++;
-				if (owner->map->isRessource(testX-1, testY))
-				{
-					if (exitQuality<1+oldQuality)
-					{
-						exitQuality=1+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=0;
-				}
-				else
-				{
-					if (exitQuality<2+oldQuality)
-					{
-						exitQuality=2+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=1;
-				}
-			}
+			checkGroundExitQuality(testX,testY,testX-1,testY,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
 	if (exitQuality<4)
 	{
 		oldQuality=0;
 		testX=this->posX+type->width;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
-			{
-				if (owner->map->isFreeForGroundUnit(testX+1, testY, canSwim, me))
-					oldQuality++;
-				if (owner->map->isRessource(testX+1, testY))
-				{
-					if (exitQuality<1+oldQuality)
-					{
-						exitQuality=1+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=0;
-				}
-				else
-				{
-					if (exitQuality<2+oldQuality)
-					{
-						exitQuality=2+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=1;
-				}
-			}
+			checkGroundExitQuality(testX,testY,testX+1,testY,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
 	if (exitQuality>0)
 	{
@@ -2691,6 +2608,45 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 		return true;
 	}
 	return false;
+}
+
+void Building::checkGroundExitQuality(
+		const int testX,
+		const int testY,
+		const int extraTestX,
+		const int extraTestY,
+		int & exitX,
+		int & exitY,
+		int & exitQuality,
+		int & oldQuality,
+		bool canSwim)
+{
+	Uint32 me=owner->me;
+	if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
+	{
+		if (owner->map->isFreeForGroundUnit(extraTestX, extraTestY, canSwim, me))
+			oldQuality++;
+		if (owner->map->isRessource(testX, testY-1))
+		{
+			if (exitQuality<1+oldQuality)
+			{
+				exitQuality=1+oldQuality;
+				exitX=testX;
+				exitY=testY;
+			}
+			oldQuality=0;
+		}
+		else
+		{
+			if (exitQuality<2+oldQuality)
+			{
+				exitQuality=2+oldQuality;
+				exitX=testX;
+				exitY=testY;
+			}
+			oldQuality=1;
+		}
+	}
 }
 
 bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)

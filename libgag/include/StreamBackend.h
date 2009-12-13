@@ -43,7 +43,7 @@ namespace GAGCore
 		virtual void flush(void) = 0;
 		virtual void read(void *data, size_t size) = 0;
 		virtual void putc(int c) = 0;
-		virtual int getc(void) = 0;
+		virtual int getChar(void) = 0;
 		virtual void seekFromStart(int displacement) = 0;
 		virtual void seekFromEnd(int displacement) = 0;
 		virtual void seekRelative(int displacement) = 0;
@@ -67,7 +67,7 @@ namespace GAGCore
 		virtual void flush(void) { assert(fp); fflush(fp); }
 		virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
 		virtual void putc(int c) { assert(fp); fputc(c, fp); }
-		virtual int getc(void) { assert(fp); return fgetc(fp); }
+		virtual int getChar(void) { assert(fp); return fgetc(fp); }
 		virtual void seekFromStart(int displacement) { assert(fp); fseek(fp, displacement, SEEK_SET); }
 		virtual void seekFromEnd(int displacement) { assert(fp); fseek(fp, displacement, SEEK_END); }
 		virtual void seekRelative(int displacement) { assert(fp); fseek(fp, displacement, SEEK_CUR); }
@@ -92,7 +92,7 @@ namespace GAGCore
 		virtual void flush(void);
 		virtual void read(void *data, size_t size);
 		virtual void putc(int c);
-		virtual int getc(void);
+		virtual int getChar(void);
 		virtual void seekFromStart(int displacement);
 		virtual void seekFromEnd(int displacement);
 		virtual void seekRelative(int displacement);
@@ -117,7 +117,7 @@ namespace GAGCore
 		virtual void flush(void) { }
 		virtual void read(void *data, size_t size);
 		virtual void putc(int c);
-		virtual int getc(void);
+		virtual int getChar(void);
 		virtual void seekFromStart(int displacement);
 		virtual void seekFromEnd(int displacement);
 		virtual void seekRelative(int displacement);

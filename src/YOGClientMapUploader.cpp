@@ -30,7 +30,7 @@
 
 
 YOGClientMapUploader::YOGClientMapUploader(boost::shared_ptr<YOGClient> client)
-	: client(client), state(Nothing)
+	: state(Nothing), client(client)
 {
 	client->setMapUploader(this);
 	fileID=0;

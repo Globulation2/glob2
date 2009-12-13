@@ -30,7 +30,7 @@ using namespace GAGGUI;
 using namespace boost;
 
 YOGClientGameConnectionDialog::YOGClientGameConnectionDialog(GraphicContext *parentCtx, boost::shared_ptr<MultiplayerGame> game)
-	: OverlayScreen(parentCtx, 200, 100), game(game), parentCtx(parentCtx)
+	:  OverlayScreen(parentCtx, 200, 100), parentCtx(parentCtx), game(game)
 {
 	addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[connecting to game]")));
 	game->addEventListener(this);
@@ -70,12 +70,14 @@ void YOGClientGameConnectionDialog::execute()
 			//Manual integration of cmd+q and alt f4
 			if(event.type == SDL_KEYDOWN)
 			{
-				SDLMod modState = SDL_GetModState();
 #					ifdef USE_OSX
+				SDLMod modState = SDL_GetModState();
 				if(event.key.keysym.sym == SDLK_q && modState & KMOD_META)
 				{
 					break;
 				}
+#					else
+				SDL_GetModState();
 #					endif
 #					ifdef USE_WIN32
 				if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
