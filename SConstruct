@@ -73,6 +73,15 @@ def configure(env):
     missing=[]
 
     env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
+
+    #Compiler check
+    if not conf.CheckCC():
+        print "C compiler does not work"
+        missing.append("C compiler")
+    if not conf.CheckCXX():
+        print "CXX compiler does not work"
+        missing.append("CXX compiler")
+
     #Simple checks for required libraries
     if not conf.CheckLib("SDL") and not server_only:
         print "Could not find libSDL"
@@ -233,10 +242,6 @@ def main():
         env.Clone()
     except AttributeError:
         env.Clone = env.Copy
-    
-    if not env['CC']:
-        print "No compiler found in PATH. Please install gcc or another compiler."
-        Exit(1)
     
     env["VERSION"] = "0.9.4.4"
     establish_options(env)
