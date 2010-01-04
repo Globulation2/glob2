@@ -222,14 +222,16 @@ namespace GAGCore
 #ifdef HAVE_FRIBIDI 
 	char *TrueTypeFont::getBIDIString (const std::string text)
 	{
-		char		*c_str = (char*) text;
+		
+		const char	*c_str = text.c_str();
 		int		len = strlen(c_str);
 		FriBidiChar	*bidi_logical = new FriBidiChar[len + 2];
 		FriBidiChar	*bidi_visual = new FriBidiChar[len + 2];
 		char		*utf8str = new char[4*len + 1];	//assume worst case here (all 4 Byte characters)
 		FriBidiCharType	base_dir = FRIBIDI_TYPE_ON;
 		int n;
-		n = fribidi_charset_to_unicode (fribidi_parse_charset ((char*)"UTF-8"),c_str, len, bidi_logical);
+		// fribidi_charset_to_unicode should take a const char*
+		n = fribidi_charset_to_unicode (fribidi_parse_charset ((char*)"UTF-8"),const_cast<char*>(c_str), len, bidi_logical);
 		fribidi_log2vis(bidi_logical, n, &base_dir, bidi_visual, NULL, NULL, NULL);
 		n =  fribidi_remove_bidi_marks (bidi_visual, n, NULL, NULL, NULL);
 		fribidi_unicode_to_charset (fribidi_parse_charset ((char*)"UTF-8"),bidi_visual, n, utf8str);
