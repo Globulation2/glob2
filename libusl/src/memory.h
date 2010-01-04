@@ -1,11 +1,9 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#include <stack>
 #include <vector>
 
 struct Value;
-struct Thread;
 
 struct Heap
 {
@@ -13,7 +11,7 @@ struct Heap
 	
 	Values values;
 	
-	void garbageCollect(Thread* thread);
+	void collectGarbage();
 };
 
 #endif // ndef MEMORY_H
