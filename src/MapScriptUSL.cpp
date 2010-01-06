@@ -126,9 +126,9 @@ MapScriptUSL::~MapScriptUSL()
 
 void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 {
-	usl.markGarbage();
+//	usl.markGarbage();
 	stream->writeEnterSection("MapScriptUSL");
-
+/*
 	// serialize heap
 	stream->writeEnterSection("heap");
 	for (Heap::Values::size_type i = 0; i != usl.heap.values.size(); ++i) {
@@ -146,7 +146,7 @@ void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-
+*/
 	stream->writeLeaveSection();
 }
 
