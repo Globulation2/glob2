@@ -111,7 +111,7 @@ Usl::Usl()
 void Usl::markGarbage() const
 {
 	root->markForGC();
-	for_each(threads.begin(), threads.end(), mem_fun_ref(&Thread::markForGC));
+//	for_each(threads.begin(), threads.end(), mem_fun_ref(&Thread::markForGC));
 }
 
 void Usl::collectGarbage()
