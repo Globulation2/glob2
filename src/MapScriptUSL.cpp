@@ -210,10 +210,12 @@ const MapScriptError& MapScriptUSL::getError() const
 void MapScriptUSL::syncStep(GameGUI *gui)
 {
 	const size_t stepsMax = 10000;
-	size_t stepsCount = usl.run(stepsMax);
 	
 	#ifdef DEBUG_USL
+		size_t stepsCount = usl.run(stepsMax);
 		std::cout << "* USL executed " << stepsCount << " steps" << std::endl;
+	#else
+		usl.run(stepsMax);
 	#endif
 }
 
