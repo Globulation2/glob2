@@ -41,7 +41,7 @@ public:
 		}
 	}
 
-	virtual void load(const char *filename)
+	virtual void load(const std::string filename)
 	{
 		GAGCore::InputStream *stream = new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(filename));
 		if (stream->isEndOfStream())

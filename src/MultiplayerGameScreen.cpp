@@ -20,6 +20,7 @@
 */
 
 #include "MultiplayerGameScreen.h"
+#include "AINames.h"
 #include "YOGClientLobbyScreen.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
@@ -47,7 +48,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	{
 		if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 		{
-			TextButton *button = new TextButton(20, 400-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", AI::getAIText(i).c_str(), ADD_AI+i);
+			TextButton *button = new TextButton(20, 400-30*(i-1), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", AINames::getAIText(i).c_str(), ADD_AI+i);
 			button->visible = false;
 			addWidget(button);
 			addAI.push_back(button);
@@ -82,7 +83,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 		addWidget(isReady);
 	}
 
-	const char * cancelText;
+	std::string cancelText;
 	if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 	{
 		cancelText = Toolkit::getStringTable()->getString("[Cancel]");

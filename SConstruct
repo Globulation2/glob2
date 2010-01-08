@@ -13,19 +13,19 @@ isDarwinPlatform = sys.platform=='darwin'
 
 
 def establish_options(env):
-    opts = Options('options_cache.py')
+    opts = Variables('options_cache.py')
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-        opts.Add(PathOption("INSTALLDIR", "Installation Directory", "./"))
+        opts.Add("INSTALLDIR", "Installation Directory", "./")
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
-    opts.Add(BoolOption("release", "Build for release", 0))
-    opts.Add(BoolOption("profile", "Build with profiling on", 0))
-    opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
-    opts.Add(BoolOption("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
+    opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add(BoolVariable("profile", "Build with profiling on", 0))
+    opts.Add(BoolVariable("mingw", "Build with mingw enabled if not auto-detected", 0))
+    opts.Add(BoolVariable("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
     opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
@@ -50,7 +50,7 @@ def configure(env):
     configfile.add("PACKAGE", "Name of package", "\"glob2\"")
     configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
     if isDarwinPlatform:
-        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
+        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
     else:
     	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
@@ -250,8 +250,8 @@ def main():
         env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     if isDarwinPlatform:
-        env.Append(LIBPATH=["/sw/lib"])
-        env.Append(CPPPATH=["/sw/include"])
+        env.Append(LIBPATH=["/opt/local/lib"])
+        env.Append(CPPPATH=["/opt/local/include"])
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
@@ -271,6 +271,9 @@ def main():
         env.Append(LINKFLAGS=['-mwindows'])
         env.Append(CPPPATH=['/usr/local/include/SDL'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
+    elif isDarwinPlatform:
+        env.ParseConfig("/opt/local/bin/sdl-config --cflags")
+        env.ParseConfig("/opt/local/bin/sdl-config --libs")
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")

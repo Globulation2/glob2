@@ -21,6 +21,7 @@
 
 #include "FormatableString.h"
 #include "Game.h"
+#include "AINames.h"
 #include "GameHeader.h"
 #include "GlobalContainer.h"
 #include "GUIButton.h"
@@ -127,7 +128,7 @@ TeamsEditor::TeamsEditor(Game* game)
 			playerName[i]=NULL;
 			aiSelector[i]=new MultiTextButton(60, 60+i*25, 100, 21, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[AI]"), 300+i);
 			for (int aii=0; aii<AI::SIZE; aii++)
-				aiSelector[i]->addText(AI::getAIText(aii));
+				aiSelector[i]->addText(AINames::getAIText(aii));
 			if(gameHeader.getBasePlayer(i).type >= BasePlayer::P_AI)
 				aiSelector[i]->setIndex(gameHeader.getBasePlayer(i).type - BasePlayer::P_AI);
 			else
@@ -243,7 +244,7 @@ void TeamsEditor::generateGameHeader()
 			{
 				AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(aiSelector[i]->getIndex());
 				FormatableString name("%0 %1");
-				name.arg(AI::getAIText(iid)).arg(i-1);
+				name.arg(AINames::getAIText(iid)).arg(i-1);
 				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, BasePlayer::playerTypeFromImplementitionID(iid));
 			}
 			gameHeader.setAllyTeamNumber(teamColor, allyTeamNumbers[i]->getIndex()+1);
