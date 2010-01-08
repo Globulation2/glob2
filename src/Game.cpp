@@ -982,7 +982,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		return false;
 	}
 
-	if(versionMinor >= 80)
+	if(versionMinor >= 82)
 	{
 		// This is the new map script system
 		mapscript.decodeData(stream, mapHeader.getVersionMinor());
