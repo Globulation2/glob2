@@ -18,6 +18,8 @@
 
 
 #include "MapScript.h"
+#include <assert.h>
+#include <iostream>
 
 #include "Stream.h"
 
@@ -81,16 +83,28 @@ void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode)
 bool MapScript::compileCode()
 {
 	if(mode == USL)
+	{
 		return usl.compileCode(script);
-	//TODO: return something
+	}
+	else
+	{
+		std::cerr << "mode unknown." << std::endl;
+		assert(false);
+	}
 }
 
 
 bool MapScript::testCompileCode(const std::string& testScript)
 {
 	if(mode == USL)
+	{
 		return usl.compileCode(testScript);
-	//TODO: return something
+	}
+	else
+	{
+		std::cerr << "mode unknown." << std::endl;
+		assert(false);
+	}
 }
 
 

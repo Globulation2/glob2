@@ -1140,7 +1140,7 @@ void Building::updateUnitsHarvesting(void)
 		it++;
 		
 		// if the building is not available to fetch from (invisible or broken)
-		if ((buildingState != ALIVE) || (owner->sharedVisionExchange & u->owner->me == 0))
+		if ((buildingState != ALIVE) || ((owner->sharedVisionExchange & u->owner->me) == 0))
 		{
 			// cancel the task u were just doing
 		    u->attachedBuilding->removeUnitFromWorking(u);
