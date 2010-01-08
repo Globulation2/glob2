@@ -42,7 +42,7 @@ public:
 	///Enumerates the different modes the map script may be
 	enum MapScriptMode
 	{
-		USL=1,
+		USL=1
 	};
 
 	///Constructs the MapScript

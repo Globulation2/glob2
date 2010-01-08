@@ -18,9 +18,10 @@
 
 
 #include "MapScript.h"
+#include <assert.h>
+#include <iostream>
 
 #include "Stream.h"
-#include <cassert>
 
 MapScript::MapScript(GameGUI* gui):
 	usl(gui)
@@ -81,17 +82,29 @@ void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode)
 
 bool MapScript::compileCode()
 {
-	//TODO: was if(mode == USL) without a return statemen in the else branch
-	assert(mode == USL);
-	return usl.compileCode(script);
+	if(mode == USL)
+	{
+		return usl.compileCode(script);
+	}
+	else
+	{
+		std::cerr << "mode unknown." << std::endl;
+		assert(false);
+	}
 }
 
 
 bool MapScript::testCompileCode(const std::string& testScript)
 {
-	//TODO: was if(mode == USL) without a return statemen in the else branch
-	assert(mode == USL);
-	return usl.compileCode(testScript);
+	if(mode == USL)
+	{
+		return usl.compileCode(testScript);
+	}
+	else
+	{
+		std::cerr << "mode unknown." << std::endl;
+		assert(false);
+	}
 }
 
 

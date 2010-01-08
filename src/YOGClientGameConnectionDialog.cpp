@@ -30,7 +30,7 @@ using namespace GAGGUI;
 using namespace boost;
 
 YOGClientGameConnectionDialog::YOGClientGameConnectionDialog(GraphicContext *parentCtx, boost::shared_ptr<MultiplayerGame> game)
-	:  OverlayScreen(parentCtx, 200, 100), parentCtx(parentCtx), game(game)
+	: OverlayScreen(parentCtx, 200, 100), parentCtx(parentCtx), game(game)
 {
 	addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[connecting to game]")));
 	game->addEventListener(this);
