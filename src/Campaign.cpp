@@ -213,7 +213,7 @@ bool Campaign::load(const std::string& fileName)
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
-		if(versionMinor >= 81)
+		if(versionMinor >= 83)
 		{
 			description = stream->readText("description");	
 		}
