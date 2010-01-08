@@ -243,7 +243,7 @@ def main():
     except AttributeError:
         env.Clone = env.Copy
     
-    env["VERSION"] = "0.9.4.4"
+    env["VERSION"] = "0.9.5.0"
     establish_options(env)
     #Add the paths to important mingw libraries
     if env['mingw'] or isWindowsPlatform:
