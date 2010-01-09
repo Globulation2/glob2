@@ -594,6 +594,8 @@ Zárva
 Zárva
 [closed]
 Zárva
+[combined vision]
+
 [compile]
 Szkript fordítása
 [compile]
@@ -1054,6 +1056,8 @@ felderítők
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Élelmiszer
 [food]
@@ -1456,6 +1460,8 @@ Játék betöltése
 
 [load map]
 
+[load replay]
+
 [load script]
 
 [load script]
@@ -1486,6 +1492,8 @@ Bejelentkezés
 Bejelentkezés
 [login]
 Bejelentkezés
+[look around]
+
 [Lost : %0 has more prestige than you]
 Veszítettél: %0 -nak nagyobb a presztízse mint neked.
 [Lost : %0 has more prestige than you]
@@ -1926,6 +1934,8 @@ A játékos neve
 
 [player rating %0]
 
+[players]
+
 [please wait]
 Kérem várjon
 [please wait]
@@ -1994,6 +2004,8 @@ Kilépés a játékból
 Kilépés a játékból
 [quit the game]
 Kilépés a játékból
+[quit the replay]
+
 [quit]
 Kilépés
 [quit]
@@ -2106,6 +2118,8 @@ Megjavítani
 
 [Repeat your password :]
 
+[replay ended]
+
 [restore default shortcuts]
 
 [restore default shortcuts]
@@ -2124,6 +2138,8 @@ Visszalépés a játékba
 Visszalépés a játékba
 [return to game]
 Visszalépés a játékba
+[return to replay]
+
 [return]
 
 [return]
@@ -2456,6 +2472,10 @@ Beállítások
 
 [shortcut explanation v]
 
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [show main menu]
@@ -2912,6 +2932,8 @@ Megtámadták a versenypályát
 Megtámadták a versenypályát
 [the racetrack is under attack]
 Megtámadták a versenypályát
+[the replays]
+
 [the school is finished]
 Az iskola elkészült
 [the school is finished]
@@ -3244,6 +3266,10 @@ harcosok
 harcosok
 [warriors]
 harcosok
+[watch again]
+
+[watching:]
+
 [water]
 Víz
 [water]
