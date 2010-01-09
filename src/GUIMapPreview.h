@@ -57,7 +57,7 @@ public:
 	int getLastWidth(void) { return thumbnail.getMapWidth(); }
 	//! Returns last map height
 	int getLastHeight(void) { return thumbnail.getMapHeight(); }
-	const char *getMethode(void);
+	std::string getMethode(void);
 	//! Returns true if the thumbnail is laoded, false otherwise
 	bool isThumbnailLoaded();
 	

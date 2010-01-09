@@ -392,9 +392,9 @@ public:
 	MapEdit();
 	~MapEdit();
 	///Loads the game given by a particular file name
-	bool load(const char *filename);
+	bool load(const std::string filename);
 	///Saves the game to a particular file name
-	bool save(const char *filename, const char *name);
+	bool save(const std::string filename, const std::string name);
 
 	///Updates the editor after map generation
 	void update();
@@ -735,6 +735,8 @@ private:
 	void handleDeleteClick(int mx, int my);
 	///Tells whether the delete tool is being dragged
 	bool isDraggingDelete;
+
+	void handleClick(int mx, int my, BrushTool::ClickType clickType);
 
 	///This vector of the keys on the team view. It allows one to choose between AI and human teams for campaign games
 	std::vector<std::string> teamViewSelectorKeys;

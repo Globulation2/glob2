@@ -34,9 +34,9 @@ namespace GAGGUI
 	{
 	public:
 		//Construct with given cordinates
-		KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, int w=0, int h=0);
+		KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, int w=0, int h=0);
 		//Construct with tooltip
-		KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, int w=0, int h=0);
+		KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, int w=0, int h=0);
 		//Destructor
 		virtual ~KeySelector() { }
 		
@@ -50,7 +50,7 @@ namespace GAGGUI
 		void setKey(const KeyPress& key);
 	protected:
 		///Constructs this widget
-		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, int w, int h);
+		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, int w, int h);
 		///Handles events, records the key
 		virtual void onSDLKeyDown(SDL_Event *event);
 		///Handles press events

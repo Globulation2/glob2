@@ -242,9 +242,9 @@ namespace GAGGUI
 	
 	void List::internalInit(void)
 	{
-		fontPtr = Toolkit::getFont(font.c_str());
+		fontPtr = Toolkit::getFont(font);
 		assert(fontPtr);
-		textHeight = fontPtr->getStringHeight((const char *)NULL);
+		textHeight = fontPtr->getStringHeight(" ");
 		assert(textHeight > 0);
 	}
 	

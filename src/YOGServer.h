@@ -20,8 +20,6 @@
 #define __YOGServer_h
 
 #include <boost/shared_ptr.hpp>
-#include <list>
-#include <map>
 #include "NetListener.h"
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
@@ -53,7 +51,7 @@ class YOGServerGame;
 ///and can also be used when a client decides to host a game themselves, which can
 ///reduce load on the project hosted server. For this, YOG has server redirection.
 ///
-///The YOG server has a few different behaviours. It can require passwords (for the
+///The YOG server has a few different behaviors. It can require passwords (for the
 ///project hosted YOG server), or allow anonymous connections (for LAN and client hosted
 ///games). It can maintain a list of games and the users that are in them (for the project
 ///server), or it can have one game, and all connected users are part of it (client hosted
@@ -61,14 +59,14 @@ class YOGServerGame;
 class YOGServer
 {
 public:
-	///Initiates the YOG Game Server and immeddiattely begins listening on the YOG port.
+	///Initiates the YOG Game Server and immediately begins listening on the YOG port.
 	YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy);
 
 	///If the attempt to bind to the local port failed, this will be false
 	bool isListening();
 
 	///This is the main update function. This must be called frequently (many times per
-	///second) in order to give fast responce times and low latency for the users.
+	///second) in order to give fast response times and low latency for the users.
 	void update();
 
 	///Runs the server as its own entity. Returns the return code of the execution
