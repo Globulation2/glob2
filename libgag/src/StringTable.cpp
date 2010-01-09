@@ -45,7 +45,7 @@ namespace GAGCore
 			delete strings[i];
 	}
 	
-	bool StringTable::loadIncompleteList(const char *filename)
+	bool StringTable::loadIncompleteList(const std::string filename)
 	{
 		// Read index file
 		InputLineStream *inputLineStream= new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
@@ -76,7 +76,7 @@ namespace GAGCore
 		The key file contains all keys, each one on a different line
 		A translation file contains pair of key-value for the given translation
 	*/
-	bool StringTable::load(const char *filename)
+	bool StringTable::load(const std::string filename)
 	{
 		std::string keyFile;
 		std::vector<std::string> translationFiles;
@@ -253,57 +253,59 @@ namespace GAGCore
 		}
 	}
 	
-	const char *StringTable::getString(const char *stringname) const
+	const std::string StringTable::getString(const std::string key) const
 	{
 		int index=-1;
 		if ((actLang < languageCount) && (actLang >= 0))
 		{
-			std::string key(stringname);
 			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
 			if (accessIt == stringAccess.end())
 			{
-				std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, no such key." << std::endl;
+				std::cerr << "StringTable::getString(\"" << key << ", " << index << "\") : error, no such key." << std::endl;
 				#ifndef YOG_SERVER_ONLY
-				if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
-					GAGCore::DrawableSurface::texts[std::string(stringname)]=key;
+				if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() &&
+						GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
+					GAGCore::DrawableSurface::texts[key]=key;
 			    #endif
-				return stringname;
+				return key;
 			}
 			else
 			{
 				int dec = index >= 0 ? index + 1 : 0;
 				if (accessIt->second+dec >= strings.size())
 				{
-					std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, index out of bound." << std::endl;
+					std::cerr << "StringTable::getString(\"" << key << ", " << index << "\") : error, index out of bound." << std::endl;
 					return "ERROR : INDEX OUT OF BOUND";
 				}
 				std::string &s = strings[accessIt->second+dec]->data[actLang];
 				if (s.length() == 0)
 				{
 					#ifndef YOG_SERVER_ONLY
-					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
+					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() &&
+							GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
 						GAGCore::DrawableSurface::texts[strings[accessIt->second+dec]->data[defaultLang]]=key;
 					#endif
-					return strings[accessIt->second+dec]->data[defaultLang].c_str();
+					return strings[accessIt->second+dec]->data[defaultLang];
 				}
 				else
 				{
 					#ifndef YOG_SERVER_ONLY
-					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() && GAGCore::DrawableSurface::wroteTexts.find(std::string(stringname))==GAGCore::DrawableSurface::wroteTexts.end())
+					if(!GAGCore::DrawableSurface::translationPicturesDirectory.empty() &&
+							GAGCore::DrawableSurface::wroteTexts.find(key)==GAGCore::DrawableSurface::wroteTexts.end())
 						GAGCore::DrawableSurface::texts[s]=key;
 					#endif
-					return s.c_str();
+					return s;
 				}
 			}
 		}
 		else
 		{
-			std::cerr << "StringTable::getString(\"" << stringname << ", " << index << "\") : error, bad language selected." << std::endl;
-			return "ERROR, BAD LANG";
+			std::cerr << "StringTable::getString(\"" << key << ", " << index << "\") : error, bad language selected." << std::endl;
+			return std::string("ERROR, BAD LANG");
 		}
 	}
 	
-	bool StringTable::doesStringExist(const char *stringname) const
+	bool StringTable::doesStringExist(const std::string stringname) const
 	{
 		std::string key(stringname);
 		std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
@@ -314,12 +316,11 @@ namespace GAGCore
 		return true;
 	}
 	
-	const char *StringTable::getStringInLang(const char *stringname, int lang) const
+	const std::string StringTable::getStringInLang(const std::string stringname, int lang) const
 	{
 		if ((lang < languageCount) && (lang >= 0))
 		{
-			std::string key(stringname);
-			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
+			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(stringname);
 			if (accessIt == stringAccess.end())
 			{
 				std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, no such key." << std::endl;
@@ -327,7 +328,7 @@ namespace GAGCore
 			}
 			else
 			{
-				return strings[accessIt->second]->data[lang].c_str();
+				return strings[accessIt->second]->data[lang];
 			}
 		}
 		else
