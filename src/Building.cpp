@@ -165,6 +165,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	{
 		unitsFailingRequirements[i]=0;
 	}
+	unitsHarvesting.clear();
 }
 
 Building::~Building()
@@ -1135,18 +1136,29 @@ void Building::updateUnitsWorking(void)
 
 void Building::updateUnitsHarvesting(void)
 {
-	// if we are not alive or has not vision, remove all units harvesting from this building
 	for (std::list<Unit *>::iterator it=unitsHarvesting.begin(); it!=unitsHarvesting.end();)
 	{
-		std::list<Unit *>::iterator thisIt = it;
-		Unit* u = *thisIt;
+		std::list<Unit *>::iterator tmpIt = it;
+		Unit* u = *tmpIt;
 		++it;
 		
+		// if the building is not available to fetch from (invisible or broken)
 		if ((buildingState != ALIVE) || (owner->sharedVisionExchange & u->owner->me == 0))
 		{
+			// cancel the task u were just doing
 			u->attachedBuilding->removeUnitFromWorking(u);
+			// behave randomly
 			u->standardRandomActivity();
-			unitsHarvesting.erase(thisIt);
+			// cancel fetching resources here
+			removeUnitFromHarvesting(u);
+			// u->attachedBuilding->removeUnitFromHarvesting(u);
+			//unitsHarvesting.remove(u);
+			// TODO: replacing the remove by an erase should be a lot faster but
+			// it causes the game to crash when a market gets destroyed. No idea
+			// why. Actually there's no point bothering about this here as this
+			// method is not performance critical but still it's weired to me
+			// why it doesn't work the other way round.
+			// unitsHarvesting.erase(tmpIt);
 		}
 	}
 }
@@ -2487,6 +2499,7 @@ void Building::insertUnitToHarvesting(Unit* unit)
 
 void Building::removeUnitFromHarvesting(Unit* unit)
 {
+	//unit->ownExchangeBuilding=NULL;
 	unitsHarvesting.remove(unit);
 }
 
