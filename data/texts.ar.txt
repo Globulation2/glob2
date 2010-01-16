@@ -496,10 +496,10 @@ test
 ﺣﻤِّﻞ ﻟﻌﺒﺔ
 [load map]
 ﺣﻤِّﻞ ﺧﺎﺭﻃﺔ
-[load script]
-ﺣﻤﻞ ﺍﻟﻨﺺ
 [load replay]
 ﺣﻤِّﻞ ﺇﻋﺎﺩﺓ
+[load script]
+ﺣﻤﻞ ﺍﻟﻨﺺ
 [load]
 ﺣﻤِّﻞ
 [loading map list]
@@ -656,12 +656,12 @@ meta-%0
 ﻣﻔﺘﺎﺡ Pause
 [Paused]
 ﺍﻟﻠﻌﺒﺔ ﻣﺘﻮﻗﻔﺔ
-[players]
-ﺍﻟﻼﻋﺒﻮﻥ
 [player name]
 ﺍﺳﻢ ﺍﻟﻼﻋﺐ
 [player rating %0]
 ﺗﻘﻴﻴﻢ ﺍﻟﻼﻋﺐ: %0
+[players]
+ﺍﻟﻼﻋﺒﻮﻥ
 [please wait]
 ﻳُﺮﺟﻰ ﺍﻻﻧﺘﻈﺎﺭ
 [power]
@@ -881,9 +881,9 @@ Display
 [Statistics]
 ﺍﻹﺣﺼﺎﺋﻴﺎﺕ
 [Still (i)]
-ﺗﺒﻘﺖ 
+ﺗﺒﻘﺖ
 [still (w)]
-ﺗﺒﻘﺖ 
+ﺗﺒﻘﺖ
 [still one unit working]
 ﻣﺎ ﺯﺍﻟﺖ ﻭﺣﺪﺓ ﺗﻌﻤﻞ
 [Still one]
@@ -1102,10 +1102,6 @@ Uncontrolled
 View History
 [Voice volume]
 ﻣﺴﺘﻮﻯ ﺍﻟﺼﻮﺕ
-[watch again]
-ﺷﺎﻫﺪ ﻣﺠﺪﺩًﺍ
-[watching:]
-ﺃﻧﺖ ﺗﺸﺎﻫﺪ:
 [waiting for %0]
 ﺑﺎﻧﺘﻈﺎﺭ %0
 [waiting for key]
@@ -1128,6 +1124,10 @@ View History
 ﻣﺤﺎﺭﺏ
 [warriors]
 ﻣﺤﺎﺭﺏ
+[watch again]
+ﺷﺎﻫﺪ ﻣﺠﺪﺩًﺍ
+[watching:]
+ﺃﻧﺖ ﺗﺸﺎﻫﺪ:
 [water]
 ﻣﺎء
 [Wheat]
