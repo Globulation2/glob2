@@ -8,6 +8,7 @@
 # English version revised by Hernan Quishpe
 # Translated to Dutch by Raoul Verveer
 # Translated to Russian by Igor Murzov
+# Translated to Arabic by Majid Al-Dharrab <majid@aldharrab.com>
 
 #Note! The English version of the following has changed since the German, French, Spanish, and Dutch versions where translated
 #show("Ahh! It's getting crazy in here with all these globules going this way and that. Ohh I am so confused. It would certainly be useful to find out where your globules are going. To do this, type 'T'. This will show you direct lines connecting a unit to its destination. You can type 'T' again to undo this effect. Also, if you would like to find out what units are working at a particular building, perhaps the School for example, just click on that building and hold the mouse button down.")
@@ -34,6 +35,7 @@ show("Auf der rechten Seite deiner Basis ist ein kleiner Steinbruch. Merke dir d
 show("Notarás que hay un conjunto de pequeñas formaciones rocosas a la derecha de tu base. Recuérdalo, pueden ser de utilidad más adelante.",es)
 show("Aan de rechterkant van je basis, bevind zich een steengroeve. Onthoud dit, want dit kan later van pas komen.",nl)
 show("Заметьте, что справа от вашей базы есть небольшая каменоломня. Запомните это. Это может понадобиться позже.",ru)
+show("ﺳﻮﻑ ﺗﻼﺣﻆ ﻭﺟﻮﺩ ﻣﺤﺠﺮ ﺻﻐﻴﺮ ﺇﻟﻰ ﻳﻤﻴﻦ ﻗﺎﻋﺪﺗﻚ. ﺗﺬﻛﺮ ﻫﺬﺍ ﺟﻴﺪًﺍ. ﺭﺑﻤﺎ ﻧﺤﺘﺎﺝ ﺇﻟﻰ ﺃﺣﺠﺎﺭ ﻣﻦ ﻫﻨﺎ ﻻﺣﻘًﺎ.",ar)
 space
 
 show("You might also notice that there is a set of trees just below the stone query. However, they don't look like normal trees. If you click on them, the right hand side bar will tell you that those trees are orange trees! You might be wondering what those orange trees are useful for. We will find out later. For now, focus on your Swarm.")
@@ -42,6 +44,7 @@ show("Du wirst die kleine Gruppe Bäume vor den Steinen bemerkt haben, die aber 
 show("Tal vez habrás notado que hay un conjunto de árboles justo debajo de la formación rocosa, pero no lucen como árboles normales.  Si los seleccionas con el ratón, la barra derecha te dirá que tales árboles son de naranjas!  Podrás preguntarte para qué sirven esos árboles.  Lo veremos más adelante, por ahora enfoquémonos en tu colmena.",es)
 show("Het zal je al opgevallen zijn dat er een groep bomen onder de steengroeve staat. Maar ze zien er niet uit als gewone bomen. Als je op de bomen klikt, kun je in de rechter menubalk lezen dat het hier sinaasappelbomen betreft! Je vraagt je misschien af wat het nut is van deze sinaasappelbomen. Daar komen we later op terug. Voorlopig concentreren we ons op de Zwerm.",nl)
 show("Вы, возможно, также заметили, что чуть ниже каменоломни есть несколько деревьев. Однако они выглядят не так как обычные деревья. Если Вы щелкните по ним, то справа Вы увидите, что эти деревья это апельсиновые деревья! Вы, возможно, удивитесь зачем эти апельсиновые деревья нужны. Мы выясним это позже. А пока давайте сосредоточимся на Рое.",ru)
+show("ﺭﺑﻤﺎ ﻻﺣﻈﺖ ﺃﻳﻀًﺎ ﻭﺟﻮﺩ ﻣﺠﻤﻮﻋﺔ ﻣﻦ ﺍﻷﺷﺠﺎﺭ ﺗﺤﺖ ﺍﻟﻤﺤﺠﺮ، ﻭﻟﻜﻨﻬﺎ ﻻ ﺗﺒﺪﻭ ﺃﺷﺠﺎﺭًﺍ ﻋﺎﺩﻳﺔ. ﺇﻥ ﻧﻘﺮﺕ ﻋﻠﻴﻬﺎ ﻓﺴﻴﺨﺒﺮﻙ ﺍﻟﺸﺮﻳﻂ ﺍﻷﻳﻤﻦ ﺃﻥ ﺗﻠﻚ ﺃﺷﺠﺎﺭ ﺑﺮﺗﻘﺎﻝ! ﺭﺑﻤﺎ ﺗﺘﺴﺎءﻝ ﻋﻦ ﻓﺎﺋﺪﺗﻬﺎ، ﻭﻟﻜﻦ ﺳﻮﻑ ﻧﺘﻌﺮﻑ ﻋﻠﻰ ﻫﺬﺍ ﻻﺣﻘًﺎ ﺇﻥ ﺷﺎء ﺍﻟﻠﻪ. ﺭﻛﺰ ﺍﻵﻥ ﻋﻠﻰ ﻭﻛﺮﻙ.",ar)
 space
 
 hilightBuildings(Swarm)
@@ -51,6 +54,7 @@ show("Im Augenblick sollte dein Stock Arbeiter und nichts als Arbeiter erschaffe
 show("En este momento tu colmena debe estar creando trabajadores, y solamente trabajadores.  Si no es así, procura que construya trabajadores en este momento.",es)
 show("Op dit moment hoort je Zwerm werkers en niets dan werkers te produceren. Als dat niet zo is, stel dan de Zwerm in zodat deze werkers produceert.",nl)
 show("В данный момент ваш Рой должен производить рабочих и только рабочих. Если это не так, Вы возможно хотите сделать так, чтобы он теперь стал производить их.",ru)
+show("ﻳﺠﺐ ﺃﻥ ﻳﻜﻮﻥ ﻭﻛﺮﻙ ﻣﺴﺘﻤﺮًﺍ ﻓﻲ ﺇﻧﺘﺎﺝ ﺍﻟﻌﻤﺎﻝ ﻓﻘﻂ ﻓﻲ ﻫﺬﻩ ﺍﻟﻠﺤﻈﺔ؛ ﺇﻥ ﻟﻢ ﻳﻜﻦ ﻛﺬﻟﻚ ﻓﺎﺿﺒﻄﻪ ﻟﻴﺒﺪﺃ ﺗﻮﻟﻴﺪ ﺍﻟﻌﻤﺎﻝ ﺍﻵﻥ.",ar)
 space
 
 show("Units seem to be coming out of the Swarm at a very slow pace. We want to kick it up a notch! Having just 3 or 4 workers isn't very useful in a common game, so select the Swarm, and assign 6 workers to be working on it. Don't be surprised. It may be a lot of workers, but very soon we will have that many, and setting it to 6 now saves us the trouble of changing it again later.")
@@ -59,6 +63,7 @@ show("Im Moment kommen die Arbeiter in großen Abständen zu deinem Stock. Das w
 show("Las unidades salen de la colmena lentamente. Sería bueno que fuera más rápido!  Solamente 3 o 4 trabajadores no es muy útil en un juego.  Selecciona la colmena y asigna 6 trabajadores para que estén laborando en esta.  No te sorprendas, parecen muchos, pero verás que el tener todos ellos y colocar 6, te ahorrará el tener que hacerlo más adelante.",es)
 show("De eenheden komen nu in een zeer langzaam tempo uit je Zwerm. Dat willen we sneller zien! In een regulier spel is het hebben van drie of vier werkers niet afdoende, selecteer daarom de Zwerm en wijs er zes eenheden aan toe. Wees niet verrast. Het lijken er misschien veel, maar al snel zullen we er zoveel hebben. Door het aantal nu op zes te zetten, besparen we ons later de moeite.",nl)
 show("Юниты как будто появляются из Роя с довольно маленькой скоростью. Мы хотим маленько увеличить её! Иметь всего лишь 3 или 4 рабочих не очень-то удобно в обычной игре, поэтому выберите Рой, и назначьте 6 рабочих работать на него. Не удивляйтесь. Это возможно большое количество рабочих, но скоро у нас будет столько, и установка числа рабочих в 6 сейчас спасёт нас от проблем с изменением этого числа в будущем.",ru)
+show("ﻳﺒﺪﻭ ﺃﻥ ﺍﻟﻮﺣﺪﺍﺕ ﺗﺨﺮﺝ ﻣﻦ ﺍﻟﻮﻛﺮ ﺑﻮﺗﻴﺮﺓ ﺑﻄﻴﺌﺔ ﺟﺪًﺍ. ﻧﺮﻳﺪ ﺃﻥ ﻧﺰﻳﺪ ﻣﻦ ﺳﺮﻋﺔ ﻫﺬﺍ! ﻟﻦ ﻳﻜﻮﻥ ﺍﻣﺘﻼﻙ ٣ ﻋﻤﺎﻝ ﺃﻭ ٤ ﻣﻔﻴﺪًﺍ ﻓﻲ ﻟﻌﺒﺔ ﻋﺎﺩﻳﺔ. ﻟﺬﻟﻚ ﺍﺧﺘﺮ ﺍﻟﻮﻛﺮ ﻭﻛﻠِّﻒ ٦ ﻋﻤﺎﻝ ﺑﺎﻟﻌﻤﻞ ﻋﻠﻴﻪ. ﻻ ﺗﺘﻔﺎﺟﺄ، ﻓﻘﺪ ﻳﺒﺪﻭ ﻫﺬﺍ ﺍﻟﻌﺪﺩ ﻛﺒﻴﺮًﺍ ﺍﻵﻥ ﻭﻟﻜﻨﻚ ﺳﺘﻤﻠﻚ ﻣﺜﻠﻪ ﻗﺮﻳﺒًﺎ. ﻟﻬﺬﺍ ﺿﺒﻄﻨﺎﻩ ﺇﻟﻰ ٦ ﻣﻨﺬ ﺍﻵﻥ ﺣﺘﻰ ﻻ ﻧﻨﺸﻐﻞ ﻻﺣﻘًﺎ ﺑﺘﻐﻴﻴﺮﻩ.",ar)
 space
 unhilightBuildings(Swarm)
 
@@ -68,6 +73,7 @@ show("Sobald du 8 Arbeiter hast gehen wird die Dinge etwas langsamer an und wend
 show("Ahora que tenemos 8 trabajadores, bajaremos el ritmo, y comenzaremos a hacer nuevas tareas.  Pero por ahora tenemos que esperar un poco más. No te desesperes, la mayoría del juego no se desarrolla esperando.",es)
 show("Zodra we ongeveer acht werkers hebben zetten we alles weer wat langzamer en gaan we nieuwe dingen doen. Maar eerst nog even geduld. Wees niet teleurgesteld: het grootste deel van de tijd bestaat niet uit wachten.",nl)
 show("Когда у нас будет 8 рабочих, мы замедлимся, и начнём новые задания. Но сейчас необходимо ещё подождать. Не разочаровывайтесь. Большая часть игры это не просто ожидание.",ru)
+show("ﺇﺫﺍ ﺃﺻﺒﺢ ﻟﺪﻳﻨﺎ ٨ ﻋﻤﺎﻝ ﻓﺴﻨﺒﻄﺊ ﺍﻷﻣﻮﺭ ﻗﻠﻴﻼً ﻟﻨﺒﺪﺃ ﺑﻤﻬﺎﻡ ﺃﺧﺮﻯ ﺟﺪﻳﺪﺓ. ﻭﻟﻜﻦ ﻋﻠﻴﻨﺎ ﺍﻵﻥ ﺃﻥ ﻧﻨﺘﻈﺮ ﺣﺘﻰ ﻳﺨﺮﺝ ﺍﻟﻤﺰﻳﺪ. ﻻ ﺗﻜﻦ ﺧﺎﺋﺐ ﺍﻷﻣﻞ، ﻓﻠﻦ ﺗﻘﻀﻲ ﻭﻗﺘًﺎ ﻛﺒﻴﺮًﺍ ﺑﺎﻻﻧﺘﻈﺎﺭ ﻓﻲ ﻟﻌﺒﺘﻚ.",ar)
 space
 hide
 wait(Worker(0) > 3)
@@ -79,6 +85,7 @@ show("Wir machen Fortschritte auf dem Weg zu unserem Ziel. Dem Stock sind nun me
 show("Estamos llegando a nuestra meta. La colmena tiene varios trabajadores asignados a ella.  Es bueno, el resto de unidades deberían salir rápidamente.",es)
 show("We komen dichter bij ons doel. Er nu al een aantal eenheden aan de Zwerm toegewezen. Dat is mooi. De rest van de eenheden zullen nu snel volgen.",nl)
 show("Мы продвигаемся к нашей цели. Рою теперь назначено несколько юнитов. Это хорошо. Остальные юниты должны появиться быстро.",ru)
+show("ﺇﻧﻨﺎ ﻧﺘﻘﺪﻡ ﻧﺤﻮ ﻫﺪﻓﻨﺎ ﺟﻴﺪًﺍ، ﻓﻔﻲ ﺍﻟﻮﻛﺮ ﺍﻵﻥ ﻣﺠﻤﻮﻋﺔ ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻤﻜﻠﻔﺔ. ﻫﺬﺍ ﺟﻴﺪ، ﻻﺑﺪ ﺃﻥ ﺑﻘﻴﺔ ﺍﻟﻮﺣﺪﺍﺕ ﺳﺘﺨﺮﺝ ﺑﺴﺮﻋﺔ.",ar)
 space
 
 show("It takes 5 wheat to create a worker at a Swarm, and it takes a long time to carry the wheat from the field on the left to the Swarm on the right. Notice how you can fill up an Inn with wheat with only 1 worker, but it takes many workers to keep a Swarm full. When playing a game, try to make sure that buildings that require wheat are nearer to wheat fields.")
@@ -87,6 +94,7 @@ show("Es kosten 5 Weizeneinheiten einen Arbeiter zu erstellen und es braucht vie
 show("Para que una colmena produzca un trabajador se requiere 5 unidades de maíz, y se emplea bastante tiempo traer los insumos del campo de la izquierda a la colmena en la derecha.  Nota que puedes llenar una taberna de maíz con solamente 1 trabajador, pero se requieren varios trabajadores para mantener la colmena llena.  Cuando juegues, asegúrate que las construcciones que requieren maíz estén cerca a los campos de maíz.",es)
 show("Het kost vijf graan om een werker te produceren in de Zwerm en het neemt flink wat tijd in beslag om het graan van het veld links, naar de Zwerm rechts te brengen. Merk hierbij op dat je een Herberg kunt bevoorraden met slechts één werker, maar je hebt er meer nodig om de Zwerm bevoorraad te houden. Als je een spel gaat spelen, houd er dan rekening mee dat je gebouwen die graan nodig hebben in de buurt staan van graanvelden.",nl)
 show("Создание нового рабочего в Рое требует 5 единиц зерна, и проходит много времени пока зерно будет принесено с поля слева к Рою справа. Заметьте, что Вы можете заполнить Кабак зерном с помощью всего 1 рабочего, но для поддержания Роя полным требуется много рабочих. Во время игры старайтесь сделать так, чтобы здания требующие зерно находились ближе к полям с зерном.",ru)
+show("ﻳﺤﺘﺎﺝ ﺗﻮﻟﻴﺪ ﻋﺎﻣﻞ ﺇﻟﻰ ٥ ﻣﻦ ﺍﻟﻘﻤﺢ ﻓﻲ ﺍﻟﻮﻛﺮ، ﻭﻳﺴﺘﻐﺮﻕ ﺣﻤﻞ ﺍﻟﻘﻤﺢ ﻣﻦ ﺍﻟﺤﻘﻞ ﺍﻟﻤﻮﺟﻮﺩ ﻓﻲ ﺍﻟﻴﺴﺎﺭ ﺣﺘﻰ ﺍﻟﻮﻛﺮ ﺍﻟﻤﻮﺟﻮﺩ ﻓﻲ ﺍﻟﻴﻤﻴﻦ ﻭﻗﺘًﺎ ﻃﻮﻳﻼً. ﻻﺣﻆ ﻛﻴﻒ ﺃﻥ ﺑﺈﻣﻜﺎﻧﻚ ﻣﻞء ﻧُﺰﻝ ﺑﺎﻟﻘﻤﺢ ﺑﻌﺎﻣﻞ ﻭﺍﺣﺪ ﻓﻘﻂ، ﻭﻟﻜﻦ ﺍﻷﻣﺮ ﻳﺘﻄﻠﺐ ﻛﺜﻴﺮًﺍ ﻣﻦ ﺍﻟﻌﻤﺎﻝ ﻹﺑﻘﺎء ﺍﻟﻮﻛﺮ ﻣﻤﺘﻠﺌًﺎ. ﺇﺫﺍ ﻛﻨﺖ ﻓﻲ ﻟﻌﺒﺔ ﻓﺤﺎﻭﻝ ﺑﻨﺎء ﺍﻟﻤﺒﺎﻧﻲ ﺍﻟﺘﻲ ﺗﺘﻄﻠﺐ ﻗﻤﺤًﺎ ﻗﺮﻳﺒًﺎ ﻣﻦ ﺣﻘﻮﻝ ﺍﻟﻘﻤﺢ.",ar)
 space
 hide
 unhilightBuildings(Swarm)
@@ -99,6 +107,7 @@ show("So, das erste Ziel ist erreicht. Nun ist es an der Zeit zu experimentieren
 show("Hemos alcanzado nuestra meta. Ahora llegó el momento de experimentar. Pero primero, disminuyamos la velocidad a la que la colmena crea unidades, y no tendremos demasiados trabajadores para administrar en cierto momento. Selecciona la colmena y asegúrate que solamente un trabajador esté asignado a ella.",es)
 show("Okay, we hebben ons doel bereikt. Nu is het tijd om te expirimenteren. Maar laten we eerst de snelheid waarmee de Zwerm eenheden produceert verlagen, zodat we straks niet overspoeld worden door eenheden. Klik op de Zwerm en zorg ervoor dat er maar één werker aan is toegewezen.",nl)
 show("Хорошо, мы достигли нашей цели. Теперь время начать экспериментировать. Но сначала, давайте замедлим скорость, с которой Рой создаёт юниты, чтобы не переборщить с юнитами в данный момент. Щелкните по Рою и сделайте так, чтобы в него был назначен только один рабочий.",ru)
+show("ﺣﺴﻨًﺎ، ﻟﻘﺪ ﻭﺻﻠﻨﺎ ﺇﻟﻰ ﻫﺪﻓﻨﺎ. ﺣﺎﻥ ﻭﻗﺖ ﺍﻟﺘﺠﺮﺑﺔ ﺍﻵﻥ، ﻭﻟﻜﻦ ﺃﻭﻻً ﺩﻋﻨﺎ ﻧﺒﻄﺊ ﺇﻧﺘﺎﺝ ﺍﻟﻮﻛﺮ ﻟﻠﻮﺣﺪﺍﺕ ﺣﺘﻰ ﻻ ﻧﺰﻳﺪ ﺍﻟﺤﻤﻞ ﻋﻠﻰ ﺃﻧﻔﺴﻨﺎ. ﺍﺿﺒﻂ ﺍﻟﻮﻛﺮ ﻟﻴﻌﻤﻞ ﻟﺪﻳﻪ ﻋﺎﻣﻞ ﻭﺍﺣﺪ ﻓﻘﻂ.",ar)
 space
 unhilightBuildings(Swarm)
 
@@ -110,6 +119,7 @@ show("Sehr gut! Wir machen gute Fortschritte mit unserer Kolonie. Wir müssen si
 show("Muy bien. Nuestra colonia está progresando. Ahora viene la expansión, pero primero, fortalezcamos lo que ya es nuestro.  Con todas esas unidades por ahí. No creo que una taberna sea suficiente, crea una nueva, al norte de la que ya está, con el mismo procedimiento que llevaste a cabo antes",es)
 show("Heel goed. We maken nu een geweldige vooruitgang met onze kolonie. We zullen straks moeten uitbreiden. Maar we gaan eerst een solide basis neerzetten. Met al die ronddwarrelende eenheden is één Herberg niet meer voldoende. Bouw nog een Herberg, volgens dezelfde werkwijze die je eerder hebt gebruikt, net ten noorden van je bestaande Herberg.",nl)
 show("Отлично. Мы делаем большие успехи с нашей колонией. Нам нужно начать расширяться, но сначала, нам самим надо крепко встать на ноги. Со всеми этими перебегающими с места на место юнитами, не думаю, что одного Кабака будет достаточно, поэтому, используя ту же процедуру, что и раньше, постройте ещё один Кабак севернее уже построенного Кабака.",ru)
+show("ﺟﻴﺪ ﺟﺪًﺍ. ﺇﻧﻨﺎ ﻧﺤﻘﻖ ﺗﻘﺪﻣًﺎ ﺟﻴﺪًﺍ ﺑﻤﺴﺘﻌﻤﺮﺗﻨﺎ. ﻋﻠﻴﻨﺎ ﺃﻥ ﻧﺒﺪﺃ ﺍﻟﺘﻮﺳﻊ، ﻭﻟﻜﻦ ﻳﺠﺐ ﺃﻭﻻً ﺃﻥ ﻧﺠﻌﻞ ﻷﻧﻔﺴﻨﺎ ﺃﺳﺎﺳًﺎ ﻣﺘﻴﻨًﺎ. ﺃﻋﺘﻘﺪ ﺃﻥ ﻧُﺰﻻً ﻭﺍﺣﺪًﺍ ﻟﻢ ﻳﻌﺪ ﻳﻜﻔﻲ ﻟﻜﻞ ﺗﻠﻚ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻤﺘﺠﻮﻟﺔ ﻫﻨﺎ ﻭﻫﻨﺎﻙ، ﻟﺬﻟﻚ ﺍﺑﻦ ﻧﺰﻻً ﺁﺧﺮ ﺇﻟﻰ ﺷﻤﺎﻝ ﺍﻟﻤﻮﺟﻮﺩ ﺍﻵﻥ ﺑﻨﻔﺲ ﺍﻟﻄﺮﻳﻘﺔ ﺍﻟﺘﻲ ﺍﺗﺒﻌﺘﻬﺎ ﺳﺎﺑﻘًﺎ.",ar)
 wait(Inn(0,0) > 1)
 hide
 unhilightBuildingOnPanel(Inn)
@@ -122,6 +132,7 @@ show("Du hast einige Arbeiter, die nichts zu tun haben, deshalb kannst du so vie
 show("Tenemos muchos trabajadores desocupados.  Asigna tantos trabajadores como desees a la construcción de la taberna para que terminen rápido. Recuerda que una taberna solamente necesita tres cargas de madera, y asignar más de 3 trabajadores a la construcción será malgastar los recursos",es)
 show("We hebben nu een aantal vrije werkers, dus voel je vrij om zoveel werkers aan de Herberg toe te wijzen als je wilt. Houd er echter rekening mee dat de Herberg maar drie boomstammen nodig heeft, dus meer dan drie werkers toewijzen is verspilde tijd.",nl)
 show("У нас есть несколько свободных рабочих, так что не стесняйтесь назначить столько рабочих сколько хотите, чтобы Кабак был построен быстро. Однако, помните, что для постройки Кабака требуется всего три бревна. Поэтому назначение более трех рабочих в Кабак однозначно будет потерей времени.",ru)
+show("ﻟﺪﻳﻨﺎ ﺑﻌﺾ ﺍﻟﻌﺎﻣﻠﻴﻦ ﺍﻟﻔﺎﺭﻏﻴﻦ، ﻓﻼ ﺗﺘﺮﺩﺩ ﻓﻲ ﺗﻜﻠﻴﻒ ﺍﻟﻌﺪﺩ ﺍﻟﺬﻱ ﺗﺮﻳﺪﻩ ﻣﻦ ﺍﻟﻌﻤﺎﻝ ﺑﺒﻨﺎء ﺍﻟﻨﺰﻝ ﺣﺘﻰ ﻳُﻨﺸﺄ ﺃﺳﺮﻉ. ﻭﻟﻜﻦ ﺿﻊ ﻓﻲ ﺣﺴﺒﺎﻧﻚ ﺃﻥ ﺑﻨﺎء ﺍﻟﻨُّﺰﻝ ﻳﺤﺘﺎﺝ ﺇﻟﻰ ٣ ﻗﻄﻊ ﻣﻦ ﺍﻟﺨﺸﺐ ﻓﻘﻂ، ﻓﻠﻦ ﻳﻜﻮﻥ ﺗﻜﻠﻴﻒ ﺃﻛﺜﺮ ﻣﻦ ٣ ﻋﻤﺎﻝ ﺑﺎﻟﻌﻤﻞ ﻓﻲ ﺍﻟﻨﺰﻝ ﺇﻻ ﻣﻀﻴﻌﺔ ﻟﻠﻮﻗﺖ.",ar)
 space
 hide
 wait(Inn(0,1) > 1)
@@ -132,6 +143,7 @@ show("Super! Nun reduziere die Anzahl der Arbeiter am Gasthof auf einen, da er a
 show("Perfecto.  Reduce a 1 el número de trabajadores asignados en la nueva taberna, debido a que no necesitamos más para recolectar el maíz.",es)
 show("Geweldig. Merk op dat het aantal werkers dat is toegewezen aan de Herberg automatisch is teruggezet naar één. Je hebt er niet meer nodig alleen om graan te verzamelen.",nl)
 show("Отлично. Заметьте, что количество рабочих назначенных в только-что законченый Кабак автоматически уменьшено до 1, так как нам не нужно много рабочих, чтобы просто собирать зерно для Кабака.",ru)
+show("ﻋﻈﻴﻢ. ﺗﺬﻛﺮ ﻓﻀﻼً ﺑﺄﻥ ﻋﺪﺩ ﺍﻟﻌﻤﺎﻝ ﺍﻟﻤﻜﻠﻔﻴﻦ ﺑﺎﻟﻌﻤﻞ ﻓﻲ ﺍﻟﻨﺰﻝ ﺍﻟﻤﺒﻨﻲ ﺣﺪﻳﺜًﺎ ﻗﺪ ﺗﻘﻠﺺ ﺁﻟﻴًﺎ ﺇﻟﻰ ١، ﻓﻨﺤﻦ ﻻ ﻧﺤﺘﺎﺝ ﺇﻟﻰ ﻛﺜﻴﺮ ﻣﻦ ﺍﻟﻌﻤﺎﻝ ﻟﺠﻤﻊ ﺍﻟﻘﻤﺢ ﻭﺣﺴﺐ.",ar)
 space
 unhilightBuildings(Inn)
 
@@ -141,6 +153,7 @@ show("Es ist an der Zeit etwas Neues einzuführen. Deine Arbeiter scheinen sehr 
 show("Es hora de algo nuevo. Nuestros trabajadores caminan lentamente, quisiéramos que fueran más rápidos para que sean más eficientes.  Lo que estamos comentando no es fútil, y la pista de carreras nos ayudará en esto.",es)
 show("Het is tijd om aan iets nieuws te beginnen. Onze werkers lopen nogal langzaam. Het zou fijn zijn als ze wat sneller zouden lopen, zodat ze meer dingen kunnen doen in een kortere tijd. Als je denk dat dit probleem niet is op te lossen, heb je het mis! Dit is namelijk precies waar de Racebaan voor gemaakt is.",nl)
 show("Уже почти настало время ввести кое-что новое. Наши рабочие кажется двигаются довольно медленно. Мы бы хотели, чтобы они двигались чуть-чуть быстрее так, чтобы они могли делать больше вещей быстрее. Если Вы думаете, что это безнадежно, подумайте ещё раз! Эта проблема это именно то для чего нужен Стадион.",ru)
+show("ﺃﻇﻦ ﺃﻥ ﺍﻟﻮﻗﺖ ﻗﺪ ﺣﺎﻥ ﻟﻌﺮﺽ ﺷﻲء ﺟﺪﻳﺪ. ﻳﺒﺪﻭ ﺃﻥ ﻋﻤﺎﻟﻨﺎ ﻳﻤﺸﻮﻥ ﺑﺒﻂء ﺗﺎﻡ. ﻧﺤﻦ ﻧﻔﻀﻞ ﺃﻥ ﻧﺠﻌﻠﻬﻢ ﺃﺳﺮﻉ ﻗﻠﻴﻼً ﺣﺘﻰ ﻳﺘﻤﻜﻨﻮﻥ ﻣﻦ ﻓﻌﻞ ﺃﺷﻴﺎء ﺃﻛﺜﺮ ﻓﻲ ﻭﻗﺖ ﺃﻗﻞ. ﺇﻥ ﻛﻨﺖ ﺗﻈﻦ ﺃﻥ ﻫﺬﺍ ﻣﺴﺘﺤﻴﻞ ﻓﺄﻧﺖ ﻣﺨﻄﺊ! ﻓﻬﺬﻩ ﺑﺎﻟﻀﺒﻂ ﻫﻲ ﺍﻟﻐﺎﻳﺔ ﻣﻦ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ.",ar)
 space
 
 hilightBuildingOnPanel(Racetrack)
@@ -152,6 +165,7 @@ show("Die Rennstecke ist ein großes Gebäude, viel größer als der Gasthof ode
 show("La pista de carreras es un edificio grande.  Mucho más que una colmena o una taberna. Construyamos una. Recuerda elegir primero el ícono del minimapa para acceder a la selección de construcciones. Pero primero debemos ver qué recursos hacen falta para construir una pista de carreras. Lleva el puntero al ícono de la pista de carreras a la derecha, pero no selecciones la pista todavía, mira en la parte inferior del menú a la derecha. Te ofrece datos acerca de la pista.",es)
 show("De Racebaan is een erg groot gebouw. Een stuk groter dan de Herberg of de Zwerm. Laten we er één bouwen. Onthoud dat je op het eerste pictogram onder de minikaart kunt klikken voor een overzicht van gebouwen. Maar eerst gaan we uitvinden welke grondstoffen er nodig zijn voor het bouwen van een Racebaan. Houd je muisaanwijzer boven het Racebaan pictogram aan de rechterkant, maar selecteer de Racebaan nog niet. Kijk nu in het onderste gedeelte van het menu aan de rechterkant. Daar vinden we meer informatie over de Racebaan.",nl)
 show("Стадион это довольно большое здание. Гораздо больше, чем Кабак и Рой. Давайте попробуем построить его. Не забудьте щелкнуть по первой иконке под мини-картой, чтобы получить выбор зданий. Но сначала, мы должны выяснить какие ресурсы требуются для постройки Стадиона, поэтому наведите курсор мыши на иконку Стадиона справа, но пока не выбирайте его. Теперь взгляните в самый низ меню справа. Оно расскажет нам о Стадионе.",ru)
+show("ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﻣﺒﻨﻰ ﻛﺒﻴﺮ ﺟﺪًﺍ. ﺃﻛﺒﺮ ﻛﺜﻴﺮًﺍ ﻣﻦ ﻧُﺰﻟﻨﺎ ﻭﻭﻛﺮﻧﺎ. ﻟﻨﺠﺮﺏ ﺑﻨﺎءﻩ. ﺗﺬﻛﺮ ﺃﻥ ﺗﻨﻘﺮ ﻋﻠﻰ ﺍﻷﻳﻘﻮﻧﺔ ﺍﻷﻭﻟﻰ ﺃﺳﻔﻞ ﺍﻟﺨﺎﺭﻃﺔ ﺍﻟﻤﺼﻐﺮﺓ ﺣﺘﻰ ﺗﺮﻯ ﻣﺠﻤﻮﻋﺔ ﺍﻟﻤﺒﺎﻧﻲ، ﻭﻟﻜﻦ ﻗﺒﻞ ﻫﺬﺍ ﻳﺠﺐ ﺃﻥ ﻧﻌﺮﻑ ﻣﺎ ﻫﻲ ﺍﻟﻤﻮﺍﺭﺩ ﺍﻟﺘﻲ ﻳﺘﻄﻠﺒﻬﺎ ﺑﻨﺎء ﻣﻴﺪﺍﻥ ﻟﻠﺴﺒﺎﻕ. ﺣﺮﻙ ﻣﺆﺷﺮ ﺍﻟﻔﺄﺭﺓ ﺇﻟﻰ ﺃﻳﻘﻮﻧﺔ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﺍﻟﻤﻮﺟﻮﺩﺓ ﻓﻲ ﺍﻟﻴﻤﻴﻦ ﺑﺪﻭﻥ ﺃﻥ ﺗﻨﻘﺮﻫﺎ. ﺍﻧﻈﺮ ﺍﻵﻥ ﺇﻟﻰ ﺃﺳﻔﻞ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﻴﻤﻨﻰ، ﻓﻬﻨﺎﻙ ﻧﻌﺮﻑ ﺃﺷﻴﺎء ﺣﻮﻝ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ.",ar)
 space
 
 show("You may have already figured that the Racetrack needs a lot of wood, and a small amount of stone. Because the Racetrack is a big and somewhat important building, we will also want to place it in a more central location, rather than right up against wood or stone.")
@@ -160,6 +174,7 @@ show("Du hast herausgefunden, dass eine Rennstrecke viel Holz und ein paar Stein
 show("Habrás notado que la pista exige mucha madera y algo de roca. Debido a que la pista es grande y tiene cierta importancia, buscaremos colocarla en un lugar central, en lugar de ubicarla muy cerca a la madera o la roca.",es)
 show("Je zal inmiddels wel ontdekt hebben dat de Racebaan veel hout en een kleine hoeveelheid steen nodig heeft. Omdat de Racebaan zo groot is en een redelijk belangrijk gebouw is, gaat de voorkeur uit naar een centrale plek in plaats van een plek in de buurt van hout of steen.",nl)
 show("Вы наверно уже поняли, что Стадион требует много дерева и немного камня. Из-за того, что Стадион это большое и в некоторой степени важное здание, мы хотим разместить его в более центральном месте, а не прямо возле дерева или камня.",ru)
+show("ﺭﺑﻤﺎ ﻻﺣﻈﺖ ﺃﻥ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﻳﺘﻄﻠﺐ ﺍﻟﻜﺜﻴﺮ ﻣﻦ ﺍﻟﺨﺸﺐ، ﻭﻛﻤﻴﺔ ﻗﻠﻴﻠﺔ ﻣﻦ ﺍﻟﺤﺠﺮ. ﻫﺬﺍ ﻷﻥ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﻣﺒﻨﻰ ﻛﺒﻴﺮ ﻭﻫﺎﻡ ﺑﻌﺾ ﺍﻟﺸﻲء. ﻛﻤﺎ ﺃﻧﻨﺎ ﻧﺮﻳﺪﻩ ﺃﻥ ﻳﻜﻮﻥ ﻓﻲ ﺍﻟﻤﻨﺘﺼﻒ ﻭﻟﻴﺲ ﻗﺮﻳﺒًﺎ ﻣﻦ ﺍﻷﺧﺸﺎﺏ ﺃﻭ ﺍﻷﺣﺠﺎﺭ.",ar)
 space
 
 show("Now, construct a Racetrack. You can build it anywhere you desire, but my personal recommendation is to build it below the Swarm. There is, however, one important thing to remember when constructing a Racetrack. You must leave a gap around the edge of the Racetrack, for reasons that will later become clear.")
@@ -168,6 +183,7 @@ show("Baue jetzt eine Rennstrecke. Du kannst sie bauen wo es dir gefällt, aber 
 show("Construye una pista de carreras. Puedes colocarla donde desees, pero mi recomendación personal es construirla bajo la colmena.  Aunque hay algo muy importante que debes recordar cuando construyes una de estas: debes dejar espacios libres que la circunden, por razones que serán evidentes más adelante.",es)
 show("Bouw nu een Racebaan. Je kan hem bouwen waar je wilt, maar mijn persoonlijke aanbeveling is om hem onder de Zwerm te bouwen. Er moet echter wel rekening worden gehouden met één belangrijk gegeven: er moet rondom de Racetrack voldoende ruimte vrij blijven. De reden daarvoor zal later duidelijk worden",nl)
 show("Теперь постройте Стадион. Вы можете построить его там где вы хотите, но мой личный совет построить его ниже Роя. Однако есть одна важная вещь, которую нужно помнить во время постройки Стадиона. Необходимо оставить зазор вокруг края Стадиона, по причинам, которые мы выясним позже.",ru)
+show("ﺍﻵﻥ ﺍﺑﻦِ ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ. ﺑﺈﻣﻜﺎﻧﻚ ﺑﻨﺎﺅﻩ ﻓﻲ ﺃﻱ ﻣﻜﺎﻥ ﺗﺮﻳﺪ، ﻭﻟﻜﻦ ﺍﻗﺘﺮﺍﺣﻲ ﺍﻟﺸﺨﺼﻲ ﻫﻮ ﺃﻥ ﺗﺒﻨﻴﻪ ﺃﺳﻔﻞ ﺍﻟﻮﻛﺮ. ﻭﻟﻜﻦ ﻫﻨﺎﻙ ﺃﻣﺮًﺍ ﻳﺠﺐ ﺗﺬﻛﺮﻩ ﻋﻨﺪ ﺑﻨﺎء ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ، ﻭﻫﻮ ﺃﻥ ﺗﺘﺮﻙ ﻓﺮﺍﻏًﺎ ﺣﻮﻝ ﺃﻃﺮﺍﻓﻪ. ﺳﺘﻌﺮﻑ ﺃﺳﺒﺎﺏ ﻫﺬﺍ ﻻﺣﻘًﺎ.",ar)
 wait(Racetrack(0, 0) > 0)
 hide
 unhilightBuildingOnPanel(Racetrack)
@@ -180,6 +196,7 @@ show("Gut. Nun solltest du deine freien Arbeiter dazu nutzen, die Rennstrecke sc
 show("Bien. Empleemos a esa cantidad de trabajadores en la pista de carreras. Asigna entre 5 y 7 de ellos para construirla, dándonos cuenta que requiere 7 recursos para completarse.  ",es)
 show("Mooi. Het is een goed idee om een grote hoeveelheid werkers toe te wijzen aan de Racebaan zodat hij snel af is. Wijs tussen de vijf en zeven werkers toe om de Racebaan te bouwen, omdat er zeven grondstoffen nodig zijn om hem te voltooien",nl)
 show("Отлично. Теперь мы должны использовать наше большое количество свободных рабочих, чтобы построить Стадион быстро. Назначьте 5-7 рабочих на постройку Стадиона, поскольку для завершения ему требуется 7 единиц ресурсов.",ru)
+show("ﺟﻤﻴﻞ. ﻋﻠﻴﻨﺎ ﺍﻵﻥ ﺃﻥ ﻧﺴﺘﻔﻴﺪ ﻣﻦ ﺍﻟﻜﻤﻴﺔ ﺍﻟﻜﺒﻴﺮﺓ ﻣﻦ ﻋﻤﺎﻟﻨﺎ ﺍﻟﻔﺎﺭﻏﻴﻦ ﻟﻨﺸﻴﺪ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﻫﺬﺍ ﺳﺮﻳﻌًﺎ. ﻛﻠِّﻒ ٥ ﺇﻟﻰ ٧ ﻭﺣﺪﺍﺕ ﺑﺒﻨﺎء ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ، ﻭﺫﻟﻚ ﺑﻤﺎ ﺃﻧﻪ ﻳﺤﺘﺎﺝ ﺇﻟﻰ ٧ ﻣﻦ ﺍﻟﻤﻮﺍﺭﺩ ﻟﻴﻜﺘﻤﻞ.",ar)
 space
 unhilightBuildings(Racetrack)
 
@@ -189,6 +206,7 @@ show("Die Rennstrecke benötigt keinen konstanten Nachschub an Weizen, so wie di
 show("A diferencia de la colmena y las tabernas, la pista de carreras no necesita madera o maíz para sostenerse.  Una vez que ha sido construida entrenará unidades sin ningún recurso adicional.",es)
 show("In tegenstelling tot de Herberg en de Zwerm, heeft de Racebaan geen constante toevoer nodig van hout of graan om zijn werk te doen. Eenmaal gebouwd, voorziet het de eenheden van training zonder er naar om te kijken.",nl)
 show("В отличие от Кабака и Роя, Стадиону не требуется постоянное снабжение деревом или зерном, чтобы продолжать работать. Однажды построенный он будет тренировать юнитов без всякого дальнейшего управления.",ru)
+show("ﻻ ﻳﺤﺘﺎﺝ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﺇﻟﻰ ﺇﻣﺪﺍﺩﺍﺕ ﻣﺴﺘﻤﺮﺓ ﻣﻦ ﺍﻟﺨﺸﺐ ﺃﻭ ﺍﻟﻘﻤﺢ ﻣﺜﻞ ﺍﻟﻨُّﺰﻝ ﻭﺍﻟﻮﻛﺮ ﻟﻴﺴﺘﻤﺮ ﺑﺎﻟﻌﻤﻞ؛ ﺑﻞ ﺇﻧﻪ ﺳﻴﺒﺪﺃ ﺗﺪﺭﻳﺐ ﺷﻘﺎﻟﺒﻚ ﺑﺪﻭﻥ ﺍﻟﺤﺎﺟﺔ ﺇﻟﻰ ﺃﻱ ﺇﺩﺍﺭﺓ ﺧﺎﺭﺟﻴﺔ.",ar)
 space
 hide
 
@@ -200,6 +218,7 @@ show("Cool. Du solltest beobachten wie ein paar Einheiten in der Rennstrecke ver
 show("Super! Una manada de glóbulos debe estar dirigiéndose a la pista de carreras. Son buenas noticias! Los glóbulos comenzarán a ejercitarse y cuando salgan serán bastante rápidos.",es)
 show("Cool! Je ziet nu als het goed is een aantal globules naar de Racebaan gaan. Dat is goed nieuws. De globules gaan trainen en als ze eruit komen, zullen ze een stuk sneller zijn.",nl)
 show("Превосходно. Сейчас Вы должны увидеть как несколько глобул направляются в Стадион. Это хорошие новости. Глобулы собираются начать тренироваться, и когда они выйдут, они будут намного быстрее.",ru)
+show("ﺭﺍﺋﻊ. ﻻﺑﺪ ﺃﻥ ﻫﻨﺎﻙ ﺷﻘﻼﺑﺎﺕ ﺗﺘﺠﻪ ﺇﻟﻰ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﺍﻵﻥ. ﻫﺬﻩ ﺃﻧﺒﺎء ﺟﻴﺪﺓ. ﺳﺘﺒﺪﺃ ﺍﻟﺸﻘﺎﻟﺐ ﺗﺪﺭﻳﺒﻬﺎ ﻭﺳﺘﺼﺒﺢ ﺃﺳﺮﻉ ﻛﺜﻴﺮًﺍ ﻋﻨﺪﻣﺎ ﺗﺨﺮﺝ.",ar)
 space
 
 hilightBuildings(Racetrack)
@@ -209,6 +228,7 @@ show("Du kannst ihren Fortschritt leicht überwachen. Klick auf die Rennstrecke.
 show("Podemos examinar su progreso fácilmente. Elije la pista de carreras.  Verás una barra en el menú de la derecha. Hay varias líneas azules moviéndose lentamente de izquierda a derecha.  Representan tus glóbulos y a medida que está más cerca del extremo derecho, indica que está terminando de entrenar.  Las unidades terminarán muy pronto su entrenamiento.",es)
 show("We kunnen hun vooruitgang makkelijk bekijken. Klik op de Racebaan. In het menu aan de rechterkant zul je een balk zien. Er lopen en aantal kleine blauwe lijnen van links naar rechts over die balk. Die lijnen representeren je globules. Hoe dichter een lijn bij het einde komt, des te eerder je globule klaar is met zijn training. Alle eenheden zullen spoedig klaar zijn met hun training.",nl)
 show("Мы легко можем проверить их продвижение. Щелкните по Стадиону. Вы увидите полоску на меню справа. Там несколько маленьких синих линий медленно двигающихся вдоль полосы. Они представляют Ваших глобул, и чем ближе линия глобулы к концу, тем раньше глобула закончит свою тренировку. Юниты закончат свою тренировку очень скоро.",ru)
+show("ﻳﻤﻜﻨﻨﺎ ﺃﻥ ﻧﺮﺍﻗﺐ ﺗﻘﺪﻣﻬﺎ ﺑﺴﻬﻮﻟﺔ. ﺍﻧﻘﺮ ﻋﻠﻰ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ. ﺳﺘﺸﺎﻫﺪ ﺷﺮﻳﻄًﺎ ﻓﻲ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﻴﻤﻨﻰ. ﻫﻨﺎﻙ ﻣﺠﻤﻮﻋﺔ ﻣﻦ ﺍﻟﺨﻄﻮﻁ ﺍﻟﺰﺭﻗﺎء ﺍﻟﺼﻐﻴﺮﺓ ﺍﻟﺘﻲ ﺗﺘﺤﺮﻙ ﺧﻼﻝ ﺍﻟﺸﺮﻳﻂ ﺑﺒﻂء. ﺗﻠﻚ ﺍﻟﺨﻄﻮﻁ ﺗﻤﺜﻞ ﺍﻟﺸﻘﺎﻟﺐ، ﻭﻛﻠﻤﺎ ﺍﻗﺘﺮﺏ ﺧﻂ ﺍﻟﺸﻘﻼﺑﺔ ﺇﻟﻰ ﺍﻟﻨﻬﺎﻳﺔ، ﻛﻠﻤﺎ ﺍﻗﺘﺮﺑﺖ ﻣﻦ ﺇﻧﻬﺎء ﺗﺪﺭﻳﺒﻬﺎ. ﺳﺘﻨﻬﻲ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﺘﺪﺭﻳﺐ ﻗﺮﻳﺒًﺎ.",ar)
 space
 unhilightBuildings(Racetrack)
 
@@ -218,6 +238,7 @@ show("Ha! Deine neuen Super-Arbeiter sind fit und bereit für die Arbeit. Da dei
 show("Eso es! nuestros nuevos super trabajadores están en forma y listos para trabajar!  Tus trabajadores andarán más rápido, serán muy útiles a nuestra colonia, aunque hacer que anden más rápido significará que consumirán comida más rápido. Es una compensación, pero es ventajoso, porque a pesar de que comen rápido, también recolectan comida más rápido.",es)
 show("Haha! Onze nieuwe superwerkers zijn fit en klaar om te werken! je werkers zijn nu een stuk sneller. Ze zullen zeker een nuttige bijdrage leveren aan onze kolonie. Hoewel, nu de eenheden sneller zijn, hebben ze ook meer voedsel nodig. Het is dus een wisselwerking. Maar wel één die in jouw voordeel werkt, omdat ze nu ook sneller graan verzamelen.",nl)
 show("Ха-ха! Наши новые супер-рабочие готовы работать! Ваши рабочие теперь двигаются гораздо быстрее. Они несомненно станут полезным атрибутом нашей колонии. Однако, хотя эти рабочие передвигаются быстрее, они будут потреблять пищу чаще, поэтому это компромисс. Но конечно одно это уже большое преимущество потому, что хотя они едят чаще, они также быстрее собирают зерно.",ru)
+show("ﻫﺎﻫّﺎ! ﻋﻤﺎﻟﻨﺎ ﺍﻟﺨﺎﺭﻗﻮﻥ ﺍﻟﺠﺪﺩ ﺭﺷﻴﻘﻮﻥ ﻭﺟﺎﻫﺰﻭﻥ ﻟﻠﻌﻤﻞ! ﺃﺻﺒﺢ ﻋﻤﺎﻟﻚ ﺃﺳﺮﻉ ﻛﺜﻴﺮًﺍ ﺍﻵﻥ. ﻻﺑﺪ ﺃﻧﻬﻢ ﺳﻴﻜﻮﻧﻮﻥ ﻣﻔﻴﺪﻳﻦ ﻟﻤﺴﺘﻌﻤﺮﺗﻨﺎ، ﻟﻜﻦ ﺑﺎﻟﺮﻏﻢ ﻣﻦ ﺃﻥ ﻫﺬﻩ ﺍﻟﻮﺣﺪﺍﺕ ﺗﻤﺸﻲ ﺃﺳﺮﻉ ﻓﻬﻲ ﺗﺴﺘﻬﻠﻚ ﺍﻟﻐﺬﺍء ﺃﺳﺮﻉ ﻛﺬﻟﻚ، ﻓﻬﺬﻩ ﺑﺘﻠﻚ. ﻟﻜﻦ ﻫﺬﺍ ﻣﻦ ﺻﺎﻟﺤﻨﺎ، ﻓﺒﺎﻟﺮﻏﻢ ﻣﻦ ﺃﻧﻬﻢ ﻳﺄﻛﻠﻮﻥ ﺃﺳﺮﻉ، ﺇﻻ ﺃﻧﻬﻢ ﻳﺠﻤﻌﻮﻥ ﺍﻟﻘﻤﺢ ﺃﻛﺜﺮ ﺃﻳﻀًﺎ.",ar)
 space
 
 
@@ -228,6 +249,7 @@ show("Schaue auf den oberen Teil deines Bildschirms, ganz auf der linken Seite. 
 show("Mira la parte superior de la pantalla, al lado izquierdo. Hay dos números ahí, representan tus trabajadores.  El primero indica cuantos tienes disponibles, sin hacer nada.  Debes tratar de usar tantos como sea posible sin sobrecargarlos con trabajo.  Será el mejor presupuesto.  El segundo dice la cantidad que tienes en total.  Debe haber crecido desde que comenzamos con 8.",es)
 show("Kijk nu bovenin het scherm, aan de linkerkant. Je ziet twee getallen. Deze getallen representeren je werkers. Het eerste getal geeft aan hoeveel werkers er vrij zijn. Over het algemeen gebruik je zoveel werkers als mogelijk, zonder ze te overladen met werk. Het aatal is waarschijnlijk iets gestegen, omdat we eerst maar acht werkers hadden.",nl)
 show("Посмотрите на самый верх экрана слева. Вы должны увидеть два числа. Эти числа соответствуют Вашим рабочим. Первое сколько у Вас свободных рабочих, которые ничем не заняты. Вообще, следует использовать столько рабочих сколько возможно не перегружая их работой. Это даст наилучший результат при ваших возможностях. Второе число показывает общее число имеющихся рабочих. Оно несомненно выросло с момента, когда было всего 8 рабочих.",ru)
+show("ﺍﻧﻈﺮ ﺇﻟﻰ ﺃﻋﻠﻰ ﺍﻟﺸﺎﺷﺔ ﻓﻲ ﺍﻟﻴﺴﺎﺭ. ﺳﺘﺸﺎﻫﺪ ﺭﻗﻤﻴﻦ. ﺗﻤﺜﻞ ﻫﺬﻩ ﺍﻷﺭﻗﺎﻡ ﻋﻤﺎﻟﻚ، ﻓﺎﻷﻭﻝ ﻳﺪﻝ ﻋﻠﻰ ﻋﺪﺩ ﺍﻟﻌﻤﺎﻝ ﺍﻟﻔﺎﺭﻏﻴﻦ ﺍﻟﺬﻳﻦ ﺗﻤﻠﻜﻬﻢ ﻭﻻ ﻳﻔﻌﻠﻮﻥ ﺷﻴﺌًﺎ. ﻓﻲ ﺍﻟﻌﻤﻮﻡ، ﻋﻠﻴﻚ ﺃﻥ ﺗﺴﺘﺨﺪﻡ ﺃﻛﺒﺮ ﻋﺪﺩ ﻣﻤﻜﻦ ﻣﻦ ﻋﻤﺎﻟﻚ ﺑﺪﻭﻥ ﺇﺛﻘﺎﻟﻬﻢ ﺑﺎﻟﻌﻤﻞ. ﺑﻬﺬﺍ ﺗﻜﻮﻥ ﺍﺳﺘﻔﺪﺕ ﺍﻻﺳﺘﻔﺎﺩﺓ ﺍﻟﻘﺼﻮﻯ ﻣﻨﻬﻢ. ﺃﻣﺎ ﺍﻟﻌﺪﺩ ﺍﻟﺜﺎﻧﻲ ﻓﻴﺨﺒﺮﻧﺎ ﺑﻤﺠﻤﻮﻉ ﺍﻟﻌﻤﺎﻝ ﺍﻟﻤﻮﺟﻮﺩﻳﻦ. ﻻ ﺷﻚ ﺃﻥ ﻫﺬﺍ ﺍﻟﻌﺪﺩ ﻗﺪ ﺍﺯﺩﺍﺩ ﻗﻠﻴﻼً ﻣﻨﺬ ﺃﻥ ﻛﺎﻥ ﻟﺪﻳﻨﺎ ٨ ﻓﻘﻂ.",ar)
 space
 unhilightItem("workers working free stat")
 
@@ -239,6 +261,7 @@ show("Diese Zahlen sind sehr wichtig. Merke sie dir für später!",de)
 show("Esas cifras son muy útiles, haz uso de ellas.",es)
 show("Merk op dat behalve het aantal werkers, je ernaast ook het aantal verkenners en soldaten kunt zien. Deze getallen zijn erg nuttig. Onthoud ze voor later.",nl)
 show("Заметьте, что сразу после количества рабочих идёт числа разведчиков и число воинов. Эти числа очень полезны. Запомните их на будущее.",ru)
+show("ﻭﻻﺣﻆ ﻓﻀﻼً ﺍﻷﻋﺪﺍﺩ ﺍﻟﺨﺎﺻﺔ ﺑﺎﻟﻤﺴﺘﻜﺸﻔﻴﻦ ﻭﺍﻟﻤﺤﺎﺭﺑﻴﻦ ﺇﻟﻰ ﺟﺎﻧﺐ ﻋﺪﺩ ﺍﻟﻌﻤﺎﻝ. ﺗﻠﻚ ﺍﻷﻋﺪﺍﺩ ﻣﻔﻴﺪﺓ ﺟﺪًﺍ. ﺗﺬﻛﺮﻫﺎ ﻟﻤﺎ ﺳﻴﺄﺗﻲ ﺑﻌﺪ.",ar)
 space
 unhilightItem("warriors working free stat")
 unhilightItem("explorers working free stat")
@@ -249,6 +272,7 @@ show("Ich glaube, dass diese Zahlen etwas zu groß werden. Denkst du, wir könne
 show("Al parecer esos números están creciendo bastante!  Podremos manejarlos a todos? Tenemos 2 tabernas.  Cada taberna puede atender a 4 unidades.  En el peor de los casos, como máximo, 8 de nuestras unidades pueden estar hambrientas al tiempo.",es)
 show("Hoewel... eigenlijk zijn die getallen wat aan de hoge kant! Denk je dat we zoveel werkers aankunnen? Tja, we hebben twee Herbergen. Elke Herberg biedt plaats voor vier eenheden. In het ergste geval kunnen maar acht werkers tegelijkertijd honger hebben.",nl)
 show("На самом деле, я думаю, что эти числа становятся чересчур большими! Вы думаете мы справимся с таким большим количеством рабочих? И так, мы имеем два Кабака. Каждый Кабак может вместить 4 юнита. То есть не больше 8 юнитов смогут проголодаться одновременно.",ru)
+show("ﻓﻲ ﺍﻟﺤﻘﻴﻘﺔ ﺃﻇﻦ ﺃﻥ ﻫﺬﻩ ﺍﻷﺭﻗﺎﻡ ﺑﺪﺃﺕ ﺑﺎﻻﺯﺩﻳﺎﺩ ﻛﺜﻴﺮًﺍ! ﻫﻞ ﺗﻌﺘﻘﺪ ﺃﻥ ﺑﺈﻣﻜﺎﻧﻨﺎ ﺍﻟﺘﺤﻜﻢ ﺑﻬﺬﺍ ﺍﻟﻌﺪﺩ ﻣﻦ ﺍﻟﻌﻤﺎﻝ؟ ﺣﺴﻨًﺎ، ﻟﺪﻳﻨﺎ ﻧُﺰﻻﻥ، ﻭﻓﻲ ﻛﻞ ﻣﻨﻬﻤﺎ ﻣﻜﺎﻥ ﻟ٤ ﻭﺣﺪﺍﺕ. ﺇﻥ ﻓﻜﺮﻧﺎ ﺑﺄﺳﻮﺃ ﺍﻻﺣﺘﻤﺎﻻﺕ، ﻓﻠﻦ ﻧﺴﺘﻄﻴﻊ ﺗﺤﻤﻞ ﺃﻛﺜﺮ ﻣﻦ ٨ ﻭﺣﺪﺍﺕ ﺟﺎﺋﻌﺔ ﻓﻲ ﺍﻟﻮﻗﺖ ﺫﺍﺗﻪ.",ar)
 space
 
 show("2 Inns does suit us for now, but it won't last us long. If we want to save ourselves effort later, such as dealing with starvation, we should build more Inns now and forget about the problem until our colony is a lot larger.")
@@ -257,6 +281,7 @@ show("2 Gasthöfe reichen im Moment noch aus, aber das wird nicht lange anhalten
 show("Las tabernas son suficientes por ahora, pero no será así por mucho tiempo.  Si queremos ahorrarnos esfuerzos posteriores y no sufrir de hambrunas, es mejor que hagamos más tabernas ahora y nos olvidemos de los problemas de nuestra colonia hasta que haya crecido mucho.",es)
 show("Twee Herbergen is nu voldoende, maar al snel niet meer. Als we ons de moeite willen besparen om straks met problemen als honger om te moeten gaan, kunnen we nu meer Herbergen bouwen en de kwestie vergeten totdat onze kolonie een stuk groter is.",nl)
 show("2 Кабака уже недостаточно для нас, и это не заняло много времени. Если мы не хотим добавить себе работы позже, такой как борьбы с голодом, то следует построить больше Кабаков и забыть об этой проблеме до тех пор пока наша колония не станет значительно больше.",ru)
+show("ﻳﻜﻔﻴﻨﺎ ﻧُﺰﻻﻥ ﺣﺎﻟﻴًّﺎ، ﻭﻟﻜﻦ ﻫﺬﺍ ﺍﻷﻣﺮ ﻟﻦ ﻳﻄﻮﻝ. ﻓﺈﻥ ﺃﺭﺩﻧﺎ ﺗﻮﻓﻴﺮ ﺍﻟﺠﻬﺪ ﻟﻠﻤﺴﺘﻘﺒﻞ، ﻭﺃﺭﺩﻧﺎ ﺍﻻﺑﺘﻌﺎﺩ ﻋﻦ ﺍﻻﻫﺘﻤﺎﻡ ﺑﺎﻟﻤﺠﺎﻋﺎﺕ ﻓﻌﻠﻴﻨﺎ ﺃﻥ ﻧﺒﻨﻲ ﺍﻟﻤﺰﻳﺪ ﻣﻦ ﺍﻟﻤﻨﺎﺯﻝ ﻭﻧﻨﺴﻰ ﺍﻷﻣﺮ ﺇﻟﻰ ﺃﻥ ﺗﺼﺒﺢ ﻣﺴﺘﻌﻤﺮﺗﻨﺎ ﺃﻛﺒﺮ ﻛﺜﻴﺮًﺍ.",ar)
 space
 
 hilightBuildingOnPanel(Inn)
@@ -267,6 +292,7 @@ show("Bau jetzt noch 3 Gasthöfe. Nahrung ist sehr wichtig, darum führe deine G
 show("Construyamos 3 tabernas más.  La comida es muy importante, recuerda administrarlas durante el desarrollo del juego.  Si un trabajador no puede obtener comida, no podrá trabajar, y morirá de inanición.  Ahora que eres un constructor no deberías tener problemas para crear otras tres.  Trata de colocarlas cerca al maíz, y asigna los trabajadores que consideres necesarios.",es)
 show("Laten we drie extra Herbergen bouwen. Voedsel is erg belangrijk, dus vergeet niet je Herbergen goed te onderhouden tijdens het spelen van een spel. Als een werker niet kan eten, zal hij niet langer werken en uiteindelijk van de honger sterven. Inmiddels zul je redelijk bekend zijn met het plaatsen van gebouwen en zal het geen probleem zijn om er nog een paar neer te zetten. Probeer ze in de buurt van het graan te houden en wijs zoveel eenheden toe als je wilt.",nl)
 show("Давайте построим ещё 3 Кабака. Еда очень важна, поэтому помните, что Кабаками нужно управлять хорошо, всякий раз когда Вы играете. Если рабочий не может получить еды, он перестанет делать какую-либо работу, и в итоге он умрёт от истощения. К этому времени Вы должны довольно легко строить здания, и для Вас не должно быть проблемой построить ещё несколько. Постарайтесь построить их возле зерна и назначьте в каждый столько рабочих сколько хотите.",ru)
+show("ﺩﻋﻨﺎ ﻧﺒﻦِ ٣ ﻣﻨﺎﺯﻝ ﺃﺧﺮﻯ. ﺍﻟﻄﻌﺎﻡ ﻣﻬﻢ ﺟﺪًﺍ ﻓﺘﺬﻛﺮ ﺍﻻﻫﺘﻤﺎﻡ ﺑﺎﻟﻤﻨﺎﺯﻝ ﻋﻨﺪﻣﺎ ﺗﻠﻌﺐ. ﺇﺫﺍ ﻟﻢ ﻳﺴﺘﻄﻊ ﺃﺣﺪ ﺍﻟﻌﻤﺎﻝ ﺍﻟﺤﺼﻮﻝ ﻋﻠﻰ ﺍﻟﻐﺬﺍء، ﻓﻠﻦ ﻳﻘﻮﻡ ﺑﺄﻱ ﻋﻤﻞ، ﺑﻞ ﺇﻧﻪ ﻓﻲ ﺍﻟﻮﺍﻗﻊ ﺳﻴﻤﻮﺕ ﺟﻮﻋًﺎ. ﻻﺑﺪ ﺃﻧﻚ ﻣﻌﺘﺎﺩ ﺗﻤﺎﻣًﺎ ﻋﻠﻰ ﺇﻧﺸﺎء ﺍﻟﻤﺒﺎﻧﻲ ﺍﻵﻥ، ﻭﻟﻦ ﻳﺸﻜﻞ ﺑﻨﺎء ﺍﻟﻤﺰﻳﺪ ﻣﻨﻬﺎ ﻣﺸﻜﻠﺔ ﺑﺎﻟﻨﺴﺒﺔ ﻟﻚ. ﺣﺎﻭﻝ ﺇﺑﻘﺎء ﺍﻟﻤﻨﺎﺯﻝ ﻗﺮﻳﺒﺔ ﻣﻦ ﺍﻟﻘﻤﺢ، ﻭﻛﻠﻒ ﺍﻟﻌﺪﺩ ﺍﻟﺬﻱ ﺗﺮﻳﺪﻩ ﻣﻦ ﺍﻟﻌﻤﺎﻝ ﺑﺎﻟﻌﻤﻞ ﻟﺪﻯ ﻛﻞ ﻣﻨﻬﺎ.",ar)
 space
 
 show("Build 3 more Inns.")
@@ -275,6 +301,7 @@ show("Bau jetzt noch 3 Gasthöfe.",de)
 show("Construyamos 3 tabernas más.",es)
 show("Bouw drie extra Herbergen.",nl)
 show("Постройте ещё 3 Кабака.",ru)
+show("ﺍﺑﻦِ ٣ ﻣﻨﺎﺯﻝ ﺃﺧﺮﻯ.",ar)
 wait(Inn(0, 1) > 4)
 unhilightBuildingOnPanel(Inn)
 unhilightItem("under minimap icons")
@@ -285,6 +312,7 @@ show("Gute Arbeit. Reduziere die Arbeiter bei den Gaststätten auf einen, da ein
 show("Buen trabajo, reduce ahora los trabajadores a uno, no necesitan muchos trabajadores para que estén llenas de maíz, sobre todo considerando cuan rápido nuestros trabajadores pueden recolectar maíz.",es)
 show("Mooi werk! Wederom is het aantal werkers dat is toegewezen aan de zojuist gebouwde Herbergen automatisch teruggezet naar één. Meer werkers zijn er niet nodig om ze de bevoorraden, zeker niet wanneer we rekening houden met de snelheid waarmee onze werkers nu graan kunnen verzamelen.",nl)
 show("Отличная работа. Ещё раз, количество рабочих назначенных в новые построенные Кабаки автоматически устанавливается в один юнит. Кабакам не нужно много рабочих для поддержания их полными зерна, особенно учитывая как быстро собирают зерно новые рабочие.",ru)
+show("ﺃﺣﺴﻨﺖ ﻋﻤﻼً. ﺳﻴﻌﺎﺩ ﻋﺪﺩ ﺍﻟﻌﻤﺎﻝ ﺍﻟﻤﻜﻠﻔﻴﻦ ﺑﺎﻟﻌﻤﻞ ﻟﺪﻯ ﺍﻟﻤﻨﺎﺯﻝ ﺍﻟﺠﺪﻳﺪﺓ ﺇﻟﻰ ﻭﺣﺪﺓ ﻭﺍﺣﺪﺓ ﻣﺮﺓ ﺃﺧﺮﻯ، ﻓﻼ ﺣﺎﺟﺔ ﻟﻬﺎ ﺑﻜﺜﻴﺮ ﻣﻦ ﺍﻟﻌﻤﺎﻝ ﻟﺘﺒﻘﻰ ﻣﻤﺘﻠﺌﺔ ﺑﺎﻟﻘﻤﺢ. ﺧﺎﺻﺔً ﺇﻥ ﺃﺧﺬﻧﺎ ﺑﻌﻴﻦ ﺍﻻﻋﺘﺒﺎﺭ ﺳﺮﻋﺔ ﻋﻤﺎﻟﻨﺎ ﺍﻟﺠﺪﺩ ﻓﻲ ﺣﺼﺪ ﺍﻟﻘﻤﺢ.",ar)
 space
 
 show("Our colony is getting pretty large. We are already seeing the improvements that the Racetrack has given us. So it's about time we learn another new skill: swimming.")
@@ -293,6 +321,7 @@ show("Deine Kolonie ist stark gewachsen. Du siehst sicherlich die Vorteile, die 
 show("Nuestra colonia está creciendo mucho. Estamos viendo las mejoras que la pista de carreras nos ha dado.  Así que es hora de aprender una nueva habilidad: nadar.",es)
 show("Onze kolonie wordt al behoorlijk groot. We zien de verbeteringen die de Racebaan ons heeft gegeven. Het is dan ook de hoogste tijd om iets nieuws te leren: zwemmen.",nl)
 show("Наша колония становится довольно большой. Мы уже видим улучшения, которые дал нам Стадион. Поэтому пора изучить новое умение: плавание.",ru)
+show("ﺇﻥ ﻣﺴﺘﻌﻤﺮﺗﻨﺎ ﺁﺧﺬﺓ ﻓﻲ ﺍﻟﻨﻤﻮ. ﻟﻘﺪ ﺑﺪﺃ ﺃﺛﺮ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﻳﻈﻬﺮ ﺑﺎﻟﻔﻌﻞ. ﺇﺫﻥ ﻓﻘﺪ ﺣﺎﻥ ﺍﻟﻮﻗﺖ ﻟﻨﺘﻌﻠﻢ ﻣﻬﺎﺭﺓ ﺟﺪﻳﺪﺓ؛ ﺇﻧﻬﺎ ﺍﻟﺴﺒﺎﺣﺔ.",ar)
 space
 
 GuiEnable(Pool)
@@ -304,6 +333,7 @@ show("Schwimmen kann man in einem Schwimmbad lernen. Baue ein Schwimmbad, es ist
 show("Si leemos los datos de la piscina, descubrimos que requiere mucha madera, pero nada más.  Así que buscaremos un espacio libre cerca a la madera.  Creo que vimos uno de esos, justo al noreste de nuestra base principal, debajo de las rocas.  Construyamos nuestra nueva piscina ahí.  Recuerda aprovechar la gran cantidad de trabajadores que tienes desempleados para construir la piscina rápido.",es)
 show("Zwemmen kan worden geleerd in een Zwembad. Een Zwembad bouwen is net zo makkelijk als het bouwen van een Racebaan. Ze zijn ook ongeveer even groot. Onthoud om ook hier ruimte over te laten rondom het Zwembad. Zeker als je hem in de buurt van grondstoffen bouwt, omdat de grondstoffen die lege ruimte kunnen overwoekeren.",nl)
 show("Плавание может быть изучено в Бассейне. Построить Бассейн также просто как и построить Стадион и они одинаковы по размеру. Не забудьте оставить довольно большой зазор вокруг края Бассейна, даже больше если Вы размещаете его возле ресурсов, так как ресурсы тогда смогут расти в оставленный Вами зазор.",ru)
+show("ﻳﻤﻜﻦ ﺗﻌﻠﻢ ﺍﻟﺴﺒﺎﺣﺔ ﻓﻲ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ، ﻭﺇﻧﺸﺎء ﺑﺮﻛﺔ ﻟﻠﺴﺒﺎﺣﺔ ﺳﻬﻞ ﻛﺈﻧﺸﺎء ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ. ﺇﻥ ﻟﻬﻤﺎ ﺍﻟﺤﺠﻢ ﻧﻔﺴﻪ ﺗﻘﺮﻳﺒًﺎ، ﻓﺘﺬﻛﺮ ﺗﺮﻙ ﻣﺴﺎﻓﺔ ﻛﺎﻓﻴﺔ ﺣﻮﻝ ﺃﻃﺮﺍﻑ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ، ﻭﺍﺟﻌﻠﻬﺎ ﺃﻛﺒﺮ ﺇﺫﺍ ﻛﻨﺖ ﺳﺘﺒﻨﻴﻬﺎ ﺑﺎﻟﻘﺮﺏ ﻣﻦ ﺍﻟﻤﻮﺍﺭﺩ، ﻓﺮﺑﻤﺎ ﺗﻨﻤﻮ ﺍﻟﻤﻮﺍﺭﺩ ﻟﺘﻤﻸ ﺍﻟﻔﺠﻮﺓ ﺍﻟﺘﻲ ﺗﺮﻛﺘﻬﺎ.",ar)
 space
 
 show("If we read the data for Swimming Pool, we discover that it takes up plenty of wood, but not anything else. So, we're looking for a large, open clearing near wood. I think I saw one of those just North-East of our main base, right above the stone. Let's build our new Swimming Pool there. Remember to take advantage of your large amount of free workers to get the Pool put up quickly.")
@@ -312,6 +342,7 @@ show("Wenn du dir die Daten des Schwimmbades ansiehst, stellst du fest, dass nur
 show("Si leemos los datos de la piscina, descubrimos que requiere mucha madera, pero nada más.  Así que buscaremos un espacio libre cerca a la madera.  Creo que vimos uno de esos, justo al noreste de nuestra base principal, debajo de las rocas.  Construyamos nuestra nueva piscina ahí.  Recuerda aprovechar la gran cantidad de trabajadores que tienes desempleados para construir la piscina rápido.",es)
 show("Als we de gegevens van het Zwembad er op na slaan, ontdekken we dat er veel hout nodig is, maar verder niets. Dus we zoeken naar een groot open gebied, in de buurt van hout. Ik geloof dat ik zoiets heb gezien, net ten noord-oosten van onze basis, vlak boven de steengroeve. Laten we het Zwembad daar bouwen. Vergeet niet gebruik te maken van het aantal vrije werkers dat je hebt, zodat het Zwembad vlug klaar is.",nl)
 show("Если прочитать данные о Бассейне, то мы узнаем, что он требует много дерева, но не требует ничего другого. Поэтому мы ищем большое расчищенное место возле леса. Мне кажется я вижу одно из таких как раз на северо-востоке от нашей главной базы, чуть выше камня. Давайте построим наш новый Бассейн здесь. Не забудьте использовать большое количество свободных рабочих, чтобы построить Бассейн быстро.",ru)
+show("ﺇﺫﺍ ﻗﺮﺃﻧﺎ ﺍﻟﻤﻌﻠﻮﻣﺎﺕ ﺍﻟﻤﻮﺟﻮﺩﺓ ﻋﻦ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ ﻓﺴﻨﺠﺪ ﺃﻧﻬﺎ ﺗﺘﻄﻠﺐ ﺍﻟﻜﺜﻴﺮ ﻣﻦ ﺍﻟﺨﺸﺐ، ﻭﻟﻜﻦ ﻻ ﺗﺘﻄﻠﺐ ﺷﻴﺌًﺎ ﺁﺧﺮ. ﻟﺬﻟﻚ ﺳﻨﺒﺤﺚ ﻋﻦ ﻣﻜﺎﻥ ﻭﺍﺳﻊ ﻭﻗﺮﻳﺐ ﻣﻦ ﺍﻟﺨﺸﺐ. ﺃﻋﺘﻘﺪ ﺃﻧﻨﻲ ﺭﺃﻳﺖ ﻣﺜﻞ ﻫﺬﺍ ﺍﻟﻤﻜﺎﻥ ﺷﻤﺎﻟﻲ ﺷﺮﻗﻲ ﻗﺎﻋﺪﺗﻨﺎ ﺍﻟﺮﺋﻴﺴﻴﺔ؛ ﺇﻧﻪ ﻓﻮﻕ ﺍﻟﺤﺠﺮ ﺗﻤﺎﻣًﺎ. ﻟﻨﺒﻦِ ﺑﺮﻛﺔ ﺳﺒﺎﺣﺘﻨﺎ ﻫﻨﺎﻙ. ﺗﺬﻛﺮ ﺃﻥ ﺗﺴﺘﻔﻴﺪ ﻣﻦ ﺍﻟﻜﻤﻴﺔ ﺍﻟﻜﺒﻴﺮﺓ ﻣﻦ ﺍﻟﻌﻤﺎﻝ ﺍﻟﻔﺎﺭﻏﻴﻦ ﻟﺪﻳﻚ ﺣﺘﻰ ﻧﺸﻴﺪ ﺍﻟﺒﺮﻛﺔ ﺳﺮﻳﻌًﺎ.",ar)
 wait(Pool(0, 0) > 0)
 hide
 unhilightBuildingOnPanel(Pool)
@@ -324,6 +355,7 @@ show("Wow! Was für ein wundervolles Schwimmbad du gebaut hast. Du solltest scho
 show("Guau!  Que gran y maravillosa piscina has construido.  Seguro has visto tus glóbulos encaminarse a ella para aprender una nueva habilidad!",es)
 show("Wauw! Wat een groot en prachtig Zwembad heb je gebouwd. Als het goed is zijn er al globules onderweg om een nieuwe vaardigheid te leren!",nl)
 show("Поразительно! Что за изумительный большой Бассейн Вы построили. Вы должны уже увидеть как Ваши глобулы начинают изучать новое умение в нём!",ru)
+show("ﻳﺎ ﺇﻟﻬﻲ! ﻳﺎﻟﻬﺬﻩ ﺍﻟﺒﺮﻛﺔ ﺍﻟﻜﺒﻴﺮﺓ ﻭﺍﻟﻌﺠﻴﺒﺔ. ﻻﺑﺪ ﺃﻧﻚ ﻻﺣﻈﺖ ﺷﻘﺎﻟﺒﻚ ﻭﻫﻲ ﺗﺪﺧﻞ ﺇﻟﻰ ﻫﻨﺎﻙ ﻟﺘﺘﻌﻠﻢ ﺍﻟﻤﻬﺎﺭﺓ ﺍﻟﺠﺪﻳﺪﺓ!",ar)
 space
 
 hilightBuildings(Pool)
@@ -333,6 +365,7 @@ show("Verfolge doch mal den Fortschritt im Schwimmbad. Klicke dazu auf das Schwi
 show("Revisemos el progreso, lo hacemos?  Selecciona la piscina, y mira en el menú derecho.  Al igual que la pista de carreras, hay una larga barra, y pequeñas barras verticales azules viajando a través de ella. Pero a diferencia de la pista de carreras, solamente 3 glóbulos pueden entrenar en una piscina en un momento dado.",es)
 show("Laten we de vooruitgang eens in de gaten houden. Klik op het Zwembad en kijk naar het menu aan de rechterkant. Net als bij de Racebaan is er een lange balk en kleine blauwe verticale balkjes die eroverheen bewegen. Alleen mogen er in het Zwembad maar drie globules tegelijkertijd trainen.",nl)
 show("Давайте проследим за продвижением. Щелкните по Бассейну и посмотрите на меню справа. Как и у Стадиона, здесь есть длинная полоса и маленькие синие линии движущиеся вдоль неё. Однако, в отличие от Стадиона, только 3 глобулы могут тренироваться в Бассейне одновременно.",ru)
+show("ﺩﻋﻨﺎ ﻧﺮﺍﻗﺐ ﺍﻟﺘﻘﺪﻡ، ﻣﺎ ﺭﺃﻳﻚ؟ ﺍﻧﻘﺮ ﻋﻠﻰ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ ﺍﻵﻥ، ﻭﺍﻧﻈﺮ ﺇﻟﻰ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﻤﻮﺟﻮﺩﺓ ﺇﻟﻰ ﺍﻟﻴﻤﻴﻦ. ﺳﺘﺠﺪ ﺷﺮﻳﻄًﺎ ﻃﻮﻳﻼً ﻭﺧﻄﻮﻃًﺎ ﺯﺭﻗﺎء ﺻﻐﻴﺮﺓ ﺗﻌﺒﺮﻩ ﻛﻤﺎ ﻓﻲ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ، ﻭﻟﻜﻦ ﻻ ﻳﺴﻤﺢ ﺇﻻ ﺑﻮﺟﻮﺩ ٣ ﺷﻘﻼﺑﺎﺕ ﻓﻲ ﺍﻟﻮﻗﺖ ﻧﻔﺴﻪ ﻓﻲ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ ﻭﻫﺬﺍ ﺑﺨﻼﻑ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ.",ar)
 space
 unhilightBuildings(Pool)
 
@@ -342,6 +375,7 @@ show("Unsere Einheiten sind nun erstklassige Schwimmer. Aber wir wollen sie jetz
 show("Nuestros glóbulos son nadadores de primera!  Pero no hemos visto demostración de esto, tendremos que invitarlos a que aprovechen su nueva habilidad de nado.",es)
 show("Onze globules zijn nu eersteklas zwemmers! Maar we hebben ze nog niet veel zwemwerk zien doen. Laten we eens van hun nieuw aangeleerde vaardigheden gebruikmaken.",nl)
 show("Наши глобулы теперь первоклассные пловцы! Но мы пока не увидим их много плавающими. Нам нужно сделать что-нибудь такое, что будет обращаться к их новым выученным навыкам плавания.",ru)
+show("ﺃﺻﺒﺤﺖ ﺷﻘﺎﻟﺒﻨﺎ ﺍﻵﻥ ﺳﺒﺎﺣﺎﺕ ﻣﻦ ﺍﻟﺪﺭﺟﺔ ﺍﻷﻭﻟﻰ! ﻭﻟﻜﻨﻨﺎ ﻟﻦ ﻧﺮﺍﻫﻢ ﻭﻫﻢ ﻳﺴﺒﺤﻮﻥ ﻛﺜﻴﺮًﺍ ﺑﻌﺪ. ﻧﻮﺩ ﺃﻥ ﻧﻔﻌﻞ ﺷﻴﺌًﺎ ﻳﺘﻄﻠﺐ ﻣﻬﺎﺭﺓ ﺍﻟﺴﺒﺎﺣﺔ ﺍﻟﺘﻲ ﺗﻌﻠﻤﻮﻫﺎ ﺣﺪﻳﺜًﺎ.",ar)
 space
 
 hilightItem("main menu icon")
@@ -351,6 +385,7 @@ show("Es wird eine Menge Situationen geben, in denen schwimmen nützlich sein wi
 show("Habrá muchas cosas que demostrarán la utilidad de nadar. Así que no desistas todavía, hay mucho por aprender.  Si no tienes tiempo para continuar, recuerda que puedes guardar en cualquier momento con el ícono de menú, que está en la esquina superior izquierda del minimapa.",es)
 show("Er zijn talloze dingen waarbij zwemmen nuttig is. Dus stop nog niet: er is nog veel te leren. Als je niet genoeg tijd hebt om verder te spelen, onthoud dan dat je je vorderingen kunt opslaan via het menu icoon, links van de minikaart.",nl)
 show("Тут будет множество вещей, которые сделают плавание полезным, поэтому не выходите пока. Есть ещё много чему научиться. Если у Вас нет времени, чтобы продолжить, помните, что Вы в любое время можете сохранить игру используя иконку меню в левом-верхнем углу мини-карты.",ru)
+show("ﺳﻴﻜﻮﻥ ﻫﻨﺎﻙ ﺍﻟﻜﺜﻴﺮ ﻣﻦ ﺍﻷﺷﻴﺎء ﺍﻟﺘﻲ ﺳﺘﺠﻌﻞ ﻣﻦ ﺍﻟﺴﺒﺎﺣﺔ ﺃﻣﺮًﺍ ﻣﻔﻴﺪًﺍ، ﻓﻼ ﺗﺴﺘﻌﺠﻞ ﺍﻵﻥ. ﻣﺎﺯﺍﻝ ﻫﻨﺎﻙ ﺍﻟﻜﺜﻴﺮ ﻟﺘﺘﻌﻠﻤﻪ. ﺗﺬﻛﺮ ﺃﻥ ﺑﺎﺳﺘﻄﺎﻋﺘﻚ ﺣﻔﻆ ﺍﻟﻠﻌﺒﺔ ﻓﻲ ﺃﻱ ﻭﻗﺖ ﺇﻥ ﻟﻢ ﺗﻤﻠﻚ ﺍﻟﻮﻗﺖ ﺍﻟﻜﺎﻓﻲ ﻟﻠﻤﻮﺍﺻﻠﺔ، ﻭﻫﺬﺍ ﻋﻦ ﻃﺮﻳﻖ ﺃﻳﻘﻮﻧﺔ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﻤﻮﺟﻮﺩﺓ ﻓﻲ ﺍﻟﺮﻛﻦ ﺍﻷﻋﻠﻰ ﻣﻦ ﺍﻟﻴﺴﺎﺭ ﻣﻦ ﺍﻟﺨﺎﺭﻃﺔ ﺍﻟﻤﺼﻐﺮﺓ.",ar)
 space
 unhilightItem("main menu icon")
 
@@ -360,6 +395,7 @@ show("Unser Reich wird stabiler. Unsere Einheiten werden bessere Athleten. Wir s
 show("Nuestro imperio es más estable. Nuestros glóbulos son atléticos. Es indispensable enseñarle a los glóbulos a usar su cerebro. Necesitamos una escuela!",es)
 show("Ons rijk wordt steeds stabieler. Onze globules worden echte atleten. Wat we nu nog nodig hebben, zijn globules die hun hersenen gebruiken. Wat we nodig hebben is een School!",nl)
 show("Наша империя становится более прочной. Наши глобулы становятся лучшими атлетами. Что нам нужно, так это научить наши глобулы использовать свой мозг. Нам нужна Школа!",ru)
+show("ﺃﺻﺒﺤﺖ ﺇﻣﺒﺮﺍﻃﻮﺭﻳﺘﻨﺎ ﺃﻛﺜﺮ ﺍﺳﺘﻘﺮﺍﺭًﺍ. ﻭﺃﺻﺒﺤﺖ ﺷﻘﺎﻟﺒﻨﺎ ﺭﻳﺎﺿﻴﺔ ﺃﻛﺜﺮ. ﺇﻥ ﻣﺎ ﻧﺤﺘﺎﺟﻪ ﺍﻵﻥ ﻫﻮ ﺃﻥ ﻧﻌﻠﻢ ﺷﻘﻼﺑﺎﺗﻨﺎ ﻛﻴﻒ ﺗﺴﺘﺨﺪﻡ ﻋﻘﻮﻟﻬﺎ. ﻣﺎ ﻧﺤﺘﺎﺟﻪ ﻫﻮ ﺍﻟﻤﺪﺭﺳﺔ!",ar)
 space
 
 GuiEnable(School)
@@ -371,6 +407,7 @@ show("Eine Schule wird deinen Einheiten beibringen bessere Sammler zu werden und
 show("En una escuela enseñaremos a nuestros glóbulos a recolectar y construir mejor. Una escuela requiere pocas cosas para construirse, lo más importante: algas.  Aquí es cuando nuestros nadadores serán de utilidad, puesto que las algas crecen en el agua.",es)
 show("Een school leert onze globules beter grondstoffen te verzamelen en betere gebouwen te maken. Een School heeft een aantal dingen nodig om gebouwd te worden, maar het belangrijkste is zeewier. Hier komen onze zwemmers goed van pas, daar het zeewier alleen voorkomt in het water.",nl)
 show("Школа научит наших глобул лучше собирать и строить лучшие здания. Чтобы построить школу нужны несколько вещей, и самой важной являются водоросли. Вот где пригодятся наши пловцы, т.к. водоросли растут только на воде.",ru)
+show("ﺳﺘﻌﻠﻢ ﺍﻟﻤﺪﺭﺳﺔ ﺷﻘﺎﻟﺒﻨﺎ ﻛﻴﻒ ﺗﺤﺼﺪ ﺃﻓﻀﻞ، ﻭﻛﻴﻒ ﺗﺒﻨﻲ ﻣﺒﺎﻧﻲ ﺃﺣﺴﻦ. ﺗﺤﺘﺎﺝ ﺍﻟﻤﺪﺭﺳﺔ ﺇﻟﻰ ﺑﻌﺾ ﺍﻷﺷﻴﺎء ﻟﺘُﻨﺸﺄ، ﻭﺃﻫﻢ ﻫﺬﻩ ﺍﻷﺷﻴﺎء ﺍﻟﻄﺤﺎﻟﺐ. ﺍﻵﻥ ﺳﻴﺼﺒﺢ ﺳﺒﺎﺣﻮﻧﺎ ﻣﻔﻴﺪﻳﻦ، ﻓﺎﻟﻄﺤﺎﻟﺐ ﻻ ﺗﻨﻤﻮ ﺇﻻ ﻋﻠﻰ ﺍﻟﻤﺎء.",ar)
 space
 
 show("However, there is one important thing to know about Schools. The wrong thing to do with a School is place it near water. Your School is extremely important to your society. During the course of the game, if you don't have Schools, it will give your opponent a huge advantage, so it's important to keep your Schools inland, and protected from your enemies, rather than on the outskirts of your base, just waiting to be destroyed.")
@@ -379,6 +416,7 @@ show("Es gibt etwas Wichtiges über Schulen zu wissen: Das Falscheste, was du tu
 show("Hay algo muy importante acerca de las escuelas. Es una pésima idea colocarla cerca al agua. Tu escuela es sumamente importante para tu sociedad.  Durante un juego, no tener una escuela le dará a tus oponentes gran ventaja, por lo tanto, manténlas al interior y protegidas de tus enemigos, en lugar de los suburbios, esperando a ser destruidas. ",es)
 show("Echter, er is nog één belangrijk ding om te weten over de School: het is niet verstandig om hem dichtbij het water te bouwen. De School is erg belangrijk voor de maatschappij. Tijdens het spelverloop heeft je tegenstander een groot voordeel als je niet over Scholen beschikt. Het is dus belangrijk om je Scholen binnenlands en in veilig gebied te bouwen. Niet in grensgebieden, waar ze wachten om vernietigd te worden.",nl)
 show("Однако, есть одна важная вещь, которую нужно знать о Школах. Размещать Школу возле воды это неправильно. Ваша Школа крайне важна для Вашего сообщества. В течение игры, если Вы не будете иметь Школы, это даст огромное преимущество Вашему сопернику, поэтому важно держать Школу в глубине вашей страны защищенную от врагов, а не на окраине Вашей базы, так и ждущей пока её кто-нибудь не разрушит.",ru)
+show("ﻭﻟﻜﻦ ﻫﻨﺎﻙ ﺃﻣﺮًﺍ ﻳﺠﺐ ﺃﻥ ﺗﻌﻠﻤﻪ ﺑﺨﺼﻮﺹ ﺍﻟﻤﺪﺍﺭﺱ، ﻓﺎﻟﻤﻜﺎﻥ ﺍﻟﺨﺎﻃﺊ ﻟﺒﻨﺎء ﺍﻟﻤﺪﺭﺳﺔ ﻫﻮ ﺃﻥ ﺗﻜﻮﻥ ﺑﺠﺎﻧﺐ ﺍﻟﻤﺎء. ﺇﻥ ﻣﺪﺭﺳﺘﻚ ﺷﺪﻳﺪﺓ ﺍﻷﻫﻤﻴﺔ ﻟﻤﺠﺘﻤﻌﻚ، ﻓﺈﻥ ﻟﻢ ﺗﻜﻦ ﺗﻤﻠﻚ ﻣﺪﺍﺭﺱ ﺃﺛﻨﺎء ﺳﻴﺮ ﺍﻟﻠﻌﺒﺔ، ﻓﺴﻴﻜﻮﻥ ﻫﺬﺍ ﻣﺼﻠﺤﺔ ﻫﺎﺋﻠﺔ ﻟﺨﺼﻤﻚ. ﻟﺬﺍ ﻓﻤﻦ ﺍﻟﻤﻬﻢ ﺑﻨﺎء ﻣﺪﺍﺭﺳﻚ ﺩﺍﺧﻞ ﺍﻟﺒﻼﺩ، ﻭﺃﻥ ﺗﺤﻤﻴﻬﺎ ﻣﻦ ﺃﻋﺪﺍﺋﻚ، ﺑﺪﻻً ﻣﻦ ﺃﻥ ﺗﻀﻌﻬﺎ ﻋﻠﻰ ﺿﻮﺍﺣﻲ ﻣﺴﺘﻌﻤﺮﺗﻚ ﺑﺎﻧﺘﻈﺎﺭ ﺗﺪﻣﻴﺮﻫﺎ.",ar)
 space
 
 show("It's my suggestion to you to build your School tucked in behind your Swimming Pool. However, if you feel it might be more protected south-west of your Swarm beside the Racetrack, or at any other spot of your choice, be my guest to build it there. You probably have lots of units by now, so be sure to take advantage of all of them.")
@@ -387,6 +425,7 @@ show("Es ist meine Empfehlung deine Schule hinter das Schwimmbad zu bauen. Wie a
 show("Te sugerimos que construyas tu escuela justo detrás de tu piscina, pero si consideras que tendría más protección al suroeste de tu colmena cerca a la pista de carreras, ese sería otro sitio para elegir. Si así lo deseas, adelante!  Debes tener muchas unidades en este momento, así que asegúrate de darles buen uso.",es)
 show("Ik stel voor om de School verdekt op te stellen achter het Zwembad. Echter, als je het gevoel hebt dat je School veiliger is ten zuid-westen van de Zwerm, naast de Racebaan, of op elke andere plek, wees dan zo vrij om hem daar te bouwen. Je zal inmiddels wel voldoende eenheden hebben, dus verzeker jezelf ervan dat je deze ten volle benut.",nl)
 show("Я предлагаю Вам построить Школу спрятанной за Бассейном. Однако, если Вы думаете, что она может быть будет лучше защищена на юго-западе от Роя за Стадионом или в любой другой точке оп Вашему выбору, пожалуйста, стройте там. У Вас наверно уже множество юнитов, поэтому убедитесь, что используете их по полной.",ru)
+show("ﺃﻗﺘﺮﺡ ﺃﻥ ﺗﺒﻨﻲ ﻣﺪﺭﺳﺘﻚ ﺧﻠﻒ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ، ﻭﻟﻜﻦ ﺇﻥ ﻛﻨﺖ ﺗﺮﻯ ﺃﻧﻪ ﺳﺘﻜﻮﻥ ﺃﻛﺜﺮ ﺃﻣﺎﻧًﺎ ﺇﻥ ﻭُﺿﻌﺖ ﺑﺠﺎﻧﺐ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ ﺇﻟﻰ ﺟﻨﻮﺏ ﻏﺮﺏ ﺍﻟﻮﻛﺮ، ﺃﻭ ﻓﻲ ﺃﻱ ﻣﻜﺎﻥ ﺁﺧﺮ ﺗﺤﺒﺬﻩ، ﻓﻼ ﺗﺘﺮﺩﺩ ﻓﻲ ﻓﻌﻞ ﺫﻟﻚ. ﻻﺑﺪ ﺃﻥ ﻟﺪﻳﻚ ﺍﻟﻜﺜﻴﺮ ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻵﻥ، ﻓﺘﺄﻛﺪ ﻣﻦ ﺍﻻﻧﺘﻔﺎﻉ ﻣﻨﻬﻢ ﺟﻤﻴﻌًﺎ.",ar)
 wait(School(0, 0) > 0)
 unhilightBuildingOnPanel(School)
 unhilightItem("under minimap icons")
@@ -399,6 +438,7 @@ show("Ahh! Es ist verrückt, so viele Einheiten, die sich in alle möglichen Ric
 show("Hey! Esto está complicándose con esa cantidad de glóbulos de aquí para allá.  Me confundo.  Sería bueno saber a ciencia cierta a dónde se dirigen.  Para descubrirlo usa la 'T'.  Mostrará líneas que conectan las unidades con su destino. Cuando oprimes 'T' de nuevo, ocultas su sentido. Por otra parte, si deseas saber qué unidades están trabajando en qué edificación, por ejemplo en la escuela, oprime en la edificación y mantén el botón pulsado.",es)
 show("Aah! Het wordt een gekkenhuis met al die globules die alle kanten op gaan. Ik raak er van in de war. Het zou handig zijn om te kunnen zien waar de globules heen gaan. Om dit te kunnen zien druk je op 'T'. Je ziet dan de lijnen die de globules verbinden met hun bestemming. Om dit effect ongedaan te maken druk je nogmaals op 'T'. Tevens is het mogelijk om te zien hoeveel eenheden er werken voor een bepaald gebouw, bijvoorbeeld de School. Klik op het gebouw het houdt de muisknop ingedrukt.",nl)
 show("Ааа! Здесь становится невыносимо со всеми этими глобулами снующими туда-сюда. Ох, я совсем запутался. Было бы несомненно полезно выяснить куда Ваши глобулы направляются. Чтобы сделать это, нажмите клавишу 't'. Это покажет прямые линии связывающие юнитов и их пункт назначения. Вы можете нажать 't' снова, чтобы отменить это действие. Также, если Вы хотите выяснить какие юниты работают на какое-то конкретное здание, например Школу, то просто щелкните по нему мышкой.",ru)
+show("ﺁﺁﻉ! ﺇﻥ ﺍﻟﻮﺿﻊ ﻫﻨﺎ ﺟﻨﻮﻧﻲ ﻭﻫﺬﻩ ﺍﻟﺸﻘﺎﻟﺐ ﺗﻤﺸﻲ ﻫﻨﺎ ﻭﻫﻨﺎﻙ. ﺭﺑﻲ! ﺇﻧﻨﻲ ﻣﺸﻮﺵ ﺟﺪًﺍ. ﺳﻴﻜﻮﻥ ﺭﺍﺋﻌًﺎ ﺇﻥ ﺍﺳﺘﻄﻌﻨﺎ ﻣﻌﺮﻓﺔ ﺍﺗﺠﺎﻩ ﺫﻫﺎﺏ ﺍﻟﺸﻘﻼﺑﺎﺕ. ﻟﺘﻔﻌﻞ ﻫﺬﺍ، ﺍﺿﻐﻂ ﺯﺭ "ﻑ". ﺑﻬﺬﺍ ﺳﺘﺘﻤﻜﻦ ﻣﻦ ﻓﻬﻢ ﺍﺗﺠﺎﻩ ﺍﻟﺸﻘﺎﻟﺐ، ﻭﺫﻟﻚ ﻋﻦ ﻃﺮﻳﻖ ﺗﺘﺒﻊ ﺧﻄﻮﻁ ﻣﺒﺎﺷﺮﺓ ﺗﻨﻄﻠﻖ ﻣﻦ ﺍﻟﻮﺣﺪﺓ ﻭﺗﺸﻴﺮ ﺇﻟﻰ ﻭﺟﻬﺘﻬﺎ. ﺍﺿﻐﻂ "ﻑ" ﺛﺎﻧﻴﺔً ﻟﺘﻠﻐﻲ ﻫﺬﺍ ﺍﻟﺘﺄﺛﻴﺮ. ﻭﻛﺬﻟﻚ ﻓﺈﻥ ﻛﻨﺖ ﺗﺮﻳﺪ ﺃﻥ ﺗﻌﺮﻑ ﻣﺎ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﺘﻲ ﺗﻌﻤﻞ ﻟﺪﻯ ﻣﺒﻨﻰ ﻣﻌﻴﻦ، ﻛﺎﻟﻤﺪﺭﺳﺔ ﻋﻠﻰ ﺳﺒﻴﻞ ﺍﻟﻤﺜﺎﻝ، ﻓﺎﻧﻘﺮ ﻋﻠﻰ ﺫﻟﻚ ﺍﻟﻤﺒﻨﻰ ﻭﺣﺴﺐ.",ar)
 space
 hide
 wait(School(0, 1) > 0)
