@@ -20,6 +20,8 @@
 #ifndef __STREAMBACKEND_H
 #define __STREAMBACKEND_H
 
+#include <fstream>
+#include <iostream>
 #include <Types.h>
 #include <string>
 #include <stdio.h>
