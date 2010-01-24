@@ -443,13 +443,16 @@ int Engine::run(void)
 				{
 					assert(globalContainer->replay);
 					
-					if (globalContainer->replayOrdersProcessed < globalContainer->replayOrdersTotal && !globalContainer->replay->isEndOfStream())
+					while ( globalContainer->replayStepCounter == 0 &&
+						globalContainer->replayOrdersProcessed < globalContainer->replayOrdersTotal &&
+						!globalContainer->replay->isEndOfStream())
 					{
-						while (globalContainer->replayStepCounter == 0)
-						{
-							globalContainer->replayOrdersProcessed++;
+						globalContainer->replayOrdersProcessed++;
 
-							NetSendOrder* msg = new NetSendOrder();
+						NetSendOrder* msg = new NetSendOrder();
+
+						try
+						{
 							msg->decodeData(globalContainer->replay);
 							shared_ptr<Order> order = msg->getOrder();
 
@@ -458,10 +461,15 @@ int Engine::run(void)
 							{
 								gui.executeOrder(order);
 							}
-
-							delete msg;
-							globalContainer->replayStepCounter = globalContainer->replay->readUint32("replayStepCounter");
 						}
+						catch (const std::ios_base::failure &e)
+						{
+							std::cout << "Error in replay: " << e.what() << std::endl;
+						}
+						catch (...) { assert(false); }
+
+						delete msg;
+						globalContainer->replayStepCounter = globalContainer->replay->readUint32("replayStepCounter");
 					}
 					
 					if (globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
