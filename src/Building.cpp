@@ -1133,6 +1133,7 @@ void Building::updateUnitsWorking(void)
 
 void Building::updateUnitsHarvesting(void)
 {
+	// if we are not alive or has not vision, remove all units harvesting from this building
 	for (std::list<Unit *>::iterator it=unitsHarvesting.begin(); it!=unitsHarvesting.end();)
 	{
 		std::list<Unit *>::iterator tmpIt = it;
