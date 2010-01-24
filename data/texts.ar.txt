@@ -1,1224 +1,1216 @@
 [%0 has left the game]
-%0 تركو اللعبه.
+ﺧﺮﺝ %0 ﻣﻦ ﺍﻟﻠﻌﺒﺔ
 [%0 level %1]
-
+%0 ﻣﺴﺘﻮﻯ %1
 [%0 units can't access building]
-
+ﺗﻌﺬﺭ ﻋﻠﻰ %0 ﺍﻟﻮﺻﻮﻝ ﻟﻠﻤﺒﻨﻰ
 [%0 units can't access flag]
-
+ﺗﻌﺬﺭ ﻋﻠﻰ %0 ﺍﻟﻮﺻﻮﻝ ﻟﻠﻌﻠﻢ
 [%0 units can't access fruit]
-
+ﺗﻌﺬﺭ ﻋﻠﻰ %0 ﺍﻟﻮﺻﻮﻝ ﻟﻠﻔﺎﻛﻬﺔ
 [%0 units can't access resource]
-
+ﺗﻌﺬﺭ ﻋﻠﻰ %0 ﺍﻟﻮﺻﻮﻝ ﻟﻠﻤﻮﺭﺩ
 [%0 units not available]
-
+ﻻ ﺗﺘﻮﻓﺮ %0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ
 [%0 units too far from building]
-
+%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻴﺪﺓ ﻋﻦ ﺍﻟﻤﺒﻨﻰ
 [%0 units too far from flag]
-
+%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻴﺪﺓ ﻋﻦ ﺍﻟﻌﻠﻢ
 [%0 units too far from fruit]
-
+%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻴﺪﺓ ﻋﻦ ﺍﻟﻔﺎﻛﻬﺔ
 [%0 units too far from resource]
-
+%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻴﺪﺓ ﻋﻦ ﺍﻟﻤﻮﺭﺩ
 [%0 units too low level]
-
+%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﻣﺴﺘﻮﻳﺎﺗﻬﺎ ﻣﻨﺨﻔﻀﺔ
 [%0% Uploaded]
-
+%0% uploaded
 [%0's game]
-
+ﻟﻌﺒﺔ %0
 [%0's team unit got converted to your team]
-%0's team unit got converted to your team
+ﺗﺤﻮﻟﺖ ﻭﺣﺪﺓ ﻣﻦ ﻓﺮﻳﻖ %0 ﺇﻟﻰ ﻓﺮﻳﻘﻚ
 [abreaviation explanation A]
-A: Allies
+A: ﺃﺻﺪﻗﺎء
 [abreaviation explanation C]
-C: Send chat messages to
+C: ﺗُﺮﺳﻞ ﻟﻬﻢ ﺭﺳﺎﺋﻞ ﺍﻟﻤﺤﺎﺩﺛﺎﺕ
 [abreaviation explanation fV]
-Vf: Show vision for Inn buildings (to steal units)
+fV: (ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﻤﺒﺎﻧﻲ ﺍﻟﻨُّﺰﻝ (ﻟﺴﺮﻗﺔ ﺍﻟﻮﺣﺪﺍﺕ
 [abreaviation explanation mV]
-mV: Show vision for Markets buildings (to exchange fruits)
+mV: (ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﻸﺳﻮﺍﻕ (ﻟﺘﺒﺎﺩﻝ ﺍﻟﻔﻮﺍﻛﻪ
 [abreaviation explanation V]
-V: Show vision for all buildings
+V: ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﺠﻤﻴﻊ ﺍﻟﻤﺒﺎﻧﻲ
 [add map]
-
+ﺃﺿِﻒ ﺧﺎﺭﻃﺔ
 [add shortcut]
-
+ﺃﺿِﻒ ﺍﺧﺘﺼﺎﺭًﺍ
 [Add]
-
+ﺃﺿِﻒ
 [AI Descriptions]
-
+ﺃﻭﺻﺎﻑ ﺍﻵﻟﻴﻴﻦ
 [AI]
-AI
+ﺁﻟﻲ
 [ai]
-AI
+ﺁﻟﻲ
 [AICastor-Description]
-
+ﺍﻟﺠﺮﻱء - ﻳﻠﻌﺐ ﺑﺘﺤﻔﻆ ﻭﻳُﺤﺴِﻦ ﺍﻟﻠﻌﺐ ﻓﻲ ﺍﻟﺨﺮﺍﺋﻂ ﺫﺍﺕ ﺍﻟﻤﻮﺍﺭﺩ ﺍﻟﻘﻠﻴﻠﺔ. ﻣﺘﻮﺳﻂ ﺍﻟﺼﻌﻮﺑﺔ.
 [AICastor]
-AICastor
+ﺟﺮﻱء
 [AINicowar-Description]
-
+ﺍﻟﻨﺬﻝ - ﻳﻠﻌﺐ ﺑﻌﻨﻒ، ﻭﻳﻨﻤﻮ ﺳﺮﻳﻌًﺎ ﻭﻳﻠﻘﻲ ﺑﺠﻴﻮﺵ ﻛﺒﻴﺮﺓ ﻋﻠﻰ ﺧﺼﻮﻣﻪ. ﺷﺪﻳﺪ ﺍﻟﺼﻌﻮﺑﺔ.
 [AINicowar]
-Nicowar
+ﻧﺬﻝ
 [AINone-Description]
-
+ﻻ ﺷﻲء - ﻻ ﻳﻔﻌﻞ ﺷﻴﺌًﺎ.
 [AINone]
-AINone
+ﻻ ﺷﻲء
 [AINumbi-Description]
-
+ﺍﻷﺧﺮﻕ - ﻳﺘَّﺴﻊ ﺑﺸﻜﻞ ﻗﻠﻴﻞ ﻭﺧﻔﻴﻒ. ﻗﻠﻴﻞ ﺍﻟﺼﻌﻮﺑﺔ.
 [AINumbi]
-AINumbi
+ﺃﺧﺮﻕ
 [AIReachToInfinity-Description]
-
+ﻭﺻﻮﻝﺇﻟﻰﺍﻟﻼﻧﻬﺎﺋﻴﺔ - ﻻ ﻳﻬﺎﺟﻢ، ﻭﻟﻜﻨﻪ ﻳﺒﻨﻲ ﻗﻮﺍﻋﺪ ﻫﺎﺋﻠﺔ ﻭﻳﺤﻮﻝ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻨﻒ. ﻗﻠﻴﻞ ﺍﻟﺼﻌﻮﺑﺔ.
 [AIReachToInfinity]
-ReachToInfinity
+ﻭﺻﻮﻝﺇﻟﻰﺍﻟﻼﻧﻬﺎﺋﻴﺔ
 [AIToubib-Description]
-
+ﻃﺒﻴﺐ
 [AIToubib]
-AIToubib
+ﻃﺒﻴﺐ
 [AIWarrush-Description]
-
+ﺍﻟﻤﻨﺪﻓﻊ - ﻳﻬﺎﺟﻢ ﺑﺴﺮﻋﺔ ﻭﻗﻮﺓ. ﻏﺎﻟﺒًﺎ ﻣﺎ ﻳﻠﻘﻲ ﺑﺎﻟﻼﻋﺐ ﺍﻟﻤﺪﺍﻓﻊ ﺇﻟﻰ ﻧﻬﺎﻳﺔ ﻟﻌﺒﺘﻪ. ﻣﺘﻮﺳﻂ ﺍﻟﺼﻌﻮﺑﺔ.
 [AIWarrush]
-AIWarrush
+ﻣﻨﺪﻓﻊ
 [Alga]
-طحلب
+ﻃﺤﺎﻟﺐ
 [algae]
-algae
+ﻃﺤﺎﻟﺐ
 [alliances]
-التحالفات
+ﺍﻟﺘﺤﺎﻟﻔﺎﺕ
 [alt %0]
-
+alt-%0
 [and]
-و
+ﻭ
 [any explorer]
-any explorer
+ﺃﻱ ﻣﺴﺘﻜﺸﻒ
 [are dying hungry]
-يموت من الجوع
+ﻳﺘﻀﻮﺭ ﺟﻮﻋًﺎ
 [are hungry]
-جائع
+ﺟﺎﺋﻊ
 [are ok]
-جيد
+ﺟﻴﺪ
 [are wonded]
-مجروح
+ﺟﺮﻳﺢ
 [armor]
-الدرع
+ﺍﻟﺪﺭﻉ
 [assigned]
-Assigned
+ﻣﻜﻠﻒ
 [At. speed]
-Att. speed
+ﺳﺮﻋﺔ ﺍﻟﻬﺠﻮﻡ
 [At. strength]
-Att. str.
+ﻗﻮﺓ ﺍﻟﻬﺠﻮﻡ
 [Attack]
-الهجوم
+ﺍﻟﻬﺠﻮﻡ
 [audio]
-الصوت
+ﺍﻟﺼﻮﺕ
 [auto save]
-حفظ تلقائى
+ﺍﻟﺤﻔﻆ ﺍﻟﺘﻠﻘﺎﺋﻲ
 [available lan games]
-Available local games
+ﺃﻟﻌﺎﺏ ﺍﻟﺸﺒﻜﺔ ﺍﻟﺪﺍﺧﻠﻴﺔ ﺍﻟﻤﺘﺎﺣﺔ
 [awaiting players]
-انتظار لاعبون
+ﺑﺎﻧﺘﻈﺎﺭ ﺍﻟﻼﻋﺒﻴﻦ
 [away:]
-بعيدا:
+away:
 [Back]
-
+ﻋُﺪ
 [backspace]
-
+backspace
 [barracks explanation 2]
-يرفع مستوى المحاربين
+ﺍﻟﻘﺘﺎﻟﻲ ﻟﻤﺤﺎﺭﺑﻴﻚ
 [barracks explanation]
-يحسن القتال
+ﺗﻄﻮﺭ ﻣﻦ ﺍﻟﻤﺴﺘﻮﻯ
 [barracks]
-ثكنه
+ﺛﻜﻨﺔ
 [beach size]
-حجم الشاطىء
+ﺣﺠﻢ ﺍﻟﺸﺎﻃﺊ
 [Blocked Players]
-
+ﺍﻟﻼﻋﺒﻮﻥ ﺍﻟﻤﻤﻨﻮﻋﻮﻥ
 [break]
-
+break
 [briefing]
-
+ﺍﻟﻤﻮﺟﺰ
 [build %0 level %1]
-
+ﺑﻨﺎء %0 ﻟﻠﻤﺴﺘﻮﻯ %1
 [Build]
-يبنى
+ﺍﻟﺒﻨﺎء
 [Building Defaults]
-
+ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﺍﻟﺒﻨﺎء
 [building settings]
-اعدادت الوحده
+ﺇﻋﺪﺍﺩﺍﺕ ﺍﻟﺒﻨﺎء
 [building site]
-موقع اﻷنشاء
+ﻣﻮﻗﻊ ﺇﻧﺸﺎء
 [Building Tool Box Explanation]
-
+ﻣﻔﺘﺎﺡ Shift ﻣﻊ ﺍﻟﺴﺤﺐ = ﺻﻨﺪﻭﻕ
 [Building Tool Line Explanation]
-
+ﻣﻔﺘﺎﺡ Ctrl ﻣﻊ ﺍﻟﺴﺤﺐ = ﺧﻂ
 [Buildings]
-المباني
+ﺍﻟﻤﺒﺎﻧﻲ
 [Bullets]
-الرصاص
+ﺍﻟﺮﺻﺎﺹ
 [campaign editor]
-
+ﻣﺤﺮﺭ ﺍﻟﺤﻤﻼﺕ
 [campaign]
-الحملة
+ﺣﻤﻠﺔ
 [Can't connect, can't find host]
-
+ﺗﻌﺬﺭ ﺍﻻﺗﺼﺎﻝ، ﺗﻌﺬﺭ ﺇﻳﺠﺎﺩ ﻣﻀﻴﻒ
 [Can't host game, port %0 in use]
-
+ﺗﻌﺬﺭ ﺍﻟﺘﻀﻴﻴﻒ، ﺍﻟﻤﻨﻔﺬ %0 ﻗﻴﺪ ﺍﻻﺳﺘﺨﺪﺍﻡ
 [Can't join game, game doesn't exist]
-
+ﺗﻌﺬﺭ ﺍﻻﻧﻀﻤﺎﻡ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ، ﺍﻟﻠﻌﺒﺔ ﻏﻴﺮ ﻣﻮﺟﻮﺩﺓ
 [Can't join game, game has started]
-
+ﺗﻌﺬﺭ ﺍﻻﻧﻀﻤﺎﻡ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ، ﺑﺪﺃﺕ ﺍﻟﻠﻌﺒﺔ
 [Can't join game, game is full]
-
-[Can't join game, missmatching game parameters]
-Can't join game, missmatching game parameters
-[Can't join game, timeout]
-Can't join game, timeout
-[Can't join game, wrong game version]
-Can't join game, wrong game version
+ﺗﻌﺬﺭ ﺍﻻﻧﻀﻤﺎﻡ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ، ﺍﻟﻠﻌﺒﺔ ﻣﻤﺘﻠﺌﺔ
 [cancel destroy]
-الغاء تدمر
+ﺃﻟﻎِ ﺍﻟﺘﺤﻄﻴﻢ
 [cancel repair]
-الغاء الاصلاح
+ﺃﻟﻎِ ﺍﻟﺘﺮﻣﻴﻢ
 [cancel upgrade]
-الغاء ترقية
+ﺃﻟﻎِ ﺍﻟﺘﺮﻗﻴﺔ
 [Cancel]
-الغاء
+ﺃﻟﻎِ
 [caps lock]
-
+caps lock
 [carry]
-يحمل:
+ﻳﺤﻤﻞ:
 [Change Area Name]
-Change Area Name
+ﻏﻴِّﺮ ﺍﺳﻢ ﺍﻟﻤﻨﻄﻘﺔ
 [Cherry]
-الكرز
+ﻛﺮﺯ
 [choose campaign]
-اختيار الحملة
+ﺍﺧﺘﺮ ﺣﻤﻠﺔ
 [choose game]
-اختر لعبه
+ﺍﺧﺘﺮ ﻟﻌﺒﺔ
 [choose map]
-اختر خريطه
+ﺍﺧﺘﺮ ﺧﺎﺭﻃﺔ
 [clear area]
-Clearing area
+ﻣﻨﻄﻘﺔ ﺗﺼﻔﻴﺔ
 [Clearing:]
-تبادل:
+ﻳﺼﻔﻲ:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Clears resources
+ﻳﺰﻳﻞ ﺍﻟﻤﺼﺎﺩﺭ
 [clearingflag]
-Clearing flag
+ﻋَﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ
 [closed]
-اغلق
+ﻣﻐﻠﻖ
 [combined vision]
-
+Combined vision
 [compile]
-ترجمة اﻷسكربت
+ﺍﺟﻤﻊ ﺍﻟﻨﺺ
 [compose]
-
+compose
 [Computing Fertility]
-
+ﻳﺤﺴﺐ ﺍﻟﺨﺼﻮﺑﺔ
 [concrete islands terrain]
-
+ﺟُﺰﺭ ﺻﻠﺒﺔ
 [connect]
-Connect
+ﺍﺗﺼﻞ
 [connecting to game]
-
+ﻳﺘﺼﻞ ﺑﺎﻟﻠﻌﺒﺔ
 [connecting to]
-Connecting to
+ﻳﺘﺼﻞ ﺑ
 [Construction Site Defaults]
-
+ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﻣﻮﺍﻗﻊ ﺍﻹﻧﺸﺎء
 [Continue playing]
-تابع اللعب
+ﻭﺍﺻﻞ ﺍﻟﻠﻌﺐ
 [control %0]
-
+control-%0
 [Corn]
-الذرة
+ﻗﻤﺢ
 [crater density]
-crater count
+ﻋﺪﺩ ﺍﻟﻔﻮﻫﺎﺕ
 [crater lakes terrain]
-Crater Lakes
+ﺑﺤﻴﺮﺍﺕ ﻓﻮﻫﺎﺕ
 [create game]
-انشاء لعبه
+ﺃﻧﺸﺊ ﻟﻌﺒﺔ
 [create map]
-Create map
+ﺃﻧﺸﺊ ﺧﺎﺭﻃﺔ
 [credits]
-Credits
+ﺍﻹﺷﺎﺩﺍﺕ
 [ctrl - line]
-
+ﻣﻔﺘﺎﺡ Ctrl - ﺧﻂ
 [current speed]
-السرعه الحاليه
+ﺍﻟﺴﺮﻋﺔ ﺍﻟﺤﺎﻟﻴﺔ
 [custom game]
-Custom game
+ﻟﻌﺒﺔ ﻣﺨﺼﺼﺔ
 [customcur]
-Custom cursor
+ﻣﺆﺷﺮ ﺧﺎﺹ
 [damage]
-التدمير
+ﺍﻟﻀﺮﺭ
 [Damaged Map]
-Damaged Map
+ﺧﺎﺭﻃﺔ ﺍﻟﻀﺮﺭ
 [decrease units working]
-
+ﻗﻠﻞ ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻌﺎﻣﻠﺔ
 [Defeat Your Oppenents]
-
+ﺍﻫﺰﻡ ﺧﺼﻮﻣﻚ
 [defencetower explanation 2]
-units or buildings
+ﺍﻟﻤﺒﺎﻧﻲ ﺍﻟﻌﺪﻭﺓ ﺍﻟﻘﺮﻳﺒﺔ
 [defencetower explanation]
-هجمات العدو القريب
+ﻳﻬﺎﺟﻢ ﺍﻟﻮﺣﺪﺍﺕ ﺃﻭ
 [defencetower]
-برج الدفاع
+ﺑﺮﺝ ﺩﻓﺎﻉ
 [Defense Map]
-Defense Map
+ﺧﺎﺭﻃﺔ ﺍﻟﺪﻓﺎﻉ
 [Defense]
-الدفاع
+ﺍﻟﺪﻓﺎﻉ
 [Delete game]
-Delete the selected game
+ﺍﺣﺬﻑ ﺍﻟﻠﻌﺒﺔ ﺍﻟﻤﺨﺘﺎﺭﺓ
 [delete]
-محو كائن
+ﺍﺣﺬﻑ
 [desert]
-الصحراء
+ﺻﺤﺮﺍء
 [destroy building]
-دمر المبنى المختار
+ﺣﻄﻢ ﺍﻟﻤﺒﻨﻰ ﺍﻟﻤﺨﺘﺎﺭ
 [destroy]
-تدمير
+ﺣﻄﻢ
 [display]
-عرض
+ﺍﻟﻌﺮﺽ
 [do nothing]
-
+ﻻ ﺗﻔﻌﻞ ﺷﻴﺌًﺎ
 [don't carry anything]
-لايحمل شىء
+ﻻ ﻳﺤﻤﻞ ﺷﻴﺌًﺎ
 [down]
-
+ﺃﺳﻔﻞ
 [Download Map]
-
+ﻧﺰِّﻝ ﺍﻟﺨﺎﺭﻃﺔ
 [Download Maps]
-
+ﻧﺰِّﻝ ﺧﺮﺍﺋﻂ
 [downloaded %0]
-
+ﻧُﺰِّﻝ %0
 [downloading map]
-
+ﻳﻨﺰِّﻝ ﺍﻟﺨﺎﺭﻃﺔ
 [edit map]
-
+ﺣﺮِّﺭ ﺍﻟﺨﺎﺭﻃﺔ
 [editing map]
-
+ﺗﺤﺮﻳﺮ ﺍﻟﺨﺎﺭﻃﺔ
 [editor shortcuts]
-Editor Shortcuts
+ﺍﺧﺘﺼﺎﺭﺍﺕ ﺍﻟﻤﺤﺮﺭ
 [editor]
-المحرر
+ﺍﻟﻤﺤﺮﺭ
 [end]
-
+end
 [Enter your nickname :]
-ادخل اسمك المستعار :
+ﺃﺩﺧِﻞ ﻛﻨﻴﺘﻚ:
 [Enter your password :]
-ادخل كلمة المرور :
+ﺃﺩﺧِﻞ ﻛﻠﻤﺔ ﺍﻟﺴﺮ:
 [enter]
-
+ﺇﺩﺧﺎﻝ
 [equals]
-
+ﻳﺴﺎﻭﻱ
 [escape]
-
+escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-يجذب المستكشفون
+ﻳﺠﺬﺏ ﺍﻟﻤﺴﺘﻜﺸﻔﻴﻦ
 [explorationflag]
-علم استكشاف
+ﻋَﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ
 [Explorer Ratio]
-Explorer Ratio
+ﻧِﺴﺐ ﺍﻟﻤﺴﺘﻜﺸﻒ
 [Explorer]
-المستكشف
+ﻣﺴﺘﻜﺸﻒ
 [explorers]
-المستكشفون
+ﻣﺴﺘﻜﺸﻒ
 [extra islands]
-جزيره خاليه
+ﺟُﺰﺭ ﻓﺎﺭﻏﺔ
 [f10]
-
+F10
 [f11]
-
+F11
 [f12]
-
+F12
 [f13]
-
+F13
 [f14]
-
+F14
 [f15]
-
+F15
 [f1]
-
+F1
 [f2]
-
+F2
 [f3]
-
+F3
 [f4]
-
+F4
 [f5]
-
+F5
 [f6]
-
+F6
 [f7]
-
+F7
 [f8]
-
+F8
 [f9]
-
+F9
 [Fertility Map]
-
+ﺧﺎﺭﻃﺔ ﺍﻟﺨﺼﻮﺑﺔ
 [Flag Defaults]
-
+ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﺍﻷﻋﻼﻡ
 [flag settings explanation]
-
+ﻧﺼﻒ ﺍﻟﻘﻄﺮ ﺍﻻﻓﺘﺮﺍﺿﻲ ﻟﻠﻌَﻠﻢ
 [fog of war]
-
+ﺿﺒﺎﺏ ﺍﻟﺤﺮﺏ
 [food]
-الطعام
+ﺍﻟﻄﻌﺎﻡ
 [forbidden area]
-منطقة محظوره
+ﻣﻨﻄﻘﺔ ﻣﺤﻈﻮﺭﺓ
 [Free]
-موافق
+ﺳﻠﻴﻢ
 [free]
-حر
+free
 [free]
-حر
+ﺑﺪﻭﻥ ﻋﻤﻞ
 [from:]
-من:
+ﻣﻦ:
 [fruit]
-الفاكهة
+ﻓﺎﻛﻬﺔ
 [fullscreen]
-ملء الشاشه
+ﻣﻞء ﺍﻟﺸﺎﺷﺔ
 [game full]
-Game full
+ﺍﻟﻠﻌﺒﺔ ﻣﻤﺘﻠﺌﺔ
 [game shortcuts]
-Game Shortcuts
+ﺍﺧﺘﺼﺎﺭﺍﺕ ﺍﻟﻠﻌﺒﺔ
 [Game]
-
+ﺍﻟﻠﻌﺒﺔ
 [general settings]
-اعدادات عامه
+ﺍﻹﻋﺪﺍﺩﺍﺕ ﺍﻟﻌﺎﻣﺔ
 [go to event]
-
+ﺍﺫﻫﺐ ﺇﻟﻰ ﺍﻟﺤﺪﺙ
 [go to home]
-
+ﺍﺫﻫﺐ ﺇﻟﻰ ﺍﻟﻤﻨﺰﻝ
 [goto main menu]
-Go back to main menu
+ﻋُﺪ ﺇﻟﻰ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﺮﺋﻴﺴﻴﺔ
 [grass]
-حشائش
+ﻋﺸﺐ
 [ground attack]
-ground attack
+ﺑﻬﺠﻮﻡ ﺃﺭﺿﻲ
 [guard area]
-حارس المنطقة
+ﻣﻨﻄﻘﺔ ﺣﺮﺍﺳﺔ
 [GUIMapPreview text 0]
-اختر من فضلك
+ﻓﻀﻼً، ﺍﺧﺘﺮ
 [GUIMapPreview text 1]
-a map
+ﺧﺎﺭﻃﺔ
 [handmade map]
-Handmade map
+ﺧﺎﺭﻃﺔ ﻣﺼﻨﻮﻋﺔ ﻳﺪﻭﻳًﺎ
 [Happyness]
-السعاده
+ﺍﻟﺴﻌﺎﺩﺓ
 [hard pause]
-
+Hard Pause
 [Harvest]
-يحصد
+ﺍﻟﺤﺼﺎﺩ
 [high priority]
-
+ﻣﺮﺗﻔﻌﺔ
 [hints]
-
+ﺍﻟﺘﻠﻤﻴﺤﺎﺕ
 [home]
-
+home
 [hospital explanation 2]
 
 [hospital explanation]
-يشفى لكم الوحدات
+ﻳﻌﺎﻟﺞ ﻭﺣﺪﺍﺗﻚ
 [hospital]
-مستشفى
+ﻣﺴﺘﺸﻔﻰ
 [host]
-Host a game
+ﺿﻴِّﻒ ﻟﻌﺒﺔ
 [hp]
-HP
+ﻥﻕ
 [hp]
-Hitpoint
+ﻧﻘﺎﻁ ﺍﻟﻘﻮﺓ
 [Human]
-
+ﺇﻧﺴﺎﻥ
 [human]
-الأنسان
+ﺇﻧﺴﺎﻥ
 [hungry]
-جائع
+ﺟﺎﺋﻊ
 [hungryness]
-الجوع
+ﺍﻟﺠﻮﻉ
 [In way]
-فى الطريق
+ﻓﻲ ﺍﻟﻄﺮﻳﻖ
 [increase units working]
-
+ﺯِﺩ ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻌﺎﻣﻠﺔ
 [inn explanation 2]
 
 [inn explanation]
-اغذيه االوحدات
+ﻳُﻄﻌﻢ ﻭﺣﺪﺍﺗﻚ
 [inn]
-كوخ
+ﻧُﺰﻝ
 [insert]
-
+insert
 [inside]
-بالداخل
+ﺑﺎﻟﺪﺍﺧﻞ
 [islands size]
-حجم الجزيره
+ﺣﺠﻢ ﺍﻟﺠﺰﻳﺮﺓ
 [islands terrain]
-جزر
+ﺟُﺰﺭ
 [isles terrain]
-
+ﻣﻤﺮﺍﺕ
 [iterate selection]
-
+ﺍﻧﺘﻘﻞ ﺇﻟﻰ ﺍﻟﺘﺤﺪﻳﺪ ﺍﻟﺘﺎﻟﻲ
 [jobs]
-jobs
+ﺍﻟﻮﻇﺎﺋﻒ
 [join a game]
-Join a game
+ﺍﻧﻀﻢ ﺇﻟﻰ ﻟﻌﺒﺔ
 [join]
-Join
+ﺍﻧﻀﻢ
 [keyboard settings]
-Keyboard Settings
+ﺇﻋﺪﺍﺩﺍﺕ ﻟﻮﺣﺔ ﺍﻟﻤﻔﺎﺗﻴﺢ
 [kick]
-
+ﺍﻃﺮﺩ
 [lan]
-LAN Game
+ﻟﻌﺒﺔ ﺷﺒﻜﺔ ﺩﺍﺧﻠﻴﺔ
 [language incomplete]
-العربيه - incomplete
+ﺍﻟﻌﺮﺑﻴﺔ - ﻏﻴﺮ ﻣﻜﺘﻤﻠﺔ
 [language-code]
 ar
 [language-tr]
-اللغة
+ﺍﻟﻠﻐﺔ
 [language]
-العربيه
+ﺍﻟﻌﺮﺑﻴﺔ
 [Leave Game]
-
+ﻏﺎﺩﺭ ﺍﻟﻠﻌﺒﺔ
 [left meta]
-
+left meta
 [left super]
-
+ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﺴﺮ
 [left]
-
+ﻳﺴﺎﺭ
+[Leo: nur ein erster Test]
+test
 [level]
-المستوى
+ﺍﻟﻤﺴﺘﻮﻯ
 [levels]
-المستويات
+ﺍﻟﻤﺴﺘﻮﻳﺎﺕ
 [load campaign]
-
+ﺣﻤِّﻞ ﺣﻤﻠﺔ
 [load game]
-تحميل اللعبه
+ﺣﻤِّﻞ ﻟﻌﺒﺔ
 [load map]
-تحميل الخريطه
+ﺣﻤِّﻞ ﺧﺎﺭﻃﺔ
 [load replay]
-
+ﺣﻤِّﻞ ﺇﻋﺎﺩﺓ
 [load script]
-
+ﺣﻤﻞ ﺍﻟﻨﺺ
 [load]
-تحميل
+ﺣﻤِّﻞ
 [loading map list]
-
+ﻳﺤﻤﻞ ﻻﺋﺤﺔ ﺍﻟﺨﺮﺍﺋﻂ ...
 [Lobby]
-
+ﺍﻟﺼﺎﻟﺔ
 [login]
-اتصال
+ﻟُﺞ
 [look around]
-
+ﺍﻧﻈﺮ ﺣﻮﻟﻚ
 [Lost : %0 has more prestige than you]
-Lost: %0 has more prestige than you
+ﺧﺴﺮﺕ: ﺣﺼﻞ %0 ﻋﻠﻰ ﻫﻴﺒﺔ ﺃﻛﺜﺮ ﻣﻨﻚ
 [Lost : your colony is dead]
-Lost: your colony is dead
+ﺧﺴﺮﺕ: ﻣﺎﺗﺖ ﻣﺴﺘﻌﻤﺮﺗﻚ
 [low priority]
-
+ﻗﻠﻴﻠﺔ
 [lowquality]
-Low quality
+ﺟﻮﺩﺓ ﻣﻨﺨﻔﻀﺔ
 [Magic At. Air]
-Air dmg.
+ﺍﻹﺿﺮﺍﺭ ﻓﻲ ﺍﻟﺠﻮ
 [Magic At. Ground]
-Ground dmg.
+ﺍﻹﺿﺮﺍﺭ ﻓﻲ ﺍﻷﺭﺽ
 [map description]
-
+ﺍﻟﻮﺻﻒ
 [Map Discovered]
-
+ﺍﻟﺨﺎﺭﻃﺔ ﻣﻜﺘﺸَﻔﺔ
 [Map download failure: lost connection]
-
+ﻓﺸﻞ ﺗﻨﺰﻳﻞ ﺍﻟﺨﺎﺭﻃﺔ: ﻓُﻘﺪ ﺍﻻﺗﺼﺎﻝ ﺑYOG.
 [Map name: %0]
-Map name: %0.
+ﺍﺳﻢ ﺍﻟﺨﺎﺭﻃﺔ: %0.
 [map name]
-
+ﺍﻻﺳﻢ
 [map rated]
-
+ﺍﻟﺨﺎﺭﻃﺔ ﻣﻘﻴﻤﺔ
 [map script]
-
+ﻧﺺ ﺍﻟﺨﺎﺭﻃﺔ
 [map size x]
-Map width
+ﻋﺮﺽ ﺍﻟﺨﺎﺭﻃﺔ
 [map size y]
-Map height
+ﻃﻮﻝ ﺍﻟﺨﺎﺭﻃﺔ
 [Map upload failure: connection lost]
-
+ﻓﺸﻞ ﺭﻓﻊ ﺍﻟﺨﺎﺭﻃﺔ: ﻓُﻘﺪ ﺍﻻﺗﺼﺎﻝ ﺑYOG.
 [Map upload failure: map name in use]
-
+ﻓﺸﻞ ﺭﻓﻊ ﺍﻟﺨﺎﺭﻃﺔ: ﺍﺳﻢ ﺍﻟﺨﺎﺭﻃﺔ ﻣﺴﺘﺨﺪَﻡ.
 [Map upload failure: unknown reason]
-
+ﻓﺸﻞ ﺭﻓﻊ ﺍﻟﺨﺎﺭﻃﺔ. ﺍﻟﺴﺒﺐ ﻣﺠﻬﻮﻝ.
 [Map Upload: Author Name]
-
+ﺍﺳﻢ ﺍﻟﺼﺎﻧﻊ
 [Map Upload: Waiting for reply]
-
+ﺑﺎﻧﺘﻈﺎﺭ ﺭﺩ
 [mark map]
 Mark Map For Allies
 [market explanation 2]
-الفواكه مع الآخري
+ﻣﻊ ﺍﻵﺧﺮﻳﻦ
 [market explanation]
-يسمح بتبادل
+ﻳﺘﻴﺢ ﺗﺒﺎﺩﻝ ﺍﻟﻔﻮﺍﻛﻪ
 [market]
-السوق
+ﺳﻮﻕ
 [medium priority]
-
+ﻭﺳﻂ
 [meta %0]
-
+meta-%0
 [Min required level:]
-المستوى الادنى المطلوب:
+ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ:
 [Minimum Level To Flag]
-Minimum Flag Level
+ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﻟﻠﻌَﻠﻢ
 [Music volume]
-صوت (الموسيقى)
+ﻣﺴﺘﻮﻯ ﺍﻟﻤﻮﺳﻴﻘﻰ
 [Mute]
-
+ﺍﻛﺘﻢ
 [mute]
-كتم الصوت
+ﺍﻛﺘﻢ
 [new campaign]
-
+ﺣﻤﻠﺔ ﺟﺪﻳﺪﺓ
 [new map]
-جديد
+ﺧﺎﺭﻃﺔ ﺟﺪﻳﺪﺓ
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+ﻧﻌﺘﺬﺭ ﻛﺜﻴﺮًﺍ ﻭﻟﻜﻦ ﺍﻻﺳﻢ ﺍﻟﺬﻱ ﺍﺧﺘﺮﺗﻪ ﻣﺘﺴﺨﺪَﻡ ﻣﺴﺒﻘًﺎ ﻋﻠﻰ ﺧﺎﺩﻭﻡ freenode، ﻭﻟﻜﻨﻚ ﺳﺘﺴﺘﻄﻴﻊ ﺍﻟﺘﺤﺪﺙ ﻓﻘﻂ ﺧﻼﻝ YOG
 [no fullscreen]
-
+* ﻻ ﻳﺘﻮﻓﺮ ﻓﻲ ﻃﻮﺭ ﻣﻞء ﺍﻟﺸﺎﺷﺔ
 [No Hints]
-
+ﻻ ﺗﻮﺟﺪ ﺗﻠﻤﻴﺤﺎﺕ
 [no key]
-
+ﻻ ﻳﻮﺟﺪ ﻣﻔﺘﺎﺡ ﺑﻌﺪ
 [No Objectives]
-
+ﻻ ﺗﻮﺟﺪ ﺃﻫﺪﺍﻑ
 [no ressources growth areas]
-No Growth Areas
+ﻣﻨﺎﻃﻖ ﻋﺪﻡ ﺍﻟﻨﻤﻮ
 [No]
-لا
+ﻻ
 [Not Enough Ratings]
-
+ﻻ ﺗﺘﻮﻓﺮ ﺗﻘﻴﻴﻤﺎﺕ ﻛﺎﻓﻴﺔ
 [not ready]
-غير جاهز
+ﻏﻴﺮ ﻣﺴﺘﻌﺪ
 [Number Of Buildings]
-
+ﻋﺪﺩ ﺍﻟﻤﺒﺎﻧﻲ
 [number of players: %0 (%1 AI)]
-
-[number of players: %0]
-%0 players are present.
+ﻋﺪﺩ ﺍﻟﻼﻋﺒﻴﻦ: %0 (%1 ﻣﻦ ﺍﻵﻟﻴﻴﻦ)
 [number of teams: %0]
-%0 teams.
+ﻋﺪﺩ ﺍﻟﻔﺮﻕ: %0
 [number of teams]
-number of teams
+ﻋﺪﺩ ﺍﻟﻔﺮﻕ
 [Number Of Units]
-
+ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ
 [numlock]
-
+ﻣﻔﺘﺎﺡ NumLock
 [objectives]
-
+ﺍﻷﻫﺪﺍﻑ
 [of which]
-هنالك
+ﻣﻨﻬﻢ
 [ok]
-موافق
+ﻧﻌﻢ
 [old islands terrain]
-old random islands
+ﺟُﺰﺭ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
 [old random terrain]
-old random terrain
+ﺗﻀﺎﺭﻳﺲ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
 [on press]
-
+ﻋﻨﺪ ﺍﻟﻀﻐﻂ
 [On the spot]
-هنا
+ﻫﻨﺎ
 [on unpress]
-
+ﻋﻨﺪ ﺭﻓﻊ ﺍﻟﻀﻐﻂ
 [open chat box]
-
+ﺍﻓﺘﺢ ﺻﻨﺪﻭﻕ ﺍﻟﻤﺤﺎﺩﺛﺔ
 [open load menu]
-Open Load Menu
+ﺍﻓﺘﺢ ﻗﺎﺋﻤﺔ ﺍﻟﺘﺤﻤﻴﻞ
 [open save menu]
-Open Save Menu
+ﺍﻓﺘﺢ ﻗﺎﺋﻤﺔ ﺍﻟﺤﻔﻆ
 [open scenario editor]
-فتح محرر الكتابة
+ﺍﻓﺘﺢ ﻣﺤﺮﺭ ﺍﻟﺴﻴﻨﺎﺭﻳﻮ
 [open teams editor]
-
+ﺍﻓﺘﺢ ﻣﺤﺮﺭ ﺍﻟﻔِﺮَﻕ
 [open]
-افتح
+ﻣﻔﺘﻮﺡ
 [OpenGL]
-
+ﺍﺳﺘﺨﺪﺍﻡ OpenGL
 [Options]
-
+ﺍﻟﺨﻴﺎﺭﺍﺕ
 [options]
-خيارات
+ﺍﻟﺨﻴﺎﺭﺍﺕ
 [Orange]
-البرتقال
+ﺑﺮﺗﻘﺎﻝ
 [Other Options]
-
+ﺧﻴﺎﺭﺍﺕ ﺃﺧﺮﻯ
 [page down]
-
+ﻣﻔﺘﺎﺡ PageDown
 [page up]
-
+ﻣﻔﺘﺎﺡ PageUp
 [Papyrus]
-ورق البردى
+ﺑﺮﺩﻱ
 [pause game]
-Pause Game
+ﺃﻟﺒِﺚ ﺍﻟﻠﻌﺒﺔ
 [pause]
-
+ﻣﻔﺘﺎﺡ Pause
 [Paused]
-Paused
+ﺍﻟﻠﻌﺒﺔ ﻣﺘﻮﻗﻔﺔ
 [player name]
-اسم الاعب
+ﺍﺳﻢ ﺍﻟﻼﻋﺐ
 [player rating %0]
-
+ﺗﻘﻴﻴﻢ ﺍﻟﻼﻋﺐ: %0
 [players]
-
+ﺍﻟﻼﻋﺒﻮﻥ
 [please wait]
-Please wait
+ﻳُﺮﺟﻰ ﺍﻻﻧﺘﻈﺎﺭ
 [power]
-
+Power
 [press space]
-Press space to continue.
+ﺍﺿﻐﻂ ﺯﺭ ﺍﻟﻤﺴﺎﻓﺔ ﻟﻠﻤﻮﺍﺻﻠﺔ.
 [Prestige Score]
-
+ﻧﻘﺎﻁ ﺍﻟﻬﻴﺒﺔ
 [Prestige Win Enabled]
-
+ﺍﻟﻔﻮﺯ ﺑﺎﻟﻬﻴﺒﺔ ﻣﺘﺎﺡ
 [Prestige]
-سمعه
+ﻫﻴﺒﺔ
 [Primary Objectives]
-
+ﺃﺳﺎﺳﻴﺔ
 [print screen]
-
+print screen
 [priority]
-
+ﺍﻷﻭﻟﻮﻳﺔ
 [Prune]
-Prune
+ﺃﺟﺎﺹ
 [quit the editor]
-الخروج من المحرر
+ﺍﺧﺮﺝ ﻣﻦ ﺍﻟﻤﺤﺮﺭ
 [quit the game]
-خروج من اللعبه
+ﺍﺧﺮﺝ ﻣﻦ ﺍﻟﻠﻌﺒﺔ
 [quit the replay]
-
+ﺍﺧﺮﺝ ﻣﻦ ﺍﻹﻋﺎﺩﺓ
 [quit]
-خروج
+ﺍﺧﺮﺝ
 [racetrack explanation 2]
-يسرع لكم الوحدات
+ﺍﻟﻤﺸﻲ ﻟﺪﻯ ﻭﺣﺪﺍﺗﻚ
 [racetrack explanation]
-يحسن المشي
+ﻳﺰﻳﺪ ﻣﻦ ﺳﺮﻋﺔ
 [racetrack]
-مضمار السباق
+ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ
 [range]
-المدى
+ﺍﻟﻨﻄﺎﻕ
 [Rated %0]
-
+ﻣﻘﻴﻤﺔ ﺑ%0
 [ratios]
-Proportions
+ﺍﻟﻨِﺴَﺐ
 [ready?]
-
+ﻣﺴﺘﻌﺪ؟
 [refresh map list]
-
-[Register a new YOG user with password]
-Register a new YOG user with a password. (insecure)
+ﺃﻋِﺪ ﺗﺤﻤﻴﻞ ﻗﺎﺋﻤﺔ ﺍﻟﺨﺮﺍﺋﻂ
 [Register]
-
+ﺳﺠِّﻞ
 [remember unit]
-Remember Unit
+ﺗﺬﻛَّﺮ ﺍﻟﻮﺣﺪﺓ
 [Remember YOG password localy]
-Remember the password locally. (insecure)
+ﺗﺬﻛَّﺮ ﻛﻠﻤﺔ ﺍﻟﺴﺮ ﻣﺤﻠﻴًﺎ.
 [remove map]
-
+ﺃﺯِﻝ ﺍﻟﺨﺎﺭﻃﺔ
 [remove shortcut]
-
+ﺃﺯِﻝ ﺍﻻﺧﺘﺼﺎﺭ
 [Remove]
-
+ﺃﺯِﻝ
 [repair building]
-Start/Stop Repair
+ﺍﺑﺪﺃ ﺃﻭ ﺃﻭﻗﻒ ﺍﻟﺘﺮﻣﻴﻢ
 [repair]
-تصليح
+ﺭﻣِّﻢ
 [repeat area]
-
+ﻋﺪﺩ ﻣﺮﺍﺕ ﺗﻜﺮﺍﺭ ﻣﻨﻈﺮ ﺍﻷﺭﺽ
 [Repeat your password :]
-
+ﻛﺮِّﺭ ﻛﻠﻤﺔ ﺍﻟﺴﺮ:
 [replay ended]
-
+ﺍﻧﺘﻬﺖ ﺍﻹﻋﺎﺩﺓ
 [restore default shortcuts]
-Restore Default Keyboard Shortcuts
+ﺍﺳﺘﻌﺪ ﺍﻻﺧﺘﺼﺎﺭﺍﺕ ﺍﻻﻓﺘﺮﺍﺿﻴﺔ ﻟﻠﻮﺣﺔ ﺍﻟﻤﻔﺎﺗﻴﺢ
 [return to editor]
-عودة الى المحرر
+ﻋُﺪ ﺇﻟﻰ ﺍﻟﻤﺤﺮﺭ
 [return to game]
-العودة الى اللعبة
+ﻋُﺪ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ
 [return to replay]
-
+ﻋُﺪ ﺇﻟﻰ ﺍﻹﻋﺎﺩﺓ
 [return]
-
+enter
 [right meta]
-
+right meta
 [right super]
-
+ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﻤﻦ
 [right]
-
+ﻳﻤﻴﻦ
 [river diameter]
-عرض النهر
+ﻋﺮﺽ ﺍﻟﻨﻬﺮ
 [river terrain]
-النهر
+ﻧﻬﺮ
 [sand]
-رمل
+ﺭﻣﻞ
 [save before quit?]
-Do you want to save before quitting?
+ﻫﻞ ﺗﻮﺩ ﺍﻟﺤﻔﻆ ﻗﺒﻞ ﺍﻟﺨﺮﻭﺝ؟
 [save game]
-حفظ اللعبه
+ﺍﺣﻔﻆ ﺍﻟﻠﻌﺒﺔ
 [save map]
-حفظ الخريطه
+ﺍﺣﻔﻆ ﺍﻟﺨﺎﺭﻃﺔ
 [save replay]
-
+ﺍﺣﻔﻆ ﺍﻹﻋﺎﺩﺓ
 [save script]
-
+ﺍﺣﻔﻆ ﺍﻟﻨﺺ
 [Save]
-حفظ
+ﺍﺣﻔﻆ
 [school explanation 2]
-يرفع مستوى العمال
+ﺍﻟﺒﻨﺎء ﻟﺪﻯ ﻋُﻤَّﺎﻟﻚ
 [school explanation]
-يحسن بناء
+ﺗﺰﻳﺪ ﻣﻦ ﻣﺴﺘﻮﻯ
 [school]
-المدرسه
+ﻣﺪﺭﺳﺔ
 [Script Areas]
-Script Areas
+ﻣﻨﺎﻃﻖ ﻣﺮﺗﺒﻄﺔ ﺑﺎﻟﻨﺺ
 [scroll lock]
-
+scroll lock
 [scroll wheel enabled]
-
+ﻋﺠﻠﺔ ﺍﻟﻔﺄﺭﺓ ﻣﺘﺎﺣﺔ
 [Secondary Objectives]
-
+ﺛﺎﻧﻮﻳﺔ
 [seeking a job]
-يبحث عن العمل
+ﻳﺒﺤﺚ ﻋﻦ ﻭﻇﻴﻔﺔ
 [seeking]
-بحث
+ﻳﺒﺤﺚ
 [select barracks building]
-Select Barracks
+ﺍﺧﺘﺮ ﺍﻟﺜﻜﻨﺔ
 [select clearingflag]
-Select Clearing Flag
+ﺍﺧﺘﺮ ﻋَﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ
 [select construct barracks]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﺜﻜﻨﺔ
 [select construct defencetower]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺑﺮﺝ ﺍﻟﺪﻓﺎﻉ
 [select construct hospital]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﻤﺴﺘﺸﻔﻰ
 [select construct inn]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﻨُﺰﻝ
 [select construct market]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﺴﻮﻕ
 [select construct racetrack]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ
 [select construct school]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﻤﺪﺭﺳﺔ
 [select construct stonewall]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﺤﺎﺋﻂ ﺍﻟﺤﺠﺮﻱ
 [select construct swarm]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﻮﻛﺮ
 [select construct swimmingpool]
-
+ﺍﺧﺘﺮ ﺑﻨﺎء ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ
 [select delete tool]
-
+ﺍﺧﺘﺮ ﺃﺩﺍﺓ ﺍﻟﺤﺬﻑ
 [select explorationflag]
-Select Exploration Flag
+ﺍﺧﺘﺮ ﻋَﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ
 [select hospital building]
-Select Hospital
+ﺍﺧﺘﺮ ﺍﻟﻤﺴﺘﺸﻔﻰ
 [select inn building]
-Select Inn
+ﺍﺧﺘﺮ ﺍﻟﻨُﺰﻝ
 [select market building]
-Select Market
+ﺍﺧﺘﺮ ﺍﻟﺴﻮﻕ
 [select place clearing area]
-
+ﺍﺧﺘﺮ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﺍﻟﺘﺼﻔﻴﺔ
 [select place clearingflag]
-
+ﺍﺧﺘﺮ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ
 [select place explorationflag]
-
+ﺍﺧﺘﺮ ﻭﺿﻊ ﻋَﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ
 [select place forbidden area]
-
+ﺍﺧﺘﺮ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﻣﺤﻈﻮﺭﺓ
 [select place guard area]
-
+ﺍﺧﺘﺮ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﺣﺮﺍﺳﺔ
 [select place warflag]
-
+ﺍﺧﺘﺮ ﻭﺿﻊ ﻋَﻠﻢ ﺍﻟﺤﺮﺏ
 [select racetrack building]
-Select Racetrack
+ﺍﺧﺘﺮ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ
 [select school building]
-Select Schoo
+ﺍﺧﺘﺮ ﺍﻟﻤﺪﺭﺳﺔ
 [select swarm building]
-Select Swarm
+ﺍﺧﺘﺮ ﺍﻟﻮﻛﺮ
 [select swimmingpool building]
-Select Swimmingpool
+ﺍﺧﺘﺮ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ
 [select tower building]
-Select Tower
+ﺍﺧﺘﺮ ﺑﺮﺝ ﺍﻟﺪﻓﺎﻉ
 [select wall building]
-Select Wall
+ﺍﺧﺘﺮ ﺍﻟﺤﺎﺋﻂ
 [select warflag]
-Select War Flag
+ﺍﺧﺘﺮ ﻋَﻠﻢ ﺍﻟﺤﺮﺏ
 [settings]
-اعدادات
+ﺍﻹﻋﺪﺍﺩﺍﺕ
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
-Enter: send a chat message
+ﻣﻔﺘﺎﺡ ﺍﻹﺩﺧﺎﻝ: ﺃﺭﺳﻞ ﺭﺳﺎﻟﺔ ﻣﺤﺎﺩﺛﺔ
 [shortcut explanation v]
-V: hold to speak
+ﻣﻔﺘﺎﺡ ﺭ: ﺍﺳﺘﻤﺮ ﻓﻲ ﺍﻟﻀﻐﻂ ﻟﻠﺘﺤﺪﺙ
 [show areas]
-
+ﺃﻇﻬﺮ ﺍﻟﻤﻨﺎﻃﻖ
 [show flags]
-
+ﺃﻇﻬﺮ ﺍﻷﻋﻼﻡ
 [show main menu]
-
+ﺃﻇﻬﺮ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﺮﺋﻴﺴﻴﺔ
 [skin]
 Display
 [smoothing]
-صقل
+ﺍﻟﺘﻨﻌﻴﻢ
 [sort by name]
-
+ﺍﻻﺳﻢ
 [sort by rating]
-
+ﺍﻟﺘﻘﻴﻴﻢ
 [sort by size]
-
+ﺍﻟﺤﺠﻢ
 [Sort By]
-
+ﺍﻓﺮﺯ ﺑﺤﺴﺐ
 [space]
-
+ﺍﻟﻤﺴﺎﻓﺔ
 [start mission]
-
+ﺍﺑﺪﺃ ﺍﻟﻤﻬﻤﺔ
 [start new campaign]
-
+ﺍﺑﺪﺃ ﺣﻤﻠﺔ ﺟﺪﻳﺪﺓ
 [Start]
-ابدأ
+ﺍﺑﺪﺃ
 [Starving Map]
-Starving Map
+ﺧﺎﺭﻃﺔ ﺍﻟﻤﺠﺎﻋﺔ
 [starving]
-تجويع
+ﻳﺘﻀﻮﺭ ﺟﻮﻋًﺎ
 [Statistics]
-احصائيات
+ﺍﻹﺣﺼﺎﺋﻴﺎﺕ
 [Still (i)]
-ما زال
+ﺗﺒﻘﺖ
 [still (w)]
-ما زال
+ﺗﺒﻘﺖ
 [still one unit working]
-وحدة واحدة لا تزال تعم
+ﻣﺎ ﺯﺍﻟﺖ ﻭﺣﺪﺓ ﺗﻌﻤﻞ
 [Still one]
-ما زال واحد
+ﺗﺒﻘﺖ ﻭﺍﺣﺪﺓ
 [Stone]
-حجارة
+ﺣﺠﺮ
 [stone]
-الأحجار
+ﺣﺠﺮ
 [stonewall explanation 2]
-عنصر
+ﻣﻨﻔﺬ
 [stonewall explanation]
-الدفاع السلبي
+ﻋﻨﺼﺮ ﺩﻓﺎﻋﻲ
 [stonewall]
-Stone wall
+ﺣﺎﺋﻂ ﺣﺠﺮﻱ
 [submit rating]
-
+ﺍﺭﻓﻊ ﺍﻟﺘﻘﻴﻴﻢ
 [svr hostname]
-Server hostname
+ﺍﺳﻢ ﺍﻟﻤﻀﻴﻒ
 [swamp terrain]
-المستنقع
+ﻣﺴﺘﻨﻘﻊ
 [swarm explanation 2]
 
 [swarm explanation]
-انشاء وحدات جديدة
+ﻳﻨﺸﺊ ﻭﺣﺪﺍﺕ ﺟﺪﻳﺪﺓ
 [swarm]
-حشد
+ﻭﻛﺮ
 [Swim]
-يسبح
+ﺍﻟﺴﺒﺎﺣﺔ
 [swimmingpool explanation 2]
-يسرع لكم الوحدات
+ﺍﻟﺴﺒﺎﺣﺔ ﻟﻮﺣﺪﺍﺗﻚ
 [swimmingpool explanation]
-يحسن السباحه
+ﺗﺰﻳﺪ ﻣﻦ ﺳﺮﻋﺔ
 [swimmingpool]
-المسبح
+ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ
 [switch to adding areas]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻭﺿﻊ ﺇﺿﺎﻓﺔ ﺍﻟﻤﻨﺎﻃﻖ
 [switch to area brush 1]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ١
 [switch to area brush 2]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٢
 [switch to area brush 3]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٣
 [switch to area brush 4]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٤
 [switch to area brush 5]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٥
 [switch to area brush 6]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٦
 [switch to area brush 7]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٧
 [switch to area brush 8]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٨
 [switch to building view]
-Switch To Building view
+ﺑﺪِّﻝ ﺇﻟﻰ ﻣﻨﻈﺮ ﺍﻟﺒﻨﺎء
 [switch to flag view]
-Switch to Flags view
+ﺑﺪِّﻝ ﺇﻟﻰ ﻣﻨﻈﺮ ﺍﻷﻋﻼﻡ
 [switch to removing areas]
-
+ﺑﺪِّﻝ ﺇﻟﻰ ﻭﺿﻊ ﺇﺯﺍﻟﺔ ﺍﻟﻤﻨﺎﻃﻖ
 [switch to teams view]
-Switch to Team view
+ﺑﺪِّﻝ ﺇﻟﻰ ﻣﻨﻈﺮ ﺍﻟﻔِﺮَﻕ
 [switch to terrain view]
-Switch to Terrain view
+ﺑﺪِّﻝ ﺇﻟﻰ ﻣﻨﻈﺮ ﺍﻟﺘﻀﺎﺭﻳﺲ
 [sys req]
-
+sys req
 [tab]
-
+tab
 [teams editor]
-
+ﻣﺤﺮﺭ ﺍﻟﻔِﺮَﻕ
 [Teams Fixed]
-
+ﺍﻟﻔِﺮَﻕ ﻣﺜﺒَّﺘﺔ
 [teams]
- فريق
+ ﻣﻦ ﺍﻟﻔﺮﻕ
 [the barracks is finished]
-انتهى بناء معسكر التدريب
+ﺗﻢ ﺑﻨﺎء ﺛﻜﻨﺔ
 [the barracks is under attack]
-معسكر التدريب تحت الهجوم
+ﺗﺘﻌﺮﺽ ﺛﻜﻨﺔ ﻟﻠﻬﺠﻮﻡ!
 [the building is finished]
-انتهى بناء المبنى
+ﺗﻢ ﺍﻟﺒﻨﺎء
 [the building is under attack]
-المبنى تحت الهجوم
+ﻳﺘﻌﺮﺽ ﺑﻨﺎء ﻟﻠﻬﺠﻮﻡ!
 [the clearingflag is finished]
-?? Clearing flag finished ??
+?? clearingflag finished ??
 [the clearingflag is under attack]
-?? Clearing flag under attack ??
+?? clearingflag under attack ??
 [the defencetower is finished]
-انتهى بناء برج الدفاع
+ﺗﻢ ﺑﻨﺎء ﺑﺮﺝ ﺩﻓﺎﻉ
 [the defencetower is under attack]
-الدفاعت تحت الهجوم
+ﺗﺘﻌﺮﺽ ﺩﻓﺎﻋﺎﺗﻚ ﻟﻠﻬﺠﻮﻡ!
 [the explorationflag is finished]
-?? Exploration flag finished ??
+?? explorationflag finished ??
 [the explorationflag is under attack]
-?? Exploration flag under attack ??
+?? explorationflag under attack ??
 [The game has not been finished]
-The game has not been finished
+ﻟﻢ ﺗﻨﺘﻪِ ﺍﻟﻠﻌﺒﺔ
 [the games]
-اﻷلعاب
+ﺍﻷﻟﻌﺎﺏ
 [the hospital is finished]
-انتهى بناء المستشفى
+ﺗﻢ ﺑﻨﺎء ﻣﺴﺘﺸﻔﻰ
 [the hospital is under attack]
-المستشفى تحت الهجوم
+ﻳﺘﻌﺮﺽ ﻣﺴﺘﺸﻔﻰ ﻟﻠﻬﺠﻮﻡ!
 [The host has cancelled the game]
-
+ﺃﻟﻐﻰ ﺍﻟﻤﻀﻴﻒ ﺍﻟﻠﻌﺒﺔ
 [the inn is finished]
-انتهى بناء الكوخ
+ﺗﻢ ﺑﻨﺎء ﻧُﺰﻝ
 [the inn is under attack]
-الكوخ تحت الهجوم
+ﻳﺘﻌﺮﺽ ﻧُﺰﻝ ﻟﻠﻬﺠﻮﻡ!
 [the maps]
-الخرائط
+ﺍﻟﺨﺮﺍﺋﻂ
 [the market is finished]
-انتهى بناء السوق
+ﺗﻢ ﺑﻨﺎء ﺳﻮﻕ
 [the market is under attack]
-السوق تحت الهجوم
+ﻳﺘﻌﺮﺽ ﺳﻮﻕ ﻟﻠﻬﺠﻮﻡ!
 [The player %0 has joined YOG]
-%0 has joined YOG.
+ﺍﻧﻀﻢ %0 ﺇﻟﻰ ﺷﺒﻜﺔ YOG.
 [The player %0 has left YOG]
-%0 has left YOG.
+ﺗﺮﻙ %0 ﺷﺒﻜﺔ YOG.
 [the racetrack is finished]
-انتهى بناء مضمار السباق
+ﺗﻢ ﺑﻨﺎء ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ
 [the racetrack is under attack]
-مضمار السباق تحت الهجوم
+ﻳﺘﻌﺮﺽ ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ ﻟﻠﻬﺠﻮﻡ!
 [the replays]
-
+ﺍﻹﻋﺎﺩﺍﺕ
 [the school is finished]
-انتهى بناء المدرسه
+ﺗﻢ ﺑﻨﺎء ﻣﺪﺭﺳﺔ
 [the school is under attack]
-المدرسه تحت الهجوم
+ﺗﺘﻌﺮﺽ ﻣﺪﺭﺳﺔ ﻟﻠﻬﺠﻮﻡ!
 [the stonewall is finished]
-انتهى بناء قطاع الحائط
+ﺗﻢ ﺑﻨﺎء ﺟﺰء ﻣﻦ ﺣﺎﺋﻂ
 [the stonewall is under attack]
-الاعداء على مشارف المدينه
+ﺍﻟﻌﺪﻭ ﻳﻬﺎﺟﻢ ﺃﺳﻮﺍﺭﻙ!
 [the swarm is finished]
-انتهى بناء الحشد
+ﺗﻢ ﺑﻨﺎء ﻭﻛﺮ
 [the swarm is under attack]
-الحشد تحت الهجوم
+ﻳﺘﻌﺮﺽ ﺍﻟﻮﻛﺮ ﻟﻠﻬﺠﻮﻡ!
 [the swimmingpool is finished]
-انتهى بناء المسبح
+ﺗﻢ ﺑﻨﺎء ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ
 [the swimmingpool is under attack]
-المسبح تحت الهجوم
+ﺗﺘﻌﺮﺽ ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ ﻟﻠﻬﺠﻮﻡ!
 [the warflag is finished]
-?? War flag finished ??
+?? warflag finished ??
 [the warflag is under attack]
-?? War flag under attack ??
+?? warflag under attack ??
 [time]
-
+ﺍﻟﻮﻗﺖ
 [to:]
-الى:
+ﺇﻟﻰ:
 [toggle draw accessibility aids]
-Toggle Draw Accessibility Aids
+ﺑﺪِّﻝ ﻭﺿﻊ ﻣﺴﺎﻋِﺪﺍﺕ ﺍﻹﺗﺎﺣﺔ
 [toggle draw information]
-Toggle Draw Information
+ﺑﺪِّﻝ ﻭﺿﻊ ﺍﻟﻤﻌﻠﻮﻣﺎﺕ
 [toggle draw unit paths]
-Toggle Draw Unit Paths
+ﺑﺪِّﻝ ﻭﺿﻊ ﻣﺴﺎﺭﺍﺕ ﺍﻟﻮﺣﺪﺍﺕ
 [toggle menu screen]
-
+ﺑﺪِّﻝ ﻋﺮﺽ ﺷﺎﺷﺔ ﺍﻟﻘﺎﺋﻤﺔ
 [toggle recording voice]
-Initiate Voice Recording
+ﺍﺑﺪﺃ ﺗﺴﺠﻴﻞ ﺍﻟﺼﻮﺕ
+[toggle recording voice]
+ﺑﺪِّﻝ ﺣﺎﻟﺔ ﺗﺴﺠﻴﻞ ﺍﻟﺼﻮﺕ
 [Total Attack Power]
-
+ﻣﺠﻤﻮﻉ ﻗﻮﺓ ﺍﻟﻬﺠﻮﻡ
 [Total Defence Power]
-
+ﻣﺠﻤﻮﻉ ﻗﻮﺓ ﺍﻟﺪﻓﺎﻉ
 [Total Hitpoints]
-
+ﻣﺠﻤﻮﻉ ﻧﻘﺎﻁ ﺍﻟﻘﻮﺓ
 [Total prestige reached]
-بلغ من هيبة
+ﻣﺠﻤﻮﻉ ﺍﻟﻬﻴﺒﺔ ﺍﻟﻤﺒﻠﻮﻏﺔ
 [Total]
-المحصله
+ﺍﻟﻤﺠﻤﻮﻉ
 [tutorial text 1]
-
+ﻣﺮﺣﺒًﺎ ﺑﻚ ﻓﻲ ﺍﻟﺘﺪﺭﻳﺐ ﺍﻷﺳﺎﺳﻲ ﻟﻠﻌﺒﺔ ﺷﻘﺎﻟﺐ ٢! ﺳﻴُﻐﻄﻲ ﻫﺬﺍ ﺍﻟﺘﺪﺭﻳﺐ ﻛﻞ ﺷﻲء ﺑﺪﺃً ﻣﻦ ﺑﻨﺎء ﺍﻟﻨﺰﻝ ﻭﺍﺳﺘﻜﺸﺎﻑ ﺍﻟﻤﻨﺎﻃﻖ، ﻭﺣﺘﻰ ﺗﺪﻣﻴﺮ ﺍﻷﻋﺪﺍء! ﻻ ﻳﻮﺟﺪ ﻧﻘﺺ ﻓﻲ ﺍﻟﻤﻌﻠﻮﻣﺎﺕ ﺍﻟﻤﻔﻴﺪﺓ ﻫﻨﺎ!
 [tutorial text 2]
-
+ﺍﻵﻥ، ﻭﺑﻌﺪ ﺃﻥ ﺃﺩﺭﻛﺖ ﺍﻷﺳﺎﺳﻴﺎﺕ، ﺣﺎﻥ ﻭﻗﺖ ﺑﻨﺎء ﺃﺷﻴﺎء ﺃﺧﺮﻯ، ﻛﻤﻴﺎﺩﻳﻦ ﺍﻟﺴﺒﺎﻕ، ﻭﺑﺮﻙ ﺍﻟﺴﺒﺎﺣﺔ، ﻭﺍﻟﻤﺪﺍﺭﺱ.
 [tutorial text 3]
-
+ﺃﺣﺴﻨﺖ ﺻﻨﻌًﺎ ﺣﺘﻰ ﻭﺻﻠﺖ ﺇﻟﻰ ﻫﻨﺎ. ﺍﻵﻥ ﺳﻨﺘﺠﻪ ﺇﻟﻰ ﺍﻟﻤﺤﺎﺭﺑﻴﻦ، ﻭﺍﻟﺜﻜﻨﺎﺕ، ﻭﺍﻟﺘﺮﻗﻴﺎﺕ.
 [tutorial text 4]
-
+ﻟﻘﺪ ﺷﺎﺭﻓﻨﺎ ﻋﻠﻰ ﺍﻻﻧﺘﻬﺎء. ﺗﺒﻘﻰ ﺃﻣﺎﻣﻨﺎ ﺍﻷﻋﻼﻡ، ﻭﺍﻟﻬﺠﻮﻡ. ﺑﻌﺪ ﺫﻟﻚ ﺳﺘﻜﻮﻥ ﻋﺎﻟﻤًﺎ ﺑﻤﺎ ﻳﻜﻔﻲ ﻟﻠﻤﻐﺎﻣﺮﺓ ﻓﻲ ﺍﻷﻟﻌﺎﺏ ﺍﻟﻤﺨﺼﺼﺔ ﻭﺃﺧﻴﺮًﺍ ﺳﺘﺴﻄﻴﻊ ﺍﻟﻠﻌﺐ ﻋﺒﺮ ﺍﻹﻧﺘﺮﻧﺖ ﺿﺪ ﻣﺠﻤﻮﻋﺔ ﻣﻦ ﺃﻓﻀﻞ ﻻﻋﺒﻲ ﺷﻘﺎﻟﺐ ٢.
 [tutorial]
-تعليم
+ﺍﻟﺘﺪﺭﻳﺐ
 [Uncontrolled]
-خارج السيطره
+Uncontrolled
 [undo]
-
+ﺗﺮﺍﺟﻊ
 [uniform terrain]
-Uniform terrain
+ﻣﻨﻄﻘﺔ ﻣﻮﺣﺪﺓ
 [Unit editor]
-محرر الوحده
+ﻣﺤﺮﺭ ﺍﻟﻮﺣﺪﺍﺕ
 [unit settings explanation]
-
+ﺍﻟﻌﺪﺩ ﺍﻻﻓﺘﺮﺍﺿﻲ ﻟﻠﻮﺣﺪﺍﺕ ﺍﻟﻤﻜﻠﻔﺔ
 [units working]
-وحدات العمل
+ ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺗﻌﻤﻞ
 [Units]
-الوحدات
+ﻭﺣﺪﺓ
 [unlocked at start]
-
+ﻣﻔﺘﻮﺣﺔ ﻓﻲ ﺍﻟﺒﺪﺍﻳﺔ
 [unlocked by]
-
+ﺗُﻔﺘﺢ ﺑﻌﺪ ﺇﻧﻬﺎء
 [Unnamed Area]
-{Unnamed Area}
+{ﻣﻨﻄﻘﺔ ﻏﻴﺮ ﻣﺴﻤﺎﺓ}
 [up]
-
+ﺃﻋﻠﻰ
 [upgrade building]
-Start/Stop Upgrade
+ﺍﺑﺪﺃ ﺃﻭ ﺃﻭﻗﻒ ﺗﺮﻗﻴﺔ ﺍﻟﻤﺒﻨﻰ
 [Upgrade Defaults]
-
+ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﺍﻟﺘﺮﻗﻴﺔ
 [upgrade]
-ترقية
+ﺭﻕِّ
 [Upload Map]
-
+ﺍﺭﻓﻊ ﺍﻟﺨﺎﺭﻃﺔ
 [upload map]
-
+ﺍﺭﻓﻊ ﺧﺎﺭﻃﺔ
 [username]
-اسم المستخدم
+ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ
 [Version]
-اﻷصداره
+ﺍﻟﻨﺴﺨﺔ
 [view history]
-
+View History
 [Voice volume]
-
+ﻣﺴﺘﻮﻯ ﺍﻟﺼﻮﺕ
 [waiting for %0]
-انتظار %0
+ﺑﺎﻧﺘﻈﺎﺭ %0
 [waiting for key]
-
+ﺑﺎﻧﺘﻈﺎﺭ ﺍﻟﻤﻔﺘﺎﺡ ...
 [Waiting]
-
+ﺑﺎﻻﻧﺘﻈﺎﺭ
 [Walk]
-يمشى
+ﺍﻟﻤﺸﻲ
 [warflag explanation 2]
 
 [warflag explanation]
-يجذب المحاربون
+ﻳﺠﺬﺏ ﺍﻟﻤﺤﺎﺭﺑﻴﻦ
 [warflag]
-علم الحرب
+ﻋَﻠﻢ ﺍﻟﺤﺮﺏ
 [Warning, you need to reboot the game for changes to take effect]
-Warning, you need to restart the game for changes to take effect
+ﺗﻨﺒﻴﻪ: ﻳﺠﺐ ﺃﻥ ﺗُﻌﺎﺩ ﺍﻟﻠﻌﺒﺔ ﺣﺘﻰ ﺗﻈﻬﺮ ﺍﻟﺘﻐﻴﻴﺮﺍﺕ
 [Warrior Ratio]
-Warrior Ratio
+ﻧِﺴﺐ ﺍﻟﻤﺤﺎﺭﺏ
 [Warrior]
-المحارب
+ﻣﺤﺎﺭﺏ
 [warriors]
-المحاربون
+ﻣﺤﺎﺭﺏ
 [watch again]
-
+ﺷﺎﻫﺪ ﻣﺠﺪﺩًﺍ
 [watching:]
-
+ﺃﻧﺖ ﺗﺸﺎﻫﺪ:
 [water]
-Water
+ﻣﺎء
 [Wheat]
-
-[wheat]
-الذره
+ﻗﻤﺢ
 [Won : you defeated your opponents]
-Won: you defeated your opponents
+ﻓُﺰﺕ: ﻟﻘﺪ ﻏﻠﺒﺖ ﺧﺼﻮﻣﻚ
 [Won : you have the most prestige]
-Won: you have the biggest prestige
+ﻓُﺰﺕ: ﻟﻘﺪ ﺣﺼﻠﺖ ﻋﻠﻰ ﺃﻋﻠﻰ ﻫﻴﺒﺔ
 [Won : your ally %0 has the most prestige]
-Won: your ally %0 has the biggest prestige
+ﻓُﺰﺕ: ﻟﻘﺪ ﺣﺼﻞ ﺻﺪﻳﻘﻚ %0 ﻋﻠﻰ ﺃﻋﻠﻰ ﻫﻴﺒﺔ
 [Wood]
-خشب
+ﺧﺸﺐ
 [wood]
-الخشب
+ﺧﺸﺐ
 [Worker Ratio]
-Worker Ratio
+ﻧِﺴﺐ ﺍﻟﻌﺎﻣﻞ
 [Worker]
-عامل
+ﻋﺎﻣﻞ
 [workers]
-العمال
+ﺍﻟﻌﻤﺎﻝ
 [workers]
-العمال
+ﻋﻤﺎﻝ
 [working]
-يعمل
+ﺍﻟﻌﺎﻣﻠﻮﻥ
 [wounded]
-مجروح
+ﺟﺮﻳﺢ
 [Yes]
-نعم
+ﻧﻌﻢ
 [YESTS_CONNECTING]
-Establishing the connection to the YOG metaserver...
+ﻳﺆﺳﺲ ﺍﻻﺗﺼﺎﻝ ﺑﻤﺨﺪﻡ YOG...
 [YESTS_CONNECTION_LOST]
-The connection to YOG has been lost.
+ﻓُﻘﺪ ﺍﺗﺼﺎﻟﻚ ﺑYOG.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻫﺬﺍ ﻣﺴﺠﻞ ﻓﻌﻠًﺎ. ﺇﻥ ﻛﺎﻥ ﻫﺬﺍ ﺍﻻﺳﻢ ﻟﻚ ﻓﺄﺯﻝ ﺍﻟﺘﺤﺪﻳﺪ ﻋﻦ ﺍﻟﺨﻴﺎﺭ "ﺳﺠِّﻞ ﻣﺴﺘﺨﺪﻡ YOG ﺟﺪﻳﺪ ﺑﻜﻠﻤﺔ ﺳﺮ".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-The YOG metaserver has refused connection because the supplied password was incorrect.
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﻛﻠﻤﺔ ﺍﻟﺴﺮ ﺍﻟﻤﻘﺪﻣﺔ ﻟﻢ ﺗﻜﻦ ﺻﺤﻴﺤﺔ.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻧﻪ ﻻ ﺗﻮﺟﺪ ﻛﻠﻤﺔ ﺳﺮ ﻻﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻫﺬﺍ ﺑﻌﺪ. ﺭﺑﻤﺎ ﺗﻮﺩ ﺗﺴﺠﻴﻞ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻟﻚ، ﺇﻥ ﻛﺎﻥ ﺍﻷﻣﺮ ﻛﺬﻟﻚ ﻓﻌﻠﻴﻚ ﺗﻔﻌﻴﻞ ﺍﻟﺨﻴﺎﺭ "ﺳﺠِّﻞ ﻣﺴﺘﺨﺪﻡ YOG ﺟﺪﻳﺪ ﺑﻜﻠﻤﺔ ﺳﺮ" ﻗﺒﻞ ﺍﻻﺗﺼﺎﻝ. ﺳﺘﺤﺘﺎﺝ ﻟﺘﻔﻌﻴﻞ ﻫﺬﺍ ﺍﻟﺨﻴﺎﺭ ﻓﻲ ﺍﻟﻤﺮﺓ ﺍﻷﻭﻟﻰ ﻓﻘﻂ.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﻋﻨﻮﺍﻥ IP ﻫﺬﺍ ﻣﺤﻈﻮﺭ ﻣﺆﻗﺘًﺎ. ﻋﻠﻴﻚ ﺃﻥ ﺗﻨﺘﻈﺮ ﺑﺼﺒﺮ ﺣﺘﻰ ﻳﻨﺘﻬﻲ ﺍﻟﺤﻈﺮ ﺃﻭ ﺃﻥ ﺗﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-The YOG metaserver has refused connection because your globulation2 client is obsolete.
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﻋﻤﻴﻞ ﻟﻌﺒﺔ ﺷﻘﺎﻟﺐ ٢ ﻟﺪﻳﻚ ﻗﺪﻳﻢ. ﻳُﺮﺟﻰ ﺍﻟﺤﺼﻮﻝ ﻋﻠﻰ ﺁﺧﺮ ﻧﺴﺨﺔ ﻣﻦ www.globulation2.org ﻟﻠﻌﺐ ﻋﻠﻰ ﺍﻹﻧﺘﺮﻧﺖ.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-The YOG metaserver has refused the connection without explanation!
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﺑﻼ ﺗﻔﺴﻴﺮ!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-The YOG metaserver has refused the connection because your username is already used by someone else.
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺍﻟﻤﻄﻠﻮﺏ ﻣﺴﺘﺨﺪﻡ ﻣﻦ ﻗِﺒﻞ ﺷﺨﺺ ﺁﺧﺮ.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻫﺬﺍ ﻣﺤﻈﻮﺭ. ﻳُﺮﺟﻰ ﺍﻟﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+ﺭﻓﺾ ﻣﺨﺪﻡ YOG ﺍﻻﺗﺼﺎﻝ ﻷﻥ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﻏﻴﺮ ﺻﺎﻟﺢ. ﻳﺠﺐ ﺃﻥ ﻻ ﻳﺤﺘﻮﻱ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺳﻮﻯ ﻋﻠﻰ ﺍﻷﺣﺮﻑ، ﻭﺍﻷﺭﻗﺎﻡ، ﻭﺍﻟﺸﺮﻃﺎﺕ ﺍﻟﺴﻔﻠﻰ.
 [YESTS_CREATED]
-The connection system is ready to contact the YOG metaserver for connection.
+ﻧﻈﺎﻡ ﺍﻻﺗﺼﺎﻝ ﺟﺎﻫﺰ ﻟﻼﺗﺼﺎﻝ ﺑﻤﺨﺪﻡ YOG.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+ﻻ ﺗﺘﻔﻖ ﻛﻠﻤﺘﺎ ﺍﻟﺴﺮ ﺍﻟﻤﻘﺪﻣﺘﺎﻥ. ﻳُﺮﺟﻰ ﺇﻋﺎﺩﺓ ﺇﺩﺧﺎﻟﻬﻤﺎ.
 [YESTS_UNABLE_TO_CONNECT]
-Unable to connect. Apparently the YOG metaserver is down.
+ﺗﻌﺬﺭ ﺍﻻﺗﺼﺎﻝ. ﻳﺒﺪﻭ ﺃﻥ ﻣﺨﺪﻡ YOG ﻣﻌﻄﻞ.
 [yog block command help]
-
+ﺍﻷﻣﺮ /block <ﺍﺳﻢ ﺍﻟﻼﻋﺐ>    ﻳﻤﻨﻊ ﻫﺬﺍ ﺍﻷﻣﺮ ﺍﻟﻼﻋﺒﻴﻦ، ﻓﻼ ﺗﺮﻯ ﻛﺘﺎﺑﺎﺗﻬﻢ ﺛﺎﻧﻴﺔً
 [yog block command player %0 already blocked]
-
+ﺍﻟﻼﻋﺐ %0 ﻣﻤﻨﻮﻉ ﺳﺎﺑﻘًﺎ
 [yog block command player %0 blocked]
-
+ﻣُﻨﻊ ﺍﻟﻼﻋﺐ %0
 [yog block command player %0 not found]
-
+ﺗﻌﺬﺭ ﺇﻳﺠﺎﺩ ﺍﻟﻼﻋﺐ %0
 [yog command header]
-
+ﺃﻭﺍﻣﺮ YOG ﺍﻟﻤﺘﺎﺣﺔ ﺣﺎﻟﻴًﺎ ﻫﻲ:
 [yog command unknown]
-
+ﺃﻣﺮ ﻣﺠﻬﻮﻝ.
 [yog help command help]
-
+ﺍﻷﻣﺮ /help    ﻳﻈﻬﺮ ﺭﺳﺎﻟﺔ ﺍﻟﻤﺴﺎﻋﺪﺓ ﻫﺬﻩ
 [yog]
-Ysagoon Online Gaming
+ﺷﺒﻜﺔ YsagoonOnlineGaming
 [you have lost]
-لقد خسرت!
+ﻟﻘﺪ ﺧﺴﺮﺕ!
 [you have won]
-لقد فزت!
+ﻟﻘﺪ ﻓُﺰﺕ!
 [You where kicked from the game]
-
+ﻟﻘﺪ ﻃُﺮﺩﺕ ﻣﻦ ﺍﻟﻠﻌﺒﺔ
 [Your %0 are under attack]
-%0 تحت الهجوم
+ﻳﺘﻌﺮﺽ %0 ﻟﻠﻬﺠﻮﻡ!
 [Your IP address was temporarily banned]
-
+ﺣُﻈﺮ ﻋﻨﻮﺍﻥ IP ﺍﻟﺨﺎﺹ ﺑﻚ ﻣﺆﻗﺘًﺎ. ﻳُﺮﺟﻰ ﺍﻻﻧﺘﻈﺎﺭ ﺑﺼﺒﺮ ﺣﺘﻰ ﻳﻨﺘﻬﻲ ﺍﻟﺤﻈﺮ ﺃﻭ ﺗﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء.
 [Your unit got converted to %0's team]
-Your unit got converted to %0's team
+ﺗﺤﻮﻟﺖ ﻭﺣﺪﺗﻚ ﺇﻟﻰ ﻓﺮﻳﻖ %0
 [Your username was banned]
-
+ﺣُﻈﺮ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺍﻟﺨﺎﺹ ﺑﻚ. ﻳُﺮﺟﻰ ﺍﻟﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء ﻟﺘﻐﻴﻴﺮ ﻫﺬﺍ.
