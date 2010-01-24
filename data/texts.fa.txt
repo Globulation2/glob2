@@ -1,0 +1,1216 @@
+[%0 has left the game]
+%0 از بازی بیرون رفت.
+[%0 level %1]
+%0 رتبه‌ی %1
+[%0 units can't access building]
+%0 نفر به ساختمان دسترسی ندارند
+[%0 units can't access flag]
+%0 نفر به پرچم دسترسی ندارند
+[%0 units can't access fruit]
+%0 نفر به میوه دسترسی ندارند
+[%0 units can't access resource]
+%0 نفر به منابع دسترسی ندارند
+[%0 units not available]
+%0 نفر در دسترس نیستند
+[%0 units too far from building]
+%0 نفر از ساختمان خیلی دورند
+[%0 units too far from flag]
+%0 نفر از پرچم خیلی دورند
+[%0 units too far from fruit]
+%0 نفر از میوه‌ها خیلی دورند
+[%0 units too far from resource]
+%0 نفر از منابع خیلی دورند
+[%0 units too low level]
+رتبه‌ی %0 نفر خیلی پایین است
+[%0% Uploaded]
+%0% فرستاده شده
+[%0's game]
+بازی %0
+[%0's team unit got converted to your team]
+یکی از افراد تیم %0 جزو تیم تو شد.
+[abreaviation explanation A]
+A (Ally): متحدها
+[abreaviation explanation C]
+C (Chat): اجازه‌دادن برای گفتگو
+[abreaviation explanation fV]
+fV (FoodVision): نشان دادن محل مسافرخانه‌ها (برای گول‌زدن افراد حریف)
+[abreaviation explanation mV]
+mV (MarketVision): نشان دادن محل بازارها (برای مبادله‌ی میوه)
+[abreaviation explanation V]
+V (Vision): نشان دادن محل همه‌ی ساختمانها
+[add map]
+اضافه‌کردن نقشه
+[add shortcut]
+اضافه‌کردن دکمه
+[Add]
+اضافه‌کردن
+[AI Descriptions]
+مشخصات هوشهای مصنوعی
+[AI]
+هوش مصنوعی
+[ai]
+هوش مصنوعی
+[AICastor-Description]
+کاستور با احتیاط بازی میکند. او در نقشه هایی که منابع کمی دارند کارش را خیلی خوب انجام میدهد. (نه سخت و نه آسان!)
+[AICastor]
+کاستور
+[AINicowar-Description]
+نیکووار خشن بازی میکند. خیلی زود رشد زیادی میکند و جنگجویان زیادی را به جان حریفهایش می‌اندازد. (سخت)
+[AINicowar]
+نیکووار
+[AINone-Description]
+ هیچی! هیچ کاری نمیکند!
+[AINone]
+هیچ
+[AINumbi-Description]
+نامبی، کم، ولی سریع گسترش پیدا میکند. (آسان)
+[AINumbi]
+نامبی
+[AIReachToInfinity-Description]
+بسوی-بینهایت، حمله نمیکند، ولی ساختمانهای زیادی میسازد و تعداد زیادی از افراد حریف را گول میزند و آنها را جزو افراد خودش میکند! (آسان)
+[AIReachToInfinity]
+بسوی-بینهایت
+[AIToubib-Description]
+طبیب!
+[AIToubib]
+طبیب
+[AIWarrush-Description]
+وارراش، بسرعت و شدید حمله میکند که خیلی وقتها حریفهایش را به حاشیه‌ی بازی میبرد. (نه سخت و نه آسان!)
+[AIWarrush]
+وارراش
+[Alga]
+جلبک
+[algae]
+مقدار جلبک
+[alliances]
+اتحادها
+[alt %0]
+alt-%0
+[and]
+و
+[any explorer]
+هرکدام از جستجوگر
+[are dying hungry]
+ نفر درحال تلف‌شدن
+[are hungry]
+ نفر گرسنه
+[are ok]
+ نفر سالم
+[are wonded]
+ نفر زخمی
+[armor]
+قدرت دفاع
+[assigned]
+درحال کار
+[At. speed]
+سرعت حمله:
+[At. strength]
+شدت حمله:
+[Attack]
+حمله
+[audio]
+صدا
+[auto save]
+-ذخیره‌ی خودبخود-
+[available lan games]
+بازیهای شبکه‌ای موجود
+[awaiting players]
+بازیکنان منتظر
+[away:]
+دور از دسترس:
+[Back]
+برگشتن
+[backspace]
+backspace
+[barracks explanation 2]
+رتبه‌ی جنگی جنگجوها
+[barracks explanation]
+برای افزایش
+[barracks]
+سربازخانه
+[beach size]
+اندازه‌ی ساحل
+[Blocked Players]
+بازیکنان مسدودشده
+[break]
+break
+[briefing]
+خلاصه
+[build %0 level %1]
+ساخت %0 رتبه‌ی %1
+[Build]
+ساخت و ساز
+[Building Defaults]
+پیشفرضهای ساختمانها
+[building settings]
+ساختمانها
+[building site]
+در دست ساخت
+[Building Tool Box Explanation]
+برای ساختن به‌شکل چهارگوش، Shift را پایین نگه‌دار، موس را کلیک کن، نگه‌دار و به سمتی که میخواهی بکش.
+[Building Tool Line Explanation]
+برای ساختن به‌شکل خطی، Ctrl را پایین نگه‌دار، موس را کلیک کن، نگه‌دار و به سمتی که میخواهی بکش.
+[Buildings]
+ساختمانها
+[Bullets]
+گلوله
+[campaign editor]
+ویرایش عملیات
+[campaign]
+عملیات
+[Can't connect, can't find host]
+نمیشود وصل شد. میزبان پیدا نشد.
+[Can't host game, port %0 in use]
+نمیشود میزبانی کرد. پورت %0 مشغول است.
+[Can't join game, game doesn't exist]
+نمیشود در بازی شرکت کرد. این بازی وجود ندارد.
+[Can't join game, game has started]
+نمیشود در بازی شرکت کرد. بازی شروع شده است.
+[Can't join game, game is full]
+نمیشود در بازی شرکت کرد. بازی پر شده است.
+[cancel destroy]
+لغو تخریب
+[cancel repair]
+لغو تعمیر
+[cancel upgrade]
+لغو پیشرفت
+[Cancel]
+لغو
+[caps lock]
+caps lock
+[carry]
+درحال حمل
+[Change Area Name]
+تغییرنام منطقه
+[Cherry]
+گیلاس
+[choose campaign]
+یک عملیات انتخاب کن
+[choose game]
+یک بازی انتخاب کن
+[choose map]
+یک نقشه انتخاب کن
+[clear area]
+منطقه‌ی پاکسازی
+[Clearing:]
+درحال پاکسازی:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+برای پاکسازی منابع طبیعی
+[clearingflag]
+پرچم پاکسازی
+[closed]
+بسته
+[combined vision]
+
+[compile]
+کمپایل برنامه
+[compose]
+`
+[Computing Fertility]
+درحال بررسی محلهای حاصلخیز...
+[concrete islands terrain]
+جزیره‌های نزدیک بهم
+[connect]
+وصل‌شدن
+[connecting to game]
+درحال وصل شدن به بازی
+[connecting to]
+درحال وصل شدن به
+[Construction Site Defaults]
+پیشفرضهای محلهای در دست ساخت
+[Continue playing]
+ادامه‌ی بازی
+[control %0]
+control-%0
+[Corn]
+گندم
+[crater density]
+تعداد دریاچه‌ها
+[crater lakes terrain]
+دریاچه
+[create game]
+ساختن بازی
+[create map]
+ساختن نقشه
+[credits]
+سازندگان
+[ctrl - line]
+Ctrl - خط
+[current speed]
+سرعت فعلی
+[custom game]
+بازی آزاد
+[customcur]
+نشانگر مخصوص
+[damage]
+خسارت
+[Damaged Map]
+نقشه‌ی خسارتها
+[decrease units working]
+کاهش تعداد افراد درحال کار
+[Defeat Your Oppenents]
+حریفت را شکست بده
+[defencetower explanation 2]
+ساختمانهای دشمن در نزدیکی محل
+[defencetower explanation]
+برای حمله به افراد یا
+[defencetower]
+برج مراقبت
+[Defense Map]
+نقشه‌ی دفاع
+[Defense]
+دفاع
+[Delete game]
+پاک‌کردن بازی انتخاب‌شده
+[delete]
+پاک‌کردن
+[desert]
+بیابان
+[destroy building]
+تخریب ساختمان انتخاب‌شده
+[destroy]
+تخریب
+[display]
+نمایش
+[do nothing]
+-هیچ کار-
+[don't carry anything]
+دست خالی
+[down]
+پایین
+[Download Map]
+دانلود نقشه
+[Download Maps]
+دانلود نقشه‌ها
+[downloaded %0]
+%0 دانلود شد
+[downloading map]
+درحال دانلود نقشه
+[edit map]
+ویرایش نقشه
+[editing map]
+درحال ویرایش نقشه
+[editor shortcuts]
+دکمه‌ها در ویرایشگر
+[editor]
+ویرایشگر
+[end]
+end
+[Enter your nickname :]
+نام کاربریت را بنویس:
+[Enter your password :]
+رمزت را بنویس:
+[enter]
+enter
+[equals]
+equals
+[escape]
+escape
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+برای صداکردن جستجوگرها
+[explorationflag]
+پرچم جستجو
+[Explorer Ratio]
+ساخت جستجوگرها
+[Explorer]
+جستجوگر
+[explorers]
+جستجوگر
+[extra islands]
+جزیره‌های خالی
+[f10]
+f10
+[f11]
+f11
+[f12]
+f12
+[f13]
+f13
+[f14]
+f14
+[f15]
+f15
+[f1]
+f1
+[f2]
+f2
+[f3]
+f3
+[f4]
+f4
+[f5]
+f5
+[f6]
+f6
+[f7]
+f7
+[f8]
+f8
+[f9]
+f9
+[Fertility Map]
+نقشه‌ی حاصلخیزی
+[Flag Defaults]
+پیشفرضهای پرچمها
+[flag settings explanation]
+اندازه‌ی پیشفرض شعاع منطقه‌ی پرچم:
+[fog of war]
+
+[food]
+تغذیه
+[forbidden area]
+منطقه‌ی ممنوعه
+[Free]
+آزاد
+[free]
+آزاد
+[free]
+آزاد
+[from:]
+از:
+[fruit]
+مقدار میوه
+[fullscreen]
+صفحه‌ی کامل
+[game full]
+بازی پر است!
+[game shortcuts]
+دکمه‌ها در بازی
+[Game]
+بازی
+[general settings]
+تنظیمهای کلی
+[go to event]
+رفتن به رویداد
+[go to home]
+رفتن به خانه
+[goto main menu]
+برگشتن به منوی اصلی
+[grass]
+مقدار چمن
+[ground attack]
+حمله‌ی زمینی
+[guard area]
+منطقه‌ی دفاعی
+[GUIMapPreview text 0]
+لطفاً یک نقشه
+[GUIMapPreview text 1]
+انتخاب کن!
+[handmade map]
+نقشه‌ی دست‌ساز
+[Happyness]
+شادی
+[hard pause]
+مکث شدید
+[Harvest]
+برداشت
+[high priority]
+زیاد
+[hints]
+راهنمایی
+[home]
+home
+[hospital explanation 2]
+
+[hospital explanation]
+برای درمان افراد
+[hospital]
+بیمارستان
+[host]
+میزبانی بازی
+[hp]
+سلامتی
+[hp]
+سلامتی
+[Human]
+آدم
+[human]
+آدم
+[hungry]
+گرسنه
+[hungryness]
+گرسنگی
+[In way]
+در راه
+[increase units working]
+افزایش تعداد افراد درحال کار
+[inn explanation 2]
+
+[inn explanation]
+برای سیرکردن افراد
+[inn]
+مسافرخانه
+[insert]
+insert
+[inside]
+تعداد افراد داخل ساختمان:
+[islands size]
+اندازه‌ی جزیره‌ها
+[islands terrain]
+جزیره
+[isles terrain]
+مجمع‌الجزایر
+[iterate selection]
+رفتن به انتخاب بعدی
+[jobs]
+کارها:
+[join a game]
+پیوستن به بازی
+[join]
+پیوستن
+[keyboard settings]
+تنظیم دکمه‌ها
+[kick]
+بیرون‌کردن
+[lan]
+بازی شبکه‌ای
+[language incomplete]
+فارسی (ناقص)
+[language-code]
+fa
+[language-tr]
+زبان
+[language]
+فارسی
+[Leave Game]
+بیرون‌رفتن از بازی
+[left meta]
+meta چپ
+[left super]
+windows چپ
+[left]
+چپ
+[Leo: nur ein erster Test]
+test
+[level]
+رتبه:
+[levels]
+رتبه ها:
+[load campaign]
+ادامه‌ی عملیات
+[load game]
+ادامه‌ی بازی
+[load map]
+بازکردن نقشه
+[load replay]
+
+[load script]
+بازکردن برنامه
+[load]
+بازکردن
+[loading map list]
+درحال خواندن لیست نقشه‌ها...
+[Lobby]
+سالن انتظار
+[login]
+واردشدن
+[look around]
+
+[Lost : %0 has more prestige than you]
+باختی: %0 اعتبار بیشتری از تو دارد.
+[Lost : your colony is dead]
+باختی: افراد تو همه مردند.
+[low priority]
+کم
+[lowquality]
+کیفیت پایین
+[Magic At. Air]
+خسارت حمله‌ی هوایی
+[Magic At. Ground]
+خسارت حمله‌ی زمینی
+[map description]
+توضیحات
+[Map Discovered]
+همه‌جای نقشه کشف شده‌باشد
+[Map download failure: lost connection]
+نقشه دانلود نشد: ارتباط با ایساگون قطع شد!
+[Map name: %0]
+اسم نقشه: %0.
+[map name]
+اسم
+[map rated]
+نمره‌ی نقشه داده شد
+[map script]
+برنامه‌ی نقشه
+[map size x]
+عرض نقشه
+[map size y]
+ارتفاع نقشه
+[Map upload failure: connection lost]
+نقشه فرستاده نشد: ارتباط با ایساگون قطع شد!
+[Map upload failure: map name in use]
+نقشه فرستاده نشد: این نقشه درحال استفاده است!
+[Map upload failure: unknown reason]
+نقشه فرستاده نشد: دلیل مشخص نیست!
+[Map Upload: Author Name]
+اسم سازنده
+[Map Upload: Waiting for reply]
+منتظر جواب...
+[mark map]
+علامتگذاری نقشه برای متحدها
+[market explanation 2]
+با دیگران
+[market explanation]
+برای معامله‌ی میوه
+[market]
+بازار
+[medium priority]
+متوسط
+[meta %0]
+meta-%0
+[Min required level:]
+حداقل رتبه‌ی لازم:
+[Minimum Level To Flag]
+حداقل رتبه‌ی پرچم
+[Music volume]
+بلندی صدای موسیقی
+[Mute]
+ساکت
+[mute]
+ساکت
+[new campaign]
+عملیات جدید
+[new map]
+نقشه‌ی جدید
+[nick taken]
+We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+*فقط در حالت پنجره
+[No Hints]
+-هیچ راهنمایی‌ای داده‌نشده-
+[no key]
+-هیج دکمه‌ای-
+[No Objectives]
+-هیچ هدفی تعیین نشده-
+[no ressources growth areas]
+زمین بایر
+[No]
+نه
+[Not Enough Ratings]
+تعداد نمره‌ها کافی نیست!
+[not ready]
+آماده نیست!
+[Number Of Buildings]
+تعداد ساختمانها
+[number of players: %0 (%1 AI)]
+%0 بازیکن (%1 هوش مصنوعی)
+[number of teams: %0]
+%0 تیم
+[number of teams]
+تعداد تیمها
+[Number Of Units]
+تعداد افراد
+[numlock]
+numlock
+[objectives]
+هدفهای بازی
+[of which]
+شامل:
+[ok]
+قبول!
+[old islands terrain]
+زمین تصادفی
+[old random terrain]
+مجمع‌الجزایر تصادفی
+[on press]
+فشارداده
+[On the spot]
+اینجا
+[on unpress]
+فشارنداده
+[open chat box]
+بازکردن کادر گفتگو
+[open load menu]
+نشان‌دادن منوی بازکردن نقشه
+[open save menu]
+نشان‌دادن منوی ذخیره‌ی نقشه
+[open scenario editor]
+ویرایش برنامه‌ی نقشه
+[open teams editor]
+ویرایش تیمها
+[open]
+بازکردن
+[OpenGL]
+اسفاده از OpenGL
+[Options]
+تنظیمها
+[options]
+تنظیمها
+[Orange]
+پرتقال
+[Other Options]
+انتخابهای بیشتر
+[page down]
+page down
+[page up]
+page up
+[Papyrus]
+پاپیروس
+[pause game]
+مکث
+[pause]
+pause
+[Paused]
+مکث...
+[player name]
+اسم بازیکن:
+[player rating %0]
+نمره‌ی بازیکن: %0
+[players]
+
+[please wait]
+لطفاً صبر کن...
+[power]
+power
+[press space]
+برای ادامه، دکمه‌ی space را بزن.
+[Prestige Score]
+امتیاز اعتبار
+[Prestige Win Enabled]
+امکان برنده‌شدن از راه کسب اعتبار
+[Prestige]
+اعتبار
+[Primary Objectives]
+در درجه‌ی اول:
+[print screen]
+print screen
+[priority]
+اولویت
+[Prune]
+آلو
+[quit the editor]
+بیرون‌رفتن از ویرایشگر
+[quit the game]
+بیرون‌رفتن از بازی
+[quit the replay]
+
+[quit]
+خروج
+[racetrack explanation 2]
+سرعت حرکت افراد
+[racetrack explanation]
+برای افزایش
+[racetrack]
+پیست مسابقه
+[range]
+:محدوده
+[Rated %0]
+نمره: %0
+[ratios]
+نسبتها:
+[ready?]
+آماده‌ای؟
+[refresh map list]
+دوباره لیست‌کردن نقشه‌ها
+[Register]
+ثبت‌نام در ایساگون
+[remember unit]
+بخاطر‌سپردن افراد
+[Remember YOG password localy]
+بخاطر‌سپردن رمز در کامپیوتر
+[remove map]
+پاک‌کردن نقشه
+[remove shortcut]
+پاک‌کردن دکمه
+[Remove]
+پاک‌کردن
+[repair building]
+شروع/توقف تعمیر
+[repair]
+تعمیر
+[repeat area]
+اندازه‌ی چند برابر؟
+[Repeat your password :]
+رمزت را دوباره بنویس:
+[replay ended]
+
+[restore default shortcuts]
+برگرداندن دکمه‌های پیشفرض
+[return to editor]
+برگشتن به ویرایشگر
+[return to game]
+برگشتن به بازی
+[return to replay]
+
+[return]
+enter
+[right meta]
+meta راست
+[right super]
+windows راست
+[right]
+راست
+[river diameter]
+عرض رودخانه
+[river terrain]
+رودخانه
+[sand]
+ماسه
+[save before quit?]
+ویرایشهایت ذخیره شود؟
+[save game]
+ذخیره‌ی بازی
+[save map]
+ذخیره‌ی نقشه
+[save replay]
+
+[save script]
+ذخیره‌ی برنامه
+[Save]
+ذخیره
+[school explanation 2]
+رتبه‌ی ساخت‌و‌ساز کارگرها
+[school explanation]
+برای افزایش
+[school]
+مدرسه
+[Script Areas]
+منطقه‌های برنامه
+[scroll lock]
+scroll lock
+[scroll wheel enabled]
+امکان استفاده از چرخ ماوس
+[Secondary Objectives]
+در درجه‌ی دوم:
+[seeking a job]
+در جستجوی کار
+[seeking]
+در جستجو
+[select barracks building]
+انتخاب سربازخانه
+[select clearingflag]
+انتخاب پرچم پاکسازی
+[select construct barracks]
+انتخاب ابزار ساخت سربازخانه
+[select construct defencetower]
+انتخاب ابزار ساخت برج مراقبت
+[select construct hospital]
+انتخاب ابزار ساخت بیمارستان
+[select construct inn]
+انتخاب ابزار ساخت مسافرخانه
+[select construct market]
+انتخاب ابزار ساخت بازار
+[select construct racetrack]
+انتخاب ابزار ساخت پیست مسابقه
+[select construct school]
+انتخاب ابزار ساخت مدرسه
+[select construct stonewall]
+انتخاب ابزار ساخت دیوار سنگی
+[select construct swarm]
+انتخاب ابزار ساخت کندو
+[select construct swimmingpool]
+انتخاب ابزار ساخت استخر
+[select delete tool]
+انتخاب ابزار پاک‌کردن
+[select explorationflag]
+انتخاب پرچم جستجو
+[select hospital building]
+انتخاب بیمارستان
+[select inn building]
+انتخاب مسافرخانه
+[select market building]
+انتخاب بازار
+[select place clearing area]
+انتخاب ابزار تعیین منطقه‌ی پاکسازی
+[select place clearingflag]
+انتخاب ابزار پرچم پاکسازی
+[select place explorationflag]
+انتخاب ابزار پرچم جستجو
+[select place forbidden area]
+انتخاب ابزار تعیین منطقه‌ی ممنوعه
+[select place guard area]
+انتخاب ابزار تعیین منطقه‌ی دفاعی
+[select place warflag]
+انتخاب ابزار پرچم جنگ
+[select racetrack building]
+انتخاب پیست‌مسابقه
+[select school building]
+انتخاب مدرسه
+[select swarm building]
+انتخاب کندو
+[select swimmingpool building]
+انتخاب استخر
+[select tower building]
+انتخاب برج مراقبت
+[select wall building]
+انتخاب دیوار سنگی
+[select warflag]
+انتخاب پرچم جنگ
+[settings]
+تنظیمها
+[shift %0]
+shift-%0
+[shortcut explanation enter]
+-برای گفتگو از دکمه‌ی Enter استفاده کن
+[shortcut explanation v]
+-برای صحبت با میکروفون، دکمه‌ی V را پایین نگه‌دار
+[show areas]
+
+[show flags]
+
+[show main menu]
+نشان‌دادن منوی اصلی
+[skin]
+Display
+[smoothing]
+یکنواختی زمین
+[sort by name]
+اسم
+[sort by rating]
+نمره
+[sort by size]
+اندازه
+[Sort By]
+مرتب کردن از روی
+[space]
+space
+[start mission]
+شروع مأموریت
+[start new campaign]
+شروع عملیات جدید
+[Start]
+شروع
+[Starving Map]
+نقشه‌ی گرسنگی
+[starving]
+درحال تلف‌شدن
+[Statistics]
+گزارش
+[Still (i)]
+هنوز
+[still (w)]
+هنوز
+[still one unit working]
+هنوز یکنفر درحال کار است.
+[Still one]
+هنوز یکنفر
+[Stone]
+سنگ
+[stone]
+مقدار سنگ
+[stonewall explanation 2]
+
+[stonewall explanation]
+برای دفاع از قلمرو
+[stonewall]
+دیوار سنگی
+[submit rating]
+نمره‌دادن
+[svr hostname]
+نام میزبان
+[swamp terrain]
+مرداب
+[swarm explanation 2]
+
+[swarm explanation]
+برای ساختن افراد جدید
+[swarm]
+کندو
+[Swim]
+شنا
+[swimmingpool explanation 2]
+سرعت شنای افراد
+[swimmingpool explanation]
+برای افزایش
+[swimmingpool]
+استخر
+[switch to adding areas]
+گذاشتن منطقه بندی
+[switch to area brush 1]
+انتخاب ابزار منطقه بندی نقطه‌ای شکل
+[switch to area brush 2]
+انتخاب ابزار منطقه بندی بعلاوه‌ای شکل
+[switch to area brush 3]
+انتخاب ابزار منطقه بندی خطی ۱
+[switch to area brush 4]
+انتخاب ابزار منطقه بندی خطی ۲
+[switch to area brush 5]
+انتخاب ابزار منطقه شطرنجی شکل
+[switch to area brush 6]
+انتخاب ابزار منطقه بندی چهارنقطه‌ای شکل
+[switch to area brush 7]
+انتخاب ابزار منطقه بندی مربعی شکل کوچک
+[switch to area brush 8]
+انتخاب ابزار منطقه بندی مربعی شکل بزرگ
+[switch to building view]
+رفتن به بخش ساختمانها
+[switch to flag view]
+رفتن به بخش پرچمها
+[switch to removing areas]
+برداشتن منطقه بندی
+[switch to teams view]
+رفتن به بخش تیمها
+[switch to terrain view]
+رفتن به بخش نوع زمین
+[sys req]
+sys req
+[tab]
+tab
+[teams editor]
+ویرایش تیمها
+[Teams Fixed]
+تیمها ثابت باشند
+[teams]
+ تیم
+[the barracks is finished]
+ساخت سربازخانه تمام شد.
+[the barracks is under attack]
+به سربازخانه حمله شده!
+[the building is finished]
+ساخت ساختمان تمام شد.
+[the building is under attack]
+به ساختمان حمله شده!
+[the clearingflag is finished]
+?? پرچم پاکسازی گذاشته شد ??
+[the clearingflag is under attack]
+?? به پرچم پاکسازی حمله شده! ??
+[the defencetower is finished]
+ساخت برج مراقبت تمام شد.
+[the defencetower is under attack]
+به برج مراقبت حمله شده!
+[the explorationflag is finished]
+?? پرچم جستجو گذاشته شد. ??
+[the explorationflag is under attack]
+?? به پرچم جستجو حمله شده! ??
+[The game has not been finished]
+بازی نیمه‌کاره ماند
+[the games]
+بازیها
+[the hospital is finished]
+ساخت بیمارستان تمام شد.
+[the hospital is under attack]
+به بیمارستان حمله شده!
+[The host has cancelled the game]
+میزبان بازی را لغو کرد!
+[the inn is finished]
+ساخت مسافرخانه تمام شد.
+[the inn is under attack]
+به مسافرخانه حمله شده!
+[the maps]
+نقشه‌ها
+[the market is finished]
+ساخت بازار تمام شد.
+[the market is under attack]
+به بازار حمله شده!
+[The player %0 has joined YOG]
+%0 وارد ایساگون شد.
+[The player %0 has left YOG]
+%0 از ایساگون بیرون رفت.
+[the racetrack is finished]
+ساخت پیست مسابقه تمام شد.
+[the racetrack is under attack]
+به پیست مسابقه حمله شده!
+[the replays]
+
+[the school is finished]
+ساخت مدرسه تمام شد.
+[the school is under attack]
+به مدرسه حمله شده!
+[the stonewall is finished]
+ساخت یک قسمت از دیوار تمام شد.
+[the stonewall is under attack]
+به دیوارها حمله شده!
+[the swarm is finished]
+ساخت کندو تمام شد.
+[the swarm is under attack]
+به کندو حمله شده!
+[the swimmingpool is finished]
+ساخت استخر تمام شد
+[the swimmingpool is under attack]
+به استخر حمله شده!
+[the warflag is finished]
+?? پرچم جنگ گذاشته شد ??
+[the warflag is under attack]
+?? به پرچم جنگ حمله شده! ??
+[time]
+زمان
+[to:]
+به:
+[toggle draw accessibility aids]
+نشان‌دادن/مخفی‌کردن کمکهای دسترسی
+[toggle draw information]
+نشان‌دادن/مخفی‌کردن اطلاعات
+[toggle draw unit paths]
+نشان‌دادن/مخفی‌کردن مسیر افراد
+[toggle menu screen]
+نشان‌دادن/مخفی‌کردن صفحه‌ی منو
+[toggle recording voice]
+شروع ضبط صدا
+[toggle recording voice]
+شروع/قطع ضبط صدا
+[Total Attack Power]
+کل قدرت حمله
+[Total Defence Power]
+کل قدرت دفاعی
+[Total Hitpoints]
+کل سلامتی (افراد و ساختمانها)
+[Total prestige reached]
+کل اعتبار کسب‌شده
+[Total]
+کل
+[tutorial text 1]
+به بازی آموزشی گلبولاسیون۲ خوش‌آمدی! این بازی شامل همه‌چیز -از ساختن مسافرخانه و کشف منطقه‌ها گرفته، تا ازبین‌بردن دشمن- میشود. اینجا هیچ اطلاعات یاارزشی از قلم نمی‌افتد!
+[tutorial text 2]
+حالا که به اصول بازی مسلط شدی، نوبت آشناشدن با ساختمانهای دیگر -مثل پیست‌مسابقه، استخر و مدرسه- میرسد.
+[tutorial text 3]
+تا اینجا خوب کار کردی! حالا برویم سراغ جنگجوها، سربازخانه‌ها و پیشرفت‌دادن ساختمانها.
+[tutorial text 4]
+خب، تقریبا تمام شد! فقط میماند پرچمها و حمله‌کردن. بعدش به اندازه‌ی کافی یادگرفته‌ای که وارد بازی آزاد بشوی و بالاخره در بازی آنلاین درمقابل بهترین بازیکنهای گلبولاسیون۲ بازی کنی!
+[tutorial]
+بازی آموزشی
+[Uncontrolled]
+کنترل نشده
+[undo]
+خنثی کردن
+[uniform terrain]
+زمین هموار
+[Unit editor]
+ویرایشگر افراد
+[unit settings explanation]
+تعداد پیشفرض افراد برای انجام کارها:
+[units working]
+ نفر درحال کار
+[Units]
+تعداد افراد
+[unlocked at start]
+آزادشده در شروع
+[unlocked by]
+آزادشده بدست
+[Unnamed Area]
+{منطقه‌ی نامگذاری نشده}
+[up]
+بالا
+[upgrade building]
+شروع/توقف پیشرفت
+[Upgrade Defaults]
+پیشفرضهای پیشرفت
+[upgrade]
+پیشرفت
+[Upload Map]
+فرستادن نقشه
+[upload map]
+فرستادن نقشه
+[username]
+نام کاربری
+[Version]
+نسخه(ی)
+[view history]
+دیدن پیغامهای قبلی
+[Voice volume]
+بلندی صدای صحبت
+[waiting for %0]
+منتظر %0
+[waiting for key]
+منتظر دکمه...
+[Waiting]
+صبر کن...
+[Walk]
+حرکت
+[warflag explanation 2]
+
+[warflag explanation]
+برای صداکردن جنگجوها
+[warflag]
+پرچم جنگ
+[Warning, you need to reboot the game for changes to take effect]
+توجه: برای اینکه تغییرات اثر کنند، باید بازی را دوباره اجرا کنی!
+[Warrior Ratio]
+ساخت جنگجو
+[Warrior]
+جنگجو
+[warriors]
+جنگجو
+[watch again]
+
+[watching:]
+
+[water]
+مقدار آب
+[Wheat]
+مقدار گندم
+[Won : you defeated your opponents]
+بردی: تو حریفهایت را شکست دادی.
+[Won : you have the most prestige]
+بردی: اعتبار تو از همه بیشتر است.
+[Won : your ally %0 has the most prestige]
+بردی: اعتبار متحد تو %0، از همه بیشتر است.
+[Wood]
+چوب
+[wood]
+مقدار چوب
+[Worker Ratio]
+ساخت کارگر
+[Worker]
+کارگر
+[workers]
+کارگر
+[workers]
+کارگرها
+[working]
+درحال کار
+[wounded]
+زخمی
+[Yes]
+بله
+[YESTS_CONNECTING]
+درحال برقراری ارتباط با ایساگون...
+[YESTS_CONNECTION_LOST]
+ارتباط با ایساگون قطع شد!
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+ایساگون ارتباط را قبول نکرد، چون این نام‌کاربری قبلا ثبت شده! اگر این نام‌کاربری خودت است، گزینه‌ی «ثبت‌نام در ایساگون» را غیرفعال کن.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+ایساگون ارتباط را قبول نکرد، چون رمز داده‌شده اشتباه بود!
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+ایساگون ارتباط را قبول نکرد، چون این نام‌کاربری هنوز رمزی  ندارد! اگر میخواهی نام‌کاربریت را با این رمز ثبت کنی، گزینه‌ی «ثبت‌نام در ایساگون» را فعال کن. این گزینه فقط یکبار لازمست فعال شود.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+ایساگون ارتباط را قبول نکرد، چون آدرس اینترنتی (IP) این کامپیوتر موقتا تحریم شده! میتوانی منتظر بمانی تا از تحریم دربیاید یا اینکه با مدیران ایساگون تماس بگیری.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+ایساگون ارتباط را قبول نکرد، چون این نسخه از بازی خیلی قدیمی است! برای بازی آنلاین، لطفا آخرین نسخه را از آدرس www.globulation2.org بگیر.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+ایساگون ارتباط را قبول نکرد! توضیحی داده‌نشد.
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+ایساگون ارتباط را قبول نکرد، چون قبلا یکنفر با این نام‌کاربری ثبت‌نام کرده‌است!
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+ایساگون ارتباط را قبول نکرد، چون این نام‌کاربری تحریم شده! میتوانی با مدیران ایساگون تماس بگیری.
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+ایساگون ارتباط را قبول نکرد، چون نام‌کاربری واردشده قابل‌قبول نیست! نام‌کاربری فقط باید از حروف، اعداد و زیرخط (ـ) تشکیل شده‌باشد.
+[YESTS_CREATED]
+سیستم اتصال آماده‌ی برقراری ارتباط با ایساگون است.
+[YESTS_PASSWORDS_DONT_MATCH]
+رمزهای واردشده با هم فرق میکنند! لطفا دوباره آنها را وارد کن.
+[YESTS_UNABLE_TO_CONNECT]
+ارتباط ممکن نیست! ظاهرا به اینترنت وصل نیستی یا ایساگون خاموش است.
+[yog block command help]
+/block <نام بازیکن>    برای مسدودکردن یک بازیکن (دیگر نوشته‌های اورا نمیبینی)
+[yog block command player %0 already blocked]
+%0قبلا مسدود شده!
+[yog block command player %0 blocked]
+%0 مسدود شد!
+[yog block command player %0 not found]
+%0 پیدا نشد!
+[yog command header]
+لیست فعلی دستورات ایساگون:
+[yog command unknown]
+این دستور ناشناخته است!
+[yog help command help]
+/help    نشان‌دادن همین پیغام
+[yog]
+بازی آنلاین در ایساگون
+[you have lost]
+تو باختی!
+[you have won]
+تو بردی!
+[You where kicked from the game]
+تو از بازی بیرون شدی!
+[Your %0 are under attack]
+به %0های تو حمله شده!
+[Your IP address was temporarily banned]
+آدرس اینترنتی (IP) این کامپیوتر موقتا تحریم شده! میتوانی منتظر بمانی تا از تحریم دربیاید یا اینکه با مدیران ایساگون تماس بگیری.
+[Your unit got converted to %0's team]
+یکی از افراد تو جزو تیم %0 شد.
+[Your username was banned]
+این نام‌کاربری تحریم شده! میتوانی با مدیران ایساگون تماس بگیری.

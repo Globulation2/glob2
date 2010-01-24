@@ -69,6 +69,9 @@ public:
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
+
+	/// Load a replay
+	int loadReplay(const std::string &fileName);
 	
 	///Tells whether a map matching mapHeader is located on this system
 	bool haveMap(const MapHeader& mapHeader);

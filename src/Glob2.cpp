@@ -69,7 +69,7 @@
 /*!	\mainpage Globulation 2 Reference documentation
 
 	\section intro Introduction
-	This is the documentation of Globulation 2 free
+	This is the documentation of Globulation 2, a free
 	software game. It covers Glob2 itself and
 	libgag (graphic and widget).
 	\section feedback Feedback
@@ -88,7 +88,7 @@ void Glob2::drawYOGSplashScreen(void)
 	w=globalContainer->gfx->getW();
 	h=globalContainer->gfx->getH();
 	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
-	const char *text[3];
+	std::string text[3];
 	text[0]=Toolkit::getStringTable()->getString("[connecting to]");
 	text[1]=Toolkit::getStringTable()->getString("[yog]");
 	text[2]=Toolkit::getStringTable()->getString("[please wait]");
@@ -257,6 +257,18 @@ int Glob2::run(int argc, char *argv[])
 	}
 
 	isRunning=true;
+
+	// Replay the game specified by the command line
+	if (globalContainer->replaying)
+	{
+		Engine engine;
+		int rc_e = engine.loadReplay(globalContainer->replayFileName);
+		if (rc_e == Engine::EE_NO_ERROR)
+			isRunning = (engine.run() != -1);
+		else if(rc_e == -1)
+			isRunning = false;
+	}
+ 
 	while (isRunning)
 	{
 		switch (MainMenuScreen::menu())
@@ -283,10 +295,7 @@ int Glob2::run(int argc, char *argv[])
 				{
 					CampaignMenuScreen cms("games/Tutorial_Campaign.txt");
 					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms==CampaignMenuScreen::EXIT)
-					{
-					}
-					else if(rc_cms == -1)
+					if(rc_cms == -1)
 					{
 						isRunning = false;
 					}
@@ -296,17 +305,11 @@ int Glob2::run(int argc, char *argv[])
 					CampaignMenuScreen cms("campaigns/Tutorial_Campaign.txt");
 					cms.setNewCampaign();
 					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms==CampaignMenuScreen::EXIT)
-					{
-					}
-					else if(rc_cms == -1)
+					if(rc_cms == -1)
 					{
 						isRunning = false;
 					}
 				}
-				//Engine engine;
-				//if (engine.initCampaign("maps/tutorial.map") == Engine::EE_NO_ERROR)
-					//isRunning = (engine.run() != -1);
 			}
 			break;
 			case MainMenuScreen::LOAD_GAME:
@@ -321,12 +324,24 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::CUSTOM:
 			{
-				Engine engine;
-				int rc_e = engine.initCustom();
-				if (rc_e ==  Engine::EE_NO_ERROR)
-					isRunning = (engine.run() != -1);
-				else if(rc_e == -1)
-					isRunning = false;
+				bool cont=true;
+				while(cont && isRunning)
+				{
+					Engine engine;
+					int rc_e = engine.initCustom();
+					if (rc_e ==  Engine::EE_NO_ERROR)
+					{
+						isRunning = (engine.run() != -1);
+					}
+					else if(rc_e == -1)
+					{
+						isRunning = false;
+					}
+					else
+					{
+						cont=false;	
+					}
+				}
 			}
 			break;
 			case MainMenuScreen::MULTIPLAYERS_YOG:
@@ -347,7 +362,9 @@ int Glob2::run(int argc, char *argv[])
 				SettingsScreen settingsScreen;
 				int rc_ss = settingsScreen.execute(globalContainer->gfx, 40);
 				if( rc_ss == -1)
+				{
 					isRunning=false;
+				}
 			}
 			break;
 			case MainMenuScreen::EDITOR:
@@ -388,7 +405,7 @@ int main(int argc, char *argv[])
 {
 #ifdef __APPLE__
 	/* SDL has this annoying "feature" of setting working directory to parent
-	   of bundle during static initalization.  We want to set it back to the
+	   of bundle during static initialization.  We want to set it back to the
 	   main bundle directory so we can find our Resources directory. */
 	CFBundleRef mainBundle = CFBundleGetMainBundle();
 	assert(mainBundle);

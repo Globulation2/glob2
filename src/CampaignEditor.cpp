@@ -39,6 +39,7 @@ CampaignEditor::CampaignEditor(const std::string& name)
 	nameEditor = new TextInput(320, 60, 310, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", campaign.getName());
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);
 	cancel = new TextButton(450, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL);
+	description = new TextArea(320, 90, 310, 225, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false, campaign.getDescription().c_str());
 	addWidget(title);
 	addWidget(mapList);
 	addWidget(addMap);
@@ -47,6 +48,7 @@ CampaignEditor::CampaignEditor(const std::string& name)
 	addWidget(nameEditor);
 	addWidget(ok);
 	addWidget(cancel);
+	addWidget(description);
 	syncMapList();
 }
 
@@ -138,6 +140,10 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		if(source==nameEditor)
 		{
 			campaign.setName(nameEditor->getText());
+		}
+		if(source==description)
+		{
+			campaign.setDescription(description->getText());
 		}
 	}
 }

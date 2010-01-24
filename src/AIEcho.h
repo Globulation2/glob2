@@ -1343,13 +1343,6 @@ namespace AIEcho
 			BuildingPriority priority;
 		};
 
-		enum AreaType
-		{
-			ClearingArea,
-			ForbiddenArea,
-			GuardArea
-		};
-
 		///This management order adds a particular type of "area" to the ground.
 		///The three types of areas are in the AreaType enum, and are passed to
 		///the constructor. To have this change multiple areas, its nesseccary

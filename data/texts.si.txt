@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Zgradi
 
 [building site]
 gradbišče
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -196,6 +202,8 @@ Razkreije surovine
 Odstiralna zastava
 [closed]
 Zaprto
+[combined vision]
+
 [compile]
 Zgradi skripto
 [compose]
@@ -350,6 +358,8 @@ raziskovalci
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Hrana
 [forbidden area]
@@ -484,6 +494,8 @@ Stopnje
 Naloži igro
 [load map]
 
+[load replay]
+
 [load script]
 
 [load]
@@ -494,6 +506,8 @@ Naloži
 
 [login]
 Prijava
+[look around]
+
 [Lost : %0 has more prestige than you]
 Izgubil si : %0 ima več ugleda kot ti
 [Lost : your colony is dead]
@@ -562,6 +576,8 @@ Glasnost glasbe
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -576,6 +592,8 @@ Ne
 
 [not ready]
 ni pripravljen
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -584,6 +602,8 @@ ni pripravljen
 %0 ekip.
 [number of teams]
 Število ekip
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -615,7 +635,7 @@ Tukaj
 [open]
 odpri
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -640,11 +660,15 @@ Ustavljeno
 Ime igralca
 [player rating %0]
 
+[players]
+
 [please wait]
 Prosim počakaj
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -662,6 +686,8 @@ Slive
 
 [quit the game]
 Izhod iz igre
+[quit the replay]
+
 [quit]
 Izhod
 [racetrack explanation 2]
@@ -682,6 +708,8 @@ Razmerja
 
 [Register a new YOG user with password]
 Prijavi novega YOG uporabnika z geslom. (Ni varno!)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -698,12 +726,18 @@ Zapomni si YOG geslo lokalno. (Ni varno)
 Popravi
 [repeat area]
 
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 
 [return to editor]
 
 [return to game]
 Vrnitev v igro
+[return to replay]
+
 [return]
 
 [right meta]
@@ -723,6 +757,8 @@ Pesek
 [save game]
 Shrani igro
 [save map]
+
+[save replay]
 
 [save script]
 
@@ -813,6 +849,10 @@ Nastavitve
 [shortcut explanation enter]
 
 [shortcut explanation v]
+
+[show areas]
+
+[show flags]
 
 [show main menu]
 
@@ -966,6 +1006,8 @@ Tržnica je napadena
 Tekaška steza je zgrajena
 [the racetrack is under attack]
 Tekaška steza je napadena
+[the replays]
+
 [the school is finished]
 Šola je zgrajena
 [the school is under attack]
@@ -986,6 +1028,8 @@ Bazen je napaden
 Vojaška zastava je zgrajena
 [the warflag is under attack]
 Vojaška zastava je napadena
+[time]
+
 [to:]
 za:
 [toggle draw accessibility aids]
@@ -997,6 +1041,12 @@ za:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Najvišji dosežen ugled
@@ -1074,6 +1124,10 @@ Pozor, da bi nastavitve stopile v veljavo moraš ponovno zagnati igro
 Vojak
 [warriors]
 vojaki
+[watch again]
+
+[watching:]
+
 [water]
 Voda
 [Wheat]
@@ -1126,6 +1180,8 @@ YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
 [yog block command help]

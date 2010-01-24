@@ -67,7 +67,7 @@ void YOGGameResults::decodeData(GAGCore::InputStream* stream, Uint32 netDataVers
 {
 	stream->readEnterSection("YOGGameResults");
 	Uint32 size = stream->readUint32("size");
-	for(int i=0; i<size; ++i)
+	for(unsigned int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
 		std::string name = stream->readText("name");

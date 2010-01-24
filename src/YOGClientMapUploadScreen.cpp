@@ -38,7 +38,7 @@
 using namespace GAGCore;
 
 YOGClientMapUploadScreen::YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> client, const std::string mapFile)
-	: uploader(client), mapFile(mapFile), client(client)
+	: client(client), uploader(client), mapFile(mapFile)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]")));
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
@@ -58,7 +58,7 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> 
 	addWidget(mapDate);
 	authorNameText=new Text(20, 60+150,  ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Map Upload: Author Name]"), 180);
 	addWidget(authorNameText);
-	authorName=new TextInput(173, 60+150, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.username, false, 255);
+	authorName=new TextInput(173, 60+150, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 255);
 	addWidget(authorName);
 	
 	//uploadStatus=new Text(248, 60+300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "", 180);

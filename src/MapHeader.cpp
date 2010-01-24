@@ -141,9 +141,11 @@ const std::string& MapHeader::getMapName() const
 
 
 
-std::string MapHeader::getFileName(bool isCampaignMap) const
+std::string MapHeader::getFileName(bool isCampaignMap, bool isReplay) const
 {
-	if(isCampaignMap)
+	if(isReplay)
+		return glob2NameToFilename("replays", mapName, "replay");
+	else if(isCampaignMap)
 		return glob2NameToFilename("campaigns", mapName, "map");
 	else if (!isSavedGame)
 		return glob2NameToFilename("maps", mapName, "map");
@@ -176,7 +178,7 @@ void MapHeader::setMapOffset(Uint32 newMapOffset)
 
 BaseTeam& MapHeader::getBaseTeam(const int n)
 {
-	assert(n>=0 && n<32);
+	assert(n>=0 && n<Team::MAX_COUNT);
 	return teams[n];
 }
 
@@ -184,7 +186,7 @@ BaseTeam& MapHeader::getBaseTeam(const int n)
 
 const BaseTeam& MapHeader::getBaseTeam(const int n) const
 {
-	assert(n>=0 && n<32);
+	assert(n>=0 && n<Team::MAX_COUNT);
 	return teams[n];
 }
 
@@ -269,6 +271,8 @@ std::string glob2FilenameToName(const std::string& filename)
 	std::string mapName;
 	if(filename.find(".game")!=std::string::npos)
 		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
+	else if(filename.find(".replay")!=std::string::npos)
+		mapName=filename.substr(filename.find("/")+1, filename.size()-8-filename.find("/"));
 	else
 		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
 	size_t pos = mapName.find("_");

@@ -1,0 +1,18 @@
+def if (cond) := {
+	def ifTrue (result) := [
+		def else (_) := result
+		def elseif (_) := ifFalse
+	]
+	def ifFalse (_) := [
+		def else (result) := result
+		def elseif := if
+	]
+	cond select (ifTrue, ifFalse)
+}
+
+def while (cond) (def body) := {
+	if (cond) {
+		body
+		while (cond) (body)
+	}
+}

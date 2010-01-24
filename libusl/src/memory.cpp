@@ -4,11 +4,8 @@
 
 using namespace std;
 
-void Heap::garbageCollect(Thread* thread)
+void Heap::collectGarbage()
 {
-	// mark all objects in heap
-	thread->markForGC();
-	
 	// filter copy, delete unrefs
 	Values marked;
 	for (size_t i = 0; i < values.size(); i++)

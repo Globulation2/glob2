@@ -36,26 +36,6 @@
 
 using namespace boost;
 
-// utilities part:
-
-inline static void dxdyfromDirection(int direction, int *dx, int *dy)
-{
-	const int tab[9][2]={	{ -1, -1},
-							{ 0, -1},
-							{ 1, -1},
-							{ 1, 0},
-							{ 1, 1},
-							{ 0, 1},
-							{ -1, 1},
-							{ -1, 0},
-							{ 0, 0} };
-	assert(direction>=0);
-	assert(direction<=8);
-	*dx=tab[direction][0];
-	*dy=tab[direction][1];
-}
-
-
 // AICastor::Project part:
 
 AICastor::Project::Project(IntBuildingType::Number shortTypeNum, const char *suffix)
@@ -84,7 +64,7 @@ void AICastor::Project::init(const char *suffix)
 	
 	//printf("new project(%s)\n", debugName);
 	
-	subPhase=0;;
+	subPhase=0;
 	
 	successWait=0;
 	blocking=true;
@@ -733,7 +713,7 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		unitSum[i]=0;
 	Unit **myUnits=team->myUnits;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u)
@@ -741,7 +721,7 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 	}
 	int foodSum=0;
 	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if (b && b->maxUnitWorking && b->type->canFeedUnit)
@@ -774,7 +754,7 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 	{
 		// Stop making any units!
 		Building **myBuildings=team->myBuildings;
-		for (int bi=0; bi<1024; bi++)
+		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
 			Building *b=myBuildings[bi];
 			if (b && b->type->unitProductionTime)
@@ -1122,7 +1102,7 @@ boost::shared_ptr<Order>AICastor::controlStrikes()
 			if ((team->enemies&enemyTeam->me)==0)
 				continue;
 			Building **enemyBuildings=enemyTeam->myBuildings;
-			for (int bi=0; bi<1024; bi++)
+			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				Building *b=enemyBuildings[bi];
 				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
@@ -1142,7 +1122,7 @@ boost::shared_ptr<Order>AICastor::controlStrikes()
 			if ((team->enemies&enemyTeam->me)==0)
 				continue;
 			Building **enemyBuildings=enemyTeam->myBuildings;
-			for (int bi=0; bi<1024; bi++)
+			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				Building *b=enemyBuildings[bi];
 				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim] || b->type->level<bestLevel)
@@ -1179,7 +1159,7 @@ boost::shared_ptr<Order>AICastor::controlStrikes()
 	Team *enemyTeam=game->teams[strikeTeam];
 	Uint32 me=team->me;
 	Building **enemyBuildings=enemyTeam->myBuildings;
-	for (int bi=0; bi<1024; bi++)
+	for (int bi=0; bi<Building::MAX_COUNT; bi++)
 	{
 		Building *b=enemyBuildings[bi];
 		if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
@@ -1626,7 +1606,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		}
 		
 		Building **myBuildings=team->myBuildings;
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b=myBuildings[i];
 			if (b)
@@ -1734,7 +1714,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if ((project->waitFinished || overWorkers) && enoughFreeWorkers())
 		{
 			Building **myBuildings=team->myBuildings;
-			for (int i=0; i<1024; i++)
+			for (int i=0; i<Building::MAX_COUNT; i++)
 			{
 				Building *b=myBuildings[i];
 				if (b && b->type->shortTypeNum==project->shortTypeNum && b->maxUnitWorking<project->mainWorkers)
@@ -1783,7 +1763,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 			Sint32 finalWorkers=project->finalWorkers;
 			
 			Building **myBuildings=team->myBuildings;
-			for (int i=0; i<1024; i++)
+			for (int i=0; i<Building::MAX_COUNT; i++)
 			{
 				Building *b=myBuildings[i];
 				if (b && b->type->shortTypeNum==project->shortTypeNum && b->maxUnitWorking!=finalWorkers)
@@ -1857,7 +1837,7 @@ void AICastor::computeCanSwim()
 	Unit **myUnits=team->myUnits;
 	int sumCanSwim=0;
 	int sumCantSwim=0;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0)
@@ -1911,7 +1891,7 @@ void AICastor::computeBuildingSum()
 				buildingLevels[bi][si][li]=0;
 	
 	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if (b)
@@ -1984,7 +1964,7 @@ void AICastor::computeWarLevel()
 	
 	int warPowerSum=0;
 	Unit **myUnits=team->myUnits;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u && u->medical==Unit::MED_FREE && u->typeNum==WARRIOR)
@@ -2279,7 +2259,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 		if (!team)
 			continue;
 		Building **myBuildings=team->myBuildings;
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b=myBuildings[i];
 			if (b && !b->type->isVirtual)
@@ -2325,7 +2305,7 @@ void AICastor::computeWorkPowerMap()
 	memset(gradient, 0, size);
 	
 	Unit **myUnits=team->myUnits;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
@@ -2400,7 +2380,7 @@ void AICastor::computeWorkRangeMap()
 	memcpy(gradient, obstacleUnitMap, size);
 	
 	Unit **myUnits=team->myUnits;
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
@@ -2616,7 +2596,7 @@ void AICastor::computeEnemyPowerMap()
 		if ((team->enemies&enemyTeam->me)==0)
 			continue;
 		Building **enemyBuildings=enemyTeam->myBuildings;
-		for (int bi=0; bi<1024; bi++)
+		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
 			Building *b=enemyBuildings[bi];
 			if (b==NULL || ((b->seenByMask&me)==0))
@@ -2696,7 +2676,7 @@ void AICastor::computeEnemyRangeMap()
 		if ((team->enemies & enemyTeam->me)==0)
 			continue;
 		Building **enemyBuildings=enemyTeam->myBuildings;
-		for (int bi=0; bi<1024; bi++)
+		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
 			Building *b=enemyBuildings[bi];
 			if (b==NULL || ((b->seenByMask&me)==0) || b->type->isBuildingSite)

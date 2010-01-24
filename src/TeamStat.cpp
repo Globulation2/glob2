@@ -143,7 +143,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	// handle in game stat step
 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
 	smoothedStat.reset();
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=team->myUnits[i];
 		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
@@ -153,7 +153,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 	
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b = team->myBuildings[i];
 		if (b)
@@ -200,7 +200,7 @@ void TeamStats::step(Team *team, bool reloaded)
 
 	stat.reset();
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=team->myUnits[i];
 		if (u)
@@ -258,7 +258,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		}
 	}
 
-	for (int i=0; i<1024; i++)
+	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b = team->myBuildings[i];
 		if (b)
@@ -381,10 +381,10 @@ void TeamStats::drawStat(int posx, int posy)
 		startPoxY -= 10; // this is to correct for the removal of the title
 		
 		int dec=0;
-		const char *Total=strings->getString("[Total]");
-		const char *free=strings->getString("[free]");
-		const char *seeking=strings->getString("[seeking]");
-		const char *slash="/";
+		std::string Total=strings->getString("[Total]");
+		std::string free=strings->getString("[free]");
+		std::string seeking=strings->getString("[seeking]");
+		std::string slash="/";
 		int sLen=font->getStringWidth(slash);
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 34, 66, 163));
@@ -408,10 +408,10 @@ void TeamStats::drawStat(int posx, int posy)
 		font->popStyle();
 
 		dec=0;
-		const char *Free=strings->getString("[Free]");
-		const char *hungry=strings->getString("[hungry]");
-		const char *starving=strings->getString("[starving]");
-		const char *wounded=strings->getString("[wounded]");
+		std::string Free=strings->getString("[Free]");
+		std::string hungry=strings->getString("[hungry]");
+		std::string starving=strings->getString("[starving]");
+		std::string wounded=strings->getString("[wounded]");
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 22, 229, 40));
 		gfx->drawString(textStartPos, startPoxY+104, font, Free);

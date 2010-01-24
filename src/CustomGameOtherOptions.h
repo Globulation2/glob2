@@ -23,6 +23,7 @@
 #include "Glob2Screen.h"
 #include "GameHeader.h"
 #include "MapHeader.h"
+#include "Team.h"
 
 using namespace GAGGUI;
 
@@ -74,11 +75,11 @@ private:
 	TextButton* cancel;
 	
 	///List of the player names
-	Text* playerNames[32];
+	Text ** playerNames;
 	//! Player colors
-	ColorButton *color[32];
+	ColorButton ** color;
 	//! Player ally temas
-	MultiTextButton *allyTeamNumbers[32];
+	MultiTextButton ** allyTeamNumbers;
 
 	///Button fixing teams during the match
 	OnOffButton *teamsFixed;
@@ -100,10 +101,9 @@ private:
 	///This updates the screens winning conditions from the game header
 	void updateScreenWinningConditions();
 	
-	
-	MapHeader& mapHeader;
 	GameHeader& gameHeader;
 	GameHeader oldGameHeader;
+	MapHeader& mapHeader;
 };
 
 #endif

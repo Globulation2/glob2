@@ -23,11 +23,6 @@
 #define __ORDER_H
 
 #include <assert.h>
-#ifndef DX9_BACKEND	// TODO:Die!
-#include <SDL.h>
-#else
-#include <Types.h>
-#endif
 
 #include "NetConsts.h"
 #include "Ressource.h"
@@ -419,7 +414,7 @@ class MessageOrder:public MiscOrder
 {
 public:
 	MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char *text);
+	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text);
 	virtual ~MessageOrder(void);
 
 	Uint8 *getData(void);

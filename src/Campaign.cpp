@@ -213,6 +213,10 @@ bool Campaign::load(const std::string& fileName)
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
+		if(versionMinor >= 83)
+		{
+			description = stream->readText("description");	
+		}
 		delete stream;
 		return true;
 	}
@@ -240,6 +244,7 @@ void Campaign::save(bool isGameSave)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	stream->writeText(description, "description");
 	delete stream;
 }
 
@@ -312,5 +317,17 @@ void Campaign::setPlayerName(const std::string& playerName)
 const std::string& Campaign::getPlayerName() const
 {
 	return playerName;
+}
+
+
+void Campaign::setDescription(const std::string& ndescription)
+{
+	description = ndescription;
+}
+
+
+const std::string& Campaign::getDescription() const
+{
+	return description;
 }
 

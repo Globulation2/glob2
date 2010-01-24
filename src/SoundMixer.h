@@ -80,7 +80,8 @@ public:
 
 	~SoundMixer();
 
-	int loadTrack(const char *name);
+	//! load an ogg file. Return the index in the track list. If index is given, attempt to replace the current track at this index
+	int loadTrack(const std::string name, int index = -1);
 
 	void setNextTrack(unsigned i, bool earlyChange=false);
 

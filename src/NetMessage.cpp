@@ -289,6 +289,11 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 	
 	order = Order::getOrder(buffer, size, VERSION_MINOR);
+
+	// If this couldn't be interpreted return it returned a NULL order, so we throw.
+	if (order == boost::shared_ptr<Order>())
+		throw std::ios_base::failure("Couldn't decode data stream to an Order: bad format.");
+
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
 	
@@ -3901,7 +3906,7 @@ void NetDownloadableMapInfos::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("NetDownloadableMapInfos");
 	stream->writeEnterSection("maps");
 	stream->writeUint32(maps.size(), "size");
-	for(int i=0; i<maps.size(); ++i)
+	for(unsigned int i=0; i<maps.size(); ++i)
 	{
 		stream->writeEnterSection(i);
 		maps[i].encodeData(stream);
@@ -3919,7 +3924,7 @@ void NetDownloadableMapInfos::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("maps");
 	Uint32 size = stream->readUint32("maps");
 	maps.resize(size);
-	for(int i=0; i<size; ++i)
+	for(unsigned int i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
 		maps[i].decodeData(stream, VERSION_MINOR);

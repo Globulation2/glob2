@@ -39,7 +39,7 @@ namespace GAGCore
 	class OutputStream;
 }
 
-struct Token
+struct SGSLToken
 {
 	enum TokenType
 	{
@@ -121,26 +121,26 @@ struct Token
 	struct TokenSymbolLookupTable
 	{
 		TokenType type;
-		const char *name;
+		const std::string name;
 	};
 
 	int value;
 	std::string msg;
 
 	//! Constructor, set logic default values
-	Token() { type=NIL; value=0; }
+	SGSLToken() { type=NIL; value=0; }
 	
 	//! Constructor, create a token of type t
-	Token(TokenType t) { type=t; value=0; }
+	SGSLToken(TokenType t) { type=t; value=0; }
 
 	//! This table is a map table between token type and token names
 	static TokenSymbolLookupTable table[];
 
 	//! Returns the type of a given name (parsing phase)
-	static TokenType getTypeByName(const char *name);
+	static TokenType getTypeByName(const std::string name);
 
 	//! Returns the name a of given type (debug & script recreation phase)
-	static const char *getNameByType(TokenType type);
+	static std::string getNameByType(TokenType type);
 };
 
 // generic functions
@@ -194,7 +194,7 @@ struct ErrorReport
 	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; pos=0; }
 	ErrorReport(ErrorType et) { type=et; line=0; col=0; pos=0; }
 
-	const char *getErrorString(void);
+	std::string getErrorString(void);
 };
 
 // Text parser, returns tokens
@@ -205,7 +205,7 @@ public:
 	virtual ~Aquisition(void);
 
 public:
-	const Token *getToken() { return &token; }
+	const SGSLToken *getToken() { return &token; }
 	void nextToken();
 	bool newFile(const char*);
 	unsigned getLine(void) { return lastLine; }
@@ -217,7 +217,7 @@ public:
 
 private:
 	const Functions& functions;
-	Token token;
+	SGSLToken token;
 	unsigned actLine, actCol, actPos, lastLine, lastCol, lastPos;
 	bool newLine;
 };
@@ -228,7 +228,7 @@ class FileAquisition: public Aquisition
 public:
 	FileAquisition(const Functions& functions) : Aquisition(functions) { fp=NULL; }
 	virtual ~FileAquisition() { if (fp) fclose(fp); }
-	bool open(const char *filename);
+	bool open(const std::string filename);
 
 	virtual int getChar(void) { return ::fgetc(fp); }
 	virtual int ungetChar(char c) { return ::ungetc(c, fp); }
@@ -243,7 +243,7 @@ class StringAquisition: public Aquisition
 public:
 	StringAquisition(const Functions& functions);
 	virtual ~StringAquisition();
-	void open(const char *text);
+	void open(const std::string text);
 
 	virtual int getChar(void);
 	virtual int ungetChar(char c);
@@ -262,7 +262,7 @@ public:
 	virtual ~Story();
 
 public:
-	std::vector<Token> line;
+	std::vector<SGSLToken> line;
 	std::map<std::string, int> labels;
 	int lineSelector; //!< PC : Program Counter
 	int internTimer;
@@ -283,6 +283,7 @@ private:
 	void objectiveFailed(GameGUI* gui);
 	void hintHidden(GameGUI* gui);
 	void hintVisible(GameGUI* gui);
+	void setHighlightItem(GameGUI* gui, bool doSet);
 	void hilightItem(GameGUI* gui);
 	void unhilightItem(GameGUI* gui);
 	void hilightUnits(GameGUI* gui);
@@ -295,7 +296,7 @@ private:
 	
 	
 	bool testCondition(GameGUI *gui);
-	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
+	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
 	
 	Mapscript *mapscript;
 	bool recievedSpace;
@@ -321,7 +322,7 @@ public:
 public:
 	ErrorReport compileScript(Game *game, const char *script);
 	ErrorReport compileScript(Game *game);
-	ErrorReport loadScript(const char *filename, Game *game);
+	ErrorReport loadScript(const std::string filename, Game *game);
 
 	//! Load a script, read source code
 	bool load(GAGCore::InputStream *stream, Game *game);

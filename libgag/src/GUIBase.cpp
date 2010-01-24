@@ -88,14 +88,14 @@ namespace GAGGUI
 		}
 	}
 	
-	unsigned getNextUTF8Char(const char *text, unsigned pos)
+	unsigned getNextUTF8Char(const std::string text, unsigned pos)
 	{
 		unsigned next=pos+getNextUTF8Char(text[pos]);
-		assert(next<=strlen(text));
+		assert(next<=text.length());
 		return next;
 	}
 	
-	unsigned getPrevUTF8Char(const char *text, unsigned pos)
+	unsigned getPrevUTF8Char(const std::string text, unsigned pos)
 	{
 		// TODO : have a more efficient algo
 		unsigned last=0, i=0;
@@ -158,7 +158,7 @@ namespace GAGGUI
 	void Widget::displayTooltip()
 	{
 		// We have a tooltip and the mouse is idle on our widget for some ticks (1 SDL tick = 1ms)
-		if(tooltipFontPtr != NULL && tooltip.length() && (currentTick - lastIdleTick) > 1000 && isOnWidget(mx, my))
+		if(tooltipFontPtr != NULL && !tooltip.empty() && (currentTick - lastIdleTick) > 1000 && isOnWidget(mx, my))
 		{
 			DrawableSurface *gfx = parent->getSurface();
 			assert(gfx);
@@ -479,10 +479,9 @@ namespace GAGGUI
 					break;
 					case SDL_KEYDOWN:
 					{
-						SDLMod modState = SDL_GetModState();
 						//Manual integration of cmd+q and alt f4
 #						ifdef USE_OSX
-						if(event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+						if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
 						{
 							run=false;
 							returnCode=-1;
@@ -490,7 +489,7 @@ namespace GAGGUI
 						}
 #						endif
 #						ifdef USE_WIN32
-						if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+						if(event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 						{
 							run=false;
 							returnCode=-1;

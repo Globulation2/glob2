@@ -1,0 +1,73 @@
+\# wrappers around native interface to get shorter calls
+
+
+\# units getter
+
+def Worker := 0
+def Explorer := 1
+def Warrior := 2
+
+def unitsCount := engine.unitsCount
+
+def AbilityWalk := 3
+def AbilitySwim := 4
+def AbilityFly := 5
+def AbilityBuild := 6
+def AbilityHarvest := 7
+def AbilityAttackSpeed := 8
+def AbilityAttackStrength := 9
+def AbilityMagicAttackAir := 10
+def AbilityMagicAttackGround := 11
+
+def unitsUpgradeCount := engine.unitsUpgradesCount
+
+\# buildings getter
+
+def Swarm := 0
+def Inn := 1
+def Hospital := 2
+def Racetrack := 3
+def Pool := 4
+def Camp := 5
+def School := 6
+def Tower := 7
+def Wall := 11
+
+def Level0Construction := 0
+def Level0Completed := 1
+def Level1Construction := 2
+def Level1Completed := 3
+def Level2Construction := 4
+def Level2Completed := 5
+
+def buildingsCount := engine.buildingsCount
+
+\# general team getter
+
+def teamsCount := engine.teamsCount
+def isAlive := engine.isTeamAlive
+
+\# more defines for engine
+
+def PrimaryObjective := 0
+def SecondaryObjective := 1
+def InvalidObjective := 2
+
+\# general game getter
+
+
+
+\# game gui
+
+def show := gui.showScriptText
+def showTr := gui.showScriptTextTr
+def hide := gui.hideScriptText
+
+
+
+\# wait on game variables
+
+def wait(x) := if (x > 0) {
+	yield()
+	wait(x - 1)
+}

@@ -40,7 +40,7 @@ LANFindScreen::LANFindScreen()
 	serverName=new TextInput(20, 170, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "localhost", true);
 	addWidget(serverName);
 
-	playerName=new TextInput(20, 270, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->getUsername(), false, 32);
+	playerName=new TextInput(20, 270, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 32);
 	addWidget(playerName);
 
 	serverText=new Text(20, 145, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[svr hostname]"));
@@ -133,8 +133,6 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			game->joinGame((*client->getGameListManager()->getGameList().begin()).getGameID());
 
 			Glob2TabScreen screen(true);
-			MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client);
-			
 			
 			listener.disableListening();
 			int rc = screen.execute(globalContainer->gfx, 40);

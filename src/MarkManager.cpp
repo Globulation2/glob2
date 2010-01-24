@@ -39,7 +39,6 @@ Mark::Mark()
 void Mark::draw(int x, int y, float scale)
 {
 	showTicks -= 1;
-	Uint8 a = Color::ALPHA_OPAQUE;
 	double ray = (sin((double)(showTicks * 2.0)/(double)(totalTime)*3.141592)*totalTime/2);
 	ray = (std::abs(ray) * showTicks) / totalTime * scale;
 
