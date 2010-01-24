@@ -31,7 +31,7 @@ class FuncFileList: public FileList
 {
 
 public:
-	FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, 
+	FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, 
 		const char *dir, const char *extension, const bool recurse, 
 		std::string (*filenameToNameFunc)(const std::string& filename),
 		std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension))
@@ -167,7 +167,7 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (par1 == OK)
 		{
-			if (fileName.length() > 0)
+			if (fileName.size())
 				endValue = OK;
 		}
 		else

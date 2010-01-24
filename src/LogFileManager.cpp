@@ -38,7 +38,7 @@ LogFileManager::~LogFileManager()
 			fclose(logFileIt->second);
 }
 
-FILE *LogFileManager::getFile(const char *fileName)
+FILE *LogFileManager::getFile(const std::string fileName)
 {
 	// This is a hack to temporarilly disable log files
 	//
@@ -47,7 +47,7 @@ FILE *LogFileManager::getFile(const char *fileName)
 	return stdout;
 
 	std::string logName = "logs/";
-	logName += globalContainer->getUsername();
+	logName += globalContainer->settings.getUsername();
 	logName += fileName;
 	if (logFileMap.find(logName) == logFileMap.end())
 	{

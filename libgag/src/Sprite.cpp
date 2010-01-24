@@ -40,12 +40,14 @@ namespace GAGCore
 		}
 	}
 	
-	bool Sprite::load(const char *filename)
+	bool Sprite::load(const std::string filename)
 	{
 		SDL_RWops *frameStream;
 		SDL_RWops *rotatedStream;
 		unsigned i = 0;
-	
+		
+		this->fileName = filename;
+		
 		while (true)
 		{
 			std::ostringstream frameName;
@@ -173,13 +175,13 @@ namespace GAGCore
 			{
 				if (it->second == this)
 				{
-					std::cerr << "GAG : Sprite::checkBound(" << index << ") : error : out of bound access for " << it->first << std::endl;
+					std::cerr << "GAG : Sprite " << fileName << " ::checkBound(" << index << ") : error : out of bound access for " << it->first << std::endl;
 					assert(false);
 					return false;
 				}
 				++it;
 			}
-			std::cerr << "GAG : Sprite::checkBound(" << index << ") : error : sprite is not in the sprite server" << std::endl;
+			std::cerr << "GAG : Sprite " << fileName << " ::checkBound(" << index << ") : error : sprite is not in the sprite server" << std::endl;
 			assert(false);
 			return false;
 		}

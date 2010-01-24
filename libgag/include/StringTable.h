@@ -40,14 +40,14 @@ namespace GAGCore
 		void setLang(int l) { actLang = l; }
 		void setDefaultLang(int l) { defaultLang = l; }
 		int getLang(void) { return actLang; }
-		int getLangCode(const std::string& lang) { return languageCodes[lang]; }
+		int getLangCode(const std::string & lang) { return languageCodes[lang]; }
 		bool isLangComplete(int l) { return !incomplete[l]; }
 		int getNumberOfLanguage(void) { return languageCount; }
-		bool loadIncompleteList(const char *filename);
-		bool load(const char *filename);
-		const char *getString(const char *stringname) const;
-		bool doesStringExist(const char *stringname) const;
-		const char *getStringInLang(const char *stringname, int lang) const;
+		bool loadIncompleteList(const std::string filename);
+		bool load(const std::string filename);
+		const std::string getString(const std::string stringname) const;
+		bool doesStringExist(const std::string stringname) const;
+		const std::string getStringInLang(const std::string stringname, int lang) const;
 		void print();
 	
 	private:

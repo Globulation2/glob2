@@ -335,7 +335,7 @@ SoundMixer::~SoundMixer()
 	}
 }
 
-int SoundMixer::loadTrack(const char *name, int index)
+int SoundMixer::loadTrack(const std::string name, int index)
 {
 	FILE* fp = Toolkit::getFileManager()->openFP(name);
 	if (!fp)
