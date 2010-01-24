@@ -3205,13 +3205,16 @@ void GameGUI::drawBuildingInfos(void)
 		{
 			if (selBuild->buildingState==Building::ALIVE)
 			{
+				// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+				const int maxUnitsWorking = (globalContainer->replaying?selBuild->maxUnitWorking:selBuild->maxUnitWorkingLocal);
+
 				std::string working = Toolkit::getStringTable()->getString("[working]");
 				const int len = globalContainer->littleFont->getStringWidth(working)+4;
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, working);
 				globalContainer->littleFont->popStyle();
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0/%1").arg((int)selBuild->unitsWorking.size()).arg(selBuild->maxUnitWorkingLocal).c_str());
-				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->maxUnitWorkingLocal, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0/%1").arg((int)selBuild->unitsWorking.size()).arg(maxUnitsWorking).c_str());
+				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, maxUnitsWorking, maxUnitsWorking, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 			}
 			else
 			{
@@ -3240,6 +3243,9 @@ void GameGUI::drawBuildingInfos(void)
 		{
 			if(selBuild->buildingState==Building::ALIVE)
 			{
+				// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+				const int priority = (globalContainer->replaying?selBuild->priority:selBuild->priorityLocal);
+
 				ypos += YOFFSET_B_SEP;
 				
 				int width = 128/3;
@@ -3250,13 +3256,13 @@ void GameGUI::drawBuildingInfos(void)
 				std::string medstr = Toolkit::getStringTable()->getString("[medium priority]");
 				std::string highstr = Toolkit::getStringTable()->getString("[high priority]");
 				
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+12+4, (selBuild->priorityLocal==-1));
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+12+4, (priority==-1));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14, ypos+12+2, globalContainer->littleFont, lowstr);
 				
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width, ypos+12+4, (selBuild->priorityLocal==0));
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width, ypos+12+4, (priority==0));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width, ypos+12+2, globalContainer->littleFont, medstr);
 				
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width*2, ypos+12+4, (selBuild->priorityLocal==1));
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width*2, ypos+12+4, (priority==1));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width*2, ypos+12+2, globalContainer->littleFont, highstr);
 				
 				ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -3269,13 +3275,16 @@ void GameGUI::drawBuildingInfos(void)
 	{
 		if ((selBuild->owner->allies)&(1<<localTeamNo))
 		{
+			// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+			const int unitStayRange = (globalContainer->replaying?selBuild->unitStayRange:selBuild->unitStayRangeLocal);
+
 			std::string range = Toolkit::getStringTable()->getString("[range]");
 			const int len = globalContainer->littleFont->getStringWidth(range)+4;
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, range);
 			globalContainer->littleFont->popStyle();
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0").arg(selBuild->unitStayRange).c_str());
-			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, selBuild->type->maxUnitStayRange);
+			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, unitStayRange, 0, selBuild->type->maxUnitStayRange);
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 	}
@@ -3297,7 +3306,7 @@ void GameGUI::drawBuildingInfos(void)
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,
 						getRessourceName(i));
 					int spriteId;
-					if (selBuild->clearingRessourcesLocal[i])
+					if (globalContainer->replaying?selBuild->clearingRessources[i]:selBuild->clearingRessourcesLocal[i])
 						spriteId=20;
 					else
 						spriteId=19;
@@ -3318,7 +3327,7 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont, 1+i);
 				int spriteId;
-				if (i==selBuild->minLevelToFlagLocal)
+				if (i==(globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal))
 					spriteId=20;
 				else
 					spriteId=19;
@@ -3341,7 +3350,7 @@ void GameGUI::drawBuildingInfos(void)
 			// 0 == any explorer
 			// 1 == must be able to attack ground
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[any explorer]"));
-			if (selBuild->minLevelToFlagLocal == 0)
+			if ((globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal) == 0)
 				spriteId = 20;
 			else
 				spriteId = 19;
@@ -3349,7 +3358,7 @@ void GameGUI::drawBuildingInfos(void)
 			
 			ypos += YOFFSET_TEXT_PARA;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[ground attack]"));
-			if (selBuild->minLevelToFlagLocal == 1)
+			if ((globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal) == 1)
 				spriteId = 20;
 			else
 				spriteId = 19;
@@ -3495,7 +3504,10 @@ void GameGUI::drawBuildingInfos(void)
 			ypos+=15;
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
-				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
+				// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+				const int ratio = (globalContainer->replaying?selBuild->ratio[i]:selBuild->ratioLocal[i]);
+
+				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selBuild->ratio[i], ratio, 0, MAX_RATIO_RANGE);
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+24, ypos, globalContainer->littleFont, getUnitName(i));
 				
 				if(i==1 && hilights.find(HilightRatioBar) != hilights.end())

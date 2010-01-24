@@ -26,7 +26,7 @@
 #include <sstream>
 
 CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)
-	:	gameHeader(gameHeader), mapHeader(mapHeader), oldGameHeader(gameHeader)
+	:	gameHeader(gameHeader), oldGameHeader(gameHeader), mapHeader(mapHeader)
 {
 	ok = new TextButton(440, (readOnly ? 420 : 360), 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
