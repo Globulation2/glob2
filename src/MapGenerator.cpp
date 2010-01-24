@@ -2141,7 +2141,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above grasslevel is desert
 	float waterLevel, sandLevel, grassLevel, wheatWoodLevel, algaeLevel, stoneLevel;
 	/// to influence the roughnes
-	float smoothingFactor=(float)(descriptor.smooth+4)*3;;
+	float smoothingFactor=(float)(descriptor.smooth+4)*3;
 	/// the proportions requested through the gui can directly be translated into tile counts of the undermap.
 	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
 	/// grass + sand + water + desert as from the gui
@@ -2658,178 +2658,89 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 	// Three, expands islands
 	for (int s=0; s<islandsSize; s++)
 	{
-		for (int y=0; y<h; y+=2)
-			for (int x=0; x<w; x+=2)
+		for (int oddEven=0; oddEven<2; oddEven++)
+		{
+			for (int y=oddEven; y<h; y+=2)
 			{
-				TerrainType umt=getUMTerrain(x, y);
-				if (umt==GRASS)
-					continue;
-				
-				int a, b;
-				switch (syncRand()&15)
+				for (int x=oddEven; x<w; x+=2)
 				{
-				case 0:
-					a=getUMTerrain(x+1, y);
-					b=getUMTerrain(x-1, y);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
+					TerrainType umt=getUMTerrain(x, y);
+					if (umt==GRASS)
 						continue;
-					}
-				break;
-				case 1:
-					a=getUMTerrain(x, y-1);
-					b=getUMTerrain(x, y+1);
-					if ((a==GRASS)||(b==GRASS))
+
+					int a, b;
+					switch (syncRand()&15)
 					{
-						setUMTerrain(x, y, GRASS);
-						continue;
+					case 0:
+						a=getUMTerrain(x+1, y);
+						b=getUMTerrain(x-1, y);
+						if ((a==GRASS)||(b==GRASS))
+						{
+							setUMTerrain(x, y, GRASS);
+						}
+					break;
+					case 1:
+						a=getUMTerrain(x, y-1);
+						b=getUMTerrain(x, y+1);
+						if ((a==GRASS)||(b==GRASS))
+						{
+							setUMTerrain(x, y, GRASS);
+						}
+					break;
+					case 2:
+						a=getUMTerrain(x+1, y+1);
+						b=getUMTerrain(x-1, y-1);
+						if ((a==GRASS)||(b==GRASS))
+						{
+							setUMTerrain(x, y, GRASS);
+						}
+					break;
+					case 3:
+						a=getUMTerrain(x+1, y-1);
+						b=getUMTerrain(x-1, y+1);
+						if ((a==GRASS)||(b==GRASS))
+						{
+							setUMTerrain(x, y, GRASS);
+						}
+					break;
+					case 4:
+						a=getUMTerrain(x+2, y);
+						b=getUMTerrain(x-2, y);
+						if ((a==GRASS)||(b==GRASS))
+						{
+							setUMTerrain(x, y, GRASS);
+						}
+					break;
+					case 5:
+						a=getUMTerrain(x, y-2);
+						b=getUMTerrain(x, y+2);
+						if ((a==GRASS)||(b==GRASS))
+						{
+							setUMTerrain(x, y, GRASS);
+						}
+					break;
+					case 6:
+						a=getUMTerrain(x+2, y+2);
+						b=getUMTerrain(x-2, y-2);
+						if ((a==GRASS)||(b==GRASS))
+						{
+							setUMTerrain(x, y, GRASS);
+						}
+					break;
+					case 7:
+						a=getUMTerrain(x+2, y-2);
+						b=getUMTerrain(x-2, y+2);
+						if ((a==GRASS)||(b==GRASS))
+						{
+							setUMTerrain(x, y, GRASS);
+						}
+					break;
+					default:
+					break;
 					}
-				break;
-				case 2:
-					a=getUMTerrain(x+1, y+1);
-					b=getUMTerrain(x-1, y-1);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 3:
-					a=getUMTerrain(x+1, y-1);
-					b=getUMTerrain(x-1, y+1);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 4:
-					a=getUMTerrain(x+2, y);
-					b=getUMTerrain(x-2, y);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 5:
-					a=getUMTerrain(x, y-2);
-					b=getUMTerrain(x, y+2);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 6:
-					a=getUMTerrain(x+2, y+2);
-					b=getUMTerrain(x-2, y-2);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 7:
-					a=getUMTerrain(x+2, y-2);
-					b=getUMTerrain(x-2, y+2);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				default:
-				break;
 				}
 			}
-		for (int y=1; y<h; y+=2)
-			for (int x=1; x<w; x+=2)
-			{
-				TerrainType umt=getUMTerrain(x, y);
-				if (umt==GRASS)
-					continue;
-				
-				int a, b;
-				switch (syncRand()&15)
-				{
-				case 0:
-					a=getUMTerrain(x+1, y);
-					b=getUMTerrain(x-1, y);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 1:
-					a=getUMTerrain(x, y-1);
-					b=getUMTerrain(x, y+1);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 2:
-					a=getUMTerrain(x+1, y+1);
-					b=getUMTerrain(x-1, y-1);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 3:
-					a=getUMTerrain(x+1, y-1);
-					b=getUMTerrain(x-1, y+1);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 4:
-					a=getUMTerrain(x+2, y);
-					b=getUMTerrain(x-2, y);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 5:
-					a=getUMTerrain(x, y-2);
-					b=getUMTerrain(x, y+2);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 6:
-					a=getUMTerrain(x+2, y+2);
-					b=getUMTerrain(x-2, y-2);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				case 7:
-					a=getUMTerrain(x+2, y-2);
-					b=getUMTerrain(x-2, y+2);
-					if ((a==GRASS)||(b==GRASS))
-					{
-						setUMTerrain(x, y, GRASS);
-						continue;
-					}
-				break;
-				default:
-				break;
-				}
-			}
+		}
 	}
 	
 	// Four, avoid too much sand. Let's smooth

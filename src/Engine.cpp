@@ -29,6 +29,7 @@
 #include <BinaryStream.h>
 #include <FormatableString.h>
 
+#include "AINames.h"
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
@@ -250,15 +251,15 @@ int Engine::run(void)
 	else
 	{
 		// look for all available musics
-		globalContainer->fileManager->initDirectoryListing("data/zik/", NULL, true);
-		const char *fileName;
+		globalContainer->fileManager->initDirectoryListing("data/zik/", "", true);
+		std::string filename;
 		std::vector<std::string> musicDirs;
-		while ((fileName = globalContainer->fileManager->getNextDirectoryEntry()) != 0) 
+		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
 		{
-			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(fileName)))
+			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(filename)))
 			{
-				std::cerr << "music dir found: " << fileName << std::endl;
-				musicDirs.push_back(fileName);
+				std::cerr << "music dir found: " << filename << std::endl;
+				musicDirs.push_back(filename);
 			}
 		}
 		
@@ -820,8 +821,8 @@ MapHeader Engine::chooseRandomMap()
 	// we add the other files
 	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), "map", false))
 	{
-		const char* fileName;
-		while ((fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())) != NULL)
+		std::string fileName;
+		while (!(fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())).empty())
 		{
 			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
 			maps.push_back(fullFileName);
@@ -844,13 +845,13 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		int teamColor=(i % numberOfTeams);
 		if (i==0)
 		{
-			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername(), teamColor, BasePlayer::P_LOCAL);
 		}
 		else
 		{
 			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
 			FormatableString name("%0 %1");
-			name.arg(AI::getAIText(iid)).arg(i-1);
+			name.arg(AINames::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 		}
 		gameHeader.setAllyTeamNumber(teamColor, teamColor);
