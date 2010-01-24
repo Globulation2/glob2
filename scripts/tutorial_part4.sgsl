@@ -8,6 +8,7 @@
 # English version revised by Hernan Quishpe
 # Translated to Dutch by Raoul Verveer
 # Translated to Russian by Igor Murzov
+# Translated to Arabic by Majid Al-Dharrab <majid@aldharrab.com>
 
 #Note! The English version of the following has changed since the German, French, Spanish, and Dutch versions where translated
 #show("Now we have to select a pattern. There are several to choose from. My personal recommendation is to choose the large, square one, but don't let me stop you from choosing the circular one if you like it.")
@@ -28,6 +29,7 @@ show("Hahaha! Du hast auf jeden Fall alles, was eine gute Kolonie braucht. Du ha
 show("Está muy bien!  Tenemos todo aquello que una buena colonia pudiera desear!  Protección, edificaciones actualizadas, colegios, un hospital, muchas tabernas, una pista de carreras, una piscina ¿qué otra cosa quisiera un hombre? Parece que no mucho.  Puedes continuar actualizando las construcciones si lo deseas, pero hay un límite para las edificaciones ya actualizadas, el máximo es 3!  Alcanzar el tercer nivel debe ser una meta, y te da ventaja significativa sobre tus enemigos.",es)
 show("Hahaha! We hebben nu alles wat een goede kolonie nodig heeft! We hebben een goede verdediging, verbeterde gebouwen, een School, een Ziekenhuis, een aantal Herbergen en Racebaan, een Zwembad... wat willen we nog meer? Veel meer te wensen is er dan ook niet. Je kan door blijven gaan met het verbeteren van je gebouwen. Nu we het daar over hebben: het is mogelijk om gebouwen van een nog hoger nivau te bouwen. Het ultieme nivau drie! Het bereiken van niveau drie in een spel is een belangrijk doel, omdat dit een significante voorsprong geeft op je vijanden.",nl)
 show("Ха-ха-ха! У нас есть всё о чём хорошая колония может мечтать! У нас есть защита, улучшенные здания, Школы, Госпиталь, несколько Кабаков, Стадион, Бассейн, что ещё можно захотеть? Оказывается не многого. Вы можете продолжить улучшать то, что хотите. На самом деле есть ещё один уровень лучший, чем уже улучшенные здания — последний уровень 3! Достижение третьего уровня должно быть целью в игре, т.к. это даст вам значительное преимущество над противником.",ru)
+show("ﻫﺎﻫﺎﻫﺎ! ﺃﺻﺒﺢ ﻟﺪﻳﻨﺎ ﻛﻞ ﻣﺎ ﺗﺤﺘﺎﺟﻪ ﺍﻟﻤﺴﺘﻌﻤﺮﺍﺕ ﺍﻟﺠﻴﺪﺓ! ﻟﺪﻳﻨﺎ ﺍﻟﺤﻤﺎﻳﺔ، ﻭﺍﻟﻤﺒﺎﻧﻲ ﺍﻟﻤﺘﻄﻮﺭﺓ، ﻭﺍﻟﻤﺪﺍﺭﺱ، ﻭﻣﺴﺘﺸﻔﻰ، ﻭﺑﻌﺾ ﺍﻟﻤﻨﺎﺯﻝ، ﻭﻣﻴﺪﺍﻥ ﻟﻠﺴﺒﺎﻕ، ﻭﺑﺮﻛﺔ ﻟﻠﺴﺒﺎﺣﺔ، ﻓﻤﺎ ﺍﻟﺬﻱ ﻗﺪ ﻳﺘﻤﻨﺎﻩ ﺍﻟﻤﺮء ﺑﻌﺪ ﻛﻞ ﻫﺬﺍ؟ ﻓﻲ ﺍﻟﻮﺍﻗﻊ ﻻ ﻳﺒﺪﻭ ﺃﻧﻪ ﻗﺪ ﺗﺒﻘﻰ ﺃﻣﺎﻣﻨﺎ ﺍﻟﻜﺜﻴﺮ. ﺑﺈﻣﻜﺎﻧﻚ ﺍﻻﺳﺘﻤﺮﺍﺭ ﻓﻲ ﺗﺮﻗﻴﺔ ﺍﻟﻤﺒﺎﻧﻲ ﺇﻥ ﺭﻏﺒﺖ. ﻓﻔﻲ ﺍﻟﻮﺍﻗﻊ ﻣﺎ ﻳﺰﺍﻝ ﻫﻨﺎﻙ ﻣﺴﺘﻮﻯ ﺃﻋﻠﻰ ﻣﻦ ﻣﺴﺘﻮﻯ ﻣﺒﺎﻧﻴﻚ ﺍﻟﺤﺎﻟﻴﺔ. ﺇﻧﻪ ﺍﻟﻤﺴﺘﻮﻯ ٣ ﺍﻟﺨﺎﺭﻕ! ﻳﺠﺐ ﺃﻥ ﺗﺠﻌﻞ ﺍﻟﻮﺻﻮﻝ ﺇﻟﻰ ﺍﻟﻤﺴﺘﻮﻯ ﺍﻟﺜﺎﻟﺚ ﻣﻦ ﺃﻫﺪﺍﻓﻚ ﻓﻲ ﺍﻟﻠﻌﺐ، ﻓﻬﻮ ﻳﻌﻄﻴﻚ ﺃﻓﻀﻠﻴﺔ ﻛﺒﻴﺮﺓ ﻋﻠﻰ ﻋﺪﻭﻙ.",ar)
 space
 
 show("Talking about enemies, have you managed to spot yours? I think he is hiding north-west from our base. You can scroll there now.")
@@ -36,6 +38,7 @@ show("Wo wir gerade über Feinde reden: Hast du es geschafft deinen zu finden? I
 show("Hablando de enemigos  ¿Haz logrado ver dónde están los tuyos?  Creo que se esconde al noroeste de nuestra base, puedes dar un vistazo.",es)
 show("En nu we het over vijanden hebben, heb je de jouwe al gezien? Volgens mij verstopt hij zich ten noord-westen van onze basis. Neem er maar eens een kijkje.",nl)
 show("Кстати, о врагах, вы провели поиск своего врага? Мне кажется, что он прячется на северо-западе от вашей базы. Вы можете посмотреть там.",ru)
+show("ﺑﻤﻨﺎﺳﺒﺔ ﺍﻟﺤﺪﻳﺚ ﻋﻦ ﺍﻷﻋﺪﺍء، ﻫﻞ ﻭﺟﺪﺕ ﻋﺪﻭﻙ؟ ﺃﻋﺘﻘﺪ ﺃﻧﻪ ﻳﺨﺘﺒﺊ ﺷﻤﺎﻟﻲ ﻏﺮﺑﻲ ﻗﺎﻋﺪﺗﻨﺎ. ﺑﺈﻣﻜﺎﻧﻚ ﺍﻟﺘﻮﺟﻪ ﺇﻟﻰ ﻫﻨﺎﻟﻚ ﺍﻵﻥ.",ar)
 space
 
 show("It seems like you can see the area, but not very clearly. The area is covered with something called 'fog of war'. If we want to see who's hiding under this dark cloud, we need to yank an explorer over, but how?")
@@ -44,6 +47,7 @@ show("Es sieht danach aus, dass du das Gebiet zwar sehen kannst, aber nicht sehr
 show("Puedes ver el área, pero no claramente.  El área está cubierta con algo llamado 'niebla de guerra'.  Si queremos ver quién se está escondiendo bajo esa nube oscura, tenemos que enviar un explorador, pero ¿cómo?",es)
 show("Je kan het gebied wel zien, maar niet erg helder. Het gebied is bedekt met iets dat we 'oorlogsmist' noemen. Als we willen zien wat er zich onder deze donkere wolk bevind, moeten we er een verkenner op af sturen. Maar hoe?",nl)
 show("Кажется, что вы можете видеть область, но не очень ясно. Область покрыта чем-то обычно называемым 'туман войны'. Если мы хотим разглядеть кто прячется за этим темным облаком, нам нужно направить туда разведчиков, но как?",ru)
+show("ﻳﻈﻬﺮ ﺃﻥ ﺑﺈﻣﻜﺎﻧﻚ ﻣﺸﺎﻫﺪﺓ ﺍﻟﻤﻨﻄﻘﺔ، ﻭﻟﻜﻦ ﻟﻴﺲ ﺑﻮﺿﻮﺡ ﻛﺎﻣﻞ. ﺇﻥ ﺍﻟﻤﻨﻄﻘﺔ ﻣﻐﻄﺎﺓ ﺑﻤﺎ ﻧﺴﻤﻴﻪ 'ﺿﺒﺎﺏ ﺍﻟﺤﺮﺏ'. ﺇﻥ ﺃﺭﺩﻧﺎ ﺃﻥ ﻧﺮﻯ ﻣﻦ ﻳﺨﺘﺒﺊ ﺗﺤﺖ ﻫﺬﻩ ﺍﻟﻐﻤﺎﻣﺔ ﺍﻟﺪﺍﻛﻨﺔ ﻓﻌﻠﻴﻨﺎ ﺃﻥ ﻧﺠﻠﺐ ﻣﺴﺘﻜﺸﻔًﺎ ﺇﻟﻰ ﻫﻨﺎ، ﻭﻟﻜﻦ ﻛﻴﻒ؟",ar)
 space
 
 GuiEnable(FlagTab)
@@ -54,6 +58,7 @@ show("Schau unter die Minikarte. Dir wird dort ein neuer Button auffallen. Diese
 show("Mira bajo el minimapa, verás que ha aparecido un botón.  Se llama la 'Pestaña de banderas'. Clic en ella. Contiene un montón de herramientas útiles para controlar tus unidades, llamadas 'banderas' o 'zonas'.",es)
 show("Kijk onder de minikaart. Er is zojuist een nieuwe knop verschenen. Deze knop is het 'Vlag Tabblad'. Klik er op. Het biedt ons een aantal nuttige gereedschappen waarmee we onze eenheden kunnen beïnvloeden. Deze gereedschappen noemen we 'Vlaggen' en 'Zones'.",nl)
 show("Посмотрите под мини-карту. Вы увидите новую кнопку, которая только что появилась. Она называется 'Вкладка флагов'. Нажмите на неё. Она содержит набор полезных инструментов для управления юнитами, которые называются 'флаги' и 'зоны'.",ru)
+show("ﺍﻧﻈﺮ ﺃﺳﻔﻞ ﺍﻟﺨﺎﺭﻃﺔ ﺍﻟﻤﺼﻐﺮﺓ. ﺳﺘﺠﺪ ﺃﻥ ﺯﺭًﺍ ﺟﺪﻳﺪًﺍ ﻗﺪ ﻇﻬﺮ ﻫﻨﺎﻙ ﻟﻠﺘﻮ. ﺇﻧﻪ ﻳُﺪﻋﻰ 'ﻟﺴﺎﻥ ﺍﻷﻋﻼﻡ'. ﺍﻧﻘﺮ ﻋﻠﻴﻪ ﺍﻵﻥ. ﺇﻧﻪ ﻳﺤﺘﻮﻱ ﻋﻠﻰ ﻛﻮﻣﺔ ﻣﻦ ﺍﻷﺩﻭﺍﺕ ﺍﻟﻤﻔﻴﺪﺓ ﻓﻲ ﺍﻟﺘﺤﻜﻢ ﺑﻮﺣﺪﺍﺗﻚ. ﺇﻧﻬﺎ ﺗُﺴﻤﻰ 'ﺍﻷﻋﻼﻡ' ﻭ'ﺍﻟﻤﻨﺎﻃﻖ'.",ar)
 space
 
 hilightBuildingOnPanel(ExplorationFlag)
@@ -63,6 +68,7 @@ show("Oben sind die 3 Flaggen. Du suchst die 'Entdecker Flagge'. Sie hat das Aus
 show("En la fila superior hay banderas. Estás buscando una, llamada la 'Bandera de Explorador'.  Tiene forma de cometa.  Selecciónala, se ubica de la misma forma que una edificación, con una excepción: puedes colocar banderas donde desees! Sobre agua, tierra, recursos, e incluso zonas inexploradas.  Eso es justamente lo que queremos!",es)
 show("In de bovenste rij bevinden zich de vlaggen. We zoeken nu één vlag in het bijzonder, namelijk de 'Verkenningsvlag'. Hij heeft de vorm van een vlieger. Je kan erop klikken en op eenzelfde manier plaatsen als je een gebouw plaatst, met één uizondering: vlaggen kunnen overal geplaatst worden! In het water, op het land, op grondstoffen en zelfs in donkere gebieden. Dit is precies wat we nodig hebben!",nl)
 show("В верхнем ряду находятся флаги. Мы сейчас ищем один конкретный флаг, который называется 'Флаг разведки'. Он имеет вид воздушного змея. Вы можете щелкнуть по нему, он размещается так же как и здания, с одним исключением: вы можете разместить флаг где угодно — над водой, над землей, над ресурсами и даже над затемненными зонами! Это именно то чего бы нам хотелось!",ru)
+show("ﺗﻮﺟﺪ ﺍﻷﻋﻼﻡ ﻓﻲ ﺍﻟﺼﻒ ﺍﻟﻌﻠﻮﻱ. ﺇﻧﻨﺎ ﻧﺒﺤﺚ ﻋﻦ ﻋﻠﻢ ﻣﺤﺪﺩ ﻳُﺪﻋﻰ 'ﻋَﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ'. ﺷﻜﻠﻪ ﻳﺸﺒﻪ ﺍﻟﻄﺎﺋﺮﺓ ﺍﻟﻮﺭﻗﻴﺔ. ﺍﻧﻘﺮ ﻋﻠﻴﻪ ﻭﻗﻢ ﺑﻮﺿﻌﻪ ﺑﻨﻔﺲ ﻃﺮﻳﻘﺔ ﻭﺿﻊ ﺍﻟﻤﺒﺎﻧﻲ، ﻭﻟﻜﻦ ﺑﺎﺧﺘﻼﻑ ﻭﺍﺣﺪ: ﻳﻤﻜﻨﻚ ﻭﺿﻊ ﺍﻷﻋﻼﻡ ﻓﻲ ﺃﻱ ﻣﻜﺎﻥ! ﻋﻠﻰ ﺍﻟﻤﺎء، ﺃﻭ ﻓﻲ ﺍﻟﻴﺎﺑﺴﺔ، ﺃﻭ ﻋﻨﺪ ﺍﻟﻤﻮﺍﺭﺩ، ﻭﺣﺘﻰ ﻋﻠﻰ ﺍﻟﻤﻨﺎﻃﻖ ﺍﻟﺪﺍﻛﻨﺔ. ﻫﺬﺍ ﻫﻮ ﻣﺎ ﻧﺮﻳﺪﻩ ﺗﻤﺎﻣًﺎ!",ar)
 space
 
 show("Its time to place a flag. Place it right over your enemy base. You may have to guess a bit about where the flag should go if you can't see the base, but it is not a problem. You will see it all soon anyway. Right-click to exit construction mode.")
@@ -71,6 +77,7 @@ show("Es ist Zeit eine Flagge zu platzieren. Platziere sie über der Feindbasis.
 show("Es hora de colocar una bandera. Colócala justo encima de la base enemiga. Deberás adivinar acerca del sitio donde debería ir si no puedes ver la base, pero no es un problema. Verás todo rápidamente.  Usa el botón derecho para ir al modo de construcción.",es)
 show("Het is tijd om een vlag te plaatsen. Plaats hem precies op de vijandige basis. Je zult een beetje moeten gokken waar dat is, als je de basis niet kunt zien, maar dat maakt niets uit. Je zal de basis snel genoeg zien. Klik met de rechter muisknop om de constructiemodus te verlaten.",nl)
 show("Время поставить флаг. Поместите его прямо над базой неприятеля. Возможно вам придётся маленько угадать место размещения флага если вам не видно базу, но это не проблема. Всё равно вы вскоре увидите её полностью. Используйте щелчок правой кнопкой для выхода из режима постройки.",ru)
+show("ﺣﺎﻥ ﻭﻗﺖ ﻭﺿﻊ ﺍﻟﻌﻠﻢ. ﺿﻌﻪ ﻓﻮﻕ ﻗﺎﻋﺪﺓ ﺍﻷﻋﺪﺍء ﺗﻤﺎﻣًﺎ. ﻗﺪ ﺗﻀﻄﺮ ﺇﻟﻰ ﺗﺨﻤﻴﻦ ﻣﻮﻗﻌﻬﺎ ﺇﻥ ﻟﻢ ﺗﻜﻦ ﺗﺮﺍﻫﺎ، ﻭﻟﻜﻦ ﻫﺬﻩ ﻟﻴﺴﺖ ﺑﻤﺸﻜﻠﺔ، ﻓﺴﺘﺮﺍﻫﺎ ﻛﻠﻬﺎ ﻗﺮﻳﺒًﺎ -ﺑﺈﺫﻥ ﺍﻟﻠﻪ- ﻋﻠﻰ ﻛﻞ ﺣﺎﻝ. ﺑﻌﺪ ﺫﻟﻚ ﺍﻧﻘﺮ ﺑﺰﺭ ﺍﻟﻔﺄﺭﺓ ﺍﻷﻳﻤﻦ ﻟﻠﺨﺮﻭﺝ ﻣﻦ ﻃﻮﺭ ﺍﻟﺒﻨﺎء.",ar)
 space
 unhilightItem("under minimap icons")
 unhilightBuildingOnPanel(ExplorationFlag)
@@ -81,6 +88,7 @@ show("Um die Flagge ist eine große blaue Linie. Dies ist der Flaggenradius. In 
 show("Notarás una linea grande que rodea la bandera.  Es el radio de la bandera, y es donde el explorador se inscribirá.  Verás que el explorador vendrá en poco tiempo. Una vez que haya llegado usa la barra espaciadora.",es)
 show("Je zult een grote lijn rondom de vlag zien. Dit is de reikwijdte van de vlag en geeft aan waar de verkenner zijn werk zal doen. Je zal de verkenner snel zien arriveren. Zo niet, kijk dan naar de getallen bovenin het scherm en controleer of je nog verkenners hebt. Produceer zonodig een nieuwe verkenner met je Zwerm. Druk op de spatiebalk zodra hij er is.",nl)
 show("Вы увидите большую линию вокруг флага. Это радиус флага, именно сюда прилетит разведчик и здесь будет разведывать. Вы вскоре заметите прилетающего разведчика. Если этого не происходит, проверьте числа сверху экрана, чтобы убедиться, что у вас ещё остались разведчики. Если необходимо, создайте нового в Рое. Нажмите пробел для продолжения, когда он прилетит.",ru)
+show("ﺳﺘﻼﺣﻆ ﻭﺟﻮﺩ ﺧﻂ ﻣﺴﺘﺪﻳﺮ ﻛﺒﻴﺮ ﻳﺤﻴﻂ ﺑﺎﻟﻌَﻠﻢ. ﺇﻧﻪ ﻣﺤﻴﻂ ﺍﻟﻌﻠﻢ، ﻭﻫﻮ ﻳﺸﻜﻞ ﺍﻟﻤﻨﻄﻘﺔ ﺍﻟﺘﻲ ﺳﻴﻘﻮﻡ ﺍﻟﻤﺴﺘﻜﺸﻒ ﺑﺎﻻﺳﺘﻜﺸﺎﻑ ﺩﺍﺧﻠﻬﺎ. ﺳﻮﻑ ﺗﻼﺣﻆ ﻣﺠﻲء ﺍﻟﻤﺴﺘﻜﺸﻒ ﻗﺮﻳﺒًﺎ. ﺇﻥ ﻟﻢ ﻳﺄﺕِ ﻓﺘﺄﻛﺪ ﻣﻦ ﻗﺮﺍءﺓ ﺍﻷﻋﺪﺍﺩ ﺍﻟﻤﻮﺟﻮﺩﺓ ﺃﻋﻠﻰ ﺍﻟﺸﺎﺷﺔ ﻟﺘﺮﻯ ﻣﺎ ﺇﻥ ﻛﻨﺖ ﺗﻤﻠﻚ ﻣﺴﺘﻜﺸﻔﻴﻦ ﺑﻌﺪ ﺃﻡ ﻻ. ﺇﻥ ﺍﺿﻄﺮﺭﺕ ﻓﺒﺈﻣﻜﺎﻧﻚ ﺗﻮﻟﻴﺪ ﻭﺣﺪﺓ ﺟﺪﻳﺪﺓ ﻣﻦ ﺍﻟﻮﻛﺮ. ﺍﺿﻐﻂ ﺯﺭ ﺍﻟﻤﺴﺎﻓﺔ ﺑﻌﺪ ﻭﺻﻮﻝ ﺍﻟﻤﺴﺘﻜﺸﻒ.",ar)
 space
 
 show("Ohh my! Our enemy seems to have lots of workers, and a sizeable army, and for some reason, they're gathering all at the same spot. Could this mean ... they're planning an attack? I think so! Quick! We have to set up some defences!")
@@ -89,6 +97,7 @@ show("Ohh! Unser Feind hat anscheinend viele Arbeiter und eine große Armee die 
 show("Oh Oh! Nuestro enemigo parece que tiene muchos trabajadores, y un ejército de cierto tamaño, y por alguna razón, los está acumulando en cierto lugar.  Esto podría significar... ¿Estarán planeando un ataque? Eso Creo! Rápido!  tenemos que ubicar nuestras defensas!",es)
 show("Grote griebels! Onze vijand heeft veel werkers en een behoorlijk groot leger. Ze lijken ze zich te verzamelen op één punt. Zou dit beteken dat... ze zich opmaken voor een aanval? Ik denk het wel! Snel! We moeten onze verdediging opzetten!",nl)
 show("Ё-моё! У нашего противника, кажется, много рабочих и немалая армия, и они зачем-то все собираются в одном месте. Может ли это означать... что они планируют атаковать? Думаю так и есть! Быстрее! Мы должны подготовить какую-нибудь защиту!",ru)
+show("ﻳﺎ ﺇﻟﻬﻲ! ﻳﺒﺪﻭ ﺃﻥ ﻋﺪﻭﻧﺎ ﻳﻤﻠﻚ ﺍﻟﻜﺜﻴﺮ ﻣﻦ ﺍﻟﻌﻤﺎﻝ، ﻭﺟﻴﺶ ﻛﺒﻴﺮ، ﻭﻫﻮ ﻣﺠﺘﻤﻊ ﻓﻲ ﻧﻘﻄﺔ ﻭﺍﺣﺪﺓ ﻟﺴﺒﺐ ﻣﺎ. ﻫﻞ ﻳﻌﻨﻲ ﻫﺬﺍ ... ﺃﻧﻬﻢ ﻳﺨﻄﻄﻮﻥ ﻟﻠﻬﺠﻮﻡ ﻋﻠﻴﻨﺎ؟ ﺃﻇﻦ ﺫﻟﻚ! ﺃﺳﺮﻉ! ﻳﺠﺐ ﺃﻥ ﻧُﻌﺪ ﺑﻌﺾ ﺍﻟﺪﻓﺎﻋﺎﺕ!",ar)
 space
 
 hilightItem("under minimap icons")
@@ -99,6 +108,7 @@ show("Um eine Verteidigung aufzubauen brauchst du eine Verteidigungszone. Wenn d
 show("Para ubicar bien la defensa, necesitaremos establecer un área de defensa.  Si usas la pestaña que empleaste para crear la bandera de explorador, verás un conjunto de tres 'zonas', se pueden seleccionar bajo las banderas.  La zona azul es la que buscamos, clic en ella.  Y bajo las zonas hay dos opciones, una con una flecha arriba y otra abajo.  Usaremos la que está hacia abajo, puesto que estamos estableciendo una zona, en lugar de removerla, que se lograría con la otra flecha.",es)
 show("Om de verdediging op te zetten, moeten we een gebied selecteren waarin verdedigd wordt. Als je op hetzelfde tabblad klikt dat we gebruikte voor de verkenningsvlag, zie je dat er drie soorten 'zones' beschikbaar zijn. We hebben nu de blauwe zone nodig, dus klik daar maar op. Vlak onder de zones zijn twee opties: één met een pijl omhoog en één met een pijl omlaag. We willen de pijl omlaag, omdat we nu een zone willen plaatsten. Een zone verwijderen gaat dus met de pijl omhoog.",nl)
 show("Чтобы установить защиту, нам необходимо установить область защиты. Если вы щелкните по той же вкладке, по которой вы щелкали, чтобы создать флаг разведки, вы увидите набор из трёх 'зон', которые можно выбрать прямо под флагами. Синяя зона это та, которую мы ищем, щелкните по ней. Прямо под зонами есть две опции, одна со стрелкой вверх и одна со стрелкой вниз. Нам нужна со стрелкой вниз, т.к. мы хотим установить зону, а не убрать её (чему соответствует стрелка вверх).",ru)
+show("ﻹﻋﺪﺍﺩ ﺍﻟﺪﻓﺎﻋﺎﺕ ﻋﻠﻴﻨﺎ ﺃﻥ .. ﻧﺠﻬﺰ ﻣﻨﻄﻘﺔ ﺣﺮﺍﺳﺔ. ﺇﻥ ﻧﻘﺮﺕ ﻋﻠﻰ ﻧﻔﺲ ﺍﻟﻠﺴﺎﻥ ﺍﻟﺬﻱ ﺍﺧﺘﺮﺗﻪ ﻹﻧﺸﺎء ﻋَﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ ﻓﺴﺘﺠﺪ ﻣﺠﻤﻮﻋﺔ ﻣﻦ ﺛﻼﺙ "ﻣﻨﺎﻃﻖ" ﻣﺘﺎﺣﺔ ﻟﻼﺧﺘﻴﺎﺭ ﺃﺳﻔﻞ ﺍﻷﻋﻼﻡ ﺗﻤﺎﻣًﺎ. ﺇﻧﻨﺎ ﻧﺮﻳﺪ ﺗﻠﻚ ﺍﻟﺰﺭﻗﺎء، ﻓﺎﻧﻘﺮ ﻋﻠﻴﻬﺎ ﺍﻵﻥ. ﻳﻮﺟﺪ ﺧﻴﺎﺭﺍﻥ ﺗﺤﺖ ﺃﻳﻘﻮﻧﺎﺕ ﺍﻟﻤﻨﺎﻃﻖ: ﺃﺣﺪﻫﻤﺎ ﻳﺤﻤﻞ ﺳﻬﻤًﺎ ﻣﺘﺠﻬًﺎ ﻟﻸﻋﻠﻰ، ﻭﺍﻵﺧﺮ ﻟﻪ ﺳﻬﻢ ﻳﺘﺠﻪ ﺇﻟﻰ ﺍﻷﺳﻔﻞ. ﻧﺤﻦ ﻧﺮﻳﺪ ﺍﻟﺴﻬﻢ ﺍﻟﺬﻱ ﻳﺸﻴﺮ ﺇﻟﻰ ﺍﻷﺳﻔﻞ، ﻓﻨﺤﻦ ﻧﺮﻳﺪ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﻭﻟﻴﺲ ﺇﺯﺍﻟﺔ ﻣﻨﻄﻖ (ﻓﻲ ﺗﻠﻚ ﺍﻟﺤﺎﻟﺔ ﺳﻨﺨﺘﺎﺭ ﺍﻟﺴﻬﻢ ﺍﻟﻤﺸﻴﺮ ﻷﻋﻠﻰ).",ar)
 space
 
 hilightItem("brush selector")
@@ -108,6 +118,7 @@ show("Nun musst du eine Struktur wählen. Es gibt einige zur Auswahl. Meine Empf
 show("Ahora tenemos que seleccionar un patrón.  Hay varios para escoger. Mi recomendación especial es escoger el largo y cuadrado, pero no te detendré si vas a escoger el circular o el que te guste.",es)
 show("Nu kunnen we een patroon selecteren. Er zijn er een aantal om uit te kiezen. Mijn persoonlijke voorkeur gaat uit naar het grote vierkant. Laat dat je niet tegenhouden om de ronde vorm te kiezen als dat je beter lijkt.",nl)
 show("Теперь нам нужно выбрать шаблон. Они бывают нескольких видов. Мой личный совет — выбирайте большой квадратный.",ru)
+show("ﺍﻵﻥ ﻋﻠﻴﻨﺎ ﺃﻥ ﻧﺨﺘﺎﺭ ﻧﻘﺸًﺎ. ﺗﻮﺟﺪ ﻋﺪﺓ ﺃﻧﻤﺎﻁ ﻟﻼﺧﺘﻴﺎﺭ ﺑﻴﻨﻬﺎ، ﻭﻟﻜﻦ ﻧﺼﻴﺤﺘﻲ ﺍﻟﺸﺨﺼﻴﺔ ﻫﻲ ﺍﺧﺘﻴﺎﺭ ﺍﻟﻨﻤﻂ ﺍﻟﻤﺮﺑﻊ ﺍﻟﻜﺒﻴﺮ.",ar)
 space
 unhilightItem("under minimap icons")
 unhilightItem("guard zone on panel")
@@ -119,6 +130,7 @@ show("Nun bist du in der Lage die Zone zu platzieren. Das kannst du tun indem du
 show("Finalmente, podemos establecer una zona.  La estableces seleccionando en la pantalla principal.  Si deseas una gran zona, usa el arrastre del ratón.  Tenemos que anticipar de dónde vendrá el ataque. En un vistazo rápido, es muy posible que la vía más rápida para que ellos lleguen a tu base es a través de esa abertura frente a la cuál colocamos nuestras torres.  Coloquemos la zona de defensa, justo detrás de las torres.",es)
 show("Nu kunnen we de zone plaatsen. Je kan een zone plaatsen gewoon door te klikken op het hoofdscherm. Als je een grote zone wilt plaatsen, houd dan de muisknop ingedrukt en sleep de zone groter. We moeten goed anticiperen op waar de vijand vandaan komt. Als je eens rondkijkt, lijkt de snelste weg naar je basis door het pad waar we de Torens hebben gebouwd. Plaats de verdegingszone dus vlak achter je Torens.",nl)
 show("Наконец-то, мы можем разместить какую-нибудь зону. Вы можете установить зону просто щелкнув мышкой по главному экрану. Если вы хотите установить большую зону, зажмите кнопку мыши и проведите курсором везде где вы хотите. Нам надо угадать откуда наш враг собирается напасть. Осмотревшись, Вам может показаться, что самый быстрый для них способ добраться до вашей базы лежит через маленький перешеек, где мы разместили наши башни, так что поместите какую-нибудь зону защиты прямо за вашими башнями.",ru)
+show("ﺃﺧﻴﺮًﺍ ﺃﺻﺒﺢ ﺑﺈﻣﻜﺎﻧﻨﺎ ﻭﺿﻊ ﻣﻨﻄﻘﺔ. ﺑﺈﻣﻜﺎﻧﻚ ﻭﺿﻊ ﺍﻟﻤﻨﺎﻃﻖ ﺑﻤﺠﺮﺩ ﺍﻟﻨﻘﺮ ﻋﻠﻰ ﺍﻟﺸﺎﺷﺔ ﺍﻟﺮﺋﻴﺴﻴﺔ. ﺇﻥ ﺃﺭﺩﺕ ﻭﺿﻊ ﻣﻨﺎﻃﻖ ﻛﺒﻴﺮﺓ ﻓﺎﺳﺘﻤﺮ ﺑﺎﻟﻨﻘﺮ ﻋﻠﻰ ﺯﺭ ﺍﻟﻔﺄﺭﺓ ﻭﺍﺳﺤﺒﻪ ﺇﻟﻰ ﺣﻴﺚ ﺗﺮﻳﺪ. ﻋﻠﻴﻨﺎ ﺃﻥ ﻧﺘﻮﻗﻊ ﺍﻟﻤﻜﺎﻥ ﺍﻟﺬﻱ ﺳﻴﻬﺠﻢ ﻣﻨﻪ ﺍﻟﻌﺪﻭ. ﺑﻌﺪ ﺃﻥ ﻧﻈﺮﺕَ ﺇﻟﻰ ﺍﻟﺨﺮﻳﻄﺔ ﻗﺪ ﻳﺒﺪﻭ ﻟﻚ ﺃﻥ ﺃﺳﺮﻉ ﻃﺮﻳﻖ ﻟﻴﺼﻠﻮﺍ ﺇﻟﻰ ﻗﺎﻋﺪﺗﻨﺎ ﻣﻨﻪ ﻫﻮ ﺗﻠﻚ ﺍﻟﻔﺘﺤﺔ ﺍﻟﺼﻐﻴﺮﺓ ﺍﻟﻤﻮﺟﻮﺩﺓ ﺇﻟﻰ ﺟﺎﻧﺐ ﺍﻷﺑﺮﺍﺝ ﺍﻟﺘﻲ ﻭﺿﻌﻨﺎﻫﺎ، ﻓﻀﻊ ﻣﻨﻄﻘﺔ ﺣﺮﺍﺳﺔ ﺧﻠﻒ ﺃﺑﺮﺍﺟﻚ ﺗﻤﺎﻣًﺎ.",ar)
 space
 
 show("You will see some of your warriors rushing over to the defense zone. This is great! We are defending the spot. Remember to make enough defense zone to hold all of the warriors, but too much defense zone will spread your warriors out instead of defending this one particular spot. Now, all we can do is wait..")
@@ -127,6 +139,7 @@ show("Du wirst einige von deinen Kriegern sehen, die auf die Verteidigungszone z
 show("Verás algunos guerreros aprestarse hacia la zona de defensa.  Es magnífico!  Estamos defendiendo el punto.  Recuerda hacer suficiente zona de defensa para colocar a los guerreros en posición. Demasiada zona los desplegará en lugar de defender puntos específicos. Ahora, esperemos a ver qué sucede...",es)
 show("De soldaten rennen nu naar de verdedigingszone. Dit is fantastisch! We verdedigen die plaats nu. Houd er rekening mee om de verdigingszone groot genoeg te maken voor al je soldaten, maar een te grote verdedigingszone zal je soldaten te veel verspreiden in plaats van deze specifieke plek te verdedigen. Nu hoeven we alleen nog maar te wachten...",nl)
 show("Вы увидите, как несколько ваших воинов устремляются к зоне защиты. Это здорово! Мы защищаем это место. Не забывайте сделать достаточно большую зону защиты, чтобы охватить всех воинов, но в тоже время слишком большая зона защиты разбросает ваших воинов вместо того, чтобы закрыть эту конкретную точку. Теперь нам остаётся только ждать..",ru)
+show("ﺳﻮﻑ ﺗﺸﺎﻫﺪ ﺑﻌﺾ ﻣﺤﺎﺭﺑﻴﻚ ﻳﺴﺮﻋﻮﻥ ﺇﻟﻰ ﻣﻨﻄﻘﺔ ﺍﻟﺤﺮﺍﺳﺔ. ﻫﺬﺍ ﻋﻈﻴﻢ! ﺇﻧﻨﺎ ﻧﺤﺮﺱ ﺍﻟﻤﻜﺎﻥ ﺟﻴﺪًﺍ. ﺗﺬﻛﺮ ﺃﻥ ﺗﻀﻊ ﻣﻨﻄﻘﺔ ﺣﺮﺍﺳﺔ ﻛﺎﻓﻴﺔ ﻻﺳﺘﻴﻌﺎﺏ ﻭﺟﻮﺩ ﻛﻞ ﺍﻟﻤﺤﺎﺭﺑﻴﻦ، ﻭﻟﻜﻦ ﻻ ﺗﺒﺎﻟﻎ ﻓﻲ ﺍﻹﻛﺜﺎﺭ ﻣﻦ ﻭﺿﻌﻬﺎ ﻭﺇﻻ ﻓﺴﻴﻨﺘﺸﺮ ﻣﺤﺎﺭﺑﻮﻙ ﻓﻲ ﻛﻞ ﺍﺗﺠﺎﻩ ﺑﺪﻻً ﻣﻦ ﺣﻤﺎﻳﺔ ﻫﺬﺍ ﺍﻟﻤﻜﺎﻥ ﺗﺤﺪﻳﺪًﺍ. ﺍﻵﻥ، ﻛﻞ ﻣﺎ ﻧﻤﻠﻜﻪ ﻫﻮ ﺍﻻﻧﺘﻈﺎﺭ ...",ar)
 space
 hide
 
@@ -139,6 +152,7 @@ show("Ich denke sie kommen näher!",de)
 show("Creo que se están acercando!",es)
 show("Ik heb het gevoel dat ze dichtbij zijn!",nl)
 show("Кажется, они приближаются!",ru)
+show("ﺃﻋﺘﻘﺪ ﺃﻧﻬﻢ ﻳﻘﺘﺮﺑﻮﻥ!",ar)
 space
 
 wait(area("enemy_attack_zone", 1))
@@ -148,6 +162,7 @@ show("Wir werden angegriffen! Aber sieh nur wie schlecht der Feind kämpft. Ich 
 show("Estamos siendo atacados! Pero mira cómo pelea nuestro enemigo, apuesto a que los acabamos sin más.",es)
 show("We worden aangevallen! Maar kijk hoe belabberd de vijand vecht. Ik wed dat we ze in een mum van tijd hebben verslagen.",nl)
 show("Нас атакуют! Но посмотрите как нелепо враг сражается. Бьюсь об заклад, мы можем моментально уничтожить их.",ru)
+show("ﺇﻧﻨﺎ ﻧﺘﻌﺮﺽ ﻟﻠﻬﺠﻮﻡ! ﻭﻟﻜﻦ ﺍﻧﻈﺮ ﻛﻴﻒ ﻳﻘﺎﺗﻞ ﺍﻟﻌﺪﻭ ﻗﺘﺎﻻً ﺳﺨﻴﻔًﺎ. ﺃﻧﺎ ﻭﺛﻖ ﻣﻦ ﺃﻧﻨﺎ ﺳﻨﻬﺰﻣﻬﻢ ﻓﻲ ﻏﻤﻀﺔ ﻋﻴﻦ.",ar)
 space
 hide
 
@@ -161,6 +176,7 @@ show("Wir haben den Angriff überlebt! Super! Ich denke, es ist an der Zeit, das
 show("Sobrevivimos al ataque! Excelente! Creo que es hora de lanzar un ataque por nuestra cuenta.  Para hacerlo, usa el menú de banderas, que está bajo el minimapa y busca la bandera que tiene muchas puntas en ella.  Dirígete a la base enemiga y coloca la bandera sobre su construcción más importante: La colmena!",es)
 show("We hebben de aanval overleefd! Geweldig! Ik denk dat het tijd wordt om zelf over te gaan op de aanval. Gebruik daarvoor weer het vlag tabblad onder de minikaart en zoek voor de puntige vlag. Ga nu naar de basis van de vijand en plaats de vlag op het belangrijkste gebouw: de Zwerm!",nl)
 show("Мы отразили атаку! Отлично! Я думаю, что сейчас самое время нам самим начать атаковать. Чтобы сделать это, используйте меню с флагами расположенное под мини-картой, и найдите флаг с множеством шипов. Теперь переместите вид на базу противника. Установите флаг над их самым главным зданием - Роем!",ru)
+show("ﻟﻘﺪ ﻧﺠﻮﻧﺎ ﻣﻦ ﺍﻟﻬﺠﻤﺔ! ﻣﻤﺘﺎﺯ! ﺃﻋﺘﻘﺪ ﺃﻥ ﺍﻟﻮﻗﺖ ﻗﺪ ﺣﺎﻥ ﻷﻥ ﻧﺸﻦ ﻫﺠﻮﻣًﺎ ﺑﺄﻧﻔﺴﻨﺎ، ﻭﺣﺘﻰ ﻧﻔﻌﻞ ﺫﻟﻚ ﻓﺴﻨﺴﺘﺨﺪﻡ ﻗﺎﺋﻤﺔ ﺍﻷﻋﻼﻡ ﺍﻟﻤﻮﺟﻮﺩﺓ ﺃﺳﻔﻞ ﺍﻟﺨﺎﺭﻃﺔ ﺍﻟﻤﺼﻐﺮﺓ. ﺍﻧﻘﺮ ﻋﻠﻰ ﺍﻟﻌﻠﻢ ﺍﻟﻤﻐﻄﻰ ﺑﻤﺠﻤﻮﻋﺔ ﻣﻦ ﺍﻷﺷﻮﺍﻙ. ﺍﻵﻥ ﺗﻮﺟﻪ ﺑﺎﻟﺸﺎﺷﺔ ﺇﻟﻰ ﻗﺎﻋﺪﺓ ﺍﻟﻌﺪﻭ، ﻭﺿﻊ ﺍﻟﻌﻠﻢ ﻋﻠﻰ ﺃﻫﻢ ﻣﺒﻨﻰ ﻟﺪﻳﻬﻢ: ﺍﻟﻮﻛﺮ!",ar)
 space
 unhilightBuildingOnPanel(WarFlag)
 unhilightItem("under minimap icons")
@@ -172,6 +188,7 @@ show("Rechtsklicke und klicke dann auf die Flagge. Es gibt ein paar Dinge zu än
 show("Usa ahora el botón derecho, y posteriormente selecciona la bandera con el izquierdo.  Hay ciertas cosas que deseamos cambiar.  Primero que todo, asignemos más de un guerrero a la bandera. Ahora hagamos el radio más pequeño, para enfocar los esfuerzos de nuestros guerreros sobre la colmena en lugar de desplegarlos.  Espera y mira la magia!",es)
 show("Klik nu op de rechter muisknop en vervolgens op de vlag. Er zijn een aantal instellingen die we willen veranderen. Ten eerste willen we meer eenheden aan de vlag toewijzen. Daarna willen we de reikwijdte kleiner maken om de soldaten ertoe te dwingen naar de Zwerm te gaan in plaats van zich over het gebied te verspreiden. En nu maar wachten en de magie aanschouwen!",nl)
 show("Теперь сделайте щелчок правой кнопкой мыши и затем щелчок по флагу. Есть несколько вещей, которые мы хотели бы изменить. Сначала назначьте флагу больше одного воина. Затем сделайте радиус меньше, чтобы сфокусировать воинов на Рое, а не разбрасывать их в разные стороны. А теперь подождём и понаблюдаем за волшебством!",ru)
+show("ﺍﻵﻥ ﺍﻧﻘﺮ ﺑﺰﺭ ﺍﻟﻔﺄﺭﺓ ﺍﻷﻳﻤﻦ، ﺛﻢ ﺍﻧﻘﺮ ﻋﻠﻰ ﺍﻟﻌﻠﻢ. ﻫﻨﺎﻙ ﺑﻌﺾ ﺍﻷﺷﻴﺎء ﺍﻟﺘﻲ ﻗﺪ ﻧﻮﺩ ﺗﻐﻴﻴﺮﻫﺎ. ﺃﻭﻻً: ﻛﻠﻒ ﺃﻛﺜﺮ ﻣﻦ ﻣﺤﺎﺭﺏ ﺑﺎﻟﺘﻮﺟﻪ ﺇﻟﻰ ﺍﻟﻌَﻠﻢ. ﺛﺎﻧﻴًﺎ: ﺍﺟﻌﻞ ﻧﺼﻒ ﻗﻄﺮ ﺍﻟﻌﻠﻢ ﺃﺻﻐﺮ، ﻭﺫﻟﻚ ﻟﺘﺮﻛﻴﺰ ﺍﻟﻤﺤﺎﺭﺑﻴﻦ ﺑﺎﺗﺠﺎﻩ ﺍﻟﻮﻛﺮ ﺑﺪﻻً ﻣﻦ ﻧﺜﺮﻫﻢ ﻭﺗﻔﺮﻳﻘﻬﻢ. ﺍﻵﻥ ﺍﻧﺘﻈﺮ ﻭﺭﺍﻗﺐ ﺍﻟﻌﺠﺐ!",ar)
 space
 hide
 unhilightBuildings(WarFlag)
@@ -184,6 +201,7 @@ show("Lass den Angriff beginnen! Ich denke du wirst dir den Weg durch ihre Mauer
 show("Que comience el ataque! Creo que tendremos que limpiar el camino de esas torres para poder llegar a la colmena, aunque no es gran cosa.",es)
 show("Laat de aanval beginnen! We zullen ons een weg moeten werken langs de Torens om bij de Zwerm te komen, maar dat zal geen grote uitdaging vormen.",nl)
 show("Начнём атаку! Думаю, что нам придётся поработать, чтобы пробраться к Рою через все эти башни, но это не должно стать большой проблемой.",ru)
+show("ﻟﻴﺒﺪﺃ ﺍﻟﻬﺠﻮﻡ! ﺃﻋﺘﻘﺪ ﺃﻥ ﻋﻠﻴﻨﺎ ﺍﺟﺘﻴﺎﺯ ﻫﺬﻩ ﺍﻷﺑﺮﺍﺝ ﺣﺘﻰ ﻧﺼﻞ ﺇﻟﻰ ﺍﻟﻮﻛﺮ، ﻭﻟﻜﻦ ﻫﺬﺍ ﻟﻦ ﻳﻜﻮﻥ ﺻﻌﺒًﺎ.",ar)
 space
 hide
 
@@ -194,6 +212,7 @@ show("Du bist fast da. Zeige den Aquas, wer hier der Boss ist!",de)
 show("Estamos llegando! Mostremos a esos glóbulos de agua quién es el jefe!",es)
 show("We zijn er bijna! We zullen die Aqua globules eens laten zien wie hier de baas is!",nl)
 show("Мы почти закончили! Давайте покажем этим синим глобулам кто здесь главный!",ru)
+show("ﻟﻘﺪ ﺷﺎﺭﻓﻨﺎ ﻋﻠﻰ ﺍﻟﻮﺻﻮﻝ! ﺩﻋﻨﺎ ﻧﺮِ ﻫﺬﻩ ﺍﻟﺸﻘﺎﻟﺐ ﺍﻟﻤﺎﺋﻴﺔ ﻣﻦ ﺍﻟﺰﻋﻴﻢ ﻫﻨﺎ!",ar)
 space
 hide
 
@@ -204,6 +223,7 @@ show("Du hast es geschafft! Dies schließt die Einführung ab. Ich hoffe du hast
 show("Lo hiciste! Felicitaciones! Esto concluye el tutorial, espero que hayas aprendido mucho acerca del tutorial, y que te haya abierto el camino para jugar Globulation 2 como un profesional!",es)
 show("Het is je gelukt! Gefeliciteerd! Dit beëindigd het oefenspel. Ik hoop dat je er veel van hebt geleerd en dat je nu een vliegende start hebt gemaakt om Globulation 2 te spelen als een professional!",nl)
 show("Вы сделали это! Поздравляю! Это завершает обучение. Надеюсь, вы многому научились из этого обучающего руководства, оно должно дать вам начать играть в Globulation 2 как профессионал!",ru)
+show("ﻟﻘﺪ ﻓﻌﻠﺘَﻬﺎ! ﺗﻬﺎﻧﻴﻨﺎ! ﺑﻬﺬﺍ ﻧﻜﻮﻥ ﻗﺪ ﻭﺻﻠﻨﺎ ﺇﻟﻰ ﺧﺘﺎﻡ ﺍﻟﺘﺪﺭﻳﺐ. ﺃﺗﻤﻨﻰ ﺃﻧﻚ ﻗﺪ ﺗﻌﻠﻤﺖ ﻛﺜﻴﺮًﺍ ﻣﻨﻪ، ﻓﻬﻮ ﺟﺪﻳﺮ ﺑﺄﻥ ﻳﻌﻄﻴﻚ ﺑﺪﺍﻳﺔ ﻗﻮﻳﺔ ﻟﻠﻌﺐ ﺷﻘﺎﻟﺐ ٢ ﻛﺎﻟﻤﺤﺘﺮﻓﻴﻦ!",ar)
 space
 
 win(0)
