@@ -34,7 +34,7 @@ struct DIR
     char                *name;  /* NTBS */
 };
 
-DIR *opendir(const char *name)
+DIR *opendir(const std::string name)
 {
     DIR *dir = 0;
 

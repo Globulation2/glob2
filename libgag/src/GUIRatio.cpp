@@ -28,9 +28,9 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font)
+	Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const std::string font)
 	{
-		assert(font);
+		assert(font.size());
 		
 		this->x=x;
 		this->y=y;
@@ -54,10 +54,10 @@ namespace GAGGUI
 		ratio=1.0;
 	}
 	
-	Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const char *font, const std::string& tooltip, const std::string &tooltipFont)
+	Ratio::Ratio(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int size, int value, const std::string font, const std::string& tooltip, const std::string &tooltipFont)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
-		assert(font);
+		assert(font.size());
 		
 		this->x=x;
 		this->y=y;
@@ -146,7 +146,7 @@ namespace GAGGUI
 	{
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);
-		textHeight = fontPtr->getStringHeight((const char *)NULL);
+		textHeight = fontPtr->getStringHeight("");
 		assert(textHeight > 0);
 	}
 	

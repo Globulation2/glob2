@@ -1,9 +1,11 @@
 def if (cond) := {
-	def ifTrue (trueVal) := [
-		def else(_) := trueVal
+	def ifTrue (result) := [
+		def else (_) := result
+		def elseif (_) := ifFalse
 	]
 	def ifFalse (_) := [
-		def else(falseVal) := falseVal
+		def else (result) := result
+		def elseif := if
 	]
 	cond select (ifTrue, ifFalse)
 }

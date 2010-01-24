@@ -289,6 +289,11 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 	
 	order = Order::getOrder(buffer, size, VERSION_MINOR);
+
+	// If this couldn't be interpreted return it returned a NULL order, so we throw.
+	if (order == boost::shared_ptr<Order>())
+		throw std::ios_base::failure("Couldn't decode data stream to an Order: bad format.");
+
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
 	

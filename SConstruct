@@ -17,7 +17,7 @@ def establish_options(env):
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-        opts.Add(PathOption("INSTALLDIR", "Installation Directory", "./"))
+        opts.Add("INSTALLDIR", "Installation Directory", "./")
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
@@ -50,7 +50,7 @@ def configure(env):
     configfile.add("PACKAGE", "Name of package", "\"glob2\"")
     configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
     if isDarwinPlatform:
-        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
+        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
     else:
     	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
@@ -250,8 +250,8 @@ def main():
         env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
     if isDarwinPlatform:
-        env.Append(LIBPATH=["/sw/lib"])
-        env.Append(CPPPATH=["/sw/include"])
+        env.Append(LIBPATH=["/opt/local/lib"])
+        env.Append(CPPPATH=["/opt/local/include"])
     configure(env)
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
@@ -271,6 +271,9 @@ def main():
         env.Append(LINKFLAGS=['-mwindows'])
         env.Append(CPPPATH=['/usr/local/include/SDL'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
+    elif isDarwinPlatform:
+        env.ParseConfig("/opt/local/bin/sdl-config --cflags")
+        env.ParseConfig("/opt/local/bin/sdl-config --libs")
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")

@@ -141,11 +141,9 @@ std::string YOGUnmutePlayer::getCommandName()
 
 bool YOGUnmutePlayer::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGUnmutePlayer::allowedForModerator()
@@ -189,9 +187,7 @@ std::string YOGResetPassword::getCommandName()
 
 bool YOGResetPassword::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
@@ -228,9 +224,7 @@ std::string YOGBanPlayer::getCommandName()
 
 bool YOGBanPlayer::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
@@ -283,9 +277,7 @@ std::string YOGUnbanPlayer::getCommandName()
 
 bool YOGUnbanPlayer::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
@@ -331,9 +323,7 @@ std::string YOGShowBannedPlayers::getCommandName()
 
 bool YOGShowBannedPlayers::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 1)
-		return false;
-	return true;
+	return tokens.size() == 1;
 }
 	
 
@@ -379,9 +369,7 @@ std::string YOGBanIP::getCommandName()
 
 bool YOGBanIP::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
@@ -430,9 +418,7 @@ std::string YOGAddAdministrator::getCommandName()
 
 bool YOGAddAdministrator::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
@@ -477,9 +463,7 @@ std::string YOGRemoveAdministrator::getCommandName()
 
 bool YOGRemoveAdministrator::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
@@ -523,9 +507,7 @@ std::string YOGAddModerator::getCommandName()
 
 bool YOGAddModerator::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
@@ -571,9 +553,7 @@ std::string YOGRemoveModerator::getCommandName()
 
 bool YOGRemoveModerator::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
@@ -619,9 +599,7 @@ std::string YOGRemoveMap::getCommandName()
 
 bool YOGRemoveMap::doesMatch(const std::vector<std::string>& tokens)
 {
-	if(tokens.size() != 2)
-		return false;
-	return true;
+	return tokens.size() == 2;
 }
 	
 
