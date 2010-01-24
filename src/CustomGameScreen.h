@@ -69,7 +69,7 @@ private:
 	ColorButton *color[NumberOfPlayerSelectors];
 	//! Text shown when entry is disabled
 	Text *closedText[NumberOfPlayerSelectors];
-	//! Multi-text button containing names of availables Player
+	//! Multi-text button containing names of available Players
 	MultiTextButton *aiSelector[NumberOfPlayerSelectors];
 	//! Text button that links to the custom game other settings screen
 	TextButton* otherOptions;

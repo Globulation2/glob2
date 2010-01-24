@@ -27,7 +27,18 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, unsigned defaultValue, unsigned maxValue, bool taper, unsigned step, const char *sprite, Sint32 id)
+	Selector::Selector(
+			int x,
+			int y,
+			Uint32 hAlign,
+			Uint32 vAlign,
+			unsigned width,
+			unsigned defaultValue,
+			unsigned maxValue,
+			bool taper,
+			unsigned step,
+			const std::string sprite,
+			Sint32 id)
 	{
 		this->x=x;
 		this->y=y;
@@ -40,14 +51,23 @@ namespace GAGGUI
 		this->vAlignFlag=vAlign;
 		this->value=defaultValue;
 		this->dragging = false;
-	
-		if (sprite)
-			this->sprite=sprite;
+		this->sprite=sprite;
 		this->id=id;
 		archPtr=NULL;
 	}
 	
-	Selector::Selector(int x, int y, Uint32 hAlign, Uint32 vAlign, unsigned width, const std::string &tooltip, const std::string &tooltipFont, unsigned defaultValue, unsigned maxValue, bool taper, unsigned step, const char *sprite, Sint32 id)
+	Selector::Selector(int x,
+			int y,
+			Uint32 hAlign,
+			Uint32 vAlign, unsigned width,
+			const std::string &tooltip,
+			const std::string &tooltipFont,
+			unsigned defaultValue,
+			unsigned maxValue,
+			bool taper,
+			unsigned step,
+			const std::string sprite,
+			Sint32 id)
 		: RectangularWidget(tooltip, tooltipFont)
 	{
 		this->x=x;
@@ -61,9 +81,7 @@ namespace GAGGUI
 		this->vAlignFlag=vAlign;
 		this->value=defaultValue;
 		this->dragging = false;
-	
-		if (sprite)
-			this->sprite=sprite;
+		this->sprite=sprite;
 		this->id=id;
 		archPtr=NULL;
 	}
