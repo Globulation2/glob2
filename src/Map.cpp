@@ -90,14 +90,14 @@ Map::Map()
 	fogOfWarB=NULL;
 	astarpoints = NULL;
 	cases=NULL;
-	for (int t=0; t<32; t++)
+	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_NB_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 			{
 				ressourcesGradient[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
 			}
-	for (int t=0; t<32; t++)
+	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int s=0; s<2; s++)
 		{
 			forbiddenGradient[t][s] = NULL;
@@ -106,14 +106,14 @@ Map::Map()
 			guardGradientUpdated[t][s] = false;
 			clearGradientUpdated[t][s] = false;
 		}
-	for (int t = 0; t < 32; t++)
+	for (int t = 0; t < Team::MAX_COUNT; t++)
 		exploredArea[t] = NULL;
 	
 	undermap=NULL;
 	sectors=NULL;
 	listedAddr=NULL;
 	
-	for (int t = 0; t < 32; t++)
+	for (int t = 0; t < Team::MAX_COUNT; t++)
 		clearingAreaClaims[t] = NULL;
 	w=0;
 	h=0;
@@ -254,7 +254,7 @@ void Map::clear()
 		assert(cases);
 		delete[] cases;
 		cases=NULL;
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (ressourcesGradient[t][0][0])
 				for (int r=0; r<MAX_RESSOURCES; r++)
 					for (int s=0; s<2; s++)
@@ -264,7 +264,7 @@ void Map::clear()
 						ressourcesGradient[t][r][s] = NULL;
 					}
 		
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (forbiddenGradient[t][0])
 				for (int s=0; s<2; s++)
 				{
@@ -282,7 +282,7 @@ void Map::clear()
 					clearGradientUpdated[t][s] = false;
 				}
 		
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (exploredArea[t])
 			{
 				assert(exploredArea[t]);
@@ -306,7 +306,7 @@ void Map::clear()
 		delete[] astarpoints;
 		astarpoints=NULL;
 
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 		{
 			if (clearingAreaClaims[t])
 			{
@@ -329,20 +329,20 @@ void Map::clear()
 		assert(fogOfWarA==NULL);
 		assert(fogOfWarB==NULL);
 		assert(cases==NULL);
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
 					assert(ressourcesGradient[t][r][s]==NULL);
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			for (int s=0; s<2; s++)
 			{
 				assert(forbiddenGradient[t][s] == NULL);
 				assert(guardAreasGradient[t][s] == NULL);
 				assert(clearAreasGradient[t][s] == NULL);
 			}
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			assert(exploredArea[t] == NULL);
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			assert(clearingAreaClaims[t] == NULL);
 		
 		assert(undermap==NULL);
@@ -368,7 +368,7 @@ void Map::clear()
 	wSector=hSector=0;
 	sizeSector=0;
 	
-	for (int t=0; t<32; t++)
+	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				gradientUpdated[t][r][s]=false;
@@ -1006,6 +1006,10 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 
 	immobileUnits = new Uint8[w*h];
+	for (int i=0; i<w*h; i++) 
+	{
+		immobileUnits[i]=0;
+	}
 
 	arraysBuilt=true;
 	
@@ -1150,7 +1154,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 					ressourcesGradient[t][r][s]=new Uint8[size];
 					updateRessourcesGradient(t, r, (bool)s);
 				}
-		for (int t=0; t<32; t++)
+		for (int t=0; t<Team::MAX_COUNT; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<1; s++)
 					gradientUpdated[t][r][s]=false;
@@ -1287,7 +1291,7 @@ void Map::addTeam(void)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				assert(ressourcesGradient[t][r][s]);
-	for (int t=oldNumberOfTeam; t<32; t++)
+	for (int t=oldNumberOfTeam; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				assert(ressourcesGradient[t][r][s]==NULL);
@@ -1298,7 +1302,7 @@ void Map::addTeam(void)
 		{
 			assert(ressourcesGradient[t][r][s]==NULL);
 			ressourcesGradient[t][r][s]=new Uint8[size];
-			updateRessourcesGradient(t, r, (bool)s);			
+			updateRessourcesGradient(t, r, (bool)s);
 		}
 	
 	for (int s=0; s<2; s++)
@@ -1327,13 +1331,13 @@ void Map::removeTeam(void)
 {
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 //	int oldNumberOfTeam=numberOfTeam+1;
-	assert(numberOfTeam<32);
+	assert(numberOfTeam<Team::MAX_COUNT);
 	
 //	for (int t=0; t<oldNumberOfTeam; t++)
 //		for (int r=0; r<MAX_RESSOURCES; r++)
 //			for (int s=0; s<2; s++)
 //				assert(ressourcesGradient[t][r][s]);
-//	for (int t=oldNumberOfTeam; t<32; t++)
+//	for (int t=oldNumberOfTeam; t<Team::MAX_COUNT; t++)
 //		for (int r=0; r<MAX_RESSOURCES; r++)
 //			for (int s=0; s<2; s++)
 //				assert(ressourcesGradient[t][r][s]==NULL);
@@ -2271,242 +2275,9 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 /*
 This was the old way. I was much more complex but reliable with partially broken gradients. Let's keep it for now in case of such type of gradient reappears
 bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
-{
-	ressourceAvailableCount[teamNumber][ressourceType]++;
-	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
-	assert(gradient);
-	x&=wMask;
-	y&=hMask;
-	Uint8 g=gradient[(y<<wDec)+x];
-	if (g<2)
-	{
-		ressourceAvailableCountFast[teamNumber][ressourceType]++;
-		return false;
-	}
-	if (dist)
-		*dist=255-g;
-	if (g>=255)
-	{
-		ressourceAvailableCountFast[teamNumber][ressourceType]++;
-		*targetX=x;
-		*targetY=y;
-		return true;
-	}
-	int vx=x&wMask;
-	int vy=y&hMask;
-	
-	Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
-	for (int count=0; count<255; count++)
-	{
-		bool found=false;
-		int vddx=0;
-		int vddy=0;
-		for (int d=0; d<8; d++)
-		{
-			int ddx=deltaOne[d][0];
-			int ddy=deltaOne[d][1];
-			Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
-			if (g>max)
-			{
-				max=g;
-				vddx=ddx;
-				vddy=ddy;
-				found=true;
-			}
-		}
-		if (found)
-		{
-			vx=(vx+vddx)&wMask;
-			vy=(vy+vddy)&hMask;
-		}
-		else
-		{
-			ressourceAvailableCountFar[teamNumber][ressourceType]++;
-			Uint8 miniGrad[25];
-			for (int ry=0; ry<5; ry++)
-				for (int rx=0; rx<5; rx++)
-				{
-					int xg=(vx+rx-2)&wMask;
-					int yg=(vy+ry-2)&hMask;
-					miniGrad[rx+ry*5]=gradient[xg+yg*w];
-				}
-			if (directionFromMinigrad(miniGrad, &vddx, &vddy, false, false))
-			{
-				vx=(vx+vddx)&wMask;
-				vy=(vy+vddy)&hMask;
-				Uint8 g=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
-				found=true;
-				if (g>max)
-					max=g;
-			}
-		}
-		if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
-		{
-			ressourceAvailableCountSuccess[teamNumber][ressourceType]++;
-			*targetX=vx;
-			*targetY=vy;
-			return true;
-		}
-		if (!found)
-		{
-			{
-				int vx=x&wMask;
-				int vy=y&hMask;
-				if (verbose)
-					printf("init v=(%d, %d)\n", vx, vy);
 
-				Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
-				for (int count=0; count<255; count++)
-				{
-					bool found=false;
-					int vddx=0;
-					int vddy=0;
-					for (int d=0; d<8; d++)
-					{
-						int ddx=deltaOne[d][0];
-						int ddy=deltaOne[d][1];
-						Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
-						if (g>max)
-						{
-							max=g;
-							vddx=ddx;
-							vddy=ddy;
-							found=true;
-						}
-					}
-					if (found)
-					{
-						vx=(vx+vddx)&wMask;
-						vy=(vy+vddy)&hMask;
-						if (verbose)
-							printf("fast v=(%d, %d), max=%d\n", vx, vy, max);
-					}
-					else
-					{
-						Uint8 miniGrad[25];
-						for (int ry=0; ry<5; ry++)
-							for (int rx=0; rx<5; rx++)
-							{
-								int xg=(vx+rx-2)&wMask;
-								int yg=(vy+ry-2)&hMask;
-								miniGrad[rx+ry*5]=gradient[xg+yg*w];
-							}
+commented out version last seen in revision 0ea2652945a0
 
-						if (directionFromMinigrad(miniGrad, &vddx, &vddy, false, false))
-						{
-							vx=(vx+vddx)&wMask;
-							vy=(vy+vddy)&hMask;
-							Uint8 g=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
-							found=true;
-							if (g>max)
-								max=g;
-							if (verbose)
-								printf("mini v=(%d, %d), g=%d, max=%d\n", vx, vy, g, max);
-						}
-					}
-					if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
-					{
-						if (verbose)
-							printf("return true v=(%d, %d), max=%d\n", vx, vy, max);
-						break;
-					}
-					if (!found)
-					{
-						if (verbose)
-							printf("return false\n");
-						break;
-					}
-				}
-			}
-			
-			ressourceAvailableCountFailureBase[teamNumber][ressourceType]++;
-			fprintf(logFile, "target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
-			if (verbose)
-				printf("target *not* found! pos=(%d, %d), vpos=(%d, %d), max=%d, team=%d, res=%d, swim=%d\n", x, y, vx, vy, max, teamNumber, ressourceType, canSwim);
-			*targetX=vx;
-			*targetY=vy;
-			return false;
-		}
-	}
-	
-	{
-		int vx=x&wMask;
-		int vy=y&hMask;
-		if (verbose)
-			printf("init v=(%d, %d)\n", vx, vy);
-
-		Uint8 max=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
-		for (int count=0; count<255; count++)
-		{
-			bool found=false;
-			int vddx=0;
-			int vddy=0;
-			for (int d=0; d<8; d++)
-			{
-				int ddx=deltaOne[d][0];
-				int ddy=deltaOne[d][1];
-				Uint8 g=gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
-				if (g>max)
-				{
-					max=g;
-					vddx=ddx;
-					vddy=ddy;
-					found=true;
-				}
-			}
-			if (found)
-			{
-				vx=(vx+vddx)&wMask;
-				vy=(vy+vddy)&hMask;
-				if (verbose)
-					printf("fast v=(%d, %d), max=%d\n", vx, vy, max);
-			}
-			else
-			{
-				Uint8 miniGrad[25];
-				for (int ry=0; ry<5; ry++)
-					for (int rx=0; rx<5; rx++)
-					{
-						int xg=(vx+rx-2)&wMask;
-						int yg=(vy+ry-2)&hMask;
-						miniGrad[rx+ry*5]=gradient[xg+yg*w];
-					}
-
-				if (directionFromMinigrad(miniGrad, &vddx, &vddy, false, false))
-				{
-					vx=(vx+vddx)&wMask;
-					vy=(vy+vddy)&hMask;
-					Uint8 g=gradient[(vx&wMask)+((vy&hMask)<<wDec)];
-					found=true;
-					if (g>max)
-						max=g;
-					if (verbose)
-						printf("mini v=(%d, %d), g=%d, max=%d\n", vx, vy, g, max);
-				}
-			}
-			if (max==255 || (max>=255 && (getBuilding(vx, vy)==NOGBID)))
-			{
-				if (verbose)
-					printf("return true v=(%d, %d), max=%d\n", vx, vy, max);
-				break;
-			}
-			if (!found)
-			{
-				if (verbose)
-					printf("return false\n");
-				break;
-			}
-		}
-	}
-	
-	ressourceAvailableCountFailureOvercount[teamNumber][ressourceType]++;
-	fprintf(logFile, "target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
-	if (verbose)
-		printf("target *not* found! (count>255) pos=(%d, %d), vpos=(%d, %d), team=%d, res=%d, swim=%d\n", x, y, vx, vy, teamNumber, ressourceType, canSwim);
-	*targetX=vx;
-	*targetY=vy;
-	return false;
-}
 */
 
 void Map::updateGlobalGradientSlow(Uint8 *gradient)
@@ -3689,6 +3460,8 @@ void propagateLocalGradients(Uint8* gradient) {
 										UPDATE_MAX(max,gradient[ypart+xpart]);
 									}
 								}
+								// TODO: checkstyle found very long code duplicaitons here
+								// src/Map.cpp:3463: warning: Found duplicate of 59 lines in src/Map.cpp, starting from line 3,858
 								assert(max);
 								if (max==1)
 									gradient[wy+x]=1;
@@ -5457,7 +5230,7 @@ bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 	}
 }
 
-void Map::dumpGradient(Uint8 *gradient, const char *filename)
+void Map::dumpGradient(Uint8 *gradient, const std::string filename)
 {
 	FILE *fp = globalContainer->fileManager->openFP(filename, "wb");
 	if (fp)

@@ -52,12 +52,11 @@ namespace GAGGUI
 	
 	public:
 		// constructor / destructor
-		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &text="", bool activated=false, size_t maxLength=0, bool password=false) { constructor(x, y, w, h, hAlign, vAlign, font, text.c_str(), activated, maxLength, password); }
-		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text="", bool activated=false, size_t maxLength=0, bool password=false) { constructor(x, y, w, h, hAlign, vAlign, font, text, activated, maxLength, password); }
+		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text="", bool activated=false, size_t maxLength=0, bool password=false) { constructor(x, y, w, h, hAlign, vAlign, font, text, activated, maxLength, password); }
 		//! With a tooltip
-		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, const std::string &text="", bool activated=false, size_t maxLength=0, bool password=false) : HighlightableWidget(tooltip, tooltipFont)
+		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, const std::string &text="", bool activated=false, size_t maxLength=0, bool password=false) : HighlightableWidget(tooltip, tooltipFont)
 		 { constructor(x, y, w, h, hAlign, vAlign, font, text.c_str(), activated, maxLength, password); }
-		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, const char *text="", bool activated=false, size_t maxLength=0, bool password=false) : HighlightableWidget(tooltip, tooltipFont)
+		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, const std::string text="", bool activated=false, size_t maxLength=0, bool password=false) : HighlightableWidget(tooltip, tooltipFont)
 		 { constructor(x, y, w, h, hAlign, vAlign, font, text, activated, maxLength, password); }
 		virtual ~TextInput() { }
 	
@@ -100,7 +99,7 @@ namespace GAGGUI
 		bool isActivated(void) { return activated; } 
 
 	protected:
-		void constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, bool activated, size_t maxLength, bool password);
+		void constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, bool activated, size_t maxLength, bool password);
 		void recomputeTextInfos(void);
 		virtual void onSDLKeyDown(SDL_Event *event);
 		virtual void onSDLMouseButtonDown(SDL_Event *event);

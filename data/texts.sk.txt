@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Stavanie
 Jednotky
 [building site]
 stavenisko
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -202,6 +208,8 @@ Vyber si mapu
 Vlajka čistenia
 [closed]
 Uzavreté
+[combined vision]
+
 [compile]
 Kopilovať skript
 [compose]
@@ -356,6 +364,8 @@ prázdne ostrovy
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Jedlo
 [forbidden area]
@@ -490,6 +500,8 @@ Slovensky
 Nahrať hru
 [load map]
 
+[load replay]
+
 [load script]
 
 [load]
@@ -500,6 +512,8 @@ Nahrať
 
 [login]
 Prihlásenie
+[look around]
+
 [Lost : %0 has more prestige than you]
 Prehra: %0 má väčšiu prestíž ako ty
 [Lost : your colony is dead]
@@ -568,6 +582,8 @@ Stlmiť
 Nová
 [nick taken]
 Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -582,6 +598,8 @@ Nie
 
 [not ready]
 nepripravený
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +608,8 @@ Počet hráčov: %0
 Tímov: %0
 [number of teams]
 počet tímov
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -621,7 +641,7 @@ Tu
 [open]
 otvorené
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -646,12 +666,16 @@ Zastavené
 Meno hráča
 [player rating %0]
 
+[players]
+
 [please wait]
 Čakaj, prosím
 [power]
 
 [press space]
 Pre pokračovanie stlač medzeru
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -668,6 +692,8 @@ Slivka
 
 [quit the game]
 Ukončiť hru
+[quit the replay]
+
 [quit]
 Koniec
 [racetrack explanation 2]
@@ -688,6 +714,8 @@ Proporcie
 
 [Register a new YOG user with password]
 Zaregistrovať nové YOG meno s heslom. (nezabezpečené)
+[Register]
+
 [remember unit]
 Uložiť jednotku
 [Remember YOG password localy]
@@ -704,12 +732,18 @@ Spust./zast. opravu
 Opraviť
 [repeat area]
 
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 Pôvodné nastavenia klávesnice
 [return to editor]
 
 [return to game]
 Nazad do hry
+[return to replay]
+
 [return]
 
 [right meta]
@@ -729,6 +763,8 @@ Chceš pred ukončením uložiť zmeny?
 [save game]
 Uložiť hru
 [save map]
+
+[save replay]
 
 [save script]
 
@@ -820,6 +856,10 @@ Nastavenia
 Enter: Pošli správu
 [shortcut explanation v]
 V: Drž a rozprávaj
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -972,6 +1012,8 @@ Trhovisko dokončené
 Bežecká dráha dokončená
 [the racetrack is under attack]
 Útočia ti na Bežeckú dráhu
+[the replays]
+
 [the school is finished]
 Škola dokončená
 [the school is under attack]
@@ -992,6 +1034,8 @@ Bazén dokončený
 ?? Vlajka vojny dokončená ??
 [the warflag is under attack]
 ?? Vlajka vojny čelí útoku ??
+[time]
+
 [to:]
 pre:
 [toggle draw accessibility aids]
@@ -1004,6 +1048,12 @@ Zobraziť/skryť cesty
 
 [toggle recording voice]
 Spustiť nahrávanie zvuku
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Dosiahnutá úroveň prestíže
 [Total]
@@ -1080,6 +1130,10 @@ Pozor, aby sa prejavili zmeny, je potrebné hru reštartovať!
 Bojovník
 [warriors]
 bojovníci
+[watch again]
+
+[watching:]
+
 [water]
 Voda
 [Wheat]
@@ -1134,6 +1188,8 @@ YOG metaserver odmietol spojenie, pretože tvoje meno už niekto používa.
 
 [YESTS_CREATED]
 Systém pripojenia je pripravený kontaktovať YOG metaserver.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Nie je možné sa pripojiť. YOG metaserver je asi spadnutý.
 [yog block command help]

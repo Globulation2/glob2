@@ -29,6 +29,7 @@
 #include <BinaryStream.h>
 #include <FormatableString.h>
 
+#include "AINames.h"
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
@@ -39,7 +40,8 @@
 #include "YOGClientLobbyScreen.h"
 #include "SoundMixer.h"
 #include "Player.h"
-#include "AIEcho.h"
+#include "NetMessage.h"
+#include "GameGUIDialog.h"
 
 #include <iostream>
 
@@ -77,6 +79,9 @@ int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const s
 		gui.localPlayer = 0;
 		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
 	}
+	
+	gameHeader.getBasePlayer(0).name = campaign.getPlayerName();
+	
 	int end=initGame(mapHeader, gameHeader);
 	gui.setCampaignGame(campaign, missionName);
 	return end;
@@ -156,17 +161,23 @@ int Engine::initCustom(const std::string &gameName)
 
 int Engine::initLoadGame()
 {
-	ChooseMapScreen loadGameScreen("games", "game", true);;
+	ChooseMapScreen loadGameScreen("games", "game", true, "replays", "replay", false);
 	int lgs = loadGameScreen.execute(globalContainer->gfx, 40);
 	if (lgs == ChooseMapScreen::CANCEL)
 		return EE_CANCEL;
 	else if(lgs == -1)
 		return -1;
 
-	return initCustom(loadGameScreen.getMapHeader().getFileName());
+	assert(loadGameScreen.getSelectedType() != ChooseMapScreen::NONE);
+	assert(loadGameScreen.getSelectedType() != ChooseMapScreen::MAP);
+
+	if (loadGameScreen.getSelectedType() == ChooseMapScreen::GAME)
+		return initCustom(loadGameScreen.getMapHeader().getFileName());
+	else if (loadGameScreen.getSelectedType() == ChooseMapScreen::REPLAY)
+		return loadReplay(loadGameScreen.getMapHeader().getFileName(false,true));
+	else
+		assert(false);
 }
-
-
 
 int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, boost::shared_ptr<YOGClient> client, int localPlayer)
 {
@@ -239,6 +250,35 @@ int Engine::run(void)
 	}
 	else
 	{
+		// look for all available musics
+		globalContainer->fileManager->initDirectoryListing("data/zik/", "", true);
+		std::string filename;
+		std::vector<std::string> musicDirs;
+		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
+		{
+			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(filename)))
+			{
+				std::cerr << "music dir found: " << filename << std::endl;
+				musicDirs.push_back(filename);
+			}
+		}
+		
+		// select a music randomly
+		// FIXME: implement more intelligent music choosing policy
+		if (!musicDirs.empty())
+		{
+			size_t musicIndex(rand() % musicDirs.size());
+			const std::string& musicDir(musicDirs[musicIndex]);
+			std::cerr << "selecting music dir " << musicDir << std::endl;
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a1.ogg").arg(musicDir), 2);
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a2.ogg").arg(musicDir), 3);
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a3.ogg").arg(musicDir), 4);
+		}
+		else
+		{
+			std::cerr << "Warning, no music found!" << std::endl;
+		}
+		
 		// Stop menu music, load game music
 		globalContainer->mix->setNextTrack(2, true);
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
@@ -247,8 +287,12 @@ int Engine::run(void)
 	
 	while (doRunOnceAgain)
 	{
-		const int speed=40;
+		int speed=40;
 		bool networkReadyToExecute = true;
+		
+		// If playing in fast-forward, we process the GUI and draw everything only once every 3 game-steps
+		// This way, the overall fps stays about the same
+		int nextGuiStep = 1;
 		
 		cpuStats.reset(speed);
 		
@@ -259,6 +303,28 @@ int Engine::run(void)
 
 		while (gui.isRunning)
 		{
+			nextGuiStep--;
+			
+			// Set the replay speed
+			if (globalContainer->replaying)
+			{
+				if (globalContainer->replayFastForward && !gui.gamePaused)
+				{
+					speed = 12;
+					if (nextGuiStep < 0) nextGuiStep = 2;
+				}
+				else
+				{
+					speed = 40;
+					if (nextGuiStep < 0) nextGuiStep = 0;
+				}
+			}
+			else
+			{
+				// Process the GUI as usual, every step
+				nextGuiStep = 0;
+			}
+			
 			// We always allow the user to use the gui:
 			if (globalContainer->automaticEndingGame)
 			{
@@ -287,7 +353,7 @@ int Engine::run(void)
 					automaticGameEndTick = SDL_GetTicks();
 				}
 			}
-			if(!globalContainer->runNoX)
+			if(!globalContainer->runNoX && nextGuiStep == 0)
 				gui.step();
 	
 			if (!gui.hardPause)
@@ -301,6 +367,10 @@ int Engine::run(void)
 				if (networkReadyToExecute)
 				{
 					gui.syncStep();
+					
+					// The gui.localPlayer may have been updated (in replays)
+					// Keep them synchronized here
+					net->setLocalPlayer(gui.localPlayer);
 					
 					// We get and push local orders
 					shared_ptr<Order> localOrder = gui.getOrder();
@@ -347,7 +417,15 @@ int Engine::run(void)
 						for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 						{
 							shared_ptr<Order> order=net->retrieveOrder(i);
-							gui.executeOrder(order);
+							if (!globalContainer->replaying)
+							{
+								gui.executeOrder(order);
+							}
+							else if (order->getOrderType() == ORDER_PLAYER_QUIT_GAME ||
+							         order->getOrderType() == ORDER_PAUSE_GAME)
+							{
+								gui.executeOrder(order);
+							}
 						}
 						net->clearTopOrders();
 					}
@@ -361,9 +439,57 @@ int Engine::run(void)
 				}
 				*/
 
+				// Load the replay's orders
+				if (globalContainer->replaying)
+				{
+					assert(globalContainer->replay);
+					
+					while ( globalContainer->replayStepCounter == 0 &&
+						globalContainer->replayOrdersProcessed < globalContainer->replayOrdersTotal &&
+						!globalContainer->replay->isEndOfStream())
+					{
+						globalContainer->replayOrdersProcessed++;
+
+						NetSendOrder* msg = new NetSendOrder();
+
+						try
+						{
+							msg->decodeData(globalContainer->replay);
+							shared_ptr<Order> order = msg->getOrder();
+
+							if (order->getOrderType() != ORDER_PLAYER_QUIT_GAME &&
+							    order->getOrderType() != ORDER_PAUSE_GAME)
+							{
+								gui.executeOrder(order);
+							}
+						}
+						catch (const std::ios_base::failure &e)
+						{
+							std::cout << "Error in replay: " << e.what() << std::endl;
+						}
+						catch (...) { assert(false); }
+
+						delete msg;
+						globalContainer->replayStepCounter = globalContainer->replay->readUint32("replayStepCounter");
+					}
+					
+					if (globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
+					{
+						gui.showEndOfReplayScreen();
+					}
+				}
+				
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
+				{
+					if (globalContainer->replaying)
+					{
+						globalContainer->replayStepCounter--;
+						globalContainer->replayStepsProcessed++;
+					}
+					
 					gui.game.syncStep(gui.localTeamNo);
+				}
 			}
 
 			if (globalContainer->automaticEndingGame)
@@ -377,9 +503,12 @@ int Engine::run(void)
 			}
 			if(!globalContainer->runNoX)
 			{
-				// we draw
-				gui.drawAll(gui.localTeamNo);
-				globalContainer->gfx->nextFrame();
+				if (nextGuiStep == 0)
+				{
+					// we draw
+					gui.drawAll(gui.localTeamNo);
+					globalContainer->gfx->nextFrame();
+				}
 				
 				// if required, save videoshot
 				if (!(globalContainer->videoshotName.empty()) && 
@@ -482,7 +611,11 @@ int Engine::run(void)
 		
 		if (gui.toLoadGameFileName[0])
 		{
-			int rv=initCustom(gui.toLoadGameFileName);
+			int rv;
+			
+			if (globalContainer->replaying) rv = loadReplay(gui.toLoadGameFileName);
+			else rv = initCustom(gui.toLoadGameFileName);
+			
 			if (rv==EE_NO_ERROR)
 				doRunOnceAgain=true;
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
@@ -504,7 +637,7 @@ int Engine::run(void)
 	{
 		// Restart menu music
 		assert(globalContainer->mix);
-		globalContainer->mix->setNextTrack(1);
+		globalContainer->mix->setNextTrack(1, true);
 		
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
@@ -594,6 +727,19 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// we create the net game
 	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
+	// Save the game for replays
+	if (gui.game.isRecordingReplay)
+	{
+		gui.save(gui.game.getReplayStream(),"header");
+		gui.game.getReplayStream()->writeUint32(-1,"stepcount");
+		gui.game.getReplayStream()->writeUint32(-1,"ordercount");
+		
+		// Also save this game to last_game.header
+		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.header"));
+		gui.save(stream,"header");
+		delete stream;
+	}
+
 	return EE_NO_ERROR;
 }
 
@@ -675,8 +821,8 @@ MapHeader Engine::chooseRandomMap()
 	// we add the other files
 	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), "map", false))
 	{
-		const char* fileName;
-		while ((fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())) != NULL)
+		std::string fileName;
+		while (!(fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())).empty())
 		{
 			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
 			maps.push_back(fullFileName);
@@ -699,13 +845,13 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		int teamColor=(i % numberOfTeams);
 		if (i==0)
 		{
-			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername(), teamColor, BasePlayer::P_LOCAL);
 		}
 		else
 		{
 			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
 			FormatableString name("%0 %1");
-			name.arg(AI::getAIText(iid)).arg(i-1);
+			name.arg(AINames::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 		}
 		gameHeader.setAllyTeamNumber(teamColor, teamColor);
@@ -715,7 +861,59 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 	return gameHeader;
 }
 
+int Engine::loadReplay(const std::string &fileName)
+{
+	// Let globalContainer know what we are doing
+	globalContainer->replaying = true;
+	globalContainer->replayFileName = fileName;
+	
+	// Reset the replay's options
+	gui.localPlayer = 0;
+	gui.localTeamNo = 0;
+	globalContainer->replayVisibleTeams = 0xFFFFFFFF;
+	globalContainer->replayFastForward = false;
+	
+	// Load the replay file
+	globalContainer->replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName));
+	assert(globalContainer->replay);
+	
+	// Get to the right position (readEnterSection doesn't work)
+	GameGUI tempGui;
+	tempGui.load(globalContainer->replay);
+	
+	// Read the total number of steps
+	globalContainer->replayStepsTotal = globalContainer->replay->readUint32("stepcount");
+	globalContainer->replayStepsProcessed = 0;
+	
+	// Read the total number of orders
+	globalContainer->replayOrdersTotal = globalContainer->replay->readUint32("ordercount");
+	globalContainer->replayOrdersProcessed = 0;
+	
+	// Read the number of steps until the first order
+	if (globalContainer->replayOrdersTotal > 0)
+		globalContainer->replayStepCounter = globalContainer->replay->readUint32("replayStepCounter");
+	else
+		globalContainer->replayStepCounter = -1;
 
+	// Load the map and settings
+	MapHeader mapHeader = loadMapHeader(fileName);
+	GameHeader gameHeader = loadGameHeader(fileName);
+
+	// Set all players to a AINone
+	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
+	{
+		gameHeader.getBasePlayer(p).makeItAI(AI::NONE);
+	}
+
+	// Finally, initialise the Game
+	int ret = initGame(mapHeader, gameHeader, true, false, true);
+	if(ret != EE_NO_ERROR)
+		return EE_CANT_LOAD_MAP;
+	else if(ret == -1)
+		return -1;
+
+	return EE_NO_ERROR;
+}
 
 void Engine::finalAdjustements(void)
 {

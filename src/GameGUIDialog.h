@@ -42,13 +42,11 @@ public:
 		LOAD_GAME = 0,
 		SAVE_GAME = 1,
 		OPTIONS = 2,
-		ALLIANCES = 3,
-		OBJECTIVES = 4,
 		RETURN_GAME = 5,
 		QUIT_GAME = 6
 	};
 public:
-	InGameMainScreen(bool showAlliance);
+	InGameMainScreen(bool isReplay = false);
 	virtual ~InGameMainScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };
@@ -59,10 +57,11 @@ public:
 	enum
 	{
 		QUIT = 0,
-		CONTINUE = 1
+		CONTINUE = 1,
+		WATCH_AGAIN = 2
 	};
 public:
-	InGameEndOfGameScreen(const char *title, bool canContinue);
+	InGameEndOfGameScreen(std::string title, bool canContinue);
 	virtual ~InGameEndOfGameScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };

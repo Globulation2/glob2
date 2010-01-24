@@ -93,19 +93,27 @@ KeyPress::KeyPress()
 bool KeyPress::operator<(const KeyPress& rhs) const
 {
 	if(key == rhs.key)
+	{
 		if(alt == rhs.alt)
+		{
 			if(control == rhs.control)
+			{
 				if(meta == rhs.meta)
+				{
 					if(shift == rhs.shift)
 						return pressed < rhs.pressed;
 					else
 						return shift < rhs.shift;
+				}
 				else
 					return meta < rhs.meta;
+			}
 			else
 				return control < rhs.control;
+		}
 		else
 			return alt < rhs.alt;
+	}
 	return key < rhs.key;
 }
 
@@ -226,9 +234,9 @@ std::string KeyPress::getTranslated() const
 	StringTable* table = Toolkit::getStringTable();
 	std::string str;
 	std::string key_s = "[" + key + "]";
-	if(table->doesStringExist(key_s.c_str()))
+	if(table->doesStringExist(key_s))
 	{
-		str=table->getString(key_s.c_str());
+		str=table->getString(key_s);
 	}
 	else
 	{

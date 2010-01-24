@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Available local games
 اعدادت الوحده
 [building site]
 موقع اﻷنشاء
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -202,6 +208,8 @@ Clears resources
 Clearing flag
 [closed]
 اغلق
+[combined vision]
+
 [compile]
 ترجمة اﻷسكربت
 [compose]
@@ -356,6 +364,8 @@ Explorer Ratio
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 الطعام
 [forbidden area]
@@ -490,6 +500,8 @@ ar
 تحميل اللعبه
 [load map]
 تحميل الخريطه
+[load replay]
+
 [load script]
 
 [load]
@@ -500,6 +512,8 @@ ar
 
 [login]
 اتصال
+[look around]
+
 [Lost : %0 has more prestige than you]
 Lost: %0 has more prestige than you
 [Lost : your colony is dead]
@@ -568,6 +582,8 @@ Minimum Flag Level
 جديد
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -582,6 +598,8 @@ No Growth Areas
 
 [not ready]
 غير جاهز
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +608,8 @@ No Growth Areas
 %0 teams.
 [number of teams]
 number of teams
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -646,12 +666,16 @@ Paused
 اسم الاعب
 [player rating %0]
 
+[players]
+
 [please wait]
 Please wait
 [power]
 
 [press space]
 Press space to continue.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -668,6 +692,8 @@ Prune
 الخروج من المحرر
 [quit the game]
 خروج من اللعبه
+[quit the replay]
+
 [quit]
 خروج
 [racetrack explanation 2]
@@ -688,6 +714,8 @@ Proportions
 
 [Register a new YOG user with password]
 Register a new YOG user with a password. (insecure)
+[Register]
+
 [remember unit]
 Remember Unit
 [Remember YOG password localy]
@@ -704,12 +732,18 @@ Start/Stop Repair
 تصليح
 [repeat area]
 
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 Restore Default Keyboard Shortcuts
 [return to editor]
 عودة الى المحرر
 [return to game]
 العودة الى اللعبة
+[return to replay]
+
 [return]
 
 [right meta]
@@ -730,6 +764,8 @@ Do you want to save before quitting?
 حفظ اللعبه
 [save map]
 حفظ الخريطه
+[save replay]
+
 [save script]
 
 [Save]
@@ -820,6 +856,10 @@ Select War Flag
 Enter: send a chat message
 [shortcut explanation v]
 V: hold to speak
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -972,6 +1012,8 @@ The game has not been finished
 انتهى بناء مضمار السباق
 [the racetrack is under attack]
 مضمار السباق تحت الهجوم
+[the replays]
+
 [the school is finished]
 انتهى بناء المدرسه
 [the school is under attack]
@@ -992,6 +1034,8 @@ The game has not been finished
 ?? War flag finished ??
 [the warflag is under attack]
 ?? War flag under attack ??
+[time]
+
 [to:]
 الى:
 [toggle draw accessibility aids]
@@ -1004,6 +1048,12 @@ Toggle Draw Unit Paths
 
 [toggle recording voice]
 Initiate Voice Recording
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 بلغ من هيبة
 [Total]
@@ -1080,6 +1130,10 @@ Warrior Ratio
 المحارب
 [warriors]
 المحاربون
+[watch again]
+
+[watching:]
+
 [water]
 Water
 [Wheat]
@@ -1134,6 +1188,8 @@ The YOG metaserver has refused the connection because your username is already u
 
 [YESTS_CREATED]
 The connection system is ready to contact the YOG metaserver for connection.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently the YOG metaserver is down.
 [yog block command help]

@@ -89,7 +89,7 @@ void NetEngine::clearTopOrders()
 			{
 				for(int i=0; i<diff; ++i)
 				{
-					for(int p=0; p<orders.size(); ++p)
+					for(unsigned int p=0; p<orders.size(); ++p)
 					{
 						boost::shared_ptr<Order> order = boost::shared_ptr<Order>(new NullOrder);
 						order->sender=p;
@@ -249,4 +249,11 @@ void NetEngine::increaseLatencyAdjustment()
 {
 	boost::shared_ptr<AdjustLatency> latency(new AdjustLatency(currentLatency+1));
 	addLocalOrder(latency);
+}
+
+
+
+void NetEngine::setLocalPlayer(int player)
+{
+	localPlayer = player;
 }

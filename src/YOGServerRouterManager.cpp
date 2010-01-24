@@ -22,7 +22,7 @@
 #include "NetMessage.h"
 
 YOGServerRouterManager::YOGServerRouterManager(YOGServer& server)
-	: server(server), listener(YOG_SERVER_ROUTER_PORT)
+	: listener(YOG_SERVER_ROUTER_PORT), server(server)
 {
 	new_connection.reset(new NetConnection);
 	n=0;
@@ -83,7 +83,7 @@ void YOGServerRouterManager::update()
 boost::shared_ptr<NetConnection> YOGServerRouterManager::chooseYOGRouter()
 {
 	n+=1;
-	if(n == routers.size())
+	if(n == (int)routers.size())
 		n = 0;
 	return routers[n];
 }

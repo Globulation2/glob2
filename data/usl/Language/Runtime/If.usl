@@ -1,25 +1,15 @@
 val true := [
-	def select(ifTrue, _) := ifTrue
+	def select (ifTrue, _) := ifTrue
 	def not := false
 	def and(that) := that
-	def or(_) := true
-	def xor(that) := that select (false, true)
+	def or (_) := true
+	def xor (that) := that select (false, true)
 ]
-
+ 
 val false := [
-	def select(_, ifFalse) := ifFalse
+	def select (_, ifFalse) := ifFalse
 	def not := true
-	def and(that) := false
-	def or(that) := that
-	def xor(that) := that select (true, false)
+	def and (that) := false
+	def or (that) := that
+	def xor (that) := that select (true, false)
 ]
-
-def if(cond) := {
-	def ifTrue(trueVal) := [
-		def else(_) := trueVal
-	]
-	def ifFalse(_) := [
-		def else(falseVal) := falseVal
-	]
-	cond select (ifTrue, ifFalse)
-}

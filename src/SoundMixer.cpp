@@ -335,7 +335,7 @@ SoundMixer::~SoundMixer()
 	}
 }
 
-int SoundMixer::loadTrack(const char *name)
+int SoundMixer::loadTrack(const std::string name, int index)
 {
 	FILE* fp = Toolkit::getFileManager()->openFP(name);
 	if (!fp)
@@ -353,10 +353,20 @@ int SoundMixer::loadTrack(const char *name)
 	}
 
 	SDL_LockAudio();
-	tracks.push_back(oggFile);
+	if (index >= 0 && index< (int)tracks.size())
+	{
+		ov_clear(tracks[index]);
+		delete tracks[index];
+		tracks[index] = oggFile;
+	}
+	else
+	{
+		tracks.push_back(oggFile);
+		index = (int)tracks.size()-1;
+	}
 	SDL_UnlockAudio();
 	
-	return (int)tracks.size()-1;
+	return index;
 }
 
 void SoundMixer::setNextTrack(unsigned i, bool earlyChange)

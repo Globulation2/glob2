@@ -29,7 +29,7 @@ using namespace boost;
 using namespace GAGCore;
 
 YOGServerFileDistributor::YOGServerFileDistributor(Uint16 fileID)
-	: startedLoading(false), fileID(fileID), downloadFromPlayerCanceled(false)
+	: fileID(fileID), startedLoading(false), downloadFromPlayerCanceled(false)
 {
 
 }
@@ -53,7 +53,7 @@ void YOGServerFileDistributor::loadFromPlayer(boost::shared_ptr<YOGServerPlayer>
 void YOGServerFileDistributor::saveToFile(const std::string& file)
 {
 	boost::shared_ptr<BinaryOutputStream> stream(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(file+".gz")));
-	for(int i=0; i<chunks.size(); ++i)
+	for(unsigned int i=0; i<chunks.size(); ++i)
 	{
 		stream->write(chunks[i]->getBuffer(), chunks[i]->getChunkSize(), "");
 	}
@@ -69,7 +69,7 @@ bool YOGServerFileDistributor::areAllChunksLoaded()
 	if(!fileInfo)
 		return false;
 	Uint32 total = 0;
-	for(int i=0; i<chunks.size(); ++i)
+	for(unsigned int i=0; i<chunks.size(); ++i)
 	{
 		total += chunks[i]->getChunkSize();
 	}
@@ -103,7 +103,7 @@ void YOGServerFileDistributor::update()
 			i->get<0>()->sendMessage(fileInfo);
 			i->get<2>() = 1;
 		}
-		else if(i->get<2>()-1 < chunks.size() && i->get<1>() < localtime)
+		else if(i->get<2>()-1 < (int)chunks.size() && i->get<1>() < localtime)
 		{
 			i->get<0>()->sendMessage(chunks[i->get<2>()-1]);
 			i->get<2>() += 1;

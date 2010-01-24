@@ -32,7 +32,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, bool readOnly, const char *text, const char *spritelocation)
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, bool readOnly, const std::string text, const std::string spritelocation)
 	{
 		this->x = x;
 		this->y = y;
@@ -47,8 +47,8 @@ namespace GAGGUI
 		// TODO : clean this and store text font
 		this->font = Toolkit::getFont(font);
 		assert(this->font);
-		assert(font);
-		charHeight = this->font->getStringHeight((const char *)NULL);
+		assert(font.size());
+		charHeight = this->font->getStringHeight("");
 		assert(charHeight);
 		areaHeight = (h-8)/charHeight;
 		areaPos=0;
@@ -61,13 +61,13 @@ namespace GAGGUI
 		
 		this->text = text;
 		
-		if (spritelocation)
+		if (!spritelocation.empty())
 			sprite = Toolkit::getSprite(spritelocation);
 		if (sprite)
 			spriteWidth = sprite->getW(0);	
 	}
 	
-	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string &tooltip, const std::string &tooltipFont, bool readOnly, const char *text, const char *spritelocation)
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string &tooltip, const std::string &tooltipFont, bool readOnly, const std::string text, const std::string spritelocation)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
 		this->x = x;
@@ -83,8 +83,8 @@ namespace GAGGUI
 		// TODO : clean this and store text font
 		this->font = Toolkit::getFont(font);
 		assert(this->font);
-		assert(font);
-		charHeight = this->font->getStringHeight((const char *)NULL);
+		assert(font.size());
+		charHeight = this->font->getStringHeight("");
 		assert(charHeight);
 		areaHeight = (h-8)/charHeight;
 		areaPos=0;
@@ -97,7 +97,7 @@ namespace GAGGUI
 		
 		this->text = text;
 		
-		if (spritelocation)
+		if (!spritelocation.empty())
 			sprite = Toolkit::getSprite(spritelocation);
 		if (sprite)
 			spriteWidth = sprite->getW(0);	
@@ -419,39 +419,61 @@ namespace GAGGUI
 				parent->onAction(this, TEXT_ACTIVATED, 0, 0);
 			}
 		}
-		/* Junk from older event handling system
-		else if (event->type==SDL_MOUSEBUTTONDOWN)
-		{
-			if ((event->button.x>size.x+size.w+theme->xScroll) &&
-				(event->button.x<size.x+size.w+theme->xScroll+theme->scrollUp->getW()) &&
-				(event->button.y>size.y+theme->y1Scroll) &&
-				(event->button.y<size.y+theme->y1Scroll+theme->scrollUp->getH()))
-			{
-				if (areaPos>0)
-				{
-					areaPos--;
-				}
-				return true;
-			}
-			else if ((event->button.x>size.x+size.w+theme->xScroll) &&
-					(event->button.x<size.x+size.w+theme->xScroll+theme->scrollUp->getW()) &&
-					(event->button.y>size.y+size.h+theme->y2Scroll) &&
-					(event->button.y<size.y+size.h+theme->y2Scroll+theme->scrollUp->getH()))
-			{
-				if (areaPos<lines.size()-areaHeight-1)
-				{
-					areaPos++;
-				}
-				return true;
-			}
-		}*/
-		//return false;
 	}
 	
 	void TextArea::setCursorPos(unsigned pos)
 	{
 		cursorPos = std::min(pos, (unsigned int)text.length());
 		compute();
+	}
+	
+	void TextArea::setCursorPos(unsigned line, unsigned column)
+	{
+		unsigned lineCounter = 0;
+		unsigned columnCounter = 0;
+		unsigned p = 0;
+		while (p < text.size())
+		{
+			// the line we want is long enough
+			if ((lineCounter >= line) && (columnCounter >= column))
+				break;
+			// the line we wanted was not long enough
+			if (lineCounter > line)
+				break;
+			
+			if (text[p] == '\n')
+			{
+				lineCounter++;
+				columnCounter = 0;
+			}
+			else
+				columnCounter++;
+			p++;
+		}
+		setCursorPos(p);
+	}
+	
+	void TextArea::getCursorPos(unsigned &pos) const
+	{
+		pos = cursorPos;
+	}
+	
+	void TextArea::getCursorPos(unsigned &line, unsigned &column) const
+	{
+		line = 0;
+		column = 0;
+		unsigned p = 0;
+		while (p < cursorPos)
+		{
+			if (text[p] == '\n')
+			{
+				line++;
+				column = 0;
+			}
+			else
+				column++;
+			p++;
+		}
 	}
 	
 	void TextArea::internalInit(void)
@@ -721,7 +743,7 @@ namespace GAGGUI
 			cursorPosY = lines.size()-1;
 	}
 	
-	void TextArea::setText(const char *text)
+	void TextArea::setText(const std::string text)
 	{
 		this->text = text;
 		if (cursorPos>this->text.length())
@@ -730,13 +752,13 @@ namespace GAGGUI
 		compute();
 	}
 	
-	void TextArea::addText(const char *text)
+	void TextArea::addText(const std::string text)
 	{
-		assert(text);
+		assert(text.length()>=0);
 		assert(cursorPos <= this->text.length());
 		assert(cursorPos >= 0);
 	
-		if (text)
+		if (text.length()>0)
 		{
 			if (readOnly)
 			{
@@ -745,7 +767,7 @@ namespace GAGGUI
 			else
 			{
 				this->text.insert(cursorPos, text);
-				cursorPos += strlen(text);
+				cursorPos += text.length();
 			}
 			
 			layout();
@@ -868,7 +890,7 @@ namespace GAGGUI
 		compute();
 	}
 	
-	bool TextArea::load(const char *filename)
+	bool TextArea::load(const std::string filename)
 	{
 		StreamBackend *stream = Toolkit::getFileManager()->openInputStreamBackend(filename);
 		if (stream->isEndOfStream())
@@ -895,7 +917,7 @@ namespace GAGGUI
 		}
 	}
 	
-	bool TextArea::save(const char *filename)
+	bool TextArea::save(const std::string filename)
 	{
 		StreamBackend *stream = Toolkit::getFileManager()->openOutputStreamBackend(filename);
 		if (stream->isEndOfStream())

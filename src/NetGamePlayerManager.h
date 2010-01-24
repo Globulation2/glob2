@@ -60,7 +60,7 @@ private:
 
 	///Represents the basic player information in the game
 	GameHeader& gameHeader;
-	bool readyToStart[32];
+	bool readyToStart[Team::MAX_COUNT];
 	int numberOfTeams;
 	bool previousReadyToLaunch;
 	NetReteamingInformation reteamInfo;

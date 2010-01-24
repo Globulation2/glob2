@@ -36,11 +36,16 @@
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
-	logFile = globalContainer->logFileManager->getFile("Unit.log");
+	init(0,0,0,0,owner,0);
 	load(stream, owner, versionMinor);
 }
 
 Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
+{
+	init(x, y, gid, typeNum, team, level);
+}
+
+void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
 	logFile = globalContainer->logFileManager->getFile("Unit.log");
 	
@@ -183,6 +188,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		underAttackTimer = stream->readUint8("underAttackTimer");
 	else
 		underAttackTimer = 0;
+
 
 	// trigger parameters
 	hp = stream->readSint32("hp");
@@ -351,6 +357,20 @@ void Unit::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
+void Unit::setTargetBuilding(Building * b)
+{
+	if(targetBuilding!=NULL) {
+		targetBuilding->removeUnitFromHarvesting(this);
+	}
+	if(b!=NULL)
+	{
+		targetX=b->getMidX();
+		targetY=b->getMidY();
+	}
+//TODO: Deal with "validTarget=true;"
+    targetBuilding = b;
+}
+
 void Unit::subscriptionSuccess(Building* building, bool inside)
 {
 	Building* b=building;
@@ -361,7 +381,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 		fprintf(logFile, "[%d] sdp1 destinationPurprose=%d\n", gid, destinationPurprose);
 		activity=ACT_FLAG;
 		attachedBuilding=b;
-		targetBuilding=b;
+	    setTargetBuilding(b);
 		if (verbose)
 			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 	}
@@ -371,7 +391,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 		assert(b->neededRessource(destinationPurprose));
 		activity=ACT_FILLING;
 		attachedBuilding=b;
-		targetBuilding=NULL;
+		setTargetBuilding(NULL);
 		if (verbose)
 			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 	}
@@ -379,7 +399,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 	{
 		activity=ACT_UPGRADING;
 		attachedBuilding=b;
-		targetBuilding=b;
+		setTargetBuilding(b);
 		if (verbose)
 			printf("guid=(%d) unitsWorkingSubscribe(findBestZonable) dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 	}
@@ -399,8 +419,8 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 				{
 					displacement=DIS_GOING_TO_FLAG;
 					assert(targetBuilding==attachedBuilding);
-					targetX=attachedBuilding->getMidX();
-					targetY=attachedBuilding->getMidY();
+					//targetX=attachedBuilding->getMidX();
+					//targetY=attachedBuilding->getMidY();
 					validTarget=true;
 				}
 				break;
@@ -408,8 +428,8 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 				{
 					displacement=DIS_GOING_TO_BUILDING;
 					assert(targetBuilding==attachedBuilding);
-					targetX=targetBuilding->getMidX();
-					targetY=targetBuilding->getMidY();
+					//targetX=targetBuilding->getMidX();
+					//targetY=targetBuilding->getMidY();
 					validTarget=true;
 				}
 				break;
@@ -419,9 +439,9 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					if (caryedRessource==destinationPurprose)
 					{
 						displacement=DIS_GOING_TO_BUILDING;
-						targetBuilding=attachedBuilding;
-						targetX=targetBuilding->getMidX();
-						targetY=targetBuilding->getMidY();
+						setTargetBuilding(attachedBuilding);
+						//targetX=targetBuilding->getMidX();
+						//targetY=targetBuilding->getMidY();
 						validTarget=true;
 					}
 					else
@@ -582,11 +602,7 @@ bool Unit::isUnitHungry(void)
 void Unit::standardRandomActivity()
 {
 	attachedBuilding=NULL;
-	if(targetBuilding!=NULL)
-	{
-		targetBuilding->removeUnitFromHarvesting(this);
-		targetBuilding=NULL;
-	}
+	setTargetBuilding(NULL);
 	ownExchangeBuilding=NULL;
 	activity=Unit::ACT_RANDOM;
 	displacement=Unit::DIS_RANDOM;
@@ -622,9 +638,7 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	
 	attachedBuilding->removeUnitFromWorking(this);
 	attachedBuilding=NULL;
-	if (targetBuilding)
-		targetBuilding->removeUnitFromHarvesting(this);
-	targetBuilding=NULL;
+	setTargetBuilding(NULL);
 	ownExchangeBuilding=NULL;
 	assert(needToRecheckMedical);
 }
@@ -646,8 +660,9 @@ void Unit::handleMagic(void)
 	{
 		std::set<Uint16> damagedBuildings;
 		damagedBuildings.insert(NOGBID);
-		for (int yi=posY-3; yi<=posY+3; yi++)
-			for (int xi=posX-3; xi<=posX+3; xi++)
+		int ATTACK_RANGE=3;
+		for (int yi=posY-ATTACK_RANGE; yi<=posY+ATTACK_RANGE; yi++)
+			for (int xi=posX-ATTACK_RANGE; xi<=posX+ATTACK_RANGE; xi++)
 			{
 				// damaging enemy units:
 				for (int altitude=0; altitude<2; altitude++)
@@ -679,7 +694,6 @@ void Unit::handleMagic(void)
 							{
 								enemyUnit->hp -= damage;
 								
-			
 								boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
 								enemyUnit->owner->pushGameEvent(event);
 								
@@ -692,32 +706,6 @@ void Unit::handleMagic(void)
 				}
 				
 				// damaging enemy buildings: this has been removed for balance purposes
-				
-				/*if (performance[MAGIC_ATTACK_GROUND])
-				{
-					Uint16 targetGBID = map->getBuilding(xi, yi);
-					if (damagedBuildings.insert(targetGBID).second)
-					{
-						Sint32 targetTeam = Building::GIDtoTeam(targetGBID);
-						Uint16 targetID = Building::GIDtoID(targetGBID);
-						Uint32 targetTeamMask = 1<<targetTeam;
-						if (owner->enemies & targetTeamMask)
-						{
-							Building *enemyBuilding = teams[targetTeam]->myBuildings[targetID];
-							Sint32 damage = performance[MAGIC_ATTACK_GROUND] + experienceLevel - enemyBuilding->type->armor;
-							if (damage > 0)
-							{
-								enemyBuilding->hp -= damage;
-								enemyBuilding->owner->setEvent(xi, yi, Team::BUILDING_UNDER_ATTACK_EVENT, targetGBID, targetTeam);
-								if (enemyBuilding->hp <= 0)
-									enemyBuilding->kill();
-								incrementExperience(damage);
-								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
-								hasUsedMagicAction = true;
-							}
-						}
-					}
-				}*/
 			}
 		
 		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
@@ -780,11 +768,9 @@ void Unit::handleMedical(void)
 				attachedBuilding=NULL;
 				ownExchangeBuilding=NULL;
 			}
-			if (targetBuilding)
-			{
-				targetBuilding->removeUnitFromHarvesting(this);
-				targetBuilding=NULL;
-			}
+			setTargetBuilding(NULL);
+            // //TODO: in beta4 this line was ommitted. delete?
+			// ownExchangeBuilding=NULL;
 			
 			activity=ACT_RANDOM;
 			validTarget=false;
@@ -795,7 +781,7 @@ void Unit::handleMedical(void)
 			else
 				owner->map->setGroundUnit(posX, posY, NOGUID);
 			
-			if(previousClearingAreaX!=-1)
+			if(previousClearingAreaX!=static_cast<unsigned int>(-1))
 			{
 				owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
 			}
@@ -847,7 +833,7 @@ void Unit::handleActivity(void)
 					assert(destinationPurprose<ARMOR);
 					activity=ACT_UPGRADING;
 					attachedBuilding=b;
-					targetBuilding=b;
+					setTargetBuilding(b);
 					if (verbose)
 						printf("guid=(%d) going to upgrade at dp=(%d), gbid=(%d)\n", gid, destinationPurprose, b->gid);
 					b->subscribeUnitForInside(this);
@@ -865,7 +851,7 @@ void Unit::handleActivity(void)
 						fprintf(logFile, "[%d] sdp2 destinationPurprose=%d\n", gid, destinationPurprose);
 						activity=ACT_UPGRADING;
 						attachedBuilding=b;
-						targetBuilding=b;
+						setTargetBuilding(b);
 						needToRecheckMedical=false;
 						if (verbose)
 							printf("guid=(%d) Going to heal building\n", gid);
@@ -892,21 +878,16 @@ void Unit::handleActivity(void)
 			attachedBuilding=NULL;
 			ownExchangeBuilding=NULL;
 		}
-		if (targetBuilding) 
-		{
-			targetBuilding->removeUnitFromHarvesting(this);
-			targetBuilding=NULL;
-		}
-		
+		setTargetBuilding(NULL);
+
 		if (medical==MED_HUNGRY)
 		{
 			Building *b;
 			b=owner->findNearestFood(this);
-			if (typeNum == EXPLORER)
-			{
-				// fprintf (stderr, "gid: %d, b: %x\n", gid, b);
-			}
-			
+                        /*if (typeNum == EXPLORER) {
+                           fprintf (stderr, "gid: %d, b: %x\n", gid, b);
+                        }*/
+
 			if (b!=NULL)
 			{
 				Team *currentTeam=owner;
@@ -926,7 +907,7 @@ void Unit::handleActivity(void)
 					
 					// Find free slot in other team
 					int targetID=-1;
-					for (int i=0; i<1024; i++)//we search for a free place for a unit.
+					for (int i=0; i<Unit::MAX_COUNT; i++)//we search for a free place for a unit.
 						if (targetTeam->myUnits[i]==NULL)
 						{
 							targetID=i;
@@ -962,7 +943,7 @@ void Unit::handleActivity(void)
 				fprintf(logFile, "[%d] sdp3 destinationPurprose=%d\n", gid, destinationPurprose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
-				targetBuilding=b;
+				setTargetBuilding(b);
 				needToRecheckMedical=false;
 				if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
@@ -981,7 +962,7 @@ void Unit::handleActivity(void)
 				fprintf(logFile, "[%d] sdp4 destinationPurprose=%d\n", gid, destinationPurprose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
-				targetBuilding=b;
+				setTargetBuilding(b);
 				needToRecheckMedical=false;
 				if (verbose)
 					printf("guid=(%d) Subscribed to heal at building gbid=(%d)\n", gid, b->gid);
@@ -1039,7 +1020,7 @@ void Unit::handleDisplacement(void)
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to aditionaly decRessource() the same ressource.
 				
-				targetBuilding=attachedBuilding;
+				setTargetBuilding(attachedBuilding);
 				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
 				{
 					displacement=DIS_FILLING_BUILDING;
@@ -1088,8 +1069,7 @@ void Unit::handleDisplacement(void)
 						caryedRessource=destinationPurprose;
 						fprintf(logFile, "[%d] sdp6 destinationPurprose=%d\n", gid, destinationPurprose);
 						
-						targetBuilding->removeUnitFromHarvesting(this);
-						targetBuilding=attachedBuilding;
+						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
 						targetY=targetBuilding->getMidY();
@@ -1162,13 +1142,15 @@ void Unit::handleDisplacement(void)
 												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
 												{
 													// We increase the cost to get a ressource in an exchange building to reflect the costs to get the ressources to the exchange building.
-													int value=(buildingDist<<1)/need;
+													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
+													int value=(buildingDist+5)/need;
 													if (value<minValue)
 													{
 														bestRessource=r;
 														minValue=value;
+
 														ownExchangeBuilding=*bi;
-														targetBuilding=*bi;
+														setTargetBuilding(*bi);
 														takeInExchangeBuilding=true;
 													}
 												}
@@ -1274,8 +1256,9 @@ void Unit::handleDisplacement(void)
 				}
 				else
 				{
+					int levelsToBeUpgraded=attachedBuilding->type->level+1-level[destinationPurprose];
 					insideTimeout=-attachedBuilding->type->upgradeTime[destinationPurprose];
-					speed=attachedBuilding->type->insideSpeed;
+					speed=attachedBuilding->type->insideSpeed/levelsToBeUpgraded;
 				}
 			}
 			else if (displacement==DIS_INSIDE)
@@ -1404,12 +1387,12 @@ void Unit::handleDisplacement(void)
 bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 {
 	//TODO: totally fix this totally hacky implementation.
-	for(int i=0;i<32;i++)
+	for(int i=0;i<Team::MAX_COUNT;i++)
 	{
 		Team *t = owner->game->teams[i];
 		if((t)&&(owner->enemies & t->me))
 		{
-			for(int j=0;j<1024;j++)
+			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
 				if((b)&&(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)&&(owner->map->warpDistMax(b->posX,b->posY,posX,posY) <= b->type->shootingRange + 1))return true;
@@ -1933,7 +1916,7 @@ void Unit::handleMovement(void)
 				attachedBuilding->removeUnitFromInside(this);
 				attachedBuilding->updateConstructionState();
 				attachedBuilding=NULL;
-				targetBuilding=NULL;
+				setTargetBuilding(NULL);
 				assert(ownExchangeBuilding==NULL);
 				assert(needToRecheckMedical);
 			}
@@ -2162,6 +2145,7 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			action=HARVEST;
 			speed=performance[action];
+			//TODO: WTH???
 			if(speed==0)
 				speed/=speed;
 			break;
@@ -2332,19 +2316,7 @@ void Unit::directionFromDxDy(void)
 
 void Unit::dxdyfromDirection(void)
 {
-	const int tab[9][2]={	{ -1, -1},
-							{ 0, -1},
-							{ 1, -1},
-							{ 1, 0},
-							{ 1, 1},
-							{ 0, 1},
-							{ -1, 1},
-							{ -1, 0},
-							{ 0, 0} };
-	assert(direction>=0);
-	assert(direction<=8);
-	dx=tab[direction][0];
-	dy=tab[direction][1];
+	dxdyfromDirection(direction,&dx,&dy);
 }
 
 int Unit::directionFromDxDy(int dx, int dy)
@@ -2358,23 +2330,6 @@ int Unit::directionFromDxDy(int dx, int dy)
 	assert(dy<=1);
 	return tab[dy+1][dx+1];
 }
-
-/*void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
-{
-	const int tab[9][2]={	{ -1, -1},
-							{ 0, -1},
-							{ 1, -1},
-							{ 1, 0},
-							{ 1, 1},
-							{ 0, 1},
-							{ -1, 1},
-							{ -1, 0},
-							{ 0, 0} };
-	assert(direction>=0);
-	assert(direction<=8);
-	*dx=tab[direction][0];
-	*dy=tab[direction][1];
-}*/
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
@@ -2414,23 +2369,23 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 
 Sint32 Unit::GIDtoID(Uint16 gid)
 {
-	assert(gid<32768);
-	return (gid%1024);
+	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
+	return (gid%Unit::MAX_COUNT);
 }
 
 Sint32 Unit::GIDtoTeam(Uint16 gid)
 {
-	assert(gid<32768);
-	return (gid/1024);
+	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
+	return (gid/Unit::MAX_COUNT);
 }
 
 Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
 {
 	assert(id>=0);
-	assert(id<1024);
+	assert(id<Unit::MAX_COUNT);
 	assert(team>=0);
-	assert(team<32);
-	return id+team*1024;
+	assert(team<Team::MAX_COUNT);
+	return id+team*Unit::MAX_COUNT;
 }
 
 //! Return the real armor, taking into account the reduction due to fruits
