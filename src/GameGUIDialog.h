@@ -61,7 +61,7 @@ public:
 		WATCH_AGAIN = 2
 	};
 public:
-	InGameEndOfGameScreen(const char *title, bool canContinue);
+	InGameEndOfGameScreen(std::string title, bool canContinue);
 	virtual ~InGameEndOfGameScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 };

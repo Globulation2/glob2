@@ -65,7 +65,9 @@ public:
 	void syncStep(void);
 	
 	void directionFromDxDy(void);
+private:
 	void dxdyfromDirection(void);
+public:
 	static int directionFromDxDy(int dx, int dy);
 	inline static void dxdyfromDirection(int direction, int *dx, int *dy)
 	{

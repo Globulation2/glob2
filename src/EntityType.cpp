@@ -53,7 +53,7 @@ void EntityType::load(GAGCore::InputStream *stream)
 	{
 		std::ostringstream oss;
 		oss << "entitytype" << i;
-		startData[i] = stream->readUint32(oss.str().c_str());
+		startData[i] = stream->readUint32(oss.str());
 	}
 }
 
