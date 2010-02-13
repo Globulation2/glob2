@@ -41,12 +41,12 @@ using namespace GAGGUI;
 #include "boost/lexical_cast.hpp"
 
 
-ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
-:OverlayScreen(globalContainer->gfx, 600, 400)
+ScriptEditorScreen::ScriptEditorScreen(Game *game)
+:OverlayScreen(globalContainer->gfx, 600, 400),
+	sgslMapScript(&game->sgslScript),
+	mapScript(&game->mapscript),
+	game(game)
 {
-	this->mapScript=mapScript;
-	this->game=game;
-	
 	addWidget(new TextButton(10, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
 	addWidget(new TextButton(120, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
 	addWidget(new TextButton(10, 10, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[map script]"), TAB_SCRIPT));
@@ -57,7 +57,16 @@ ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 	addWidget(mode);
 
 	//These are for the script tab
-	scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, mapScript->getMapScript().c_str());
+	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
+	{
+		// USL
+		scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, mapScript->getMapScript().c_str());
+	}
+	else
+	{
+		// SGSL
+		scriptEditor = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, sgslMapScript->sourceCode.c_str());
+	}
 	scriptWidgets.push_back(scriptEditor);
 	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_TOP, "standard");
 	scriptWidgets.push_back(compilationResult);
@@ -145,19 +154,42 @@ ScriptEditorScreen::ScriptEditorScreen(MapScript *mapScript, Game *game)
 
 bool ScriptEditorScreen::testCompile(void)
 {
-	mapScript->setMapScript(scriptEditor->getText());
-	if(mapScript->compileCode())
+	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
 	{
-		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 100, 255, 100));
-		compilationResult->setText("Compilation success");
-		return true;
+		// USL
+		mapScript->setMapScript(scriptEditor->getText());
+		if(mapScript->compileCode())
+		{
+			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 100, 255, 100));
+			compilationResult->setText("Compilation success");
+			return true;
+		}
+		else
+		{
+			MapScriptError error = mapScript->getError();
+			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
+			compilationResult->setText(FormatableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
+			return false;
+		}
 	}
 	else
 	{
-		MapScriptError error = mapScript->getError();
-		compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-		compilationResult->setText(FormatableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
-		return false;
+		// SGSL
+		sgslMapScript->reset();
+		const ErrorReport er = sgslMapScript->compileScript(game, scriptEditor->getText().c_str());
+		if (er.type==ErrorReport::ET_OK)
+		{
+			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 100, 255, 100));
+			compilationResult->setText("Compilation success");
+			return true;
+		}
+		else
+		{
+			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
+			compilationResult->setText(FormatableString("Compilation failure : %0:%1:(%2):%3").arg(er.line+1).arg(er.col).arg(er.pos).arg(er.getErrorString()).c_str());
+			scriptEditor->setCursorPos(er.pos);
+			return false;
+		}
 	}
 }
 
@@ -170,7 +202,16 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			//Load the script
 			if (testCompile())
 			{
-				mapScript->setMapScript(scriptEditor->getText());
+				if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
+				{
+					// USL
+					mapScript->setMapScript(scriptEditor->getText());
+				}
+				else
+				{
+					// SGSL
+					sgslMapScript->sourceCode = scriptEditor->getText();
+				}
 				endValue=par1;
 			}
 			
@@ -251,11 +292,29 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if (par1 == LOAD)
 		{
-			loadSave(true, "scripts", "usl");
+			if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
+			{
+				// USL
+				loadSave(true, "scripts", "usl");
+			}
+			else
+			{
+				// SGSL
+				loadSave(true, "scripts", "sgsl");
+			}
 		}
 		else if (par1 == SAVE)
 		{
-			loadSave(false, "scripts", "usl");
+			if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
+			{
+				// USL
+				loadSave(false, "scripts", "usl");
+			}
+			else
+			{
+				// SGSL
+				loadSave(false, "scripts", "sgsl");
+			}
 		}
 		else if (par1 == TAB_SCRIPT)
 		{
@@ -476,7 +535,16 @@ std::string filenameToName(const std::string& fullfilename)
 {
 	std::string filename = fullfilename;
 	filename.erase(0, 8);
-	filename.erase(filename.find(".usl"));
+	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
+	{
+		// USL
+		filename.erase(filename.find(".usl"));
+	}
+	else
+	{
+		// SGSL
+		filename.erase(filename.find(".sgsl"));
+	}
 	std::replace(filename.begin(), filename.end(), '_', ' ');
 	return filename;
 }
