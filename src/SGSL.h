@@ -146,7 +146,7 @@ struct SGSLToken
 // generic functions
 
 class Story;
-class Mapscript;
+class MapScriptSGSL;
 class GameGUI;
 class Game;
 
@@ -194,7 +194,7 @@ struct ErrorReport
 	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; pos=0; }
 	ErrorReport(ErrorType et) { type=et; line=0; col=0; pos=0; }
 
-	std::string getErrorString(void);
+	std::string getErrorString(void) const;
 };
 
 // Text parser, returns tokens
@@ -243,13 +243,13 @@ class StringAquisition: public Aquisition
 public:
 	StringAquisition(const Functions& functions);
 	virtual ~StringAquisition();
-	void open(const std::string text);
+	void open(const std::string& text);
 
 	virtual int getChar(void);
 	virtual int ungetChar(char c);
 
 private:
-	char *buffer;
+	std::string buffer;
 	int pos;
 };
 
@@ -258,7 +258,7 @@ class Story
 {
 	static const bool verbose = false;
 public:
-	Story(Mapscript *mapscript);
+	Story(MapScriptSGSL *mapscript);
 	virtual ~Story();
 
 public:
@@ -274,7 +274,7 @@ public:
 	
 	
 private:
-	friend class Mapscript;
+	friend class MapScriptSGSL;
 	bool conditionTester(const Game *game, int pc, bool readLevel, bool only);
 	void toto(GameGUI* gui);
 	void objectiveHidden(GameGUI* gui);
@@ -298,7 +298,7 @@ private:
 	bool testCondition(GameGUI *gui);
 	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
 	
-	Mapscript *mapscript;
+	MapScriptSGSL *mapscript;
 	bool recievedSpace;
 };
 
@@ -313,11 +313,11 @@ class Building;
 typedef std::map<std::string, Area> AreaMap;
 typedef std::map<std::string, Building *> BuildingMap;
 
-class Mapscript
+class MapScriptSGSL
 {
 public:
-	Mapscript();
-	~Mapscript();
+	MapScriptSGSL();
+	~MapScriptSGSL();
 
 public:
 	ErrorReport compileScript(Game *game, const char *script);

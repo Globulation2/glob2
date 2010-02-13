@@ -86,7 +86,7 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
 	}
 	
 	// compile script
-	game.script.compileScript(&game);
+	game.sgslScript.compileScript(&game);
 	
 	if (verbose)
 		printf(".... map generated.\n");

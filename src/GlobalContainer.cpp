@@ -306,6 +306,15 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings.screenFlags &= ~GraphicContext::RESIZABLE;
 		}
 		
+		else if  (strcmp(argv[i], "-sgsl")==0)
+		{
+			settings.optionFlags &= ~OPTION_MAP_EDIT_USE_USL;
+		}
+		else if (strcmp(argv[i], "-usl")==0)
+		{
+			settings.optionFlags |= OPTION_MAP_EDIT_USE_USL;
+		}
+		
 		else if (strcmp(argv[i], "-g")==0)
 		{
 			settings.screenFlags |= GraphicContext::USEGPU;
@@ -422,6 +431,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-l\tlow speed graphics: disable some transparency effects\n");
 			printf("-m/-M\tmute/unmute the sound (both music and speech)\n");
 			printf("-r/-R\tset/clear resizable window\n");
+			printf("-sgsl\tedit SGSL script in the map editor (default)\n");
+			printf("-usl\tedit USL script in the map editor\n");
 			printf("\n");
 			printf("-d <directory>\tadd a directory to the directory search list\n");
 			printf("-dl\tprint the directory search list\n");
