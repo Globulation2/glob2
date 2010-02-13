@@ -25,6 +25,8 @@ def establish_options(env):
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("profile", "Build with profiling on", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
+    opts.Add(BoolOption("mingwcross", "Cross-compile with mingw for Win32", 0))
+    opts.Add("crossroot", "Path to include/ and lib/ containing Win32 files for cross-compiling", "../local")
     opts.Add(BoolOption("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
     opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
     Help(opts.GenerateHelpText(env))
@@ -60,7 +62,7 @@ def configure(env):
     configfile.add("AUDIO_RECORDER_OSS", "Set the audio input type to OSS; the UNIX Open Sound System")
     if isDarwinPlatform:
         configfile.add("USE_OSX", "Set when this build is OSX")
-    if env['mingw'] or isWindowsPlatform:
+    if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
         configfile.add("USE_WIN32", "Set when this build is Win32")
     configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
 
@@ -119,7 +121,7 @@ def configure(env):
             print "Could not find libz or zlib1.dll"
             missing.append("zlib")
     
-    if ((env['mingw'] or isWindowsPlatform) and not conf.CheckLib("regex")) or not conf.CheckCXXHeader("regex.h"):
+    if ((env['mingw'] or env['mingwcross'] or isWindowsPlatform) and not conf.CheckLib("regex")) or not conf.CheckCXXHeader("regex.h"):
 			print "Could not find regex.h"
 			missing.append("regex")
 
@@ -200,7 +202,7 @@ def configure(env):
 
     #Do checks for portaudio
     if conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
-        if env['mingw'] or isWindowsPlatform:
+        if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
             print "--------"
             print "NOTE: It appears you are compiling under Windows. At this stage, PortAudio crashes Globulation 2 when voice chat is used."
             print "NOTE: Disabling PortAudio in this build (you will be unable to use Voice Chat ingame)."
@@ -238,13 +240,22 @@ def main():
               metavar='portaudio',
               help='should portaudio be used')
     env = Environment()
+    env["VERSION"] = "0.9.5.0"
+    establish_options(env)
+    
+    if env['mingwcross']:
+            env.Platform('cygwin')
+            env['CC']  = 'i586-mingw32msvc-gcc'
+            env['CXX'] = 'i586-mingw32msvc-g++'
+            env['AR']  = 'i586-mingw32msvc-ar'
+            env['RANLIB'] = 'i586-mingw32msvc-ranlib'
+    
     try:
         env.Clone()
     except AttributeError:
         env.Clone = env.Copy
     
-    env["VERSION"] = "0.9.5.0"
-    establish_options(env)
+    
     #Add the paths to important mingw libraries
     if env['mingw'] or isWindowsPlatform:
         env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
@@ -252,7 +263,16 @@ def main():
     if isDarwinPlatform:
         env.Append(LIBPATH=["/opt/local/lib"])
         env.Append(CPPPATH=["/opt/local/include"])
+    if env['mingwcross']:
+        if os.path.isabs(env['crossroot']):
+            root = env['crossroot']
+        else:
+            root = os.getcwdu() + '/' + env['crossroot']
+        env.Append(LIBPATH=['/usr/i586-mingw32msvc/lib', root + '/lib'])
+        env.Append(CPPPATH=['/usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/include/c++', '/usr/i586-mingw32msvc/include'])
+        env.Append(CPPPATH=[root + '/include', root + '/include/SDL'])
     configure(env)
+
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
     env.Append(CXXFLAGS=' -Wall')
@@ -271,13 +291,17 @@ def main():
         env.Append(LINKFLAGS=['-mwindows'])
         env.Append(CPPPATH=['/usr/local/include/SDL'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
+    elif env['mingwcross']:
+        env.Append(LIBS=['regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
+        env.Append(LINKFLAGS=['-mwindows'])
+        env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
     elif isDarwinPlatform:
         env.ParseConfig("/opt/local/bin/sdl-config --cflags")
         env.ParseConfig("/opt/local/bin/sdl-config --libs")
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
-    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
+    env.Append(LIBS=['vorbisfile', 'vorbis', 'ogg', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
