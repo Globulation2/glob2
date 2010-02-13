@@ -3462,14 +3462,14 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 				{
 					switch(clickType)
 					{
-					case BrushTool::DELETE:
+					case BrushTool::CT_DELETE:
 						game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
 						game.regenerateDiscoveryMap();
 						break;
-					case BrushTool::AREA:
+					case BrushTool::CT_AREA:
 						game.map.setPoint(areaNumber->getIndex(), x, y);
 						break;
-					case BrushTool::NO_RESOURCE_GROWTH:
+					case BrushTool::CT_NO_RESOURCE_GROWTH:
 						game.map.getCase(x, y).canRessourcesGrow=false;
 						break;
 					}
@@ -3483,10 +3483,10 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 				{
 					switch(clickType)
 					{
-					case BrushTool::AREA:
+					case BrushTool::CT_AREA:
 						game.map.unsetPoint(areaNumber->getIndex(), x, y);
 						break;
-					case BrushTool::NO_RESOURCE_GROWTH:
+					case BrushTool::CT_NO_RESOURCE_GROWTH:
 						game.map.getCase(x, y).canRessourcesGrow=true;
 						break;
 					default:break;
@@ -3499,21 +3499,21 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 }
 void MapEdit::handleDeleteClick(int mx, int my)
 {
-	handleClick(mx,my,BrushTool::DELETE);
+	handleClick(mx,my,BrushTool::CT_DELETE);
 }
 
 
 
 void MapEdit::handleAreaClick(int mx, int my)
 {
-	handleClick(mx,my,BrushTool::AREA);
+	handleClick(mx,my,BrushTool::CT_AREA);
 }
 
 
 
 void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 {
-	handleClick(mx,my,BrushTool::NO_RESOURCE_GROWTH);
+	handleClick(mx,my,BrushTool::CT_NO_RESOURCE_GROWTH);
 }
 
 
