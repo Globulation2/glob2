@@ -114,18 +114,29 @@ SGSLToken::TokenType SGSLToken::getTypeByName(const std::string name)
 
 	//std::cout << "Getting token for " << name << std::endl;
 
-	if (!name.empty())
-		while (table[i].type != NIL)
+	if (name.empty())
+	{
+		std::cerr << "Warning, SGSLToken::getTypeByName(name) called with empty name!" << std::endl;
+		return NIL;
+	}
+	
+	while (table[i].type != NIL)
+	{
+		//NOTE: SM: I reverted back to case-insensitive, as the other one breaks tutorial
+		if (strcasecmp(name.c_str(), table[i].name.c_str())==0)
+		//if (name.compare(table[i].name) == 0)
 		{
-			//TODO: made case sensitive. was that ok??
-			//if (strcasecmp(name, table[i].name)==0)
-			if (name.compare(table[i].name) == 0)
-			{
-				type = table[i].type;
-				break;
-			}
-			i++;
+			type = table[i].type;
+			break;
 		}
+		i++;
+	}
+	
+	if (type == NIL)
+	{
+		std::cerr << "Warning, SGSLToken::getTypeByName(name) found no type for name " << name << "!" << std::endl;
+	}
+	
 	return type;
 }
 
@@ -147,7 +158,7 @@ std::string SGSLToken::getNameByType(SGSLToken::TokenType type)
 	return name;
 }
 
-Story::Story(Mapscript *mapscript)
+Story::Story(MapScriptSGSL *mapscript)
 {
 	lineSelector = 0;
 	internTimer=0;
@@ -1081,7 +1092,7 @@ void Story::syncStep(GameGUI *gui)
 
 using namespace std;
 
-std::string ErrorReport::getErrorString(void)
+std::string ErrorReport::getErrorString(void) const
 {
 	static const std::string strings[]={
 		"No error",
@@ -1295,30 +1306,23 @@ bool FileAquisition::open(const std::string filename)
 StringAquisition::StringAquisition(const Functions& functions) :
 	Aquisition(functions)
 {
-	buffer=NULL;
 	pos=0;
 }
 
 StringAquisition::~StringAquisition()
 {
-	if (buffer)
-		free(buffer);
+	
 }
 
-void StringAquisition::open(const std::string text)
+void StringAquisition::open(const std::string& text)
 {
-	if (buffer)
-		free (buffer);
-
-	size_t len=text.length();
-	buffer=(char *)malloc(len+1);
-	memcpy(buffer, text.c_str(), len+1);
+	buffer = text;
 	pos=0;
 }
 
 int StringAquisition::getChar(void)
 {
-	if (buffer[pos])
+	if (pos < int(buffer.length()))
 	{
 		return (buffer[pos++]);
 	}
@@ -1328,16 +1332,16 @@ int StringAquisition::getChar(void)
 
 int StringAquisition::ungetChar(char c)
 {
-	if (pos)
+	if (pos > 0)
 	{
 		buffer[--pos]=c;
 	}
 	return 0;
 }
 
-// Mapscript creation
+// MapScriptSGSL creation
 
-Mapscript::Mapscript()
+MapScriptSGSL::MapScriptSGSL()
 {
 	functions["toto"] = std::make_pair(totoDescription, &Story::toto);
 	functions["objectiveHidden"] = std::make_pair(objectiveHiddenDescription, &Story::objectiveHidden);
@@ -1357,12 +1361,12 @@ Mapscript::Mapscript()
 	functions["resetAI"] = std::make_pair(resetAIDescription, &Story::resetAI);
 }
 
-Mapscript::~Mapscript(void)
+MapScriptSGSL::~MapScriptSGSL(void)
 {
 	
 }
 
-bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
+bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 {
 	stream->readEnterSection("SGSL");
 	
@@ -1439,7 +1443,7 @@ bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 	return true;
 }
 
-void Mapscript::save(GAGCore::OutputStream *stream, const Game *game)
+void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 {
 	stream->writeEnterSection("SGSL");
 	
@@ -1505,7 +1509,7 @@ void Mapscript::save(GAGCore::OutputStream *stream, const Game *game)
 	stream->writeLeaveSection();
 }
 
-void Mapscript::reset(void)
+void MapScriptSGSL::reset(void)
 {
 	isTextShown = false;
 	mainTimer=0;
@@ -1514,12 +1518,12 @@ void Mapscript::reset(void)
 	flags.clear();
 }
 
-bool Mapscript::testMainTimer()
+bool MapScriptSGSL::testMainTimer()
 {
 	return (mainTimer <= 0);
 }
 
-void Mapscript::syncStep(GameGUI *gui)
+void MapScriptSGSL::syncStep(GameGUI *gui)
 {
 	if (mainTimer)
 		mainTimer--;
@@ -1536,7 +1540,7 @@ void Mapscript::syncStep(GameGUI *gui)
 	}
 }
 
-Sint32 Mapscript::checkSum()
+Sint32 MapScriptSGSL::checkSum()
 {
 	Sint32 cs=0;
 	for (std::vector<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
@@ -1548,19 +1552,19 @@ Sint32 Mapscript::checkSum()
 }
 
 
-ErrorReport Mapscript::compileScript(Game *game, const char *script)
+ErrorReport MapScriptSGSL::compileScript(Game *game, const char *script)
 {
 	StringAquisition aquisition(functions);
 	aquisition.open(script);
 	return parseScript(&aquisition, game);
 }
 
-ErrorReport Mapscript::compileScript(Game *game)
+ErrorReport MapScriptSGSL::compileScript(Game *game)
 {
 	return compileScript(game, sourceCode.c_str());
 }
 
-ErrorReport Mapscript::loadScript(const std::string filename, Game *game)
+ErrorReport MapScriptSGSL::loadScript(const std::string filename, Game *game)
 {
 	FileAquisition aquisition(functions);
 	if (aquisition.open(filename))
@@ -1570,7 +1574,7 @@ ErrorReport Mapscript::loadScript(const std::string filename, Game *game)
 }
 
 // Control of the syntax of the script
-ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
+ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 {
 	// Gets next token and sets right error position
 	#define NEXT_TOKEN \
@@ -2418,8 +2422,11 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				default:
+				{
+					cerr << "SGSL: unknown token found: " << donnees->getToken()->type << endl;
 					er.type=ErrorReport::ET_UNKNOWN;
-					break;
+				}
+				break;
 			}
 		}
 		thisone.line.push_back(SGSLToken(SGSLToken::S_STORY));
@@ -2433,7 +2440,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	return er;
 }
 
-bool Mapscript::hasTeamWon(unsigned teamNumber)
+bool MapScriptSGSL::hasTeamWon(unsigned teamNumber)
 {
 	// Seb: Cheapo hack. Script should intialize hasWon first :-)
 	if (testMainTimer() && hasWon.size()>teamNumber)
@@ -2443,7 +2450,7 @@ bool Mapscript::hasTeamWon(unsigned teamNumber)
 	return false;
 }
 
-bool Mapscript::hasTeamLost(unsigned teamNumber)
+bool MapScriptSGSL::hasTeamLost(unsigned teamNumber)
 {
 	// Seb: Cheapo hack. Script should intialize hasLost first :-)
 	if(hasLost.size()>teamNumber)
@@ -2453,7 +2460,7 @@ bool Mapscript::hasTeamLost(unsigned teamNumber)
 
 
 
-void Mapscript::addTeam()
+void MapScriptSGSL::addTeam()
 {
 	hasWon.push_back(false);
 	hasLost.push_back(false);
@@ -2461,7 +2468,7 @@ void Mapscript::addTeam()
 
 
 
-void Mapscript::removeTeam(int n)
+void MapScriptSGSL::removeTeam(int n)
 {
 	hasWon.erase(hasWon.begin()+n);
 	hasLost.erase(hasLost.begin()+n);

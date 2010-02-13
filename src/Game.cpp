@@ -976,7 +976,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	integrity();
 
 	// Now load the old map script
-	if (!script.load(stream, this))
+	if (!sgslScript.load(stream, this))
 	{
 		stream->readLeaveSection();
 		return false;
@@ -1127,7 +1127,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	stream->write("GaPl", 4, "signatureAfterPlayers");
 
 	// Save the old map script state
-	script.save(stream, this);
+	sgslScript.save(stream, this);
 
 	// This is the new map script system
 	mapscript.encodeData(stream);
@@ -1246,7 +1246,7 @@ void Game::wonSyncStep(void)
 void Game::scriptSyncStep()
 {
 	// do a script step
-	script.syncStep(gui);
+	sgslScript.syncStep(gui);
 	mapscript.syncStep(gui);
 }
 
@@ -1398,7 +1398,7 @@ void Game::addTeam(int pos)
 
 	map.addTeam();
 
-	script.addTeam();
+	sgslScript.addTeam();
 }
 
 void Game::removeTeam(int pos)
@@ -1421,7 +1421,7 @@ void Game::removeTeam(int pos)
 			teams[i]->setCorrectColor(((float)i*360.0f)/(float)mapHeader.getNumberOfTeams());
 
 		map.removeTeam();
-		script.removeTeam(pos);
+		sgslScript.removeTeam(pos);
 		teams[pos]=NULL;
 	}
 }
@@ -3108,7 +3108,7 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	cs=(cs<<31)|(cs>>1);
 
-	Uint32 scriptCs=script.checkSum();
+	Uint32 scriptCs=sgslScript.checkSum();
 	cs^=scriptCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(scriptCs);// [4+t*20+p*2]
