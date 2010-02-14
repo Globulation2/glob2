@@ -469,7 +469,7 @@ Expulsar
 [lan]
 Partida en Red Local
 [language incomplete]
-Español
+Español - incompleta
 [language-code]
 es
 [language-tr]
