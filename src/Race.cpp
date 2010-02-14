@@ -35,7 +35,8 @@
 #include "Version.h"
 #include "Race.h"
 
-Race Race::defaultRace;
+UnitType Race::unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
+Sint32 Race::hungryness;
 
 Race::Race()
 {
@@ -61,13 +62,13 @@ void Race::loadDefault()
 		return;
 	}
 	
-	defaultRace.hungryness = stream->readSint32("hungryness");
+	hungryness = stream->readSint32("hungryness");
 	
 	stream->readEnterSection("worker");
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
 		stream->readEnterSection(i);
-		defaultRace.unitTypes[0][i].load(stream, VERSION_MINOR);
+		unitTypes[0][i].load(stream, VERSION_MINOR);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -76,7 +77,7 @@ void Race::loadDefault()
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
 		stream->readEnterSection(i);
-		defaultRace.unitTypes[1][i].load(stream, VERSION_MINOR);
+		unitTypes[1][i].load(stream, VERSION_MINOR);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -85,7 +86,7 @@ void Race::loadDefault()
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
 		stream->readEnterSection(i);
-		defaultRace.unitTypes[2][i].load(stream, VERSION_MINOR);
+		unitTypes[2][i].load(stream, VERSION_MINOR);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -95,12 +96,11 @@ void Race::loadDefault()
 
 Uint32 Race::checkSumDefault()
 {
-	return defaultRace.checkSum();
+	return checkSum();
 }
 
 void Race::load()
 {
-	*this = defaultRace;
 }
 
 /*void Race::load()
