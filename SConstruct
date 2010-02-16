@@ -265,12 +265,12 @@ def main():
         env.Append(CPPPATH=["/opt/local/include"])
     if env['mingwcross']:
         if os.path.isabs(env['crossroot']):
-            root = env['crossroot']
+            crossroot_abs = env['crossroot']
         else:
-            root = os.getcwdu() + '/' + env['crossroot']
-        env.Append(LIBPATH=['/usr/i586-mingw32msvc/lib', root + '/lib'])
+            crossroot_abs = os.getcwdu() + '/' + env['crossroot']
+        env.Append(LIBPATH=['/usr/i586-mingw32msvc/lib', crossroot_abs + '/lib'])
         env.Append(CPPPATH=['/usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/include/c++', '/usr/i586-mingw32msvc/include'])
-        env.Append(CPPPATH=[root + '/include', root + '/include/SDL'])
+        env.Append(CPPPATH=[crossroot_abs + '/include', crossroot_abs + '/include/SDL'])
     configure(env)
 
     env.Append(CPPPATH=['#libgag/include', '#'])
@@ -322,7 +322,7 @@ def main():
                     f = env.Install(new_dir, s)
                     env.Tar(target, f)
               
-    PackTar(env["TARFILE"], Split("COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
+    PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     #packaging for apple
     if isDarwinPlatform and env["release"]:
         bundle.generate(env)
@@ -343,6 +343,8 @@ def main():
 
     Export('env')
     Export('PackTar')
+    if env['mingwcross']:
+        Export('crossroot_abs')
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
     SConscript("fedora/SConscript")
