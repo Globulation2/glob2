@@ -67,9 +67,9 @@ public:
 	///The state of a unit in certain lists.
 	enum InListState
 	{
-		UNKNOWN=0,
-		IN=1,
-		OUT=2
+		LS_UNKNOWN=0,
+		LS_IN=1,
+		LS_OUT=2
 	};
 
 public:

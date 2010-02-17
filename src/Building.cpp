@@ -135,12 +135,12 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	seenByMask=0;
 
-	inCanFeedUnit=UNKNOWN;
-	inCanHealUnit=UNKNOWN;
+	inCanFeedUnit=LS_UNKNOWN;
+	inCanHealUnit=LS_UNKNOWN;
 	callListState=0;
 
 	for (int i=0; i<NB_ABILITY; i++)
-		inUpgrade[i]=UNKNOWN;
+		inUpgrade[i]=LS_UNKNOWN;
 
 	for (int i=0; i<2; i++)
 	{
@@ -314,12 +314,12 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	seenByMask = stream->readUint32("seenByMaskk");
 
-	inCanFeedUnit=UNKNOWN;
-	inCanHealUnit=UNKNOWN;
+	inCanFeedUnit=LS_UNKNOWN;
+	inCanHealUnit=LS_UNKNOWN;
 	callListState = 0;
 
 	for (int i=0; i<NB_ABILITY; i++)
-		inUpgrade[i] = UNKNOWN;
+		inUpgrade[i] = LS_UNKNOWN;
 
 	freeGradients();
 
@@ -886,10 +886,10 @@ void Building::updateCallLists(void)
 	{
 		// Add itself in the right "call-lists":
 		for (int i=0; i<NB_ABILITY; i++)
-			if (inUpgrade[i]!=IN && type->upgrade[i])
+			if (inUpgrade[i]!=LS_IN && type->upgrade[i])
 			{
 				owner->upgrade[i].push_front(this);
-				inUpgrade[i]=IN;
+				inUpgrade[i]=LS_IN;
 			}
 
 		// this is for food handling
@@ -897,50 +897,50 @@ void Building::updateCallLists(void)
 		{
 			if (ressources[CORN]>(int)unitsInside.size())
 			{
-				if (inCanFeedUnit!=IN)
+				if (inCanFeedUnit!=LS_IN)
 				{
 					owner->canFeedUnit.push_front(this);
 					//A Building newly getting available to feed is locked to conversion for 150 frames
 					canNotConvertUnitTimer=150;
-					inCanFeedUnit=IN;
+					inCanFeedUnit=LS_IN;
 				}
 			}
 			else
 			{
-				if (inCanFeedUnit!=OUT)
+				if (inCanFeedUnit!=LS_OUT)
 				{
 					owner->canFeedUnit.remove(this);
-					inCanFeedUnit=OUT;
+					inCanFeedUnit=LS_OUT;
 				}
 			}
 		}
 
 		// this is for Unit healing
-		if (type->canHealUnit && inCanHealUnit!=IN)
+		if (type->canHealUnit && inCanHealUnit!=LS_IN)
 		{
 			owner->canHealUnit.push_front(this);
-			inCanHealUnit=IN;
+			inCanHealUnit=LS_IN;
 		}
 	}
 	else
 	{
 		// delete itself from all Call lists
 		for (int i=0; i<NB_ABILITY; i++)
-			if (inUpgrade[i]!=OUT && type->upgrade[i])
+			if (inUpgrade[i]!=LS_OUT && type->upgrade[i])
 			{
 				owner->upgrade[i].remove(this);
-				inUpgrade[i]=OUT;
+				inUpgrade[i]=LS_OUT;
 			}
 
-		if (type->canFeedUnit && inCanFeedUnit!=OUT)
+		if (type->canFeedUnit && inCanFeedUnit!=LS_OUT)
 		{
 			owner->canFeedUnit.remove(this);
-			inCanFeedUnit=OUT;
+			inCanFeedUnit=LS_OUT;
 		}
-		if (type->canHealUnit && inCanHealUnit!=OUT)
+		if (type->canHealUnit && inCanHealUnit!=LS_OUT)
 		{
 			owner->canHealUnit.remove(this);
-			inCanHealUnit=OUT;
+			inCanHealUnit=LS_OUT;
 		}
 	}
 }
