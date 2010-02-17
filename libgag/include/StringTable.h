@@ -21,6 +21,7 @@
 #define __STRINGTABLE_H
 
 #include <vector>
+#include <bitset>
 #include <map>
 #include <string>
 

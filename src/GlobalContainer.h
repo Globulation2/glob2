@@ -45,6 +45,7 @@ class GlobalContainer
 public:
 	enum { USERNAME_MAX_LENGTH=32 };
 	enum { OPTION_LOW_SPEED_GFX=0x1 };
+	enum { OPTION_MAP_EDIT_USE_USL=0x2 };
 
 private:
 	void updateLoadProgressScreen(int value);

@@ -232,11 +232,11 @@ public:
 	Team ** teams;
 	Player ** players;
 	Map map;
-	Mapscript script;
+	MapScriptSGSL sgslScript; ///< SGSL script
+	MapScript mapscript; ///< new script, currently USL
 	GameObjectives objectives;
 	GameHints gameHints;
 	std::string missionBriefing;
-	MapScript mapscript;
 	GameGUI *gui;
 	MapEdit *edit;
 	std::list<BuildProject> buildProjects;
