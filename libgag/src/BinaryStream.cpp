@@ -104,7 +104,17 @@ namespace GAGCore
 		std::valarray<char> buffer(len+1);
 		read(&buffer[0], len, "");
 		buffer[len] = 0;
-		assert(len < 1024*1024);
+
+		// We don't use strings longer than 1024*1024, so if len > 1024*1024 these bits don't represent a string.
+		if (len > 1024*1024)
+		{
+			// TODO: Make a BadFileFormatException (or similar) class and if necessary update the catch'es at
+			//  - ChooseMapScreen.cpp : 167
+			//  - Engine.cpp : 218, 688, 754, 932
+			//  - MapEdit.cpp : 1135
+			throw std::ios_base::failure("String "+name+" length > 1024*1024");
+		}
+
 		return std::string(&buffer[0]);
 	}
 }

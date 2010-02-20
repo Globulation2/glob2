@@ -306,6 +306,8 @@ Enter your password:
 enter
 [equals]
 equals
+[ERROR_CANT_LOAD_MAP]
+The map couldn't be loaded because the file is either damaged or an incompatible version.
 [escape]
 escape
 [explorationflag explanation 2]
