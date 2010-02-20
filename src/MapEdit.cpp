@@ -1126,7 +1126,27 @@ bool MapEdit::load(const std::string filename)
 	}
 	else
 	{
-		bool rv = game.load(stream);
+		bool rv;
+
+		try
+		{
+			rv = game.load(stream);
+		}
+		catch (std::exception &e)
+		{
+			std::cerr << "Failed to open map: bad format." << std::endl;
+
+			if (!globalContainer->runNoX)
+			{
+				// Display an error message
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+			}
+
+			// We can't recover from this, so we quit
+			doQuitAfterLoadSave = true;
+
+			return false;
+		}
 		
 		delete stream;
 		if (!rv)
@@ -1217,6 +1237,14 @@ int MapEdit::run(void)
 		while (SDL_PollEvent(&event))
 		{
  			processEvent(event);
+		}
+
+		// While processing events the user could've tried to load a map that failed.
+		// Then we can't go through drawing everything because that would segfault.
+		if(doQuitAfterLoadSave && !showingSave)
+		{
+			isRunning = false;
+			break;
 		}
 		
 		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
