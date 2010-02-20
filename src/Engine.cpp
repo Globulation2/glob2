@@ -42,6 +42,7 @@
 #include "Player.h"
 #include "NetMessage.h"
 #include "GameGUIDialog.h"
+#include <GUIMessageBox.h>
 
 #include <iostream>
 
@@ -204,7 +205,21 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 
 void Engine::createRandomGame()
 {
-	MapHeader map = chooseRandomMap();
+	bool validMapChosen = false;
+	MapHeader map;
+
+	while (!validMapChosen)
+	{
+		try
+		{
+			map = chooseRandomMap();
+			validMapChosen = true;
+		}
+		catch (std::ios_base::failure &e)
+		{
+			validMapChosen = false;
+		}
+	}
 	
 	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
 	
@@ -663,7 +678,23 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 	{
 		if (verbose)
 			std::cout << "Engine::loadMapHeader : loading map " << filename << std::endl;
-		bool validMapSelected = mapHeader.load(stream);
+
+		bool validMapSelected;
+
+		try
+		{
+			validMapSelected = mapHeader.load(stream);
+		}
+		catch (std::ios_base::failure &e)
+		{
+			// Notify what filename couldn't load, because if we're doing -test-games(-nox) and loading the map fails,
+			// the map name won't be saved inside mapHeader.
+			std::cerr << "Engine::loadMapHeader : can't load map \"" << filename << "\": bad format" << std::endl;
+
+			// We didn't solve the problem though, so we re-throw
+			throw;
+		}
+
 		if (!validMapSelected)
 			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
 	}
@@ -715,9 +746,24 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 
 int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
 {
-	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
+	try
+	{
+		if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
+			return EE_CANT_LOAD_MAP;
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Failed to load the map: bad format." << std::endl;
+
+		if (!globalContainer->runNoX)
+		{
+			// Display an error message
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+		}
+
 		return EE_CANT_LOAD_MAP;
-	
+	}
+
 	// We remove uncontrolled stuff from map
 	gui.game.clearingUncontrolledTeams();
 
@@ -878,8 +924,23 @@ int Engine::loadReplay(const std::string &fileName)
 	assert(globalContainer->replay);
 	
 	// Get to the right position (readEnterSection doesn't work)
-	GameGUI tempGui;
-	tempGui.load(globalContainer->replay);
+	try
+	{
+		GameGUI tempGui;
+		tempGui.load(globalContainer->replay);
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Failed to load replay file: bad format." << std::endl;
+
+		if (!globalContainer->runNoX)
+		{
+			// Display an error message
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+		}
+
+		return EE_CANT_LOAD_MAP;
+	}
 	
 	// Read the total number of steps
 	globalContainer->replayStepsTotal = globalContainer->replay->readUint32("stepcount");

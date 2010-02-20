@@ -23,6 +23,7 @@
 #include "GlobalContainer.h"
 #include <FormatableString.h>
 #include <GUIButton.h>
+#include <GUIMessageBox.h>
 #include <GUIText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -128,38 +129,48 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			else
 				mapFileName = alternateFileList->listToFile(alternateFileList->getText(par1).c_str());
 
-			mapPreview->setMapThumbnail(mapFileName.c_str());
-
-			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
-			if (stream->isEndOfStream())
+			try
 			{
-				std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
-			}
-			else
-			{
-				if (verbose)
-					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
-				validMapSelected = mapHeader.load(stream);
+				mapPreview->setMapThumbnail(mapFileName.c_str());
 
-				if (!validMapSelected) selectedType = NONE;
-
-				mapHeader.setMapName(glob2FilenameToName(mapFileName));
-				if (validMapSelected)
+				InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+				if (stream->isEndOfStream())
 				{
-					updateMapInformation();
-
-					time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
-					mapDate->setText(ctime(&mtime));
-
-					if (currentDirectoryMode == DisplayRegular)
-						selectedType = type1;
-					else
-						selectedType = type2;
+					std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
 				}
 				else
-					std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
+				{
+					if (verbose)
+						std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
+					validMapSelected = mapHeader.load(stream);
+
+					if (!validMapSelected) selectedType = NONE;
+
+					mapHeader.setMapName(glob2FilenameToName(mapFileName));
+					if (validMapSelected)
+					{
+						updateMapInformation();
+
+						time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
+						mapDate->setText(ctime(&mtime));
+
+						if (currentDirectoryMode == DisplayRegular)
+							selectedType = type1;
+						else
+							selectedType = type2;
+					}
+					else
+						std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
+				}
+				delete stream;
 			}
-			delete stream;
+			catch (std::exception &e)
+			{
+				// Show error message
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+
+				validMapSelected = false;
+			}
 		}
 		else 
 		{
