@@ -342,6 +342,8 @@ def main():
     Export('PackTar')
     if env['mingwcross']:
         Export('crossroot_abs')
+    Export('isWindowsPlatform')
+
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
     SConscript("fedora/SConscript")
