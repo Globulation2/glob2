@@ -1,0 +1,1 @@
+?package(glob2):needs="X11" section="Games/Strategy"  title="Globulation 2" command="/usr/games/glob2"
