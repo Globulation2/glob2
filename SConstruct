@@ -346,6 +346,7 @@ def main():
 
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
+    SConscript("debian/SConscript")
     SConscript("fedora/SConscript")
     SConscript("gnupg/SConscript")
     SConscript("libgag/SConscript")
