@@ -32,6 +32,8 @@ def establish_options(env):
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save("options_cache.py", env)
+    if env.GetOption('clean'):
+        Execute(Delete("options_cache.py"))
     
     
 class Configuration:
