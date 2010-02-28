@@ -16,6 +16,8 @@ if 'dist' or 'install' in COMMAND_LINE_TARGETS:
                        patches/02_upstream_changelog.patch              patches/series""")
     PackTar(env['TARFILE'], patches)
 
+if env['mingwcross']:
+    Return()
 
 if 'dist' in COMMAND_LINE_TARGETS and os.path.exists('/etc/debian_version'):
     dpkg = env.Command('deb', None, 'dpkg-buildpackage')
