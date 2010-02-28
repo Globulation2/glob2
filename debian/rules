@@ -31,7 +31,7 @@ build-stamp: patch
 	dh_testdir
 
 #	Building without optimization.
-	scons INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true
+	scons -j3 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true
 
 	touch build-stamp
 
