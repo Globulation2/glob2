@@ -1,10 +1,10 @@
 With gcc 4.4, compilation of libgag/src/TextStream.cpp fails with the error: 
 'class GAGCore::StreamBackend' has no member named 'getc'. Reordering 
 #include's solves the problem.
-Index: glob2-0.9.4.1/libgag/src/TextStream.cpp
+Index: b/libgag/src/TextStream.cpp
 ===================================================================
---- glob2-0.9.4.1.orig/libgag/src/TextStream.cpp	2009-06-27 20:19:38.000000000 +0400
-+++ glob2-0.9.4.1/libgag/src/TextStream.cpp	2009-06-27 20:20:22.000000000 +0400
+--- a/libgag/src/TextStream.cpp	2010-02-28 10:09:41.977348783 +0300
++++ b/libgag/src/TextStream.cpp	2010-02-28 16:50:09.257348091 +0300
 @@ -17,11 +17,11 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
