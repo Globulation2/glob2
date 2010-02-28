@@ -42,9 +42,8 @@ clean: unpatch
 
 	dh_clean
 
-#	scons -c
-
-#	rm -rf .sconf_temp/ .sconsign.dblite options_cache.py config.log config.h
+	rm -rf .sconf_temp/ .sconsign.dblite options_cache.py config.log config.h
+	scons -c
 
 install: build
 	dh_testdir
