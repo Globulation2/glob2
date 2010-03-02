@@ -4,6 +4,7 @@ Import("env")
 Import("PackTar")
 if env['mingwcross']:
     Import("crossroot_abs")
+Import("isWindowsPlatform")
 
 
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
@@ -15,12 +16,15 @@ if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "SConscript")
 
 
+if not (isWindowsPlatform or env['mingwcross']):
+    Return()
 if 'dist' not in COMMAND_LINE_TARGETS:
     Return()
 
 
 
-def genlists():
+def genlists(target, source, env):
+    """ First element in the list passed as target should be install list path. """
     #
     # FUNCTION TAKEN FROM http://nsis.sourceforge.net/Talk:Uninstall_only_installed_files
     #
@@ -37,8 +41,8 @@ def genlists():
     #
     # OPEN FILES
     #
-    install_list = open_file_for_writing("install_list.nsh")
-    uninstall_list = open_file_for_writing("uninstall_list.nsh")
+    install_list = open_file_for_writing(target[0].path)
+    uninstall_list = open_file_for_writing(target[1].path)
 
     #
     # PREPARE ARRAY FOR UNINSTALL LIST
@@ -49,10 +53,9 @@ def genlists():
     #
     # INSTALL LIST
     #
-    for path, dirs, files in list(os.walk('../data')) + list(os.walk('../maps')) + list(os.walk('../campaigns')) + list(os.walk('../scripts')):
+    for path, dirs, files in list(os.walk('data')) + list(os.walk('maps')) + list(os.walk('campaigns')) + list(os.walk('scripts')):
         if env['mingwcross']:
             path = ntpath.normpath(path)        # Switch / to \\
-        path = path[3:]     # Strip '..\\' from path.
         print >> install_list, "SetOutPath $INSTDIR\\" + path
         folder_list.append(path)
         for f in files:
@@ -97,9 +100,13 @@ def genlists():
 
 
 
-Execute(Delete('install_list.nsh'))
-Execute(Delete('uninstall_list.nsh'))
-genlists()
-if Execute('makensis win32_installer.nsi'):
-    Exit(1)
+# First element in the list passed as target should be install list path.
+list_files = ['install_list.nsh', 'uninstall_list.nsh']
+env.Command(list_files, None, genlists)
+env.Alias('dist', list_files)
+
+env.Command('globulation2_win32.exe', 'win32_installer.nsi', 'makensis $SOURCE')
+env.Depends('globulation2_win32.exe', list_files)
+env.Alias('dist', 'globulation2_win32.exe')
+
 

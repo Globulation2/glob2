@@ -1,321 +1,412 @@
-glob2 (0.9.3.post~20080519.8276878d95c3) hardy; urgency=low
-
-  * Resurected debian package
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Mon, 19 May 2008 20:15:44 +0200
-
-glob2 (beta2) unstable; urgency=low
-
-  * Beta2
-
- -- Stéphane Magnenat <stephane at magnenat dot net>  Sat, 23 Feb 2008 11:03:00 +0100
-
-glob2 (alpha23) unstable; urgency=low
-
-  * Alpha23
-
- -- Stéphane Magnenat <stephane at magnenat dot net>  Tue, 17 Apr 2007 22:55:06 +0200
-
-glob2 (alpha22) unstable; urgency=low
-
-  * Alpha22
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Wed,  4 Apr 2007 17:21:54 +0200
-
-glob2 (alpha21) unstable; urgency=low
-
-  * Alpha21
-
- -- Stéphane Magnenat <stephane at magnenat dot net>  Sun,  6 Aug 2006 14:44:24 +0200
-
-glob2 (alpha20) unstable; urgency=low
-
-  * Alpha 20 
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Fri,  4 Aug 2006 14:36:19 -0400
-
-glob2 (alpha19) unstable; urgency=low
-
-  * Alpha19
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 12 Mar 2006 17:26:02 +0100
-
-glob2 (alpha18) unstable; urgency=low
-
-  * Alpha18
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 29 Jan 2006 19:38:55 +0100
-
-glob2 (alpha17) unstable; urgency=low
-
-  * Alpha17
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 11 Dec 2005 15:52:34 +0100
-
-glob2 (alpha16) unstable; urgency=low
-
-  * Alpha16
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 20 Nov 2005 11:03:01 +0100
-
-glob2 (alpha15) unstable; urgency=low
-
-  * Alpha15
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Mon, 16 May 2005 13:34:09 +0200
-
-glob2 (alpha14) unstable; urgency=low
-
-  * Alpha14
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 24 Apr 2005 17:52:58 +0200
-
-glob2 (alpha13) unstable; urgency=low
-
-  * Alpha13
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sat, 16 Apr 2005 17:42:44 +0200
-
-glob2 (alpha12) unstable; urgency=low
-
-  * Alpha12
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 13 Feb 2005 13:01:59 +0100
-
-glob2 (alpha11) unstable; urgency=low
-
-  * Alpha11
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 16 Jan 2005 00:08:12 +0100
-
-glob2 (alpha10) unstable; urgency=low
-
-  * Alpha10, working version
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Wed, 29 Dec 2004 12:20:37 +0100
-
-glob2 (alpha10pre) unstable; urgency=low
-
-  * Alpha10, preversion
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 24 Oct 2004 19:15:00 +0200
-
-glob2 (alpha9) unstable; urgency=low
-
-  * Alpha9
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Fri,  8 Oct 2004 18:28:02 +0200
-
-glob2 (alpha8) unstable; urgency=low
-
-  * Alpha8
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun, 12 Sep 2004 21:10:04 +0200
-
-glob2 (alpha7) unstable; urgency=low
-
-  * Alpha7
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sun,  8 Aug 2004 22:00:39 +0200
-
-glob2 (alpha6) unstable; urgency=low
-
-  * Alpha6
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Wed,  9 Jun 2004 21:29:08 +0200
-
-glob2 (alpha5-post) unstable; urgency=low
-
-  * Post Alpha5 CVS
-  * Lib GLU deps changed
-
- -- Stephane Magnenat <stephane at magnenat dot net>  Sat, 29 May 2004 12:25:00 +0200
-
-glob2 (alpha3) unstable; urgency=low
-
-  * Alpha 3
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Fri, 20 Feb 2004 11:24:21 +0100
-
-glob2 (alpha0) unstable; urgency=low
-
-  * Alpha version
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Fri,  6 Feb 2004 12:22:09 +0100
-
-glob2cvs (20040119-1) unstable; urgency=low
-
-  * CVS Jan 19th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 19 Jan 2004 12:33:22 +0100
-
-glob2cvs (20040105-1) unstable; urgency=low
-
-  * CVS Jan 5th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon,  5 Jan 2004 22:44:10 +0100
-
-glob2cvs (20031225-1) unstable; urgency=low
-
-  * CVS Dec 25th 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 25 Dec 2003 21:29:48 +0100
-
-glob2cvs (20031224-1) unstable; urgency=low
-
-  * CVS Dec 24th (merry christmas) 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 25 Dec 2003 01:58:48 +0100
-
-glob2cvs (20031127-1) unstable; urgency=low
-
-  * CVS Nov 27th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 27 Nov 2003 15:31:16 +0100
-
-glob2cvs (20031121-1) unstable; urgency=low
-
-  * CVS Nov 21st
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Sat, 22 Nov 2003 00:38:45 +0100
-
-glob2cvs (20031116-3) unstable; urgency=low
-
-  * CVS Nov 16th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Sun, 16 Nov 2003 14:14:16 +0100
-
-glob2cvs (20031112-1) unstable; urgency=low
-
-  * CVS Nov 12th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Wed, 12 Nov 2003 11:08:31 +0100
-
-glob2cvs (20031111-1) unstable; urgency=low
-
-  * CVS Nov 11th 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 11 Nov 2003 12:11:54 +0100
-
-glob2cvs (20031110-1) unstable; urgency=low
-
-  * CVS Nov 10th 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 10 Nov 2003 18:19:29 +0100
-
-glob2cvs (20031103-1) unstable; urgency=low
-
-  * CVS Nov 3rd
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Tue,  4 Nov 2003 01:40:57 +0100
-
-glob2cvs (20031101-1) unstable; urgency=low
-
-  * CVS Nov 1st 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Sat,  1 Nov 2003 15:07:10 +0100
-
-glob2cvs (20031027-1) unstable; urgency=low
-
-  * CVS Oct 27th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 27 Oct 2003 10:25:45 +0100
-
-glob2cvs (20031023-1) unstable; urgency=low
-
-  * CVS Oct 23rd
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 23 Oct 2003 18:02:16 +0200
-
-glob2cvs (20031022-1) unstable; urgency=low
-
-  * CVS Oct 22nd
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Thu, 23 Oct 2003 01:16:34 +0200
-
-glob2cvs (20031019-1) unstable; urgency=low
-
-  * CVS Oct 19th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Sun, 19 Oct 2003 12:46:20 +0200
-
-glob2cvs (20031010-1) unstable; urgency=low
-
-  * CVS Oct 10th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Sat, 11 Oct 2003 00:43:03 +0200
-
-glob2cvs (20031009-1) unstable; urgency=low
-
-  * CVS Oct 9th. 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Thu,  9 Oct 2003 12:28:33 +0200
-
-glob2cvs (20030715-1) unstable; urgency=low
-
-  * CVS July 15th. 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 15 Jul 2003 09:53:02 +0200
-
-glob2cvs (20030703-1) unstable; urgency=low
-
-  * CVS Jul 3rd.
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Thu,  3 Jul 2003 09:45:10 +0200
-
-glob2cvs (20030624-2) unstable; urgency=low
-
-  * Fixed a menu bug (in rules file)
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 24 Jun 2003 13:48:55 +0200
-
-glob2cvs (20030624-1) unstable; urgency=low
-
-  * CVS June 24th ; tiny fixes in the debian structure.
-    binaries now in /usr/games (was /usr/bin)
-  
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 24 Jun 2003 12:10:02 +0200
-
-glob2cvs (20030602-1) unstable; urgency=low
-
-  * CVS June 2nd
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon,  2 Jun 2003 10:15:43 +0200
-
-glob2cvs (20030526-1) unstable; urgency=low
-
-  * CVS May 26th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 26 May 2003 11:14:21 +0200
-
-glob2cvs (20030519-1) unstable; urgency=low
-
-  * CVS May 19th 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 19 May 2003 10:14:21 +0200
-
-glob2cvs (20030512-1) unstable; urgency=low
-
-  * CVS May 12th 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 12 May 2003 09:15:11 +0200
-
-glob2cvs (20030505-1) unstable; urgency=low
-
-  * CVS May 5th
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon,  5 May 2003 11:44:35 +0200
-
-glob2cvs (20030429-2) unstable; urgency=low
-
-  * A stupid version error existed on the dependencies on gfx and maps packages. 
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Tue, 29 Apr 2003 15:08:30 +0200
-
-glob2cvs (20030429-1) unstable; urgency=low
-
-  * Initial Release.
-
- -- Vincent Deffontaines <vincent@gryzor.com>  Mon, 29 Apr 2003 14:59:24 +0200
-
+glob2 (0.9.5.0) unstable; urgency=low
+
+  * Pulled in all the structure from Debian.
+  * Updated Changelog.
+
+ -- Nikolay Epifanov <nick.time at yahoo dot com>  Mon, 22 Feb 2010 18:34:06 +0300
+
+glob2 (0.9.4.4-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix "FTBFS with GCC 4.4: 'class GAGCore::StreamBackend' has no
+    member named 'getc'", apply patch frum Ubunto, thanks to Ilya Barygin
+    (closes: #553706).
+
+ -- gregor herrmann <gregoa@debian.org>  Fri, 25 Dec 2009 19:34:33 +0100
+
+glob2 (0.9.4.4-1) unstable; urgency=low
+
+  * New upstream release (closes: #549947).  Thanks, Gerfried Fuchs, for
+    pushing this forward and some fixes in this release.  Main changes
+    are:
+    - Rare bug fixed which made glob2 to crash.
+    - Corrupted tutorials and bugs in editor fixed.
+  * Change patch 02_upstream_changelog to work with source format 3.0
+    (quilt).  This should have been part of the fix for #485248.
+  * debian/copyright: Add the word Copyright to the debian copyright.
+  * Add README.source about quilt, thus fixing lintian warning.
+
+ -- David Martínez Moreno <ender@debian.org>  Sun, 25 Oct 2009 10:16:13 +0100
+
+glob2 (0.9.4.1-1) unstable; urgency=low
+
+  * New upstream release (closes: #515227).  Main changes are:
+    - Balancing of unit and building costs.
+    - Ability to CTRL+Click and drag to place a string of the selected
+      building (useful for walls).
+    - A new Other Options page in Custom Games and YOG pregame setup.
+    - New mission objectives system (set in the map editor, with SGSL commands
+      to show/hide them).
+    - New mission hints system (set in the map editor).
+    - Brand new random map generation engine, which will be used eventually to
+      make and play random maps on the fly from Custom Game / YOG screens.
+    - Added optional implementation of voice chat using port audio.
+    - Add new -router code, so people can create a router through which game
+      commands are 'routed'. Complete with remote administrative interface.
+    - A new map distribution system.
+    - A new pregame alliances system where you can set alliances which cannot be
+      changed ingame.
+    - A new "I Am Ready" button to prevent game makers from starting before all
+      players are ready.
+    - Adjustments to latency system for smoother online gaming 
+    - New -test-map-gen option, to continuously make maps until the generator
+      crashes (used for stability like -test-games[-nox]).
+    - Lots of other behind the scenes changes for speed, stability, usability
+      and interactivity.
+    - Lots of bug fixes.
+    - Moved AUTHORS to data/authors.txt so it will get included in distribution
+      releases (closes: #502067).
+  * debian/glob2.install: Added patch from Andrew Starr-Bochiocchio to install
+    a missing menu icon (closes: #511143).  Thanks, Andrew!!
+  * debian/patches:
+    - Adjusted quilt patches to comply with new source format 3.0 (closes:
+      #485248).
+    - Removed 02_gcc43_compat as obsolete.
+    - Added official Changelog as a separate patch
+      (02_upstream_changelog.patch).
+  * debian/rules: Activated portaudio.
+  * debian/control:
+    - Removed an ancient Replaces in glob2-data.
+    - Added libboost-math1.38-dev to B-D.
+    - Added libportaudio-dev to B-D.
+    - Bumped Standards-Version to 3.8.1 (no changes).
+    - Made a versioned dependency on DH 6.
+  * debian/compat bumped to 6.
+
+ -- David Martínez Moreno <ender@debian.org>  Mon, 22 Jun 2009 01:33:04 +0200
+
+glob2 (0.9.3-2) unstable; urgency=low
+
+  * debian/rules: Added config.h to the clean target.
+  * debian/patches/02_gcc43_compat.patch: Added #include <typeinfo> for
+    fixing a FTBFS with G++ 4.3.  Thanks, Peter Green (closes: #479872).
+
+ -- David Martínez Moreno <ender@debian.org>  Tue, 20 May 2008 01:18:40 +0200
+
+glob2 (0.9.3-1) unstable; urgency=low
+
+  * New upstream release (beta 3).  Main changes are:
+    - Better unit movement: forbidden areas, enhanced warrior movement, units
+      can go backwards.
+    - Better flag/area functionality: clearing areas call proper units,
+      forbidden areas are now respected. 
+    - Many improvments to Nicowar's stability and performance.
+    - Script text is now added to the history box ('h').
+    - Tutorial text updated.
+    - Building worker count, and building future working count are now saved
+      in the game file.
+    - Removed the map debug messages in the console.
+    - Improved keyboard shortcut system.
+    - Flag default worker settings are now editable in the Unit Settings tab.
+    - Made net connections multi-threaded.
+    - New Administrative YOG commands.
+    - Improved latency computation on server.
+    - Games will now be sent over network to joining players when the computed
+      SHA1 does not match.
+    - You can now adjust the sound of someone talking through the Settings
+      panel on the main menu or in game.
+    - Minimum (default) resolution now 800x600.
+    - A new talk indicator (for Linux players) shows who is talking on VOIP.
+    - Flag/Area in game button now differs from the building button.
+    - The tutorial campaign text is now in the translation files.
+    - scons script now checks for a compiler.
+    - Addition of two new command line options: 
+        * -test-games: Runs the game automatically, with different maps,
+          different players, for 1 hour or until game is won, using GUI. Good
+          for testing features or AI's.
+        * -test-games-nox: Same as -test-games, but without a GUI, so many
+          times faster, but harder to knnow if features are working as they
+          should. Good for finding bugs in the engine.
+    - General code improvements for maintainability.
+    - Fixed several memory leaks.
+  * debian/patches/01_remove_home_directory_browsing.patch: Changed a fixed
+    path that made the game load the wrong data.
+
+ -- David Martínez Moreno <ender@debian.org>  Tue, 06 May 2008 21:15:21 +0200
+
+glob2 (0.9.2-2) unstable; urgency=low
+
+  * Agh.  Globulation 2 keeps doing the same thing again and again, and I keep
+    hating Scons more and more every day.  Removed the build directory from
+    build target in debian/rules and wrote a simple install script to avoid
+    the broken install script in Scons that tries to build again the binary,
+    this time with the wrong path (closes: #477365).
+  * debian/control:
+    - Added libboost-thread-dev and libboost-date-time-dev to the
+      Build-Depends.  Thanks, Amaya!
+    - Added scons to Build-Depends as well.  Thanks again!.  This closes:
+      #476369.
+
+ -- David Martínez Moreno <ender@debian.org>  Tue, 29 Apr 2008 01:49:41 +0200
+
+glob2 (0.9.2-1) unstable; urgency=low
+
+  * New upstream release (beta 2) (closes: #454501):
+    - Map headers have been replaced and designed for better maintainability.
+    - YOG has been completely redesigned.
+    - Licence changed to GPLv3.
+    - Scons has completely replaced the old configure and make tools for
+      compiling.
+    - Nicowar has been majorly improved.
+    - Several parts of the game have been optimized, to make it less CPU
+      intensive.
+    - A new keyboard shortcuts system has been implemented.
+    - Quick Kill keys have been added.
+    - The tutorial has been split into a 4 part campaign.
+    - All overlays now paint with OpenGL for much smoother results.
+    - A particle engine has been added allowing smoke effects.
+    - A new fertility overlay has been added, which shows where resource are
+      the most likely to grow.
+    - The ability to open saved games in the map editor has been revived.
+    - Restarting a network game using a saved game is also working again.
+    - Debug output has been removed, improving game's speed.
+    - Translations have been reviewed, and a script made to mark them as
+      incomplete.
+    - Brazilian and French translations have been updated.
+    - Many bugs (major and minor) have been fixed.
+  * debian/copyright: Updated with lots of information.
+  * debian/rules: Rewritten with scons in mind.  While at it, make sure that
+    we're installing dataset in the right directory (closes: #460295).
+  * debian/control:
+    - Upgraded Standards-Version to 3.7.3.0.
+    - Added a Replaces in glob2 to solve conflict with glob2.desktop, shipped
+      by error in glob2-data package in old versions.
+  * debian/patches:
+    - 02_gcc-4.3_fixes.patch: Merged.
+    - 03_freedesktop_compliance.patch: Removed, leftover.
+    - 04_CXXFLAGS_abuse.patch: Removed, leftover.
+    - 05_remove_vorbis_useless_dependency.patch: Depends on configure, so
+      dropped until seeing if it's needed.
+  * debian/glob2.6: Fixed some errors detected by lintian.
+
+ -- David Martínez Moreno <ender@debian.org>  Wed, 16 Apr 2008 00:11:20 +0200
+
+glob2 (0.8.23-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Apply patch from Cyril Brulebois to fix GCC 4.3 compatibility
+    (Closes: #461948)
+
+ -- Moritz Muehlenhoff <jmm@debian.org>  Mon, 17 Mar 2008 23:35:02 +0100
+
+glob2 (0.8.23-1) unstable; urgency=low
+
+  * New upstream release (closes: #426156):
+    - More coherent look and feel between game and menus.
+    - Prestige can be adjusted for single player games
+    - Several bug fixes.
+  * Updated 02_gcc-4.3_fixes.patch with new fixes from Martin Michlmayr
+    (closes: #420878).
+  * Dropped 03_freedesktop_compliance.patch, 04_CXXFLAGS_abuse.patch; they
+    were included upstream.
+
+ -- David Martínez Moreno <ender@debian.org>  Tue, 29 May 2007 00:57:19 +0200
+
+glob2 (0.8.22.dfsg-1) unstable; urgency=low
+
+  * New upstream release.  Main changes are:
+    - New campaign system.
+    - Unified buttons height throughout the game. More coherent GUI. All
+      buttons are pixmaps.
+    - Improved Echo API and redesigned Nicowar AI.
+    - New building/unit editor.
+    - New script areas.
+    - New no-growth areas.
+    - Globulation 2 is translated to more languages (included Arabic).
+    - Balanced magic attacks.
+    - Minor features and bug fixes.
+  * The .dfsg.1 prefix is due to the unfortunate fact that I had to grab
+    manually maps and campaigns from the server, as they were not inside the
+    original tar.gz.
+  * debian/rules: Added patch/unpatch targets from quilt.
+  * debian/control: Added quilt and libfribidi-dev to Build-Depends.
+  * Added patches:
+    - 01_remove_home_directory_browsing: Isolated change for Debian bug
+      #408733.
+    - 02_gcc-4.3_fixes: Fix to compile Globulation 2 with GCC 4.3 (closes:
+      #417198).  Thanks to Martin Michlmayr.
+    - 03_freedesktop_compliance: Fix to glob2.desktop in order to make it
+      compliant with freedesktop standards (closes: #401545).  Thanks, Lukas
+      Fittl.
+    - 04_CXXFLAGS_abuse: Upstream forced to use -O3 -march=i686 as CXXFLAGS,
+      so I had to disable it.
+    - 05_remove_vorbis_useless_dependency: checklib sorted out a useless
+      direct dependency on libvorbis (in fact it is accesed through
+      libvorbis{file,enc}).  Removed from configure.
+  * debian/glob2.6: Updated with current options.  Specifically, help is
+    displayed with --help, not -h, and OpenGL renderer is disabled with -G,
+    not -t 0 (closes: #397748).  -h is not "simply ignored", but on the
+    opposite is an abbreviation for 'high quality graphics'.
+
+ -- David Martínez Moreno <ender@debian.org>  Tue, 10 Apr 2007 02:25:49 +0200
+
+glob2 (0.8.21-4) unstable; urgency=medium
+
+  * Added patch for libgag/src/FileManager.cpp in order to remove my own home
+    directory from first inspection by the included filemanager.  This can
+    trigger big syslog growth when automount is active.  Priority medium, as
+    this can have undesirable effects in the whole system (closes: #408733).
+
+ -- David Martínez Moreno <ender@debian.org>  Sun, 28 Jan 2007 02:57:03 +0100
+
+glob2 (0.8.21-3) unstable; urgency=low
+
+  * Install data in /usr/share/games (closes: #390930).
+  * Move pixmaps/ and applications/ to glob2-data package.
+
+ -- David Martínez Moreno <ender@debian.org>  Sat, 14 Oct 2006 11:40:53 +0200
+
+glob2 (0.8.21-2) unstable; urgency=low
+
+  * debian/control:
+    - glob2-data should Replace files from old glob2 packages.  Thanks, Yann
+      Dirson (closes: #390211).
+    - Added libsdl-ttf2.0-dev to Build-Depends (closes: #390003).
+  * configure: Removed -lvorbis, as it is a useless dependency.
+
+ -- David Martínez Moreno <ender@debian.org>  Sat, 30 Sep 2006 13:02:33 +0200
+
+glob2 (0.8.21-1) unstable; urgency=low
+
+  * New upstream release (closes: #381645):
+    - Videoshot support added. Using the -vs command line switch, it is now
+      possible to dump each frame to a bmp in order to build a video
+      afterwards.
+    - Added Sloven and Turkish translations.
+    - Updated Polish, Catalan, Danish, German, Spanish and Swedish
+      translations.
+    - Prevented key scrolling while in-game menu is active.
+    - Unit to building allocation system rewrite started.
+    - Towers can now attack explorers.
+    - Explorers avoid towers.
+    - Markets on the same team now share fruits.
+    - Per-unit skinning and parameter editing.
+    - Map generator now places stone and fruit.
+    - Synced the amount of teams that can be placed on a map automatically.
+    - Completely revamped map editor with better end-user experience.
+    - New AI system codenamed Echo for better and easier AI development.
+    - New economic AI using Echo called ReachToInfinity.
+    - New war-based AI called WarRush.
+    - Brand new language formatting system which will make it easier for
+      developers in the future.
+    - New tooltip system implemented in libgag.
+    - Gradients have been modified a fair bit.
+    - Several memory leaks have been found and fixed.
+    - Fixed lots of other bugs.
+  * Splitted glob2 in binary and -data packages.  More that 80 MB of archive
+    space are saved in this way.
+
+ -- David Martínez Moreno <ender@debian.org>  Thu, 21 Sep 2006 02:54:10 +0200
+
+glob2 (0.8.19-2) unstable; urgency=low
+
+  * debian/control: Added libboost-dev to Build-Depends, as it seems to be a
+    new dependency.  Thanks, Roberto Pariset.  Closes: #379583.
+
+ -- David Martínez Moreno <ender@debian.org>  Tue, 25 Jul 2006 01:24:37 +0200
+
+glob2 (0.8.19-1) unstable; urgency=low
+
+  * New upstream release (closes: #374362).  Main changes are:
+    - Added and updated translations.
+    - Enhanced AI.
+    - Unit/building cost tuning.
+    - New graphics and animations.
+    - Improved events (unit/building attacked, conversion, etc).
+    - Network game enhancements.
+    - New Perlin-Noise based random map generation for island, swamp,
+      craterlakes or river theme maps.
+    - The tutorial is finally revamped.
+    - GUI improvements in usability.
+    - Fixed lots of bugs.
+  * Acknowledge NMU.  Thanks, Mohammed Adnène Trojette (closes: #369090,
+    #357552).  In that NMU, also config.guess and config.sub were updated to
+    latest version.
+  * debian/control: Replaced libglu1-xorg-dev by libglu1-mesa-dev in
+    Build-Depends, as the former is now a transition package depending on the
+    latter.
+  * Stripped down CVS/ directory from source.
+
+ -- David Martínez Moreno <ender@debian.org>  Mon, 24 Jul 2006 01:05:20 +0200
+
+glob2 (0.8.16-2.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Remove include of obsolete internals (closes: #369090).
+  * GCC 4.1 qualification.
+     + Include patch from Martin Michlmayr (closes: #357552).
+  * Bump Standards-Version (no changes needed).
+
+ -- Mohammed Adnène Trojette <adn+deb@diwi.org>  Mon,  5 Jun 2006 20:12:54 +0200
+
+glob2 (0.8.16-2) unstable; urgency=low
+
+  * A problem in my local tree caused a missing icon in the 0.8.16-1 release,
+    and segfaults. Many thanks to Daniel Burrows for the accurate analysis
+    (closes: #342500). While at it, also updated my environment to latest sid.
+
+ -- David Martínez Moreno <ender@debian.org>  Fri,  9 Dec 2005 01:03:48 +0100
+
+glob2 (0.8.16-1) unstable; urgency=low
+
+  * New upstream release.
+    0.8.15:
+    - Free unit only go to heal if they are more than 10% damaged.
+    - Unit heal speed depends on their damages.
+    - Explorer now have magic attack. Air first then ground with school level
+      3 upgrade.
+    - Shift-v toggle voice chat on/off.
+    - Graphic info are displayed in game option menu.
+    - Gameplay tuning.
+    - Fix for loading saved maps (closes: #307996).
+    - OpenGL display in 16 bpp fixed.
+
+    0.8.16:
+    - Exploration flag now allows the player to choose between basic explorers
+      and upgraded ones that can attack ground.
+    - Explorer damage against buildings is now constant, rather than being
+      proportional to the number of squares the explorer's pulse hits.
+    - The "inn bug" has been fixed: vast numbers of workers could previously be
+      trapped by almost-full inns.
+    - The Campaign has been slightly improved.
+    - The game now admits it when you win by prestige.
+    - Upstream now uses Free DejaVu (http://dejavu.sourceforge.net) instead of
+      MD King KhammuRabi (closes: #321879).
+    - New AI: Nicowar (still unstable, for testing only for now).
+    - General improvements in IRC commands.
+    - Changed YOG servers addresses.
+    - PNG's sizes reduced by pngcrush.
+    - The output of the game is now much quieter.
+    - Several crash bugs fixed.
+
+  * debian/control:
+    - Updated Standards-Version to 3.6.2.
+    - Replaced Build-Depends on xlibmesa-glu-dev to libglu1-xorg-dev |
+      libglu-dev (closes: #333946).
+    - Changed slightly the Description line.
+  * debian/copyright: Changed the old FSF address.
+  * Stripped down CVS/ dir from src/.
+  * OpenGL games work now, I suspect that was a problem with nvidia-glx in my
+    environment (closes: #306782).
+  * Fullscreen games revert to the previous X resolution when exitting
+    (closes: #313010).
+
+ -- David Martínez Moreno <ender@debian.org>  Wed,  7 Dec 2005 18:22:09 +0100
+
+glob2 (0.8.14-2) unstable; urgency=low
+
+  * debian/control: Damn, I would have swore that libsdl-dev depended on
+    libfreetype6-dev...O:-) Added.
+
+ -- David Martínez Moreno <ender@debian.org>  Wed, 27 Apr 2005 01:31:51 +0200
+
+glob2 (0.8.14-1) unstable; urgency=low
+
+  * Initial release.
+  * Integrated most of the structure that Vincent Deffontaines
+    <vincent@gryzor.com> made for the unofficial packages. Thanks, Vincent!
+  * Fixed several glitches and typos across manpage.
+  * Added a home-made ChangeLog gathering individual release-notes-0.8.*.txt
+    files from the website.
+
+ -- David Martínez Moreno <ender@debian.org>  Tue, 26 Apr 2005 20:09:12 +0200
