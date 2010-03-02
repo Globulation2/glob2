@@ -2,20 +2,34 @@ Source: glob2
 Section: games
 Priority: optional
 Maintainer: Stephane Magnenat <stephane at magnenat dot net>
-Build-Depends: debhelper (>> 4.0.0),libsdl1.2-dev (>=1.2.0),libsdl-image1.2-dev(>=1.2.0),libsdl-net1.2-dev(>=1.2.0),libvorbis-dev,libspeex-dev,libglu1-xorg-dev|libglu-dev,libboost-dev,libsdl-ttf2.0-dev,libfribidi-dev,scons,libboost-date-time-dev,libboost-thread-dev,libboost-dev,libfribidi-dev
-Standards-Version: 3.5.8
+Build-Depends: debhelper (>> 6.0.0), quilt (>= 0.40), scons, libsdl1.2-dev (>=1.2.0), libsdl-image1.2-dev (>=1.2.0), libsdl-net1.2-dev (>=1.2.0), libsdl-ttf2.0-dev, libglu1-mesa-dev | libglu-dev, libvorbis-dev, libspeex-dev, libfreetype6-dev, libboost-dev, libboost-thread-dev, libboost-date-time-dev, libfribidi-dev, portaudio19-dev, libboost-math-dev
+Standards-Version: 3.8.1
+Homepage: http://globulation2.org
 
 Package: glob2
 Architecture: any
-Depends: ${shlibs:Depends}
-Conflicts: glob2cvs
-Description: Glob2 is a state of the art Real Time Strategy (RTS) game.
- Globulation in a whole is an on-going project to create an innovative high 
- quality gameplay by minimizing micro-managment and assigning automatically 
- the tasks to the units. The player just has to order the number of units 
+Depends: ${shlibs:Depends}, glob2-data (= ${source:Version})
+Replaces: glob2-data (<< 0.9.2)
+Description: innovative state-of-the-art Real Time Strategy (RTS) game
+ Globulation 2, in a whole, is an on-going project to create an innovative high 
+ quality gameplay by minimizing micro-management and assigning automatically 
+ the tasks to the units.  The player just has to order the number of units 
  he wants for a selected task and the units will do their best to satisfy 
- your requirements.
+ his requirements.
+ .
  Glob2 can be played by a single player, through your Local Area Network (LAN), 
- or through Internet thanks to Ysagoon Online Game (YOG), a meta-server. It 
+ or through Internet, thanks to Ysagoon Online Game (YOG), a meta-server.  It 
  also features a scripting language for versatile gameplay and an integrated 
  map editor.
+
+Package: glob2-data
+Architecture: all
+Description: dataset for Globulation2 (glob2)
+ Globulation 2, in a whole, is an on-going project to create an innovative high 
+ quality gameplay by minimizing micro-management and assigning automatically 
+ the tasks to the units.  The player just has to order the number of units 
+ he wants for a selected task and the units will do their best to satisfy 
+ his requirements.
+ .
+ These are the images, maps and the rest of architecture-independent dataset
+ for Globulation 2.

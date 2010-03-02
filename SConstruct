@@ -17,7 +17,7 @@ def establish_options(env):
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-        opts.Add("INSTALLDIR", "Installation Directory", "./")
+        opts.Add(PathOption("INSTALLDIR", "Installation Directory", "./"))
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
@@ -32,6 +32,8 @@ def establish_options(env):
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save("options_cache.py", env)
+    if env.GetOption('clean'):
+        Execute(Delete("options_cache.py"))
     
     
 class Configuration:
@@ -52,7 +54,7 @@ def configure(env):
     configfile.add("PACKAGE", "Name of package", "\"glob2\"")
     configfile.add("PACKAGE_BUGREPORT", "Define to the address where bug reports for this package should be sent.", "\"glob2-devel@nongnu.org\"")
     if isDarwinPlatform:
-        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
+        configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "../Resources/\"")
     else:
     	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
@@ -345,8 +347,11 @@ def main():
     Export('PackTar')
     if env['mingwcross']:
         Export('crossroot_abs')
+    Export('isWindowsPlatform')
+
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
+    SConscript("debian/SConscript")
     SConscript("fedora/SConscript")
     SConscript("gnupg/SConscript")
     SConscript("libgag/SConscript")
