@@ -80,6 +80,7 @@ void YOGClientGameConnectionDialog::execute()
 				SDL_GetModState();
 #					endif
 #					ifdef USE_WIN32
+				SDLMod modState = SDL_GetModState();
 				if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
 				{
 					break;

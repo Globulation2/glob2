@@ -49,9 +49,9 @@ public:
 	};
 
 	enum ClickType {
-		DELETE=0,
-		AREA=1,
-		NO_RESOURCE_GROWTH=2
+		CT_DELETE=0,
+		CT_AREA=1,
+		CT_NO_RESOURCE_GROWTH=2
 	};
 
 protected:
