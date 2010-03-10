@@ -2145,9 +2145,7 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			action=HARVEST;
 			speed=performance[action];
-			//TODO: WTH???
-			if(speed==0)
-				speed/=speed;
+			assert(speed!=0);
 			break;
 		}
 		

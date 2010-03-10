@@ -66,9 +66,9 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	mapscript(gui)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
-	
+
 	isRecordingReplay = false;
-	
+
 	init(gui, edit);
 }
 
@@ -129,7 +129,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 
 	stepCounter=0;
 	prestigeToReach=0;
-	
+
 	ticksGameSum=new int[Team::MAX_COUNT];
 	for (int i=0; i<Team::MAX_COUNT; i++)
 		ticksGameSum[i]=0;
@@ -159,7 +159,7 @@ void Game::clearGame()
 			players[i]=NULL;
 		}
 	}
-	
+
 	// Clear build projects
 	buildProjects.clear();
 
@@ -226,13 +226,16 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	assert(order->sender<Team::MAX_COUNT);
 	assert(order->sender < gameHeader.getNumberOfPlayers());
 
-	if (isRecordingReplay && order->getOrderType() != ORDER_VOICE_DATA && order->getOrderType() != ORDER_NULL) // TODO: optionally save VOIP
+	if (isRecordingReplay
+			&& order->getOrderType() != ORDER_VOICE_DATA
+			&& order->getOrderType() != ORDER_NULL)
+		// TODO: optionally save VOIP
 	{
 		assert(replay);
-		
+
 		replayOrderCount++;
 		NetSendOrder* msg = new NetSendOrder(order);
-		
+
 		for (std::vector<OutputStream *>::iterator out = replayOutputStreams.begin(); out != replayOutputStreams.end(); out++)
 		{
 			// Steps since last order
@@ -245,11 +248,11 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 
 			(*out)->flush();
 		}
-		
+
 		delete msg;
 		replayStepsSinceLastOrder=0;
 	}
-	
+
 	anyPlayerWaited=false;
 	Team *team=players[order->sender]->team;
 	assert(team);
@@ -836,7 +839,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		replayStepsSinceLastOrder = 0;
 
 		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.replay"));
-		
+
 		replayOutputStreams.push_back(replay);
 		replayOutputStreams.push_back(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.orders")));
 	}
@@ -1270,7 +1273,7 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam)
 {
-	if (isRecordingReplay) 
+	if (isRecordingReplay)
 	{
 		replayStepCount++;
 		replayStepsSinceLastOrder++;
@@ -2334,7 +2337,7 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 						|| (building->seenByMask & visibleTeams)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
-						int px,py;					
+						int px,py;
 						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
 					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
 						drawnBuildings.insert(building);
@@ -2351,10 +2354,10 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	static int areaAnimationTick = 0;
-	
+
 	typedef bool (Map::*MapIsFP)(int, int);
 	MapIsFP mapIs;
-	
+
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->replaying || globalContainer->replayShowAreas))
 	{
 		mapIs=&Map::isForbiddenLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, ForbiddenArea);
