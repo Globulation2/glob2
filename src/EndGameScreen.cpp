@@ -380,6 +380,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	addWidget(graphLabel);
 	
 	// add buttons
+	// FIXME: magic numbers!
 	addWidget(new TextButton(90, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
 	addWidget(new TextButton(190, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
 	addWidget(new TextButton(290, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
@@ -389,7 +390,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 
 	if (gui->game.isRecordingReplay)
 	{
-		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's')); // FIXME: magic numbers!
+		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's'));
 		addWidget(new TextButton(15, 15, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
 	}
 	else

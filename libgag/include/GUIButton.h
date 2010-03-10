@@ -64,7 +64,7 @@ namespace GAGGUI
 		TextButton() { fontPtr=NULL; }
 		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode,
 		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode=0);
-		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returxnCode, Uint16 unicodeShortcut=0);
+		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, Uint16 unicodeShortcut=0);
 		virtual ~TextButton() { }
 		virtual void internalInit(void);
 		virtual void paint(void);
