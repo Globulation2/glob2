@@ -24,6 +24,7 @@
 
 #include "boost/integer_traits.hpp"
 #include "boost/math/common_factor.hpp"
+//also the Perlin Noise stuff uses random that is not based on syncRand
 #include "boost/random.hpp"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -305,10 +306,6 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	{
 		for(int j=i+1; j<descriptor.nbTeams; ++j)
 		{
-			//TODO: side effects???
-			//int d = 
-			game.map.warpDistSquare(teamAreaPoints[i].x, teamAreaPoints[i].y, teamAreaPoints[j].x, teamAreaPoints[j].y);
-
 			// Choose one random point from each players area
 			std::vector<MapGeneratorPoint> teami;
 			std::vector<MapGeneratorPoint> teamj;
@@ -326,11 +323,8 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 			{
 				for(int x=-2; x<=2 && !failed; ++x)
 				{
-					//TODO: does this line and 3 below have side effects? i removed the "int nx="
-					game.map.normalizeX(linePoints[p].x + x);
 					for(int y=-2; y<=2 && !failed; ++y)
 					{
-						game.map.normalizeY(linePoints[p].y + y);
 						int g = grid[linePoints[p].y * game.map.getW() + linePoints[p].x];
 						if(g!=0 && g!=teamAreaNumbers[i] && g!=teamAreaNumbers[j] && g!=connectorArea)
 						{
@@ -2335,7 +2329,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	{
 		for (unsigned x=0; x<wHeightMap; x++)
 		{
-			int tmpRessource=-12;//TODO: sorry! is there some NONE?
+			int tmpRessource=NO_RES;
 			if(hm(x+wHeightMap*y)<algaeLevel)
 			{
 				tmpRessource=ALGA;
@@ -2358,7 +2352,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 					tmpRessource=WOOD;
 				}
 			}
-			if (tmpRessource!=-12)
+			if (tmpRessource!=NO_RES)
 			{
 				for (int yRepeat=0; yRepeat<pow(2,hPower2Divider); yRepeat++)
 				{
@@ -2370,26 +2364,14 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			}
 		}
 	}
-/*	for(int x=0; x<w; x++)
-	{
-		for (int y=0; y<h; y++)
-		{
-		if(hm(x+w*y)<algaeLevel)
-			setRessource(x,y, ALGA, 1);
-		//following places stone next to sand & water and keeps wheat & wood more inland without clogging up the interior too badly
-		else if(hm(x+w*y)<wheatWoodLevel)
-			//patch to get smooth areas of wheat and wood:
-			//if the map is ascending at x+w/2,y set wheat. else set wood
-			if(hm((x+w/2)%w+w*y)<hm((x+w/2+1)%w+w*y))
-				setRessource(x,y,CORN,1);
-				else setRessource(x,y,WOOD,1);
-		if(hm(x+w*y) < stoneLevel)
-			setRessource(x,y,STONE,1);
-		}
-	}*/
+
 	//TODO: count of groves(=descriptor.fruitRatio) does not scale with mapsize.
 	//so it has to be adjusted higher on bigger maps now.
-	//TODO: is the use of syncrand obligatory in mapgeneration?
+
+	// in mapgeneration syncRand is not needed. In earlier versions we assumed
+	// to profit from sharing only the generation seeds for common random maps.
+	// this assumption was dropped in favour of easier code.
+
 	srand((unsigned)time(NULL));
 	//fruit-placement:
 	if (descriptor.fruitRatio > 0)
