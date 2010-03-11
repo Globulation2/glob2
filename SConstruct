@@ -258,10 +258,12 @@ def main():
         env.Clone = env.Copy
     
     
-    #Add the paths to important mingw libraries
+    # Add specific paths.
     if env['mingw'] or isWindowsPlatform:
         env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
+        env.Append(LIBPATH=['/usr/local/lib'])
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
+        env.Append(CPPPATH=['/usr/local/include/SDL'])
     if isDarwinPlatform:
         env.Append(LIBPATH=["/sw/lib"])
         env.Append(CPPPATH=["/sw/include"])
@@ -279,6 +281,7 @@ def main():
     env.Append(CPPPATH=['#libusl/src', '#'])
     env.Append(CXXFLAGS=' -Wall')
     env.Append(LINKFLAGS=' -Wall')
+    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
     if env['release']:
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS=' -O2')
@@ -287,20 +290,14 @@ def main():
         env.Append(LINKFLAGS='-pg')
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS='-O2')
-    if env['mingw'] or isWindowsPlatform:
-        env.Append(LIBPATH=['/usr/local/lib'])
-        env.Append(LIBS=['regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
-        env.Append(LINKFLAGS=['-mwindows'])
-        env.Append(CPPPATH=['/usr/local/include/SDL'])
-        env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
-    elif env['mingwcross']:
-        env.Append(LIBS=['regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
+    if env['mingw'] or isWindowsPlatform or env['mingwcross']:
+        env.Append(LIBS=['vorbis', 'ogg', 'regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
         env.Append(LINKFLAGS=['-mwindows'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
-    env.Append(LIBS=['vorbisfile', 'vorbis', 'ogg', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
+    
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
