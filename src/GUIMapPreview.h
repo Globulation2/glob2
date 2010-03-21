@@ -52,7 +52,7 @@ public:
 	//! Reload thumbnail for a new map
 	virtual void setMapThumbnail(const std::string& mapName);
 	//! Load from a given thumbnail
-	virtual void setMapThumbnail(MapThumbnail thumbnail);
+	virtual void setMapThumbnail(const MapThumbnail &thumbnail);
 	//! Returns last map width
 	int getLastWidth(void) { return thumbnail.getMapWidth(); }
 	//! Returns last map height
