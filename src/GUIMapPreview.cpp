@@ -79,14 +79,15 @@ bool MapPreview::isThumbnailLoaded()
 
 void MapPreview::setMapThumbnail(const std::string& mapName)
 {
-	MapThumbnail n;
-	n.loadFromMap(mapName);
-	setMapThumbnail(n);
+	MapThumbnail *n = new MapThumbnail();
+	n->loadFromMap(mapName);
+	setMapThumbnail(*n);
+	delete n;
 }
 
 
 
-void MapPreview::setMapThumbnail(MapThumbnail nthumbnail)
+void MapPreview::setMapThumbnail(const MapThumbnail &nthumbnail)
 {
 	thumbnail = nthumbnail;
 	if(surface)
