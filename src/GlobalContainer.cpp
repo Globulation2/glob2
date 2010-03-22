@@ -330,7 +330,16 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			settings.screenFlags &= ~GraphicContext::RESIZABLE;
 			continue;
 		}
-		
+
+		if (strcmp(argv[i], "-sgsl")==0)
+		{
+			settings.optionFlags &= ~OPTION_MAP_EDIT_USE_USL;
+		}
+		if (strcmp(argv[i], "-usl")==0)
+		{
+			settings.optionFlags |= OPTION_MAP_EDIT_USE_USL;
+		}
+
 		if (strcmp(argv[i], "-g")==0)
 		{
 			settings.screenFlags |= GraphicContext::USEGPU;
@@ -381,6 +390,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-h\thigh speed graphics: max of transparency effects\n");
 			printf("-v\tset the music volume\n");
 			printf("-m/-M\tmute/unmute the sound (both music and speech)\n");
+			printf("-sgsl\tedit SGSL script in the map editor (default)\n");
+			printf("-usl\tedit USL script in the map editor\n");
 			printf("-d\tadd a directory to the directory search list\n");
 			printf("-u\tspecify a user name\n");
 			printf("-y\tspecify an alternative hostname for YOG server\n");
