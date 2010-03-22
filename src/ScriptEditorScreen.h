@@ -31,6 +31,7 @@ namespace GAGGUI
 using namespace GAGGUI;
 class Game;
 class MapScript;
+class MapScriptSGSL;
 
 class ScriptEditorScreen:public OverlayScreen
 {
@@ -53,6 +54,7 @@ public:
 protected:
 	TextArea *scriptEditor;
 	Text *compilationResult;
+	MapScriptSGSL *sgslMapScript;
 	MapScript *mapScript;
 	Game *game;
 	Text *mode;
@@ -76,7 +78,7 @@ protected:
 	bool testCompile(void);
 	
 public:
-	ScriptEditorScreen(MapScript *mapScript, Game *game);
+	ScriptEditorScreen(Game *game);
 	virtual ~ScriptEditorScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);

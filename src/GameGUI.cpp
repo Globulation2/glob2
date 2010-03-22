@@ -520,11 +520,11 @@ void GameGUI::step(void)
 	
 	// TODO: die with SGSL
 	// Check if the text being displayed has changed, and if it has, add it to the history box
-	if(game.script.isTextShown && game.script.textShown != previousSGSLText)
+	if(game.sgslScript.isTextShown && game.sgslScript.textShown != previousSGSLText)
 	{
 		//Split into one per line
 		std::vector<std::string> messages;
-		setMultiLine(game.script.textShown, &messages, "    ");
+		setMultiLine(game.sgslScript.textShown, &messages, "    ");
 
 		///Add each line as a seperate message to the message manager.
 		///Must be done backwards to appear in the right order
@@ -533,7 +533,7 @@ void GameGUI::step(void)
 			messageManager.addChatMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
 		}
 		
-		previousSGSLText = game.script.textShown;
+		previousSGSLText = game.sgslScript.textShown;
 	}
 	
 	// Check if the text being displayed has changed, and if it has, add it to the history box
@@ -4203,10 +4203,10 @@ void GameGUI::drawOverlayInfos(void)
 
 		// TODO: die with SGSL
 		// show script text
-		if (game.script.isTextShown)
+		if (game.sgslScript.isTextShown)
 		{
 			std::vector<std::string> lines;
-			setMultiLine(game.script.textShown, &lines);
+			setMultiLine(game.sgslScript.textShown, &lines);
 			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
@@ -4237,9 +4237,9 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// show script counter
-		if (game.script.getMainTimer())
+		if (game.sgslScript.getMainTimer())
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormatableString("%0").arg(game.script.getMainTimer()).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormatableString("%0").arg(game.sgslScript.getMainTimer()).c_str());
 			yinc = std::max(yinc, 32);
 		}
 

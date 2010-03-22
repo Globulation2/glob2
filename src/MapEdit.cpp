@@ -2065,7 +2065,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		scriptEditor=new ScriptEditorScreen(&game.mapscript, &game);
+		scriptEditor=new ScriptEditorScreen(&game);
 		showingScriptEditor=true;
 		hasMapBeenModified=true;
 	}
