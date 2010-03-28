@@ -406,7 +406,7 @@ private:
 	int viewportSpeedX, viewportSpeedY;
 
 	// menu related functions
-	enum
+	enum InGameMenu
 	{
 		IGM_NONE=0,
 		IGM_MAIN,
