@@ -95,6 +95,12 @@
 #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
 #define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 
+// Icons for main menu, alliance and objectives buttons.
+#define IGM_ICON_HEIGHT 36
+#define IGM_MAIN_MENU_ICON_Y 0
+#define IGM_ALLIANCE_ICON_Y IGM_ICON_HEIGHT
+#define IGM_OBJECTIVES_ICON_Y (IGM_ICON_HEIGHT * 2)
+
 // Settings for the right sidebar in replays
 #define REPLAY_PANEL_XOFFSET 25
 #define REPLAY_PANEL_YOFFSET (YPOS_BASE_STAT+10)
@@ -938,71 +944,68 @@ void GameGUI::processEvent(SDL_Event *event)
 			panPushed=false;
 		}
 	}
-	
-	if (event->type==SDL_MOUSEBUTTONDOWN)
+
+
+	if (event->type == SDL_MOUSEBUTTONDOWN)
 	{
-		int button=event->button.button;
-		if (button==SDL_BUTTON_LEFT)
+		int butx = event->button.x;
+		int buty = event->button.y;
+
+		int leftEdge  = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH - IGM_ICON_HEIGHT/2;
+		int rightEdge = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + IGM_ICON_HEIGHT/2;
+		int menu = -1;
+
+		if (event->button.button == SDL_BUTTON_LEFT
+			&& (butx > leftEdge)
+			&& (butx < rightEdge))
 		{
-			// NOTE : if there is more than this, move to a func
-			if ((event->button.y<34) && (event->button.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+16) && (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+16))
+			if (buty < IGM_MAIN_MENU_ICON_Y + IGM_ICON_HEIGHT)
 			{
-				if(inGameMenu!=IGM_NONE)
-				{
-					delete gameMenuScreen;
-					gameMenuScreen=NULL;
-				}
-				if(inGameMenu==IGM_MAIN)
-				{
-					inGameMenu=IGM_NONE;
-				}
-				else
-				{
-					gameMenuScreen=new InGameMainScreen(globalContainer->replaying);
-					inGameMenu=IGM_MAIN;
-				}
+				menu = IGM_MAIN;
 			}
-			// NOTE : if there is more than this, move to a func
-			if ((event->button.y>36) && (event->button.y<70) && (event->button.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+16) && (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+16))
+			if (!(hiddenGUIElements & HIDABLE_ALLIANCE)
+				&& (buty > IGM_ALLIANCE_ICON_Y)
+				&& (buty < IGM_ALLIANCE_ICON_Y + IGM_ICON_HEIGHT))
 			{
-				if(inGameMenu!=IGM_NONE)
-				{
-					delete gameMenuScreen;
-					gameMenuScreen=NULL;
-				}
-				if(inGameMenu==IGM_ALLIANCE)
-				{
-					inGameMenu=IGM_NONE;
-				}
-				else
-				{
-					gameMenuScreen=new InGameAllianceScreen(this);
-					inGameMenu=IGM_ALLIANCE;
-				}
+				menu = IGM_ALLIANCE;
+			}
+			if ((buty > IGM_OBJECTIVES_ICON_Y)
+				&& (buty < IGM_OBJECTIVES_ICON_Y + IGM_ICON_HEIGHT))
+			{
+				menu = IGM_OBJECTIVES;
 			}
 
-			// NOTE : if there is more than this, move to a func
-			if ((event->button.y>72) && (event->button.y<106) && (event->button.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+16) && (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+16))
+			if (menu != -1)
 			{
-				if(inGameMenu!=IGM_NONE)
+				if (inGameMenu != IGM_NONE)
 				{
 					delete gameMenuScreen;
-					gameMenuScreen=NULL;
+					gameMenuScreen = NULL;
 				}
-				if(inGameMenu==IGM_OBJECTIVES)
-				{
-					inGameMenu=IGM_NONE;
-				}
+				if (inGameMenu == menu)
+					inGameMenu = IGM_NONE;
 				else
+					inGameMenu = static_cast<InGameMenu>(menu);
+
+				switch (menu)
 				{
-					gameMenuScreen=new InGameObjectivesScreen(this, false);
-					inGameMenu=IGM_OBJECTIVES;
+				case IGM_MAIN:
+					gameMenuScreen = new InGameMainScreen(globalContainer->replaying);
+					break;
+				case IGM_ALLIANCE:
+					gameMenuScreen = new InGameAllianceScreen(this);
+					break;
+				case IGM_OBJECTIVES:
+					gameMenuScreen = new InGameObjectivesScreen(this, false);
+					break;
+				default:
+					assert(false);
 				}
 			}
 		}
 	}
-	
-	
+
+
 	// if there is a menu he get events first
 	if (inGameMenu)
 	{
@@ -4092,24 +4095,32 @@ void GameGUI::drawTopScreenBar(void)
 		globalContainer->gfx->drawSprite(pos+12, i, globalContainer->gamegui, 17);
 	}
 
+
+	int index;
 	// draw main menu button
-	if (inGameMenu==IGM_MAIN)
-		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 7);
+	if (inGameMenu == IGM_MAIN)
+		index = 7;
 	else
-		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 6);
+		index = 6;
+	globalContainer->gfx->drawSprite(pos, IGM_MAIN_MENU_ICON_Y, globalContainer->gamegui, index);
 
 	// draw alliance button
-	if (inGameMenu==IGM_ALLIANCE)
-		globalContainer->gfx->drawSprite(pos, 36, globalContainer->gamegui, 44);
-	else
-		globalContainer->gfx->drawSprite(pos, 36, globalContainer->gamegui, 45);
+	if ( !(hiddenGUIElements & HIDABLE_ALLIANCE) )
+	{
+		if (inGameMenu == IGM_ALLIANCE)
+			index = 44;
+		else
+			index = 45;
+		globalContainer->gfx->drawSprite(pos, IGM_ALLIANCE_ICON_Y, globalContainer->gamegui, index);
+	}
 
 	// draw objectives button
-	if (inGameMenu==IGM_OBJECTIVES)
-		globalContainer->gfx->drawSprite(pos, 72, globalContainer->gamegui, 46);
+	if (inGameMenu == IGM_OBJECTIVES)
+		index = 46;
 	else
-		globalContainer->gfx->drawSprite(pos, 72, globalContainer->gamegui, 47);
-	
+		index = 47;
+	globalContainer->gfx->drawSprite(pos, IGM_OBJECTIVES_ICON_Y, globalContainer->gamegui, index);
+
 	if(hilights.find(HilightMainMenuIcon) != hilights.end())
 	{
 		arrowPositions.push_back(HilightArrowPosition(pos-32, 32, 43));
