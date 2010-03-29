@@ -16,7 +16,7 @@ struct Position
 	bool operator<(const Position& that) const;
 	
 	void operator+=(char c);
-	void move(const char *text, size_t length);
+	void move(const std::string text, size_t length);
 };
 
 inline std::ostream& operator<<(std::ostream& stream, const Position& position)

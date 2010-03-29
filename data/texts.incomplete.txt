@@ -6,12 +6,14 @@
 *data/texts.dk.txt
 data/texts.en.txt
 *data/texts.es.txt
+*data/texts.eo.txt
 *data/texts.eu.txt
+*data/texts.fa.txt
 data/texts.fr.txt
 *data/texts.gr.txt
 *data/texts.hu.txt
 data/texts.it.txt
-*data/texts.nl.txt
+data/texts.nl.txt
 *data/texts.pl.txt
 *data/texts.pt.txt
 *data/texts.ro.txt
@@ -19,6 +21,7 @@ data/texts.ru.txt
 *data/texts.si.txt
 *data/texts.sk.txt
 *data/texts.sr.txt
+*data/texts.fi.txt
 *data/texts.sv.txt
 *data/texts.tr.txt
 *data/texts.zh-tw.txt
