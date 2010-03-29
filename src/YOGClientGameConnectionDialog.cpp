@@ -72,14 +72,12 @@ void YOGClientGameConnectionDialog::execute()
 			{
 #					ifdef USE_OSX
 				SDLMod modState = SDL_GetModState();
-#					else
-				SDL_GetModState();
-#					endif
-#					ifdef USE_OSX
 				if(event.key.keysym.sym == SDLK_q && modState & KMOD_META)
 				{
 					break;
 				}
+#					else
+				SDL_GetModState();
 #					endif
 #					ifdef USE_WIN32
 				SDLMod modState = SDL_GetModState();

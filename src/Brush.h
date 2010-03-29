@@ -47,7 +47,13 @@ public:
 		MODE_ADD,
 		MODE_DEL
 	};
-	
+
+	enum ClickType {
+		CT_DELETE=0,
+		CT_AREA=1,
+		CT_NO_RESOURCE_GROWTH=2
+	};
+
 protected:
 	unsigned figure;
 	Mode mode;

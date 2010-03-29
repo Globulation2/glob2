@@ -31,8 +31,8 @@ namespace GAGCore
 class Race
 {
 public:
-	UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
-	Sint32 hungryness;
+	static UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
+	static Sint32 hungryness;
 
 public:
 	Race();
@@ -46,10 +46,7 @@ public:
 	
 	void save(GAGCore::OutputStream *stream);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	Uint32 checkSum(void);
-	
-protected:
-	static Race defaultRace;
+	static Uint32 checkSum(void);
 };
 
 #endif

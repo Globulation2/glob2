@@ -32,12 +32,12 @@ namespace GAGGUI
 	class MessageBoxScreen:public OverlayScreen
 	{
 	public:
-		MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3]);
+		MessageBoxScreen(GraphicContext *parentCtx, const std::string font, MessageBoxType type, std::string title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], std::string captionArray[3]);
 		virtual ~MessageBoxScreen() { }
 		virtual void onAction(Widget *source, Action action, int par1, int par2);
 	};
 	
-	MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], const char *captionArray[3])
+	MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const std::string font, MessageBoxType type, std::string title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], std::string captionArray[3])
 	:OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 110)
 	{
 		addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, font, title));
@@ -61,10 +61,10 @@ namespace GAGGUI
 			endValue=par1;
 	}
 	
-	int MessageBox(GraphicContext *parentCtx, const char *font, MessageBoxType type, const char *title, const char *caption1, const char *caption2, const char *caption3)
+	int MessageBox(GraphicContext *parentCtx, const std::string font, MessageBoxType type, std::string title, std::string caption1, std::string caption2, std::string caption3)
 	{
 		// for passing captions to class
-		const char *captionArray[3]={
+		std::string captionArray[3]={
 			caption1,
 			caption2,
 			caption3 };
@@ -75,14 +75,14 @@ namespace GAGGUI
 	
 		// compute number of caption
 		unsigned captionCount;
-		if (caption3!=NULL)
+		if (!caption3.empty())
 		{
 			captionCount = 3;
 			captionWidth[2] = fontPtr->getStringWidth(captionArray[2])+40;
 			captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+40;
 			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+40;
 		}
-		else if (caption2!=NULL)
+		else if (!caption2.empty())
 		{
 			captionCount = 2;
 			captionWidth[1] = fontPtr->getStringWidth(captionArray[1])+40;

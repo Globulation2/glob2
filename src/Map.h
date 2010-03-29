@@ -874,7 +874,7 @@ public:
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
 	Sint32 warpDistSum(int px, int py, int qx, int qy); //!< The combined distance on x and r y axis, between (px, py) and (qx, qy), warp-safe.
 	bool isInLocalGradient(int ux, int uy, int bx, int by); //!< Return true if the unit @(ux, uy) is close enough of building @(bx, by).
-	void dumpGradient(Uint8 *gradient, const char *filename = "gradient.dump.pgm");
+	void dumpGradient(Uint8 *gradient, const std::string filename = "gradient.dump.pgm");
 
 public:
 	void makeHomogenMap(TerrainType terrainType);

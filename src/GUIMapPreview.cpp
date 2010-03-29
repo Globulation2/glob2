@@ -64,7 +64,7 @@ MapPreview::~MapPreview()
 
 
 
-const char *MapPreview::getMethode(void)
+std::string MapPreview::getMethode(void)
 {
 	return Toolkit::getStringTable()->getString("[handmade map]");
 }
@@ -131,8 +131,8 @@ void MapPreview::paint(void)
 		/*parent->getSurface()->drawRect(x, y, 128, 128, ColorTheme::frontColor);*/
 		Font *standardFont = Toolkit::getFont("standard");
 		assert(standardFont);
-		const char *line0 = Toolkit::getStringTable()->getString("[GUIMapPreview text 0]");
-		const char *line1 = Toolkit::getStringTable()->getString("[GUIMapPreview text 1]");
+		std::string line0 = Toolkit::getStringTable()->getString("[GUIMapPreview text 0]");
+		std::string line1 = Toolkit::getStringTable()->getString("[GUIMapPreview text 1]");
 		int sw0 = standardFont->getStringWidth(line0);
 		int sw1 = standardFont->getStringWidth(line1);
 		int sh = standardFont->getStringHeight(line0);

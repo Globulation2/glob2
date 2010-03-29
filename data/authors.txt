@@ -143,6 +143,7 @@ piglet
 Nederlands
 
 Raoul Verveer <lazy-r at zonnet dot nl>
+Michiel De Muynck <michieldemuynck at gmail dot com>
 
 *
 Portuguese

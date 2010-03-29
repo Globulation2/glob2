@@ -284,7 +284,7 @@ NewMapScreen::NewMapScreen()
 	addWidget(new TextButton(10, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
 	addWidget(new TextButton(330, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
-	const char *text= Toolkit::getStringTable()->getString("[create map]");
+	const std::string text= Toolkit::getStringTable()->getString("[create map]");
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", text));
 	addWidget(new Text(130, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[map size x]")));
 	addWidget(new Text(130, 75, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[map size y]")));

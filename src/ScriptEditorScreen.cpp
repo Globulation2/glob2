@@ -176,7 +176,7 @@ bool ScriptEditorScreen::testCompile(void)
 	{
 		// SGSL
 		sgslMapScript->reset();
-		const ErrorReport er = sgslMapScript->compileScript(game, scriptEditor->getText());
+		const ErrorReport er = sgslMapScript->compileScript(game, scriptEditor->getText().c_str());
 		if (er.type==ErrorReport::ET_OK)
 		{
 			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 100, 255, 100));
