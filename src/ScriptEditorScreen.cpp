@@ -70,10 +70,10 @@ ScriptEditorScreen::ScriptEditorScreen(Game *game)
 	scriptWidgets.push_back(scriptEditor);
 	compilationResult=new Text(10, 343, ALIGN_LEFT, ALIGN_TOP, "standard");
 	scriptWidgets.push_back(compilationResult);
-	cursorPosition=new Text(230, 370, ALIGN_LEFT, ALIGN_TOP, "standard", "Line:1 Col:1");
-	scriptWidgets.push_back(cursorPosition);
-	//scriptWidgets.push_back(new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
+	scriptWidgets.push_back(new TextButton(230, 370, 130, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[compile]"), COMPILE));
 	scriptWidgets.push_back(new TextButton(370, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[load]"), LOAD));
+	cursorPosition=new Text(480, 343, ALIGN_LEFT, ALIGN_TOP, "standard", "Line:1 Col:1");
+	scriptWidgets.push_back(cursorPosition);
 	scriptWidgets.push_back(new TextButton(480, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Save]"), SAVE));
 
 	//These are for the objectives tab
@@ -169,6 +169,8 @@ bool ScriptEditorScreen::testCompile(void)
 			MapScriptError error = mapScript->getError();
 			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
 			compilationResult->setText(FormatableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
+			// USL counts from 1, TextArea counts from 0.
+			scriptEditor->setCursorPos(error.getLine() - 1, error.getColumn() - 1);
 			return false;
 		}
 	}
@@ -496,19 +498,19 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			changeTabAgain=false;
 		}
 	}
-	else if(action == TEXT_MODIFIED)
-	{
-		// on typing compilation
-		if (source == scriptEditor)
-		{
-			testCompile();
-			unsigned line;
-			unsigned column;
-			scriptEditor->getCursorPos(line, column);
-			cursorPosition->setText(FormatableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
-		}
-	}
-	else if (action == TEXT_CURSOR_MOVED)
+	// else if(action == TEXT_MODIFIED)
+	// {
+	// 	// on typing compilation
+	// 	if (source == scriptEditor)
+	// 	{
+	// 		testCompile();
+	// 		unsigned line;
+	// 		unsigned column;
+	// 		scriptEditor->getCursorPos(line, column);
+	// 		cursorPosition->setText(FormatableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
+	// 	}
+	// }
+	else if ((action == TEXT_CURSOR_MOVED) || (action == TEXT_MODIFIED))
 	{
 		if (source == scriptEditor)
 		{
@@ -522,7 +524,9 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 
 void ScriptEditorScreen::onSDLEvent(SDL_Event *event)
 {
-
+	// No unicode representation for F9 key, so putting it here.
+	if ((event->type == SDL_KEYUP) && (event->key.keysym.sym == SDLK_F9))
+		testCompile();
 }
 
 void ScriptEditorScreen::onTimer(Uint32 timer)
