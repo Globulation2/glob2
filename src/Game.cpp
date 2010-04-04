@@ -1232,13 +1232,13 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam)
 {
-	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
-	{
-		globalContainer->replayWriter->advanceStep();
-	}
-
 	if (!anyPlayerWaited)
 	{
+		if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
+		{
+			globalContainer->replayWriter->advanceStep();
+		}
+
 		Sint32 startTick=SDL_GetTicks();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
