@@ -78,6 +78,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) { }
 		virtual size_t getPosition(void) { return backend->getPosition(); }
 		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
+		virtual bool isValid(void) { return backend->isValid(); }
 	};
 	
 	//! Read data from a human readable form, C-like, supporting C and C++ comments
@@ -133,6 +134,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) { }
 		virtual size_t getPosition(void) { return 0; }
 		virtual bool isEndOfStream(void) { return false; }
+		virtual bool isValid(void) { return true; }
 	};
 }
 

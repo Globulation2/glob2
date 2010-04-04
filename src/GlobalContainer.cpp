@@ -37,6 +37,8 @@
 #include "SoundMixer.h"
 #include "UnitsSkins.h"
 #include "VoiceRecorder.h"
+#include "ReplayReader.h"
+#include "ReplayWriter.h"
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -105,18 +107,15 @@ GlobalContainer::GlobalContainer(void)
 	automaticGameGlobalEndConditions=false;
 
 	replaying = false;
-	replay = NULL;
 	replayFileName = "";
 	replayFastForward = false;
 	replayShowFog = true;
 	replayVisibleTeams = 0xFFFFFFFF;
 	replayShowAreas = false;
 	replayShowFlags = true;
-	replayStepsProcessed = 0;
-	replayStepsTotal = -1;
-	replayOrdersProcessed = 0;
-	replayOrdersTotal = -1;
-	replayStepCounter = -1;
+	
+	replayReader = NULL;
+	replayWriter = NULL;
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
@@ -147,6 +146,10 @@ GlobalContainer::~GlobalContainer(void)
 	
 	// close virtual filesystem
 	delete logFileManager;
+
+	// delete replay handlers
+	delete replayReader; replayReader = NULL;
+	delete replayWriter; replayWriter = NULL;
 }
 
 /**

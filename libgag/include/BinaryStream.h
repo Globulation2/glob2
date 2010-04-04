@@ -68,6 +68,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) { backend->seekRelative(displacement); }
 		virtual size_t getPosition(void) { return backend->getPosition(); }
 		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
+		virtual bool isValid(void) { return backend->isValid(); }
 	};
 	
 	/// This class reads compressed data that was written by BinaryOutputStream.
@@ -106,6 +107,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) { backend->seekRelative(displacement); }
 		virtual size_t getPosition(void) { return backend->getPosition(); }
 		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
+		virtual bool isValid(void) { return backend->isValid(); }
 	};
 }
 
