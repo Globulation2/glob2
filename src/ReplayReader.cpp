@@ -108,7 +108,9 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 
 	// Calculate the length of this replay
 	boost::shared_ptr<Order> order;
-	numSteps = stream->readUint16("replayStepCounter");
+	numSteps = 0;
+	numOrders = 0;
+	stepsUntilNextOrder = stream->readUint16("replayStepCounter");
 	do
 	{
 		try
@@ -117,25 +119,36 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 			NetSendOrder msg;
 			msg.decodeData(stream);
 			order = msg.getOrder();
+
+			// If we got here, it means the order was valid, so increase the replay length
+			numOrders++;
+			numSteps += stepsUntilNextOrder;
 		}
 		catch (const std::ios_base::failure &e)
 		{
 			// The order in the stream was invalid
 			std::cout << "Error reading replay: " << e.what() << std::endl;
 
-			delete stream;
-			stream = NULL;
-			return false;
+			// If it was a replay with at least a few orders that were correct so far, use to plan B: play the replay up to this order
+			if (numOrders < 5)
+			{
+				// Fail
+				delete stream;
+				stream = NULL;
+				return false;
+			}
+			else
+			{
+				// Overwrite the order as if it were a NullOrder
+				order = boost::shared_ptr<Order>(new NullOrder());
+			}
 		}
 
 		// If it was a real order, read and increase numSteps accordingly
 		if (order->getOrderType() != ORDER_NULL)
 		{
-			numSteps += stream->readUint16("replayStepCounter");
+			stepsUntilNextOrder = stream->readUint16("replayStepCounter");
 		}
-
-		// The final NullOrder also counts as an order (it has a stepsUntilNextOrder we should wait for)
-		numOrders++;
 	}
 	while (order->getOrderType() != ORDER_NULL);
 
@@ -205,7 +218,7 @@ boost::shared_ptr<Order> ReplayReader::retrieveOrder()
 	}
 	catch (const std::ios_base::failure &e)
 	{
-		// We shouldn't ever get here. In init() we made sure that the replay file was valid.
+		// We shouldn't ever get here. In init() we made sure that all the orders up to numOrders are valid.
 		std::cerr << "Error reading replay: " << e.what() << std::endl;
 		delete stream;
 		stream = NULL;
