@@ -271,22 +271,9 @@ public:
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool generateMap(MapGenerationDescriptor &descriptor);
 
-	bool isRecordingReplay;
-	OutputStream * getReplayStream();
-	Uint32 getReplayOrderCount();
-	Uint32 getReplayStepCount();
-	void addReplayOutputStream( OutputStream *stream );
-
 protected:
 	FILE *logFile;
 	int * ticksGameSum;
-
-	OutputStream *replay;
-	Uint32 replayStepsSinceLastOrder;
-	Uint32 replayOrderCount;
-	Uint32 replayStepCount;
-	
-	std::vector<OutputStream *> replayOutputStreams;
 };
 
 #endif
