@@ -25,6 +25,7 @@ NetBroadcastListener.cpp                NetConnection.cpp                     Ne
 NetEngine.cpp                           NetGamePlayerManager.cpp              NetListener.cpp                           NetMessage.cpp
 NetReteamingInformation.cpp             NetTestSuite.cpp                      NewMapScreen.cpp                          Order.cpp
 OverlayAreas.cpp                        PerlinNoise.cpp                       Player.cpp                                Race.cpp
+ReplayReader.cpp                        ReplayWriter.cpp
 Ressource.cpp                           RessourcesTypes.cpp                   ScriptEditorScreen.cpp                    Sector.cpp
 Settings.cpp                            SettingsScreen.cpp                    SGSL.cpp                                  SimplexNoise.cpp
 SoundMixer.cpp                          Team.cpp                              TeamStat.cpp                              UnitConsts.cpp

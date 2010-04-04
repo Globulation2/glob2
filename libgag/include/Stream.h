@@ -37,6 +37,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) = 0;
 		virtual size_t getPosition(void) = 0;
 		virtual bool isEndOfStream(void) = 0;
+		virtual bool isValid(void) = 0;
 	};
 	
 	//! The stream that can be written to

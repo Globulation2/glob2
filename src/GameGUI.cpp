@@ -51,7 +51,8 @@
 #include "VoiceRecorder.h"
 #include "GameGUIKeyActions.h"
 #include "Player.h"
-
+#include "ReplayReader.h"
+#include "ReplayWriter.h"
 #include "config.h"
 
 #ifndef DX9_BACKEND	// TODO:Die!
@@ -3753,6 +3754,10 @@ void GameGUI::drawReplayPanel(void)
 
 void GameGUI::drawReplayProgressBar(bool drawBackground)
 {
+	assert(globalContainer->replaying);
+	assert(globalContainer->replayReader);
+	assert(globalContainer->replayReader->isValid());
+
 	// set the clipping rectangle
 	globalContainer->gfx->setClipRect( 0, REPLAY_BAR_Y - 4, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT + 4);
 
@@ -3772,8 +3777,8 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 	Style::style->drawProgressBar(globalContainer->gfx, 
 		REPLAY_PROGRESS_BAR_X_OFFSET + REPLAY_PROGRESS_BAR_CAP_WIDTH - 1, y,
 		REPLAY_BAR_WIDTH - 2*REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_NUM_BUTTONS * REPLAY_PROGRESS_BAR_BUTTON_WIDTH - 2*REPLAY_PROGRESS_BAR_CAP_WIDTH + 2, 
-		globalContainer->replayStepsProcessed, 
-		globalContainer->replayStepsTotal);
+		globalContainer->replayReader->getCurrentStep(), 
+		globalContainer->replayReader->getNumStepsTotal());
 	
 	// Draw the round caps
 	globalContainer->gfx->drawSprite(
@@ -3796,13 +3801,13 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 	// Calculate the time
 	// This is based on default speed 25 fps, not the actual Engine's speed
 	// because if we fast-forward we still want to see the old time
-	unsigned int time1_sec = (globalContainer->replayStepsProcessed/25)%60;
-	unsigned int time1_min = (globalContainer->replayStepsProcessed/(25*60))%60;
-	unsigned int time1_hour = (globalContainer->replayStepsProcessed/(25*3600));
+	unsigned int time1_sec = (globalContainer->replayReader->getCurrentStep()/25)%60;
+	unsigned int time1_min = (globalContainer->replayReader->getCurrentStep()/(25*60))%60;
+	unsigned int time1_hour = (globalContainer->replayReader->getCurrentStep()/(25*3600));
 	
-	unsigned int time2_sec = (globalContainer->replayStepsTotal/25)%60;
-	unsigned int time2_min = (globalContainer->replayStepsTotal/(25*60))%60;
-	unsigned int time2_hour = (globalContainer->replayStepsTotal/(25*3600));
+	unsigned int time2_sec = (globalContainer->replayReader->getNumStepsTotal()/25)%60;
+	unsigned int time2_min = (globalContainer->replayReader->getNumStepsTotal()/(25*60))%60;
+	unsigned int time2_hour = (globalContainer->replayReader->getNumStepsTotal()/(25*3600));
 
 	// Draw the time
 	if (time2_hour <= 99)
@@ -4408,7 +4413,7 @@ void GameGUI::drawAll(int team)
 	{
 		std::string s;
 		
-		if (globalContainer->replaying && globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
+		if (globalContainer->replaying && globalContainer->replayReader->isFinished())
 		{
 			s = Toolkit::getStringTable()->getString("[replay ended]");
 		}
