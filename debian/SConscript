@@ -1,0 +1,38 @@
+
+import os
+import SCons.Script.Main
+
+Import('env')
+Import('PackTar')
+
+
+if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+    files = Split("""changelog  copyright        glob2-data.install  glob2.install                 rules
+                     compat     glob2.6          glob2.dirs          glob2.menu     README.Debian  SConscript
+                     control    glob2-data.dirs  glob2.docs          glob2.sgml     README.source""")
+    PackTar(env['TARFILE'], files)
+
+    patches = Split("""patches/01_remove_home_directory_browsing.patch  patches/03_headers_order.patch
+                       patches/02_upstream_changelog.patch              patches/series""")
+    PackTar(env['TARFILE'], patches)
+
+if env['mingwcross']:
+    Return()
+
+if 'dist' in COMMAND_LINE_TARGETS and os.path.exists('/etc/debian_version'):
+    dpkg = env.Command('deb', None, 'dpkg-buildpackage -b')
+    env.AlwaysBuild(dpkg)
+    env.Alias('dist', 'deb')
+
+    # Impossible to pass -uuploadfilesdir option to dpkg-genchanges through dpkg-buildpackage.
+    # Just move output files.
+    mv = env.Command('debmove', None, "mv -f ../glob2*.deb ../glob2*.changes debian/")
+    env.AlwaysBuild(mv)
+    env.Depends('debmove', dpkg)
+    env.Alias('dist', 'debmove')
+
+    if env.GetOption('clean'):
+        env.Execute('dpkg-buildpackage -Tclean', chdir='..')
+        env.Execute('rm -f glob2*.deb glob2*.changes')
+
+
