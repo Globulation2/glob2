@@ -1,11 +1,112 @@
+
+import sys, os, ntpath, glob
 Import("env")
 Import("PackTar")
-    
+if env['mingwcross']:
+    Import("crossroot_abs")
+Import("isWindowsPlatform")
+
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "glob2.ico")
-    PackTar(env["TARFILE"], "glob2_make_win32.sh")
     PackTar(env["TARFILE"], "header.bmp")
     PackTar(env["TARFILE"], "side.bmp")
     PackTar(env["TARFILE"], "win32_installer.nsi")
-    
+
     PackTar(env["TARFILE"], "SConscript")
+
+
+if not (isWindowsPlatform or env['mingwcross']):
+    Return()
+if 'dist' not in COMMAND_LINE_TARGETS:
+    Return()
+
+
+
+def genlists(target, source, env):
+    """ First element in the list passed as target should be install list path. """
+    #
+    # FUNCTION TAKEN FROM http://nsis.sourceforge.net/Talk:Uninstall_only_installed_files
+    #
+    def open_file_for_writing(filename):
+        "return a handle to the file to write to"
+        try:
+            h = open(filename, "w")
+        except:
+            print "Problem opening file %s for writing" % filename
+            print __doc__
+            sys.exit(1)
+        return h
+
+    #
+    # OPEN FILES
+    #
+    install_list = open_file_for_writing(target[0].path)
+    uninstall_list = open_file_for_writing(target[1].path)
+
+    #
+    # PREPARE ARRAY FOR UNINSTALL LIST
+    #
+    folder_list = []
+    file_list = []
+
+    #
+    # INSTALL LIST
+    #
+    for path, dirs, files in list(os.walk('data')) + list(os.walk('maps')) + list(os.walk('campaigns')) + list(os.walk('scripts')):
+        if env['mingwcross']:
+            path = ntpath.normpath(path)        # Switch / to \\
+        print >> install_list, "SetOutPath $INSTDIR\\" + path
+        folder_list.append(path)
+        for f in files:
+            if (f != "SConscript" and f != "SConstruct"):
+                print >> install_list, "File ..\\" + path + "\\" + f
+                file_list.append(path + "\\" + f)
+
+    print >> install_list, "SetOutPath $INSTDIR"
+
+    dllpaths = ['..']
+    if env['mingwcross']:
+        dllpaths = [crossroot_abs + '/bin', crossroot_abs + '/lib']
+
+    for cpath in dllpaths:
+        if not os.path.exists(cpath):
+            continue
+        for file in list(os.listdir(cpath)):
+            if (file.find(".dll", -4) != -1):
+                if env['mingwcross']:
+                    cpath = ntpath.normpath(cpath)      # Switch / to \\
+                print >> install_list, "File %s\\%s" % (cpath, file)
+                file_list.append(file)
+
+
+    #
+    # UNINSTALL LIST
+    #
+    file_list.reverse()
+    for file in file_list:
+        print >> uninstall_list, "Delete $INSTDIR\\" + file
+    folder_list.reverse()
+    for folder in folder_list:
+        print >> uninstall_list, "RMDir $INSTDIR\\" + folder
+
+    #
+    # CLOSE FILES
+    #
+    install_list.close()
+    uninstall_list.close()
+
+
+
+
+
+# First element in the list passed as target should be install list path.
+list_files = ['install_list.nsh', 'uninstall_list.nsh']
+env.Command(list_files, None, genlists)
+env.Alias('dist', list_files)
+
+env.Command('globulation2_win32.exe', 'win32_installer.nsi', 'makensis $SOURCE')
+env.Depends('globulation2_win32.exe', list_files)
+env.Alias('dist', 'globulation2_win32.exe')
+
+

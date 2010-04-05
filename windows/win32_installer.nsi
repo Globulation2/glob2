@@ -69,8 +69,8 @@
 ;------------------------------------
   Section ""
   SectionIn RO
-  !include "install_list.nsh" ;List of files to install (generated from gen_inst_uninst_list.py)
-  File ..\AUTHORS
+  !include "install_list.nsh" ;List of files to install (generated from windows/SConscript)
+  File ..\data\authors.txt
   File ..\COPYING
   File ..\src\glob2.exe
   File glob2.ico
@@ -100,8 +100,8 @@
 ;Commands for the uninstaller
 ;------------------------------------
   Section "Uninstall"
-  !include "uninstall_list.nsh" ;List of files to uninstall (generated from gen_inst_uninst_list.py)
-  Delete $INSTDIR\AUTHORS
+  !include "uninstall_list.nsh" ;List of files to uninstall (generated from windows/SConscript)
+  Delete $INSTDIR\authors.txt
   Delete $INSTDIR\COPYING
   Delete $INSTDIR\glob2.exe
   Delete $INSTDIR\glob2.ico

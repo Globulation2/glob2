@@ -25,11 +25,15 @@ def establish_options(env):
     opts.Add(BoolOption("release", "Build for release", 0))
     opts.Add(BoolOption("profile", "Build with profiling on", 0))
     opts.Add(BoolOption("mingw", "Build with mingw enabled if not auto-detected", 0))
+    opts.Add(BoolOption("mingwcross", "Cross-compile with mingw for Win32", 0))
+    opts.Add("crossroot", "Path to include/ and lib/ containing Win32 files for cross-compiling", "../local")
     opts.Add(BoolOption("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
     opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save("options_cache.py", env)
+    if env.GetOption('clean'):
+        Execute(Delete("options_cache.py"))
     
     
 class Configuration:
@@ -60,7 +64,7 @@ def configure(env):
     configfile.add("AUDIO_RECORDER_OSS", "Set the audio input type to OSS; the UNIX Open Sound System")
     if isDarwinPlatform:
         configfile.add("USE_OSX", "Set when this build is OSX")
-    if env['mingw'] or isWindowsPlatform:
+    if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
         configfile.add("USE_WIN32", "Set when this build is Win32")
     configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
 
@@ -73,6 +77,15 @@ def configure(env):
     missing=[]
 
     env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
+
+    #Compiler check
+    if not conf.CheckCC():
+        print "C compiler does not work"
+        missing.append("C compiler")
+    if not conf.CheckCXX():
+        print "CXX compiler does not work"
+        missing.append("CXX compiler")
+
     #Simple checks for required libraries
     if not conf.CheckLib("SDL") and not server_only:
         print "Could not find libSDL"
@@ -187,7 +200,7 @@ def configure(env):
 
     #Do checks for portaudio
     if conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
-        if env['mingw'] or isWindowsPlatform:
+        if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
             print "--------"
             print "NOTE: It appears you are compiling under Windows. At this stage, PortAudio crashes Globulation 2 when voice chat is used."
             print "NOTE: Disabling PortAudio in this build (you will be unable to use Voice Chat ingame)."
@@ -209,7 +222,6 @@ def configure(env):
                 print "         no portaudio - let us know at:"
                 print "         no portaudio - https://savannah.nongnu.org/bugs/index.php?24668"
                 print "         no portaudio"
-        
     if missing:
         for t in missing:
             print "Missing %s" % t
@@ -226,26 +238,53 @@ def main():
               metavar='portaudio',
               help='should portaudio be used')
     env = Environment()
+    env["VERSION"] = "0.9.4.5"
+    establish_options(env)
+    
+    if env['mingwcross']:
+            env.Platform('cygwin')
+            env['CC']  = 'i586-mingw32msvc-gcc'
+            env['CXX'] = 'i586-mingw32msvc-g++'
+            env['AR']  = 'i586-mingw32msvc-ar'
+            env['RANLIB'] = 'i586-mingw32msvc-ranlib'
+    
     try:
         env.Clone()
     except AttributeError:
         env.Clone = env.Copy
     
-    if not env['CC']:
-        print "No compiler found in PATH. Please install gcc or another compiler."
-        Exit(1)
     
-    env["VERSION"] = "0.9.4.5"
-    establish_options(env)
-    #Add the paths to important mingw libraries
+    # Add specific paths.
     if env['mingw'] or isWindowsPlatform:
         env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
+        env.Append(LIBPATH=['/usr/local/lib'])
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
+        env.Append(CPPPATH=['/usr/local/include/SDL'])
     if isDarwinPlatform:
+        # FinkCommander
         env.Append(LIBPATH=["/sw/lib"])
         env.Append(CPPPATH=["/sw/include"])
+        # MacPorts
+        env.Append(LIBPATH=["/opt/local/lib"])
+        env.Append(CPPPATH=["/opt/local/include"])
+        # Homebrew
+        env.Append(LIBPATH=["/usr/local/lib"])
+        env.Append(CPPPATH=["/usr/local/include"])
+    if env['mingwcross']:
+        if os.path.isabs(env['crossroot']):
+            crossroot_abs = env['crossroot']
+        else:
+            crossroot_abs = os.getcwdu() + '/' + env['crossroot']
+        env.Append(LIBPATH=['/usr/i586-mingw32msvc/lib', crossroot_abs + '/lib'])
+        env.Append(CPPPATH=['/usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/include/c++', '/usr/i586-mingw32msvc/include'])
+        env.Append(CPPPATH=[crossroot_abs + '/include', crossroot_abs + '/include/SDL'])
     configure(env)
+
     env.Append(CPPPATH=['#libgag/include', '#'])
+    env.Append(CPPPATH=['#libusl/src', '#'])
+    env.Append(CXXFLAGS=' -Wall')
+    env.Append(LINKFLAGS=' -Wall')
+    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
     if env['release']:
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS=' -O2')
@@ -254,16 +293,14 @@ def main():
         env.Append(LINKFLAGS='-pg')
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS='-O2')
-    if env['mingw'] or isWindowsPlatform:
-        env.Append(LIBPATH=['/usr/local/lib'])
-        env.Append(LIBS=['wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
+    if env['mingw'] or isWindowsPlatform or env['mingwcross']:
+        env.Append(LIBS=['vorbis', 'ogg', 'regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
         env.Append(LINKFLAGS=['-mwindows'])
-        env.Append(CPPPATH=['/usr/local/include/SDL'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
-    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
+    
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
     env["TARFLAGS"] = "-c -z"
@@ -284,7 +321,7 @@ def main():
                     f = env.Install(new_dir, s)
                     env.Tar(target, f)
               
-    PackTar(env["TARFILE"], Split("COPYING gen_inst_uninst_list.py INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
+    PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     #packaging for apple
     if isDarwinPlatform and env["release"]:
         bundle.generate(env)
@@ -305,8 +342,13 @@ def main():
 
     Export('env')
     Export('PackTar')
+    if env['mingwcross']:
+        Export('crossroot_abs')
+    Export('isWindowsPlatform')
+
     SConscript("campaigns/SConscript")
     SConscript("data/SConscript")
+    SConscript("debian/SConscript")
     SConscript("fedora/SConscript")
     SConscript("gnupg/SConscript")
     SConscript("libgag/SConscript")

@@ -1,0 +1,724 @@
+Index: b/ChangeLog
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ b/ChangeLog	2010-02-23 08:57:06.540302028 +0300
+@@ -0,0 +1,719 @@
++Changes in 0.9.5.0
++
++    * Replay Feature
++    * Many translations updated
++    * new Finnish, Farsi and Esperanto translation
++    * Removed compiler warnings
++    * Speed of unit upgrades depends on the count of levels to upgrade. pre-trained units train faster to a certain level.
++    * slight changes to the forbidden/guard/clearing area gfx
++    * USL something
++    * Off-Screen-Units get displayed when they are selected
++    * an Ajax Website based on Ext-JS to do the translations is in the making
++    * The default map list has been updated with more recent and overall better maps.
++
++Changes in 0.9.4.5
++
++    * 0.9.4.4 was not compatible to head of the beta4-branch that was made to compile with latest changes in gcc breaking compatibility. 0.9.4.5 fixes that.
++
++Changes in 0.9.4.4
++
++    * The scons scripts have been updated to reflect the proper version
++    * the scons script for creating the mac .dmg file has had the hardcoded version numbers changed to use the variables
++    * the YOG lobby will now show IRC users too
++
++Changes in 0.9.4.3
++
++    * A rare bug would cause the game to crash. it has been fixed.
++
++Changes in 0.9.4.2
++
++    * There were 2 bugs that would cause the editor to crash. They have been fixed.
++
++Changes in 0.9.4.1
++
++    * Tutorial 3 was corrupted and would cause the game to crash. Tutorial 3 was fixed.
++
++0.9.4 (released 20090201)
++Gameplay Improvements
++
++    * Right side menu width ingame and in the map editor was increased
++    * New priority system which allows the player to choose which buildings and flags will receive units first
++    * When you click on a building, it now tells you why no one is able to come to work at it (unavailable, too far away etc)
++    * Game chat has been separted from game messages, so players messages (tutorial or in YOG) won't get lost.
++    * Many adjustments to the properties of buildings and units to better balance gameplay
++    * Ability to CTRL+Click and drag to place a string of the selected building (useful for walls)
++    * A new Other Options page in Custom Games and YOG pregame setup which includes
++          o The ability for game creators to make a map prediscovered to all players
++          o The ability for game creators to turn off prestige wins
++          o The ability for game creators to lock teams
++
++Overall Improvements
++
++    * Removed 'AI' from the names of the AI players (shorter)
++    * Added a mission description to the campaign system
++    * New mission objectives system (set in the map editor, with SGSL commands to show/hide them)
++    * New AI description screen for new players that don't know their difficulties
++    * New mission hints system (set in the map editor)
++    * Ability to highlight certain game elements in a map script (such as those used in the tutorial)
++    * Brand new random map generation engine, which will be used eventually to make and play random maps on the fly from Custom Game / YOG screens
++    * Ability to tab between certain form elements (such as YOG login screen)
++    * Added optional implementation of voice chat using port audio (stable and working, will fall back to the old self written voice handling if port audio is not present)
++
++Network Improvements
++
++    * Add new -router code, so people can create a router through which game commands are 'routed' (reduce lag if two players live next door for example). Complete with remote administrative interface.
++    * A new map distribution system which allows
++          o Upload of new maps by their creators moments after finishing the map
++          o Community rating system to sort maps by rating
++          o Download of maps where you can get the maps you want quickly and easily
++    * A new pregame alliances system where you can set alliances which cannot be changed ingame
++    * A new "I Am Ready" button to prevent game makers from starting before all players are ready
++    * A new YOG options screen for players to block insulting players
++    * Tab system for changing between lobby, options, download maps and pregame screens without having to quit to go to the other.
++    * YOG Administrators can now ban players in various ways, or mute them for a set amount of time
++    * Ability to set YOG moderators (limited YOG administrative permissions)
++    * Ability to see a players score (displayed when you click a name of an online YOG player)
++    * Ability to message alliances members by prefixing your messages with /a
++    * Ability to message a specific member by prefixing the message with /[playername]
++    * Adjustments to latency system for smoother online gaming
++
++Miscellaneous Improvements
++
++    * New -test-map-gen option, to continuously make maps until the generator crashes (used for stability like -test-games[-nox])
++    * Lots of other behind the scenes changes for speed, stability, usability and interactivity
++    * Lots of bug fixes
++    * Moved AUTHORS to data/authors.txt so it will get included in distribution releases
++
++
++0.9.3 (released 20080424)
++Gameplay Improvements
++
++    * Better unit movement:
++
++        * Removed hidden forbidden area, replaced with a new 'immobile units' array (same purpose (avoid unit clashing), done differently)
++        * Units can now move backwards to get around blockages (before they had to move forward or stall)
++        * Warriors no longer consider enemy walls and towers blockages when plotting their route to a war flag / defence area.
++        * Warriors now pathfind using an A* algorithm. This means that attacks are more effecient (they surround enemies to kill them faster for example)
++
++    * Better flag/area functionality:
++
++        * Checkboard and half-checkboard brush are now tilable (they space out on a grid rather than clump together)
++        * Clearing areas have been adjusted to pull free healthy units, rather than waiting for one to walk into a clearing area
++        * Clearing flags no longer call units that can't swim, if what they have to clear is over water
++        * Forbidden areas are now respected over clearing areas/flags
++
++    * Many improvments to Nicowar's stability and performance (fewer crashes, and now uses ground attack explorers if the game goes on that long)
++    * Script text is now added to the history box ('h') so people who play the tutorial can read the last messages if they forget
++    * Now more more than 4/3 units per resource needed for a building construction/upgrade are allocated to a building
++    * Explorer attacks are now 2/5 the power of what they once were
++    * Tutorial text updated to reflect features in recent version.
++    * Building worker count, and building future working count (the amount assigned the moment a construction is complete) is now saved in the game file and restored when loaded
++
++Overall Improvements
++
++    * Moved fertiliy from on the fly, to being calculated with the map when saving it (less bugs, faster performance). Older maps will compute fertility before being playable
++    * Fixed several memory leaks
++    * syncRand system changed to use the well known Mersenne Twister algorithm through Boost Random
++    * Removed the verbose messages from Map that outputted things like "pathfind local resource failed" in the console
++    * Map editor now asks you if you want to save the map before quitting
++    * Improved keyboard shortcut system (can now assign shortcuts with CTRL, ALT, SHIFT, and meta (Mac OSX Command key for example), as well as pressed/unpressed events)
++    * Flag default worker settings are now editable in the Unit Settings tab
++
++Network Improvements
++
++    * Made net connections multi-threaded
++    * General code improvements for maintainability
++    * New Administrative YOG commands (for muting and unmuting players who spam the channel, or resetting a player password)
++    * Ghost buildings (previous release feature) now display in your teams color
++    * Improved latency computation on server (games with lag should run a bit smoother now)
++    * Games will now be sent over network to joining players when the computed sha1 does not match (no longer uses game checksum). More reliable now
++    * VOIP changes:
++
++        * Experimental Win32 VOIP
++        * You can now adjust the sound of someone talking through the Settings panel on the main menu or in game
++
++Graphical Improvements
++
++    * Minimum (default) resolution now 800x600
++    * The cursor now uses your team colour, rather than the default pink
++    * A new talk indicator (for Linux players) shows who is talking on VOIP
++    * Flag/Area in game button now differs from the building button.
++
++Translation Improvements
++
++    * The tutorial campaign text is now in the translation files (the ingame text isn't yet though)
++    * Updated Italian and Russian translations
++
++Miscellaneous Improvements
++
++    * scons script now checks for a compiler, to prevent problems with it tries to compile with nothing
++    * Experimental, but semi stable, Mac OS X .app bundle and dmg file creation in scons. Needs more people to test
++    * Added spec files for making Fedora packages
++    * The adition of two new command line options:
++
++        * -test-games  : Runs the game automatically, with different maps, different players, for 1 hour or until game is won, using GUI. Good for testing features or AI's
++        * -test-games-nox  : Same as -test-games, but without a GUI, so many times faster, but harder to knnow if features are working as they should. Good for finding bugs in the engine
++
++--------------------------------
++0.9.2 (released 20080223)
++Gameplay Improvements
++
++    * Nicowar has been majorly improved, to cope better on smaller maps, and has now got a Warrush style that it can randomly select to pursue (so you cant run the same map and expect the same result each time).
++    * Changed default SGSL wait behavior for buildings: wait for condition for specified level and higher level. Added keyword "only" to restrict to specified level. This should remove tutorial dead-locking because of too efficient players.
++    * Several parts of the game have been optimized, to make it less CPU exhaustive.
++
++Overall improvements
++
++    * The ability to open saved games in the map editor has been revived.
++    * Changes to Scons script so it compiles better on a range of different systems (including Mac OSX)
++    * Quick Kill keys have been added for MacOSX (CMD+Q) and Windows (ALT+F4). These will quit the game completely, from wherever you are, rather than using the menus to quit.
++    * The Unit Settings screen has been slightly improved so its easier to understand.
++
++Network improvements
++
++    * Many changes to YOG and LAN network gaming to improve stability, and performance.
++    * Changes to YOG IRC so it uses multi-threading techniques (removes GUI delays when logging into YOG)
++    * YOG Game information box (the top right box in YOG when you click on a game) has been reenabled after several releases of it not being there.
++    * The ability to restart a network game using a saved game is also working again (just start it up with the saved game map, assign the players back to their team colors, and start).
++    * Buildings now have a ghost building placed before being usable (it wont be noticeable in local games, but in online games, with a little bit of lag, it provides confirmation of placement until your request is processed).
++    * YOG now displays to the player when they join a network game, how much of a map they have downloaded if they have to do so).
++
++Graphical enhancement
++
++    * A particle engine has been added allowing neat little smoke effects for damaged buildings and turret fire.
++
++Miscellaneous improvements
++
++    * Fixed a bug where the windows installer would remove more than it should when uninstalling. #21011
++    * Fixed the age old bug where starving globs wouldn't go to inns. #17040
++    * Fixed the bug where globules spinning on the spot would leave hidden forbidden areas when they died.
++    * Many other bugs on and off the bug tracker have been fixed, #22137, #21055, #21880, #21306
++
++--------------------------------
++0.9.1 (released 20070901)
++Important Changes
++
++    * Map headers have been replaced and designed for better maintainability.
++    * YOG has been completely redesigned, from the ground up, for improved stability and easier maintainability.
++    * All new subsequent versions of Globulation 2 will be released under GPL version 3
++    * Scons has completely replaced the old configure and make tools for compiling. The new script is more flexible and easier for the developers to maintain (for Linux, Mac, and Windows).
++
++Overall improvements
++
++    * Changes to GameGUI have been made, so it is more maintainable for developers.
++    * Various other changes to the code have been made to increase maintainability.
++    * A new keyboard shortcuts system has been implemented so people can configure their own controls.
++    * The tutorial has been split into a 4 part campaign, allowing a better flow for new players and demonstrating the campaign power.
++    * All overlays now paint with OpenGL for much smoother results.
++
++Gameplay improvements
++
++    * A new fertility overlay has been added, which shows where resource are the most likely to grow.
++    * Debug output has been removed (so less is printed in a console window and no log files are made in ~/.glob2/ (now longer causes problems when it comes to HDD being filled up with them)). This also improves the speed of the game.
++
++Miscellaneous improvements
++
++    * The volume bars in the Settings screen are now tapered to indicate which way is softer and which is louder.
++    * Fixed several bug with scroll wheels (mainly speed and preventing accidents on specially designed touch pads (like ones on Laptops)).
++    * Default compilation build with -g, for debugging output when run with GDB. This should help fix problems with crash reports in the future (the more information, the better).
++    * Mercurial has been setup and is now used as the revision control system for Globulation 2's code.
++    * Translations have been reviewed, and a script made to sort the labels/string alphabetically and keep them up to date in all (even if the strings for them aren't there, the labels will be). They are also now marked as incomplete so players who can update the translation are informed and able to help.
++    * Brazilian and French translations have been updated.
++    * AUTHORS file is now sorted alphabetically.
++    * Many bugs (major and minor) have been fixed.
++
++--------------------------------
++0.8.23 (released 2007 April 28)
++Overall improvements
++
++    * GUI frames and lists are now coherent in look and feel between game and menus.
++
++Miscellaneous improvements
++
++    * Fixed a bug that prevented the code from compiling on Windows using Mingw
++    * Prestige can be adjusted for single player games
++    * Major bug fixes (bug #19542)
++    * Minor bugfixes (bug #19552 #19594 #19489 #19572 #19532 #19551)
++
++--------------------------------
++0.8.22 (released 2007 April 04)
++Overall improvements
++
++    * New campaign system
++    * Unified buttons height throughout the game. More coherent GUI. All buttons are pixmapped.
++
++AI improvements
++
++    * Improved Echo API
++    * Redesigned and remade Nicowar AI using Echo
++
++Editor improvements
++
++    * New building/unit editor
++    * New script areas
++    * New no-growth areas
++
++Networking improvements
++
++    * Allowed creation orders to pass default worker info to prevent world desyncs. (bug# 17480)
++
++Translation improvements
++
++    * Basque translation has been added
++    * Swedish translation has been added
++    * Arabic translation has been added using bidi
++    * Spanish tutorial text merged in.
++    * English tutorial text improved.
++
++Gameplay improvements
++
++    * Magic attacks are no longer reduced by armor
++    * Magic attacks no longer affect buildings
++    * Towers consider explorers a higher priority target
++    * Restricted growth zone added
++    * Added overlay maps
++    * Redesigned unit allocation system gets more work out of the same units and fixes bug #16842.
++
++Miscellaneous improvements
++
++    * Remember unit option in settings menu now works correctly for all buildings (bug# 16558)
++    * Settings menu now allows customization of all buildings (bug# 17800)
++    * Improved campaign system (bug# 15347)
++    * Improved end-game screen
++    * New translation textshot code
++    * Improved in-game statistics
++    * Minor bugfixes (bug# 17428)
++
++--------------------------------
++0.8.21 (released 2006 August 04)
++    *  A pair of critical bugs discovered at the last minute have been fixed.
++    * Videoshot support added. Using the -vs command line switch, it is now possible to dump each frame to a bmp in order to build a video afterwards (disabled with GPU renderer because of crash on some graphic cards).
++
++--------------------------------
++0.8.20 (released 2006 August 04)
++Translation improvements
++
++    * Added Sloven and Turkish translations
++    * Updated Polish, Catalan, Danish, German, Spanish and Swedish translations
++    * The tutorial has been translated to German
++
++Gameplay improvements
++
++    * Prevented key scrolling while in-game menu is active (fixes bug 16091)
++    * Unit to building allocation system rewrite started
++    * Towers can now attack explorers
++    * Explorers avoid towers
++    * Markets on the same team now share fruits, meaning instant fruit teleportation between markets
++
++General improvements
++
++    * Per-unit skinning and parameter editing
++    * Map generator now places stone and fruit (fixes bug 16080)
++    * Synced the amount of teams that can be placed on a map automatically, and while editing (now 16 is the highest) so that the game no longer crashes when playing a map with 17 or more teams (fixes bug 16097)
++    * Allowed custom default settings for flags (fixes bug 16547)
++    * Completely revamped map editor with better end-user experience
++    * New AI system codenamed Echo for better and easier AI development
++    * New economic AI using Echo called ReachToInfinity
++    * New war-based AI called WarRush
++
++Miscellaneous improvements
++
++    * Brand new language formatting system which will make it eaiser for developers in the future
++    * Several memory leaks have been found and fixed
++    * New tooltip system implemented in libgag, curtesy of Sebastien, is now in place for use in a future version.
++    * Gradients have been modified a fair bit. They are now updated when a building is destroyed by an enemy. And all war flags are updated when any building is destroyed. Also, a comment now warns the programmers to use a restrictive input for the gradient algorithms if they rely on correct results. (fixes bug 16257) and several tests have been put in place to test the new changes. Also, there is now a #define to allow easy change of the gradient computation system between the default algorithm, kai's algorithm or simon's algorithm. The gradient computation now uses different algorithms for different types of gradients.
++    * Fixed bugs 16350, 16323, 16148, 16171, 16096, and 15908, and numerous others
++
++--------------------------------
++0.8.19 (released 20060312)
++Translation improvements
++
++* Polish translation updated.
++
++Gameplay improvements
++
++* The old tutorial has been completly revamped. It is now more in-depth and
++ covers more aspects of Globulation 2.
++* Fixed a bug which prevented players to be dropped correctly when someone is
++ disconnected.
++* Fixed a bug which prevented linux systems not named localhost to join themselves
++
++General improvements
++
++* GUI improved following the comments submitted by Ellen Reitmayr which can be
++ found at Usability issues.
++* Fixed a bug which made compiling on Windows difficult.
++* Fixed two bugs with YOG. One that prevented the game name from being displayed
++ correctly, and another that prevented players in YOG from seeing people in IRC.
++
++Miscellaneous improvements
++
++* The red X on the campaign and custom game screen has been replaced with the
++ text "Please choose a map".
++* You can now click 'cancel' to go back to the menu screen from campaigns or
++ the tutorial if you decide not to play it.
++* Script state is now saved, which means scripted maps such as the tutorial can
++ now be saved and loaded.
++* New SGSL keyword 'space', which simply put halts any other actions until the
++ spacebar is pressed.
++* Several bugs fixed.
++* Dumping mean CPU usage in Engine.log.
++
++--------------------------------
++0.8.18 (released 20060129)
++Translation improvements
++
++* Swedish and Portuguese translations added.
++* Danish, Spanish and Catalan translations updated.
++* Catalan and Spanish versions of tutorial added.
++
++Gameplay improvements
++
++* Improved the shooting system of towers.
++* Improved the way the explorers fly around, so they tend to explore the least
++ known areas.
++* Improved the way the warriors spread into guard areas and war flags, so they
++ go to the least known area.
++* Death animation added.
++* Unit/building cost tuning.
++* The schools now upgrade both "harvest" and "build" abilities in only one
++ time in the building.
++* The barracks now upgrade both "attack speed" and "attack strength" in only
++ one time in the building.
++* A hungry unit that goes into an inn, or a damaged unit that goes into a
++ hospital is now counted as healthy in the statistics.
++* New terrain graphics
++* Improved events (unit/building attacked, conversion, etc); the name of the
++ team is now printed on conversion and ctrl + space iterate through the
++ positions of each event type.
++
++General improvements
++
++* You can't join a game if you have different gameplay configuration files
++ than the game host; in order to prevent a world de-synchronization.
++* When you can't join a game in YOG, a reason is printed
++* Nick autocompletion in YOG chat
++* Better GUI theming.
++* Better handling of IRC protocol.
++* New Perlin-Noise based random map generation for island, swamp, craterlakes
++ or river theme maps.
++* Fixed bugs 13584, 13679, 15172, 15197, 15198, 15201, 15208, 15211, 15222,
++ 15267, and 15376 as well as the stat overflow, lost condition, fruits
++ conversion bug (now you can't convert an enemy unit if you can't really feed
++ it), and path line bug (the path lines now warp correctly to the target and
++ appear correctly on big maps and very small maps).
++
++--------------------------------
++0.8.17 (released 20051211)
++
++* Catalan translation added
++* Fixed missing load/save in bullet code that made desynchronisation or crash
++ of saved game in network.
++* Win32 port sync
++* Work-around ATI GL driver bug
++
++--------------------------------
++Globulation 2
++0.8.16 (alpha 16)
++
++Release notes
++Stephane Magnenat, 04-12-2005
++
++Changes since alpha15:
++
++* Gameplay
++ - Exploration flag now allows the player to choose between basic explorers
++and upgraded ones that can attack ground
++ - Explorer damage against buildings is now constant, rather than being
++proportional to the number of squares the explorer's pulse hits.
++ - The "inn bug" has been fixed: vast numbers of workers could previously be
++trapped by almost-full inns.
++ - The Campaign has been slightly improved
++ - The game now admits it when you win by prestige
++ - New AI: Nicowar (still unstable, for testing only for now)
++* General improvements
++ - It is now possible to send IRC command from within the game by typing //CMD
++Argument (single / send YOG commands). In the chat room, of course, a single /
++works for both YOG and IRC.
++ - PNG's sizes reduced by pngcrush
++ - Several crash bugs fixed
++ - The output of the game is now much quieter
++ - Changed YOG metaserver address to yog.globulation2.org
++ - Changed YOG IRC server address to irc.globulation2.org
++ - IRC module now responds to IRC Pings
++ - Use a free sans serif font from dejavu (http://dejavu.sourceforge.net)
++
++Known problems :
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.15 (alpha 15)
++
++Release notes
++Stephane Magnenat, 16-05-2005
++
++Changelog since alpha14:
++- free unit only go to heal if they are more than 10% damaged
++- unit heal speed depends on their damages
++- explorer now have magic attack. Air first then ground with school level 3
++upgrade
++- shift-v toggle voice chat on/off
++- graphic info are displayed in game option menu
++- gameplay tuning
++- map can't be saved in editor bug fixed
++- GL display in 16bpp fixed
++- improved configure for OS X build
++- minor bug fixed
++
++Known problems :
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.14 (alpha 14)
++
++Release notes
++Stephane Magnenat, 24-04-2005
++
++Changelog since alpha13:
++- Warriors have experience which improves their attack strength
++- Workers loose HP when clearing ressources
++- Fruits reduce the armor of warriors
++- Config files now support inheritance
++- Several minor gameplay parameters tuning
++
++Known problems :
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.13 (alpha 13)
++
++Release notes
++Stephane Magnenat, 16-04-2005
++
++Changelog since alpha12:
++- New GL backend
++- Map are now gzipped for transfer through Internet
++- Bugfix for YOG
++
++Known problems :
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.12 (alpha 12)
++
++Release notes
++Stephane Magnenat, 13-02-2005
++
++Changelog since alpha11:
++- History in game
++- Fixed areas crash
++- Several minor bug fixed
++
++Known problems :
++- The tutorial is not finished yet.
++- Menu are not always correctly displayed when using the GL backend.
++
++--------------------------------
++Globulation 2
++0.8.11 (alpha 11)
++
++Release notes
++Stephane Magnenat, 16-01-2005
++
++Changelog since alpha10:
++- Voice over IP
++- Forbidden area
++- Several bug fix
++
++Known problems :
++- The tutorial is not finished yet.
++- Menu are not always correctly displayed when using the GL backend.
++
++--------------------------------
++Globulation 2
++0.8.10 (alpha 10)
++
++Release notes
++Stephane Magnenat, 29-12-2004
++
++Changelog since alpha9 :
++- settings for custom/default cursors
++- YOG shows IRC users
++- Campaign support
++- Test campaign
++- Warrior behaviour improved
++- Network connection/join/map download bugs fixed
++- Areas fixed in network game
++- Several small bugs fixed, typo upgrade and memory trash removed
++
++Known problems :
++- The tutorial is not finished yet.
++- Menu are not always correctly displayed when using the GL backend.
++
++--------------------------------
++Globulation 2
++0.8.9 (alpha 9)
++
++Release notes
++Stephane Magnenat, 8-10-2004
++
++Changelog since alpha7 :
++- new cursors
++- New musics
++- Fix in guard and forbidden areas
++- Bugs fix
++
++Known problems :
++- The tutorial is not finished yet.
++- Menu are not always correctly displayed when using the GL backend.
++
++--------------------------------
++Globulation 2
++0.8.8 (alpha 8)
++
++Release notes
++Stephane Magnenat, 12-09-2004
++
++Changelog since alpha7 :
++- Improved OpenGL backend, more usable, full double buffering support in GUI
++- New graphics
++- New musics
++- New gradient subsystem, much faster on big maps
++- New load/save (serialization) structure
++- IRC client that connects to #glob2 on freenode while on YOG
++- New eyes-candy effects on GUI
++- AINumbi fixed
++- AICAstor fixed
++- Lots of bugs fixed
++
++Known problems :
++- The tutorial is not finished yet.
++- Menu are not always correctly displayed when using the GL backend.
++
++--------------------------------
++Globulation 2
++0.8.7 (alpha 7)
++
++Release notes
++Stephane Magnenat, 08-08-2004
++
++Changelog since alpha6 :
++- New OpenGL backend based on glSDL. Still experimental, but much faster then software version in big resolutions
++- Major structural cleanup and implementation fix in libgag, config files and sprites
++- Several eye-candy effects added
++- Lots of new graphics
++- Lots of bugs and network desyncronisation fixed
++
++Known problems :
++- The tutorial is not finished yet.
++- Menu are not correctly displayed when using the GL backend. It seems to be a bug in glSDL. Patches welcome.
++- AINumbi seems to crash glob2 after a while, at least on win32, please use AICastor
++- Double buffering doesn't work correctly on win32
++
++--------------------------------
++Globulation 2
++0.8.6 (alpha 6)
++
++Release notes
++Stephane Magnenat, 09-06-2004
++
++Changelog since alpha5 :
++- New AI (AICastor), which is much better
++- Forbidden area can now be drawn
++- Building can be put over units and units make room
++- GUI updates in game
++- Tons of bugs fixed
++
++Known problems :
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.5 (alpha 5)
++
++Release notes
++Stephane Magnenat, 30-03-2004
++
++Changelog since alpha4 :
++- Fixed pathfinding
++- Fixed network desynchronisation
++- Map editor can delete flags
++- The player can choose which ressources are cleared in a clearing flag
++- Clearing flags don't request units when there is no ressource inside
++- Lots of minor nug fixed
++
++Known problems :
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.4 (alpha 4)
++
++Release notes
++Stephane Magnenat, 20-03-2004
++
++Changelog since alpha3 :
++- Version number and alpha number synced (alphaN is 0.8.N)
++- Network layer rewritten
++- YOG much improved, now users can have login and password
++- Lots of bugs fixed and minor features added
++- SGSL (Script) much improved, lots of fix in it
++- The GUI is now nice at all resolutions
++
++Known problems :
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.2 (alpha 3)
++
++Release notes
++Stephane Magnenat, 08-02-2004
++
++Chnagelog since alpha2 :
++- Pathfinding fixed.
++- TextArea overflow fixed.
++
++Known problems :
++- The music doesn't work correctly on Little-Endian. If you wanna help, take a look at src/SoundMixer.cpp, patch welcome.
++- The GUI is not nice when resizing.
++- When resizing down on X11, sometimes X kills glob2.
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.1 (alpha 2)
++
++Release notes
++Stephane Magnenat, 08-02-2004
++
++Chnagelog since alpha1 :
++- Unit state machine bug fixed.
++- Multiple minor bugs fixed.
++- Lots of new graphics added.
++- Configure improved.
++
++Known problems :
++- The music doesn't work correctly on Little-Endian. If you wanna help, take a look at src/SoundMixer.cpp, patch welcome.
++- The GUI is not nice when resizing.
++- When resizing down on X11, sometimes X kills glob2.
++- The tutorial is not finished yet.
++
++--------------------------------
++Globulation 2
++0.8.0 (alpha 1)
++
++Release notes
++Stephane Magnenat, 01-02-2004
++
++Known problems :
++- The music doesn't work correctly on Little-Endian. If you wanna help, take a look at src/SoundMixer.cpp, patch welcome.
++- The GUI is not nice when resizing.
++- When resizing down on X11, sometimes X kills glob2.
++- The tutorial is not finished yet.
++
++--------------------------------
