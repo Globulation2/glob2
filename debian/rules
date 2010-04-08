@@ -31,7 +31,10 @@ build-stamp: patch
 	dh_testdir
 
 #	Building without optimization.
-	scons -j3 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true
+#	Build server binary first.
+	scons -j3 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=yes
+	scons -j3 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=no -c
+	scons -j3 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=no
 
 	touch build-stamp
 
@@ -43,9 +46,10 @@ clean: unpatch
 	dh_clean
 
 	rm -rf .sconf_temp/ .sconsign.dblite options_cache.py config.log config.h
-	scons -c
+	scons server=yes -c
+	scons server=no -c
 
-install: build
+install:
 	dh_testdir
 	dh_testroot
 	dh_clean -k
@@ -56,11 +60,12 @@ install: build
 
 	cp -a campaigns/ data/ maps/ scripts/ $(CURDIR)/debian/tmp/usr/share/games/glob2
 	cp -a src/glob2 $(CURDIR)/debian/tmp/usr/games/
+	cp -a src/glob2-server $(CURDIR)/debian/tmp/usr/games/
 	find $(CURDIR)/debian/tmp/usr/share/games/glob2 -type f -exec chmod 664 {} \;
 	find $(CURDIR)/debian/tmp/usr/share/games/glob2 -name SConscript -o -name \*.py -o -name \*.sh -o -name \*.perl | xargs rm
 
 # Build architecture-independent files here.
-binary-indep: build install
+binary-indep: install
 	dh_testdir -i
 	dh_testroot -i
 	dh_installchangelogs ChangeLog -i
@@ -89,7 +94,7 @@ binary-indep: build install
 	dh_builddeb -i
 
 # Build architecture-dependent files here.
-binary-arch: build install
+binary-arch: install
 	dh_testdir -a
 	dh_testroot -a
 	dh_installchangelogs -a ChangeLog
