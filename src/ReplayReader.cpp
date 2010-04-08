@@ -27,6 +27,8 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 
+#include <iomanip>
+
 ReplayReader::ReplayReader()
 {
 	stream = NULL;
@@ -35,6 +37,7 @@ ReplayReader::ReplayReader()
 	ordersProcessed = 0;
 	numOrders = 0;
 	stepsUntilNextOrder = -1;
+	checksum = 0;
 }
 
 ReplayReader::~ReplayReader()
@@ -45,6 +48,9 @@ ReplayReader::~ReplayReader()
 
 bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrders)
 {
+	// Reset checksum
+	checksum = 0;
+
 	// Make sure the given stream is valid
 	if (inputStream == NULL) return false;
 	if (!inputStream->isValid())
@@ -202,6 +208,11 @@ void ReplayReader::advanceStep()
 	stepsUntilNextOrder--;
 }
 
+void ReplayReader::setCheckSum(Uint32 checksum)
+{
+	this->checksum = checksum;
+}
+
 boost::shared_ptr<Order> ReplayReader::retrieveOrder()
 {
 	if (!hasMoreOrdersThisStep()) return boost::shared_ptr<Order>(new NullOrder());
@@ -215,6 +226,21 @@ boost::shared_ptr<Order> ReplayReader::retrieveOrder()
 		NetSendOrder msg;
 		msg.decodeData(stream);
 		order = msg.getOrder();
+
+		// Check the checksums (no assert as we also want to check this in release-mode)
+		if (checksum != 0 && order->gameCheckSum != 0 && checksum != order->gameCheckSum)
+		{
+			// Mayday, checksums don't match!
+			std::cerr << "Error in replay: checksums don't match!" << std::endl;
+			std::cerr << std::setbase(16);
+			std::cerr << "\tCurrent game's checksum: 0x" << checksum << std::endl;
+			std::cerr << "\tChecksum in replay file: 0x" << order->gameCheckSum << std::endl;
+			std::cerr << std::setbase(10);
+
+			delete stream;
+			stream = NULL;
+			return boost::shared_ptr<Order>(new NullOrder());
+		}
 	}
 	catch (const std::ios_base::failure &e)
 	{
