@@ -139,8 +139,10 @@ public:
 	bool replayShowAreas; //!< Show areas of gui.localPlayer or not. Can be edited real-time.
 	bool replayShowFlags; //!< Show all flags or show none. Can be edited real-time.
 
+#ifndef YOG_SERVER_ONLY
 	ReplayReader *replayReader; //!< Reads and processes replay files, and outputs orders
 	ReplayWriter *replayWriter; //!< Writes orders into replay files
+#endif  // !YOG_SERVER_ONLY
 
 public:
 #ifndef YOG_SERVER_ONLY
