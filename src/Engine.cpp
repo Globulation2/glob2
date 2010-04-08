@@ -413,6 +413,10 @@ int Engine::run(void)
 				{
 					Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
 					net->advanceStep(checksum);
+
+					// Enable this to do test if checksums in the replay match
+					//if (globalContainer->replayReader) globalContainer->replayReader->setCheckSum(checksum);
+					if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
 				}
 
 				// We proceed network:
