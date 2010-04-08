@@ -29,12 +29,25 @@
 
 #include <stdio.h>
 
+// Write an Order to the stream, with the given checksum
+inline void writeOrder(GAGCore::OutputStream *stream, boost::shared_ptr<Order> order, Uint32 checksum = 0)
+{
+	// Write the checksum
+	order->gameCheckSum = checksum;
+
+	// A NetSendOrder has methods to write an Order to a stream
+	NetSendOrder msg(order);
+
+	// Write the data of the Order to the file
+	msg.encodeData(stream);
+}
+
 ReplayWriter::ReplayWriter()
 {
 	bufferBackend = NULL;
 	buffer = NULL;
-
 	stepsSinceLastOrder = 0;
+	checksum = 0;
 }
 
 ReplayWriter::~ReplayWriter()
@@ -46,6 +59,9 @@ ReplayWriter::~ReplayWriter()
 
 void ReplayWriter::init(const std::string &backend, GameGUI &gui)
 {
+	// Avoid trouble
+	checksum = 0;
+
 	// Initialise the buffer backend
 	if (backend == "")
 	{
@@ -80,34 +96,36 @@ void ReplayWriter::advanceStep()
 	stepsSinceLastOrder++;
 }
 
+void ReplayWriter::setCheckSum(Uint32 checksum)
+{
+	this->checksum = checksum;
+}
+
 void ReplayWriter::pushOrder(boost::shared_ptr<Order> order)
 {
 	if (!isValid()) return;
 	if (order->getOrderType() == ORDER_VOICE_DATA || order->getOrderType() == ORDER_NULL) return;
 
-	NetSendOrder msg(order);
-
 	// Write the number of steps since last order to this order (can be 0)
 	buffer->writeUint16(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
-	// Write the data of the Order to the file
-	msg.encodeData(buffer);
+	// Write the Order to the file
+	writeOrder(buffer, order, checksum);
 
 	stepsSinceLastOrder = 0;
+
+	// Don't flush the buffer. That is done when writing the last Order, in ReplayWriter::finish().
 }
 
 void ReplayWriter::finish()
 {
 	if (!isValid()) return;
 
-	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
-	NetSendOrder msg(boost::shared_ptr<Order>(new NullOrder()));
-
 	// Write the number of steps since last order to the end of the replay
 	buffer->writeUint16(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
-	// Write the NullOrder to the file
-	msg.encodeData(buffer);
+	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
+	writeOrder(buffer, boost::shared_ptr<Order>(new NullOrder()), 0);
 
 	// Flush the buffer now
 	buffer->flush();
@@ -144,14 +162,11 @@ bool ReplayWriter::write(const std::string &filename) const
 		fileBackend->putc(c);
 	}
 
-	// Write a NullOrder to the file to make sure it's a NullOrder-terminated replay
-	NetSendOrder msg(boost::shared_ptr<Order>(new NullOrder()));
-
 	// Write the number of steps since last order to the end of the replay
 	file->writeUint16(0, "replayStepsSinceLastOrder");
 
-	// Write the NullOrder to the file
-	msg.encodeData(file);
+	// Write a NullOrder to the file to make sure it's a NullOrder-terminated replay
+	writeOrder(file, boost::shared_ptr<Order>(new NullOrder()), 0);
 
 	// Flush the file
 	file->flush();
