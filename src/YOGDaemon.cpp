@@ -22,6 +22,8 @@
 #include "FileManager.h"
 #include "StringTable.h"
 
+// TODO: Is this file used anywhere?
+
 using namespace GAGCore;
 
 int main(int argc, char** argv)

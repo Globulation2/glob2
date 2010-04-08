@@ -2365,27 +2365,6 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 	}
 }
 
-Sint32 Unit::GIDtoID(Uint16 gid)
-{
-	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
-	return (gid%Unit::MAX_COUNT);
-}
-
-Sint32 Unit::GIDtoTeam(Uint16 gid)
-{
-	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
-	return (gid/Unit::MAX_COUNT);
-}
-
-Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
-{
-	assert(id>=0);
-	assert(id<Unit::MAX_COUNT);
-	assert(team>=0);
-	assert(team<Team::MAX_COUNT);
-	return id+team*Unit::MAX_COUNT;
-}
-
 //! Return the real armor, taking into account the reduction due to fruits
 int Unit::getRealArmor(bool isMagic) const
 {
