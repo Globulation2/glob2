@@ -49,14 +49,19 @@ public:
 	enum { OPTION_LOW_SPEED_GFX=0x1 };
 	enum { OPTION_MAP_EDIT_USE_USL=0x2 };
 
+#ifndef YOG_SERVER_ONLY
 private:
 	void updateLoadProgressScreen(int value);
+#endif  // !YOG_SERVER_ONLY
 
 public:
 	GlobalContainer(void);
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
+#ifndef YOG_SERVER_ONLY
+	void loadClient(void);
+#endif  // !YOG_SERVER_ONLY
 	void load(void);
 
 	//void setUsername(const std::string &name);
@@ -67,6 +72,7 @@ public:
 	FileManager *fileManager;
 	LogFileManager *logFileManager;
 
+#ifndef YOG_SERVER_ONLY
 	GraphicContext *gfx;
 	SoundMixer *mix;
 	VoiceRecorder *voiceRecorder;
@@ -98,10 +104,12 @@ public:
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;
-	
+#endif  // !YOG_SERVER_ONLY
 	Settings settings;
 
+#ifndef YOG_SERVER_ONLY
 	BuildingsTypes buildingsTypes;
+#endif  // !YOG_SERVER_ONLY
 	RessourcesTypes ressourcesTypes;
 
 	std::string videoshotName; //!< the name of videoshot to record. If empty, do not record videoshot
@@ -135,7 +143,9 @@ public:
 	ReplayWriter *replayWriter; //!< Writes orders into replay files
 
 public:
+#ifndef YOG_SERVER_ONLY
 	Uint32 getConfigCheckSum();
+#endif  // !YOG_SERVER_ONLY
 };
 
 extern GlobalContainer *globalContainer;

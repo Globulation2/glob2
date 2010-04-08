@@ -40,12 +40,13 @@ LogFileManager::~LogFileManager()
 
 FILE *LogFileManager::getFile(const std::string fileName)
 {
-	// This is a hack to temporarilly disable log files
+	// FIXME: This is a hack to temporarilly disable log files
 	//
 	// According to Bradley, logging causes crashes without this hack.
 	// A major cleanup is required prior to switching logging back on.
 	return stdout;
 
+#if 0
 	std::string logName = "logs/";
 	logName += globalContainer->settings.getUsername();
 	logName += fileName;
@@ -63,4 +64,5 @@ FILE *LogFileManager::getFile(const std::string fileName)
 	{
 		return logFileMap[logName];
 	}
+#endif  // 0
 }
