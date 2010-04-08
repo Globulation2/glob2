@@ -7,9 +7,10 @@ Import('PackTar')
 
 
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
-    files = Split("""changelog  copyright        glob2-data.install  glob2.install                 rules
-                     compat     glob2.6          glob2.dirs          glob2.menu     README.Debian  SConscript
-                     control    glob2-data.dirs  glob2.docs          glob2.sgml     README.source""")
+    files = Split("""changelog  glob2.6             glob2.docs         glob2-server.install  README.source
+                     compat     glob2-data.dirs     glob2.install      glob2.sgml            rules
+                     control    glob2-data.install  glob2.menu                               SConscript
+                     copyright  glob2.dirs          glob2-server.dirs  README.Debian""")
     PackTar(env['TARFILE'], files)
 
     patches = Split("""patches/01_remove_home_directory_browsing.patch  patches/03_headers_order.patch

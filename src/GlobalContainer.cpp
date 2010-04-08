@@ -37,8 +37,10 @@
 #include "SoundMixer.h"
 #include "UnitsSkins.h"
 #include "VoiceRecorder.h"
+#ifndef YOG_SERVER_ONLY
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
+#endif  // !YOG_SERVER_ONLY
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -122,9 +124,11 @@ GlobalContainer::GlobalContainer(void)
 	replayVisibleTeams = 0xFFFFFFFF;
 	replayShowAreas = false;
 	replayShowFlags = true;
-	
+
+#ifndef YOG_SERVER_ONLY
 	replayReader = NULL;
 	replayWriter = NULL;
+#endif  // !YOG_SERVER_ONLY
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
@@ -158,9 +162,11 @@ GlobalContainer::~GlobalContainer(void)
 	// close virtual filesystem
 	delete logFileManager;
 
+#ifndef YOG_SERVER_ONLY
 	// delete replay handlers
 	delete replayReader; replayReader = NULL;
 	delete replayWriter; replayWriter = NULL;
+#endif  // !YOG_SERVER_ONLY
 }
 
 /**
