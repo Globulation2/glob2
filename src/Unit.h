@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <string.h>
 
+#include "UnitUtils.h"
 #include <GAGSys.h>
 #include "UnitConsts.h"
 #include "Ressource.h"
@@ -44,11 +45,10 @@ namespace GAGCore
 }
 
 // a unit
-class Unit
+class Unit : public UnitUtils
 {
 	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
-	static const int MAX_COUNT=1024;
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void) { }
@@ -85,10 +85,6 @@ public:
 		*dx=tab[direction][0];
 		*dy=tab[direction][1];
 	}
-	
-	static Sint32 GIDtoID(Uint16 gid);
-	static Sint32 GIDtoTeam(Uint16 gid);
-	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 
 	void selectPreferedMovement(void);
 	void selectPreferedGroundMovement(void);

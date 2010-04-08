@@ -48,10 +48,14 @@ enum WinningConditionType
 class WinningCondition
 {
 public:
+	// These two methods in WinningConditionScript depend on SGSL.cpp,
+	// but they aren't needed for server.
+#ifndef YOG_SERVER_ONLY
 	///Returns true if the particular player has won according to this winning condition
 	virtual bool hasTeamWon(int team, Game* game)=0;
 	///Returns true if the particular player has lost according to this winning condition
 	virtual bool hasTeamLost(int team, Game* game)=0;
+#endif  // !YOG_SERVER_ONLY
 	///Returns the winning condition type
 	virtual WinningConditionType getType() const=0;
 	///This will encode the data in this winning condition to a stream. All derived class must start by saving a Uint8 from getType()
@@ -104,8 +108,10 @@ public:
 class WinningConditionScript : public WinningCondition
 {
 public:
+#ifndef YOG_SERVER_ONLY
 	bool hasTeamWon(int team, Game* game);
 	bool hasTeamLost(int team, Game* game);
+#endif  // !YOG_SERVER_ONLY
 	WinningConditionType getType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
