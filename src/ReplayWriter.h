@@ -71,7 +71,7 @@ public:
 	/// Get the buffer, if for any reason you would need it
 	GAGCore::OutputStream* getBuffer() const;
 
-public:
+private:
 	/// You shouldn't copy-construct this class
 	ReplayWriter(const ReplayWriter &copy) { assert(false); };
 

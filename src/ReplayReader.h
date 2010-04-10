@@ -34,7 +34,7 @@ class Order;
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
 /// If this replay stores checksums, they are checked every time an order is read.
-/// The replay ends early if both the checksum given to this class by advanceStep(checksum) != 0
+/// The replay ends early if both the checksum given to this class by setCheckSum(checksum) != 0
 /// AND the order written in the replay file != 0 AND both don't match.
 class ReplayReader
 {
