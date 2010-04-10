@@ -54,8 +54,7 @@ struct IntBuildingType
 	static std::vector<std::string> reverseConversionMap;
 	static std::string null;
 	
-	static int shortNumberFromType(const char *type);
-	static int shortNumberFromType(const std::string &s);
+	static int shortNumberFromType(const std::string &type);
 	static const std::string & typeFromShortNumber(int number);
 	
 	static void init(void);

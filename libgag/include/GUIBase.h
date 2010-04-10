@@ -43,10 +43,10 @@ namespace GAGGUI
 	unsigned getNextUTF8Char(unsigned char c);
 	
 	//! return pos of the next UTF8 char in text
-	unsigned getNextUTF8Char(const char *text, unsigned pos);
+	unsigned getNextUTF8Char(const std::string text, unsigned pos);
 	
 	//! return pos of the previous UTF8 char in text
-	unsigned getPrevUTF8Char(const char *text, unsigned pos);
+	unsigned getPrevUTF8Char(const std::string text, unsigned pos);
 	
 	//! Interpolate from V0 on time 0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = 0, f'(T) = 0
 	float splineInterpolation(float T, float V0, float V1, float x);

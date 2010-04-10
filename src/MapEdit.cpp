@@ -1113,9 +1113,9 @@ MapEdit::~MapEdit()
 }
 
 
-bool MapEdit::load(const char *filename)
+bool MapEdit::load(const std::string filename)
 {
-	assert(filename);
+	assert(filename.size());
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
 	if (stream->isEndOfStream())
@@ -1126,7 +1126,27 @@ bool MapEdit::load(const char *filename)
 	}
 	else
 	{
-		bool rv = game.load(stream);
+		bool rv;
+
+		try
+		{
+			rv = game.load(stream);
+		}
+		catch (std::exception &e)
+		{
+			std::cerr << "Failed to open map: bad format." << std::endl;
+
+			if (!globalContainer->runNoX)
+			{
+				// Display an error message
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+			}
+
+			// We can't recover from this, so we quit
+			doQuitAfterLoadSave = true;
+
+			return false;
+		}
 		
 		delete stream;
 		if (!rv)
@@ -1151,13 +1171,13 @@ bool MapEdit::load(const char *filename)
 
 
 
-bool MapEdit::save(const char *filename, const char *name)
+bool MapEdit::save(const std::string filename, const std::string name)
 {
 	FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
 	dialog.execute();
 
-	assert(filename);
-	assert(name);
+	assert(filename.size());
+	assert(name.size());
 
 	hasMapBeenModified = false;
 
@@ -1217,6 +1237,14 @@ int MapEdit::run(void)
 		while (SDL_PollEvent(&event))
 		{
  			processEvent(event);
+		}
+
+		// While processing events the user could've tried to load a map that failed.
+		// Then we can't go through drawing everything because that would segfault.
+		if(doQuitAfterLoadSave && !showingSave)
+		{
+			isRunning = false;
+			break;
 		}
 		
 		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
@@ -3434,15 +3462,13 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	lastPlacementY=mapY;
 }
 
-
-
-void MapEdit::handleDeleteClick(int mx, int my)
+void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 {
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
-		
+
 	if(lastPlacementX == -1)
 	{
 		firstPlacementX=mapX;
@@ -3462,100 +3488,60 @@ void MapEdit::handleDeleteClick(int mx, int my)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
-					game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
+					switch(clickType)
+					{
+					case BrushTool::CT_DELETE:
+						game.removeUnitAndBuildingAndFlags(x, y, 1, Game::DEL_BUILDING | Game::DEL_UNIT | Game::DEL_FLAG);
+						game.regenerateDiscoveryMap();
+						break;
+					case BrushTool::CT_AREA:
+						game.map.setPoint(areaNumber->getIndex(), x, y);
+						break;
+					case BrushTool::CT_NO_RESOURCE_GROWTH:
+						game.map.getCase(x, y).canRessourcesGrow=false;
+						break;
+					}
+				}
+	}
+	else if (brush.getType() == BrushTool::MODE_DEL)
+	{
+		for (int y=startY; y<startY+height; y++)
+			for (int x=startX; x<startX+width; x++)
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				{
+					switch(clickType)
+					{
+					case BrushTool::CT_AREA:
+						game.map.unsetPoint(areaNumber->getIndex(), x, y);
+						break;
+					case BrushTool::CT_NO_RESOURCE_GROWTH:
+						game.map.getCase(x, y).canRessourcesGrow=true;
+						break;
+					default:break;
+					}
 				}
 	}
 	lastPlacementX=mapX;
 	lastPlacementY=mapY;
 	game.regenerateDiscoveryMap();
 }
+void MapEdit::handleDeleteClick(int mx, int my)
+{
+	handleClick(mx,my,BrushTool::CT_DELETE);
+}
 
 
 
 void MapEdit::handleAreaClick(int mx, int my)
 {
-	int mapX, mapY;
-	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
-	if(lastPlacementX==mapX && lastPlacementY==mapY)
-		return;
-		
-	if(lastPlacementX == -1)
-	{
-		firstPlacementX=mapX;
-		firstPlacementY=mapY;
-	}
-	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
-	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
-	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
-	int width  = BrushTool::getBrushWidth(fig);
-	int height = BrushTool::getBrushHeight(fig);
-	// we update local values
-	if (brush.getType() == BrushTool::MODE_ADD)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
-				{
-					game.map.setPoint(areaNumber->getIndex(), x, y);
-				}
-	}
-	else if (brush.getType() == BrushTool::MODE_DEL)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
-				{
-					game.map.unsetPoint(areaNumber->getIndex(), x, y);
-				}
-	}
-	lastPlacementX=mapX;
-	lastPlacementY=mapY;
+	handleClick(mx,my,BrushTool::CT_AREA);
 }
 
 
 
 void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
 {
-	int mapX, mapY;
-	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
-	if(lastPlacementX==mapX && lastPlacementY==mapY)
-		return;
-		
-	if(lastPlacementX == -1)
-	{
-		firstPlacementX=mapX;
-		firstPlacementY=mapY;
-	}
-	int fig = brush.getFigure();
-	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
-	// we get coordinates
-	int startX = mapX-BrushTool::getBrushDimXMinus(fig);
-	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
-	int width  = BrushTool::getBrushWidth(fig);
-	int height = BrushTool::getBrushHeight(fig);
-	// we update local values
-	if (brush.getType() == BrushTool::MODE_ADD)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
-				{
-					game.map.getCase(x, y).canRessourcesGrow=false;
-				}
-	}
-	else if (brush.getType() == BrushTool::MODE_DEL)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
-				{
-					game.map.getCase(x, y).canRessourcesGrow=true;
-				}
-	}
-	lastPlacementX=mapX;
-	lastPlacementY=mapY;
+	handleClick(mx,my,BrushTool::CT_NO_RESOURCE_GROWTH);
 }
 
 

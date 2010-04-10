@@ -26,7 +26,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	Animation::Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *sprite, Sint32 start, Sint32 count, Sint32 duration)
+	Animation::Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string sprite, Sint32 start, Sint32 count, Sint32 duration)
 	{
 		this->x=x;
 		this->y=y;
@@ -38,7 +38,7 @@ namespace GAGGUI
 		pos=start;
 		durationLeft=duration;
 	
-		assert(sprite);
+		assert(sprite.length());
 		this->sprite=sprite;
 		archPtr=Toolkit::getSprite(sprite);
 		assert(archPtr);

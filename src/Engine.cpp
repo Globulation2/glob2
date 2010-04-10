@@ -29,6 +29,7 @@
 #include <BinaryStream.h>
 #include <FormatableString.h>
 
+#include "AINames.h"
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
@@ -41,6 +42,7 @@
 #include "Player.h"
 #include "NetMessage.h"
 #include "GameGUIDialog.h"
+#include <GUIMessageBox.h>
 
 #include <iostream>
 
@@ -203,7 +205,21 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 
 void Engine::createRandomGame()
 {
-	MapHeader map = chooseRandomMap();
+	bool validMapChosen = false;
+	MapHeader map;
+
+	while (!validMapChosen)
+	{
+		try
+		{
+			map = chooseRandomMap();
+			validMapChosen = true;
+		}
+		catch (std::ios_base::failure &e)
+		{
+			validMapChosen = false;
+		}
+	}
 	
 	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
 	
@@ -250,15 +266,15 @@ int Engine::run(void)
 	else
 	{
 		// look for all available musics
-		globalContainer->fileManager->initDirectoryListing("data/zik/", NULL, true);
-		const char *fileName;
+		globalContainer->fileManager->initDirectoryListing("data/zik/", "", true);
+		std::string filename;
 		std::vector<std::string> musicDirs;
-		while ((fileName = globalContainer->fileManager->getNextDirectoryEntry()) != 0) 
+		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
 		{
-			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(fileName)))
+			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(filename)))
 			{
-				std::cerr << "music dir found: " << fileName << std::endl;
-				musicDirs.push_back(fileName);
+				std::cerr << "music dir found: " << filename << std::endl;
+				musicDirs.push_back(filename);
 			}
 		}
 		
@@ -662,7 +678,23 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 	{
 		if (verbose)
 			std::cout << "Engine::loadMapHeader : loading map " << filename << std::endl;
-		bool validMapSelected = mapHeader.load(stream);
+
+		bool validMapSelected;
+
+		try
+		{
+			validMapSelected = mapHeader.load(stream);
+		}
+		catch (std::ios_base::failure &e)
+		{
+			// Notify what filename couldn't load, because if we're doing -test-games(-nox) and loading the map fails,
+			// the map name won't be saved inside mapHeader.
+			std::cerr << "Engine::loadMapHeader : can't load map \"" << filename << "\": bad format" << std::endl;
+
+			// We didn't solve the problem though, so we re-throw
+			throw;
+		}
+
 		if (!validMapSelected)
 			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
 	}
@@ -714,9 +746,24 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 
 int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
 {
-	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
+	try
+	{
+		if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
+			return EE_CANT_LOAD_MAP;
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Failed to load the map: bad format." << std::endl;
+
+		if (!globalContainer->runNoX)
+		{
+			// Display an error message
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+		}
+
 		return EE_CANT_LOAD_MAP;
-	
+	}
+
 	// We remove uncontrolled stuff from map
 	gui.game.clearingUncontrolledTeams();
 
@@ -820,8 +867,8 @@ MapHeader Engine::chooseRandomMap()
 	// we add the other files
 	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), "map", false))
 	{
-		const char* fileName;
-		while ((fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())) != NULL)
+		std::string fileName;
+		while (!(fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())).empty())
 		{
 			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
 			maps.push_back(fullFileName);
@@ -844,13 +891,13 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		int teamColor=(i % numberOfTeams);
 		if (i==0)
 		{
-			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername(), teamColor, BasePlayer::P_LOCAL);
 		}
 		else
 		{
 			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
 			FormatableString name("%0 %1");
-			name.arg(AI::getAIText(iid)).arg(i-1);
+			name.arg(AINames::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 		}
 		gameHeader.setAllyTeamNumber(teamColor, teamColor);
@@ -877,8 +924,23 @@ int Engine::loadReplay(const std::string &fileName)
 	assert(globalContainer->replay);
 	
 	// Get to the right position (readEnterSection doesn't work)
-	GameGUI tempGui;
-	tempGui.load(globalContainer->replay);
+	try
+	{
+		GameGUI tempGui;
+		tempGui.load(globalContainer->replay);
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Failed to load replay file: bad format." << std::endl;
+
+		if (!globalContainer->runNoX)
+		{
+			// Display an error message
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+		}
+
+		return EE_CANT_LOAD_MAP;
+	}
 	
 	// Read the total number of steps
 	globalContainer->replayStepsTotal = globalContainer->replay->readUint32("stepcount");

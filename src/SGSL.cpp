@@ -104,49 +104,49 @@ SGSLToken::TokenSymbolLookupTable SGSLToken::table[] =
 	{ S_GFXSTATTAB, "GfxStatTab"},
 
 	// NIL must be at the end because it is a stop condition... not very clean
-	{ NIL, NULL },
+	{ NIL, "" },
 };
 
-SGSLToken::TokenType SGSLToken::getTypeByName(const char *name)
+SGSLToken::TokenType SGSLToken::getTypeByName(const std::string name)
 {
 	int i = 0;
 	TokenType type=NIL;
 
 	//std::cout << "Getting token for " << name << std::endl;
 
-	if (name == NULL)
+	if (name.empty())
 	{
 		std::cerr << "Warning, SGSLToken::getTypeByName(name) called with empty name!" << std::endl;
 		return NIL;
 	}
-
+	
 	while (table[i].type != NIL)
 	{
 		//NOTE: SM: I reverted back to case-insensitive, as the other one breaks tutorial
-		if (strcasecmp(name, table[i].name)==0)
+		if (strcasecmp(name.c_str(), table[i].name.c_str())==0)
 		//if (name.compare(table[i].name) == 0)
-  		{
+		{
 			type = table[i].type;
 			break;
-  		}
+		}
 		i++;
 	}
-
+	
 	if (type == NIL)
 	{
 		std::cerr << "Warning, SGSLToken::getTypeByName(name) found no type for name " << name << "!" << std::endl;
 	}
-
+	
 	return type;
 }
 
-const char *SGSLToken::getNameByType(SGSLToken::TokenType type)
+std::string SGSLToken::getNameByType(SGSLToken::TokenType type)
 {
 	int i = 0;
-	const char *name=NULL;
+	std::string name="";
 
 	if (type != NIL)
-		while (table[i].name != NULL)
+		while (!table[i].name.empty())
 		{
 			if (type == table[i].type)
 			{
@@ -361,9 +361,7 @@ void Story::hintVisible(GameGUI* gui)
 	}
 }
 
-
-
-void Story::hilightItem(GameGUI* gui)
+void Story::setHighlightItem(GameGUI* gui, bool doSet)
 {
 	std::string n = line[++lineSelector].msg;
 	int t=0;
@@ -415,72 +413,29 @@ void Story::hilightItem(GameGUI* gui)
 	{
 		t=GameGUI::HilightBrushSelector;
 	}
-	
 	if(t!=0)
 	{
-		gui->hilights.insert(t);
+		if(doSet)
+		{
+			gui->hilights.insert(t);
+		}
+		else
+		{
+			gui->hilights.erase(t);
+		}
 	}
+}
+
+void Story::hilightItem(GameGUI* gui)
+{
+	setHighlightItem(gui, true);
 }
 
 
 
 void Story::unhilightItem(GameGUI* gui)
 {
-	std::string n = line[++lineSelector].msg;
-	int t=0;
-	if(n=="main menu icon")
-	{
-		t=GameGUI::HilightMainMenuIcon;
-	}
-	else if(n=="right side panel")
-	{
-		t=GameGUI::HilightRightSidePanel;
-	}
-	else if(n=="under minimap icons")
-	{
-		t=GameGUI::HilightUnderMinimapIcon;
-	}
-	else if(n=="units assigned bar")
-	{
-		t=GameGUI::HilightUnitsAssignedBar;
-	}
-	else if(n=="units ratio bar")
-	{
-		t=GameGUI::HilightRatioBar;
-	}
-	else if(n=="workers working free stat")
-	{
-		t=GameGUI::HilightWorkersWorkingFreeStat;
-	}
-	else if(n=="explorers working free stat")
-	{
-		t=GameGUI::HilightExplorersWorkingFreeStat;
-	}
-	else if(n=="warriors working free stat")
-	{
-		t=GameGUI::HilightWarriorsWorkingFreeStat;
-	}
-	else if(n=="forbidden zone on panel")
-	{
-		t=GameGUI::HilightWorkersWorkingFreeStat;
-	}
-	else if(n=="guard zone on panel")
-	{
-		t=GameGUI::HilightGuardZoneOnPanel;
-	}
-	else if(n=="clearing zone on panel")
-	{
-		t=GameGUI::HilightClearingZoneOnPanel;
-	}
-	else if(n=="brush selector")
-	{
-		t=GameGUI::HilightBrushSelector;
-	}
-	
-	if(t!=0)
-	{
-		gui->hilights.erase(t);
-	}
+	setHighlightItem(gui, false);
 }
 
 
@@ -1137,9 +1092,9 @@ void Story::syncStep(GameGUI *gui)
 
 using namespace std;
 
-const char *ErrorReport::getErrorString(void) const
+std::string ErrorReport::getErrorString(void) const
 {
-	static const char *strings[]={
+	static const std::string strings[]={
 		"No error",
 		"Invalid Value ",
 		"Syntax error",
@@ -1335,13 +1290,13 @@ void Aquisition::nextToken()
 		token.type = SGSLToken::NIL;
 }
 
-bool FileAquisition::open(const char *filename)
+bool FileAquisition::open(const std::string filename)
 {
 	if (fp != NULL)
 		fclose(fp);
-	if ((fp = fopen(filename,"r")) == NULL)
+	if ((fp = fopen(filename.c_str(),"r")) == NULL)
 	{
-		fprintf(stderr,"SGSL : Can't open file %s\n", filename);
+		fprintf(stderr,"SGSL : Can't open file %s\n", filename.c_str());
 		return false;
 	}
 	return true;
@@ -1351,32 +1306,23 @@ bool FileAquisition::open(const char *filename)
 StringAquisition::StringAquisition(const Functions& functions) :
 	Aquisition(functions)
 {
-	buffer=NULL;
 	pos=0;
 }
 
 StringAquisition::~StringAquisition()
 {
-	if (buffer)
-		free(buffer);
+	
 }
 
-void StringAquisition::open(const char *text)
+void StringAquisition::open(const std::string& text)
 {
-	assert(text);
-
-	if (buffer)
-		free (buffer);
-
-	size_t len=strlen(text);
-	buffer=(char *)malloc(len+1);
-	memcpy(buffer, text, len+1);
+	buffer = text;
 	pos=0;
 }
 
 int StringAquisition::getChar(void)
 {
-	if (buffer[pos])
+	if (pos < int(buffer.length()))
 	{
 		return (buffer[pos++]);
 	}
@@ -1431,7 +1377,10 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 	ErrorReport er = compileScript(game);
 	if (er.type != ErrorReport::ET_OK)
 	{
-		printf("SGSL : %s at line %d on col %d\n", er.getErrorString(), er.line+1, er.col);
+		std::cout << "SGSL : " << er.getErrorString()
+				<< " at line " << er.line+1
+				<< " on col " << er.col
+				<< std::endl;
 		stream->readLeaveSection();
 		return false;
 	}
@@ -1615,7 +1564,7 @@ ErrorReport MapScriptSGSL::compileScript(Game *game)
 	return compileScript(game, sourceCode.c_str());
 }
 
-ErrorReport MapScriptSGSL::loadScript(const char *filename, Game *game)
+ErrorReport MapScriptSGSL::loadScript(const std::string filename, Game *game)
 {
 	FileAquisition aquisition(functions);
 	if (aquisition.open(filename))
