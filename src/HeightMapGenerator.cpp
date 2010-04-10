@@ -209,6 +209,8 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 	}
 	addNoise(.7,smoothingFactor);
 	normalize();
+	delete[] centerX;
+	delete[] centerY;
 }
 
 void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
