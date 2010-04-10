@@ -54,6 +54,7 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "config.h"
+#include "Order.h"
 
 #ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_keysym.h>

@@ -18,7 +18,7 @@
 
 #include "ReplayWriter.h"
 
-#include "Stream.h"
+#include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "Order.h"
 #include "NetMessage.h"

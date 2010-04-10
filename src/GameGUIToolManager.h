@@ -22,13 +22,15 @@
 #ifndef GameGUIToolManager_h
 #define GameGUIToolManager_h
 
-#include "Game.h"
 #include "boost/shared_ptr.hpp"
 #include "Brush.h"
-#include "GameGUIDefaultAssignManager.h"
-#include "GameGUIGhostBuildingManager.h"
 #include <string>
 #include <queue>
+
+class Game;
+class GameGUIDefaultAssignManager;
+class GameGUIGhostBuildingManager;
+class Order;
 
 ///This class is meant to manage the game gui tool, such as placing a building, flag or zone
 class GameGUIToolManager

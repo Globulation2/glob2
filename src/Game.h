@@ -23,8 +23,6 @@
 #define __GAME_H
 
 #include <iostream>
-#include "Stream.h"
-#include "BinaryStream.h"
 
 #include "Map.h"
 #include "SGSL.h"
@@ -39,6 +37,8 @@
 namespace GAGCore
 {
 	class DrawableSurface;
+	class InputStream;
+	class OutputStream;
 }
 using namespace GAGCore;
 class MapGenerationDescriptor;

@@ -23,10 +23,8 @@
 #include <list>
 #include <vector>
 
-#include "Bullet.h"
 #include "Ressource.h"
 #include "UnitConsts.h"
-#include "Order.h"
 
 namespace GAGCore
 {
@@ -39,6 +37,7 @@ class Unit;
 class Team;
 class BuildingType;
 class BuildingsTypes;
+class Order;
 
 class Building
 {

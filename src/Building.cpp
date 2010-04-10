@@ -32,6 +32,8 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include "Order.h"
+#include "Bullet.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {

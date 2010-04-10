@@ -51,7 +51,7 @@
 
 #include "Brush.h"
 #include "DynamicClouds.h"
-
+#include "Bullet.h"
 #include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 

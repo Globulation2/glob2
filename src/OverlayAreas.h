@@ -19,10 +19,10 @@
 #ifndef OverlayAreas_h
 #define OverlayAreas_h
 
-#include "Game.h"
 #include <vector>
-#include <boost/thread/thread.hpp>
+#include "Types.h"
 
+class Game;
 
 ///This class is used to compute overlay areas, a tool to visualize concentrations
 ///of, for example, starving units. Note that these may be computed in another

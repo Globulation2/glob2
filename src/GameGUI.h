@@ -25,9 +25,7 @@
 #include <queue>
 #include <valarray>
 
-#include "Header.h"
 #include "Game.h"
-#include "Order.h"
 #include "Brush.h"
 #include "Campaign.h"
 #include "MapHeader.h"
@@ -54,7 +52,8 @@ using namespace GAGGUI;
 
 class TeamStats;
 class InGameTextInput;
-
+class Order;
+class MapMarkOrder;
 
 //! max unit working at a building
 #define MAX_UNIT_WORKING 20
