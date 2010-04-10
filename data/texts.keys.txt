@@ -152,6 +152,7 @@
 [Enter your password :]
 [enter]
 [equals]
+[ERROR_CANT_LOAD_MAP]
 [escape]
 [explorationflag explanation 2]
 [explorationflag explanation]

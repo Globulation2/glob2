@@ -181,38 +181,3 @@ void AI::save(GAGCore::OutputStream *stream)
 	stream->write( "AI e",  4, "signatureEnd");
 	stream->writeLeaveSection();
 }
-
-
-
-std::string AI::getAIText(int id)
-{
-	if(id == NONE)
-	{
-		return Toolkit::getStringTable()->getString("[AINone]");
-	}
-	else if(id == NUMBI)
-	{
-		return Toolkit::getStringTable()->getString("[AINumbi]");
-	}
-	else if(id == CASTOR)
-	{
-		return Toolkit::getStringTable()->getString("[AICastor]");
-	}
-	else if(id == WARRUSH)
-	{
-		return Toolkit::getStringTable()->getString("[AIWarrush]");
-	}
-	else if(id == REACHTOINFINITY)
-	{
-		return Toolkit::getStringTable()->getString("[AIReachToInfinity]");
-	}
-	else if(id == NICOWAR)
-	{
-		return Toolkit::getStringTable()->getString("[AINicowar]");
-	}
-	else if(id == TOUBIB)
-	{
-		return Toolkit::getStringTable()->getString("[AIToubib]");
-	}
-	return "";
-}

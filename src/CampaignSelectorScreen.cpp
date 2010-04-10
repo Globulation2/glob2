@@ -65,7 +65,7 @@ void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, i
 		{
 			Campaign toload;
 			toload.load(getCampaignName());
-			description->setText(Toolkit::getStringTable()->getString(toload.getDescription().c_str()));
+			description->setText(Toolkit::getStringTable()->getString(toload.getDescription()));
 		}
 		else
 		{

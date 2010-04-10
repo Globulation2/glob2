@@ -265,8 +265,8 @@ def main():
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
         env.Append(CPPPATH=['/usr/local/include/SDL'])
     if isDarwinPlatform:
-        env.Append(LIBPATH=["/sw/lib"])
-        env.Append(CPPPATH=["/sw/include"])
+        env.Append(LIBPATH=["/opt/local/lib"])
+        env.Append(CPPPATH=["/opt/local/include"])
     if env['mingwcross']:
         if os.path.isabs(env['crossroot']):
             crossroot_abs = env['crossroot']
@@ -294,6 +294,9 @@ def main():
         env.Append(LIBS=['vorbis', 'ogg', 'regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
         env.Append(LINKFLAGS=['-mwindows'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
+    elif isDarwinPlatform:
+        env.ParseConfig("/opt/local/bin/sdl-config --cflags")
+        env.ParseConfig("/opt/local/bin/sdl-config --libs")
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")

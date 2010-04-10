@@ -28,14 +28,14 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	KeySelector::KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, int w, int h)
+	KeySelector::KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, int w, int h)
 	{
 		constructor(x, y, hAlign, vAlign, font, w, h);
 	}
 	
 	
 	
-	KeySelector::KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, const std::string& tooltip, const std::string &tooltipFont, int w, int h)
+	KeySelector::KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, int w, int h)
 	: HighlightableWidget(tooltip, tooltipFont)
 	{
 		constructor(x, y, hAlign, vAlign, font, w, h);
@@ -91,7 +91,7 @@ namespace GAGGUI
 	
 	
 	
-	void KeySelector::constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const char *font, int w, int h)
+	void KeySelector::constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, int w, int h)
 	{
 		this->x=x;
 		this->y=y;
