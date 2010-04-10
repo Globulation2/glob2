@@ -25,7 +25,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #include "FormatableString.h"
 #include "GameGUI.h"
 #include <cmath>
-
+#include "GameGUIDefaultAssignManager.h"
+#include "GameGUIGhostBuildingManager.h"
+#include "Order.h"
 
 using namespace GAGGUI;
 using namespace GAGCore;

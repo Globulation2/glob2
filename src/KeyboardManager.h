@@ -19,7 +19,6 @@
 #ifndef __KEYBOARD_MANAGER_H
 #define __KEYBOARD_MANAGER_H
 
-#include "SDL.h"
 #include <map>
 #include <list>
 #include <vector>

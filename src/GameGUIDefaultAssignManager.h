@@ -23,7 +23,7 @@
 #define GameGUIDefaultAssignManager_h
 
 #include <map>
-#include "SDL.h"
+#include "Types.h"
 
 namespace GAGCore
 {

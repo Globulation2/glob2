@@ -18,7 +18,7 @@
 
 #include "ReplayReader.h"
 
-#include "Stream.h"
+#include "BinaryStream.h"
 #include "Order.h"
 #include "NetMessage.h"
 #include "GUIMessageBox.h"

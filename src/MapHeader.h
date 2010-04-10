@@ -19,10 +19,14 @@
 #ifndef __MAPHEADER_H
 #define __MAPHEADER_H
 
-#include "Stream.h"
-#include "Version.h"
 #include "BaseTeam.h"
 #include "Team.h"
+
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
 
 ///This is the map header. It is static with the map, and does not change from game to game if
 ///the user is playing on the same map. It holds small details about a map that aren't placed
