@@ -78,7 +78,6 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 	
 	this->implementitionID=implementitionID;
 	this->player=player;
-	step=0;
 }
 
 AI::AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
@@ -86,7 +85,6 @@ AI::AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 	aiImplementation=NULL;
 	implementitionID=NONE;
 	this->player=player;
-	step=0;
 	bool goodLoad=load(stream, versionMinor);
 	assert(goodLoad);
 }
@@ -101,7 +99,6 @@ AI::~AI()
 boost::shared_ptr<Order> AI::getOrder(bool paused)
 {
 	assert(player);
-	step++;
 	if (paused || !player->team->isAlive)
 		return shared_ptr<Order>(new NullOrder());
 	assert(aiImplementation);
