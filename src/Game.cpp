@@ -2561,6 +2561,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			overlays=&gui->overlay;
 		else if(edit)
 			overlays=&edit->overlay;
+		else assert(false);
 		int overlayMax=overlays->getMaximum();
 		Color overlayColor;
 		if(overlays->getOverlayType() == OverlayArea::Starving)
