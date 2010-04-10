@@ -19,6 +19,7 @@
 #include "GameGUIGhostBuildingManager.h"
 
 #include "GlobalContainer.h"
+#include "Game.h"
 
 GameGUIGhostBuildingManager::GameGUIGhostBuildingManager(Game& game)
 	: game(game)

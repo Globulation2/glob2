@@ -21,7 +21,14 @@
 
 #include <string>
 #include <vector>
-#include "Stream.h"
+
+#include "Types.h"
+
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
 
 ///An entry for a single map in the campaign
 class CampaignMapEntry

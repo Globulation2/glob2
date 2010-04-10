@@ -31,6 +31,7 @@
 #include "Team.h"
 #include "TeamStat.h"
 #include "Unit.h"
+#include "Bullet.h"
 
 
 EndOfGameStat::EndOfGameStat(int units, int buildings, int prestige, int hp, int attack, int defense)

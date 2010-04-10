@@ -25,6 +25,7 @@
 class Map;
 class Game;
 class Bullet;
+class BulletExplosion;
 class Explosion;
 class Team;
 

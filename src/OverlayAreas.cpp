@@ -21,6 +21,9 @@
 #include "Unit.h"
 #include "BuildingType.h"
 #include <cmath>
+#include <boost/thread/thread.hpp>
+#include "Game.h"
+#include "Bullet.h"
 
 OverlayArea::OverlayArea()
 {

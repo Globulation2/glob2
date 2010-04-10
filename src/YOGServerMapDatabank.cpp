@@ -19,10 +19,10 @@
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "NetMessage.h"
-#include "Stream.h"
 #include "Toolkit.h"
 #include "YOGServer.h"
 #include "YOGServerMapDatabank.h"
+#include "Version.h"
 
 using namespace GAGCore;
 
