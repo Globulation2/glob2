@@ -27,6 +27,7 @@
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
+#include <cppunit/XmlOutputter.h>
 
 int main(int argc, char* argv[])
 {
@@ -38,11 +39,14 @@ int main(int argc, char* argv[])
 	CppUnit::TextUi::TestRunner runner;
 	runner.addTest(suite);
 
-	// Change the default outputter to a compiler error format outputter
-	runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(),
-			std::cerr));
+	// made the outputter actually write to an XML-file that is needed for hudson
+	std::ofstream xmlFileOut("testResults.xml");
+	CppUnit::XmlOutputter xmlOut(&runner.result(), xmlFileOut);
+
 	// Run the tests.
 	bool wasSucessful = runner.run();
+
+	xmlOut.write();
 
 	// Return error code 1 if one of the tests failed.
 	return wasSucessful ? 0 : 1;
