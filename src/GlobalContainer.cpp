@@ -424,15 +424,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			printf("\nGlobulation 2 - %s\n\n", PACKAGE_VERSION);
 			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
-#ifndef DX9_BACKEND
 			SDL_version v;
 			SDL_VERSION(&v);
 			printf("Compiled with SDL version %d.%d.%d\n", v.major, v.minor, v.patch);
 			v = *SDL_Linked_Version();
 			printf("Linked with SDL version %d.%d.%d\n\n", v.major, v.minor, v.patch);
-#else
-			printf("Using DirectX 9 Backend\n\n");
-#endif
 			printf("Featuring :\n");
 			printf("* Map version %d\n", VERSION_MINOR);
 			printf("* Maps up to version %d can still be loaded\n", MINIMUM_VERSION_MINOR);

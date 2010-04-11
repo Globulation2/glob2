@@ -20,11 +20,7 @@
 #ifndef __RESSOURCE_H
 #define __RESSOURCE_H
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL.h>
-#else
-#include <Types.h>
-#endif
 
 #include <string>
 

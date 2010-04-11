@@ -22,11 +22,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>
-#else
-#include <Types.h>
-#endif
 #include <iostream>
 #include <valarray>
 #include <zlib.h>
