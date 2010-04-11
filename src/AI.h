@@ -83,7 +83,7 @@ public:
 
 	boost::shared_ptr<Order> getOrder(bool paused);
 
-	Uint32 step;
+//	Uint32 step;
 };
 
 #endif

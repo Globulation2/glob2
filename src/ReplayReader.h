@@ -33,6 +33,9 @@ class Order;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
+/// If this replay stores checksums, they are checked every time an order is read.
+/// The replay ends early if both the checksum given to this class by setCheckSum(checksum) != 0
+/// AND the order written in the replay file != 0 AND both don't match.
 class ReplayReader
 {
 public:
@@ -70,6 +73,9 @@ public:
 	/// Increments the current step number
 	void advanceStep();
 
+	/// Set the checksum. 0 means no testing is done for checksum matches.
+	void setCheckSum(Uint32 checksum = 0);
+
 	/// Get the next order on the current step
 	boost::shared_ptr<Order> retrieveOrder();
 
@@ -100,6 +106,9 @@ private:
 
 	/// The number of steps until the next order
 	Uint16 stepsUntilNextOrder;
+
+	/// The game's current checksum (or 0 if it's not given)
+	Uint32 checksum;
 };
 
 #endif

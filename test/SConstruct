@@ -9,7 +9,15 @@ else:
 
 env.Append(CCFLAGS = ccflags)
 
-sources = Split('TestsRunner.cpp MiniCppUnit.cpp PerlinNoiseTest.cpp ../src/PerlinNoise.cpp')
+sources = Split("""
+TestsRunner.cpp
+PerlinNoiseTest.cpp
+HelloWorldTest.cpp
+../src/PerlinNoise.cpp
+""")
+
+
+env.Append(LIBS=['cppunit'])
 
 env.Program( sources )
 

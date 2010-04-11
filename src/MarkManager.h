@@ -19,7 +19,9 @@
 #ifndef MarkManager_h
 #define MarkManager_h
 
-#include "Game.h"
+#include "GraphicContext.h"
+
+class Game;
 
 ///This class represents a mark on the screen. Players are able to mark
 ///places on the map that show briefly to other players. This class

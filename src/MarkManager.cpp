@@ -20,6 +20,7 @@
 #include "Utilities.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
+#include "Game.h"
 #include <cmath>
 
 Mark::Mark(int px, int py, GAGCore::Color color, int time)
