@@ -24,10 +24,8 @@
 #include <vector>
 
 #include "BuildingUtils.h"
-#include "Bullet.h"
 #include "Ressource.h"
 #include "UnitConsts.h"
-#include "Order.h"
 
 namespace GAGCore
 {
@@ -40,10 +38,12 @@ class Unit;
 class Team;
 class BuildingType;
 class BuildingsTypes;
+class Order;
 
 class Building : public BuildingUtils
 {
 public:
+	static const int MAX_COUNT=1024;
 	///This is the buildings basic state of existance.
 	enum BuildingState
 	{

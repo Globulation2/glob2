@@ -31,7 +31,6 @@
 #include "Team.h"
 #include "TerrainType.h"
 #include "BitArray.h"
-#include "MapHeader.h"
 
 class Unit;
 
@@ -45,6 +44,7 @@ class Map;
 class Game;
 class MapGenerationDescriptor;
 class SessionGame;
+class MapHeader;
 
 // a 1x1 piece of map
 struct Case

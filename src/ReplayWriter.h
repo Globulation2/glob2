@@ -34,6 +34,7 @@ class Order;
 
 /// This class is used for writing replays.
 /// ReplayWriter buffers a whole replay and then writes it to a file when you call write()
+/// You can optionally (though preferably) write checksums that will then be checked when reading back the replay.
 class ReplayWriter
 {
 public:
@@ -51,8 +52,11 @@ public:
 	/// Returns false if the writer isn't initialised or if the data does not make sense
 	bool isValid() const;
 
-	/// Increments the current step number
+	/// Increments the current step number and updates the checksum.
 	void advanceStep();
+
+	/// If the checksum is 0, there won't be any checking if the checksums match for orders.
+	void setCheckSum(Uint32 checksum = 0);
 
 	/// Adds the order to the replay
 	void pushOrder(boost::shared_ptr<Order> order);
@@ -82,6 +86,9 @@ private:
 
 	/// The number of steps since the last order
 	Uint16 stepsSinceLastOrder;
+
+	/// The game's current checksum (or 0 if it's not given)
+	Uint32 checksum;
 };
 
 #endif

@@ -17,6 +17,7 @@
 */
 
 #include "YOGAfterJoinGameInformation.h"
+#include "Version.h"
 
 namespace GAGCore
 {

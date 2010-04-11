@@ -21,7 +21,6 @@
 #define __GLOBALCONTAINER_H
 
 #include "BuildingsTypes.h"
-#include "Header.h"
 #include "RessourcesTypes.h"
 #include "Settings.h"
 

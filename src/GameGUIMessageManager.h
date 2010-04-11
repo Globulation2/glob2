@@ -20,10 +20,13 @@
 #define GameGUIMessageManager_h
 
 #include <string>
-#include "SDL.h"
 #include <list>
 #include "GUIBase.h"
-#include "GUIList.h"
+
+namespace GAGGUI
+{
+	struct List;
+}
 
 using namespace GAGGUI;
 using namespace GAGCore;
