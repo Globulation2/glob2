@@ -1,20 +1,20 @@
 /*
-  Copyright (C) 2007 Bradley Arsenault
+ Copyright (C) 2007 Bradley Arsenault
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 
 #ifndef __NetTestSuite_h
 #define __NetTestSuite_h
@@ -28,10 +28,14 @@
 
 using namespace boost;
 
-///This is a basic unit test system for the low level net classes,
+///This is a basic test system for the low level net classes,
 ///NetConnection, NetListener, NetMessage, YOGGameInfo and YOGMessage
 ///When run, it is assumed that the host allows the program to listen on
-//the port 30, and that it can connect to itself via localhost
+///the port 30, and that it can connect to itself via localhost
+
+// TODO: leo wandersleb 2010-04-11: This is not really a test-suite. It would
+// need to be split up into a UnitTestSuite to test the code and an actual test
+// for network and backend or whatever is needed to run yog.
 class NetTestSuite
 {
 public:
@@ -49,7 +53,7 @@ public:
 	///that the classes decode back to exactly what they where
 	///encoded to.
 	int testNetMessages();
-	
+
 	///Tests NetSendOrder
 	int testNetSendOrder();
 
@@ -88,7 +92,7 @@ public:
 
 	///Tests the YOGPlayerSessionInfo class and its serialization
 	int testYOGPlayerSessionInfo();
-	
+
 	///Tests the NetReteamingInformation class and its serialization
 	int testNetReteamingInformation();
 
@@ -99,6 +103,5 @@ public:
 	///Returns true if all tests passed, false otherwise.
 	bool runAllTests();
 };
-
 
 #endif
