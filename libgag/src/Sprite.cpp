@@ -22,9 +22,7 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <assert.h>
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_image.h>
-#endif
 #include <algorithm>
 #include <iostream>
 #include <sstream>

@@ -21,11 +21,7 @@
 #ifndef __IRC_H
 #define __IRC_H
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_net.h>
-#else
-#include <Types.h>
-#endif
 
 #include <deque>
 #include <vector>

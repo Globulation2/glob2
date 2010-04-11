@@ -19,11 +19,7 @@
 
 #include <assert.h>
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>
-#else
-#include <Types.h>
-#endif
 
 #include <vector>
 

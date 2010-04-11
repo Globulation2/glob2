@@ -22,9 +22,7 @@
 #include <FileManager.h>
 #include <assert.h>
 #include <iostream>
-#ifndef DX9_BACKEND	// TODO:Die!
 #include "TrueTypeFont.h"
-#endif
 
 #ifndef YOG_SERVER_ONLY
 #include <GraphicContext.h>

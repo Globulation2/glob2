@@ -23,11 +23,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_net.h>
-#else
-#include <Types.h>
-#endif
 
 #include <boost/random/mersenne_twister.hpp>
 

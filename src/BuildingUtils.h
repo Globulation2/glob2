@@ -20,13 +20,7 @@
 #ifndef __BUILDING_UTILS_H
 #define __BUILDING_UTILS_H
 
-
-#ifndef DX9_BACKEND     // TODO:Die!
 #include <SDL_net.h>
-#else
-#include <Types.h>
-#endif
-
 
 class BuildingUtils
 {
