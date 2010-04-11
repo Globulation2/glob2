@@ -1442,6 +1442,7 @@ void Map::growRessources(void)
 	}
 }
 
+#ifndef YOG_SERVER_ONLY
 void Map::syncStep(Uint32 stepCounter)
 {
 	growRessources();
@@ -1499,6 +1500,7 @@ void Map::syncStep(Uint32 stepCounter)
 			}
 	}
 }
+#endif  // !YOG_SERVER_ONLY
 
 void Map::switchFogOfWar(void)
 {
@@ -3108,6 +3110,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	}
 }
 
+#ifndef YOG_SERVER_ONLY
 void Map::pathfindRandom(Unit *unit, bool verbose)
 {
 	if (verbose)
@@ -3178,6 +3181,7 @@ void Map::pathfindRandom(Unit *unit, bool verbose)
 		assert(false);
 	}
 }
+#endif  // !YOG_SERVER_ONLY
 
 /** Helper for updateLocalGradient, and others */
 int clip_0_31(int x) {return (x<0)? 0 : (x>31)? 31 : x;}
@@ -4998,7 +5002,7 @@ void Map::initExploredArea(int teamNumber)
 
 void Map::makeDiscoveredAreasExplored (int teamNumber)
 {
-  /* This function is a stupid hack to make up for the fact that
+  /* FIXME: This function is a stupid hack to make up for the fact that
      exploredArea is not saved in saved games.  It allows doing
      something less awful than simply making everything considered
      unexplored (which completely messes up explorer behavior and

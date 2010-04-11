@@ -17,6 +17,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "Glob2.h"
+#include "GlobalContainer.h"
+#include "YOGServer.h"
+
+#ifndef YOG_SERVER_ONLY
 
 #include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
@@ -27,8 +32,6 @@
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Game.h"
-#include "Glob2.h"
-#include "GlobalContainer.h"
 #include "GUIMessageBox.h"
 #include "Header.h"
 #include "LANFindScreen.h"
@@ -43,7 +46,6 @@
 #include "Utilities.h"
 #include "YOGClient.h"
 #include "YOGLoginScreen.h"
-#include "YOGServer.h"
 #include "YOGServerRouter.h"
 #include "YOGClientRouterAdministrator.h"
 
@@ -53,6 +55,8 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+
+#endif  // !YOG_SERVER_ONLY
 
 #ifndef WIN32
 #	include <unistd.h>
@@ -81,6 +85,8 @@
 
 GlobalContainer *globalContainer=NULL;
 
+
+#ifndef YOG_SERVER_ONLY
 
 void Glob2::drawYOGSplashScreen(void)
 {
@@ -201,12 +207,13 @@ int Glob2::runTestMapGeneration()
 	}
 	return 0;
 }
+#endif  // !YOG_SERVER_ONLY
 
 
 int Glob2::run(int argc, char *argv[])
 {
 	srand(time(NULL));
-	
+
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
@@ -222,8 +229,12 @@ int Glob2::run(int argc, char *argv[])
 	{
 		YOGServer server(YOGRequirePassword, YOGMultipleGames);
 		int rc = server.run();
-		return rc;	
+		delete globalContainer;
+		return rc;
 	}
+
+// Glob2::run ends here for server.
+#ifndef YOG_SERVER_ONLY
 
 	if (globalContainer->hostRouter)
 	{
@@ -396,8 +407,10 @@ int Glob2::run(int argc, char *argv[])
 
 	// This is for the textshot code
 	GAGCore::DrawableSurface::printFinishingText();
-//	delete yog;
 	delete globalContainer;
+
+#endif  // !YOG_SERVER_ONLY
+
 	return 0;
 }
 

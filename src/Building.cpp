@@ -2742,25 +2742,6 @@ bool Building::canConvertUnit(void)
 			((int)unitsInside.size()<maxUnitInside);
 }
 
-Sint32 Building::GIDtoID(Uint16 gid)
-{
-	assert(gid<Building::MAX_COUNT*Team::MAX_COUNT);
-	return gid%Building::MAX_COUNT;
-}
-
-Sint32 Building::GIDtoTeam(Uint16 gid)
-{
-	assert(gid<Building::MAX_COUNT*Team::MAX_COUNT);
-	return gid/Building::MAX_COUNT;
-}
-
-Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
-{
-	assert(id<Building::MAX_COUNT);
-	assert(team<Team::MAX_COUNT);
-	return id+team*Building::MAX_COUNT;
-}
-
 void Building::integrity()
 {
 	assert(unitsWorking.size()>=0);

@@ -23,6 +23,7 @@
 #include <list>
 #include <vector>
 
+#include "BuildingUtils.h"
 #include "Ressource.h"
 #include "UnitConsts.h"
 
@@ -39,7 +40,7 @@ class BuildingType;
 class BuildingsTypes;
 class Order;
 
-class Building
+class Building : public BuildingUtils
 {
 public:
 	static const int MAX_COUNT=1024;
@@ -268,10 +269,6 @@ public:int getLongLevel(void);
 	/// Returns if this Building (Inn) can convert a hostile Unit. To avoid conversion
 	/// once the capacities of the own inns are hit, conversion is limited.
 	bool canConvertUnit(void);
-	
-	static Sint32 GIDtoID(Uint16 gid);
-	static Sint32 GIDtoTeam(Uint16 gid);
-	static Uint16 GIDfrom(Sint32 id, Sint32 team);
 
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);

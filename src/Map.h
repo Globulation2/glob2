@@ -114,8 +114,10 @@ public:
 
 	//! Grow ressources on map
 	void growRessources(void);
+#ifndef YOG_SERVER_ONLY
 	//! Do a step associated woth map (grow ressources and process bullets)
 	void syncStep(Uint32 stepCounter);
+#endif  // !YOG_SERVER_ONLY
 	//! Switch the Fog of War bufferRessourceType
 	void switchFogOfWar(void);
 
@@ -620,8 +622,10 @@ public:
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool strict, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork, bool verbose);
+#ifndef YOG_SERVER_ONLY
 	void pathfindRandom(Unit *unit, bool verbose);
-	
+#endif  // !YOG_SERVER_ONLY
+
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
 	template<typename Tint> void updateGlobalGradient(Building *building, bool canSwim);

@@ -237,7 +237,7 @@ void WinningConditionPrestige::decodeData(GAGCore::InputStream* stream, Uint32 v
 }
 
 
-
+#ifndef YOG_SERVER_ONLY
 bool WinningConditionScript::hasTeamWon(int team, Game* game)
 {
 	if(game->sgslScript.hasTeamWon(team))
@@ -257,7 +257,7 @@ bool WinningConditionScript::hasTeamLost(int team, Game* game)
 	}
 	return false;
 }
-
+#endif  // !YOG_SERVER_ONLY
 
 
 WinningConditionType WinningConditionScript::getType() const

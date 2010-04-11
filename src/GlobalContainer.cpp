@@ -37,8 +37,10 @@
 #include "SoundMixer.h"
 #include "UnitsSkins.h"
 #include "VoiceRecorder.h"
+#ifndef YOG_SERVER_ONLY
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
+#endif  // !YOG_SERVER_ONLY
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
@@ -76,12 +78,18 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
 	logFileManager = new LogFileManager(fileManager);
-	
+
 	// load user preference
 	settings.load();
+
+#ifndef YOG_SERVER_ONLY
 	runNoX = false;
-	
 	hostServer = false;
+#else
+	runNoX = true;
+	hostServer = true;
+#endif  // !YOG_SERVER_ONLY
+
 	hostRouter = false;
 	adminRouter = false;
 	
@@ -89,9 +97,12 @@ GlobalContainer::GlobalContainer(void)
 	runTestMapGeneration=false;
 	automaticEndingGame=false;
 	automaticEndingSteps=-1;
-	
+
+#ifndef YOG_SERVER_ONLY
 	gfx = NULL;
 	mix = NULL;
+	voiceRecorder = NULL;
+
 	terrain = NULL;
 	terrainShader = NULL;
 	terrainBlack = NULL;
@@ -102,8 +113,8 @@ GlobalContainer::GlobalContainer(void)
 	menuFont = NULL;
 	standardFont = NULL;
 	littleFont = NULL;
-	
-	voiceRecorder = NULL;
+#endif  // !YOG_SERVER_ONLY
+
 	automaticGameGlobalEndConditions=false;
 
 	replaying = false;
@@ -113,43 +124,49 @@ GlobalContainer::GlobalContainer(void)
 	replayVisibleTeams = 0xFFFFFFFF;
 	replayShowAreas = false;
 	replayShowFlags = true;
-	
+
+#ifndef YOG_SERVER_ONLY
 	replayReader = NULL;
 	replayWriter = NULL;
+#endif  // !YOG_SERVER_ONLY
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
 
 GlobalContainer::~GlobalContainer(void)
 {
+#ifndef YOG_SERVER_ONLY
 	// unlink GUI style
-	if(!runNoX)
+	if (!runNoX)
 		delete Style::style;
 	Style::style = &defaultStyle;
-	
+
 	// release unit skins
 	if (unitsSkins)
 		delete unitsSkins;
-	
+
 	// close sound
 	if (mix)
 		delete mix;
-	
+
 	if (voiceRecorder)
 		delete voiceRecorder;
-	
+
 	// delete title image
 	delete title;
-	
+#endif  // !YOG_SERVER_ONLY
+
 	// release resources
 	Toolkit::close();
-	
+
 	// close virtual filesystem
 	delete logFileManager;
 
+#ifndef YOG_SERVER_ONLY
 	// delete replay handlers
 	delete replayReader; replayReader = NULL;
 	delete replayWriter; replayWriter = NULL;
+#endif  // !YOG_SERVER_ONLY
 }
 
 /**
@@ -174,6 +191,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
+#ifndef YOG_SERVER_ONLY
 		if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
 		{
 			bool good=true;
@@ -232,29 +250,6 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			runTestMapGeneration = true;
 			runNoX=true;
 		}
-		else if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
-		{
-			printf("\nGlobulation 2 - %s\n\n", PACKAGE_VERSION);
-			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
-#ifndef DX9_BACKEND
-			SDL_version v;
-			SDL_VERSION(&v);
-			printf("Compiled with SDL version %d.%d.%d\n", v.major, v.minor, v.patch);
-			v = *SDL_Linked_Version();
-			printf("Linked with SDL version %d.%d.%d\n\n", v.major, v.minor, v.patch);
-#else
-			printf("Using DirectX 9 Backend\n\n");
-#endif
-			printf("Featuring :\n");
-			printf("* Map version %d\n", VERSION_MINOR);
-			printf("* Maps up to version %d can still be loaded\n", MINIMUM_VERSION_MINOR);
-			printf("* Network Protocol version %d\n", NET_PROTOCOL_VERSION);
-			printf("This program and all related materials are GPL, see COPYING for details.\n");
-			printf("(C) 2001-2007 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
-			printf("See data/authors.txt for a full list.\n\n");
-			printf("Type %s --help for a list of command line options.\n\n", argv[0]);
-			exit(0);
-		}
 		else if (strcmp(argv[i], "-vs")==0)
 		{
 			if (i+1 < argc)
@@ -308,7 +303,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			settings.screenFlags &= ~GraphicContext::RESIZABLE;
 		}
-		
+
 		else if  (strcmp(argv[i], "-sgsl")==0)
 		{
 			settings.optionFlags &= ~OPTION_MAP_EDIT_USE_USL;
@@ -317,7 +312,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			settings.optionFlags |= OPTION_MAP_EDIT_USE_USL;
 		}
-		
+
 		else if (strcmp(argv[i], "-g")==0)
 		{
 			settings.screenFlags |= GraphicContext::USEGPU;
@@ -352,6 +347,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			if(i+1 < argc)
 			{
+				// TODO: Let this option really change hostname.
 				yogHostName = argv[i+1];
 				i++;
 			}
@@ -422,11 +418,37 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				exit(0);
 			}
 		}
+		else
+#endif  // !YOG_SERVER_ONLY
+			if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
+		{
+			printf("\nGlobulation 2 - %s\n\n", PACKAGE_VERSION);
+			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
+#ifndef DX9_BACKEND
+			SDL_version v;
+			SDL_VERSION(&v);
+			printf("Compiled with SDL version %d.%d.%d\n", v.major, v.minor, v.patch);
+			v = *SDL_Linked_Version();
+			printf("Linked with SDL version %d.%d.%d\n\n", v.major, v.minor, v.patch);
+#else
+			printf("Using DirectX 9 Backend\n\n");
+#endif
+			printf("Featuring :\n");
+			printf("* Map version %d\n", VERSION_MINOR);
+			printf("* Maps up to version %d can still be loaded\n", MINIMUM_VERSION_MINOR);
+			printf("* Network Protocol version %d\n", NET_PROTOCOL_VERSION);
+			printf("This program and all related materials are GPL, see COPYING for details.\n");
+			printf("(C) 2001-2007 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
+			printf("See data/authors.txt for a full list.\n\n");
+			printf("Type %s --help for a list of command line options.\n\n", argv[0]);
+			exit(0);
+		}
 		else if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "--help")==0)
 		{
 			printf("\nGlobulation 2\n");
 			printf("Command line arguments:\n");
 			printf("switches:\n");
+#ifndef YOG_SERVER_ONLY
 			printf("-c/-C\tenable/disable custom cursor\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-g/-G\tenable/disable OpenGL acceleration (GPU use)\n");
@@ -451,13 +473,15 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
-			printf("-version\tprint the version and exit\n");
 			printf("-replay <replay file name>\t replay the game stored in the specified file.\n");
+#endif  // !YOG_SERVER_ONLY
+			printf("-version\tprint the version and exit\n");
 			exit(0);
 		}
 	}
 }
 
+#ifndef YOG_SERVER_ONLY
 void GlobalContainer::updateLoadProgressScreen(int value)
 {
 	unsigned randomSeed = 1;
@@ -482,27 +506,9 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 	gfx->nextFrame();
 }
 
-
-void GlobalContainer::load(void)
+// glob2-client specific actions here.
+void GlobalContainer::loadClient(void)
 {
-	// load texts
-	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
-	{
-		std::cerr << "Fatal error : while loading \"data/texts.list.txt\"" << std::endl;
-		assert(false);
-		exit(-1);
-	}
-	// load texts
-	if (!Toolkit::getStringTable()->loadIncompleteList("data/texts.incomplete.txt"))
-	{
-		std::cerr << "Fatal error : while loading \"data/texts.incomplete.txt\"" << std::endl;
-		assert(false);
-		exit(-1);
-	}
-	
-	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
-		
-
 	if (!runNoX)
 	{
 		// create graphic context
@@ -539,16 +545,11 @@ void GlobalContainer::load(void)
 	{
 		updateLoadProgressScreen(35);
 	}
-	
-	// load default unit types
-	Race::loadDefault();
-	// load resources types
-	ressourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
-	
+
 	// initiate keyboard actions
 	GameGUIKeyActions::init();
 	MapEditKeyActions::init();
-	
+
 	if (settings.version < 1)
 	{
 		KeyboardManager game(GameGUIShortcuts);
@@ -559,7 +560,7 @@ void GlobalContainer::load(void)
 		edit.loadDefaultShortcuts();
 		edit.saveKeyboardLayout();
 	}
-	
+
 	if (!runNoX)
 	{
 		updateLoadProgressScreen(40);
@@ -619,7 +620,38 @@ void GlobalContainer::load(void)
 		updateLoadProgressScreen(100);
 	}
 }
+#endif  // !YOG_SERVER_ONLY
 
+void GlobalContainer::load(void)
+{
+	// load texts
+	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
+	{
+		std::cerr << "Fatal error : while loading \"data/texts.list.txt\"" << std::endl;
+		assert(false);
+		exit(-1);
+	}
+	// load texts
+	if (!Toolkit::getStringTable()->loadIncompleteList("data/texts.incomplete.txt"))
+	{
+		std::cerr << "Fatal error : while loading \"data/texts.incomplete.txt\"" << std::endl;
+		assert(false);
+		exit(-1);
+	}
+	
+	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
+	// load default unit types
+	Race::loadDefault();
+	// load resources types
+	ressourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
+
+#ifndef YOG_SERVER_ONLY
+	loadClient();
+#endif  // !YOG_SERVER_ONLY
+}
+
+
+#ifndef YOG_SERVER_ONLY
 /**
  * supposed to return the checksum of all config files, but nobody
  * got around to adding the unit configs to the program. Feel free to do
@@ -632,6 +664,7 @@ Uint32 GlobalContainer::getConfigCheckSum()
 	// TODO: add the units config
 	return buildingsTypes.checkSum() + ressourcesTypes.checkSum() + Race::checkSumDefault();
 }
+#endif  // !YOG_SERVER_ONLY
 
 /**
  * returns the hostname of the computer
