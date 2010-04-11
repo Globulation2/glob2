@@ -11,7 +11,6 @@ env.Append(CCFLAGS = ccflags)
 
 sources = Split("""
 TestsRunner.cpp
-MiniCppUnit.cpp
 PerlinNoiseTest.cpp
 HelloWorldTest.cpp
 ../src/PerlinNoise.cpp
