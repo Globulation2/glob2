@@ -1,67 +1,63 @@
-#include "MiniCppUnit.h"
+#include "PerlinNoiseTest.h"
 #include "../src/PerlinNoise.h"
+CPPUNIT_TEST_SUITE_REGISTRATION( PerlinNoiseTest );
 
-class PerlinNoiseTest : public TestFixture<PerlinNoiseTest>
+const static int SEED = 12;
+PerlinNoise * perlinNoise;
+float * position;
+
+void PerlinNoiseTest::setUp()
 {
-public:
-    TEST_FIXTURE( PerlinNoiseTest )
-    {
-        TEST_CASE( testNotZeroOne );
-        TEST_CASE( testReseed );
-        TEST_CASE( testReseedInt );
-        TEST_CASE( testnoise1d );
-        TEST_CASE( testnoise2d );
-        TEST_CASE( testnoise3d );
-    }
-    const static int SEED=12;
-    PerlinNoise * pn;
-    float * position;
-    void setUp()
-    {
-        pn = new PerlinNoise(SEED);
-        position=new float[3];
-        position[0]=.11111f;
-        position[1]=.21111f;
-        position[2]=.71111f;
-    }
-    void testNotZeroOne()
-    {
-        float a=pn->Noise1d(position);
-        ASSERT(a!=0.0f);
-        ASSERT(a!=1.0f);
-    }
-    void testReseed()
-    {
-        float a=pn->Noise1d(position);
-        pn->reseed();
-        float b=pn->Noise1d(position);
-        ASSERT(a!=b);
-    }
-    void testReseedInt()
-    {
-        float a=pn->Noise1d(position);
-        pn->reseed(SEED);
-        float b=pn->Noise1d(position);
-        ASSERT(a==b);
-    }
-    void testnoise1d()
-    {
-        float a=pn->Noise1d(position);
-        float b=pn->Noise(position[0]);
-        ASSERT(a==b);
-    }
-    void testnoise2d()
-    {
-        float a=pn->Noise2d(position);
-        float b=pn->Noise(position[0],position[1]);
-        ASSERT(a==b);
-    }
-    void testnoise3d()
-    {
-        float a=pn->Noise3d(position);
-        float b=pn->Noise(position[0],position[1],position[2]);
-        ASSERT(a==b);
-    }
-};
-
-REGISTER_FIXTURE( PerlinNoiseTest );
+	perlinNoise = new PerlinNoise(SEED);
+	position = new float[3];
+	position[0] = .11111f;
+	position[1] = .21111f;
+	position[2] = .71111f;
+}
+void PerlinNoiseTest::tearDown()
+{
+	delete perlinNoise;
+	delete[] position;
+}
+void PerlinNoiseTest::testConstructor()
+{
+	CPPUNIT_FAIL("not implemented yet!");
+}
+void PerlinNoiseTest::testNotZeroOne()
+{
+	float a = perlinNoise->Noise1d(position);
+	CPPUNIT_ASSERT(a != 0.0f);
+	CPPUNIT_ASSERT(a != 1.0f);
+}
+void PerlinNoiseTest::testReseed()
+{
+	float a = perlinNoise->Noise1d(position);
+	perlinNoise->reseed();
+	float b = perlinNoise->Noise1d(position);
+	CPPUNIT_ASSERT(a != b);
+}
+void PerlinNoiseTest::testReseedInt()
+{
+	float a = perlinNoise->Noise1d(position);
+	perlinNoise->reseed(SEED);
+	float b = perlinNoise->Noise1d(position);
+	CPPUNIT_ASSERT_EQUAL(a, b);
+}
+void PerlinNoiseTest::testnoise1d()
+{
+	float a = perlinNoise->Noise1d(position);
+	float b = perlinNoise->Noise(position[0]);
+	CPPUNIT_ASSERT_EQUAL(a, b);
+}
+void PerlinNoiseTest::testnoise2d()
+{
+	float a = perlinNoise->Noise2d(position);
+	float b = perlinNoise->Noise(position[0], position[1]);
+	CPPUNIT_ASSERT_EQUAL(a, b);
+}
+void PerlinNoiseTest::testnoise3d()
+{
+	float a = perlinNoise->Noise3d(position);
+	float b = perlinNoise->Noise(position[0], position[1], position[2]);
+	CPPUNIT_ASSERT(a == b);
+}
