@@ -39,7 +39,8 @@ void PerlinNoiseTest::tearDown()
 }
 void PerlinNoiseTest::testConstructor()
 {
-	CPPUNIT_FAIL("not implemented yet!");
+	//The constructor is tested implicitly by being used in setUp
+	//Actually it has no state that could be tested.
 }
 void PerlinNoiseTest::testNotZeroOne()
 {
