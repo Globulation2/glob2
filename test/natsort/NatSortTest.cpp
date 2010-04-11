@@ -90,10 +90,21 @@ void NatSortTest::testOne(std::string leftString, std::string rightString,
 	const nat_char *right = (const nat_char*) rightString.c_str();
 
 	std::string message = std::string("Expecting: ").append(left);
-	message.append(expectedResult > 0 ? " > " : " < ");
+	if (expectedResult < 0)
+	{
+		message.append(" > ");
+	}
+	else if (expectedResult > 0)
+	{
+		message.append(" < ");
+	}
+	else
+	{
+		message.append(" == ");
+	}
 	message.append(right);
 
-	int actualResult = strnatcasecmp(left, right);
+	int actualResult = func(left, right);
 
 	CPPUNIT_ASSERT_EQUAL_MESSAGE(message, expectedResult, actualResult);
 }
