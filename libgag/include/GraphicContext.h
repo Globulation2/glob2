@@ -20,11 +20,7 @@
 #ifndef __GRAPHICCONTEXT_H
 #define __GRAPHICCONTEXT_H
 
-#ifdef DX9_BACKEND
-#include "DX9GraphicContext.h"
-#else
 #include "SDLGraphicContext.h"
-#endif
 
 #endif
 

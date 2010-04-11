@@ -20,11 +20,7 @@
 #ifndef __AI_H
 #define __AI_H
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_rwops.h>
-#else
-#include <Types.h>
-#endif
 
 #include <boost/shared_ptr.hpp>
 namespace GAGCore

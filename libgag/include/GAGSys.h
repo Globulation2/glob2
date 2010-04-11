@@ -49,13 +49,9 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef DX9_BACKEND
 // This is the only one which should be left... In theory :-)
 // Remove this comment once all other SDL deps have been removed.
 #include <SDL.h>
-#else
-#include "types.h"
-#endif
 
 // usefull macros
 #ifndef MAX

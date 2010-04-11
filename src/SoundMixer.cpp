@@ -31,11 +31,7 @@ using namespace GAGCore;
 
 #include <speex/speex.h>
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>
-#else
-#include <Types.h>
-#endif
 
 #ifdef WIN32
 #include <malloc.h>
