@@ -39,7 +39,7 @@ void YOGClientBlockedList::load()
 	if(!backend->isEndOfStream())
 	{
 		InputStream* stream = new TextInputStream(backend);
-		Uint32 versionMinor = stream->readUint32("version");
+		stream->readUint32("version");
 		stream->readEnterSection("blockedPlayers");
 		Uint32 size = stream->readUint32("size");
 		for(unsigned i=0; i<size; ++i)

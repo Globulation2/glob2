@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Eraiki
 Unitate ezarpenak
 [building site]
 eraikitzen
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -202,6 +208,8 @@ Baliabideak garbitzeko
 Garbiketa bandera
 [closed]
 Itxita
+[combined vision]
+
 [compile]
 Konpilatu script-a
 [compose]
@@ -356,6 +364,8 @@ irla hutsak
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Janaria
 [forbidden area]
@@ -490,6 +500,8 @@ Kargatu kanpaina
 Kargatu partida
 [load map]
 Kargatu mapa
+[load replay]
+
 [load script]
 
 [load]
@@ -500,6 +512,8 @@ Kargatu
 
 [login]
 Saioa hasi
+[look around]
+
 [Lost : %0 has more prestige than you]
 Galdu duzu: %0 zuk baino izen on gehiago du
 [Lost : your colony is dead]
@@ -570,6 +584,8 @@ Kanpaina berria
 Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -584,6 +600,8 @@ Ez
 
 [not ready]
 itxaron...
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -592,6 +610,8 @@ itxaron...
 %0 talde.
 [number of teams]
 talde kopurua
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -648,12 +668,16 @@ Geldituta
 Jokalari izena
 [player rating %0]
 
+[players]
+
 [please wait]
 Mesedez itxaron
 [power]
 
 [press space]
 Zanpatu espazio barra jarraitzeko
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -670,6 +694,8 @@ Arana
 Irten editoretik
 [quit the game]
 Irten partidatik
+[quit the replay]
+
 [quit]
 Irten
 [racetrack explanation 2]
@@ -690,6 +716,8 @@ Proportzioak
 
 [Register a new YOG user with password]
 YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
+[Register]
+
 [remember unit]
 Gogoratu unitatea
 [Remember YOG password localy]
@@ -706,12 +734,18 @@ Konponketa hasi/gelditu
 Konpondu
 [repeat area]
 aldiz lurzoru bera
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 Lehenetsitako teklak berezarri
 [return to editor]
 Itzuli editorera
 [return to game]
 Itzuli partidara
+[return to replay]
+
 [return]
 
 [right meta]
@@ -732,6 +766,8 @@ Partida gorde irten aurretik?
 Gorde partida
 [save map]
 Gorde mapa
+[save replay]
+
 [save script]
 
 [Save]
@@ -822,6 +858,10 @@ Ezarpenak
 Enter: Txat mezua bidali
 [shortcut explanation v]
 V: mantendu hitzegiteko
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -974,6 +1014,8 @@ Merkatua erasopean dago
 Zirkuitoa bukatuta dago
 [the racetrack is under attack]
 Zirkuitoa erasopean dago
+[the replays]
+
 [the school is finished]
 Eskola bukatuta dago
 [the school is under attack]
@@ -994,6 +1036,8 @@ Igerilekua erasopean dago
 ?? War flag finished ??
 [the warflag is under attack]
 ?? War flag under attack ??
+[time]
+
 [to:]
 nori:
 [toggle draw accessibility aids]
@@ -1006,6 +1050,12 @@ Unitate ibilibidea marraztu
 
 [toggle recording voice]
 Hasi ahots grabaketa
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Gehienezko izen ona lortuta
 [Total]
@@ -1082,6 +1132,10 @@ Soldadu Ratioa
 Soldadua
 [warriors]
 soldadu
+[watch again]
+
+[watching:]
+
 [water]
 Ura
 [Wheat]
@@ -1136,6 +1190,8 @@ YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek due
 
 [YESTS_CREATED]
 Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
 [yog block command help]

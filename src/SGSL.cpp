@@ -42,7 +42,7 @@
 #include "Utilities.h"
 
 
-Token::TokenSymbolLookupTable Token::table[] =
+SGSLToken::TokenSymbolLookupTable SGSLToken::table[] =
 {
 	{ INT, "int" },
 	{ STRING, "string" },
@@ -107,27 +107,40 @@ Token::TokenSymbolLookupTable Token::table[] =
 	{ NIL, NULL },
 };
 
-Token::TokenType Token::getTypeByName(const char *name)
+SGSLToken::TokenType SGSLToken::getTypeByName(const char *name)
 {
 	int i = 0;
 	TokenType type=NIL;
 
 	//std::cout << "Getting token for " << name << std::endl;
 
-	if (name != NULL)
-		while (table[i].type != NIL)
-		{
-			if (strcasecmp(name, table[i].name)==0)
-			{
-				type = table[i].type;
-				break;
-			}
-			i++;
-		}
+	if (name == NULL)
+	{
+		std::cerr << "Warning, SGSLToken::getTypeByName(name) called with empty name!" << std::endl;
+		return NIL;
+	}
+
+	while (table[i].type != NIL)
+	{
+		//NOTE: SM: I reverted back to case-insensitive, as the other one breaks tutorial
+		if (strcasecmp(name, table[i].name)==0)
+		//if (name.compare(table[i].name) == 0)
+  		{
+			type = table[i].type;
+			break;
+  		}
+		i++;
+	}
+
+	if (type == NIL)
+	{
+		std::cerr << "Warning, SGSLToken::getTypeByName(name) found no type for name " << name << "!" << std::endl;
+	}
+
 	return type;
 }
 
-const char *Token::getNameByType(Token::TokenType type)
+const char *SGSLToken::getNameByType(SGSLToken::TokenType type)
 {
 	int i = 0;
 	const char *name=NULL;
@@ -145,7 +158,7 @@ const char *Token::getNameByType(Token::TokenType type)
 	return name;
 }
 
-Story::Story(Mapscript *mapscript)
+Story::Story(MapScriptSGSL *mapscript)
 {
 	lineSelector = 0;
 	internTimer=0;
@@ -159,34 +172,34 @@ Story::~Story()
 }
 
 //get values from the game
-int Story::valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level)
+int Story::valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level)
 {
 	TeamStat *latestStat=game->teams[teamNumber]->stats.getLatestStat();
 	switch(type)
 	{
-		case(Token::S_WORKER):
+		case(SGSLToken::S_WORKER):
 			return latestStat->numberUnitPerType[0];
-		case(Token::S_EXPLORER):
+		case(SGSLToken::S_EXPLORER):
 			return latestStat->numberUnitPerType[1];
-		case(Token::S_WARRIOR):
+		case(SGSLToken::S_WARRIOR):
 			return latestStat->numberUnitPerType[2];
-		case(Token::S_SWARM_B):
+		case(SGSLToken::S_SWARM_B):
 			return latestStat->numberBuildingPerTypePerLevel[0][level];
-		case(Token::S_FOOD_B):
+		case(SGSLToken::S_FOOD_B):
 			return latestStat->numberBuildingPerTypePerLevel[1][level];
-		case(Token::S_HEALTH_B):
+		case(SGSLToken::S_HEALTH_B):
 			return latestStat->numberBuildingPerTypePerLevel[2][level];
-		case(Token::S_WALKSPEED_B):
+		case(SGSLToken::S_WALKSPEED_B):
 			return latestStat->numberBuildingPerTypePerLevel[3][level];
-		case(Token::S_SWIMSPEED_B):
+		case(SGSLToken::S_SWIMSPEED_B):
 			return latestStat->numberBuildingPerTypePerLevel[4][level];
-		case(Token::S_ATTACK_B):
+		case(SGSLToken::S_ATTACK_B):
 			return latestStat->numberBuildingPerTypePerLevel[5][level];
-		case(Token::S_SCIENCE_B):
+		case(SGSLToken::S_SCIENCE_B):
 			return latestStat->numberBuildingPerTypePerLevel[6][level];
-		case(Token::S_DEFENCE_B):
+		case(SGSLToken::S_DEFENCE_B):
 			return latestStat->numberBuildingPerTypePerLevel[7][level];
-		case(Token::S_WALL_B):
+		case(SGSLToken::S_WALL_B):
 			return latestStat->numberBuildingPerTypePerLevel[11][level];
 		default:
 			assert(false);
@@ -197,7 +210,7 @@ int Story::valueOfVariable(const Game *game, Token::TokenType type, int teamNumb
 // code for testing conditions. If readLevel is true, for building check for specific level. If atMin is true, add higher levels too
 bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 {
-	Token::TokenType type, operation;
+	SGSLToken::TokenType type, operation;
 	int level, teamNumber, amount;
 
 	type = line[pc++].type;
@@ -219,29 +232,29 @@ bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 		
 	switch (operation)
 	{
-		case (Token::S_HIGHER):
+		case (SGSLToken::S_HIGHER):
 		{
 			if (verbose)
 			std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
-				  << Token::getNameByType(type) << " ("
+				  << SGSLToken::getNameByType(type) << " ("
 				  << teamNumber << ", " << level << ") : "
 				  << val << " >? " << amount << std::endl;
 			return (val > amount);
 		}
-		case (Token::S_LOWER):
+		case (SGSLToken::S_LOWER):
 		{
 			if (verbose)
 				std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
-				  << Token::getNameByType(type) << " ("
+				  << SGSLToken::getNameByType(type) << " ("
 					  << teamNumber << ", " << level << ") : "
 					  << val << " <? " << amount << std::endl;
 			return (val < amount);
 		}
-		case (Token::S_EQUAL):
+		case (SGSLToken::S_EQUAL):
 		{
 			if (verbose)
 				std::cout << "Story::conditionTester : SGSL thread " << this << " testing "
-					  << Token::getNameByType(type) << " ("
+					  << SGSLToken::getNameByType(type) << " ("
 					  << teamNumber << ", " << level << ") : "
 					  << val << " =? " << amount << std::endl;
 			return (val == amount);
@@ -254,7 +267,7 @@ bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 void Story::toto(GameGUI* gui)
 {
 	std::cout << "toto func : ";
-	std::cout << Token::getNameByType(line[++lineSelector].type) << " ";
+	std::cout << SGSLToken::getNameByType(line[++lineSelector].type) << " ";
 	std::cout << line[++lineSelector].value << "\n";
 }
 
@@ -474,7 +487,7 @@ void Story::unhilightItem(GameGUI* gui)
 
 void Story::hilightUnits(GameGUI* gui)
 {
-	int n = line[++lineSelector].type - Token::S_WORKER;
+	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
 	gui->hilights.insert(GameGUI::HilightWorkers+n);
 }
 
@@ -482,7 +495,7 @@ void Story::hilightUnits(GameGUI* gui)
 
 void Story::unhilightUnits(GameGUI* gui)
 {
-	int n = line[++lineSelector].type - Token::S_WORKER;
+	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
 	gui->hilights.erase(GameGUI::HilightWorkers+n);
 }
 
@@ -490,7 +503,7 @@ void Story::unhilightUnits(GameGUI* gui)
 
 void Story::hilightBuildings(GameGUI* gui)
 {
-	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
 	gui->hilights.insert(GameGUI::HilightBuildingOnMap+n);
 }
 
@@ -498,7 +511,7 @@ void Story::hilightBuildings(GameGUI* gui)
 
 void Story::unhilightBuildings(GameGUI* gui)
 {
-	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
 	gui->hilights.erase(GameGUI::HilightBuildingOnMap+n);
 }
 
@@ -506,7 +519,7 @@ void Story::unhilightBuildings(GameGUI* gui)
 
 void Story::hilightBuildingOnPanel(GameGUI* gui)
 {
-	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
 	gui->hilights.insert(GameGUI::HilightBuildingOnPanel+n);
 }
 
@@ -514,7 +527,7 @@ void Story::hilightBuildingOnPanel(GameGUI* gui)
 
 void Story::unhilightBuildingOnPanel(GameGUI* gui)
 {
-	int n = line[++lineSelector].type - Token::S_SWARM_B;
+	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
 	gui->hilights.erase(GameGUI::HilightBuildingOnPanel+n);
 }
 
@@ -532,84 +545,84 @@ void Story::resetAI(GameGUI* gui)
 
 
 static const FunctionArgumentDescription totoDescription[] = {
-	{ Token::S_WIN, Token::S_LOOSE },
-	{ Token::INT, Token::INT },
+	{ SGSLToken::S_WIN, SGSLToken::S_LOOSE },
+	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription objectiveCompleteDescription[] = {
-	{ Token::INT, Token::INT },
+	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription objectiveHiddenDescription[] = {
-	{ Token::INT, Token::INT },
+	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription objectiveVisibleDescription[] = {
-	{ Token::INT, Token::INT },
+	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription objectiveFailedDescription[] = {
-	{ Token::INT, Token::INT },
+	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription hintHiddenDescription[] = {
-	{ Token::INT, Token::INT },
+	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription hintVisibleDescription[] = {
-	{ Token::INT, Token::INT },
+	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription hilightItemDescription[] = {
-	{ Token::STRING, Token::STRING },
+	{ SGSLToken::STRING, SGSLToken::STRING },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription unhilightItemDescription[] = {
-	{ Token::STRING, Token::STRING },
+	{ SGSLToken::STRING, SGSLToken::STRING },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription hilightUnitsDescription[] = {
-	{ Token::S_WORKER, Token::S_WARRIOR },
+	{ SGSLToken::S_WORKER, SGSLToken::S_WARRIOR },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription unhilightUnitsDescription[] = {
-	{ Token::S_WORKER, Token::S_WARRIOR },
+	{ SGSLToken::S_WORKER, SGSLToken::S_WARRIOR },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription hilightBuildingsDescription[] = {
-	{ Token::S_SWARM_B, Token::S_MARKET_B },
+	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription unhilightBuildingsDescription[] = {
-	{ Token::S_SWARM_B, Token::S_MARKET_B },
+	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription hilightBuildingOnPanelDescription[] = {
-	{ Token::S_SWARM_B, Token::S_MARKET_B },
+	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription unhilightBuildingOnPanelDescription[] = {
-	{ Token::S_SWARM_B, Token::S_MARKET_B },
+	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
 static const FunctionArgumentDescription resetAIDescription[] = {
-	{ Token::INT, Token::INT },
-	{ Token::INT, Token::INT },
+	{ SGSLToken::INT, SGSLToken::INT },
+	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
 
@@ -623,12 +636,12 @@ bool Story::testCondition(GameGUI *gui)
 	if (line.size())
 		switch (line[lineSelector].type)
 		{
-			case (Token::S_STORY):
+			case (SGSLToken::S_STORY):
 			{
 				return false;
 			}
 			
-			case (Token::FUNC_CALL):
+			case (SGSLToken::FUNC_CALL):
 			{
 				Functions::const_iterator fIt = mapscript->functions.find(line[lineSelector].msg);
 				assert(fIt != mapscript->functions.end());
@@ -636,10 +649,10 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 			
-			case (Token::S_SHOW):
+			case (SGSLToken::S_SHOW):
 			{
 				unsigned lsInc=0;
-				if (line[lineSelector+2].type == Token::LANG)
+				if (line[lineSelector+2].type == SGSLToken::LANG)
 				{
 					if (line[lineSelector+2].msg != globalContainer->settings.language)
 					{
@@ -654,25 +667,25 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case (Token::S_WIN):
+			case (SGSLToken::S_WIN):
 			{
 				mapscript->hasWon.at(line[++lineSelector].value)=true;
 				return true;
 			}
 
-			case (Token::S_LOOSE):
+			case (SGSLToken::S_LOOSE):
 			{
 				mapscript->hasLost.at(line[++lineSelector].value)=true;
 				return true;
 			}
 
-			case (Token::S_TIMER):
+			case (SGSLToken::S_TIMER):
 			{
 				mapscript->mainTimer=line[++lineSelector].value;
 				return true;
 			}
 
-			case (Token::S_ALLIANCE):
+			case (SGSLToken::S_ALLIANCE):
 			{
 				int team1 = line[++lineSelector].value;
 				int team2 = line[++lineSelector].value;
@@ -717,19 +730,19 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case (Token::S_LABEL):
+			case (SGSLToken::S_LABEL):
 			{
 				lineSelector++;
 				return true;
 			}
 
-			case (Token::S_JUMP):
+			case (SGSLToken::S_JUMP):
 			{
 				lineSelector = labels[line[lineSelector+1].msg];
 				return true;
 			}
 
-			case (Token::INT):
+			case (SGSLToken::INT):
 			{
 				internTimer--;
 				if (internTimer==0)
@@ -738,56 +751,56 @@ bool Story::testCondition(GameGUI *gui)
 					return false;
 			}
 
-			case (Token::S_GUIENABLE):
+			case (SGSLToken::S_GUIENABLE):
 			{
 				// TODO : be clean and dynamic and generic here !
-				Token::TokenType object = line[++lineSelector].type;
-				if (object <= Token::S_WARRIOR)
+				SGSLToken::TokenType object = line[++lineSelector].type;
+				if (object <= SGSLToken::S_WARRIOR)
 				{
 					// Units : TODO
 				}
-				else if (object <= Token::S_MARKET_B)
+				else if (object <= SGSLToken::S_MARKET_B)
 				{
-					gui->enableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_SWARM_B));
+					gui->enableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - SGSLToken::S_SWARM_B));
 				}
-				else if (object <= Token::S_CLEARING_F)
+				else if (object <= SGSLToken::S_CLEARING_F)
 				{
-					gui->enableFlagsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
+					gui->enableFlagsChoice(IntBuildingType::typeFromShortNumber(object - SGSLToken::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
 				}
-				else if (object <= Token::S_ALLIANCESCREEN)
+				else if (object <= SGSLToken::S_ALLIANCESCREEN)
 				{
-					gui->enableGUIElement(object - Token::S_BUILDINGTAB);
+					gui->enableGUIElement(object - SGSLToken::S_BUILDINGTAB);
 				}
 				return true;
 			}
 
-			case (Token::S_GUIDISABLE):
+			case (SGSLToken::S_GUIDISABLE):
 			{
-				Token::TokenType object = line[++lineSelector].type;
-				if (object <= Token::S_WARRIOR)
+				SGSLToken::TokenType object = line[++lineSelector].type;
+				if (object <= SGSLToken::S_WARRIOR)
 				{
 					// Units : TODO
 				}
-				else if (object <= Token::S_MARKET_B)
+				else if (object <= SGSLToken::S_MARKET_B)
 				{
-					gui->disableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_SWARM_B));
+					gui->disableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - SGSLToken::S_SWARM_B));
 				}
-				else if (object <= Token::S_CLEARING_F)
+				else if (object <= SGSLToken::S_CLEARING_F)
 				{
-					gui->disableFlagsChoice(IntBuildingType::typeFromShortNumber(object - Token::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
+					gui->disableFlagsChoice(IntBuildingType::typeFromShortNumber(object - SGSLToken::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
 				}
-				else if (object <= Token::S_ALLIANCESCREEN)
+				else if (object <= SGSLToken::S_ALLIANCESCREEN)
 				{
-					gui->disableGUIElement(object - Token::S_BUILDINGTAB);
+					gui->disableGUIElement(object - SGSLToken::S_BUILDINGTAB);
 				}
 				return true;
 			}
 
-			case (Token::S_SUMMONUNITS):
+			case (SGSLToken::S_SUMMONUNITS):
 			{
 				const std::string& areaName = line[++lineSelector].msg;
 				int globulesAmount = line[++lineSelector].value;
-				int type = line[++lineSelector].type - Token::S_WORKER;
+				int type = line[++lineSelector].type - SGSLToken::S_WORKER;
 				int level = line[++lineSelector].value;
 				int team = line[++lineSelector].value;
 				
@@ -852,7 +865,7 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case Token::S_SUMMONFLAG:
+			case SGSLToken::S_SUMMONFLAG:
 			{
 				const std::string& flagName = line[++lineSelector].msg;
 				int x = line[++lineSelector].value;
@@ -876,7 +889,7 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case Token::S_DESTROYFLAG:
+			case SGSLToken::S_DESTROYFLAG:
 			{
 				const std::string& flagName = line[++lineSelector].msg;
 				BuildingMap::iterator i;
@@ -893,7 +906,7 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case (Token::S_SETAREA):
+			case (SGSLToken::S_SETAREA):
 			{
 				Area flag;
 
@@ -907,13 +920,13 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case (Token::S_HIDE):
+			case (SGSLToken::S_HIDE):
 			{
 				mapscript->isTextShown = false;
 				return true;
 			}
 
-			case (Token::S_SPACE):
+			case (SGSLToken::S_SPACE):
 			{
 				if (recievedSpace)
 				{
@@ -926,26 +939,26 @@ bool Story::testCondition(GameGUI *gui)
 				}
 			}
 
-			case (Token::S_WAIT):
+			case (SGSLToken::S_WAIT):
 			{
 				bool negate = false;
 				int execLine = lineSelector+1;
 
-				if (line[execLine].type == Token::S_NOT)
+				if (line[execLine].type == SGSLToken::S_NOT)
 				{
 					negate = true;
 					execLine++;
 				}
 				switch (line[execLine].type)
 				{
-					case (Token::INT):
+					case (SGSLToken::INT):
 					{
 						// The idea is to put an int token on execution which stands for decrement and waiting
 						internTimer = line[execLine].value;
 						lineSelector = execLine;
 						return false;
 					}
-					case (Token::S_ISDEAD):
+					case (SGSLToken::S_ISDEAD):
 					{
 						execLine++;
 						if (!game->teams[line[execLine].value]->isAlive)
@@ -956,7 +969,7 @@ bool Story::testCondition(GameGUI *gui)
 						else
 							return false;
 					}
-					case (Token::S_AREA):
+					case (SGSLToken::S_AREA):
 					{
 						execLine++;
 
@@ -965,18 +978,18 @@ bool Story::testCondition(GameGUI *gui)
 						execLine++;
 						Uint32 teamsToTestMask = 0;
 						//A team number is given
-						if (line[execLine].type==Token::INT)
+						if (line[execLine].type==SGSLToken::INT)
 						{
 							teamsToTestMask = 1<<(line[execLine].value);
 						}
 						//All of the enemies are given
-						else if (line[execLine].type==Token::S_ENEMY)
+						else if (line[execLine].type==SGSLToken::S_ENEMY)
 						{
 							execLine++;
 							teamsToTestMask = game->teams[line[execLine].value]->enemies;
 						}
 						//All of the allies are given
-						else if (line[execLine].type==Token::S_ALLY)
+						else if (line[execLine].type==SGSLToken::S_ALLY)
 						{
 							execLine++;
 							teamsToTestMask = game->teams[line[execLine].value]->allies;
@@ -1055,9 +1068,9 @@ bool Story::testCondition(GameGUI *gui)
 							return false;
 						}
 					}
-					case (Token::S_WORKER):
-					case (Token::S_EXPLORER):
-					case (Token::S_WARRIOR):
+					case (SGSLToken::S_WORKER):
+					case (SGSLToken::S_EXPLORER):
+					case (SGSLToken::S_WARRIOR):
 					{
 						bool conditionResult = conditionTester(game, execLine, false, true);
 						conditionResult ^= negate;
@@ -1075,7 +1088,7 @@ bool Story::testCondition(GameGUI *gui)
 					{
 						// Check if we have the "atmin" keyword
 						bool only = false;
-						if (line[execLine].type == Token::S_ONLY)
+						if (line[execLine].type == SGSLToken::S_ONLY)
 						{
 							only = true;
 							execLine++;
@@ -1108,13 +1121,13 @@ void Story::syncStep(GameGUI *gui)
 	int cycleLeft = 256;
 
 	if (verbose)
-		std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
+		std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << SGSLToken::getNameByType(line[lineSelector].type) << ")" << std::endl;
 	while (testCondition(gui) && cycleLeft)
 	{
 		lineSelector++;
 		cycleLeft--;
 		if (verbose)
-			std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << Token::getNameByType(line[lineSelector].type) << ")" << std::endl;
+			std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << SGSLToken::getNameByType(line[lineSelector].type) << ")" << std::endl;
 		recievedSpace=false;
 	}
 
@@ -1124,7 +1137,7 @@ void Story::syncStep(GameGUI *gui)
 
 using namespace std;
 
-const char *ErrorReport::getErrorString(void)
+const char *ErrorReport::getErrorString(void) const
 {
 	static const char *strings[]={
 		"No error",
@@ -1160,7 +1173,7 @@ Aquisition::~Aquisition(void)
 Aquisition::Aquisition(const Functions& functions) :
 	functions(functions)
 {
-	token.type=Token::NIL;
+	token.type=SGSLToken::NIL;
 	actLine=0;
 	actCol=0;
 	actPos=0;
@@ -1220,7 +1233,7 @@ void Aquisition::nextToken()
 
 	if (c==EOF)
 	{
-		token.type=Token::S_EOF;
+		token.type=SGSLToken::S_EOF;
 		return;
 	}
 
@@ -1275,7 +1288,7 @@ void Aquisition::nextToken()
 	{
 		if ((word[0]>='0') && (word[0]<='9'))
 		{
-			token.type = Token::INT;
+			token.type = SGSLToken::INT;
 			token.value = atoi(word.c_str());
 		}
 		else if (word[0]=='"')
@@ -1284,12 +1297,12 @@ void Aquisition::nextToken()
 			string::size_type end=word.find_last_of("\"");
 			if ((start!=string::npos) && (end!=string::npos))
 			{
-				token.type = Token::STRING;
+				token.type = SGSLToken::STRING;
 				assert(end-start-1>=0);
 				token.msg = word.substr(start+1, end-start-1);
 			}
 			else
-				token.type = Token::NIL;
+				token.type = SGSLToken::NIL;
 		}
 		else
 		{
@@ -1297,7 +1310,7 @@ void Aquisition::nextToken()
 			Functions::const_iterator fIt = functions.find(word);
 			if (fIt != functions.end())
 			{
-				token.type = Token::FUNC_CALL;
+				token.type = SGSLToken::FUNC_CALL;
 				token.msg = word;
 				return;
 			}
@@ -1307,7 +1320,7 @@ void Aquisition::nextToken()
 			{
 				if (word == std::string(Toolkit::getStringTable()->getStringInLang("[language-code]", i)))
 				{
-					token.type = Token::LANG;
+					token.type = SGSLToken::LANG;
 					token.value = i;
 					token.msg = word;
 					return;
@@ -1315,11 +1328,11 @@ void Aquisition::nextToken()
 			}
 			
 			// so it is another token
-			token.type = Token::getTypeByName(word.c_str());
+			token.type = SGSLToken::getTypeByName(word.c_str());
 		}
 	}
 	else
-		token.type = Token::NIL;
+		token.type = SGSLToken::NIL;
 }
 
 bool FileAquisition::open(const char *filename)
@@ -1373,16 +1386,16 @@ int StringAquisition::getChar(void)
 
 int StringAquisition::ungetChar(char c)
 {
-	if (pos)
+	if (pos > 0)
 	{
 		buffer[--pos]=c;
 	}
 	return 0;
 }
 
-// Mapscript creation
+// MapScriptSGSL creation
 
-Mapscript::Mapscript()
+MapScriptSGSL::MapScriptSGSL()
 {
 	functions["toto"] = std::make_pair(totoDescription, &Story::toto);
 	functions["objectiveHidden"] = std::make_pair(objectiveHiddenDescription, &Story::objectiveHidden);
@@ -1402,12 +1415,12 @@ Mapscript::Mapscript()
 	functions["resetAI"] = std::make_pair(resetAIDescription, &Story::resetAI);
 }
 
-Mapscript::~Mapscript(void)
+MapScriptSGSL::~MapScriptSGSL(void)
 {
 	
 }
 
-bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
+bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 {
 	stream->readEnterSection("SGSL");
 	
@@ -1481,7 +1494,7 @@ bool Mapscript::load(GAGCore::InputStream *stream, Game *game)
 	return true;
 }
 
-void Mapscript::save(GAGCore::OutputStream *stream, const Game *game)
+void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 {
 	stream->writeEnterSection("SGSL");
 	
@@ -1547,7 +1560,7 @@ void Mapscript::save(GAGCore::OutputStream *stream, const Game *game)
 	stream->writeLeaveSection();
 }
 
-void Mapscript::reset(void)
+void MapScriptSGSL::reset(void)
 {
 	isTextShown = false;
 	mainTimer=0;
@@ -1556,12 +1569,12 @@ void Mapscript::reset(void)
 	flags.clear();
 }
 
-bool Mapscript::testMainTimer()
+bool MapScriptSGSL::testMainTimer()
 {
 	return (mainTimer <= 0);
 }
 
-void Mapscript::syncStep(GameGUI *gui)
+void MapScriptSGSL::syncStep(GameGUI *gui)
 {
 	if (mainTimer)
 		mainTimer--;
@@ -1578,7 +1591,7 @@ void Mapscript::syncStep(GameGUI *gui)
 	}
 }
 
-Sint32 Mapscript::checkSum()
+Sint32 MapScriptSGSL::checkSum()
 {
 	Sint32 cs=0;
 	for (std::vector<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
@@ -1590,19 +1603,19 @@ Sint32 Mapscript::checkSum()
 }
 
 
-ErrorReport Mapscript::compileScript(Game *game, const char *script)
+ErrorReport MapScriptSGSL::compileScript(Game *game, const char *script)
 {
 	StringAquisition aquisition(functions);
 	aquisition.open(script);
 	return parseScript(&aquisition, game);
 }
 
-ErrorReport Mapscript::compileScript(Game *game)
+ErrorReport MapScriptSGSL::compileScript(Game *game)
 {
 	return compileScript(game, sourceCode.c_str());
 }
 
-ErrorReport Mapscript::loadScript(const char *filename, Game *game)
+ErrorReport MapScriptSGSL::loadScript(const char *filename, Game *game)
 {
 	FileAquisition aquisition(functions);
 	if (aquisition.open(filename))
@@ -1612,7 +1625,7 @@ ErrorReport Mapscript::loadScript(const char *filename, Game *game)
 }
 
 // Control of the syntax of the script
-ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
+ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 {
 	// Gets next token and sets right error position
 	#define NEXT_TOKEN \
@@ -1627,7 +1640,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	#define CHECK_PAROPEN \
 	{ \
 		NEXT_TOKEN; \
-		if (donnees->getToken()->type != Token::S_PAROPEN) \
+		if (donnees->getToken()->type != SGSLToken::S_PAROPEN) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_PAROPEN; \
 			return er; \
@@ -1638,7 +1651,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	#define CHECK_PARCLOSE \
 	{ \
 		NEXT_TOKEN; \
-		if (donnees->getToken()->type != Token::S_PARCLOSE) \
+		if (donnees->getToken()->type != SGSLToken::S_PARCLOSE) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_PARCLOSE; \
 			return er; \
@@ -1649,7 +1662,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	#define CHECK_SEMICOL \
 	{ \
 		NEXT_TOKEN; \
-		if (donnees->getToken()->type != Token::S_SEMICOL) \
+		if (donnees->getToken()->type != SGSLToken::S_SEMICOL) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_SEMICOL; \
 			return er; \
@@ -1659,7 +1672,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	// Checks for right number of arguments
 	#define CHECK_ARGUMENT \
 	{ \
-		if (donnees->getToken()->type == Token::S_PARCLOSE || donnees->getToken()->type == Token::S_SEMICOL) \
+		if (donnees->getToken()->type == SGSLToken::S_PARCLOSE || donnees->getToken()->type == SGSLToken::S_SEMICOL) \
 		{ \
 			er.type=ErrorReport::ET_MISSING_ARGUMENT; \
 			return er; \
@@ -1678,14 +1691,14 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 	std::fill(hasLost.begin(), hasLost.end(), false);
 
 	NEXT_TOKEN;
-	while (donnees->getToken()->type != Token::S_EOF)
+	while (donnees->getToken()->type != SGSLToken::S_EOF)
 	{
 		Story thisone(this);
 		if (er.type != ErrorReport::ET_OK)
 		{
 			break;
 		}
-		while ((donnees->getToken()->type != Token::S_STORY) && (donnees->getToken()->type !=Token::S_EOF))
+		while ((donnees->getToken()->type != SGSLToken::S_STORY) && (donnees->getToken()->type !=SGSLToken::S_EOF))
 		{
 			if (er.type != ErrorReport::ET_OK)
 			{
@@ -1696,7 +1709,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 			switch (donnees->getToken()->type)
 			{
 				// function call
-				case (Token::FUNC_CALL):
+				case (SGSLToken::FUNC_CALL):
 				{
 					thisone.line.push_back(*donnees->getToken());
 					
@@ -1734,7 +1747,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 				
 				// summonUnits(flag_name , globules_amount , globule_type , globule_level , team_int)
-				case (Token::S_SUMMONUNITS):
+				case (SGSLToken::S_SUMMONUNITS):
 				{
 					//<-summon
 					thisone.line.push_back(*donnees->getToken());
@@ -1742,7 +1755,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_PAROPEN;
 					NEXT_TOKEN; // <- flag_name
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::STRING)
+					if (donnees->getToken()->type != SGSLToken::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1770,7 +1783,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- globules_amount
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1785,7 +1798,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- globules type
 					CHECK_ARGUMENT;
-					if ((donnees->getToken()->type != Token::S_WARRIOR) && (donnees->getToken()->type != Token::S_WORKER) && (donnees->getToken()->type != Token::S_EXPLORER))
+					if ((donnees->getToken()->type != SGSLToken::S_WARRIOR) && (donnees->getToken()->type != SGSLToken::S_WORKER) && (donnees->getToken()->type != SGSLToken::S_EXPLORER))
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1795,7 +1808,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- globules level
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1810,7 +1823,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- team
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1828,7 +1841,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				// setArea(string name, int x , int y , int r)
-				case (Token::S_SETAREA):
+				case (SGSLToken::S_SETAREA):
 				{
 					Area area;
 
@@ -1839,7 +1852,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_PAROPEN;
 					NEXT_TOKEN; // <- string name
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::STRING)
+					if (donnees->getToken()->type != SGSLToken::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1855,7 +1868,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; // <- int x
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1866,7 +1879,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; //<- int y
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1877,7 +1890,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; // <- int r
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1898,14 +1911,14 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				// summonFlag(string name, int x, int y, int r, int unitcount, int team)
-				case (Token::S_SUMMONFLAG):
+				case (SGSLToken::S_SUMMONFLAG):
 				{
 					thisone.line.push_back(*donnees->getToken());
 
 					CHECK_PAROPEN;
 					NEXT_TOKEN; // <- string name
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::STRING)
+					if (donnees->getToken()->type != SGSLToken::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1915,7 +1928,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; // <- int x
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1925,7 +1938,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; // <- int y
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1935,7 +1948,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; // <- int r
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1945,7 +1958,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; // <- int unitcount
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1955,7 +1968,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN; // <- int team
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1973,14 +1986,14 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				// destroyFlag(string name)
-				case (Token::S_DESTROYFLAG):
+				case (SGSLToken::S_DESTROYFLAG):
 				{
 					thisone.line.push_back(*donnees->getToken());
 
 					CHECK_PAROPEN;
 					NEXT_TOKEN; // <- string name
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::STRING)
+					if (donnees->getToken()->type != SGSLToken::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -1993,7 +2006,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				// Alliance
-				case (Token::S_ALLIANCE):
+				case (SGSLToken::S_ALLIANCE):
 				{
 					thisone.line.push_back(*donnees->getToken()); //<-SETAREA
 
@@ -2001,7 +2014,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -2017,7 +2030,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -2033,7 +2046,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					CHECK_SEMICOL;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -2051,28 +2064,28 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				// Show, Label, Jump
-				case (Token::S_SHOW):
-				case (Token::S_LABEL):
-				case (Token::S_JUMP):
+				case (SGSLToken::S_SHOW):
+				case (SGSLToken::S_LABEL):
+				case (SGSLToken::S_JUMP):
 				{
-					Token::TokenType type = donnees->getToken()->type;
+					SGSLToken::TokenType type = donnees->getToken()->type;
 
 					thisone.line.push_back(*donnees->getToken());
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::STRING)
+					if (donnees->getToken()->type != SGSLToken::STRING)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
 
-					if (type == Token::S_LABEL)
+					if (type == SGSLToken::S_LABEL)
 					{
 						// add label to table
 						thisone.labels[donnees->getToken()->msg] = thisone.line.size();
 					}
-					if (type == Token::S_JUMP)
+					if (type == SGSLToken::S_JUMP)
 					{
 						// complain if label doesn't exists
 						if (thisone.labels.find(donnees->getToken()->msg) == thisone.labels.end())
@@ -2082,21 +2095,21 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						}
 					}
 
-					if (type == Token::S_SHOW)
+					if (type == SGSLToken::S_SHOW)
 					{
 						thisone.line.push_back(*donnees->getToken());
 						NEXT_TOKEN;
-						if (donnees->getToken()->type != Token::S_PARCLOSE)
+						if (donnees->getToken()->type != SGSLToken::S_PARCLOSE)
 						{
 							// This is a multilingual show
-							if (donnees->getToken()->type != Token::S_SEMICOL)
+							if (donnees->getToken()->type != SGSLToken::S_SEMICOL)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
 							}
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
-							if (donnees->getToken()->type != Token::LANG)
+							if (donnees->getToken()->type != SGSLToken::LANG)
 							{
 								er.type=ErrorReport::ET_NOT_VALID_LANG_ID;
 								break;
@@ -2120,17 +2133,16 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				// Wait | wait ( int) or wait ( isdead( teamNumber ) ) or wait( [only] condition ) or wait( not( [atmin] condition ) )
-				case (Token::S_WAIT):
+				case (SGSLToken::S_WAIT):
 				{
 					bool enter = false;
 					bool negate = false;
-					bool atmin = false;
 					thisone.line.push_back(*donnees->getToken());
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
 					// int
-					if (donnees->getToken()->type == Token::INT  && !enter)
+					if (donnees->getToken()->type == SGSLToken::INT  && !enter)
 					{
 						enter = true;
 						if (donnees->getToken()->value <=0)
@@ -2142,14 +2154,14 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					}
 
 					// isdead( teamNumber )
-					if (donnees->getToken()->type == Token::S_ISDEAD && !enter)
+					if (donnees->getToken()->type == SGSLToken::S_ISDEAD && !enter)
 					{
 						enter = true;
 						thisone.line.push_back(*donnees->getToken());
 						CHECK_PAROPEN;
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
-						if (donnees->getToken()->type != Token::INT)
+						if (donnees->getToken()->type != SGSLToken::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
@@ -2163,7 +2175,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						CHECK_PARCLOSE;
 					}
 					// following two arguments can be negated !
-					if (donnees->getToken()->type == Token::S_NOT && !enter)
+					if (donnees->getToken()->type == SGSLToken::S_NOT && !enter)
 					{
 						negate = true;
 						thisone.line.push_back(*donnees->getToken());
@@ -2172,7 +2184,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						CHECK_ARGUMENT;
 					}
 					// area ("areaname" , who*)
-					if (donnees->getToken()->type == Token::S_AREA && !enter)
+					if (donnees->getToken()->type == SGSLToken::S_AREA && !enter)
 					{
 						enter = true;
 						thisone.line.push_back(*donnees->getToken());
@@ -2180,7 +2192,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						CHECK_PAROPEN;
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
-						if (donnees->getToken()->type != Token::STRING)
+						if (donnees->getToken()->type != SGSLToken::STRING)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
@@ -2207,10 +2219,10 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
 						thisone.line.push_back(*donnees->getToken());
-						if (donnees->getToken()->type != Token::INT)
+						if (donnees->getToken()->type != SGSLToken::INT)
 						{
-							if ((donnees->getToken()->type != Token::S_ENEMY)
-								&& (donnees->getToken()->type != Token::S_ALLY))
+							if ((donnees->getToken()->type != SGSLToken::S_ENEMY)
+								&& (donnees->getToken()->type != SGSLToken::S_ALLY))
 								{
 									er.type=ErrorReport::ET_SYNTAX_ERROR;
 									break;
@@ -2220,7 +2232,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 								// we have enemy or ally
 								CHECK_PAROPEN;
 								NEXT_TOKEN;
-								if (donnees->getToken()->type != Token::INT)
+								if (donnees->getToken()->type != SGSLToken::INT)
 								{
 									er.type=ErrorReport::ET_SYNTAX_ERROR;
 									break;
@@ -2234,7 +2246,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					
 					// only
 					bool only = false;
-					if (donnees->getToken()->type == Token::S_ONLY && !enter)
+					if (donnees->getToken()->type == SGSLToken::S_ONLY && !enter)
 					{
 						only = true;
 						thisone.line.push_back(*donnees->getToken());
@@ -2244,19 +2256,19 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 					//Comparaison| ( Variable( team , "flagName" ) cond value ) : variable = unit
 					//( Variable( level , team , "flagName" ) cond value ) : variable = building
 					//"flagName" can be omitted !
-					if ((donnees->getToken()->type >= Token::S_WORKER) && (donnees->getToken()->type <= Token::S_MARKET_B) && !enter)
+					if ((donnees->getToken()->type >= SGSLToken::S_WORKER) && (donnees->getToken()->type <= SGSLToken::S_MARKET_B) && !enter)
 					{
 						enter = true;
 						
 						thisone.line.push_back(*donnees->getToken());
-						if (donnees->getToken()->type >= Token::S_SWARM_B)
+						if (donnees->getToken()->type >= SGSLToken::S_SWARM_B)
 						{
 							// Buildings
 							CHECK_PAROPEN;
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
 							// team
-							if (donnees->getToken()->type != Token::INT)
+							if (donnees->getToken()->type != SGSLToken::INT)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
@@ -2272,7 +2284,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							CHECK_ARGUMENT;
 
 							// level
-							if (donnees->getToken()->type != Token::INT)
+							if (donnees->getToken()->type != SGSLToken::INT)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
@@ -2298,7 +2310,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 							NEXT_TOKEN;
 							CHECK_ARGUMENT;
 							// team
-							if (donnees->getToken()->type != Token::INT)
+							if (donnees->getToken()->type != SGSLToken::INT)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
@@ -2314,11 +2326,11 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 
 						/*NEXT_TOKEN;
 						//Optional "areaName"
-						if (donnees->getToken()->type != Token::S_PARCLOSE)
+						if (donnees->getToken()->type != SGSLToken::S_PARCLOSE)
 						{
 							NEXT_TOKEN;
 							//there is a areaName
-							if (donnees->getToken()->type != Token::STRING)
+							if (donnees->getToken()->type != SGSLToken::STRING)
 							{
 								er.type=ErrorReport::ET_SYNTAX_ERROR;
 								break;
@@ -2337,7 +2349,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
-						if ((donnees->getToken()->type < Token::S_EQUAL) || (donnees->getToken()->type > Token::S_LOWER))
+						if ((donnees->getToken()->type < SGSLToken::S_EQUAL) || (donnees->getToken()->type > SGSLToken::S_LOWER))
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
@@ -2345,7 +2357,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 						thisone.line.push_back(*donnees->getToken());
 						NEXT_TOKEN;
 						CHECK_ARGUMENT;
-						if (donnees->getToken()->type != Token::INT)
+						if (donnees->getToken()->type != SGSLToken::INT)
 						{
 							er.type=ErrorReport::ET_SYNTAX_ERROR;
 							break;
@@ -2368,7 +2380,7 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				}
 				break;
 
-				case (Token::NIL):
+				case (SGSLToken::NIL):
 				{
 					//NEXT_TOKEN;
 					er.type=ErrorReport::ET_UNKNOWN;
@@ -2376,14 +2388,14 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				// Grammar of Timer( int )
-				case (Token::S_TIMER):
+				case (SGSLToken::S_TIMER):
 				{
 					thisone.line.push_back(*donnees->getToken());
 
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -2396,15 +2408,15 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				break;
 
 				// Enable or disable a GUI element
-				case (Token::S_GUIENABLE):
-				case (Token::S_GUIDISABLE):
+				case (SGSLToken::S_GUIENABLE):
+				case (SGSLToken::S_GUIDISABLE):
 				{
 					thisone.line.push_back(*donnees->getToken());
 
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
-					if ((donnees->getToken()->type < Token::S_WORKER) || (donnees->getToken()->type > Token::S_ALLIANCESCREEN))
+					if ((donnees->getToken()->type < SGSLToken::S_WORKER) || (donnees->getToken()->type > SGSLToken::S_ALLIANCESCREEN))
 					{
 						er.type=ErrorReport::ET_INVALID_VALUE;
 						break;
@@ -2416,15 +2428,15 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				}
 				break;
 
-				case (Token::S_LOOSE):
-				case (Token::S_WIN):
+				case (SGSLToken::S_LOOSE):
+				case (SGSLToken::S_WIN):
 				{
 					thisone.line.push_back(*donnees->getToken());
 
 					CHECK_PAROPEN;
 					NEXT_TOKEN;
 					CHECK_ARGUMENT;
-					if (donnees->getToken()->type != Token::INT)
+					if (donnees->getToken()->type != SGSLToken::INT)
 					{
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
@@ -2441,42 +2453,45 @@ ErrorReport Mapscript::parseScript(Aquisition *donnees, Game *game)
 				}
 				break;
 
-				case (Token::S_HIDE):
+				case (SGSLToken::S_HIDE):
 				{
 					thisone.line.push_back(*donnees->getToken());
 					NEXT_TOKEN;
 				}
 				break;
 
-				case (Token::S_SPACE):
+				case (SGSLToken::S_SPACE):
 				{
 					thisone.line.push_back(*donnees->getToken());
 					NEXT_TOKEN;
 				}
 				break;
 
-				case (Token::S_EOF):
+				case (SGSLToken::S_EOF):
 				{
 				}
 				break;
 
 				default:
+				{
+					cerr << "SGSL: unknown token found: " << donnees->getToken()->type << endl;
 					er.type=ErrorReport::ET_UNKNOWN;
-					break;
+				}
+				break;
 			}
 		}
-		thisone.line.push_back(Token(Token::S_STORY));
+		thisone.line.push_back(SGSLToken(SGSLToken::S_STORY));
 		stories.push_back(thisone);
 		// Debug code
 		/*printf("SGSL : story loaded, %d tokens, dumping now :\n", (int)thisone.line.size());
 		for (unsigned  i=0; i<thisone.line.size(); i++)
-			cout << "Token type " << Token::getNameByType(thisone.line[i].type) << endl;*/
+			cout << "SGSLToken type " << SGSLToken::getNameByType(thisone.line[i].type) << endl;*/
 		NEXT_TOKEN;
 	}
 	return er;
 }
 
-bool Mapscript::hasTeamWon(unsigned teamNumber)
+bool MapScriptSGSL::hasTeamWon(unsigned teamNumber)
 {
 	// Seb: Cheapo hack. Script should intialize hasWon first :-)
 	if (testMainTimer() && hasWon.size()>teamNumber)
@@ -2486,7 +2501,7 @@ bool Mapscript::hasTeamWon(unsigned teamNumber)
 	return false;
 }
 
-bool Mapscript::hasTeamLost(unsigned teamNumber)
+bool MapScriptSGSL::hasTeamLost(unsigned teamNumber)
 {
 	// Seb: Cheapo hack. Script should intialize hasLost first :-)
 	if(hasLost.size()>teamNumber)
@@ -2496,7 +2511,7 @@ bool Mapscript::hasTeamLost(unsigned teamNumber)
 
 
 
-void Mapscript::addTeam()
+void MapScriptSGSL::addTeam()
 {
 	hasWon.push_back(false);
 	hasLost.push_back(false);
@@ -2504,7 +2519,7 @@ void Mapscript::addTeam()
 
 
 
-void Mapscript::removeTeam(int n)
+void MapScriptSGSL::removeTeam(int n)
 {
 	hasWon.erase(hasWon.begin()+n);
 	hasLost.erase(hasLost.begin()+n);

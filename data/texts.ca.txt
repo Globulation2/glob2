@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Construir
 
 [building site]
 Construint
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -202,6 +208,8 @@ Atrau als teus globuls treballadors
 Bandera de Neteja
 [closed]
 Tancat
+[combined vision]
+
 [compile]
 Compilar el script
 [compose]
@@ -356,6 +364,8 @@ illes buides
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Menjar
 [forbidden area]
@@ -490,6 +500,8 @@ Nivells
 Cargar partida
 [load map]
 
+[load replay]
+
 [load script]
 
 [load]
@@ -500,6 +512,8 @@ Carregar
 
 [login]
 Conectar
+[look around]
+
 [Lost : %0 has more prestige than you]
 Perdedor: %0 te més prestigi que tú
 [Lost : your colony is dead]
@@ -568,6 +582,8 @@ Silenci
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -582,6 +598,8 @@ No
 
 [not ready]
 sense preparar
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -590,6 +608,8 @@ sense preparar
 %0 nombre d' equips
 [number of teams]
 Nombre d' equips
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -621,7 +641,7 @@ Aqui
 [open]
 Obrir
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -646,11 +666,15 @@ Pausat
 Nom del jugador
 [player rating %0]
 
+[players]
+
 [please wait]
 Esperi un moment
 [power]
 
 [press space]
+
+[Prestige Score]
 
 [Prestige Win Enabled]
 
@@ -668,6 +692,8 @@ Passes
 
 [quit the game]
 Sortir del joc
+[quit the replay]
+
 [quit]
 Sortir
 [racetrack explanation 2]
@@ -688,6 +714,8 @@ Proporció
 
 [Register a new YOG user with password]
 Registrar un nou jugador YOG amb contrasenya (insegur)
+[Register]
+
 [remember unit]
 
 [Remember YOG password localy]
@@ -704,12 +732,18 @@ Recordar la contrasenya (insegur)
 Reparar
 [repeat area]
 
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 
 [return to editor]
 
 [return to game]
 Tornar al joc
+[return to replay]
+
 [return]
 
 [right meta]
@@ -729,6 +763,8 @@ Vols desar abans de sortir?
 [save game]
 Desar partida
 [save map]
+
+[save replay]
 
 [save script]
 
@@ -820,6 +856,10 @@ Opcions
 key enter : Envia un missatge de text
 [shortcut explanation v]
 key v : Presiona per parlar
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -972,6 +1012,8 @@ El jugador %0 ha abandonat YOG
 El POLIESPORTIU ja està construida
 [the racetrack is under attack]
 El Poliesportiu està sent atacat
+[the replays]
+
 [the school is finished]
 L' ESCOLA ja està construid
 [the school is under attack]
@@ -992,6 +1034,8 @@ La Piscina està sent atacada
 ?? Bandera de Guerra finalizada ??
 [the warflag is under attack]
 ?? La bandera de Guerra està sent atacada ??
+[time]
+
 [to:]
 a:
 [toggle draw accessibility aids]
@@ -1003,6 +1047,12 @@ a:
 [toggle menu screen]
 
 [toggle recording voice]
+
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
 
 [Total prestige reached]
 Prestigi total alcanzat
@@ -1080,6 +1130,10 @@ Compte, necesites reiniciar el joc per que els cambis tinguin efecte
 Guerrer
 [warriors]
 Guerrers
+[watch again]
+
+[watching:]
+
 [water]
 Aigua
 [Wheat]
@@ -1134,6 +1188,8 @@ No es pot conectar al metaservidor YOG. Nom d'usuari en ús
 
 [YESTS_CREATED]
 El sistema de conexió està llest per contactar amb el metaservidor YOG
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Imposible conectar. Metaservidor YOG esta caigut
 [yog block command help]

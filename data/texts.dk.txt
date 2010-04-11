@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -190,6 +194,8 @@ Byg
 Enheder
 [building site]
 bygningssted
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -250,6 +256,8 @@ Fjern ressourcer
 Rydningsflag
 [closed]
 Lukket
+[combined vision]
+
 [compile]
 Kompilere skript
 [compose]
@@ -410,6 +418,8 @@ Tom ø
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Mad
 [forbidden area]
@@ -550,6 +560,8 @@ Hent Kampagne
 Hent spil
 [load map]
 Hent bane
+[load replay]
+
 [load script]
 
 [load]
@@ -560,6 +572,8 @@ hent
 
 [login]
 Log ind
+[look around]
+
 [Lost : %0 has more prestige than you]
 Tabt : %0 har mere prestige end du har
 [Lost : your colony is dead]
@@ -630,6 +644,8 @@ Ny Kampagne
 Ny
 [nick taken]
 Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -644,6 +660,8 @@ Nej
 
 [not ready]
 ikke klar
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -652,6 +670,8 @@ ikke klar
 %0 hold.
 [number of teams]
 antal af hold
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -683,7 +703,7 @@ Her
 [open]
 Åben
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -708,12 +728,16 @@ Pause
 Spillernavn
 [player rating %0]
 
+[players]
+
 [please wait]
 Vent venligst
 [power]
 
 [press space]
 Tryk på mellemrum for at fortsætte
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -730,6 +754,8 @@ Prune
 Afslut editor
 [quit the game]
 Afslut spillet
+[quit the replay]
+
 [quit]
 Afslut
 [racetrack explanation 2]
@@ -750,6 +776,8 @@ Proportioner
 
 [Register a new YOG user with password]
 Register en ny YOG bruger med adgangskode. (usikker)
+[Register]
+
 [remember unit]
 Husk enhed
 [Remember YOG password localy]
@@ -766,12 +794,18 @@ Start/Stop Reparation
 Reparere
 [repeat area]
 antal gange det samme landskab
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
 Tilbage til editor
 [return to game]
 Vend tilbage til spillet
+[return to replay]
+
 [return]
 
 [right meta]
@@ -792,6 +826,8 @@ Vil du gemme for du afslutter?
 Gemme spil
 [save map]
 Gem bane
+[save replay]
+
 [save script]
 
 [Save]
@@ -882,6 +918,10 @@ Indstillinger
 tast enter : send en besked
 [shortcut explanation v]
 tast v : hold v nede for at snakke
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -1036,6 +1076,8 @@ Market er under angreb
 Raserbanen er fædtig gjort
 [the racetrack is under attack]
 Raserbanen er under angreb
+[the replays]
+
 [the school is finished]
 Skolen er færdig gjort
 [the school is under attack]
@@ -1056,6 +1098,8 @@ Svømme pølen er under angreb
 ?? Krigs flaget er færdig ??
 [the warflag is under attack]
 ?? Krigs flaget er under angreb ??
+[time]
+
 [to:]
 til:
 [toggle draw accessibility aids]
@@ -1068,6 +1112,12 @@ Vælg tegn endhd router
 
 [toggle recording voice]
 Start volkal optagelse
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Total prestige opnået
 [Total]
@@ -1144,6 +1194,10 @@ Kriger Ratio
 Krigere
 [warriors]
 krigere
+[watch again]
+
+[watching:]
+
 [water]
 Vand
 [Wheat]
@@ -1198,6 +1252,8 @@ YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i br
 
 [YESTS_CREATED]
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
 [yog block command help]

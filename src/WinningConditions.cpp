@@ -30,11 +30,6 @@ boost::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCor
 	
 	switch (type)
 	{
-		case WCUnknown:
-		{
-			assert(false);
-		}
-		break;
 		case WCDeath:
 		{
 			boost::shared_ptr<WinningConditionDeath> condition(new WinningConditionDeath);
@@ -70,7 +65,12 @@ boost::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCor
 			return condition;
 		}
 		break;
+		case WCUnknown:
+		default:
+			break;
 	}
+	assert(false);
+	return boost::shared_ptr<WinningCondition>();//to satisfy -Wall
 }
 
 
@@ -240,7 +240,7 @@ void WinningConditionPrestige::decodeData(GAGCore::InputStream* stream, Uint32 v
 
 bool WinningConditionScript::hasTeamWon(int team, Game* game)
 {
-	if(game->script.hasTeamWon(team))
+	if(game->sgslScript.hasTeamWon(team))
 	{
 		return true;
 	}
@@ -251,7 +251,7 @@ bool WinningConditionScript::hasTeamWon(int team, Game* game)
 
 bool WinningConditionScript::hasTeamLost(int team, Game* game)
 {
-	if(game->script.hasTeamLost(team))
+	if(game->sgslScript.hasTeamLost(team))
 	{
 		return true;
 	}

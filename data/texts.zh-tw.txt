@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -190,6 +194,8 @@ AIWarrush
 單位設定
 [building site]
 建築地點
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -250,6 +256,8 @@ AIWarrush
 清除旗幟
 [closed]
 已關閉
+[combined vision]
+
 [compile]
 收集語法
 [compose]
@@ -410,6 +418,8 @@ AIWarrush
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 食物
 [forbidden area]
@@ -550,6 +560,8 @@ zh-tw
 載入遊戲
 [load map]
 載入遊戲
+[load replay]
+
 [load script]
 
 [load]
@@ -560,6 +572,8 @@ zh-tw
 
 [login]
 登入
+[look around]
+
 [Lost : %0 has more prestige than you]
 輸: %0 的聲望比你還高
 [Lost : your colony is dead]
@@ -630,6 +644,8 @@ Air dmg.
 新的
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -644,6 +660,8 @@ Air dmg.
 
 [not ready]
 還沒準備好
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -652,6 +670,8 @@ Air dmg.
 %0 隊伍.
 [number of teams]
 隊伍數量
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -708,12 +728,16 @@ Air dmg.
 玩家名稱
 [player rating %0]
 
+[players]
+
 [please wait]
 請稍等
 [power]
 
 [press space]
 按下空白鍵以繼續
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -730,6 +754,8 @@ Air dmg.
 離開編輯器
 [quit the game]
 離開遊戲
+[quit the replay]
+
 [quit]
 離開
 [racetrack explanation 2]
@@ -750,6 +776,8 @@ Air dmg.
 
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
+[Register]
+
 [remember unit]
 記錄單位
 [Remember YOG password localy]
@@ -766,12 +794,18 @@ Air dmg.
 修復
 [repeat area]
 在相同地景的時間
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 還原預設鍵盤快捷鍵
 [return to editor]
 返回編輯器
 [return to game]
 返回遊戲
+[return to replay]
+
 [return]
 
 [right meta]
@@ -792,6 +826,8 @@ Air dmg.
 儲存遊戲
 [save map]
 儲存地圖
+[save replay]
+
 [save script]
 
 [Save]
@@ -882,6 +918,10 @@ Air dmg.
 Enter: 傳送訊息
 [shortcut explanation v]
 V: 持鍵以傳送訊息
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -1036,6 +1076,8 @@ V: 持鍵以傳送訊息
 跑道已完成
 [the racetrack is under attack]
 跑道正遭受攻擊
+[the replays]
+
 [the school is finished]
 學校已完成
 [the school is under attack]
@@ -1056,6 +1098,8 @@ V: 持鍵以傳送訊息
 ?? 攻擊旗幟已完成 ??
 [the warflag is under attack]
 ?? 攻擊旗幟正遭受攻擊 ??
+[time]
+
 [to:]
 前往:
 [toggle draw accessibility aids]
@@ -1068,6 +1112,12 @@ V: 持鍵以傳送訊息
 
 [toggle recording voice]
 開始錄音
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 聲望總計達到
 [Total]
@@ -1144,6 +1194,10 @@ V: 持鍵以傳送訊息
 士兵
 [warriors]
 士兵
+[watch again]
+
+[watching:]
+
 [water]
 水面
 [Wheat]
@@ -1198,6 +1252,8 @@ YOG meta伺服器拒絕連線因為你的用戶名已被使用。
 
 [YESTS_CREATED]
 連線系統已準備連接YOG meta伺服器。
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 無法連接。 YOG meta伺服器已關閉。
 [yog block command help]

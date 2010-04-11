@@ -28,6 +28,7 @@
 #include <FileManager.h>
 #include <GUITextInput.h>
 #include <GUIList.h>
+#include <GUIStyle.h>
 #include <GraphicContext.h>
 #include <StringTable.h>
 #include <SupportFunctions.h>
@@ -63,7 +64,7 @@
 #define TYPING_INPUT_MAX_POS 46
 
 // these values are manually layouted for cuteste perception
-#define YPOS_BASE_DEFAULT 160
+#define YPOS_BASE_DEFAULT 180
 #define YPOS_BASE_CONSTRUCTION (YPOS_BASE_DEFAULT + 5)
 #define YPOS_BASE_FLAG (YPOS_BASE_DEFAULT + 5)
 #define YPOS_BASE_STAT YPOS_BASE_DEFAULT
@@ -88,10 +89,46 @@
 
 #define YOFFSET_BRUSH 56
 
+// The sidebar on the right
 #define RIGHT_MENU_WIDTH 160
 #define RIGHT_MENU_HALF_WIDTH (RIGHT_MENU_WIDTH / 2)
 #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
 #define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
+
+// Icons for main menu, alliance and objectives buttons.
+#define IGM_ICON_HEIGHT 36
+#define IGM_MAIN_MENU_ICON_Y 0
+#define IGM_ALLIANCE_ICON_Y IGM_ICON_HEIGHT
+#define IGM_OBJECTIVES_ICON_Y (IGM_ICON_HEIGHT * 2)
+
+// Settings for the right sidebar in replays
+#define REPLAY_PANEL_XOFFSET 25
+#define REPLAY_PANEL_YOFFSET (YPOS_BASE_STAT+10)
+#define REPLAY_PANEL_SPACE_BETWEEN_OPTIONS 22
+#define REPLAY_PANEL_PLAYERLIST_YOFFSET (5*REPLAY_PANEL_SPACE_BETWEEN_OPTIONS+5)
+
+// The actual progress bar (including buttons)
+#define REPLAY_PROGRESS_BAR_X_OFFSET 4
+#define REPLAY_PROGRESS_BAR_Y_OFFSET 3
+#define REPLAY_PROGRESS_BAR_BUTTON_WIDTH 15
+#define REPLAY_PROGRESS_BAR_CAP_WIDTH 10
+#define REPLAY_PROGRESS_BAR_NUM_BUTTONS 3
+
+// The panel around the actual progress bar
+#define REPLAY_BAR_WIDTH (globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 4)
+#define REPLAY_BAR_HEIGHT (2*REPLAY_PROGRESS_BAR_Y_OFFSET + 20)
+#define REPLAY_BAR_Y (globalContainer->settings.screenHeight - REPLAY_BAR_HEIGHT)
+#define REPLAY_BAR_TIMER_X (REPLAY_PROGRESS_BAR_X_OFFSET + REPLAY_PROGRESS_BAR_CAP_WIDTH + 5)
+
+// Sprites for the replay bar
+#define REPLAY_BAR_LEFT_CAP_SPRITE 56
+#define REPLAY_BAR_RIGHT_CAP_SPRITE 57
+#define REPLAY_BAR_PLAY_BUTTON_SPRITE 51
+#define REPLAY_BAR_PLAY_BUTTON_ACTIVE_SPRITE 50
+#define REPLAY_BAR_PAUSE_BUTTON_SPRITE 53
+#define REPLAY_BAR_PAUSE_BUTTON_ACTIVE_SPRITE 52
+#define REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE 55
+#define REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE 54
 
 using namespace boost;
 
@@ -138,7 +175,15 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 
 GameGUI::GameGUI()
 	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
-	  minimap(globalContainer->runNoX, (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()-RIGHT_MENU_WIDTH), 0, RIGHT_MENU_WIDTH, 128, (RIGHT_MENU_WIDTH-100)/2, 14, Minimap::HideFOW),
+	  minimap(globalContainer->runNoX, 
+	         RIGHT_MENU_WIDTH, // width of the menu
+	         (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()), // width of the screen
+	         20, // x offset
+	         10, // y offset
+	         128, // width
+	         128, //height
+	         Minimap::ShowFOW), // minimap mode
+	  
 	  ghostManager(game)
 {
 }
@@ -165,6 +210,7 @@ void GameGUI::init()
 	mouseX=0;
 	mouseY=0;
 	displayMode=CONSTRUCTION_VIEW;
+	replayDisplayMode=RDM_REPLAY_VIEW;
 	selectionMode=NO_SELECTION;
 	selectionPushed=false;
 	selection.building = NULL;
@@ -175,6 +221,7 @@ void GameGUI::init()
 	chatMask=0xFFFFFFFF;
 	hasSpaceBeenClicked=false;
 	swallowSpaceKey=false;
+	scriptTextUpdated = false;
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
@@ -207,7 +254,12 @@ void GameGUI::init()
 	buildingsChoiceName.push_back("school");
 	buildingsChoiceName.push_back("defencetower");
 	buildingsChoiceName.push_back("stonewall");
-	buildingsChoiceName.push_back("market");
+
+	//TODO 2009-12-06 giszmo Markets has been disabled as a bug was blocking
+	//the release of beta5 and with that also the replay feature for 3 months
+	//now.
+	// buildingsChoiceName.push_back("market");
+
 	buildingsChoiceState.resize(buildingsChoiceName.size(), true);
 
 	flagsChoiceName.clear();
@@ -233,9 +285,9 @@ void GameGUI::init()
 void GameGUI::adjustLocalTeam()
 {
 	assert(localTeamNo>=0);
-	assert(localTeamNo<32);
+	assert(localTeamNo<Team::MAX_COUNT);
 	assert(game.gameHeader.getNumberOfPlayers()>0);
-	assert(game.gameHeader.getNumberOfPlayers()<32);
+	assert(game.gameHeader.getNumberOfPlayers()<Team::MAX_COUNT);
 	assert(localTeamNo<game.mapHeader.getNumberOfTeams());
 
 	localTeam = game.teams[localTeamNo];
@@ -264,6 +316,8 @@ void GameGUI::adjustInitialViewport()
 
 void GameGUI::moveFlag(int mx, int my, bool drop)
 {
+	if (globalContainer->replaying) return;
+
 	int posX, posY;
 	Building* selBuild=selection.building;
 	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
@@ -339,7 +393,6 @@ void GameGUI::step(void)
 	bool wasWindowEvent=false;
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
-	SDLMod modState = SDL_GetModState();
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type==SDL_MOUSEMOTION)
@@ -388,14 +441,14 @@ void GameGUI::step(void)
 			wasMouseMotion=true;
 		}
 #		ifdef USE_OSX
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
 		}
 #		endif
 #		ifdef USE_WIN32
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
@@ -471,12 +524,13 @@ void GameGUI::step(void)
 		orderQueue.push_back(orderVoiceData);
 	}
 	
+	// TODO: die with SGSL
 	// Check if the text being displayed has changed, and if it has, add it to the history box
-	if(game.script.isTextShown && game.script.textShown != previousSGSLText)
+	if(game.sgslScript.isTextShown && game.sgslScript.textShown != previousSGSLText)
 	{
 		//Split into one per line
 		std::vector<std::string> messages;
-		setMultiLine(game.script.textShown, &messages, "    ");
+		setMultiLine(game.sgslScript.textShown, &messages, "    ");
 
 		///Add each line as a seperate message to the message manager.
 		///Must be done backwards to appear in the right order
@@ -485,7 +539,24 @@ void GameGUI::step(void)
 			messageManager.addChatMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
 		}
 		
-		previousSGSLText = game.script.textShown;
+		previousSGSLText = game.sgslScript.textShown;
+	}
+	
+	// Check if the text being displayed has changed, and if it has, add it to the history box
+	if (scriptTextUpdated)
+	{
+		// Split into one per line
+		std::vector<std::string> messages;
+		setMultiLine(scriptText, &messages, "    ");
+	
+		// Add each line as a seperate message to the message manager.
+		// Must be done backwards to appear in the right order
+		for (int i=messages.size()-1; i>=0; i--)
+		{
+			messageManager.addChatMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
+		}
+		
+		scriptTextUpdated = false;
 	}
 	
 	// music step
@@ -606,7 +677,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
-					gameMenuScreen = new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+					if (globalContainer->replaying)
+						gameMenuScreen = new LoadSaveScreen("replays", "replay", true, std::string(Toolkit::getStringTable()->getString("[load replay]")), defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+					else
+						gameMenuScreen = new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
 					return true;
 				}
 				break;
@@ -615,24 +689,6 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
 					gameMenuScreen = new LoadSaveScreen("games", "game", false, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
-					return true;
-				}
-				break;
-				case InGameMainScreen::ALLIANCES:
-				{
-					delete gameMenuScreen;
-					gameMenuScreen=NULL;
-					inGameMenu=IGM_ALLIANCE;
-					gameMenuScreen = new InGameAllianceScreen(this);
-					return true;
-				}
-				break;
-				case InGameMainScreen::OBJECTIVES:
-				{
-					delete gameMenuScreen;
-					gameMenuScreen=NULL;
-					inGameMenu=IGM_OBJECTIVES;
-					gameMenuScreen = new InGameObjectivesScreen(this, false);
 					return true;
 				}
 				break;
@@ -758,10 +814,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					{
 						toLoadGameFileName = locationName;
 						orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+						flushOutgoingAndExit=true;
 					}
 					else
 					{
-    					defualtGameSaveName=((LoadSaveScreen *)gameMenuScreen)->getName();
+						defualtGameSaveName=((LoadSaveScreen *)gameMenuScreen)->getName();
 						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
 						if (stream->isEndOfStream())
 						{
@@ -800,6 +857,16 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				inGameMenu=IGM_NONE;
 				delete gameMenuScreen;
 				gameMenuScreen=NULL;
+				return true;
+				
+				case InGameEndOfGameScreen::WATCH_AGAIN:
+				assert(globalContainer->replaying);
+				inGameMenu=IGM_NONE;
+				delete gameMenuScreen;
+				gameMenuScreen=NULL;
+				toLoadGameFileName = globalContainer->replayFileName;
+				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+				flushOutgoingAndExit=true;
 				return true;
 
 				default:
@@ -877,7 +944,68 @@ void GameGUI::processEvent(SDL_Event *event)
 			panPushed=false;
 		}
 	}
-	
+
+
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+	{
+		int butx = event->button.x;
+		int buty = event->button.y;
+
+		int leftEdge  = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH - IGM_ICON_HEIGHT/2;
+		int rightEdge = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + IGM_ICON_HEIGHT/2;
+		int menu = -1;
+
+		if (event->button.button == SDL_BUTTON_LEFT
+			&& (butx > leftEdge)
+			&& (butx < rightEdge))
+		{
+			if (buty < IGM_MAIN_MENU_ICON_Y + IGM_ICON_HEIGHT)
+			{
+				menu = IGM_MAIN;
+			}
+			if (!(hiddenGUIElements & HIDABLE_ALLIANCE)
+				&& (buty > IGM_ALLIANCE_ICON_Y)
+				&& (buty < IGM_ALLIANCE_ICON_Y + IGM_ICON_HEIGHT))
+			{
+				menu = IGM_ALLIANCE;
+			}
+			if ((buty > IGM_OBJECTIVES_ICON_Y)
+				&& (buty < IGM_OBJECTIVES_ICON_Y + IGM_ICON_HEIGHT))
+			{
+				menu = IGM_OBJECTIVES;
+			}
+
+			if (menu != -1)
+			{
+				if (inGameMenu != IGM_NONE)
+				{
+					delete gameMenuScreen;
+					gameMenuScreen = NULL;
+				}
+				if (inGameMenu == menu)
+					inGameMenu = IGM_NONE;
+				else
+					inGameMenu = static_cast<InGameMenu>(menu);
+
+				switch (menu)
+				{
+				case IGM_MAIN:
+					gameMenuScreen = new InGameMainScreen(globalContainer->replaying);
+					break;
+				case IGM_ALLIANCE:
+					gameMenuScreen = new InGameAllianceScreen(this);
+					break;
+				case IGM_OBJECTIVES:
+					gameMenuScreen = new InGameObjectivesScreen(this, false);
+					break;
+				default:
+					assert(false);
+				}
+			}
+		}
+	}
+
+
 	// if there is a menu he get events first
 	if (inGameMenu)
 	{
@@ -912,26 +1040,10 @@ void GameGUI::processEvent(SDL_Event *event)
 			{
 				if (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)
 					handleMenuClick(event->button.x-globalContainer->gfx->getW()+RIGHT_MENU_WIDTH, event->button.y, event->button.button);
+				else if (globalContainer->replaying && event->button.y >= REPLAY_BAR_Y)
+					handleReplayProgressBarClick(event->button.x, event->button.y, event->button.button);
 				else
 					handleMapClick(event->button.x, event->button.y, event->button.button);
-
-				// NOTE : if there is more than this, move to a func
-				if ((event->button.y<34) && (event->button.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2) && (event->button.x>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32))
-				{
-					if (inGameMenu==IGM_NONE)
-					{
-						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
-						inGameMenu=IGM_MAIN;
-					}
-					// the following is commented becase we don't get click event while in menu.
-					// if this change uncomment the following code :
-					/*else
-					{
-						delete gameMenuScreen;
-						gameMenuScreen=NULL;
-						inGameMenu=IGM_NONE;
-					}*/
-				}
 			}
 			else if (button==SDL_BUTTON_MIDDLE)
 			{
@@ -1052,6 +1164,12 @@ void GameGUI::handleRightClick(void)
 
 void GameGUI::nextDisplayMode(void)
 {
+	if (globalContainer->replaying)
+	{
+		replayDisplayMode=ReplayDisplayMode((replayDisplayMode + 1) % RDM_NB_VIEWS);
+		return;
+	}
+
 	int t=0;
 	do
 	{
@@ -1125,7 +1243,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 				{
 					if (inGameMenu==IGM_NONE)
 					{
-						gameMenuScreen=new InGameMainScreen(!(hiddenGUIElements & HIDABLE_ALLIANCE));
+						gameMenuScreen=new InGameMainScreen(globalContainer->replaying);
 						inGameMenu=IGM_MAIN;
 					}
 				}
@@ -1894,7 +2012,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 void GameGUI::handleMenuClick(int mx, int my, int button)
 {
 	// handle minimap
-	if (my<128)
+	if (my<128 && mx > (RIGHT_MENU_OFFSET) && mx < RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 	{
 		if (putMark)
 		{
@@ -1913,14 +2031,32 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 		}
 	}
-	else if (my<128+32)
+	// Check if one of the panel buttons has been clicked
+	else if (my<YPOS_BASE_DEFAULT)
 	{
-		int dec = (RIGHT_MENU_WIDTH-128)/2;
-		int dm=(mx-dec)/32;
-		if (!((1<<dm) & hiddenGUIElements))
+		if (!globalContainer->replaying)
 		{
-			displayMode=DisplayMode(dm);
-			clearSelection();
+			int dec = (RIGHT_MENU_WIDTH-128)/2;
+			int dm=(mx-dec)/32;
+			if (!((1<<dm) & hiddenGUIElements))
+			{
+				if (dm < NB_VIEWS)
+				{
+					displayMode=DisplayMode(dm);
+					clearSelection();
+				}
+			}
+		}
+		else
+		{
+			int dec = (RIGHT_MENU_WIDTH-96)/2;
+			int dm=(mx-dec)/32;
+			
+			if (dm < RDM_NB_VIEWS)
+			{
+				replayDisplayMode=ReplayDisplayMode(dm);
+				clearSelection();
+			}
 		}
 	}
 	else if (selectionMode==BUILDING_SELECTION)
@@ -1981,9 +2117,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				&& selBuild->buildingState==Building::ALIVE)
 			{
 				int width = (128 - 8)/3;
-				const char *lowstr = Toolkit::getStringTable()->getString("[low priority]");
-				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
-				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
 
 				if(lmx>=0 && lmx<=12)
 				{
@@ -2251,7 +2384,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		printf(" destinationPurprose=%d\n", selUnit->destinationPurprose);
 		printf(" caryedRessource=%d\n", selUnit->caryedRessource);
 	}
-	else if (displayMode==CONSTRUCTION_VIEW)
+	else if ((displayMode==CONSTRUCTION_VIEW && !globalContainer->replaying))
 	{
 		int xNum=mx/(RIGHT_MENU_WIDTH/2);
 		int yNum=(my-YPOS_BASE_CONSTRUCTION)/46;
@@ -2260,13 +2393,15 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (buildingsChoiceState[id])
 				setSelection(TOOL_SELECTION, (void *)buildingsChoiceName[id].c_str());
 	}
-	else if (displayMode==FLAG_VIEW)
+	else if ((displayMode==FLAG_VIEW && !globalContainer->replaying))
 	{
 		int dec = (RIGHT_MENU_WIDTH - 128)/2;
 		my -= YPOS_BASE_FLAG;
 		int nmx = mx - dec;
 		if (my > YOFFSET_BRUSH)
 		{
+			// set the selection
+			setSelection(BRUSH_SELECTION);
 			// change the brush type (forbidden, guard, clear) if necessary
 			if (my < YOFFSET_BRUSH+40)
 			{
@@ -2279,8 +2414,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 			// anyway, update the tool
 			brush.handleClick(mx-dec, my-YOFFSET_BRUSH-40);
-			// set the selection
-			setSelection(BRUSH_SELECTION);
 			toolManager.activateZoneTool();
 		}
 		else
@@ -2293,11 +2426,17 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					setSelection(TOOL_SELECTION, (void*)flagsChoiceName[id].c_str());
 		}
 	}
-	else if (displayMode==STAT_GRAPH_VIEW)
+	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->replaying) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->replaying))
 	{
 		if(mx > 8 && mx < 24)
 		{
-			if(my > YPOS_BASE_STAT+140+64 && my < YPOS_BASE_STAT+140+80)
+			// In replays, this menu bar is 15 pixels lower than usual to show "Watching: player-name"
+			int inc;
+
+			if (globalContainer->replaying) inc = 15;
+			else inc = 0;
+
+			if(my > YPOS_BASE_STAT+140+inc+64 && my < YPOS_BASE_STAT+140+inc+80)
 			{
 				showDamagedMap=false;
 				showDefenseMap=false;
@@ -2306,7 +2445,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				overlay.compute(game, OverlayArea::Starving, localTeamNo);
 			}
 
-			if(my > YPOS_BASE_STAT+140+88 && my < YPOS_BASE_STAT+140+104)
+			if(my > YPOS_BASE_STAT+140+inc+88 && my < YPOS_BASE_STAT+140+inc+104)
 			{
 				showDamagedMap=!showDamagedMap;
 				showStarvingMap=false;
@@ -2315,7 +2454,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				overlay.compute(game, OverlayArea::Damage, localTeamNo);
 			}
 
-			if(my > YPOS_BASE_STAT+140+112 && my < YPOS_BASE_STAT+140+128)
+			if(my > YPOS_BASE_STAT+140+inc+112 && my < YPOS_BASE_STAT+140+inc+128)
 			{
 				showDefenseMap=!showDefenseMap;
 				showStarvingMap=false;
@@ -2324,13 +2463,109 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				overlay.compute(game, OverlayArea::Defence, localTeamNo);
 			}
 
-			if(my > YPOS_BASE_STAT+140+136 && my < YPOS_BASE_STAT+140+152)
+			if(my > YPOS_BASE_STAT+140+inc+136 && my < YPOS_BASE_STAT+140+inc+152)
 			{
 				showFertilityMap=!showFertilityMap;
 				showDefenseMap=false;
 				showStarvingMap=false;
 				showDamagedMap=false;
 				overlay.compute(game, OverlayArea::Fertility, localTeamNo);
+			}
+		}
+	}
+	else if (replayDisplayMode==RDM_REPLAY_VIEW && globalContainer->replaying)
+	{
+		int x = REPLAY_PANEL_XOFFSET;
+		int y = REPLAY_PANEL_YOFFSET;
+		int inc = REPLAY_PANEL_SPACE_BETWEEN_OPTIONS;
+
+		if (mx > x && mx < x+20 && my > y+1*inc && my < y+1*inc + 20)
+		{
+			// Disable/show fog of war
+			globalContainer->replayShowFog = !globalContainer->replayShowFog;
+
+			if (globalContainer->replayShowFog) minimap.setMinimapMode( Minimap::ShowFOW );
+			else minimap.setMinimapMode( Minimap::HideFOW );
+		}
+		if (mx > x && mx < x+20 && my > y+2*inc && my < y+2*inc + 20)
+		{
+			// Disable/enable combined vision
+			if (globalContainer->replayVisibleTeams == 0xFFFFFFFF)
+			{
+				globalContainer->replayVisibleTeams = localTeam->me;
+			}
+			else
+			{
+				globalContainer->replayVisibleTeams = 0xFFFFFFFF;
+			}
+		}
+		if (mx > x && mx < x+20 && my > y+3*inc && my < y+3*inc + 20)
+		{
+			// Show/hide player's areas
+			globalContainer->replayShowAreas = !globalContainer->replayShowAreas;
+		}
+		if (mx > x && mx < x+20 && my > y+4*inc && my < y+4*inc + 20)
+		{
+			// Show/hide flags
+			globalContainer->replayShowFlags = !globalContainer->replayShowFlags;
+		}
+
+		for (int i = 0; i < game.teamsCount(); i++)
+		{
+			if (mx > x && mx < x+20 && my > y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc && my < y+REPLAY_PANEL_PLAYERLIST_YOFFSET+(i+1)*inc + 20)
+			{
+				localTeamNo = i;
+				
+				// Update everything to match this team number
+				adjustLocalTeam();
+
+				// Update localPlayer to the first player of this team
+				for (int j=0; j<game.gameHeader.getNumberOfPlayers(); j++)
+				{
+					if (game.players[j]->teamNumber == localTeamNo)
+					{
+						localPlayer = j;
+						break;
+					}
+				}
+
+				// Update the visible players unless all players are visible
+				if (globalContainer->replayVisibleTeams != 0xFFFFFFFF)
+				{
+					globalContainer->replayVisibleTeams = localTeam->me;
+				}
+			}
+		}
+	}
+}
+
+void GameGUI::handleReplayProgressBarClick(int mx, int my, int button)
+{
+	// Check the play, pause and fast-forward buttons
+	if (globalContainer->replaying)
+	{
+		int x = REPLAY_BAR_WIDTH - REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_CAP_WIDTH;
+		int y = REPLAY_BAR_Y + REPLAY_PROGRESS_BAR_Y_OFFSET;
+		int inc = REPLAY_PROGRESS_BAR_BUTTON_WIDTH;
+		
+		if (my >= y && my <= y+20)
+		{
+			if (mx >= x-3*inc && mx <= x-2*inc)
+			{
+				// Play
+				gamePaused = false;
+				globalContainer->replayFastForward = false;
+			}
+			if (mx > x-2*inc && mx <= x-inc)
+			{
+				// Pause
+				gamePaused = true;
+			}
+			if (mx > x-inc && mx <= x)
+			{
+				// Fast-forward
+				gamePaused = false;
+				globalContainer->replayFastForward = true;
 			}
 		}
 	}
@@ -2400,47 +2635,71 @@ void GameGUI::drawParticles(void)
 	}
 }
 
-void GameGUI::drawPanelButtons(int pos)
+void GameGUI::drawPanelButtons(int y)
 {
-	int dec = (RIGHT_MENU_WIDTH-128)/2;
-	// draw buttons
-	if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
+	if (!globalContainer->replaying)
 	{
-		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==CONSTRUCTION_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, pos, globalContainer->gamegui, 1);
-		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, pos, globalContainer->gamegui, 0);
-	}
+		if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
+		{
+			if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION)) && (displayMode==CONSTRUCTION_VIEW))
+				drawPanelButton(y, 0, NB_VIEWS, 1);
+			else
+				drawPanelButton(y, 0, NB_VIEWS, 0);
+		}
 
-	if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
-	{
-		if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+32, pos, globalContainer->gamegui, 29);
-		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+32, pos, globalContainer->gamegui, 28);
-	}
+		if (!(hiddenGUIElements & HIDABLE_FLAGS_LIST))
+		{
+			if (((selectionMode==NO_SELECTION) || (selectionMode==TOOL_SELECTION) || (selectionMode==BRUSH_SELECTION)) && (displayMode==FLAG_VIEW))
+				drawPanelButton(y, 1, NB_VIEWS, 29);
+			else
+				drawPanelButton(y, 1, NB_VIEWS, 28);
+		}
 
-	if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
-	{
-		if ((selectionMode==NO_SELECTION) && (displayMode==STAT_TEXT_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+64, pos, globalContainer->gamegui, 3);
-		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+64, pos, globalContainer->gamegui, 2);
-	}
+		if (!(hiddenGUIElements & HIDABLE_TEXT_STAT))
+		{
+			if ((selectionMode==NO_SELECTION) && (displayMode==STAT_TEXT_VIEW))
+				drawPanelButton(y, 2, NB_VIEWS, 3);
+			else
+				drawPanelButton(y, 2, NB_VIEWS, 2);
+		}
 
-	if (!(hiddenGUIElements & HIDABLE_GFX_STAT))
+		if (!(hiddenGUIElements & HIDABLE_GFX_STAT))
+		{
+			if ((selectionMode==NO_SELECTION) && (displayMode==STAT_GRAPH_VIEW))
+				drawPanelButton(y, 3, NB_VIEWS, 5);
+			else
+				drawPanelButton(y, 3, NB_VIEWS, 4);
+		}
+	}
+	else
 	{
-		if ((selectionMode==NO_SELECTION) && (displayMode==STAT_GRAPH_VIEW))
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+96, pos, globalContainer->gamegui, 5);
+		if (replayDisplayMode==RDM_REPLAY_VIEW)
+			drawPanelButton(y, 0, RDM_NB_VIEWS, 48);
 		else
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec+96, pos, globalContainer->gamegui, 4);
+			drawPanelButton(y, 0, RDM_NB_VIEWS, 49);
+
+		if (replayDisplayMode==RDM_STAT_TEXT_VIEW)
+			drawPanelButton(y, 1, RDM_NB_VIEWS, 3);
+		else
+			drawPanelButton(y, 1, RDM_NB_VIEWS, 2);
+
+		if (replayDisplayMode==RDM_STAT_GRAPH_VIEW)
+			drawPanelButton(y, 2, RDM_NB_VIEWS, 5);
+		else
+			drawPanelButton(y, 2, RDM_NB_VIEWS, 4);
 	}
 
 	if(hilights.find(HilightUnderMinimapIcon) != hilights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, pos, 38));
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, y, 38));
 	}
-	// draw decoration
+}
+
+void GameGUI::drawPanelButton(int y, int pos, int numButtons, int sprite)
+{
+	int dec = (RIGHT_MENU_WIDTH - numButtons*32)/2;
+
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + dec + pos*32, y, globalContainer->gamegui, sprite);
 }
 
 void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine)
@@ -2466,7 +2725,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 			int x, y;
 
 			x=((i % numberPerLine)*width)+globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-			y=((i / numberPerLine)*46)+pos;
+			y=((i / numberPerLine)*46)+YPOS_BASE_BUILDING;
 			globalContainer->gfx->setClipRect(x, y, 64, 46);
 
 			Sprite *buildingSprite;
@@ -2497,7 +2756,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 128, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128);
 
-	// draw selection if needed
+	// draw building selection if needed
 	if (selectionMode == TOOL_SELECTION)
 	{
 		int sw;
@@ -2506,10 +2765,10 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 		else
 			sw = globalContainer->gamegui->getW(23);
 			
-		
+	  
 		assert(sel>=0);
 		int x=((sel  % numberPerLine)*width)+globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-		int y=((sel / numberPerLine)*46)+pos;
+		int y=((sel / numberPerLine)*46)+YPOS_BASE_BUILDING;
 		
 		int decX = (width - sw) / 2;
 		
@@ -2518,8 +2777,8 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 		else
 			globalContainer->gfx->drawSprite(x+decX, y+4, globalContainer->gamegui, 23);
 	}
-
-	// draw infos
+	
+	int toDrawInfoFor = -1;
 	if (mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)
 	{
 		if (mouseY>pos)
@@ -2529,37 +2788,56 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 			int id=yNum*numberPerLine+xNum;
 			if (id<count)
 			{
-				std::string &type = types[id];
-				if (states[id])
-				{
-					int buildingInfoStart=globalContainer->gfx->getH()-50;
+				toDrawInfoFor = id;
+			}
+		}
+	}
+	if(toDrawInfoFor == -1)
+	{
+		if(toolManager.getBuildingName() != "")
+		{
+			std::vector<std::string>::iterator i = std::find(types.begin(), types.end(), toolManager.getBuildingName());
+			if(i != types.end())
+			{
+				toDrawInfoFor = i - types.begin();	
+			}
+		}
+	}
 
-					std::string key = "[" + type + "]";
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, key.c_str());
-					
-					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
-					key = "[" + type + " explanation]";
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-20, key.c_str());
-					key = "[" + type + " explanation 2]";
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-8, key.c_str());
-					globalContainer->littleFont->popStyle();
-					BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
-					if (bt)
-					{
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxRessource[0]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxRessource[3]).c_str());
+	// draw infos
+	if (toDrawInfoFor != -1)
+	{
+		int id = toDrawInfoFor;
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxRessource[4]).c_str());
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxRessource[1]).c_str());
+		std::string &type = types[id];
+		if (states[id])
+		{
+			int buildingInfoStart=globalContainer->gfx->getH()-50;
 
-						globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+28, globalContainer->littleFont,
-							FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxRessource[2]).c_str());
-					}
-				}
+			std::string key = "[" + type + "]";
+			drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, key.c_str());
+			
+			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
+			key = "[" + type + " explanation]";
+			drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-20, key.c_str());
+			key = "[" + type + " explanation 2]";
+			drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-8, key.c_str());
+			globalContainer->littleFont->popStyle();
+			BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
+			if (bt)
+			{
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxRessource[0]).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxRessource[3]).c_str());
+
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+6, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxRessource[4]).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+64+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+17, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxRessource[1]).c_str());
+
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(RIGHT_MENU_WIDTH-128)/2, buildingInfoStart+28, globalContainer->littleFont,
+					FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxRessource[2]).c_str());
 			}
 		}
 	}
@@ -2934,13 +3212,16 @@ void GameGUI::drawBuildingInfos(void)
 		{
 			if (selBuild->buildingState==Building::ALIVE)
 			{
+				// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+				const int maxUnitsWorking = (globalContainer->replaying?selBuild->maxUnitWorking:selBuild->maxUnitWorkingLocal);
+
 				const char *working = Toolkit::getStringTable()->getString("[working]");
 				const int len = globalContainer->littleFont->getStringWidth(working)+4;
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, working);
 				globalContainer->littleFont->popStyle();
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0/%1").arg((int)selBuild->unitsWorking.size()).arg(selBuild->maxUnitWorkingLocal).c_str());
-				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->maxUnitWorkingLocal, selBuild->maxUnitWorkingLocal, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0/%1").arg((int)selBuild->unitsWorking.size()).arg(maxUnitsWorking).c_str());
+				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, maxUnitsWorking, maxUnitsWorking, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 			}
 			else
 			{
@@ -2969,6 +3250,9 @@ void GameGUI::drawBuildingInfos(void)
 		{
 			if(selBuild->buildingState==Building::ALIVE)
 			{
+				// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+				const int priority = (globalContainer->replaying?selBuild->priority:selBuild->priorityLocal);
+
 				ypos += YOFFSET_B_SEP;
 				
 				int width = 128/3;
@@ -2979,13 +3263,13 @@ void GameGUI::drawBuildingInfos(void)
 				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
 				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
 				
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+12+4, (selBuild->priorityLocal==-1));
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+12+4, (priority==-1));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14, ypos+12+2, globalContainer->littleFont, lowstr);
 				
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width, ypos+12+4, (selBuild->priorityLocal==0));
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width, ypos+12+4, (priority==0));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width, ypos+12+2, globalContainer->littleFont, medstr);
 				
-				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width*2, ypos+12+4, (selBuild->priorityLocal==1));
+				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width*2, ypos+12+4, (priority==1));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width*2, ypos+12+2, globalContainer->littleFont, highstr);
 				
 				ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -2998,13 +3282,16 @@ void GameGUI::drawBuildingInfos(void)
 	{
 		if ((selBuild->owner->allies)&(1<<localTeamNo))
 		{
+			// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+			const int unitStayRange = (globalContainer->replaying?selBuild->unitStayRange:selBuild->unitStayRangeLocal);
+
 			const char *range = Toolkit::getStringTable()->getString("[range]");
 			const int len = globalContainer->littleFont->getStringWidth(range)+4;
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, range);
 			globalContainer->littleFont->popStyle();
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0").arg(selBuild->unitStayRange).c_str());
-			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, selBuild->unitStayRangeLocal, 0, selBuild->type->maxUnitStayRange);
+			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, unitStayRange, 0, selBuild->type->maxUnitStayRange);
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 	}
@@ -3026,7 +3313,7 @@ void GameGUI::drawBuildingInfos(void)
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,
 						getRessourceName(i));
 					int spriteId;
-					if (selBuild->clearingRessourcesLocal[i])
+					if (globalContainer->replaying?selBuild->clearingRessources[i]:selBuild->clearingRessourcesLocal[i])
 						spriteId=20;
 					else
 						spriteId=19;
@@ -3047,7 +3334,7 @@ void GameGUI::drawBuildingInfos(void)
 			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont, 1+i);
 				int spriteId;
-				if (i==selBuild->minLevelToFlagLocal)
+				if (i==(globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal))
 					spriteId=20;
 				else
 					spriteId=19;
@@ -3070,7 +3357,7 @@ void GameGUI::drawBuildingInfos(void)
 			// 0 == any explorer
 			// 1 == must be able to attack ground
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[any explorer]"));
-			if (selBuild->minLevelToFlagLocal == 0)
+			if ((globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal) == 0)
 				spriteId = 20;
 			else
 				spriteId = 19;
@@ -3078,7 +3365,7 @@ void GameGUI::drawBuildingInfos(void)
 			
 			ypos += YOFFSET_TEXT_PARA;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[ground attack]"));
-			if (selBuild->minLevelToFlagLocal == 1)
+			if ((globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal) == 1)
 				spriteId = 20;
 			else
 				spriteId = 19;
@@ -3224,7 +3511,10 @@ void GameGUI::drawBuildingInfos(void)
 			ypos+=15;
 			for (int i=0; i<NB_UNIT_TYPE; i++)
 			{
-				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selBuild->ratio[i], selBuild->ratioLocal[i], 0, MAX_RATIO_RANGE);
+				// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+				const int ratio = (globalContainer->replaying?selBuild->ratio[i]:selBuild->ratioLocal[i]);
+
+				drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selBuild->ratio[i], ratio, 0, MAX_RATIO_RANGE);
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+24, ypos, globalContainer->littleFont, getUnitName(i));
 				
 				if(i==1 && hilights.find(HilightRatioBar) != hilights.end())
@@ -3250,7 +3540,7 @@ void GameGUI::drawBuildingInfos(void)
 			for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
 			{
 				int n = selBuild->unitsFailingRequirements[j];
-				if(n>0 && selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
+				if(n>0 && (int)selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
 				{
 					std::string s;
 					if(j == Building::UnitNotAvailable)
@@ -3258,9 +3548,19 @@ void GameGUI::drawBuildingInfos(void)
 					if(j == Building::UnitTooLowLevel)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too low level]")).arg(n);
 					else if(j == Building::UnitCantAccessBuilding)
-						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access building]")).arg(n);
+					{
+						if (buildingType->isVirtual)
+							s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access flag]")).arg(n);
+						else
+							s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access building]")).arg(n);
+					}
 					else if(j == Building::UnitTooFarFromBuilding)
-						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from building]")).arg(n);
+					{
+						if (buildingType->isVirtual)
+							s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from flag]")).arg(n);
+						else
+							s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from building]")).arg(n);
+					}
 					else if(j == Building::UnitCantAccessResource)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access resource]")).arg(n);
 					else if(j == Building::UnitCantAccessFruit)
@@ -3429,6 +3729,125 @@ void GameGUI::drawRessourceInfos(void)
 	}
 }
 
+void GameGUI::drawReplayPanel(void)
+{
+	Font *font=globalContainer->littleFont;
+
+	int x = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + REPLAY_PANEL_XOFFSET;
+	int y = REPLAY_PANEL_YOFFSET;
+	int inc = REPLAY_PANEL_SPACE_BETWEEN_OPTIONS;
+
+	globalContainer->gfx->drawString(x, y, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[Options]")));
+
+	drawCheckButton(x, y + 1*inc, Toolkit::getStringTable()->getString("[fog of war]"), globalContainer->replayShowFog);
+	drawCheckButton(x, y + 2*inc, Toolkit::getStringTable()->getString("[combined vision]"), (globalContainer->replayVisibleTeams == 0xFFFFFFFF));
+	drawCheckButton(x, y + 3*inc, Toolkit::getStringTable()->getString("[show areas]"), (globalContainer->replayShowAreas));
+	drawCheckButton(x, y + 4*inc, Toolkit::getStringTable()->getString("[show flags]"), (globalContainer->replayShowFlags));
+
+	globalContainer->gfx->drawString(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
+
+	for (int i = 0; i < game.teamsCount(); i++)
+	{
+		// I know this is a matter of taste, but I prefer checkboxes here. Radio buttons are a totally different style
+		//drawRadioButton(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, game.teams[i]->getFirstPlayerName().c_str(), localTeamNo == i);
+		drawRadioButton(x + 1, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc + 1, localTeamNo == i);
+		globalContainer->gfx->drawString(x + 20, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, font, game.teams[i]->getFirstPlayerName().c_str());
+	}
+}
+
+void GameGUI::drawReplayProgressBar(bool drawBackground)
+{
+	// set the clipping rectangle
+	globalContainer->gfx->setClipRect( 0, REPLAY_BAR_Y - 4, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT + 4);
+
+	// draw menu background, black if low speed graphics, transparent otherwise
+	if (drawBackground)
+	{
+		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+			globalContainer->gfx->drawFilledRect( 0, REPLAY_BAR_Y, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT, 0, 0, 0);
+		else
+			globalContainer->gfx->drawFilledRect( 0, REPLAY_BAR_Y, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT, 0, 0, 40, 180);
+	}
+
+	// Progress bar y
+	int y = REPLAY_BAR_Y + REPLAY_PROGRESS_BAR_Y_OFFSET;
+
+	// Draw the actual progress bar
+	Style::style->drawProgressBar(globalContainer->gfx, 
+		REPLAY_PROGRESS_BAR_X_OFFSET + REPLAY_PROGRESS_BAR_CAP_WIDTH - 1, y,
+		REPLAY_BAR_WIDTH - 2*REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_NUM_BUTTONS * REPLAY_PROGRESS_BAR_BUTTON_WIDTH - 2*REPLAY_PROGRESS_BAR_CAP_WIDTH + 2, 
+		globalContainer->replayStepsProcessed, 
+		globalContainer->replayStepsTotal);
+	
+	// Draw the round caps
+	globalContainer->gfx->drawSprite(
+		REPLAY_PROGRESS_BAR_X_OFFSET, y,
+		globalContainer->gamegui,
+		REPLAY_BAR_LEFT_CAP_SPRITE);
+	globalContainer->gfx->drawSprite(
+		REPLAY_BAR_WIDTH - REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_CAP_WIDTH, y,
+		globalContainer->gamegui,
+		REPLAY_BAR_RIGHT_CAP_SPRITE);
+	
+	// Draw the buttons for play, pause and fast-forward
+	int x = REPLAY_BAR_WIDTH - REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_CAP_WIDTH;
+	int inc = REPLAY_PROGRESS_BAR_BUTTON_WIDTH;
+	
+	globalContainer->gfx->drawSprite( x - inc*3, y, globalContainer->gamegui, (!gamePaused && !globalContainer->replayFastForward ? REPLAY_BAR_PLAY_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_PLAY_BUTTON_SPRITE));
+	globalContainer->gfx->drawSprite( x - inc*2, y, globalContainer->gamegui, (gamePaused ? REPLAY_BAR_PAUSE_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_PAUSE_BUTTON_SPRITE));
+	globalContainer->gfx->drawSprite( x - inc*1, y, globalContainer->gamegui, (!gamePaused && globalContainer->replayFastForward ? REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE));
+	
+	// Calculate the time
+	// This is based on default speed 25 fps, not the actual Engine's speed
+	// because if we fast-forward we still want to see the old time
+	unsigned int time1_sec = (globalContainer->replayStepsProcessed/25)%60;
+	unsigned int time1_min = (globalContainer->replayStepsProcessed/(25*60))%60;
+	unsigned int time1_hour = (globalContainer->replayStepsProcessed/(25*3600));
+	
+	unsigned int time2_sec = (globalContainer->replayStepsTotal/25)%60;
+	unsigned int time2_min = (globalContainer->replayStepsTotal/(25*60))%60;
+	unsigned int time2_hour = (globalContainer->replayStepsTotal/(25*3600));
+
+	// Draw the time
+	if (time2_hour <= 99)
+	{
+		globalContainer->gfx->drawString(REPLAY_BAR_TIMER_X, y+3, globalContainer->littleFont,
+			FormatableString("%0:%1:%2 / %3:%4:%5")
+			.arg(time1_hour)
+			.arg(time1_min,2,10,'0')
+			.arg(time1_sec,2,10,'0')
+			.arg(time2_hour)
+			.arg(time2_min,2,10,'0')
+			.arg(time2_sec,2,10,'0')
+			.c_str());
+	}
+	else
+	{
+		// Time did not get saved properly, don't show it
+		globalContainer->gfx->drawString(REPLAY_BAR_TIMER_X, y+3, globalContainer->littleFont,
+			FormatableString("%0:%1:%2")
+			.arg(time1_hour)
+			.arg(time1_min,2,10,'0')
+			.arg(time1_sec,2,10,'0')
+			.c_str());
+	}
+	
+	// Draw the filename of the replay
+	std::string replayName = glob2FilenameToName(globalContainer->replayFileName);
+	int stringWidth = globalContainer->littleFont->getStringWidth(replayName.c_str());
+	int pos = (globalContainer->settings.screenWidth-RIGHT_MENU_WIDTH)/2 - stringWidth/2;
+	globalContainer->gfx->drawString(pos, y+3, globalContainer->littleFont, replayName.c_str());
+
+	// Draw the border
+	if (drawBackground)
+	{
+		for (int i = 0; i < REPLAY_BAR_WIDTH; i += 32)
+		{
+			globalContainer->gfx->drawSprite(i, REPLAY_BAR_Y-4, globalContainer->gamegui, 16);
+		}
+	}
+}
+
 void GameGUI::drawPanel(void)
 {
 	// ensure we have a valid selection and associate pointers
@@ -3439,111 +3858,145 @@ void GameGUI::drawPanel(void)
 
 	// draw menu background, black if low speed graphics, transparent otherwise
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 128, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 133, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 128, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
+		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 133, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
 	if(hilights.find(HilightRightSidePanel) != hilights.end())
 	{
 		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, globalContainer->gfx->getH()/2, 38));
 	}
 
-	// draw the buttons in the panel
-	drawPanelButtons(128);
+	// draw the panel selection buttons
+	drawPanelButtons(YPOS_BASE_DEFAULT-32);
 
-	if (selectionMode==BUILDING_SELECTION)
+	switch(selectionMode)
 	{
+	case BUILDING_SELECTION:
 		drawBuildingInfos();
-	}
-	else if (selectionMode==UNIT_SELECTION)
-	{
+		break;
+	case UNIT_SELECTION:
 		drawUnitInfos();
-	}
-	else if (selectionMode==RESSOURCE_SELECTION)
-	{
+		break;
+	case RESSOURCE_SELECTION:
 		drawRessourceInfos();
-	}
-	else if (displayMode==CONSTRUCTION_VIEW)
-	{
-		drawChoice(YPOS_BASE_CONSTRUCTION, buildingsChoiceName, buildingsChoiceState);
-	}
-	else if (displayMode==FLAG_VIEW)
-	{
-		int dec = (RIGHT_MENU_WIDTH - 128)/2;
-		// draw flags
-		drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
-		
-		// draw choice of area
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 25);
-		if (brush.getType() != BrushTool::MODE_NONE)
+		break;
+	default:
+		if (!globalContainer->replaying)
 		{
-			int decX = 8 + ((int)toolManager.getZoneType()) * 40 + dec;
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
-		}
-		if(hilights.find(HilightForbiddenZoneOnPanel) != hilights.end())
-		{
-			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
-		}
-		if(hilights.find(HilightGuardZoneOnPanel) != hilights.end())
-		{
-			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
-		}
-		if(hilights.find(HilightClearingZoneOnPanel) != hilights.end())
-		{
-			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
-		}
-		
-		// draw brush
-		brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40);
-		
-		if(hilights.find(HilightBrushSelector) != hilights.end())
-		{
-			arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40+30, 38));
-		}
-		
-		// draw brush help text
-		if ((mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
-		{
-			int buildingInfoStart = globalContainer->gfx->getH()-50;
-			if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+40)
+			switch(displayMode)
 			{
-				int panelMouseX = mouseX - globalContainer->gfx->getW() + RIGHT_MENU_WIDTH;
-				if (panelMouseX < 44)
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
-				else if (panelMouseX < 84)
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
-				else
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
-			}
-			else
-			{
-				if (toolManager.getZoneType() == GameGUIToolManager::Forbidden)
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
-				else if (toolManager.getZoneType() == GameGUIToolManager::Guard)
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
-				else if (toolManager.getZoneType() == GameGUIToolManager::Clearing)
-					drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
-				else
-					assert(false);
+			case CONSTRUCTION_VIEW:
+				drawChoice(YPOS_BASE_CONSTRUCTION, buildingsChoiceName, buildingsChoiceState);
+				break;
+			case FLAG_VIEW:
+				drawFlagView();
+				break;
+			case STAT_TEXT_VIEW:
+				teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
+				break;
+			case STAT_GRAPH_VIEW:
+				teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
+				break;
+			default:
+				std::cout << "Was not expecting displayMode" << displayMode;
+				assert(false);
 			}
 		}
-	}
-	else if (displayMode==STAT_TEXT_VIEW)
-	{
-		teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
-	}
-	else if (displayMode==STAT_GRAPH_VIEW)
-	{
-		teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
-		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+140+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
+		else
+		{
+			switch(replayDisplayMode)
+			{
+			case RDM_REPLAY_VIEW:
+				drawReplayPanel();
+				break;
+			case RDM_STAT_TEXT_VIEW:
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(localTeam->getFirstPlayerName()).c_str());
+				teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
+				break;
+			case RDM_STAT_GRAPH_VIEW:
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(localTeam->getFirstPlayerName()).c_str());
+				teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+112, Toolkit::getStringTable()->getString("[Defense Map]"), showDefenseMap);
+				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+136, Toolkit::getStringTable()->getString("[Fertility Map]"), showFertilityMap);
+				break;
+			default:
+				std::cout << "Was not expecting replayDisplayMode" << replayDisplayMode;
+				assert(false);
+			}
+		}
 	}
 }
 
+void GameGUI::drawFlagView(void)                                                                                                                                                        
+{
+	int dec = (RIGHT_MENU_WIDTH - 128)/2;
+	// draw flags
+	drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
+	
+	// draw choice of area
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 13);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 14);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 25);
+	if (brush.getType() != BrushTool::MODE_NONE)
+	{
+		int decX = 8 + ((int)toolManager.getZoneType()) * 40 + dec;
+		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
+	}
+	if(hilights.find(HilightForbiddenZoneOnPanel) != hilights.end())
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+	}
+	if(hilights.find(HilightGuardZoneOnPanel) != hilights.end())
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+	}
+	if(hilights.find(HilightClearingZoneOnPanel) != hilights.end())
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+	}
+	
+	// draw brush
+	brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40);
+	
+	if(hilights.find(HilightBrushSelector) != hilights.end())
+	{
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40+30, 38));
+	}
+	
+	// draw brush help text
+	if ((mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
+	{
+		int buildingInfoStart = globalContainer->gfx->getH()-50;
+		if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+40)
+		{
+			int panelMouseX = mouseX - globalContainer->gfx->getW() + RIGHT_MENU_WIDTH;
+			if (panelMouseX < 44)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
+			else if (panelMouseX < 84)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
+			else
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
+		}
+		else
+		{
+			if (toolManager.getZoneType() == GameGUIToolManager::Forbidden)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[forbidden area]");
+			else if (toolManager.getZoneType() == GameGUIToolManager::Guard)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[guard area]");
+			else if (toolManager.getZoneType() == GameGUIToolManager::Clearing)
+				drawTextCenter(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, buildingInfoStart-32, "[clear area]");
+			else
+				assert(false);
+		}
+	}
+}
 
 void GameGUI::drawTopScreenBar(void)
 {
@@ -3632,22 +4085,42 @@ void GameGUI::drawTopScreenBar(void)
 	globalContainer->gfx->drawVertLine(dec+40, 2, 12, 200, 200, 200);
 	
 	// draw window bar
-	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32;
+	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-16;
 	for (int i=0; i<pos; i+=32)
 	{
 		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
 	}
 	for (int i=16; i<globalContainer->gfx->getH(); i+=32)
 	{
-		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
+		globalContainer->gfx->drawSprite(pos+12, i, globalContainer->gamegui, 17);
 	}
 
+
+	int index;
 	// draw main menu button
-	if (gameMenuScreen)
-		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 7);
+	if (inGameMenu == IGM_MAIN)
+		index = 7;
 	else
-		globalContainer->gfx->drawSprite(pos, 0, globalContainer->gamegui, 6);
-	
+		index = 6;
+	globalContainer->gfx->drawSprite(pos, IGM_MAIN_MENU_ICON_Y, globalContainer->gamegui, index);
+
+	// draw alliance button
+	if ( !(hiddenGUIElements & HIDABLE_ALLIANCE) )
+	{
+		if (inGameMenu == IGM_ALLIANCE)
+			index = 44;
+		else
+			index = 45;
+		globalContainer->gfx->drawSprite(pos, IGM_ALLIANCE_ICON_Y, globalContainer->gamegui, index);
+	}
+
+	// draw objectives button
+	if (inGameMenu == IGM_OBJECTIVES)
+		index = 46;
+	else
+		index = 47;
+	globalContainer->gfx->drawSprite(pos, IGM_OBJECTIVES_ICON_Y, globalContainer->gamegui, index);
+
 	if(hilights.find(HilightMainMenuIcon) != hilights.end())
 	{
 		arrowPositions.push_back(HilightArrowPosition(pos-32, 32, 43));
@@ -3739,11 +4212,12 @@ void GameGUI::drawOverlayInfos(void)
 		int ymesg = 32;
 		int yinc = 0;
 
+		// TODO: die with SGSL
 		// show script text
-		if (game.script.isTextShown)
+		if (game.sgslScript.isTextShown)
 		{
 			std::vector<std::string> lines;
-			setMultiLine(game.script.textShown, &lines);
+			setMultiLine(game.sgslScript.textShown, &lines);
 			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
@@ -3759,11 +4233,24 @@ void GameGUI::drawOverlayInfos(void)
 			}
 			yinc += 8;
 		}
+		
+		// show script text
+		if (!scriptText.empty())
+		{
+			std::vector<std::string> lines;
+			setMultiLine(scriptText, &lines);
+			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
+			for (unsigned i=0; i<lines.size(); i++)
+			{
+				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
+				yinc += 20;
+			}
+		}
 
 		// show script counter
-		if (game.script.getMainTimer())
+		if (game.sgslScript.getMainTimer())
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormatableString("%0").arg(game.script.getMainTimer()).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormatableString("%0").arg(game.sgslScript.getMainTimer()).c_str());
 			yinc = std::max(yinc, 32);
 		}
 
@@ -3774,13 +4261,14 @@ void GameGUI::drawOverlayInfos(void)
 
 	// display map mark
 	globalContainer->gfx->setClipRect();
-	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+30, 14, 100, viewportX, viewportY, game);
+	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, game);
 
 	// display text if placing a building 
 	if(selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
 	{
 		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255)));
 		globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[Building Tool Line Explanation]"), 0, 75);
+		globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100+12, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[Building Tool Box Explanation]"), 0, 75);
 		globalContainer->standardFont->popStyle();
 	}
 
@@ -3790,7 +4278,7 @@ void GameGUI::drawOverlayInfos(void)
 
 	// Draw which players are transmitting voice
 	int xinc = 42;
-	for(int p=0; p<32; ++p)
+	for(int p=0; p<Team::MAX_COUNT; ++p)
 	{
 		if(globalContainer->mix->isPlayerTransmittingVoice(p))
 		{
@@ -3884,7 +4372,6 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
-
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
@@ -3894,6 +4381,7 @@ void GameGUI::drawAll(int team)
 								((showDamagedMap) ? Game::DRAW_OVERLAY : 0) |
 								((showDefenseMap) ? Game::DRAW_OVERLAY : 0) |
 								((showFertilityMap) ? Game::DRAW_OVERLAY : 0) |
+								((globalContainer->replaying && !globalContainer->replayShowFog) ? Game::DRAW_WHOLE_MAP : 0) |
 								Game::DRAW_AREA;
 	
 	updateHilightInGame();
@@ -3901,7 +4389,7 @@ void GameGUI::drawAll(int team)
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawOptions);
+		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);
 	}
 	else
 	{
@@ -3909,7 +4397,7 @@ void GameGUI::drawAll(int team)
 		
 		globalContainer->gfx->setClipRect();
 		
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(),viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
+		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
 		
 		// generate and draw particles
 		generateNewParticles(&visibleBuildings);
@@ -3917,14 +4405,24 @@ void GameGUI::drawAll(int team)
 	}
 
 	///Draw ghost buildings
-	ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 	
 	// if paused, tint the game area
 	if (gamePaused)
 	{
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 0, 0, 20);
-		const char *s = Toolkit::getStringTable()->getString("[Paused]");
-		int x = (globalContainer->gfx->getW()-globalContainer->menuFont->getStringWidth(s))>>1;
+		const char *s;
+		
+		if (globalContainer->replaying && globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
+		{
+			s = Toolkit::getStringTable()->getString("[replay ended]");
+		}
+		else
+		{
+			globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 0, 0, 20);
+			s = Toolkit::getStringTable()->getString("[Paused]");
+		}
+		
+		int x = (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-globalContainer->menuFont->getStringWidth(s))/2;
 		globalContainer->gfx->drawString(x, globalContainer->gfx->getH()-80, globalContainer->menuFont, s);
 	}
 
@@ -3940,6 +4438,9 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	minimap.draw(localTeamNo, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );
 
+	// draw the progress bar if this is a replay
+	if (globalContainer->replaying) drawReplayProgressBar();
+	
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
@@ -3961,7 +4462,7 @@ void GameGUI::drawAll(int team)
 		drawInGameScrollableText();
 		
 	// draw the hilight arrows
-	for(int i=0; i<arrowPositions.size(); ++i)
+	for(int i=0; i<(int)arrowPositions.size(); ++i)
 	{
 		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
 		
@@ -3970,7 +4471,7 @@ void GameGUI::drawAll(int team)
 
 void GameGUI::checkWonConditions(void)
 {
-	if (hasEndOfGameDialogBeenShown)
+	if (hasEndOfGameDialogBeenShown || globalContainer->replaying)
 		return;
 	
 	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
@@ -4009,6 +4510,20 @@ void GameGUI::checkWonConditions(void)
 	}
 }
 
+void GameGUI::showEndOfReplayScreen()
+{
+	gamePaused = true;
+	
+	if (!hasEndOfGameDialogBeenShown)
+	{
+		hasEndOfGameDialogBeenShown = true;
+
+		inGameMenu=IGM_END_OF_GAME;
+		gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true);
+		miniMapPushed=false;
+	}
+}
+
 void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 {
 	switch (order->getOrderType())
@@ -4032,7 +4547,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 				{
 					Uint32 rm=mo->recepientsMask;
 					int k;
-					for (k=0; k<32; k++)
+					for (k=0; k<Team::MAX_COUNT; k++)
 						if (rm==1)
 						{
 							addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
@@ -4040,7 +4555,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 						}
 						else
 							rm=rm>>1;
-					assert(k<32);
+					assert(k<Team::MAX_COUNT);
 				}
 			}
 			else
@@ -4107,9 +4622,14 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(true)));
 		if(stream->isEndOfStream())
 		{
-			std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << " or " << mapHeader.getFileName(true) << std::endl;
 			delete stream;
-			return false;
+			stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(false,true)));
+			if(stream->isEndOfStream())
+			{
+				std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << ", " << mapHeader.getFileName(true) << " or " << mapHeader.getFileName(false,true) << std::endl;
+				delete stream;
+				return false;
+			}
 		}
 	}
 	
@@ -4394,10 +4914,10 @@ void GameGUI::iterateSelection(void)
 		int i=pos;
 		if (team==localTeamNo)
 		{
-			while (i<pos+1024)
+			while (i<pos+Building::MAX_COUNT)
 			{
 				i++;
-				Building *b=game.teams[team]->myBuildings[i&0x1FF];
+				Building *b=game.teams[team]->myBuildings[i % Building::MAX_COUNT];
 				if (b && b->typeNum==selBuild->typeNum)
 				{
 					setSelection(BUILDING_SELECTION, b);
@@ -4410,7 +4930,7 @@ void GameGUI::iterateSelection(void)
 	else if (selectionMode==TOOL_SELECTION)
 	{
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(toolManager.getBuildingName(), 0, false);
-		for (int i=0; i<1024; i++)
+		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b=game.teams[localTeamNo]->myBuildings[i];
 			if (b && b->typeNum==typeNum)
@@ -4431,16 +4951,12 @@ void GameGUI::iterateSelection(void)
 			one of our pieces of same type, otherwise start at the
 			beginning of our pieces of that type. */
 		Sint32 id = ((Unit::GIDtoTeam(gid) == localTeamNo) ? Unit::GIDtoID(gid) : 0);
-		/* It violates good abstraction principles that we know
-			that the size of the myUnits array is 1024.  This
-			information should be abstracted by some method that we
-			call instead to get the next unit. */
-		id %= 1024; /* just in case! */
+		id %= Unit::MAX_COUNT; /* just in case! */
 		// std::cerr << "starting id: " << id << std::endl;
 		Sint32 i = id;
 		while (1)
 		{
-			i = ((i + 1) % 1024);
+			i = ((i + 1) % Unit::MAX_COUNT);
 			if (i == id) break;
 			// std::cerr << "trying id: " << i << std::endl;
 			Unit * u = game.teams[localTeamNo]->myUnits[i];
@@ -4577,9 +5093,28 @@ void GameGUI::enableGUIElement(int id)
 
 void GameGUI::disableGUIElement(int id)
 {
+	if (globalContainer->replaying) return;
+
 	hiddenGUIElements |= (1<<id);
 	if (displayMode==id)
 		nextDisplayMode();
+}
+
+void GameGUI::showScriptText(const std::string &text)
+{
+	scriptText = text;
+	scriptTextUpdated = true;
+}
+
+void GameGUI::showScriptTextTr(const std::string &text, const std::string &lang)
+{
+	if (lang == globalContainer->settings.language)
+		showScriptText(text);
+}
+
+void GameGUI::hideScriptText()
+{
+	scriptText.clear();
 }
 
 void GameGUI::setCpuLoad(int s)

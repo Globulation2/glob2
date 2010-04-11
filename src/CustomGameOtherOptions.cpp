@@ -26,7 +26,7 @@
 #include <sstream>
 
 CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)
-	:	gameHeader(gameHeader), oldGameHeader(gameHeader), mapHeader(mapHeader)
+	:	mapHeader(mapHeader), gameHeader(gameHeader), oldGameHeader(gameHeader)
 {
 	ok = new TextButton(440, (readOnly ? 420 : 360), 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
@@ -40,7 +40,10 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Other Options]"));
 	addWidget(title);
 
-	for(int i=0; i<32; ++i)
+	playerNames=new Text*[32];
+	color=new ColorButton*[32];
+	allyTeamNumbers=new MultiTextButton*[32];
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		playerNames[i] = NULL;
 		color[i] = NULL;

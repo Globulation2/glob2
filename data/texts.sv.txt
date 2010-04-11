@@ -4,6 +4,8 @@
 
 [%0 units can't access building]
 
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 
 [%0 units can't access resource]
@@ -11,6 +13,8 @@
 [%0 units not available]
 
 [%0 units too far from building]
+
+[%0 units too far from flag]
 
 [%0 units too far from fruit]
 
@@ -142,6 +146,8 @@ Bygga
 Enheter
 [building site]
 byggarbetsplats
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -202,6 +208,8 @@ Röjer resurser
 Röjningsflagga
 [closed]
 Stängd
+[combined vision]
+
 [compile]
 Kompilera skript
 [compose]
@@ -356,6 +364,8 @@ tomma öar
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Mat
 [forbidden area]
@@ -490,6 +500,8 @@ Ladda Kampanj
 Ladda spel
 [load map]
 Ladda Karta
+[load replay]
+
 [load script]
 
 [load]
@@ -500,6 +512,8 @@ Ladda
 
 [login]
 Logga in
+[look around]
+
 [Lost : %0 has more prestige than you]
 Förlust: %0 har mer prestige än dig
 [Lost : your colony is dead]
@@ -570,6 +584,8 @@ Ny Kampanj
 Ny
 [nick taken]
 Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -584,6 +600,8 @@ Nej
 
 [not ready]
 inte redo
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -592,6 +610,8 @@ inte redo
 %0 lag.
 [number of teams]
 antal lag
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -623,7 +643,7 @@ Här
 [open]
 öppna
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -648,12 +668,16 @@ Pausat
 Spelarnamn
 [player rating %0]
 
+[players]
+
 [please wait]
 Var god vänta
 [power]
 
 [press space]
 Tryck mellanslag för att forsätta.
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -670,6 +694,8 @@ Sviskon
 Avsluta editorn
 [quit the game]
 Avsluta spelet
+[quit the replay]
+
 [quit]
 Avsluta
 [racetrack explanation 2]
@@ -690,6 +716,8 @@ Proportioner
 
 [Register a new YOG user with password]
 Registrera en ny YOG-användare med lösenord. (osäkert)
+[Register]
+
 [remember unit]
 Kom Ihåg Enhet
 [Remember YOG password localy]
@@ -706,12 +734,18 @@ Starta/Stoppa Reparation
 Reparera
 [repeat area]
 gånger samma landskap
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 Återställ Till Ursprungliga Tangentbordsgenvägar
 [return to editor]
 Återgå till editorn
 [return to game]
 Återgå till spelet
+[return to replay]
+
 [return]
 
 [right meta]
@@ -732,6 +766,8 @@ Vill du spara innan du avslutar?
 Spara spel
 [save map]
 Spara Karta
+[save replay]
+
 [save script]
 
 [Save]
@@ -822,6 +858,10 @@ Inställningar
 Enter: skicka ett chattmeddelande
 [shortcut explanation v]
 V: håll för att prata
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -974,6 +1014,8 @@ Marknaden är under attack
 Löparbanan är färdig
 [the racetrack is under attack]
 Löparbanan är under attack
+[the replays]
+
 [the school is finished]
 Skolan är färdig
 [the school is under attack]
@@ -994,6 +1036,8 @@ Simbassängen är under attack
 ?? Krigsflaggan är klar ??
 [the warflag is under attack]
 ?? Krigsflaggan är under attack ??
+[time]
+
 [to:]
 till:
 [toggle draw accessibility aids]
@@ -1006,6 +1050,12 @@ Växla Visa Enhetsdestinationer
 
 [toggle recording voice]
 Initiera röstinspelning
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Total prestige uppnådd
 [Total]
@@ -1082,6 +1132,10 @@ Krigare Proportion
 Krigare
 [warriors]
 krigare
+[watch again]
+
+[watching:]
+
 [water]
 Vatten
 [Wheat]
@@ -1136,6 +1190,8 @@ YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
 
 [YESTS_CREATED]
 Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
 [yog block command help]

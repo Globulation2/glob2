@@ -41,8 +41,9 @@ class BuildingType;
 class BuildingsTypes;
 
 class Building
-{	
+{
 public:
+	static const int MAX_COUNT=1024;
 	///This is the buildings basic state of existance.
 	enum BuildingState
 	{
@@ -52,7 +53,7 @@ public:
 		WAITING_FOR_CONSTRUCTION=3,
 		WAITING_FOR_CONSTRUCTION_ROOM=4
 	};
-	
+
 	///If the building is undergoing any construction,
 	///this state designates what
 	enum ConstructionResultState
@@ -61,6 +62,14 @@ public:
 		NEW_BUILDING=1,
 		UPGRADE=2,
 		REPAIR=3
+	};
+
+	///The state of a unit in certain lists.
+	enum InListState
+	{
+		LS_UNKNOWN=0,
+		LS_IN=1,
+		LS_OUT=2
 	};
 
 public:
@@ -76,11 +85,21 @@ public:
 
 	bool isRessourceFull(void);
 	int neededRessource(void);
+	/**
+	 * calls neededRessource(int res) for all possible ressources.
+	 * @param array of needs that will be filld by this function
+	 */
 	void neededRessources(int needs[MAX_NB_RESSOURCES]);
 	void wishedRessources(int needs[MAX_NB_RESSOURCES]);
+	/**
+	 * @param res The resource type
+	 * @return count of resources needed of type res. In case of higher multiplicity
+	 * of the requested resource (fruits have 10) the value is reduced by (multiplicity-1)
+	 * and clipped to >= 0
+	 */
+	int neededRessource(int res);
 	///Wished ressources are any ressources that are needed, and not being carried by a unit already.
 	void computeWishedRessources();
-	int neededRessource(int r);
 	int totalWishedRessource();
 
 	///Launches construction. Provided with the number of units that should be working during the construction,
@@ -93,11 +112,11 @@ public:
 	void launchDelete(void);
 	///Cancels the deletion of a building, returning it to normal.
 	void cancelDelete(void);
-	
+
 	///This function updates the call lists that the Building is on. A call list is a list
 	///of buildings in Team that need units for work, or can have units "inside"
 	void updateCallLists(void);
-	///When a building is waiting for room, this will make sure that the building is in the 
+	///When a building is waiting for room, this will make sure that the building is in the
 	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hardspace, etc if
 	///ressources grow into the space or a building is placed, it becomes impossible
 	///to upgrade and the construction is cancelled.
@@ -108,7 +127,10 @@ public:
 	///This function updates the units working at this building. If there are too many units, it
 	///fires some.
 	void updateUnitsWorking(void);
-	///This function updates the units harvesting at this building. In particular, it unsubscribe them when the building is being destroyed
+	/// This function updates the units harvesting at this building. In
+	/// particular, it unsubscribes them when the building is being destroyed or
+	/// turns invisible when for example the other teams switches the view for
+	/// its markets.
 	void updateUnitsHarvesting(void);
 	///This function is called after important events in order to update the building
 	void update(void);
@@ -129,7 +151,7 @@ public:
 	///This function removes the hidden forbidden area placed by addForbiddenToUpgradeArea
 	///It must be done before any type or position state is changed.
 	void removeForbiddenZoneFromUpgradeArea(void);
-	
+
 	///Checks if there is hard space for a building. Non hard space is any space occupied by something that
 	///won't move. Units will move, so they are ignored. If there is space for the building site, then this
 	///returns true.
@@ -192,9 +214,9 @@ public:
 	void removeUnitFromInside(Unit* unit);
 
 	/// This function updates the ressources pointer. The variable ressources can either point to local ressources
-	/// or team ressoureces, depending on the BuildingType. 
+	/// or team ressoureces, depending on the BuildingType.
 	void updateRessourcesPointer();
-	
+
 	/// This function is called when a Unit places a ressource into the building.
 	void addRessourceIntoBuilding(int ressourceType);
 	
@@ -226,7 +248,7 @@ public:
 	/// Return the number of differents fruits in this building. If mask is non-null,
 	/// set masks value to the mask as well
 	Uint32 eatOnce(Uint32 *mask=NULL);
-	
+
 	/// Returns the maximum happyness level that this building can provide, taking into account the
 	/// units that are already in it.
 	int availableHappynessLevel();
@@ -243,7 +265,7 @@ public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 	int verbose;
 	std::list<Order *> orderQueue;
-	
+
 	static std::string getBuildingName(int type);
 public:
 	// type
@@ -277,19 +299,22 @@ public:
 	Sint32 priorityLocal;
 	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
 	Sint32 oldPriority;
+
 	///This is the list of units harvesting from the building (if it is a market for instance)
 	std::list<Unit *> unitsHarvesting;
 	
+private:
 	// optimisation and consistency
-	Sint32 canFeedUnit; // Included in {0: unknow, 1:allready in owner->canFeedUnit, 2:not in owner->canFeedUnit}
+	InListState inCanFeedUnit;
 	Uint8 canNotConvertUnitTimer; //counts down 150 frames after the building was last unable to feed a unit
-	Sint32 canHealUnit; // Included in {0: unknow, 1:allready in owner->canHealUnit, 2:not in owner->canHealUnit}
-	Sint32 upgrade[NB_ABILITY]; // Included in {0: unknow, 1:allready in owner->upgrade[i], 2:not in owner->upgrade[i]}
+	InListState inCanHealUnit;
+	InListState inUpgrade[NB_ABILITY];
 	/// This variable indicates whether this building is already in the team call list
 	/// to recieve units. A 1 indicates its already in the call list, and 0 indicates
 	/// that it is not.
 	Uint8 callListState;
 
+public:
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
@@ -303,7 +328,7 @@ public:
 
 
 	// Flag usefull :
-	Sint32 unitStayRange;
+	Sint32 unitStayRange; // (Uint8)
 	Sint32 unitStayRangeLocal;
 	bool clearingRessources[BASIC_COUNT]; // true if the ressource has to be cleared.
 	bool clearingRessourcesLocal[BASIC_COUNT];
@@ -338,7 +363,7 @@ public:
 	Uint32 shootingStep;
 	Sint32 shootingCooldown;
 	Sint32 bullets;
-	
+
 	// A true bit meant that the corresponding team can see this building, under FOW or not.
 	Uint32 seenByMask;
 
@@ -347,17 +372,17 @@ public:
 	Uint8 *globalGradient[2];
 	bool locked[2]; //True if the building is not reachable.
 	Uint32 lastGlobalGradientUpdateStepCounter[2];
-	
+
 	Uint8 *localRessources[2];
 	int localRessourcesCleanTime[2]; // The time since the localRessources[x] has not been updated.
 	int anyRessourceToClear[2]; // Which localRessources[x] gradient has any ressource. {0: unknow, 1:true, 2:false}
-	
+
 	// shooting eye-candy data, not net synchronised
 	Uint32 lastShootStep;
 	Sint32 lastShootSpeedX;
 	Sint32 lastShootSpeedY;
-	
-	
+
+
 	enum UnitCantWorkReason
 	{
 		UnitNotAvailable=0,
@@ -370,7 +395,7 @@ public:
 		UnitTooFarFromFruit=7,
 		UnitCantWorkReasonSize,
 	};
-	
+
 	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
 
 protected:
@@ -378,4 +403,4 @@ protected:
 };
 
 #endif
- 
+

@@ -4,6 +4,8 @@
 %0 niveau %1
 [%0 units can't access building]
 %0 globs kunnen het gebouw niet bereiken
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 globs kunnen het fruit niet bereiken
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 globs zijn niet beschikbaar
 [%0 units too far from building]
 %0 globs zijn te ver van het gebouw
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 globs zijn te ver van fruit
 [%0 units too far from resource]
@@ -190,6 +194,8 @@ Bouwen
 Gebouwen
 [building site]
 bouwplaats
+[Building Tool Box Explanation]
+
 [Building Tool Line Explanation]
 
 [Buildings]
@@ -250,6 +256,8 @@ Roept werkers op
 Grondstoffenvlag
 [closed]
 Gesloten
+[combined vision]
+
 [compile]
 Compileer script
 [compose]
@@ -410,6 +418,8 @@ Lege eilanden
 
 [flag settings explanation]
 
+[fog of war]
+
 [food]
 Voedsel
 [forbidden area]
@@ -550,6 +560,8 @@ Campagne laden
 Laden
 [load map]
 Speelveld laden
+[load replay]
+
 [load script]
 
 [load]
@@ -560,6 +572,8 @@ Laden
 
 [login]
 Aanmelden
+[look around]
+
 [Lost : %0 has more prestige than you]
 Verloren: %0 heeft meer roem dan jou
 [Lost : your colony is dead]
@@ -630,6 +644,8 @@ Nieuwe campagne
 Nieuw
 [nick taken]
 Het spijt ons, maar de naam die je gekozen hebt is al geregistreerd bij freenode. Je kan alleen maar praten via YOG
+[no fullscreen]
+
 [No Hints]
 
 [no key]
@@ -644,6 +660,8 @@ Nee
 
 [not ready]
 Niet klaar
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 
 [number of players: %0]
@@ -652,6 +670,8 @@ Er zijn %0 spelers aanwezig.
 %0 teams.
 [number of teams]
 Aantal teams
+[Number Of Units]
+
 [numlock]
 
 [objectives]
@@ -683,7 +703,7 @@ Open scriptbewerker
 [open]
 Open
 [OpenGL]
-
+OpenGL
 [Options]
 
 [options]
@@ -708,12 +728,16 @@ Pauze
 Naam speler
 [player rating %0]
 
+[players]
+
 [please wait]
 Even geduld alsjeblieft
 [power]
 
 [press space]
 Druk op spatie om verder te gaan
+[Prestige Score]
+
 [Prestige Win Enabled]
 
 [Prestige]
@@ -730,6 +754,8 @@ Pruimen
 Verlaat bewerker
 [quit the game]
 Verlaat dit spel
+[quit the replay]
+
 [quit]
 Afsluiten
 [racetrack explanation 2]
@@ -750,6 +776,8 @@ Afmetingen
 
 [Register a new YOG user with password]
 Registreer nieuwe gebruiker met wachtwoord (onveilig)
+[Register]
+
 [remember unit]
 Onthoud eenheid
 [Remember YOG password localy]
@@ -766,12 +794,18 @@ Start/Stop repareren
 Repareren
 [repeat area]
 Herhaling van speelveld
+[Repeat your password :]
+
+[replay ended]
+
 [restore default shortcuts]
 Herstel standaard toetsbindingen
 [return to editor]
 Terug naar bewerker
 [return to game]
 Speel verder
+[return to replay]
+
 [return]
 
 [right meta]
@@ -792,6 +826,8 @@ Wil je spel opslaan voordat je aflsuiten?
 Opslaan
 [save map]
 Speelveld opslaan
+[save replay]
+
 [save script]
 
 [Save]
@@ -882,6 +918,10 @@ Instellingen
 Enter-toets: stuur een bericht
 [shortcut explanation v]
 V-toets: ingedrukt houden om te spreken
+[show areas]
+
+[show flags]
+
 [show main menu]
 
 [skin]
@@ -1036,6 +1076,8 @@ De markt wordt aangevallen
 De racebaan is voltooid
 [the racetrack is under attack]
 De racebaan wordt aangevallen
+[the replays]
+
 [the school is finished]
 De school is voltooid
 [the school is under attack]
@@ -1056,6 +1098,8 @@ Het zwembad wordt aangevallen
 ?? De oorlogsvlag is klaar ??
 [the warflag is under attack]
 ?? De oorlogsvlag wordt aangevallen ??
+[time]
+
 [to:]
 aan:
 [toggle draw accessibility aids]
@@ -1068,6 +1112,12 @@ Paden van eenheden aan/uitschakelen
 
 [toggle recording voice]
 Spraak opname
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Totaal verworven roem
 [Total]
@@ -1144,6 +1194,10 @@ Soldaat ratio
 Soldaat
 [warriors]
 soldaten
+[watch again]
+
+[watching:]
+
 [water]
 Water
 [Wheat]
@@ -1198,6 +1252,8 @@ De verbinding met de YOG server is geweigerd omdat uw gebruikersnaam al bestaat.
 
 [YESTS_CREATED]
 Je kunt nu met de YOG server verbinden. Log in met een reeds geregistreerde gebruikersnaam, of registreer een nieuwe gebruikersnaam door een vinkje te zetten voor "Registreer nieuwe gebruiker met wachtwoord".
+[YESTS_PASSWORDS_DONT_MATCH]
+
 [YESTS_UNABLE_TO_CONNECT]
 Kan geen verbinding maken. Waarschijnlijk werkt de YOG server niet.
 [yog block command help]
