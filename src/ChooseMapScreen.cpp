@@ -38,16 +38,6 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	
 	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
-	
-	if(alternateDirectory)
-	{
-		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[the games]"), SWITCHTYPE, 27);
-		addWidget(switchType);
-
-		alternateFileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", alternateDirectory, alternateExtension, alternateRecurse);
-		addWidget(alternateFileList);
-		alternateFileList->visible=false;
-	}
 
 	fileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", directory, extension, recurse);
 	addWidget(fileList);
@@ -60,16 +50,26 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	deleteMap = NULL;
 	if (strcmp(directory, "maps") == 0)
 	{
+		type1 = MAP;
+		type2 = GAME;
+
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose map]"));
 	}
 	else if (strcmp(directory, "games") == 0)
 	{
+		type1 = GAME;
+		type2 = REPLAY;
+
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose game]"));
-		deleteMap = new TextButton(220, 430, 200, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Delete game]"), DELETEGAME);
+		//deleteMap = new TextButton(225, 380, 200, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Delete game]"), DELETEGAME);
+		deleteMap = new TextButton(250, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[delete]"), DELETEGAME);
 		addWidget(deleteMap);
 	}
 	else
 	{
+		type1 = GAME;
+		type2 = NONE;
+
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose game]"));
 	}
 	addWidget(title);
@@ -83,8 +83,28 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	addWidget(mapSize);
 	mapDate=new Text(440, 60+128+125, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapDate);
+
+	if(alternateDirectory)
+	{
+		assert(type2 != NONE);
+
+		std::string alternativeTypeName;
+
+		if (type2 == GAME) alternativeTypeName = Toolkit::getStringTable()->getString("[the games]");
+		else if (type2 == MAP) alternativeTypeName = Toolkit::getStringTable()->getString("[the maps]");
+		else if (type2 == REPLAY) alternativeTypeName = Toolkit::getStringTable()->getString("[the replays]");
+		else assert(false);
+
+		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", alternativeTypeName.c_str(), SWITCHTYPE, 27);
+		addWidget(switchType);
+
+		alternateFileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", alternateDirectory, alternateExtension, alternateRecurse);
+		addWidget(alternateFileList);
+		alternateFileList->visible=false;
+	}
 	
 	validMapSelected = false;
+	selectedType = NONE;
 }
 
 ChooseMapScreen::~ChooseMapScreen()
@@ -95,6 +115,11 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 {
 	if (action == LIST_ELEMENT_SELECTED)
 	{
+		//LoadableType currentDirectoryType;
+
+		//if (currentDirectoryMode == DisplayRegular) currentDirectoryType = type1;
+		//else currentDirectoryType = type2;
+
 		if((currentDirectoryMode == DisplayRegular && fileList->getSelectionIndex() != -1) || (currentDirectoryMode == DisplayAlternate && alternateFileList->getSelectionIndex() != -1))
 		{
 			std::string mapFileName;
@@ -102,7 +127,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
 			else
 				mapFileName = alternateFileList->listToFile(alternateFileList->getText(par1).c_str());
-			
+
 			mapPreview->setMapThumbnail(mapFileName.c_str());
 
 			InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
@@ -115,6 +140,9 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				if (verbose)
 					std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 				validMapSelected = mapHeader.load(stream);
+
+				if (!validMapSelected) selectedType = NONE;
+
 				mapHeader.setMapName(glob2FilenameToName(mapFileName));
 				if (validMapSelected)
 				{
@@ -122,6 +150,11 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 
 					time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
 					mapDate->setText(ctime(&mtime));
+
+					if (currentDirectoryMode == DisplayRegular)
+						selectedType = type1;
+					else
+						selectedType = type2;
 				}
 				else
 					std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
@@ -154,33 +187,70 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		else if (source == deleteMap)
 		{
 			// if a valid file is selected, delete it
-			if (fileList->getSelectionIndex() >= 0)
+
+			if(currentDirectoryMode == DisplayRegular)
 			{
-				size_t i = fileList->getSelectionIndex();
-				std::string mapFileName = fileList->listToFile(fileList->get().c_str());
-				Toolkit::getFileManager()->remove(mapFileName);
-				fileList->generateList();
-				
-				fileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
-				fileList->selectionChanged();
+				if (fileList->getSelectionIndex() >= 0)
+				{
+					size_t i = fileList->getSelectionIndex();
+					std::string mapFileName = fileList->listToFile(fileList->get().c_str());
+
+					Toolkit::getFileManager()->remove(mapFileName);
+					fileList->generateList();
+					
+					fileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
+					fileList->selectionChanged();
+				}
+			}
+			else
+			{
+				if (alternateFileList->getSelectionIndex() >= 0)
+				{
+					size_t i = alternateFileList->getSelectionIndex();
+					std::string mapFileName = alternateFileList->listToFile(alternateFileList->get().c_str());
+
+					Toolkit::getFileManager()->remove(mapFileName);
+					alternateFileList->generateList();
+					
+					alternateFileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
+					alternateFileList->selectionChanged();
+				}
 			}
 		}
 		else if (source == switchType)
 		{
 			if(currentDirectoryMode == DisplayRegular)
 			{
+				assert(type1 != NONE);
+
+				std::string newTypeName;
+
+				if (type1 == GAME) newTypeName = Toolkit::getStringTable()->getString("[the games]");
+				else if (type1 == MAP) newTypeName = Toolkit::getStringTable()->getString("[the maps]");
+				else if (type1 == REPLAY) newTypeName = Toolkit::getStringTable()->getString("[the replays]");
+				else assert(false);
+
 				currentDirectoryMode = DisplayAlternate;
 				fileList->visible=false;
 				alternateFileList->visible=true;
-				switchType->setText(Toolkit::getStringTable()->getString("[the maps]"));
+				switchType->setText(newTypeName);
 				alternateFileList->selectionChanged();
 			}
 			else
 			{
+				assert(type2 != NONE);
+
+				std::string newTypeName;
+
+				if (type2 == GAME) newTypeName = Toolkit::getStringTable()->getString("[the games]");
+				else if (type2 == MAP) newTypeName = Toolkit::getStringTable()->getString("[the maps]");
+				else if (type2 == REPLAY) newTypeName = Toolkit::getStringTable()->getString("[the replays]");
+				else assert(false);
+
 				currentDirectoryMode = DisplayRegular;
 				fileList->visible=true;
 				alternateFileList->visible=false;
-				switchType->setText(Toolkit::getStringTable()->getString("[the games]"));
+				switchType->setText(newTypeName);
 				fileList->selectionChanged();
 			}
 		}
@@ -216,4 +286,7 @@ GameHeader& ChooseMapScreen::getGameHeader()
 	return gameHeader;
 }
 
-
+ChooseMapScreen::LoadableType ChooseMapScreen::getSelectedType()
+{
+	return selectedType;
+}

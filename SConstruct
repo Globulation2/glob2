@@ -122,6 +122,10 @@ def configure(env):
         else:
             print "Could not find libz or zlib1.dll"
             missing.append("zlib")
+    
+    if ((env['mingw'] or env['mingwcross'] or isWindowsPlatform) and not conf.CheckLib("regex")) or not conf.CheckCXXHeader("regex.h"):
+			print "Could not find regex.h"
+			missing.append("regex")
 
     boost_thread = ''
     if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
@@ -238,7 +242,7 @@ def main():
               metavar='portaudio',
               help='should portaudio be used')
     env = Environment()
-    env["VERSION"] = "0.9.4.5"
+    env["VERSION"] = "0.9.5.0"
     establish_options(env)
     
     if env['mingwcross']:
@@ -261,15 +265,8 @@ def main():
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
         env.Append(CPPPATH=['/usr/local/include/SDL'])
     if isDarwinPlatform:
-        # FinkCommander
         env.Append(LIBPATH=["/sw/lib"])
         env.Append(CPPPATH=["/sw/include"])
-        # MacPorts
-        env.Append(LIBPATH=["/opt/local/lib"])
-        env.Append(CPPPATH=["/opt/local/include"])
-        # Homebrew
-        env.Append(LIBPATH=["/usr/local/lib"])
-        env.Append(CPPPATH=["/usr/local/include"])
     if env['mingwcross']:
         if os.path.isabs(env['crossroot']):
             crossroot_abs = env['crossroot']

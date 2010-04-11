@@ -39,8 +39,9 @@ public:
 	
 	enum GameObjectiveType
 	{
-		Primary,
+		Primary = 0,
 		Secondary,
+		Invalid
 	};
 
 	///This gets the number of objectives there are
@@ -88,6 +89,7 @@ public:
 	void encodeData(GAGCore::OutputStream* stream) const;
 	///Decodes this GameObjectives from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+	
 private:
 	std::vector<std::string> texts;
 	std::vector<bool> hidden;
@@ -95,6 +97,7 @@ private:
 	std::vector<bool> failed;
 	std::vector<GameObjectiveType> types;
 	std::vector<int> scriptNumbers;
+	std::string invalidText;
 };
 
 #endif

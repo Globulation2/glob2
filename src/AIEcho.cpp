@@ -1640,7 +1640,7 @@ BuildingRegister::BuildingRegister(Player* player, Echo& echo) : building_id(0),
 
 void BuildingRegister::initiate()
 {
-	for(unsigned int i=0; i<1024; ++i)
+	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
 		Building* b=player->team->myBuildings[i];
 		if(b!=NULL)
@@ -4325,7 +4325,7 @@ void enemy_team_iterator::set_to_next()
 int SearchTools::is_flag(Echo& echo, int x, int y)
 {
 	Building** buildings=echo.player->team->myBuildings;
-	for(int n=0; n<1024; ++n)
+	for(int n=0; n<Building::MAX_COUNT; ++n)
 	{
 		Building* b=buildings[n];
 		if(b)
@@ -4401,7 +4401,7 @@ void enemy_building_iterator::set_to_next()
 	else
 		current_index++;
 
-	while(current_index<1024)
+	while(current_index<Building::MAX_COUNT)
 	{
 		Building* b=echo->player->game->teams[team]->myBuildings[current_index];
 		if(b)
@@ -4439,7 +4439,7 @@ void enemy_building_iterator::set_to_next()
 		current_index++;
 	}
 
-	if(current_index==1024)
+	if(current_index==Building::MAX_COUNT)
 		is_end=true;
 }
 
@@ -4700,11 +4700,11 @@ void Echo::update_building_orders()
 
 void Echo::init_starting_buildings()
 {
-	for(int t=0; t<32; ++t)
+	for(int t=0; t<Team::MAX_COUNT; ++t)
 	{
 		if(player->game->teams[t])
 		{
-			for(int bu=0; bu<1024; ++bu)
+			for(int bu=0; bu<Building::MAX_COUNT; ++bu)
 			{
 				Building* b=player->game->teams[t]->myBuildings[bu];
 				if(b)

@@ -454,6 +454,55 @@ namespace GAGGUI
 		compute();
 	}
 	
+	void TextArea::setCursorPos(unsigned line, unsigned column)
+	{
+		unsigned lineCounter = 0;
+		unsigned columnCounter = 0;
+		unsigned p = 0;
+		while (p < text.size())
+		{
+			// the line we want is long enough
+			if ((lineCounter >= line) && (columnCounter >= column))
+				break;
+			// the line we wanted was not long enough
+			if (lineCounter > line)
+				break;
+			
+			if (text[p] == '\n')
+			{
+				lineCounter++;
+				columnCounter = 0;
+			}
+			else
+				columnCounter++;
+			p++;
+		}
+		setCursorPos(p);
+	}
+	
+	void TextArea::getCursorPos(unsigned &pos) const
+	{
+		pos = cursorPos;
+	}
+	
+	void TextArea::getCursorPos(unsigned &line, unsigned &column) const
+	{
+		line = 0;
+		column = 0;
+		unsigned p = 0;
+		while (p < cursorPos)
+		{
+			if (text[p] == '\n')
+			{
+				line++;
+				column = 0;
+			}
+			else
+				column++;
+			p++;
+		}
+	}
+	
 	void TextArea::internalInit(void)
 	{
 		layout();

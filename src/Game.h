@@ -22,6 +22,10 @@
 #ifndef __GAME_H
 #define __GAME_H
 
+#include <iostream>
+#include "Stream.h"
+#include "BinaryStream.h"
+
 #include "Map.h"
 #include "SGSL.h"
 #include <string>
@@ -30,6 +34,7 @@
 #include "GameHeader.h"
 #include "GameObjectives.h"
 #include "GameHints.h"
+#include "MapScript.h"
 
 namespace GAGCore
 {
@@ -47,13 +52,13 @@ class Game
 public:
 	///Constructor. GUI can be NULL
 	Game(GameGUI *gui, MapEdit* edit=NULL);
-	
+
 	///Clears all memory that Game uses
 	virtual ~Game();
 
 	///Loads data from a stream
 	bool load(GAGCore::InputStream *stream);
-	
+
 	//! Check some available integrity constraints
 	void integrity(void);
 
@@ -68,7 +73,7 @@ public:
 		DEL_UNIT=0x6,
 		DEL_FLAG=0x8
 	};
-	
+
 	enum DrawOption
 	{
 		DRAW_HEALTH_FOOD_BAR = 0x1,
@@ -84,11 +89,11 @@ public:
 
 	/// This method will prepare the game with this mapHeader
 	void setMapHeader(const MapHeader& mapHeader);
-	
+
 	/// This method will prepare the game with the provided gameHeader,
 	/// including initiating the Players
 	void setGameHeader(const GameHeader& gameHeader, bool saveAI=false);
-	
+
 	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	void executeOrder(boost::shared_ptr<Order> order, int localPlayer);
 
@@ -100,15 +105,23 @@ public:
 
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();
-	
+
 	/// Updates total prestige stats
 	void prestigeSyncStep();
 
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
 	/// internal proccessing.
 	void syncStep(Sint32 localTeam);
-	
+
 	void dirtyWarFlagGradient();
+
+	// Script interface
+	int teamsCount() { return mapHeader.getNumberOfTeams(); }
+	int isTeamAlive(int team);
+	int unitsCount(int team, int type);
+	int buildingsCount(int team, int type, int level);
+	int unitsUpgradesCount(int team, int type, int ability, int level);
+	
 
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator
@@ -133,11 +146,11 @@ public:
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions);
-	void drawMap(int sx, int sy, int sw, int sh, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0);
+	void drawMap(int sx, int sy, int sw, int sh, int righMargin, int topMargin, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0);
 
 	///Sets the mask respresenting which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
-	
+
 	///This dumps all data in text form to the given file
 	void dumpAllData(const std::string& file);
 private:
@@ -148,7 +161,7 @@ private:
 		TOP_TO_BOTTOM,
 		BOTTOM_TO_TOP
 	};
-	
+
 	struct BuildProject
 	{
 		int posX;
@@ -158,7 +171,7 @@ private:
 		int unitWorking;
 		int unitWorkingFuture;
 	};
-	
+
 	///Initiates Game
 	void init(GameGUI *gui, MapEdit* edit);
 
@@ -178,16 +191,22 @@ private:
 		drawPointBar(x, y, orientation, maxLength, actLength, 0, r, g, b, r, g, b, barWidth);
 	}
 
-	//Point bars can have 2 sections of actLength and secondActLength, followed by black until maxLength. r/g/b is for the first section, r2/g2/b2 for the second
+	///draws a point bar. This can be health, hunger, fill level, etc. Point bars can have 2 sections of actLength and secondActLength, followed by black until maxLength. r/g/b is for the first section, r2/g2/b2 for the second
 	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2, int barWidth=2);
+	///draws the overlay representing water
 	inline void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
+	///draws the terrain tiles of sand and gras
 	inline void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	///draws the resources like algues, wheat or fruit trees
 	inline void drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	///draws the ground units. up till now those are workers and warriors
 	inline void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	///draws debug information. switched in the code.
 	inline void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings);
 	inline void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	inline void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int), int areaAnimationTick, AreaType areaType);
 	inline void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
 	inline void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
@@ -195,24 +214,26 @@ private:
 	inline void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	inline void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
+	inline void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, Unit* unit, Uint32 drawOptions);
 	static float interpolateValues(float a, float b, float x);
 	inline bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
 public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
-	
+
 	/// Sets the alliances from the GameHeader alliance teams
 	void setAlliances(void);
-	
+
 public:
 	///This is a static header for a map. It remains the same in between games on the same map.
 	MapHeader mapHeader;
 	///This is a game header. It contains all the settings for a particular game, from AI's to Alliances to victory conditions.
 	GameHeader gameHeader;
 
-	Team *teams[32];
-	Player *players[32];
+	Team ** teams;
+	Player ** players;
 	Map map;
-	Mapscript script;
+	MapScriptSGSL sgslScript; ///< SGSL script
+	MapScript mapscript; ///< new script, currently USL
 	GameObjectives objectives;
 	GameHints gameHints;
 	std::string missionBriefing;
@@ -228,7 +249,7 @@ public:
 	Unit *mouseUnit;
 	Unit *selectedUnit;
 	Building *selectedBuilding;
-	
+
 	Uint32 stepCounter;
 	int totalPrestige;
 	int prestigeToReach;
@@ -240,19 +261,32 @@ public:
 	Uint32 hilightBuildingType;
 	///Similar to above, but for units
 	Uint32 hilightUnitType;
-	
-	
+
+
 	Team *getTeamWithMostPrestige(void);
 	bool isPrestigeWinCondition(void);
-	
+
 public:
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool generateMap(MapGenerationDescriptor &descriptor);
 
+	bool isRecordingReplay;
+	OutputStream * getReplayStream();
+	Uint32 getReplayOrderCount();
+	Uint32 getReplayStepCount();
+	void addReplayOutputStream( OutputStream *stream );
+
 protected:
 	FILE *logFile;
-	int ticksGameSum[32];
+	int * ticksGameSum;
+
+	OutputStream *replay;
+	Uint32 replayStepsSinceLastOrder;
+	Uint32 replayOrderCount;
+	Uint32 replayStepCount;
+	
+	std::vector<OutputStream *> replayOutputStreams;
 };
 
 #endif

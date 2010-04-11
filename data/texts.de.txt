@@ -4,6 +4,8 @@
 %0 Level %1
 [%0 units can't access building]
 %0 Einheiten können das Gebäude nicht betreten
+[%0 units can't access flag]
+
 [%0 units can't access fruit]
 %0 Einheiten können die Früchte nicht erreichen
 [%0 units can't access resource]
@@ -12,6 +14,8 @@
 %0 Einheiten nicht verfügbar
 [%0 units too far from building]
 %0 Einheiten zu weit  vom Gebäude entfernt
+[%0 units too far from flag]
+
 [%0 units too far from fruit]
 %0 Einheiten zu weit von den Früchten entfernt
 [%0 units too far from resource]
@@ -142,8 +146,10 @@ Gebäudestandards
 Gebäude
 [building site]
 Baustelle
-[Building Tool Line Explanation]
+[Building Tool Box Explanation]
 
+[Building Tool Line Explanation]
+Strg+Ziehen=Linie
 [Buildings]
 Gebäude
 [Bullets]
@@ -196,6 +202,8 @@ Rodet Ressourcen
 Rodungsflagge
 [closed]
 Geschlossen
+[combined vision]
+
 [compile]
 Skript kompilieren
 [compose]
@@ -207,7 +215,7 @@ Befestigte Inseln
 [connect]
 Verbinden
 [connecting to game]
-
+Verbinde zu Spiel
 [connecting to]
 Verbinden mit
 [Construction Site Defaults]
@@ -350,6 +358,8 @@ Karte der Fruchtbarkeit des Bodens
 Flaggen Standards
 [flag settings explanation]
 Standardradius der Flagge
+[fog of war]
+
 [food]
 Nahrung
 [forbidden area]
@@ -484,6 +494,8 @@ Feldzug laden
 Spiel laden
 [load map]
 Karte laden
+[load replay]
+
 [load script]
 Script laden
 [load]
@@ -494,6 +506,8 @@ Lade Kartenauswahl
 Empfang
 [login]
 Login
+[look around]
+
 [Lost : %0 has more prestige than you]
 Verloren: %0 hat mehr Prestige als Du
 [Lost : your colony is dead]
@@ -562,6 +576,8 @@ Neuer Feldzug
 Neue Karte
 [nick taken]
 Leider ist Ihr Spitzname auf IRC schon besetzt. Sie können nur durch YOG chatten.
+[no fullscreen]
+* nicht im Vollbildmodus verfügbar
 [No Hints]
 Keine Hinweise
 [no key]
@@ -576,12 +592,16 @@ Nein
 Zu wenige Bewertungen
 [not ready]
 nicht bereit
+[Number Of Buildings]
+
 [number of players: %0 (%1 AI)]
 %0 Spieler (%1 KI)
 [number of teams: %0]
 %0 Mannschaften
 [number of teams]
 Mannschaften
+[Number Of Units]
+
 [numlock]
 Numlock
 [objectives]
@@ -613,7 +633,7 @@ Beim Loslassen
 [open]
 offen
 [OpenGL]
-
+OpenGL
 [Options]
 Einstellungen
 [options]
@@ -638,12 +658,16 @@ Pause
 Spielername
 [player rating %0]
 Spielerbewertung: %0
+[players]
+
 [please wait]
 Bitte warten
 [power]
 Kraft
 [press space]
 Leertaste drücken, um fortzufahren.
+[Prestige Score]
+
 [Prestige Win Enabled]
 Sieg durch Prestige aktivieren
 [Prestige]
@@ -660,6 +684,8 @@ Pflaumen
 Editor verlassen
 [quit the game]
 Spiel beenden
+[quit the replay]
+
 [quit]
 Beenden
 [racetrack explanation 2]
@@ -680,6 +706,8 @@ Bereit?
 Kartenliste aktualisieren
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
+[Register]
+Register
 [remember unit]
 Arbeiterzahlen merken
 [Remember YOG password localy]
@@ -696,12 +724,18 @@ Reparieren / Abbrechen
 Reparieren
 [repeat area]
 mal die selbe Landschaft
+[Repeat your password :]
+Wiederhole Dein Passwort
+[replay ended]
+
 [restore default shortcuts]
 Standardtastenkürzel wiederherstellen
 [return to editor]
 Zurück zum Editor
 [return to game]
 Zurück zum Spiel
+[return to replay]
+
 [return]
 Enter
 [right meta]
@@ -722,6 +756,8 @@ Möchtest Du vor dem Beenden speichern?
 Spiel speichern
 [save map]
 Karte speichern
+[save replay]
+
 [save script]
 Skript speichern
 [Save]
@@ -812,6 +848,10 @@ SHIFT-%0
 Enter: Chatnachricht senden
 [shortcut explanation v]
 V: gedrückt halten, um zu sprechen
+[show areas]
+
+[show flags]
+
 [show main menu]
 Zeige Hauptmenü
 [skin]
@@ -964,6 +1004,8 @@ Spieler %0 hat YOG verlassen.
 Die Rennbahn ist fertig
 [the racetrack is under attack]
 Die Rennbahn wird angegriffen
+[the replays]
+
 [the school is finished]
 Die Schule ist fertig
 [the school is under attack]
@@ -984,6 +1026,8 @@ Das Schwimmbecken wird angegriffen
 ?? Kriegsflagge fertig ??
 [the warflag is under attack]
 ?? Kriegsflagge wird angegriffen ??
+[time]
+
 [to:]
 auf:
 [toggle draw accessibility aids]
@@ -996,6 +1040,12 @@ Wege zeigen an/aus
 Schalte Menü an/aus
 [toggle recording voice]
 Mikrofon ein-/ausschalten
+[Total Attack Power]
+
+[Total Defence Power]
+
+[Total Hitpoints]
+
 [Total prestige reached]
 Höchstmögliches Prestige erreicht
 [Total]
@@ -1074,6 +1124,10 @@ Kriegeranteil
 Krieger
 [warriors]
 Krieger
+[watch again]
+
+[watching:]
+
 [water]
 Wasser
 [Wheat]
@@ -1126,6 +1180,8 @@ Der YOG-Metaserver hat die Verbindung verweigert, da der Benutzername gesperrt w
 Der YOG-Metaserver hat die Verbindung verweigert weil der Benutzername ungültig ist.
 [YESTS_CREATED]
 Das Verbindungsystem ist bereit, mit YOG in Kontakt zu treten.
+[YESTS_PASSWORDS_DONT_MATCH]
+Die eingegebenen Passwörter stimmen nicht überein.
 [YESTS_UNABLE_TO_CONNECT]
 Verbinden unmöglich. Anscheinend ist der YOG-Metaserver nicht verfügbar.
 [yog block command help]
@@ -1158,5 +1214,3 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
-[no fullscreen]
-* nicht im Vollbildmodus verfügbar

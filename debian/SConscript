@@ -20,13 +20,14 @@ if env['mingwcross']:
     Return()
 
 if 'dist' in COMMAND_LINE_TARGETS and os.path.exists('/etc/debian_version'):
-    dpkg = env.Command('deb', None, 'dpkg-buildpackage -b')
+    dpkg = env.Command('deb', None, 'dpkg-buildpackage -S -I.hg')
     env.AlwaysBuild(dpkg)
     env.Alias('dist', 'deb')
 
     # Impossible to pass -uuploadfilesdir option to dpkg-genchanges through dpkg-buildpackage.
     # Just move output files.
-    mv = env.Command('debmove', None, "mv -f ../glob2*.deb ../glob2*.changes debian/")
+    mv = env.Command('debmove', None, "mv -f ../glob2*.changes ../glob2*.dsc"
+                                        + " ../glob2*.tar.gz debian/")
     env.AlwaysBuild(mv)
     env.Depends('debmove', dpkg)
     env.Alias('dist', 'debmove')

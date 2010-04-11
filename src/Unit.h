@@ -46,7 +46,9 @@ namespace GAGCore
 // a unit
 class Unit
 {
+	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
+	static const int MAX_COUNT=1024;
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void) { }
@@ -215,7 +217,9 @@ public:
 	Displacement displacement;
 	Movement movement;
 	Abilities action;
+	/// These coordinates are usef for target-lines only (Hotkey T in game)
 	Sint32 targetX, targetY;
+	/// Maybe this is also only for GUI to tag if a line may be drawn or not
 	bool validTarget;
 	Sint32 magicActionTimeout;
 
@@ -245,6 +249,7 @@ public:
 	Building *attachedBuilding;
 	//! building the Unit is going to
 	Building *targetBuilding;
+	//! no idea what this is. TODO: Explain
 	Building *ownExchangeBuilding;
 	Sint32 destinationPurprose;
 	int caryedRessource;
@@ -275,6 +280,7 @@ public:
 public:
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
+    void setTargetBuilding(Building * b);
 	bool verbose;
 	
 protected:

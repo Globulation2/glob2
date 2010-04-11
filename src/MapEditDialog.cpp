@@ -229,7 +229,6 @@ void TeamsEditor::onAction(Widget *source, Action action, int par1, int par2)
 void TeamsEditor::generateGameHeader()
 {
 	GameHeader gameHeader;
-	MapHeader& mapHeader = game->mapHeader;
 	int count = 0;
 	for (int i=0; i<NumberOfPlayerSelectors; i++)
 	{

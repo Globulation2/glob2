@@ -39,7 +39,7 @@ namespace GAGCore
 	class OutputStream;
 }
 
-struct Token
+struct SGSLToken
 {
 	enum TokenType
 	{
@@ -128,10 +128,10 @@ struct Token
 	std::string msg;
 
 	//! Constructor, set logic default values
-	Token() { type=NIL; value=0; }
+	SGSLToken() { type=NIL; value=0; }
 	
 	//! Constructor, create a token of type t
-	Token(TokenType t) { type=t; value=0; }
+	SGSLToken(TokenType t) { type=t; value=0; }
 
 	//! This table is a map table between token type and token names
 	static TokenSymbolLookupTable table[];
@@ -146,7 +146,7 @@ struct Token
 // generic functions
 
 class Story;
-class Mapscript;
+class MapScriptSGSL;
 class GameGUI;
 class Game;
 
@@ -194,7 +194,7 @@ struct ErrorReport
 	ErrorReport() { type=ET_UNKNOWN; line=0; col=0; pos=0; }
 	ErrorReport(ErrorType et) { type=et; line=0; col=0; pos=0; }
 
-	const char *getErrorString(void);
+	const char *getErrorString(void) const;
 };
 
 // Text parser, returns tokens
@@ -205,7 +205,7 @@ public:
 	virtual ~Aquisition(void);
 
 public:
-	const Token *getToken() { return &token; }
+	const SGSLToken *getToken() { return &token; }
 	void nextToken();
 	bool newFile(const char*);
 	unsigned getLine(void) { return lastLine; }
@@ -217,7 +217,7 @@ public:
 
 private:
 	const Functions& functions;
-	Token token;
+	SGSLToken token;
 	unsigned actLine, actCol, actPos, lastLine, lastCol, lastPos;
 	bool newLine;
 };
@@ -258,11 +258,11 @@ class Story
 {
 	static const bool verbose = false;
 public:
-	Story(Mapscript *mapscript);
+	Story(MapScriptSGSL *mapscript);
 	virtual ~Story();
 
 public:
-	std::vector<Token> line;
+	std::vector<SGSLToken> line;
 	std::map<std::string, int> labels;
 	int lineSelector; //!< PC : Program Counter
 	int internTimer;
@@ -274,7 +274,7 @@ public:
 	
 	
 private:
-	friend class Mapscript;
+	friend class MapScriptSGSL;
 	bool conditionTester(const Game *game, int pc, bool readLevel, bool only);
 	void toto(GameGUI* gui);
 	void objectiveHidden(GameGUI* gui);
@@ -295,9 +295,9 @@ private:
 	
 	
 	bool testCondition(GameGUI *gui);
-	int valueOfVariable(const Game *game, Token::TokenType type, int teamNumber, int level);
+	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
 	
-	Mapscript *mapscript;
+	MapScriptSGSL *mapscript;
 	bool recievedSpace;
 };
 
@@ -312,11 +312,11 @@ class Building;
 typedef std::map<std::string, Area> AreaMap;
 typedef std::map<std::string, Building *> BuildingMap;
 
-class Mapscript
+class MapScriptSGSL
 {
 public:
-	Mapscript();
-	~Mapscript();
+	MapScriptSGSL();
+	~MapScriptSGSL();
 
 public:
 	ErrorReport compileScript(Game *game, const char *script);

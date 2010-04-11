@@ -1,0 +1,1218 @@
+[%0 has left the game]
+%0 on poistunut pelistä.
+[%0 level %1]
+%0 Taso %1
+[%0 units can't access building]
+%0 yksikköä ei pääse rakennukseen
+[%0 units can't access flag]
+%0 yksikköä ei pääse lipulle
+[%0 units can't access fruit]
+%0 yksikköä ei pääse hedelmien luo
+[%0 units can't access resource]
+%0 yksikköä ei pääse resurssin luo
+[%0 units not available]
+%0 yksikköä ei ole saatavilla
+[%0 units too far from building]
+%0 yksikköä on liian kaukana rakennuksesta
+[%0 units too far from flag]
+%0 yksikköä on liian kaukana lipusta
+[%0 units too far from fruit]
+%0 yksikköä liian kaukana hedelmistä
+[%0 units too far from resource]
+%0 yksikköä liian kaukana resurssista
+[%0 units too low level]
+%0:n yksikön taso liian matala
+[%0% Uploaded]
+%0% ladattu
+[%0's game]
+%0:n Peli
+[%0's team unit got converted to your team]
+%0:n joukkueen yksikkö siirtyi sinun joukkueseen
+[abreaviation explanation A]
+A: Allies
+[abreaviation explanation C]
+C: Send chat messages to
+[abreaviation explanation fV]
+fV: Show vision for Inn buildings (to steal units)
+[abreaviation explanation mV]
+mV: Show vision for Markets buildings (to exchange fruits)
+[abreaviation explanation V]
+V: Show vision for all buildings
+[add map]
+Lisää kartta
+[add shortcut]
+Lisää pikanäppäin
+[Add]
+Lisää
+[AI Descriptions]
+AI:n kuvaukset
+[AI]
+AI
+[ai]
+AI
+[AICastor-Description]
+Castor pelaa varmistellen ja pärjää hyvin kartoilla, joissa on vähän resursseja. Vaikeustaso: normaali.
+[AICastor]
+Castor
+[AINicowar-Description]
+Nicowar pelaa aggressiivisesti, kasvaa nopeasti and hyökkää suurilla sotajoukkoilla vastustajiensa kimppuun. Vaikeustaso: haastava.
+[AINicowar]
+Nicowar
+[AINone-Description]
+None ei tee mitään.
+[AINone]
+None
+[AINumbi-Description]
+Numbi laajentaa nopeasti ja sulavasti. Vaikeustaso: aloittelija.
+[AINumbi]
+Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity - Ei hyökkää, mutta rakentaa valtavan tukikohdan ja yrittää voimakkaasti käännyttää joukkoja omalle puolelleen. Vaikeustaso: aloittelija.
+[AIReachToInfinity]
+ReachToInfinity
+[AIToubib-Description]
+Toubib
+[AIToubib]
+Toubib
+[AIWarrush-Description]
+Warrush - Hyökkää nopeasti työntäen puolustamiseen painottavan pelaajan häviön partaalle. Vaikeustaso: normaali.
+[AIWarrush]
+Warrush
+[Alga]
+Levä
+[algae]
+levä
+[alliances]
+Liittoumat
+[alt %0]
+alt-%0
+[and]
+ja
+[any explorer]
+any explorer
+[are dying hungry]
+nääntyvää
+[are hungry]
+nälkäistä
+[are ok]
+kunnossa
+[are wonded]
+haavoittunutta
+[armor]
+Panssari
+[assigned]
+Tehtävissä
+[At. speed]
+Hyök. nopeus
+[At. strength]
+Hyök. voima
+[Attack]
+Hyökkäys
+[audio]
+Audio
+[auto save]
+Automaattinen tallennus
+[available lan games]
+Avoimet paikalliset pelit
+[awaiting players]
+Odotetaan pelaajia
+[away:]
+poissa:
+[Back]
+Takaisin
+[backspace]
+askelpalautin
+[barracks explanation 2]
+taistelukykyä
+[barracks explanation]
+Parantaa sotureitesi
+[barracks]
+Parakki
+[beach size]
+rannan koko
+[Blocked Players]
+Estetyt pelaajat
+[break]
+break
+[briefing]
+Ohjeistaminen
+[build %0 level %1]
+Rakentaminen: %0 Taso %1
+[Build]
+Rakentaminen
+[Building Defaults]
+Rakennusasetukset
+[building settings]
+Rakennusasetukset
+[building site]
+rakennuspaikka
+[Building Tool Box Explanation]
+Shift + Raahaus = Laatikko
+[Building Tool Line Explanation]
+Ctrl + Raahaus = Viiva
+[Buildings]
+Rakennuksia
+[Bullets]
+Luotien määrä
+[campaign editor]
+Kampanjaeditori
+[campaign]
+Kampanja
+[Can't connect, can't find host]
+Yhdistäminen epäonnistui, pelin aloittajaa ei löydy
+[Can't host game, port %0 in use]
+Pelin luonti epäonnistui, portti %0 käytössä
+[Can't join game, game doesn't exist]
+Liittyminen epäonnistui, peliä ei ole
+[Can't join game, game has started]
+Liittyminen epäonnistui, peli on jo alkanut
+[Can't join game, game is full]
+Liittyminen epäonnistui, peli on täynnä
+[cancel destroy]
+Peruuta tuhoaminen
+[cancel repair]
+Peruuta korjaus
+[cancel upgrade]
+Peruuta päivitys
+[Cancel]
+Peruuta
+[caps lock]
+caps lock
+[carry]
+Kuljettamassa:
+[Change Area Name]
+Vaihda alueen nimi
+[Cherry]
+Kirsikka
+[choose campaign]
+Valitse kampanja
+[choose game]
+Valitse peli
+[choose map]
+Valitse kartta
+[clear area]
+Keräämisalue
+[Clearing:]
+Keräämässä:
+[clearingflag explanation 2]
+resurssien keräyspaikan
+[clearingflag explanation]
+Asettaa pääasiallisen
+[clearingflag]
+Keräämislippu
+[closed]
+Ei käytössä
+[combined vision]
+
+[compile]
+Kääntämisskripti
+[compose]
+compose
+[Computing Fertility]
+Lasketaan hedelmällisyyttä
+[concrete islands terrain]
+Betonisaaret
+[connect]
+Yhdistä
+[connecting to game]
+Otetaan yhteyttä peliin
+[connecting to]
+Otetaan yhteyttä:
+[Construction Site Defaults]
+Rakentamisasetukset
+[Continue playing]
+Continue playing
+[control %0]
+control-%0
+[Corn]
+Vilja
+[crater density]
+kraattereiden määrä
+[crater lakes terrain]
+Kraatterijärvet
+[create game]
+Luo peli
+[create map]
+Luo kartta
+[credits]
+Tekijät
+[ctrl - line]
+Ctrl - Viiva
+[current speed]
+Nykyinen nopeus
+[custom game]
+Tavallinen peli
+[customcur]
+Muokattu kursori
+[damage]
+Vahinko
+[Damaged Map]
+Vahinkokartta
+[decrease units working]
+Laske työskentelevien määrää
+[Defeat Your Oppenents]
+Kukista vastustajasi.
+[defencetower explanation 2]
+vihollisrakennuksia tai -yksiköitä
+[defencetower explanation]
+Hyökkää lähellä olevia
+[defencetower]
+Puolustustorni
+[Defense Map]
+Puolustuskartta
+[Defense]
+Puolustus
+[Delete game]
+Poista valittu peli
+[delete]
+Poista
+[desert]
+aavikko
+[destroy building]
+Tuhoa valittu rakennus
+[destroy]
+Tuhoa
+[display]
+Näyttö
+[do nothing]
+Do Nothing
+[don't carry anything]
+Ei kanna mitään
+[down]
+down
+[Download Map]
+Lataa kartta
+[Download Maps]
+Lataa karttoja
+[downloaded %0]
+Ladattu %0
+[downloading map]
+Ladataan karttaa
+[edit map]
+Muokkaa
+[editing map]
+Muokataan karttaa
+[editor shortcuts]
+Editori
+[editor]
+Editori
+[end]
+end
+[Enter your nickname :]
+Nimimerkkisi:
+[Enter your password :]
+Salasanasi:
+[enter]
+enter
+[equals]
+equals
+[escape]
+escape
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+Houkuttelee tiedustelijoita
+[explorationflag]
+Tiedustelulippu
+[Explorer Ratio]
+Tiedustelijoiden suhde
+[Explorer]
+Tiedustelija
+[explorers]
+explorers
+[extra islands]
+tyhjää saarta
+[f10]
+f10
+[f11]
+f11
+[f12]
+f12
+[f13]
+f13
+[f14]
+f14
+[f15]
+f15
+[f1]
+f1
+[f2]
+f2
+[f3]
+f3
+[f4]
+f4
+[f5]
+f5
+[f6]
+f6
+[f7]
+f7
+[f8]
+f8
+[f9]
+f9
+[Fertility Map]
+Hedelmällisyys
+[Flag Defaults]
+Lippuasetukset
+[flag settings explanation]
+Lipun säteen oletuspituus
+[fog of war]
+
+[food]
+Ruoka
+[forbidden area]
+Kielletty alue
+[Free]
+Ok
+[free]
+on vapaana
+[free]
+vapaana
+[from:]
+from:
+[fruit]
+hedelmä
+[fullscreen]
+Koko näyttö
+[game full]
+Game full
+[game shortcuts]
+Peli
+[Game]
+Peli
+[general settings]
+Perusasetukset
+[go to event]
+Mene tapahtumapaikalle
+[go to home]
+Keskitä karttaa Pesään
+[goto main menu]
+Takaisin päävalikkoon
+[grass]
+ruoho
+[ground attack]
+maahyökkäys
+[guard area]
+Vartioitava alue
+[GUIMapPreview text 0]
+Please choose
+[GUIMapPreview text 1]
+a map
+[handmade map]
+Handmade map
+[Happyness]
+Onnellisuus
+[hard pause]
+Vahva pelin pysäytys
+[Harvest]
+Kerääminen
+[high priority]
+ylin
+[hints]
+Vihjeitä
+[home]
+home
+[hospital explanation 2]
+
+[hospital explanation]
+Parantaa yksiköitäsi
+[hospital]
+Sairaala
+[host]
+Isännöi peli
+[hp]
+HP
+[hp]
+Kestopisteet
+[Human]
+Human
+[human]
+human
+[hungry]
+nälkäinen
+[hungryness]
+Nälkäisyys
+[In way]
+Matkalla
+[increase units working]
+Kasvata työskentelevien määrää
+[inn explanation 2]
+
+[inn explanation]
+Ruokkii yksiköitäsi.
+[inn]
+Majatalo
+[insert]
+insert
+[inside]
+Sisällä
+[islands size]
+saarien koko
+[islands terrain]
+Saaret
+[isles terrain]
+Isles
+[iterate selection]
+Siirrä valinta rakennuksesta toiseen
+[jobs]
+työt
+[join a game]
+Liity peliin
+[join]
+Liity
+[keyboard settings]
+Näppäimistö
+[kick]
+Kick
+[lan]
+LAN-peli
+[language incomplete]
+Suomi - keskeneräinen
+[language-code]
+fi
+[language-tr]
+Kieli
+[language]
+Suomi
+[Leave Game]
+Poistu pelistä
+[left meta]
+vasen meta
+[left super]
+vasen windows-näppäin
+[left]
+vasen
+[Leo: nur ein erster Test]
+testi
+[level]
+Tason
+[levels]
+Kokemustasot
+[load campaign]
+Jatka kampanjaa
+[load game]
+Lataa tallennettu peli
+[load map]
+Avaa kartta
+[load replay]
+
+[load script]
+Avaa skripti
+[load]
+Avaa
+[loading map list]
+Ladataan karttalistaa...
+[Lobby]
+Aula
+[login]
+Kirjaudu sisään
+[look around]
+
+[Lost : %0 has more prestige than you]
+Hävisit: %0:lla on enemmän Mainetta, kuin sinulla
+[Lost : your colony is dead]
+Hävisit: sinun siirtokuntasi on tuhottu
+[low priority]
+alin
+[lowquality]
+Matala laatu
+[Magic At. Air]
+Hyök. ilmaan:
+[Magic At. Ground]
+Hyök. maahan:
+[map description]
+Kuvaus
+[Map Discovered]
+Kartta paljastettu
+[Map download failure: lost connection]
+Kartan lataus epäonnistui: Yhteys YOG:iin menetetty.
+[Map name: %0]
+Kartan nimi: %0.
+[map name]
+Nimi
+[map rated]
+Map Rated
+[map script]
+Karttaskripti
+[map size x]
+Kartan leveys
+[map size y]
+Kartan korkeus
+[Map upload failure: connection lost]
+Kartan julkaisu epäonnistui: Yhteys YOG:iin menetetty.
+[Map upload failure: map name in use]
+Kartan julkaisu epäonnistui. Kartn nimi jo käytössä.
+[Map upload failure: unknown reason]
+Kartan julkaisu epäonnistui. Tuntematon syy.
+[Map Upload: Author Name]
+Julkaisijan Nimi
+[Map Upload: Waiting for reply]
+Odotetaan vastausta
+[mark map]
+Mark Map For Allies
+[market explanation 2]
+vaihdon muiden kanssa.
+[market explanation]
+Mahdollistaa hedelmien
+[market]
+Kauppa
+[medium priority]
+keski
+[meta %0]
+meta-%0
+[Min required level:]
+Alin vaadittu taso:
+[Minimum Level To Flag]
+Alin Lipun taso
+[Music volume]
+musiikin voimakkuus
+[Mute]
+Mykistä
+[mute]
+mykistä
+[new campaign]
+Uusi kampanja
+[new map]
+Uusi kartta
+[nick taken]
+Olemme pahoillamme, mutta valitsemasi nimi on jo varattu Freenode-verkossa. Pystyt keskustelemaan vain YOG:n kautta.
+[no fullscreen]
+* vain ikkunatilassa
+[No Hints]
+Ei Vihjeitä
+[no key]
+no key yet
+[No Objectives]
+Ei Tavoitteita
+[no ressources growth areas]
+Ei kasvualueita
+[No]
+Ei
+[Not Enough Ratings]
+Ei tarpeeksi arvioita
+[not ready]
+ei valmis
+[Number Of Buildings]
+Rakennusten Määrä:
+[number of players: %0 (%1 AI)]
+%0 pelaajaa (%1 AI)
+[number of teams: %0]
+Joukkueiden määrä: %0
+[number of teams]
+joukkueiden määrä
+[Number Of Units]
+yksiköiden määrä
+[numlock]
+numlock
+[objectives]
+Tavoitteet
+[of which]
+joista
+[ok]
+Ok
+[old islands terrain]
+vanhat satunnaiset saaret
+[old random terrain]
+vanhat satunnaiset maastot
+[on press]
+Painaessa
+[On the spot]
+Paikalla
+[on unpress]
+Vapauttaessa
+[open chat box]
+Avaa chat-laatikko
+[open load menu]
+Open Load Menu
+[open save menu]
+Open Save Menu
+[open scenario editor]
+Avaa skenaarioeditori
+[open teams editor]
+Avaa joukkue-editori
+[open]
+avaa
+[OpenGL]
+OpenGL
+[Options]
+Asetukset
+[options]
+Asetukset
+[Orange]
+Appelsiini
+[Other Options]
+Muut Asetukset
+[page down]
+page down
+[page up]
+page up
+[Papyrus]
+Papyrus
+[pause game]
+Pelin pysäytys
+[pause]
+pause
+[Paused]
+Paused
+[player name]
+Player name
+[player rating %0]
+Pelaajan Sijoitus: %0
+[players]
+
+[please wait]
+Odota hetki
+[power]
+power
+[press space]
+Paina välilyöntiä jatkaaksesi.
+[Prestige Score]
+Mainepisteet
+[Prestige Win Enabled]
+Voitto Maineen avulla sallittu
+[Prestige]
+Maine
+[Primary Objectives]
+Ensisijaiset
+[print screen]
+print screen
+[priority]
+Tärkeys
+[Prune]
+Luumu
+[quit the editor]
+Poistu editorista
+[quit the game]
+Poistu pelistä
+[quit the replay]
+
+[quit]
+Lopeta
+[racetrack explanation 2]
+kävelynopeutta.
+[racetrack explanation]
+Parantaa yksiköittesi
+[racetrack]
+Kilparata
+[range]
+Kantama
+[Rated %0]
+Rated %0
+[ratios]
+Mittasuhteet
+[ready?]
+valmis?
+[refresh map list]
+Päivitä karttalista
+[Register]
+Rekisteröidy
+[remember unit]
+Muista yksiköiden määrä
+[Remember YOG password localy]
+Muista YOG salasana paikallisesti.
+[remove map]
+Poista kartta
+[remove shortcut]
+Poista pikanäppäin
+[Remove]
+Poista
+[repair building]
+Aloita/Lopeta korjaaminen
+[repair]
+Repair
+[repeat area]
+kertaa sama maisema
+[Repeat your password :]
+Toista salasanasi:
+[replay ended]
+
+[restore default shortcuts]
+Palauta oletuspikanäppäimet
+[return to editor]
+Palaa editoriin
+[return to game]
+Palaa peliin
+[return to replay]
+
+[return]
+enter
+[right meta]
+oikea meta
+[right super]
+oikea windows-näppäin
+[right]
+oikea
+[river diameter]
+joen leveys
+[river terrain]
+Joki
+[sand]
+hiekka
+[save before quit?]
+Haluatko tallentaa ennen poistumista?
+[save game]
+Tallenna peli
+[save map]
+Tallenna kartta
+[save replay]
+
+[save script]
+Tallenna skripti
+[Save]
+Tallenna
+[school explanation 2]
+rakentamistasoa.
+[school explanation]
+Parantaa työläistesi
+[school]
+Koulu
+[Script Areas]
+Skriptialueet
+[scroll lock]
+scroll lock
+[scroll wheel enabled]
+Vieritysrulla käytössä
+[Secondary Objectives]
+Toissijaiset
+[seeking a job]
+etsimässä työtä
+[seeking]
+etsimässä
+[select barracks building]
+Valitse Parakki
+[select clearingflag]
+Valitse Keräämislippu
+[select construct barracks]
+Valitse Rakenna Parakki
+[select construct defencetower]
+Valitse Rakenna Puolustustorni
+[select construct hospital]
+Valitse Rakenna Sairaala
+[select construct inn]
+Valitse Rakenna Majatalo
+[select construct market]
+Valitse Rakenna Kauppa
+[select construct racetrack]
+Valitse Rakenna Kilparata
+[select construct school]
+Valitse Rakenna Koulu
+[select construct stonewall]
+Valitse Rakenna Kivimuuri
+[select construct swarm]
+Valitse Rakenna Pesä
+[select construct swimmingpool]
+Valitse Rakenna Uima-allas
+[select delete tool]
+Valitse Poistotyökalu
+[select explorationflag]
+valitse Tiedustelulippu
+[select hospital building]
+Valitse Sairaala
+[select inn building]
+Valitse Majatalo
+[select market building]
+Valitse Kauppa
+[select place clearing area]
+Valitse Aseta keräämisalue
+[select place clearingflag]
+Valitse Aseta keräämislippu
+[select place explorationflag]
+Valitse Aseta tiedustelulippu
+[select place forbidden area]
+Valitse Aseta kielletty alue
+[select place guard area]
+Valitse Aseta vartioitava alue
+[select place warflag]
+Valitse Aseta sotalippu
+[select racetrack building]
+Valitse Kilparata
+[select school building]
+Valitse Koulu
+[select swarm building]
+Valitse Pesä
+[select swimmingpool building]
+Valitse Uima-allas
+[select tower building]
+Valitse Puolustustorni
+[select wall building]
+Valitse Muuri
+[select warflag]
+Valitse Sotalippu
+[settings]
+Asetukset
+[shift %0]
+shift-%0
+[shortcut explanation enter]
+Enter: lähetä chat-viesti
+[shortcut explanation v]
+V: pidä pohjassa puhuaksesi
+[show areas]
+
+[show flags]
+
+[show main menu]
+Näytä päävalikko
+[skin]
+Näyttö
+[smoothing]
+tasaisuus
+[sort by name]
+Nimi
+[sort by rating]
+Arvio
+[sort by size]
+Koko
+[Sort By]
+Lajittelu:
+[space]
+space
+[start mission]
+Aloita tehtävä
+[start new campaign]
+Aloita uusi kampanja
+[Start]
+Aloita
+[Starving Map]
+Ruokatilannekartta
+[starving]
+nälissään
+[Statistics]
+Tilastot
+[Still (i)]
+Vielä
+[still (w)]
+Still
+[still one unit working]
+Yksi yksikkö työskentelee yhä
+[Still one]
+Vielä yksi
+[Stone]
+Kivi
+[stone]
+kivi
+[stonewall explanation 2]
+läpikulun
+[stonewall explanation]
+Estää
+[stonewall]
+Kivimuuri
+[submit rating]
+Lähetä arvio
+[svr hostname]
+Server hostname
+[swamp terrain]
+Suo
+[swarm explanation 2]
+
+[swarm explanation]
+Tuottaa uusia yksiköitä
+[swarm]
+Pesä
+[Swim]
+Uinti
+[swimmingpool explanation 2]
+uintinopeutta.
+[swimmingpool explanation]
+Parantaa yksiköittesi
+[swimmingpool]
+Uima-allas
+[switch to adding areas]
+Vaihda alueiden lisäämistoimintoon
+[switch to area brush 1]
+Vaihda alueenmerkintäkuvioon 1
+[switch to area brush 2]
+Vaihda alueenmerkintäkuvioon 2
+[switch to area brush 3]
+Vaihda alueenmerkintäkuvioon 3
+[switch to area brush 4]
+Vaihda alueenmerkintäkuvioon 4
+[switch to area brush 5]
+Vaihda alueenmerkintäkuvioon 5
+[switch to area brush 6]
+Vaihda alueenmerkintäkuvioon 6
+[switch to area brush 7]
+Vaihda alueenmerkintäkuvioon 7
+[switch to area brush 8]
+Vaihda alueenmerkintäkuvioon 8
+[switch to building view]
+Vaihda rakennusnäkymään
+[switch to flag view]
+Vaihda lippunäkymään
+[switch to removing areas]
+Vaihda alueiden poistamistoimintoon
+[switch to teams view]
+Vaihda joukkuenäkymään
+[switch to terrain view]
+Vaihda maastonäkymään
+[sys req]
+sys req
+[tab]
+tab
+[teams editor]
+Joukkue-editori
+[Teams Fixed]
+Teams Fixed
+[teams]
+ joukkuetta
+[the barracks is finished]
+Parakki on valmis
+[the barracks is under attack]
+Parakkisi kimppuun hyökätään
+[the building is finished]
+Rakennus on valmis
+[the building is under attack]
+Rakennuksesi kimppuun hyökätään
+[the clearingflag is finished]
+?? keräämislippu on valmis ??
+[the clearingflag is under attack]
+?? keräämislippusi kimppuun hyökätään ??
+[the defencetower is finished]
+Puolustustorni on valmis
+[the defencetower is under attack]
+Puolustuksesi kimppuun hyökätään.
+[the explorationflag is finished]
+?? tiedustelulippu on valmis ??
+[the explorationflag is under attack]
+?? tiedustelulippusi kimppuun hyökätään ??
+[The game has not been finished]
+Peliä ei pelattu loppuun saakka
+[the games]
+Tallennukset
+[the hospital is finished]
+Sairaala on valmis
+[the hospital is under attack]
+Sairaalasi kimppuun hyökätään
+[The host has cancelled the game]
+Pelin aloittaja on perunut pelin
+[the inn is finished]
+Majatalo on valmis
+[the inn is under attack]
+Majatalosi kimppuun hyökätään
+[the maps]
+Kartat
+[the market is finished]
+Kauppa on valmis
+[the market is under attack]
+Kauppasi kimppuun hyökätään
+[The player %0 has joined YOG]
+%0 on liittynyt YOG:iin.
+[The player %0 has left YOG]
+%0 on poistunut YOG:sta.
+[the racetrack is finished]
+Kilparata on valmis
+[the racetrack is under attack]
+Kilparatasi kimppuun hyökätään
+[the replays]
+
+[the school is finished]
+Koulu on valmis
+[the school is under attack]
+Koulusi kimppuun hyökätään
+[the stonewall is finished]
+Muuri on valmis
+[the stonewall is under attack]
+Muurisi kimppuun hyökätään
+[the swarm is finished]
+Pesä on valmis
+[the swarm is under attack]
+Pesäsi kimppuun hyökätään
+[the swimmingpool is finished]
+Uima-allas on valmis
+[the swimmingpool is under attack]
+Uima-altaasi kimppuun hyökätään
+[the warflag is finished]
+?? sotalippu on valmis ??
+[the warflag is under attack]
+?? sotalippusi kimppuun hyökätään ??
+[time]
+Aika
+[to:]
+to:
+[toggle draw accessibility aids]
+Näytä yksiköiden/rakennusten joukkueen numero
+[toggle draw information]
+Näytä yksiköiden status-palkit
+[toggle draw unit paths]
+Piirrä yksiköiden polut
+[toggle menu screen]
+Toggle Menu Screen
+[toggle recording voice]
+Initiate Voice Recording
+[toggle recording voice]
+Käynnistä äänen nauhoitus
+[Total Attack Power]
+Total Attack Power
+[Total Defence Power]
+Total Defence Power
+[Total Hitpoints]
+Total Hitpoints
+[Total prestige reached]
+Total prestige reached
+[Total]
+Total
+[tutorial text 1]
+Tervetuloa Globulation 2:n tutoriaalin! Tämä tutoriaali kattaa muun muassa majatalojen rakentamisen, alueiden tutkimisen ja vihollisten tuhoamisen. Hyödyllisestä tiedosta ei ole pulaa.
+[tutorial text 2]
+Nyt kun hallitset perusasiat, on aika tutustua muihin rakennuksiin, kuten Kilparatoihin, Altaisiin ja Kouluihin.
+[tutorial text 3]
+Olet pärjännyt hyvin tähän asti. Nyt on vuoro keskittyä Sotureihin, Parakkeihin, ja Päivityksiin.
+[tutorial text 4]
+Olet melkein valmis. Vain Liput ja hyökkääminen jäljellä. Sitten tiedät tarpeeksi keskittyäksesi tavallisiin peleihin ja lopulta internet-peleihin pelaten Globulation 2:n parhaimpia pelaajia vastaan.
+[tutorial]
+Tutoriaali
+[Uncontrolled]
+Uncontrolled
+[undo]
+peru
+[uniform terrain]
+Yhdenmukainen maasto
+[Unit editor]
+Yksikköeditori
+[unit settings explanation]
+Yksiköiden oletusmäärä eri tehtävissä
+[unit settings]
+Yksikköasetukset
+[units working]
+yksiköitä tehtävissä
+[Units]
+Yksiköt
+[unlocked at start]
+Unlocked At Start
+[unlocked by]
+Unlocked By
+[Unnamed Area]
+{Unnamed Area}
+[up]
+up
+[upgrade building]
+Aloita/Pysäytä Päivitys
+[Upgrade Defaults]
+Päivitysasetukset
+[upgrade]
+Päivitä
+[Upload Map]
+Julkaise kartta
+[upload map]
+Julkaise kartta
+[username]
+Käyttäjänimi
+[Version]
+Versio
+[view history]
+Näytä historia
+[Voice volume]
+Ääniefektien voimakkuus
+[waiting for %0]
+Odotetaan %0:ta
+[waiting for key]
+odotetaan näppäintä...
+[Waiting]
+Odotetaan
+[Walk]
+Kävely
+[warflag explanation 2]
+
+[warflag explanation]
+Houkuttelee sotureita.
+[warflag]
+Sotalippu
+[Warning, you need to reboot the game for changes to take effect]
+Varoitus, sinun pitää käynnistää peli uudelleen, että muutokset astuvat voimaan.
+[Warrior Ratio]
+Sotureiden suhde
+[Warrior]
+Soturi
+[warriors]
+soturia
+[watch again]
+
+[watching:]
+
+[water]
+vesi
+[Wheat]
+Vilja
+[Won : you defeated your opponents]
+Voitit: kukistit vastustajasi
+[Won : you have the most prestige]
+Voitit: sinulla on eniten Mainetta
+[Won : your ally %0 has the most prestige]
+Voitit: sinun liittolaisellasi %0:lla on eniten Mainetta
+[Wood]
+Puu
+[wood]
+puu
+[Worker Ratio]
+Työläisten suhde
+[Worker]
+Työläinen
+[workers]
+Työläistä
+[workers]
+työläistä
+[working]
+Työskentelemässä
+[wounded]
+haavoittunut
+[Yes]
+Kyllä
+[YESTS_CONNECTING]
+Otetaan yhteyttä YOG-serveriin...
+[YESTS_CONNECTION_LOST]
+Yhteys YOG:iin katkesi.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+YOG-serveri katkaisi yhteyden, koska tämä käyttäjänimi on jo rekisteröity. Jos tämä käyttäjänimi on sinun, poista valinta vaihtoehdosta "Rekisteröi uusi YOG-käyttäjä salasanan kanssa".
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+YOG-serveri katkaisi yhteyden, koska annettu salasana oli väärä.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+YOG serveri katkaisi yhteyden, koska tällä käyttäjänimellä ei ole vielä salasanaa. Haluat luultavasti rekisteröidä käyttäjänimesi tällä salasanalla, joten valitse vaihtoehto "Rekisteröi uusi YOG-käyttäjä salasanan kanssa". Sinun ei tarvitse aktivoida tätä vaihtoehtoa enää myöhemmin.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+The YOG serveri katkaisi yhteyden, koska tämä IP-osoite on väliaikaisesti estetty. Odota kärsivällisesti, kunnes esto poistetaan metaserver has refused the connection because this IP address is temporarily banned. You will have to wait patiently until it is unbanned or contact the administrators.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+The YOG serveri katkaisi yhteyden, koska Globulation 2-pelisi versio on vanhentunut. Uusin versio on ladattavissa osoitteessa www.globulation2.org.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+YOG serveri katkaisi yhteyden selittämättömästä syystä!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+YOG serveri katkaisi yhteyden, koska valitsemasi käyttäjänimi on jo jonkun muun käytössä.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+YOG serveri katkaisi yhteyden, koska käyttäjänimesi on väliaikaisesti estetty. Olkaa hyvä ja ottakaa yhteyttä ylläpitäjiin.
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+YOG serveri katkaisi yhteyden, koska käyttäjänimesi on virheellinen. Käyttäjänimi saa sisältää vain kirjaimia, numeroita ja alaviivoja.
+[YESTS_CREATED]
+Järjestelmä on valmis yhdistämään YOG serveriin.
+[YESTS_PASSWORDS_DONT_MATCH]
+Antamasi salasanat eivät täsmää. Ole hyvä ja kirjoita ne uudelleen.
+[YESTS_UNABLE_TO_CONNECT]
+Yhteyttä ei voitu muodostaa. YOG serveri saattaa olla väliaikaisesti poissa käytöstä.
+[yog block command help]
+/block <playername>    Estää pelaajan, et näe enää hänen kirjoituksia
+[yog block command player %0 already blocked]
+Pelaaja %0 on jo estetty
+[yog block command player %0 blocked]
+Pelaaja %0 estetty
+[yog block command player %0 not found]
+Pelaajaa %0 ei löydy
+[yog command header]
+Lista nykyisistä YOGin komennoista on:
+[yog command unknown]
+Tuntematon komento.
+[yog help command help]
+/help    Näyttää tämän apuviestin
+[yog]
+YOG-moninpeliserveri
+[you have lost]
+Olet hävinnyt pelin!
+[you have won]
+Olet voittanut pelin!
+[You where kicked from the game]
+Sinut on poistettu pelistä.
+[Your %0 are under attack]
+%0 on hyökkäyksen kohteena
+[Your IP address was temporarily banned]
+IP-osoitteesi on väliaikisesti estetty. Odottakaa kärsivällisesti, kunnes est poistetaan, tai ota yhteyttä ylläpitäjiin.
+[Your unit got converted to %0's team]
+Yksikkösi siirtyi %0:n joukkueeseen.
+[Your username was banned]
+Käyttäjänimesi on estetty. Ota yhteys ylläpitäjiin.

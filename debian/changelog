@@ -1,9 +1,9 @@
-glob2 (0.9.4.5) unstable; urgency=low
+glob2 (0.9.5.0) unstable; urgency=low
 
   * Pulled in all the structure from Debian.
   * Updated Changelog.
 
- -- Nikolay Epifanov <nick.time at yahoo dot com>  Mon, 05 Apr 2010 08:06:11 +0400
+ -- Nikolay Epifanov <nick.time at yahoo dot com>  Mon, 22 Feb 2010 18:34:06 +0300
 
 glob2 (0.9.4.4-1.1) unstable; urgency=low
 

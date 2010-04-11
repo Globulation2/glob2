@@ -20,6 +20,7 @@
 #include "CampaignSelectorScreen.h"
 #include "StringTable.h"
 #include "Toolkit.h"
+#include "Campaign.h"
 
 CampaignSelectorScreen::CampaignSelectorScreen(bool isSelectingSave)
 {
@@ -32,10 +33,13 @@ CampaignSelectorScreen::CampaignSelectorScreen(bool isSelectingSave)
 	else
 		fileList = new FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "campaigns", "txt", false);
 	fileList->generateList();
+	description = new TextArea(420, 60, 200, 290, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true);
+	
 	addWidget(title);
 	addWidget(ok);
 	addWidget(cancel);
 	addWidget(fileList);
+	addWidget(description);
 }
 
 
@@ -53,6 +57,19 @@ void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, i
 		else if (source == cancel)
 		{
 			endExecute(par1);
+		}
+	}
+	if (action == LIST_ELEMENT_SELECTED)
+	{
+		if (fileList->getSelectionIndex()!=-1)
+		{
+			Campaign toload;
+			toload.load(getCampaignName());
+			description->setText(Toolkit::getStringTable()->getString(toload.getDescription().c_str()));
+		}
+		else
+		{
+			description->setText("");	
 		}
 	}
 }
