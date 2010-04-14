@@ -45,7 +45,6 @@ public:
 	void buildSkinsList(MultiTextButton *target) const;
 	
 protected:
-	TextInputStream *stream;
 	std::map<std::string, UnitSkin *> unitsSkins;
 };
 

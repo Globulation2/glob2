@@ -29,7 +29,7 @@
 UnitsSkins::UnitsSkins()
 {
 	StreamBackend *backend = Toolkit::getFileManager()->openInputStreamBackend("data/unitsSkins.txt");
-	stream = new TextInputStream(backend);
+	TextInputStream *stream = new TextInputStream(backend);
 	delete backend;
 	if (stream->isEndOfStream())
 	{
