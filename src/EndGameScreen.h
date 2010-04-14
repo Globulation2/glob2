@@ -38,7 +38,7 @@ public:
 	//! Constructor, takes position and initial map name
 	EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game);
 	//! Destructor
-	virtual ~EndGameStat() { }
+	virtual ~EndGameStat();
 	//! Set the type of stats (units, buildings, prestige) to draw
 	void setStatType(EndOfGameStat::Type type);
 	//! Enables / disables a particular team

@@ -56,6 +56,11 @@ EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlig
 	mouse_y = -1;
 }
 
+EndGameStat::~EndGameStat()
+{
+	delete[] isTeamEnabled;
+}
+
 void EndGameStat::setStatType(EndOfGameStat::Type type)
 {
 	this->type=type;
