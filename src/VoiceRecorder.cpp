@@ -403,7 +403,7 @@ VoiceRecorder::~VoiceRecorder()
 		err = Pa_Terminate();
 		if( err != paNoError )
 			printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
-		delete buffer;
+		delete[] buffer;
 	#else
 		recordThreadRun = false;
 		// wait that the record thead finish
