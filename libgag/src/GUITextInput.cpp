@@ -360,11 +360,19 @@ namespace GAGGUI
 	/// removes word from autocompletion via <tab>
 	void TextInput::removeAutoCompletableWord(const std::string &word)
 	{
+		std::vector<std::vector<std::string>::iterator> toDelete;
+
 		std::vector<std::string>::iterator it;
 		for (it = autocompletableWord.begin(); it != autocompletableWord.end(); ++it)
 		{
 			if (*it==word)
-				autocompletableWord.erase(it);
+				toDelete.push_back(it);
+		}
+
+		std::vector<std::vector<std::string>::iterator>::iterator it2;
+		for (it2 = toDelete.begin(); it2 != toDelete.end(); ++it2)
+		{
+			autocompletableWord.erase(*it2);
 		}
 	}
 	
