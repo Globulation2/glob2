@@ -23,6 +23,7 @@
 #include "Stream.h"
 #include <list>
 #include "WinningConditions.h"
+#include <assert.h>
 
 ///This is the game header. It is dynamic, and can change from game to game, even
 ///if the map doesn't. It holds all configurable information for a game, from team
