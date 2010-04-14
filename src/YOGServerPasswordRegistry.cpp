@@ -93,7 +93,10 @@ void YOGServerPasswordRegistry::readPasswords()
 {
 	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(YOG_SERVER_FOLDER+"registry"));
 	if(stream->isEndOfStream())
+	{
+		delete stream;
 		return;
+	}
 	stream->readUint32("version");
 	Uint32 size = stream->readUint32("size");
 	for(unsigned i=0; i<size; ++i)
