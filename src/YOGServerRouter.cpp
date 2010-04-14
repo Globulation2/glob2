@@ -165,7 +165,10 @@ bool YOGServerRouter::isAdministratorPasswordCorrect(const std::string& password
 	{
 		std::string pass = stream->readLine();
 		if(pass == password)
+		{
+			delete stream;
 			return true;
+		}
 	}
 	delete stream;
 	return false;
