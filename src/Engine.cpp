@@ -238,9 +238,11 @@ void Engine::createRandomGame()
 
 bool Engine::haveMap(const MapHeader& mapHeader)
 {
+	// FIXME: This is a fairly ugly way to test if the file exists
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
 	if (stream->isEndOfStream())
 	{
+		delete stream;
 		return false;
 	}
 	delete stream;
