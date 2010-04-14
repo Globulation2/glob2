@@ -22,6 +22,8 @@
 class YOGClientDownloadableMapListener
 {
 public:
+	virtual ~YOGClientDownloadableMapListener() {}
+
 	virtual void mapListUpdated() = 0;
 	virtual void mapThumbnailsUpdated() = 0;
 };
