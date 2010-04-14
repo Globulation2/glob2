@@ -286,8 +286,8 @@ def main():
         env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'speex'])
 
     if env['release']:
-        env.Append(CXXFLAGS=' -O2')
-        env.Append(LINKFLAGS=' -O2')
+        env.Append(CXXFLAGS=' -O2 -s')
+        env.Append(LINKFLAGS=' -O2 -s --fwhole-program')
     if env['profile']:
         env.Append(CXXFLAGS=' -pg')
         env.Append(LINKFLAGS='-pg')
