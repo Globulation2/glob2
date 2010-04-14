@@ -55,57 +55,65 @@ public:
 	void savePlayerInfo(GAGCore::OutputStream *stream) const;
 
 	///Returns the number of players in the game
-	Sint32 getNumberOfPlayers() const;
+	inline Sint32 getNumberOfPlayers() const { return numberOfPlayers; }
 	
 	///Sets the number of players in the game
-	void setNumberOfPlayers(Sint32 players);
+	inline void setNumberOfPlayers(Sint32 players) { numberOfPlayers=players; }
 	
 	///Returns the games latency. This would be 0 for local games, but higher for networked games.
-	Sint32 getGameLatency() const;
+	inline Sint32 getGameLatency() const { return gameLatency; }
 	
 	///Sets the latency of the game.
-	void setGameLatency(Sint32 latency);
+	inline void setGameLatency(Sint32 latency) { gameLatency = latency; }
 	
 	///Returns the order rate. 1 means an order is sent across the net for every frame,
 	///2 sends at every second frame, 3 at every 3'rd and so on
-	Uint8 getOrderRate() const;
+	inline Uint8 getOrderRate() const { return orderRate; }
 	
 	///Sets the order frame rate
-	void setOrderRate(Uint8 orderRate);
+	inline void setOrderRate(Uint8 orderRate) { this->orderRate = orderRate; }
 	
 	///Provides access to the base player. n must be between 0 and 31.
-	BasePlayer& getBasePlayer(const int n);
+	inline BasePlayer& getBasePlayer(const int n)
+	{
+		assert(n<Team::MAX_COUNT && n>=0);
+		return players[n];
+	}
 	
 	///Provides access to the base player. n must be between 0 and 31.
-	const BasePlayer& getBasePlayer(const int n) const;
+	inline const BasePlayer& getBasePlayer(const int n) const
+	{
+		assert(n<Team::MAX_COUNT && n>=0);
+		return players[n];
+	}
 	
 	///Returns the ally-team number for the given team for pre-game alliances
-	Uint8 getAllyTeamNumber(int teamNumber);
+	inline Uint8 getAllyTeamNumber(int teamNumber) { return allyTeamNumbers[teamNumber]; }
 	
 	///Sets the ally-team number for the given team
-	void setAllyTeamNumber(int teamNumber, Uint8 allyTeam);
+	inline void setAllyTeamNumber(int teamNumber, Uint8 allyTeam) { allyTeamNumbers[teamNumber]=allyTeam; }
 	
 	///Returns whether allying and de-allying are allowed mid-game
-	bool areAllyTeamsFixed();
+	inline bool areAllyTeamsFixed() { return allyTeamsFixed; }
 	
 	///Sets whether ally-teams are fixed during the game
-	void setAllyTeamsFixed(bool fixed);
+	inline void setAllyTeamsFixed(bool fixed) { allyTeamsFixed = fixed; }
 	
 	///Returns the list of winning conditions. This list can be modified. Mind, though, the pecking order of winning conditions.
 	///Ones first on the list are considered first.
-	std::list<boost::shared_ptr<WinningCondition> >& getWinningConditions();
+	inline std::list<boost::shared_ptr<WinningCondition> >& getWinningConditions() { return winningConditions; }
 	
 	///Returns the random generator seed thats being used
-	Uint32 getRandomSeed() const;
+	inline Uint32 getRandomSeed() const { return seed; }
 	
 	///Sets the random generator seed to be used
-	void setRandomSeed(Uint32 seed);
+	inline void setRandomSeed(Uint32 s) { seed = s; }
 	
 	///Returns whether the map is discovered at game start
-	bool isMapDiscovered() const;
+	inline bool isMapDiscovered() const { return mapDiscovered; }
 	
 	///Sets whether the map is discovered at game start
-	void setMapDiscovered(bool discovered);
+	inline void setMapDiscovered(bool discovered) { mapDiscovered=discovered; }
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;
