@@ -1142,7 +1142,8 @@ void Unit::handleDisplacement(void)
 												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
 												{
 													// We increase the cost to get a ressource in an exchange building to reflect the costs to get the ressources to the exchange building.
-													int value=(buildingDist<<1)/need;
+													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
+													int value=(buildingDist+5)/need;
 													if (value<minValue)
 													{
 														bestRessource=r;
@@ -2144,9 +2145,7 @@ void Unit::handleAction(void)
 			directionFromDxDy();
 			action=HARVEST;
 			speed=performance[action];
-			//TODO: WTH???
-			if(speed==0)
-				speed/=speed;
+			assert(speed!=0);
 			break;
 		}
 		
@@ -2315,19 +2314,7 @@ void Unit::directionFromDxDy(void)
 
 void Unit::dxdyfromDirection(void)
 {
-	const int tab[9][2]={	{ -1, -1},
-							{ 0, -1},
-							{ 1, -1},
-							{ 1, 0},
-							{ 1, 1},
-							{ 0, 1},
-							{ -1, 1},
-							{ -1, 0},
-							{ 0, 0} };
-	assert(direction>=0);
-	assert(direction<=8);
-	dx=tab[direction][0];
-	dy=tab[direction][1];
+	dxdyfromDirection(direction,&dx,&dy);
 }
 
 int Unit::directionFromDxDy(int dx, int dy)
@@ -2341,23 +2328,6 @@ int Unit::directionFromDxDy(int dx, int dy)
 	assert(dy<=1);
 	return tab[dy+1][dx+1];
 }
-
-/*void Unit::dxdyfromDirection(int direction, int *dx, int *dy)
-{
-	const int tab[9][2]={	{ -1, -1},
-							{ 0, -1},
-							{ 1, -1},
-							{ 1, 0},
-							{ 1, 1},
-							{ 0, 1},
-							{ -1, 1},
-							{ -1, 0},
-							{ 0, 0} };
-	assert(direction>=0);
-	assert(direction<=8);
-	*dx=tab[direction][0];
-	*dy=tab[direction][1];
-}*/
 
 void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 {
@@ -2393,27 +2363,6 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 		*cdx=SIGN(ldx);
 		*cdy=SIGN(ldy);
 	}
-}
-
-Sint32 Unit::GIDtoID(Uint16 gid)
-{
-	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
-	return (gid%Unit::MAX_COUNT);
-}
-
-Sint32 Unit::GIDtoTeam(Uint16 gid)
-{
-	assert(gid<Unit::MAX_COUNT*Team::MAX_COUNT);
-	return (gid/Unit::MAX_COUNT);
-}
-
-Uint16 Unit::GIDfrom(Sint32 id, Sint32 team)
-{
-	assert(id>=0);
-	assert(id<Unit::MAX_COUNT);
-	assert(team>=0);
-	assert(team<Team::MAX_COUNT);
-	return id+team*Unit::MAX_COUNT;
 }
 
 //! Return the real armor, taking into account the reduction due to fruits

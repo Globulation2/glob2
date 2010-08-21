@@ -20,11 +20,7 @@
 #ifndef __RESSOURCE_H
 #define __RESSOURCE_H
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL.h>
-#else
-#include <Types.h>
-#endif
 
 #include <string>
 
@@ -48,6 +44,7 @@ std::string getRessourceName(int type);
 
 #define MAX_NB_RESSOURCES 15
 #define MAX_RESSOURCES 8
+#define NO_RES -1
 #define WOOD 0
 #define CORN 1
 #define PAPYRUS 2

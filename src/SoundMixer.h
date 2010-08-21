@@ -20,12 +20,8 @@
 #ifndef __SOUNDMIXER_H
 #define __SOUNDMIXER_H
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL.h>
 #include <SDL_audio.h>
-#else
-#include <Types.h>
-#endif
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 #include <vector>
@@ -81,7 +77,7 @@ public:
 	~SoundMixer();
 
 	//! load an ogg file. Return the index in the track list. If index is given, attempt to replace the current track at this index
-	int loadTrack(const char *name, int index = -1);
+	int loadTrack(const std::string name, int index = -1);
 
 	void setNextTrack(unsigned i, bool earlyChange=false);
 

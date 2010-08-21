@@ -182,4 +182,39 @@ namespace GAGCore
 	{
 		return index >= datas.size();
 	}
+
+	void HashStreamBackend::write(const void *data, const size_t size)
+	{
+		unsigned char *p = (unsigned char *)data; // Pointer to data
+		unsigned char *e = p + size; // Pointer to the end of the data
+
+		// FNV-1a hash each byte in the buffer
+		while (p < e)
+		{
+			// xor the least significant bits of the hash with the current byte
+			hash ^= (Uint32)(*p);
+
+			// Multiply by the 32 bit FNV magic prime mod 2^32
+			hash *= 0x01000193;
+
+			p++;
+		}
+	}
+
+	void HashStreamBackend::putc(int c)
+	{
+		c = (unsigned int)c;
+
+		while (c != 0)
+		{
+			// xor the least significant bits of the hash with the current byte
+			hash ^= (Uint32)(c|0xFF);
+
+			// Multiply by the 32 bit FNV magic prime mod 2^32
+			hash *= 0x01000193;
+
+			// Next byte
+			c >>= 8;
+		}
+	}
 }

@@ -22,9 +22,7 @@
 #include <FileManager.h>
 #include <assert.h>
 #include <iostream>
-#ifndef DX9_BACKEND	// TODO:Die!
 #include "TrueTypeFont.h"
-#endif
 
 #ifndef YOG_SERVER_ONLY
 #include <GraphicContext.h>
@@ -52,7 +50,7 @@ namespace GAGCore
 	}
 	
 	#ifndef YOG_SERVER_ONLY
-	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags, const char *title, const char *icon)
+	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags, const std::string title, const std::string icon)
 	{
 		gc = new GraphicContext(w, h, flags, title, icon);
 		return gc;
@@ -88,9 +86,9 @@ namespace GAGCore
 	}
 	
 		#ifndef YOG_SERVER_ONLY
-	Sprite *Toolkit::getSprite(const char *name)
+	Sprite *Toolkit::getSprite(const std::string name)
 	{
-		assert(name);
+		assert(name.size());
 		if (spriteMap.find(name) == spriteMap.end())
 		{
 			Sprite *sprite = new Sprite();
@@ -108,33 +106,23 @@ namespace GAGCore
 		return spriteMap[std::string(name)];
 	}
 	
-	Sprite *Toolkit::getSprite(const std::string &name)
+	void Toolkit::releaseSprite(const std::string name)
 	{
-		return getSprite(name.c_str());
-	}
-	
-	void Toolkit::releaseSprite(const char *name)
-	{
-		assert(name);
-		SpriteMap::iterator it = spriteMap.find(std::string(name));
+		assert(name.size());
+		SpriteMap::iterator it = spriteMap.find(name);
 		assert(it!=spriteMap.end());
 		delete (*it).second;
 		spriteMap.erase(it);
 	}
 	
-	void Toolkit::releaseSprite(const std::string &name)
+	void Toolkit::loadFont(const std::string filename, unsigned size, const std::string name)
 	{
-		return releaseSprite(name.c_str());
-	}
-	
-	void Toolkit::loadFont(const char *filename, unsigned size, const char *name)
-	{
-		assert(filename);
-		assert(name);
+		assert(filename.size());
+		assert(name.size());
 		TrueTypeFont *ttf = new TrueTypeFont();
 		if (ttf->load(filename, size))
 		{
-			Toolkit::fontMap[std::string(name)] = ttf;
+			Toolkit::fontMap[name] = ttf;
 		}
 		else
 		{
@@ -143,22 +131,22 @@ namespace GAGCore
 		}
 	}
 	
-	Font *Toolkit::getFont(const char *name)
+	Font *Toolkit::getFont(const std::string name)
 	{
-		assert(name);
+		assert(name.size());
 		if (fontMap.find(name) == fontMap.end())
 		{
 			std::cerr << "GAG : Font " << name << " does not exists" << std::endl;
 			assert(false);
 			return NULL;
 		}
-		return fontMap[std::string(name)];
+		return fontMap[name];
 	}
 	
-	void Toolkit::releaseFont(const char *name)
+	void Toolkit::releaseFont(const std::string name)
 	{
-		assert(name);
-		FontMap::iterator it = fontMap.find(std::string(name));
+		assert(name.size());
+		FontMap::iterator it = fontMap.find(name);
 		assert(it!=fontMap.end());
 		delete (*it).second;
 		fontMap.erase(it);

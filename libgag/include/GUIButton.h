@@ -62,15 +62,14 @@ namespace GAGGUI
 	
 	public:
 		TextButton() { fontPtr=NULL; }
-		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returnCode,
+		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode,
 		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode=0);
-		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int returxnCode, Uint16 unicodeShortcut=0);
+		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, Uint16 unicodeShortcut=0);
 		virtual ~TextButton() { }
 		virtual void internalInit(void);
 		virtual void paint(void);
 	
-		void setText(const char *text);
-		void setText(const std::string &text) { setText(text.c_str()); }
+		void setText(const std::string text);
 	};
 	
 	class OnOffButton:public HighlightableWidget
@@ -164,13 +163,12 @@ namespace GAGGUI
 	
 	public:
 		MultiTextButton() { textIndex=0; returnCode=0; }
-		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int retuxrnCode, Uint16 unicodeShortcut=0);
-		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const char *font, const char *text, int retuxrnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut=0);
+		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int retuxrnCode, Uint16 unicodeShortcut=0);
+		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int retuxrnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut=0);
 		virtual ~MultiTextButton() { }
 	
 		
-		void addText(const char *s);
-		void addText(const std::string &s) { addText(s.c_str()); }
+		void addText(const std::string s);
 		const std::string &getText(void) const { return texts.at(textIndex); }
 		void clearTexts(void);
 		void setIndex(int i);

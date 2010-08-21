@@ -17,6 +17,7 @@
 */
 
 #include <algorithm>
+#include "Version.h"
 #include "NetBroadcaster.h"
 #include "NetConnection.h"
 #include "NetMessage.h"

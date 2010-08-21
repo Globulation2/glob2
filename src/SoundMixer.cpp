@@ -31,11 +31,7 @@ using namespace GAGCore;
 
 #include <speex/speex.h>
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>
-#else
-#include <Types.h>
-#endif
 
 #ifdef WIN32
 #include <malloc.h>
@@ -335,7 +331,7 @@ SoundMixer::~SoundMixer()
 	}
 }
 
-int SoundMixer::loadTrack(const char *name, int index)
+int SoundMixer::loadTrack(const std::string name, int index)
 {
 	FILE* fp = Toolkit::getFileManager()->openFP(name);
 	if (!fp)

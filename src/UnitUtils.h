@@ -17,10 +17,21 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __FATAL_H
-#define __FATAL_H
+#ifndef __UNIT_UTILS_H
+#define __UNIT_UTILS_H
 
-extern void installCrashHandler(void);
-extern void printTrace(void);
+#include <SDL_net.h>
 
-#endif
+class UnitUtils
+{
+ public:
+	static Sint32 GIDtoID(Uint16 gid);
+	static Sint32 GIDtoTeam(Uint16 gid);
+	static Uint16 GIDfrom(Sint32 id, Sint32 team);
+
+	static const int MAX_COUNT = 1024;
+};
+
+
+#endif  // __UNIT_UTILS_H
+

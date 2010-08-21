@@ -37,6 +37,7 @@ namespace GAGCore
 		virtual void seekRelative(int displacement) = 0;
 		virtual size_t getPosition(void) = 0;
 		virtual bool isEndOfStream(void) = 0;
+		virtual bool isValid(void) = 0;
 	};
 	
 	//! The stream that can be written to
@@ -45,20 +46,20 @@ namespace GAGCore
 	public:
 		virtual ~OutputStream() { }
 		
-		virtual void write(const void *data, const size_t size, const char *name) = 0;
-		virtual void writeSint8(const Sint8 v, const char *name) = 0;
-		virtual void writeUint8(const Uint8 v, const char *name) = 0;
-		virtual void writeSint16(const Sint16 v, const char *name) = 0;
-		virtual void writeUint16(const Uint16 v, const char *name) = 0;
-		virtual void writeSint32(const Sint32 v, const char *name) = 0;
-		virtual void writeUint32(const Uint32 v, const char *name) = 0;
-		virtual void writeFloat(const float v, const char *name) = 0;
-		virtual void writeDouble(const double v, const char *name) = 0;
-		virtual void writeText(const std::string &v, const char *name) = 0;
+		virtual void write(const void *data, const size_t size, const std::string name) = 0;
+		virtual void writeSint8(const Sint8 v, const std::string name) = 0;
+		virtual void writeUint8(const Uint8 v, const std::string name) = 0;
+		virtual void writeSint16(const Sint16 v, const std::string name) = 0;
+		virtual void writeUint16(const Uint16 v, const std::string name) = 0;
+		virtual void writeSint32(const Sint32 v, const std::string name) = 0;
+		virtual void writeUint32(const Uint32 v, const std::string name) = 0;
+		virtual void writeFloat(const float v, const std::string name) = 0;
+		virtual void writeDouble(const double v, const std::string name) = 0;
+		virtual void writeText(const std::string &v, const std::string name) = 0;
 		
 		virtual void flush(void) = 0;
 		
-		virtual void writeEnterSection(const char *name) = 0;
+		virtual void writeEnterSection(const std::string name) = 0;
 		virtual void writeEnterSection(unsigned id) = 0;
 		virtual void writeLeaveSection(size_t count = 1) = 0;
 	};
@@ -69,18 +70,18 @@ namespace GAGCore
 	public:
 		virtual ~InputStream() { }
 	
-		virtual void read(void *data, size_t size, const char *name) = 0;
-		virtual Sint8 readSint8(const char *name) = 0;
-		virtual Uint8 readUint8(const char *name) = 0;
-		virtual Sint16 readSint16(const char *name) = 0;
-		virtual Uint16 readUint16(const char *name) = 0;
-		virtual Sint32 readSint32(const char *name) = 0;
-		virtual Uint32 readUint32(const char *name) = 0;
-		virtual float readFloat(const char *name) = 0;
-		virtual double readDouble(const char *name) = 0;
-		virtual std::string readText(const char *name) = 0;
+		virtual void read(void *data, size_t size, const std::string name) = 0;
+		virtual Sint8 readSint8(const std::string name) = 0;
+		virtual Uint8 readUint8(const std::string name) = 0;
+		virtual Sint16 readSint16(const std::string name) = 0;
+		virtual Uint16 readUint16(const std::string name) = 0;
+		virtual Sint32 readSint32(const std::string name) = 0;
+		virtual Uint32 readUint32(const std::string name) = 0;
+		virtual float readFloat(const std::string name) = 0;
+		virtual double readDouble(const std::string name) = 0;
+		virtual std::string readText(const std::string name) = 0;
 		
-		virtual void readEnterSection(const char *name) = 0;
+		virtual void readEnterSection(const std::string name) = 0;
 		virtual void readEnterSection(unsigned id) = 0;
 		virtual void readLeaveSection(size_t count = 1) = 0;
 	};

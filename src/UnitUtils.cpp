@@ -17,10 +17,27 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NETDEFINE_H
-#define __NETDEFINE_H
+#include "UnitUtils.h"
+#include "Team.h"
 
-//#define  NETPRINTF printf
-//#define NETPRINTF if (true) ; else printf
 
-#endif
+Sint32 UnitUtils::GIDtoID(Uint16 gid)
+{
+	assert(gid < UnitUtils::MAX_COUNT * Team::MAX_COUNT);
+	return (gid % UnitUtils::MAX_COUNT);
+}
+
+Sint32 UnitUtils::GIDtoTeam(Uint16 gid)
+{
+	assert(gid < UnitUtils::MAX_COUNT * Team::MAX_COUNT);
+	return (gid / UnitUtils::MAX_COUNT);
+}
+
+Uint16 UnitUtils::GIDfrom(Sint32 id, Sint32 team)
+{
+	assert(id >= 0);
+	assert(id < UnitUtils::MAX_COUNT);
+	assert(team >= 0);
+	assert(team < Team::MAX_COUNT);
+	return id + team * UnitUtils::MAX_COUNT;
+}

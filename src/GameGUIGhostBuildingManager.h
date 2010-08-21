@@ -22,7 +22,8 @@
 #include <vector>
 #include <boost/tuple/tuple.hpp>
 #include <string>
-#include "Game.h"
+
+class Game;
 
 ///GameGUIGhostBuildingManager causes 'ghosts' of buildings to be drawn on the map in
 ///the time inbetween when the user clicks the button to construct a building, and when

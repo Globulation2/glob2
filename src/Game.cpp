@@ -51,11 +51,13 @@
 
 #include "Brush.h"
 #include "DynamicClouds.h"
-
+#include "Bullet.h"
 #include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 
 #include "NetMessage.h"
+
+#include "ReplayWriter.h"
 
 #define BULLET_IMGID 0
 
@@ -66,9 +68,7 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 	mapscript(gui)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
-	
-	isRecordingReplay = false;
-	
+
 	init(gui, edit);
 }
 
@@ -97,13 +97,8 @@ Game::~Game()
 
 	clearGame();
 
-	if (isRecordingReplay)
-	{
-		for (size_t i = 0; i < replayOutputStreams.size(); i++)
-		{
-			delete replayOutputStreams[i];
-		}
-	}
+	delete globalContainer->replayWriter;
+	globalContainer->replayWriter = NULL;
 }
 
 void Game::init(GameGUI *gui, MapEdit* edit)
@@ -129,7 +124,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 
 	stepCounter=0;
 	prestigeToReach=0;
-	
+
 	ticksGameSum=new int[Team::MAX_COUNT];
 	for (int i=0; i<Team::MAX_COUNT; i++)
 		ticksGameSum[i]=0;
@@ -159,7 +154,7 @@ void Game::clearGame()
 			players[i]=NULL;
 		}
 	}
-	
+
 	// Clear build projects
 	buildProjects.clear();
 
@@ -226,30 +221,11 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	assert(order->sender<Team::MAX_COUNT);
 	assert(order->sender < gameHeader.getNumberOfPlayers());
 
-	if (isRecordingReplay && order->getOrderType() != ORDER_VOICE_DATA && order->getOrderType() != ORDER_NULL) // TODO: optionally save VOIP
+	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
-		assert(replay);
-		
-		replayOrderCount++;
-		NetSendOrder* msg = new NetSendOrder(order);
-		
-		for (std::vector<OutputStream *>::iterator out = replayOutputStreams.begin(); out != replayOutputStreams.end(); out++)
-		{
-			// Steps since last order
-
-			(*out)->writeUint32(replayStepsSinceLastOrder, "replayStepsSinceLastOrder" );
-
-			// Write actual order to replay
-
-			msg->encodeData( *out );
-
-			(*out)->flush();
-		}
-		
-		delete msg;
-		replayStepsSinceLastOrder=0;
+		globalContainer->replayWriter->pushOrder(order);
 	}
-	
+
 	anyPlayerWaited=false;
 	Team *team=players[order->sender]->team;
 	assert(team);
@@ -827,20 +803,6 @@ bool Game::load(GAGCore::InputStream *stream)
 {
 	assert(stream);
 
-	// Initialize the replay
-	isRecordingReplay = !globalContainer->replaying; // TODO: provide an option for this
-	if (isRecordingReplay)
-	{
-		replayStepCount = 0;
-		replayOrderCount = 0;
-		replayStepsSinceLastOrder = 0;
-
-		replay = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.replay"));
-		
-		replayOutputStreams.push_back(replay);
-		replayOutputStreams.push_back(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.orders")));
-	}
-
 	stream->readEnterSection("Game");
 
 	///Clears any previous game
@@ -1270,14 +1232,13 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam)
 {
-	if (isRecordingReplay) 
-	{
-		replayStepCount++;
-		replayStepsSinceLastOrder++;
-	}
-
 	if (!anyPlayerWaited)
 	{
+		if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
+		{
+			globalContainer->replayWriter->advanceStep();
+		}
+
 		Sint32 startTick=SDL_GetTicks();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
@@ -1596,7 +1557,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 				if ((*bi)->posX==x && (*bi)->posY==y)
 				{
 					teams[ti]->virtualBuildings.erase(bi);
-					teams[ti]->myBuildings[Building::GIDtoID((*bi)->gid)]=NULL;;
+					teams[ti]->myBuildings[Building::GIDtoID((*bi)->gid)]=NULL;
 					delete *bi;
 					found=true;
 					break;
@@ -2334,7 +2295,7 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 						|| (building->seenByMask & visibleTeams)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
-						int px,py;					
+						int px,py;
 						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
 					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
 						drawnBuildings.insert(building);
@@ -2351,10 +2312,10 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	static int areaAnimationTick = 0;
-	
+
 	typedef bool (Map::*MapIsFP)(int, int);
 	MapIsFP mapIs;
-	
+
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->replaying || globalContainer->replayShowAreas))
 	{
 		mapIs=&Map::isForbiddenLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, ForbiddenArea);
@@ -2600,6 +2561,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			overlays=&gui->overlay;
 		else if(edit)
 			overlays=&edit->overlay;
+		else assert(false);
 		int overlayMax=overlays->getMaximum();
 		Color overlayColor;
 		if(overlays->getOverlayType() == OverlayArea::Starving)
@@ -3142,24 +3104,4 @@ bool Game::isPrestigeWinCondition(void)
 			return true;
 	}
 	return false;
-}
-
-OutputStream *Game::getReplayStream()
-{
-	return replay;
-}
-
-void Game::addReplayOutputStream( OutputStream *stream )
-{
-	replayOutputStreams.push_back(stream);
-}
-
-Uint32 Game::getReplayOrderCount()
-{
-	return replayOrderCount;
-}
-
-Uint32 Game::getReplayStepCount()
-{
-	return replayStepCount;
 }

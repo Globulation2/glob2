@@ -23,7 +23,7 @@ void Position::operator+=(char c)
 	};
 }
 
-void Position::move(const char *text, size_t length)
+void Position::move(const std::string text, size_t length)
 {
 	for (size_t i = 0; i < length; i++)
 		*this += text[i];

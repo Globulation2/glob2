@@ -47,7 +47,7 @@ class Configuration:
         self.f.write("#define %s %s\n" % (variable, value))
         self.f.write("\n")
     
-def configure(env):
+def configure(env, server_only):
     """Configures glob2"""
     conf = Configure(env.Clone())
     configfile = Configuration()
@@ -68,12 +68,6 @@ def configure(env):
         configfile.add("USE_WIN32", "Set when this build is Win32")
     configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
 
-        
-    server_only=False
-    if env['server']:
-        env.Append(CPPDEFINES=["YOG_SERVER_ONLY"])
-        server_only=True
-
     missing=[]
 
     env.Append(CPPDEFINES=["HAVE_CONFIG_H"])
@@ -87,28 +81,28 @@ def configure(env):
         missing.append("CXX compiler")
 
     #Simple checks for required libraries
-    if not conf.CheckLib("SDL") and not server_only:
+    if not server_only and not conf.CheckLib("SDL"):
         print "Could not find libSDL"
         missing.append("SDL")
-    if not conf.CheckLib("SDL_ttf") and not server_only:
+    if not server_only and not conf.CheckLib("SDL_ttf"):
         print "Could not find libSDL_ttf"
         missing.append("SDL_ttf")
-    if not conf.CheckLib("SDL_image") and not server_only:
+    if not server_only and not conf.CheckLib("SDL_image"):
         print "Could not find libSDL_image"
         missing.append("SDL_image")
-    if not conf.CheckLib("SDL_net") and not server_only:
+    if not conf.CheckLib("SDL_net"):
         print "Could not find libSDL_net"
         missing.append("SDL_net")
-    if not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h") and not server_only:
+    if not server_only and (not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h")):
         print "Could not find libspeex or could not find 'speex/speex.h'"
         missing.append("speex")
-    if not conf.CheckLib("vorbisfile") and not server_only:
+    if not server_only and not conf.CheckLib("vorbisfile"):
         print "Could not find libvorbisfile"
         missing.append("vorbisfile")
-    if not conf.CheckLib("vorbis") and not server_only:
+    if not server_only and not conf.CheckLib("vorbis"):
         print "Could not find libvorbis"
         missing.append("vorbis")
-    if not conf.CheckLib("ogg") and not server_only:
+    if not server_only and not conf.CheckLib("ogg"):
         print "Could not find libogg"
         missing.append("ogg")
     if not conf.CheckCXXHeader("zlib.h"):
@@ -166,44 +160,45 @@ def configure(env):
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
-    if isDarwinPlatform and not server_only:
-        print "Using Apple's OpenGL framework"
-        env.Append(FRAMEWORKS="OpenGL")
-    elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h") and not server_only:
-        gl_libraries.append("GL")
-    elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h") and not server_only:
-        gl_libraries.append("GL")
-    elif conf.CheckLib("opengl32") and conf.CheckCXXHeader("GL/gl.h") and not server_only:
-        gl_libraries.append("opengl32")
-    elif not server_only:
-        print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
-        missing.append("OpenGL")
+    if not server_only:
+        if isDarwinPlatform:
+            print "Using Apple's OpenGL framework"
+            env.Append(FRAMEWORKS="OpenGL")
+        elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h"):
+            gl_libraries.append("GL")
+        elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h"):
+            gl_libraries.append("GL")
+        elif conf.CheckLib("opengl32") and conf.CheckCXXHeader("GL/gl.h"):
+            gl_libraries.append("opengl32")
+        else:
+            print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
+            missing.append("OpenGL")
 
-    #Do checks for GLU, which is different on every system
-    if isDarwinPlatform and not server_only:
-        print "Using Apple's GLUT framework"
-        env.Append(FRAMEWORKS="GLUT")
-    elif conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h") and not server_only:
-        gl_libraries.append("GLU")
-    elif conf.CheckLib('GLU') and conf.CheckCXXHeader("OpenGL/glu.h") and not server_only:
-        gl_libraries.append("GLU")
-    elif conf.CheckLib('glu32') and conf.CheckCXXHeader('GL/glu.h') and not server_only:
-        gl_libraries.append("glu32")
-    elif not server_only:
-        print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
-        missing.append("GLU")
+        #Do checks for GLU, which is different on every system
+        if isDarwinPlatform:
+            print "Using Apple's GLUT framework"
+            env.Append(FRAMEWORKS="GLUT")
+        elif conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h"):
+            gl_libraries.append("GLU")
+        elif conf.CheckLib('GLU') and conf.CheckCXXHeader("OpenGL/glu.h"):
+            gl_libraries.append("GLU")
+        elif conf.CheckLib('glu32') and conf.CheckCXXHeader('GL/glu.h'):
+            gl_libraries.append("glu32")
+        else:
+            print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
+            missing.append("GLU")
     
     if gl_libraries or isDarwinPlatform:
         configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
         env.Append(LIBS=gl_libraries)
     
     #Do checks for fribidi
-    if conf.CheckLib('fribidi') and conf.CheckCXXHeader('fribidi/fribidi.h'):
+    if not server_only and conf.CheckLib('fribidi') and conf.CheckCXXHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
         env.Append(LIBS=['fribidi'])
 
     #Do checks for portaudio
-    if conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
+    if not server_only and conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
         if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
             print "--------"
             print "NOTE: It appears you are compiling under Windows. At this stage, PortAudio crashes Globulation 2 when voice chat is used."
@@ -265,8 +260,8 @@ def main():
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
         env.Append(CPPPATH=['/usr/local/include/SDL'])
     if isDarwinPlatform:
-        env.Append(LIBPATH=["/sw/lib"])
-        env.Append(CPPPATH=["/sw/include"])
+        env.Append(LIBPATH=["/opt/local/lib"])
+        env.Append(CPPPATH=["/opt/local/include"])
     if env['mingwcross']:
         if os.path.isabs(env['crossroot']):
             crossroot_abs = env['crossroot']
@@ -275,13 +270,21 @@ def main():
         env.Append(LIBPATH=['/usr/i586-mingw32msvc/lib', crossroot_abs + '/lib'])
         env.Append(CPPPATH=['/usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/include/c++', '/usr/i586-mingw32msvc/include'])
         env.Append(CPPPATH=[crossroot_abs + '/include', crossroot_abs + '/include/SDL'])
-    configure(env)
+
+    server_only = False
+    if env['server']:
+        env.Append(CPPDEFINES=["YOG_SERVER_ONLY"])
+        server_only = True
+    configure(env, server_only)
 
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
     env.Append(CXXFLAGS=' -Wall')
     env.Append(LINKFLAGS=' -Wall')
-    env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'SDL_net', 'speex'])
+    env.Append(LIBS=['SDL_net'])
+    if not server_only:
+        env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'speex'])
+
     if env['release']:
         env.Append(CXXFLAGS=' -O2 -s')
         env.Append(LINKFLAGS=' -O2 -s --fwhole-program')
@@ -291,9 +294,13 @@ def main():
         env.Append(CXXFLAGS=' -O2')
         env.Append(LINKFLAGS='-O2')
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
+        # TODO: Remove unneccessary dependencies for server.
         env.Append(LIBS=['vorbis', 'ogg', 'regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
         env.Append(LINKFLAGS=['-mwindows'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
+    elif isDarwinPlatform:
+        env.ParseConfig("/opt/local/bin/sdl-config --cflags")
+        env.ParseConfig("/opt/local/bin/sdl-config --libs")
     else:
         env.ParseConfig("sdl-config --cflags")
         env.ParseConfig("sdl-config --libs")
@@ -357,4 +364,5 @@ def main():
     SConscript("src/SConscript")
     SConscript("tools/SConscript")
     SConscript("windows/SConscript")
+
 main()

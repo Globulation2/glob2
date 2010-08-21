@@ -20,6 +20,8 @@
 #ifndef __STREAMBACKEND_H
 #define __STREAMBACKEND_H
 
+#include <fstream>
+#include <iostream>
 #include <Types.h>
 #include <string>
 #include <stdio.h>
@@ -125,6 +127,32 @@ namespace GAGCore
 		virtual bool isEndOfStream(void);
 		virtual bool isValid(void) { return true; }
 		virtual const char* getBuffer() { return datas.c_str(); }
+	};
+
+	//! A stream that doesn't save data, it just produces a hash. Don't try to read from it!
+	//! It uses the FNV-1a algorithm for its speed
+	class HashStreamBackend : public StreamBackend
+	{
+	private:
+		Uint32 hash;
+
+	public:
+		HashStreamBackend() { hash = 0x811c9dc5; }
+		virtual ~HashStreamBackend() {}
+
+		virtual void write(const void *data, const size_t size);
+		virtual void flush(void) {}
+		virtual void read(void *data, size_t size) { assert(false); }
+		virtual void putc(int c);
+		virtual int getChar(void) { assert(false); }
+		virtual void seekFromStart(int displacement) {}
+		virtual void seekFromEnd(int displacement) {}
+		virtual void seekRelative(int displacement) {}
+		virtual size_t getPosition(void) { return 0; }
+		virtual bool isEndOfStream(void) { return false; }
+		virtual bool isValid(void) { return true; }
+
+		virtual Uint32 getHash(void) { return hash; }
 	};
 }
 

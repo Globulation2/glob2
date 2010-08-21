@@ -17,10 +17,6 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifdef DX9_BACKEND
-#include <Types.h>
-#endif
-
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <StringTable.h>
@@ -29,6 +25,7 @@
 #include <BinaryStream.h>
 #include <FormatableString.h>
 
+#include "AINames.h"
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
@@ -41,6 +38,9 @@
 #include "Player.h"
 #include "NetMessage.h"
 #include "GameGUIDialog.h"
+#include "GUIMessageBox.h"
+#include "ReplayReader.h"
+#include "ReplayWriter.h"
 
 #include <iostream>
 
@@ -203,7 +203,21 @@ int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, 
 
 void Engine::createRandomGame()
 {
-	MapHeader map = chooseRandomMap();
+	bool validMapChosen = false;
+	MapHeader map;
+
+	while (!validMapChosen)
+	{
+		try
+		{
+			map = chooseRandomMap();
+			validMapChosen = true;
+		}
+		catch (std::ios_base::failure &e)
+		{
+			validMapChosen = false;
+		}
+	}
 	
 	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
 	
@@ -252,15 +266,15 @@ int Engine::run(void)
 	else
 	{
 		// look for all available musics
-		globalContainer->fileManager->initDirectoryListing("data/zik/", NULL, true);
-		const char *fileName;
+		globalContainer->fileManager->initDirectoryListing("data/zik/", "", true);
+		std::string filename;
 		std::vector<std::string> musicDirs;
-		while ((fileName = globalContainer->fileManager->getNextDirectoryEntry()) != 0) 
+		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
 		{
-			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(fileName)))
+			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(filename)))
 			{
-				std::cerr << "music dir found: " << fileName << std::endl;
-				musicDirs.push_back(fileName);
+				std::cerr << "music dir found: " << filename << std::endl;
+				musicDirs.push_back(filename);
 			}
 		}
 		
@@ -397,6 +411,10 @@ int Engine::run(void)
 				{
 					Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
 					net->advanceStep(checksum);
+
+					// Enable this to do test if checksums in the replay match
+					//if (globalContainer->replayReader) globalContainer->replayReader->setCheckSum(checksum);
+					if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
 				}
 
 				// We proceed network:
@@ -443,38 +461,22 @@ int Engine::run(void)
 				// Load the replay's orders
 				if (globalContainer->replaying)
 				{
-					assert(globalContainer->replay);
+					assert(globalContainer->replayReader);
+					assert(globalContainer->replayReader->isValid());
 					
-					while ( globalContainer->replayStepCounter == 0 &&
-						globalContainer->replayOrdersProcessed < globalContainer->replayOrdersTotal &&
-						!globalContainer->replay->isEndOfStream())
+					while (globalContainer->replayReader->hasMoreOrdersThisStep())
 					{
-						globalContainer->replayOrdersProcessed++;
+						shared_ptr<Order> order = globalContainer->replayReader->retrieveOrder();
 
-						NetSendOrder* msg = new NetSendOrder();
-
-						try
+						if (order->getOrderType() != ORDER_PLAYER_QUIT_GAME &&
+						    order->getOrderType() != ORDER_PAUSE_GAME &&
+						    order->getOrderType() != ORDER_NULL)
 						{
-							msg->decodeData(globalContainer->replay);
-							shared_ptr<Order> order = msg->getOrder();
-
-							if (order->getOrderType() != ORDER_PLAYER_QUIT_GAME &&
-							    order->getOrderType() != ORDER_PAUSE_GAME)
-							{
-								gui.executeOrder(order);
-							}
+							gui.executeOrder(order);
 						}
-						catch (const std::ios_base::failure &e)
-						{
-							std::cout << "Error in replay: " << e.what() << std::endl;
-						}
-						catch (...) { assert(false); }
-
-						delete msg;
-						globalContainer->replayStepCounter = globalContainer->replay->readUint32("replayStepCounter");
 					}
 					
-					if (globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
+					if (globalContainer->replayReader->isFinished())
 					{
 						gui.showEndOfReplayScreen();
 					}
@@ -485,8 +487,8 @@ int Engine::run(void)
 				{
 					if (globalContainer->replaying)
 					{
-						globalContainer->replayStepCounter--;
-						globalContainer->replayStepsProcessed++;
+						assert(globalContainer->replayReader);
+						globalContainer->replayReader->advanceStep();
 					}
 					
 					gui.game.syncStep(gui.localTeamNo);
@@ -664,7 +666,23 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 	{
 		if (verbose)
 			std::cout << "Engine::loadMapHeader : loading map " << filename << std::endl;
-		bool validMapSelected = mapHeader.load(stream);
+
+		bool validMapSelected;
+
+		try
+		{
+			validMapSelected = mapHeader.load(stream);
+		}
+		catch (std::ios_base::failure &e)
+		{
+			// Notify what filename couldn't load, because if we're doing -test-games(-nox) and loading the map fails,
+			// the map name won't be saved inside mapHeader.
+			std::cerr << "Engine::loadMapHeader : can't load map \"" << filename << "\": bad format" << std::endl;
+
+			// We didn't solve the problem though, so we re-throw
+			throw;
+		}
+
 		if (!validMapSelected)
 			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
 	}
@@ -716,9 +734,24 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 
 int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
 {
-	if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
+	try
+	{
+		if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
+			return EE_CANT_LOAD_MAP;
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Failed to load the map: bad format." << std::endl;
+
+		if (!globalContainer->runNoX)
+		{
+			// Display an error message
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+		}
+
 		return EE_CANT_LOAD_MAP;
-	
+	}
+
 	// We remove uncontrolled stuff from map
 	gui.game.clearingUncontrolledTeams();
 
@@ -728,17 +761,12 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// we create the net game
 	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
-	// Save the game for replays
-	if (gui.game.isRecordingReplay)
+	// Initialise the replay writer, unless we're showing a replay
+	if (!globalContainer->replaying)
 	{
-		gui.save(gui.game.getReplayStream(),"header");
-		gui.game.getReplayStream()->writeUint32(-1,"stepcount");
-		gui.game.getReplayStream()->writeUint32(-1,"ordercount");
-		
-		// Also save this game to last_game.header
-		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("replays/last_game.header"));
-		gui.save(stream,"header");
-		delete stream;
+		assert(globalContainer->replayWriter == NULL);
+		globalContainer->replayWriter = new ReplayWriter();
+		globalContainer->replayWriter->init("replays/last_game.replay", gui);
 	}
 
 	return EE_NO_ERROR;
@@ -822,8 +850,8 @@ MapHeader Engine::chooseRandomMap()
 	// we add the other files
 	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), "map", false))
 	{
-		const char* fileName;
-		while ((fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())) != NULL)
+		std::string fileName;
+		while (!(fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())).empty())
 		{
 			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
 			maps.push_back(fullFileName);
@@ -846,13 +874,13 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		int teamColor=(i % numberOfTeams);
 		if (i==0)
 		{
-			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername(), teamColor, BasePlayer::P_LOCAL);
 		}
 		else
 		{
 			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
 			FormatableString name("%0 %1");
-			name.arg(AI::getAIText(iid)).arg(i-1);
+			name.arg(AINames::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 		}
 		gameHeader.setAllyTeamNumber(teamColor, teamColor);
@@ -873,30 +901,28 @@ int Engine::loadReplay(const std::string &fileName)
 	gui.localTeamNo = 0;
 	globalContainer->replayVisibleTeams = 0xFFFFFFFF;
 	globalContainer->replayFastForward = false;
-	
-	// Load the replay file
-	globalContainer->replay = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName));
-	assert(globalContainer->replay);
-	
-	// Get to the right position (readEnterSection doesn't work)
-	GameGUI tempGui;
-	tempGui.load(globalContainer->replay);
-	
-	// Read the total number of steps
-	globalContainer->replayStepsTotal = globalContainer->replay->readUint32("stepcount");
-	globalContainer->replayStepsProcessed = 0;
-	
-	// Read the total number of orders
-	globalContainer->replayOrdersTotal = globalContainer->replay->readUint32("ordercount");
-	globalContainer->replayOrdersProcessed = 0;
-	
-	// Read the number of steps until the first order
-	if (globalContainer->replayOrdersTotal > 0)
-		globalContainer->replayStepCounter = globalContainer->replay->readUint32("replayStepCounter");
-	else
-		globalContainer->replayStepCounter = -1;
 
-	// Load the map and settings
+	// Initialize the ReplayReader in GlobalContainer
+	globalContainer->replayReader = new ReplayReader();
+	bool replayLoaded = globalContainer->replayReader->loadReplay(fileName);
+
+	// If the reader found that the replay isn't valid, show an error message and return
+	if (!replayLoaded)
+	{
+		if (!globalContainer->runNoX)
+		{
+			// Display an error message
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+		}
+
+		delete globalContainer->replayReader;
+		globalContainer->replayReader = NULL;
+		return EE_CANT_LOAD_MAP;
+	}
+
+	assert(globalContainer->replayReader->isValid());
+
+	// Load the map and settings.
 	MapHeader mapHeader = loadMapHeader(fileName);
 	GameHeader gameHeader = loadGameHeader(fileName);
 

@@ -26,6 +26,7 @@
 #include <GraphicContext.h>
 #include <Stream.h>
 
+#ifndef YOG_SERVER_ONLY
 UnitDeathAnimation::UnitDeathAnimation(int x, int y, Team *team)
 {
 	this->x = x;
@@ -33,6 +34,7 @@ UnitDeathAnimation::UnitDeathAnimation(int x, int y, Team *team)
 	this->team = team;
 	this->ticksLeft = globalContainer->deathAnimation->getFrameCount() - 1;
 }
+#endif  // !YOG_SERVER_ONLY
 
 Sector::Sector(Game *game)
 {
@@ -61,11 +63,13 @@ void Sector::free(void)
 	for (std::list<BulletExplosion *>::iterator it=explosions.begin();it!=explosions.end();it++)
 		delete (*it);
 	explosions.clear();
-	
+
+#ifndef YOG_SERVER_ONLY
 	for (std::list<UnitDeathAnimation *>::iterator it=deathAnimations.begin();it!=deathAnimations.end();it++)
 		delete (*it);
 	deathAnimations.clear();
-	
+#endif  // !YOG_SERVER_ONLY
+
 	game=NULL;
 	map=NULL;
 }
@@ -104,6 +108,7 @@ bool Sector::load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 	return true;
 }
 
+#ifndef YOG_SERVER_ONLY
 void Sector::step(void)
 {
 	assert(map);
@@ -195,7 +200,7 @@ void Sector::step(void)
 			it = explosions.erase(it);
 		}
 	}
-	
+
 	// handle death animation
 	for (std::list<UnitDeathAnimation *>::iterator it=deathAnimations.begin();it!=deathAnimations.end();++it)
 	{
@@ -210,4 +215,5 @@ void Sector::step(void)
 		}
 	}
 }
+#endif  // !YOG_SERVER_ONLY
 

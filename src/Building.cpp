@@ -32,6 +32,8 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include "Order.h"
+#include "Bullet.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -1133,6 +1135,7 @@ void Building::updateUnitsWorking(void)
 
 void Building::updateUnitsHarvesting(void)
 {
+	// if we are not alive or has not vision, remove all units harvesting from this building
 	for (std::list<Unit *>::iterator it=unitsHarvesting.begin(); it!=unitsHarvesting.end();)
 	{
 		std::list<Unit *>::iterator tmpIt = it;
@@ -2478,8 +2481,6 @@ void Building::insertUnitToHarvesting(Unit* unit)
 
 void Building::removeUnitFromHarvesting(Unit* unit)
 {
-	if(unitsHarvesting.empty())
-		return;
 	unitsHarvesting.remove(unit);
 }
 
@@ -2566,131 +2567,36 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	int exitQuality=0;
 	int oldQuality;
 	int exitX=0, exitY=0;
-	Uint32 me=owner->me;
 
-	//if (exitQuality<4)
+	// TODO: Introduce a border iterator for rectangles
+
+	// if (exitQuality<4)
 	{
 		testY=this->posY-1;
 		oldQuality=0;
-		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
-			{
-				if (owner->map->isFreeForGroundUnit(testX, testY-1, canSwim, me))
-					oldQuality++;
-				if (owner->map->isRessource(testX, testY-1))
-				{
-					if (exitQuality<1+oldQuality)
-					{
-						exitQuality=1+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=0;
-				}
-				else
-				{
-					if (exitQuality<2+oldQuality)
-					{
-						exitQuality=2+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=1;
-				}
-			}
+		for (testX=this->posX-1; testX<=this->posX+type->width ; testX++)
+			checkGroundExitQuality(testX,testY,testX,testY-1,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
 	if (exitQuality<4)
 	{
 		testY=this->posY+type->height;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
-			{
-				if (owner->map->isFreeForGroundUnit(testX, testY+1, canSwim, me))
-					oldQuality++;
-				if (owner->map->isRessource(testX, testY+1))
-				{
-					if (exitQuality<1+oldQuality)
-					{
-						exitQuality=1+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=0;
-				}
-				else
-				{
-					if (exitQuality<2+oldQuality)
-					{
-						exitQuality=2+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=1;
-				}
-			}
+			checkGroundExitQuality(testX,testY,testX,testY+1,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
 	if (exitQuality<4)
 	{
 		oldQuality=0;
 		testX=this->posX-1;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
-			{
-				if (owner->map->isFreeForGroundUnit(testX-1, testY, canSwim, me))
-					oldQuality++;
-				if (owner->map->isRessource(testX-1, testY))
-				{
-					if (exitQuality<1+oldQuality)
-					{
-						exitQuality=1+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=0;
-				}
-				else
-				{
-					if (exitQuality<2+oldQuality)
-					{
-						exitQuality=2+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=1;
-				}
-			}
+			checkGroundExitQuality(testX,testY,testX-1,testY,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
 	if (exitQuality<4)
 	{
 		oldQuality=0;
 		testX=this->posX+type->width;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
-			{
-				if (owner->map->isFreeForGroundUnit(testX+1, testY, canSwim, me))
-					oldQuality++;
-				if (owner->map->isRessource(testX+1, testY))
-				{
-					if (exitQuality<1+oldQuality)
-					{
-						exitQuality=1+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=0;
-				}
-				else
-				{
-					if (exitQuality<2+oldQuality)
-					{
-						exitQuality=2+oldQuality;
-						exitX=testX;
-						exitY=testY;
-					}
-					oldQuality=1;
-				}
-			}
+			checkGroundExitQuality(testX,testY,testX+1,testY,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
 	if (exitQuality>0)
 	{
@@ -2703,6 +2609,45 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 		return true;
 	}
 	return false;
+}
+
+void Building::checkGroundExitQuality(
+		const int testX,
+		const int testY,
+		const int extraTestX,
+		const int extraTestY,
+		int & exitX,
+		int & exitY,
+		int & exitQuality,
+		int & oldQuality,
+		bool canSwim)
+{
+	Uint32 me=owner->me;
+	if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
+	{
+		if (owner->map->isFreeForGroundUnit(extraTestX, extraTestY, canSwim, me))
+			oldQuality++;
+		if (owner->map->isRessource(testX, testY-1))
+		{
+			if (exitQuality<1+oldQuality)
+			{
+				exitQuality=1+oldQuality;
+				exitX=testX;
+				exitY=testY;
+			}
+			oldQuality=0;
+		}
+		else
+		{
+			if (exitQuality<2+oldQuality)
+			{
+				exitQuality=2+oldQuality;
+				exitX=testX;
+				exitY=testY;
+			}
+			oldQuality=1;
+		}
+	}
 }
 
 bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
@@ -2795,25 +2740,6 @@ bool Building::canConvertUnit(void)
 			canNotConvertUnitTimer<=0 &&
 			((int)unitsInside.size()<ressources[CORN]) && 
 			((int)unitsInside.size()<maxUnitInside);
-}
-
-Sint32 Building::GIDtoID(Uint16 gid)
-{
-	assert(gid<Building::MAX_COUNT*Team::MAX_COUNT);
-	return gid%Building::MAX_COUNT;
-}
-
-Sint32 Building::GIDtoTeam(Uint16 gid)
-{
-	assert(gid<Building::MAX_COUNT*Team::MAX_COUNT);
-	return gid/Building::MAX_COUNT;
-}
-
-Uint16 Building::GIDfrom(Sint32 id, Sint32 team)
-{
-	assert(id<Building::MAX_COUNT);
-	assert(team<Team::MAX_COUNT);
-	return id+team*Building::MAX_COUNT;
 }
 
 void Building::integrity()

@@ -34,6 +34,7 @@
 #include "Team.h"
 #include "GameGUILoadSave.h"
 #include "StreamBackend.h"
+#include "ReplayWriter.h"
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -385,6 +386,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	addWidget(graphLabel);
 	
 	// add buttons
+	// FIXME: magic numbers!
 	addWidget(new TextButton(90, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
 	addWidget(new TextButton(190, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
 	addWidget(new TextButton(290, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
@@ -392,9 +394,9 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	addWidget(new TextButton(190, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Attack]"), 4, '5'));
 	addWidget(new TextButton(290, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Defense]"), 5, '6'));
 
-	if (gui->game.isRecordingReplay)
+	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
-		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's')); // FIXME: magic numbers!
+		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's'));
 		addWidget(new TextButton(15, 15, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
 	}
 	else
@@ -580,39 +582,10 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 
 	if (loadSaveScreen->endValue==0)
 	{
-		StreamBackend* header = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.header");
-		StreamBackend* orders = Toolkit::getFileManager()->openInputStreamBackend("replays/last_game.orders");
-		StreamBackend* outBackend = Toolkit::getFileManager()->openOutputStreamBackend(loadSaveScreen->getFileName());
-
-		assert(header->isValid());
-		assert(orders->isValid());
-		assert(outBackend->isValid());
-
-		BinaryOutputStream *out = new BinaryOutputStream(outBackend);
-
-		while (!header->isEndOfStream())
-		{
-			int c = header->getChar();
-			if (header->isEndOfStream()) break;
-			outBackend->putc(c);
-		}
-
-		out->writeUint32(game->getReplayStepCount(),"stepcount");
-		out->writeUint32(game->getReplayOrderCount(),"ordercount");
-
-		while (!orders->isEndOfStream())
-		{
-			int c = orders->getChar();
-			if (orders->isEndOfStream()) break;
-			outBackend->putc(c);
-		}
-
-		delete header;
-		delete orders;
-		
-		// Make any remaining orders also written to this filename
-		// Game will take care of the delete
-		game->addReplayOutputStream( out );
+		// Write the replay to the file
+		assert(globalContainer->replayWriter);
+		assert(globalContainer->replayWriter->isValid());
+		globalContainer->replayWriter->write(loadSaveScreen->getFileName());
 	}
 
 	// clean up

@@ -31,7 +31,6 @@
 #include "Team.h"
 #include "TerrainType.h"
 #include "BitArray.h"
-#include "MapHeader.h"
 
 class Unit;
 
@@ -45,6 +44,7 @@ class Map;
 class Game;
 class MapGenerationDescriptor;
 class SessionGame;
+class MapHeader;
 
 // a 1x1 piece of map
 struct Case
@@ -114,8 +114,10 @@ public:
 
 	//! Grow ressources on map
 	void growRessources(void);
+#ifndef YOG_SERVER_ONLY
 	//! Do a step associated woth map (grow ressources and process bullets)
 	void syncStep(Uint32 stepCounter);
+#endif  // !YOG_SERVER_ONLY
 	//! Switch the Fog of War bufferRessourceType
 	void switchFogOfWar(void);
 
@@ -620,8 +622,10 @@ public:
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool strict, bool verbose);
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose);
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork, bool verbose);
+#ifndef YOG_SERVER_ONLY
 	void pathfindRandom(Unit *unit, bool verbose);
-	
+#endif  // !YOG_SERVER_ONLY
+
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
 	template<typename Tint> void updateGlobalGradient(Building *building, bool canSwim);
@@ -874,7 +878,7 @@ public:
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
 	Sint32 warpDistSum(int px, int py, int qx, int qy); //!< The combined distance on x and r y axis, between (px, py) and (qx, qy), warp-safe.
 	bool isInLocalGradient(int ux, int uy, int bx, int by); //!< Return true if the unit @(ux, uy) is close enough of building @(bx, by).
-	void dumpGradient(Uint8 *gradient, const char *filename = "gradient.dump.pgm");
+	void dumpGradient(Uint8 *gradient, const std::string filename = "gradient.dump.pgm");
 
 public:
 	void makeHomogenMap(TerrainType terrainType);

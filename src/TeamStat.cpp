@@ -31,6 +31,7 @@
 #include "Team.h"
 #include "TeamStat.h"
 #include "Unit.h"
+#include "Bullet.h"
 
 
 EndOfGameStat::EndOfGameStat(int units, int buildings, int prestige, int hp, int attack, int defense)
@@ -381,10 +382,10 @@ void TeamStats::drawStat(int posx, int posy)
 		startPoxY -= 10; // this is to correct for the removal of the title
 		
 		int dec=0;
-		const char *Total=strings->getString("[Total]");
-		const char *free=strings->getString("[free]");
-		const char *seeking=strings->getString("[seeking]");
-		const char *slash="/";
+		std::string Total=strings->getString("[Total]");
+		std::string free=strings->getString("[free]");
+		std::string seeking=strings->getString("[seeking]");
+		std::string slash="/";
 		int sLen=font->getStringWidth(slash);
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 34, 66, 163));
@@ -408,10 +409,10 @@ void TeamStats::drawStat(int posx, int posy)
 		font->popStyle();
 
 		dec=0;
-		const char *Free=strings->getString("[Free]");
-		const char *hungry=strings->getString("[hungry]");
-		const char *starving=strings->getString("[starving]");
-		const char *wounded=strings->getString("[wounded]");
+		std::string Free=strings->getString("[Free]");
+		std::string hungry=strings->getString("[hungry]");
+		std::string starving=strings->getString("[starving]");
+		std::string wounded=strings->getString("[wounded]");
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 22, 229, 40));
 		gfx->drawString(textStartPos, startPoxY+104, font, Free);

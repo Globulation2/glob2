@@ -22,8 +22,13 @@
 #ifndef BaseTeam_h
 #define BaseTeam_h
 
-#include "Stream.h"
-#include "GUIBase.h"
+#include "GraphicContext.h"
+
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
 
 class BaseTeam
 {

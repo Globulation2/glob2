@@ -22,11 +22,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_endian.h>
-#else
-#include <Types.h>
-#endif
 #include <iostream>
 #include <valarray>
 #include <zlib.h>
@@ -66,11 +62,11 @@
 
 namespace GAGCore
 {
-	FileManager::FileManager(const char *gameName)
+	FileManager::FileManager(const std::string gameName)
 	{
 		#ifndef WIN32
-		const char *homeDir = getenv("HOME");
-		if (homeDir)
+		const std::string homeDir = getenv("HOME");
+		if (!homeDir.empty())
 		{
 			std::string gameLocal(homeDir);
 			gameLocal += "/.";
@@ -145,12 +141,12 @@ namespace GAGCore
 		fileListIndex = -1;
 	}
 	
-	void FileManager::addDir(const char *dir)
+	void FileManager::addDir(const std::string dir)
 	{
 		dirList.push_back(dir);
 	}
 	
-	void FileManager::addWriteSubdir(const char *subdir)
+	void FileManager::addWriteSubdir(const std::string subdir)
 	{
 		for (size_t i = 0; i < dirList.size(); i++)
 		{
@@ -170,37 +166,37 @@ namespace GAGCore
 		}
 	}
 	
-	SDL_RWops *FileManager::openWithbackup(const char *filename, const char *mode)
+	SDL_RWops *FileManager::openWithbackup(const std::string filename, const std::string mode)
 	{
-		if (strchr(mode, 'w'))
+		if (mode.find('w') != std::string::npos)
 		{
 			std::string backupName(filename);
 			backupName += '~';
-			rename(filename, backupName.c_str());
+			rename(filename.c_str(), backupName.c_str());
 		}
-		return SDL_RWFromFile(filename, mode);
+		return SDL_RWFromFile(filename.c_str(), mode.c_str());
 	}
 	
-	FILE *FileManager::openWithbackupFP(const char *filename, const char *mode)
+	FILE *FileManager::openWithbackupFP(const std::string filename, const std::string mode)
 	{
-		if (strchr(mode, 'w'))
+		if (mode.find('w') != std::string::npos)
 		{
 			std::string backupName(filename);
 			backupName += '~';
-			rename(filename, backupName.c_str());
+			rename(filename.c_str(), backupName.c_str());
 		}
-		return fopen(filename, mode);
+		return fopen(filename.c_str(), mode.c_str());
 	}
 	
-	std::ofstream *FileManager::openWithbackupOFS(const char *filename, std::ofstream::openmode mode)
+	std::ofstream *FileManager::openWithbackupOFS(const std::string filename, std::ofstream::openmode mode)
 	{
 		if (mode & std::ios_base::out)
 		{
 			std::string backupName(filename);
 			backupName += '~';
-			rename(filename, backupName.c_str());
+			rename(filename.c_str(), backupName.c_str());
 		}
-		std::ofstream *ofs = new std::ofstream(filename, mode);
+		std::ofstream *ofs = new std::ofstream(filename.c_str(), mode);
 		if (ofs->is_open())
 			return ofs;
 		
@@ -208,7 +204,7 @@ namespace GAGCore
 		return NULL;
 	}
 	
-	StreamBackend *FileManager::openOutputStreamBackend(const char *filename)
+	StreamBackend *FileManager::openOutputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -224,7 +220,7 @@ namespace GAGCore
 		return new FileStreamBackend(NULL);
 	}
 	
-	StreamBackend *FileManager::openInputStreamBackend(const char *filename)
+	StreamBackend *FileManager::openInputStreamBackend(const std::string filename)
 	{	
 	
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -241,7 +237,7 @@ namespace GAGCore
 		return new FileStreamBackend(NULL);
 	}
 	
-	StreamBackend *FileManager::openCompressedOutputStreamBackend(const char *filename)
+	StreamBackend *FileManager::openCompressedOutputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -261,7 +257,7 @@ namespace GAGCore
 		return new ZLibStreamBackend("", false);
 	}
 	
-	StreamBackend *FileManager::openCompressedInputStreamBackend(const char *filename)
+	StreamBackend *FileManager::openCompressedInputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -280,7 +276,7 @@ namespace GAGCore
 		return new ZLibStreamBackend("", false);
 	}
 	
-	SDL_RWops *FileManager::open(const char *filename, const char *mode)
+	SDL_RWops *FileManager::open(const std::string filename, const std::string mode)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -289,7 +285,7 @@ namespace GAGCore
 			path += filename;
 	
 			//std::cerr << "FileManager::open trying to open " << path << " corresponding to source [" << dirList[i] << "] and filename [" << filename << "] with mode " << mode << "\n" << std::endl;
-			SDL_RWops *fp = openWithbackup(path.c_str(), mode);
+			SDL_RWops *fp = openWithbackup(path.c_str(), mode.c_str());
 			if (fp)
 				return fp;
 		}
@@ -297,7 +293,7 @@ namespace GAGCore
 		return NULL;
 	}
 	
-	FILE *FileManager::openFP(const char *filename, const char *mode)
+	FILE *FileManager::openFP(const std::string filename, const std::string mode)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -305,7 +301,7 @@ namespace GAGCore
 			path += DIR_SEPARATOR;
 			path += filename;
 			
-			FILE *fp = openWithbackupFP(path.c_str(), mode);
+			FILE *fp = openWithbackupFP(path.c_str(), mode.c_str());
 			if (fp)
 				return fp;
 		}
@@ -331,7 +327,7 @@ namespace GAGCore
 		return NULL;
 	}
 	
-	Uint32 FileManager::checksum(const char *filename)
+	Uint32 FileManager::checksum(const std::string filename)
 	{
 		Uint32 cs = 0;
 		SDL_RWops *stream = open(filename);
@@ -358,7 +354,7 @@ namespace GAGCore
 		return cs;
 	}
 	
-	time_t FileManager::mtime(const char *filename)
+	time_t FileManager::mtime(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -374,7 +370,7 @@ namespace GAGCore
 		return 0;
 	}
 	
-	void FileManager::remove(const char *filename)
+	void FileManager::remove(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
@@ -385,7 +381,7 @@ namespace GAGCore
 		}
 	}
 	
-	bool FileManager::isDir(const char *filename)
+	bool FileManager::isDir(const std::string filename)
 	{
 		#ifdef WIN32
 		struct _stat s;
@@ -477,9 +473,9 @@ namespace GAGCore
 		return true;
 	}
 
-	bool FileManager::addListingForDir(const char *realDir, const char *extension, const bool dirs)
+	bool FileManager::addListingForDir(const std::string realDir, const std::string extension, const bool dirs)
 	{
-		DIR *dir = opendir(realDir);
+		DIR *dir = opendir(realDir.c_str());
 		struct dirent *dirEntry;
 	
 		if (!dir)
@@ -509,14 +505,14 @@ namespace GAGCore
 				ok = dirs;
 			}
 			// check extension if provided
-			else if (extension) 
+			else if (!extension.empty())
 			{
 				size_t l, nl;
-				l=strlen(extension);
+				l=extension.length();
 				nl=strlen(dirEntry->d_name);
 				ok = ((nl>l) &&
 					(dirEntry->d_name[nl-l-1]=='.') &&
-					(strcmp(extension,dirEntry->d_name+(nl-l))==0));
+					(strcmp(extension.c_str(),dirEntry->d_name+(nl-l))==0));
 			}
 			if (ok)
 			{
@@ -541,7 +537,7 @@ namespace GAGCore
 		return true;
 	}
 	
-	bool FileManager::initDirectoryListing(const char *virtualDir, const char *extension, const bool dirs)
+	bool FileManager::initDirectoryListing(const std::string virtualDir, const std::string extension, const bool dirs)
 	{
 		bool result = false;
 		clearFileList();
@@ -559,12 +555,12 @@ namespace GAGCore
 		return result;
 	}
 	
-	const char *FileManager::getNextDirectoryEntry(void)
+	const std::string FileManager::getNextDirectoryEntry(void)
 	{
 		if ((fileListIndex >= 0) && (fileListIndex < (int)fileList.size()))
 		{
-			return fileList[fileListIndex++].c_str();
+			return fileList[fileListIndex++];
 		}
-		return NULL;
+		return "";
 	}
 }

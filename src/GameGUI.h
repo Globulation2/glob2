@@ -25,9 +25,7 @@
 #include <queue>
 #include <valarray>
 
-#include "Header.h"
 #include "Game.h"
-#include "Order.h"
 #include "Brush.h"
 #include "Campaign.h"
 #include "MapHeader.h"
@@ -54,7 +52,8 @@ using namespace GAGGUI;
 
 class TeamStats;
 class InGameTextInput;
-
+class Order;
+class MapMarkOrder;
 
 //! max unit working at a building
 #define MAX_UNIT_WORKING 20
@@ -96,7 +95,7 @@ public:
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false);
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const char *name);
+	void save(GAGCore::OutputStream *stream, const std::string name);
 
 	void processEvent(SDL_Event *event);
 
@@ -234,13 +233,13 @@ private:
 	// Drawing support functions
 	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
 	void drawXPProgressBar(int x, int y, int act, int max);
-	void drawButton(int x, int y, const char *caption, int r=128, int g=128, int b=128, bool doLanguageLookup=true);
-	void drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup=true);
-	void drawRedButton(int x, int y, const char *caption, bool doLanguageLookup=true);
-	void drawTextCenter(int x, int y, const char *caption);
+	void drawButton(int x, int y, std::string caption, int r=128, int g=128, int b=128, bool doLanguageLookup=true);
+	void drawBlueButton(int x, int y, std::string caption, bool doLanguageLookup=true);
+	void drawRedButton(int x, int y, std::string caption, bool doLanguageLookup=true);
+	void drawTextCenter(int x, int y, std::string caption);
 	void drawValueAlignedRight(int y, int v);
 	void drawCosts(int ressources[BASIC_COUNT], Font *font);
-	void drawCheckButton(int x, int y, const char* caption, bool isSet);
+	void drawCheckButton(int x, int y, std::string caption, bool isSet);
 	void drawRadioButton(int x, int y, bool isSet);
 
 	void iterateSelection(void);

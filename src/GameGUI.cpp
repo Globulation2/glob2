@@ -51,14 +51,12 @@
 #include "VoiceRecorder.h"
 #include "GameGUIKeyActions.h"
 #include "Player.h"
-
+#include "ReplayReader.h"
+#include "ReplayWriter.h"
 #include "config.h"
+#include "Order.h"
 
-#ifndef DX9_BACKEND	// TODO:Die!
 #include <SDL_keysym.h>
-#else
-#include <Types.h>
-#endif
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
@@ -154,7 +152,7 @@ public:
 	//! Return the text typed
 	std::string getText(void) const { return textInput->getText(); }
 	//! Set the text
-	void setText(const char *text) const { textInput->setText(text); }
+	void setText(const std::string text) const { textInput->setText(text); }
 };
 
 InGameTextInput::InGameTextInput(GraphicContext *parentCtx)
@@ -254,11 +252,7 @@ void GameGUI::init()
 	buildingsChoiceName.push_back("school");
 	buildingsChoiceName.push_back("defencetower");
 	buildingsChoiceName.push_back("stonewall");
-
-	//TODO 2009-12-06 giszmo Markets has been disabled as a bug was blocking
-	//the release of beta5 and with that also the replay feature for 3 months
-	//now.
-	// buildingsChoiceName.push_back("market");
+	buildingsChoiceName.push_back("market");
 
 	buildingsChoiceState.resize(buildingsChoiceName.size(), true);
 
@@ -643,7 +637,7 @@ void GameGUI::syncStep(void)
 
 	if ((game.stepCounter&255) == 79)
 	{
-		const char *name = Toolkit::getStringTable()->getString("[auto save]");
+		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");
 		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(fileName));
 		if (stream->isEndOfStream())
@@ -826,8 +820,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						}
 						else
 						{
-							const char *name = ((LoadSaveScreen *)gameMenuScreen)->getName();
-							assert(name);
+							const std::string name = ((LoadSaveScreen *)gameMenuScreen)->getName();
+							assert(name.size());
 							save(stream, name);
 						}
 						delete stream;
@@ -3037,7 +3031,7 @@ void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
 	}
 }
 
-void GameGUI::drawCheckButton(int x, int y, const char* caption, bool isSet)
+void GameGUI::drawCheckButton(int x, int y, std::string caption, bool isSet)
 {
 	globalContainer->gfx->drawRect(x, y, 16, 16, Color::white);
 	if(isSet)
@@ -3100,7 +3094,7 @@ void GameGUI::drawBuildingInfos(void)
 	title = "";
 	if ((buildingType->nextLevel>=0) ||  (buildingType->prevLevel>=0))
 	{
-		const char *textT = Toolkit::getStringTable()->getString("[level]");
+		const std::string textT = Toolkit::getStringTable()->getString("[level]");
 		title += FormatableString("%0 %1").arg(textT).arg(buildingType->level+1);
 	}
 	if (buildingType->isBuildingSite)
@@ -3215,7 +3209,7 @@ void GameGUI::drawBuildingInfos(void)
 				// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
 				const int maxUnitsWorking = (globalContainer->replaying?selBuild->maxUnitWorking:selBuild->maxUnitWorkingLocal);
 
-				const char *working = Toolkit::getStringTable()->getString("[working]");
+				std::string working = Toolkit::getStringTable()->getString("[working]");
 				const int len = globalContainer->littleFont->getStringWidth(working)+4;
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, working);
@@ -3256,12 +3250,12 @@ void GameGUI::drawBuildingInfos(void)
 				ypos += YOFFSET_B_SEP;
 				
 				int width = 128/3;
-				const char *prioritystr = Toolkit::getStringTable()->getString("[priority]");
+				std::string prioritystr = Toolkit::getStringTable()->getString("[priority]");
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, prioritystr);
 
-				const char *lowstr = Toolkit::getStringTable()->getString("[low priority]");
-				const char *medstr = Toolkit::getStringTable()->getString("[medium priority]");
-				const char *highstr = Toolkit::getStringTable()->getString("[high priority]");
+				std::string lowstr = Toolkit::getStringTable()->getString("[low priority]");
+				std::string medstr = Toolkit::getStringTable()->getString("[medium priority]");
+				std::string highstr = Toolkit::getStringTable()->getString("[high priority]");
 				
 				drawRadioButton(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+12+4, (priority==-1));
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14, ypos+12+2, globalContainer->littleFont, lowstr);
@@ -3285,7 +3279,7 @@ void GameGUI::drawBuildingInfos(void)
 			// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
 			const int unitStayRange = (globalContainer->replaying?selBuild->unitStayRange:selBuild->unitStayRangeLocal);
 
-			const char *range = Toolkit::getStringTable()->getString("[range]");
+			std::string range = Toolkit::getStringTable()->getString("[range]");
 			const int len = globalContainer->littleFont->getStringWidth(range)+4;
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, range);
@@ -3757,6 +3751,10 @@ void GameGUI::drawReplayPanel(void)
 
 void GameGUI::drawReplayProgressBar(bool drawBackground)
 {
+	assert(globalContainer->replaying);
+	assert(globalContainer->replayReader);
+	assert(globalContainer->replayReader->isValid());
+
 	// set the clipping rectangle
 	globalContainer->gfx->setClipRect( 0, REPLAY_BAR_Y - 4, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT + 4);
 
@@ -3776,8 +3774,8 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 	Style::style->drawProgressBar(globalContainer->gfx, 
 		REPLAY_PROGRESS_BAR_X_OFFSET + REPLAY_PROGRESS_BAR_CAP_WIDTH - 1, y,
 		REPLAY_BAR_WIDTH - 2*REPLAY_PROGRESS_BAR_X_OFFSET - REPLAY_PROGRESS_BAR_NUM_BUTTONS * REPLAY_PROGRESS_BAR_BUTTON_WIDTH - 2*REPLAY_PROGRESS_BAR_CAP_WIDTH + 2, 
-		globalContainer->replayStepsProcessed, 
-		globalContainer->replayStepsTotal);
+		globalContainer->replayReader->getCurrentStep(), 
+		globalContainer->replayReader->getNumStepsTotal());
 	
 	// Draw the round caps
 	globalContainer->gfx->drawSprite(
@@ -3800,13 +3798,13 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 	// Calculate the time
 	// This is based on default speed 25 fps, not the actual Engine's speed
 	// because if we fast-forward we still want to see the old time
-	unsigned int time1_sec = (globalContainer->replayStepsProcessed/25)%60;
-	unsigned int time1_min = (globalContainer->replayStepsProcessed/(25*60))%60;
-	unsigned int time1_hour = (globalContainer->replayStepsProcessed/(25*3600));
+	unsigned int time1_sec = (globalContainer->replayReader->getCurrentStep()/25)%60;
+	unsigned int time1_min = (globalContainer->replayReader->getCurrentStep()/(25*60))%60;
+	unsigned int time1_hour = (globalContainer->replayReader->getCurrentStep()/(25*3600));
 	
-	unsigned int time2_sec = (globalContainer->replayStepsTotal/25)%60;
-	unsigned int time2_min = (globalContainer->replayStepsTotal/(25*60))%60;
-	unsigned int time2_hour = (globalContainer->replayStepsTotal/(25*3600));
+	unsigned int time2_sec = (globalContainer->replayReader->getNumStepsTotal()/25)%60;
+	unsigned int time2_min = (globalContainer->replayReader->getNumStepsTotal()/(25*60))%60;
+	unsigned int time2_hour = (globalContainer->replayReader->getNumStepsTotal()/(25*3600));
 
 	// Draw the time
 	if (time2_hour <= 99)
@@ -4410,9 +4408,9 @@ void GameGUI::drawAll(int team)
 	// if paused, tint the game area
 	if (gamePaused)
 	{
-		const char *s;
+		std::string s;
 		
-		if (globalContainer->replaying && globalContainer->replayStepsProcessed >= globalContainer->replayStepsTotal)
+		if (globalContainer->replaying && globalContainer->replayReader->isFinished())
 		{
 			s = Toolkit::getStringTable()->getString("[replay ended]");
 		}
@@ -4713,7 +4711,7 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 	return true;
 }
 
-void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
+void GameGUI::save(GAGCore::OutputStream *stream, const std::string name)
 {
 	// Game is can't be no more automatically generated
 	game.save(stream, false, name);
@@ -4750,12 +4748,12 @@ void GameGUI::save(GAGCore::OutputStream *stream, const char *name)
 	stream->writeLeaveSection();
 }
 
-void GameGUI::drawButton(int x, int y, const char *caption, int r, int g, int b, bool doLanguageLookup)
+void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)
 {
 	globalContainer->gfx->drawSprite(x+8, y, globalContainer->gamegui, 12);
 	globalContainer->gfx->drawFilledRect(x+17, y+3, 94, 10, r, g, b);
 
-	const char *textToDraw;
+	std::string textToDraw;
 	if (doLanguageLookup)
 		textToDraw=Toolkit::getStringTable()->getString(caption);
 	else
@@ -4765,19 +4763,19 @@ void GameGUI::drawButton(int x, int y, const char *caption, int r, int g, int b,
 	globalContainer->gfx->drawString(x+17+((94-len)>>1), y+((16-h)>>1), globalContainer->littleFont, textToDraw);
 }
 
-void GameGUI::drawBlueButton(int x, int y, const char *caption, bool doLanguageLookup)
+void GameGUI::drawBlueButton(int x, int y, std::string caption, bool doLanguageLookup)
 {
 	drawButton(x,y,caption,128,128,192,doLanguageLookup);
 }
 
-void GameGUI::drawRedButton(int x, int y, const char *caption, bool doLanguageLookup)
+void GameGUI::drawRedButton(int x, int y, std::string caption, bool doLanguageLookup)
 {
 	drawButton(x,y,caption,192,128,128,doLanguageLookup);
 }
 
-void GameGUI::drawTextCenter(int x, int y, const char *caption)
+void GameGUI::drawTextCenter(int x, int y, std::string caption)
 {
-	const char *text;
+	std::string text;
 
 	text=Toolkit::getStringTable()->getString(caption);
 	int dec=(RIGHT_MENU_WIDTH-globalContainer->littleFont->getStringWidth(text))>>1;
