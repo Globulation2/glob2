@@ -1376,6 +1376,12 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 2));
 
+	//Constraints about the distance to water.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
+	//You dont want to be too close to water. allows farms to develop
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
+
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
