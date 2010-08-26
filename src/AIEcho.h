@@ -1576,7 +1576,10 @@ namespace AIEcho
 			bool is_clearing_area(int x, int y);
 			bool is_discovered(int x, int y);
 			bool is_ressource(int x, int y, int type);
+			bool is_ressource(int x, int y);
 			bool is_water(int x, int y);
+			bool is_sand(int x, int y);
+			bool is_grass(int x, int y);
 			bool backs_onto_sand(int x, int y);
 			int get_ammount_ressource(int x, int y);
 		private:
