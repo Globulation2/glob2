@@ -1054,6 +1054,12 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	//You can't be farther than 10 units from wheat
 	bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
 
+	//Constraints about the distance to water.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
+	//You dont want to be too close to water, so that farm can develop between it and water
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
+
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
@@ -1117,6 +1123,12 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 6));
 
+	//Constraints about the distance to water.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
+	//You dont want to be too close to water, so that farm can develop between it and water
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
+
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
@@ -1160,6 +1172,12 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
+
+	//Constraints about the distance to water.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
+	//You dont want to be too close to water. allows farms to develop
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
 
 	//Constraints arround the location of stone
 	AIEcho::Gradients::GradientInfo gi_stone;
@@ -1208,6 +1226,12 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
+
+	//Constraints about the distance to water.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
+	//You dont want to be too close to water. allows farms to develop
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
 
 	//Constraints arround the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
@@ -1264,6 +1288,12 @@ int NewNicowar::order_regular_school(Echo& echo)
 	//You want to be close to other buildings
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
+	//Constraints about the distance to water.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
+	//You dont want to be too close to water. allows farms to develop
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
+
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
@@ -1292,6 +1322,12 @@ int NewNicowar::order_regular_barracks(Echo& echo)
 {
 	//The main order for the barracks
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::ATTACK_BUILDING, 6);
+
+	//Constraints about the distance to water.
+	AIEcho::Gradients::GradientInfo gi_water;
+	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
+	//You dont want to be too close to water. allows farms to develop
+	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
 
 	//Constraints arround the location of stone
 	AIEcho::Gradients::GradientInfo gi_stone;
@@ -2524,41 +2560,101 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 
 void NewNicowar::update_farming(Echo& echo)
 {
-	//Farming wheat and wood near water
+	//Farming wheat and wood in areas near water
 	AddArea* mo_farming=new AddArea(ForbiddenArea);
 	RemoveArea* mo_non_farming=new RemoveArea(ForbiddenArea);
 	AIEcho::Gradients::GradientInfo gi_water;
 	gi_water.add_source(new Entities::Water);
-	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_water);
+	Gradient& water_gradient=echo.get_gradient_manager().get_gradient(gi_water);
+
 	MapInfo mi(echo);
 	for(int x=0; x<mi.get_width(); ++x)
 	{
 		for(int y=0; y<mi.get_height(); ++y)
 		{
-			if((mi.is_ressource(x, y, WOOD) ||
-				mi.is_ressource(x, y, CORN)) &&
-				mi.is_discovered(x, y))
+			if(mi.is_discovered(x, y))
 			{
-				/*if(mi.backs_onto_sand(x, y))
+				const int wood_dist = 6;
+				const int wheat_dist = 10;
+
+				bool is_wood = mi.is_ressource(x, y, WOOD);
+				bool is_wheat = mi.is_ressource(x, y, CORN);
+
+				bool is_in_wheat_zone = water_gradient.get_height(x,y) < wheat_dist;
+				bool is_in_wood_zone = water_gradient.get_height(x,y) < wood_dist;
+
+				bool farm_spot = false;
+
+				//Permament farming exists for every second row and column
+				if(x%2==1 && y%2==1)
 				{
-					if(!mi.is_forbidden_area(x, y))
-						mo_farming->add_location(x, y);
+					if((is_wood && is_in_wood_zone) || (is_wheat && is_in_wheat_zone))
+					{
+						farm_spot = true;
+					}
 				}
-				else */if((x%2==1 && y%2==1) &&
-						gradient.get_height(x, y)<(mi.is_ressource(x, y, WOOD) ? 6 : 10) &&
-						!mi.is_clearing_area(x, y))
+
+				//Expand the farm horizontally
+				if((x%2==0 && y%2==1))
 				{
-					if(!mi.is_forbidden_area(x, y))
-						mo_farming->add_location(x, y);
+					if(is_wood && mi.is_ressource(x-1, y, WOOD) && !mi.is_ressource(x+1,y) && water_gradient.get_height(x+1, y) < wood_dist && mi.is_grass(x+1,y))
+					{
+						farm_spot = true;
+					}
+					else if(is_wheat && mi.is_ressource(x-1, y, CORN) && !mi.is_ressource(x+1,y) && water_gradient.get_height(x+1, y) < wheat_dist && mi.is_grass(x+1,y))
+					{
+						farm_spot = true;
+					}
+					else if(is_wood && mi.is_ressource(x+1, y, WOOD) && !mi.is_ressource(x-1,y) && water_gradient.get_height(x-1, y) < wood_dist && mi.is_grass(x-1,y))
+					{
+						farm_spot = true;
+					}
+					else if(is_wheat && mi.is_ressource(x+1, y, CORN) && !mi.is_ressource(x-1,y) && water_gradient.get_height(x-1, y) < wheat_dist && mi.is_grass(x-1,y))
+					{
+						farm_spot = true;
+					}
 				}
-				else if(mi.is_forbidden_area(x, y))
+
+				//Expand the farm vertically
+				if((x%2==1 && y%2==0))
+				{
+					if(is_wood && mi.is_ressource(x, y-1, WOOD) && !mi.is_ressource(x,y+1) && water_gradient.get_height(x, y+1) < wood_dist && mi.is_grass(x,y+1))
+					{
+						farm_spot = true;
+					}
+					else if(is_wheat && mi.is_ressource(x, y-1, CORN) && !mi.is_ressource(x,y+1) && water_gradient.get_height(x, y+1) < wheat_dist && mi.is_grass(x,y+1))
+					{
+						farm_spot = true;
+					}
+					else if(is_wood && mi.is_ressource(x, y+1, WOOD) && !mi.is_ressource(x,y-1) && water_gradient.get_height(x, y-1) < wood_dist && mi.is_grass(x,y-1))
+					{
+						farm_spot = true;
+					}
+					else if(is_wheat && mi.is_ressource(x, y+1, CORN) && !mi.is_ressource(x,y-1) && water_gradient.get_height(x, y-1) < wheat_dist && mi.is_grass(x,y-1))
+					{
+						farm_spot = true;
+					}
+				}
+
+
+				if(farm_spot && mi.is_clearing_area(x,y))
+				{
+					farm_spot = false;
+				}
+
+				if(farm_spot && mi.is_sand(x,y))
+				{
+					farm_spot = false;
+				}
+
+				if(farm_spot && !mi.is_forbidden_area(x, y))
+				{
+					mo_farming->add_location(x, y);
+				}
+				else if(!farm_spot && mi.is_forbidden_area(x, y))
 				{
 					mo_non_farming->add_location(x, y);
 				}
-			}
-			else if(mi.is_forbidden_area(x, y))
-			{
-				mo_non_farming->add_location(x, y);
 			}
 		}
 	}
