@@ -4502,9 +4502,30 @@ bool MapInfo::is_ressource(int x, int y, int type)
 
 
 
+bool MapInfo::is_ressource(int x, int y)
+{
+	return echo.player->map->isRessource(x, y);
+}
+
+
+
 bool MapInfo::is_water(int x, int y)
 {
 	return echo.player->map->isWater(x, y);
+}
+
+
+
+bool MapInfo::is_sand(int x, int y)
+{
+	return echo.player->map->isSand(x, y);
+}
+
+
+
+bool MapInfo::is_grass(int x, int y)
+{
+	return echo.player->map->isGrass(x, y);
 }
 
 
