@@ -1832,6 +1832,7 @@ bool Building::subscribeForFlagingStep()
 					{
 						int distBuilding=0;
 						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+						timeLeft*=timeLeft;
 						int directdist=owner->map->warpDistSquare(unit->posX, unit->posY, posX, posY);
 						bool canSwim=unit->performance[SWIM];
 						if(type->zonable[EXPLORER] && timeLeft < directdist)
