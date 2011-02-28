@@ -38,7 +38,7 @@ show("Заметьте, что справа от вашей базы есть н
 show("ﺳﻮﻑ ﺗﻼﺣﻆ ﻭﺟﻮﺩ ﻣﺤﺠﺮ ﺻﻐﻴﺮ ﺇﻟﻰ ﻳﻤﻴﻦ ﻗﺎﻋﺪﺗﻚ. ﺗﺬﻛﺮ ﻫﺬﺍ ﺟﻴﺪًﺍ. ﺭﺑﻤﺎ ﻧﺤﺘﺎﺝ ﺇﻟﻰ ﺃﺣﺠﺎﺭ ﻣﻦ ﻫﻨﺎ ﻻﺣﻘًﺎ.",ar)
 space
 
-show("You might also notice that there is a set of trees just below the stone query. However, they don't look like normal trees. If you click on them, the right hand side bar will tell you that those trees are orange trees! You might be wondering what those orange trees are useful for. We will find out later. For now, focus on your Swarm.")
+show("You might also notice that there is a set of trees just below the stone quarry. However, they don't look like normal trees. If you click on them, the right hand side bar will tell you that those trees are orange trees! You might be wondering what those orange trees are useful for. We will find out later. For now, focus on your Swarm.")
 show("Vous pourriez également avoir constaté que quelques arbres se trouvent juste en dessous de la carrière, cependant, ils diffèrent des arbres normaux. Si vous cliquez dessus, la barre latérale vous indiquera qu'il s'agit d'orangers ! Nous verrons plus tard à quoi ils servent, pour l'instant, concentrez-vous sur votre Ruche.", fr)
 show("Du wirst die kleine Gruppe Bäume vor den Steinen bemerkt haben, die aber nicht wie normale Bäume aussehen. Wenn du auf sie klickst, wird dir die rechte Menüseite Informationen über diese Bäume - Orangenbäume - anzeigen. Du wunderst dich vielleicht wozu Orangenbäume nützlich sind - du wirst es noch herausfinden. Jetzt klicke erstmal auf deinen Stock.",de)
 show("Tal vez habrás notado que hay un conjunto de árboles justo debajo de la formación rocosa, pero no lucen como árboles normales.  Si los seleccionas con el ratón, la barra derecha te dirá que tales árboles son de naranjas!  Podrás preguntarte para qué sirven esos árboles.  Lo veremos más adelante, por ahora enfoquémonos en tu colmena.",es)
@@ -212,7 +212,7 @@ hide
 
 wait(Racetrack(0, 1) > 0)
 
-show("Cool. You should be seeing a bunch of globules heading into the Racetrack. This is good news. The globules are going to begin training, and when they come out, they will be plenty faster.")
+show("Cool. You should be seeing a bunch of globules heading into the Racetrack. This is good news. The globules are going to begin training, and when they come out, they will be much faster.")
 show("OK. Vous devriez voir un groupe de globules s'entrainant sur la Piste de Course. C'est une bonne nouvelle, les globules vont commencer à s'entrainer et lorsqu'ils sortiront, ils seront beaucoup plus rapides.", fr)
 show("Cool. Du solltest beobachten wie ein paar Einheiten in der Rennstrecke verschwinden, das sind gute Nachrichten! Die Einheiten werden dort trainiert und wenn sie herauskommen sind sie um einiges schneller als zuvor.",de)
 show("Super! Una manada de glóbulos debe estar dirigiéndose a la pista de carreras. Son buenas noticias! Los glóbulos comenzarán a ejercitarse y cuando salgan serán bastante rápidos.",es)

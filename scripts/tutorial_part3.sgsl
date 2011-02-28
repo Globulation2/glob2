@@ -29,7 +29,7 @@ show("Ура нашей колонии! У нас есть Стадион, ес�
 show("ﻣﺮﺣﻰ ﻟﻤﺴﺘﻌﻤﺮﺗﻨﺎ! ﺇﻥ ﻟﺪﻳﻨﺎ ﻣﻴﺎﺩﻳﻨًﺎ ﻟﻠﺴﺒﺎﻕ، ﻭﻟﺪﻳﻨﺎ ﺑﺮﻙ ﻟﻠﺴﺒﺎﺣﺔ، ﻭﻟﺪﻳﻨﺎ ﺍﻟﻤﺴﺘﺸﻔﻴﺎﺕ ﻭﺍﻟﻤﺪﺍﺭﺱ. ﻣَﻦ ﻣِﻦ ﺍﻟﻨﺎﺱ ﻟﻦ ﻳﻌﺠﺒﻪ ﺍﻟﻌﻴﺶ ﻫﻨﺎ؟",ar)
 space
 
-show("Unfortunately, there is a reason not to want to live in our colony. We are sort of lacking the ... military department. I can't sight any warriors to defend our base anywhere. Perhaps that is because we haven't made any.")
+show("Unfortunately, there is a reason not to want to live in our colony. We are sort of lacking the ... military department. I can't see any warriors to defend our base anywhere. Perhaps that is because we haven't made any.")
 show("Malheureusement, il y a une raison valable pour ne pas vouloir vivre dans notre colonie. Il nous manque... un département militaire. Je ne vois aucune guerrière pour défendre notre base. Peut-etre parce que nous n'en avons créé aucune.", fr)
 show("Unglücklicherweise gibt es einen Grund hier nicht zu leben! Wir haben die militärische Präsenz vernachlässigt. Ich kann keine Krieger sehen um deine Basis zu verteidigen. Vermutlich, weil du noch keine konstruiert hast.",de)
 show("Desafortunadamente hay una razón para no querer vivir en la colonia. Nos hace falta algo como ... la milicia.  No es posible colocar guerreros para defender nuestra base.  Tal vez porque no hemos hecho ninguno hasta el momento.",es)
@@ -40,7 +40,7 @@ space
 
 hilightBuildings(Swarm)
 hilightItem("units ratio bar")
-show("Do you remember how to operate the Swarm? If not, I will give you a quick refresher. Click on your Swarm. On the right-hand side menu, about halfway down, you will see three bars. One of these is labeled 'Warrior'. This is the one we want. Put this bar up two notches. Don't reduce the worker bar, though. We want to remain constructing workers.")
+show("Do you remember how to operate the Swarm? If not, I will give you a quick refresher. Click on your Swarm. On the right-hand side menu, about halfway down, you will see three bars. One of these is labeled 'Warrior'. This is the one we want. Put this bar up two notches. Don't reduce the worker bar, though. We want to keep producing workers.")
 show("Vous souvenez-vous comment fonctionne la Ruche ? Si ce n'est pas le cas, laissez-moi vous le rappeler. Cliquez sur votre ruche. À peu près au milieu du menu, vous verrez trois barres. L'une d'elle s'intitule 'Guerrières'. C'est celle que nous voulons. Ajoutez deux crands à cette barre. Ne réduisez pas celle des ouvrières, nous voulons qu'il nous reste des batisseuses.", fr)
 show("Erinnerst du dich wie der Stock arbeitet? Wenn nicht, hier eine kleine Auffrischung: Klicke auf den Stock. In der Mitte der rechten Seite siehst du 3 Balken. Einer trägt die Aufschrift 'Krieger'. Das ist der, den dir wir jetzt brauchen. Erhöhe die Krieger Produktion um 2. Verändere den Arbeiter-Balken jedoch nicht. Wir wollen auch noch Arbeiter produzieren.",de)
 show("Recuerdas cómo operar la colmena?  Si no, te daré un repaso rápido. Elige tu colmena.  En el menú derecho, hacia la mitad, podrás ver tres barras.  Una de ellas etiquetada como 'Guerrero'.  Es la que buscamos.  Haz que valga dos.  No reduzcas la barra de trabajadores, queremos producir trabajadores también.",es)
@@ -63,7 +63,7 @@ hide
 hilightUnits(Warrior)
 wait(Warrior(0) > 0)
 
-show("Whoah! Those warrior globs certainly look beefy and mighty. They would certainly do well to defend our colony. You might notice that he's not waisting any time, and going right to work, training. Let's wait for another one to come.")
+show("Whoah! Those warrior globs certainly look beefy and mighty. They would certainly do well to defend our colony. You probably noticed that he's wasting no time and going right to work, that is training. Let's wait for another one to come.")
 show("Wow ! Cette guerrière a l'air musclée et puissante, elle conviendrat certainement à la défense de notre colonie. Vous pourriez remarquer qu'elle ne perd pas de temps et se met tout de suite au travail. Attendons qu'une deuxième soit prete.", fr)
 show("Whoah! Diese Krieger sehen muskulös und gewaltig aus. Sie werden deine Kolonie sicher gut verteidigen. Dir wird aufgefallen sein, dass er keine Zeit verschwendet und gleich zum Training geht. Lass uns warten bis ein weiterer fertig ist.",de)
 show("Esos glóbulos guerreros se ven tan grandes y poderosos!!, defenderán bien nuestra colonia.  Te habrás dado cuenta que no desperdician su tiempo y van de una vez a trabajar, entrenando.  Esperemos a que salga el siguiente.",es)
@@ -75,7 +75,7 @@ hide
 unhilightUnits(Warrior)
 wait(Warrior(0) > 1)
 
-show("You might now be wondering if there is a way to train our warriors to be mightier, in the same way that we trained our workers to be faster and smarter. There certainly is. The warriors will already go to the Racetrack to learn to run, and to the Swimming Pool to learn to swim, but there is something else we can teach them as well, its called attack.")
+show("You might now be wondering if there is a way to train our warriors to be mightier, in the same way that we trained our workers to be faster and smarter. There certainly is. The warriors will already go to the Racetrack to learn to run, and to the Swimming Pool to learn to swim, but there is something else we can teach them as well - it's called attack.")
 show("Vous vous demandez peut-etre s'il y a un moyen d'entrainer nos guerrières pour qu'elles soient plus puissantes, de lamêmefaçon que nous l'avons fait pour rendre nos ouvrières plus rapides et plus intelligentes. Bien sur qu'il y en a un. Les guerrières vont déjà aller s'entrainer sur la Piste de Course pour apprendre à courir, puis à la Piscine pour apprendre à nager, mais il reste une chose que nous pouvons leur enseigner : l'attaque.", fr)
 show("Du dürftest dich jetzt fragen, ob es einen Weg gäbe deine Krieger, in der selben Weise wie die Arbeiter, noch stärker zu machen. Natürlich gibt es ihn! Die Krieger gehen bereits zur Rennstrecke und lernen schneller zu rennen; um schwimmen zu lernen gehen sie auch noch ins Schwimmbad. Aber du kannst ihnen noch mehr beibringen, nämlich den Angriff.",de)
 show("Te preguntarás si habrá forma de hacer que el entrenamiento haga que tus guerreros sean más fuertes, de la misma forma que entrenamos a los trabajadores para que fueran más fuertes e inteligentes.  Si hay forma.  Los guerreros irán a la pista de carreras para correr, a la piscina para nadar, pero hay algo más que podemos enseñarles: es el ataque.",es)
@@ -87,7 +87,7 @@ space
 GuiEnable(Camp)
 hilightBuildingOnPanel(Camp)
 hilightItem("under minimap icons")
-show("Attack is taught at a Barracks, and is comprised of two parts, Attack Strength, and Attack Speed. Attack Strength makes your units do more damage per hit, and Attack Speed makes your units attack more times per second. Barracks are key buildings, as they allow our warriors to get an edge over opposing warriors. It's often seen that a fully trained warrior can take on as many as 5 untrained warriors!")
+show("Attack is taught at Barracks, and is comprised of two parts, Attack Strength, and Attack Speed. Attack Strength makes your units do more damage per hit, and Attack Speed makes your units attack more times per second. Barracks are key buildings, as they allow our warriors to get an edge over opposing warriors. It's often seen that a fully trained warrior can take on as many as 5 untrained warriors!")
 show("L'attaque s'apprend à la Caserne et est composée de deux parties. La Force d'Attaque et la Vitesse d'Attaque. La Force permet à vos unités de faire plus de dégats par coup et la Vitesse les fait attaquer plus de fois par seconde. Les Casernes constituent des bâtiments clés, puisqu'elles permettent à nos guerrières de devenir plus puissantes que celles de nos ennemis. Il est courant de voir une guerrière bien entrainée venir à bout de 5 novices.", fr)
 show("Angreifen kann man in einem Trainingslager lernen. Der Angriff besteht aus 2 Teilen: Angriffgeschwindigkeit und Angriffsstärke. Angriffsstärke gibt deinen Kämpfern mehr Schaden pro Schlag und Angriffsgeschwindigkeit lässt sie mehrmals in der Sekunde angreifen. Trainingslager sind Schlüsselgebäude, da mit ihnen deine Krieger besser geschult sind als die des Feindes. Es wurde schon oft beobachtet, dass ein vollständig trainierter Kämpfer es mit 5 untrainierten Kriegern aufnehmen konnte!",de)
 show("El ataque se enseña en los cuarteles, y se conforma de dos partes, la fuerza de ataque y la velocidad de ataque.  La fuerza de ataque hace que tus unidades hagan más daño por cada golpe y la velocidad de ataque hace que ataquen más veces por segundo.  Los cuarteles son claves puesto que habilitan a los guerreros para ganar competencia frente a los atacantes.  Se ha visto que unos guerreros en su máximo estado son capaces de atender a 5 guerreros que no han sido entrenados!",es)
@@ -96,7 +96,7 @@ show("Атаку можно выучить в Казармах, и она сос
 show("ﻳُﻌﻠَّﻢ ﺍﻟﻬﺠﻮﻡ ﻓﻲ ﺍﻟﺜﻜﻨﺎﺕ، ﻭﻫﻮ ﻳﺘﻜﻮﻥ ﻣﻦ ﻗﺴﻤﻴﻦ: ﻗﻮﺓ ﺍﻟﻬﺠﻮﻡ، ﻭﺳﺮﻋﺔ ﺍﻟﻬﺠﻮﻡ. ﺗﺠﻌﻞ ﻗﻮﺓ ﺍﻟﻬﺠﻮﻡ ﻭﺣﺪﺍﺗﻚ ﺗﺴﺒﺐ ﺍﻟﻤﺰﻳﺪ ﻣﻦ ﺍﻟﻀﺮﺭ ﻓﻲ ﻛﻞ ﺿﺮﺑﺔ. ﺃﻣﺎ ﺳﺮﻋﺔ ﺍﻟﻬﺠﻮﻡ ﻓﺘﺠﻌﻞ ﻭﺣﺪﺍﺗﻚ ﺗﻨﻔﺬ ﻫﺠﻤﺎﺕ ﺃﻛﺜﺮ ﻓﻲ ﻛﻞ ﺛﺎﻧﻴﺔ. ﺍﻟﺜﻜﻨﺔ ﻣﺒﻨﻰ ﺭﺋﻴﺴﻲ، ﻓﻬﻮ ﻳﺘﻴﺢ ﻟﻠﻤﺤﺎﺭﺑﻴﻦ ﺍﻟﺘﻔﻮﻕ ﻋﻠﻰ ﺍﻟﻤﺤﺎﺭﺑﻴﻦ ﺍﻟﻤﻌﺎﺩﻳﻦ. ﻛﺜﻴﺮًﺍ ﻣﺎ ﻧﺸﺎﻫﺪ ﻣﺤﺎﺭﺑًﺎ ﻛﺎﻣﻞ ﺍﻟﺘﺪﺭﻳﺐ ﻳﺘﻐﻠﺐ ﻋﻠﻰ ﻣﺎ ﻳﺼﻞ ﺇﻟﻰ ٥ ﻣﺤﺎﺭﺑﻴﻦ ﻏﻴﺮ ﻣﺪﺭﺑﻴﻦ!",ar)
 space
 
-show("You can now construct a Barracks. As the menu says, Barracks need wood to be constructed, so it's natural that we place one near wood.")
+show("You can now construct Barracks. As the menu says, Barracks need wood to be constructed, so it's natural that we place one near wood.")
 show("Vous pouvez maintenant construire une Caserne. Comme l'indique la barre de menu, il faut du bois, il est donc normale que nous la construisions près d'une foret.", fr)
 show("Du kannst nun Trainingslager bauen. Wie das Menü anzeigt, brauchen Trainingslager Holz um gebaut zu werden. Stelle sie also neben einen Wald.",de)
 show("Puedes construir un cuartel.  Como indica el menú, un cuartel necesita madera para construirse, así que el mejor sitio  es cerca al bosque.",es)
@@ -109,7 +109,7 @@ unhilightItem("under minimap icons")
 hide
 
 hilightBuildings(Camp)
-show("Ok, just remember to use all of those free workers, and get that Barracks made quickly. Don't try to use too many workers, however. Overworking your workers will cause you to lose some of the direct control over them.")
+show("Ok, just remember to use all of those free workers, and get that Barracks made quickly. Don't try to use too many workers, however. Giving your workers too much tasks will cause you to lose some of the direct control over them.")
 show("OK, souvenez-vous bien d'utiliser toutes les ouvrières libres pour construire rapidement la Caserne. N'en employez pas trop tout de meme, les surcharger de travail vous ferait perdre une partie du controle que vous avez sur elles.", fr)
 show("OK denke daran alle freien Arbeiter zu nutzen damit das Trainingslager schnell fertig wird. Benutze aber nicht zu viele. Überarbeitung lässt die Kontrollmöglichkeiten von dir auf deine Arbeiter schwinden!",de)
 show("No olvides usar a esos trabajadores desempleados, y que construyan rápido el cuartel.  No intentes usar demasiados, puesto que sobrecargarlos te impedirá tener control directo sobre ellos.",es)
@@ -148,7 +148,7 @@ show("Улучшение зданий использует те преимуще
 show("ﺳﻮﻑ ﻧﺴﺘﻔﻴﺪ ﻣﻦ ﻣﺪﺭﺳﺘﻨﺎ ﻋﻨﺪﻣﺎ ﻧﻘﻮﻡ ﺑﺘﺮﻗﻴﺔ ﺍﻟﻤﺒﺎﻧﻲ. ﺭﺑﻤﺎ ﻟﻢ ﺗﻼﺣﻆ ﺃﻧﻚ ﻋﻨﺪﻣﺎ ﺗﻨﻘﺮ ﻋﻠﻰ ﻣﺒﻨﻰ ﻓﺈﻧﻚ ﺗﺸﺎﻫﺪ ﺍﻵﻥ ﺯﺭ "ﺭﻕِّ" ﻓﻲ ﺍﻟﺠﺰء ﺍﻟﺴﻔﻠﻲ ﻣﻦ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﻴﻤﻨﻰ. ﺇﻧﻪ ﻓﻮﻕ ﺯﺭ "ﺣﻄِّﻢ" ﺗﻤﺎﻣًﺎ.",ar)
 space
 
-show("Now, lets decide what buildings we should upgrade first. Lets look at our Inns. They don't look particularly overworked. In fact, a few of them are still empty.")
+show("Now, lets decide what buildings we should upgrade first. Lets look at our Inns. They don't look very crowded. In fact, a few of them are still empty.")
 show("Choisissons maintenant les bâtiments à améliorer en priorité. Jeton un oeil à nos auberges. Elles n'ont pas l'air surchargées de travail, certaines d'entre elles sontmêmevides.", fr)
 show("Jetzt musst du entscheiden, welches Gebäude du zuerst verbesserst. Schau dir die Gaststätten an. Sie sehen nicht überlastet aus, manche von ihnen sind sogar leer.",de)
 show("Ahora, decidamos qué edificaciones debemos actualizar primero.  Veamos nuestras tabernas.  No lucen muy elaboradas, de hecho, algunas de ellas están vacías.",es)
@@ -157,7 +157,7 @@ show("Теперь давайте решим какие здания стоит 
 show("ﺩﻋﻨﺎ ﻧﻘﺮﺭ ﺍﻵﻥ ﺍﻟﻤﺒﺎﻧﻲ ﺍﻟﺘﻲ ﻧﺮﻳﺪ ﺗﺮﻗﻴﺘﻬﺎ ﺃﻭﻻً. ﺩﻋﻨﺎ ﻧﻠﻖِ ﻧﻈﺮﺓ ﻋﻠﻰ ﻣﻨﺎﺯﻟﻨﺎ. ﺇﻧﻬﺎ ﻻ ﺗﺒﺪﻭ ﻣﺠﻬﺪﺓ ﺣﻘًﺎ. ﺑﻞ ﺇﻥ ﺑﻌﻀﺎ ﻣﺎ ﻳﺰﺍﻝ ﻓﺎﺭﻏًﺎ.",ar)
 space
 
-show("Our Hospital doesn't look overcrowded either. So, it's between our School, our Racetrack, our Swimming Pool, and our Barracks.")
+show("Our Hospital doesn't look overcrowded either. So, our choice lies between our School, Racetrack, Swimming Pool, or the Barracks.")
 show("Notre hopital n'a pas l'air encombré lui non plus. Il nous reste donc à choisir entre notre École, notre Piste de Course, notre Piscine et notre Caserne", fr)
 show("Dein Krankenhaus sieht auch nicht überfüllt aus. Es bleiben noch Rennstrecke, Schwimmbad und das Trainingslager. ",de)
 show("Nuestro hospital tampoco está muy lleno. Así que está entre el colegio, la pista de carreras, la piscina o el cuartel.",es)
@@ -208,7 +208,7 @@ hide
 wait(Racetrack(0, 3) > 0)
 
 hilightBuildings(Racetrack)
-show("Bam! A shiny new Racetrack! And its not bad looking either, certainly a notable improvement from the last one. You may notice that the Racetrack got larger when you upgraded it. This is why you had to leave a gap between the Racetrack and other things. Buildings can't be upgraded if there's no room for them to expand. So, lets go through and upgrade some more buildings, shall we?")
+show("Bam! A shiny new Racetrack! And it's not looking bad either, certainly a notable improvement over the last one. You may notice that the Racetrack got larger when you upgraded it. This is why you had to leave a gap between the Racetrack and other things. Buildings can't be upgraded if there's no room for them to expand. So, let's have a look at our colony and upgrade some more buildings, shall we?")
 show("Bam ! Une nouvelle Piste de Course rutilante ! Elle n'est pas désagréable à regarder, il s'agit certainement d'une amélioration notable par rapport à la dernière. Vous avez peut-etre constaté que la Piste de Course est désormais plus grande. C'est pourquoi vous devez laisser un espace autours de la Piste de Course et des autres bâtiments. Ils ne peuvent pas etre améliorés s'ils n'ont pas de place pour s'étendre. Continuons et améliorons d'autres bâtiments...", fr)
 show("Bam! Eine brandneue Rennstrecke ist fertig. Und sie sieht gar nicht schlecht aus, gewiss eine Verbesserung zu vorher. Du wirst bemerkt haben, dass die Rennbahn nach der Verbesserung größer geworden ist. Deshalb solltest du vorhin einen Rand um die Rennstrecke und andere Gebäude lassen. Gebäude können nur verbessert werden, wenn Platz dafür vorhanden ist. So. Am Besten, du verbesserst noch mehr Gebäude, oder nicht?",de)
 show("Ahh! Una nueva pista de carreras! y no luce mal, es una mejora sustancial desde la última vez.  Notarás que la pista de carreras se hizo más grande cuando la actualizaste.  Esa era la razón para dejar espacio entre la pista de carreras y otras cosas.  Las edificaciones no pueden actualizarse si no hay espacio para que ellas se expandan.  Hagamos la tarea de actualizar otras construcciones, o.k.?",es)
@@ -218,7 +218,7 @@ show("ﺍﻟﻠﻪ! ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ ﺟﺪﻳﺪ ﻭﺣﻠﻮ! ﺇ�
 space
 unhilightBuildings(Racetrack)
 
-show("Hmm, what to do next? It's certainly a hard decision. I would go with the Barracks, and then the Swimming Pool. When they're both finished, we will then continue.")
+show("Hmm, what to do next? It's certainly a hard decision. I would go with the Barracks, and then the Swimming Pool. When they're both upgraded, we will then continue.")
 show("Hmm, que faire maintenant ? C'est une décision compliquée. Je continuerais avec la Caserne puis la Piscine. Lorsqu'elles seront toutes deux terminées, nous pourrons continuer.", fr)
 show("Hmm, was ist als Nächstes zu tun? Das ist natürlich eine schwere Entscheidung. Ich würde mit dem Trainingslager weitermachen und dann zum Schwimmbad übergehen. Wenn du mit beiden fertig bist, machen wir weiter.",de)
 show("Hmm, qué hacer ahora? Una decisión nada sencilla.  Comenzaría con el cuartel, después la piscina, y cuando haya finalizado las dos, continuaremos.",es)
@@ -277,7 +277,7 @@ show("Итак, стоит ли нам построить несколько б�
 show("ﻫﻼ ﺑﻨﻴﻨﺎ ﺑﻌﺾ ﺍﻷﺑﺮﺍﺝ؟ ﺃﻋﺘﻘﺪ ﺃﻥ ﻫﻨﺎﻙ ﻣﻮﻗﻌًﺎ ﺷﺮﻗﻲ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ. ﺇﻧﻪ ﻓﻮﻕ ﺗﻠﻚ ﺍﻟﻤﺠﻤﻮﻋﺔ ﺍﻷﺧﺮﻯ ﻣﻦ ﺃﺷﺠﺎﺭ ﺍﻟﻔﺎﻛﻬﺔ. ﻳﺒﺪﻭ ﺃﻧﻪ ﻳﺼﻞ ﺇﻟﻰ ﺟﺰﻳﺮﺓ ﺃﺧﺮﻯ! ﻋﻠﻴﻨﺎ ﺃﻥ ﻧﺪﺍﻓﻊ ﻋﻦ ﺗﻠﻚ ﺍﻟﻨﻘﻄﺔ.",ar)
 space
 
-show("When constructing the towers, there is a couple of things to remember. First of all, you want to leave open spaces completely around the tower. The space behind the tower will be used by your workers to put stone in. It is your choice whether you want to leave space on the other three sides, but in general it is a good idea, because it allows you to put in walls. Thankfully, there is just enough room between those trees and the beach to place two towers that will be completely surrounded in stone wall.")
+show("When constructing towers, there is a couple of things to remember. First of all, you want to leave some open space around the tower. The space behind the tower will be used by your workers to put stone in them. It's your choice whether you want to leave space on the other three sides, but in general it is a good idea, because it allows you to put in walls. Thankfully, there is enough space between those trees and the beach to place there two towers that will be completely surrounded in stone wall.")
 show("Lorsque vous construisez des tours, souvenez-vous de quelques éléments. Tout d'abord, laissez de l'espace tout autour. L'espace à l'arrière de la tour sera utilisé pour l'approvisionnement en pierres. C'est à vous de choisir si vous laissez de l'espace sur les trois autres cotés, mais il s'agit généralement d'une bonne idée, car cela vous permet de dresser des murs. Heureusement, il y a juste assez d'espace entre les arbres et la place pour placer deux tours qui seront totalement encerclées par des murs.", fr)
 show("Wenn du die Türme baust gibt es einiges zu bedenken. Als erstes solltest du rund um den Turm ein bisschen Platz lassen. Der Platz hinter dem Turm wird von den Arbeitern benutzt um ihn mit Steinen zu versorgen. Es ist deine Entscheidung ob du bei den anderen 3 Seiten Platz lässt, es ist aber eine gute Idee, da du dann Mauern um den Turm herum ergänzen kannst. Gott sei Dank ist zwischen den Bäumen und dem Strand genug Platz für 2 Türme und die Mauern, um ihn zu umgeben.",de)
 show("Cuando construyas torres hay algunas cosas para tener en cuenta.  Primero, debes dejar espacios libres alrededor de la torre.  El espacio detrás de la torre le servirá a tus trabajadores para colocar rocas.  Es tu decisión si deseas dejar espacio en los otros frentes de la torre, pero usualmente esto es bueno, porque te permite colocarte detrás de las paredes.  Afortunadamente hay espacio suficiente entre esos árboles y la playa, para colocar dos torres que van a estar rodeadas completamente de murallas de roca.",es)
@@ -298,7 +298,7 @@ unhilightBuildingOnPanel(Tower)
 hide
 
 hilightBuildingOnPanel(Wall)
-show("Excellent! Now, to place the walls around them. Don't worry if you can't fit a wall into every corner. It comes with a little practice trying to guess the place to put the Tower in order to leave enough space for a wall. To place the wall, select the wall icon, and place several wall sections surrounding the three sides of the towers that aren't facing the trees as best as you can.")
+show("Excellent! Now let's place walls around them. Don't worry if you can't fit a wall into every corner. Choosing the right place to put the Tower with enough space for the wall comes with a little practice. To place the wall, select the wall icon, and place several wall sections surrounding the three sides of the towers that aren't facing the trees as best as you can.")
 show("Excellent ! Maintenant, entourez-les de murs. Ne vous inquiétez pas si vous n'arriver pas à les encercler parfaitement, déterminer un emplacement permettant de placer une Tour tout en laissant suffisamment d'espace autour cdemande un peu de pratique. Pour construire un mur, sélectionnez son icone et placez en plusieurs sections sur les trois cotés de la tour qui ne sont pas face aux mur.", fr)
 show("Super! Nun baue die Mauer um den Turm. Verzweifle nicht, wenn du nicht in jede Ecke eine Mauer bauen kannst. Dafür brauchst du ein bisschen Übung darin, den Platz abzuschätzen wo du einen Turm hinbauen musst, damit eine Mauer drumherum passt. Um eine Mauer zu bauen wähle das Mauer-Symbol und platziere die Mauerstücke so gut es geht um den Turm - an den drei Seiten des Turmes, die nicht den Fruchtbäumen gegenüberliegen.",de)
 show("Excelente! Ahora, coloquemos paredes alrededor de ellas.  No te preocupes si no puedes colocar paredes en cada esquina. Se logra con un poco de práctica el colocar las torres para que haya espacio suficiente para las paredes.  Para ubicar las paredes selecciona el ícono de pared, y coloca, tan bien como puedas, muchas secciones de pared rodeando los tres lados de las paredes que no están enfrentados a los árboles .",es)
