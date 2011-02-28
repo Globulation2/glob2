@@ -190,7 +190,7 @@ unhilightItem("units assigned bar")
 unhilightBuildings(Inn)
 
 hilightUnits(worker)
-show("Now all your workers are idle. They continue to eat, however, so be carefull not to let your Inn run out of food!")
+show("Now all your workers are idle. They continue to eat, however, so be careful not to let your Inn run out of food!")
 show("Maintenant, vos deux ouvrières sont inactives. Toutefois, elles continuent à manger, soyez donc attentif à ce qu'elles ne vident pas l'auberge !",fr)
 show("Nun haben alle deine Arbeiter nichts zu tun und sind faul. Leider essen sie immer noch weiter, also lass deinem Gasthof die Nahrung nicht ausgehen!",de)
 show("En este momento todos los trabajadores están desocupados.  Continúan comiendo, así que ten cuidado de no quedarte sin comida!",es)
