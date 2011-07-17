@@ -20,6 +20,7 @@
 #ifndef __BRUSH_H
 #define __BRUSH_H
 
+#include <cstddef>
 #include <vector>
 //#include "GraphicContext.h" // just to get Color, really this should only be in GameGUI
 
