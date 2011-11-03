@@ -854,11 +854,13 @@ MapEdit::MapEdit()
 	terrainView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 136, 32, 32), "any", "terrain view icon", "switch to terrain view", 31, Terrain);
 	teamsView = new PanelIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+96+decX, 136, 32, 32), "any", "teams view icon", "switch to teams view", 33, Teams);
 	menuIcon = new MenuIcon(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32+decX, 0, 32, 32), "any", "menu icon", "open menu screen");
+	mapCoordinatesLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+decX, globalContainer->gfx->getH()-95, 75, 10), "any", "map coordinates label", "do nothing", "", false, "0 0");
 	addWidget(buildingView);
 	addWidget(flagsView);
 	addWidget(terrainView);
 	addWidget(teamsView);
 	addWidget(menuIcon);
+	addWidget(mapCoordinatesLabel);
 	swarm = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12+decX, 128+32+6, 40, 40), "building view", "swarm", "set place building selection swarm", "swarm", true);
 	inn = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+12+decX, 128+32+6, 40, 40), "building view", "inn", "set place building selection inn", "inn", true);
 	hospital = new BuildingSelectorWidget(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+12+decX, 128+32+46*1+6, 40, 40), "building view", "hospital", "set place building selection hospital", "hospital", true);
@@ -1671,6 +1673,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		mouseY=event.motion.y;
 		relMouseX=event.motion.xrel;
 		relMouseY=event.motion.yrel;
+		updateCoordinatesLabel();
 		if(isDraggingMinimap)
 		{
 			performAction("minimap drag motion", relMouseX, relMouseY);
@@ -3164,6 +3167,20 @@ void MapEdit::handleMapScroll()
 	{
 		xSpeed += xMotion;
 	}
+	updateCoordinatesLabel();
+}
+
+void MapEdit::updateCoordinatesLabel()
+{
+	std::ostringstream s;
+	int x;
+	int y;
+	if (panelMode==Terrain) //terrain has a slightly different coordinates system
+		game.map.displayToMapCaseAligned(mouseX+(terrainType>TerrainSelector::Water ? 0 : 16), mouseY+(terrainType>TerrainSelector::Water ? 0 : 16), &x, &y,  viewportX, viewportY);
+	else
+		game.map.displayToMapCaseAligned(mouseX, mouseY, &x, &y, viewportX, viewportY);
+	s << "X: " << x << " Y: " << y;
+	mapCoordinatesLabel->setLabel(s.str());
 }
 
 void MapEdit::addWidget(MapEditorWidget* widget)
