@@ -328,27 +328,44 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 			
 			if (old!=descriptor.methode)
 			{
-				terrains->visible=
-				ratioText->visible=
-				waterRatio->visible=waterText->visible=
-				sandRatio->visible=sandText->visible=
-				grassRatio->visible=grassText->visible=
-				desertRatio->visible=desertText->visible=
-				smooth->visible=smoothingText->visible=
-				wheatRatio->visible=wheatText->visible=
-				woodRatio->visible=woodText->visible=
-				stoneRatio->visible=stoneText->visible=
-				algaeRatio->visible=algaeText->visible=
-				riverDiameter->visible=riverDiameterText->visible=
-				extraIslands->visible=extraIslandsText->visible=
-				craterDensity->visible=craterDensityText->visible=
-				riverDiameter->visible=riverDiameterText->visible=
-				oldBeach->visible=oldBeachSizeText->visible=
-				oldIslandSize->visible=oldIslandSizeText->visible=
-				riverDiameter->visible=riverDiameterText->visible=
-				fruitRatio->visible=fruitText->visible=
-				logRepeatAreaTimes->visible=areaTimesText->visible=
-				false;
+				terrains->visible=false;
+				ratioText->visible=false;
+				waterRatio->visible=false;
+				waterText->visible=false;
+				sandRatio->visible=false;
+				sandText->visible=false;
+				grassRatio->visible=false;
+				grassText->visible=false;
+				desertRatio->visible=false;
+				desertText->visible=false;
+				smooth->visible=false;
+				smoothingText->visible=false;
+				wheatRatio->visible=false;
+				wheatText->visible=false;
+				woodRatio->visible=false;
+				woodText->visible=false;
+				stoneRatio->visible=false;
+				stoneText->visible=false;
+				algaeRatio->visible=false;
+				algaeText->visible=false;
+				riverDiameter->visible=false;
+				riverDiameterText->visible=false;
+				extraIslands->visible=false;
+				extraIslandsText->visible=false;
+				craterDensity->visible=false;
+				craterDensityText->visible=false;
+				riverDiameter->visible=false;
+				riverDiameterText->visible=false;
+				oldBeach->visible=false;
+				oldBeachSizeText->visible=false;
+				oldIslandSize->visible=false;
+				oldIslandSizeText->visible=false;
+				riverDiameter->visible=false;
+				riverDiameterText->visible=false;
+				fruitRatio->visible=false;
+				fruitText->visible=false;
+				logRepeatAreaTimes->visible=false;
+				areaTimesText->visible=false;
 			
 				// not eUNIFORM
 				nbTeams->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
