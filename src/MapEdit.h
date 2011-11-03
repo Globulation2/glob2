@@ -476,6 +476,8 @@ private:
 	void delegateMenu(SDL_Event& event);
 	///Handles the scrolling of the map, by arrow keys and by putting the mouse near the edge of the screen
 	void handleMapScroll();
+	///Updates the coordinates label, should be called when scrolling or moving the mouse
+	void updateCoordinatesLabel();
 
 	///This states whether the minimap was rendered or not
 	bool wasMinimapRendered;
@@ -508,12 +510,13 @@ private:
 
 	PanelMode panelMode;
 
-	//Miscalaneous panel icons
+	//Miscellaneous panel icons and coordinates label
 	PanelIcon* buildingView;
 	PanelIcon* flagsView;
 	PanelIcon* terrainView;
 	PanelIcon* teamsView;
 	MenuIcon* menuIcon;
+	TextLabel* mapCoordinatesLabel;
 
 	///Building view
 	///@{
