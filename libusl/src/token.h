@@ -3,6 +3,7 @@
 
 #include "position.h"
 #include <string>
+#include <unistd.h>
 
 struct Token
 {
