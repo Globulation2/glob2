@@ -31,6 +31,7 @@
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), router("localhost"), maps(this), scoreCalculator(this)
 {
+	isBroadcasting = false;
 	nl.startListening(YOG_SERVER_PORT);
 	new_connection.reset(new NetConnection);
 	organizedGameBroadcastTime=0;
