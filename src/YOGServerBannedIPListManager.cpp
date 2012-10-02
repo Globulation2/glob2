@@ -35,6 +35,7 @@ YOGServerBannedIPListManager::YOGServerBannedIPListManager()
 {
 	loadBannedIPList();
 	saveCountdown=0;
+        modified=false;
 }
 
 
