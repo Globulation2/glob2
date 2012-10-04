@@ -2132,7 +2132,7 @@ NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> strea
 	int pos=0;
 	while(!stream->isEndOfStream() && size < 4096)
 	{
-		stream->read(data+pos, 1, NULL);
+		stream->read(data+pos, 1, "");
 		//For some reason the last byte is an overread, so it should be ignored
 		if(!stream->isEndOfStream())
 		{
