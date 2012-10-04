@@ -34,10 +34,7 @@ YOGGameInfo::YOGGameInfo()
 YOGGameInfo::YOGGameInfo(const std::string& gameName, Uint16 gameID)
 	: gameID(gameID), gameName(gameName), gameState(GameOpen), aiJoined(0)
 {
-	gameID=0;
-	gameState = GameOpen;
 	playersJoined = 0;
-	aiJoined = 0;
 	numberOfTeams = 0;
 }
 
