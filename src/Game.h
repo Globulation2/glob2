@@ -162,6 +162,7 @@ private:
 		BOTTOM_TO_TOP
 	};
 
+public:
 	struct BuildProject
 	{
 		int posX;
@@ -172,6 +173,7 @@ private:
 		int unitWorkingFuture;
 	};
 
+private:
 	///Initiates Game
 	void init(GameGUI *gui, MapEdit* edit);
 
