@@ -140,6 +140,7 @@ def configure(env, server_only):
         print "Could not find libboost_date_time or libboost_date_time-mt or boost/thread/thread.hpp"
         missing.append("libboost_date_time")
     env.Append(LIBS=[boost_date_time])
+    env.Append(LIBS=["boost_system", "pthread"])
     
 
     if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
