@@ -62,7 +62,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if(par1 == HOST)
 		{
-			ChooseMapScreen cms("maps", "map", false, "games", "game", false);
+			ChooseMapScreen cms("maps", "map", false, "games", "game", NULL);
 			int rc = cms.execute(globalContainer->gfx, 40);
 			if(rc == ChooseMapScreen::OK)
 			{
