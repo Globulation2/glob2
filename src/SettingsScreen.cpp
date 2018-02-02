@@ -513,9 +513,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (source==modeList)
 		{
-			int w, h;
-			char fso; //full screen only
-			sscanf(modeList->getText(par1).c_str(), "%dx%d %c", &w, &h, &fso);
+			int w, h, res;
+			char fso = 0; //full screen only
+			res = sscanf(modeList->getText(par1).c_str(), "%dx%d %c", &w, &h, &fso);
+			assert(res >= 2);
 			globalContainer->settings.screenWidth=w;
 			globalContainer->settings.screenHeight=h;
 			if(fso=='*')
