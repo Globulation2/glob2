@@ -199,7 +199,7 @@ void Settings::save(std::string filename)
 			}
 		}
 
-		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
+		for(int n=0; n<3; ++n)
 		{
 			std::string keyname = "defaultFlagRadius["+boost::lexical_cast<std::string>(n)+"]";
 			Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultFlagRadius[n]);
