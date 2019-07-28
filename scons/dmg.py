@@ -14,7 +14,7 @@ def create_dmg_message( target, source, env):
 
 def generate(env) :
 	"""Add Builders and construction variables for qt to an Environment."""
-	print "Lodading dmg tool..."
+	print "Loading dmg tool..."
 	env.Append( BUILDERS={'Dmg' : 
 			env.Builder( action=env.Action(create_dmg, create_dmg_message ))
 		} )
