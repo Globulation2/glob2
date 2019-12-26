@@ -1,5 +1,3 @@
-syntax: glob
-
 config.*
 options_cache.py
 libgag.a
