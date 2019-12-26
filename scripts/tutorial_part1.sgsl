@@ -1,7 +1,7 @@
-# glob2's tutorial, (c) 2003-2007 Ghislain "Court-Jus" Leveque and Stéphane Magnenat and Bradley Arsenault and Kieran P
-# This map is released under the GNU GPL, see COPYING for more infos
+# glob2's tutorial, (c) 2003-2019 Ghislain "Court-Jus" Leveque, Stéphane Magnenat, Bradley Arsenault and Kieran P
+# This map is released under the GNU GPL, see COPYING for more information
 
-# Tutorial, scénario 1
+# Tutorial, scenario 1
 # Désactivation de tout ce qui est inutile au tutorial
 # Tutorial translated into german by Manuel Soukup (and corrected by Julia Schmitt)
 # Translation to spanish Igor Támara <igor@tamarapatino.org> (and revised by Hernan Quishpe)
@@ -177,7 +177,7 @@ show("ﺍﻧﻘﺮ ﻋﻠﻰ ﺍﻟﻮﻛﺮ. ﺇﻥ ﻧﻈﺮﺕ ﺇﻟﻰ ﺍ�
 space
 
 hilightBuildings(Inn)
-show("You will notice that on either side of the bar, there are two arrows. You can use the arrows to either increase or decrease the number of notches on the bar, and thus the number of units assigned to the building. Decrease the number of units assigned to the Swarm to 0, and then do the same thing for the Inn.")
+show("You will notice that there is an arrow on either side of the bar. You can use the arrows to either increase or decrease the number of notches on the bar, and thus the number of units assigned to the building. Decrease the number of units assigned to the Swarm to 0, and then do the same thing for the Inn.")
 show("Vous remarquerez que de chaque coté de la barre se trouvent deux fl_che. Vous pouvez les utiliser pour augmenter ou diminuer le nombre d'unités assignées au bâtiment. Placez le nombre d'unités affectées à la Ruche à 0 et faites demêmepour l'auberge.", fr)
 show("Du wirst bemerkt haben, dass bei den Leistenenden zwei Pfeile angebracht sind. Du kannst die Pfeile benutzen um den blauen Balken zwischen ihnen zu vergößern oder zu verkleinern, was wiederum die Zahl der zugeteilten Arbeiter zum Gebäude erhöht oder verringert. Vermindere die 'An der Arbeit'-Zahl am Stock auf 0 und mache dann das Gleiche beim Gasthof.",de)
 show("Verás que a cada lado de la barra hay una flecha. Puedes usarlas para aumentar o disminuir la cantidad de cuadros en la misma, que es la cantidad de unidades asignadas a la edificación.  Disminuye a 0 la cantidad de unidades asignadas a la colmena , y haz lo mismo para la taberna. ",es)
@@ -267,7 +267,7 @@ show("Щелкните по Рою. Посмотрите, приблизител
 show("ﺍﻧﻘﺮ ﺍﻵﻥ ﻋﻠﻰ ﻭﻛﺮﻙ. ﺍﻧﻈﺮ ﺇﻟﻰ ﻣﻨﺘﺼﻒ ﺍﻟﻘﺎﺋﻤﺔ ﺗﻘﺮﻳﺒًﺎ، ﺳﻮﻑ ﺗﺠﺪ ٣ ﺃﺷﺮﻃﺔ، ﻋﺎﻣﻞ، ﻭﻣﺴﺘﻜﺸﻒ، ﻭﻣﺤﺎﺭﺏ. ﻭﺳﺘﺠﺪ ﺃﻥ ﻓﻲ ﺷﺮﻳﻂ ﺍﻟﻌﺎﻣﻞ ﺳِﻨﺔ ﺻﻐﻴﺮﺓ. ﺇﻥ ﻛﻨﺎ ﻧﺮﻳﺪ ﺃﻥ ﻧﺤﺼﻞ ﻋﻠﻰ ﻣﺴﺘﻜﺸﻒ ﻓﻴﺠﺐ ﺃﻥ ﻧﺰﻳﺪ ﺳِﻨَّﺔ ﺇﻟﻰ ﺷﺮﻳﻂ ﺍﻟﻤﺴﺘﻜﺸﻒ.",ar)
 space
 
-show("You now have one notch for workers and one notch for explorers. This means that the Swarm will create explorers and workers half and half, one worker and then one explorer. But this is not what we want! We would like to get one explorer immediatly, rather than waiting, so decrease one notch for workers, and explorers will be the only type of unit that is created.")
+show("You now have one notch for workers and one notch for explorers. This means that the Swarm will create explorers and workers half and half, one worker and then one explorer. But this is not what we want! We would like to get one explorer immediately, rather than waiting, so decrease one notch for workers, and explorers will be the only type of unit that is created.")
 show("Vous avez maintenant une graduation pleine pour les ouvrière et une pour les exploratrice. Cela signifie que la ruche créera des exploratrices et des ouvrières à part égales : une ouvrière, puis une exploratrice. Mais ce n'est pas ce que nous voulons ! Nous voudrions une exploratrice tout de suite plutot que d'attendre. Diminuez donc la production d'ouvrière afin que les exploratrices soient le seul type d'unités créé.", fr)
 show("Nun hast du ein Stück blauen Balken für Arbeiter und eins für Entdecker. Das bedeutet, dass der Stock im Wechsel einen Arbeiter und einen Entdecker produziert. Aber das ist ja nicht das, was du willst, du willst nur einen Entdecker und das schnell. Deshalb reduziere den Arbeiter-Balken auf 0. Nun werden nur noch Entdecker erschaffen.",de)
 show("Ahora tienes una unidad para trabajadores y otra para exploradores.  Esto significa que la colmena creará sendos exploradores y trabajadores, uno a uno.  Pero no es lo que queremos! Queremos que el explorador salga inmediatamente en lugar de esperar. Disminuye los trabajadores y así solamente se crearán exploradores.",es)
@@ -325,7 +325,7 @@ wait(Explorer(0) > 1)
 unhilightUnits(Explorer)
 hilightBuildings(Swarm)
 
-show("Good. Now set the explorer production back a notch and worker production ahead a notch. You can do this in the same way you did before. Click on the Swarm, and then click on the up/down arrows on the worker and explorer bar respectivly.")
+show("Good. Now set the explorer production back a notch and worker production ahead a notch. You can do this in the same way you did before. Click on the Swarm, and then click on the up/down arrows on the worker and explorer bar respectively.")
 show("Bien. Diminuez maintenant la production d'exploratrices et augmentez celle des ouvrières. Vous pouvez le faire comme tout à l'heure, en cliquant sur la Ruche puis en utilisant les flèches des barres ouvrières et exploratrices", fr)
 show("Gut. Nun setze die Entdeckerproduktion um eins zurück und die Arbeiterproduktion um eins nach oben. Das machst du wie bereits erklärt: Klicke auf den Stock und dann auf die jeweiligen Leistenenden von Entdecker und Arbeiter.",de)
 show("Bien. Elimina la producción de exploradores y aumenta en uno la producción de trabajadores. Lo haces de la misma forma en que lo hiciste antes, selecciona la colmena y después selecciona las flechas en las barras de explorador y trabajador, respectivamente.",es)
