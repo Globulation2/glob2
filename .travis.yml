@@ -45,7 +45,7 @@ script:
   # Build source using scons
   - scons
   # Build source with qmake
-  - qmake
+  - qmake src/globulation2.pro
   - make --silent
   # Check if build was successfull
   - if [ ! -f src/glob2 ]; then echo "scons build failed" ; exit 1 ; fi
