@@ -43,16 +43,13 @@ script:
   # ... clone my fork
   - git clone https://github.com/richelbilderbeek/glob2
   # Build source using scons
-  - if [[ $TRAVIS_BRANCH == "scons" ]]; then cd glob2; scons; cd .. ; fi
-  - if [[ $TRAVIS_BRANCH != "scons" ]]; then cd glob2; scons; cd .. ; fi
+  - scons
   # Build source with qmake
-  - if [[ $TRAVIS_BRANCH != "scons" ]]; then qmake; fi
-  - if [[ $TRAVIS_BRANCH != "scons" ]]; then make --silent; fi
-  - if [[ $TRAVIS_BRANCH != "scons" ]]; then ln -s glob2/data; fi
-  - if [[ $TRAVIS_BRANCH != "scons" ]]; then ln -s glob2/maps; fi
+  - qmake
+  - make --silent
   # Check if build was successfull
-  - if [[ $TRAVIS_BRANCH == "scons" ]]; then if [ ! -f glob2/src/glob2 ]; then echo "scons build failed" ; exit 1 ; fi; fi
-  - if [[ $TRAVIS_BRANCH != "scons" ]]; then if [ ! -f globulation2 ]; then echo "qmake build failed" ; exit 1 ; fi; fi
+  - if [ ! -f src/glob2 ]; then echo "scons build failed" ; exit 1 ; fi
+  - if [ ! -f globulation2 ]; then echo "qmake build failed" ; exit 1 ; fi
   # Call OCLint
   #- ./do_oclint
   # Get code coverage
