@@ -1,0 +1,82 @@
+language: cpp
+dist: xenial # Must use Xenial here
+compiler: gcc
+
+addons: 
+  apt: 
+    packages: 
+      - mercurial
+      - scons 
+      - libsdl1.2-dev 
+      - libsdl-net1.2-dev 
+      - libsdl-image1.2-dev
+      - libsdl-ttf2.0-dev 
+      - zlibc 
+      - libspeex-dev 
+      - libogg-dev 
+      - libvorbis-dev 
+      - qt5-qmake 
+      - qt5-default
+      - cppcheck
+      - valgrind
+      - sloccount
+
+install: 
+  - sudo apt update -qq
+  # Boost
+  - sudo apt install -qq libboost-all-dev
+  # Codecov
+  - sudo pip install codecov
+  # OCLint
+  #- ./install_oclint
+  # Check dead links
+  - sudo apt-get install -qq npm
+  - npm config set strict-ssl false
+  - sudo npm install -g markdown-link-check
+
+services:
+ - xvfb
+
+script: 
+  # Clone original source or ...
+  #- hg clone https://bitbucket.org/giszmo/glob2
+  # ... clone my fork
+  - hg clone https://bitbucket.org/richelbilderbeek/glob2
+  # Build source using scons
+  - if [[ $TRAVIS_BRANCH == "scons" ]]; then cd glob2; scons; cd .. ; fi
+  - if [[ $TRAVIS_BRANCH != "scons" ]]; then cd glob2; scons; cd .. ; fi
+  # Build source with qmake
+  - if [[ $TRAVIS_BRANCH != "scons" ]]; then qmake; fi
+  - if [[ $TRAVIS_BRANCH != "scons" ]]; then make --silent; fi
+  - if [[ $TRAVIS_BRANCH != "scons" ]]; then ln -s glob2/data; fi
+  - if [[ $TRAVIS_BRANCH != "scons" ]]; then ln -s glob2/maps; fi
+  # Check if build was successfull
+  - if [[ $TRAVIS_BRANCH == "scons" ]]; then if [ ! -f glob2/src/glob2 ]; then echo "scons build failed" ; exit 1 ; fi; fi
+  - if [[ $TRAVIS_BRANCH != "scons" ]]; then if [ ! -f globulation2 ]; then echo "qmake build failed" ; exit 1 ; fi; fi
+  # Call OCLint
+  #- ./do_oclint
+  # Get code coverage
+  #- cp debug/*.* .
+  #- ./get_code_cov
+  #- codecov
+  # helgrind: takes long
+  # - if [[ $TRAVIS_BRANCH == "richel" ]]; then travis_wait 50 valgrind --tool=helgrind --verbose --log-file=helgrind.log -v ./djog_unos_2018 --god --short 1; fi
+  # - if [[ $TRAVIS_BRANCH == "richel" ]]; then cat helgrind.log; fi
+  # cppcheck
+  - travis_wait 50 cppcheck --quiet --error-exitcode=1 . || true
+  # SLOCcount
+  #   remove OCLint and .git, otherwise it will be counted as well
+  #- rm -rf oclint-0.10.3 oclint-0.10.3-x86_64-linux-3.13.0-74-generic.tar.gz oclint.log
+  #- rm -rf .git
+  #- rm -rf debug
+  #- rm -rf debug
+  #- cd ..; sloccount --overhead 1 --personcost 22614 djog_unos_2018 | egrep -v "Adding"; cd djog_unos_2018
+  # Check dead links
+  - ./scripts/check_dead_links
+
+after_success:
+  # Codecov
+  #- bash <(curl -s https://codecov.io/bash)
+
+
+
