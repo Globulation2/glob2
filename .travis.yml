@@ -39,9 +39,9 @@ services:
 
 script: 
   # Clone original source or ...
-  #- hg clone https://bitbucket.org/giszmo/glob2
+  #- git clone https://github.com/Globulation2/glob2
   # ... clone my fork
-  - hg clone https://bitbucket.org/richelbilderbeek/glob2
+  - git clone https://github.com/richelbilderbeek/glob2
   # Build source using scons
   - if [[ $TRAVIS_BRANCH == "scons" ]]; then cd glob2; scons; cd .. ; fi
   - if [[ $TRAVIS_BRANCH != "scons" ]]; then cd glob2; scons; cd .. ; fi
