@@ -39,16 +39,16 @@ namespace GAGGUI
 		this->h = Style::style->getStyleMetric(Style::STYLE_METRIC_PROGRESS_BAR_HEIGHT);
 		this->hAlignFlag = hAlign;
 		this->vAlignFlag = vAlign;
-		
+
 		this->value = value;
 		this->range = range;
-		
+
 		fontPtr = 0;
 		if (font)
 			this->font = font;
 		this->format = format;
 	}
-	
+
 	void ProgressBar::internalInit(void)
 	{
 		if (font.length())
@@ -57,21 +57,21 @@ namespace GAGGUI
 			assert(fontPtr);
 		}
 	}
-	
+
 	void ProgressBar::paint(void)
 	{
 		int hDec;
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-	
+
 		if (vAlignFlag==ALIGN_FILL)
 			hDec=(h-this->h)>>1;
 		else
 			hDec=0;
-	
+
 		Style::style->drawProgressBar(parent->getSurface(), x, y+hDec, w, value, range);
 		if (fontPtr)
 		{

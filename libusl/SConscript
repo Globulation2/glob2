@@ -1,6 +1,6 @@
 Import("env")
 Import("PackTar")
-    
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "SConscript")
 SConscript("src/SConscript")

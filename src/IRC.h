@@ -41,7 +41,7 @@ class IRC
 {
 	// STATUS nct 20060315 : mostly clean, some string cleanup still welcome though
 	static const bool verbose = false;
-	
+
 public:
 	enum IRCConst
 	{
@@ -50,7 +50,7 @@ public:
 		//! we are using oftc, which says its nicklen is 30
 		IRC_NICK_SIZE = 30
 	};
-	
+
 	enum InfoMessageType
 	{
 		IRC_MSG_NONE=0,
@@ -66,7 +66,7 @@ public:
 		std::string source;
 		std::string diffusion;
 		std::string message;
-		
+
 		ChatMessage() { source[0] = 0; diffusion[0] = 0; message[0] = 0; }
 	};
 
@@ -76,7 +76,7 @@ public:
 		std::string source;
 		std::string diffusion;
 		std::string message;
-		
+
 		InfoMessage(InfoMessageType t) { type=t; source[0] = 0; diffusion[0] = 0; message[0] = 0; }
 	};
 
@@ -91,7 +91,7 @@ protected:
 
 	//! pending info messages
 	std::deque<InfoMessage> infoMessages;
-	
+
 	//! all users on each connected channels
 	std::map<std::string, std::set<std::string> > usersOnChannels;
 	//! true if usersOnChannels has been modified
@@ -100,7 +100,7 @@ protected:
 	std::set<std::string>::const_iterator endChannelUser;
 	//! iterator to the next channel user
 	std::set<std::string>::const_iterator nextChannelUser;
-	
+
 	//! The chat where default chat will go
 	std::string chatChan;
 	//! copy of the nick
@@ -157,7 +157,7 @@ public:
 	const std::string &getInfoMessageText(void);
 	//! Free last info message
 	void freeInfoMessage(void);
-	
+
 	// CHANNEL
 	//! Join a given channel, if no argument is given, join chat channel
 	void joinChannel(const std::string &channel);

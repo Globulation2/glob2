@@ -201,11 +201,11 @@ private:bool canUnitWorkHere(Unit* unit);
 	/// This function removes the unit from the list of units working on the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
 public:void removeUnitFromWorking(Unit* unit);
-	
+
 	/// Insert into the harvesting unit, when the unit has decided to do so.
 	/// This does not handle units state, just the buildings.
 	void insertUnitToHarvesting(Unit* unit);
-	
+
 	/// This function removes the unit from the list of units harvesting from the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
 	/// It is safe to call this function even if the unit is not harvesting at the building.
@@ -221,7 +221,7 @@ private:void updateRessourcesPointer();
 
 	/// This function is called when a Unit places a ressource into the building.
 public:void addRessourceIntoBuilding(int ressourceType);
-	
+
 	/// This function is called when a Unit takes a ressource from a building, such as a market
 	void removeRessourceFromBuilding(int ressourceType);
 
@@ -311,7 +311,7 @@ private:Sint32 oldPriority;
 
 	///This is the list of units harvesting from the building (if it is a market for instance)
 private:std::list<Unit *> unitsHarvesting;
-	
+
 private:
 	// optimisation and consistency
 	InListState inCanFeedUnit;

@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2007 Bradley Arsenault
-  
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -45,7 +45,7 @@ Minimap::Minimap(bool nox, int menuWidth, int gameWidth, int xOffset, int yOffse
 {
 	if (nox) return;
 
-  // since the update loop goes by row store that row so we gan draw the gray "radar" line 
+  // since the update loop goes by row store that row so we gan draw the gray "radar" line
 	update_row = -1;
 	// The actual minimap picture to be drawn to.
 	surface=new DrawableSurface(width, height);
@@ -93,7 +93,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 		borderB = 40;
 		borderA = 180;
 	}
-	
+
 	// Fill the 4 sides of the menu around the minimap with the color above
 	// left side
 	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth, 0, xOffset, height+yOffset, borderR, borderG, borderB, borderA);
@@ -103,7 +103,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, 0, width, yOffset, borderR, borderG, borderB, borderA);
 	// bottom side not needed, because the menu draws up to it
 	//globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, yOffset+height, width, 0, borderR, borderG, borderB, borderA);
-  
+
   // calculate the offset for the viewport square
 	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
 	offset_y = game->teams[localteam]->startPosY - game->map.getH() / 2;
@@ -123,7 +123,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	{
 		///Render 1/25th of the rows at a time
 		const int rows_to_render = std::max(1, mini_h/25);
-		
+
 		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localteam);
 		update_row += rows_to_render;
 		update_row %= (mini_h);
@@ -143,7 +143,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	{
 		globalContainer->gfx->drawPixel(n, starty, 255, 255, 255);
 		globalContainer->gfx->drawPixel(n, endy, 255, 255, 255);
-		
+
 		n+=1;
 		if(n == (mini_x + mini_w))
 			n = mini_x;
@@ -163,12 +163,12 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	///Draw the line that shows where the minimap is currently updating
 	if(minimapMode == HideFOW)
 		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
-	
+
 	///Draw a 1 pixel border arround the minimap
 	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
-	                               yOffset-1, 
-	                               width+2, 
-	                               height+2, 
+	                               yOffset-1,
+	                               width+2,
+	                               height+2,
 	                               200, 200, 200);
 }
 
@@ -227,7 +227,7 @@ void Minimap::setMinimapMode(MinimapMode mode)
 void Minimap::computeMinimapPositioning()
 {
 	if (noX) return;
-	
+
 	if(game->map.getW() > game->map.getH())
 	{
 	  // If the width is greater than the height, normal width but shrink the height
@@ -263,7 +263,7 @@ void Minimap::refreshPixelRows(int start, int end, int localteam)
 	for(int y=start; y!=end;)
 	{
 		computeColors(y, localteam);
-		
+
 		y++;
 		if(y == end)
 			break;
@@ -318,7 +318,7 @@ void Minimap::computeColors(int row, int localTeam)
 		memset(pcol, 0, sizeof(pcol));
 		int nCount = 0;
 		int UnitOrBuildingIndex = -1;
-		
+
 		// compute
 		for (int minidyFP=dMy*dy+decSPY; minidyFP<=(dMy*(dy+1))+decSPY; minidyFP+=(1<<16)) { // Fixed-point numbers
 			int minidy = minidyFP>>16;
@@ -365,7 +365,7 @@ void Minimap::computeColors(int row, int localTeam)
 						goto unitOrBuildingFound;
 					}
 				}
-				
+
 				if (useMapDiscovered || game->map.isMapDiscovered(minidx, minidy, visibleTeams))
 				{
 					// get color to add
@@ -379,7 +379,7 @@ void Minimap::computeColors(int row, int localTeam)
 					{
 						pcolIndex=game->map.getUMTerrain(minidx,minidy);
 					}
-					
+
 					// get weight to add
 					int pcolAddValue;
 					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, visibleTeams))

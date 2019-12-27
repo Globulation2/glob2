@@ -57,10 +57,10 @@ private:
 
 	/// The list of missions that are currently unlocked
 	CheckList* availableMissions;
-	
+
 	/// Map description
 	TextArea* description;
-	
+
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 

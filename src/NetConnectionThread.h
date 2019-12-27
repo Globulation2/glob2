@@ -30,9 +30,9 @@ class NetConnectionThread
 {
 public:
 	NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex);
-	
+
 	~NetConnectionThread();
-	
+
 	///Runs the net thread
 	void operator()();
 
@@ -55,7 +55,7 @@ private:
 	TCPsocket socket;
 	SDLNet_SocketSet set;
 	bool connected;
-	
+
 	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
 	std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing;
 	boost::recursive_mutex incomingMutex;

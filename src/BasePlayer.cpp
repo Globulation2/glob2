@@ -33,7 +33,7 @@ BasePlayer::BasePlayer()
 BasePlayer::BasePlayer(Sint32 number, const std::string& nname, Sint32 teamNumber, PlayerType type)
 {
 	init();
-	
+
 	assert(number>=0);
 	assert(number<Team::MAX_COUNT);
 	assert(teamNumber>=0);
@@ -61,7 +61,7 @@ void BasePlayer::init()
 	quitting=false;
 	quitUStep=0;
 	lastUStepToExecute=0;
-	
+
 	disableRecursiveDestruction=false;
 }
 
@@ -128,7 +128,7 @@ Uint32 BasePlayer::checkSum()
 
 	for (unsigned i=0; i<name.size(); i++)
 		cs^=name[i];
-	
+
 	return cs;
 }
 

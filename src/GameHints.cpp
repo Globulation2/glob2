@@ -22,7 +22,7 @@
 
 GameHints::GameHints()
 {
-	
+
 }
 
 

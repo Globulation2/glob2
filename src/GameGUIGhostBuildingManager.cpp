@@ -54,7 +54,7 @@ bool GameGUIGhostBuildingManager::isGhostBuilding(int x, int y, int w, int h)
 				if(typeNum == -1)
 					typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
 				BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-				
+
 				for(int dx=0; dx<bt->width; ++dx)
 				{
 					for(int dy=0; dy<bt->height; ++dy)

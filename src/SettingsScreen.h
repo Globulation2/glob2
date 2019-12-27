@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2007 Bradley Arsenault
-  
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -76,7 +76,7 @@ private:
 	List *modeList;
 	Text *modeListNote;
 	TextInput *userName;
-	
+
 	TextButton *ok, *cancel;
 	TextButton *buildings, *flags, *constructionsites, *upgrades;
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
@@ -109,12 +109,12 @@ private:
 	List* action_list;
 	TextButton* add_shortcut;
 	TextButton* remove_shortcut;
-	
+
 	Text* unitSettingsExplanation;
 	Text* flagSettingsExplanation;
-	
+
 	bool gfxAltered;
-	
+
 	//! If GL is enabled, hide useless options
 	void setVisibilityFromGraphicType(void);
 	//! If mute is set, do not show volume slider
@@ -146,10 +146,10 @@ public:
 	std::string getDefaultUnitAssignmentText(int type, int level, bool flag);
 	///Sets the texts for all default unit assignment widgets
 	void setLanguageTextsForDefaultAssignmentWidgets();
-	
-	
+
+
 	virtual void onGroupActivated(int group_n);
-	
+
 	///Update shortcut_list, if n is not -1, just update that specific entry
 	void updateShortcutList(int n=-1);
 	///Update the action_list

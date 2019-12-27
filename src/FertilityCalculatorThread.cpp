@@ -31,7 +31,7 @@ FertilityCalculatorThread::FertilityCalculatorThread(Map& map, std::queue<boost:
 void FertilityCalculatorThread::operator()()
 {
 	///This function goes so quick relative to the following, it isn't even considered for percent complete
-	computeRessourcesGradient();	
+	computeRessourcesGradient();
 	fertilitymax = 0;
 	fertility.resize(map.getW() * map.getH());
 	std::fill(fertility.begin(), fertility.end(), 0);
@@ -63,7 +63,7 @@ void FertilityCalculatorThread::operator()()
 			}
 		}
 	}
-	
+
 	for(int x=0; x<map.getW(); ++x)
 	{
 		for(int y=0; y<map.getH(); ++y)
@@ -72,8 +72,8 @@ void FertilityCalculatorThread::operator()()
 			map.fertilityMaximum = fertilitymax;
 		}
 	}
-	
-	
+
+
 	boost::shared_ptr<FCTFertilityCompleted> message(new FCTFertilityCompleted);
 	sendToMainThread(message);
 }
@@ -107,7 +107,7 @@ void FertilityCalculatorThread::sendToMainThread(boost::shared_ptr<FertilityCalc
 void FertilityCalculatorThread::computeRessourcesGradient()
 {
 	gradient.resize(map.getW()*map.getH());
-	std::fill(gradient.begin(), gradient.end(),0); 
+	std::fill(gradient.begin(), gradient.end(),0);
 
 	std::queue<position> positions;
 	for(int x=0; x<map.getW(); ++x)

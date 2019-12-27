@@ -62,12 +62,12 @@ public:
 	virtual void encodeData(GAGCore::OutputStream* stream) const = 0;
 	///This will decode data. It is important that, unlike encodeData, this must ignore the initial Uint8
 	virtual void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)=0;
-	
+
 	///This will reconstruct a winning condition from serialized data
 	static boost::shared_ptr<WinningCondition> getWinningCondition(GAGCore::InputStream* stream, Uint32 versionMinor);
 	///This will set the given list to the default set of winning conditions, in their default order
 	static std::list<boost::shared_ptr<WinningCondition> > getDefaultWinningConditions();
-	
+
 };
 
 ///A team has lost if its dead.

@@ -35,34 +35,34 @@ class YOGClientDownloadableMapList
 public:
 	///Constructs the map list
 	YOGClientDownloadableMapList(YOGClient* client);
-	
+
 	///This returns true if the map list is waiting for a responce from the server
 	bool waitingForListFromServer();
 
 	///Requests an update to the map list
 	void requestMapListUpdate();
-	
+
 	///Recieves a message from the server
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
-	
+
 	///Returns the list of downloadable games
 	std::vector<YOGDownloadableMapInfo>& getDownloadableMapList();
-	
+
 	///Returns a YOGDownloadableMapInfo assocciatted with a given name
 	YOGDownloadableMapInfo getMap(const std::string& name);
-	
+
 	///Requests a thumbnail for the given map name
 	void requestThumbnail(const std::string& name);
-	
+
 	///Retrieves the thumbnail for the given map name
 	MapThumbnail& getMapThumbnail(const std::string& name);
-	
+
 	///Sends a rating about a map
 	void submitRating(const std::string& map, Uint8 rating);
-	
+
 	///Adds a listener to recieve events when the map list updated
 	void addListener(YOGClientDownloadableMapListener* listener);
-	
+
 	///Removes a listener from recieving events
 	void removeListener(YOGClientDownloadableMapListener* listener);
 private:

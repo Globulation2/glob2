@@ -126,7 +126,7 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Si
 		stream->readLeaveSection();
 		return false;
 	}
-	
+
 	// if AI, delete
 	if (type>=P_AI)
 	{
@@ -163,7 +163,7 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Si
 		ai = NULL;
 		team->type = BaseTeam::T_HUMAN;
 	}
-	
+
 	stream->read(signature, 4, "signatureEnd");
 	if (memcmp(signature,"PLYe",4)!=0)
 	{
@@ -171,7 +171,7 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Si
 		stream->readLeaveSection();
 		return false;
 	}
-	
+
 	stream->readLeaveSection();
 	return true;
 }
@@ -209,11 +209,11 @@ Uint32 Player::checkSum(std::vector<Uint32> *checkSumsVector)
 	Uint32 cs=0;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [2+t*20+p*2]
-	
+
 	cs^=BasePlayer::checkSum();
-	
+
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [3+t*20+p*2]
-	
+
 	return cs;
 }

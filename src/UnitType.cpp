@@ -24,7 +24,7 @@ UnitType& UnitType::operator+=(const UnitType &a)
 {
 	for (int i=0; i<NB_MOVE; i++)
 		startImage[i]=a.startImage[i];
-	
+
 	hungryness+=a.hungryness;
 
 	for (int i=0; i<NB_ABILITY; i++)
@@ -47,7 +47,7 @@ UnitType& UnitType::operator/=(int a)
 
 	for (int i=0; i<NB_ABILITY; i++)
 		performance[i]/=a;
-	
+
 	return *this;
 }
 
@@ -65,8 +65,8 @@ UnitType& UnitType::operator*=(int a)
 
 	for (int i=0; i<NB_ABILITY; i++)
 		performance[i]*=a;
-	
-	return *this;	
+
+	return *this;
 }
 
 UnitType UnitType::operator*(int a)
@@ -80,10 +80,10 @@ UnitType UnitType::operator*(int a)
 int UnitType::operator*(const UnitType &a)
 {
 	int r=0;
-	
+
 	for (int i=0; i<NB_ABILITY; i++)
 		r+= a.performance[i] * this->performance[i];
-	
+
 	return r;
 }
 
@@ -92,10 +92,10 @@ void UnitType::copyIf(const UnitType a, const UnitType b)
 {
 	for (int i=0; i<NB_MOVE; i++)
 		startImage[i]=a.startImage[i];
-	
+
 	if (b.hungryness)
 		hungryness=a.hungryness;
-	
+
 	for (int i=0; i<NB_ABILITY; i++)
 		if (b.performance[i])
 			performance[i]=a.performance[i];
@@ -106,7 +106,7 @@ void UnitType::copyIfNot(const UnitType a, const UnitType b)
 {
 	for (int i=0; i<NB_MOVE; i++)
 		startImage[i]=a.startImage[i];
-	
+
 	if (!(b.hungryness))
 		hungryness=a.hungryness;
 
@@ -126,9 +126,9 @@ void UnitType::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	startImage[BUILD] = stream->readUint32("startImageBuild");
 	startImage[HARVEST] = stream->readUint32("startImageHarvest");
 	startImage[ATTACK_SPEED] = stream->readUint32("startImageAttack");
-	
+
 	hungryness = stream->readSint32("hungryness");
-	
+
 	performance[STOP_WALK] = stream->readSint32("stopWalkSpeed");
 	performance[STOP_SWIM] = stream->readSint32("stopSwimSpeed");
 	performance[STOP_FLY] = stream->readSint32("stopFlySpeed");
@@ -146,7 +146,7 @@ void UnitType::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	performance[MAGIC_CREATE_ALGA] = stream->readSint32("magicCreateAlga");
 	performance[ARMOR] = stream->readSint32("armor");
 	performance[HP] = stream->readSint32("hpMax");
-	
+
 	harvestDamage = stream->readSint32("harvestDamage");
 	armorReductionPerHappyness = stream->readSint32("armorReductionPerHappyness");
 	experiencePerLevel = stream->readSint32("experiencePerLevel");
@@ -164,9 +164,9 @@ void UnitType::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(startImage[BUILD], "startImageBuild");
 	stream->writeUint32(startImage[HARVEST], "startImageHarvest");
 	stream->writeUint32(startImage[ATTACK_SPEED], "startImageAttack");
-	
+
 	stream->writeSint32(hungryness, "hungryness");
-	
+
 	stream->writeSint32(performance[STOP_WALK], "stopWalkSpeed");
 	stream->writeSint32(performance[STOP_SWIM], "stopSwimSpeed");
 	stream->writeSint32(performance[STOP_FLY], "stopFlySpeed");
@@ -184,7 +184,7 @@ void UnitType::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(performance[MAGIC_CREATE_ALGA], "magicCreateAlga");
 	stream->writeSint32(performance[ARMOR], "armor");
 	stream->writeSint32(performance[HP], "hpMax");
-	
+
 	stream->writeSint32(harvestDamage, "harvestDamage");
 	stream->writeSint32(armorReductionPerHappyness, "armorReductionPerHappyness");
 	stream->writeSint32(experiencePerLevel, "experiencePerLevel");

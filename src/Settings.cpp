@@ -34,7 +34,7 @@ Settings::Settings()
 #	ifdef WIN32
 		newUsername=getenv("USERNAME");
 #	else // angel > case of Unix and MacIntosh Systems
-		newUsername=getenv("USER");		
+		newUsername=getenv("USER");
 #	endif
 	if (!newUsername)
 		newUsername="player";
@@ -52,11 +52,11 @@ Settings::Settings()
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;
-	
+
 	scrollWheelEnabled=true;
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
-	
+
 	cloudPatchSize=16;//the bigger the faster the uglier
 	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
 	cloudMaxSpeed=3;
@@ -150,11 +150,11 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(cloudStability);
 		READ_PARSED_INT(cloudSize);
 		READ_PARSED_INT(cloudHeight);
-		
+
 		READ_PARSED_INT(version);
 	}
 	delete stream;
-	
+
 	if(version < SETTINGS_VERSION)
 	{
 		resetDefaultUnitsAssigned();

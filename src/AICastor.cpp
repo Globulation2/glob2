@@ -56,32 +56,32 @@ void AICastor::Project::init(const char *suffix)
 	food=(this->shortTypeNum==IntBuildingType::SWARM_BUILDING
 		|| this->shortTypeNum==IntBuildingType::FOOD_BUILDING);
 	defense=(this->shortTypeNum==IntBuildingType::DEFENSE_BUILDING);
-	
+
 	debugStdName += IntBuildingType::typeFromShortNumber(this->shortTypeNum);
 	debugStdName += "-";
 	debugStdName += suffix;
 	this->debugName=debugStdName.c_str();
-	
+
 	//printf("new project(%s)\n", debugName);
-	
+
 	subPhase=0;
-	
+
 	successWait=0;
 	blocking=true;
 	critical=false;
 	priority=1;
 	triesLeft=64;
-	
+
 	mainWorkers=-1;
 	foodWorkers=-1;
 	otherWorkers=-1;
-	
+
 	multipleStart=false;
 	waitFinished=false;
 	finalWorkers=-1;
-	
+
 	finished=false;
-	
+
 	timer=(Uint32)-1;
 }
 
@@ -91,9 +91,9 @@ void AICastor::Project::init(const char *suffix)
 AICastor::Strategy::Strategy()
 {
 	defined=false;
-	
+
 	successWait=0;
-	
+
 	warLevelTrigger=0;
 	warTimeTrigger=0;
 	maxAmountGoal=0;
@@ -107,7 +107,7 @@ void AICastor::firstInit()
 	obstacleBuildingMap=NULL;
 	spaceForBuildingMap=NULL;
 	buildingNeighbourMap=NULL;
-	
+
 	workPowerMap=NULL;
 	workRangeMap=NULL;
 	workAbilityMap=NULL;
@@ -118,13 +118,13 @@ void AICastor::firstInit()
 		oldWheatGradient[i]=NULL;
 	for (int i=0; i<2; i++)
 		wheatCareMap[i]=NULL;
-	
+
 	goodBuildingMap=NULL;
-	
+
 	enemyWarriorsMap=NULL;
 	enemyPowerMap=NULL;
 	enemyRangeMap=NULL;
-	
+
 	ressourcesCluster=NULL;
 }
 
@@ -132,7 +132,7 @@ AICastor::AICastor(Player *player)
 {
 	logFile=globalContainer->logFileManager->getFile("AICastor.log");
 	//logFile=stdout;
-	
+
 	firstInit();
 	init(player);
 }
@@ -140,7 +140,7 @@ AICastor::AICastor(Player *player)
 AICastor::AICastor(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	logFile=globalContainer->logFileManager->getFile("AICastor.log");
-	
+
 	firstInit();
 	bool goodLoad=load(stream, player, versionMinor);
 	assert(goodLoad);
@@ -149,7 +149,7 @@ AICastor::AICastor(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 void AICastor::init(Player *player)
 {
 	assert(player);
-	
+
 	// Logical :
 	timer=0;
 	canSwim=false;
@@ -166,17 +166,17 @@ void AICastor::init(Player *player)
 	controlUpgradeTimer=0;
 	controlUpgradeDelay=32;
 	controlStrikesTimer=0;
-	
+
 	warLevel=0;
 	warTimeTriggerLevel=0;
 	warLevelTriggerLevel=0;
 	warAmountTriggerLevel=0;
-	
+
 	onStrike=false;
 	strikeTimeTrigger=0;
 	strikeTeamSelected=false;
 	strikeTeam=0;
-	
+
 	foodWarning=false;
 	foodLock=false;
 	foodSurplus=false;
@@ -187,8 +187,8 @@ void AICastor::init(Player *player)
 	starvingWarningStats[0]=0;
 	starvingWarningStats[1]=0;
 	buildsAmount=0;
-	
-	
+
+
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		delete *pi;
 	projects.clear();
@@ -202,41 +202,41 @@ void AICastor::init(Player *player)
 	assert(this->team);
 	assert(this->game);
 	assert(this->map);
-	
+
 	size_t size=map->w*map->h;
 	assert(size>0);
-	
+
 	computeBoot=0;
-	
+
 	if (obstacleUnitMap!=NULL)
 		delete[] obstacleUnitMap;
 	obstacleUnitMap=new Uint8[size];
-	
+
 	if (obstacleBuildingMap!=NULL)
 		delete[] obstacleBuildingMap;
 	obstacleBuildingMap=new Uint8[size];
-	
+
 	if (spaceForBuildingMap!=NULL)
 		delete[] spaceForBuildingMap;
 	spaceForBuildingMap=new Uint8[size];
-	
+
 	if (buildingNeighbourMap!=NULL)
 		delete[] buildingNeighbourMap;
 	buildingNeighbourMap=new Uint8[size];
-	
-	
+
+
 	if (workPowerMap!=NULL)
 		delete[] workPowerMap;
 	workPowerMap=new Uint8[size];
-	
+
 	if (workRangeMap!=NULL)
 		delete[] workRangeMap;
 	workRangeMap=new Uint8[size];
-	
+
 	if (workAbilityMap!=NULL)
 		delete[] workAbilityMap;
 	workAbilityMap=new Uint8[size];
-	
+
 	if (hydratationMap!=NULL)
 		delete[] hydratationMap;
 	hydratationMap=new Uint8[size];
@@ -244,41 +244,41 @@ void AICastor::init(Player *player)
 	if (notGrassMap!=NULL)
 		delete[] notGrassMap;
 	notGrassMap=new Uint8[size];
-	
+
 	if (wheatGrowthMap!=NULL)
 		delete[] wheatGrowthMap;
 	wheatGrowthMap=new Uint8[size];
-	
+
 	for (int i=0; i<4; i++)
 	{
 		if (oldWheatGradient[i]!=NULL)
 			delete[] oldWheatGradient[i];
 		oldWheatGradient[i]=new Uint8[size];
 	}
-	
+
 	for (int i=0; i<2; i++)
 	{
 		if (wheatCareMap[i]!=NULL)
 			delete[] wheatCareMap[i];
 		wheatCareMap[i]=new Uint8[size];
 	}
-	
+
 	if (goodBuildingMap!=NULL)
 		delete[] goodBuildingMap;
 	goodBuildingMap=new Uint8[size];
-	
+
 	if (enemyPowerMap!=NULL)
 		delete[] enemyPowerMap;
 	enemyPowerMap=new Uint8[size];
-	
+
 	if (enemyRangeMap!=NULL)
 		delete[] enemyRangeMap;
 	enemyRangeMap=new Uint8[size];
-	
+
 	if (enemyWarriorsMap!=NULL)
 		delete[] enemyWarriorsMap;
 	enemyWarriorsMap=new Uint8[size];
-	
+
 	if (ressourcesCluster!=NULL)
 		delete[] ressourcesCluster;
 	ressourcesCluster=new Uint16[size];
@@ -288,55 +288,55 @@ AICastor::~AICastor()
 {
 	if (obstacleUnitMap!=NULL)
 		delete[] obstacleUnitMap;
-	
+
 	if (obstacleBuildingMap!=NULL)
 		delete[] obstacleBuildingMap;
-	
+
 	if (spaceForBuildingMap!=NULL)
 		delete[] spaceForBuildingMap;
-	
+
 	if (buildingNeighbourMap!=NULL)
 		delete[] buildingNeighbourMap;
-	
-	
+
+
 	if (workPowerMap!=NULL)
 		delete[] workPowerMap;
-	
+
 	if (workRangeMap!=NULL)
 		delete[] workRangeMap;
-	
+
 	if (workAbilityMap!=NULL)
 		delete[] workAbilityMap;
-	
+
 	if (hydratationMap!=NULL)
 		delete[] hydratationMap;
-	
+
 	if (notGrassMap!=NULL)
 		delete[] notGrassMap;
-	
+
 	if (wheatGrowthMap!=NULL)
 		delete[] wheatGrowthMap;
-	
+
 	for (int i=0; i<4; i++)
 		if (oldWheatGradient[i]!=NULL)
 			delete[] oldWheatGradient[i];
-	
+
 	for (int i=0; i<2; i++)
 		if (wheatCareMap[i]!=NULL)
 			delete[] wheatCareMap[i];
-	
+
 	if (goodBuildingMap!=NULL)
 		delete[] goodBuildingMap;
-	
+
 	if (enemyPowerMap!=NULL)
 		delete[] enemyPowerMap;
-	
+
 	if (enemyRangeMap!=NULL)
 		delete[] enemyRangeMap;
-	
+
 	if (enemyWarriorsMap!=NULL)
 		delete[] enemyWarriorsMap;
-	
+
 	if (ressourcesCluster!=NULL)
 		delete[] ressourcesCluster;
 
@@ -352,7 +352,7 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	fprintf(logFile, "load(%d)\n", versionMinor);
 	init(player);
 	assert(game);
-	
+
 	stream->readEnterSection("AICastor");
 	Sint32 aiFileVersion = stream->readSint32("aiFileVersion");
 	if (aiFileVersion<AI_FILE_MIN_VERSION)
@@ -366,7 +366,7 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		timer = stream->readUint32("timer");
 	else
 		timer=0;
-		
+
 	stream->readLeaveSection();
 	fprintf(logFile, "load success\n");
 	return true;
@@ -383,10 +383,10 @@ void AICastor::save(GAGCore::OutputStream *stream)
 boost::shared_ptr<Order>AICastor::getOrder()
 {
 	timer++;
-	
+
 	if (!strategy.defined)
 		defineStrategy();
-	
+
 	if (computeBoot<32)
 	{
 		computeBoot++;
@@ -461,7 +461,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 		computeBoot++;
 		return shared_ptr<Order>(new NullOrder());
 	}
-	
+
 	if ((timer&511)==0)
 	{
 		Uint8 *temp=oldWheatGradient[3];
@@ -473,14 +473,14 @@ boost::shared_ptr<Order>AICastor::getOrder()
 		computeObstacleUnitMap();
 		computeWheatCareMap();
 	}
-	
+
 	/*// Defense, we check it first, because it will only return true if there is an attack and free warriors
 	{
 		boost::shared_ptr<Order>order = controlBaseDefense();
 		if (order)
 			return order;
 	}*/
-		
+
 	//printf("getOrder(), %d projects\n", projects.size());
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->finished)
@@ -493,16 +493,16 @@ boost::shared_ptr<Order>AICastor::getOrder()
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->blocking)
 			blocking=true;
-	
+
 	computeBuildingSum();
-	
+
 	if (!blocking)// No blocking project, we can start a new one:
 		addProjects();
 	Sint32 priority=0x7FFFFFFF;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if (priority>(*pi)->priority && (*pi)->critical)
 			priority=(*pi)->priority;
-	
+
 	if (timer>controlSwarmsTimer)
 	{
 		computeWarLevel();
@@ -511,12 +511,12 @@ boost::shared_ptr<Order>AICastor::getOrder()
 		if (order)
 			return order;
 	}
-	
+
 	//bool critical=false;
 	//for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 	//	if ((*pi)->critical)
 	//		critical=true;
-	
+
 	int minReal=1024;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->priority<=priority)
@@ -547,7 +547,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 					return order;
 			}
 		}
-	
+
 	if (priority>0 && timer>expandFoodTimer)
 	{
 		expandFoodTimer=timer+256; // each 10s
@@ -555,7 +555,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 		if (order)
 			return order;
 	}
-	
+
 	if (timer>lastEnemyRangeMapComputed+1024) // each 41s
 	{
 		computeEnemyRangeMap();
@@ -564,7 +564,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 	{
 		computeEnemyWarriorsMap();
 	}
-	
+
 	/*if (onStrike)
 	{
 		if (timer>lastEnemyPowerMapComputed+128) // each 5s
@@ -575,43 +575,43 @@ boost::shared_ptr<Order>AICastor::getOrder()
 		if (timer>lastEnemyPowerMapComputed+4096) // each 2min44s
 			computeEnemyPowerMap();
 	}*/
-	
+
 	if (priority>0)
 	{
 		boost::shared_ptr<Order>order=controlFood();
 		if (order)
 			return order;
 	}
-	
+
 	if (priority>0)
 	{
 		boost::shared_ptr<Order>order=controlUpgrades();
 		if (order)
 			return order;
 	}
-	
+
 	if (timer>controlStrikesTimer)
 	{
 		boost::shared_ptr<Order>order=controlStrikes();
 		if (order)
 			return order;
 	}
-	
+
 	return shared_ptr<Order>(new NullOrder());
 }
 
 void AICastor::defineStrategy()
 {
 	strategy.defined=true;
-	
+
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		strategy.build[bi].baseOrder=-1;
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		strategy.build[bi].newOrder=-1;
-	
+
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		strategy.build[bi].finalWorkers=-1;
-	
+
 	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseOrder=0;
 	strategy.build[IntBuildingType::SWARM_BUILDING].baseOrder=1;
 	strategy.build[IntBuildingType::ATTACK_BUILDING].baseOrder=2;
@@ -620,7 +620,7 @@ void AICastor::defineStrategy()
 	strategy.build[IntBuildingType::HEAL_BUILDING].baseOrder=5;
 	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseOrder=6;
 	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseOrder=7;
-	
+
 	strategy.build[IntBuildingType::SCIENCE_BUILDING].base=2;
 	strategy.build[IntBuildingType::SWARM_BUILDING].base=2;
 	strategy.build[IntBuildingType::ATTACK_BUILDING].base=2;
@@ -629,7 +629,7 @@ void AICastor::defineStrategy()
 	strategy.build[IntBuildingType::HEAL_BUILDING].base=2;
 	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].base=1;
 	strategy.build[IntBuildingType::WALKSPEED_BUILDING].base=1;
-	
+
 	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseWorkers=5;
 	strategy.build[IntBuildingType::SWARM_BUILDING].baseWorkers=2;
 	strategy.build[IntBuildingType::ATTACK_BUILDING].baseWorkers=2;
@@ -638,7 +638,7 @@ void AICastor::defineStrategy()
 	strategy.build[IntBuildingType::HEAL_BUILDING].baseWorkers=1;
 	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseWorkers=3;
 	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseWorkers=5;
-	
+
 	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseUpgrade=2;
 	strategy.build[IntBuildingType::SWARM_BUILDING].baseUpgrade=0;
 	strategy.build[IntBuildingType::ATTACK_BUILDING].baseUpgrade=2;
@@ -647,13 +647,13 @@ void AICastor::defineStrategy()
 	strategy.build[IntBuildingType::HEAL_BUILDING].baseUpgrade=2;
 	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseUpgrade=0;
 	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseUpgrade=0;
-	
-	
+
+
 	strategy.build[IntBuildingType::SWARM_BUILDING].finalWorkers=2;
 	strategy.build[IntBuildingType::FOOD_BUILDING].finalWorkers=1;
 	strategy.build[IntBuildingType::DEFENSE_BUILDING].finalWorkers=2;
-	
-	
+
+
 	strategy.build[IntBuildingType::DEFENSE_BUILDING].newOrder=0;
 	strategy.build[IntBuildingType::SWARM_BUILDING].newOrder=1;
 	strategy.build[IntBuildingType::FOOD_BUILDING].newOrder=2;
@@ -662,7 +662,7 @@ void AICastor::defineStrategy()
 	strategy.build[IntBuildingType::HEAL_BUILDING].newOrder=5;
 	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newOrder=6;
 	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newOrder=7;
-	
+
 	strategy.build[IntBuildingType::DEFENSE_BUILDING].news=10;
 	strategy.build[IntBuildingType::SWARM_BUILDING].news=1;
 	strategy.build[IntBuildingType::FOOD_BUILDING].news=7;
@@ -671,7 +671,7 @@ void AICastor::defineStrategy()
 	strategy.build[IntBuildingType::HEAL_BUILDING].news=5;
 	strategy.build[IntBuildingType::WALKSPEED_BUILDING].news=1;
 	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].news=1;
-	
+
 	strategy.build[IntBuildingType::DEFENSE_BUILDING].newWorkers=4;
 	strategy.build[IntBuildingType::SWARM_BUILDING].newWorkers=3;
 	strategy.build[IntBuildingType::FOOD_BUILDING].newWorkers=2;
@@ -680,7 +680,7 @@ void AICastor::defineStrategy()
 	strategy.build[IntBuildingType::HEAL_BUILDING].newWorkers=2;
 	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newWorkers=4;
 	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newWorkers=4;
-	
+
 	strategy.build[IntBuildingType::DEFENSE_BUILDING].newUpgrade=10;
 	strategy.build[IntBuildingType::SWARM_BUILDING].newUpgrade=0;
 	strategy.build[IntBuildingType::FOOD_BUILDING].newUpgrade=3;
@@ -689,26 +689,26 @@ void AICastor::defineStrategy()
 	strategy.build[IntBuildingType::HEAL_BUILDING].newUpgrade=5;
 	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newUpgrade=0;
 	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newUpgrade=0;
-	
+
 	strategy.successWait=0; // TODO: use a "lowDiscovered" flag instead
 	strategy.isFreePart=10; // good in [3..20]
-	
+
 	strategy.warLevelTrigger=1;
 	strategy.warTimeTrigger=8192;
 	strategy.warAmountTrigger=3;
-	
+
 	strategy.strikeWarPowerTriggerUp=4096;
 	strategy.strikeWarPowerTriggerDown=2048;
 	strategy.strikeTimeTrigger=32768; //21min51s
 	strikeTimeTrigger=strategy.strikeTimeTrigger;
-	
+
 	strategy.maxAmountGoal=10;
 }
 
 boost::shared_ptr<Order>AICastor::controlSwarms()
 {
 	Sint32 warriorGoal=warLevel;
-	
+
 	int unitSum[NB_UNIT_TYPE];
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		unitSum[i]=0;
@@ -727,29 +727,29 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 		if (b && b->maxUnitWorking && b->type->canFeedUnit)
 			foodSum+=b->type->maxUnitInside;
 	}
-	
+
 	int unitSumAll=unitSum[0]+unitSum[1]+unitSum[2];
-	
+
 	foodWarning=((unitSumAll+11)>=(foodSum<<1));
 	foodLock=((unitSumAll+3)>=(foodSum<<1));
 	foodLockStats[foodLock]++;
-	
+
 	foodSurplus=(unitSumAll+4<foodSum);
-	
+
 	starvingWarning=(((unitSumAll>>5)+3)<team->stats.getStarvingUnits());
 	starvingWarningStats[starvingWarning]++;
 	fprintf(logFile,  "starvingWarning=%d\n", starvingWarning);
-	
+
 	bool realFoodLock;
-	
+
 	if (warriorGoal>1)
 		realFoodLock=((unitSumAll)>=(foodSum*3));
 	else
 		realFoodLock=((unitSumAll)>=(foodSum*2));
-	
+
 	fprintf(logFile,  "unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d, foodWarning=%d, foodLock=%d, realFoodLock=%d, foodLockStats=[%d, %d]\n",
 		unitSum[0], unitSum[1], unitSum[2], unitSumAll, foodSum, foodWarning, foodLock, realFoodLock, foodLockStats[0], foodLockStats[1]);
-	
+
 	if ((timer>2048) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
 	{
 		// Stop making any units!
@@ -770,10 +770,10 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 						return shared_ptr<Order>(new OrderModifySwarm(b->gid, b->ratioLocal));
 					}
 		}
-		
+
 		return shared_ptr<Order>();
 	}
-	
+
 	size_t size=map->w*map->h;
 	int discovered=0;
 	int seeable=0;
@@ -798,16 +798,16 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 		explorerGoal=1;
 	else
 		explorerGoal=0;
-	
+
 	Sint32 workerGoal;
 	if (overWorkers)
 		workerGoal=1;
 	else
 		workerGoal=4;
-	
+
 	fprintf(logFile,  "discovered=%d, seeable=%d, size=%zd, explorerGoal=%d\n",
 		discovered, seeable, size, explorerGoal);
-	
+
 	for (int bi=0; bi<1024; bi++)
 	{
 		Building *b=myBuildings[bi];
@@ -828,7 +828,7 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 			}
 		}
 	}
-	
+
 	return shared_ptr<Order>();
 }
 
@@ -838,12 +838,12 @@ boost::shared_ptr<Order>AICastor::expandFood()
 		|| (!foodWarning && !enoughFreeWorkers())
 		|| buildingSum[IntBuildingType::FOOD_BUILDING][1]>buildingSum[IntBuildingType::FOOD_BUILDING][0]+1)
 		return shared_ptr<Order>();
-	
+
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("inn", 0, true);
 	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
 	int bh=globalContainer->buildingsTypes.get(typeNum)->height;
 	assert(bw==bh);
-	
+
 	computeCanSwim();
 	computeObstacleBuildingMap();
 	computeSpaceForBuildingMap(bw);
@@ -854,7 +854,7 @@ boost::shared_ptr<Order>AICastor::expandFood()
 	computeWorkPowerMap();
 	computeWorkRangeMap();
 	computeWorkAbilityMap();
-	
+
 	return findGoodBuilding(typeNum, true, false, false);
 }
 
@@ -867,7 +867,7 @@ boost::shared_ptr<Order>AICastor::controlFood()
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	//size_t size=w*h;
-	
+
 	int bi=(controlFoodTimer++)&1023;
 	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[bi];
@@ -881,12 +881,12 @@ boost::shared_ptr<Order>AICastor::controlFood()
 		return shared_ptr<Order>();
 	if (b->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING && b->type->shortTypeNum!=IntBuildingType::SWARM_BUILDING)
 		return shared_ptr<Order>();
-	
+
 	int bx=b->posX;
 	int by=b->posY;
 	int bw=b->type->width;
 	int bh=b->type->height;
-	
+
 	Uint8 worstCare=0;
 	for (int xi=bx-1; xi<bx+bw; xi++)
 	{
@@ -908,7 +908,7 @@ boost::shared_ptr<Order>AICastor::controlFood()
 		if (worstCare<wheatCare)
 			worstCare=wheatCare;
 	}
-	
+
 	if (worstCare>4)
 	{
 		if (b->maxUnitWorking!=0)
@@ -1023,21 +1023,21 @@ boost::shared_ptr<Order>AICastor::controlUpgrades()
 	for (int li=(level+1); li<4; li++)
 		for (int si=0; si<2; si++)
 			sumOver+=buildingLevels[shortTypeNum][si][li];
-	
+
 	int upgradeAmountGoal=strategy.build[shortTypeNum].baseUpgrade;
 	for (int ai=1; ai<=upgradeLevelGoal; ai++)
 		upgradeAmountGoal+=strategy.build[shortTypeNum].newUpgrade;
-	
+
 	fprintf(logFile,  "controlUpgrades(%d)\n", bi);
 	fprintf(logFile,  " shortTypeNum=%d\n", shortTypeNum);
 	fprintf(logFile,  " sumOver=%d\n", sumOver);
 	fprintf(logFile,  " upgradeAmountGoal=%d\n", upgradeAmountGoal);
 	//fprintf(logFile,  "controlUpgrades(%d), shortTypeNum=%d, sumOver=%d, upgradeAmountGoal=%d\n",
 	//	bi, shortTypeNum, sumOver, upgradeAmountGoal);
-	
+
 	if (sumOver>=upgradeAmountGoal)
 		return shared_ptr<Order>();
-	
+
 	if (shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
 	{
 		int buildBase=team->stats.getWorkersLevel(0);
@@ -1082,16 +1082,16 @@ boost::shared_ptr<Order>AICastor::controlUpgrades()
 boost::shared_ptr<Order>AICastor::controlStrikes()
 {
 	controlStrikesTimer=timer+64;
-	
+
 	if (!onStrike)
 		return shared_ptr<Order>();
 	fprintf(logFile,  "controlStrikes()\n");
-	
+
 	int warriors=team->stats.getTotalUnits(WARRIOR);
 	int warFlagsGoal=(warriors+16)/32;
 	int warFlagsReal=buildingSum[IntBuildingType::WAR_FLAG][0];
 	fprintf(logFile,  " warriors=%d, warFlagsGoal=%d, warFlagsReal=%d\n", warriors, warFlagsGoal, warFlagsReal);
-	
+
 	if (!strikeTeamSelected)
 	{
 		int bestLevel=-1;
@@ -1144,16 +1144,16 @@ boost::shared_ptr<Order>AICastor::controlStrikes()
 		strikeTeamSelected=true;
 	}
 	fprintf(logFile,  " strikeTeam=%d\n", strikeTeam);
-	
+
 	// We choose the best buildings to attack:
-	
+
 	//int w=map->w;
 	//int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
-	
+
 	Uint32 bestScore=0;
 	Building *bestBuilding=NULL;
 	Team *enemyTeam=game->teams[strikeTeam];
@@ -1182,15 +1182,15 @@ boost::shared_ptr<Order>AICastor::controlStrikes()
 			bestBuilding=b;
 		}
 	}
-	
+
 	std::list<Building *> *virtualBuildings=&team->virtualBuildings;
 	if (bestBuilding!=NULL)
 	{
 		Sint32 x=bestBuilding->posX+1;
 		Sint32 y=bestBuilding->posY+1;
-		
+
 		fprintf(logFile,  " target found bestScore=%d, p=(%d, %d)\n", bestScore, x, y);
-		
+
 		if (warFlagsReal<warFlagsGoal)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
@@ -1238,7 +1238,7 @@ boost::shared_ptr<Order>AICastor::controlStrikes()
 		strikeTeamSelected=false;
 		onStrike=false;
 	}
-	
+
 	return shared_ptr<Order>();
 }
 
@@ -1281,46 +1281,46 @@ void AICastor::addProjects()
 {
 	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
 	//	canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
-	
+
 	buildsAmount=-1;
-	
+
 	if (buildingSum[IntBuildingType::FOOD_BUILDING][0]==0)
 	{
 		Project *project=new Project(IntBuildingType::FOOD_BUILDING, "boot");
-		
+
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		project->priority=0;
 		project->food=true;
-		
+
 		project->mainWorkers=3;
 		project->foodWorkers=2;
 		project->otherWorkers=0;
-		
+
 		project->multipleStart=true;
 		project->waitFinished=true;
 		project->finalWorkers=1;
-		
+
 		if (addProject(project))
 			return;
 	}
 	if (buildingSum[IntBuildingType::SWARM_BUILDING][0]+buildingSum[IntBuildingType::SWARM_BUILDING][1]==0)
 	{
 		Project *project=new Project(IntBuildingType::SWARM_BUILDING, "boot");
-		
+
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		project->priority=0;
 		project->food=true;
-		
+
 		project->mainWorkers=10;
 		project->foodWorkers=1;
 		project->otherWorkers=0;
-		
+
 		project->multipleStart=false;
 		project->waitFinished=true;
 		project->finalWorkers=2;
-		
+
 		if (addProject(project))
 			return;
 	}
@@ -1375,13 +1375,13 @@ void AICastor::addProjects()
 			return;
 	}*/
 	// all critical projects succeded.
-	
+
 	// enough workers
 	//Strategy::Builds buildsCurrent=strategy.buildsBase;
 	buildsAmount=0;
 	if (!enoughFreeWorkers())
 		return;
-	
+
 	for (int bpi=0; bpi<NB_HARD_BUILDING; bpi++)
 		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 			if (bpi==strategy.build[bi].baseOrder)
@@ -1401,7 +1401,7 @@ void AICastor::addProjects()
 						return;
 				}
 	buildsAmount=1;
-	
+
 	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 	{
 		int upgradeSum=0;
@@ -1411,15 +1411,15 @@ void AICastor::addProjects()
 			return;
 	}
 	buildsAmount=2;
-	
+
 	int amountGoal[NB_HARD_BUILDING];
 	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 		amountGoal[bi]=strategy.build[bi].base;
-	
+
 	int upgradeGoal[NB_HARD_BUILDING];
 	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 		upgradeGoal[bi]=strategy.build[bi].baseUpgrade;
-	
+
 	for (Sint32 agi=1; agi<4; agi++)
 	{
 		buildsAmount=0+(agi<<1);
@@ -1427,7 +1427,7 @@ void AICastor::addProjects()
 			return;
 		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 			amountGoal[bi]+=strategy.build[bi].news;
-		
+
 		for (int bpi=0; bpi<NB_HARD_BUILDING; bpi++)
 			for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 				if (bi==strategy.build[bpi].newOrder)
@@ -1447,7 +1447,7 @@ void AICastor::addProjects()
 							return;
 					}
 		buildsAmount=1+(agi<<1);
-		
+
 		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 			upgradeGoal[bi]+=strategy.build[bi].newUpgrade;
 		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
@@ -1458,7 +1458,7 @@ void AICastor::addProjects()
 			if (upgradeSum<upgradeGoal[bi])
 				return;
 		}
-		
+
 		buildsAmount=2+(agi<<1);
 	}
 }
@@ -1471,10 +1471,10 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 	//	project->shortTypeNum, project->food,
 	//	project->mainWorkers, project->foodWorkers, project->otherWorkers,
 	//	project->multipleStart, project->waitFinished, project->subPhase);
-	
+
 	if (timer<project->timer+32)
 		return shared_ptr<Order>();
-	
+
 	if (foodLock && !project->critical && project->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 	{
 		fprintf(logFile,  "(%s) (give up by foodLock [%d, %d])\n", project->debugName, project->blocking, project->critical);
@@ -1485,7 +1485,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		project->blocking=false;
 		project->critical=false;
 	}
-	
+
 	if (project->subPhase==0)
 	{
 		// boot phase
@@ -1500,12 +1500,12 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 			return shared_ptr<Order>();
 		}
 		// find any good building place
-		
+
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(project->shortTypeNum), 0, true);
 		int bw=globalContainer->buildingsTypes.get(typeNum)->width;
 		int bh=globalContainer->buildingsTypes.get(typeNum)->height;
 		assert(bw==bh);
-		
+
 		computeCanSwim();
 		computeObstacleBuildingMap();
 		computeSpaceForBuildingMap(bw);
@@ -1515,7 +1515,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		computeWorkPowerMap();
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
-		
+
 		boost::shared_ptr<Order>gfbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
 		project->timer=timer;
 		if (gfbm)
@@ -1547,11 +1547,11 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 	else if (project->subPhase==2)
 	{
 		// do we have enough building sites ?
-		
+
 		int real=buildingSum[project->shortTypeNum][0];
 		int site=buildingSum[project->shortTypeNum][1];
 		int sum=real+site;
-		
+
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
@@ -1586,7 +1586,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 	else if (project->subPhase==3)
 	{
 		// balance workers:
-		
+
 		int isFree=team->stats.getWorkersBalance();
 		Sint32 mainWorkers=project->mainWorkers;
 		Sint32 finalWorkers=project->finalWorkers;
@@ -1604,7 +1604,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 			//if (finalWorkers>isFree)
 			//	finalWorkers=isFree;
 		}
-		
+
 		Building **myBuildings=team->myBuildings;
 		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
@@ -1665,13 +1665,13 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 				}
 			}
 		}
-		
+
 		int real=buildingSum[project->shortTypeNum][0];
 		int site=buildingSum[project->shortTypeNum][1];
 		int sum=real+site;
-		
+
 		//printf("(%s) (all maxUnitWorking set)\n", project->debugName);
-		
+
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
@@ -1710,7 +1710,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 	{
 		// We simply wait for the building to be finished,
 		// and add free workers if available and project.waitFinished:
-		
+
 		if ((project->waitFinished || overWorkers) && enoughFreeWorkers())
 		{
 			Building **myBuildings=team->myBuildings;
@@ -1729,11 +1729,11 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 				}
 			}
 		}
-		
+
 		int real=buildingSum[project->shortTypeNum][0];
 		int site=buildingSum[project->shortTypeNum][1];
 		int sum=real+site;
-		
+
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
@@ -1750,18 +1750,18 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 	else if (project->subPhase==6)
 	{
 		// balance final workers:
-		
+
 		if (project->blocking)
 		{
 			fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 			project->blocking=false;
 			project->critical=false;
 		}
-		
+
 		if (project->finalWorkers>=0)
 		{
 			Sint32 finalWorkers=project->finalWorkers;
-			
+
 			Building **myBuildings=team->myBuildings;
 			for (int i=0; i<Building::MAX_COUNT; i++)
 			{
@@ -1787,7 +1787,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 	}
 	else
 		assert(false);
-	
+
 	return shared_ptr<Order>();
 }
 
@@ -1808,10 +1808,10 @@ bool AICastor::enoughFreeWorkers()
 	if (foodLock)
 		minBalance+=3;
 	int minOverWorkers=minBalance+partFree;
-	
+
 	bool enough=(workersBalance>minBalance);
 	overWorkers=(workersBalance>minOverWorkers);
-	
+
 	assert(buildsAmount<1024);
 	static int oldEnough[1024];
 	static bool first=true;
@@ -1848,7 +1848,7 @@ void AICastor::computeCanSwim()
 				sumCantSwim++;
 		}
 	}
-	
+
 	canSwim=(sumCanSwim>sumCantSwim);
 	//printf("...computeCanSwim() done\n");
 }
@@ -1858,28 +1858,28 @@ void AICastor::computeNeedSwim()
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
-	
+
 	canSwim=false;
 	computeObstacleUnitMap();
 	computeWorkRangeMap();
-	
+
 	Sint32 baseCount=0;
 	for (size_t i=0; i<size; i++)
 		if (workRangeMap[i]!=0)
 			baseCount++;
-	
+
 	canSwim=true;
 	computeObstacleUnitMap();
 	computeWorkRangeMap();
-	
+
 	Sint32 extendedCount=0;
 	for (size_t i=0; i<size; i++)
 		if (workRangeMap[i]!=0)
 			extendedCount++;
-	
+
 	needSwim=((baseCount<<4)>(7*extendedCount));
 	fprintf(logFile,  "needSwim=%d\n", needSwim);
-	
+
 	computeCanSwim();
 }
 
@@ -1889,7 +1889,7 @@ void AICastor::computeBuildingSum()
 		for (int si=0; si<2; si++)
 			for (int li=0; li<4; li++)
 				buildingLevels[bi][si][li]=0;
-	
+
 	Building **myBuildings=team->myBuildings;
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
@@ -1910,7 +1910,7 @@ void AICastor::computeBuildingSum()
 				sum+=buildingLevels[bi][si][li];
 			buildingSum[bi][si]=sum;
 		}
-	
+
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		for (int si=0; si<2; si++)
 			for (int li=0; li<4; li++)
@@ -1931,7 +1931,7 @@ void AICastor::computeWarLevel()
 	int warTimeTriggerLevelUse=warTimeTriggerLevel;
 	if (warTimeTriggerLevelUse>2)
 		warTimeTriggerLevelUse=2;
-	
+
 	int sum=0;
 	for (int si=0; si<2; si++)
 		for (int li=strategy.warLevelTrigger; li<4; li++)
@@ -1942,7 +1942,7 @@ void AICastor::computeWarLevel()
 		warLevelTriggerLevel=1;
 	else
 		warLevelTriggerLevel=0;
-	
+
 	if (buildsAmount>strategy.warAmountTrigger)
 		warAmountTriggerLevel=2;
 	else if (buildsAmount>=strategy.warAmountTrigger)
@@ -1950,7 +1950,7 @@ void AICastor::computeWarLevel()
 	else
 		warAmountTriggerLevel=0;
 	warLevel=warTimeTriggerLevelUse+warLevelTriggerLevel+warAmountTriggerLevel;
-	
+
 	static int oldWarLevel=-1;
 	if (oldWarLevel!=warLevel)
 	{
@@ -1958,10 +1958,10 @@ void AICastor::computeWarLevel()
 			warLevel, warTimeTriggerLevelUse, warLevelTriggerLevel, warAmountTriggerLevel);
 		oldWarLevel=warLevel;
 	}
-	
+
 	if (warLevel==0)
 		return;
-	
+
 	int warPowerSum=0;
 	Unit **myUnits=team->myUnits;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
@@ -1976,14 +1976,14 @@ void AICastor::computeWarLevel()
 		fprintf(logFile,  "warPowerSum=%d\n", warPowerSum);
 		oldWarPowerSum=warPowerSum;
 	}
-	
+
 	if (warPowerSum<strategy.strikeWarPowerTriggerDown)
 	{
 		if (onStrike)
 		{
 			strikeTeamSelected=false;
 			onStrike=false;
-			
+
 			strikeTimeTrigger=timer+strategy.strikeTimeTrigger;
 			strategy.strikeWarPowerTriggerUp=strategy.strikeWarPowerTriggerUp+strategy.strikeWarPowerTriggerUp/2;
 			fprintf(logFile,  " strategy.strikeWarPowerTriggerUp=%d\n", strategy.strikeWarPowerTriggerUp);
@@ -2059,16 +2059,16 @@ void AICastor::computeSpaceForBuildingMap(int max)
 	//int hDec=map->hDec;
 	//int wDec=map->wDec;
 	size_t size=w*h;
-	
+
 	memcpy(spaceForBuildingMap, obstacleBuildingMap, size);
-	
+
 	for (int i=1; i<max; i++)
 	{
 		for (int y=0; y<h; y++)
 		{
 			int wy0=w*y;
 			int wy1=w*((y+1)&hMask);
-			
+
 			for (int x=0; x<w; x++)
 			{
 				int wyx[4];
@@ -2099,18 +2099,18 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	int hMask=map->hMask;
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
-	
+
 	//size_t size=w*h;
 	Uint8 *gradient=buildingNeighbourMap;
 	Case *cases=map->cases;
-	
+
 	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
-	
+
 	/*int bx=b->posX;
 	int by=b->posY;
 	int bw=b->type->width;
 	int bh=b->type->height;*/
-	
+
 	// we skip building with already a neighbour:
 	bool neighbour=false;
 	//bool wheat=false;
@@ -2143,13 +2143,13 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 			//if (wheatGradient[index]==255)
 			//	wheat=true;
 		}
-	
+
 	Uint8 dirty;
 	if (neighbour || /*!wheat ||*/ bw!=dw || bh!=dh)
 		dirty=1;
 	else
 		dirty=0;
-	
+
 	// dirty at a range of 1 space case, without corners;
 	for (int xi=bx-dw+1; xi<bx+bw; xi++)
 	{
@@ -2168,7 +2168,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 		gradient[((bx+bw)&wMask)+(((by-dh)&hMask)<<wDec)]|=1;
 		gradient[((bx+bw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
 	}
-	
+
 	// At a range of 0 space case (neignbours), without corners,
 	// we increment (bit 1 to 3), and dirty bit 0 in case:
 	for (int xi=bx-dw+1; xi<bx+bw; xi++)
@@ -2187,7 +2187,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 		p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
 		*p=((*p+2)|dirty)&(~16);
 	}
-	
+
 	// At a range of 2 space case, without corners,
 	// we increment (bit 5 to 7):
 	for (int xi=bx-dw; xi<bx+bw+1; xi++)
@@ -2225,13 +2225,13 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 	int w=map->w;
 	int h=map->h;
 	//size_t size=w*h;
-	
+
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
-	
+
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	
+
 	Uint8 *gradient=buildingNeighbourMap;
 	//memset(gradient, 0, size);
 	Uint32 visionMask=team->me;
@@ -2250,7 +2250,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 		doubleBreak:
 			gradient[(y<<wDec)+x]=0;
 		}
-	
+
 	Game *game=team->game;
 	for (Sint32 ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
 	{
@@ -2272,7 +2272,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 			}
 		}
 	}
-	
+
 	for (std::list<Game::BuildProject>::iterator bpi=game->buildProjects.begin(); bpi!=game->buildProjects.end(); bpi++)
 	{
 		int bx=bpi->posX&map->getMaskW();
@@ -2301,9 +2301,9 @@ void AICastor::computeWorkPowerMap()
 		maxRange=w/2;
 	if (maxRange>h/2)
 		maxRange=h/2;
-	
+
 	memset(gradient, 0, size);
-	
+
 	Unit **myUnits=team->myUnits;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
@@ -2376,9 +2376,9 @@ void AICastor::computeWorkRangeMap()
 	int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=workRangeMap;
-	
+
 	memcpy(gradient, obstacleUnitMap, size);
-	
+
 	Unit **myUnits=team->myUnits;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
@@ -2395,7 +2395,7 @@ void AICastor::computeWorkRangeMap()
 			gradient[index]=(Uint8)range;
 		}
 	}
-	
+
 	updateGlobalGradient(gradient);
 }
 
@@ -2409,16 +2409,16 @@ void AICastor::computeWorkAbilityMap()
 	//int hDec=map->hDec;
 	//int wDec=map->wDec;
 	size_t size=w*h;
-	
+
 	for (size_t i=0; i<size; i++)
 	{
 		Uint8 workPower=workPowerMap[i];
 		Uint8 workRange=workRangeMap[i];
-		
+
 		Uint32 workAbility=((workPower*workRange)>>5);
 		if (workAbility>255)
 			workAbility=255;
-		
+
 		workAbilityMap[i]=(Uint8)workAbility;
 	}
 }
@@ -2433,7 +2433,7 @@ fprintf(logFile,  "computeHydratationMap()...\n");
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	size_t size=w*h;
-	
+
 	Uint16 *gradient=(Uint16 *)malloc(2*size);
 	memset(gradient, 0, 2*size);
 	Case *cases=map->cases;
@@ -2487,9 +2487,9 @@ void AICastor::computeNotGrassMap()
 	//int wMask=map->wMask;
 	//int hMask=map->hMask;
 	size_t size=w*h;
-	
+
 	memset(notGrassMap, 0, size);
-	
+
 	Case *cases=map->cases;
 	for (size_t i=0; i<size; i++)
 	{
@@ -2497,7 +2497,7 @@ void AICastor::computeNotGrassMap()
 		if (t>16)// if !GRASS
 			notGrassMap[i]=16;
 	}
-	
+
 	updateGlobalGradientNoObstacle(notGrassMap);
 	fprintf(logFile,  "...computeNotGrassMap() done\n");
 }
@@ -2515,11 +2515,11 @@ void AICastor::computeWheatCareMap()
 	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	//Case *cases=map->cases;
 	//Uint32 teamMask=team->me;
-	
+
 	Uint8 *temp=wheatCareMap[1];
 	wheatCareMap[1]=wheatCareMap[0];
 	wheatCareMap[0]=temp;
-	
+
 	memcpy(wheatCareMap[0], obstacleUnitMap, size);
 	for (size_t i=0; i<=sizeMask; i++)
 		if (wheatCareMap[0][i]!=0 && notGrassMap[i]==15 && hydratationMap[i]>0
@@ -2538,7 +2538,7 @@ void AICastor::computeWheatGrowthMap()
 {
 	if (lastWheatGrowthMapComputed==timer)
 		return;
-	
+
 	int w=map->w;
 	int h=map->h;
 	//int wMask=map->wMask;
@@ -2547,15 +2547,15 @@ void AICastor::computeWheatGrowthMap()
 	//int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
-	
+
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
-	
+
 	for (size_t i=0; i<size; i++)
 		if (wheatGradient[i]==255)
 			wheatGrowthMap[i]=1+(hydratationMap[i]>>3);
-	
+
 	map->updateGlobalGradientSlow(wheatGrowthMap);
-	
+
 	for (size_t i=0; i<size; i++)
 	{
 		Uint8 care=wheatCareMap[0][i];
@@ -2577,7 +2577,7 @@ void AICastor::computeEnemyPowerMap()
 	if (lastEnemyPowerMapComputed==timer)
 		return;
 	lastEnemyPowerMapComputed=timer;
-	
+
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -2586,9 +2586,9 @@ void AICastor::computeEnemyPowerMap()
 	int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=enemyPowerMap;
-	
+
 	memset(gradient, 0, size);
-	
+
 	for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
 	{
 		Team *enemyTeam=game->teams[ti];
@@ -2656,7 +2656,7 @@ void AICastor::computeEnemyRangeMap()
 	if (lastEnemyRangeMapComputed==timer)
 		return;
 	lastEnemyRangeMapComputed=timer;
-	
+
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -2665,14 +2665,14 @@ void AICastor::computeEnemyRangeMap()
 	int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=enemyRangeMap;
-	
+
 	memcpy(gradient, obstacleUnitMap, size);
-	
+
 	for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
 	{
 		Team *enemyTeam=game->teams[ti];
 		Uint32 me=team->me;
-		
+
 		if ((team->enemies & enemyTeam->me)==0)
 			continue;
 		Building **enemyBuildings=enemyTeam->myBuildings;
@@ -2690,7 +2690,7 @@ void AICastor::computeEnemyRangeMap()
 					gradient[(dx&wMask)+((dy&hMask)<<wDec)]=255;
 		}
 	}
-	
+
 	map->updateGlobalGradientSlow(gradient);
 }
 
@@ -2701,7 +2701,7 @@ void AICastor::computeEnemyWarriorsMap()
 	lastEnemyWarriorsMapComputed=timer;
 	if (verbose)
 		printf("computeEnemyWarriorsMap()\n");
-	
+
 	int w=map->w;
 	int h=map->h;
 	//int wMask=map->wMask;
@@ -2710,7 +2710,7 @@ void AICastor::computeEnemyWarriorsMap()
 	//int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=enemyWarriorsMap;
-	
+
 	memcpy(gradient, obstacleUnitMap, size);
 	for (size_t i=0; i<size; i++)
 	{
@@ -2742,7 +2742,7 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 	Uint32 *mapDiscovered=map->mapDiscovered;
 	Uint32 me=team->me;
 	fprintf(logFile,  "findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
-	
+
 	// minWork computation:
 	Sint32 bestWorkScore=2;
 	for (size_t i=0; i<size; i++)
@@ -2765,7 +2765,7 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 			minWork=30*4;
 	}
 	fprintf(logFile,  " bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork/4);
-	
+
 	// wheatGradientLimit computation:
 	Uint32 wheatGradientLimit;
 	if (food)
@@ -2783,17 +2783,17 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 			wheatGradientLimit=(255-7)*4;
 	}
 	fprintf(logFile,  " wheatGradientLimit=%d\n", wheatGradientLimit/4);
-	
+
 	// we find the best place possible:
 	size_t bestIndex=0;
 	Sint32 bestScore=0;
-	
+
 	//wheatLimit=(wheatLimit<<2);
 	//printf(" (scaled) minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
-	
+
 	Uint8 *wheatGradientMap=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	memset(goodBuildingMap, 0, size);
-	
+
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
@@ -2801,7 +2801,7 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 			size_t corner1=(((x+bw-1)&wMask)|(y<<wDec));
 			size_t corner2=(x|(((y+bw-1)&hMask)<<wDec));
 			size_t corner3=(((x+bw-1)&wMask)|(((y+bw-1)&hMask)<<wDec));
-			
+
 			if (critical
 				&& (mapDiscovered[corner0]&me)==0
 				&& (mapDiscovered[corner1]&me)==0
@@ -2809,17 +2809,17 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 				&& (mapDiscovered[corner3]&me)==0)
 				continue;
 			//goodBuildingMap[corner0]=1;
-			
+
 			Uint8 space=spaceForBuildingMap[corner0];
 			if (space<bw)
 				continue;
 			//goodBuildingMap[corner0]=2;
-			
+
 			Sint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
 			if (work<minWork)
 				continue;
 			//goodBuildingMap[corner0]=3;
-			
+
 			Uint32 wheatGradient=wheatGradientMap[corner0]+wheatGradientMap[corner1]+wheatGradientMap[corner2]+wheatGradientMap[corner3];
 			if (!defense)
 			{
@@ -2839,22 +2839,22 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 				}
 			}
 			//goodBuildingMap[corner0]=4;
-			
+
 			Uint32 enemyRange=enemyRangeMap[corner0]+enemyRangeMap[corner1]+enemyRangeMap[corner2]+enemyRangeMap[corner3];
 			if (enemyRange>4*(255-8))
 				continue;
 			//goodBuildingMap[corner0]=5;
-			
+
 			Sint32 wheatGrowth=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
-			
+
 			Uint8 neighbour=buildingNeighbourMap[corner0];
 			Uint8 directNeighboursCount=(neighbour>>1)&7; // [0, 7]
 			Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7]
 			if ((neighbour&1)||(directNeighboursCount>1))
 				continue;
-			
+
 			//goodBuildingMap[corner0]=6;
-			
+
 			Sint32 score;
 			if (defense)
 				score=((work<<1)+wheatGradient+(enemyRange<<4))*(16+(directNeighboursCount<<2)+farNeighboursCount);
@@ -2862,7 +2862,7 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 				score=((wheatGrowth<<8)+work+(wheatGradient>>1)-enemyRange)*(8+(directNeighboursCount<<2)+farNeighboursCount);
 			else
 				score=(4096+work-(wheatGrowth<<8)-enemyRange)*(8+(directNeighboursCount<<2)+farNeighboursCount);
-			
+
 			if (defense)
 			{
 				if (score<0)
@@ -2872,32 +2872,32 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 				else
 					goodBuildingMap[corner0]=(score>>12);
 			}
-			
+
 			if (bestScore<score)
 			{
 				bestScore=score;
 				bestIndex=corner0;
 			}
 		}
-	
+
 	if (bestScore>0)
 	{
 		fprintf(logFile,  " found a cool place");
 		fprintf(logFile,  "  score=%d, wheatGrowth=%d, wheatGradientMap=%d, work=%d\n",
 			bestScore, wheatGrowthMap[bestIndex], wheatGradientMap[bestIndex], workAbilityMap[bestIndex]);
-		
+
 		Uint8 neighbour=buildingNeighbourMap[bestIndex];
 		Uint8 directNeighboursCount=(neighbour>>1)&7; // [0, 7]
 		Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7]
-			
+
 		fprintf(logFile,  " directNeighboursCount=%d, farNeighboursCount=%d\n",
 			directNeighboursCount, farNeighboursCount);
-		
+
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
 		return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1));
 	}
-	
+
 	return shared_ptr<Order>();
 }
 
@@ -2909,9 +2909,9 @@ void AICastor::computeRessourcesCluster()
 	int wMask=map->wMask;
 	int hMask=map->hMask;
 	size_t size=w*h;
-	
+
 	memset(ressourcesCluster, 0, size*2);
-	
+
 	//int i=0;
 	Uint8 old=0xFF;
 	Uint16 id=0;
@@ -2924,11 +2924,11 @@ void AICastor::computeRessourcesCluster()
 			Case *c=map->cases+w*(y&hMask)+(x&wMask); // case
 			Ressource r=c->ressource; // ressource
 			Uint8 rt=r.type; // ressources type
-			
+
 			int rci=x+y*w; // ressource cluster index
 			Uint16 *rcp=&ressourcesCluster[rci]; // ressource cluster pointer
 			Uint16 rc=*rcp; // ressource cluster
-			
+
 			if (rt==0xFF)
 			{
 				*rcp=0;
@@ -2974,7 +2974,7 @@ void AICastor::computeRessourcesCluster()
 		}
 		memcpy(ressourcesCluster+((y+1)&hMask)*w, ressourcesCluster+y*w, w*2);
 	}
-	
+
 	int used=0;
 	for (int id=1; id<65536; id++)
 		if (usedid[id])
@@ -2992,7 +2992,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 	int wMask=map->wMask;
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
-	
+
 	for (int yi=0; yi<h; yi++)
 	{
 		int wy=((yi&hMask)<<wDec);
@@ -3118,14 +3118,14 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
 {
 	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
-	
+
 	int w=map->w;
 	int h=map->h;
 	int hMask=map->hMask;
 	int wMask=map->wMask;
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
-	
+
 	for (int yi=0; yi<h; yi++)
 	{
 		int wy=((yi&hMask)<<wDec);
@@ -3156,7 +3156,7 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
 			}
 		}
 	}
-	
+
 	for (int y=hMask; y>=0; y--)
 	{
 		int wy=(y<<wDec);
@@ -3187,7 +3187,7 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
 			}
 		}
 	}
-	
+
 	for (int x=0; x<w; x++)
 	{
 		int xl=(x-1)&wMask;

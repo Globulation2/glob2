@@ -34,7 +34,7 @@ CampaignSelectorScreen::CampaignSelectorScreen(bool isSelectingSave)
 		fileList = new FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "campaigns", "txt", false);
 	fileList->generateList();
 	description = new TextArea(420, 60, 200, 290, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true);
-	
+
 	addWidget(title);
 	addWidget(ok);
 	addWidget(cancel);
@@ -69,7 +69,7 @@ void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, i
 		}
 		else
 		{
-			description->setText("");	
+			description->setText("");
 		}
 	}
 }

@@ -26,17 +26,17 @@ struct Function {
 };
 
 namespace Functions {
-	
+
 	struct Native {
 		void call(Stack* stack) { code(stack); }
 		void (*code)(Stack*);
 	};
-	
+
 	struct Interpreted {
 		void call(Stack* stack);
 		uint8_t* code;
 	};
-	
+
 };
 
 #endif // ndef FUNCTION_H

@@ -42,12 +42,12 @@ class IRCTextMessageHandler
 public:
 	///Starts listening to the messages coming from IRC
 	IRCTextMessageHandler();
-	
+
 	~IRCTextMessageHandler();
 
 	///Connects to the IRC server and begins taking messages from it
 	void startIRC(const std::string& username);
-	
+
 	///Disconnect from IRC
 	void stopIRC();
 
@@ -80,7 +80,7 @@ private:
 
 
 	bool userListModified;
-		
+
 };
 
 

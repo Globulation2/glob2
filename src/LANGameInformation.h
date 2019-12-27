@@ -37,7 +37,7 @@ public:
 
 	///Constructs an empty LANGameInformation
 	LANGameInformation();
-	
+
 	///Encodes this LANGameInformation into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
@@ -46,7 +46,7 @@ public:
 
 	///Returns the game information
 	const YOGGameInfo& getGameInformation() const;
-	
+
 	///Returns the game information for modification
 	YOGGameInfo& getGameInformation();
 private:

@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2006-2008 Bradley Arsenault
-  
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -99,7 +99,7 @@ public:
 	virtual ~TeamsEditor() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void generateGameHeader();
-	
+
 	enum
 	{
 		OK,
@@ -107,7 +107,7 @@ public:
 	};
 private:
 	Game* game;
-	
+
 	//! Player enable/disable buttons
 	OnOffButton *isPlayerActive[Team::MAX_COUNT];
 	///List of the player names

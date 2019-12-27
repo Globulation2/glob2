@@ -9,7 +9,7 @@ Index: libgag/src/FileManager.cpp
 --- a/libgag/src/FileManager.cpp.orig	2008-03-08 06:27:16.000000000 +0100
 +++ b/libgag/src/FileManager.cpp	2008-05-06 21:06:11.295638046 +0200
 @@ -121,7 +121,7 @@
- 
+
  			if ((linksize + 13) <= (int)sizeof(link))
  			{
 -				strcat(link, "/share/glob2");
@@ -19,10 +19,10 @@ Index: libgag/src/FileManager.cpp
  		}
 @@ -129,7 +129,7 @@
  		#endif
- 
+
  		addDir(PACKAGE_DATA_DIR);
 -		addDir(PACKAGE_SOURCE_DIR);
 +		//addDir(PACKAGE_SOURCE_DIR);
  		fileListIndex = -1;
  	}
- 	
+

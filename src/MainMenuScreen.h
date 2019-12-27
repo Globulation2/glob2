@@ -38,7 +38,7 @@ public:
 		CREDITS,
 		QUIT,
 	};
-	
+
 public:
 	MainMenuScreen();
 	virtual ~MainMenuScreen();

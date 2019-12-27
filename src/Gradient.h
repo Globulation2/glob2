@@ -31,7 +31,7 @@
 ///calculates whether a particular point on the map is an obstacle, a destination, or simply a passable
 ///square.
 ///The class GradientMethod above must have a function as such:
-///Uint8 getValue(Map* map, int square) 
+///Uint8 getValue(Map* map, int square)
 ///This function returns 0 if the square in question is an obstacle, 1 if the square is passable,
 ///and 255 if the square is a destination.
 template<typename Tint, typename GradientMethod> class Gradient
@@ -39,7 +39,7 @@ template<typename Tint, typename GradientMethod> class Gradient
 public:
 	Gradient(int width, int height, const GradientMethod& method);
 	~Gradient();
-	
+
 	///This algorithm computes the full gradient of a map
 	void computeFullGradient(Map* map);
 
@@ -94,7 +94,7 @@ template<typename Tint, typename GradientMethod> void Gradient<Tint, GradientMet
 {
 	Tint *listedAddr = new Tint[width*height];
 	size_t listCountWrite = 0;
-	
+
 	// We set the obstacle and free places
 	for (size_t i=0; i<(width*height); i++)
 	{
@@ -103,7 +103,7 @@ template<typename Tint, typename GradientMethod> void Gradient<Tint, GradientMet
 		if(n == 255)
 			listedAddr[listCountWrite++] = i;
 	}
-	
+
 	map->updateGlobalGradientVersionSimple(gradient, listedAddr, listCountWrite, Map::GT_UNDEFINED);
 }
 
@@ -121,9 +121,9 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 	int posW=building->type->width;
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
-	
+
 	Case& c=map->cases[square];
-	
+
 	bool isWarFlag=false;
 	bool isWarFlagSquare=false;
 	bool isClearingFlag=false;
@@ -153,7 +153,7 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 			}
 		}
 	}
-	
+
 	if(c.building==NOGBID)
 	{
 		if (c.forbidden&teamMask)
@@ -175,10 +175,10 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 		else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 			return 0;
 	}
-	
+
 	if(isClearingFlagSquare || isWarFlagSquare)
 		return 255;
-	
+
 	return 1;
 }
 

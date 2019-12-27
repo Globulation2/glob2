@@ -38,7 +38,7 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		this->font=font;
 		nth=-1;
 		disp=0;
@@ -46,7 +46,7 @@ namespace GAGGUI
 		blockPos=0;
 		selectionState = NOTHING_PRESSED;
 	}
-	
+
 	List::List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font, const std::string& tooltip, const std::string &tooltipFont)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
@@ -56,7 +56,7 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		this->font=font;
 		nth=-1;
 		disp=0;
@@ -64,25 +64,25 @@ namespace GAGGUI
 		blockPos=0;
 		selectionState = NOTHING_PRESSED;
 	}
-	
+
 	List::~List()
 	{
-	
+
 	}
-	
+
 	void List::clear(void)
 	{
 		strings.clear();
 		nth=-1;
 	}
-	
-	
+
+
 	void List::onTimer(Uint32 tick)
 	{
 		// this code is required for layouting
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		const unsigned count = (h-4) / textHeight;
 		switch (selectionState)
 		{
@@ -105,17 +105,17 @@ namespace GAGGUI
 			default:
 			break;
 		}
-		
+
 	}
-	
+
 	void List::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
-		
+
 		// this code is required for layouting
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		const unsigned count = (h-4) / textHeight;
 		unsigned wSel;
 		const int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
@@ -173,7 +173,7 @@ namespace GAGGUI
 				id+=disp;
 				if ((id>=0) &&(id<(int)strings.size()))
 				{
-					if (this->nth != id) 
+					if (this->nth != id)
 					{
 						nth=id;
 						this->selectionChanged();
@@ -202,19 +202,19 @@ namespace GAGGUI
 			}
 		}
 	}
-	
+
 	void List::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
 		selectionState = NOTHING_PRESSED;
 	}
-	
+
 	void List::onSDLMouseMotion(SDL_Event *event)
 	{
 		// this code is required for layouting
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(event->type == SDL_MOUSEMOTION);
 		HighlightableWidget::onSDLMouseMotion(event);
 		if (selectionState == HANDLE_PRESSED)
@@ -234,12 +234,12 @@ namespace GAGGUI
 				disp = newDisp;
 		}
 	}
-	
+
 	void List::selectionChanged()
 	{
 		this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
 	}
-	
+
 	void List::internalInit(void)
 	{
 		fontPtr = Toolkit::getFont(font);
@@ -247,16 +247,16 @@ namespace GAGGUI
 		textHeight = fontPtr->getStringHeight(" ");
 		assert(textHeight > 0);
 	}
-	
+
 	void List::paint(void)
 	{
 		// this code is required for layouting
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-		
+
 		const int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
 		const int scrollBarX = x + w - scrollBarW;
 		const int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
@@ -265,7 +265,7 @@ namespace GAGGUI
 		const int frameLeftWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_LEFT_WIDTH);
 		const int frameRightWidth = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_RIGHT_WIDTH);
 		const int frameBottomHeight = Style::style->getStyleMetric(Style::STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
-		
+
 		const int elementsHeight = h - frameTopHeight - frameBottomHeight;
 		const int count = elementsHeight / textHeight;
 		int elementLength;
@@ -294,13 +294,13 @@ namespace GAGGUI
 			disp = 0;
 			elementLength = w - frameLeftWidth - frameRightWidth;
 		}
-		
+
 		// draw content
 		parent->getSurface()->setClipRect(x + frameLeftWidth, y + frameTopHeight, elementLength, elementsHeight);
 		int yPos = y + frameTopHeight;
 		int nextSize = textHeight;
 		size_t i = 0;
-		
+
 		while ((nextSize < elementsHeight) && (i+disp < strings.size()))
 		{
 			drawItem(x + frameLeftWidth * 2, yPos, static_cast<size_t>(i+disp));
@@ -311,28 +311,28 @@ namespace GAGGUI
 			i++;
 			yPos += textHeight;
 		}
-		
+
 		parent->getSurface()->setClipRect();
-		
+
 		// draw frame
 		if (static_cast<int>(strings.size()) > count)
 			Style::style->drawFrame(parent->getSurface(), x, y, w - Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH), h, getNextHighlightValue());
 		else
 			Style::style->drawFrame(parent->getSurface(), x, y, w, h, getNextHighlightValue());
 	}
-	
+
 	void List::drawItem(int x, int y, size_t element)
 	{
 		assert(element < strings.size());
 		assert(strings[element].c_str());
 		parent->getSurface()->drawString(x, y, fontPtr, (strings[element]).c_str());
 	}
-	
+
 	void List::handleItemClick(size_t element, int mx, int my)
 	{
-		
+
 	}
-	
+
 	void List::addText(const std::string &text, size_t pos)
 	{
 		if (pos < strings.size())
@@ -344,17 +344,17 @@ namespace GAGGUI
 			strings.push_back(text);
 		}
 	}
-	
+
 	void List::addText(const std::string &text)
 	{
 		strings.push_back(text);
 	}
-	
+
 	void List::sort(void)
 	{
 		std::sort(strings.begin(), strings.end(), GAGCore::naturalStringSort);
 	}
-	
+
 	void List::removeText(size_t pos)
 	{
 		if (pos < strings.size())
@@ -367,7 +367,7 @@ namespace GAGGUI
 		if(disp + count > strings.size())
 			disp-=1;
 	}
-	
+
 	bool List::isText(const std::string &text) const
 	{
 		for (size_t i=0; i<strings.size(); i++)
@@ -377,7 +377,7 @@ namespace GAGGUI
 		}
 		return false;
 	}
-	
+
 	const std::string &List::getText(size_t pos) const
 	{
 		if (pos < strings.size())
@@ -387,7 +387,7 @@ namespace GAGGUI
 		else
 			assert(false);
 	}
-	
+
 	const std::string &List::get(void) const
 	{
 		if (nth >= 0)
@@ -395,29 +395,29 @@ namespace GAGGUI
 		else
 			assert(false);
 	}
-	
+
 	void List::setText(size_t pos, const std::string& text)
 	{
 		assert(pos < strings.size());
 		strings[pos]=text;
 	}
-	
+
 	size_t List::getCount(void) const
 	{
 		return strings.size();
 	}
-	
+
 	int List::getSelectionIndex(void) const
 	{
 		return nth;
 	}
-	
+
 	void List::setSelectionIndex(int index)
 	{
 		if ((index >= -1 ) && (index < static_cast<int>(strings.size())))
 			this->nth = index;
 	}
-	
+
 	void List::centerOnItem(int index)
 	{
 		const int count = (h-4) / textHeight;

@@ -42,56 +42,56 @@ namespace GAGCore {
 		}
 		++argLevel;
 	}
-	
+
 	FormatableString &FormatableString::arg(int value, int fieldWidth, int base, char fillChar)
 	{
 		std::ostringstream oss;
 		oss << std::setbase(base);
 		oss.width(fieldWidth);
 		oss.fill(fillChar);
-		
+
 		// transform value into std::string
 		oss << value;
-	
+
 		proceedReplace(oss.str());
-		
+
 		// return reference to this so that .arg can proceed further
 		return *this;
 	}
-	
+
 	FormatableString &FormatableString::arg(unsigned value, int fieldWidth, int base, char fillChar)
 	{
 		std::ostringstream oss;
 		oss << std::setbase(base);
 		oss.width(fieldWidth);
 		oss.fill(fillChar);
-		
+
 		// transform value into std::string
 		oss << value;
-	
+
 		proceedReplace(oss.str());
-		
+
 		// return reference to this so that .arg can proceed further
 		return *this;
 	}
-	
+
 	FormatableString &FormatableString::arg(float value, int fieldWidth, int precision, char fillChar)
 	{
 		std::ostringstream oss;
 		oss.precision(precision);
 		oss.width(fieldWidth);
 		oss.fill(fillChar);
-	
+
 		oss.setf(oss.fixed, oss.floatfield);
 		// transform value into std::string
 		oss << value;
-	
+
 		proceedReplace(oss.str());
-		
+
 		// return reference to this so that .arg can proceed further
 		return *this;
 	}
-	
+
 	FormatableString &FormatableString::operator=(const std::string& str)
 	{
 		this->assign(str);

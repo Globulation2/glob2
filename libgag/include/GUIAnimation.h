@@ -30,7 +30,7 @@ namespace GAGCore
 
 namespace GAGGUI
 {
-	
+
 	class Animation: public RectangularWidget
 	{
 	protected:
@@ -38,11 +38,11 @@ namespace GAGGUI
 		Uint32 count;
 		Sint32 start;
 		std::string sprite;
-	
+
 		// cache, recomputed on internalInit
 		GAGCore::Sprite *archPtr;
 		unsigned pos, durationLeft;
-	
+
 	public:
 		Animation() { duration=count=start=0; pos=durationLeft=0; archPtr=NULL; }
 		Animation(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string sprite, Sint32 start, Sint32 count=1, Sint32 duration=1);

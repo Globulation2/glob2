@@ -1,24 +1,24 @@
 import os
-    
+
 Import('env')
 Import("PackTar")
-    
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
         if file.find(".txt") != -1:
             PackTar(env["TARFILE"], file)
             env.Install(env["INSTALLDIR"] + "/glob2/data", file)
-        
-    
+
+
     env.Install(env["INSTALLDIR"] + "/applications", "glob2.desktop")
     env.Alias("install", env["INSTALLDIR"]+"/glob2/data")
     env.Alias("install", env["INSTALLDIR"]+"/applications")
     PackTar(env["TARFILE"], "glob2.desktop")
     PackTar(env["TARFILE"], "SConscript")
-    
+
 SConscript("fonts/SConscript")
 SConscript("gfx/SConscript")
 SConscript("gui/SConscript")
 SConscript("icons/SConscript")
 SConscript("zik/SConscript")
-    
+

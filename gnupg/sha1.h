@@ -7,7 +7,7 @@
  Charrière <NuageBleu at gmail dot com>
 
 */
- 
+
 #ifndef _SHA1_H
 # define _SHA1_H
 

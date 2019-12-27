@@ -28,9 +28,9 @@ void BuildingsTypes::load()
 {
 	ConfigVector<BuildingType>::load("data/buildings.default.txt", true);
 	ConfigVector<BuildingType>::load("data/buildings.txt");
-	
+
 	resolveUpgradeReferences();
-	
+
 	checkIntegrity();
 }
 
@@ -40,7 +40,7 @@ void BuildingsTypes::checkIntegrity(void)
 	{
 		BuildingType *bt = entries[i];
 		assert(bt);
-		
+
 		//Need ressource integrity:
 		bool needRessource=false;
 		for (unsigned j=0; j<MAX_RESSOURCES; j++)
@@ -51,13 +51,13 @@ void BuildingsTypes::checkIntegrity(void)
 			}
 		if (needRessource)
 			assert(bt->fillable || bt->foodable);
-		
+
 		//hpInc integrity:
 		if (bt->isBuildingSite)
 			assert(bt->hpInc > 0);
 		else
 			assert(bt->hpInc == 0);
-		
+
 		//mpMax/hpInit integrity:
 		if (bt->isBuildingSite)
 		{
@@ -72,8 +72,8 @@ void BuildingsTypes::checkIntegrity(void)
 				}
 			}
 		}
-		
-		
+
+
 		//hpInit/hpInc integrity:
 		if (bt->isBuildingSite)
 		{
@@ -86,8 +86,8 @@ void BuildingsTypes::checkIntegrity(void)
 				std::cerr << "BuildingsTypes::load() : warning : " << bt->type << " : hpSum(" << hpSum <<") < hpMax(" << bt->hpMax << ") with hpInit=" << bt->hpInit << ", hpInc=" << bt->hpInc << ", resSum=" << resSum << ". Make hpInc>=" << (bt->hpMax-bt->hpInit+resSum-1)/resSum << std::endl;
 			}
 		}
-		
-		
+
+
 		//flag integrity:
 		if (bt->isVirtual)
 		{
@@ -110,7 +110,7 @@ void BuildingsTypes::checkIntegrity(void)
 			assert(bt->isVirtual);
 			assert(bt->defaultUnitStayRange);
 		}
-		
+
 	}
 }
 
@@ -120,7 +120,7 @@ void BuildingsTypes::resolveUpgradeReferences(void)
 	{
 		entries[i]->nextLevel = entries[i]->prevLevel = -1;
 	}
-	
+
 	for (size_t i=0; i<entries.size(); i++)
 	{
 		BuildingType *bt1 = entries[i];
@@ -160,7 +160,7 @@ Sint32 BuildingsTypes::getTypeNum(const char *type, int level, bool isBuildingSi
 		if ((entries[i]->type == type) && (entries[i]->level == level) && ((entries[i]->isBuildingSite!=0) == isBuildingSite))
 			return i;
 	}
-	
+
 	//std::cerr << "BuildingsTypes::getTypeNum(" << type << "," << level << "," << isBuildingSite << ") : error : type does not exists" << std::endl;
 	// we can reach this point if we request a flag
 	return -1;
@@ -174,7 +174,7 @@ BuildingType *BuildingsTypes::getByType(const char *type, int level, bool isBuil
 		if ((entries[i]->type == type) && (entries[i]->level == level) && ((entries[i]->isBuildingSite!=0) == isBuildingSite))
 			return entries[i];
 	}
-	
+
 	//std::cerr << "BuildingsTypes::getByType(" << type << "," << level << "," << isBuildingSite << ") : error : type does not exists" << std::endl;
 	// we can reach this point if we request a flag
 	return NULL;
@@ -193,12 +193,12 @@ BuildingType *BuildingsTypes::getByType(const std::string &s,int level, bool isB
 Uint32 BuildingsTypes::checkSum(void)
 {
 	Uint32 cs = 0;
-	
+
 	for (size_t i=0; i<entries.size(); ++i)
 	{
 		cs ^= entries[i]->checkSum();
 		cs = (cs<<1) | (cs>>31);
 	}
-	
+
 	return cs;
 }

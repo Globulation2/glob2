@@ -36,25 +36,25 @@ class YOGMessage
 public:
 	///Construct an empty YOGMessage
 	YOGMessage();
-	
+
 	///Construct a YOGMessage
 	YOGMessage(const std::string& message, const std::string& sender, YOGMessageType type);
 
 	///Sets the body of the message
 	void setMessage(const std::string& message);
-	
+
 	///Returns the message
 	std::string getMessage() const;
 
 	///Sets the user the message was sent from
 	void setSender(const std::string& user);
-	
+
 	///Returns the sender
 	std::string getSender() const;
 
 	///Sets the message type
 	void setMessageType(YOGMessageType type);
-	
+
 	///Returns the message type
 	YOGMessageType getMessageType() const;
 
@@ -63,7 +63,7 @@ public:
 
 	///Decodes this YOGMessage from a bit stream
 	void decodeData(GAGCore::InputStream* stream);
-	
+
 	///Test for equality between two YOGMessage
 	bool operator==(const YOGMessage& rhs) const;
 	bool operator!=(const YOGMessage& rhs) const;

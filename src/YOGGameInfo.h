@@ -43,13 +43,13 @@ public:
 
 	///Sets the name of the game
 	void setGameName(const std::string& gameName);
-	
+
 	///Returns the name of the game
 	std::string getGameName() const;
 
 	///Sets the unique game ID of the game
 	void setGameID(Uint16 id);
-	
+
 	///Returns the unique game ID of the game
 	Uint16 getGameID() const;
 
@@ -62,31 +62,31 @@ public:
 
 	///Returns the game state
 	GameState getGameState() const;
-	
+
 	///Sets the game state
 	void setGameState(const GameState& state);
 
 	///Sets the number of human players joined
 	void setPlayersJoined(Uint8 playersJoined);
-	
+
 	///Returns the number of human players joined
 	Uint8 getPlayersJoined() const;
 
 	///Sets the number of AI players joined
 	void setAIJoined(Uint8 aiJoined);
-	
+
 	///Returns the number of AI players joined
 	Uint8 getAIJoined() const;
 
 	///Sets the name of the map
 	void setMapName(const std::string& mapName);
-	
+
 	///Returns the name of the map
 	std::string getMapName() const;
 
 	///Sets the number of teams
 	void setNumberOfTeams(Uint8 numberOfTeams);
-	
+
 	///Returns the name of the game
 	Uint8 getNumberOfTeams() const;
 
@@ -95,7 +95,7 @@ public:
 
 	///Decodes this YOGGameInfo from a bit stream
 	void decodeData(GAGCore::InputStream* stream);
-	
+
 	///Test for equality between two YOGGameInfo
 	bool operator==(const YOGGameInfo& rhs) const;
 	bool operator!=(const YOGGameInfo& rhs) const;

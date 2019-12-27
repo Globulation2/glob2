@@ -43,7 +43,7 @@ struct Load: NativeCode
 	Load():
 		NativeCode("load")
 	{}
-	
+
 	void prologue(ThunkPrototype* thunk)
 	{
 		thunk->body.push_back(new EvalCode()); // evaluate the argument
@@ -53,14 +53,14 @@ struct Load: NativeCode
 	{
 		Thread::Frame& frame = thread->frames.back();
 		Thread::Frame::Stack& stack = frame.stack;
-		
+
 		Value* argument = stack.back();
 		stack.pop_back();
-	
+
 		const string& filename = unbox<string>(thread, argument);
-		
+
 		Usl* usl = thread->usl;
-		
+
 		auto_ptr<ifstream> stream(usl->openFile(filename));
 		Scope* scope = usl->compile(filename, *stream);
 		if (frame.nextInstr >= frame.thunk->thunkPrototype()->body.size())
@@ -75,17 +75,17 @@ struct Yield: NativeCode
 	Yield():
 		NativeCode("yield")
 	{}
-	
+
 	void prologue(ThunkPrototype* thunk)
 	{
 		thunk->body.push_back(new PopCode()); // ignore the argument
 	}
-	
+
 	void epilogue(ThunkPrototype* thunk)
 	{
 		thunk->body.push_back(new ConstCode(&nil)); // return nil
 	}
-	
+
 	void execute(Thread* thread)
 	{
 		thread->state = Thread::YIELD;
@@ -129,12 +129,12 @@ void Usl::includeScript(const std::string& name, std::istream& stream)
 	ScopePrototype* scopePrototype = scope->scopePrototype();
 	Thread* thread = createThread(scope);
 	thread->run();
-	
+
 	ScopePrototype* rootPrototype = root->scopePrototype();
 	size_t index = rootPrototype->locals.size();
 	rootPrototype->locals.push_back(name);
 	root->locals.push_back(scope);
-	
+
 	for (Prototype::Members::const_iterator it = scopePrototype->members.begin(); it != scopePrototype->members.end(); ++it)
 	{
 		const string& name = it->first;
@@ -146,7 +146,7 @@ void Usl::includeScript(const std::string& name, std::istream& stream)
 		getter->body.push_back(new EvalCode());
 		rootPrototype->members[name] = getter;
 	}
-	
+
 	for (size_t i = 0; i < scopePrototype->locals.size(); ++i)
 	{
 		setConstant(scopePrototype->locals[i], scope->locals[i]);
@@ -198,22 +198,22 @@ Scope* Usl::compile(const std::string& name, std::istream& stream)
 	char c;
 	while (stream.get(c))
 		source += c;
-	
+
 	Parser parser(name, source.c_str(), &heap);
 	#ifdef DEBUG_USL
 		cout << source << endl;
 	#endif
-	
+
 	ExecutionBlock block = ExecutionBlock(Position());
 	parser.parse(&block);
 	#ifdef DEBUG_USL
 		block.dump(cout);
 		cout << endl;
 	#endif
-	
+
 	ScopePrototype* prototype = new ScopePrototype(&heap, root->prototype);
 	block.generateMembers(prototype, &debug, &heap);
-	
+
 	Scope* scope = new Scope(&heap, prototype, root);
 	return scope;
 }
@@ -226,16 +226,16 @@ ifstream* Usl::openFile(const string& name)
 size_t Usl::run(size_t steps)
 {
 	size_t total = 0;
-	
+
 	for (Threads::iterator it = threads.begin(); it != threads.end(); ++it)
 	{
 		if (it->state == Thread::YIELD)
 			it->state = Thread::RUN;
 		total += it->run(steps);
 	}
-	
+
 	// TODO: garbageCollect
-	
+
 	return total;
 }
 
@@ -247,9 +247,9 @@ int main(int argc, char** argv)
 		cerr << "Wrong number of arguments" << endl;
 		return 1;
 	}
-	
+
 	Usl usl;
-	
+
 	try
 	{
 		int i;
@@ -261,12 +261,12 @@ int main(int argc, char** argv)
 			usl.includeScript(name, stream);
 			stream.close();
 		}
-		
+
 		const char* name = argv[i];
 		stream.open(name);
 		usl.createThread(name, stream);
 		stream.close();
-		
+
 		size_t steps = 1000000;
 		usl.run(steps);
 	}
@@ -275,7 +275,7 @@ int main(int argc, char** argv)
 		cout << e.position << ":" << e.what() << endl;
 		return -1;
 	}
-	
+
 	return 0;
 }
 */

@@ -476,7 +476,7 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		assert(unit);
 		unitsInside.push_front(unit);
 	}
-	
+
 	if (versionMinor>=80)
 	{
 		unsigned nbHarvesting = stream->readUint32("nbHarvesting");
@@ -547,7 +547,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		oss << "unitsInside[" << i++ << "]";
 		stream->writeUint16((*it)->gid, oss.str().c_str());
 	}
-	
+
 	stream->writeUint32(unitsHarvesting.size(), "nbHarvesting");
 	fprintf(logFile, " nbHarvesting=%zd\n", unitsHarvesting.size());
 	i = 0;
@@ -1141,7 +1141,7 @@ void Building::updateUnitsHarvesting(void)
 		std::list<Unit *>::iterator tmpIt = it;
 		Unit* u = *tmpIt;
 		it++;
-		
+
 		// if the building is not available to fetch from (invisible or broken)
 		if ((buildingState != ALIVE) || ((owner->sharedVisionExchange & u->owner->me) == 0))
 		{
@@ -2421,9 +2421,9 @@ void Building::kill(void)
 	}
 
 	buildingState=DEAD;
-	
+
 	updateUnitsHarvesting();
-	
+
 	owner->prestige-=type->prestige;
 
 	owner->buildingsToBeDestroyed.push_front(this);
@@ -2739,7 +2739,7 @@ bool Building::canConvertUnit(void)
 	assert(type->canFeedUnit);
 	return
 			canNotConvertUnitTimer<=0 &&
-			((int)unitsInside.size()<ressources[CORN]) && 
+			((int)unitsInside.size()<ressources[CORN]) &&
 			((int)unitsInside.size()<maxUnitInside);
 }
 
@@ -2885,10 +2885,10 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [24]
 
-	
+
 	cs^=unitsHarvesting.size();
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [25]
-	
+
 	return cs;
 }

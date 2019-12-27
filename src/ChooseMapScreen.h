@@ -47,10 +47,10 @@ public:
 	//! Destructor
 	virtual ~ChooseMapScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	
+
 	/// Returns the mapHeader of the map that is currently selected
 	MapHeader& getMapHeader();
-	
+
 	/// Returns the gameHeader, with all of the customized options,
 	/// for the currently selected map.
 	GameHeader& getGameHeader();

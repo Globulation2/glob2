@@ -43,7 +43,7 @@ bool YOGServerRestart::doesMatch(const std::vector<std::string>& tokens)
 		return false;
 	return true;
 }
-	
+
 
 
 bool YOGServerRestart::allowedForModerator()
@@ -78,7 +78,7 @@ bool YOGMutePlayer::doesMatch(const std::vector<std::string>& tokens)
 {
 	if(tokens.size() == 2)
 		return true;
-	
+
 	if(tokens.size() == 3)
 	{
 		try
@@ -93,7 +93,7 @@ bool YOGMutePlayer::doesMatch(const std::vector<std::string>& tokens)
 	}
 	return false;
 }
-	
+
 
 
 bool YOGMutePlayer::allowedForModerator()
@@ -189,7 +189,7 @@ bool YOGResetPassword::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGResetPassword::allowedForModerator()
@@ -226,7 +226,7 @@ bool YOGBanPlayer::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGBanPlayer::allowedForModerator()
@@ -279,7 +279,7 @@ bool YOGUnbanPlayer::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGUnbanPlayer::allowedForModerator()
@@ -325,7 +325,7 @@ bool YOGShowBannedPlayers::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 1;
 }
-	
+
 
 
 bool YOGShowBannedPlayers::allowedForModerator()
@@ -371,7 +371,7 @@ bool YOGBanIP::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGBanIP::allowedForModerator()
@@ -420,7 +420,7 @@ bool YOGAddAdministrator::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGAddAdministrator::allowedForModerator()
@@ -433,7 +433,7 @@ bool YOGAddAdministrator::allowedForModerator()
 void YOGAddAdministrator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
-	
+
 	if(server->getAdministratorList().isAdministrator(name))
 	{
 		admin->sendTextMessage("Player "+name+" is already an admin.", player);
@@ -465,7 +465,7 @@ bool YOGRemoveAdministrator::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGRemoveAdministrator::allowedForModerator()
@@ -509,7 +509,7 @@ bool YOGAddModerator::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGAddModerator::allowedForModerator()
@@ -555,7 +555,7 @@ bool YOGRemoveModerator::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGRemoveModerator::allowedForModerator()
@@ -601,7 +601,7 @@ bool YOGRemoveMap::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
-	
+
 
 
 bool YOGRemoveMap::allowedForModerator()

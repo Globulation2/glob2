@@ -41,11 +41,11 @@ CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 			availableMissions->addItem(campaign.getMap(i).getMapName(), campaign.getMap(i).isCompleted());
 	}
 	addWidget(availableMissions);
-	
-	
+
+
 	mapPreview = new MapPreview(330, 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(mapPreview);
-	
+
 	description = new TextArea(10, 260, 620, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true);
 	addWidget(description);
 }

@@ -38,7 +38,7 @@ class GameGUIToolManager
 public:
 	///Constructs a tool manager
 	GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefaultAssignManager& defaultAssign, GameGUIGhostBuildingManager& ghostManager);
-	
+
 	///List of tool modes
 	enum ToolMode
 	{
@@ -46,7 +46,7 @@ public:
 		PlaceBuilding,
 		PlaceZone,
 	};
-	
+
 	///List of zone types
 	enum ZoneType
 	{
@@ -60,28 +60,28 @@ public:
 
 	///Activates the building tool with the given zone type
 	void activateZoneTool(ZoneType type);
-	
+
 	///Activates the zone tool with the last selected zone type
 	void activateZoneTool();
-	
+
 	///Cancels a tool
 	void deactivateTool();
 
 	///Draws the tool on the map
 	void drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
-	
+
 	///Returns the name of the current building
 	std::string getBuildingName() const;
 
 	///Returns the current type of zone
 	ZoneType getZoneType() const;
-	
+
 	///Handles a mouse down
 	void handleMouseDown(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
-	
+
 	///Handles a mouse up
 	void handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
-	
+
 	///Handles the dragging of the mouse
 	void handleMouseDrag(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
 

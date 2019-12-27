@@ -35,15 +35,15 @@ public:
 	// caracteristic modulated by player choice, if 0, feature disabled
 	// display infos
 	Uint32 startImage[NB_MOVE];
-	
+
 	Sint32 hungryness;
 
 	Sint32 performance[NB_ABILITY];
-	
+
 	Sint32 harvestDamage;
 	Sint32 armorReductionPerHappyness;
 	Sint32 experiencePerLevel;
-	
+
 	Sint32 magicActionCooldown;
 
 public:
@@ -59,10 +59,10 @@ public:
 	UnitType& operator*=(int a);
 	UnitType operator*(int a);
 	int operator*(const UnitType &a);
-	
+
 	void copyIf(const UnitType a, const UnitType b);
 	void copyIfNot(const UnitType a, const UnitType b);
-	
+
 	void load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	Uint32 checkSum(void);

@@ -37,32 +37,32 @@ YOGRegisterScreen::YOGRegisterScreen(boost::shared_ptr<YOGClient> client)
 	: client(client)
 {
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]")));
-	
+
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]"), REGISTER, 13));
-	
+
 	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true, Toolkit::getStringTable()->getString("[YESTS_CREATED]"));
 	addWidget(statusText);
-	
+
 	addWidget(new Text(20, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
 	login=new TextInput(20, 290, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), true, 32);
 	addWidget(login);
-	
+
 	addWidget(new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
 	password=new TextInput(20, 360, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", false, 32, true);
 	addWidget(password);
-	
+
 	addWidget(new Text(20, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Repeat your password :]")));
 	passwordRepeat=new TextInput(20, 430, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", false, 32, true);
 	addWidget(passwordRepeat);
-	
+
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
-	
+
 	wasConnecting=false;
 	changeTabAgain=true;
-	
+
 	client->addEventListener(this);
 }
 
@@ -113,7 +113,7 @@ void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int pa
 				animation->show();
 				globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
 				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
-				
+
 				client->connect(YOG_SERVER_IP);
 				wasConnecting = true;
 			}
@@ -171,7 +171,7 @@ void YOGRegisterScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> e
 		attemptRegistration();
 	}
 	else if(type == YEConnectionLost)
-	{ 
+	{
 		//shared_ptr<YOGConnectionLostEvent> info = static_pointer_cast<YOGConnectionLostEvent>(event);
 		animation->visible=false;
 		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));
@@ -180,7 +180,7 @@ void YOGRegisterScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> e
 	{
 		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
 		animation->visible=false;
-		
+
 		endExecute(Connected);
 	}
 	else if(type == YELoginRefused)

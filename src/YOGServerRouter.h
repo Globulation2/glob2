@@ -38,28 +38,28 @@ class YOGServerRouter
 public:
 	///This constructs a router
 	YOGServerRouter();
-	
+
 	///This constructs a router with a specific ip address of the server
 	YOGServerRouter(const std::string& yogip);
 
 	///This updates the router
 	void update();
-	
+
 	///Runs the router as its own entity. Returns the return code of the execution
 	int run();
 
 	///Returns the game id
 	boost::shared_ptr<YOGServerGameRouter> getGame(Uint16 gameID);
-	
+
 	///Returns true if the password given is correct for the administrator for this server
 	bool isAdministratorPasswordCorrect(const std::string& password);
 
 	///Returns the router administrator
 	YOGServerRouterAdministrator& getAdministrator();
-	
+
 	///This puts the router into shutdown mode, disconnecting from YOG and turning off once all clients disconnect
 	void enterShutdownMode();
-	
+
 	///This prints a status report of the router
 	std::string getStatusReport();
 

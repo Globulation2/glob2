@@ -97,7 +97,7 @@ void IRCTextMessageHandler::update()
 			}
 			break;
 		}
-	}	
+	}
 }
 
 
@@ -126,7 +126,7 @@ void IRCTextMessageHandler::sendCommand(const std::string& command)
 
 bool IRCTextMessageHandler::hasUserListBeenModified()
 {
-	if(userListModified)	
+	if(userListModified)
 	{
 		userListModified=false;
 		return true;

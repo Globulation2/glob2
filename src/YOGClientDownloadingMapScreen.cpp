@@ -47,7 +47,7 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(boost::shared_ptr<Y
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	preview = new MapPreview(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(preview);
-	
+
 	mapName=new Text(173, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapName);
 	mapInfo=new Text(173, 60+30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
@@ -56,11 +56,11 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(boost::shared_ptr<Y
 	addWidget(mapSize);
 	authorName=new Text(173, 60+90,  ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(authorName);
-	
+
 	downloadStatus=new ProgressBar(20, 300, 600, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	downloadStatus->visible = false;
 	addWidget(downloadStatus);
-	
+
 	// update map name & info
 	MapHeader mapHeader = info.getMapHeader();
 	mapName->setText(mapHeader.getMapName());
@@ -70,7 +70,7 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(boost::shared_ptr<Y
 	textTemp = FormatableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
 	mapSize->setText(textTemp);
 	authorName->setText(info.getAuthorName());
-	
+
 	downloader.startDownloading(info);
 }
 
@@ -101,7 +101,7 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map download failure: connection lost]"), Toolkit::getStringTable()->getString("[ok]"));
 		endExecute(CONNECTIONLOST);
 	}
-	
+
 	downloadStatus->visible = false;
 	if(downloader.getDownloadingState() == YOGClientMapDownloader::DownloadingMap)
 	{
@@ -115,7 +115,7 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 	{
 		endExecute(FINISHED);
 	}
-	
+
 	if(!preview->isThumbnailLoaded())
 	{
 		MapThumbnail& thumbnail = client->getDownloadableMapList()->getMapThumbnail(info.getMapHeader().getMapName());

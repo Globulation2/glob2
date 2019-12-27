@@ -32,7 +32,7 @@ YOGServerAdministratorList::YOGServerAdministratorList()
 }
 
 
-	
+
 bool YOGServerAdministratorList::isAdministrator(const std::string& playerName)
 {
 	if(admins.find(playerName) != admins.end())

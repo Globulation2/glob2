@@ -55,7 +55,7 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	///Responds to timer events
 	void onTimer(Uint32 tick);
-	
+
 	enum
 	{
 		CANCEL,

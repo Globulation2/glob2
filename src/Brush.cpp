@@ -88,7 +88,7 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 	int w = getBrushWidth(figure);
 	int h = getBrushHeight(figure);
 	/* Move x and y from center of focus point to upper left of
-	brush shape. */ 
+	brush shape. */
 	const int cell_size = 32; // This file should not know this value!!!
 	x -= ((cell_size * getBrushDimXMinus(figure)) + (cell_size / 2));
 	y -= ((cell_size * getBrushDimYMinus(figure)) + (cell_size / 2));
@@ -102,7 +102,7 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 		originalY = viewportY + (y / cell_size);
 	else if(onlines)
 		originalY+=1;
-	
+
 	for (int cx = 0; cx < w; cx++)
 	{
 		for (int cy = 0; cy < h; cy++)
@@ -114,7 +114,7 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 			}
 		}
 	}
-	
+
 	/* The following code is the old way of doing things.  It is
 	kept in case anyone wants to restore it, which might be
 	useful for some of the brush shapes. */
@@ -250,13 +250,13 @@ bool BrushTool::getBrushValue(unsigned figure, int x, int y, int centerX, int ce
 						1, 1, 1, 1, 1,
 						1, 1, 1, 1, 1 };
 	int *brushes[BRUSH_COUNT] = { brush0, brush1, brush2, brush3, brush4, brush5, brush6, brush7 };
-	
+
 	assert(figure < BRUSH_COUNT);
 	int w = getBrushWidth(figure);
 	int h = getBrushHeight(figure);
 	assert(x < w);
 	assert(y < h);
-	
+
 	if ((figure == 4) || (figure == 5))
 	{
 		// do alignment on specific brush (4 and 5)
@@ -265,7 +265,7 @@ bool BrushTool::getBrushValue(unsigned figure, int x, int y, int centerX, int ce
 		if (centerY % 2 == originalY%2)
 			y++;
 	}
-	
+
 	return (brushes[figure][(y%h) * getBrushWidth(figure) + (x%w)] != 0);
 }
 
@@ -308,14 +308,14 @@ void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 			py += mapH;
 		else if (py > (mapH/2))
 			py -= mapH;
-		
+
 		// extend dimensions
 		dim.minX = std::min(dim.minX, px - BrushTool::getBrushDimXMinus(brush.figure));
 		dim.maxX = std::max(dim.maxX, px + BrushTool::getBrushDimXPlus(brush.figure));
 		dim.minY = std::min(dim.minY, py - BrushTool::getBrushDimYMinus(brush.figure));
 		dim.maxY = std::max(dim.maxY, py + BrushTool::getBrushDimYPlus(brush.figure));
 	}
-	
+
 	// and add to vector
 	applications.push_back(brush);
 }
@@ -324,7 +324,7 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 {
 	assert(array);
 	assert(dim);
-	
+
 	*dim = this->dim;
 
 	if (applications.size() > 0)
@@ -334,7 +334,7 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 		int arrayW = dim->maxX - dim->minX;
 		size_t size = static_cast<size_t>(arrayW * arrayH);
 		array->resize(size, false);
-		
+
 		// fill array
 		for (size_t i=0; i<applications.size(); ++i)
 		{
@@ -354,10 +354,10 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 						py += mapH;
 					else if (py > (mapH/2))
 						py -= mapH;
-					
+
 					int arrayX = px - dim->minX - BrushTool::getBrushDimXMinus(applications[i].figure) + x;
 					int arrayY = py - dim->minY - BrushTool::getBrushDimYMinus(applications[i].figure) + y;
-					
+
 					size_t arrayPos = static_cast<size_t>(arrayY * arrayW + arrayX);
 					if (BrushTool::getBrushValue(applications[i].figure, x, y, applications[i].x, applications[i].y, firstX, firstY))
 						array->set(arrayPos, true);

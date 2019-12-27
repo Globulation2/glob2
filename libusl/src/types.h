@@ -18,7 +18,7 @@ struct Value
 {
 	Prototype* prototype;
 	bool marked;
-	
+
 	Value(Heap* heap, Prototype* prototype):
 		prototype(prototype)
 	{
@@ -28,15 +28,15 @@ struct Value
 			heap->values.push_back(this);
 		}
 	}
-	
+
 	virtual ~Value() { }
-	
+
 	void dump(std::ostream &stream) const;
-	
+
 	virtual void dumpSpecific(std::ostream &stream) const { }
-	
+
 	virtual void propagateMarkForGC() { }
-	
+
 	void markForGC()
 	{
 		if (!marked)
@@ -45,7 +45,7 @@ struct Value
 			propagateMarkForGC();
 		}
 	}
-	
+
 	void clearGCMark() { marked = false; }
 };
 extern Value nil;
@@ -55,13 +55,13 @@ struct NativeCode;
 struct Prototype: Value
 {
 	typedef std::map<std::string, ThunkPrototype*> Members;
-	
+
 	Members members;
-	
+
 	Prototype(Heap* heap);
-	
+
 	void addMethod(NativeCode* native);
-	
+
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
 		stream << ": ";
@@ -69,14 +69,14 @@ struct Prototype: Value
 		using namespace __gnu_cxx;
 		transform(members.begin(), members.end(), ostream_iterator<string>(stream, " "), select1st<Members::value_type>());
 	}
-	
+
 	virtual void propagateMarkForGC()
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
 		for_each(members.begin(), members.end(), compose1(mem_fun(&Value::markForGC), select2nd<Members::value_type>()));
 	}
-	
+
 	virtual ThunkPrototype* lookup(const std::string& name) const
 	{
 		Members::const_iterator method = members.find(name);
@@ -96,12 +96,12 @@ struct ThunkPrototype: Prototype
 	Body body;
 
 	ThunkPrototype(Heap* heap, Prototype* outer);
-	
+
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
 		stream << body.size() << " codes";
 	}
-	
+
 	virtual void propagateMarkForGC()
 	{
 		if (outer != 0)
@@ -129,9 +129,9 @@ struct Thunk: Value
 struct ScopePrototype: ThunkPrototype
 {
 	typedef std::vector<std::string> Locals;
-	
+
 	Locals locals;
-	
+
 	ScopePrototype(Heap* heap, Prototype* outer);
 	virtual ~ScopePrototype();
 };
@@ -140,11 +140,11 @@ struct Scope: Thunk
 {
 	typedef ScopePrototype Prototype;
 	typedef std::vector<Value*> Locals;
-	
+
 	Locals locals;
-	
+
 	Scope(Heap* heap, ScopePrototype* prototype, Value* outer);
-	
+
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
 		for(Locals::const_iterator it = locals.begin(); it != locals.end(); ++it)
@@ -156,14 +156,14 @@ struct Scope: Thunk
 				local->dump(stream);
 		}
 	}
-	
+
 	virtual void propagateMarkForGC()
 	{
 		using namespace std;
 		using namespace __gnu_cxx;
 		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
 	}
-	
+
 	ScopePrototype* scopePrototype() const
 	{
 		return static_cast<ScopePrototype*>(prototype);
@@ -175,7 +175,7 @@ struct MetaPrototype: Value
 	typedef ScopePrototype Prototype;
 
 	MetaPrototype(Heap* heap, Prototype* prototype, Value* outer);
-	
+
 	Prototype* prototype; // this is the prototype of the target, not of this meta object
 	Value* outer;
 };

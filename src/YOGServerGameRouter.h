@@ -30,17 +30,17 @@ class YOGServerGameRouter
 {
 public:
 	///Constructs a YOGServerGameRouter
-	YOGServerGameRouter(); 
+	YOGServerGameRouter();
 
 	///Adds a player to this router group
 	void addPlayer(boost::shared_ptr<YOGServerRouterPlayer> player);
-	
+
 	///Updates this game
 	void update();
-	
+
 	///Returns true if this game is empty
 	bool isEmpty();
-	
+
 	///Removes a net message to all players
 	void routeMessage(boost::shared_ptr<NetMessage> message, YOGServerRouterPlayer* sender);
 private:

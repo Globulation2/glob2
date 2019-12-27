@@ -100,7 +100,7 @@ YOGClientLobbyScreen::YOGClientLobbyScreen(TabScreen* parent, boost::shared_ptr<
 
 	hostButton = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[create game]"), CREATE_GAME);
 	addWidget(hostButton);
-	
+
 	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), CANCEL, 27));
 
 	gameList=new List(20, 120, 220, 140, ALIGN_FILL, ALIGN_TOP, "standard");
@@ -117,18 +117,18 @@ YOGClientLobbyScreen::YOGClientLobbyScreen(TabScreen* parent, boost::shared_ptr<
 	addWidget(chatWindow);
 	textInput=new TextInput(20, 90, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
 	addWidget(textInput);
-	
+
 	lobbyChat.reset(new YOGClientChatChannel(LOBBY_CHAT_CHANNEL, client));
 
 	ircChat.reset(new IRCTextMessageHandler);
 	ircChat->addTextMessageListener(this);
 	ircChat->startIRC(client->getUsername());
-	
+
 	client->addEventListener(this);
 	client->getGameListManager()->addListener(this);
 	client->getPlayerListManager()->addListener(this);
 	lobbyChat->addListener(this);
-	
+
 	gameScreen=-1;
 }
 
@@ -138,7 +138,7 @@ YOGClientLobbyScreen::~YOGClientLobbyScreen()
 {
 	ircChat->removeTextMessageListener(this);
 	ircChat->stopIRC();
-	
+
 	lobbyChat->removeListener(this);
 	client->removeEventListener(this);
 	client->getGameListManager()->removeListener(this);
@@ -515,7 +515,7 @@ void YOGClientLobbyScreen::autoCompleteNick()
 		}
 
 	}
-	
+
 	if( found == 1 )
 	{
 		msg = foundNick;

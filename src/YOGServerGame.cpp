@@ -223,7 +223,7 @@ void YOGServerGame::setReteamingInfo(const NetReteamingInformation& nreteamingIn
 {
 	reteamingInfo=nreteamingInfo;
 	playerManager.setReteamingInformation(reteamingInfo);
-	
+
 	if(!hasAddedHost)
 	{
 		hasAddedHost=true;
@@ -253,7 +253,7 @@ void YOGServerGame::routeMessage(shared_ptr<NetMessage> message, shared_ptr<YOGS
 
 void YOGServerGame::kickPlayer(shared_ptr<NetKickPlayer> message)
 {
-	routeMessage(message, host);	
+	routeMessage(message, host);
 	for(std::vector<shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if((*i)->getPlayerID() == message->getPlayerID())
@@ -357,7 +357,7 @@ Uint16 YOGServerGame::getHostPlayerID() const
 void YOGServerGame::chooseLatencyMode()
 {
 	latencyUpdateTimer=SDL_GetTicks();
-	
+
 	unsigned highest = 0;
 	unsigned second_highest = 0;
 	for(unsigned i=0; i<players.size(); ++i)

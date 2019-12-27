@@ -32,7 +32,7 @@ void Prototype::addMethod(NativeCode* native)
 	native->prologue(scope);
 	scope->body.push_back(native); // run the method
 	native->epilogue(scope);
-	
+
 	members[native->name] = methodMember(scope);
 }
 
@@ -48,7 +48,7 @@ struct ScopeSize: NativeThunk
 	ScopeSize():
 		NativeThunk(0, "Scope::size")
 	{}
-	
+
 	Value* execute(Thread* thread, Value* receiver)
 	{
 		Scope* scope = dynamic_cast<Scope*>(receiver);
@@ -62,12 +62,12 @@ struct ScopeAt: NativeMethod
 	ScopeAt():
 		NativeMethod(0, "Scope::at", new ValPatternNode(Position(), "index"))
 	{}
-	
+
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
 	{
 		Scope* scope = dynamic_cast<Scope*>(receiver);
 		assert(scope);
-		
+
 		Integer* index = dynamic_cast<Integer*>(argument);
 		assert(index);
 
@@ -85,7 +85,7 @@ struct ScopeMetaPrototype: NativeThunk
 	ScopeMetaPrototype():
 		NativeThunk(0, "Scope::metaPrototype")
 	{}
-	
+
 	Value* execute(Thread* thread, Value* receiver)
 	{
 		Scope* scope = dynamic_cast<Scope*>(receiver);
@@ -99,7 +99,7 @@ ScopePrototype::ScopePrototype(Heap* heap, Prototype* outer):
 {
 //	members["size"] = &scopeSize;
 //	members["at"] = nativeMethodMember(&scopeAt);
-//	members["prototype"] = &scopeMetaPrototype;	
+//	members["prototype"] = &scopeMetaPrototype;
 }
 
 ScopePrototype::~ScopePrototype()
@@ -113,7 +113,7 @@ Scope::Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
 	Thunk(heap, prototype, outer),
 	locals(prototype->locals.size(), 0)
 {}
-	
+
 /*
 NativeThunk::NativeThunk(Prototype* outer, const std::string& name):
 	ThunkPrototype(0, outer),
@@ -145,12 +145,12 @@ struct PrototypeWith: NativeMethod
 	PrototypeWith():
 		NativeMethod(0, "Prototype::with", new ValPatternNode(Position(), "that"))
 	{}
-	
+
 	Value* execute(Thread* thread, Value* receiver, Value* argument)
 	{
 		MetaPrototype* thisProt = dynamic_cast<MetaPrototype*>(receiver);
 		assert(thisProt);
-		
+
 		MetaPrototype* thatProt = dynamic_cast<MetaPrototype*>(argument);
 		if (thatProt == 0)
 		{
@@ -167,7 +167,7 @@ struct PrototypeWith: NativeMethod
 		foreach var in this
 			copy var in composedThunk
 		return composedThunk;/
-		
+
 		if (dynamic_cast<Function*>(thatProt))
 		{
 			return new Function(&thread->usl->heap, target, thatProt->outer);

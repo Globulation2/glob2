@@ -29,7 +29,7 @@ IRCThread::IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing,
 }
 
 
-	
+
 void IRCThread::operator()()
 {
 	while(true)
@@ -116,42 +116,42 @@ void IRCThread::operator()()
 		{
 			std::string message;
 			message += irc.getInfoMessageSource();
-			
+
 			switch (irc.getInfoMessageType())
 			{
 				case IRC::IRC_MSG_JOIN:
 				message += " has joined irc channel ";
 				break;
-				
+
 				case IRC::IRC_MSG_PART:
 				message += " has left irc channel ";
 				break;
-				
+
 				case IRC::IRC_MSG_QUIT:
 				message += " has quit irc, reason";
 				break;
-				
+
 				case IRC::IRC_MSG_MODE:
 				message += " has set mode of ";
 				break;
-				
+
 				case IRC::IRC_MSG_NOTICE:
 				if (irc.getInfoMessageSource()[0])
 					message += " noticed ";
 				else
 					message += "Notice ";
 				break;
-				
+
 				default:
 				message += " has sent an unhandled IRC Info Message:";
 				break;
 			}
-			
+
 			if (irc.getInfoMessageDiffusion() != "")
 			{
 				message += irc.getInfoMessageDiffusion();
 			}
-			
+
 			if (irc.getInfoMessageText() != "")
 			{
 				message += " : ";

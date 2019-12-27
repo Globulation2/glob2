@@ -17,7 +17,7 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
- 
+
 #ifndef __AI_WARRUSH_H
 #define __AI_WARRUSH_H
 
@@ -37,19 +37,19 @@ struct DynamicGradientMapArray
 {
 public:
 	typedef Uint8 element_type;
-	
+
 	DynamicGradientMapArray(std::size_t w, std::size_t h) :
 		width(w),
 		height(h),
 		array(w*h)
 	{
 	}
-	
+
 	//usage: gradient(x, y)
 	const element_type &operator()(size_t x, size_t y) const { return array[y * width + x]; }
 	element_type &operator()(size_t x, size_t y) { return array[y * width + x]; }
 	element_type* c_array() { return &array[0]; }
-	
+
 private:
 	std::size_t width;
 	std::size_t height;
@@ -76,7 +76,7 @@ public:
 
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-	
+
 	boost::shared_ptr<Order> getOrder(void);
 private:
 	void init(Player *player);

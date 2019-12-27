@@ -43,13 +43,13 @@ namespace GAGGUI
 		Sint32 nth;
 		//! index of the first entry to be shown, used for scrolling
 		size_t disp;
-	
+
 		//! Cached variables, do not serialise, reconstructed on paint() call
 		//! Length of the scroll box, this is a cache
 		unsigned blockLength, blockPos, textHeight;
 		//! Pointer to font, this is a cache
 		GAGCore::Font *fontPtr;
-		
+
 		//! Possible states of selection inside this widget
 		enum SelectionState
 		{
@@ -64,7 +64,7 @@ namespace GAGGUI
 		int mouseDragStartPos;
 		//! Initial displacement when handle dragging started
 		int mouseDragStartDisp;
-	
+
 	public:
 		//! Creator
 		List() { fontPtr = NULL; }
@@ -76,11 +76,11 @@ namespace GAGGUI
 		List(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font, const std::string& tooltip, const std::string &tooltipFont);
 		//! Destructor
 		virtual ~List();
-	
+
 		virtual void onTimer(Uint32 tick);
 		virtual void internalInit(void);
 		virtual void paint(void);
-	
+
 		//! Add text to pos in the list
 		void addText(const std::string &text, size_t pos);
 		//! Add text to the end of the list
@@ -101,18 +101,18 @@ namespace GAGGUI
 		size_t getCount(void) const;
 		//! Sorts the list (override it if you don't like it)
 		virtual void sort(void);
-	
+
 		//! Called when selection changes (default: signal parent)
 		virtual void selectionChanged();
-	
+
 		//! Return the index of the current selection. Returns -1 if no selection
 		int getSelectionIndex(void) const;
 		//! Set the index of the current selection. Set -1 for no selection
 		void setSelectionIndex(int index);
-		
+
 		//! Scrolls the List to be centered on item
 		void centerOnItem(int index);
-		
+
 	protected:
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 		virtual void onSDLMouseButtonUp(SDL_Event *event);

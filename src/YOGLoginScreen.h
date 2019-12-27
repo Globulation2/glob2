@@ -71,13 +71,13 @@ private:
 
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
-	
+
 	///Responds to YOG events
 	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
 
 	///Attempt a login with the entered information
 	void attemptLogin();
-	
+
 	///Opens the lobby screen
 	void runLobby();
 
@@ -86,9 +86,9 @@ private:
 	Text *rememberYogPasswordText;
 	TextArea *statusText;
 	Animation *animation;
-	
+
 	bool wasConnecting;
-	
+
 	boost::shared_ptr<YOGClient> client;
 	bool changeTabAgain;
 };

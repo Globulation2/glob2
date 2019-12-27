@@ -27,7 +27,7 @@ namespace GAGCore
 	class Sprite;
 	class DrawableSurface;
 	class Color;
-	
+
 	//! A support class to manage cursors
 	class CursorManager
 	{
@@ -51,7 +51,7 @@ namespace GAGCore
 			CURSOR_MARK = 11,
 			CURSOR_COUNT
 		};
-	
+
 	protected:
 		//! a vector of loaded cursors
 		std::vector<Sprite *> cursors;
@@ -61,7 +61,7 @@ namespace GAGCore
 		CursorType nextType;
 		//! the current frame of cursor sprite.
 		int currentFrame;
-		
+
 	public:
 		//! Constructor, set default values
 		CursorManager();

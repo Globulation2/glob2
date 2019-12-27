@@ -3,10 +3,10 @@ import Language.FlowControl.if as if
 // An immutable, O(log n) Set
 // The Set cannot be created empty
 // The language being dynamically typed, check for emptynes by invoking isNil on your object.
-// Stephane Magnenat <stephane at magnenat dot net> - 2008 
+// Stephane Magnenat <stephane at magnenat dot net> - 2008
 
 private def Set(left, element, right) := (
-	
+
 	// Inserts an element in the set
 	def insert(x) := {
 		if (x == element) {
@@ -23,7 +23,7 @@ private def Set(left, element, right) := (
 				Set(left, element, right.insert(x))
 		}
 	}
-	
+
 	def map(function) := {
 		val mappedLeft := {
 			if (!left.isNil)
@@ -40,7 +40,7 @@ private def Set(left, element, right) := (
 		}
 		Set(mappedLeft, mappedElement, mappedRight)
 	}
-	
+
 	def foreach(function) := {
 		if (!left.isNil)
 			left.foreach(function)
@@ -48,7 +48,7 @@ private def Set(left, element, right) := (
 		if (!right.isNil)
 			right.foreach(function)
 	}
-	
+
 	def contains(x) := {
 		if (x == element) {
 			true
@@ -64,7 +64,7 @@ private def Set(left, element, right) := (
 				right.contains(x)
 		}
 	}
-	
+
 	// Returns a set consisting of the union of this set and x
 	def union(x:Set) := {
 		val xUnionLeft = {

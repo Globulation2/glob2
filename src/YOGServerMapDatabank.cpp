@@ -224,7 +224,7 @@ void YOGServerMapDatabank::load()
 			YOGDownloadableMapInfo info;
 			info.decodeData(stream, versionMinor);
 			int fileID = server->getFileDistributionManager().allocateFileDistributor();
-			server->getFileDistributionManager().getDistributor(fileID)->loadFromLocally(info.getMapHeader().getFileName());		
+			server->getFileDistributionManager().getDistributor(fileID)->loadFromLocally(info.getMapHeader().getFileName());
 			info.setFileID(fileID);
 			maps.push_back(info);
 			stream->readLeaveSection();

@@ -51,14 +51,14 @@ void AINumbi::init(Player *player)
 	attackTimer=0;
 	for (int i=0; i<IntBuildingType::NB_BUILDING; i++)
 		mainBuilding[i]=0;
-	
+
 	assert(player);
-	
+
 	this->player=player;
 	this->team=player->team;
 	this->game=player->game;
 	this->map=player->map;
-	
+
 	assert(this->team);
 	assert(this->game);
 	assert(this->map);
@@ -71,9 +71,9 @@ AINumbi::~AINumbi()
 bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
-	
+
 	stream->readEnterSection("AINumbi");
-	
+
 	phase            = stream->readSint32("phase");
 	attackPhase      = stream->readSint32("attackPhase");
 	phaseTime        = stream->readSint32("phaseTime");
@@ -87,16 +87,16 @@ bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 		oss << "mainBuilding[" << bi << "]";
 		mainBuilding[bi] = stream->readSint32(oss.str().c_str());
 	}
-	
+
 	stream->readLeaveSection();
-	
+
 	return true;
 }
 
 void AINumbi::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AINumbi");
-	
+
 	stream->writeSint32(phase, "phase");
 	stream->writeSint32(attackPhase, "attackPhase");
 	stream->writeSint32(phaseTime, "phaseTime");
@@ -110,7 +110,7 @@ void AINumbi::save(GAGCore::OutputStream *stream)
 		oss << "mainBuilding[" << bi << "]";
 		stream->writeSint32(mainBuilding[bi], oss.str().c_str());
 	}
-	
+
 	stream->writeLeaveSection();
 }
 
@@ -350,7 +350,7 @@ int AINumbi::estimateFood(Building *building)
 				w++;
 			else if (hole--<0)
 				break;
-		
+
 		//printf("r=(%d, %d), w=%d, h=%d, s=%d.\n", rx, ry, w, h, w*h);
 
 		return (w*h);
@@ -416,7 +416,7 @@ boost::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, con
 		else if (numberRequestedLoca==0)
 			if (f<(nbu*5+1))
 				numberRequestedTemp=0;
-		
+
 		if (numberRequestedLoca!=numberRequestedTemp)
 		{
 			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
@@ -481,7 +481,7 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 	int px=posX+map->getW();
 	int py=posY+map->getH();
 	int x, y;
-	
+
 	int valid=256+96;
 	int r;
 	for (r=2; r<=3; r++)
@@ -549,7 +549,7 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 				break;
 			}
 	}
-	
+
 	for (r=1; r<=8; r++)
 	{
 		y=py-r;
@@ -606,9 +606,9 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 			break;
 	}
 	hu+=r;
-	
+
 	valid-=(wu)*(hu);
-	
+
 	return valid;
 }
 
@@ -676,7 +676,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 	int width=bt->width;
 	int height=bt->height;
-	
+
 	int valid=nbFreeAround(buildingType, b->posX, b->posY, width, height);
 	//printf("AI: findNewEmplacement(%d) valid=(%d), uid=(%d), s=(%d, %d).\n", buildingType, valid, b->UID, width, height);
 	if (valid>299)
@@ -698,21 +698,21 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 
 		int bposX=b->posX+map->getW();
 		int bposY=b->posY+map->getH();
-		
+
 		sx=bposX-width-margin;
 		sy=bposY-height-margin;
 
 		px=sx;
 		py=sy;
-		
+
 		mx=bposX+b->type->width+margin;
 		my=bposY+b->type->height+margin;
-		
+
 		sy--;
 		px++;
 		dx=1;
 		dy=0;
-		
+
 		int bestValid=-1;
 		for (int i=0; i<4096; i++)
 		{
@@ -893,7 +893,7 @@ boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeo
 		assert(false);
 		return shared_ptr<Order>(new NullOrder);
 	}
-	
+
 }
 
 boost::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType)
@@ -901,7 +901,7 @@ boost::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int nu
 	Building **myBuildings=team->myBuildings;
 	//Unit **myUnits=player->team->myUnits;
 	int fb=0;
-	
+
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
@@ -913,14 +913,14 @@ boost::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int nu
 				return shared_ptr<Order>(new OrderModifyBuilding(b->gid, w));
 		}
 	}
-	
+
 	int wr=countUnits();
-	
+
 	if (buildingType==IntBuildingType::FOOD_BUILDING)
 		wr+=2*countUnits(Unit::MED_HUNGRY);
 	else if (buildingType==IntBuildingType::HEAL_BUILDING)
 		wr+=4*countUnits(Unit::MED_DAMAGED);
-	
+
 	if (fb<((wr/numbers)+numbersInc))
 	{
 		//printf("AI: findNewEmplacement(%d), fb=%d, wr=%d, numbers=%d, numbersInc=%d, nn=%d.\n", buildingType, fb, wr, numbers, numbersInc, ((wr/numbers)+numbersInc));
@@ -942,7 +942,7 @@ boost::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int wo
 {
 	//std::list<Building *> swarms=team->swarms;
 	//int ss=swarms.size();
-	
+
 	Building **myBuildings=team->myBuildings;
 	int ss=0;
 	for (int i=0; i<Building::MAX_COUNT; i++)
@@ -951,7 +951,7 @@ boost::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int wo
 		if ((b)&&(b->type->shortTypeNum==0))
 			ss++;
 	}
-	
+
 	int wr=countUnits();
 
 	if (ss<=(wr/numbers))
@@ -976,23 +976,23 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 	int numberFood[4]={0, 0, 0, 0}; // number of food buildings
 	int numberUpgradingFood[4]={0, 0, 0, 0}; // number of upgrading food buildings
 	Building *foodBuilding[4]={0, 0, 0, 0};
-	
+
 	int numberHealth[4]={0, 0, 0, 0}; // number of food buildings
 	int numberUpgradingHealth[4]={0, 0, 0, 0}; // number of upgrading food buildings
 	Building *healthBuilding[4]={0, 0, 0, 0};
-	
+
 	int numberAttack[4]={0, 0, 0, 0}; // number of food buildings
 	int numberUpgradingAttack[4]={0, 0, 0, 0}; // number of upgrading food buildings
 	Building *attackBuilding[4]={0, 0, 0, 0};
-	
+
 	int numberScience[4]={0, 0, 0, 0}; // number of Science buildings
 	int numberUpgradingScience[4]={0, 0, 0, 0}; // number of upgrading Science buildings
 	Building *scienceBuilding[4]={0, 0, 0, 0};
-	
+
 	int numberDefense[4]={0, 0, 0, 0}; // number of Defense buildings
 	int numberUpgradingDefense[4]={0, 0, 0, 0}; // number of upgrading Science buildings
 	Building *defenseBuilding[4]={0, 0, 0, 0};
-	
+
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
@@ -1057,7 +1057,7 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 			}
 		}
 	}
-	
+
 	Unit **myUnits=team->myUnits;
 	int wun[4]={0, 0, 0, 0};//working units
 	int fun[4]={0, 0, 0, 0};//free units
@@ -1074,9 +1074,9 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 			}
 		}
 	}
-	
+
 	//printf("sbu=(%d, %d, %d, %d) wun=(%d, %d, %d, %d)\n", sbu[0], sbu[1], sbu[2], sbu[3], wun[0], wun[1], wun[2], wun[3]);
-	
+
 	// We calculate if we may upgrade to level 1:
 	int potential=wun[1]+wun[2]+wun[3]+4*(numberScience[0]+numberScience[1]+numberScience[2]+numberScience[3]);
 	int now=fun[1]+fun[2]+fun[3];
@@ -1114,7 +1114,7 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 	}
-	
+
 	// We calculate if we may upgrade to leverl 2:
 	potential=wun[2]+wun[3]+4*(numberScience[1]+numberScience[2]+numberScience[3]);
 	now=fun[2]+fun[3];
@@ -1151,7 +1151,7 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
 		}
 	}
-	
+
 	return shared_ptr<Order>(new NullOrder);
 }
 

@@ -15,7 +15,7 @@ void Heap::collectGarbage()
 		else
 			delete values[i];
 	}
-	
+
 	// clean heap
 	swap(values, marked);
 	for_each(values.begin(), values.end(), mem_fun(&Value::clearGCMark));

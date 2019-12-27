@@ -58,7 +58,7 @@ private:
 
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
-	
+
 	///Responds to YOG events
 	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
 
@@ -71,7 +71,7 @@ private:
 	Animation *animation;
 	bool wasConnecting;
 	bool changeTabAgain;
-	
+
 
 	boost::shared_ptr<YOGClient> client;
 };

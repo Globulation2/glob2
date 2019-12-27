@@ -46,7 +46,7 @@ protected:
 	unsigned posx;
 	unsigned posy;
 	unsigned maxy;
-	
+
 public:
 	Layouter()
 	{
@@ -55,7 +55,7 @@ public:
 		posy = 0;
 		maxy = 0;
 	}
-	
+
 	void writeFrame(const Geometry &frameSize, const Image &frame, bool doDraw)
 	{
 		Frame f;
@@ -109,7 +109,7 @@ public:
 		}
 		return true;
 	}
-	
+
 	bool findBestLayout(size_t count, char *files[])
 	{
 		unsigned oldTexSize;
@@ -122,14 +122,14 @@ public:
 			layoutResult = layout(count, files, false);
 		}
 		while (layoutResult && (frames.size() > 0) && (planes.size() == 1) && (texsize > 0));
-		
+
 		texsize = oldTexSize;
 		cout << "Using texture of " << texsize << endl;
 		layoutResult = layout(count, files, true);
-		
+
 		return (frames.size() != 0) && layoutResult;
 	}
-	
+
 	void writeSpritePlanes(const char *spriteName)
 	{
 		for (size_t i=0; i<planes.size(); i++)
@@ -140,7 +140,7 @@ public:
 			planes[i].write(planeFileName.str());
 		}
 	}
-	
+
 	void writeSpriteText(const char *spriteName)
 	{
 		ostringstream spriteFileName;
@@ -201,9 +201,9 @@ int main(int argc, char *argv[])
 		else
 			cerr << "Can't find a suitable layout !" << endl;
 	}
-	catch ( Exception &error_ ) 
-	{ 
-		cerr << "Caught exception: " << error_.what() << endl; 
+	catch ( Exception &error_ )
+	{
+		cerr << "Caught exception: " << error_.what() << endl;
 	}
 	return 0;
 }

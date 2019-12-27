@@ -21,7 +21,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #include "GlobalContainer.h"
 #include "HeightMapGenerator.h"
 #include <math.h>
@@ -50,7 +50,7 @@ HeightMap::HeightMap(unsigned int width, unsigned int height)
 {
 	init(width,height);
 }
-	
+
 HeightMap::~HeightMap()
 {
 	delete [] _map;
@@ -219,11 +219,11 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
 	makeStamp(maxDiameter/2);
 	/// level the map
 	operator=(1.0);
-	
+
 	/// find start for a random walk
 	float startingPointX=rand()%_w;
 	float startingPointY=rand()%_h;
-	
+
 	/// the target=start+(w,h) is set now. tmprand(0,1,2)==position(+h,+w,+w+h)
 	float targetPointX;
 	float targetPointY;

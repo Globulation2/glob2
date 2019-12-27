@@ -47,7 +47,7 @@ using namespace boost;
 AI::AI(ImplementitionID implementitionID, Player *player)
 {
 	aiImplementation=NULL;
-	
+
 	switch (implementitionID)
 	{
 		case NONE:
@@ -75,7 +75,7 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 			assert(false);
 		break;
 	}
-	
+
 	this->implementitionID=implementitionID;
 	this->player=player;
 }
@@ -108,13 +108,13 @@ boost::shared_ptr<Order> AI::getOrder(bool paused)
 bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	assert(player);
-	
+
 	if (aiImplementation)
 		delete aiImplementation;
 	aiImplementation=NULL;
 
 	char signature[4];
-	
+
 	stream->readEnterSection("AI");
 	stream->read(signature, 4, "signatureStart");
 	if (memcmp(signature,"AI b", 4)!=0)
@@ -164,7 +164,7 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		fprintf(stderr, "AI::bad end signature\n");
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -172,12 +172,12 @@ void AI::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AI");
 	stream->write("AI b", 4, "signatureStart");
-	
+
 	stream->writeUint32(static_cast<Uint32>(implementitionID), "implementitionID");
-	
+
 	assert(aiImplementation);
 	aiImplementation->save(stream);
-	
+
 	stream->write( "AI e",  4, "signatureEnd");
 	stream->writeLeaveSection();
 }

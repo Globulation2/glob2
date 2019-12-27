@@ -49,7 +49,7 @@ Uint32 GameEvent::getStep()
 }
 
 
-	
+
 Sint16 GameEvent::getX()
 {
 	return x;

@@ -64,12 +64,12 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	isSavedGame = stream->readUint8("isSavedGame");
 	if(versionMinor==67)
 		stream->readUint32("checksum");
-	
+
 	if(versionMinor>=68)
 	{
 		stream->read(SHA1, 20, "SHA1");
 	}
-	
+
 	stream->readEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -83,7 +83,7 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 }
 
 
-	
+
 void MapHeader::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("MapHeader");

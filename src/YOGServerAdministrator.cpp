@@ -51,7 +51,7 @@ YOGServerAdministrator::~YOGServerAdministrator()
 	}
 }
 
-	
+
 
 bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message, boost::shared_ptr<YOGServerPlayer> player, bool moderator)
 {
@@ -86,7 +86,7 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 		tokens.push_back(token);
 		token.clear();
 	}
-	
+
 	if(tokens.size() == 0)
 	{
 		return false;

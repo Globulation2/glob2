@@ -38,11 +38,11 @@ public:
 	Sint32 gameSpriteCount;
 	std::string miniSprite;
 	Sint32 miniSpriteImage;
-	
+
 	Sint32 hueImage; // bool. The way we show the building's team (false=we draw a flag, true=we hue all the sprite)
 	Sint32 flagImage;
 	Sint32 crossConnectMultiImage; // If true, mean we have a wall-like building
-	
+
 	// could be Uint8, if non 0 tell the number of maximum units locked by bulding for:
 	// by order of priority (top = max)
 	Sint32 upgrade[NB_ABILITY]; // What kind on units can be upgraded here
@@ -52,7 +52,7 @@ public:
 	Sint32 fillable;
 	Sint32 zonable[NB_UNIT_TYPE]; // If an unit is required for a presence.
 	Sint32 zonableForbidden;
-	
+
 	Sint32 canFeedUnit;
 	Sint32 timeToFeedUnit;
 	Sint32 canHealUnit;
@@ -101,7 +101,7 @@ public:
 
 	Sint32 viewingRange;
 	Sint32 regenerationSpeed;
-	
+
 	Sint32 prestige;
 
 	// Regenerated parameters
@@ -118,4 +118,4 @@ public:
 };
 
 #endif
- 
+

@@ -32,7 +32,7 @@ struct SDL_Surface;
 namespace GAGCore
 {
 	class DrawableSurface;
-	
+
 	//! An implementation of Font using SDL_TTF
 	class TrueTypeFont:public Font
 	{
@@ -42,16 +42,16 @@ namespace GAGCore
 		TrueTypeFont(const std::string filename, unsigned size);
 		virtual ~TrueTypeFont();
 		bool load(const std::string filename, unsigned size);
-		
+
 		//! Get the width of string with shape. Update cache
 		int getStringWidth(const std::string string);
 		//! Get the height of string with shape. If string is NULL, return base value, else update cache
 		int getStringHeight(const std::string string);
-		
+
 		// Style and color
 		virtual void setStyle(Style style);
 		virtual Style getStyle(void) const;
-		
+
 	protected:
 		//! Init internal variables
 		void init(void);
@@ -59,32 +59,32 @@ namespace GAGCore
 		virtual void drawString(DrawableSurface *surface, float x, float y, float w, const std::string text, Uint8 alpha);
 		virtual void pushStyle(Style style);
 		virtual void popStyle(void);
-		
+
 		//! If text is cached, returns its surface. If it is not, create, cache and return surface
 		DrawableSurface *getStringCached(const std::string text);
 		//! If cache is too big, remove old entry
 		void cleanupCache(void);
-#ifdef HAVE_FRIBIDI 
+#ifdef HAVE_FRIBIDI
 		char *getBIDIString (const std::string text);
-#endif		
+#endif
 	protected:
 		TTF_Font *font;
 		std::stack<Style> styleStack;
-		
+
 		struct CacheKey
 		{
 			std::string text;
 			Style style;
-			
+
 			bool operator<(const CacheKey &o) const { if (text == o.text) return (style < o.style); else return (text < o.text);  }
 		};
-		
+
 		struct CacheData
 		{
 			DrawableSurface *s;
 			unsigned lastAccessed;
 		};
-		
+
 		unsigned now;
 		std::map<CacheKey, CacheData> cache;
 		std::map<unsigned, std::map<CacheKey, CacheData>::iterator> timeCache;

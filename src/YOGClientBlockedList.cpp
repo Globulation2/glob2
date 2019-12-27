@@ -59,7 +59,7 @@ void YOGClientBlockedList::load()
 }
 
 
-	
+
 void YOGClientBlockedList::save()
 {
 	OutputStream* stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("blocked-"+username+".txt"));
@@ -79,21 +79,21 @@ void YOGClientBlockedList::save()
 }
 
 
-	
+
 void YOGClientBlockedList::addBlockedPlayer(const std::string& name)
 {
 	blockedPlayers.insert(name);
 }
 
 
-	
+
 bool YOGClientBlockedList::isPlayerBlocked(const std::string& name)
 {
 	return blockedPlayers.find(name) != blockedPlayers.end();
 }
 
 
-	
+
 void YOGClientBlockedList::removeBlockedPlayer(const std::string& name)
 {
 	std::set<std::string>::iterator i = blockedPlayers.find(name);
@@ -102,7 +102,7 @@ void YOGClientBlockedList::removeBlockedPlayer(const std::string& name)
 }
 
 
-	
+
 const std::set<std::string>& YOGClientBlockedList::getBlockedPlayers() const
 {
 	return blockedPlayers;

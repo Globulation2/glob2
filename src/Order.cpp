@@ -115,7 +115,7 @@ OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typ
 Uint8 *OrderCreate::getData(void)
 {
 	assert(sizeof(data) == getDataLength());
-	
+
 	addSint32(data, this->teamNumber, 0);
 	addSint32(data, this->posX, 4);
 	addSint32(data, this->posY, 8);
@@ -123,7 +123,7 @@ Uint8 *OrderCreate::getData(void)
 	addSint32(data, this->unitWorking, 16);
 	addSint32(data, this->unitWorkingFuture, 20);
 	addSint32(data, this->flagRadius, 24);
-	
+
 	return data;
 }
 
@@ -133,7 +133,7 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength, Uint32 versionMinor
 		return false;
 	else if (versionMinor>=78 && dataLength!=getDataLength())
 		return false;
-	
+
 	this->teamNumber=getSint32(data, 0);
 	this->posX=getSint32(data, 4);
 	this->posY=getSint32(data, 8);
@@ -142,9 +142,9 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength, Uint32 versionMinor
 	this->unitWorkingFuture=getSint32(data, 20);
 	if(versionMinor>=78)
 		this->flagRadius=getSint32(data, 24);
-	
+
 	memcpy(this->data, data, dataLength);
-	
+
 	return true;
 }
 
@@ -470,7 +470,7 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength, Uint32 
 	this->gid=getUint16(data, 0);
 	for (int i=0; i<BASIC_COUNT; i++)
 		clearingRessources[i]=(bool)getUint8(data, 2+i);
-	
+
 	return true;
 }
 
@@ -589,7 +589,7 @@ bool OrderChangePriority::setData(const Uint8 *data, int dataLength, Uint32 vers
 OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	_data = NULL;
-	
+
 	bool good=setData(data, dataLength, versionMinor);
 	assert(good);
 }
@@ -599,7 +599,7 @@ OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumula
 {
 	assert(acc);
 	_data = NULL;
-	
+
 	BrushAccumulator::AreaDimensions dim;
 	acc->getBitmap(&mask, &dim, map);
 	this->teamNumber = teamNumber;
@@ -626,7 +626,7 @@ Uint8 *OrderAlterateArea::getData(void)
 	if (_data)
 		free (_data);
 	this->_data = (Uint8 *)malloc(getDataLength());
-	
+
 	addUint8(_data, teamNumber, 0);
 	addUint8(_data, type, 1);
 	addSint16(_data, centerX, 2);
@@ -636,7 +636,7 @@ Uint8 *OrderAlterateArea::getData(void)
 	addUint16(_data, maxX, 10);
 	addUint16(_data, maxY, 12);
 	mask.serialize(_data+14);
-	
+
 	return _data;
 }
 
@@ -649,7 +649,7 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versio
 			printf("data[%d]=%d\n", i, data[i]);
 		return false;
 	}
-	
+
 	teamNumber = getUint8(data, 0);
 	type = getUint8(data, 1);
 	centerX = getSint16(data, 2);
@@ -661,7 +661,7 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versio
 	assert(maxX-minX <= 512);
 	assert(maxY-minY <= 512);
 	mask.deserialize(data+14, (maxX-minX)*(maxY-minY));
-	
+
 	return true;
 }
 
@@ -758,7 +758,7 @@ OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, 
 	this->recepientsMask = recepientsMask;
 	this->framesDatasLength = framesDatasLength;
 	this->frameCount = frameCount;
-	
+
 	data = (Uint8 *)malloc(framesDatasLength+5);
 	if (framesDatas)
 		memcpy(data+5, framesDatas, framesDatasLength);
@@ -782,11 +782,11 @@ bool OrderVoiceData::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 	assert(dataLength >= 5);
 	if (dataLength<5)
 		return false;
-		
+
 	this->framesDatasLength = (size_t)dataLength - 5;
 	this->recepientsMask = getUint32(data, 0);
 	this->frameCount = getUint8(data, 4);
-	
+
 	if (this->data != NULL)
 		free(this->data);
 	this->data = (Uint8 *)malloc(dataLength);
@@ -939,9 +939,9 @@ bool PlayerQuitsGameOrder::setData(const Uint8 *data, int dataLength, Uint32 ver
 		return false;
 
 	this->player=getUint32(data, 0);
-	
+
 	memcpy(this->data, data, dataLength);
-	
+
 	return true;
 }
 
@@ -974,8 +974,8 @@ bool AdjustLatency::setData(const Uint8 *data, int dataLength, Uint32 versionMin
 		return false;
 
 	this->latencyAdjustment=getUint16(data, 0);
-	
+
 	memcpy(this->data, data, dataLength);
-	
+
 	return true;
 }

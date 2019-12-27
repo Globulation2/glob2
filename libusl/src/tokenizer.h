@@ -9,7 +9,7 @@ class Tokenizer
 public:
 	Tokenizer(const Token::Type *tokenTypes, const size_t tokenTypesSize, const std::string& filename, const char* text);
 	const Token next();
-	
+
 private:
 	const Token::Type *tokenTypes;
 	const size_t tokenTypesSize;

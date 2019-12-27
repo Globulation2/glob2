@@ -50,7 +50,7 @@ namespace Types {
 		// storage size in bytes
 		const size_t size;
 		size_t Size(const Value* value) const { return size; }
-		
+
 		ConstSize(Meta meta, size_t size): Type(meta), size(size) {}
 		::Value* Copy(const Value* src, Value* dest) const {
 			const uint8_t* srcBegin = (const uint8_t*)src;
@@ -59,7 +59,7 @@ namespace Types {
 			return (::Value*)destBegin + size;
 		}
 	};
-	
+
 	// Builtin types
 	struct Builtin: ConstSize {
 		// builtin types
@@ -81,7 +81,7 @@ namespace Types {
 	private:
 		Builtin(size_t size): ConstSize(Type::Builtin, size) {}
 	};
-	
+
 	// Compound type
 	struct Compound: ConstSize {
 		// for reflection & garbage collection
@@ -101,7 +101,7 @@ namespace Types {
 		}
 		Compound(size_t fieldsCount, const Field* fields): ConstSize(Type::Compound, TotalSize(fields, fields + fieldsCount)), fieldsCount(fieldsCount), fields(fields) {}
 	};
-	
+
 	// Array type
 	struct Array: ConstSize {
 		const ConstSize* elemsType;
@@ -109,12 +109,12 @@ namespace Types {
 	private:
 		Array(const ConstSize* elemsType, const size_t elemsCount): ConstSize(Type::Array, elemsCount * elemsType->size), elemsType(elemsType), elemsCount(elemsCount) {}
 	};
-	
+
 	// Variable size type
 	struct VarSize: Type {
 		// storage size in bytes
 		virtual size_t Size(const Value* value) const = 0;
-		
+
 		VarSize(Meta meta): Type(meta) {}
 		::Value* Copy(const Value* src, Value* dest) const {
 			size_t size = Size(src);
@@ -124,14 +124,14 @@ namespace Types {
 			return (::Value*)destBegin + size;
 		}
 	};
-	
+
 	// Variable length array type
 	struct VarArray: VarSize {
 		const ConstSize* elemsType;
 	private:
 		VarArray(const ConstSize* elemsType): VarSize(Type::VarArray), elemsType(elemsType) {}
 	};
-	
+
 };
 
 #endif // ndef TYPE_H

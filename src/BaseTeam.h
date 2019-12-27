@@ -48,10 +48,10 @@ public:
 	Sint32 numberOfPlayer; // number of controling players
 	GAGCore::Color color;
 	Uint32 playersMask;
-	
+
 public:
 	bool disableRecursiveDestruction;
-	
+
 private:
 	Uint8 data[16];
 

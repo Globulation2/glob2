@@ -215,7 +215,7 @@ bool Campaign::load(const std::string& fileName)
 		stream->readLeaveSection();
 		if(versionMinor >= 83)
 		{
-			description = stream->readText("description");	
+			description = stream->readText("description");
 		}
 		delete stream;
 		return true;

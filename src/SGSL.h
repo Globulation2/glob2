@@ -48,7 +48,7 @@ struct SGSLToken
 		INT,
 		STRING,
 		LANG,
-		
+
 		// Generic language stuff
 		FUNC_CALL=10,
 
@@ -106,7 +106,7 @@ struct SGSLToken
 		S_EXPLOR_F=S_SWARM_B+IntBuildingType::EXPLORATION_FLAG,
 		S_FIGHT_F,
 		S_CLEARING_F,
-		
+
 		S_WALL_B=S_SWARM_B+IntBuildingType::STONE_WALL,
 		S_MARKET_B,
 
@@ -129,7 +129,7 @@ struct SGSLToken
 
 	//! Constructor, set logic default values
 	SGSLToken() { type=NIL; value=0; }
-	
+
 	//! Constructor, create a token of type t
 	SGSLToken(TokenType t) { type=t; value=0; }
 
@@ -271,8 +271,8 @@ public:
 	Sint32 checkSum() { return lineSelector; }
 
 	void sendSpace() { recievedSpace=true; }
-	
-	
+
+
 private:
 	friend class MapScriptSGSL;
 	bool conditionTester(const Game *game, int pc, bool readLevel, bool only);
@@ -293,11 +293,11 @@ private:
 	void hilightBuildingOnPanel(GameGUI* gui);
 	void unhilightBuildingOnPanel(GameGUI* gui);
 	void resetAI(GameGUI* gui);
-	
-	
+
+
 	bool testCondition(GameGUI *gui);
 	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
-	
+
 	MapScriptSGSL *mapscript;
 	bool recievedSpace;
 };
@@ -334,17 +334,17 @@ public:
 	bool hasTeamWon(unsigned teamNumber);
 	bool hasTeamLost(unsigned teamNumber);
 	int getMainTimer(void) { return mainTimer; }
-	
+
 	/// Adds a team
 	void addTeam();
-	
+
 	/// Removes the team
 	void removeTeam(int n);
 
 	void reset(void);
 	bool isTextShown;
 	std::string textShown;
-	
+
 	//! source code of the script
 	std::string sourceCode;
 

@@ -27,18 +27,18 @@ class AINull : public AIImplementation
 public:
 	AINull() { }
 	~AINull() { }
-	
+
 	void init(Player *player) { }
 
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor) { return true; }
 	void save(GAGCore::OutputStream *stream) { }
-	
+
 	boost::shared_ptr<Order> getOrder(void);
-	
+
 private:
 };
 
 #endif
 
- 
+
 

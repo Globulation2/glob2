@@ -43,7 +43,7 @@ public:
 	YOGClientGameConnectionDialog(GAGCore::GraphicContext *parentCtx, boost::shared_ptr<MultiplayerGame> game);
 	virtual ~YOGClientGameConnectionDialog();
 	virtual void onAction(GAGGUI::Widget *source, GAGGUI::Action action, int par1, int par2);
-	
+
 	///This screen is modal, this executes it
 	void execute();
 

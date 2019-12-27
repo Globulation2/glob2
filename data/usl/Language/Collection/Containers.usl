@@ -10,11 +10,11 @@ Comparable := interface (
 
 Iterator := interface (
 	self := this
-	
+
 	get := abstract
 	next : Iterator := abstract
 	end : Boolean := abstract
-	
+
 	def zip(that: Iterator) with Iterator := (
 		get := (self.get, that.get)
 		next := self.next zip that.next
@@ -28,17 +28,17 @@ RandomAccessIterator := Iterator with (
 
 Container := interface (
 	self := this
-	
+
 	elements := abstract : Iterator
 	size := abstract
 	isEmpty := abstract
-	
+
 	def zip(that : Container) := Container with (
 		elements := self.begin zip that.begin
 		size := self.size <? that.size
 		isEmpty := self.isEmpty || that.isEmpty
 	)
-	
+
 	def foreach(function) := {
 		def foreach(it) := {
 			if (! it.end) {
@@ -48,7 +48,7 @@ Container := interface (
 		}
 		foreach(elements)
 	}
-	
+
 	def forall(predicate : _ => Boolean) : Boolean {
 		def forall(it) := {
 			if (! it.end) {

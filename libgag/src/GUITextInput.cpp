@@ -33,26 +33,26 @@ namespace GAGGUI
 		this->y=y;
 		this->w=w;
 		this->h=h;
-	
+
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		this->font=font;
 		this->text=text;
-		
+
 		cursPos=this->text.length();
 		this->maxLength=maxLength;
 		textDep=0;
 		cursorScreenPos=0;
-	
+
 		this->activated=activated;
 		this->password=password;
 	}
-	
+
 	void TextInput::onTimer(Uint32 tick)
 	{
 	}
-	
+
 	void TextInput::setText(const std::string &newText)
 	{
 		this->text = newText;
@@ -65,13 +65,13 @@ namespace GAGGUI
 			parent->onAction(this, TEXT_SET, 0, 0);
 		}
 	}
-	
+
 	void TextInput::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
 		{
 			if (activated)
@@ -94,7 +94,7 @@ namespace GAGGUI
 			}
 		}
 	}
-	
+
 	void TextInput::onSDLKeyDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_KEYDOWN);
@@ -102,7 +102,7 @@ namespace GAGGUI
 		{
 			SDLKey sym=event->key.keysym.sym;
 			SDLMod mod=event->key.keysym.mod;
-	
+
 			switch (sym)
 			{
 				case SDLK_RIGHT:
@@ -140,7 +140,7 @@ namespace GAGGUI
 					}
 				}
 				break;
-				
+
 				case SDLK_LEFT:
 				{
 					if (mod&KMOD_CTRL)
@@ -175,37 +175,37 @@ namespace GAGGUI
 					}
 				}
 				break;
-				
+
 				case SDLK_BACKSPACE:
 				{
 					if (cursPos>0)
 					{
 						unsigned last=getPrevUTF8Char(text.c_str(), cursPos);
-		
+
 						text.erase(last, cursPos-last);
-		
+
 						cursPos=last;
-		
+
 						recomputeTextInfos();
 						parent->onAction(this, TEXT_MODIFIED, 0, 0);
 					}
 				}
 				break;
-				
+
 				case SDLK_DELETE:
 				{
 					if (cursPos<text.length())
 					{
 						int utf8l=getNextUTF8Char(text[cursPos]);
-		
+
 						text.erase(cursPos, utf8l);
-		
+
 						recomputeTextInfos();
 						parent->onAction(this, TEXT_MODIFIED, 0, 0);
 					}
 				}
 				break;
-				
+
 				case SDLK_HOME:
 				{
 					cursPos=0;
@@ -213,7 +213,7 @@ namespace GAGGUI
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 				break;
-				
+
 				case SDLK_END:
 				{
 					cursPos=text.length();
@@ -221,26 +221,26 @@ namespace GAGGUI
 					parent->onAction(this, TEXT_CURSOR_MOVED, 0, 0);
 				}
 				break;
-				
+
 				case SDLK_RETURN:
 				case SDLK_KP_ENTER:
 				{
 					parent->onAction(this, TEXT_VALIDATED, 0, 0);
 				}
 				break;
-				
+
 				case SDLK_ESCAPE:
 				{
 					parent->onAction(this, TEXT_CANCELED, 0, 0);
 				}
 				break;
-			
+
 				case SDLK_TAB:
 				{
 					parent->onAction(this, TEXT_TABBED, 0, 0);
 				}
 				break;
-					
+
 				default:
 				{
 					Uint16 c=event->key.keysym.unicode;
@@ -253,9 +253,9 @@ namespace GAGGUI
 						{
 							text.insert(cursPos, utf8text);
 							cursPos+=lutf8;
-		
+
 							recomputeTextInfos();
-		
+
 							parent->onAction(this, TEXT_MODIFIED, 0, 0);
 						}
 					}
@@ -263,25 +263,25 @@ namespace GAGGUI
 			}
 		}
 	}
-	
+
 	void TextInput::internalInit(void)
 	{
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);
 	}
-	
+
 	void TextInput::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-		
+
 		HighlightableWidget::paint();
-		
+
 		recomputeTextInfos();
-		
+
 		if (password)
 		{
 			parent->getSurface()->drawString(x+3, y+3, fontPtr, pwd.c_str(), w-6);
@@ -290,7 +290,7 @@ namespace GAGGUI
 		{
 			parent->getSurface()->drawString(x+3, y+3, fontPtr, text.c_str()+textDep, w-6);
 		}
-	
+
 		// we draw the cursor:
 		if (activated)
 		{
@@ -298,13 +298,13 @@ namespace GAGGUI
 			parent->getSurface()->drawLine(x+3+cursorScreenPos, y+3 , x+3+cursorScreenPos, y+3+hbc, Style::style->textColor);
 		}
 	}
-	
+
 	void TextInput::recomputeTextInfos(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 	#define TEXTBOXSIDEPAD 30
-	
+
 		if (password)
 		{
 			pwd.clear();
@@ -332,7 +332,7 @@ namespace GAGGUI
 			// make sure we have always right space at left
 			if (cursPos<textDep)
 				textDep=cursPos;
-		
+
 			// we make cursor not out of the box at left
 			textDep++;
 			do
@@ -341,7 +341,7 @@ namespace GAGGUI
 				cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
 			}
 			while ((textDep>0) && (cursorScreenPos<TEXTBOXSIDEPAD));
-		
+
 			// we make cursor not out of the box at right
 			while ( (textDep<text.length()) && (cursorScreenPos>w-TEXTBOXSIDEPAD-4) )
 			{
@@ -350,13 +350,13 @@ namespace GAGGUI
 			}
 		}
 	}
-	
+
 	/// adds word for autocompletion via <tab>
 	void TextInput::addAutoCompletableWord(const std::string &word)
 	{
 		autocompletableWord.push_back(word);
 	};
-	
+
 	/// removes word from autocompletion via <tab>
 	void TextInput::removeAutoCompletableWord(const std::string &word)
 	{
@@ -375,7 +375,7 @@ namespace GAGGUI
 			autocompletableWord.erase(*it2);
 		}
 	}
-	
+
 	/// returns the count of matching words for autocompletion for word and stores them to wordlist
 	bool TextInput::getAutoCompleteSuggestion(const std::string & word, std::vector<std::string> & wordlist)
 	{
@@ -393,7 +393,7 @@ namespace GAGGUI
 			return true;
 		return false;
 	};
-	
+
 	/// returns the n-th suggestion
 	std::string TextInput::getAutoComplete(const std::string & word, int n)
 	{

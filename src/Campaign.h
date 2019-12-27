@@ -56,7 +56,7 @@ public:
 	bool isCompleted();
 	///Sets whether the map has been completed
 	void setCompleted(bool completed);
-	
+
 	///Returns the description of this map in the campaign
 	const std::string& getDescription() const;
 	///Sets the description of this map in the campaign
@@ -107,7 +107,7 @@ public:
 	void setPlayerName(const std::string& playerName);
 	///Retrieves the player name
 	const std::string& getPlayerName() const;
-	
+
 	///Sets the description of the campaign
 	void setDescription(const std::string& description);
 	///Retrieves the description

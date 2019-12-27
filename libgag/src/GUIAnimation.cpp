@@ -37,16 +37,16 @@ namespace GAGGUI
 		this->duration=duration;
 		pos=start;
 		durationLeft=duration;
-	
+
 		assert(sprite.length());
 		this->sprite=sprite;
 		archPtr=Toolkit::getSprite(sprite);
 		assert(archPtr);
-	
+
 		this->w=archPtr->getW(start);
 		this->h=archPtr->getH(start);
 	}
-	
+
 	void Animation::internalInit(void)
 	{
 		archPtr=Toolkit::getSprite(sprite.c_str());
@@ -54,20 +54,20 @@ namespace GAGGUI
 		pos=start;
 		durationLeft=duration;
 	}
-	
+
 	void Animation::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-		
+
 		int dW=(w-archPtr->getW(pos))>>1;
 		int dH=(h-archPtr->getH(pos))>>1;
 		parent->getSurface()->drawSprite(x+dW, y+dH, archPtr, pos);
 	}
-	
+
 	void Animation::onTimer(Uint32 tick)
 	{
 		if (count>1)

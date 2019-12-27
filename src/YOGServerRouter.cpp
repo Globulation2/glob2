@@ -60,13 +60,13 @@ void YOGServerRouter::update()
 		players[players.size()-1]->setPointer(players[players.size()-1]);
 		new_connection.reset(new NetConnection);
 	}
-	
+
 	//Call update to all of the players
 	for(std::vector<boost::shared_ptr<YOGServerRouterPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 	{
 		(*i)->update();
 	}
-	
+
 	//Call update to all of the games
 	for(std::map<Uint16, shared_ptr<YOGServerGameRouter> >::iterator i=games.begin(); i!=games.end(); ++i)
 	{
@@ -87,7 +87,7 @@ void YOGServerRouter::update()
 			i++;
 		}
 	}
-	
+
 	//Remove old games
 	for(std::map<Uint16, shared_ptr<YOGServerGameRouter> >::iterator i=games.begin(); i!=games.end();)
 	{
@@ -102,8 +102,8 @@ void YOGServerRouter::update()
 			i++;
 		}
 	}
-	
-	
+
+
 	//Parse incoming messages.
 	shared_ptr<NetMessage> message = yog_connection->getMessage();
 	if(message)
@@ -138,7 +138,7 @@ int YOGServerRouter::run()
 		endTick=SDL_GetTicks();
 		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
-		
+
 		if(shutdownMode)
 		{
 			if(games.size() == 0 && players.size() == 0)
@@ -194,7 +194,7 @@ std::string YOGServerRouter::getStatusReport()
 	s<<"Status Report: "<<std::endl;
 	s<<"\t"<<games.size()<<" active games"<<std::endl;
 	s<<"\t"<<players.size()<<" connected players"<<std::endl;
-	
+
 	int count_admin=0;
 	for(unsigned int i=0; i<players.size(); ++i)
 	{
@@ -202,7 +202,7 @@ std::string YOGServerRouter::getStatusReport()
 			count_admin+=1;
 	}
 	s<<"\t"<<count_admin<<" authenticed admins"<<std::endl;
-	
+
 	if(shutdownMode)
 		s<<"\tServer is currently in shutdown mode"<<std::endl;
 	else

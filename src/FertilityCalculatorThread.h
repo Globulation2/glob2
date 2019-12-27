@@ -47,10 +47,10 @@ public:
 private:
 	///Sends this IRC message back to the main thread
 	void sendToMainThread(boost::shared_ptr<FertilityCalculatorThreadMessage> message);
-	
+
 	///Computes the ressources gradient
 	void computeRessourcesGradient();
-	
+
 	///Updates the percent complete
 	void updatePercentComplete(float percent);
 
@@ -61,9 +61,9 @@ private:
 		int x;
 		int y;
 	};
-	
+
 	int get_pos(int x, int y);
-	
+
 	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
 	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing;
 	boost::recursive_mutex incomingMutex;

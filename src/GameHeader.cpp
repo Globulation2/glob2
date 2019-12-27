@@ -35,7 +35,7 @@ void GameHeader::reset()
 	seed = std::time(NULL);
 	//If needed, seed can be fixed, default value, 5489
 	//seed = 5489;
-	
+
 	players=new BasePlayer[Team::MAX_COUNT];
 	allyTeamNumbers=new Uint8[Team::MAX_COUNT];
 	for(int i=0; i<Team::MAX_COUNT; ++i)
@@ -72,7 +72,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
-		
+
 		stream->readEnterSection("winningConditions");
 		winningConditions.clear();
 		Uint32 size = stream->readUint32("size");
@@ -147,7 +147,7 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
-		
+
 		stream->readEnterSection("winningConditions");
 		winningConditions.clear();
 		Uint32 size = stream->readUint32("size");

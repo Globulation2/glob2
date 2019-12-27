@@ -32,19 +32,19 @@ class YOGClientMapUploader
 public:
 	///Constructs a map uploader
 	YOGClientMapUploader(boost::shared_ptr<YOGClient> client);
-	
+
 	///Removes the map uploader
 	~YOGClientMapUploader();
 
 	///Starts uploading the given map, with the given name, with the given author name
 	void startUploading(const std::string& mapFile, const std::string& newMapName, const std::string& authorName, int w, int h);
-	
+
 	///If this uploader is uploading a map, this will cancel the upload
 	void cancelUpload();
-	
+
 	///This recieves a message from the server
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
-	
+
 	///This updates the uploader
 	void update();
 
@@ -57,13 +57,13 @@ public:
 	};
 	///Returns the current uploading state
 	UploadingState getUploadingState();
-	
+
 	///Returns the current refusal reason
 	YOGMapUploadRefusalReason getRefusalReason();
-	
+
 	///Returns the percent uploaded
 	int getPercentUploaded();
-	
+
 	///Returns the size of a file compressed
 	int getCompressedSize(const std::string& mapName);
 private:

@@ -54,8 +54,8 @@ enum NetMessageType
 	MNetRefuseRegistration,
 	MNetSendClientInformation,
 	MNetSendServerInformation,
-	
-	//These are all glob2 version dependent and can be kept in any order	
+
+	//These are all glob2 version dependent and can be kept in any order
 	MNetAcknowledgeRouter,
 	MNetAddAI,
 	MNetAttemptJoinGame,
@@ -113,7 +113,7 @@ enum NetMessageType
 
 ///This is bassically a message in the Net Engine. A Message has two parts,
 ///a type and a body. The NetMessage base class also has a static function
-///that will read data in, and create the appropriette derived class. 
+///that will read data in, and create the appropriette derived class.
 class NetMessage
 {
 public:
@@ -156,15 +156,15 @@ class NetSendOrder : public NetMessage
 public:
 	///Creates a NetSendOrder message with a NULL Order.
 	NetSendOrder();
-	
+
 	///Creates a NetSendOrder message with the provided Order.
 	///This will assume ownership of the Order.
 	NetSendOrder(boost::shared_ptr<Order> newOrder);
-	
+
 	///Changes the Order that NetSendOrder holds. This will
 	///delete an Order that was already present.
 	void addOrder(boost::shared_ptr<Order> newOrder);
-	
+
 	///Returns the Order that NetSendOrder holds
 	boost::shared_ptr<Order> getOrder();
 
@@ -214,7 +214,7 @@ public:
 
 	///Compares with another NetSendClientInformation
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the net version
 	Uint16 getNetVersion() const;
 private:
@@ -231,7 +231,7 @@ class NetSendServerInformation : public NetMessage
 public:
 	///Creates a NetSendServerInformation message with the provided server information
 	NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, Uint16 playerID);
-	
+
 	///Creates an empty NetSendServerInformation message
 	NetSendServerInformation();
 
@@ -250,16 +250,16 @@ public:
 
 	///Compares with another NetSendServerInformation
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the login policy
 	YOGLoginPolicy getLoginPolicy() const;
-	
+
 	///Returns the game policy
 	YOGGamePolicy getGamePolicy() const;
-	
+
 	///Returns the playerID
 	Uint16 getPlayerID() const;
-	
+
 private:
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
@@ -274,7 +274,7 @@ class NetAttemptLogin : public NetMessage
 public:
 	///Creates a NetAttemptLogin message with the given username and password
 	NetAttemptLogin(const std::string& username, const std::string& password);
-	
+
 	///Creates an empty NetAttemptLogin message
 	NetAttemptLogin();
 
@@ -293,13 +293,13 @@ public:
 
 	///Compares with another NetAttemptLogin
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the username
 	const std::string& getUsername() const;
-	
+
 	///Returns the password
 	const std::string& getPassword() const;
-	
+
 private:
 	std::string username;
 	std::string password;
@@ -358,7 +358,7 @@ public:
 
 	///Compares with another NetRefuseLogin
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the reason why this login was refused
 	YOGLoginState getRefusalReason() const;
 private:
@@ -400,7 +400,7 @@ public:
 
 	///Compares with another NetUpdateGameList
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Applies the differences that this message has been given to the provided container.
 	///The container must have the methods erase(iter), begin(), end(), and insert(iter, object)
 	template<typename container> void applyDifferences(container& original) const;
@@ -443,7 +443,7 @@ class NetAttemptRegistration : public NetMessage
 public:
 	///Creates a NetAttemptRegistration message
 	NetAttemptRegistration();
-	
+
 	///Creates a NetAttemptRegistration message
 	NetAttemptRegistration(const std::string& username, const std::string& password);
 
@@ -462,10 +462,10 @@ public:
 
 	///Compares with another NetAttemptRegistration
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the username
 	std::string getUsername() const;
-	
+
 	///Returns the password
 	std::string getPassword() const;
 private:
@@ -512,7 +512,7 @@ public:
 
 	///Creates a NetRefuseRegistration message with the given reason
 	NetRefuseRegistration(YOGLoginState reason);
-	
+
 	///Returns MNetRefuseRegistration
 	Uint8 getMessageType() const;
 
@@ -528,7 +528,7 @@ public:
 
 	///Compares with another NetRefuseRegistration
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the reason why this registration was refused
 	YOGLoginState getRefusalReason() const;
 private:
@@ -564,7 +564,7 @@ public:
 
 	///Compares with another NetUpdatePlayerList
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///This will apply the recorded differences to the given container
 	template<typename container> void applyDifferences(container& original) const;
 
@@ -601,7 +601,7 @@ public:
 
 	///Compares with another NetCreateGame
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the game name
 	const std::string& getGameName() const;
 private:
@@ -637,7 +637,7 @@ public:
 
 	///Compares with another NetAttemptJoinGame
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the game ID
 	Uint16 getGameID() const;
 private:
@@ -708,7 +708,7 @@ public:
 
 	///Compares with another NetGameJoinRefused
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the reason why the player could not join the game.
 	YOGServerGameJoinRefusalReason getRefusalReason() const;
 private:
@@ -746,7 +746,7 @@ public:
 
 	///Returns the channel
 	Uint32 getChannel() const;
-	
+
 	///Returns the YOG message
 	boost::shared_ptr<YOGMessage> getMessage() const;
 private:
@@ -782,7 +782,7 @@ public:
 
 	///Compares with another NetSendMapHeader
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the map header
 	const MapHeader& getMapHeader() const;
 private:
@@ -816,14 +816,14 @@ public:
 	std::string format() const;
 
 	///Compares with another NetCreateGameAccepted
-	bool operator==(const NetMessage& rhs) const;	
+	bool operator==(const NetMessage& rhs) const;
 
 	///Retrieves the chat channel for the new game
 	Uint32 getChatChannel() const;
 
 	///Retrivees the game id for the new game
 	Uint16 getGameID() const;
-	
+
 	///Retrieves the game-router ip address
 	const std::string getGameRouterIP() const;
 
@@ -864,7 +864,7 @@ public:
 
 	///Compares with another NetCreateGameRefused
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the reason why the player could not join the game.
 	YOGServerGameCreateRefusalReason getRefusalReason() const;
 private:
@@ -881,7 +881,7 @@ class NetSendGameHeader : public NetMessage
 public:
 	///Creates a NetSendGameHeader message
 	NetSendGameHeader();
-	
+
 	///Creates a NetSendGameHeader message
 	NetSendGameHeader(const GameHeader& gameHeader);
 
@@ -900,7 +900,7 @@ public:
 
 	///Compares with another NetSendGameHeader
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Downloads information into the given game header
 	void downloadToGameHeader(GameHeader& header);
 private:
@@ -979,7 +979,7 @@ class NetRequestFile : public NetMessage
 public:
 	///Creates a NetRequestFile message
 	NetRequestFile();
-	
+
 	///Creates a NetRequestFile message for the given fileID
 	NetRequestFile(Uint16 fileID);
 
@@ -998,7 +998,7 @@ public:
 
 	///Compares with another NetRequestFile
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the fileID of the file being requested
 	Uint16 getFileID();
 private:
@@ -1033,10 +1033,10 @@ public:
 
 	///Compares with another NetSendFileInformation
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the file size
 	Uint32 getFileSize() const;
-	
+
 	///Returns the file size
 	Uint16 getFileID() const;
 private:
@@ -1073,13 +1073,13 @@ public:
 
 	///Compares with another NetSendFileChunk
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Provides the buffer of data
 	const Uint8* getBuffer() const;
-	
+
 	///Returns the chunk size
 	Uint32 getChunkSize() const;
-	
+
 	///Returns the fileID
 	Uint16 getFileID() const;
 private:
@@ -1097,7 +1097,7 @@ class NetKickPlayer : public NetMessage
 public:
 	///Creates a NetKickPlayer message
 	NetKickPlayer();
-	
+
 	///Creates a NetKickPlayer message
 	NetKickPlayer(Uint16 playerID, YOGKickReason reason);
 
@@ -1116,10 +1116,10 @@ public:
 
 	///Compares with another NetKickPlayer
 	bool operator==(const NetMessage& rhs) const;
-	
+
 	///Returns the playerID
 	Uint16 getPlayerID();
-	
+
 	///Returns the reason
 	YOGKickReason getReason();
 private:
@@ -2390,8 +2390,8 @@ template<typename container> void NetUpdateGameList::applyDifferences(container&
 		}
 		original.erase(game);
 	}
-	
-	
+
+
 	//Change the changed games and add the rest
 	for(Uint16 i=0; i<updatedGames.size(); ++i)
 	{
@@ -2433,7 +2433,7 @@ template<typename container> void NetUpdatePlayerList::updateDifferences(const c
 		if(!found)
 			removedPlayers.push_back(i->getPlayerID());
 	}
-	
+
 	//Find added or changed players
 	for(typename container::const_iterator i = updated.begin(); i!=updated.end(); ++i)
 	{
@@ -2472,7 +2472,7 @@ template<typename container> void NetUpdatePlayerList::applyDifferences(containe
 			}
 		}
 	}
-	
+
 	//Change and/or add the players that are updated
 	for(std::vector<YOGPlayerSessionInfo>::const_iterator i=updatedPlayers.begin(); i!=updatedPlayers.end(); ++i)
 	{

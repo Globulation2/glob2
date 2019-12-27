@@ -41,7 +41,7 @@ void IntBuildingType::init(void)
 	conversionMap["clearingflag"] = CLEARING_FLAG;
 	conversionMap["stonewall"] = STONE_WALL;
 	conversionMap["market"] = MARKET_BUILDING;
-	
+
 	reverseConversionMap.resize(NB_BUILDING);
 	reverseConversionMap[SWARM_BUILDING] = "swarm";
 	reverseConversionMap[FOOD_BUILDING] = "inn";

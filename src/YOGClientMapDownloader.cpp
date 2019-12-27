@@ -44,7 +44,7 @@ void YOGClientMapDownloader::startDownloading(const YOGDownloadableMapInfo& map)
 	boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 	assembler->startRecievingFile(map.getMapHeader().getFileName());
 	client->setYOGClientFileAssembler(fileID, assembler);
-	
+
 	boost::shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 	client->sendNetMessage(message);
 	state = DownloadingMap;

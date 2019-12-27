@@ -27,21 +27,21 @@ namespace GAGCore
 	// WARNING, does not work as it, please fix
 	// TODO : FIX
 	// FIXME : TODO
-	
+
 	//! Uncompress from a StreamBackend
 	class CompressedInputStreamBackendFilter : public MemoryStreamBackend
 	{
 	public:
-		//! Use backend as the source 
+		//! Use backend as the source
 		CompressedInputStreamBackendFilter(StreamBackend *backen);
 	};
-	
+
 	//! Uncompress from a StreamBackend
 	class CompressedOutputStreamBackendFilter : public MemoryStreamBackend
 	{
 	protected:
 		StreamBackend *backend;
-		
+
 	public:
 		//! Use backend as the destination
 		CompressedOutputStreamBackendFilter(StreamBackend *backen);

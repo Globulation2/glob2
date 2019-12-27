@@ -37,7 +37,7 @@ public:
 
 	///Adds the building to be drawn, and the x and y positions on the map
 	void addBuilding(const std::string& type, int x, int y);
-	
+
 	///Returns true if there is a ghost building covering the given square
 	bool isGhostBuilding(int x, int y, int w, int h);
 

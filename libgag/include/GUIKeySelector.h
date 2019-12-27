@@ -39,13 +39,13 @@ namespace GAGGUI
 		KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, int w=0, int h=0);
 		//Destructor
 		virtual ~KeySelector() { }
-		
+
 		///Paint the widget
 		virtual void paint(void);
-		
+
 		///Gets the current key
 		KeyPress getKey();
-		
+
 		///Sets the key
 		void setKey(const KeyPress& key);
 	protected:
@@ -55,7 +55,7 @@ namespace GAGGUI
 		virtual void onSDLKeyDown(SDL_Event *event);
 		///Handles press events
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
-		
+
 		///The font
 		GAGCore::Font *fontPtr;
 		std::string font;

@@ -50,7 +50,7 @@ public:
 		TAB_PRIMARY = 14,
 		TAB_SECONDARY = 15,
 	};
-	
+
 protected:
 	TextArea *scriptEditor;
 	Text *compilationResult;
@@ -66,17 +66,17 @@ protected:
 	TextArea* missionBriefing;
 	TextInput *hints[8];
 	Text *hintLabels[8];
-	
+
 	std::vector<Widget*> scriptWidgets;
 	std::vector<Widget*> objectivesWidgets;
 	std::vector<Widget*> briefingWidgets;
 	std::vector<Widget*> hintWidgets;
-	
-	
+
+
 	bool changeTabAgain;
 protected:
 	bool testCompile(void);
-	
+
 public:
 	ScriptEditorScreen(Game *game);
 	virtual ~ScriptEditorScreen() { }

@@ -36,9 +36,9 @@ protected:
 	virtual void drawFrame(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 	virtual void drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength);
 	virtual void drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range);
-	
+
 	virtual int getStyleMetric(StyleMetrics metric);
-	
+
 protected:
 	Sprite *sprite;
 };

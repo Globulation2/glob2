@@ -61,16 +61,16 @@ namespace MapEditKeyActions
 
 	///Gets the name of a key-action from the integer
 	const std::string getName(Uint32 action);
-	
+
 	///Reverses a name of a key action back to its integer
 	const Uint32 getAction(const std::string& name);
-	
+
 	///Returns the name of the file for the default configuration
 	std::string getDefaultConfigurationFile();
-	
+
 	///Returns the name of the file for the configuration
 	std::string getConfigurationFile();
-	
+
 	extern std::vector<std::string> names;
 	extern std::map<std::string, Uint32> keys;
 };

@@ -38,11 +38,11 @@ class GameGUIDefaultAssignManager
 public:
 	///Constructs a GameGUIDefaultAssignManager
 	GameGUIDefaultAssignManager();
-	
-	///Retrive the default assigned units for a given building typenum (note, not the 
+
+	///Retrive the default assigned units for a given building typenum (note, not the
 	///ntBuildingType typenum, the BuildingTypes typenum)
 	int getDefaultAssignedUnits(int typenum);
-	
+
 	///Sets the default assigned units for a given building typenum
 	void setDefaultAssignedUnits(int typenum, int value);
 
@@ -51,7 +51,7 @@ public:
 
 	///Loads the default assign information
 	void load(GAGCore::InputStream* stream, Sint32 versionMinor);
-	
+
 private:
 	std::map<int, int> unitCount;
 };

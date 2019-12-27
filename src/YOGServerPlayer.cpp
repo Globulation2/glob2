@@ -89,7 +89,7 @@ void YOGServerPlayer::update()
 		else
 		{
 			connectionState = NeedToSendLoginRefusal;
-		}	
+		}
 	}
 	//This recieves a login attempt
 	else if(type==MNetAttemptRegistration)
@@ -109,7 +109,7 @@ void YOGServerPlayer::update()
 		else
 		{
 			connectionState = NeedToSendRegistrationRefused;
-		}	
+		}
 	}
 	//This recieves a YOGMessage and sends it to the game server to be proccessed
 	else if(type==MNetSendYOGMessage)
@@ -121,8 +121,8 @@ void YOGServerPlayer::update()
 		///If this player is a moderator, also execute a command, however, moderators can only execute a limtied number of commands
 		else if(server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isModerator())
 			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID), true);
-			
-		
+
+
 		///Check if this player is muted, ignore otherwise
 		if(!server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isMuted())
 			server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));
@@ -264,7 +264,7 @@ void YOGServerPlayer::update()
 	else if(type==MNetSendGameResult)
 	{
 		shared_ptr<NetSendGameResult> info = static_pointer_cast<NetSendGameResult>(message);
-		ngame->setPlayerGameResult(server.getPlayer(playerID), info->getGameResult()); 
+		ngame->setPlayerGameResult(server.getPlayer(playerID), info->getGameResult());
 	}
 	//This recieves a ping reply
 	else if(type==MNetRequestDownloadableMapList)
@@ -402,7 +402,7 @@ unsigned YOGServerPlayer::getAveragePing() const
 		spings.erase(spings.begin());
 	if(spings.size() > 2)
 		spings.erase(spings.end()-1);
-	
+
 	//Compute mean
 	unsigned mean = 0;
 	for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
@@ -410,7 +410,7 @@ unsigned YOGServerPlayer::getAveragePing() const
 		mean += *i;
 	}
 	mean /= spings.size();
-	
+
 	//Compute standard deviations
 	float deviation = 0;
 	for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
@@ -532,7 +532,7 @@ void YOGServerPlayer::handleJoinGame(Uint16 ngameID)
 {
 	YOGServerGameJoinRefusalReason reason = server.canJoinGame(ngameID);
 	if(reason == YOGJoinRefusalUnknown)
-	{	
+	{
 		gameID = ngameID;
 		game = server.getGame(gameID);
 		boost::shared_ptr<YOGServerGame> ngame(game);

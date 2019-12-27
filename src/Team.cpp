@@ -244,7 +244,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		return false;
 	}
 	stats.step(this, true);
-	
+
 	if(versionMinor >= 73)
 	{
 		if(!race.load(stream, versionMinor))
@@ -612,7 +612,7 @@ Building *Team::findNearestFood(Unit *unit)
 			concurency = true;
 			break;
 		}
-	
+
 	// first, we check for the best food an enemy can offer:
 	Sint32 bestEnemyHappyness = 0;
 	Sint32 maxDist = std::max(0, unit->hungry) / unit->race->hungryness + unit->hp;
@@ -740,7 +740,7 @@ Building *Team::findNearestFood(Unit *unit)
 		if (choosenFood)
 			return choosenFood;
 	}
-	
+
 	return bestEnemyFood;
 }
 
@@ -796,14 +796,14 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		priority_lhs=2+lhs->type->level*10;
 	else
 		priority_lhs=1+lhs->type->level*10;
-	
+
 	int priority_rhs=0;
 	if(rhs->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && !rhs->type->isBuildingSite)
 		priority_rhs=2+rhs->type->level*10;
 	else
 		priority_rhs=1+rhs->type->level*10;
 
-	if(priority_lhs != priority_rhs)	
+	if(priority_lhs != priority_rhs)
 	{
 		return priority_lhs > priority_rhs;
 	}
@@ -1066,7 +1066,7 @@ void Team::syncStep(void)
 			myBuildings[i]->step();
 		}
 	}
-	
+
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
 			if (!(*it)->locked[1] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
@@ -1127,7 +1127,7 @@ void Team::pushGameEvent(boost::shared_ptr<GameEvent> event)
 		eventCooldownTimers[event->getEventType()]=50;
 	}
 }
-	
+
 
 
 boost::shared_ptr<GameEvent> Team::getEvent()
@@ -1139,7 +1139,7 @@ boost::shared_ptr<GameEvent> Team::getEvent()
 	events.pop();
 	return event;
 }
-	
+
 
 
 void Team::updateEvents()
@@ -1166,7 +1166,7 @@ void Team::updateEvents()
 	}
 }
 
-	
+
 bool Team::wasRecentEvent(GameEventType type)
 {
 	return eventCooldownTimers[type]==50;

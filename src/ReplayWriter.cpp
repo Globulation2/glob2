@@ -137,7 +137,7 @@ bool ReplayWriter::write(const std::string &filename) const
 {
 	if (!isValid()) return false;
 	if (filename == "") return false;
-	
+
 	// Make sure the buffer is flushed
 	buffer->flush();
 

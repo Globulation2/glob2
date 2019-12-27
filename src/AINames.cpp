@@ -51,7 +51,7 @@ namespace AINames
 		}
 		return Toolkit::getStringTable()->getString(sAi);
 	}
-	
+
 	std::string getAIDescription(int id)
 	{
 		std::string sAi;

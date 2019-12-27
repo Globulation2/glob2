@@ -34,13 +34,13 @@ class YOGPlayerPrivateInfo
 public:
 	///Constructs a default YOGPlayerPrivateInfo
 	YOGPlayerPrivateInfo();
-	
+
 	///Encodes this YOGPlayerPrivateInfo into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
 	///Decodes this YOGPlayerPrivateInfo from a bit stream
 	void decodeData(GAGCore::InputStream* stream);
-	
+
 	///Test for equality between two YOGPlayerPrivateInfo
 	bool operator==(const YOGPlayerPrivateInfo& rhs) const;
 	bool operator!=(const YOGPlayerPrivateInfo& rhs) const;

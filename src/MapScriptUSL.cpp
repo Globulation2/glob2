@@ -48,12 +48,12 @@ inline void NativeValuePrototype<GameGUI*>::initialize()
 	addMethod<bool(GameGUI*,string)>("isFlagEnabled", &GameGUI::isFlagEnabled);
 	addMethod<void(GameGUI*,int)>("enableGUIElement", &GameGUI::enableGUIElement);
 	addMethod<void(GameGUI*,int)>("disableGUIElement", &GameGUI::disableGUIElement);
-	
+
 	//addMethod<bool(GameGUI*)>("isSpaceSet", &GameGUI::isSpaceSet);
 	//addMethod<void(GameGUI*,bool)>("setIsSpaceSet", &GameGUI::setIsSpaceSet);
 	//addMethod<bool(GameGUI*)>("isSwallowSpaceKey", &GameGUI::isSwallowSpaceKey);
 	//addMethod<void(GameGUI*,bool)>("setSwallowSpaceKey", &GameGUI::setSwallowSpaceKey);
-	
+
 	addMethod<void(GameGUI*,string)>("showScriptText", &GameGUI::showScriptText);
 	addMethod<void(GameGUI*,string,string)>("showScriptTextTr", &GameGUI::showScriptTextTr);
 	addMethod<void(GameGUI*)>("hideScriptText", &GameGUI::hideScriptText);
@@ -64,11 +64,11 @@ inline void NativeValuePrototype<Game*>::initialize()
 {
 	addMethod<int(Game*)>("teamsCount", &Game::teamsCount);
 	addMethod<bool(Game*,int)>("isTeamAlive", &Game::isTeamAlive);
-	
+
 	addMethod<int(Game*,int,int)>("unitsCount", &Game::unitsCount);
 	addMethod<int(Game*,int,int,int,int)>("unitsUpgradesCount", &Game::unitsUpgradesCount);
 	addMethod<int(Game*,int,int,int)>("buildingsCount", &Game::buildingsCount);
-	
+
 	// TODO: if required, add more from teamStats, maybe amount of unit starving can be usefull
 }
 
@@ -76,10 +76,10 @@ template<>
 inline void NativeValuePrototype<GameHints*>::initialize()
 {
 	addMethod<int(GameHints*)>("count", &GameHints::getNumberOfHints);
-	
+
 	addMethod<void(GameHints*,int)>("show", &GameHints::setHintVisible);
 	addMethod<void(GameHints*,int)>("hide", &GameHints::setHintHidden);
-	
+
 	addMethod<bool(GameHints*,int)>("isVisible", &GameHints::isHintVisible);
 }
 
@@ -87,7 +87,7 @@ template<>
 inline void NativeValuePrototype<GameObjectives*>::initialize()
 {
 	addMethod<int(GameObjectives*)>("count", &GameObjectives::getNumberOfObjectives);
-	
+
 	addMethod<void(GameObjectives*,int)>("setComplete", &GameObjectives::setObjectiveComplete);
     addMethod<void(GameObjectives*,int)>("setIncomplete", &GameObjectives::setObjectiveIncomplete);
     addMethod<void(GameObjectives*,int)>("setFailed", &GameObjectives::setObjectiveFailed);
@@ -97,7 +97,7 @@ inline void NativeValuePrototype<GameObjectives*>::initialize()
     addMethod<bool(GameObjectives*,int)>("isVisible", &GameObjectives::isObjectiveVisible);
 	addMethod<bool(GameObjectives*,int)>("isComplete", &GameObjectives::isObjectiveComplete);
 	addMethod<bool(GameObjectives*,int)>("isFailed", &GameObjectives::isObjectiveFailed);
-	
+
 	addMethod<string(GameObjectives*,int)>("getText", &GameObjectives::getGameObjectiveText);
 	addMethod<int(GameObjectives*,int)>("getType", &GameObjectives::getObjectiveType);
 }
@@ -120,7 +120,7 @@ MapScriptUSL::MapScriptUSL(GameGUI* gui)
 
 MapScriptUSL::~MapScriptUSL()
 {
-	
+
 }
 
 
@@ -164,10 +164,10 @@ bool MapScriptUSL::compileCode(const std::string& code)
 	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getConstant("gui"))->value;
 	usl = Usl();
 	addGlob2Values(gui);
-	
+
 	const char* dirsToLoad[] = { "data/usl/Language/Runtime" , "data/usl/Glob2/Runtime", 0 };
 	const char** dir = dirsToLoad;
-	
+
 	while (*(dir) != 0)
 	{
 		try
@@ -205,7 +205,7 @@ bool MapScriptUSL::compileCode(const std::string& code)
 		}
 		++dir;
 	}
-	
+
 	try
 	{
 		istringstream codeStream(code);
@@ -216,7 +216,7 @@ bool MapScriptUSL::compileCode(const std::string& code)
 		error = MapScriptError(e.position.line, e.position.column, e.what());
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -229,7 +229,7 @@ const MapScriptError& MapScriptUSL::getError() const
 void MapScriptUSL::syncStep(GameGUI *gui)
 {
 	const size_t stepsMax = 10000;
-	
+
 	#ifdef DEBUG_USL
 		size_t stepsCount = usl.run(stepsMax);
 		std::cout << "* USL executed " << stepsCount << " steps" << std::endl;

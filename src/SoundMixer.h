@@ -48,7 +48,7 @@ public:
 	bool soundEnabled;
 	unsigned musicVolume;
 	unsigned voiceVolume;
-	
+
 	//! Voice for one player
 	struct PlayerVoice
 	{
@@ -64,10 +64,10 @@ public:
 	std::map<int, PlayerVoice> voices;
 	//! pointer to the structure holding the speex decoder
 	void *speexDecoderState;
-	
+
 	//! if voice data is available, insert it to output
 	inline void handleVoiceInsertion(int *outputSample, int voicevol);
-	
+
 protected:
 	void openAudio(void);
 
@@ -82,12 +82,12 @@ public:
 	void setNextTrack(unsigned i, bool earlyChange=false);
 
 	void setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute);
-	
+
 	void stopMusic(void);
-	
+
 	//! Tells whether the given player is being heard in voip
 	bool isPlayerTransmittingVoice(int player);
-	
+
 	//! Add voice data from order. Data should be copied as order will be destroyed after this call
 	void addVoiceData(boost::shared_ptr<OrderVoiceData> order);
 };

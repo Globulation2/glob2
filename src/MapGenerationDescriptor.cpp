@@ -29,9 +29,9 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 {
 	wDec=7;
 	hDec=7;
-	
+
 	terrainType=GRASS;
-	
+
 	methode=eUNIFORM;
 	waterRatio=50;
 	sandRatio=50;
@@ -47,12 +47,12 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	smooth=4;
 	fruitRatio=4;
 	logRepeatAreaTimes=0;
-	
+
 	oldIslandSize=50;
-	oldBeach=1;	
+	oldBeach=1;
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
 		ressource[i]=7;
-	
+
 	nbWorkers=4;
 	nbTeams=4;
 }
@@ -66,7 +66,7 @@ MapGenerationDescriptor::~MapGenerationDescriptor()
 Uint8 *MapGenerationDescriptor::getData()
 {
 	assert(DATA_SIZE==100+MAX_NB_RESSOURCES*4);
-	
+
 	addSint32(data, wDec, 0);
 	addSint32(data, hDec, 4);
 
@@ -77,20 +77,20 @@ Uint8 *MapGenerationDescriptor::getData()
 	addSint32(data, sandRatio, 20);
 	addSint32(data, grassRatio, 24);
 	addSint32(data, desertRatio, 28);
-	
+
 	addSint32(data, wheatRatio, 32);
 	addSint32(data, woodRatio, 36);
 	addSint32(data, algaeRatio, 40);
-	addSint32(data, stoneRatio, 44);	
+	addSint32(data, stoneRatio, 44);
 	addSint32(data, riverDiameter, 48);
-	
+
 	addSint32(data, craterDensity, 52);
 	addSint32(data, extraIslands, 56);
 	addSint32(data, smooth, 60);
 
 	addUint32(data, nbWorkers, 64);
 	addUint32(data, nbTeams, 68);
-	
+
 	addUint32(data, oldIslandSize, 72);
 	addUint32(data, oldBeach, 76);
 	addUint32(data, fruitRatio, 80);
@@ -108,10 +108,10 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	assert(DATA_SIZE==100+MAX_NB_RESSOURCES*4);
 	assert(getDataLength()==DATA_SIZE);
 	assert(getDataLength()==dataLength);
-	
+
 	wDec=getSint32(data, 0);
 	hDec=getSint32(data, 4);
-	
+
 	terrainType=(TerrainType)getSint32(data, 8);
 
 	methode=(Methode)getSint32(data, 12);
@@ -119,23 +119,23 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	sandRatio=getSint32(data, 20);
 	grassRatio=getSint32(data, 24);
 	desertRatio = getSint32(data, 28);
-	
+
 	wheatRatio = getSint32(data, 32);
 	woodRatio = getSint32(data, 36);
 	algaeRatio = getSint32(data, 40);
 	stoneRatio = getSint32(data, 44);
 	riverDiameter = getSint32(data, 48);
-	
+
 	craterDensity = getSint32(data, 52);
 	extraIslands = getSint32(data, 56);
 	smooth=getSint32(data, 60);
 
 	nbWorkers=getSint32(data, 64);
 	nbTeams=getSint32(data, 68);
-	
+
 	oldIslandSize=getSint32(data, 72);
 	oldBeach=getSint32(data, 76);
-	
+
 	fruitRatio = getSint32(data, 80);
 	logRepeatAreaTimes = getSint32(data, 84);
 
@@ -151,7 +151,7 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 		good=false;
 	if (terrainType>GRASS)
 		good=false;
-	
+
 	return (good);
 }
 
@@ -186,7 +186,7 @@ bool MapGenerationDescriptor::load(GAGCore::InputStream *stream, Sint32 versionM
 Uint32 MapGenerationDescriptor::checkSum()
 {
 	Uint32 cs=0;
-	
+
 	cs^=wDec+(hDec<<16);
 	cs^=(Sint32)terrainType;
 	cs=(cs<<31)|(cs>>1);
@@ -230,7 +230,7 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs=(cs<<31)|(cs>>1);
 	cs^=nbWorkers;
 	cs^=nbTeams<<5;
-	
+
 	return cs;
 }
 

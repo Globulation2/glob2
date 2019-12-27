@@ -26,7 +26,7 @@ NetListener::NetListener(Uint16 port)
 }
 
 
-	
+
 NetListener::NetListener()
 {
 	listening=false;
@@ -52,7 +52,7 @@ void NetListener::startListening(Uint16 nport)
 				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
 			listening=false;
 		}
-		
+
 		socket=SDLNet_TCP_Open(&address);
 		if(!socket)
 		{
@@ -66,7 +66,7 @@ void NetListener::startListening(Uint16 nport)
 			port = nport;
 		}
 	}
-	
+
 
 }
 
@@ -80,14 +80,14 @@ void NetListener::stopListening()
 }
 
 
-	
+
 bool NetListener::isListening()
 {
 	return listening;
 }
 
 
-	
+
 bool NetListener::attemptConnection(NetConnection& connection)
 {
 	if(listening)

@@ -40,7 +40,7 @@ namespace GAGCore
 	{
 	public:
 		virtual ~StreamBackend() { }
-		
+
 		virtual void write(const void *data, const size_t size) = 0;
 		virtual void flush(void) = 0;
 		virtual void read(void *data, size_t size) = 0;
@@ -53,18 +53,18 @@ namespace GAGCore
 		virtual bool isEndOfStream(void) = 0;
 		virtual bool isValid(void) = 0;
 	};
-	
+
 	//! The FILE* implementation of stream backend
 	class FileStreamBackend : public StreamBackend
 	{
 	private:
 		FILE *fp;
-		
+
 	public:
 		//! Constructor. If fp is NULL, isEndOfStream returns true and all other functions excepted destructor are invalid and will assert false if called
 		FileStreamBackend(FILE *fp) { this->fp = fp; }
 		virtual ~FileStreamBackend() { if (fp) fclose(fp); }
-		
+
 		virtual void write(const void *data, const size_t size) { assert(fp); fwrite(data, size, 1 ,fp); }
 		virtual void flush(void) { assert(fp); fflush(fp); }
 		virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
@@ -77,7 +77,7 @@ namespace GAGCore
 		virtual bool isEndOfStream(void) { return (fp == NULL) || (feof(fp) != 0); }
 		virtual bool isValid(void) { return (fp != NULL); }
 	};
-	
+
 	//! The zlib implementation of stream backend. *important* all zlib activity is run through full-file buffer in memory
 	class ZLibStreamBackend : public StreamBackend
 	{
@@ -89,7 +89,7 @@ namespace GAGCore
 		//! Constructor. If file is "", isEndOfStream returns true and all other functions excepted destructor are invalid and will assert false if called
 		ZLibStreamBackend(const std::string& file, bool read);
 		virtual ~ZLibStreamBackend();
-		
+
 		virtual void write(const void *data, const size_t size);
 		virtual void flush(void);
 		virtual void read(void *data, size_t size);
@@ -102,19 +102,19 @@ namespace GAGCore
 		virtual bool isEndOfStream(void);
 		virtual bool isValid(void);
 	};
-	
+
 	//! A stream backend that lies in memory
 	class MemoryStreamBackend : public StreamBackend
 	{
 	private:
 		std::string datas;
 		size_t index;
-		
+
 	public:
 		//! Constructor. If NULL is passed to data, internal buffer is empty, otherwise size bytes are copied from data.
 		MemoryStreamBackend(const void *data = NULL, const size_t size = 0);
 		virtual ~MemoryStreamBackend() { }
-		
+
 		virtual void write(const void *data, const size_t size);
 		virtual void flush(void) { }
 		virtual void read(void *data, size_t size);

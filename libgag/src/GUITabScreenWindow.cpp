@@ -31,8 +31,8 @@ namespace GAGGUI
 		tabNumber = parent->addGroup(tabName);
 		parent->setTabScreenWindowToGroup(this, tabNumber);
 	}
-	
-	
+
+
 	TabScreenWindow::~TabScreenWindow()
 	{
 		parent->removeGroup(tabNumber);
@@ -42,58 +42,58 @@ namespace GAGGUI
 	{
 		parent->addWidgetToGroup(widget, tabNumber);
 	}
-		
+
 	void TabScreenWindow::removeWidget(Widget* widget)
 	{
 		parent->removeWidgetFromGroup(widget, tabNumber);
 	}
-		
+
 	void TabScreenWindow::onAction(Widget *source, Action action, int par1, int par2)
 	{
-		
+
 	}
 
 	void TabScreenWindow::onTimer(Uint32 tick)
 	{
-		
+
 	}
-		
+
 	int TabScreenWindow::getReturnCode()
 	{
 		return returnCode;
 	}
-	
+
 	bool TabScreenWindow::isStillExecuting()
 	{
 		return isExecuting;
 	}
-	
+
 	void TabScreenWindow::internalInit()
 	{
 		parent->internalInit(tabNumber);
 	}
-	
+
 	int TabScreenWindow::getTabNumber()
 	{
 		return tabNumber;
 	}
-	
+
 	bool TabScreenWindow::isActivated()
 	{
 		return activated;
 	}
-	
+
 	void TabScreenWindow::onActivated()
 	{
-		
+
 	}
-	
+
 	void TabScreenWindow::endExecute(int nreturnCode)
 	{
 		isExecuting = false;
 		returnCode = nreturnCode;
 	}
-	
+
 	void TabScreenWindow::setActivated(bool nactivated)
 	{
 		activated=nactivated;

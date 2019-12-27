@@ -38,16 +38,16 @@ namespace GAGGUI
 			STYLE_METRIC_LIST_SCROLLBAR_BOTTOM_WIDTH,
 			STYLE_METRIC_PROGRESS_BAR_HEIGHT
 		};
-		
+
 		GAGCore::Color textColor; //!< color of text
 		GAGCore::Color highlightColor; //!< color of highlighted elements
 		GAGCore::Color frameColor; //!< base color of frames
 		GAGCore::Color listSelectedElementColor;
 		GAGCore::Color backColor; //!< background color
 		GAGCore::Color backOverlayColor; //!< overlay background color
-		
+
 		static Style *style;
-		
+
 	public:
 		Style();
 		virtual ~Style() { }
@@ -57,10 +57,10 @@ namespace GAGGUI
 		virtual void drawFrame(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
 		virtual void drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength);
 		virtual void drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range);
-		
+
 		virtual int getStyleMetric(StyleMetrics metric);
 	};
-	
+
 	extern Style defaultStyle;
 }
 

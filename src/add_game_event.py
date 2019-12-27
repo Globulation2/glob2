@@ -17,12 +17,12 @@ public:
 	///Constructs a mname event
 	mname(Uint32 step, Sint16 x, Sint16 y, Uint8 type);
 
-	///This formats a user-readable message, including translating the message 
+	///This formats a user-readable message, including translating the message
 	std::string formatMessage();
 
 	///Returns the color of the message after its formatted
 	GAGCore::Color formatColor();
-	
+
 	///Returns the event type
 	Uint8 getEventType();
 private:

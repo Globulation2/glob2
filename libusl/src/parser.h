@@ -12,7 +12,7 @@ struct Parser: Lexer
 		Lexer(filename, src),
 		heap(heap)
 	{}
-	
+
 	void parse(BlockNode* block);
 
 private:

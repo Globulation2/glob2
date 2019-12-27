@@ -55,7 +55,7 @@ public:
 	std::queue<boost::shared_ptr<OrderVoiceData> > orders;
 	//! True when recording
 	bool recordingNow;
-	
+
 	#ifdef HAVE_PORTAUDIO
 	PaStream *stream;
 	int frameCount;
@@ -66,16 +66,16 @@ public:
 	//! When recordingNow is set to false, get decrement
 	int stopRecordingTimeout;
 	#endif
-	
-	
-	
+
+
+
 public:
 	//! Constructor
 	VoiceRecorder();
-	
+
 	//! Destructor
 	virtual ~VoiceRecorder();
-	
+
 	//! Start recording
 	void startRecording(void);
 	//! Stop recording

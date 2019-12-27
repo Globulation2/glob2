@@ -43,7 +43,7 @@ void YOGPlayerSessionInfo::setPlayerName(const std::string& newPlayerName)
 }
 
 
-	
+
 std::string YOGPlayerSessionInfo::getPlayerName() const
 {
 	return playerName;
@@ -100,7 +100,7 @@ void YOGPlayerSessionInfo::decodeData(GAGCore::InputStream* stream)
 }
 
 
-	
+
 bool YOGPlayerSessionInfo::operator==(const YOGPlayerSessionInfo& rhs) const
 {
 	if(playerName == rhs.playerName && playerID == rhs.playerID && stored == rhs.stored)
@@ -114,8 +114,8 @@ bool YOGPlayerSessionInfo::operator==(const YOGPlayerSessionInfo& rhs) const
 	return false;
 }
 
-	
-	
+
+
 bool YOGPlayerSessionInfo::operator!=(const YOGPlayerSessionInfo& rhs) const
 {
 	if(playerName != rhs.playerName || playerID != rhs.playerID || stored != rhs.stored)

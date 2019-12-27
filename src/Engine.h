@@ -48,7 +48,7 @@ public:
 
 	/// Initiates a campaign map. This first loads the MapHeader, and then generates a GameHeader for
 	/// the campaign map. It then informs GameGUI that this map is a campaign, and if the player wins
-	/// it, the given Campaign should be informed. 
+	/// it, the given Campaign should be informed.
 	int initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName);
 
 	/// Initiates a campaign game that isn't part of a campaign. One example is the tutorial, which
@@ -72,7 +72,7 @@ public:
 
 	/// Load a replay
 	int loadReplay(const std::string &fileName);
-	
+
 	///Tells whether a map matching mapHeader is located on this system
 	bool haveMap(const MapHeader& mapHeader);
 
@@ -97,7 +97,7 @@ public:
 
 	///This will load the game header of the game with the given filename
 	static GameHeader loadGameHeader(const std::string &filename);
-	
+
 private:
 	/// Initiates a game, provided the map and game header. This initiates the net
 	/// as well. When setGameHeader is true, the gameHeader given will replace the
@@ -120,7 +120,7 @@ private:
 
 	///This function will choose a random map from the available maps
 	MapHeader chooseRandomMap();
-	
+
 	///This function prepares a random set of AI's in a GameHeader, first player is always human + ai team
 	GameHeader createRandomGame(int numberOfTeams);
 

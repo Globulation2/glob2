@@ -55,7 +55,7 @@ void YOGServerBannedIPListManager::update()
 	{
 		saveCountdown -= 1;
 	}
-	
+
 	boost::posix_time::ptime current_time = boost::posix_time::second_clock::local_time();
 	for(std::map<std::string, boost::posix_time::ptime>::iterator i=bannedIPs.begin(); i!=bannedIPs.end();)
 	{
@@ -120,7 +120,7 @@ void YOGServerBannedIPListManager::loadBannedIPList()
 		{
 			std::string ip = stream->readText("ip");
 			std::string b = stream->readText("time");
-			
+
 			std::stringstream time;
 			boost::posix_time::ptime unban_time;
 			time<<b;

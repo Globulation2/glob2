@@ -34,7 +34,7 @@ namespace GAGCore
 namespace GAGGUI
 {
 	class TextArea:public HighlightableWidget
-	{	
+	{
 	protected:
 		bool readOnly;
 		std::string spritelocation;
@@ -50,7 +50,7 @@ namespace GAGGUI
 		std::string text;
 		std::map<std::string, int> stringWidthCache;
 		GAGCore::Sprite *sprite;
-		
+
 		// edit mod variables
 		// this one is the only one always valid, other are recomputed from it
 		size_t cursorPos;
@@ -86,10 +86,10 @@ namespace GAGGUI
 				const std::string text="",
 				const std::string spritelocation="");
 		virtual ~TextArea();
-	
+
 		virtual void internalInit(void);
 		virtual void paint(void);
-	
+
 		virtual void setText(const std::string text);
 		virtual const std::string getText(void) { return text; }
 		virtual void addText(const std::string text);
@@ -112,7 +112,7 @@ namespace GAGGUI
 		virtual bool save(const std::string filename);
 		void deactivate(void) { activated = false; }
 		void activate(void) { activated = true; }
-	
+
 	protected:
 		//! Lookup a string in cache for its size
 		int getStringWidth(const std::string &s);

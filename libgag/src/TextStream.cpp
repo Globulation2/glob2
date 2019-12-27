@@ -34,13 +34,13 @@ namespace GAGCore
 		for (unsigned i=0; i<level; i++)
 			backend->putc('\t');
 	}
-	
+
 	void TextOutputStream::printString(const std::string &string)
 	{
 		assert(string.size());
 		backend->write(string.c_str(), string.size());
 	}
-	
+
 	void TextOutputStream::write(const void *data, const size_t size, const std::string name)
 	{
 		printLevel();
@@ -58,7 +58,7 @@ namespace GAGCore
 		}
 		printString(";\n");
 	}
-	
+
 	void TextOutputStream::writeText(const std::string &v, const std::string name)
 	{
 		printLevel();
@@ -74,7 +74,7 @@ namespace GAGCore
 				backend->putc(v[i]);
 		printString("\";\n");
 	}
-	
+
 	void TextOutputStream::writeEnterSection(const std::string name)
 	{
 		printLevel();
@@ -84,7 +84,7 @@ namespace GAGCore
 		printString("{\n");
 		level++;
 	}
-	
+
 	void TextOutputStream::writeEnterSection(unsigned id)
 	{
 		printLevel();
@@ -94,16 +94,16 @@ namespace GAGCore
 		printString("{\n");
 		level++;
 	}
-	
+
 	void TextOutputStream::writeLeaveSection(size_t count)
 	{
 		level -= count;
 		printLevel();
 		printString("}\n");
 	}
-	
+
 	// Parser for TextInputStream
-	
+
 	struct Parser
 	{
 		// parser
@@ -120,34 +120,34 @@ namespace GAGCore
 				VAL,
 				NONE
 			} type;
-			
+
 			std::string val;
-			
+
 			Token(Type type, const std::string &val = "")
 			{
 				this->type = type;
 				this->val = val;
 			}
 		};
-		
+
 		int next;
 		StreamBackend *stream;
 		Token token;
 		size_t line, column;
-		
+
 		Parser(StreamBackend *stream)
 		 : token(Token::NONE)
 		{
 			assert(stream);
-			
+
 			line = 1;
 			column = 0;
 			this->stream = stream;
-			
+
 			if (!stream->isEndOfStream())
 				nextChar();
 		}
-		
+
 		int nextChar(void)
 		{
 			next = stream->getChar();
@@ -160,7 +160,7 @@ namespace GAGCore
 				column++;
 			return next;
 		}
-		
+
 		Token nextToken(void)
 		{
 			if (!stream->isEndOfStream())
@@ -184,7 +184,7 @@ namespace GAGCore
 						while ((next != '*' || (nextChar(), next != '/')) && !stream->isEndOfStream())
 							nextChar();
 						nextChar();
-						
+
 						/* More human readable version.
 						nextChar();
 						while (!ifs.eof())
@@ -205,32 +205,32 @@ namespace GAGCore
 					}
 					token = nextToken();
 					break;
-					
+
 					case '{':
 					nextChar();
 					token = Token(Token::OPEN_BRACKET);
 					break;
-					
+
 					case '}':
 					nextChar();
 					token = Token(Token::CLOSE_BRACKET);
 					break;
-					
+
 					case '=':
 					nextChar();
 					token = Token(Token::EQUAL);
 					break;
-					
+
 					case ';':
 					nextChar();
 					token = Token(Token::SEMI_COLON);
 					break;
-					
+
 					case ':':
 					nextChar();
 					token = Token(Token::COLON);
 					break;
-					
+
 					case '"':
 					{
 						std::string tempValue;
@@ -242,7 +242,7 @@ namespace GAGCore
 						token = Token(Token::VAL, tempValue);
 					}
 					break;
-					
+
 					case ' ':
 					case '\t':
 					case '\n':
@@ -251,7 +251,7 @@ namespace GAGCore
 						nextChar();
 					token = nextToken();
 					break;
-					
+
 					default:
 					{
 						if (isalnum(next) || (next == '.') || (next == '-') || (next == '[') || (next == ']'))
@@ -280,7 +280,7 @@ namespace GAGCore
 			}
 			return token;
 		}
-		
+
 		//! Macro that return false and an error message if parser encountered EOF
 		#define CHECK_NOT_EOF \
 		if (token.type == Token::END_OF_INPUT) \
@@ -288,7 +288,7 @@ namespace GAGCore
 			 std::cerr << "TextStream::parser : error @ " << line << ':' << column << " : unexpected EOF" << std::endl; \
 			 return false; \
 		}
-		
+
 		//! Macro that return false and an error message if anything else then a value is encountered
 		#define CHECK_VAL \
 		if (token.type != Token::VAL) \
@@ -296,7 +296,7 @@ namespace GAGCore
 			std::cerr << "TextStream::parser : error @ " << line << ':' << column << " : value expected" << std::endl; \
 			return false; \
 		}
-		
+
 		//! Macro that return false and an error message if anything else then a ; is encountered
 		#define CHECK_SEMICOLON \
 		if (token.type != Token::SEMI_COLON) \
@@ -304,7 +304,7 @@ namespace GAGCore
 			std::cerr << "TextStream::parser : error @ " << line << ':' << column << " : ; (semicolon) expected" << std::endl; \
 			return false; \
 		}
-		
+
 		//! Macro that return false and an error message if anything else then a { is encountered
 		#define CHECK_OPEN_BRACKET \
 		if (token.type != Token::OPEN_BRACKET) \
@@ -312,19 +312,19 @@ namespace GAGCore
 			std::cerr << "TextStream::parser : error @ " << line << ':' << column << " : ; { expected" << std::endl; \
 			return false; \
 		}
-		
+
 		bool parse(std::map<std::string, std::string> *table)
 		{
 			if (stream->isEndOfStream())
 				return false;
-				
+
 			std::vector<std::string> levels;
 			std::string id;
 			std::string fullId;
 			std::stack<unsigned> autovectors; // stack of unsigned used for implicit vectors. If value is 0, the level is not considered using autovector
-			
+
 			assert(table);
-			
+
 			nextToken();
 			while (token.type != Token::END_OF_INPUT)
 			{
@@ -340,11 +340,11 @@ namespace GAGCore
 							oss << autovectors.top();
 							(*table)[fullId + ".count"] = oss.str();
 						}
-						
+
 						autovectors.pop();
 						levels.pop_back();
 						fullId.clear();
-						
+
 						std::vector<std::string>::size_type size = levels.size();
 						std::vector<std::string>::size_type j = 0;
 						if (size != 0)
@@ -377,27 +377,27 @@ namespace GAGCore
 						// normal entry, have an id
 						CHECK_VAL
 						id = token.val;
-						
+
 						nextToken();
 						CHECK_NOT_EOF
 					}
-					
+
 					if (token.type == Token::EQUAL)
 					{
 						nextToken();
 						CHECK_NOT_EOF
 						CHECK_VAL
 						std::string val = token.val;
-						
+
 						nextToken();
 						CHECK_NOT_EOF
 						CHECK_SEMICOLON
-						
+
 						std::string path = fullId;
 						if (fullId.length())
 							path += ".";
 						path += id;
-						
+
 						(*table)[path] = val;
 						nextToken();
 					}
@@ -418,18 +418,18 @@ namespace GAGCore
 						CHECK_NOT_EOF
 						CHECK_VAL
 						std::string copyPathSource = token.val;
-						
+
 						nextToken();
 						CHECK_NOT_EOF
 						CHECK_OPEN_BRACKET
-						
+
 						// build new path
 						if (fullId.length())
 							fullId += ".";
 						fullId += id;
 						levels.push_back(id);
 						autovectors.push(0);
-						
+
 						// copy subkeys to actual
 						size_t len = copyPathSource.length();
 						for (std::map<std::string, std::string>::iterator i = table->begin(); i != table->end(); i++)
@@ -440,28 +440,28 @@ namespace GAGCore
 								(*table)[fullId + copyPathSub] = i->second;
 							}
 						}
-						
+
 						nextToken();
 						CHECK_NOT_EOF
 					}
 					else
 					{
 						std::cerr << "TextStream::parser : error @ " << line << ':' << column << " : = or { expected" << std::endl;
-						return false; 
+						return false;
 					}
 				}
 			}
-			
+
 			if (levels.size())
 			{
 				std::cerr << "TextStream::parser : error @ " << line << ':' << column << "End of file called while all } are not closed" << std::endl;
 				return false;
 			}
-			
+
 			return true;
 		}
 	};
-	
+
 	TextInputStream::TextInputStream(StreamBackend *backend)
 	{
 		assert(backend);
@@ -470,7 +470,7 @@ namespace GAGCore
 		/*for (std::map<std::string, std::string>::iterator i = table.begin(); i != table.end(); ++i)
 			std::cout << i->first << " = " << i->second << std::endl;*/
 	}
-	
+
 	void TextInputStream::readEnterSection(const std::string name)
 	{
 		if (levels.size() > 0)
@@ -478,7 +478,7 @@ namespace GAGCore
 		levels.push_back(std::string(name));
 		key += name;
 	}
-	
+
 	void TextInputStream::readEnterSection(unsigned id)
 	{
 		std::ostringstream oss;
@@ -487,11 +487,11 @@ namespace GAGCore
 		key += ".";
 		key += oss.str();
 	}
-	
+
 	void TextInputStream::readLeaveSection(size_t count)
 	{
 		assert(count <= levels.size());
-		
+
 		levels.resize(levels.size() - count);
 		key.clear();
 		size_t size = levels.size();
@@ -505,11 +505,11 @@ namespace GAGCore
 			}
 		}
 	}
-	
+
 	void TextInputStream::readFromTableToString(const std::string name, std::string *result)
 	{
 		assert(result);
-		
+
 		std::string fullKey;
 		if (levels.size() > 0)
 		{
@@ -517,7 +517,7 @@ namespace GAGCore
 			fullKey += ".";
 		}
 		fullKey += name;
-		
+
 		const std::map<std::string, std::string>::const_iterator it = table.find(fullKey);
 		if (it != table.end())
 		{
@@ -529,7 +529,7 @@ namespace GAGCore
 			*result = "";
 		}
 	}
-	
+
 	void TextInputStream::read(void *data, size_t size, const std::string name)
 	{
 		std::string s;
@@ -550,7 +550,7 @@ namespace GAGCore
 			destBuffer[i] = val;
 		}
 	}
-	
+
 	void TextInputStream::getSubSections(const std::string &root, std::set<std::string> *sections)
 	{
 		size_t rootLength = root.length();

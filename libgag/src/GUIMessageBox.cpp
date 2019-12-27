@@ -36,12 +36,12 @@ namespace GAGGUI
 		virtual ~MessageBoxScreen() { }
 		virtual void onAction(Widget *source, Action action, int par1, int par2);
 	};
-	
+
 	MessageBoxScreen::MessageBoxScreen(GraphicContext *parentCtx, const std::string font, MessageBoxType type, std::string title, int titleWidth, int totCaptionWidth, int captionCount, int captionWidth[3], std::string captionArray[3])
 	:OverlayScreen(parentCtx, titleWidth > totCaptionWidth ? titleWidth : totCaptionWidth, 110)
 	{
 		addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, font, title));
-	
+
 		int dec;
 		if (titleWidth>totCaptionWidth)
 			dec=20+((titleWidth-totCaptionWidth)>>1);
@@ -54,13 +54,13 @@ namespace GAGGUI
 		}
 		dispatchInit();
 	}
-	
+
 	void MessageBoxScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (action==BUTTON_RELEASED)
 			endValue=par1;
 	}
-	
+
 	int MessageBox(GraphicContext *parentCtx, const std::string font, MessageBoxType type, std::string title, std::string caption1, std::string caption2, std::string caption3)
 	{
 		// for passing captions to class
@@ -68,11 +68,11 @@ namespace GAGGUI
 			caption1,
 			caption2,
 			caption3 };
-	
+
 		int captionWidth[3];
 		memset(captionWidth, 0, sizeof(captionWidth));
 		Font *fontPtr=Toolkit::getFont(font);
-	
+
 		// compute number of caption
 		unsigned captionCount;
 		if (!caption3.empty())
@@ -93,19 +93,19 @@ namespace GAGGUI
 			captionCount = 1;
 			captionWidth[0] = fontPtr->getStringWidth(captionArray[0])+40;
 		}
-	
+
 		int totCaptionWidth = captionWidth[0]+captionWidth[1]+captionWidth[2]+(captionCount-1)*20+40;
 		int titleWidth =  fontPtr->getStringWidth(title)+20;
-	
+
 		MessageBoxScreen *mbs = new MessageBoxScreen(parentCtx, font, type, title, titleWidth, totCaptionWidth, captionCount, captionWidth, captionArray);
-	
+
 		// save screen in a temporary surface
 		parentCtx->setClipRect();
 		DrawableSurface *background = new DrawableSurface(parentCtx->getW(), parentCtx->getH());
 		background->drawSurface(0, 0, parentCtx);
-		
+
 		mbs->dispatchPaint();
-	
+
 		SDL_Event event;
 		while(mbs->endValue<0)
 		{
@@ -140,20 +140,20 @@ namespace GAGGUI
 			Sint32 newTime = SDL_GetTicks();
 			SDL_Delay(std::max(40 - newTime + time, 0));
 		}
-	
+
 		int retVal;
 		if (mbs->endValue>=0)
 			retVal=mbs->endValue;
 		else
 			retVal=-1;
-	
+
 		// clean up
 		delete mbs;
-		
+
 		// restore screen and destroy temporary surface
 		parentCtx->drawSurface(0, 0, background);
 		delete background;
-	
+
 		return retVal;
 	}
 }

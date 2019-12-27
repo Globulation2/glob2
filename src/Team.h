@@ -55,7 +55,7 @@ public:
 	void setBaseTeam(const BaseTeam *initial);
 	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-	
+
 	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).
 	void createLists(void);
 
@@ -67,12 +67,12 @@ public:
 
 	//! Check some available integrity constraints
 	void integrity(void);
-	
+
 	//! remove the building from all lists not realated to the upgrade/destroying systems
 	void removeFromAbilitiesLists(Building *building);
 	//! add the building from all lists not realated to the upgrade/destroying systems
 	void addToStaticAbilitiesLists(Building *building);
-	
+
 	//! Do a step for each unit, building and bullet in team.
 	void syncStep(void);
 	//! Check if there is still players controlling this team, if not, it is dead
@@ -80,13 +80,13 @@ public:
 
 	///Push a new game event into the queue
 	void pushGameEvent(boost::shared_ptr<GameEvent> event);
-	
+
 	///Return the top-most event from the queue and remove it
 	boost::shared_ptr<GameEvent> getEvent();
-	
+
 	///This returns whether an event of the given type had occurred on the last tick
 	bool wasRecentEvent(GameEventType type);
-	
+
 	///Updates the list of events. This automatically clears events that get too old,
 	///and decrements the cooldown timers for each event type
 	void updateEvents();
@@ -95,10 +95,10 @@ public:
 	void setCorrectColor(const GAGCore::Color& color);
 	void setCorrectColor(float value);
 	inline static Uint32 teamNumberToMask(int team) { return 1<<team; }
-	
+
 	void update();
 	bool openMarket();
-	
+
 	Building *findNearestHeal(Unit *unit);
 	Building *findNearestFood(Unit *unit);
 	Building *findBestUpgrade(Unit *unit);
@@ -120,16 +120,16 @@ public:
 	void computeForbiddenArea();
 	void dirtyGlobalGradient();
 	void dirtyWarFlagGradient();
-	
+
 	//! Compute team checksum
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
-	
+
 	//! Return the name of the first player in the team
 	std::string getFirstPlayerName(void) const;
-	
+
 	//!  This checks all of the win conditions and updates hasWon, hasLost and winCondition
 	void checkWinConditions();
-	
+
 private:
 	void init(void);
 
@@ -137,9 +137,9 @@ public:
 	// game is the basic (structural) pointer. Map is used for direct access.
 	Game *game;
 	Map *map;
-	
+
 	Unit **myUnits;
-	
+
 	Building **myBuildings;
 
 	///This stores the buildings that need units, listed into their hard priorities. They are sorted based on priority.
@@ -147,7 +147,7 @@ public:
 
 	// thoses where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
 	std::list<Building *> upgrade[NB_ABILITY]; //to upgrade the units' abilities.
-	
+
 	// The list of building which have one specific ability.
 	std::list<Building *> canFeedUnit; // The buildings with not enough food are not in this list.
 	std::list<Building *> canHealUnit;
@@ -175,7 +175,7 @@ public:
 	Sint32 startPosX, startPosY;
 	Sint32 startPosSet; // {0=unset, 1=any unit, 2=any building, 3=swarm building}
 	Sint32 prestige;
-	
+
 	// Number of unit lost due to conversion
 	Sint32 unitConversionLost;
 	// Number of unit gained due to conversion
@@ -192,8 +192,8 @@ private:
 	///timer isn't at 0 when a new event is recieved, the new event
 	///is ignored.
 	Uint8 eventCooldownTimers[GESize];
-	
-	
+
+
 public:
 	///This is the teams race, which defines its properties
 	Race race;
@@ -209,7 +209,7 @@ public:
 	bool hasLost;
 	///This is the winningCondition that caused thist team to win/lose
 	WinningConditionType winCondition;
-	
+
 	//! the stat for this team. It is computed every step, so it is always updated.
 	// TeamStat latestStat; this has been moved to *stats.getLatestStat();
 	TeamStats stats;

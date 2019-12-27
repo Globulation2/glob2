@@ -38,7 +38,7 @@ namespace GAGGUI
 		bool recurse;
 		//! current subfolder
 		std::string current;
-	
+
 	public:
 		//! Constructor
 		FileList():List() { }
@@ -53,7 +53,7 @@ namespace GAGGUI
 						const std::string extension="", const bool recurse=false);
 		//! Destructor
 		virtual ~FileList();
-	
+
 		//! converts file name to displayed name (default removes .extension)
 		virtual std::string fileToList(const std::string fileName) const;
 		//! converts displayed name to file constname (default appends .extension)
@@ -62,10 +62,10 @@ namespace GAGGUI
 		std::string fullDir() const;
 		//! returns the full file name (by prepending fullDir()/)
 		std::string fullName(const std::string fileName) const;
-	
+
 		//! Sorts the list (puts directories first)
-		virtual void sort(void); 
-	
+		virtual void sort(void);
+
 	public:
 		//! Regenerate the list content from the current directory
 		void generateList();

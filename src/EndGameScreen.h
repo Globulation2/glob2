@@ -52,10 +52,10 @@ protected:
 
 	//! Returns the text for a particular time from seconds
 	std::string getTimeText(int seconds);
-	
+
 	//! Returns the text for the right-scale
 	std::string getRightScaleText(int value, int digits);
-	
+
 	/// Get the label of the end game stat
 	std::string getStatLabel();
 
@@ -91,10 +91,10 @@ protected:
 protected:
 	//! resort players
 	void sortAndSet(EndOfGameStat::Type type);
-	
+
 	//! pointer to the game, necessary for correctly saving replays
 	Game *game;
-	
+
 public:
 	EndGameScreen(GameGUI *gui);
 	virtual ~EndGameScreen() { }

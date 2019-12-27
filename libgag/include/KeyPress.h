@@ -29,7 +29,7 @@ class KeyPress
 public:
 	///Construct a KeyPress
 	KeyPress(SDL_keysym key, bool pressed);
-	
+
 	///Clone a KeyPress except changing the pressed value
 	KeyPress(KeyPress key, bool pressed);
 
@@ -44,31 +44,31 @@ public:
 
 	///Compares two KeyPress
 	bool operator==(const KeyPress& rhs) const;
-	
+
 	///Formats a key press
 	std::string format() const;
-	
+
 	///Interprets a key press from a string
 	void interpret(const std::string& s);
-	
+
 	///Returns the key
 	std::string getKey() const;
-	
+
 	///Returns the translated version of the key
 	std::string getTranslated() const;
-	
+
 	///Returns whether the key is to be pressed in or out
 	bool getPressed() const;
-	
+
 	///Returns whether the alt must be held with the key
 	bool needAlt() const;
-	
+
 	///Returns whether control must be held with the key
 	bool needControl() const;
-	
+
 	///Returns whether the meta must be helt with the key
 	bool needMeta() const;
-	
+
 	///Returns whether shift must be held with the key
 	bool needShift() const;
 private:

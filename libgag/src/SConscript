@@ -7,7 +7,7 @@ GUITextArea.cpp     GUIText.cpp           GUITextInput.cpp  GUIImage.cpp
 GUIProgressBar.cpp  KeyPress.cpp          Sprite.cpp        StreamBackend.cpp
 Stream.cpp          StreamFilter.cpp      StringTable.cpp   SupportFunctions.cpp
 TextStream.cpp      Toolkit.cpp           TrueTypeFont.cpp  win32_dirent.cpp
-GUITabScreen.cpp    GUITabScreenWindow.cpp  TextSort.cpp    GUICheckList.cpp  
+GUITabScreen.cpp    GUITabScreenWindow.cpp  TextSort.cpp    GUICheckList.cpp
 """)
 
 libgag_just_server = Split("""
@@ -16,7 +16,7 @@ BinaryStream.cpp     Stream.cpp     FileManager.cpp   FormatableString.cpp
 TextStream.cpp      StreamFilter.cpp   StreamBackend.cpp StringTable.cpp  Toolkit.cpp
 """)
 
-    
+
 Import("env")
 l1 = env.StaticLibrary("gag", libgag_sources)
 
@@ -28,14 +28,14 @@ if not env['server']:
 else:
     Default(l2)
 
-    
+
 Import("env")
 Import("PackTar")
 import os
-    
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
         if file.find(".cpp") != -1:
             PackTar(env["TARFILE"], file)
-    
+
     PackTar(env["TARFILE"], "SConscript")

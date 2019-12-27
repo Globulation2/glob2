@@ -34,7 +34,7 @@ struct Ressource
 	Uint8 variety;
 	Uint8 amount;
 	Uint8 animation;
-	
+
 	void clear() {type=NO_RES_TYPE; variety = 0;  amount = 0;  animation = 0; }
 	//void setUint32(Uint32 i) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
 	Uint32 getUint32() { return animation | (amount<<8) | (variety<<16) | (type<<24); }

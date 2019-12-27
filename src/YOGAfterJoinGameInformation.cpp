@@ -106,7 +106,7 @@ void YOGAfterJoinGameInformation::setMapFileID(Uint16 nfileID)
 {
 	fileID = nfileID;
 }
-	
+
 
 
 Uint16 YOGAfterJoinGameInformation::getMapFileID() const

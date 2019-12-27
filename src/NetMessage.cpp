@@ -237,21 +237,21 @@ NetSendOrder::NetSendOrder()
 }
 
 
-	
+
 NetSendOrder::NetSendOrder(boost::shared_ptr<Order> newOrder)
 {
 	order=newOrder;
 }
 
 
-	
+
 void NetSendOrder::changeOrder(boost::shared_ptr<Order> newOrder)
 {
 	order = newOrder;
 }
 
 
-	
+
 boost::shared_ptr<Order> NetSendOrder::getOrder()
 {
 	return order;
@@ -287,7 +287,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	Uint8* buffer = new Uint8[size];
 	stream->read(buffer, size, "data");
 	stream->readLeaveSection();
-	
+
 	order = Order::getOrder(buffer, size, VERSION_MINOR);
 
 	// If this couldn't be interpreted return it returned a NULL order, so we throw.
@@ -296,7 +296,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
-	
+
 	delete[] buffer;
 }
 
@@ -478,14 +478,14 @@ bool NetSendServerInformation::operator==(const NetMessage& rhs) const
 }
 
 
-	
+
 YOGLoginPolicy NetSendServerInformation::getLoginPolicy() const
 {
 	return loginPolicy;
 }
 
 
-	
+
 YOGGamePolicy NetSendServerInformation::getGamePolicy() const
 {
 	return gamePolicy;
@@ -706,7 +706,7 @@ bool NetRefuseLogin::operator==(const NetMessage& rhs) const
 }
 
 
-	
+
 YOGLoginState NetRefuseLogin::getRefusalReason() const
 {
 	return reason;
@@ -715,7 +715,7 @@ YOGLoginState NetRefuseLogin::getRefusalReason() const
 
 NetUpdateGameList::NetUpdateGameList()
 {
-	
+
 }
 
 
@@ -737,7 +737,7 @@ void NetUpdateGameList::encodeData(GAGCore::OutputStream* stream) const
 		stream->writeUint16(removedGames[i], "removedGames[i]");
 	}
 	stream->writeLeaveSection();
-	
+
 	stream->writeEnterSection("updatedGames");
 	stream->writeUint8(updatedGames.size(), "size");
 	for(Uint16 i=0; i<updatedGames.size(); ++i)
@@ -754,7 +754,7 @@ void NetUpdateGameList::encodeData(GAGCore::OutputStream* stream) const
 void NetUpdateGameList::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetUpdateGameList");
-	
+
 	stream->readEnterSection("removedGames");
 	Uint8 size = stream->readUint8("size");
 	removedGames.resize(size);
@@ -763,7 +763,7 @@ void NetUpdateGameList::decodeData(GAGCore::InputStream* stream)
 		removedGames[i]=stream->readUint16("removedGames[i]");
 	}
 	stream->readLeaveSection();
-	
+
 	stream->readEnterSection("updatedGames");
 	size = stream->readUint8("size");
 	updatedGames.resize(size);
@@ -863,9 +863,9 @@ NetAttemptRegistration::NetAttemptRegistration()
 NetAttemptRegistration::NetAttemptRegistration(const std::string& username, const std::string& password)
 	: username(username), password(password)
 {
-	
+
 }
-	
+
 
 
 
@@ -1085,7 +1085,7 @@ void NetUpdatePlayerList::encodeData(GAGCore::OutputStream* stream) const
 		stream->writeUint16(removedPlayers[i], "removedPlayers[i]");
 	}
 	stream->writeLeaveSection();
-	
+
 	stream->writeEnterSection("updatedPlayers");
 	stream->writeUint8(updatedPlayers.size(), "size");
 	for(Uint16 i=0; i<updatedPlayers.size(); ++i)
@@ -1102,7 +1102,7 @@ void NetUpdatePlayerList::encodeData(GAGCore::OutputStream* stream) const
 void NetUpdatePlayerList::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetUpdatePlayerList");
-	
+
 	stream->readEnterSection("removedPlayers");
 	Uint8 size = stream->readUint8("size");
 	removedPlayers.resize(size);
@@ -1111,7 +1111,7 @@ void NetUpdatePlayerList::decodeData(GAGCore::InputStream* stream)
 		removedPlayers[i]=stream->readUint16("removedPlayers[i]");
 	}
 	stream->readLeaveSection();
-	
+
 	stream->readEnterSection("updatedPlayers");
 	size = stream->readUint8("size");
 	updatedPlayers.resize(size);
@@ -1284,14 +1284,14 @@ Uint16 NetAttemptJoinGame::getGameID() const
 {
 	return gameID;
 }
-	
+
 
 
 NetGameJoinAccepted::NetGameJoinAccepted()
 {
 	chatChannel = 0;
 }
-	
+
 
 
 NetGameJoinAccepted::NetGameJoinAccepted(Uint32 chatChannel)
@@ -1417,7 +1417,7 @@ bool NetGameJoinRefused::operator==(const NetMessage& rhs) const
 	{
 		const NetGameJoinRefused& r = dynamic_cast<const NetGameJoinRefused&>(rhs);
 		if(r.reason == reason)
-			return true;	
+			return true;
 	}
 	return false;
 }
@@ -1742,7 +1742,7 @@ bool NetCreateGameRefused::operator==(const NetMessage& rhs) const
 	{
 		const NetCreateGameRefused& r = dynamic_cast<const NetCreateGameRefused&>(rhs);
 		if(reason == r.reason)
-			return true;	
+			return true;
 	}
 	return false;
 }
@@ -1815,7 +1815,7 @@ bool NetSendGameHeader::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-	
+
 
 void NetSendGameHeader::downloadToGameHeader(GameHeader& newGameHeader)
 {

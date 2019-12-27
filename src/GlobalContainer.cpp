@@ -92,7 +92,7 @@ GlobalContainer::GlobalContainer(void)
 
 	hostRouter = false;
 	adminRouter = false;
-	
+
 	runTestGames=false;
 	runTestMapGeneration=false;
 	automaticEndingGame=false;
@@ -511,12 +511,12 @@ void GlobalContainer::loadClient(void)
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
 		gfx->setMinRes(640, 480);
 		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
-		
+
 		// load data required for drawing progress screen
 		title = new DrawableSurface("data/gfx/title.png");
 		terrain = Toolkit::getSprite("data/gfx/terrain");
 		updateLoadProgressScreen(0);
-		
+
 		// create mixer
 		mix = new SoundMixer(settings.musicVolume, settings.voiceVolume, settings.mute);
 		mix->loadTrack("data/zik/intro.ogg");
@@ -526,17 +526,17 @@ void GlobalContainer::loadClient(void)
 		mix->loadTrack("data/zik/original/a3.ogg");
 		mix->setNextTrack(0);
 		mix->setNextTrack(1);
-		
+
 		// create voice recorder
 		voiceRecorder = new VoiceRecorder();
-		
+
 		updateLoadProgressScreen(15);
 	}
-	
+
 	// load buildings types
 	buildingsTypes.load();
 	IntBuildingType::init();
-	
+
 	if (!runNoX)
 	{
 		updateLoadProgressScreen(35);
@@ -560,7 +560,7 @@ void GlobalContainer::loadClient(void)
 	if (!runNoX)
 	{
 		updateLoadProgressScreen(40);
-		
+
 		// load fonts
 		std::string fontfile = "data/fonts/";
 		fontfile+=+PRIMARY_FONT;
@@ -579,13 +579,13 @@ void GlobalContainer::loadClient(void)
 		//terrain = Toolkit::getSprite("data/gfx/terrain"); // terrain is already loaded as it is required to display progress screen
 		terrainWater = Toolkit::getSprite("data/gfx/water");
 		terrainCloud = Toolkit::getSprite("data/gfx/cloud");
-		
+
 		// black for unexplored terrain
 		terrainBlack = Toolkit::getSprite("data/gfx/black");
 
 		// load shader for invisible terrain
 		terrainShader = Toolkit::getSprite("data/gfx/shade");
-		
+
 		updateLoadProgressScreen(60);
 		// load resources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
@@ -595,7 +595,7 @@ void GlobalContainer::loadClient(void)
 		areaGuard = Toolkit::getSprite("data/gfx/area-guard");
 		bullet = Toolkit::getSprite("data/gfx/bullet");
 		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
-		deathAnimation = Toolkit::getSprite("data/gfx/death"); 
+		deathAnimation = Toolkit::getSprite("data/gfx/death");
 
 		updateLoadProgressScreen(70);
 		// load units
@@ -609,7 +609,7 @@ void GlobalContainer::loadClient(void)
 		brush = Toolkit::getSprite("data/gfx/brush");
 		magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
 		particles = Toolkit::getSprite("data/gfx/particle");
-		
+
 		// use custom style
 		Style::style = new Glob2Style;
 
@@ -634,7 +634,7 @@ void GlobalContainer::load(void)
 		assert(false);
 		exit(-1);
 	}
-	
+
 	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
 	// load default unit types
 	Race::loadDefault();

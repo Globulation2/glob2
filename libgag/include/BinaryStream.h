@@ -38,11 +38,11 @@ namespace GAGCore
 	public:
 		BinaryOutputStream(StreamBackend *backend) { this->backend = backend; doingSHA1 = false;}
 		virtual ~BinaryOutputStream() { delete backend; }
-	
+
 		virtual void write(const void *data, const size_t size, const std::string name);
-	
+
 		virtual void writeEndianIndependant(const void *v, const size_t size, const std::string name);
-	
+
 		virtual void writeSint8(const Sint8 v, const std::string name) { this->write(&v, 1, name); }
 		virtual void writeUint8(const Uint8 v, const std::string name) { this->write(&v, 1, name); }
 		virtual void writeSint16(const Sint16 v, const std::string name) { this->writeEndianIndependant(&v, 2, name); }
@@ -52,16 +52,16 @@ namespace GAGCore
 		virtual void writeFloat(const float v, const std::string name) { this->writeEndianIndependant(&v, 4, name); }
 		virtual void writeDouble(const double v, const std::string name) { this->writeEndianIndependant(&v, 8, name); }
 		virtual void writeText(const std::string &v, const std::string name);
-		
+
 		virtual void flush(void) { backend->flush(); }
-		
+
 		virtual void writeEnterSection(const std::string name) { }
 		virtual void writeEnterSection(unsigned id) { }
 		virtual void writeLeaveSection(size_t count = 1) { }
-		
+
 		void enableSHA1();
 		void finishSHA1(Uint8 sha1[20]);
-		
+
 		virtual bool canSeek(void) { return true; }
 		virtual void seekFromStart(int displacement) { backend->seekFromStart(displacement); }
 		virtual void seekFromEnd(int displacement) { backend->seekFromEnd(displacement); }
@@ -70,7 +70,7 @@ namespace GAGCore
 		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
 		virtual bool isValid(void) { return backend->isValid(); }
 	};
-	
+
 	/// This class reads compressed data that was written by BinaryOutputStream.
 	/// The name argument in most functions isn't used, and the writeEnterSection has no effect.
 	/// Only the order in which you read the data to the stream is important.
@@ -78,15 +78,15 @@ namespace GAGCore
 	{
 	private:
 		StreamBackend *backend;
-		
+
 	public:
 		BinaryInputStream(StreamBackend *backend) { this->backend = backend; }
 		virtual ~BinaryInputStream() { delete backend; }
-	
+
 		virtual void read(void *data, size_t size, const std::string name) { backend->read(data, size); }
-	
+
 		virtual void readEndianIndependant(void *v, size_t size, const std::string name);
-	
+
 		virtual Sint8 readSint8(const std::string name) { Sint8 i; this->read(&i, 1, name); return i; }
 		virtual Uint8 readUint8(const std::string name) { Uint8 i; this->read(&i, 1, name); return i; }
 		virtual Sint16 readSint16(const std::string name) { Sint16 i; this->readEndianIndependant(&i, 2, name); return i; }
@@ -96,11 +96,11 @@ namespace GAGCore
 		virtual float readFloat(const std::string name) { float f; this->readEndianIndependant(&f, 4, name); return f; }
 		virtual double readDouble(const std::string name) { double d; this->readEndianIndependant(&d, 8, name); return d; }
 		virtual std::string readText(const std::string name);
-		
+
 		virtual void readEnterSection(const std::string name) { }
 		virtual void readEnterSection(unsigned id) { }
 		virtual void readLeaveSection(size_t count = 1) { }
-		
+
 		virtual bool canSeek(void) { return true; }
 		virtual void seekFromStart(int displacement) { backend->seekFromStart(displacement); }
 		virtual void seekFromEnd(int displacement) { backend->seekFromEnd(displacement); }

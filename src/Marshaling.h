@@ -99,4 +99,4 @@ inline Sint8 getSint8(const Uint8 *data, int pos)
 }
 
 #endif
- 
+

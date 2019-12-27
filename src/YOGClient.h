@@ -46,13 +46,13 @@ class YOGClient
 public:
 	///Initializes and attempts to connect to server.
 	YOGClient(const std::string& server);
-	
+
 	///Initializes the client as empty
 	YOGClient();
-	
+
 	///Initializes the client as empty
 	void initialize();
-	
+
 	///Attempts a connection to server.
 	void connect(const std::string& server);
 
@@ -64,10 +64,10 @@ public:
 
 	///Updates the client. This parses and interprets any incoming messages.
 	void update();
-	
+
 	///This returns the current ip address
 	const std::string& getIPAddress() const;
-	
+
 	///This defines the current state of the connection. There are many states,
 	///due to the asychronous design.
 	enum ConnectionState
@@ -90,18 +90,18 @@ public:
 		///for some input
 		ClientOnStandby,
 	};
-	
+
 	///This returns the current connection state. This state includes both internal and external
 	ConnectionState getConnectionState() const;
-	
+
 	///This will return the current login policy used by the server, if its known.
 	///When unknown, this will return YOGUnknownLoginPolicy
 	YOGLoginPolicy getLoginPolicy() const;
-	
+
 	///This will return the current game policy used by the server, if its known.
 	///When unknown, this will return YOGUnknownGamePolicy
 	YOGGamePolicy getGamePolicy() const;
-	
+
 	///This will return the playerID of the current connection
 	Uint16 getPlayerID() const;
 
@@ -110,12 +110,12 @@ public:
 	///be ignored. Login attempts should be done when the client is in the
 	///WaitingForLoginInformation state.
 	void attemptLogin(const std::string& username, const std::string& password = "");
-	
+
 	///This all attempt to register a new user with the provided login information.
 	///The password is mandatory. After a successful register, the client is
 	///considered logged-in and does not need to attempt a login
 	void attemptRegistration(const std::string& username, const std::string& password);
-	
+
 	///This will return the login state. When this is unknown (it hasn't recieved a reply
 	///yet), this returns YOGLoginUnknown. In the case when there has been multiple
 	///attempts at a login (or registration), this returns the state of the most recent attempt that has
@@ -125,7 +125,7 @@ public:
 	///This will disconnect the client and server
 	void disconnect();
 
-	///Returns the username for the player	
+	///Returns the username for the player
 	std::string getUsername() const;
 
 	///Sends the message to create a new game with the given game name to the server
@@ -139,7 +139,7 @@ public:
 
 	///Sets a file assembler for the given id
 	void setYOGClientFileAssembler(Uint16 fileID, boost::shared_ptr<YOGClientFileAssembler> assembler);
-	
+
 	///Returns the map assembler for this connection
 	boost::shared_ptr<YOGClientFileAssembler> getYOGClientFileAssembler(Uint16 fileID);
 
@@ -151,7 +151,7 @@ public:
 
 	///This attaches a P2PConnection to this client
 	void setP2PConnection(boost::shared_ptr<P2PConnection> connection);
-	
+
 	///This retrieves the attached P2P connection
 	boost::shared_ptr<P2PConnection> getP2PConnection();
 
@@ -199,7 +199,7 @@ public:
 
 	///This sets the YOGClientMapDownloader of this client
 	void setMapDownloader(YOGClientMapDownloader* downloader);
-	
+
 	///This returns the YOGClientMapDownloader of this client
 	YOGClientMapDownloader* getMapDownloader();
 
@@ -215,7 +215,7 @@ protected:
 	friend class YOGClientMapDownloadScreen;
 	friend class YOGClientDownloadableMapList;
 	friend class YOGClientMapDownloader;
-    
+
     ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGClientChatChannel
     void sendNetMessage(boost::shared_ptr<NetMessage> message);
 
@@ -238,13 +238,13 @@ private:
 	NetConnection nc;
 
 	ConnectionState connectionState;
-	
+
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 	YOGLoginState loginState;
-	
+
 	std::map<Uint32, YOGClientChatChannel*> chatChannels;
-	
+
 	boost::shared_ptr<MultiplayerGame> joinedGame;
 	std::map<Uint16, boost::shared_ptr<YOGClientFileAssembler> > assembler;
 	boost::shared_ptr<P2PConnection> p2pconnection;

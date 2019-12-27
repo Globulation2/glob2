@@ -38,7 +38,7 @@ public:
 	///Construct a LANFindScreen
 	LANFindScreen();
 	virtual ~LANFindScreen();
-	
+
 	void onTimer(Uint32 tick);
 
 	void onSDLEvent(SDL_Event *event);
@@ -64,7 +64,7 @@ private:
 
 	List *lanServers;
 	bool wasVisible;
-	
+
 	NetBroadcastListener listener;
 };
 

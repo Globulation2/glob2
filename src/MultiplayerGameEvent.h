@@ -51,10 +51,10 @@ public:
 
 	///Returns the event type
 	virtual Uint8 getEventType() const = 0;
-	
+
 	///Returns a formatted version of the event
 	virtual std::string format() const = 0;
-	
+
 	///Compares two MultiplayerGameEvent
 	virtual bool operator==(const MultiplayerGameEvent& rhs) const = 0;
 };
@@ -74,7 +74,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -94,7 +94,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -114,7 +114,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -133,7 +133,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -153,7 +153,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -173,7 +173,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -193,7 +193,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -213,7 +213,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -233,7 +233,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -253,7 +253,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -273,7 +273,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -293,7 +293,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 };
@@ -313,7 +313,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 
@@ -338,7 +338,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two MultiplayerGameEvent
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 

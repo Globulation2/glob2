@@ -37,11 +37,11 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(gameSpriteCount, "gameSpriteCount");
 	configBlock->load(miniSprite, "miniSprite");
 	configBlock->load(miniSpriteImage, "miniSpriteImage");
-	
+
 	configBlock->load(hueImage,"hueImage");
 	configBlock->load(flagImage,"flagImage");
 	configBlock->load(crossConnectMultiImage,"crossConnectMultiImage");
-	
+
 	assert(NB_ABILITY == 17);
 	configBlock->load(upgrade[0], "upgradeStopWalk");
 	configBlock->load(upgrade[1], "upgradeStopSwim");
@@ -78,10 +78,10 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgradeTime[15], "upgradeTimeArmor");
 	configBlock->load(upgradeTime[16], "upgradeTimeHP");
 	configBlock->load(upgradeInParallel, "upgradeInParallel");
-	
+
 	configBlock->load(foodable, "foodable");
 	configBlock->load(fillable, "fillable");
-	
+
 	assert(NB_UNIT_TYPE == 3);
 	configBlock->load(zonable[0], "zonableWorker");
 	configBlock->load(zonable[1], "zonableExplorer");
@@ -111,7 +111,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 
 	configBlock->load(unitProductionTime, "unitProductionTime");
 	configBlock->load(ressourceForOneUnit, "ressourceForOneUnit");
-	
+
 	assert(MAX_NB_RESSOURCES == 15);
 	configBlock->load(maxRessource[0], "maxWood");
 	configBlock->load(maxRessource[1], "maxCorn");
@@ -160,9 +160,9 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 
 	configBlock->load(viewingRange, "viewingRange");
 	configBlock->load(regenerationSpeed, "regenerationSpeed");
-	
+
 	configBlock->load(prestige, "prestige");
-	
+
 	// regenerate local parameters
 	if ((!globalContainer->runNoX) && (type != "null"))
 	{
@@ -176,7 +176,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 Uint32 BuildingType::checkSum(void)
 {
 	Uint32 cs = 0;
-	
+
 	for (size_t i = 0; i<(size_t)NB_ABILITY; i++)
 	{
 		cs ^= upgrade[i];
@@ -277,6 +277,6 @@ Uint32 BuildingType::checkSum(void)
 	cs ^= regenerationSpeed;
 	cs = (cs<<1) | (cs>>31);
 	cs ^= prestige;
-	
+
 	return cs;
 }

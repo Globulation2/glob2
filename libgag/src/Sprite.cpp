@@ -37,40 +37,40 @@ namespace GAGCore
 			delete it->second;
 		}
 	}
-	
+
 	bool Sprite::load(const std::string filename)
 	{
 		SDL_RWops *frameStream;
 		SDL_RWops *rotatedStream;
 		unsigned i = 0;
-		
+
 		this->fileName = filename;
-		
+
 		while (true)
 		{
 			std::ostringstream frameName;
 			frameName << filename << i << ".png";
 			frameStream = Toolkit::getFileManager()->open(frameName.str().c_str(), "rb");
-	
+
 			std::ostringstream frameNameRot;
 			frameNameRot << filename << i << "r.png";
 			rotatedStream = Toolkit::getFileManager()->open(frameNameRot.str().c_str(), "rb");
-	
+
 			if (!((frameStream) || (rotatedStream)))
 				break;
-	
+
 			loadFrame(frameStream, rotatedStream);
-	
+
 			if (frameStream)
 				SDL_RWclose(frameStream);
 			if (rotatedStream)
 				SDL_RWclose(rotatedStream);
 			i++;
 		}
-		
+
 		return getFrameCount() > 0;
 	}
-	
+
 	DrawableSurface *Sprite::getRotatedSurface(int index)
 	{
 		RotatedImage::RotationMap::const_iterator it = rotated[index]->rotationMap.find(actColor);
@@ -83,11 +83,11 @@ namespace GAGCore
 			Color(51, 255, 153).getHSV(&baseHue, &sat, &lum);
 			actColor.getHSV(&actHue, &sat, &lum);
 			hueShift = actHue - baseHue;
-			
+
 			// rotate image
 			ds = rotated[index]->orig->clone();
 			ds->shiftHSV(hueShift, 0.0f, 0.0f);
-			
+
 			// write back
 			rotated[index]->rotationMap[actColor] = ds;
 		}
@@ -97,7 +97,7 @@ namespace GAGCore
 		}
 		return ds;
 	}
-	
+
 	Sprite::~Sprite()
 	{
 		for (std::vector <DrawableSurface *>::iterator imagesIt = images.begin(); imagesIt != images.end(); ++imagesIt)
@@ -111,7 +111,7 @@ namespace GAGCore
 				delete (*rotatedIt);
 		}
 	}
-	
+
 	void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
 	{
 		if (frameStream)
@@ -123,7 +123,7 @@ namespace GAGCore
 		}
 		else
 			images.push_back(NULL);
-	
+
 		if (rotatedStream)
 		{
 			SDL_Surface *sprite = IMG_Load_RW(rotatedStream, 0);
@@ -134,7 +134,7 @@ namespace GAGCore
 		else
 			rotated.push_back(NULL);
 	}
-	
+
 	int Sprite::getW(int index)
 	{
 		if (!checkBound(index))
@@ -146,7 +146,7 @@ namespace GAGCore
 		else
 			return 0;
 	}
-	
+
 	int Sprite::getH(int index)
 	{
 		if (!checkBound(index))
@@ -158,12 +158,12 @@ namespace GAGCore
 		else
 			return 0;
 	}
-	
+
 	int Sprite::getFrameCount(void)
 	{
 		return std::max(images.size(), rotated.size());
 	}
-	
+
 	bool Sprite::checkBound(int index)
 	{
 		if ((index < 0) || (index >= getFrameCount()))

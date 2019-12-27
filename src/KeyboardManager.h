@@ -55,19 +55,19 @@ public:
 
 	///Formats a translated version, not for serializtaion
 	std::string formatTranslated(ShortcutMode mode) const;
-	
+
 	///Counts how many key presses there is
 	size_t getKeyPressCount() const;
-	
+
 	///Returns the n'th key press
 	KeyPress getKeyPress(size_t n) const;
-	
+
 	///Sets the action accossiatted with this shortcut
 	void setAction(Uint32 action);
-	
+
 	///Returns the action accossiatted with this shortcut
 	Uint32 getAction() const;
-	
+
 	///Returns whether this shortcut is valid. Shortcuts are invalid if any of the
 	///KeyPresses where not changed from "no key"
 	bool isShortcutValid() const;
@@ -83,13 +83,13 @@ class KeyboardManager
 public:
 	///Constructs a keyboard manager, either to use the MapEdit shortcuts or the GameGUI shortcuts
 	KeyboardManager(ShortcutMode mode);
-	
+
 	///Returns the integer action accossiatted with the provided key.
 	Uint32 getAction(const KeyPress& key);
-	
+
 	///Saves the keyboard layout
 	void saveKeyboardLayout() const;
-	
+
 	///Loads the keyboard layout, returns false in unsuccessfull
 	bool loadKeyboardLayout(const std::string& file);
 

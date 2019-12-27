@@ -33,15 +33,15 @@ class YOGServerRouterAdministrator
 public:
 	///Constructs the administration engine
 	YOGServerRouterAdministrator(YOGServerRouter* router);
-	
+
 	///Destroys the administration engine
 	~YOGServerRouterAdministrator();
-	
+
 	///Interprets whether the given message is an administrative command,
 	///and if so, executes it. If it was, returns true, otherwise, returns
 	///false
 	bool executeAdministrativeCommand(const std::string& message, YOGServerRouterPlayer* player);
-	
+
 	///This sends a message to the player from the administrator engine
 	void sendTextMessage(const std::string& message, YOGServerRouterPlayer* admin);
 

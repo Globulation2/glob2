@@ -92,13 +92,13 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		// Get the type and sprite
 		int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-		
+
 		// Translate the mouse position to a building position, and check if there is room
 		// on the map
 		int mapX, mapY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
-		
-		
+
+
 		SDLMod modState = SDL_GetModState();
 		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || firstPlacementX==-1)
 		{
@@ -173,7 +173,7 @@ GameGUIToolManager::ZoneType GameGUIToolManager::getZoneType() const
 void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
 {
 	if(mode == PlaceBuilding)
-	{		
+	{
 		// we get the type of building
 		// try to get the building site, if it doesn't exists, get the finished building (for flags)
 		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
@@ -197,7 +197,7 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		//incorrect areas can be adjusted easily
 		int mapX, mapY;
 		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
-		
+
 		if(firstPlacementX == -1)
 		{
 			firstPlacementX=mapX;
@@ -219,7 +219,7 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		flushBrushOrders(localteam);
 	}
 	if(mode == PlaceBuilding)
-	{		
+	{
 		// we get the type of building
 		// try to get the building site, if it doesn't exists, get the finished building (for flags)
 		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
@@ -231,7 +231,7 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		assert (typeNum!=-1);
 
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-		
+
 		int mapX, mapY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
@@ -330,7 +330,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 			}
 		}
 	}
-	
+
 	// if we have an area over 32x32, which mean over 128 bytes, send it
 	if (brushAccumulator.getAreaSurface() > 32*32)
 	{
@@ -387,14 +387,14 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 			isRoom=game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, localteam);
 		else
 			isRoom=game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-			
-	
+
+
 		if(ghostManager.isGhostBuilding(mapX, mapY, bt->width, bt->height))
 			isRoom = false;
-		
+
 		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
 		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
-		
+
 		if (isRoom)
 		{
 			int r = 0;
@@ -414,30 +414,30 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
 	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 	Sprite *sprite = bt->gameSpritePtr;
-		
+
 	int tempX = mapX, tempY = mapY;
 	bool isRoom;
 	if (bt->isVirtual)
 		isRoom=game.checkRoomForBuilding(mapX, mapY, bt, &tempX, &tempY, localteam);
 	else
 		isRoom=game.checkHardRoomForBuilding(mapX, mapY, bt, &tempX, &tempY);
-			
-	
+
+
 	if(ghostManager.isGhostBuilding(tempX, tempY, bt->width, bt->height))
 		isRoom = false;
-	
+
 	// Increase/Decrease hilight strength, given whether there is room or not
 	if (isRoom)
 		hilightStrength = std::min(hilightStrength + 0.1f, 1.0f);
 	else
 		hilightStrength = std::max(hilightStrength - 0.1f, 0.0f);
-		
+
 	// we get the screen dimensions of the building
 	int batW = (bt->width) * 32;
 	int batH = sprite->getH(bt->gameSpriteImage);
 	int batX = (((tempX-viewportX)&(game.map.wMask)) * 32);
 	int batY = (((tempY-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
-	
+
 	// Draw the building
 	sprite->setBaseColor(game.teams[localteam]->color);
 	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, hilightStrength));
@@ -451,7 +451,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
 			globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
 			globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
-			
+
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
 			globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
 			globalContainer->littleFont->popStyle();
@@ -463,7 +463,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
 			else
 				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-			
+
 			// We look for its maximum extension size
 			// we find last's level type num:
 			BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
@@ -480,7 +480,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 					break;
 				}
 			}
-				
+
 			int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
 			bool isExtendedRoom = game.checkHardRoomForBuilding(mapX, mapY, lastbt, &exMapX, &exMapY);
 			int exBatX=((exMapX-viewportX)&(game.map.wMask)) * 32;
@@ -501,12 +501,12 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 	// Get the type and sprite
 	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
 	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-		
+
 	int startx = sx;
 	int endx = ex;
 	int starty = sy;
 	int endy = ey;
-	
+
 	int dirx = (endx > startx ? 1 : -1);
 	int distx = std::abs(endx - startx);
 	if(distx > game.map.getW()/2)
@@ -514,7 +514,7 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 		dirx = -dirx;
 		distx = game.map.getW() -  distx;
 	}
-			
+
 	int diry = (endy > starty ? 1 : -1);
 	int disty = std::abs(endy - starty);
 	if(disty > game.map.getH()/2)
@@ -522,7 +522,7 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 		diry = -diry;
 		disty = game.map.getH() -  disty;
 	}
-	
+
 	int bw = 0;
 	int bh = 0;
 	if(distx > disty)
@@ -629,12 +629,12 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 	// Get the type and sprite
 	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
 	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-	
+
 	int startx = sx;
 	int endx = ex;
 	int starty = sy;
 	int endy = ey;
-	
+
 	int dirx = (endx > startx ? 1 : -1);
 	int distx = std::abs(endx - startx);
 	if(distx > game.map.getW()/2)
@@ -642,7 +642,7 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 		dirx = -dirx;
 		distx = game.map.getW() -  distx;
 	}
-			
+
 	int diry = (endy > starty ? 1 : -1);
 	int disty = std::abs(endy - starty);
 	if(disty > game.map.getH()/2)
@@ -650,10 +650,10 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 		diry = -diry;
 		disty = game.map.getH() -  disty;
 	}
-	
+
 	endx = game.map.normalizeX(endx + (distx % bt->width + 1) * dirx);
 	endy = game.map.normalizeY(endy + (disty % bt->height + 1) * diry);
-	
+
 	int bx=0;
 	for(int x=startx; x!=endx;)
 	{
@@ -674,8 +674,8 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 				}
 				y=game.map.normalizeY(y+diry);
 			}
-			bx = bt->width;	
-		}	
+			bx = bt->width;
+		}
 		x=game.map.normalizeX(x+dirx);
 	}
 }

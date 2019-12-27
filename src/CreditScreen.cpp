@@ -37,7 +37,7 @@ using namespace GAGCore;
 // INCLUDE part
 // #ifndef __SCROLLINGTEXT_H
 // #define __SCROLLINGTEXT_H
-// 
+//
 // #include "GUIBase.h"
 // #include <string>
 
@@ -77,17 +77,17 @@ ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	this->h = h;
 	this->hAlignFlag = hAlign;
 	this->vAlignFlag = vAlign;
-	
+
 	offset = 0;
 	imgid = 0;
 	imgid0 = 88;
-	
+
 	assert(font.size());
 	assert(filename.size());
 	this->font = font;
 	this->filename = filename;
 	fontPtr = NULL;
-	
+
 	// load text
 	InputLineStream *inputLineStream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
 	if (inputLineStream->isEndOfStream())
@@ -108,10 +108,10 @@ void ScrollingText::internalInit(void)
 {
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
-	int x, y, w, h;	
+	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
 	offset = -h + 25;
-	
+
 	// Measures all the length of all the lines of the file (usefull for centering)
 	for (size_t i = 0; i < text.size(); i++)
 	{
@@ -128,7 +128,7 @@ void ScrollingText::internalInit(void)
 				s.erase(f, l-f+1);
 			}
 		}
-		xPos.push_back((w-fontPtr->getStringWidth(s.c_str()))>>1);	
+		xPos.push_back((w-fontPtr->getStringWidth(s.c_str()))>>1);
 	}
 }
 
@@ -136,7 +136,7 @@ void ScrollingText::paint()
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
-	
+
 	assert(parent);
 	assert(parent->getSurface());
 
@@ -156,13 +156,13 @@ void ScrollingText::paint()
 			{
 				int px = 2*h+(offset-yPos)*4;
 				int py = yPos-offset;
-				
+
 				Sprite *unitSprite=globalContainer->units;
 				unitSprite->setBaseColor(128, 128, 128);
 				int decX = (unitSprite->getW(imgid)-32)>>1;
 				int decY = (unitSprite->getH(imgid)-32)>>1;
 				globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
-				
+
 				yPos += 20;
 			}
 			else
@@ -188,7 +188,7 @@ void ScrollingText::onTimer(Uint32 tick)
 CreditScreen::CreditScreen()
 {
 	addWidget(new TextButton(20, 20, 100,  40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Back]"), 0, 27));
-	
+
 	addWidget(new ScrollingText(0, 0 , 0, 0, ALIGN_FILL, ALIGN_FILL, "standard", "data/authors.txt"));
 }
 

@@ -29,10 +29,10 @@ namespace Utilities
 	private:
 		std::valarray<unsigned char> values;
 		size_t bitLength;
-		
+
 		size_t bitToByte(size_t v);
 		void assertPos(size_t pos);
-		
+
 	public:
 		BitArray() { bitLength = 0; }
 		BitArray(size_t size, bool defaultValue = false);

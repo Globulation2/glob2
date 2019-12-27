@@ -145,7 +145,7 @@ public:
 	InGameObjectivesScreen(GameGUI* gui, bool showBriefing);
 	virtual ~InGameObjectivesScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	
+
 	Text* objectives;
 	Text* briefing;
 	Text* hints;

@@ -28,7 +28,7 @@ namespace GAGCore
 		nextType = currentType = CURSOR_NORMAL;
 		currentFrame = 0;
 	}
-	
+
 	void CursorManager::load(void)
 	{
 		cursors.clear();
@@ -46,13 +46,13 @@ namespace GAGCore
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/mark"));
 		setDefaultColor();
 	}
-	
+
 	void CursorManager::nextTypeFromMouse(DrawableSurface *ds, int x, int y, bool button)
 	{
 		// if we are in a user mode, we don't change it
 		if (nextType > CURSOR_LEFT)
 			return;
-		
+
 		// button override directions
 		const int limit = 20;
 		if (button)
@@ -60,7 +60,7 @@ namespace GAGCore
 			nextType = CURSOR_CLICK;
 			return;
 		}
-		
+
 		// cursor change if near end of screen
 		int w = ds->getW();
 		int h = ds->getH();
@@ -92,13 +92,13 @@ namespace GAGCore
 				nextType = CURSOR_NORMAL;
 		}
 	}
-	
+
 	void CursorManager::setNextType(CursorType type)
 	{
 		nextType = type;
 	}
-	
-	
+
+
 	void CursorManager::setDrawColor(const Color& color)
 	{
 		for(unsigned i = 0; i<cursors.size(); ++i)
@@ -106,16 +106,16 @@ namespace GAGCore
 			cursors[i]->setBaseColor(color);
 		}
 	}
-	
-	
-	
+
+
+
 	void CursorManager::setDefaultColor()
 	{
 		setDrawColor(Color(255, 0, 0));
 	}
-	
-	
-	
+
+
+
 	void CursorManager::draw(DrawableSurface *ds, int x, int y)
 	{
 		if (currentFrame >= cursors[static_cast<int>(currentType)]->getFrameCount())

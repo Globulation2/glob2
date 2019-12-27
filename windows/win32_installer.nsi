@@ -22,8 +22,8 @@
 ;------------------------------------
 ;Store the users Language Selection
 ;------------------------------------
-  !define MUI_LANGDLL_REGISTRY_ROOT "HKCU" 
-  !define MUI_LANGDLL_REGISTRY_KEY "Software\Globulation_2" 
+  !define MUI_LANGDLL_REGISTRY_ROOT "HKCU"
+  !define MUI_LANGDLL_REGISTRY_KEY "Software\Globulation_2"
   !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
 ;------------------------------------
@@ -35,8 +35,8 @@
     !insertmacro MUI_PAGE_WELCOME
     !insertmacro MUI_PAGE_LICENSE "..\COPYING"
     !insertmacro MUI_PAGE_DIRECTORY
-    !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-    !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Globulation_2" 
+    !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
+    !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Globulation_2"
     !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
     !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
     !insertmacro MUI_PAGE_INSTFILES
@@ -116,7 +116,7 @@
   RMDir $INSTDIR\logs
   RMDir $INSTDIR\videoshots
   RMDir $INSTDIR
-  
+
   ;------------------------------------
   ;Delete shortcuts
   ;------------------------------------
@@ -139,14 +139,14 @@
   Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
   FunctionEnd
-  
+
 ;------------------------------------
 ;Uninstaller Functions
 ;------------------------------------
   Function un.onInit
   ;------------------------------------
   ;Make sure Globulation 2 isn't running
-  ;------------------------------------  
+  ;------------------------------------
     FindWindow $0 "" "Globulation 2"
     StrCmp $0 0 continueInstall
     MessageBox MB_ICONSTOP|MB_OK "The application you are trying to remove is currently running. Close it and try again."

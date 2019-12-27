@@ -22,7 +22,7 @@
 #include "MultiplayerGameEvent.h"
 #include "boost/shared_ptr.hpp"
 
-/// This is a mix-in class. Classes that want to respond to 
+/// This is a mix-in class. Classes that want to respond to
 /// MultiplayerGameEvents should derive from this class
 class MultiplayerGameEventListener
 {

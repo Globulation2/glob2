@@ -1,13 +1,13 @@
 import os
-    
+
 Import("env")
 Import("PackTar")
-    
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
         if file.find(".sgsl") != -1:
             PackTar(env["TARFILE"], file)
             env.Install(env["INSTALLDIR"]+"/glob2/scripts", file)
-    
+
     env.Alias("install", env["INSTALLDIR"]+"/glob2/scripts")
     PackTar(env["TARFILE"], "SConscript")

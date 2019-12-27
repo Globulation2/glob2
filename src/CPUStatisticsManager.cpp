@@ -39,7 +39,7 @@ void CPUStatisticsManager::reset(int atime_per_frame)
 }
 
 
-	
+
 void CPUStatisticsManager::addFrameData(int cpu_time_used)
 {
 	if(frame_number % 10 == 0)
@@ -68,10 +68,10 @@ void CPUStatisticsManager::format()
 			line+= "0" + boost::lexical_cast<std::string>(seconds);
 		else
 			line+= boost::lexical_cast<std::string>(seconds);
-		
+
 		while(line.size() < 10)
 			line += " ";
-		
+
 		int total_cpu_time_consumed=0;
 		int total_recorded=0;
 		for(int j = (statistics.size() * (i) / 20); j < (statistics.size() * (i+1) / 20); ++j)
@@ -79,13 +79,13 @@ void CPUStatisticsManager::format()
 			total_cpu_time_consumed += statistics[j];
 			total_recorded += 1;
 		}
-		
+
 		float cpu_usage = (float)(total_cpu_time_consumed) / (float)(total_recorded * time_per_frame);
 		line += boost::lexical_cast<std::string>(cpu_usage);
-		
+
 		stream->writeLine(line);
 	}
-	
+
 	delete stream;
 */
 }

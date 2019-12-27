@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2007 Bradley Arsenault
-  
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -54,15 +54,15 @@ public:
 
 	///This tells whether the given on-screen cordinates are inside the minimap itself
 	bool insideMinimap(int x, int y);
-	
+
 	///This converts the given on-screen cordinate (provided its within the minimap itself)
 	///to a cordinate on the map. The nx and ny variables are the on-screen cordinates,
 	///the x and y variables are where the map cordinates will be placed.
 	void convertToMap(int nx, int ny, int& x, int& y);
-	
+
 	///This converts the given map cordinates to the closest on-screen cordinate
 	void convertToScreen(int nx, int ny, int& x, int& y);
-	
+
 	///This resest the minimap drawing
 	void resetMinimapDrawing();
 
@@ -78,7 +78,7 @@ private:
 
 	/// Computes the colors for positions in the given row
 	void computeColors(int row, int localteam);
-	
+
 	bool noX;
 	int menuWidth;
 	int gameWidth;
@@ -96,12 +96,12 @@ private:
 	int mini_offset_x;
 	int mini_offset_y;
 	MinimapMode minimapMode;
-	
+
 	Game* game;
 
 	///Converts x & y to a position in the color map
 	int position(int x, int y) { return (x * game->map.getH() + y); }
-	
+
 	DrawableSurface *surface;
 };
 

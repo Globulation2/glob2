@@ -32,7 +32,7 @@ public:
 
 	///Adds a game result to the log
 	void addGameResults(YOGGameResults results);
-	
+
 	///Updates this game log, periodically saving and changing the log file
 	void update();
 private:

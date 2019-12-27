@@ -23,7 +23,7 @@
 #include "YOGClientRouterAdministrator.h"
 #include "YOGConsts.h"
 
-	
+
 YOGClientRouterAdministrator::YOGClientRouterAdministrator()
 {
 
@@ -49,7 +49,7 @@ int YOGClientRouterAdministrator::execute()
 		std::cout<<std::endl;
 		return 0;
 	}
-	
+
 	std::cout<<"Connecting"<<std::endl;
 	NetConnection connect(ip, YOG_ROUTER_PORT);
 	while(connect.isConnecting())
@@ -66,10 +66,10 @@ int YOGClientRouterAdministrator::execute()
 		std::cout<<"Connection to "<<ip<<" failed."<<std::endl;
 		return 1;
 	}
-	
+
 	boost::shared_ptr<NetRouterAdministratorLogin> login(new NetRouterAdministratorLogin(password));
 	connect.sendMessage(login);
-	
+
 	//Parse incoming messages and generate events
 	shared_ptr<NetMessage> message = connect.getMessage();
 	while(!message)
@@ -84,7 +84,7 @@ int YOGClientRouterAdministrator::execute()
 		std::cout<<"Router version is incompatible. Please update your version and/or contact the router administrator."<<std::endl;
 		return 2;
 	}
-	
+
 	if(type == MNetRouterAdministratorLoginRefused)
 	{
 		boost::shared_ptr<NetRouterAdministratorLoginRefused> info = static_pointer_cast<NetRouterAdministratorLoginRefused>(message);
@@ -100,7 +100,7 @@ int YOGClientRouterAdministrator::execute()
 			return 4;
 		}
 	}
-	
+
 	while(!std::cin.eof() && connect.isConnected())
 	{
 		std::cout<<"> "<<std::flush;
@@ -113,7 +113,7 @@ int YOGClientRouterAdministrator::execute()
 		}
 		boost::shared_ptr<NetRouterAdministratorSendCommand> cmd(new NetRouterAdministratorSendCommand(command));
 		connect.sendMessage(cmd);
-		
+
 		//Parse incoming messages and generate events
 		message = connect.getMessage();
 		while(!message && connect.isConnected())
@@ -122,7 +122,7 @@ int YOGClientRouterAdministrator::execute()
 			SDL_Delay(50);
 			message = connect.getMessage();
 		}
-		
+
 		while(message)
 		{
 			Uint8 type = message->getMessageType();
@@ -135,7 +135,7 @@ int YOGClientRouterAdministrator::execute()
 		}
 		SDL_Delay(50);
 	}
-	
+
 	return 0;
 }
 

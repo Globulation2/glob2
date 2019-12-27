@@ -52,18 +52,18 @@ public:
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void) { }
-	
+
 	void load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	void loadCrossRef(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	void saveCrossRef(GAGCore::OutputStream *stream);
-	
+
 	///This function is called by a Building that has subscribed this unit.
 	///If the unit has been subscribed for upgrading or for food, as opposed
 	///to being subscribed for work, inside is set to true.
 	void subscriptionSuccess(Building* building, bool inside);
 	void syncStep(void);
-	
+
 	void directionFromDxDy(void);
 private:
 	void dxdyfromDirection(void);
@@ -90,14 +90,14 @@ public:
 	void selectPreferedGroundMovement(void);
 	bool isUnitHungry(void);
 	void standardRandomActivity();
-	
+
 	int getRealArmor(bool isMagic) const;
 	int getRealAttackStrength(void) const; //!< Return the real attack strengh for warriors
 	int getNextLevelThreshold(void) const;
 	void incrementExperience(int increment);
-	
+
 	void skinPointerFromName(void);
-	
+
 public:
 
 	enum Medical
@@ -114,31 +114,31 @@ public:
 		ACT_FLAG=2,
 		ACT_UPGRADING=3
 	};
-	
+
 	enum Displacement
 	{
 		DIS_RANDOM=0,
-		
+
 		DIS_HARVESTING=2,
-		
+
 		DIS_FILLING_BUILDING=4,
 //NOT USED:
 //		//!Markets can get emptied
 //		DIS_EMPTYING_BUILDING=6,
-		
+
 		DIS_GOING_TO_FLAG=8,
 		DIS_ATTACKING_AROUND=10,
 		DIS_REMOVING_BLACK_AROUND=12,
 		DIS_CLEARING_RESSOURCES=14,
-		
+
 		DIS_GOING_TO_RESSOURCE=16,
-		
+
 		DIS_GOING_TO_BUILDING=18,
 		DIS_ENTERING_BUILDING=20,
 		DIS_INSIDE=22,
 		DIS_EXITING_BUILDING=24
 	};
-	
+
 	enum Movement
 	{
 		MOV_RANDOM_GROUND=0,
@@ -161,11 +161,11 @@ public:
 		DIR_RIGHT=2
 	};
 
-	enum 
+	enum
 	{
 		HUNGRY_MAX=150000
 	};
-	
+
 protected:
 	void stopAttachedForBuilding(bool goingInside);
 	void handleMagic(void);
@@ -174,9 +174,9 @@ protected:
 	void handleDisplacement(void);
 	void handleMovement(void);
 	void handleAction(void);
-	
+
 	void endOfAction(void);
-	
+
 	void setNewValidDirectionGround(void);
 	void setNewValidDirectionAir(void);
 	void flytoTarget(); //This will set (dx,dy) given targetX/Y. air asserted.
@@ -186,15 +186,15 @@ protected:
 	void defaultSkinNameFromType(void);
 
 	bool locationIsInEnemyGuardTowerRange(int x, int y)const;
-	
+
 public:
-	
+
 	// unit specification
 	Sint32 typeNum; // Uint8, WORKER, EXPLORER, WARRIOR
 	Race *race;
 	UnitSkin *skin;
 	std::string skinName;
-	
+
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
@@ -242,7 +242,7 @@ public:
 	bool canLearn[NB_ABILITY];
 	Sint32 experience;
 	Sint32 experienceLevel;
-	
+
 	//! building the Unit is working for
 	Building *attachedBuilding;
 	//! building the Unit is going to
@@ -254,16 +254,16 @@ public:
 	/// This counts 32 ticks to wait for a job before a unit goes off
 	/// to upgrade or heal when it is otherwise doing nothing.
 	Sint32 jobTimer;
-	
+
 	// gui
 	int levelUpAnimation;
 	int magicActionAnimation;
-	
+
 	// These store the previous clearing area target cordinates
 	Uint32 previousClearingAreaX;
 	Uint32 previousClearingAreaY;
 	Uint32 previousClearingAreaDistance;
-	
+
 public:
 	// optimisation cached values
 	int stepsLeftUntilHungry;
@@ -274,13 +274,13 @@ public:
 	// computing optimisation cached values
 	int numberOfStepsLeftUntilHungry(void);
 	void computeMinDistToResources(void);
-	
+
 public:
 	void integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
     void setTargetBuilding(Building * b);
 	bool verbose;
-	
+
 protected:
 	FILE *logFile;
 };

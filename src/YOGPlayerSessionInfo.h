@@ -42,19 +42,19 @@ public:
 
 	///Sets the name of the player
 	void setPlayerName(const std::string& playerName);
-	
+
 	///Returns the name of the player
 	std::string getPlayerName() const;
 
 	///Sets the unique player ID
 	void setPlayerID(Uint16 id);
-	
+
 	///Returns the unique player ID
 	Uint16 getPlayerID() const;
-	
+
 	///Returns the players stored info
 	const YOGPlayerStoredInfo& getPlayerStoredInfo() const;
-	
+
 	///Sets the player stored info
 	void setPlayerStoredInfo(const YOGPlayerStoredInfo& info);
 
@@ -63,7 +63,7 @@ public:
 
 	///Decodes this YOGPlayerSessionInfo from a bit stream
 	void decodeData(GAGCore::InputStream* stream);
-	
+
 	///Test for equality between two YOGPlayerSessionInfo
 	bool operator==(const YOGPlayerSessionInfo& rhs) const;
 	bool operator!=(const YOGPlayerSessionInfo& rhs) const;

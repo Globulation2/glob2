@@ -25,7 +25,7 @@ def backup(file):
 	f = open(file+".txt",'w')
 	f.writelines(lines)
 	f.close()
-	
+
 def assemble_variables(need_default=False, need_write=False):
 	vn=0
 	variables=[]
@@ -93,7 +93,7 @@ def assemble_initialize_variable_defaults(variables):
 		if v!=variables[-1]:
 			initialize_variables+=","
 	return initialize_variables
-	
+
 def assemble_format_variables(variables):
 	format = "	std::ostringstream s;\n"
 	format+= "	s<<\"mname("
@@ -104,7 +104,7 @@ def assemble_format_variables(variables):
 		format+="<<\""
 	format+=")\";"
 	return format
-	
+
 def assemble_compare_variables(variables):
 	scode = ""
 	if variables:

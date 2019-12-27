@@ -40,7 +40,7 @@ void EntityType::init(void)
 {
 	size_t varSize;
 	Uint32 *startData;
-	getVars(&varSize, &startData);	
+	getVars(&varSize, &startData);
 	memset(startData,0,varSize*sizeof(Uint32));
 }
 
@@ -66,7 +66,7 @@ bool EntityType::loadText(GAGCore::InputStream *stream)
 
 	size_t varSize;
 	Uint32 *startData;
-	const char **tab=getVars(&varSize, &startData);	
+	const char **tab=getVars(&varSize, &startData);
 
 	assert(stream);
 	while (true)
@@ -112,7 +112,7 @@ void EntityType::dump(void)
 	size_t varSize;
 	Uint32 *startData;
 	const char **tab=getVars(&varSize, &startData);
-	
+
 	printf("%d Elements :\n", static_cast<unsigned>(varSize));
 	for (size_t i=0; i<varSize;i++)
 		printf("\t%s = %d\n",tab[i],*(startData+i));

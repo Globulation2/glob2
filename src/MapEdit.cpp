@@ -112,7 +112,7 @@ void BuildingSelectorWidget::draw()
 		buildingSprite = bt->gameSpritePtr;
 		imgid = bt->gameSpriteImage;
 	}
-		
+
 	buildingSprite->setBaseColor(me.game.teams[me.team]->color);
 	globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
@@ -213,7 +213,7 @@ void MenuIcon::draw()
 ZoneSelector::ZoneSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, ZoneType zoneType)
 	: MapEditorWidget(me, area, group, name, action), zoneType(zoneType)
 {
-	
+
 }
 
 
@@ -716,7 +716,7 @@ void BuildingPicture::setBuilding(Building* aBuilding)
 TextLabel::TextLabel(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, bool centered, const std::string& emptyLabel)
 	: MapEditorWidget(me, area, group, name, action), label(label), emptyLabel(emptyLabel), centered(centered)
 {
-	
+
 }
 
 
@@ -794,11 +794,11 @@ void Checkbox::draw()
 		globalContainer->gfx->drawLine(area.x+4, area.y+4, area.x+12, area.y+12, Color::white);
 		globalContainer->gfx->drawLine(area.x+12, area.y+4, area.x+4, area.y+12, Color::white);
 	}
-	
+
 	std::string translatedText;
 	translatedText=Toolkit::getStringTable()->getString(text.c_str());
-	
-	globalContainer->gfx->drawString(area.x+20, area.y, globalContainer->littleFont, translatedText); 
+
+	globalContainer->gfx->drawString(area.x+20, area.y, globalContainer->littleFont, translatedText);
 }
 
 
@@ -812,7 +812,7 @@ void Checkbox::handleClick(int relMouseX, int relMouseY)
 
 
 MapEdit::MapEdit()
-  : game(NULL, this), keyboardManager(MapEditShortcuts), 
+  : game(NULL, this), keyboardManager(MapEditShortcuts),
     minimap(globalContainer->runNoX,
             RIGHT_MENU_WIDTH, // menu width
             globalContainer->gfx->getW(), // game width
@@ -1099,7 +1099,7 @@ MapEdit::MapEdit()
 
 	areaName=NULL;
 	isShowingAreaName=false;
-	
+
 	isFertilityOn=false;
 }
 
@@ -1149,22 +1149,22 @@ bool MapEdit::load(const std::string filename)
 
 			return false;
 		}
-		
+
 		delete stream;
 		if (!rv)
 			return false;
-		
+
 		// set the editor default values
 		team = 0;
-	
+
 		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
-		
+
 		minimap.resetMinimapDrawing();
-		
+
 		game.map.computeLocalForbidden(team);
 		game.map.computeLocalClearArea(team);
 		game.map.computeLocalGuardArea(team);
-	
+
 		hasMapBeenModified = false;
 		return true;
 	}
@@ -1215,14 +1215,14 @@ int MapEdit::run(void)
 
 // 	regenerateClipRect();
 
-		
+
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
 	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), true, true);
 	drawMiniMap();
 	drawMenu();
-	
-	
+
+
 	if(game.gameHeader.getNumberOfPlayers() == 0)
 		regenerateGameHeader();
 
@@ -1233,7 +1233,7 @@ int MapEdit::run(void)
 	{
 		//SDL_Event event;
 		startTick=SDL_GetTicks();
-	
+
 		// we get all pending events but for mousemotion we only keep the last one
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -1248,7 +1248,7 @@ int MapEdit::run(void)
 			isRunning = false;
 			break;
 		}
-		
+
 		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
 		{
 			handleMapScroll();
@@ -1272,9 +1272,9 @@ int MapEdit::run(void)
 			else if(isDraggingNoRessourceGrowthArea)
 				performAction("no ressource growth area drag motion");
 		}
-		
+
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
-		
+
 		drawMenu();
 		drawMiniMap();
 		wasMinimapRendered=false;
@@ -1314,10 +1314,10 @@ int MapEdit::run(void)
 			areaName->dispatchPaint();
 			globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
 		}
-		
-		
+
+
 		globalContainer->gfx->nextFrame();
-		
+
 
 		endTick=SDL_GetTicks();
 		deltaTick=endTick-startTick;
@@ -1461,7 +1461,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 			typeNum = globalContainer->buildingsTypes.getTypeNum(selectionName, 0, false);
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
-		
+
 		// we translate dimensions and situation
 		int tempX, tempY;
 		int mapX, mapY;
@@ -1471,26 +1471,26 @@ void MapEdit::drawBuildingSelectionOnMap()
 			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, team);
 		else
 			isRoom = game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-			
+
 		// modifiy highlight given room
 // 		if (isRoom)
 // 			highlightSelection = std::min(highlightSelection + 0.1f, 1.0f);
 // / 		else
 //  			highlightSelection = std::max(highlightSelection - 0.1f, 0.0f);
-		
+
 		// we get the screen dimensions of the building
 		int batW = (bt->width)<<5;
 		int batH = sprite->getH(bt->gameSpriteImage);
 		int batX = (((mapX-viewportX)&(game.map.wMask))<<5);
 		int batY = (((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
-		
+
 		// we draw the building
 		sprite->setBaseColor(game.teams[team]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 // 		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
 	 	int spriteIntensity = 127;
 		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
-		
+
 		if (!bt->isVirtual)
 		{
 			if (game.teams[team]->noMoreBuildingSitesCountdown>0)
@@ -1498,7 +1498,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
-				
+
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
 				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
 				globalContainer->littleFont->popStyle();
@@ -1509,7 +1509,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
 				else
 					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-				
+
 				// We look for its maximum extension size
 				// we find last's level type num:
 				BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
@@ -1526,7 +1526,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 						break;
 					}
 				}
-					
+
 				int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
 				bool isExtendedRoom = game.checkHardRoomForBuilding(tempX, tempY, lastbt, &exMapX, &exMapY);
 				int exBatX=((exMapX-viewportX)&(game.map.wMask))<<5;
@@ -1570,7 +1570,7 @@ void MapEdit::drawMenuEyeCandy()
 {
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 
-	// bar background 
+	// bar background
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 0);
 	else
@@ -1599,9 +1599,9 @@ void MapEdit::drawPlacingUnitOnMap()
 		type=WARRIOR;
 	else if(placingUnit==Explorer)
 		type=EXPLORER;
-	
+
 	int level=placingUnitLevel;
-	
+
 	int cx=(mouseX>>5)+viewportX;
 	int cy=(mouseY>>5)+viewportY;
 
@@ -1661,7 +1661,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		doFullQuit=true;
 	}
 #	endif
-	
+
 	else if(showingMenuScreen || showingLoad || showingSave || showingScriptEditor || showingTeamsEditor || isShowingAreaName)
 	{
 		delegateMenu(event);
@@ -2111,12 +2111,12 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		
+
 		for (int i=0; i<game.mapHeader.getNumberOfTeams(); ++i)
 		{
 			game.mapHeader.getBaseTeam(i)=*game.teams[i];
 		}
-		
+
 		teamsEditor=new TeamsEditor(&game);
 		showingTeamsEditor=true;
 		hasMapBeenModified=true;
@@ -2203,7 +2203,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		terrainType=TerrainSelector::Grass;
 		selectionMode=PlaceTerrain;
-		
+
 		brush.defaultSelection();
 		brush.setAddRemoveEnabledState(false);
 	}
@@ -2212,7 +2212,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		terrainType=TerrainSelector::Sand;
 		selectionMode=PlaceTerrain;
-		
+
 		brush.defaultSelection();
 		brush.setAddRemoveEnabledState(false);
 	}
@@ -2221,7 +2221,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		terrainType=TerrainSelector::Water;
 		selectionMode=PlaceTerrain;
-		
+
 		brush.defaultSelection();
 		brush.setAddRemoveEnabledState(false);
 	}
@@ -2302,7 +2302,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		performAction("unselect");
 		selectionMode=RemoveObject;
 		deleteButton->setSelected();
-		
+
 		brush.defaultSelection();
 		brush.setAddRemoveEnabledState(false);
 	}
@@ -3129,7 +3129,7 @@ void MapEdit::handleMapScroll()
 		/* Probably some keys held down as part of window
 			manager operations. */
 		xMotion = 0;
-		yMotion = 0; 
+		yMotion = 0;
 	}
 	if (
 			keystate[SDLK_UP] ||
@@ -3142,26 +3142,26 @@ void MapEdit::handleMapScroll()
 	}
 	if (
 			keystate[SDLK_DOWN] ||
-			keystate[SDLK_KP1] || 
-			keystate[SDLK_KP2] || 
+			keystate[SDLK_KP1] ||
+			keystate[SDLK_KP2] ||
 			keystate[SDLK_KP3] ||
 			globalContainer->gfx->getH()-mouseY<scrollAreaWidth)
 	{
 		ySpeed += yMotion;
 	}
 	if (
-			keystate[SDLK_LEFT] || 
-			keystate[SDLK_KP1] || 
-			keystate[SDLK_KP4] || 
+			keystate[SDLK_LEFT] ||
+			keystate[SDLK_KP1] ||
+			keystate[SDLK_KP4] ||
 			keystate[SDLK_KP7] ||
 			mouseX<scrollAreaWidth)
 	{
 		xSpeed += -xMotion;
 	}
 	if (
-			keystate[SDLK_RIGHT] || 
-			keystate[SDLK_KP3] || 
-			keystate[SDLK_KP6] || 
+			keystate[SDLK_RIGHT] ||
+			keystate[SDLK_KP3] ||
+			keystate[SDLK_KP6] ||
 			keystate[SDLK_KP9] ||
 			globalContainer->gfx->getW()-mouseX<scrollAreaWidth)
 	{
@@ -3266,13 +3266,13 @@ void MapEdit::handleBrushClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
-		
+
 	if(lastPlacementX == -1)
 	{
 		firstPlacementX=mapX;
 		firstPlacementY=mapY;
 	}
-	
+
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
@@ -3351,7 +3351,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	game.map.displayToMapCaseAligned(mx+(terrainType>TerrainSelector::Water ? 0 : 16), my+(terrainType>TerrainSelector::Water ? 0 : 16), &mapX, &mapY,  viewportX, viewportY);
 	if(lastPlacementX==mapX && lastPlacementY==mapY)
 		return;
-		
+
 	if(lastPlacementX == -1)
 	{
 		firstPlacementX=mapX;
@@ -3566,7 +3566,7 @@ void MapEdit::regenerateGameHeader()
 {
 	GameHeader gameHeader;
 	MapHeader& mapHeader = game.mapHeader;
-	
+
 	int playerNumber=0;
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{

@@ -62,7 +62,7 @@ void YOGServer::update()
 	{
 		i->second->update();
 	}
-	
+
 	//Call update to all of the games
 	for(std::map<Uint16, shared_ptr<YOGServerGame> >::iterator i=games.begin(); i!=games.end(); ++i)
 	{
@@ -100,7 +100,7 @@ void YOGServer::update()
 			i++;
 		}
 	}
-	
+
 	if(broadcaster)
 		broadcaster->update();
 	if(!broadcaster && isBroadcasting && gameList.size())
@@ -109,7 +109,7 @@ void YOGServer::update()
 		info.getGameInformation() = *gameList.begin();
 		broadcaster.reset(new NetBroadcaster(info));
 	}
-	
+
 	playerInfos.update();
 	bannedIPs.update();
 	gameLog.update();
@@ -117,7 +117,7 @@ void YOGServer::update()
 	router.update();
 	maps.update();
 	fileDistributionManager.update();
-	
+
 	int t = SDL_GetTicks();
 	if(organizedGameTimeEnabled)
 	{
@@ -146,7 +146,7 @@ int YOGServer::run()
 	bool cont = tests.runAllTests();
 	if(!cont)
 		return 1;
-	
+
 	std::cout<<"Server started successfully."<<std::endl;
 	while(nl.isListening())
 	{
@@ -184,7 +184,7 @@ YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, con
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
-	
+
 	///check if the player is banned
 	if(playerInfos.doesStoredInfoExist(username))
 	{
@@ -218,7 +218,7 @@ YOGLoginState YOGServer::registerInformation(const std::string& username, const 
 		return YOGClientVersionTooOld;
 	if(loginPolicy == YOGAnonymousLogin)
 		return YOGLoginSuccessful;
-	
+
 	if(bannedIPs.isIPBanned(ip))
 	{
 		return YOGIPAddressBanned;
@@ -233,7 +233,7 @@ const std::list<YOGGameInfo>& YOGServer::getGameList() const
 	return gameList;
 }
 
-	
+
 const std::list<YOGPlayerSessionInfo>& YOGServer::getPlayerList() const
 {
 	return playerList;
@@ -321,7 +321,7 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 	std::string routerip = routerManager.chooseYOGRouter()->getIPAddress();
 	if(routerip == "127.0.0.1")
 		routerip = "YOGIP";
-	
+
 	gameList.push_back(YOGGameInfo(name, newID));
 	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, routerip, *this));
 	return newID;
@@ -383,7 +383,7 @@ void YOGServer::enableLANBroadcasting()
 }
 
 
-	
+
 void YOGServer::disableLANBroadcasting()
 {
 	broadcaster.reset();

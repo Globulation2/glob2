@@ -51,7 +51,7 @@ KeyPress::KeyPress(SDL_keysym nkey, bool pressed)
 	//whereas nkey.sym is still fine
 	if(nkey.sym < 128)
 		c = nkey.sym;
-	
+
 	if(Toolkit::getStringTable()->doesStringExist(key_s.c_str()))
 	{
 		key = SDL_GetKeyName(nkey.sym);
@@ -144,7 +144,7 @@ bool KeyPress::operator==(const KeyPress& rhs) const
 }
 
 
-	
+
 std::string KeyPress::format() const
 {
 	std::string s;

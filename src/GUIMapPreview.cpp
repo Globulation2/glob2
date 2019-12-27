@@ -111,15 +111,15 @@ void MapPreview::paint(void)
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
-	
+
 	assert(parent);
 	assert(parent->getSurface());
-	
+
 	if (hAlignFlag == ALIGN_FILL)
 		x += (w-128)>>1;
 	if (vAlignFlag == ALIGN_FILL)
 		y += (h-128)>>1;
-	
+
 	if (surface)
 	{
 		parent->getSurface()->drawSurface(x, y, surface);

@@ -36,7 +36,7 @@ namespace GAGGUI
 		this->h = h;
 		this->hAlignFlag = hAlign;
 		this->vAlignFlag = vAlign;
-	
+
 		this->unicodeShortcut=unicodeShortcut;
 		this->isClickable = true;
 	}
@@ -51,11 +51,11 @@ namespace GAGGUI
 		this->h = h;
 		this->hAlignFlag = hAlign;
 		this->vAlignFlag = vAlign;
-	
+
 		this->unicodeShortcut=unicodeShortcut;
 		this->isClickable = true;
 	}
-	
+
 	void Button::onSDLKeyDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_KEYDOWN);
@@ -74,7 +74,7 @@ namespace GAGGUI
 				  && isClickable)
 		parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 	}
-	
+
 	void Button::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
@@ -83,8 +83,8 @@ namespace GAGGUI
 				  && isClickable)
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
-	
-	
+
+
 	TextButton::TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, Uint16 unicode) :
 		Button(x, y, w, h, hAlign, vAlign, returnCode, unicode)
 	{
@@ -108,30 +108,30 @@ namespace GAGGUI
 		fontPtr = Toolkit::getFont(font.c_str());
 		assert(fontPtr);
 	}
-	
+
 	void TextButton::paint()
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-		
+
 		Style::style->drawTextButtonBackground(parent->getSurface(), x, y, w, h, getNextHighlightValue());
-		
+
 		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
 		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
-	
+
 		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, text.c_str());
 	}
-	
+
 	void TextButton::setText(const std::string text)
 	{
 		assert(text.size());
 		this->text=text;
 	}
-	
-	
+
+
 	OnOffButton::OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode)
 	:HighlightableWidget(returnCode)
 	{
@@ -141,11 +141,11 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		this->state=startState;
 		isClickable=true;
 	}
-	
+
 	OnOffButton::OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont)
 	:HighlightableWidget(tooltip, tooltipFont, returnCode)
 	{
@@ -155,11 +155,11 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		this->state=startState;
 		isClickable=true;
 	}
-	
+
 	void OnOffButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
@@ -171,25 +171,25 @@ namespace GAGGUI
 			parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, state == true ? 1 : 0);
 		}
 	}
-	
+
 	void OnOffButton::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
 		if (isOnWidget(event->button.x, event->button.y) && isClickable)
 				parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
-	
+
 	void OnOffButton::paint()
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-		
+
 		Style::style->drawOnOffButton(parent->getSurface(), x, y, w, h, getNextHighlightValue(), state);
 	}
-	
+
 	void OnOffButton::setState(bool newState)
 	{
 		if (newState!=state)
@@ -197,8 +197,8 @@ namespace GAGGUI
 			state=newState;
 		}
 	}
-	
-	
+
+
 	TriButton::TriButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Uint8 startState, int returnCode)
 	:HighlightableWidget(returnCode)
 	{
@@ -208,11 +208,11 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		this->state=startState;
 		isClickable=true;
 	}
-	
+
 	TriButton::TriButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Uint8 startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont)
 	:HighlightableWidget(tooltip, tooltipFont, returnCode)
 	{
@@ -222,11 +222,11 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		this->state=startState;
 		isClickable=true;
 	}
-	
+
 	void TriButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
@@ -243,30 +243,30 @@ namespace GAGGUI
 			parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, state);
 		}
 	}
-	
+
 	void TriButton::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
 		if (isOnWidget(event->button.x, event->button.y) && isClickable)
 				parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 	}
-	
+
 	void TriButton::paint()
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-		
+
 		Style::style->drawTriButton(parent->getSurface(), x, y, w, h, getNextHighlightValue(), state);
 	}
-	
+
 	void TriButton::setState(Uint8 newState)
 	{
 		state = newState;
 	}
-	
+
 	ColorButton::ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode)
 	:HighlightableWidget(returnCode)
 	{
@@ -277,7 +277,7 @@ namespace GAGGUI
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
 		this->isClickable=true;
-		
+
 		selColor=0;
 	}
 
@@ -291,10 +291,10 @@ namespace GAGGUI
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
 		this->isClickable=true;
-	
+
 		selColor=0;
 	}
-	
+
 	void ColorButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		if (isOnWidget(event->button.x, event->button.y) && v.size() && isClickable)
@@ -304,7 +304,7 @@ namespace GAGGUI
 				selColor++;
 				if (selColor>=(signed)v.size())
 					selColor=0;
-		
+
 				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
 				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 			}
@@ -313,13 +313,13 @@ namespace GAGGUI
 				selColor--;
 				if (selColor<0)
 					selColor=(signed)v.size()-1;
-				
+
 				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, selColor);
 				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 			}
 		}
 	}
-	
+
 	void ColorButton::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		if (isOnWidget(event->button.x, event->button.y) &&
@@ -328,20 +328,20 @@ namespace GAGGUI
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 		}
 	}
-	
+
 	void ColorButton::paint()
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-		
+
 		if (v.size())
 			parent->getSurface()->drawFilledRect(x+1, y+1, w-2, h-2, v[selColor]);
 		HighlightableWidget::paint();
 	}
-	
+
 	MultiTextButton::MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, Uint16 unicode) :
 		TextButton(x, y, w, h, hAlign, vAlign, font, text, returnCode, unicode)
 	{
@@ -352,7 +352,7 @@ namespace GAGGUI
 	{
 		textIndex = 0;
 	}
-	
+
 	void MultiTextButton::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
@@ -364,7 +364,7 @@ namespace GAGGUI
 				if (textIndex >= texts.size())
 					textIndex = 0;
 				setText(texts.at(textIndex));
-	
+
 				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
 				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 			}
@@ -375,13 +375,13 @@ namespace GAGGUI
 				else
 					textIndex = texts.size()-1;
 				setText(texts.at(textIndex));
-				
+
 				parent->onAction(this, BUTTON_STATE_CHANGED, returnCode, textIndex);
 				parent->onAction(this, BUTTON_PRESSED, returnCode, 0);
 			}
 		}
 	}
-	
+
 	void MultiTextButton::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
@@ -391,23 +391,23 @@ namespace GAGGUI
 			parent->onAction(this, BUTTON_RELEASED, returnCode, 0);
 		}
 	}
-	
+
 	void MultiTextButton::addText(const std::string s)
 	{
 		texts.push_back(s);
 	}
-	
+
 	void MultiTextButton::clearTexts(void)
 	{
 		texts.clear();
 	}
-	
+
 	void MultiTextButton::setIndex(int i)
 	{
 		textIndex = i;
 		setText(texts.at(textIndex));
 	}
-	
+
 	void MultiTextButton::setIndexFromText(const std::string &s)
 	{
 		for (size_t i = 0; i < texts.size(); i++)

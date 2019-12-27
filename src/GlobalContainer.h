@@ -75,9 +75,9 @@ public:
 	GraphicContext *gfx;
 	SoundMixer *mix;
 	VoiceRecorder *voiceRecorder;
-	
+
 	DrawableSurface *title;
-	
+
 	Sprite *terrain;
 	Sprite *terrainWater;
 	Sprite *terrainCloud;
@@ -97,9 +97,9 @@ public:
 	Sprite *brush;
 	Sprite *magiceffect;
 	Sprite *particles;
-	
+
 	UnitsSkins *unitsSkins;
-	
+
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;
@@ -118,11 +118,11 @@ public:
 	bool automaticEndingGame;
 	int automaticEndingSteps;
 	bool automaticGameGlobalEndConditions; //! Set false if the automatic game will end if the local team wins/loses, true to wait for the entire game to finish
-	
+
 	bool runTestGames; //! runs test games
-	
+
 	bool runTestMapGeneration; //! runs test map generation
-	
+
 	bool hostServer;
 	bool hostRouter;
 	bool adminRouter;

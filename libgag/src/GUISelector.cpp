@@ -55,7 +55,7 @@ namespace GAGGUI
 		this->id=id;
 		archPtr=NULL;
 	}
-	
+
 	Selector::Selector(int x,
 			int y,
 			Uint32 hAlign,
@@ -85,7 +85,7 @@ namespace GAGGUI
 		this->id=id;
 		archPtr=NULL;
 	}
-	
+
 	void Selector::clipValue(int v)
 	{
 		if (v>=static_cast<int>(maxValue))
@@ -94,10 +94,10 @@ namespace GAGGUI
 			value=0;
 		else
 			value=static_cast<unsigned>(v);
-		
+
 		value = step * ((value + step/2) / step);
 	}
-	
+
 	void Selector::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
@@ -113,7 +113,7 @@ namespace GAGGUI
 			parent->onAction(this, VALUE_CHANGED, value, 0);
 		}
 	}
-		
+
 	void Selector::onSDLMouseMotion(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEMOTION);
@@ -127,7 +127,7 @@ namespace GAGGUI
 			parent->onAction(this, VALUE_CHANGED, value, 0);
 		}
 	}
-	
+
 	void Selector::onSDLMouseButtonUp(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONUP);
@@ -136,7 +136,7 @@ namespace GAGGUI
 			dragging = false;
 		}
 	}
-	
+
 	void Selector::internalInit(void)
 	{
 		if (id>=0)
@@ -145,16 +145,16 @@ namespace GAGGUI
 			assert(archPtr);
 		}
 	}
- 
- 
+
+
 	void Selector::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-	
+
 		///Taper the line to show a definitive larger end on the right
 		if(taper)
 		{
@@ -174,7 +174,7 @@ namespace GAGGUI
 		parent->getSurface()->drawVertLine(x+3, y+2, h, 180, 180, 180);
 		parent->getSurface()->drawVertLine(x+w-1, y+2, h, 180, 180, 180);
 		parent->getSurface()->drawVertLine(x+w-2, y+2, h, 180, 180, 180);
-	
+
 		if (id<0)
 		{
 			parent->getSurface()->drawRect(x+(w-4)*value/maxValue, y, 6, h+4, 255, 255, 255);

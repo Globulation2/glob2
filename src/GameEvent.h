@@ -34,7 +34,7 @@ enum GameEventType
 	//type_append_marker
 	GESize,
 };
-	
+
 ///This represents an event in the game. This includes events such as building completion,
 ///units being attacked, etc...
 class GameEvent
@@ -45,21 +45,21 @@ public:
 
 	virtual ~GameEvent();
 
-	///This formats a user-readable message, including translating the message 
+	///This formats a user-readable message, including translating the message
 	virtual std::string formatMessage()=0;
 
 	///Returns the color of the message after its formatted
 	virtual GAGCore::Color formatColor()=0;
-	
+
 	///Returns the step of the event
 	Uint32 getStep();
-	
+
 	///Returns the x-cordinate
 	Sint16 getX();
-	
+
 	///Returns the y-cordinate
 	Sint16 getY();
-	
+
 	///Returns the event type
 	virtual Uint8 getEventType()=0;
 
@@ -78,12 +78,12 @@ public:
 	///Constructs a UnitUnderAttack event
 	UnitUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint32 type);
 
-	///This formats a user-readable message, including translating the message 
+	///This formats a user-readable message, including translating the message
 	std::string formatMessage();
 
 	///Returns the color of the message after its formatted
 	GAGCore::Color formatColor();
-	
+
 	///Returns the event type
 	Uint8 getEventType();
 private:
@@ -99,12 +99,12 @@ public:
 	///Constructs a UnitLostConversion event
 	UnitLostConversionEvent(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName);
 
-	///This formats a user-readable message, including translating the message 
+	///This formats a user-readable message, including translating the message
 	std::string formatMessage();
 
 	///Returns the color of the message after its formatted
 	GAGCore::Color formatColor();
-	
+
 	///Returns the event type
 	Uint8 getEventType();
 private:
@@ -120,12 +120,12 @@ public:
 	///Constructs a UnitGainedConversion event
 	UnitGainedConversionEvent(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName);
 
-	///This formats a user-readable message, including translating the message 
+	///This formats a user-readable message, including translating the message
 	std::string formatMessage();
 
 	///Returns the color of the message after its formatted
 	GAGCore::Color formatColor();
-	
+
 	///Returns the event type
 	Uint8 getEventType();
 private:
@@ -141,12 +141,12 @@ public:
 	///Constructs a BuildingUnderAttack event
 	BuildingUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint8 type);
 
-	///This formats a user-readable message, including translating the message 
+	///This formats a user-readable message, including translating the message
 	std::string formatMessage();
 
 	///Returns the color of the message after its formatted
 	GAGCore::Color formatColor();
-	
+
 	///Returns the event type
 	Uint8 getEventType();
 private:
@@ -162,12 +162,12 @@ public:
 	///Constructs a BuildingCompleted event
 	BuildingCompletedEvent(Uint32 step, Sint16 x, Sint16 y, Uint8 type);
 
-	///This formats a user-readable message, including translating the message 
+	///This formats a user-readable message, including translating the message
 	std::string formatMessage();
 
 	///Returns the color of the message after its formatted
 	GAGCore::Color formatColor();
-	
+
 	///Returns the event type
 	Uint8 getEventType();
 private:

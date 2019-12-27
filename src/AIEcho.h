@@ -561,9 +561,9 @@ namespace AIEcho
 		private:
 			int gbid;
 		};
-		
 
-		///This constraint, againt unlike the others, does not use gradients. It only allows the given 
+
+		///This constraint, againt unlike the others, does not use gradients. It only allows the given
 		///position to be allowed. The resulting building will *not* be centered on it except if it is
 		///a 1x1 building
 		class SinglePosition : public Constraint
@@ -918,7 +918,7 @@ namespace AIEcho
 			static void save_condition(BuildingCondition* condition, GAGCore::OutputStream *stream);
 		};
 
-		///This condition waits for a building not to be under construction. 
+		///This condition waits for a building not to be under construction.
 		class NotUnderConstruction : public BuildingCondition
 		{
 		public:
@@ -1045,7 +1045,7 @@ namespace AIEcho
 			int tracker_method;
 		};
 
-		///This class compares the age provided by a ressource tracker 
+		///This class compares the age provided by a ressource tracker
 		class RessourceTrackerAge : public BuildingCondition
 		{
 		public:
@@ -1289,7 +1289,7 @@ namespace AIEcho
 		{
 		public:
 			ChangeFlagMinimumLevel() : minimum_level(0), building_id(0) {}
-			explicit ChangeFlagMinimumLevel(int minimum_level, int building_id); 
+			explicit ChangeFlagMinimumLevel(int minimum_level, int building_id);
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -1306,7 +1306,7 @@ namespace AIEcho
 		{
 		public:
 			ChangeFlagPosition() : x(0), y(0), building_id(0) {}
-			explicit ChangeFlagPosition(int x, int y, int building_id); 
+			explicit ChangeFlagPosition(int x, int y, int building_id);
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -1329,7 +1329,7 @@ namespace AIEcho
 				Medium,
 				High,
 			};
-			
+
 			AdjustPriority() : building_id(0) {}
 			AdjustPriority(int building_id, BuildingPriority priority);
 		protected:
@@ -1424,7 +1424,7 @@ namespace AIEcho
 		private:
 			int id;
 		};
-		
+
 		#ifdef SendMessage
 		#undef SendMessage
 		#endif
@@ -1498,7 +1498,7 @@ namespace AIEcho
 		};
 
 		///This class is a standard iterator that is used to iterate over teams that qualify as "enemies".
-		///It returns an integer corrosponding to the teams id. 
+		///It returns an integer corrosponding to the teams id.
 		class enemy_team_iterator
 		{
 		public:
@@ -1632,7 +1632,7 @@ namespace AIEcho
 		boost::shared_ptr<Order> getOrder(void);
 
 		unsigned int add_building_order(Construction::BuildingOrder* bo);
-		void add_management_order(Management::ManagementOrder* mo);		
+		void add_management_order(Management::ManagementOrder* mo);
 		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
 		boost::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
 
@@ -1654,7 +1654,7 @@ namespace AIEcho
 		friend class AIEcho::Management::UnPauseRessourceTracker;
 		friend class AIEcho::Management::ChangeAlliances;
 		friend class AIEcho::Management::SendMessage;
-		
+
 
 		Uint32 allies;
 		Uint32 enemies;

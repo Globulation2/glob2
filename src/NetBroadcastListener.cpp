@@ -56,7 +56,7 @@ void NetBroadcastListener::update()
 
 			LANGameInformation info;
 			info.decodeData(bis);
-			
+
 			bool found = false;
 			for(unsigned int i=0; i<addresses.size(); ++i)
 			{
@@ -75,11 +75,11 @@ void NetBroadcastListener::update()
 				timeouts.push_back(1500);
 				addresses.push_back(packet->address);
 			}
-			
+
 			delete bis;
 			result = SDLNet_UDP_Recv(socket, packet);
 		}
-		
+
 		int time = SDL_GetTicks() - lastTime;
 		for(unsigned int i=0; i<timeouts.size();)
 		{

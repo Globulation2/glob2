@@ -30,11 +30,11 @@ namespace GAGGUI
 	{
 	protected:
 		GAGCore::DrawableSurface *image; //!< pointer to the image, the widget does not delete it
-		
+
 	public:
 		Image(int x, int y, Uint32 hAlign, Uint32 vAlign, GAGCore::DrawableSurface *image);
 		virtual ~Image() { }
-		
+
 		virtual void paint(void);
 	};
 }

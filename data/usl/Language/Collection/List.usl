@@ -10,7 +10,7 @@ list := interface [
 
 	\# Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
 	def prepend(x) := cons(x, this)
-	
+
 	\# Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
 	def append(x) := {
 		if (isEmpty) {
@@ -19,7 +19,7 @@ list := interface [
 			cons(this.head, this.tail append x)
 		}
 	}
-	
+
 	\# Returns a list resulting from the concatenation of list x at the end of this list
 	def concat (x:list) := {
 		if (isEmpty) {
@@ -36,12 +36,12 @@ list := interface [
 			cons(function(this.head), this.tail map function)
 		}
 	}
-	
+
 	def foreach(function) := if (!isEmpty) {
 		function(this.head)
 		this.tail foreach function
 	}
-	
+
 	def contains(x) := {
 		if (isEmpty) {
 			false
@@ -81,20 +81,20 @@ nil := [
 
 	\# Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
 	def prepend(x) := cons(x, this)
-	
+
 	\# Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
 	def append(x) := cons(x, nil)
-	
+
 	\# Returns a list resulting from the concatenation of list x at the end of this list
 	def concat(x) := x
 
 	def map(function) := nil
-	
+
 	def foreach(function) := if (!isEmpty) {
 		function(this.head)
 		this.tail foreach function
 	}
-	
+
 	def contains(x) := false
 
 	\# Returns a list containing the elements of this list in the reverse order
@@ -106,20 +106,20 @@ cons := fun (head, tail) => [
 
 	\# Returns a list resulting from the concatenation of element x at the beginning and this list afterwards
 	def prepend(x) := cons(x, this)
-	
+
 	\# Returns a list resulting from the concatenation of this list at the beginning and element x afterwards
 	def append(x) := cons(this.head, this.tail append x)
-	
+
 	\# Returns a list resulting from the concatenation of list x at the end of this list
 	def concat(x) := cons(this.head, this.tail concat x)
 
 	def map(function) := cons(function(this.head), this.tail map function)
-	
+
 	def foreach(function) := {
 		function(head)
 		tail foreach function
 	}
-	
+
 	def contains(x) := (head == x) || (tail contains x)
 
 	\# Returns a list containing the elements of this list in the reverse order

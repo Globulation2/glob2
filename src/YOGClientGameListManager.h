@@ -36,19 +36,19 @@ public:
 
 	///Recieves an incoming message
 	void recieveMessage(boost::shared_ptr<NetMessage> message);
-	
+
 	///This will return the list of games on hosted on the server.
 	const std::list<YOGGameInfo>& getGameList() const;
-	
+
 	///This will return the list of games on hosted on the server.
 	std::list<YOGGameInfo>& getGameList();
-	
+
 	///Returns the game info with the given game id
 	YOGGameInfo getGameInfo(Uint16 gameID);
 
 	///This will add a listener for events saying the game list has been updated
 	void addListener(YOGClientGameListListener* listener);
-	
+
 	///This will remove a listener
 	void removeListener(YOGClientGameListListener* listener);
 

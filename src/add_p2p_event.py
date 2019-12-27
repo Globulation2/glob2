@@ -40,7 +40,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two P2PConnectionEvent
 	bool operator==(const P2PConnectionEvent& rhs) const;
 """

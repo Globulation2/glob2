@@ -23,7 +23,7 @@ static string getName(ThunkPrototype* thunk)
 			return nativeCode->name;
 		}
 	}
-	
+
 	return "???";
 }
 
@@ -45,7 +45,7 @@ const Position& DebugInfo::find(ThunkPrototype* thunk, size_t address)
 		debug.source2Address[nativePosition] = lastAddr;
 		return debug.address2Source[lastAddr];
 	}
-	
+
 }
 
 string unmangle(string::const_iterator& begin, string::const_iterator end)
@@ -62,7 +62,7 @@ string unmangle(string::const_iterator& begin, string::const_iterator end)
 			++begin;
 		}
 		while (isdigit(*begin));
-	
+
 		for (size_t i = 0; i < counter; ++i)
 		{
 			name += *begin;
@@ -102,7 +102,7 @@ string unmangle(string::const_iterator& begin, string::const_iterator end)
 			name += *begin;
 		}
 	}
-	
+
 	if (begin != end)
 	{
 		switch(*begin)

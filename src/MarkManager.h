@@ -62,7 +62,7 @@ class MarkManager
 public:
 	///Construct a MarkManager
 	MarkManager();
-	
+
 	///Draw all marks
 	void drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, Game& game);
 

@@ -27,34 +27,34 @@ namespace GAGCore
 	{
 		this->backend = backend;
 	}
-	
+
 	OutputLineStream::~OutputLineStream()
 	{
 		delete backend;
 	}
-	
+
 	InputLineStream::InputLineStream(StreamBackend *backend)
 	{
 		this->backend = backend;
 	}
-	
+
 	InputLineStream::~InputLineStream()
 	{
 		delete backend;
 	}
-	
+
 	void OutputLineStream::writeLine(const std::string &s)
 	{
 		backend->write(s.c_str(), s.length());
 		backend->putc('\n');
 	}
-	
+
 	void OutputLineStream::writeLine(const char *s)
 	{
 		backend->write(s, strlen(s));
 		backend->putc('\n');
 	}
-	
+
 	std::string InputLineStream::readLine()
 	{
 		std::string s;
@@ -70,12 +70,12 @@ namespace GAGCore
 		}
 		return s;
 	}
-	
+
 	bool OutputLineStream::isEndOfStream(void)
 	{
 		return backend->isEndOfStream();
 	}
-	
+
 	bool InputLineStream::isEndOfStream(void)
 	{
 		return backend->isEndOfStream();

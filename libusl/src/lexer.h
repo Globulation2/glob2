@@ -34,10 +34,10 @@ public:
 		END,
 		TOKENTYPES,
 	};
-	
+
 private:
 	static const Token::Type tokenTypes[TOKENTYPES];
-	
+
 public:
 	static const Token::Type* getType(TokenType id)
 	{
@@ -51,24 +51,24 @@ public:
 		Tokenizer(tokenTypes, TOKENTYPES, filename, text),
 		token(_next())
 	{ }
-	
+
 	const Token& next()
 	{
 		token = _next();
 		return token;
 	}
-	
+
 	TokenType tokenType() const
 	{
 		return (TokenType) token.type->id;
 	}
-	
+
 protected:
 	void fail(const std::string& expected) const __attribute__((noreturn));
-	
+
 private:
 	Token _next();
-	
+
 public:
 	Token token;
 };

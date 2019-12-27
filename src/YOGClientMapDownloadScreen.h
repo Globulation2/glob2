@@ -52,7 +52,7 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	///Called when this tab is activated
 	void onActivated();
-	
+
 	enum
 	{
 		QUIT,
@@ -62,12 +62,12 @@ public:
 		SUBMITRATING,
 		SORTMETHOD,
 	};
-	
+
 	///Updates the list of maps
 	void mapListUpdated();
 	///Updates the list of maps
 	void mapThumbnailsUpdated();
-	
+
 private:
 	///This requests the list of maps from the server
 	void requestMaps();
@@ -103,10 +103,10 @@ private:
 	Text* sortMethodLabel;
 	//! Allows the map list to be sorted in different ways
 	MultiTextButton* sortMethod;
-	
+
 	bool mapValid;
 	bool mapsRequested;
-	
+
 	//! True when the selected map is valid
 	bool validMapSelected;
 };
@@ -121,10 +121,10 @@ public:
 		Size,
 		Rating,
 	};
-	
+
 	///Creates the sorting functor with the given sort method
 	MapListSorter(SortMethod sortmethod);
-	
+
 	///Compares two downloadable map info
 	bool operator()(const YOGDownloadableMapInfo& lhs, const YOGDownloadableMapInfo& rhs);
 private:

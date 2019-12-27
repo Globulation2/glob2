@@ -32,7 +32,7 @@ namespace GAGCore
 	public:
 		std::vector<std::string> data;
 	};
-	
+
 	class StringTable
 	{
 	public:
@@ -50,7 +50,7 @@ namespace GAGCore
 		bool doesStringExist(const std::string stringname) const;
 		const std::string getStringInLang(const std::string stringname, int lang) const;
 		void print();
-	
+
 	private:
 		std::vector<OneStringToken *> strings;
 		std::map<std::string, size_t> stringAccess;
@@ -59,7 +59,7 @@ namespace GAGCore
 		int defaultLang;
 		int languageCount;
 		std::vector<bool> incomplete;
-		
+
 	public:
 		enum {AI_NAME_SIZE=4};
 	};

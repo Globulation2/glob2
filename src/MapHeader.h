@@ -36,34 +36,34 @@ class MapHeader
 public:
 	/// Gives default values to all entries
 	MapHeader();
-		
+
 	/// Resets the MapHeader to a "blank" state with default values
-	void reset();	
+	void reset();
 
 	/// Loads map header information from the stream
 	bool load(GAGCore::InputStream *stream);
-	
+
 	/// Saves map header information to the stream.
 	void save(GAGCore::OutputStream *stream) const;
 
 	/// Returns the version major
 	Sint32 getVersionMajor() const;
-	
+
 	/// Returns the version minor
 	Sint32 getVersionMinor() const;
-	
+
 	/// Returns the number of teams
 	Sint32 getNumberOfTeams() const;
 
 	/// Sets the number of teams in the map
 	void setNumberOfTeams(Sint32 teamNum);
 
-	/// Returns the user-friendly name of the map	
+	/// Returns the user-friendly name of the map
 	const std::string& getMapName() const;
-	
+
 	/// Returns the file name of the map. isCampaignMap is a special override when the game is loading campaign maps
 	std::string getFileName(bool isCampaignMap=false, bool isReplay=false) const;
-	
+
 	/// Sets the user-friendly name of the map
 	void setMapName(const std::string& newMapName);
 
@@ -75,7 +75,7 @@ public:
 	/// Sets the map offset. Should only be done during saving
 	/// the game or map.
 	/// Note that technically the MapHeader is the first thing
-	/// written to the file. This means that it has to be 
+	/// written to the file. This means that it has to be
 	/// *overwritten* after the offset has been found.
 	void setMapOffset(Uint32 mapOffset);
 
@@ -86,22 +86,22 @@ public:
 	/// Returns true if this header represents a saved game, otherwise it
 	/// is a map
 	bool getIsSavedGame() const;
-	
+
 	/// Sets whether or no this header represents a saved game
 	void setIsSavedGame(bool isSavedGame);
 
 	/// Sets the complete game checksum
 	void setGameSHA1(Uint8 SHA1sum[20]);
-	
+
 	/// Returns the complete game checksum
 	Uint8* getGameSHA1();
-	
+
 	/// Returns the complete game checksum
 	void resetGameSHA1();
 
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
-	
+
 	///Comparison does *not* count file version numbers
 	bool operator!=(const MapHeader& rhs) const;
 	bool operator==(const MapHeader& rhs) const;
@@ -116,14 +116,14 @@ private:
 	/// and is used to generate Map previews without loading
 	/// the complete file.
 	Uint32 mapOffset;
-	
+
 	/// The teams in the map. BaseTeam is used to allow access to information like team numbers and
 	/// team colors without loading the entire game.
 	BaseTeam teams[Team::MAX_COUNT];
-	
+
 	/// If this is true, this map header represents a saved game, rather than a new map
 	bool isSavedGame;
-	
+
 	/// Set to the complete files SHA1
 	Uint8 SHA1[20];
 

@@ -41,7 +41,7 @@ class InGameMessage
 public:
 	///Constructs an in game message with the text, the color, and a time to be displayed, in ms
 	InGameMessage(const std::string& text, const GAGCore::Color& color, int time=8000);
-	
+
 	///Returns the text in this message
 	std::string getText() const;
 protected:
@@ -62,17 +62,17 @@ class GameGUIMessageManager
 public:
 	///Constructs a GameGUIMessageManager
 	GameGUIMessageManager();
-	
+
 	///Add a message to the history of game messages
 	void addGameMessage(const InGameMessage& message);
-	
+
 	///Add a message to the history of chat messages
 	void addChatMessage(const InGameMessage& message);
-	
+
 
 	///Draws all messages that need to be drawn starting at x,y
 	void drawAllGameMessages(int x, int y);
-	
+
 	///Draws all chat messages that need to be drawn starting at x,y
 	void drawAllChatMessages(int x, int y);
 
@@ -107,7 +107,7 @@ protected:
 	/// The last known size of the history, to count for changes
 	size_t lastSize;
 	/// The widget
-	List *messageList;	
+	List *messageList;
 };
 
 

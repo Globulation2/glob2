@@ -80,7 +80,7 @@ bool YOGServerRouterAdministrator::executeAdministrativeCommand(const std::strin
 		tokens.push_back(token);
 		token.clear();
 	}
-	
+
 	if(tokens.size() == 0)
 	{
 		sendTextMessage("Use help to get a list of commands", player);

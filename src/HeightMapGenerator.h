@@ -21,7 +21,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #ifndef _HEIGHTMAPGENERATOR_H
 #define _HEIGHTMAPGENERATOR_H
 
@@ -36,7 +36,7 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 	PerlinNoise _pn;/// to get reproducable corellated random numbers
 public:
 	enum kindOfMap {SWAMP=0,ISLANDS=1,RIVER=2,CRATERS=3,RANDOM=4};
-	
+
 	HeightMap(unsigned int width, unsigned int height);
 	HeightMap(unsigned int width, unsigned int height, unsigned int playerCount, unsigned int kind);
 	~HeightMap();
@@ -57,7 +57,7 @@ public:
 	void makePlain(float smoothingFactor); /// a plain perlin height field
 	void makeSwamp(float smoothingFactor); /// a plain perlin height field
 	void makeIslands(unsigned int count, float smoothingFactor); /// generates a 'swamp' with count hills
-	void makeRiver(unsigned int maxDiameter, float smoothingFactor); /// generates a 'swamp' with a river based on a random walk. 
+	void makeRiver(unsigned int maxDiameter, float smoothingFactor); /// generates a 'swamp' with a river based on a random walk.
 	void makeCraters(unsigned int craterCount, unsigned int craterRadius, float smoothingFactor); /// generates a 'swamp' with craterCount craters
 private:
 	void operator+(HeightMap hm){for(unsigned int i=0; i<_w*_h; i++)_map[i]+=hm(i);};

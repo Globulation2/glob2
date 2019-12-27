@@ -25,9 +25,9 @@ using namespace GAGCore;
 namespace GAGGUI
 {
 	Style defaultStyle;
-	
+
 	Style *Style::style = &defaultStyle;
-	
+
 	Style::Style()
 	{
 		textColor = highlightColor = Color(255, 255, 255);
@@ -36,7 +36,7 @@ namespace GAGGUI
 		backColor = Color(0, 0, 0);
 		backOverlayColor = Color(0, 0, 40);
 	}
-	
+
 	void Style::drawOnOffButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, bool state)
 	{
 		drawFrame(target, x, y, w, h, highlight);
@@ -48,7 +48,7 @@ namespace GAGGUI
 			target->drawLine(x+(w/2),   y+4*(w/5),   x+4*(w/5)-1, y+(h/5), 0, 255, 0);
 		}
 	}
-	
+
 	void Style::drawTriButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, Uint8 state)
 	{
 		drawFrame(target, x, y, w, h, highlight);
@@ -67,19 +67,19 @@ namespace GAGGUI
 			target->drawLine(x+w-(w/5)-2, y+(h/5), x+(w/5)+1,   y+4*(h/5), 255, 64, 0);
 		}
 	}
-	
+
 	void Style::drawTextButtonBackground(DrawableSurface *target, int x, int y, int w, int h, unsigned highlight)
 	{
 		drawFrame(target, x, y, w, h, highlight);
 	}
-	
+
 	void Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, unsigned highlight)
 	{
 		target->drawRect(x, y, w, h, frameColor);
 		if (highlight > 0)
 			target->drawRect(x+1, y+1, w-2, h-2, frameColor.applyAlpha(highlight));
 	}
-	
+
 	void Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength)
 	{
 		// draw line and arrows
@@ -104,7 +104,7 @@ namespace GAGGUI
 		target->drawFilledRect(x, y+22+blockPos, 17, blockLength, Style::style->highlightColor.applyAlpha(128));
 		target->drawRect(x+1, y+22+blockPos, 17, blockLength, Style::style->highlightColor);
 	}
-	
+
 	void Style::drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range)
 	{
 		int h = getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
@@ -116,7 +116,7 @@ namespace GAGGUI
 		int len = (value*w)/range;
 		target->drawFilledRect(x, y, len, h, listSelectedElementColor);
 	}
-	
+
 	int Style::getStyleMetric(StyleMetrics metric)
 	{
 		switch (metric)

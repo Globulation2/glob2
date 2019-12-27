@@ -35,7 +35,7 @@ AIToubib::AIToubib(Player *player)
 AIToubib::AIToubib(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
-	
+
 	bool goodLoad = load(stream, player, versionMinor);
 	assert(goodLoad);
 }
@@ -48,7 +48,7 @@ AIToubib::~AIToubib()
 void AIToubib::init(Player *player)
 {
 	assert(player);
-	
+
 	this->player = player;
 	this->team = player->team;
 	this->game = player->game;
@@ -57,15 +57,15 @@ void AIToubib::init(Player *player)
 	assert(this->team);
 	assert(this->game);
 	assert(this->map);
-	
+
 	now = 0;
-	
+
 	/*currentStateIndex = NB_HISTORY_STATES;
 	memset(history, 0, sizeof(AIState) * NB_HISTORY_STATES);
-	
+
 	//pq = new std::priority_queue(std::list<AIProject>);
-	
-	
+
+
 	*/
 }
 
@@ -74,7 +74,7 @@ bool AIToubib::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	// check version
 	// saving state variables
 	now = stream->readUint32("now");
-	
+
 	return true;
 }
 
@@ -97,7 +97,7 @@ void AIToubib::computeMyStatsStep(void)
 boost::shared_ptr<Order> AIToubib::getOrder(void)
 {
 	now++;
-	
+
 	switch (now % 2)
 	{
 		case 0: return getOrderBuildingStep();

@@ -32,13 +32,13 @@ namespace GAGGUI
 	{
 		x = y = w = h = m = nth = 0;
 	}
-	
+
 	Number::Number(const std::string &tooltip, const std::string &tooltipFont)
 		:HighlightableWidget(tooltip, tooltipFont)
 	{
 		x = y = w = h = m = nth = 0;
 	}
-	
+
 	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font)
 	{
 		assert(font.size());
@@ -49,13 +49,13 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		if (m<1)
 			m=h;
 		this->m=m;
 		nth=0;
 	}
-	
+
 	Number::Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font, const std::string &tooltip, const std::string &tooltipFont)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
@@ -67,18 +67,18 @@ namespace GAGGUI
 		this->h=h;
 		this->hAlignFlag=hAlign;
 		this->vAlignFlag=vAlign;
-	
+
 		if (m<1)
 			m=h;
 		this->m=m;
 		nth=0;
 	}
-	
+
 	Number::~Number()
 	{
 		// Let's sing.
 	}
-	
+
 	void Number::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
@@ -86,8 +86,8 @@ namespace GAGGUI
 		getScreenPos(&x, &y, &w, &h);
 		bool inc = false;
 		bool dec = false;
-		
-		
+
+
 		// We can't use isOnWidget since x, y, w, h are needed
 		// out of the test
 		if (isPtInRect(event->button.x, event->button.y, x, y, w, h))
@@ -102,7 +102,7 @@ namespace GAGGUI
 				{
 					inc = true;
 				}
-			
+
 			}
 			else if(event->button.button == SDL_BUTTON_WHEELUP)
 			{
@@ -113,7 +113,7 @@ namespace GAGGUI
 				dec = true;
 			}
 		}
-		
+
 		if (dec)
 		{
 			// a "Less" click
@@ -136,7 +136,7 @@ namespace GAGGUI
 			}
 		}
 	}
-	
+
 	void Number::internalInit(void)
 	{
 		this->fontPtr=Toolkit::getFont(font.c_str());
@@ -144,18 +144,18 @@ namespace GAGGUI
 		textHeight=this->fontPtr->getStringHeight("");
 		assert(textHeight > 0);
 	}
-	
+
 	void Number::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-		
+
 		parent->getSurface()->drawLine(x+m, y, x+m, y+h, Style::style->frameColor);
 		parent->getSurface()->drawLine(x+w-m, y, x+w-m, y+h, Style::style->frameColor);
-		
+
 		assert(nth>=0);
 		assert(nth<(int)numbers.size());
 		int dy=(h-textHeight)/2;
@@ -172,27 +172,27 @@ namespace GAGGUI
 		parent->getSurface()->drawString(x+dx1, y+dy, fontPtr, "-");
 		int dx2=(m-fontPtr->getStringWidth("+"))/2;
 		parent->getSurface()->drawString(x+dx2+w-m, y+dy, fontPtr, "+");
-		
+
 		HighlightableWidget::paint();
 	}
-	
+
 	void Number::add(int number)
 	{
 		numbers.push_back(number);
 	}
-	
+
 	void Number::clear(void)
 	{
 		numbers.clear();
 	}
-	
+
 	void Number::setNth(int nth)
 	{
 		assert((nth>=0)&&(nth<(int)numbers.size()));
 		if ((nth>=0)&&(nth<(int)numbers.size()))
 			this->nth=nth;
 	}
-	
+
 	void Number::set(int number)
 	{
 		for (int i=0; i<(int)numbers.size(); i++)
@@ -202,12 +202,12 @@ namespace GAGGUI
 				break;
 			}
 	}
-	
+
 	int Number::getNth(void)
 	{
 		return nth;
 	}
-	
+
 	int Number::get(void)
 	{
 		assert(nth<(int)numbers.size());

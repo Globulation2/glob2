@@ -1,8 +1,8 @@
 import os
-    
+
 Import("env")
 Import("PackTar")
-    
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     any=False
     for file in os.listdir("."):

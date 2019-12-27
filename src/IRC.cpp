@@ -59,7 +59,7 @@ IRC::~IRC()
 bool IRC::connect(const std::string &serverName, int serverPort, const std::string &nick)
 {
 	disconnect();
-	
+
 	IPaddress ip;
 	socketSet = SDLNet_AllocSocketSet(1);
 	if (SDLNet_ResolveHost(&ip, (char *)serverName.c_str(), serverPort)==-1)
@@ -76,7 +76,7 @@ bool IRC::connect(const std::string &serverName, int serverPort, const std::stri
 	}
 
 	SDLNet_TCP_AddSocket(socketSet, socket);
-	
+
 	// Here we change the nick on yog for the IRC
 	// changing from nick = "nick" to YOGnick = "YOGnick"
 	this->nick = "[YOG]" + nick;
@@ -171,17 +171,17 @@ void IRC::interpreteIRCMessage(const std::string &message)
 	{
 		char *diffusion=strtok(NULL, " :");
 		char *message=strtok(NULL, "\0");
-		
+
 		// normal chat message
 		ChatMessage msg;
-		
+
 		if (strstr(source, "[YOG]")==0)
 		{
 			if (message && (*(++message)))
 			{
 				msg.source = source;
 				msg.diffusion = diffusion;
-				msg.message = message;	
+				msg.message = message;
 				messages.push_back(msg);
 			}
 		}
@@ -190,12 +190,12 @@ void IRC::interpreteIRCMessage(const std::string &message)
 	{
 		char *diffusion=strtok(NULL, " :\0");
 		InfoMessage msg(IRC_MSG_JOIN);
-		
+
 		msg.source = source;
 		msg.diffusion = diffusion;
 
 		infoMessages.push_back(msg);
-		
+
 		usersOnChannels[std::string(diffusion)].insert(std::string(source));
 		usersOnChannelsModified = true;
 	}
@@ -207,14 +207,14 @@ void IRC::interpreteIRCMessage(const std::string &message)
 
 		msg.source = source;
 		msg.diffusion = diffusion;
-		
+
 		if (message && (*(++message)))
 		{
 			msg.message = message;
 		}
 
 		infoMessages.push_back(msg);
-		
+
 		// if we leave the chan, erase all list
 		if (source == nick)
 			usersOnChannels[std::string(diffusion)].clear();
@@ -232,7 +232,7 @@ void IRC::interpreteIRCMessage(const std::string &message)
 		{
 			msg.message = message;
 		}
-		
+
 		// erase this nick from all chans
 		std::string user(source);
 		for (std::map<std::string, std::set<std::string> >::iterator it = usersOnChannels.begin(); it!=usersOnChannels.end(); ++it)
@@ -250,11 +250,11 @@ void IRC::interpreteIRCMessage(const std::string &message)
 	{
 		char *diffusion = strtok(NULL, " :");
 		char *message = strtok(NULL, "\0");
-	
+
 		if ((diffusion != NULL) && (message != NULL))
 		{
 			InfoMessage msg(IRC_MSG_NOTICE);
-			
+
 			if (source)
 			{
 				msg.source = source;
@@ -286,13 +286,13 @@ void IRC::interpreteIRCMessage(const std::string &message)
 			sendString("NICK " + nick);
 			joinChannel("#glob2");
 		}
-		
+
 		else
 		{
 			const std::string &nicktaken = Toolkit::getStringTable()->getString("[nick taken]");
 			const std::string &ok = Toolkit::getStringTable()->getString("[ok]");
 			int res = (int)MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, nicktaken.c_str(), ok.c_str());
-		
+
 			if (res != 0 )
 			{
 				assert(false);

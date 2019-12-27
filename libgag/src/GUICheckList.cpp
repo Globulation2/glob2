@@ -24,30 +24,30 @@ namespace GAGGUI
 	CheckList::CheckList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font, bool readOnly)
 		: List(x, y, w, h, hAlign, vAlign, font), readOnly(readOnly)
 	{
-		
+
 	}
-	
-		
+
+
 	void CheckList::addItem(const std::string& text, bool checked)
 	{
 		addText(text);
 		checks.push_back(checked);
 	}
-	
-	
+
+
 	void CheckList::clear(void)
 	{
 		List::clear();
 		checks.clear();
 	}
-	
-	
+
+
 	bool CheckList::isChecked(int n)
 	{
 		return checks[n];
 	}
-	
-	
+
+
 	void CheckList::drawItem(int x, int y, size_t element)
 	{
 		if(element < getCount())
@@ -58,8 +58,8 @@ namespace GAGGUI
 			parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
 		}
 	}
-	
-	
+
+
 	void CheckList::handleItemClick(size_t element, int mx, int my)
 	{
 		if(!readOnly)

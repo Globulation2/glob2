@@ -51,7 +51,7 @@ public:
 	void onActivated();
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
-	
+
 	enum
 	{
 		QUIT,
@@ -68,7 +68,7 @@ private:
 	void updateBlockedPlayerRemove();
 
 	boost::shared_ptr<YOGClient> client;
-	
+
 	List* blockedPlayers;
 	Text* blockedPlayersText;
 	TextButton* removeBlockedPlayer;

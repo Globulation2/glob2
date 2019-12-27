@@ -34,13 +34,13 @@ class YOGPlayerStoredInfo
 public:
 	///Constructs a default YOGPlayerStoredInfo
 	YOGPlayerStoredInfo();
-	
+
 	///Sets this player to be muted until the given time
 	void setMuted(boost::posix_time::ptime unmute_time);
-	
+
 	///Sets this player to be unmuted
 	void setUnmuted();
-	
+
 	///Returns true if this player is muted, false otherwise
 	bool isMuted() const;
 
@@ -49,19 +49,19 @@ public:
 
 	///Sets this player to be unbanned
 	void setUnbanned();
-	
+
 	///Returns true if this player is banned, false otherwise
 	bool isBanned() const;
-	
+
 	///Sets whether this player is a moderator or not
 	void setModerator(bool isModerator);
-	
+
 	///Returns whether this player is a moderator
 	bool isModerator() const;
-	
+
 	///Sets this players rating
 	void setPlayerRating(int rating);
-	
+
 	///Gets this players rating
 	int getPlayerRating() const;
 
@@ -70,7 +70,7 @@ public:
 
 	///Decodes this YOGPlayerStoredInfo from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 dataVersionMinor);
-	
+
 	///Test for equality between two YOGPlayerStoredInfo
 	bool operator==(const YOGPlayerStoredInfo& rhs) const;
 	bool operator!=(const YOGPlayerStoredInfo& rhs) const;

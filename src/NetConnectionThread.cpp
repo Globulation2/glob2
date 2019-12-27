@@ -117,11 +117,11 @@ void NetConnectionThread::operator()()
 							BinaryOutputStream* bos = new BinaryOutputStream(msb);
 							bos->writeUint8(message->getMessageType(), "messageType");
 							message->encodeData(bos);
-							
+
 							msb->seekFromEnd(0);
 							Uint32 length = msb->getPosition();
 							msb->seekFromStart(0);
-							
+
 							Uint8* newData = new Uint8[length+2];
 							SDLNet_Write16(length, newData);
 							msb->read(newData+2, length);
@@ -133,7 +133,7 @@ void NetConnectionThread::operator()()
 								sendToMainThread(error);
 								closeConnection();
 							}
-							
+
 							/*
 							amount += length;
 							if(amount >= 1024)
@@ -144,7 +144,7 @@ void NetConnectionThread::operator()()
 								amount = 0;
 							}
 							*/
-							
+
 							delete bos;
 							delete[] newData;
 						}
@@ -174,7 +174,7 @@ void NetConnectionThread::operator()()
 					break;
 				}
 			}
-			
+
 			while (connected)
 			{
 				SDL_Delay(50);
@@ -229,7 +229,7 @@ void NetConnectionThread::operator()()
 								amount = 0;
 							}
 						*/
-										
+
 							MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
 							msb->seekFromStart(0);
 							BinaryInputStream* bis = new BinaryInputStream(msb);
@@ -240,7 +240,7 @@ void NetConnectionThread::operator()()
 							sendToMainThread(recieved);
 
 							//std::cout<<"Recieved: "<<message->format()<<std::endl;
-							
+
 							delete bis;
 						}
 						delete[] data;

@@ -35,11 +35,11 @@ class MapGenerationDescriptor
 public:
 	MapGenerationDescriptor();
 	virtual ~MapGenerationDescriptor(void);
-	
+
 	Uint8 *getData();
 	bool setData(const Uint8 *data, int dataLength);
 	int getDataLength() {return DATA_SIZE; }
-	
+
 	void save(GAGCore::OutputStream *stream);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	Uint32 checkSum();
@@ -67,9 +67,9 @@ public:
 	};
 
 	Methode methode;
-	
+
 	Sint32 wDec, hDec;
-	
+
 	Sint32 waterRatio, sandRatio, grassRatio, desertRatio, wheatRatio,
 		woodRatio, fruitRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
 	Sint32 oldIslandSize, oldBeach;

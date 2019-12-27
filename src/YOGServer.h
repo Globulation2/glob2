@@ -74,22 +74,22 @@ public:
 
 	///Returns the login policy that is being used by the server
 	YOGLoginPolicy getLoginPolicy() const;
-	
+
 	///Returns the game policy that is being used by the server
 	YOGGamePolicy getGamePolicy() const;
 
 	///Returns whether the users password is correct.
 	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version);
-	
+
 	///This reigsters a new user
 	YOGLoginState registerInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version);
 
 	///Returns the list of games the server currently has
 	const std::list<YOGGameInfo>& getGameList() const;
-	
+
 	///Returns the list of players the server currently has
 	const std::list<YOGPlayerSessionInfo>& getPlayerList() const;
-	
+
 	///Sets the player stored info for a particular player
 	void setPlayerStoredInfo(const std::string& name, const YOGPlayerStoredInfo& info);
 
@@ -113,7 +113,7 @@ public:
 	///Asks the server whether a player can join the provided game with the information.
 	///Return YOGJoinRefusalUnknown if it can, or the failure reason elsewise
 	YOGServerGameJoinRefusalReason canJoinGame(Uint16 gameID);
-	
+
 	///Returns the game assocciatted with the given ID
 	boost::shared_ptr<YOGServerGame> getGame(Uint16 gameID);
 
@@ -122,43 +122,43 @@ public:
 
 	///Returns the player assocciatted with the given name
 	boost::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
-	
+
 	///This starts LAN broadcasting of the first game, if it exists
 	void enableLANBroadcasting();
-	
+
 	///This stops LAN broadcasting
 	void disableLANBroadcasting();
 
 	///Returns the YOGGameInfo for modification
 	YOGGameInfo& getGameInfo(Uint16 gameID);
-	
+
 	///Returns the YOGServerAdministratorList
 	YOGServerAdministratorList& getAdministratorList();
-	
+
 	///Returns the YOGServerAdministrator
 	YOGServerAdministrator& getAdministrator();
-	
+
 	///Returns the YOGServerPlayerStoredInfoManager
 	YOGServerPlayerStoredInfoManager& getPlayerStoredInfoManager();
-	
+
 	///Returns the YOGServerPasswordRegistry
 	YOGServerPasswordRegistry& getServerPasswordRegistry();
-	
+
 	///Returns the YOGServerBannedIPListManager
 	YOGServerBannedIPListManager& getServerBannedIPListManager();
-	
+
 	///Returns the YOGServerGameLog
 	YOGServerGameLog& getGameLog();
-	
+
 	///Returns the YOGServerRouterManager
 	YOGServerRouterManager& getRouterManager();
-	
+
 	///Returns the YOGServerMapDatabank
 	YOGServerMapDatabank& getMapDatabank();
-	
+
 	///Returns the YOGServerFileDistributationManager
 	YOGServerFileDistributationManager& getFileDistributionManager();
-	
+
 	///Returns the YOGServerPlayerScoreCalculator
 	YOGServerPlayerScoreCalculator& getPlayerScoreCalculator();
 private:
@@ -175,16 +175,16 @@ private:
 	NetListener nl;
 	boost::shared_ptr<NetBroadcaster> broadcaster;
 	boost::shared_ptr<NetConnection> new_connection;
-	
+
 	std::map<Uint16, boost::shared_ptr<YOGServerPlayer> > players;
 	std::map<Uint16, boost::shared_ptr<YOGServerGame> > games;
 	std::list<YOGGameInfo> gameList;
 	std::list<YOGPlayerSessionInfo> playerList;
-	
+
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 	bool isBroadcasting;
-	
+
 	YOGServerPasswordRegistry registry;
 	YOGServerChatChannelManager chatChannelManager;
 	YOGServerAdministrator administrator;

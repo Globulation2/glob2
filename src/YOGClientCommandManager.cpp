@@ -31,7 +31,7 @@ YOGClientCommandManager::YOGClientCommandManager(YOGClient* client)
 }
 
 
-	
+
 YOGClientCommandManager::~YOGClientCommandManager()
 {
 	for(unsigned int i=0; i<commands.size(); ++i)
@@ -75,12 +75,12 @@ std::string YOGClientCommandManager::executeClientCommand(const std::string& mes
 		tokens.push_back(token);
 		token.clear();
 	}
-	
+
 	if(tokens.size() == 0)
 	{
 		return "";
 	}
-	
+
 	std::string text;
 	if(tokens[0] == "/help")
 	{

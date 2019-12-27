@@ -57,10 +57,10 @@ LANFindScreen::LANFindScreen()
 
 	addWidget(new TextButton( 10, 20, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[connect]"), CONNECT, 13));
 	addWidget(new TextButton(330, 20, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
-	
+
 	lanServers=new List(340, 80, 280, 100, ALIGN_SCREEN_CENTERED, ALIGN_FILL, "standard");
 	addWidget(lanServers);
-	
+
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[join a game]")));
 
 	wasVisible=false;
@@ -74,7 +74,7 @@ LANFindScreen::~LANFindScreen()
 void LANFindScreen::onTimer(Uint32 tick)
 {
 	listener.update();
-	
+
 	int s = lanServers->getSelectionIndex();
 
 	lanServers->clear();
@@ -83,7 +83,7 @@ void LANFindScreen::onTimer(Uint32 tick)
 	{
 		lanServers->addText(games[i].getGameInformation().getGameName());
 	}
-	
+
 	lanServers->setSelectionIndex(std::min(s, int(games.size()-1)));
 }
 
@@ -106,7 +106,7 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 				client->update();
 				SDL_Delay(50);
 			}
-			
+
 			if(!client->isConnected())
 			{
 				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
@@ -117,7 +117,7 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			client->attemptLogin(playerName->getText());
 			while(client->getConnectionState() != YOGClient::ClientOnStandby)
 				client->update();
-				
+
 			boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 			client->setMultiplayerGame(game);
 
@@ -133,7 +133,7 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			game->joinGame((*client->getGameListManager()->getGameList().begin()).getGameID());
 
 			Glob2TabScreen screen(true);
-			
+
 			listener.disableListening();
 			int rc = screen.execute(globalContainer->gfx, 40);
 			listener.enableListening();

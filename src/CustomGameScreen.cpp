@@ -47,16 +47,16 @@ CustomGameScreen::CustomGameScreen() :
 		{
 			closedText[i]=new Text(300, 60+i*25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername());
 			addWidget(closedText[i]);
-			
+
 			aiSelector[i]=NULL;
 		}
 		else
 		{
 			color[i]->hide();
-			
+
 			closedText[i]=new Text(300, 60+i*25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[closed]"));
 			addWidget(closedText[i]);
-			
+
 			aiSelector[i]=new MultiTextButton(300, 60+i*25, 100, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[AI]"), 300+i);
 			for (int aii=0; aii<AI::SIZE; aii++)
 				aiSelector[i]->addText(AINames::getAIText(aii));
@@ -69,7 +69,7 @@ CustomGameScreen::CustomGameScreen() :
 	addWidget(otherOptions);
 	aiDescriptions = new TextButton(230, 370, 170, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[AI Descriptions]"), 0);
 	addWidget(aiDescriptions);
-	
+
 	otherOptions->visible=false;
 }
 

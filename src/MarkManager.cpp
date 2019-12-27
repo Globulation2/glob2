@@ -61,7 +61,7 @@ void Mark::drawInMinimap(int s, int local, int x, int y, Game& game)
 	int szX, szY;
 	int decX, decY;
 	int nx, ny;
-	
+
 	Utilities::computeMinimapData(s, game.map.getW(), game.map.getH(), &mMax, &szX, &szY, &decX, &decY);
 	GameUtilities::globalCoordToLocalView(&game, local, px, py, &nx, &ny);
 
@@ -69,7 +69,7 @@ void Mark::drawInMinimap(int s, int local, int x, int y, Game& game)
 	ny = (ny*s)/mMax;
 	nx += x + decX;
 	ny += y + decY;
-	
+
 	draw(nx, ny, 1.0);
 }
 
@@ -79,7 +79,7 @@ void Mark::drawInMainView(int viewportX, int viewportY, Game& game)
 {
 	int nx, ny;
 	game.map.mapCaseToDisplayable(px, py, &nx, &ny, viewportX, viewportY);
-	
+
 	draw(nx, ny, 2.0);
 }
 

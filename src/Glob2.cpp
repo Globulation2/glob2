@@ -164,7 +164,7 @@ int Glob2::runTestMapGeneration()
 	while(true)
 	{
 		MapGenerationDescriptor descriptor;
-		
+
 		int type = (syncRand() % 7) + 1;
 		int wDec = (syncRand() % 4) + 6;
 		int hDec = (syncRand() % 4) + 6;
@@ -172,9 +172,9 @@ int Glob2::runTestMapGeneration()
 		int workers = (syncRand() % 8) + 1;
 		int repeat = (syncRand() % 5);
 		int smooth = (syncRand() % 8) + 1;
-		
+
 		int oldBeach = (syncRand() % 4);
-		
+
 		descriptor.methode = static_cast<MapGenerationDescriptor::Methode>(type);
 		descriptor.nbTeams = teams;
 		descriptor.wDec=wDec;
@@ -183,7 +183,7 @@ int Glob2::runTestMapGeneration()
 		descriptor.oldBeach=oldBeach;
 		descriptor.nbWorkers=workers;
 		descriptor.logRepeatAreaTimes = repeat;
-		
+
 		descriptor.waterRatio=syncRand() % 100;
 		descriptor.sandRatio=syncRand() % 100;
 		descriptor.grassRatio=syncRand() % 100;
@@ -198,9 +198,9 @@ int Glob2::runTestMapGeneration()
 		descriptor.extraIslands=syncRand() % 9;
 		//eISLANDS
 		descriptor.oldIslandSize=syncRand() % 74;
-		
 
-		std::cout<<"Generating Map"<<std::endl;		
+
+		std::cout<<"Generating Map"<<std::endl;
 		MapGenerator generator;
 		Game game(NULL);
 		generator.generateMap(game, descriptor);
@@ -240,26 +240,26 @@ int Glob2::run(int argc, char *argv[])
 	{
 		YOGServerRouter router;
 		int rc = router.run();
-		return rc;	
+		return rc;
 	}
 	if(globalContainer->adminRouter)
 	{
 		YOGClientRouterAdministrator admin;
 		return admin.execute();
 	}
-	
+
 	if (globalContainer->runTestGames)
 	{
 		int ret=runTestGames();
 		delete globalContainer;
 		return ret;
 	}
-	
+
 	if(globalContainer->runTestMapGeneration)
 	{
 		runTestMapGeneration();
 	}
-	
+
 	if (globalContainer->runNoX)
 	{
 		int ret=runNoX();
@@ -279,7 +279,7 @@ int Glob2::run(int argc, char *argv[])
 		else if(rc_e == -1)
 			isRunning = false;
 	}
- 
+
 	while (isRunning)
 	{
 		switch (MainMenuScreen::menu())
@@ -350,7 +350,7 @@ int Glob2::run(int argc, char *argv[])
 					}
 					else
 					{
-						cont=false;	
+						cont=false;
 					}
 				}
 			}
@@ -426,11 +426,11 @@ int main(int argc, char *argv[])
 	assert(mainBundleURL);
 	CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
 	assert(cfStringRef);
-	
+
 	char path[MAXPATHLEN];
 	CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
 	chdir(path);
-	
+
 	CFRelease(mainBundleURL);
 	CFRelease(cfStringRef);
 #endif

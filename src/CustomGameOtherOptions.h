@@ -49,14 +49,14 @@ public:
 	virtual ~CustomGameOtherOptions();
 	///Recieves an action from a widget
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	
+
 	///These are the end values for this screen
 	enum EndValues
 	{
 		Finished,
 		Canceled,
 	};
-	
+
 private:
 	enum
 	{
@@ -66,14 +66,14 @@ private:
 		PRESTIGEWINENABLED,
 		MAPDISCOVERED,
 	};
-	
+
 	///"Other Options" Title
 	Text* title;
 	///Ok button
 	TextButton* ok;
 	///Cancel button
 	TextButton* cancel;
-	
+
 	///List of the player names
 	Text ** playerNames;
 	//! Player colors
@@ -85,7 +85,7 @@ private:
 	OnOffButton *teamsFixed;
 	///Text for above button
 	Text* teamsFixedText;
-	
+
 	///Enables a win via prestige
 	OnOffButton* prestigeWinEnabled;
 	///Text for above button
@@ -95,12 +95,12 @@ private:
 	OnOffButton *mapDiscovered;
 	///Text for above button
 	Text* mapDiscoveredText;
-	
+
 	///This updates the winning conditions in the game header
 	void updateGameHeaderWinningConditions();
 	///This updates the screens winning conditions from the game header
 	void updateScreenWinningConditions();
-	
+
 	GameHeader& gameHeader;
 	GameHeader oldGameHeader;
 	MapHeader& mapHeader;

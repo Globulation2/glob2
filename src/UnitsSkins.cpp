@@ -38,26 +38,26 @@ UnitsSkins::UnitsSkins()
 		abort();
 		return;
 	}
-	
+
 	// read all entries
 	std::set<std::string> entries;
 	stream->getSubSections("", &entries);
-	
+
 	for (std::set<std::string>::const_iterator it = entries.begin(); it != entries.end(); ++it)
 	{
 		const std::string &name = *it;
 		UnitSkin *unitSkin = new UnitSkin;
-		
+
 		stream->readEnterSection(name.c_str());
 		bool result = unitSkin->load(stream);
 		stream->readLeaveSection();
-		
+
 		if (result)
 			unitsSkins[name] = unitSkin;
 		else
 			delete unitSkin;
 	}
-	
+
 	delete stream;
 }
 
@@ -66,7 +66,7 @@ UnitsSkins::~UnitsSkins()
 {
 	for (std::map<std::string, UnitSkin *>::iterator it = unitsSkins.begin(); it != unitsSkins.end(); ++it)
 		delete it->second;
-	
+
 }
 
 //! Return the skin corresponding to name. If no such skin exist, return NULL

@@ -129,7 +129,7 @@ TeamStats::TeamStats()
 
 TeamStats::~TeamStats()
 {
-	
+
 }
 
 void TeamStats::step(Team *team, bool reloaded)
@@ -140,7 +140,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		endOfGameStats.push_back(EndOfGameStat(stats[statsIndex].totalUnit, stats[statsIndex].totalBuilding, team->prestige,
 			stats[statsIndex].totalHP, stats[statsIndex].totalAttackPower, stats[statsIndex].totalDefensePower));
 	}
-	
+
 	// handle in game stat step
 	TeamSmoothedStat &smoothedStat=smoothedStats[smoothedIndex];
 	smoothedStat.reset();
@@ -153,7 +153,7 @@ void TeamStats::step(Team *team, bool reloaded)
 			smoothedStat.totalFree++;
 		}
 	}
-	
+
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b = team->myBuildings[i];
@@ -172,7 +172,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	smoothedIndex%=STATS_SMOOTH_SIZE;
 	if (smoothedIndex)
 		return;
-	
+
 	TeamSmoothedStat maxStat;
 	for (int i=0; i<STATS_SMOOTH_SIZE; i++)
 	{
@@ -220,7 +220,7 @@ void TeamStats::step(Team *team, bool reloaded)
 				}
 				else
 					stat.needFood++;
-					
+
 				if(u->activity != Unit::ACT_UPGRADING)
 				{
 					stat.needFoodNoInns++;
@@ -254,7 +254,7 @@ void TeamStats::step(Team *team, bool reloaded)
 			}
 			if (u->typeNum==WARRIOR)
 				stat.totalAttackPower+=u->performance[ATTACK_SPEED]*u->getRealAttackStrength();
-			
+
 			stat.happiness[u->fruitCount]++;
 		}
 	}
@@ -275,7 +275,7 @@ void TeamStats::step(Team *team, bool reloaded)
 				stat.totalBuilding++;
 		}
 	}
-	
+
 	// We override unsmoothed stats:
 	stat.totalFree=maxStat.totalFree;
 	for (int j=0; j<NB_UNIT_TYPE; j++)
@@ -293,9 +293,9 @@ void TeamStats::drawText(int posx, int posy)
 	StringTable *strings=Toolkit::getStringTable();
 	int textStartPosX=posx+4;
 	int textStartPosY=posy;
-	
+
 	TeamStat &newStats=stats[statsIndex];
-	
+
 	// general
 	//gfx->drawString(textStartPosX, textStartPosY, font, strings->getString("[Statistics]"));
 	textStartPosY -= 5; // this is to correct for the removal of the title
@@ -334,12 +334,12 @@ void TeamStats::drawText(int posx, int posy)
 		gfx->drawString(textStartPosX, textStartPosY+210, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[Harvest]")).arg(newStats.upgradeState[HARVEST][0]).arg(newStats.upgradeState[HARVEST][1]).arg(newStats.upgradeState[HARVEST][2]).arg(newStats.upgradeState[HARVEST][3]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+222, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[At. speed]")).arg(newStats.upgradeState[ATTACK_SPEED][0]).arg(newStats.upgradeState[ATTACK_SPEED][1]).arg(newStats.upgradeState[ATTACK_SPEED][2]).arg(newStats.upgradeState[ATTACK_SPEED][3]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+234, globalContainer->littleFont, FormatableString("%0 %1/%2/%3/%4").arg(strings->getString("[At. strength]")).arg(newStats.upgradeState[ATTACK_STRENGTH][0]).arg(newStats.upgradeState[ATTACK_STRENGTH][1]).arg(newStats.upgradeState[ATTACK_STRENGTH][2]).arg(newStats.upgradeState[ATTACK_STRENGTH][3]).c_str());
-	
+
 		// jobs
 		gfx->drawString(textStartPosX, textStartPosY+249, globalContainer->littleFont, FormatableString("%0 1 %1: %2").arg(strings->getString("[level]")).arg(strings->getString("[jobs]")).arg(newStats.totalNeededPerLevel[0]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+261, globalContainer->littleFont, FormatableString("%0 2 %1: %2").arg(strings->getString("[level]")).arg(strings->getString("[jobs]")).arg(newStats.totalNeededPerLevel[1]).c_str());
 		gfx->drawString(textStartPosX, textStartPosY+273, globalContainer->littleFont, FormatableString("%0 3 %1: %2").arg(strings->getString("[level]")).arg(strings->getString("[jobs]")).arg(newStats.totalNeededPerLevel[2]).c_str());
-	
+
 		// happyness
 		std::stringstream happyness;
 		happyness << strings->getString("[Happyness]") << " " << newStats.happiness[0];
@@ -352,14 +352,14 @@ void TeamStats::drawText(int posx, int posy)
 void TeamStats::drawStat(int posx, int posy)
 {
 	assert(STATS_SIZE==128);// We have graphical constraints
-	
+
 	// local variable to speed up access
 	GraphicContext *gfx=globalContainer->gfx;
 	Font *font=globalContainer->littleFont;
 	StringTable *strings=Toolkit::getStringTable();
 	int textStartPos=posx+4;
 	int startPoxY=posy;
-	
+
 	// compute total units
 	/*int maxUnit=0;
 	int i;
@@ -380,7 +380,7 @@ void TeamStats::drawStat(int posx, int posy)
 	{
 		//gfx->drawString(textStartPos, startPoxY, font, strings->getString("[Statistics]"));
 		startPoxY -= 10; // this is to correct for the removal of the title
-		
+
 		int dec=0;
 		std::string Total=strings->getString("[Total]");
 		std::string free=strings->getString("[free]");
@@ -447,7 +447,7 @@ void TeamStats::drawStat(int posx, int posy)
 	for (int i=0; i<128; i++)
 	{
 		int index=(statsIndex+i+1)&0x7F;
-		
+
 		int free=stats[index].isFree[WORKER]-stats[index].totalNeeded;
 		int seeking=stats[index].totalNeeded;
 		if (free<0)
@@ -455,11 +455,11 @@ void TeamStats::drawStat(int posx, int posy)
 			free=0;
 			seeking=stats[index].isFree[WORKER];
 		}
-		
+
 		int nbFree=(free*64)/maxWorker;
 		int nbSeeking=(seeking*64)/maxWorker;
 		int nbTotal=(stats[index].numberUnitPerType[WORKER]*64)/maxWorker;
-		
+
 		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 36 +64-nbTotal, nbTotal-nbFree-nbSeeking, 34, 66, 163);
 		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 36 +64-nbFree-nbSeeking, nbFree, 22, 229, 40);
 		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 36 +64-nbSeeking, nbSeeking, 150, 50, 50);
@@ -544,7 +544,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	size=stream->readUint32("size");
 
 	bool stop=false;
-	
+
 	for (unsigned int i=0; i<size; i++)
 	{
 		stream->readEnterSection(i);

@@ -30,7 +30,7 @@ class YOGClientCommandManager
 {
 public:
 	YOGClientCommandManager(YOGClient* client);
-	
+
 	///Destroys the administration engine
 	~YOGClientCommandManager();
 
@@ -38,7 +38,7 @@ public:
 	///executes it. If it wasn't a command, the string this returns will be
 	///empty
 	std::string executeClientCommand(const std::string& message);
-	
+
 private:
 	YOGClient* client;
 	std::vector<YOGClientCommand*> commands;

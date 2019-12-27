@@ -36,16 +36,16 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 {
 	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
-	
+
 	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 	addWidget(cancel);
 
 	fileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", directory, extension, recurse);
 	addWidget(fileList);
-	
+
 	mapPreview = new MapPreview(640-20-26-128, 70, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(mapPreview);
-	
+
 	currentDirectoryMode=DisplayRegular;
 
 	deleteMap = NULL;
@@ -103,7 +103,7 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 		addWidget(alternateFileList);
 		alternateFileList->visible=false;
 	}
-	
+
 	validMapSelected = false;
 	selectedType = NONE;
 }
@@ -172,7 +172,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				validMapSelected = false;
 			}
 		}
-		else 
+		else
 		{
 			mapDate->setText("");
 			mapVersion->setText("");
@@ -208,7 +208,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 
 					Toolkit::getFileManager()->remove(mapFileName);
 					fileList->generateList();
-					
+
 					fileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
 					fileList->selectionChanged();
 				}
@@ -222,7 +222,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 
 					Toolkit::getFileManager()->remove(mapFileName);
 					alternateFileList->generateList();
-					
+
 					alternateFileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
 					alternateFileList->selectionChanged();
 				}
@@ -280,7 +280,7 @@ void ChooseMapScreen::updateMapInformation()
 	mapVersion->setText(textTemp);
 	textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
 	mapSize->setText(textTemp);
-	
+
 	// call subclass handler
 	validMapSelectedhandler();
 }

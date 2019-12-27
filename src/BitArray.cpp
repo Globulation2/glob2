@@ -28,7 +28,7 @@ namespace Utilities
 	{
 		resize(size, defaultValue);
 	}
-	
+
 	void BitArray::assertPos(size_t pos)
 	{
 		size_t wordPos = pos / 8;
@@ -38,7 +38,7 @@ namespace Utilities
 			assert(false);
 		}
 	}
-	
+
 	void BitArray::resize(size_t size, bool defaultValue)
 	{
 		bitLength = size;
@@ -47,7 +47,7 @@ namespace Utilities
 		else
 			values.resize(bitToByte(size), 0);
 	}
-	
+
 	size_t BitArray::bitToByte(size_t v)
 	{
 		if (v&0x7)
@@ -55,36 +55,36 @@ namespace Utilities
 		else
 			return v>>3;
 	}
-	
+
 	void BitArray::set(size_t pos, bool value)
 	{
 		assertPos(pos);
-		
+
 		size_t wordPos = pos / 8;
 		size_t bitPos = pos % 8;
-		
+
 		if (value)
 			values[wordPos] |= (1<<bitPos);
 		else
 			values[wordPos] &= ~(1<<bitPos);
 	}
-	
+
 	bool BitArray::get(size_t pos)
 	{
 		assertPos(pos);
-		
+
 		size_t wordPos = pos / 8;
 		size_t bitPos = pos % 8;
 
 		return (values[wordPos] & (1<<bitPos)) != 0;
 	}
-	
+
 	void BitArray::serialize(unsigned char *stream)
 	{
 		size_t l = values.size();
 		std::copy(&values[0], &values[l], stream);
 	}
-	
+
 	void BitArray::deserialize(const unsigned char *stream, size_t size)
 	{
 		bitLength = size;

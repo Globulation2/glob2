@@ -53,10 +53,10 @@ FILE *LogFileManager::getFile(const std::string fileName)
 	if (logFileMap.find(logName) == logFileMap.end())
 	{
 		FILE *file=fileManager->openFP(logName.c_str(), "w");
-		
+
 		if (file==NULL)
 			file = stdout;
-		
+
 		logFileMap[logName] = file;
 		return file;
 	}

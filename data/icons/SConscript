@@ -1,13 +1,13 @@
 import os
-    
+
 Import("env")
 Import("PackTar")
-    
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
         if file.find(".png") != -1:
             PackTar(env["TARFILE"], file)
-    
+
     PackTar(env["TARFILE"], "SConscript")
     env.InstallAs(env["INSTALLDIR"]+"/icons/hicolor/16x16/apps/glob2.png", "glob2-icon-16x16.png")
     env.Alias("install", env["INSTALLDIR"]+"/icons/hicolor/16x16/apps/")

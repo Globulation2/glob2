@@ -46,13 +46,13 @@
 		///Voice recording on windows temporarily disables
 		#undef WIN32
 	#endif
-	
+
 	#ifdef __APPLE__
 		// Mac OS X stuff here
 		#undef AUDIO_RECORDER_OSS
 		#define STOP_RECORDING_TIMEOUT 3000
 	#endif
-	
+
 	#ifdef AUDIO_RECORDER_OSS
 		#include <sys/time.h>
 		#include <sys/types.h>
@@ -73,17 +73,17 @@ void PaFlushVoiceData(VoiceRecorder* recorder)
 {
 	SpeexBits& bits = recorder->bits;
 	int byteLength = speex_bits_nbytes(&bits);
-	
+
 	boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, recorder->frameCount, NULL));
 	int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 	assert(byteLength == nbBytes);
-	
+
 	recorder->frameCount=0;
-	
+
 	SDL_LockMutex(recorder->ordersMutex);
 	recorder->orders.push(order);
 	SDL_UnlockMutex(recorder->ordersMutex);
-	
+
 	// reset
 	speex_bits_reset(&bits);
 };
@@ -93,7 +93,7 @@ int PaSpeexEncodeCallback( const void *input, void *output, unsigned long frameC
 {
 	VoiceRecorder* recorder = reinterpret_cast<VoiceRecorder*>(userData);
 	SpeexBits& bits = recorder->bits;
-	
+
 	const short* inBuffer = reinterpret_cast<const short*>(input);
 	short* buffer = recorder->buffer;
 	for(int i=0; i<frameCount; ++i)
@@ -108,14 +108,14 @@ int PaSpeexEncodeCallback( const void *input, void *output, unsigned long frameC
 	{
 		PaFlushVoiceData(recorder);
 	}
-	
-	return 0;	
+
+	return 0;
 }
 void PaSpeexFinishedCallback(void *userData)
 {
 	VoiceRecorder* recorder = reinterpret_cast<VoiceRecorder*>(userData);
 	SpeexBits& bits = recorder->bits;
-	
+
 	int byteLength = speex_bits_nbytes(&bits);
 	if (byteLength > 0)
 	{
@@ -128,21 +128,21 @@ void PaSpeexFinishedCallback(void *userData)
 int record(void *pointer)
 {
 	VoiceRecorder *voiceRecorder = static_cast<VoiceRecorder *>(pointer);
-	
+
 	// bits buffer for compressed datas
 	SpeexBits& bits = voiceRecorder->bits;
-	
+
 	while (voiceRecorder->recordThreadRun)
 	{
 		while (!voiceRecorder->recordingNow)
 		{
 			// TODO : ugly, use semaphore
 			SDL_Delay(1);
-			
+
 			if (!voiceRecorder->recordThreadRun)
 				goto abortRecordThread;
 		}
-		
+
 		// Win32
 		#ifdef WIN32
 		// Create members
@@ -152,7 +152,7 @@ int record(void *pointer)
 		signed short buffersData[bufferCount][SPEEX_FRAME_SIZE];
 		WAVEHDR buffers[bufferCount];
 		unsigned bufferPos = 0;
-		
+
 		// Setup parameters
 		WAVEFORMATEX waveFormat;
 		waveFormat.wFormatTag = WAVE_FORMAT_PCM;
@@ -162,7 +162,7 @@ int record(void *pointer)
 		waveFormat.nBlockAlign = (waveFormat.nChannels * waveFormat.wBitsPerSample) / 8;
 		waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
 		waveFormat.cbSize = 0;
-		
+
 		// Get the number of Digital Audio In devices in this computer
 		unsigned long devCount = waveInGetNumDevs();
 		if (!devCount)
@@ -178,12 +178,12 @@ int record(void *pointer)
 		}
 		// TODO: let the user choose it, for now, always take the first one
 		unsigned sourceId = 0;
-		
+
 		// Open device
 		MMRESULT openResult = waveInOpen(&waveIn, sourceId, &waveFormat, (DWORD)event, 0, CALLBACK_EVENT);
 		if (openResult != MMSYSERR_NOERROR)
 			break;
-		
+
 		// Prepare and add buffer
 		bool addBufferError = false;
 		for (unsigned i = 0; i < bufferCount; i++)
@@ -202,43 +202,43 @@ int record(void *pointer)
 				break;
 			}
 		}
-		
+
 		// Start acquisition if no error, otherwise berak
 		if (addBufferError || (waveInStart(waveIn) != MMSYSERR_NOERROR))
 			break;
-		#endif	
-		
+		#endif
+
 		#ifdef __APPLE__
 		fprintf(stderr, "VoiceRecorder::record : no audio input support for Mac yet. Voice chat will be disabled. Contributions welcome\n");
 		// TODO : Mac OS X code
 		break; // while no code, break
 		#endif
-		
-		
+
+
 		// open sound device, plateforme dependant
 		#ifdef AUDIO_RECORDER_OSS
 		// bytes buffer for read
 		short buffer[SPEEX_FRAME_SIZE];
 		size_t toReadLength = 2*SPEEX_FRAME_SIZE;
-	
+
 		// OSS, Open Sound System
 		int dsp;
 		int rate = 8000;
 		int channels = 1;
-		
+
 		#if SDL_BYTEORDER == SDL_LIL_ENDIAN
 		int format = AFMT_S16_LE;
 		#else
 		int format = AFMT_S16_BE;
 		#endif
-		
+
 		dsp = open("/dev/dsp", O_RDONLY);
 		if (dsp == -1)
 		{
 			fprintf(stderr, "VoiceRecorder::record : can't open /dev/dsp. Voice chat will be disabled.\n");
 			break;
 		}
-		
+
 		ioctl(dsp, SNDCTL_DSP_SPEED , &rate);
 		ioctl(dsp, SNDCTL_DSP_CHANNELS , &channels);
 		ioctl(dsp, SNDCTL_DSP_SETFMT , &format);
@@ -247,34 +247,34 @@ int record(void *pointer)
 		fprintf(stderr, "VoiceRecorder::record : no audio input support for your system and system unknown. Voice chat will be disabled.\n");
 		break;
 		#endif
-		
+
 		size_t totalRead = 0;
 		size_t frameCount = 0;
-		
+
 		while (voiceRecorder->recordingNow || (voiceRecorder->stopRecordingTimeout > 0))
 		{
 			float floatBuffer[SPEEX_FRAME_SIZE];
-			
+
 			// read
 			#ifdef WIN32
 			// Wait for buffer ready
 			WaitForSingleObject(event, INFINITE);
-			
+
 			// transforms samples to float
 			for (size_t i = 0; i < SPEEX_FRAME_SIZE; i++)
 				floatBuffer[i] = buffersData[bufferPos][i];
-			
+
 			 // Put back buffer
 			waveInAddBuffer(waveIn, &buffers[bufferPos], sizeof(WAVEHDR));
 			bufferPos = (bufferPos + 1) % bufferCount;
 			voiceRecorder->stopRecordingTimeout -= SPEEX_FRAME_SIZE;
 			totalRead += SPEEX_FRAME_SIZE;
 			#endif
-			
+
 			#ifdef __APPLE__
 			// TODO : Mac OS X code
 			#endif
-			
+
 			#ifdef AUDIO_RECORDER_OSS
 			// read
 			Utilities::read(dsp, buffer, toReadLength);
@@ -284,11 +284,11 @@ int record(void *pointer)
 			for (size_t i=0; i<SPEEX_FRAME_SIZE; i++)
 				floatBuffer[i] = buffer[i];
 			#endif
-			
+
 			// encode
 			speex_encode(voiceRecorder->speexEncoderState, floatBuffer, &bits);
 			frameCount++;
-			
+
 			// if overflow conditions, send
 			int byteLength = speex_bits_nbytes(&bits);
 			if (byteLength > MAX_VOICE_MULTI_FRAME_LENGTH || totalRead > MAX_VOICE_MULTI_FRAME_SAMPLE_COUNT)
@@ -296,18 +296,18 @@ int record(void *pointer)
 				boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
 				int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 				assert(byteLength == nbBytes);
-				
+
 				SDL_LockMutex(voiceRecorder->ordersMutex);
 				voiceRecorder->orders.push(order);
 				SDL_UnlockMutex(voiceRecorder->ordersMutex);
-				
+
 				// reset
 				totalRead = 0;
 				frameCount = 0;
 				speex_bits_reset(&bits);
 			}
 		}
-		
+
 		// create order with resting bits
 		int byteLength = speex_bits_nbytes(&bits);
 		if (byteLength > 0)
@@ -315,12 +315,12 @@ int record(void *pointer)
 			boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
 			int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 			assert(byteLength == nbBytes);
-			
+
 			SDL_LockMutex(voiceRecorder->ordersMutex);
 			voiceRecorder->orders.push(order);
 			SDL_UnlockMutex(voiceRecorder->ordersMutex);
 		}
-		
+
 		// close sound device, plateforme dependant
 		#ifdef WIN32
 		if (waveIn != 0)
@@ -330,7 +330,7 @@ int record(void *pointer)
 			// Destroy buffers
 			for (unsigned i = 0; i < bufferCount; i++)
 				waveInUnprepareHeader(waveIn, &buffers[i], sizeof(WAVEHDR));
-			
+
 			// Close device
 			waveInClose(waveIn);
 		}
@@ -343,11 +343,11 @@ int record(void *pointer)
 		#ifdef AUDIO_RECORDER_OSS
 		close(dsp);
 		#endif
-		
+
 	}
-	
+
 abortRecordThread:
-	
+
 	// release buffers, no will be released in the descructor
 	// speex_bits_destroy(&bits);
 	return 0;
@@ -359,18 +359,18 @@ VoiceRecorder::VoiceRecorder()
 	// create the decoder
 	speexEncoderState = speex_encoder_init(&speex_nb_mode);
 	assert(speexEncoderState);
-	
+
 	// get some parameters
 	speex_encoder_ctl(speexEncoderState, SPEEX_GET_FRAME_SIZE, &frameSize);
 	assert(SPEEX_FRAME_SIZE == frameSize);
-	
+
 	// can be reduced to one to spare bandwiodth
 	int quality = 2;
 	speex_encoder_ctl(speexEncoderState, SPEEX_SET_QUALITY, &quality);
-	
+
 	speex_bits_init(&bits);
 	speex_bits_reset(&bits);
-		
+
 	recordingNow = false;
 	ordersMutex = SDL_CreateMutex();
 	#ifdef HAVE_PORTAUDIO
@@ -410,7 +410,7 @@ VoiceRecorder::~VoiceRecorder()
 		SDL_WaitThread(recordingThread, NULL);
 		SDL_DestroyMutex(ordersMutex);
 	#endif
-	
+
 	speex_bits_reset(&bits);
 	// destroy the decoder
 	speex_encoder_destroy(speexEncoderState);

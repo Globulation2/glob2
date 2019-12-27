@@ -71,11 +71,11 @@ private:
 		STARTED=3,
 		OTHEROPTIONS=4,
 		READY=5,
-		
+
 		COLOR_BUTTONS=32,
 		CLOSE_BUTTONS=64,
-		
-		
+
+
 		ADD_AI = 100
 	};
 
@@ -91,7 +91,7 @@ private:
 	///This function will update the list of joined players
 	void updateJoinedPlayers();
 	void updateVisibleButtons();
-	
+
 	virtual void onActivated();
 
 	TextButton *startButton;
@@ -105,7 +105,7 @@ private:
 
 	TextInput *textInput;
 	TextArea *chatWindow;
-	
+
 	OnOffButton *isReady;
 	Text *isReadyText;
 

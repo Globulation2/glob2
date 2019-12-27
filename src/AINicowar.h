@@ -32,13 +32,13 @@ public:
 
 	///Loads the strategy from the configuration block
 	void loadFromConfigFile(const ConfigBlock *configBlock);
-	
+
 	///Returns the name of the strategy
 	std::string getStrategyName();
-	
+
 	///Sets the name of the strategy
 	void setStrategyName(const std::string& name);
-	
+
 	///Maximum number of units for the growth phase
 	int growth_phase_unit_max;
 	///Minimum number of units for the skilled work phase
@@ -198,10 +198,10 @@ class NicowarStrategyLoader : ConfigVector<NicowarStrategy>
 public:
 	///Loads all strategies from the strategy files
 	NicowarStrategyLoader();
-	
+
 	///This chooses a strategy at random
 	NicowarStrategy chooseRandomStrategy();
-	
+
 	///This chooses a strategy with a particular name
 	NicowarStrategy getParticularStrategy(const std::string& name);
 };
@@ -373,8 +373,8 @@ private:
 	bool is_digging_out;
 	///This vector stores the ID's for all current war flags
 	std::vector<int> attack_flags;
-	
-	
+
+
 	///This function calculates the positions of defense flags
 	void compute_defense_flag_positioning(AIEcho::Echo& echo);
 	///This function adds the specific value to the counts arround the given pos, used in compute_defense_flag_positioning

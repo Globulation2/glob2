@@ -60,7 +60,7 @@ public:
 	std::string getMethode(void);
 	//! Returns true if the thumbnail is laoded, false otherwise
 	bool isThumbnailLoaded();
-	
+
 protected:
 	MapThumbnail thumbnail;
 	DrawableSurface* surface;

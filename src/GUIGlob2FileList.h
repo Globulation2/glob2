@@ -26,11 +26,11 @@ using namespace GAGGUI;
 class Glob2FileList: public FileList
 {
 public:
-	Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, 
+	Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
 								const std::string dir,
 								const std::string extension="", const bool recurse=false);
 
-	Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, 
+	Glob2FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
 								const std::string dir, const std::string& tooltip, const std::string &tooltipFont,
 								const std::string extension="", const bool recurse=false);
 	virtual ~Glob2FileList();

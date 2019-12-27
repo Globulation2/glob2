@@ -35,7 +35,7 @@ class UnitSkin
 public:
 	Sprite *sprite;
 	Uint32 startImage[NB_MOVE];
-	
+
 public:
 	bool load(GAGCore::InputStream *stream);
 };

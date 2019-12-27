@@ -28,7 +28,7 @@ Glob2Style::Glob2Style()
 	listSelectedElementColor = Color(170, 170, 240);
 	backColor = Color(0, 0, 0);
 	backOverlayColor = Color(0, 0, 40);
-	
+
 	sprite = Toolkit::getSprite("data/gfx/guitheme");
 };
 
@@ -43,29 +43,29 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 	if (h == 40)
 	{
 		int ocrX, ocrY, ocrW, ocrH;
-		
+
 		// base of buttons
 		target->drawSprite(x, y, sprite, 0);
-		
+
 		target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
 		target->setClipRect(x+20, y, w-40, 40);
 		for (int i = 0; i < w-40; i += 40)
 			target->drawSprite(x+20+i, y, sprite, 2);
 		target->setClipRect(ocrX, ocrY, ocrW, ocrH);
-		
+
 		target->drawSprite(x+w-20, y, sprite, 4);
-		
+
 		// hightlight of buttons
 		if (highlight > 0)
 		{
 			target->drawSprite(x, y, sprite, 1, highlight);
-		
+
 			target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
 			target->setClipRect(x+20, y, w-40, 40);
 			for (int i = 0; i < w-40; i += 40)
 				target->drawSprite(x+20+i, y, sprite, 3, highlight);
 			target->setClipRect(ocrX, ocrY, ocrW, ocrH);
-			
+
 			target->drawSprite(x+w-20, y, sprite, 5, highlight);
 		}
 	}
@@ -73,29 +73,29 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 	else if (h == 20)
 	{
 		int ocrX, ocrY, ocrW, ocrH;
-		
+
 		// base of buttons
 		target->drawSprite(x, y, sprite, 6);
-		
+
 		target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
 		target->setClipRect(x+10, y, w-20, 20);
 		for (int i = 0; i < w-20; i += 20)
 			target->drawSprite(x+10+i, y, sprite, 8);
 		target->setClipRect(ocrX, ocrY, ocrW, ocrH);
-		
+
 		target->drawSprite(x+w-10, y, sprite, 10);
-		
+
 		// hightlight of buttons
 		if (highlight > 0)
 		{
 			target->drawSprite(x, y, sprite, 7, highlight);
-		
+
 			target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
 			target->setClipRect(x+10, y, w-20, 20);
 			for (int i = 0; i < w-20; i += 20)
 				target->drawSprite(x+10+i, y, sprite, 9, highlight);
 			target->setClipRect(ocrX, ocrY, ocrW, ocrH);
-			
+
 			target->drawSprite(x+w-10, y, sprite, 11, highlight);
 		}
 	}
@@ -107,11 +107,11 @@ void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, 
 {
 	/*
 		Sprites index are:
-		
+
 		12			13			14
 		15						16
 		17			18			19
-		
+
 		Width of sprites 13 and 18 must be the same
 		Width of sprites 12, 15 and 17 must be the same
 		Width of sprites 14, 16 and 19 must be the same
@@ -119,11 +119,11 @@ void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, 
 		Height of sprites 12, 13 and 14 must be the same
 		Height of sprites 17, 18 and 19 must be the same
 	*/
-	
+
 	// save cliprect
 	int ocrX, ocrY, ocrW, ocrH;
 	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
-	
+
 	// top, bottom
 	int contentX = x + sprite->getW(12);
 	int contentWidth = w - sprite->getW(12) - sprite->getW(14);
@@ -133,7 +133,7 @@ void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, 
 		target->drawSprite(contentX + i, y, sprite, 13);
 		target->drawSprite(contentX + i, y + h - sprite->getH(18), sprite, 18);
 	}
-	
+
 	// left, right
 	int contentY = y + sprite->getH(12);
 	int contentHeight = h - sprite->getH(12) - sprite->getH(17);
@@ -143,10 +143,10 @@ void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, 
 		target->drawSprite(x, contentY + i, sprite, 15);
 		target->drawSprite(x + w - sprite->getW(16), contentY + i, sprite, 16);
 	}
-	
+
 	// reset cliprect
 	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
-	
+
 	// corners
 	target->drawSprite(x, y, sprite, 12);
 	target->drawSprite(x + w - sprite->getW(14), y, sprite, 14);
@@ -159,28 +159,28 @@ void Glob2Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, i
 	/*
 		Width of sprites 20, 21 and 22 must be the same
 	*/
-	
+
 	target->drawSprite(x, y, sprite, 20);
 	target->drawSprite(x, y + h - sprite->getH(22), sprite, 22);
-	
+
 	// save cliprect
 	int ocrX, ocrY, ocrW, ocrH;
 	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
-	
+
 	// scroll background
 	int barBackgroundY = y + sprite->getH(20);
 	int barBackgroundHeight = h - sprite->getH(20) - sprite->getH(22);
 	target->setClipRect(x, barBackgroundY, w, barBackgroundHeight);
 	for (int i = 0; i < barBackgroundHeight; i += sprite->getH(21))
 		target->drawSprite(x, barBackgroundY + i, sprite, 21);
-	
+
 	// scroll bar
 	int barForegroundY = barBackgroundY + blockPos;
 	int barForegroundHeight = blockLength;
 	target->setClipRect(x, barForegroundY, w, barForegroundHeight);
 	for (int i = 0; i < barForegroundHeight; i += sprite->getH(23))
 		target->drawSprite(x + (sprite->getW(21) - sprite->getW(23)) / 2, barForegroundY + i, sprite, 23);
-	
+
 	// reset cliprect
 	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
 }
@@ -193,18 +193,18 @@ void Glob2Style::drawProgressBar(GAGCore::DrawableSurface *target, int x, int y,
 	y += getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT);
 	w -= getStyleMetric(STYLE_METRIC_FRAME_LEFT_WIDTH) + getStyleMetric(STYLE_METRIC_FRAME_RIGHT_WIDTH);
 	h -= getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT) + getStyleMetric(STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
-	
+
 	int len = (value*w)/range;
-	
+
 	target->drawFilledRect(x, y, w, h, Color(168, 150, 90));
-	
+
 	// save cliprect
 	int ocrX, ocrY, ocrW, ocrH;
 	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
 	target->setClipRect(x, y, len, h);
 	for (int i = 0; i < len; i += sprite->getW(24))
 		target->drawSprite(x + i, y, sprite, 24);
-	
+
 	// reset cliprect
 	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
 }

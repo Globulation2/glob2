@@ -50,7 +50,7 @@ struct Value {
 };
 
 namespace Values {
-	
+
 	// Builtin values
 	struct Builtin: Value {
 	};
@@ -70,20 +70,20 @@ namespace Values {
 	VALUES_BUILTIN_VALUE(Int64);
 	VALUES_BUILTIN_VALUE(ValueRef);
 	VALUES_BUILTIN_VALUE(ObjectRef);
-	
+
 	struct Compound: Value {
 	};
-	
+
 	struct Array: Value {
 		Value elems[0];
 	};
-	
+
 	struct VarArray: Value {
 		const size_t elemsCount;
 		Value elems[0];
 		VarArray(size_t elemsCount): elemsCount(elemsCount) {}
 	};
-	
+
 };
 
 struct Object {

@@ -32,13 +32,13 @@ public:
 
 	///Allocates a file distributor, returns the transfer ID
 	int allocateFileDistributor();
-	
+
 	///This updates this distributor
 	void update();
-	
+
 	///This returns the file distributor for the given id
 	boost::shared_ptr<YOGServerFileDistributor> getDistributor(Uint16 transferID);
-	
+
 	///This removes the file distributor
 	void removeDistributor(Uint16 transferID);
 private:

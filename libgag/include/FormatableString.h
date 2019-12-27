@@ -37,14 +37,14 @@ namespace GAGCore {
 			* Next argument to be replaced.
 			*/
 			int argLevel;
-		
+
 			/*!
 			* Replace the next argument by replacement.
 			*/
 			void proceedReplace(const std::string &replacement);
-			
+
 		public:
-			
+
 			FormatableString() : std::string(), argLevel(0) { }
 			/*!
 			* Creates a new FormatableString with format string set to s.
@@ -54,7 +54,7 @@ namespace GAGCore {
 			*/
 			FormatableString(const std::string &s)
 		: std::string(s), argLevel(0) { }
-			
+
 			/*!
 			* Replace the next arg by an int value.
 			* \param value Value used to replace the current argument.
@@ -64,7 +64,7 @@ namespace GAGCore {
 			* \see arg(const T& value)
 			*/
 			FormatableString &arg(int value, int fieldWidth = 0, int base = 10, char fillChar = ' ');
-			
+
 			/*!
 			* Replace the next arg by an int value.
 			* \param value Value used to replace the current argument.
@@ -74,7 +74,7 @@ namespace GAGCore {
 			* \see arg(const T& value)
 			*/
 			FormatableString &arg(unsigned value, int fieldWidth = 0, int base = 10, char fillChar = ' ');
-			
+
 			/*!
 			* Replace the next arg by a float value.
 			* \param value Value used to replace the current argument.
@@ -84,7 +84,7 @@ namespace GAGCore {
 			* \see arg(const T& value)
 			*/
 			FormatableString &arg(float value, int fieldWidth = 0, int precision = 6, char fillChar = ' ');
-			
+
 			/*!
 			* Replace the next arg by a value that can be passed to an ostringstream.
 			* The first call to arg replace %0, the second %1, and so on.
@@ -95,20 +95,20 @@ namespace GAGCore {
 				// transform value into std::string
 				std::ostringstream oss;
 				oss << value;
-			
+
 				proceedReplace(oss.str());
-	
+
 				// return reference to this so that .arg can proceed further
 				return *this;
 			}
-			
+
 			/*!
 			* Affects a new value to the format string and reset the arguments
 			* counter.
 			* \param str New format string.
 			*/
 			FormatableString& operator=(const std::string& str) ;
-			
+
 			/*!
 			* Casts this string to a const char*
 			*/

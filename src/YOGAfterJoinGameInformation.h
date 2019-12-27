@@ -38,40 +38,40 @@ class YOGAfterJoinGameInformation
 {
 public:
 	YOGAfterJoinGameInformation();
-	
+
 	///Sets map header
 	void setMapHeader(const MapHeader& header);
-	
+
 	///Returns the map header
 	const MapHeader& getMapHeader() const;
-	
+
 	///Sets the game header
 	void setGameHeader(const GameHeader& header);
-	
+
 	///Returns the game header
 	const GameHeader& getGameHeader() const;
 
 	///Sets the reteaming information
 	void setReteamingInformation(const NetReteamingInformation& reteam);
-	
+
 	///Returns the reteaming information
 	const NetReteamingInformation& getReteamingInformation() const;
-	
+
 	///Sets the latency adjustment
 	void setLatencyAdjustment(Uint8 latency);
-	
+
 	///Returns the latency adjustment
 	Uint8 getLatencyAdjustment() const;
-	
+
 	///Sets the IP address of the game-router for this game
 	void setGameRouterIP(const std::string& ip);
-	
+
 	///Returns the ip address of the game router for this game
 	const std::string& getGameRouterIP() const;
-	
+
 	///Sets the fileID for the games map, so that players can download it if needed
 	void setMapFileID(Uint16 fileID);
-	
+
 	///Returns the fileID for the games map, so that players can download it if needed
 	Uint16 getMapFileID() const;
 
@@ -80,7 +80,7 @@ public:
 
 	///Decodes this YOGAfterJoinGameInfo from a bit stream
 	void decodeData(GAGCore::InputStream* stream);
-	
+
 	///Test for equality between two YOGAfterJoinGameInfo
 	bool operator==(const YOGAfterJoinGameInformation& rhs) const;
 	bool operator!=(const YOGAfterJoinGameInformation& rhs) const;

@@ -37,7 +37,7 @@ namespace GAGCore
 	#endif
 	FileManager *Toolkit::fileManager = NULL;
 	StringTable *Toolkit::strings = NULL;
-	
+
 	void Toolkit::init(const char *gameName)
 	{
 		if (!fileManager)
@@ -48,7 +48,7 @@ namespace GAGCore
 		else
 			assert(false);
 	}
-	
+
 	#ifndef YOG_SERVER_ONLY
 	GraphicContext *Toolkit::initGraphic(int w, int h, unsigned int flags, const std::string title, const std::string icon)
 	{
@@ -56,7 +56,7 @@ namespace GAGCore
 		return gc;
 	}
 	#endif
-	
+
 	void Toolkit::close(void)
 	{
 		#ifndef YOG_SERVER_ONLY
@@ -67,7 +67,7 @@ namespace GAGCore
 			delete (*it).second;
 		fontMap.clear();
 		#endif
-		
+
 		if (fileManager)
 		{
 			delete fileManager;
@@ -75,7 +75,7 @@ namespace GAGCore
 			delete strings;
 			strings = NULL;
 		}
-		
+
 		#ifndef YOG_SERVER_ONLY
 		if (gc)
 		{
@@ -84,7 +84,7 @@ namespace GAGCore
 		}
 		#endif
 	}
-	
+
 		#ifndef YOG_SERVER_ONLY
 	Sprite *Toolkit::getSprite(const std::string name)
 	{
@@ -105,7 +105,7 @@ namespace GAGCore
 		}
 		return spriteMap[std::string(name)];
 	}
-	
+
 	void Toolkit::releaseSprite(const std::string name)
 	{
 		assert(name.size());
@@ -114,7 +114,7 @@ namespace GAGCore
 		delete (*it).second;
 		spriteMap.erase(it);
 	}
-	
+
 	void Toolkit::loadFont(const std::string filename, unsigned size, const std::string name)
 	{
 		assert(filename.size());
@@ -130,7 +130,7 @@ namespace GAGCore
 			std::cerr << "GAG : Can't load font " << name << " with size " << size << " from " << filename << std::endl;
 		}
 	}
-	
+
 	Font *Toolkit::getFont(const std::string name)
 	{
 		assert(name.size());
@@ -142,7 +142,7 @@ namespace GAGCore
 		}
 		return fontMap[name];
 	}
-	
+
 	void Toolkit::releaseFont(const std::string name)
 	{
 		assert(name.size());

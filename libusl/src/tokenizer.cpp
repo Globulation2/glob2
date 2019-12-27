@@ -1,7 +1,7 @@
 #include "tokenizer.h"
 #include "error.h"
 
-Tokenizer::Tokenizer(const Token::Type *tokenTypes, const size_t tokenTypesSize, 
+Tokenizer::Tokenizer(const Token::Type *tokenTypes, const size_t tokenTypesSize,
                      const std::string& filename, const char* text):
 	tokenTypes(tokenTypes),
 	tokenTypesSize(tokenTypesSize),

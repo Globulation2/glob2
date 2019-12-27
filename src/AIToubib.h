@@ -36,66 +36,66 @@ class AIToubib : public AIImplementation
 protected:
 	// Internal members
 	Uint32 now;
-	
+
 protected:
 	// Internal functions
 
 	//! Initialization (avoid duplicate code)
 	void init(Player *player);
-	
+
 	//! Create a building if possible
 	boost::shared_ptr<Order> getOrderBuildingStep(void);
 	//! Compute internal stats used by other parts of the code
 	void computeMyStatsStep(void);
-	
+
 public:
 	AIToubib(Player *player);
 	AIToubib(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	virtual ~AIToubib();
-	
+
 	Player *player;
 	Team *team;
 	Game *game;
 	Map *map;
-	
+
 	//! Load AI saved from a stream
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	//! Save AI to a save stream
 	void save(GAGCore::OutputStream *stream);
-	
+
 	//! return a new order in response to last events
 	boost::shared_ptr<Order> getOrder(void);
-	
+
 private:
 	/*
-	// All constants parameterizing AIToubib	
+	// All constants parameterizing AIToubib
 	static const Uint8 MAX_NB_PROJECTS = 10;
 	static const Uint8 NB_HISTORY_STATES = 5;
-	
+
 	// Put here all the state variables
 	typedef struct {
 		// TODO
-		
+
 	} AIState;
-	
+
 	class AIProject {
 		// TODO
 	};
-	
+
 	// Put here all the history variables
-	
+
 	//! Circular buffer to store state's history
 	AIState history[NB_HISTORY_STATES];
 	Uint8 currentStateIndex;
-	
+
 	//std::list<int>::iterator pi;
-	
+
 	//std::list<int> myList;
 	//std::list<int, std::allocator<int> > t1;
 	std::priority_queue<
-		int, 
+		int,
 		std::vector<
-		int, 
+		int,
 		std::allocator<int> >,
 		std::less<int> > pq;*/
 	/*std::priority_queue< AIProject,
@@ -106,8 +106,8 @@ private:
 	/*
 	//! Initialization (avoid duplicate code)
 	void init(Player *player);
-	
-	//! evaluate the current state 
+
+	//! evaluate the current state
 	void evalState();
 	*/
 };

@@ -50,7 +50,7 @@ public:
 			delete stream;
 			return;
 		}
-		
+
 		bool result = true;
 
 		T defaultEntityType;
@@ -87,7 +87,7 @@ public:
 	}
 
 	size_t size(void) { return entitiesTypes.size(); }
-	
+
 	void dump(void)
 	{
 		for (typename std::vector <T *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)

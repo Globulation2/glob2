@@ -33,7 +33,7 @@ namespace GAGGUI
 			activated=0;
 			returnCode=0;
 		}
-		
+
 		void TabScreen::addWidgetToGroup(Widget* widget, int group_n)
 		{
 			addWidget(widget);
@@ -47,7 +47,7 @@ namespace GAGGUI
 				widget->internalInit();
 			}
 		}
-		
+
 		void TabScreen::removeWidgetFromGroup(Widget* widget, int group_n)
 		{
 			removeWidget(widget);
@@ -55,7 +55,7 @@ namespace GAGGUI
 			if(i!=groups[group_n].end())
 				groups[group_n].erase(i);
 		}
-		
+
 		void TabScreen::setTabScreenWindowToGroup(TabScreenWindow* window, int group_n)
 		{
 			windows[group_n] = window;
@@ -69,7 +69,7 @@ namespace GAGGUI
 			}
 			returnCodes[group_n] = -1;
 		}
-		
+
 		void TabScreen::removeTabScreenWindowFromGroup(TabScreenWindow* window, int group_n)
 		{
 			if(windows.find(group_n) != windows.end())
@@ -77,7 +77,7 @@ namespace GAGGUI
 				windows.erase(windows.find(group_n));
 			}
 		}
-		
+
 		void TabScreen::activateGroup(int group_n)
 		{
 			for(std::map<int, std::vector<Widget*> >::iterator i = groups.begin(); i!=groups.end(); ++i)
@@ -109,12 +109,12 @@ namespace GAGGUI
 			if(windows.find(group_n) != windows.end())
 				windows[group_n]->onActivated();
 		}
-		
+
 		int TabScreen::addGroup(const std::string& title)
 		{
 			int group_n=returnCode;
 			returnCode+=1;
-			
+
 			int w = (longerButtons ? 200 : 180);
 			if(fullScreen)
 				groupButtons[group_n] = new TextButton(0, 0, w, 40, ALIGN_LEFT, ALIGN_TOP, "menu", title.c_str(), 0);
@@ -134,7 +134,7 @@ namespace GAGGUI
 				}
 			}
 			repositionPanelButtons();
-			
+
 			return group_n;
 		}
 
@@ -151,15 +151,15 @@ namespace GAGGUI
 				delete *j;
 			}
 			groups.erase(groups.find(group_n));
-			
+
 			if(windows.find(group_n) != windows.end())
 				windows.erase(windows.find(group_n));
-			
+
 			if(groupButtons[group_n])
 				removeWidget(groupButtons[group_n]);
 			delete groupButtons[group_n];
 			groupButtons.erase(groupButtons.find(group_n));
-			
+
 			if(groupButtons.size() == 1)
 			{
 				groupButtons.begin()->second->visible=false;
@@ -173,7 +173,7 @@ namespace GAGGUI
 			}
 			repositionPanelButtons();
 		}
-		
+
 		void TabScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			bool found=false;
@@ -205,13 +205,13 @@ namespace GAGGUI
 				}
 			}
 		}
-		
-		
+
+
 		void TabScreen::onGroupActivated(int group_n)
 		{
-		
+
 		}
-		
+
 		void TabScreen::onTimer(Uint32 tick)
 		{
 			int last = -1;
@@ -248,19 +248,19 @@ namespace GAGGUI
 				}
 			}
 		}
-		
+
 		int TabScreen::getReturnCode(int group_n)
 		{
 			return returnCodes[group_n];
 		}
-		
-		
+
+
 		void TabScreen::completeEndExecute(int return_code)
 		{
 			endExecute(return_code);
 		}
-		
-		
+
+
 		void TabScreen::internalInit(int group_n)
 		{
 			for(std::vector<Widget*>::iterator j = groups[group_n].begin(); j!=groups[group_n].end(); ++j)
@@ -268,7 +268,7 @@ namespace GAGGUI
 				(*j)->internalInit();
 			}
 		}
-		
+
 		void TabScreen::repositionPanelButtons()
 		{
 			int x=0;

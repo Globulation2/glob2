@@ -69,7 +69,7 @@ class GameGUI
 public:
 	///Constructs a GameGUI
 	GameGUI();
-	
+
 	///Destroys the GameGUI
 	~GameGUI();
 
@@ -113,12 +113,12 @@ public:
 	bool isFlagEnabled(const std::string &name);
 	void enableGUIElement(int id);
 	void disableGUIElement(int id);
-	
+
 	bool isSpaceSet() { return hasSpaceBeenClicked; }
 	void setIsSpaceSet(bool value) { hasSpaceBeenClicked=value; }
 	bool isSwallowSpaceKey() { return swallowSpaceKey; }
 	void setSwallowSpaceKey(bool value) { swallowSpaceKey=value; }
-	
+
 	void showScriptText(const std::string &text);
 	void showScriptTextTr(const std::string &text, const std::string &lang);
 	void hideScriptText();
@@ -128,10 +128,10 @@ public:
 
 	/// Sets this game as a campaign game from the provided campaign and the provided mission
 	void setCampaignGame(Campaign& campaign, const std::string& missionName);
-	
+
 	/// Show the dialog that says that the replay ended
 	void showEndOfReplayScreen();
-	
+
 	///This is an enum for the current hilight object. The hilighted object is shown with a large arrow.
 	///This is primarily for tutorials
 	enum HilightObject
@@ -166,7 +166,7 @@ public:
 		HilightClearingZoneOnPanel=14,
 		///This causes the brush selector to be hilighted
 		HilightBrushSelector=15,
-		
+
 		///Anything above this number causes a particular building on the right side menu to be hilighted,
 		///the value is HilightBuilding+IntBuildingType
 		HilightBuildingOnPanel=50,
@@ -174,10 +174,10 @@ public:
 		///the value is HilightBuilding+IntBuildingType
 		HilightBuildingOnMap=100,
 	};
-	
+
 	///Stores the currently hilighted elements
 	std::set<int> hilights;
-	
+
 	struct HilightArrowPosition
 	{
 		HilightArrowPosition(int x, int y, int sprite) : x(x), y(y), sprite(sprite) {}
@@ -189,10 +189,10 @@ public:
 	///So there positions are stored during the drawing
 	///proccess, and they are drawn last
 	std::vector<HilightArrowPosition> arrowPositions;
-	
+
 	///This sends the hilight values to the Game class, setting Game::hilightBuildingType and Game::hilightUnitType
 	void updateHilightInGame();
-	
+
 	KeyboardManager keyboardManager;
 public:
 	Game game;
@@ -214,7 +214,7 @@ public:
 private:
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
-	
+
 	bool processGameMenu(SDL_Event *event);
 	bool processScrollableWidget(SDL_Event *event);
 	void handleRightClick(void);
@@ -244,7 +244,7 @@ private:
 
 	void iterateSelection(void);
 	void centerViewportOnSelection(void);
-	
+
 	//! Draw the top of screen bar, called by drawOverlayInfos
 	void drawTopScreenBar(void);
 	//! Draw the infos that are over the others, like the message, the waiting players, ...
@@ -278,16 +278,16 @@ private:
 	void drawInGameTextInput(void);
 	//! Draw the message history field
 	void drawInGameScrollableText(void);
-	
+
 	void moveFlag(int mx, int my, bool drop);
 	//! One viewport has moved and a flag or a brush is selected, update its position
 	void dragStep(int mx, int my, int button);
 	//! on each step, check if we have won or lost
 	void checkWonConditions(void);
-	
+
 	//! given the game state, change the music
 	void musicStep(void);
-	
+
 	friend class InGameAllianceScreen;
 
 	//! Display mode
@@ -325,7 +325,7 @@ private:
 		Unit* unit;
 		int ressource;
 	} selection;
-	
+
 	// Brushes
 	BrushTool brush;
 	GameGUIToolManager toolManager;
@@ -336,10 +336,10 @@ private:
 	void setSelection(SelectionMode newSelMode, unsigned newSelection);
 	void clearSelection(void) { setSelection(NO_SELECTION); }
 	void checkSelection(void);
-	
+
 	/// This function causes all information about the selected unit to be dumped
 	void dumpUnitInformation(void);
-	
+
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;
@@ -419,11 +419,11 @@ private:
 	OverlayScreen *gameMenuScreen;
 
 	///Denotes the name of the game save for saving,
-	///set on loading the map	
+	///set on loading the map
 	std::string defualtGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
-	
+
 	GameGUIMessageManager messageManager;
 	InGameScrollableHistory* scrollableText;
 
@@ -434,22 +434,22 @@ private:
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
 	int eventGoType; //!< type of last event
 	int eventGoTypeIterator; //!< iterator to iter on ctrl + space press
-	
+
 	//! Transform a text to multi line according to screen width
 	void setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent="");
-	
+
 	// Typing stuff :
 	InGameTextInput *typingInputScreen;
 	int typingInputScreenPos;
 	int typingInputScreenInc;
 
-	///This manages map marks	
+	///This manages map marks
 	MarkManager markManager;
-	
+
 	//! add a minimap mark
 	void addMark(boost::shared_ptr<MapMarkOrder> mmo);
-	
-	// records CPU usage percentages 
+
+	// records CPU usage percentages
 	static const unsigned SMOOTHED_CPU_SIZE=32;
 	int smoothedCPULoad[SMOOTHED_CPU_SIZE];
 	int smoothedCPUPos;
@@ -459,16 +459,16 @@ private:
 	std::string missionName;
 
 	GameGUIDefaultAssignManager defaultAssign;
-	
+
 	GameGUIGhostBuildingManager ghostManager;
 
 	///Because its possible to move the scrollwheel faster than the engine can handle it
 	///multiple scroll wheel events compound
 	int scrollWheelChanges;
-	
+
 	///This function flushes orders from the scrollWheel at the end of every frame
 	void flushScrollWheelOrders();
-	
+
 	//! A particle is cute and only for eye candy
 	struct Particle
 	{
@@ -477,17 +477,17 @@ private:
 		float ax, ay; //!< acceleration in pixels per tick
 		int age; //!< current age of the particle
 		int lifeSpan; //!< maximum age of the particle
-		
+
 		int startImg; //!< image of the particle at birth
 		int endImg; //!< image of the partile at death
 		Color color; //!< color (team) of this particle
 	};
-	
+
 	typedef std::set<Particle*> ParticleSet;
-	
+
 	//! All particles visible on screen
 	ParticleSet particles;
-	
+
 	//! Generate new particles if required
 	void generateNewParticles(std::set<Building*> *visibleBuildings);
 	//! Move all particles by a certain amount of pixels

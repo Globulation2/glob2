@@ -45,13 +45,13 @@ EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlig
 
 	this->hAlignFlag=hAlign;
 	this->vAlignFlag=vAlign;
-	
+
 	this->game = game;
 
 	isTeamEnabled=new bool[Team::MAX_COUNT];
 	for(int x=0; x<Team::MAX_COUNT; ++x)
 		isTeamEnabled[x]=true;
-	
+
 	this->type = EndOfGameStat::TYPE_UNITS;
 	mouse_x = -1;
 	mouse_y = -1;
@@ -76,11 +76,11 @@ void EndGameStat::paint(void)
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
-		
+
 	assert(parent);
 	assert(parent->getSurface());
-	
-	
+
+
 	if(game->teams[0]->stats.endOfGameStats.size()==0)
 		return;
 	// find maximum
@@ -99,7 +99,7 @@ void EndGameStat::paint(void)
 		std::stringstream maxstr;
 		maxstr<<maxValue<<std::endl;
 		int max_digit_count=maxstr.str().size();
-		
+
 		//Compute the maximum width used by the right-scale
 		int max_width=-1;
 		for(int n=0; n<num; ++n)
@@ -109,7 +109,7 @@ void EndGameStat::paint(void)
 			int width=globalContainer->littleFont->getStringWidth(valueText.c_str());
 			max_width=std::max(width, max_width);
 		}
-		
+
 		//Compute the maximum height used by the time-scale
 		int time_period=(game->teams[0]->stats.endOfGameStats.size()*512)/25;
 		int max_height = 0;
@@ -120,7 +120,7 @@ void EndGameStat::paint(void)
 			int height=globalContainer->littleFont->getStringHeight(timeText.c_str());
 			max_height = std::max(height, max_height);
 		}
-		
+
 		///Effective width and height
 		int e_width = w - max_width - 8;
 		int e_height = h - max_height - 8;
@@ -172,7 +172,7 @@ void EndGameStat::paint(void)
 				const Color& color = game->teams[team]->color;
 
 				int previous_y = e_height - int(double(e_height) * getValue(0, team, type) / double(maxValue));
-				
+
 				for(int px=0; px<(e_width-2); ++px)
 				{
 					double value = getValue(double(px) / double(e_width-2), team, type);
@@ -197,12 +197,12 @@ void EndGameStat::paint(void)
 			str<<circle_position_value;
 			parent->getSurface()->drawString(circle_position_x+10, circle_position_y+10, globalContainer->littleFont, str.str());
 		}
-		
+
 		// Draw labels
 		std::string label = Toolkit::getStringTable()->getString("[time]");
 		int textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
 		parent->getSurface()->drawString(x - textwidth/2 + e_width/2, y+e_height-20, globalContainer->standardFont, label);
-		
+
 		label = getStatLabel();
 		textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
 		parent->getSurface()->drawString(x + e_width - textwidth - 4, y + e_height/2, globalContainer->standardFont, label);
@@ -221,8 +221,8 @@ double EndGameStat::getValue(double position, int team, int type)
 	int s = game->teams[team]->stats.endOfGameStats.size()-1;
 	int lower = int(position * float(s));
 	int upper = lower+1;
-	double mu = (position * float(s)) - lower; 
-	
+	double mu = (position * float(s)) - lower;
+
 	//int y0 = game->teams[team]->stats.endOfGameStats[std::max(lower-1, 0)].value[type];
 	int y1 = game->teams[team]->stats.endOfGameStats[lower].value[type];
 	int y2 = game->teams[team]->stats.endOfGameStats[upper].value[type];
@@ -246,7 +246,7 @@ double EndGameStat::getValue(double position, int team, int type)
 	return(y1*(1-mu2)+y2*mu2);
 */
 }
-	
+
 
 
 std::string EndGameStat::getTimeText(int seconds)
@@ -343,7 +343,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 
 	// title & graph
 	std::string titleText;
-	
+
 	if (gui->game.totalPrestigeReached && gui->game.isPrestigeWinCondition())
 	{
 		Team *t=gui->game.getTeamWithMostPrestige();
@@ -377,14 +377,14 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	{
 		titleText=Toolkit::getStringTable()->getString("[The game has not been finished]");
 	}
-	
+
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText.c_str()));
 	statWidget=new EndGameStat(20, 80, 180, 120, ALIGN_FILL, ALIGN_FILL, &(gui->game));
 	addWidget(statWidget);
 
 	graphLabel=new Text(25, 85, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Units]"));
 	addWidget(graphLabel);
-	
+
 	// add buttons
 	// FIXME: magic numbers!
 	addWidget(new TextButton(90, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
@@ -429,7 +429,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		OnOffButton* enabled_button = new OnOffButton(10, 80+(i*inc), inc, inc, ALIGN_RIGHT, ALIGN_TOP, true, 6+i);
 		team_enabled_buttons.push_back(enabled_button);
 		addWidget(enabled_button);
-		
+
 		if((i>0 && teams[i-1].teamNum != teams[i].teamNum) || i==0)
 		{
 			team_enabled_buttons[i]->visible=true;
@@ -438,15 +438,15 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		{
 			team_enabled_buttons[i]->visible=false;
 		}
-		
+
 		text=new Text(10+inc, 80+(i*inc), ALIGN_RIGHT, ALIGN_TOP, "standard", "", 140);
 		names.push_back(text);
 		addWidget(text);
 	}
-	
+
 	// Save the step and order count
 	game = &(gui->game);
-	
+
 	sortAndSet(EndOfGameStat::TYPE_UNITS);
 }
 
@@ -506,7 +506,7 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 	MoreScore moreScore;
 	moreScore.type=type;
 	std::sort(teams.begin(), teams.end(), moreScore);
-	
+
 	int prev_num=1;
 	for (unsigned i=0; i<teams.size(); i++)
 	{
@@ -524,13 +524,13 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 			str<<"#"<<i+1<<": "<<teams[i].name;
 			prev_num=i+1;
 		}
-	
+
 		names[i]->setText(str.str().c_str());
 		names[i]->setStyle(Font::Style(Font::STYLE_NORMAL, teams[i].color));
 		if(team_enabled_buttons[i])
 			team_enabled_buttons[i]->returnCode=6+i;
-		
-		
+
+
 		if((i>0 && teams[i-1].teamNum != teams[i].teamNum) || i==0)
 		{
 			team_enabled_buttons[i]->visible=true;
@@ -559,7 +559,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 
 	// save screen
 	globalContainer->gfx->setClipRect();
-	
+
 	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	background->drawSurface(0, 0, globalContainer->gfx);
 
@@ -572,7 +572,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
 		loadSaveScreen->dispatchPaint();
-		
+
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
@@ -590,7 +590,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 
 	// clean up
 	delete loadSaveScreen;
-	
+
 	// destroy temporary surface
 	delete background;
 }

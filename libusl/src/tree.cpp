@@ -11,7 +11,7 @@ using namespace std;
 void Node::generate(ThunkPrototype* thunk, DebugInfo* debug, Code* code)
 {
 	thunk->body.push_back(code);
-	
+
 	if (debug != 0)
 	{
 		size_t address = thunk->body.size();
@@ -93,7 +93,7 @@ void ApplyNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
 {
 	ThunkPrototype* arg = new ThunkPrototype(heap, thunk);
 	argument->generate(arg, debug, heap);
-	
+
 	function->generate(thunk, debug, heap);
 	Node::generate(thunk, debug, new ThunkCode());
 	Node::generate(thunk, debug, new CreateCode<Thunk>(arg));
@@ -116,7 +116,7 @@ DecNode::~DecNode()
 void DecNode::declare(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
 {
 	scope->members[name] = new ThunkPrototype(heap, scope);
-	
+
 	if (type == VAR)
 	{
 		// TODO: setter
@@ -148,11 +148,11 @@ void DecNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
 		{
 			size_t index = scope->locals.size();
 			scope->locals.push_back(name);
-			
+
 			body->generate(scope, debug, heap);
 			Node::generate(scope, debug, new DupCode(0));
 			Node::generate(scope, debug, new ValCode(index));
-			
+
 			ThunkPrototype* getter = scope->members[name];
 			Node::generate(getter, debug, new ThunkCode());
 			Node::generate(getter, debug, new ParentCode());
@@ -208,14 +208,14 @@ void ExecutionBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, He
 			if (dec != 0)
 				dec->declare(scope, debug, heap);
 		}
-	
+
 		for (Elements::const_iterator it = elements.begin(); it != elements.end() - 1; ++it)
 		{
 			Node* element = *it;
 			element->generate(scope, debug, heap);
 			Node::generate(scope, debug, new PopCode());
 		}
-	
+
 		elements.back()->generate(scope, debug, heap);
 	}
 	else
@@ -247,7 +247,7 @@ void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap*
 		if (dec)
 		{
 			Node::generate(scope, debug, new PopCode());
-			
+
 			getter = scope->members[dec->name];
 		}
 		else
@@ -273,7 +273,7 @@ void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap*
 void DefLookupNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
 {
 	Node::generate(thunk, debug, new ThunkCode());
-	
+
 	ThunkPrototype* member;
 	Prototype* prototype = thunk;
 	while (true)
@@ -281,14 +281,14 @@ void DefLookupNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap
 		member = prototype->lookup(name);
 		if (member != 0)
 			break;
-		
+
 		ThunkPrototype* t = dynamic_cast<ThunkPrototype*>(prototype);
 		assert(t != 0);
-		
+
 		Node::generate(thunk, debug, new ParentCode());
-		
+
 		prototype = t->outer;
-		
+
 		if (prototype == 0)
 		{
 			ostringstream message;
@@ -296,7 +296,7 @@ void DefLookupNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap
 			throw Exception(position, message.str());
 		}
 	}
-	
+
 	Node::generate(thunk, debug, new CreateCode<Thunk>(member));
 	Node::generate(thunk, debug, new EvalCode());
 }
@@ -325,13 +325,13 @@ void ValPatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* hea
 {
 	size_t index = scope->locals.size();
 	scope->locals.push_back(name);
-	
+
 	Node::generate(scope, debug, new EvalCode());
 	Node::generate(scope, debug, new ValCode(index));
-	
+
 	ScopePrototype* getter = new ScopePrototype(heap, scope);
 	scope->members[name] = getter;
-	
+
 	Node::generate(getter, debug, new ThunkCode());
 	Node::generate(getter, debug, new ParentCode());
 	Node::generate(getter, debug, new ValRefCode(index));
@@ -348,12 +348,12 @@ void DefPatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* hea
 {
 	size_t index = scope->members.size();
 	scope->locals.push_back(name);
-	
+
 	Node::generate(scope, debug, new ValCode(index));
-	
+
 	ScopePrototype* getter = new ScopePrototype(heap, scope);
 	scope->members[name] = getter;
-	
+
 	Node::generate(getter, debug, new ThunkCode());
 	Node::generate(getter, debug, new ParentCode());
 	Node::generate(getter, debug, new ValRefCode(index));
@@ -417,7 +417,7 @@ void FunNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
 		body->generate(scope, debug, heap);
 	else
 		block->generateMembers(scope, debug, heap);
-	
+
 	Node::generate(thunk, debug, new ThunkCode());
 	Node::generate(thunk, debug, new CreateCode<Function>(scope));
 }

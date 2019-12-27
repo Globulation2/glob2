@@ -57,7 +57,7 @@ public:
 
 	/// Destructor, release sprites
 	virtual ~YOGClientPlayerList();
-	
+
 	/// Represents the type of network a player can be in
 	enum NetworkType
 	{
@@ -90,7 +90,7 @@ public:
 	YOGClientLobbyScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
 
 	virtual ~YOGClientLobbyScreen();
-	
+
 	///Responds to timer events
 	virtual void onTimer(Uint32 tick);
 	///Responds to widget events
@@ -123,7 +123,7 @@ private:
 		CREATE_GAME=3,
 		UPDATE_LIST=4,
 		JOIN=7,
-		
+
 		STARTED=11
 	};
 
@@ -150,14 +150,14 @@ private:
 	YOGClientPlayerList *playerList;
 	TextInput *textInput;
 	TextArea *chatWindow;
-	
+
 	TextButton *joinButton;
 	TextButton *hostButton;
 
 	boost::shared_ptr<YOGClient> client;
 	boost::shared_ptr<YOGClientChatChannel> lobbyChat;
 	boost::shared_ptr<IRCTextMessageHandler> ircChat;
-	
+
 	int gameScreen;
 
 };

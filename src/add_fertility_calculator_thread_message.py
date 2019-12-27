@@ -40,7 +40,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two FertilityCalculatorThreadMessage
 	bool operator==(const FertilityCalculatorThreadMessage& rhs) const;
 """

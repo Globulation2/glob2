@@ -35,13 +35,13 @@ class AIDescriptionScreen : public Glob2Screen
 public:
 	///This shows descriptions for the various types of AI
 	AIDescriptionScreen();
-	
+
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 
 	enum
 	{
 		OK,
-	};	
+	};
 
 private:
 	TextButton* ok;

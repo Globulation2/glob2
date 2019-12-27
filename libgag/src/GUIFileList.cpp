@@ -34,20 +34,20 @@ namespace GAGGUI
 										const std::string extension, const bool recurse)
 		: List(x, y, w, h, hAlign, vAlign, font),
 			dir(dir),
-			extension(extension), recurse(recurse), 
+			extension(extension), recurse(recurse),
 			current("")
 	{
 		// There is a problem with this call: it doesn't use the child's virtual methods (fileToList and listToFile)
 		// For now: call it explicitly from the child's constructor or the program
 		//this->generateList();
 	}
-	
+
 	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
 										const std::string dir, const std::string& tooltip, const std::string &tooltipFont,
 										const std::string extension, const bool recurse)
 		: List(x, y, w, h, hAlign, vAlign, font, tooltip, tooltipFont),
 			dir(dir),
-			extension(extension), recurse(recurse), 
+			extension(extension), recurse(recurse),
 			current("")
 	{
 		// There is a problem with this call: it doesn't use the child's virtual methods (fileToList and listToFile)
@@ -56,12 +56,12 @@ namespace GAGGUI
 	}
 	FileList::~FileList()
 	{}
-	
+
 	void FileList::generateList()
 	{
 		// we free the current list
 		this->strings.clear();
-	
+
 		std::string fullDir = this->dir;
 		// we add the parent directory
 		if (! this->current.empty())
@@ -90,11 +90,11 @@ namespace GAGGUI
 			}
 			this->sort();
 		}
-		
+
 		// we deselect
 		this->nth = -1;
 	}
-	
+
 	void FileList::selectionChanged()
 	{
 		if(this->nth != -1)
@@ -133,7 +133,7 @@ namespace GAGGUI
 			this->parent->onAction(this, LIST_ELEMENT_SELECTED, this->nth, 0);
 		}
 	}
-	
+
 	std::string FileList::fileToList(const std::string fileName) const
 	{
 		// this default behaviour is probably not what you want
@@ -143,7 +143,7 @@ namespace GAGGUI
 			listName.resize(listName.size() - (extension.size() + 1));
 		return listName;
 	}
-	
+
 	std::string FileList::listToFile(const std::string listName) const
 	{
 		// this default behaviour is probably not what you want
@@ -155,7 +155,7 @@ namespace GAGGUI
 		}
 		return fileName;
 	}
-	
+
 	std::string FileList::fullDir() const
 	{
 		std::string fullDir = this->dir;
@@ -163,7 +163,7 @@ namespace GAGGUI
 			fullDir += DIR_SEPARATOR + this->current;
 		return fullDir.c_str();
 	}
-	
+
 	std::string FileList::fullName(const std::string fileName) const
 	{
 		std::string fullName = fullDir();
@@ -171,7 +171,7 @@ namespace GAGGUI
 		fullName += fileName;
 		return fullName;
 	}
-	
+
 	struct strfilecmp_functor : public std::binary_function<std::string, std::string, bool>
 	{
 		bool operator()(std::string x, std::string y)
@@ -181,7 +181,7 @@ namespace GAGGUI
 			return ((xIsNotDir == yIsNotDir)?(naturalStringSort(x,y)):xIsNotDir<yIsNotDir);
 		}
 	};
-	
+
 	void FileList::sort(void)
 	{
 		std::sort(strings.begin(), strings.end(), strfilecmp_functor());

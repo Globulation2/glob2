@@ -83,7 +83,7 @@ public:
 	bool rememberUnit;
 	bool scrollWheelEnabled;
 
-	
+
 
 	///Levels are from 0 to 5, where even numbers are building
 	///under construction and odd ones are completed buildings.

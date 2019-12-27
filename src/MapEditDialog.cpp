@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2006-2008 Bradley Arsenault
-  
+
   Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
@@ -98,10 +98,10 @@ TeamsEditor::TeamsEditor(Game* game)
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[teams editor]")));
 	addWidget(new TextButton(155, 370, 135, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[ok]"), OK));
 	addWidget(new TextButton(10, 370, 135, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL));
-	
+
 	GameHeader& gameHeader = game->gameHeader;
 	MapHeader& mapHeader = game->mapHeader;
-	
+
 	for(int i=0; i<NumberOfPlayerSelectors; ++i)
 	{
 		isPlayerActive[i] = new OnOffButton(10, 60+i*25, 21, 21, ALIGN_LEFT, ALIGN_TOP, gameHeader.getBasePlayer(i).type != BasePlayer::P_NONE, 100+i);
@@ -110,13 +110,13 @@ TeamsEditor::TeamsEditor(Game* game)
 		{
 			isPlayerActive[i]->visible=false;
 		}
-	
+
 		color[i] = new ColorButton(35, 60+25*i, 21, 21, ALIGN_LEFT, ALIGN_TOP, 200+i);
 		for (int j = 0; j<mapHeader.getNumberOfTeams(); j++)
 			color[i]->addColor(mapHeader.getBaseTeam(j).color);
 		color[i]->setSelectedColor(gameHeader.getBasePlayer(i).teamNumber);
 		addWidget(color[i]);
-		
+
 		if(i==0)
 		{
 			playerName[i] = new Text(60, 60+25*i, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Human]"));
@@ -135,7 +135,7 @@ TeamsEditor::TeamsEditor(Game* game)
 				aiSelector[i]->setIndex(AI::NONE);
 			addWidget(aiSelector[i]);
 		}
-		
+
 		allyTeamNumbers[i] = new MultiTextButton(185, 60+25*i, 21, 21, ALIGN_LEFT, ALIGN_TOP, "standard", "", 400+i);
 		allyTeamNumbers[i]->clearTexts();
 		for(int j=0; j<mapHeader.getNumberOfTeams(); ++j)
@@ -146,8 +146,8 @@ TeamsEditor::TeamsEditor(Game* game)
 		}
 		allyTeamNumbers[i]->setIndex(gameHeader.getAllyTeamNumber(gameHeader.getBasePlayer(i).teamNumber)-1);
 		addWidget(allyTeamNumbers[i]);
-		
-		
+
+
 		if(gameHeader.getBasePlayer(i).type == BasePlayer::P_NONE)
 		{
 			color[i]->visible=false;
@@ -197,7 +197,7 @@ void TeamsEditor::onAction(Widget *source, Action action, int par1, int par2)
 				}
 			}
 		}
-	
+
 		if(par1>=400)
 		{
 			GameHeader& gameHeader = game->gameHeader;

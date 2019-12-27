@@ -52,7 +52,7 @@ std::string KeyboardShortcut::format(ShortcutMode mode) const
 		if(i!=(keys.end()-1))
 			s+="-";
 	}
-	
+
 	s+= "=";
 
 	if(mode == GameGUIShortcuts)
@@ -77,12 +77,12 @@ void KeyboardShortcut::interpret(const std::string& as, ShortcutMode mode)
 		keys.push_back(kp);
 		left=left.substr(end+2, std::string::npos);
 	}
-	
+
 	//Add the key that isn't seperated by a -
 	KeyPress kp;
 	kp.interpret(left);
 	keys.push_back(kp);
-	
+
 	if(mode == GameGUIShortcuts)
 		action = GameGUIKeyActions::getAction(right);
 	if(mode == MapEditShortcuts)
@@ -101,14 +101,14 @@ std::string KeyboardShortcut::formatTranslated(ShortcutMode mode) const
 			s+="-";
 	}
 	s+= "=";
-	
+
 	std::string key_s = "[";
 	if(mode == GameGUIShortcuts)
 		key_s += GameGUIKeyActions::getName(action);
 	else if(mode == MapEditShortcuts)
 		key_s += MapEditKeyActions::getName(action);
 	key_s += "]";
-	
+
 	s+=Toolkit::getStringTable()->getString(key_s.c_str());
 	return s;
 }
@@ -121,21 +121,21 @@ size_t KeyboardShortcut::getKeyPressCount() const
 }
 
 
-	
+
 KeyPress KeyboardShortcut::getKeyPress(size_t n) const
 {
 	return keys[n];
 }
 
 
-	
+
 void KeyboardShortcut::setAction(Uint32 naction)
 {
 	action = naction;
 }
 
 
-	
+
 Uint32 KeyboardShortcut::getAction() const
 {
 	return action;
@@ -187,7 +187,7 @@ Uint32 KeyboardManager::getAction(const KeyPress& key)
 	{
 		if(lastPresses.size() > i->getKeyPressCount())
 			continue;
-		
+
 		bool matched=true;
 		for(size_t j=0; j<lastPresses.size(); ++j)
 		{

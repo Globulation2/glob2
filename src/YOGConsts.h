@@ -177,4 +177,4 @@ enum YOGMapUploadRefusalReason
 	YOGMapUploadReasonUnknown,
 };
 
-#endif 
+#endif

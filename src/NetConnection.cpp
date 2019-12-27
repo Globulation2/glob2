@@ -26,7 +26,7 @@
 using namespace GAGCore;
 
 
-	
+
 //Uint32 NetConnection::lastTime = 0;
 //Uint32 NetConnection::amount = 0;
 
@@ -56,7 +56,7 @@ NetConnection::~NetConnection()
 }
 
 
-	
+
 void NetConnection::openConnection(const std::string& connectaddress, Uint16 port)
 {
 	address = connectaddress;
@@ -153,7 +153,7 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 }
 
 
-	
+
 void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 {
 	//std::cout<<"Sending: "<<message->format()<<std::endl;

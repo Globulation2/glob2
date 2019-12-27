@@ -48,7 +48,7 @@ void Race::loadDefault()
 	StreamBackend *backend = Toolkit::getFileManager()->openInputStreamBackend("data/units.txt");
 	TextInputStream *stream = new TextInputStream(backend);
 	delete backend;
-	
+
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Race::create : error, can't open file data/units.txt." << std::endl;
@@ -56,9 +56,9 @@ void Race::loadDefault()
 		assert(false);
 		return;
 	}
-	
+
 	hungryness = stream->readSint32("hungryness");
-	
+
 	stream->readEnterSection("worker");
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
@@ -67,7 +67,7 @@ void Race::loadDefault()
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	
+
 	stream->readEnterSection("explorer");
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
@@ -76,7 +76,7 @@ void Race::loadDefault()
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	
+
 	stream->readEnterSection("warrior");
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
 	{
@@ -85,7 +85,7 @@ void Race::loadDefault()
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	
+
 	delete stream;
 }
 
@@ -112,7 +112,7 @@ void Race::save(GAGCore::OutputStream *stream)
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
 			unitTypes[i][j].save(stream);
-	
+
 	stream->writeSint32(hungryness, "hungryness");
 }
 
@@ -123,7 +123,7 @@ bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			unitTypes[i][j].load(stream, versionMinor);
 
 	hungryness = (Sint32)stream->readSint32("hungryness");
-	
+
 	return true;
 }
 

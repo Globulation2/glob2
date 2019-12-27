@@ -58,14 +58,14 @@ GameGUIMessageManager::GameGUIMessageManager()
 }
 
 
-	
+
 void GameGUIMessageManager::addGameMessage(const InGameMessage& message)
 {
 	historyGame.push_front(message);
 }
 
 
-	
+
 void GameGUIMessageManager::addChatMessage(const InGameMessage& message)
 {
 	historyChat.push_front(message);

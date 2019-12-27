@@ -39,7 +39,7 @@ public:
 		OK = 0,
 		CANCEL = 1
 	};
-	
+
 private:
 	List *fileList;
 	TextInput *fileNameEntry;
@@ -49,7 +49,7 @@ private:
 	std::string fileName;
 	std::string (*filenameToNameFunc)(const std::string& filename);
 	std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension);
-	
+
 private:
 	//! create a filename from user friendly's name
 	void generateFileName(void);

@@ -25,9 +25,9 @@ boost::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCor
 {
 	if (stream->isEndOfStream())
 		return boost::shared_ptr<WinningCondition>();
-	
+
 	Uint8 type = stream->readUint8("type");
-	
+
 	switch (type)
 	{
 		case WCDeath:
@@ -145,7 +145,7 @@ bool WinningConditionAllies::hasTeamWon(int team, Game* game)
 
 bool WinningConditionAllies::hasTeamLost(int team, Game* game)
 {
-	return false;	
+	return false;
 }
 
 
@@ -185,7 +185,7 @@ bool WinningConditionPrestige::hasTeamWon(int team, Game* game)
 			totalPrestige += game->teams[i]->prestige;
 			maximum = std::max(maximum, game->teams[i]->prestige);
 		}
-	
+
 		if(game->teams[team]->prestige == maximum)
 			return true;
 	}
@@ -205,7 +205,7 @@ bool WinningConditionPrestige::hasTeamLost(int team, Game* game)
 			totalPrestige += game->teams[i]->prestige;
 			maximum = std::max(maximum, game->teams[i]->prestige);
 		}
-	
+
 		if(game->teams[team]->prestige < maximum)
 			return true;
 	}

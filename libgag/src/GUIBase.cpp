@@ -58,7 +58,7 @@ namespace GAGGUI
 			fprintf(stderr, "GAG : UCS16toUTF8 : Error, can handle UTF16 characters\n");
 		}
 	}
-	
+
 	// this function support full unicode (UCS32)
 	unsigned getNextUTF8Char(unsigned char c)
 	{
@@ -87,14 +87,14 @@ namespace GAGGUI
 			return 1;
 		}
 	}
-	
+
 	unsigned getNextUTF8Char(const std::string text, unsigned pos)
 	{
 		unsigned next=pos+getNextUTF8Char(text[pos]);
 		assert(next<=text.length());
 		return next;
 	}
-	
+
 	unsigned getPrevUTF8Char(const std::string text, unsigned pos)
 	{
 		// TODO : have a more efficient algo
@@ -106,14 +106,14 @@ namespace GAGGUI
 		}
 		return last;
 	}
-	
+
 	Widget::Widget()
 	{
 		this->tooltipFontPtr = NULL;
 		visible=true;
 		parent=NULL;
 	}
-	
+
 	Widget::Widget(const std::string& tooltip, const std::string &tooltipFont)
 	{
 		this->tooltipFontPtr = NULL;
@@ -125,10 +125,10 @@ namespace GAGGUI
 		visible = true;
 		parent = NULL;
 	}
-	
+
 	Widget::~Widget()
 	{
-		
+
 	}
 
 	void Widget::init(void)
@@ -154,7 +154,7 @@ namespace GAGGUI
 		my = event->motion.y;
 		onSDLMouseMotion(event);
 	}
-	
+
 	void Widget::displayTooltip()
 	{
 		// We have a tooltip and the mouse is idle on our widget for some ticks (1 SDL tick = 1ms)
@@ -162,14 +162,14 @@ namespace GAGGUI
 		{
 			DrawableSurface *gfx = parent->getSurface();
 			assert(gfx);
-			
+
 			int width = tooltipFontPtr->getStringWidth(tooltip.c_str());
 			int height = tooltipFontPtr->getStringHeight(tooltip.c_str());
 			int x = mx - width - 10;
 			if(x < 0) x = 0;
 			int y = my - height - 10;
 			if(y < 0) y = 0;
-			
+
 			gfx->drawFilledRect(x + 1, y + 1, width + 1, height, 22, 0, 0, 128);
 			gfx->drawRect(x,y, width + 2, height + 1, 255, 255, 255);
 			gfx->drawString(x, y, tooltipFontPtr, tooltip);
@@ -198,12 +198,12 @@ namespace GAGGUI
 	{
 		visible = true;
 	}
-	
+
 	void RectangularWidget::hide(void)
 	{
 		visible = false;
 	}
-	
+
 	void RectangularWidget::setVisible(bool newState)
 	{
 		if (newState)
@@ -211,7 +211,7 @@ namespace GAGGUI
 		else
 			hide();
 	}
-	
+
 	float splineInterpolation(float T, float V0, float V1, float x)
 	{
 		assert(T > 0);
@@ -221,7 +221,7 @@ namespace GAGGUI
 		float d = V0;
 		return a * (x * x * x) + b * (x * x) + c * x + d;
 	}
-	
+
 	//! Interpolate from V0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = -1, f'(T) = 0
 	float splineInterpolationFastStart(float T, float V0, float V1, float x)
 	{
@@ -232,7 +232,7 @@ namespace GAGGUI
 		float d = V0;
 		return a * (x * x * x) + b * (x * x) + c * x + d;
 	}
-	
+
 	void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
 	{
 		assert(sx);
@@ -241,73 +241,73 @@ namespace GAGGUI
 		assert(sh);
 		assert(parent);
 		assert(parent->getSurface());
-	
+
 		int screenw = parent->getSurface()->getW();
 		int screenh = parent->getSurface()->getH();
-		
+
 		switch (hAlignFlag)
 		{
 			case ALIGN_LEFT:
 				*sx=x;
 				*sw=w;
 				break;
-	
+
 			case ALIGN_RIGHT:
 				*sx=screenw-w-x;
 				*sw=w;
 				break;
-	
+
 			case ALIGN_FILL:
 				*sx=x;
 				*sw=screenw-w-x;
 				break;
-				
+
 			case ALIGN_SCREEN_CENTERED:
 				*sx=x+((screenw-640)>>1);
 				*sw=w;
 				break;
-				
+
 			case ALIGN_CENTERED:
 				*sx = (screenw - w) >> 1;
 				*sw = w;
 				break;
-	
+
 			default:
 				assert(false);
 		}
-	
+
 		switch (vAlignFlag)
 		{
 			case ALIGN_LEFT:
 				*sy=y;
 				*sh=h;
 				break;
-	
+
 			case ALIGN_RIGHT:
 				*sy=screenh-h-y;
 				*sh=h;
 				break;
-	
+
 			case ALIGN_FILL:
 				*sy=y;
 				*sh=screenh-h-y;
 				break;
-				
+
 			case ALIGN_SCREEN_CENTERED:
 				*sy=y+((screenh-480)>>1);
 				*sh=h;
 				break;
-				
+
 			case ALIGN_CENTERED:
 				*sy = (screenh - h) >> 1;
 				*sh = h;
 				break;
-	
+
 			default:
 				assert(false);
 		}
 	}
-	
+
 	HighlightableWidget::HighlightableWidget()
 	: totalAnimationTime(10)
 	{
@@ -329,7 +329,7 @@ namespace GAGGUI
 		actAnimationTime = 0;
 		this->returnCode = returnCode;
 	}
-	
+
 	HighlightableWidget::HighlightableWidget(Sint32 returnCode)
 	: totalAnimationTime(10)
 	{
@@ -351,7 +351,7 @@ namespace GAGGUI
 		actAnimationTime = 0;
 		this->returnCode = 0;
 	}
-	
+
 	void HighlightableWidget::onSDLMouseMotion(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEMOTION);
@@ -380,7 +380,7 @@ namespace GAGGUI
 			}
 		}
 	}
-	
+
 	unsigned HighlightableWidget::getNextHighlightValue(void)
 	{
 		float actHighlight;
@@ -392,25 +392,25 @@ namespace GAGGUI
 		}
 		else
 			actHighlight = nextHighlightValue;
-			
+
 		return static_cast<unsigned>(255.0 * actHighlight);
 	}
-	
+
 	void HighlightableWidget::paint(void)
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		Style::style->drawFrame(parent->getSurface(), x, y, w, h, getNextHighlightValue());
 	}
-	
+
 	Screen::Screen()
 	{
 		gfx = NULL;
 		returnCode = 0;
 		run = false;
 	}
-	
+
 	Screen::~Screen()
 	{
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
@@ -418,32 +418,32 @@ namespace GAGGUI
 			delete (*it);
 		}
 	}
-	
+
 	int Screen::execute(DrawableSurface *gfx, int stepLength)
 	{
 		Uint32 frameStartTime;
 		Sint32 frameWaitTime;
-		
+
 		this->gfx = gfx;
-	
+
 		// init widgets
 		dispatchInit();
-		
+
 		// create screen event
 		onAction(NULL, SCREEN_CREATED, 0, 0);
-		
+
 		// draw screen
 		dispatchPaint();
 		run=true;
-		
+
 		while (run)
 		{
 			// get first timer
 			frameStartTime=SDL_GetTicks();
-			
+
 			// send timer
 			dispatchTimer(frameStartTime);
-	
+
 			// send events
 			SDL_Event lastMouseMotion, windowEvent, event;
 			bool hadLastMouseMotion=false;
@@ -511,29 +511,29 @@ namespace GAGGUI
 				dispatchEvents(&lastMouseMotion);
 			if (wasWindowEvent)
 				dispatchEvents(&windowEvent);
-				
+
 			// draw
 			dispatchPaint();
-	
+
 			// wait timer
 			frameWaitTime=SDL_GetTicks()-frameStartTime;
 			frameWaitTime=stepLength-frameWaitTime;
 			if (frameWaitTime>0)
 				SDL_Delay(frameWaitTime);
 		}
-		
+
 		// destroy screen event
 		onAction(NULL, SCREEN_DESTROYED, 0, 0);
-	
+
 		return returnCode;
 	}
-	
+
 	void Screen::endExecute(int returnCode)
 	{
 		run=false;
 		this->returnCode=returnCode;
 	}
-	
+
 	void Screen::addWidget(Widget* widget)
 	{
 		assert(widget);
@@ -541,14 +541,14 @@ namespace GAGGUI
 		// this option enable or disable the multiple add check
 		widgets.insert(widget);
 	}
-	
+
 	void Screen::removeWidget(Widget* widget)
 	{
 		assert(widget);
 		assert(widget->parent==this);
 		widgets.erase(widget);
 	}
-	
+
 	void Screen::dispatchEvents(SDL_Event *event)
 	{
 		onSDLEvent(event);
@@ -557,7 +557,7 @@ namespace GAGGUI
 		// we never receive neither SDL_QUIT nor
 		// SDL_VIDEORESIZE (not dispatched)
 		// For the moment, we do not take the following event in accout :
-		// SDL_SYSWMEVENT, SDL_JOY*****, 
+		// SDL_SYSWMEVENT, SDL_JOY*****,
 		switch(event->type)
 		{
 			case SDL_ACTIVEEVENT:
@@ -620,7 +620,7 @@ namespace GAGGUI
 
 		}
 	}
-	
+
 	void Screen::dispatchTimer(Uint32 tick)
 	{
 		onTimer(tick);
@@ -630,7 +630,7 @@ namespace GAGGUI
 				(*it)->timerTick(tick);
 		}
 	}
-	
+
 	void Screen::dispatchInit(void)
 	{
 		animationFrame = 0;
@@ -639,7 +639,7 @@ namespace GAGGUI
 			(*it)->init();
 		}
 	}
-	
+
 	void Screen::dispatchPaint(void)
 	{
 		assert(gfx);
@@ -657,25 +657,25 @@ namespace GAGGUI
 				(*it)->displayTooltip();
 		}
 		gfx->nextFrame();
-		
+
 		if (animationFrame < SCREEN_ANIMATION_FRAME_COUNT)
 			animationFrame++;
 	}
-	
+
 	void Screen::paint(void)
 	{
 		gfx->drawFilledRect(0, 0, getW(), getH(), Style::style->backColor);
 	}
-	
+
 	int Screen::getW(void)
 	{
 		if (gfx)
 			return gfx->getW();
 		else
 			return 0;
-	
+
 	}
-	
+
 	int Screen::getH(void)
 	{
 		if (gfx)
@@ -683,9 +683,9 @@ namespace GAGGUI
 		else
 			return 0;
 	}
-	
+
 	// Overlay screen, used for non full frame dialog
-	
+
 	OverlayScreen::OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h)
 	{
 		gfx = new DrawableSurface(w, h);
@@ -693,17 +693,17 @@ namespace GAGGUI
 		decY = (parentCtx->getH()-h)>>1;
 		endValue = -1;
 	}
-	
+
 	OverlayScreen::~OverlayScreen()
 	{
 		delete gfx;
 	}
-	
+
 	int OverlayScreen::execute(DrawableSurface *gfx, int stepLength)
 	{
 		return Screen::execute(this->gfx, stepLength);
 	}
-	
+
 	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 	{
 		int newX, newY;
@@ -728,7 +728,7 @@ namespace GAGGUI
 		}
 		dispatchEvents(&ev);
 	}
-	
+
 	void OverlayScreen::paint(void)
 	{
 		gfx->drawFilledRect(0, 0, getW(), getH(), Style::style->backOverlayColor);

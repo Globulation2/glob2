@@ -37,14 +37,14 @@ namespace GAGCore
 		actLang = 0;
 		defaultLang = 0;
 	}
-	
-	
+
+
 	StringTable::~StringTable()
 	{
 		for (size_t i=0; i<strings.size(); i++)
 			delete strings[i];
 	}
-	
+
 	bool StringTable::loadIncompleteList(const std::string filename)
 	{
 		// Read index file
@@ -68,11 +68,11 @@ namespace GAGCore
 		}
 		return true;
 	}
-	
-	
+
+
 	/*
 		Load, argument is a file listing the key file and translation files
-		
+
 		The key file contains all keys, each one on a different line
 		A translation file contains pair of key-value for the given translation
 	*/
@@ -81,7 +81,7 @@ namespace GAGCore
 		std::string keyFile;
 		std::vector<std::string> translationFiles;
 		InputLineStream *inputLineStream;
-		 
+
 		// Read index file
 		inputLineStream= new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
 		if (inputLineStream->isEndOfStream())
@@ -100,16 +100,16 @@ namespace GAGCore
 			}
 			delete inputLineStream;
 		}
-		
+
 		if (translationFiles.size() == 0)
 			return false;
-		
+
 		languageCount = translationFiles.size();
-		
+
 		// Temporary storage for keys and translations
 		std::vector<std::string> keys;
 		std::vector<std::map<std::string, std::string> > translations(translationFiles.size());
-		
+
 		// Load keys
 		inputLineStream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(keyFile));
 		if (inputLineStream->isEndOfStream())
@@ -134,7 +134,7 @@ namespace GAGCore
 			}
 			delete inputLineStream;
 		}
-		
+
 		// Load translations
 		for (size_t i=0; i<translationFiles.size(); i++)
 		{
@@ -155,13 +155,13 @@ namespace GAGCore
 				delete inputLineStream;
 			}
 		}
-		
+
 		// Create entries
 		for (size_t i=0; i<keys.size(); i++)
 		{
 			const std::string &key = keys[i];
 			OneStringToken *entry = new OneStringToken;
-			
+
 			for (size_t j=0; j<translations.size(); j++)
 			{
 				std::map<std::string, std::string>::const_iterator it = translations[j].find(key);
@@ -170,11 +170,11 @@ namespace GAGCore
 				else
 					entry->data.push_back("");
 			}
-			
+
 			stringAccess[key] = strings.size();
 			strings.push_back(entry);
 		}
-		
+
 		// Check for consistency
 		for (std::map<std::string, size_t>::iterator it=stringAccess.begin(); it!=stringAccess.end(); ++it)
 		{
@@ -230,18 +230,18 @@ namespace GAGCore
 				}
 			}
 		}
-		
+
 		for(unsigned i=0; i<translations.size(); ++i)
 		{
 			languageCodes[getStringInLang("[language-code]", i)] = i;
 		}
-		
+
 		defaultLang = getLangCode("en");
-		
+
 		return true;
 	}
-	
-	
+
+
 	void StringTable::print()
 	{
 		for (std::map<std::string, size_t>::iterator it=stringAccess.begin(); it!=stringAccess.end(); ++it)
@@ -252,7 +252,7 @@ namespace GAGCore
 			std::cout << std::endl;
 		}
 	}
-	
+
 	const std::string StringTable::getString(const std::string key) const
 	{
 		int index=-1;
@@ -304,7 +304,7 @@ namespace GAGCore
 			return std::string("ERROR, BAD LANG");
 		}
 	}
-	
+
 	bool StringTable::doesStringExist(const std::string stringname) const
 	{
 		std::string key(stringname);
@@ -315,7 +315,7 @@ namespace GAGCore
 		}
 		return true;
 	}
-	
+
 	const std::string StringTable::getStringInLang(const std::string stringname, int lang) const
 	{
 		if ((lang < languageCount) && (lang >= 0))

@@ -41,7 +41,7 @@ YOGClientOptionsScreen::YOGClientOptionsScreen(TabScreen* parent, boost::shared_
 	addBlockedPlayer = new TextButton(230, 285, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Add]"), ADDBLOCKEDPLAYER);
 	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 
-	
+
 	addWidget(blockedPlayers);
 	addWidget(blockedPlayersText);
 	addWidget(removeBlockedPlayer);
@@ -97,7 +97,7 @@ void YOGClientOptionsScreen::updateBlockedPlayerList()
 	{
 		blockedPlayers->addText(*i);
 	}
-	
+
 	blockedPlayers->setSelectionIndex(std::min(int(blocked.size())-1, n));
 }
 

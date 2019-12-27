@@ -56,7 +56,7 @@ namespace SimplexNoise {
 
 	/** Returns the noise value for a given point.
 	 *  @param x,y,z  The coordinates - in 256ths.
-	 *  @return A noise value in the interval [0;255] 
+	 *  @return A noise value in the interval [0;255]
 	 */
 	int getNoise3D(int xin, int yin, int zin) {
 		// 1. Find rough grid area:
@@ -74,7 +74,7 @@ namespace SimplexNoise {
 		    y0 = gridY-unskew,
 		    z0 = gridZ-unskew;
 		int relX = xin-x0, relY = yin-y0, relZ = zin-z0;
-		
+
 		// 3. Find exact grid area:
 		int offsetX1, offsetY1;
 		int offsetX2, offsetY2;
@@ -110,7 +110,7 @@ namespace SimplexNoise {
 				offsetX2 = 0; /*offsetY2 = 1;*/ //offsetZ2 = 1;
 			}
 		}
-		
+
 		// 4. Find coordinates wrt. the corners:
 		int relX1 = relX - 256*offsetX1 + INT_ROUND_DIV(256,6);
 		int relY1 = relY - 256*offsetY1 + INT_ROUND_DIV(256,6);

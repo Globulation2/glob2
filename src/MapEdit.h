@@ -113,7 +113,7 @@ public:
 
 
 ///This is a level selector. It draws a small picture denoting the level, and darkens if this selectors level is the currently selected one. Its at the bottom
-///of the building and flag views. 
+///of the building and flag views.
 class SingleLevelSelector : public MapEditorWidget
 {
 public:
@@ -156,7 +156,7 @@ public:
 		GuardingZone,
 		ClearingZone,
 	};
-	
+
 	ZoneSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, ZoneType zoneType);
 	void draw();
 private:
@@ -276,7 +276,7 @@ private:
 
 
 
-///This is a small text object. It shows two values and a label, like "label 1/2". The denominator can be fixed or variable. Either way, the numerator is done 
+///This is a small text object. It shows two values and a label, like "label 1/2". The denominator can be fixed or variable. Either way, the numerator is done
 ///by pointer because this class is used for the convinient edditing of values in a Unit or Building
 class FractionValueText : public MapEditorWidget
 {
@@ -296,7 +296,7 @@ private:
 
 
 
-///This is a scroll box, similair to FractionValueText, that allows for the changing of its two values. 
+///This is a scroll box, similair to FractionValueText, that allows for the changing of its two values.
 class ValueScrollBox : public MapEditorWidget
 {
 public:
@@ -403,9 +403,9 @@ public:
 	int run(int sizeX, int sizeY, TerrainType terrainType);
 	///This is the main loop function. It "ticks" every 33 miliseconds, handling events and drawing as it goes.
 	int run(void);
-	
+
 	void mapHasBeenModiffied(void) { hasMapBeenModified=true; }
-	
+
 	///This function regenerates a game header for use in campaigns
 	void regenerateGameHeader();
 
@@ -425,7 +425,7 @@ public:
 	friend class MinusIcon;
 	friend class TeamInfo;
 	friend class BuildingInfoTitle;
-	
+
 	///This is used for the Fertility Overlay
 	OverlayArea overlay;
 	///Tells whether the fertility overlay is set or not
@@ -703,7 +703,7 @@ private:
 	///Tells whether the script editor is being drawn
 	bool showingScriptEditor;
 	ScriptEditorScreen* scriptEditor;
-	
+
 	///Tells whether the teams editor is being drawn
 	bool showingTeamsEditor;
 	TeamsEditor* teamsEditor;
@@ -716,7 +716,7 @@ private:
 		GuardAreaBrush,
 		ClearAreaBrush,
 		NoBrush,
-		
+
 	} brushType;
 	///This is a brush tool that the BrushSelector widget uses
 	BrushTool brush;
@@ -759,7 +759,7 @@ private:
 	int selectedUnitGID;
 	///The gid of the building that is currently selected
 	int selectedBuildingGID;
-	
+
 	///Tells whether the text input box
 	bool isShowingAreaName;
 	AskForTextInput* areaName;
@@ -778,4 +778,4 @@ private:
 
 
 
-#endif 
+#endif

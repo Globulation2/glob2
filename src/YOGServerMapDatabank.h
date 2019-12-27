@@ -36,10 +36,10 @@ public:
 
 	///Adds a map to the database
 	void addMap(const YOGDownloadableMapInfo& map);
-	
+
 	///Removes a map from the database
 	void removeMap(const std::string& map);
-	
+
 	///Returns true if there is a map by this map name
 	bool doesMapExist(const std::string& map);
 
@@ -49,16 +49,16 @@ public:
 
 	///Starts recieving a map from the given player, and returns the file ID for the transfer
 	Uint16 recieveMapFromPlayer(const YOGDownloadableMapInfo& map, boost::shared_ptr<YOGServerPlayer> player);
-	
+
 	///Sends the list of maps to the given player
 	void sendMapListToPlayer(boost::shared_ptr<YOGServerPlayer> player);
-	
+
 	///Sends a map thumbnail to the given player
 	void sendMapThumbnailToPlayer(Uint16 mapID, boost::shared_ptr<YOGServerPlayer> player);
-	
+
 	///Submits a rating for a given player.
 	void submitRating(Uint16 mapID, Uint8 rating);
-	
+
 	///This updates the map databank
 	void update();
 private:
@@ -72,11 +72,11 @@ private:
 	void load();
 	///This does a full save of the map databank
 	void save();
-	
+
 	Uint16 currentMapID;
-	
+
 	YOGServer* server;
-	
+
 	std::vector<YOGDownloadableMapInfo> maps;
 	///List of maps currently being uploaded
 	std::vector<boost::tuple<YOGDownloadableMapInfo, int> > uploadingMaps;

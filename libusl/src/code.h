@@ -24,20 +24,20 @@ struct Code
 struct ConstCode: Code
 {
 	ConstCode(Value* value);
-	
+
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
-	
+
 	Value* value;
 };
 
 struct ValRefCode: Code
 {
 	ValRefCode(size_t index);
-	
+
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
-	
+
 	size_t index;
 };
 
@@ -49,10 +49,10 @@ struct EvalCode: Code
 struct SelectCode: Code
 {
 	SelectCode(const std::string& name);
-	
+
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
-	
+
 	std::string name;
 };
 
@@ -67,7 +67,7 @@ struct ValCode: Code
 
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
-	
+
 	size_t index;
 };
 
@@ -86,7 +86,7 @@ struct DupCode: Code
 	DupCode(size_t index);
 
 	virtual void execute(Thread* thread);
-	
+
 	size_t index;
 };
 
@@ -98,11 +98,11 @@ struct ThunkCode: Code
 struct NativeCode: Code
 {
 	NativeCode(const std::string& name);
-	
+
 	virtual void prologue(ThunkPrototype* thunk) {}
 	virtual void epilogue(ThunkPrototype* thunk) {}
 	virtual void dumpSpecific(std::ostream &stream) const;
-	
+
 	std::string name;
 };
 
@@ -110,10 +110,10 @@ template<typename ThunkType>
 struct CreateCode: Code
 {
 	CreateCode(typename ThunkType::Prototype* prototype);
-	
+
 	virtual void execute(Thread* thread);
 	virtual void dumpSpecific(std::ostream &stream) const;
-	
+
 	typename ThunkType::Prototype* prototype;
 };
 

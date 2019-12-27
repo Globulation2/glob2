@@ -44,7 +44,7 @@ void YOGMessage::setMessage(const std::string& newMessage)
 }
 
 
-	
+
 std::string YOGMessage::getMessage() const
 {
 	return message;
@@ -72,7 +72,7 @@ void YOGMessage::setMessageType(YOGMessageType type)
 }
 
 
-	
+
 YOGMessageType YOGMessage::getMessageType() const
 {
 	return messageType;
@@ -102,7 +102,7 @@ void YOGMessage::decodeData(GAGCore::InputStream* stream)
 }
 
 
-	
+
 bool YOGMessage::operator==(const YOGMessage& rhs) const
 {
 	if(message == rhs.message && messageType == rhs.messageType)

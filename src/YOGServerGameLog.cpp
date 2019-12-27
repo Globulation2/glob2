@@ -60,7 +60,7 @@ void YOGServerGameLog::update()
 		hour = new_hour;
 		load();
 	}
-	
+
 	if(local > flushTime)
 	{
 		if(modified)
@@ -81,7 +81,7 @@ void YOGServerGameLog::save()
 	s<<hour;
 	s<<".log";
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(s.str()));
-	
+
 	stream->writeUint32(VERSION_MINOR, "version");
 	stream->writeUint32(games.size(), "size");
 	for(std::vector<YOGGameResults>::iterator i = games.begin(); i!=games.end(); ++i)

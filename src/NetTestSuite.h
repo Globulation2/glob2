@@ -39,7 +39,7 @@ using namespace boost;
 class NetTestSuite
 {
 public:
-	///Constructor takes no arguments. 
+	///Constructor takes no arguments.
 	NetTestSuite();
 
 	///This generic test tests the serialization of a provided object

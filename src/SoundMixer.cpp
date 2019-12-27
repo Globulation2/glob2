@@ -69,13 +69,13 @@ void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
 	// if no more voice
 	if (voices.empty())
 		return;
-	
+
 	float value = 0;
 	for (std::map<int, PlayerVoice>::iterator i = voices.begin(); i != voices.end();)
 	{
 		struct PlayerVoice &pv = i->second;
 		value += (1-pv.voiceSubIndex) * pv.voiceVal0 + pv.voiceSubIndex * pv.voiceVal1;
-	
+
 		// increment index, keep track of stereo
 		pv.voiceSubIndex += (8000.0f/44100.0f)*0.5f;
 		if (pv.voiceSubIndex > 1)
@@ -84,7 +84,7 @@ void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
 			pv.voiceVal0 = pv.voiceVal1;
 			pv.voiceDatas.pop();
 			pv.voiceVal1 = pv.voiceDatas.front();
-			
+
 			// if there is no more data in this voice, remove it
 			if (pv.voiceDatas.empty())
 			{
@@ -95,7 +95,7 @@ void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
 				continue;
 			}
 		}
-		
+
 		// go to next voice
 		++i;
 	}
@@ -263,7 +263,7 @@ void SoundMixer::openAudio(void)
 	as.samples = SAMPLE_COUNT_PER_SLICE>>1;
 	as.callback = mixaudio;
 	as.userdata = this;
-	
+
 	// Open the audio device and start playing sound!
 	if (SDL_OpenAudio(&as, NULL) < 0)
 	{
@@ -276,12 +276,12 @@ void SoundMixer::openAudio(void)
 		soundEnabled = true;
 		mode = MODE_STOPPED;
 	}
-	
+
 	// Open Speex decoder
 	speexDecoderState = speex_decoder_init(&speex_nb_mode);
 	int tmp = 1;
 	speex_decoder_ctl(speexDecoderState, SPEEX_SET_ENH, &tmp);
-	
+
 }
 
 SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
@@ -292,9 +292,9 @@ SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 	this->voiceVolume = voicevol;
 	mode = MODE_STOPPED;
 	speexDecoderState = NULL;
-	
+
 	initInterpolationTable();
-		
+
 	if (mute)
 	{
 		this->musicVolume = 0;
@@ -323,7 +323,7 @@ SoundMixer::~SoundMixer()
 		SDL_CloseAudio();
 		speex_decoder_destroy(speexDecoderState);
 	}
-	
+
 	for (size_t i=0; i<tracks.size(); i++)
 	{
 		ov_clear(tracks[i]);
@@ -361,7 +361,7 @@ int SoundMixer::loadTrack(const std::string name, int index)
 		index = (int)tracks.size()-1;
 	}
 	SDL_UnlockAudio();
-	
+
 	return index;
 }
 
@@ -370,13 +370,13 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	if ((soundEnabled) && (i<tracks.size()))
 	{
 		SDL_LockAudio();
-		
+
 		// Select next tracks
 		if (actTrack >= 0)
 			nextTrack = i;
 		else
 			nextTrack = actTrack = i;
-		
+
 		// Select mode
 		if (mode == MODE_STOPPED)
 		{
@@ -387,7 +387,7 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		{
 			mode = MODE_EARLY_CHANGE;
 		}
-		
+
 		SDL_UnlockAudio();
 	}
 }
@@ -454,7 +454,7 @@ void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
 			pv.voiceVal0 = pv.voiceVal1 = 0;
 			pv.voiceSubIndex = 0;
 		}
-		
+
 		SpeexBits bits;
 		speex_bits_init(&bits);
 		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDatasLength);
@@ -463,12 +463,12 @@ void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
 		{
 			float floatBuffer[SPEEX_FRAME_SIZE];
 			speex_decode(speexDecoderState, &bits, floatBuffer);
-			
+
 			for (size_t j=0; j<SPEEX_FRAME_SIZE; j++)
 				pv.voiceDatas.push(floatBuffer[j]);
 		}
 		speex_bits_destroy(&bits);
-		
+
 		SDL_UnlockAudio();
 	}
 }

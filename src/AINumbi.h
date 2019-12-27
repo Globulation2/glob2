@@ -41,12 +41,12 @@ public:
 	Team *team;
 	Game *game;
 	Map *map;
-	
+
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-	
+
 	boost::shared_ptr<Order>getOrder(void);
-	
+
 private:
 	int timer;
 	int phase;
@@ -74,5 +74,5 @@ private:
 
 #endif
 
- 
+
 

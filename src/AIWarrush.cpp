@@ -39,14 +39,14 @@ using namespace boost;
 void AIWarrush::init(Player *player)
 {
 	assert(player);
-	
+
 	this->player=player;
 	this->team=player->team;
 	this->game=player->game;
 	this->map=player->map;
 	buildingDelay = 0;
 	areaUpdatingDelay = 0;
-	
+
 	assert(this->team);
 	assert(this->game);
 	assert(this->map);
@@ -232,7 +232,7 @@ int AIWarrush::numberOfBuildingsOfType(Sint32 shortTypeNum)const
 		Building *b=myBuildings[i];
 		if((b)&&(
 				b->shortTypeNum == shortTypeNum
-		))++count;	
+		))++count;
 	}
 	return count;
 }
@@ -251,7 +251,7 @@ int AIWarrush::numberOfExtraBuildings()const
 				|| b->shortTypeNum == IntBuildingType::SWIMSPEED_BUILDING
 				|| b->shortTypeNum == IntBuildingType::SCIENCE_BUILDING
 				|| b->shortTypeNum == IntBuildingType::DEFENSE_BUILDING
-		))++count;	
+		))++count;
 	}
 	return count;
 }
@@ -315,7 +315,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 		buildingDelay--;
 	if (areaUpdatingDelay > 0)
 		areaUpdatingDelay--;
-	
+
 	if(game->stepCounter < 64 && game->stepCounter%2 == 0)
 	{
 		int teamIndex = game->stepCounter / 2;
@@ -333,7 +333,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 		areaUpdatingDelay = AREAS_DELAY;
 		return farm();
 	}
-	
+
 	//assuming we didn't have to mess with areas or explore flags, check if we can build stuff
 	if (buildingDelay <= 0)
 	{
@@ -347,7 +347,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 			return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
 		}
 		if(verbose)std::cout << "ignored.\n";
-		
+
 		//Silly inns. Don't build them right away and don't build too many at a time and don't build too many.
 		//More limits than it should have, maybe, but the idea of the AI is that it should either win
 		//or lose warriors (so it shouldn't need so many inns.)
@@ -368,7 +368,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 			return buildBuildingOfType(IntBuildingType::FOOD_BUILDING);
 		}
 		if(verbose)std::cout << "ignored.\n";
-		
+
 		//if the barracks are all working at capacity,
 		//build more barracks! (this also builds the first barracks...)
 		if(verbose)std::cout << "Chance to build barracks: ";
@@ -381,7 +381,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 			return buildBuildingOfType(IntBuildingType::ATTACK_BUILDING);
 		}
 		if(verbose)std::cout << "ignored.\n";
-	
+
 		//and if we have excess workers, build random other buildings!
 		if(verbose)std::cout << "Chance to build etc: ";
 		if(shouldBuildMore)
@@ -412,7 +412,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 			return shared_ptr<Order>(new OrderModifySwarm(out_of_date_swarm->gid, settings));
 		}
 	}
-	
+
 	//all swarms should always have 5 workers at them!
 	Building *weak_swarm = getBuildingWithoutWorkersAssigned(IntBuildingType::SWARM_BUILDING, 5);
 	if (weak_swarm) return shared_ptr<Order>(new OrderModifyBuilding(weak_swarm->gid, 5));
@@ -420,12 +420,12 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 	//all inns should always have 3 workers at them! (best to build fast, make sure they're fed)
 	Building *weak_inn = getBuildingWithoutWorkersAssigned(IntBuildingType::FOOD_BUILDING, 3);
 	if (weak_inn) return shared_ptr<Order>(new OrderModifyBuilding(weak_inn->gid, 3));
-	
+
 	//work barracks more too.
 	Building *weak_barracks = getBuildingWithoutWorkersAssigned(IntBuildingType::ATTACK_BUILDING, 3);
 	if (weak_barracks && weak_barracks->constructionResultState != Building::NO_CONSTRUCTION)
 	 return shared_ptr<Order>(new OrderModifyBuilding(weak_barracks->gid, 3));
-	
+
 	//nothing at all to do?!
 	return shared_ptr<Order>(new NullOrder);
 }
@@ -470,7 +470,7 @@ boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 	}
 	else return shared_ptr<Order>(new NullOrder);
 }
-	
+
 boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 {
 	BrushAccumulator guard_add_acc;
@@ -498,7 +498,7 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 							//do not order a building attacked if the order is already in place.
 							(
 								!map->isGuardArea(b->posX,b->posY,team->me)
-									)			
+									)
 										)
 					{
 						if((map->getBuilding(b->posX, b->posY)!=NOGBID)&&(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(b->posX, b->posY))]->me)) //paranoia
@@ -516,14 +516,14 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 			}
 		}
 	}
-	
+
 	if(guard_add_acc.getApplicationCount())
 	{
 		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc, map));
 	}
 	else return shared_ptr<Order>(new NullOrder);
 }
-	
+
 boost::shared_ptr<Order> AIWarrush::farm()
 {
 	// Algorithm initially stolen from Nicowar.
@@ -531,7 +531,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 	for(int x=0;x<map->w;x++)
 	{
 		for(int y=0;y<map->h;y++)
-		{	
+		{
 			if (map->isWater(x,y))
 			{
 				water_gradient(x, y) = 255;
@@ -572,12 +572,12 @@ boost::shared_ptr<Order> AIWarrush::farm()
 					}
 				}
 			}
-			
+
 			if(map->isForbidden(x, y, team->me) && map->isClearArea(x, y, team->me))
 			{
 				del_acc.applyBrush(BrushApplication(x, y, 0), map);
 			}
-			
+
 			//we never clear anything but wood
 			if(!map->isRessourceTakeable(x, y, WOOD))
 			{
@@ -616,12 +616,12 @@ boost::shared_ptr<Order> AIWarrush::farm()
 				if(map->isRessourceTakeable(x, y, WOOD))
 				{
 					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
-					{	
+					{
 						add_acc.applyBrush(BrushApplication(x, y, 0), map);
 					}
 				}
 			}
-			
+
 			if(x%2==y%2)
 			{
 				if(map->isRessourceTakeable(x, y, CORN))
@@ -746,9 +746,9 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 			}
 		}
 	}
-	
+
 	map->updateGlobalGradientSlow(gradient.c_array());
-	
+
 	for(int x=0;x<map->w;x++)
 	{
 		for(int y=0;y<map->h;y++)
@@ -763,7 +763,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 
 boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 {
-	
+
 	// set delay
 	// now doing this first in order to avoid repeated failed builds
 	// WARNING THIS IS A HACK FIX
@@ -774,10 +774,10 @@ boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	DynamicGradientMapArray wheat_gradient(map->w,map->h);
 	initializeGradientWithResource(wood_gradient, WOOD);
 	initializeGradientWithResource(wheat_gradient, CORN);
-	
-	
+
+
 	BuildingType *bt=globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
-	
+
 	DynamicGradientMapArray availability_gradient(map->w,map->h);
 	for(int x=0;x<map->w;x++)
 	{
@@ -796,16 +796,16 @@ boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if(map->isHardSpaceForBuilding(x-(bt->width / 2),y-(bt->width / 2),bt->width*2,bt->height*2) && locationIsAvailableForBuilding(x,y,bt->width,bt->height)) //the extra numbers at the ends expand the building 
+			else if(map->isHardSpaceForBuilding(x-(bt->width / 2),y-(bt->width / 2),bt->width*2,bt->height*2) && locationIsAvailableForBuilding(x,y,bt->width,bt->height)) //the extra numbers at the ends expand the building
 			{
 				availability_gradient(x, y) = 255;
 			}
 			else availability_gradient(x, y) = 1;
 		}
 	}
-	
+
 	map->updateGlobalGradientSlow(availability_gradient.c_array());
-	
+
 	Building *swarm = getSwarmAtRandom();
 	if (!swarm)
 	{
@@ -818,9 +818,9 @@ boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		Sint32 x_temp,y_temp;
 		//map->dumpGradient(gradient.c_array(), "gradient.pgm");
 		//map->dumpGradient(availability_gradient.c_array(), "availability_gradient.pgm");
-		
+
 		x = swarm->posX; y = swarm->posY;
-		
+
 		if(shortTypeNum==IntBuildingType::ATTACK_BUILDING || shortTypeNum==IntBuildingType::HEAL_BUILDING || shortTypeNum==IntBuildingType::SCIENCE_BUILDING || shortTypeNum==IntBuildingType::WALKSPEED_BUILDING || shortTypeNum==IntBuildingType::SWIMSPEED_BUILDING || shortTypeNum==IntBuildingType::DEFENSE_BUILDING)
 		{
 			map->getGlobalGradientDestination(wood_gradient.c_array(), x, y, &x_temp, &y_temp);
@@ -832,11 +832,11 @@ boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 			x = x_temp; y = y_temp;
 		}
 		bool result = map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
-		
+
 		if(verbose)std::cout << "Trying to build " << shortTypeNum << "(" << bt->width << " x " << bt->height << ")" << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl;
 		if(verbose)if((int)availability_gradient(destination_x, destination_y) != 255)std::cout << "Could not find valid location for building! Best spot: " << destination_x << "," << destination_y << " (" << (int)availability_gradient(destination_x, destination_y) << ")\n";
 	}
-		
+
 	// create and return order
 	Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(shortTypeNum), 0, true);
 	return shared_ptr<Order>(new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum, 1, 1));

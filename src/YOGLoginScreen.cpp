@@ -51,27 +51,27 @@ YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	addWidget(new Text(20, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
 	login=new TextInput(20, 290, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 32);
 	addWidget(login);
-	
+
 	addWidget(new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
 	password=new TextInput(20, 360, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getPasswd().c_str(), true, 32, true);
 	addWidget(password);
-	
+
 	rememberYogPassword=new OnOffButton(20, 400, 21, 21, ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED, password->getText().length() > 0, NEW_USER);
 	rememberYogPasswordText=new Text(47, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
 		Toolkit::getStringTable()->getString("[Remember YOG password localy]"));
 	addWidget(rememberYogPassword);
 	addWidget(rememberYogPasswordText);
-	
+
 	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true, Toolkit::getStringTable()->getString("[YESTS_CREATED]"));
 	addWidget(statusText);
-	
+
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
-	
+
 	wasConnecting = false;
 	changeTabAgain=true;
-	
+
 	client->addEventListener(this);
 }
 
@@ -96,7 +96,7 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 			animation->show();
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
-			
+
 			client->connect(YOG_SERVER_IP);
 			wasConnecting = true;
 		}
@@ -167,7 +167,7 @@ void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> even
 		attemptLogin();
 	}
 	else if(type == YEConnectionLost)
-	{ 
+	{
 		//shared_ptr<YOGConnectionLostEvent> info = static_pointer_cast<YOGConnectionLostEvent>(event);
 		animation->visible=false;
 		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));

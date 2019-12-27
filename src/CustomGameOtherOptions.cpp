@@ -30,13 +30,13 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 {
 	ok = new TextButton(440, (readOnly ? 420 : 360), 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
-	
+
 	if(!readOnly)
 	{
 		cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
 		addWidget(cancel);
 	}
-	
+
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Other Options]"));
 	addWidget(title);
 
@@ -48,7 +48,7 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 		playerNames[i] = NULL;
 		color[i] = NULL;
 	}
-	
+
 	for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 	{
 		playerNames[i] = new Text(125, 60+25*i, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", gameHeader.getBasePlayer(i).name);
@@ -66,24 +66,24 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 		color[i]->clearColors();
 		color[i]->addColor(mapHeader.getBaseTeam(gameHeader.getBasePlayer(i).teamNumber).color);
 		color[i]->setSelectedColor(0);
-		
+
 		if(readOnly)
 		{
 			allyTeamNumbers[i]->setClickable(false);
 		}
-		
+
 		addWidget(playerNames[i]);
 		addWidget(color[i]);
 		addWidget(allyTeamNumbers[i]);
 	}
-	
+
 	teamsFixed = new OnOffButton(300, 60, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.areAllyTeamsFixed(), TEAMSFIXED);
 	addWidget(teamsFixed);
 	teamsFixedText = new Text(325, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Teams Fixed]"));
 	addWidget(teamsFixedText);
 	if(readOnly)
 		teamsFixed->setClickable(false);
-	
+
 	//These are for winning conditions
 	prestigeWinEnabled = new OnOffButton(300, 90, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, PRESTIGEWINENABLED);
 	addWidget(prestigeWinEnabled);
@@ -92,7 +92,7 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 	updateScreenWinningConditions();
 	if(readOnly)
 		prestigeWinEnabled->setClickable(false);
-	
+
 	//Map discovered.
 	mapDiscovered = new OnOffButton(300, 120, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.isMapDiscovered(), MAPDISCOVERED);
 	addWidget(mapDiscovered);
@@ -173,7 +173,7 @@ void CustomGameOtherOptions::updateGameHeaderWinningConditions()
 {
 	std::list<boost::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
 	winningConditions = WinningCondition::getDefaultWinningConditions();
-	
+
 	//Update the prestige condition
 	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
 	{
@@ -199,7 +199,7 @@ void CustomGameOtherOptions::updateGameHeaderWinningConditions()
 void CustomGameOtherOptions::updateScreenWinningConditions()
 {
 	std::list<boost::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
-	
+
 	//Update the prestige condition
 	prestigeWinEnabled->setState(false);
 	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)

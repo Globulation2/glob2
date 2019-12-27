@@ -33,7 +33,7 @@ using namespace GAGGUI;
 NewMapScreen::NewMapScreen()
 {
 	//defaultTerrainTypeButton[0]=new OnOffButton(400, 110, 20, 20, true, 30);
-	
+
 	mapSizeX=new Number(20, 50, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	mapSizeX->add(64);
 	mapSizeX->add(128);
@@ -41,7 +41,7 @@ NewMapScreen::NewMapScreen()
 	mapSizeX->add(512);
 	mapSizeX->setNth(descriptor.wDec-6);
 	addWidget(mapSizeX);
-	
+
 	mapSizeY=new Number(20, 75, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	mapSizeY->add(64);
 	mapSizeY->add(128);
@@ -59,7 +59,7 @@ NewMapScreen::NewMapScreen()
 	logRepeatAreaTimes->add(32);
 	logRepeatAreaTimes->visible=false;
 	addWidget(logRepeatAreaTimes);
-	
+
 	methodes=new List(20, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
 	methodes->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
 	methodes->addText(Toolkit::getStringTable()->getString("[swamp terrain]"));
@@ -72,7 +72,7 @@ NewMapScreen::NewMapScreen()
 	methodes->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
 	methodes->setSelectionIndex(0);
 	addWidget(methodes);
-	
+
 	// eUNIFORM
 
 	terrains=new List(340, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
@@ -81,9 +81,9 @@ NewMapScreen::NewMapScreen()
 	terrains->addText(Toolkit::getStringTable()->getString("[grass]"));
 	terrains->setSelectionIndex(descriptor.terrainType);
 	addWidget(terrains);
-	
+
 	// not eUNIFORM"", -1, -1,
-	
+
 	nbTeams=new Number(310, 100, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	nbTeams->add(1);
 	nbTeams->add(2);
@@ -106,7 +106,7 @@ NewMapScreen::NewMapScreen()
 	nbTeams->setNth(descriptor.nbTeams-1);
 	nbTeams->visible=false;
 	addWidget(nbTeams);
-	
+
 	nbWorkers=new Number(310, 120, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	nbWorkers->add(1);
 	nbWorkers->add(2);
@@ -131,42 +131,42 @@ NewMapScreen::NewMapScreen()
 	numberOfWorkerText=new Text (430, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[workers]"));
 	numberOfWorkerText->visible=false;
 	addWidget(numberOfWorkerText);
-	
+
 	waterRatio=new Ratio(310, 160, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.waterRatio, "menu");
 	waterRatio->set(50);
 	waterRatio->visible=false;
 	addWidget(waterRatio);
-	
+
 	sandRatio=new Ratio(310, 180, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.sandRatio, "menu");
 	sandRatio->set(0);
 	sandRatio->visible=false;
 	addWidget(sandRatio);
-	
+
 	grassRatio=new Ratio(310, 200, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.grassRatio, "menu");
 	grassRatio->set(50);
 	grassRatio->visible=false;
 	addWidget(grassRatio);
-	
+
 	desertRatio=new Ratio(310, 220, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.desertRatio, "menu");
 	desertRatio->set(0);
 	desertRatio->visible=false;
 	addWidget(desertRatio);
-	
+
 	algaeRatio=new Ratio(310, 240, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.algaeRatio, "menu");
 	algaeRatio->set(50);
 	algaeRatio->visible=false;
 	addWidget(algaeRatio);
-	
+
 	wheatRatio=new Ratio(310, 260, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.wheatRatio, "menu");
 	wheatRatio->set(50);
 	wheatRatio->visible=false;
 	addWidget(wheatRatio);
-	
+
 	woodRatio=new Ratio(310, 280, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.woodRatio, "menu");
 	woodRatio->set(50);
 	woodRatio->visible=false;
 	addWidget(woodRatio);
-	
+
 	stoneRatio=new Ratio(310, 300, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 64, descriptor.stoneRatio, "menu");
 	stoneRatio->set(50);
 	stoneRatio->visible=false;
@@ -200,7 +200,7 @@ NewMapScreen::NewMapScreen()
 	extraIslands->setNth(descriptor.extraIslands+1);
 	extraIslands->visible=false;
 	addWidget(extraIslands);
- 
+
 	smooth=new Number(310, 360, 164, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	smooth->add(1);
 	smooth->add(2);
@@ -213,7 +213,7 @@ NewMapScreen::NewMapScreen()
 	smooth->setNth(descriptor.smooth-1);
 	smooth->visible=false;
 	addWidget(smooth);
-	
+
 	ratioText=new Text(310, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[ratios]"));
 	ratioText->visible=false;
 	addWidget(ratioText);
@@ -261,7 +261,7 @@ NewMapScreen::NewMapScreen()
 	oldIslandSize=new Ratio(310, 140, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.oldIslandSize, "menu");
 	oldIslandSize->visible=false;
 	addWidget(oldIslandSize);
-	
+
 	oldBeach=new Number(310, 160, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 18, "menu");
 	oldBeach->add(0);
 	oldBeach->add(1);
@@ -271,16 +271,16 @@ NewMapScreen::NewMapScreen()
 	oldBeach->setNth(descriptor.oldBeach);
 	oldBeach->visible=false;
 	addWidget(oldBeach);
-	
+
 	oldIslandSizeText=new Text(430, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[islands size]"));
 	oldIslandSizeText->visible=false;
 	addWidget(oldIslandSizeText);
 	oldBeachSizeText=new Text(430, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[beach size]"));
 	oldBeachSizeText->visible=false;
 	addWidget(oldBeachSizeText);
-	
+
 	// all
-	
+
 	addWidget(new TextButton(10, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
 	addWidget(new TextButton(330, 420, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
@@ -301,10 +301,10 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		descriptor.wDec=mapSizeX->getNth()+6;
 		descriptor.hDec=mapSizeY->getNth()+6;
-		
+
 		// not eUNIFORM
 		descriptor.nbTeams=nbTeams->getNth()+1;
-		
+
 		// eRANDOM
 		descriptor.smooth=smooth->getNth()+1;
 
@@ -319,13 +319,13 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		// eUNIFORM
 		if (source==terrains)
 			descriptor.terrainType=(TerrainType)terrains->getSelectionIndex();
-		
+
 		// all
 		if (source==methodes)
 		{
 			MapGenerationDescriptor::Methode old=descriptor.methode;
 			descriptor.methode=(MapGenerationDescriptor::Methode)methodes->getSelectionIndex();
-			
+
 			if (old!=descriptor.methode)
 			{
 				terrains->visible=false;
@@ -366,7 +366,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				fruitText->visible=false;
 				logRepeatAreaTimes->visible=false;
 				areaTimesText->visible=false;
-			
+
 				// not eUNIFORM
 				nbTeams->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
 				nbWorkers->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);

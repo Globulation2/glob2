@@ -35,9 +35,9 @@ namespace GAGCore
 	{
 	protected:
 		StreamBackend *backend;
-		
+
 		unsigned level;
-		
+
 		//! print levels of tabs
 		void printLevel(void);
 		//! print string to backend
@@ -50,13 +50,13 @@ namespace GAGCore
 			oss << v;
 			printString(oss.str().c_str());
 		}
-		
+
 	public:
 		TextOutputStream(StreamBackend *backend) { this->backend = backend; level=0; };
 		virtual ~TextOutputStream() { delete backend; }
-	
+
 		virtual void write(const void *data, const size_t size, const std::string name);
-	
+
 		virtual void writeSint8(const Sint8 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
 		virtual void writeUint8(const Uint8 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
 		virtual void writeSint16(const Sint16 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
@@ -67,11 +67,11 @@ namespace GAGCore
 		virtual void writeDouble(const double v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
 		virtual void writeText(const std::string &v, const std::string name);
 		virtual void flush(void) { backend->flush(); }
-		
+
 		virtual void writeEnterSection(const std::string name);
 		virtual void writeEnterSection(unsigned id);
 		virtual void writeLeaveSection(size_t count = 1);
-		
+
 		virtual bool canSeek(void) { return false; }
 		virtual void seekFromStart(int displacement) { }
 		virtual void seekFromEnd(int displacement) { }
@@ -80,7 +80,7 @@ namespace GAGCore
 		virtual bool isEndOfStream(void) { return backend->isEndOfStream(); }
 		virtual bool isValid(void) { return backend->isValid(); }
 	};
-	
+
 	//! Read data from a human readable form, C-like, supporting C and C++ comments
 	class TextInputStream : public InputStream
 	{
@@ -91,10 +91,10 @@ namespace GAGCore
 		std::vector<std::string> levels;
 		//! actual complete key
 		std::string key;
-		
+
 		//! Read from table using keys key and name and put result to result
 		void readFromTableToString(const std::string name, std::string *result);
-		
+
 		//! read from table and convert to type T using std::istringstream
 		template <class T>
 		T readFromTable(const std::string name)
@@ -106,13 +106,13 @@ namespace GAGCore
 			iss >> v;
 			return v;
 		}
-		
+
 	public:
 		//! Constructor. Uses backend, but does not delete it
 		TextInputStream(StreamBackend *backend);
 		//! Return all subsections of root
 		void getSubSections(const std::string &root, std::set<std::string> *sections);
-		
+
 		virtual void read(void *data, size_t size, const std::string name);
 		virtual Sint8 readSint8(const std::string name) { return static_cast<Sint8>(readFromTable<signed>(name)); }
 		virtual Uint8 readUint8(const std::string name) { return static_cast<Uint8>(readFromTable<unsigned>(name)); }
@@ -123,11 +123,11 @@ namespace GAGCore
 		virtual float readFloat(const std::string name) { return readFromTable<float>(name); }
 		virtual double readDouble(const std::string name) { return readFromTable<double>(name); }
 		virtual std::string readText(const std::string name) { std::string s; readFromTableToString(name, &s); return s; }
-		
+
 		virtual void readEnterSection(const std::string name);
 		virtual void readEnterSection(unsigned id);
 		virtual void readLeaveSection(size_t count = 1);
-		
+
 		virtual bool canSeek(void) { return false; }
 		virtual void seekFromStart(int displacement) { }
 		virtual void seekFromEnd(int displacement) { }

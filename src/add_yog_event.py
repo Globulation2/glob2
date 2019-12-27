@@ -39,7 +39,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two YOGEvent
 	bool operator==(const YOGClientEvent& rhs) const;
 """

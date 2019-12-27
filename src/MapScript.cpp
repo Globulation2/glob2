@@ -72,7 +72,7 @@ MapScript::MapScriptMode MapScript::getMapScriptMode() const
 	return mode;
 }
 
-	
+
 void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode)
 {
 	mode = newMode;

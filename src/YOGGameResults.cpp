@@ -94,8 +94,8 @@ bool YOGGameResults::operator==(const YOGGameResults& rhs) const
 	return false;
 }
 
-	
-	
+
+
 bool YOGGameResults::operator!=(const YOGGameResults& rhs) const
 {
 	if(results != rhs.results)

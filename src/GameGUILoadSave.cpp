@@ -31,16 +31,16 @@ class FuncFileList: public FileList
 {
 
 public:
-	FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, 
-		const char *dir, const char *extension, const bool recurse, 
+	FuncFileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
+		const char *dir, const char *extension, const bool recurse,
 		std::string (*filenameToNameFunc)(const std::string& filename),
 		std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension))
-		: FileList(x, y, w, h, hAlign, vAlign, font, dir, extension, recurse), 
+		: FileList(x, y, w, h, hAlign, vAlign, font, dir, extension, recurse),
 			filenameToNameFunc(filenameToNameFunc), nameToFilenameFunc(nameToFilenameFunc)
 	{
 		this->generateList();
 	}
-	
+
 	~FuncFileList()
 	{}
 
@@ -49,7 +49,7 @@ private:
 	{
 		return filenameToNameFunc(fullName(fileName).c_str());
 	}
-	
+
 	std::string listToFile(const char* listName) const
 	{
 		return nameToFilenameFunc(fullDir().c_str(), listName, extension.c_str());
@@ -92,7 +92,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 		defaultFileName="";
 	fileNameEntry=new TextInput(10, 190, 280, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", defaultFileName, true);
 	addWidget(fileNameEntry);
-	
+
 	if(isLoad)
 		fileNameEntry->visible=false;
 
@@ -143,7 +143,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 		defaultFileName="";
 	fileNameEntry=new TextInput(10, 190, 280, 25, ALIGN_LEFT, ALIGN_LEFT, "standard", defaultFileName, true);
 	addWidget(fileNameEntry);
-	
+
 	if(isLoad)
 		fileNameEntry->visible=false;
 
@@ -158,7 +158,7 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 
 LoadSaveScreen::~LoadSaveScreen()
 {
-	
+
 }
 
 void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)

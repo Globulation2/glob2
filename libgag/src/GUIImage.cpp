@@ -33,7 +33,7 @@ namespace GAGGUI
 	{
 		assert(image);
 		this->image = image;
-		
+
 		this->x = x;
 		this->y = y;
 		this->w = image->getW();
@@ -41,27 +41,27 @@ namespace GAGGUI
 		this->hAlignFlag = hAlign;
 		this->vAlignFlag = vAlign;
 	}
-	
+
 	void Image::paint(void)
 	{
 		int wDec, hDec;
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		
+
 		assert(parent);
 		assert(parent->getSurface());
-	
-		
+
+
 		if (hAlignFlag==ALIGN_FILL)
 			wDec=(w-image->getW())>>1;
 		else
 			wDec=0;
-	
+
 		if (vAlignFlag==ALIGN_FILL)
 			hDec=(h-image->getH())>>1;
 		else
 			hDec=0;
-	
+
 		parent->getSurface()->drawSurface(x+wDec, y+hDec, image);
 	}
 }

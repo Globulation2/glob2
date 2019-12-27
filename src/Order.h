@@ -47,13 +47,13 @@ public:
 
 	///Returns the encoded data buffer of data for the Order
 	virtual Uint8 *getData(void)=0;
-	
+
 	///Sets the Orders local data from a data buffer
 	virtual bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor)=0;
-	
+
 	///Returns the length of the data
 	virtual int getDataLength(void)=0;
-	
+
 	int sender; // sender player number, setby NetGame in getOrder() only
 	Uint32 gameCheckSum;
 };
@@ -203,12 +203,12 @@ public:
 
 	Uint16 gid;
 	Uint16 numberRequested;
-	
+
 protected:
 	Uint8 data[4];
 };
 
-//! Change the 
+//! Change the
 class OrderModifyExchange:public OrderModify
 {
 public:
@@ -224,7 +224,7 @@ public:
 	Uint16 gid;
 	Uint32 receiveRessourceMask;
 	Uint32 sendRessourceMask;
-	
+
 protected:
 	Uint8 data[10];
 };
@@ -336,11 +336,11 @@ public:
 	OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
 	#endif
 	virtual ~OrderAlterateArea(void);
-	
+
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void);
-	
+
 	Uint8 teamNumber;
 	Uint8 type;
 	Sint16 centerX;
@@ -350,7 +350,7 @@ public:
 	Sint16 maxX;
 	Sint16 maxY;
 	Utilities::BitArray mask;
-	
+
 protected:
 	Uint8 *_data;
 };
@@ -362,7 +362,7 @@ public:
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
-	
+
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
 };
 
@@ -373,7 +373,7 @@ public:
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
-	
+
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_GUARD_AREA; }
 };
 
@@ -384,7 +384,7 @@ public:
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
-	
+
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_CLEAR_AREA; }
 };
 
@@ -488,7 +488,7 @@ public:
 	MapMarkOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y);
 	virtual ~MapMarkOrder(void) { }
-	
+
 	Uint8 getOrderType(void) { return ORDER_MAP_MARK; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -517,7 +517,7 @@ public:
 	int getDataLength(void) { return 1; }
 
 	bool pause;
-	
+
 private:
 	Uint8 data[1];
 };
@@ -533,9 +533,9 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 4; }
-	
+
 	Sint32 player;
-	
+
 private:
 	Uint8 data[4];
 };
@@ -552,12 +552,12 @@ public:
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void) { return 2; }
-	
+
 	Uint16 latencyAdjustment;
-	
+
 private:
 	Uint8 data[2];
 };
 
 #endif
- 
+

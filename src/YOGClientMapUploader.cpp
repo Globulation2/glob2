@@ -84,7 +84,7 @@ void YOGClientMapUploader::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<NetAcceptMapUpload> info = static_pointer_cast<NetAcceptMapUpload>(message);
 		fileID = info->getFileID();
 		state = UploadingMap;
-		
+
 		boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 		assembler->startSendingFile(mapFile);
 		client->setYOGClientFileAssembler(fileID, assembler);

@@ -75,14 +75,14 @@ class AIImplementation
 public:
 	AIImplementation(){}
 	virtual ~AIImplementation(){}
-	
+
 	virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 	virtual void save(GAGCore::OutputStream *stream)=0;
-	
+
 	virtual boost::shared_ptr<Order> getOrder(void)=0;
 };
 
 #endif
 
- 
+
 

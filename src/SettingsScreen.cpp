@@ -44,7 +44,7 @@ SettingsScreen::SettingsScreen()
  : Glob2TabScreen(false, true), unitRatioGroupNumbers(), mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
 {
 	old_settings=globalContainer->settings;
-	
+
 	generalGroup = addGroup(Toolkit::getStringTable()->getString("[general settings]"));
 	unitGroup = addGroup(Toolkit::getStringTable()->getString("[building settings]"));
 	keyboardGroup = addGroup(Toolkit::getStringTable()->getString("[keyboard settings]"));
@@ -95,22 +95,22 @@ SettingsScreen::SettingsScreen()
 			ost << " *";
 			modeList->addText(ost.str().c_str());
 		}
-		
+
 	}
 	addWidgetToGroup(modeList, generalGroup);
 	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"));
 	addWidgetToGroup(modeListNote, generalGroup);
-	
+
 	fullscreen=new OnOffButton(230, 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::FULLSCREEN, FULLSCREEN);
 	addWidgetToGroup(fullscreen, generalGroup);
 	fullscreenText=new Text(260, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 180);
 	addWidgetToGroup(fullscreenText, generalGroup);
-	
+
 	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
 	addWidgetToGroup(usegpu, generalGroup);
 	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[OpenGL]"), 180);
 	addWidgetToGroup(usegpuText, generalGroup);
-	
+
 	lowquality=new OnOffButton(230, 90 + 60, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidgetToGroup(lowquality, generalGroup);
 	lowqualityText=new Text(260, 90 + 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 180);
@@ -130,12 +130,12 @@ SettingsScreen::SettingsScreen()
 	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
 	addWidgetToGroup(scrollwheelText, generalGroup);
 
-	
+
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	//TODO: warning style should be defined centrally.
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
 	addWidget(rebootWarning);
-	
+
 	setVisibilityFromGraphicType();
 	rebootWarning->visible=false;
 
@@ -161,8 +161,8 @@ SettingsScreen::SettingsScreen()
 	voiceVolText=new Text(320, 365, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Voice volume]"), 300);
 	addWidgetToGroup(voiceVolText, generalGroup);
 	setVisibilityFromAudioSettings();
-	
-	
+
+
 
 	//This is all the second tab, the default values for various buildings
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
@@ -173,11 +173,11 @@ SettingsScreen::SettingsScreen()
 			unitRatioTexts[t][l]=NULL;
 		}
 	}
-	
+
 	int group_row=0;
 	int group_current_column_x=20;
 	int group_widest_element=0;
-	
+
 	//First group is fully constructed buildings sites
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
@@ -191,7 +191,7 @@ SettingsScreen::SettingsScreen()
 			{
 				int size = addDefaultUnitAssignmentWidget(t, l*2+1, group_current_column_x, 100 + 40*group_row, 1);
 				group_widest_element = std::max(group_widest_element, size);
-				
+
 				group_row += 1;
 				if(group_row == 4)
 				{
@@ -200,22 +200,22 @@ SettingsScreen::SettingsScreen()
 					group_widest_element = 0;
 				}
 			}
-		}	
+		}
 	}
-	
+
 	group_row=0;
 	group_current_column_x=20;
-	group_widest_element=0;	
+	group_widest_element=0;
 	///Second group, new construction
 	for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 	{
 		std::string name=IntBuildingType::typeFromShortNumber(t);
-		//Even numbers represent under-construction, whereas odd numbers represent completed buildings		
+		//Even numbers represent under-construction, whereas odd numbers represent completed buildings
 		if(globalContainer->buildingsTypes.getByType(name, 0, true) != NULL)
 		{
 			int size = addDefaultUnitAssignmentWidget(t, 0, group_current_column_x, 100 + 40*group_row, 2);
 			group_widest_element = std::max(group_widest_element, size);
-			
+
 			group_row += 1;
 			if(group_row == 6)
 			{
@@ -225,7 +225,7 @@ SettingsScreen::SettingsScreen()
 			}
 		}
 	}
-	
+
 	///Third group, upgrades
 	group_row=0;
 	group_current_column_x=20;
@@ -235,12 +235,12 @@ SettingsScreen::SettingsScreen()
 		for(int t=0; t<IntBuildingType::NB_BUILDING; ++t)
 		{
 			std::string name=IntBuildingType::typeFromShortNumber(t);
-			//Even numbers represent under-construction, whereas odd numbers represent completed buildings		
+			//Even numbers represent under-construction, whereas odd numbers represent completed buildings
 			if(globalContainer->buildingsTypes.getByType(name, l, true) != NULL)
 			{
 				int size = addDefaultUnitAssignmentWidget(t, l*2, group_current_column_x, 100 + 40*group_row, 3);
 				group_widest_element = std::max(group_widest_element, size);
-				
+
 				group_row += 1;
 				if(group_row == 7)
 				{
@@ -251,7 +251,7 @@ SettingsScreen::SettingsScreen()
 			}
 		}
 	}
-	
+
 	group_row=0;
 	group_current_column_x=20;
 	group_widest_element=0;
@@ -260,7 +260,7 @@ SettingsScreen::SettingsScreen()
 	{
 		int size = addDefaultUnitAssignmentWidget(t, 1, group_current_column_x, 100 + 40*group_row, 4, true);
 		group_widest_element = std::max(group_widest_element, size);
-		
+
 		group_row += 1;
 		if(group_row == 8)
 		{
@@ -270,12 +270,12 @@ SettingsScreen::SettingsScreen()
 		}
 	}
 	flagSettingsExplanation = new Text( 10, 100+40*3+10, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[flag settings explanation]"));
-	
+
 	for(int t=IntBuildingType::EXPLORATION_FLAG; t<=IntBuildingType::CLEARING_FLAG; ++t)
 	{
 		int size = addDefaultFlagRadiusWidget(t, group_current_column_x, 130 + 40*group_row, 4);
 		group_widest_element = std::max(group_widest_element, size);
-		
+
 		group_row += 1;
 		if(group_row == 8)
 		{
@@ -284,7 +284,7 @@ SettingsScreen::SettingsScreen()
 			group_widest_element = 0;
 		}
 	}
-	
+
 	buildings = new TextButton( 10, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Building Defaults]"), BUILDINGSETTINGS);
 	constructionsites = new TextButton( 140, 60, 220, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Construction Site Defaults]"), CONSTRUCTIONSITES);
 	upgrades = new TextButton( 370, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Upgrade Defaults]"), UPGRADES);
@@ -317,7 +317,7 @@ SettingsScreen::SettingsScreen()
 	pressedUnpressedSelector->clearTexts();
 	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
 	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
-		
+
 	addWidgetToGroup(game_shortcuts, keyboardGroup);
 	addWidgetToGroup(editor_shortcuts, keyboardGroup);
 	addWidgetToGroup(shortcut_list, keyboardGroup);
@@ -491,22 +491,22 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
 			audioMuteText->setText(Toolkit::getStringTable()->getString("[mute]"));
-			
+
 			rebootWarning->setText(Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
-			
+
 			unitSettingsExplanation->setText(Toolkit::getStringTable()->getString("[unit settings explanation]"));
 			buildings->setText(Toolkit::getStringTable()->getString("[Building Defaults]"));
 			flags->setText(Toolkit::getStringTable()->getString("[Flag Defaults]"));
 			constructionsites->setText(Toolkit::getStringTable()->getString("[Construction Site Defaults]"));
 			upgrades->setText(Toolkit::getStringTable()->getString("[Upgrade Defaults]"));
 			setLanguageTextsForDefaultAssignmentWidgets();
-			
+
 			game_shortcuts->setText(Toolkit::getStringTable()->getString("[game shortcuts]"));
 			editor_shortcuts->setText(Toolkit::getStringTable()->getString("[editor shortcuts]"));
 			restore_default_shortcuts->setText(Toolkit::getStringTable()->getString("[restore default shortcuts]"));
 			add_shortcut->setText(Toolkit::getStringTable()->getString("[add shortcut]"));
 			remove_shortcut->setText(Toolkit::getStringTable()->getString("[remove shortcut]"));
-			
+
 			pressedUnpressedSelector->clearTexts();
 			pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
 			pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
@@ -661,7 +661,7 @@ int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, i
 
 	std::string text=getDefaultUnitAssignmentText(type, level, flag);
 	unitRatioTexts[type][level]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", text);
-	
+
 	addWidgetToGroup(unitRatioTexts[type][level], unitGroup);
 	unitRatioTexts[type][level]->visible=false;
 	unitRatioGroupNumbers[type][level] = group;
@@ -682,7 +682,7 @@ int SettingsScreen::addDefaultFlagRadiusWidget(int type, int x, int y, int group
 
 	std::string text=getDefaultUnitAssignmentText(type, 1, true);
 	flagRadiusTexts[n]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", text);
-	
+
 	addWidgetToGroup(flagRadiusTexts[n], unitGroup);
 	flagRadiusTexts[n]->visible=false;
 	flagRadiusGroupNumbers[n] = group;
@@ -822,7 +822,7 @@ void SettingsScreen::updateShortcutList(int an)
 		m = &guiKeyboardManager;
 	else if(currentMode == MapEditShortcuts)
 		m = &mapeditKeyboardManager;
-	
+
 	const std::list<KeyboardShortcut>& shortcuts = m->getKeyboardShortcuts();
 	size_t n = 0;
 	for(std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
@@ -933,10 +933,10 @@ void SettingsScreen::updateKeyboardManagerFromShortcutInfo()
 		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
 		std::advance(i, selection_n);
 		KeyboardShortcut new_shortcut;
-		
+
 		KeyPress first = KeyPress(select_key_1->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
 		KeyPress second = KeyPress(select_key_2->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
-		
+
 		new_shortcut.addKeyPress(first);
 		if(key_2_active->getState())
 			new_shortcut.addKeyPress(second);

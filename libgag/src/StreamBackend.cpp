@@ -54,57 +54,57 @@ namespace GAGCore
 			gzclose(fp);
 		}
 	}
-		
+
 	void ZLibStreamBackend::write(const void *data, const size_t size)
 	{
 		buffer->write(data, size);
 	}
-	
+
 	void ZLibStreamBackend::flush(void)
 	{
 		buffer->flush();
 	}
-	
+
 	void ZLibStreamBackend::read(void *data, size_t size)
 	{
 		buffer->read(data, size);
 	}
-	
+
 	void ZLibStreamBackend::putc(int c)
 	{
 		buffer->putc(c);
 	}
-	
+
 	int ZLibStreamBackend::getChar(void)
 	{
 		return buffer->getChar();
 	}
-	
+
 	void ZLibStreamBackend::seekFromStart(int displacement)
 	{
 		buffer->seekFromStart(displacement);
 	}
-	
+
 	void ZLibStreamBackend::seekFromEnd(int displacement)
 	{
 		buffer->seekFromEnd(displacement);
 	}
-	
+
 	void ZLibStreamBackend::seekRelative(int displacement)
 	{
 		buffer->seekRelative(displacement);
 	}
-	
+
 	size_t ZLibStreamBackend::getPosition(void)
 	{
 		return buffer->getPosition();
 	}
-	
+
 	bool ZLibStreamBackend::isEndOfStream(void)
 	{
 		return !isValid();
 	}
-	
+
 	bool ZLibStreamBackend::isValid(void)
 	{
 		return (file.size()>0 && buffer->isValid());
@@ -116,7 +116,7 @@ namespace GAGCore
 		if (size)
 			write(data, size);
 	}
-	
+
 	void MemoryStreamBackend::write(const void *data, const size_t size)
 	{
 		const char *_data = static_cast<const char *>(data);
@@ -125,7 +125,7 @@ namespace GAGCore
 		std::copy(_data, _data+size, datas.begin()+index);
 		index += size;
 	}
-	
+
 	void MemoryStreamBackend::read(void *data, size_t size)
 	{
 		char *_data = static_cast<char *>(data);
@@ -140,13 +140,13 @@ namespace GAGCore
 			index += size;
 		}
 	}
-	
+
 	void MemoryStreamBackend::putc(int c)
 	{
 		Uint8 ch = c;
 		write(&ch, 1);
 	}
-	
+
 	//TODO: Why is the Uint8 ch returned as int?
 	int MemoryStreamBackend::getChar(void)
 	{
@@ -154,17 +154,17 @@ namespace GAGCore
 		read(&ch, 1);
 		return ch;
 	}
-	
+
 	void MemoryStreamBackend::seekFromStart(int displacement)
 	{
 		index = std::min(static_cast<size_t>(displacement), datas.size());
 	}
-	
+
 	void MemoryStreamBackend::seekFromEnd(int displacement)
 	{
 		index = static_cast<size_t>(std::max(0, static_cast<int>(datas.size()) - displacement));
 	}
-	
+
 	void MemoryStreamBackend::seekRelative(int displacement)
 	{
 		int newIndex = static_cast<int>(index) + displacement;
@@ -172,12 +172,12 @@ namespace GAGCore
 		newIndex = std::min(newIndex, static_cast<int>(datas.size()));
 		index = static_cast<size_t>(newIndex);
 	}
-	
+
 	size_t MemoryStreamBackend::getPosition(void)
 	{
 		return index;
 	}
-	
+
 	bool MemoryStreamBackend::isEndOfStream(void)
 	{
 		return index >= datas.size();

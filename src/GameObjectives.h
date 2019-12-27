@@ -36,7 +36,7 @@ class GameObjectives
 {
 public:
 	GameObjectives();
-	
+
 	enum GameObjectiveType
 	{
 		Primary = 0,
@@ -55,15 +55,15 @@ public:
 	void setGameObjectiveText(int n, const std::string& objective);
 	///This returns the text for the game objective at n
 	const std::string& getGameObjectiveText(int n);
-	
-	
+
+
 	///This sets the given objective text as hidden
 	void setObjectiveHidden(int n);
 	///This sets the given objective text as visible
 	void setObjectiveVisible(int n);
 	///This returns true if the given objective text is visible
 	bool isObjectiveVisible(int n);
-	
+
 	///This sets the given objective text as complete
 	void setObjectiveComplete(int n);
 	///This sets the given objective text as incomplete
@@ -74,12 +74,12 @@ public:
 	bool isObjectiveComplete(int n);
 	///This returns true if the given objective is failed
 	bool isObjectiveFailed(int n);
-	
+
 	///This sets the given objective type
 	void setObjectiveType(int n, GameObjectiveType type);
 	///This returns the given objective type
 	GameObjectiveType getObjectiveType(int n);
-	
+
 	///This sets the script number, which is how scripts will reference the given object
 	void setScriptNumber(int n, int scriptNumber);
 	///This returns the script number, which is how scripts will reference the given object
@@ -89,7 +89,7 @@ public:
 	void encodeData(GAGCore::OutputStream* stream) const;
 	///Decodes this GameObjectives from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
-	
+
 private:
 	std::vector<std::string> texts;
 	std::vector<bool> hidden;

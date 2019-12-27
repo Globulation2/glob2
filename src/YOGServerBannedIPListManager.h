@@ -37,7 +37,7 @@ public:
 
 	///Adds the given IP address to the list of IP's banned for however long
 	void addBannedIP(const std::string& bannedIP, boost::posix_time::ptime unban_time);
-	
+
 	///Returns true if the given IP address is in the list of ones banned
 	bool isIPBanned(const std::string& bannedIP);
 

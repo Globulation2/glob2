@@ -44,7 +44,7 @@ public:
 	///Retrieves the size of the history
 	Uint32 getHistorySize() const;
 
-	///Retrieves YOG message x, where 0 is the first message recieved, and higher gets more recent	
+	///Retrieves YOG message x, where 0 is the first message recieved, and higher gets more recent
 	const boost::shared_ptr<YOGMessage> getMessage(Uint32 n) const;
 
 	///Retrieves the local time that YOG message x was recieved, where higher x gets more recent
@@ -61,7 +61,7 @@ public:
 
 	///Adds the listener for this channel. Does not take ownership.
 	void addListener(YOGClientChatListener* listener);
-	
+
 	///Removes the listener from this channel
 	void removeListener(YOGClientChatListener* listener);
 

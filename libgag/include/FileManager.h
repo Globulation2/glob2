@@ -36,7 +36,7 @@
 namespace GAGCore
 {
 	class StreamBackend;
-	
+
 	//! File Manager (filesystem abstraction)
 	class FileManager
 	{
@@ -51,7 +51,7 @@ namespace GAGCore
 			//! Text stream, human readable and backward compatible
 			STREAM_TEXT,
 		};
-		
+
 	private:
 		//! List of directory where to search for requested file
 		std::vector<std::string> dirList;
@@ -59,7 +59,7 @@ namespace GAGCore
 		std::vector<std::string> fileList;
 		//! Index in the dirFileList vector
 		int fileListIndex;
-	
+
 	private:
 		//! clear the list of file for directory listing
 		void clearFileList(void);
@@ -71,13 +71,13 @@ namespace GAGCore
 		FILE *openWithbackupFP(const std::string filename, const std::string mode);
 		//! open a file, if it is in writing, do a backup, std::ofstream version
 		std::ofstream *openWithbackupOFS(const std::string filename, std::ofstream::openmode mode);
-	
+
 	public:
 		//! FileManager constructor
 		FileManager(const std::string gameName);
 		//! FileManager destructor
 		virtual ~FileManager();
-	
+
 		//! Add a directory to the search list
 		void addDir(const std::string dir);
 		//! Return the number of directory in the search list
@@ -86,30 +86,30 @@ namespace GAGCore
 		std::string getDir(unsigned index) const { if (index < getDirCount()) return dirList[index]; else return std::string(); }
 		//! Add a new subdir (create it if needed) which will be used to open file in write mode in it
 		void addWriteSubdir(const std::string subdir);
-	
+
 		//! Remove a file or a directory in the virtual filesystem, std::string version
 		void remove(const std::string filename);
 		//! Returns true if filename is a directory
 		bool isDir(const std::string filename);
-		
+
 		//! Compress source to dest uzing gzip, returns true on success
 		bool gzip(const std::string &source, const std::string &dest);
 		//! Uncompress source to dest uzing gzip, returns true on success
 		bool gunzip(const std::string &source, const std::string &dest);
-	
+
 		//! Open an output stream backend, use it to construct specific output streams
 		StreamBackend *openOutputStreamBackend(const std::string filename);
-		
+
 		//! Open an input stream backend, use it to construct specific input streams
 		StreamBackend *openInputStreamBackend(const std::string filename);
-		
+
 		//! Open a compressed output stream backend, use it to construct specific output streams
 		StreamBackend *openCompressedOutputStreamBackend(const std::string filename);
-		
+
 		//! Open a compressed input stream backend, use it to construct specific input streams
 		StreamBackend *openCompressedInputStreamBackend(const std::string filename);
-		
-		
+
+
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
 		SDL_RWops *open(const std::string filename, const std::string mode="rb");
 		//! Open a file in the FILE* format
@@ -120,7 +120,7 @@ namespace GAGCore
 		Uint32 checksum(const std::string filename);
 		//! Return the modification date of a file
 		time_t mtime(const std::string filename);
-	
+
 		// FIXME : the following functions are not thread-safe :
 		//! must be call before directory listening, return true if success
 		bool initDirectoryListing(const std::string virtualDir, const std::string extension="", const bool dirs=false);

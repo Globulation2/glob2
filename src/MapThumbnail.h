@@ -38,10 +38,10 @@ class MapThumbnail
 public:
 	///Constructs a thumbnail
 	MapThumbnail();
-	
+
 	///Loads the thumbnail from the map with the given map name
 	void loadFromMap(const std::string& map);
-	
+
 	///Encodes this thumbnail into a stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
@@ -50,13 +50,13 @@ public:
 
 	///Loads the picture into the given surface
 	void loadIntoSurface(GAGCore::DrawableSurface *surface);
-	
+
 	///Returns the map width
 	int getMapWidth();
-	
+
 	///Returns the map height
 	int getMapHeight();
-	
+
 	///Returns true if this thumbnail is laoded
 	bool isLoaded();
 

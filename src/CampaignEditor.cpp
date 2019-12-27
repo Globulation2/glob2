@@ -233,7 +233,7 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 					entry.getUnlockedByMaps().push_back(mapsUnlockedBy->getText(i));
 				}
 			}
-			
+
 			if(!isUnlocked->getState())
 				entry.lockMap();
 			else

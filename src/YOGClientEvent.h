@@ -44,10 +44,10 @@ public:
 
 	///Returns the event type
 	virtual Uint8 getEventType() const = 0;
-	
+
 	///Returns a formatted version of the event
 	virtual std::string format() const = 0;
-	
+
 	///Compares two YOGClientEvent
 	virtual bool operator==(const YOGClientEvent& rhs) const = 0;
 };
@@ -67,7 +67,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two YOGClientEvent
 	bool operator==(const YOGClientEvent& rhs) const;
 };
@@ -87,7 +87,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two YOGClientEvent
 	bool operator==(const YOGClientEvent& rhs) const;
 };
@@ -107,7 +107,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two YOGClientEvent
 	bool operator==(const YOGClientEvent& rhs) const;
 };
@@ -127,7 +127,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two YOGClientEvent
 	bool operator==(const YOGClientEvent& rhs) const;
 
@@ -152,7 +152,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two YOGEvent
 	bool operator==(const YOGClientEvent& rhs) const;
 };
@@ -172,7 +172,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two YOGEvent
 	bool operator==(const YOGClientEvent& rhs) const;
 };

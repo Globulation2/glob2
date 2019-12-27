@@ -119,7 +119,7 @@ SGSLToken::TokenType SGSLToken::getTypeByName(const std::string name)
 		std::cerr << "Warning, SGSLToken::getTypeByName(name) called with empty name!" << std::endl;
 		return NIL;
 	}
-	
+
 	while (table[i].type != NIL)
 	{
 		//NOTE: SM: I reverted back to case-insensitive, as the other one breaks tutorial
@@ -131,12 +131,12 @@ SGSLToken::TokenType SGSLToken::getTypeByName(const std::string name)
 		}
 		i++;
 	}
-	
+
 	if (type == NIL)
 	{
 		std::cerr << "Warning, SGSLToken::getTypeByName(name) found no type for name " << name << "!" << std::endl;
 	}
-	
+
 	return type;
 }
 
@@ -221,7 +221,7 @@ bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 		level = -1;
 	operation = line[pc++].type;
 	amount = line[pc].value;
-	
+
 	// if we want all unit over one level, sum
 	int val = 0;
 	if (!only)
@@ -229,7 +229,7 @@ bool Story::conditionTester(const Game *game, int pc, bool readLevel, bool only)
 			val += valueOfVariable(game, type, teamNumber, i);
 	else
 		val = valueOfVariable(game, type, teamNumber, level);
-		
+
 	switch (operation)
 	{
 		case (SGSLToken::S_HIGHER):
@@ -595,7 +595,7 @@ bool Story::testCondition(GameGUI *gui)
 			{
 				return false;
 			}
-			
+
 			case (SGSLToken::FUNC_CALL):
 			{
 				Functions::const_iterator fIt = mapscript->functions.find(line[lineSelector].msg);
@@ -603,7 +603,7 @@ bool Story::testCondition(GameGUI *gui)
 				(this->*(fIt->second.second))(gui);
 				return true;
 			}
-			
+
 			case (SGSLToken::S_SHOW):
 			{
 				unsigned lsInc=0;
@@ -758,7 +758,7 @@ bool Story::testCondition(GameGUI *gui)
 				int type = line[++lineSelector].type - SGSLToken::S_WORKER;
 				int level = line[++lineSelector].value;
 				int team = line[++lineSelector].value;
-				
+
 				int areaN=-1;
 				//First, check if there is a script area in the map with the same name
 				for(int n=0; n<9; ++n)
@@ -969,7 +969,7 @@ bool Story::testCondition(GameGUI *gui)
 							AreaMap::const_iterator fi;
 							if ((fi = mapscript->areas.find(line[execLine].msg)) == mapscript->areas.end())
 								assert(false);
-	
+
 							int x = fi->second.x;
 							int y = fi->second.y;
 							int r = fi->second.r;
@@ -1048,7 +1048,7 @@ bool Story::testCondition(GameGUI *gui)
 							only = true;
 							execLine++;
 						}
-						
+
 						// Do the test
 						bool conditionResult = conditionTester(game, execLine, true, only);
 						conditionResult ^= negate;
@@ -1141,7 +1141,7 @@ Aquisition::Aquisition(const Functions& functions) :
 #define HANDLE_ERROR_POS(c) { actPos++; if (c=='\n') { actLine++; actCol=0; } else { actCol++; } }
 #undef getc
 
-#ifdef WIN32 
+#ifdef WIN32
 const char *index(const char *str, char f)
 {
 	for(const char *a=str;*a;a++)
@@ -1269,7 +1269,7 @@ void Aquisition::nextToken()
 				token.msg = word;
 				return;
 			}
-			
+
 			// is it a language ?
 			for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 			{
@@ -1281,7 +1281,7 @@ void Aquisition::nextToken()
 					return;
 				}
 			}
-			
+
 			// so it is another token
 			token.type = SGSLToken::getTypeByName(word.c_str());
 		}
@@ -1311,7 +1311,7 @@ StringAquisition::StringAquisition(const Functions& functions) :
 
 StringAquisition::~StringAquisition()
 {
-	
+
 }
 
 void StringAquisition::open(const std::string& text)
@@ -1363,16 +1363,16 @@ MapScriptSGSL::MapScriptSGSL()
 
 MapScriptSGSL::~MapScriptSGSL(void)
 {
-	
+
 }
 
 bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 {
 	stream->readEnterSection("SGSL");
-	
+
 	// load source code
 	sourceCode = stream->readText("sourceCode");
-	
+
 	// compile source code
 	ErrorReport er = compileScript(game);
 	if (er.type != ErrorReport::ET_OK)
@@ -1384,11 +1384,11 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 		stream->readLeaveSection();
 		return false;
 	}
-	
+
 	// load state
 	// load main timer
 	mainTimer = stream->readSint32("mainTimer");
-	
+
 	// load hasWon / hasLost vectors
 	stream->readEnterSection("victoryConditions");
 	for (unsigned i = 0; i < (unsigned)game->mapHeader.getNumberOfTeams(); i++)
@@ -1399,7 +1399,7 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	
+
 	// load stories datas
 	stream->readEnterSection("stories");
 	for (unsigned i = 0; i < stories.size(); i++)
@@ -1410,7 +1410,7 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	
+
 	// load areas
 	stream->readEnterSection("areas");
 	unsigned areasCount = stream->readUint32("areasCount");
@@ -1424,7 +1424,7 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	
+
 	// load flags
 	stream->readEnterSection("flags");
 	unsigned flagsCount = stream->readUint32("flagsCount");
@@ -1446,14 +1446,14 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 {
 	stream->writeEnterSection("SGSL");
-	
+
 	stream->writeText(sourceCode, "sourceCode");
-	
+
 	// save state
-	
+
 	// save main timer
 	stream->writeSint32(mainTimer, "mainTimer");
-	
+
 	// save hasWon / hasLost vectors
 	stream->writeEnterSection("victoryConditions");
 	for (unsigned i = 0; i < (unsigned)game->mapHeader.getNumberOfTeams(); i++)
@@ -1464,7 +1464,7 @@ void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-	
+
 	// save stories datas
 	stream->writeEnterSection("stories");
 	for (unsigned i = 0; i < stories.size(); i++)
@@ -1475,7 +1475,7 @@ void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-	
+
 	// save areas
 	stream->writeEnterSection("areas");
 	stream->writeUint32(areas.size(), "areasCount");
@@ -1491,7 +1491,7 @@ void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 		i++;
 	}
 	stream->writeLeaveSection();
-	
+
 	// save flags
 	stream->writeEnterSection("flags");
 	stream->writeUint32(flags.size(), "flagsCount");
@@ -1505,7 +1505,7 @@ void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 		i++;
 	}
 	stream->writeLeaveSection();
-	
+
 	stream->writeLeaveSection();
 }
 
@@ -1653,7 +1653,7 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 			{
 				break;
 			}
-			
+
 			// Grammar check
 			switch (donnees->getToken()->type)
 			{
@@ -1661,40 +1661,40 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 				case (SGSLToken::FUNC_CALL):
 				{
 					thisone.line.push_back(*donnees->getToken());
-					
+
 					Functions::const_iterator fIt = functions.find(donnees->getToken()->msg);
 					assert(fIt != functions.end());
 					const FunctionArgumentDescription *argument = fIt->second.first;
-					
+
 					CHECK_PAROPEN;
-					NEXT_TOKEN; 
-					
+					NEXT_TOKEN;
+
 					while (true)
 					{
 						CHECK_ARGUMENT;
-						
+
 						int argumentTokenType = donnees->getToken()->type;
 						if ((argumentTokenType < argument->argRangeFirst) || (argumentTokenType > argument->argRangeLast))
 						{
 							er.type=ErrorReport::ET_WRONG_FUNCTION_ARGUMENT;
 							return er;
 						}
-						
+
 						thisone.line.push_back(*donnees->getToken());
-						
+
 						argument++;
 						if (argument->argRangeFirst<0)
 							break;
-						
+
 						CHECK_SEMICOL;
 						NEXT_TOKEN;
 					}
-					
+
 					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
 				break;
-				
+
 				// summonUnits(flag_name , globules_amount , globule_type , globule_level , team_int)
 				case (SGSLToken::S_SUMMONUNITS):
 				{
@@ -1709,7 +1709,7 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 						er.type=ErrorReport::ET_SYNTAX_ERROR;
 						break;
 					}
-					
+
 					std::string areaName=donnees->getToken()->msg;
 					int areaN=-1;
 					//Check if there is a script area in the map with the same name
@@ -1721,7 +1721,7 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 							break;
 						}
 					}
-					
+
 					if (areaN == -1 && areas.find(areaName) == areas.end())
 					{
 						er.type=ErrorReport::ET_UNDEFINED_AREA_NAME;
@@ -2006,7 +2006,7 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 						break;
 					}
 					thisone.line.push_back(*donnees->getToken());
-					
+
 					CHECK_PARCLOSE;
 					NEXT_TOKEN;
 				}
@@ -2192,7 +2192,7 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 						}
 						CHECK_PARCLOSE;
 					}
-					
+
 					// only
 					bool only = false;
 					if (donnees->getToken()->type == SGSLToken::S_ONLY && !enter)
@@ -2201,14 +2201,14 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 						thisone.line.push_back(*donnees->getToken());
 						NEXT_TOKEN;
 					}
-					
+
 					//Comparaison| ( Variable( team , "flagName" ) cond value ) : variable = unit
 					//( Variable( level , team , "flagName" ) cond value ) : variable = building
 					//"flagName" can be omitted !
 					if ((donnees->getToken()->type >= SGSLToken::S_WORKER) && (donnees->getToken()->type <= SGSLToken::S_MARKET_B) && !enter)
 					{
 						enter = true;
-						
+
 						thisone.line.push_back(*donnees->getToken());
 						if (donnees->getToken()->type >= SGSLToken::S_SWARM_B)
 						{
@@ -2253,7 +2253,7 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 								er.type=ErrorReport::ET_INVALID_ONLY;
 								break;
 							}
-							
+
 							// Units
 							CHECK_PAROPEN;
 							NEXT_TOKEN;

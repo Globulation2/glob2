@@ -45,7 +45,7 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> 
 	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]"), UPLOAD, 27));
 	preview = new MapPreview(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(preview);
-	
+
 	mapName=new TextInput(173, 60, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", false, 255);
 	addWidget(mapName);
 	mapInfo=new Text(173, 60+30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
@@ -60,14 +60,14 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> 
 	addWidget(authorNameText);
 	authorName=new TextInput(173, 60+150, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 255);
 	addWidget(authorName);
-	
+
 	//uploadStatus=new Text(248, 60+300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "", 180);
 	uploadStatus = new ProgressBar(20, 300, 600, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	uploadStatus->visible = false;
 	addWidget(uploadStatus);
-	uploadStatusText = new Text(0, 300, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", ""); 
+	uploadStatusText = new Text(0, 300, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "");
 	addWidget(uploadStatusText);
-	
+
 	// update map name & info
 	preview->setMapThumbnail(mapFile.c_str());
 	Engine engine;
@@ -126,7 +126,7 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map upload failure: connection lost]"), Toolkit::getStringTable()->getString("[ok]"));
 		endExecute(CONNECTIONLOST);
 	}
-	
+
 	uploadStatus->visible = false;
 	if(isUploading)
 	{

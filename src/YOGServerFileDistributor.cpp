@@ -169,7 +169,7 @@ void YOGServerFileDistributor::loadDataFromFile()
 		int size=istream->getPosition();
 		istream->seekFromStart(0);
 		fileInfo = boost::shared_ptr<NetSendFileInformation>(new NetSendFileInformation(size, fileID));
-		
+
 		int ammount=0;
 		while(ammount < size)
 		{

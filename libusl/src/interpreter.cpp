@@ -17,7 +17,7 @@ bool Thread::step()
 		size_t nextInstr = frame.nextInstr;
 		Code* code = thunk->body[nextInstr];
 		frame.nextInstr++;
-		
+
 		// Uncomment to get *verbose* debug info on scripting
 		/*cout << thunk;
 		for (size_t i = 0; i < frames.size(); ++i)
@@ -25,9 +25,9 @@ bool Thread::step()
 		cout << " " << usl->debug.find(thunk, nextInstr) << ": ";
 		code->dump(cout);
 		cout << endl;*/
-		
+
 		code->execute(this);
-		
+
 		while (true)
 		{
 			Thread::Frame& frame = frames.back();
@@ -83,7 +83,7 @@ void Thread::markForGC()
 {
 	using namespace std;
 	using namespace __gnu_cxx;
-	
+
 	// mark all frames in stack
 	for_each(frames.begin(), frames.end(), mem_fun_ref(&Frame::markForGC));
 }
@@ -92,7 +92,7 @@ void Thread::Frame::markForGC()
 {
 	using namespace std;
 	using namespace __gnu_cxx;
-	
+
 	// mark all variables in frame
 	for_each(stack.begin(), stack.end(), mem_fun(&Value::markForGC));
 	thunk->markForGC();

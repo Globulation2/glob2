@@ -17,10 +17,10 @@
 // S curve is (3x^2 - 2x^3) because it's quick to calculate
 // though -cos(x * PI) * 0.5 + 0.5 would work too
 
-#define easeCurve(t)( t * t * (3.0 - 2.0 * t) )       
-#define linearInterp(t, a, b)( a + t * (b - a) )        
-#define dot2(rx, ry, q)( rx * q[0] + ry * q[1] )        
-#define dot3(rx, ry, rz, q)     ( rx * q[0] + ry * q[1] + rz * q[2] )       
+#define easeCurve(t)( t * t * (3.0 - 2.0 * t) )
+#define linearInterp(t, a, b)( a + t * (b - a) )
+#define dot2(rx, ry, q)( rx * q[0] + ry * q[1] )
+#define dot3(rx, ry, rz, q)     ( rx * q[0] + ry * q[1] + rz * q[2] )
 
 
 #define setupValues(t, axis, g0, g1, d0, d1, pos) \

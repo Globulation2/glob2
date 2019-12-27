@@ -78,9 +78,9 @@ int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const s
 		gui.localPlayer = 0;
 		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
 	}
-	
+
 	gameHeader.getBasePlayer(0).name = campaign.getPlayerName();
-	
+
 	int end=initGame(mapHeader, gameHeader);
 	gui.setCampaignGame(campaign, missionName);
 	return end;
@@ -117,7 +117,7 @@ int Engine::initCustom(void)
 		return EE_CANCEL;
 	if (cgs==-1)
 		return -1;
-		
+
 	int teamColor=customGameScreen.getSelectedColor(0);
 	gui.localPlayer=0;
 	gui.localTeamNo=teamColor;
@@ -218,19 +218,19 @@ void Engine::createRandomGame()
 			validMapChosen = false;
 		}
 	}
-	
+
 	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
-	
+
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
 	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)
 	{
 		std::cout<<"    Player: "<<game.getBasePlayer(p).name<<" for team "<<game.getBasePlayer(p).teamNumber<<std::endl;
 	}
-	
+
 	gui.localPlayer=0;
 	gui.localTeamNo=0;
-	
+
 	initGame(map, game);
 }
 
@@ -277,7 +277,7 @@ int Engine::run(void)
 				musicDirs.push_back(filename);
 			}
 		}
-		
+
 		// select a music randomly
 		// FIXME: implement more intelligent music choosing policy
 		if (!musicDirs.empty())
@@ -293,24 +293,24 @@ int Engine::run(void)
 		{
 			std::cerr << "Warning, no music found!" << std::endl;
 		}
-		
+
 		// Stop menu music, load game music
 		globalContainer->mix->setNextTrack(2, true);
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
 		SDL_EnableKeyRepeat(0,0);
 	}
-	
+
 	while (doRunOnceAgain)
 	{
 		int speed=40;
 		bool networkReadyToExecute = true;
-		
+
 		// If playing in fast-forward, we process the GUI and draw everything only once every 3 game-steps
 		// This way, the overall fps stays about the same
 		int nextGuiStep = 1;
-		
+
 		cpuStats.reset(speed);
-		
+
 		Sint32 needToBeTime = 0;
 		Sint32 startTime = SDL_GetTicks();
 		unsigned frameNumber = 0;
@@ -319,7 +319,7 @@ int Engine::run(void)
 		while (gui.isRunning)
 		{
 			nextGuiStep--;
-			
+
 			// Set the replay speed
 			if (globalContainer->replaying)
 			{
@@ -339,7 +339,7 @@ int Engine::run(void)
 				// Process the GUI as usual, every step
 				nextGuiStep = 0;
 			}
-			
+
 			// We always allow the user to use the gui:
 			if (globalContainer->automaticEndingGame)
 			{
@@ -370,7 +370,7 @@ int Engine::run(void)
 			}
 			if(!globalContainer->runNoX && nextGuiStep == 0)
 				gui.step();
-	
+
 			if (!gui.hardPause)
 			{
 				if(multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
@@ -382,16 +382,16 @@ int Engine::run(void)
 				if (networkReadyToExecute)
 				{
 					gui.syncStep();
-					
+
 					// The gui.localPlayer may have been updated (in replays)
 					// Keep them synchronized here
 					net->setLocalPlayer(gui.localPlayer);
-					
+
 					// We get and push local orders
 					shared_ptr<Order> localOrder = gui.getOrder();
 					net->addLocalOrder(localOrder);
 				}
-				
+
 				// we get and push ai orders, if they are needed for this frame
 				for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 				{
@@ -401,12 +401,12 @@ int Engine::run(void)
 						net->pushOrder(order, i, true);
 					}
 				}
-				
+
 				gui.game.setWaitingOnMask(net->getWaitingOnMask());
-				
+
 				if(multiplayer)
 					multiplayer->update();
-				
+
 				if(networkReadyToExecute)
 				{
 					Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
@@ -425,7 +425,7 @@ int Engine::run(void)
 				{
 					sendBumpUp=false;
 					if(!net->matchCheckSums())
-					{	
+					{
 						std::cout<<"Game desychronized."<<std::endl;
 						gui.game.dumpAllData("glob2.world-desynchronization.dump.txt");
 						assert(false);
@@ -463,7 +463,7 @@ int Engine::run(void)
 				{
 					assert(globalContainer->replayReader);
 					assert(globalContainer->replayReader->isValid());
-					
+
 					while (globalContainer->replayReader->hasMoreOrdersThisStep())
 					{
 						shared_ptr<Order> order = globalContainer->replayReader->retrieveOrder();
@@ -475,13 +475,13 @@ int Engine::run(void)
 							gui.executeOrder(order);
 						}
 					}
-					
+
 					if (globalContainer->replayReader->isFinished())
 					{
 						gui.showEndOfReplayScreen();
 					}
 				}
-				
+
 				// here we do the real work
 				if (networkReadyToExecute && !gui.gamePaused && !gui.hardPause)
 				{
@@ -490,7 +490,7 @@ int Engine::run(void)
 						assert(globalContainer->replayReader);
 						globalContainer->replayReader->advanceStep();
 					}
-					
+
 					gui.game.syncStep(gui.localTeamNo);
 				}
 			}
@@ -512,9 +512,9 @@ int Engine::run(void)
 					gui.drawAll(gui.localTeamNo);
 					globalContainer->gfx->nextFrame();
 				}
-				
+
 				// if required, save videoshot
-				if (!(globalContainer->videoshotName.empty()) && 
+				if (!(globalContainer->videoshotName.empty()) &&
 					!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 					)
 				{
@@ -522,7 +522,7 @@ int Engine::run(void)
 					printf("printing video shot %s\n", fileName.c_str());
 					globalContainer->gfx->printScreen(fileName.c_str());
 				}
-	
+
 				// we compute timing
 				needToBeTime += speed;
 				Sint32 currentTime = SDL_GetTicks() - startTime;
@@ -535,7 +535,7 @@ int Engine::run(void)
 				//Any inconsistancies in the delays will be smoothed throughout the following frames,
 				Sint32 delay = std::max(0, needToBeTime - currentTime);
 				SDL_Delay(delay);
-				
+
 				// we set CPU stats
 //				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
 				gui.setCpuLoad((4000-(delay*100)) / 40);
@@ -544,7 +544,7 @@ int Engine::run(void)
 					cpuStats.addFrameData(delay);
 				}
 			}
-			
+
 			if(gui.flushOutgoingAndExit)
 			{
 				shared_ptr<Order> localOrder = gui.getOrder();
@@ -569,7 +569,7 @@ int Engine::run(void)
 		}
 
 		cpuStats.format();
-		
+
 		if(multiplayer)
 		{
 			if (gui.game.totalPrestigeReached)
@@ -605,31 +605,31 @@ int Engine::run(void)
 		delete net;
 		net=NULL;
 		multiplayer.reset();
-		
+
 		if (gui.exitGlobCompletely)
 			return -1; // There is no bypass for the "close window button"
 
-		
+
 		doRunOnceAgain=false;
-		
+
 		if (gui.toLoadGameFileName[0])
 		{
 			int rv;
-			
+
 			if (globalContainer->replaying) rv = loadReplay(gui.toLoadGameFileName);
 			else rv = initCustom(gui.toLoadGameFileName);
-			
+
 			if (rv==EE_NO_ERROR)
 				doRunOnceAgain=true;
 			gui.toLoadGameFileName[0]=0; // Avoid the communication system between GameGUI and Engine to loop.
 		}
 	}
-	
+
 	if(!globalContainer->runNoX)
 	{
 		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	}
-	
+
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
 	{
 		if(!globalContainer->runNoX)
@@ -641,14 +641,14 @@ int Engine::run(void)
 		// Restart menu music
 		assert(globalContainer->mix);
 		globalContainer->mix->setNextTrack(1, true);
-		
+
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, 40);
-		
+
 		// Return to default color
 		globalContainer->gfx->cursorManager.setDefaultColor();
-		
+
 		// Return
 		return (result == -1) ? -1 : EE_NO_ERROR;
 	}
@@ -687,7 +687,7 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
 	}
 	delete stream;
-	
+
 	//Map name is the filename without underscores or .map, it has to be updated in case the map file itself was renamed
 	std::string mapName;
 	if(mapHeader.getIsSavedGame())
@@ -701,7 +701,7 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 		pos = mapName.find("_");
 	}
 	mapHeader.setMapName(glob2FilenameToName(filename));
-	
+
 	return mapHeader;
 }
 
@@ -782,7 +782,7 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& 
 	int playerNumber=0;
 	// Incase there are multiple "humans" selected, only the first will actually become human
 	bool wasHuman=false;
-	// Each team has a variable, type, that designates whether it is a human or an AI in 
+	// Each team has a variable, type, that designates whether it is a human or an AI in
 	// a campaign match.
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
@@ -806,7 +806,7 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& 
 		localPlayer = 0;
 		localTeam = gameHeader.getBasePlayer(0).teamNumber;
 	}
-	
+
 	gameHeader.setNumberOfPlayers(playerNumber);
 
 	return gameHeader;
@@ -857,9 +857,9 @@ MapHeader Engine::chooseRandomMap()
 			maps.push_back(fullFileName);
 		}
 	}
-	
+
 	int number = syncRand() % maps.size();
-	
+
 	return loadMapHeader(maps[number]);
 }
 
@@ -895,7 +895,7 @@ int Engine::loadReplay(const std::string &fileName)
 	// Let globalContainer know what we are doing
 	globalContainer->replaying = true;
 	globalContainer->replayFileName = fileName;
-	
+
 	// Reset the replay's options
 	gui.localPlayer = 0;
 	gui.localTeamNo = 0;

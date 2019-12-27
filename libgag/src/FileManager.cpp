@@ -128,24 +128,24 @@ namespace GAGCore
 		addDir(PACKAGE_SOURCE_DIR);
 		fileListIndex = -1;
 	}
-	
+
 	FileManager::~FileManager()
 	{
 		dirList.clear();
 		clearFileList();
 	}
-	
+
 	void FileManager::clearFileList(void)
 	{
 		fileList.clear();
 		fileListIndex = -1;
 	}
-	
+
 	void FileManager::addDir(const std::string dir)
 	{
 		dirList.push_back(dir);
 	}
-	
+
 	void FileManager::addWriteSubdir(const std::string subdir)
 	{
 		for (size_t i = 0; i < dirList.size(); i++)
@@ -165,7 +165,7 @@ namespace GAGCore
 				break;
 		}
 	}
-	
+
 	SDL_RWops *FileManager::openWithbackup(const std::string filename, const std::string mode)
 	{
 		if (mode.find('w') != std::string::npos)
@@ -176,7 +176,7 @@ namespace GAGCore
 		}
 		return SDL_RWFromFile(filename.c_str(), mode.c_str());
 	}
-	
+
 	FILE *FileManager::openWithbackupFP(const std::string filename, const std::string mode)
 	{
 		if (mode.find('w') != std::string::npos)
@@ -187,7 +187,7 @@ namespace GAGCore
 		}
 		return fopen(filename.c_str(), mode.c_str());
 	}
-	
+
 	std::ofstream *FileManager::openWithbackupOFS(const std::string filename, std::ofstream::openmode mode)
 	{
 		if (mode & std::ios_base::out)
@@ -199,11 +199,11 @@ namespace GAGCore
 		std::ofstream *ofs = new std::ofstream(filename.c_str(), mode);
 		if (ofs->is_open())
 			return ofs;
-		
+
 		delete ofs;
 		return NULL;
 	}
-	
+
 	StreamBackend *FileManager::openOutputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -211,32 +211,32 @@ namespace GAGCore
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
-			
+
 			FILE *fp = fopen(path.c_str(), "wb");
 			if (fp)
 				return new FileStreamBackend(fp);
 		}
-	
+
 		return new FileStreamBackend(NULL);
 	}
-	
+
 	StreamBackend *FileManager::openInputStreamBackend(const std::string filename)
-	{	
-	
+	{
+
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
-			
+
 			FILE *fp = fopen(path.c_str(), "rb");
 			if (fp)
 				return new FileStreamBackend(fp);
 		}
-	
+
 		return new FileStreamBackend(NULL);
 	}
-	
+
 	StreamBackend *FileManager::openCompressedOutputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -244,7 +244,7 @@ namespace GAGCore
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
-			
+
 			//Test if it can be opened first
 			FILE *fp = fopen(path.c_str(), "wb");
 			if(fp)
@@ -253,10 +253,10 @@ namespace GAGCore
 				return new ZLibStreamBackend(path, false);
 			}
 		}
-	
+
 		return new ZLibStreamBackend("", false);
 	}
-	
+
 	StreamBackend *FileManager::openCompressedInputStreamBackend(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -264,7 +264,7 @@ namespace GAGCore
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
-			
+
 			FILE *fp = fopen(path.c_str(), "rb");
 			if(fp)
 			{
@@ -272,10 +272,10 @@ namespace GAGCore
 				return new ZLibStreamBackend(path, true);
 			}
 		}
-	
+
 		return new ZLibStreamBackend("", false);
 	}
-	
+
 	SDL_RWops *FileManager::open(const std::string filename, const std::string mode)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -283,16 +283,16 @@ namespace GAGCore
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
-	
+
 			//std::cerr << "FileManager::open trying to open " << path << " corresponding to source [" << dirList[i] << "] and filename [" << filename << "] with mode " << mode << "\n" << std::endl;
 			SDL_RWops *fp = openWithbackup(path.c_str(), mode.c_str());
 			if (fp)
 				return fp;
 		}
-	
+
 		return NULL;
 	}
-	
+
 	FILE *FileManager::openFP(const std::string filename, const std::string mode)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -300,15 +300,15 @@ namespace GAGCore
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
-			
+
 			FILE *fp = openWithbackupFP(path.c_str(), mode.c_str());
 			if (fp)
 				return fp;
 		}
-	
+
 		return NULL;
 	}
-	
+
 	std::ifstream *FileManager::openIFStream(const std::string &fileName)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -316,17 +316,17 @@ namespace GAGCore
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += fileName;
-	
+
 			std::ifstream *fp = new std::ifstream(path.c_str());
 			if (fp->good())
 				return fp;
 			else
 				delete fp;
 		}
-		
+
 		return NULL;
 	}
-	
+
 	Uint32 FileManager::checksum(const std::string filename)
 	{
 		Uint32 cs = 0;
@@ -335,7 +335,7 @@ namespace GAGCore
 		{
 			int length = SDL_RWseek(stream, 0, SEEK_END);
 			SDL_RWseek(stream, 0, SEEK_SET);
-			
+
 			int lengthBlock = length & (~0x3);
 			for (int i=0; i<(lengthBlock>>2); i++)
 			{
@@ -353,7 +353,7 @@ namespace GAGCore
 		}
 		return cs;
 	}
-	
+
 	time_t FileManager::mtime(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -361,7 +361,7 @@ namespace GAGCore
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
-	
+
 			//std::cerr << "FileManager::open trying to open " << path << " corresponding to source [" << dirList[i] << "] and filename [" << filename << "] with mode " << mode << "\n" << std::endl;
 			struct stat stats;
 			if (stat(path.c_str(), &stats) == 0)
@@ -369,7 +369,7 @@ namespace GAGCore
 		}
 		return 0;
 	}
-	
+
 	void FileManager::remove(const std::string filename)
 	{
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -380,7 +380,7 @@ namespace GAGCore
 			std::remove(path.c_str());
 		}
 	}
-	
+
 	bool FileManager::isDir(const std::string filename)
 	{
 		#ifdef WIN32
@@ -403,58 +403,58 @@ namespace GAGCore
 		}
 		return (s.st_mode & S_IFDIR) != 0;
 	}
-	
+
 	bool FileManager::gzip(const std::string &source, const std::string &dest)
 	{
 		// Open streams
 		StreamBackend *srcStream = openInputStreamBackend(source);
 		FILE *destStream = openFP(dest.c_str(), "wb");
-		
+
 		// Check
 		if ((!srcStream->isValid()) || (destStream == NULL))
 		{
 			delete srcStream;
 			return false;
 		}
-		
+
 		// Preapare source
 		srcStream->seekFromEnd(0);
 		size_t fileLength = srcStream->getPosition();
 		srcStream->seekFromStart(0);
 		std::valarray<char> buffer(fileLength);
-		
+
 		// Compress
 		srcStream->read(&buffer[0], fileLength);
 		gzFile gzStream = gzdopen(fileno(destStream), "wb");
 		gzwrite(gzStream, &buffer[0], fileLength);
-		
+
 		// Close
 		gzclose(gzStream);
 		delete srcStream;
-		
+
 		return true;
 	}
-	
+
 	bool FileManager::gunzip(const std::string &source, const std::string &dest)
 	{
 		// Open streams
 		FILE *srcStream = openFP(source.c_str(), "rb");
 		StreamBackend *destStream = openOutputStreamBackend(dest);
-		
+
 		// Check
 		if ((!destStream->isValid()) || (srcStream == NULL))
 		{
 			delete destStream;
 			return false;
 		}
-		
+
 		// Preapare source
 		gzFile gzStream = gzdopen(fileno(srcStream), "rb");
 		#define BLOCK_SIZE 1024*1024
 		std::string buffer;
 		size_t len = 0;
 		size_t bufferLength = 0;
-		
+
 		// Uncompress
 		while (gzeof(gzStream) == 0)
 		{
@@ -462,14 +462,14 @@ namespace GAGCore
 			len += gzread(gzStream, const_cast<void *>(static_cast<const void *>(buffer.data() + bufferLength)), BLOCK_SIZE);
 			bufferLength += BLOCK_SIZE;
 		}
-		
+
 		// Write
 		destStream->write(buffer.c_str(), len);
-		
+
 		// Close
 		gzclose(gzStream);
 		delete destStream;
-		
+
 		return true;
 	}
 
@@ -477,7 +477,7 @@ namespace GAGCore
 	{
 		DIR *dir = opendir(realDir.c_str());
 		struct dirent *dirEntry;
-	
+
 		if (!dir)
 		{
 			#ifdef DBG_VPATH_LIST
@@ -485,13 +485,13 @@ namespace GAGCore
 			#endif
 			return false;
 		}
-	
+
 		while ((dirEntry = readdir(dir))!=NULL)
 		{
 			#ifdef DBG_VPATH_LIST
 			std::cerr << realDir << std::endl;
 			#endif
-			
+
 			// there might be a way to optimize the decision of the ok
 			bool ok = true;
 			// hide hidden stuff
@@ -532,11 +532,11 @@ namespace GAGCore
 				}
 			}
 		}
-	
+
 		closedir(dir);
 		return true;
 	}
-	
+
 	bool FileManager::initDirectoryListing(const std::string virtualDir, const std::string extension, const bool dirs)
 	{
 		bool result = false;
@@ -554,7 +554,7 @@ namespace GAGCore
 			fileListIndex=-1;
 		return result;
 	}
-	
+
 	const std::string FileManager::getNextDirectoryEntry(void)
 	{
 		if ((fileListIndex >= 0) && (fileListIndex < (int)fileList.size()))

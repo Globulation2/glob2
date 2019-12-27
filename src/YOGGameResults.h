@@ -47,7 +47,7 @@ public:
 
 	///Decodes this YOGGameResults from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 netDataVersion);
-	
+
 	///Test for equality between two YOGGameResults
 	bool operator==(const YOGGameResults& rhs) const;
 	bool operator!=(const YOGGameResults& rhs) const;

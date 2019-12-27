@@ -74,13 +74,13 @@ public:
 	///Routes the given message to all players except for the sender,
 	///unless sender is null
 	void routeMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
-	
+
 	///Kicks the player and sends a kick message to the player
 	void kickPlayer(boost::shared_ptr<NetKickPlayer> message);
-	
+
 	///Returns whether there are no players left in the game
 	bool isEmpty() const;
-	
+
 	///Returns the game ID
 	Uint16 getGameID() const;
 
@@ -94,7 +94,7 @@ public:
 	///While the host is normally updated with this information, lag from the connection
 	///May cause the host to start the game just as another player has joined
 	void recieveGameStartRequest();
-	
+
 	///Starts the game
 	void startGame();
 
@@ -109,16 +109,16 @@ public:
 
 	///This chooses a latency mode and sends it to all the players
 	void chooseLatencyMode();
-	
+
 	///This sets a players game result
 	void setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result);
 
 	///This sends the games results to the game log, if this game actually went through
 	void sendGameResultsToGameLog();
-	
+
 	///Returns the router ip address for this game
 	const std::string getRouterIP() const;
-	
+
 	///Returns the file transfer id for the map of this game
 	Uint16 getFileID() const;
 private:

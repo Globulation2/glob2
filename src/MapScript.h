@@ -56,25 +56,25 @@ public:
 
 	///This returns the string representing the mapscript
 	const std::string& getMapScript() const;
-	
+
 	///This sets the string representing the mapscript
 	void setMapScript(const std::string& newScript);
-	
+
 	///This returns the current map script mode
 	MapScriptMode getMapScriptMode() const;
-	
+
 	///This sets the current map script mode
 	void setMapScriptMode(MapScriptMode newMode);
-	
+
 	///This compiles the code and returns false on error
 	bool compileCode();
-	
+
 	///This test compiles the code and returns false on error
 	bool testCompileCode(const std::string& testScript);
-	
+
 	///This returns the error
 	const MapScriptError& getError() const;
-	
+
 	///Execute a step of script corresponding to a step of the game engine
 	void syncStep(GameGUI *gui);
 

@@ -70,7 +70,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 
 	currentStep = 0;
 	ordersProcessed = 0;
-	
+
 	// Skip to the section in the stream where the header ends
 	if (skipToOrders)
 	{
@@ -160,7 +160,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 
 	// Go back to the original position in the stream
 	stream->seekFromStart(pos);
-	
+
 	// Read the number of steps until the first order
 	stepsUntilNextOrder = stream->readUint16("replayStepCounter");
 

@@ -40,17 +40,17 @@ public:
 
 	///Sets this file distributor to load the given file locally
 	void loadFromLocally(const std::string& file);
-	
+
 	///Tells this file distributor to load from the given player
 	void loadFromPlayer(boost::shared_ptr<YOGServerPlayer> player);
-	
+
 	///This tells the file distributor to save all data in the file the given filename locally
 	void saveToFile(const std::string& file);
 
 	///This returns true if all of the chunks for the map are loaded, including the file
 	///information chunk, false otherwise
 	bool areAllChunksLoaded();
-	
+
 	///This returns true if the uploading from a player was canceled
 	bool wasUploadingCanceled();
 
@@ -59,7 +59,7 @@ public:
 
 	///Add the given player as one requesting the file
 	void addMapRequestee(boost::shared_ptr<YOGServerPlayer> player);
-	
+
 	///Removes the given player from requesting the map
 	void removeMapRequestee(boost::shared_ptr<YOGServerPlayer> player);
 

@@ -61,7 +61,7 @@ struct TeamStat
 	int totalHP;
 	int totalAttackPower;
 	int totalDefensePower;
-		
+
 	int happiness[HAPPYNESS_COUNT+1];
 };
 
@@ -90,7 +90,7 @@ struct EndOfGameStat
 		TYPE_DEFENSE = 5,
 		TYPE_NB_STATS = 6
 	};
-	
+
 	// units, buildings, prestige
 	int value[TYPE_NB_STATS];
 };
@@ -102,7 +102,7 @@ class TeamStats
 public:
 	TeamStats();
 	virtual ~TeamStats(void);
-	
+
 	void step(Team *team, bool reloaded = false);
 
 	void drawText(int posx, int posy);
@@ -120,23 +120,23 @@ private:
 		STATS_SMOOTH_SIZE=32,
 		STATS_SIZE=128
 	};
-	
+
 	int statsIndex;
 	TeamStat stats[STATS_SIZE];
 	bool haveSetMapSize;
-	
+
 	int smoothedIndex;
 	TeamSmoothedStat smoothedStats[STATS_SMOOTH_SIZE];
-	
+
 	friend class EndGameStat;
 	friend class EndGameScreen;
-	
+
 	//! Thoses stats are used when player has ended the game
 	friend class Team;
 	friend class Game;
-	
+
 	std::vector<EndOfGameStat> endOfGameStats;
-	
+
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 

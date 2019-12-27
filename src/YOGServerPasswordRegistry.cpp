@@ -53,12 +53,12 @@ YOGLoginState YOGServerPasswordRegistry::registerInformation(const std::string& 
 {
 	if(passwords[username] != "")
 		return YOGUsernameAlreadyUsed;
-	
+
 	for(unsigned int i=0; i<invalidChars.size(); ++i)
 		if(username.find(invalidChars[i]) != std::string::npos)
 			return YOGNameInvalidSpecialCharacters;
-	
-		
+
+
 	passwords[username] = transform(username, password);
 	flushPasswords();
 	return YOGLoginSuccessful;

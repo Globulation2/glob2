@@ -50,10 +50,10 @@ public:
 
 	///Returns the event type
 	virtual Uint8 getMessageType() const = 0;
-	
+
 	///Returns a formatted version of the event
 	virtual std::string format() const = 0;
-	
+
 	///Compares two NetConnectionThreadMessage
 	virtual bool operator==(const NetConnectionThreadMessage& rhs) const = 0;
 };
@@ -72,7 +72,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
@@ -101,7 +101,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
@@ -126,10 +126,10 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
-	
+
 	///Returns the ip address of the connection
 	const std::string& getIPAddress();
 private:
@@ -151,7 +151,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 };
@@ -171,7 +171,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
@@ -196,7 +196,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
@@ -221,7 +221,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
@@ -246,7 +246,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
@@ -271,7 +271,7 @@ public:
 
 	///Returns a formatted version of the event
 	std::string format() const;
-	
+
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 };

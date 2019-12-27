@@ -143,7 +143,7 @@ namespace Utilities
 			*yd = ys;
 		}
 	}
-	
+
 	void sdcRects(SDL_Rect *source, SDL_Rect *destination, SDL_Rect clipping)
 	{
 		//sdc= Source-Destination-Clipping
@@ -313,7 +313,7 @@ namespace Utilities
 			*decY=0;
 		}
 	}
-	
+
 	Sint32 log2(Sint32 a)
 	{
 		assert(a);
@@ -334,14 +334,14 @@ namespace Utilities
 				m=m<<1;
 		return 32;
 	}
-	
+
 	Sint32 power2(Sint32 a)
 	{
 		assert(a>=0);
 		assert(a<32);
 		return 1<<a;
 	}
-	
+
 	int strnlen(const char *s, int max)
 	{
 		for (int i=0; i<max; i++)
@@ -349,7 +349,7 @@ namespace Utilities
 				return i;
 		return max;
 	}
-	
+
 	int strmlen(const char *s, int max)
 	{
 		for (int i=0; i<max; i++)
@@ -357,14 +357,14 @@ namespace Utilities
 				return i+1;
 		return max;
 	}
-	
+
 	void stringIP(char *s, int n, Uint32 nip)
 	{
 		Uint32 ip=SDL_SwapBE32(nip);
 		snprintf(s, n, "%d.%d.%d.%d", ((ip>>24)&0xFF), ((ip>>16)&0xFF), ((ip>>8)&0xFF), (ip&0xFF));
 		s[n-1]=0;
 	}
-	
+
 	char staticStringIP[8][128];
 	int staticCounter;
 	char *stringIP(Uint32 nip)
@@ -383,7 +383,7 @@ namespace Utilities
 		staticStringIP[staticCounter][127]=0;
 		return staticStringIP[staticCounter];
 	}
-	
+
 	char *stringIP(IPaddress nip)
 	{
 		staticCounter=(staticCounter+1)&0x7;
@@ -426,7 +426,7 @@ namespace Utilities
 		stream->write(buffer, strlen(buffer), buffer);
 		va_end(arglist);
 	}
-	
+
 	int staticTokenize(const char *s, int n, char token[32][256])
 	{
 		int tokenNumber=0;
@@ -465,7 +465,7 @@ namespace Utilities
 		}
 		return tokenNumber;
 	}
-	
+
 	void read(int fd, void *buf, size_t count)
 	{
 		char *ptr = (char *)buf;
@@ -487,7 +487,7 @@ namespace Utilities
 			}
 		}
 	}
-	
+
 	void write(int fd, const void *buf, size_t count)
 	{
 		const char *ptr = (const char *)buf;

@@ -37,13 +37,13 @@ public:
 public:
 	Race();
 	virtual ~Race();
-	
+
 	void load();
 	static void loadDefault();
 	static Uint32 checkSumDefault();
-	
+
 	UnitType *getUnitType(int type, int level);
-	
+
 	void save(GAGCore::OutputStream *stream);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	static Uint32 checkSum(void);

@@ -39,13 +39,13 @@ namespace GAGCore
 		virtual bool isEndOfStream(void) = 0;
 		virtual bool isValid(void) = 0;
 	};
-	
+
 	//! The stream that can be written to
 	class OutputStream : public Stream
 	{
 	public:
 		virtual ~OutputStream() { }
-		
+
 		virtual void write(const void *data, const size_t size, const std::string name) = 0;
 		virtual void writeSint8(const Sint8 v, const std::string name) = 0;
 		virtual void writeUint8(const Uint8 v, const std::string name) = 0;
@@ -56,20 +56,20 @@ namespace GAGCore
 		virtual void writeFloat(const float v, const std::string name) = 0;
 		virtual void writeDouble(const double v, const std::string name) = 0;
 		virtual void writeText(const std::string &v, const std::string name) = 0;
-		
+
 		virtual void flush(void) = 0;
-		
+
 		virtual void writeEnterSection(const std::string name) = 0;
 		virtual void writeEnterSection(unsigned id) = 0;
 		virtual void writeLeaveSection(size_t count = 1) = 0;
 	};
-	
+
 	//! The stream that can be read from
 	class InputStream : public Stream
 	{
 	public:
 		virtual ~InputStream() { }
-	
+
 		virtual void read(void *data, size_t size, const std::string name) = 0;
 		virtual Sint8 readSint8(const std::string name) = 0;
 		virtual Uint8 readUint8(const std::string name) = 0;
@@ -80,20 +80,20 @@ namespace GAGCore
 		virtual float readFloat(const std::string name) = 0;
 		virtual double readDouble(const std::string name) = 0;
 		virtual std::string readText(const std::string name) = 0;
-		
+
 		virtual void readEnterSection(const std::string name) = 0;
 		virtual void readEnterSection(unsigned id) = 0;
 		virtual void readLeaveSection(size_t count = 1) = 0;
 	};
-	
+
 	class StreamBackend;
-	
+
 	//! Stream used to write line by line
 	class OutputLineStream
 	{
 	private:
 		StreamBackend *backend;
-	
+
 	public:
 		OutputLineStream(StreamBackend *backend);
 		virtual ~OutputLineStream();
@@ -101,13 +101,13 @@ namespace GAGCore
 		void writeLine(const char *s);
 		bool isEndOfStream(void);
 	};
-	
+
 	//! Stream used to read line by line
 	class InputLineStream
 	{
 	private:
 		StreamBackend *backend;
-	
+
 	public:
 		InputLineStream(StreamBackend *backend);
 		virtual ~InputLineStream();

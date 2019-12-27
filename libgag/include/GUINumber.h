@@ -38,21 +38,21 @@ namespace GAGGUI
 		Sint32 m;
 		std::vector<int> numbers;
 		std::string font;
-	
+
 		// cache, recomputed at least on paint
 		GAGCore::Font *fontPtr;
 		int textHeight;
-	
+
 	public:
 		Number();
 		Number(const std::string& tooltip, const std::string &tooltipFont);
 		Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font);
 		Number(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int m, const std::string font, const std::string& tooltip, const std::string &tooltipFont);
 		virtual ~Number();
-	
+
 		virtual void internalInit(void);
 		virtual void paint(void);
-	
+
 		void add(int number);
 		void clear(void);
 		void setNth(int nth);

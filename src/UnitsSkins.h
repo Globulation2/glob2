@@ -40,10 +40,10 @@ class UnitsSkins
 public:
 	UnitsSkins();
 	virtual ~UnitsSkins();
-	
+
 	UnitSkin *getSkin(const std::string &name);
 	void buildSkinsList(MultiTextButton *target) const;
-	
+
 protected:
 	std::map<std::string, UnitSkin *> unitsSkins;
 };

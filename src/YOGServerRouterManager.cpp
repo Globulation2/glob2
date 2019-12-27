@@ -63,7 +63,7 @@ void YOGServerRouterManager::update()
 			}
 		}
 	}
-	
+
 	for(std::vector<boost::shared_ptr<NetConnection> >::iterator i = routers.begin(); i!=routers.end();)
 	{
 		if(!(*i)->isConnected())

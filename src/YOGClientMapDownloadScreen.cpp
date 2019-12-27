@@ -70,10 +70,10 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	addWidget(refresh);
 	downloadMap = new TextButton(20, 15, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Download Map]"), DOWNLOADMAP);
 	addWidget(downloadMap);
-	
+
 	loadingMapList = new Text(280, 200, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[loading map list]"));
 	addWidget(loadingMapList);
-	
+
 	submitRating = new TextButton(250, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[submit rating]"), SUBMITRATING);
 	addWidget(submitRating);
 	rating = new Number(250, 35, 220, 20, ALIGN_LEFT, ALIGN_BOTTOM, 10, "standard");
@@ -88,7 +88,7 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	submitRating->visible=false;
 	rating->visible=false;
 	mapRatedAlready->visible=false;
-	
+
 	sortMethodLabel = new Text(250, 120, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Sort By]"));
 	addWidget(sortMethodLabel);
 	sortMethod = new MultiTextButton(250, 140, 100, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "", SORTMETHOD);
@@ -98,7 +98,7 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by size]"));
 	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by rating]"));
 	sortMethod->setIndex(0);
-	
+
 	validMapSelected=false;
 	client->getDownloadableMapList()->addListener(this);
 	mapValid=false;
@@ -161,7 +161,7 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 				}
 				else if(rc == YOGClientDownloadingMapScreen::FINISHED)
 				{
-				
+
 				}
 			}
 		}
@@ -221,7 +221,7 @@ void YOGClientMapDownloadScreen::requestMaps()
 	mapList->clear();
 	mapList->setSelectionIndex(-1);
 	updateMapInfo();
-	
+
 	client->getDownloadableMapList()->requestMapListUpdate();
 	mapsRequested=true;
 }
@@ -326,7 +326,7 @@ void YOGClientMapDownloadScreen::updateMapPreview()
 	}
 	else
 	{
-	
+
 		mapPreview->setMapThumbnail("");
 	}
 }
@@ -356,7 +356,7 @@ bool MapListSorter::operator()(const YOGDownloadableMapInfo& lhs, const YOGDownl
 			int rw = rhs.getWidth();
 			int rh = rhs.getHeight();
 			int ra = lw*rh;
-			
+
 			if(la==ra)
 			{
 				if(lw == rw)
@@ -379,7 +379,7 @@ bool MapListSorter::operator()(const YOGDownloadableMapInfo& lhs, const YOGDownl
 			int ln = lhs.getNumberOfRatings();
 			int rt = rhs.getRatingTotal();
 			int rn = rhs.getNumberOfRatings();
-			
+
 			if(lt>5 && rt>5 && lt/ln!=rt/rn)
 			{
 				return lt/ln > rt/rn;

@@ -61,7 +61,7 @@ protected:
 	bool addRemoveEnabled;
 public:
 	BrushTool();
-	//! Draw the brush tool and its actual state at a given coordinate 
+	//! Draw the brush tool and its actual state at a given coordinate
 	void draw(int x, int y);
 	//! Handle the click for given coordinate. Select correct mode and figure, accept negative coordinates for y
 	void handleClick(int x, int y);
@@ -81,12 +81,12 @@ public:
 	unsigned getFigure(void) { return figure; }
 	//! Set the id of the actual figure
 	void setFigure(unsigned f);
-	
+
 	//! Return the full width of a brush
 	static int getBrushWidth(unsigned figure);
 	//! Return the full height of a brush
 	static int getBrushHeight(unsigned figure);
-	
+
 	//! This enables or disables the ability to select add / remove. Used by the map editor because logically you can't "remove" Terrain and such.
 	void setAddRemoveEnabledState(bool value);
 	//! Return the left extend of the brush (not counting its center cell)
@@ -119,10 +119,10 @@ public:
 	{
 		int centerX, centerY;
 		int minX, minY, maxX, maxY;
-		
+
 		AreaDimensions() { minX = minY = maxX = maxY = centerX = centerY = 0; }
 	};
-	
+
 	int firstX;
 	int firstY;
 protected:
@@ -130,7 +130,7 @@ protected:
 	std::vector<BrushApplication> applications;
 	//! The actual dimensions of the resulting applications
 	AreaDimensions dim;
-	
+
 public:
 	//! Apply this brush to the brush application vector and extend dim as required
 	void applyBrush(const BrushApplication &brush, const Map* map);

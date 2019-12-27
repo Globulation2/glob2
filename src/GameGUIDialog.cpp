@@ -123,30 +123,30 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		Team *team = gameGUI->game.players[i]->team;
 		texts[i]->setStyle(Font::Style(Font::STYLE_NORMAL, team->color));
 		addWidget(texts[i]);
-		
-	
+
+
 		alliance[i]=new OnOffButton(172+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->allies & otherTeamMask) != 0, ALLIED+i);
 		addWidget(alliance[i]);
-	
+
 		normalVision[i]=new OnOffButton(196+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0, NORMAL_VISION+i);
 		addWidget(normalVision[i]);
-		
+
 		if(gameGUI->game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying)
 		{
 			alliance[i]->visible=false;
 			normalVision[i]->visible=false;
 		}
-		
+
 		foodVision[i]=new OnOffButton(220+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionFood & otherTeamMask) != 0, FOOD_VISION+i);
 		addWidget(foodVision[i]);
-		
+
 		marketVision[i]=new OnOffButton(244+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionExchange & otherTeamMask) != 0, MARKET_VISION+i);
 		addWidget(marketVision[i]);
 
 		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
 		chat[i]=new OnOffButton(268+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
 		addWidget(chat[i]);
-		
+
 		if(otherTeam == gameGUI->localTeamNo)
 		{
 			alliance[i]->visible=false;
@@ -166,7 +166,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 			}
 			n+=1;
 		}
-		
+
 		// Disable these buttons if it's a replay
 		if (globalContainer->replaying)
 		{
@@ -186,7 +186,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		marketVision[i] = NULL;
 		chat[i] = NULL;
 	}
-	
+
 	//Put locks if needed
 	if(gameGUI->game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying)
 	{
@@ -194,7 +194,7 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 		//Although this is the animation widget, we are just using it to display a still frame
 		addWidget(new Animation(172, 40 + std::min(4, np/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
 		addWidget(new Animation(196, 40 + std::min(4, np/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
-		
+
 		if(np>8)
 		{
 			addWidget(new Animation(172, 40 + std::min(4, (np-8)/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
@@ -203,34 +203,34 @@ InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
 	}
 
 	// add static text and images
-	addWidget(new Text(172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A")); 
+	addWidget(new Text(172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A"));
 	addWidget(new Text(196+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "V"));
 	addWidget(new Text(220, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "fV"));
 	addWidget(new Text(244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
 	addWidget(new Text(268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
-	
+
 	if (gameGUI->game.gameHeader.getNumberOfPlayers() > 8)
 	{
-		addWidget(new Text(300+172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A")); 
+		addWidget(new Text(300+172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A"));
 		addWidget(new Text(300+196+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "V"));
 		addWidget(new Text(300+220, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "fV"));
 		addWidget(new Text(300+244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
 		addWidget(new Text(300+268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
 	}
-	
+
 	// add ok button
 	addWidget(new TextButton(0, 345, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	
+
 	// add keyboard shortcut explanations
 	addWidget(new Text(10, 245, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation A]")));
 	addWidget(new Text(10, 258, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation V]")));
 	addWidget(new Text(10, 271, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation fV]")));
 	addWidget(new Text(10, 284, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation mV]")));
 	addWidget(new Text(10, 297, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation C]")));
-	
+
 	addWidget(new Text(10, 310, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation enter]")));
 	addWidget(new Text(10, 323, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation v]")));
-	
+
 	this->gameGUI=gameGUI;
 	dispatchInit();
 }
@@ -367,17 +367,17 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	addWidget(audioMuteText);
 
 	mute = new OnOffButton(19, 50, 20, 20, ALIGN_LEFT, ALIGN_TOP, globalContainer->settings.mute, MUTE);
-	addWidget(mute);	
+	addWidget(mute);
 
 	musicVolText=new Text(10, 80, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
 	addWidget(musicVolText);
 
 	voiceVolText=new Text(10, 130, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Voice volume]"));
 	addWidget(voiceVolText);
-	
+
 	musicVol=new Selector(19, 110, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256, true);
 	addWidget(musicVol);
-	
+
 	voiceVol=new Selector(19, 160, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.voiceVolume, 256, true);
 	addWidget(voiceVol);
 
@@ -390,14 +390,14 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	}
 
 	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	
+
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
 	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		oss << " GL";
 	else
 		oss << " SDL";
-		
+
 	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
 	dispatchInit();
 }
@@ -453,20 +453,20 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 	}
 	addWidget(new TextButton(second_offset+10, 40, 143, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[objectives]"), OBJECTIVES));
 	addWidget(new TextButton(second_offset+hints_x, 40, 143, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hints]"), HINTS));
-	
-	
-	
+
+
+
 	objectives = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[objectives]"));
 	briefing = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[briefing]"));
 	hints = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[hints]"));
-	
+
 	objectivesWidgets.push_back(objectives);
 	briefingWidgets.push_back(briefing);
 	hintsWidgets.push_back(hints);
-	
-	
+
+
 	std::string text;
-	
+
 	//This group of widgets is all for the objectives tab
 	objectivesWidgets.push_back(new Text(10, 70, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Primary Objectives]")));
 	int n=0;
@@ -494,7 +494,7 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 		objectivesWidgets.push_back(new Text(50, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[No Objectives]")));
 		n+=1;
 	}
-	
+
 	bool isSecondary = false;
 	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
 	{
@@ -504,7 +504,7 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 			break;
 		}
 	}
-	
+
 	if(isSecondary)
 	{
 		objectivesWidgets.push_back(new Text(10, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Secondary Objectives]")));
@@ -528,14 +528,14 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 			}
 		}
 	}
-	
+
 	text = gui->game.missionBriefing;
 	if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
 		text = Toolkit::getStringTable()->getString(text.c_str());
-		
+
 	//This group of widgets is for the mission briefing tab
 	briefingWidgets.push_back(new TextArea(10, 70, 450, 260, ALIGN_LEFT, ALIGN_TOP, "standard", true, text.c_str()));
-	
+
 	//This group of widgets is for the hints tab
 	n=0;
 	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
@@ -555,7 +555,7 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 		hintsWidgets.push_back(new Text(50, 70 + 25*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[No Hints]")));
 		n+=1;
 	}
-	
+
 	//Add the widgets to the menu
 	for(unsigned int i=0; i<objectivesWidgets.size(); i++)
 	{
@@ -572,7 +572,7 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 		hintsWidgets[i]->visible=false;
 		addWidget(hintsWidgets[i]);
 	}
-	
+
 	// add ok button
 	addWidget(new TextButton(0, 340, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	dispatchInit();

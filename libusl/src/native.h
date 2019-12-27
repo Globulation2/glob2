@@ -18,10 +18,10 @@ struct NativeFunction: NativeCode
 	BoostFunction function;
 
 	NativeFunction(const std::string& name, const BoostFunction& function, bool receiver = false);
-	
+
 	void prologue(ThunkPrototype* thunk);
 	void execute(Thread* thread);
-	
+
 	bool receiver;
 };
 
@@ -33,12 +33,12 @@ struct NativeValuePrototype: Prototype
 	{
 		initialize();
 	}
-	
+
 private:
 	/// specialize this method to add members to a native value prototype
 	void initialize()
 	{}
-	
+
 	template<typename Function>
 	void addMethod(const std::string& name, const boost::function<Function>& function)
 	{
@@ -52,16 +52,16 @@ template<typename This>
 struct NativeValue: Value
 {
 	static NativeValuePrototype<This> prototype;
-	
+
 	NativeValue(Heap* heap, const This& value):
 		Value(heap, &prototype),
 		value(value)
 	{}
-	
+
 	const This value;
-	
+
 	operator const This&() { return value; }
-	
+
 	void dumpSpecific(std::ostream &stream) const
 	{
 		stream << "= " << value;
@@ -256,7 +256,7 @@ void NativeFunction<Function>::prologue(ThunkPrototype* thunk)
 	size_t arguments = BoostFunction::arity;
 	if (receiver)
 		--arguments;
-	
+
 	if (arguments > 0)
 	{
 		thunk->body.push_back(new EvalCode()); // evaluate the argument
@@ -277,7 +277,7 @@ void NativeFunction<Function>::prologue(ThunkPrototype* thunk)
 	{
 		thunk->body.push_back(new PopCode()); // dump the argument
 	}
-	
+
 	if (receiver)
 	{
 		thunk->body.push_back(new ThunkCode()); // get the current thunk

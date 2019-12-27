@@ -27,10 +27,10 @@ class CPUStatisticsManager
 public:
 	///Constructs a CPU statistics manager
 	CPUStatisticsManager();
-	
+
 	///Resets the statistics
 	void reset(int time_per_frame);
-	
+
 	///Add the data for another frame to the manager
 	void addFrameData(int cpu_time_used);
 

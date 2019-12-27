@@ -32,7 +32,7 @@ class IRCThread
 {
 public:
 	IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex);
-	
+
 	///Runs the IRC thread
 	void operator()();
 
@@ -47,7 +47,7 @@ private:
 
 	IRC irc;
 	std::string channel;
-	
+
 	std::queue<boost::shared_ptr<IRCThreadMessage> > incoming;
 	std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing;
 	boost::recursive_mutex incomingMutex;

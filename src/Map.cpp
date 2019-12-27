@@ -83,7 +83,7 @@ Map::Map()
 	game=NULL;
 
 	arraysBuilt=false;
-	
+
 	mapDiscovered=NULL;
 	fogOfWar=NULL;
 	fogOfWarA=NULL;
@@ -108,11 +108,11 @@ Map::Map()
 		}
 	for (int t = 0; t < Team::MAX_COUNT; t++)
 		exploredArea[t] = NULL;
-	
+
 	undermap=NULL;
 	sectors=NULL;
 	listedAddr=NULL;
-	
+
 	for (int t = 0; t < Team::MAX_COUNT; t++)
 		clearingAreaClaims[t] = NULL;
 	w=0;
@@ -125,9 +125,9 @@ Map::Map()
 	wSector=0;
 	hSector=0;
 	sizeSector=0;
-	
+
 	immobileUnits=NULL;
-	
+
 	//Gradients stats:
 	for (int t=0; t<16; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
@@ -136,11 +136,11 @@ Map::Map()
 			ressourceAvailableCountSuccess[t][r]=0;
 			ressourceAvailableCountFailure[t][r]=0;
 		}
-	
+
 	pathToRessourceCountTot=0;
 	pathToRessourceCountSuccess=0;
 	pathToRessourceCountFailure=0;
-	
+
 	localRessourcesUpdateCount=0;
 	pathfindLocalRessourceCount=0;
 	pathfindLocalRessourceCountWait=0;
@@ -151,7 +151,7 @@ Map::Map()
 	pathfindLocalRessourceCountFailureUnusable=0;
 	pathfindLocalRessourceCountFailureNone=0;
 	pathfindLocalRessourceCountFailureBad=0;
-	
+
 	pathToBuildingCountTot=0;
 	pathToBuildingCountClose=0;
 	pathToBuildingCountCloseSuccessStand=0;
@@ -159,7 +159,7 @@ Map::Map()
 	pathToBuildingCountCloseSuccessUpdated=0;
 	pathToBuildingCountCloseFailureLocked=0;
 	pathToBuildingCountCloseFailureEnd=0;
-	
+
 	pathToBuildingCountIsFar=0;
 	pathToBuildingCountFar=0;
 	pathToBuildingCountFarIsNew=0;
@@ -172,12 +172,12 @@ Map::Map()
 	pathToBuildingCountFarUpdateFailureLocked=0;
 	pathToBuildingCountFarUpdateFailureVirtual=0;
 	pathToBuildingCountFarUpdateFailureBad=0;
-	
+
 	localBuildingGradientUpdate=0;
 	localBuildingGradientUpdateLocked=0;
 	globalBuildingGradientUpdate=0;
 	globalBuildingGradientUpdateLocked=0;
-	
+
 	buildingAvailableCountTot=0;
 	buildingAvailableCountClose=0;
 	buildingAvailableCountCloseSuccessFast=0;
@@ -186,7 +186,7 @@ Map::Map()
 	buildingAvailableCountCloseSuccessUpdateAround=0;
 	buildingAvailableCountCloseFailureLocked=0;
 	buildingAvailableCountCloseFailureEnd=0;
-	
+
 	buildingAvailableCountIsFar=0;
 	buildingAvailableCountFar=0;
 	buildingAvailableCountFarNew=0;
@@ -200,11 +200,11 @@ Map::Map()
 	buildingAvailableCountFarOldSuccessAround=0;
 	buildingAvailableCountFarOldFailureLocked=0;
 	buildingAvailableCountFarOldFailureEnd=0;
-	
+
 	pathfindForbiddenCount=0;
 	pathfindForbiddenCountSuccess=0;
 	pathfindForbiddenCountFailure=0;
-	
+
 	#ifdef check_disorderable_gradient_error_probability
 	// stats to check the probability of an error:
 	for (int i = 0; i < GT_SIZE; i++)
@@ -213,12 +213,12 @@ Map::Map()
 		listCountSizeStatsOver[i] = 0;
 	}
 	#endif
-	
+
 	logFile = globalContainer->logFileManager->getFile("Map.log");
 	std::fill(incRessourceLog, incRessourceLog + 16, 0);
 
 	areaNames.resize(9);
-	
+
 	fertilityMaximum = 0;
 }
 
@@ -242,7 +242,7 @@ void Map::clear()
 		mapDiscovered=NULL;
 
 		fogOfWar=NULL;
-		
+
 		assert(fogOfWarA);
 		delete[] fogOfWarA;
 		fogOfWarA=NULL;
@@ -263,7 +263,7 @@ void Map::clear()
 						delete[] ressourcesGradient[t][r][s];
 						ressourcesGradient[t][r][s] = NULL;
 					}
-		
+
 		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (forbiddenGradient[t][0])
 				for (int s=0; s<2; s++)
@@ -277,11 +277,11 @@ void Map::clear()
 					assert(clearAreasGradient[t][s]);
 					delete[] clearAreasGradient[t][s];
 					clearAreasGradient[t][s] = NULL;
-					
+
 					guardGradientUpdated[t][s] = false;
 					clearGradientUpdated[t][s] = false;
 				}
-		
+
 		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (exploredArea[t])
 			{
@@ -289,11 +289,11 @@ void Map::clear()
 				delete[] exploredArea[t];
 				exploredArea[t] = NULL;
 			}
-		
+
 		assert(undermap);
 		delete[] undermap;
 		undermap=NULL;
-		
+
 		assert(sectors);
 		delete[] sectors;
 		sectors=NULL;
@@ -301,7 +301,7 @@ void Map::clear()
 		assert(listedAddr);
 		delete[] listedAddr;
 		listedAddr=NULL;
-		
+
 		assert(astarpoints);
 		delete[] astarpoints;
 		astarpoints=NULL;
@@ -315,7 +315,7 @@ void Map::clear()
 				clearingAreaClaims[t]=NULL;
 			}
 		}
-		
+
 		assert(immobileUnits);
 		delete[] immobileUnits;
 		immobileUnits=NULL;
@@ -344,7 +344,7 @@ void Map::clear()
 			assert(exploredArea[t] == NULL);
 		for (int t=0; t<Team::MAX_COUNT; t++)
 			assert(clearingAreaClaims[t] == NULL);
-		
+
 		assert(undermap==NULL);
 		assert(sectors==NULL);
 		assert(listedAddr==NULL);
@@ -360,14 +360,14 @@ void Map::clear()
 		assert(hSector==0);
 		assert(sizeSector==0);
 	}
-	
+
 	w=h=0;
 	size=0;
 	wMask=hMask=0;
 	wDec=hDec=0;
 	wSector=hSector=0;
 	sizeSector=0;
-	
+
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
@@ -391,7 +391,7 @@ void Map::logAtClear()
 						ressourceAvailableCountFailure[t][r],
 						100.*(double)ressourceAvailableCountFailure[t][r]/(double)ressourceAvailableCount[t][r]);
 				}
-	
+
 	for (int t=0; t<16; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 		{
@@ -399,7 +399,7 @@ void Map::logAtClear()
 			ressourceAvailableCountSuccess[t][r]=0;
 			ressourceAvailableCountFailure[t][r]=0;
 		}
-	
+
 	fprintf(logFile, "\n");
 	fprintf(logFile, "pathToRessourceCountTot=%d\n", pathToRessourceCountTot);
 	if (pathToBuildingCountTot)
@@ -414,26 +414,26 @@ void Map::logAtClear()
 	pathToRessourceCountTot=0;
 	pathToRessourceCountSuccess=0;
 	pathToRessourceCountFailure=0;
-	
+
 	fprintf(logFile, "\n");
-	
+
 	fprintf(logFile, "pathfindLocalRessourceCount=%d\n", pathfindLocalRessourceCount);
 	if (pathfindLocalRessourceCount)
 	{
 		fprintf(logFile, "+ localRessourcesUpdateCount=%d (%f %% of calls)\n",
 			localRessourcesUpdateCount,
 			100.*(float)localRessourcesUpdateCount/(float)pathfindLocalRessourceCount);
-		
+
 		fprintf(logFile, "| pathfindLocalRessourceCountWait=%d (%f %% of count)\n",
 			pathfindLocalRessourceCountWait,
 			100.*(float)pathfindLocalRessourceCountWait/(float)pathfindLocalRessourceCount);
-		
+
 		int pathfindLocalRessourceCountSuccess=
 			+pathfindLocalRessourceCountSuccessBase
 			+pathfindLocalRessourceCountSuccessLocked
 			+pathfindLocalRessourceCountSuccessUpdate
 			+pathfindLocalRessourceCountSuccessUpdateLocked;
-		
+
 		fprintf(logFile, "| pathfindLocalRessourceCountSuccess=%d (%f %% of count)\n",
 			pathfindLocalRessourceCountSuccess,
 			100.*(float)pathfindLocalRessourceCountSuccess/(float)pathfindLocalRessourceCount);
@@ -453,12 +453,12 @@ void Map::logAtClear()
 			pathfindLocalRessourceCountSuccessUpdateLocked,
 			100.*(float)pathfindLocalRessourceCountSuccessUpdateLocked/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountSuccessUpdateLocked/(float)pathfindLocalRessourceCountSuccess);
-		
+
 		int pathfindLocalRessourceCountFailure=
 			+pathfindLocalRessourceCountFailureUnusable
 			+pathfindLocalRessourceCountFailureNone
 			+pathfindLocalRessourceCountFailureBad;
-		
+
 		fprintf(logFile, "| pathfindLocalRessourceCountFailure=%d (%f %% of count)\n",
 			pathfindLocalRessourceCountFailure,
 			100.*(float)pathfindLocalRessourceCountFailure/(float)pathfindLocalRessourceCount);
@@ -475,9 +475,9 @@ void Map::logAtClear()
 			100.*(float)pathfindLocalRessourceCountFailureBad/(float)pathfindLocalRessourceCount,
 			100.*(float)pathfindLocalRessourceCountFailureBad/(float)pathfindLocalRessourceCountFailure);
 	}
-	
+
 	localRessourcesUpdateCount=0;
-	
+
 	pathfindLocalRessourceCount=0;
 	pathfindLocalRessourceCountWait=0;
 	pathfindLocalRessourceCountSuccessBase=0;
@@ -487,7 +487,7 @@ void Map::logAtClear()
 	pathfindLocalRessourceCountFailureUnusable=0;
 	pathfindLocalRessourceCountFailureNone=0;
 	pathfindLocalRessourceCountFailureBad=0;
-	
+
 	fprintf(logFile, "\n");
 	fprintf(logFile, "pathToBuildingCountTot=%d\n", pathToBuildingCountTot);
 	if (pathToBuildingCountTot)
@@ -495,35 +495,35 @@ void Map::logAtClear()
 		fprintf(logFile, "|- pathToBuildingCountClose=%d (%f %% of tot)\n",
 			pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountClose/(double)pathToBuildingCountTot);
-		
+
 		int pathToBuildingCountCloseSuccessTot=
 			+pathToBuildingCountCloseSuccessStand
 			+pathToBuildingCountCloseSuccessBase
 			+pathToBuildingCountCloseSuccessUpdated;
-	
+
 		fprintf(logFile, "|-  pathToBuildingCountCloseSuccessTot=%d (%f %% of tot) (%f %% of close)\n",
 			pathToBuildingCountCloseSuccessTot,
 			100.*(double)pathToBuildingCountCloseSuccessTot/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessTot/(double)pathToBuildingCountClose);
-		
+
 		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessStand=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessStand,
 			100.*(double)pathToBuildingCountCloseSuccessStand/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessStand/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessStand/(double)pathToBuildingCountCloseSuccessTot);
-		
+
 		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessBase=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessBase,
 			100.*(double)pathToBuildingCountCloseSuccessBase/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessBase/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessBase/(double)pathToBuildingCountCloseSuccessTot);
-		
+
 		fprintf(logFile, "|-   pathToBuildingCountCloseSuccessUpdated=%d (%f %% of tot) (%f %% of close) (%f %% of successTot)\n",
 			pathToBuildingCountCloseSuccessUpdated,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountClose,
 			100.*(double)pathToBuildingCountCloseSuccessUpdated/(double)pathToBuildingCountCloseSuccessTot);
-		
+
 		int pathToBuildingCountCloseFailure=
 			+pathToBuildingCountCloseFailureLocked
 			+pathToBuildingCountCloseFailureEnd;
@@ -561,7 +561,7 @@ void Map::logAtClear()
 			pathToBuildingCountIsFar,
 			100.*(double)pathToBuildingCountIsFar/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountIsFar/(double)pathToBuildingCountFar);
-		
+
 		int pathToBuildingCountFarOld=
 			+pathToBuildingCountFarOldSuccess
 			+pathToBuildingCountFarOldFailureLocked
@@ -572,13 +572,13 @@ void Map::logAtClear()
 			pathToBuildingCountFarOld,
 			100.*(double)pathToBuildingCountFarOld/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarOld/(double)pathToBuildingCountFar);
-		
+
 		fprintf(logFile, "|-   pathToBuildingCountFarOldSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of old)\n",
 			pathToBuildingCountFarOldSuccess,
 			100.*(double)pathToBuildingCountFarOldSuccess/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarOldSuccess/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarOldSuccess/(double)pathToBuildingCountFarOld);
-		
+
 		int pathToBuildingCountFarOldFailure=
 			+pathToBuildingCountFarOldFailureLocked
 			+pathToBuildingCountFarOldFailureBad
@@ -613,7 +613,7 @@ void Map::logAtClear()
 			100.*(double)pathToBuildingCountFarOldFailureUnusable/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarOldFailureUnusable/(double)pathToBuildingCountFarOld,
 			100.*(double)pathToBuildingCountFarOldFailureUnusable/(double)pathToBuildingCountFarOldFailure);
-		
+
 		int pathToBuildingCountFarUpdate=
 			+pathToBuildingCountFarUpdateSuccess
 			+pathToBuildingCountFarUpdateFailureLocked
@@ -633,7 +633,7 @@ void Map::logAtClear()
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountTot,
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountFar,
 			100.*(double)pathToBuildingCountFarUpdateSuccess/(double)pathToBuildingCountFarUpdate);
-		
+
 		int pathToBuildingCountFarUpdateFailure=
 			+pathToBuildingCountFarUpdateFailureLocked
 			+pathToBuildingCountFarUpdateFailureVirtual
@@ -662,7 +662,7 @@ void Map::logAtClear()
 			100.*(double)pathToBuildingCountFarUpdateFailureBad/(double)pathToBuildingCountFarUpdate,
 			100.*(double)pathToBuildingCountFarUpdateFailureBad/(double)pathToBuildingCountFarUpdateFailure);
 	}
-	
+
 	pathToBuildingCountTot=0;
 	pathToBuildingCountClose=0;
 	pathToBuildingCountCloseSuccessStand=0;
@@ -670,21 +670,21 @@ void Map::logAtClear()
 	pathToBuildingCountCloseSuccessUpdated=0;
 	pathToBuildingCountCloseFailureLocked=0;
 	pathToBuildingCountCloseFailureEnd=0;
-	
+
 	pathToBuildingCountIsFar=0;
 	pathToBuildingCountFar=0;
-	
+
 	pathToBuildingCountFarIsNew=0;
 	pathToBuildingCountFarOldSuccess=0;
 	pathToBuildingCountFarOldFailureLocked=0;
 	pathToBuildingCountFarOldFailureBad=0;
 	pathToBuildingCountFarOldFailureRepeat=0;
 	pathToBuildingCountFarOldFailureUnusable=0;
-	
+
 	pathToBuildingCountFarUpdateSuccess=0;
 	pathToBuildingCountFarUpdateFailureLocked=0;
 	pathToBuildingCountFarUpdateFailureBad=0;
-	
+
 	int buildingGradientUpdate=localBuildingGradientUpdate+globalBuildingGradientUpdate;
 	fprintf(logFile, "\n");
 	fprintf(logFile, "buildingGradientUpdate=%d\n", buildingGradientUpdate);
@@ -697,7 +697,7 @@ void Map::logAtClear()
 			localBuildingGradientUpdateLocked,
 			100.*(double)localBuildingGradientUpdateLocked/(double)buildingGradientUpdate,
 			100.*(double)localBuildingGradientUpdateLocked/(double)localBuildingGradientUpdate);
-		
+
 		fprintf(logFile, "|- globalBuildingGradientUpdate=%d (%f %%)\n",
 			globalBuildingGradientUpdate,
 			100.*(double)globalBuildingGradientUpdate/(double)buildingGradientUpdate);
@@ -706,12 +706,12 @@ void Map::logAtClear()
 			100.*(double)globalBuildingGradientUpdateLocked/(double)buildingGradientUpdate,
 			100.*(double)globalBuildingGradientUpdateLocked/(double)globalBuildingGradientUpdate);
 	}
-	
+
 	localBuildingGradientUpdate=0;
 	localBuildingGradientUpdateLocked=0;
 	globalBuildingGradientUpdate=0;
 	globalBuildingGradientUpdateLocked=0;
-	
+
 	fprintf(logFile, "\n");
 	fprintf(logFile, "buildingAvailableCountTot=%d\n", buildingAvailableCountTot);
 	if (buildingAvailableCountTot)
@@ -719,7 +719,7 @@ void Map::logAtClear()
 		fprintf(logFile, "|- buildingAvailableCountClose=%d (%f %%)\n",
 			buildingAvailableCountClose,
 			100.*(double)buildingAvailableCountClose/(double)buildingAvailableCountTot);
-		
+
 		int buildingAvailableCountCloseSuccess=
 			+buildingAvailableCountCloseSuccessFast
 			+buildingAvailableCountCloseSuccessAround
@@ -749,7 +749,7 @@ void Map::logAtClear()
 			100.*(double)buildingAvailableCountCloseSuccessUpdateAround/(double)buildingAvailableCountTot,
 			100.*(double)buildingAvailableCountCloseSuccessUpdateAround/(double)buildingAvailableCountClose,
 			100.*(double)buildingAvailableCountCloseSuccessUpdateAround/(double)buildingAvailableCountCloseSuccess);
-		
+
 		int buildingAvailableCountCloseFailure=
 			+buildingAvailableCountCloseFailureLocked
 			+buildingAvailableCountCloseFailureEnd;
@@ -767,7 +767,7 @@ void Map::logAtClear()
 			100.*(double)buildingAvailableCountCloseFailureEnd/(double)buildingAvailableCountTot,
 			100.*(double)buildingAvailableCountCloseFailureEnd/(double)buildingAvailableCountClose,
 			100.*(double)buildingAvailableCountCloseFailureEnd/(double)buildingAvailableCountCloseFailure);
-		
+
 		fprintf(logFile, "|- buildingAvailableCountFar=%d (%f %%)\n",
 			buildingAvailableCountFar,
 			100.*(double)buildingAvailableCountFar/(double)buildingAvailableCountTot);
@@ -775,12 +775,12 @@ void Map::logAtClear()
 			buildingAvailableCountIsFar,
 			100.*(double)buildingAvailableCountIsFar/(double)buildingAvailableCountTot,
 			100.*(double)buildingAvailableCountIsFar/(double)buildingAvailableCountFar);
-		
+
 		fprintf(logFile, "|-  buildingAvailableCountFarOld=%d (%f %% of tot) (%f %% of far)\n",
 			buildingAvailableCountFarOld,
 			100.*(double)buildingAvailableCountFarOld/(double)buildingAvailableCountTot,
 			100.*(double)buildingAvailableCountFarOld/(double)buildingAvailableCountFar);
-		
+
 		int buildingAvailableCountFarOldSuccess=
 			+buildingAvailableCountFarOldSuccessFast
 			+buildingAvailableCountFarOldSuccessAround;
@@ -801,7 +801,7 @@ void Map::logAtClear()
 			100.*(double)buildingAvailableCountFarOldSuccessAround/(double)buildingAvailableCountFar,
 			100.*(double)buildingAvailableCountFarOldSuccessAround/(double)buildingAvailableCountFarOld,
 			100.*(double)buildingAvailableCountFarOldSuccessAround/(double)buildingAvailableCountFarOldSuccess);
-		
+
 		int buildingAvailableCountFarOldFailure=
 			+buildingAvailableCountFarOldFailureLocked
 			+buildingAvailableCountFarOldFailureEnd;
@@ -822,12 +822,12 @@ void Map::logAtClear()
 			100.*(double)buildingAvailableCountFarOldFailureEnd/(double)buildingAvailableCountFar,
 			100.*(double)buildingAvailableCountFarOldFailureEnd/(double)buildingAvailableCountFarOld,
 			100.*(double)buildingAvailableCountFarOldFailureEnd/(double)buildingAvailableCountFarOldFailure);
-		
+
 		fprintf(logFile, "|-  buildingAvailableCountFarNew=%d (%f %% of tot) (%f %% of far)\n",
 			buildingAvailableCountFarNew,
 			100.*(double)buildingAvailableCountFarNew/(double)buildingAvailableCountTot,
 			100.*(double)buildingAvailableCountFarNew/(double)buildingAvailableCountFar);
-		
+
 		int buildingAvailableCountFarNewSuccess=buildingAvailableCountFarNewSuccessFast+buildingAvailableCountFarNewSuccessClosely;
 		fprintf(logFile, "|-    buildingAvailableCountFarNewSuccess=%d (%f %% of tot) (%f %% of far) (%f %% of new)\n",
 			buildingAvailableCountFarNewSuccess,
@@ -846,7 +846,7 @@ void Map::logAtClear()
 			100.*(double)buildingAvailableCountFarNewSuccessClosely/(double)buildingAvailableCountFar,
 			100.*(double)buildingAvailableCountFarNewSuccessClosely/(double)buildingAvailableCountFarNew,
 			100.*(double)buildingAvailableCountFarNewSuccessClosely/(double)buildingAvailableCountFarNewSuccess);
-		
+
 		int buildingAvailableCountFarNewFailure=
 			+buildingAvailableCountFarNewFailureLocked
 			+buildingAvailableCountFarNewFailureVirtual
@@ -875,9 +875,9 @@ void Map::logAtClear()
 			100.*(double)buildingAvailableCountFarNewFailureEnd/(double)buildingAvailableCountFarNew,
 			100.*(double)buildingAvailableCountFarNewFailureEnd/(double)buildingAvailableCountFarNewFailure);
 	}
-	
+
 	buildingAvailableCountTot=0;
-	
+
 	buildingAvailableCountClose=0;
 	buildingAvailableCountCloseSuccessFast=0;
 	buildingAvailableCountCloseSuccessAround=0;
@@ -885,7 +885,7 @@ void Map::logAtClear()
 	buildingAvailableCountCloseSuccessUpdateAround=0;
 	buildingAvailableCountCloseFailureLocked=0;
 	buildingAvailableCountCloseFailureEnd=0;
-	
+
 	buildingAvailableCountIsFar=0;
 	buildingAvailableCountFar=0;
 	buildingAvailableCountFarNew=0;
@@ -899,7 +899,7 @@ void Map::logAtClear()
 	buildingAvailableCountFarOldSuccessAround=0;
 	buildingAvailableCountFarOldFailureLocked=0;
 	buildingAvailableCountFarOldFailureEnd=0;
-	
+
 	fprintf(logFile, "\n");
 	fprintf(logFile, "pathfindForbiddenCount=%d\n", pathfindForbiddenCount);
 	if (pathfindForbiddenCount)
@@ -907,16 +907,16 @@ void Map::logAtClear()
 		fprintf(logFile, "|- pathfindForbiddenCountSuccess=%d (%f %%)\n",
 			pathfindForbiddenCountSuccess,
 			100.*(double)pathfindForbiddenCountSuccess/(double)pathfindForbiddenCount);
-		
+
 		fprintf(logFile, "|- pathfindForbiddenCountFailure=%d (%f %%)\n",
 			pathfindForbiddenCountFailure,
 			100.*(double)pathfindForbiddenCountFailure/(double)pathfindForbiddenCount);
 	}
-	
+
 	pathfindForbiddenCount=0;
 	pathfindForbiddenCountSuccess=0;
 	pathfindForbiddenCountFailure=0;
-	
+
 	#ifdef check_disorderable_gradient_error_probability
 	fprintf(logFile, "\n");
 	for (int i = 0; i < GT_SIZE; i++)
@@ -963,11 +963,11 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	fogOfWarB=new Uint32[size];
 	memset(fogOfWarB, 0, size*sizeof(Uint32));
 	fogOfWar=fogOfWarA;
-	
+
 	localForbiddenMap.resize(size, false);
 	localGuardAreaMap.resize(size, false);
 	localClearAreaMap.resize(size, false);
-	
+
 	cases=new Case[size];
 	Case initCase;
 	initCase.terrain = 0; // default, not really meaningfull.
@@ -981,13 +981,13 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	initCase.scriptAreas = 0;
 	initCase.canRessourcesGrow = 1;
 	initCase.fertility = 0;
-	
+
 	for (size_t i=0; i<size; i++)
 		cases[i]=initCase;
-	
+
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
-	
+
 	listedAddr = new Uint8*[size];
 
 	//numberOfTeam=0, then ressourcesGradient[][][] is empty. This is done by clear();
@@ -1006,13 +1006,13 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 
 	immobileUnits = new Uint8[w*h];
-	for (int i=0; i<w*h; i++) 
+	for (int i=0; i<w*h; i++)
 	{
 		immobileUnits[i]=0;
 	}
 
 	arraysBuilt=true;
-	
+
 	#ifdef check_disorderable_gradient_error_probability
 	// stats to check the probability of an error:
 	for (int i = 0; i < GT_SIZE; i++)
@@ -1035,7 +1035,7 @@ void Map::setGame(Game *game)
 	assert(sectors);
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
-	
+
 	#ifdef check_disorderable_gradient_error_probability
 	// stats to check the probability of an error:
 	for (int i = 0; i < GT_SIZE; i++)
@@ -1055,7 +1055,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	Sint32 versionMinor = header.getVersionMinor();
 
 	clear();
-	
+
 	stream->readEnterSection("Map");
 
 	char signature[4];
@@ -1091,7 +1091,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	astarpoints=new AStarAlgorithmPoint[size];
 	immobileUnits = new Uint8[size];
 	memset(immobileUnits, 255, size*sizeof(Uint8));
-	
+
 	#ifdef check_disorderable_gradient_error_probability
 	for (int i = 0; i < GT_SIZE; i++)
 	{
@@ -1137,7 +1137,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		setAreaName(n, stream->readText("areaname"));
 		stream->readLeaveSection();
 	}
-	
+
 	if (game)
 	{
                 /* Must set game field before following action as they
@@ -1165,15 +1165,15 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 				assert(forbiddenGradient[t][s] == NULL);
 				forbiddenGradient[t][s] = new Uint8[size];
 				updateForbiddenGradient(t, s);
-				
+
 				assert(guardAreasGradient[t][s] == NULL);
 				guardAreasGradient[t][s] = new Uint8[size];
 				updateGuardAreasGradient(t, s);
-			
+
 				assert(clearAreasGradient[t][s] == NULL);
 				clearAreasGradient[t][s] = new Uint8[size];
 				updateClearAreasGradient(t, s);
-				
+
 				guardGradientUpdated[t][s] = false;
 				clearGradientUpdated[t][s] = false;
 			}
@@ -1183,7 +1183,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 			exploredArea[t] = new Uint8[size];
 			initExploredArea(t);
 			makeDiscoveredAreasExplored(t);
-			
+
 			clearingAreaClaims[t] = new Uint16[size];
 			memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
 		}
@@ -1195,9 +1195,9 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
-	
+
 	arraysBuilt = true;
-	
+
 	stream->readEnterSection("sectors");
 	for (int i=0; i<sizeSector; i++)
 	{
@@ -1213,13 +1213,13 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 
 	stream->read(signature, 4, "signatureEnd");
 	stream->readLeaveSection();
-	
+
 	if (memcmp(signature, "MapE", 4)!=0)
 	{
 		fprintf(stderr, "Map:: Failed to find signature at the end of Map.\n");
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -1227,7 +1227,7 @@ void Map::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("Map");
 	stream->write("MapB", 4, "signatureStart");
-	
+
 	// We save size:
 	stream->writeSint32(wDec, "wDec");
 	stream->writeSint32(hDec, "hDec");
@@ -1242,9 +1242,9 @@ void Map::save(GAGCore::OutputStream *stream)
 
 		stream->writeUint16(cases[i].terrain, "terrain");
 		stream->writeUint16(cases[i].building, "building");
-		
+
 		stream->write(&(cases[i].ressource), 4, "ressource");
-		
+
 		stream->writeUint16(cases[i].groundUnit, "groundUnit");
 		stream->writeUint16(cases[i].airUnit, "airUnit");
 		stream->writeUint32(cases[i].forbidden, "forbidden");
@@ -1286,7 +1286,7 @@ void Map::addTeam(void)
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	int oldNumberOfTeam=numberOfTeam-1;
 	assert(numberOfTeam>0);
-	
+
 	for (int t=0; t<oldNumberOfTeam; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
@@ -1295,7 +1295,7 @@ void Map::addTeam(void)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
 				assert(ressourcesGradient[t][r][s]==NULL);
-	
+
 	int t=oldNumberOfTeam;
 	for (int r=0; r<MAX_RESSOURCES; r++)
 		for (int s=0; s<2; s++)
@@ -1304,7 +1304,7 @@ void Map::addTeam(void)
 			ressourcesGradient[t][r][s]=new Uint8[size];
 			updateRessourcesGradient(t, r, (bool)s);
 		}
-	
+
 	for (int s=0; s<2; s++)
 	{
 		assert(forbiddenGradient[t][s] == NULL);
@@ -1317,11 +1317,11 @@ void Map::addTeam(void)
 		clearAreasGradient[t][s] = new Uint8[size];
 		updateClearAreasGradient(t, s);
 	}
-	
+
 	assert(exploredArea[t] == NULL);
 	exploredArea[t] = new Uint8[size];
 	initExploredArea(t);
-	
+
 	assert(clearingAreaClaims[t] == NULL);
 	clearingAreaClaims[t] = new Uint16[size];
 	memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
@@ -1332,7 +1332,7 @@ void Map::removeTeam(void)
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 //	int oldNumberOfTeam=numberOfTeam+1;
 	assert(numberOfTeam<Team::MAX_COUNT);
-	
+
 //	for (int t=0; t<oldNumberOfTeam; t++)
 //		for (int r=0; r<MAX_RESSOURCES; r++)
 //			for (int s=0; s<2; s++)
@@ -1341,7 +1341,7 @@ void Map::removeTeam(void)
 //		for (int r=0; r<MAX_RESSOURCES; r++)
 //			for (int s=0; s<2; s++)
 //				assert(ressourcesGradient[t][r][s]==NULL);
-	
+
 	int t=numberOfTeam;
 	for (int r=0; r<MAX_RESSOURCES; r++)
 		for (int s=0; s<2; s++)
@@ -1365,11 +1365,11 @@ void Map::removeTeam(void)
 		clearAreasGradient[t][s]=NULL;
 	}
 
-	
+
 	assert(exploredArea[t] != NULL);
 	delete[] exploredArea[t];
 	exploredArea[t]=NULL;
-	
+
 	assert(clearingAreaClaims[t] != NULL);
 	delete[] clearingAreaClaims[t];
 	clearingAreaClaims[t]=NULL;
@@ -1448,14 +1448,14 @@ void Map::syncStep(Uint32 stepCounter)
 	growRessources();
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
-	
+
 	if (stepCounter & 1)
 	{
 		int team = (stepCounter >> 1) & 31;
 		if (team < game->mapHeader.getNumberOfTeams())
 			updateExploredArea(team);
 	}
-	
+
 	// We only update one gradient per step:
 	bool updated=false;
 	while (!updated)
@@ -1486,7 +1486,7 @@ void Map::syncStep(Uint32 stepCounter)
 					clearGradientUpdated[t][s]=true;
 					return;
 				}
-				
+
 
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
@@ -1544,12 +1544,12 @@ void Map::computeLocalClearArea(int localTeamNo)
 void Map::decRessource(int x, int y)
 {
 	Ressource &r = getCase(x, y).ressource;
-	
+
 	if (r.type == NO_RES_TYPE || r.amount == 0)
 		return;
-	
+
 	const RessourceType *fulltype = globalContainer->ressourcesTypes.get(r.type);
-	
+
 	if (!fulltype->shrinkable)
 		return;
 	if (fulltype->eternal)
@@ -1586,7 +1586,7 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 		if (getGroundUnit(x, y) != NOGUID)
 			return false;
 		incRessourceLog[3]++;
-		
+
 		fulltype = globalContainer->ressourcesTypes.get(ressourceType);
 		if (getTerrainType(x, y) == fulltype->terrain)
 		{
@@ -1608,7 +1608,7 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 		fulltype = globalContainer->ressourcesTypes.get(r.type);
 		incRessourceLog[6]++;
 	}
-	
+
 	incRessourceLog[7]++;
 	if (r.type != ressourceType)
 		return false;
@@ -1754,7 +1754,7 @@ bool Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy)
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	
+
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
 			if (getBuilding(x+tdx, y+tdy)==gbid)
@@ -1899,7 +1899,7 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
 			}
 			//TODO: can ground WARRIOR hit flying EXPLORER ?
 		}
-	
+
 	if (bestTime<256)
 	{
 		*dx=bdx;
@@ -2166,12 +2166,12 @@ void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHei
 		tempX=((mx)>>5)+viewportX;
 	else
 		tempX=((mx+16)>>5)+viewportX;
-			
+
 	if (buildingHeight&0x1)
 		tempY=((my)>>5)+viewportY;
 	else
 		tempY=((my+16)>>5)+viewportY;
-		
+
 	*px=tempX&getMaskW();
 	*py=tempY&getMaskH();
 }
@@ -2209,7 +2209,7 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y, dist);
 	else
 		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y);
-		
+
 	// target position
 	Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
 	ressourceAvailableCount[teamNumber][ressourceType]++;
@@ -2217,7 +2217,7 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 		ressourceAvailableCountSuccess[teamNumber][ressourceType]++;
 	else
 		ressourceAvailableCountFailure[teamNumber][ressourceType]++;
-	
+
 	return result;
 }
 
@@ -2228,7 +2228,7 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 	int vy = y & hMask;
 	// max is initiaslized to gradient value of current position
 	Uint8 max = gradient[(vx&wMask)+((vy&hMask)<<wDec)];
-	
+
 	bool result = false;
 	// for up to 255 steps, we follow gradient
 	for (int count=0; count<255; count++)
@@ -2236,7 +2236,7 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 		bool found = false;
 		int vddx = 0;
 		int vddy = 0;
-		
+
 		// search all directions
 		for (int d=0; d<8; d++)
 		{
@@ -2251,11 +2251,11 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 				found = true;
 			}
 		}
-		
+
 		// change position
 		vx = (vx+vddx) & wMask;
 		vy = (vy+vddy) & hMask;
-		
+
 		// if we have reached destionation break
 		if (max == 255)
 		{
@@ -2266,7 +2266,7 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 		else if (!found)
 			break;
 	}
-	
+
 	// return best destination and wether it is exact or not
 	*targetX = vx;
 	*targetY = vy;
@@ -2318,23 +2318,23 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimple(
 	while (listCountRead < listCountWrite)
 	{
 		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
-		
+
 		size_t y = deltaAddrG >> wDec;      // Calculate the coordinates of
 		size_t x = deltaAddrG & wMask;      // the current field and of the
-		
+
 		size_t yu = ((y - 1) & hMask);      // fields next to it.
 		size_t yd = ((y + 1) & hMask);      // We live on a torus! If we are on
 		size_t xl = ((x - 1) & wMask);      // the "last line" of the map, the
 		size_t xr = ((x + 1) & wMask);      // next line is the line 0 again.
-		
+
 		Uint8 g = gradient[(y << wDec) | x] - 1;
 		if (g <= 1)        // All free non-source-fields start with gradient=1
 			continue;  // There is no need to propagate gradient when g==1
-		
+
 		size_t deltaAddrC[8];
 		Uint8 *addr;
 		Uint8 side;
-		
+
 		deltaAddrC[0] = (yu << wDec) | xl;  // Calculate the positions of the
 		deltaAddrC[1] = (yu << wDec) | x ;  // 8 fields next to us from their
 		deltaAddrC[2] = (yu << wDec) | xr;  // coordinates.
@@ -2403,19 +2403,19 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 	while (listCountRead < listCountWrite)
 	{
 		Tint deltaAddrG = listedAddr[(listCountRead++)&(size-1)];
-		
+
 		size_t y = deltaAddrG >> wDec;
 		size_t x = deltaAddrG & wMask;
-		
+
 		size_t yu = ((y - 1) & hMask);
 		size_t yd = ((y + 1) & hMask);
 		size_t xl = ((x - 1) & wMask);
 		size_t xr = ((x + 1) & wMask);
-		
+
 		Uint8 g = gradient[(y << wDec) | x] - 1;
 		if (g <= 1)
 			continue;
-		
+
 		Uint32 flag = 0;
 		Uint8 *addr;
 		Uint8 side;
@@ -2434,7 +2434,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 	        */
 			const Uint32 diagFlags[4] = {9, 3, 6, 12};
 			size_t deltaAddrC[4];
-			
+
 			deltaAddrC[0] = (yu << wDec) | xl; // Calculate the position
 			deltaAddrC[1] = (yu << wDec) | xr; // of the 4 diagonal fields
 			deltaAddrC[2] = (yd << wDec) | xr;
@@ -2457,10 +2457,10 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 		}
 		{ // Now we take a look at our nondiagonal neighbours
 			size_t deltaAddrC[4];
-			
+
 			deltaAddrC[0] = (yu << wDec) | x ;   // _|0|_
 			deltaAddrC[1] = (y  << wDec) | xr;   // 3|*|1
-			deltaAddrC[2] = (yd << wDec) | x ;   //  |2| 
+			deltaAddrC[2] = (yd << wDec) | x ;   //  |2|
 			deltaAddrC[3] = (y  << wDec) | xl;
 
 
@@ -2471,7 +2471,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 				if (side > 0 && side < g)
 				{
 					*addr = g;
-                                // Only mark this as a new source, 
+                                // Only mark this as a new source,
                                 // if its left or right was inaccessable.
 					if (flag & 1) // Information is in the first bit
 						listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
@@ -2515,18 +2515,18 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 	size_t spared=0;
 	size_t listCountWriteStart=listCountWrite;
 #endif
-	
+
 	while (listCountRead < listCountWrite)  // While listedAddr not empty.
 	{
 		Tint deltaAddrG = listedAddr[listCountRead&sizeMask];
-		
+
 		size_t y = deltaAddrG >> wDec;
 		size_t x = deltaAddrG & wMask;
-		
+
 		size_t yu = ((y - 1) & hMask);
 		size_t yd = ((y + 1) & hMask);
 
-		
+
 		Uint8 myg = gradient[deltaAddrG]; // Get the gradient of the current field
 		Uint8 g = myg-1;   // g will be the gradient of the children.
 		if (g <= 1)        // All free non-source-fields start with gradient=1
@@ -2534,11 +2534,11 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 			listCountRead++;
 			continue;  // There is no need to propagate gradient when g==1
 		}
-		
+
 
 		Uint8 *addr;       // Pointer to a field.
 		Uint8 side;        // Gradient value of a field.
-		size_t pos;        // pos stores the combined (x,y) coordinate.		
+		size_t pos;        // pos stores the combined (x,y) coordinate.
 
 
                 // Get the length of the segment.
@@ -2582,7 +2582,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 		bool rightflag=false;  // resp. right of the segment to listedAddr.
 
                 // Handle the upper line first then the lower line.
-		ylineDec = yu << wDec;   
+		ylineDec = yu << wDec;
 		for (int upperOrLower=0;upperOrLower<=1;upperOrLower++)
 		{
 			// The left of the first field is special,
@@ -2593,7 +2593,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 			if ( side>0 && side<g )     // Check if we can improve.
 			{
 				*addr = g;
-				listedAddr[(listCountWrite++)&sizeMask] = pos;				
+				listedAddr[(listCountWrite++)&sizeMask] = pos;
 			} else if (side == 0)       // See Simons version.
 				leftflag=true;
 
@@ -2618,13 +2618,13 @@ template<typename Tint> void Map::updateGlobalGradientVersionKai(Uint8 *gradient
 			if ( side>0 && side<g )
 			{
 				*addr = g;
-				listedAddr[(listCountWrite++)&sizeMask] = pos;				
+				listedAddr[(listCountWrite++)&sizeMask] = pos;
 			} else if (side == 0)
 				rightflag=true;
 
 			ylineDec = yd << wDec;  // Change attention to the lower line.
 		}
-                // The segment is processed.		
+                // The segment is processed.
 		// Now handle leftmost and rightmost field.
 		pos = (y << wDec) | ( (x-1) & wMask );
 		addr = &gradient[pos];
@@ -2682,7 +2682,7 @@ template<typename Tint> void Map::updateGlobalGradient(
 	fprintf(logSimon, "gradientType: %d\n", gradientType);
 	fprintf(logSimon, "canSwim: %d\n", canSwim);
 #endif
-	
+
 	#if defined( USE_GRADIENT_VERSION_TEST_KAI)
 	if (gradientType == GT_UNDEFINED)
 		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
@@ -2696,28 +2696,28 @@ template<typename Tint> void Map::updateGlobalGradient(
 		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 		assert (memcmp (testGradient, gradient, size) == 0);
 	}
-	
+
 	#elif defined(USE_GRADIENT_VERSION_KAI)
 		updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
-		
+
 	#elif defined(USE_GRADIENT_VERSION_SIMON)
 		updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
-		
+
 	#elif defined(USE_GRADIENT_VERSION_SIMPLE)
 		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-		
+
 	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION_SR)
 		if (gradientType == GT_RESOURCE)
 			updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
 		else
 			updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-		
+
 	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION_KR)
 		if (gradientType == GT_RESOURCE)
 			updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
 		else
 			updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-		
+
 	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION)
 		// use the fastest gradient computation for each GradientType:
 		switch (gradientType)
@@ -2726,38 +2726,38 @@ template<typename Tint> void Map::updateGlobalGradient(
 				updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
 				// speed 105.09% compare to simple on test
 			break;
-			
+
 			case GT_RESOURCE:
 				updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
 				//speed 104.76% compare to simple on test
 			break;
-			
+
 			case GT_BUILDING:
 				updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
 				// speed 100.29% compare to simple on test
 			break;
-			
+
 			case GT_FORBIDDEN:
 				updateGlobalGradientVersionKai<Tint>(gradient, listedAddr, listCountWrite);
 				// speed 100.18% compare to simple on test
 			break;
-			
+
 			case GT_GUARD_AREA:
 				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 				// fastest one here
 			break;
-			
+
 			case GT_CLEAR_AREA:
 				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
 				// fastest one here
 			break;
-			
+
 			default:
 				assert(false);
 				abort();
 			break;
 		}
-			
+
 	#else
 		#error Please select a gradient version
 	#endif
@@ -2777,7 +2777,7 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 	assert(gradient);
 	Tint *listedAddr = new Tint[size];
 	size_t listCountWrite = 0;
-	
+
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
 	for (size_t i=0; i<size; i++)
@@ -2809,7 +2809,7 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 		else
 			gradient[i]=0;
 	}
-	
+
 	updateGlobalGradient(gradient, (Tint *)listedAddr, listCountWrite, GT_RESOURCE, canSwim);
 	delete[] listedAddr;
 }
@@ -2819,7 +2819,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	Uint8 max;
 	Uint8 mxd; // max in direction
 	Uint32 maxs[8];
-	
+
 	max=mxd=miniGrad[1+1*5];
 	if (max && max!=255)
 	{
@@ -2864,8 +2864,8 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 		UPDATE_MAX(max,miniGrad[0+2*5]);
 	}
 	maxs[3]=(max<<8)|mxd;
-	
-	
+
+
 	max=mxd=miniGrad[2+1*5];
 	if (max && max!=255)
 	{
@@ -2902,7 +2902,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 		UPDATE_MAX(max,miniGrad[0+3*5]);
 	}
 	maxs[7]=(max<<8)|mxd;
-	
+
 	int centerg=miniGrad[2+2*5];
 	centerg=(centerg<<8)|centerg;
 	int maxg=0;
@@ -2936,7 +2936,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			}
 		}
 	}
-	
+
 	if (verbose)
 	{
 		if (verbose)
@@ -2957,10 +2957,10 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 			printf("max=%4d.%4d (%d), d=%d, good=%d\n", maxs[maxd]>>8, maxs[maxd]&0xFF, maxs[maxd], maxd, good);
 		};
 	}
-	
+
 	if (!good)
 		return false;
-	
+
 	int stdd;
 	if (maxd<4)
 		stdd=(maxd<<1);
@@ -2968,9 +2968,9 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 		stdd=1+((maxd-4)<<1);
 	else
 		stdd=8;
-	
+
 	//printf("stdd=%4d\n", maxd);
-	
+
 	Unit::dxdyfromDirection(stdd, dx, dy);
 	return true;
 }
@@ -3090,7 +3090,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 		*stopWork=true;
 		return false;
 	}
-	
+
 	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true, verbose))
 	{
 		pathToRessourceCountSuccess++;
@@ -3230,11 +3230,11 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 	int posH=building->type->height;
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
-	
+
 	Uint8 *tgtGradient=building->localGradient[canSwim];
 
 	Uint8 gradient[1024];
- 
+
 	// 1. INITIALIZATION of gradient[]:
 	// 1a. Set all values to 1 (meaning 'far away, but not inaccessable').
 	memset(gradient, 1, 1024);
@@ -3294,7 +3294,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 
 	// 1c. Set values at inaccessible areas to 0 (meaning, well, 'inaccessible').
 	// Here g=Global(map axis), l=Local(map axis)
-	
+
 	for (int yl=0; yl<32; yl++)
 	{
 		int wyl=(yl<<5);
@@ -3305,7 +3305,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			int xg=(xl+posX-15)&wMask;
 			const Case& c=cases[wyg+xg];
 			int wyx=wyl+xl;
-			
+
 			if (c.building==NOGBID)
 			{
 				if (c.forbidden&teamMask)
@@ -3331,7 +3331,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			}
 		}
 	}
-	
+
 	// 2. NEED TO UPDATE? Check boundary conditions to see if they have changed.
 	// I commented this out, because the tgtGradient is not initialized
 	// in the first runs: leading to an unconditional jump
@@ -3369,7 +3369,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 				assert(y>=0);
 				assert(x<32);
 				assert(y<32);
-				
+
 				Uint8 g=gradient[(y<<5)+x];
 				//printf("ai=%d, mi=%d, (%d, %d), g=%d\n", ai, mi, x, y, g);
 				if (g)
@@ -3393,7 +3393,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					break;
 				}
 			}
-		
+
 		assert(building->locked[canSwim]);
 		localBuildingGradientUpdateLocked++;
 		//fprintf(logFile, "...not updatedLocalGradient! building bgid=%d is locked!\n", building->gid);
@@ -3435,7 +3435,7 @@ void propagateLocalGradients(Uint8* gradient) {
 				die=31;
 				ddi=+2;
 			}
-			
+
 			for (int di=dis; di!=die; di+=ddi) //distance-iterator
 			{
 				for (int bi=0; bi<2; bi++) //back-iterator
@@ -3551,10 +3551,10 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	//int posH=building->type->height;
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
-	
+
 	Uint8 *gradient=building->globalGradient[canSwim];
 	assert(gradient);
-	
+
 	Tint *listedAddr = new Tint[size];
 	size_t listCountWrite = 0;
 
@@ -3562,7 +3562,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	bool isWarFlag=false;
 	if (building->type->isVirtual && building->type->zonable[WARRIOR])
 		isWarFlag=true;
-	
+
 	memset(gradient, 1, size);
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
@@ -3644,7 +3644,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			}
 		}
 	}
-	
+
 	if (!building->type->isVirtual)
 	{
 		building->locked[canSwim]=true;
@@ -3683,7 +3683,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				x=(x+w)&wMask;
 				y=(y+h)&hMask;
 			}
-		
+
 		assert(building->locked[canSwim]);
 		globalBuildingGradientUpdateLocked++;
 		//printf("...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
@@ -3694,7 +3694,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 	}
 	else
 		building->locked[canSwim]=false;
-	
+
 	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_BUILDING, canSwim);
 	delete[] listedAddr;
 }
@@ -3706,11 +3706,11 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 	assert(building->type);
 	assert(building->type->isVirtual);
 	fprintf(logFile, "updatingLocalRessources[%d] (gbid=%d)...\n", canSwim, building->gid);
-	
+
 	int posX=building->posX;
 	int posY=building->posY;
 	Uint32 teamMask=building->owner->me;
-	
+
 	Uint8 *gradient=building->localRessources[canSwim];
 	if (gradient==NULL)
 	{
@@ -3718,10 +3718,10 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 		building->localRessources[canSwim]=gradient;
 	}
 	assert(gradient);
-	
+
 	bool *clearingRessources=building->clearingRessources;
 	bool anyRessourceToClear=false;
-	
+
 	memset(gradient, 1, 1024);
 	int range=building->unitStayRange;
 	if (range>15)
@@ -3801,7 +3801,7 @@ void Map::expandLocalGradient(Uint8 *gradient)
 				die=31;
 				ddi=+2;
 			}
-			
+
 			for (int di=dis; di!=die; di+=ddi) //distance-iterator
 			{
 				for (int bi=0; bi<2; bi++) //back-iterator
@@ -3840,7 +3840,7 @@ void Map::expandLocalGradient(Uint8 *gradient)
 									xr=x+1;
 
 								Uint8 side;
-								
+
 								side=gradient[wyu+xl];
 								if (side > max) max=side;
 								side=gradient[wyu+x ];
@@ -3932,9 +3932,9 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 	y&=hMask;
 	assert(x>=0);
 	assert(y>=0);
-	
+
 	Uint8 *gradient=building->localGradient[canSwim];
-	
+
 	if (isInLocalGradient(x, y, bx, by))
 	{
 		buildingAvailableCountClose++;
@@ -3967,19 +3967,19 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 				}
 			}
 		}
-		
+
 		updateLocalGradient(building, canSwim);
 		if (building->locked[canSwim])
 		{
 			buildingAvailableCountCloseFailureLocked++;
 			//printf("ba-a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			//fprintf(logFile, "ba-a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			
+
 			return false;
 		}
-		
+
 		Uint8 currentg=gradient[lx+ly*32];
-		
+
 		if (currentg>1)
 		{
 			buildingAvailableCountCloseSuccessUpdate++;
@@ -4009,8 +4009,8 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 	else
 		buildingAvailableCountIsFar++;
 	buildingAvailableCountFar++;
-	
-	
+
+
 	gradient=building->globalGradient[canSwim];
 	if (gradient==NULL)
 	{
@@ -4058,7 +4058,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 			return false;
 		}
 	}
-	
+
 	updateGlobalGradient(building, canSwim);
 	if (building->locked[canSwim])
 	{
@@ -4067,7 +4067,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 		fprintf(logFile, "ba-d- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
 		return false;
 	}
-	
+
 	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 	if (currentg>1)
 	{
@@ -4136,7 +4136,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		Uint8 currentg=gradient[lx+(ly<<5)];
 		bool found=false;
 		bool gradientUsable=false;
-		
+
 		if (!building->dirtyLocalGradient[canSwim] && currentg==255)
 		{
 			*dx=0;
@@ -4188,7 +4188,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		pathToBuildingCountIsFar++;
 	pathToBuildingCountFar++;
 	//Here the "local-32*32-cases-gradient-pathfinding-system" has failed, then we look for a full size gradient.
-	
+
 	gradient=building->globalGradient[canSwim];
 	if (gradient==NULL)
 	{
@@ -4242,10 +4242,10 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			pathToBuildingCountFarOldFailureUnusable++;
 		}
 	}
-	
+
 	updateGlobalGradient(building, canSwim);
 	building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
-	
+
 	if (building->locked[canSwim])
 	{
 		pathToBuildingCountFarUpdateFailureLocked++;
@@ -4254,7 +4254,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		fprintf(logFile, "e- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
 		return false;
 	}
-	
+
 	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
 	if (currentg>1)
 	{
@@ -4266,7 +4266,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			return true;
 		}
 	}
-	
+
 	if (building->type->isVirtual)
 	{
 		pathToBuildingCountFarUpdateFailureVirtual++;
@@ -4292,11 +4292,11 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	assert(building->type);
 	assert(building->type->isVirtual);
 	//printf("pathfindingLocalRessource[%d] (gbid=%d)...\n", canSwim, building->gid);
-	
+
 	int bx=building->posX;
 	int by=building->posY;
 	Uint32 teamMask=building->owner->me;
-	
+
 	Uint8 *gradient=building->localRessources[canSwim];
 	if (gradient==NULL)
 	{
@@ -4309,14 +4309,14 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	if(!isInLocalGradient(x, y, bx, by))
 		return false;
 //	assert(isInLocalGradient(x, y, bx, by));
-	
+
 	int lx=(x-bx+15+32)&31;
 	int ly=(y-by+15+32)&31;
 	int max=0;
 	Uint8 currentg=gradient[lx+(ly<<5)];
 	bool found=false;
 	bool gradientUsable=false;
-	
+
 	if (currentg==1 && (building->localRessourcesCleanTime[canSwim]+=16)<128)
 	{
 		// This mean there are still ressources, but they are unreachable.
@@ -4326,7 +4326,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		pathfindLocalRessourceCountWait++;
 		return false;
 	}
-	
+
 	if (currentg>1 && currentg!=255)
 	{
 		for (int sd=0; sd<=1; sd++)
@@ -4369,12 +4369,12 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	}
 
 	updateLocalRessources(building, canSwim);
-	
+
 	max=0;
 	currentg=gradient[lx+(ly<<5)];
 	found=false;
 	gradientUsable=false;
-	
+
 	if (currentg==1)
 	{
 		pathfindLocalRessourceCountFailureNone++;
@@ -4480,7 +4480,7 @@ bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim,
 	if (verbose && !gradient)
 		printf("error, Map::pathfindForbidden(), forbiddenGradient[teamNumber=%d][canSwim=%d] is NULL\n", teamNumber, canSwim);
 	assert(gradient);
-	
+
 	Uint32 maxValue=0;
 	int maxd=0;
 	for (int di=0; di<8; di++)
@@ -4542,17 +4542,17 @@ bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 	if (max < 2)
 		return false; // any existing area are too far away.
 	bool found = false;
-	
-	// we look around us, searching for a usable position with a bigger gradient value 
+
+	// we look around us, searching for a usable position with a bigger gradient value
 	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true, verbose))
 	{
 		found = true;
 	}
-	
+
 	// we are in a blocked situation, so we have to regenerate the forbidden gradient
 	if (!found)
 		updateGuardAreasGradient(teamNumber, canSwim);
-	
+
 	return found;
 }
 
@@ -4567,17 +4567,17 @@ bool Map::pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx,
 	if (max < 2)
 		return false; // any existing area are too far away.
 	bool found = false;
-	
-	// we look around us, searching for a usable position with a bigger gradient value 
+
+	// we look around us, searching for a usable position with a bigger gradient value
 	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true, verbose))
 	{
 		found = true;
 	}
-	
+
 	// we are in a blocked situation, so we have to regenerate the forbidden gradient
 	if (!found)
 		updateClearAreasGradient(teamNumber, canSwim);
-	
+
 	return found;
 }
 
@@ -4626,7 +4626,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			size_t adm = (i     + w) & (size - 1);
 			size_t adl = (i - 1 + w) & (size - 1);
 			size_t aml = (i - 1    ) & (size - 1);
-			
+
 			if( ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aul].forbidden) &teamMask)
 				|| (cases[aul].building!=NOGBID) || (!canSwim && isWater(aul))) &&
 			    ((cases[aul].ressource.type != NO_RES_TYPE) || ((cases[aum].forbidden) &teamMask)
@@ -4665,7 +4665,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 	Uint8 *testgradient = forbiddenGradient[teamNumber][canSwim];
 	assert(testgradient);
 	size_t listCountWriteInit = 0;
-	
+
 	// We set the obstacle and free places
 	for (size_t i=0; i<size; i++)
 	{
@@ -4687,7 +4687,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			testgradient[i] = 255;
 	}
 
-	// Now check if the forbidden fields border free fields. 
+	// Now check if the forbidden fields border free fields.
 	// If a field does, its gradient must be 254 and it can be used as a source
 	// for the forbidden gradient.
 	for (size_t listCountReadInit=0; listCountReadInit<listCountWriteInit; listCountReadInit++)
@@ -4695,7 +4695,7 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 		size_t i = listedAddr[listCountReadInit];
 		size_t y = i >> wDec;               // Calculate the coordinates of
 		size_t x = i & wMask;               // the current field and of the
-		
+
 		size_t yu = ((y - 1) & hMask);      // fields next to it.
 		size_t yd = ((y + 1) & hMask);
 		size_t xl = ((x - 1) & wMask);
@@ -4720,10 +4720,10 @@ template<typename Tint> void Map::updateForbiddenGradient(int teamNumber, bool c
 			}
 		}
 	}
-	
+
 	// Then we propagate the gradient
 	updateGlobalGradient(testgradient, listedAddr, listCountWrite, GT_FORBIDDEN, canSwim);
-#endif	
+#endif
 
 #if defined(SIMPLE_FORBIDDEN_GRADIENT_INIT)
 	listCountWrite = 0;
@@ -4788,7 +4788,7 @@ template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool 
 	assert(gradient);
 	Tint *listedAddr = new Tint[size];
 	size_t listCountWrite = 0;
-	
+
 	// We set the obstacle and free places
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
@@ -4812,7 +4812,7 @@ template<typename Tint> void Map::updateGuardAreasGradient(int teamNumber, bool 
 		else
 			gradient[i] = 1;
 	}
-	
+
 	// Then we propagate the gradient
 	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_GUARD_AREA, canSwim);
 	delete[] listedAddr;
@@ -4844,7 +4844,7 @@ template<typename Tint> void Map::updateClearAreasGradient(int teamNumber, bool 
 	assert(gradient);
 	Tint *listedAddr = new Tint[size];
 	size_t listCountWrite = 0;
-	
+
 	// We set the obstacle and free places
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
@@ -4868,7 +4868,7 @@ template<typename Tint> void Map::updateClearAreasGradient(int teamNumber, bool 
 		else
 			gradient[i] = 1;
 	}
-	
+
 	// Then we propagate the gradient
 	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_CLEAR_AREA, canSwim);
 	delete[] listedAddr;
@@ -4895,20 +4895,20 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	//the initial node, a small optimization since we don't need the whole path
 	targetX = (targetX + w) & wMask;
 	targetY = (targetY + h) & hMask;
-	
+
 	AStarComparator compare(astarpoints);
-	
+
 	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
 	std::priority_queue<int, std::vector<int>, AStarComparator> openList(compare);
 	openList.push((x << hDec) + y);
 	astarpoints[(x << hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
-	
+
 	//These are all the examined points, so that these positions on astarponts
 	//Can be reset later. Why not reset or re-allocate the whole thing every
 	//call? Its slow! Use reserve to avoid doing this multiple times
 	astarExaminedPoints.reserve(maximumLength*2 + 6);
 	astarExaminedPoints.push_back((x << hDec) + y);
-	
+
 	while(!openList.empty())
 	{
 		///Get the smallest from the heap
@@ -4917,12 +4917,12 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 
 		AStarAlgorithmPoint& pos = astarpoints[position];
 		pos.isClosed = true;
-				
+
 		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumLength))
 		{
 			break;
 		}
-		
+
 		for(int lx=-1; lx<=1; ++lx)
 		{
 			for(int ly=-1; ly<=1; ++ly)
@@ -4939,7 +4939,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 				{
 					int moveCost = pos.moveCost + 1;
 					int totalCost = moveCost +  warpDistMax(targetX, targetY, nx, ny);
-					
+
 					//If this cell hasn't been examined at all yet
 					if(npos.x == -1)
 					{
@@ -4972,7 +4972,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 			}
 		}
 	}
-	
+
 	AStarAlgorithmPoint final = astarpoints[(targetX << hDec) + targetY];
 
 	//Clear all of the examined points for the next call to this algorithm
@@ -4980,13 +4980,13 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	{
 		astarpoints[astarExaminedPoints[i]] = AStarAlgorithmPoint();
 	}
-	
+
 	astarExaminedPoints.clear();
 
 	//It was never examined, thus there is no paths
 	if(final.x == -1)
 		return false;
-	
+
 	//Input direction of the final square to the unit
 	*dx = final.dx;
 	*dy = final.dy;
@@ -5044,7 +5044,7 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br)
 		The index in the following table is :
 		val[0] + val[1]*k + val[2]*k^2 + val[3]*k^3
 		where k is the number of different possibilites.
-		
+
 		H = grass
 		S = sand
 		E = water
@@ -5211,7 +5211,7 @@ bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 			return true;
 		if (dx>15)
 			return false;
-		
+
 		return ((bx+15) & wMask)==(ux & wMask);
 	}
 	else if (dx<dy)
@@ -5220,7 +5220,7 @@ bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 			return true;
 		if (dy>15)
 			return false;
-		
+
 		return ((by+15) & wMask)==(uy & wMask);
 	}
 	else
@@ -5229,7 +5229,7 @@ bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 			return true;
 		if (dx>15)
 			return false;
-		
+
 		return (((bx+15) & wMask)==(ux & wMask)) && (((by+15) & wMask)==(uy & wMask));
 	}
 }

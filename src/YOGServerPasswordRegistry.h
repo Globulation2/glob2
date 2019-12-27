@@ -32,14 +32,14 @@ public:
 	YOGServerPasswordRegistry();
 
 	///Verifies that the information is correct
-	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password); 
+	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password);
 
 	///Registers a user with the given information
-	YOGLoginState registerInformation(const std::string& username, const std::string& password); 
+	YOGLoginState registerInformation(const std::string& username, const std::string& password);
 
 	///This resets a players password
 	void resetPlayersPassword(const std::string& username);
-	
+
 private:
 	///Writes the passwords and usernames to a text file
 	void flushPasswords();

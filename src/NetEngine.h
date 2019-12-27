@@ -47,32 +47,32 @@ public:
 
 	//Pushes an order to the NetEngine. AI's are special because they don't have padding arround orders
 	void pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool isAI);
-	
+
 	///Retrieves the order for the given player for this turn
 	boost::shared_ptr<Order> retrieveOrder(int playerNumber);
 
 	///Adds a order from the local player, which will be queued and sent across the network when needed
 	void addLocalOrder(boost::shared_ptr<Order> order);
-	
+
 	///Tells whether the network is ready at the current tick. For
 	///the network to be ready, all Orders from all players must be
 	///present, otherwise it will have to hold for recieved Orders.
 	bool allOrdersRecieved();
-	
+
 	///Returns the current step number
 	int getStep();
 
 	///Sends all pending orders across the network without a checksum. This is used if the game has to end immediettly
 	void flushAllOrders();
-	
+
 	///Adds padding for the player for the given latency,
 	///this is used because with latency, there aren't any
 	///orders for the first few frames
 	void prepareForLatency(int playerNumber, int latency);
-	
+
 	///Returns true if the given player has provided an order and is ready to go
 	bool orderRecieved(int playerNumber);
-	
+
 	///Returns the mask representing each player that the NetEngine is waiting
 	///on for this step
 	Uint32 getWaitingOnMask();
@@ -83,10 +83,10 @@ public:
 
 	///This sends an order through the network that causes the latency adjustment to be increased
 	void increaseLatencyAdjustment();
-	
+
 	///Set the localPlayer, only necessary in replays
 	void setLocalPlayer(int player);
-	
+
 private:
 
 	///This stores the queues with the orders from each player

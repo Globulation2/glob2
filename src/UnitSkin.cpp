@@ -27,7 +27,7 @@ bool UnitSkin::load(GAGCore::InputStream *stream)
 	std::string spriteName = stream->readText("spriteName");
 	if (spriteName == "")
 		return false;
-		
+
 	sprite = Toolkit::getSprite(spriteName);
 	if (!sprite)
 	{
@@ -43,6 +43,6 @@ bool UnitSkin::load(GAGCore::InputStream *stream)
 	startImage[BUILD] = stream->readUint32("startImageBuild");
 	startImage[HARVEST] = stream->readUint32("startImageHarvest");
 	startImage[ATTACK_SPEED] = stream->readUint32("startImageAttack");
-	
+
 	return true;
 }

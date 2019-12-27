@@ -24,7 +24,7 @@
 #include <assert.h>
 #include <iostream>
 
-#ifdef HAVE_FRIBIDI 
+#ifdef HAVE_FRIBIDI
 #include <fribidi/fribidi.h>
 #endif
 
@@ -37,13 +37,13 @@ namespace GAGCore
 	{
 		init();
 	}
-	
+
 	TrueTypeFont::TrueTypeFont(const std::string filename, unsigned size)
 	{
 		init();
 		load(filename, size);
 	}
-	
+
 	void TrueTypeFont::init(void)
 	{
 		font = NULL;
@@ -51,7 +51,7 @@ namespace GAGCore
 		cacheHit = 0;
 		cacheMiss = 0;
 	}
-	
+
 	TrueTypeFont::~TrueTypeFont()
 	{
 		if (font)
@@ -76,7 +76,7 @@ namespace GAGCore
 			TTF_CloseFont(font);
 		}
 	}
-	
+
 	bool TrueTypeFont::load(const std::string filename, unsigned size)
 	{
 		SDL_RWops *fontStream = Toolkit::getFileManager()->open(filename, "rb");
@@ -91,7 +91,7 @@ namespace GAGCore
 		}
 		return false;
 	}
-	
+
 	int TrueTypeFont::getStringWidth(const std::string string)
 	{
 		DrawableSurface *s = getStringCached(string);
@@ -105,7 +105,7 @@ namespace GAGCore
 			w = 0;
 		return w;
 	}
-	
+
 	int TrueTypeFont::getStringHeight(const std::string string)
 	{
 		int h;
@@ -126,54 +126,54 @@ namespace GAGCore
 		}
 		return h;
 	}
-	
+
 	void TrueTypeFont::setStyle(Style style)
 	{
 		assert(font);
-		
+
 		while (styleStack.size() > 0)
 			styleStack.pop();
 		pushStyle(style);
 	}
-	
+
 	void TrueTypeFont::pushStyle(Style style)
 	{
 		assert(font);
-		
+
 		styleStack.push(style);
 		TTF_SetFontStyle(font, style.shape);
 	}
-	
+
 	void TrueTypeFont::popStyle(void)
 	{
 		assert(font);
-		
+
 		if (styleStack.size() > 1)
 		{
 			styleStack.pop();
 			TTF_SetFontStyle(font, styleStack.top().shape);
 		}
 	}
-	
+
 	Font::Style TrueTypeFont::getStyle(void) const
 	{
 		assert(font);
-		
+
 		return styleStack.top();
 	}
-	
+
 	DrawableSurface *TrueTypeFont::getStringCached(const std::string text)
 	{
 		assert(font);
 		assert(styleStack.size()>0);
-		
+
 		CacheKey key;
 		key.text = text;
 		key.style = styleStack.top();
-		
+
 		CacheData data;
 		DrawableSurface *s;
-		
+
 		std::map<CacheKey, CacheData>::iterator keyIt = cache.find(key);
 		if (keyIt == cache.end())
 		{
@@ -183,22 +183,22 @@ namespace GAGCore
 			c.g = styleStack.top().color.g;
 			c.b = styleStack.top().color.b;
 			c.unused = styleStack.top().color.a;
-#ifdef HAVE_FRIBIDI 
+#ifdef HAVE_FRIBIDI
 			char *bidiStr = getBIDIString(text);
 			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, bidiStr, c);
 			delete []bidiStr;
-#else		
+#else
 			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, text.c_str(), c);
 #endif
 			if (temp == NULL)
 				return NULL;
-			
+
 			// create key
 			data.lastAccessed = now;
 			data.s = s = new DrawableSurface(temp);
 			assert(s);
 			SDL_FreeSurface(temp);
-			
+
 			// store in cache
 			cache[key] = data;
 			timeCache[now] = cache.find(key);
@@ -219,10 +219,10 @@ namespace GAGCore
 		now++;
 		return s;
 	}
-#ifdef HAVE_FRIBIDI 
+#ifdef HAVE_FRIBIDI
 	char *TrueTypeFont::getBIDIString (const std::string text)
 	{
-		
+
 		const char	*c_str = text.c_str();
 		int		len = strlen(c_str);
 		FriBidiChar	*bidi_logical = new FriBidiChar[len + 2];
@@ -237,9 +237,9 @@ namespace GAGCore
 		fribidi_unicode_to_charset (fribidi_parse_charset ((char*)"UTF-8"),bidi_visual, n, utf8str);
 		delete []bidi_logical;
 		delete []bidi_visual;
-		return utf8str;	
+		return utf8str;
 	}
-#endif	
+#endif
 	void TrueTypeFont::cleanupCache(void)
 	{
 		// when cache is too big, remove the first element
@@ -250,14 +250,14 @@ namespace GAGCore
 			timeCache.erase(timeCache.begin());
 		}
 	}
-	
+
 	void TrueTypeFont::drawString(DrawableSurface *surface, int x, int y, int w, const std::string text, Uint8 alpha)
 	{
 		// get
 		DrawableSurface *s = getStringCached(text);
 		if (s == NULL)
 			return;
-		
+
 		// render
 		if (w)
 		{
@@ -267,22 +267,22 @@ namespace GAGCore
 			surface->setClipRect(rx, ry, nrw, rh);
 			surface->drawSurface(x, y, s, alpha);
 			surface->setClipRect(rx, ry, rw, rh);
-			
+
 		}
 		else
 			surface->drawSurface(x, y, s, alpha);
-		
+
 		// cleanup
 		cleanupCache();
 	}
-	
+
 	void TrueTypeFont::drawString(DrawableSurface *surface, float x, float y, float w, const std::string text, Uint8 alpha)
 	{
 		// get
 		DrawableSurface *s = getStringCached(text);
 		if (s == NULL)
 			return;
-		
+
 		// render
 		if (w != 0.0f)
 		{
@@ -292,11 +292,11 @@ namespace GAGCore
 			surface->setClipRect(rx, ry, nrw, rh);
 			surface->drawSurface(x, y, s, alpha);
 			surface->setClipRect(rx, ry, rw, rh);
-			
+
 		}
 		else
 			surface->drawSurface(x, y, s, alpha);
-		
+
 		// cleanup
 		cleanupCache();
 	}

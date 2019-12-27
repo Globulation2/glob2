@@ -5,7 +5,7 @@ val true := [
 	def or (_) := true
 	def xor (that) := that select (false, true)
 ]
- 
+
 val false := [
 	def select (_, ifFalse) := ifFalse
 	def not := true

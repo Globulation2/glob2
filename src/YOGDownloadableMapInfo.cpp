@@ -121,7 +121,7 @@ Uint16 YOGDownloadableMapInfo::getMapID() const
 {
 	return mapID;
 }
-	
+
 
 
 void YOGDownloadableMapInfo::setMapID(Uint16 nmapID)

@@ -22,22 +22,22 @@
 #include "container.h"
 
 namespace Asm {
-	
+
 	struct Instruction {
 		// returns next instruction to evaluate
 #define ASM_INSTRUCTION_NEXT (const Instruction*)(((const uint8_t*)this) + sizeof(*this))
 		virtual const Instruction* Eval(Stack* stack) const = 0;
 		virtual ~Instruction() { }
 	};
-	
+
 	namespace Instructions {
-		
+
 		struct Nop: Instruction {
 			const Instruction* Eval(Stack* stack) const {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Nop instruction with metadata
 		template<typename T>
 		struct Meta: Instruction {
@@ -47,7 +47,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT; // Nop
 			}
 		};
-		
+
 		// Load immediate constant
 		// ... => ..., value
 		struct Const: Instruction {
@@ -60,7 +60,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Duplicate value
 		// ..., value => ..., value, value
 		struct Duplicate: Instruction {
@@ -73,7 +73,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Load from address
 		// ..., address => ..., value
 		struct Load: Instruction {
@@ -87,7 +87,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Store to address
 		// ..., address, value => ...
 		struct Store: Instruction {
@@ -101,7 +101,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Copy data
 		// ..., destAddress, srcAddress => ...
 		struct Copy: Instruction {
@@ -116,7 +116,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Build stack reference
 		// ... => ..., address
 		struct Reference: Instruction {
@@ -127,7 +127,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Grow stack
 		// ... => ..., space
 		struct Alloc: Instruction {
@@ -138,7 +138,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Shrink stack
 		// ..., space => ...
 		struct Free: Instruction {
@@ -149,7 +149,7 @@ namespace Asm {
 				return ASM_INSTRUCTION_NEXT;
 			}
 		};
-		
+
 		// Jump to target instruction
 		// ..., target => ...
 		struct Jump: Instruction {
@@ -159,7 +159,7 @@ namespace Asm {
 				return next;
 			}
 		};
-		
+
 		// Call function
 		// ..., target => ..., returnAddress
 		struct Call: Instruction {
@@ -170,13 +170,13 @@ namespace Asm {
 				return next;
 			}
 		};
-		
+
 		// Return from function
 		// ..., returnAddress => ...
 		typedef Jump Return;
-		
+
 	};
-	
+
 };
 
 #endif // ndef ASM_H

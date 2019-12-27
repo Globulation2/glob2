@@ -1185,8 +1185,8 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 
 void Game::wonSyncStep(void)
 {
-	//TODO: sideeffects? 
-	//std::list<boost::shared_ptr<WinningCondition> >& conditions = 
+	//TODO: sideeffects?
+	//std::list<boost::shared_ptr<WinningCondition> >& conditions =
 	gameHeader.getWinningConditions();
 
 	bool areAllDecided=true;

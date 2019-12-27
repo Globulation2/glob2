@@ -11,7 +11,7 @@
     that this copyright and permissions notice appear in all copies and
     derivatives, and that no charge may be made for the software and its
     documentation except to cover cost of distribution.
-    
+
     This software is supplied "as is" without express or implied warranty.
 
     But that said, if there are any problems please get in touch.

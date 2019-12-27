@@ -31,7 +31,7 @@ public:
 
 	///Sets a map that the user has rated by the user
 	void addRatedMap(const std::string& mapname);
-	
+
 	///Returns true if the given map has been rated by the user, false otherwise
 	bool isMapRated(const std::string& mapname);
 

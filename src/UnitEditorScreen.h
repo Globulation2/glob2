@@ -40,14 +40,14 @@ public:
 		OK = 0,
 		CANCEL = 1,
 	};
-	
+
 public:
 	UnitEditorScreen(Unit *toEdit);
 	virtual ~UnitEditorScreen();
-	
+
 protected:
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	
+
 protected:
 	Unit *unit; //!< unit being edited
 	MultiTextButton *skin;

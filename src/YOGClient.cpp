@@ -58,7 +58,7 @@ void YOGClient::initialize()
 	playerID=0;
 	wasConnected=false;
 	wasConnecting=false;
-	
+
 	//By default, the client creates its own game list manager and player list manager
 	gameListManager.reset(new YOGClientGameListManager(this));
 	playerListManager.reset(new YOGClientPlayerListManager(this));
@@ -103,7 +103,7 @@ void YOGClient::update()
 
 	if(gameConnection)
 		gameConnection->update();
-	
+
 	if(!nc.isConnecting() && wasConnecting)
 	{
 		if(nc.isConnected())
@@ -375,7 +375,7 @@ void YOGClient::update()
 	}
 
 	if(gameConnection)
-	{		
+	{
 		shared_ptr<NetMessage> message = gameConnection->getMessage();
 		while(message)
 		{
@@ -630,7 +630,7 @@ void YOGClient::setMapDownloader(YOGClientMapDownloader* ndownloader)
 }
 
 
-	
+
 YOGClientMapDownloader* YOGClient::getMapDownloader()
 {
 	return downloader;
@@ -643,7 +643,7 @@ void YOGClient::attachGameServer(boost::shared_ptr<YOGServer> nserver)
 	server = nserver;
 }
 
-	
+
 
 boost::shared_ptr<YOGServer> YOGClient::getGameServer()
 {

@@ -24,7 +24,7 @@
 YOGClientGameListManager::YOGClientGameListManager(YOGClient* client)
 	: client(client)
 {
-	
+
 }
 
 
@@ -32,7 +32,7 @@ YOGClientGameListManager::YOGClientGameListManager(YOGClient* client)
 void YOGClientGameListManager::recieveMessage(boost::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
-	
+
 	///This recieves a game list update message
 	if(type==MNetUpdateGameList)
 	{

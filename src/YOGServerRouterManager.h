@@ -35,10 +35,10 @@ public:
 
 	///Adds a connection to a YOG
 	void addRouter(boost::shared_ptr<NetConnection> connection);
-	
+
 	///Updates this manager
 	void update();
-	
+
 	///This chooses a new yog router
 	boost::shared_ptr<NetConnection> chooseYOGRouter();
 private:

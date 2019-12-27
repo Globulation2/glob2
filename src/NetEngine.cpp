@@ -109,7 +109,7 @@ void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool
 {
 	assert(playerNumber>=0);
 	order->sender=playerNumber;
-	orders[playerNumber].push_back(order); 
+	orders[playerNumber].push_back(order);
 
 	///The local player and network players all have padding arround their order
 	if(! isAI)

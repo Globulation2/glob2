@@ -92,7 +92,7 @@ namespace GAGCore
 			*yd = ys;
 		}
 	}
-	
+
 	void sdcRects(SDL_Rect *source, SDL_Rect *destination, const SDL_Rect &clipping)
 	{
 		//sdc= Source-Destination-Clipping

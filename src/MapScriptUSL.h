@@ -38,10 +38,10 @@ class MapScriptUSL
 public:
 	///Construct a map script
 	MapScriptUSL(GameGUI* gui);
-	
+
 	///Destruct a map script
 	~MapScriptUSL();
-	
+
 	///Construct all the global (from USL POV) values that reference glob2 objects
 	void addGlob2Values(GameGUI* gui);
 
@@ -50,18 +50,18 @@ public:
 
 	///Decodes this MapScript from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
-	
+
 	///This compiles the code, returns false on failure
 	bool compileCode(const std::string& code);
-	
+
 	///This returns the error of the most recent compile
 	const MapScriptError& getError() const;
-	
+
 	///Execute a step of script corresponding to a step of the game engine
 	void syncStep(GameGUI *gui);
-	
+
 private:
-	
+
 	Usl usl;
 	MapScriptError error;
 };

@@ -36,13 +36,13 @@ namespace GAGGUI
 	protected:
 		Uint16 unicodeShortcut;
 		bool isClickable;
-		
+
 	public:
 		Button() { isClickable=true; }
 		Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode, Uint16 unicodeShortcut=0);
 		Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode, const std::string& tooltip, const std::string &font, Uint16 unicodeShortcut=0);
 		virtual ~Button() { }
-	
+
 		//! Makes it so that nothing occurs on click
 		virtual void setClickable(bool enabled) { isClickable = enabled; }
 	protected:
@@ -50,16 +50,16 @@ namespace GAGGUI
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
-	
+
 	class TextButton:public Button
 	{
 	protected:
 		std::string text;
 		std::string font;
-	
+
 		// cache, recomputed on internalInit
 		GAGCore::Font *fontPtr;
-	
+
 	public:
 		TextButton() { fontPtr=NULL; }
 		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode,
@@ -68,10 +68,10 @@ namespace GAGGUI
 		virtual ~TextButton() { }
 		virtual void internalInit(void);
 		virtual void paint(void);
-	
+
 		void setText(const std::string text);
 	};
-	
+
 	class OnOffButton:public HighlightableWidget
 	{
 	protected:
@@ -83,18 +83,18 @@ namespace GAGGUI
 		OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode);
 		OnOffButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, bool startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont);
 		virtual ~OnOffButton() { }
-	
+
 		virtual void paint(void);
 		virtual bool getState(void) { return state; }
 		virtual void setState(bool newState);
-	
+
 		//! Makes it so that nothing occurs on click
 		virtual void setClickable(bool enabled) { isClickable = enabled; }
 	protected:
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
-	
+
 	///A button like OnOffButton except that it has 3 states, off (0), on (1) and alternate (2)
 	class TriButton:public HighlightableWidget
 	{
@@ -107,18 +107,18 @@ namespace GAGGUI
 		TriButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Uint8 startState, int returnCode);
 		TriButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Uint8 startState, int returnCode, const std::string &tooltip, const std::string &tooltipFont);
 		virtual ~TriButton() { }
-	
+
 		virtual void paint(void);
 		virtual Uint8 getState(void) { return state; }
 		virtual void setState(Uint8 newState);
-	
+
 		//! Makes it so that nothing occurs on click
 		virtual void setClickable(bool enabled) { isClickable = enabled; }
 	protected:
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
-	
+
 	//! A button that can have multiple color
 	class ColorButton:public HighlightableWidget
 	{
@@ -126,7 +126,7 @@ namespace GAGGUI
 		Sint32 selColor;
 		std::vector<GAGCore::Color> v;
 		bool isClickable;
-	
+
 	public:
 		ColorButton() { selColor=returnCode=0; isClickable=true;}
 		//! ColorButton constructor
@@ -135,7 +135,7 @@ namespace GAGGUI
 		ColorButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string& tooltip, const std::string &tooltipFont, int returnCode);
 		//! ColorButton destructor
 		virtual ~ColorButton() { }
-	
+
 		virtual void paint(void);
 		//! Add a color to the color list
 		virtual void addColor(const GAGCore::Color& color) { v.push_back(color); }
@@ -153,21 +153,21 @@ namespace GAGGUI
 		virtual void onSDLMouseButtonUp(SDL_Event *event);
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 	};
-	
+
 	//! A button that can have multiple texts
 	class MultiTextButton:public TextButton
 	{
 	protected:
 		std::vector<std::string> texts;
 		unsigned textIndex;
-	
+
 	public:
 		MultiTextButton() { textIndex=0; returnCode=0; }
 		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int retuxrnCode, Uint16 unicodeShortcut=0);
 		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int retuxrnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut=0);
 		virtual ~MultiTextButton() { }
-	
-		
+
+
 		void addText(const std::string s);
 		const std::string &getText(void) const { return texts.at(textIndex); }
 		void clearTexts(void);

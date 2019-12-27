@@ -79,36 +79,36 @@ ScriptEditorScreen::ScriptEditorScreen(Game *game)
 	//These are for the objectives tab
 	objectivesWidgets.push_back(new TextButton(30, 40, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Primary Objectives]"), TAB_PRIMARY));
 	objectivesWidgets.push_back(new TextButton(150, 40, 120, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Secondary Objectives]"), TAB_SECONDARY));
-	
+
 	for(int i=0; i<8; ++i)
 	{
 		primaryObjectives[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		objectivesWidgets.push_back(primaryObjectives[i]);
-		
+
 		primaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
 		objectivesWidgets.push_back(primaryObjectiveLabels[i]);
-		
+
 		secondaryObjectives[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		objectivesWidgets.push_back(secondaryObjectives[i]);
-		
+
 		secondaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+9));
 		objectivesWidgets.push_back(secondaryObjectiveLabels[i]);
 	}
-	
+
 	//This is for the briefing tab
 	missionBriefing = new TextArea(10, 38, 580, 300, ALIGN_LEFT, ALIGN_TOP, "standard", false, game->missionBriefing.c_str());
 	briefingWidgets.push_back(missionBriefing);
-	
+
 	//This is for the hints tab
 	for(int i=0; i<8; ++i)
 	{
 		hints[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		hintWidgets.push_back(hints[i]);
-		
+
 		hintLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
 		hintWidgets.push_back(hintLabels[i]);
-	}	
-	
+	}
+
 	//Add all the widgets
 	for(unsigned int i=0; i<scriptWidgets.size(); ++i)
 	{
@@ -129,7 +129,7 @@ ScriptEditorScreen::ScriptEditorScreen(Game *game)
 		hintWidgets[i]->visible=false;
 		addWidget(hintWidgets[i]);
 	}
-	
+
 	// important, widgets must be initialised by hand as we use custom event loop
 	dispatchInit();
 
@@ -148,7 +148,7 @@ ScriptEditorScreen::ScriptEditorScreen(Game *game)
 	{
 		hints[game->gameHints.getScriptNumber(i)-1]->setText(game->gameHints.getGameHintText(i));
 	}
-	
+
 	changeTabAgain=true;
 }
 
@@ -216,7 +216,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 				}
 				endValue=par1;
 			}
-			
+
 			//Load the objectives
 			int n=0;
 			for(int i=0; i<8; ++i)
@@ -260,7 +260,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 
 			//Load the briefing
 			game->missionBriefing = missionBriefing->getText();
-			
+
 			//Load the hints
 			n=0;
 			for(int i=0; i<8; ++i)
@@ -336,7 +336,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			{
 				hintWidgets[i]->visible=false;
 			}
-			
+
 			mode->setText(Toolkit::getStringTable()->getString("[map script]"));
 		}
 		else if (par1 == TAB_OBJECTIVES)
@@ -357,13 +357,13 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			{
 				hintWidgets[i]->visible=false;
 			}
-			
+
 			for(int i=0; i<8; ++i)
 			{
 				secondaryObjectives[i]->visible = false;
 				secondaryObjectiveLabels[i]->visible = false;
 			}
-			
+
 			mode->setText(Toolkit::getStringTable()->getString("[objectives]"));
 		}
 		else if (par1 == TAB_BRIEFING)
@@ -384,7 +384,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			{
 				hintWidgets[i]->visible=false;
 			}
-			
+
 			mode->setText(Toolkit::getStringTable()->getString("[briefing]"));
 		}
 		else if (par1 == TAB_HINTS)
@@ -405,7 +405,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			{
 				hintWidgets[i]->visible=true;
 			}
-			
+
 			mode->setText(Toolkit::getStringTable()->getString("[hints]"));
 		}
 		else if (par1 == TAB_PRIMARY)
@@ -561,7 +561,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 
 	// save screen
 	globalContainer->gfx->setClipRect();
-	
+
 	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
 	background->drawSurface(0, 0, globalContainer->gfx);
 
@@ -574,7 +574,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
 		loadSaveScreen->dispatchPaint();
-		
+
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
@@ -609,7 +609,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 
 	// clean up
 	delete loadSaveScreen;
-	
+
 	// destroy temporary surface
 	delete background;
 }

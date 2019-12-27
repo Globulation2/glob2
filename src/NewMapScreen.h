@@ -58,7 +58,7 @@ private:
 	Text *numberOfTeamText, *numberOfWorkerText, *craterDensityText, *extraIslandsText;
 	Text *ratioText, *waterText, *sandText, *grassText, *desertText, *wheatText, *woodText, *stoneText, *algaeText, *fruitText, *smoothingText, *riverDiameterText, *areaTimesText;
 	Text *oldIslandSizeText, *oldBeachSizeText;
-	
+
 
 public:
 	//! Constructor

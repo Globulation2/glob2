@@ -46,7 +46,7 @@ protected:
 	friend class ConfigVector;
 	typedef std::map<std::string, std::string> StringMap;
 	StringMap lines;
-	
+
 public:
 	template<typename T>
 	void load(T &variable, const std::string &name) const
@@ -69,7 +69,7 @@ protected:
 	std::vector<std::string> entriesToName;
 	std::map<std::string, size_t> nameToEntries;
 	T defaultEntry;
-	
+
 	void addBlock(const std::string &blockName, const ConfigBlock *block, bool isDefault)
 	{
 		if (isDefault)
@@ -86,27 +86,27 @@ protected:
 			nameToEntries[blockName] = id;
 		}
 	}
-	
+
 public:
 	~ConfigVector()
 	{
 		for (size_t i=0; i<entries.size(); ++i)
 			delete entries[i];
 	}
-	
+
 	void load(const std::string &fileName, bool isDefault = false)
 	{
 		bool first = true;
 		ConfigBlock b;
 		std::string bName;
-		
+
 		std::ifstream *stream = Toolkit::getFileManager()->openIFStream(fileName);
 		assert(stream);
-		
+
 		while (stream->good())
 		{
 			int c = stream->get();
-			
+
 			switch (c)
 			{
 				// New block, commit the old if any
@@ -124,7 +124,7 @@ public:
 					bName = temp;
 				}
 				break;
-				
+
 				// Comment, eat one line
 				case '#':
 				case '/':
@@ -137,12 +137,12 @@ public:
 					}
 				}
 				break;
-				
+
 				// new line, ignore
 				case '\n':
 				case '\r':
 				break;
-				
+
 				// normal entry, read line, commit only if valid
 				default:
 				{
@@ -155,20 +155,20 @@ public:
 						assert(false);
 					}
 					*stream >> value;
-					
+
 					b.lines[variable] = value;
 				}
 			}
 		}
-		
+
 		if (b.lines.size() > 0)
 			addBlock(bName, &b, isDefault);
-			
+
 		delete stream;
 	}
-	
+
 	void loadDefault(const std::string &fileName) { load(fileName, true); }
-	
+
 	T* get(size_t id)
 	{
 		if (id < entries.size())
@@ -182,9 +182,9 @@ public:
 			return &defaultEntry;
 		}
 	}
-	
+
 	size_t getIdByName(const std::string &name) { return nameToEntries[name]; }
-	
+
 	const std::string getNameById(size_t id) { return entriesToName[id]; }
 };
 

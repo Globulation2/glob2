@@ -34,7 +34,7 @@ namespace GAGGUI
 		//! three buttons, (like Yes, No, Cancel)
 		MB_THREEBUTTONS
 	};
-	
+
 	//! The display a modal message box, with a title and some buttons
 	//! \retval the nummer of the clicked button, -1 on unexpected early-out (CTRL-C, ...)
 	int MessageBox(GAGCore::GraphicContext *parentCtx, const std::string font, MessageBoxType type, std::string title, std::string caption1, std::string caption2 = "", std::string caption3 = "");

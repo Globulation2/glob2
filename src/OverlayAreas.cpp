@@ -107,7 +107,7 @@ Uint16 OverlayArea::getValue(int x, int y)
 }
 
 
-	
+
 Uint16 OverlayArea::getMaximum()
 {
 	return overlaymax;

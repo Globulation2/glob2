@@ -1,10 +1,10 @@
 Import("env")
 Import("PackTar")
 import os
-    
+
 if 'dist' or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
         if file.find(".usl") != -1:
             PackTar(env["TARFILE"], file)
     PackTar(env["TARFILE"], "SConscript")
-    
+

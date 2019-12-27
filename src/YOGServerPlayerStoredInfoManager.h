@@ -40,10 +40,10 @@ public:
 
 	///Insure that a YOGPlayerStoredInfo exists for the given username, if it doesn't, this creates one
 	void insureStoredInfoExists(const std::string& username);
-	
+
 	///Returns true if a player info with the given username exists
 	bool doesStoredInfoExist(const std::string& username);
-	
+
 	///Returns the player info
 	const YOGPlayerStoredInfo& getPlayerStoredInfo(const std::string& username);
 
@@ -52,7 +52,7 @@ public:
 
 	///Returns a list of the banned players
 	std::list<std::string> getBannedPlayers();
-	
+
 	///This stores the player infos in a file
 	void savePlayerInfos();
 

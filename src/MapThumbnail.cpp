@@ -46,7 +46,7 @@ void MapThumbnail::loadFromMap(const std::string& map)
 		loaded = false;
 		return;
 	}
-	
+
 	loaded = true;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(map));
@@ -65,7 +65,7 @@ void MapThumbnail::loadFromMap(const std::string& map)
 			delete stream;
 			return;
 		}
-		
+
 		// read map
 		if (stream->canSeek())
 			stream->seekFromStart(header.getMapOffset());
@@ -78,7 +78,7 @@ void MapThumbnail::loadFromMap(const std::string& map)
 		delete stream;
 		if (!good)
 			return;
-		
+
 		// set values
 		lastW = map.getW();
 		lastH = map.getH();
@@ -107,7 +107,7 @@ void MapThumbnail::loadFromMap(const std::string& map)
 
 		dMx=(float)mMax/128.0f;
 		dMy=(float)mMax/128.0f;
-		
+
 		for(int i=0; i<(128*128*3); ++i)
 		{
 			buffer[i]=0;

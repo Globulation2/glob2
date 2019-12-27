@@ -149,7 +149,7 @@ bool Entities::Building::operator==(const Entity& rhs)
 	if(typeid(rhs)==typeid(Entities::Building) &&
 	   static_cast<const Entities::Building&>(rhs).building_type==building_type &&
 	   static_cast<const Entities::Building&>(rhs).team==team &&
-	   static_cast<const Entities::Building&>(rhs).under_construction==under_construction 
+	   static_cast<const Entities::Building&>(rhs).under_construction==under_construction
 	    )
 		return true;
 	return false;
@@ -223,7 +223,7 @@ bool Entities::AnyTeamBuilding::operator==(const Entity& rhs)
 {
 	if(typeid(rhs)==typeid(Entities::AnyTeamBuilding) &&
 	   static_cast<const Entities::AnyTeamBuilding&>(rhs).team==team &&
-	   static_cast<const Entities::AnyTeamBuilding&>(rhs).under_construction==under_construction 
+	   static_cast<const Entities::AnyTeamBuilding&>(rhs).under_construction==under_construction
 	    )
 		return true;
 	return false;
@@ -527,9 +527,9 @@ bool Entities::Position::is_entity(Map* map, int posx, int posy)
 
 bool Entities::Position::operator==(const Entity& rhs)
 {
-	if(typeid(rhs)==typeid(Entities::Position) && 
+	if(typeid(rhs)==typeid(Entities::Position) &&
 	   static_cast<const Entities::Position&>(rhs).x==x &&
-	   static_cast<const Entities::Position&>(rhs).y==y) 
+	   static_cast<const Entities::Position&>(rhs).y==y)
 		return true;
 	return false;
 }
@@ -820,7 +820,7 @@ GradientInfo make_gradient_info_obstacle(Entities::Entity* source1, Entities::En
 
 
 
-Gradient::Gradient(const GradientInfo& gi) 
+Gradient::Gradient(const GradientInfo& gi)
 {
 	gradient_info=gi;
 	width=0;
@@ -832,10 +832,10 @@ void Gradient::recalculate(Map* map)
 	width=map->getW();
 //	if(gradient==NULL)
 //		gradient=new Sint16[map->getW()*map->getH()];
-//	std::fill(gradient, gradient+(map->getW()*map->getH()),0); 
+//	std::fill(gradient, gradient+(map->getW()*map->getH()),0);
 
 	gradient.resize(map->getW()*map->getH());
-	std::fill(gradient.begin(), gradient.end(),0); 
+	std::fill(gradient.begin(), gradient.end(),0);
 
 	std::queue<position> positions;
 	for(int x=0; x<map->getW(); ++x)
@@ -1914,7 +1914,7 @@ bool BuildingRegister::is_building_upgrading(unsigned int id)
 	{
 		return false;
 	}
-	
+
 	tribool v=found_buildings[id].get<4>();
 	if(v)
 		return true;
@@ -2599,7 +2599,7 @@ void UnderConstruction::save(GAGCore::OutputStream *stream)
 
 SpecificBuildingType::SpecificBuildingType(int building_type) : building_type(building_type)
 {
-	
+
 }
 
 
@@ -3311,7 +3311,7 @@ void RessourceTracker::save(GAGCore::OutputStream *stream)
 
 AddRessourceTracker::AddRessourceTracker(int length, int ressource, int building_id) : length(length), building_id(building_id), ressource(ressource)
 {
-	
+
 }
 
 
@@ -4196,7 +4196,7 @@ void building_search_iterator::set_to_next()
 	}
 	if(position->first==-1 && positionSaved==position)
 	{                        // This fixes an infinit loop.
-		is_end=true;     // In some special cases the program Logic 
+		is_end=true;     // In some special cases the program Logic
 		return;          // must have been wrong.
 	}
 	found_id=position->first;
@@ -4876,7 +4876,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("EchoAI");
 
 	signature_write(stream);
-		
+
 	stream->writeEnterSection("orders");
 	stream->writeUint32((Uint32)orders.size(), "size");
 	Uint32 ordersIndex = 0;
@@ -5122,7 +5122,7 @@ void ReachToInfinity::tick(Echo& echo)
 	{
 		BuildingSearch bs(echo);
 		for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
-		{	
+		{
 			if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 			{
 				ManagementOrder* mo_completion=new AssignWorkers(5, *i);
@@ -5156,7 +5156,7 @@ void ReachToInfinity::tick(Echo& echo)
 			{
 				//The main order for the inn
 				BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
-	
+
 				//Constraints arround the location of wheat
 				AIEcho::Gradients::GradientInfo gi_wheat;
 				gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
@@ -5164,7 +5164,7 @@ void ReachToInfinity::tick(Echo& echo)
 				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
 				//You can't be farther than 10 units from wheat
 				bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
-	
+
 				//Constraints arround nearby settlement
 				AIEcho::Gradients::GradientInfo gi_building;
 				gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
@@ -5185,14 +5185,14 @@ void ReachToInfinity::tick(Echo& echo)
 				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
 				//You want to be reasnobly close to fruit, closer if possible
 				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
-	
+
 				if(prev_id!=-1)
 				{
 					bo->add_condition(new EitherCondition(new ParticularBuilding(new NotUnderConstruction, prev_id), new BuildingDestroyed(prev_id)));
 				}
 				else
 					bo->add_condition(new Population(true, true, true, 5, Population::Greater));
-	
+
 				//Add the building order to the list of orders
 				unsigned int id=echo.add_building_order(bo);
 
@@ -5221,11 +5221,11 @@ void ReachToInfinity::tick(Echo& echo)
 				{
 					fifth_id=id;
 				}
-				
+
 				ManagementOrder* mo_completion=new AssignWorkers(1, id);
 				mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 				echo.add_management_order(mo_completion);
-	
+
 				ManagementOrder* mo_tracker=new AddRessourceTracker(12, id, CORN);
 				mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 				echo.add_management_order(mo_tracker);
@@ -5239,7 +5239,7 @@ void ReachToInfinity::tick(Echo& echo)
 				ManagementOrder* mo_reconstruct = new SendMessage("construct inn");
 				mo_reconstruct->add_condition(new BuildingDestroyed(id));
 				echo.add_management_order(mo_reconstruct);
-	
+
 				prev_id=id;
 			}
 
@@ -5464,7 +5464,7 @@ void ReachToInfinity::tick(Echo& echo)
 			unsigned int id=echo.add_building_order(bo);
 
 //			std::cout<<"inn ordered, id="<<id<<std::endl;
-	
+
 			ManagementOrder* mo_completion=new AssignWorkers(1, id);
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_completion);
@@ -5487,7 +5487,7 @@ void ReachToInfinity::tick(Echo& echo)
 //			std::cout<<"Constructing swarm"<<std::endl;
 			//The main order for the swarm
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWARM_BUILDING, 3);
-	
+
 			//Constraints arround the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
 			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
@@ -5540,7 +5540,7 @@ void ReachToInfinity::tick(Echo& echo)
 		{
 			//The main order for the racetrack
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, 6);
-	
+
 			//Constraints arround the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
 			gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
@@ -5583,7 +5583,7 @@ void ReachToInfinity::tick(Echo& echo)
 		{
 			//The main order for the swimmingpool
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, 6);
-	
+
 			//Constraints arround the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
 			gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
@@ -5881,7 +5881,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 	{
 		//The main order for the inn
 		BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
-	
+
 		//Constraints arround the location of wheat
 		AIEcho::Gradients::GradientInfo gi_wheat;
 		gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
@@ -5918,7 +5918,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		unsigned int id=echo.add_building_order(bo);
 
 //				std::cout<<"inn ordered, id="<<id<<std::endl;
-		
+
 		ManagementOrder* mo_completion=new AssignWorkers(1, id);
 		mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_completion);

@@ -59,7 +59,7 @@ void Sector::free(void)
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();it++)
 		delete (*it);
 	bullets.clear();
-	
+
 	for (std::list<BulletExplosion *>::iterator it=explosions.begin();it!=explosions.end();it++)
 		delete (*it);
 	explosions.clear();
@@ -113,7 +113,7 @@ void Sector::step(void)
 {
 	assert(map);
 	assert(game);
-	
+
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
 	{
 		Bullet *bullet = (*it);
@@ -131,14 +131,14 @@ void Sector::step(void)
 				// we have hit a unit
 				int team = Unit::GIDtoTeam(gid);
 				int id = Unit::GIDtoID(gid);
-				
-				
+
+
 				boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->typeNum));
 				game->teams[team]->pushGameEvent(event);
-		
+
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
-				
+
 				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor(false);
 				if (degats <= 0)
 					degats = 1;
@@ -152,16 +152,16 @@ void Sector::step(void)
 					// we have hit a building
 					int team = Building::GIDtoTeam(gid);
 					int id = Building::GIDtoID(gid);
-					
+
 					if (bullet->revealW > 0 && bullet->revealH > 0)
 						game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
-					
+
 					Building *building = game->teams[team]->myBuildings[id];
-					int damage = bullet->shootDamage-building->type->armor; 
-					
+					int damage = bullet->shootDamage-building->type->armor;
+
 					boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, building->shortTypeNum));
 					game->teams[team]->pushGameEvent(event);
-					
+
 					if (damage > 0)
 						building->hp -= damage;
 					else
@@ -170,7 +170,7 @@ void Sector::step(void)
 						building->kill();
 				}
 			}
-			
+
 			if (!globalContainer->runNoX)
 			{
 				// create new explosion
@@ -186,7 +186,7 @@ void Sector::step(void)
 			it = bullets.erase(it);
 		}
 	}
-	
+
 	// handle explosions timeout
 	for (std::list<BulletExplosion *>::iterator it=explosions.begin();it!=explosions.end();++it)
 	{

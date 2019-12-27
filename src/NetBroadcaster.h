@@ -28,18 +28,18 @@ class NetBroadcaster
 public:
 	///Creates a new NetBroadcaster with the given information to broadcast
 	NetBroadcaster(LANGameInformation& info);
-	
+
 	~NetBroadcaster();
-	
+
 	///Begins broadcasting the following game information
 	void broadcast(LANGameInformation& info);
-	
+
 	///Updates the broadcaster
 	void update();
-	
+
 	///Disables broadcasting
 	void disableBroadcasting();
-	
+
 	///Enables broadcasting
 	void enableBroadcasting();
 private:
