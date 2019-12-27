@@ -5,9 +5,9 @@
 TEMPLATE = app
 TARGET = globulation2
 
-INCLUDEPATH += $$PWD/glob2
-INCLUDEPATH += $$PWD/glob2/libgag/include
-INCLUDEPATH += $$PWD/glob2/libusl/src
+INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$PWD/../libgag/include
+INCLUDEPATH += $$PWD/../libusl/src
 #INCLUDEPATH += $$PWD/glob2/libwee/include
 
 INCLUDEPATH += /usr/include/SDL
@@ -29,4 +29,4 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 include(globulation2.pri)
-SOURCES += glob2/src/Glob2.cpp
+SOURCES += $$PWD/Glob2.cpp
