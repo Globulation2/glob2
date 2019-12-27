@@ -1,7 +1,7 @@
 include(globulation2.pri)
 include(globulation2_test.pri)
 include(cppunit.pri)
-SOURCES += glob2/test/TestsRunner.cpp
+SOURCES += $$PWD/../test/TestsRunner.cpp
 
 TEMPLATE = app
 TARGET = globulation2_test
@@ -9,10 +9,10 @@ TARGET = globulation2_test
 # Unique to tests
 LIBS += -ldl
 
-INCLUDEPATH += $$PWD/glob2
-INCLUDEPATH += $$PWD/glob2/libgag/include
-INCLUDEPATH += $$PWD/glob2/libusl/src
-#INCLUDEPATH += $$PWD/glob2/libwee/include
+INCLUDEPATH += $$PWD/..
+INCLUDEPATH += $$PWD/..2/libgag/include
+INCLUDEPATH += $$PWD/..2/libusl/src
+#INCLUDEPATH += $$PWD/../libwee/include
 
 INCLUDEPATH += /usr/include/SDL
 LIBS += -lSDL -lz -lboost_system -lboost_thread

@@ -26,14 +26,7 @@ install:
   # Boost
   - sudo apt install -qq libboost-all-dev
 
-services:
- - xvfb
-
 script: 
-  # Clone original source or ...
-  #- git clone https://github.com/Globulation2/glob2
-  # ... clone my fork
-  #- git clone https://github.com/richelbilderbeek/glob2
   # Build source using scons
   - scons
   # Build source with qmake
@@ -42,10 +35,4 @@ script:
   # Check if build was successfull
   - if [ ! -f src/glob2 ]; then echo "scons build failed" ; exit 1 ; fi
   - if [ ! -f globulation2 ]; then echo "qmake build failed" ; exit 1 ; fi
-
-after_success:
-  # Codecov
-  #- bash <(curl -s https://codecov.io/bash)
-
-
 
