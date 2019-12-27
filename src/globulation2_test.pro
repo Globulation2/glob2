@@ -10,8 +10,8 @@ TARGET = globulation2_test
 LIBS += -ldl
 
 INCLUDEPATH += $$PWD/..
-INCLUDEPATH += $$PWD/..2/libgag/include
-INCLUDEPATH += $$PWD/..2/libusl/src
+INCLUDEPATH += $$PWD/../libgag/include
+INCLUDEPATH += $$PWD/../libusl/src
 #INCLUDEPATH += $$PWD/../libwee/include
 
 INCLUDEPATH += /usr/include/SDL

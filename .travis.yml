@@ -25,8 +25,24 @@ install:
   - sudo apt update -qq
   # Boost
   - sudo apt install -qq libboost-all-dev
+  # cppunit
+  - my_github=${PWD##*/}  
+  - cd ..
+  - git clone git://anongit.freedesktop.org/git/libreoffice/cppunit/
+  - cd cppunit
+  - ./autogen.sh
+  - ./configure
+  - make
+  - make check # optional
+  - sudo make install
+  - cd ..
+  - cd $my_github
 
 script: 
+  # Run tests
+  - qmake src/globulation2_test.pro
+  - make --silent
+  - ./globulation2_test
   # Build source using scons
   - scons
   # Build source with qmake

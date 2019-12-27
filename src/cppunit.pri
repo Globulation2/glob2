@@ -1,54 +1,54 @@
-INCLUDEPATH += ../cppunit/include/cppunit
+INCLUDEPATH += $$PWD/../../cppunit/include/cppunit
 
-HEADERS += ../cppunit/include/cppunit/*.h
+HEADERS += $$PWD/../../cppunit/include/cppunit/*.h
 
-SOURCES += ../cppunit/src/cppunit/AdditionalMessage.cpp \
-           ../cppunit/src/cppunit/Asserter.cpp \
-           ../cppunit/src/cppunit/BriefTestProgressListener.cpp \
-           ../cppunit/src/cppunit/CompilerOutputter.cpp \
-           ../cppunit/src/cppunit/DefaultProtector.cpp \
-           ../cppunit/src/cppunit/DynamicLibraryManager.cpp \
-           ../cppunit/src/cppunit/DynamicLibraryManagerException.cpp \
-           ../cppunit/src/cppunit/Exception.cpp \
-           ../cppunit/src/cppunit/Message.cpp \
-           ../cppunit/src/cppunit/PlugInManager.cpp \
-           ../cppunit/src/cppunit/PlugInParameters.cpp \
-           ../cppunit/src/cppunit/ProtectorChain.cpp \
-           ../cppunit/src/cppunit/Protector.cpp \
-           ../cppunit/src/cppunit/RepeatedTest.cpp \
-           ../cppunit/src/cppunit/ShlDynamicLibraryManager.cpp \
-           ../cppunit/src/cppunit/SourceLine.cpp \
-           ../cppunit/src/cppunit/StringTools.cpp \
-           ../cppunit/src/cppunit/SynchronizedObject.cpp \
-           ../cppunit/src/cppunit/TestAssert.cpp \
-           ../cppunit/src/cppunit/TestCase.cpp \
-           ../cppunit/src/cppunit/TestCaseDecorator.cpp \
-           ../cppunit/src/cppunit/TestComposite.cpp \
-           ../cppunit/src/cppunit/Test.cpp \
-           ../cppunit/src/cppunit/TestDecorator.cpp \
-           ../cppunit/src/cppunit/TestFactoryRegistry.cpp \
-           ../cppunit/src/cppunit/TestFailure.cpp \
-           ../cppunit/src/cppunit/TestLeaf.cpp \
-           ../cppunit/src/cppunit/TestNamer.cpp \
-           ../cppunit/src/cppunit/TestPath.cpp \
-           ../cppunit/src/cppunit/TestPlugInDefaultImpl.cpp \
-           ../cppunit/src/cppunit/TestResultCollector.cpp \
-           ../cppunit/src/cppunit/TestResult.cpp \
-           ../cppunit/src/cppunit/TestRunner.cpp \
-           ../cppunit/src/cppunit/TestSetUp.cpp \
-           ../cppunit/src/cppunit/TestSuccessListener.cpp \
-           ../cppunit/src/cppunit/TestSuiteBuilderContext.cpp \
-           ../cppunit/src/cppunit/TestSuite.cpp \
-           ../cppunit/src/cppunit/TextOutputter.cpp \
-           ../cppunit/src/cppunit/TextTestProgressListener.cpp \
-           ../cppunit/src/cppunit/TextTestResult.cpp \
-           ../cppunit/src/cppunit/TextTestRunner.cpp \
-           ../cppunit/src/cppunit/TypeInfoHelper.cpp \
-           ../cppunit/src/cppunit/UnixDynamicLibraryManager.cpp \
-           ../cppunit/src/cppunit/Win32DynamicLibraryManager.cpp \
-           ../cppunit/src/cppunit/XmlDocument.cpp \
-           ../cppunit/src/cppunit/XmlElement.cpp \
-           ../cppunit/src/cppunit/XmlOutputter.cpp \
-           ../cppunit/src/cppunit/XmlOutputterHook.cpp
+SOURCES += $$PWD/../../cppunit/src/cppunit/AdditionalMessage.cpp \
+           $$PWD/../../cppunit/src/cppunit/Asserter.cpp \
+           $$PWD/../../cppunit/src/cppunit/BriefTestProgressListener.cpp \
+           $$PWD/../../cppunit/src/cppunit/CompilerOutputter.cpp \
+           $$PWD/../../cppunit/src/cppunit/DefaultProtector.cpp \
+           $$PWD/../../cppunit/src/cppunit/DynamicLibraryManager.cpp \
+           $$PWD/../../cppunit/src/cppunit/DynamicLibraryManagerException.cpp \
+           $$PWD/../../cppunit/src/cppunit/Exception.cpp \
+           $$PWD/../../cppunit/src/cppunit/Message.cpp \
+           $$PWD/../../cppunit/src/cppunit/PlugInManager.cpp \
+           $$PWD/../../cppunit/src/cppunit/PlugInParameters.cpp \
+           $$PWD/../../cppunit/src/cppunit/ProtectorChain.cpp \
+           $$PWD/../../cppunit/src/cppunit/Protector.cpp \
+           $$PWD/../../cppunit/src/cppunit/RepeatedTest.cpp \
+           $$PWD/../../cppunit/src/cppunit/ShlDynamicLibraryManager.cpp \
+           $$PWD/../../cppunit/src/cppunit/SourceLine.cpp \
+           $$PWD/../../cppunit/src/cppunit/StringTools.cpp \
+           $$PWD/../../cppunit/src/cppunit/SynchronizedObject.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestAssert.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestCase.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestCaseDecorator.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestComposite.cpp \
+           $$PWD/../../cppunit/src/cppunit/Test.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestDecorator.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestFactoryRegistry.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestFailure.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestLeaf.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestNamer.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestPath.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestPlugInDefaultImpl.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestResultCollector.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestResult.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestRunner.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestSetUp.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestSuccessListener.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestSuiteBuilderContext.cpp \
+           $$PWD/../../cppunit/src/cppunit/TestSuite.cpp \
+           $$PWD/../../cppunit/src/cppunit/TextOutputter.cpp \
+           $$PWD/../../cppunit/src/cppunit/TextTestProgressListener.cpp \
+           $$PWD/../../cppunit/src/cppunit/TextTestResult.cpp \
+           $$PWD/../../cppunit/src/cppunit/TextTestRunner.cpp \
+           $$PWD/../../cppunit/src/cppunit/TypeInfoHelper.cpp \
+           $$PWD/../../cppunit/src/cppunit/UnixDynamicLibraryManager.cpp \
+           $$PWD/../../cppunit/src/cppunit/Win32DynamicLibraryManager.cpp \
+           $$PWD/../../cppunit/src/cppunit/XmlDocument.cpp \
+           $$PWD/../../cppunit/src/cppunit/XmlElement.cpp \
+           $$PWD/../../cppunit/src/cppunit/XmlOutputter.cpp \
+           $$PWD/../../cppunit/src/cppunit/XmlOutputterHook.cpp
 
-#../cppunit/src/cppunit/DllMain.cpp \
+#$$PWD/../../cppunit/src/cppunit/DllMain.cpp \

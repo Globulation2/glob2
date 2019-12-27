@@ -11,3 +11,4 @@ src/glob2
 scons/*.pyc
 *.pro.user
 build-globulation2-Desktop-Debug/
+build-*
