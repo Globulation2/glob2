@@ -25,14 +25,6 @@ install:
   - sudo apt update -qq
   # Boost
   - sudo apt install -qq libboost-all-dev
-  # Codecov
-  - sudo pip install codecov
-  # OCLint
-  #- ./install_oclint
-  # Check dead links
-  - sudo apt-get install -qq npm
-  - npm config set strict-ssl false
-  - sudo npm install -g markdown-link-check
 
 services:
  - xvfb
@@ -50,26 +42,6 @@ script:
   # Check if build was successfull
   - if [ ! -f src/glob2 ]; then echo "scons build failed" ; exit 1 ; fi
   - if [ ! -f globulation2 ]; then echo "qmake build failed" ; exit 1 ; fi
-  # Call OCLint
-  #- ./do_oclint
-  # Get code coverage
-  #- cp debug/*.* .
-  #- ./get_code_cov
-  #- codecov
-  # helgrind: takes long
-  # - if [[ $TRAVIS_BRANCH == "richel" ]]; then travis_wait 50 valgrind --tool=helgrind --verbose --log-file=helgrind.log -v ./djog_unos_2018 --god --short 1; fi
-  # - if [[ $TRAVIS_BRANCH == "richel" ]]; then cat helgrind.log; fi
-  # cppcheck
-  - travis_wait 50 cppcheck --quiet --error-exitcode=1 . || true
-  # SLOCcount
-  #   remove OCLint and .git, otherwise it will be counted as well
-  #- rm -rf oclint-0.10.3 oclint-0.10.3-x86_64-linux-3.13.0-74-generic.tar.gz oclint.log
-  #- rm -rf .git
-  #- rm -rf debug
-  #- rm -rf debug
-  #- cd ..; sloccount --overhead 1 --personcost 22614 djog_unos_2018 | egrep -v "Adding"; cd djog_unos_2018
-  # Check dead links
-  - ./scripts/check_dead_links
 
 after_success:
   # Codecov
