@@ -41,7 +41,7 @@ script:
   # Clone original source or ...
   #- git clone https://github.com/Globulation2/glob2
   # ... clone my fork
-  - git clone https://github.com/richelbilderbeek/glob2
+  #- git clone https://github.com/richelbilderbeek/glob2
   # Build source using scons
   - scons
   # Build source with qmake
