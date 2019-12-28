@@ -3,11 +3,6 @@ include(globulation2_test.pri)
 include(cppunit.pri)
 SOURCES += $$PWD/../test/TestsRunner.cpp
 
-
-# Use C++11
-CONFIG += c++11
-QMAKE_CXXFLAGS += -std=c++11
-
 TEMPLATE = app
 TARGET = globulation2_test
 
