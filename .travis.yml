@@ -39,12 +39,12 @@ install:
   - cd $my_github
 
 script: 
+  # Build source using scons. Creates 'config.h'
+  - scons
   # Run tests
   - qmake src/globulation2_test.pro
   - make --silent
   - ./globulation2_test
-  # Build source using scons
-  - scons
   # Build source with qmake
   - qmake src/globulation2.pro
   - make --silent
