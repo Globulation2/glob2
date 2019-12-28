@@ -237,6 +237,9 @@ def main():
               action='store',
               metavar='portaudio',
               help='should portaudio be used')
+    AddOption('--build',
+              default='build',
+              help='build directory')
     env = Environment()
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
@@ -351,19 +354,24 @@ def main():
         Export('crossroot_abs')
     Export('isWindowsPlatform')
 
-    SConscript("campaigns/SConscript")
-    SConscript("data/SConscript")
-    SConscript("debian/SConscript")
-    SConscript("fedora/SConscript")
-    SConscript("gnupg/SConscript")
-    SConscript("libgag/SConscript")
-    SConscript("libusl/SConscript")
-    SConscript("maps/SConscript")
-    SConscript("natsort/SConscript")
-    SConscript("scripts/SConscript")
-    SConscript("scons/SConscript")
-    SConscript("src/SConscript")
-    SConscript("tools/SConscript")
-    SConscript("windows/SConscript")
+    bdir = GetOption('build')
+    targets = [
+        "campaigns",
+        "data",
+        "debian",
+        "fedora",
+        "gnupg",
+        "libgag",
+        "libusl",
+        "maps",
+        "natsort",
+        "scripts",
+        "scons",
+        "src",
+        "tools",
+        "windows"
+    ]
+    for target in targets:
+        SConscript(target + "/SConscript", variant_dir = bdir + "/" + target, duplicate = 0)
 
 main()
