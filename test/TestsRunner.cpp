@@ -29,6 +29,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/XmlOutputter.h>
 
+//Globulation2 has one global
 #include "GlobalContainer.h"
 GlobalContainer *globalContainer = new GlobalContainer;
 
