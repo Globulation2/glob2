@@ -48,6 +48,12 @@ and `BINDIR'. If you wanted to install into your home directory for example
 
      scons BINDIR="/home/user/glob2/bin" INSTALLDIR="/home/user/glob2/share"
 
+Out of source compliation
+=========================
+
+   To compile Globulation 2 in a given directory, pass the `--build` flag to
+`scons`, for example `scons --build=/home/$USER/build/glob2`.
+
 Specifying the System Type
 ==========================
 
