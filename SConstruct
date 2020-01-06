@@ -130,14 +130,24 @@ def configure(env, server_only):
         print "Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp"
         missing.append("libboost_thread")
     env.Append(LIBS=[boost_thread])
+
+    boost_system = ''
+    if conf.CheckLib("boost_system"):
+        boost_system="boost_system"
+    elif conf.CheckLib("boost_system-mt"):
+        boost_system="boost_system-mt"
+    else:
+        print "Could not find libboost_system or libboost_system-mt"
+        missing.append("libboost_system")
+    env.Append(LIBS=[boost_system])
     
     boost_date_time = ''
     if conf.CheckLib("boost_date_time") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_thread="boost_thread"
+        boost_date_time="boost_date_time"
     elif conf.CheckLib("boost_date_time-mt") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_thread="boost_thread-mt"
+        boost_date_time="boost_date_time-mt"
     else:
-        print "Could not find libboost_date_time or libboost_date_time-mt or boost/thread/thread.hpp"
+        print "Could not find libboost_date_time or libboost_date_time-mt or boost/date_time/date_time.hpp"
         missing.append("libboost_date_time")
     env.Append(LIBS=[boost_date_time])
     env.Append(LIBS=["boost_system", "pthread"])
@@ -285,7 +295,7 @@ def main():
     env.Append(CPPPATH=['#libusl/src', '#'])
     env.Append(CXXFLAGS=' -Wall')
     env.Append(LINKFLAGS=' -Wall')
-    env.Append(LIBS=['SDL_net'])
+    env.Append(LIBS=['SDL_net', 'pthread'])
     if not server_only:
         env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'speex'])
 
