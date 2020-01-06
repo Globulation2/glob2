@@ -150,7 +150,7 @@ int YOGServer::run()
 	std::cout<<"Server started successfully."<<std::endl;
 	while(nl.isListening())
 	{
-		const int speed = 4;
+		const int speed = 20;
 		int startTick, endTick;
 		startTick = SDL_GetTicks();
 		update();
