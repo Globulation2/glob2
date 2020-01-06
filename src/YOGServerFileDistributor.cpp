@@ -103,6 +103,10 @@ void YOGServerFileDistributor::update()
 			i->get<0>()->sendMessage(fileInfo);
 			i->get<2>() = 1;
 		}
+		else if(i->get<2>() == 0) {
+			// WORKAROUND
+			continue;
+		}
 		else if(i->get<2>()-1 < (int)chunks.size() && i->get<1>() < localtime)
 		{
 			i->get<0>()->sendMessage(chunks[i->get<2>()-1]);
