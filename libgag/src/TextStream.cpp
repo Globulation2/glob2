@@ -44,7 +44,7 @@ namespace GAGCore
 	void TextOutputStream::write(const void *data, const size_t size, const std::string name)
 	{
 		printLevel();
-		if (name.size());
+		if (name.size())
 		{
 			printString(name);
 			printString(" = ");
