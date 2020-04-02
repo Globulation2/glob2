@@ -67,9 +67,9 @@ void YOGServerPlayerScoreCalculator::proccessResults(YOGGameResults& results, Ga
 				//std::cout<<"old: "<<your_rating<<" new: "<<int(double(your_rating) + change * (1.0 - expected))<<std::endl;
 			}
 			else
-
+			{
 				///Decreases player score
-				info.setPlayerRating(int(double(your_rating) + change * (0.0 - expected)));			{
+				info.setPlayerRating(int(double(your_rating) + change * (0.0 - expected)));
 				//std::cout<<"old: "<<your_rating<<" new: "<<int(double(your_rating) + change * (0.0 - expected))<<std::endl;
 			}
 			server->getPlayerStoredInfoManager().setPlayerStoredInfo(header.getBasePlayer(i).name, info);
