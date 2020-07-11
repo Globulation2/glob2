@@ -74,39 +74,39 @@ def configure(env, server_only):
 
     #Compiler check
     if not conf.CheckCC():
-        print "C compiler does not work"
+        print("C compiler does not work")
         missing.append("C compiler")
     if not conf.CheckCXX():
-        print "CXX compiler does not work"
+        print("CXX compiler does not work")
         missing.append("CXX compiler")
 
     #Simple checks for required libraries
     if not server_only and not conf.CheckLib("SDL"):
-        print "Could not find libSDL"
+        print("Could not find libSDL")
         missing.append("SDL")
     if not server_only and not conf.CheckLib("SDL_ttf"):
-        print "Could not find libSDL_ttf"
+        print("Could not find libSDL_ttf")
         missing.append("SDL_ttf")
     if not server_only and not conf.CheckLib("SDL_image"):
-        print "Could not find libSDL_image"
+        print("Could not find libSDL_image")
         missing.append("SDL_image")
     if not conf.CheckLib("SDL_net"):
-        print "Could not find libSDL_net"
+        print("Could not find libSDL_net")
         missing.append("SDL_net")
     if not server_only and (not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h")):
-        print "Could not find libspeex or could not find 'speex/speex.h'"
+        print("Could not find libspeex or could not find 'speex/speex.h'")
         missing.append("speex")
     if not server_only and not conf.CheckLib("vorbisfile"):
-        print "Could not find libvorbisfile"
+        print("Could not find libvorbisfile")
         missing.append("vorbisfile")
     if not server_only and not conf.CheckLib("vorbis"):
-        print "Could not find libvorbis"
+        print("Could not find libvorbis")
         missing.append("vorbis")
     if not server_only and not conf.CheckLib("ogg"):
-        print "Could not find libogg"
+        print("Could not find libogg")
         missing.append("ogg")
     if not conf.CheckCXXHeader("zlib.h"):
-        print "Could not find zlib.h"
+        print("Could not find zlib.h")
         missing.append("zlib")
     else:
         if conf.CheckLib("z"):
@@ -114,12 +114,12 @@ def configure(env, server_only):
         elif conf.CheckLib("zlib1"):
             env.Append(LIBS="zlib1")
         else:
-            print "Could not find libz or zlib1.dll"
+            print("Could not find libz or zlib1.dll")
             missing.append("zlib")
     
     if ((env['mingw'] or env['mingwcross'] or isWindowsPlatform) and not conf.CheckLib("regex")) or not conf.CheckCXXHeader("regex.h"):
-			print "Could not find regex.h"
-			missing.append("regex")
+        print("Could not find regex.h")
+        missing.append("regex")
 
     boost_thread = ''
     if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
@@ -127,7 +127,7 @@ def configure(env, server_only):
     elif conf.CheckLib("boost_thread-mt") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
         boost_thread="boost_thread-mt"
     else:
-        print "Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp"
+        print("Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp")
         missing.append("libboost_thread")
     env.Append(LIBS=[boost_thread])
     
@@ -137,33 +137,33 @@ def configure(env, server_only):
     elif conf.CheckLib("boost_date_time-mt") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
         boost_thread="boost_thread-mt"
     else:
-        print "Could not find libboost_date_time or libboost_date_time-mt or boost/thread/thread.hpp"
+        print("Could not find libboost_date_time or libboost_date_time-mt or boost/thread/thread.hpp")
         missing.append("libboost_date_time")
     env.Append(LIBS=[boost_date_time])
     env.Append(LIBS=["boost_system", "pthread"])
     
 
     if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
-        print "Could not find boost/shared_ptr.hpp"
+        print("Could not find boost/shared_ptr.hpp")
         missing.append("boost/shared_ptr.hpp")
     if not conf.CheckCXXHeader("boost/tuple/tuple.hpp"):
-        print "Could not find boost/tuple/tuple.hpp"
+        print("Could not find boost/tuple/tuple.hpp")
         missing.append("boost/tuple/tuple.hpp")
     if not conf.CheckCXXHeader("boost/tuple/tuple_comparison.hpp"):
-        print "Could not find boost/tuple/tuple_comparison.hpp"
+        print("Could not find boost/tuple/tuple_comparison.hpp")
         missing.append("boost/tuple/tuple_comparison.hpp")
     if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):
-        print "Could not find boost/logic/tribool.hpp"
+        print("Could not find boost/logic/tribool.hpp")
         missing.append("boost/logic/tribool.hpp")
     if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
-        print "Could not find boost/lexical_cast.hpp"
+        print("Could not find boost/lexical_cast.hpp")
         missing.append("boost/lexical_cast.hpp")
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
     if not server_only:
         if isDarwinPlatform:
-            print "Using Apple's OpenGL framework"
+            print("Using Apple's OpenGL framework")
             env.Append(FRAMEWORKS="OpenGL")
         elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h"):
             gl_libraries.append("GL")
@@ -172,12 +172,12 @@ def configure(env, server_only):
         elif conf.CheckLib("opengl32") and conf.CheckCXXHeader("GL/gl.h"):
             gl_libraries.append("opengl32")
         else:
-            print "Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h"
+            print("Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h")
             missing.append("OpenGL")
 
         #Do checks for GLU, which is different on every system
         if isDarwinPlatform:
-            print "Using Apple's GLUT framework"
+            print("Using Apple's GLUT framework")
             env.Append(FRAMEWORKS="GLUT")
         elif conf.CheckLib('GLU') and conf.CheckCXXHeader("GL/glu.h"):
             gl_libraries.append("GLU")
@@ -186,7 +186,7 @@ def configure(env, server_only):
         elif conf.CheckLib('glu32') and conf.CheckCXXHeader('GL/glu.h'):
             gl_libraries.append("glu32")
         else:
-            print "Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h"
+            print("Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h")
             missing.append("GLU")
     
     if gl_libraries or isDarwinPlatform:
@@ -201,30 +201,30 @@ def configure(env, server_only):
     #Do checks for portaudio
     if not server_only and conf.CheckLib('portaudio') and conf.CheckCXXHeader('portaudio.h'):
         if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
-            print "--------"
-            print "NOTE: It appears you are compiling under Windows. At this stage, PortAudio crashes Globulation 2 when voice chat is used."
-            print "NOTE: Disabling PortAudio in this build (you will be unable to use Voice Chat ingame)."
-            print "--------"
+            print("--------")
+            print("NOTE: It appears you are compiling under Windows. At this stage, PortAudio crashes Globulation 2 when voice chat is used.")
+            print("NOTE: Disabling PortAudio in this build (you will be unable to use Voice Chat ingame).")
+            print("--------")
         else:
             if GetOption('portaudio'):
-                print "trying to use portaudio"
+                print("trying to use portaudio")
                 configfile.add("HAVE_PORTAUDIO ", "Defined when Port Audio support is present and compiled")
                 env.Append(LIBS=['portaudio'])
             else:
-                print "         no portaudio"
-                print "         no portaudio - although portaudio was found to be installed, you have "
-                print "         no portaudio - to explicitly activate it using: "
-                print "         no portaudio - $ scons --portaudio=true"
-                print "         no portaudio - this may not work properly if the version of portaudio"
-                print "         no portaudio - is wrong. portaudio is used to allow communicating over VOIP"
-                print "         no portaudio"
-                print "         no portaudio - if you know of a solution to detect portaudio version"
-                print "         no portaudio - let us know at:"
-                print "         no portaudio - https://savannah.nongnu.org/bugs/index.php?24668"
-                print "         no portaudio"
+                print("         no portaudio")
+                print("         no portaudio - although portaudio was found to be installed, you have ")
+                print("         no portaudio - to explicitly activate it using: ")
+                print("         no portaudio - $ scons --portaudio=true")
+                print("         no portaudio - this may not work properly if the version of portaudio")
+                print("         no portaudio - is wrong. portaudio is used to allow communicating over VOIP")
+                print("         no portaudio")
+                print("         no portaudio - if you know of a solution to detect portaudio version")
+                print("         no portaudio - let us know at:")
+                print("         no portaudio - https://savannah.nongnu.org/bugs/index.php?24668")
+                print("         no portaudio")
     if missing:
         for t in missing:
-            print "Missing %s" % t
+            print("Missing %s" % t)
         Exit(1)
        
     conf.Finish()
@@ -270,7 +270,7 @@ def main():
         if os.path.isabs(env['crossroot']):
             crossroot_abs = env['crossroot']
         else:
-            crossroot_abs = os.getcwdu() + '/' + env['crossroot']
+            crossroot_abs = os.getcwd() + '/' + env['crossroot']
         env.Append(LIBPATH=['/usr/i586-mingw32msvc/lib', crossroot_abs + '/lib'])
         env.Append(CPPPATH=['/usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/include/c++', '/usr/i586-mingw32msvc/include'])
         env.Append(CPPPATH=[crossroot_abs + '/include', crossroot_abs + '/include/SDL'])

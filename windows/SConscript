@@ -33,8 +33,8 @@ def genlists(target, source, env):
         try:
             h = open(filename, "w")
         except:
-            print "Problem opening file %s for writing" % filename
-            print __doc__
+            print("Problem opening file %s for writing" % filename)
+            print(__doc__)
             sys.exit(1)
         return h
 
@@ -56,14 +56,14 @@ def genlists(target, source, env):
     for path, dirs, files in list(os.walk('data')) + list(os.walk('maps')) + list(os.walk('campaigns')) + list(os.walk('scripts')):
         if env['mingwcross']:
             path = ntpath.normpath(path)        # Switch / to \\
-        print >> install_list, "SetOutPath $INSTDIR\\" + path
+        print("SetOutPath $INSTDIR\\" + path, file=install_list)
         folder_list.append(path)
         for f in files:
             if (f != "SConscript" and f != "SConstruct"):
-                print >> install_list, "File ..\\" + path + "\\" + f
+                print("File ..\\" + path + "\\" + f, file=install_list)
                 file_list.append(path + "\\" + f)
 
-    print >> install_list, "SetOutPath $INSTDIR"
+    print("SetOutPath $INSTDIR", file=install_list)
 
     dllpaths = ['..']
     if env['mingwcross']:
@@ -76,7 +76,7 @@ def genlists(target, source, env):
             if (file.find(".dll", -4) != -1):
                 if env['mingwcross']:
                     cpath = ntpath.normpath(cpath)      # Switch / to \\
-                print >> install_list, "File %s\\%s" % (cpath, file)
+                print("File %s\\%s" % (cpath, file), file=install_list)
                 file_list.append(file)
 
 
@@ -85,10 +85,10 @@ def genlists(target, source, env):
     #
     file_list.reverse()
     for file in file_list:
-        print >> uninstall_list, "Delete $INSTDIR\\" + file
+        print("Delete $INSTDIR\\" + file, file=uninstall_list)
     folder_list.reverse()
     for folder in folder_list:
-        print >> uninstall_list, "RMDir $INSTDIR\\" + folder
+        print("RMDir $INSTDIR\\" + folder, file=uninstall_list)
 
     #
     # CLOSE FILES

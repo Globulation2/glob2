@@ -15,7 +15,7 @@ def TOOL_BUNDLE(env):
     if 'BUNDLE' in env['TOOLS']: return
     if env['osx'] == 1:
         if tools_verbose:
-            print " running tool: TOOL_BUNDLE"
+            print(" running tool: TOOL_BUNDLE")
         env.Append(TOOLS = 'BUNDLE')
         # This is like the regular linker, but uses different vars.
         # XXX: NOTE: this may be out of date now, scons 0.96.91 has some bundle linker stuff built in.
@@ -63,7 +63,7 @@ def TOOL_BUNDLE(env):
             suffix=bundledir[string.rfind(bundledir,'.'):]
             if (suffix=='.app' and typecode != 'APPL' or
                 suffix!='.app' and typecode == 'APPL'):
-                raise Error, "MakeBundle: inconsistent dir suffix %s and type code %s: app bundles should end with .app and type code APPL."%(suffix, typecode)
+                raise Error("MakeBundle: inconsistent dir suffix %s and type code %s: app bundles should end with .app and type code APPL."%(suffix, typecode))
             if subst_dict is None:
                 subst_dict={'%SHORTVERSION%': '$VERSION_NUM',
                             '%LONGVERSION%': '$VERSION_NAME',
@@ -93,7 +93,7 @@ def TOOL_BUNDLE(env):
         SConsEnvironment.MakeBundle = MakeBundle
 def TOOL_WRITE_VAL(env):
     if tools_verbose:
-        print " running tool: TOOL_WRITE_VAL"
+        print(" running tool: TOOL_WRITE_VAL")
     env.Append(TOOLS = 'WRITE_VAL')
     def write_val(target, source, env):
         """Write the contents of the first source into the target.
