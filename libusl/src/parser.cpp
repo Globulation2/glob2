@@ -83,7 +83,7 @@ ExpressionNode* Parser::declaration2(const Position& position) {
 		next();
 		break;
 	default:
-		auto_ptr<PatternNode> argument(pattern());
+		unique_ptr<PatternNode> argument(pattern());
 		ExpressionNode* body = declaration2(position);
 		return new FunNode(position, argument.release(), body);
 	}
@@ -104,7 +104,7 @@ PatternNode* Parser::pattern()
 		}
 		else
 		{
-			auto_ptr<TuplePatternNode> tuple(new TuplePatternNode(position));
+			unique_ptr<TuplePatternNode> tuple(new TuplePatternNode(position));
 			tuple->members.push_back(pattern());
 			while (tokenType() == COMMA)
 			{
@@ -189,7 +189,7 @@ ExpressionNode* Parser::prefixedExpression()
 
 ExpressionNode* Parser::methodCompositionExpression(ExpressionNode* first)
 {
-	auto_ptr<ExpressionNode> node(pathExpression(first));
+	unique_ptr<ExpressionNode> node(pathExpression(first));
 	while (true)
 	{
 		const Position position(token.position);
@@ -211,7 +211,7 @@ ExpressionNode* Parser::methodCompositionExpression(ExpressionNode* first)
 
 ExpressionNode* Parser::pathExpression(ExpressionNode* first)
 {
-	auto_ptr<ExpressionNode> node(first);
+	unique_ptr<ExpressionNode> node(first);
 	while (true)
 	{
 		const Position& position = token.position;
@@ -266,7 +266,7 @@ ExpressionNode* Parser::simpleExpression()
 	case LPAR:
 		{
 			next();
-			auto_ptr<RecordBlock> block(new RecordBlock(position));
+			unique_ptr<RecordBlock> block(new RecordBlock(position));
 			expressions(block.get());
 			accept(RPAR);
 			RecordBlock* record = block.get();
@@ -286,7 +286,7 @@ ExpressionNode* Parser::simpleExpression()
 	case LBRACE:
 		{
 			next();
-			auto_ptr<ExecutionBlock> block(new ExecutionBlock(position));
+			unique_ptr<ExecutionBlock> block(new ExecutionBlock(position));
 			statements(block.get());
 			accept(RBRACE);
 			return block.release();
@@ -294,7 +294,7 @@ ExpressionNode* Parser::simpleExpression()
 	case LBRACK:
 		{
 			next();
-			auto_ptr<RecordBlock> block(new RecordBlock(position));
+			unique_ptr<RecordBlock> block(new RecordBlock(position));
 			statements(block.get());
 			accept(RBRACK);
 			return block.release();
@@ -302,7 +302,7 @@ ExpressionNode* Parser::simpleExpression()
 	case FUN:
 		{
 			next();
-			auto_ptr<PatternNode> arg(pattern());
+			unique_ptr<PatternNode> arg(pattern());
 			accept(ARROW);
 			ExpressionNode* body = expression();
 			return new FunNode(position, arg.release(), body);
