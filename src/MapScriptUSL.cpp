@@ -178,7 +178,7 @@ bool MapScriptUSL::compileCode(const std::string& code)
 				do {
 					fileName = Toolkit::getFileManager()->getNextDirectoryEntry();
 					std::string fullFileName = string(*dir) + DIR_SEPARATOR + fileName;
-					auto_ptr<ifstream> file(Toolkit::getFileManager()->openIFStream(fullFileName));
+					unique_ptr<ifstream> file(Toolkit::getFileManager()->openIFStream(fullFileName));
 					if (file.get())
 					{
 						#ifdef DEBUG_USL

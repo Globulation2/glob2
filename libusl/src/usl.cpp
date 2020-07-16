@@ -61,7 +61,7 @@ struct Load: NativeCode
 		
 		Usl* usl = thread->usl;
 		
-		auto_ptr<ifstream> stream(usl->openFile(filename));
+		unique_ptr<ifstream> stream(usl->openFile(filename));
 		Scope* scope = usl->compile(filename, *stream);
 		if (frame.nextInstr >= frame.thunk->thunkPrototype()->body.size())
 			thread->frames.pop_back(); // tail-call optimisation
