@@ -1817,7 +1817,7 @@ bool AICastor::enoughFreeWorkers()
 	static bool first=true;
 	if (first)
 	{
-		memset(oldEnough, 2, 1024);
+		memset(oldEnough, 2, 1024*sizeof(*oldEnough));
 		first=false;
 	}
 	if ((oldEnough[buildsAmount]==2) || (enough!=oldEnough[buildsAmount]))
