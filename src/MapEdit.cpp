@@ -1778,7 +1778,7 @@ void MapEdit::processEvent(SDL_Event& event)
 
 
 
-void MapEdit::handleKeyPressed(SDL_keysym key, bool pressed)
+void MapEdit::handleKeyPressed(SDL_Keysym key, bool pressed)
 {
 	Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
 	switch(action_t)
@@ -3092,8 +3092,8 @@ void MapEdit::handleMapScroll()
 	int scrollAreaWidth=10; // if the cursor is that close to the border the viewport will scroll
 
 	SDL_PumpEvents();
-	Uint8 *keystate = SDL_GetKeyState(NULL);
-	SDLMod modState = SDL_GetModState();
+	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+	SDL_Keymod modState = SDL_GetModState();
 	int xMotion = 1;
 	int yMotion = 1;
 	/* We check that only Control is held to avoid accidentally
@@ -3132,37 +3132,37 @@ void MapEdit::handleMapScroll()
 		yMotion = 0; 
 	}
 	if (
-			keystate[SDLK_UP] ||
-			keystate[SDLK_KP7] ||
-			keystate[SDLK_KP8] ||
-			keystate[SDLK_KP9] ||
+			keystate[SDL_SCANCODE_UP] ||
+			keystate[SDL_SCANCODE_KP_7] ||
+			keystate[SDL_SCANCODE_KP_8] ||
+			keystate[SDL_SCANCODE_KP_9] ||
 			mouseY<scrollAreaWidth)
 	{
 		ySpeed += -yMotion;
 	}
 	if (
-			keystate[SDLK_DOWN] ||
-			keystate[SDLK_KP1] || 
-			keystate[SDLK_KP2] || 
-			keystate[SDLK_KP3] ||
+			keystate[SDL_SCANCODE_DOWN] ||
+			keystate[SDL_SCANCODE_KP_1] || 
+			keystate[SDL_SCANCODE_KP_2] || 
+			keystate[SDL_SCANCODE_KP_3] ||
 			globalContainer->gfx->getH()-mouseY<scrollAreaWidth)
 	{
 		ySpeed += yMotion;
 	}
 	if (
-			keystate[SDLK_LEFT] || 
-			keystate[SDLK_KP1] || 
-			keystate[SDLK_KP4] || 
-			keystate[SDLK_KP7] ||
+			keystate[SDL_SCANCODE_LEFT] || 
+			keystate[SDL_SCANCODE_KP_1] || 
+			keystate[SDL_SCANCODE_KP_4] || 
+			keystate[SDL_SCANCODE_KP_7] ||
 			mouseX<scrollAreaWidth)
 	{
 		xSpeed += -xMotion;
 	}
 	if (
-			keystate[SDLK_RIGHT] || 
-			keystate[SDLK_KP3] || 
-			keystate[SDLK_KP6] || 
-			keystate[SDLK_KP9] ||
+			keystate[SDL_SCANCODE_RIGHT] || 
+			keystate[SDL_SCANCODE_KP_3] || 
+			keystate[SDL_SCANCODE_KP_6] || 
+			keystate[SDL_SCANCODE_KP_9] ||
 			globalContainer->gfx->getW()-mouseX<scrollAreaWidth)
 	{
 		xSpeed += xMotion;

@@ -465,15 +465,15 @@ namespace GAGGUI
 						lastMouseMotion=event;
 					}
 					break;
-					case SDL_ACTIVEEVENT:
+					case SDL_WINDOWEVENT:
 					{
 						windowEvent=event;
 						wasWindowEvent=true;
 					}
 					break;
-					case SDL_VIDEORESIZE:
+					case SDL_WINDOWEVENT_RESIZED:
 					{
-						gfx->setRes(event.resize.w, event.resize.h);
+						gfx->setRes(event.window.data1, event.window.data2);
 						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 					}
 					break;
@@ -560,7 +560,7 @@ namespace GAGGUI
 		// SDL_SYSWMEVENT, SDL_JOY*****, 
 		switch(event->type)
 		{
-			case SDL_ACTIVEEVENT:
+			case SDL_WINDOWEVENT:
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 				{
 					if ((*it)->visible)
@@ -602,7 +602,7 @@ namespace GAGGUI
 						(*it)->onSDLMouseButtonDown(event);
 				}
 				break;
-			case SDL_VIDEOEXPOSE:
+			case SDL_WINDOWEVENT_EXPOSED:
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 				{
 					if ((*it)->visible)

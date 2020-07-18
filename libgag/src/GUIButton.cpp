@@ -61,7 +61,7 @@ namespace GAGGUI
 		assert(event->type == SDL_KEYDOWN);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-		Uint16 typedUnicode=event->key.keysym.unicode;
+		SDL_Keycode typedUnicode=event->key.keysym.sym;
 		if ((unicodeShortcut)&&(typedUnicode==unicodeShortcut))
 			parent->onAction(this, BUTTON_SHORTCUT, returnCode, unicodeShortcut);
 	}

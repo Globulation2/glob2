@@ -78,7 +78,48 @@ namespace GAGGUI
 	{
 		// Let's sing.
 	}
-	
+	void Number::onSDLMouseWheel(SDL_Event* event)
+	{
+		assert(event->type == SDL_MOUSEWHEEL);
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		bool inc = false;
+		bool dec = false;
+		if (event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
+		{
+			event->wheel.y *= -1;
+		}
+		if (event->wheel.y > 0)
+		{
+			inc = true;
+		}
+		else if (event->wheel.y < 0)
+		{
+			dec = true;
+		}
+		
+		if (dec)
+		{
+			// a "Less" click
+			if (nth>0)
+			{
+				nth--;
+				if (numbers.size())
+				{
+					parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
+				}
+			}
+		}
+		else if (inc)
+		{
+			// a "More" click
+			if (nth<((int)numbers.size()-1))
+			{
+				nth++;
+				parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
+			}
+		}
+	}	
 	void Number::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
@@ -86,7 +127,6 @@ namespace GAGGUI
 		getScreenPos(&x, &y, &w, &h);
 		bool inc = false;
 		bool dec = false;
-		
 		
 		// We can't use isOnWidget since x, y, w, h are needed
 		// out of the test
@@ -103,14 +143,6 @@ namespace GAGGUI
 					inc = true;
 				}
 			
-			}
-			else if(event->button.button == SDL_BUTTON_WHEELUP)
-			{
-				inc = true;
-			}
-			else if(event->button.button == SDL_BUTTON_WHEELDOWN)
-			{
-				dec = true;
 			}
 		}
 		
