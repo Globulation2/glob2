@@ -18,6 +18,7 @@
 */
 
 #include <GraphicContext.h>
+#include <../../src/GlobalContainer.h>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
@@ -54,6 +55,7 @@
 
 //extern "C" { SDL_PixelFormat *SDL_AllocFormat(int bpp, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask); }
 
+extern GlobalContainer *globalContainer;
 namespace GAGCore
 {
 	// static local pointer to the actual graphic context
@@ -240,6 +242,10 @@ namespace GAGCore
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
 		SDL_Surface *dest;
+		if (!_gc)
+		{
+			_gc = globalContainer->gfx;
+		}
 		if (_gc->sdlsurface->format->BitsPerPixel == 32)
 		{
 			dest = SDL_ConvertSurfaceFormat(source, SDL_PIXELFORMAT_RGBA32, 0);
@@ -2020,7 +2026,18 @@ namespace GAGCore
 		}
 
 		TTF_Init();
+		Uint32 sdlflags = 0;
+		if (flags & USEGPU)
+			sdlflags |= SDL_WINDOW_OPENGL;
+		if (flags & FULLSCREEN)
+			sdlflags |= SDL_WINDOW_FULLSCREEN;
 
+		window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, sdlflags);
+		if (flags & USEGPU)
+		{
+			SDL_GLContext context = SDL_GL_CreateContext(window);
+			SDL_GL_MakeCurrent(window, context);
+		}
 		if (!title.empty() && !icon.empty())
 		{
 			SDL_SetWindowTitle(window, title.c_str());
@@ -2087,6 +2104,19 @@ namespace GAGCore
 		#endif
 
 		// create surface
+		Uint32 rmask, gmask, bmask, amask;
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	rmask = 0xff000000;
+	gmask = 0x00ff0000;
+	bmask = 0x0000ff00;
+	amask = 0x000000ff;
+#else
+	rmask = 0x000000ff;
+	gmask = 0x0000ff00;
+	bmask = 0x00ff0000;
+	amask = 0xff000000;
+#endif
+		sdlsurface = SDL_CreateRGBSurface(0, w, h, 32, rmask, gmask, bmask, amask);
 		SDL_SetWindowSize(window, w, h);
 
 		// check surface
