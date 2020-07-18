@@ -2005,7 +2005,7 @@ namespace GAGCore
 		if (flags & FULLSCREEN)
 			sdlflags |= SDL_WINDOW_FULLSCREEN;
 
-		window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, sdlflags);
+		SDL_CreateWindowAndRenderer(w, h, sdlflags, &window, &sdlrenderer);
 		if (flags & USEGPU)
 		{
 			SDL_GLContext context = SDL_GL_CreateContext(window);
