@@ -99,7 +99,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 		
 		
-		SDLMod modState = SDL_GetModState();
+		SDL_Keymod modState = SDL_GetModState();
 		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || firstPlacementX==-1)
 		{
 			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
@@ -235,7 +235,7 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		int mapX, mapY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
-		SDLMod modState = SDL_GetModState();
+		SDL_Keymod modState = SDL_GetModState();
 		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || firstPlacementX==-1)
 		{
 			placeBuildingAt(mapX, mapY, localteam);

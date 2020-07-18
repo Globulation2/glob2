@@ -316,7 +316,10 @@ namespace GAGCore
 		//! the minimum acceptable resolution
 		int minW, minH;
 		//! the pointer for iterating through mode list
-		SDL_Rect **modes;
+		SDL_DisplayMode **modes;
+		int totalmodes;
+		SDL_Window *window;
+		SDL_Renderer *sdlrenderer;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -388,7 +391,7 @@ namespace GAGCore
 		//! Set the minimum acceptable resolution
 		virtual void setMinRes(int w = 0, int h = 0);
 		//! Set the caption of the window
-		virtual void setCaption(const char *title, const char *icon) { SDL_WM_SetCaption(title, icon); }
+		virtual void setCaption(const char *title, const char *icon) { SDL_SetWindowTitle(window, title); }
 		//! Begin listing of acceptable video mode, *not thread-safe*
 		virtual void beginVideoModeListing(void);
 		//! Get the next acceptable video mode in w,h, return false if end of list, *not thread-safe*

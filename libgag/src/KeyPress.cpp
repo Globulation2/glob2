@@ -25,7 +25,7 @@
 using namespace GAGCore;
 using namespace GAGGUI;
 
-KeyPress::KeyPress(SDL_keysym nkey, bool pressed)
+KeyPress::KeyPress(SDL_Keysym nkey, bool pressed)
 	: pressed(pressed)
 {
 	if(nkey.mod & KMOD_CTRL)
@@ -36,7 +36,7 @@ KeyPress::KeyPress(SDL_keysym nkey, bool pressed)
 		shift = true;
 	else
 		shift = false;
-	if(nkey.mod & KMOD_META)
+	if(nkey.mod & KMOD_LGUI || nkey.mod & KMOD_RGUI)
 		meta = true;
 	else
 		meta = false;
@@ -46,7 +46,7 @@ KeyPress::KeyPress(SDL_keysym nkey, bool pressed)
 		alt = false;
 
 	std::string key_s = std::string("[") + SDL_GetKeyName(nkey.sym) + std::string("]");
-	Uint16 c=nkey.unicode;
+	Uint16 c=0;
 	//This is to get over a bug where ctrl-d ctrl-a etc... would cause nkey.unicode to be mangled,
 	//whereas nkey.sym is still fine
 	if(nkey.sym < 128)

@@ -182,7 +182,7 @@ namespace GAGCore
 			c.r = styleStack.top().color.r;
 			c.g = styleStack.top().color.g;
 			c.b = styleStack.top().color.b;
-			c.unused = styleStack.top().color.a;
+			c.a = styleStack.top().color.a;
 #ifdef HAVE_FRIBIDI 
 			char *bidiStr = getBIDIString(text);
 			SDL_Surface *temp = TTF_RenderUTF8_Blended(font, bidiStr, c);

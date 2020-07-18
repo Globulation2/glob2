@@ -285,9 +285,9 @@ def main():
     env.Append(CPPPATH=['#libusl/src', '#'])
     env.Append(CXXFLAGS=' -Wall -fPIC')
     env.Append(LINKFLAGS=' -Wall')
-    env.Append(LIBS=['SDL_net'])
+    env.Append(LIBS=['SDL2_net'])
     if not server_only:
-        env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'speex'])
+        env.Append(LIBS=['vorbisfile', 'SDL2_ttf', 'SDL2_image', 'speex'])
 
     if env['release']:
         env.Append(CXXFLAGS=' -O3 -s')
@@ -306,8 +306,8 @@ def main():
         env.ParseConfig("/opt/local/bin/sdl-config --cflags")
         env.ParseConfig("/opt/local/bin/sdl-config --libs")
     else:
-        env.ParseConfig("sdl-config --cflags")
-        env.ParseConfig("sdl-config --libs")
+        env.ParseConfig("sdl2-config --cflags")
+        env.ParseConfig("sdl2-config --libs")
     
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"

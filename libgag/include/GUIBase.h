@@ -169,7 +169,7 @@ namespace GAGGUI
 		/*! Called when an SDL_ACTIVEEVENT event occurs.
 		 * \param event Catched SDL event
 		 */
-		virtual void onSDLActive(SDL_Event *event) { assert(event->type == SDL_ACTIVEEVENT); }
+		virtual void onSDLActive(SDL_Event *event) { assert(event->type == SDL_WINDOWEVENT); }
 		/*! Called when an SDL_KEYDOWN event occurs.
 		 * \param event Catched SDL event
 		 */
@@ -193,7 +193,7 @@ namespace GAGGUI
 		/*! Called when an SDL_VIDEOEXPOSE event occurs.
 		 * \param event Catched SDL event
 		 */
-		virtual void onSDLVideoExpose(SDL_Event *event) { assert(event->type == SDL_VIDEOEXPOSE); }
+		virtual void onSDLVideoExpose(SDL_Event *event) { assert(event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_EXPOSED); }
 	};
 	
 	#define ALIGN_LEFT 0

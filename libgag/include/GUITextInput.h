@@ -103,6 +103,7 @@ namespace GAGGUI
 		void recomputeTextInfos(void);
 		virtual void onSDLKeyDown(SDL_Event *event);
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLTextInput(SDL_Event *event);
 	};
 }
 

@@ -467,7 +467,7 @@ private:
 	///This proccesses an event from the SDL
 	void processEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
-	void handleKeyPressed(SDL_keysym key, bool pressed);
+	void handleKeyPressed(SDL_Keysym key, bool pressed);
 	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
