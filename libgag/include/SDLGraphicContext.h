@@ -296,7 +296,7 @@ namespace GAGCore
 	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.
 	class GraphicContext:public DrawableSurface
 	{
-		static const bool verbose = false;
+		static const bool verbose = true;
 	public:
 		//! The cursor manager, public to be able to set custom cursors
 		CursorManager cursorManager;
