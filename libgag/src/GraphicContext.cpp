@@ -248,7 +248,7 @@ namespace GAGCore
 		}
 		if (_gc->sdlsurface->format->BitsPerPixel == 32)
 		{
-			dest = SDL_ConvertSurfaceFormat(source, SDL_PIXELFORMAT_RGBA32, 0);
+			dest = SDL_ConvertSurfaceFormat(source, SDL_PIXELFORMAT_BGRA32, 0);
 		}
 		else
 		{
