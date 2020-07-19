@@ -1938,7 +1938,8 @@ namespace GAGCore
 			nummodes = SDL_GetNumDisplayModes(i);
 			totalmodes += nummodes;
 		}
-		modes = new SDL_DisplayMode*[totalmodes];
+		modes = new SDL_DisplayMode*[totalmodes+1];
+		modes[totalmodes] = 0;
 		for (int i =0;i < displays;i++) {
 			nummodes = SDL_GetNumDisplayModes(i);
 			for (int j = 0;j < nummodes;j++) {
