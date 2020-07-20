@@ -609,6 +609,14 @@ namespace GAGGUI
 						(*it)->onSDLVideoExpose(event);
 				}
 				break;
+			case SDL_TEXTINPUT:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLTextInput(event);
+				}
+				break;
+
 			default:
 				// Every other event is passed to onSDLEvent
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)

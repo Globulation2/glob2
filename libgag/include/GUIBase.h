@@ -194,6 +194,11 @@ namespace GAGGUI
 		 * \param event Catched SDL event
 		 */
 		virtual void onSDLVideoExpose(SDL_Event *event) { assert(event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_EXPOSED); }
+
+		/*! Called when an SDL_TEXTINPUT event occurs.
+		 * \param event Catched SDL event
+		 */
+		virtual void onSDLTextInput(SDL_Event *event) { assert(event->type == SDL_TEXTINPUT); }
 	};
 	
 	#define ALIGN_LEFT 0
