@@ -4387,7 +4387,7 @@ bool enemy_building_iterator::operator!=(const enemy_building_iterator& rhs) con
 {
 	if(is_end && rhs.is_end)
 		return false;
-	return is_end!=rhs.is_end || team!=rhs.team || building_type!=rhs.building_type || level!=rhs.level || construction_site!=rhs.construction_site;
+	return is_end!=rhs.is_end || team!=rhs.team || building_type!=rhs.building_type || level!=rhs.level || bool(construction_site!=rhs.construction_site);
 }
 
 
