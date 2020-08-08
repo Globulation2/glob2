@@ -206,7 +206,7 @@ void MapThumbnail::loadIntoSurface(GAGCore::DrawableSurface *surface)
 			int r = buffer[x * 128 * 3 + y * 3 + 0];
 			int g = buffer[x * 128 * 3 + y * 3 + 1];
 			int b = buffer[x * 128 * 3 + y * 3 + 2];
-			surface->drawPixel(x, y, Color(r, g, b));
+			surface->drawPixel(x, y, Color(b, g, r));
 		}
 	}
 }
