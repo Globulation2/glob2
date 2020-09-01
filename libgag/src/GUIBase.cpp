@@ -17,6 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "../../src/GlobalContainer.h"
 #include <GUIBase.h>
 #include <GUIStyle.h>
 #include <assert.h>
@@ -614,6 +615,15 @@ namespace GAGGUI
 				{
 					if ((*it)->visible)
 						(*it)->onSDLTextInput(event);
+				}
+				break;
+			case SDL_MOUSEWHEEL:
+				if (!globalContainer->settings.scrollWheelEnabled)
+					break;
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLMouseWheel(event);
 				}
 				break;
 

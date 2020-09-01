@@ -117,6 +117,7 @@ namespace GAGGUI
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 		virtual void onSDLMouseButtonUp(SDL_Event *event);
 		virtual void onSDLMouseMotion(SDL_Event *event);
+		virtual void onSDLMouseWheel(SDL_Event *event);
 		//! Draw an item of the list, called by paint
 		virtual void drawItem(int x, int y, size_t element);
 		//! Handles an item being clicked, with mx and my being relative to the corner of the item.
