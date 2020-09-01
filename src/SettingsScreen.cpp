@@ -556,6 +556,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source==scrollwheel)
 		{
 			globalContainer->settings.scrollWheelEnabled=scrollwheel->getState();
+			scrollWheelEnabled=scrollwheel->getState();
 		}
 		else if (source==lowquality)
 		{

@@ -18,7 +18,6 @@
 */
 
 #include <GraphicContext.h>
-#include <../../src/GlobalContainer.h>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
@@ -55,7 +54,6 @@
 
 //extern "C" { SDL_PixelFormat *SDL_AllocFormat(int bpp, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask); }
 
-extern GlobalContainer *globalContainer;
 namespace GAGCore
 {
 	// static local pointer to the actual graphic context
@@ -242,10 +240,6 @@ namespace GAGCore
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
 		SDL_Surface *dest;
-		if (!_gc)
-		{
-			_gc = globalContainer->gfx;
-		}
 		if (_gc->sdlsurface->format->BitsPerPixel == 32)
 		{
 			dest = SDL_ConvertSurfaceFormat(source, SDL_PIXELFORMAT_BGRA32, 0);

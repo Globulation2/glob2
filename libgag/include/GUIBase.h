@@ -190,6 +190,11 @@ namespace GAGGUI
 		 * \param event Catched SDL event
 		 */
 		virtual void onSDLMouseButtonDown(SDL_Event *event) { assert(event->type == SDL_MOUSEBUTTONDOWN); }
+		/*! Called when an SDL_MOUSEWHEEL event occurs.
+		 * \param event Catched SDL event
+		 */
+
+		virtual void onSDLMouseWheel(SDL_Event* event) {assert(event->type == SDL_MOUSEWHEEL); }
 		/*! Called when an SDL_VIDEOEXPOSE event occurs.
 		 * \param event Catched SDL event
 		 */
@@ -305,6 +310,7 @@ namespace GAGGUI
 	public:
 		//! The animation frame for screen creation
 		int animationFrame;
+		static bool scrollWheelEnabled;
 		
 	public:
 		Screen();

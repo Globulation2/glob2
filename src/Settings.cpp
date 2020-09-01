@@ -18,6 +18,7 @@
 */
 
 #include "Settings.h"
+#include "GUIBase.h"
 #include "Utilities.h"
 #include <Stream.h>
 #include <BinaryStream.h>
@@ -125,6 +126,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
+		GAGGUI::Screen::scrollWheelEnabled = scrollWheelEnabled;
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{

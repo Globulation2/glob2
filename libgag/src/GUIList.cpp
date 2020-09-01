@@ -108,6 +108,36 @@ namespace GAGGUI
 		
 	}
 	
+	void List::onSDLMouseWheel(SDL_Event *event)
+	{
+		assert(event->type == SDL_MOUSEWHEEL);
+		int mouse_x, mouse_y;
+		SDL_GetMouseState(&mouse_x, &mouse_y);
+		int x, y, w, h;
+		getScreenPos(&x, &y, &w, &h);
+		const unsigned count = (h-4) / textHeight;
+		if (isPtInRect(mouse_x, mouse_y, x, y, w, h))
+		{
+			if (event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
+			{
+				event->wheel.y *= -1;
+			}
+			// scroll up
+			if (event->wheel.y > 0)
+			{
+				if (disp < (unsigned)event->wheel.y)
+					disp = 0;
+				else
+					disp -= event->wheel.y;
+			}
+			// scroll down
+			else if (event->wheel.y < 0)
+			{
+				disp = std::min(disp - event->wheel.y, strings.size() - count);
+			}
+		}
+	}
+
 	void List::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);

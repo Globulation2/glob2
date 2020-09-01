@@ -404,6 +404,7 @@ namespace GAGGUI
 		Style::style->drawFrame(parent->getSurface(), x, y, w, h, getNextHighlightValue());
 	}
 	
+	bool Screen::scrollWheelEnabled = true;
 	Screen::Screen()
 	{
 		gfx = NULL;
@@ -614,6 +615,15 @@ namespace GAGGUI
 				{
 					if ((*it)->visible)
 						(*it)->onSDLTextInput(event);
+				}
+				break;
+			case SDL_MOUSEWHEEL:
+				if (!scrollWheelEnabled)
+					break;
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLMouseWheel(event);
 				}
 				break;
 
