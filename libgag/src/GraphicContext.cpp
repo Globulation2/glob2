@@ -2059,6 +2059,9 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Screen height %d is too small, set to min %d\n", h, minH);
 			h = minH;
 		}
+		
+		SDL_SetWindowSize(window, w, h);
+		sdlsurface = SDL_GetWindowSurface(window);
 
 		// set flags
 		optionFlags = flags;
@@ -2073,13 +2076,18 @@ namespace GAGCore
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
+		else
+		{
+
+			SDL_DestroyRenderer(sdlrenderer);
+			sdlrenderer = SDL_CreateSoftwareRenderer(sdlsurface);
+		}
 		#else
 		// remove GL from options
 		optionFlags &= ~USEGPU;
+		SDL_DestroyRenderer(sdlrenderer);
+		sdlrenderer = SDL_CreateSoftwareRenderer(sdlsurface);
 		#endif
-
-		SDL_SetWindowSize(window, w, h);
-		sdlsurface = SDL_GetWindowSurface(window);
 
 		// check surface
 		if (!sdlsurface)
@@ -2195,7 +2203,7 @@ namespace GAGCore
 			else
 			#endif
 			{
-				SDL_RenderPresent(sdlrenderer);
+				SDL_UpdateWindowSurface(window);
 			}
 		}
 	}
