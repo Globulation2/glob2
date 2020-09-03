@@ -1122,12 +1122,6 @@ namespace GAGCore
 				dr.y = static_cast<Sint16>(y);
 				dr.w = static_cast<Uint16>(sw);
 				dr.h = static_cast<Uint16>(sh);
-				SDL_Surface *sdlsurface2 = surface->convertForUpload(sdlsurface);
-				if (sdlsurface2)
-				{
-					SDL_FreeSurface(sdlsurface);
-					sdlsurface = sdlsurface2;
-				}
 				SDL_BlitSurface(surface->sdlsurface, &sr, sdlsurface, &dr);
 			#ifdef HAVE_OPENGL
 			}
