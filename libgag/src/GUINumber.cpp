@@ -82,41 +82,46 @@ namespace GAGGUI
 	{
 		assert(event->type == SDL_MOUSEWHEEL);
 		int x, y, w, h;
+		int mouse_x, mouse_y;
 		getScreenPos(&x, &y, &w, &h);
+		SDL_GetMouseState(&mouse_x, &mouse_y);
 		bool inc = false;
 		bool dec = false;
-		if (event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
+		if (isPtInRect(mouse_x, mouse_y, x, y, w, h))
 		{
-			event->wheel.y *= -1;
-		}
-		if (event->wheel.y > 0)
-		{
-			inc = true;
-		}
-		else if (event->wheel.y < 0)
-		{
-			dec = true;
-		}
-		
-		if (dec)
-		{
-			// a "Less" click
-			if (nth>0)
+			if (event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED)
 			{
-				nth--;
-				if (numbers.size())
+				event->wheel.y *= -1;
+			}
+			if (event->wheel.y > 0)
+			{
+				inc = true;
+			}
+			else if (event->wheel.y < 0)
+			{
+				dec = true;
+			}
+			
+			if (dec)
+			{
+				// a "Less" click
+				if (nth>0)
 				{
-					parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
+					nth--;
+					if (numbers.size())
+					{
+						parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
+					}
 				}
 			}
-		}
-		else if (inc)
-		{
-			// a "More" click
-			if (nth<((int)numbers.size()-1))
+			else if (inc)
 			{
-				nth++;
-				parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
+				// a "More" click
+				if (nth<((int)numbers.size()-1))
+				{
+					nth++;
+					parent->onAction(this, NUMBER_ELEMENT_SELECTED, nth, 0);
+				}
 			}
 		}
 	}	
