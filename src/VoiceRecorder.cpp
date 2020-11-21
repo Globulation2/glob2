@@ -389,7 +389,7 @@ VoiceRecorder::VoiceRecorder()
 		// create the thread that willl record and the mutex that will protect access to shared order list
 		recordThreadRun = true;
 		stopRecordingTimeout = 0;
-		recordingThread = SDL_CreateThread(record, this);
+		recordingThread = SDL_CreateThread(record, "VoiceRecorder", this);
 	#endif
 }
 

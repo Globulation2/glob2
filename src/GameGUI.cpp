@@ -56,7 +56,7 @@
 #include "config.h"
 #include "Order.h"
 
-#include <SDL_keysym.h>
+#include <SDL_keycode.h>
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
@@ -464,7 +464,7 @@ void GameGUI::step(void)
 			lastMouseY = event.button.y;
 			processEvent (&event);
 		}
-		else if (event.type==SDL_ACTIVEEVENT)
+		else if (event.type==SDL_WINDOWEVENT)
 		{
 			windowEvent=event;
 			wasWindowEvent=true;
@@ -1109,9 +1109,9 @@ void GameGUI::processEvent(SDL_Event *event)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
 	}
-	else if (event->type==SDL_ACTIVEEVENT)
+	else if (event->type==SDL_WINDOWEVENT)
 	{
-		handleActivation(event->active.state, event->active.gain);
+		handleActivation(event->window.data1, event->window.data2);
 	}
 	else if (event->type==SDL_QUIT)
 	{
@@ -1119,10 +1119,10 @@ void GameGUI::processEvent(SDL_Event *event)
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 		flushOutgoingAndExit=true;
 	}
-	else if (event->type==SDL_VIDEORESIZE)
+	else if (event->type==SDL_WINDOWEVENT_RESIZED)
 	{
-		int newW=event->resize.w;
-		int newH=event->resize.h;
+		int newW=event->window.data1;
+		int newH=event->window.data2;
 		newW&=(~(0x1F));
 		newH&=(~(0x1F));
 		if (newW<640)
@@ -1208,7 +1208,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	}
 }
 
-void GameGUI::handleKey(SDL_keysym key, bool pressed)
+void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 {
 
 	int modifier;
@@ -1722,7 +1722,7 @@ void GameGUI::handleKey(SDL_keysym key, bool pressed)
 
 void GameGUI::handleKeyDump(SDL_KeyboardEvent key)
 {
-	if (key.keysym.sym == SDLK_PRINT)
+	if (key.keysym.sym == SDLK_PRINTSCREEN)
 	{
 		if ((key.keysym.mod & KMOD_SHIFT) != 0)
 		{
@@ -1748,10 +1748,10 @@ void GameGUI::handleKeyDump(SDL_KeyboardEvent key)
 void GameGUI::handleKeyAlways(void)
 {
 	SDL_PumpEvents();
-	Uint8 *keystate = SDL_GetKeyState(NULL);
+	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
 	if (notmenu == false)
 	{
-		SDLMod modState = SDL_GetModState();
+		SDL_Keymod modState = SDL_GetModState();
 		int xMotion = 1;
 		int yMotion = 1;
 		/* We check that only Control is held to avoid accidentally
@@ -1790,38 +1790,38 @@ void GameGUI::handleKeyAlways(void)
 			yMotion = 0; 
 		}
 		
-		if (keystate[SDLK_UP])
+		if (keystate[SDL_SCANCODE_UP])
 			viewportY -= yMotion;
-		if (keystate[SDLK_KP8])
+		if (keystate[SDL_SCANCODE_KP_8])
 			viewportY -= yMotion;
-		if (keystate[SDLK_DOWN])
+		if (keystate[SDL_SCANCODE_DOWN])
 			viewportY += yMotion;
-		if (keystate[SDLK_KP2])
+		if (keystate[SDL_SCANCODE_KP_2])
 			viewportY += yMotion;
-		if ((keystate[SDLK_LEFT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+		if ((keystate[SDL_SCANCODE_LEFT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 			viewportX -= xMotion;
-		if (keystate[SDLK_KP4])
+		if (keystate[SDL_SCANCODE_KP_4])
 			viewportX -= xMotion;
-		if ((keystate[SDLK_RIGHT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+		if ((keystate[SDL_SCANCODE_RIGHT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 			viewportX += xMotion;
-		if (keystate[SDLK_KP6])
+		if (keystate[SDL_SCANCODE_KP_6])
 			viewportX += xMotion;
-		if (keystate[SDLK_KP7])
+		if (keystate[SDL_SCANCODE_KP_7])
 		{
 			viewportX -= xMotion;
 			viewportY -= yMotion;
 		}
-		if (keystate[SDLK_KP9])
+		if (keystate[SDL_SCANCODE_KP_9])
 		{
 			viewportX += xMotion;
 			viewportY -= yMotion;
 		}
-		if (keystate[SDLK_KP1])
+		if (keystate[SDL_SCANCODE_KP_1])
 		{
 			viewportX -= xMotion;
 			viewportY += yMotion;
 		}
-		if (keystate[SDLK_KP3])
+		if (keystate[SDL_SCANCODE_KP_3])
 		{
 			viewportX += xMotion;
 			viewportY += yMotion;
@@ -5232,7 +5232,7 @@ void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 
 void GameGUI::flushScrollWheelOrders()
 {
-	SDLMod modState = SDL_GetModState();
+	SDL_Keymod modState = SDL_GetModState();
 	if (scrollWheelChanges!=0 && selectionMode==BUILDING_SELECTION)
 	{
 		Building* selBuild=selection.building;

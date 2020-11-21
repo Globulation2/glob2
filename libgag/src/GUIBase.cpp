@@ -17,6 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include "../../src/GlobalContainer.h"
 #include <GUIBase.h>
 #include <GUIStyle.h>
 #include <assert.h>
@@ -465,15 +466,15 @@ namespace GAGGUI
 						lastMouseMotion=event;
 					}
 					break;
-					case SDL_ACTIVEEVENT:
+					case SDL_WINDOWEVENT:
 					{
 						windowEvent=event;
 						wasWindowEvent=true;
 					}
 					break;
-					case SDL_VIDEORESIZE:
+					case SDL_WINDOWEVENT_RESIZED:
 					{
-						gfx->setRes(event.resize.w, event.resize.h);
+						gfx->setRes(event.window.data1, event.window.data2);
 						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 					}
 					break;
@@ -560,7 +561,7 @@ namespace GAGGUI
 		// SDL_SYSWMEVENT, SDL_JOY*****, 
 		switch(event->type)
 		{
-			case SDL_ACTIVEEVENT:
+			case SDL_WINDOWEVENT:
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 				{
 					if ((*it)->visible)
@@ -602,13 +603,30 @@ namespace GAGGUI
 						(*it)->onSDLMouseButtonDown(event);
 				}
 				break;
-			case SDL_VIDEOEXPOSE:
+			case SDL_WINDOWEVENT_EXPOSED:
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 				{
 					if ((*it)->visible)
 						(*it)->onSDLVideoExpose(event);
 				}
 				break;
+			case SDL_TEXTINPUT:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLTextInput(event);
+				}
+				break;
+			case SDL_MOUSEWHEEL:
+				if (!globalContainer->settings.scrollWheelEnabled)
+					break;
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLMouseWheel(event);
+				}
+				break;
+
 			default:
 				// Every other event is passed to onSDLEvent
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)

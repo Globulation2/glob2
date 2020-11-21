@@ -61,6 +61,7 @@ namespace GAGGUI
 		int get(void);
 	protected:
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
+		virtual void onSDLMouseWheel(SDL_Event* event);
 	};
 }
 

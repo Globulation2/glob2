@@ -297,7 +297,6 @@ int Engine::run(void)
 		// Stop menu music, load game music
 		globalContainer->mix->setNextTrack(2, true);
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
-		SDL_EnableKeyRepeat(0,0);
 	}
 	
 	while (doRunOnceAgain)
@@ -627,7 +626,6 @@ int Engine::run(void)
 	
 	if(!globalContainer->runNoX)
 	{
-		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	}
 	
 	if (globalContainer->runNoX || globalContainer->automaticEndingGame)

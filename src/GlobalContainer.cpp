@@ -427,7 +427,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			SDL_version v;
 			SDL_VERSION(&v);
 			printf("Compiled with SDL version %d.%d.%d\n", v.major, v.minor, v.patch);
-			v = *SDL_Linked_Version();
+			SDL_GetVersion(&v);
 			printf("Linked with SDL version %d.%d.%d\n\n", v.major, v.minor, v.patch);
 			printf("Featuring :\n");
 			printf("* Map version %d\n", VERSION_MINOR);
