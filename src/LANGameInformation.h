@@ -20,7 +20,7 @@
 #define __LANGameInformation_h
 
 #include "YOGGameInfo.h"
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 namespace GAGCore
 {

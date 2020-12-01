@@ -23,7 +23,7 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <queue>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 class FertilityCalculatorThreadMessage;
 class Map;

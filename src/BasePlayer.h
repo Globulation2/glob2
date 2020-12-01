@@ -22,7 +22,7 @@
 #ifndef BasePlayer_h
 #define BasePlayer_h
 
-#include <SDL_net.h>
+#include <SDL2/SDL_net.h>
 #include "AI.h"
 #include "Team.h"
 #include <string>

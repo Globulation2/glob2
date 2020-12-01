@@ -22,7 +22,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/shared_ptr.hpp"
 #include "boost/tuple/tuple.hpp"
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include <vector>
 
 class NetSendFileInformation;

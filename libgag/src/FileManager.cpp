@@ -22,7 +22,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <SDL_endian.h>
+#include <SDL2/SDL_endian.h>
 #include <iostream>
 #include <valarray>
 #include <zlib.h>

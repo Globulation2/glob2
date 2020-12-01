@@ -23,7 +23,7 @@
 #include "YOGPlayerStoredInfo.h"
 #include <string>
 #include <map>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include <list>
 
 class YOGServer;

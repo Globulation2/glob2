@@ -20,7 +20,7 @@
 #ifndef __BUILDING_UTILS_H
 #define __BUILDING_UTILS_H
 
-#include <SDL_net.h>
+#include <SDL2/SDL_net.h>
 
 class BuildingUtils
 {

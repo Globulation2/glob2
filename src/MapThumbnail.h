@@ -23,7 +23,7 @@
 #define MapThumbnail_h
 
 #include <string>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 namespace GAGCore
 {

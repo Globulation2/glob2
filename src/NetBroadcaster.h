@@ -20,7 +20,7 @@
 #define __NetBroadcaster_h
 
 #include "LANGameInformation.h"
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 ///This class allows for subnet broadcasting (hosting a LAN game)
 class NetBroadcaster

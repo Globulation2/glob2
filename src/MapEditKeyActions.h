@@ -19,7 +19,7 @@
 #ifndef __MAPEDIT_KEY_ACTIONS_H
 #define __MAPEDIT_KEY_ACTIONS_H
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include <string>
 #include <map>
 #include <vector>

@@ -21,7 +21,7 @@
 
 #include "YOGGameResults.h"
 #include "boost/date_time/posix_time/posix_time.hpp"
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 ///This class keeps a complete list of games played
 class YOGServerGameLog

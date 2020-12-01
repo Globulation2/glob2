@@ -17,7 +17,7 @@
 */
 
 #include "assert.h"
-#include "SDL_net.h"
+#include <SDL2/SDL_net.h>
 #include "Stream.h"
 #include "StringTable.h"
 #include "Toolkit.h"

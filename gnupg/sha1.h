@@ -11,7 +11,7 @@
 #ifndef _SHA1_H
 # define _SHA1_H
 
-#include <SDL_net.h>
+#include <SDL2/SDL_net.h>
 
 typedef Uint32 uint32_t;
 

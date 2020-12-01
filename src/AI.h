@@ -20,7 +20,7 @@
 #ifndef __AI_H
 #define __AI_H
 
-#include <SDL_rwops.h>
+#include <SDL2/SDL_rwops.h>
 
 #include <boost/shared_ptr.hpp>
 namespace GAGCore

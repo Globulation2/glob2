@@ -20,7 +20,7 @@
 #ifndef __RESSOURCE_H
 #define __RESSOURCE_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include <string>
 

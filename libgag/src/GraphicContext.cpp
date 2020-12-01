@@ -26,8 +26,8 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "SDL_ttf.h"
-#include <SDL_image.h>
+#include "SDL2/SDL_ttf.h"
+#include <SDL2/SDL_image.h>
 #include <math.h>
 #include <string.h>
 #include <valarray>

@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include <SDL_net.h>
+#include <SDL2/SDL_net.h>
 
 #include <boost/random/mersenne_twister.hpp>
 

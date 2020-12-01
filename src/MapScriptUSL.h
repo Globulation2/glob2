@@ -22,7 +22,7 @@
 #include "usl.h"
 #include "interpreter.h"
 #include "MapScriptError.h"
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 namespace GAGCore
 {

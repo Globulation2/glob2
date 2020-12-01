@@ -21,7 +21,7 @@
 #define __YOG_CONSTS_H
 
 #include <string>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 ///New YOG constants
 extern const Uint16 YOG_SERVER_PORT;

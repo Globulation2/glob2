@@ -21,7 +21,7 @@
 #ifndef __IRC_H
 #define __IRC_H
 
-#include <SDL_net.h>
+#include <SDL2/SDL_net.h>
 
 #include <deque>
 #include <vector>

@@ -22,7 +22,7 @@
 
 #include <string>
 #include <vector>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 namespace GAGCore
 {

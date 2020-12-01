@@ -23,7 +23,7 @@
 #include "GameHeader.h"
 #include "MapHeader.h"
 #include "NetReteamingInformation.h"
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include <string>
 
 namespace GAGCore

@@ -22,7 +22,7 @@
 
 #include <string>
 #include <map>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 ///This class stores and records YOGPlayerStoredInfo for the server

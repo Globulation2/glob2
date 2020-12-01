@@ -20,7 +20,7 @@
 #define __YOGClientEvent_h
 
 #include <string>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "YOGConsts.h"
 
 enum YOGClientEventType

@@ -19,7 +19,7 @@
 #ifndef __NetListener_h
 #define __NetListener_h
 
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "NetConnection.h"
 
 using namespace boost;

@@ -19,7 +19,7 @@
 
 #include <StreamBackend.h>
 #include <iostream>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 namespace GAGCore
 {

@@ -20,7 +20,7 @@
 #define WinningConditions_h
 
 #include "boost/shared_ptr.hpp"
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include <list>
 
 

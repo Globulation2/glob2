@@ -22,7 +22,7 @@
 #define YOGServerChatChannel_h
 
 #include <list>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include <boost/shared_ptr.hpp>
 
 class YOGMessage;

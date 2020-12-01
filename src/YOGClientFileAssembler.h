@@ -21,7 +21,7 @@
 
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "boost/weak_ptr.hpp"
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include <string>
 
 class YOGClient;

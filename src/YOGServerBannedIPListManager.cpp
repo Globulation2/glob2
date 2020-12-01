@@ -21,7 +21,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "FileManager.h"
 #include <map>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "Stream.h"
 #include <string>
 #include "Toolkit.h"

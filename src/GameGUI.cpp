@@ -56,7 +56,7 @@
 #include "config.h"
 #include "Order.h"
 
-#include <SDL_keycode.h>
+#include <SDL2/SDL_keycode.h>
 
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46

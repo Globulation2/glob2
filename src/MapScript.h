@@ -21,7 +21,7 @@
 #ifndef MapScript_h
 #define MapScript_h
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include <string>
 #include "MapScriptUSL.h"
 

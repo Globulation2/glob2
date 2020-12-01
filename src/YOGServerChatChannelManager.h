@@ -21,7 +21,7 @@
 #define YOGServerChatChannelManager_h
 
 #include <map>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "boost/shared_ptr.hpp"
 
 class YOGServerChatChannel;

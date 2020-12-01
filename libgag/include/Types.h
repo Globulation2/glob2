@@ -20,7 +20,7 @@
 #ifndef __TYPES_H
 #define __TYPES_H
 
-#include <SDL_net.h>
+#include <SDL2/SDL_net.h>
 
 namespace GAGCore
 {

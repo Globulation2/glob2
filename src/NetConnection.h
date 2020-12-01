@@ -19,7 +19,7 @@
 #ifndef __NetConnection_h
 #define __NetConnection_h
 
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "NetConnectionThread.h"
 #include <queue>
 #include <boost/shared_ptr.hpp>

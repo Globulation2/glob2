@@ -20,7 +20,7 @@
 #define YOGPlayerStoredInfo_h
 
 #include "boost/date_time/posix_time/posix_time.hpp"
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 
 namespace GAGCore
 {

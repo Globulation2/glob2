@@ -31,7 +31,7 @@ using namespace GAGCore;
 
 #include <speex/speex.h>
 
-#include <SDL_endian.h>
+#include <SDL2/SDL_endian.h>
 
 #ifdef WIN32
 #include <malloc.h>

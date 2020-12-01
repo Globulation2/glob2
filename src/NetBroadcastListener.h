@@ -19,7 +19,7 @@
 #ifndef __NetBroadcastListener_h
 #define __NetBroadcastListener_h
 
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "LANGameInformation.h"
 #include <vector>
 

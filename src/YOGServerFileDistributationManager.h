@@ -20,7 +20,7 @@
 #define YOGServerFileDistributationManager_h
 
 #include <map>
-#include "SDL_net.h"
+#include "SDL2/SDL_net.h"
 #include "YOGServerFileDistributor.h"
 
 ///This class manages all file transfers on the server
