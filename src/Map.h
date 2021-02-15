@@ -790,7 +790,7 @@ public:
 public:
 	// Used to go to ressources
 	//[int team][int ressourceNumber][bool unitCanSwim]
-	//255=ressource, 0=obstacle, the higher it is, the closer it is to the ressouce.
+	//255=resource, 0=obstacle, the higher it is, the closer it is to the resource.
 	Uint8 *ressourcesGradient[Team::MAX_COUNT][MAX_NB_RESSOURCES][2];
 	
 	// Used to go out of forbidden areas

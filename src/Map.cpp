@@ -2083,7 +2083,7 @@ void Map::setRessource(int x, int y, int type, int l)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 			if (isRessourceAllowed(dx, dy, type))
 			{
-				Ressource& rp=(cases[coordToIndex(dx, dy)]).ressource;
+				Ressource& rp=cases[coordToIndex(dx, dy)].ressource;
 				rp.type=type;
 				const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
 				rp.variety=syncRand()%rt->varietiesCount;
