@@ -868,8 +868,8 @@ protected:
 	};
 	
 	//This array is kept and re-used for every point-to-point pathfind call
-	AStarAlgorithmPoint* astarpoints;
-	std::vector<int> astarExaminedPoints;
+	AStarAlgorithmPoint* aStarPoints;
+	std::vector<int> aStarExaminedPoints;
 
 public:
 	Uint32 checkSum(bool heavy);

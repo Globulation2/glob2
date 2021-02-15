@@ -88,7 +88,7 @@ Map::Map()
 	fogOfWar=NULL;
 	fogOfWarA=NULL;
 	fogOfWarB=NULL;
-	astarpoints = NULL;
+	aStarPoints = NULL;
 	cases=NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_NB_RESSOURCES; r++)
@@ -302,9 +302,9 @@ void Map::clear()
 		delete[] listedAddr;
 		listedAddr=NULL;
 		
-		assert(astarpoints);
-		delete[] astarpoints;
-		astarpoints=NULL;
+		assert(aStarPoints);
+		delete[] aStarPoints;
+		aStarPoints=NULL;
 
 		for (int t=0; t<Team::MAX_COUNT; t++)
 		{
@@ -1002,7 +1002,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 		delete[] sectors;
 	sectors=new Sector[sizeSector];
 
-	astarpoints=new AStarAlgorithmPoint[w*h];
+	aStarPoints=new AStarAlgorithmPoint[w*h];
 
 
 	immobileUnits = new Uint8[w*h];
@@ -1088,7 +1088,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	cases = new Case[size];
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
-	astarpoints=new AStarAlgorithmPoint[size];
+	aStarPoints=new AStarAlgorithmPoint[size];
 	immobileUnits = new Uint8[size];
 	memset(immobileUnits, 255, size*sizeof(Uint8));
 	
@@ -4896,18 +4896,18 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	targetX = (targetX + w) & wMask;
 	targetY = (targetY + h) & hMask;
 	
-	AStarComparator compare(astarpoints);
+	AStarComparator compare(aStarPoints);
 	
 	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
 	std::priority_queue<int, std::vector<int>, AStarComparator> openList(compare);
 	openList.push((x << hDec) + y);
-	astarpoints[(x << hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
+	aStarPoints[(x << hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
 	
-	//These are all the examined points, so that these positions on astarponts
+	//These are all the examined points, so that these positions on aStarPoints
 	//Can be reset later. Why not reset or re-allocate the whole thing every
 	//call? Its slow! Use reserve to avoid doing this multiple times
-	astarExaminedPoints.reserve(maximumLength*2 + 6);
-	astarExaminedPoints.push_back((x << hDec) + y);
+	aStarExaminedPoints.reserve(maximumLength*2 + 6);
+	aStarExaminedPoints.push_back((x << hDec) + y);
 	
 	while(!openList.empty())
 	{
@@ -4915,7 +4915,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 		int position = openList.top();
 		openList.pop();
 
-		AStarAlgorithmPoint& pos = astarpoints[position];
+		AStarAlgorithmPoint& pos = aStarPoints[position];
 		pos.isClosed = true;
 				
 		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumLength))
@@ -4930,7 +4930,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 				int nx = (pos.x + lx + w) & wMask;
 				int ny = (pos.y + ly + h) & hMask;
 				int n = (nx << hDec) + ny;
-				AStarAlgorithmPoint& npos = astarpoints[n];
+				AStarAlgorithmPoint& npos = aStarPoints[n];
 				if(npos.isClosed)
 				{
 					continue;
@@ -4957,7 +4957,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 								npos = AStarAlgorithmPoint(nx, ny, pos.dx, pos.dy, moveCost, totalCost, false);
 								openList.push(n);
 							}
-							astarExaminedPoints.push_back(n);
+							aStarExaminedPoints.push_back(n);
 						}
 					}
 					//Check if we can improve this cells value by taking this route
@@ -4973,15 +4973,15 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 		}
 	}
 	
-	AStarAlgorithmPoint final = astarpoints[(targetX << hDec) + targetY];
+	AStarAlgorithmPoint final = aStarPoints[(targetX << hDec) + targetY];
 
 	//Clear all of the examined points for the next call to this algorithm
-	for(unsigned i=0; i<astarExaminedPoints.size(); ++i)
+	for(unsigned i=0; i<aStarExaminedPoints.size(); ++i)
 	{
-		astarpoints[astarExaminedPoints[i]] = AStarAlgorithmPoint();
+		aStarPoints[aStarExaminedPoints[i]] = AStarAlgorithmPoint();
 	}
 	
-	astarExaminedPoints.clear();
+	aStarExaminedPoints.clear();
 
 	//It was never examined, thus there is no paths
 	if(final.x == -1)
