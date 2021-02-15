@@ -283,20 +283,20 @@ def main():
 
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
-    env.Append(CXXFLAGS=' -Wall')
+    env.Append(CXXFLAGS=' -Wall -fPIC')
     env.Append(LINKFLAGS=' -Wall')
     env.Append(LIBS=['SDL_net'])
     if not server_only:
         env.Append(LIBS=['vorbisfile', 'SDL_ttf', 'SDL_image', 'speex'])
 
     if env['release']:
-        env.Append(CXXFLAGS=' -O2 -s')
-        env.Append(LINKFLAGS=' -O2 -s --fwhole-program')
+        env.Append(CXXFLAGS=' -O3 -s')
+        env.Append(LINKFLAGS=' -O3 -s --fwhole-program')
     if env['profile']:
         env.Append(CXXFLAGS=' -pg')
         env.Append(LINKFLAGS='-pg')
-        env.Append(CXXFLAGS=' -O2')
-        env.Append(LINKFLAGS='-O2')
+        env.Append(CXXFLAGS=' -O3')
+        env.Append(LINKFLAGS='-O3')
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
         # TODO: Remove unneccessary dependencies for server.
         env.Append(LIBS=['vorbis', 'ogg', 'regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
