@@ -138,6 +138,10 @@ public:
 	//! Return the number of sectors on y, which corresponds to the sector map height
 	int getSectorH(void) const { return hSector; }
 
+	size_t coordToIndex(int x, int y) {
+		return ((y&hMask)<<wDec)+(x&wMask);
+	}
+
 	///Returns a normalized version of the x cordinate, taking into account that x coordinates wrap around
 	int normalizeX(int x)
 	{
@@ -153,7 +157,7 @@ public:
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
 	void setMapDiscovered(int x, int y, Uint32 sharedVision)
 	{
-		size_t index = ((y&hMask)<<wDec)+(x&wMask);
+		size_t index = coordToIndex(x, y);
 		mapDiscovered[index] |= sharedVision;
 		fogOfWarA[index] |= sharedVision;
 		fogOfWarB[index] |= sharedVision;
@@ -170,7 +174,7 @@ public:
 	//! Make the building at (x, y) visible for all teams in sharedVision (mask).
 	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
 	{
-		Uint16 bgid = (cases+((y&hMask)<<wDec)+(x&wMask))->building;
+		Uint16 bgid = (cases+coordToIndex(x, y))->building;
 		if (bgid != NOGBID)
 		{
 			int id = Building::GIDtoID(bgid);
@@ -196,7 +200,7 @@ public:
 	{
 		for (int dx = x; dx < x + w; dx++)
 			for (int dy = y; dy < y + h; dy++)
-				exploredArea[team][((dy & hMask) << wDec) | (dx & wMask)] = 255;
+				exploredArea[team][coordToIndex(dx, dy)] = 255;
 	}
 	
 	//! Make the map at rect (x, y, w, h) explored by building, i.e. to minimum 2
@@ -204,8 +208,8 @@ public:
 	{
 		for (int dx = x; dx < x + w; dx++)
 			for (int dy = y; dy < y + h; dy++)
-				if (exploredArea[team][((dy & hMask) << wDec) | (dx & wMask)] < 2)
-					exploredArea[team][((dy & hMask) << wDec) | (dx & wMask)] = 2;
+				if (exploredArea[team][coordToIndex(dx, dy)] < 2)
+					exploredArea[team][coordToIndex(dx, dy)] = 2;
 	}
 
 	//! Set all map for all teams to undiscovered state
@@ -218,7 +222,7 @@ public:
 	//! This mask represents which team's part of map we are allowed to see.
 	bool isMapDiscovered(int x, int y, Uint32 visionMask)
 	{
-		return ((mapDiscovered[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
+		return ((mapDiscovered[coordToIndex(x, y)]) & visionMask) != 0;
 	}
 	
 	//! Returns true if map is discovered at position (x1..x2,y1..y2) for a given vision mask.
@@ -248,46 +252,46 @@ public:
 	//! This mask represents which team's units and buildings we are allowed to see.
 	bool isFOWDiscovered(int x, int y, int visionMask)
 	{
-		return ((fogOfWar[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
+		return ((fogOfWar[coordToIndex(x, y)]) & visionMask) != 0;
 	}
 	
 	//! Return true if the position (x,y) is a forbidden area set by the user
 	// or rather, by the team computeLocalForbidden was last called for
 	bool isForbiddenLocal(int x, int y)
 	{
-		return localForbiddenMap.get(((y&hMask)<<wDec)+(x&wMask));
+		return localForbiddenMap.get(coordToIndex(x, y));
 	}
 	
 	//! Returns true if the position(x, y) is a forbidden area for the given team
 	bool isForbidden(int x, int y, Uint32 teamMask)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden&teamMask;
+		return cases[coordToIndex(x, y)].forbidden&teamMask;
 	}
 
 	//! Return true if the position (x,y) is a guard area set by the user
 	// or rather, by the team computeLocalGuardArea was last called for
 	bool isGuardAreaLocal(int x, int y)
 	{
-		return localGuardAreaMap.get(((y&hMask)<<wDec)+(x&wMask));
+		return localGuardAreaMap.get(coordToIndex(x, y));
 	}
 	
 	//! Returns true if the position(x, y) is a guard area for the given team
 	bool isGuardArea(int x, int y, Uint32 teamMask)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].guardArea&teamMask;
+		return cases[coordToIndex(x, y)].guardArea&teamMask;
 	}
 
 	//! Return true if the position (x,y) is a clear area set by the user
 	// or rather, by the team computeLocalClearArea was last called for
 	bool isClearAreaLocal(int x, int y)
 	{
-		return localClearAreaMap.get(((y&hMask)<<wDec)+(x&wMask));
+		return localClearAreaMap.get(coordToIndex(x, y));
 	}
 
 	//! Returns true if the position(x, y) is a clear area for the given team
 	bool isClearArea(int x, int y, Uint32 teamMask)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].clearArea&teamMask;
+		return cases[coordToIndex(x, y)].clearArea&teamMask;
 	}
 	
 	// note - these are only meant to be called for the LOCAL team
@@ -302,13 +306,13 @@ public:
 	//! Return the case at a given position
 	inline Case &getCase(int x, int y)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)];
+		return cases[coordToIndex(x, y)];
 	}
 
 	//! Return the terrain for a given coordinate
 	inline Uint16 getTerrain(int x, int y)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].terrain;
+		return cases[coordToIndex(x, y)].terrain;
 	}
 	
 	//! Return the terrain for a given position in case array
@@ -333,7 +337,7 @@ public:
 
 	Ressource getRessource(int x, int y)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].ressource;
+		return cases[coordToIndex(x, y)].ressource;
 	}
 	
 	Ressource getRessource(unsigned pos)
@@ -344,48 +348,48 @@ public:
 	//Returns the combined forbidden and hidden foribidden masks
 	Uint32 getForbidden(int x, int y)
 	{
-		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden;
+		return cases[coordToIndex(x, y)].forbidden;
 	}
 	
 	Uint8 getExplored(int x, int y, int team)
 	{
-		return exploredArea[team][((y&hMask)<<wDec)+(x&wMask)];
+		return exploredArea[team][coordToIndex(x, y)];
 	}
 	
 	Uint8 getGuardAreasGradient(int x, int y, bool canSwim, int team)
 	{
-		return guardAreasGradient[team][canSwim][((y&hMask)<<wDec)+(x&wMask)];
+		return guardAreasGradient[team][canSwim][coordToIndex(x, y)];
 	}
 	
 	void setTerrain(int x, int y, Uint16 terrain)
 	{
-		cases[((y&hMask)<<wDec)+(x&wMask)].terrain = terrain;
+		cases[coordToIndex(x, y)].terrain = terrain;
 	}
 	
 	void setForbidden(int x, int y, Uint32 forbidden)
 	{
-		cases[((y&hMask)<<wDec)+(x&wMask)].forbidden = forbidden;
+		cases[coordToIndex(x, y)].forbidden = forbidden;
 	}
 	
 	void addForbidden(int x, int y, Uint32 teamNum)
 	{
-		cases[((y&hMask)<<wDec)+(x&wMask)].forbidden |=  Team::teamNumberToMask(teamNum);
+		cases[coordToIndex(x, y)].forbidden |=  Team::teamNumberToMask(teamNum);
 	}
 
 	void removeForbidden(int x, int y, Uint32 teamNum)
 	{
-		Case& c=cases[((y&hMask)<<wDec)+(x&wMask)];
+		Case& c=cases[coordToIndex(x, y)];
 		c.forbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
 	}
 	
 	void addClearArea(int x, int y, Uint32 teamNum)
 	{
-		cases[((y&hMask)<<wDec)+(x&wMask)].clearArea |=  Team::teamNumberToMask(teamNum);
+		cases[coordToIndex(x, y)].clearArea |=  Team::teamNumberToMask(teamNum);
 	}
 	
 	void addGuardArea(int x, int y, Uint32 teamNum)
 	{
-		cases[((y&hMask)<<wDec)+(x&wMask)].guardArea |=  Team::teamNumberToMask(teamNum);
+		cases[coordToIndex(x, y)].guardArea |=  Team::teamNumberToMask(teamNum);
 	}
 
 	
@@ -408,7 +412,7 @@ public:
 	
 	bool isGrass(unsigned pos)
 	{
-		return  (getTerrain(pos)<16);
+		return (getTerrain(pos)<16);
 	}
 	
 	bool isSand(int x, int y)
@@ -509,17 +513,17 @@ public:
 	Uint8 getImmobileUnit(int x, int y);
 
 	//! Return GID
-	Uint16 getGroundUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].groundUnit; }
-	Uint16 getAirUnit(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].airUnit; }
-	Uint16 getBuilding(int x, int y) { return cases[((y&hMask)<<wDec)+(x&wMask)].building; }
+	Uint16 getGroundUnit(int x, int y) { return cases[coordToIndex(x, y)].groundUnit; }
+	Uint16 getAirUnit(int x, int y) { return cases[coordToIndex(x, y)].airUnit; }
+	Uint16 getBuilding(int x, int y) { return cases[coordToIndex(x, y)].building; }
 	
-	void setGroundUnit(int x, int y, Uint16 guid) { cases[((y&hMask)<<wDec)+(x&wMask)].groundUnit = guid; }
-	void setAirUnit(int x, int y, Uint16 guid) { cases[((y&hMask)<<wDec)+(x&wMask)].airUnit = guid; }
+	void setGroundUnit(int x, int y, Uint16 guid) { cases[coordToIndex(x, y)].groundUnit = guid; }
+	void setAirUnit(int x, int y, Uint16 guid) { cases[coordToIndex(x, y)].airUnit = guid; }
 	void setBuilding(int x, int y, int w, int h, Uint16 gbid)
 	{
 		for (int yi=y; yi<y+h; yi++)
 			for (int xi=x; xi<x+w; xi++)
-				cases[((yi&hMask)<<wDec)+(xi&wMask)].building = gbid;
+				cases[coordToIndex(xi, yi)].building = gbid;
 	}
 	
 	//! Return sector at (x,y).
@@ -528,9 +532,9 @@ public:
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 
 	//! Set undermap terrain type at (x,y) (undermap positions)
-	void setUMTerrain(int x, int y, TerrainType t) { undermap[((y&hMask)<<wDec)+(x&wMask)] = (Uint8)t; }
+	void setUMTerrain(int x, int y, TerrainType t) { undermap[coordToIndex(x, y)] = (Uint8)t; }
 	//! Return undermap terrain type at (x,y)
-	TerrainType getUMTerrain(int x, int y) { return (TerrainType)undermap[((y&hMask)<<wDec)+(x&wMask)]; }
+	TerrainType getUMTerrain(int x, int y) { return (TerrainType)undermap[coordToIndex(x, y)]; }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int l);
 
@@ -594,14 +598,14 @@ public:
 	{
 		Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
 		assert(gradient);
-		return gradient[((y&hMask)<<wDec)+(x&wMask)];
+		return gradient[coordToIndex(x, y)];
 	}
 	
 	Uint8 getClearingGradient(int teamNumber, bool canSwim, int x, int y)
 	{
 		Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
 		assert(gradient);
-		return gradient[((y&hMask)<<wDec)+(x&wMask)];
+		return gradient[coordToIndex(x, y)];
 	}
 	
 	void updateGlobalGradientSlow(Uint8 *gradient);

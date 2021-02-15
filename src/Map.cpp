@@ -2071,7 +2071,7 @@ void Map::setNoRessource(int x, int y, int l)
 	assert(l<h);
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
-			(cases+w*(dy&hMask)+(dx&wMask))->ressource.clear();
+			cases[coordToIndex(dx, dy)].ressource.clear();
 }
 
 void Map::setRessource(int x, int y, int type, int l)
@@ -2083,13 +2083,13 @@ void Map::setRessource(int x, int y, int type, int l)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 			if (isRessourceAllowed(dx, dy, type))
 			{
-				Ressource *rp=&((cases+w*(dy&hMask)+(dx&wMask))->ressource);
-				rp->type=type;
-				RessourceType *rt=globalContainer->ressourcesTypes.get(type);
-				rp->variety=syncRand()%rt->varietiesCount;
+				Ressource& rp=(cases[coordToIndex(dx, dy)]).ressource;
+				rp.type=type;
+				const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
+				rp.variety=syncRand()%rt->varietiesCount;
 				assert(rt->sizesCount>1);
-				rp->amount=1+syncRand()%(rt->sizesCount-1);
-				rp->animation=0;
+				rp.amount=1+syncRand()%(rt->sizesCount-1);
+				rp.animation=0;
 			}
 }
 
@@ -2226,8 +2226,8 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 	// we start from our current position
 	int vx = x & wMask;
 	int vy = y & hMask;
-	// max is initiaslized to gradient value of current position
-	Uint8 max = gradient[(vx&wMask)+((vy&hMask)<<wDec)];
+	// max is initialized to gradient value of current position
+	Uint8 max = gradient[coordToIndex(vx, vy)];
 	
 	bool result = false;
 	// for up to 255 steps, we follow gradient
@@ -2242,7 +2242,7 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 		{
 			int ddx = deltaOne[d][0];
 			int ddy = deltaOne[d][1];
-			Uint8 g = gradient[((vx+ddx)&wMask)+(((vy+ddy)&hMask)<<wDec)];
+			Uint8 g = gradient[coordToIndex(vx + ddx, vy + ddy)];
 			if (g>max)
 			{
 				max = g;
@@ -2256,7 +2256,7 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 		vx = (vx+vddx) & wMask;
 		vy = (vy+vddy) & hMask;
 		
-		// if we have reached destionation break
+		// if we have reached destination break
 		if (max == 255)
 		{
 			result = true;
@@ -2983,9 +2983,9 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *
 	{
 		int rx=tabFar[di][0];
 		int ry=tabFar[di][1];
-		int xg=(x+rx)&wMask;
-		int yg=(y+ry)&hMask;
-		int g=gradient[xg+yg*w];
+		int xg = x + rx;
+		int yg = y + ry;
+		int g=gradient[coordToIndex(xg, yg)];
 		if (g==0 || g==255 || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
 			miniGrad[rx+ry*5+12]=g;
 		else
@@ -2995,9 +2995,9 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *
 	{
 		int rx=tabClose[di][0];
 		int ry=tabClose[di][1];
-		int xg=(x+rx)&wMask;
-		int yg=(y+ry)&hMask;
-		int g=gradient[xg+yg*w];
+		int xg = x + rx;
+		int yg = y + ry;
+		int g=gradient[coordToIndex(xg, yg)];
 		if (g==0 || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
 			miniGrad[rx+ry*5+12]=g;
 		else
@@ -3279,7 +3279,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			{
 				if (yi2+(xi*xi)<=r2)
 				{
-					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
 					if(cases[addr].ressource.type != NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
 					{
 						int xxi=clip_0_31(15+xi);
@@ -3575,7 +3575,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			for (int xi=-r; xi<=r; xi++)
 				if (yi2+(xi*xi)<=r2)
 				{
-					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
 					if(gradient[addr] == 1)
 					{
 						gradient[addr] = 255;
@@ -3596,7 +3596,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			for (int xi=-r; xi<=r; xi++)
 				if (yi2+(xi*xi)<=r2)
 				{
-					size_t addr = ((posX+w+xi)&wMask)+(w*((posY+h+yi)&hMask));
+					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
 					if(cases[addr].ressource.type!=NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
 					{
 						if(gradient[addr] == 1)
@@ -4029,7 +4029,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 			//fprintf(logFile, "ba-b- global gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
 		}
-		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
+		Uint8 currentg=gradient[coordToIndex(x, y)];
 		if (currentg>1)
 		{
 			buildingAvailableCountFarOldSuccessFast++;
@@ -4042,9 +4042,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 			{
 				int ddx, ddy;
 				Unit::dxdyfromDirection(d, &ddx, &ddy);
-				int xddx=(x+ddx)&wMask;
-				int yddy=(y+ddy)&hMask;
-				Uint8 g=gradient[xddx+yddy*w];
+				Uint8 g=gradient[coordToIndex(x + ddx, y + ddy)];
 				if (g>1)
 				{
 					buildingAvailableCountFarOldSuccessAround++;
@@ -4068,7 +4066,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 		return false;
 	}
 	
-	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
+	Uint8 currentg=gradient[coordToIndex(x, y)];
 	if (currentg>1)
 	{
 		buildingAvailableCountFarNewSuccessFast++;
@@ -4081,9 +4079,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 		{
 			int ddx, ddy;
 			Unit::dxdyfromDirection(d, &ddx, &ddy);
-			int xddx=(x+ddx)&wMask;
-			int yddy=(y+ddy)&hMask;
-			Uint8 g=gradient[xddx+yddy*w];
+			Uint8 g=gradient[coordToIndex(x + ddx, y + ddy)];
 			if (g>1)
 			{
 				buildingAvailableCountFarNewSuccessClosely++;
@@ -4202,7 +4198,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	else
 	{
 		bool found=false;
-		Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
+		Uint8 currentg=gradient[coordToIndex(x, y)];
 		if (building->locked[canSwim])
 		{
 			pathToBuildingCountFarOldFailureLocked++;
@@ -4255,7 +4251,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		return false;
 	}
 	
-	Uint8 currentg=gradient[(x&wMask)+w*(y&hMask)];
+	Uint8 currentg=gradient[coordToIndex(x, y)];
 	if (currentg>1)
 	{
 		if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true, verbose))
@@ -4446,11 +4442,9 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 	fprintf(logFile, "Map::dirtyLocalGradient(%d, %d, %d, %d, %d)\n", x, y, wl, hl, teamNumber);
 	for (int hi=0; hi<hl; hi++)
 	{
-		int wyi=w*((y+hi)&hMask);
 		for (int wi=0; wi<wl; wi++)
 		{
-			int xi=(x+wi)&wMask;
-			int bgid=cases[xi+wyi].building;
+			int bgid=cases[coordToIndex(x + wi, y + hi)].building;
 			if (bgid!=NOGBID)
 				if (Building::GIDtoTeam(bgid)==teamNumber)
 				{
