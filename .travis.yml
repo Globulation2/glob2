@@ -7,7 +7,6 @@ env:
   matrix:
    #- BUILD_IMG=ubuntu:16.04 DEPS=python3 # requires a manually installed scons version which works with Python 3
    - BUILD_IMG=ubuntu:18.04 DEPS=python3
-   - BUILD_IMG=ubuntu:19.10 DEPS=python3
    - BUILD_IMG=ubuntu:20.04
    - BUILD_IMG=ubuntu:20.10
 
