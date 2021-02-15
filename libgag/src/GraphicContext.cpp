@@ -1960,6 +1960,7 @@ namespace GAGCore
 		minW = minH = 0;
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
+		modes = nullptr;
 
 		// Load the SDL library
 		if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER)<0 )
