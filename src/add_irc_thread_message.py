@@ -3,8 +3,8 @@ from add_stuff_base import *
 backup("IRCThreadMessage.h")
 backup("IRCThreadMessage.cpp")
 
-print "Name? "
-name = raw_input()
+print("Name? ")
+name = input()
 tname = "ITM"+name.replace("IT", "")
 
 variables = assemble_variables(False, False)
@@ -18,9 +18,9 @@ declare_variables=assemble_declare_variables(variables)
 
 initialize_variables=""
 if vn:
-	initialize_variables="	: "
-	initialize_variables+=assemble_initialize_variables(variables)
-	initialize_variables+="\n"
+    initialize_variables="  : "
+    initialize_variables+=assemble_initialize_variables(variables)
+    initialize_variables+="\n"
 
 
 format_variables = assemble_format_variables(variables)
@@ -32,17 +32,17 @@ hcode = """
 class mname : public IRCThreadMessage
 {
 public:
-	///Creates a mname event
-	""" + constructor + """;
+    ///Creates a mname event
+    """ + constructor + """;
 
-	///Returns tname
-	Uint8 getMessageType() const;
+    ///Returns tname
+    Uint8 getMessageType() const;
 
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two IRCThreadMessage
-	bool operator==(const IRCThreadMessage& rhs) const;
+    ///Returns a formatted version of the event
+    std::string format() const;
+    
+    ///Compares two IRCThreadMessage
+    bool operator==(const IRCThreadMessage& rhs) const;
 """
 hcode+=declare_functions
 hcode+=declare_variables
@@ -59,7 +59,7 @@ scode+=initialize_variables
 scode+="{\n}\n\n\n\n"
 scode+="""Uint8 mname::getMessageType() const
 {
-	return tname;
+    return tname;
 }
 
 
@@ -67,18 +67,18 @@ scode+="""Uint8 mname::getMessageType() const
 std::string mname::format() const
 {
 """ + format_variables + """
-	return s.str();
+    return s.str();
 }
 
 
 
 bool mname::operator==(const IRCThreadMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(mname))
-	{
+    if(typeid(rhs)==typeid(mname))
+    {
 """ + compare_variables + """
-	}
-	return false;
+    }
+    return false;
 }
 
 
@@ -89,7 +89,7 @@ scode += get_function_defines
 
 lines = readLines("IRCThreadMessage.h")
 i = findMarker(lines,"type_append_marker")
-lines.insert(i, "	%s,\n" % tname)
+lines.insert(i, "   %s,\n" % tname)
 
 
 i = findMarker(lines,"event_append_marker")

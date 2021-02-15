@@ -8,4 +8,4 @@ src/glob2
 *.o
 *~
 .directory
-scons/*.pyc
+__pycache__/

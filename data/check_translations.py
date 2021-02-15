@@ -2,7 +2,7 @@ changes={"" : ""}
 
 
 def translation_check(filename, keys):
-    print "Examining %s" % (filename)
+    print(("Examining %s" % (filename)))
     f=open(filename)
     lines = [x.rstrip() for x in f.readlines()]
     f.close()
@@ -14,7 +14,7 @@ def translation_check(filename, keys):
         line = lines[n]
         if expect_type=="key":
             if line == "" or line[0] != '[' or line[-1] != ']':
-                print "\tKey on line %i not in correct format, skipping" % (n)
+                print(("\tKey on line %i not in correct format, skipping" % (n)))
             else:
                 current_key = changes.get(line, line)
                 expect_type="text"
@@ -32,10 +32,10 @@ def translation_check(filename, keys):
     new_texts.sort()
     for t in new_texts:
         if t[2] == "":
-            print "\tUntranslated key: %s" % (t[1])
+            print(("\tUntranslated key: %s" % (t[1])))
 
     for t in local_set.difference(key_set):
-        print "\tKey found not in texts.keys.txt: %s" % (t)
+        print(("\tKey found not in texts.keys.txt: %s" % (t)))
             
     f=open(filename, "w")
     for t in new_texts:
@@ -62,7 +62,7 @@ def main():
         keyf.write(key[1] + "\n")
     keyf.close()
     for t in translations:
-    	nt = t.replace("data/", "").rstrip()
+        nt = t.replace("data/", "").rstrip()
         if len(sys.argv)==1 or sys.argv[1]==nt:
             if nt != "texts.keys.txt":
                 translation_check(nt, keys) 
