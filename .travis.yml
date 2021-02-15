@@ -9,5 +9,6 @@ env:
    - BUILD_IMG=ubuntu:18.04 DEPS=python3
    - BUILD_IMG=ubuntu:20.04
    - BUILD_IMG=ubuntu:20.10
+   - BUILD_IMG=ubuntu:21.04
 
 script: docker run --rm=true -v $HOME:$HOME:rw $BUILD_IMG /bin/sh -c "sed -i '/^#\sdeb-src /s/^#//' /etc/apt/sources.list && apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get build-dep --yes glob2 && env DEBIAN_FRONTEND=noninteractive apt-get install --yes $DEPS && cd $PWD && /usr/bin/env python3 /usr/bin/scons -j16 && /usr/bin/env python3 /usr/bin/scons -j16 install"
