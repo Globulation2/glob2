@@ -62,7 +62,7 @@ namespace GAGCore
 	void TextOutputStream::writeText(const std::string &v, const std::string name)
 	{
 		printLevel();
-		if (name.size());
+		if (name.size())
 		{
 			printString(name);
 			printString(" = \"");
