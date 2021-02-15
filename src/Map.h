@@ -115,7 +115,7 @@ public:
 	//! Grow ressources on map
 	void growRessources(void);
 #ifndef YOG_SERVER_ONLY
-	//! Do a step associated woth map (grow ressources and process bullets)
+	//! Do a step associated with map (grow ressources and process bullets)
 	void syncStep(Uint32 stepCounter);
 #endif  // !YOG_SERVER_ONLY
 	//! Switch the Fog of War bufferRessourceType
@@ -138,13 +138,13 @@ public:
 	//! Return the number of sectors on y, which corresponds to the sector map height
 	int getSectorH(void) const { return hSector; }
 
-	///Returns a normalized version of the x cordinate, taking into account that x cordinates wrap arround
+	///Returns a normalized version of the x cordinate, taking into account that x coordinates wrap around
 	int normalizeX(int x)
 	{
 		return (x + w) & wMask;
 	}
 	
-	///Returns a normalized version of the y cordinate, taking into account that y cordinates wrap arround
+	///Returns a normalized version of the y cordinate, taking into account that y coordinates wrap around
 	int normalizeY(int y)
 	{
 		return (y + h) & hMask;
@@ -214,14 +214,14 @@ public:
 		memset(mapDiscovered, 0, w*h*sizeof(Uint32));
 	}
 
-	//! Returs true if map is discovered at position (x,y) for a given vision mask.
+	//! Returns true if map is discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's part of map we are allowed to see.
 	bool isMapDiscovered(int x, int y, Uint32 visionMask)
 	{
 		return ((mapDiscovered[((y&hMask)<<wDec)+(x&wMask)]) & visionMask) != 0;
 	}
 	
-	//! Returs true if map is discovered at position (x1..x2,y1..y2) for a given vision mask.
+	//! Returns true if map is discovered at position (x1..x2,y1..y2) for a given vision mask.
 	//! This mask represents which team's part of map we are allowed to see.
 	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask)
 	{
@@ -244,7 +244,7 @@ public:
 		memset(mapDiscovered, ~0u, w*h*sizeof(Uint32));
 	}
 
-	//! Returs true if map is currently discovered at position (x,y) for a given vision mask.
+	//! Returns true if map is currently discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's units and buildings we are allowed to see.
 	bool isFOWDiscovered(int x, int y, int visionMask)
 	{
@@ -258,7 +258,7 @@ public:
 		return localForbiddenMap.get(((y&hMask)<<wDec)+(x&wMask));
 	}
 	
-	//! Returns true if the position(x, y) is a forbideen area for the given team
+	//! Returns true if the position(x, y) is a forbidden area for the given team
 	bool isForbidden(int x, int y, Uint32 teamMask)
 	{
 		return cases[((y&hMask)<<wDec)+(x&wMask)].forbidden&teamMask;
@@ -641,7 +641,7 @@ public:
 	//! Make local gradient dirty in the area. Wrap-safe on x,y
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
 	bool pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
-	//! Find the best direction toward gaurd area, return true if one has been found, false otherwise
+	//! Find the best direction toward guard area, return true if one has been found, false otherwise
 	bool pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
 	//! Find the best direction toward clearing area, return true if one has been found, false otherwise
 	bool pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
