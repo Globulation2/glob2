@@ -2003,11 +2003,11 @@ void AICastor::computeObstacleUnitMap()
 	//int wMask=map->wMask;
 	//int hMask=map->hMask;
 	size_t size=w*h;
-	Case *cases=map->cases;
+	const auto& cases=map->cases;
 	Uint32 teamMask=team->me;
 	for (size_t i=0; i<size; i++)
 	{
-		Case c=cases[i];
+		const auto& c=cases[i];
 		if (c.building!=NOGBID)
 			obstacleUnitMap[i]=0;
 		else if (c.ressource.type!=NO_RES_TYPE)
@@ -2033,10 +2033,10 @@ void AICastor::computeObstacleBuildingMap()
 	//int hDec=map->hDec;
 	//int wDec=map->wDec;
 	size_t size=w*h;
-	Case *cases=map->cases;
+	const auto& cases=map->cases;
 	for (size_t i=0; i<size; i++)
 	{
-		Case c=cases[i];
+		const Case& c=cases[i];
 		if (c.building!=NOGBID)
 			obstacleBuildingMap[i]=0;
 		else  if (c.terrain>=16) // if (!isGrass)
@@ -2102,7 +2102,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	
 	//size_t size=w*h;
 	Uint8 *gradient=buildingNeighbourMap;
-	Case *cases=map->cases;
+	const auto& cases=map->cases;
 	
 	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	
@@ -2169,7 +2169,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 		gradient[((bx+bw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
 	}
 	
-	// At a range of 0 space case (neignbours), without corners,
+	// At a range of 0 space case (neighbours), without corners,
 	// we increment (bit 1 to 3), and dirty bit 0 in case:
 	for (int xi=bx-dw+1; xi<bx+bw; xi++)
 	{
@@ -2436,7 +2436,7 @@ fprintf(logFile,  "computeHydratationMap()...\n");
 	
 	Uint16 *gradient=(Uint16 *)malloc(2*size);
 	memset(gradient, 0, 2*size);
-	Case *cases=map->cases;
+	const auto& cases=map->cases;
 	static const int range=16;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -2490,7 +2490,7 @@ void AICastor::computeNotGrassMap()
 	
 	memset(notGrassMap, 0, size);
 	
-	Case *cases=map->cases;
+	const auto& cases=map->cases;
 	for (size_t i=0; i<size; i++)
 	{
 		Uint16 t=cases[i].terrain;
@@ -2906,7 +2906,7 @@ void AICastor::computeRessourcesCluster()
 	fprintf(logFile,  "computeRessourcesCluster()\n");
 	int w=map->w;
 	int h=map->h;
-	int wMask=map->wMask;
+	//int wMask=map->wMask;
 	int hMask=map->hMask;
 	size_t size=w*h;
 	
@@ -2921,8 +2921,8 @@ void AICastor::computeRessourcesCluster()
 	{
 		for (int x=0; x<w; x++)
 		{
-			Case *c=map->cases+w*(y&hMask)+(x&wMask); // case
-			Ressource r=c->ressource; // ressource
+			const auto& c = map->cases[map->coordToIndex(x, y)]; // case
+			const auto& r=c.ressource; // ressource
 			Uint8 rt=r.type; // ressources type
 			
 			int rci=x+y*w; // ressource cluster index

@@ -49,24 +49,24 @@ class MapHeader;
 // a 1x1 piece of map
 struct Case
 {
-	Uint16 terrain;
-	Uint16 building;
+	Uint16 terrain = 0; // default, not really meaningful.
+	Uint16 building = NOGBID;
 
 	Ressource ressource;
 
-	Uint16 groundUnit;
-	Uint16 airUnit;
+	Uint16 groundUnit = NOGUID;
+	Uint16 airUnit = NOGUID;
 
-	Uint32 forbidden; // This is a mask, one bit by team, 1=forbidden, 0=allowed
+	Uint32 forbidden = 0; // This is a mask, one bit by team, 1=forbidden, 0=allowed
 	///The difference between forbidden zone and hidden forbidden zone is that hidden forbidden zone
 	///is put there by the game engine and is not draw to the screen.
-	Uint32 guardArea; // This is a mask, one bit by team, 1=guard area, 0=normal
-	Uint32 clearArea; // This is a mask, one bit by team, 1=clear area, 0=normal
+	Uint32 guardArea = 0; // This is a mask, one bit by team, 1=guard area, 0=normal
+	Uint32 clearArea = 0; // This is a mask, one bit by team, 1=clear area, 0=normal
 
-	Uint16 scriptAreas; // This is also a mask. A single bit represents an area #n, on or off for the square
-	Uint8 canRessourcesGrow; // This is a boolean, it represents whether ressources are allowed to grow into this location.
+	Uint16 scriptAreas = 0; // This is also a mask. A single bit represents an area #n, on or off for the square
+	Uint8 canRessourcesGrow = 1; // This is a boolean, it represents whether ressources are allowed to grow into this location.
 	
-	Uint16 fertility; // This is a value that represents the fertility of this square, the chance that wheat will grow on it
+	Uint16 fertility = 0; // This is a value that represents the fertility of this square, the chance that wheat will grow on it
 };
 
 /// Types of areas
@@ -138,8 +138,9 @@ public:
 	//! Return the number of sectors on y, which corresponds to the sector map height
 	int getSectorH(void) const { return hSector; }
 
+	/// Return an index into map arrays for a given position, wrap-safe
 	size_t coordToIndex(int x, int y) {
-		return ((y&hMask)<<wDec)+(x&wMask);
+		return ((y & hMask) << wDec) + (x & wMask);
 	}
 
 	///Returns a normalized version of the x cordinate, taking into account that x coordinates wrap around
@@ -174,7 +175,7 @@ public:
 	//! Make the building at (x, y) visible for all teams in sharedVision (mask).
 	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
 	{
-		Uint16 bgid = (cases+coordToIndex(x, y))->building;
+		Uint16 bgid = cases[coordToIndex(x, y)].building;
 		if (bgid != NOGBID)
 		{
 			int id = Building::GIDtoID(bgid);
@@ -340,9 +341,9 @@ public:
 		return cases[coordToIndex(x, y)].ressource;
 	}
 	
-	Ressource getRessource(unsigned pos)
+	Ressource getRessource(size_t pos)
 	{
-		return (cases+pos)->ressource;
+		return cases[pos].ressource;
 	}
 	
 	//Returns the combined forbidden and hidden foribidden masks
@@ -759,7 +760,7 @@ protected:
 public:
 	Game *game;
 public:
-	Case *cases;
+	std::vector<Case> cases;
 	Sint32 w, h;
 	Sint32 wMask, hMask;
 	Sint32 wDec, hDec;
