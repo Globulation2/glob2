@@ -65,7 +65,10 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 				int noise = (SimplexNoise::getNoise3D(nx,ny,nz)) - 128;
 				int a = INT_ROUND_RSHIFT(noiseMultiplier * (-21+noise), 8);
 				int alpha = INT_ROUND_RSHIFT(a*a, 16);
-				if (alpha<0) alpha=0; if (alpha>maxAlpha) alpha=maxAlpha;
+				if (alpha<0)
+					alpha=0;
+				if (alpha>maxAlpha)
+					alpha=maxAlpha;
 				alphaMap[wGrid*y+x] = alpha;
 			}
 	}
