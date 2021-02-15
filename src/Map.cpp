@@ -89,7 +89,6 @@ Map::Map()
 	fogOfWarA=NULL;
 	fogOfWarB=NULL;
 	aStarPoints = NULL;
-	cases=NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_NB_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
@@ -251,9 +250,6 @@ void Map::clear()
 		delete[] fogOfWarB;
 		fogOfWarB=NULL;
 
-		assert(cases);
-		delete[] cases;
-		cases=NULL;
 		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (ressourcesGradient[t][0][0])
 				for (int r=0; r<MAX_RESSOURCES; r++)
@@ -328,7 +324,6 @@ void Map::clear()
 		assert(fogOfWar==NULL);
 		assert(fogOfWarA==NULL);
 		assert(fogOfWarB==NULL);
-		assert(cases==NULL);
 		for (int t=0; t<Team::MAX_COUNT; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
@@ -968,22 +963,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	localGuardAreaMap.resize(size, false);
 	localClearAreaMap.resize(size, false);
 	
-	cases=new Case[size];
-	Case initCase;
-	initCase.terrain = 0; // default, not really meaningfull.
-	initCase.building = NOGBID;
-	initCase.ressource.clear();
-	initCase.groundUnit = NOGUID;
-	initCase.airUnit = NOGUID;
-	initCase.forbidden = 0;
-	initCase.guardArea = 0;
-	initCase.clearArea = 0;
-	initCase.scriptAreas = 0;
-	initCase.canRessourcesGrow = 1;
-	initCase.fertility = 0;
-	
-	for (size_t i=0; i<size; i++)
-		cases[i]=initCase;
+	cases.assign(size, Case());
 	
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
@@ -1085,7 +1065,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	localForbiddenMap.resize(size, false);
 	localGuardAreaMap.resize(size, false);
 	localClearAreaMap.resize(size, false);
-	cases = new Case[size];
+	cases.resize(size);
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	aStarPoints=new AStarAlgorithmPoint[size];
@@ -2782,7 +2762,7 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 	assert(globalContainer);
 	for (size_t i=0; i<size; i++)
 	{
-		Case& c=cases[i];
+		const Case& c=cases[i];
 		if (c.forbidden & teamMask)
 			gradient[i]=0;
 		else if(immobileUnits[i] != 255)
@@ -3615,7 +3595,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 		for (int x=0; x<w; x++)
 		{
 			int wyx=wy+x;
-			Case& c=cases[wyx];
+			const Case& c=cases[wyx];
 			if (c.building==NOGBID)
 			{
 				if (c.forbidden&teamMask)
@@ -5144,17 +5124,16 @@ Uint32 Map::checkSum(bool heavy)
 	Uint32 cs=size;
 	if (heavy)
 	{
-		const Case* end = cases + (w * h);
-		for (Case* c=cases; c < end; ++c)
+		for (const auto& c: cases)
 		{
 			cs+=
-				c->terrain +
-				c->building +
-				c->ressource.getUint32() +
-				c->groundUnit +
-				c->airUnit +
-				c->forbidden +
-				c->scriptAreas;
+				c.terrain +
+				c.building +
+				c.ressource.getUint32() +
+				c.groundUnit +
+				c.airUnit +
+				c.forbidden +
+				c.scriptAreas;
 			cs=(cs<<1)|(cs>>31);
 		}
 	};

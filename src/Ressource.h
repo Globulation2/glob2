@@ -30,14 +30,14 @@
 //! Either a ressource type is NO_RES_TYPE and all others fields are zero, or the ressource has a valid type and amount is NOT zero. This constraint does not apply if a ressource is eternal.
 struct Ressource
 {
-	Uint8 type;
-	Uint8 variety;
-	Uint8 amount;
-	Uint8 animation;
+	Uint8 type = NO_RES_TYPE;
+	Uint8 variety = 0;
+	Uint8 amount = 0;
+	Uint8 animation = 0;
 	
 	void clear() {type=NO_RES_TYPE; variety = 0;  amount = 0;  animation = 0; }
 	//void setUint32(Uint32 i) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
-	Uint32 getUint32() { return animation | (amount<<8) | (variety<<16) | (type<<24); }
+	Uint32 getUint32() const { return animation | (amount<<8) | (variety<<16) | (type<<24); }
 };
 
 std::string getRessourceName(int type);
