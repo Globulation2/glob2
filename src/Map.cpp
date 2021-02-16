@@ -1610,7 +1610,7 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 	return false;
 }
 
-bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask)
+bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const
 {
 	if (isRessource(x, y))
 		return false;
@@ -1625,7 +1625,7 @@ bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask)
 	return true;
 }
 
-bool Map::isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim)
+bool Map::isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim) const
 {
 	if (isRessource(x, y))
 		return false;
@@ -1638,7 +1638,7 @@ bool Map::isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim)
 	return true;
 }
 
-bool Map::isFreeForBuilding(int x, int y)
+bool Map::isFreeForBuilding(int x, int y) const
 {
 	if (isRessource(x, y))
 		return false;
@@ -1652,7 +1652,7 @@ bool Map::isFreeForBuilding(int x, int y)
 		return false;
 }
 
-bool Map::isFreeForBuilding(int x, int y, int w, int h)
+bool Map::isFreeForBuilding(int x, int y, int w, int h) const
 {
 	for (int yi=y; yi<y+h; yi++)
 		for (int xi=x; xi<x+w; xi++)
@@ -1661,7 +1661,7 @@ bool Map::isFreeForBuilding(int x, int y, int w, int h)
 	return true;
 }
 
-bool Map::isFreeForBuilding(int x, int y, int w, int h, Uint16 gid)
+bool Map::isFreeForBuilding(int x, int y, int w, int h, Uint16 gid) const
 {
 	for (int yi=y; yi<y+h; yi++)
 		for (int xi=x; xi<x+w; xi++)
@@ -1680,7 +1680,7 @@ bool Map::isFreeForBuilding(int x, int y, int w, int h, Uint16 gid)
 	return true;
 }
 
-bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me)
+bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me) const
 {
 	if (isRessource(x, y))
 		return false;
@@ -1693,7 +1693,7 @@ bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me)
 	return true;
 }
 
-bool Map::isHardSpaceForBuilding(int x, int y)
+bool Map::isHardSpaceForBuilding(int x, int y) const
 {
 	if (isRessource(x, y))
 		return false;
@@ -1705,7 +1705,7 @@ bool Map::isHardSpaceForBuilding(int x, int y)
 		return false;
 }
 
-bool Map::isHardSpaceForBuilding(int x, int y, int w, int h)
+bool Map::isHardSpaceForBuilding(int x, int y, int w, int h) const
 {
 	for (int yi=y; yi<y+h; yi++)
 		for (int xi=x; xi<x+w; xi++)
@@ -1714,7 +1714,7 @@ bool Map::isHardSpaceForBuilding(int x, int y, int w, int h)
 	return true;
 }
 
-bool Map::isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid)
+bool Map::isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid) const
 {
 	for (int yi=y; yi<y+h; yi++)
 		for (int xi=x; xi<x+w; xi++)
@@ -1730,7 +1730,7 @@ bool Map::isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid)
 	return true;
 }
 
-bool Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy)
+bool Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -1746,7 +1746,7 @@ bool Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy)
 	return false;
 }
 
-bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid)
+bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid) const
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
@@ -1755,7 +1755,7 @@ bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid)
 	return false;
 }
 
-bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid, int *dx, int *dy)
+bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid, int *dx, int *dy) const
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
@@ -1768,7 +1768,7 @@ bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid, int *dx, int *dy)
 	return false;
 }
 
-bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy)
+bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -1784,7 +1784,7 @@ bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy)
 	return false;
 }
 
-bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy)
+bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -1800,7 +1800,7 @@ bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy
 	return false;
 }
 
-bool Map::doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *dy)
+bool Map::doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *dy) const
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
@@ -1815,7 +1815,7 @@ bool Map::doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *d
 
 //! This method gives a good direction to hit for a warrior, and return false if nothing was found.
 //! Currently, it chooses to hit any turret if available, then units, then other buildings.
-bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy)
+bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -1906,7 +1906,7 @@ void Map::setClearingAreaUnclaimed(int x, int y, int teamNumber)
 
 
 
-int Map::isClearingAreaClaimed(int x, int y, int teamNumber)
+int Map::isClearingAreaClaimed(int x, int y, int teamNumber) const
 {
 	return clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)];
 }
@@ -1925,14 +1925,14 @@ void Map::clearImmobileUnit(int x, int y)
 }
 
 
-bool Map::isImmobileUnit(int x, int y)
+bool Map::isImmobileUnit(int x, int y) const
 {
 	return immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] != 255;
 }
 
 
 
-Uint8 Map::getImmobileUnit(int x, int y)
+Uint8 Map::getImmobileUnit(int x, int y) const
 {
 	return immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)];
 }
@@ -2078,7 +2078,7 @@ bool Map::isRessourceAllowed(int x, int y, int type)
 	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
 }
 
-bool Map::isPointSet(int n, int x, int y)
+bool Map::isPointSet(int n, int x, int y) const
 {
 	return getCase(x, y).scriptAreas & 1<<n;
 }
@@ -2093,7 +2093,7 @@ void Map::unsetPoint(int n, int x, int y)
 	getCase(x, y).scriptAreas ^= getCase(x, y).scriptAreas & (1<<n);
 }
 
-std::string Map::getAreaName(int n)
+std::string Map::getAreaName(int n) const
 {
 	return areaNames[n];
 }
@@ -2103,7 +2103,7 @@ void Map::setAreaName(int n, std::string name)
 	areaNames[n]=name;
 }
 
-void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY)
+void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
@@ -2115,7 +2115,7 @@ void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, 
 	*py=y<<5;
 }
 
-void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH)
+void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
@@ -2127,19 +2127,19 @@ void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewp
 	*py=y<<5;
 }
 
-void Map::displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY)
+void Map::displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
 {
 	*px=((mx>>5)+viewportX)&getMaskW();
 	*py=((my>>5)+viewportY)&getMaskH();
 }
 
-void Map::displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewportX, int viewportY)
+void Map::displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
 {
 	*px=(((mx+16)>>5)+viewportX)&getMaskW();
 	*py=(((my+16)>>5)+viewportY)&getMaskH();
 }
 
-void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY)
+void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY) const
 {
 	int tempX, tempY;
 	if (buildingWidth&0x1)
@@ -2156,20 +2156,20 @@ void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHei
 	*py=tempY&getMaskH();
 }
 
-void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY)
+void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY) const
 {
 	mapCaseToDisplayable(px, py, mx, my, viewportX, viewportY);
 	*mx+=buildingWidth*16;
 	*my+=buildingHeight*16;
 }
 
-bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y)
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y) const
 {
 	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
-	return g>1; //Becasue 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
+	return g>1; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
-bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist)
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist) const
 {
 	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
 	if (g>1)
@@ -2181,7 +2181,7 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 		return false;
 }
 
-bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+bool Map::ressourceAvailableUpdate(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 {
 	// distance and availability
 	bool result;
@@ -2201,7 +2201,7 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 	return result;
 }
 
-bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY)
+bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const
 {
 	// we start from our current position
 	int vx = x & wMask;
@@ -2794,7 +2794,7 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 	delete[] listedAddr;
 }
 
-bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose)
+bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose) const
 {
 	Uint8 max;
 	Uint8 mxd; // max in direction
@@ -2955,7 +2955,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	return true;
 }
 
-bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool strict, bool verbose)
+bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, const Uint8 *gradient, bool strict, bool verbose) const
 {
 	Uint8 miniGrad[25];
 	miniGrad[2+2*5]=gradient[x+y*w];
@@ -2988,7 +2988,7 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *
 	return directionFromMinigrad(miniGrad, dx, dy, strict, verbose);
 }
 
-bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose)
+bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose) const
 {
 	Uint8 miniGrad[25];
 	for (int ry=0; ry<5; ry++)
@@ -3050,7 +3050,7 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	if (verbose)
 		printf("pathfindingRessource...\n");
 	assert(ressourceType<MAX_RESSOURCES);
-	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+	const Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	Uint8 max=gradient[x+y*w];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
@@ -4445,7 +4445,7 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 	}
 }
 
-bool Map::pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
+bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
 {
 	if (verbose)
 		printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
@@ -5005,7 +5005,7 @@ void Map::regenerateMap(int x, int y, int w, int h)
 			setTerrain(dx, dy, lookup(getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)));
 }
 
-Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br)
+Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
 {
 	/*
 		Value of vertice's order in square :

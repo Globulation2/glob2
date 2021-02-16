@@ -139,18 +139,18 @@ public:
 	int getSectorH(void) const { return hSector; }
 
 	/// Return an index into map arrays for a given position, wrap-safe
-	size_t coordToIndex(int x, int y) {
+	inline size_t coordToIndex(int x, int y) const {
 		return ((y & hMask) << wDec) + (x & wMask);
 	}
 
 	///Returns a normalized version of the x cordinate, taking into account that x coordinates wrap around
-	int normalizeX(int x)
+	int normalizeX(int x) const
 	{
 		return (x + w) & wMask;
 	}
 	
 	///Returns a normalized version of the y cordinate, taking into account that y coordinates wrap around
-	int normalizeY(int y)
+	int normalizeY(int y) const
 	{
 		return (y + h) & hMask;
 	}
@@ -221,14 +221,14 @@ public:
 
 	//! Returns true if map is discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's part of map we are allowed to see.
-	bool isMapDiscovered(int x, int y, Uint32 visionMask)
+	bool isMapDiscovered(int x, int y, Uint32 visionMask) const
 	{
 		return ((mapDiscovered[coordToIndex(x, y)]) & visionMask) != 0;
 	}
 	
 	//! Returns true if map is discovered at position (x1..x2,y1..y2) for a given vision mask.
 	//! This mask represents which team's part of map we are allowed to see.
-	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask)
+	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const
 	{
 		assert((x1<x2) && (y1<y2));
 		for(int x=x1;x<=x2;x++)
@@ -251,46 +251,46 @@ public:
 
 	//! Returns true if map is currently discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's units and buildings we are allowed to see.
-	bool isFOWDiscovered(int x, int y, int visionMask)
+	bool isFOWDiscovered(int x, int y, int visionMask) const
 	{
 		return ((fogOfWar[coordToIndex(x, y)]) & visionMask) != 0;
 	}
 	
 	//! Return true if the position (x,y) is a forbidden area set by the user
 	// or rather, by the team computeLocalForbidden was last called for
-	bool isForbiddenLocal(int x, int y)
+	bool isForbiddenLocal(int x, int y) const
 	{
 		return localForbiddenMap.get(coordToIndex(x, y));
 	}
 	
 	//! Returns true if the position(x, y) is a forbidden area for the given team
-	bool isForbidden(int x, int y, Uint32 teamMask)
+	bool isForbidden(int x, int y, Uint32 teamMask) const
 	{
 		return cases[coordToIndex(x, y)].forbidden&teamMask;
 	}
 
 	//! Return true if the position (x,y) is a guard area set by the user
 	// or rather, by the team computeLocalGuardArea was last called for
-	bool isGuardAreaLocal(int x, int y)
+	bool isGuardAreaLocal(int x, int y) const
 	{
 		return localGuardAreaMap.get(coordToIndex(x, y));
 	}
 	
 	//! Returns true if the position(x, y) is a guard area for the given team
-	bool isGuardArea(int x, int y, Uint32 teamMask)
+	bool isGuardArea(int x, int y, Uint32 teamMask) const
 	{
 		return cases[coordToIndex(x, y)].guardArea&teamMask;
 	}
 
 	//! Return true if the position (x,y) is a clear area set by the user
 	// or rather, by the team computeLocalClearArea was last called for
-	bool isClearAreaLocal(int x, int y)
+	bool isClearAreaLocal(int x, int y) const
 	{
 		return localClearAreaMap.get(coordToIndex(x, y));
 	}
 
 	//! Returns true if the position(x, y) is a clear area for the given team
-	bool isClearArea(int x, int y, Uint32 teamMask)
+	bool isClearArea(int x, int y, Uint32 teamMask) const
 	{
 		return cases[coordToIndex(x, y)].clearArea&teamMask;
 	}
@@ -310,20 +310,26 @@ public:
 		return cases[coordToIndex(x, y)];
 	}
 
+	//! Return the const case at a given position
+	inline const Case &getCase(int x, int y) const
+	{
+		return cases[coordToIndex(x, y)];
+	}
+
 	//! Return the terrain for a given coordinate
-	inline Uint16 getTerrain(int x, int y)
+	inline Uint16 getTerrain(int x, int y) const
 	{
 		return cases[coordToIndex(x, y)].terrain;
 	}
 	
 	//! Return the terrain for a given position in case array
-	inline Uint16 getTerrain(unsigned pos)
+	inline Uint16 getTerrain(size_t pos) const
 	{
 		return cases[pos].terrain;
 	}
 
 	//! Return the typeof terrain. If type is unregistred, returns unknown (-1).
-	int getTerrainType(int x, int y)
+	int getTerrainType(int x, int y) const
 	{
 		unsigned t = getTerrain(x, y);
 		if (t<16)
@@ -336,28 +342,38 @@ public:
 			return -1;
 	}
 
-	Ressource getRessource(int x, int y)
+	const Ressource& getRessource(int x, int y) const
+	{
+		return cases[coordToIndex(x, y)].ressource;
+	}
+
+	const Ressource& getRessource(size_t pos) const
+	{
+		return cases[pos].ressource;
+	}
+
+	Ressource& getRessource(int x, int y)
 	{
 		return cases[coordToIndex(x, y)].ressource;
 	}
 	
-	Ressource getRessource(size_t pos)
+	Ressource& getRessource(size_t pos)
 	{
 		return cases[pos].ressource;
 	}
 	
 	//Returns the combined forbidden and hidden foribidden masks
-	Uint32 getForbidden(int x, int y)
+	Uint32 getForbidden(int x, int y) const
 	{
 		return cases[coordToIndex(x, y)].forbidden;
 	}
 	
-	Uint8 getExplored(int x, int y, int team)
+	Uint8 getExplored(int x, int y, int team) const
 	{
 		return exploredArea[team][coordToIndex(x, y)];
 	}
 	
-	Uint8 getGuardAreasGradient(int x, int y, bool canSwim, int team)
+	Uint8 getGuardAreasGradient(int x, int y, bool canSwim, int team) const
 	{
 		return guardAreasGradient[team][canSwim][coordToIndex(x, y)];
 	}
@@ -394,52 +410,52 @@ public:
 	}
 
 	
-	bool isWater(int x, int y)
+	bool isWater(int x, int y) const
 	{
 		int t = getTerrain(x, y)-256;
 		return ((t>=0) && (t<16));
 	}
 	
-	bool isWater(unsigned pos)
+	bool isWater(unsigned pos) const
 	{
 		int t = getTerrain(pos)-256;
 		return ((t>=0) && (t<16));
 	}
 
-	bool isGrass(int x, int y)
+	bool isGrass(int x, int y) const
 	{
 		return (getTerrain(x, y)<16);
 	}
 	
-	bool isGrass(unsigned pos)
+	bool isGrass(unsigned pos) const
 	{
 		return (getTerrain(pos)<16);
 	}
 	
-	bool isSand(int x, int y)
+	bool isSand(int x, int y) const
 	{
 		int t=getTerrain(x, y);
 		return ((t>=128)&&(t<128+16));
 	}
 	
-	bool hasSand(int x, int y)
+	bool hasSand(int x, int y) const
 	{
 		int t=getTerrain(x, y);
 		return ((t>=16)&&(t<=255));
 	}
 
-	bool isRessource(int x, int y)
+	bool isRessource(int x, int y) const
 	{
 		return getCase(x, y).ressource.type != NO_RES_TYPE;
 	}
 
-	bool isRessourceTakeable(int x, int y, int ressourceType)
+	bool isRessourceTakeable(int x, int y, int ressourceType) const
 	{
 		const Ressource &ressource = getCase(x, y).ressource;
 		return (ressource.type == ressourceType && ressource.amount > 0);
 	}
 
-	bool isRessourceTakeable(int x, int y, bool ressourceTypes[BASIC_COUNT])
+	bool isRessourceTakeable(int x, int y, bool ressourceTypes[BASIC_COUNT]) const
 	{
 		const Ressource &ressource = getCase(x, y).ressource;
 		return (ressource.type != NO_RES_TYPE
@@ -448,7 +464,7 @@ public:
 			&& ressourceTypes[ressource.type]);
 	}
 
-	bool isRessource(int x, int y, int *ressourceType)
+	bool isRessource(int x, int y, int *ressourceType) const
 	{
 		const Ressource &ressource = getCase(x, y).ressource;
 		if (ressource.type == NO_RES_TYPE)
@@ -457,7 +473,7 @@ public:
 		return true;
 	}
 
-	bool canRessourcesGrow(int x, int y)
+	bool canRessourcesGrow(int x, int y) const
 	{
 		return getCase(x, y).canRessourcesGrow;
 	}
@@ -469,54 +485,54 @@ public:
 	bool incRessource(int x, int y, int ressourceType, int variety);
 	
 	//! Return true if unit can go to position (x,y)
-	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask);
-	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim);
-	bool isFreeForAirUnit(int x, int y) { return (getAirUnit(x+w, y+h)==NOGUID); }
-	bool isFreeForBuilding(int x, int y);
-	bool isFreeForBuilding(int x, int y, int w, int h);
-	bool isFreeForBuilding(int x, int y, int w, int h, Uint16 gid);
+	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const;
+	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim) const;
+	bool isFreeForAirUnit(int x, int y) const { return (getAirUnit(x+w, y+h)==NOGUID); }
+	bool isFreeForBuilding(int x, int y) const;
+	bool isFreeForBuilding(int x, int y, int w, int h) const;
+	bool isFreeForBuilding(int x, int y, int w, int h, Uint16 gid) const;
 	// The "hardSpace" keywork means "Free" but you don't count Ground-Units as obstacles.
-	bool isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me);
-	bool isHardSpaceForBuilding(int x, int y);
-	bool isHardSpaceForBuilding(int x, int y, int w, int h);
-	bool isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid);
+	bool isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me) const;
+	bool isHardSpaceForBuilding(int x, int y) const;
+	bool isHardSpaceForBuilding(int x, int y, int w, int h) const;
+	bool isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid) const;
 	
 	//! Return true if unit has contact with building gbid. If true, put contact direction in dx, dy
-	bool doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy);
+	bool doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy) const;
 	//! Return true if (x,y) has contact with building gbid.
-	bool doesPosTouchBuilding(int x, int y, Uint16 gbid);
+	bool doesPosTouchBuilding(int x, int y, Uint16 gbid) const;
 	//! Return true if (x,y) has contact with building gbid. If true, put contact direction in dx, dy
-	bool doesPosTouchBuilding(int x, int y, Uint16 gbid, int *dx, int *dy);
+	bool doesPosTouchBuilding(int x, int y, Uint16 gbid, int *dx, int *dy) const;
 	
 	//! Return true if unit has contact with ressource of any ressourceType. If true, put contact direction in dx, dy
-	bool doesUnitTouchRessource(Unit *unit, int *dx, int *dy);
+	bool doesUnitTouchRessource(Unit *unit, int *dx, int *dy) const;
 	//! Return true if unit has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
-	bool doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy);
+	bool doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy) const;
 	//! Return true if (x,y) has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
-	bool doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *dy);
+	bool doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *dy) const;
 	//! Return true if unit has contact with enemy. If true, put contact direction in dx, dy
-	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy);
+	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy) const;
 
 	//! Sets this particular clearing area location as claimed
 	void setClearingAreaClaimed(int x, int y, int teamNumber, int gid);
 	//! Sets this particular clearing area location as unclaimed
 	void setClearingAreaUnclaimed(int x, int y, int teamNumber);
 	//! Returns the gid if this clearing area is claimed, NOGUID otherwise
-	int isClearingAreaClaimed(int x, int y, int teamNumber);
+	int isClearingAreaClaimed(int x, int y, int teamNumber) const;
 
 	//! Marks a particular square as containing an immobile unit
 	void markImmobileUnit(int x, int y, int teamNumber);
 	//! Clears a particular square of having an immobile unit
 	void clearImmobileUnit(int x, int y);
 	//! Returns true if theres an immobile unit on the square
-	bool isImmobileUnit(int x, int y);
+	bool isImmobileUnit(int x, int y) const;
 	//! Returns the team number of the immobile unit on the given square, 255 for none
-	Uint8 getImmobileUnit(int x, int y);
+	Uint8 getImmobileUnit(int x, int y) const;
 
 	//! Return GID
-	Uint16 getGroundUnit(int x, int y) { return cases[coordToIndex(x, y)].groundUnit; }
-	Uint16 getAirUnit(int x, int y) { return cases[coordToIndex(x, y)].airUnit; }
-	Uint16 getBuilding(int x, int y) { return cases[coordToIndex(x, y)].building; }
+	Uint16 getGroundUnit(int x, int y) const { return cases[coordToIndex(x, y)].groundUnit; }
+	Uint16 getAirUnit(int x, int y) const { return cases[coordToIndex(x, y)].airUnit; }
+	Uint16 getBuilding(int x, int y) const { return cases[coordToIndex(x, y)].building; }
 	
 	void setGroundUnit(int x, int y, Uint16 guid) { cases[coordToIndex(x, y)].groundUnit = guid; }
 	void setAirUnit(int x, int y, Uint16 guid) { cases[coordToIndex(x, y)].airUnit = guid; }
@@ -535,7 +551,7 @@ public:
 	//! Set undermap terrain type at (x,y) (undermap positions)
 	void setUMTerrain(int x, int y, TerrainType t) { undermap[coordToIndex(x, y)] = (Uint8)t; }
 	//! Return undermap terrain type at (x,y)
-	TerrainType getUMTerrain(int x, int y) { return (TerrainType)undermap[coordToIndex(x, y)]; }
+	TerrainType getUMTerrain(int x, int y) const { return (TerrainType)undermap[coordToIndex(x, y)]; }
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int l);
 
@@ -549,13 +565,13 @@ public:
 	///The following is for script areas, which are named areas for map scripts set in the editor
 	///@{
 	///Returns whether area #n is set for a particular point. n can be from 0 to 8
-	bool isPointSet(int n, int x, int y);
+	bool isPointSet(int n, int x, int y) const;
 	///Sets a particular point on area #n
 	void setPoint(int n, int x, int y);
 	///Unsets a particular point on area #n
 	void unsetPoint(int n, int x, int y);
 	///Returns the name of area #n
-	std::string getAreaName(int n);
+	std::string getAreaName(int n) const;
 	///Sets the name of area #n
 	void setAreaName(int n, std::string name);
 	///A vector holding the area names
@@ -563,19 +579,19 @@ public:
 	///@}
 	
 	//! Transform coordinate from map scale (mx,my) to pixel scale (px,py)
-	void mapCaseToPixelCase(int mx, int my, int *px, int *py) { *px=(mx<<5); *py=(my<<5); }
+	void mapCaseToPixelCase(int mx, int my, int *px, int *py) const { *px=(mx<<5); *py=(my<<5); }
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a building or an unit to the screen.
-	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY);
+	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a pathline to the screen.
-	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH);
+	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
 	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid aligned object (buildings, ressources, units)
-	void displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY);
+	void displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid unaligned object (terrain)
-	void displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewportX, int viewportY);
+	void displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from screen (mx,my) to building (px,py)
-	void cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY);
+	void cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from building (px,py) to screen (mx,my)
-	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY);
+	void buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY) const;
 	
 	enum GradientType
 	{
@@ -588,23 +604,23 @@ public:
 		GT_SIZE = 6
 	};
 	
-	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y);
-	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist);
-	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
+	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y) const;
+	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist) const;
+	bool ressourceAvailableUpdate(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
 	
 	//! Starting from position (x, y) using gradient, returns the gradient destination in (targetX, targetY)
-	bool getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY);
+	bool getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
 	
-	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y)
+	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y) const
 	{
-		Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
+		const Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
 		assert(gradient);
 		return gradient[coordToIndex(x, y)];
 	}
 	
-	Uint8 getClearingGradient(int teamNumber, bool canSwim, int x, int y)
+	Uint8 getClearingGradient(int teamNumber, bool canSwim, int x, int y) const
 	{
-		Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
+		const Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
 		assert(gradient);
 		return gradient[coordToIndex(x, y)];
 	}
@@ -623,9 +639,9 @@ public:
 	//void updateGlobalGradient(Uint8 *gradient);
 	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	template<typename Tint> void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
-	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose);
-	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, Uint8 *gradient, bool strict, bool verbose);
-	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose);
+	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose) const;
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, const Uint8 *gradient, bool strict, bool verbose) const;
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose) const;
 	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork, bool verbose);
 #ifndef YOG_SERVER_ONLY
 	void pathfindRandom(Unit *unit, bool verbose);
@@ -645,7 +661,7 @@ public:
 	
 	//! Make local gradient dirty in the area. Wrap-safe on x,y
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
-	bool pathfindForbidden(Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
+	bool pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
 	//! Find the best direction toward guard area, return true if one has been found, false otherwise
 	bool pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
 	//! Find the best direction toward clearing area, return true if one has been found, false otherwise
@@ -770,7 +786,7 @@ protected:
 
 	void regenerateMap(int x, int y, int w, int h);
 	
-	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br);
+	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const;
 
 public:
     // here we handle terrain

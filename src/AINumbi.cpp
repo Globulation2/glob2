@@ -264,13 +264,13 @@ int AINumbi::estimateFood(Building *building)
 {
 	int rx, ry, dist;
 	bool found;
-	if (map->ressourceAvailable(team->teamNumber, CORN, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
+	if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailable(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY-1, &rx, &ry, &dist))
+	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY-1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailable(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY+building->type->height+1, &rx, &ry, &dist))
+	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY+building->type->height+1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailable(team->teamNumber, CORN, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
+	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
 		found=true;
 	else
 		found=false;
@@ -730,7 +730,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 				if ((valid>299)&&(game->checkRoomForBuilding(px, py, bt, player->team->teamNumber)))
 				{
 					int rx, ry, dist;
-					bool nr=map->ressourceAvailable(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
+					bool nr=map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
 					if (nr)
 					{
 						//int dist=map->warpDistSquare(px+1, py+1, rx, ry);

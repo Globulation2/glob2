@@ -370,7 +370,7 @@ void Minimap::computeColors(int row, int localTeam)
 				{
 					// get color to add
 					int pcolIndex;
-					Ressource r=game->map.getRessource(minidx, minidy);
+					const auto& r = game->map.getRessource(minidx, minidy);
 					if (r.type!=NO_RES_TYPE)
 					{
 						pcolIndex=r.type + 3;

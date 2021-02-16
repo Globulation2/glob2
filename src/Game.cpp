@@ -1945,7 +1945,7 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 						visibleTeams) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
-				Ressource r=map.getRessource(x+viewportX, y+viewportY);
+				const auto& r = map.getRessource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
 					Sprite *sprite=globalContainer->ressources;
@@ -2313,14 +2313,11 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 {
 	static int areaAnimationTick = 0;
 
-	typedef bool (Map::*MapIsFP)(int, int);
-	MapIsFP mapIs;
-
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->replaying || globalContainer->replayShowAreas))
 	{
-		mapIs=&Map::isForbiddenLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, ForbiddenArea);
-		mapIs=&Map::isGuardAreaLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, GuardArea);
-		mapIs=&Map::isClearAreaLocal; drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, mapIs, areaAnimationTick, ClearingArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isForbiddenLocal, areaAnimationTick, ForbiddenArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isGuardAreaLocal, areaAnimationTick, GuardArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isClearAreaLocal, areaAnimationTick, ClearingArea);
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
@@ -2353,7 +2350,7 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
  */
 inline void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 		int sh, int viewportX, int viewportY, int localTeam,
-		Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int), int areaAnimationTick,
+		Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int) const, int areaAnimationTick,
 		AreaType areaType)
 {
 	Sprite* sprite;
