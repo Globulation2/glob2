@@ -30,18 +30,18 @@ namespace Utilities
 		std::valarray<unsigned char> values;
 		size_t bitLength;
 		
-		size_t bitToByte(size_t v);
-		void assertPos(size_t pos);
+		size_t bitToByte(size_t v) const;
+		void assertPos(size_t pos) const;
 		
 	public:
 		BitArray() { bitLength = 0; }
 		BitArray(size_t size, bool defaultValue = false);
 		void resize(size_t size, bool defaultValue = false);
-		size_t getBitLength(void) { return bitLength; }
-		size_t getByteLength(void) { return values.size(); }
+		size_t getBitLength(void) const { return bitLength; }
+		size_t getByteLength(void) const { return values.size(); }
 		void set(size_t pos, bool value);
-		bool get(size_t pos);
-		void serialize(unsigned char *stream);
+		bool get(size_t pos) const;
+		void serialize(unsigned char *stream) const;
 		void deserialize(const unsigned char *stream, size_t size);
 	};
 }

@@ -29,7 +29,7 @@ namespace Utilities
 		resize(size, defaultValue);
 	}
 	
-	void BitArray::assertPos(size_t pos)
+	void BitArray::assertPos(size_t pos) const
 	{
 		size_t wordPos = pos / 8;
 		if (wordPos >= values.size())
@@ -48,7 +48,7 @@ namespace Utilities
 			values.resize(bitToByte(size), 0);
 	}
 	
-	size_t BitArray::bitToByte(size_t v)
+	size_t BitArray::bitToByte(size_t v) const
 	{
 		if (v&0x7)
 			return (v>>3)+1;
@@ -69,7 +69,7 @@ namespace Utilities
 			values[wordPos] &= ~(1<<bitPos);
 	}
 	
-	bool BitArray::get(size_t pos)
+	bool BitArray::get(size_t pos) const
 	{
 		assertPos(pos);
 		
@@ -79,7 +79,7 @@ namespace Utilities
 		return (values[wordPos] & (1<<bitPos)) != 0;
 	}
 	
-	void BitArray::serialize(unsigned char *stream)
+	void BitArray::serialize(unsigned char *stream) const
 	{
 		size_t l = values.size();
 		std::copy(&values[0], &values[l], stream);
