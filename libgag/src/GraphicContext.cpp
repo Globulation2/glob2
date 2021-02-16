@@ -1942,7 +1942,7 @@ namespace GAGCore
 
 		// +1 to make room for sentinel NULL at end of array
 		modes = new SDL_DisplayMode*[totalmodes+1];
-
+		modesitr = modes;
 		// Clear modes
 		for (int i = 0;i < totalmodes+1;i++) {
 			modes[i] = nullptr;
@@ -1971,13 +1971,13 @@ namespace GAGCore
 
 	bool GraphicContext::getNextVideoMode(int *w, int *h)
 	{
-		if (modes && (modes != (SDL_DisplayMode **)-1))
+		if (modesitr && (modesitr != (SDL_DisplayMode **)-1))
 		{
-			while (*modes)
+			while (*modesitr)
 			{
-				int nw = (*modes)->w;
-				int nh = (*modes)->h;
-				modes++;
+				int nw = (*modesitr)->w;
+				int nh = (*modesitr)->h;
+				modesitr++;
 
 				if(nw < 800 || nh<600)
 				{

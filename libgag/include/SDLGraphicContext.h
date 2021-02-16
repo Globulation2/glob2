@@ -315,8 +315,9 @@ namespace GAGCore
 	protected:
 		//! the minimum acceptable resolution
 		int minW, minH;
-		//! the pointer for iterating through mode list
 		SDL_DisplayMode **modes;
+		//! the pointer for iterating through mode list
+		SDL_DisplayMode **modesitr;
 		int totalmodes;
 		SDL_Window *window;
 		SDL_Renderer *sdlrenderer;
