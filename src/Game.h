@@ -231,8 +231,8 @@ public:
 	///This is a game header. It contains all the settings for a particular game, from AI's to Alliances to victory conditions.
 	GameHeader gameHeader;
 
-	Team ** teams;
-	Player ** players;
+	Team * teams[Team::MAX_COUNT];
+	Player * players[Team::MAX_COUNT];
 	Map map;
 	MapScriptSGSL sgslScript; ///< SGSL script
 	MapScript mapscript; ///< new script, currently USL
@@ -275,7 +275,7 @@ public:
 
 protected:
 	FILE *logFile;
-	int * ticksGameSum;
+	int ticksGameSum[Team::MAX_COUNT];
 };
 
 #endif

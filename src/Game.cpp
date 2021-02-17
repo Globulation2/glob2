@@ -110,8 +110,6 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	mapHeader.reset();
 	gameHeader.reset();
 
-	teams=new Team*[Team::MAX_COUNT];
-	players=new Player*[Team::MAX_COUNT];
 	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		teams[i]=NULL;
@@ -125,7 +123,6 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	stepCounter=0;
 	prestigeToReach=0;
 
-	ticksGameSum=new int[Team::MAX_COUNT];
 	for (int i=0; i<Team::MAX_COUNT; i++)
 		ticksGameSum[i]=0;
 

@@ -127,10 +127,10 @@ private:
 	Uint8 orderRate;
 
 	///Represents the basic player information in the game
-	BasePlayer * players;
+	BasePlayer players[Team::MAX_COUNT];
 	
 	///Represents the ally team numbers
-	Uint8 * allyTeamNumbers;
+	Uint8 allyTeamNumbers[Team::MAX_COUNT];
 	
 	///Represents whether the ally-teams are fixed for the whole game, so no allying/unallying can take place
 	bool allyTeamsFixed;

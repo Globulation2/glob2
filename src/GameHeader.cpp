@@ -36,10 +36,9 @@ void GameHeader::reset()
 	//If needed, seed can be fixed, default value, 5489
 	//seed = 5489;
 	
-	players=new BasePlayer[Team::MAX_COUNT];
-	allyTeamNumbers=new Uint8[Team::MAX_COUNT];
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for (Uint8 i=0; i<Team::MAX_COUNT; ++i)
 	{
+		players[i] = BasePlayer();
 		allyTeamNumbers[i] = i+1;
 	}
 	allyTeamsFixed=true;
