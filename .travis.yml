@@ -6,9 +6,9 @@ services:
 env:
   matrix:
    #- BUILD_IMG=ubuntu:16.04 DEPS=python3 # requires a manually installed scons version which works with Python 3
-   - BUILD_IMG=ubuntu:18.04 DEPS=python3
-   - BUILD_IMG=ubuntu:20.04
-   - BUILD_IMG=ubuntu:20.10
-   - BUILD_IMG=ubuntu:21.04
+   - BUILD_IMG=ubuntu:18.04 DEPS="python3 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev"
+   - BUILD_IMG=ubuntu:20.04 DEPS="libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev"
+   - BUILD_IMG=ubuntu:20.10 DEPS="libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev"
+   - BUILD_IMG=ubuntu:21.04 DEPS="libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev"
 
 script: docker run --rm=true -v $HOME:$HOME:rw $BUILD_IMG /bin/sh -c "sed -i '/^#\sdeb-src /s/^#//' /etc/apt/sources.list && apt-get update && env DEBIAN_FRONTEND=noninteractive apt-get build-dep --yes glob2 && env DEBIAN_FRONTEND=noninteractive apt-get install --yes $DEPS && cd $PWD && /usr/bin/env python3 /usr/bin/scons -j16 && /usr/bin/env python3 /usr/bin/scons -j16 install"
