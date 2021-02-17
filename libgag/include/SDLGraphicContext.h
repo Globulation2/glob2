@@ -319,7 +319,6 @@ namespace GAGCore
 		//! the minimum acceptable resolution
 		int minW, minH;
 		SDL_Window *window = nullptr;
-		SDL_Renderer *sdlrenderer;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
