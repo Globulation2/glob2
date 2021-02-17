@@ -78,16 +78,18 @@ static const int tabFar[16][2]={
 	{-2,  0},
 	{-2, -1}};
 
+// helper to fill vectors
+template <typename T>
+void fill(std::vector<T>& vec, const T& value) {
+	std::fill(vec.begin(), vec.end(), value);
+}
+
 Map::Map()
 {
 	game=NULL;
 
 	arraysBuilt=false;
 	
-	mapDiscovered=NULL;
-	fogOfWar=NULL;
-	fogOfWarA=NULL;
-	fogOfWarB=NULL;
 	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_NB_RESSOURCES; r++)
@@ -236,20 +238,6 @@ void Map::clear()
 	logAtClear();
 	if (arraysBuilt)
 	{
-		assert(mapDiscovered);
-		delete[] mapDiscovered;
-		mapDiscovered=NULL;
-
-		fogOfWar=NULL;
-		
-		assert(fogOfWarA);
-		delete[] fogOfWarA;
-		fogOfWarA=NULL;
-
-		assert(fogOfWarB);
-		delete[] fogOfWarB;
-		fogOfWarB=NULL;
-
 		for (int t=0; t<Team::MAX_COUNT; t++)
 			if (ressourcesGradient[t][0][0])
 				for (int r=0; r<MAX_RESSOURCES; r++)
@@ -320,10 +308,6 @@ void Map::clear()
 	}
 	else
 	{
-		assert(mapDiscovered==NULL);
-		assert(fogOfWar==NULL);
-		assert(fogOfWarA==NULL);
-		assert(fogOfWarB==NULL);
 		for (int t=0; t<Team::MAX_COUNT; t++)
 			for (int r=0; r<MAX_RESSOURCES; r++)
 				for (int s=0; s<2; s++)
@@ -950,20 +934,17 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	hMask=h-1;
 	size=w*h;
 
-	mapDiscovered=new Uint32[size];
-	memset(mapDiscovered, 0, size*sizeof(Uint32));
-
-	fogOfWarA=new Uint32[size];
-	memset(fogOfWarA, 0, size*sizeof(Uint32));
-	fogOfWarB=new Uint32[size];
-	memset(fogOfWarB, 0, size*sizeof(Uint32));
-	fogOfWar=fogOfWarA;
+	fogOfWarA.assign(size, 0);
+	fogOfWarB.assign(size, 0);
+	fogOfWar = &fogOfWarA[0];
 	
 	localForbiddenMap.resize(size, false);
 	localGuardAreaMap.resize(size, false);
 	localClearAreaMap.resize(size, false);
 	
 	cases.assign(size, Case());
+
+	mapDiscovered.assign(size, 0);
 	
 	undermap=new Uint8[size];
 	memset(undermap, terrainType, size);
@@ -1056,12 +1037,10 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	size = w*h;
 
 	// We allocate memory:
-	mapDiscovered = new Uint32[size];
-	fogOfWarA = new Uint32[size];
-	fogOfWarB = new Uint32[size];
-	fogOfWar = fogOfWarA;
-	memset(fogOfWarA, 0, size*sizeof(Uint32));
-	memset(fogOfWarB, 0, size*sizeof(Uint32));
+	mapDiscovered.resize(size);
+	fogOfWarA.assign(size, 0);
+	fogOfWarB.assign(size, 0);
+	fogOfWar = &fogOfWarA[0];
 	localForbiddenMap.resize(size, false);
 	localGuardAreaMap.resize(size, false);
 	localClearAreaMap.resize(size, false);
@@ -1485,10 +1464,88 @@ void Map::syncStep(Uint32 stepCounter)
 void Map::switchFogOfWar(void)
 {
 	memset(fogOfWar, 0, size*sizeof(Uint32));
-	if (fogOfWar==fogOfWarA)
-		fogOfWar=fogOfWarB;
+	if (fogOfWar == &fogOfWarA[0])
+		fogOfWar = &fogOfWarB[0];
 	else
-		fogOfWar=fogOfWarA;
+		fogOfWar = &fogOfWarA[0];
+}
+
+void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
+{
+	size_t index = coordToIndex(x, y);
+	mapDiscovered[index] |= sharedVision;
+	fogOfWarA[index] |= sharedVision;
+	fogOfWarB[index] |= sharedVision;
+}
+
+void Map::setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision)
+{
+	for (int dx=x; dx<x+w; dx++)
+		for (int dy=y; dy<y+h; dy++)
+			setMapDiscovered(dx, dy, sharedVision);
+}
+
+void Map::setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
+{
+	Uint16 bgid = cases[coordToIndex(x, y)].building;
+	if (bgid != NOGBID)
+	{
+		int id = Building::GIDtoID(bgid);
+		int team = Building::GIDtoTeam(bgid);
+		assert(id>=0);
+		assert(id<Building::MAX_COUNT);
+		assert(team>=0);
+		assert(team<Team::MAX_COUNT);
+		teams[team]->myBuildings[id]->seenByMask|=sharedVision;
+	}
+}
+
+void Map::setMapBuildingsDiscovered(int x, int y, int w, int h, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
+{
+	for (int dx=x; dx<x+w; dx++)
+		for (int dy=y; dy<y+h; dy++)
+			setMapBuildingsDiscovered(dx, dy, sharedVision, teams);
+}
+
+void Map::setMapExploredByUnit(int x, int y, int w, int h, int team)
+{
+	for (int dx = x; dx < x + w; dx++)
+		for (int dy = y; dy < y + h; dy++)
+			exploredArea[team][coordToIndex(dx, dy)] = 255;
+}
+
+void Map::setMapExploredByBuilding(int x, int y, int w, int h, int team)
+{
+	for (int dx = x; dx < x + w; dx++)
+		for (int dy = y; dy < y + h; dy++)
+			if (exploredArea[team][coordToIndex(dx, dy)] < 2)
+				exploredArea[team][coordToIndex(dx, dy)] = 2;
+}
+
+void Map::unsetMapDiscovered(void)
+{
+	fill(mapDiscovered, 0u);
+}
+
+bool Map::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const
+{
+	assert((x1<x2) && (y1<y2));
+	for(int x=x1;x<=x2;x++)
+	{
+		for(int y=y1;y<=y2;y++)
+		{
+			if(isMapDiscovered(x,y,visionMask))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void Map::setMapDiscovered(void)
+{
+	fill(mapDiscovered, ~0u);
 }
 
 void Map::computeLocalForbidden(int localTeamNo)

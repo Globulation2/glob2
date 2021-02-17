@@ -156,68 +156,25 @@ public:
 	}
 
 	//! Set map to discovered state at position (x, y) for all teams in sharedVision (mask).
-	void setMapDiscovered(int x, int y, Uint32 sharedVision)
-	{
-		size_t index = coordToIndex(x, y);
-		mapDiscovered[index] |= sharedVision;
-		fogOfWarA[index] |= sharedVision;
-		fogOfWarB[index] |= sharedVision;
-	}
+	void setMapDiscovered(int x, int y, Uint32 sharedVision);
 
 	//! Set map to discovered state at rect (x, y, w, h) for all teams in sharedVision (mask).
-	void setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision)
-	{
-		for (int dx=x; dx<x+w; dx++)
-			for (int dy=y; dy<y+h; dy++)
-				setMapDiscovered(dx, dy, sharedVision);
-	}
+	void setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision);
 
 	//! Make the building at (x, y) visible for all teams in sharedVision (mask).
-	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
-	{
-		Uint16 bgid = cases[coordToIndex(x, y)].building;
-		if (bgid != NOGBID)
-		{
-			int id = Building::GIDtoID(bgid);
-			int team = Building::GIDtoTeam(bgid);
-			assert(id>=0);
-			assert(id<Building::MAX_COUNT);
-			assert(team>=0);
-			assert(team<Team::MAX_COUNT);
-			teams[team]->myBuildings[id]->seenByMask|=sharedVision;
-		}
-	}
+	void setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT]);
 
 	//! Make the building at rect (x, y, w, h) visible for all teams in sharedVision (mask).
-	void setMapBuildingsDiscovered(int x, int y, int w, int h, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
-	{
-		for (int dx=x; dx<x+w; dx++)
-			for (int dy=y; dy<y+h; dy++)
-				setMapBuildingsDiscovered(dx, dy, sharedVision, teams);
-	}
+	void setMapBuildingsDiscovered(int x, int y, int w, int h, Uint32 sharedVision, Team *teams[Team::MAX_COUNT]);
 	
 	//! Make the map at rect (x, y, w, h) explored by unit, i.e. to 255
-	void setMapExploredByUnit(int x, int y, int w, int h, int team)
-	{
-		for (int dx = x; dx < x + w; dx++)
-			for (int dy = y; dy < y + h; dy++)
-				exploredArea[team][coordToIndex(dx, dy)] = 255;
-	}
+	void setMapExploredByUnit(int x, int y, int w, int h, int team);
 	
 	//! Make the map at rect (x, y, w, h) explored by building, i.e. to minimum 2
-	void setMapExploredByBuilding(int x, int y, int w, int h, int team)
-	{
-		for (int dx = x; dx < x + w; dx++)
-			for (int dy = y; dy < y + h; dy++)
-				if (exploredArea[team][coordToIndex(dx, dy)] < 2)
-					exploredArea[team][coordToIndex(dx, dy)] = 2;
-	}
+	void setMapExploredByBuilding(int x, int y, int w, int h, int team);
 
 	//! Set all map for all teams to undiscovered state
-	void unsetMapDiscovered(void)
-	{
-		memset(mapDiscovered, 0, w*h*sizeof(Uint32));
-	}
+	void unsetMapDiscovered(void);
 
 	//! Returns true if map is discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's part of map we are allowed to see.
@@ -228,26 +185,10 @@ public:
 	
 	//! Returns true if map is discovered at position (x1..x2,y1..y2) for a given vision mask.
 	//! This mask represents which team's part of map we are allowed to see.
-	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const
-	{
-		assert((x1<x2) && (y1<y2));
-		for(int x=x1;x<=x2;x++)
-		{
-			for(int y=y1;y<=y2;y++)
-			{
-				if(isMapDiscovered(x,y,visionMask))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+	bool isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const;
+
 	//! Sets all map for all teams to discovered state
-	void setMapDiscovered(void)
-	{
-		memset(mapDiscovered, ~0u, w*h*sizeof(Uint32));
-	}
+	void setMapDiscovered(void);
 
 	//! Returns true if map is currently discovered at position (x,y) for a given vision mask.
 	//! This mask represents which team's units and buildings we are allowed to see.
@@ -792,8 +733,10 @@ public:
     // here we handle terrain
 	// mapDiscovered
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
-	Uint32 *mapDiscovered;
-	Uint32 *fogOfWar, *fogOfWarA, *fogOfWarB;
+	std::vector<Uint32> mapDiscovered;
+	std::vector<Uint32> fogOfWarA;
+	std::vector<Uint32> fogOfWarB;
+	Uint32* fogOfWar = nullptr; // if valid, either points to &fogOfWarA[0] or &fogOfWarB[0]
 	//! true = forbidden
 	Utilities::BitArray localForbiddenMap;
 	//! true = guard area

@@ -777,8 +777,8 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 	size_t size=map->w*map->h;
 	int discovered=0;
 	int seeable=0;
-	Uint32 *mapDiscovered=map->mapDiscovered;
-	Uint32 *fogOfWar=map->fogOfWar;
+	Uint32 *mapDiscovered=&(map->mapDiscovered[0]);
+	Uint32 *fogOfWar=&map->fogOfWar[0];
 	Uint32 me=team->me;
 	for (size_t i=0; i<size; i++)
 	{
@@ -2739,7 +2739,7 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 	int wMask=map->wMask;
 	int hMask=map->hMask;
 	size_t size=w*h;
-	Uint32 *mapDiscovered=map->mapDiscovered;
+	Uint32 *mapDiscovered=&(map->mapDiscovered[0]);
 	Uint32 me=team->me;
 	fprintf(logFile,  "findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
 	
