@@ -108,9 +108,9 @@ namespace GAGGUI
 				{
 					text.insert(cursPos, c);
 					cursPos+=lutf8;
-		
+
 					recomputeTextInfos();
-		
+
 					parent->onAction(this, TEXT_MODIFIED, 0, 0);
 				}
 			}

@@ -2090,7 +2090,7 @@ namespace GAGCore
 			window = nullptr;
 		}
 		// create the new window and the surface
-		window = SDL_CreateWindow("unnamed", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
+		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
 		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
 
 		// check surface
@@ -2157,10 +2157,6 @@ namespace GAGCore
 			#endif // HAVE_OPENGL
 
 			// setup title and icon
-			if (!windowTitle.empty())
-			{
-				SDL_SetWindowTitle(window, windowTitle.c_str());
-			}
 			if (!appIcon.empty())
 			{
 				SDL_Surface *iconSurface = IMG_Load(appIcon.c_str());
