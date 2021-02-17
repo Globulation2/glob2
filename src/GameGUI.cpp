@@ -1121,7 +1121,8 @@ void GameGUI::processEvent(SDL_Event *event)
 	}
 	else if (event->type==SDL_WINDOWEVENT_RESIZED)
 	{
-		int newW=event->window.data1;
+		// FIXME: window resize is broken
+		/*int newW=event->window.data1;
 		int newH=event->window.data2;
 		newW&=(~(0x1F));
 		newH&=(~(0x1F));
@@ -1130,7 +1131,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (newH<480)
 			newH=480;
 		printf("New size : %dx%d\n", newW, newH);
-		globalContainer->gfx->setRes(newW, newH);
+		globalContainer->gfx->setRes(newW, newH);*/
 	}
 }
 

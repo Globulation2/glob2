@@ -474,7 +474,12 @@ namespace GAGGUI
 					break;
 					case SDL_WINDOWEVENT_RESIZED:
 					{
-						gfx->setRes(event.window.data1, event.window.data2);
+						// FIXME: window resize is broken
+						// gfx->setRes(event.window.data1, event.window.data2);
+					}
+					break;
+					case SDL_WINDOWEVENT_SIZE_CHANGED:
+					{
 						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 					}
 					break;

@@ -2070,7 +2070,7 @@ namespace GAGCore
 		Uint32 sdlFlags = 0;
 		if (flags & FULLSCREEN)
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
-		// TODO: add listening for resize events and then re-enable this
+		// FIXME: window resize is broken
 		// if (flags & RESIZABLE)
 		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
