@@ -1410,7 +1410,7 @@ void Map::growRessources(void)
 					{
 						// we extand ressource:
 						int dx, dy;
-						Unit::dxdyfromDirection((syncRand()&7), &dx, &dy);
+						Unit::dxDyFromDirection((syncRand()&7), &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
 						if(canRessourcesGrow(nx, ny))
@@ -2951,7 +2951,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	
 	//printf("stdd=%4d\n", maxd);
 	
-	Unit::dxdyfromDirection(stdd, dx, dy);
+	Unit::dxDyFromDirection(stdd, dx, dy);
 	return true;
 }
 
@@ -3934,7 +3934,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 				for (int d=0; d<8; d++)
 				{
 					int ddx, ddy;
-					Unit::dxdyfromDirection(d, &ddx, &ddy);
+					Unit::dxDyFromDirection(d, &ddx, &ddy);
 					int lxddx=clip_0_31(lx+ddx);
 					int lyddy=clip_0_31(ly+ddy);
 					Uint8 g=gradient[lxddx+(lyddy<<5)];
@@ -3971,7 +3971,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 			for (int d=0; d<8; d++)
 			{
 				int ddx, ddy;
-				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				Unit::dxDyFromDirection(d, &ddx, &ddy);
 				int lxddx=clip_0_31(lx+ddx);
 				int lyddy=clip_0_31(ly+ddy);
 				Uint8 g=gradient[lxddx+(lyddy<<5)];
@@ -4021,7 +4021,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 			for (int d=0; d<8; d++)
 			{
 				int ddx, ddy;
-				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				Unit::dxDyFromDirection(d, &ddx, &ddy);
 				Uint8 g=gradient[coordToIndex(x + ddx, y + ddy)];
 				if (g>1)
 				{
@@ -4058,7 +4058,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 		for (int d=0; d<8; d++)
 		{
 			int ddx, ddy;
-			Unit::dxdyfromDirection(d, &ddx, &ddy);
+			Unit::dxDyFromDirection(d, &ddx, &ddy);
 			Uint8 g=gradient[coordToIndex(x + ddx, y + ddy)];
 			if (g>1)
 			{
@@ -4309,7 +4309,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			for (int d=sd; d<8; d+=2)
 			{
 				int ddx, ddy;
-				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				Unit::dxDyFromDirection(d, &ddx, &ddy);
 				int lxddx=clip_0_31(lx+ddx);
 				int lyddy=clip_0_31(ly+ddy);
 				Uint8 g=gradient[lxddx+(lyddy<<5)];
@@ -4363,7 +4363,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			for (int d=sd; d<8; d+=2)
 			{
 				int ddx, ddy;
-				Unit::dxdyfromDirection(d, &ddx, &ddy);
+				Unit::dxDyFromDirection(d, &ddx, &ddy);
 				int lxddx=clip_0_31(lx+ddx);
 				int lyddy=clip_0_31(ly+ddy);
 				Uint8 g=gradient[lxddx+(lyddy<<5)];

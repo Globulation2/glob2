@@ -146,7 +146,7 @@ public:
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions);
-	void drawMap(int sx, int sy, int sw, int sh, int righMargin, int topMargin, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0);
+	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0);
 
 	///Sets the mask respresenting which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
@@ -257,12 +257,12 @@ public:
 	int prestigeToReach;
 	bool totalPrestigeReached;
 	bool isGameEnded;
-	///This is the IntBuildingType of a building type to be hilighted. All buildings of this type will be drawn
+	///This is the IntBuildingType of a building type to be highlighted. All buildings of this type will be drawn
 	///With an arrow pointed at them. This is primarily for tutorials and is linked through the script system
-	///This is a mask, where 1<<typenum is the buildings to be hilighted
-	Uint32 hilightBuildingType;
+	///This is a mask, where 1<<typenum is the buildings to be highlighted
+	Uint32 highlightBuildingType;
 	///Similar to above, but for units
-	Uint32 hilightUnitType;
+	Uint32 highlightUnitType;
 
 
 	Team *getTeamWithMostPrestige(void);

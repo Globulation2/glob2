@@ -190,7 +190,7 @@ public:
 	///proccess, and they are drawn last
 	std::vector<HilightArrowPosition> arrowPositions;
 	
-	///This sends the hilight values to the Game class, setting Game::hilightBuildingType and Game::hilightUnitType
+	///This sends the hilight values to the Game class, setting Game::highlightBuildingType and Game::highlightUnitType
 	void updateHilightInGame();
 	
 	KeyboardManager keyboardManager;

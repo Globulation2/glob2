@@ -135,7 +135,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 	std::vector<int> areaNumbers = teamAreaNumbers;
 	areaNumbers.insert(areaNumbers.end(), islandAreaNumbers.begin(), islandAreaNumbers.end());
 	
-	// Initiallly devide up the land
+	// Initially divide up the land
 	splitUpPoints(game, grid, 0, teamPoints, weights1);
 	splitUpArea(game, grid, 0, teamPoints, weights2, areaNumbers);
 	
@@ -215,8 +215,8 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			areaNumber+=1;
 		}
 		
-		// Devide the area. Its possible the area will be so small it can't be used
-		if(devideUpArea(game, grid, islandAreaNumbers[i], areaWeights, areaNumbers))
+		// Divide the area. Its possible the area will be so small it can't be used
+		if(divideUpArea(game, grid, islandAreaNumbers[i], areaWeights, areaNumbers))
 		{
 			// Fill in wheat
 			std::vector<MapGeneratorPoint> points;
@@ -235,7 +235,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 		}
 	}
 	
-	if(!devideUpPlayerLands(game, descriptor, grid, teamAreaNumbers, areaNumber))
+	if(!divideUpPlayerLands(game, descriptor, grid, teamAreaNumbers, areaNumber))
 		return false;
 	
 	// Initialize final team info
@@ -307,16 +307,16 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 		for(int j=i+1; j<descriptor.nbTeams; ++j)
 		{
 			// Choose one random point from each players area
-			std::vector<MapGeneratorPoint> teami;
-			std::vector<MapGeneratorPoint> teamj;
-			getAllPoints(game, grid, teamAreaNumbers[i], teami);
-			getAllPoints(game, grid, teamAreaNumbers[j], teamj);
-			chooseRandomPoints(game, teami, 1);
-			chooseRandomPoints(game, teamj, 1);
+			std::vector<MapGeneratorPoint> teamI;
+			std::vector<MapGeneratorPoint> teamJ;
+			getAllPoints(game, grid, teamAreaNumbers[i], teamI);
+			getAllPoints(game, grid, teamAreaNumbers[j], teamJ);
+			chooseRandomPoints(game, teamI, 1);
+			chooseRandomPoints(game, teamJ, 1);
 			
 			// Traverse between the two points
 			std::vector<MapGeneratorPoint> linePoints;
-			getAllPointsLine(game, teami[0].x, teami[0].y, teamj[0].x, teamj[0].y, linePoints);
+			getAllPointsLine(game, teamI[0].x, teamI[0].y, teamJ[0].x, teamJ[0].y, linePoints);
 			// If a connection can be made without going through another teams area, then do it
 			bool failed=false;
 			for(unsigned int p=0; p<linePoints.size() && !failed; ++p)
@@ -439,7 +439,7 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 		}
 	}
 
-	if(!devideUpPlayerLands(game, descriptor, grid, teamAreaNumbers, areaNumber))
+	if(!divideUpPlayerLands(game, descriptor, grid, teamAreaNumbers, areaNumber))
 	{
 		return false;
 	}
@@ -454,7 +454,7 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 
 
 
-bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber)
+bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber)
 {
 	int typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
 	BuildingType *swarm = globalContainer->buildingsTypes.get(typeNum);
@@ -491,8 +491,8 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			areaNumber+=1;
 		}
 		
-		// Devide the area. Its possible the area will be so small it can't be used
-		if(devideUpArea(game, grid, teamAreaNumbers[i], areaWeights, areaNumbers))
+		// Divide the area. Its possible the area will be so small it can't be used
+		if(divideUpArea(game, grid, teamAreaNumbers[i], areaWeights, areaNumbers))
 		{
 			// Sort the list of areas based on how close they are to water
 			std::vector<int> areaDistances(areaNumbers.size());
@@ -545,7 +545,7 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			}
 			
 			
-			// These are all poinst in the base
+			// These are all points in the base
 			std::vector<MapGeneratorPoint> baseLocations;
 			getAllPoints(game, grid, areaNumbers[6], baseLocations);
 			getAllPoints(game, grid, areaNumbers[7], baseLocations);
@@ -615,7 +615,7 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			game.teams[i]->startPosY=b->posY;
 			game.teams[i]->startPosSet=3;
 			
-			// Place units arround the swarm
+			// Place units around the swarm
 			std::vector<MapGeneratorPoint> unitLocations = baseLocations;
 			chooseFreeForGroundUnits(game, unitLocations, i);
 			chooseTouchingBuilding(game, unitLocations, b);
@@ -635,7 +635,7 @@ bool MapGenerator::devideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 
 
 
-bool MapGenerator::devideUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<int>& weights, std::vector<int>& areaNumbers)
+bool MapGenerator::divideUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<int>& weights, std::vector<int>& areaNumbers)
 {
 	std::vector<MapGeneratorPoint> points;
 	std::vector<int> splitWeights;
@@ -949,61 +949,61 @@ void MapGenerator::getAllOtherPoints(Game& game, std::vector<int>& grid, int are
 
 void MapGenerator::getAllPointsLine(Game& game, int x1, int y1, int x2, int y2, std::vector<MapGeneratorPoint>& points)
 {
-	int startx = x1;
-	int endx = x2;
-	int starty = y1;
-	int endy = y2;
+	int startX = x1;
+	int endX = x2;
+	int startY = y1;
+	int endY = y2;
 	
-	int dirx = (endx > startx ? 1 : -1);
-	int distx = std::abs(endx - startx);
-	if(distx > game.map.getW()/2)
+	int dirX = (endX > startX ? 1 : -1);
+	int distX = std::abs(endX - startX);
+	if(distX > game.map.getW()/2)
 	{
-		dirx = -dirx;
-		distx = game.map.getW() -  distx;
+		dirX = -dirX;
+		distX = game.map.getW() -  distX;
 	}
 			
-	int diry = (endy > starty ? 1 : -1);
-	int disty = std::abs(endy - starty);
-	if(disty > game.map.getH()/2)
+	int dirY = (endY > startY ? 1 : -1);
+	int distY = std::abs(endY - startY);
+	if(distY > game.map.getH()/2)
 	{
-		diry = -diry;
-		disty = game.map.getH() -  disty;
+		dirY = -dirY;
+		distY = game.map.getH() -  distY;
 	}
 			
-	if(distx > disty)
+	if(distX > distY)
 	{
 		int px = 0;
 		int py = 0;
-		int y = starty;
-		for(int x=startx; x!=endx;)
+		int y = startY;
+		for(int x=startX; x!=endX;)
 		{
 			px+=1;
 			points.push_back(MapGeneratorPoint(x, y));
-			if(std::abs(px * disty - py * distx) > std::abs(px * disty - (py+1) * distx))
+			if(std::abs(px * distY - py * distX) > std::abs(px * distY - (py+1) * distX))
 			{
-				y=game.map.normalizeY(y+diry);
+				y=game.map.normalizeY(y+dirY);
 				points.push_back(MapGeneratorPoint(x, y));
 				py+=1;
 			}
-			x=game.map.normalizeX(x+dirx);
+			x=game.map.normalizeX(x+dirX);
 		}
 	}
 	else
 	{
 		int px = 0;
 		int py = 0;
-		int x = startx;
-		for(int y=starty; y!=endy;)
+		int x = startX;
+		for(int y=startY; y!=endY;)
 		{
 			py+=1;
 			points.push_back(MapGeneratorPoint(x, y));
-			if(std::abs(py * distx - px * disty) > std::abs(py * distx - (px+1) * disty))
+			if(std::abs(py * distX - px * distY) > std::abs(py * distX - (px+1) * distY))
 			{
-				x=game.map.normalizeX(x+dirx);
+				x=game.map.normalizeX(x+dirX);
 				points.push_back(MapGeneratorPoint(x, y));
 				px+=1;
 			}
-			y=game.map.normalizeY(y+diry);
+			y=game.map.normalizeY(y+dirY);
 		}
 	}
 }
@@ -1158,7 +1158,7 @@ void MapGenerator::adjustHeightmapFromPerlinNoise(Game& game, std::vector<int>& 
 
 
 
-void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obtacles, std::vector<int>& heightmap)
+void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap)
 {
 	std::queue<int> places;
 	heightmap.clear();
@@ -1168,9 +1168,9 @@ void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& 
 		heightmap[sources[i].y * game.map.getW() + sources[i].x] = 1;
 		places.push(sources[i].y * game.map.getW() + sources[i].x);
 	}
-	for(unsigned int i=0; i<obtacles.size(); ++i)
+	for(unsigned int i=0; i<obstacles.size(); ++i)
 	{
-		heightmap[obtacles[i].y * game.map.getW() + obtacles[i].x] = -1;
+		heightmap[obstacles[i].y * game.map.getW() + obstacles[i].x] = -1;
 	}
 	
 	Uint32 wDec = game.map.wDec;
@@ -1443,7 +1443,7 @@ void Map::smoothRessources(int times)
 					{
 						// we extand ressource:
 						int dx, dy;
-						Unit::dxdyfromDirection(syncRand()&7, &dx, &dy);
+						Unit::dxDyFromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
 						if (getGroundUnit(nx, ny)==NOGUID)
@@ -1618,19 +1618,19 @@ void fastSimulateRandomMap(int smooth, double baseWater, double baseSand, double
 	int n=smooth*2+1;
 	VARARRAY(double,finalWaters,n);
 	VARARRAY(double,finalSands,n);
-	VARARRAY(double,finalGrasss,n);
+	VARARRAY(double,finalGrasses,n);
 	
 	for (int i=0; i<n; i++)
-		simulateRandomMap(4, baseWater, baseSand, baseGrass, &finalWaters[i], &finalSands[i], &finalGrasss[i]);
+		simulateRandomMap(4, baseWater, baseSand, baseGrass, &finalWaters[i], &finalSands[i], &finalGrasses[i]);
 	
 	double medianFinalWater=finalWaters[0];
 	double medianFinalSand =finalSands [0];
-	double medianFinalGrass=finalGrasss[0];
+	double medianFinalGrass=finalGrasses[0];
 	for (int i=0; i<n; i++)
 	{
 		double wf=finalWaters[i];
 		double sf=finalSands [i];
-		double gf=finalGrasss[i];
+		double gf=finalGrasses[i];
 		int ws=0;
 		int wb=0;
 		int we=0;
@@ -1654,9 +1654,9 @@ void fastSimulateRandomMap(int smooth, double baseWater, double baseSand, double
 				ss++;
 			else
 				se++;
-			if (gf<finalGrasss[j])
+			if (gf<finalGrasses[j])
 				gb++;
-			else if (gf>finalGrasss[j])
+			else if (gf>finalGrasses[j])
 				gs++;
 			else
 				ge++;
@@ -1695,7 +1695,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	if (verbose)
 		printf("makeRandomMap::old-base=(%f, %f, %f).\n", baseWater, baseSand, baseGrass);
 	
-	//Sorry, the equation is too complex for me. We uses a numeric aproach:
+	//Sorry, the equation is too complex for me. We uses a numeric approach:
 	double alphaWater=baseWater;
 	double alphaSand =baseSand ;
 	double alphaGrass=baseGrass;
@@ -2054,7 +2054,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 		for (int y=0; y<h; y++)
 		{
 			int width=0;
-			int startx=0;
+			int startX=0;
 			for (int x=0; x<w; x++)
 			{
 				int a=undermap[y*w+x];
@@ -2064,22 +2064,22 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 				{
 					if (width>7)
 					{
-						int centerx=((x+startx)>>1);
+						int centerX=((x+startX)>>1);
 						int top, bot;
 						for (top=0; top<h; top++)
-							if (getUMTerrain(centerx, y-top)!=GRASS)
+							if (getUMTerrain(centerX, y-top)!=GRASS)
 								break;
 						for (bot=0; bot<h; bot++)
-							if (getUMTerrain(centerx, y+bot)!=GRASS)
+							if (getUMTerrain(centerX, y+bot)!=GRASS)
 								break;
 						int height=top+bot-1;
 						int surface=height*width;
 						assert(surface>0);
 						
-						int centery=y+((bot-top)>>1);
+						int centerY=y+((bot-top)>>1);
 						bool farEnough=true;
 						for (int ti=0; ti<team; ti++)
-							if (warpDistSquare(centerx, centery, bootX[ti], bootY[ti])<minDistSquare)
+							if (warpDistSquare(centerX, centerY, bootX[ti], bootY[ti])<minDistSquare)
 							{
 								farEnough=false;
 								break;
@@ -2088,12 +2088,12 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 						if (surface>maxSurface && farEnough)
 						{
 							maxSurface=surface;
-							maxX=centerx;
-							maxY=centery;
+							maxX=centerX;
+							maxY=centerY;
 						}
 					}
 					width=0;
-					startx=x;
+					startX=x;
 				}
 			}
 		}
@@ -2129,12 +2129,12 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	return true;
 }
 
-/// This random map generator generates a heightfield and then choses levels at wich to draw the line between water, sand, gras and sand again (desert)
+/// This random map generator generates a heightfield and then choses levels at which to draw the line between water, sand, gras and sand again (desert)
 bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above grasslevel is desert
 	float waterLevel, sandLevel, grassLevel, wheatWoodLevel, algaeLevel, stoneLevel;
-	/// to influence the roughnes
+	/// to influence the roughness
 	float smoothingFactor=(float)(descriptor.smooth+4)*3;
 	/// the proportions requested through the gui can directly be translated into tile counts of the undermap.
 	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
@@ -2268,7 +2268,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		for (int y=0; y<h; y++)
 		{
 			int width=0;
-			int startx=0;
+			int startX=0;
 			for (int x=0; x<w; x++)
 			{
 				int a=undermap[y*w+x];
@@ -2278,22 +2278,22 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				{
 					if (width>7)
 					{
-						int centerx=((x+startx)>>1);
+						int centerX=((x+startX)>>1);
 						int top, bot;
 						for (top=0; top<h; top++)
-							if (getUMTerrain(centerx, y-top)!=GRASS)
+							if (getUMTerrain(centerX, y-top)!=GRASS)
 								break;
 						for (bot=0; bot<h; bot++)
-							if (getUMTerrain(centerx, y+bot)!=GRASS)
+							if (getUMTerrain(centerX, y+bot)!=GRASS)
 								break;
 						int height=top+bot-1;
 						int surface=height*width;
 						assert(surface>0);
 						
-						int centery=y+((bot-top)>>1);
+						int centerY=y+((bot-top)>>1);
 						bool farEnough=true;
 						for (int ti=0; ti<team; ti++)
-							if (warpDistSquare(centerx, centery, bootX[ti], bootY[ti])<minDistSquare)
+							if (warpDistSquare(centerX, centerY, bootX[ti], bootY[ti])<minDistSquare)
 							{
 								farEnough=false;
 								break;
@@ -2302,12 +2302,12 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 						if (surface>maxSurface && farEnough)
 						{
 							maxSurface=surface;
-							maxX=centerx;
-							maxY=centery;
+							maxX=centerX;
+							maxY=centerY;
 						}
 					}
 					width=0;
-					startx=x;
+					startX=x;
 				}
 			}
 		}
@@ -2404,12 +2404,12 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				//find a valid neighbor of actual coordinate
 				for (int iTry=0; iTry<100; iTry++)
 				{
-					int xnew=x+rand()%3-1;
-					int ynew=y+rand()%3-1;
-					if(getUMTerrain(xnew, ynew)==GRASS && !isRessource(xnew,ynew))
+					int xNew=x+rand()%3-1;
+					int yNew=y+rand()%3-1;
+					if(getUMTerrain(xNew, yNew)==GRASS && !isRessource(xNew,yNew))
 					{
-						x=xnew;
-						y=ynew;
+						x=xNew;
+						y=yNew;
 						break;
 					}
 				}
@@ -2437,11 +2437,11 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		bool dirUsed[8];
 		for (int i=0; i<8; i++)
 			dirUsed[i]=false;
-		int ressOrder[4];
-		ressOrder[0]=CORN;
-		ressOrder[1]=WOOD;
-		ressOrder[2]=STONE;
-		ressOrder[3]=CORN;
+		int resOrder[4];
+		resOrder[0]=CORN;
+		resOrder[1]=WOOD;
+		resOrder[2]=STONE;
+		resOrder[3]=CORN;
 		
 		int distWeight[4];
 		distWeight[0]=1;
@@ -2455,9 +2455,9 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		widthWeight[2]=1;
 		widthWeight[3]=2;
 		
-		for (int resi=0; resi<4; resi++)
+		for (int resI=0; resI<4; resI++)
 		{
-			int ress=ressOrder[resi];
+			int res=resOrder[resI];
 			int maxDir=0;
 			int maxWidth=0;
 			int maxDist=0;
@@ -2466,7 +2466,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 				{
 					int width=0;
 					int dx, dy, dist;
-					Unit::dxdyfromDirection(dir, &dx, &dy);
+					Unit::dxDyFromDirection(dir, &dx, &dy);
 					for (dist=5; dist<limiteDist; dist++)
 						if (isGrass(bootX[team]+dx*dist, bootY[team]+dy*dist))
 							width++;
@@ -2475,7 +2475,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 						else
 							width=1;
 
-					if (dist*distWeight[resi]+width*widthWeight[resi]>maxDist*distWeight[resi]+maxWidth*widthWeight[resi])
+					if (dist*distWeight[resI]+width*widthWeight[resI]>maxDist*distWeight[resI]+maxWidth*widthWeight[resI])
 					{
 						maxWidth=width;
 						maxDist=dist;
@@ -2486,18 +2486,18 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			if (maxWidth<smallestWidth)
 			{
 				smallestWidth=maxWidth;
-				smallestRessource=ress;
+				smallestRessource=res;
 			}
 			
 			int dx, dy;
-			Unit::dxdyfromDirection(maxDir, &dx, &dy);
+			Unit::dxDyFromDirection(maxDir, &dx, &dy);
 			int d=maxDist-(maxWidth>>1);
 			dx*=d;
 			dy*=d;
 			
-			int amount=descriptor.ressource[ress];
+			int amount=descriptor.ressource[res];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, ress, amount);
+				setRessource(bootX[team]+dx, bootY[team]+dy, res, amount);
 		}
 
 		if (smallestWidth<limiteDist)
@@ -2510,7 +2510,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 				{
 					int width=0;
 					int dx, dy, dist;
-					Unit::dxdyfromDirection(dir, &dx, &dy);
+					Unit::dxDyFromDirection(dir, &dx, &dy);
 					for (dist=0; dist<2*limiteDist; dist++)
 						if (isGrass(bootX[team]+dx*dist, bootY[team]+dy*dist))
 							width++;
@@ -2529,7 +2529,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			dirUsed[maxDir]=true;
 			
 			int dx, dy;
-			Unit::dxdyfromDirection(maxDir, &dx, &dy);
+			Unit::dxDyFromDirection(maxDir, &dx, &dy);
 			int d=maxDist-(maxWidth>>1);
 			dx*=d;
 			dy*=d;
@@ -2546,7 +2546,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		{
 			int width=0;
 			int dx, dy, dist;
-			Unit::dxdyfromDirection(dir, &dx, &dy);
+			Unit::dxDyFromDirection(dir, &dx, &dy);
 			for (dist=0; dist<2*limiteDist; dist++)
 				if (isWater(bootX[team]+dx*dist, bootY[team]+dy*dist))
 					width++;
@@ -2564,7 +2564,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		}
 		
 		int dx, dy;
-		Unit::dxdyfromDirection(maxDir, &dx, &dy);
+		Unit::dxDyFromDirection(maxDir, &dx, &dy);
 		int d=maxDist-(maxWidth>>1);
 		dx*=d;
 		dy*=d;

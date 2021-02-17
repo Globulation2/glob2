@@ -44,7 +44,7 @@ class Building : public BuildingUtils
 {
 public:
 	static const int MAX_COUNT=1024;
-	///This is the buildings basic state of existance.
+	///This is the buildings basic state of existence.
 	enum BuildingState
 	{
 		DEAD=0,
@@ -137,17 +137,17 @@ private:void updateUnitsHarvesting(void);
 	///This function is called after important events in order to update the building
 public:void update(void);
 
-	///Sets the area arround the building to be discovered, and visible by the building
+	///Sets the area around the building to be discovered, and visible by the building
 	void setMapDiscovered(void);
 
-	///Gets the ammount of ressources for each type of ressource that are needed to repair the building.
+	///Gets the amount of ressources for each type of ressource that are needed to repair the building.
 public:void getRessourceCountToRepair(int ressources[BASIC_COUNT]);
 
 	///Attempts to find room for a building site. If room is found, the building site is established,
 	///and it returns true.
 	bool tryToBuildingSiteRoom(void);
 
-	///This function puts hidden forbidden area arround a new building site. This dispereses units so that
+	///This function puts hidden forbidden area around a new building site. This dispereses units so that
 	///the building isn't waiting for space when there are lots of units.
 private:void addForbiddenZoneToUpgradeArea(void);
 	///This function removes the hidden forbidden area placed by addForbiddenToUpgradeArea
@@ -216,7 +216,7 @@ public:void removeUnitFromWorking(Unit* unit);
 	void removeUnitFromInside(Unit* unit);
 
 	/// This function updates the ressources pointer. The variable ressources can either point to local ressources
-	/// or team ressoureces, depending on the BuildingType.
+	/// or team resources, depending on the BuildingType.
 private:void updateRessourcesPointer();
 
 	/// This function is called when a Unit places a ressource into the building.
@@ -231,11 +231,11 @@ public:void addRessourceIntoBuilding(int ressourceType);
 	int getMidY(void);
 
 	/// When a unit leaves a building, this function will find an open spot for that unit to leave,
-	/// and provides the x and y cordinates, along with the direction the unit should be travelling
+	/// and provides the x and y coordinates, along with the direction the unit should be travelling
 	/// when it leaves.
 	bool findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim);
 	/// When a unit leaves a building, this function will find an open spot for that unit to leave,
-	/// and provides the x and y cordinates, along with the direction the unit should be travelling
+	/// and provides the x and y coordinates, along with the direction the unit should be travelling
 	/// when it leaves.
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
 private:
@@ -258,7 +258,7 @@ public:int getLongLevel(void);
 	void computeFlagStatLocal(int *goingTo, int *onSpot);
 
 	/// Eats one wheat and one of each of the available fruit from the building.
-	/// Return the number of differents fruits in this building. If mask is non-null,
+	/// Return the number of different fruits in this building. If mask is non-null,
 	/// set masks value to the mask as well
 	Uint32 eatOnce(Uint32 *mask=NULL);
 
@@ -296,7 +296,7 @@ private:Sint32 maxUnitWorkingPrevious;
 	///This is a constantly updated number that indicates the buildings desired number of units,
 	///say for example that the building is full, it needs no units, so this is 0
 public:Sint32 desiredMaxUnitWorking;
-	///This is the list of units activly working on the building.
+	///This is the list of units actively working on the building.
 	std::list<Unit *> unitsWorking;
 	///The subscribeToBringRessourcesStep and subscribeForFlagingStep operate every 32 ticks
 private:Sint32 subscriptionWorkingTimer;
@@ -319,7 +319,7 @@ private:
 	InListState inCanHealUnit;
 	InListState inUpgrade[NB_ABILITY];
 	/// This variable indicates whether this building is already in the team call list
-	/// to recieve units. A 1 indicates its already in the call list, and 0 indicates
+	/// to receive units. A 1 indicates its already in the call list, and 0 indicates
 	/// that it is not.
 	Uint8 callListState;
 
@@ -345,7 +345,7 @@ public:
 	Sint32 minLevelToFlagLocal;
 
 	// Building specific :
-	/// Ammount stocked, or used for building building. Local ressources stores the ressources this particular building contains
+	/// Amount stocked, or used for building building. Local ressources stores the ressources this particular building contains
 	/// in the event that the building type designates using global ressources instead of local ressources, the ressources pointer
 	/// will be changed to point to the global ressources Team::teamRessources instead of localRessources.
 	Sint32* ressources;

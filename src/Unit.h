@@ -66,10 +66,10 @@ public:
 	
 	void directionFromDxDy(void);
 private:
-	void dxdyfromDirection(void);
+	void dxDyFromDirection(void);
 public:
 	static int directionFromDxDy(int dx, int dy);
-	inline static void dxdyfromDirection(int direction, int *dx, int *dy)
+	inline static void dxDyFromDirection(int direction, int *dx, int *dy)
 	{
 		const int tab[9][2]={	{ -1, -1},
 								{ 0, -1},
@@ -86,13 +86,13 @@ public:
 		*dy=tab[direction][1];
 	}
 
-	void selectPreferedMovement(void);
-	void selectPreferedGroundMovement(void);
+	void selectPreferredMovement(void);
+	void selectPreferredGroundMovement(void);
 	bool isUnitHungry(void);
 	void standardRandomActivity();
 	
 	int getRealArmor(bool isMagic) const;
-	int getRealAttackStrength(void) const; //!< Return the real attack strengh for warriors
+	int getRealAttackStrength(void) const; //!< Return the real attack strength for warriors
 	int getNextLevelThreshold(void) const;
 	void incrementExperience(int increment);
 	
@@ -145,7 +145,7 @@ public:
 		MOV_RANDOM_FLY=1,
 		MOV_GOING_TARGET=2,
 		MOV_FLYING_TARGET=3,
-		MOV_GOING_DXDY=4,
+		MOV_GOING_DX_DY=4,
 		MOV_HARVESTING=5,
 		MOV_FILLING=6,
 		MOV_ENTERING_BUILDING=7,
@@ -179,7 +179,7 @@ protected:
 	
 	void setNewValidDirectionGround(void);
 	void setNewValidDirectionAir(void);
-	void flytoTarget(); //This will set (dx,dy) given targetX/Y. air asserted.
+	void flyToTarget(); //This will set (dx,dy) given targetX/Y. air asserted.
 	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
 	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
@@ -215,7 +215,7 @@ public:
 	Displacement displacement;
 	Movement movement;
 	Abilities action;
-	/// These coordinates are usef for target-lines only (Hotkey T in game)
+	/// These coordinates are used for target-lines only (Hotkey T in game)
 	Sint32 targetX, targetY;
 	/// Maybe this is also only for GUI to tag if a line may be drawn or not
 	bool validTarget;
@@ -249,8 +249,8 @@ public:
 	Building *targetBuilding;
 	//! no idea what this is. TODO: Explain
 	Building *ownExchangeBuilding;
-	Sint32 destinationPurprose;
-	int caryedRessource;
+	Sint32 destinationPurpose;
+	int carriedRessource;
 	/// This counts 32 ticks to wait for a job before a unit goes off
 	/// to upgrade or heal when it is otherwise doing nothing.
 	Sint32 jobTimer;
@@ -259,7 +259,7 @@ public:
 	int levelUpAnimation;
 	int magicActionAnimation;
 	
-	// These store the previous clearing area target cordinates
+	// These store the previous clearing area target coordinates
 	Uint32 previousClearingAreaX;
 	Uint32 previousClearingAreaY;
 	Uint32 previousClearingAreaDistance;

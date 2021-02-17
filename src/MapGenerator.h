@@ -41,12 +41,12 @@ public:
 	bool computeIsles(Game& game, MapGenerationDescriptor& descriptor);
 
 	///This function devides up the player lands using the standard method
-	bool devideUpPlayerLands(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber);
+	bool divideUpPlayerLands(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber);
 
 private:
 	///This is a function that takes an area and devides it up into several smaller areas using the
 	///given area numbers and weights. This is bassically a combination of splitUpPoints and splitUpArea
-	bool devideUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<int>& weights, std::vector<int>& areaNumbers);
+	bool divideUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<int>& weights, std::vector<int>& areaNumbers);
 	
 	///This creates an area with the shape of an oval with the given width and height
 	void createOval(Game& game, std::vector<int>& grid, int areaN, int x, int y, int width, int height);
@@ -93,13 +93,13 @@ private:
 	///This function adjusts the heightmap value of point given by the given value
 	void adjustHeightmapFromPoints(Game& game, std::vector<MapGeneratorPoint>& points, std::vector<int>& heightmap, int value);
 	
-	///This function afjusts the heightmap values from a standard perlin noise. Spread is how much the value can go up or down
+	///This function adjusts the heightmap values from a standard perlin noise. Spread is how much the value can go up or down
 	void adjustHeightmapFromPerlinNoise(Game& game, std::vector<int>& heights, int spread);
 	
 	///This function computes the distance of every point from the given points, putting these distances
 	///into the given heightmap. The points given as sources are considered to be a distance of 1. The points
 	///given as obstacles are considered to be a distance of -1
-	void computeDistances(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obtacles, std::vector<int>& heightmap);
+	void computeDistances(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap);
 	
 	///Computes the average height/distance of a area on a heightmap
 	int computeAverageDistance(Game& game, std::vector<int>& grid, int areaN, std::vector<int> heightmap);

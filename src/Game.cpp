@@ -168,8 +168,8 @@ void Game::clearGame()
 	selectedUnit = NULL;
 	selectedBuilding = NULL;
 
-	hilightBuildingType=0;
-	hilightUnitType=0;
+	highlightBuildingType=0;
+	highlightUnitType=0;
 }
 
 
@@ -1466,7 +1466,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	teams[team]->myUnits[id]->dy=dy;
 	teams[team]->myUnits[id]->directionFromDxDy();
 	teams[team]->myUnits[id]->delta=delta;
-	teams[team]->myUnits[id]->selectPreferedMovement();
+	teams[team]->myUnits[id]->selectPreferredMovement();
 	return teams[team]->myUnits[id];
 }
 
@@ -1852,8 +1852,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 
-		if ((unit->performance[HARVEST]) && (unit->caryedRessource>=0))
-			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->caryedRessource);
+		if ((unit->performance[HARVEST]) && (unit->carriedRessource>=0))
+			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->carriedRessource);
 	}
 
 	if (drawOptions & DRAW_ACCESSIBILITY)
@@ -1868,7 +1868,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 	}
-	if(hilightUnitType & (1<<unit->typeNum))
+	if(highlightUnitType & (1<<unit->typeNum))
 	{
 		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gamegui, 36);
 	}
@@ -2261,7 +2261,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 	}
 
-	if(hilightBuildingType & (1<<building->shortTypeNum))
+	if(highlightBuildingType & (1<<building->shortTypeNum))
 	{
 		globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
 	}
@@ -2807,7 +2807,7 @@ inline bool Game::isOnScreen(int left, int top, int right, int bot, int viewport
 
 
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int righMargin, int topMargin, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
 {
 	static int time = 0;
 	static DynamicClouds ds(&globalContainer->settings);
@@ -2856,7 +2856,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int righMargin, int topMargin
 			Unit* unit = *i;
 			if(!isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY))
 			{
-				drawUnitOffScreen(0, topMargin, sw - righMargin, sh-topMargin, viewportX, viewportY, unit, drawOptions);
+				drawUnitOffScreen(0, topMargin, sw - rightMargin, sh-topMargin, viewportX, viewportY, unit, drawOptions);
 			}
 		}
 	}

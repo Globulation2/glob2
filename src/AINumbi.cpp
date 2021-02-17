@@ -720,7 +720,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 			//printf("AI:i=%d, d=(%d, %d), s=(%d, %d), p=(%d, %d), m=(%d, %d).\n", i, dx, dy, sx, sy, px, py, mx, my);
 
 			//int dx, dy;
-			//Unit::dxdyfromDirection(d, &dx, &dy);
+			//Unit::dxDyFromDirection(d, &dx, &dy);
 
 			//int px=b->posX+dx*(width+r);
 			//int py=b->posY+dy*(height+r);

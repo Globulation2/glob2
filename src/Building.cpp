@@ -606,10 +606,10 @@ void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
 		needs[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurprose >= 0)
+		if ((*ui)->destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurprose < MAX_NB_RESSOURCES);
-			needs[(*ui)->destinationPurprose]--;
+			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
+			needs[(*ui)->destinationPurpose]--;
 		}
 }
 
@@ -619,10 +619,10 @@ void Building::computeWishedRessources()
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
 		wishedResources[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurprose >= 0)
+		if ((*ui)->destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurprose < MAX_NB_RESSOURCES);
-			wishedResources[(*ui)->destinationPurprose]--;
+			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
+			wishedResources[(*ui)->destinationPurpose]--;
 		}
 }
 
@@ -1067,7 +1067,7 @@ void Building::updateUnitsWorking(void)
 			// First choice: free an unit who has a not needed ressource..
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
-				int r=(*it)->caryedRessource;
+				int r=(*it)->carriedRessource;
 				if (r>=0 && !neededRessource(r))
 				{
 					fu=(*it);
@@ -1085,7 +1085,7 @@ void Building::updateUnitsWorking(void)
 				int minDistSquare=INT_MAX;
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
-					int r=(*it)->caryedRessource;
+					int r=(*it)->carriedRessource;
 					if (r<0)
 					{
 						int tx = posX;
@@ -1502,7 +1502,7 @@ bool Building::subscribeToBringRessourcesStep()
 			if(!canUnitWorkHere(unit))
 				continue;
 
-			int r=unit->caryedRessource;
+			int r=unit->carriedRessource;
 			int dist;
 			if(!map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist))
 			{
@@ -1542,8 +1542,8 @@ bool Building::subscribeToBringRessourcesStep()
 			50*(unit->level[HARVEST]+1)+
 			(unit->level[SWIM]>0?-200:0);//swimmer's penalty to keep them free for swimmer tasks
 			//std::cout << "d" << dist << " dr" << distUnitRessource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << unit->level[WALK] << " ha" << unit->level[HARVEST] << " va" << value << std::endl << std::flush;
-			unit->destinationPurprose=(rightRes>0?r:nr);
-			fprintf(logFile, "[%d] bdp1 destinationPurprose=%d\n", unit->gid, unit->destinationPurprose);
+			unit->destinationPurpose=(rightRes>0?r:nr);
+			fprintf(logFile, "[%d] bdp1 destinationPurpose=%d\n", unit->gid, unit->destinationPurpose);
 			if (value>maxValue)
 			{
 				maxValue=value;
@@ -1595,7 +1595,7 @@ bool Building::subscribeToBringRessourcesStep()
 					}
 					else
 					{
-						int unitr = unit->caryedRessource;
+						int unitr = unit->carriedRessource;
 						if((unitr>=0) && neededRessource(unitr))
 						{
 							possibleUnits[n] = unit;
@@ -1682,14 +1682,14 @@ bool Building::subscribeToBringRessourcesStep()
 			if(unit==NULL)
 				continue;
 
-			int r=unit->caryedRessource;
+			int r=unit->carriedRessource;
 			int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
 			if ((r>=0) && neededRessource(r))
 			{
 				int dist = distances[n];
 				int value=dist-(timeLeft>>1);
 				int level = unit->level[HARVEST]*10 + unit->level[WALK];
-				unit->destinationPurprose=r;
+				unit->destinationPurpose=r;
 				if ((level>maxLevel) || (level==maxLevel && value<minValue))
 				{
 					minValue=value;
@@ -1708,7 +1708,7 @@ bool Building::subscribeToBringRessourcesStep()
 				if(unit==NULL)
 					continue;
 
-				if (unit->caryedRessource<0)
+				if (unit->carriedRessource<0)
 				{
 					int r = resource[n];
 					int value=distances[n];
@@ -1718,7 +1718,7 @@ bool Building::subscribeToBringRessourcesStep()
 						minValue=value;
 						maxLevel=level;
 						choosen=unit;
-						unit->destinationPurprose=r;
+						unit->destinationPurpose=r;
 					}
 				}
 			}
@@ -1733,7 +1733,7 @@ bool Building::subscribeToBringRessourcesStep()
 				if(unit==NULL)
 					continue;
 
-				int r2=unit->caryedRessource;
+				int r2=unit->carriedRessource;
 				if ((r2>=0) && !neededRessource(r2))
 				{
 					int r = resource[n];
@@ -1744,7 +1744,7 @@ bool Building::subscribeToBringRessourcesStep()
 						minValue=value;
 						maxLevel=level;
 						choosen=unit;
-						unit->destinationPurprose=r;
+						unit->destinationPurpose=r;
 					}
 				}
 			}

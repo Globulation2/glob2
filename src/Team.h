@@ -145,7 +145,7 @@ public:
 	///This stores the buildings that need units, listed into their hard priorities. They are sorted based on priority.
 	std::map<int, std::vector<Building*>, std::greater<int> > buildingsNeedingUnits;
 
-	// thoses where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
+	// those where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
 	std::list<Building *> upgrade[NB_ABILITY]; //to upgrade the units' abilities.
 	
 	// The list of building which have one specific ability.
@@ -189,7 +189,7 @@ private:
 	std::queue<boost::shared_ptr<GameEvent> > events;
 	///These timers indicate the cooldown for a particular event type,
 	///This keeps too many events from being pumped at once. If the
-	///timer isn't at 0 when a new event is recieved, the new event
+	///timer isn't at 0 when a new event is received, the new event
 	///is ignored.
 	Uint8 eventCooldownTimers[GESize];
 	
@@ -197,7 +197,7 @@ private:
 public:
 	///This is the teams race, which defines its properties
 	Race race;
-	//! If you try to build buildings in the ennemy territory, you will be prevented to build any new buildings for a given time.
+	//! If you try to build buildings in the enemy territory, you will be prevented to build any new buildings for a given time.
 	//! This is the time left you can't build for. time in ticks.
 	int noMoreBuildingSitesCountdown;
 	static const int noMoreBuildingSitesCountdownMax=200; // We set 5s as default
@@ -207,7 +207,7 @@ public:
 	bool hasWon;
 	//! Set to true if this team has lost
 	bool hasLost;
-	///This is the winningCondition that caused thist team to win/lose
+	///This is the winningCondition that caused this team to win/lose
 	WinningConditionType winCondition;
 	
 	//! the stat for this team. It is computed every step, so it is always updated.
