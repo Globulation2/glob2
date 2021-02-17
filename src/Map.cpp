@@ -1894,47 +1894,47 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy) const
 
 void Map::setClearingAreaClaimed(int x, int y, int teamNumber, int gid)
 {
-	clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)] = gid;
+	clearingAreaClaims[teamNumber][coordToIndex(x, y)] = gid;
 }
 
 
 
 void Map::setClearingAreaUnclaimed(int x, int y, int teamNumber)
 {
-	clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)]=NOGUID;
+	clearingAreaClaims[teamNumber][coordToIndex(x, y)]=NOGUID;
 }
 
 
 
 int Map::isClearingAreaClaimed(int x, int y, int teamNumber) const
 {
-	return clearingAreaClaims[teamNumber][(normalizeY(y) << wDec) + normalizeX(x)];
+	return clearingAreaClaims[teamNumber][coordToIndex(x, y)];
 }
 
 
 
 void Map::markImmobileUnit(int x, int y, int teamNumber)
 {
-	immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] = teamNumber;
+	immobileUnits[coordToIndex(x, y)] = teamNumber;
 }
 
 
 void Map::clearImmobileUnit(int x, int y)
 {
-	immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] = 255;
+	immobileUnits[coordToIndex(x, y)] = 255;
 }
 
 
 bool Map::isImmobileUnit(int x, int y) const
 {
-	return immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)] != 255;
+	return immobileUnits[coordToIndex(x, y)] != 255;
 }
 
 
 
 Uint8 Map::getImmobileUnit(int x, int y) const
 {
-	return immobileUnits[(normalizeY(y) << wDec) + normalizeX(x)];
+	return immobileUnits[coordToIndex(x, y)];
 }
 
 
