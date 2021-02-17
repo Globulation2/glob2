@@ -37,9 +37,9 @@ public:
 	 */
  	enum PlayerType
 	{
-		///A non existin player //NOTE : we don't need any more because null player are not created
+		///A non existing player //NOTE : we don't need any more because null player are not created
 		P_NONE=0,
-		///Player will be droped in any cases, but we still have to exchange orders
+		///Player will be dropped in any cases, but we still have to exchange orders
 		P_LOST_DROPPING=1,
 		///Player is no longer taken into account, may be later changed to P_AI. All orders are NULLs.
 		P_LOST_FINAL=2,
