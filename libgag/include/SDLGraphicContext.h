@@ -324,6 +324,8 @@ namespace GAGCore
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
+		std::string windowTitle;
+		std::string appIcon;
 		
 	public:
 		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)

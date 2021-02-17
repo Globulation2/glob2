@@ -1996,7 +1996,9 @@ namespace GAGCore
 		return false;
 	}
 
-	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon)
+	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon):
+		windowTitle(title),
+		appIcon(icon)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -2029,13 +2031,6 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Initial window could not be created, quitting.\n");
 				exit(1);
 			}
-		}
-		if (!title.empty() && !icon.empty())
-		{
-			SDL_SetWindowTitle(window, title.c_str());
-			SDL_Surface *iconSurface = IMG_Load(icon.c_str());
-			SDL_SetWindowIcon(window, iconSurface);
-			SDL_FreeSurface(iconSurface);
 		}
 	}
 
@@ -2075,7 +2070,8 @@ namespace GAGCore
 		Uint32 sdlFlags = 0;
 		if (flags & FULLSCREEN)
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
-		// if (flags & FULLSCREEN)
+		// TODO: add listening for resize events and then re-enable this
+		// if (flags & RESIZABLE)
 		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
@@ -2159,6 +2155,18 @@ namespace GAGCore
 			if (optionFlags & USEGPU)
 				glState.checkExtensions();
 			#endif // HAVE_OPENGL
+
+			// setup title and icon
+			if (!windowTitle.empty())
+			{
+				SDL_SetWindowTitle(window, windowTitle.c_str());
+			}
+			if (!appIcon.empty())
+			{
+				SDL_Surface *iconSurface = IMG_Load(appIcon.c_str());
+				SDL_SetWindowIcon(window, iconSurface);
+				SDL_FreeSurface(iconSurface);
+			}
 
 			setClipRect();
 			if (flags & CUSTOMCURSOR)

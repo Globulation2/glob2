@@ -101,7 +101,6 @@ namespace GAGGUI
 			{
 				dec = true;
 			}
-			
 			if (dec)
 			{
 				// a "Less" click
@@ -124,7 +123,8 @@ namespace GAGGUI
 				}
 			}
 		}
-	}	
+	}
+
 	void Number::onSDLMouseButtonDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_MOUSEBUTTONDOWN);
