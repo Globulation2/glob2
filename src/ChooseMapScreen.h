@@ -107,11 +107,11 @@ private:
 	//! the delete map button
 	Button *deleteMap;
 	//! the switch type button
-	TextButton *switchType;
+	TextButton *switchType = nullptr;
 	//! The list of maps or games
 	Glob2FileList *fileList;
 	//! The alternate list of maps or games
-	Glob2FileList *alternateFileList;
+	Glob2FileList *alternateFileList = nullptr;
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
