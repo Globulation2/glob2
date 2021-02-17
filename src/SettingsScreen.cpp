@@ -75,14 +75,13 @@ SettingsScreen::SettingsScreen()
 	actDisplay = new Text(440, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", actDisplayModeToString().c_str());
 	addWidgetToGroup(actDisplay, generalGroup);
 	modeList=new List(440, 90, 180, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	globalContainer->gfx->beginVideoModeListing();
-	int w, h;
+	const auto modes = globalContainer->gfx->listVideoModes();
 	const int standardResolutionsCount=5;
 	int standardResolutions[standardResolutionsCount][2]={{640,480},{800,600},{1024,768},{1280,1024},{1600,1200}};
-	while(globalContainer->gfx->getNextVideoMode(&w, &h))
+	for (auto const& mode : modes)
 	{
 		std::ostringstream ost;
-		ost << w << "x" << h;
+		ost << mode.w << "x" << mode.h;
 		if (!modeList->isText(ost.str().c_str()))
 			modeList->addText(ost.str().c_str());
 	}
@@ -95,7 +94,6 @@ SettingsScreen::SettingsScreen()
 			ost << " *";
 			modeList->addText(ost.str().c_str());
 		}
-		
 	}
 	addWidgetToGroup(modeList, generalGroup);
 	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"));

@@ -1920,80 +1920,43 @@ namespace GAGCore
 		minH = h;
 	}
 
-	void GraphicContext::beginVideoModeListing(void)
+	VideoModes GraphicContext::listVideoModes() const
 	{
-		int displays = 0, nummodes = 0;
-		totalmodes = 0;
-		SDL_DisplayMode* mode;
-		displays = SDL_GetNumVideoDisplays();
-		if (displays < 1) {
-			std::cerr << "SDL_GetNumVideoDisplays failed: " << SDL_GetError() << std::endl;
-		}
+		VideoModes modes;
 
-		// Check how many modes are available.
-		for (int i = 0;i < displays;i++) {
-			nummodes = SDL_GetNumDisplayModes(i);
-			if (nummodes < 0) {
-				nummodes = 0;
-				std::cerr << "SDL_GetNumDisplayModes failed: " << SDL_GetError() << std::endl;
-			}
-			totalmodes += nummodes;
-		}
-
-		// +1 to make room for sentinel NULL at end of array
-		modes = new SDL_DisplayMode*[totalmodes+1];
-		modesitr = modes;
-		// Clear modes
-		for (int i = 0;i < totalmodes+1;i++) {
-			modes[i] = nullptr;
-		}
-
-		// Populate modes
-		int k = 0;
-		for (int i =0;i < displays;i++) {
-			nummodes = SDL_GetNumDisplayModes(i);
-			if (nummodes < 0) {
-				std::cerr << "SDL_GetNumDisplayModes failed: " << SDL_GetError() << std::endl;
-				break;
-			}
-			for (int j = 0;j < nummodes;j++) {
-				mode = new SDL_DisplayMode;
-				if (SDL_GetDisplayMode(i, j, mode)) {
-					delete mode;
-					mode = nullptr;
-					std::cerr << "SDL_GetDisplayMode failed: " << SDL_GetError() << std::endl;
-					break;
-				}
-				modes[k++] = mode;
-			}
-		}
-	}
-
-	bool GraphicContext::getNextVideoMode(int *w, int *h)
-	{
-		if (modesitr && (modesitr != (SDL_DisplayMode **)-1))
+		// Iterate display
+		const int displayCount = SDL_GetNumVideoDisplays();
+		if (displayCount < 1)
 		{
-			while (*modesitr)
-			{
-				int nw = (*modesitr)->w;
-				int nh = (*modesitr)->h;
-				modesitr++;
+			std::cerr << "SDL_GetNumVideoDisplays failed: " << SDL_GetError() << std::endl;
+			return modes;
+		}
 
-				if(nw < 800 || nh<600)
+		// For each display, iterate modes
+		for (int i = 0; i < displayCount; i++)
+		{
+			const int modeCount = SDL_GetNumDisplayModes(i);
+			if (modeCount < 0)
+			{
+				std::cerr << "SDL_GetNumDisplayModes failed: " << SDL_GetError() << std::endl;
+				continue;
+			}
+			for (int j = 0; j < modeCount; j++)
+			{
+				SDL_DisplayMode mode;
+				if (SDL_GetDisplayMode(i, j, &mode)) {
+					std::cerr << "SDL_GetDisplayMode failed: " << SDL_GetError() << std::endl;
+					continue;
+				}
+				if (mode.w < minW || mode.h < minH)
 				{
 					continue;
 				}
-
-				if ( ((minW == 0) || (nw >= minW))
-					&& ((minH == 0) || (nh >= minH)))
-				{
-					*w = nw;
-					*h = nh;
-					return true;
-				}
+				modes.push_back(mode);
 			}
 		}
-		return false;
+
+		return modes;
 	}
 
 	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon):
@@ -2006,8 +1969,6 @@ namespace GAGCore
 		minW = minH = 0;
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
-		modes = nullptr;
-		totalmodes = 0;
 
 		// Load the SDL library
 		if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER)<0 )
@@ -2039,11 +2000,6 @@ namespace GAGCore
 		TTF_Quit();
 		SDL_Quit();
 		sdlsurface = NULL;
-		// modes was allocated by beginVideoModeListing
-		for (int i = 0;i<totalmodes;i++) {
-			delete modes[i];
-		}
-		delete[] modes;
 
 		if (verbose)
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");

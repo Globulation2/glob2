@@ -292,6 +292,9 @@ namespace GAGCore
 		// This prints out information on all of the texts that where requested but not detected
 		static void printFinishingText();
 	};
+
+	//! The description of a video mode
+	typedef std::vector<SDL_DisplayMode> VideoModes;
 	
 	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.
 	class GraphicContext:public DrawableSurface
@@ -315,10 +318,6 @@ namespace GAGCore
 	protected:
 		//! the minimum acceptable resolution
 		int minW, minH;
-		SDL_DisplayMode **modes;
-		//! the pointer for iterating through mode list
-		SDL_DisplayMode **modesitr;
-		int totalmodes;
 		SDL_Window *window = nullptr;
 		SDL_Renderer *sdlrenderer;
 		friend class DrawableSurface;
@@ -393,13 +392,9 @@ namespace GAGCore
 		// GraphicContext specific methods
 		//! Set the minimum acceptable resolution
 		virtual void setMinRes(int w = 0, int h = 0);
-		//! Set the caption of the window
-		virtual void setCaption(const char *title, const char *icon) { SDL_SetWindowTitle(window, title); }
-		//! Begin listing of acceptable video mode, *not thread-safe*
-		virtual void beginVideoModeListing(void);
-		//! Get the next acceptable video mode in w,h, return false if end of list, *not thread-safe*
-		virtual bool getNextVideoMode(int *w, int *h);
-		
+		//! List all video modes
+		VideoModes listVideoModes() const;
+
 		//! Save a bmp of the screen to a file, bypass virtual filesystem
 		virtual void printScreen(const std::string filename);
 		
