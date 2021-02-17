@@ -2020,32 +2020,23 @@ namespace GAGCore
 		}
 
 		TTF_Init();
-		Uint32 sdlflags = 0;
-		if (flags & USEGPU)
-			sdlflags |= SDL_WINDOW_OPENGL;
-		if (flags & FULLSCREEN)
-			sdlflags |= SDL_WINDOW_FULLSCREEN;
 
-		SDL_CreateWindowAndRenderer(w, h, sdlflags, &window, &sdlrenderer);
-		if (flags & USEGPU)
-		{
-			SDL_GLContext context = SDL_GL_CreateContext(window);
-			SDL_GL_MakeCurrent(window, context);
-		}
-		if (!title.empty() && !icon.empty())
-		{
-			SDL_SetWindowTitle(window, title.c_str());
-			SDL_Surface *iconsurface = IMG_Load(icon.c_str());
-			SDL_SetWindowIcon(window, iconsurface);
-			SDL_FreeSurface(iconsurface);
-		}
 		///If setting the given resolution fails, default to 800x600
 		if(!setRes(w, h, flags))
 		{
 			fprintf(stderr, "Toolkit : Can't set screen resolution, resetting to default of 800x600\n");
-			setRes(800,600,flags);
+			if (!setRes(800,600,flags)) {
+				fprintf(stderr, "Toolkit : Initial window could not be created, quitting.\n");
+				exit(1);
+			}
 		}
-
+		if (!title.empty() && !icon.empty())
+		{
+			SDL_SetWindowTitle(window, title.c_str());
+			SDL_Surface *iconSurface = IMG_Load(icon.c_str());
+			SDL_SetWindowIcon(window, iconSurface);
+			SDL_FreeSurface(iconSurface);
+		}
 	}
 
 	GraphicContext::~GraphicContext(void)
@@ -2078,35 +2069,33 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Screen height %d is too small, set to min %d\n", h, minH);
 			h = minH;
 		}
-		
-		SDL_SetWindowSize(window, w, h);
-		sdlsurface = SDL_GetWindowSurface(window);
 
 		// set flags
 		optionFlags = flags;
 		Uint32 sdlFlags = 0;
 		if (flags & FULLSCREEN)
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
-		if (flags & FULLSCREEN)
-			sdlFlags |= SDL_WINDOW_RESIZABLE;
+		// if (flags & FULLSCREEN)
+		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
-		else
-		{
-
-			SDL_DestroyRenderer(sdlrenderer);
-			sdlrenderer = SDL_CreateSoftwareRenderer(sdlsurface);
-		}
 		#else
 		// remove GL from options
 		optionFlags &= ~USEGPU;
-		SDL_DestroyRenderer(sdlrenderer);
-		sdlrenderer = SDL_CreateSoftwareRenderer(sdlsurface);
 		#endif
+
+		// if window exists, delete it
+		if (window) {
+			SDL_DestroyWindow(window);
+			window = nullptr;
+		}
+		// create the new window and the surface
+		window = SDL_CreateWindow("unnamed", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
+		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
 
 		// check surface
 		if (!sdlsurface)
@@ -2118,7 +2107,12 @@ namespace GAGCore
 		else
 		{
 			_gc = this;
-
+			// enable GL context
+			if (flags & USEGPU)
+			{
+				SDL_GLContext context = SDL_GL_CreateContext(window);
+				SDL_GL_MakeCurrent(window, context);
+			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
 			{

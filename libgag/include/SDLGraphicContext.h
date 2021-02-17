@@ -319,7 +319,7 @@ namespace GAGCore
 		//! the pointer for iterating through mode list
 		SDL_DisplayMode **modesitr;
 		int totalmodes;
-		SDL_Window *window;
+		SDL_Window *window = nullptr;
 		SDL_Renderer *sdlrenderer;
 		friend class DrawableSurface;
 		//! option flags
