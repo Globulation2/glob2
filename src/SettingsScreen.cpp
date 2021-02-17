@@ -556,6 +556,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source==scrollwheel)
 		{
 			globalContainer->settings.scrollWheelEnabled=scrollwheel->getState();
+			scrollWheelEnabled=scrollwheel->getState();
 		}
 		else if (source==lowquality)
 		{
@@ -676,7 +677,7 @@ int SettingsScreen::addDefaultFlagRadiusWidget(int type, int x, int y, int group
 	int n = type - IntBuildingType::EXPLORATION_FLAG;
 	flagRadii[n] = new Number(x, y+20, 100, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	addNumbersFor(1, 20, flagRadii[n]);
-	flagRadii[n]->setNth(globalContainer->settings.defaultFlagRadius[n]-1);
+	flagRadii[n]->setNth(std::max(0, globalContainer->settings.defaultFlagRadius[n]-1));
 	flagRadii[n]->visible=false;
 	addWidgetToGroup(flagRadii[n], unitGroup);
 

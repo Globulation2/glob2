@@ -404,6 +404,7 @@ namespace GAGGUI
 		Style::style->drawFrame(parent->getSurface(), x, y, w, h, getNextHighlightValue());
 	}
 	
+	bool Screen::scrollWheelEnabled = true;
 	Screen::Screen()
 	{
 		gfx = NULL;
@@ -465,15 +466,20 @@ namespace GAGGUI
 						lastMouseMotion=event;
 					}
 					break;
-					case SDL_ACTIVEEVENT:
+					case SDL_WINDOWEVENT:
 					{
 						windowEvent=event;
 						wasWindowEvent=true;
 					}
 					break;
-					case SDL_VIDEORESIZE:
+					case SDL_WINDOWEVENT_RESIZED:
 					{
-						gfx->setRes(event.resize.w, event.resize.h);
+						// FIXME: window resize is broken
+						// gfx->setRes(event.window.data1, event.window.data2);
+					}
+					break;
+					case SDL_WINDOWEVENT_SIZE_CHANGED:
+					{
 						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 					}
 					break;
@@ -560,7 +566,7 @@ namespace GAGGUI
 		// SDL_SYSWMEVENT, SDL_JOY*****, 
 		switch(event->type)
 		{
-			case SDL_ACTIVEEVENT:
+			case SDL_WINDOWEVENT:
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 				{
 					if ((*it)->visible)
@@ -602,13 +608,30 @@ namespace GAGGUI
 						(*it)->onSDLMouseButtonDown(event);
 				}
 				break;
-			case SDL_VIDEOEXPOSE:
+			case SDL_WINDOWEVENT_EXPOSED:
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 				{
 					if ((*it)->visible)
 						(*it)->onSDLVideoExpose(event);
 				}
 				break;
+			case SDL_TEXTINPUT:
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLTextInput(event);
+				}
+				break;
+			case SDL_MOUSEWHEEL:
+				if (!scrollWheelEnabled)
+					break;
+				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
+				{
+					if ((*it)->visible)
+						(*it)->onSDLMouseWheel(event);
+				}
+				break;
+
 			default:
 				// Every other event is passed to onSDLEvent
 				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)

@@ -94,14 +94,36 @@ namespace GAGGUI
 			}
 		}
 	}
-	
+
+	void TextInput::onSDLTextInput(SDL_Event *event)
+	{
+		assert(event->type == SDL_TEXTINPUT);
+		if (activated)
+		{
+			char* c = event->text.text;
+			if (c)
+			{
+				size_t lutf8=strlen(c);
+				if ((maxLength==0) || (text.length()+lutf8<maxLength))
+				{
+					text.insert(cursPos, c);
+					cursPos+=lutf8;
+
+					recomputeTextInfos();
+
+					parent->onAction(this, TEXT_MODIFIED, 0, 0);
+				}
+			}
+		}
+	}
+
 	void TextInput::onSDLKeyDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_KEYDOWN);
 		if (activated)
 		{
-			SDLKey sym=event->key.keysym.sym;
-			SDLMod mod=event->key.keysym.mod;
+			SDL_Keycode sym=event->key.keysym.sym;
+			Uint16 mod=event->key.keysym.mod;
 	
 			switch (sym)
 			{
@@ -242,24 +264,8 @@ namespace GAGGUI
 				break;
 					
 				default:
-				{
-					Uint16 c=event->key.keysym.unicode;
-					if (c)
-					{
-						char utf8text[4];
-						UCS16toUTF8(c, utf8text);
-						size_t lutf8=strlen(utf8text);
-						if ((maxLength==0) || (text.length()+lutf8<maxLength))
-						{
-							text.insert(cursPos, utf8text);
-							cursPos+=lutf8;
-		
-							recomputeTextInfos();
-		
-							parent->onAction(this, TEXT_MODIFIED, 0, 0);
-						}
-					}
-				}
+				//Unicode input moved to onSDLTextInput.
+				break;
 			}
 		}
 	}

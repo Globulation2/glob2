@@ -107,15 +107,27 @@ namespace GAGGUI
 	{
 		
 	}
-	
+	void TextArea::onSDLTextInput(SDL_Event *event)
+	{
+		assert(event->type == SDL_TEXTINPUT);
+		if (activated && !readOnly)
+		{
+			char* c=event->text.text;
+			if (c)
+			{
+				addText(c);
+				parent->onAction(this, TEXT_MODIFIED, 0, 0);
+			}
+		}
+	}
 	void TextArea::onSDLKeyDown(SDL_Event *event)
 	{
 		assert(event->type == SDL_KEYDOWN);
 		
 		if(activated)
 		{
-			SDLKey sym=event->key.keysym.sym;
-			SDLMod mod=event->key.keysym.mod;
+			SDL_Keycode sym=event->key.keysym.sym;
+			Uint16 mod=event->key.keysym.mod;
 			
 			switch (sym)
 			{
@@ -381,17 +393,7 @@ namespace GAGGUI
 				break;
 			
 				default:
-				if (!readOnly)
-				{
-					Uint16 c=event->key.keysym.unicode;
-					if (c)
-					{
-						char utf8text[4];
-						UCS16toUTF8(c, utf8text);
-						addText(utf8text);
-						parent->onAction(this, TEXT_MODIFIED, 0, 0);
-					}
-				}
+				//Unicode handling moved to onSDLTextInput
 				break;
 			}
 		}

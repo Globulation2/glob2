@@ -169,7 +169,7 @@ namespace GAGGUI
 		/*! Called when an SDL_ACTIVEEVENT event occurs.
 		 * \param event Catched SDL event
 		 */
-		virtual void onSDLActive(SDL_Event *event) { assert(event->type == SDL_ACTIVEEVENT); }
+		virtual void onSDLActive(SDL_Event *event) { assert(event->type == SDL_WINDOWEVENT); }
 		/*! Called when an SDL_KEYDOWN event occurs.
 		 * \param event Catched SDL event
 		 */
@@ -190,10 +190,20 @@ namespace GAGGUI
 		 * \param event Catched SDL event
 		 */
 		virtual void onSDLMouseButtonDown(SDL_Event *event) { assert(event->type == SDL_MOUSEBUTTONDOWN); }
+		/*! Called when an SDL_MOUSEWHEEL event occurs.
+		 * \param event Catched SDL event
+		 */
+
+		virtual void onSDLMouseWheel(SDL_Event* event) {assert(event->type == SDL_MOUSEWHEEL); }
 		/*! Called when an SDL_VIDEOEXPOSE event occurs.
 		 * \param event Catched SDL event
 		 */
-		virtual void onSDLVideoExpose(SDL_Event *event) { assert(event->type == SDL_VIDEOEXPOSE); }
+		virtual void onSDLVideoExpose(SDL_Event *event) { assert(event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_EXPOSED); }
+
+		/*! Called when an SDL_TEXTINPUT event occurs.
+		 * \param event Catched SDL event
+		 */
+		virtual void onSDLTextInput(SDL_Event *event) { assert(event->type == SDL_TEXTINPUT); }
 	};
 	
 	#define ALIGN_LEFT 0
@@ -300,6 +310,7 @@ namespace GAGGUI
 	public:
 		//! The animation frame for screen creation
 		int animationFrame;
+		static bool scrollWheelEnabled;
 		
 	public:
 		Screen();

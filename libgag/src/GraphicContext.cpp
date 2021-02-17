@@ -242,11 +242,11 @@ namespace GAGCore
 		SDL_Surface *dest;
 		if (_gc->sdlsurface->format->BitsPerPixel == 32)
 		{
-			dest = SDL_DisplayFormatAlpha(source);
+			dest = SDL_ConvertSurfaceFormat(source, SDL_PIXELFORMAT_BGRA32, 0);
 		}
 		else
 		{
-			dest = SDL_ConvertSurface(source, &_glFormat, SDL_SWSURFACE | SDL_SRCALPHA);
+			dest = SDL_ConvertSurface(source, &_glFormat, 0);
 		}
 		assert(dest);
 		return dest;
@@ -1922,18 +1922,62 @@ namespace GAGCore
 
 	void GraphicContext::beginVideoModeListing(void)
 	{
-		modes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
+		int displays = 0, nummodes = 0;
+		totalmodes = 0;
+		SDL_DisplayMode* mode;
+		displays = SDL_GetNumVideoDisplays();
+		if (displays < 1) {
+			std::cerr << "SDL_GetNumVideoDisplays failed: " << SDL_GetError() << std::endl;
+		}
+
+		// Check how many modes are available.
+		for (int i = 0;i < displays;i++) {
+			nummodes = SDL_GetNumDisplayModes(i);
+			if (nummodes < 0) {
+				nummodes = 0;
+				std::cerr << "SDL_GetNumDisplayModes failed: " << SDL_GetError() << std::endl;
+			}
+			totalmodes += nummodes;
+		}
+
+		// +1 to make room for sentinel NULL at end of array
+		modes = new SDL_DisplayMode*[totalmodes+1];
+		modesitr = modes;
+		// Clear modes
+		for (int i = 0;i < totalmodes+1;i++) {
+			modes[i] = nullptr;
+		}
+
+		// Populate modes
+		int k = 0;
+		for (int i =0;i < displays;i++) {
+			nummodes = SDL_GetNumDisplayModes(i);
+			if (nummodes < 0) {
+				std::cerr << "SDL_GetNumDisplayModes failed: " << SDL_GetError() << std::endl;
+				break;
+			}
+			for (int j = 0;j < nummodes;j++) {
+				mode = new SDL_DisplayMode;
+				if (SDL_GetDisplayMode(i, j, mode)) {
+					delete mode;
+					mode = nullptr;
+					std::cerr << "SDL_GetDisplayMode failed: " << SDL_GetError() << std::endl;
+					break;
+				}
+				modes[k++] = mode;
+			}
+		}
 	}
 
 	bool GraphicContext::getNextVideoMode(int *w, int *h)
 	{
-		if (modes && (modes != (SDL_Rect **)-1))
+		if (modesitr && (modesitr != (SDL_DisplayMode **)-1))
 		{
-			while (*modes)
+			while (*modesitr)
 			{
-				int nw = (*modes)->w;
-				int nh = (*modes)->h;
-				modes++;
+				int nw = (*modesitr)->w;
+				int nh = (*modesitr)->h;
+				modesitr++;
 
 				if(nw < 800 || nh<600)
 				{
@@ -1952,7 +1996,9 @@ namespace GAGCore
 		return false;
 	}
 
-	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon)
+	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon):
+		windowTitle(title),
+		appIcon(icon)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -1961,6 +2007,7 @@ namespace GAGCore
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
 		modes = nullptr;
+		totalmodes = 0;
 
 		// Load the SDL library
 		if ( SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER)<0 )
@@ -1974,21 +2021,17 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
 		}
 
-		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-		SDL_EnableUNICODE(1);
-
 		TTF_Init();
-
-		if (!title.empty() && !icon.empty())
-			SDL_WM_SetCaption(title.c_str(), icon.c_str());
 
 		///If setting the given resolution fails, default to 800x600
 		if(!setRes(w, h, flags))
 		{
 			fprintf(stderr, "Toolkit : Can't set screen resolution, resetting to default of 800x600\n");
-			setRes(800,600,flags);
+			if (!setRes(800,600,flags)) {
+				fprintf(stderr, "Toolkit : Initial window could not be created, quitting.\n");
+				exit(1);
+			}
 		}
-
 	}
 
 	GraphicContext::~GraphicContext(void)
@@ -1996,6 +2039,11 @@ namespace GAGCore
 		TTF_Quit();
 		SDL_Quit();
 		sdlsurface = NULL;
+		// modes was allocated by beginVideoModeListing
+		for (int i = 0;i<totalmodes;i++) {
+			delete modes[i];
+		}
+		delete[] modes;
 
 		if (verbose)
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
@@ -2021,24 +2069,29 @@ namespace GAGCore
 		optionFlags = flags;
 		Uint32 sdlFlags = 0;
 		if (flags & FULLSCREEN)
-			sdlFlags |= SDL_FULLSCREEN;
-		if (flags & FULLSCREEN)
-			sdlFlags |= SDL_RESIZABLE;
+			sdlFlags |= SDL_WINDOW_FULLSCREEN;
+		// FIXME: window resize is broken
+		// if (flags & RESIZABLE)
+		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-			sdlFlags |= SDL_OPENGL | SDL_ANYFORMAT;
+			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
 		// remove GL from options
 		optionFlags &= ~USEGPU;
 		#endif
 
-		// create surface
-		if (sdlsurface)
-			SDL_FreeSurface(sdlsurface);
-		sdlsurface = SDL_SetVideoMode(w, h, 32, sdlFlags);
+		// if window exists, delete it
+		if (window) {
+			SDL_DestroyWindow(window);
+			window = nullptr;
+		}
+		// create the new window and the surface
+		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
+		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
 
 		// check surface
 		if (!sdlsurface)
@@ -2050,7 +2103,12 @@ namespace GAGCore
 		else
 		{
 			_gc = this;
-
+			// enable GL context
+			if (flags & USEGPU)
+			{
+				SDL_GLContext context = SDL_GL_CreateContext(window);
+				SDL_GL_MakeCurrent(window, context);
+			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
 			{
@@ -2078,8 +2136,8 @@ namespace GAGCore
 				_glFormat.Gloss = 0;
 				_glFormat.Bloss = 0;
 				_glFormat.Aloss = 0;
-				_glFormat.colorkey = 0;
-				_glFormat.alpha = 255;
+				//_glFormat.colorkey = 0;
+				//_glFormat.alpha = 255;
 				//_glFormat = *SDL_AllocFormat(32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 			}
 			else
@@ -2097,6 +2155,14 @@ namespace GAGCore
 			if (optionFlags & USEGPU)
 				glState.checkExtensions();
 			#endif // HAVE_OPENGL
+
+			// setup title and icon
+			if (!appIcon.empty())
+			{
+				SDL_Surface *iconSurface = IMG_Load(appIcon.c_str());
+				SDL_SetWindowIcon(window, iconSurface);
+				SDL_FreeSurface(iconSurface);
+			}
 
 			setClipRect();
 			if (flags & CUSTOMCURSOR)
@@ -2148,13 +2214,13 @@ namespace GAGCore
 			#ifdef HAVE_OPENGL
 			if (optionFlags & GraphicContext::USEGPU)
 			{
-				SDL_GL_SwapBuffers();
+				SDL_GL_SwapWindow(window);
 				//fprintf(stderr, "%d allocated GPU textures\n", glState.alocatedTextureCount);
 			}
 			else
 			#endif
 			{
-				SDL_Flip(sdlsurface);
+				SDL_UpdateWindowSurface(window);
 			}
 		}
 	}
