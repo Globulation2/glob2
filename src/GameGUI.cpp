@@ -1117,26 +1117,26 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_WINDOWEVENT)
 	{
 		handleActivation(event->window.data1, event->window.data2);
+		if (event->window.event == SDL_WINDOWEVENT_RESIZED || event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+		{
+			// FIXME: window resize is broken
+			int newW=event->window.data1;
+			int newH=event->window.data2;
+			newW&=(~(0x1F));
+			newH&=(~(0x1F));
+			if (newW<640)
+				newW=640;
+			if (newH<480)
+				newH=480;
+			printf("New size : %dx%d\n", newW, newH);
+			globalContainer->gfx->setRes(newW, newH);
+		}
 	}
 	else if (event->type==SDL_QUIT)
 	{
 		exitGlobCompletely=true;
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 		flushOutgoingAndExit=true;
-	}
-	else if (event->type==SDL_WINDOWEVENT_RESIZED)
-	{
-		// FIXME: window resize is broken
-		/*int newW=event->window.data1;
-		int newH=event->window.data2;
-		newW&=(~(0x1F));
-		newH&=(~(0x1F));
-		if (newW<640)
-			newW=640;
-		if (newH<480)
-			newH=480;
-		printf("New size : %dx%d\n", newW, newH);
-		globalContainer->gfx->setRes(newW, newH);*/
 	}
 }
 

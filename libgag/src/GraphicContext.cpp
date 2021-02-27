@@ -2028,8 +2028,8 @@ namespace GAGCore
 		if (flags & FULLSCREEN)
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
 		// FIXME: window resize is broken
-		// if (flags & RESIZABLE)
-		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
+		if (flags & RESIZABLE)
+			sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
 		{
@@ -2041,13 +2041,29 @@ namespace GAGCore
 		optionFlags &= ~USEGPU;
 		#endif
 
-		// if window exists, delete it
+		// if window exists, resize it
 		if (window) {
-			SDL_DestroyWindow(window);
-			window = nullptr;
+			SDL_SetWindowSize(window, w, h);
+			sdlsurface = SDL_GetWindowSurface(window);
+#ifdef HAVE_OPENGL
+			if (flags & USEGPU)
+			{
+				// https://gamedev.stackexchange.com/questions/62691/opengl-resize-problem
+				glViewport(0, 0, w, h);
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				glOrtho(0, w, 0, h, -1.0, -1.0);
+				glMatrixMode(GL_MODELVIEW);
+				glLoadIdentity();
+			}
+#endif
+			setClipRect(0, 0, w, h);
+			nextFrame();
 		}
-		// create the new window and the surface
-		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
+		else {
+			// create the new window and the surface
+			window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
+		}
 		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
 
 		// check surface
@@ -2061,9 +2077,9 @@ namespace GAGCore
 		{
 			_gc = this;
 			// enable GL context
-			if (flags & USEGPU)
+			if (flags & USEGPU && !context)
 			{
-				SDL_GLContext context = SDL_GL_CreateContext(window);
+				context = SDL_GL_CreateContext(window);
 				SDL_GL_MakeCurrent(window, context);
 			}
 			// set _glFormat
