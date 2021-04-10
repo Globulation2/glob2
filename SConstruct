@@ -81,18 +81,18 @@ def configure(env, server_only):
         missing.append("CXX compiler")
 
     #Simple checks for required libraries
-    if not server_only and not conf.CheckLib("SDL"):
-        print("Could not find libSDL")
-        missing.append("SDL")
-    if not server_only and not conf.CheckLib("SDL_ttf"):
+    if not server_only and not conf.CheckLib("SDL2"):
+        print("Could not find libSDL2")
+        missing.append("SDL2")
+    if not server_only and not conf.CheckLib("SDL2_ttf"):
         print("Could not find libSDL_ttf")
-        missing.append("SDL_ttf")
-    if not server_only and not conf.CheckLib("SDL_image"):
-        print("Could not find libSDL_image")
-        missing.append("SDL_image")
-    if not conf.CheckLib("SDL_net"):
-        print("Could not find libSDL_net")
-        missing.append("SDL_net")
+        missing.append("SDL2_ttf")
+    if not server_only and not conf.CheckLib("SDL2_image"):
+        print("Could not find libSDL2_image")
+        missing.append("SDL2_image")
+    if not conf.CheckLib("SDL2_net"):
+        print("Could not find libSDL2_net")
+        missing.append("SDL2_net")
     if not server_only and (not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h")):
         print("Could not find libspeex or could not find 'speex/speex.h'")
         missing.append("speex")
