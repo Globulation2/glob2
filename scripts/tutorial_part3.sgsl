@@ -63,7 +63,7 @@ hide
 hilightUnits(Warrior)
 wait(Warrior(0) > 0)
 
-show("Whoah! Those warrior globs certainly look beefy and mighty. They would certainly do well to defend our colony. You probably noticed that he's wasting no time and going right to work, that is training. Let's wait for another one to come.")
+show("Whoah! Those warrior globs certainly look beefy and mighty. They would certainly do well to defend our colony. You probably noticed that they're wasting no time and going right to work, that is training. Let's wait for another one to come.")
 show("Wow ! Cette guerrière a l'air musclée et puissante, elle conviendrat certainement à la défense de notre colonie. Vous pourriez remarquer qu'elle ne perd pas de temps et se met tout de suite au travail. Attendons qu'une deuxième soit prete.", fr)
 show("Whoah! Diese Krieger sehen muskulös und gewaltig aus. Sie werden deine Kolonie sicher gut verteidigen. Dir wird aufgefallen sein, dass er keine Zeit verschwendet und gleich zum Training geht. Lass uns warten bis ein weiterer fertig ist.",de)
 show("Esos glóbulos guerreros se ven tan grandes y poderosos!!, defenderán bien nuestra colonia.  Te habrás dado cuenta que no desperdician su tiempo y van de una vez a trabajar, entrenando.  Esperemos a que salga el siguiente.",es)
