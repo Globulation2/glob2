@@ -31,6 +31,7 @@
 #include <string.h>
 #include <valarray>
 #include <cstdlib>
+#include <memory>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -2187,12 +2188,13 @@ namespace GAGCore
 
 		// Fetch the surface to print
 		#ifdef HAVE_OPENGL
+		std::unique_ptr<DrawableSurface> toPrint = nullptr;
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
-			DrawableSurface toPrint(getW(), getH());
+			toPrint = std::make_unique<DrawableSurface>(getW(), getH());
 			glFlush();
-			toPrint.drawSurface(0, 0, this);
-			toPrintSurface = toPrint.sdlsurface;
+			toPrint->drawSurface(0, 0, this);
+			toPrintSurface = toPrint->sdlsurface;
 		}
 		else
 		#endif
