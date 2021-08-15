@@ -97,7 +97,7 @@ int PaSpeexEncodeCallback( const void *input, void *output, unsigned long frameC
 	
 	const short* inBuffer = reinterpret_cast<const short*>(input);
 	short* buffer = recorder->buffer;
-	for(int i=0; i<frameCount; ++i)
+	for(unsigned long i=0; i<frameCount; ++i)
 		buffer[i] = inBuffer[i];
 	for(int i=frameCount; i<recorder->frameSize; ++i)
 		buffer[i] = 0;
