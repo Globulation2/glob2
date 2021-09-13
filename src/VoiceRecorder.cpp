@@ -377,6 +377,7 @@ VoiceRecorder::VoiceRecorder()
 	#ifdef HAVE_PORTAUDIO
 		buffer = new short[frameSize];
 		frameCount=0;
+		stream = nullptr;
 		PaError err = Pa_Initialize();
 		if( err != paNoError )
 			return;
@@ -398,7 +399,9 @@ VoiceRecorder::~VoiceRecorder()
 {
 	recordingNow = false;
 	#ifdef HAVE_PORTAUDIO
-		PaError err = Pa_CloseStream( stream );
+		PaError err = paNoError;
+		if(stream)
+			err = Pa_CloseStream( stream );
 		if( err != paNoError )
 			printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
 		err = Pa_Terminate();
