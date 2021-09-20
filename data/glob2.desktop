@@ -2,6 +2,8 @@
 Version=1.0
 Encoding=UTF-8
 Name=Globulation 2
+GenericName=Real Time Strategy Game
+GenericName[de]=Echtzeit-Strategiespiel
 Comment=An innovative new strategy game
 Exec=glob2
 Icon=glob2
@@ -9,4 +11,3 @@ Terminal=false
 X-MultipleArgs=false
 Type=Application
 Categories=Application;Game;StrategyGame;
-GenericName[en_US]=
