@@ -10,4 +10,4 @@ Icon=glob2
 Terminal=false
 X-MultipleArgs=false
 Type=Application
-Categories=Application;Game;StrategyGame;
+Categories=Game;StrategyGame;
