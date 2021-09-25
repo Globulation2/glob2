@@ -415,7 +415,7 @@ VoiceRecorder::~VoiceRecorder()
 		SDL_DestroyMutex(ordersMutex);
 	#endif
 	
-	speex_bits_reset(&bits);
+	speex_bits_destroy(&bits);
 	// destroy the decoder
 	speex_encoder_destroy(speexEncoderState);
 }
