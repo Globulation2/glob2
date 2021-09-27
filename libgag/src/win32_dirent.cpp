@@ -28,7 +28,7 @@
 
 struct DIR
 {
-    long                handle; /* -1 for failed rewind */
+    intptr_t            handle; /* -1 for failed rewind */
     struct _finddata_t  info;
     struct dirent       result; /* d_name null iff first time */
     char                *name;  /* NTBS */
