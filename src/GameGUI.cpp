@@ -435,7 +435,7 @@ void GameGUI::step(void)
 			wasMouseMotion=true;
 		}
 #		ifdef USE_OSX
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
