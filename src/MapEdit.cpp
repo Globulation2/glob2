@@ -1650,7 +1650,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		doFullQuit=true;
 	}
 #	ifdef USE_OSX
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
 	{
 		doFullQuit=true;
 	}
