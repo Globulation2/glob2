@@ -15,5 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          ls -a
-          pwd
+          sudo apt-get install -y debhelper quilt scons libsdl1.2-dev libsdl-image1.2-dev \
+            libsdl-net1.2-dev libsdl-ttf2.0-dev libglu1-mesa-dev libvorbis-dev libspeex-dev \
+            libfreetype6-dev libboost-dev libboost-thread-dev libboost-date-time-dev \
+            libfribidi-dev portaudio19-dev libboost-math-dev \
+            dpkg-dev libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-net-dev
+          scons -j5
+          dpkg-buildpackage -I.hg
