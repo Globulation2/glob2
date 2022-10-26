@@ -1,56 +1,58 @@
 name: Build
 
 on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
 
 jobs:
-  Ubuntu-Bulid:
-    name: Build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-22.04, ubuntu-20.04, ubuntu-18.04]
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt-get install -y debhelper quilt scons libglu1-mesa-dev libvorbis-dev \
-            libspeex-dev libfreetype6-dev libboost-dev libboost-thread-dev \
-            libboost-date-time-dev libfribidi-dev portaudio19-dev libboost-math-dev \
-            dpkg-dev libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-net-dev
-          scons -j16
-          #dpkg-buildpackage -I.hg
-  Windows-Build:
-    runs-on: windows-2022
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-      - uses: msys2/setup-msys2@v2
-        with:
-          #update: true
-          install: >-
-            base-devel
-            git
-            msys/scons
-            msys/quilt
-            mingw64/mingw-w64-x86_64-SDL2
-            mingw64/mingw-w64-x86_64-SDL2_image
-            mingw64/mingw-w64-x86_64-SDL2_net
-            mingw64/mingw-w64-x86_64-SDL2_ttf
-            mingw64/mingw-w64-x86_64-mesa
-            mingw64/mingw-w64-x86_64-libvorbis
-            mingw64/mingw-w64-x86_64-speex
-            mingw64/mingw-w64-x86_64-freetype
-            mingw64/mingw-w64-x86_64-boost
-            mingw64/mingw-w64-x86_64-fribidi
-            mingw64/mingw-w64-x86_64-portaudio
-      - shell: cmd
-        run: git config --global core.autocrlf input
-      - uses: actions/checkout@v3
-      - run: scons -j16
+    Ubuntu-Bulid:
+        name: Build on ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-22.04, ubuntu-20.04, ubuntu-18.04]
+        steps:
+            - uses: actions/checkout@v3
+            - run: |
+                sudo apt-get install -y debhelper quilt scons libglu1-mesa-dev libvorbis-dev \
+                    libspeex-dev libfreetype6-dev libboost-dev libboost-thread-dev \
+                    libboost-date-time-dev libfribidi-dev portaudio19-dev libboost-math-dev \
+                    dpkg-dev libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-net-dev
+                scons -j16
+                dpkg-buildpackage -I.hg
+
+    Windows-Build:
+        name: Build on windows-2022 msys2
+        runs-on: windows-2022
+        defaults:
+            run:
+                shell: msys2 {0}
+        steps:
+            - uses: msys2/setup-msys2@v2
+              with:
+                  #update: true
+                  install: >-
+                      base-devel
+                      git
+                      msys/scons
+                      msys/quilt
+                      mingw64/mingw-w64-x86_64-SDL2
+                      mingw64/mingw-w64-x86_64-SDL2_image
+                      mingw64/mingw-w64-x86_64-SDL2_net
+                      mingw64/mingw-w64-x86_64-SDL2_ttf
+                      mingw64/mingw-w64-x86_64-mesa
+                      mingw64/mingw-w64-x86_64-libvorbis
+                      mingw64/mingw-w64-x86_64-speex
+                      mingw64/mingw-w64-x86_64-freetype
+                      mingw64/mingw-w64-x86_64-boost
+                      mingw64/mingw-w64-x86_64-fribidi
+                      mingw64/mingw-w64-x86_64-portaudio
+            - shell: cmd
+              run: git config --global core.autocrlf input
+            - uses: actions/checkout@v3
+            - run: scons -j16
