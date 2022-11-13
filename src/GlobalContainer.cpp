@@ -505,8 +505,9 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 	gfx->nextFrame();
 }
 
+EventListener* el = NULL;
 // glob2-client specific actions here.
-void GlobalContainer::loadClient(void)
+void GlobalContainer::loadClient(bool runEventListener)
 {
 	if (!runNoX)
 	{
@@ -515,8 +516,10 @@ void GlobalContainer::loadClient(void)
 		gfx->setMinRes(640, 480);
 		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
 		
-		EventListener el(gfx);
-		el.run();
+		if (runEventListener) {
+			el = new EventListener(gfx);
+			el->run();
+		}
 		
 		// load data required for drawing progress screen
 		title = new DrawableSurface("data/gfx/title.png");
@@ -624,31 +627,33 @@ void GlobalContainer::loadClient(void)
 }
 #endif  // !YOG_SERVER_ONLY
 
-void GlobalContainer::load(void)
+void GlobalContainer::load(bool runEventListener)
 {
-	// load texts
-	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
-	{
-		std::cerr << "Fatal error : while loading \"data/texts.list.txt\"" << std::endl;
-		assert(false);
-		exit(-1);
+	if (runEventListener) {
+		// load texts
+		if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
+		{
+			std::cerr << "Fatal error : while loading \"data/texts.list.txt\"" << std::endl;
+			assert(false);
+			exit(-1);
+		}
+		// load texts
+		if (!Toolkit::getStringTable()->loadIncompleteList("data/texts.incomplete.txt"))
+		{
+			std::cerr << "Fatal error : while loading \"data/texts.incomplete.txt\"" << std::endl;
+			assert(false);
+			exit(-1);
+		}
+		
+		Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
+		// load default unit types
+		Race::loadDefault();
+		// load resources types
+		ressourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
 	}
-	// load texts
-	if (!Toolkit::getStringTable()->loadIncompleteList("data/texts.incomplete.txt"))
-	{
-		std::cerr << "Fatal error : while loading \"data/texts.incomplete.txt\"" << std::endl;
-		assert(false);
-		exit(-1);
-	}
-	
-	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
-	// load default unit types
-	Race::loadDefault();
-	// load resources types
-	ressourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
 
 #ifndef YOG_SERVER_ONLY
-	loadClient();
+	loadClient(runEventListener);
 #endif  // !YOG_SERVER_ONLY
 }
 

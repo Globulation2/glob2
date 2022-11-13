@@ -26,4 +26,8 @@ void EventListener::run()
 	}
 	done = true;
 }
+bool EventListener::isRunning()
+{
+	return !quit;
+}
 }

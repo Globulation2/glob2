@@ -20,9 +20,10 @@
 #include "Glob2.h"
 #include "GlobalContainer.h"
 #include "YOGServer.h"
+#include <thread>
+#include <atomic>
 
 #ifndef YOG_SERVER_ONLY
-
 #include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
 #include "CampaignMainMenu.h"
@@ -211,14 +212,27 @@ int Glob2::runTestMapGeneration()
 }
 #endif  // !YOG_SERVER_ONLY
 
-
+std::thread* otherthread = nullptr;
+std::thread::id mainthr;
+std::atomic<bool> mainthrSet = false;
 int Glob2::run(int argc, char *argv[])
 {
 	srand(time(NULL));
-
-	globalContainer=new GlobalContainer();
-	globalContainer->parseArgs(argc, argv);
-	globalContainer->load();
+	if (!globalContainer) {
+		globalContainer=new GlobalContainer();
+		globalContainer->parseArgs(argc, argv);
+	}
+	if (!mainthrSet) {
+		mainthr = std::this_thread::get_id();
+		mainthrSet = true;
+		otherthread = new std::thread(&Glob2::run, this, argc, argv);
+	}
+	if (std::this_thread::get_id() == mainthr) {
+		globalContainer->load(true);
+	}
+	else {
+		globalContainer->load(false);
+	}
 
 	if ( SDLNet_Init() < 0 )
 	{

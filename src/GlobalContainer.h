@@ -23,6 +23,7 @@
 #include "BuildingsTypes.h"
 #include "RessourcesTypes.h"
 #include "Settings.h"
+#include "EventListener.h"
 
 namespace GAGCore
 {
@@ -41,6 +42,7 @@ class UnitsSkins;
 class ReplayReader;
 class ReplayWriter;
 
+extern EventListener* el;
 class GlobalContainer
 {
 public:
@@ -59,9 +61,9 @@ public:
 
 	void parseArgs(int argc, char *argv[]);
 #ifndef YOG_SERVER_ONLY
-	void loadClient(void);
+	void loadClient(bool runEventListener);
 #endif  // !YOG_SERVER_ONLY
-	void load(void);
+	void load(bool runEventListener);
 
 	//void setUsername(const std::string &name);
 	//const std::string &getUsername(void) { return settings.getUsername(); }
