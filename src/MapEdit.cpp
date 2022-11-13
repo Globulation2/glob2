@@ -37,6 +37,7 @@
 #include "Utilities.h"
 #include "FertilityCalculatorDialog.h"
 #include "GUIMessageBox.h"
+#include "EventListener.h"
 
 
 #define RIGHT_MENU_WIDTH 160
@@ -1236,7 +1237,8 @@ int MapEdit::run(void)
 	
 		// we get all pending events but for mousemotion we only keep the last one
 		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		EventListener *el = EventListener::instance();
+		while (el->poll(&event))
 		{
  			processEvent(event);
 		}

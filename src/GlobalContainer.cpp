@@ -511,16 +511,19 @@ void GlobalContainer::loadClient(bool runEventListener)
 {
 	if (!runNoX)
 	{
-		// create graphic context
-		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
-		gfx->setMinRes(640, 480);
-		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
-		
 		if (runEventListener) {
+			// create graphic context
+			gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+			gfx->setMinRes(640, 480);
+			//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
+		
 			el = new EventListener(gfx);
 			el->run();
 		}
 		
+		while (!el || !el->isRunning()) {
+			SDL_Delay(100);
+		}
 		// load data required for drawing progress screen
 		title = new DrawableSurface("data/gfx/title.png");
 		terrain = Toolkit::getSprite("data/gfx/terrain");

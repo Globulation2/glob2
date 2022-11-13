@@ -10,9 +10,12 @@ public:
 	EventListener(GraphicContext* gfx);
 	void run();
 	bool isRunning();
+	int poll(SDL_Event* e);
+	static EventListener *instance();
 	~EventListener();
 private:
 	GraphicContext* gfx;
+	static EventListener* el;
 	bool quit, done;
 };
 }

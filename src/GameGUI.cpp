@@ -55,6 +55,7 @@
 #include "ReplayWriter.h"
 #include "config.h"
 #include "Order.h"
+#include "EventListener.h"
 
 #include <SDL_keycode.h>
 
@@ -388,7 +389,8 @@ void GameGUI::step(void)
 	bool wasWindowEvent=false;
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
-	while (SDL_PollEvent(&event))
+	EventListener *el = EventListener::instance();
+	while (el->poll(&event))
 	{
 		if (event.type==SDL_MOUSEMOTION)
 		{

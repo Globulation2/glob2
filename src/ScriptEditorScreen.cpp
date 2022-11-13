@@ -28,6 +28,7 @@
 #include <StringTable.h>
 #include <SupportFunctions.h>
 #include <Stream.h>
+#include <EventListener.h>
 using namespace GAGCore;
 #include <GUIText.h>
 #include <GUITextArea.h>
@@ -569,7 +570,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 	while(loadSaveScreen->endValue<0)
 	{
 		int time = SDL_GetTicks();
-		while (SDL_PollEvent(&event))
+		EventListener *el = EventListener::instance();
+		while (el->poll(&event))
 		{
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}

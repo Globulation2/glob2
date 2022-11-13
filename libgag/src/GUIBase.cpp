@@ -22,6 +22,7 @@
 #include <assert.h>
 #include <GraphicContext.h>
 #include <cmath>
+#include <EventListener.h>
 
 #include <Toolkit.h>
 
@@ -449,7 +450,8 @@ namespace GAGGUI
 			SDL_Event lastMouseMotion, windowEvent, event;
 			bool hadLastMouseMotion=false;
 			bool wasWindowEvent=false;
-			while (SDL_PollEvent(&event))
+			EventListener* el = EventListener::instance();
+			while (el->poll(&event))
 			{
 				switch (event.type)
 				{

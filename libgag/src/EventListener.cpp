@@ -1,9 +1,11 @@
 #include "EventListener.h"
 namespace GAGCore {
 std::deque<SDL_Event> events = std::deque<SDL_Event>();
+EventListener* EventListener::el = nullptr;
 EventListener::EventListener(GraphicContext* gfx)
 {
 	this->gfx = gfx;
+	el = this;
 	done = false;
 	quit = false;
 }
@@ -25,6 +27,19 @@ void EventListener::run()
 		}
 	}
 	done = true;
+}
+int EventListener::poll(SDL_Event* e)
+{
+	if (events.size()) {
+		*e = events.front();
+		events.pop_front();
+		return 1;
+	}
+	return 0;
+}
+EventListener *EventListener::instance()
+{
+	return el;
 }
 bool EventListener::isRunning()
 {

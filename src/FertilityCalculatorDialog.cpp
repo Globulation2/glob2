@@ -26,6 +26,7 @@
 #include <sstream>
 #include "StringTable.h"
 #include "Toolkit.h"
+#include "EventListener.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;
@@ -66,7 +67,8 @@ void FertilityCalculatorDialog::execute()
 	while(endValue<0)
 	{
 		Sint32 time = SDL_GetTicks();
-		while (SDL_PollEvent(&event))
+		EventListener *el = EventListener::instance();
+		while (el->poll(&event))
 		{
 			if (event.type==SDL_QUIT)
 				break;
