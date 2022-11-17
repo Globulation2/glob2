@@ -318,6 +318,7 @@ namespace GAGCore
 	protected:
 		//! the minimum acceptable resolution
 		int minW, minH;
+		int prevW, prevH;
 		SDL_Window *window = nullptr;
 		SDL_GLContext context = nullptr;
 		friend class DrawableSurface;
@@ -335,6 +336,9 @@ namespace GAGCore
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+		virtual SDL_Rect getRes();
+		virtual bool resChanged();
+		virtual void createGLContext();
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);

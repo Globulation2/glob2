@@ -519,11 +519,13 @@ void GlobalContainer::loadClient(bool runEventListener)
 		
 			el = new EventListener(gfx);
 			el->run();
+			exit(0);
 		}
 		
 		while (!el || !el->isRunning()) {
 			SDL_Delay(100);
 		}
+		gfx->createGLContext();
 		// load data required for drawing progress screen
 		title = new DrawableSurface("data/gfx/title.png");
 		terrain = Toolkit::getSprite("data/gfx/terrain");

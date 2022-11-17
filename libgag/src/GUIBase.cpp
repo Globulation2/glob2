@@ -516,6 +516,12 @@ namespace GAGGUI
 					break;
 				}
 			}
+			GraphicContext* gfxCasted = dynamic_cast<GraphicContext*>(gfx);
+			if (gfxCasted && gfxCasted->resChanged()) {
+				SDL_Rect r = gfxCasted->getRes();
+				gfx->setRes(r.w, r.h);
+				onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
+			}
 			if (hadLastMouseMotion)
 				dispatchEvents(&lastMouseMotion);
 			if (wasWindowEvent)
