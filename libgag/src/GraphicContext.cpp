@@ -32,6 +32,7 @@
 #include <valarray>
 #include <cstdlib>
 #include <memory>
+#include <mutex>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -2006,15 +2007,26 @@ namespace GAGCore
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
 	}
 
+	std::mutex m;
+
 	void GraphicContext::createGLContext()
 	{
 		// enable GL context
 		if (optionFlags & USEGPU)
 		{
-			if (context)
-				SDL_GL_DeleteContext(context);
-			context = SDL_GL_CreateContext(window);
+			std::lock_guard<std::mutex> l(m);
+			if (!context)
+			    context = SDL_GL_CreateContext(window);
+			if (!context)
+			    throw "no context";
 			SDL_GL_MakeCurrent(window, context);
+		}
+	}
+	void GraphicContext::unsetContext()
+	{
+		if (optionFlags & USEGPU)
+		{
+			SDL_GL_MakeCurrent(window, nullptr);
 		}
 	}
 	bool GraphicContext::resChanged()
@@ -2030,6 +2042,17 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &w, &h);
 		r = {0, 0, w, h};
 		return r;
+	}
+	void GraphicContext::resetMatrices()
+	{
+		// https://gamedev.stackexchange.com/questions/62691/opengl-resize-problem
+		int w = getW(), h = getH();
+		glViewport(0, 0, w, h);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, w, 0, h, -1.0, -1.0);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 	}
 
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
@@ -2077,13 +2100,7 @@ namespace GAGCore
 #ifdef HAVE_OPENGL
 			if (flags & USEGPU)
 			{
-				// https://gamedev.stackexchange.com/questions/62691/opengl-resize-problem
-				glViewport(0, 0, w, h);
-				glMatrixMode(GL_PROJECTION);
-				glLoadIdentity();
-				glOrtho(0, w, 0, h, -1.0, -1.0);
-				glMatrixMode(GL_MODELVIEW);
-				glLoadIdentity();
+				resetMatrices();
 			}
 #endif
 			setClipRect(0, 0, w, h);
@@ -2094,7 +2111,12 @@ namespace GAGCore
 			window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
 		}
 		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
-
+#ifdef HAVE_OPENGL
+		if (flags & USEGPU)
+		{
+			resetMatrices();
+		}
+#endif
 		// check surface
 		if (!sdlsurface)
 		{
@@ -2108,8 +2130,7 @@ namespace GAGCore
 			// enable GL context
 			if (flags & USEGPU && !context)
 			{
-				context = SDL_GL_CreateContext(window);
-				SDL_GL_MakeCurrent(window, context);
+				createGLContext();
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))

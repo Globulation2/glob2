@@ -517,6 +517,7 @@ void GlobalContainer::loadClient(bool runEventListener)
 			gfx->setMinRes(640, 480);
 			//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
 		
+			gfx->unsetContext();
 			el = new EventListener(gfx);
 			el->run();
 			exit(0);

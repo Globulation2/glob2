@@ -339,6 +339,8 @@ namespace GAGCore
 		virtual SDL_Rect getRes();
 		virtual bool resChanged();
 		virtual void createGLContext();
+		virtual void unsetContext();
+		void resetMatrices();
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);
