@@ -9,12 +9,15 @@ EventListener::EventListener(GraphicContext* gfx)
 	done = false;
 	quit = false;
 }
-EventListener::~EventListener()
+void EventListener::stop()
 {
 	quit = true;
 	while (!done) {
 		SDL_Delay(100);
 	}
+}
+EventListener::~EventListener()
+{
 }
 void EventListener::run()
 {
