@@ -56,6 +56,7 @@
 #include "config.h"
 #include "Order.h"
 #include "EventListener.h"
+#include "SDLGraphicContext.h"
 
 #include <SDL_keycode.h>
 
@@ -476,6 +477,11 @@ void GameGUI::step(void)
 		{
 			processEvent(&event);
 		}
+	}
+	GraphicContext* gfx = GraphicContext::instance();
+	if (gfx->resChanged()) {
+		SDL_Rect r = gfx->getRes();
+		gfx->setRes(r.w, r.h);
 	}
 	if (wasMouseMotion)
 		processEvent(&mouseMotionEvent);

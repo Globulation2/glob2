@@ -340,6 +340,7 @@ namespace GAGCore
 		virtual bool resChanged();
 		virtual void createGLContext();
 		virtual void unsetContext();
+		static GraphicContext* instance();
 		void resetMatrices();
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);

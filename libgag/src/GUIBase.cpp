@@ -516,9 +516,9 @@ namespace GAGGUI
 					break;
 				}
 			}
-			GraphicContext* gfxCasted = dynamic_cast<GraphicContext*>(gfx);
-			if (gfxCasted && gfxCasted->resChanged()) {
-				SDL_Rect r = gfxCasted->getRes();
+			GraphicContext* gfx = GraphicContext::instance();
+			if (gfx->resChanged()) {
+				SDL_Rect r = gfx->getRes();
 				gfx->setRes(r.w, r.h);
 				onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 			}

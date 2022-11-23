@@ -2007,8 +2007,12 @@ namespace GAGCore
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
 	}
 
-	std::mutex m;
+	GraphicContext* GraphicContext::instance()
+	{
+		return _gc;
+	}
 
+	std::mutex m;
 	void GraphicContext::createGLContext()
 	{
 		// enable GL context
