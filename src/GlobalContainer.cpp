@@ -529,8 +529,11 @@ void GlobalContainer::loadClient(bool runEventListener)
 			exit(0);
 		}
 		
-		while (!el || !el->isRunning()) {
-			SDL_Delay(100);
+		{
+			std::unique_lock lock(EventListener::startMutex);
+			while (!el || !el->isRunning()) {
+				EventListener::startedCond.wait(lock);
+			}
 		}
 		gfx->createGLContext();
 		// load data required for drawing progress screen
