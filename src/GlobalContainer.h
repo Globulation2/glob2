@@ -24,6 +24,8 @@
 #include "RessourcesTypes.h"
 #include "Settings.h"
 #include "EventListener.h"
+#include <thread>
+#include <atomic>
 
 namespace GAGCore
 {
@@ -139,6 +141,12 @@ public:
 	Uint32 replayVisibleTeams; //!< A mask of which teams can be seen in the replay. Can be edited real-time.
 	bool replayShowAreas; //!< Show areas of gui.localPlayer or not. Can be edited real-time.
 	bool replayShowFlags; //!< Show all flags or show none. Can be edited real-time.
+
+	// other thread handles events in the queue, game logic, rendering, etc.
+	std::thread* otherthread;
+	// main thread listens for SDL events and adds them to a queue
+	std::thread::id mainthr;
+	std::atomic<bool> mainthrSet;
 
 #ifndef YOG_SERVER_ONLY
 	ReplayReader *replayReader; //!< Reads and processes replay files, and outputs orders

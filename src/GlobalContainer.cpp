@@ -26,6 +26,7 @@
 #include "GameGUIKeyActions.h"
 #include "Glob2Screen.h"
 #include "Glob2Style.h"
+#include "Glob2.h"
 #include "GlobalContainer.h"
 #include "Header.h"
 #include "IntBuildingType.h"
@@ -127,6 +128,9 @@ GlobalContainer::GlobalContainer(void)
 	replayVisibleTeams = 0xFFFFFFFF;
 	replayShowAreas = false;
 	replayShowFlags = true;
+
+	mainthrSet = false;
+	otherthread = nullptr;
 
 #ifndef YOG_SERVER_ONLY
 	replayReader = NULL;
@@ -520,6 +524,8 @@ void GlobalContainer::loadClient(bool runEventListener)
 			gfx->unsetContext();
 			el = new EventListener(gfx);
 			el->run();
+			otherthread->join();
+			delete otherthread;
 			exit(0);
 		}
 		

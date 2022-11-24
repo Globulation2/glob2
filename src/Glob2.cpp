@@ -212,9 +212,6 @@ int Glob2::runTestMapGeneration()
 }
 #endif  // !YOG_SERVER_ONLY
 
-std::thread* otherthread = nullptr;
-std::thread::id mainthr;
-std::atomic<bool> mainthrSet = false;
 int Glob2::run(int argc, char *argv[])
 {
 	srand(time(NULL));
@@ -222,12 +219,15 @@ int Glob2::run(int argc, char *argv[])
 		globalContainer=new GlobalContainer();
 		globalContainer->parseArgs(argc, argv);
 	}
-	if (!mainthrSet) {
-		mainthr = std::this_thread::get_id();
-		mainthrSet = true;
-		otherthread = new std::thread(&Glob2::run, this, argc, argv);
+	if (!globalContainer->mainthrSet) {
+		globalContainer->mainthr = std::this_thread::get_id();
+		globalContainer->mainthrSet = true;
+		if (!globalContainer->hostServer) {
+			globalContainer->otherthread = new std::thread(&Glob2::run, this, argc, argv);
+		}
 	}
-	if (std::this_thread::get_id() == mainthr) {
+	if (!globalContainer->hostServer &&
+	    std::this_thread::get_id() == globalContainer->mainthr) {
 		globalContainer->load(true);
 	}
 	else {
