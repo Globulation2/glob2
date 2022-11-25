@@ -212,6 +212,12 @@ int Glob2::runTestMapGeneration()
 }
 #endif  // !YOG_SERVER_ONLY
 
+void Glob2::finish()
+{
+	// This is for the textshot code
+	GAGCore::DrawableSurface::printFinishingText();
+	delete globalContainer;
+}
 int Glob2::run(int argc, char *argv[])
 {
 	srand(time(NULL));
@@ -222,13 +228,16 @@ int Glob2::run(int argc, char *argv[])
 	if (!globalContainer->mainthrSet) {
 		globalContainer->mainthr = std::this_thread::get_id();
 		globalContainer->mainthrSet = true;
-		if (!globalContainer->hostServer) {
+		if (!globalContainer->hostServer && !globalContainer->runNoX) {
 			globalContainer->otherthread = new std::thread(&Glob2::run, this, argc, argv);
 		}
 	}
 	if (!globalContainer->hostServer &&
+		!globalContainer->runNoX &&
 	    std::this_thread::get_id() == globalContainer->mainthr) {
 		globalContainer->load(true);
+		finish();
+		return 0;
 	}
 	else {
 		globalContainer->load(false);
@@ -421,9 +430,20 @@ int Glob2::run(int argc, char *argv[])
 		}
 	}
 
-	// This is for the textshot code
-	GAGCore::DrawableSurface::printFinishingText();
-	delete globalContainer;
+	// quit event loop so otherthread can be joined by main thread
+	if (globalContainer->otherthread)
+	{
+		EventListener *el = EventListener::instance();
+		el->stop();
+	}
+
+	// Deleting globalContainer indirectly deletes GraphicContext whose
+	// destructor calls SDL_Quit(). I think SDL_Quit needs to be called from
+	// same thread that called SDL_Init.
+	if (std::this_thread::get_id() == globalContainer->mainthr)
+	{
+		finish();
+	}
 
 #endif  // !YOG_SERVER_ONLY
 

@@ -526,7 +526,7 @@ void GlobalContainer::loadClient(bool runEventListener)
 			el->run();
 			otherthread->join();
 			delete otherthread;
-			exit(0);
+			return;
 		}
 		
 		{
