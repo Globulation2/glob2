@@ -530,7 +530,7 @@ void GlobalContainer::loadClient(bool runEventListener)
 		}
 		
 		{
-			std::unique_lock lock(EventListener::startMutex);
+			std::unique_lock<std::mutex> lock(EventListener::startMutex);
 			while (!el || !el->isRunning()) {
 				EventListener::startedCond.wait(lock);
 			}

@@ -34,7 +34,7 @@ EventListener::EventListener(GraphicContext* gfx)
 void EventListener::stop()
 {
 	quit = true;
-	std::unique_lock lock(doneMutex);
+	std::unique_lock<std::mutex> lock(doneMutex);
 	while (!done) {
 		doneCond.wait(lock);
 	}
@@ -45,7 +45,7 @@ EventListener::~EventListener()
 void EventListener::run()
 {
 	{
-		std::unique_lock lock(startMutex);
+		std::unique_lock<std::mutex> lock(startMutex);
 		quit = false;
 		startedCond.notify_one();
 	}
@@ -61,7 +61,7 @@ void EventListener::run()
 		}
 	}
 	{
-		std::unique_lock lock(doneMutex);
+		std::unique_lock<std::mutex> lock(doneMutex);
 		done = true;
 		doneCond.notify_one();
 	}
