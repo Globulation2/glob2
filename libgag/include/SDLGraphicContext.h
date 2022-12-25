@@ -336,6 +336,7 @@ namespace GAGCore
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+		virtual SDL_Surface *getOrCreateSurface(int w, int h, Uint32 flags);
 		virtual SDL_Rect getRes();
 		virtual bool resChanged();
 		virtual void createGLContext();
