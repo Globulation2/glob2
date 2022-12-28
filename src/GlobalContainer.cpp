@@ -536,6 +536,8 @@ void GlobalContainer::loadClient(bool runEventListener)
 			}
 		}
 		gfx->createGLContext();
+		// Next line fixes white screen during loading screen in software rendered mode.
+		gfx->getOrCreateSurface(gfx->getW(), gfx->getH(), gfx->getOptionFlags());
 		// load data required for drawing progress screen
 		title = new DrawableSurface("data/gfx/title.png");
 		terrain = Toolkit::getSprite("data/gfx/terrain");
