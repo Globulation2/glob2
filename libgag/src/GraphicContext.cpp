@@ -2076,6 +2076,7 @@ namespace GAGCore
 
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
+		static bool isLoading = true;
 		// check dimension
 		if (minW && (w < minW))
 		{
@@ -2099,8 +2100,14 @@ namespace GAGCore
 		if (flags & FULLSCREEN)
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
 		// FIXME: window resize is broken
-		if (flags & RESIZABLE)
+		if (flags & RESIZABLE && !isLoading)
+		{
 			sdlFlags |= SDL_WINDOW_RESIZABLE;
+		}
+		else
+		{
+			isLoading = false;
+		}
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
 		{
@@ -2115,6 +2122,7 @@ namespace GAGCore
 		// if window exists, resize it
 		if (window) {
 			SDL_SetWindowSize(window, w, h);
+			SDL_SetWindowResizable(window, SDL_TRUE);
 			getOrCreateSurface(w, h, flags);
 #ifdef HAVE_OPENGL
 			if (flags & USEGPU)

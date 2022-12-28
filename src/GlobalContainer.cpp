@@ -640,6 +640,7 @@ void GlobalContainer::loadClient(bool runEventListener)
 		Style::style = new Glob2Style;
 
 		updateLoadProgressScreen(100);
+		gfx->setRes(gfx->getW(), gfx->getH());
 	}
 }
 #endif  // !YOG_SERVER_ONLY
