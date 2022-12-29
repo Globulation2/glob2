@@ -22,6 +22,8 @@
 #include "GUIBase.h"
 #include "FormatableString.h"
 
+#include <algorithm>
+
 using namespace GAGCore;
 using namespace GAGGUI;
 
@@ -45,16 +47,18 @@ KeyPress::KeyPress(SDL_Keysym nkey, bool pressed)
 	else
 		alt = false;
 
-	std::string key_s = std::string("[") + SDL_GetKeyName(nkey.sym) + std::string("]");
+	std::string name = SDL_GetKeyName(nkey.sym);
+	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+	std::string key_s = std::string("[") + name + std::string("]");
 	Uint16 c=0;
 	//This is to get over a bug where ctrl-d ctrl-a etc... would cause nkey.unicode to be mangled,
 	//whereas nkey.sym is still fine
 	if(nkey.sym < 128)
 		c = nkey.sym;
 	
-	if(Toolkit::getStringTable()->doesStringExist(key_s.c_str()))
+	if(Toolkit::getStringTable()->doesStringExist(key_s))
 	{
-		key = SDL_GetKeyName(nkey.sym);
+		key = name;
 	}
 	else if (c)
 	{
@@ -65,7 +69,7 @@ KeyPress::KeyPress(SDL_Keysym nkey, bool pressed)
 	}
 	else
 	{
-		key = SDL_GetKeyName(nkey.sym);
+		key = name;
 	}
 }
 
