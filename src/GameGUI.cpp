@@ -191,6 +191,7 @@ GameGUI::GameGUI()
 
 GameGUI::~GameGUI()
 {
+	EventListener::instance()->setPainter(nullptr);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 }
@@ -4384,6 +4385,7 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+	EventListener::instance()->setPainter(std::bind(&GameGUI::drawAll, this, team));
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |

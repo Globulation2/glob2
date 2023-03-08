@@ -24,6 +24,7 @@
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
+#include <functional>
 namespace GAGCore {
 extern std::deque<SDL_Event> events;
 class EventListener {
@@ -39,7 +40,10 @@ public:
 	static std::condition_variable startedCond;
 	static std::mutex doneMutex;
 	static std::condition_variable doneCond;
+	void setPainter(std::function<void()> f);
+	void paint();
 private:
+	std::function<void()> painter;
 	GraphicContext* gfx;
 	static EventListener* el;
 	std::atomic<bool> quit, done;
