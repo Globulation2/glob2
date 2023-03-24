@@ -21,6 +21,7 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
+#include "EventListener.h"
 #include <assert.h>
 #include <string>
 #include <sstream>
@@ -2060,6 +2061,7 @@ namespace GAGCore
 	}
 
 	SDL_Surface* GraphicContext::getOrCreateSurface(int w, int h, Uint32 flags) {
+		std::unique_lock<std::mutex> lock(EventListener::instance()->renderMutex);
 		if (flags & USEGPU)
 		{
 			if (sdlsurface)

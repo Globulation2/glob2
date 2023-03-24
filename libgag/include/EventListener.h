@@ -40,6 +40,7 @@ public:
 	static std::condition_variable startedCond;
 	static std::mutex doneMutex;
 	static std::condition_variable doneCond;
+	static std::mutex renderMutex;
 	void setPainter(std::function<void()> f);
 	void paint();
 private:

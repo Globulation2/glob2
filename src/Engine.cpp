@@ -507,6 +507,14 @@ int Engine::run(void)
 				if (nextGuiStep == 0)
 				{
 					// we draw
+					static bool isPainterSet = false;
+					if (!isPainterSet)
+					{
+						EventListener::instance()->setPainter(std::bind(GameGUI::drawAll, &gui, gui.localTeamNo));
+						isPainterSet = true;
+					}
+					std::unique_lock<std::mutex> lock(EventListener::instance()->renderMutex);
+					globalContainer->gfx->createGLContext();
 					gui.drawAll(gui.localTeamNo);
 					globalContainer->gfx->nextFrame();
 				}

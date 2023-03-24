@@ -25,6 +25,7 @@ std::mutex EventListener::startMutex;
 std::condition_variable EventListener::startedCond;
 std::mutex EventListener::doneMutex;
 std::condition_variable EventListener::doneCond;
+std::mutex EventListener::renderMutex;
 
 #define SIZE_MOVE_TIMER_ID 1
 #if defined(_WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
@@ -52,12 +53,15 @@ EventListener::~EventListener()
 }
 void EventListener::setPainter(std::function<void()> f)
 {
+	std::unique_lock<std::mutex> lock(renderMutex);
 	painter = f;
 }
 void EventListener::paint()
 {
 	if (painter)
 	{
+		std::unique_lock<std::mutex> lock(renderMutex);
+		gfx->createGLContext();
 		painter();
 		gfx->nextFrame();
 	}
