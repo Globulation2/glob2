@@ -23,7 +23,7 @@
 #include <stdlib.h>
 
 #include "boost/integer_traits.hpp"
-#include "boost/math/common_factor.hpp"
+#include "boost/integer/common_factor.hpp"
 //also the Perlin Noise stuff uses random that is not based on syncRand
 #include "boost/random.hpp"
 #include "Game.h"
