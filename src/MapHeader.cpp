@@ -286,7 +286,7 @@ std::string glob2FilenameToName(const std::string& filename)
 }
 
 template<typename It, typename T>
-class contains: std::unary_function<T, bool>
+class contains
 {
 public:
 	contains(const It from, const It to) : from(from), to(to) {}

@@ -320,7 +320,7 @@ void EndGameStat::onSDLMouseMotion(SDL_Event* event)
 
 
 //! This function is used to sort the player array
-struct MoreScore : public std::binary_function<const TeamEntry&, const TeamEntry&, bool>
+struct MoreScore
 {
 	EndOfGameStat::Type type;
 	bool operator()(const TeamEntry& t1, const TeamEntry& t2)

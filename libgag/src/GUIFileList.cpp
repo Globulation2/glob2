@@ -172,9 +172,9 @@ namespace GAGGUI
 		return fullName;
 	}
 	
-	struct strfilecmp_functor : public std::binary_function<std::string, std::string, bool>
+	struct strfilecmp_functor
 	{
-		bool operator()(std::string x, std::string y)
+		bool operator()(const std::string &x, const std::string &y)
 		{
 			bool xIsNotDir = (x[x.length()-1] != DIR_SEPARATOR);
 			bool yIsNotDir = (y[y.length()-1] != DIR_SEPARATOR);
