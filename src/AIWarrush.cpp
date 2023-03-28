@@ -144,16 +144,15 @@ Building *AIWarrush::getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int 
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
-		//TODO: b->type->shortTypeNum==shortTypeNum != IntBuildingType::HEAL_BUILDING looks fishy not only to g++
 		if (	(b != NULL)
 				&& (b->type->shortTypeNum == shortTypeNum)
 				&& (b->maxUnitWorking != num_workers)
 				&& (b->constructionResultState != Building::NO_CONSTRUCTION
-					|| ((b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::ATTACK_BUILDING)
-						&& (b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::HEAL_BUILDING)
-						&& (b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::WALKSPEED_BUILDING)
-						&& (b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::SWIMSPEED_BUILDING)
-						&& (b->type->shortTypeNum==shortTypeNum) != (IntBuildingType::SCIENCE_BUILDING)
+					|| ((shortTypeNum != IntBuildingType::ATTACK_BUILDING)
+						&& (shortTypeNum != IntBuildingType::HEAL_BUILDING)
+						&& (shortTypeNum != IntBuildingType::WALKSPEED_BUILDING)
+						&& (shortTypeNum != IntBuildingType::SWIMSPEED_BUILDING)
+						&& (shortTypeNum != IntBuildingType::SCIENCE_BUILDING)
 			)))
 		{
 			return b;
