@@ -3,7 +3,13 @@
 
 #include "position.h"
 #include <string>
+#ifdef _MSC_VER
+#include <BaseTsd.h>
+using size_t = SIZE_T;
+using ssize_t = SSIZE_T;
+#else
 #include <unistd.h>
+#endif
 
 struct Token
 {
