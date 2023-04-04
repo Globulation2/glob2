@@ -17,7 +17,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#ifdef _MSC_VER
+#include <io.h> // for _open, _write
+#include <BaseTsd.h> // for ssize_t
+using size_t = SIZE_T;
+using ssize_t = SSIZE_T;
+#else
 #include <unistd.h>
+#endif
 #include <math.h>
 #include <assert.h>
 #include <string.h>
