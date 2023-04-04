@@ -387,10 +387,10 @@
 				RelativePath="src\YOG.cpp">
 			</File>
 			<File
-				RelativePath="src\YOGPreScreen.cpp">
+				RelativePath="src\YOGLoginScreen.cpp">
 			</File>
 			<File
-				RelativePath="src\YOGScreen.cpp">
+				RelativePath="src\YOGClientLobbyScreen.cpp">
 			</File>
 			<Filter
 				Name="libgag"
@@ -781,10 +781,10 @@
 				RelativePath="src\YOGConsts.h">
 			</File>
 			<File
-				RelativePath="src\YOGPreScreen.h">
+				RelativePath="src\YOGLoginScreen.h">
 			</File>
 			<File
-				RelativePath="src\YOGScreen.h">
+				RelativePath="src\YOGClientLobbyScreen.h">
 			</File>
 			<Filter
 				Name="libgag"
