@@ -94,6 +94,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug SDL|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include\SDL2;$(ProjectDir);$(ProjectDir)src;$(ProjectDir)libwee\include;$(ProjectDir)libgag\include;$(ProjectDir)libusl\src</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release SDL|Win32'">
     <OutDir>Release\</OutDir>
@@ -323,7 +324,6 @@
     <ClCompile Include="src\BuildingsTypes.cpp" />
     <ClCompile Include="src\BuildingType.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
-    <ClCompile Include="src\CampaignScreen.cpp" />
     <ClCompile Include="src\ChooseMapScreen.cpp" />
     <ClCompile Include="src\CreditScreen.cpp" />
     <ClCompile Include="src\CustomGameScreen.cpp" />
@@ -348,15 +348,6 @@
     <ClCompile Include="src\MapEdit.cpp" />
     <ClCompile Include="src\MapGenerationDescriptor.cpp" />
     <ClCompile Include="src\MapGenerator.cpp" />
-    <ClCompile Include="src\MultiplayersChooseMapScreen.cpp" />
-    <ClCompile Include="src\MultiplayersConnectedScreen.cpp" />
-    <ClCompile Include="src\MultiplayersCrossConnectable.cpp" />
-    <ClCompile Include="src\MultiplayersHost.cpp" />
-    <ClCompile Include="src\MultiplayersHostScreen.cpp" />
-    <ClCompile Include="src\MultiplayersJoin.cpp" />
-    <ClCompile Include="src\MultiplayersJoinScreen.cpp" />
-    <ClCompile Include="src\MultiplayersOfferScreen.cpp" />
-    <ClCompile Include="src\NetGame.cpp" />
     <ClCompile Include="src\NewMapScreen.cpp" />
     <ClCompile Include="src\Order.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -364,8 +355,6 @@
     <ClCompile Include="src\Ressource.cpp" />
     <ClCompile Include="src\ScriptEditorScreen.cpp" />
     <ClCompile Include="src\Sector.cpp" />
-    <ClCompile Include="src\Session.cpp" />
-    <ClCompile Include="src\SessionConnection.cpp" />
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\SettingsScreen.cpp" />
     <ClCompile Include="src\SGSL.cpp" />
@@ -376,9 +365,8 @@
     <ClCompile Include="src\UnitType.cpp" />
     <ClCompile Include="src\Utilities.cpp" />
     <ClCompile Include="src\VoiceRecorder.cpp" />
-    <ClCompile Include="src\YOG.cpp" />
-    <ClCompile Include="src\YOGPreScreen.cpp" />
-    <ClCompile Include="src\YOGScreen.cpp" />
+    <ClCompile Include="src\YOGLoginScreen.cpp" />
+    <ClCompile Include="src\YOGClientLobbyScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libgag\include\DX9GraphicContext.h" />
@@ -493,8 +481,8 @@
     <ClInclude Include="src\Version.h" />
     <ClInclude Include="src\YOG.h" />
     <ClInclude Include="src\YOGConsts.h" />
-    <ClInclude Include="src\YOGPreScreen.h" />
-    <ClInclude Include="src\YOGScreen.h" />
+    <ClInclude Include="src\YOGLoginScreen.h" />
+    <ClInclude Include="src\YOGClientLobbyScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
