@@ -495,25 +495,7 @@
 					Name="libgagSDL"
 					Filter="">
 					<File
-						RelativePath=".\libgag\src\glSDL.c">
-						<FileConfiguration
-							Name="Debug DX9|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath=".\libgag\src\GraphicContext.cpp">
-						<FileConfiguration
-							Name="Debug DX9|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath=".\libgag\src\SDL_ttf.c">
 						<FileConfiguration
 							Name="Debug DX9|Win32"
 							ExcludedFromBuild="TRUE">
@@ -856,9 +838,6 @@
 					Name="libgagSDL"
 					Filter="">
 					<File
-						RelativePath=".\libgag\include\glSDL.h">
-					</File>
-					<File
 						RelativePath="libgag\src\SDLFont.h">
 					</File>
 					<File
@@ -880,9 +859,6 @@
 					Filter="">
 					<File
 						RelativePath=".\libgag\src\BinaryStream.h">
-					</File>
-					<File
-						RelativePath="libgag\src\SDL_ttf.h">
 					</File>
 					<File
 						RelativePath=".\libgag\src\TextStream.h">
