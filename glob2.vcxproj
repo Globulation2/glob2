@@ -266,10 +266,6 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release SDL|Win32'">ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release SDL|x64'">ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="libgag\src\glSDL.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DX9|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DX9|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="libgag\src\GraphicContext.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DX9|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DX9|x64'">true</ExcludedFromBuild>
@@ -286,10 +282,6 @@
     <ClCompile Include="libgag\src\GUIText.cpp" />
     <ClCompile Include="libgag\src\GUITextArea.cpp" />
     <ClCompile Include="libgag\src\GUITextInput.cpp" />
-    <ClCompile Include="libgag\src\SDL_ttf.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DX9|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DX9|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="libgag\src\Sprite.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DX9|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DX9|x64'">true</ExcludedFromBuild>
@@ -373,7 +365,6 @@
     <ClInclude Include="libgag\include\FileManager.h" />
     <ClInclude Include="libgag\include\GAG.h" />
     <ClInclude Include="libgag\include\GAGSys.h" />
-    <ClInclude Include="libgag\include\glSDL.h" />
     <ClInclude Include="libgag\include\GraphicContext.h" />
     <ClInclude Include="libgag\include\GUIAnimation.h" />
     <ClInclude Include="libgag\include\GUIBase.h" />
@@ -396,7 +387,6 @@
     <ClInclude Include="libgag\src\BinaryStream.h" />
     <ClInclude Include="libgag\src\SDLFont.h" />
     <ClInclude Include="libgag\src\SDLSprite.h" />
-    <ClInclude Include="libgag\src\SDL_ttf.h" />
     <ClInclude Include="libgag\src\StreamBackend.h" />
     <ClInclude Include="libgag\src\TextStream.h" />
     <ClInclude Include="libgag\src\TrueTypeFont.h" />
