@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static_d.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib libspeex.lib glu32.lib zdll.lib"
+				AdditionalDependencies="sdl2.lib sdl2_net.lib sdl2_image.lib freetype.lib sdl2main.lib ws2_32.lib ogg.lib vorbis.lib vorbisfile.lib sdl2_ttf.lib opengl32.lib speex.lib glu32.lib zlib.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="WinSDLBuild\Lib"
@@ -87,7 +87,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib sdl_ttf.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static.lib vorbis_static.lib vorbisfile_static.lib opengl32.lib libspeex.lib glu32.lib zdll.lib"
+				AdditionalDependencies="sdl2.lib sdl2_net.lib sdl2_image.lib sdl2_ttf.lib freetype.lib sdl2main.lib ws2_32.lib ogg.lib vorbis.lib vorbisfile.lib opengl32.lib speex.lib glu32.lib zlib.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="WinSDLBuild\Lib"
@@ -140,7 +140,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib sdl_net.lib sdl_image.lib libfreetype.lib sdlmain.lib ws2_32.lib ogg_static_d.lib vorbis_static_d.lib vorbisfile_static_d.lib sdl_ttf.lib opengl32.lib"
+				AdditionalDependencies="sdl2.lib sdl2_net.lib sdl2_image.lib freetype.lib sdl2main.lib ws2_32.lib ogg.lib vorbis.lib vorbisfile.lib sdl2_ttf.lib opengl32.lib"
 				OutputFile="$(OutDir)/glob2.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="WinSDLBuild\Lib"
