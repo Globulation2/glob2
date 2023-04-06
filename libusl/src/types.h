@@ -11,7 +11,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <ext/functional>
+#include <functional>
 
 struct Prototype;
 struct Value
@@ -66,15 +66,13 @@ struct Prototype: Value
 	{
 		stream << ": ";
 		using namespace std;
-		using namespace __gnu_cxx;
-		transform(members.begin(), members.end(), ostream_iterator<string>(stream, " "), select1st<Members::value_type>());
+		transform(members.begin(), members.end(), ostream_iterator<string>(stream, " "), [](auto& member) {return member.first; });
 	}
 	
 	virtual void propagateMarkForGC()
 	{
 		using namespace std;
-		using namespace __gnu_cxx;
-		for_each(members.begin(), members.end(), compose1(mem_fun(&Value::markForGC), select2nd<Members::value_type>()));
+		for_each(members.begin(), members.end(), [this](auto& member) {dynamic_cast<Value*>(member.second)->markForGC(); });
 	}
 	
 	virtual ThunkPrototype* lookup(const std::string& name) const
@@ -160,7 +158,6 @@ struct Scope: Thunk
 	virtual void propagateMarkForGC()
 	{
 		using namespace std;
-		using namespace __gnu_cxx;
 		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
 	}
 	
