@@ -1,6 +1,11 @@
 #include "token.h"
 #include <cassert>
+#ifdef _MSC_VER
+// Visual Studio has no regex.h so we use pcre instead.
+#include <pcreposix.h>
+#else
 #include <regex.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 
