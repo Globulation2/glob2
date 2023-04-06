@@ -18,6 +18,7 @@
       "boost-random",
       "boost-logic",
       "speex",
-      "opengl"
+      "opengl",
+      "pcre"
     ]
 }
