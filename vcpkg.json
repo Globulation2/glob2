@@ -17,6 +17,7 @@
       "boost-date-time",
       "boost-random",
       "boost-logic",
+      "boost-lambda",
       "speex",
       "opengl",
       "pcre"
