@@ -25,7 +25,7 @@
 
 namespace GAGGUI
 {
-	struct List;
+	class List;
 }
 
 using namespace GAGGUI;

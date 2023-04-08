@@ -358,7 +358,13 @@ abortRecordThread:
 VoiceRecorder::VoiceRecorder()
 {
 	// create the decoder
+#ifdef _MSC_VER
+	// workaround for vcpkg bug #2292 which seems to be broken again.
+	const SpeexMode* speex_nb_mode = speex_lib_get_mode(SPEEX_MODEID_NB);
+	speexEncoderState = speex_encoder_init(speex_nb_mode);
+#else
 	speexEncoderState = speex_encoder_init(&speex_nb_mode);
+#endif
 	assert(speexEncoderState);
 	
 	// get some parameters

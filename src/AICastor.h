@@ -28,7 +28,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-class Case;
+struct Case;
 class Game;
 class Map;
 class Order;

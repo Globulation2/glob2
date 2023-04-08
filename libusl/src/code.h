@@ -4,11 +4,11 @@
 #include <cassert>
 #include <ostream>
 
-class Thread;
-class Value;
-class Prototype;
-class ThunkPrototype;
-class ScopePrototype;
+struct Thread;
+struct Value;
+struct Prototype;
+struct ThunkPrototype;
+struct ScopePrototype;
 
 ThunkPrototype* thisMember(Prototype* outer);
 ThunkPrototype* methodMember(ScopePrototype* method);

@@ -278,7 +278,13 @@ void SoundMixer::openAudio(void)
 	}
 	
 	// Open Speex decoder
+#ifdef _MSC_VER
+	// workaround for vcpkg bug #2292 which seems to be broken again.
+	const SpeexMode *speex_nb_mode = speex_lib_get_mode(SPEEX_MODEID_NB);
+	speexDecoderState = speex_decoder_init(speex_nb_mode);
+#else
 	speexDecoderState = speex_decoder_init(&speex_nb_mode);
+#endif
 	int tmp = 1;
 	speex_decoder_ctl(speexDecoderState, SPEEX_SET_ENH, &tmp);
 	
