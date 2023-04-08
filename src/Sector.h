@@ -25,7 +25,7 @@
 class Map;
 class Game;
 class Bullet;
-class BulletExplosion;
+struct BulletExplosion;
 class Explosion;
 class Team;
 
