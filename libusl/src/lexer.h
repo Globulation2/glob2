@@ -64,7 +64,7 @@ public:
 	}
 	
 protected:
-	void fail(const std::string& expected) const __attribute__((noreturn));
+	[[noreturn]] void fail(const std::string& expected) const;
 	
 private:
 	Token _next();
