@@ -347,7 +347,11 @@ int SoundMixer::loadTrack(const std::string name, int index)
 	}
 
 	OggVorbis_File *oggFile = new OggVorbis_File;
+#ifdef _MSC_VER
+	if (ov_open_callbacks(fp, oggFile, NULL, 0, OV_CALLBACKS_DEFAULT) < 0)
+#else
 	if (ov_open(fp, oggFile, NULL, 0) < 0)
+#endif
 	{
 		std::cerr << "SoundMixer : File " << name << " does not appear to be an Ogg bitstream." << std::endl;
 		fclose(fp);
