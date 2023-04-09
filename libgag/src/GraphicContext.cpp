@@ -1715,7 +1715,7 @@ namespace GAGCore
 				GLboolean old_texture_2d;
 				glGetBooleanv(GL_TEXTURE_2D,&old_texture_2d);
 				glEnable(GL_TEXTURE_2D);
-				GLfloat image[mapW*mapH];
+				std::valarray<GLfloat> image(mapW*mapH);
 				for (int i=0; i<mapH; i++)
 					for (int j=0; j<mapW;j++)
 						image[i*mapW+j]=map[mapW*i+j];
@@ -1724,7 +1724,7 @@ namespace GAGCore
 				glBindTexture(GL_TEXTURE_2D, texture[0]);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, image);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, &image[0]);
 				glBindTexture( GL_TEXTURE_2D, texture[0] );
 				glBegin(GL_QUADS);
 				glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+0);
@@ -1788,7 +1788,7 @@ namespace GAGCore
 				bool oldBlend=glState.doBlend(true);
 				bool oldTexture=glState.doTexture(true);*/
 				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-				GLubyte image[mapW*mapH];
+				std::valarray<GLubyte> image(mapW*mapH);
 				for (int i=0; i<mapH; i++)
 					for (int j=0; j<mapW;j++)
 						image[i*mapW+j]=map[mapW*i+j];
@@ -1799,7 +1799,7 @@ namespace GAGCore
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, image);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, &image[0]);
 				glBegin(GL_QUADS);
 					glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+0);
 					glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+0         ,y+0);
