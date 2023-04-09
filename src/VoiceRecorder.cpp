@@ -181,7 +181,7 @@ int record(void *pointer)
 		unsigned sourceId = 0;
 		
 		// Open device
-		MMRESULT openResult = waveInOpen(&waveIn, sourceId, &waveFormat, (DWORD)event, 0, CALLBACK_EVENT);
+		MMRESULT openResult = waveInOpen(&waveIn, sourceId, &waveFormat, (DWORD_PTR)event, 0, CALLBACK_EVENT);
 		if (openResult != MMSYSERR_NOERROR)
 			break;
 		
