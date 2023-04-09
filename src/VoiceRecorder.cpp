@@ -150,8 +150,9 @@ int record(void *pointer)
 		HWAVEIN waveIn = 0;
 		HANDLE event = CreateEvent(NULL, FALSE, FALSE, NULL);
 		unsigned bufferCount = 2;
-		signed short buffersData[bufferCount][SPEEX_FRAME_SIZE];
-		WAVEHDR buffers[bufferCount];
+		using SHORTARRAY = std::valarray<signed short>;
+		std::valarray<SHORTARRAY> buffersData(SHORTARRAY(bufferCount), SPEEX_FRAME_SIZE);
+		std::valarray<WAVEHDR> buffers(bufferCount);
 		unsigned bufferPos = 0;
 		
 		// Setup parameters
@@ -190,7 +191,7 @@ int record(void *pointer)
 		for (unsigned i = 0; i < bufferCount; i++)
 		{
 			buffers[i].dwBufferLength = SPEEX_FRAME_SIZE * sizeof(signed short);
-			buffers[i].lpData = (char *)buffersData[i];
+			buffers[i].lpData = (char *)&buffersData[i][0];
 			buffers[i].dwFlags = 0;
 			if (waveInPrepareHeader(waveIn, &buffers[i], sizeof(WAVEHDR)) != MMSYSERR_NOERROR)
 			{
