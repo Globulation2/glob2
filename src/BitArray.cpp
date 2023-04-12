@@ -82,7 +82,7 @@ namespace Utilities
 	void BitArray::serialize(unsigned char *stream) const
 	{
 		size_t l = values.size();
-		std::copy(&values[0], &values[l], stream);
+		std::copy(&values[0], l + &values[0], stream);
 	}
 	
 	void BitArray::deserialize(const unsigned char *stream, size_t size)
