@@ -1045,13 +1045,15 @@ void Team::syncStep(void)
 	if (buildingsToBeDestroyed.size())
 		buildingsToBeDestroyed.clear();
 
-	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
+	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end();)
 	{
 		if ((*it)->tryToBuildingSiteRoom())
 		{
 			std::list<Building *>::iterator ittemp=it;
 			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
 		}
+		else
+			++it;
 	}
 
 	updateAllBuildingTasks();
