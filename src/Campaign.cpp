@@ -218,6 +218,7 @@ bool Campaign::load(const std::string& fileName)
 			description = stream->readText("description");	
 		}
 		delete stream;
+		delete backend;
 		return true;
 	}
 }

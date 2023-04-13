@@ -51,11 +51,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor plays a conservative game and does very well on maps with few ressources. Medium Difficulty.
+Castor plays a conservative game and does very well on maps with few resources. Medium Difficulty.
 [AICastor]
 Castor
 [AINicowar-Description]
-Nicowar plays aggressivly, grows large fast and throws huge armies at its opponents. Hard Difficulty.
+Nicowar plays aggressively, grows large fast and throws huge armies at its opponents. Hard Difficulty.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -67,7 +67,7 @@ Numbi - Expands lightly, and swiftly. Easy Difficulty.
 [AINumbi]
 Numbi
 [AIReachToInfinity-Description]
-ReachToInfinity - Does not attack, but builds monstrous bases and aggressivly converts units. Easy Difficulty.
+ReachToInfinity - Does not attack, but builds monstrous bases and aggressively converts units. Easy Difficulty.
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib-Description]
@@ -251,7 +251,7 @@ Damaged Map
 [decrease units working]
 Decrease Units Working
 [Defeat Your Oppenents]
-Defeat Your Oppenents
+Defeat Your Opponents
 [defencetower explanation 2]
 units or buildings
 [defencetower explanation]
@@ -435,7 +435,7 @@ human
 [hungry]
 hungry
 [hungryness]
-Hungryness
+Hungriness
 [In way]
 On the way
 [increase units working]
@@ -443,7 +443,7 @@ Increase Units Working
 [inn explanation 2]
 
 [inn explanation]
-Foods your units
+Feeds your units
 [inn]
 Inn
 [insert]
@@ -579,7 +579,7 @@ New Campaign
 [new map]
 New Map
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+We are very sorry, but the name you chose is already taken on freenode; you will only be able to talk through YOG.
 [no fullscreen]
 * only in windowed mode
 [No Hints]
@@ -805,7 +805,7 @@ Select Construct Stone Wall
 [select construct swarm]
 Select Construct Swarm
 [select construct swimmingpool]
-Select Construct Swimmingpool
+Select Construct Swimming Pool
 [select delete tool]
 Select Delete Tool
 [select explorationflag]
@@ -835,7 +835,7 @@ Select School
 [select swarm building]
 Select Swarm
 [select swimmingpool building]
-Select Swimmingpool
+Select Swimming Pool
 [select tower building]
 Select Defence Tower
 [select wall building]
@@ -959,71 +959,71 @@ Teams Fixed
 [teams]
  teams
 [the barracks is finished]
-The training camp is finished
+The training camp is finished.
 [the barracks is under attack]
-The training camp is under attack
+The training camp is under attack.
 [the building is finished]
-The building is finished
+The building is finished.
 [the building is under attack]
-The building is under attack
+The building is under attack.
 [the clearingflag is finished]
 ?? clearingflag finished ??
 [the clearingflag is under attack]
 ?? clearingflag under attack ??
 [the defencetower is finished]
-The defense tower is finished
+The defense tower is finished.
 [the defencetower is under attack]
-Your defenses are under attack
+Your defenses are under attack.
 [the explorationflag is finished]
 ?? explorationflag finished ??
 [the explorationflag is under attack]
 ?? explorationflag under attack ??
 [The game has not been finished]
-The game has not been finished
+The game has not been finished.
 [the games]
 Games
 [the hospital is finished]
-The hospital is finished
+The hospital is finished.
 [the hospital is under attack]
-The hospital is under attack
+The hospital is under attack.
 [The host has cancelled the game]
-The host has cancelled the game
+The host has cancelled the game.
 [the inn is finished]
-The Inn is finished
+The Inn is finished.
 [the inn is under attack]
-The Inn is under attack
+The Inn is under attack.
 [the maps]
 Maps
 [the market is finished]
-The market is finished
+The market is finished.
 [the market is under attack]
-The market is under attack
+The market is under attack.
 [The player %0 has joined YOG]
 %0 has joined YOG.
 [The player %0 has left YOG]
 %0 has left YOG.
 [the racetrack is finished]
-The racetrack is finished
+The racetrack is finished.
 [the racetrack is under attack]
-The racetrack is under attack
+The racetrack is under attack.
 [the replays]
 Replays
 [the school is finished]
-The school is finished
+The school is finished.
 [the school is under attack]
-The school is under attack
+The school is under attack.
 [the stonewall is finished]
-A wall section is finished
+A wall section is finished.
 [the stonewall is under attack]
-The enemy is at your walls
+The enemy is at your walls.
 [the swarm is finished]
-The swarm is finished
+The swarm is finished.
 [the swarm is under attack]
-The swarm is under attack
+The swarm is under attack.
 [the swimmingpool is finished]
-The swimming pool is finished
+The swimming pool is finished.
 [the swimmingpool is under attack]
-The swimming pool is under attack
+The swimming pool is under attack.
 [the warflag is finished]
 ?? warflag finished ??
 [the warflag is under attack]
@@ -1055,13 +1055,13 @@ Total prestige reached
 [Total]
 Total
 [tutorial text 1]
-Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of usefull knowledge here!
+Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!
 [tutorial text 2]
 Now that you have mastered the basics, its time to get used to other buildings such as Racetracks, Pools, and Schools.
 [tutorial text 3]
-You have done well to get this far. Now lets move onto Warriors, Training Camps, and Upgrades.
+You have done well to get this far. Now let's move onto Warriors, Training Camps, and Upgrades.
 [tutorial text 4]
-You are almost complete. Just flags, and attacking left. Then you'll know enough to venture forwarded into Custom Games and eventually play online against some of Globulation 2's finest players.
+You are almost complete. Just flags, and attacking left. Then you'll know enough to venture forward into Custom Games and eventually play online against some of Globulation 2's finest players.
 [tutorial]
 Tutorial
 [Uncontrolled]
@@ -1171,7 +1171,7 @@ The YOG metaserver has refused connection because this username has no password 
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 The YOG metaserver has refused the connection because this IP address is temporarily banned. You will have to wait patiently until it is unbanned or contact the administrators.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online
+The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 The YOG metaserver has refused the connection without explanation!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
@@ -1185,9 +1185,9 @@ The connection system is ready to contact the YOG metaserver for connection.
 [YESTS_PASSWORDS_DONT_MATCH]
 The provided passwords don't match. Please retype them.
 [YESTS_UNABLE_TO_CONNECT]
-Unable to connect. Apparently the YOG metaserver is down.
+Unable to connect. Apparently, the YOG metaserver is down.
 [yog block command help]
-/block <playername>    Blocks a player, you will no longer see his text
+/block <playername>    Blocks a player; you will no longer see his text.
 [yog block command player %0 already blocked]
 Player %0 already blocked
 [yog block command player %0 blocked]

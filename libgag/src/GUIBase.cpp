@@ -487,7 +487,7 @@ namespace GAGGUI
 					{
 						//Manual integration of cmd+q and alt f4
 #						ifdef USE_OSX
-						if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
+						if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
 						{
 							run=false;
 							returnCode=-1;

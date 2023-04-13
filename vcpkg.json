@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "globulation2",
+  "license": "GPL-3.0",
+  "version": "0.9.5.0",
+    "dependencies": [
+      "sdl2",
+      "sdl2-net",
+      "sdl2-ttf",
+      "sdl2-image",
+      "zlib",
+      "fribidi",
+      "libogg",
+      "libvorbis",
+      "boost-math",
+      "boost-thread",
+      "boost-date-time",
+      "boost-random",
+      "boost-logic",
+      "boost-lambda",
+      "speex",
+      "opengl",
+      "pcre"
+    ]
+}

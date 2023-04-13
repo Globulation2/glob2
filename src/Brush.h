@@ -26,7 +26,7 @@
 
 namespace GAGCore
 {
-	class Color;
+	struct Color;
 }
 
 //! A click of the brush tool to the map

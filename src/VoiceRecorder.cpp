@@ -22,6 +22,7 @@
 #include "VoiceRecorder.h"
 #include <assert.h>
 #include <stdio.h>
+#include <iostream>
 #include "Order.h"
 #include "Utilities.h"
 
@@ -96,7 +97,7 @@ int PaSpeexEncodeCallback( const void *input, void *output, unsigned long frameC
 	
 	const short* inBuffer = reinterpret_cast<const short*>(input);
 	short* buffer = recorder->buffer;
-	for(int i=0; i<frameCount; ++i)
+	for(unsigned long i=0; i<frameCount; ++i)
 		buffer[i] = inBuffer[i];
 	for(int i=frameCount; i<recorder->frameSize; ++i)
 		buffer[i] = 0;
@@ -180,7 +181,7 @@ int record(void *pointer)
 		unsigned sourceId = 0;
 		
 		// Open device
-		MMRESULT openResult = waveInOpen(&waveIn, sourceId, &waveFormat, (DWORD)event, 0, CALLBACK_EVENT);
+		MMRESULT openResult = waveInOpen(&waveIn, sourceId, &waveFormat, (DWORD_PTR)event, 0, CALLBACK_EVENT);
 		if (openResult != MMSYSERR_NOERROR)
 			break;
 		
@@ -357,7 +358,13 @@ abortRecordThread:
 VoiceRecorder::VoiceRecorder()
 {
 	// create the decoder
+#ifdef _MSC_VER
+	// workaround for vcpkg bug #2292 which seems to be broken again.
+	const SpeexMode* speex_nb_mode = speex_lib_get_mode(SPEEX_MODEID_NB);
+	speexEncoderState = speex_encoder_init(speex_nb_mode);
+#else
 	speexEncoderState = speex_encoder_init(&speex_nb_mode);
+#endif
 	assert(speexEncoderState);
 	
 	// get some parameters
@@ -376,6 +383,7 @@ VoiceRecorder::VoiceRecorder()
 	#ifdef HAVE_PORTAUDIO
 		buffer = new short[frameSize];
 		frameCount=0;
+		stream = nullptr;
 		PaError err = Pa_Initialize();
 		if( err != paNoError )
 			return;
@@ -397,7 +405,9 @@ VoiceRecorder::~VoiceRecorder()
 {
 	recordingNow = false;
 	#ifdef HAVE_PORTAUDIO
-		PaError err = Pa_CloseStream( stream );
+		PaError err = paNoError;
+		if(stream)
+			err = Pa_CloseStream( stream );
 		if( err != paNoError )
 			printf(  "PortAudio error: %s\n", Pa_GetErrorText( err ) );
 		err = Pa_Terminate();
@@ -411,7 +421,7 @@ VoiceRecorder::~VoiceRecorder()
 		SDL_DestroyMutex(ordersMutex);
 	#endif
 	
-	speex_bits_reset(&bits);
+	speex_bits_destroy(&bits);
 	// destroy the decoder
 	speex_encoder_destroy(speexEncoderState);
 }

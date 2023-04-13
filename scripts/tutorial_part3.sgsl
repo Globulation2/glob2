@@ -63,7 +63,7 @@ hide
 hilightUnits(Warrior)
 wait(Warrior(0) > 0)
 
-show("Whoah! Those warrior globs certainly look beefy and mighty. They would certainly do well to defend our colony. You probably noticed that they're wasting no time and going right to work, that is training. Let's wait for another one to come.")
+show("Whoa! Those warrior globs certainly look beefy and mighty. They would certainly do well to defend our colony. You probably noticed that they're wasting no time and going right to work, that is, training. Let's wait for another one to come.")
 show("Wow ! Cette guerrière a l'air musclée et puissante, elle conviendrat certainement à la défense de notre colonie. Vous pourriez remarquer qu'elle ne perd pas de temps et se met tout de suite au travail. Attendons qu'une deuxième soit prete.", fr)
 show("Whoah! Diese Krieger sehen muskulös und gewaltig aus. Sie werden deine Kolonie sicher gut verteidigen. Dir wird aufgefallen sein, dass er keine Zeit verschwendet und gleich zum Training geht. Lass uns warten bis ein weiterer fertig ist.",de)
 show("Esos glóbulos guerreros se ven tan grandes y poderosos!!, defenderán bien nuestra colonia.  Te habrás dado cuenta que no desperdician su tiempo y van de una vez a trabajar, entrenando.  Esperemos a que salga el siguiente.",es)
@@ -109,7 +109,7 @@ unhilightItem("under minimap icons")
 hide
 
 hilightBuildings(Camp)
-show("Ok, just remember to use all of those free workers, and get that Barracks made quickly. Don't try to use too many workers, however. Giving your workers too much tasks will cause you to lose some of the direct control over them.")
+show("Ok, just remember to use all of those free workers, and get that Barracks made quickly. Don't try to use too many workers, however. Giving your workers too many tasks will cause you to lose some of the direct control over them.")
 show("OK, souvenez-vous bien d'utiliser toutes les ouvrières libres pour construire rapidement la Caserne. N'en employez pas trop tout de meme, les surcharger de travail vous ferait perdre une partie du controle que vous avez sur elles.", fr)
 show("OK denke daran alle freien Arbeiter zu nutzen damit das Trainingslager schnell fertig wird. Benutze aber nicht zu viele. Überarbeitung lässt die Kontrollmöglichkeiten von dir auf deine Arbeiter schwinden!",de)
 show("No olvides usar a esos trabajadores desempleados, y que construyan rápido el cuartel.  No intentes usar demasiados, puesto que sobrecargarlos te impedirá tener control directo sobre ellos.",es)
@@ -148,7 +148,7 @@ show("Улучшение зданий использует те преимуще
 show("ﺳﻮﻑ ﻧﺴﺘﻔﻴﺪ ﻣﻦ ﻣﺪﺭﺳﺘﻨﺎ ﻋﻨﺪﻣﺎ ﻧﻘﻮﻡ ﺑﺘﺮﻗﻴﺔ ﺍﻟﻤﺒﺎﻧﻲ. ﺭﺑﻤﺎ ﻟﻢ ﺗﻼﺣﻆ ﺃﻧﻚ ﻋﻨﺪﻣﺎ ﺗﻨﻘﺮ ﻋﻠﻰ ﻣﺒﻨﻰ ﻓﺈﻧﻚ ﺗﺸﺎﻫﺪ ﺍﻵﻥ ﺯﺭ "ﺭﻕِّ" ﻓﻲ ﺍﻟﺠﺰء ﺍﻟﺴﻔﻠﻲ ﻣﻦ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﻴﻤﻨﻰ. ﺇﻧﻪ ﻓﻮﻕ ﺯﺭ "ﺣﻄِّﻢ" ﺗﻤﺎﻣًﺎ.",ar)
 space
 
-show("Now, lets decide what buildings we should upgrade first. Lets look at our Inns. They don't look very crowded. In fact, a few of them are still empty.")
+show("Now, let's decide what buildings we should upgrade first. Let's look at our Inns. They don't look very crowded. In fact, a few of them are still empty.")
 show("Choisissons maintenant les bâtiments à améliorer en priorité. Jeton un oeil à nos auberges. Elles n'ont pas l'air surchargées de travail, certaines d'entre elles sontmêmevides.", fr)
 show("Jetzt musst du entscheiden, welches Gebäude du zuerst verbesserst. Schau dir die Gaststätten an. Sie sehen nicht überlastet aus, manche von ihnen sind sogar leer.",de)
 show("Ahora, decidamos qué edificaciones debemos actualizar primero.  Veamos nuestras tabernas.  No lucen muy elaboradas, de hecho, algunas de ellas están vacías.",es)
@@ -228,7 +228,7 @@ show("ﻫﻤﻤﻢ، ﻣﺎﺫﺍ ﻧﻔﻌﻞ ﺍﻵﻥ؟ ﻫﺬﺍ ﻗﺮﺍ�
 wait(Pool(0, 3) > 0)
 wait(Camp(0, 3) > 0)
 
-show("Wow, you certainly are getting good at this, and the colony is getting mighty fine too. Higher level buildings can generally process more globules at once, and train them to a higher level. For example, a level 2 Inn can feed 7 units at a time, and in just over half the time of a level 1 Inn.")
+show("Wow, you certainly are getting good at this, and the colony is getting mighty fine too. Higher-level buildings can generally process more globules at once, and train them to a higher level. For example, a level 2 Inn can feed 7 units at a time, and in just over half the time of a level 1 Inn.")
 show("Bien, vous commencez à devenir bon et votre colonie devient puissante. Les bâtiments d'un niveau supérieur peuvent généralement entrainer plus de globules à la fois et les amener à un niveau plus élevé. Par exemple, une auberge de niveau deux peut nourrir sept unités à la fois et en moitié moins de temps qu'une auberge de niveau 1.", fr)
 show("Wow, du wirst darin immer besser und die Kolonie wird auch immer schöner und größer. Verbesserte Gebäude können mehr Einheiten zur selben Zeit abfertigen und sie auf einen höheren Level trainieren. Zum Beispiel kann eine Level 2 Gaststätte 7 Einheiten versorgen und benötigt nur die Hälfte der Zeit eines Level 1 Gasthofs.",de)
 show("Maravilloso, te estás volviendo buen@ en esto, y la colonia está cada vez más fuerte.  Las edificaciones de nivel mayor en general pueden procesar más glóbulos al tiempo, y entrenarlas a un nivel más alto.  Por ejemplo en una taberna de nivel 2 se pueden alimentar hasta 7 unidades simultáneamente, y en la mitad del tiempo que en una taberna de primer nivel.",es)

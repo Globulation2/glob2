@@ -629,7 +629,7 @@ Building *Team::findNearestFood(Unit *unit)
 				if (ti == teamNumber)
 					continue;
 				Team *team = game->teams[ti];
-				if ((!team->sharedVisionFood & me) || (team->allies & me))
+				if (!(team->sharedVisionFood & me) || (team->allies & me))
 					continue;
 				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
@@ -664,7 +664,7 @@ Building *Team::findNearestFood(Unit *unit)
 				if (ti == teamNumber)
 					continue;
 				Team *team = game->teams[ti];
-				if ((!team->sharedVisionFood & me) || (team->allies & me))
+				if (!(team->sharedVisionFood & me) || (team->allies & me))
 					continue;
 				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
@@ -1045,13 +1045,15 @@ void Team::syncStep(void)
 	if (buildingsToBeDestroyed.size())
 		buildingsToBeDestroyed.clear();
 
-	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end(); ++it)
+	for (std::list<Building *>::iterator it=buildingsTryToBuildingSiteRoom.begin(); it!=buildingsTryToBuildingSiteRoom.end();)
 	{
 		if ((*it)->tryToBuildingSiteRoom())
 		{
 			std::list<Building *>::iterator ittemp=it;
 			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
 		}
+		else
+			++it;
 	}
 
 	updateAllBuildingTasks();

@@ -278,7 +278,13 @@ void SoundMixer::openAudio(void)
 	}
 	
 	// Open Speex decoder
+#ifdef _MSC_VER
+	// workaround for vcpkg bug #2292 which seems to be broken again.
+	const SpeexMode *speex_nb_mode = speex_lib_get_mode(SPEEX_MODEID_NB);
+	speexDecoderState = speex_decoder_init(speex_nb_mode);
+#else
 	speexDecoderState = speex_decoder_init(&speex_nb_mode);
+#endif
 	int tmp = 1;
 	speex_decoder_ctl(speexDecoderState, SPEEX_SET_ENH, &tmp);
 	
@@ -341,7 +347,11 @@ int SoundMixer::loadTrack(const std::string name, int index)
 	}
 
 	OggVorbis_File *oggFile = new OggVorbis_File;
+#ifdef _MSC_VER
+	if (ov_open_callbacks(fp, oggFile, NULL, 0, OV_CALLBACKS_DEFAULT) < 0)
+#else
 	if (ov_open(fp, oggFile, NULL, 0) < 0)
+#endif
 	{
 		std::cerr << "SoundMixer : File " << name << " does not appear to be an Ogg bitstream." << std::endl;
 		fclose(fp);

@@ -71,8 +71,8 @@ void YOGClientGameConnectionDialog::execute()
 			if(event.type == SDL_KEYDOWN)
 			{
 #					ifdef USE_OSX
-				SDLMod modState = SDL_GetModState();
-				if(event.key.keysym.sym == SDLK_q && modState & KMOD_META)
+				SDL_Keymod modState = SDL_GetModState();
+				if(event.key.keysym.sym == SDLK_q && modState & KMOD_GUI)
 				{
 					break;
 				}
@@ -80,7 +80,7 @@ void YOGClientGameConnectionDialog::execute()
 				SDL_GetModState();
 #					endif
 #					ifdef USE_WIN32
-				SDLMod modState = SDL_GetModState();
+				SDL_Keymod modState = SDL_GetModState();
 				if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
 				{
 					break;

@@ -118,7 +118,7 @@ namespace GAGGUI
 				if(event.type == SDL_KEYDOWN)
 				{
 #					ifdef USE_OSX
-					if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_META)
+					if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
 					{
 						break;
 					}

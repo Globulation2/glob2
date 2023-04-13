@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glob2", "glob2.vcxproj", "{21BF838A-D64B-4500-92CB-93A7438A3DF0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug DX9|x64 = Debug DX9|x64
+		Debug DX9|x86 = Debug DX9|x86
+		Debug SDL|x64 = Debug SDL|x64
+		Debug SDL|x86 = Debug SDL|x86
+		Release SDL|x64 = Release SDL|x64
+		Release SDL|x86 = Release SDL|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug DX9|x64.ActiveCfg = Debug DX9|x64
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug DX9|x64.Build.0 = Debug DX9|x64
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug DX9|x86.ActiveCfg = Debug DX9|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug DX9|x86.Build.0 = Debug DX9|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug SDL|x64.ActiveCfg = Debug SDL|x64
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug SDL|x64.Build.0 = Debug SDL|x64
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug SDL|x86.ActiveCfg = Debug SDL|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Debug SDL|x86.Build.0 = Debug SDL|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release SDL|x64.ActiveCfg = Release SDL|x64
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release SDL|x64.Build.0 = Release SDL|x64
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release SDL|x86.ActiveCfg = Release SDL|Win32
+		{21BF838A-D64B-4500-92CB-93A7438A3DF0}.Release SDL|x86.Build.0 = Release SDL|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C9FA9E0-5917-43FC-90FC-FB8082643C1F}
+	EndGlobalSection
+EndGlobal

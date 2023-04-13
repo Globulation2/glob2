@@ -26,7 +26,7 @@ namespace GAGCore
 {
 	class Sprite;
 	class DrawableSurface;
-	class Color;
+	struct Color;
 	
 	//! A support class to manage cursors
 	class CursorManager

@@ -43,7 +43,6 @@ namespace GAGCore
 using namespace GAGCore;
 class MapGenerationDescriptor;
 class GameGUI;
-class BuilgingType;
 class MapEdit;
 
 class Game

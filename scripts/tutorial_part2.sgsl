@@ -147,7 +147,7 @@ show("ﻋﻈﻴﻢ. ﺗﺬﻛﺮ ﻓﻀﻼً ﺑﺄﻥ ﻋﺪﺩ ﺍﻟﻌﻤﺎ
 space
 unhilightBuildings(Inn)
 
-show("It's about time to introduce something new. Our workers seem to walk fairly slowly. We would prefer them to go a little bit faster so that they can do more things sooner. If you think the problem is hopeless, think again! This is exactly the purpose of the Racetrack.")
+show("It's about time to introduce something new. Our workers seem to walk fairly slowly. We would prefer them to go a little bit faster, so that they can do more things sooner. If you think the problem is hopeless, think again! This is exactly the purpose of the Racetrack.")
 show("Il est temps maintenant d'introduire un nouvel élément. Nos ouvrières marchent assez lentement, il serait préférable qu'elles aillent un peu plus vite, afin de pouvoir bientôt faire plus de choses. Si vous pensez que le problème est insoluble, repensez-y ! C'est également le but de la Piste de Course.", fr)
 show("Es ist an der Zeit etwas Neues einzuführen. Deine Arbeiter scheinen sehr langsam zu laufen. Wir möchten sie ein bisschen schneller machen, damit sie mehr Dinge in kürzerer Zeit erledigen können. Wenn du jetzt glaubst, dieses Problem sei nicht zu lösen, dann hast du dich geirrt. Das ist nämlich genau das, was eine Rennbahn macht.",de)
 show("Es hora de algo nuevo. Nuestros trabajadores caminan lentamente, quisiéramos que fueran más rápidos para que sean más eficientes.  Lo que estamos comentando no es fútil, y la pista de carreras nos ayudará en esto.",es)
@@ -159,7 +159,7 @@ space
 hilightBuildingOnPanel(Racetrack)
 hilightItem("under minimap icons")
 GuiEnable(Racetrack)
-show("The Racetrack is a really big building. A lot larger than our Inn or our Swarm. Lets try to construct one. Remember to click the first icon under the minimap to give you the selection of buildings. But first, we should find out what resources are needed to construct a Racetrack, so move your mouse pointer over the Racetrack icon on the right, but don't select a Racetrack just yet. Now look at the bottom of the right hand side menu. It tells us about the Racetrack.")
+show("The Racetrack is a really big building. A lot larger than our Inn or our Swarm. Let's try to construct one. Remember to click the first icon under the minimap to give you the selection of buildings. But first, we should find out what resources are needed to construct a Racetrack, so move your mouse pointer over the Racetrack icon on the right, but don't select a Racetrack just yet. Now look at the bottom of the right hand side menu. It tells us about the Racetrack.")
 show("La piste de course est un très grand bâtiment. Beaucoup plus que notre auberge ou notre ruche. Souvenez-vous que cliquer sur la premiere icone sous la mini-carte vous donne accès à la construction de bâtiments. Mais avant tout, nous devons savoir quelles sont les ressources nécessaires à la construction d'une piste de course. Placez donc votre curseur au-dessus de l'icone de la piste de course sur la droite, sans la sélectionner. Observez maintenant le bas du panneau latéral, vous y trouverez des informations sur la piste de course", fr)
 show("Die Rennstecke ist ein großes Gebäude, viel größer als der Gasthof oder der Stock. Lass uns versuchen eine zu bauen. Aber zuerst solltest du wissen, welche Ressourcen eine Rennbahn benötigt. Fahre mit der Maus über das Icon der Rennstrecke und schau auf den Boden der Leiste.",de)
 show("La pista de carreras es un edificio grande.  Mucho más que una colmena o una taberna. Construyamos una. Recuerda elegir primero el ícono del minimapa para acceder a la selección de construcciones. Pero primero debemos ver qué recursos hacen falta para construir una pista de carreras. Lleva el puntero al ícono de la pista de carreras a la derecha, pero no selecciones la pista todavía, mira en la parte inferior del menú a la derecha. Te ofrece datos acerca de la pista.",es)
@@ -306,7 +306,7 @@ wait(Inn(0, 1) > 4)
 unhilightBuildingOnPanel(Inn)
 unhilightItem("under minimap icons")
 
-show("Good work. Again, the amount of workers assigned to the newly build Inns is automatically set back to one unit. They don't need many workers to keep them full of wheat, especially considering how fast our new workers can collect wheat.")
+show("Good work. Again, the amount of workers assigned to the newly built Inns is automatically set back to one unit. They don't need many workers to keep them full of wheat, especially considering how fast our new workers can collect wheat.")
 show("Bon boulot, réduisez maintenant à un le nombre d'ouvrières assignées aux auberges, elles n'en n'ont pas besoin de beaucoup pour maintenir leurs stocks au maximum, en particulier si l'on regarde la vitesse à laquelle les ouvrières peuvent récolter le blé.", fr)
 show("Gute Arbeit. Reduziere die Arbeiter bei den Gaststätten auf einen, da einer ausreicht, um Weizen zu sammeln. Vor allem, da er es jetzt ja schneller sammelt.",de)
 show("Buen trabajo, reduce ahora los trabajadores a uno, no necesitan muchos trabajadores para que estén llenas de maíz, sobre todo considerando cuan rápido nuestros trabajadores pueden recolectar maíz.",es)
@@ -369,7 +369,7 @@ show("ﺩﻋﻨﺎ ﻧﺮﺍﻗﺐ ﺍﻟﺘﻘﺪﻡ، ﻣﺎ ﺭﺃﻳﻚ؟ �
 space
 unhilightBuildings(Pool)
 
-show("Our globules are now first class swimmers! But we won't see them doing much swimming just yet. We need to do something that calls upon their newly learned swimming skills.")
+show("Our globules are now first-class swimmers! But we won't see them doing much swimming just yet. We need to do something that calls upon their newly learned swimming skills.")
 show("Nos globules sont maintenant des nageurs de premier ordre ! Mais cela ne leur sert pas à grand chose pour l'instant, nous devons faire quelque chsoe faisant appel à leurs nouvelles compétences.", fr)
 show("Unsere Einheiten sind nun erstklassige Schwimmer. Aber wir wollen sie jetzt nicht beim schwimmen im Bad beobachten, wir brauchen etwas, wo sie ihre neu erlernten Schwimmfähigkeiten unter Beweis stellen können.",de)
 show("Nuestros glóbulos son nadadores de primera!  Pero no hemos visto demostración de esto, tendremos que invitarlos a que aprovechen su nueva habilidad de nado.",es)

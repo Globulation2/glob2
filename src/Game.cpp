@@ -1553,9 +1553,9 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			for (std::list<Building *>::iterator bi=teams[ti]->virtualBuildings.begin(); bi!=teams[ti]->virtualBuildings.end(); ++bi)
 				if ((*bi)->posX==x && (*bi)->posY==y)
 				{
-					teams[ti]->virtualBuildings.erase(bi);
 					teams[ti]->myBuildings[Building::GIDtoID((*bi)->gid)]=NULL;
 					delete *bi;
+					teams[ti]->virtualBuildings.erase(bi);
 					found=true;
 					break;
 				}
