@@ -32,7 +32,7 @@
 
    #define S_IFDIR _S_IFDIR
 
-   #ifndef __MINGW32__
+   #if defined(_MSC_VER) && _MSC_VER < 1900
 	#define snprintf _snprintf
 	#define vsnprintf _vsnprintf
 	#pragma warning (disable : 4786)
