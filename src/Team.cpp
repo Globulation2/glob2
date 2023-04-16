@@ -991,7 +991,7 @@ void Team::syncStep(void)
 	}
 
 	bool isDirtyGlobalGradient=false;
-	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end(); ++it)
+	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end();)
 	{
 		Building *building=*it;
 		if (building->unitsInside.size()==0)
@@ -1012,6 +1012,8 @@ void Team::syncStep(void)
 			std::list<Building *>::iterator ittemp=it;
 			it=buildingsWaitingForDestruction.erase(ittemp);
 		}
+		else
+			++it;
 	}
 	if (isDirtyGlobalGradient)
 	{
