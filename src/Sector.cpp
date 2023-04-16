@@ -114,12 +114,13 @@ void Sector::step(void)
 	assert(map);
 	assert(game);
 	
-	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();++it)
+	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();)
 	{
 		Bullet *bullet = (*it);
 		if ( bullet->ticksLeft > 0 )
 		{
 			bullet->step();
+			++it;
 		}
 		else
 		{
@@ -188,11 +189,12 @@ void Sector::step(void)
 	}
 	
 	// handle explosions timeout
-	for (std::list<BulletExplosion *>::iterator it=explosions.begin();it!=explosions.end();++it)
+	for (std::list<BulletExplosion *>::iterator it=explosions.begin();it!=explosions.end();)
 	{
 		if ( (*it)->ticksLeft > 0 )
 		{
 			(*it)->ticksLeft--;
+			++it;
 		}
 		else
 		{
@@ -202,11 +204,12 @@ void Sector::step(void)
 	}
 
 	// handle death animation
-	for (std::list<UnitDeathAnimation *>::iterator it=deathAnimations.begin();it!=deathAnimations.end();++it)
+	for (std::list<UnitDeathAnimation *>::iterator it=deathAnimations.begin();it!=deathAnimations.end();)
 	{
 		if ( (*it)->ticksLeft > 0 )
 		{
 			(*it)->ticksLeft--;
+			++it;
 		}
 		else
 		{
