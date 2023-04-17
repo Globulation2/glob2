@@ -482,13 +482,15 @@ boost::shared_ptr<Order>AICastor::getOrder()
 	}*/
 		
 	//printf("getOrder(), %d projects\n", projects.size());
-	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
+	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end();)
 		if ((*pi)->finished)
 		{
 			//printf("deleting project (%s)\n", (*pi)->debugName);
 			delete *pi;
 			pi=projects.erase(pi);
 		}
+		else
+			pi++;
 	bool blocking=false;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->blocking)
