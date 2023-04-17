@@ -401,6 +401,8 @@ public:
 	///Saves the game to a particular file name
 	bool save(const std::string filename, const std::string name);
 
+	void draw(void);
+
 	///Updates the editor after map generation
 	void update();
 
@@ -778,6 +780,7 @@ private:
 	///Handles a click or drag of the no ressource growth area placement tool
 	void handleNoRessourceGrowthClick(int mx, int my);
 
+	Uint32 startTick, endTick, deltaTick;
 };
 
 
