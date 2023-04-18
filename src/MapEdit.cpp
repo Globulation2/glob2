@@ -1228,11 +1228,11 @@ int MapEdit::run(void)
 
 	bool isRunning=true;
 	int returnCode=0;
-	Uint32 startTick, endTick, deltaTick;
+	Uint64 startTick, endTick, deltaTick;
 	while (isRunning)
 	{
 		//SDL_Event event;
-		startTick=SDL_GetTicks();
+		startTick=SDL_GetTicks64();
 	
 		// we get all pending events but for mousemotion we only keep the last one
 		SDL_Event event;
@@ -1319,7 +1319,7 @@ int MapEdit::run(void)
 		globalContainer->gfx->nextFrame();
 		
 
-		endTick=SDL_GetTicks();
+		endTick=SDL_GetTicks64();
 		deltaTick=endTick-startTick;
 		if (deltaTick<33)
 			SDL_Delay(33-deltaTick);

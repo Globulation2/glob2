@@ -109,7 +109,7 @@ namespace GAGGUI
 		SDL_Event event;
 		while(mbs->endValue<0)
 		{
-			Sint32 time = SDL_GetTicks();
+			Sint64 time = SDL_GetTicks64();
 			while (SDL_PollEvent(&event))
 			{
 				if (event.type==SDL_QUIT)
@@ -137,8 +137,8 @@ namespace GAGGUI
 			parentCtx->drawSurface((int)0, (int)0, background);
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
 			parentCtx->nextFrame();
-			Sint32 newTime = SDL_GetTicks();
-			SDL_Delay(std::max(40 - newTime + time, 0));
+			Sint64 newTime = SDL_GetTicks64();
+			SDL_Delay(std::max(40 - newTime + time, 0ll));
 		}
 	
 		int retVal;

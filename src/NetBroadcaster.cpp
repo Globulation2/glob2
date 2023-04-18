@@ -53,7 +53,7 @@ void NetBroadcaster::update()
 {
 	if(socket)
 	{
-		Uint32 time = SDL_GetTicks();
+		Uint64 time = SDL_GetTicks64();
 		if((time - lastTime) >= 500 )
 		{
 			MemoryStreamBackend* msb = new MemoryStreamBackend;
@@ -127,7 +127,7 @@ void NetBroadcaster::enableBroadcasting()
 	SDLNet_ResolveHost(&localaddress, "127.0.0.1", LAN_BROADCAST_PORT);
 	SDLNet_UDP_Bind(localsocket, 0, &localaddress);
 	
-	lastTime = SDL_GetTicks();
+	lastTime = SDL_GetTicks64();
 }
 
 

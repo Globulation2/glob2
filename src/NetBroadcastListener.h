@@ -51,7 +51,7 @@ private:
 	std::vector<LANGameInformation> games;
 	std::vector<int> timeouts;
 	std::vector<IPaddress> addresses;
-	Uint32 lastTime;
+	Uint64 lastTime;
 };
 
 #endif
