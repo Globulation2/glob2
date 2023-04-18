@@ -34,7 +34,7 @@ YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id
 	loginState = YOGLoginUnknown;
 	gameID=0;
 	netVersion=0;
-	pingCountdown=SDL_GetTicks();
+	pingCountdown=SDL_GetTicks64();
 	pingSendTime=0;
 	port = 0;
 }
@@ -47,11 +47,11 @@ void YOGServerPlayer::update()
 	updateConnectionSates();
 	updateGamePlayerLists();
 
-	if(SDL_GetTicks() - pingCountdown > 5000 && pingCountdown != 0)
+	if(SDL_GetTicks64() - pingCountdown > 5000 && pingCountdown != 0)
 	{
 		shared_ptr<NetPing> message(new NetPing);
 		connection->sendMessage(message);
-		pingSendTime = SDL_GetTicks();
+		pingSendTime = SDL_GetTicks64();
 		pingCountdown = 0;
 	}
 
@@ -256,11 +256,11 @@ void YOGServerPlayer::update()
 	else if(type==MNetPingReply)
 	{
 		shared_ptr<NetPingReply> info = static_pointer_cast<NetPingReply>(message);
-		pings.push_back(SDL_GetTicks() - pingSendTime);
+		pings.push_back(SDL_GetTicks64() - pingSendTime);
 		if(pings.size() > 16)
 			pings.erase(pings.begin());
 
-		pingCountdown = SDL_GetTicks();
+		pingCountdown = SDL_GetTicks64();
 	}
 	//This recieves a ping reply
 	else if(type==MNetSendGameResult)

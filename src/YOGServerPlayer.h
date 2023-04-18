@@ -158,11 +158,11 @@ private:
 	weak_ptr<YOGServerGame> game;
 
 	///Counts down between sending a ping
-	Uint32 pingCountdown;
+	Uint64 pingCountdown;
 	///This says the time when the ping was sent, 0 means not waiting on ping reply
 	unsigned pingSendTime;
 	///This holds the most recent 5 pings
-	std::list<unsigned> pings;
+	std::list<Uint64> pings;
 	
 };
 

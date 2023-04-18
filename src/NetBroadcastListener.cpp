@@ -29,7 +29,7 @@ using namespace GAGCore;
 NetBroadcastListener::NetBroadcastListener()
 {
 	enableListening();
-	lastTime = SDL_GetTicks();
+	lastTime = SDL_GetTicks64();
 }
 
 
@@ -80,7 +80,7 @@ void NetBroadcastListener::update()
 			result = SDLNet_UDP_Recv(socket, packet);
 		}
 		
-		int time = SDL_GetTicks() - lastTime;
+		Uint64 time = SDL_GetTicks64() - lastTime;
 		for(unsigned int i=0; i<timeouts.size();)
 		{
 			timeouts[i] -= time;
@@ -95,7 +95,7 @@ void NetBroadcastListener::update()
 				++i;
 			}
 		}
-		lastTime = SDL_GetTicks();
+		lastTime = SDL_GetTicks64();
 	}
 }
 

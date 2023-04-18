@@ -260,7 +260,7 @@ int Engine::run(void)
 	{
 		assert(globalContainer->mix==NULL);
 		printf("nox::game started\n");
-		automaticGameStartTick = SDL_GetTicks();
+		automaticGameStartTick = SDL_GetTicks64();
 	}
 	else
 	{
@@ -309,8 +309,8 @@ int Engine::run(void)
 		
 		cpuStats.reset(speed);
 		
-		Sint32 needToBeTime = 0;
-		Sint32 startTime = SDL_GetTicks();
+		Sint64 needToBeTime = 0;
+		Sint64 startTime = SDL_GetTicks64();
 		unsigned frameNumber = 0;
 		bool sendBumpUp=false;
 
@@ -345,25 +345,25 @@ int Engine::run(void)
 				{
 					printf("nox::gui.localTeam is dead\n");
 					gui.isRunning = false;
-					automaticGameEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks64();
 				}
 				else if (gui.getLocalTeam()->hasWon && !globalContainer->automaticGameGlobalEndConditions)
 				{
 					printf("nox::gui.localTeam has won\n");
 					gui.isRunning = false;
-					automaticGameEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks64();
 				}
 				else if (gui.game.totalPrestigeReached)
 				{
 					printf("nox::gui.game.totalPrestigeReached\n");
 					gui.isRunning = false;
-					automaticGameEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks64();
 				}
 				else if (gui.game.isGameEnded)
 				{
 					printf("nox::gui.game.isGameEnded\n");
 					gui.isRunning = false;
-					automaticGameEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks64();
 				}
 			}
 			if(!globalContainer->runNoX && nextGuiStep == 0)
@@ -498,7 +498,7 @@ int Engine::run(void)
 				if ((int)gui.game.stepCounter == globalContainer->automaticEndingSteps)
 				{
 					gui.isRunning = false;
-					automaticGameEndTick = SDL_GetTicks();
+					automaticGameEndTick = SDL_GetTicks64();
 					printf("nox::gui.game.checkSum() = %08x\n", gui.game.checkSum());
 				}
 			}
@@ -523,7 +523,7 @@ int Engine::run(void)
 	
 				// we compute timing
 				needToBeTime += speed;
-				Sint32 currentTime = SDL_GetTicks() - startTime;
+				Sint64 currentTime = SDL_GetTicks64() - startTime;
 				//if we are more than 500 milliseconds behind where we should be,
 				//then truncate it. This is to avoid playing "catchup" for long
 				//periods of time if Glob2 recieved allmost no cpu time
@@ -531,7 +531,7 @@ int Engine::run(void)
 					needToBeTime = currentTime - 500;
 
 				//Any inconsistancies in the delays will be smoothed throughout the following frames,
-				Sint32 delay = std::max(0, needToBeTime - currentTime);
+				Sint64 delay = std::max(0, needToBeTime - currentTime);
 				SDL_Delay(delay);
 				
 				// we set CPU stats

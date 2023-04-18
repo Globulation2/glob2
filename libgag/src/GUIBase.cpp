@@ -422,8 +422,8 @@ namespace GAGGUI
 	
 	int Screen::execute(DrawableSurface *gfx, int stepLength)
 	{
-		Uint32 frameStartTime;
-		Sint32 frameWaitTime;
+		Uint64 frameStartTime;
+		Sint64 frameWaitTime;
 		
 		this->gfx = gfx;
 	
@@ -440,7 +440,7 @@ namespace GAGGUI
 		while (run)
 		{
 			// get first timer
-			frameStartTime=SDL_GetTicks();
+			frameStartTime=SDL_GetTicks64();
 			
 			// send timer
 			dispatchTimer(frameStartTime);
@@ -522,7 +522,7 @@ namespace GAGGUI
 			dispatchPaint();
 	
 			// wait timer
-			frameWaitTime=SDL_GetTicks()-frameStartTime;
+			frameWaitTime=SDL_GetTicks64()-frameStartTime;
 			frameWaitTime=stepLength-frameWaitTime;
 			if (frameWaitTime>0)
 				SDL_Delay(frameWaitTime);

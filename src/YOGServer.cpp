@@ -118,7 +118,7 @@ void YOGServer::update()
 	maps.update();
 	fileDistributionManager.update();
 	
-	int t = SDL_GetTicks();
+	Uint64 t = SDL_GetTicks64();
 	if(organizedGameTimeEnabled)
 	{
 		if(t > organizedGameBroadcastTime)
@@ -151,10 +151,10 @@ int YOGServer::run()
 	while(nl.isListening())
 	{
 		const int speed = 20;
-		int startTick, endTick;
-		startTick = SDL_GetTicks();
+		Uint64 startTick, endTick;
+		startTick = SDL_GetTicks64();
 		update();
-		endTick=SDL_GetTicks();
+		endTick=SDL_GetTicks64();
 		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
 	}

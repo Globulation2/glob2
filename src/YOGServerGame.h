@@ -130,7 +130,7 @@ private:
 	boost::shared_ptr<YOGServerPlayer> host;
 	GameHeader gameHeader;
 	int latencyMode;
-	int latencyUpdateTimer;
+	Uint64 latencyUpdateTimer;
 	Uint32 mapFile;
 	MapHeader mapHeader;
 	NetGamePlayerManager playerManager;

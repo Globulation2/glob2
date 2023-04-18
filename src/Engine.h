@@ -135,7 +135,7 @@ private:
 
 	CPUStatisticsManager cpuStats;
 
-	Sint32 automaticGameStartTick, automaticGameEndTick;
+	Sint64 automaticGameStartTick, automaticGameEndTick;
 
 	FILE *logFile;
 

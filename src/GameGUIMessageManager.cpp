@@ -37,7 +37,7 @@ std::string InGameMessage::getText() const
 
 void InGameMessage::draw(int x, int y)
 {
-	Uint32 newTime = SDL_GetTicks();
+	Uint64 newTime = SDL_GetTicks64();
 	if(lastTime != 0)
 	{
 		timeLeft -=  (newTime - lastTime);

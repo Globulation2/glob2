@@ -132,10 +132,10 @@ int YOGServerRouter::run()
 	while(nl.isListening())
 	{
 		const int speed = 25;
-		int startTick, endTick;
-		startTick = SDL_GetTicks();
+		Uint64 startTick, endTick;
+		startTick = SDL_GetTicks64();
 		update();
-		endTick=SDL_GetTicks();
+		endTick=SDL_GetTicks64();
 		int remaining = std::max(speed - endTick + startTick, 0);
 		SDL_Delay(remaining);
 		
