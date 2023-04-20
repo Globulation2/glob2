@@ -262,6 +262,7 @@
     <ClCompile Include="gnupg\sha1.c" />
     <ClCompile Include="libgag\src\BinaryStream.cpp" />
     <ClCompile Include="libgag\src\CursorManager.cpp" />
+    <ClCompile Include="libgag\src\EventListener.cpp" />
     <ClCompile Include="libgag\src\FileManager.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug SDL|Win32'">ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug SDL|x64'">ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -507,6 +508,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libgag\include\DX9GraphicContext.h" />
+    <ClInclude Include="libgag\include\EventListener.h" />
     <ClInclude Include="libgag\include\FileManager.h" />
     <ClInclude Include="libgag\include\GAG.h" />
     <ClInclude Include="libgag\include\GAGSys.h" />

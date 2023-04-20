@@ -191,7 +191,7 @@ GameGUI::GameGUI()
 
 GameGUI::~GameGUI()
 {
-	EventListener::instance()->setPainter(nullptr);
+	EventListener::instance()->removePainter("GameGUI");
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 }

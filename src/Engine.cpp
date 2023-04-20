@@ -510,7 +510,7 @@ int Engine::run(void)
 					static bool isPainterSet = false;
 					if (!isPainterSet)
 					{
-						EventListener::instance()->setPainter(std::bind(GameGUI::drawAll, &gui, gui.localTeamNo));
+						EventListener::instance()->addPainter("GameGUI", std::bind(&GameGUI::drawAll, &gui, gui.localTeamNo));
 						isPainterSet = true;
 					}
 					std::unique_lock<std::mutex> lock(EventListener::instance()->renderMutex);

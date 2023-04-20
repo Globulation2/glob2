@@ -1116,6 +1116,7 @@ MapEdit::MapEdit()
 
 MapEdit::~MapEdit()
 {
+	EventListener::instance()->removePainter("MapEdit");
 	Toolkit::releaseSprite("data/gui/editor");
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
@@ -1257,6 +1258,7 @@ int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 {
 	game.map.setSize(sizeX, sizeY, terrainType);
 	game.map.setGame(&game);
+	EventListener::instance()->addPainter("MapEdit", std::bind(&MapEdit::draw, this));
 	return run();
 }
 

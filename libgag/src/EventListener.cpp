@@ -18,6 +18,7 @@
 */
 #include "EventListener.h"
 #include <SDL_syswm.h>
+#include <cassert>
 namespace GAGCore {
 std::deque<SDL_Event> events = std::deque<SDL_Event>();
 EventListener* EventListener::el = nullptr;
@@ -56,13 +57,38 @@ void EventListener::setPainter(std::function<void()> f)
 	std::unique_lock<std::mutex> lock(renderMutex);
 	painter = f;
 }
+
+void EventListener::addPainter(const std::string& name, std::function<void()> f)
+{
+	std::unique_lock<std::mutex> lock(renderMutex);
+	painters.insert(std::pair<const std::string, std::function<void()> >(name, f));
+}
+void EventListener::removePainter(const std::string& name)
+{
+	if (painters.empty())
+		assert("Tried to remove a painter when painters map is empty.");
+	std::unique_lock<std::mutex> lock(renderMutex);
+	for (auto it = painters.rbegin(); it != painters.rend();++it)
+	{
+		if (it->first == name)
+		{
+			// There might be multiple Screens active, so we remove the one added last.
+			// For example, a Screen with an OverlayScreen above it.
+			painters.erase(it.base());
+			break;
+		}
+	}
+}
 void EventListener::paint()
 {
-	if (painter)
+	if (painters.size())
 	{
 		std::unique_lock<std::mutex> lock(renderMutex);
 		gfx->createGLContext();
-		painter();
+		for (std::multimap<const std::string, std::function<void()> >::iterator it = painters.begin(); it != painters.end(); ++it)
+		{
+			it->second();
+		}
 		gfx->nextFrame();
 	}
 }

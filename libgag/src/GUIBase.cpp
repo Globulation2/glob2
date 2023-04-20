@@ -415,6 +415,7 @@ namespace GAGGUI
 	
 	Screen::~Screen()
 	{
+		EventListener::instance()->removePainter("Screen");
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 		{
 			delete (*it);
@@ -427,6 +428,7 @@ namespace GAGGUI
 		Sint32 frameWaitTime;
 		
 		this->gfx = gfx;
+		EventListener::instance()->addPainter("Screen", std::bind(&Screen::dispatchPaint, this));
 	
 		// init widgets
 		dispatchInit();

@@ -25,6 +25,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <functional>
+#include <map>
 namespace GAGCore {
 extern std::deque<SDL_Event> events;
 class EventListener {
@@ -42,9 +43,12 @@ public:
 	static std::condition_variable doneCond;
 	static std::mutex renderMutex;
 	void setPainter(std::function<void()> f);
+	void addPainter(const std::string& name, std::function<void()> f);
+	void removePainter(const std::string& name);
 	void paint();
 private:
 	std::function<void()> painter;
+	std::multimap<const std::string, std::function<void()> > painters;
 	GraphicContext* gfx;
 	static EventListener* el;
 	std::atomic<bool> quit, done;
