@@ -126,7 +126,9 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
+#ifndef YOG_SERVER_ONLY
 		GAGGUI::Screen::scrollWheelEnabled = scrollWheelEnabled;
+#endif
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
