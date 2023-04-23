@@ -29,7 +29,7 @@
 
 using namespace GAGCore;
 using namespace GAGGUI;
-using namespace boost;
+using boost::static_pointer_cast;
 
 FertilityCalculatorDialog::FertilityCalculatorDialog(GraphicContext *parentCtx, Map& map)
 	: OverlayScreen(parentCtx, 200, 100), map(map), parentCtx(parentCtx), thread(map, incoming, incomingMutex)

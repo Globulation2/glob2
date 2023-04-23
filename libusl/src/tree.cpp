@@ -5,7 +5,9 @@
 #include "types.h"
 #include <sstream>
 
-using namespace std;
+using std::stringstream;
+using std::ostringstream;
+using std::endl;
 
 
 void Node::generate(ThunkPrototype* thunk, DebugInfo* debug, Code* code)

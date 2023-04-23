@@ -25,6 +25,7 @@
 
 
 using namespace GAGCore;
+using boost::shared_ptr;
 
 NetTestSuite::NetTestSuite()
 {

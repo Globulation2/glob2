@@ -32,6 +32,7 @@
 #include "GlobalContainer.h"
 
 
+using boost::static_pointer_cast;
 
 YOGRegisterScreen::YOGRegisterScreen(boost::shared_ptr<YOGClient> client)
 	: client(client)

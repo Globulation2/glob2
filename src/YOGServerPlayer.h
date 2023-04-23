@@ -27,13 +27,13 @@
 #include "YOGGameInfo.h"
 #include "YOGPlayerSessionInfo.h"
 
-using namespace boost;
 
 class YOGServer;
 class YOGServerGame;
 class NetMessage;
 class P2PManager;
 
+using boost::weak_ptr;
 ///This represents a connected user on the YOG server.
 class YOGServerPlayer
 {

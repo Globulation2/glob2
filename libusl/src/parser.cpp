@@ -3,7 +3,8 @@
 #include "error.h"
 #include <memory>
 
-using namespace std;
+using std::string;
+using std::unique_ptr;
 
 void Parser::parse(BlockNode* block)
 {

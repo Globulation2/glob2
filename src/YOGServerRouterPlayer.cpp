@@ -23,6 +23,7 @@
 #include "YOGServerGameRouter.h"
 #include "YOGServerRouter.h"
 
+using boost::static_pointer_cast;
 
 YOGServerRouterPlayer::YOGServerRouterPlayer(boost::shared_ptr<NetConnection> connection, YOGServerRouter* router)
 	: connection(connection), router(router), isAdmin(false)

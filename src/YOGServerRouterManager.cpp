@@ -21,6 +21,8 @@
 #include "NetConnection.h"
 #include "NetMessage.h"
 
+using boost::static_pointer_cast;
+
 YOGServerRouterManager::YOGServerRouterManager(YOGServer& server)
 	: listener(YOG_SERVER_ROUTER_PORT), server(server)
 {

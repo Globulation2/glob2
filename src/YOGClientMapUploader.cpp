@@ -28,6 +28,7 @@
 #include "Stream.h"
 #include "BinaryStream.h"
 
+using boost::static_pointer_cast;
 
 YOGClientMapUploader::YOGClientMapUploader(boost::shared_ptr<YOGClient> client)
 	: state(Nothing), client(client)

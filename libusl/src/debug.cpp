@@ -3,7 +3,7 @@
 #include "code.h"
 #include "native.h"
 
-using namespace std;
+using std::string;
 
 const Position& ThunkDebugInfo::find(size_t address) const
 {

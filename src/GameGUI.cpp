@@ -128,7 +128,8 @@
 #define REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE 55
 #define REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE 54
 
-using namespace boost;
+using boost::shared_ptr;
+using boost::static_pointer_cast;
 
 enum GameGUIGfxId
 {

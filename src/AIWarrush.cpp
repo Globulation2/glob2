@@ -34,7 +34,7 @@
 #define BUILDING_DELAY 30
 #define AREAS_DELAY 50
 
-using namespace boost;
+using boost::shared_ptr;
 
 void AIWarrush::init(Player *player)
 {

@@ -33,7 +33,12 @@ using namespace GAGCore;
 #include <memory>
 #include <boost/functional.hpp>
 
-using namespace std;
+using std::string;
+using std::unique_ptr;
+using std::ifstream;
+using std::istringstream;
+using std::cerr;
+using std::endl;
 
 
 template<>

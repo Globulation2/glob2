@@ -25,8 +25,8 @@
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
 
-using namespace boost;
 using namespace GAGCore;
+using boost::static_pointer_cast;
 
 YOGServerFileDistributor::YOGServerFileDistributor(Uint16 fileID)
 	: fileID(fileID), startedLoading(false), downloadFromPlayerCanceled(false)

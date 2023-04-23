@@ -23,6 +23,8 @@
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
 
+using boost::static_pointer_cast;
+
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
 {

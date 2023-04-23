@@ -9,7 +9,6 @@
 #include <cassert>
 #include <algorithm>
 
-using namespace std;
 
 void Value::dump(std::ostream &stream) const
 {

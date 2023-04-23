@@ -28,8 +28,8 @@
 #include "YOGServerRouterPlayer.h"
 #include <sstream>
 
-using namespace boost;
 using namespace GAGCore;
+using boost::static_pointer_cast;
 
 YOGServerRouter::YOGServerRouter()
 	: nl(YOG_ROUTER_PORT), admin(this)

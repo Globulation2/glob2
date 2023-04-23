@@ -25,8 +25,8 @@
 #include "YOGClientFileAssembler.h"
 #include "YOGClient.h"
 
-using namespace boost;
 using namespace GAGCore;
+using boost::static_pointer_cast;
 
 YOGClientFileAssembler::YOGClientFileAssembler(boost::weak_ptr<YOGClient> client, Uint16 fileID)
 	: client(client), fileID(fileID)

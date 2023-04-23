@@ -41,6 +41,9 @@
 #include "Unit.h"
 #include "Utilities.h"
 
+using std::string;
+using std::cerr;
+using std::endl;
 
 SGSLToken::TokenSymbolLookupTable SGSLToken::table[] =
 {
@@ -1090,7 +1093,6 @@ void Story::syncStep(GameGUI *gui)
 		std::cout << "Story::syncStep : SGSL : Warning, story step took more than 256 cycles, perhaps you have infinite loop in your script" << std::endl;
 }
 
-using namespace std;
 
 std::string ErrorReport::getErrorString(void) const
 {

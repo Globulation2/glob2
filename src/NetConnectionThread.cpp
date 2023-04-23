@@ -23,6 +23,7 @@
 #include "boost/lexical_cast.hpp"
 
 using namespace GAGCore;
+using boost::static_pointer_cast;
 
 NetConnectionThread::NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
 	: outgoing(outgoing),  outgoingMutex(outgoingMutex)

@@ -40,6 +40,8 @@
 #include "YOGLoginScreen.h"
 #include "YOGRegisterScreen.h"
 
+using boost::static_pointer_cast;
+
 YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
 	: client(client)
 {

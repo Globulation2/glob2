@@ -22,7 +22,6 @@
 #include "SDL_net.h"
 #include "NetConnection.h"
 
-using namespace boost;
 
 ///NetListener represents a low level wrapper arround SDL.
 ///It listens for incoming connections. One should frequently
