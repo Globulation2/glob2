@@ -26,8 +26,6 @@
 #include "YOGMessage.h"
 #include <boost/shared_ptr.hpp>
 
-using namespace boost;
-
 ///This is a basic test system for the low level net classes,
 ///NetConnection, NetListener, NetMessage, YOGGameInfo and YOGMessage
 ///When run, it is assumed that the host allows the program to listen on

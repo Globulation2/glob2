@@ -26,6 +26,9 @@
 #include "NetMessage.h"
 #include "YOGClientGameListManager.h"
 
+using boost::shared_ptr;
+using boost::static_pointer_cast;
+
 MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
 	: client(client), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)
 {

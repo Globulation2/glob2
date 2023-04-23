@@ -21,6 +21,8 @@
 #include "NetMessage.h"
 #include "YOGClientGameListListener.h"
 
+using boost::static_pointer_cast;
+
 YOGClientGameListManager::YOGClientGameListManager(YOGClient* client)
 	: client(client)
 {

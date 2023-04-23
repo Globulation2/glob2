@@ -24,6 +24,8 @@
 #include "NetMessage.h"
 
 using namespace GAGCore;
+using boost::static_pointer_cast;
+using boost::shared_ptr;
 
 
 	

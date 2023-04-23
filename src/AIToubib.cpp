@@ -25,7 +25,7 @@
 #include "Order.h"
 #include "Player.h"
 
-using namespace boost;
+using boost::shared_ptr;
 
 AIToubib::AIToubib(Player *player)
 {

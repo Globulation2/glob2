@@ -2,7 +2,8 @@
 #include "interpreter.h"
 #include "types.h"
 
-using namespace std;
+using std::for_each;
+using std::mem_fun;
 
 void Heap::collectGarbage()
 {

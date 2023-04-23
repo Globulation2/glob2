@@ -37,7 +37,7 @@
 #include "YOGAfterJoinGameInformation.h"
 
 
-using namespace boost;
+using boost::shared_ptr;
 
 ///This is the enum of message types
 enum NetMessageType

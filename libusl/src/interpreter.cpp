@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-using namespace std;
+using std::for_each;
 
 bool Thread::step()
 {
@@ -81,16 +81,12 @@ size_t Thread::run()
 
 void Thread::markForGC()
 {
-	using namespace std;
-
 	// mark all frames in stack
 	for_each(frames.begin(), frames.end(), [](auto& frame) {frame.markForGC(); });
 }
 
 void Thread::Frame::markForGC()
 {
-	using namespace std;
-	
 	// mark all variables in frame
 	for_each(stack.begin(), stack.end(), [](auto& value) {value->markForGC(); });
 	thunk->markForGC();

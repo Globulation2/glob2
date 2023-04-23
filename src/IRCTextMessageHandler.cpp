@@ -26,7 +26,7 @@
 #include "YOGConsts.h"
 
 using namespace GAGCore;
-using namespace boost;
+using boost::static_pointer_cast;
 
 IRCTextMessageHandler::IRCTextMessageHandler()
 	: irc(incoming, incomingMutex)

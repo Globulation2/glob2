@@ -23,6 +23,7 @@
 #include "YOGClientRouterAdministrator.h"
 #include "YOGConsts.h"
 
+using boost::static_pointer_cast;
 	
 YOGClientRouterAdministrator::YOGClientRouterAdministrator()
 {

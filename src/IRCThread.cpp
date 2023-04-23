@@ -20,7 +20,7 @@
 #include "IRCThreadMessage.h"
 #include <iostream>
 
-using namespace boost;
+using boost::static_pointer_cast;
 
 IRCThread::IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
 	: outgoing(outgoing), outgoingMutex(outgoingMutex)

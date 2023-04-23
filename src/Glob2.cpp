@@ -70,6 +70,8 @@
 #	include <sys/param.h>
 #endif
 
+using boost::shared_ptr;
+
 /*!	\mainpage Globulation 2 Reference documentation
 
 	\section intro Introduction

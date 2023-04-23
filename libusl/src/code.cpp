@@ -8,7 +8,8 @@
 
 #include <sstream>
 
-using namespace std;
+using std::ostringstream;
+using std::string;
 
 ThunkPrototype* thisMember(Prototype* outer)
 {

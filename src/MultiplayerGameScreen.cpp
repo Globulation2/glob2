@@ -40,6 +40,8 @@
 #include "YOGMessage.h"
 #include "CustomGameOtherOptions.h"
 
+using boost::static_pointer_cast;
+
 MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
 	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
 {

@@ -65,13 +65,15 @@ struct Prototype: Value
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
 		stream << ": ";
-		using namespace std;
+		using std::transform;
+		using std::ostream_iterator;
+		using std::string;
 		transform(members.begin(), members.end(), ostream_iterator<string>(stream, " "), [](auto& member) {return member.first; });
 	}
 	
 	virtual void propagateMarkForGC()
 	{
-		using namespace std;
+		using std::for_each;
 		for_each(members.begin(), members.end(), [this](auto& member) {dynamic_cast<Value*>(member.second)->markForGC(); });
 	}
 	
@@ -157,7 +159,8 @@ struct Scope: Thunk
 	
 	virtual void propagateMarkForGC()
 	{
-		using namespace std;
+		using std::for_each;
+		using std::mem_fun;
 		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
 	}
 	

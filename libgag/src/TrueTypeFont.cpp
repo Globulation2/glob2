@@ -28,7 +28,6 @@
 #include <fribidi/fribidi.h>
 #endif
 
-using namespace std;
 #define MAX_CACHE_SIZE 128
 
 namespace GAGCore

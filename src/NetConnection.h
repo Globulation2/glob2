@@ -24,7 +24,7 @@
 #include <queue>
 #include <boost/shared_ptr.hpp>
 
-using namespace boost;
+using boost::shared_ptr;
 
 class NetListener;
 class NetMessage;

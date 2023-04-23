@@ -44,7 +44,6 @@
 
 #include <iostream>
 
-using namespace boost;
 
 Engine::Engine()
 {

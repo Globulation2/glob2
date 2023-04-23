@@ -34,7 +34,7 @@
 #define AI_FILE_MIN_VERSION 1
 #define AI_FILE_VERSION 2
 
-using namespace boost;
+using boost::shared_ptr;
 
 // AICastor::Project part:
 

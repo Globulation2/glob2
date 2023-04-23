@@ -4,7 +4,9 @@
 #include <cassert>
 #include <sstream>
 
-using namespace std;
+using std::ostringstream;
+using std::string;
+using std::endl;
 
 const Token::Type Lexer::tokenTypes[] =
 {

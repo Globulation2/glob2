@@ -40,7 +40,7 @@ using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
 using namespace boost::logic;
-using namespace boost;
+using boost::shared_ptr;
 
 
 

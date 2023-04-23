@@ -21,6 +21,7 @@
 #include "YOGClient.h"
 #include "NetMessage.h"
 
+using boost::static_pointer_cast;
 
 YOGClientDownloadableMapList::YOGClientDownloadableMapList(YOGClient* client)
 	: client(client)

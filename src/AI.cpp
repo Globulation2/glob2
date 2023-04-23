@@ -35,7 +35,7 @@
 #include "AINicowar.h"
 #include "AIEcho.h"
 
-using namespace boost;
+using boost::shared_ptr;
 
 /*AI::AI(Player *player)
 {

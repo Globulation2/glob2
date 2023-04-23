@@ -34,6 +34,7 @@
 #include "YOGClientGameListManager.h"
 
 using namespace GAGGUI;
+using boost::shared_ptr;
 
 LANFindScreen::LANFindScreen()
 {

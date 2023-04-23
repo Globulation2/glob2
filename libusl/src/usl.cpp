@@ -8,7 +8,12 @@
 #include <fstream>
 #include <memory>
 
-using namespace std;
+using std::ostream;
+using std::ifstream;
+using std::string;
+using std::unique_ptr;
+using std::cout;
+using std::endl;
 
 void dumpCode(ThunkPrototype* thunk, ThunkDebugInfo* debug, ostream& stream)
 {

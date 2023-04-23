@@ -27,7 +27,7 @@
 #include "Utilities.h"
 #include "Unit.h"
 
-using namespace boost;
+using boost::shared_ptr;
 
 AINumbi::AINumbi(Player *player)
 {

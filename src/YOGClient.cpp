@@ -34,6 +34,9 @@
 #include "YOGMessage.h"
 #include "YOGServer.h"
 
+using boost::static_pointer_cast;
+using boost::shared_ptr;
+
 YOGClient::YOGClient(const std::string& server)
 {
 	initialize();

@@ -36,6 +36,8 @@
 class MultiplayersJoin;
 class NetGame;
 
+using boost::shared_ptr;
+
 /// Engine is the backend of the game. It is responsible for loading and setting up games and players,
 /// and its run function is meant to run the game that has been loaded.
 class Engine

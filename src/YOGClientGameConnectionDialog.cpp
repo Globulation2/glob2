@@ -27,7 +27,6 @@
 
 using namespace GAGCore;
 using namespace GAGGUI;
-using namespace boost;
 
 YOGClientGameConnectionDialog::YOGClientGameConnectionDialog(GraphicContext *parentCtx, boost::shared_ptr<MultiplayerGame> game)
 	: OverlayScreen(parentCtx, 200, 100), parentCtx(parentCtx), game(game)
