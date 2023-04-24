@@ -530,7 +530,10 @@ namespace GAGGUI
 				dispatchEvents(&windowEvent);
 				
 			// draw
-			dispatchPaint();
+			{
+				std::unique_lock<std::mutex> lock(EventListener::instance()->renderMutex);
+				dispatchPaint();
+			}
 	
 			// wait timer
 			frameWaitTime=SDL_GetTicks()-frameStartTime;

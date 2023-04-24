@@ -52,6 +52,7 @@ private:
 	GraphicContext* gfx;
 	static EventListener* el;
 	std::atomic<bool> quit, done;
+	std::atomic<int> depth;
 };
 }
 #endif //__EVENTLISTENER_H

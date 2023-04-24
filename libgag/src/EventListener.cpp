@@ -34,7 +34,7 @@ std::mutex EventListener::renderMutex;
 #endif
 
 EventListener::EventListener(GraphicContext* gfx)
-: painter(nullptr)
+: painter(nullptr), depth(0)
 {
 	this->gfx = gfx;
 	el = this;
@@ -68,19 +68,22 @@ void EventListener::removePainter(const std::string& name)
 	if (painters.empty())
 		assert("Tried to remove a painter when painters map is empty.");
 	std::unique_lock<std::mutex> lock(renderMutex);
-	for (auto it = painters.rbegin(); it != painters.rend();++it)
+	for (std::multimap<const std::string, std::function<void()> >::reverse_iterator it = painters.rbegin(); it != painters.rend(); ++it)
 	{
 		if (it->first == name)
 		{
 			// There might be multiple Screens active, so we remove the one added last.
 			// For example, a Screen with an OverlayScreen above it.
-			painters.erase(it.base());
+			painters.erase(--(it.base()));
 			break;
 		}
 	}
 }
 void EventListener::paint()
 {
+	depth++;
+	if (depth > 1)
+		return;
 	if (painters.size())
 	{
 		std::unique_lock<std::mutex> lock(renderMutex);
@@ -91,6 +94,7 @@ void EventListener::paint()
 		}
 		gfx->nextFrame();
 	}
+	depth--;
 }
 //https://stackoverflow.com/a/51597338/8890345
 #ifdef WINDOWS_OR_MINGW
@@ -124,8 +128,8 @@ void EventListener::run()
 	{
 		std::unique_lock<std::mutex> lock(startMutex);
 		quit = false;
-		startedCond.notify_one();
 	}
+	startedCond.notify_one();
 #ifdef WINDOWS_OR_MINGW
 	SDL_AddEventWatch(eventWatch, this); // register the event watch function
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE); // we need the native Windows events, so we can listen to WM_ENTERSIZEMOVE and WM_TIMER
@@ -165,8 +169,8 @@ void EventListener::run()
 	{
 		std::unique_lock<std::mutex> lock(doneMutex);
 		done = true;
-		doneCond.notify_one();
 	}
+	doneCond.notify_one();
 }
 int EventListener::poll(SDL_Event* e)
 {
