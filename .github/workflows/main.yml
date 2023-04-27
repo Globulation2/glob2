@@ -15,7 +15,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [ubuntu-22.04, ubuntu-20.04, ubuntu-18.04]
+                os: [ubuntu-22.04, ubuntu-20.04]
         steps:
             - uses: actions/checkout@v3
             - run: |
@@ -23,8 +23,8 @@ jobs:
                     libspeex-dev libfreetype6-dev libboost-dev libboost-thread-dev \
                     libboost-date-time-dev libfribidi-dev portaudio19-dev libboost-math-dev \
                     dpkg-dev libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libsdl2-net-dev
-                scons -j16
-                dpkg-buildpackage -I.hg
+            - run: scons -j16
+            - run: dpkg-buildpackage -I.hg
 
     Windows-Build:
         name: Build on windows-2022 msys2
@@ -55,4 +55,4 @@ jobs:
             - shell: cmd
               run: git config --global core.autocrlf input
             - uses: actions/checkout@v3
-            - run: scons -j16
+            - run: echo 'mingw = True' >> options_cache.py && scons -j16
