@@ -50,8 +50,8 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	
 	oldIslandSize=50;
 	oldBeach=1;	
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
-		ressource[i]=7;
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
+		resource[i]=7;
 	
 	nbWorkers=4;
 	nbTeams=4;
@@ -65,7 +65,7 @@ MapGenerationDescriptor::~MapGenerationDescriptor()
 
 Uint8 *MapGenerationDescriptor::getData()
 {
-	assert(DATA_SIZE==100+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==100+MAX_NB_RESOURCES*4);
 	
 	addSint32(data, wDec, 0);
 	addSint32(data, hDec, 4);
@@ -97,15 +97,15 @@ Uint8 *MapGenerationDescriptor::getData()
 
 	addUint32(data, logRepeatAreaTimes, 84);
 
-	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		addSint32(data, ressource[i], 88+i*4);
+	for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
+		addSint32(data, resource[i], 88+i*4);
 
 	return data;
 }
 
 bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 {
-	assert(DATA_SIZE==100+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==100+MAX_NB_RESOURCES*4);
 	assert(getDataLength()==DATA_SIZE);
 	assert(getDataLength()==dataLength);
 	
@@ -139,8 +139,8 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	fruitRatio = getSint32(data, 80);
 	logRepeatAreaTimes = getSint32(data, 84);
 
-	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		ressource[i]=getSint32(data, 88+i*4);
+	for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
+		resource[i]=getSint32(data, 88+i*4);
 
 	bool good=true;
 	if (getDataLength()!=dataLength)
@@ -224,8 +224,8 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs=(cs<<31)|(cs>>1);
 	cs ^= logRepeatAreaTimes;
 
-	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		cs+=ressource[i]<<(3*i);
+	for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
+		cs+=resource[i]<<(3*i);
 
 	cs=(cs<<31)|(cs>>1);
 	cs^=nbWorkers;

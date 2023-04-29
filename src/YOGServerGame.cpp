@@ -118,7 +118,7 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 
 
 
-void YOGServerGame::addAIPlayer(AI::ImplementitionID type)
+void YOGServerGame::addAIPlayer(AI::ImplementationID type)
 {
 	playerManager.addAIPlayer(type);
 

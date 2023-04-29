@@ -121,9 +121,9 @@ void BuildingSelectorWidget::draw()
 	if (me.selectionName == type)
 	{
 		if (largeSelector)
-			globalContainer->gfx->drawSprite(x-8, y-5, globalContainer->gamegui, 8);
+			globalContainer->gfx->drawSprite(x-8, y-5, globalContainer->gameGui, 8);
 		else
-			globalContainer->gfx->drawSprite(x-4, y-3, globalContainer->gamegui, 23);
+			globalContainer->gfx->drawSprite(x-4, y-3, globalContainer->gameGui, 23);
 	}
 }
 
@@ -183,9 +183,9 @@ void PanelIcon::draw()
 {
 	// draw buttons
 	if (me.panelMode==panelModeHilight)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, iconNumber+1);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, iconNumber+1);
 	else
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, iconNumber);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, iconNumber);
 
 }
 
@@ -203,9 +203,9 @@ void MenuIcon::draw()
 {
 	// draw buttons
 	if (me.showingMenuScreen)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 7);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 7);
 	else
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 6);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 6);
 
 }
 
@@ -224,25 +224,25 @@ void ZoneSelector::draw()
 	bool isSelected=false;
 	if(zoneType==ForbiddenZone)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 13);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 13);
 		if(me.brushType==MapEdit::ForbiddenBrush)
 			isSelected=true;
 	}
 	else if(zoneType==GuardingZone)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 14);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 14);
 		if(me.brushType==MapEdit::GuardAreaBrush)
 			isSelected=true;
 	}
 	else if(zoneType==ClearingZone)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 25);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 25);
 		if(me.brushType==MapEdit::ClearAreaBrush)
 			isSelected=true;
 	}
 	if(me.selectionMode==MapEdit::PlaceZone && isSelected)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 22);
 	}
 }
 
@@ -297,7 +297,7 @@ void UnitSelector::draw()
 	}
 	if(drawSelection)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 23);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 23);
 	}
 }
 
@@ -320,23 +320,23 @@ void TerrainSelector::draw()
 	if(terrainType==Water)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 259);
 	if(terrainType==Wheat)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 19);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 19);
 	if(terrainType==Trees)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 2);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 2);
 	if(terrainType==Stone)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 34);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 34);
 	if(terrainType==Algae)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 44);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 44);
 	if(terrainType==Papyrus)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 24);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 24);
 	if(terrainType==CherryTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 54);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 54);
 	if(terrainType==OrangeTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 59);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 59);
 	if(terrainType==PruneTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 64);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 64);
 	if(me.terrainType==terrainType)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 22);
 }
 
 
@@ -351,7 +351,7 @@ BlueButton::BlueButton(MapEdit& me, const widgetRectangle& area, const std::stri
 
 void BlueButton::draw()
 {
-	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 12);
+	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 12);
 	if(selected)
 		globalContainer->gfx->drawFilledRect(area.x+9, area.y+3, 94, 10, 128, 128, 192);
 
@@ -499,7 +499,7 @@ void UnitPicture::draw()
 	int decX = (32-unitSprite->getW(imgid))/2;
 	int decY = (32-unitSprite->getH(imgid))/2;
 	globalContainer->gfx->drawSprite(xpos+12+decX, ypos+7+decY, unitSprite, imgid);
-	globalContainer->gfx->drawSprite(xpos, ypos, globalContainer->gamegui, 18);
+	globalContainer->gfx->drawSprite(xpos, ypos, globalContainer->gameGui, 18);
 }
 
 
@@ -537,7 +537,7 @@ FractionValueText::~FractionValueText()
 
 void FractionValueText::draw()
 {
-	globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, FormatableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(*numerator).arg(*denominator).c_str());
+	globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, FormattableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(*numerator).arg(*denominator).c_str());
 }
 
 
@@ -583,14 +583,14 @@ ValueScrollBox::~ValueScrollBox()
 
 void ValueScrollBox::draw()
 {
-	//Sometimes a scrollbox gets initiated with max-value 0. A turret construction site has 0/0 stone and 0/0 shots. To not run into arithmetic exceptions those cases are treated here.
+	//Sometimes a scrollbox gets initiated with max-value 0. A turret construction site has 0/0 stone and 0/0 shots. To not run into arithmetic exceptions those tiles are treated here.
 	if((*max) != 0)
 	{
 		globalContainer->gfx->setClipRect(area.x, area.y, 112, 16);
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 9);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 9);
 		int size=((*value)*92)/(*max);
 		globalContainer->gfx->setClipRect(area.x+10, area.y, size, 16);
-		globalContainer->gfx->drawSprite(area.x+10, area.y+3, globalContainer->gamegui, 10);
+		globalContainer->gfx->drawSprite(area.x+10, area.y+3, globalContainer->gameGui, 10);
 		globalContainer->gfx->setClipRect();
 	}
 }
@@ -702,7 +702,7 @@ void BuildingPicture::draw()
 	int dy = (46-miniSprite->getH(imgid))/2;
 	miniSprite->setBaseColor(selBuild->owner->color);
 	globalContainer->gfx->drawSprite(area.x+dx, area.y+dy, miniSprite, imgid);
-	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 18);
+	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, 18);
 }
 
 
@@ -1271,7 +1271,7 @@ int MapEdit::run(void)
 			else if(isDraggingArea)
 				performAction("area drag motion");
 			else if(isDraggingNoRessourceGrowthArea)
-				performAction("no ressource growth area drag motion");
+				performAction("no resource growth area drag motion");
 		}
 		
 		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
@@ -1501,7 +1501,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
 				
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
+				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
 				globalContainer->littleFont->popStyle();
 			}
 			else
@@ -1581,11 +1581,11 @@ void MapEdit::drawMenuEyeCandy()
 	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32;
 	for (int i=0; i<=pos; i+=32)
 	{
-		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);
+		globalContainer->gfx->drawSprite(i, 16, globalContainer->gameGui, 16);
 	}
 	for (int i=16; i<globalContainer->gfx->getH(); i+=32)
 	{
-		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gamegui, 17);
+		globalContainer->gfx->drawSprite(pos+28, i, globalContainer->gameGui, 17);
 	}
 }
 
@@ -1705,7 +1705,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		}
 		else if(isDraggingNoRessourceGrowthArea)
 		{
-			performAction("no ressource growth area drag motion", relMouseX, relMouseY);
+			performAction("no resource growth area drag motion", relMouseX, relMouseY);
 		}
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
@@ -1726,7 +1726,7 @@ void MapEdit::processEvent(SDL_Event& event)
 			else if(selectionMode==ChangeAreas)
 				performAction("area drag start");
 			else if(selectionMode==ChangeNoRessourceGrowthAreas)
-				performAction("no ressource growth area drag start");
+				performAction("no resource growth area drag start");
 			else
 			{
 				performAction("select map unit");
@@ -1760,7 +1760,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		if(isDraggingArea)
 			performAction("area drag end");
 		if(isDraggingNoRessourceGrowthArea)
-			performAction("no ressource growth area drag end");
+			performAction("no resource growth area drag end");
 	}
 	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_MIDDLE)
 	{
@@ -2393,18 +2393,18 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		firstPlacementX=-1;
 		firstPlacementY=-1;
 	}
-	else if(action=="no ressource growth area drag start")
+	else if(action=="no resource growth area drag start")
 	{
 		isDraggingNoRessourceGrowthArea=true;
 		handleNoRessourceGrowthClick(mouseX, mouseY);
 		hasMapBeenModified = true;
 	}
-	else if(action=="no ressource growth area drag motion")
+	else if(action=="no resource growth area drag motion")
 	{
 		handleNoRessourceGrowthClick(mouseX, mouseY);
 		hasMapBeenModified = true;
 	}
-	else if(action=="no ressource growth area drag end")
+	else if(action=="no resource growth area drag end")
 	{
 		isDraggingNoRessourceGrowthArea=false;
 		lastPlacementX=-1;
@@ -2677,8 +2677,8 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			buildingHPLabel->setValues(&b->hp, &b->type->hpMax);
 			buildingHPScrollBox->setValues(&b->hp, &b->type->hpMax);
 			bool foodLabel=false;
-			buildingFoodQuantityLabel->setValues(&b->ressources[CORN], &b->type->maxRessource[CORN]);
-			buildingFoodQuantityScrollBox->setValues(&b->ressources[CORN], &b->type->maxRessource[CORN]);
+			buildingFoodQuantityLabel->setValues(&b->resources[CORN], &b->type->maxResource[CORN]);
+			buildingFoodQuantityScrollBox->setValues(&b->resources[CORN], &b->type->maxResource[CORN]);
 			bool assignedLabel=false;
 			buildingAssignedLabel->setValues(&b->maxUnitWorking);
 			buildingAssignedScrollBox->setValues(&b->maxUnitWorking);
@@ -2692,17 +2692,17 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 			buildingWarriorRatioLabel->setValues(&b->ratio[WARRIOR]);
 			buildingWarriorRatioScrollBox->setValues(&b->ratio[WARRIOR]);
 			bool cherryLabel=false;
-			buildingCherryLabel->setValues(&b->ressources[CHERRY], &b->type->maxRessource[CHERRY]);
-			buildingCherryScrollBox->setValues(&b->ressources[CHERRY], &b->type->maxRessource[CHERRY]);
+			buildingCherryLabel->setValues(&b->resources[CHERRY], &b->type->maxResource[CHERRY]);
+			buildingCherryScrollBox->setValues(&b->resources[CHERRY], &b->type->maxResource[CHERRY]);
 			bool orangeLabel=false;
-			buildingOrangeLabel->setValues(&b->ressources[ORANGE], &b->type->maxRessource[ORANGE]);
-			buildingOrangeScrollBox->setValues(&b->ressources[ORANGE], &b->type->maxRessource[ORANGE]);
+			buildingOrangeLabel->setValues(&b->resources[ORANGE], &b->type->maxResource[ORANGE]);
+			buildingOrangeScrollBox->setValues(&b->resources[ORANGE], &b->type->maxResource[ORANGE]);
 			bool pruneLabel=false;
-			buildingPruneLabel->setValues(&b->ressources[PRUNE], &b->type->maxRessource[PRUNE]);
-			buildingPruneScrollBox->setValues(&b->ressources[PRUNE], &b->type->maxRessource[PRUNE]);
+			buildingPruneLabel->setValues(&b->resources[PRUNE], &b->type->maxResource[PRUNE]);
+			buildingPruneScrollBox->setValues(&b->resources[PRUNE], &b->type->maxResource[PRUNE]);
 			bool stoneLabel=false;
-			buildingStoneLabel->setValues(&b->ressources[STONE], &b->type->maxRessource[STONE]);
-			buildingStoneScrollBox->setValues(&b->ressources[STONE], &b->type->maxRessource[STONE]);
+			buildingStoneLabel->setValues(&b->resources[STONE], &b->type->maxResource[STONE]);
+			buildingStoneScrollBox->setValues(&b->resources[STONE], &b->type->maxResource[STONE]);
 			bool bulletsLabel=false;
 			buildingBulletsLabel->setValues(&b->bullets, &b->type->maxBullets);
 			buildingBulletsScrollBox->setValues(&b->bullets, &b->type->maxBullets);
@@ -3290,17 +3290,17 @@ void MapEdit::handleBrushClick(int mx, int my)
 				{
 					if (brushType == ForbiddenBrush)
 					{
-						game.map.getCase(x, y).forbidden |= (1<<team);
+						game.map.getTile(x, y).forbidden |= (1<<team);
 						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					}
 					else if (brushType == GuardAreaBrush)
 					{
-						game.map.getCase(x, y).guardArea |= (1<<team);
+						game.map.getTile(x, y).guardArea |= (1<<team);
 						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					}
 					else if (brushType == ClearAreaBrush)
 					{
-						game.map.getCase(x, y).clearArea |= (1<<team);
+						game.map.getTile(x, y).clearArea |= (1<<team);
 						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					}
 					else
@@ -3315,17 +3315,17 @@ void MapEdit::handleBrushClick(int mx, int my)
 				{
 					if (brushType == ForbiddenBrush)
 					{
-						game.map.getCase(x, y).forbidden ^= game.map.getCase(x, y).forbidden & (1<<team);
+						game.map.getTile(x, y).forbidden ^= game.map.getTile(x, y).forbidden & (1<<team);
 						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					}
 					else if (brushType == GuardAreaBrush)
 					{
-						game.map.getCase(x, y).guardArea ^= game.map.getCase(x, y).guardArea & (1<<team);
+						game.map.getTile(x, y).guardArea ^= game.map.getTile(x, y).guardArea & (1<<team);
 						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					}
 					else if (brushType == ClearAreaBrush)
 					{
-						game.map.getCase(x, y).clearArea ^= game.map.getCase(x, y).clearArea & (1<<team);
+						game.map.getTile(x, y).clearArea ^= game.map.getTile(x, y).clearArea & (1<<team);
 						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					}
 					else
@@ -3379,17 +3379,17 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					{
 					case TerrainSelector::Grass:
 						game.removeUnitAndBuildingAndFlags(x, y, 3, Game::DEL_BUILDING | Game::DEL_UNIT);
-						game.map.setNoRessource(x, y, 3);
+						game.map.setNoResource(x, y, 3);
 						game.map.setUMatPos(x, y, GRASS, 1);
 						break;
 					case TerrainSelector::Sand:
 						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
-						game.map.setNoRessource(x, y, 3);
+						game.map.setNoResource(x, y, 3);
 						game.map.setUMatPos(x, y, SAND, 1);
 						break;
 					case TerrainSelector::Water:
 						game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
-						game.map.setNoRessource(x, y, 5);
+						game.map.setNoResource(x, y, 5);
 						game.map.setUMatPos(x, y, WATER, 1);
 						break;
 					case TerrainSelector::Wheat:
@@ -3419,9 +3419,9 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					case TerrainSelector::NoTerrain:
 						break;
 					}
-					if(resToSet!=-1 && game.map.isRessourceAllowed(x, y, resToSet))
+					if(resToSet!=-1 && game.map.isResourceAllowed(x, y, resToSet))
 					{
-						game.map.setRessource(x, y, resToSet, 1);
+						game.map.setResource(x, y, resToSet, 1);
 					}
 				}
 			}
@@ -3438,35 +3438,35 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					case TerrainSelector::Sand:
 					case TerrainSelector::Water:
 						game.map.setUMatPos(x, y, GRASS, 1);
-						game.map.setNoRessource(x, y, 3);
+						game.map.setNoResource(x, y, 3);
 						break;
 					case TerrainSelector::Wheat:
-						if(game.map.isRessourceTakeable(x, y, CORN))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, CORN))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Trees:
-						if(game.map.isRessourceTakeable(x, y, WOOD))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, WOOD))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Stone:
-						if(game.map.isRessourceTakeable(x, y, STONE))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, STONE))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Algae:
-						if(game.map.isRessourceTakeable(x, y, ALGA))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, ALGA))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Papyrus:
-						if(game.map.isRessourceTakeable(x, y, PAPYRUS))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, PAPYRUS))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::CherryTree:
 					case TerrainSelector::OrangeTree:
 					case TerrainSelector::PruneTree:
-						if(game.map.isRessourceTakeable(x, y, CHERRY)
-						|| game.map.isRessourceTakeable(x, y, ORANGE)
-						|| game.map.isRessourceTakeable(x, y, PRUNE))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, CHERRY)
+						|| game.map.isResourceTakeable(x, y, ORANGE)
+						|| game.map.isResourceTakeable(x, y, PRUNE))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Grass:
 					case TerrainSelector::NoTerrain:
@@ -3516,7 +3516,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 						game.map.setPoint(areaNumber->getIndex(), x, y);
 						break;
 					case BrushTool::CT_NO_RESOURCE_GROWTH:
-						game.map.getCase(x, y).canRessourcesGrow=false;
+						game.map.getTile(x, y).canResourcesGrow=false;
 						break;
 					}
 				}
@@ -3533,7 +3533,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 						game.map.unsetPoint(areaNumber->getIndex(), x, y);
 						break;
 					case BrushTool::CT_NO_RESOURCE_GROWTH:
-						game.map.getCase(x, y).canRessourcesGrow=true;
+						game.map.getTile(x, y).canResourcesGrow=true;
 						break;
 					default:break;
 					}
@@ -3573,12 +3573,12 @@ void MapEdit::regenerateGameHeader()
 	{
 		if (i==0)
 		{
-			std::string name = FormatableString("Player %0").arg(playerNumber);
+			std::string name = FormattableString("Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_LOCAL);
 		}
 		else
 		{
-			std::string name = FormatableString("AI Player %0").arg(playerNumber);
+			std::string name = FormattableString("AI Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_AI);
 		}
 		playerNumber+=1;

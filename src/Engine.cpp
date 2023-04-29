@@ -271,7 +271,7 @@ int Engine::run(void)
 		std::vector<std::string> musicDirs;
 		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
 		{
-			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(filename)))
+			if (globalContainer->fileManager->isDir(FormattableString("%0/%1").arg("data/zik/").arg(filename)))
 			{
 				std::cerr << "music dir found: " << filename << std::endl;
 				musicDirs.push_back(filename);
@@ -285,9 +285,9 @@ int Engine::run(void)
 			size_t musicIndex(rand() % musicDirs.size());
 			const std::string& musicDir(musicDirs[musicIndex]);
 			std::cerr << "selecting music dir " << musicDir << std::endl;
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a1.ogg").arg(musicDir), 2);
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a2.ogg").arg(musicDir), 3);
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a3.ogg").arg(musicDir), 4);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a1.ogg").arg(musicDir), 2);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a2.ogg").arg(musicDir), 3);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a3.ogg").arg(musicDir), 4);
 		}
 		else
 		{
@@ -517,7 +517,7 @@ int Engine::run(void)
 					!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 					)
 				{
-					FormatableString fileName = FormatableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(frameNumber++, 10, 10, '0');
+					FormattableString fileName = FormattableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(frameNumber++, 10, 10, '0');
 					printf("printing video shot %s\n", fileName.c_str());
 					globalContainer->gfx->printScreen(fileName.c_str());
 				}
@@ -792,13 +792,13 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& 
 		{
 			localPlayer = playerNumber;
 			localTeam = i;
-			std::string name = FormatableString("Player %0").arg(playerNumber);
+			std::string name = FormattableString("Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_LOCAL);
 			wasHuman=true;
 		}
 		else if (mapHeader.getBaseTeam(i).type==BaseTeam::T_AI || wasHuman)
 		{
-			std::string name = FormatableString("AI Player %0").arg(playerNumber);
+			std::string name = FormattableString("AI Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_AI);
 		}
 		playerNumber+=1;
@@ -880,8 +880,8 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		}
 		else
 		{
-			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
-			FormatableString name("%0 %1");
+			AI::ImplementationID iid=static_cast<AI::ImplementationID>(syncRand() % 5 + 1);
+			FormattableString name("%0 %1");
 			name.arg(AINames::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 		}

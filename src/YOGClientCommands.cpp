@@ -55,16 +55,16 @@ std::string YOGClientBlockPlayerCommand::execute(YOGClient* client, const std::v
 	{
 		if(client->getBlockedList()->isPlayerBlocked(tokens[1]))
 		{
-			return FormatableString(Toolkit::getStringTable()->getString("[yog block command player %0 already blocked]")).arg(tokens[1]);
+			return FormattableString(Toolkit::getStringTable()->getString("[yog block command player %0 already blocked]")).arg(tokens[1]);
 		}
 		else
 		{
 			client->getBlockedList()->addBlockedPlayer(tokens[1]);
 			client->getBlockedList()->save();
-			return FormatableString(Toolkit::getStringTable()->getString("[yog block command player %0 blocked]")).arg(tokens[1]);
+			return FormattableString(Toolkit::getStringTable()->getString("[yog block command player %0 blocked]")).arg(tokens[1]);
 		}
 	}
-	return FormatableString(Toolkit::getStringTable()->getString("[yog block command player %0 not found]")).arg(tokens[1]);
+	return FormattableString(Toolkit::getStringTable()->getString("[yog block command player %0 not found]")).arg(tokens[1]);
 }
 
 

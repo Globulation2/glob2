@@ -420,11 +420,11 @@ void Story::setHighlightItem(GameGUI* gui, bool doSet)
 	{
 		if(doSet)
 		{
-			gui->hilights.insert(t);
+			gui->highlights.insert(t);
 		}
 		else
 		{
-			gui->hilights.erase(t);
+			gui->highlights.erase(t);
 		}
 	}
 }
@@ -446,7 +446,7 @@ void Story::unhilightItem(GameGUI* gui)
 void Story::hilightUnits(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
-	gui->hilights.insert(GameGUI::HilightWorkers+n);
+	gui->highlights.insert(GameGUI::HilightWorkers+n);
 }
 
 
@@ -454,7 +454,7 @@ void Story::hilightUnits(GameGUI* gui)
 void Story::unhilightUnits(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
-	gui->hilights.erase(GameGUI::HilightWorkers+n);
+	gui->highlights.erase(GameGUI::HilightWorkers+n);
 }
 
 
@@ -462,7 +462,7 @@ void Story::unhilightUnits(GameGUI* gui)
 void Story::hilightBuildings(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->hilights.insert(GameGUI::HilightBuildingOnMap+n);
+	gui->highlights.insert(GameGUI::HilightBuildingOnMap+n);
 }
 
 
@@ -470,7 +470,7 @@ void Story::hilightBuildings(GameGUI* gui)
 void Story::unhilightBuildings(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->hilights.erase(GameGUI::HilightBuildingOnMap+n);
+	gui->highlights.erase(GameGUI::HilightBuildingOnMap+n);
 }
 
 
@@ -478,7 +478,7 @@ void Story::unhilightBuildings(GameGUI* gui)
 void Story::hilightBuildingOnPanel(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->hilights.insert(GameGUI::HilightBuildingOnPanel+n);
+	gui->highlights.insert(GameGUI::HilightBuildingOnPanel+n);
 }
 
 
@@ -486,7 +486,7 @@ void Story::hilightBuildingOnPanel(GameGUI* gui)
 void Story::unhilightBuildingOnPanel(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->hilights.erase(GameGUI::HilightBuildingOnPanel+n);
+	gui->highlights.erase(GameGUI::HilightBuildingOnPanel+n);
 }
 
 
@@ -497,7 +497,7 @@ void Story::resetAI(GameGUI* gui)
 	int aitype = line[++lineSelector].value;
 	if(gui->game.players[player])
 	{
-		gui->game.players[player]->makeItAI(static_cast<AI::ImplementitionID>(aitype));
+		gui->game.players[player]->makeItAI(static_cast<AI::ImplementationID>(aitype));
 	}
 }
 

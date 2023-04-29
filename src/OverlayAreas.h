@@ -45,7 +45,7 @@ public:
 	~OverlayArea();
 	
 	///Compute the overlay area
-	void compute(Game& game, OverlayType type, int localteam);
+	void compute(Game& game, OverlayType type, int localTeam);
 
 	///Gets the value of the overlay for a given position
 	Uint16 getValue(int x, int y);
@@ -61,11 +61,11 @@ public:
 	
 protected:
 	OverlayType type;
-	OverlayType lasttype;
+	OverlayType lastType;
 	int height;
 	int width;
 	std::vector<Uint16> overlay;
-	Uint16 overlaymax;
+	Uint16 overlayMax;
 	
 	void increasePoint(int x, int y, int distance, std::vector<Uint16>& field, Uint16& max);
 	void spreadPoint(int x, int y, int value, int distance, std::vector<Uint16>& field, Uint16& msx);

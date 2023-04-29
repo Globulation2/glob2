@@ -85,7 +85,7 @@ Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Pl
 			entity->load(stream, player, versionMinor);
 		break;
 		case Entities::ERessource:
-			entity = new Entities::Ressource;
+			entity = new Entities::Resource;
 			entity->load(stream, player, versionMinor);
 		break;
 		case Entities::EAnyRessource:
@@ -330,16 +330,16 @@ void Entities::AnyBuilding::save(GAGCore::OutputStream *stream)
 
 
 
-Entities::Ressource::Ressource(int ressource_type) : ressource_type(ressource_type)
+Entities::Resource::Resource(int ressource_type) : ressource_type(ressource_type)
 {
 
 }
 
 
 
-bool Entities::Ressource::is_entity(Map* map, int posx, int posy)
+bool Entities::Resource::is_entity(Map* map, int posx, int posy)
 {
-	if(map->isRessourceTakeable(posx, posy, ressource_type))
+	if(map->isResourceTakeable(posx, posy, ressource_type))
 	{
 		return true;
 	}
@@ -348,10 +348,10 @@ bool Entities::Ressource::is_entity(Map* map, int posx, int posy)
 
 
 
-bool Entities::Ressource::operator==(const Entity& rhs)
+bool Entities::Resource::operator==(const Entity& rhs)
 {
-	if(typeid(rhs)==typeid(Entities::Ressource) &&
-	   static_cast<const Entities::Ressource&>(rhs).ressource_type==ressource_type
+	if(typeid(rhs)==typeid(Entities::Resource) &&
+	   static_cast<const Entities::Resource&>(rhs).ressource_type==ressource_type
 	    )
 		return true;
 	return false;
@@ -359,7 +359,7 @@ bool Entities::Ressource::operator==(const Entity& rhs)
 
 
 
-bool Entities::Ressource::can_change()
+bool Entities::Resource::can_change()
 {
 	if(ressource_type==WOOD || ressource_type==CORN || ressource_type==ALGA)
 		return true;
@@ -368,16 +368,16 @@ bool Entities::Ressource::can_change()
 
 
 
-Entities::EntityType Entities::Ressource::get_type()
+Entities::EntityType Entities::Resource::get_type()
 {
 	return Entities::ERessource;
 }
 
 
 
-bool Entities::Ressource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool Entities::Resource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
-	stream->readEnterSection("Ressource");
+	stream->readEnterSection("Resource");
 	ressource_type = stream->readSint32("ressource_type");
 	stream->readLeaveSection();
 	return true;
@@ -385,9 +385,9 @@ bool Entities::Ressource::load(GAGCore::InputStream *stream, Player *player, Sin
 
 
 
-void Entities::Ressource::save(GAGCore::OutputStream *stream)
+void Entities::Resource::save(GAGCore::OutputStream *stream)
 {
-	stream->writeEnterSection("Ressource");
+	stream->writeEnterSection("Resource");
 	stream->writeSint32(ressource_type, "ressource_type");
 	stream->writeLeaveSection();
 }
@@ -403,7 +403,7 @@ Entities::AnyRessource:: AnyRessource()
 
 bool Entities::AnyRessource:: is_entity(Map* map, int posx, int posy)
 {
-	if(map->isRessource(posx, posy))
+	if(map->isResource(posx, posy))
 	{
 		return true;
 	}
@@ -3230,7 +3230,7 @@ void DestroyBuilding::save(GAGCore::OutputStream *stream)
 
 
 
-RessourceTracker::RessourceTracker(Echo& echo, int building_id, int length, int ressource) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id), ressource(ressource)
+RessourceTracker::RessourceTracker(Echo& echo, int building_id, int length, int resource) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id), resource(resource)
 {
 
 }
@@ -3243,7 +3243,7 @@ void RessourceTracker::tick()
 	if((timer%10)==0)
 	{
 		Building* b = echo.get_building_register().get_building(building_id);
-		record[position]=b->ressources[ressource];
+		record[position]=b->resources[resource];
 		position++;
 		if(position>=record.size())
 			position=0;
@@ -3280,7 +3280,7 @@ bool RessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32
 	timer=stream->readUint32("timer");
 	building_id=stream->readUint32("building_id");
 	length=stream->readUint32("length");
-	ressource=stream->readUint32("ressource");
+	resource=stream->readUint32("resource");
 	stream->readLeaveSection();
 	return true;
 }
@@ -3303,13 +3303,13 @@ void RessourceTracker::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(timer, "timer");
 	stream->writeUint32(building_id, "building_id");
 	stream->writeUint32(length, "length");
-	stream->writeUint32(ressource, "ressource");
+	stream->writeUint32(resource, "resource");
 	stream->writeLeaveSection();
 }
 
 
 
-AddRessourceTracker::AddRessourceTracker(int length, int ressource, int building_id) : length(length), building_id(building_id), ressource(ressource)
+AddRessourceTracker::AddRessourceTracker(int length, int resource, int building_id) : length(length), building_id(building_id), resource(resource)
 {
 	
 }
@@ -3318,7 +3318,7 @@ AddRessourceTracker::AddRessourceTracker(int length, int ressource, int building
 
 void AddRessourceTracker::modify(Echo& echo)
 {
-	echo.add_ressource_tracker(new RessourceTracker(echo, building_id, length, ressource), building_id);
+	echo.add_ressource_tracker(new RessourceTracker(echo, building_id, length, resource), building_id);
 }
 
 
@@ -3341,7 +3341,7 @@ bool AddRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sin
 	ManagementOrder::load(stream, player, versionMinor);
 	length=stream->readUint32("length");
 	building_id=stream->readUint32("building_id");
-	ressource=stream->readUint32("ressource");
+	resource=stream->readUint32("resource");
 	stream->readLeaveSection();
 	return true;
 }
@@ -3354,7 +3354,7 @@ void AddRessourceTracker::save(GAGCore::OutputStream *stream)
 	ManagementOrder::save(stream);
 	stream->writeUint32(length, "length");
 	stream->writeUint32(building_id, "building_id");
-	stream->writeUint32(ressource, "ressource");
+	stream->writeUint32(resource, "resource");
 	stream->writeLeaveSection();
 }
 
@@ -4196,7 +4196,7 @@ void building_search_iterator::set_to_next()
 	}
 	if(position->first==-1 && positionSaved==position)
 	{                        // This fixes an infinit loop.
-		is_end=true;     // In some special cases the program Logic 
+		is_end=true;     // In some special tiles the program Logic 
 		return;          // must have been wrong.
 	}
 	found_id=position->first;
@@ -4497,14 +4497,14 @@ bool MapInfo::is_discovered(int x, int y)
 
 bool MapInfo::is_ressource(int x, int y, int type)
 {
-	return echo.player->map->isRessourceTakeable(x, y, type);
+	return echo.player->map->isResourceTakeable(x, y, type);
 }
 
 
 
 bool MapInfo::is_ressource(int x, int y)
 {
-	return echo.player->map->isRessource(x, y);
+	return echo.player->map->isResource(x, y);
 }
 
 
@@ -4555,7 +4555,7 @@ bool MapInfo::backs_onto_sand(int x, int y)
 
 int MapInfo::get_ammount_ressource(int x, int y)
 {
-	return echo.player->map->getRessource(x, y).amount;
+	return echo.player->map->getResource(x, y).amount;
 }
 
 
@@ -5159,7 +5159,7 @@ void ReachToInfinity::tick(Echo& echo)
 	
 				//Constraints arround the location of wheat
 				AIEcho::Gradients::GradientInfo gi_wheat;
-				gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+				gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 				//You want to be close to wheat
 				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
 				//You can't be farther than 10 units from wheat
@@ -5180,9 +5180,9 @@ void ReachToInfinity::tick(Echo& echo)
 
 				//Constraints arround the location of fruit
 				AIEcho::Gradients::GradientInfo gi_fruit;
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
 				//You want to be reasnobly close to fruit, closer if possible
 				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
 	
@@ -5287,7 +5287,7 @@ void ReachToInfinity::tick(Echo& echo)
 
 					//Constraint arround the location of fruit
 					AIEcho::Gradients::GradientInfo gi_cherry;
-					gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
+					gi_cherry.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
 					//You want to be ontop of the cherry trees
 					bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 0));
 
@@ -5318,7 +5318,7 @@ void ReachToInfinity::tick(Echo& echo)
 
 					//Constraints arround the location of fruit
 					AIEcho::Gradients::GradientInfo gi_orange;
-					gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
+					gi_orange.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
 					//You want to be ontop of the orange trees
 					bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 0));
 
@@ -5347,7 +5347,7 @@ void ReachToInfinity::tick(Echo& echo)
 					bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
 					AIEcho::Gradients::GradientInfo gi_prune;
-					gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+					gi_prune.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
 					//You want to be ontop of the prune trees
 					bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 0));
 
@@ -5430,7 +5430,7 @@ void ReachToInfinity::tick(Echo& echo)
 
 			//Constraints arround the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
 			//You can't be farther than 10 units from wheat
@@ -5453,9 +5453,9 @@ void ReachToInfinity::tick(Echo& echo)
 			{
 				//Constraints arround the location of fruit
 				AIEcho::Gradients::GradientInfo gi_fruit;
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
 				//You want to be reasnobly close to fruit, closer if possible
 				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
 			}
@@ -5490,7 +5490,7 @@ void ReachToInfinity::tick(Echo& echo)
 	
 			//Constraints arround the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
 
@@ -5543,13 +5543,13 @@ void ReachToInfinity::tick(Echo& echo)
 	
 			//Constraints arround the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
-			gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+			gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 			//You want to be close to wood
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
 
 			//Constraints arround the location of stone
 			AIEcho::Gradients::GradientInfo gi_stone;
-			gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+			gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 			//You want to be close to stone
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, 1));
 			//But not to close, so you have room to upgrade
@@ -5586,19 +5586,19 @@ void ReachToInfinity::tick(Echo& echo)
 	
 			//Constraints arround the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
-			gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+			gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 			//You want to be close to wood
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
 
 			//Constraints arround the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 1));
 
 			//Constraints arround the location of stone
 			AIEcho::Gradients::GradientInfo gi_stone;
-			gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+			gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 			//You don't want to be too close, so you have room to upgrade
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, 2));
 
@@ -5884,7 +5884,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 	
 		//Constraints arround the location of wheat
 		AIEcho::Gradients::GradientInfo gi_wheat;
-		gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+		gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 		//You want to be close to wheat
 		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
 		//You can't be farther than 10 units from wheat
@@ -5907,9 +5907,9 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		if(echo.is_fruit_on_map())
 		{
 			AIEcho::Gradients::GradientInfo gi_fruit;
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
 			//You want to be reasnobly close to fruit, closer if possible
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
 		}

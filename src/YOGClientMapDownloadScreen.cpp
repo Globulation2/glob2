@@ -243,25 +243,25 @@ void YOGClientMapDownloadScreen::updateMapInfo()
 		// update map name & info
 		mapName->setText(mapHeader.getMapName());
 		std::string textTemp;
-		textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
+		textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 		mapInfo->setText(textTemp);
-		textTemp = FormatableString("%0 x %1").arg(info.getWidth()).arg(info.getHeight());
+		textTemp = FormattableString("%0 x %1").arg(info.getWidth()).arg(info.getHeight());
 		mapSize->setText(textTemp);
 		mapAuthor->setText(info.getAuthorName());
 		if(info.getNumberOfRatings() > 5)
 		{
-			textTemp = FormatableString(Toolkit::getStringTable()->getString("[Rated %0]")).arg(info.getRatingTotal() / info.getNumberOfRatings());
+			textTemp = FormattableString(Toolkit::getStringTable()->getString("[Rated %0]")).arg(info.getRatingTotal() / info.getNumberOfRatings());
 		}
 		else
 		{
-			textTemp = FormatableString(Toolkit::getStringTable()->getString("[Not Enough Ratings]"));
+			textTemp = FormattableString(Toolkit::getStringTable()->getString("[Not Enough Ratings]"));
 		}
 		mapRating->setText(textTemp);
 		if(!client->getDownloadableMapList()->getMapThumbnail(mapList->get()).isLoaded())
 		{
 			client->getDownloadableMapList()->requestThumbnail(mapList->get());
 		}
-		textTemp = FormatableString("%0 kb").arg((info.getSize()+512)/1024);
+		textTemp = FormattableString("%0 kb").arg((info.getSize()+512)/1024);
 		mapDownloadSize->setText(textTemp);
 	}
 	else

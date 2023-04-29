@@ -27,8 +27,8 @@
 
 OverlayArea::OverlayArea()
 {
-	lasttype = None;
-	overlaymax = 0;
+	lastType = None;
+	overlayMax = 0;
 //	fertilitymax = 0;
 //	fertilityComputed = 0;
 }
@@ -49,7 +49,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 	if(type == Starving || type == Damage)
 	{
 		std::fill(overlay.begin(), overlay.end(), 0);
-		overlaymax = 0;
+		overlayMax = 0;
 		for (int i=0; i<Unit::MAX_COUNT; i++)
 		{
 			Unit *u=game.teams[localteam]->myUnits[i];
@@ -57,11 +57,11 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 			{
 				if (type == Starving && u->isUnitHungry() && u->hp < u->performance[HP])
 				{
-					increasePoint(u->posX, u->posY, 8, overlay, overlaymax);
+					increasePoint(u->posX, u->posY, 8, overlay, overlayMax);
 				}
 				else if(type == Damage && u->medical==Unit::MED_DAMAGED)
 				{
-					increasePoint(u->posX, u->posY, 8, overlay, overlaymax);
+					increasePoint(u->posX, u->posY, 8, overlay, overlayMax);
 				}
 			}
 		}
@@ -69,7 +69,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 	else if(type == Defence)
 	{
 		std::fill(overlay.begin(), overlay.end(), 0);
-		overlaymax = 0;
+		overlayMax = 0;
 		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
 			Building *b = game.teams[localteam]->myBuildings[i];
@@ -77,26 +77,26 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 			{
 				if(b->type->shootDamage > 0)
 				{
-					int power = (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
-					spreadPoint(b->posX, b->posY, power, b->type->shootingRange, overlay, overlaymax);
+					int power = (b->type->shootDamage*b->type->shootRhythm) >> SHOOTING_COOLDOWN_MAGNITUDE;
+					spreadPoint(b->posX, b->posY, power, b->type->shootingRange, overlay, overlayMax);
 				}
 			}
 
 
 		}
 	}
-	else if(type == Fertility && lasttype != Fertility)
+	else if(type == Fertility && lastType != Fertility)
 	{
 		for(int x=0; x<game.map.getW(); ++x)
 		{
 			for(int y=0; y<game.map.getH(); ++y)
 			{
-				overlay[x * height + y] = game.map.getCase(x, y).fertility;
-				overlaymax = game.map.fertilityMaximum;
+				overlay[x * height + y] = game.map.getTile(x, y).fertility;
+				overlayMax = game.map.fertilityMaximum;
 			}
 		}
 	}
-	lasttype = type;
+	lastType = type;
 }
 
 
@@ -110,7 +110,7 @@ Uint16 OverlayArea::getValue(int x, int y)
 	
 Uint16 OverlayArea::getMaximum()
 {
-	return overlaymax;
+	return overlayMax;
 }
 
 
@@ -124,7 +124,7 @@ OverlayArea::OverlayType OverlayArea::getOverlayType()
 
 void OverlayArea::forceRecompute()
 {
-	lasttype = None;
+	lastType = None;
 }
 
 

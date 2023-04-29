@@ -355,7 +355,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		}
 		else
 		{
-			FormatableString strText;
+			FormattableString strText;
 			if ((t->allies) & (gui->getLocalTeam()->me))
 				strText = Toolkit::getStringTable()->getString("[Won : your ally %0 has the most prestige]");
 			else

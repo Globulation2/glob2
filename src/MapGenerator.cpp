@@ -49,7 +49,7 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
 	switch (descriptor.methode)
 	{
 		case MapGenerationDescriptor::eUNIFORM:
-			game.map.makeHomogenMap(descriptor.terrainType);
+			game.map.makeHomogeneMap(descriptor.terrainType);
 			game.addTeam();
 		break;
 		case MapGenerationDescriptor::eSWAMP:
@@ -97,7 +97,7 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
 
 bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& descriptor)
 {
-	game.map.makeHomogenMap(descriptor.terrainType);
+	game.map.makeHomogeneMap(descriptor.terrainType);
 	for(int i=0; i<descriptor.nbTeams; ++i)
 		game.addTeam();
 
@@ -187,7 +187,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			int total_height = heights[y * game.map.getW() + x];
 			if(total_height<=10)
 			{
-				game.map.setRessource(x, y, ALGA, 1);
+				game.map.setResource(x, y, ALGA, 1);
 			}
 		}
 	}
@@ -230,7 +230,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			chooseRandomPoints(game, points, fruit_n);
 			for(unsigned int j=0; j<points.size(); ++j)
 			{
-				game.map.setRessource(points[j].x, points[j].y, CHERRY + syncRand()%3, 1);
+				game.map.setResource(points[j].x, points[j].y, CHERRY + syncRand()%3, 1);
 			}
 		}
 	}
@@ -250,7 +250,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 
 bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 {
-	game.map.makeHomogenMap(descriptor.terrainType);
+	game.map.makeHomogeneMap(descriptor.terrainType);
 	for(int i=0; i<descriptor.nbTeams; ++i)
 		game.addTeam();
 		
@@ -434,7 +434,7 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 			for(int y=-2; y<=2; ++y)
 			{
 				int ny = game.map.normalizeY(possible[r].y + y);
-				game.map.setRessource(nx, ny, ALGA, 1);
+				game.map.setResource(nx, ny, ALGA, 1);
 			}
 		}
 	}
@@ -523,7 +523,7 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if(h > 50)
 				{
-					game.map.setRessource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
+					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
 					//woodPoints.push_back(wheatWoodPoints[j]);
 				}
 			}
@@ -539,7 +539,7 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if(h > 50)
 				{
-					game.map.setRessource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, CORN, 1);
+					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, CORN, 1);
 					wheatPoints.push_back(wheatWoodPoints[j]);
 				}
 			}
@@ -560,7 +560,7 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			chooseRandomPoints(game, stoneLocations, numberOfStone);
 			for(unsigned int j=0; j<stoneLocations.size(); ++j)
 			{
-				game.map.setRessource(stoneLocations[j].x, stoneLocations[j].y, STONE, 1);
+				game.map.setResource(stoneLocations[j].x, stoneLocations[j].y, STONE, 1);
 			}
 			
 			
@@ -1049,7 +1049,7 @@ void MapGenerator::fillInResource(Game& game, std::vector<MapGeneratorPoint>& po
 {
 	for(unsigned int n=0;  n<points.size(); ++n)
 	{
-		game.map.setRessource(points[n].x, points[n].y, ressourceType, 1+syncRand()%maxFillSize);
+		game.map.setResource(points[n].x, points[n].y, ressourceType, 1+syncRand()%maxFillSize);
 	}
 }
 
@@ -1391,7 +1391,7 @@ Building* MapGenerator::addBuilding(Game& game, int x, int y, int team, int type
 
 
 ///generates a map that is of one terrain type only
-void Map::makeHomogenMap(TerrainType terrainType)
+void Map::makeHomogeneMap(TerrainType terrainType)
 {
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -1426,7 +1426,7 @@ void Map::controlSand(void)
 		}
 }
 
-void Map::smoothRessources(int times)
+void Map::smoothResources(int times)
 {
 	for (int s=0; s<times; s++)
 		for (int y=0; y<h; y++)
@@ -1441,7 +1441,7 @@ void Map::smoothRessources(int times)
 						setTerrain(x, y, d+273);
 					else 
 					{
-						// we extand ressource:
+						// we extend resource:
 						int dx, dy;
 						Unit::dxDyFromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;
@@ -2358,7 +2358,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				{
 					for (int xRepeat=0; xRepeat<pow(2,wPower2Divider); xRepeat++)
 					{
-						setRessource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,tmpRessource,1);
+						setResource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,tmpRessource,1);
 					}
 				}
 			}
@@ -2387,26 +2387,26 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				case 2:
 				default: fruit = PRUNE; break;
 			}
-			//choose coordinate where there is grass but no ressource yet
+			//choose coordinate where there is grass but no resource yet
 			int x, y;
 			do
 			{
 				x=(rand()%wHeightMap);
 				y=(rand()%hHeightMap);
-			} while (getUMTerrain(x, y)!=GRASS || isRessource(x,y));
+			} while (getUMTerrain(x, y)!=GRASS || isResource(x,y));
 			//choose size of grove (tree count)
 			int grovesize=(rand()%10)+1;
 			for (int i=0; i<grovesize; i++)
 			{
 				for (int yRepeat=0; yRepeat<pow(2,hPower2Divider); yRepeat++)
 					for (int xRepeat=0; xRepeat<pow(2,wPower2Divider); xRepeat++)
-						setRessource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,fruit,1);
+						setResource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,fruit,1);
 				//find a valid neighbor of actual coordinate
 				for (int iTry=0; iTry<100; iTry++)
 				{
 					int xNew=x+rand()%3-1;
 					int yNew=y+rand()%3-1;
-					if(getUMTerrain(xNew, yNew)==GRASS && !isRessource(xNew,yNew))
+					if(getUMTerrain(xNew, yNew)==GRASS && !isResource(xNew,yNew))
 					{
 						x=xNew;
 						y=yNew;
@@ -2421,7 +2421,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	return true;
 }
 
-void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
+void Map::oldAddResourcesRandomMap(MapGenerationDescriptor &descriptor)
 {
 	int *bootX=descriptor.bootX;
 	int *bootY=descriptor.bootY;
@@ -2495,9 +2495,9 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			dx*=d;
 			dy*=d;
 			
-			int amount=descriptor.ressource[res];
+			int amount=descriptor.resource[res];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, res, amount);
+				setResource(bootX[team]+dx, bootY[team]+dy, res, amount);
 		}
 
 		if (smallestWidth<limiteDist)
@@ -2534,9 +2534,9 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			dx*=d;
 			dy*=d;
 			
-			int amount=descriptor.ressource[smallestRessource];
+			int amount=descriptor.resource[smallestRessource];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, smallestRessource, amount);
+				setResource(bootX[team]+dx, bootY[team]+dy, smallestRessource, amount);
 		}
 
 		int maxDir=0;
@@ -2569,17 +2569,17 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		dx*=d;
 		dy*=d;
 		
-		int amount=descriptor.ressource[ALGA];
+		int amount=descriptor.resource[ALGA];
 		if (amount>0)
-			setRessource(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
+			setResource(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
 	}
 	
-	// Let's smooth ressources...
+	// Let's smooth resources...
 	int maxAmount=0;
 	for (int r=0; r<4; r++)
-		if (maxAmount<descriptor.ressource[r])
-			maxAmount=descriptor.ressource[r];
-	smoothRessources(maxAmount*3);
+		if (maxAmount<descriptor.resource[r])
+			maxAmount=descriptor.resource[r];
+	smoothResources(maxAmount*3);
 }
 
 bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
@@ -2856,7 +2856,7 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 	return true;
 }
 
-void Map::oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
+void Map::oldAddResourcesIslandsMap(MapGenerationDescriptor &descriptor)
 {
 	int *bootX=descriptor.bootX;
 	int *bootY=descriptor.bootY;
@@ -2864,8 +2864,8 @@ void Map::oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 	int islandsSize=(int)(((w+h)*descriptor.oldIslandSize)/(400.0*sqrt((double)descriptor.nbTeams)));
 	if (islandsSize<8)
 		islandsSize=8;
-	// let's add ressources...
-	int smoothRessources=islandsSize/4;
+	// let's add resources...
+	int smoothResources=islandsSize/4;
 	for (int s=0; s<descriptor.nbTeams; s++)
 	{
 		int d, p, amount;
@@ -2876,13 +2876,13 @@ void Map::oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s], bootY[s]-d))
 				break;
-		amount=descriptor.ressource[WOOD];
-		amount=d-smoothRessources-2;
+		amount=descriptor.resource[WOOD];
+		amount=d-smoothResources-2;
 		if (amount<1)
 			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
-			setRessource(bootX[s], bootY[s]-p, WOOD, amount);
+			setResource(bootX[s], bootY[s]-p, WOOD, amount);
 		smallestAmount=amount;
 		smallestRessource=WOOD;
 		
@@ -2890,13 +2890,13 @@ void Map::oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s]-d, bootY[s]))
 				break;
-		amount=descriptor.ressource[CORN];
-		amount=d-smoothRessources-0;
+		amount=descriptor.resource[CORN];
+		amount=d-smoothResources-0;
 		if (amount<1)
 			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
-			setRessource(bootX[s]-p, bootY[s], CORN, amount);
+			setResource(bootX[s]-p, bootY[s], CORN, amount);
 		if (amount<smallestAmount)
 		{
 			smallestAmount=amount;
@@ -2907,33 +2907,33 @@ void Map::oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor)
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s], bootY[s]+d))
 				break;
-		setRessource(bootX[s], bootY[s]+p, STONE, 1);
+		setResource(bootX[s], bootY[s]+p, STONE, 1);
 
-		//We add the ressource with the smallest amount:
+		//We add the resource with the smallest amount:
 		for (d=0; d<islandsSize; d++)
 			if (!isGrass(bootX[s]+d, bootY[s]+d))
 				break;
-		amount=descriptor.ressource[smallestRessource];
-		amount=d-smoothRessources-3;
+		amount=descriptor.resource[smallestRessource];
+		amount=d-smoothResources-3;
 		if (amount<1)
 			amount=1;
 		p=d-1-amount/2;
 		if (amount>0)
-			setRessource(bootX[s]+p, bootY[s]+p, smallestRessource, amount);
+			setResource(bootX[s]+p, bootY[s]+p, smallestRessource, amount);
 		
 		//ALGAE
 		for (d=0; d<2*islandsSize; d++)
 			if (isWater(bootX[s]+d, bootY[s]))
 				break;
-		amount=descriptor.ressource[ALGA];
-		amount=smoothRessources;
-		p=d+smoothRessources-1+amount/2;
+		amount=descriptor.resource[ALGA];
+		amount=smoothResources;
+		p=d+smoothResources-1+amount/2;
 		if (amount>0)
-			setRessource(bootX[s]+p, bootY[s], ALGA, amount);
+			setResource(bootX[s]+p, bootY[s], ALGA, amount);
 	}
 
 	// Let's smooth ressources...
-	this->smoothRessources(smoothRessources*2);
+	this->smoothResources(smoothResources*2);
 }
 
 bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
@@ -2966,7 +2966,7 @@ bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 			}
 		teams[s]->createLists();
 	}
-	map.smoothRessources(descriptor.oldIslandSize/10);
+	map.smoothResources(descriptor.oldIslandSize/10);
 	return true;
 }
 
@@ -2980,8 +2980,8 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, 5);
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, 5);
-		map.setNoRessource(descriptor.bootX[s]+2, descriptor.bootY[s]+0, 5);
-		map.setNoRessource(descriptor.bootX[s]+2, descriptor.bootY[s]+2, 5);
+		map.setNoResource(descriptor.bootX[s]+2, descriptor.bootY[s]+0, 5);
+		map.setNoResource(descriptor.bootX[s]+2, descriptor.bootY[s]+2, 5);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
 		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], globalContainer->buildingsTypes.get(typeNum), s, false))

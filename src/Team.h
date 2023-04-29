@@ -68,9 +68,9 @@ public:
 	//! Check some available integrity constraints
 	bool integrity(void);
 	
-	//! remove the building from all lists not realated to the upgrade/destroying systems
+	//! remove the building from all lists not related to the upgrade/destroying systems
 	void removeFromAbilitiesLists(Building *building);
-	//! add the building from all lists not realated to the upgrade/destroying systems
+	//! add the building from all lists not related to the upgrade/destroying systems
 	void addToStaticAbilitiesLists(Building *building);
 	
 	//! Do a step for each unit, building and bullet in team.
@@ -181,8 +181,8 @@ public:
 	// Number of unit gained due to conversion
 	Sint32 unitConversionGained;
 
-	/// The amount of ressources the team has globally, for markets
-	Sint32 teamRessources[MAX_NB_RESSOURCES];
+	/// The amount of resources the team has globally, for markets
+	Sint32 teamResources[MAX_NB_RESOURCES];
 
 private:
 	///Queue of game events

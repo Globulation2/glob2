@@ -68,7 +68,7 @@ void FertilityCalculatorThread::operator()()
 	{
 		for(int y=0; y<map.getH(); ++y)
 		{
-			map.getCase(x, y).fertility = fertility[x * map.getH() + y];
+			map.getTile(x, y).fertility = fertility[x * map.getH() + y];
 			map.fertilityMaximum = fertilitymax;
 		}
 	}
@@ -114,7 +114,7 @@ void FertilityCalculatorThread::computeRessourcesGradient()
 	{
 		for(int y=0; y<map.getH(); ++y)
 		{
-			if(map.isRessourceTakeable(x, y, CORN) || map.isRessourceTakeable(x, y, WOOD))
+			if(map.isResourceTakeable(x, y, CORN) || map.isResourceTakeable(x, y, WOOD))
 			{
 				gradient[get_pos(x, y)]=2;
 				positions.push(position(x, y));

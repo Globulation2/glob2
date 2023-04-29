@@ -28,7 +28,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-struct Case;
+struct Tile;
 class Game;
 class Map;
 class Order;
@@ -250,7 +250,7 @@ public:
 	Uint8 *enemyRangeMap;
 	Uint8 *enemyWarriorsMap;
 	
-	Uint16 *ressourcesCluster;
+	Uint16 *resourcesCluster;
 	
 private:
 	FILE *logFile;

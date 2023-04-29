@@ -768,9 +768,9 @@ private:
 	///Handles a click or drag of the script area placement tool
 	void handleAreaClick(int mx, int my);
 
-	///Tells whether where dragging the no ressource growth area placement tool
+	///Tells whether where dragging the no resource growth area placement tool
 	bool isDraggingNoRessourceGrowthArea;
-	///Handles a click or drag of the no ressource growth area placement tool
+	///Handles a click or drag of the no resource growth area placement tool
 	void handleNoRessourceGrowthClick(int mx, int my);
 
 };

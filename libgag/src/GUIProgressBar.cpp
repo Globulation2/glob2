@@ -75,7 +75,7 @@ namespace GAGGUI
 		Style::style->drawProgressBar(parent->getSurface(), x, y+hDec, w, value, range);
 		if (fontPtr)
 		{
-			FormatableString text = FormatableString(format).arg((value*100)/range);
+			FormattableString text = FormattableString(format).arg((value*100)/range);
 			int textW = fontPtr->getStringWidth(text.c_str());
 			int textH = fontPtr->getStringHeight(text.c_str());
 			parent->getSurface()->drawString(x + ((w-textW) >> 1), y + ((h-textH) >> 1), fontPtr, text);

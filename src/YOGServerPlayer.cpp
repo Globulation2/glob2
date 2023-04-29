@@ -233,7 +233,7 @@ void YOGServerPlayer::update()
 	else if(type==MNetAddAI)
 	{
 		shared_ptr<NetAddAI> info = static_pointer_cast<NetAddAI>(message);
-		ngame->addAIPlayer(static_cast<AI::ImplementitionID>(info->getType()));
+		ngame->addAIPlayer(static_cast<AI::ImplementationID>(info->getType()));
 	}
 	//This recieves a request to add an AI player to the game
 	else if(type==MNetRemoveAI)

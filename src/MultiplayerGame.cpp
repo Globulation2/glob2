@@ -327,7 +327,7 @@ void MultiplayerGame::updateReadyState()
 
 
 
-void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
+void MultiplayerGame::addAIPlayer(AI::ImplementationID type)
 {
 	shared_ptr<NetAddAI> message(new NetAddAI((Uint8)type));
 	client->sendNetMessage(message);
@@ -596,7 +596,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	if(type==MNetAddAI)
 	{
 		shared_ptr<NetAddAI> info = static_pointer_cast<NetAddAI>(message);
-		playerManager.addAIPlayer(static_cast<AI::ImplementitionID>(info->getType()));
+		playerManager.addAIPlayer(static_cast<AI::ImplementationID>(info->getType()));
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);

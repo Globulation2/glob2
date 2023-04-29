@@ -162,7 +162,7 @@ std::string KeyPress::format() const
 		s+="<meta>";
 	if(shift)
 		s+="<shift>";
-	s+=FormatableString("<%0>").arg(key);
+	s+=FormattableString("<%0>").arg(key);
 	return s;
 }
 
@@ -248,13 +248,13 @@ std::string KeyPress::getTranslated() const
 	}
 	//Visual order, control always first. Rather than alt-control-a for example, its control-alt-a
 	if(alt)
-		str=FormatableString(table->getString("[alt %0]")).arg(str);
+		str=FormattableString(table->getString("[alt %0]")).arg(str);
 	if(meta)
-		str=FormatableString(table->getString("[meta %0]")).arg(str);
+		str=FormattableString(table->getString("[meta %0]")).arg(str);
 	if(shift)
-		str=FormatableString(table->getString("[shift %0]")).arg(str);
+		str=FormattableString(table->getString("[shift %0]")).arg(str);
 	if(control)
-		str=FormatableString(table->getString("[control %0]")).arg(str);
+		str=FormattableString(table->getString("[control %0]")).arg(str);
 	return str;
 }
 

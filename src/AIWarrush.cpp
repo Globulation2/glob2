@@ -296,7 +296,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 					&&
 					b->constructionResultState == Building::NO_CONSTRUCTION
 					&&
-					(b->ressources[CORN]) > ((b->wishedResources[CORN]) * 2 / 3))
+					(b->resources[CORN]) > ((b->wishedResources[CORN]) * 2 / 3))
 			{//heavily worked swarms and inns sometimes are full and have no workers
 				++num_worked_buildings;
 				if(verbose)std::cout << "C";
@@ -551,7 +551,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			if((!map->isRessourceTakeable(x, y, WOOD) && !map->isRessourceTakeable(x, y, CORN)))
+			if((!map->isResourceTakeable(x, y, WOOD) && !map->isResourceTakeable(x, y, CORN)))
 			{
 				if(map->isForbidden(x, y, team->me))
 				{
@@ -562,9 +562,9 @@ boost::shared_ptr<Order> AIWarrush::farm()
 						&& !map->isForbidden (x,y + 1,team->me)
 						&& !map->isForbidden (x,y - 1,team->me)
 						//Or fruits'!
-						&& !map->isRessourceTakeable(x, y, CHERRY)
-						&& !map->isRessourceTakeable(x, y, ORANGE)
-						&& !map->isRessourceTakeable(x, y, PRUNE)
+						&& !map->isResourceTakeable(x, y, CHERRY)
+						&& !map->isResourceTakeable(x, y, ORANGE)
+						&& !map->isResourceTakeable(x, y, PRUNE)
 						)
 					{
 						del_acc.applyBrush(BrushApplication(x, y, 0), map);
@@ -578,7 +578,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 			}
 			
 			//we never clear anything but wood
-			if(!map->isRessourceTakeable(x, y, WOOD))
+			if(!map->isResourceTakeable(x, y, WOOD))
 			{
 				if(map->isClearArea(x, y, team->me))
 				{
@@ -587,7 +587,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 			}
 
 			//we clear wood if it's next to nice stuff like wheat or buildings
-			if(map->isRessourceTakeable(x, y, WOOD))
+			if(map->isResourceTakeable(x, y, WOOD))
 			{
 				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
 				{
@@ -595,7 +595,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 					{
 						for(int ymod=-1;ymod<=1;ymod++)
 						{
-							if(map->isRessourceTakeable(x+xmod, y+ymod, CORN)
+							if(map->isResourceTakeable(x+xmod, y+ymod, CORN)
 									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
 									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
 							{
@@ -612,7 +612,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==1 && ((y%2==1 && x%4==1) || (y%2==0 && x%4==3)))
 			{
-				if(map->isRessourceTakeable(x, y, WOOD))
+				if(map->isResourceTakeable(x, y, WOOD))
 				{
 					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
 					{	
@@ -623,7 +623,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 			
 			if(x%2==y%2)
 			{
-				if(map->isRessourceTakeable(x, y, CORN))
+				if(map->isResourceTakeable(x, y, CORN))
 				{
 					if(!map->isForbidden(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (255 - 15))
 					{
@@ -634,9 +634,9 @@ boost::shared_ptr<Order> AIWarrush::farm()
 
 			//FORBID FRUITS!!! They're horrible for our warriors and we hate converting.
 			if(
-				(	map->isRessourceTakeable(x, y, CHERRY)
-					|| map->isRessourceTakeable(x, y, ORANGE)
-					|| map->isRessourceTakeable(x, y, PRUNE)	)
+				(	map->isResourceTakeable(x, y, CHERRY)
+					|| map->isResourceTakeable(x, y, ORANGE)
+					|| map->isResourceTakeable(x, y, PRUNE)	)
 				&& !map->isForbidden(x, y, team->me)
 				&& map->isMapDiscovered(x, y, team->me)
 					)
@@ -722,12 +722,12 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			Case c=map->getCase(x,y);
-			if (c.ressource.type==resource_type)
+			Tile c=map->getTile(x,y);
+			if (c.resource.type==resource_type)
 			{
 				gradient(x, y) = 255;
 			}
-			else if (c.ressource.type!=NO_RES_TYPE)
+			else if (c.resource.type!=NO_RES_TYPE)
 			{
 				gradient(x, y) = 0;
 			}
@@ -782,8 +782,8 @@ boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			Case c=map->getCase(x,y);
-			if (c.ressource.type!=NO_RES_TYPE)
+			Tile c=map->getTile(x,y);
+			if (c.resource.type!=NO_RES_TYPE)
 			{
 				availability_gradient(x, y) = 0;
 			}

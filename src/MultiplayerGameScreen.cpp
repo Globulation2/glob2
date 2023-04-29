@@ -172,7 +172,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		}
 		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + AI::SIZE))
 		{
-			game->addAIPlayer((AI::ImplementitionID)(par1-ADD_AI));
+			game->addAIPlayer((AI::ImplementationID)(par1-ADD_AI));
 		}
 		else if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
 		{

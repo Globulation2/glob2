@@ -296,7 +296,7 @@ void Minimap::computeColors(int row, int localTeam)
 		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
 	};
 
-	int pcol[3+MAX_RESSOURCES];
+	int pcol[3+MAX_RESOURCES];
 
 	// get data
 	int szX = mini_w;
@@ -370,7 +370,7 @@ void Minimap::computeColors(int row, int localTeam)
 				{
 					// get color to add
 					int pcolIndex;
-					const auto& r = game->map.getRessource(minidx, minidy);
+					const auto& r = game->map.getResource(minidx, minidy);
 					if (r.type!=NO_RES_TYPE)
 					{
 						pcolIndex=r.type + 3;
@@ -417,9 +417,9 @@ void Minimap::computeColors(int row, int localTeam)
 				lg += pcol[i]*terrainColor[i][1];
 				lb += pcol[i]*terrainColor[i][2];
 			}
-			for (int i=0; i<MAX_RESSOURCES; i++)
+			for (int i=0; i<MAX_RESOURCES; i++)
 			{
-				RessourceType *rt = globalContainer->ressourcesTypes.get(i);
+				ResourceType *rt = globalContainer->resourcesTypes.get(i);
 				lr += pcol[i+3]*(rt->minimapR);
 				lg += pcol[i+3]*(rt->minimapG);
 				lb += pcol[i+3]*(rt->minimapB);

@@ -170,7 +170,7 @@ bool ScriptEditorScreen::testCompile(void)
 		{
 			MapScriptError error = mapScript->getError();
 			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-			compilationResult->setText(FormatableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
+			compilationResult->setText(FormattableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
 			// USL counts from 1, TextArea counts from 0.
 			scriptEditor->setCursorPos(error.getLine() - 1, error.getColumn() - 1);
 			return false;
@@ -190,7 +190,7 @@ bool ScriptEditorScreen::testCompile(void)
 		else
 		{
 			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-			compilationResult->setText(FormatableString("Compilation failure : %0:%1:(%2):%3").arg(er.line+1).arg(er.col).arg(er.pos).arg(er.getErrorString()).c_str());
+			compilationResult->setText(FormattableString("Compilation failure : %0:%1:(%2):%3").arg(er.line+1).arg(er.col).arg(er.pos).arg(er.getErrorString()).c_str());
 			scriptEditor->setCursorPos(er.pos);
 			return false;
 		}
@@ -519,7 +519,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			unsigned line;
 			unsigned column;
 			scriptEditor->getCursorPos(line, column);
-			cursorPosition->setText(FormatableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
+			cursorPosition->setText(FormattableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
 		}
 	}
 }
@@ -593,7 +593,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!scriptEditor->load(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(FormatableString("Loading script from %0 failed").arg(loadSaveScreen->getName()).c_str());
+					compilationResult->setText(FormattableString("Loading script from %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
 				else
 					testCompile();
@@ -603,7 +603,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!scriptEditor->save(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(FormatableString("Saving script to %0 failed").arg(loadSaveScreen->getName()).c_str());
+					compilationResult->setText(FormattableString("Saving script to %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
 			}
 		}

@@ -40,15 +40,15 @@ using boost::shared_ptr;
 /*AI::AI(Player *player)
 {
 	aiImplementation=new AICastor(player);
-	this->implementitionID=NUMBI;
+	this->implementationID=NUMBI;
 	this->player=player;
 }*/
 
-AI::AI(ImplementitionID implementitionID, Player *player)
+AI::AI(ImplementationID implementationID, Player *player)
 {
 	aiImplementation=NULL;
 	
-	switch (implementitionID)
+	switch (implementationID)
 	{
 		case NONE:
 			aiImplementation=new AINull();
@@ -65,7 +65,7 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		case WARRUSH:
 			aiImplementation=new AIWarrush(player);
 		break;
-		case REACHTOINFINITY:
+		case REACH_TO_INFINITY:
 			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
 		break;
 		case TOUBIB:
@@ -76,14 +76,14 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		break;
 	}
 	
-	this->implementitionID=implementitionID;
+	this->implementationID=implementationID;
 	this->player=player;
 }
 
 AI::AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	aiImplementation=NULL;
-	implementitionID=NONE;
+	implementationID=NONE;
 	this->player=player;
 	bool goodLoad=load(stream, versionMinor);
 	assert(goodLoad);
@@ -119,14 +119,14 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	stream->read(signature, 4, "signatureStart");
 	if (memcmp(signature,"AI b", 4)!=0)
 	{
-		fprintf(stderr, "AI::bad begining signature\n");
+		fprintf(stderr, "AI::bad beginning signature\n");
 		stream->readLeaveSection();
 		return false;
 	}
 
-	implementitionID=(ImplementitionID)stream->readUint32("implementitionID");
+	implementationID=(ImplementationID)stream->readUint32("implementitionID");
 
-	switch (implementitionID)
+	switch (implementationID)
 	{
 		case NONE:
 			aiImplementation=new AINull();
@@ -141,7 +141,7 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AIEcho::Echo(new NewNicowar, player);
 			aiImplementation->load(stream, player, versionMinor);
 		break;
-		case REACHTOINFINITY:
+		case REACH_TO_INFINITY:
 			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
 			aiImplementation->load(stream, player, versionMinor);
 		break;
@@ -152,7 +152,7 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AIWarrush(stream, player, versionMinor);
 		break;
 		default:
-			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementitionID);
+			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementationID);
 			assert(false);
 		break;
 	}
@@ -173,7 +173,7 @@ void AI::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("AI");
 	stream->write("AI b", 4, "signatureStart");
 	
-	stream->writeUint32(static_cast<Uint32>(implementitionID), "implementitionID");
+	stream->writeUint32(static_cast<Uint32>(implementationID), "implementitionID");
 	
 	assert(aiImplementation);
 	aiImplementation->save(stream);

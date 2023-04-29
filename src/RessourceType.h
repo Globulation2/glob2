@@ -23,10 +23,10 @@
 #include "EntityType.h"
 #include "Ressource.h"
 
-class RessourceType: public EntityType
+class ResourceType: public EntityType
 {
 public:
-#define __STARTDATA_R ((Uint32*)&terrain)
+	#define __START_DATA_R ((Uint32*)&terrain)
 	Sint32 terrain;
 	Sint32 gfxId;
 	Sint32 sizesCount;
@@ -41,10 +41,10 @@ public:
 	Sint32 minimapR, minimapG, minimapB;
 
 public:
-	RessourceType() { init(); }
-	RessourceType(GAGCore::InputStream *stream) { load(stream); }
+	ResourceType() { init(); }
+	ResourceType(GAGCore::InputStream *stream) { load(stream); }
 	Uint32 checkSum(void) { return shrinkable+(expendable<<1)+(eternal<<2)+(granular<<3)+(visibleToBeCollected<<4);}
-	virtual ~RessourceType() { }
+	virtual ~ResourceType() { }
 	virtual const char **getVars(size_t *size, Uint32 **data)
 	{
 		static const char *vars[] =
@@ -65,7 +65,7 @@ public:
 		if (size)
 			*size=(sizeof(vars)/sizeof(char *));
 		if (data)
-			*data=__STARTDATA_R;
+			*data=__START_DATA_R;
 		return vars;
 	}
 };

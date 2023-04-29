@@ -132,13 +132,13 @@ public:
 	/// Show the dialog that says that the replay ended
 	void showEndOfReplayScreen();
 	
-	///This is an enum for the current hilight object. The hilighted object is shown with a large arrow.
+	///This is an enum for the current highlight object. The highlighted object is shown with a large arrow.
 	///This is primarily for tutorials
-	enum HilightObject
+	enum HighlightObject
 	{
-		///This causes the main menu icon to be hilighted
+		///This causes the main menu icon to be highlighted
 		HilightMainMenuIcon=1,
-		///This causes all workers on the map to be hilighted
+		///This causes all workers on the map to be highlighted
 		HilightWorkers=2,
 		///This causes all explorers on the map to be hilighted
 		HilightExplorers=3,
@@ -154,7 +154,7 @@ public:
 		HilightRatioBar=8,
 		///This causes the workers working/free statistic to be hilighted
 		HilightWorkersWorkingFreeStat=9,
-		///This causes the exploresrs working/free statistic to be hilighted
+		///This causes the explores working/free statistic to be hilighted
 		HilightExplorersWorkingFreeStat=10,
 		///This causes the warriors working/free statistic to be hilighted
 		HilightWarriorsWorkingFreeStat=11,
@@ -176,7 +176,7 @@ public:
 	};
 	
 	///Stores the currently hilighted elements
-	std::set<int> hilights;
+	std::set<int> highlights;
 	
 	struct HilightArrowPosition
 	{
@@ -190,7 +190,7 @@ public:
 	///proccess, and they are drawn last
 	std::vector<HilightArrowPosition> arrowPositions;
 	
-	///This sends the hilight values to the Game class, setting Game::highlightBuildingType and Game::highlightUnitType
+	///This sends the highlight values to the Game class, setting Game::highlightBuildingType and Game::highlightUnitType
 	void updateHilightInGame();
 	
 	KeyboardManager keyboardManager;
@@ -200,7 +200,7 @@ public:
 	bool gamePaused;
 	bool hardPause;
 	bool isRunning;
-	bool notmenu;
+	bool notMenu;
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
 	//! true if the game needs to flush all outgoing orders and exit
@@ -238,7 +238,7 @@ private:
 	void drawRedButton(int x, int y, std::string caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, std::string caption);
 	void drawValueAlignedRight(int y, int v);
-	void drawCosts(int ressources[BASIC_COUNT], Font *font);
+	void drawCosts(int resources[BASIC_COUNT], Font *font);
 	void drawCheckButton(int x, int y, std::string caption, bool isSet);
 	void drawRadioButton(int x, int y, bool isSet);
 
@@ -265,8 +265,8 @@ private:
 	void drawUnitInfos(void);
 	//! Draw the infos and actions from a building
 	void drawBuildingInfos(void);
-	//! Draw the infos about a ressource on map (type and number left)
-	void drawRessourceInfos(void);
+	//! Draw the infos about a resource on map (type and number left)
+	void drawResourceInfos(void);
 	//! Draw the replay panel
 	void drawReplayPanel(void);
 	//! Draw the bottom bar with the replay's time bar
@@ -315,7 +315,7 @@ private:
 		NO_SELECTION=0,
 		BUILDING_SELECTION,
 		UNIT_SELECTION,
-		RESSOURCE_SELECTION,
+		RESOURCE_SELECTION,
 		TOOL_SELECTION,
 		BRUSH_SELECTION
 	} selectionMode;
@@ -323,7 +323,7 @@ private:
 	{
 		Building* building;
 		Unit* unit;
-		int ressource;
+		int resource;
 	} selection;
 	
 	// Brushes
@@ -368,11 +368,11 @@ private:
 	//! whether script text was updated in last step, required because of our translation override common text mechanism
 	bool scriptTextUpdated;
 
-	//! True if the mouse's button way never relased since selection.
+	//! True if the mouse's button way never released since selection.
 	bool selectionPushed;
 	//! The position of the flag when it was pushed.
 	Sint32 selectionPushedPosX, selectionPushedPosY;
-	//! True if the mouse's button way never relased since click im minimap.
+	//! True if the mouse's button way never released since click im minimap.
 	bool miniMapPushed;
 	//! True if we try to put a mark in the minimap
 	bool putMark;
@@ -420,7 +420,7 @@ private:
 
 	///Denotes the name of the game save for saving,
 	///set on loading the map	
-	std::string defualtGameSaveName;
+	std::string defaultGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
 	
@@ -479,7 +479,7 @@ private:
 		int lifeSpan; //!< maximum age of the particle
 		
 		int startImg; //!< image of the particle at birth
-		int endImg; //!< image of the partile at death
+		int endImg; //!< image of the particle at death
 		Color color; //!< color (team) of this particle
 	};
 	

@@ -274,11 +274,11 @@ void ChooseMapScreen::updateMapInformation()
 	// update map name & info
 	mapName->setText(mapHeader.getMapName());
 	std::string textTemp;
-	textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
+	textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 	mapInfo->setText(textTemp);
-	textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
+	textTemp = FormattableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
 	mapVersion->setText(textTemp);
-	textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+	textTemp = FormattableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
 	mapSize->setText(textTemp);
 	
 	// call subclass handler

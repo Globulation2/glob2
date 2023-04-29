@@ -217,7 +217,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		buildings_under_construction=stream->readUint32("buildings_under_construction");
 		for(int n=0; n<PlacementSize; ++n)
 		{
-			buildings_under_construction_per_type[n]=stream->readUint8(FormatableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
+			buildings_under_construction_per_type[n]=stream->readUint8(FormattableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
 		}
 			
 		stream->readEnterSection("placement_queue");
@@ -307,7 +307,7 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(buildings_under_construction, "buildings_under_construction");
 	for(int n=0; n<PlacementSize; ++n)
 	{
-		stream->writeUint8(buildings_under_construction_per_type[n], FormatableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
+		stream->writeUint8(buildings_under_construction_per_type[n], FormattableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
 	}
 		
 	stream->writeEnterSection("placement_queue");
@@ -1048,7 +1048,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 
 	//Constraints arround the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 8));
 	//You can't be farther than 10 units from wheat
@@ -1089,9 +1089,9 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	{
 		//Constraints arround the location of fruit
 		AIEcho::Gradients::GradientInfo gi_fruit;
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
 		//You want to be reasnobly close to fruit, closer if possible
 		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
 	}
@@ -1100,7 +1100,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	unsigned int id=echo.add_building_order(bo);
 
 	//Change the number of workers assigned when the building is finished
-	ManagementOrder* mo_completion=new SendMessage(FormatableString("update inn %0").arg(id));
+	ManagementOrder* mo_completion=new SendMessage(FormattableString("update inn %0").arg(id));
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_completion);
 
@@ -1119,7 +1119,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 
 	//Constraints arround the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 6));
 
@@ -1150,7 +1150,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	unsigned int id=echo.add_building_order(bo);
 
 	//Change the number of workers assigned when the building is finished
-	ManagementOrder* mo_completion=new SendMessage(FormatableString("update swarm %0").arg(id));
+	ManagementOrder* mo_completion=new SendMessage(FormattableString("update swarm %0").arg(id));
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_completion);
 	
@@ -1169,7 +1169,7 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 
 	//Constraints arround the location of wood
 	AIEcho::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
 
@@ -1181,7 +1181,7 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 
 	//Constraints arround the location of stone
 	AIEcho::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+	gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 	//You want to be close to stone
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, 1));
 	//But not to close, so you have room to upgrade
@@ -1223,7 +1223,7 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 
 	//Constraints arround the location of wood
 	AIEcho::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
 
@@ -1235,13 +1235,13 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 
 	//Constraints arround the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 1));
 
 	//Constraints arround the location of stone
 	AIEcho::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+	gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 	//You don't want to be too close, so you have room to upgrade
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, 2));
 
@@ -1331,13 +1331,13 @@ int NewNicowar::order_regular_barracks(Echo& echo)
 
 	//Constraints arround the location of stone
 	AIEcho::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+	gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 	//You want to be close to stone
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, 5));
 
 	//Constraints arround the location of wood
 	AIEcho::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 2));
 
@@ -1372,7 +1372,7 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 
 	//Constraints arround the location of wood
 	AIEcho::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 2));
 
@@ -1485,7 +1485,7 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 
 	to_assign=strategy.base_swarm_units_assigned;
 
-	///Double units when ressource level is low
+	///Double units when resource level is low
 	if(total_ressource_level <= (strategy.base_swarm_low_wheat_trigger_ammount * 25))
 		to_assign*=2;
 
@@ -1731,7 +1731,7 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 
 			//Cause the building to be updated after its completion. Not all buildings need
 			//to be updated, in which case the order will simply be ignored
-			ManagementOrder* mo_completion=new SendMessage(FormatableString("update %0 %1").arg(type).arg(id));
+			ManagementOrder* mo_completion=new SendMessage(FormattableString("update %0 %1").arg(type).arg(id));
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_completion);
 		}
@@ -1755,7 +1755,7 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 
 			//Cause the building to be updated after its completion. Not all buildings need
 			//to be updated, in which case the order will simply be ignored
-			ManagementOrder* mo_completion=new SendMessage(FormatableString("update %0 %1").arg(type).arg(id));
+			ManagementOrder* mo_completion=new SendMessage(FormattableString("update %0 %1").arg(type).arg(id));
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_completion);
 		}
@@ -1944,7 +1944,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_pathfind;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
-	gi_pathfind.add_obstacle(new Entities::Ressource(STONE));
+	gi_pathfind.add_obstacle(new Entities::Resource(STONE));
 	Gradient& gradient_pathfind=echo.get_gradient_manager().get_gradient(gi_pathfind);
 
 	///Next, find the closest point manhattan distance wise, to the building that is accessible
@@ -2696,7 +2696,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 		//Constraint arround the location of fruit
 		AIEcho::Gradients::GradientInfo gi_cherry;
-		gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
+		gi_cherry.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
 		//You want to be ontop of the cherry trees
 		bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 0));
 		//Add the building order to the list of orders
@@ -2713,7 +2713,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 		//Constraints arround the location of fruit
 		AIEcho::Gradients::GradientInfo gi_orange;
-		gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
+		gi_orange.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
 		//You want to be ontop of the orange trees
 		bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 0));
 		unsigned int id_orange=echo.add_building_order(bo_orange);
@@ -2726,7 +2726,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		//You want the closest fruit to your settlement possible
 		bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 		AIEcho::Gradients::GradientInfo gi_prune;
-		gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
+		gi_prune.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
 		//You want to be ontop of the prune trees
 		bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 0));
 		//Add the building order to the list of orders

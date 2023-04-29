@@ -51,7 +51,7 @@ protected:
 protected:
 	Unit *unit; //!< unit being edited
 	MultiTextButton *skin;
-	TextInput *hungryness;
+	TextInput *hungriness;
 };
 
 #endif
