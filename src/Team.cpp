@@ -97,8 +97,8 @@ void Team::init(void)
 	prestige=0;
 	unitConversionLost = 0;
 	unitConversionGained = 0;
-	for(int i=0; i<MAX_NB_RESSOURCES; ++i)
-		teamRessources[i]=0;
+	for(int i=0; i<MAX_NB_RESOURCES; ++i)
+		teamResources[i]=0;
 
 	for(int i=0; i<GESize; ++i)
 		eventCooldownTimers[i]=0;
@@ -227,10 +227,10 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	unitConversionGained = stream->readSint32("unitConversionGained");
 
 	stream->readEnterSection("teamRessources");
-	for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
+	for (unsigned int i=0; i<MAX_NB_RESOURCES; ++i)
 	{
 		stream->readEnterSection(i);
-		teamRessources[i] = stream->readUint32("teamRessources");
+		teamResources[i] = stream->readUint32("teamRessources");
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -348,10 +348,10 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(unitConversionGained, "unitConversionGained");
 
 	stream->writeEnterSection("teamRessources");
-	for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
+	for (unsigned int i=0; i<MAX_NB_RESOURCES; ++i)
 	{
 		stream->writeEnterSection(i);
-		stream->writeUint32(teamRessources[i], "teamRessources");
+		stream->writeUint32(teamResources[i], "teamRessources");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -564,7 +564,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		Sint32 x = unit->posX;
 		Sint32 y = unit->posY;
-		Sint32 maxDist = unit->hungry / unit->race->hungryness + unit->hp;
+		Sint32 maxDist = unit->hungry / unit->race->hungriness + unit->hp;
 		Building *choosen = NULL;
 		Sint32 bestDist2 = maxDist * maxDist;
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
@@ -583,7 +583,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		Sint32 x = unit->posX;
 		Sint32 y = unit->posY;
-		Sint32 maxDist = unit->hungry / race.hungryness + unit->hp;
+		Sint32 maxDist = unit->hungry / race.hungriness + unit->hp;
 		bool canSwim = unit->performance[SWIM];
 		Building *choosen=  NULL;
 		Sint32 bestDist = maxDist;
@@ -617,7 +617,7 @@ Building *Team::findNearestFood(Unit *unit)
 	
 	// first, we check for the best food an enemy can offer:
 	Sint32 bestEnemyHappyness = 0;
-	Sint32 maxDist = std::max(0, unit->hungry) / unit->race->hungryness + unit->hp;
+	Sint32 maxDist = std::max(0, unit->hungry) / unit->race->hungriness + unit->hp;
 	Building *bestEnemyFood = NULL;
 	if (concurency)
 	{
@@ -819,8 +819,8 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
-			int ratio_lhs_ressource = lhs->totalWishedRessource();
-			int ratio_rhs_ressource = rhs->totalWishedRessource();
+			int ratio_lhs_ressource = lhs->totalWishedResource();
+			int ratio_rhs_ressource = rhs->totalWishedResource();
 			return ratio_lhs_ressource > ratio_rhs_ressource;
 		}
 		else
@@ -877,7 +877,7 @@ void Team::updateAllBuildingTasks()
 					if(i->second[j]->type->isVirtual)
 						thisFound |= (i->second)[j]->subscribeForFlagingStep();
 					else
-						thisFound |= (i->second)[j]->subscribeToBringRessourcesStep();
+						thisFound |= (i->second)[j]->subscribeToBringResourcesStep();
 					found |= thisFound;
 					foundPer[j] = thisFound;
 				}
@@ -1075,7 +1075,7 @@ void Team::syncStep(void)
 	
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
-			if (!(*it)->locked[1] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
+			if (!(*it)->locked[1] && (*it)->resources[CORN]>(*it)->type->resourceForOneUnit)
 				isEnoughFoodInSwarm=true;
 			(*it)->swarmStep();
 		}

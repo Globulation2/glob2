@@ -139,7 +139,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 			lines.  (The intensities used below are 2/3 as
 			bright for the case of removing areas.) */
 		/* This reasoning should be abstracted out and reused
-			in MapEdit.cpp to choose a color for those cases
+			in MapEdit.cpp to choose a color for those tiles
 			where areas are being drawn. */
 		unsigned mode = brush.getType();
 		switch(mode)
@@ -453,7 +453,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 			globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
 			
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-			globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
+			globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
 			globalContainer->littleFont->popStyle();
 		}
 		else

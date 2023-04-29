@@ -53,7 +53,7 @@ public:
 	//! Returns true if AI i is enabled
 	bool isActive(int i);
 	//! Returns the implementation of AI i. If AI is disabled, result is undefined
-	AI::ImplementitionID getAiImplementation(int i);
+	AI::ImplementationID getAiImplementation(int i);
 	//! Returns the color of AI i. If AI is disabled, result is undefined
 	int getSelectedColor(int i);
 

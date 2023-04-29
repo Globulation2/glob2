@@ -467,7 +467,7 @@ void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
 		
 		SpeexBits bits;
 		speex_bits_init(&bits);
-		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDatasLength);
+		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDataLength);
 		// read each frame
 		for (size_t i=0; i<order->frameCount; i++)
 		{

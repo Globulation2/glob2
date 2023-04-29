@@ -443,18 +443,18 @@ class OrderVoiceData:public MiscOrder
 {
 public:
 	OrderVoiceData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas);
+	OrderVoiceData(Uint32 recipientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData);
 	virtual ~OrderVoiceData(void);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return framesDatasLength+5; }
+	int getDataLength(void) { return framesDataLength+5; }
 	int getStrippedDataLength(void) { return 5; }
 	Uint8 getOrderType(void) { return ORDER_VOICE_DATA; }
 	Uint8 *getFramesData(void) { return data+5; }
 
-	Uint32 recepientsMask;
-	size_t framesDatasLength;
+	Uint32 recipientsMask;
+	size_t framesDataLength;
 	Uint8 frameCount;
 	Uint8 *data;
 };

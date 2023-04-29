@@ -65,7 +65,7 @@ void NetGamePlayerManager::addPerson(Uint16 playerID, const std::string& name)
 
 
 
-void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
+void NetGamePlayerManager::addAIPlayer(AI::ImplementationID type)
 {
 	//16 is current maximum
 	if(gameHeader.getNumberOfPlayers() < 16)
@@ -76,7 +76,7 @@ void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 			BasePlayer& bp = gameHeader.getBasePlayer(x);
 			if(bp.type == BasePlayer::P_NONE)
 			{
-				FormatableString name("%0 %1");
+				FormattableString name("%0 %1");
 				name.arg(AINames::getAIText(type)).arg(x+1);
 				bp = BasePlayer(x, name, team_number, Player::playerTypeFromImplementitionID(type));
 				readyToStart[x] = true;
@@ -117,7 +117,7 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 			bp.numberMask = 1u>>bp.number;
 			if(bp.type >= Player::P_AI)
 			{
-				FormatableString name("%0 %1");
+				FormattableString name("%0 %1");
 				name.arg(AINames::getAIText(bp.type - (int)Player::P_AI)).arg(bp.number+1);
 				bp.name = name;
 			}

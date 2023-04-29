@@ -127,13 +127,13 @@ void MapThumbnail::loadFromMap(const std::string& map)
 					for (minidy=(dMy*dy); minidy<=(dMy*(dy+1)); minidy++)
 					{
 						// get color to add
-						if (map.isRessourceTakeable((int)minidx, (int)minidy, WOOD))
+						if (map.isResourceTakeable((int)minidx, (int)minidy, WOOD))
 							pcolIndex=3;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, CORN))
+						else if (map.isResourceTakeable((int)minidx, (int)minidy, CORN))
 							pcolIndex=4;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, STONE))
+						else if (map.isResourceTakeable((int)minidx, (int)minidy, STONE))
 							pcolIndex=5;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, ALGA))
+						else if (map.isResourceTakeable((int)minidx, (int)minidy, ALGA))
 							pcolIndex=6;
 						else
 							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);

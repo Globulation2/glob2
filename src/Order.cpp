@@ -755,8 +755,8 @@ OrderVoiceData::OrderVoiceData(const Uint8 *data, int dataLength, Uint32 version
 
 OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas)
 {
-	this->recepientsMask = recepientsMask;
-	this->framesDatasLength = framesDatasLength;
+	this->recipientsMask = recepientsMask;
+	this->framesDataLength = framesDatasLength;
 	this->frameCount = frameCount;
 	
 	data = (Uint8 *)malloc(framesDatasLength+5);
@@ -772,7 +772,7 @@ OrderVoiceData::~OrderVoiceData()
 
 Uint8 *OrderVoiceData::getData(void)
 {
-	addUint32(data, recepientsMask, 0);
+	addUint32(data, recipientsMask, 0);
 	addUint8(data, frameCount, 4);
 	return data;
 }
@@ -783,8 +783,8 @@ bool OrderVoiceData::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 	if (dataLength<5)
 		return false;
 		
-	this->framesDatasLength = (size_t)dataLength - 5;
-	this->recepientsMask = getUint32(data, 0);
+	this->framesDataLength = (size_t)dataLength - 5;
+	this->recipientsMask = getUint32(data, 0);
 	this->frameCount = getUint8(data, 4);
 	
 	if (this->data != NULL)

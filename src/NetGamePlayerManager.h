@@ -33,7 +33,7 @@ public:
 	///Adds a person to the gameHeader
 	void addPerson(Uint16 playerID, const std::string& name);
 	///This is intended to add an AI to the game
-	void addAIPlayer(AI::ImplementitionID type);
+	void addAIPlayer(AI::ImplementationID type);
 	///Removes a person from the gameHeader
 	void removePerson(Uint16 playerID);
 	///Removes a player, human or AI

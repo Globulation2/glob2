@@ -41,10 +41,10 @@ void BuildingsTypes::checkIntegrity(void)
 		BuildingType *bt = entries[i];
 		assert(bt);
 		
-		//Need ressource integrity:
+		//Need resource integrity:
 		bool needRessource=false;
-		for (unsigned j=0; j<MAX_RESSOURCES; j++)
-			if (bt->maxRessource[j])
+		for (unsigned j=0; j<MAX_RESOURCES; j++)
+			if (bt->maxResource[j])
 			{
 				needRessource=true;
 				break;
@@ -78,8 +78,8 @@ void BuildingsTypes::checkIntegrity(void)
 		if (bt->isBuildingSite)
 		{
 			int resSum=0;
-			for (int i=0; i<MAX_RESSOURCES; i++)
-				resSum += bt->maxRessource[i];
+			for (int i=0; i<MAX_RESOURCES; i++)
+				resSum += bt->maxResource[i];
 			int hpSum = bt->hpInit+resSum*bt->hpInc;
 			if (hpSum < bt->hpMax)
 			{
@@ -91,22 +91,22 @@ void BuildingsTypes::checkIntegrity(void)
 		//flag integrity:
 		if (bt->isVirtual)
 		{
-			assert(bt->isCloacked);
+			assert(bt->isCloaked);
 			assert(bt->defaultUnitStayRange);
 		}
-		if (bt->isCloacked)
+		if (bt->isCloaked)
 		{
 			assert(bt->isVirtual);
 			assert(bt->defaultUnitStayRange);
 		}
 		if (bt->defaultUnitStayRange)
 		{
-			assert(bt->isCloacked);
+			assert(bt->isCloaked);
 			assert(bt->isVirtual);
 		}
 		if (bt->zonableForbidden)
 		{
-			assert(bt->isCloacked);
+			assert(bt->isCloaked);
 			assert(bt->isVirtual);
 			assert(bt->defaultUnitStayRange);
 		}

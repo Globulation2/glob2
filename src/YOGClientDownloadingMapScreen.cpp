@@ -65,9 +65,9 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(boost::shared_ptr<Y
 	MapHeader mapHeader = info.getMapHeader();
 	mapName->setText(mapHeader.getMapName());
 	std::string textTemp;
-	textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
+	textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 	mapInfo->setText(textTemp);
-	textTemp = FormatableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
+	textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
 	mapSize->setText(textTemp);
 	authorName->setText(info.getAuthorName());
 	
@@ -123,7 +123,7 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 		{
 			preview->setMapThumbnail(thumbnail);
 			std::string textTemp;
-			textTemp = FormatableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
+			textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
 			mapSize->setText(textTemp);
 		}
 	}

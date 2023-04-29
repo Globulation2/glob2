@@ -111,7 +111,7 @@ public:
 	void updateReadyState();
 	
 	///This is intended to add an AI to the game
-	void addAIPlayer(AI::ImplementitionID type);
+	void addAIPlayer(AI::ImplementationID type);
 
 	///This kicks/removes a player from the game
 	void kickPlayer(int playerNum);

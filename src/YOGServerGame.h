@@ -48,7 +48,7 @@ public:
 	void addPlayer(boost::shared_ptr<YOGServerPlayer> player);
 
 	///Adds an AI to the game
-	void addAIPlayer(AI::ImplementitionID type);
+	void addAIPlayer(AI::ImplementationID type);
 
 	///Removes the player from the game
 	void removePlayer(boost::shared_ptr<YOGServerPlayer> player);

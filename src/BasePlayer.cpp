@@ -133,7 +133,7 @@ Uint32 BasePlayer::checkSum()
 }
 
 
-void BasePlayer::makeItAI(AI::ImplementitionID aiType)
+void BasePlayer::makeItAI(AI::ImplementationID aiType)
 {
 	type=(PlayerType)(P_AI+aiType);
 }

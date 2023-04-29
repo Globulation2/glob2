@@ -56,7 +56,7 @@ public:
 	bool load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor);
 	void save(GAGCore::OutputStream  *stream);
 
-	void makeItAI(AI::ImplementitionID aiType);
+	void makeItAI(AI::ImplementationID aiType);
 public:
 	Sint32 startPositionX, startPositionY;
 

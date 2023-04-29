@@ -40,7 +40,7 @@ namespace AINames
 			break;
 		case AI::WARRUSH: sAi="[AIWarrush]";
 			break;
-		case AI::REACHTOINFINITY: sAi="[AIReachToInfinity]";
+		case AI::REACH_TO_INFINITY: sAi="[AIReachToInfinity]";
 			break;
 		case AI::NICOWAR: sAi="[AINicowar]";
 			break;
@@ -65,7 +65,7 @@ namespace AINames
 			break;
 		case AI::WARRUSH: sAi="[AIWarrush-Description]";
 			break;
-		case AI::REACHTOINFINITY: sAi="[AIReachToInfinity-Description]";
+		case AI::REACH_TO_INFINITY: sAi="[AIReachToInfinity-Description]";
 			break;
 		case AI::NICOWAR: sAi="[AINicowar-Description]";
 			break;

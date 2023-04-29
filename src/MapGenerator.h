@@ -74,7 +74,7 @@ private:
 	///This function sets all given points as a specific area on the grid
 	void setAsArea(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
 	
-	///This function fills all given points area with a certain ressource. It will fill in a randomly sized
+	///This function fills all given points area with a certain resource. It will fill in a randomly sized
 	///square over each grid space no larger than maxFillSize
 	void fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int ressourceType, int maxFillSize);
 	

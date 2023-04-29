@@ -31,7 +31,7 @@ namespace GAGCore
 	class StringTable;
 	class GraphicContext;
 	
-	//! Toolkit is a ressource server
+	//! Toolkit is a resource server
 	class Toolkit
 	{
 	private:

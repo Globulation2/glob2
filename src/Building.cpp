@@ -41,7 +41,7 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 	for (int i=0; i<2; i++)
 	{
 		globalGradient[i]=NULL;
-		localRessources[i]=NULL;
+		localResources[i]=NULL;
 	}
 	logFile = globalContainer->logFileManager->getFile("Building.log");
 	load(stream, types, owner, versionMinor);
@@ -94,25 +94,25 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	underAttackTimer=0;
 	canNotConvertUnitTimer=0;
 
-	// flag usefull :
+	// flag useful :
 	unitStayRange=type->defaultUnitStayRange;
 	unitStayRangeLocal=unitStayRange;
 	for(int i=0; i<BASIC_COUNT; i++)
-		clearingRessources[i]=true;
-	clearingRessources[STONE]=false;
-	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
+		clearingResources[i]=true;
+	clearingResources[STONE]=false;
+	memcpy(clearingResourcesLocal, clearingResources, sizeof(bool)*BASIC_COUNT);
 	minLevelToFlag=0;
 	minLevelToFlagLocal=minLevelToFlag;
 
 	// building specific :
-	for(int i=0; i<MAX_NB_RESSOURCES; i++)
-		localRessource[i]=0;
-	updateRessourcesPointer();
+	for(int i=0; i<MAX_NB_RESOURCES; i++)
+		localResource[i]=0;
+	updateResourcesPointer();
 
 	// quality parameters
 	hp=type->hpInit; // (Uint16)
 
-	// prefered parameters
+	// preferred parameters
 
 	productionTimeout=type->unitProductionTime;
 
@@ -127,10 +127,10 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		percentUsed[i]=0;
 	}
 
-	receiveRessourceMask=0;
-	sendRessourceMask=0;
-	receiveRessourceMaskLocal=0;
-	sendRessourceMaskLocal=0;
+	receiveResourceMask=0;
+	sendResourceMask=0;
+	receiveResourceMaskLocal=0;
+	sendResourceMaskLocal=0;
 
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
@@ -148,14 +148,14 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<2; i++)
 	{
 		globalGradient[i]=NULL;
-		localRessources[i]=NULL;
+		localResources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
 		lastGlobalGradientUpdateStepCounter[i]=0;
 
-		localRessources[i]=0;
-		localRessourcesCleanTime[i]=0;
-		anyRessourceToClear[i]=0;
+		localResources[i]=0;
+		localResourcesCleanTime[i]=0;
+		anyResourceToClear[i]=0;
 	}
 
 	verbose=false;
@@ -185,17 +185,17 @@ void Building::freeGradients()
 			delete[] globalGradient[i];
 			globalGradient[i] = NULL;
 		}
-		if (localRessources[i])
+		if (localResources[i])
 		{
-			delete[] localRessources[i];
-			localRessources[i] = NULL;
+			delete[] localResources[i];
+			localResources[i] = NULL;
 		}
 		dirtyLocalGradient[i] = true;
 		locked[i] = false;
 		lastGlobalGradientUpdateStepCounter[i] = 0;
 
-		localRessourcesCleanTime[i] = 0;
-		anyRessourceToClear[i] = 0;
+		localResourcesCleanTime[i] = 0;
+		anyResourceToClear[i] = 0;
 	}
 }
 
@@ -248,27 +248,27 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	{
 		std::ostringstream oss;
 		oss << "clearingRessources[" << i << "]";
-		clearingRessources[i] = (bool)stream->readSint32(oss.str().c_str());
+		clearingResources[i] = (bool)stream->readSint32(oss.str().c_str());
 	}
-	assert(clearingRessources[STONE] == false);
+	assert(clearingResources[STONE] == false);
 
-	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
+	memcpy(clearingResourcesLocal, clearingResources, sizeof(bool)*BASIC_COUNT);
 
 	minLevelToFlag = stream->readSint32("minLevelToFlag");
 	minLevelToFlagLocal = minLevelToFlag;
 
 	// Building Specific
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
 	{
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
-		localRessource[i] = stream->readSint32(oss.str().c_str());
+		localResource[i] = stream->readSint32(oss.str().c_str());
 	}
 
 	// quality parameters
 	hp = stream->readSint32("hp");
 
-	// prefered parameters
+	// preferred parameters
 	productionTimeout = stream->readSint32("productionTimeout");
 	totalRatio = stream->readSint32("totalRatio");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -285,10 +285,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		}
 	}
 
-	receiveRessourceMask = stream->readUint32("receiveRessourceMask");
-	sendRessourceMask = stream->readUint32("sendRessourceMask");
-	receiveRessourceMaskLocal = receiveRessourceMask;
-	sendRessourceMaskLocal = sendRessourceMask;
+	receiveResourceMask = stream->readUint32("receiveRessourceMask");
+	sendResourceMask = stream->readUint32("sendRessourceMask");
+	receiveResourceMaskLocal = receiveResourceMask;
+	sendResourceMaskLocal = sendResourceMask;
 
 	shootingStep = stream->readUint32("shootingStep");
 	shootingCooldown = stream->readSint32("shootingCooldown");
@@ -299,7 +299,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	typeNum = stream->readSint32("typeNum");
 	type = types->get(typeNum);
 	assert(type);
-	updateRessourcesPointer();
+	updateResourcesPointer();
 
 	// reload data from type
 	shortTypeNum = type->shortTypeNum;
@@ -369,22 +369,22 @@ void Building::save(GAGCore::OutputStream *stream)
 	{
 		std::ostringstream oss;
 		oss << "clearingRessources[" << i << "]";
-		stream->writeSint32(clearingRessources[i], oss.str().c_str());
+		stream->writeSint32(clearingResources[i], oss.str().c_str());
 	}
 	stream->writeSint32(minLevelToFlag, "minLevelToFlag");
 
 	// Building Specific
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
 	{
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
-		stream->writeSint32(localRessource[i], oss.str().c_str());
+		stream->writeSint32(localResource[i], oss.str().c_str());
 	}
 
 	// quality parameters
 	stream->writeSint32(hp, "hp");
 
-	// prefered parameters
+	// preferred parameters
 	stream->writeSint32(productionTimeout, "productionTimeout");
 	stream->writeSint32(totalRatio, "totalRatio");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -401,8 +401,8 @@ void Building::save(GAGCore::OutputStream *stream)
 		}
 	}
 
-	stream->writeUint32(receiveRessourceMask, "receiveRessourceMask");
-	stream->writeUint32(sendRessourceMask, "sendRessourceMask");
+	stream->writeUint32(receiveResourceMask, "receiveRessourceMask");
+	stream->writeUint32(sendResourceMask, "sendRessourceMask");
 
 	stream->writeUint32(shootingStep, "shootingStep");
 	stream->writeSint32(shootingCooldown, "shootingCooldown");
@@ -563,28 +563,28 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-bool Building::isRessourceFull(void)
+bool Building::isResourceFull(void)
 {
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
 	{
-		if (ressources[i]+type->multiplierRessource[i]<=type->maxRessource[i])
+		if (resources[i]+type->multiplierResource[i]<=type->maxResource[i])
 			return false;
 	}
 	return true;
 }
 
-int Building::neededRessource(void)
+int Building::neededResource(void)
 {
 	Sint32 minProportion=0x7FFFFFFF;
 	int minType=-1;
-	int deci=syncRand()%MAX_RESSOURCES;
-	for (int ib=0; ib<MAX_RESSOURCES; ib++)
+	int deci=syncRand()%MAX_RESOURCES;
+	for (int ib=0; ib<MAX_RESOURCES; ib++)
 	{
-		int i=(ib+deci)%MAX_RESSOURCES;
-		int maxr=type->maxRessource[i];
-		if (maxr)
+		int i=(ib+deci)%MAX_RESOURCES;
+		int maxR=type->maxResource[i];
+		if (maxR)
 		{
-			Sint32 proportion=(ressources[i]<<16)/maxr;
+			Sint32 proportion=(resources[i]<<16)/maxR;
 			if (proportion<minProportion)
 			{
 				minProportion=proportion;
@@ -595,50 +595,50 @@ int Building::neededRessource(void)
 	return minType;
 }
 
-void Building::neededRessources(int needs[MAX_NB_RESSOURCES])
+void Building::neededResources(int needs[MAX_NB_RESOURCES])
 {
-	for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
-		needs[ri]=Building::neededRessource(ri);
+	for (int ri=0; ri<MAX_NB_RESOURCES; ri++)
+		needs[ri]=Building::neededResource(ri);
 }
 
-void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
+void Building::computedNeededResources(int needs[MAX_NB_RESOURCES])
 {
 	 // we balance the system with Units working on it:
-	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		needs[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
+	for (int ri = 0; ri < MAX_NB_RESOURCES; ri++)
+		needs[ri] = (4 * (type->maxResource[ri] - resources[ri])) / (type->multiplierResource[ri] * 3);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
+			assert((*ui)->destinationPurpose < MAX_NB_RESOURCES);
 			needs[(*ui)->destinationPurpose]--;
 		}
 }
 
-void Building::computeWishedRessources()
+void Building::computeWishedResources()
 {
 	 // we balance the system with Units working on it:
-	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		wishedResources[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
+	for (int ri = 0; ri < MAX_NB_RESOURCES; ri++)
+		wishedResources[ri] = (4 * (type->maxResource[ri] - resources[ri])) / (type->multiplierResource[ri] * 3);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
+			assert((*ui)->destinationPurpose < MAX_NB_RESOURCES);
 			wishedResources[(*ui)->destinationPurpose]--;
 		}
 }
 
-int Building::neededRessource(int r)
+int Building::neededResource(int r)
 {
 	assert(r >= 0);
-	int need = type->maxRessource[r] - ressources[r] + 1 - type->multiplierRessource[r];
+	int need = type->maxResource[r] - resources[r] + 1 - type->multiplierResource[r];
 	return std::max(need,0);
 }
 
 
-int Building::totalWishedRessource()
+int Building::totalWishedResource()
 {
 	int sum=0;
-	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
+	for (int ri = 0; ri < MAX_NB_RESOURCES; ri++)
 		sum += wishedResources[ri];
 	return sum;
 }
@@ -665,7 +665,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		owner->removeFromAbilitiesLists(this);
 
 		// We remove all units who are going to the building:
-		// Notice that the algotithm is not fast but clean.
+		// Notice that the algorithm is not fast but clean.
 		std::list<Unit *> unitsToRemove;
 		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 		{
@@ -761,8 +761,8 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	owner->prestige+=type->prestige;
 	owner->addToStaticAbilitiesLists(this);
 
-	//Update the pointer ressources to the newly changed type
-	updateRessourcesPointer();
+	//Update the pointer resources to the newly changed type
+	updateResourcesPointer();
 
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
@@ -842,8 +842,8 @@ void Building::updateCallLists(void)
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
-	bool ressourceFull=isRessourceFull();
-	if (ressourceFull && !(type->canExchange && owner->openMarket()))
+	bool resourceFull=isResourceFull();
+	if (resourceFull && !(type->canExchange && owner->openMarket()))
 	{
 		// Then we don't need anyone more to fill me, if I'm still in the call list for units,
 		// remove me
@@ -898,7 +898,7 @@ void Building::updateCallLists(void)
 		// this is for food handling
 		if (type->canFeedUnit)
 		{
-			if (ressources[CORN]>(int)unitsInside.size())
+			if (resources[CORN]>(int)unitsInside.size())
 			{
 				if (inCanFeedUnit!=LS_IN)
 				{
@@ -983,11 +983,11 @@ void Building::updateBuildingSite(void)
 {
 	assert(type->isBuildingSite);
 
-	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
+	if (isResourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
-		// we really uses the resources of the buildingsite:
-		for(int i=0; i<MAX_RESSOURCES; i++)
-			ressources[i]-=type->maxRessource[i];
+		// we really uses the resources of the building site:
+		for(int i=0; i<MAX_RESOURCES; i++)
+			resources[i]-=type->maxResource[i];
 
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevel;
@@ -996,8 +996,8 @@ void Building::updateBuildingSite(void)
 		constructionResultState=NO_CONSTRUCTION;
 		owner->prestige+=type->prestige;
 
-		//Update the pointer ressources to the newly changed type
-		updateRessourcesPointer();
+		//Update the pointer resources to the newly changed type
+		updateResourcesPointer();
 
 
 		//now that building is complete clear the workers
@@ -1063,13 +1063,13 @@ void Building::updateUnitsWorking(void)
 			int maxDistSquare=0;
 
 			Unit *fu=NULL;
-			std::list<Unit *>::iterator ittemp;
+			std::list<Unit *>::iterator itTemp;
 
-			// First choice: free an unit who has a not needed ressource..
+			// First choice: free an unit who has a not needed resource..
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
-				int r=(*it)->carriedRessource;
-				if (r>=0 && !neededRessource(r))
+				int r=(*it)->carriedResource;
+				if (r>=0 && !neededResource(r))
 				{
 					fu=(*it);
 					fu->standardRandomActivity();
@@ -1080,13 +1080,13 @@ void Building::updateUnitsWorking(void)
 				}
 			}
 			if(fu!=NULL) continue;
-			// Second choice: free an unit who has no ressource..
+			// Second choice: free an unit who has no resource..
 			if (fu==NULL)
 			{
 				int minDistSquare=INT_MAX;
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
-					int r=(*it)->carriedRessource;
+					int r=(*it)->carriedResource;
 					if (r<0)
 					{
 						int tx = posX;
@@ -1101,7 +1101,7 @@ void Building::updateUnitsWorking(void)
 						{
 							minDistSquare=newDistSquare;
 							fu=(*it);
-							ittemp=it;
+							itTemp=it;
 						}
 					}
 				}
@@ -1116,7 +1116,7 @@ void Building::updateUnitsWorking(void)
 					{
 						maxDistSquare=newDistSquare;
 						fu=(*it);
-						ittemp=it;
+						itTemp=it;
 					}
 				}
 
@@ -1126,7 +1126,7 @@ void Building::updateUnitsWorking(void)
 					printf("bgid=%d, we free the unit gid=%d\n", gid, fu->gid);
 				// We free the unit.
 				fu->standardRandomActivity();
-				unitsWorking.erase(ittemp);
+				unitsWorking.erase(itTemp);
 			}
 			else
 				break;
@@ -1155,7 +1155,7 @@ void Building::updateUnitsHarvesting(void)
 			// TODO: replacing the remove by an erase should be a lot faster but
 			// it causes the game to crash when a market gets destroyed. No idea
 			// why. Actually there's no point bothering about this here as this
-			// method is not performance critical but still it's weired to me
+			// method is not performance critical but still it's weird to me
 			// why it doesn't work the other way round.
 			// unitsHarvesting.erase(tmpIt);
 		}
@@ -1164,7 +1164,7 @@ void Building::updateUnitsHarvesting(void)
 
 void Building::update(void)
 {
-	computeWishedRessources();
+	computeWishedResources();
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
@@ -1189,7 +1189,7 @@ void Building::setMapDiscovered(void)
 	owner->map->setMapExploredByBuilding(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
 }
 
-void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
+void Building::getResourceCountToRepair(int resources[BASIC_COUNT])
 {
 	assert(!type->isBuildingSite);
 	int repairLevelTypeNum=type->prevLevel;
@@ -1199,7 +1199,7 @@ void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 	Sint32 fTotErr=0;
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
-		int fVal=fDestructionRatio*repairBt->maxRessource[i];
+		int fVal=fDestructionRatio*repairBt->maxResource[i];
 		int iVal=(fVal>>16);
 		fTotErr+=fVal&65535;
 		if (fTotErr>=65536)
@@ -1207,7 +1207,7 @@ void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 			fTotErr-=65536;
 			iVal++;
 		}
-		ressources[i]=repairBt->maxRessource[i]-iVal;
+		resources[i]=repairBt->maxResource[i]-iVal;
 	}
 }
 
@@ -1245,9 +1245,9 @@ bool Building::tryToBuildingSiteRoom(void)
 		{
 			Sint32 fDestructionRatio=(hp<<16)/type->hpMax;
 			Sint32 fTotErr=0;
-			for (int i=0; i<MAX_RESSOURCES; i++)
+			for (int i=0; i<MAX_RESOURCES; i++)
 			{
-				int fVal=fDestructionRatio*targetBt->maxRessource[i];
+				int fVal=fDestructionRatio*targetBt->maxResource[i];
 				int iVal=(fVal>>16);
 				fTotErr+=fVal&65535;
 				if (fTotErr>=65536)
@@ -1255,7 +1255,7 @@ bool Building::tryToBuildingSiteRoom(void)
 					fTotErr-=65536;
 					iVal++;
 				}
-				ressources[i]=iVal;
+				resources[i]=iVal;
 			}
 		}
 
@@ -1271,24 +1271,24 @@ bool Building::tryToBuildingSiteRoom(void)
 		type=targetBt;
 		owner->prestige+=type->prestige;
 
-		//Update the pointer ressources to the newly changed type
-		updateRessourcesPointer();
+		//Update the pointer resources to the newly changed type
+		updateResourcesPointer();
 
 		buildingState=ALIVE;
 		owner->addToStaticAbilitiesLists(this);
 
 		// towers may already have some stone!
 		if (constructionResultState==UPGRADE)
-			for (int i=0; i<MAX_NB_RESSOURCES; i++)
+			for (int i=0; i<MAX_NB_RESOURCES; i++)
 			{
-				int res=ressources[i];
-				int resMax=type->maxRessource[i];
+				int res=resources[i];
+				int resMax=type->maxResource[i];
 				if (res>0 && resMax>0)
 				{
 					if (res>resMax)
 						res=resMax;
 					if (verbose)
-						printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
+						printf("using %d resources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
 					hp+=res*type->hpInc;
 				}
 			}
@@ -1309,14 +1309,14 @@ bool Building::tryToBuildingSiteRoom(void)
 		posXLocal=posX;
 		posYLocal=posY;
 
-		// flag usefull :
+		// flag useful :
 		unitStayRange=type->defaultUnitStayRange;
 		unitStayRangeLocal=unitStayRange;
 
 		// quality parameters
 		// hp=type->hpInit; // (Uint16)
 
-		// prefered parameters
+		// preferred parameters
 		productionTimeout=type->unitProductionTime;
 
 		totalRatio=0;
@@ -1395,17 +1395,17 @@ bool Building::isHardSpaceForBuildingSite(void)
 
 bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionResultState)
 {
-	int tltn=-1;
+	int tlTn=-1;
 	if (constructionResultState==UPGRADE)
-		tltn=type->nextLevel;
+		tlTn=type->nextLevel;
 	else if (constructionResultState==REPAIR)
-		tltn=type->prevLevel;
+		tlTn=type->prevLevel;
 	else
 		assert(false);
 
-	if (tltn==-1)
+	if (tlTn==-1)
 		return true;
-	BuildingType *bt=globalContainer->buildingsTypes.get(tltn);
+	BuildingType *bt=globalContainer->buildingsTypes.get(tlTn);
 	int x=posX+bt->decLeft-type->decLeft;
 	int y=posY+bt->decTop -type->decTop ;
 	int w=bt->width;
@@ -1418,7 +1418,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionRe
 
 bool Building::fullInside(void)
 {
-	if ((type->canFeedUnit) && (ressources[CORN]<=(int)unitsInside.size()))
+	if ((type->canFeedUnit) && (resources[CORN]<=(int)unitsInside.size()))
 		return true;
 	else
 		return ((signed)unitsInside.size()>=maxUnitInside);
@@ -1428,29 +1428,29 @@ bool Building::fullInside(void)
 int Building::desiredNumberOfWorkers(void)
 {
 	//If its virtual, than this building is a flag and always gets
-	//full ressources
+	//full resources
 	if(type->isVirtual)
 	{
 		return maxUnitWorking;
 	}
-	//Otherwise, this building gets what the user desires, up to a limit of 2 units per 1 needed ressource,
-	//thus if no ressources are needed, then no units will be working here.
-	int neededRessourcesSum = 0;
-	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
+	//Otherwise, this building gets what the user desires, up to a limit of 2 units per 1 needed resource,
+	//thus if no resources are needed, then no units will be working here.
+	int neededResourcesSum = 0;
+	for (size_t ri = 0; ri < MAX_RESOURCES; ri++)
 	{
-		int neededRessources = (type->maxRessource[ri] - ressources[ri]) / type->multiplierRessource[ri];
-		if (neededRessources > 0)
-			neededRessourcesSum += neededRessources;
+		int neededResources = (type->maxResource[ri] - resources[ri]) / type->multiplierResource[ri];
+		if (neededResources > 0)
+			neededResourcesSum += neededResources;
 	}
 	int user_num = maxUnitWorking;
-	int max_considering_ressources = (4 * neededRessourcesSum) / 3;
-	return std::min(user_num, max_considering_ressources);
+	int max_considering_resources = (4 * neededResourcesSum) / 3;
+	return std::min(user_num, max_considering_resources);
 }
 
 
 void Building::step(void)
 {
-	computeWishedRessources();
+	computeWishedResources();
 
 	updateCallLists();
 	if(underAttackTimer>0)
@@ -1461,7 +1461,7 @@ void Building::step(void)
 }
 
 
-bool Building::subscribeToBringRessourcesStep()
+bool Building::subscribeToBringResourcesStep()
 {
 	for(int i=0; i<UnitCantWorkReasonSize; ++i)
 	{
@@ -1470,7 +1470,7 @@ bool Building::subscribeToBringRessourcesStep()
 	if (buildingState==DEAD)
 		return false;
 	if (verbose)
-		printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
+		printf("bgid=%d, subscribeToBringResourcesStep()...\n", gid);
 
 	bool hired=false;
 	if (((Sint32)unitsWorking.size()<desiredMaxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
@@ -1484,11 +1484,11 @@ bool Building::subscribeToBringRessourcesStep()
 		/* To choose a good unit, we get a composition of things:
 		1-the closest the unit is, the better it is.
 		2-the less the unit is hungry, the better it is.
-		3-if the unit has a needed ressource, this is better.
-		4-if the unit as a not needed ressource, this is worse.
-		5-if the unit is close of a needed ressource, this is better
+		3-if the unit has a needed resource, this is better.
+		4-if the unit as a not needed resource, this is worse.
+		5-if the unit is close of a needed resource, this is better
 
-		score_to_max=(rightRes*100/d+noRes*80/(d+dr)+wrongRes*25/(d+dr))/walk+sign(timeleft>>2 - (d+dr))*500+100/harvest
+		score_to_max=(rightRes*100/d+noRes*80/(d+dr)+wrongRes*25/(d+dr))/walk+sign(timeLeft>>2 - (d+dr))*500+100/harvest
 		*/
 		/*
 		int maxValue=-INT_MAX;
@@ -1512,11 +1512,11 @@ bool Building::subscribeToBringRessourcesStep()
 			}
 			int distUnitRessource;
 			int nr;
-			for (nr=0; nr<MAX_RESSOURCES; nr++)
+			for (nr=0; nr<MAX_RESOURCES; nr++)
 			{
 				if (neededRessource(nr)>0)
 				{
-					if(map->ressourceAvailable(owner->teamNumber, nr, unit->performance[SWIM], unit->posX, unit->posY, &distUnitRessource)) //to fill distUnitRessource
+					if(map->resourceAvailable(owner->teamNumber, nr, unit->performance[SWIM], unit->posX, unit->posY, &distUnitRessource)) //to fill distUnitRessource
 						break;
 					else
 						continue;
@@ -1528,9 +1528,9 @@ bool Building::subscribeToBringRessourcesStep()
 				continue;
 			}
 			int rightRes=(((r>=0) && neededRessource(r))?1:0);
-			if(rightRes==1 && (unit->hungry-unit->trigHungry)/unit->race->hungryness/2<dist)
+			if(rightRes==1 && (unit->hungry-unit->trigHungry)/unit->race->hungriness/2<dist)
 				continue;
-			else if(rightRes!=1 && (unit->hungry-unit->trigHungry)/unit->race->hungryness/2<(dist+distUnitRessource))
+			else if(rightRes!=1 && (unit->hungry-unit->trigHungry)/unit->race->hungriness/2<(dist+distUnitRessource))
 				continue;
 			int noRes=(r<0?1:0);
 			int wrongRes=(((r>=0) && !neededRessource(r))?1:0);
@@ -1584,7 +1584,7 @@ bool Building::subscribeToBringRessourcesStep()
 				else
 				{
 					int distBuilding=0;
-					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 					bool canSwim=unit->performance[SWIM];
 					if(!map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
 					{
@@ -1596,12 +1596,12 @@ bool Building::subscribeToBringRessourcesStep()
 					}
 					else
 					{
-						int unitr = unit->carriedRessource;
-						if((unitr>=0) && neededRessource(unitr))
+						int unitR = unit->carriedResource;
+						if((unitR>=0) && neededResource(unitR))
 						{
 							possibleUnits[n] = unit;
 							distances[n] = distBuilding;
-							resource[n] = unitr;
+							resource[n] = unitR;
 						}
 						else
 						{
@@ -1613,9 +1613,9 @@ bool Building::subscribeToBringRessourcesStep()
 							bool fruitFoundTooFar=false;
 							int x=unit->posX;
 							int y=unit->posY;
-							for(int r=0; r<MAX_NB_RESSOURCES; ++r)
+							for(int r=0; r<MAX_NB_RESOURCES; ++r)
 							{
-								int need = neededRessource(r);
+								int need = neededResource(r);
 								if(need>0)
 								{
 									if(r<BASIC_COUNT)
@@ -1623,7 +1623,7 @@ bool Building::subscribeToBringRessourcesStep()
 									else
 										fruitFound=true;
 									int distResource = 0;
-									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distResource))
+									if (map->resourceAvailable(teamNumber, r, canSwim, x, y, &distResource))
 									{
 										if(distResource<timeLeft)
 										{
@@ -1683,9 +1683,9 @@ bool Building::subscribeToBringRessourcesStep()
 			if(unit==NULL)
 				continue;
 
-			int r=unit->carriedRessource;
-			int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-			if ((r>=0) && neededRessource(r))
+			int r=unit->carriedResource;
+			int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
+			if ((r>=0) && neededResource(r))
 			{
 				int dist = distances[n];
 				int value=dist-(timeLeft>>1);
@@ -1700,7 +1700,7 @@ bool Building::subscribeToBringRessourcesStep()
 			}
 		}
 
-		//Second: we look for an unit who is not carying a ressource:
+		//Second: we look for an unit who is not carrying a resource:
 		if (choosen==NULL)
 		{
 			for(int n=0; n<Unit::MAX_COUNT; ++n)
@@ -1709,7 +1709,7 @@ bool Building::subscribeToBringRessourcesStep()
 				if(unit==NULL)
 					continue;
 
-				if (unit->carriedRessource<0)
+				if (unit->carriedResource<0)
 				{
 					int r = resource[n];
 					int value=distances[n];
@@ -1734,8 +1734,8 @@ bool Building::subscribeToBringRessourcesStep()
 				if(unit==NULL)
 					continue;
 
-				int r2=unit->carriedRessource;
-				if ((r2>=0) && !neededRessource(r2))
+				int r2=unit->carriedResource;
+				if ((r2>=0) && !neededResource(r2))
 				{
 					int r = resource[n];
 					int value=distances[n];
@@ -1832,11 +1832,11 @@ bool Building::subscribeForFlagingStep()
 					else
 					{
 						int distBuilding=0;
-						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 						timeLeft*=timeLeft;
-						int directdist=owner->map->warpDistSquare(unit->posX, unit->posY, posX, posY);
+						int directDist=owner->map->warpDistSquare(unit->posX, unit->posY, posX, posY);
 						bool canSwim=unit->performance[SWIM];
-						if(type->zonable[EXPLORER] && timeLeft < directdist)
+						if(type->zonable[EXPLORER] && timeLeft < directDist)
 						{
 							unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
 						}
@@ -1848,14 +1848,14 @@ bool Building::subscribeForFlagingStep()
 						{
 							unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
 						}
-						else if(type->zonable[WORKER] && anyRessourceToClear[canSwim]==2)
+						else if(type->zonable[WORKER] && anyResourceToClear[canSwim]==2)
 						{
 							unitsFailingRequirements[UnitCantAccessResource] += 1;
 						}
 						else
 						{
 							if(type->zonable[EXPLORER])
-								distances[n]=directdist;
+								distances[n]=directDist;
 							else
 								distances[n]=distBuilding;
 							possibleUnits[n]=unit;
@@ -1882,7 +1882,7 @@ bool Building::subscribeForFlagingStep()
 					if(unit==NULL)
 						continue;
 
-					int timeLeft=unit->hungry/unit->race->hungryness;
+					int timeLeft=unit->hungry/unit->race->hungriness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					timeLeft*=timeLeft;
 					hp*=hp;
@@ -1907,11 +1907,11 @@ bool Building::subscribeForFlagingStep()
 					if(unit==NULL)
 						continue;
 
-					int timeLeft=unit->hungry/unit->race->hungryness;
+					int timeLeft=unit->hungry/unit->race->hungriness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist = distances[n];
 					int value=dist-2*timeLeft-2*hp;
-					//We want to maximize the attack level, use higher level soldeirs first
+					//We want to maximize the attack level, use higher level soldiers first
 					int level=unit->performance[ATTACK_SPEED]*unit->getRealAttackStrength();
 					if ((level > maxLevel) || (level==maxLevel && value<minValue))
 					{
@@ -1929,7 +1929,7 @@ bool Building::subscribeForFlagingStep()
 					if(unit==NULL)
 						continue;
 
-					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist = distances[n];
 					int value=dist-timeLeft-hp;
@@ -1979,7 +1979,7 @@ void Building::swarmStep(void)
 	if (hp<type->hpMax)
 		hp++;
 	assert(NB_UNIT_TYPE==3);
-	if ((ressources[CORN]>=type->ressourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
+	if ((resources[CORN]>=type->resourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
 		productionTimeout--;
 
 	if (productionTimeout<0)
@@ -2021,7 +2021,7 @@ void Building::swarmStep(void)
 			Unit * u=owner->game->addUnit(posX, posY, owner->teamNumber, minType, 0, 0, dx, dy);
 			if (u)
 			{
-				ressources[CORN]-=type->ressourceForOneUnit;
+				resources[CORN]-=type->resourceForOneUnit;
 				updateCallLists();
 
 				u->activity=Unit::ACT_RANDOM;
@@ -2053,9 +2053,9 @@ void Building::swarmStep(void)
 void Building::turretStep(Uint32 stepCounter)
 {
 	// create bullet from stones in stock
-	if (ressources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
+	if (resources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
 	{
-		ressources[STONE]--;
+		resources[STONE]--;
 		bullets += type->multiplierStoneToBullets;
 
 		// we need to be stone-feeded
@@ -2065,7 +2065,7 @@ void Building::turretStep(Uint32 stepCounter)
 	// compute cooldown
 	if (shootingCooldown > 0)
 	{
-		shootingCooldown -= type->shootRythme;
+		shootingCooldown -= type->shootRhythm;
 		return;
 	}
 
@@ -2171,20 +2171,20 @@ void Building::turretStep(Uint32 stepCounter)
 							if (testUnit->typeNum == WARRIOR)
 							{
 								int targetOffense = (testUnit->getRealAttackStrength() * testUnit->performance[ATTACK_SPEED]); // 88 to 1024
-								int targetWeakeness = 0; // 0 to 512
+								int targetWeakness = 0; // 0 to 512
 								if (testUnit->hp > 0)
 								{
 									if (testUnit->hp < type->shootDamage) // hahaha, how mean!
-										targetWeakeness = 512;
+										targetWeakness = 512;
 									else
-										targetWeakeness = 256 / testUnit->hp;
+										targetWeakness = 256 / testUnit->hp;
 								}
 								int targetProximity = 0; // 0 to 512
 								if (i <= 0)
 									targetProximity = 512;
 								else
 									targetProximity = (256 / i);
-								int targetScore = targetOffense + targetWeakeness + targetProximity;
+								int targetScore = targetOffense + targetWeakness + targetProximity;
 								// lower scores are overriden
 								if (targetScore > bestScore)
 								{
@@ -2305,7 +2305,7 @@ void Building::turretStep(Uint32 stepCounter)
 
 		assert(dpx);
 		assert(dpy);
-		if (abs(dpx)>abs(dpy)) //we avoid a square root, since all ditances are squares lengthed.
+		if (abs(dpx)>abs(dpy)) //we avoid a square root, since all distances are squares length.
 		{
 			mdp=abs(dpx);
 			speedX=((dpx*type->shootSpeed)/(mdp<<8));
@@ -2342,9 +2342,9 @@ void Building::clearingFlagStep()
 {
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 		for (int canSwim=0; canSwim<2; canSwim++)
-			if (localRessourcesCleanTime[canSwim]++>125) // Update every 5[s]
+			if (localResourcesCleanTime[canSwim]++>125) // Update every 5[s]
 			{
-				if (!owner->map->updateLocalRessources(this, canSwim))
+				if (!owner->map->updateLocalResources(this, canSwim))
 				{
 					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 						(*it)->standardRandomActivity();
@@ -2410,7 +2410,7 @@ void Building::kill(void)
 		{
 			bool good=false;
 			for (int r=0; r<BASIC_COUNT; r++)
-				if (ressources[r]>0)
+				if (resources[r]>0)
 				{
 					good=true;
 					break;
@@ -2495,25 +2495,25 @@ void Building::removeUnitFromInside(Unit* unit)
 
 
 
-void Building::updateRessourcesPointer()
+void Building::updateResourcesPointer()
 {
-	if(!type->useTeamRessources)
+	if(!type->useTeamResources)
 	{
-		ressources=localRessource;
+		resources=localResource;
 	}
 	else
 	{
-		ressources=owner->teamRessources;
+		resources=owner->teamResources;
 	}
 }
 
 
 
-void Building::addRessourceIntoBuilding(int ressourceType)
+void Building::addResourceIntoBuilding(int resourceType)
 {
-	ressources[ressourceType]+=type->multiplierRessource[ressourceType];
+	resources[resourceType]+=type->multiplierResource[resourceType];
 	//You can not exceed the maximum amount
-	ressources[ressourceType] = std::min(ressources[ressourceType], type->maxRessource[ressourceType]);
+	resources[resourceType] = std::min(resources[resourceType], type->maxResource[resourceType]);
 	switch (constructionResultState)
 	{
 		case NO_CONSTRUCTION:
@@ -2528,10 +2528,10 @@ void Building::addRessourceIntoBuilding(int ressourceType)
 
 		case REPAIR:
 		{
-			int totRessources=0;
-			for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-				totRessources+=type->maxRessource[i];
-			hp += type->hpMax/totRessources;
+			int totResources=0;
+			for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
+				totResources+=type->maxResource[i];
+			hp += type->hpMax/totResources;
 			hp = std::min(hp, type->hpMax);
 		}
 		break;
@@ -2544,10 +2544,10 @@ void Building::addRessourceIntoBuilding(int ressourceType)
 
 
 
-void Building::removeRessourceFromBuilding(int ressourceType)
+void Building::removeResourceFromBuilding(int resourceType)
 {
-	ressources[ressourceType]-=type->multiplierRessource[ressourceType];
-	ressources[ressourceType]= std::max(ressources[ressourceType], 0);
+	resources[resourceType]-=type->multiplierResource[resourceType];
+	resources[resourceType]= std::max(resources[resourceType], 0);
 	updateCallLists();
 }
 
@@ -2629,7 +2629,7 @@ void Building::checkGroundExitQuality(
 	{
 		if (owner->map->isFreeForGroundUnit(extraTestX, extraTestY, canSwim, me))
 			oldQuality++;
-		if (owner->map->isRessource(testX, testY-1))
+		if (owner->map->isResource(testX, testY-1))
 		{
 			if (exitQuality<1+oldQuality)
 			{
@@ -2704,16 +2704,16 @@ void Building::computeFlagStatLocal(int *goingTo, int *onSpot)
 
 Uint32 Building::eatOnce(Uint32 *mask)
 {
-	ressources[CORN]--;
-	assert(ressources[CORN]>=0);
+	resources[CORN]--;
+	assert(resources[CORN]>=0);
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
 	for (int i=0; i<HAPPYNESS_COUNT; i++)
 	{
 		int resId=i+HAPPYNESS_BASE;
-		if (ressources[resId])
+		if (resources[resId])
 		{
-			ressources[resId]--;
+			resources[resId]--;
 			fruitMask|=(1<<i);
 			fruitCount++;
 		}
@@ -2726,11 +2726,11 @@ Uint32 Building::eatOnce(Uint32 *mask)
 int Building::availableHappynessLevel()
 {
 	int inside = (int)unitsInside.size();
-	if (ressources[CORN] <= inside)
+	if (resources[CORN] <= inside)
 		return 0;
 	int happyness = 1;
 	for (int i = 0; i < HAPPYNESS_COUNT; i++)
-		if (ressources[i + HAPPYNESS_BASE]  >inside)
+		if (resources[i + HAPPYNESS_BASE]  >inside)
 			happyness++;
 	return happyness;
 }
@@ -2740,7 +2740,7 @@ bool Building::canConvertUnit(void)
 	assert(type->canFeedUnit);
 	return
 			canNotConvertUnitTimer<=0 &&
-			((int)unitsInside.size()<ressources[CORN]) && 
+			((int)unitsInside.size()<resources[CORN]) && 
 			((int)unitsInside.size()<maxUnitInside);
 }
 
@@ -2835,8 +2835,8 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [14]
 
-	for (int i=0; i<MAX_RESSOURCES; i++)
-		cs^=localRessource[i];
+	for (int i=0; i<MAX_RESOURCES; i++)
+		cs^=localResource[i];
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [15]
 	cs=(cs<<31)|(cs>>1);

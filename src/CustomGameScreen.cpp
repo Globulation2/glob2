@@ -182,9 +182,9 @@ bool CustomGameScreen::isActive(int i)
 
 
 
-AI::ImplementitionID CustomGameScreen::getAiImplementation(int i)
+AI::ImplementationID CustomGameScreen::getAiImplementation(int i)
 {
-	return (AI::ImplementitionID)aiSelector[i]->getIndex();
+	return (AI::ImplementationID)aiSelector[i]->getIndex();
 }
 
 
@@ -213,8 +213,8 @@ void CustomGameScreen::updatePlayers()
 			}
 			else
 			{
-				AI::ImplementitionID iid=getAiImplementation(i);
-				FormatableString name("%0 %1");
+				AI::ImplementationID iid=getAiImplementation(i);
+				FormattableString name("%0 %1");
 				name.arg(AINames::getAIText(iid)).arg(i-1);
 				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
 				if(teamColor != humanColor)

@@ -264,13 +264,13 @@ int AINumbi::estimateFood(Building *building)
 {
 	int rx, ry, dist;
 	bool found;
-	if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
+	if (map->resourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY-1, &rx, &ry, &dist))
+	else if (map->resourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY-1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY+building->type->height+1, &rx, &ry, &dist))
+	else if (map->resourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY+building->type->height+1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
+	else if (map->resourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
 		found=true;
 	else
 		found=false;
@@ -288,14 +288,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessourceTakeable(rx+i, ry, CORN)||map->isRessourceTakeable(rx+i, ry-1, CORN))
+			if (map->isResourceTakeable(rx+i, ry, CORN)||map->isResourceTakeable(rx+i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		rxr=rx+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessourceTakeable(rx-i, ry, CORN)||map->isRessourceTakeable(rx-i, ry-1, CORN))
+			if (map->isResourceTakeable(rx-i, ry, CORN)||map->isResourceTakeable(rx-i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
@@ -305,14 +305,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessourceTakeable(rx, ry+i, CORN)||map->isRessourceTakeable(rx-1, ry+i, CORN))
+			if (map->isResourceTakeable(rx, ry+i, CORN)||map->isResourceTakeable(rx-1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessourceTakeable(rx, ry-i, CORN)||map->isRessourceTakeable(rx-1, ry-i, CORN))
+			if (map->isResourceTakeable(rx, ry-i, CORN)||map->isResourceTakeable(rx-1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -323,14 +323,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessourceTakeable(rx, ry+i, CORN)||map->isRessourceTakeable(rx+1, ry+i, CORN))
+			if (map->isResourceTakeable(rx, ry+i, CORN)||map->isResourceTakeable(rx+1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessourceTakeable(rx, ry-i, CORN)||map->isRessourceTakeable(rx+1, ry-i, CORN))
+			if (map->isResourceTakeable(rx, ry-i, CORN)||map->isResourceTakeable(rx+1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -340,13 +340,13 @@ int AINumbi::estimateFood(Building *building)
 		w=0;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessourceTakeable(rx+i, ry, CORN)||map->isRessourceTakeable(rx+i, ry+1, CORN))
+			if (map->isResourceTakeable(rx+i, ry, CORN)||map->isResourceTakeable(rx+i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		hole=2;
 		for (i=0; i<32; i++)
-			if (map->isRessourceTakeable(rx-i, ry, CORN)||map->isRessourceTakeable(rx-i, ry+1, CORN))
+			if (map->isResourceTakeable(rx-i, ry, CORN)||map->isResourceTakeable(rx-i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
@@ -730,7 +730,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 				if ((valid>299)&&(game->checkRoomForBuilding(px, py, bt, player->team->teamNumber)))
 				{
 					int rx, ry, dist;
-					bool nr=map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
+					bool nr=map->resourceAvailableUpdate(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
 					if (nr)
 					{
 						//int dist=map->warpDistSquare(px+1, py+1, rx, ry);

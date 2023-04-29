@@ -102,7 +102,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[Team::MAX_COUN
 
 	if (type>=P_AI)
 	{
-		ai=new AI((AI::ImplementitionID)(type-P_AI), this);
+		ai=new AI((AI::ImplementationID)(type-P_AI), this);
 	}
 	else if(type==P_NONE)
 	{
@@ -194,7 +194,7 @@ void Player::save(GAGCore::OutputStream  *stream)
 
 
 
-void Player::makeItAI(AI::ImplementitionID aiType)
+void Player::makeItAI(AI::ImplementationID aiType)
 {
 	BasePlayer::makeItAI(aiType);
 	if(ai)

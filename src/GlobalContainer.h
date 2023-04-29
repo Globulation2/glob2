@@ -83,8 +83,8 @@ public:
 	Sprite *terrainCloud;
 	Sprite *terrainBlack;
 	Sprite *terrainShader;
-	Sprite *ressources;
-	Sprite *ressourceMini;
+	Sprite *resources;
+	Sprite *resourceMini;
 	Sprite *areaClearing;
 	Sprite *areaForbidden;
 	Sprite *areaGuard;
@@ -92,10 +92,10 @@ public:
 	Sprite *bulletExplosion;
 	Sprite *deathAnimation;
 	Sprite *units;
-	Sprite *unitmini;
-	Sprite *gamegui;
+	Sprite *unitMini;
+	Sprite *gameGui;
 	Sprite *brush;
-	Sprite *magiceffect;
+	Sprite *magicEffect;
 	Sprite *particles;
 	
 	UnitsSkins *unitsSkins;
@@ -109,7 +109,7 @@ public:
 #ifndef YOG_SERVER_ONLY
 	BuildingsTypes buildingsTypes;
 #endif  // !YOG_SERVER_ONLY
-	RessourcesTypes ressourcesTypes;
+	ResourcesTypes resourcesTypes;
 
 	std::string videoshotName; //!< the name of videoshot to record. If empty, do not record videoshot
 	bool runNoX;

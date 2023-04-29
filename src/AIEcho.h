@@ -49,7 +49,7 @@ namespace AIEcho
 			class Building;
 			class AnyTeamBuilding;
 			class AnyBuilding;
-			class Ressource;
+			class Resource;
 			class AnyRessource;
 			class Water;
 		};
@@ -242,13 +242,13 @@ namespace AIEcho
 				bool under_construction;
 			};
 
-			///Matches a particular ressource type
-			class Ressource : public Entity
+			///Matches a particular resource type
+			class Resource : public Entity
 			{
 			public:
-				explicit Ressource(int ressource_type);
+				explicit Resource(int ressource_type);
 			protected:
-				Ressource() : ressource_type(-1) {}
+				Resource() : ressource_type(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
@@ -260,7 +260,7 @@ namespace AIEcho
 				int ressource_type;
 			};
 
-			///Matches any ressource type
+			///Matches any resource type
 			class AnyRessource : public Entity
 			{
 			public:
@@ -395,7 +395,7 @@ namespace AIEcho
 
 		///The gradient manager is a very important part of the system, just like the gradient itself is. The gradient manager takes upon the task
 		///of managing and updating various gradients in the game. It returns a matching gradient when provided a GradientInfo.
-		///This object is shared among all Echo AI's, which means gradients that aren't specific to a particular team (such as most Ressource
+		///This object is shared among all Echo AI's, which means gradients that aren't specific to a particular team (such as most Resource
 		///gradients) don't have to be recalculated for every Echo AI seperately. This saves allot of cpu time when their are multiple Echo AI's.
 		class GradientManager
 		{
@@ -1023,7 +1023,7 @@ namespace AIEcho
 			void save(GAGCore::OutputStream *stream);
 		};
 
-		///This class compares the total amount of ressources recorded by a ressource tracker.
+		///This class compares the total amount of ressources recorded by a resource tracker.
 		class RessourceTrackerAmount : public BuildingCondition
 		{
 		public:
@@ -1045,7 +1045,7 @@ namespace AIEcho
 			int tracker_method;
 		};
 
-		///This class compares the age provided by a ressource tracker 
+		///This class compares the age provided by a resource tracker 
 		class RessourceTrackerAge : public BuildingCondition
 		{
 		public:
@@ -1190,19 +1190,19 @@ namespace AIEcho
 		};
 
 
-		///A ressource tracker is generally used for management, like most other things. A ressource trackers job is to keep
+		///A resource tracker is generally used for management, like most other things. A resource trackers job is to keep
 		///track of the number of ressources in a particular building, and returning averages over a small period of time.
-		///Its better to use a ressource tracker than getting the ressource amounts directly, because a ressource tracker
+		///Its better to use a resource tracker than getting the resource amounts directly, because a resource tracker
 		///returns trends, and small anomalies like an Inn running out of food for only a second don't impact its result greatly.
 		class RessourceTracker
 		{
 		public:
 			RessourceTracker(Echo& echo, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : echo(echo)
 				{ load(stream, player, versionMinor);  }
-			RessourceTracker(Echo& echo, int building_id, int length, int ressource);
+			RessourceTracker(Echo& echo, int building_id, int length, int resource);
 			///Returns the total ressources the building possessed within the time frame
 			int get_total_level();
-			///Returns the number of ticks the ressource tracker has been tracking.
+			///Returns the number of ticks the resource tracker has been tracking.
 			int get_age();
 		private:
 			friend class AIEcho::Echo;
@@ -1215,15 +1215,15 @@ namespace AIEcho
 			int length;
 			Echo& echo;
 			int building_id;
-			int ressource;
+			int resource;
 		};
 
-		///This adds a ressource tracker to a building
+		///This adds a resource tracker to a building
 		class AddRessourceTracker : public ManagementOrder
 		{
 		public:
-			AddRessourceTracker(int length, int ressource, int building_id);
-			AddRessourceTracker() : length(0), building_id(0), ressource(0) {}
+			AddRessourceTracker(int length, int resource, int building_id);
+			AddRessourceTracker() : length(0), building_id(0), resource(0) {}
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -1232,10 +1232,10 @@ namespace AIEcho
 			void save(GAGCore::OutputStream *stream);
 			int length;
 			int building_id;
-			int ressource;
+			int resource;
 		};
 
-		///This pauses a ressource tracker. This is mainly done when a building is about to be upgraded.
+		///This pauses a resource tracker. This is mainly done when a building is about to be upgraded.
 		class PauseRessourceTracker : public ManagementOrder
 		{
 		public:
@@ -1250,7 +1250,7 @@ namespace AIEcho
 			int building_id;
 		};
 
-		///This unpauses a ressource tracker. This should be done when a building is done being upgraded.
+		///This unpauses a resource tracker. This should be done when a building is done being upgraded.
 		class UnPauseRessourceTracker : public ManagementOrder
 		{
 		public:

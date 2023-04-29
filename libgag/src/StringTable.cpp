@@ -182,7 +182,7 @@ namespace GAGCore
 			bool lcwp=false;
 			int baseCount=0;
 			const std::string &s = it->first;
-			// we check that we only have valid format (from a FormatableString point of view)...
+			// we check that we only have valid format (from a FormattableString point of view)...
 			for (size_t j=0; j<s.length(); j++)
 			{
 				char c = s[j];

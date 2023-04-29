@@ -37,7 +37,7 @@ void BrushTool::draw(int x, int y)
 		globalContainer->gfx->drawSprite(x+16, y, globalContainer->brush, 0);
 		globalContainer->gfx->drawSprite(x+64+16, y, globalContainer->brush, 1);
 		if (mode)
-			globalContainer->gfx->drawSprite(x+(static_cast<int>(mode)-1)*64+16, y, globalContainer->gamegui, 22);
+			globalContainer->gfx->drawSprite(x+(static_cast<int>(mode)-1)*64+16, y, globalContainer->gameGui, 22);
 	}
 	for (unsigned i=0; i<8; i++)
 	{
@@ -45,7 +45,7 @@ void BrushTool::draw(int x, int y)
 		int decY = 32*(i/4)+36;
 		globalContainer->gfx->drawSprite(x+decX, y+decY, globalContainer->brush, 2+i);
 		if ((mode != MODE_NONE) && (figure == i))
-			globalContainer->gfx->drawSprite(x+decX, y+decY, globalContainer->gamegui, 22);
+			globalContainer->gfx->drawSprite(x+decX, y+decY, globalContainer->gameGui, 22);
 	}
 }
 
