@@ -1003,7 +1003,27 @@ void Game::integrity(void)
 			{
 				int tid = Building::GIDtoTeam(c.building);
 				assert(teams[tid]);
-				assert(teams[tid]->myBuildings[Building::GIDtoID(c.building)]);
+				int bid = Building::GIDtoID(c.building);
+				const auto building = teams[tid]->myBuildings[bid];
+				assert(building);
+				#define assertBuildingCoord(expr, coordL, coordH) \
+					if (!(expr)) { \
+						std::cerr << "Invalid coordinate " << #coordH << "=" << coordL \
+							<< " for team " << tid \
+							<< " building " << bid \
+							<< " (" << building->type->type << ")" \
+							<< " with " << #coordH \
+							<< " span [" << building->pos ## coordH << ":" << buildingEnd ## coordH << "[" \
+							<< std::endl; \
+						assert(false); \
+					}
+
+				const auto buildingEndX = building->posX + building->type->width;
+				assertBuildingCoord(x >= building->posX || x < (buildingEndX & map.wMask), x, X);
+				assertBuildingCoord(x < buildingEndX, x, X);
+				const auto buildingEndY = building->posY + building->type->height;
+				assertBuildingCoord(y >= building->posY || y < (buildingEndY & map.hMask), y, Y);
+				assertBuildingCoord(y < buildingEndY, y, Y);
 			}
 			if (c.groundUnit != NOGUID)
 			{
