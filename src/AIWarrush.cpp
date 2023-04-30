@@ -403,7 +403,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 	{
 		//This is basically a way to change all the swarms without bothering to remember
 		//anything. (It can only issue one order per tick, so it has to do it over several
-		//ticks and calculate the orders seperately.)
+		//ticks and calculate the orders separately.)
 		Building *out_of_date_swarm = getSwarmWithoutSettings(4,1,3);
 		if(out_of_date_swarm)
 		{
@@ -440,15 +440,15 @@ boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 			if(map->isGuardArea(x,y,team->me))
 			{
 				bool keep = false;
-				for(int xmod=-1;xmod<=1;xmod++)
+				for(int xMod=-1;xMod<=1;xMod++)
 				{
-					for(int ymod=-1;ymod<=1;ymod++)
+					for(int yMod=-1;yMod<=1;yMod++)
 					{
 						//if there's a building...
-						if(map->getBuilding(x+xmod,y+ymod)!=NOGBID)
+						if(map->getBuilding(x+xMod,y+yMod)!=NOGBID)
 						{
 							//...AND it's an enemy building...
-							if(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)
+							if(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(x+xMod,y+yMod))]->me)
 							{
 								//...then we still want it guarded.
 								keep=true;
@@ -591,20 +591,20 @@ boost::shared_ptr<Order> AIWarrush::farm()
 			{
 				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
 				{
-					for(int xmod=-1;xmod<=1;xmod++)
+					for(int xMod=-1;xMod<=1;xMod++)
 					{
-						for(int ymod=-1;ymod<=1;ymod++)
+						for(int yMod=-1;yMod<=1;yMod++)
 						{
-							if(map->isResourceTakeable(x+xmod, y+ymod, CORN)
-									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
-									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
+							if(map->isResourceTakeable(x+xMod, y+yMod, CORN)
+									|| (map->getBuilding(x+xMod,y+yMod)!=NOGBID
+									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xMod,y+yMod))]->me)))
 							{
 								clr_add_acc.applyBrush(BrushApplication(x, y, 0), map);
-								goto doublebreak;
+								goto doubleBreak;
 							}
 						}
 					}
-					doublebreak:
+					doubleBreak:
 					/*statement for label to point to*/;
 				}
 			}

@@ -127,7 +127,7 @@ namespace AIEcho
 
 namespace AIEcho
 {
-	///A position on a map. Simple x and y cordinates, and a comparison operator for stoarge and maps and sets
+	///A position on a map. Simple x and y coordinates, and a comparison operator for storage and maps and sets
 	class position
 	{
 	public:
@@ -170,7 +170,7 @@ namespace AIEcho
 				virtual ~Entity(){}
 				friend class AIEcho::Gradients::GradientInfo;
 			protected:
-				virtual bool is_entity(Map* map, int posx, int posy)=0;
+				virtual bool is_entity(Map* map, int posX, int posY)=0;
 				///The comparison operator is used to reference gradients by the entities and sources that was use to compute them
 				virtual bool operator==(const Entity& rhs)=0;
 
@@ -193,7 +193,7 @@ namespace AIEcho
 			protected:
 				Building() : building_type(-1), team(-1), under_construction(false) {}
 				friend class Entity;
-				bool is_entity(Map* map, int posx, int posy);
+				bool is_entity(Map* map, int posX, int posY);
 				bool operator==(const Entity& rhs);
 				bool can_change();
 				EntityType get_type();
@@ -205,7 +205,7 @@ namespace AIEcho
 				bool under_construction;
 			};
 
-			///Matches any building of a particular team and consruction state
+			///Matches any building of a particular team and construction state
 			class AnyTeamBuilding : public Entity
 			{
 			public:
@@ -213,7 +213,7 @@ namespace AIEcho
 			protected:
 				AnyTeamBuilding() : team(-1), under_construction(false) {}
 				friend class Entity;
-				bool is_entity(Map* map, int posx, int posy);
+				bool is_entity(Map* map, int posX, int posY);
 				bool operator==(const Entity& rhs);
 				bool can_change();
 				EntityType get_type();
@@ -232,7 +232,7 @@ namespace AIEcho
 			protected:
 				AnyBuilding() : under_construction(false) {}
 				friend class Entity;
-				bool is_entity(Map* map, int posx, int posy);
+				bool is_entity(Map* map, int posX, int posY);
 				bool operator==(const Entity& rhs);
 				bool can_change();
 				EntityType get_type();
@@ -250,7 +250,7 @@ namespace AIEcho
 			protected:
 				Resource() : resource_type(-1) {}
 				friend class Entity;
-				bool is_entity(Map* map, int posx, int posy);
+				bool is_entity(Map* map, int posX, int posY);
 				bool operator==(const Entity& rhs);
 				bool can_change();
 				EntityType get_type();
@@ -267,7 +267,7 @@ namespace AIEcho
 				AnyResource();
 			protected:
 				friend class Entity;
-				bool is_entity(Map* map, int posx, int posy);
+				bool is_entity(Map* map, int posX, int posY);
 				bool operator==(const Entity& rhs);
 				bool can_change();
 				EntityType get_type();
@@ -282,7 +282,7 @@ namespace AIEcho
 				Water();
 			protected:
 				friend class Entity;
-				bool is_entity(Map* map, int posx, int posy);
+				bool is_entity(Map* map, int posX, int posY);
 				bool operator==(const Entity& rhs);
 				bool can_change();
 				EntityType get_type();
@@ -298,7 +298,7 @@ namespace AIEcho
 			protected:
 				Position() : x(-1), y(-1) {}
 				friend class Entity;
-				bool is_entity(Map* map, int posx, int posy);
+				bool is_entity(Map* map, int posX, int posY);
 				bool operator==(const Entity& rhs);
 				bool can_change();
 				EntityType get_type();
@@ -315,7 +315,7 @@ namespace AIEcho
 				Sand();
 			protected:
 				friend class Entity;
-				bool is_entity(Map* map, int posx, int posy);
+				bool is_entity(Map* map, int posX, int posY);
 				bool operator==(const Entity& rhs);
 				bool can_change();
 				EntityType get_type();
@@ -324,7 +324,7 @@ namespace AIEcho
 			};
 		};
 
-		///The gradient info class is used to hold the information about sources and obstacles taht are used to compute a gradient
+		///The gradient info class is used to hold the information about sources and obstacles that are used to compute a gradient
 		class GradientInfo
 		{
 		public:
@@ -347,11 +347,11 @@ namespace AIEcho
 			void save(GAGCore::OutputStream *stream);
 
 			///Returns true if the provided position matches any of the sources that where added
-			bool match_source(Map* map, int posx, int posy);
+			bool match_source(Map* map, int posX, int posY);
 			///Returns true if the provided position matches any of the obstacles that where added
-			bool match_obstacle(Map* map, int posx, int posy);
+			bool match_obstacle(Map* map, int posX, int posY);
 			///Returns true if this GradientInfo has any entities that can change, causing it to need to be updated.
-			///This is an optmization, as many gradients don't need to be update
+			///This is an optimization, as many gradients don't need to be update
 			bool needs_updating() const;
 
 			bool operator==(const GradientInfo& rhs) const;
@@ -371,14 +371,14 @@ namespace AIEcho
 
 
 		///A generic, all purpose gradient. The gradient is referenced by its GradientInfo, which it uses continually in its computation.
-		///Echo gradients are probably the slowest gradients in the game. However, they have one key difference compared to other gradinents,
+		///Echo gradients are probably the slowest gradients in the game. However, they have one key difference compared to other gradients,
 		///they can be shared, and they are generic, even more so than Nicowar gradients (which where decently generic, but not entirely).
 		class Gradient
 		{
 		public:
 			explicit Gradient(const GradientInfo& gi);
 			///Gets the distance of the provided position from the nearest source
-			int get_height(int posx, int posy) const;
+			int get_height(int posX, int posY) const;
 		private:
 			friend class AIEcho::Gradients::GradientManager;
 
@@ -396,12 +396,12 @@ namespace AIEcho
 		///The gradient manager is a very important part of the system, just like the gradient itself is. The gradient manager takes upon the task
 		///of managing and updating various gradients in the game. It returns a matching gradient when provided a GradientInfo.
 		///This object is shared among all Echo AI's, which means gradients that aren't specific to a particular team (such as most Resource
-		///gradients) don't have to be recalculated for every Echo AI seperately. This saves allot of cpu time when their are multiple Echo AI's.
+		///gradients) don't have to be recalculated for every Echo AI separately. This saves allot of cpu time when their are multiple Echo AI's.
 		class GradientManager
 		{
 		public:
 			explicit GradientManager(Map* map);
-			///A simple function, returns the Gradient that matches the GradientInfo. Its garunteed to be up to date within the last 150 ticks.
+			///A simple function, returns the Gradient that matches the GradientInfo. It's guaranteed to be up to date within the last 150 ticks.
 			///If a matching gradient isn't found, a new one is created. 150 ticks may sound like a large amount of leeway, however, most
 			///gradients are updated sooner than that. As well, at normal game speed, 150 ticks is only 6 seconds, and you can count it yourself,
 			///not much changes in the game in six seconds.
@@ -543,7 +543,7 @@ namespace AIEcho
 
 		///This constraint doesn't use gradients, unlike the other ones. In particular, it only allows one
 		///position to be allowed, the center of the building with the provided GBID. Notice this is not
-		///like other building ID's, it can only be obtained with enemy_building_iterator or a similair
+		///like other building ID's, it can only be obtained with enemy_building_iterator or a similar
 		///method.
 		class CenterOfBuilding : public Constraint
 		{
@@ -563,15 +563,15 @@ namespace AIEcho
 		};
 		
 
-		///This constraint, againt unlike the others, does not use gradients. It only allows the given 
+		///This constraint, against unlike the others, does not use gradients. It only allows the given 
 		///position to be allowed. The resulting building will *not* be centered on it except if it is
 		///a 1x1 building
 		class SinglePosition : public Constraint
 		{
 		public:
-			SinglePosition(int posx, int posy);
+			SinglePosition(int posX, int posY);
 		protected:
-			SinglePosition() : posx(0), posy(0) {}
+			SinglePosition() : posX(0), posY(0) {}
 			friend class Constraint;
 			int calculate_constraint(Echo& echo, int x, int y);
 			bool passes_constraint(Echo& echo, int x, int y);
@@ -580,8 +580,8 @@ namespace AIEcho
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
-			int posx;
-			int posy;
+			int posX;
+			int posY;
 		};
 
 
@@ -626,7 +626,7 @@ namespace AIEcho
 			void set_flag(int x, int y, int gid);
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
-			std::vector<int> flagmap;
+			std::vector<int> flagMap;
 			int width;
 			Echo& echo;
 		};
@@ -715,8 +715,8 @@ namespace AIEcho
 			found_iterator end() { return found_buildings.end(); }
 			///The last variables in both of these is simply a "this exists" variable. Its used to combat the fact
 			///that pending_buildings[id] may create a new object, and the system can't tell the difference between it and something
-			///real. So bassically, the last variable is set to true when the object is supposed to be there, false is
-			///the default value if its accidentilly created.
+			///real. So basically, the last variable is set to true when the object is supposed to be there, false is
+			///the default value if its accidentally created.
 			std::map<int, boost::tuple<int, int, int, int> > pending_buildings;
 			std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
 			unsigned int building_id;
@@ -727,7 +727,7 @@ namespace AIEcho
 	};
 
 	///These are all conditions on a particular Building. They are used in several places, such as when counting numbers of buildings, or
-	///for setting a condition on an order to change the number of units assigned, making them very usefull. Its important to note that
+	///for setting a condition on an order to change the number of units assigned, making them very useful. Its important to note that
 	///none of the conditions work on enemies buildings, they only work on buildings on you're own team.
 	namespace Conditions
 	{
@@ -753,7 +753,7 @@ namespace AIEcho
 			friend class EitherCondition;
 			friend class AllConditions;
 			///This function checks if the condition passes. The third state, indeterminate, means that the condition
-			///is impossible to fullfill. For example, a condition on a particular building could never pass if that
+			///is impossible to fulfill. For example, a condition on a particular building could never pass if that
 			///building is destroyed.
 			virtual boost::logic::tribool passes(Echo& echo)=0;
 			virtual ConditionType get_type()=0;
@@ -951,7 +951,7 @@ namespace AIEcho
 			void save(GAGCore::OutputStream *stream);
 		};
 
-		///Similair to BeingUpgraded, but this also takes a level, in which the building is being upgraded
+		///Similar to BeingUpgraded, but this also takes a level, in which the building is being upgraded
 		///to a particular level. When possible, use this instead od combining BeingUpgraded and BuildingLevel
 		class BeingUpgradedTo : public BuildingCondition
 		{
@@ -1121,7 +1121,7 @@ namespace AIEcho
 			///This acts somewhat like a condition tester of its own. Like passes_conditions, this one
 			///checks for the conditions for the management order to execute at all. indeterminate means
 			///that its impossible to execute, false means wait some more and true means ready to execute
-			///For example, the ChangeFlagSize order requires that the building be in existance, and
+			///For example, the ChangeFlagSize order requires that the building be in existence, and
 			///that its a flag.
 			virtual boost::logic::tribool wait(Echo& echo)=0;
 
@@ -1351,7 +1351,7 @@ namespace AIEcho
 		{
 		public:
 			AddArea() {}
-			explicit AddArea(AreaType areatype);
+			explicit AddArea(AreaType areaType);
 			void add_location(int x, int y);
 		protected:
 			void modify(Echo& echo);
@@ -1360,7 +1360,7 @@ namespace AIEcho
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
-			AreaType areatype;
+			AreaType areaType;
 			std::vector<position> locations;
 		};
 
@@ -1371,7 +1371,7 @@ namespace AIEcho
 		{
 		public:
 			RemoveArea() {}
-			explicit RemoveArea(AreaType areatype);
+			explicit RemoveArea(AreaType areaType);
 			void add_location(int x, int y);
 		protected:
 			void modify(Echo& echo);
@@ -1380,7 +1380,7 @@ namespace AIEcho
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
-			AreaType areatype;
+			AreaType areaType;
 			std::vector<position> locations;
 		};
 
@@ -1391,7 +1391,7 @@ namespace AIEcho
 			ChangeAlliances() {}
 			///You pass in a team number, that can be retrieved from enemy_team_iterator or a similar method. Then you pass in modifiers
 			///on each of the possible alliances. If you pass in true, that alliance mode is set. If you pass in false, that alliance
-			///mode is unset. If you pass in undeterminate, that alliance mode is not changed, keeping whatever value it had before.
+			///mode is unset. If you pass in indeterminate, that alliance mode is not changed, keeping whatever value it had before.
 			ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other);
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -1486,7 +1486,7 @@ namespace AIEcho
 			void add_condition(Conditions::BuildingCondition* condition);
 			///This counts up all the buildings that satisfy the conditions
 			int count_buildings();
-			///Returns the begininng iterator
+			///Returns the beginning iterator
 			building_search_iterator begin();
 			///Returns the one-past-the-end iterator
 			building_search_iterator end();
@@ -1498,7 +1498,7 @@ namespace AIEcho
 		};
 
 		///This class is a standard iterator that is used to iterate over teams that qualify as "enemies".
-		///It returns an integer corrosponding to the teams id. 
+		///It returns an integer corresponding to the teams id. 
 		class enemy_team_iterator
 		{
 		public:
@@ -1625,7 +1625,7 @@ namespace AIEcho
 	class Echo : public AIImplementation
 	{
 	public:
-		Echo(EchoAI* echoai, Player* player);
+		Echo(EchoAI* echoAi, Player* player);
 		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 		void save(GAGCore::OutputStream *stream);
 
@@ -1671,7 +1671,7 @@ namespace AIEcho
 		void check_fruit();
 
 		std::list<boost::shared_ptr<Order> > orders;
-		boost::shared_ptr<EchoAI> echoai;
+		boost::shared_ptr<EchoAI> echoAi;
 		boost::shared_ptr<Gradients::GradientManager> gm;
 		Construction::BuildingRegister br;
 		Construction::FlagMap fm;

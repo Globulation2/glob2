@@ -40,10 +40,10 @@ class Order;
 /*
 Howto make a new AI ?
 If you want to build a new way AI behave, you have to:
-Add a new Strategy to the AI::ImplementitionID enum.
+Add a new Strategy to the AI::ImplementationID enum.
 Add a new case in the AI::load method.
 Create a subclass of AIImplementation.
-Fill AIImplenetation's methods correctly for that subclass.
+Fill AIImplementation's methods correctly for that subclass.
 
 Warning:
 You have to understand how the Order class is used.
@@ -52,7 +52,7 @@ Never use rand(), always syncRand().
 Be sure to return at least a *NullOrder, not NULL.
 
 Idea:
-You can access usefull data this way:
+You can access useful data this way:
 player
 player->team
 player->team->game

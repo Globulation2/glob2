@@ -52,7 +52,7 @@ public:
 		IntBuildingType::Number shortTypeNum;
 		int amount; // number of buildings wanted
 		bool food; // place closer to wheat of further
-		bool defense; // place at incpoming places.
+		bool defense; // place at incoming places.
 		
 		std::string debugStdName;
 		const char *debugName;
@@ -201,7 +201,7 @@ public:
 	bool strikeTeamSelected;
 	int strikeTeam;
 	
-	bool foodWarning; // true if wwe are aproaching a foodLock
+	bool foodWarning; // true if wwe are approaching a foodLock
 	bool foodLock; // we stop producing any unit until we get more food buildings
 	bool foodSurplus; // we have too many food buildings
 	Uint32 foodLockStats[2];
