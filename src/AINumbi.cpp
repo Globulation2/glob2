@@ -46,8 +46,8 @@ void AINumbi::init(Player *player)
 	phase=0;
 	phaseTime=1024;
 	attackPhase=0;
-	critticalWarriors=20;
-	critticalTime=1024;
+	criticalWarriors=20;
+	criticalTime=1024;
 	attackTimer=0;
 	for (int i=0; i<IntBuildingType::NB_BUILDING; i++)
 		mainBuilding[i]=0;
@@ -77,8 +77,8 @@ bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	phase            = stream->readSint32("phase");
 	attackPhase      = stream->readSint32("attackPhase");
 	phaseTime        = stream->readSint32("phaseTime");
-	critticalWarriors= stream->readSint32("critticalWarriors");
-	critticalTime    = stream->readSint32("critticalTime");
+	criticalWarriors= stream->readSint32("critticalWarriors");
+	criticalTime    = stream->readSint32("critticalTime");
 	attackTimer      = stream->readSint32("attackTimer");
 
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
@@ -100,8 +100,8 @@ void AINumbi::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(phase, "phase");
 	stream->writeSint32(attackPhase, "attackPhase");
 	stream->writeSint32(phaseTime, "phaseTime");
-	stream->writeSint32(critticalWarriors, "critticalWarriors");
-	stream->writeSint32(critticalTime, "critticalTime");
+	stream->writeSint32(criticalWarriors, "critticalWarriors");
+	stream->writeSint32(criticalTime, "critticalTime");
 	stream->writeSint32(attackTimer, "attackTimer");
 
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
@@ -249,7 +249,7 @@ boost::shared_ptr<Order>AINumbi::getOrder(void)
 			case 6:
 				return adjustBuildings(70, 2, 3, IntBuildingType::ATTACK_BUILDING);
 			case 7:
-				return mayAttack(critticalWarriors, critticalTime, 10);
+				return mayAttack(criticalWarriors, criticalTime, 10);
 			case 8:
 				return checkoutExpands(40, 5);
 			case 9:
@@ -387,11 +387,11 @@ int AINumbi::countUnits(const int medicalState)
 	return 0;
 }
 
-boost::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors)
+boost::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int warriors)
 {
 	std::list<Building *> swarms=team->swarms;
 	int ss=swarms.size();
-	Sint32 numberRequested=1+(nbWorkersFator/(ss+1));
+	Sint32 numberRequested=1+(nbWorkersFactor/(ss+1));
 	int nbu=countUnits();
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
@@ -410,14 +410,14 @@ boost::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, con
 
 		int f=estimateFood(b);
 		int numberRequestedTemp=numberRequested;
-		int numberRequestedLoca=b->maxUnitWorking;
+		int numberRequestedLocA=b->maxUnitWorking;
 		if (f<(nbu*3-1))
 			numberRequestedTemp=0;
-		else if (numberRequestedLoca==0)
+		else if (numberRequestedLocA==0)
 			if (f<(nbu*5+1))
 				numberRequestedTemp=0;
 		
-		if (numberRequestedLoca!=numberRequestedTemp)
+		if (numberRequestedLocA!=numberRequestedTemp)
 		{
 			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
 			b->maxUnitWorkingLocal=numberRequestedTemp;
@@ -472,7 +472,7 @@ void AINumbi::nextMainBuilding(const int buildingType)
 				break;
 			}
 		mainBuilding[buildingType]=Building::GIDtoID(b->gid);
-		//printf("AI: nextMainBuilding newuid=%d\n", b->UID);
+		//printf("AI: nextMainBuilding new uid=%d\n", b->UID);
 	}
 }
 
@@ -617,7 +617,7 @@ bool AINumbi::parseBuildingType(const int buildingType)
 	return (buildingType==IntBuildingType::DEFENSE_BUILDING);
 }
 
-void AINumbi::squareCircleScann(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my)
+void AINumbi::squareCircleScan(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my)
 {
 	if (x>=mx)
 	{
@@ -669,7 +669,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	}
 	if (b==NULL)
 	{
-		// TODO : scan the units and find a ressoucefull place.
+		// TODO : scan the units and find a resourceful place.
 		return false;
 	}
 	int typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
@@ -681,12 +681,12 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	//printf("AI: findNewEmplacement(%d) valid=(%d), uid=(%d), s=(%d, %d).\n", buildingType, valid, b->UID, width, height);
 	if (valid>299)
 	{
-		int maxr;
+		int maxX;
 		if (b->type->shortTypeNum==0)
-			maxr=64;
+			maxX=64;
 		else
-			maxr=16;
-		//for (int r=0; r<=maxr; r++)
+			maxX=16;
+		//for (int r=0; r<=maxR; r++)
 		//	for (int d=0; d<8; d++)
 
 		int dx, dy, sx, sy, px, py, mx, my;
@@ -716,7 +716,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		int bestValid=-1;
 		for (int i=0; i<4096; i++)
 		{
-			squareCircleScann(dx, dy, sx, sy, px, py, mx, my);
+			squareCircleScan(dx, dy, sx, sy, px, py, mx, my);
 			//printf("AI:i=%d, d=(%d, %d), s=(%d, %d), p=(%d, %d), m=(%d, %d).\n", i, dx, dy, sx, sy, px, py, mx, my);
 
 			//int dx, dy;
@@ -771,7 +771,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	return false;
 }
 
-boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested)
+boost::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, Sint32 numberRequested)
 {
 	Unit **myUnits=team->myUnits;
 	int ft=0;
@@ -781,13 +781,13 @@ boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeo
 
 	if (attackPhase==0)
 	{
-		if (ft>=critticalMass)
+		if (ft>=criticalMass)
 		{
-			//printf("AI:(crittical mass)new attack with %d units.\n", ft);
+			//printf("AI:(critical mass)new attack with %d units.\n", ft);
 			attackPhase=1;
 		}
 		attackTimer++;
-		if ((attackTimer>=critticalTimeout)&&(ft>numberRequested))
+		if ((attackTimer>=criticalTimeout)&&(ft>numberRequested))
 		{
 			attackTimer=0;
 			//printf("AI:(timeout)new attack with %d units.\n", ft);
@@ -797,7 +797,7 @@ boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeo
 	}
 	else if (attackPhase==1)
 	{
-		if (ft<=(critticalMass/2))
+		if (ft<=(criticalMass/2))
 		{
 			attackPhase=3;
 			//printf("AI:stop attack.\n");
@@ -884,8 +884,8 @@ boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeo
 			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 				return shared_ptr<Order>(new OrderDelete((*bit)->gid));
 		attackPhase=0;
-		critticalWarriors*=2;
-		critticalTime*=2;
+		criticalWarriors*=2;
+		criticalTime*=2;
 		return shared_ptr<Order>(new NullOrder);
 	}
 	else
@@ -970,7 +970,7 @@ boost::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int wo
 		return shared_ptr<Order>(new NullOrder);
 }
 
-boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
+boost::shared_ptr<Order>AINumbi::mayUpgrade(const int pTrigger, const int nTrigger)
 {
 	Building **myBuildings=team->myBuildings;
 	int numberFood[4]={0, 0, 0, 0}; // number of food buildings
@@ -1080,8 +1080,8 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 	// We calculate if we may upgrade to level 1:
 	int potential=wun[1]+wun[2]+wun[3]+4*(numberScience[0]+numberScience[1]+numberScience[2]+numberScience[3]);
 	int now=fun[1]+fun[2]+fun[3];
-	//printf("potential=(%d/%d), now=(%d/%d).\n", potential, ptrigger, now, ntrigger);
-	if ((potential>ptrigger)&&(now>ntrigger))
+	//printf("potential=(%d/%d), now=(%d/%d).\n", potential, pTrigger, now, nTrigger);
+	if ((potential>pTrigger)&&(now>nTrigger))
 	{
 		if (numberFood[0]>numberUpgradingFood[1])
 		{
@@ -1115,10 +1115,10 @@ boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigg
 		}
 	}
 	
-	// We calculate if we may upgrade to leverl 2:
+	// We calculate if we may upgrade to level 2:
 	potential=wun[2]+wun[3]+4*(numberScience[1]+numberScience[2]+numberScience[3]);
 	now=fun[2]+fun[3];
-	if ((potential>ptrigger)&&(now>ntrigger))
+	if ((potential>pTrigger)&&(now>nTrigger))
 	{
 		if (numberFood[1]>numberUpgradingFood[2])
 		{

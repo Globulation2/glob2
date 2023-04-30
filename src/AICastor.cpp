@@ -1250,7 +1250,7 @@ bool AICastor::addProject(Project *project)
 {
 	if (buildingSum[project->shortTypeNum][0]>=project->amount)
 	{
-		fprintf(logFile,  "will not add project (%s x%d) as it already succeded\n", project->debugName, project->amount);
+		fprintf(logFile,  "will not add project (%s x%d) as it already succeeded\n", project->debugName, project->amount);
 		delete project;
 		return false;
 	}
@@ -1281,8 +1281,8 @@ bool AICastor::addProject(Project *project)
 
 void AICastor::addProjects()
 {
-	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
-	//	canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
+	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attack=%d+%d, speed=%d+%d\n",
+	//	canFeedUnit, swarms, pool, poolSite, attack, attackSite, speed, speedSite);
 	
 	buildsAmount=-1;
 	
@@ -1376,7 +1376,7 @@ void AICastor::addProjects()
 		if (addProject(project))
 			return;
 	}*/
-	// all critical projects succeded.
+	// all critical projects succeeded.
 	
 	// enough workers
 	//Strategy::Builds buildsCurrent=strategy.buildsBase;
@@ -1492,7 +1492,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 	{
 		// boot phase
 		project->subPhase=2;
-		fprintf(logFile,  "(%s) (boot) (switching to subphase 2)\n", project->debugName);
+		fprintf(logFile,  "(%s) (boot) (switching to sub-phase 2)\n", project->debugName);
 	}
 	else if (project->subPhase==1)
 	{
@@ -1518,9 +1518,9 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
 		
-		boost::shared_ptr<Order>gfbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
+		boost::shared_ptr<Order>gFbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
 		project->timer=timer;
-		if (gfbm)
+		if (gFbm)
 		{
 			if (project->successWait>0)
 			{
@@ -1530,8 +1530,8 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 			else
 			{
 				project->subPhase=2;
-				fprintf(logFile,  "(%s) (one construction site placed) (switching to next subphase 2)\n", project->debugName);
-				return gfbm;
+				fprintf(logFile,  "(%s) (one construction site placed) (switching to next sub-phase 2)\n", project->debugName);
+				return gFbm;
 			}
 		}
 		else if (project->triesLeft>0)
@@ -1557,11 +1557,11 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) ([%d>=%d] building finished) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) ([%d>=%d] building finished) (switching to sub-phase 6).\n",
 				project->debugName, real, project->amount);
 			if (!project->waitFinished)
 			{
-				fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+				fprintf(logFile,  "(%s) (de-blocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
 			}
@@ -1569,17 +1569,17 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
+			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to sub-phase 1)\n",
 				project->debugName, real, site, project->amount);
 		}
 		else
 		{
 			project->subPhase=3;
-			fprintf(logFile,  "(%s) (enough real building site found [%d+%d>=%d]) (switching to next subphase 3)\n",
+			fprintf(logFile,  "(%s) (enough real building site found [%d+%d>=%d]) (switching to next sub-phase 3)\n",
 				project->debugName, real, site, project->amount);
 			if (!project->waitFinished)
 			{
-				fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+				fprintf(logFile,  "(%s) (de-blocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
 			}
@@ -1677,13 +1677,13 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to sub-phase 6).\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
+			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to sub-phase 1)\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (project->multipleStart)
@@ -1693,18 +1693,18 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 			if (isFree>1)
 			{
 				project->subPhase=1;
-				fprintf(logFile,  "(%s) (enough free workers %d) (switching back to subphase 1)\n", project->debugName, isFree);
+				fprintf(logFile,  "(%s) (enough free workers %d) (switching back to sub-phase 1)\n", project->debugName, isFree);
 			}
 			else
 			{
 				project->subPhase=5;
-				fprintf(logFile,  "(%s) (no more free workers) (switching to next subphase 5)\n", project->debugName);
+				fprintf(logFile,  "(%s) (no more free workers) (switching to next sub-phase 5)\n", project->debugName);
 			}
 		}
 		else
 		{
 			project->subPhase=5;
-			fprintf(logFile,  "(%s) (enough construction site [%d+%d>=%d]) (switching to next subphase 5)\n",
+			fprintf(logFile,  "(%s) (enough construction site [%d+%d>=%d]) (switching to next sub-phase 5)\n",
 				project->debugName, real, site, project->amount);
 		}
 	}
@@ -1739,13 +1739,13 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to sub-phase 6).\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (sum<project->amount)
 		{
 			project->subPhase=2;
-			fprintf(logFile,  "(%s) (building destroyed! [%d+%d<%d]) (switching to subphase 2).\n",
+			fprintf(logFile,  "(%s) (building destroyed! [%d+%d<%d]) (switching to sub-phase 2).\n",
 				project->debugName, real, site, project->amount);
 		}
 	}
@@ -1755,7 +1755,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		
 		if (project->blocking)
 		{
-			fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+			fprintf(logFile,  "(%s) (de-blocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 			project->blocking=false;
 			project->critical=false;
 		}
@@ -1784,7 +1784,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (buildingSum[project->shortTypeNum][1]==0)
 		{
 			project->finished=true;
-			fprintf(logFile,  "(%s) (all finalWorkers set) (project succeded)\n", project->debugName);
+			fprintf(logFile,  "(%s) (all finalWorkers set) (project succeeded)\n", project->debugName);
 		}
 	}
 	else
@@ -1834,8 +1834,8 @@ bool AICastor::enoughFreeWorkers()
 void AICastor::computeCanSwim()
 {
 	//printf("computeCanSwim()...\n");
-	// If our population has more healthy-working-units able to swimm than healthy-working-units
-	// unable to swimm then we choose to be able to go trough water:
+	// If our population has more healthy-working-units able to swim than healthy-working-units
+	// unable to swim then we choose to be able to go trough water:
 	Unit **myUnits=team->myUnits;
 	int sumCanSwim=0;
 	int sumCantSwim=0;
@@ -2016,7 +2016,7 @@ void AICastor::computeObstacleUnitMap()
 			obstacleUnitMap[i]=0;
 		else if (c.forbidden&teamMask)
 			obstacleUnitMap[i]=0;
-		else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWatter ?
+		else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWater ?
 			obstacleUnitMap[i]=0;
 		else
 			obstacleUnitMap[i]=1;
@@ -2106,7 +2106,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	Uint8 *gradient=buildingNeighbourMap;
 	const auto& tiles=map->tiles;
 	
-	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	
 	/*int bx=b->posX;
 	int by=b->posY;
@@ -2514,7 +2514,7 @@ void AICastor::computeWheatCareMap()
 	//int wDec=map->wDec;
 	size_t size=w*h;
 	size_t sizeMask=(size-1);
-	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	//Tile *tiles=map->tiles;
 	//Uint32 teamMask=team->me;
 	
@@ -2925,7 +2925,7 @@ void AICastor::computeResourcesCluster()
 		{
 			const auto& c = map->tiles[map->coordToIndex(x, y)]; // case
 			const auto& r=c.resource; // resource
-			Uint8 rt=r.type; // ressources type
+			Uint8 rt=r.type; // resources type
 			
 			int rci=x+y*w; // resource cluster index
 			Uint16 *rcp=&resourcesCluster[rci]; // resource cluster pointer
@@ -2959,13 +2959,13 @@ void AICastor::computeResourcesCluster()
 					}
 					else
 					{
-						Uint16 oldid=id;
-						usedId[oldid]=false;
+						Uint16 oldId=id;
+						usedId[oldId]=false;
 						id=rc; // newid
-						fprintf(logFile,  " cleaning oldid=%d to id=%d.\n", oldid, id);
+						fprintf(logFile,  " cleaning oldId=%d to id=%d.\n", oldId, id);
 						// We have to correct last resourcesCluster values:
 						*rcp=id;
-						while (*rcp==oldid)
+						while (*rcp==oldId)
 						{
 							*rcp=id;
 							rcp--;

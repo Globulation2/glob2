@@ -58,7 +58,7 @@ void AIEcho::signature_check(GAGCore::InputStream *stream, Player *player, Sint3
 	if (memcmp(signature,"EchoSig", 7)!=0)
 	{
 
-		std::cerr<<"Signature match failed. Expected \"EchoSig\", recieved \""<<signature<<"\""<<std::endl;
+		std::cerr<<"Signature match failed. Expected \"EchoSig\", received \""<<signature<<"\""<<std::endl;
 		assert(false);
 	}
 }
@@ -127,9 +127,9 @@ Entities::Building::Building(int building_type, int team, bool under_constructio
 }
 
 
-bool Entities::Building::is_entity(Map* map, int posx, int posy)
+bool Entities::Building::is_entity(Map* map, int posX, int posY)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posX, posY);
 	if(building_id!=NOGBID)
 	{
 		int team_id=::Building::GIDtoTeam(building_id);
@@ -201,9 +201,9 @@ Entities::AnyTeamBuilding::AnyTeamBuilding(int team, bool under_construction) : 
 
 
 
-bool Entities::AnyTeamBuilding::is_entity(Map* map, int posx, int posy)
+bool Entities::AnyTeamBuilding::is_entity(Map* map, int posX, int posY)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posX, posY);
 	if(building_id!=NOGBID)
 	{
 		int team_id=::Building::GIDtoTeam(building_id);
@@ -272,9 +272,9 @@ Entities::AnyBuilding::AnyBuilding(bool under_construction) : under_construction
 
 
 
-bool Entities::AnyBuilding::is_entity(Map* map, int posx, int posy)
+bool Entities::AnyBuilding::is_entity(Map* map, int posX, int posY)
 {
-	int building_id=map->getBuilding(posx, posy);
+	int building_id=map->getBuilding(posX, posY);
 	if(building_id!=NOGBID)
 	{
 		int team_id=::Building::GIDtoTeam(building_id);
@@ -330,16 +330,16 @@ void Entities::AnyBuilding::save(GAGCore::OutputStream *stream)
 
 
 
-Entities::Resource::Resource(int ressource_type) : resource_type(ressource_type)
+Entities::Resource::Resource(int resource_type) : resource_type(resource_type)
 {
 
 }
 
 
 
-bool Entities::Resource::is_entity(Map* map, int posx, int posy)
+bool Entities::Resource::is_entity(Map* map, int posX, int posY)
 {
-	if(map->isResourceTakeable(posx, posy, resource_type))
+	if(map->isResourceTakeable(posX, posY, resource_type))
 	{
 		return true;
 	}
@@ -401,9 +401,9 @@ Entities::AnyResource:: AnyResource()
 
 
 
-bool Entities::AnyResource:: is_entity(Map* map, int posx, int posy)
+bool Entities::AnyResource:: is_entity(Map* map, int posX, int posY)
 {
-	if(map->isResource(posx, posy))
+	if(map->isResource(posX, posY))
 	{
 		return true;
 	}
@@ -459,9 +459,9 @@ Entities::Water::Water()
 
 
 
-bool Entities::Water::is_entity(Map* map, int posx, int posy)
+bool Entities::Water::is_entity(Map* map, int posX, int posY)
 {
-	if(map->isWater(posx, posy))
+	if(map->isWater(posX, posY))
 	{
 		return true;
 	}
@@ -515,9 +515,9 @@ Entities::Position::Position(int x, int y) : x(x), y(y)
 }
 
 
-bool Entities::Position::is_entity(Map* map, int posx, int posy)
+bool Entities::Position::is_entity(Map* map, int posX, int posY)
 {
-	if(x==posx && y==posy)
+	if(x==posX && y==posY)
 	{
 		return true;
 	}
@@ -574,9 +574,9 @@ Entities::Sand::Sand()
 
 
 
-bool Entities::Sand::is_entity(Map* map, int posx, int posy)
+bool Entities::Sand::is_entity(Map* map, int posX, int posY)
 {
-	if(map->hasSand(posx, posy))
+	if(map->hasSand(posX, posY))
 	{
 		return true;
 	}
@@ -649,19 +649,19 @@ void GradientInfo::add_obstacle(Entities::Entity* obstacle)
 }
 
 
-bool GradientInfo::match_source(Map* map, int posx, int posy)
+bool GradientInfo::match_source(Map* map, int posX, int posY)
 {
 	for(unsigned int x=0; x<sources.size(); ++x)
-		if(sources[x]->is_entity(map, posx, posy))
+		if(sources[x]->is_entity(map, posX, posY))
 			return true;
 	return false;
 }
 
 
-bool GradientInfo::match_obstacle(Map* map, int posx, int posy)
+bool GradientInfo::match_obstacle(Map* map, int posX, int posY)
 {
 	for(unsigned int x=0; x<obstacles.size(); ++x)
-		if(obstacles[x]->is_entity(map, posx, posy))
+		if(obstacles[x]->is_entity(map, posX, posY))
 			return true;
 	return false;
 }
@@ -924,9 +924,9 @@ void Gradient::recalculate(Map* map)
 }
 
 
-int Gradient::get_height(int posx, int posy) const
+int Gradient::get_height(int posX, int posY) const
 {
-	return gradient[get_pos(posx, posy)]-2;
+	return gradient[get_pos(posX, posY)]-2;
 }
 
 
@@ -1326,7 +1326,7 @@ void CenterOfBuilding::save(GAGCore::OutputStream *stream)
 
 
 
-SinglePosition::SinglePosition(int posx, int posy) : posx(posx), posy(posy)
+SinglePosition::SinglePosition(int posX, int posY) : posX(posX), posY(posY)
 {
 
 }
@@ -1342,7 +1342,7 @@ int SinglePosition::calculate_constraint(Echo& echo, int x, int y)
 
 bool SinglePosition::passes_constraint(Echo& echo, int x, int y)
 {
-	if(posx==x && posy==y)
+	if(posX==x && posY==y)
 		return true;
 	return false;
 }
@@ -1359,8 +1359,8 @@ ConstraintType SinglePosition::get_type()
 bool SinglePosition::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("SinglePosition");
-	posx = stream->readSint32("posx");
-	posy = stream->readSint32("posy");
+	posX = stream->readSint32("posx");
+	posY = stream->readSint32("posy");
 	stream->readLeaveSection();
 	return true;
 }
@@ -1370,8 +1370,8 @@ bool SinglePosition::load(GAGCore::InputStream *stream, Player *player, Sint32 v
 void SinglePosition::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("SinglePosition");
-	stream->writeSint32(posx, "posx");
-	stream->writeSint32(posy, "posy");
+	stream->writeSint32(posX, "posx");
+	stream->writeSint32(posY, "posy");
 	stream->writeLeaveSection();
 }
 
@@ -1573,7 +1573,7 @@ void BuildingOrder::queue_gradients(Gradients::GradientManager& manager)
 }
 
 
-FlagMap::FlagMap(Echo& echo) : flagmap(echo.player->map->getW()*echo.player->map->getH(), NOGBID), width(echo.player->map->getW()), echo(echo)
+FlagMap::FlagMap(Echo& echo) : flagMap(echo.player->map->getW()*echo.player->map->getH(), NOGBID), width(echo.player->map->getW()), echo(echo)
 {
 }
 
@@ -1581,14 +1581,14 @@ FlagMap::FlagMap(Echo& echo) : flagmap(echo.player->map->getW()*echo.player->map
 
 int FlagMap::get_flag(int x, int y)
 {
-	return flagmap[y*width+x];
+	return flagMap[y*width+x];
 }
 
 
 
 void FlagMap::set_flag(int x, int y, int gid)
 {
-	flagmap[y*width+x]=gid;
+	flagMap[y*width+x]=gid;
 }
 
 
@@ -1598,11 +1598,11 @@ bool FlagMap::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	stream->readEnterSection("FlagMap");
 	stream->readEnterSection("flagmap");
 	Uint32 size=stream->readUint32("size");
-	flagmap.resize(size);
-	for (Uint32 flagmap_index = 0; flagmap_index < size; flagmap_index++)
+	flagMap.resize(size);
+	for (Uint32 flagMap_index = 0; flagMap_index < size; flagMap_index++)
 	{
-		stream->readEnterSection(flagmap_index);
-		flagmap[flagmap_index]=stream->readUint32("gid");
+		stream->readEnterSection(flagMap_index);
+		flagMap[flagMap_index]=stream->readUint32("gid");
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1617,11 +1617,11 @@ void FlagMap::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("FlagMap");
 	stream->writeEnterSection("flagmap");
-	stream->writeUint32(flagmap.size(), "size");
-	for (Uint32 flagmap_index = 0; flagmap_index < flagmap.size(); flagmap_index++)
+	stream->writeUint32(flagMap.size(), "size");
+	for (Uint32 flagMap_index = 0; flagMap_index < flagMap.size(); flagMap_index++)
 	{
-		stream->writeEnterSection(flagmap_index);
-		stream->writeUint32(flagmap[flagmap_index], "gid");
+		stream->writeEnterSection(flagMap_index);
+		stream->writeUint32(flagMap[flagMap_index], "gid");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -1699,8 +1699,8 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 	{
 		stream->readEnterSection(found_index);
 		Uint32 id=stream->readUint32("echo_building_id");
-		Uint32 xpos=stream->readUint32("xpos");
-		Uint32 ypos=stream->readUint32("ypos");
+		Uint32 xPos=stream->readUint32("xpos");
+		Uint32 yPos=stream->readUint32("ypos");
 		Uint32 building_type=stream->readUint32("building_type");
 		Uint32 gid=stream->readUint32("gid");
 		Uint8 upgrade_status=stream->readUint8("upgrade_status");
@@ -1711,7 +1711,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 			t=true;
 		else
 			t=indeterminate;
-		found_buildings[id]=boost::make_tuple(xpos, ypos, building_type, gid, t);
+		found_buildings[id]=boost::make_tuple(xPos, yPos, building_type, gid, t);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -2173,9 +2173,9 @@ bool EnemyBuildingDestroyed::load(GAGCore::InputStream *stream, Player *player, 
 	gbid=stream->readUint32("gbid");
 	type=stream->readUint32("type");
 	level=stream->readUint32("level");
-	int posx=stream->readUint32("posx");
-	int posy=stream->readUint32("posy");
-	location=position(posx, posy);
+	int posX=stream->readUint32("posx");
+	int posY=stream->readUint32("posy");
+	location=position(posX, posY);
 	stream->readLeaveSection();
 	return true;
 }
@@ -3693,7 +3693,7 @@ void AdjustPriority::save(GAGCore::OutputStream *stream)
 
 
 
-AddArea::AddArea(AreaType areatype) : areatype(areatype)
+AddArea::AddArea(AreaType areaType) : areaType(areaType)
 {
 
 }
@@ -3716,7 +3716,7 @@ void AddArea::modify(Echo& echo)
 	}
 	if(acc.getApplicationCount()>0)
 	{
-		switch(areatype)
+		switch(areaType)
 		{
 			case ClearingArea:
 				echo.push_order(shared_ptr<Order>(new OrderAlterClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
@@ -3744,7 +3744,7 @@ bool AddArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 {
 	stream->readEnterSection("AddArea");
 	ManagementOrder::load(stream, player, versionMinor);
-	areatype=static_cast<AreaType>(stream->readUint32("area_type"));
+	areaType=static_cast<AreaType>(stream->readUint32("area_type"));
 	stream->readEnterSection("locations");
 	Uint32 size=stream->readUint32("size");
 	locations.resize(size);
@@ -3765,7 +3765,7 @@ void AddArea::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AddArea");
 	ManagementOrder::save(stream);
-	stream->writeUint32(areatype, "area_type");
+	stream->writeUint32(areaType, "area_type");
 	stream->writeEnterSection("locations");
 	stream->writeUint32(locations.size(), "size");
 	for(Uint32 location_index=0; location_index<locations.size(); ++location_index)
@@ -3781,7 +3781,7 @@ void AddArea::save(GAGCore::OutputStream *stream)
 
 
 
-RemoveArea::RemoveArea(AreaType areatype) : areatype(areatype)
+RemoveArea::RemoveArea(AreaType areaType) : areaType(areaType)
 {
 
 }
@@ -3804,7 +3804,7 @@ void RemoveArea::modify(Echo& echo)
 	}
 	if(acc.getApplicationCount()>0)
 	{
-		switch(areatype)
+		switch(areaType)
 		{
 			case ClearingArea:
 				echo.push_order(shared_ptr<Order>(new OrderAlterClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
@@ -3832,7 +3832,7 @@ bool RemoveArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 {
 	stream->readEnterSection("RemoveArea");
 	ManagementOrder::load(stream, player, versionMinor);
-	areatype=static_cast<AreaType>(stream->readUint32("area_type"));
+	areaType=static_cast<AreaType>(stream->readUint32("area_type"));
 	stream->readEnterSection("locations");
 	Uint32 size=stream->readUint32("size");
 	locations.resize(size);
@@ -3853,7 +3853,7 @@ void RemoveArea::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("RemoveArea");
 	ManagementOrder::save(stream);
-	stream->writeUint32(areatype, "area_type");
+	stream->writeUint32(areaType, "area_type");
 	stream->writeEnterSection("locations");
 	stream->writeUint32(locations.size(), "size");
 	for(Uint32 location_index=0; location_index<locations.size(); ++location_index)
@@ -3877,23 +3877,23 @@ ChangeAlliances::ChangeAlliances(int team, boost::logic::tribool is_allied, boos
 
 void ChangeAlliances::modify(Echo& echo)
 {
-	Uint32 alliedmask=echo.allies;
-	Uint32 enemymask=echo.enemies;
+	Uint32 alliedMask=echo.allies;
+	Uint32 enemyMask=echo.enemies;
 	Uint32 market_mask=echo.market_view;
 	Uint32 inn_mask=echo.inn_view;
 	Uint32 other_mask=echo.other_view;
 	Team* t=echo.player->game->teams[team];
 	if(is_allied)
-		alliedmask|=t->me;
+		alliedMask|=t->me;
 	else if(!is_allied)
-		if(alliedmask&t->me)
-			alliedmask^=t->me;
+		if(alliedMask&t->me)
+			alliedMask^=t->me;
 
 	if(is_enemy)
-		enemymask|=t->me;
+		enemyMask|=t->me;
 	else if(!is_enemy)
-		if(enemymask&t->me)
-			enemymask^=t->me;
+		if(enemyMask&t->me)
+			enemyMask^=t->me;
 
 	if(view_market)
 		market_mask|=t->me;
@@ -3913,13 +3913,13 @@ void ChangeAlliances::modify(Echo& echo)
 		if(other_mask&t->me)
 			other_mask^=t->me;
 
-	echo.allies=alliedmask;
-	echo.enemies=enemymask;
+	echo.allies=alliedMask;
+	echo.enemies=enemyMask;
 	echo.market_view=market_mask;
 	echo.inn_view=inn_mask;
 	echo.other_view=other_mask;
 
-	echo.push_order(shared_ptr<Order>(new SetAllianceOrder(echo.player->team->teamNumber, alliedmask, enemymask, market_mask, inn_mask, other_mask)));
+	echo.push_order(shared_ptr<Order>(new SetAllianceOrder(echo.player->team->teamNumber, alliedMask, enemyMask, market_mask, inn_mask, other_mask)));
 }
 
 
@@ -4089,7 +4089,7 @@ SendMessage::SendMessage(const std::string& message) : message(message)
 
 void SendMessage::modify(Echo& echo)
 {
-	echo.echoai->handle_message(echo, message);
+	echo.echoAi->handle_message(echo, message);
 }
 
 
@@ -4195,7 +4195,7 @@ void building_search_iterator::set_to_next()
 		return;
 	}
 	if(position->first==-1 && positionSaved==position)
-	{                        // This fixes an infinit loop.
+	{                        // This fixes an infinite loop.
 		is_end=true;     // In some special tiles the program Logic 
 		return;          // must have been wrong.
 	}
@@ -4560,7 +4560,7 @@ int MapInfo::get_amount_resource(int x, int y)
 
 
 
-Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(), br(player, *this), fm(*this), timer(0)
+Echo::Echo(EchoAI* echoAi, Player* player) : player(player), echoAi(echoAi), gm(), br(player, *this), fm(*this), timer(0)
 {
 	previous_building_id=-1;
 	from_load_timer=0;
@@ -4819,10 +4819,10 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	signature_check(stream, player, versionMinor);
 
 	stream->readEnterSection("ressource_trackers");
-	Uint32 ressourceTrackerSize=stream->readUint32("size");
-	for(Uint32 ressourceTrackerIndex=0; ressourceTrackerIndex<ressourceTrackerSize; ++ressourceTrackerIndex)
+	Uint32 resourceTrackerSize=stream->readUint32("size");
+	for(Uint32 resourceTrackerIndex=0; resourceTrackerIndex<resourceTrackerSize; ++resourceTrackerIndex)
 	{
-		stream->readEnterSection(ressourceTrackerIndex);
+		stream->readEnterSection(resourceTrackerIndex);
 		int id=stream->readUint32("echo_building_id");
 		boost::shared_ptr<ResourceTracker> rt(new ResourceTracker(*this, stream, player, versionMinor));
 		bool activated=stream->readUint8("active");
@@ -4857,7 +4857,7 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 
 	signature_check(stream, player, versionMinor);
 
-	echoai->load(stream, player, versionMinor);
+	echoAi->load(stream, player, versionMinor);
 
 
 	signature_check(stream, player, versionMinor);
@@ -4933,10 +4933,10 @@ void Echo::save(GAGCore::OutputStream *stream)
 
 	stream->writeEnterSection("ressource_trackers");
 	stream->writeUint32(resource_trackers.size(), "size");
-	Uint32 ressourceTrackerIndex=0;
-	for(tracker_iterator i=resource_trackers.begin(); i!=resource_trackers.end(); ++ressourceTrackerIndex, ++i)
+	Uint32 resourceTrackerIndex=0;
+	for(tracker_iterator i=resource_trackers.begin(); i!=resource_trackers.end(); ++resourceTrackerIndex, ++i)
 	{
-		stream->writeEnterSection(ressourceTrackerIndex);
+		stream->writeEnterSection(resourceTrackerIndex);
 		stream->writeUint32(i->first, "echo_building_id");
 		i->second.get<0>()->save(stream);
 		stream->writeUint8(i->second.get<1>(), "active");
@@ -4970,7 +4970,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 
 	signature_write(stream);
 
-	echoai->save(stream);
+	echoAi->save(stream);
 
 
 	signature_write(stream);
@@ -5050,7 +5050,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 	br.tick();
 	update_resource_trackers();
 	update_management_orders();
-	echoai->tick(*this);
+	echoAi->tick(*this);
 	update_management_orders();
 	update_building_orders();
 	timer++;
@@ -5157,7 +5157,7 @@ void ReachToInfinity::tick(Echo& echo)
 				//The main order for the inn
 				BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
 	
-				//Constraints arround the location of wheat
+				//Constraints around the location of wheat
 				AIEcho::Gradients::GradientInfo gi_wheat;
 				gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 				//You want to be close to wheat
@@ -5165,7 +5165,7 @@ void ReachToInfinity::tick(Echo& echo)
 				//You can't be farther than 10 units from wheat
 				bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
 	
-				//Constraints arround nearby settlement
+				//Constraints around nearby settlement
 				AIEcho::Gradients::GradientInfo gi_building;
 				gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 				gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
@@ -5178,12 +5178,12 @@ void ReachToInfinity::tick(Echo& echo)
 				//You don't want to be too close
 				bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
-				//Constraints arround the location of fruit
+				//Constraints around the location of fruit
 				AIEcho::Gradients::GradientInfo gi_fruit;
 				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
 				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
 				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
-				//You want to be reasnobly close to fruit, closer if possible
+				//You want to be reasonably close to fruit, closer if possible
 				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
 	
 				if(prev_id!=-1)
@@ -5273,7 +5273,7 @@ void ReachToInfinity::tick(Echo& echo)
 	//		const int number=bs_flag.count_buildings();
 			if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=6 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
 			{
-				//Constraints arround nearby settlement
+				//Constraints around nearby settlement
 				AIEcho::Gradients::GradientInfo gi_building;
 				gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 
@@ -5285,10 +5285,10 @@ void ReachToInfinity::tick(Echo& echo)
 					//You want the closest fruit to your settlement possible
 					bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
-					//Constraint arround the location of fruit
+					//Constraint around the location of fruit
 					AIEcho::Gradients::GradientInfo gi_cherry;
 					gi_cherry.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
-					//You want to be ontop of the cherry trees
+					//You want to be on top of the cherry trees
 					bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 0));
 
 					//Add the building order to the list of orders
@@ -5316,10 +5316,10 @@ void ReachToInfinity::tick(Echo& echo)
 					//You want the closest fruit to your settlement possible
 					bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
-					//Constraints arround the location of fruit
+					//Constraints around the location of fruit
 					AIEcho::Gradients::GradientInfo gi_orange;
 					gi_orange.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
-					//You want to be ontop of the orange trees
+					//You want to be on top of the orange trees
 					bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 0));
 
 					unsigned int id_orange=echo.add_building_order(bo_orange);
@@ -5348,7 +5348,7 @@ void ReachToInfinity::tick(Echo& echo)
 
 					AIEcho::Gradients::GradientInfo gi_prune;
 					gi_prune.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
-					//You want to be ontop of the prune trees
+					//You want to be on top of the prune trees
 					bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 0));
 
 					//Add the building order to the list of orders
@@ -5428,7 +5428,7 @@ void ReachToInfinity::tick(Echo& echo)
 			//The main order for the inn
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
 
-			//Constraints arround the location of wheat
+			//Constraints around the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
 			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
@@ -5436,7 +5436,7 @@ void ReachToInfinity::tick(Echo& echo)
 			//You can't be farther than 10 units from wheat
 			bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
@@ -5451,12 +5451,12 @@ void ReachToInfinity::tick(Echo& echo)
 
 			if(echo.is_fruit_on_map())
 			{
-				//Constraints arround the location of fruit
+				//Constraints around the location of fruit
 				AIEcho::Gradients::GradientInfo gi_fruit;
 				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
 				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
 				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
-				//You want to be reasnobly close to fruit, closer if possible
+				//You want to be reasonably close to fruit, closer if possible
 				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
 			}
 
@@ -5488,13 +5488,13 @@ void ReachToInfinity::tick(Echo& echo)
 			//The main order for the swarm
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWARM_BUILDING, 3);
 	
-			//Constraints arround the location of wheat
+			//Constraints around the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
 			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 4));
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
@@ -5541,13 +5541,13 @@ void ReachToInfinity::tick(Echo& echo)
 			//The main order for the racetrack
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, 6);
 	
-			//Constraints arround the location of wood
+			//Constraints around the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
 			gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 			//You want to be close to wood
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
 
-			//Constraints arround the location of stone
+			//Constraints around the location of stone
 			AIEcho::Gradients::GradientInfo gi_stone;
 			gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 			//You want to be close to stone
@@ -5555,7 +5555,7 @@ void ReachToInfinity::tick(Echo& echo)
 			//But not to close, so you have room to upgrade
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, 2));
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
@@ -5581,28 +5581,28 @@ void ReachToInfinity::tick(Echo& echo)
 		const int number=bs.count_buildings();
 		if((echo.player->team->stats.getLatestStat()->totalUnit/60)>=number && number<3)
 		{
-			//The main order for the swimmingpool
+			//The main order for the swimming pool
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, 6);
 	
-			//Constraints arround the location of wood
+			//Constraints around the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
 			gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 			//You want to be close to wood
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, 4));
 
-			//Constraints arround the location of wheat
+			//Constraints around the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
 			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, 1));
 
-			//Constraints arround the location of stone
+			//Constraints around the location of stone
 			AIEcho::Gradients::GradientInfo gi_stone;
 			gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 			//You don't want to be too close, so you have room to upgrade
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, 2));
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
@@ -5632,7 +5632,7 @@ void ReachToInfinity::tick(Echo& echo)
 			//The main order for the school
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SCIENCE_BUILDING, 5);
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
@@ -5645,7 +5645,7 @@ void ReachToInfinity::tick(Echo& echo)
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
-			//Constraints arround the enemy
+			//Constraints around the enemy
 			AIEcho::Gradients::GradientInfo gi_enemy;
 			for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 			{
@@ -5882,7 +5882,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		//The main order for the inn
 		BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
 	
-		//Constraints arround the location of wheat
+		//Constraints around the location of wheat
 		AIEcho::Gradients::GradientInfo gi_wheat;
 		gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 		//You want to be close to wheat
@@ -5890,7 +5890,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		//You can't be farther than 10 units from wheat
 		bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
 
-		//Constraints arround nearby settlement
+		//Constraints around nearby settlement
 		AIEcho::Gradients::GradientInfo gi_building;
 		gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
@@ -5903,14 +5903,14 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		//You don't want to be too close
 		bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
-		//Constraints arround the location of fruit
+		//Constraints around the location of fruit
 		if(echo.is_fruit_on_map())
 		{
 			AIEcho::Gradients::GradientInfo gi_fruit;
 			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
 			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
 			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
-			//You want to be reasnobly close to fruit, closer if possible
+			//You want to be reasonably close to fruit, closer if possible
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, 1));
 		}
 
