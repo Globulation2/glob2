@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef TextSort_h
-#define TextSort_h
+#ifndef __TEXT_SORT_H
+#define __TEXT_SORT_H
 
 #include <string>
 

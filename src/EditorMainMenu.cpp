@@ -65,7 +65,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 					setRandomSyncRandSeed();
 					if (generator.generateMap(mapEdit.game, newMapScreen.descriptor))
 					{
-						mapEdit.mapHasBeenModiffied(); // make all map as modified by default
+						mapEdit.mapHasBeenModified(); // make all map as modified by default
 						mapEdit.regenerateGameHeader();
 						if (mapEdit.run()==-1)
 							endExecute(-1);

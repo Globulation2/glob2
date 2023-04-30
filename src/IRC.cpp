@@ -291,7 +291,7 @@ void IRC::interpreteIRCMessage(const std::string &message)
 		{
 			const std::string &nicktaken = Toolkit::getStringTable()->getString("[nick taken]");
 			const std::string &ok = Toolkit::getStringTable()->getString("[ok]");
-			int res = (int)MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, nicktaken.c_str(), ok.c_str());
+			int res = (int)MessageBox(globalContainer->gfx, "standard", MB_ONE_BUTTON, nicktaken.c_str(), ok.c_str());
 		
 			if (res != 0 )
 			{

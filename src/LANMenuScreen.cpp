@@ -72,7 +72,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 				shared_ptr<YOGServer> server(new YOGServer(YOGAnonymousLogin, YOGSingleGame));
 				if(!server->isListening())
 				{
-					MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, FormattableString(Toolkit::getStringTable()->getString("[Can't host game, port %0 in use]")).arg(YOG_SERVER_PORT).c_str(), Toolkit::getStringTable()->getString("[ok]"));
+					MessageBox(globalContainer->gfx, "standard", MB_ONE_BUTTON, FormattableString(Toolkit::getStringTable()->getString("[Can't host game, port %0 in use]")).arg(YOG_SERVER_PORT).c_str(), Toolkit::getStringTable()->getString("[ok]"));
 					endExecute(QuitMenu);
 				}
 				else

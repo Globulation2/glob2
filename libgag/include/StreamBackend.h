@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __STREAMBACKEND_H
-#define __STREAMBACKEND_H
+#ifndef __STREAM_BACKEND_H
+#define __STREAM_BACKEND_H
 
 #include <fstream>
 #include <iostream>
@@ -107,7 +107,7 @@ namespace GAGCore
 	class MemoryStreamBackend : public StreamBackend
 	{
 	private:
-		std::string datas;
+		std::string data;
 		size_t index;
 		
 	public:
@@ -126,7 +126,7 @@ namespace GAGCore
 		virtual size_t getPosition(void);
 		virtual bool isEndOfStream(void);
 		virtual bool isValid(void) { return true; }
-		virtual const char* getBuffer() { return datas.c_str(); }
+		virtual const char* getBuffer() { return data.c_str(); }
 	};
 
 	//! A stream that doesn't save data, it just produces a hash. Don't try to read from it!

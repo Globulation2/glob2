@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef FORMATABLESTRING_H
-#define FORMATABLESTRING_H
+#ifndef FORMATABLE_STRING_H
+#define FORMATABLE_STRING_H
 
 #include <string>
 #include <sstream>

@@ -46,7 +46,7 @@ using namespace GAGGUI;
 ScriptEditorScreen::ScriptEditorScreen(Game *game)
 :OverlayScreen(globalContainer->gfx, 600, 400),
 	sgslMapScript(&game->sgslScript),
-	mapScript(&game->mapscript),
+	mapScript(&game->mapScript),
 	game(game)
 {
 	addWidget(new TextButton(10, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));

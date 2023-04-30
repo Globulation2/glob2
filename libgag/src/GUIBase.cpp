@@ -243,8 +243,8 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 	
-		int screenw = parent->getSurface()->getW();
-		int screenh = parent->getSurface()->getH();
+		int screenW = parent->getSurface()->getW();
+		int screenH = parent->getSurface()->getH();
 		
 		switch (hAlignFlag)
 		{
@@ -254,22 +254,22 @@ namespace GAGGUI
 				break;
 	
 			case ALIGN_RIGHT:
-				*sx=screenw-w-x;
+				*sx=screenW-w-x;
 				*sw=w;
 				break;
 	
 			case ALIGN_FILL:
 				*sx=x;
-				*sw=screenw-w-x;
+				*sw=screenW-w-x;
 				break;
 				
 			case ALIGN_SCREEN_CENTERED:
-				*sx=x+((screenw-640)>>1);
+				*sx=x+((screenW-640)>>1);
 				*sw=w;
 				break;
 				
 			case ALIGN_CENTERED:
-				*sx = (screenw - w) >> 1;
+				*sx = (screenW - w) >> 1;
 				*sw = w;
 				break;
 	
@@ -285,22 +285,22 @@ namespace GAGGUI
 				break;
 	
 			case ALIGN_RIGHT:
-				*sy=screenh-h-y;
+				*sy=screenH-h-y;
 				*sh=h;
 				break;
 	
 			case ALIGN_FILL:
 				*sy=y;
-				*sh=screenh-h-y;
+				*sh=screenH-h-y;
 				break;
 				
 			case ALIGN_SCREEN_CENTERED:
-				*sy=y+((screenh-480)>>1);
+				*sy=y+((screenH-480)>>1);
 				*sh=h;
 				break;
 				
 			case ALIGN_CENTERED:
-				*sy = (screenh - h) >> 1;
+				*sy = (screenH - h) >> 1;
 				*sh = h;
 				break;
 	
@@ -563,7 +563,7 @@ namespace GAGGUI
 		// a switch in each specific onSDLEvent method
 		// we never receive neither SDL_QUIT nor
 		// SDL_VIDEORESIZE (not dispatched)
-		// For the moment, we do not take the following event in accout :
+		// For the moment, we do not take the following event in account :
 		// SDL_SYSWMEVENT, SDL_JOY*****, 
 		switch(event->type)
 		{

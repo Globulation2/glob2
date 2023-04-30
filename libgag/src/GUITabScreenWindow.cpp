@@ -88,15 +88,15 @@ namespace GAGGUI
 		
 	}
 	
-	void TabScreenWindow::endExecute(int nreturnCode)
+	void TabScreenWindow::endExecute(int nReturnCode)
 	{
 		isExecuting = false;
-		returnCode = nreturnCode;
+		returnCode = nReturnCode;
 	}
 	
-	void TabScreenWindow::setActivated(bool nactivated)
+	void TabScreenWindow::setActivated(bool nActivated)
 	{
-		activated=nactivated;
+		activated=nActivated;
 	}
 };
 

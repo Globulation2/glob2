@@ -172,7 +172,7 @@ void SingleLevelSelector::draw()
 
 
 PanelIcon::PanelIcon(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int iconNumber, int panelModeHilight)
-	: MapEditorWidget(me, area, group, name, action), iconNumber(iconNumber), panelModeHilight(panelModeHilight)
+	: MapEditorWidget(me, area, group, name, action), iconNumber(iconNumber), panelModeHighlight(panelModeHilight)
 {
 
 }
@@ -182,7 +182,7 @@ PanelIcon::PanelIcon(MapEdit& me, const widgetRectangle& area, const std::string
 void PanelIcon::draw()
 {
 	// draw buttons
-	if (me.panelMode==panelModeHilight)
+	if (me.panelMode==panelModeHighlight)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, iconNumber+1);
 	else
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gameGui, iconNumber);
@@ -934,7 +934,7 @@ MapEdit::MapEdit()
 	orange = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 248, 32, 32), "terrain view", "orange selector", "select orange tree", TerrainSelector::OrangeTree);
 	cherry = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 248, 32, 32), "terrain view", "cherry selector", "select cherry tree", TerrainSelector::CherryTree);
 	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
-	noRessourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
+	noResourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
 	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 320, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
 	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 336, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
 	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24+decX, 336, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
@@ -951,7 +951,7 @@ MapEdit::MapEdit()
 	addWidget(orange);
 	addWidget(cherry);
 	addWidget(prune);
-	addWidget(noRessourceGrowthButton);
+	addWidget(noResourceGrowthButton);
 	addWidget(areasButton);
 	addWidget(areaNumber);
 	addWidget(areaNameLabel);
@@ -1070,7 +1070,7 @@ MapEdit::MapEdit()
 	isDraggingDelete=false;
 	isScrollDragging=false;
 	isDraggingArea=false;
-	isDraggingNoRessourceGrowthArea=false;
+	isDraggingNoResourceGrowthArea=false;
 
 	lastPlacementX=-1;
 	lastPlacementY=-1;
@@ -1142,7 +1142,7 @@ bool MapEdit::load(const std::string filename)
 			if (!globalContainer->runNoX)
 			{
 				// Display an error message
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 			}
 
 			// We can't recover from this, so we quit
@@ -1270,7 +1270,7 @@ int MapEdit::run(void)
 				performAction("delete drag motion");
 			else if(isDraggingArea)
 				performAction("area drag motion");
-			else if(isDraggingNoRessourceGrowthArea)
+			else if(isDraggingNoResourceGrowthArea)
 				performAction("no resource growth area drag motion");
 		}
 		
@@ -1336,7 +1336,7 @@ int MapEdit::run(void)
 		{
 			if(hasMapBeenModified)
 			{
-				int ret = GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_THREEBUTTONS, Toolkit::getStringTable()->getString("[save before quit?]"), Toolkit::getStringTable()->getString("[Yes]"), Toolkit::getStringTable()->getString("[No]"), Toolkit::getStringTable()->getString("[Cancel]"));
+				int ret = GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_THREE_BUTTONS, Toolkit::getStringTable()->getString("[save before quit?]"), Toolkit::getStringTable()->getString("[Yes]"), Toolkit::getStringTable()->getString("[No]"), Toolkit::getStringTable()->getString("[Cancel]"));
 				if(ret == 0)
 				{
 					doQuit=false;
@@ -1380,7 +1380,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
 
-	Uint32 drawOptions = Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESSOURCE_GROWTH_AREAS;
+	Uint32 drawOptions = Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESOURCE_GROWTH_AREAS;
 	if(isFertilityOn)
 	{
 		drawOptions |= Game::DRAW_OVERLAY;
@@ -1390,7 +1390,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 // 	if (doPaintEditMode)
 // 		paintEditMode(false, false);
 
-	if(widgetRectangle(sx, sy, sw, sh).is_in(mouseX, mouseY))
+	if(widgetRectangle(sx, sy, sw, sh).isIn(mouseX, mouseY))
 	{
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
@@ -1420,7 +1420,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		{
 			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 		}
-		if(selectionMode==ChangeNoRessourceGrowthAreas)
+		if(selectionMode==ChangeNoResourceGrowthAreas)
 			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
 	}
 
@@ -1683,12 +1683,12 @@ void MapEdit::processEvent(SDL_Event& event)
 		}
 		else if(isDraggingZone)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).isIn(mouseX, mouseY))
 				performAction("zone drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingTerrain)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).isIn(mouseX, mouseY))
 				performAction("terrain drag motion", relMouseX, relMouseY);
 		}
 		else if(isScrollDragging)
@@ -1703,14 +1703,14 @@ void MapEdit::processEvent(SDL_Event& event)
 		{
 			performAction("area drag motion", relMouseX, relMouseY);
 		}
-		else if(isDraggingNoRessourceGrowthArea)
+		else if(isDraggingNoResourceGrowthArea)
 		{
 			performAction("no resource growth area drag motion", relMouseX, relMouseY);
 		}
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
-		if(!findAction(event.button.x, event.button.y) && widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
+		if(!findAction(event.button.x, event.button.y) && widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()).isIn(mouseX, mouseY))
 		{
 			//The button wasn't clicked in any registered area
 			if(selectionMode==PlaceBuilding)
@@ -1725,7 +1725,7 @@ void MapEdit::processEvent(SDL_Event& event)
 				performAction("delete drag start");
 			else if(selectionMode==ChangeAreas)
 				performAction("area drag start");
-			else if(selectionMode==ChangeNoRessourceGrowthAreas)
+			else if(selectionMode==ChangeNoResourceGrowthAreas)
 				performAction("no resource growth area drag start");
 			else
 			{
@@ -1733,7 +1733,7 @@ void MapEdit::processEvent(SDL_Event& event)
 				performAction("select map building");
 			}
 		}
-		else if(widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
+		else if(widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET+14, 14, 100, 100).isIn(mouseX, mouseY))
 			performAction("minimap drag start");
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_RIGHT)
@@ -1759,7 +1759,7 @@ void MapEdit::processEvent(SDL_Event& event)
 			performAction("delete drag end");
 		if(isDraggingArea)
 			performAction("area drag end");
-		if(isDraggingNoRessourceGrowthArea)
+		if(isDraggingNoResourceGrowthArea)
 			performAction("no resource growth area drag end");
 	}
 	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_MIDDLE)
@@ -1966,12 +1966,12 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		game.selectedUnit=NULL;
 		deleteButton->setUnselected();
 		areasButton->setUnselected();
-		noRessourceGrowthButton->setUnselected();
+		noResourceGrowthButton->setUnselected();
 		isDraggingZone=false;
 		isDraggingTerrain=false;
 		isDraggingDelete=false;
 		isDraggingArea=false;
-		isDraggingNoRessourceGrowthArea=false;
+		isDraggingNoResourceGrowthArea=false;
 		if(panelMode==UnitEditor)
 			performAction("switch to building view");
 	}
@@ -2310,15 +2310,15 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	else if(action=="select no ressources growth")
 	{
 		performAction("unselect");
-		selectionMode=ChangeNoRessourceGrowthAreas;
-		noRessourceGrowthButton->setSelected();
+		selectionMode=ChangeNoResourceGrowthAreas;
+		noResourceGrowthButton->setSelected();
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
 		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="handle terrain click")
 	{
-		if(terrainType==TerrainSelector::NoTerrain && selectionMode!=RemoveObject && selectionMode!=ChangeAreas && selectionMode!=ChangeNoRessourceGrowthAreas)
+		if(terrainType==TerrainSelector::NoTerrain && selectionMode!=RemoveObject && selectionMode!=ChangeAreas && selectionMode!=ChangeNoResourceGrowthAreas)
 			performAction("select grass");
 		brush.handleClick(relMouseX, relMouseY);
 	}
@@ -2395,18 +2395,18 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 	}
 	else if(action=="no resource growth area drag start")
 	{
-		isDraggingNoRessourceGrowthArea=true;
-		handleNoRessourceGrowthClick(mouseX, mouseY);
+		isDraggingNoResourceGrowthArea=true;
+		handleNoResourceGrowthClick(mouseX, mouseY);
 		hasMapBeenModified = true;
 	}
 	else if(action=="no resource growth area drag motion")
 	{
-		handleNoRessourceGrowthClick(mouseX, mouseY);
+		handleNoResourceGrowthClick(mouseX, mouseY);
 		hasMapBeenModified = true;
 	}
 	else if(action=="no resource growth area drag end")
 	{
-		isDraggingNoRessourceGrowthArea=false;
+		isDraggingNoResourceGrowthArea=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
 		firstPlacementX=-1;
@@ -3194,7 +3194,7 @@ bool MapEdit::findAction(int x, int y)
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
 		MapEditorWidget* mi=*i;
-		if(mi->is_in(x, y) && mi->enabled)
+		if(mi->isIn(x, y) && mi->enabled)
 		{
 			mi->handleClick(mouseX-mi->area.x, mouseY-mi->area.y);
 			return true;
@@ -3557,7 +3557,7 @@ void MapEdit::handleAreaClick(int mx, int my)
 
 
 
-void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
+void MapEdit::handleNoResourceGrowthClick(int mx, int my)
 {
 	handleClick(mx,my,BrushTool::CT_NO_RESOURCE_GROWTH);
 }

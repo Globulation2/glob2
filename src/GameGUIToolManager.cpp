@@ -346,15 +346,15 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 	{
 		if (zoneType == Forbidden)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(boost::shared_ptr<Order>(new OrderAlterForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Guard)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(boost::shared_ptr<Order>(new OrderAlterGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Clearing)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(boost::shared_ptr<Order>(new OrderAlterClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else
 			assert(false);

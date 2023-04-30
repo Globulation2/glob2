@@ -95,15 +95,15 @@ namespace GAGCore
 		#endif
 		char * pch;
 
-		int linksize = readlink(proc, link, sizeof(link));
-		if (linksize < 0)
+		int linkSize = readlink(proc, link, sizeof(link));
+		if (linkSize < 0)
 		{
 			perror("readlink() error");
 		}
 		else
 		{
-			assert ((int)sizeof(link) > linksize);
-			link[linksize] = '\0';
+			assert ((int)sizeof(link) > linkSize);
+			link[linkSize] = '\0';
 
 			pch = strrchr(link,'/');
 			if ( (pch-link) > 0)
@@ -115,7 +115,7 @@ namespace GAGCore
 			if ( (pch-link) > 0)
 				link[pch-link] = '\0';
 
-			if ((linksize + 13) <= (int)sizeof(link))
+			if ((linkSize + 13) <= (int)sizeof(link))
 			{
 				strcat(link, "/share/glob2");
 				addDir(link);
@@ -166,7 +166,7 @@ namespace GAGCore
 		}
 	}
 	
-	SDL_RWops *FileManager::openWithbackup(const std::string filename, const std::string mode)
+	SDL_RWops *FileManager::openWithBackup(const std::string filename, const std::string mode)
 	{
 		if (mode.find('w') != std::string::npos)
 		{
@@ -177,7 +177,7 @@ namespace GAGCore
 		return SDL_RWFromFile(filename.c_str(), mode.c_str());
 	}
 	
-	FILE *FileManager::openWithbackupFP(const std::string filename, const std::string mode)
+	FILE *FileManager::openWithBackupFP(const std::string filename, const std::string mode)
 	{
 		if (mode.find('w') != std::string::npos)
 		{
@@ -188,7 +188,7 @@ namespace GAGCore
 		return fopen(filename.c_str(), mode.c_str());
 	}
 	
-	std::ofstream *FileManager::openWithbackupOFS(const std::string filename, std::ofstream::openmode mode)
+	std::ofstream *FileManager::openWithBackupOFS(const std::string filename, std::ofstream::openmode mode)
 	{
 		if (mode & std::ios_base::out)
 		{
@@ -285,7 +285,7 @@ namespace GAGCore
 			path += filename;
 	
 			//std::cerr << "FileManager::open trying to open " << path << " corresponding to source [" << dirList[i] << "] and filename [" << filename << "] with mode " << mode << "\n" << std::endl;
-			SDL_RWops *fp = openWithbackup(path.c_str(), mode.c_str());
+			SDL_RWops *fp = openWithBackup(path.c_str(), mode.c_str());
 			if (fp)
 				return fp;
 		}
@@ -301,7 +301,7 @@ namespace GAGCore
 			path += DIR_SEPARATOR;
 			path += filename;
 			
-			FILE *fp = openWithbackupFP(path.c_str(), mode.c_str());
+			FILE *fp = openWithBackupFP(path.c_str(), mode.c_str());
 			if (fp)
 				return fp;
 		}
@@ -417,7 +417,7 @@ namespace GAGCore
 			return false;
 		}
 		
-		// Preapare source
+		// Prepare source
 		srcStream->seekFromEnd(0);
 		size_t fileLength = srcStream->getPosition();
 		srcStream->seekFromStart(0);
@@ -448,7 +448,7 @@ namespace GAGCore
 			return false;
 		}
 		
-		// Preapare source
+		// Prepare source
 		gzFile gzStream = gzdopen(fileno(srcStream), "rb");
 		#define BLOCK_SIZE 1024*1024
 		std::string buffer;

@@ -48,8 +48,8 @@ private:
 	///Sends this IRC message back to the main thread
 	void sendToMainThread(boost::shared_ptr<FertilityCalculatorThreadMessage> message);
 	
-	///Computes the ressources gradient
-	void computeRessourcesGradient();
+	///Computes the resources gradient
+	void computeResourcesGradient();
 	
 	///Updates the percent complete
 	void updatePercentComplete(float percent);
@@ -72,7 +72,7 @@ private:
 
 	std::vector<Uint16> fertility;
 	std::vector<Uint16> gradient;
-	Uint16 fertilitymax;
+	Uint16 fertilityMax;
 	Map& map;
 };
 

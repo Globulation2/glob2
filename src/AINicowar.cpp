@@ -51,9 +51,9 @@ void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(upgrading_phase_2_unit_min, "upgrading_phase_2_unit_min");
 	configBlock->load(upgrading_phase_2_trained_worker_min, "upgrading_phase_2_trained_worker_min");
 	configBlock->load(minimum_warrior_level_for_trained, "minimum_warrior_level_for_trained");
-	configBlock->load(war_preperation_phase_unit_min, "war_preperation_phase_unit_min");
-	configBlock->load(war_preperation_phase_barracks_max, "war_preperation_phase_barracks_max");
-	configBlock->load(war_preperation_phase_trained_warrior_max, "war_preperation_phase_trained_warrior_max");
+	configBlock->load(war_preparation_phase_unit_min, "war_preperation_phase_unit_min");
+	configBlock->load(war_preparation_phase_barracks_max, "war_preperation_phase_barracks_max");
+	configBlock->load(war_preparation_phase_trained_warrior_max, "war_preperation_phase_trained_warrior_max");
 	configBlock->load(war_phase_trained_warrior_min, "war_phase_trained_warrior_min");
 	configBlock->load(fruit_phase_unit_min, "fruit_phase_unit_min");
 	configBlock->load(starvation_recovery_phase_starving_no_inn_min_percent, "starvation_recovery_phase_starving_no_inn_min_percent");
@@ -70,12 +70,12 @@ void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(skilled_work_phase_number_of_schools, "skilled_work_phase_number_of_schools");
 	configBlock->load(war_preparation_phase_number_of_barracks, "war_preparation_phase_number_of_barracks");
 	configBlock->load(base_number_of_hospitals, "base_number_of_hospitals");
-	configBlock->load(war_preperation_phase_warriors_per_hospital, "war_preperation_phase_warriors_per_hospital");
+	configBlock->load(war_preparation_phase_warriors_per_hospital, "war_preperation_phase_warriors_per_hospital");
 	configBlock->load(base_number_of_construction_sites, "base_number_of_construction_sites");
 	configBlock->load(starving_recovery_phase_number_of_extra_construction_sites, "starving_recovery_phase_number_of_extra_construction_sites");
-	configBlock->load(level_1_inn_low_wheat_trigger_ammount, "level_1_inn_low_wheat_trigger_ammount");
-	configBlock->load(level_2_inn_low_wheat_trigger_ammount, "level_2_inn_low_wheat_trigger_ammount");
-	configBlock->load(level_3_inn_low_wheat_trigger_ammount, "level_3_inn_low_wheat_trigger_ammount");
+	configBlock->load(level_1_inn_low_wheat_trigger_amount, "level_1_inn_low_wheat_trigger_ammount");
+	configBlock->load(level_2_inn_low_wheat_trigger_amount, "level_2_inn_low_wheat_trigger_ammount");
+	configBlock->load(level_3_inn_low_wheat_trigger_amount, "level_3_inn_low_wheat_trigger_ammount");
 	configBlock->load(level_1_inn_units_assigned_normal_wheat, "level_1_inn_units_assigned_normal_wheat");
 	configBlock->load(level_2_inn_units_assigned_normal_wheat, "level_2_inn_units_assigned_normal_wheat");
 	configBlock->load(level_3_inn_units_assigned_normal_wheat, "level_3_inn_units_assigned_normal_wheat");
@@ -83,14 +83,14 @@ void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(level_2_inn_units_assigned_low_wheat, "level_2_inn_units_assigned_low_wheat");
 	configBlock->load(level_3_inn_units_assigned_low_wheat, "level_3_inn_units_assigned_low_wheat");
 	configBlock->load(base_swarm_units_assigned, "base_swarm_units_assigned");
-	configBlock->load(base_swarm_low_wheat_trigger_ammount, "base_swarm_low_wheat_trigger_ammount");
+	configBlock->load(base_swarm_low_wheat_trigger_amount, "base_swarm_low_wheat_trigger_ammount");
 	configBlock->load(base_swarm_hungry_reduce_trigger_percent, "base_swarm_hungry_reduce_trigger_percent");
 	configBlock->load(growth_phase_swarm_worker_ratio, "growth_phase_swarm_worker_ratio");
 	configBlock->load(non_growth_phase_swarm_worker_ratio, "non_growth_phase_swarm_worker_ratio");
 	configBlock->load(base_number_of_explorers, "base_number_of_explorers");
 	configBlock->load(fruit_phase_extra_number_of_explorers, "fruit_phase_extra_number_of_explorers");
 	configBlock->load(base_swarm_explorer_ratio, "base_swarm_explorer_ratio");
-	configBlock->load(war_preperation_swarm_warrior_ratio, "war_preperation_swarm_warrior_ratio");
+	configBlock->load(war_preparation_swarm_warrior_ratio, "war_preperation_swarm_warrior_ratio");
 	configBlock->load(defense_explorer_population_percent, "defense_explorer_population_percent");
 	configBlock->load(offense_explorer_number, "offense_explorer_number");
 	configBlock->load(offense_explorer_minimum, "offense_explorer_minimum");
@@ -165,14 +165,14 @@ NewNicowar::NewNicowar()
 	skilled_work_phase=0;
 	upgrading_phase_1=false;
 	upgrading_phase_2=false;
-	war_preperation=false;
+	war_preparation=false;
 	war=false;
 	fruit_phase=false;
 	starving_recovery=false;
 	no_workers_phase=false;
 	can_swim=false;
 	defend_explorers=false;
-	explorer_attack_preperation_phase=false;
+	explorer_attack_preparation_phase=false;
 	explorer_attack_phase=false;
 	starving_recovery_inns = 0;
 	exploration_on_fruit=false;
@@ -205,7 +205,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		skilled_work_phase=stream->readUint8("skilled_work_phase");
 		upgrading_phase_1=stream->readUint8("upgrading_phase_1");
 		upgrading_phase_2=stream->readUint8("upgrading_phase_2");
-		war_preperation=stream->readUint8("war_preperation");
+		war_preparation=stream->readUint8("war_preperation");
 		war=stream->readUint8("war");
 		fruit_phase=stream->readUint8("fruit_phase");
 		starving_recovery=stream->readUint8("starving_recovery");
@@ -297,7 +297,7 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	stream->writeUint8(skilled_work_phase, "skilled_work_phase");
 	stream->writeUint8(upgrading_phase_1, "upgrading_phase_1");
 	stream->writeUint8(upgrading_phase_2, "upgrading_phase_2");
-	stream->writeUint8(war_preperation, "war_preperation");
+	stream->writeUint8(war_preparation, "war_preperation");
 	stream->writeUint8(war, "war");
 	stream->writeUint8(fruit_phase, "fruit_phase");
 	stream->writeUint8(starving_recovery, "starving_recovery");
@@ -524,13 +524,13 @@ void NewNicowar::initialize(Echo& echo)
 	{	
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
-			ManagementOrder* mo_tracker=new AddRessourceTracker(25, CORN, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(25, CORN, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			echo.add_management_order(mo_tracker);
 		}
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 		{
-			ManagementOrder* mo_tracker=new AddRessourceTracker(25, CORN, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(25, CORN, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			echo.add_management_order(mo_tracker);
 		}
@@ -610,9 +610,9 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the war preperation phase:
-	///1) Atleast strategy.war_preperation_phase_unit_min units
-	///2) Less than strategy.war_preperation_phase_barracks_max barracks OR
-	///3) Less than strategy.war_preperation_phase_trained_warrior_max trained warriors
+	///1) Atleast strategy.war_preparation_phase_unit_min units
+	///2) Less than strategy.war_preparation_phase_barracks_max barracks OR
+	///3) Less than strategy.war_preparation_phase_trained_warrior_max trained warriors
 	BuildingSearch barracks(echo);
 	barracks.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
 	int barracks_count=barracks.count_buildings();
@@ -623,13 +623,13 @@ void NewNicowar::check_phases(Echo& echo)
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
 	}
 
-	if(stat->totalUnit>=strategy.war_preperation_phase_unit_min && (warrior_count < strategy.war_preperation_phase_trained_warrior_max || barracks_count<strategy.war_preperation_phase_barracks_max))
+	if(stat->totalUnit>=strategy.war_preparation_phase_unit_min && (warrior_count < strategy.war_preparation_phase_trained_warrior_max || barracks_count<strategy.war_preparation_phase_barracks_max))
 	{
-		war_preperation=true;
+		war_preparation=true;
 	}
 	else
 	{
-		war_preperation=false;
+		war_preparation=false;
 	}
 
 	///Qualifications for the war phase:
@@ -724,11 +724,11 @@ void NewNicowar::check_phases(Echo& echo)
 	//1) This teams prestige greater than 0
 	if(echo.player->team->prestige > 0)
 	{
-		explorer_attack_preperation_phase = true;
+		explorer_attack_preparation_phase = true;
 	}
 	else
 	{
-		explorer_attack_preperation_phase = false;
+		explorer_attack_preparation_phase = false;
 	}
 	
 	///Qualifications for the explorer attack phase
@@ -918,7 +918,7 @@ void NewNicowar::queue_barracks(Echo& echo)
 	const int barracks_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularBarracks];
 
 	int demand=0;
-	if(war_preperation)
+	if(war_preparation)
 	{
 		demand=strategy.war_preparation_phase_number_of_barracks;
 		///This only kicks in right at the start, so that it doesn't build barracks when it doesn't need to
@@ -948,9 +948,9 @@ void NewNicowar::queue_hospitals(Echo& echo)
 	int demand=0;
 	if(echo.player->team->stats.getLatestStat()->needHeal > 0)
 		demand += strategy.base_number_of_hospitals;
-	if(war_preperation || war)
+	if(war_preparation || war)
 	{
-		demand+=total_warrior/strategy.war_preperation_phase_warriors_per_hospital;
+		demand+=total_warrior/strategy.war_preparation_phase_warriors_per_hospital;
 	}
 
 	if(demand > hospital_count)
@@ -1063,7 +1063,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
@@ -1071,7 +1071,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -1104,7 +1104,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_completion);
 
-	ManagementOrder* mo_tracker=new AddRessourceTracker(25, CORN, id);
+	ManagementOrder* mo_tracker=new AddResourceTracker(25, CORN, id);
 	mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_tracker);
 
@@ -1132,7 +1132,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
@@ -1140,7 +1140,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -1154,7 +1154,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_completion);
 	
-	ManagementOrder* mo_tracker=new AddRessourceTracker(25, CORN, id);
+	ManagementOrder* mo_tracker=new AddResourceTracker(25, CORN, id);
 	mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_tracker);
 
@@ -1190,7 +1190,7 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
@@ -1203,7 +1203,7 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -1248,7 +1248,7 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
@@ -1261,7 +1261,7 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -1282,7 +1282,7 @@ int NewNicowar::order_regular_school(Echo& echo)
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
@@ -1296,7 +1296,7 @@ int NewNicowar::order_regular_school(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -1344,7 +1344,7 @@ int NewNicowar::order_regular_barracks(Echo& echo)
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
@@ -1352,7 +1352,7 @@ int NewNicowar::order_regular_barracks(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -1385,7 +1385,7 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 	//Constraints arround nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
@@ -1393,7 +1393,7 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -1431,24 +1431,24 @@ void NewNicowar::manage_inn(Echo& echo, int id)
 	int assigned=echo.get_building_register().get_assigned(id);
 
 	//Do nothing if the ressource_tracker order hasn't been processed yet
-	if(! echo.get_ressource_tracker(id))
+	if(! echo.get_resource_tracker(id))
 		return;
-	int total_ressource_level = echo.get_ressource_tracker(id)->get_total_level();
+	int total_ressource_level = echo.get_resource_tracker(id)->get_total_level();
 	
 	int to_assign = 0;
-	if(level==1 && total_ressource_level>(strategy.level_1_inn_low_wheat_trigger_ammount*25))
+	if(level==1 && total_ressource_level>(strategy.level_1_inn_low_wheat_trigger_amount*25))
 		to_assign=strategy.level_1_inn_units_assigned_normal_wheat;
-	else if(level==1 && total_ressource_level<=(strategy.level_1_inn_low_wheat_trigger_ammount*25))
+	else if(level==1 && total_ressource_level<=(strategy.level_1_inn_low_wheat_trigger_amount*25))
 		to_assign=strategy.level_1_inn_units_assigned_low_wheat;
 
-	if(level==2 && total_ressource_level>(strategy.level_2_inn_low_wheat_trigger_ammount*25))
+	if(level==2 && total_ressource_level>(strategy.level_2_inn_low_wheat_trigger_amount*25))
 		to_assign=strategy.level_2_inn_units_assigned_normal_wheat;
-	else if(level==2 && total_ressource_level<=(strategy.level_2_inn_low_wheat_trigger_ammount*25))
+	else if(level==2 && total_ressource_level<=(strategy.level_2_inn_low_wheat_trigger_amount*25))
 		to_assign=strategy.level_2_inn_units_assigned_low_wheat;
 	
-	if(level==3 && total_ressource_level>(strategy.level_3_inn_low_wheat_trigger_ammount*25))
+	if(level==3 && total_ressource_level>(strategy.level_3_inn_low_wheat_trigger_amount*25))
 		to_assign=strategy.level_3_inn_units_assigned_normal_wheat;
-	else if(level==3 && total_ressource_level<=(strategy.level_3_inn_low_wheat_trigger_ammount*25))
+	else if(level==3 && total_ressource_level<=(strategy.level_3_inn_low_wheat_trigger_amount*25))
 		to_assign=strategy.level_3_inn_units_assigned_low_wheat;
 	
 	///The number of units assigned to an Inn depends entirely on its level
@@ -1474,9 +1474,9 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 	int to_assign=0;
 
 	//Do nothing if the ressource_tracker order hasn't been processed yet
-	if(! echo.get_ressource_tracker(id))
+	if(! echo.get_resource_tracker(id))
 		return;
-	int total_ressource_level = echo.get_ressource_tracker(id)->get_total_level();
+	int total_ressource_level = echo.get_resource_tracker(id)->get_total_level();
 
 	int worker_ratio=0;
 	int explorer_ratio=0;
@@ -1486,7 +1486,7 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 	to_assign=strategy.base_swarm_units_assigned;
 
 	///Double units when resource level is low
-	if(total_ressource_level <= (strategy.base_swarm_low_wheat_trigger_ammount * 25))
+	if(total_ressource_level <= (strategy.base_swarm_low_wheat_trigger_amount * 25))
 		to_assign*=2;
 
 	///Half units if world is hungry
@@ -1519,7 +1519,7 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 		needed_explorers+=strategy.fruit_phase_extra_number_of_explorers;
 	if(defend_explorers)
 		needed_explorers+=(stat->totalUnit * strategy.defense_explorer_population_percent) / 100;
-	if(explorer_attack_preperation_phase)
+	if(explorer_attack_preparation_phase)
 		needed_explorers+=strategy.offense_explorer_number;
 
 	if(total_explorers<needed_explorers)
@@ -1528,9 +1528,9 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 		explorer_ratio=0;
 
 	///Warriors are constructed during the war preperation phase
-	if(war_preperation)
+	if(war_preparation)
 	{
-		warrior_ratio=strategy.war_preperation_swarm_warrior_ratio;
+		warrior_ratio=strategy.war_preparation_swarm_warrior_ratio;
 	}
 	else
 	{
@@ -1770,7 +1770,7 @@ int NewNicowar::choose_building_to_attack(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyRessource);
+	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
@@ -1843,7 +1843,7 @@ void NewNicowar::control_attacks(Echo& echo)
 	
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyRessource);
+	gi_building.add_obstacle(new Entities::AnyResource);
 	if(num_pool == 0)
 		gi_building.add_obstacle(new Entities::Water);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
@@ -1868,7 +1868,7 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 {
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyRessource);
+	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
 
 	if(target==-1 || !echo.player->game->teams[target]->isAlive)
@@ -1920,7 +1920,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyRessource);
+	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
@@ -2595,8 +2595,8 @@ void NewNicowar::update_farming(Echo& echo)
 				const int wood_dist = 6;
 				const int wheat_dist = 10;
 
-				bool is_wood = mi.is_ressource(x, y, WOOD);
-				bool is_wheat = mi.is_ressource(x, y, CORN);
+				bool is_wood = mi.is_resource(x, y, WOOD);
+				bool is_wheat = mi.is_resource(x, y, CORN);
 
 				bool is_in_wheat_zone = water_gradient.get_height(x,y) < wheat_dist;
 				bool is_in_wood_zone = water_gradient.get_height(x,y) < wood_dist;
@@ -2615,19 +2615,19 @@ void NewNicowar::update_farming(Echo& echo)
 				//Expand the farm horizontally
 				if((x%2==0 && y%2==1))
 				{
-					if(is_wood && mi.is_ressource(x-1, y, WOOD) && !mi.is_ressource(x+1,y) && water_gradient.get_height(x+1, y) < wood_dist && mi.is_grass(x+1,y))
+					if(is_wood && mi.is_resource(x-1, y, WOOD) && !mi.is_resource(x+1,y) && water_gradient.get_height(x+1, y) < wood_dist && mi.is_grass(x+1,y))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_ressource(x-1, y, CORN) && !mi.is_ressource(x+1,y) && water_gradient.get_height(x+1, y) < wheat_dist && mi.is_grass(x+1,y))
+					else if(is_wheat && mi.is_resource(x-1, y, CORN) && !mi.is_resource(x+1,y) && water_gradient.get_height(x+1, y) < wheat_dist && mi.is_grass(x+1,y))
 					{
 						farm_spot = true;
 					}
-					else if(is_wood && mi.is_ressource(x+1, y, WOOD) && !mi.is_ressource(x-1,y) && water_gradient.get_height(x-1, y) < wood_dist && mi.is_grass(x-1,y))
+					else if(is_wood && mi.is_resource(x+1, y, WOOD) && !mi.is_resource(x-1,y) && water_gradient.get_height(x-1, y) < wood_dist && mi.is_grass(x-1,y))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_ressource(x+1, y, CORN) && !mi.is_ressource(x-1,y) && water_gradient.get_height(x-1, y) < wheat_dist && mi.is_grass(x-1,y))
+					else if(is_wheat && mi.is_resource(x+1, y, CORN) && !mi.is_resource(x-1,y) && water_gradient.get_height(x-1, y) < wheat_dist && mi.is_grass(x-1,y))
 					{
 						farm_spot = true;
 					}
@@ -2636,19 +2636,19 @@ void NewNicowar::update_farming(Echo& echo)
 				//Expand the farm vertically
 				if((x%2==1 && y%2==0))
 				{
-					if(is_wood && mi.is_ressource(x, y-1, WOOD) && !mi.is_ressource(x,y+1) && water_gradient.get_height(x, y+1) < wood_dist && mi.is_grass(x,y+1))
+					if(is_wood && mi.is_resource(x, y-1, WOOD) && !mi.is_resource(x,y+1) && water_gradient.get_height(x, y+1) < wood_dist && mi.is_grass(x,y+1))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_ressource(x, y-1, CORN) && !mi.is_ressource(x,y+1) && water_gradient.get_height(x, y+1) < wheat_dist && mi.is_grass(x,y+1))
+					else if(is_wheat && mi.is_resource(x, y-1, CORN) && !mi.is_resource(x,y+1) && water_gradient.get_height(x, y+1) < wheat_dist && mi.is_grass(x,y+1))
 					{
 						farm_spot = true;
 					}
-					else if(is_wood && mi.is_ressource(x, y+1, WOOD) && !mi.is_ressource(x,y-1) && water_gradient.get_height(x, y-1) < wood_dist && mi.is_grass(x,y-1))
+					else if(is_wood && mi.is_resource(x, y+1, WOOD) && !mi.is_resource(x,y-1) && water_gradient.get_height(x, y-1) < wood_dist && mi.is_grass(x,y-1))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_ressource(x, y+1, CORN) && !mi.is_ressource(x,y-1) && water_gradient.get_height(x, y-1) < wheat_dist && mi.is_grass(x,y-1))
+					else if(is_wheat && mi.is_resource(x, y+1, CORN) && !mi.is_resource(x,y-1) && water_gradient.get_height(x, y-1) < wheat_dist && mi.is_grass(x,y-1))
 					{
 						farm_spot = true;
 					}

@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef INCLUDED_SDL_GRAPHICCONTEXT_H
-#define INCLUDED_SDL_GRAPHICCONTEXT_H
+#ifndef INCLUDED_SDL_GRAPHIC_CONTEXT_H
+#define INCLUDED_SDL_GRAPHIC_CONTEXT_H
 
 #include "GAGSys.h"
 #include "CursorManager.h"
@@ -39,7 +39,7 @@ namespace GAGCore
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{
-		//! Typical usefull alpha values pre-defined
+		//! Typical useful alpha values pre-defined
 		enum Alpha
 		{
 			ALPHA_TRANSPARENT = 0, //!< constant for transparent alpha
@@ -55,7 +55,7 @@ namespace GAGCore
 		
 		//! Return HSV values in pointers
 		void getHSV(float *hue, float *sat, float *lum);
-		//! Set color from HLS, alpha unctouched
+		//! Set color from HLS, alpha untouched
 		void setHSV(float hue, float sat, float lum);
 		
 		//! pack components in a 32 bits int given SDL screen values
@@ -82,7 +82,7 @@ namespace GAGCore
 	
 	class Sprite;
 	
-	//! Font with a given foundery, shape and color
+	//! Font with a given foundry, shape and color
 	class Font
 	{
 	public:
@@ -159,7 +159,7 @@ namespace GAGCore
 		friend struct Color;
 		friend class GraphicContext;
 		//! the underlying software SDL surface
-		SDL_Surface *sdlsurface;
+		SDL_Surface *sdlSurface;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
 		//! this surface has been modified since latest blit
@@ -176,9 +176,9 @@ namespace GAGCore
 		void _drawHorzLine(int x, int y, int l, const Color& color);
 		
 	protected:
-		//! Protectedconstructor, only called by GraphicContext
-		DrawableSurface() { sdlsurface = NULL; }
-		//! allocate textre in GPU for this surface
+		//! Protected constructor, only called by GraphicContext
+		DrawableSurface() { sdlSurface = NULL; }
+		//! allocate texture in GPU for this surface
 		void allocateTexture(void);
 		//! reset the texture size upon changes
 		void initTextureSize(void);
@@ -209,8 +209,8 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum);
 		
 		// accessors
-		virtual int getW(void) { return sdlsurface->w; } 
-		virtual int getH(void) { return sdlsurface->h; }
+		virtual int getW(void) { return sdlSurface->w; } 
+		virtual int getH(void) { return sdlSurface->h; }
 		
 		// capability querying
 		virtual bool canDrawStretchedSprite(void) { return false; }
@@ -253,7 +253,7 @@ namespace GAGCore
 		void drawString(float x, float y, Font *font, const std::string &msg, float w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 
-		//! Draw an alpha map of size mapW, mapH using a specific color at coordinantes x, y using cells of size cellW, cellH
+		//! Draw an alpha map of size mapW, mapH using a specific color at coordinates x, y using cells of size cellW, cellH
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		
@@ -269,7 +269,7 @@ namespace GAGCore
 		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawString(int x, int y, Font *font, int i);
 		
-		// This is for translation textshot code, it works by trapping calls to the getString function in the translation StringTables,
+		// This is for translation text shot code, it works by trapping calls to the getString function in the translation StringTables,
 		// then later in drawString, if we are drawing one of the found strings returned by StringTable, it will add it to the list of
 		// rectangles that represent found texts. Just before the next frame begins to draw, all of the rectangle pictures are flushed
 		// into bmp's. This is done because we want the translation pictures to be done when *all* of the screen is already drawn (when
@@ -310,11 +310,11 @@ namespace GAGCore
 		enum OptionFlags
 		{
 			DEFAULT = 0,
-			USEGPU = 1,
-			FULLSCREEN = 2,
+			USE_GPU = 1,
+			FULL_SCREEN = 2,
 			//TODO: either implement "resizable" as a resizable gui or explain what this does
 			RESIZABLE = 8,
-			CUSTOMCURSOR = 16,
+			CUSTOM_CURSOR = 16,
 		};
 		
 	protected:
@@ -347,7 +347,7 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum) { }
 		
 		// reimplemented drawing commands for HW (GPU / GL) accelerated version
-		virtual bool canDrawStretchedSprite(void) { return (optionFlags & USEGPU) != 0; }
+		virtual bool canDrawStretchedSprite(void) { return (optionFlags & USE_GPU) != 0; }
 		
 		virtual void drawPixel(int x, int y, const Color& color);
 		virtual void drawPixel(float x, float y, const Color& color);

@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUITEXTAREA_H
-#define __GUITEXTAREA_H
+#ifndef __GUI_TEXT_AREA_H
+#define __GUI_TEXT_AREA_H
 
 #include "GUIBase.h"
 #include <vector>
@@ -37,7 +37,7 @@ namespace GAGGUI
 	{	
 	protected:
 		bool readOnly;
-		std::string spritelocation;
+		std::string spriteLocation;
 		int spriteWidth;
 		GAGCore::Font *font;
 		size_t areaHeight;
@@ -72,7 +72,7 @@ namespace GAGGUI
 				const std::string font,
 				bool readOnly=true,
 				const std::string text="",
-				const std::string spritelocation="");
+				const std::string spriteLocation="");
 		TextArea(int x,
 				int y,
 				int w,
@@ -84,7 +84,7 @@ namespace GAGGUI
 				const std::string &tooltipFont,
 				bool readOnly=true,
 				const std::string text="",
-				const std::string spritelocation="");
+				const std::string spriteLocation="");
 		virtual ~TextArea();
 	
 		virtual void internalInit(void);

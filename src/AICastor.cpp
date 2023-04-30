@@ -2903,9 +2903,9 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 	return shared_ptr<Order>();
 }
 
-void AICastor::computeRessourcesCluster()
+void AICastor::computeResourcesCluster()
 {
-	fprintf(logFile,  "computeRessourcesCluster()\n");
+	fprintf(logFile,  "computeResourcesCluster()\n");
 	int w=map->w;
 	int h=map->h;
 	//int wMask=map->wMask;
@@ -2981,7 +2981,7 @@ void AICastor::computeRessourcesCluster()
 	for (int id=1; id<65536; id++)
 		if (usedId[id])
 			used++;
-	fprintf(logFile,  "computeRessourcesCluster(), used=%d\n", used);
+	fprintf(logFile,  "computeResourcesCluster(), used=%d\n", used);
 }
 
 void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)

@@ -99,12 +99,12 @@ SettingsScreen::SettingsScreen()
 	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"));
 	addWidgetToGroup(modeListNote, generalGroup);
 	
-	fullscreen=new OnOffButton(230, 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::FULLSCREEN, FULLSCREEN);
+	fullscreen=new OnOffButton(230, 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::FULL_SCREEN, FULLSCREEN);
 	addWidgetToGroup(fullscreen, generalGroup);
 	fullscreenText=new Text(260, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 180);
 	addWidgetToGroup(fullscreenText, generalGroup);
 	
-	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
+	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USE_GPU, USEGL);
 	addWidgetToGroup(usegpu, generalGroup);
 	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[OpenGL]"), 180);
 	addWidgetToGroup(usegpuText, generalGroup);
@@ -114,7 +114,7 @@ SettingsScreen::SettingsScreen()
 	lowqualityText=new Text(260, 90 + 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 180);
 	addWidgetToGroup(lowqualityText, generalGroup);
 
-	customcur=new OnOffButton(230, 90 + 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::CUSTOMCURSOR, CUSTOMCUR);
+	customcur=new OnOffButton(230, 90 + 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::CUSTOM_CURSOR, CUSTOMCUR);
 	addWidgetToGroup(customcur, generalGroup);
 	customcurText=new Text(260, 90 + 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[customcur]"), 180);
 	addWidgetToGroup(customcurText, generalGroup);
@@ -348,10 +348,10 @@ void SettingsScreen::addNumbersFor(int low, int high, Number* widget)
 void SettingsScreen::setFullscreen()
 {
     if(fullscreen->getState()){
-        globalContainer->settings.screenFlags |= GraphicContext::FULLSCREEN;
+        globalContainer->settings.screenFlags |= GraphicContext::FULL_SCREEN;
         globalContainer->settings.screenFlags &= ~(GraphicContext::RESIZABLE);
     }else{
-        globalContainer->settings.screenFlags &= ~(GraphicContext::FULLSCREEN);
+        globalContainer->settings.screenFlags &= ~(GraphicContext::FULL_SCREEN);
         globalContainer->settings.screenFlags |= GraphicContext::RESIZABLE;
     }
     updateGfxCtx();
@@ -568,11 +568,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			if (usegpu->getState())
 			{
-				globalContainer->settings.screenFlags |= GraphicContext::USEGPU;
+				globalContainer->settings.screenFlags |= GraphicContext::USE_GPU;
 			}
 			else
 			{
-				globalContainer->settings.screenFlags &= ~(GraphicContext::USEGPU);
+				globalContainer->settings.screenFlags &= ~(GraphicContext::USE_GPU);
 			}
 			updateGfxCtx();
 		}
@@ -580,11 +580,11 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			if (customcur->getState())
 			{
-				globalContainer->settings.screenFlags |= GraphicContext::CUSTOMCURSOR;
+				globalContainer->settings.screenFlags |= GraphicContext::CUSTOM_CURSOR;
 			}
 			else
 			{
-				globalContainer->settings.screenFlags &= ~(GraphicContext::CUSTOMCURSOR);
+				globalContainer->settings.screenFlags &= ~(GraphicContext::CUSTOM_CURSOR);
 			}
 			updateGfxCtx();
 		}
@@ -617,7 +617,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void SettingsScreen::setVisibilityFromGraphicType(void)
 {
-	rebootWarning->visible = globalContainer->settings.screenFlags & GraphicContext::USEGPU;
+	rebootWarning->visible = globalContainer->settings.screenFlags & GraphicContext::USE_GPU;
 }
 
 void SettingsScreen::setVisibilityFromAudioSettings(void)
@@ -630,7 +630,7 @@ void SettingsScreen::setVisibilityFromAudioSettings(void)
 
 void SettingsScreen::updateGfxCtx(void)
 {
-	if ((globalContainer->settings.screenFlags & GraphicContext::USEGPU) == 0)
+	if ((globalContainer->settings.screenFlags & GraphicContext::USE_GPU) == 0)
 		globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenFlags);
 	setVisibilityFromGraphicType();
 	actDisplay->setText(actDisplayModeToString().c_str());
@@ -641,7 +641,7 @@ std::string SettingsScreen::actDisplayModeToString(void)
 {
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 		oss << " GL";
 	else
 		oss << " SDL";

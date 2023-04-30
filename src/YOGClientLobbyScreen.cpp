@@ -262,16 +262,16 @@ void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent
 	Uint8 type = event->getEventType();
 	if(type == YEConnectionLost)
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"), Toolkit::getStringTable()->getString("[ok]"));
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"), Toolkit::getStringTable()->getString("[ok]"));
 		parent->completeEndExecute(ConnectionLost);
 	}
 	else if(type == YEPlayerBanned)
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your username was banned]"), Toolkit::getStringTable()->getString("[ok]"));
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Your username was banned]"), Toolkit::getStringTable()->getString("[ok]"));
 	}
 	else if(type == YEIPBanned)
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your IP address was temporarily banned]"), Toolkit::getStringTable()->getString("[ok]"));
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Your IP address was temporarily banned]"), Toolkit::getStringTable()->getString("[ok]"));
 	}
 }
 

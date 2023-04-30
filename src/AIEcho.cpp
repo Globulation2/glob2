@@ -84,12 +84,12 @@ Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Pl
 			entity = new Entities::AnyBuilding;
 			entity->load(stream, player, versionMinor);
 		break;
-		case Entities::ERessource:
+		case Entities::EResource:
 			entity = new Entities::Resource;
 			entity->load(stream, player, versionMinor);
 		break;
-		case Entities::EAnyRessource:
-			entity = new Entities::AnyRessource;
+		case Entities::EAnyResource:
+			entity = new Entities::AnyResource;
 			entity->load(stream, player, versionMinor);
 		break;
 		case Entities::EWater:
@@ -330,7 +330,7 @@ void Entities::AnyBuilding::save(GAGCore::OutputStream *stream)
 
 
 
-Entities::Resource::Resource(int ressource_type) : ressource_type(ressource_type)
+Entities::Resource::Resource(int ressource_type) : resource_type(ressource_type)
 {
 
 }
@@ -339,7 +339,7 @@ Entities::Resource::Resource(int ressource_type) : ressource_type(ressource_type
 
 bool Entities::Resource::is_entity(Map* map, int posx, int posy)
 {
-	if(map->isResourceTakeable(posx, posy, ressource_type))
+	if(map->isResourceTakeable(posx, posy, resource_type))
 	{
 		return true;
 	}
@@ -351,7 +351,7 @@ bool Entities::Resource::is_entity(Map* map, int posx, int posy)
 bool Entities::Resource::operator==(const Entity& rhs)
 {
 	if(typeid(rhs)==typeid(Entities::Resource) &&
-	   static_cast<const Entities::Resource&>(rhs).ressource_type==ressource_type
+	   static_cast<const Entities::Resource&>(rhs).resource_type==resource_type
 	    )
 		return true;
 	return false;
@@ -361,7 +361,7 @@ bool Entities::Resource::operator==(const Entity& rhs)
 
 bool Entities::Resource::can_change()
 {
-	if(ressource_type==WOOD || ressource_type==CORN || ressource_type==ALGA)
+	if(resource_type==WOOD || resource_type==CORN || resource_type==ALGA)
 		return true;
 	return false;
 }
@@ -370,7 +370,7 @@ bool Entities::Resource::can_change()
 
 Entities::EntityType Entities::Resource::get_type()
 {
-	return Entities::ERessource;
+	return Entities::EResource;
 }
 
 
@@ -378,7 +378,7 @@ Entities::EntityType Entities::Resource::get_type()
 bool Entities::Resource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("Resource");
-	ressource_type = stream->readSint32("ressource_type");
+	resource_type = stream->readSint32("ressource_type");
 	stream->readLeaveSection();
 	return true;
 }
@@ -388,20 +388,20 @@ bool Entities::Resource::load(GAGCore::InputStream *stream, Player *player, Sint
 void Entities::Resource::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("Resource");
-	stream->writeSint32(ressource_type, "ressource_type");
+	stream->writeSint32(resource_type, "ressource_type");
 	stream->writeLeaveSection();
 }
 
 
 
-Entities::AnyRessource:: AnyRessource()
+Entities::AnyResource:: AnyResource()
 {
 
 }
 
 
 
-bool Entities::AnyRessource:: is_entity(Map* map, int posx, int posy)
+bool Entities::AnyResource:: is_entity(Map* map, int posx, int posy)
 {
 	if(map->isResource(posx, posy))
 	{
@@ -412,30 +412,30 @@ bool Entities::AnyRessource:: is_entity(Map* map, int posx, int posy)
 
 
 
-bool Entities::AnyRessource::operator==(const Entity& rhs)
+bool Entities::AnyResource::operator==(const Entity& rhs)
 {
-	if(typeid(rhs)==typeid(Entities::AnyRessource))
+	if(typeid(rhs)==typeid(Entities::AnyResource))
 		return true;
 	return false;
 }
 
 
 
-bool Entities::AnyRessource::can_change()
+bool Entities::AnyResource::can_change()
 {
 	return true;
 }
 
 
 
-Entities::EntityType Entities::AnyRessource::get_type()
+Entities::EntityType Entities::AnyResource::get_type()
 {
-	return Entities::EAnyRessource;
+	return Entities::EAnyResource;
 }
 
 
 
-bool Entities::AnyRessource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool Entities::AnyResource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("AnyRessource");
 	stream->readLeaveSection();
@@ -444,7 +444,7 @@ bool Entities::AnyRessource::load(GAGCore::InputStream *stream, Player *player, 
 
 
 
-void Entities::AnyRessource::save(GAGCore::OutputStream *stream)
+void Entities::AnyResource::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AnyRessource");
 	stream->writeLeaveSection();
@@ -2515,12 +2515,12 @@ BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *strea
 			condition=new Upgradable;
 			condition->load(stream, player, versionMinor);
 		break;
-		case CRessourceTrackerAmount:
-			condition=new RessourceTrackerAmount;
+		case CResourceTrackerAmount:
+			condition=new ResourceTrackerAmount;
 			condition->load(stream, player, versionMinor);
 		break;
-		case CRessourceTrackerAge:
-			condition=new RessourceTrackerAge;
+		case CResourceTrackerAge:
+			condition=new ResourceTrackerAge;
 			condition->load(stream, player, versionMinor);
 		break;
 		case CTicksPassed:
@@ -2811,43 +2811,43 @@ void Upgradable::save(GAGCore::OutputStream *stream)
 
 
 
-RessourceTrackerAmount::RessourceTrackerAmount(int amount, TrackerMethod tracker_method) : amount(amount), tracker_method(tracker_method)
+ResourceTrackerAmount::ResourceTrackerAmount(int amount, TrackerMethod tracker_method) : amount(amount), tracker_method(tracker_method)
 {
 
 }
 
 
 
-RessourceTrackerAmount::RessourceTrackerAmount()
+ResourceTrackerAmount::ResourceTrackerAmount()
 {
 
 }
 
 
 
-bool RessourceTrackerAmount::passes(Echo& echo, int id)
+bool ResourceTrackerAmount::passes(Echo& echo, int id)
 {
 	if(tracker_method==Greater)
 	{
-		return echo.get_ressource_tracker(id)->get_total_level() > amount;
+		return echo.get_resource_tracker(id)->get_total_level() > amount;
 	}
 	else if(tracker_method==Lesser)
 	{
-		return echo.get_ressource_tracker(id)->get_total_level() < amount;
+		return echo.get_resource_tracker(id)->get_total_level() < amount;
 	}
 	return false;
 }
 
 
 
-BuildingConditionType RessourceTrackerAmount::get_type()
+BuildingConditionType ResourceTrackerAmount::get_type()
 {
-	return CRessourceTrackerAmount;
+	return CResourceTrackerAmount;
 }
 
 
 
-bool RessourceTrackerAmount::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool ResourceTrackerAmount::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("RessourceTrackerAmount");
 	amount=stream->readUint32("amount");
@@ -2858,7 +2858,7 @@ bool RessourceTrackerAmount::load(GAGCore::InputStream *stream, Player *player, 
 
 
 
-void RessourceTrackerAmount::save(GAGCore::OutputStream *stream)
+void ResourceTrackerAmount::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("RessourceTrackerAmount");
 	stream->writeUint32(amount, "amount");
@@ -2868,43 +2868,43 @@ void RessourceTrackerAmount::save(GAGCore::OutputStream *stream)
 
 
 
-RessourceTrackerAge::RessourceTrackerAge(int age, TrackerMethod tracker_method) : age(age), tracker_method(tracker_method)
+ResourceTrackerAge::ResourceTrackerAge(int age, TrackerMethod tracker_method) : age(age), tracker_method(tracker_method)
 {
 
 }
 
 
 
-RessourceTrackerAge::RessourceTrackerAge()
+ResourceTrackerAge::ResourceTrackerAge()
 {
 
 }
 
 
 
-bool RessourceTrackerAge::passes(Echo& echo, int id)
+bool ResourceTrackerAge::passes(Echo& echo, int id)
 {
 	if(tracker_method==Greater)
 	{
-		return echo.get_ressource_tracker(id)->get_age() > age;
+		return echo.get_resource_tracker(id)->get_age() > age;
 	}
 	else if(tracker_method==Lesser)
 	{
-		return echo.get_ressource_tracker(id)->get_age() < age;
+		return echo.get_resource_tracker(id)->get_age() < age;
 	}
 	return false;
 }
 
 
 
-BuildingConditionType RessourceTrackerAge::get_type()
+BuildingConditionType ResourceTrackerAge::get_type()
 {
-	return CRessourceTrackerAge;
+	return CResourceTrackerAge;
 }
 
 
 
-bool RessourceTrackerAge::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool ResourceTrackerAge::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("RessourceTrackerAge");
 	age=stream->readUint32("age");
@@ -2915,7 +2915,7 @@ bool RessourceTrackerAge::load(GAGCore::InputStream *stream, Player *player, Sin
 
 
 
-void RessourceTrackerAge::save(GAGCore::OutputStream *stream)
+void ResourceTrackerAge::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("RessourceTrackerAge");
 	stream->writeUint32(age, "age");
@@ -3014,16 +3014,16 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 			mo=new DestroyBuilding;
 			mo->load(stream, player, versionMinor);
 			break;
-		case MAddRessourceTracker:
-			mo=new AddRessourceTracker;
+		case MAddResourceTracker:
+			mo=new AddResourceTracker;
 			mo->load(stream, player, versionMinor);
 			break;
-		case MPauseRessourceTracker:
-			mo=new PauseRessourceTracker;
+		case MPauseResourceTracker:
+			mo=new PauseResourceTracker;
 			mo->load(stream, player, versionMinor);
 			break;
-		case MUnPauseRessourceTracker:
-			mo=new UnPauseRessourceTracker;
+		case MUnPauseResourceTracker:
+			mo=new UnPauseResourceTracker;
 			mo->load(stream, player, versionMinor);
 			break;
 		case MChangeFlagSize:
@@ -3230,14 +3230,14 @@ void DestroyBuilding::save(GAGCore::OutputStream *stream)
 
 
 
-RessourceTracker::RessourceTracker(Echo& echo, int building_id, int length, int resource) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id), resource(resource)
+ResourceTracker::ResourceTracker(Echo& echo, int building_id, int length, int resource) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id), resource(resource)
 {
 
 }
 
 
 
-void RessourceTracker::tick()
+void ResourceTracker::tick()
 {
 	timer++;
 	if((timer%10)==0)
@@ -3251,7 +3251,7 @@ void RessourceTracker::tick()
 }
 
 
-int RessourceTracker::get_total_level()
+int ResourceTracker::get_total_level()
 {
 	int sum=0;
 	for(unsigned int n=0; n<record.size(); ++n)
@@ -3263,7 +3263,7 @@ int RessourceTracker::get_total_level()
 
 
 
-bool RessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool ResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("RessourceTracker");
 	stream->readEnterSection("record");
@@ -3287,7 +3287,7 @@ bool RessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32
 
 
 
-void RessourceTracker::save(GAGCore::OutputStream *stream)
+void ResourceTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("RessourceTracker");
 	stream->writeEnterSection("record");
@@ -3309,21 +3309,21 @@ void RessourceTracker::save(GAGCore::OutputStream *stream)
 
 
 
-AddRessourceTracker::AddRessourceTracker(int length, int resource, int building_id) : length(length), building_id(building_id), resource(resource)
+AddResourceTracker::AddResourceTracker(int length, int resource, int building_id) : length(length), building_id(building_id), resource(resource)
 {
 	
 }
 
 
 
-void AddRessourceTracker::modify(Echo& echo)
+void AddResourceTracker::modify(Echo& echo)
 {
-	echo.add_ressource_tracker(new RessourceTracker(echo, building_id, length, resource), building_id);
+	echo.add_resource_tracker(new ResourceTracker(echo, building_id, length, resource), building_id);
 }
 
 
 
-boost::logic::tribool AddRessourceTracker::wait(Echo& echo)
+boost::logic::tribool AddResourceTracker::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
 		return true;
@@ -3335,7 +3335,7 @@ boost::logic::tribool AddRessourceTracker::wait(Echo& echo)
 
 
 
-bool AddRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool AddResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("AddRessourceTracker");
 	ManagementOrder::load(stream, player, versionMinor);
@@ -3348,7 +3348,7 @@ bool AddRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sin
 
 
 
-void AddRessourceTracker::save(GAGCore::OutputStream *stream)
+void AddResourceTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AddRessourceTracker");
 	ManagementOrder::save(stream);
@@ -3360,21 +3360,21 @@ void AddRessourceTracker::save(GAGCore::OutputStream *stream)
 
 
 
-PauseRessourceTracker::PauseRessourceTracker(int building_id) : building_id(building_id)
+PauseResourceTracker::PauseResourceTracker(int building_id) : building_id(building_id)
 {
 
 }
 
 
 
-void PauseRessourceTracker::modify(Echo& echo)
+void PauseResourceTracker::modify(Echo& echo)
 {
-	echo.pause_ressource_tracker(building_id);
+	echo.pause_resource_tracker(building_id);
 }
 
 
 
-boost::logic::tribool PauseRessourceTracker::wait(Echo& echo)
+boost::logic::tribool PauseResourceTracker::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
 		return true;
@@ -3386,7 +3386,7 @@ boost::logic::tribool PauseRessourceTracker::wait(Echo& echo)
 
 
 
-bool PauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool PauseResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("PauseRessourceTracker");
 	ManagementOrder::load(stream, player, versionMinor);
@@ -3397,7 +3397,7 @@ bool PauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player, S
 
 
 
-void PauseRessourceTracker::save(GAGCore::OutputStream *stream)
+void PauseResourceTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("PauseRessourceTracker");
 	ManagementOrder::save(stream);
@@ -3407,21 +3407,21 @@ void PauseRessourceTracker::save(GAGCore::OutputStream *stream)
 
 
 
-UnPauseRessourceTracker::UnPauseRessourceTracker(int building_id) : building_id(building_id)
+UnPauseResourceTracker::UnPauseResourceTracker(int building_id) : building_id(building_id)
 {
 
 }
 
 
 
-void UnPauseRessourceTracker::modify(Echo& echo)
+void UnPauseResourceTracker::modify(Echo& echo)
 {
-	echo.unpause_ressource_tracker(building_id);
+	echo.unpause_resource_tracker(building_id);
 }
 
 
 
-boost::logic::tribool UnPauseRessourceTracker::wait(Echo& echo)
+boost::logic::tribool UnPauseResourceTracker::wait(Echo& echo)
 {
 	if(echo.get_building_register().is_building_found(building_id))
 		return true;
@@ -3433,7 +3433,7 @@ boost::logic::tribool UnPauseRessourceTracker::wait(Echo& echo)
 
 
 
-bool UnPauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool UnPauseResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("UnPauseRessourceTracker");
 	ManagementOrder::load(stream, player, versionMinor);
@@ -3444,7 +3444,7 @@ bool UnPauseRessourceTracker::load(GAGCore::InputStream *stream, Player *player,
 
 
 
-void UnPauseRessourceTracker::save(GAGCore::OutputStream *stream)
+void UnPauseResourceTracker::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("UnPauseRessourceTracker");
 	ManagementOrder::save(stream);
@@ -3719,13 +3719,13 @@ void AddArea::modify(Echo& echo)
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
 				break;
 		}
 	}
@@ -3807,13 +3807,13 @@ void RemoveArea::modify(Echo& echo)
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
 				break;
 		}
 	}
@@ -4495,14 +4495,14 @@ bool MapInfo::is_discovered(int x, int y)
 
 
 
-bool MapInfo::is_ressource(int x, int y, int type)
+bool MapInfo::is_resource(int x, int y, int type)
 {
 	return echo.player->map->isResourceTakeable(x, y, type);
 }
 
 
 
-bool MapInfo::is_ressource(int x, int y)
+bool MapInfo::is_resource(int x, int y)
 {
 	return echo.player->map->isResource(x, y);
 }
@@ -4553,7 +4553,7 @@ bool MapInfo::backs_onto_sand(int x, int y)
 
 
 
-int MapInfo::get_ammount_ressource(int x, int y)
+int MapInfo::get_amount_resource(int x, int y)
 {
 	return echo.player->map->getResource(x, y).amount;
 }
@@ -4613,45 +4613,45 @@ void Echo::update_management_orders()
 
 
 
-void Echo::add_ressource_tracker(Management::RessourceTracker* rt, int building_id)
+void Echo::add_resource_tracker(Management::ResourceTracker* rt, int building_id)
 {
-	ressource_trackers[building_id]=boost::make_tuple(boost::shared_ptr<RessourceTracker>(rt), true);
+	resource_trackers[building_id]=boost::make_tuple(boost::shared_ptr<ResourceTracker>(rt), true);
 }
 
 
 
-boost::shared_ptr<Management::RessourceTracker> Echo::get_ressource_tracker(int building_id)
+boost::shared_ptr<Management::ResourceTracker> Echo::get_resource_tracker(int building_id)
 {
-	if(ressource_trackers.find(building_id)==ressource_trackers.end())
-		return boost::shared_ptr<Management::RessourceTracker>();
-	return ressource_trackers[building_id].get<0>();
+	if(resource_trackers.find(building_id)==resource_trackers.end())
+		return boost::shared_ptr<Management::ResourceTracker>();
+	return resource_trackers[building_id].get<0>();
 }
 
 
 
-void Echo::pause_ressource_tracker(int building_id)
+void Echo::pause_resource_tracker(int building_id)
 {
-	ressource_trackers[building_id].get<1>()=false;
+	resource_trackers[building_id].get<1>()=false;
 }
 
 
 
-void Echo::unpause_ressource_tracker(int building_id)
+void Echo::unpause_resource_tracker(int building_id)
 {
-	ressource_trackers[building_id].get<1>()=true;
+	resource_trackers[building_id].get<1>()=true;
 }
 
 
 
-void Echo::update_ressource_trackers()
+void Echo::update_resource_trackers()
 {
-	for(std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator i = ressource_trackers.begin(); i!=ressource_trackers.end();)
+	for(std::map<int, boost::tuple<boost::shared_ptr<Management::ResourceTracker>, bool> >::iterator i = resource_trackers.begin(); i!=resource_trackers.end();)
 	{
 		if(!br.is_building_found(i->first) && !br.is_building_pending(i->first))
 		{
-			std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator current=i;
+			std::map<int, boost::tuple<boost::shared_ptr<Management::ResourceTracker>, bool> >::iterator current=i;
 			++i;
-			ressource_trackers.erase(current);
+			resource_trackers.erase(current);
 			continue;
 		}
 		else if(br.is_building_found(i->first))
@@ -4744,11 +4744,11 @@ void Echo::check_fruit()
 	{
 		for(int y=0; y<mi.get_height(); ++y)
 		{
-			if(mi.is_ressource(x, y, CHERRY))
+			if(mi.is_resource(x, y, CHERRY))
 				is_fruit=true;
-			if(mi.is_ressource(x, y, ORANGE))
+			if(mi.is_resource(x, y, ORANGE))
 				is_fruit=true;
-			if(mi.is_ressource(x, y, PRUNE))
+			if(mi.is_resource(x, y, PRUNE))
 				is_fruit=true;
 			if(is_fruit)
 				return;
@@ -4824,9 +4824,9 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	{
 		stream->readEnterSection(ressourceTrackerIndex);
 		int id=stream->readUint32("echo_building_id");
-		boost::shared_ptr<RessourceTracker> rt(new RessourceTracker(*this, stream, player, versionMinor));
+		boost::shared_ptr<ResourceTracker> rt(new ResourceTracker(*this, stream, player, versionMinor));
 		bool activated=stream->readUint8("active");
-		ressource_trackers[id]=boost::make_tuple(rt, activated);
+		resource_trackers[id]=boost::make_tuple(rt, activated);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -4932,9 +4932,9 @@ void Echo::save(GAGCore::OutputStream *stream)
 	signature_write(stream);
 
 	stream->writeEnterSection("ressource_trackers");
-	stream->writeUint32(ressource_trackers.size(), "size");
+	stream->writeUint32(resource_trackers.size(), "size");
 	Uint32 ressourceTrackerIndex=0;
-	for(tracker_iterator i=ressource_trackers.begin(); i!=ressource_trackers.end(); ++ressourceTrackerIndex, ++i)
+	for(tracker_iterator i=resource_trackers.begin(); i!=resource_trackers.end(); ++ressourceTrackerIndex, ++i)
 	{
 		stream->writeEnterSection(ressourceTrackerIndex);
 		stream->writeUint32(i->first, "echo_building_id");
@@ -5048,7 +5048,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 	if(update_gm)
 		gm->update();
 	br.tick();
-	update_ressource_trackers();
+	update_resource_trackers();
 	update_management_orders();
 	echoai->tick(*this);
 	update_management_orders();
@@ -5132,12 +5132,12 @@ void ReachToInfinity::tick(Echo& echo)
 				mo_ratios->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 				echo.add_management_order(mo_ratios);
 
-				ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, *i);
+				ManagementOrder* mo_tracker=new AddResourceTracker(12, CORN, *i);
 				echo.add_management_order(mo_tracker);
 			}
 			if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 			{
-				ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, *i);
+				ManagementOrder* mo_tracker=new AddResourceTracker(12, CORN, *i);
 				echo.add_management_order(mo_tracker);
 			}
 		}
@@ -5439,13 +5439,13 @@ void ReachToInfinity::tick(Echo& echo)
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
@@ -5469,7 +5469,7 @@ void ReachToInfinity::tick(Echo& echo)
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_completion);
 
-			ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, id);
+			ManagementOrder* mo_tracker=new AddResourceTracker(12, CORN, id);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_tracker);
 		}
@@ -5497,13 +5497,13 @@ void ReachToInfinity::tick(Echo& echo)
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
@@ -5523,7 +5523,7 @@ void ReachToInfinity::tick(Echo& echo)
 			echo.add_management_order(mo_ratios);
 
 			//Add a tracker
-			ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, id);
+			ManagementOrder* mo_tracker=new AddResourceTracker(12, CORN, id);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_tracker);
 
@@ -5558,13 +5558,13 @@ void ReachToInfinity::tick(Echo& echo)
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
@@ -5605,13 +5605,13 @@ void ReachToInfinity::tick(Echo& echo)
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
@@ -5635,13 +5635,13 @@ void ReachToInfinity::tick(Echo& echo)
 			//Constraints arround nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 4));
 
@@ -5651,7 +5651,7 @@ void ReachToInfinity::tick(Echo& echo)
 			{
 				gi_enemy.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(*i, false));
 			}
-			gi_enemy.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_enemy.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			bo->add_constraint(new AIEcho::Construction::MaximizedDistance(gi_enemy, 3));
 
 			//Add the building order to the list of orders
@@ -5699,11 +5699,11 @@ void ReachToInfinity::tick(Echo& echo)
 
 				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
-					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_pause=new PauseResourceTracker(buildings[chosen]);
 					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_pause);
 
-					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_unpause=new UnPauseResourceTracker(buildings[chosen]);
 					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_unpause);
 
@@ -5767,11 +5767,11 @@ void ReachToInfinity::tick(Echo& echo)
 
 				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
-					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_pause=new PauseResourceTracker(buildings[chosen]);
 					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_pause);
 
-					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_unpause=new UnPauseResourceTracker(buildings[chosen]);
 					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_unpause);
 
@@ -5799,7 +5799,7 @@ void ReachToInfinity::tick(Echo& echo)
 		inns.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=inns.begin(); i!=inns.end(); ++i)
 		{
-			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
+			boost::shared_ptr<ResourceTracker> rt=echo.get_resource_tracker(*i);
 			if(rt)
 			{
 				if(rt->get_age()>1500)
@@ -5819,7 +5819,7 @@ void ReachToInfinity::tick(Echo& echo)
 		swarms.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
 		{
-			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
+			boost::shared_ptr<ResourceTracker> rt=echo.get_resource_tracker(*i);
 			if(rt)
 			{
 				if(rt->get_age()>2500)
@@ -5849,16 +5849,16 @@ void ReachToInfinity::tick(Echo& echo)
 			{
 				if((x%2==1 && y%2==1))
 				{
-					if((!mi.is_ressource(x, y, WOOD) &&
-					    !mi.is_ressource(x, y, CORN)) &&
+					if((!mi.is_resource(x, y, WOOD) &&
+					    !mi.is_resource(x, y, CORN)) &&
 					    mi.is_forbidden_area(x, y))
 					{
 						mo_non_farming->add_location(x, y);
 					}
 					else
 					{
-						if((mi.is_ressource(x, y, WOOD) ||
-						    mi.is_ressource(x, y, CORN)) &&
+						if((mi.is_resource(x, y, WOOD) ||
+						    mi.is_resource(x, y, CORN)) &&
 						    mi.is_discovered(x, y) &&
 						    !mi.is_forbidden_area(x, y) &&
 						    gradient.get_height(x, y)<10)
@@ -5893,13 +5893,13 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		//Constraints arround nearby settlement
 		AIEcho::Gradients::GradientInfo gi_building;
 		gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-		gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 		//You want to be close to other buildings, but wheat is more important
 		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 2));
 
 		AIEcho::Gradients::GradientInfo gi_building_construction;
 		gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 		//You don't want to be too close
 		bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
@@ -5923,7 +5923,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_completion);
 
-		ManagementOrder* mo_tracker=new AddRessourceTracker(12, CORN, id);
+		ManagementOrder* mo_tracker=new AddResourceTracker(12, CORN, id);
 		mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_tracker);
 	}
