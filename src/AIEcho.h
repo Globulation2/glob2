@@ -50,7 +50,7 @@ namespace AIEcho
 			class AnyTeamBuilding;
 			class AnyBuilding;
 			class Resource;
-			class AnyRessource;
+			class AnyResource;
 			class Water;
 		};
 		class GradientInfo;
@@ -98,10 +98,10 @@ namespace AIEcho
 		class AssignWorkers;
 		class ChangeSwarm;
 		class DestroyBuilding;
-		class RessourceTracker;
-		class AddRessourceTracker;
-		class PauseRessourceTracker;
-		class UnPauseRessourceTracker;
+		class ResourceTracker;
+		class AddResourceTracker;
+		class PauseResourceTracker;
+		class UnPauseResourceTracker;
 		class ChangeFlagSize;
 		class ChangeFlagMinimumLevel;
 		class GlobalManagementOrder;
@@ -156,8 +156,8 @@ namespace AIEcho
 				EBuilding,
 				EAnyTeamBuilding,
 				EAnyBuilding,
-				ERessource,
-				EAnyRessource,
+				EResource,
+				EAnyResource,
 				EWater,
 				EPosition,
 				ESand,
@@ -246,9 +246,9 @@ namespace AIEcho
 			class Resource : public Entity
 			{
 			public:
-				explicit Resource(int ressource_type);
+				explicit Resource(int resource_type);
 			protected:
-				Resource() : ressource_type(-1) {}
+				Resource() : resource_type(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs);
@@ -257,14 +257,14 @@ namespace AIEcho
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			private:
-				int ressource_type;
+				int resource_type;
 			};
 
 			///Matches any resource type
-			class AnyRessource : public Entity
+			class AnyResource : public Entity
 			{
 			public:
-				AnyRessource();
+				AnyResource();
 			protected:
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
@@ -633,13 +633,13 @@ namespace AIEcho
 
 		///The building register is a very important sub system of Echo. It keeps track of buildings.
 		///A seemingly simple process, but very, very important. Buildings you construct are looked for,
-		///found, recorded, etc. Allot of seemingly odd code is found here, meant to work arround some
-		///of the difficulties of other parts of glob2, so that the AI programmer can have a seemless,
+		///found, recorded, etc. Allot of seemingly odd code is found here, meant to work around some
+		///of the difficulties of other parts of glob2, so that the AI programmer can have a seamless,
 		///comfortable interface. Nothing here is directly important to an AI programmer.
 		///The system puts buildings through three stages. The first is where the building order has been
 		///issued by the ai, but it hasn't satisfied its conditions, and thus hasn't been sent to the glob2
 		///engine. The second is where the building conditions are satisfied and the building order
-		///has been sent, but the engine is awaiting the pertimiter of the building to be cleared before
+		///has been sent, but the engine is awaiting the perimeter of the building to be cleared before
 		///it sets the building in place. The third stage is where the building has been set in place,
 		///and was detected on the map. In this stage, an engine gid has been found and a pointer to
 		///the building in memory secured. The fourth stage is where the building is being upgraded.
@@ -648,7 +648,7 @@ namespace AIEcho
 		///If the register knows when a building is being upgraded, it knows when the building is
 		///expected to change in size and to what size, and this bug is solved.
 		///Another unmentioned part is that during the second stage, the building can be timed out if
-		///it was unable to be set for various reasons (ressources grew into its area)
+		///it was unable to be set for various reasons (resources grew into its area)
 		class BuildingRegister
 		{
 		public:
@@ -681,10 +681,10 @@ namespace AIEcho
 			friend class AIEcho::Management::AssignWorkers;
 			friend class AIEcho::Management::ChangeSwarm;
 			friend class AIEcho::Management::DestroyBuilding;
-			friend class AIEcho::Management::RessourceTracker;
-			friend class AIEcho::Management::AddRessourceTracker;
-			friend class AIEcho::Management::PauseRessourceTracker;
-			friend class AIEcho::Management::UnPauseRessourceTracker;
+			friend class AIEcho::Management::ResourceTracker;
+			friend class AIEcho::Management::AddResourceTracker;
+			friend class AIEcho::Management::PauseResourceTracker;
+			friend class AIEcho::Management::UnPauseResourceTracker;
 			friend class AIEcho::Management::ChangeFlagSize;
 			friend class AIEcho::Management::ChangeFlagMinimumLevel;
 			friend class AIEcho::Management::GlobalManagementOrder;
@@ -895,8 +895,8 @@ namespace AIEcho
 			CNotSpecificBuildingType,
 			CBuildingLevel,
 			CUpgradable,
-			CRessourceTrackerAmount,
-			CRessourceTrackerAge,
+			CResourceTrackerAmount,
+			CResourceTrackerAge,
 			CTicksPassed
 		};
 
@@ -1023,8 +1023,8 @@ namespace AIEcho
 			void save(GAGCore::OutputStream *stream);
 		};
 
-		///This class compares the total amount of ressources recorded by a resource tracker.
-		class RessourceTrackerAmount : public BuildingCondition
+		///This class compares the total amount of resources recorded by a resource tracker.
+		class ResourceTrackerAmount : public BuildingCondition
 		{
 		public:
 			enum TrackerMethod
@@ -1033,10 +1033,10 @@ namespace AIEcho
 				Lesser,
 			};
 
-			explicit RessourceTrackerAmount(int amount, TrackerMethod tracker_method);
+			explicit ResourceTrackerAmount(int amount, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			RessourceTrackerAmount();
+			ResourceTrackerAmount();
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -1046,7 +1046,7 @@ namespace AIEcho
 		};
 
 		///This class compares the age provided by a resource tracker 
-		class RessourceTrackerAge : public BuildingCondition
+		class ResourceTrackerAge : public BuildingCondition
 		{
 		public:
 			enum TrackerMethod
@@ -1055,10 +1055,10 @@ namespace AIEcho
 				Lesser,
 			};
 
-			explicit RessourceTrackerAge(int age, TrackerMethod tracker_method);
+			explicit ResourceTrackerAge(int age, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			RessourceTrackerAge();
+			ResourceTrackerAge();
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -1092,9 +1092,9 @@ namespace AIEcho
 			MAssignWorkers,
 			MChangeSwarm,
 			MDestroyBuilding,
-			MAddRessourceTracker,
-			MPauseRessourceTracker,
-			MUnPauseRessourceTracker,
+			MAddResourceTracker,
+			MPauseResourceTracker,
+			MUnPauseResourceTracker,
 			MChangeFlagSize,
 			MChangeFlagMinimumLevel,
 			MAddArea,
@@ -1108,7 +1108,7 @@ namespace AIEcho
 
 
 		///A generic management order can have conditions attached to it. This makes management orders
-		///both convinient and usefull. They will wait for the conditions to be satisfied before
+		///both convenient and useful. They will wait for the conditions to be satisfied before
 		///performing their change.
 		class ManagementOrder
 		{
@@ -1191,16 +1191,16 @@ namespace AIEcho
 
 
 		///A resource tracker is generally used for management, like most other things. A resource trackers job is to keep
-		///track of the number of ressources in a particular building, and returning averages over a small period of time.
+		///track of the number of resources in a particular building, and returning averages over a small period of time.
 		///Its better to use a resource tracker than getting the resource amounts directly, because a resource tracker
 		///returns trends, and small anomalies like an Inn running out of food for only a second don't impact its result greatly.
-		class RessourceTracker
+		class ResourceTracker
 		{
 		public:
-			RessourceTracker(Echo& echo, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : echo(echo)
+			ResourceTracker(Echo& echo, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : echo(echo)
 				{ load(stream, player, versionMinor);  }
-			RessourceTracker(Echo& echo, int building_id, int length, int resource);
-			///Returns the total ressources the building possessed within the time frame
+			ResourceTracker(Echo& echo, int building_id, int length, int resource);
+			///Returns the total resources the building possessed within the time frame
 			int get_total_level();
 			///Returns the number of ticks the resource tracker has been tracking.
 			int get_age();
@@ -1219,11 +1219,11 @@ namespace AIEcho
 		};
 
 		///This adds a resource tracker to a building
-		class AddRessourceTracker : public ManagementOrder
+		class AddResourceTracker : public ManagementOrder
 		{
 		public:
-			AddRessourceTracker(int length, int resource, int building_id);
-			AddRessourceTracker() : length(0), building_id(0), resource(0) {}
+			AddResourceTracker(int length, int resource, int building_id);
+			AddResourceTracker() : length(0), building_id(0), resource(0) {}
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -1236,11 +1236,11 @@ namespace AIEcho
 		};
 
 		///This pauses a resource tracker. This is mainly done when a building is about to be upgraded.
-		class PauseRessourceTracker : public ManagementOrder
+		class PauseResourceTracker : public ManagementOrder
 		{
 		public:
-			PauseRessourceTracker() : building_id(0) {}
-			PauseRessourceTracker(int building_id);
+			PauseResourceTracker() : building_id(0) {}
+			PauseResourceTracker(int building_id);
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -1251,11 +1251,11 @@ namespace AIEcho
 		};
 
 		///This unpauses a resource tracker. This should be done when a building is done being upgraded.
-		class UnPauseRessourceTracker : public ManagementOrder
+		class UnPauseResourceTracker : public ManagementOrder
 		{
 		public:
-			UnPauseRessourceTracker() : building_id(0) {}
-			UnPauseRessourceTracker(int building_id);
+			UnPauseResourceTracker() : building_id(0) {}
+			UnPauseResourceTracker(int building_id);
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -1575,13 +1575,13 @@ namespace AIEcho
 			bool is_guard_area(int x, int y);
 			bool is_clearing_area(int x, int y);
 			bool is_discovered(int x, int y);
-			bool is_ressource(int x, int y, int type);
-			bool is_ressource(int x, int y);
+			bool is_resource(int x, int y, int type);
+			bool is_resource(int x, int y);
 			bool is_water(int x, int y);
 			bool is_sand(int x, int y);
 			bool is_grass(int x, int y);
 			bool backs_onto_sand(int x, int y);
-			int get_ammount_ressource(int x, int y);
+			int get_amount_resource(int x, int y);
 		private:
 			Echo& echo;
 		};
@@ -1633,8 +1633,8 @@ namespace AIEcho
 
 		unsigned int add_building_order(Construction::BuildingOrder* bo);
 		void add_management_order(Management::ManagementOrder* mo);		
-		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
-		boost::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
+		void add_resource_tracker(Management::ResourceTracker* rt, int building_id);
+		boost::shared_ptr<Management::ResourceTracker> get_resource_tracker(int building_id);
 
 		TeamStat& get_team_stats();
 		void flare(int x, int y);
@@ -1649,9 +1649,9 @@ namespace AIEcho
 		Player* player;
 	private:
 
-		friend class AIEcho::Management::AddRessourceTracker;
-		friend class AIEcho::Management::PauseRessourceTracker;
-		friend class AIEcho::Management::UnPauseRessourceTracker;
+		friend class AIEcho::Management::AddResourceTracker;
+		friend class AIEcho::Management::PauseResourceTracker;
+		friend class AIEcho::Management::UnPauseResourceTracker;
 		friend class AIEcho::Management::ChangeAlliances;
 		friend class AIEcho::Management::SendMessage;
 		
@@ -1663,10 +1663,10 @@ namespace AIEcho
 		Uint32 other_view;
 
 		void update_management_orders();
-		void pause_ressource_tracker(int building_id);
-		void unpause_ressource_tracker(int building_id);
+		void pause_resource_tracker(int building_id);
+		void unpause_resource_tracker(int building_id);
 		void init_starting_buildings();
-		void update_ressource_trackers();
+		void update_resource_trackers();
 		void update_building_orders();
 		void check_fruit();
 
@@ -1677,11 +1677,11 @@ namespace AIEcho
 		Construction::FlagMap fm;
 		std::vector<boost::shared_ptr<Construction::BuildingOrder> > building_orders;
 		std::vector<boost::shared_ptr<Management::ManagementOrder> > management_orders;
-		std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> > ressource_trackers;
-		typedef std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator tracker_iterator;
+		std::map<int, boost::tuple<boost::shared_ptr<Management::ResourceTracker>, bool> > resource_trackers;
+		typedef std::map<int, boost::tuple<boost::shared_ptr<Management::ResourceTracker>, bool> >::iterator tracker_iterator;
 		std::set<int> starting_buildings;
 		int timer;
-		///This to keep multiuple buildings from being constructed on the same tick.
+		///This to keep multiple buildings from being constructed on the same tick.
 		///Before the next building is constructed, the previous building must be
 		///found on the BuildingRegister
 		int previous_building_id;
@@ -1810,30 +1810,30 @@ inline AIEcho::Management::ManagementOrderType AIEcho::Management::DestroyBuildi
 }
 
 
-inline int AIEcho::Management::RessourceTracker::get_age()
+inline int AIEcho::Management::ResourceTracker::get_age()
 {
 	return timer;
 }
 
 
 
-inline AIEcho::Management::ManagementOrderType AIEcho::Management::AddRessourceTracker::get_type()
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::AddResourceTracker::get_type()
 {
-	return MAddRessourceTracker;
+	return MAddResourceTracker;
 }
 
 
 
-inline AIEcho::Management::ManagementOrderType AIEcho::Management::PauseRessourceTracker::get_type()
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::PauseResourceTracker::get_type()
 {
-	return MPauseRessourceTracker;
+	return MPauseResourceTracker;
 }
 
 
 
-inline AIEcho::Management::ManagementOrderType AIEcho::Management::UnPauseRessourceTracker::get_type()
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::UnPauseResourceTracker::get_type()
 {
-	return MUnPauseRessourceTracker;
+	return MUnPauseResourceTracker;
 }
 
 

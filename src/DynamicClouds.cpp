@@ -30,7 +30,7 @@
 
 void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeight, const int time)
 {
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 	{
 		//tribute to the torrodial world: the viewport must never jump by more than 31.
 		//if it does, we assume a jump in the opposite direction
@@ -76,7 +76,7 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 
 void DynamicClouds::render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, DynamicClouds::Layer layer)
 {
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 	{
 		Color c;
 		int offsetX, offsetY, gran;

@@ -35,7 +35,7 @@ namespace GAGCore
 	class Toolkit
 	{
 	private:
-		// Private constructor, we do not want the user to create a Tookit, it is a static thing
+		// Private constructor, we do not want the user to create a Toolkit, it is a static thing
 		Toolkit() { }
 		
 	public:

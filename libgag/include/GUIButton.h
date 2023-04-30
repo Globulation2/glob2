@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIBUTTON_H
-#define __GUIBUTTON_H
+#ifndef __GUI_BUTTON_H
+#define __GUI_BUTTON_H
 
 #include "GUIBase.h"
 #include <string>
@@ -163,8 +163,8 @@ namespace GAGGUI
 	
 	public:
 		MultiTextButton() { textIndex=0; returnCode=0; }
-		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int retuxrnCode, Uint16 unicodeShortcut=0);
-		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int retuxrnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut=0);
+		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, Uint16 unicodeShortcut=0);
+		MultiTextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode, const std::string& tooltip, const std::string &tooltipFont, Uint16 unicodeShortcut=0);
 		virtual ~MultiTextButton() { }
 	
 		

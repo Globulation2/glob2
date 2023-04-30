@@ -41,7 +41,7 @@ Settings::Settings()
 		newUsername="player";
 	username=newUsername;
 
-	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
+	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOM_CURSOR;
 	screenWidth = 800;
 	screenHeight = 600;
 	optionFlags = 0;

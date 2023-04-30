@@ -178,7 +178,7 @@ private:
 
 	boost::shared_ptr<Order>findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
 	
-	void computeRessourcesCluster();
+	void computeResourcesCluster();
 	
 public:
 	void updateGlobalGradientNoObstacle(Uint8 *gradient);

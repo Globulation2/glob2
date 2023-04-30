@@ -31,8 +31,8 @@ FertilityCalculatorThread::FertilityCalculatorThread(Map& map, std::queue<boost:
 void FertilityCalculatorThread::operator()()
 {
 	///This function goes so quick relative to the following, it isn't even considered for percent complete
-	computeRessourcesGradient();	
-	fertilitymax = 0;
+	computeResourcesGradient();	
+	fertilityMax = 0;
 	fertility.resize(map.getW() * map.getH());
 	std::fill(fertility.begin(), fertility.end(), 0);
 	for(int x=0; x<map.getW(); ++x)
@@ -57,7 +57,7 @@ void FertilityCalculatorThread::operator()()
 								total += int(4.2f * std::sqrt((float)value));
 						}
 					}
-					fertilitymax = std::max(fertilitymax, total);
+					fertilityMax = std::max(fertilityMax, total);
 					fertility[x * map.getH() + y] = total;
 				}
 			}
@@ -69,7 +69,7 @@ void FertilityCalculatorThread::operator()()
 		for(int y=0; y<map.getH(); ++y)
 		{
 			map.getTile(x, y).fertility = fertility[x * map.getH() + y];
-			map.fertilityMaximum = fertilitymax;
+			map.fertilityMaximum = fertilityMax;
 		}
 	}
 	
@@ -104,7 +104,7 @@ void FertilityCalculatorThread::sendToMainThread(boost::shared_ptr<FertilityCalc
 
 
 
-void FertilityCalculatorThread::computeRessourcesGradient()
+void FertilityCalculatorThread::computeResourcesGradient()
 {
 	gradient.resize(map.getW()*map.getH());
 	std::fill(gradient.begin(), gradient.end(),0); 

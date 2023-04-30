@@ -63,12 +63,12 @@ boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength
 		return boost::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1, versionMinor));
 	case ORDER_CHANGE_PRIORITY:
 		return boost::shared_ptr<Order>(new OrderChangePriority(netData+1, netDataLength-1, versionMinor));
-	case ORDER_ALTERATE_FORBIDDEN:
-		return boost::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1, versionMinor));
-	case ORDER_ALTERATE_GUARD_AREA:
-		return boost::shared_ptr<Order>(new OrderAlterateGuardArea(netData+1, netDataLength-1, versionMinor));
-	case ORDER_ALTERATE_CLEAR_AREA:
-		return boost::shared_ptr<Order>(new OrderAlterateClearArea(netData+1, netDataLength-1, versionMinor));
+	case ORDER_ALTER_FORBIDDEN:
+		return boost::shared_ptr<Order>(new OrderAlterForbidden(netData+1, netDataLength-1, versionMinor));
+	case ORDER_ALTER_GUARD_AREA:
+		return boost::shared_ptr<Order>(new OrderAlterGuardArea(netData+1, netDataLength-1, versionMinor));
+	case ORDER_ALTER_CLEAR_AREA:
+		return boost::shared_ptr<Order>(new OrderAlterClearArea(netData+1, netDataLength-1, versionMinor));
 	case ORDER_NULL:
 		return boost::shared_ptr<Order>(new NullOrder());
 	case ORDER_TEXT_MESSAGE:
@@ -338,16 +338,16 @@ OrderModifyExchange::OrderModifyExchange(const Uint8 *data, int dataLength, Uint
 OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask)
 {
 	this->gid=gid;
-	this->receiveRessourceMask=receiveRessourceMask;
-	this->sendRessourceMask=sendRessourceMask;
+	this->receiveResourceMask=receiveRessourceMask;
+	this->sendResourceMask=sendRessourceMask;
 }
 
 Uint8 *OrderModifyExchange::getData(void)
 {
 	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
-	addUint32(data, receiveRessourceMask, 2);
-	addUint32(data, sendRessourceMask, 6);
+	addUint32(data, receiveResourceMask, 2);
+	addUint32(data, sendResourceMask, 6);
 	return data;
 }
 
@@ -356,8 +356,8 @@ bool OrderModifyExchange::setData(const Uint8 *data, int dataLength, Uint32 vers
 	if (dataLength!=10)
 		return false;
 	gid=getUint16(data, 0);
-	receiveRessourceMask=getUint32(data, 2);
-	sendRessourceMask=getUint32(data, 6);
+	receiveResourceMask=getUint32(data, 2);
+	sendResourceMask=getUint32(data, 6);
 	return true;
 }
 
@@ -444,7 +444,7 @@ OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingRessou
 {
 	this->data=NULL;
 	this->gid=gid;
-	memcpy(this->clearingRessources, clearingRessources, sizeof(bool)*BASIC_COUNT);
+	memcpy(this->clearingResources, clearingRessources, sizeof(bool)*BASIC_COUNT);
 }
 
 OrderModifyClearingFlag::~OrderModifyClearingFlag(void)
@@ -459,7 +459,7 @@ Uint8 *OrderModifyClearingFlag::getData(void)
 		data=(Uint8 *)malloc(2+BASIC_COUNT);
 	addUint16(data, gid, 0);
 	for (int i=0; i<BASIC_COUNT; i++)
-		addUint8(data, (Uint8)clearingRessources[i], 2+i);
+		addUint8(data, (Uint8)clearingResources[i], 2+i);
 	return data;
 }
 
@@ -469,7 +469,7 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength, Uint32 
 		return false;
 	this->gid=getUint16(data, 0);
 	for (int i=0; i<BASIC_COUNT; i++)
-		clearingRessources[i]=(bool)getUint8(data, 2+i);
+		clearingResources[i]=(bool)getUint8(data, 2+i);
 	
 	return true;
 }
@@ -586,7 +586,7 @@ bool OrderChangePriority::setData(const Uint8 *data, int dataLength, Uint32 vers
 
 // OrderAlterateArea's code
 
-OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderAlterArea::OrderAlterArea(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	_data = NULL;
 	
@@ -595,7 +595,7 @@ OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 v
 }
 
 #ifndef YOG_SERVER_ONLY
-OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map)
+OrderAlterArea::OrderAlterArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map)
 {
 	assert(acc);
 	_data = NULL;
@@ -615,13 +615,13 @@ OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumula
 }
 #endif
 
-OrderAlterateArea::~OrderAlterateArea(void)
+OrderAlterArea::~OrderAlterArea(void)
 {
 	if (_data)
 		free(_data);
 }
 
-Uint8 *OrderAlterateArea::getData(void)
+Uint8 *OrderAlterArea::getData(void)
 {
 	if (_data)
 		free (_data);
@@ -640,7 +640,7 @@ Uint8 *OrderAlterateArea::getData(void)
 	return _data;
 }
 
-bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
+bool OrderAlterArea::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength < 14)
 	{
@@ -665,7 +665,7 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versio
 	return true;
 }
 
-int OrderAlterateArea::getDataLength(void)
+int OrderAlterArea::getDataLength(void)
 {
 	int length=14+mask.getByteLength();
 	assert(length>=14);
@@ -706,7 +706,7 @@ MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const
 	addUint32(data, recepientsMask, 0);
 	addUint32(data, messageOrderType, 4);
 	addUint8(data, (Uint8)(length-9), 8);
-	this->recepientsMask=recepientsMask;
+	this->recipientsMask=recepientsMask;
 	this->messageOrderType=messageOrderType;
 }
 
@@ -726,7 +726,7 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMino
 	if (dataLength<9)
 		return false;
 	this->length=dataLength;
-	this->recepientsMask=getUint32(data, 0);
+	this->recipientsMask=getUint32(data, 0);
 	this->messageOrderType=getUint32(data, 4);
 	Uint8 textLength=getUint8(data, 8);
 	if (this->data!=NULL)

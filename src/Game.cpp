@@ -66,7 +66,7 @@
 #define TEAM_MAX_PRESTIGE 150
 
 Game::Game(GameGUI *gui, MapEdit* edit):
-	mapscript(gui)
+	mapScript(gui)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
 
@@ -319,8 +319,8 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
 				fprintf(logFile, "ORDER_MODIFY_EXCHANGE");
-				b->receiveResourceMask=ome->receiveRessourceMask;
-				b->sendResourceMask=ome->sendRessourceMask;
+				b->receiveResourceMask=ome->receiveResourceMask;
+				b->sendResourceMask=ome->sendResourceMask;
 				if (order->sender!=localPlayer)
 				{
 					b->receiveResourceMaskLocal=b->receiveResourceMask;
@@ -392,9 +392,9 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				&& b->type->zonable[WORKER])
 			{
 				fprintf(logFile, "ORDER_MODIFY_CLEARING_FLAG");
-				memcpy(b->clearingResources, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
+				memcpy(b->clearingResources, omcf->clearingResources, sizeof(bool)*BASIC_COUNT);
 				if (order->sender!=localPlayer)
-					memcpy(b->clearingResourcesLocal, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
+					memcpy(b->clearingResourcesLocal, omcf->clearingResources, sizeof(bool)*BASIC_COUNT);
 			}
 		}
 		break;
@@ -480,10 +480,10 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			}
 		}
 		break;
-		case ORDER_ALTERATE_FORBIDDEN:
+		case ORDER_ALTER_FORBIDDEN:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
-			boost::shared_ptr<OrderAlterateForbidden> oaa = boost::static_pointer_cast<OrderAlterateForbidden>(order);
+			boost::shared_ptr<OrderAlterForbidden> oaa = boost::static_pointer_cast<OrderAlterForbidden>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -533,10 +533,10 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			map.updateClearAreasGradient(oaa->teamNumber);
 		}
 		break;
-		case ORDER_ALTERATE_GUARD_AREA:
+		case ORDER_ALTER_GUARD_AREA:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_GUARD_AREA");
-			boost::shared_ptr<OrderAlterateGuardArea> oaa = boost::static_pointer_cast<OrderAlterateGuardArea>(order);
+			boost::shared_ptr<OrderAlterGuardArea> oaa = boost::static_pointer_cast<OrderAlterGuardArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -580,10 +580,10 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			map.updateGuardAreasGradient(oaa->teamNumber);
 		}
 		break;
-		case ORDER_ALTERATE_CLEAR_AREA:
+		case ORDER_ALTER_CLEAR_AREA:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_CLEAR_AREA");
-			boost::shared_ptr<OrderAlterateClearArea> oaa = boost::static_pointer_cast<OrderAlterateClearArea>(order);
+			boost::shared_ptr<OrderAlterClearArea> oaa = boost::static_pointer_cast<OrderAlterClearArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -946,7 +946,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	if(versionMinor >= 82)
 	{
 		// This is the new map script system
-		mapscript.decodeData(stream, mapHeader.getVersionMinor());
+		mapScript.decodeData(stream, mapHeader.getVersionMinor());
 	}
 
 	///Load the campaign text for the game.
@@ -1163,7 +1163,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	sgslScript.save(stream, this);
 
 	// This is the new map script system
-	mapscript.encodeData(stream);
+	mapScript.encodeData(stream);
 
 	///Save game objectives
 	objectives.encodeData(stream);
@@ -1280,7 +1280,7 @@ void Game::scriptSyncStep()
 {
 	// do a script step
 	sgslScript.syncStep(gui);
-	mapscript.syncStep(gui);
+	mapScript.syncStep(gui);
 }
 
 
@@ -2000,7 +2000,7 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 			}
 }
 
-inline void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+inline void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
@@ -2392,7 +2392,7 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
-				if((drawOptions & DRAW_NO_RESSOURCE_GROWTH_AREAS) != 0)
+				if((drawOptions & DRAW_NO_RESOURCE_GROWTH_AREAS) != 0)
 				{
 					if(!map.canResourcesGrow(x+viewportX, y+viewportY))
 					{
@@ -2666,7 +2666,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		}
 
 		///This is to correct OpenGL's blending not beeing offset correctly to line up with the map tiles
-		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -16, -16, 32, 32, overlayColor);
 		else
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -32, -32, 32, 32, overlayColor);
@@ -2890,7 +2890,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	time++;
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+	drawMapResources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings);

@@ -82,7 +82,7 @@ public:
 		DRAW_WHOLE_MAP = 0x10,
 		DRAW_ACCESSIBILITY = 0x20,
 		DRAW_SCRIPT_AREAS = 0x40,
-		DRAW_NO_RESSOURCE_GROWTH_AREAS = 0x80,
+		DRAW_NO_RESOURCE_GROWTH_AREAS = 0x80,
 		DRAW_OVERLAY = 0x100,
 	};
 
@@ -109,7 +109,7 @@ public:
 	void prestigeSyncStep();
 
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
-	/// internal proccessing.
+	/// internal processing.
 	void syncStep(Sint32 localTeam);
 
 	void dirtyWarFlagGradient();
@@ -147,7 +147,7 @@ public:
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions);
 	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0);
 
-	///Sets the mask respresenting which players the game is waiting on
+	///Sets the mask representing which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
 
 	///This dumps all data in text form to the given file
@@ -176,7 +176,7 @@ private:
 	///Initiates Game
 	void init(GameGUI *gui, MapEdit* edit);
 
-	///Clears existing game information, deleting the teams and players, in preperation of a new game.
+	///Clears existing game information, deleting the teams and players, in preparation of a new game.
 	void clearGame();
 
 public:
@@ -201,7 +201,7 @@ private:
 	///draws the terrain tiles of sand and gras
 	inline void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	///draws the resources like algues, wheat or fruit trees
-	inline void drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	inline void drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	///draws the ground units. up till now those are workers and warriors
 	inline void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	///draws debug information. switched in the code.
@@ -236,7 +236,7 @@ public:
 	Player * players[Team::MAX_COUNT];
 	Map map;
 	MapScriptSGSL sgslScript; ///< SGSL script
-	MapScript mapscript; ///< new script, currently USL
+	MapScript mapScript; ///< new script, currently USL
 	GameObjectives objectives;
 	GameHints gameHints;
 	std::string missionBriefing;

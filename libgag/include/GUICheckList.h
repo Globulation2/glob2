@@ -21,7 +21,7 @@
 
 #include "GUIList.h"
 
-///A CheckList is bassically like a list, except that each item is either checked off or it isn't
+///A CheckList is basically like a list, except that each item is either checked off or it isn't
 
 namespace GAGGUI
 {

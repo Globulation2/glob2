@@ -279,20 +279,20 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		else if (strcmp(argv[i], "-f")==0)
 		{
-			settings.screenFlags |= GraphicContext::FULLSCREEN;
+			settings.screenFlags |= GraphicContext::FULL_SCREEN;
 		}
 		else if (strcmp(argv[i], "-F")==0)
 		{
-			settings.screenFlags &= ~GraphicContext::FULLSCREEN;
+			settings.screenFlags &= ~GraphicContext::FULL_SCREEN;
 		}
 
 		else if (strcmp(argv[i], "-c")==0)
 		{
-			settings.screenFlags |= GraphicContext::CUSTOMCURSOR;
+			settings.screenFlags |= GraphicContext::CUSTOM_CURSOR;
 		}
 		else if (strcmp(argv[i], "-C")==0)
 		{
-			settings.screenFlags &= ~GraphicContext::CUSTOMCURSOR;
+			settings.screenFlags &= ~GraphicContext::CUSTOM_CURSOR;
 		}
 
 		else if (strcmp(argv[i], "-r")==0)
@@ -315,11 +315,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 
 		else if (strcmp(argv[i], "-g")==0)
 		{
-			settings.screenFlags |= GraphicContext::USEGPU;
+			settings.screenFlags |= GraphicContext::USE_GPU;
 		}
 		else if (strcmp(argv[i], "-G")==0)
 		{
-			settings.screenFlags &= ~GraphicContext::USEGPU;
+			settings.screenFlags &= ~GraphicContext::USE_GPU;
 		}
 
 		else if (strcmp(argv[i], "-l")==0)

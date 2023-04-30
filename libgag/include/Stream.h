@@ -26,7 +26,7 @@
 
 namespace GAGCore
 {
-	//! A stream is a high-level serialization structure, used to read/write structured datas
+	//! A stream is a high-level serialization structure, used to read/write structured data
 	class Stream
 	{
 	public:

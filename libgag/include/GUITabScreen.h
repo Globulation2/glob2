@@ -19,8 +19,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef GUITabScreen_h
-#define GUITabScreen_h
+#ifndef __GUI_TAB_SCREEN_H
+#define __GUI_TAB_SCREEN_H
 
 #include "GUIBase.h"
 #include <map>
@@ -45,7 +45,7 @@ namespace GAGGUI
 		///This removes a widget from a particular group. This calls remove widget automatically
 		void removeWidgetFromGroup(Widget* widget, int group_n);
 		
-		///This sets a particular TabScreenWindow to a group_n. TabScreenWindows recieve events from the widgets
+		///This sets a particular TabScreenWindow to a group_n. TabScreenWindows receive events from the widgets
 		///in their group.
 		void setTabScreenWindowToGroup(TabScreenWindow* window, int group_n);
 		
@@ -64,7 +64,7 @@ namespace GAGGUI
 		///This removes a title for a group, removing the group and any widgets in it
 		void removeGroup(int group_n);
 		
-		///Recieves the action. Child classes should call this one first
+		///Receives the action. Child classes should call this one first
 		void onAction(Widget *source, Action action, int par1, int par2);
 		
 		///This is called when a group has been activated

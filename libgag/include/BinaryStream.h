@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __BINARYSTREAM_H
-#define __BINARYSTREAM_H
+#ifndef __BINARY_STREAM_H
+#define __BINARY_STREAM_H
 
 #include <Stream.h>
 #include <StreamBackend.h>
@@ -41,16 +41,16 @@ namespace GAGCore
 	
 		virtual void write(const void *data, const size_t size, const std::string name);
 	
-		virtual void writeEndianIndependant(const void *v, const size_t size, const std::string name);
+		virtual void writeEndianIndependent(const void *v, const size_t size, const std::string name);
 	
 		virtual void writeSint8(const Sint8 v, const std::string name) { this->write(&v, 1, name); }
 		virtual void writeUint8(const Uint8 v, const std::string name) { this->write(&v, 1, name); }
-		virtual void writeSint16(const Sint16 v, const std::string name) { this->writeEndianIndependant(&v, 2, name); }
-		virtual void writeUint16(const Uint16 v, const std::string name) { this->writeEndianIndependant(&v, 2, name); }
-		virtual void writeSint32(const Sint32 v, const std::string name) { this->writeEndianIndependant(&v, 4, name); }
-		virtual void writeUint32(const Uint32 v, const std::string name) { this->writeEndianIndependant(&v, 4, name); }
-		virtual void writeFloat(const float v, const std::string name) { this->writeEndianIndependant(&v, 4, name); }
-		virtual void writeDouble(const double v, const std::string name) { this->writeEndianIndependant(&v, 8, name); }
+		virtual void writeSint16(const Sint16 v, const std::string name) { this->writeEndianIndependent(&v, 2, name); }
+		virtual void writeUint16(const Uint16 v, const std::string name) { this->writeEndianIndependent(&v, 2, name); }
+		virtual void writeSint32(const Sint32 v, const std::string name) { this->writeEndianIndependent(&v, 4, name); }
+		virtual void writeUint32(const Uint32 v, const std::string name) { this->writeEndianIndependent(&v, 4, name); }
+		virtual void writeFloat(const float v, const std::string name) { this->writeEndianIndependent(&v, 4, name); }
+		virtual void writeDouble(const double v, const std::string name) { this->writeEndianIndependent(&v, 8, name); }
 		virtual void writeText(const std::string &v, const std::string name);
 		
 		virtual void flush(void) { backend->flush(); }
@@ -85,16 +85,16 @@ namespace GAGCore
 	
 		virtual void read(void *data, size_t size, const std::string name) { backend->read(data, size); }
 	
-		virtual void readEndianIndependant(void *v, size_t size, const std::string name);
+		virtual void readEndianIndependent(void *v, size_t size, const std::string name);
 	
 		virtual Sint8 readSint8(const std::string name) { Sint8 i; this->read(&i, 1, name); return i; }
 		virtual Uint8 readUint8(const std::string name) { Uint8 i; this->read(&i, 1, name); return i; }
-		virtual Sint16 readSint16(const std::string name) { Sint16 i; this->readEndianIndependant(&i, 2, name); return i; }
-		virtual Uint16 readUint16(const std::string name) { Uint16 i; this->readEndianIndependant(&i, 2, name); return i; }
-		virtual Sint32 readSint32(const std::string name) { Sint32 i; this->readEndianIndependant(&i, 4, name); return i; }
-		virtual Uint32 readUint32(const std::string name) { Uint32 i; this->readEndianIndependant(&i, 4, name); return i; }
-		virtual float readFloat(const std::string name) { float f; this->readEndianIndependant(&f, 4, name); return f; }
-		virtual double readDouble(const std::string name) { double d; this->readEndianIndependant(&d, 8, name); return d; }
+		virtual Sint16 readSint16(const std::string name) { Sint16 i; this->readEndianIndependent(&i, 2, name); return i; }
+		virtual Uint16 readUint16(const std::string name) { Uint16 i; this->readEndianIndependent(&i, 2, name); return i; }
+		virtual Sint32 readSint32(const std::string name) { Sint32 i; this->readEndianIndependent(&i, 4, name); return i; }
+		virtual Uint32 readUint32(const std::string name) { Uint32 i; this->readEndianIndependent(&i, 4, name); return i; }
+		virtual float readFloat(const std::string name) { float f; this->readEndianIndependent(&f, 4, name); return f; }
+		virtual double readDouble(const std::string name) { double d; this->readEndianIndependent(&d, 8, name); return d; }
 		virtual std::string readText(const std::string name);
 		
 		virtual void readEnterSection(const std::string name) { }

@@ -393,7 +393,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 		oss << " GL";
 	else
 		oss << " SDL";

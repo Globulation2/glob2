@@ -465,7 +465,7 @@ boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 	}
 	if(acc.getApplicationCount())
 	{
-		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc,map));
+		return shared_ptr<Order>(new OrderAlterGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc,map));
 	}
 	else return shared_ptr<Order>(new NullOrder);
 }
@@ -518,7 +518,7 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	
 	if(guard_add_acc.getApplicationCount())
 	{
-		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc, map));
+		return shared_ptr<Order>(new OrderAlterGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc, map));
 	}
 	else return shared_ptr<Order>(new NullOrder);
 }
@@ -648,13 +648,13 @@ boost::shared_ptr<Order> AIWarrush::farm()
 	}
 
 	if(del_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc, map));
+		return shared_ptr<Order>(new OrderAlterForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc, map));
 	if(add_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc, map));
+		return shared_ptr<Order>(new OrderAlterForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc, map));
 	if(clr_del_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc, map));
+		return shared_ptr<Order>(new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc, map));
 	if(clr_add_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map));
+		return shared_ptr<Order>(new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map));
 
 	//nothing to do...
 	return shared_ptr<Order>(new NullOrder());

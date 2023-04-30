@@ -60,7 +60,7 @@ namespace GAGCore
 	// static local pointer to the actual graphic context
 	static GraphicContext *_gc = NULL;
 	static SDL_PixelFormat _glFormat;
-	//EXPERIMENTAL is a bit buggy and "not EXPERIMENTAL" is bugfree but slow
+	//EXPERIMENTAL is a bit buggy and "not EXPERIMENTAL" is bug free but slow
 	//when rendering clouds or other density layers (GraphicContext::drawAlphaMap).
 	static const bool EXPERIMENTAL=false;
 
@@ -115,17 +115,17 @@ namespace GAGCore
 		bool _doTexture;
 		bool _doScissor;
 		GLint _texture;
-		GLenum _sfactor, _dfactor;
+		GLenum _sFactor, _dFactor;
 		bool isTextureSRectangle;
 		bool useATIWorkaround;
-		unsigned alocatedTextureCount;
+		unsigned allocatedTextureCount;
 
 		GLState(void)
 		{
 			resetCache();
 			isTextureSRectangle = false;
 			useATIWorkaround = false;
-			alocatedTextureCount = 0;
+			allocatedTextureCount = 0;
 		}
 
 		void resetCache(void)
@@ -134,8 +134,8 @@ namespace GAGCore
 			_doTexture = false;
 			_doScissor = false;
 			_texture = -1;
-			_sfactor = 0xffffffff;
-			_dfactor = 0xffffffff;
+			_sFactor = 0xffffffff;
+			_dFactor = 0xffffffff;
 		}
 
 		void checkExtensions(void)
@@ -209,7 +209,7 @@ namespace GAGCore
 		bool doScissor(bool on)
 		{
 			// The glIsEnabled is function is quite expensive. That's why we have a _doScissor variable.
-			// I'm quite sure that this assert should never fail, so I've outcommented it, partially
+			// I'm quite sure that this assert should never fail, so I've out-commented it, partially
 			// because we don't do #define NDEBUG in most of our releases (so far).
 			
 			//assert(_doScissor == glIsEnabled(GL_SCISSOR_TEST));
@@ -225,15 +225,15 @@ namespace GAGCore
 			return !on;
 		}
 
-		void blendFunc(GLenum sfactor, GLenum dfactor)
+		void blendFunc(GLenum sFactor, GLenum dFactor)
 		{
-			if ((sfactor == _sfactor) && (dfactor == _dfactor))
+			if ((sFactor == _sFactor) && (dFactor == _dFactor))
 				return;
 
-			glBlendFunc(sfactor, dfactor);
+			glBlendFunc(sFactor, dFactor);
 
-			_sfactor = sfactor;
-			_dfactor = dfactor;
+			_sFactor = sFactor;
+			_dFactor = dFactor;
 		}
 	} glState;
 	#endif
@@ -241,7 +241,7 @@ namespace GAGCore
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
 		SDL_Surface *dest;
-		if (_gc->sdlsurface->format->BitsPerPixel == 32)
+		if (_gc->sdlSurface->format->BitsPerPixel == 32)
 		{
 			dest = SDL_ConvertSurfaceFormat(source, SDL_PIXELFORMAT_BGRA32, 0);
 		}
@@ -256,7 +256,7 @@ namespace GAGCore
 	// Drawable surface
 	DrawableSurface::DrawableSurface(const std::string &imageFileName)
 	{
-		sdlsurface = NULL;
+		sdlSurface = NULL;
 		if (!loadImage(imageFileName))
 			setRes(0, 0);
 		allocateTexture();
@@ -264,7 +264,7 @@ namespace GAGCore
 
 	DrawableSurface::DrawableSurface(int w, int h)
 	{
-		sdlsurface = NULL;
+		sdlSurface = NULL;
 		setRes(w, h);
 		allocateTexture();
 	}
@@ -272,9 +272,9 @@ namespace GAGCore
 	DrawableSurface::DrawableSurface(const SDL_Surface *sourceSurface)
 	{
 		assert(sourceSurface);
-		// beurk, const cast here becasue SDL API sucks
-		sdlsurface = convertForUpload(const_cast<SDL_Surface *>(sourceSurface));
-		assert(sdlsurface);
+		// beurk, const cast here because SDL API sucks
+		sdlSurface = convertForUpload(const_cast<SDL_Surface *>(sourceSurface));
+		assert(sdlSurface);
 		setClipRect();
 		allocateTexture();
 		dirty = true;
@@ -282,12 +282,12 @@ namespace GAGCore
 
 	DrawableSurface *DrawableSurface::clone(void)
 	{
-		return new DrawableSurface(sdlsurface);
+		return new DrawableSurface(sdlSurface);
 	}
 
 	DrawableSurface::~DrawableSurface(void)
 	{
-		SDL_FreeSurface(sdlsurface);
+		SDL_FreeSurface(sdlSurface);
 		freeGPUTexture();
 	}
 
@@ -303,10 +303,10 @@ namespace GAGCore
 	void DrawableSurface::allocateTexture(void)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
-			glState.alocatedTextureCount++;
+			glState.allocatedTextureCount++;
 			initTextureSize();
 		}
 		#endif
@@ -315,7 +315,7 @@ namespace GAGCore
 	void DrawableSurface::initTextureSize(void)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			// only power of two textures are supported
 			if (!glState.isTextureSRectangle)
@@ -325,8 +325,8 @@ namespace GAGCore
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
-				int w = getMinPowerOfTwo(sdlsurface->w);
-				int h = getMinPowerOfTwo(sdlsurface->h);
+				int w = getMinPowerOfTwo(sdlSurface->w);
+				int h = getMinPowerOfTwo(sdlSurface->h);
 				std::valarray<char> zeroBuffer((char)0, w * h * 4);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
 
@@ -345,15 +345,15 @@ namespace GAGCore
 	void DrawableSurface::uploadToTexture(void)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			glState.setTexture(texture);
 
 			void *pixelsPtr;
 			GLenum pixelFormat;
 			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-			std::valarray<Uint32> tempPixels(sdlsurface->w * sdlsurface->h);
-			Uint32 *sourcePtr = static_cast<Uint32 *>(sdlsurface->pixels);
+			std::valarray<Uint32> tempPixels(sdlSurface->w * sdlSurface->h);
+			Uint32 *sourcePtr = static_cast<Uint32 *>(sdlSurface->pixels);
 			for (size_t i=0; i<tempPixels.size(); i++)
 			{
 				tempPixels[i] = ((*sourcePtr) << 8) | ((*sourcePtr) >> 24);
@@ -362,16 +362,16 @@ namespace GAGCore
 			pixelsPtr = &tempPixels[0];
 			pixelFormat = GL_RGBA;
 			#else
-			pixelsPtr = sdlsurface->pixels;
+			pixelsPtr = sdlSurface->pixels;
 			pixelFormat = GL_BGRA;
 			#endif
 			if (glState.isTextureSRectangle)
 			{
-				glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA, sdlsurface->w, sdlsurface->h, 0, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
+				glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA, sdlSurface->w, sdlSurface->h, 0, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
 			}
 			else
 			{
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlsurface->w, sdlsurface->h, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
+				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlSurface->w, sdlSurface->h, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
 			}
 		}
 		#endif
@@ -381,14 +381,14 @@ namespace GAGCore
 	void DrawableSurface::freeGPUTexture(void)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
-			glState.alocatedTextureCount--;
+			glState.allocatedTextureCount--;
 			
 			// The next line causes a desynchronization between _doScissors and glIsEnabled(GL_SCISSOR_TEST),
 			// which causes the setClipRect() functions to not reset the clipping the way it should,  so many
-			// things don't get drawn properly and the game appears to "blink". Outcommenting it didn't cause
+			// things don't get drawn properly and the game appears to "blink". Out-commenting it didn't cause
 			// any other problems.  If you think glState should be reset,  feel free to do so,  but also call
 			// functions like glDisable() as required.
 			
@@ -399,11 +399,11 @@ namespace GAGCore
 
 	void DrawableSurface::setRes(int w, int h)
 	{
-		if (sdlsurface)
-			SDL_FreeSurface(sdlsurface);
+		if (sdlSurface)
+			SDL_FreeSurface(sdlSurface);
 
-		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, _glFormat.Rmask, _glFormat.Gmask, _glFormat.Bmask, _glFormat.Amask);
-		assert(sdlsurface);
+		sdlSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, _glFormat.Rmask, _glFormat.Gmask, _glFormat.Bmask, _glFormat.Amask);
+		assert(sdlSurface);
 		setClipRect();
 		initTextureSize();
 		dirty = true;
@@ -424,26 +424,26 @@ namespace GAGCore
 
 	void DrawableSurface::setClipRect(int x, int y, int w, int h)
 	{
-		assert(sdlsurface);
+		assert(sdlSurface);
 
 		clipRect.x = static_cast<Sint16>(x);
 		clipRect.y = static_cast<Sint16>(y);
 		clipRect.w = static_cast<Uint16>(w);
 		clipRect.h = static_cast<Uint16>(h);
 
-		SDL_SetClipRect(sdlsurface, &clipRect);
+		SDL_SetClipRect(sdlSurface, &clipRect);
 	}
 
 	void DrawableSurface::setClipRect(void)
 	{
-		assert(sdlsurface);
+		assert(sdlSurface);
 
 		clipRect.x = 0;
 		clipRect.y = 0;
-		clipRect.w = static_cast<Uint16>(sdlsurface->w);
-		clipRect.h = static_cast<Uint16>(sdlsurface->h);
+		clipRect.w = static_cast<Uint16>(sdlSurface->w);
+		clipRect.h = static_cast<Uint16>(sdlSurface->h);
 
-		SDL_SetClipRect(sdlsurface, &clipRect);
+		SDL_SetClipRect(sdlSurface, &clipRect);
 	}
 
 	bool DrawableSurface::loadImage(const std::string name)
@@ -458,9 +458,9 @@ namespace GAGCore
 				SDL_RWclose(imageStream);
 				if (loadedSurface)
 				{
-					if (sdlsurface)
-						SDL_FreeSurface(sdlsurface);
-					sdlsurface = convertForUpload(loadedSurface);
+					if (sdlSurface)
+						SDL_FreeSurface(sdlSurface);
+					sdlSurface = convertForUpload(loadedSurface);
 					SDL_FreeSurface(loadedSurface);
 					setClipRect();
 					dirty = true;
@@ -473,8 +473,8 @@ namespace GAGCore
 
 	void DrawableSurface::shiftHSV(float hue, float sat, float lum)
 	{
-		Uint32 *mem = (Uint32 *)sdlsurface->pixels;
-		for (size_t i = 0; i < static_cast<size_t>(sdlsurface->w * sdlsurface->h); i++)
+		Uint32 *mem = (Uint32 *)sdlSurface->pixels;
+		for (size_t i = 0; i < static_cast<size_t>(sdlSurface->w * sdlSurface->h); i++)
 		{
 			// get values
 			float h, s, v;
@@ -514,7 +514,7 @@ namespace GAGCore
 		// draw
 		if (color.a == Color::ALPHA_OPAQUE)
 		{
-			*(((Uint32 *)sdlsurface->pixels) + y*(sdlsurface->pitch>>2) + x) = color.pack();
+			*(((Uint32 *)sdlSurface->pixels) + y*(sdlSurface->pitch>>2) + x) = color.pack();
 		}
 		else
 		{
@@ -524,7 +524,7 @@ namespace GAGCore
 			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
 			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
 
-			Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + y*(sdlsurface->pitch>>2) + x;
+			Uint32 *mem = ((Uint32 *)sdlSurface->pixels) + y*(sdlSurface->pitch>>2) + x;
 
 			Uint32 surfaceValue = *mem;
 			Uint32 surfacePreMult0 = (surfaceValue & 0x00FF00FF) * na;
@@ -598,7 +598,7 @@ namespace GAGCore
 			Uint32 colorValue = color.pack();
 			for (int dy = y; dy < y + h; dy++)
 			{
-				Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + dy*(sdlsurface->pitch>>2) + x;
+				Uint32 *mem = ((Uint32 *)sdlSurface->pixels) + dy*(sdlSurface->pitch>>2) + x;
 				int dw = w;
 				do
 				{
@@ -617,7 +617,7 @@ namespace GAGCore
 
 			for (int dy = y; dy < y + h; dy++)
 			{
-				Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + dy*(sdlsurface->pitch>>2) + x;
+				Uint32 *mem = ((Uint32 *)sdlSurface->pixels) + dy*(sdlSurface->pitch>>2) + x;
 				int dw = w;
 				do
 				{
@@ -651,7 +651,7 @@ namespace GAGCore
 		if ((x < clipRect.x) || (x >= clipRect.x + clipRect.w))
 			return;
 
-		// set l positiv
+		// set l positive
 		if (l < 0)
 		{
 			y += l;
@@ -676,8 +676,8 @@ namespace GAGCore
 			return;
 
 		// draw
-		int increment = sdlsurface->pitch >> 2;
-		Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + y*increment + x;
+		int increment = sdlSurface->pitch >> 2;
+		Uint32 *mem = ((Uint32 *)sdlSurface->pixels) + y*increment + x;
 		if (color.a == Color::ALPHA_OPAQUE)
 		{
 			Uint32 colorValue = color.pack();
@@ -719,7 +719,7 @@ namespace GAGCore
 		if ((y < clipRect.y) || (y >= clipRect.y + clipRect.h))
 			return;
 
-		// set l positiv
+		// set l positive
 		if (l < 0)
 		{
 			x += l;
@@ -744,7 +744,7 @@ namespace GAGCore
 			return;
 
 		// draw
-		Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + y*(sdlsurface->pitch >> 2) + x;
+		Uint32 *mem = ((Uint32 *)sdlSurface->pixels) + y*(sdlSurface->pitch >> 2) + x;
 		if (color.a == Color::ALPHA_OPAQUE)
 		{
 			Uint32 colorValue = color.pack();
@@ -874,42 +874,42 @@ namespace GAGCore
 
 		// setup variable to draw alpha in the right direction
 		#define Sgn(x) (x>0 ? (x == 0 ? 0 : 1) : (x==0 ? 0 : -1))
-		Sint32 littleincx;
-		Sint32 littleincy;
-		Sint32 bigincx;
-		Sint32 bigincy;
-		Sint32 alphadecx;
-		Sint32 alphadecy;
+		Sint32 littleIncX;
+		Sint32 littleIncY;
+		Sint32 bigIncX;
+		Sint32 bigIncY;
+		Sint32 alphaDecX;
+		Sint32 alphaDecY;
 		if (abs(dx) > abs(dy))
 		{
-			littleincx = 1;
-			littleincy = 0;
-			bigincx = 1;
-			bigincy = Sgn(dy);
-			alphadecx = 0;
-			alphadecy = Sgn(dy);
+			littleIncX = 1;
+			littleIncY = 0;
+			bigIncX = 1;
+			bigIncY = Sgn(dy);
+			alphaDecX = 0;
+			alphaDecY = Sgn(dy);
 		}
 		else
 		{
 			// we swap x and y meaning
 			test = -test;
 			std::swap(dx, dy);
-			littleincx = 0;
-			littleincy = 1;
-			bigincx = Sgn(dx);
-			bigincy = 1;
-			alphadecx = 1;
-			alphadecy = 0;
+			littleIncX = 0;
+			littleIncY = 1;
+			bigIncX = Sgn(dx);
+			bigIncY = 1;
+			alphaDecX = 1;
+			alphaDecY = 0;
 		}
 
 		if (dx < 0)
 		{
 			dx = -dx;
-			littleincx = 0;
-			littleincy = -littleincy;
-			bigincx = -bigincx;
-			bigincy = -bigincy;
-			alphadecy = -alphadecy;
+			littleIncX = 0;
+			littleIncY = -littleIncY;
+			bigIncX = -bigIncX;
+			bigIncY = -bigIncY;
+			alphaDecY = -alphaDecY;
 		}
 
 		// compute initial position
@@ -917,15 +917,15 @@ namespace GAGCore
 		px = x1;
 		py = y1;
 
-		// variable initialisation for bresenham algo
+		// variable initialisation for Bresenham algo
 		if (dx == 0)
 			return;
 		if (dy == 0)
 			return;
 		const int FIXED = 8;
 		const int I = 255; // number of degree of alpha
-		const int Ibits = 8;
-		int m = (abs(dy) << (Ibits+FIXED)) / abs(dx);
+		const int IBits = 8;
+		int m = (abs(dy) << (IBits+FIXED)) / abs(dx);
 		int w = (I << FIXED) - m;
 		int e = 1 << (FIXED-1);
 
@@ -941,20 +941,20 @@ namespace GAGCore
 		{
 			if (e < w)
 			{
-				px+=littleincx;
-				py+=littleincy;
+				px+=littleIncX;
+				py+=littleIncY;
 				e+= m;
 			}
 			else
 			{
-				px+=bigincx;
-				py+=bigincy;
+				px+=bigIncX;
+				py+=bigIncY;
 				e-= w;
 			}
 			color.a = I - (e >> FIXED);
 			drawPixel(px, py, color);
 			color.a = e >> FIXED;
-			drawPixel(px + alphadecx, py + alphadecy, color);
+			drawPixel(px + alphaDecX, py + alphaDecY, color);
 		}
 	}
 
@@ -1072,20 +1072,20 @@ namespace GAGCore
 		if (alpha == Color::ALPHA_OPAQUE)
 		{
 			#ifdef HAVE_OPENGL
-			if ((surface == _gc) && (_gc->getOptionFlags() & GraphicContext::USEGPU))
+			if ((surface == _gc) && (_gc->getOptionFlags() & GraphicContext::USE_GPU))
 			{
-				if ((x == 0) && (y == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
+				if ((x == 0) && (y == 0) && (sdlSurface->w == sw) && (sdlSurface->h == sh))
 				{
 					std::valarray<unsigned> tempPixels(sw*sh);
 					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					glReadPixels(sx, sy, sdlSurface->w, sdlSurface->h, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#else
-					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					glReadPixels(sx, sy, sdlSurface->w, sdlSurface->h, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#endif
 					for (int y = 0; y<sh; y++)
 					{
 						unsigned *srcPtr = (unsigned *)&tempPixels[y*sw];
-						unsigned *destPtr = &(((unsigned *)sdlsurface->pixels)[(sh-y-1)*sw]);
+						unsigned *destPtr = &(((unsigned *)sdlSurface->pixels)[(sh-y-1)*sw]);
 						for (int x = 0; x<sw; x++)
 						#if SDL_BYTEORDER == SDL_BIG_ENDIAN
 						{
@@ -1117,16 +1117,16 @@ namespace GAGCore
 				dr.y = static_cast<Sint16>(y);
 				dr.w = static_cast<Uint16>(sw);
 				dr.h = static_cast<Uint16>(sh);
-				SDL_BlitSurface(surface->sdlsurface, &sr, sdlsurface, &dr);
+				SDL_BlitSurface(surface->sdlSurface, &sr, sdlSurface, &dr);
 			#ifdef HAVE_OPENGL
 			}
 			#endif // HAVE_OPENGL
 		}
 		else
 		{
-			if ((surface == _gc) && (_gc->getOptionFlags() & GraphicContext::USEGPU))
+			if ((surface == _gc) && (_gc->getOptionFlags() & GraphicContext::USE_GPU))
 			{
-				std::cerr << "Blitting with alphablending from framebuffer in GL is forbidden" << std::endl;
+				std::cerr << "Blitting with alpha blending from framebuffer in GL is forbidden" << std::endl;
 				assert(false);
 			}
 
@@ -1170,8 +1170,8 @@ namespace GAGCore
 			#endif
 			for (int dy = 0; dy < sh; dy++)
 			{
-				Uint32 *memSrc = ((Uint32 *)surface->sdlsurface->pixels) + (sy + dy)*(surface->sdlsurface->pitch>>2) + sx;
-				Uint32 *memDest = ((Uint32 *)sdlsurface->pixels) + (y + dy)*(sdlsurface->pitch>>2) + x;
+				Uint32 *memSrc = ((Uint32 *)surface->sdlSurface->pixels) + (sy + dy)*(surface->sdlSurface->pitch>>2) + sx;
+				Uint32 *memDest = ((Uint32 *)sdlSurface->pixels) + (y + dy)*(sdlSurface->pitch>>2) + x;
 				int dw = sw;
 				do
 				{
@@ -1288,7 +1288,7 @@ namespace GAGCore
 
 		font->drawString(this, x, y, w, output, alpha);
 
-		///////////// The following code is for translation textshots ////////////
+		///////////// The following code is for translation text shots ////////////
 		if(!translationPicturesDirectory.empty())
 		{
 			for(std::map<std::string, std::string>::iterator i=texts.begin(); i!=texts.end(); ++i)
@@ -1297,8 +1297,8 @@ namespace GAGCore
 				{
 					int width=font->getStringWidth(i->first.c_str());
 					int height=font->getStringHeight(i->first.c_str());
-					int startx=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
-					drawSquares.push_back(boost::make_tuple(SRectangle(x+startx, y, width, height), i->second, this));
+					int startX=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
+					drawSquares.push_back(boost::make_tuple(SRectangle(x+startX, y, width, height), i->second, this));
 					wroteTexts.insert(i->second);
 					texts.erase(i);
 					break;
@@ -1318,7 +1318,7 @@ namespace GAGCore
 		if(pos != std::string::npos)
 			output = output.substr(0, pos);
 
-		///////////// The following code is for translation textshots ////////////
+		///////////// The following code is for translation text shots ////////////
 		if(!translationPicturesDirectory.empty())
 		{
 			for(std::map<std::string, std::string>::iterator i=texts.begin(); i!=texts.end(); ++i)
@@ -1327,8 +1327,8 @@ namespace GAGCore
 				{
 					int width=font->getStringWidth(i->first.c_str());
 					int height=font->getStringHeight(i->first.c_str());
-					int startx=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
-					drawSquares.push_back(boost::make_tuple(SRectangle(int(x+startx), int(y), width, height), i->second, this));
+					int startX=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
+					drawSquares.push_back(boost::make_tuple(SRectangle(int(x+startX), int(y), width, height), i->second, this));
 					wroteTexts.insert(i->second);
 					texts.erase(i);
 					break;
@@ -1365,7 +1365,7 @@ namespace GAGCore
 		this->drawString(x, y, font, str.str());
 	}
 
-	//This code is for the textshot code
+	//This code is for the text shot code
 	std::map<std::string, std::string> DrawableSurface::texts;
 	std::set<std::string> DrawableSurface::wroteTexts;
 	std::vector<boost::tuple<DrawableSurface::SRectangle, std::string, GAGCore::DrawableSurface*> > DrawableSurface::drawSquares;
@@ -1393,7 +1393,7 @@ namespace GAGCore
 			for (size_t i2 = 0; i2 < Toolkit::getFileManager()->getDirCount(); i2++)
 			{
 				std::string fullFileName = translationPicturesDirectory + DIR_SEPARATOR_S + "text-" + i->get<1>();
-				if (SDL_SaveBMP(toPrint.sdlsurface, (fullFileName+".bmp").c_str()) == 0)
+				if (SDL_SaveBMP(toPrint.sdlSurface, (fullFileName+".bmp").c_str()) == 0)
 				{
 					break;
 				}
@@ -1417,7 +1417,7 @@ namespace GAGCore
 	{
 		DrawableSurface::setClipRect(x, y, w, h);
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			glState.doScissor(true);
 			glScissor(clipRect.x, getH() - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
@@ -1429,17 +1429,17 @@ namespace GAGCore
 	{
 		DrawableSurface::setClipRect();
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 			glState.doScissor(false);
 		#endif
 	}
 
-	// drawing, reimplementation for GL
+	// drawing, re-implementation for GL
 
 	void GraphicContext::drawPixel(int x, int y, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			GraphicContext::drawPixel(static_cast<float>(x), static_cast<float>(y), color);
 		else
 		#endif
@@ -1449,7 +1449,7 @@ namespace GAGCore
 	void GraphicContext::drawPixel(float x, float y, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			drawFilledRect(x, y, 1.0f, 1.0f, color);
 		else
 		#endif
@@ -1460,7 +1460,7 @@ namespace GAGCore
 	void GraphicContext::drawRect(int x, int y, int w, int h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			GraphicContext::drawRect(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h), color);
 		else
 		#endif
@@ -1470,7 +1470,7 @@ namespace GAGCore
 	void GraphicContext::drawRect(float x, float y, float w, float h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 		{
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1498,7 +1498,7 @@ namespace GAGCore
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			GraphicContext::drawFilledRect(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h), color);
 		else
 		#endif
@@ -1508,7 +1508,7 @@ namespace GAGCore
 	void GraphicContext::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 		{
 			// state change
 			if (color.a < 255)
@@ -1538,7 +1538,7 @@ namespace GAGCore
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			GraphicContext::drawLine(static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2), color);
 		else
 		#endif
@@ -1548,7 +1548,7 @@ namespace GAGCore
 	void GraphicContext::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 		{
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1574,7 +1574,7 @@ namespace GAGCore
 	void GraphicContext::drawCircle(int x, int y, int radius, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			drawCircle(static_cast<float>(x), static_cast<float>(y), static_cast<float>(radius), color);
 		else
 		#endif
@@ -1584,7 +1584,7 @@ namespace GAGCore
 	void GraphicContext::drawCircle(float x, float y, float radius, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 		{
 			glState.doBlend(true);
 			glState.doTexture(false);
@@ -1638,7 +1638,7 @@ namespace GAGCore
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 			drawSurface(x, y, sw, sh, surface, sx, sy, sw, sh, alpha);
 		else
 		#endif
@@ -1648,7 +1648,7 @@ namespace GAGCore
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 			drawSurface(x, y, static_cast<float>(sw), static_cast<float>(sh), surface, sx, sy, sw, sh, alpha);
 		else
 		#endif
@@ -1658,7 +1658,7 @@ namespace GAGCore
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 			GraphicContext::drawSurface(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h), surface, sx, sy, sw, sh, alpha);
 		else
 		#endif
@@ -1668,7 +1668,7 @@ namespace GAGCore
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			// upload
 			if (surface->dirty)
@@ -1701,7 +1701,7 @@ namespace GAGCore
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 	#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			assert(mapW * mapH <= static_cast<int>(map.size()));
 			float fr = 255.0f*(float)color.r;
@@ -1741,16 +1741,16 @@ namespace GAGCore
 				glState.doTexture(false);
 				for (int dy=0; dy < mapH-1; dy++)
 				{
-					int midy = y + dy * cellH + cellH/2;
+					int midY = y + dy * cellH + cellH/2;
 					for (int dx=0; dx < mapW-1; dx++)
 					{
 						glBegin(GL_TRIANGLE_FAN);
 						//This interpolates to find the center color, then fans out to the four corners.
-						int midx = x + dx * cellW + cellW/2;
+						int midX = x + dx * cellW + cellW/2;
 						float mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
 						float mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
 						glColor4f(fr, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-						glVertex2f(midx, midy);
+						glVertex2f(midX, midY);
 						//Touch each of the four corners
 						glColor4f(fr, fg, fb, map[mapW * dy + dx]);
 						glVertex2f(x + dx * cellW, y + dy * cellH);
@@ -1777,7 +1777,7 @@ namespace GAGCore
 	void GraphicContext::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
 	#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			assert(mapW * mapH <= static_cast<int>(map.size()));
 			if(EXPERIMENTAL) {
@@ -1815,17 +1815,17 @@ namespace GAGCore
 				glState.doTexture(false);
 				for (int dy=0; dy < mapH-1; dy++)
 				{
-					int midy = y + dy * cellH + cellH/2;
+					int midY = y + dy * cellH + cellH/2;
 					for (int dx=0; dx < mapW-1; dx++)
 					{
 
 						glBegin(GL_TRIANGLE_FAN);
 						//This interpolates to find the center color, then fans out to the four corners.
-						int midx = x + dx * cellW + cellW/2;
+						int midX = x + dx * cellW + cellW/2;
 						int mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
 						int mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
 						glColor4ub(color.r, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-						glVertex2f(midx, midy);
+						glVertex2f(midX, midY);
 						//Touch each of the four corners
 						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
 						glVertex2f(x + dx * cellW, y + dy * cellH);
@@ -1873,7 +1873,7 @@ namespace GAGCore
 	void GraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			drawLine(x, y, x, y+l, Color(r, g, b, a));
 		else
 		#endif
@@ -1883,7 +1883,7 @@ namespace GAGCore
 	void GraphicContext::drawVertLine(int x, int y, int l, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			drawLine(x, y, x, y+l, color);
 		else
 		#endif
@@ -1893,7 +1893,7 @@ namespace GAGCore
 	void GraphicContext::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			drawLine(x, y, x+l, y, Color(r, g, b, a));
 		else
 		#endif
@@ -1903,7 +1903,7 @@ namespace GAGCore
 	void GraphicContext::drawHorzLine(int x, int y, int l, const Color& color)
 	{
 		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
+		if (optionFlags & GraphicContext::USE_GPU)
 			drawLine(x, y, x+l, y, color);
 		else
 		#endif
@@ -1968,7 +1968,7 @@ namespace GAGCore
 		assert(sizeof(Color) == 4);
 
 		minW = minH = 0;
-		sdlsurface = NULL;
+		sdlSurface = NULL;
 		optionFlags = DEFAULT;
 
 		// Load the SDL library
@@ -2000,7 +2000,7 @@ namespace GAGCore
 	{
 		TTF_Quit();
 		SDL_Quit();
-		sdlsurface = NULL;
+		sdlSurface = NULL;
 
 		if (verbose)
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
@@ -2025,20 +2025,20 @@ namespace GAGCore
 		// set flags
 		optionFlags = flags;
 		Uint32 sdlFlags = 0;
-		if (flags & FULLSCREEN)
+		if (flags & FULL_SCREEN)
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
 		// FIXME: window resize is broken
 		// if (flags & RESIZABLE)
 		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
-		if (flags & USEGPU)
+		if (flags & USE_GPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
 		// remove GL from options
-		optionFlags &= ~USEGPU;
+		optionFlags &= ~USE_GPU;
 		#endif
 
 		// if window exists, delete it
@@ -2048,10 +2048,10 @@ namespace GAGCore
 		}
 		// create the new window and the surface
 		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
-		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
+		sdlSurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
 
 		// check surface
-		if (!sdlsurface)
+		if (!sdlSurface)
 		{
 			fprintf(stderr, "Toolkit : can't set screen to %dx%d at 32 bpp\n", w, h);
 			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
@@ -2061,13 +2061,13 @@ namespace GAGCore
 		{
 			_gc = this;
 			// enable GL context
-			if (flags & USEGPU)
+			if (flags & USE_GPU)
 			{
 				SDL_GLContext context = SDL_GL_CreateContext(window);
 				SDL_GL_MakeCurrent(window, context);
 			}
 			// set _glFormat
-			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
+			if ((optionFlags & USE_GPU) && (_gc->sdlSurface->format->BitsPerPixel != 32))
 			{
 				_glFormat.palette = NULL;
 				_glFormat.BitsPerPixel = 32;
@@ -2099,7 +2099,7 @@ namespace GAGCore
 			}
 			else
 			{
-				memcpy(&_glFormat, _gc->sdlsurface->format, sizeof(SDL_PixelFormat));
+				memcpy(&_glFormat, _gc->sdlSurface->format, sizeof(SDL_PixelFormat));
 				unsigned alphaPos(24);
 				if ((_glFormat.Rshift == 24) || (_glFormat.Gshift == 24) || (_glFormat.Bshift == 24))
 					alphaPos = 0;
@@ -2109,7 +2109,7 @@ namespace GAGCore
 			}
 
 			#ifdef HAVE_OPENGL
-			if (optionFlags & USEGPU)
+			if (optionFlags & USE_GPU)
 				glState.checkExtensions();
 			#endif // HAVE_OPENGL
 
@@ -2122,7 +2122,7 @@ namespace GAGCore
 			}
 
 			setClipRect();
-			if (flags & CUSTOMCURSOR)
+			if (flags & CUSTOM_CURSOR)
 			{
 				// disable system cursor
 				SDL_ShowCursor(SDL_DISABLE);
@@ -2134,13 +2134,13 @@ namespace GAGCore
 
 			if (verbose)
 				fprintf(stderr,
-					(flags & FULLSCREEN)
+					(flags & FULL_SCREEN)
 					?"Toolkit : Screen set to %dx%d at 32 bpp in fullscreen\n"
 					:"Toolkit : Screen set to %dx%d at 32 bpp in window\n",
 					w, h);
 
 			#ifdef HAVE_OPENGL
-			if (optionFlags & USEGPU)
+			if (optionFlags & USE_GPU)
 			{
 				gluOrtho2D(0, w, h, 0);
 				glEnable(GL_LINE_SMOOTH);
@@ -2157,9 +2157,9 @@ namespace GAGCore
 	void GraphicContext::nextFrame(void)
 	{
 		DrawableSurface::nextFrame();
-		if (sdlsurface)
+		if (sdlSurface)
 		{
-			if (optionFlags & CUSTOMCURSOR)
+			if (optionFlags & CUSTOM_CURSOR)
 			{
 				int mx, my;
 				unsigned b = SDL_GetMouseState(&mx, &my);
@@ -2169,10 +2169,10 @@ namespace GAGCore
 			}
 
 			#ifdef HAVE_OPENGL
-			if (optionFlags & GraphicContext::USEGPU)
+			if (optionFlags & GraphicContext::USE_GPU)
 			{
 				SDL_GL_SwapWindow(window);
-				//fprintf(stderr, "%d allocated GPU textures\n", glState.alocatedTextureCount);
+				//fprintf(stderr, "%d allocated GPU textures\n", glState.allocatedTextureCount);
 			}
 			else
 			#endif
@@ -2189,16 +2189,16 @@ namespace GAGCore
 		// Fetch the surface to print
 		#ifdef HAVE_OPENGL
 		std::unique_ptr<DrawableSurface> toPrint = nullptr;
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc->optionFlags & GraphicContext::USE_GPU)
 		{
 			toPrint = std::make_unique<DrawableSurface>(getW(), getH());
 			glFlush();
 			toPrint->drawSurface(0, 0, this);
-			toPrintSurface = toPrint->sdlsurface;
+			toPrintSurface = toPrint->sdlSurface;
 		}
 		else
 		#endif
-			toPrintSurface = sdlsurface;
+			toPrintSurface = sdlSurface;
 
 		// Print it using virtual filesystem
 		if (toPrintSurface)

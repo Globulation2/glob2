@@ -96,7 +96,7 @@ namespace GAGCore
 	void sdcRects(SDL_Rect *source, SDL_Rect *destination, const SDL_Rect &clipping)
 	{
 		//sdc= Source-Destination-Clipping
-		//Use if destination have the same size than source & cliping on destination
+		//Use if destination have the same size than source & clipping on destination
 		int dx=clipping.x-destination->x;
 		int dy=clipping.y-destination->y;
 

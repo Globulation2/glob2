@@ -76,7 +76,7 @@ private:
 	
 	///This function fills all given points area with a certain resource. It will fill in a randomly sized
 	///square over each grid space no larger than maxFillSize
-	void fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int ressourceType, int maxFillSize);
+	void fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int resourceType, int maxFillSize);
 	
 	///This chooses n-random squares from a the points vector, and eliminates the rest
 	void chooseRandomPoints(Game& game, std::vector<MapGeneratorPoint>& points, int n);

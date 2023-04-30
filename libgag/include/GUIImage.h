@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIIMAGE_H
-#define __GUIIMAGE_H
+#ifndef __GUI_IMAGE_H
+#define __GUI_IMAGE_H
 
 #include "GUIBase.h"
 #include "GraphicContext.h"

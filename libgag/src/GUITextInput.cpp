@@ -103,11 +103,11 @@ namespace GAGGUI
 			char* c = event->text.text;
 			if (c)
 			{
-				size_t lutf8=strlen(c);
-				if ((maxLength==0) || (text.length()+lutf8<maxLength))
+				size_t lUtf8=strlen(c);
+				if ((maxLength==0) || (text.length()+lUtf8<maxLength))
 				{
 					text.insert(cursPos, c);
-					cursPos+=lutf8;
+					cursPos+=lUtf8;
 
 					recomputeTextInfos();
 
@@ -309,7 +309,7 @@ namespace GAGGUI
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
-	#define TEXTBOXSIDEPAD 30
+	#define TEXT_BOX_SIDE_PAD 30
 	
 		if (password)
 		{
@@ -346,10 +346,10 @@ namespace GAGGUI
 				textDep--;
 				cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
 			}
-			while ((textDep>0) && (cursorScreenPos<TEXTBOXSIDEPAD));
+			while ((textDep>0) && (cursorScreenPos<TEXT_BOX_SIDE_PAD));
 		
 			// we make cursor not out of the box at right
-			while ( (textDep<text.length()) && (cursorScreenPos>w-TEXTBOXSIDEPAD-4) )
+			while ( (textDep<text.length()) && (cursorScreenPos>w-TEXT_BOX_SIDE_PAD-4) )
 			{
 				textDep++;
 				cursorScreenPos=fontPtr->getStringWidth(text.c_str()+textDep, cursPos-textDep);
@@ -360,7 +360,7 @@ namespace GAGGUI
 	/// adds word for autocompletion via <tab>
 	void TextInput::addAutoCompletableWord(const std::string &word)
 	{
-		autocompletableWord.push_back(word);
+		autoCompletableWord.push_back(word);
 	};
 	
 	/// removes word from autocompletion via <tab>
@@ -369,7 +369,7 @@ namespace GAGGUI
 		std::vector<std::vector<std::string>::iterator> toDelete;
 
 		std::vector<std::string>::iterator it;
-		for (it = autocompletableWord.begin(); it != autocompletableWord.end(); ++it)
+		for (it = autoCompletableWord.begin(); it != autoCompletableWord.end(); ++it)
 		{
 			if (*it==word)
 				toDelete.push_back(it);
@@ -378,7 +378,7 @@ namespace GAGGUI
 		std::vector<std::vector<std::string>::iterator>::iterator it2;
 		for (it2 = toDelete.begin(); it2 != toDelete.end(); ++it2)
 		{
-			autocompletableWord.erase(*it2);
+			autoCompletableWord.erase(*it2);
 		}
 	}
 	
@@ -387,7 +387,7 @@ namespace GAGGUI
 	{
 		int count = 0;
 		std::vector<std::string>::iterator it;
-		for (it = autocompletableWord.begin(); it != autocompletableWord.end(); ++it)
+		for (it = autoCompletableWord.begin(); it != autoCompletableWord.end(); ++it)
 		{
 			if(*it==word)
 			{

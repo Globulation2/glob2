@@ -513,7 +513,7 @@ int Engine::run(void)
 				
 				// if required, save videoshot
 				if (!(globalContainer->videoshotName.empty()) && 
-					!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+					!(globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 					)
 				{
 					FormattableString fileName = FormattableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(frameNumber++, 10, 10, '0');
@@ -745,7 +745,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		if (!globalContainer->runNoX)
 		{
 			// Display an error message
-			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 		}
 		return EE_CANT_LOAD_MAP;
 	}
@@ -910,7 +910,7 @@ int Engine::loadReplay(const std::string &fileName)
 		if (!globalContainer->runNoX)
 		{
 			// Display an error message
-			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 		}
 
 		delete globalContainer->replayReader;

@@ -27,34 +27,34 @@
 using namespace GAGCore;
 using namespace GAGGUI;
 
-KeyPress::KeyPress(SDL_Keysym nkey, bool pressed)
+KeyPress::KeyPress(SDL_Keysym nKey, bool pressed)
 	: pressed(pressed)
 {
-	if(nkey.mod & KMOD_CTRL)
+	if(nKey.mod & KMOD_CTRL)
 		control = true;
 	else
 		control = false;
-	if(nkey.mod & KMOD_SHIFT)
+	if(nKey.mod & KMOD_SHIFT)
 		shift = true;
 	else
 		shift = false;
-	if(nkey.mod & KMOD_LGUI || nkey.mod & KMOD_RGUI)
+	if(nKey.mod & KMOD_LGUI || nKey.mod & KMOD_RGUI)
 		meta = true;
 	else
 		meta = false;
-	if(nkey.mod & KMOD_ALT)
+	if(nKey.mod & KMOD_ALT)
 		alt = true;
 	else
 		alt = false;
 
-	std::string name = SDL_GetKeyName(nkey.sym);
+	std::string name = SDL_GetKeyName(nKey.sym);
 	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 	std::string key_s = std::string("[") + name + std::string("]");
 	Uint16 c=0;
-	//This is to get over a bug where ctrl-d ctrl-a etc... would cause nkey.unicode to be mangled,
-	//whereas nkey.sym is still fine
-	if(nkey.sym < 128)
-		c = nkey.sym;
+	//This is to get over a bug where ctrl-d ctrl-a etc... would cause nKey.unicode to be mangled,
+	//whereas nKey.sym is still fine
+	if(nKey.sym < 128)
+		c = nKey.sym;
 	
 	if(Toolkit::getStringTable()->doesStringExist(key_s))
 	{
@@ -64,8 +64,8 @@ KeyPress::KeyPress(SDL_Keysym nkey, bool pressed)
 	{
 		char utf8text[4];
 		UCS16toUTF8(c, utf8text);
-		size_t lutf8=strlen(utf8text);
-		key = std::string(utf8text, lutf8);
+		size_t lUtf8=strlen(utf8text);
+		key = std::string(utf8text, lUtf8);
 	}
 	else
 	{
@@ -75,10 +75,10 @@ KeyPress::KeyPress(SDL_Keysym nkey, bool pressed)
 
 
 
-KeyPress::KeyPress(KeyPress key, bool npressed)
+KeyPress::KeyPress(KeyPress key, bool nPressed)
 {
 	*this = key;
-	pressed = npressed;
+	pressed = nPressed;
 }
 
 

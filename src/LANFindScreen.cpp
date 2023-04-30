@@ -110,7 +110,7 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			
 			if(!client->isConnected())
 			{
-				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
+				MessageBox(globalContainer->gfx, "standard", MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
 				return;
 			}
 			while(client->getConnectionState() != YOGClient::WaitingForLoginInformation)
@@ -127,7 +127,7 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			if((*client->getGameListManager()->getGameList().begin()).getGameState()==YOGGameInfo::GameRunning)
 			{
-				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't join game, game has started]"), Toolkit::getStringTable()->getString("[ok]"));
+				MessageBox(globalContainer->gfx, "standard", MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Can't join game, game has started]"), Toolkit::getStringTable()->getString("[ok]"));
 				return;
 			}
 
