@@ -11,3 +11,4 @@ src/glob2
 .directory
 __pycache__/
 build/
+vcpkg_installed/
