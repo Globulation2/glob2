@@ -270,7 +270,7 @@ public:int getLongLevel(void);
 	/// once the capacities of the own inns are hit, conversion is limited.
 	bool canConvertUnit(void);
 
-	void integrity();
+	bool integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 int verbose;
 private:std::list<Order *> orderQueue;

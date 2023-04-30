@@ -59,7 +59,7 @@ public:
 	bool load(GAGCore::InputStream *stream);
 
 	//! Check some available integrity constraints
-	void integrity(void);
+	bool integrity(void);
 
 	///Saves data to a stream
 	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);

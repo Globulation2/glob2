@@ -44,6 +44,7 @@
 #include "Order.h"
 #include "Unit.h"
 #include "UnitSkin.h"
+#include "Integrity.h"
 #include "Utilities.h"
 #include "GameGUI.h"
 
@@ -932,7 +933,8 @@ bool Game::load(GAGCore::InputStream *stream)
 	}
 
 	// Check integrity of loaded game
-	integrity();
+	if (!integrity())
+		return false;
 
 	// Now load the old map script
 	if (!sgslScript.load(stream, this))
@@ -988,11 +990,11 @@ bool Game::load(GAGCore::InputStream *stream)
 	return true;
 }
 
-void Game::integrity(void)
+bool Game::integrity(void)
 {
 	///Check teams integrity
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-		teams[i]->integrity();
+		checkInvariant(teams[i]->integrity());
 
 	///Check that all ID do point to existing objects
 	for (int y=0; y<map.getH(); y++)
@@ -1002,10 +1004,10 @@ void Game::integrity(void)
 			if (c.building != NOGBID)
 			{
 				int tid = Building::GIDtoTeam(c.building);
-				assert(teams[tid]);
+				checkInvariant(teams[tid]);
 				int bid = Building::GIDtoID(c.building);
 				const auto building = teams[tid]->myBuildings[bid];
-				assert(building);
+				checkInvariant(building);
 				#define assertBuildingCoord(expr, coordL, coordH) \
 					if (!(expr)) { \
 						std::cerr << "Invalid coordinate " << #coordH << "=" << coordL \
@@ -1015,7 +1017,7 @@ void Game::integrity(void)
 							<< " with " << #coordH \
 							<< " span [" << building->pos ## coordH << ":" << buildingEnd ## coordH << "[" \
 							<< std::endl; \
-						assert(false); \
+						return false; \
 					}
 
 				const auto buildingEndX = building->posX + building->type->width;
@@ -1028,16 +1030,23 @@ void Game::integrity(void)
 			if (c.groundUnit != NOGUID)
 			{
 				int tid = Unit::GIDtoTeam(c.groundUnit);
-				assert(teams[tid]);
-				assert(teams[tid]->myUnits[Unit::GIDtoID(c.groundUnit)]);
+				checkInvariant(teams[tid]);
+				const auto unit = teams[tid]->myUnits[Unit::GIDtoID(c.groundUnit)];
+				checkInvariant(unit);
+				checkInvariant(unit->posX == x);
+				checkInvariant(unit->posY == y);
 			}
 			if (c.airUnit != NOGUID)
 			{
 				int tid = Unit::GIDtoTeam(c.airUnit);
-				assert(teams[tid]);
-				assert(teams[tid]->myUnits[Unit::GIDtoID(c.airUnit)]);
+				checkInvariant(teams[tid]);
+				const auto unit = teams[tid]->myUnits[Unit::GIDtoID(c.airUnit)];
+				checkInvariant(unit);
+				checkInvariant(unit->posX == x);
+				checkInvariant(unit->posY == y);
 			}
 		}
+	return true;
 }
 
 void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name)

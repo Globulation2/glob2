@@ -26,6 +26,7 @@
 #include "Game.h"
 
 #include "Building.h"
+#include "Integrity.h"
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
@@ -2460,17 +2461,18 @@ void Unit::computeMinDistToResources(void)
 		minDistToResource[carriedRessource] = 0;
 }
 
-void Unit::integrity()
+bool Unit::integrity()
 {
-	assert(gid<32768);
+	checkInvariant(gid<32768);
 	if (isDead)
-		return;
+		return true;
 	
 	if (!needToRecheckMedical)
 	{
-		assert(activity==ACT_UPGRADING);
-		assert(destinationPurpose==HEAL || destinationPurpose==FEED);
+		checkInvariant(activity==ACT_UPGRADING);
+		checkInvariant(destinationPurpose==HEAL || destinationPurpose==FEED);
 	}
+	return true;
 }
 
 Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
