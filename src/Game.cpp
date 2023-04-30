@@ -990,11 +990,41 @@ bool Game::load(GAGCore::InputStream *stream)
 	return true;
 }
 
+bool Game::checkBuildingsDoNotOverlap() {
+	std::vector<Uint16> buildings(map.getW()*map.getH(), NOGBID);
+	for (int ti=0; ti<mapHeader.getNumberOfTeams(); ti++)
+	{
+		Team *team = teams[ti];
+		for (int bi=0; bi<Building::MAX_COUNT; bi++)
+		{
+			const auto building = team->myBuildings[bi];
+			if (!building)
+				continue;
+			const auto x = building->posX;
+			const auto y = building->posY;
+			const auto type = building->type;
+			const auto w = type->width;
+			const auto h = type->height;
+			for (int yi=y; yi<y+h; yi++)
+				for (int xi=x; xi<x+w; xi++)
+				{
+					const auto index = map.coordToIndex(xi, yi);
+					checkInvariant(buildings[index]==NOGBID);
+					buildings[index] = building->gid;
+				}
+		}
+	}
+	return true;
+}
+
 bool Game::integrity(void)
 {
 	///Check teams integrity
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 		checkInvariant(teams[i]->integrity());
+
+	///Check that buildings do not overlap, as a pre-condition for healing
+	checkInvariant(checkBuildingsDoNotOverlap());
 
 	///Check that all ID do point to existing objects
 	for (int y=0; y<map.getH(); y++)
