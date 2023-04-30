@@ -2172,6 +2172,20 @@ void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, 
 	*py=y<<5;
 }
 
+void Map::mapCaseToDisplayableNoWrap(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
+{
+	int x = mx - viewportX;
+	while (x < -1) {
+		x += w;
+	}
+	int y = my - viewportY;
+	while (y < -1) {
+		y += h;
+	}
+	*px=x<<5;
+	*py=y<<5;
+}
+
 void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const
 {
 	int x = (mx - viewportX + w) & wMask;
