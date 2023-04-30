@@ -276,7 +276,7 @@ public:
 	void computeMinDistToResources(void);
 	
 public:
-	void integrity();
+	bool integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
     void setTargetBuilding(Building * b);
 	bool verbose;

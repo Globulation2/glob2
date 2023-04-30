@@ -66,7 +66,7 @@ public:
 	void clearMem(void);
 
 	//! Check some available integrity constraints
-	void integrity(void);
+	bool integrity(void);
 	
 	//! remove the building from all lists not realated to the upgrade/destroying systems
 	void removeFromAbilitiesLists(Building *building);

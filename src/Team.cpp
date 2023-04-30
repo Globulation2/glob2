@@ -34,6 +34,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "Player.h"
+#include "Integrity.h"
 
 Team::Team(Game *game)
 :BaseTeam()
@@ -469,36 +470,37 @@ void Team::clearMem(void)
 
 
 
-void Team::integrity(void)
+bool Team::integrity(void)
 {
-	assert(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
+	checkInvariant(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
 	for (int id=0; id<Building::MAX_COUNT; id++)
 	{
 		Building *b=myBuildings[id];
 		if (b)
-			b->integrity();
+			checkInvariant(b->integrity());
 	}
 	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
 	{
-		assert(*it);
-		assert((*it)->type);
-		assert((*it)->type->isVirtual);
-		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
+		checkInvariant(*it);
+		checkInvariant((*it)->type);
+		checkInvariant((*it)->type->isVirtual);
+		checkInvariant(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
 	{
-		assert(*it);
-		assert((*it)->type);
-		assert((*it)->type->isVirtual);
-		assert(myBuildings[Building::GIDtoID((*it)->gid)]);
+		checkInvariant(*it);
+		checkInvariant((*it)->type);
+		checkInvariant((*it)->type->isVirtual);
+		checkInvariant(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u)
-			u->integrity();
+			checkInvariant(u->integrity());
 	}
+	return true;
 }
 
 

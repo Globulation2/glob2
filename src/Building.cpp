@@ -34,6 +34,7 @@
 #include "Utilities.h"
 #include "Order.h"
 #include "Bullet.h"
+#include "Integrity.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -2743,30 +2744,31 @@ bool Building::canConvertUnit(void)
 			((int)unitsInside.size()<maxUnitInside);
 }
 
-void Building::integrity()
+bool Building::integrity()
 {
-	assert(unitsWorking.size()>=0);
-	assert((int)unitsWorking.size()<=Unit::MAX_COUNT);
+	checkInvariant(unitsWorking.size()>=0);
+	checkInvariant((int)unitsWorking.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
-		assert(*it);
-		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		assert((*it)->attachedBuilding==this);
+		checkInvariant(*it);
+		checkInvariant(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		checkInvariant((*it)->attachedBuilding==this);
 	}
 
-	assert(unitsInside.size()>=0);
-	assert((int)unitsInside.size()<=Unit::MAX_COUNT);
+	checkInvariant(unitsInside.size()>=0);
+	checkInvariant((int)unitsInside.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
-		assert(*it);
-		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
-		assert((*it)->attachedBuilding==this);
+		checkInvariant(*it);
+		checkInvariant(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		checkInvariant((*it)->attachedBuilding==this);
 	}
 	for (std::list<Unit *>::iterator  it=unitsHarvesting.begin(); it!=unitsHarvesting.end(); ++it)
 	{
-		assert(*it);
-		assert((*it)->targetBuilding==this);
+		checkInvariant(*it);
+		checkInvariant((*it)->targetBuilding==this);
 	}
+	return true;
 }
 
 Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
