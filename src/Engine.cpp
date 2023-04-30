@@ -731,21 +731,22 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 
 int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
 {
+	bool error = false;
 	try
 	{
-		if (!gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI))
-			return EE_CANT_LOAD_MAP;
+		error = !gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI);
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Failed to load the map: bad format." << std::endl;
-
+		std::cerr << "Failed to load the map: exception received." << std::endl;
+		error = true;
+	}
+	if (error) {
 		if (!globalContainer->runNoX)
 		{
 			// Display an error message
 			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 		}
-
 		return EE_CANT_LOAD_MAP;
 	}
 
