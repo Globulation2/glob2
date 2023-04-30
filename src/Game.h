@@ -188,7 +188,7 @@ public:
 
 private:
 	/// Return whether there is no overlap between any buildings
-	bool checkBuildingsDoNotOverlap();
+	bool checkBuildingsDoNotOverlapAndHealMissing();
 	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2)
 	{
 		drawPointBar(x, y, orientation, maxLength, actLength, 0, r, g, b, r, g, b, barWidth);

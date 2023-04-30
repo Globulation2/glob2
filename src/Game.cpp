@@ -990,7 +990,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	return true;
 }
 
-bool Game::checkBuildingsDoNotOverlap() {
+bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 	std::vector<Uint16> buildings(map.getW()*map.getH(), NOGBID);
 	for (int ti=0; ti<mapHeader.getNumberOfTeams(); ti++)
 	{
@@ -1005,12 +1005,27 @@ bool Game::checkBuildingsDoNotOverlap() {
 			const auto type = building->type;
 			const auto w = type->width;
 			const auto h = type->height;
+			const auto gid = building->gid;
 			for (int yi=y; yi<y+h; yi++)
 				for (int xi=x; xi<x+w; xi++)
 				{
+					// virtual buildings (flags) do not participate in this check
+					if (type->isVirtual)
+						continue;
+					// check for overlap
 					const auto index = map.coordToIndex(xi, yi);
 					checkInvariant(buildings[index]==NOGBID);
-					buildings[index] = building->gid;
+					buildings[index] = gid;
+					// heal missing cells
+					if (map.getCase(xi, yi).building != gid)
+					{
+						std::cerr << "Missing map cell GBID at " << xi << "," << yi
+							<< " for team " << ti
+							<< " building " << bi
+							<< " (" << building->type->type << "), healing!"
+							<< std::endl;
+						map.getCase(xi, yi).building = gid;
+					}
 				}
 		}
 	}
@@ -1024,7 +1039,7 @@ bool Game::integrity(void)
 		checkInvariant(teams[i]->integrity());
 
 	///Check that buildings do not overlap, as a pre-condition for healing
-	checkInvariant(checkBuildingsDoNotOverlap());
+	checkInvariant(checkBuildingsDoNotOverlapAndHealMissing());
 
 	///Check that all ID do point to existing objects
 	for (int y=0; y<map.getH(); y++)
@@ -1038,24 +1053,24 @@ bool Game::integrity(void)
 				int bid = Building::GIDtoID(c.building);
 				const auto building = teams[tid]->myBuildings[bid];
 				checkInvariant(building);
-				#define assertBuildingCoord(expr, coordL, coordH) \
+				#define healBuildingOutsideCoord(expr, coordL, coordH) \
 					if (!(expr)) { \
 						std::cerr << "Invalid coordinate " << #coordH << "=" << coordL \
 							<< " for team " << tid \
 							<< " building " << bid \
 							<< " (" << building->type->type << ")" \
 							<< " with " << #coordH \
-							<< " span [" << building->pos ## coordH << ":" << buildingEnd ## coordH << "[" \
+							<< " span [" << building->pos ## coordH << ":" << buildingEnd ## coordH << "[, healing!" \
 							<< std::endl; \
-						return false; \
+						map.getCase(x, y).building = NOGBID; \
 					}
 
 				const auto buildingEndX = building->posX + building->type->width;
-				assertBuildingCoord(x >= building->posX || x < (buildingEndX & map.wMask), x, X);
-				assertBuildingCoord(x < buildingEndX, x, X);
+				healBuildingOutsideCoord(x >= building->posX || x < (buildingEndX & map.wMask), x, X);
+				healBuildingOutsideCoord(x < buildingEndX, x, X);
 				const auto buildingEndY = building->posY + building->type->height;
-				assertBuildingCoord(y >= building->posY || y < (buildingEndY & map.hMask), y, Y);
-				assertBuildingCoord(y < buildingEndY, y, Y);
+				healBuildingOutsideCoord(y >= building->posY || y < (buildingEndY & map.hMask), y, Y);
+				healBuildingOutsideCoord(y < buildingEndY, y, Y);
 			}
 			if (c.groundUnit != NOGUID)
 			{
