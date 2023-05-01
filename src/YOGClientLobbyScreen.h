@@ -100,7 +100,7 @@ public:
 	///Handle text message events from IRCTextMessageHandler
 	void handleIRCTextMessage(const std::string& message);
 	///Handles text message events from the YOGClientChatChannel
-	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
+	void receiveTextMessage(boost::shared_ptr<YOGMessage> message);
 	///Handles an internal message
 	void recieveInternalMessage(const std::string& message);
 	///Handles when the game list has been updated from YOGClientGameListManager

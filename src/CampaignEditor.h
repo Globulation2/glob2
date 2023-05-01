@@ -35,9 +35,9 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	enum
 	{
-		ADDMAP,
-		EDITMAP,
-		REMOVEMAP,
+		ADD_MAP,
+		EDIT_MAP,
+		REMOVE_MAP,
 		OK,
 		CANCEL,
 	};
@@ -55,7 +55,7 @@ private:
 	Button* addMap;
 	/// Opens the map editor screen and edits the selected map
 	Button* editMap;
-	/// Remvoes the map from the list of maps
+	/// Removes the map from the list of maps
 	Button* removeMap;
 	/// Text editor changes the name of the campaign
 	TextInput* nameEditor;

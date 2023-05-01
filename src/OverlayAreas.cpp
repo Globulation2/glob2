@@ -29,7 +29,7 @@ OverlayArea::OverlayArea()
 {
 	lastType = None;
 	overlayMax = 0;
-//	fertilitymax = 0;
+//	fertilityMax = 0;
 //	fertilityComputed = 0;
 }
 
@@ -40,9 +40,9 @@ OverlayArea::~OverlayArea()
 }
 
 
-void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
+void OverlayArea::compute(Game& game, OverlayType type, int localTeam)
 {
-	type = ntype;
+	this->type = type;
 	height = game.map.getH();
 	width = game.map.getW();
 	overlay.resize(game.map.getW() * game.map.getH());
@@ -52,7 +52,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 		overlayMax = 0;
 		for (int i=0; i<Unit::MAX_COUNT; i++)
 		{
-			Unit *u=game.teams[localteam]->myUnits[i];
+			Unit *u=game.teams[localTeam]->myUnits[i];
 			if (u && u->activity != Unit::ACT_UPGRADING)
 			{
 				if (type == Starving && u->isUnitHungry() && u->hp < u->performance[HP])
@@ -72,7 +72,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 		overlayMax = 0;
 		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
-			Building *b = game.teams[localteam]->myBuildings[i];
+			Building *b = game.teams[localTeam]->myBuildings[i];
 			if (b)
 			{
 				if(b->type->shootDamage > 0)
@@ -136,15 +136,15 @@ void OverlayArea::increasePoint(int x, int y, int distance, std::vector<Uint16>&
 	{
 		for(int py=0; py<(distance*2+1); ++py)
 		{
-			int relx = (px-distance);
-			int rely = (py-distance);
-			if(relx*relx + rely*rely < distance*distance)
+			int relX = (px-distance);
+			int relY = (py-distance);
+			if(relX*relX + relY*relY < distance*distance)
 			{
-				int posx=(x - distance + px + width) % width;
-				int posy=(y - distance + py + height) % height;
+				int posX=(x - distance + px + width) % width;
+				int posY=(y - distance + py + height) % height;
 
-				field[posx * height + posy]+=distance - (relx*relx + rely*rely) / distance;
-				max=std::max(max, field[posx * height + posy]);
+				field[posX * height + posY]+=distance - (relX*relX + relY*relY) / distance;
+				max=std::max(max, field[posX * height + posY]);
 			}
 		}
 	}
@@ -158,14 +158,14 @@ void OverlayArea::spreadPoint(int x, int y, int value, int distance, std::vector
 	{
 		for (int py=y-distance-1; py<(y+distance+1); py++)
 		{
-			int relx = (px-x);
-			int rely = (py-y);
-			if((relx*relx + rely*rely) <= (distance*distance))
+			int relX = (px-x);
+			int relY = (py-y);
+			if((relX*relX + relY*relY) <= (distance*distance))
 			{
 				int targetX=(px + width) % width;
 				int targetY=(py + height) % height;
 
-				field[targetX * height + targetY]+=distance - (relx*relx + rely*rely) / distance;
+				field[targetX * height + targetY]+=distance - (relX*relX + relY*relY) / distance;
 				max=std::max(max, field[targetX * height + targetY] );
 			}
 		}

@@ -31,7 +31,7 @@ bool UnitSkin::load(GAGCore::InputStream *stream)
 	sprite = Toolkit::getSprite(spriteName);
 	if (!sprite)
 	{
-		std::cerr << "Can't load unit sprite " << spriteName << ", abording" << std::endl;
+		std::cerr << "Can't load unit sprite " << spriteName << ", aborting" << std::endl;
 		return false;
 	}
 	startImage[STOP_WALK] = stream->readUint32("startImageStopWalk");

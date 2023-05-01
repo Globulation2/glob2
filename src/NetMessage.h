@@ -90,7 +90,7 @@ enum NetMessageType
 	MNetSendGameResult,
 	MNetSendMapHeader,
 	MNetSendOrder,
-	MNetSendReteamingInformation,
+	MNetSendReTeamingInformation,
 	MNetSendYOGMessage,
 	MNetSetGameInRouter,
 	MNetSetLatencyMode,
@@ -103,7 +103,7 @@ enum NetMessageType
 	MNetAcceptMapUpload,
 	MNetRefuseMapUpload,
 	MNetCancelSendingFile,
-	MNetCancelRecievingFile,
+	MNetCancelReceivingFile,
 	MNetRequestMapThumbnail,
 	MNetSendMapThumbnail,
 	MNetSubmitRatingOnMap,
@@ -111,9 +111,9 @@ enum NetMessageType
 };
 
 
-///This is bassically a message in the Net Engine. A Message has two parts,
+///This is basically a message in the Net Engine. A Message has two parts,
 ///a type and a body. The NetMessage base class also has a static function
-///that will read data in, and create the appropriette derived class. 
+///that will read data in, and create the appropriate derived class. 
 class NetMessage
 {
 public:
@@ -136,7 +136,7 @@ public:
 	///derived classes, as it is handled by getNetMessage
 	virtual void decodeData(GAGCore::InputStream* stream) = 0;
 
-	///This causes the message to be formated to a string, for debugging and/or logging
+	///This causes the message to be formatted to a string, for debugging and/or logging
 	///purposes
 	virtual std::string format() const = 0 ;
 
@@ -150,7 +150,7 @@ public:
 
 
 
-///This message bassically wraps the Order class, meant to deliver an Order across a network.
+///This message basically wraps the Order class, meant to deliver an Order across a network.
 class NetSendOrder : public NetMessage
 {
 public:
@@ -307,7 +307,7 @@ private:
 
 
 
-///This message informs the client its login was successfull
+///This message informs the client its login was successful
 class NetLoginSuccessful : public NetMessage
 {
 public:
@@ -366,10 +366,10 @@ private:
 };
 
 
-///This message updates the users pre-joining game list. Bassically, it takes what the user already has
+///This message updates the users pre-joining game list. Basically, it takes what the user already has
 ///(the server should have a copy), and the new server game list, and sends a message with the differences
 ///between the two, and reassembles the completed list at the other end. This both reduces bandwidth,
-///and eliminates the need for seperate GameAdded, GameRemoved, and GameChanged messages just to keep
+///and eliminates the need for separate GameAdded, GameRemoved, and GameChanged messages just to keep
 ///a connected user updated. For this to work, the server and the client should have synced versions
 ///of what the list is, and this message will just pass updates.
 class NetUpdateGameList : public NetMessage
@@ -503,7 +503,7 @@ public:
 
 
 
-///NetRefuseRegistration informs the user that their registration attemp was denied
+///NetRefuseRegistration informs the user that their registration attempt was denied
 class NetRefuseRegistration : public NetMessage
 {
 public:
@@ -821,7 +821,7 @@ public:
 	///Retrieves the chat channel for the new game
 	Uint32 getChatChannel() const;
 
-	///Retrivees the game id for the new game
+	///Retrieves the game id for the new game
 	Uint16 getGameID() const;
 	
 	///Retrieves the game-router ip address
@@ -1055,7 +1055,7 @@ public:
 	NetSendFileChunk();
 
 	///Creates a NetSendFileChunk message to read off of the given stream,
-	///either untill the stream ends or the chunk size limit is reached
+	///either until the stream ends or the chunk size limit is reached
 	NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID);
 
 	///Returns MNetSendFileChunk
@@ -1533,17 +1533,17 @@ private:
 
 
 
-///NetSendReteamingInformation
-class NetSendReteamingInformation : public NetMessage
+///NetSendReTeamingInformation
+class NetSendReTeamingInformation : public NetMessage
 {
 public:
-	///Creates a NetSendReteamingInformation message
-	NetSendReteamingInformation();
+	///Creates a NetSendReTeamingInformation message
+	NetSendReTeamingInformation();
 
-	///Creates a NetSendReteamingInformation message
-	NetSendReteamingInformation(NetReteamingInformation reteamingInfo);
+	///Creates a NetSendReTeamingInformation message
+	NetSendReTeamingInformation(NetReTeamingInformation reTeamingInfo);
 
-	///Returns MNetSendReteamingInformation
+	///Returns MNetSendReTeamingInformation
 	Uint8 getMessageType() const;
 
 	///Encodes the data
@@ -1552,18 +1552,18 @@ public:
 	///Decodes the data
 	void decodeData(GAGCore::InputStream* stream);
 
-	///Formats the NetSendReteamingInformation message with a small amount
+	///Formats the NetSendReTeamingInformation message with a small amount
 	///of information.
 	std::string format() const;
 
-	///Compares with another NetSendReteamingInformation
+	///Compares with another NetSendReTeamingInformation
 	bool operator==(const NetMessage& rhs) const;
 
-	///Retrieves reteamingInfo
-	NetReteamingInformation getReteamingInfo() const;
+	///Retrieves reTeamingInfo
+	NetReTeamingInformation getReTeamingInfo() const;
 private:
 private:
-	NetReteamingInformation reteamingInfo;
+	NetReTeamingInformation reTeamingInfo;
 };
 
 
@@ -1605,7 +1605,7 @@ private:
 
 
 
-///NetPlayerIsBanned this bassically tells the client that their username was banned by the administrators
+///NetPlayerIsBanned this basically tells the client that their username was banned by the administrators
 class NetPlayerIsBanned : public NetMessage
 {
 public:
@@ -2163,17 +2163,17 @@ private:
 
 
 
-///NetCancelRecievingFile
-class NetCancelRecievingFile : public NetMessage
+///NetCancelReceivingFile
+class NetCancelReceivingFile : public NetMessage
 {
 public:
-	///Creates a NetCancelRecievingFile message
-	NetCancelRecievingFile();
+	///Creates a NetCancelReceivingFile message
+	NetCancelReceivingFile();
 
-	///Creates a NetCancelRecievingFile message
-	NetCancelRecievingFile(Uint16 fileID);
+	///Creates a NetCancelReceivingFile message
+	NetCancelReceivingFile(Uint16 fileID);
 
-	///Returns MNetCancelRecievingFile
+	///Returns NetCancelReceivingFile
 	Uint8 getMessageType() const;
 
 	///Encodes the data
@@ -2182,11 +2182,11 @@ public:
 	///Decodes the data
 	void decodeData(GAGCore::InputStream* stream);
 
-	///Formats the NetCancelRecievingFile message with a small amount
+	///Formats the NetCancelReceivingFile message with a small amount
 	///of information.
 	std::string format() const;
 
-	///Compares with another NetCancelRecievingFile
+	///Compares with another NetCancelReceivingFile
 	bool operator==(const NetMessage& rhs) const;
 
 	///Retrieves fileID

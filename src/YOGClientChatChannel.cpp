@@ -113,7 +113,7 @@ void YOGClientChatChannel::sendToListeners(boost::shared_ptr<YOGMessage> message
 {
 	for(std::list<YOGClientChatListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{
-		(*i)->recieveTextMessage(message);
+		(*i)->receiveTextMessage(message);
 	}
 }
 

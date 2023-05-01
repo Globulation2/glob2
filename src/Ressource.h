@@ -24,7 +24,7 @@
 
 #include <string>
 
-//! No resource identifier. This correspond to resource type 255. On this case, variety, amout and animation are zero.
+//! No resource identifier. This correspond to resource type 255. On this case, variety, amount and animation are zero.
 #define NO_RES_TYPE 0xFF
 
 //! Either a resource type is NO_RES_TYPE and all others fields are zero, or the resource has a valid type and amount is NOT zero. This constraint does not apply if a resource is eternal.

@@ -66,7 +66,7 @@ public:
 	void setMapHeader(const MapHeader& mapHeader);
 
 	///Sets the reteaming information of the game
-	void setReteamingInfo(const NetReteamingInformation& reteamingInfo);
+	void setReteamingInfo(const NetReTeamingInformation& reteamingInfo);
 
 	///Gets the game header of the game
 	GameHeader& getGameHeader();
@@ -134,7 +134,7 @@ private:
 	Uint32 mapFile;
 	MapHeader mapHeader;
 	NetGamePlayerManager playerManager;
-	NetReteamingInformation reteamingInfo;
+	NetReTeamingInformation reteamingInfo;
 	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
 	Uint16 gameID;
 	Uint32 chatChannel;

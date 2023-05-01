@@ -50,7 +50,7 @@ namespace SimplexNoise {
 
 
 	int contribution(int gx, int gy, int gz, int relX, int relY, int relZ);
-	int dotprod(int hash, int x, int y, int z);
+	int dotProd(int hash, int x, int y, int z);
 	int hashGridPoint(int gx, int gy, int gz);
 
 
@@ -64,15 +64,15 @@ namespace SimplexNoise {
 		int gridX = (xin+skew) & FLOOR_MASK,
 		    gridY = (yin+skew) & FLOOR_MASK,
 		    gridZ = (zin+skew) & FLOOR_MASK;
-		int igridX = gridX>>8;
-		int igridY = gridY>>8;
-		int igridZ = gridZ>>8;
+		int iGridX = gridX>>8;
+		int iGridY = gridY>>8;
+		int iGridZ = gridZ>>8;
 
 		// 2. Find coordinates wrt. corner 0:
-		int unskew = INT_ROUND_DIV(gridX+gridY+gridZ, 6);
-		int x0 = gridX-unskew,
-		    y0 = gridY-unskew,
-		    z0 = gridZ-unskew;
+		int unSkew = INT_ROUND_DIV(gridX+gridY+gridZ, 6);
+		int x0 = gridX-unSkew,
+		    y0 = gridY-unSkew,
+		    z0 = gridZ-unSkew;
 		int relX = xin-x0, relY = yin-y0, relZ = zin-z0;
 		
 		// 3. Find exact grid area:
@@ -123,10 +123,10 @@ namespace SimplexNoise {
 		int relZ3 = relZ - 256      + INT_ROUND_DIV(256,2);
 
 		// 5. Compute noise value:
-		int value = ( contribution(igridX, igridY, igridZ, relX, relY, relZ) +
-			      contribution(igridX+offsetX1, igridY+offsetY1, igridZ+(1-offsetX1-offsetY1), relX1, relY1, relZ1) +
-			      contribution(igridX+offsetX2, igridY+offsetY2, igridZ+(2-offsetX2-offsetY2), relX2, relY2, relZ2) +
-			      contribution(igridX+1, igridY+1, igridZ+1, relX3, relY3, relZ3));
+		int value = ( contribution(iGridX, iGridY, iGridZ, relX, relY, relZ) +
+			      contribution(iGridX+offsetX1, iGridY+offsetY1, iGridZ+(1-offsetX1-offsetY1), relX1, relY1, relZ1) +
+			      contribution(iGridX+offsetX2, iGridY+offsetY2, iGridZ+(2-offsetX2-offsetY2), relX2, relY2, relZ2) +
+			      contribution(iGridX+1, iGridY+1, iGridZ+1, relX3, relY3, relZ3));
 
 		return INT_ROUND_RSHIFT(value,12) + 128;
 	}
@@ -145,7 +145,7 @@ namespace SimplexNoise {
 		// w2 is .16 fixed-point.
 		int w4 = INT_ROUND_RSHIFT(w2*w2,16);
 		// w4 is .16 fixed-point.
-		int res = w4 * dotprod(hash, relX,relY,relZ);
+		int res = w4 * dotProd(hash, relX,relY,relZ);
 		// res is .24 fixed-point.
 		return res;
 	}
@@ -153,7 +153,7 @@ namespace SimplexNoise {
 	/** Dot product with gradients3D[hash&15] -
 	 *  Because of the nature of gradients3D, no multiplications are needed - only additions and subtractions.
 	 */
-	int dotprod(int hash, int x, int y, int z) {
+	int dotProd(int hash, int x, int y, int z) {
 		/*
 	static const int gradients3D[16][3] =
 	{{1,1,0}, {1,-1,0}, {-1,1,0}, {-1,-1,0},

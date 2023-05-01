@@ -33,7 +33,7 @@ enum NetConnectionThreadMessageType
 	NTMConnected,
 	NTMCloseConnection,
 	NTMLostConnection,
-	NTMRecievedMessage,
+	NTMReceivedMessage,
 	NTMSendMessage,
 	NTMAcceptConnection,
 	NTMExitThread,
@@ -184,14 +184,14 @@ private:
 
 
 
-///NTRecievedMessage
-class NTRecievedMessage : public NetConnectionThreadMessage
+///NTReceivedMessage
+class NTReceivedMessage : public NetConnectionThreadMessage
 {
 public:
-	///Creates a NTRecievedMessage event
-	NTRecievedMessage(boost::shared_ptr<NetMessage> message);
+	///Creates a NTReceivedMessage event
+	NTReceivedMessage(boost::shared_ptr<NetMessage> message);
 
-	///Returns NTMRecievedMessage
+	///Returns NTMReceivedMessage
 	Uint8 getMessageType() const;
 
 	///Returns a formatted version of the event

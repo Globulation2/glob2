@@ -21,28 +21,28 @@
 #include <iostream>
 #include "Stream.h"
 
-NetReteamingInformation::NetReteamingInformation()
+NetReTeamingInformation::NetReTeamingInformation()
 {
 
 }
 
 
 
-void NetReteamingInformation::setPlayerToTeam(const std::string& playerName, int team)
+void NetReTeamingInformation::setPlayerToTeam(const std::string& playerName, int team)
 {
 	teams[playerName] = team;
 }
 
 
 
-bool NetReteamingInformation::doesPlayerHaveTeam(const std::string& playerName) const
+bool NetReTeamingInformation::doesPlayerHaveTeam(const std::string& playerName) const
 {
 	return (teams.find(playerName) != teams.end());
 }
 
 
 
-int NetReteamingInformation::getPlayersTeam(const std::string& playerName) const
+int NetReTeamingInformation::getPlayersTeam(const std::string& playerName) const
 {
 	if(doesPlayerHaveTeam(playerName))
 		return teams.find(playerName)->second;
@@ -51,7 +51,7 @@ int NetReteamingInformation::getPlayersTeam(const std::string& playerName) const
 
 
 
-void NetReteamingInformation::encodeData(GAGCore::OutputStream* stream) const
+void NetReTeamingInformation::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetReteamingInformation");
 	stream->writeEnterSection("teams");
@@ -71,7 +71,7 @@ void NetReteamingInformation::encodeData(GAGCore::OutputStream* stream) const
 
 
 
-void NetReteamingInformation::decodeData(GAGCore::InputStream* stream)
+void NetReTeamingInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetReteamingInformation");
 	teams.clear();
@@ -91,7 +91,7 @@ void NetReteamingInformation::decodeData(GAGCore::InputStream* stream)
 
 
 
-bool NetReteamingInformation::operator==(const NetReteamingInformation& rhs) const
+bool NetReTeamingInformation::operator==(const NetReTeamingInformation& rhs) const
 {
 	if(teams == rhs.teams)
 		return true;
@@ -100,7 +100,7 @@ bool NetReteamingInformation::operator==(const NetReteamingInformation& rhs) con
 
 
 
-bool NetReteamingInformation::operator!=(const NetReteamingInformation& rhs) const
+bool NetReTeamingInformation::operator!=(const NetReTeamingInformation& rhs) const
 {
 	if(teams != rhs.teams)
 		return true;

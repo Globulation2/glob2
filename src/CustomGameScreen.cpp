@@ -81,7 +81,7 @@ CustomGameScreen::~CustomGameScreen()
 
 
 
-void CustomGameScreen::validMapSelectedhandler(void)
+void CustomGameScreen::validMapSelectedHandler(void)
 {
 	int i;
 	// set the correct number of colors
@@ -216,7 +216,7 @@ void CustomGameScreen::updatePlayers()
 				AI::ImplementationID iid=getAiImplementation(i);
 				FormattableString name("%0 %1");
 				name.arg(AINames::getAIText(iid)).arg(i-1);
-				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementationID(iid));
 				if(teamColor != humanColor)
 					gameHeader.setAllyTeamNumber(teamColor, 2);
 			}

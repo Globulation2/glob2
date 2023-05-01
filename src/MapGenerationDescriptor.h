@@ -46,27 +46,27 @@ public:
 
 public:
 	TerrainType terrainType;
-	enum Methode
+	enum class Method
 	{
 		/// No terrain (terrain undefined)
-		eNONE=-1,
+		NONE=-1,
 		/// Uniform terrain (all of one type. completely unstructured)
-		eUNIFORM=0,
+		UNIFORM=0,
 		/// swamp-like terrain with water here and land there
-		eSWAMP=1,
+		SWAMP=1,
 		/// a more or less winding river
-		eRIVER=2,
+		RIVER=2,
 		/// islands that have organic shape and no passage from one to the next
-		eISLANDS=3,
+		ISLANDS=3,
 		/// all connected land with round lakes
-		eCRATERLAKES=4,
-		eCONCRETEISLANDS=5,
-		eISLES=6,
-		eOLDRANDOM=7,
-		eOLDISLANDS=8
+		CRATER_LAKES=4,
+		CONCRETE_ISLANDS=5,
+		ISLES=6,
+		OLD_RANDOM=7,
+		OLD_ISLANDS=8
 	};
 
-	Methode methode;
+	Method method;
 	
 	Sint32 wDec, hDec;
 	
@@ -80,7 +80,7 @@ public:
 
 	Sint32 nbTeams, nbWorkers;
 public:
-	// Thoses may not be in data
+	// Those may not be in data
 	Sint32 bootX[Team::MAX_COUNT];
 	Sint32 bootY[Team::MAX_COUNT];
 public:

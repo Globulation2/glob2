@@ -32,7 +32,7 @@ namespace GAGCore
 	class InputStream;
 }
 
-///This class holds all of the data that is sent to a player immeddiettly after they join a game,
+///This class holds all of the data that is sent to a player immediately after they join a game,
 ///including all of the information that isn't visible directly from the lobby
 class YOGAfterJoinGameInformation
 {
@@ -51,11 +51,11 @@ public:
 	///Returns the game header
 	const GameHeader& getGameHeader() const;
 
-	///Sets the reteaming information
-	void setReteamingInformation(const NetReteamingInformation& reteam);
+	///Sets the re-teaming information
+	void setReTeamingInformation(const NetReTeamingInformation& reTeam);
 	
-	///Returns the reteaming information
-	const NetReteamingInformation& getReteamingInformation() const;
+	///Returns the re-teaming information
+	const NetReTeamingInformation& getReTeamingInformation() const;
 	
 	///Sets the latency adjustment
 	void setLatencyAdjustment(Uint8 latency);
@@ -87,7 +87,7 @@ public:
 private:
 	MapHeader map;
 	GameHeader game;
-	NetReteamingInformation reteam;
+	NetReTeamingInformation reTeam;
 	Uint8 latency;
 	std::string routerIP;
 	Uint32 fileID;

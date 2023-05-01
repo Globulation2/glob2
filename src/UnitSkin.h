@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UNITSKIN_H
-#define __UNITSKIN_H
+#ifndef __UNIT_SKIN_H
+#define __UNIT_SKIN_H
 
 #include <GAGSys.h>
 #include "UnitConsts.h"

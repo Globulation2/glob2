@@ -181,42 +181,42 @@ void Settings::save(std::string filename)
 	}
 	else
 	{
-		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
-		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
-		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
-		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
-		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
-		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
-		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
-		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
-		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);
-		Utilities::streamprintf(stream, "mute=%d\n", mute);
-		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
-		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
+		Utilities::streamPrintf(stream, "username=%s\n", username.c_str());
+		Utilities::streamPrintf(stream, "password=%s\n", password.c_str());
+		Utilities::streamPrintf(stream, "screenWidth=%d\n", screenWidth);
+		Utilities::streamPrintf(stream, "screenHeight=%d\n", screenHeight);
+		Utilities::streamPrintf(stream, "screenFlags=%d\n", screenFlags);
+		Utilities::streamPrintf(stream, "optionFlags=%d\n", optionFlags);
+		Utilities::streamPrintf(stream, "language=%s\n", language.c_str());
+		Utilities::streamPrintf(stream, "musicVolume=%d\n", musicVolume);
+		Utilities::streamPrintf(stream, "voiceVolume=%d\n", voiceVolume);
+		Utilities::streamPrintf(stream, "mute=%d\n", mute);
+		Utilities::streamPrintf(stream, "rememberUnit=%d\n", rememberUnit);
+		Utilities::streamPrintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
 			for(int t=0; t<6; ++t)
 			{
 				std::string keyname="defaultUnitsAssigned["+boost::lexical_cast<std::string>(n)+"]["+boost::lexical_cast<std::string>(t)+"]";
-				Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultUnitsAssigned[n][t]);
+				Utilities::streamPrintf(stream, "%s=%i\n", keyname.c_str(), defaultUnitsAssigned[n][t]);
 			}
 		}
 
 		for(int n=0; n<3; ++n)
 		{
 			std::string keyname = "defaultFlagRadius["+boost::lexical_cast<std::string>(n)+"]";
-			Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultFlagRadius[n]);
+			Utilities::streamPrintf(stream, "%s=%i\n", keyname.c_str(), defaultFlagRadius[n]);
 		}
 
-		Utilities::streamprintf(stream, "cloudPatchSize=%d\n",	cloudPatchSize);
-		Utilities::streamprintf(stream, "cloudMaxAlpha=%d\n",	cloudMaxAlpha);
-		Utilities::streamprintf(stream, "cloudMaxSpeed=%d\n",	cloudMaxSpeed);
-		Utilities::streamprintf(stream, "cloudWindStability=%d\n",	cloudWindStability);
-		Utilities::streamprintf(stream, "cloudStability=%d\n",	cloudStability);
-		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
-		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
-		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
+		Utilities::streamPrintf(stream, "cloudPatchSize=%d\n",	cloudPatchSize);
+		Utilities::streamPrintf(stream, "cloudMaxAlpha=%d\n",	cloudMaxAlpha);
+		Utilities::streamPrintf(stream, "cloudMaxSpeed=%d\n",	cloudMaxSpeed);
+		Utilities::streamPrintf(stream, "cloudWindStability=%d\n",	cloudWindStability);
+		Utilities::streamPrintf(stream, "cloudStability=%d\n",	cloudStability);
+		Utilities::streamPrintf(stream, "cloudSize=%d\n",	cloudSize);
+		Utilities::streamPrintf(stream, "cloudHeight=%d\n",	cloudHeight);
+		Utilities::streamPrintf(stream, "version=%d\n",	SETTINGS_VERSION);
 	}
 	delete stream;
 }

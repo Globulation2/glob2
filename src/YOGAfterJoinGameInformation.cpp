@@ -60,16 +60,16 @@ const GameHeader& YOGAfterJoinGameInformation::getGameHeader() const
 
 
 
-void YOGAfterJoinGameInformation::setReteamingInformation(const NetReteamingInformation& nreteam)
+void YOGAfterJoinGameInformation::setReTeamingInformation(const NetReTeamingInformation& nreteam)
 {
-	reteam = nreteam;
+	reTeam = nreteam;
 }
 
 
 
-const NetReteamingInformation& YOGAfterJoinGameInformation::getReteamingInformation() const
+const NetReTeamingInformation& YOGAfterJoinGameInformation::getReTeamingInformation() const
 {
-	return reteam;
+	return reTeam;
 }
 
 
@@ -121,7 +121,7 @@ void YOGAfterJoinGameInformation::encodeData(GAGCore::OutputStream* stream) cons
 	stream->writeEnterSection("YOGAfterJoinGameInformation");
 	map.save(stream);
 	game.save(stream);
-	reteam.encodeData(stream);
+	reTeam.encodeData(stream);
 	stream->writeUint8(latency, "latency");
 	stream->writeText(routerIP, "routerIP");
 	stream->writeUint16(fileID, "fileID");
@@ -135,7 +135,7 @@ void YOGAfterJoinGameInformation::decodeData(GAGCore::InputStream* stream)
 	stream->readEnterSection("YOGAfterJoinGameInformation");
 	map.load(stream);
 	game.load(stream, VERSION_MINOR);
-	reteam.decodeData(stream);
+	reTeam.decodeData(stream);
 	latency = stream->readUint8("latency");
 	routerIP = stream->readText("routerIP");
 	fileID = stream->readUint16("fileID");
@@ -146,7 +146,7 @@ void YOGAfterJoinGameInformation::decodeData(GAGCore::InputStream* stream)
 
 bool YOGAfterJoinGameInformation::operator==(const YOGAfterJoinGameInformation& rhs) const
 {
-	if(map == rhs.map && reteam == rhs.reteam && latency == rhs.latency && routerIP == rhs.routerIP)
+	if(map == rhs.map && reTeam == rhs.reTeam && latency == rhs.latency && routerIP == rhs.routerIP)
 		return true;
 	return false;
 }
@@ -155,7 +155,7 @@ bool YOGAfterJoinGameInformation::operator==(const YOGAfterJoinGameInformation& 
 
 bool YOGAfterJoinGameInformation::operator!=(const YOGAfterJoinGameInformation& rhs) const
 {
-	if(map != rhs.map || reteam != rhs.reteam || latency != rhs.latency || routerIP != rhs.routerIP)
+	if(map != rhs.map || reTeam != rhs.reTeam || latency != rhs.latency || routerIP != rhs.routerIP)
 		return true;
 	return false;
 }

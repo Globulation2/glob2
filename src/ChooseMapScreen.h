@@ -42,7 +42,7 @@ class ChooseMapScreen : public Glob2Screen
 public:
 	/// Constructor. Directory is the source of the listed files.
 	/// extension is the file extension to show. If recurse is true,
-	/// subdirectoried are shown and can be opened.
+	/// subdirectories are shown and can be opened.
 	ChooseMapScreen(const char *directory, const char *extension, bool recurse, const char* alternateDirectory=NULL, const char* alternateExtension=NULL, const bool alternateRecurse=false);
 	//! Destructor
 	virtual ~ChooseMapScreen();
@@ -62,9 +62,9 @@ public:
 		//! Value returned upon screen execution completion when the map/game selection is canceled
 		CANCEL = 2,
 		//! Value returned if screen is for games and delete button has been pressed
-		DELETEGAME = 3,
+		DELETE_GAME = 3,
 		//! Value returned if screen if the button to switch between games and maps has been pressed
-		SWITCHTYPE = 4,
+		SWITCH_TYPE = 4,
 	};
 
 	enum LoadableType
@@ -81,7 +81,7 @@ public:
 protected:
 	/// Handle called when a valid map has been selected.
 	/// This is to be overwritten by the derived class.
-	virtual void validMapSelectedhandler(void) { }
+	virtual void validMapSelectedHandler(void) { }
 
 	/// The map header of the currently selected map
 	MapHeader mapHeader;

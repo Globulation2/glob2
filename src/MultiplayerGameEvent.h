@@ -42,7 +42,7 @@ enum MultiplayerGameEventType
 };
 
 
-///This represents an event recieved from MultiplayerGame
+///This represents an event received from MultiplayerGame
 ///These are merely data classes, and not much more
 class MultiplayerGameEvent
 {

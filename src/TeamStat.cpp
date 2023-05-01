@@ -467,7 +467,7 @@ void TeamStats::drawStat(int posX, int posY)
 		int nbOk, nbNeedFood, nbNeedFoodCritical, nbNeedHeal;
 		if (stats[index].totalUnit)
 		{
-			// to avoid some roundoff errors
+			// to avoid some round-off errors
 			if (stats[index].needNothing>0)
 			{
 				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;

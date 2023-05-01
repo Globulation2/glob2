@@ -287,7 +287,7 @@ void YOGClientLobbyScreen::handleIRCTextMessage(const std::string& message)
 
 
 
-void YOGClientLobbyScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
+void YOGClientLobbyScreen::receiveTextMessage(boost::shared_ptr<YOGMessage> message)
 {
 	chatWindow->addText(message->formatForReading());
 	chatWindow->addImage(0);

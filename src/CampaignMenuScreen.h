@@ -47,9 +47,9 @@ private:
 
 	/// Title of the screen
 	Text* title;
-	/// The exit to menuscreen button
+	/// The exit to menu screen button
 	Button* exit;
-	/// The "start mission" buttion
+	/// The "start mission" button
 	Button* startMission;
 
 	/// The box where the players name is put

@@ -40,7 +40,7 @@ namespace GAGCore
 }
 
 /**
- * Player extends BasePlayer by an associated AI, a Game, a Map, a Team and a startng position.
+ * Player extends BasePlayer by an associated AI, a Game, a Map, a Team and a starting position.
  */
 class Player:public BasePlayer
 {

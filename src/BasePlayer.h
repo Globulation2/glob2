@@ -51,13 +51,13 @@ public:
 		P_AI=5
 	};
 	//TODO: Explain
-	static AI::ImplementationID implementitionIdFromPlayerType(PlayerType type)
+	static AI::ImplementationID implementationIdFromPlayerType(PlayerType type)
 	{
 		assert(type>=P_AI);
 		return (AI::ImplementationID)((int)type-(int)P_AI);
 	}
 	//TODO: Explain
-	static PlayerType playerTypeFromImplementitionID(AI::ImplementationID iid)
+	static PlayerType playerTypeFromImplementationID(AI::ImplementationID iid)
 	{
 		return (PlayerType)((int)iid+(int)P_AI);
 	}
@@ -93,10 +93,10 @@ public:
 	/**
       \param number
       \param name
-      \param teamn
+      \param teamNumber
       \param type
 	 */
-	BasePlayer(Sint32 number, const std::string& name, Sint32 teamn, PlayerType type);
+	BasePlayer(Sint32 number, const std::string& name, Sint32 teamNumber, PlayerType type);
 	//TODO: Explain
 	void init();
 	virtual ~BasePlayer(void);

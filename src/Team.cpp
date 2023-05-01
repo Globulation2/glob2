@@ -123,13 +123,13 @@ void Team::setBaseTeam(const BaseTeam *initial)
 
 
 
-bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
+bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingsTypes, Sint32 versionMinor)
 {
 	assert(stream);
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsTryToBuildingSiteRoom.clear();
 
-	// loading baseteam
+	// loading base team
 	if(!BaseTeam::load(stream, versionMinor))
 		return false;
 
@@ -169,7 +169,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		Uint32 isUsed = stream->readUint32("isUsed");
 		if (isUsed)
 		{
-			myBuildings[i] = new Building(stream, buildingstypes, this, versionMinor);
+			myBuildings[i] = new Building(stream, buildingsTypes, this, versionMinor);
 			if (myBuildings[i]->type->unitProductionTime)
 				swarms.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->shootingRange)
@@ -206,7 +206,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		if (myBuildings[i])
 		{
 			stream->readEnterSection(i);
-			myBuildings[i]->loadCrossRef(stream, buildingstypes, this, versionMinor);
+			myBuildings[i]->loadCrossRef(stream, buildingsTypes, this, versionMinor);
 			if (myBuildings[i]->type->canExchange)
 				canExchange.push_back(myBuildings[i]);
 			stream->readLeaveSection();
@@ -270,7 +270,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 
 void Team::save(GAGCore::OutputStream *stream)
 {
-	// saving baseteam
+	// saving base team
 	BaseTeam::save(stream);
 
 	stream->writeEnterSection("Team");
@@ -701,7 +701,7 @@ Building *Team::findNearestFood(Unit *unit)
 	}
 
 	//Second, we check if we have any satisfactory inns on our team.
-	// That mean it has to be better or equal than the ennemy food.
+	// That mean it has to be better or equal than the enemy food.
 	if (unit->performance[FLY])
 	{
 		Sint32 bestDist = maxDist;
@@ -819,9 +819,9 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
-			int ratio_lhs_ressource = lhs->totalWishedResource();
-			int ratio_rhs_ressource = rhs->totalWishedResource();
-			return ratio_lhs_ressource > ratio_rhs_ressource;
+			int ratioLhsResource = lhs->totalWishedResource();
+			int ratioRhsResource = rhs->totalWishedResource();
+			return ratioLhsResource > ratioRhsResource;
 		}
 		else
 		{
@@ -836,8 +836,8 @@ void Team::add_building_needing_work(Building* b, Sint32 priority)
 {
 	bool did_find_position=false;
 	Sint32 p = priority;
-	std::vector<Building*>& blist = buildingsNeedingUnits[p];
-	for(std::vector<Building*>::iterator i=blist.begin(); i!=blist.end(); ++i)
+	std::vector<Building*>& bList = buildingsNeedingUnits[p];
+	for(std::vector<Building*>::iterator i=bList.begin(); i!=bList.end(); ++i)
 	{
 		if(prioritize_building(b, *i))
 		{
@@ -965,8 +965,8 @@ void Team::syncStep(void)
 	if (noMoreBuildingSitesCountdown>0)
 		noMoreBuildingSitesCountdown--;
 
-	int nbUsefullUnits = 0;
-	int nbUsefullUnitsAlone = 0;
+	int nbUsefulUnits = 0;
+	int nbUsefulUnitsAlone = 0;
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		Unit *u = myUnits[i];
@@ -974,9 +974,9 @@ void Team::syncStep(void)
 		{
 			if (u->typeNum != EXPLORER)
 			{
-				nbUsefullUnits++;
+				nbUsefulUnits++;
 				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->attachedBuilding && u->attachedBuilding->type->canFeedUnit))
-					nbUsefullUnitsAlone++;
+					nbUsefulUnitsAlone++;
 			}
 			u->syncStep();
 			if (u->isDead)
@@ -1011,8 +1011,8 @@ void Team::syncStep(void)
 				buildingsToBeDestroyed.push_front(building);
 			}
 
-			std::list<Building *>::iterator ittemp=it;
-			it=buildingsWaitingForDestruction.erase(ittemp);
+			std::list<Building *>::iterator itTemp=it;
+			it=buildingsWaitingForDestruction.erase(itTemp);
 		}
 		else
 			++it;
@@ -1036,7 +1036,7 @@ void Team::syncStep(void)
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
 
-		//TODO: optimisation: we can avoid some of thoses remove(Building *) by keeping a building state to detect which remove() are needed.
+		//TODO: optimisation: we can avoid some of those remove(Building *) by keeping a building state to detect which remove() are needed.
 		buildingsTryToBuildingSiteRoom.remove(building);
 
 		if (game->selectedBuilding==building)
@@ -1053,8 +1053,8 @@ void Team::syncStep(void)
 	{
 		if ((*it)->tryToBuildingSiteRoom())
 		{
-			std::list<Building *>::iterator ittemp=it;
-			it=buildingsTryToBuildingSiteRoom.erase(ittemp);
+			std::list<Building *>::iterator itTemp=it;
+			it=buildingsTryToBuildingSiteRoom.erase(itTemp);
 		}
 		else
 			++it;
@@ -1087,14 +1087,14 @@ void Team::syncStep(void)
 		(*it)->clearingFlagStep();
 
 	bool isDying= (playersMask==0)
-		|| (!isEnoughFoodInSwarm && nbUsefullUnitsAlone==0 && (nbUsefullUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
+		|| (!isEnoughFoodInSwarm && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
 	{
 		isAlive=false;
 		fprintf(logFile, "Team %d is dead:\n", teamNumber);
 		fprintf(logFile, " isEnoughFoodInSwarm=%d\n", isEnoughFoodInSwarm);
-		fprintf(logFile, " nbUsefullUnitsAlone=%d\n", nbUsefullUnitsAlone);
-		fprintf(logFile, " nbUsefullUnits=%d\n", nbUsefullUnits);
+		fprintf(logFile, " nbUsefulUnitsAlone=%d\n", nbUsefulUnitsAlone);
+		fprintf(logFile, " nbUsefulUnits=%d\n", nbUsefulUnits);
 		fprintf(logFile, "  canFeedUnit.size()=%zd\n", canFeedUnit.size());
 		fprintf(logFile, "  canHealUnit.size()=%zd\n", canHealUnit.size());
 	}

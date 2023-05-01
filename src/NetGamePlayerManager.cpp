@@ -37,9 +37,9 @@ NetGamePlayerManager::NetGamePlayerManager(GameHeader& gameHeader)
 void NetGamePlayerManager::addPerson(Uint16 playerID, const std::string& name)
 {
 	int team_number;
-	if(reteamInfo.doesPlayerHaveTeam(name))
+	if(reTeamInfo.doesPlayerHaveTeam(name))
 	{
-		team_number = reteamInfo.getPlayersTeam(name);
+		team_number = reTeamInfo.getPlayersTeam(name);
 	}
 	else
 	{
@@ -78,7 +78,7 @@ void NetGamePlayerManager::addAIPlayer(AI::ImplementationID type)
 			{
 				FormattableString name("%0 %1");
 				name.arg(AINames::getAIText(type)).arg(x+1);
-				bp = BasePlayer(x, name, team_number, Player::playerTypeFromImplementitionID(type));
+				bp = BasePlayer(x, name, team_number, Player::playerTypeFromImplementationID(type));
 				readyToStart[x] = true;
 				break;
 			}
@@ -186,23 +186,23 @@ bool NetGamePlayerManager::isReadyToGo(int playerID)
 
 
 
-void NetGamePlayerManager::setNumberOfTeams(int nnumberOfTeams)
+void NetGamePlayerManager::setNumberOfTeams(int numberOfTeams)
 {
-	numberOfTeams = nnumberOfTeams;
+	this->numberOfTeams = numberOfTeams;
 }
 
 
 
-void NetGamePlayerManager::setReteamingInformation(const NetReteamingInformation& information)
+void NetGamePlayerManager::setReTeamingInformation(const NetReTeamingInformation& information)
 {
-	reteamInfo = information;
+	reTeamInfo = information;
 }
 
 
 
-const NetReteamingInformation& NetGamePlayerManager::getReteamingInformation() const
+const NetReTeamingInformation& NetGamePlayerManager::getReTeamingInformation() const
 {
-	return reteamInfo;
+	return reTeamInfo;
 }
 
 
@@ -218,7 +218,7 @@ int NetGamePlayerManager::chooseTeamNumber()
 		if(bp.type != BasePlayer::P_NONE)
 			numberOfPlayersPerTeam[bp.teamNumber] += 1;
 	}
-	//Chooes a team number that has the lowest number of players attached
+	//Choose a team number that has the lowest number of players attached
 	int lowest_number = 10000;
 	int team_number = 0;
 	for(int x=0; x<numberOfTeams; ++x)

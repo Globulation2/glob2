@@ -507,7 +507,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeSint32(maxUnitInside, "maxUnitInside");
 	//TODO: std::list::size() is O(n). We should investigate
 	//if our intense use of this has an impact on overall performance.
-	//steph and nuage suggested to store and update size in a variable
+	//Stephane and nuage suggested to store and update size in a variable
 	//what is faster but also more error prone.
 	stream->writeUint32(unitsWorking.size(), "nbWorking");
 	fprintf(logFile, " nbWorking=%zd\n", unitsWorking.size());
@@ -2058,7 +2058,7 @@ void Building::turretStep(Uint32 stepCounter)
 		resources[STONE]--;
 		bullets += type->multiplierStoneToBullets;
 
-		// we need to be stone-feeded
+		// we need to be stone-fed
 		updateCallLists();
 	}
 
@@ -2085,16 +2085,16 @@ void Building::turretStep(Uint32 stepCounter)
 	assert(map);
 
 	// the type of target we have found
-	enum TargetType
+	enum class TargetType
 	{
-		TARGETTYPE_NONE,
-		TARGETTYPE_BUILDING,
-		TARGETTYPE_WORKER,
-		TARGETTYPE_WARRIOR,
-		TARGETTYPE_EXPLORER,
+		NONE,
+		BUILDING,
+		WORKER,
+		WARRIOR,
+		EXPLORER,
 	};
 	// The type of the best target we have found up to now
-	TargetType targetFound = TARGETTYPE_NONE;
+	TargetType targetFound = TargetType::NONE;
 	// The score of the best target we have found up to now
 	int bestScore = INT_MIN;
 	// The number of ticks before the unit may move away
@@ -2192,10 +2192,10 @@ void Building::turretStep(Uint32 stepCounter)
 									bestTicks = targetTicks;
 									bestTargetX = targetX;
 									bestTargetY = targetY;
-									targetFound = TARGETTYPE_WARRIOR;
+									targetFound = TargetType::WARRIOR;
 								}
 							}
-							else if ((targetFound != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER))
+							else if ((targetFound != TargetType::WARRIOR) && (testUnit->typeNum == WORKER))
 							{
 								// adjust score for range
 								int targetScore = - testUnit->hp;
@@ -2206,7 +2206,7 @@ void Building::turretStep(Uint32 stepCounter)
 									bestTicks = targetTicks;
 									bestTargetX = targetX;
 									bestTargetY = targetY;
-									targetFound = TARGETTYPE_WORKER;
+									targetFound = TargetType::WORKER;
 								}
 							}
 						}
@@ -2238,14 +2238,14 @@ void Building::turretStep(Uint32 stepCounter)
 								bestTicks = targetTicks;
 								bestTargetX = targetX;
 								bestTargetY = targetY;
-								targetFound = TARGETTYPE_EXPLORER;
+								targetFound = TargetType::EXPLORER;
 							}
 						}
 					}
 				}
 
 				// shoot building only if no unit is found
-				if (targetFound == TARGETTYPE_NONE)
+				if (targetFound == TargetType::NONE)
 				{
 					Uint16 targetGBID = map->getBuilding(targetX, targetY);
 					if (targetGBID != NOGBID)
@@ -2263,18 +2263,18 @@ void Building::turretStep(Uint32 stepCounter)
 								bestTicks = 256;
 								bestTargetX = targetX;
 								bestTargetY = targetY;
-								targetFound = TARGETTYPE_BUILDING;
+								targetFound = TargetType::BUILDING;
 							}
 						}
 					}
 				}
 			}
 		}
-		if (targetFound == TARGETTYPE_EXPLORER)
+		if (targetFound == TargetType::EXPLORER)
 			break;//specifying explorers as high priority
 	}
 
-	if (targetFound != TARGETTYPE_NONE)
+	if (targetFound != TargetType::NONE)
 	{
 		shootingStep = 0;
 

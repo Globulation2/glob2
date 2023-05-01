@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NEWMAPSCREEN_H
-#define __NEWMAPSCREEN_H
+#ifndef __NEW_MAP_SCREEN_H
+#define __NEW_MAP_SCREEN_H
 
 #include "Glob2Screen.h"
 #include "MapGenerationDescriptor.h"
@@ -45,7 +45,7 @@ public:
 
 private:
 	Number *mapSizeX, *mapSizeY;
-	List *methodes, *terrains;
+	List *methods, *terrains;
 	Ratio *waterRatio, *sandRatio, *grassRatio, *desertRatio;
 	Ratio *wheatRatio, *woodRatio, *stoneRatio, *algaeRatio, *craterDensity;
 	Ratio *riverDiameter, *fruitRatio;

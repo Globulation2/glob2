@@ -46,36 +46,36 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
 	game.map.setGame(&game);
 	setRandomSyncRandSeed();
 	
-	switch (descriptor.methode)
+	switch (descriptor.method)
 	{
-		case MapGenerationDescriptor::eUNIFORM:
+		case MapGenerationDescriptor::Method::UNIFORM:
 			game.map.makeHomogeneMap(descriptor.terrainType);
 			game.addTeam();
 		break;
-		case MapGenerationDescriptor::eSWAMP:
-		case MapGenerationDescriptor::eISLANDS:
-		case MapGenerationDescriptor::eRIVER:
-		case MapGenerationDescriptor::eCRATERLAKES:
+		case MapGenerationDescriptor::Method::SWAMP:
+		case MapGenerationDescriptor::Method::ISLANDS:
+		case MapGenerationDescriptor::Method::RIVER:
+		case MapGenerationDescriptor::Method::CRATER_LAKES:
 			if (!game.map.makeRandomMap(descriptor))
 				return false;
 			if (!game.makeRandomMap(descriptor))
 				return false;
 			break;
-		case MapGenerationDescriptor::eCONCRETEISLANDS:
+		case MapGenerationDescriptor::Method::CONCRETE_ISLANDS:
 			if (!computeConcreteIslands(game, descriptor))
 				return false;
 			break;
-		case MapGenerationDescriptor::eISLES:
+		case MapGenerationDescriptor::Method::ISLES:
 			if (!computeIsles(game, descriptor))
 				return false;
 			break;
-		case MapGenerationDescriptor::eOLDRANDOM:
+		case MapGenerationDescriptor::Method::OLD_RANDOM:
 			if (!game.map.oldMakeRandomMap(descriptor))
 				return false;
 			if (!game.makeRandomMap(descriptor))
 				return false;
 			break;
-		case MapGenerationDescriptor::eOLDISLANDS:
+		case MapGenerationDescriptor::Method::OLD_ISLANDS:
 			if (!game.map.oldMakeIslandsMap(descriptor))
 				return false;
 			if (!game.oldMakeIslandsMap(descriptor))
@@ -2129,7 +2129,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	return true;
 }
 
-/// This random map generator generates a heightfield and then choses levels at which to draw the line between water, sand, gras and sand again (desert)
+/// This random map generator generates a height field and then choses levels at which to draw the line between water, sand, gras and sand again (desert)
 bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above grasslevel is desert
@@ -2155,27 +2155,27 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	/// 1 to avoid division by zero, 
 	unsigned int tmpTotal=1+descriptor.waterRatio+descriptor.grassRatio;
 	unsigned int sectionIslandCount=std::max(1u, static_cast<unsigned int>((descriptor.nbTeams+descriptor.extraIslands)/pow(2,power2Divider)));
-	switch (descriptor.methode)
+	switch (descriptor.method)
 	{
-		case MapGenerationDescriptor::eSWAMP:
+		case MapGenerationDescriptor::Method::SWAMP:
 			hm.makeSwamp(smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio*wHeightMap*hHeightMap/(float)tmpTotal);
 			sandTiles=0;
 			grassTiles=wHeightMap*hHeightMap-waterTiles;
 			break;
-		case MapGenerationDescriptor::eRIVER:
+		case MapGenerationDescriptor::Method::RIVER:
 			hm.makeRiver(descriptor.riverDiameter*(wHeightMap+hHeightMap)/2/100,smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
-		case MapGenerationDescriptor::eCRATERLAKES:
+		case MapGenerationDescriptor::Method::CRATER_LAKES:
 			hm.makeCraters(wHeightMap*hHeightMap*descriptor.craterDensity/30000, 30, smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
-		case MapGenerationDescriptor::eISLANDS:
+		case MapGenerationDescriptor::Method::ISLANDS:
 			hm.makeIslands(sectionIslandCount, smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
