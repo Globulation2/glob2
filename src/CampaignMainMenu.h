@@ -30,8 +30,8 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	enum
 	{
-		NEWCAMPAIGN,
-		LOADCAMPAIGN,
+		NEW_CAMPAIGN,
+		LOAD_CAMPAIGN,
 		CANCEL,
 	};
 private:

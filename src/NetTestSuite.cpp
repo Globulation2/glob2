@@ -618,11 +618,11 @@ int NetTestSuite::testYOGPlayerSessionInfo()
 
 
 
-int NetTestSuite::testNetReteamingInformation()
+int NetTestSuite::testNetReTeamingInformation()
 {
-	shared_ptr<NetReteamingInformation> info(new NetReteamingInformation);
-	//Test the intial state
-	if(!testInitial<NetReteamingInformation>())
+	shared_ptr<NetReTeamingInformation> info(new NetReTeamingInformation);
+	//Test the initial state
+	if(!testInitial<NetReTeamingInformation>())
 		return 1;
 	
 	//Test adding a few players
@@ -675,13 +675,13 @@ int NetTestSuite::testListenerConnection()
 	//Attempts to transmit a NetSendOrder over the connection
 	shared_ptr<NetLoginSuccessful> netSendLogin1(new NetLoginSuccessful);
 	nc_client.sendMessage(netSendLogin1);
-	//Allow time for the request to be proccessed
+	//Allow time for the request to be processed
 	SDL_Delay(100);
 	
 	nc_client.update();
 	nc_server.update();
 	
-	//Recieves the message on the other end
+	//Receives the message on the other end
 	shared_ptr<NetMessage> netSendLogin2 = nc_server.getMessage();
 	if(!netSendLogin2)
 	{
@@ -757,15 +757,15 @@ bool NetTestSuite::runAllTests()
 		std::cout<<"YOGPlayerSessionInfo test #"<<failNumber<<" failed."<<std::endl;
 	}	
 
-	failNumber = testNetReteamingInformation();
+	failNumber = testNetReTeamingInformation();
 	if(failNumber == 0)
 	{
-		std::cout<<"NetReteamingInformation tests passed."<<std::endl;
+		std::cout<<"NetReTeamingInformation tests passed."<<std::endl;
 	}
 	else
 	{
 		failed = true;
-		std::cout<<"NetReteamingInformation test #"<<failNumber<<" failed."<<std::endl;
+		std::cout<<"NetReTeamingInformation test #"<<failNumber<<" failed."<<std::endl;
 	}
 
 	return !failed;

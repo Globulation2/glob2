@@ -177,7 +177,7 @@ int Glob2::runTestMapGeneration()
 		
 		int oldBeach = (syncRand() % 4);
 		
-		descriptor.methode = static_cast<MapGenerationDescriptor::Methode>(type);
+		descriptor.method = static_cast<MapGenerationDescriptor::Method>(type);
 		descriptor.nbTeams = teams;
 		descriptor.wDec=wDec;
 		descriptor.hDec=hDec;

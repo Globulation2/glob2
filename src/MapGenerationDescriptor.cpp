@@ -32,7 +32,7 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	
 	terrainType=GRASS;
 	
-	methode=eUNIFORM;
+	method=Method::UNIFORM;
 	waterRatio=50;
 	sandRatio=50;
 	grassRatio=50;
@@ -72,7 +72,7 @@ Uint8 *MapGenerationDescriptor::getData()
 
 	addSint32(data, (Sint32)terrainType, 8);
 
-	addSint32(data, (Sint32)methode, 12);
+	addSint32(data, (Sint32)method, 12);
 	addSint32(data, waterRatio, 16);
 	addSint32(data, sandRatio, 20);
 	addSint32(data, grassRatio, 24);
@@ -114,7 +114,7 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	
 	terrainType=(TerrainType)getSint32(data, 8);
 
-	methode=(Methode)getSint32(data, 12);
+	method=(Method)getSint32(data, 12);
 	waterRatio=getSint32(data, 16);
 	sandRatio=getSint32(data, 20);
 	grassRatio=getSint32(data, 24);
@@ -190,7 +190,7 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs^=wDec+(hDec<<16);
 	cs^=(Sint32)terrainType;
 	cs=(cs<<31)|(cs>>1);
-	cs^=(Sint32)methode;
+	cs^=(Sint32)method;
 	cs=(cs<<31)|(cs>>1);
 	cs ^= waterRatio;
 	cs=(cs<<31)|(cs>>1);

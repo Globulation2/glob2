@@ -86,7 +86,7 @@ boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength
 	case ORDER_ADJUST_LATENCY :
 		return boost::shared_ptr<Order>(new AdjustLatency(netData+1, netDataLength-1, versionMinor));
 	default:
-		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
+		printf("Bad packet received in Order.cpp (%d)\n", netData[0]);
 	}
 	return boost::shared_ptr<Order>();
 }
@@ -335,11 +335,11 @@ OrderModifyExchange::OrderModifyExchange(const Uint8 *data, int dataLength, Uint
 	assert(good);
 }
 
-OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask)
+OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveResourceMask, Uint32 sendResourceMask)
 {
 	this->gid=gid;
-	this->receiveResourceMask=receiveRessourceMask;
-	this->sendResourceMask=sendRessourceMask;
+	this->receiveResourceMask=receiveResourceMask;
+	this->sendResourceMask=sendResourceMask;
 }
 
 Uint8 *OrderModifyExchange::getData(void)
@@ -440,11 +440,11 @@ OrderModifyClearingFlag::OrderModifyClearingFlag(const Uint8 *data, int dataLeng
 	assert(good);
 }
 
-OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT])
+OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingResources[BASIC_COUNT])
 {
 	this->data=NULL;
 	this->gid=gid;
-	memcpy(this->clearingResources, clearingRessources, sizeof(bool)*BASIC_COUNT);
+	memcpy(this->clearingResources, clearingResources, sizeof(bool)*BASIC_COUNT);
 }
 
 OrderModifyClearingFlag::~OrderModifyClearingFlag(void)
@@ -584,7 +584,7 @@ bool OrderChangePriority::setData(const Uint8 *data, int dataLength, Uint32 vers
 	return true;
 }
 
-// OrderAlterateArea's code
+// OrderAlterArea's code
 
 OrderAlterArea::OrderAlterArea(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
@@ -644,7 +644,7 @@ bool OrderAlterArea::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 {
 	if (dataLength < 14)
 	{
-		printf("OrderAlterateArea::setData(dataLength=%d) failure\n", dataLength);
+		printf("OrderAlterArea::setData(dataLength=%d) failure\n", dataLength);
 		for (int i=0; i<dataLength; i++)
 			printf("data[%d]=%d\n", i, data[i]);
 		return false;
@@ -697,16 +697,16 @@ MessageOrder::MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMino
 	assert(good);
 }
 
-MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text)
+MessageOrder::MessageOrder(Uint32 recipientsMask, Uint32 messageOrderType, const char * text)
 {
-	length=Utilities::strmlen(text, 256)+9;
+	length=Utilities::strmLen(text, 256)+9;
 	data=(Uint8 *)malloc(length);
 	memcpy(data+9, text, length-9);
 	data[length-1]=0;
-	addUint32(data, recepientsMask, 0);
+	addUint32(data, recipientsMask, 0);
 	addUint32(data, messageOrderType, 4);
 	addUint8(data, (Uint8)(length-9), 8);
-	this->recipientsMask=recepientsMask;
+	this->recipientsMask=recipientsMask;
 	this->messageOrderType=messageOrderType;
 }
 
@@ -735,7 +735,7 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMino
 	memcpy(this->data, data, dataLength);
 	if (this->data[dataLength-1]!=0)
 		return false;
-	if (textLength!=Utilities::strmlen((const char *)(this->data+9), 256))
+	if (textLength!=Utilities::strmLen((const char *)(this->data+9), 256))
 		return false;
 	if (textLength!=dataLength-9)
 		return false;
@@ -753,15 +753,15 @@ OrderVoiceData::OrderVoiceData(const Uint8 *data, int dataLength, Uint32 version
 	assert(good);
 }
 
-OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas)
+OrderVoiceData::OrderVoiceData(Uint32 recipientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData)
 {
-	this->recipientsMask = recepientsMask;
-	this->framesDataLength = framesDatasLength;
+	this->recipientsMask = recipientsMask;
+	this->framesDataLength = framesDataLength;
 	this->frameCount = frameCount;
 	
-	data = (Uint8 *)malloc(framesDatasLength+5);
-	if (framesDatas)
-		memcpy(data+5, framesDatas, framesDatasLength);
+	data = (Uint8 *)malloc(framesDataLength+5);
+	if (framesData)
+		memcpy(data+5, framesData, framesDataLength);
 }
 
 OrderVoiceData::~OrderVoiceData()

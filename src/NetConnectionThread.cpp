@@ -238,7 +238,7 @@ void NetConnectionThread::operator()()
 
 							//Now interpret the message from the data, and add it to the queue
 							shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
-							boost::shared_ptr<NTRecievedMessage> recieved(new NTRecievedMessage(message));
+							boost::shared_ptr<NTReceivedMessage> recieved(new NTReceivedMessage(message));
 							sendToMainThread(recieved);
 
 							//std::cout<<"Recieved: "<<message->format()<<std::endl;

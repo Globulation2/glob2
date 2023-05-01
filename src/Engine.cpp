@@ -136,7 +136,7 @@ int Engine::initCustom(const std::string &gameName)
 	MapHeader mapHeader = loadMapHeader(gameName);
 	GameHeader gameHeader = loadGameHeader(gameName);
 
-	// If the game is a network saved game, we need to toogle net players to ai players:
+	// If the game is a network saved game, we need to toggle net players to ai players:
 	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
 	{
 		if (verbose)
@@ -222,7 +222,7 @@ void Engine::createRandomGame()
 	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
 	
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
-	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
+	std::cout<<"Random Seed game header: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)
 	{
 		std::cout<<"    Player: "<<game.getBasePlayer(p).name<<" for team "<<game.getBasePlayer(p).teamNumber<<std::endl;
@@ -394,7 +394,7 @@ int Engine::run(void)
 				// we get and push ai orders, if they are needed for this frame
 				for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 				{
-					if (gui.game.players[i]->ai && !net->orderRecieved(i))
+					if (gui.game.players[i]->ai && !net->orderReceived(i))
 					{
 						shared_ptr<Order> order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
 						net->pushOrder(order, i, true);
@@ -417,7 +417,7 @@ int Engine::run(void)
 				}
 
 				// We proceed network:
-				networkReadyToExecute=net->allOrdersRecieved();
+				networkReadyToExecute=net->allOrdersReceived();
 
 
 				if(networkReadyToExecute)
@@ -758,7 +758,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	gui.game.clearingUncontrolledTeams();
 
 	// We do some cosmetic fix
-	finalAdjustements();
+	finalAdjustments();
 
 	// we create the net game
 	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
@@ -883,7 +883,7 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 			AI::ImplementationID iid=static_cast<AI::ImplementationID>(syncRand() % 5 + 1);
 			FormattableString name("%0 %1");
 			name.arg(AINames::getAIText(iid)).arg(i-1);
-			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementationID(iid));
 		}
 		gameHeader.setAllyTeamNumber(teamColor, teamColor);
 		count+=1;
@@ -944,7 +944,7 @@ int Engine::loadReplay(const std::string &fileName)
 	return EE_NO_ERROR;
 }
 
-void Engine::finalAdjustements(void)
+void Engine::finalAdjustments(void)
 {
 	gui.adjustLocalTeam();
 	if (!globalContainer->runNoX)

@@ -328,7 +328,7 @@ namespace GAGCore
 		std::string appIcon;
 		
 	public:
-		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)
+		//! Constructor. Create a new window of size (w,h). If useGpu is true, use GPU for accelerated 2D (OpenGL or DX)
 		GraphicContext(int w, int h, Uint32 flags, const std::string title = "", const std::string icon = "");
 		//! Destructor
 		virtual ~GraphicContext(void);

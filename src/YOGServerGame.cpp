@@ -96,7 +96,7 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 		info.setMapHeader(mapHeader);
 		info.setGameHeader(gameHeader);
 		info.setLatencyAdjustment(latencyMode);
-		info.setReteamingInformation(reteamingInfo);
+		info.setReTeamingInformation(reteamingInfo);
 		info.setGameRouterIP(routerIP);
 		info.setMapFileID(mapFile);
 		shared_ptr<NetSendAfterJoinGameInformation> afterjoin(new NetSendAfterJoinGameInformation(info));
@@ -220,10 +220,10 @@ void YOGServerGame::setMapHeader(const MapHeader& nmapHeader)
 
 
 
-void YOGServerGame::setReteamingInfo(const NetReteamingInformation& nreteamingInfo)
+void YOGServerGame::setReteamingInfo(const NetReTeamingInformation& nreteamingInfo)
 {
 	reteamingInfo=nreteamingInfo;
-	playerManager.setReteamingInformation(reteamingInfo);
+	playerManager.setReTeamingInformation(reteamingInfo);
 	
 	if(!hasAddedHost)
 	{

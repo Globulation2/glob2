@@ -30,7 +30,7 @@ BasePlayer::BasePlayer()
 	init();
 };
 
-BasePlayer::BasePlayer(Sint32 number, const std::string& nname, Sint32 teamNumber, PlayerType type)
+BasePlayer::BasePlayer(Sint32 number, const std::string& name, Sint32 teamNumber, PlayerType type)
 {
 	init();
 	
@@ -38,12 +38,12 @@ BasePlayer::BasePlayer(Sint32 number, const std::string& nname, Sint32 teamNumbe
 	assert(number<Team::MAX_COUNT);
 	assert(teamNumber>=0);
 	assert(teamNumber<Team::MAX_COUNT);
-	assert(nname.size());
+	assert(name.size());
 
 	setNumber(number);
 	setTeamNumber(teamNumber);
 
-	name=nname;
+	this->name=name;
 
 	this->type=type;
 };

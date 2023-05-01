@@ -53,7 +53,7 @@ public:
 	virtual ~Team(void);
 
 	void setBaseTeam(const BaseTeam *initial);
-	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
+	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingsTypes, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
 	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).

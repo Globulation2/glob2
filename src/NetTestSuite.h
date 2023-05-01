@@ -91,8 +91,8 @@ public:
 	///Tests the YOGPlayerSessionInfo class and its serialization
 	int testYOGPlayerSessionInfo();
 
-	///Tests the NetReteamingInformation class and its serialization
-	int testNetReteamingInformation();
+	///Tests the NetReTeamingInformation class and its serialization
+	int testNetReTeamingInformation();
 
 	///This tests NetListener and NetConnection in tandem.
 	int testListenerConnection();

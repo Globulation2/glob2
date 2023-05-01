@@ -100,9 +100,9 @@ bool CampaignMapEntry::isCompleted()
 
 
 
-void CampaignMapEntry::setCompleted(bool ncompleted)
+void CampaignMapEntry::setCompleted(bool completed)
 {
-	completed = ncompleted;
+	this->completed = completed;
 }
 
 
@@ -114,9 +114,9 @@ const std::string& CampaignMapEntry::getDescription() const
 
 
 
-void CampaignMapEntry::setDescription(const std::string& ndescription)
+void CampaignMapEntry::setDescription(const std::string& description)
 {
-	description=ndescription;
+	this->description=description;
 }
 
 
@@ -321,9 +321,9 @@ const std::string& Campaign::getPlayerName() const
 }
 
 
-void Campaign::setDescription(const std::string& ndescription)
+void Campaign::setDescription(const std::string& description)
 {
-	description = ndescription;
+	this->description = description;
 }
 
 

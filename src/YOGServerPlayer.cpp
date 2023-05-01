@@ -149,10 +149,10 @@ void YOGServerPlayer::update()
 		handleJoinGame(info->getGameID());
 	}
 	//This recieves a message to set the map header
-	else if(type==MNetSendReteamingInformation)
+	else if(type==MNetSendReTeamingInformation)
 	{
-		shared_ptr<NetSendReteamingInformation> info = static_pointer_cast<NetSendReteamingInformation>(message);
-		ngame->setReteamingInfo(info->getReteamingInfo());
+		shared_ptr<NetSendReTeamingInformation> info = static_pointer_cast<NetSendReTeamingInformation>(message);
+		ngame->setReteamingInfo(info->getReTeamingInfo());
 	}
 	//This recieves a request to change a players team in the game
 	else if(type==MNetRequestGameStart)
@@ -302,9 +302,9 @@ void YOGServerPlayer::update()
 		}
 	}
 	//This recieves a cancel to a file download
-	else if(type==MNetCancelRecievingFile)
+	else if(type==MNetCancelReceivingFile)
 	{
-		shared_ptr<NetCancelRecievingFile> info = static_pointer_cast<NetCancelRecievingFile>(message);
+		shared_ptr<NetCancelReceivingFile> info = static_pointer_cast<NetCancelReceivingFile>(message);
 		if(server.getFileDistributionManager().getDistributor(info->getFileID()))
 		{
 			server.getFileDistributionManager().getDistributor(info->getFileID())->removeMapRequestee(server.getPlayer(playerID));

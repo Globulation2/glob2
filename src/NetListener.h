@@ -23,7 +23,7 @@
 #include "NetConnection.h"
 
 
-///NetListener represents a low level wrapper arround SDL.
+///NetListener represents a low level wrapper around SDL.
 ///It listens for incoming connections. One should frequently
 ///attemptConnection
 class NetListener
@@ -35,7 +35,7 @@ public:
 	///Creates a null listener, start listening with startListening
 	NetListener();
 	
-	///Stops listening if nesseccarry
+	///Stops listening if necessary
 	~NetListener();
 	
 	///Causes the listener to start listening on the provided port
@@ -44,11 +44,11 @@ public:
 	///Stops the listener from listening on the port
 	void stopListening();
 	
-	///Returns true if the connection is activly listening, false otherwise
+	///Returns true if the connection is actively listening, false otherwise
 	bool isListening();
 	
 	///Attempts to accept an incoming connection, placing it
-	///in the provided NetConnection. Returns true if successfull,
+	///in the provided NetConnection. Returns true if successful,
 	///false otherwise.
 	bool attemptConnection(NetConnection& connection);
 

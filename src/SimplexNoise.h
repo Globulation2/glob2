@@ -1,5 +1,5 @@
-#ifndef __SIMPLEXNOISE_H__
-#define __SIMPLEXNOISE_H__
+#ifndef __SIMPLEX_NOISE_H__
+#define __SIMPLEX_NOISE_H__
 
 namespace SimplexNoise {
 	/** Returns the noise value for a given point.

@@ -44,7 +44,7 @@ Race::~Race()
 
 void Race::loadDefault()
 {
-	// read datas from backend
+	// read data from backend
 	StreamBackend *backend = Toolkit::getFileManager()->openInputStreamBackend("data/units.txt");
 	TextInputStream *stream = new TextInputStream(backend);
 	delete backend;

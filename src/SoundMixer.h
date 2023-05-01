@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SOUNDMIXER_H
-#define __SOUNDMIXER_H
+#ifndef __SOUND_MIXER_H
+#define __SOUND_MIXER_H
 
 #include <SDL.h>
 #include <SDL_audio.h>
@@ -53,10 +53,10 @@ public:
 	struct PlayerVoice
 	{
 		//! float sample from speex decoder
-		std::queue<float> voiceDatas;
+		std::queue<float> voiceData;
 		//! subsample precision for voice (8Khz instead of 44.1Khz)
 		float voiceSubIndex;
-		//! value used for interpolation and optimisation. Linear interpolation is done on the 8Khz audio datas
+		//! value used for interpolation and optimisation. Linear interpolation is done on the 8Khz audio data
 		float voiceVal0;
 		float voiceVal1;
 	};
@@ -66,13 +66,13 @@ public:
 	void *speexDecoderState;
 	
 	//! if voice data is available, insert it to output
-	inline void handleVoiceInsertion(int *outputSample, int voicevol);
+	inline void handleVoiceInsertion(int *outputSample, int voiceVol);
 	
 protected:
 	void openAudio(void);
 
 public:
-	SoundMixer(unsigned musicvol = 255, unsigned voicevol = 255, bool mute = false);
+	SoundMixer(unsigned musicVol = 255, unsigned voiceVol = 255, bool mute = false);
 
 	~SoundMixer();
 

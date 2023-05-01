@@ -49,7 +49,7 @@ public:
 	//! Destructor
 	virtual ~CustomGameScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	virtual void validMapSelectedhandler(void);
+	virtual void validMapSelectedHandler(void);
 	//! Returns true if AI i is enabled
 	bool isActive(int i);
 	//! Returns the implementation of AI i. If AI is disabled, result is undefined

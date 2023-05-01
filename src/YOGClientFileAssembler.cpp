@@ -31,7 +31,7 @@ using boost::static_pointer_cast;
 YOGClientFileAssembler::YOGClientFileAssembler(boost::weak_ptr<YOGClient> client, Uint16 fileID)
 	: client(client), fileID(fileID)
 {
-	obackend = NULL;
+	oBackend = NULL;
 	mode = NoTransfer;
 	size = 0;
 	finished=0;
@@ -71,12 +71,12 @@ void YOGClientFileAssembler::startSendingFile(std::string mapname)
 
 
 
-void YOGClientFileAssembler::startRecievingFile(std::string mapname)
+void YOGClientFileAssembler::startReceivingFile(std::string mapname)
 {
 	filename=mapname;
-	obackend = new MemoryStreamBackend;
-	ostream.reset(new BinaryOutputStream(obackend));
-	mode=RecivingFile;
+	oBackend = new MemoryStreamBackend;
+	ostream.reset(new BinaryOutputStream(oBackend));
+	mode=ReceivingFile;
 	finished=0;
 }
 
@@ -92,7 +92,7 @@ void YOGClientFileAssembler::handleMessage(boost::shared_ptr<NetMessage> message
 	}
 	if(type == MNetSendFileChunk)
 	{
-		if(mode == RecivingFile)
+		if(mode == ReceivingFile)
 		{
 			shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
 			Uint32 bsize = info->getChunkSize();
@@ -105,7 +105,7 @@ void YOGClientFileAssembler::handleMessage(boost::shared_ptr<NetMessage> message
 				//Write from the buffer, obackend, to the file
 				BinaryOutputStream* fstream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename+".gz"));
 				ostream->seekFromEnd(0);
-				fstream->write(obackend->getBuffer(), ostream->getPosition(), "");
+				fstream->write(oBackend->getBuffer(), ostream->getPosition(), "");
 				delete fstream;
 				ostream.reset();
 				//unzip file
@@ -131,10 +131,10 @@ void YOGClientFileAssembler::cancelSendingFile()
 
 
 
-void YOGClientFileAssembler::cancelRecievingFile()
+void YOGClientFileAssembler::cancelReceivingFile()
 {
 	boost::shared_ptr<YOGClient> nclient(client);
-	shared_ptr<NetCancelRecievingFile> message(new NetCancelRecievingFile(fileID));
+	shared_ptr<NetCancelReceivingFile> message(new NetCancelReceivingFile(fileID));
 	nclient->sendNetMessage(message);
 	size = 0;
 	finished = 0;
@@ -155,7 +155,7 @@ Uint8 YOGClientFileAssembler::getPercentage()
 
 
 
-bool YOGClientFileAssembler::fileInformationRecieved()
+bool YOGClientFileAssembler::fileInformationReceived()
 {
 	if(size == 0)
 		return false;

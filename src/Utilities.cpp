@@ -70,7 +70,7 @@ void setSyncRandSeed()
 {
 	///Sets the default seed
 	randomGenerator.seed();
-	//printf("ini rand=(%d, %d, %d).\n", randa, randb, randc);
+	//printf("ini rand=(%d, %d, %d).\n", randA, randB, randC);
 }
 void setSyncRandSeed(Uint32 seed)
 {
@@ -154,7 +154,7 @@ namespace Utilities
 	void sdcRects(SDL_Rect *source, SDL_Rect *destination, SDL_Rect clipping)
 	{
 		//sdc= Source-Destination-Clipping
-		//Use if destination have the same size than source & cliping on destination
+		//Use if destination have the same size than source & clipping on destination
 		int dx=clipping.x-destination->x;
 		int dy=clipping.y-destination->y;
 
@@ -332,7 +332,7 @@ namespace Utilities
 			else
 				m=m<<1;
 		assert(false);
-		//failsafe relase case
+		//failsafe release case
 		m=1;
 		for (int i=0; i<32; i++)
 			if (m>=a)
@@ -349,7 +349,7 @@ namespace Utilities
 		return 1<<a;
 	}
 	
-	int strnlen(const char *s, int max)
+	int strnLen(const char *s, int max)
 	{
 		for (int i=0; i<max; i++)
 			if (*(s+i)==0)
@@ -357,7 +357,7 @@ namespace Utilities
 		return max;
 	}
 	
-	int strmlen(const char *s, int max)
+	int strmLen(const char *s, int max)
 	{
 		for (int i=0; i<max; i++)
 			if (*(s+i)==0)
@@ -424,14 +424,14 @@ namespace Utilities
 		return dest;
 	}
 
-	void streamprintf(GAGCore::OutputStream *stream, const char *format, ...)
+	void streamPrintf(GAGCore::OutputStream *stream, const char *format, ...)
 	{
 		char buffer[256];
-		va_list arglist;
-		va_start(arglist, format);
-		vsnprintf(buffer, 256, format, arglist);
+		va_list argList;
+		va_start(argList, format);
+		vsnprintf(buffer, 256, format, argList);
 		stream->write(buffer, strlen(buffer), buffer);
-		va_end(arglist);
+		va_end(argList);
 	}
 	
 	int staticTokenize(const char *s, int n, char token[32][256])

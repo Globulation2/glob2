@@ -42,14 +42,14 @@ void BuildingsTypes::checkIntegrity(void)
 		assert(bt);
 		
 		//Need resource integrity:
-		bool needRessource=false;
+		bool needResource=false;
 		for (unsigned j=0; j<MAX_RESOURCES; j++)
 			if (bt->maxResource[j])
 			{
-				needRessource=true;
+				needResource=true;
 				break;
 			}
-		if (needRessource)
+		if (needResource)
 			assert(bt->fillable || bt->foodable);
 		
 		//hpInc integrity:

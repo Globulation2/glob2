@@ -73,7 +73,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_pt
 	notReadyText->visible=isActivated();
 	addWidget(notReadyText);
 
-	otherOptions = new TextButton(20, (isHost ? 425 : 475), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Other Options]"), OTHEROPTIONS);
+	otherOptions = new TextButton(20, (isHost ? 425 : 475), 180, 20, ALIGN_RIGHT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Other Options]"), OTHER_OPTIONS);
 	addWidget(otherOptions);
 	otherOptions->visible=false;
 	
@@ -178,7 +178,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		{
 			game->kickPlayer(par1 - CLOSE_BUTTONS);
 		}
-		else if(par1 == OTHEROPTIONS)
+		else if(par1 == OTHER_OPTIONS)
 		{
 			bool readOnly = true;
 			if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
@@ -208,7 +208,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 
 
 
-void MultiplayerGameScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
+void MultiplayerGameScreen::receiveTextMessage(boost::shared_ptr<YOGMessage> message)
 {
 	chatWindow->addText(message->formatForReading());
 	chatWindow->addText("\n");

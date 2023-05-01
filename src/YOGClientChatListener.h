@@ -31,7 +31,7 @@ public:
 	virtual ~YOGClientChatListener() {}
 
 	///Recieves a text message
-	virtual void recieveTextMessage(boost::shared_ptr<YOGMessage> message)=0;
+	virtual void receiveTextMessage(boost::shared_ptr<YOGMessage> message)=0;
 };
 
 #endif

@@ -92,9 +92,9 @@ namespace Utilities
 	Sint32 power2(Sint32 a);
 	
 	//! return the length of the string. Maximum return value is "max".
-	int strnlen(const char *s, int max);
+	int strnLen(const char *s, int max);
 	//! return the memory size of a string. Maximum return value is "max".
-	int strmlen(const char *s, int max);
+	int strmLen(const char *s, int max);
 	
 	void stringIP(char *s, int n, Uint32 ip);
 	char *stringIP(Uint32 ip);
@@ -103,7 +103,7 @@ namespace Utilities
 
 	//! read a string from a stream
 	char *gets(char *dest, int size, GAGCore::InputStream *stream);
-	void streamprintf(GAGCore::OutputStream *stream, const char *format, ...);
+	void streamPrintf(GAGCore::OutputStream *stream, const char *format, ...);
 	
 	//! tokenize the string into 32 static char[256] strings. Returns the number of tokens. All tokens are valids
 	int staticTokenize(const char *s, int n, char token[32][256]);
@@ -121,7 +121,7 @@ namespace Utilities
 		
 		};
 	
-		//! An error (not normal disconnection) occcured while reading or writing on the file descriptor.
+		//! An error (not normal disconnection) occured while reading or writing on the file descriptor.
 		struct FileDescriptorError : public FileDescriptor
 		{
 			FileDescriptorError(int errNumber) : errNumber(errNumber) {}
@@ -138,14 +138,14 @@ namespace Utilities
 	/*! Read data on a file descriptor
 		\param fd source file descriptor,
 		\param buf destination pointer where to put the data,
-		\param count exact amout to read. The function only returns when this amount of data has been written or if an exception has been raised.
+		\param count exact amount to read. The function only returns when this amount of data has been written or if an exception has been raised.
 	*/
 	void read(int fd, void *buf, size_t count);
 	
 	/*! Write data on a file descriptor
 		\param fd destination file descriptor,
 		\param buf source pointer where to get the data,
-		\param count exact amout to write. The function only returns when this amount of data has been written or if an exception has been raised.
+		\param count exact amount to write. The function only returns when this amount of data has been written or if an exception has been raised.
 	*/
 	void write(int fd, const void *buf, size_t count);
 };

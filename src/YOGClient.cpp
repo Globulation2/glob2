@@ -224,52 +224,52 @@ void YOGClient::update()
 		if(type==MNetCreateGameAccepted)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetCreateGameRefused)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetGameJoinAccepted)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetGameJoinRefused)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendMapHeader)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendGameHeader)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendAfterJoinGameInformation)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendGamePlayerInfo)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetStartGame)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetRefuseGameStart)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendOrder)
 		{
@@ -277,57 +277,57 @@ void YOGClient::update()
 			//say, the leftover orders in transit after a player
 			//quits a game
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetRequestFile)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetKickPlayer)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetReadyToLaunch)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetNotReadyToLaunch)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSetLatencyMode)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetPlayerJoinsGame)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetAddAI)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetRemoveAI)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetChangePlayersTeam)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
-		if(type == MNetSendReteamingInformation)
+		if(type == MNetSendReTeamingInformation)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendFileInformation)
 		{
@@ -389,7 +389,7 @@ void YOGClient::update()
 				//say, the leftover orders in transit after a player
 				//quits a game
 				if(joinedGame)
-					joinedGame->recieveMessage(message);
+					joinedGame->receiveMessage(message);
 			}
 			message = gameConnection->getMessage();
 		}

@@ -509,7 +509,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 	// 		unsigned line;
 	// 		unsigned column;
 	// 		scriptEditor->getCursorPos(line, column);
-	// 		cursorPosition->setText(FormatableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
+	// 		cursorPosition->setText(FormattableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
 	// 	}
 	// }
 	else if ((action == TEXT_CURSOR_MOVED) || (action == TEXT_MODIFIED))
@@ -537,9 +537,9 @@ void ScriptEditorScreen::onTimer(Uint32 timer)
 }
 
 
-std::string filenameToName(const std::string& fullfilename)
+std::string filenameToName(const std::string& fullFilename)
 {
-	std::string filename = fullfilename;
+	std::string filename = fullFilename;
 	filename.erase(0, 8);
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
 	{
@@ -580,8 +580,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
-		Uint64 ntime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
+		Uint64 newTime = SDL_GetTicks64();
+		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time)));
 	}
 
 	if (loadSaveScreen->endValue==0)

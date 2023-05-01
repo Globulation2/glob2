@@ -122,10 +122,10 @@ void NetConnection::update()
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 			}
 			break;
-			case NTMRecievedMessage:
+			case NTMReceivedMessage:
 			{
-				boost::shared_ptr<NTRecievedMessage> info = static_pointer_cast<NTRecievedMessage>(message);
-				recieved.push(info->getMessage());
+				boost::shared_ptr<NTReceivedMessage> info = static_pointer_cast<NTReceivedMessage>(message);
+				received.push(info->getMessage());
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 				//std::cout<<"Recieved: "<<info->getMessage()->format()<<std::endl;
 			}
@@ -142,10 +142,10 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 
 	//Check if there are messages in the queue.
 	//If so, return one, else, return NULL
-	if(recieved.size())
+	if(received.size())
 	{
-		shared_ptr<NetMessage> message = recieved.front();
-		recieved.pop();
+		shared_ptr<NetMessage> message = received.front();
+		received.pop();
 		return message;
 	}
 	else
