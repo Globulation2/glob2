@@ -71,31 +71,31 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source == addMap)
 		{
 			ChooseMapScreen cms("campaigns", "map", false);
-			int rcms=cms.execute(gfx, 40);
-			if(rcms==ChooseMapScreen::OK)
+			int rCms=cms.execute(gfx, 40);
+			if(rCms==ChooseMapScreen::OK)
 			{
 				MapHeader& mapHeader = cms.getMapHeader();
 				CampaignMapEntry cme(mapHeader.getMapName(), glob2NameToFilename("campaigns", mapHeader.getMapName(), "map"));
-				CampaignMapEntryEditor cmee(campaign, cme);
-				int rcmee = cmee.execute(gfx, 40);
-				if(rcmee==CampaignMapEntryEditor::OK)
+				CampaignMapEntryEditor mee(campaign, cme);
+				int rMee = mee.execute(gfx, 40);
+				if(rMee==CampaignMapEntryEditor::OK)
 				{
 					campaign.appendMap(cme);
 					mapList->addText(mapHeader.getMapName());
 				}
-				else if(rcmee==CampaignMapEntryEditor::CANCEL)
+				else if(rMee==CampaignMapEntryEditor::CANCEL)
 				{
 
 				}
-				else if(rcmee == -1)
+				else if(rMee == -1)
 				{
 					endExecute(-1);
 				}
 			}
-			else if(rcms==ChooseMapScreen::CANCEL)
+			else if(rCms==ChooseMapScreen::CANCEL)
 			{
 			}
-			else if(rcms==-1)
+			else if(rCms==-1)
 			{
 				endExecute(-1);
 			}
@@ -106,13 +106,13 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 			{
 				if(mapList->getSelectionIndex()!=-1 && campaign.getMap(i).getMapName()==mapList->get())
 				{
-					CampaignMapEntryEditor cmee(campaign, campaign.getMap(i));
-					int rcmee = cmee.execute(gfx, 40);
-					if(rcmee==CampaignMapEntryEditor::OK)
+					CampaignMapEntryEditor mee(campaign, campaign.getMap(i));
+					int rMee = mee.execute(gfx, 40);
+					if(rMee==CampaignMapEntryEditor::OK)
 					{
 						mapList->setText(mapList->getSelectionIndex(), campaign.getMap(i).getMapName());
 					}
-					else if(rcmee==CampaignMapEntryEditor::CANCEL)
+					else if(rMee==CampaignMapEntryEditor::CANCEL)
 					{
 					}
 				}

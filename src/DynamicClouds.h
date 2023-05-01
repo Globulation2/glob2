@@ -21,8 +21,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _DYNAMICCLOUDS_H
-#define _DYNAMICCLOUDS_H
+#ifndef __DYNAMIC_CLOUDS_H
+#define __DYNAMIC_CLOUDS_H
 
 #include "PerlinNoise.h"
 #include "Settings.h"
@@ -107,8 +107,8 @@ public:
 	 * @param h height of the alphaMap
 	 * @param time time
 	 */
-	void compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeght, const int time);
+	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
 };
 
-#endif /* _DYNAMICCLOUDS_H */
+#endif /* __DYNAMIC_CLOUDS_H */

@@ -40,7 +40,7 @@ enum GameEventType
 class GameEvent
 {
 public:
-	///Constructs a GameEvent with the step and the (x,y) cordinates of the event on screen
+	///Constructs a GameEvent with the step and the (x,y) coordinates of the event on screen
 	GameEvent(Uint32 step, Sint16 x, Sint16 y);
 
 	virtual ~GameEvent();
@@ -54,10 +54,10 @@ public:
 	///Returns the step of the event
 	Uint32 getStep();
 	
-	///Returns the x-cordinate
+	///Returns the x-coordinate
 	Sint16 getX();
 	
-	///Returns the y-cordinate
+	///Returns the y-coordinate
 	Sint16 getY();
 	
 	///Returns the event type

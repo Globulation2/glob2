@@ -34,11 +34,11 @@ class EditorMainMenu : public Glob2Screen
 public:
 	enum
 	{
-		NEWMAP = 1,
-		LOADMAP = 2,
+		NEW_MAP = 1,
+		LOAD_MAP = 2,
 		CANCEL = 3,
-		NEWCAMPAIGN = 4,
-		LOADCAMPAIGN = 5,
+		NEW_CAMPAIGN = 4,
+		LOAD_CAMPAIGN = 5,
 	};
 
 public:

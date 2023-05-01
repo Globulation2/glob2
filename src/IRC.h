@@ -107,8 +107,8 @@ protected:
 	std::string nick;
 
 protected:
-	//! Interprete a message from IRC; do parsing etc
-	void interpreteIRCMessage(const std::string &message);
+	//! Interpret a message from IRC; do parsing etc
+	void interpretIRCMessage(const std::string &message);
 	//! Force disconnect (kill socket)
 	void forceDisconnect(void);
 
@@ -119,9 +119,9 @@ public:
 	virtual ~IRC();
 
 	// CONNECTION
-	//! Connect to YOG server (IRC network), return true on sucess
+	//! Connect to YOG server (IRC network), return true on success
 	bool connect(const std::string &serverName, int serverPort, const std::string &nick);
-	//! Try to disconnect from server in a cleany way
+	//! Try to disconnect from server in a cleanly way
 	bool disconnect(void);
 
 	// RUN

@@ -42,8 +42,8 @@ public:
 	///If this uploader is uploading a map, this will cancel the upload
 	void cancelUpload();
 	
-	///This recieves a message from the server
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	///This receives a message from the server
+	void receiveMessage(boost::shared_ptr<NetMessage> message);
 	
 	///This updates the uploader
 	void update();

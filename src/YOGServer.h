@@ -81,7 +81,7 @@ public:
 	///Returns whether the users password is correct.
 	YOGLoginState verifyLoginInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version);
 	
-	///This reigsters a new user
+	///This registers a new user
 	YOGLoginState registerInformation(const std::string& username, const std::string& password, const std::string& ip, Uint16 version);
 
 	///Returns the list of games the server currently has
@@ -103,7 +103,7 @@ public:
 	YOGServerChatChannelManager& getChatChannelManager();
 
 	///Asks the server whether a new game can be created with the given information.
-	///Return YOGCreateRefusalUnknown if it can, or the refusal reason elsewise
+	///Return YOGCreateRefusalUnknown if it can, or the refusal reason otherwise
 	YOGServerGameCreateRefusalReason canCreateNewGame(const std::string& game);
 
 	///Tells the server to create a new game with the given game information,
@@ -111,16 +111,16 @@ public:
 	Uint16 createNewGame(const std::string& name);
 
 	///Asks the server whether a player can join the provided game with the information.
-	///Return YOGJoinRefusalUnknown if it can, or the failure reason elsewise
+	///Return YOGJoinRefusalUnknown if it can, or the failure reason otherwise
 	YOGServerGameJoinRefusalReason canJoinGame(Uint16 gameID);
 	
-	///Returns the game assocciatted with the given ID
+	///Returns the game associated with the given ID
 	boost::shared_ptr<YOGServerGame> getGame(Uint16 gameID);
 
-	///Returns the player assocciatted with the given ID
+	///Returns the player associated with the given ID
 	boost::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
 
-	///Returns the player assocciatted with the given name
+	///Returns the player associated with the given name
 	boost::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
 	
 	///This starts LAN broadcasting of the first game, if it exists
@@ -156,8 +156,8 @@ public:
 	///Returns the YOGServerMapDatabank
 	YOGServerMapDatabank& getMapDatabank();
 	
-	///Returns the YOGServerFileDistributationManager
-	YOGServerFileDistributationManager& getFileDistributionManager();
+	///Returns the YOGServerFileDistributionManager
+	YOGServerFileDistributionManager& getFileDistributionManager();
 	
 	///Returns the YOGServerPlayerScoreCalculator
 	YOGServerPlayerScoreCalculator& getPlayerScoreCalculator();
@@ -195,7 +195,7 @@ private:
 	YOGServerRouterManager routerManager;
 	YOGServerRouter router;
 	YOGServerMapDatabank maps;
-	YOGServerFileDistributationManager fileDistributionManager;
+	YOGServerFileDistributionManager fileDistributionManager;
 	YOGServerPlayerScoreCalculator scoreCalculator;
 };
 

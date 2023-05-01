@@ -58,7 +58,7 @@ public:
 	Uint32 getNumberOfRatings() const;
 	
 	///This sets the author name
-	void setAuthorName(const std::string& authorname);
+	void setAuthorName(const std::string& authorName);
 	
 	///This returns the author name
 	std::string getAuthorName() const;

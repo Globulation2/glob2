@@ -29,7 +29,7 @@ enum IRCThreadMessageType
 	ITMDisconnect,
 	ITMSendMessage,
 	ITMDisconnected,
-	ITMRecieveMessage,
+	ITMReceiveMessage,
 	ITMJoinChannel,
 	ITMExitThread,
 	ITMUserListModified,
@@ -153,14 +153,14 @@ public:
 
 
 
-///ITRecieveMessage
-class ITRecieveMessage : public IRCThreadMessage
+///ITReceiveMessage
+class ITReceiveMessage : public IRCThreadMessage
 {
 public:
-	///Creates a ITRecieveMessage event
-	ITRecieveMessage(std::string message);
+	///Creates a ITReceiveMessage event
+	ITReceiveMessage(std::string message);
 
-	///Returns ITMRecieve
+	///Returns ITMReceive
 	Uint8 getMessageType() const;
 
 	///Returns a formatted version of the event

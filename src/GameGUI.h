@@ -137,50 +137,50 @@ public:
 	enum HighlightObject
 	{
 		///This causes the main menu icon to be highlighted
-		HilightMainMenuIcon=1,
+		HighlightMainMenuIcon=1,
 		///This causes all workers on the map to be highlighted
-		HilightWorkers=2,
-		///This causes all explorers on the map to be hilighted
-		HilightExplorers=3,
-		///This causes all warriors on the map to be hilighted
-		HilightWarriors=4,
-		///This causes the right-side menu to be hilighted
-		HilightRightSidePanel=5,
-		///This causes the minimap icons to be hilighted
-		HilightUnderMinimapIcon=6,
-		///This causes the units working bar to be hilighted
-		HilightUnitsAssignedBar=7,
-		///This causes the worker/explorer/warrior ratio bars on a swarm to be hilighted
-		HilightRatioBar=8,
-		///This causes the workers working/free statistic to be hilighted
-		HilightWorkersWorkingFreeStat=9,
-		///This causes the explores working/free statistic to be hilighted
-		HilightExplorersWorkingFreeStat=10,
-		///This causes the warriors working/free statistic to be hilighted
-		HilightWarriorsWorkingFreeStat=11,
-		///This causes the forbidden zone to be hilighted
-		HilightForbiddenZoneOnPanel=12,
-		///This causes the defense zone to be hilighted
-		HilightGuardZoneOnPanel=13,
-		///This causes the clearing zone to be hilighted
-		HilightClearingZoneOnPanel=14,
-		///This causes the brush selector to be hilighted
-		HilightBrushSelector=15,
+		HighlightWorkers=2,
+		///This causes all explorers on the map to be highlighted
+		HighlightExplorers=3,
+		///This causes all warriors on the map to be highlighted
+		HighlightWarriors=4,
+		///This causes the right-side menu to be highlighted
+		HighlightRightSidePanel=5,
+		///This causes the minimap icons to be highlighted
+		HighlightUnderMinimapIcon=6,
+		///This causes the units working bar to be highlighted
+		HighlightUnitsAssignedBar=7,
+		///This causes the worker/explorer/warrior ratio bars on a swarm to be highlighted
+		HighlightRatioBar=8,
+		///This causes the workers working/free statistic to be highlighted
+		HighlightWorkersWorkingFreeStat=9,
+		///This causes the explores working/free statistic to be highlighted
+		HighlightExplorersWorkingFreeStat=10,
+		///This causes the warriors working/free statistic to be highlighted
+		HighlightWarriorsWorkingFreeStat=11,
+		///This causes the forbidden zone to be highlighted
+		HighlightForbiddenZoneOnPanel=12,
+		///This causes the defense zone to be highlighted
+		HighlightGuardZoneOnPanel=13,
+		///This causes the clearing zone to be highlighted
+		HighlightClearingZoneOnPanel=14,
+		///This causes the brush selector to be highlighted
+		HighlightBrushSelector=15,
 		
-		///Anything above this number causes a particular building on the right side menu to be hilighted,
-		///the value is HilightBuilding+IntBuildingType
-		HilightBuildingOnPanel=50,
-		///Anything above this number causes the particular building on the actual map to be hilighted
-		///the value is HilightBuilding+IntBuildingType
-		HilightBuildingOnMap=100,
+		///Anything above this number causes a particular building on the right side menu to be highlighted,
+		///the value is HighlightBuilding+IntBuildingType
+		HighlightBuildingOnPanel=50,
+		///Anything above this number causes the particular building on the actual map to be highlighted
+		///the value is HighlightBuilding+IntBuildingType
+		HighlightBuildingOnMap=100,
 	};
 	
-	///Stores the currently hilighted elements
+	///Stores the currently highlighted elements
 	std::set<int> highlights;
 	
-	struct HilightArrowPosition
+	struct HighlightArrowPosition
 	{
-		HilightArrowPosition(int x, int y, int sprite) : x(x), y(y), sprite(sprite) {}
+		HighlightArrowPosition(int x, int y, int sprite) : x(x), y(y), sprite(sprite) {}
 		int x;
 		int y;
 		int sprite;
@@ -188,10 +188,10 @@ public:
 	///The arrows must be the last things to be drawn,
 	///So there positions are stored during the drawing
 	///proccess, and they are drawn last
-	std::vector<HilightArrowPosition> arrowPositions;
+	std::vector<HighlightArrowPosition> arrowPositions;
 	
 	///This sends the highlight values to the Game class, setting Game::highlightBuildingType and Game::highlightUnitType
-	void updateHilightInGame();
+	void updateHighlightInGame();
 	
 	KeyboardManager keyboardManager;
 public:

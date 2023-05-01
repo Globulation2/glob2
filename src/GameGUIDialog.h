@@ -94,7 +94,7 @@ public:
 	InGameAllianceScreen(GameGUI *gameGUI);
 	virtual ~InGameAllianceScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	int countNumberPlayersForLocalTeam(GameHeader& gameHeader, int localteam);
+	int countNumberPlayersForLocalTeam(GameHeader& gameHeader, int localTeam);
 	Uint32 getAlliedMask(void);
 	Uint32 getEnemyMask(void);
 	Uint32 getExchangeVisionMask(void);

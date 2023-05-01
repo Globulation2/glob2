@@ -36,9 +36,9 @@ YOGClientOptionsScreen::YOGClientOptionsScreen(TabScreen* parent, boost::shared_
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Options]")));
 	blockedPlayers = new List(50, 200, 150, 200, ALIGN_LEFT, ALIGN_TOP, "standard");
 	blockedPlayersText = new Text(50, 180, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Blocked Players]"));
-	removeBlockedPlayer = new TextButton(230, 200, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Remove]"), REMOVEBLOCKEDPLAYER);
+	removeBlockedPlayer = new TextButton(230, 200, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Remove]"), REMOVE_BLOCKED_PLAYER);
 	addBlockedPlayerText = new TextInput(230, 250, 100, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
-	addBlockedPlayer = new TextButton(230, 285, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Add]"), ADDBLOCKEDPLAYER);
+	addBlockedPlayer = new TextButton(230, 285, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Add]"), ADD_BLOCKED_PLAYER);
 	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 
 	
@@ -68,11 +68,11 @@ void YOGClientOptionsScreen::onAction(Widget *source, Action action, int par1, i
 			endExecute(QUIT);
 			parent->completeEndExecute(QUIT);
 		}
-		if(par1 == REMOVEBLOCKEDPLAYER)
+		if(par1 == REMOVE_BLOCKED_PLAYER)
 		{
 			updateBlockedPlayerRemove();
 		}
-		if(par1 == ADDBLOCKEDPLAYER)
+		if(par1 == ADD_BLOCKED_PLAYER)
 		{
 			updateBlockedPlayerAdd();
 		}

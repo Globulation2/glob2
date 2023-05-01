@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __BULDING_TYPE_H
-#define __BULDING_TYPE_H
+#ifndef __BUILDING_TYPE_H
+#define __BUILDING_TYPE_H
 
 #include <vector>
 

@@ -33,14 +33,14 @@ YOGPlayerStoredInfo::YOGPlayerStoredInfo()
 
 void YOGPlayerStoredInfo::setMuted(boost::posix_time::ptime nunmute_time)
 {
-	unmute_time = nunmute_time;
+	unMuteTime = nunmute_time;
 }
 
 
 
-void YOGPlayerStoredInfo::setUnmuted()
+void YOGPlayerStoredInfo::setUnMuted()
 {
-	unmute_time = boost::posix_time::ptime();
+	unMuteTime = boost::posix_time::ptime();
 }
 
 
@@ -48,7 +48,7 @@ void YOGPlayerStoredInfo::setUnmuted()
 bool YOGPlayerStoredInfo::isMuted() const
 {
 	boost::posix_time::ptime current_time = boost::posix_time::second_clock::local_time();
-	if(unmute_time == boost::posix_time::ptime() || unmute_time < current_time)
+	if(unMuteTime == boost::posix_time::ptime() || unMuteTime < current_time)
 	{
 		return false;
 	}
@@ -110,7 +110,7 @@ void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGPlayerStoredInfo");
 	std::stringstream time;
-	time<<unmute_time;
+	time<<unMuteTime;
 	stream->writeText(time.str(), "unmute_time");
 	stream->writeUint8(banned, "banned");
 	stream->writeUint8(moderator, "moderator");
@@ -126,7 +126,7 @@ void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream, Uint32 dataVe
 	std::string b = stream->readText("unmute_time");
 	std::stringstream time;
 	time<<b;
-	time>>unmute_time;
+	time>>unMuteTime;
 	banned=stream->readUint8("banned");
 	moderator=stream->readUint8("moderator");
 	rating=stream->readUint32("rating");
@@ -137,7 +137,7 @@ void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream, Uint32 dataVe
 
 bool YOGPlayerStoredInfo::operator==(const YOGPlayerStoredInfo& rhs) const
 {
-	if(unmute_time == rhs.unmute_time && banned == rhs.banned && rating == rhs.rating)
+	if(unMuteTime == rhs.unMuteTime && banned == rhs.banned && rating == rhs.rating)
 		return true;
 	return false;
 }
@@ -146,7 +146,7 @@ bool YOGPlayerStoredInfo::operator==(const YOGPlayerStoredInfo& rhs) const
 
 bool YOGPlayerStoredInfo::operator!=(const YOGPlayerStoredInfo& rhs) const
 {
-	if(unmute_time != rhs.unmute_time && banned == rhs.banned && rating == rhs.rating)
+	if(unMuteTime != rhs.unMuteTime && banned == rhs.banned && rating == rhs.rating)
 		return true;
 	return false;
 }

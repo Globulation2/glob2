@@ -186,7 +186,7 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 			std::string result = client->getCommandManager()->executeClientCommand(textInput->getText());
 			if(!result.empty())
 			{
-				recieveInternalMessage(result);
+				receiveInternalMessage(result);
 				textInput->setText("");
 			}
 			else
@@ -225,19 +225,19 @@ void YOGClientLobbyScreen::onTimer(Uint32 tick)
 		{
 			boost::shared_ptr<MultiplayerGame> game(client->getMultiplayerGame());
 			if(rc == MultiplayerGameScreen::Kicked)
-				recieveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
+				receiveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
 			else if(rc == MultiplayerGameScreen::GameCancelled)
-				recieveInternalMessage(Toolkit::getStringTable()->getString("[The host has cancelled the game]"));
+				receiveInternalMessage(Toolkit::getStringTable()->getString("[The host has cancelled the game]"));
 			else if(rc == MultiplayerGameScreen::GameRefused)
 			{
 				if(game->getGameJoinState() == YOGServerGameHasAlreadyStarted)
-					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
+					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
 				else if(game->getGameJoinState() == YOGServerGameIsFull)
-					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
+					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
 				else if(game->getGameJoinState() == YOGServerGameDoesntExist)
-					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
+					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
 				else if(game->getGameCreationState() == YOGCreateRefusalUnknown)
-					recieveInternalMessage("Game was refused by server");
+					receiveInternalMessage("Game was refused by server");
 			}
 			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 			gameScreen=-1;
@@ -258,7 +258,7 @@ void YOGClientLobbyScreen::onTimer(Uint32 tick)
 
 void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
 {
-	//std::cout<<"YOGClientLobbyScreen: recieved event "<<event->format()<<std::endl;
+	//std::cout<<"YOGClientLobbyScreen: received event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
 	if(type == YEConnectionLost)
 	{
@@ -297,7 +297,7 @@ void YOGClientLobbyScreen::receiveTextMessage(boost::shared_ptr<YOGMessage> mess
 
 
 
-void YOGClientLobbyScreen::recieveInternalMessage(const std::string& message)
+void YOGClientLobbyScreen::receiveInternalMessage(const std::string& message)
 {
 	chatWindow->addText(message);
 	chatWindow->addText("\n");
@@ -473,15 +473,15 @@ void YOGClientLobbyScreen::autoCompleteNick()
 	std::string foundNick;
 	std::string msg;
 	std::string beginningOfNick;
-	int startlen;
+	int startLen;
 	int found = 0;
 
-	startlen = message.rfind(' ');
-	if( startlen == -1 )
+	startLen = message.rfind(' ');
+	if( startLen == -1 )
 	{
-		startlen = 0;
+		startLen = 0;
 	}
-	beginningOfNick = message.substr(startlen, msglen);
+	beginningOfNick = message.substr(startLen, msglen);
 
 	if( beginningOfNick.compare("") != 0 )
 	{

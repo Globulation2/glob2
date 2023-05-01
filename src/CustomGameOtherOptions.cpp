@@ -77,7 +77,7 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 		addWidget(allyTeamNumbers[i]);
 	}
 	
-	teamsFixed = new OnOffButton(300, 60, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.areAllyTeamsFixed(), TEAMSFIXED);
+	teamsFixed = new OnOffButton(300, 60, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.areAllyTeamsFixed(), TEAMS_FIXED);
 	addWidget(teamsFixed);
 	teamsFixedText = new Text(325, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Teams Fixed]"));
 	addWidget(teamsFixedText);
@@ -85,7 +85,7 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 		teamsFixed->setClickable(false);
 	
 	//These are for winning conditions
-	prestigeWinEnabled = new OnOffButton(300, 90, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, PRESTIGEWINENABLED);
+	prestigeWinEnabled = new OnOffButton(300, 90, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, PRESTIGE_WIN_ENABLED);
 	addWidget(prestigeWinEnabled);
 	prestigeWinEnabledText = new Text(325, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Prestige Win Enabled]"));
 	addWidget(prestigeWinEnabledText);
@@ -94,7 +94,7 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 		prestigeWinEnabled->setClickable(false);
 	
 	//Map discovered.
-	mapDiscovered = new OnOffButton(300, 120, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.isMapDiscovered(), MAPDISCOVERED);
+	mapDiscovered = new OnOffButton(300, 120, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.isMapDiscovered(), MAP_DISCOVERED);
 	addWidget(mapDiscovered);
 	mapDiscoveredText = new Text(325, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Map Discovered]"));
 	addWidget(mapDiscoveredText);
@@ -152,15 +152,15 @@ void CustomGameOtherOptions::onAction(Widget *source, Action action, int par1, i
 			}
 			gameHeader.setAllyTeamNumber(team, n);
 		}
-		else if(par1 == TEAMSFIXED)
+		else if(par1 == TEAMS_FIXED)
 		{
 			gameHeader.setAllyTeamsFixed(teamsFixed->getState());
 		}
-		else if(par1 == PRESTIGEWINENABLED)
+		else if(par1 == PRESTIGE_WIN_ENABLED)
 		{
 			updateGameHeaderWinningConditions();
 		}
-		else if(par1 == MAPDISCOVERED)
+		else if(par1 == MAP_DISCOVERED)
 		{
 			gameHeader.setMapDiscovered(mapDiscovered->getState());
 		}

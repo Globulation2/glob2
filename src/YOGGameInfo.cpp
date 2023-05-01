@@ -82,9 +82,9 @@ void YOGGameInfo::setGameState(const YOGGameInfo::GameState& state)
 
 
 
-void YOGGameInfo::setPlayersJoined(Uint8 nplayersJoined)
+void YOGGameInfo::setPlayersJoined(Uint8 playersJoined)
 {
-	playersJoined = nplayersJoined;
+	this->playersJoined = playersJoined;
 }
 
 
@@ -96,9 +96,9 @@ Uint8 YOGGameInfo::getPlayersJoined() const
 
 
 
-void YOGGameInfo::setAIJoined(Uint8 naiJoined)
+void YOGGameInfo::setAIJoined(Uint8 aiJoined)
 {
-	aiJoined = naiJoined;
+	this->aiJoined = aiJoined;
 }
 	
 
@@ -110,9 +110,9 @@ Uint8 YOGGameInfo::getAIJoined() const
 
 
 
-void YOGGameInfo::setMapName(const std::string& nmapName)
+void YOGGameInfo::setMapName(const std::string& mapName)
 {
-	mapName = nmapName;
+	this->mapName = mapName;
 }
 
 
@@ -124,9 +124,9 @@ std::string YOGGameInfo::getMapName() const
 
 
 
-void YOGGameInfo::setNumberOfTeams(Uint8 nnumberOfTeams)
+void YOGGameInfo::setNumberOfTeams(Uint8 numberOfTeams)
 {
-	numberOfTeams = nnumberOfTeams;
+	this->numberOfTeams = numberOfTeams;
 }
 
 

@@ -35,8 +35,8 @@ using namespace GAGCore;
 // New class for an auto-scrolling credit screen.
 
 // INCLUDE part
-// #ifndef __SCROLLINGTEXT_H
-// #define __SCROLLINGTEXT_H
+// #ifndef __SCROLLING_TEXT_H
+// #define __SCROLLING_TEXT_H
 // 
 // #include "GUIBase.h"
 // #include <string>
@@ -47,9 +47,9 @@ protected:
 	std::string filename;
 	std::string font;
 	std::vector<std::string> text;
-	std::vector<int> xPos; // Pre-calculated postions for text centering
+	std::vector<int> xPos; // Pre-calculated positions for text centering
 	int offset;
-	int imgid, imgid0;
+	int imgId, imgId0;
 
 	// cache, recomputed on internalInit
 	GAGCore::Font *fontPtr;
@@ -79,8 +79,8 @@ ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	this->vAlignFlag = vAlign;
 	
 	offset = 0;
-	imgid = 0;
-	imgid0 = 88;
+	imgId = 0;
+	imgId0 = 88;
 	
 	assert(font.size());
 	assert(filename.size());
@@ -112,7 +112,7 @@ void ScrollingText::internalInit(void)
 	getScreenPos(&x, &y, &w, &h);
 	offset = -h + 25;
 	
-	// Measures all the length of all the lines of the file (usefull for centering)
+	// Measures all the length of all the lines of the file (useful for centering)
 	for (size_t i = 0; i < text.size(); i++)
 	{
 		std::string &s = text[i];
@@ -124,7 +124,7 @@ void ScrollingText::internalInit(void)
 			// If we can find a "<" and a ">" in this line
 			if ((f != std::string::npos) && (l != std::string::npos))
 			{
-				// Rips off the e-mail adresses
+				// Rips off the e-mail addresses
 				s.erase(f, l-f+1);
 			}
 		}
@@ -141,7 +141,7 @@ void ScrollingText::paint()
 	assert(parent->getSurface());
 
 	int yPos = y;
-	imgid = imgid0 + (offset & 0x7);
+	imgId = imgId0 + (offset & 0x7);
 
 	for (size_t i = 0; i < text.size(); i++)
 	{
@@ -159,9 +159,9 @@ void ScrollingText::paint()
 				
 				Sprite *unitSprite=globalContainer->units;
 				unitSprite->setBaseColor(128, 128, 128);
-				int decX = (unitSprite->getW(imgid)-32)>>1;
-				int decY = (unitSprite->getH(imgid)-32)>>1;
-				globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+				int decX = (unitSprite->getW(imgId)-32)>>1;
+				int decY = (unitSprite->getH(imgId)-32)>>1;
+				globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgId);
 				
 				yPos += 20;
 			}

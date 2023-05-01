@@ -63,18 +63,18 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	addWidget(mapRating);
 	mapDownloadSize = new Text(72, 268 + 150, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapDownloadSize);
-	addMap = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[upload map]"), ADDMAP);
+	addMap = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[upload map]"), ADD_MAP);
 	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
 	addWidget(addMap);
-	refresh = new TextButton(20, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[refresh map list]"), REFRESHMAPLIST);
+	refresh = new TextButton(20, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[refresh map list]"), REFRESH_MAP_LIST);
 	addWidget(refresh);
-	downloadMap = new TextButton(20, 15, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Download Map]"), DOWNLOADMAP);
+	downloadMap = new TextButton(20, 15, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Download Map]"), DOWNLOAD_MAP);
 	addWidget(downloadMap);
 	
 	loadingMapList = new Text(280, 200, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[loading map list]"));
 	addWidget(loadingMapList);
 	
-	submitRating = new TextButton(250, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[submit rating]"), SUBMITRATING);
+	submitRating = new TextButton(250, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[submit rating]"), SUBMIT_RATING);
 	addWidget(submitRating);
 	rating = new Number(250, 35, 220, 20, ALIGN_LEFT, ALIGN_BOTTOM, 10, "standard");
 	for(int i=1; i<=10; ++i)
@@ -91,7 +91,7 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost:
 	
 	sortMethodLabel = new Text(250, 120, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Sort By]"));
 	addWidget(sortMethodLabel);
-	sortMethod = new MultiTextButton(250, 140, 100, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "", SORTMETHOD);
+	sortMethod = new MultiTextButton(250, 140, 100, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "", SORT_METHOD);
 	addWidget(sortMethod);
 	sortMethod->clearTexts();
 	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by name]"));
@@ -128,7 +128,7 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 			endExecute(QUIT);
 			parent->completeEndExecute(QUIT);
 		}
-		else if(par1==ADDMAP)
+		else if(par1==ADD_MAP)
 		{
 			ChooseMapScreen cms("maps", "map", false);
 			int rc = cms.execute(globalContainer->gfx, 40);
@@ -144,11 +144,11 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 				requestMaps();
 			}
 		}
-		else if (par1==REFRESHMAPLIST)
+		else if (par1==REFRESH_MAP_LIST)
 		{
 			requestMaps();
 		}
-		else if (par1==DOWNLOADMAP)
+		else if (par1==DOWNLOAD_MAP)
 		{
 			if(mapValid)
 			{
@@ -165,12 +165,12 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 				}
 			}
 		}
-		else if (par1==SUBMITRATING)
+		else if (par1==SUBMIT_RATING)
 		{
 			client->getDownloadableMapList()->submitRating(mapList->get(), rating->get());
 			client->getRatedMapList()->addRatedMap(mapList->get());
 		}
-		else if (par1==SORTMETHOD)
+		else if (par1==SORT_METHOD)
 		{
 			mapListUpdated();
 		}

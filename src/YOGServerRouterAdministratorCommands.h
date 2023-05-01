@@ -64,7 +64,7 @@ public:
 };
 
 
-///This command causes a router to disconnect from the server and turn off once all clients disconnecty
+///This command causes a router to disconnect from the server and turn off once all clients disconnected
 class YOGServerRouterShutdownCommand : public YOGServerRouterAdministratorCommand
 {
 public:

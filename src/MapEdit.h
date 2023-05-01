@@ -431,7 +431,7 @@ public:
 	///Tells whether the fertility overlay is set or not
 	bool isFertilityOn;
 private:
-	///If this is set, the map editor will exit as soon as it finishes drawing and proccessing events
+	///If this is set, the map editor will exit as soon as it finishes drawing and processing events
 	bool doQuit;
 	///If this is set, the map editor will do a full quit, from glob2 entirely
 	bool doFullQuit;
@@ -457,7 +457,7 @@ private:
 
 	///This draws the right side menu in its entirety
 	void drawMenu(void);
-	///Draws some of the fancy bars, and the bar at the top of the screen, the eye-candy so to speek
+	///Draws some of the fancy bars, and the bar at the top of the screen, the eye-candy so to speak
 	void drawMenuEyeCandy();
 	///Draws a unit under the cursor. This should be done and only done when the user is placing a unit.
 	void drawPlacingUnitOnMap();
@@ -666,7 +666,7 @@ private:
 
 	///Adds a widget to be drawn and respond to clicks
 	void addWidget(MapEditorWidget* widget);
-	///Finds and runs the action accossiatted with a particular mouse x and mouse y position. Returns false if none is found, true otherwise
+	///Finds and runs the action associated with a particular mouse x and mouse y position. Returns false if none is found, true otherwise
 	bool findAction(int x, int y);
 	///Enables only widgets with this particular groupname, or the name "any" as a special name
 	void enableOnlyGroup(const std::string& group);

@@ -34,10 +34,10 @@ int GameHints::getNumberOfHints()
 
 
 
-void GameHints::addNewHint(const std::string& hint, bool nhidden, int scriptNumber)
+void GameHints::addNewHint(const std::string& hint, bool nHidden, int scriptNumber)
 {
 	texts.push_back(hint);
-	hidden.push_back(nhidden);
+	hidden.push_back(nHidden);
 	scriptNumbers.push_back(scriptNumber);
 }
 

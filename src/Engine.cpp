@@ -526,11 +526,11 @@ int Engine::run(void)
 				Sint32 currentTime = SDL_GetTicks() - startTime;
 				//if we are more than 500 milliseconds behind where we should be,
 				//then truncate it. This is to avoid playing "catchup" for long
-				//periods of time if Glob2 recieved allmost no cpu time
+				//periods of time if Glob2 received almost no cpu time
 				if(  (currentTime - needToBeTime) > 500)
 					needToBeTime = currentTime - 500;
 
-				//Any inconsistancies in the delays will be smoothed throughout the following frames,
+				//Any inconsistencies in the delays will be smoothed throughout the following frames,
 				Sint32 delay = std::max(0, needToBeTime - currentTime);
 				SDL_Delay(delay);
 				

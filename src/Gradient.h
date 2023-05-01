@@ -171,7 +171,7 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 		{
 			return 255;
 		}
-		//Warflags don't consider enemy buildings an obstacle
+		//War flags don't consider enemy buildings an obstacle
 		else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 			return 0;
 	}

@@ -51,12 +51,12 @@ IRCTextMessageHandler::~IRCTextMessageHandler()
 
 void IRCTextMessageHandler::startIRC(const std::string& username)
 {
-	std::string nusername = username;
-	while(nusername.find(" ") != std::string::npos)
+	std::string nUsername = username;
+	while(nUsername.find(" ") != std::string::npos)
 	{
-		nusername.replace(nusername.find(" "), 1, "_");
+		nUsername.replace(nUsername.find(" "), 1, "_");
 	}
-	boost::shared_ptr<ITConnect> message1(new ITConnect(IRC_SERVER, nusername, 6667));
+	boost::shared_ptr<ITConnect> message1(new ITConnect(IRC_SERVER, nUsername, 6667));
 	boost::shared_ptr<ITJoinChannel> message2(new ITJoinChannel(IRC_CHAN));
 
 	irc.sendMessage(message1);
@@ -83,9 +83,9 @@ void IRCTextMessageHandler::update()
 		Uint8 type = message->getMessageType();
 		switch(type)
 		{
-			case ITMRecieveMessage:
+			case ITMReceiveMessage:
 			{
-				boost::shared_ptr<ITRecieveMessage> info = static_pointer_cast<ITRecieveMessage>(message);
+				boost::shared_ptr<ITReceiveMessage> info = static_pointer_cast<ITReceiveMessage>(message);
 				sendToAllListeners(info->getMessage());
 			}
 			break;
