@@ -49,7 +49,7 @@ void YOGClientDownloadableMapList::requestMapListUpdate()
 
 
 
-void YOGClientDownloadableMapList::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientDownloadableMapList::receiveMessage(boost::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	if(type == MNetDownloadableMapInfos)

@@ -172,7 +172,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	}
 }
 
-//! Return a chcksum of all parameter that could lead to a game desynchronization
+//! Return a checksum of all parameter that could lead to a game desynchronization
 Uint32 BuildingType::checkSum(void)
 {
 	Uint32 cs = 0;

@@ -34,8 +34,8 @@ public:
 	///Constructs the yog player list manager with a link to the YOGClient
 	YOGClientPlayerListManager(YOGClient* client);
 
-	///Recieves an incoming message
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	///Receives an incoming message
+	void receiveMessage(boost::shared_ptr<NetMessage> message);
 	
 	///This will return the list of players on hosted on the server.
 	const std::list<YOGPlayerSessionInfo>& getPlayerList() const;

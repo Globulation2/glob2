@@ -370,51 +370,51 @@ void Story::setHighlightItem(GameGUI* gui, bool doSet)
 	int t=0;
 	if(n=="main menu icon")
 	{
-		t=GameGUI::HilightMainMenuIcon;
+		t=GameGUI::HighlightMainMenuIcon;
 	}
 	else if(n=="right side panel")
 	{
-		t=GameGUI::HilightRightSidePanel;
+		t=GameGUI::HighlightRightSidePanel;
 	}
 	else if(n=="under minimap icons")
 	{
-		t=GameGUI::HilightUnderMinimapIcon;
+		t=GameGUI::HighlightUnderMinimapIcon;
 	}
 	else if(n=="units assigned bar")
 	{
-		t=GameGUI::HilightUnitsAssignedBar;
+		t=GameGUI::HighlightUnitsAssignedBar;
 	}
 	else if(n=="units ratio bar")
 	{
-		t=GameGUI::HilightRatioBar;
+		t=GameGUI::HighlightRatioBar;
 	}
 	else if(n=="workers working free stat")
 	{
-		t=GameGUI::HilightWorkersWorkingFreeStat;
+		t=GameGUI::HighlightWorkersWorkingFreeStat;
 	}
 	else if(n=="explorers working free stat")
 	{
-		t=GameGUI::HilightExplorersWorkingFreeStat;
+		t=GameGUI::HighlightExplorersWorkingFreeStat;
 	}
 	else if(n=="warriors working free stat")
 	{
-		t=GameGUI::HilightWarriorsWorkingFreeStat;
+		t=GameGUI::HighlightWarriorsWorkingFreeStat;
 	}
 	else if(n=="forbidden zone on panel")
 	{
-		t=GameGUI::HilightWorkersWorkingFreeStat;
+		t=GameGUI::HighlightWorkersWorkingFreeStat;
 	}
 	else if(n=="guard zone on panel")
 	{
-		t=GameGUI::HilightGuardZoneOnPanel;
+		t=GameGUI::HighlightGuardZoneOnPanel;
 	}
 	else if(n=="clearing zone on panel")
 	{
-		t=GameGUI::HilightClearingZoneOnPanel;
+		t=GameGUI::HighlightClearingZoneOnPanel;
 	}
 	else if(n=="brush selector")
 	{
-		t=GameGUI::HilightBrushSelector;
+		t=GameGUI::HighlightBrushSelector;
 	}
 	if(t!=0)
 	{
@@ -446,7 +446,7 @@ void Story::unHighlightItem(GameGUI* gui)
 void Story::highlightUnits(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
-	gui->highlights.insert(GameGUI::HilightWorkers+n);
+	gui->highlights.insert(GameGUI::HighlightWorkers+n);
 }
 
 
@@ -454,7 +454,7 @@ void Story::highlightUnits(GameGUI* gui)
 void Story::unHighlightUnits(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
-	gui->highlights.erase(GameGUI::HilightWorkers+n);
+	gui->highlights.erase(GameGUI::HighlightWorkers+n);
 }
 
 
@@ -462,7 +462,7 @@ void Story::unHighlightUnits(GameGUI* gui)
 void Story::highlightBuildings(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->highlights.insert(GameGUI::HilightBuildingOnMap+n);
+	gui->highlights.insert(GameGUI::HighlightBuildingOnMap+n);
 }
 
 
@@ -470,7 +470,7 @@ void Story::highlightBuildings(GameGUI* gui)
 void Story::unHighlightBuildings(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->highlights.erase(GameGUI::HilightBuildingOnMap+n);
+	gui->highlights.erase(GameGUI::HighlightBuildingOnMap+n);
 }
 
 
@@ -478,7 +478,7 @@ void Story::unHighlightBuildings(GameGUI* gui)
 void Story::highlightBuildingOnPanel(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->highlights.insert(GameGUI::HilightBuildingOnPanel+n);
+	gui->highlights.insert(GameGUI::HighlightBuildingOnPanel+n);
 }
 
 
@@ -486,7 +486,7 @@ void Story::highlightBuildingOnPanel(GameGUI* gui)
 void Story::unHighlightBuildingOnPanel(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->highlights.erase(GameGUI::HilightBuildingOnPanel+n);
+	gui->highlights.erase(GameGUI::HighlightBuildingOnPanel+n);
 }
 
 

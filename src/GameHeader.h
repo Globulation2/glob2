@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GAMEHEADER_H
-#define __GAMEHEADER_H
+#ifndef __GAME_HEADER_H
+#define __GAME_HEADER_H
 
 #include "BasePlayer.h"
 #include "Stream.h"
@@ -132,7 +132,7 @@ private:
 	///Represents the ally team numbers
 	Uint8 allyTeamNumbers[Team::MAX_COUNT];
 	
-	///Represents whether the ally-teams are fixed for the whole game, so no allying/unallying can take place
+	///Represents whether the ally-teams are fixed for the whole game, so no allying/un-allying can take place
 	bool allyTeamsFixed;
 	
 	///Represents the winning conditions of the game.

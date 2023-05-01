@@ -24,13 +24,13 @@
 
 class YOGMessage;
 
-///This class is a mix-in class for objects that want to listen for recieved texts
+///This class is a mix-in class for objects that want to listen for received texts
 class YOGClientChatListener
 {
 public:
 	virtual ~YOGClientChatListener() {}
 
-	///Recieves a text message
+	///Receives a text message
 	virtual void receiveTextMessage(boost::shared_ptr<YOGMessage> message)=0;
 };
 

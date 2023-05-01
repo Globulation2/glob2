@@ -369,8 +369,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				i++;
 				const char *resStr=&(argv[i][0]);
 				int ix, iy;
-				int nscaned = sscanf(resStr, "%dx%dx", &ix, &iy);
-				if (nscaned == 2)
+				int nScanned = sscanf(resStr, "%dx%dx", &ix, &iy);
+				if (nScanned == 2)
 				{
 					if (ix!=0 && iy!=0)
 					{
@@ -566,11 +566,11 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(40);
 		
 		// load fonts
-		std::string fontfile = "data/fonts/";
-		fontfile+=+PRIMARY_FONT;
-		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
-		Toolkit::loadFont(fontfile.c_str(), 13, "standard");
-		Toolkit::loadFont(fontfile.c_str(), 10, "little");
+		std::string fontFile = "data/fonts/";
+		fontFile+=+PRIMARY_FONT;
+		Toolkit::loadFont(fontFile.c_str(), 20, "menu");
+		Toolkit::loadFont(fontFile.c_str(), 13, "standard");
+		Toolkit::loadFont(fontFile.c_str(), 10, "little");
 		menuFont = Toolkit::getFont("menu");
 		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		standardFont = Toolkit::getFont("standard");
@@ -643,7 +643,7 @@ void GlobalContainer::load(void)
 	// load default unit types
 	Race::loadDefault();
 	// load resources types
-	resourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
+	resourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is resources
 
 #ifndef YOG_SERVER_ONLY
 	loadClient();

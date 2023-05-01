@@ -42,11 +42,11 @@ YOGServerRouter::YOGServerRouter()
 
 
 
-YOGServerRouter::YOGServerRouter(const std::string& yogip)
+YOGServerRouter::YOGServerRouter(const std::string& yogIp)
 	: nl(YOG_ROUTER_PORT), admin(this)
 {
 	new_connection.reset(new NetConnection);
-	yog_connection.reset(new NetConnection(yogip, YOG_SERVER_ROUTER_PORT));
+	yog_connection.reset(new NetConnection(yogIp, YOG_SERVER_ROUTER_PORT));
 	shutdownMode=false;
 }
 
@@ -110,7 +110,7 @@ void YOGServerRouter::update()
 	if(message)
 	{
 		Uint8 type = message->getMessageType();
-		//This recieves the client information
+		//This receives the client information
 		if(type==MNetAcknowledgeRouter)
 		{
 			shared_ptr<NetAcknowledgeRouter> info = static_pointer_cast<NetAcknowledgeRouter>(message);
@@ -202,7 +202,7 @@ std::string YOGServerRouter::getStatusReport()
 		if(players[i]->isAdministrator())
 			count_admin+=1;
 	}
-	s<<"\t"<<count_admin<<" authenticed admins"<<std::endl;
+	s<<"\t"<<count_admin<<" authenticated admins"<<std::endl;
 	
 	if(shutdownMode)
 		s<<"\tServer is currently in shutdown mode"<<std::endl;

@@ -56,10 +56,10 @@ void YOGServerPlayer::update()
 		pingCountdown = 0;
 	}
 
-	boost::shared_ptr<YOGServerGame> ngame;
+	boost::shared_ptr<YOGServerGame> nGame;
 	if(!game.expired())
 	{
-		ngame = boost::shared_ptr<YOGServerGame>(game);
+		nGame = boost::shared_ptr<YOGServerGame>(game);
 	}
 
 	//Parse incoming messages.
@@ -67,14 +67,14 @@ void YOGServerPlayer::update()
 	if(!message)
 		return;
 	Uint8 type = message->getMessageType();
-	//This recieves the client information
+	//This receives the client information
 	if(type==MNetSendClientInformation)
 	{
 		shared_ptr<NetSendClientInformation> info = static_pointer_cast<NetSendClientInformation>(message);
 		netVersion = info->getNetVersion();
 		connectionState = NeedToSendServerInformation;
 	}
-	//This recieves a login attempt
+	//This receives a login attempt
 	else if(type==MNetAttemptLogin)
 	{
 		shared_ptr<NetAttemptLogin> info = static_pointer_cast<NetAttemptLogin>(message);
@@ -94,7 +94,7 @@ void YOGServerPlayer::update()
 			connectionState = NeedToSendLoginRefusal;
 		}	
 	}
-	//This recieves a login attempt
+	//This receives a login attempt
 	else if(type==MNetAttemptRegistration)
 	{
 		shared_ptr<NetAttemptRegistration> info = static_pointer_cast<NetAttemptRegistration>(message);
@@ -114,14 +114,14 @@ void YOGServerPlayer::update()
 			connectionState = NeedToSendRegistrationRefused;
 		}	
 	}
-	//This recieves a YOGMessage and sends it to the game server to be proccessed
+	//This receives a YOGMessage and sends it to the game server to be processed
 	else if(type==MNetSendYOGMessage)
 	{
 		shared_ptr<NetSendYOGMessage> info = static_pointer_cast<NetSendYOGMessage>(message);
 		///This is sends a command to the administrator engine
 		if(server.getAdministratorList().isAdministrator(info->getMessage()->getSender()))
 			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID), false);
-		///If this player is a moderator, also execute a command, however, moderators can only execute a limtied number of commands
+		///If this player is a moderator, also execute a command, however, moderators can only execute a limited number of commands
 		else if(server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isModerator())
 			server.getAdministrator().executeAdministrativeCommand(info->getMessage()->getMessage(), server.getPlayer(playerID), true);
 			
@@ -130,56 +130,56 @@ void YOGServerPlayer::update()
 		if(!server.getPlayerStoredInfoManager().getPlayerStoredInfo(info->getMessage()->getSender()).isMuted())
 			server.getChatChannelManager().getChannel(info->getChannel())->routeMessage(info->getMessage(), server.getPlayer(playerID));
 	}
-	//This recieves an attempt to create a new game
+	//This receives an attempt to create a new game
 	else if(type==MNetCreateGame)
 	{
 		shared_ptr<NetCreateGame> info = static_pointer_cast<NetCreateGame>(message);
 		handleCreateGame(info->getGameName());
 	}
-	//This recieves a message to set the map header
+	//This receives a message to set the map header
 	else if(type==MNetSendMapHeader)
 	{
 		shared_ptr<NetSendMapHeader> info = static_pointer_cast<NetSendMapHeader>(message);
-		ngame->setMapHeader(info->getMapHeader());
+		nGame->setMapHeader(info->getMapHeader());
 	}
-	//This recieves an attempt to join a game
+	//This receives an attempt to join a game
 	else if(type==MNetAttemptJoinGame)
 	{
 		shared_ptr<NetAttemptJoinGame> info = static_pointer_cast<NetAttemptJoinGame>(message);
 		handleJoinGame(info->getGameID());
 	}
-	//This recieves a message to set the map header
+	//This receives a message to set the map header
 	else if(type==MNetSendReTeamingInformation)
 	{
 		shared_ptr<NetSendReTeamingInformation> info = static_pointer_cast<NetSendReTeamingInformation>(message);
-		ngame->setReteamingInfo(info->getReTeamingInfo());
+		nGame->setReTeamingInfo(info->getReTeamingInfo());
 	}
-	//This recieves a request to change a players team in the game
+	//This receives a request to change a players team in the game
 	else if(type==MNetRequestGameStart)
 	{
 		shared_ptr<NetRequestGameStart> info = static_pointer_cast<NetRequestGameStart>(message);
-		ngame->recieveGameStartRequest();
+		nGame->receiveGameStartRequest();
 	}
-	//This recieves a message to set the game header
+	//This receives a message to set the game header
 	else if(type==MNetSendGameHeader)
 	{
 		shared_ptr<NetSendGameHeader> info = static_pointer_cast<NetSendGameHeader>(message);
-		info->downloadToGameHeader(ngame->getGameHeader());
-		ngame->routeMessage(info, server.getPlayer(playerID));
+		info->downloadToGameHeader(nGame->getGameHeader());
+		nGame->routeMessage(info, server.getPlayer(playerID));
 	}
-	//This recieves a message to set the game header
+	//This receives a message to set the game header
 	else if(type==MNetSendGamePlayerInfo)
 	{
 		shared_ptr<NetSendGamePlayerInfo> info = static_pointer_cast<NetSendGamePlayerInfo>(message);
-		info->downloadToGameHeader(ngame->getGameHeader());
-		ngame->routeMessage(info, server.getPlayer(playerID));
+		info->downloadToGameHeader(nGame->getGameHeader());
+		nGame->routeMessage(info, server.getPlayer(playerID));
 	}
-	//This recieves a message to set the game header
+	//This receives a message to set the game header
 	else if(type==MNetStartGame)
 	{
-		ngame->startGame();
+		nGame->startGame();
 	}
-	//This recieves requests a map file
+	//This receives requests a map file
 	else if(type==MNetRequestFile)
 	{
 		shared_ptr<NetRequestFile> info = static_pointer_cast<NetRequestFile>(message);
@@ -188,7 +188,7 @@ void YOGServerPlayer::update()
 			server.getFileDistributionManager().getDistributor(info->getFileID())->addMapRequestee(server.getPlayer(playerID));
 		}
 	}
-	//This recieves a file chunk
+	//This receives a file chunk
 	else if(type==MNetSendFileChunk)
 	{
 		shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
@@ -197,7 +197,7 @@ void YOGServerPlayer::update()
 			server.getFileDistributionManager().getDistributor(info->getFileID())->handleMessage(message, server.getPlayer(playerID));
 		}
 	}
-	//This recieves a file information message
+	//This receives a file information message
 	else if(type==MNetSendFileInformation)
 	{
 		shared_ptr<NetSendFileInformation> info = static_pointer_cast<NetSendFileInformation>(message);
@@ -206,54 +206,54 @@ void YOGServerPlayer::update()
 			server.getFileDistributionManager().getDistributor(info->getFileID())->handleMessage(message, server.getPlayer(playerID));
 		}
 	}
-	//This recieves a leave game message
+	//This receives a leave game message
 	else if(type==MNetLeaveGame)
 	{
-		ngame->removePlayer(server.getPlayer(playerID));
+		nGame->removePlayer(server.getPlayer(playerID));
 	}
-	//This recieves a ready to launch message
+	//This receives a ready to launch message
 	else if(type==MNetReadyToLaunch)
 	{
 		shared_ptr<NetReadyToLaunch> info = static_pointer_cast<NetReadyToLaunch>(message);
-		ngame->setReadyToStart(playerID);
+		nGame->setReadyToStart(playerID);
 	}
-	//This recieves a not ready to launch message
+	//This receives a not ready to launch message
 	else if(type==MNetNotReadyToLaunch)
 	{
 		shared_ptr<NetNotReadyToLaunch> info = static_pointer_cast<NetNotReadyToLaunch>(message);
-		ngame->setNotReadyToStart(playerID);
+		nGame->setNotReadyToStart(playerID);
 	}
-	//This recieves a kick message
+	//This receives a kick message
 	else if(type==MNetKickPlayer)
 	{
 		shared_ptr<NetKickPlayer> info = static_pointer_cast<NetKickPlayer>(message);
-		ngame->kickPlayer(info);
+		nGame->kickPlayer(info);
 	}
-	//This recieves a request to add an AI player to the game
+	//This receives a request to add an AI player to the game
 	else if(type==MNetAddAI)
 	{
 		shared_ptr<NetAddAI> info = static_pointer_cast<NetAddAI>(message);
-		ngame->addAIPlayer(static_cast<AI::ImplementationID>(info->getType()));
+		nGame->addAIPlayer(static_cast<AI::ImplementationID>(info->getType()));
 	}
-	//This recieves a request to add an AI player to the game
+	//This receives a request to add an AI player to the game
 	else if(type==MNetRemoveAI)
 	{
 		shared_ptr<NetRemoveAI> info = static_pointer_cast<NetRemoveAI>(message);
-		ngame->removeAIPlayer(info->getPlayerNumber());
+		nGame->removeAIPlayer(info->getPlayerNumber());
 	}
-	//This recieves a request to change a players team in the game
+	//This receives a request to change a players team in the game
 	else if(type==MNetChangePlayersTeam)
 	{
 		shared_ptr<NetChangePlayersTeam> info = static_pointer_cast<NetChangePlayersTeam>(message);
-		ngame->setTeam(info->getPlayer(), info->getTeam());
+		nGame->setTeam(info->getPlayer(), info->getTeam());
 	}
-	//This recieves a request to change a players team in the game
+	//This receives a request to change a players team in the game
 	else if(type==MNetRequestGameStart)
 	{
 		shared_ptr<NetRequestGameStart> info = static_pointer_cast<NetRequestGameStart>(message);
-		ngame->recieveGameStartRequest();
+		nGame->receiveGameStartRequest();
 	}
-	//This recieves a ping reply
+	//This receives a ping reply
 	else if(type==MNetPingReply)
 	{
 		shared_ptr<NetPingReply> info = static_pointer_cast<NetPingReply>(message);
@@ -263,26 +263,26 @@ void YOGServerPlayer::update()
 
 		pingCountdown = SDL_GetTicks64();
 	}
-	//This recieves a ping reply
+	//This receives a ping reply
 	else if(type==MNetSendGameResult)
 	{
 		shared_ptr<NetSendGameResult> info = static_pointer_cast<NetSendGameResult>(message);
-		ngame->setPlayerGameResult(server.getPlayer(playerID), info->getGameResult()); 
+		nGame->setPlayerGameResult(server.getPlayer(playerID), info->getGameResult()); 
 	}
-	//This recieves a ping reply
+	//This receives a ping reply
 	else if(type==MNetRequestDownloadableMapList)
 	{
 		shared_ptr<NetRequestDownloadableMapList> info = static_pointer_cast<NetRequestDownloadableMapList>(message);
 		server.getMapDatabank().sendMapListToPlayer(server.getPlayer(playerID));
 	}
-	//This recieves
+	//This receives
 	else if(type==MNetRequestMapUpload)
 	{
 		shared_ptr<NetRequestMapUpload> info = static_pointer_cast<NetRequestMapUpload>(message);
-		YOGMapUploadRefusalReason reason = server.getMapDatabank().canRecieveFromPlayer(info->getMapInfo());
+		YOGMapUploadRefusalReason reason = server.getMapDatabank().canReceiveFromPlayer(info->getMapInfo());
 		if(reason == YOGMapUploadReasonUnknown)
 		{
-			Uint16 fileID =  server.getMapDatabank().recieveMapFromPlayer(info->getMapInfo(), server.getPlayer(playerID));
+			Uint16 fileID =  server.getMapDatabank().receiveMapFromPlayer(info->getMapInfo(), server.getPlayer(playerID));
 			boost::shared_ptr<NetAcceptMapUpload> info = boost::shared_ptr<NetAcceptMapUpload>(new NetAcceptMapUpload(fileID));
 			sendMessage(info);
 		}
@@ -292,7 +292,7 @@ void YOGServerPlayer::update()
 			sendMessage(info);
 		}
 	}
-	//This recieves a cancel to a file upload
+	//This receives a cancel to a file upload
 	else if(type==MNetCancelSendingFile)
 	{
 		shared_ptr<NetCancelSendingFile> info = static_pointer_cast<NetCancelSendingFile>(message);
@@ -301,7 +301,7 @@ void YOGServerPlayer::update()
 			server.getFileDistributionManager().getDistributor(info->getFileID())->handleMessage(info, server.getPlayer(playerID));
 		}
 	}
-	//This recieves a cancel to a file download
+	//This receives a cancel to a file download
 	else if(type==MNetCancelReceivingFile)
 	{
 		shared_ptr<NetCancelReceivingFile> info = static_pointer_cast<NetCancelReceivingFile>(message);
@@ -310,13 +310,13 @@ void YOGServerPlayer::update()
 			server.getFileDistributionManager().getDistributor(info->getFileID())->removeMapRequestee(server.getPlayer(playerID));
 		}
 	}
-	//This recieves a cancel to a file download
+	//This receives a cancel to a file download
 	else if(type==MNetRequestMapThumbnail)
 	{
 		shared_ptr<NetRequestMapThumbnail> info = static_pointer_cast<NetRequestMapThumbnail>(message);
 		server.getMapDatabank().sendMapThumbnailToPlayer(info->getMapID(), server.getPlayer(playerID));
 	}
-	//This recieves a map rating
+	//This receives a map rating
 	else if(type==MNetSubmitRatingOnMap)
 	{
 		shared_ptr<NetSubmitRatingOnMap> info = static_pointer_cast<NetSubmitRatingOnMap>(message);
@@ -395,32 +395,32 @@ unsigned YOGServerPlayer::getAveragePing() const
 
 
 	//Copy the ping values, sort them, remove two highest and two lowest
-	std::vector<unsigned> spings(pings.begin(), pings.end());
-	std::sort(spings.begin(), spings.end(), std::greater<unsigned>());
-	if(spings.size() > 2)
-		spings.erase(spings.begin());
-	if(spings.size() > 2)
-		spings.erase(spings.end()-1);
-	if(spings.size() > 2)
-		spings.erase(spings.begin());
-	if(spings.size() > 2)
-		spings.erase(spings.end()-1);
+	std::vector<unsigned> sPings(pings.begin(), pings.end());
+	std::sort(sPings.begin(), sPings.end(), std::greater<unsigned>());
+	if(sPings.size() > 2)
+		sPings.erase(sPings.begin());
+	if(sPings.size() > 2)
+		sPings.erase(sPings.end()-1);
+	if(sPings.size() > 2)
+		sPings.erase(sPings.begin());
+	if(sPings.size() > 2)
+		sPings.erase(sPings.end()-1);
 	
 	//Compute mean
 	unsigned mean = 0;
-	for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
+	for(std::vector<unsigned>::iterator i=sPings.begin(); i!=sPings.end(); ++i)
 	{
 		mean += *i;
 	}
-	mean /= spings.size();
+	mean /= sPings.size();
 	
 	//Compute standard deviations
 	float deviation = 0;
-	for(std::vector<unsigned>::iterator i=spings.begin(); i!=spings.end(); ++i)
+	for(std::vector<unsigned>::iterator i=sPings.begin(); i!=sPings.end(); ++i)
 	{
 		deviation += float((*i - mean) * (*i - mean));
 	}
-	deviation = std::sqrt(deviation / spings.size());
+	deviation = std::sqrt(deviation / sPings.size());
 
 	//At two standard deviations, 99.7% of all data will be less
 	return mean + int(deviation*2);
@@ -488,10 +488,10 @@ void YOGServerPlayer::updateGamePlayerLists()
 	{
 		if(playersGames != server.getGameList())
 		{
-			shared_ptr<NetUpdateGameList> gamelist(new NetUpdateGameList);
-			gamelist->updateDifferences(playersGames, server.getGameList());
+			shared_ptr<NetUpdateGameList> gameList(new NetUpdateGameList);
+			gameList->updateDifferences(playersGames, server.getGameList());
 			playersGames = server.getGameList();
-			connection->sendMessage(gamelist);
+			connection->sendMessage(gameList);
 		}
 	}
 	//Send an updated player list to the user
@@ -499,10 +499,10 @@ void YOGServerPlayer::updateGamePlayerLists()
 	{
 		if(playersPlayerList != server.getPlayerList())
 		{
-			shared_ptr<NetUpdatePlayerList> playerlist(new NetUpdatePlayerList);
-			playerlist->updateDifferences(playersPlayerList, server.getPlayerList());
+			shared_ptr<NetUpdatePlayerList> playerList(new NetUpdatePlayerList);
+			playerList->updateDifferences(playersPlayerList, server.getPlayerList());
 			playersPlayerList = server.getPlayerList();
-			connection->sendMessage(playerlist);
+			connection->sendMessage(playerList);
 		}
 	}
 }
@@ -515,12 +515,12 @@ void YOGServerPlayer::handleCreateGame(const std::string& gameName)
 	{
 		gameID = server.createNewGame(gameName);
 		game = server.getGame(gameID);
-		boost::shared_ptr<YOGServerGame> ngame(game);
+		boost::shared_ptr<YOGServerGame> nGame(game);
 		updateGamePlayerLists();
 		std::string ip = boost::shared_ptr<YOGServerGame>(game)->getRouterIP();
-		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel(), gameID, ip, ngame->getFileID()));
+		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(nGame->getChatChannel(), gameID, ip, nGame->getFileID()));
 		connection->sendMessage(message);
-		ngame->addPlayer(server.getPlayer(playerID));
+		nGame->addPlayer(server.getPlayer(playerID));
 	}
 	else
 	{
@@ -531,17 +531,17 @@ void YOGServerPlayer::handleCreateGame(const std::string& gameName)
 
 
 
-void YOGServerPlayer::handleJoinGame(Uint16 ngameID)
+void YOGServerPlayer::handleJoinGame(Uint16 nGameID)
 {
-	YOGServerGameJoinRefusalReason reason = server.canJoinGame(ngameID);
+	YOGServerGameJoinRefusalReason reason = server.canJoinGame(nGameID);
 	if(reason == YOGJoinRefusalUnknown)
 	{	
-		gameID = ngameID;
+		gameID = nGameID;
 		game = server.getGame(gameID);
-		boost::shared_ptr<YOGServerGame> ngame(game);
-		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted(ngame->getChatChannel()));
+		boost::shared_ptr<YOGServerGame> nGame(game);
+		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted(nGame->getChatChannel()));
 		connection->sendMessage(message);
-		ngame->addPlayer(server.getPlayer(playerID));
+		nGame->addPlayer(server.getPlayer(playerID));
 		//gameListState = NeedToSendGameList;
 	}
 	else

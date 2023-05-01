@@ -31,7 +31,7 @@ class YOGServerGame;
 class YOGServerPlayer;
 class NetMessage;
 
-///This class assumes the responsibility of sending, transfering, and recieving files to and from clients
+///This class assumes the responsibility of sending, transferring, and receiving files to and from clients
 class YOGServerFileDistributor
 {
 public:
@@ -71,7 +71,7 @@ private:
 	///Requests the file from the player
 	void requestDataFromPlayer();
 	///Makes sure that the map has been requested, either from file or player
-	void garunteeDataRequested();
+	void guaranteeDataRequested();
 
 	Uint16 fileID;
 	bool startedLoading;

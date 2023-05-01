@@ -16,19 +16,19 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGServerFileDistributationManager_h
-#define YOGServerFileDistributationManager_h
+#ifndef YOGServerFileDistributionManager_h
+#define YOGServerFileDistributionManager_h
 
 #include <map>
 #include "SDL_net.h"
 #include "YOGServerFileDistributor.h"
 
 ///This class manages all file transfers on the server
-class YOGServerFileDistributationManager
+class YOGServerFileDistributionManager
 {
 public:
 	///Constructs a distributor
-	YOGServerFileDistributationManager();
+	YOGServerFileDistributionManager();
 
 	///Allocates a file distributor, returns the transfer ID
 	int allocateFileDistributor();

@@ -51,7 +51,7 @@ public:
 
 
 
-///Shutsdown the server
+///Shuts down the server
 class YOGServerRestart : public YOGServerAdministratorCommand
 {
 public:
@@ -85,8 +85,8 @@ public:
 
 
 
-///Unmutes a player
-class YOGUnmutePlayer : public YOGServerAdministratorCommand
+///Un-mutes a player
+class YOGUnMutePlayer : public YOGServerAdministratorCommand
 {
 public:
 	std::string getHelpMessage();

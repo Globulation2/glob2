@@ -55,8 +55,8 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if(par1 == JOIN)
 		{
-			LANFindScreen lanfs;
-			int rc = lanfs.execute(globalContainer->gfx, 40);
+			LANFindScreen lanFs;
+			int rc = lanFs.execute(globalContainer->gfx, 40);
 			if(rc==-1)
 				endExecute(-1);
 			else

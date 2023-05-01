@@ -33,7 +33,7 @@ enum ShortcutMode
 
 //Steps to add a keyboard shortcut:
 //1) Identify where it goes (either GameGUIKeyboardActions or MapEditorKeyboardActions)
-//2) Add the action to the enum there, and give it an approppriette name in the init function
+//2) Add the action to the enum there, and give it an appropriate name in the init function
 //3) Find the handleKey function in either GameGUI or MapEdit and add the code for the action
 //4) Add the name you provided to the translation files, as [name], and at the bare minimum, give it an English translation
 
@@ -53,7 +53,7 @@ public:
 	///Interprets a keyboard shortcut from a string
 	void interpret(const std::string& s, ShortcutMode mode);
 
-	///Formats a translated version, not for serializtaion
+	///Formats a translated version, not for serialization
 	std::string formatTranslated(ShortcutMode mode) const;
 	
 	///Counts how many key presses there is
@@ -62,10 +62,10 @@ public:
 	///Returns the n'th key press
 	KeyPress getKeyPress(size_t n) const;
 	
-	///Sets the action accossiatted with this shortcut
+	///Sets the action associated with this shortcut
 	void setAction(Uint32 action);
 	
-	///Returns the action accossiatted with this shortcut
+	///Returns the action associated with this shortcut
 	Uint32 getAction() const;
 	
 	///Returns whether this shortcut is valid. Shortcuts are invalid if any of the
@@ -84,13 +84,13 @@ public:
 	///Constructs a keyboard manager, either to use the MapEdit shortcuts or the GameGUI shortcuts
 	KeyboardManager(ShortcutMode mode);
 	
-	///Returns the integer action accossiatted with the provided key.
+	///Returns the integer action associated with the provided key.
 	Uint32 getAction(const KeyPress& key);
 	
 	///Saves the keyboard layout
 	void saveKeyboardLayout() const;
 	
-	///Loads the keyboard layout, returns false in unsuccessfull
+	///Loads the keyboard layout, returns false in unsuccessful
 	bool loadKeyboardLayout(const std::string& file);
 
 	///Clears all current shortcuts and loads the defaults

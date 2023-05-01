@@ -60,9 +60,9 @@ const GameHeader& YOGAfterJoinGameInformation::getGameHeader() const
 
 
 
-void YOGAfterJoinGameInformation::setReTeamingInformation(const NetReTeamingInformation& nreteam)
+void YOGAfterJoinGameInformation::setReTeamingInformation(const NetReTeamingInformation& reTeam)
 {
-	reTeam = nreteam;
+	this->reTeam = reTeam;
 }
 
 
@@ -74,9 +74,9 @@ const NetReTeamingInformation& YOGAfterJoinGameInformation::getReTeamingInformat
 
 
 
-void YOGAfterJoinGameInformation::setLatencyAdjustment(Uint8 nlatency)
+void YOGAfterJoinGameInformation::setLatencyAdjustment(Uint8 latency)
 {
-	latency = nlatency;
+	this->latency = latency;
 }
 
 
@@ -102,9 +102,9 @@ const std::string& YOGAfterJoinGameInformation::getGameRouterIP() const
 
 
 
-void YOGAfterJoinGameInformation::setMapFileID(Uint16 nfileID)
+void YOGAfterJoinGameInformation::setMapFileID(Uint16 id)
 {
-	fileID = nfileID;
+	this->fileID = id;
 }
 	
 

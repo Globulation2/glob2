@@ -70,21 +70,21 @@ void BrushTool::handleClick(int x, int y)
 
 
 
-void BrushTool::drawBrush(int x, int y, int viewportX, int viewportY, int originalX, int originalY, bool onlines)
+void BrushTool::drawBrush(int x, int y, int viewportX, int viewportY, int originalX, int originalY, bool onLines)
 {
 	/* We use 2/3 intensity to indicate removing areas.  This was
 		formerly 78% intensity, which was bright enough that it was hard
 		to notice any difference, so the brightness has been lowered. */
 	int i = ((mode == MODE_ADD) ? 255 : 170);
-	drawBrush(x, y, Color(i,i,i), viewportX, viewportY, originalX, originalY, onlines);
+	drawBrush(x, y, Color(i,i,i), viewportX, viewportY, originalX, originalY, onLines);
 }
 
-void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, int originalX, int originalY, bool onlines)
+void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int viewportY, int originalX, int originalY, bool onLines)
 {
 	/* It violates good abstraction practices that Brush.cpp knows
 		this much about the visual layout of the GUI. */
-	x = ((x+(onlines ? 16 : 0)) & ~0x1f) + (!onlines ? 16 : 0);
-	y = ((y+(onlines ? 16 : 0)) & ~0x1f) + (!onlines ? 16 : 0);
+	x = ((x+(onLines ? 16 : 0)) & ~0x1f) + (!onLines ? 16 : 0);
+	y = ((y+(onLines ? 16 : 0)) & ~0x1f) + (!onLines ? 16 : 0);
 	int w = getBrushWidth(figure);
 	int h = getBrushHeight(figure);
 	/* Move x and y from center of focus point to upper left of
@@ -96,18 +96,18 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 
 	if(originalX == -1)
 		originalX = viewportX + (x / cell_size);
-	else if(onlines)
+	else if(onLines)
 		originalX+=1;
 	if(originalY == -1)
 		originalY = viewportY + (y / cell_size);
-	else if(onlines)
+	else if(onLines)
 		originalY+=1;
 	
 	for (int cx = 0; cx < w; cx++)
 	{
 		for (int cy = 0; cy < h; cy++)
 		{
-			// TODO: the brush is wrong, but without lookuping viewport in game gui, there is no way to know this
+			// TODO: the brush is wrong, but without looking up viewport in game gui, there is no way to know this
 			if (getBrushValue(figure, cx, cy, viewportX + (x / cell_size), viewportY + (y / cell_size), originalX, originalY))
 			{
 				globalContainer->gfx->drawRect(x + (cell_size * cx) + inset, y + (cell_size * cy) + inset, cell_size - inset, cell_size - inset, c);

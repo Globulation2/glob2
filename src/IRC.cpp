@@ -110,7 +110,7 @@ void IRC::forceDisconnect(void)
 	}
 }
 
-void IRC::interpreteIRCMessage(const std::string &message)
+void IRC::interpretIRCMessage(const std::string &message)
 {
 	char tempMessage[IRC_MESSAGE_SIZE];
 	char *prefix;
@@ -289,9 +289,9 @@ void IRC::interpreteIRCMessage(const std::string &message)
 		
 		else
 		{
-			const std::string &nicktaken = Toolkit::getStringTable()->getString("[nick taken]");
+			const std::string &nickTaken = Toolkit::getStringTable()->getString("[nick taken]");
 			const std::string &ok = Toolkit::getStringTable()->getString("[ok]");
-			int res = (int)MessageBox(globalContainer->gfx, "standard", MB_ONE_BUTTON, nicktaken.c_str(), ok.c_str());
+			int res = (int)MessageBox(globalContainer->gfx, "standard", MB_ONE_BUTTON, nickTaken.c_str(), ok.c_str());
 		
 			if (res != 0 )
 			{
@@ -321,7 +321,7 @@ void IRC::step(void)
 			{
 				if (verbose)
 					printf("YOG (IRC) has received [%s]\n", data);
-				interpreteIRCMessage(data);
+				interpretIRCMessage(data);
 			}
 			else
 			{

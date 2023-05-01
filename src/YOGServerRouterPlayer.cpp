@@ -32,9 +32,9 @@ YOGServerRouterPlayer::YOGServerRouterPlayer(boost::shared_ptr<NetConnection> co
 
 
 
-void YOGServerRouterPlayer::setPointer(boost::weak_ptr<YOGServerRouterPlayer> npointer)
+void YOGServerRouterPlayer::setPointer(boost::weak_ptr<YOGServerRouterPlayer> pointer)
 {
-	pointer = npointer;
+	this->pointer = pointer;
 }
 
 
@@ -54,7 +54,7 @@ void YOGServerRouterPlayer::update()
 	while(message)
 	{
 		Uint8 type = message->getMessageType();
-		//This recieves the client information
+		//This receives the client information
 		if(type==MNetSendOrder)
 		{
 			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);

@@ -63,7 +63,7 @@ void YOGClientMapDownloader::cancelDownload()
 
 
 
-void YOGClientMapDownloader::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientMapDownloader::receiveMessage(boost::shared_ptr<NetMessage> message)
 {
 
 }

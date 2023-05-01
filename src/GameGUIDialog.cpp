@@ -257,12 +257,12 @@ void InGameAllianceScreen::onAction(Widget *source, Action action, int par1, int
 
 
 
-int InGameAllianceScreen::countNumberPlayersForLocalTeam(GameHeader& gameHeader, int localteam)
+int InGameAllianceScreen::countNumberPlayersForLocalTeam(GameHeader& gameHeader, int localTeam)
 {
 	int count = 0;
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 	{
-		if(gameHeader.getBasePlayer(i).teamNumber == localteam)
+		if(gameHeader.getBasePlayer(i).teamNumber == localTeam)
 		{
 			count += 1;
 		}

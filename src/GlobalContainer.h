@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GLOBALCONTAINER_H
-#define __GLOBALCONTAINER_H
+#ifndef __GLOBAL_CONTAINER_H
+#define __GLOBAL_CONTAINER_H
 
 #include "BuildingsTypes.h"
 #include "RessourcesTypes.h"

@@ -75,9 +75,9 @@ Uint32 YOGDownloadableMapInfo::getRatingTotal() const
 
 
 
-void YOGDownloadableMapInfo::setNumberOfRatings(Uint32 nnumberOfRatings)
+void YOGDownloadableMapInfo::setNumberOfRatings(Uint32 numberOfRatings)
 {
-	numberOfRatings = nnumberOfRatings;
+	this->numberOfRatings = numberOfRatings;
 }
 
 
@@ -89,9 +89,9 @@ Uint32 YOGDownloadableMapInfo::getNumberOfRatings() const
 
 
 
-void YOGDownloadableMapInfo::setAuthorName(const std::string& authorname)
+void YOGDownloadableMapInfo::setAuthorName(const std::string& name)
 {
-	author = authorname;
+	this->author = name;
 }
 
 
@@ -110,9 +110,9 @@ Uint16 YOGDownloadableMapInfo::getFileID() const
 
 
 
-void YOGDownloadableMapInfo::setFileID(Uint16 nfileID)
+void YOGDownloadableMapInfo::setFileID(Uint16 id)
 {
-	fileID = nfileID;
+	this->fileID = id;
 }
 
 
@@ -124,9 +124,9 @@ Uint16 YOGDownloadableMapInfo::getMapID() const
 	
 
 
-void YOGDownloadableMapInfo::setMapID(Uint16 nmapID)
+void YOGDownloadableMapInfo::setMapID(Uint16 id)
 {
-	mapID = nmapID;
+	this->mapID = id;
 }
 
 
@@ -145,10 +145,10 @@ Uint16 YOGDownloadableMapInfo::getHeight() const
 
 
 
-void YOGDownloadableMapInfo::setDimensions(Uint16 nwidth, Uint16 nheight)
+void YOGDownloadableMapInfo::setDimensions(Uint16 width, Uint16 height)
 {
-	width = nwidth;
-	height = nheight;
+	this->width = width;
+	this->height = height;
 }
 
 

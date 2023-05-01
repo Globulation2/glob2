@@ -78,7 +78,7 @@ void KeyboardShortcut::interpret(const std::string& as, ShortcutMode mode)
 		left=left.substr(end+2, std::string::npos);
 	}
 	
-	//Add the key that isn't seperated by a -
+	//Add the key that isn't separated by a -
 	KeyPress kp;
 	kp.interpret(left);
 	keys.push_back(kp);
@@ -129,9 +129,9 @@ KeyPress KeyboardShortcut::getKeyPress(size_t n) const
 
 
 	
-void KeyboardShortcut::setAction(Uint32 naction)
+void KeyboardShortcut::setAction(Uint32 action)
 {
-	action = naction;
+	this->action = action;
 }
 
 
@@ -177,7 +177,7 @@ KeyboardManager::KeyboardManager(ShortcutMode mode)
 
 Uint32 KeyboardManager::getAction(const KeyPress& key)
 {
-	//This is to solve a bug due to the system recieving the key-up event
+	//This is to solve a bug due to the system receiving the key-up event
 	//which is not included in multiple-key sequences
 	if(key.getPressed() || lastPresses.empty())
 		lastPresses.push_back(key);

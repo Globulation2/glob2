@@ -111,9 +111,9 @@ void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, co
 		time = boost::lexical_cast<int>(tokens[2]);
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
-		boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(time);
+		boost::posix_time::ptime unMuteTime = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(time);
 		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
-		i.setMuted(unmute_time);
+		i.setMuted(unMuteTime);
 		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
 		admin->sendTextMessage("Player muted: "+name, player);
 	}
@@ -125,41 +125,41 @@ void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, co
 
 
 
-std::string YOGUnmutePlayer::getHelpMessage()
+std::string YOGUnMutePlayer::getHelpMessage()
 {
-	return ".unmute_player <playername>    Unmutes a player";
+	return ".unmute_player <playername>    Un-mutes a player";
 }
 
 
 
-std::string YOGUnmutePlayer::getCommandName()
+std::string YOGUnMutePlayer::getCommandName()
 {
 	return ".unmute_player";
 }
 
 
 
-bool YOGUnmutePlayer::doesMatch(const std::vector<std::string>& tokens)
+bool YOGUnMutePlayer::doesMatch(const std::vector<std::string>& tokens)
 {
 	return tokens.size() == 2;
 }
 
 
 
-bool YOGUnmutePlayer::allowedForModerator()
+bool YOGUnMutePlayer::allowedForModerator()
 {
 	return true;
 }
 
 
 
-void YOGUnmutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGUnMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
 		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
-		i.setUnmuted();
+		i.setUnMuted();
 		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
 		admin->sendTextMessage("Player unmuted: "+name, player);
 	}
@@ -210,7 +210,7 @@ void YOGResetPassword::execute(YOGServer* server, YOGServerAdministrator* admin,
 
 std::string YOGBanPlayer::getHelpMessage()
 {
-	return ".ban_player <playername>    Bans a player indefinitly";
+	return ".ban_player <playername>    Bans a player indefinitely";
 }
 
 
@@ -244,12 +244,12 @@ void YOGBanPlayer::execute(YOGServer* server, YOGServerAdministrator* admin, con
 		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
 		i.setBanned();
 		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
-		boost::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
-		if(nplayer)
+		boost::shared_ptr<YOGServerPlayer> nPlayer = server->getPlayer(name);
+		if(nPlayer)
 		{
 			boost::shared_ptr<NetPlayerIsBanned> send(new NetPlayerIsBanned);
-			nplayer->sendMessage(send);
-			nplayer->closeConnection();
+			nPlayer->sendMessage(send);
+			nPlayer->closeConnection();
 		}
 		admin->sendTextMessage("Player banned: "+name, player);
 	}
@@ -384,15 +384,15 @@ bool YOGBanIP::allowedForModerator()
 void YOGBanIP::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
-	boost::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
-	if(nplayer)
+	boost::shared_ptr<YOGServerPlayer> nPlayer = server->getPlayer(name);
+	if(nPlayer)
 	{
 		boost::posix_time::ptime unban_time = boost::posix_time::second_clock::local_time() + boost::posix_time::hours(24);
-		server->getServerBannedIPListManager().addBannedIP(nplayer->getPlayerIP(), unban_time);
+		server->getServerBannedIPListManager().addBannedIP(nPlayer->getPlayerIP(), unban_time);
 		boost::shared_ptr<NetIPIsBanned> send(new NetIPIsBanned);
-		nplayer->sendMessage(send);
-		nplayer->closeConnection();
-		admin->sendTextMessage("Player "+name+"'s IP "+nplayer->getPlayerIP()+" has been banned.", player);
+		nPlayer->sendMessage(send);
+		nPlayer->closeConnection();
+		admin->sendTextMessage("Player "+name+"'s IP "+nPlayer->getPlayerIP()+" has been banned.", player);
 	}
 	else
 	{
@@ -585,7 +585,7 @@ void YOGRemoveModerator::execute(YOGServer* server, YOGServerAdministrator* admi
 
 std::string YOGRemoveMap::getHelpMessage()
 {
-	return ".remove_map <mapname>    Removes a map from the server respitory";
+	return ".remove_map <mapname>    Removes a map from the server repository";
 }
 
 

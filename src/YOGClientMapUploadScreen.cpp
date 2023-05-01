@@ -124,7 +124,7 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 	if(!client->isConnected())
 	{
 		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Map upload failure: connection lost]"), Toolkit::getStringTable()->getString("[ok]"));
-		endExecute(CONNECTIONLOST);
+		endExecute(CONNECTION_LOST);
 	}
 	
 	uploadStatus->visible = false;
@@ -140,7 +140,7 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 			{
 				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Map upload failure: unknown reason]"), Toolkit::getStringTable()->getString("[ok]"));
 			}
-			endExecute(UPLOADFAILED);
+			endExecute(UPLOAD_FAILED);
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::WaitingForUploadReply)
 		{
@@ -148,7 +148,7 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::Finished)
 		{
-			endExecute(UPLOADFINISHED);
+			endExecute(UPLOAD_FINISHED);
 		}
 		else
 		{

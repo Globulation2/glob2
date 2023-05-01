@@ -44,10 +44,10 @@ public:
 	///Retrieves the size of the history
 	Uint32 getHistorySize() const;
 
-	///Retrieves YOG message x, where 0 is the first message recieved, and higher gets more recent	
+	///Retrieves YOG message x, where 0 is the first message received, and higher gets more recent
 	const boost::shared_ptr<YOGMessage> getMessage(Uint32 n) const;
 
-	///Retrieves the local time that YOG message x was recieved, where higher x gets more recent
+	///Retrieves the local time that YOG message x was received, where higher x gets more recent
 	boost::posix_time::ptime getMessageTime(Uint32 n) const;
 
 	///Sends a message through this channel
@@ -68,8 +68,8 @@ public:
 protected:
 	friend class YOGClient;
 
-	///Recieves a message from the network (called by YOGClient)
-	void recieveMessage(boost::shared_ptr<YOGMessage> message);
+	///Receives a message from the network (called by YOGClient)
+	void receiveMessage(boost::shared_ptr<YOGMessage> message);
 
 	///This sends the message to all listeners
 	void sendToListeners(boost::shared_ptr<YOGMessage> message);
