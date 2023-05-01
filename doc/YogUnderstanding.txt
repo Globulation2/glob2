@@ -1,4 +1,4 @@
-This documents describes the features of YOG which allow players behind NAT and firewalls systems to play. As the author of YOG I know it to be unclear. Read this before the YOG code to have a chance to understand it. Comments are welcome at nuage@ysagoon.com
+This documents describes the features of YOG which allow players behind NAT and firewalls systems to play. As the author of YOG I know it to be unclear. Read this before the YOG code to have a chance to understand it.
 
 ***Things to know:
 
@@ -20,9 +20,9 @@ Some time ago, we had one IPA per computer. But as you know, we ran out of IPA, 
                                                               |     | <---------> computer 2 with one internal IPA
                                                               +-----+
 
-To explain how the NAT works, we'll give one typical use-case. Let's say that the extrnal IPA is 190.190.190.190 (fake case), and the internals IPA are 192.168.1.0,  192.168.1.1, and  192.168.1.2 (typical case). Let's say that yog1.ysagoon.com is at 128.128.128.128 (fake case).
+To explain how the NAT works, we'll give one typical use-case. Let's say that the extrnal IPA is 190.190.190.190 (fake case), and the internals IPA are 192.168.1.0,  192.168.1.1, and  192.168.1.2 (typical case). Let's say that yog.globulation2.org is at 128.128.128.128 (fake case).
 
-The computer 0 open glob2 and connect to YOG. Glob2 create a YogSocket binded to a port, for instance the port 4000. The first packet is sent to yog1.ysagoon.com at port 7468 (real static port).
+The computer 0 open glob2 and connect to YOG. Glob2 create a YogSocket binded to a port, for instance the port 4000. The first packet is sent to yog.globulation2.org at port 7468 (real static port).
 1) When on the LAN, the header of the packet namely has:
     source      = 192.168.1.0:4000        (computer 0 IPA + regular yog port)
     destination = 128.128.128.128:7268    (yog1 + static port)

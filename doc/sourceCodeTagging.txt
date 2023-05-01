@@ -1,7 +1,7 @@
 Glob2 source code tagging
 =========================
 
-Stephane Magnenat <nct@ysagoon.com>, 04.08.2004
+Stephane Magnenat <stephane at magnenat dot net>, 04.08.2004
 
 Introduction
 ------------

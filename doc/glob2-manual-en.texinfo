@@ -8,7 +8,7 @@
 @c %**end of header
 
 @copying
-This manual is for the @uref{http://ysagoon.com/glob2, Globulation 2 game}.
+This manual is for the @uref{https://globulation2.org, Globulation 2 game}.
 
 Copyright @copyright{} 2002 St@'ephane Magnenat
 
@@ -39,7 +39,7 @@ Globulation 2 developpers.''
 @vskip 0pt plus 1filll
 @insertcopying
 
-@uref{http://ysagoon.com/glob2, Published by the Globulation 2 project}
+@uref{https://globulation2.org, Published by the Globulation 2 project}
 @end titlepage
 
 @c Output the table of contents at the beginning.
