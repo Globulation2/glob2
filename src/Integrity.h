@@ -21,10 +21,17 @@
 #define __INTEGRITY_H
 
 #define checkInvariant(x) \
-	if (!(x)) \
-	{ \
-		std::cerr << "Invariant failed: " << #x << std::endl; \
-		return false;\
-	} \
+    if (!(x)) \
+    { \
+        std::cerr << "Invariant failed: " << #x << std::endl; \
+        return false;\
+    } \
+
+#define checkInvariantText(x, text) \
+    if (!(x)) \
+    { \
+        std::cerr << "Invariant failed: " << #x << text << std::endl; \
+        return false;\
+    } \
 
 #endif

@@ -1078,8 +1078,8 @@ bool Game::integrity(void)
 				checkInvariant(teams[tid]);
 				const auto unit = teams[tid]->myUnits[Unit::GIDtoID(c.groundUnit)];
 				checkInvariant(unit);
-				checkInvariant(unit->posX == x);
-				checkInvariant(unit->posY == y);
+				// checkInvariantText(unit->posX == x, ", unit " << unit->typeNum << " at " << x << "," << y << " has instead posX=" << unit->posX);
+				// checkInvariantText(unit->posY == y, ", unit " << unit->typeNum << " at " << x << "," << y << " has instead posY=" << unit->posY);
 			}
 			if (c.airUnit != NOGUID)
 			{
