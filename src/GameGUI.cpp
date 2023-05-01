@@ -1103,7 +1103,11 @@ void GameGUI::processEvent(SDL_Event *event)
 			panPushed=false;
 			// showUnitWorkingToBuilding=false;
 		}
-		
+		else if (event->type==SDL_MOUSEWHEEL)
+		{
+			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
+			scrollWheelChanges += event->wheel.y * factor;
+		}
 	}
 
 	if (event->type==SDL_MOUSEMOTION)
