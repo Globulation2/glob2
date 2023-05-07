@@ -150,6 +150,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>sdl2.lib;sdl2_net.lib;sdl2_image.lib;freetype.lib;sdl2main.lib;ws2_32.lib;ogg.lib;vorbis.lib;vorbisfile.lib;sdl2_ttf.lib;opengl32.lib;speex.lib;glu32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
