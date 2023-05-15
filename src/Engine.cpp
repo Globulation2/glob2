@@ -507,13 +507,13 @@ int Engine::run(void)
 				if (nextGuiStep == 0)
 				{
 					// we draw
-					static bool isPainterSet = false;
-					if (!isPainterSet)
+					if (!gui.isRegistered)
 					{
+						std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
 						EventListener::instance()->addPainter("GameGUI", std::bind(&GameGUI::drawAll, &gui, gui.localTeamNo));
-						isPainterSet = true;
+						gui.isRegistered = true;
 					}
-					std::unique_lock<std::mutex> lock(EventListener::instance()->renderMutex);
+					std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
 					globalContainer->gfx->createGLContext();
 					gui.drawAll(gui.localTeamNo);
 					globalContainer->gfx->nextFrame();

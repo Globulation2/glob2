@@ -349,6 +349,8 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
+			std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
+			EventListener::ensureContext();
 			glState.setTexture(texture);
 
 			void *pixelsPtr;
@@ -2061,7 +2063,7 @@ namespace GAGCore
 	}
 
 	SDL_Surface* GraphicContext::getOrCreateSurface(int w, int h, Uint32 flags) {
-		std::unique_lock<std::mutex> lock(EventListener::instance()->renderMutex);
+		std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
 		if (flags & USEGPU)
 		{
 			if (sdlsurface)

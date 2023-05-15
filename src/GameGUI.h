@@ -201,6 +201,10 @@ public:
 	bool hardPause;
 	bool isRunning;
 	bool notmenu;
+
+	// isRegistered tracks whether this instance of GameGUI has been registered with EventListener.
+	bool isRegistered;
+
 	//! true if user close the glob2 window.
 	bool exitGlobCompletely;
 	//! true if the game needs to flush all outgoing orders and exit

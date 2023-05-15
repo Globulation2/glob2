@@ -530,10 +530,7 @@ namespace GAGGUI
 				dispatchEvents(&windowEvent);
 				
 			// draw
-			{
-				std::unique_lock<std::mutex> lock(EventListener::instance()->renderMutex);
-				dispatchPaint();
-			}
+			dispatchPaint();
 	
 			// wait timer
 			frameWaitTime=SDL_GetTicks()-frameStartTime;
@@ -680,6 +677,8 @@ namespace GAGGUI
 	void Screen::dispatchPaint(void)
 	{
 		assert(gfx);
+		std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
+		EventListener::ensureContext();
 		gfx->setClipRect();
 		paint();
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)

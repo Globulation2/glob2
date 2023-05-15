@@ -184,7 +184,7 @@ GameGUI::GameGUI()
 	         128, // width
 	         128, //height
 	         Minimap::ShowFOW), // minimap mode
-	  
+	  isRegistered(false),
 	  ghostManager(game)
 {
 }
@@ -4385,6 +4385,8 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+	std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
+	EventListener::ensureContext();
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |

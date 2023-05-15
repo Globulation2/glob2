@@ -41,10 +41,11 @@ public:
 	static std::condition_variable startedCond;
 	static std::mutex doneMutex;
 	static std::condition_variable doneCond;
-	static std::mutex renderMutex;
+	static std::recursive_mutex renderMutex;
 	void setPainter(std::function<void()> f);
 	void addPainter(const std::string& name, std::function<void()> f);
 	void removePainter(const std::string& name);
+	static void ensureContext();
 	void paint();
 private:
 	std::function<void()> painter;

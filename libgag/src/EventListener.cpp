@@ -26,21 +26,24 @@ std::mutex EventListener::startMutex;
 std::condition_variable EventListener::startedCond;
 std::mutex EventListener::doneMutex;
 std::condition_variable EventListener::doneCond;
-std::mutex EventListener::renderMutex;
+std::recursive_mutex EventListener::renderMutex;
 
 #define SIZE_MOVE_TIMER_ID 1
 #if defined(_WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
 #define WINDOWS_OR_MINGW 1
 #endif
 
+// The depth variable is used to return early when indirect recursion happens
 EventListener::EventListener(GraphicContext* gfx)
 : painter(nullptr), depth(0)
 {
+	assert(gfx);
 	this->gfx = gfx;
 	el = this;
 	done = false;
 	quit = true;
 }
+
 void EventListener::stop()
 {
 	quit = true;
@@ -49,25 +52,38 @@ void EventListener::stop()
 		doneCond.wait(lock);
 	}
 }
+
 EventListener::~EventListener()
 {
 }
+
+// Create an OpenGL context or set existing context as current on this thread.
+void EventListener::ensureContext()
+{
+	instance()->gfx->createGLContext();
+}
+
+// deprecated; use addPainter/removePainter instead.
 void EventListener::setPainter(std::function<void()> f)
 {
-	std::unique_lock<std::mutex> lock(renderMutex);
+	std::unique_lock<std::recursive_mutex> lock(renderMutex);
 	painter = f;
 }
 
+/* name should be the class name that the function is called on
+ * f is the function to call to draw the screen.
+ */
 void EventListener::addPainter(const std::string& name, std::function<void()> f)
 {
-	std::unique_lock<std::mutex> lock(renderMutex);
+	std::unique_lock<std::recursive_mutex> lock(renderMutex);
 	painters.insert(std::pair<const std::string, std::function<void()> >(name, f));
 }
+// Erase the latest painter added with the name `name` from the multimap
 void EventListener::removePainter(const std::string& name)
 {
 	if (painters.empty())
 		assert("Tried to remove a painter when painters map is empty.");
-	std::unique_lock<std::mutex> lock(renderMutex);
+	std::unique_lock<std::recursive_mutex> lock(renderMutex);
 	for (std::multimap<const std::string, std::function<void()> >::reverse_iterator it = painters.rbegin(); it != painters.rend(); ++it)
 	{
 		if (it->first == name)
@@ -79,6 +95,7 @@ void EventListener::removePainter(const std::string& name)
 		}
 	}
 }
+// Draw all the registered painters in order
 void EventListener::paint()
 {
 	depth++;
@@ -86,7 +103,7 @@ void EventListener::paint()
 		return;
 	if (painters.size())
 	{
-		std::unique_lock<std::mutex> lock(renderMutex);
+		std::unique_lock<std::recursive_mutex> lock(renderMutex);
 		gfx->createGLContext();
 		for (std::multimap<const std::string, std::function<void()> >::iterator it = painters.begin(); it != painters.end(); ++it)
 		{
