@@ -62,6 +62,12 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	numberOfTeams = stream->readSint32("numberOfTeams");
 	mapOffset = stream->readUint32("mapOffset");
 	isSavedGame = stream->readUint8("isSavedGame");
+
+	if(numberOfTeams > Team::MAX_COUNT)
+	{
+		return false;
+	}
+
 	if(versionMinor==67)
 		stream->readUint32("checksum");
 	
