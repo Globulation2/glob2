@@ -54,6 +54,10 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
+	if (numberOfPlayers > Team::MAX_COUNT)
+	{
+		return false;
+	}
 	stream->readEnterSection("players");
 	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
