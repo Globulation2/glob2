@@ -708,21 +708,24 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 {
 	MapHeader mapHeader;
 	GameHeader gameHeader;
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	std::unique_ptr<InputStream> stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(filename));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Engine::loadGameHeader : error, can't open file " << filename  << std::endl;
+		return GameHeader(); // an empty game header
 	}
 	else
 	{
 		if (verbose)
 			std::cout << "Engine::loadGameHeader : loading map " << filename << std::endl;
-		mapHeader.load(stream);
-		bool validMapSelected = gameHeader.load(stream, mapHeader.getVersionMinor());
-		if (!validMapSelected)
+		bool headerValid = mapHeader.load(stream.get());
+		bool validMapSelected = gameHeader.load(stream.get(), mapHeader.getVersionMinor());
+		if (!headerValid || !validMapSelected)
+		{
 			std::cerr << "Engine::loadGameHeader : invalid game header for map " << filename << std::endl;
+			return GameHeader();
+		}
 	}
-	delete stream;
 	return gameHeader;
 
 }
