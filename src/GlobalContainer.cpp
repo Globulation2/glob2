@@ -79,6 +79,8 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("videoshots");
 	logFileManager = new LogFileManager(fileManager);
 
+	title = nullptr;
+
 	// load user preference
 	settings.load();
 
