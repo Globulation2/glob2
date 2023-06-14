@@ -21,6 +21,7 @@
 #include <cassert>
 namespace GAGCore {
 std::deque<SDL_Event> events = std::deque<SDL_Event>();
+std::mutex EventListener::queueMutex;
 EventListener* EventListener::el = nullptr;
 std::mutex EventListener::startMutex;
 std::condition_variable EventListener::startedCond;
@@ -180,7 +181,10 @@ void EventListener::run()
 				sizeMoveTimerRunning = false;
 			}
 #endif
-			events.push_back(event);
+			{
+				std::lock_guard<std::mutex> lock(queueMutex);
+				events.push_back(event);
+			}
 		}
 	}
 	{
@@ -191,6 +195,7 @@ void EventListener::run()
 }
 int EventListener::poll(SDL_Event* e)
 {
+	std::lock_guard<std::mutex> lock(queueMutex);
 	if (events.size()) {
 		*e = events.front();
 		events.pop_front();

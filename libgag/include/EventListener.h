@@ -54,6 +54,8 @@ private:
 	static EventListener* el;
 	std::atomic<bool> quit, done;
 	std::atomic<int> depth;
+
+	static std::mutex queueMutex; // used when pushing/popping queue.
 };
 }
 #endif //__EVENTLISTENER_H
