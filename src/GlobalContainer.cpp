@@ -130,7 +130,7 @@ GlobalContainer::GlobalContainer(void)
 	replayShowFlags = true;
 
 	mainthrSet = false;
-	otherthread = nullptr;
+	logicThread = nullptr;
 
 #ifndef YOG_SERVER_ONLY
 	replayReader = NULL;
@@ -524,8 +524,8 @@ void GlobalContainer::loadClient(bool runEventListener)
 			gfx->unsetContext();
 			el = new EventListener(gfx);
 			el->run();
-			otherthread->join();
-			delete otherthread;
+			logicThread->join();
+			delete logicThread;
 			return;
 		}
 		

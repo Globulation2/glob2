@@ -235,7 +235,7 @@ int Glob2::run(int argc, char *argv[])
 		globalContainer->mainthr = std::this_thread::get_id();
 		globalContainer->mainthrSet = true;
 		if (!globalContainer->hostServer && !globalContainer->runNoX) {
-			globalContainer->otherthread = new std::thread(&Glob2::run, this, argc, argv);
+			globalContainer->logicThread = new std::thread(&Glob2::run, this, argc, argv);
 		}
 	}
 	if (!globalContainer->hostServer &&
@@ -447,8 +447,8 @@ int Glob2::run(int argc, char *argv[])
 		}
 	}
 
-	// quit event loop so otherthread can be joined by main thread
-	if (globalContainer->otherthread)
+	// quit event loop so logic thread can be joined by main thread
+	if (globalContainer->logicThread)
 	{
 		EventListener *el = EventListener::instance();
 		el->stop();

@@ -142,8 +142,8 @@ public:
 	bool replayShowAreas; //!< Show areas of gui.localPlayer or not. Can be edited real-time.
 	bool replayShowFlags; //!< Show all flags or show none. Can be edited real-time.
 
-	// other thread handles events in the queue, game logic, rendering, etc.
-	std::thread* otherthread;
+	// logic thread handles events in the queue, game logic, rendering, etc.
+	std::thread* logicThread;
 	// main thread listens for SDL events and adds them to a queue
 	std::thread::id mainthr;
 	std::atomic<bool> mainthrSet;
