@@ -129,8 +129,8 @@ void EventListener::paint()
 //! Handle user resizing the game window on Microsoft Windows.
 // TODO: Handle window resizing on macOS
 //https://stackoverflow.com/a/51597338/8890345
-#ifdef WINDOWS_OR_MINGW
 bool sizeMoveTimerRunning = false;
+#ifdef WINDOWS_OR_MINGW
 int eventWatch(void* self, SDL_Event* event) {
 	if (event->type == SDL_SYSWMEVENT)
 	{
@@ -156,6 +156,10 @@ int eventWatch(void* self, SDL_Event* event) {
 }
 #endif
 
+bool EventListener::isResizing()
+{
+	return sizeMoveTimerRunning;
+}
 /** Listens for events and adds them to a queue.
  *  Call EventListener::poll to get an event from the queue.
  */

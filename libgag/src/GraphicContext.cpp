@@ -1675,7 +1675,7 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			// upload
-			if (surface->dirty)
+			if (surface->dirty || EventListener::instance()->isResizing())
 				surface->uploadToTexture();
 
 			// state change

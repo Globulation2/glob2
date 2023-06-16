@@ -39,6 +39,7 @@ public:
 	void run();
 	void stop();
 	bool isRunning();
+	bool isResizing();
 	int poll(SDL_Event* e);
 	static EventListener *instance();
 	~EventListener();
