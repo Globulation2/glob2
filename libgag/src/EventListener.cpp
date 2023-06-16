@@ -19,6 +19,14 @@
 #include "EventListener.h"
 #include <SDL_syswm.h>
 #include <cassert>
+
+/*
+  The main thread opens the window and handles events; the logic thread handles
+  everything else. Every so often, the logic thread paints the screen. During
+  resize, the event watch function will call paint() on every registered painter.
+
+  The logic thread is started in Glob2::run.
+*/
 namespace GAGCore {
 std::deque<SDL_Event> events = std::deque<SDL_Event>();
 std::mutex EventListener::queueMutex;
@@ -42,6 +50,7 @@ EventListener::EventListener(GraphicContext* gfx)
 	quit = true;
 }
 
+//! End the event listening loop
 void EventListener::stop()
 {
 	quit = true;
@@ -55,28 +64,32 @@ EventListener::~EventListener()
 {
 }
 
-// Create an OpenGL context or set existing context as current on this thread.
+//! Create an OpenGL context or set existing context as current on this thread.
 void EventListener::ensureContext()
 {
 	instance()->gfx->createGLContext();
 }
 
-// deprecated; use addPainter/removePainter instead.
+//! deprecated; use addPainter/removePainter instead.
 void EventListener::setPainter(std::function<void()> f)
 {
 	std::unique_lock<std::recursive_mutex> lock(renderMutex);
 	painter = f;
 }
 
-/* name should be the class name that the function is called on
- * f is the function to call to draw the screen.
+/** Add a painter to the list of painting functions to be called on window resize.
+ *  name should be the class name that the function is called on
+ *  f is the function to call to draw the screen.
  */
 void EventListener::addPainter(const std::string& name, std::function<void()> f)
 {
 	std::unique_lock<std::recursive_mutex> lock(renderMutex);
 	painters.insert(std::pair<const std::string, std::function<void()> >(name, f));
 }
-// Erase the latest painter added with the name `name` from the multimap
+
+/** Erase the latest painter added with the name `name` from the multimap
+ *  Removes the most recently added painter with that name.
+ */
 void EventListener::removePainter(const std::string& name)
 {
 	if (painters.empty())
@@ -93,7 +106,8 @@ void EventListener::removePainter(const std::string& name)
 		}
 	}
 }
-// Draw all the registered painters in order
+
+//! Draw all the registered painters in order
 void EventListener::paint()
 {
 	depth++;
@@ -111,6 +125,9 @@ void EventListener::paint()
 	}
 	depth--;
 }
+
+//! Handle user resizing the game window on Microsoft Windows.
+// TODO: Handle window resizing on macOS
 //https://stackoverflow.com/a/51597338/8890345
 #ifdef WINDOWS_OR_MINGW
 bool sizeMoveTimerRunning = false;
@@ -138,6 +155,10 @@ int eventWatch(void* self, SDL_Event* event) {
 	return 0;
 }
 #endif
+
+/** Listens for events and adds them to a queue.
+ *  Call EventListener::poll to get an event from the queue.
+ */
 void EventListener::run()
 {
 	{
@@ -190,6 +211,10 @@ void EventListener::run()
 	}
 	doneCond.notify_one();
 }
+
+/** Drop-in replacement for SDL_PollEvent.
+ *  Call this to get an event from the queue.
+ */
 int EventListener::poll(SDL_Event* e)
 {
 	std::lock_guard<std::mutex> lock(queueMutex);
@@ -200,10 +225,15 @@ int EventListener::poll(SDL_Event* e)
 	}
 	return 0;
 }
+
+/** Gets the active EventListener instance.
+ *  Does not initialize the EventListener if it is nullptr.
+ */
 EventListener *EventListener::instance()
 {
 	return el;
 }
+//! Checks if the EventListener is currently in the event handling loop.
 bool EventListener::isRunning()
 {
 	return !quit;
