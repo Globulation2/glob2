@@ -1674,8 +1674,10 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
+			if (!resizeTimer && EventListener::instance()->isResizing())
+				resizeTimer++;
 			// upload
-			if (surface->dirty || EventListener::instance()->isResizing())
+			if (surface->dirty || resizeTimer)
 				surface->uploadToTexture();
 
 			// state change
@@ -1967,7 +1969,8 @@ namespace GAGCore
 
 	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon):
 		windowTitle(title),
-		appIcon(icon)
+		appIcon(icon),
+		resizeTimer(0)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -2275,6 +2278,8 @@ namespace GAGCore
 			{
 				SDL_UpdateWindowSurface(window);
 			}
+			if (resizeTimer)
+				resizeTimer--;
 		}
 	}
 
