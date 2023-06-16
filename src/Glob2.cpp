@@ -32,6 +32,7 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
+#include "EventListener.h"
 #include "Game.h"
 #include "GUIMessageBox.h"
 #include "Header.h"
@@ -64,6 +65,11 @@
 #	include <sys/time.h>
 #else
 #	include <time.h>
+#endif
+
+#if defined(__linux__) || defined(__APPLE__)
+// for setting thread name
+#include <pthread.h>
 #endif
 
 #ifdef __APPLE__
@@ -235,11 +241,22 @@ int Glob2::run(int argc, char *argv[])
 	if (!globalContainer->hostServer &&
 		!globalContainer->runNoX &&
 	    std::this_thread::get_id() == globalContainer->mainthr) {
+		// Handle events in main thread
 		globalContainer->load(true);
 		finish();
 		return 0;
 	}
 	else {
+		// set thread name
+		const char* name = "Game logic";
+#ifdef WINDOWS_OR_MINGW
+		std::vector<wchar_t> wideName(4096);
+		MultiByteToWideChar(CP_ACP, 0, name, -1, wideName.data(), 4096);
+		SetThreadDescription(GetCurrentThread(), wideName.data());
+#elif defined(__linux__) || defined(__APPLE__)
+		pthread_setname_np(pthread_self(), name);
+#endif
+		// Handle game logic in logic thread
 		globalContainer->load(false);
 	}
 

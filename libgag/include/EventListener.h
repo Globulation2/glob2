@@ -26,6 +26,11 @@
 #include <condition_variable>
 #include <functional>
 #include <map>
+
+#if defined(_WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
+#define WINDOWS_OR_MINGW 1
+#endif
+
 namespace GAGCore {
 extern std::deque<SDL_Event> events;
 class EventListener {

@@ -30,9 +30,6 @@ std::condition_variable EventListener::doneCond;
 std::recursive_mutex EventListener::renderMutex;
 
 #define SIZE_MOVE_TIMER_ID 1
-#if defined(_WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
-#define WINDOWS_OR_MINGW 1
-#endif
 
 // The depth variable is used to return early when indirect recursion happens
 EventListener::EventListener(GraphicContext* gfx)
