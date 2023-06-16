@@ -28,7 +28,7 @@
   The logic thread is started in Glob2::run.
 */
 namespace GAGCore {
-std::deque<SDL_Event> events = std::deque<SDL_Event>();
+std::queue<SDL_Event> events = std::queue<SDL_Event>();
 std::mutex EventListener::queueMutex;
 EventListener* EventListener::el = nullptr;
 std::mutex EventListener::startMutex;
@@ -201,7 +201,7 @@ void EventListener::run()
 #endif
 			{
 				std::lock_guard<std::mutex> lock(queueMutex);
-				events.push_back(event);
+				events.push(event);
 			}
 		}
 	}
@@ -220,7 +220,7 @@ int EventListener::poll(SDL_Event* e)
 	std::lock_guard<std::mutex> lock(queueMutex);
 	if (events.size()) {
 		*e = events.front();
-		events.pop_front();
+		events.pop();
 		return 1;
 	}
 	return 0;

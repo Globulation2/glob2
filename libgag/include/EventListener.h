@@ -20,7 +20,7 @@
 #define __EVENTLISTENER_H
 #include "GraphicContext.h"
 #include <SDL.h>
-#include <deque>
+#include <queue>
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
@@ -32,7 +32,7 @@
 #endif
 
 namespace GAGCore {
-extern std::deque<SDL_Event> events;
+extern std::queue<SDL_Event> events;
 class EventListener {
 public:
 	EventListener(GraphicContext* gfx);
