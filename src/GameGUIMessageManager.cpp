@@ -19,6 +19,7 @@
 #include "GameGUIMessageManager.h"
 #include "GlobalContainer.h"
 #include "GUIList.h"
+#include "SDLCompat.h"
 
 InGameMessage::InGameMessage(const std::string& text, const GAGCore::Color& color, int time)
  : timeLeft(time), text(text), color(color)

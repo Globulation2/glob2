@@ -41,6 +41,7 @@
 #include "GUIMessageBox.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
+#include "SDLCompat.h"
 
 #include <iostream>
 

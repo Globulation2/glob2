@@ -21,7 +21,7 @@
 #include "Stream.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
-#include "SDLGraphicContext.h" // for SDL_GetTicks64 fallback
+#include "SDLCompat.h" // for SDL_GetTicks64 fallback
 #include <iostream>
 #include "boost/lexical_cast.hpp"
 
