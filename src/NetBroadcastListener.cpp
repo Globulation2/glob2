@@ -21,6 +21,7 @@
 #include "Stream.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
+#include "SDLGraphicContext.h" // for SDL_GetTicks64 #define
 #include <iostream>
 #include <sstream>
 
