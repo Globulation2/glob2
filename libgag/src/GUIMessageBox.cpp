@@ -138,7 +138,7 @@ namespace GAGGUI
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
 			parentCtx->nextFrame();
 			Sint64 newTime = SDL_GetTicks64();
-			SDL_Delay(std::max(40 - newTime + time, 0ll));
+			SDL_Delay(std::max<Sint64>(40 - newTime + time, 0));
 		}
 	
 		int retVal;

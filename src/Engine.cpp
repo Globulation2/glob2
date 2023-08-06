@@ -531,7 +531,7 @@ int Engine::run(void)
 					needToBeTime = currentTime - 500;
 
 				//Any inconsistancies in the delays will be smoothed throughout the following frames,
-				Sint64 delay = std::max(0, needToBeTime - currentTime);
+				Sint64 delay = std::max<Sint64>(0, needToBeTime - currentTime);
 				SDL_Delay(delay);
 				
 				// we set CPU stats

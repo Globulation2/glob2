@@ -95,7 +95,7 @@ void YOGClientGameConnectionDialog::execute()
 		parentCtx->nextFrame();
 		updateGame();
 		Sint64 newTime = SDL_GetTicks64();
-		SDL_Delay(std::max(40 - newTime + time, 0));
+		SDL_Delay(std::max<Sint64>(40 - newTime + time, 0));
 	}
 	
 	delete background;
