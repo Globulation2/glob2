@@ -47,6 +47,7 @@
 #include "Integrity.h"
 #include "Utilities.h"
 #include "GameGUI.h"
+#include "SDLCompat.h"
 
 #include "MapEdit.h"
 

@@ -21,6 +21,7 @@
 #include <GUIStyle.h>
 #include <assert.h>
 #include <GraphicContext.h>
+#include <SDLCompat.h>
 #include <cmath>
 
 #include <Toolkit.h>

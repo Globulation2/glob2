@@ -37,6 +37,7 @@
 #include "Utilities.h"
 #include "FertilityCalculatorDialog.h"
 #include "GUIMessageBox.h"
+#include "SDLCompat.h"
 
 
 #define RIGHT_MENU_WIDTH 160

@@ -24,6 +24,7 @@
 #include <sstream>
 #include "StringTable.h"
 #include "Toolkit.h"
+#include "SDLCompat.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;

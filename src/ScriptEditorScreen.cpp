@@ -35,6 +35,8 @@ using namespace GAGCore;
 #include <GUITextInput.h>
 using namespace GAGGUI;
 
+#include "SDLCompat.h"
+
 #include "MapScript.h"
 
 #include <algorithm>

@@ -24,6 +24,7 @@
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
 #include "YOGAfterJoinGameInformation.h"
+#include "SDLCompat.h"
 
 YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::string& routerIP, YOGServer& server)
 	: playerManager(gameHeader), gameID(gameID), chatChannel(chatChannel), routerIP(routerIP), server(server)

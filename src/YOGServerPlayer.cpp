@@ -22,6 +22,7 @@
 #include "YOGServer.h"
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
+#include "SDLCompat.h"
 
 using boost::static_pointer_cast;
 

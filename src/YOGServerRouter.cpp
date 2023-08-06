@@ -26,6 +26,7 @@
 #include "YOGServerGameRouter.h"
 #include "YOGServerRouter.h"
 #include "YOGServerRouterPlayer.h"
+#include "SDLCompat.h"
 #include <sstream>
 
 using namespace GAGCore;

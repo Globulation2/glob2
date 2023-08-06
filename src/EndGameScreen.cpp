@@ -35,6 +35,7 @@
 #include "GameGUILoadSave.h"
 #include "StreamBackend.h"
 #include "ReplayWriter.h"
+#include "SDLCompat.h"
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {

@@ -23,6 +23,7 @@
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
+#include <SDLCompat.h>
 #include <algorithm>
 
 using namespace GAGCore;
