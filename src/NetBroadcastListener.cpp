@@ -81,7 +81,7 @@ void NetBroadcastListener::update()
 			result = SDLNet_UDP_Recv(socket, packet);
 		}
 		
-		Uint64 time = SDL_GetTicks64() - lastTime;
+		Uint64 time = std::max<Sint64>(0, static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(lastTime));
 		for(unsigned int i=0; i<timeouts.size();)
 		{
 			timeouts[i] -= time;

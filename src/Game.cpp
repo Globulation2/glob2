@@ -1311,7 +1311,7 @@ void Game::syncStep(Sint32 localTeam)
 			globalContainer->replayWriter->advanceStep();
 		}
 
-		Sint64 startTick=SDL_GetTicks64();
+		Uint64 startTick=SDL_GetTicks64();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
@@ -1349,8 +1349,8 @@ void Game::syncStep(Sint32 localTeam)
 			wonSyncStep();
 		}
 
-		Sint64 endTick=SDL_GetTicks64();
-		ticksGameSum[stepCounter&31]+=endTick-startTick;
+		Uint64 endTick=SDL_GetTicks64();
+		ticksGameSum[stepCounter&31]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		stepCounter++;
 		anyPlayerWaitedTimeFor+=1;
 	}

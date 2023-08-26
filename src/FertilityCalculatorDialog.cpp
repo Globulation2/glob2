@@ -66,7 +66,7 @@ void FertilityCalculatorDialog::execute()
 	SDL_Event event;
 	while(endValue<0)
 	{
-		Sint64 time = SDL_GetTicks64();
+		Uint64 time = SDL_GetTicks64();
 		while (SDL_PollEvent(&event))
 		{
 			if (event.type==SDL_QUIT)
@@ -95,8 +95,8 @@ void FertilityCalculatorDialog::execute()
 		parentCtx->drawSurface((int)0, (int)0, background);
 		parentCtx->drawSurface(decX, decY, getSurface());
 		parentCtx->nextFrame();
-		Sint64 newTime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(40 - newTime + time, 0));
+		Uint64 newTime = SDL_GetTicks64();
+		SDL_Delay(std::max<Sint64>(40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time), 0));
 	}
 	
 	delete background;

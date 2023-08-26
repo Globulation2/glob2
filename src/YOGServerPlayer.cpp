@@ -48,7 +48,7 @@ void YOGServerPlayer::update()
 	updateConnectionSates();
 	updateGamePlayerLists();
 
-	if(SDL_GetTicks64() - pingCountdown > 5000 && pingCountdown != 0)
+	if((static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(pingCountdown)) > 5000 && pingCountdown != 0)
 	{
 		shared_ptr<NetPing> message(new NetPing);
 		connection->sendMessage(message);
@@ -257,7 +257,7 @@ void YOGServerPlayer::update()
 	else if(type==MNetPingReply)
 	{
 		shared_ptr<NetPingReply> info = static_pointer_cast<NetPingReply>(message);
-		pings.push_back(SDL_GetTicks64() - pingSendTime);
+		pings.push_back(std::max<Sint64>(0, static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(pingSendTime)));
 		if(pings.size() > 16)
 			pings.erase(pings.begin());
 

@@ -160,7 +160,7 @@ private:
 	///Counts down between sending a ping
 	Uint64 pingCountdown;
 	///This says the time when the ping was sent, 0 means not waiting on ping reply
-	unsigned pingSendTime;
+	Uint64 pingSendTime;
 	///This holds the most recent 5 pings
 	std::list<Uint64> pings;
 	

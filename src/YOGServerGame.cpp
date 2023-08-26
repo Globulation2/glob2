@@ -43,7 +43,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::strin
 
 void YOGServerGame::update()
 {
-	if((SDL_GetTicks64() - latencyUpdateTimer) > 4000)
+	if((static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(latencyUpdateTimer)) > 4000)
 	{
 		chooseLatencyMode();
 	}
