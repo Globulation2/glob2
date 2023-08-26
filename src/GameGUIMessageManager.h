@@ -50,7 +50,7 @@ protected:
 	void draw(int x, int y);
 	int timeLeft;
 private:
-	Uint32 lastTime;
+	Uint64 lastTime;
 	std::string text;
 	GAGCore::Color color;
 };

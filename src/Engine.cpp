@@ -311,7 +311,7 @@ int Engine::run(void)
 		cpuStats.reset(speed);
 		
 		Sint64 needToBeTime = 0;
-		Sint64 startTime = SDL_GetTicks64();
+		Uint64 startTime = SDL_GetTicks64();
 		unsigned frameNumber = 0;
 		bool sendBumpUp=false;
 
@@ -524,15 +524,15 @@ int Engine::run(void)
 	
 				// we compute timing
 				needToBeTime += speed;
-				Sint64 currentTime = SDL_GetTicks64() - startTime;
+				Sint64 currentTime = static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(startTime);
 				//if we are more than 500 milliseconds behind where we should be,
 				//then truncate it. This is to avoid playing "catchup" for long
 				//periods of time if Glob2 recieved allmost no cpu time
-				if(  (currentTime - needToBeTime) > 500)
+				if((currentTime - needToBeTime) > 500)
 					needToBeTime = currentTime - 500;
 
 				//Any inconsistancies in the delays will be smoothed throughout the following frames,
-				Sint64 delay = std::max<Sint64>(0, needToBeTime - currentTime);
+				Uint64 delay = std::max<Sint64>(0, needToBeTime - currentTime);
 				SDL_Delay(delay);
 				
 				// we set CPU stats

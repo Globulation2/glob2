@@ -156,7 +156,7 @@ int YOGServer::run()
 		startTick = SDL_GetTicks64();
 		update();
 		endTick=SDL_GetTicks64();
-		int remaining = std::max<Uint64>(speed - endTick + startTick, 0);
+		int remaining = std::max<Sint64>(speed - static_cast<Sint64>(endTick) + static_cast<Sint64>(startTick), 0);
 		SDL_Delay(remaining);
 	}
 	std::cout<<nl.isListening()<<std::endl;

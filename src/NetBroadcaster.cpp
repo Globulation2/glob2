@@ -55,7 +55,7 @@ void NetBroadcaster::update()
 	if(socket)
 	{
 		Uint64 time = SDL_GetTicks64();
-		if((time - lastTime) >= 500 )
+		if((static_cast<Sint64>(time) - static_cast<Sint64>(lastTime)) >= 500 )
 		{
 			MemoryStreamBackend* msb = new MemoryStreamBackend;
 			BinaryOutputStream* bos = new BinaryOutputStream(msb);

@@ -41,7 +41,7 @@ void InGameMessage::draw(int x, int y)
 	Uint64 newTime = SDL_GetTicks64();
 	if(lastTime != 0)
 	{
-		timeLeft -=  (newTime - lastTime);
+		timeLeft -= std::max<Sint64>(static_cast<Sint64>(newTime) - static_cast<Sint64>(lastTime), 0);
 		timeLeft = std::max(0, timeLeft);
 	}
 	lastTime = newTime;

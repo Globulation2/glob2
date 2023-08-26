@@ -578,7 +578,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 		Uint64 ntime = SDL_GetTicks64();
-		SDL_Delay(std::max<Uint64>(0, 40 - ntime + time));
+		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
 	}
 
 	if (loadSaveScreen->endValue==0)

@@ -523,7 +523,7 @@ namespace GAGGUI
 			dispatchPaint();
 	
 			// wait timer
-			frameWaitTime=SDL_GetTicks64()-frameStartTime;
+			frameWaitTime=static_cast<Sint64>(SDL_GetTicks64())-static_cast<Sint64>(frameStartTime);
 			frameWaitTime=stepLength-frameWaitTime;
 			if (frameWaitTime>0)
 				SDL_Delay(frameWaitTime);

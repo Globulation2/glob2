@@ -1321,7 +1321,7 @@ int MapEdit::run(void)
 		
 
 		endTick=SDL_GetTicks64();
-		deltaTick=endTick-startTick;
+		deltaTick=std::max<Sint64>(0, static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick));
 		if (deltaTick<33)
 			SDL_Delay(33-deltaTick);
 		if (returnCode==-1)
