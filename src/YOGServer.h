@@ -169,7 +169,7 @@ private:
 	void removeGameInfo(Uint16 gameID);
 
 	///This represents the next time when the message will be broad casted that a game is organized
-	int organizedGameBroadcastTime;
+	Uint64 organizedGameBroadcastTime;
 	static const bool organizedGameTimeEnabled = false;
 
 	NetListener nl;
