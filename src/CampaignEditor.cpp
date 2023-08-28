@@ -17,6 +17,7 @@
 */
 
 #include "CampaignEditor.h"
+#include "MapEdit.h"
 #include "Toolkit.h"
 #include "StringTable.h"
 #include "ChooseMapScreen.h"
@@ -173,6 +174,7 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	descriptionEditor = new TextArea(420, 195, 180, 225, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false, entry.getDescription().c_str());
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);
 	cancel = new TextButton(450, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL);
+	editMap = new TextButton(10, 430, 150, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[edit map]"), EDITMAP);
 
 	std::set<std::string> unlockedBy;
 	for(unsigned n=0; n<entry.getUnlockedByMaps().size(); ++n)
@@ -204,6 +206,7 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	addWidget(descriptionEditor);
 	addWidget(ok);
 	addWidget(cancel);
+	addWidget(editMap);
 }
 
 
@@ -243,6 +246,13 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 		else if (source == cancel)
 		{
 			endExecute(CANCEL);
+		}
+		else if (source == editMap)
+		{
+			MapEdit mapEdit;
+			mapEdit.load(entry.getMapFileName());
+			if (mapEdit.run() == -1)
+				endExecute(-1);
 		}
 	}
 	else if(action == TEXT_ACTIVATED)
