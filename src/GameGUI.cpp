@@ -4082,7 +4082,7 @@ void GameGUI::drawTopScreenBar(void)
 	else
 		memcpy(actC, redC, sizeof(redC));
 
-	int cpuLength = int(float(cpuLoad) / 100.0 * 40.0);
+	int cpuLength = int(float(std::min(cpuLoad, 100)) / 100.0 * 40.0);
 
 	globalContainer->gfx->drawFilledRect(dec, 4, cpuLength, 8, actC[0], actC[1], actC[2]);
 	globalContainer->gfx->drawVertLine(dec, 2, 12, 200, 200, 200);
