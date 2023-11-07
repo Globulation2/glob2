@@ -2262,6 +2262,10 @@ namespace GAGCore
 			{
 				int mx, my;
 				unsigned b = SDL_GetMouseState(&mx, &my);
+				if (resizeTimer) {
+					std::lock_guard<std::recursive_mutex> lock(EventListener::renderMutex);
+					cursorManager.reinitTextures();
+				}
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
 				setClipRect();
 				cursorManager.draw(this, mx, my);

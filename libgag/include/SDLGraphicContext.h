@@ -156,6 +156,7 @@ namespace GAGCore
 	protected:
 		friend struct Color;
 		friend class GraphicContext;
+		friend class Sprite;
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
 		//! The clipping rect, we do not draw outside it
@@ -447,6 +448,8 @@ namespace GAGCore
 		
 		//! Load a sprite from the file, return true if any frame have been loaded
 		bool load(const std::string filename);
+
+		void reinit();
 	
 		//! Set the (r,g,b) color to a sprite's base color
 		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor = Color(r, g, b); }
