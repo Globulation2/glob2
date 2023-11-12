@@ -328,6 +328,7 @@ namespace GAGCore
 		std::string windowTitle;
 		std::string appIcon;
 		int resizeTimer;
+		Sint64 framesDrawn, frameStartResize, frameStopResize;
 		
 	public:
 		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)
@@ -345,6 +346,7 @@ namespace GAGCore
 		virtual void unsetContext();
 		static GraphicContext* instance();
 		void resetMatrices();
+		bool isResizing();
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);

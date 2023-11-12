@@ -1073,6 +1073,10 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+		if (surface != _gc && (surface->dirty || _gc->isResizing()))
+			surface->uploadToTexture();
+		if (this != _gc && (this->dirty || _gc->isResizing()))
+			this->uploadToTexture();
 		if (alpha == Color::ALPHA_OPAQUE)
 		{
 			#ifdef HAVE_OPENGL
@@ -1674,10 +1678,8 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
-			if (!resizeTimer && EventListener::instance()->isResizing())
-				resizeTimer++;
 			// upload
-			if (surface->dirty || resizeTimer)
+			if (surface->dirty || isResizing())
 				surface->uploadToTexture();
 
 			// state change
@@ -1967,10 +1969,13 @@ namespace GAGCore
 		return modes;
 	}
 
-	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon):
+	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon) :
 		windowTitle(title),
 		appIcon(icon),
-		resizeTimer(0)
+		resizeTimer(0),
+		framesDrawn(0),
+		frameStartResize(-1),
+		frameStopResize(-1)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -2063,6 +2068,15 @@ namespace GAGCore
 		glLoadIdentity();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+	}
+
+	bool GraphicContext::isResizing()
+	{
+		static EventListener* instance = nullptr;
+		if (!instance)
+			instance = EventListener::instance();
+		// Either currently resizing or is within 5 frames of stopping resize.
+		return instance->isResizing() || (frameStartResize <= frameStopResize && framesDrawn < (frameStopResize + 5));
 	}
 
 	SDL_Surface* GraphicContext::getOrCreateSurface(int w, int h, Uint32 flags) {
@@ -2262,8 +2276,8 @@ namespace GAGCore
 			{
 				int mx, my;
 				unsigned b = SDL_GetMouseState(&mx, &my);
-				if (resizeTimer) {
-					std::lock_guard<std::recursive_mutex> lock(EventListener::renderMutex);
+				if (isResizing())
+				{
 					cursorManager.reinitTextures();
 				}
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
@@ -2282,8 +2296,20 @@ namespace GAGCore
 			{
 				SDL_UpdateWindowSurface(window);
 			}
-			if (resizeTimer)
+			bool isResizing = EventListener::instance()->isResizing();
+			if (resizeTimer && !isResizing)
+			{
+				// Resize flag is set but we are not currently resizing.
+				frameStopResize = framesDrawn;
 				resizeTimer--;
+			}
+			if (!resizeTimer && isResizing)
+			{
+				// The user started resizing the window.
+				frameStartResize = framesDrawn;
+				resizeTimer++;
+			}
+			framesDrawn++;
 		}
 	}
 

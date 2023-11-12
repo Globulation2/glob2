@@ -81,8 +81,15 @@ namespace GAGCore
 		}
 		for (RotatedImage* turned : rotated)
 		{
-			if (turned && turned->orig)
-				turned->orig->uploadToTexture();
+			if (turned)
+			{
+				if (turned->orig)
+					turned->orig->uploadToTexture();
+				for (auto& pair : turned->rotationMap)
+				{
+					pair.second->uploadToTexture();
+				}
+			}
 		}
 	}
 	
