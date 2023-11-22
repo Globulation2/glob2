@@ -2095,9 +2095,10 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	//when a defense flag position is chosen, all units or buildings within range of the flag
 	//have all squares within their range -1, effectivly doing the same as recalculating all
 	//squares excluding those units now covered by a defense flag
-	MapInfo mi(echo);
-	const int w = mi.get_width();
-	const int h = mi.get_height();
+	MapInfo     mi(echo);
+	const int   w      = mi.get_width();
+	const int   h      = mi.get_height();
+	const int   RADIUS = 4;
 	
 	Uint16* counts = new Uint16[w * h];
 	Uint16* buildingGID = new Uint16[w * h];
@@ -2115,7 +2116,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] == NOGUID)
 		{
 			unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] = unit->gid;
-			modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, 4, 1, locations);
+			modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, RADIUS, 1, locations);
 		}
 	}
 	for(int i=0; i<Building::MAX_COUNT; ++i)
@@ -2126,7 +2127,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 			int nx = (building->posX - building->type->decLeft + w) %w;
 			int ny = (building->posY - building->type->decTop + h) %h;
 			buildingGID[building->posX * h + building->posY] = building->gid;
-			modify_points(counts, w, h, nx, ny, 4, 1, locations);
+			modify_points(counts, w, h, nx, ny, RADIUS, 1, locations);
 		}
 	}
 	
@@ -2149,7 +2150,14 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 				max = n;
 			}
 		}
-		
+
+		// Inserting twice the same flag is a bug and may lead to an
+		// infinite loop. The most probable cause is an insufficient
+		// margin in the loop on all units and buildings below.
+		for (std::vector<int>::const_iterator i = flagLocations.begin();
+		     i != flagLocations.end();
+		     ++i)
+			assert (*i != maxPos);
 		flagLocations.push_back(maxPos);
 		
 		int max_x = maxPos / h;
@@ -2161,16 +2169,19 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		//decrement the values surrounding them. At the same time, count the number of enemy
 		//warriors in this zone
 		int enemy_count = 0;
-		for(int px = -3; px <= 3; ++px)
+		// We need to loop over an area slightly bigger than RADIUS
+		// because buildings are taken into account in an offset
+		// location
+		for(int px = -RADIUS-3; px <= RADIUS+3; ++px)
 		{
 			int nx = (max_x + px + w)%w;
-			for(int py = -3; py<=3; ++py)
+			for(int py = -RADIUS-3; py<=RADIUS+3; ++py)
 			{
 				int ny = (max_y + py + h)%h;
 				if(unitGID[nx * h + ny] != NOGUID)
 				{
 					Unit* unit = echo.player->team->myUnits[Unit::GIDtoID(unitGID[nx * h + ny])];
-					modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, 4, -1, locations);
+					modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, RADIUS, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
@@ -2178,17 +2189,22 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 					Building* building = echo.player->team->myBuildings[Building::GIDtoID(buildingGID[nx * h + ny])];
 					int nx2 = (building->posX - building->type->decLeft + w) %w;
 					int ny2 = (building->posY - building->type->decTop + h) %h;
-					modify_points(counts, w, h, nx2, ny2, 4, -1, locations);
+					modify_points(counts, w, h, nx2, ny2, RADIUS, -1, locations);
 					buildingGID[nx * h + ny] = NOGBID;
 				}
-				
-				Uint16 guid = echo.player->map->getGroundUnit(nx, ny);
-				if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & echo.player->team->enemies)
-				{
-					Unit* unit = echo.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
-					if(unit->typeNum == WARRIOR)
+
+				// Take enemy units into account only if they are
+				// within RADIUS of the flag (remember that we loop
+				// over a bigger area).
+				if ((px >= -RADIUS) && (px <= RADIUS) && (py >= -RADIUS) && (py <= RADIUS)) {
+					Uint16 guid = echo.player->map->getGroundUnit(nx, ny);
+					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & echo.player->team->enemies)
 					{
-						enemy_count += 1;
+						Unit* unit = echo.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
+						if(unit->typeNum == WARRIOR)
+						{
+							enemy_count += 1;
+						}
 					}
 				}
 			}
@@ -2348,21 +2364,17 @@ void NewNicowar::modify_points(Uint16* counts, int w, int h, int x, int y, int d
 			int ny = (y + py + h)%h;
 			if(px * px + py * py <= dist * dist)
 			{
-				Uint8 d = (dist-std::max(std::abs(px), std::abs(py)));
-				if(d != 0)
+				if(value>0)
 				{
-					if(value>0)
-					{
-						if(counts[nx * h + ny] == 0)
-							locations.push_back(nx * h + ny);
-						counts[nx * h + ny] += d;
-					}
-					else if(value<0)
-					{
-						counts[nx * h + ny] -= d;
-						if(counts[nx * h + ny] == 0)
-							locations.remove(nx * h + ny);
-					}
+					if(counts[nx * h + ny] == 0)
+						locations.push_back(nx * h + ny);
+					counts[nx * h + ny] += value;
+				}
+				else if(value<0)
+				{
+					counts[nx * h + ny] += value;
+					if(counts[nx * h + ny] == 0)
+						locations.remove(nx * h + ny);
 				}
 			}
 		}
