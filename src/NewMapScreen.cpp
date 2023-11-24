@@ -60,18 +60,18 @@ NewMapScreen::NewMapScreen()
 	logRepeatAreaTimes->visible=false;
 	addWidget(logRepeatAreaTimes);
 	
-	methodes=new List(20, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
-	methodes->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[swamp terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[river terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[concrete islands terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[isles terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[old random terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
-	methodes->setSelectionIndex(0);
-	addWidget(methodes);
+	methods=new List(20, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
+	methods->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[swamp terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[river terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[concrete islands terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[isles terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[old random terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
+	methods->setSelectionIndex(0);
+	addWidget(methods);
 	
 	// eUNIFORM
 
@@ -256,7 +256,7 @@ NewMapScreen::NewMapScreen()
 	smoothingText=new Text(480, 360, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[smoothing]"));
 	smoothingText->visible=false;
 	addWidget(smoothingText);
-	// eOLDISLANDS
+	// OLD_ISLANDS
 
 	oldIslandSize=new Ratio(310, 140, 114, 18, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 40, descriptor.oldIslandSize, "menu");
 	oldIslandSize->visible=false;
@@ -308,7 +308,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		// eRANDOM
 		descriptor.smooth=smooth->getNth()+1;
 
-		// eOLDISLANDS
+		// OLD_ISLANDS
 		descriptor.oldBeach=oldBeach->getNth();
 		descriptor.nbWorkers=nbWorkers->getNth()+1;
 
@@ -321,12 +321,12 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 			descriptor.terrainType=(TerrainType)terrains->getSelectionIndex();
 		
 		// all
-		if (source==methodes)
+		if (source==methods)
 		{
-			MapGenerationDescriptor::Methode old=descriptor.methode;
-			descriptor.methode=(MapGenerationDescriptor::Methode)methodes->getSelectionIndex();
+			MapGenerationDescriptor::Method old=descriptor.method;
+			descriptor.method=(MapGenerationDescriptor::Method)methods->getSelectionIndex();
 			
-			if (old!=descriptor.methode)
+			if (old!=descriptor.method)
 			{
 				terrains->visible=false;
 				ratioText->visible=false;
@@ -368,17 +368,17 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				areaTimesText->visible=false;
 			
 				// not eUNIFORM
-				nbTeams->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				nbWorkers->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				numberOfTeamText->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				numberOfWorkerText->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				nbTeams->setVisible(descriptor.method!=MapGenerationDescriptor::Method::UNIFORM);
+				nbWorkers->setVisible(descriptor.method!=MapGenerationDescriptor::Method::UNIFORM);
+				numberOfTeamText->setVisible(descriptor.method!=MapGenerationDescriptor::Method::UNIFORM);
+				numberOfWorkerText->setVisible(descriptor.method!=MapGenerationDescriptor::Method::UNIFORM);
 
-				switch (descriptor.methode)
+				switch (descriptor.method)
 				{
-					case MapGenerationDescriptor::eUNIFORM:
+					case MapGenerationDescriptor::Method::UNIFORM:
 						terrains->visible=true;
 						break;
-					case MapGenerationDescriptor::eSWAMP:
+					case MapGenerationDescriptor::Method::SWAMP:
 						ratioText->visible=
 						waterRatio->visible=waterText->visible=
 						grassRatio->visible=grassText->visible=
@@ -391,7 +391,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
 						break;
-					case  MapGenerationDescriptor::eRIVER:
+					case  MapGenerationDescriptor::Method::RIVER:
 						ratioText->visible=
 						waterRatio->visible=waterText->visible=
 						sandRatio->visible=sandText->visible=
@@ -407,7 +407,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
 						break;
-					case  MapGenerationDescriptor::eISLANDS:
+					case  MapGenerationDescriptor::Method::ISLANDS:
 						ratioText->visible=
 						waterRatio->visible=waterText->visible=
 						sandRatio->visible=sandText->visible=
@@ -423,7 +423,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
 						break;
-					case  MapGenerationDescriptor::eCRATERLAKES:
+					case  MapGenerationDescriptor::Method::CRATER_LAKES:
 						ratioText->visible=
 						waterRatio->visible=waterText->visible=
 						sandRatio->visible=sandText->visible=
@@ -439,11 +439,11 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						logRepeatAreaTimes->visible=areaTimesText->visible=
 						true;
 						break;
-					case  MapGenerationDescriptor::eCONCRETEISLANDS:
+					case  MapGenerationDescriptor::Method::CONCRETE_ISLANDS:
 						break;
-					case  MapGenerationDescriptor::eISLES:
+					case  MapGenerationDescriptor::Method::ISLES:
 						break;
-					case  MapGenerationDescriptor::eOLDRANDOM:
+					case  MapGenerationDescriptor::Method::OLD_RANDOM:
 						ratioText->visible=
 						waterRatio->visible=waterText->visible=
 						sandRatio->visible=sandText->visible=
@@ -455,7 +455,7 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 						algaeRatio->visible=algaeText->visible=
 						true;
 						break;
-					case  MapGenerationDescriptor::eOLDISLANDS:
+					case  MapGenerationDescriptor::Method::OLD_ISLANDS:
 						oldBeach->visible=oldBeachSizeText->visible=
 						oldIslandSize->visible=oldIslandSizeText->visible=
 						true;

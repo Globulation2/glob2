@@ -36,13 +36,13 @@ class Map;
 class Order
 {
 public:
-	///Contructs an Order
+	///Constructs an Order
  	Order(void);
 	virtual ~Order(void) {}
 	///Returns the Order Type
 	virtual Uint8 getOrderType(void)=0;
 
-	///Takes in an arbitrary amount of information and returns its assocciatted order
+	///Takes in an arbitrary amount of information and returns its associated order
 	static boost::shared_ptr<Order> getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor);
 
 	///Returns the encoded data buffer of data for the Order
@@ -54,7 +54,7 @@ public:
 	///Returns the length of the data
 	virtual int getDataLength(void)=0;
 	
-	int sender; // sender player number, setby NetGame in getOrder() only
+	int sender; // sender player number, set by NetGame in getOrder() only
 	Uint32 gameCheckSum;
 };
 
@@ -140,7 +140,7 @@ protected:
 	Uint8 data[10];
 };
 
-//! Cancel a building upgarde or repair if pending
+//! Cancel a building upgrade or repair if pending
 class OrderCancelConstruction:public Order
 {
 public:
@@ -213,7 +213,7 @@ class OrderModifyExchange:public OrderModify
 {
 public:
 	OrderModifyExchange(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask);
+	OrderModifyExchange(Uint16 gid, Uint32 receiveResourceMask, Uint32 sendResourceMask);
 	virtual ~OrderModifyExchange(void) {}
 
 	Uint8 *getData(void);
@@ -222,8 +222,8 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MODIFY_EXCHANGE; }
 
 	Uint16 gid;
-	Uint32 receiveRessourceMask;
-	Uint32 sendRessourceMask;
+	Uint32 receiveResourceMask;
+	Uint32 sendResourceMask;
 	
 protected:
 	Uint8 data[10];
@@ -271,7 +271,7 @@ class OrderModifyClearingFlag:public OrderModify
 {
 public:
 	OrderModifyClearingFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT]);
+	OrderModifyClearingFlag(Uint16 gid, bool clearingResources[BASIC_COUNT]);
 	virtual ~OrderModifyClearingFlag(void);
 
 	Uint8 *getData(void);
@@ -280,7 +280,7 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MODIFY_CLEARING_FLAG; }
 
 	Uint16 gid;
-	bool clearingRessources[BASIC_COUNT];
+	bool clearingResources[BASIC_COUNT];
 
 protected:
 	Uint8 *data;
@@ -328,14 +328,14 @@ protected:
 
 class BrushAccumulator;
 
-class OrderAlterateArea:public OrderModify
+class OrderAlterArea:public OrderModify
 {
 public:
-	OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderAlterArea(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	#ifndef YOG_SERVER_ONLY
-	OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
+	OrderAlterArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
 	#endif
-	virtual ~OrderAlterateArea(void);
+	virtual ~OrderAlterArea(void);
 	
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -355,37 +355,37 @@ protected:
 	Uint8 *_data;
 };
 
-class OrderAlterateForbidden:public OrderAlterateArea
+class OrderAlterForbidden:public OrderAlterArea
 {
 public:
-	OrderAlterateForbidden(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
+	OrderAlterForbidden(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterArea(data, dataLength, versionMinor) { }
 	#ifndef YOG_SERVER_ONLY
-	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
+	OrderAlterForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 	
-	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
+	Uint8 getOrderType(void) { return ORDER_ALTER_FORBIDDEN; }
 };
 
-class OrderAlterateGuardArea:public OrderAlterateArea
+class OrderAlterGuardArea:public OrderAlterArea
 {
 public:
-	OrderAlterateGuardArea(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
+	OrderAlterGuardArea(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterArea(data, dataLength, versionMinor) { }
 	#ifndef YOG_SERVER_ONLY
-	OrderAlterateGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
+	OrderAlterGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 	
-	Uint8 getOrderType(void) { return ORDER_ALTERATE_GUARD_AREA; }
+	Uint8 getOrderType(void) { return ORDER_ALTER_GUARD_AREA; }
 };
 
-class OrderAlterateClearArea:public OrderAlterateArea
+class OrderAlterClearArea:public OrderAlterArea
 {
 public:
-	OrderAlterateClearArea(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
+	OrderAlterClearArea(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterArea(data, dataLength, versionMinor) { }
 	#ifndef YOG_SERVER_ONLY
-	OrderAlterateClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
+	OrderAlterClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 	
-	Uint8 getOrderType(void) { return ORDER_ALTERATE_CLEAR_AREA; }
+	Uint8 getOrderType(void) { return ORDER_ALTER_CLEAR_AREA; }
 };
 
 
@@ -414,7 +414,7 @@ class MessageOrder:public MiscOrder
 {
 public:
 	MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text);
+	MessageOrder(Uint32 recipientsMask, Uint32 messageOrderType, const char * text);
 	virtual ~MessageOrder(void);
 
 	Uint8 *getData(void);
@@ -423,7 +423,7 @@ public:
 	char *getText(void) { return (char *)(data+9); }
 	Uint8 getOrderType(void) { return ORDER_TEXT_MESSAGE; }
 
-	Uint32 recepientsMask;
+	Uint32 recipientsMask;
 	enum MessageOrderType
 	{
 		BAD_MESSAGE_TYPE=0,
@@ -443,18 +443,18 @@ class OrderVoiceData:public MiscOrder
 {
 public:
 	OrderVoiceData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas);
+	OrderVoiceData(Uint32 recipientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData);
 	virtual ~OrderVoiceData(void);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return framesDatasLength+5; }
+	int getDataLength(void) { return framesDataLength+5; }
 	int getStrippedDataLength(void) { return 5; }
 	Uint8 getOrderType(void) { return ORDER_VOICE_DATA; }
 	Uint8 *getFramesData(void) { return data+5; }
 
-	Uint32 recepientsMask;
-	size_t framesDatasLength;
+	Uint32 recipientsMask;
+	size_t framesDataLength;
 	Uint8 frameCount;
 	Uint8 *data;
 };

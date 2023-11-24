@@ -40,23 +40,23 @@ public:
 	///This performs the isles generator
 	bool computeIsles(Game& game, MapGenerationDescriptor& descriptor);
 
-	///This function devides up the player lands using the standard method
+	///This function divides up the player lands using the standard method
 	bool divideUpPlayerLands(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber);
 
 private:
-	///This is a function that takes an area and devides it up into several smaller areas using the
-	///given area numbers and weights. This is bassically a combination of splitUpPoints and splitUpArea
+	///This is a function that takes an area and divides it up into several smaller areas using the
+	///given area numbers and weights. This is basically a combination of splitUpPoints and splitUpArea
 	bool divideUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<int>& weights, std::vector<int>& areaNumbers);
 	
 	///This creates an area with the shape of an oval with the given width and height
 	void createOval(Game& game, std::vector<int>& grid, int areaN, int x, int y, int width, int height);
 	
 	///This function takes the grid, an area number, and places points in it such that the points are spaced
-	///as far from eachother as possible, bearing in mind weights. Returns 0 if failure, otherwise returns 
+	///as far from each other as possible, bearing in mind weights. Returns 0 if failure, otherwise returns 
 	///the minimum distance between points that was accomplished
 	int splitUpPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights);
 	
-	///This function takes a grid and an area number, and devides that area into more areas
+	///This function takes a grid and an area number, and divides that area into more areas
 	void splitUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, std::vector<int>& areaNumbers, bool grassOnly=false);
 	
 	///This function fills the vector with all of the points in a specific area
@@ -74,9 +74,9 @@ private:
 	///This function sets all given points as a specific area on the grid
 	void setAsArea(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
 	
-	///This function fills all given points area with a certain ressource. It will fill in a randomly sized
+	///This function fills all given points area with a certain resource. It will fill in a randomly sized
 	///square over each grid space no larger than maxFillSize
-	void fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int ressourceType, int maxFillSize);
+	void fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int resourceType, int maxFillSize);
 	
 	///This chooses n-random squares from a the points vector, and eliminates the rest
 	void chooseRandomPoints(Game& game, std::vector<MapGeneratorPoint>& points, int n);

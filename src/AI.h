@@ -38,7 +38,7 @@ class AI
 {
 public:
 	///TODO: Explain
-	enum ImplementitionID
+	enum ImplementationID
 	{
 		///Reference to AINull
 		NONE=0,
@@ -49,7 +49,7 @@ public:
 		///Reference to AIWarrush
 		WARRUSH=3,
 		///Reference to the AIEcho based AIReachToInfinity
-		REACHTOINFINITY=4,
+		REACH_TO_INFINITY=4,
 		///Reference to the AIEcho based AINicowar
 		NICOWAR=5,
 
@@ -58,17 +58,17 @@ public:
 
 		EXPERIMENTAL_SIZE
 	};
-	static const ImplementitionID toggleAI=CASTOR;
+	static const ImplementationID toggleAI=CASTOR;
 
 public:
 	//AI(Player *player); //TODO: remove this constructor, and choose the AI the user wants.
-	AI(ImplementitionID implementitionID, Player *player);
+	AI(ImplementationID implementationID, Player *player);
 	AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AI();
-	//void init(ImplementitionID ImplementitionID, Player *player);
+	//void init(ImplementationID ImplementationID, Player *player);
 
 	AIImplementation *aiImplementation;
-	ImplementitionID implementitionID;
+	ImplementationID implementationID;
 
 	Player *player;
 

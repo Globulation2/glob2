@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIGLOB2FILELIST_H
-#define __GUIGLOB2FILELIST_H
+#ifndef __GUI_GLOB2_FILE_LIST_H
+#define __GUI_GLOB2_FILE_LIST_H
 
 #include <GUIFileList.h>
 using namespace GAGGUI;

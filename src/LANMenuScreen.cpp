@@ -55,8 +55,8 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if(par1 == JOIN)
 		{
-			LANFindScreen lanfs;
-			int rc = lanfs.execute(globalContainer->gfx, 40);
+			LANFindScreen lanFs;
+			int rc = lanFs.execute(globalContainer->gfx, 40);
 			if(rc==-1)
 				endExecute(-1);
 			else
@@ -72,7 +72,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 				shared_ptr<YOGServer> server(new YOGServer(YOGAnonymousLogin, YOGSingleGame));
 				if(!server->isListening())
 				{
-					MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, FormatableString(Toolkit::getStringTable()->getString("[Can't host game, port %0 in use]")).arg(YOG_SERVER_PORT).c_str(), Toolkit::getStringTable()->getString("[ok]"));
+					MessageBox(globalContainer->gfx, "standard", MB_ONE_BUTTON, FormattableString(Toolkit::getStringTable()->getString("[Can't host game, port %0 in use]")).arg(YOG_SERVER_PORT).c_str(), Toolkit::getStringTable()->getString("[ok]"));
 					endExecute(QuitMenu);
 				}
 				else
@@ -88,7 +88,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 			
 					boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 					client->setMultiplayerGame(game);
-					std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(globalContainer->settings.getUsername());
+					std::string name = FormattableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(globalContainer->settings.getUsername());
 					game->createNewGame(name);
 					game->setMapHeader(cms.getMapHeader());
 

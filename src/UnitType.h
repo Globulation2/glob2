@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UNITTYPE_H
-#define __UNITTYPE_H
+#ifndef __UNIT_TYPE_H
+#define __UNIT_TYPE_H
 
 #include <GAGSys.h>
 #include "UnitConsts.h"
@@ -32,11 +32,11 @@ namespace GAGCore
 class UnitType
 {
 public:
-	// caracteristic modulated by player choice, if 0, feature disabled
+	// characteristic modulated by player choice, if 0, feature disabled
 	// display infos
 	Uint32 startImage[NB_MOVE];
 	
-	Sint32 hungryness;
+	Sint32 hungriness;
 
 	Sint32 performance[NB_ABILITY];
 	

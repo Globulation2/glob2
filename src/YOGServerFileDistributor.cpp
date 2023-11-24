@@ -43,9 +43,9 @@ void YOGServerFileDistributor::loadFromLocally(const std::string& file)
 
 
 
-void YOGServerFileDistributor::loadFromPlayer(boost::shared_ptr<YOGServerPlayer> nplayer)
+void YOGServerFileDistributor::loadFromPlayer(boost::shared_ptr<YOGServerPlayer> player)
 {
-	player = nplayer;
+	this->player = player;
 }
 
 
@@ -121,7 +121,7 @@ void YOGServerFileDistributor::update()
 
 void YOGServerFileDistributor::addMapRequestee(boost::shared_ptr<YOGServerPlayer> player)
 {
-	garunteeDataRequested();
+	guaranteeDataRequested();
 	players.push_back(boost::make_tuple(player, boost::posix_time::second_clock::local_time(), 0));
 }
 
@@ -141,19 +141,19 @@ void YOGServerFileDistributor::removeMapRequestee(boost::shared_ptr<YOGServerPla
 
 
 
-void YOGServerFileDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> nplayer)
+void YOGServerFileDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> nPlayer)
 {
 	///This ignores certain messages that must come from the person uploading the map
 	Uint8 messageType = message->getMessageType();
-	if(messageType == MNetSendFileInformation && nplayer == player)
+	if(messageType == MNetSendFileInformation && nPlayer == player)
 	{
 		fileInfo = static_pointer_cast<NetSendFileInformation>(message);
 	}
-	else if(messageType == MNetSendFileChunk && nplayer == player)
+	else if(messageType == MNetSendFileChunk && nPlayer == player)
 	{
 		chunks.push_back(static_pointer_cast<NetSendFileChunk>(message));
 	}
-	else if(messageType == MNetCancelSendingFile && nplayer == player)
+	else if(messageType == MNetCancelSendingFile && nPlayer == player)
 	{
 		chunks.clear();
 		fileInfo.reset();
@@ -174,11 +174,11 @@ void YOGServerFileDistributor::loadDataFromFile()
 		istream->seekFromStart(0);
 		fileInfo = boost::shared_ptr<NetSendFileInformation>(new NetSendFileInformation(size, fileID));
 		
-		int ammount=0;
-		while(ammount < size)
+		int amount=0;
+		while(amount < size)
 		{
 			boost::shared_ptr<NetSendFileChunk> message(new NetSendFileChunk(istream, fileID));
-			ammount += message->getChunkSize();
+			amount += message->getChunkSize();
 			chunks.push_back(message);
 		}
 	}
@@ -194,7 +194,7 @@ void YOGServerFileDistributor::requestDataFromPlayer()
 	}
 }
 
-void YOGServerFileDistributor::garunteeDataRequested()
+void YOGServerFileDistributor::guaranteeDataRequested()
 {
 	if(player)
 		requestDataFromPlayer();

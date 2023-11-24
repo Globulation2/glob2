@@ -29,7 +29,7 @@ class Game;
 class Mark
 {
 public:
-	///Construct a Mark. The px and py cordinates are on the map, not on the screen
+	///Construct a Mark. The px and py coordinates are on the map, not on the screen
 	///r, g, and b are colors and time is how long the Mark is to stay on the screen
 	Mark(int px, int py, GAGCore::Color color, const int time=50);
 
@@ -38,7 +38,7 @@ public:
 
 protected:
 	friend class MarkManager;
-	///x and y here indicate the x and y screen cordinates
+	///x and y here indicate the x and y screen coordinates
 	void draw(int x, int y, float scale);
 	///This draws the mark in a minimap where s is the size of the minimap (in pixels),
 	///local is the local team number, x and y are the locations of the minimap in

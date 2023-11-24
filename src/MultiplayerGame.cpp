@@ -108,7 +108,7 @@ void MultiplayerGame::update()
 	{
 		if(needToSendMapHeader)
 		{
-			shared_ptr<NetSendReteamingInformation> message(new NetSendReteamingInformation(playerManager.getReteamingInformation()));
+			shared_ptr<NetSendReTeamingInformation> message(new NetSendReTeamingInformation(playerManager.getReTeamingInformation()));
 			client->sendNetMessage(message);
 	
 			shared_ptr<NetSendMapHeader> message2(new NetSendMapHeader(mapHeader));
@@ -163,9 +163,9 @@ void MultiplayerGame::createNewGame(const std::string& name)
 
 
 
-void MultiplayerGame::joinGame(Uint16 ngameID)
+void MultiplayerGame::joinGame(Uint16 gameID)
 {
-	gameID=ngameID;
+	this->gameID=gameID;
 	shared_ptr<NetAttemptJoinGame> message(new NetAttemptJoinGame(gameID));
 	client->sendNetMessage(message);
 	state=WaitingForInitialReply;
@@ -217,13 +217,13 @@ YOGServerGameJoinRefusalReason MultiplayerGame::getGameJoinState()
 
 
 
-void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
+void MultiplayerGame::setMapHeader(MapHeader& mapHeader)
 {
-	mapHeader = nmapHeader;
+	this->mapHeader = mapHeader;
 
-	NetReteamingInformation info = constructReteamingInformation(mapHeader.getFileName());
+	NetReTeamingInformation info = constructReTeamingInformation(mapHeader.getFileName());
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
-	playerManager.setReteamingInformation(info);
+	playerManager.setReTeamingInformation(info);
 	needToSendMapHeader=true;
 }
 
@@ -262,9 +262,9 @@ void MultiplayerGame::updatePlayerChanges()
 
 
 
-void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
+void MultiplayerGame::setNetEngine(NetEngine* netEngine)
 {
-	netEngine = nnetEngine;
+	this->netEngine = netEngine;
 }
 
 
@@ -327,7 +327,7 @@ void MultiplayerGame::updateReadyState()
 
 
 
-void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
+void MultiplayerGame::addAIPlayer(AI::ImplementationID type)
 {
 	shared_ptr<NetAddAI> message(new NetAddAI((Uint8)type));
 	client->sendNetMessage(message);
@@ -379,16 +379,16 @@ YOGKickReason MultiplayerGame::getKickReason() const
 
 
 
-void MultiplayerGame::addEventListener(MultiplayerGameEventListener* alistener)
+void MultiplayerGame::addEventListener(MultiplayerGameEventListener* listener)
 {
-	listeners.push_back(alistener);
+	listeners.push_back(listener);
 }
 
 
 
-void MultiplayerGame::removeEventListener(MultiplayerGameEventListener* alistener)
+void MultiplayerGame::removeEventListener(MultiplayerGameEventListener* listener)
 {
-	listeners.remove(alistener);
+	listeners.remove(listener);
 }
 
 
@@ -400,10 +400,10 @@ int MultiplayerGame::getLocalPlayerNumber()
 
 
 
-void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
+void MultiplayerGame::receiveMessage(boost::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
-	//This recieves responces to creating a game
+	//This receives responses to creating a game
 	if(type==MNetCreateGameAccepted)
 	{
 		shared_ptr<NetCreateGameAccepted> info = static_pointer_cast<NetCreateGameAccepted>(message);
@@ -487,12 +487,12 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 			shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 			client->sendNetMessage(message);
 			boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
-			assembler->startRecievingFile(mapHeader.getFileName());
+			assembler->startReceivingFile(mapHeader.getFileName());
 			client->setYOGClientFileAssembler(fileID, assembler);
 		}
 		
-		//Set reteam info
-		playerManager.setReteamingInformation(i.getReteamingInformation());
+		//Set re-team info
+		playerManager.setReTeamingInformation(i.getReTeamingInformation());
 		
 		//Set latency
 		gameHeader.setGameLatency(i.getLatencyAdjustment());
@@ -596,7 +596,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	if(type==MNetAddAI)
 	{
 		shared_ptr<NetAddAI> info = static_pointer_cast<NetAddAI>(message);
-		playerManager.addAIPlayer(static_cast<AI::ImplementitionID>(info->getType()));
+		playerManager.addAIPlayer(static_cast<AI::ImplementationID>(info->getType()));
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
@@ -617,10 +617,10 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);
 	}
-	if(type==MNetSendReteamingInformation)
+	if(type==MNetSendReTeamingInformation)
 	{
-		shared_ptr<NetSendReteamingInformation> info = static_pointer_cast<NetSendReteamingInformation>(message);
-		playerManager.setReteamingInformation(info->getReteamingInfo());
+		shared_ptr<NetSendReTeamingInformation> info = static_pointer_cast<NetSendReTeamingInformation>(message);
+		playerManager.setReTeamingInformation(info->getReTeamingInfo());
 	}
 }
 
@@ -675,9 +675,9 @@ void MultiplayerGame::sendToListeners(boost::shared_ptr<MultiplayerGameEvent> ev
 
 
 
-NetReteamingInformation MultiplayerGame::constructReteamingInformation(const std::string& file)
+NetReTeamingInformation MultiplayerGame::constructReTeamingInformation(const std::string& file)
 {
-	NetReteamingInformation info;
+	NetReTeamingInformation info;
 	GameHeader game = Engine::loadGameHeader(file);
 	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{

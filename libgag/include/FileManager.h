@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __FILEMANAGER_H
-#define __FILEMANAGER_H
+#ifndef __FILE_MANAGER_H
+#define __FILE_MANAGER_H
 
 #include "GAGSys.h"
 #include <vector>
@@ -66,11 +66,11 @@ namespace GAGCore
 		//! internal function that does the real listing job
 		bool addListingForDir(const std::string realDir, const std::string extension="", const bool dirs=false);
 		//! open a file, if it is in writing, do a backup
-		SDL_RWops *openWithbackup(const std::string filename, const std::string mode);
+		SDL_RWops *openWithBackup(const std::string filename, const std::string mode);
 		//! open a file, if it is in writing, do a backup, fopen version
-		FILE *openWithbackupFP(const std::string filename, const std::string mode);
+		FILE *openWithBackupFP(const std::string filename, const std::string mode);
 		//! open a file, if it is in writing, do a backup, std::ofstream version
-		std::ofstream *openWithbackupOFS(const std::string filename, std::ofstream::openmode mode);
+		std::ofstream *openWithBackupOFS(const std::string filename, std::ofstream::openmode mode);
 	
 	public:
 		//! FileManager constructor
@@ -92,9 +92,9 @@ namespace GAGCore
 		//! Returns true if filename is a directory
 		bool isDir(const std::string filename);
 		
-		//! Compress source to dest uzing gzip, returns true on success
+		//! Compress source to dest using gzip, returns true on success
 		bool gzip(const std::string &source, const std::string &dest);
-		//! Uncompress source to dest uzing gzip, returns true on success
+		//! Uncompress source to dest using gzip, returns true on success
 		bool gunzip(const std::string &source, const std::string &dest);
 	
 		//! Open an output stream backend, use it to construct specific output streams

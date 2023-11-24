@@ -105,8 +105,8 @@ public:
 	
 	void step(Team *team, bool reloaded = false);
 
-	void drawText(int posx, int posy);
-	void drawStat(int posx, int posy);
+	void drawText(int posX, int posy);
+	void drawStat(int posX, int posy);
 	int getFreeUnits(int type);
 	int getTotalUnits(int type);
 	int getWorkersNeeded();
@@ -131,7 +131,7 @@ private:
 	friend class EndGameStat;
 	friend class EndGameScreen;
 	
-	//! Thoses stats are used when player has ended the game
+	//! Those stats are used when player has ended the game
 	friend class Team;
 	friend class Game;
 	

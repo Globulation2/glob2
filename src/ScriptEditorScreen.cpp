@@ -44,7 +44,7 @@ using namespace GAGGUI;
 ScriptEditorScreen::ScriptEditorScreen(Game *game)
 :OverlayScreen(globalContainer->gfx, 600, 400),
 	sgslMapScript(&game->sgslScript),
-	mapScript(&game->mapscript),
+	mapScript(&game->mapScript),
 	game(game)
 {
 	addWidget(new TextButton(10, 370, 100, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[ok]"), OK));
@@ -168,7 +168,7 @@ bool ScriptEditorScreen::testCompile(void)
 		{
 			MapScriptError error = mapScript->getError();
 			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-			compilationResult->setText(FormatableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
+			compilationResult->setText(FormattableString("Error at %0:%1: %2").arg(error.getLine()).arg(error.getColumn()).arg(error.getMessage()).c_str());
 			// USL counts from 1, TextArea counts from 0.
 			scriptEditor->setCursorPos(error.getLine() - 1, error.getColumn() - 1);
 			return false;
@@ -188,7 +188,7 @@ bool ScriptEditorScreen::testCompile(void)
 		else
 		{
 			compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-			compilationResult->setText(FormatableString("Compilation failure : %0:%1:(%2):%3").arg(er.line+1).arg(er.col).arg(er.pos).arg(er.getErrorString()).c_str());
+			compilationResult->setText(FormattableString("Compilation failure : %0:%1:(%2):%3").arg(er.line+1).arg(er.col).arg(er.pos).arg(er.getErrorString()).c_str());
 			scriptEditor->setCursorPos(er.pos);
 			return false;
 		}
@@ -507,7 +507,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 	// 		unsigned line;
 	// 		unsigned column;
 	// 		scriptEditor->getCursorPos(line, column);
-	// 		cursorPosition->setText(FormatableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
+	// 		cursorPosition->setText(FormattableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
 	// 	}
 	// }
 	else if ((action == TEXT_CURSOR_MOVED) || (action == TEXT_MODIFIED))
@@ -517,7 +517,7 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			unsigned line;
 			unsigned column;
 			scriptEditor->getCursorPos(line, column);
-			cursorPosition->setText(FormatableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
+			cursorPosition->setText(FormattableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
 		}
 	}
 }
@@ -535,9 +535,9 @@ void ScriptEditorScreen::onTimer(Uint32 timer)
 }
 
 
-std::string filenameToName(const std::string& fullfilename)
+std::string filenameToName(const std::string& fullFilename)
 {
-	std::string filename = fullfilename;
+	std::string filename = fullFilename;
 	filename.erase(0, 8);
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
 	{
@@ -578,8 +578,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
-		int ntime = SDL_GetTicks();
-		SDL_Delay(std::max(0, 40 - ntime + time));
+		int newTime = SDL_GetTicks();
+		SDL_Delay(std::max(0, 40 - newTime + time));
 	}
 
 	if (loadSaveScreen->endValue==0)
@@ -591,7 +591,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!scriptEditor->load(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(FormatableString("Loading script from %0 failed").arg(loadSaveScreen->getName()).c_str());
+					compilationResult->setText(FormattableString("Loading script from %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
 				else
 					testCompile();
@@ -601,7 +601,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 				if (!scriptEditor->save(loadSaveScreen->getFileName()))
 				{
 					compilationResult->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 50, 50));
-					compilationResult->setText(FormatableString("Saving script to %0 failed").arg(loadSaveScreen->getName()).c_str());
+					compilationResult->setText(FormattableString("Saving script to %0 failed").arg(loadSaveScreen->getName()).c_str());
 				}
 			}
 		}

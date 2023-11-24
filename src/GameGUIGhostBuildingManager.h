@@ -26,7 +26,7 @@
 class Game;
 
 ///GameGUIGhostBuildingManager causes 'ghosts' of buildings to be drawn on the map in
-///the time inbetween when the user clicks the button to construct a building, and when
+///the time in between when the user clicks the button to construct a building, and when
 ///the building is actually constructed. This time is 0 for local games, but for online
 ///games it can be as high as 2 seconds with bad connections.
 class GameGUIGhostBuildingManager

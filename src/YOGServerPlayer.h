@@ -90,7 +90,7 @@ private:
 		NeedToSendServerInformation,
 		///Means its waiting for a login attempt by the client.
 		WaitingForLoginAttempt,
-		///A login accceptance needs to be sent
+		///A login acceptance needs to be sent
 		NeedToSendLoginAccepted,
 		///A login refusal needs to be sent
 		NeedToSendLoginRefusal,
@@ -127,7 +127,7 @@ private:
 	Uint16 netVersion;
 	YOGLoginState loginState;
 
-	///Send outgoing messsages involving ConnectionState
+	///Send outgoing messages involving ConnectionState
 	void updateConnectionSates();
 
 	///Send outgoing messages involving the game and player lists
@@ -139,13 +139,13 @@ private:
 	///Handles a request to join a game
 	void handleJoinGame(Uint16 gameID);
 	
-	///Stores a copy of the games that the player knows about, bassically
+	///Stores a copy of the games that the player knows about, basically
 	///the list as it was on the last game list update
 	std::list<YOGGameInfo> playersGames;
 	///Stores a copy of the players that the player knows about.
 	///This is a synchronized list of what the client has
 	std::list<YOGPlayerSessionInfo> playersPlayerList;
-	///The playerID, used to identify the assocciatted YOGPlayerSessionInfo
+	///The playerID, used to identify the associated YOGPlayerSessionInfo
 	Uint16 playerID;
 	///the name of the player after logging in
 	std::string playerName;

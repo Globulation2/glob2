@@ -59,7 +59,7 @@ public:
 	enum
 	{
 		CANCEL,
-		CONNECTIONLOST,
+		CONNECTION_LOST,
 		FINISHED,
 	};
 private:

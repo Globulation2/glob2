@@ -32,7 +32,7 @@
 #include "Race.h"
 
 UnitType Race::unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
-Sint32 Race::hungryness;
+Sint32 Race::hungriness;
 
 Race::Race()
 {
@@ -44,7 +44,7 @@ Race::~Race()
 
 void Race::loadDefault()
 {
-	// read datas from backend
+	// read data from backend
 	StreamBackend *backend = Toolkit::getFileManager()->openInputStreamBackend("data/units.txt");
 	TextInputStream *stream = new TextInputStream(backend);
 	delete backend;
@@ -57,7 +57,7 @@ void Race::loadDefault()
 		return;
 	}
 	
-	hungryness = stream->readSint32("hungryness");
+	hungriness = stream->readSint32("hungryness");
 	
 	stream->readEnterSection("worker");
 	for (int i = 0; i < NB_UNIT_LEVELS; i++)
@@ -113,7 +113,7 @@ void Race::save(GAGCore::OutputStream *stream)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
 			unitTypes[i][j].save(stream);
 	
-	stream->writeSint32(hungryness, "hungryness");
+	stream->writeSint32(hungriness, "hungryness");
 }
 
 bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
@@ -122,7 +122,7 @@ bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		for(int j=0; j<NB_UNIT_LEVELS; j++)
 			unitTypes[i][j].load(stream, versionMinor);
 
-	hungryness = (Sint32)stream->readSint32("hungryness");
+	hungriness = (Sint32)stream->readSint32("hungryness");
 	
 	return true;
 }

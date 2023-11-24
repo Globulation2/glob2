@@ -109,7 +109,7 @@ void Glob2::drawYOGSplashScreen(void)
 	globalContainer->gfx->nextFrame();
 }
 
-void Glob2::mutiplayerYOG(void)
+void Glob2::multiplayerYOG(void)
 {
 	if (verbose)
 		printf("Glob2:: starting YOGLoginScreen...\n");
@@ -177,7 +177,7 @@ int Glob2::runTestMapGeneration()
 		
 		int oldBeach = (syncRand() % 4);
 		
-		descriptor.methode = static_cast<MapGenerationDescriptor::Methode>(type);
+		descriptor.method = static_cast<MapGenerationDescriptor::Method>(type);
 		descriptor.nbTeams = teams;
 		descriptor.wDec=wDec;
 		descriptor.hDec=hDec;
@@ -294,8 +294,8 @@ int Glob2::run(int argc, char *argv[])
 			case MainMenuScreen::CAMPAIGN:
 			{
 				CampaignMainMenu ccs;
-				int rccs=ccs.execute(globalContainer->gfx, 40);
-				if(rccs == -1)
+				int rCcs=ccs.execute(globalContainer->gfx, 40);
+				if(rCcs == -1)
 				{
 					isRunning = false;
 				}
@@ -359,14 +359,14 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::MULTIPLAYERS_YOG:
 			{
-				mutiplayerYOG();
+				multiplayerYOG();
 			}
 			break;
 			case MainMenuScreen::MULTIPLAYERS_LAN:
 			{
-				LANMenuScreen lanms;
-				int rc_lms = lanms.execute(globalContainer->gfx, 40);
-				if(rc_lms == -1)
+				LANMenuScreen screen;
+				int rc = screen.execute(globalContainer->gfx, 40);
+				if(rc == -1)
 					isRunning=false;
 			}
 			break;
@@ -407,7 +407,7 @@ int Glob2::run(int argc, char *argv[])
 		}
 	}
 
-	// This is for the textshot code
+	// This is for the text shot code
 	GAGCore::DrawableSurface::printFinishingText();
 	delete globalContainer;
 

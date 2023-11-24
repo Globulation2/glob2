@@ -28,7 +28,7 @@ YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 {
 	commands.push_back(new YOGServerRestart);
 	commands.push_back(new YOGMutePlayer);
-	commands.push_back(new YOGUnmutePlayer);
+	commands.push_back(new YOGUnMutePlayer);
 	commands.push_back(new YOGResetPassword);
 	commands.push_back(new YOGBanPlayer);
 	commands.push_back(new YOGUnbanPlayer);

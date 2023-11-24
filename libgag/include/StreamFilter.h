@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __STREAMFILTER_H
-#define __STREAMFILTER_H
+#ifndef __STREAM_FILTER_H
+#define __STREAM_FILTER_H
 
 #include "StreamBackend.h"
 
@@ -33,7 +33,7 @@ namespace GAGCore
 	{
 	public:
 		//! Use backend as the source 
-		CompressedInputStreamBackendFilter(StreamBackend *backen);
+		CompressedInputStreamBackendFilter(StreamBackend *backend);
 	};
 	
 	//! Uncompress from a StreamBackend
@@ -44,7 +44,7 @@ namespace GAGCore
 		
 	public:
 		//! Use backend as the destination
-		CompressedOutputStreamBackendFilter(StreamBackend *backen);
+		CompressedOutputStreamBackendFilter(StreamBackend *backend);
 		//! Delete also the associated backend
 		virtual ~CompressedOutputStreamBackendFilter();
 		//! We are writing in memory, never out of stream

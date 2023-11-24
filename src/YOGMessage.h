@@ -30,7 +30,7 @@ namespace GAGCore
 
 ///This class generically represents a message sent in YOG. This kind of message
 ///can be for any purpose, including administrator messages, private messages,
-///in-game messages, excetra
+///in-game messages, etcetera
 class YOGMessage
 {
 public:

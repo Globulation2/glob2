@@ -62,8 +62,8 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 		type2 = REPLAY;
 
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose game]"));
-		//deleteMap = new TextButton(225, 380, 200, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Delete game]"), DELETEGAME);
-		deleteMap = new TextButton(250, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[delete]"), DELETEGAME);
+		//deleteMap = new TextButton(225, 380, 200, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Delete game]"), DELETE_GAME);
+		deleteMap = new TextButton(250, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[delete]"), DELETE_GAME);
 		addWidget(deleteMap);
 	}
 	else
@@ -96,7 +96,7 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 		else if (type2 == REPLAY) alternativeTypeName = Toolkit::getStringTable()->getString("[the replays]");
 		else assert(false);
 
-		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", alternativeTypeName.c_str(), SWITCHTYPE, 27);
+		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", alternativeTypeName.c_str(), SWITCH_TYPE, 27);
 		addWidget(switchType);
 
 		alternateFileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", alternateDirectory, alternateExtension, alternateRecurse);
@@ -167,7 +167,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			catch (std::exception &e)
 			{
 				// Show error message
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 
 				validMapSelected = false;
 			}
@@ -274,15 +274,15 @@ void ChooseMapScreen::updateMapInformation()
 	// update map name & info
 	mapName->setText(mapHeader.getMapName());
 	std::string textTemp;
-	textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
+	textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 	mapInfo->setText(textTemp);
-	textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
+	textTemp = FormattableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
 	mapVersion->setText(textTemp);
-	textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+	textTemp = FormattableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
 	mapSize->setText(textTemp);
 	
 	// call subclass handler
-	validMapSelectedhandler();
+	validMapSelectedHandler();
 }
 
 

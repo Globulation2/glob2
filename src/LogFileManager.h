@@ -30,18 +30,18 @@ namespace GAGCore
 }
 using namespace GAGCore;
 
-///This is a hack to temporarilly disable log files
+///This is a hack to temporarily disable log files
 #define fprintf if(false)fprintf
 
 /**
  * The LogFileManager is an utility class. It's designed to have only one
- * instance per programm. Simply call the class method "getFile()" like you
+ * instance per program. Simply call the class method "getFile()" like you
  * would call the C function "fopen()".
  * The returned "FILE*" is writeable, and stored in a place chosen by the
  * "FileManager*" policy.
- * The name of the file is the concathenation of the user name and the 
+ * The name of the file is the concatenation of the user name and the 
  * "const std::string filename" argument.
- * This is usefull when you have to test multiple users on the same account
+ * This is useful when you have to test multiple users on the same account
  * while debugging multiplayers games.
  * 
  * If you request the same file name more than once, the LogFileManager will

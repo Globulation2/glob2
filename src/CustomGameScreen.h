@@ -39,7 +39,7 @@ class MapPreview;
 
 const int NumberOfPlayerSelectors=12;
 
-//! This screen is used to setup a custom game. AI can be set. Map choosing functionnalities are inherited from ChooseMapScreen
+//! This screen is used to setup a custom game. AI can be set. Map choosing functionalities are inherited from ChooseMapScreen
 class CustomGameScreen : public ChooseMapScreen
 {
 
@@ -49,11 +49,11 @@ public:
 	//! Destructor
 	virtual ~CustomGameScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	virtual void validMapSelectedhandler(void);
+	virtual void validMapSelectedHandler(void);
 	//! Returns true if AI i is enabled
 	bool isActive(int i);
 	//! Returns the implementation of AI i. If AI is disabled, result is undefined
-	AI::ImplementitionID getAiImplementation(int i);
+	AI::ImplementationID getAiImplementation(int i);
 	//! Returns the color of AI i. If AI is disabled, result is undefined
 	int getSelectedColor(int i);
 

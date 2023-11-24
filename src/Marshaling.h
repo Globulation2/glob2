@@ -24,8 +24,8 @@
 #include <SDL_endian.h>
 #include <string.h>
 
-// Usefull function for marshalling
-// TODO: we have to add another version for all thoses if we want them to work for spark CPUs.
+// Useful function for marshalling
+// TODO: we have to add another version for all those if we want them to work for spark CPUs.
 
 // 32 bit:
 

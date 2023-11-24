@@ -172,7 +172,7 @@ namespace GAGGUI
 		return fullName;
 	}
 	
-	struct strfilecmp_functor
+	struct strFileCmpFunctor
 	{
 		bool operator()(const std::string &x, const std::string &y)
 		{
@@ -184,6 +184,6 @@ namespace GAGGUI
 	
 	void FileList::sort(void)
 	{
-		std::sort(strings.begin(), strings.end(), strfilecmp_functor());
+		std::sort(strings.begin(), strings.end(), strFileCmpFunctor());
 	}
 }

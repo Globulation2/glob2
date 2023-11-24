@@ -130,7 +130,7 @@ int record(void *pointer)
 {
 	VoiceRecorder *voiceRecorder = static_cast<VoiceRecorder *>(pointer);
 	
-	// bits buffer for compressed datas
+	// bits buffer for compressed data
 	SpeexBits& bits = voiceRecorder->bits;
 	
 	while (voiceRecorder->recordThreadRun)
@@ -217,7 +217,7 @@ int record(void *pointer)
 		#endif
 		
 		
-		// open sound device, plateforme dependant
+		// open sound device, plateform dependant
 		#ifdef AUDIO_RECORDER_OSS
 		// bytes buffer for read
 		short buffer[SPEEX_FRAME_SIZE];
@@ -323,7 +323,7 @@ int record(void *pointer)
 			SDL_UnlockMutex(voiceRecorder->ordersMutex);
 		}
 		
-		// close sound device, plateforme dependant
+		// close sound device, plateform dependant
 		#ifdef WIN32
 		if (waveIn != 0)
 		{
@@ -350,7 +350,7 @@ int record(void *pointer)
 	
 abortRecordThread:
 	
-	// release buffers, no will be released in the descructor
+	// release buffers, no will be released in the destructor
 	// speex_bits_destroy(&bits);
 	return 0;
 }
@@ -372,7 +372,7 @@ VoiceRecorder::VoiceRecorder()
 	speex_encoder_ctl(speexEncoderState, SPEEX_GET_FRAME_SIZE, &frameSize);
 	assert(SPEEX_FRAME_SIZE == frameSize);
 	
-	// can be reduced to one to spare bandwiodth
+	// can be reduced to one to spare bandwidth
 	int quality = 2;
 	speex_encoder_ctl(speexEncoderState, SPEEX_SET_QUALITY, &quality);
 	
@@ -395,7 +395,7 @@ VoiceRecorder::VoiceRecorder()
 		if( err != paNoError)
 			return;
 	#else
-		// create the thread that willl record and the mutex that will protect access to shared order list
+		// create the thread that will record and the mutex that will protect access to shared order list
 		recordThreadRun = true;
 		stopRecordingTimeout = 0;
 		recordingThread = SDL_CreateThread(record, "VoiceRecorder", this);

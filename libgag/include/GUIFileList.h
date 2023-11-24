@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIFILELIST_H
-#define __GUIFILELIST_H
+#ifndef __GUI_FILELIST_H
+#define __GUI_FILELIST_H
 
 #include "FileManager.h"
 #include "GUIList.h"

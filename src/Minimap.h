@@ -40,30 +40,30 @@ public:
 		ShowFOW,
 	};
 
-	///Construct a minimap to be drawn at the given cordinates, and the given size, provided that
+	///Construct a minimap to be drawn at the given coordinates, and the given size, provided that
 	///some of that size is a border
 	Minimap(bool nox, int menuWidth, int gameWidth, int xOffset, int yOffset, int width, int height, MinimapMode minimapMode);
 
 	~Minimap();
 
-	///Sets the game assocciatted with the minimap
+	///Sets the game associated with the minimap
 	void setGame(Game& game);
 
 	///Draws the minimap
-	void draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH);
+	void draw(int localTeam, int viewportX, int viewportY, int viewportW, int viewportH);
 
-	///This tells whether the given on-screen cordinates are inside the minimap itself
+	///This tells whether the given on-screen coordinates are inside the minimap itself
 	bool insideMinimap(int x, int y);
 	
-	///This converts the given on-screen cordinate (provided its within the minimap itself)
-	///to a cordinate on the map. The nx and ny variables are the on-screen cordinates,
-	///the x and y variables are where the map cordinates will be placed.
+	///This converts the given on-screen coordinate (provided its within the minimap itself)
+	///to a coordinate on the map. The nx and ny variables are the on-screen coordinates,
+	///the x and y variables are where the map coordinates will be placed.
 	void convertToMap(int nx, int ny, int& x, int& y);
 	
-	///This converts the given map cordinates to the closest on-screen cordinate
+	///This converts the given map coordinates to the closest on-screen coordinate
 	void convertToScreen(int nx, int ny, int& x, int& y);
 	
-	///This resest the minimap drawing
+	///This resets the minimap drawing
 	void resetMinimapDrawing();
 
 	///Enable or disable fog of war
@@ -74,10 +74,10 @@ private:
 	void computeMinimapPositioning();
 
 	///Refreshes a range of rows on the screen, handles wrapping
-	void refreshPixelRows(int start, int end, int localteam);
+	void refreshPixelRows(int start, int end, int localTeam);
 
 	/// Computes the colors for positions in the given row
-	void computeColors(int row, int localteam);
+	void computeColors(int row, int localTeam);
 	
 	bool noX;
 	int menuWidth;

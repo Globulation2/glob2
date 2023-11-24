@@ -91,13 +91,13 @@ void MapThumbnail::loadFromMap(const std::string& map)
 		int corn[3]= { 211, 207, 167 };
 		int stone[3]= { 104, 112, 124 };
 		int alga[3]= { 41, 157, 165 };
-		int pcol[7];
-		int pcolIndex, pcolAddValue;
+		int pCol[7];
+		int pColIndex, pColAddValue;
 
 		int dx, dy;
 		int nCount;
 		float dMx, dMy;
-		float minidx, minidy;
+		float miniDx, miniDy;
 		int r, b, g;
 		// get data
 		int mMax;
@@ -118,38 +118,38 @@ void MapThumbnail::loadFromMap(const std::string& map)
 			for (dx=0; dx<szX; dx++)
 			{
 				for (int i=0; i<7; i++)
-					pcol[i]=0;
+					pCol[i]=0;
 				nCount=0;
 
 				// compute
-				for (minidx=(dMx*dx); minidx<=(dMx*(dx+1)); minidx++)
+				for (miniDx=(dMx*dx); miniDx<=(dMx*(dx+1)); miniDx++)
 				{
-					for (minidy=(dMy*dy); minidy<=(dMy*(dy+1)); minidy++)
+					for (miniDy=(dMy*dy); miniDy<=(dMy*(dy+1)); miniDy++)
 					{
 						// get color to add
-						if (map.isRessourceTakeable((int)minidx, (int)minidy, WOOD))
-							pcolIndex=3;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, CORN))
-							pcolIndex=4;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, STONE))
-							pcolIndex=5;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, ALGA))
-							pcolIndex=6;
+						if (map.isResourceTakeable((int)miniDx, (int)miniDy, WOOD))
+							pColIndex=3;
+						else if (map.isResourceTakeable((int)miniDx, (int)miniDy, CORN))
+							pColIndex=4;
+						else if (map.isResourceTakeable((int)miniDx, (int)miniDy, STONE))
+							pColIndex=5;
+						else if (map.isResourceTakeable((int)miniDx, (int)miniDy, ALGA))
+							pColIndex=6;
 						else
-							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
+							pColIndex=map.getUMTerrain((int)miniDx,(int)miniDy);
 
 						// get weight to add
-						pcolAddValue=5;
+						pColAddValue=5;
 
-						pcol[pcolIndex]+=pcolAddValue;
+						pCol[pColIndex]+=pColAddValue;
 						nCount++;
 					}
 				}
 
 				nCount*=5;
-				r=(int)((H[0]*pcol[GRASS]+E[0]*pcol[WATER]+S[0]*pcol[SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
-				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
-				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
+				r=(int)((H[0]*pCol[GRASS]+E[0]*pCol[WATER]+S[0]*pCol[SAND]+wood[0]*pCol[3]+corn[0]*pCol[4]+stone[0]*pCol[5]+alga[0]*pCol[6])/(nCount));
+				g=(int)((H[1]*pCol[GRASS]+E[1]*pCol[WATER]+S[1]*pCol[SAND]+wood[1]*pCol[3]+corn[1]*pCol[4]+stone[1]*pCol[5]+alga[1]*pCol[6])/(nCount));
+				b=(int)((H[2]*pCol[GRASS]+E[2]*pCol[WATER]+S[2]*pCol[SAND]+wood[2]*pCol[3]+corn[2]*pCol[4]+stone[2]*pCol[5]+alga[2]*pCol[6])/(nCount));
 
 				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 0] = r;
 				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 1] = g;
@@ -188,8 +188,8 @@ void MapThumbnail::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 	Uint8* compressed = new Uint8[compressedLength];
 	stream->read(compressed, compressedLength, "compressed");
 	//uncompress with zlib
-	unsigned long uncompLen = 128 * 128 * 3;
-	uncompress(buffer, &uncompLen, compressed, compressedLength);
+	unsigned long uncompressedLen = 128 * 128 * 3;
+	uncompress(buffer, &uncompressedLen, compressed, compressedLength);
 	stream->readLeaveSection();
 	delete[] compressed;
 	loaded=true;

@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __TEXTSTREAM_H
-#define __TEXTSTREAM_H
+#ifndef __TEXT_STREAM_H
+#define __TEXT_STREAM_H
 
 #include <Stream.h>
 #include <StreamBackend.h>

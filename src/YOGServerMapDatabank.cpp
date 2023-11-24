@@ -38,10 +38,10 @@ void YOGServerMapDatabank::addMap(const YOGDownloadableMapInfo& map)
 {
 	int fileID = server->getFileDistributionManager().allocateFileDistributor();
 	server->getFileDistributionManager().getDistributor(fileID)->loadFromLocally(map.getMapHeader().getFileName());
-	YOGDownloadableMapInfo nmap(map);
-	nmap.setFileID(fileID);
-	nmap.setMapID(currentMapID);
-	maps.push_back(nmap);
+	YOGDownloadableMapInfo nMap(map);
+	nMap.setFileID(fileID);
+	nMap.setMapID(currentMapID);
+	maps.push_back(nMap);
 	currentMapID+=1;
 	save();
 }
@@ -78,7 +78,7 @@ bool YOGServerMapDatabank::doesMapExist(const std::string& map)
 
 
 
-YOGMapUploadRefusalReason YOGServerMapDatabank::canRecieveFromPlayer(const YOGDownloadableMapInfo& map)
+YOGMapUploadRefusalReason YOGServerMapDatabank::canReceiveFromPlayer(const YOGDownloadableMapInfo& map)
 {
 	for(std::vector<boost::tuple<YOGDownloadableMapInfo, int> >::iterator i = uploadingMaps.begin(); i!=uploadingMaps.end(); ++i)
 	{
@@ -95,7 +95,7 @@ YOGMapUploadRefusalReason YOGServerMapDatabank::canRecieveFromPlayer(const YOGDo
 
 
 
-Uint16 YOGServerMapDatabank::recieveMapFromPlayer(const YOGDownloadableMapInfo& map, boost::shared_ptr<YOGServerPlayer> player)
+Uint16 YOGServerMapDatabank::receiveMapFromPlayer(const YOGDownloadableMapInfo& map, boost::shared_ptr<YOGServerPlayer> player)
 {
 	int fileID = server->getFileDistributionManager().allocateFileDistributor();
 	server->getFileDistributionManager().getDistributor(fileID)->loadFromPlayer(player);

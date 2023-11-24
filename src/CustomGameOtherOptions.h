@@ -47,7 +47,7 @@ public:
 	CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly);
 	/// Destructor
 	virtual ~CustomGameOtherOptions();
-	///Recieves an action from a widget
+	///Receives an action from a widget
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	
 	///These are the end values for this screen
@@ -62,9 +62,9 @@ private:
 	{
 		OK,
 		CANCEL,
-		TEAMSFIXED,
-		PRESTIGEWINENABLED,
-		MAPDISCOVERED,
+		TEAMS_FIXED,
+		PRESTIGE_WIN_ENABLED,
+		MAP_DISCOVERED,
 	};
 	
 	///"Other Options" Title
@@ -78,7 +78,7 @@ private:
 	Text ** playerNames;
 	//! Player colors
 	ColorButton ** color;
-	//! Player ally temas
+	//! Player ally teams
 	MultiTextButton ** allyTeamNumbers;
 
 	///Button fixing teams during the match

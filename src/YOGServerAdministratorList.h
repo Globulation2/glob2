@@ -32,7 +32,7 @@ public:
 	///Returns true if the given username is an administrator, false otherwise
 	bool isAdministrator(const std::string& playerName);
 	
-	///Adds the specificed user as an administrator
+	///Adds the specified user as an administrator
 	void addAdministrator(const std::string& playerName);
 	
 	///Removes the specified user from the administrator list

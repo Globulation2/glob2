@@ -28,11 +28,11 @@
 
 #define INT_ROUND_RSHIFT(x,places)  ( ((x)+(1<<((places)-1))) >> (places) )
 
-void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeight, const int time)
+void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time)
 {
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 	{
-		//tribute to the torrodial world: the viewport must never jump by more than 31.
+		//tribute to the toroidal world: the viewport must never jump by more than 31.
 		//if it does, we assume a jump in the opposite direction
 		static int vpX=0;
 		static int vpY=0;
@@ -47,7 +47,7 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 		vpX += (viewPortX-vpX%64+96)%64-32;
 		vpY += (viewPortY-vpY%64+96)%64-32;
 
-		wGrid=viewPortWdth/granularity+1;
+		wGrid=viewPortWidth/granularity+1;
 		hGrid=viewPortHeight/granularity+1;
 		alphaMap.resize(wGrid*hGrid);
 
@@ -76,7 +76,7 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 
 void DynamicClouds::render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, DynamicClouds::Layer layer)
 {
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 	{
 		Color c;
 		int offsetX, offsetY, gran;
@@ -97,7 +97,7 @@ void DynamicClouds::render(DrawableSurface *dest, const int viewPortWidth, const
 			assert(false);
 		}
 		//magnify cloud map by cloud height in white (clouds)
-		//TODO: (int)(cloudheight*granularity) might round unexpectedly for
+		//TODO: (int)(cloudHeight*granularity) might round unexpectedly for
 			//low granularity resulting in unpainted areas/unscaled clouds.
 		dest->drawAlphaMap(alphaMap,
 			wGrid, hGrid,

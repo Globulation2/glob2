@@ -29,18 +29,18 @@ namespace GAGCore
 }
 
 
-///Reteaming is when you load a YOG save-game in YOG, and if the same players join, it automatically sets their team color
-///This class stores reteaming information
-class NetReteamingInformation
+///Re-teaming is when you load a YOG save-game in YOG, and if the same players join, it automatically sets their team color
+///This class stores re-teaming information
+class NetReTeamingInformation
 {
 public:
-	///NetReteamingInformation stores information to reload team colors in a Net game
-	NetReteamingInformation();
+	///NetReTeamingInformation stores information to reload team colors in a Net game
+	NetReTeamingInformation();
 
 	///Sets the player with the given name to be automatically set to the given team
 	void setPlayerToTeam(const std::string& playerName, int team);
 	
-	///Returns true if this player name has an automatic team number assocciatted with it
+	///Returns true if this player name has an automatic team number associated with it
 	bool doesPlayerHaveTeam(const std::string& playerName) const;
 	
 	///Returns the team for the given player, -1 is this player doesn't have an automatic team
@@ -53,8 +53,8 @@ public:
 	void decodeData(GAGCore::InputStream* stream);
 	
 	///Test for equality between two YOGGameInfo
-	bool operator==(const NetReteamingInformation& rhs) const;
-	bool operator!=(const NetReteamingInformation& rhs) const;
+	bool operator==(const NetReTeamingInformation& rhs) const;
+	bool operator!=(const NetReTeamingInformation& rhs) const;
 private:
 	std::map<std::string, int> teams;
 };

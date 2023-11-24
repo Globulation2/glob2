@@ -64,7 +64,7 @@ MapPreview::~MapPreview()
 
 
 
-std::string MapPreview::getMethode(void)
+std::string MapPreview::getMethod(void)
 {
 	return Toolkit::getStringTable()->getString("[handmade map]");
 }
@@ -87,17 +87,17 @@ void MapPreview::setMapThumbnail(const std::string& mapName)
 
 
 
-void MapPreview::setMapThumbnail(const MapThumbnail &nthumbnail)
+void MapPreview::setMapThumbnail(const MapThumbnail &thumbnail)
 {
-	thumbnail = nthumbnail;
+	this->thumbnail = thumbnail;
 	if(surface)
 	{
 		delete surface;
 	}
-	if(thumbnail.isLoaded())
+	if(this->thumbnail.isLoaded())
 	{
 		surface = new DrawableSurface(128, 128);
-		thumbnail.loadIntoSurface(surface);
+		this->thumbnail.loadIntoSurface(surface);
 	}
 	else
 	{

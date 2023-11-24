@@ -30,7 +30,7 @@ BasePlayer::BasePlayer()
 	init();
 };
 
-BasePlayer::BasePlayer(Sint32 number, const std::string& nname, Sint32 teamNumber, PlayerType type)
+BasePlayer::BasePlayer(Sint32 number, const std::string& name, Sint32 teamNumber, PlayerType type)
 {
 	init();
 	
@@ -38,12 +38,12 @@ BasePlayer::BasePlayer(Sint32 number, const std::string& nname, Sint32 teamNumbe
 	assert(number<Team::MAX_COUNT);
 	assert(teamNumber>=0);
 	assert(teamNumber<Team::MAX_COUNT);
-	assert(nname.size());
+	assert(name.size());
 
 	setNumber(number);
 	setTeamNumber(teamNumber);
 
-	name=nname;
+	this->name=name;
 
 	this->type=type;
 };
@@ -120,10 +120,10 @@ Uint32 BasePlayer::checkSum()
 	//Uint32 netHost=SDL_SwapBE32(ip.host);
 	//Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
 	//cs^=netHost;
-	// IP adress can't stay in checksum, because:
-	// We now support NAT or IP may simply be differents between computers
+	// IP address can't stay in checksum, because:
+	// We now support NAT or IP may simply be different between computers
 	// And we uses checkSum in network.
-	// (we could uses two differents check sums, but the framework would be heavier)
+	// (we could uses two different check sums, but the framework would be heavier)
 	//cs^=netPort;
 
 	for (unsigned i=0; i<name.size(); i++)
@@ -133,7 +133,7 @@ Uint32 BasePlayer::checkSum()
 }
 
 
-void BasePlayer::makeItAI(AI::ImplementitionID aiType)
+void BasePlayer::makeItAI(AI::ImplementationID aiType)
 {
 	type=(PlayerType)(P_AI+aiType);
 }

@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __BULDING_TYPE_H
-#define __BULDING_TYPE_H
+#ifndef __BUILDING_TYPE_H
+#define __BUILDING_TYPE_H
 
 #include <vector>
 
@@ -43,11 +43,11 @@ public:
 	Sint32 flagImage;
 	Sint32 crossConnectMultiImage; // If true, mean we have a wall-like building
 	
-	// could be Uint8, if non 0 tell the number of maximum units locked by bulding for:
+	// could be Uint8, if non 0 tell the number of maximum units locked by building for:
 	// by order of priority (top = max)
 	Sint32 upgrade[NB_ABILITY]; // What kind on units can be upgraded here
 	Sint32 upgradeTime[NB_ABILITY]; // Time to upgrade an unit, given the upgrade type needed.
-	Sint32 upgradeInParallel; // if true, can learn all upgardes with one learning time into the building
+	Sint32 upgradeInParallel; // if true, can learn all upgrades with one learning time into the building
 	Sint32 foodable;
 	Sint32 fillable;
 	Sint32 zonable[NB_UNIT_TYPE]; // If an unit is required for a presence.
@@ -59,27 +59,27 @@ public:
 	Sint32 timeToHealUnit;
 	Sint32 insideSpeed;
 	Sint32 canExchange;
-	Sint32 useTeamRessources;
+	Sint32 useTeamResources;
 
 	Sint32 width, height; // Uint8, size in square
 	Sint32 decLeft, decTop;
 	Sint32 isVirtual; // bool, doesn't occupy ground occupation map, used for war-flag and exploration-flag.
-	Sint32 isCloacked; // bool, graphicaly invisible for enemy.
-	//Sint32 *walkOverMap; // should be allocated and deleted in a cleany way
+	Sint32 isCloaked; // bool, graphically invisible for enemy.
+	//Sint32 *walkOverMap; // should be allocated and deleted in a clean way
 	//Sint32 walkableOver; // bool, can walk over
 	Sint32 shootingRange; // Uint8, if 0 can't shoot
 	Sint32 shootDamage; // Uint8
 	Sint32 shootSpeed; // Uint8, the actual speed at which the shots fly through the air.
-	Sint32 shootRythme;		// Uint8, The frequency with which a tower fires. It fires once every
-							// SHOOTING_COOLDOWN_MAX/shootRythme ticks.
+	Sint32 shootRhythm;		// Uint8, The frequency with which a tower fires. It fires once every
+							// SHOOTING_COOLDOWN_MAX/shootRhythm ticks.
 	Sint32 maxBullets;
 	Sint32 multiplierStoneToBullets; //The tower gets this many bullets every time a worker delivers stone to it.
 
 	Sint32 unitProductionTime; // Uint8, nb tick to produce one unit
-	Sint32 ressourceForOneUnit; // The amount of wheat consumed in the production of a unit.
+	Sint32 resourceForOneUnit; // The amount of wheat consumed in the production of a unit.
 
-	Sint32 maxRessource[MAX_NB_RESSOURCES];
-	Sint32 multiplierRessource[MAX_NB_RESSOURCES];
+	Sint32 maxResource[MAX_NB_RESOURCES];
+	Sint32 multiplierResource[MAX_NB_RESOURCES];
 	Sint32 maxUnitInside;
 	Sint32 maxUnitWorking;
 
@@ -95,7 +95,7 @@ public:
 	Sint32 shortTypeNum; // BuildingTypeShortNumber, Should not be used by the main engine, but only to choose the next level building.
 	Sint32 isBuildingSite;
 
-	// Flag usefull
+	// Flag useful
 	Sint32 defaultUnitStayRange;
 	Sint32 maxUnitStayRange;
 

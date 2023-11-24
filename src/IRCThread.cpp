@@ -107,7 +107,7 @@ void IRCThread::operator()()
 			message+=irc.getChatMessageSource();
 			message+=">";
 			message+=irc.getChatMessage();
-			boost::shared_ptr<ITRecieveMessage> m(new ITRecieveMessage(message));
+			boost::shared_ptr<ITReceiveMessage> m(new ITReceiveMessage(message));
 			sendToMainThread(m);
 			irc.freeChatMessage();
 		}
@@ -157,7 +157,7 @@ void IRCThread::operator()()
 				message += " : ";
 				message += irc.getInfoMessageText();
 			}
-			boost::shared_ptr<ITRecieveMessage> m(new ITRecieveMessage(message));
+			boost::shared_ptr<ITReceiveMessage> m(new ITReceiveMessage(message));
 			sendToMainThread(m);
 			irc.freeInfoMessage();
 		}

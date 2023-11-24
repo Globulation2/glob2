@@ -19,16 +19,16 @@
 #ifndef YOGClientRouterAdministrator_h
 #define YOGClientRouterAdministrator_h
 
-///This class allows a player to connect to a YOG router and send and recieve
+///This class allows a player to connect to a YOG router and send and receive
 ///administrator commands to it. It is meant to be standalone with control of
 ///program flow
 class YOGClientRouterAdministrator
 {
 public:
-	///Constructs this router admnistrator
+	///Constructs this router administrator
 	YOGClientRouterAdministrator();
 
-	///Executes, running the console to output output and recieve commands
+	///Executes, running the console to output output and receive commands
 	int execute();
 
 private:

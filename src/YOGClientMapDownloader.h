@@ -42,8 +42,8 @@ public:
 	///If this downloader is downloading a map, this will cancel the download
 	void cancelDownload();
 	
-	///This recieves a message from the server
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	///This receives a message from the server
+	void receiveMessage(boost::shared_ptr<NetMessage> message);
 	
 	///This updates the downloader
 	void update();

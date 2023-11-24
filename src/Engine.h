@@ -57,13 +57,13 @@ public:
 	/// is a lone map that runs with campaign semantics
 	int initCampaign(const std::string &mapName);
 
-	/// Displays the CustomMap dialogue, and initiates a game from the settings it recieves
+	/// Displays the CustomMap dialogue, and initiates a game from the settings it receives
 	int initCustom();
 
 	/// Initiate a custom game from the provided game, without adjusting settings from the user
 	int initCustom(const std::string &gameName);
 
-	/// Show the load/save dialoge, and use initCustom(gameName) to load the game
+	/// Show the load/save dialog, and use initCustom(gameName) to load the game
 	int initLoadGame();
 
 	/// Initiate a game with the given MultiplayerGame
@@ -117,8 +117,8 @@ private:
 
 	//! Load a game. Return true on success
 	bool loadGame(const std::string &filename);
-	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
-	void finalAdjustements(void);
+	//! Do the final adjustments, like setting local teams and viewport, rendering minimap
+	void finalAdjustments(void);
 
 	///This function will choose a random map from the available maps
 	MapHeader chooseRandomMap();
@@ -130,7 +130,7 @@ private:
 	GameGUI gui;
 	//! The netGame, take care of order queuing and dispatching
 	NetEngine *net;
-	//! The MultiplayerGame, recieves orders from across a network
+	//! The MultiplayerGame, receives orders from across a network
 	shared_ptr<MultiplayerGame> multiplayer;
 
 	CPUStatisticsManager cpuStats;

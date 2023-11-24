@@ -40,7 +40,7 @@ struct widgetRectangle
 {
 	widgetRectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
 	widgetRectangle() : x(0), y(0), width(0), height(0) {}
-	bool is_in(int posx, int posy) { return posx>x && posx<(x+width) && posy>y && posy<(y+height); }
+	bool isIn(int posX, int posY) { return posX>x && posX<(x+width) && posY>y && posY<(y+height); }
 
 	int x;
 	int y;
@@ -57,8 +57,8 @@ class MapEdit;
 ///would be very tightly coupled. It would not improve maintainability, which is the ultimate goal, and the amount of work-arounds
 ///would not save much time from the code re-use. So, instead I made my own semi-widget system. These widgets do just enough to
 ///make the map editor easily maintained. They are, like libgag, very tightly coupled to the map editor, and can not be re-used.
-///However, they do solve a few other problems. They automatically detect clicks of the mouse and send the appropriette action
-///to be carried out to the map editor, which saves from tedious maintaining of x,y cordinates.
+///However, they do solve a few other problems. They automatically detect clicks of the mouse and send the appropriate action
+///to be carried out to the map editor, which saves from tedious maintaining of x,y coordinates.
 class MapEditorWidget
 {
 public:
@@ -70,13 +70,13 @@ public:
 	void disable();
 	///This enables the widget.
 	void enable();
-	///This tests whether the x,y cordinates are within this particular widgets area.
-	bool is_in(int x, int y) { return area.is_in(x, y); }
-	///This function handles a click with mouse positions relitive to the widget. It can be overrided, but derived classes
-	///should be carefull to call the base class version after there customized code
+	///This tests whether the x,y coordinates are within this particular widgets area.
+	bool isIn(int x, int y) { return area.isIn(x, y); }
+	///This function handles a click with mouse positions relative to the widget. It can be overriden, but derived classes
+	///should be careful to call the base class version after there customized code
 	virtual void handleClick(int relMouseX, int relMouseY);
 	///This function must be implemented by all derived classes. This is where the widget draws itself. It should use area.x
-	///and area.y to get the cordinates.
+	///and area.y to get the coordinates.
 	virtual void draw()=0;
 	friend class MapEdit;
 protected:
@@ -89,8 +89,8 @@ protected:
 };
 
 
-///This widget allows the selection of a building, of any type. When MapEdit::selectionName matches this widgets building_type, it will draw a selction
-///arround its building as well. The large selector (56x46) is default, but if largeSelector is false, it will use the smaller selector, which is
+///This widget allows the selection of a building, of any type. When MapEdit::selectionName matches this widgets building_type, it will draw a selection
+///around its building as well. The large selector (56x46) is default, but if largeSelector is false, it will use the smaller selector, which is
 ///(32x32).
 class BuildingSelectorWidget : public MapEditorWidget
 {
@@ -129,11 +129,11 @@ private:
 class PanelIcon : public MapEditorWidget
 {
 public:
-	PanelIcon(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int iconNumber, int panelModeHilight);
+	PanelIcon(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int iconNumber, int panelModeHighlight);
 	void draw();
 private:
 	int iconNumber;
-	int panelModeHilight;
+	int panelModeHighlight;
 };
 
 
@@ -176,7 +176,7 @@ private:
 };
 
 
-///This allows the selection of a particular type of unit. It draws a selector arround the unit when that unit type is the one selected.
+///This allows the selection of a particular type of unit. It draws a selector around the unit when that unit type is the one selected.
 class UnitSelector : public MapEditorWidget
 {
 public:
@@ -188,7 +188,7 @@ private:
 
 
 
-///This is a terrain selector. It allows for the selection of a variety of terrains and ressources. It draws a selector arround the particular terrain type
+///This is a terrain selector. It allows for the selection of a variety of terrains and resources. It draws a selector around the particular terrain type
 ///when that terrain is selected.
 class TerrainSelector : public MapEditorWidget
 {
@@ -277,7 +277,7 @@ private:
 
 
 ///This is a small text object. It shows two values and a label, like "label 1/2". The denominator can be fixed or variable. Either way, the numerator is done 
-///by pointer because this class is used for the convinient edditing of values in a Unit or Building
+///by pointer because this class is used for the convenient editing of values in a Unit or Building
 class FractionValueText : public MapEditorWidget
 {
 public:
@@ -296,7 +296,7 @@ private:
 
 
 
-///This is a scroll box, similair to FractionValueText, that allows for the changing of its two values. 
+///This is a scroll box, similar to FractionValueText, that allows for the changing of its two values. 
 class ValueScrollBox : public MapEditorWidget
 {
 public:
@@ -404,7 +404,7 @@ public:
 	///This is the main loop function. It "ticks" every 33 miliseconds, handling events and drawing as it goes.
 	int run(void);
 	
-	void mapHasBeenModiffied(void) { hasMapBeenModified=true; }
+	void mapHasBeenModified(void) { hasMapBeenModified=true; }
 	
 	///This function regenerates a game header for use in campaigns
 	void regenerateGameHeader();
@@ -431,7 +431,7 @@ public:
 	///Tells whether the fertility overlay is set or not
 	bool isFertilityOn;
 private:
-	///If this is set, the map editor will exit as soon as it finishes drawing and proccessing events
+	///If this is set, the map editor will exit as soon as it finishes drawing and processing events
 	bool doQuit;
 	///If this is set, the map editor will do a full quit, from glob2 entirely
 	bool doFullQuit;
@@ -457,22 +457,22 @@ private:
 
 	///This draws the right side menu in its entirety
 	void drawMenu(void);
-	///Draws some of the fancy bars, and the bar at the top of the screen, the eye-candy so to speek
+	///Draws some of the fancy bars, and the bar at the top of the screen, the eye-candy so to speak
 	void drawMenuEyeCandy();
 	///Draws a unit under the cursor. This should be done and only done when the user is placing a unit.
 	void drawPlacingUnitOnMap();
 	///Draws a building under the cursor. Like drawPlacingUnitOnMap, it should only be done when placing a building
 	void drawBuildingSelectionOnMap();
 
-	///This proccesses an event from the SDL
+	///This processes an event from the SDL
 	void processEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
 	void handleKeyPressed(SDL_Keysym key, bool pressed);
-	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large
+	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using separate functions for such a large
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
 	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
-	///This delegates a sdl event to one of the menus, if they are open, and handle end codes of the menus appropriettly
+	///This delegates a sdl event to one of the menus, if they are open, and handle end codes of the menus appropriately
 	void delegateMenu(SDL_Event& event);
 	///Handles the scrolling of the map, by arrow keys and by putting the mouse near the edge of the screen
 	void handleMapScroll();
@@ -494,9 +494,9 @@ private:
 	int mouseX;
 	///This is the mouse y position, updated whenever the mouse moves
 	int mouseY;
-	///This is the mouse x position relitive to its last position
+	///This is the mouse x position relative to its last position
 	int relMouseX;
-	///This is the mouse y position relitive to its last position
+	///This is the mouse y position relative to its last position
 	int relMouseY;
 	///This boolean states whether we are dragging the screen with the middle mouse button
 	bool isScrollDragging;
@@ -556,7 +556,7 @@ private:
 	SingleLevelSelector* flag_view_level4;
 	///@}
 
-	///Terrain, ressources and areas view
+	///Terrain, resources and areas view
 	///@{
 	TerrainSelector* grass;
 	TerrainSelector* sand;
@@ -569,7 +569,7 @@ private:
 	TerrainSelector* orange;
 	TerrainSelector* cherry;
 	TerrainSelector* prune;
-	BlueButton* noRessourceGrowthButton;
+	BlueButton* noResourceGrowthButton;
 	BlueButton* areasButton;
 	NumberCycler* areaNumber;
 	TextLabel* areaNameLabel;
@@ -661,12 +661,12 @@ private:
 		EditingUnit,
 		EditingBuilding,
 		ChangeAreas,
-		ChangeNoRessourceGrowthAreas,
+		ChangeNoResourceGrowthAreas,
 	} selectionMode;
 
 	///Adds a widget to be drawn and respond to clicks
 	void addWidget(MapEditorWidget* widget);
-	///Finds and runs the action accossiatted with a particular mouse x and mouse y position. Returns false if none is found, true otherwise
+	///Finds and runs the action associated with a particular mouse x and mouse y position. Returns false if none is found, true otherwise
 	bool findAction(int x, int y);
 	///Enables only widgets with this particular groupname, or the name "any" as a special name
 	void enableOnlyGroup(const std::string& group);
@@ -674,7 +674,7 @@ private:
 	void drawWidgets();
 	std::vector<MapEditorWidget*> mew;
 
-	///Translates a mouse x and mouse y position to cordinates on the Map
+	///Translates a mouse x and mouse y position to coordinates on the Map
 	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
 	///Denotes whether the user is holding the mouse button down, dragging the minimap
 	bool isDraggingMinimap;
@@ -768,10 +768,10 @@ private:
 	///Handles a click or drag of the script area placement tool
 	void handleAreaClick(int mx, int my);
 
-	///Tells whether where dragging the no ressource growth area placement tool
-	bool isDraggingNoRessourceGrowthArea;
-	///Handles a click or drag of the no ressource growth area placement tool
-	void handleNoRessourceGrowthClick(int mx, int my);
+	///Tells whether where dragging the no resource growth area placement tool
+	bool isDraggingNoResourceGrowthArea;
+	///Handles a click or drag of the no resource growth area placement tool
+	void handleNoResourceGrowthClick(int mx, int my);
 
 };
 

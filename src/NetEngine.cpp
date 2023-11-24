@@ -32,10 +32,10 @@ NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate,
 
 
 
-void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<NetConnection> nrouter)
+void NetEngine::setNetworkInfo(int networkOrderRate, boost::shared_ptr<NetConnection> router)
 {
-	networkOrderRate = nnetworkOrderRate;
-	router = nrouter;
+	this->networkOrderRate = networkOrderRate;
+	this->router = router;
 }
 
 
@@ -111,14 +111,14 @@ void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool
 	order->sender=playerNumber;
 	orders[playerNumber].push_back(order); 
 
-	///The local player and network players all have padding arround their order
+	///The local player and network players all have padding around their order
 	if(! isAI)
 	{
 		for(int i=0; i<(networkOrderRate - 1); ++i)
 		{
-			shared_ptr<Order> norder(new NullOrder);
-			norder->sender=playerNumber;
-			orders[playerNumber].push_back(norder);
+			shared_ptr<Order> nullOrder(new NullOrder);
+			nullOrder->sender=playerNumber;
+			orders[playerNumber].push_back(nullOrder);
 		}
 	}
 }
@@ -142,7 +142,7 @@ void NetEngine::addLocalOrder(boost::shared_ptr<Order> order)
 
 
 
-bool NetEngine::allOrdersRecieved()
+bool NetEngine::allOrdersReceived()
 {
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
@@ -197,7 +197,7 @@ void NetEngine::prepareForLatency(int playerNumber, int latency)
 
 
 
-bool NetEngine::orderRecieved(int playerNumber)
+bool NetEngine::orderReceived(int playerNumber)
 {
 	if(orders[playerNumber].empty())
 		return false;

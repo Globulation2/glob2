@@ -39,7 +39,7 @@ public:
 	{
 		///A non existing player //NOTE : we don't need any more because null player are not created
 		P_NONE=0,
-		///Player will be dropped in any cases, but we still have to exchange orders
+		///Player will be dropped in any tiles, but we still have to exchange orders
 		P_LOST_DROPPING=1,
 		///Player is no longer taken into account, may be later changed to P_AI. All orders are NULLs.
 		P_LOST_FINAL=2,
@@ -51,13 +51,13 @@ public:
 		P_AI=5
 	};
 	//TODO: Explain
-	static AI::ImplementitionID implementitionIdFromPlayerType(PlayerType type)
+	static AI::ImplementationID implementationIdFromPlayerType(PlayerType type)
 	{
 		assert(type>=P_AI);
-		return (AI::ImplementitionID)((int)type-(int)P_AI);
+		return (AI::ImplementationID)((int)type-(int)P_AI);
 	}
 	//TODO: Explain
-	static PlayerType playerTypeFromImplementitionID(AI::ImplementitionID iid)
+	static PlayerType playerTypeFromImplementationID(AI::ImplementationID iid)
 	{
 		return (PlayerType)((int)iid+(int)P_AI);
 	}
@@ -93,10 +93,10 @@ public:
 	/**
       \param number
       \param name
-      \param teamn
+      \param teamNumber
       \param type
 	 */
-	BasePlayer(Sint32 number, const std::string& name, Sint32 teamn, PlayerType type);
+	BasePlayer(Sint32 number, const std::string& name, Sint32 teamNumber, PlayerType type);
 	//TODO: Explain
 	void init();
 	virtual ~BasePlayer(void);
@@ -108,7 +108,7 @@ public:
 
 	Uint32 checkSum();
 
-	virtual void makeItAI(AI::ImplementitionID aiType);
+	virtual void makeItAI(AI::ImplementationID aiType);
 	//TODO: Explain
 	bool disableRecursiveDestruction;
 };

@@ -27,9 +27,9 @@
 
 CampaignMainMenu::CampaignMainMenu()
 {
-	newCampaign = new TextButton(0, 70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[start new campaign]"), NEWCAMPAIGN);
+	newCampaign = new TextButton(0, 70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[start new campaign]"), NEW_CAMPAIGN);
 	addWidget(newCampaign);
-	loadCampaign = new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load campaign]"), LOADCAMPAIGN, 13);
+	loadCampaign = new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load campaign]"), LOAD_CAMPAIGN, 13);
 	addWidget(loadCampaign);
 	cancel = new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27);
 	addWidget(cancel);
@@ -40,7 +40,7 @@ void CampaignMainMenu::onAction(Widget *source, Action action, int par1, int par
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		if ((par1==LOADCAMPAIGN))
+		if ((par1==LOAD_CAMPAIGN))
 		{
 			CampaignSelectorScreen css(true);
 			int rc_css=css.execute(globalContainer->gfx, 40);
@@ -64,7 +64,7 @@ void CampaignMainMenu::onAction(Widget *source, Action action, int par1, int par
 				endExecute(-1);
 			}
 		}
-		else if((par1==NEWCAMPAIGN))
+		else if((par1==NEW_CAMPAIGN))
 		{
 			CampaignSelectorScreen css;
 			int rc_css=css.execute(globalContainer->gfx, 40);

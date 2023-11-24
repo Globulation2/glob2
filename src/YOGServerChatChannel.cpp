@@ -47,11 +47,11 @@ void YOGServerChatChannel::removePlayer(boost::shared_ptr<YOGServerPlayer> playe
 
 void YOGServerChatChannel::routeMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGServerPlayer> sender)
 {
-	boost::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channel, message));
+	boost::shared_ptr<NetSendYOGMessage> netMessage(new NetSendYOGMessage(channel, message));
 	for(std::list<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(*i != sender)
-			(*i)->sendMessage(netmessage);
+			(*i)->sendMessage(netMessage);
 	}
 }
 

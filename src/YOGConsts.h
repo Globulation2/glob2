@@ -151,11 +151,11 @@ enum YOGGameResult
 {
 	///This represents when the player in question has won the game
 	YOGGameResultWonGame,
-	///This resprsents when the player in question has lost the game
+	///This represents when the player in question has lost the game
 	YOGGameResultLostGame,
 	///This represents when the player in question has quit its last game
 	YOGGameResultQuitGame,
-	///This reprsents when the player in question lost connection
+	///This represents when the player in question lost connection
 	YOGGameResultConnectionLost,
 	///This represents when the game result is unknown
 	YOGGameResultUnknown,

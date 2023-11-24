@@ -29,8 +29,8 @@ using boost::shared_ptr;
 class NetListener;
 class NetMessage;
 
-///NetConnection represents a low level wrapper arround SDL.
-///It queues Message(s) it recieves from the connection.
+///NetConnection represents a low level wrapper around SDL.
+///It queues Message(s) it receives from the connection.
 class NetConnection
 {
 public:
@@ -58,7 +58,7 @@ public:
 	///Updates messages from the thread
 	void update();
 	
-	///Pops the top-most message in the queue of recieved messages.
+	///Pops the top-most message in the queue of received messages.
 	///When there are no messages, it will poll SDL for more packets.
 	///The caller assumes ownership of the NetMessage.
 	shared_ptr<NetMessage> getMessage();
@@ -80,7 +80,7 @@ private:
 	
 	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
 	boost::recursive_mutex incomingMutex;
-	std::queue<shared_ptr<NetMessage> > recieved;
+	std::queue<shared_ptr<NetMessage> > received;
 	
 	std::string address;
 	bool connecting;

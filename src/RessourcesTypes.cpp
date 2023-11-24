@@ -24,11 +24,11 @@
 #include "RessourcesTypes.h"
 #include "GlobalContainer.h"
 
-Uint32 RessourcesTypes::checkSum(void)
+Uint32 ResourcesTypes::checkSum(void)
 {
 	Uint32 cs = 0;
 	
-	for (std::vector <RessourceType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
+	for (std::vector <ResourceType *>::iterator it=entitiesTypes.begin(); it!=entitiesTypes.end(); ++it)
 	{
 		cs ^= (*it)->checkSum();
 		cs = (cs<<1) | (cs>>31);

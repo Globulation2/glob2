@@ -33,7 +33,7 @@ namespace GAGGUI
 	class KeySelector: public HighlightableWidget
 	{
 	public:
-		//Construct with given cordinates
+		//Construct with given coordinates
 		KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, int w=0, int h=0);
 		//Construct with tooltip
 		KeySelector(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, int w=0, int h=0);

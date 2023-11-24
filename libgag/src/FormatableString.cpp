@@ -27,7 +27,7 @@
 #include <FormatableString.h>
 
 namespace GAGCore {
-	void FormatableString::proceedReplace(const std::string &replacement)
+	void FormattableString::proceedReplace(const std::string &replacement)
 	{
 		std::ostringstream search;
 		search << "%" << this->argLevel;
@@ -43,7 +43,7 @@ namespace GAGCore {
 		++argLevel;
 	}
 	
-	FormatableString &FormatableString::arg(int value, int fieldWidth, int base, char fillChar)
+	FormattableString &FormattableString::arg(int value, int fieldWidth, int base, char fillChar)
 	{
 		std::ostringstream oss;
 		oss << std::setbase(base);
@@ -59,7 +59,7 @@ namespace GAGCore {
 		return *this;
 	}
 	
-	FormatableString &FormatableString::arg(unsigned value, int fieldWidth, int base, char fillChar)
+	FormattableString &FormattableString::arg(unsigned value, int fieldWidth, int base, char fillChar)
 	{
 		std::ostringstream oss;
 		oss << std::setbase(base);
@@ -75,7 +75,7 @@ namespace GAGCore {
 		return *this;
 	}
 	
-	FormatableString &FormatableString::arg(float value, int fieldWidth, int precision, char fillChar)
+	FormattableString &FormattableString::arg(float value, int fieldWidth, int precision, char fillChar)
 	{
 		std::ostringstream oss;
 		oss.precision(precision);
@@ -92,7 +92,7 @@ namespace GAGCore {
 		return *this;
 	}
 	
-	FormatableString &FormatableString::operator=(const std::string& str)
+	FormattableString &FormattableString::operator=(const std::string& str)
 	{
 		this->assign(str);
 		this->argLevel = 0;

@@ -148,8 +148,8 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetAddAI:
 		message.reset(new NetAddAI);
 		break;
-		case MNetSendReteamingInformation:
-		message.reset(new NetSendReteamingInformation);
+		case MNetSendReTeamingInformation:
+		message.reset(new NetSendReTeamingInformation);
 		break;
 		case MNetSendGameResult:
 		message.reset(new NetSendGameResult);
@@ -205,8 +205,8 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetCancelSendingFile:
 		message.reset(new NetCancelSendingFile);
 		break;
-		case MNetCancelRecievingFile:
-		message.reset(new NetCancelRecievingFile);
+		case MNetCancelReceivingFile:
+		message.reset(new NetCancelReceivingFile);
 		break;
 		case MNetRequestMapThumbnail:
 		message.reset(new NetRequestMapThumbnail);
@@ -675,18 +675,18 @@ void NetRefuseLogin::decodeData(GAGCore::InputStream* stream)
 std::string NetRefuseLogin::format() const
 {
 	std::ostringstream s;
-	std::string sreason;
+	std::string sReason;
 	if(reason == YOGLoginSuccessful)
-		sreason="YOGLoginSuccessful";
+		sReason="YOGLoginSuccessful";
 	if(reason == YOGLoginUnknown)
-		sreason="YOGLoginUnknown";
+		sReason="YOGLoginUnknown";
 	if(reason == YOGPasswordIncorrect)
-		sreason="YOGPasswordIncorrect";
+		sReason="YOGPasswordIncorrect";
 	if(reason == YOGUsernameAlreadyUsed)
-		sreason="YOGUsernameAlreadyUsed";
+		sReason="YOGUsernameAlreadyUsed";
 	if(reason == YOGUserNotRegistered)
-		sreason="YOGUserNotRegistered";
-	s<<"NetRefuseLogin(reason="<<sreason<<")";
+		sReason="YOGUserNotRegistered";
+	s<<"NetRefuseLogin(reason="<<sReason<<")";
 	return s.str();
 }
 
@@ -1025,18 +1025,18 @@ void NetRefuseRegistration::decodeData(GAGCore::InputStream* stream)
 std::string NetRefuseRegistration::format() const
 {
 	std::ostringstream s;
-	std::string sreason;
+	std::string sReason;
 	if(reason == YOGLoginSuccessful)
-		sreason="YOGLoginSuccessful";
+		sReason="YOGLoginSuccessful";
 	if(reason == YOGLoginUnknown)
-		sreason="YOGLoginUnknown";
+		sReason="YOGLoginUnknown";
 	if(reason == YOGPasswordIncorrect)
-		sreason="YOGPasswordIncorrect";
+		sReason="YOGPasswordIncorrect";
 	if(reason == YOGUsernameAlreadyUsed)
-		sreason="YOGUsernameAlreadyUsed";
+		sReason="YOGUsernameAlreadyUsed";
 	if(reason == YOGUserNotRegistered)
-		sreason="YOGUserNotRegistered";
-	s<<"NetRefuseRegistration(reason="<<sreason<<")";
+		sReason="YOGUserNotRegistered";
+	s<<"NetRefuseRegistration(reason="<<sReason<<")";
 	return s.str();
 }
 
@@ -1402,10 +1402,10 @@ void NetGameJoinRefused::decodeData(GAGCore::InputStream* stream)
 std::string NetGameJoinRefused::format() const
 {
 	std::ostringstream s;
-	std::string sreason;
+	std::string sReason;
 	if(reason == YOGJoinRefusalUnknown)
-		sreason="YOGJoinRefusalUnknown";
-	s<<"NetGameJoinRefused(reason="<<sreason<<")";
+		sReason="YOGJoinRefusalUnknown";
+	s<<"NetGameJoinRefused(reason="<<sReason<<")";
 	return s.str();
 }
 
@@ -1821,14 +1821,14 @@ void NetSendGameHeader::downloadToGameHeader(GameHeader& newGameHeader)
 {
 	//This is a special trick used to avoid having to manually copy over every
 	//variable
-	MemoryStreamBackend* obackend = new MemoryStreamBackend;
-	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(obackend);
+	MemoryStreamBackend* oBackend = new MemoryStreamBackend;
+	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(oBackend);
 	gameHeader.saveWithoutPlayerInfo(ostream);
 
 
-	obackend->seekFromStart(0);
-	MemoryStreamBackend* ibackend = new MemoryStreamBackend(*obackend);
-	GAGCore::BinaryInputStream* istream = new BinaryInputStream(ibackend);
+	oBackend->seekFromStart(0);
+	MemoryStreamBackend* iBackend = new MemoryStreamBackend(*oBackend);
+	GAGCore::BinaryInputStream* istream = new BinaryInputStream(iBackend);
 	newGameHeader.loadWithoutPlayerInfo(istream, VERSION_MINOR);
 
 	delete ostream;
@@ -1903,13 +1903,13 @@ void NetSendGamePlayerInfo::downloadToGameHeader(GameHeader& header)
 {
 	//This is a special trick used to avoid having to manually copy over every
 	//variable
-	MemoryStreamBackend* obackend = new MemoryStreamBackend;
-	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(obackend);
+	MemoryStreamBackend* oBackend = new MemoryStreamBackend;
+	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(oBackend);
 	gameHeader.savePlayerInfo(ostream);
 
-	obackend->seekFromStart(0);
-	MemoryStreamBackend* ibackend = new MemoryStreamBackend(*obackend);
-	GAGCore::BinaryInputStream* istream = new BinaryInputStream(ibackend);
+	oBackend->seekFromStart(0);
+	MemoryStreamBackend* iBackend = new MemoryStreamBackend(*oBackend);
+	GAGCore::BinaryInputStream* istream = new BinaryInputStream(iBackend);
 	header.loadPlayerInfo(istream, VERSION_MINOR);
 
 	delete ostream;
@@ -2133,7 +2133,7 @@ NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> strea
 	while(!stream->isEndOfStream() && size < 4096)
 	{
 		stream->read(data+pos, 1, "");
-		//For some reason the last byte is an overread, so it should be ignored
+		//For some reason the last byte is an over-read, so it should be ignored
 		if(!stream->isEndOfStream())
 		{
 			pos+=1;
@@ -3073,46 +3073,46 @@ Uint8 NetAddAI::getType() const
 
 
 
-NetSendReteamingInformation::NetSendReteamingInformation()
+NetSendReTeamingInformation::NetSendReTeamingInformation()
 {
 
 }
 
 
 
-NetSendReteamingInformation::NetSendReteamingInformation(NetReteamingInformation reteamingInfo)
-	:reteamingInfo(reteamingInfo)
+NetSendReTeamingInformation::NetSendReTeamingInformation(NetReTeamingInformation reTeamingInfo)
+	:reTeamingInfo(reTeamingInfo)
 {
 }
 
 
 
-Uint8 NetSendReteamingInformation::getMessageType() const
+Uint8 NetSendReTeamingInformation::getMessageType() const
 {
-	return MNetSendReteamingInformation;
+	return MNetSendReTeamingInformation;
 }
 
 
 
-void NetSendReteamingInformation::encodeData(GAGCore::OutputStream* stream) const
+void NetSendReTeamingInformation::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetSendReteamingInformation");
-	reteamingInfo.encodeData(stream);
+	reTeamingInfo.encodeData(stream);
 	stream->writeLeaveSection();
 }
 
 
 
-void NetSendReteamingInformation::decodeData(GAGCore::InputStream* stream)
+void NetSendReTeamingInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendReteamingInformation");
-	reteamingInfo.decodeData(stream);
+	reTeamingInfo.decodeData(stream);
 	stream->readLeaveSection();
 }
 
 
 
-std::string NetSendReteamingInformation::format() const
+std::string NetSendReTeamingInformation::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendReteamingInformation()";
@@ -3121,21 +3121,21 @@ std::string NetSendReteamingInformation::format() const
 
 
 
-bool NetSendReteamingInformation::operator==(const NetMessage& rhs) const
+bool NetSendReTeamingInformation::operator==(const NetMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NetSendReteamingInformation))
+	if(typeid(rhs)==typeid(NetSendReTeamingInformation))
 	{
-		const NetSendReteamingInformation& r = dynamic_cast<const NetSendReteamingInformation&>(rhs);
-		if(r.reteamingInfo == reteamingInfo)
+		const NetSendReTeamingInformation& r = dynamic_cast<const NetSendReTeamingInformation&>(rhs);
+		if(r.reTeamingInfo == reTeamingInfo)
 			return true;
 	}
 	return false;
 }
 
 
-NetReteamingInformation NetSendReteamingInformation::getReteamingInfo() const
+NetReTeamingInformation NetSendReTeamingInformation::getReTeamingInfo() const
 {
-	return reteamingInfo;
+	return reTeamingInfo;
 }
 
 
@@ -4292,7 +4292,7 @@ Uint16 NetCancelSendingFile::getFileID() const
 
 
 
-NetCancelRecievingFile::NetCancelRecievingFile()
+NetCancelReceivingFile::NetCancelReceivingFile()
 	: fileID(0)
 {
 
@@ -4300,21 +4300,21 @@ NetCancelRecievingFile::NetCancelRecievingFile()
 
 
 
-NetCancelRecievingFile::NetCancelRecievingFile(Uint16 fileID)
+NetCancelReceivingFile::NetCancelReceivingFile(Uint16 fileID)
 	:fileID(fileID)
 {
 }
 
 
 
-Uint8 NetCancelRecievingFile::getMessageType() const
+Uint8 NetCancelReceivingFile::getMessageType() const
 {
-	return MNetCancelRecievingFile;
+	return MNetCancelReceivingFile;
 }
 
 
 
-void NetCancelRecievingFile::encodeData(GAGCore::OutputStream* stream) const
+void NetCancelReceivingFile::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetCancelRecievingFile");
 	stream->writeUint16(fileID, "fileID");
@@ -4323,7 +4323,7 @@ void NetCancelRecievingFile::encodeData(GAGCore::OutputStream* stream) const
 
 
 
-void NetCancelRecievingFile::decodeData(GAGCore::InputStream* stream)
+void NetCancelReceivingFile::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCancelRecievingFile");
 	fileID = stream->readUint16("fileID");
@@ -4332,20 +4332,20 @@ void NetCancelRecievingFile::decodeData(GAGCore::InputStream* stream)
 
 
 
-std::string NetCancelRecievingFile::format() const
+std::string NetCancelReceivingFile::format() const
 {
 	std::ostringstream s;
-	s<<"NetCancelRecievingFile("<<"fileID="<<fileID<<"; "<<")";
+	s<<"NetCancelReceivingFile("<<"fileID="<<fileID<<"; "<<")";
 	return s.str();
 }
 
 
 
-bool NetCancelRecievingFile::operator==(const NetMessage& rhs) const
+bool NetCancelReceivingFile::operator==(const NetMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NetCancelRecievingFile))
+	if(typeid(rhs)==typeid(NetCancelReceivingFile))
 	{
-		const NetCancelRecievingFile& r = dynamic_cast<const NetCancelRecievingFile&>(rhs);
+		const NetCancelReceivingFile& r = dynamic_cast<const NetCancelReceivingFile&>(rhs);
 		if(r.fileID == fileID)
 			return true;
 	}
@@ -4353,7 +4353,7 @@ bool NetCancelRecievingFile::operator==(const NetMessage& rhs) const
 }
 
 
-Uint16 NetCancelRecievingFile::getFileID() const
+Uint16 NetCancelReceivingFile::getFileID() const
 {
 	return fileID;
 }
