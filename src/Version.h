@@ -113,5 +113,6 @@
 // version 25 changed YOGGameInfo to include game state information so that running games aren't shown
 // version 26 changed heavy updates to YOG in general
 // version 27 reordered the NetMessages so that reverse compatibility with future game versions can be done, added random seed in GameHeader
+// version 28 Nicowar's behavior was changed
 
 #endif
