@@ -22,6 +22,7 @@
 #include <assert.h>
 #include <GraphicContext.h>
 #include <cmath>
+#include <EventListener.h>
 
 #include <Toolkit.h>
 
@@ -414,6 +415,7 @@ namespace GAGGUI
 	
 	Screen::~Screen()
 	{
+		EventListener::instance()->removePainter("Screen");
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 		{
 			delete (*it);
@@ -426,6 +428,7 @@ namespace GAGGUI
 		Sint32 frameWaitTime;
 		
 		this->gfx = gfx;
+		EventListener::instance()->addPainter("Screen", std::bind(&Screen::dispatchPaint, this));
 	
 		// init widgets
 		dispatchInit();
@@ -449,7 +452,8 @@ namespace GAGGUI
 			SDL_Event lastMouseMotion, windowEvent, event;
 			bool hadLastMouseMotion=false;
 			bool wasWindowEvent=false;
-			while (SDL_PollEvent(&event))
+			EventListener* el = EventListener::instance();
+			while (el->poll(&event))
 			{
 				switch (event.type)
 				{
@@ -470,12 +474,13 @@ namespace GAGGUI
 					{
 						windowEvent=event;
 						wasWindowEvent=true;
-					}
-					break;
-					case SDL_WINDOWEVENT_RESIZED:
-					{
-						// FIXME: window resize is broken
-						// gfx->setRes(event.window.data1, event.window.data2);
+						if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+						{
+
+							// FIXME: window resize is broken
+							gfx->setRes(event.window.data1, event.window.data2);
+							onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
+						}
 					}
 					break;
 					case SDL_WINDOWEVENT_SIZE_CHANGED:
@@ -512,6 +517,12 @@ namespace GAGGUI
 					}
 					break;
 				}
+			}
+			GraphicContext* gfx = GraphicContext::instance();
+			if (gfx->resChanged()) {
+				SDL_Rect r = gfx->getRes();
+				gfx->setRes(r.w, r.h);
+				onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
 			}
 			if (hadLastMouseMotion)
 				dispatchEvents(&lastMouseMotion);
@@ -666,6 +677,8 @@ namespace GAGGUI
 	void Screen::dispatchPaint(void)
 	{
 		assert(gfx);
+		std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
+		EventListener::ensureContext();
 		gfx->setClipRect();
 		paint();
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)

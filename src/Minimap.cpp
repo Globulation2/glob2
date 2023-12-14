@@ -71,6 +71,9 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 {
 	if (noX) return;
 
+	// Keep the minimap in the right place even if window is resized.
+	gameWidth = globalContainer->gfx->getW();
+
   // Compute the position of the minimap if it needs to be scaled & centered
 	computeMinimapPositioning();
 

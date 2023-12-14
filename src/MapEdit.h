@@ -38,14 +38,18 @@
 ///A generic rectangle structure used for a variety of purposes, but mainly for the convience of the widget system
 struct widgetRectangle
 {
-	widgetRectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
-	widgetRectangle() : x(0), y(0), width(0), height(0) {}
-	bool is_in(int posx, int posy) { return posx>x && posx<(x+width) && posy>y && posy<(y+height); }
+	widgetRectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height), initialWindowWidth(globalContainer->gfx->getW()) {}
+	widgetRectangle() : x(0), y(0), width(0), height(0), initialWindowWidth(0) {}
+	bool is_in(int posx, int posy) { return posx>(x+globalContainer->gfx->getW()-initialWindowWidth) &&
+											posx<(x+globalContainer->gfx->getW()-initialWindowWidth+width) &&
+											posy>y && 
+											posy<(y+height); }
 
 	int x;
 	int y;
 	int width;
 	int height;
+	int initialWindowWidth;
 };
 
 class MapEdit;
@@ -78,6 +82,7 @@ public:
 	///This function must be implemented by all derived classes. This is where the widget draws itself. It should use area.x
 	///and area.y to get the cordinates.
 	virtual void draw()=0;
+	int adjustX();
 	friend class MapEdit;
 protected:
 	MapEdit& me;
@@ -395,6 +400,8 @@ public:
 	bool load(const std::string filename);
 	///Saves the game to a particular file name
 	bool save(const std::string filename, const std::string name);
+
+	void draw(void);
 
 	///Updates the editor after map generation
 	void update();
@@ -773,6 +780,7 @@ private:
 	///Handles a click or drag of the no ressource growth area placement tool
 	void handleNoRessourceGrowthClick(int mx, int my);
 
+	Uint32 startTick, endTick, deltaTick;
 };
 
 

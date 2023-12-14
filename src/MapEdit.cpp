@@ -37,6 +37,8 @@
 #include "Utilities.h"
 #include "FertilityCalculatorDialog.h"
 #include "GUIMessageBox.h"
+#include "EventListener.h"
+#include "SDLGraphicContext.h"
 
 
 #define RIGHT_MENU_WIDTH 160
@@ -57,6 +59,13 @@ void MapEditorWidget::drawSelf()
 		draw();
 }
 
+
+// If the window gets wider, we need to move the widgets further to the right.
+// Likewize, if the window becomes smaller, the widgets should move to the left.
+int MapEditorWidget::adjustX()
+{
+	return globalContainer->gfx->getW()-area.initialWindowWidth;
+}
 
 
 void MapEditorWidget::disable()
@@ -99,7 +108,7 @@ void BuildingSelectorWidget::draw()
 	int imgid = bt->miniSpriteImage;
 	int x, y;
 
-	x=area.x;
+	x=area.x+adjustX();
 	y=area.y;
 
 	Sprite *buildingSprite;
@@ -140,7 +149,7 @@ void TeamColorSelector::draw()
 {
 	for(int n=0; n<16; ++n)
 	{
-		const int xpos = area.x + (n%6)*16;
+		const int xpos = area.x + adjustX() + (n%6)*16;
 		const int ypos = area.y + (n/6)*16;
 		if(me.game.teams[n])
 		{
@@ -165,7 +174,7 @@ SingleLevelSelector::SingleLevelSelector(MapEdit& me, const widgetRectangle& are
 
 void SingleLevelSelector::draw()
 {
-	globalContainer->gfx->drawSprite(area.x, area.y, me.menu, 30+level-1, (level-1)==levelNum ? 128 : 255);
+	globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, me.menu, 30+level-1, (level-1)==levelNum ? 128 : 255);
 }
 
 
@@ -182,9 +191,9 @@ void PanelIcon::draw()
 {
 	// draw buttons
 	if (me.panelMode==panelModeHilight)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, iconNumber+1);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, iconNumber+1);
 	else
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, iconNumber);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, iconNumber);
 
 }
 
@@ -202,9 +211,9 @@ void MenuIcon::draw()
 {
 	// draw buttons
 	if (me.showingMenuScreen)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 7);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 7);
 	else
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 6);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 6);
 
 }
 
@@ -223,25 +232,25 @@ void ZoneSelector::draw()
 	bool isSelected=false;
 	if(zoneType==ForbiddenZone)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 13);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 13);
 		if(me.brushType==MapEdit::ForbiddenBrush)
 			isSelected=true;
 	}
 	else if(zoneType==GuardingZone)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 14);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 14);
 		if(me.brushType==MapEdit::GuardAreaBrush)
 			isSelected=true;
 	}
 	else if(zoneType==ClearingZone)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 25);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 25);
 		if(me.brushType==MapEdit::ClearAreaBrush)
 			isSelected=true;
 	}
 	if(me.selectionMode==MapEdit::PlaceZone && isSelected)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 22);
 	}
 }
 
@@ -257,7 +266,7 @@ BrushSelector::BrushSelector(MapEdit& me, const widgetRectangle& area, const std
 
 void BrushSelector::draw()
 {
-	brushTool.draw(area.x, area.y);
+	brushTool.draw(area.x+adjustX(), area.y);
 }
 
 
@@ -280,23 +289,23 @@ void UnitSelector::draw()
 	{
 		if(me.selectionMode==MapEdit::PlaceUnit && me.placingUnit==MapEdit::Worker)
 			drawSelection=true;
-		globalContainer->gfx->drawSprite(area.x, area.y, unitSprite, 64);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, unitSprite, 64);
 	}
 	else if(unitType==EXPLORER)
 	{
 		if(me.selectionMode==MapEdit::PlaceUnit && me.placingUnit==MapEdit::Explorer)
 			drawSelection=true;
-		globalContainer->gfx->drawSprite(area.x, area.y, unitSprite, 0);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, unitSprite, 0);
 	}
 	else if(unitType==WARRIOR)
 	{
 		if(me.selectionMode==MapEdit::PlaceUnit && me.placingUnit==MapEdit::Warrior)
 			drawSelection=true;
-		globalContainer->gfx->drawSprite(area.x, area.y, unitSprite, 256);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, unitSprite, 256);
 	}
 	if(drawSelection)
 	{
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 23);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 23);
 	}
 }
 
@@ -313,29 +322,29 @@ TerrainSelector::TerrainSelector(MapEdit& me, const widgetRectangle& area, const
 void TerrainSelector::draw()
 {
 	if(terrainType==Grass)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 0);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->terrain, 0);
 	if(terrainType==Sand)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 128);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->terrain, 128);
 	if(terrainType==Water)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 259);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->terrain, 259);
 	if(terrainType==Wheat)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 19);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->ressources, 19);
 	if(terrainType==Trees)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 2);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->ressources, 2);
 	if(terrainType==Stone)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 34);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->ressources, 34);
 	if(terrainType==Algae)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 44);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->ressources, 44);
 	if(terrainType==Papyrus)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 24);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->ressources, 24);
 	if(terrainType==CherryTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 54);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->ressources, 54);
 	if(terrainType==OrangeTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 59);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->ressources, 59);
 	if(terrainType==PruneTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 64);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->ressources, 64);
 	if(me.terrainType==terrainType)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 22);
 }
 
 
@@ -350,15 +359,15 @@ BlueButton::BlueButton(MapEdit& me, const widgetRectangle& area, const std::stri
 
 void BlueButton::draw()
 {
-	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 12);
+	globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 12);
 	if(selected)
-		globalContainer->gfx->drawFilledRect(area.x+9, area.y+3, 94, 10, 128, 128, 192);
+		globalContainer->gfx->drawFilledRect(area.x+9+adjustX(), area.y+3, 94, 10, 128, 128, 192);
 
 	std::string translatedText;
 	translatedText=Toolkit::getStringTable()->getString(text.c_str());
 	int len=globalContainer->littleFont->getStringWidth(translatedText.c_str());
 	int h=globalContainer->littleFont->getStringHeight(translatedText.c_str());
-	globalContainer->gfx->drawString(area.x+9+((94-len)/2), area.y+((16-h)/2), globalContainer->littleFont, translatedText);
+	globalContainer->gfx->drawString(area.x+adjustX()+9+((94-len)/2), area.y+((16-h)/2), globalContainer->littleFont, translatedText);
 }
 
 
@@ -386,10 +395,10 @@ PlusIcon::PlusIcon(MapEdit& me, const widgetRectangle& area, const std::string& 
 
 void PlusIcon::draw()
 {
-	globalContainer->gfx->drawFilledRect(area.x, area.y, 32, 32, Color(75,0,200));
-	globalContainer->gfx->drawRect(area.x, area.y, 32, 32, Color::white);
-	globalContainer->gfx->drawFilledRect(area.x + 15, area.y + 6, 2, 20, Color::white);
-	globalContainer->gfx->drawFilledRect(area.x + 6, area.y + 15, 20, 2, Color::white);
+	globalContainer->gfx->drawFilledRect(area.x+adjustX(), area.y, 32, 32, Color(75,0,200));
+	globalContainer->gfx->drawRect(area.x+adjustX(), area.y, 32, 32, Color::white);
+	globalContainer->gfx->drawFilledRect(area.x+adjustX() + 15, area.y + 6, 2, 20, Color::white);
+	globalContainer->gfx->drawFilledRect(area.x+adjustX() + 6, area.y + 15, 20, 2, Color::white);
 }
 
 
@@ -404,9 +413,9 @@ MinusIcon::MinusIcon(MapEdit& me, const widgetRectangle& area, const std::string
 
 void MinusIcon::draw()
 {
-	globalContainer->gfx->drawFilledRect(area.x, area.y, 32, 32, Color(75,0,200));
-	globalContainer->gfx->drawRect(area.x, area.y, 32, 32, Color::white);
-	globalContainer->gfx->drawFilledRect(area.x + 6, area.y + 15, 20, 2, Color::white);
+	globalContainer->gfx->drawFilledRect(area.x+adjustX(), area.y, 32, 32, Color(75,0,200));
+	globalContainer->gfx->drawRect(area.x+adjustX(), area.y, 32, 32, Color::white);
+	globalContainer->gfx->drawFilledRect(area.x+adjustX() + 6, area.y + 15, 20, 2, Color::white);
 }
 
 
@@ -421,7 +430,7 @@ UnitInfoTitle::UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std
 
 void UnitInfoTitle::draw()
 {
-	const int xpos=area.x;
+	const int xpos=area.x+adjustX();
 	const int ypos=area.y;
 	Unit* u=unit;
 
@@ -467,7 +476,7 @@ UnitPicture::UnitPicture(MapEdit& me, const widgetRectangle& area, const std::st
 
 void UnitPicture::draw()
 {
-	const int xpos=area.x;
+	const int xpos=area.x+adjustX();
 	const int ypos=area.y;
 
 	// draw unit's image
@@ -536,7 +545,7 @@ FractionValueText::~FractionValueText()
 
 void FractionValueText::draw()
 {
-	globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, FormatableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(*numerator).arg(*denominator).c_str());
+	globalContainer->gfx->drawString(area.x+adjustX(), area.y, globalContainer->littleFont, FormatableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(*numerator).arg(*denominator).c_str());
 }
 
 
@@ -585,11 +594,11 @@ void ValueScrollBox::draw()
 	//Sometimes a scrollbox gets initiated with max-value 0. A turret construction site has 0/0 stone and 0/0 shots. To not run into arithmetic exceptions those cases are treated here.
 	if((*max) != 0)
 	{
-		globalContainer->gfx->setClipRect(area.x, area.y, 112, 16);
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 9);
+		globalContainer->gfx->setClipRect(area.x+adjustX(), area.y, 112, 16);
+		globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 9);
 		int size=((*value)*92)/(*max);
-		globalContainer->gfx->setClipRect(area.x+10, area.y, size, 16);
-		globalContainer->gfx->drawSprite(area.x+10, area.y+3, globalContainer->gamegui, 10);
+		globalContainer->gfx->setClipRect(area.x+10+adjustX(), area.y, size, 16);
+		globalContainer->gfx->drawSprite(area.x+10+adjustX(), area.y+3, globalContainer->gamegui, 10);
 		globalContainer->gfx->setClipRect();
 	}
 }
@@ -657,7 +666,7 @@ void BuildingInfoTitle::draw()
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
 	int titleLen = globalContainer->littleFont->getStringWidth(title.c_str());
-	int titlePos = area.x+((area.width-titleLen)/2);
+	int titlePos = area.x+adjustX()+((area.width-titleLen)/2);
 	globalContainer->gfx->drawString(titlePos, area.y, globalContainer->littleFont, title.c_str());
 	globalContainer->littleFont->popStyle();
 }
@@ -700,8 +709,8 @@ void BuildingPicture::draw()
 	int dx = (56-miniSprite->getW(imgid))/2;
 	int dy = (46-miniSprite->getH(imgid))/2;
 	miniSprite->setBaseColor(selBuild->owner->color);
-	globalContainer->gfx->drawSprite(area.x+dx, area.y+dy, miniSprite, imgid);
-	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 18);
+	globalContainer->gfx->drawSprite(area.x+dx+adjustX(), area.y+dy, miniSprite, imgid);
+	globalContainer->gfx->drawSprite(area.x+adjustX(), area.y, globalContainer->gamegui, 18);
 }
 
 
@@ -729,9 +738,9 @@ void TextLabel::draw()
 	int titleWidth = globalContainer->littleFont->getStringWidth(label.c_str());
 	int titleHeight = globalContainer->littleFont->getStringHeight(label.c_str());
 	if(centered)
-		globalContainer->gfx->drawString(area.x+(area.width-titleWidth)/2, area.y+(area.height-titleHeight)/2, globalContainer->littleFont, label.c_str());
+		globalContainer->gfx->drawString(area.x+adjustX()+(area.width-titleWidth)/2, area.y+(area.height-titleHeight)/2, globalContainer->littleFont, label.c_str());
 	else
-		globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, label.c_str());
+		globalContainer->gfx->drawString(area.x+adjustX(), area.y, globalContainer->littleFont, label.c_str());
 }
 
 
@@ -755,7 +764,7 @@ void NumberCycler::draw()
 {
 	std::stringstream s;
 	s<<currentNumber;
-	globalContainer->gfx->drawString(area.x, area.y, globalContainer->standardFont, s.str().c_str());
+	globalContainer->gfx->drawString(area.x+adjustX(), area.y, globalContainer->standardFont, s.str().c_str());
 }
 
 
@@ -788,17 +797,17 @@ Checkbox::Checkbox(MapEdit& me, const widgetRectangle& area, const std::string& 
 
 void Checkbox::draw()
 {
-	globalContainer->gfx->drawRect(area.x, area.y, 16, 16, Color::white);
+	globalContainer->gfx->drawRect(area.x+adjustX(), area.y, 16, 16, Color::white);
 	if(isActivated)
 	{
-		globalContainer->gfx->drawLine(area.x+4, area.y+4, area.x+12, area.y+12, Color::white);
-		globalContainer->gfx->drawLine(area.x+12, area.y+4, area.x+4, area.y+12, Color::white);
+		globalContainer->gfx->drawLine(area.x+4+adjustX(), area.y+4, area.x+adjustX()+12, area.y+12, Color::white);
+		globalContainer->gfx->drawLine(area.x+12+adjustX(), area.y+4, area.x+adjustX()+4, area.y+12, Color::white);
 	}
 	
 	std::string translatedText;
 	translatedText=Toolkit::getStringTable()->getString(text.c_str());
 	
-	globalContainer->gfx->drawString(area.x+20, area.y, globalContainer->littleFont, translatedText); 
+	globalContainer->gfx->drawString(area.x+20+adjustX(), area.y, globalContainer->littleFont, translatedText); 
 }
 
 
@@ -1107,6 +1116,7 @@ MapEdit::MapEdit()
 
 MapEdit::~MapEdit()
 {
+	EventListener::instance()->removePainter("MapEdit");
 	Toolkit::releaseSprite("data/gui/editor");
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
@@ -1198,12 +1208,59 @@ bool MapEdit::save(const std::string filename, const std::string name)
 	}
 }
 
+void MapEdit::draw(void)
+{
+	std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
+	EventListener::ensureContext();
+	drawMap(0, 0, globalContainer->gfx->getW() - 0, globalContainer->gfx->getH(), true, true);
+
+	drawMenu();
+	drawMiniMap();
+	wasMinimapRendered = false;
+	drawWidgets();
+	if (showingMenuScreen)
+	{
+		globalContainer->gfx->setClipRect();
+		menuScreen->dispatchTimer(startTick);
+		menuScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
+	}
+	if (showingLoad || showingSave)
+	{
+		globalContainer->gfx->setClipRect();
+		loadSaveScreen->dispatchTimer(startTick);
+		loadSaveScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
+	}
+	if (showingScriptEditor)
+	{
+		globalContainer->gfx->setClipRect();
+		scriptEditor->dispatchTimer(startTick);
+		scriptEditor->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
+	}
+	if (showingTeamsEditor)
+	{
+		globalContainer->gfx->setClipRect();
+		teamsEditor->dispatchTimer(startTick);
+		teamsEditor->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
+	}
+	if (isShowingAreaName)
+	{
+		globalContainer->gfx->setClipRect();
+		areaName->dispatchTimer(startTick);
+		areaName->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
+	}
+}
 
 
 int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 {
 	game.map.setSize(sizeX, sizeY, terrainType);
 	game.map.setGame(&game);
+	EventListener::instance()->addPainter("MapEdit", std::bind(&MapEdit::draw, this));
 	return run();
 }
 
@@ -1228,7 +1285,6 @@ int MapEdit::run(void)
 
 	bool isRunning=true;
 	int returnCode=0;
-	Uint32 startTick, endTick, deltaTick;
 	while (isRunning)
 	{
 		//SDL_Event event;
@@ -1236,9 +1292,16 @@ int MapEdit::run(void)
 	
 		// we get all pending events but for mousemotion we only keep the last one
 		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		EventListener *el = EventListener::instance();
+		while (el->poll(&event))
 		{
  			processEvent(event);
+		}
+
+		GraphicContext *gfx = GraphicContext::instance();
+		if (gfx->resChanged()) {
+			SDL_Rect r = gfx->getRes();
+			gfx->setRes(r.w, r.h);
 		}
 
 		// While processing events the user could've tried to load a map that failed.
@@ -1273,49 +1336,8 @@ int MapEdit::run(void)
 				performAction("no ressource growth area drag motion");
 		}
 		
-		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
-		
-		drawMenu();
-		drawMiniMap();
-		wasMinimapRendered=false;
-		drawWidgets();
-		if(showingMenuScreen)
-		{
-			globalContainer->gfx->setClipRect();
-			menuScreen->dispatchTimer(startTick);
-			menuScreen->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
-		}
-		if(showingLoad || showingSave)
-		{
-			globalContainer->gfx->setClipRect();
-			loadSaveScreen->dispatchTimer(startTick);
-			loadSaveScreen->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
-		}
-		if(showingScriptEditor)
-		{
-			globalContainer->gfx->setClipRect();
-			scriptEditor->dispatchTimer(startTick);
-			scriptEditor->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
-		}
-		if(showingTeamsEditor)
-		{
-			globalContainer->gfx->setClipRect();
-			teamsEditor->dispatchTimer(startTick);
-			teamsEditor->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
-		}
-		if(isShowingAreaName)
-		{
-			globalContainer->gfx->setClipRect();
-			areaName->dispatchTimer(startTick);
-			areaName->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
-		}
-		
-		
+		draw();
+
 		globalContainer->gfx->nextFrame();
 		
 
@@ -3195,7 +3217,8 @@ bool MapEdit::findAction(int x, int y)
 		MapEditorWidget* mi=*i;
 		if(mi->is_in(x, y) && mi->enabled)
 		{
-			mi->handleClick(mouseX-mi->area.x, mouseY-mi->area.y);
+			int adjustX = globalContainer->gfx->getW() - mi->area.initialWindowWidth;
+			mi->handleClick(mouseX-(mi->area.x+adjustX), mouseY-mi->area.y);
 			return true;
 		}
 	}

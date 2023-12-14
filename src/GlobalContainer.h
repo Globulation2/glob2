@@ -23,6 +23,9 @@
 #include "BuildingsTypes.h"
 #include "RessourcesTypes.h"
 #include "Settings.h"
+#include "EventListener.h"
+#include <thread>
+#include <atomic>
 
 namespace GAGCore
 {
@@ -41,6 +44,7 @@ class UnitsSkins;
 class ReplayReader;
 class ReplayWriter;
 
+extern EventListener* el;
 class GlobalContainer
 {
 public:
@@ -59,9 +63,9 @@ public:
 
 	void parseArgs(int argc, char *argv[]);
 #ifndef YOG_SERVER_ONLY
-	void loadClient(void);
+	void loadClient(bool runEventListener);
 #endif  // !YOG_SERVER_ONLY
-	void load(void);
+	void load(bool runEventListener);
 
 	//void setUsername(const std::string &name);
 	//const std::string &getUsername(void) { return settings.getUsername(); }
@@ -137,6 +141,12 @@ public:
 	Uint32 replayVisibleTeams; //!< A mask of which teams can be seen in the replay. Can be edited real-time.
 	bool replayShowAreas; //!< Show areas of gui.localPlayer or not. Can be edited real-time.
 	bool replayShowFlags; //!< Show all flags or show none. Can be edited real-time.
+
+	// logic thread handles events in the queue, game logic, rendering, etc.
+	std::thread* logicThread;
+	// main thread listens for SDL events and adds them to a queue
+	std::thread::id mainthr;
+	std::atomic<bool> mainthrSet;
 
 #ifndef YOG_SERVER_ONLY
 	ReplayReader *replayReader; //!< Reads and processes replay files, and outputs orders

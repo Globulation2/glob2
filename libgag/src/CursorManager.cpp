@@ -46,6 +46,14 @@ namespace GAGCore
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/mark"));
 		setDefaultColor();
 	}
+
+	void CursorManager::reinitTextures(void)
+	{
+		for (Sprite *cursor : cursors)
+		{
+			cursor->reinit();
+		}
+	}
 	
 	void CursorManager::nextTypeFromMouse(DrawableSurface *ds, int x, int y, bool button)
 	{

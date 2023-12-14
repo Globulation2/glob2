@@ -55,6 +55,8 @@
 #include "ReplayWriter.h"
 #include "config.h"
 #include "Order.h"
+#include "EventListener.h"
+#include "SDLGraphicContext.h"
 
 #include <SDL_keycode.h>
 
@@ -182,13 +184,14 @@ GameGUI::GameGUI()
 	         128, // width
 	         128, //height
 	         Minimap::ShowFOW), // minimap mode
-	  
+	  isRegistered(false),
 	  ghostManager(game)
 {
 }
 
 GameGUI::~GameGUI()
 {
+	EventListener::instance()->removePainter("GameGUI");
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 }
@@ -388,7 +391,8 @@ void GameGUI::step(void)
 	bool wasWindowEvent=false;
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mousemotion we only keep the last one
-	while (SDL_PollEvent(&event))
+	EventListener *el = EventListener::instance();
+	while (el->poll(&event))
 	{
 		if (event.type==SDL_MOUSEMOTION)
 		{
@@ -474,6 +478,11 @@ void GameGUI::step(void)
 		{
 			processEvent(&event);
 		}
+	}
+	GraphicContext* gfx = GraphicContext::instance();
+	if (gfx->resChanged()) {
+		SDL_Rect r = gfx->getRes();
+		gfx->setRes(r.w, r.h);
 	}
 	if (wasMouseMotion)
 		processEvent(&mouseMotionEvent);
@@ -1117,26 +1126,26 @@ void GameGUI::processEvent(SDL_Event *event)
 	else if (event->type==SDL_WINDOWEVENT)
 	{
 		handleActivation(event->window.data1, event->window.data2);
+		if (event->window.event == SDL_WINDOWEVENT_RESIZED || event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+		{
+			// FIXME: window resize is broken
+			int newW=event->window.data1;
+			int newH=event->window.data2;
+			newW&=(~(0x1F));
+			newH&=(~(0x1F));
+			if (newW<640)
+				newW=640;
+			if (newH<480)
+				newH=480;
+			printf("New size : %dx%d\n", newW, newH);
+			globalContainer->gfx->setRes(newW, newH);
+		}
 	}
 	else if (event->type==SDL_QUIT)
 	{
 		exitGlobCompletely=true;
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 		flushOutgoingAndExit=true;
-	}
-	else if (event->type==SDL_WINDOWEVENT_RESIZED)
-	{
-		// FIXME: window resize is broken
-		/*int newW=event->window.data1;
-		int newH=event->window.data2;
-		newW&=(~(0x1F));
-		newH&=(~(0x1F));
-		if (newW<640)
-			newW=640;
-		if (newH<480)
-			newH=480;
-		printf("New size : %dx%d\n", newW, newH);
-		globalContainer->gfx->setRes(newW, newH);*/
 	}
 }
 
@@ -4376,6 +4385,8 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+	std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
+	EventListener::ensureContext();
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |

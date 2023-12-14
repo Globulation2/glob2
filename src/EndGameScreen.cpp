@@ -35,6 +35,7 @@
 #include "GameGUILoadSave.h"
 #include "StreamBackend.h"
 #include "ReplayWriter.h"
+#include "EventListener.h"
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -567,7 +568,8 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 	while(loadSaveScreen->endValue<0)
 	{
 		int time = SDL_GetTicks();
-		while (SDL_PollEvent(&event))
+		EventListener *el = EventListener::instance();
+		while (el->poll(&event))
 		{
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}

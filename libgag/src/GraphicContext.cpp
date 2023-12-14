@@ -21,6 +21,7 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
+#include "EventListener.h"
 #include <assert.h>
 #include <string>
 #include <sstream>
@@ -32,6 +33,7 @@
 #include <valarray>
 #include <cstdlib>
 #include <memory>
+#include <mutex>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -347,6 +349,8 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
+			std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
+			EventListener::ensureContext();
 			glState.setTexture(texture);
 
 			void *pixelsPtr;
@@ -1069,6 +1073,10 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+		if (surface != _gc && (surface->dirty || _gc->isResizing()))
+			surface->uploadToTexture();
+		if (this != _gc && (this->dirty || _gc->isResizing()))
+			this->uploadToTexture();
 		if (alpha == Color::ALPHA_OPAQUE)
 		{
 			#ifdef HAVE_OPENGL
@@ -1671,7 +1679,7 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			// upload
-			if (surface->dirty)
+			if (surface->dirty || isResizing())
 				surface->uploadToTexture();
 
 			// state change
@@ -1919,6 +1927,7 @@ namespace GAGCore
 	{
 		minW = w;
 		minH = h;
+		SDL_SetWindowMinimumSize(window, minW, minH);
 	}
 
 	VideoModes GraphicContext::listVideoModes() const
@@ -1960,9 +1969,13 @@ namespace GAGCore
 		return modes;
 	}
 
-	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon):
+	GraphicContext::GraphicContext(int w, int h, Uint32 flags, const std::string title, const std::string icon) :
 		windowTitle(title),
-		appIcon(icon)
+		appIcon(icon),
+		resizeTimer(0),
+		framesDrawn(0),
+		frameStartResize(-1),
+		frameStopResize(-1)
 	{
 		// some assert on the universe's structure
 		assert(sizeof(Color) == 4);
@@ -2006,8 +2019,85 @@ namespace GAGCore
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
 	}
 
+	GraphicContext* GraphicContext::instance()
+	{
+		return _gc;
+	}
+
+	std::mutex m;
+	void GraphicContext::createGLContext()
+	{
+		// enable GL context
+		if (optionFlags & USEGPU)
+		{
+			std::lock_guard<std::mutex> l(m);
+			if (!context)
+			    context = SDL_GL_CreateContext(window);
+			if (!context)
+			    throw "no context";
+			SDL_GL_MakeCurrent(window, context);
+		}
+	}
+	void GraphicContext::unsetContext()
+	{
+		if (optionFlags & USEGPU)
+		{
+			SDL_GL_MakeCurrent(window, nullptr);
+		}
+	}
+	bool GraphicContext::resChanged()
+	{
+		int w, h;
+		SDL_GetWindowSize(window, &w, &h);
+		return prevW != w || prevH != h;
+	}
+	SDL_Rect GraphicContext::getRes()
+	{
+		int w, h;
+		SDL_Rect r;
+		SDL_GetWindowSize(window, &w, &h);
+		r = {0, 0, w, h};
+		return r;
+	}
+	void GraphicContext::resetMatrices()
+	{
+		// https://gamedev.stackexchange.com/questions/62691/opengl-resize-problem
+		int w = getW(), h = getH();
+		glViewport(0, 0, w, h);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+	}
+
+	bool GraphicContext::isResizing()
+	{
+		static EventListener* instance = nullptr;
+		if (!instance)
+			instance = EventListener::instance();
+		// Either currently resizing or is within 5 frames of stopping resize.
+		return instance->isResizing() || (frameStartResize <= frameStopResize && framesDrawn < (frameStopResize + 5));
+	}
+
+	SDL_Surface* GraphicContext::getOrCreateSurface(int w, int h, Uint32 flags) {
+		std::unique_lock<std::recursive_mutex> lock(EventListener::renderMutex);
+		if (flags & USEGPU)
+		{
+			if (sdlsurface)
+				SDL_FreeSurface(sdlsurface);
+			// Can't use SDL_GetWindowSurface with OpenGL; the documentation forbids it.
+			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		}
+		else
+		{
+			sdlsurface = SDL_GetWindowSurface(window);
+		}
+		return sdlsurface;
+	}
+
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
+		static bool isLoading = true;
 		// check dimension
 		if (minW && (w < minW))
 		{
@@ -2022,14 +2112,23 @@ namespace GAGCore
 			h = minH;
 		}
 
+		prevW = w;
+		prevH = h;
+
 		// set flags
 		optionFlags = flags;
 		Uint32 sdlFlags = 0;
 		if (flags & FULLSCREEN)
 			sdlFlags |= SDL_WINDOW_FULLSCREEN;
 		// FIXME: window resize is broken
-		// if (flags & RESIZABLE)
-		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
+		if (flags & RESIZABLE && !isLoading)
+		{
+			sdlFlags |= SDL_WINDOW_RESIZABLE;
+		}
+		else
+		{
+			isLoading = false;
+		}
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
 		{
@@ -2041,14 +2140,34 @@ namespace GAGCore
 		optionFlags &= ~USEGPU;
 		#endif
 
-		// if window exists, delete it
+		// if window exists, resize it
 		if (window) {
-			SDL_DestroyWindow(window);
-			window = nullptr;
+			SDL_SetWindowSize(window, w, h);
+			SDL_SetWindowResizable(window, SDL_TRUE);
+			getOrCreateSurface(w, h, flags);
+#ifdef HAVE_OPENGL
+			if (flags & USEGPU)
+			{
+				resetMatrices();
+			}
+#endif
+			setClipRect(0, 0, w, h);
+			//nextFrame();
 		}
-		// create the new window and the surface
-		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
-		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
+		else {
+			// create the new window and the surface
+			window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
+			sdlsurface = window != nullptr ? getOrCreateSurface(w, h, flags) : nullptr;
+#ifdef HAVE_OPENGL
+			// enable GL context
+			if (flags & USEGPU)
+			{
+				if (!context)
+					createGLContext();
+				resetMatrices();
+			}
+#endif
+		}
 
 		// check surface
 		if (!sdlsurface)
@@ -2060,12 +2179,6 @@ namespace GAGCore
 		else
 		{
 			_gc = this;
-			// enable GL context
-			if (flags & USEGPU)
-			{
-				SDL_GLContext context = SDL_GL_CreateContext(window);
-				SDL_GL_MakeCurrent(window, context);
-			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
 			{
@@ -2163,6 +2276,10 @@ namespace GAGCore
 			{
 				int mx, my;
 				unsigned b = SDL_GetMouseState(&mx, &my);
+				if (isResizing())
+				{
+					cursorManager.reinitTextures();
+				}
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
 				setClipRect();
 				cursorManager.draw(this, mx, my);
@@ -2179,6 +2296,20 @@ namespace GAGCore
 			{
 				SDL_UpdateWindowSurface(window);
 			}
+			bool isResizing = EventListener::instance()->isResizing();
+			if (resizeTimer && !isResizing)
+			{
+				// Resize flag is set but we are not currently resizing.
+				frameStopResize = framesDrawn;
+				resizeTimer--;
+			}
+			if (!resizeTimer && isResizing)
+			{
+				// The user started resizing the window.
+				frameStartResize = framesDrawn;
+				resizeTimer++;
+			}
+			framesDrawn++;
 		}
 	}
 

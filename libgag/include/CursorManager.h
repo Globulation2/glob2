@@ -67,6 +67,7 @@ namespace GAGCore
 		CursorManager();
 		//! Load the cursor sprites
 		void load(void);
+		void reinitTextures(void);
 		//! Select the next type given the mouse position
 		void nextTypeFromMouse(DrawableSurface *ds, int x, int y, bool button);
 		//! Manually set the next type

@@ -70,6 +70,28 @@ namespace GAGCore
 		
 		return getFrameCount() > 0;
 	}
+
+	void Sprite::reinit()
+	{
+		
+		for (DrawableSurface* image : images)
+		{
+			if (image)
+				image->uploadToTexture();
+		}
+		for (RotatedImage* turned : rotated)
+		{
+			if (turned)
+			{
+				if (turned->orig)
+					turned->orig->uploadToTexture();
+				for (auto& pair : turned->rotationMap)
+				{
+					pair.second->uploadToTexture();
+				}
+			}
+		}
+	}
 	
 	DrawableSurface *Sprite::getRotatedSurface(int index)
 	{

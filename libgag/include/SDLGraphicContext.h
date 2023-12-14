@@ -156,6 +156,7 @@ namespace GAGCore
 	protected:
 		friend struct Color;
 		friend class GraphicContext;
+		friend class Sprite;
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
 		//! The clipping rect, we do not draw outside it
@@ -318,12 +319,16 @@ namespace GAGCore
 	protected:
 		//! the minimum acceptable resolution
 		int minW, minH;
+		int prevW, prevH;
 		SDL_Window *window = nullptr;
+		SDL_GLContext context = nullptr;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
 		std::string windowTitle;
 		std::string appIcon;
+		int resizeTimer;
+		Sint64 framesDrawn, frameStartResize, frameStopResize;
 		
 	public:
 		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)
@@ -334,6 +339,14 @@ namespace GAGCore
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+		virtual SDL_Surface *getOrCreateSurface(int w, int h, Uint32 flags);
+		virtual SDL_Rect getRes();
+		virtual bool resChanged();
+		virtual void createGLContext();
+		virtual void unsetContext();
+		static GraphicContext* instance();
+		void resetMatrices();
+		bool isResizing();
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);
@@ -437,6 +450,8 @@ namespace GAGCore
 		
 		//! Load a sprite from the file, return true if any frame have been loaded
 		bool load(const std::string filename);
+
+		void reinit();
 	
 		//! Set the (r,g,b) color to a sprite's base color
 		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor = Color(r, g, b); }

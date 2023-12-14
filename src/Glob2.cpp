@@ -20,9 +20,10 @@
 #include "Glob2.h"
 #include "GlobalContainer.h"
 #include "YOGServer.h"
+#include <thread>
+#include <atomic>
 
 #ifndef YOG_SERVER_ONLY
-
 #include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
 #include "CampaignMainMenu.h"
@@ -31,6 +32,7 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
+#include "EventListener.h"
 #include "Game.h"
 #include "GUIMessageBox.h"
 #include "Header.h"
@@ -63,6 +65,11 @@
 #	include <sys/time.h>
 #else
 #	include <time.h>
+#endif
+
+#if defined(__linux__) || defined(__APPLE__)
+// for setting thread name
+#include <pthread.h>
 #endif
 
 #ifdef __APPLE__
@@ -211,14 +218,47 @@ int Glob2::runTestMapGeneration()
 }
 #endif  // !YOG_SERVER_ONLY
 
-
+void Glob2::finish()
+{
+	// This is for the textshot code
+	GAGCore::DrawableSurface::printFinishingText();
+	delete globalContainer;
+}
 int Glob2::run(int argc, char *argv[])
 {
 	srand(time(NULL));
-
-	globalContainer=new GlobalContainer();
-	globalContainer->parseArgs(argc, argv);
-	globalContainer->load();
+	if (!globalContainer) {
+		globalContainer=new GlobalContainer();
+		globalContainer->parseArgs(argc, argv);
+	}
+	if (!globalContainer->mainthrSet) {
+		globalContainer->mainthr = std::this_thread::get_id();
+		globalContainer->mainthrSet = true;
+		if (!globalContainer->hostServer && !globalContainer->runNoX) {
+			globalContainer->logicThread = new std::thread(&Glob2::run, this, argc, argv);
+		}
+	}
+	if (!globalContainer->hostServer &&
+		!globalContainer->runNoX &&
+	    std::this_thread::get_id() == globalContainer->mainthr) {
+		// Handle events in main thread
+		globalContainer->load(true);
+		finish();
+		return 0;
+	}
+	else {
+		// set thread name
+		const char* name = "Game logic";
+#ifdef WINDOWS_OR_MINGW
+		std::vector<wchar_t> wideName(4096);
+		MultiByteToWideChar(CP_ACP, 0, name, -1, wideName.data(), 4096);
+		SetThreadDescription(GetCurrentThread(), wideName.data());
+#elif defined(__linux__) || defined(__APPLE__)
+		pthread_setname_np(pthread_self(), name);
+#endif
+		// Handle game logic in logic thread
+		globalContainer->load(false);
+	}
 
 	if ( SDLNet_Init() < 0 )
 	{
@@ -407,9 +447,20 @@ int Glob2::run(int argc, char *argv[])
 		}
 	}
 
-	// This is for the textshot code
-	GAGCore::DrawableSurface::printFinishingText();
-	delete globalContainer;
+	// quit event loop so logic thread can be joined by main thread
+	if (globalContainer->logicThread)
+	{
+		EventListener *el = EventListener::instance();
+		el->stop();
+	}
+
+	// Deleting globalContainer indirectly deletes GraphicContext whose
+	// destructor calls SDL_Quit(). I think SDL_Quit needs to be called from
+	// same thread that called SDL_Init.
+	if (std::this_thread::get_id() == globalContainer->mainthr)
+	{
+		finish();
+	}
 
 #endif  // !YOG_SERVER_ONLY
 

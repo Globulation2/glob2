@@ -23,6 +23,7 @@
 #include <assert.h>
 #include <iostream>
 #include "TrueTypeFont.h"
+#include "EventListener.h"
 
 #ifndef YOG_SERVER_ONLY
 #include <GraphicContext.h>
@@ -77,6 +78,13 @@ namespace GAGCore
 		}
 		
 		#ifndef YOG_SERVER_ONLY
+		EventListener *el = EventListener::instance();
+		if (el)
+		{
+			el->stop();
+			delete el;
+			el = NULL;
+		}
 		if (gc)
 		{
 			delete gc;

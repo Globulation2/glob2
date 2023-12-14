@@ -24,6 +24,7 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <algorithm>
+#include <EventListener.h>
 
 using namespace GAGCore;
 
@@ -110,7 +111,8 @@ namespace GAGGUI
 		while(mbs->endValue<0)
 		{
 			Sint32 time = SDL_GetTicks();
-			while (SDL_PollEvent(&event))
+			EventListener* el = EventListener::instance();
+			while (el->poll(&event))
 			{
 				if (event.type==SDL_QUIT)
 					break;

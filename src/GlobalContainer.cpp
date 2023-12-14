@@ -16,15 +16,17 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
+#include <thread>
 #include <Toolkit.h>
 #include <GAG.h>
 #include <GUIBase.h>
 
+#include "EventListener.h"
 #include "FileManager.h"
 #include "GameGUIKeyActions.h"
 #include "Glob2Screen.h"
 #include "Glob2Style.h"
+#include "Glob2.h"
 #include "GlobalContainer.h"
 #include "Header.h"
 #include "IntBuildingType.h"
@@ -126,6 +128,9 @@ GlobalContainer::GlobalContainer(void)
 	replayVisibleTeams = 0xFFFFFFFF;
 	replayShowAreas = false;
 	replayShowFlags = true;
+
+	mainthrSet = false;
+	logicThread = nullptr;
 
 #ifndef YOG_SERVER_ONLY
 	replayReader = NULL;
@@ -504,16 +509,35 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 	gfx->nextFrame();
 }
 
+EventListener* el = NULL;
 // glob2-client specific actions here.
-void GlobalContainer::loadClient(void)
+void GlobalContainer::loadClient(bool runEventListener)
 {
 	if (!runNoX)
 	{
-		// create graphic context
-		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
-		gfx->setMinRes(640, 480);
-		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
+		if (runEventListener) {
+			// create graphic context
+			gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+			gfx->setMinRes(640, 480);
+			//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
 		
+			gfx->unsetContext();
+			el = new EventListener(gfx);
+			el->run();
+			logicThread->join();
+			delete logicThread;
+			return;
+		}
+		
+		{
+			std::unique_lock<std::mutex> lock(EventListener::startMutex);
+			while (!el || !el->isRunning()) {
+				EventListener::startedCond.wait(lock);
+			}
+		}
+		gfx->createGLContext();
+		// Next line fixes white screen during loading screen in software rendered mode.
+		gfx->getOrCreateSurface(gfx->getW(), gfx->getH(), gfx->getOptionFlags());
 		// load data required for drawing progress screen
 		title = new DrawableSurface("data/gfx/title.png");
 		terrain = Toolkit::getSprite("data/gfx/terrain");
@@ -616,35 +640,38 @@ void GlobalContainer::loadClient(void)
 		Style::style = new Glob2Style;
 
 		updateLoadProgressScreen(100);
+		gfx->setRes(gfx->getW(), gfx->getH());
 	}
 }
 #endif  // !YOG_SERVER_ONLY
 
-void GlobalContainer::load(void)
+void GlobalContainer::load(bool runEventListener)
 {
-	// load texts
-	if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
-	{
-		std::cerr << "Fatal error : while loading \"data/texts.list.txt\"" << std::endl;
-		assert(false);
-		exit(-1);
+	if (runEventListener) {
+		// load texts
+		if (!Toolkit::getStringTable()->load("data/texts.list.txt"))
+		{
+			std::cerr << "Fatal error : while loading \"data/texts.list.txt\"" << std::endl;
+			assert(false);
+			exit(-1);
+		}
+		// load texts
+		if (!Toolkit::getStringTable()->loadIncompleteList("data/texts.incomplete.txt"))
+		{
+			std::cerr << "Fatal error : while loading \"data/texts.incomplete.txt\"" << std::endl;
+			assert(false);
+			exit(-1);
+		}
+		
+		Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
+		// load default unit types
+		Race::loadDefault();
+		// load resources types
+		ressourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
 	}
-	// load texts
-	if (!Toolkit::getStringTable()->loadIncompleteList("data/texts.incomplete.txt"))
-	{
-		std::cerr << "Fatal error : while loading \"data/texts.incomplete.txt\"" << std::endl;
-		assert(false);
-		exit(-1);
-	}
-	
-	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
-	// load default unit types
-	Race::loadDefault();
-	// load resources types
-	ressourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
 
 #ifndef YOG_SERVER_ONLY
-	loadClient();
+	loadClient(runEventListener);
 #endif  // !YOG_SERVER_ONLY
 }
 
