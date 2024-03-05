@@ -35,6 +35,8 @@ using namespace GAGCore;
 #include <GUITextInput.h>
 using namespace GAGGUI;
 
+#include "SDLCompat.h"
+
 #include "MapScript.h"
 
 #include <algorithm>
@@ -568,7 +570,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 	SDL_Event event;
 	while(loadSaveScreen->endValue<0)
 	{
-		int time = SDL_GetTicks();
+		Uint64 time = SDL_GetTicks64();
 		while (SDL_PollEvent(&event))
 		{
 			loadSaveScreen->translateAndProcessEvent(&event);
@@ -578,8 +580,8 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
-		int ntime = SDL_GetTicks();
-		SDL_Delay(std::max(0, 40 - ntime + time));
+		Uint64 ntime = SDL_GetTicks64();
+		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
 	}
 
 	if (loadSaveScreen->endValue==0)

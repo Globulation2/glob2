@@ -47,6 +47,7 @@
 #include "Integrity.h"
 #include "Utilities.h"
 #include "GameGUI.h"
+#include "SDLCompat.h"
 
 #include "MapEdit.h"
 
@@ -1310,7 +1311,7 @@ void Game::syncStep(Sint32 localTeam)
 			globalContainer->replayWriter->advanceStep();
 		}
 
-		Sint32 startTick=SDL_GetTicks();
+		Uint64 startTick=SDL_GetTicks64();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
@@ -1348,8 +1349,8 @@ void Game::syncStep(Sint32 localTeam)
 			wonSyncStep();
 		}
 
-		Sint32 endTick=SDL_GetTicks();
-		ticksGameSum[stepCounter&31]+=endTick-startTick;
+		Uint64 endTick=SDL_GetTicks64();
+		ticksGameSum[stepCounter&31]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		stepCounter++;
 		anyPlayerWaitedTimeFor+=1;
 	}

@@ -21,6 +21,7 @@
 #include "Stream.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
+#include <SDLCompat.h>
 #include <iostream>
 #include <sstream>
 
@@ -29,7 +30,7 @@ using namespace GAGCore;
 NetBroadcastListener::NetBroadcastListener()
 {
 	enableListening();
-	lastTime = SDL_GetTicks();
+	lastTime = SDL_GetTicks64();
 }
 
 
@@ -80,7 +81,7 @@ void NetBroadcastListener::update()
 			result = SDLNet_UDP_Recv(socket, packet);
 		}
 		
-		int time = SDL_GetTicks() - lastTime;
+		Uint64 time = std::max<Sint64>(0, static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(lastTime));
 		for(unsigned int i=0; i<timeouts.size();)
 		{
 			timeouts[i] -= time;
@@ -95,7 +96,7 @@ void NetBroadcastListener::update()
 				++i;
 			}
 		}
-		lastTime = SDL_GetTicks();
+		lastTime = SDL_GetTicks64();
 	}
 }
 

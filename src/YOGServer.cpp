@@ -27,6 +27,7 @@
 #include "YOGServer.h"
 #include "YOGServerPlayer.h"
 #include "boost/date_time/posix_time/posix_time.hpp"
+#include "SDLCompat.h"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), router("localhost"), maps(this), scoreCalculator(this)
@@ -118,7 +119,7 @@ void YOGServer::update()
 	maps.update();
 	fileDistributionManager.update();
 	
-	int t = SDL_GetTicks();
+	Uint64 t = SDL_GetTicks64();
 	if(organizedGameTimeEnabled)
 	{
 		if(t > organizedGameBroadcastTime)
@@ -151,11 +152,11 @@ int YOGServer::run()
 	while(nl.isListening())
 	{
 		const int speed = 20;
-		int startTick, endTick;
-		startTick = SDL_GetTicks();
+		Uint64 startTick, endTick;
+		startTick = SDL_GetTicks64();
 		update();
-		endTick=SDL_GetTicks();
-		int remaining = std::max(speed - endTick + startTick, 0);
+		endTick=SDL_GetTicks64();
+		int remaining = std::max<Sint64>(speed - static_cast<Sint64>(endTick) + static_cast<Sint64>(startTick), 0);
 		SDL_Delay(remaining);
 	}
 	std::cout<<nl.isListening()<<std::endl;

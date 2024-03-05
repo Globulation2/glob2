@@ -24,6 +24,7 @@
 #include <sstream>
 #include "StringTable.h"
 #include "Toolkit.h"
+#include "SDLCompat.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;
@@ -61,7 +62,7 @@ void YOGClientGameConnectionDialog::execute()
 	SDL_Event event;
 	while(endValue<0)
 	{
-		Sint32 time = SDL_GetTicks();
+		Uint64 time = SDL_GetTicks64();
 		while (SDL_PollEvent(&event))
 		{
 			if (event.type==SDL_QUIT)
@@ -94,8 +95,8 @@ void YOGClientGameConnectionDialog::execute()
 		parentCtx->drawSurface(decX, decY, getSurface());
 		parentCtx->nextFrame();
 		updateGame();
-		Sint32 newTime = SDL_GetTicks();
-		SDL_Delay(std::max(40 - newTime + time, 0));
+		Uint64 newTime = SDL_GetTicks64();
+		SDL_Delay(std::max<Sint64>(40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time), 0));
 	}
 	
 	delete background;

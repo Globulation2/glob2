@@ -31,6 +31,8 @@
 #include <set>
 #include <boost/tuple/tuple.hpp>
 
+#include <SDLCompat.h>
+
 
 namespace GAGCore
 {

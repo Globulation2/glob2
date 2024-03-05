@@ -21,6 +21,7 @@
 #include "Stream.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
+#include "SDLCompat.h" // for SDL_GetTicks64 fallback
 #include <iostream>
 #include "boost/lexical_cast.hpp"
 
@@ -53,8 +54,8 @@ void NetBroadcaster::update()
 {
 	if(socket)
 	{
-		Uint32 time = SDL_GetTicks();
-		if((time - lastTime) >= 500 )
+		Uint64 time = SDL_GetTicks64();
+		if((static_cast<Sint64>(time) - static_cast<Sint64>(lastTime)) >= 500 )
 		{
 			MemoryStreamBackend* msb = new MemoryStreamBackend;
 			BinaryOutputStream* bos = new BinaryOutputStream(msb);
@@ -127,7 +128,7 @@ void NetBroadcaster::enableBroadcasting()
 	SDLNet_ResolveHost(&localaddress, "127.0.0.1", LAN_BROADCAST_PORT);
 	SDLNet_UDP_Bind(localsocket, 0, &localaddress);
 	
-	lastTime = SDL_GetTicks();
+	lastTime = SDL_GetTicks64();
 }
 
 

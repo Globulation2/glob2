@@ -20,6 +20,7 @@
 #include "StreamBackend.h"
 #include "BinaryStream.h"
 #include "NetMessage.h"
+#include "SDLCompat.h"
 #include "boost/lexical_cast.hpp"
 
 using namespace GAGCore;

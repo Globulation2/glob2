@@ -24,6 +24,7 @@
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
 #include "YOGAfterJoinGameInformation.h"
+#include "SDLCompat.h"
 
 YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::string& routerIP, YOGServer& server)
 	: playerManager(gameHeader), gameID(gameID), chatChannel(chatChannel), routerIP(routerIP), server(server)
@@ -34,7 +35,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::strin
 	recievedMapHeader=false;
 	hasAddedHost=false;
 	latencyMode = 0;
-	latencyUpdateTimer = SDL_GetTicks();
+	latencyUpdateTimer = SDL_GetTicks64();
 	aiNum = 0;
 	mapFile = server.getFileDistributionManager().allocateFileDistributor();
 }
@@ -42,7 +43,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::strin
 
 void YOGServerGame::update()
 {
-	if((SDL_GetTicks() - latencyUpdateTimer) > 4000)
+	if((static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(latencyUpdateTimer)) > 4000)
 	{
 		chooseLatencyMode();
 	}
@@ -356,7 +357,7 @@ Uint16 YOGServerGame::getHostPlayerID() const
 
 void YOGServerGame::chooseLatencyMode()
 {
-	latencyUpdateTimer=SDL_GetTicks();
+	latencyUpdateTimer=SDL_GetTicks64();
 	
 	unsigned highest = 0;
 	unsigned second_highest = 0;
