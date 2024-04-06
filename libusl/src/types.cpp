@@ -25,6 +25,15 @@ Prototype::Prototype(Heap* heap):
 	Value(heap, 0)
 {}
 
+Prototype::~Prototype()
+{
+	for (auto const& pair : members) {
+		delete pair.second;
+	}
+	std::for_each(scopes.begin(), scopes.end(), [](ScopePrototype* p) { delete p; });
+}
+
+
 void Prototype::addMethod(NativeCode* native)
 {
 	ScopePrototype* scope = new ScopePrototype(static_cast<Heap*>(0), this); // TODO: GC
@@ -33,6 +42,7 @@ void Prototype::addMethod(NativeCode* native)
 	native->epilogue(scope);
 	
 	members[native->name] = methodMember(scope);
+	scopes.push_back(scope);
 }
 
 
@@ -40,6 +50,12 @@ ThunkPrototype::ThunkPrototype(Heap* heap, Prototype* outer):
 	Prototype(heap),
 	outer(outer)
 {}
+
+ThunkPrototype::~ThunkPrototype()
+{
+	for (Body::iterator it = body.begin(); it != body.end(); ++it)
+		delete *it;
+}
 
 /*
 struct ScopeSize: NativeThunk
@@ -101,17 +117,17 @@ ScopePrototype::ScopePrototype(Heap* heap, Prototype* outer):
 //	members["prototype"] = &scopeMetaPrototype;	
 }
 
-ScopePrototype::~ScopePrototype()
-{
-	for (Body::iterator it = body.begin(); it != body.end(); ++it)
-		delete *it;
-}
-
-
 Scope::Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
 	Thunk(heap, prototype, outer),
 	locals(prototype->locals.size(), 0)
 {}
+
+Scope::~Scope()
+{
+	for (auto& local : locals) {
+		delete local;
+	}
+}
 	
 /*
 NativeThunk::NativeThunk(Prototype* outer, const std::string& name):

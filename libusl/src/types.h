@@ -52,13 +52,17 @@ extern Value nil;
 
 struct ThunkPrototype;
 struct NativeCode;
+struct ScopePrototype;
 struct Prototype: Value
 {
 	typedef std::map<std::string, ThunkPrototype*> Members;
+	typedef std::vector<ScopePrototype*> Scopes;
 	
 	Members members;
+	Scopes scopes;
 	
 	Prototype(Heap* heap);
+	~Prototype();
 	
 	void addMethod(NativeCode* native);
 	
@@ -96,6 +100,7 @@ struct ThunkPrototype: Prototype
 	Body body;
 
 	ThunkPrototype(Heap* heap, Prototype* outer);
+	~ThunkPrototype();
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
@@ -133,7 +138,6 @@ struct ScopePrototype: ThunkPrototype
 	Locals locals;
 	
 	ScopePrototype(Heap* heap, Prototype* outer);
-	virtual ~ScopePrototype();
 };
 
 struct Scope: Thunk
@@ -144,6 +148,7 @@ struct Scope: Thunk
 	Locals locals;
 	
 	Scope(Heap* heap, ScopePrototype* prototype, Value* outer);
+	~Scope();
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{

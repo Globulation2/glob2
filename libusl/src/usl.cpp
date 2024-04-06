@@ -113,6 +113,12 @@ Usl::Usl()
 	root = new Scope(&heap, prototype, 0);
 }
 
+Usl::~Usl()
+{
+	delete root->prototype;
+	delete root;
+}
+
 void Usl::markGarbage() const
 {
 	root->markForGC();
