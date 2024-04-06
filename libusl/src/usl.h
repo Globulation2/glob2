@@ -12,7 +12,7 @@ struct Scope;
 struct Usl
 {
 	Usl();
-	virtual ~Usl() {}
+	virtual ~Usl();
 	
 	void markGarbage() const;
 	void collectGarbage();
