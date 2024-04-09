@@ -364,12 +364,12 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 						b->locked[i]=false;
 						if (b->globalGradient[i])
 						{
-							delete b->globalGradient[i];
+							delete[] b->globalGradient[i];
 							b->globalGradient[i]=NULL;
 						}
 						if (b->localRessources[i])
 						{
-							delete b->localRessources[i];
+							delete[] b->localRessources[i];
 							b->localRessources[i]=NULL;
 						}
 					}
