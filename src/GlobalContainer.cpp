@@ -79,7 +79,9 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("videoshots");
 	logFileManager = new LogFileManager(fileManager);
 
+#ifndef YOG_SERVER_ONLY
 	title = nullptr;
+#endif  // !YOG_SERVER_ONLY
 
 	// load user preference
 	settings.load();
