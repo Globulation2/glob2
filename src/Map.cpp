@@ -4165,10 +4165,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		pathToBuildingCountClose++;
 		int lx=(x-bx+15+32)&31;
 		int ly=(y-by+15+32)&31;
-		int max=0;
 		Uint8 currentg=gradient[lx+(ly<<5)];
-		bool found=false;
-		bool gradientUsable=false;
 		
 		if (!building->dirtyLocalGradient[canSwim] && currentg==255)
 		{
@@ -4201,10 +4198,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 			return false;
 		}
 
-		max=0;
 		currentg=gradient[lx+ly*32];
-		found=false;
-		gradientUsable=false;
 		if (currentg>1)
 		{
 			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, true, verbose))
