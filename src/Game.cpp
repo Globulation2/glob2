@@ -1829,7 +1829,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action<NB_MOVE);
 	imgid=unit->skin->startImage[unit->action];
 	int px, py;
-	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+	map.mapCaseToDisplayableNoWrap(x + viewportX, y + viewportY, &px, &py, viewportX, viewportY);
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
@@ -2168,7 +2168,7 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 	}
 }
 
-inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+inline void Game::drawMapBuilding(int x, int y, int gid, int localTeam, Uint32 drawOptions)
 {
 	Building *building = teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
 	assert(building);
@@ -2367,9 +2367,12 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 						|| (building->seenByMask & visibleTeams)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
-						int px,py;
+						int px, py;
 						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
-					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						// loops to deal with screen being bigger than map
+						for (;py >> 5 < bot; py += map.h * 32)
+							for (;px >> 5 < right; px += map.w * 32)
+					 			drawMapBuilding(px, py, gid, localTeam, drawOptions);
 						drawnBuildings.insert(building);
 					}
 				}
@@ -2548,7 +2551,10 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 				int frame = globalContainer->bulletExplosion->getFrameCount() - (*it)->ticksLeft - 1;
 				int decX = globalContainer->bulletExplosion->getW(frame)>>1;
 				int decY = globalContainer->bulletExplosion->getH(frame)>>1;
-				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, globalContainer->bulletExplosion, frame);
+				// loops to deal with screen being bigger than map
+				for (;y >> 5 < bot; y += map.h * 32)
+					for (;x >> 5 < right; x += map.w * 32)
+						globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, globalContainer->bulletExplosion, frame);
 			}
 		}
 		// death animations
@@ -2562,9 +2568,11 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 				int decX = globalContainer->deathAnimation->getW(frame)>>1;
 				int decY = globalContainer->deathAnimation->getH(frame)>>1;
 				Team *team = (*it)->team;
-
 				globalContainer->deathAnimation->setBaseColor(team->color);
-				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY-frame, globalContainer->deathAnimation, frame);
+				// loops to deal with screen being bigger than map
+				for (;y >> 5 < bot; y += map.h * 32)
+					for (;x >> 5 < right; x += map.w * 32)
+						globalContainer->gfx->drawSprite(x+16-decX, y+16-decY-frame, globalContainer->deathAnimation, frame);
 			}
 		}
 	}
