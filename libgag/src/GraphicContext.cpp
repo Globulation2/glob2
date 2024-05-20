@@ -303,6 +303,8 @@ namespace GAGCore
 	void DrawableSurface::allocateTexture(void)
 	{
 		#ifdef HAVE_OPENGL
+		if (usingAtlas)
+			return;
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
@@ -345,6 +347,10 @@ namespace GAGCore
 	void DrawableSurface::uploadToTexture(void)
 	{
 		#ifdef HAVE_OPENGL
+		if (usingAtlas)
+		{
+			return;
+		}
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glState.setTexture(texture);
@@ -1049,22 +1055,22 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
@@ -1617,22 +1623,22 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
