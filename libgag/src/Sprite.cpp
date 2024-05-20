@@ -67,8 +67,53 @@ namespace GAGCore
 				SDL_RWclose(rotatedStream);
 			i++;
 		}
+		if (!images.empty())
+			createTextureAtlas();
 		
 		return getFrameCount() > 0;
+	}
+
+	// Create texture atlas for images array
+	void Sprite::createTextureAtlas()
+	{
+		size_t numImages = images.size();
+		int w = 0, h = 0;
+		for (auto image : images)
+		{
+			if (!image)
+				return;
+			if (!w || !h)
+			{
+				w = image->getW();
+				h = image->getH();
+			}
+			if (image->getW() != w || image->getH() != h)
+				return;
+		}
+		int tileWidth = images[0]->getW();
+		int tileHeight = images[0]->getH();
+		int sheetWidth = tileWidth * (sqrt(numImages) + 1);
+		int sheetHeight = tileHeight * (sqrt(numImages) + 1);
+		atlas = new DrawableSurface(sheetWidth, sheetHeight);
+		int x = 0, y = 0;
+		for (auto image: images)
+		{
+			atlas->drawSurface(x, y, image);
+			image->texX = x;
+			image->texY = y;
+			x += tileWidth;
+			if (sheetWidth - x < tileWidth) {
+				x = 0;
+				y += tileHeight;
+			}
+		}
+		atlas->uploadToTexture();
+		for (auto image : images)
+		{
+			image->texture = atlas->texture;
+			image->usingAtlas = true;
+			image->setRes(sheetWidth, sheetHeight);
+		}
 	}
 	
 	DrawableSurface *Sprite::getRotatedSurface(int index)

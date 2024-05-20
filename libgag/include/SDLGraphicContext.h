@@ -158,6 +158,7 @@ namespace GAGCore
 	protected:
 		friend struct Color;
 		friend class GraphicContext;
+		friend class Sprite;
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
 		//! The clipping rect, we do not draw outside it
@@ -166,6 +167,13 @@ namespace GAGCore
 		bool dirty;
 		//! texture index if GPU (GL) is used
 		unsigned int texture;
+		//! sprite sheet coordinates
+		int texX = 0;
+		int texY = 0;
+		//! width and height if using atlas
+		int w;
+		int h;
+		bool usingAtlas = false;
 		//! texture divisor
 		float texMultX, texMultY;
 		
@@ -420,6 +428,7 @@ namespace GAGCore
 		std::string fileName;
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
+		DrawableSurface *atlas = nullptr;
 		Color actColor;
 	
 		friend class DrawableSurface;
@@ -428,6 +437,7 @@ namespace GAGCore
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
+		void createTextureAtlas();
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
 	
