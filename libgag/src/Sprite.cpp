@@ -101,6 +101,10 @@ namespace GAGCore
 			atlas->drawSurface(x, y, image);
 			image->texX = x;
 			image->texY = y;
+			image->texMultX = 1.f;
+			image->texMultY = 1.f;
+			image->w = tileWidth;
+			image->h = tileHeight;
 			x += tileWidth;
 			if (sheetWidth - x < tileWidth) {
 				x = 0;

@@ -217,8 +217,8 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum);
 		
 		// accessors
-		virtual int getW(void) { return sdlsurface->w; } 
-		virtual int getH(void) { return sdlsurface->h; }
+		virtual int getW(void) { if (usingAtlas && w) return w; return sdlsurface->w; }
+		virtual int getH(void) { if (usingAtlas && h) return h; return sdlsurface->h; }
 		
 		// capability querying
 		virtual bool canDrawStretchedSprite(void) { return false; }
