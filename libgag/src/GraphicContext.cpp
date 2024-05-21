@@ -1684,11 +1684,24 @@ namespace GAGCore
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glState.doBlend(true);
 			glState.doTexture(true);
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glColor4ub(255, 255, 255, alpha);
 
 			// draw
 			glState.setTexture(surface->texture);
-			glBegin(GL_QUADS);
+			float vertices[8] = { x, y, x + w, y, x + w, y + h, x, y + h };
+			float texCoords[8] = { static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
+				static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
+			};
+			glVertexPointer(2, GL_FLOAT, 0, vertices);
+			glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+			glDrawArrays(GL_QUADS, 0, 4);
+			assert(!glGetError());
+		    //glDrawElements(GL_QUADS, 4, GL_FLOAT, );
+			/*glBegin(GL_QUADS);
 			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
 			glVertex2f(x, y);
 			glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
@@ -1697,7 +1710,10 @@ namespace GAGCore
 			glVertex2f(x+w, y+h);
 			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
 			glVertex2f(x, y+h);
-			glEnd();
+			glEnd();*/
+
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
 		else
 		#endif
