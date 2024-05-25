@@ -37,6 +37,7 @@
 #include <config.h>
 #endif
 
+#define GL_GLEXT_PROTOTYPES
 #ifdef HAVE_OPENGL
 	#if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
 		#include <OpenGL/gl.h>
@@ -1697,16 +1698,14 @@ namespace GAGCore
 
 			// draw
 			glState.setTexture(surface->texture);
-			float vertices[8] = { x, y, x + w, y, x + w, y + h, x, y + h };
-			float texCoords[8] = { static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+			std::vector<float> vertices = { x, y, x + w, y, x + w, y + h, x, y + h };
+			std::vector<float> texCoords = { static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
 				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
 				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
 				static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
 			};
-			glVertexPointer(2, GL_FLOAT, 0, vertices);
-			glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
-			glDrawArrays(GL_QUADS, 0, 4);
-			assert(!glGetError());
+			surface->sprite->vertices.insert(surface->sprite->vertices.end(), vertices.begin(), vertices.end());
+			surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), texCoords.begin(), texCoords.end());
 		    //glDrawElements(GL_QUADS, 4, GL_FLOAT, );
 			/*glBegin(GL_QUADS);
 			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
@@ -1725,6 +1724,39 @@ namespace GAGCore
 		else
 		#endif
 			DrawableSurface::drawSurface(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), surface, sx, sy, sw, sh, alpha);
+	}
+
+	// Lets us efficiently draw terrain and water.
+	void GraphicContext::finishDrawingSprite(Sprite* sprite, Uint8 alpha)
+	{
+#ifdef HAVE_OPENGL
+		if (_gc->optionFlags & GraphicContext::USEGPU)
+		{
+			// state change
+			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glState.doBlend(true);
+			glState.doTexture(true);
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glColor4ub(255, 255, 255, alpha);
+			glState.setTexture(sprite->atlas->texture);
+			glBindBuffer(GL_ARRAY_BUFFER, sprite->vbo);
+			glBufferData(GL_ARRAY_BUFFER, sprite->vertices.size() * sizeof(float), &sprite->vertices[0], GL_STREAM_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER, sprite->texCoordBuffer);
+			glBufferData(GL_ARRAY_BUFFER, sprite->texCoords.size() * sizeof(float), &sprite->texCoords[0], GL_STREAM_DRAW);
+
+			glVertexPointer(2, GL_FLOAT, 0, &sprite->vertices[0]);
+			glTexCoordPointer(2, GL_FLOAT, 0, &sprite->texCoords[0]);
+			glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 4);
+
+			sprite->vertices.clear();
+			sprite->texCoords.clear();
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		}
+#endif
 	}
 
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
