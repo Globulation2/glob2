@@ -22,6 +22,7 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <assert.h>
+#include <glad/glad.h>
 #include <SDL_image.h>
 #include <algorithm>
 #include <iostream>

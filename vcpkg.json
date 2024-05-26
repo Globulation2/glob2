@@ -20,7 +20,10 @@
     "boost-lambda",
     "speex",
     "opengl",
-    "glad",
+    {
+      "name": "glad",
+      "features": ["gl-api-20"]
+    },
     "pcre"
   ]
 }
