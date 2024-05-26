@@ -8,6 +8,7 @@
 
 #include <sstream>
 #include <boost/function.hpp>
+#include <boost/type_traits/function_traits.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/mpl/assert.hpp>
 
@@ -42,7 +43,7 @@ private:
 	template<typename Function>
 	void addMethod(const std::string& name, const boost::function<Function>& function)
 	{
-		BOOST_MPL_ASSERT(( boost::is_same<This, typename boost::function<Function>::arg1_type> ));
+		BOOST_MPL_ASSERT(( boost::is_same<This, typename boost::function_traits<Function>::arg1_type> ));
 		NativeCode* native = new NativeFunction<Function>(name, function, true);
 		Prototype::addMethod(native);
 	}
