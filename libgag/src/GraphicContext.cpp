@@ -1749,12 +1749,11 @@ namespace GAGCore
 			glState.setTexture(sprite->atlas->texture);
 			glBindBuffer(GL_ARRAY_BUFFER, sprite->vbo);
 			glBufferData(GL_ARRAY_BUFFER, sprite->vertices.size() * sizeof(float), &sprite->vertices[0], GL_STREAM_DRAW);
+			glVertexPointer(2, GL_FLOAT, 0, 0);
 			glBindBuffer(GL_ARRAY_BUFFER, sprite->texCoordBuffer);
 			glBufferData(GL_ARRAY_BUFFER, sprite->texCoords.size() * sizeof(float), &sprite->texCoords[0], GL_STREAM_DRAW);
-
-			glVertexPointer(2, GL_FLOAT, 0, &sprite->vertices[0]);
-			glTexCoordPointer(2, GL_FLOAT, 0, &sprite->texCoords[0]);
-			glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 4);
+			glTexCoordPointer(2, GL_FLOAT, 0, 0);
+			glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 2);
 
 			sprite->vertices.clear();
 			sprite->texCoords.clear();
