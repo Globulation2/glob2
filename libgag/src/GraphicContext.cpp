@@ -1697,16 +1697,15 @@ namespace GAGCore
 
 			// draw
 			glState.setTexture(surface->texture);
-			std::vector<float> vertices = { x, y, x + w, y, x + w, y + h, x, y + h };
-			std::vector<float> texCoords = { static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
-				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
-				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
-				static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
-			};
 			if (surface->sprite && alpha == Color::ALPHA_OPAQUE)
 			{
-				surface->sprite->vertices.insert(surface->sprite->vertices.end(), vertices.begin(), vertices.end());
-				surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), texCoords.begin(), texCoords.end());
+				surface->sprite->vertices.insert(surface->sprite->vertices.end(), { x, y, x + w, y, x + w, y + h, x, y + h });
+				surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), {
+					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
+					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
+				});
 			}
 			else
 			{
