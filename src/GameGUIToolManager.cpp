@@ -442,6 +442,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	sprite->setBaseColor(game.teams[localteam]->color);
 	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, hilightStrength));
 	globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
+	globalContainer->gfx->finishDrawingSprite(sprite, spriteIntensity);
 
 	if (!bt->isVirtual)
 	{

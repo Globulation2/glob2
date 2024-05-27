@@ -1926,6 +1926,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 		if ((unit->performance[HARVEST]) && (unit->carriedRessource>=0))
 			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->carriedRessource);
+		globalContainer->gfx->finishDrawingSprite(globalContainer->ressourceMini, 255);
 	}
 
 	if (drawOptions & DRAW_ACCESSIBILITY)
@@ -1964,6 +1965,7 @@ inline void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int
 	for (int y=waterStartY; y<sh; y += 512)
 		for (int x=waterStartX; x<sw; x += 512)
 			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater, 255);
 }
 
 inline void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
@@ -2225,6 +2227,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 
 	// draw building
 	globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
 	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
 	{
@@ -2458,6 +2461,7 @@ inline void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 			}
 		}
 	}
+	globalContainer->gfx->finishDrawingSprite(sprite, 255);
 }
 
 inline void Game::drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
@@ -2540,6 +2544,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 				globalContainer->gfx->drawSprite(x+(balisticShift>>1), y, bulletSprite, BULLET_IMGID+1);
 			}
 		}
+		globalContainer->gfx->finishDrawingSprite(bulletSprite, 255);
 		// explosions
 		for (std::list<BulletExplosion *>::iterator it=s->explosions.begin();it!=s->explosions.end();it++)
 		{
@@ -2553,6 +2558,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, globalContainer->bulletExplosion, frame);
 			}
 		}
+		globalContainer->gfx->finishDrawingSprite(globalContainer->bulletExplosion, 255);
 		// death animations
 		for (std::list<UnitDeathAnimation *>::iterator it=s->deathAnimations.begin();it!=s->deathAnimations.end();++it)
 		{
@@ -2569,6 +2575,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY-frame, globalContainer->deathAnimation, frame);
 			}
 		}
+		globalContainer->gfx->finishDrawingSprite(globalContainer->deathAnimation, 255);
 	}
 }
 
@@ -2620,6 +2627,8 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 						globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, shadeValue);
 				}
 			}
+		globalContainer->gfx->finishDrawingSprite(globalContainer->terrainBlack, 255);
+		globalContainer->gfx->finishDrawingSprite(globalContainer->terrainShader, 255);
 	}
 }
 

@@ -47,6 +47,8 @@ void BrushTool::draw(int x, int y)
 		if ((mode != MODE_NONE) && (figure == i))
 			globalContainer->gfx->drawSprite(x+decX, y+decY, globalContainer->gamegui, 22);
 	}
+	globalContainer->gfx->finishDrawingSprite(globalContainer->brush, 255);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
 }
 
 void BrushTool::handleClick(int x, int y)

@@ -125,6 +125,8 @@ void BuildingSelectorWidget::draw()
 		else
 			globalContainer->gfx->drawSprite(x-4, y-3, globalContainer->gamegui, 23);
 	}
+	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
 }
 
 
@@ -337,6 +339,12 @@ void TerrainSelector::draw()
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 64);
 	if(me.terrainType==terrainType)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
+	if (terrainType == Grass || terrainType == Sand || terrainType == Water)
+		globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
+	else
+		globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
+	if (me.terrainType == terrainType)
+		globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
 }
 
 
@@ -703,6 +711,8 @@ void BuildingPicture::draw()
 	miniSprite->setBaseColor(selBuild->owner->color);
 	globalContainer->gfx->drawSprite(area.x+dx, area.y+dy, miniSprite, imgid);
 	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 18);
+	globalContainer->gfx->finishDrawingSprite(miniSprite, 255);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
 }
 
 
