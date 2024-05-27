@@ -86,7 +86,8 @@ namespace GAGCore
 				SDL_RWclose(rotatedStream);
 			i++;
 		}
-		if (!images.empty())
+		// TODO: How to cache rotated images?
+		if (!images.empty() && rotated.empty())
 			createTextureAtlas();
 		
 		return getFrameCount() > 0;
