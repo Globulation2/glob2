@@ -2000,7 +2000,7 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 				if ((id < 256) || (id >= 256+16))
 					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
 			}
-	globalContainer->gfx->finishDrawingSprite(sprite, 255);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
 }
 
 inline void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
@@ -2041,6 +2041,7 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
 				}
 			}
+	globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
 }
 
 inline void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)

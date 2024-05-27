@@ -1693,8 +1693,6 @@ namespace GAGCore
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glState.doBlend(true);
 			glState.doTexture(true);
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glColor4ub(255, 255, 255, alpha);
 
 			// draw
@@ -1705,22 +1703,24 @@ namespace GAGCore
 				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
 				static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
 			};
-			surface->sprite->vertices.insert(surface->sprite->vertices.end(), vertices.begin(), vertices.end());
-			surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), texCoords.begin(), texCoords.end());
-		    //glDrawElements(GL_QUADS, 4, GL_FLOAT, );
-			/*glBegin(GL_QUADS);
-			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
-			glVertex2f(x, y);
-			glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
-			glVertex2f(x+w, y);
-			glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
-			glVertex2f(x+w, y+h);
-			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
-			glVertex2f(x, y+h);
-			glEnd();*/
-
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			if (surface->sprite)
+			{
+				surface->sprite->vertices.insert(surface->sprite->vertices.end(), vertices.begin(), vertices.end());
+				surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), texCoords.begin(), texCoords.end());
+			}
+			else
+			{
+				glBegin(GL_QUADS);
+				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
+				glVertex2f(x, y);
+				glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
+				glVertex2f(x + w, y);
+				glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
+				glVertex2f(x + w, y + h);
+				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
+				glVertex2f(x, y + h);
+				glEnd();
+			}
 		}
 		else
 		#endif
@@ -1733,6 +1733,12 @@ namespace GAGCore
 #ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
+			if (!sprite->atlas)
+			{
+				assert(!sprite->vertices.size());
+				assert(!sprite->texCoords.size());
+				return;
+			}
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glState.doBlend(true);
