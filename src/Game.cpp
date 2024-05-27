@@ -1964,6 +1964,7 @@ inline void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int
 	for (int y=waterStartY; y<sh; y += 512)
 		for (int x=waterStartX; x<sw; x += 512)
 			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater, 255);
 }
 
 inline void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
