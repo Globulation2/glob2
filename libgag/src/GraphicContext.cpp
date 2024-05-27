@@ -1735,8 +1735,14 @@ namespace GAGCore
 		{
 			if (!sprite->atlas)
 			{
+				// No sprite sheet, so we have nothing to draw.
 				assert(!sprite->vertices.size());
 				assert(!sprite->texCoords.size());
+				return;
+			}
+			if (sprite->vertices.empty() || sprite->texCoords.empty())
+			{
+				// No data.
 				return;
 			}
 			// state change
