@@ -3,8 +3,10 @@
 
 #include "memory.h"
 #include "debug.h"
+#include "types.h"
 
 #include <istream>
+#include <memory>
 
 struct Thread;
 struct Scope;
@@ -27,7 +29,8 @@ struct Usl
 	
 	DebugInfo debug;
 	Heap heap;
-	Scope* root;
+	std::unique_ptr<Scope> root;
+	std::unique_ptr<Prototype> prototype;
 	Threads threads;
 	
 	/// Run one thread (round-robin over all threads) for a maximum of steps bytecodes executions

@@ -105,19 +105,34 @@ void print(Value* value)
 
 Usl::Usl()
 {
-	ScopePrototype* prototype = new ScopePrototype(&heap, 0);
+	prototype = std::make_unique<ScopePrototype>(&heap, nullptr);
 	prototype->addMethod(new Load());
 	prototype->addMethod(new Yield());
 	prototype->addMethod(new NativeFunction<void(Value*)>("print", print));
 
-	root = new Scope(&heap, prototype, 0);
+	/*std::dynamic_pointer_cast<ScopePrototype>(rootPrototype).get()*/
+	root = std::make_unique<Scope>(&heap, dynamic_cast<ScopePrototype*>(prototype.get()), nullptr);
 }
 
-Usl::~Usl()
+Usl::~Usl() {}
+
+/*Usl::~Usl()
 {
 	delete root->prototype;
 	delete root;
 }
+
+void swap(Usl& first, Usl& second)
+{
+	using std::swap;
+	swap(first.root, second.root);
+}
+
+Usl& Usl::operator=(Usl other)
+{
+	swap(*this, other);
+	return *this;
+}*/
 
 void Usl::markGarbage() const
 {
@@ -225,7 +240,7 @@ Scope* Usl::compile(const std::string& name, std::istream& stream)
 	ScopePrototype* prototype = new ScopePrototype(&heap, root->prototype);
 	block.generateMembers(prototype, &debug, &heap);
 	
-	Scope* scope = new Scope(&heap, prototype, root);
+	Scope* scope = new Scope(&heap, prototype, root.get());
 	return scope;
 }
 
