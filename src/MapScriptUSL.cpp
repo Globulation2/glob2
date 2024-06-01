@@ -167,7 +167,7 @@ void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 bool MapScriptUSL::compileCode(const std::string& code)
 {
 	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getConstant("gui"))->value;
-	usl = Usl();
+	new (&usl) Usl();
 	addGlob2Values(gui);
 	
 	const char* dirsToLoad[] = { "data/usl/Language/Runtime" , "data/usl/Glob2/Runtime", 0 };

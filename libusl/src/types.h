@@ -62,7 +62,6 @@ struct Prototype: Value
 	Scopes scopes;
 	
 	Prototype(Heap* heap);
-	~Prototype();
 	
 	void addMethod(NativeCode* native);
 	
@@ -148,7 +147,6 @@ struct Scope: Thunk
 	Locals locals;
 	
 	Scope(Heap* heap, ScopePrototype* prototype, Value* outer);
-	~Scope();
 	
 	virtual void dumpSpecific(std::ostream& stream) const
 	{
