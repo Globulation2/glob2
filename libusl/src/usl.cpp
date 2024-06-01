@@ -114,7 +114,17 @@ Usl::Usl()
 	root = std::make_unique<Scope>(&heap, dynamic_cast<ScopePrototype*>(prototype.get()), nullptr);
 }
 
-Usl::~Usl() {}
+Usl::~Usl() {
+	// Remove prototype and root as they will be automatically deleted anyway.
+	for (auto it = heap.values.begin(); it != heap.values.end();)
+	{
+		if (*it == prototype.get() || *it == root.get())
+			it = heap.values.erase(it);
+		else
+			it++;
+	}
+	heap.collectGarbage();
+}
 
 /*Usl::~Usl()
 {
