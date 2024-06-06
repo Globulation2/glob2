@@ -13,7 +13,7 @@ using std::string;
 
 ThunkPrototype* thisMember(Prototype* outer)
 {
-	ThunkPrototype* thunk = new ThunkPrototype(0, outer); // TODO: GC
+	ThunkPrototype* thunk = new ThunkPrototype(outer->heap, outer); // TODO: GC
 	thunk->body.push_back(new ThunkCode());
 	thunk->body.push_back(new ParentCode());
 	return thunk;
@@ -21,7 +21,7 @@ ThunkPrototype* thisMember(Prototype* outer)
 
 ThunkPrototype* methodMember(ScopePrototype* method)
 {
-	ThunkPrototype* thunk = new ThunkPrototype(0, method->outer);
+	ThunkPrototype* thunk = new ThunkPrototype(method->heap, method->outer);
 	thunk->body.push_back(new ThunkCode());
 	thunk->body.push_back(new ParentCode());
 	thunk->body.push_back(new CreateCode<Function>(method));
