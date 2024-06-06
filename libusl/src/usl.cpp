@@ -112,9 +112,7 @@ Usl::Usl()
 
 	/*std::dynamic_pointer_cast<ScopePrototype>(rootPrototype).get()*/
 	root = std::make_unique<Scope>(&heap, dynamic_cast<ScopePrototype*>(prototype.get()), nullptr);
-}
 
-Usl::~Usl() {
 	// Remove prototype and root as they will be automatically deleted anyway.
 	for (auto it = heap.values.begin(); it != heap.values.end();)
 	{
@@ -123,7 +121,10 @@ Usl::~Usl() {
 		else
 			it++;
 	}
-	heap.collectGarbage();
+}
+
+Usl::~Usl() {
+	collectGarbage();
 }
 
 /*Usl::~Usl()
@@ -271,7 +272,7 @@ size_t Usl::run(size_t steps)
 	}
 	
 	// TODO: garbageCollect
-	
+	collectGarbage();
 	return total;
 }
 

@@ -22,18 +22,20 @@ Value nil(0, &Nil);
 
 
 Prototype::Prototype(Heap* heap):
-	Value(heap, 0)
-{}
+	Value(heap, 0),
+	heap(heap)
+{
+}
 
 void Prototype::addMethod(NativeCode* native)
 {
-	ScopePrototype* scope = new ScopePrototype(static_cast<Heap*>(0), this); // TODO: GC
+	assert(heap);
+	ScopePrototype* scope = new ScopePrototype(heap, this); // TODO: GC
 	native->prologue(scope);
 	scope->body.push_back(native); // run the method
 	native->epilogue(scope);
 	
 	members[native->name] = methodMember(scope);
-	scopes.push_back(scope);
 }
 
 

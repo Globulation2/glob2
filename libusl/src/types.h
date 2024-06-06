@@ -59,7 +59,7 @@ struct Prototype: Value
 	typedef std::vector<ScopePrototype*> Scopes;
 	
 	Members members;
-	Scopes scopes;
+	Heap* heap;
 	
 	Prototype(Heap* heap);
 	

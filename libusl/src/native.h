@@ -29,12 +29,12 @@ template<typename This>
 struct NativeValuePrototype: Prototype
 {
 	NativeValuePrototype():
-		Prototype(static_cast<Heap*>(0))
+		Prototype(heap)
 	{
-		initialize();
 	}
 	
 private:
+	template<typename Thiss> friend struct NativeValue;
 	/// specialize this method to add members to a native value prototype
 	void initialize()
 	{}
@@ -56,7 +56,10 @@ struct NativeValue: Value
 	NativeValue(Heap* heap, const This& value):
 		Value(heap, &prototype),
 		value(value)
-	{}
+	{
+		prototype.heap = heap;
+		prototype.initialize();
+	}
 	
 	const This value;
 	
