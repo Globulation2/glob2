@@ -2,7 +2,7 @@ Source: glob2
 Section: games
 Priority: optional
 Maintainer: Stephane Magnenat <stephane at magnenat dot net>
-Build-Depends: debhelper (>> 6.0.0), quilt (>= 0.40), scons, libsdl2-dev (>=2.0.0), libsdl2-image-dev (>=2.0.0), libsdl2-net-dev (>=2.0.0), libsdl2-ttf-dev, libglu1-mesa-dev | libglu-dev, libvorbis-dev, libspeex-dev, libfreetype6-dev, libboost-dev, libboost-thread-dev, libboost-date-time-dev, libfribidi-dev, portaudio19-dev, libboost-math-dev
+Build-Depends: debhelper (>> 6.0.0), quilt (>= 0.40), scons, libsdl2-dev (>=2.0.0), libsdl2-image-dev (>=2.0.0), libsdl2-net-dev (>=2.0.0), libsdl2-ttf-dev, libglu1-mesa-dev | libglu-dev, libvorbis-dev, libspeex-dev, libfreetype6-dev, libboost-dev, libboost-thread-dev, libboost-date-time-dev, libfribidi-dev, portaudio19-dev, libboost-math-dev, libepoxy-dev
 Standards-Version: 3.8.1
 Homepage: http://globulation2.org
 
