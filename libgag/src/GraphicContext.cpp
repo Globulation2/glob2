@@ -25,7 +25,12 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <glad/glad.h>
+#include <epoxy/gl.h>
+#ifdef _MSC_VER
+#include <epoxy/wgl.h>
+#else
+#include <epoxy/glx.h>
+#endif
 #include "SDL_ttf.h"
 #include <SDL_image.h>
 #include <math.h>
@@ -2137,7 +2142,6 @@ namespace GAGCore
 			{
 				SDL_GLContext context = SDL_GL_CreateContext(window);
 				SDL_GL_MakeCurrent(window, context);
-				gladLoadGLLoader(SDL_GL_GetProcAddress);
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
