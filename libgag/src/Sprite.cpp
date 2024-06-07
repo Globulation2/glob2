@@ -35,14 +35,14 @@
 #include <OpenGL/glu.h>
 #define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
 #else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-#endif
-
-#ifdef WIN32
-#include <GL/glext.h>
-#endif
+#include <epoxy/gl.h>
+#ifdef _MSC_VER
+#include <epoxy/wgl.h>
+#else
+#include <epoxy/glx.h>
+#endif // _MSC_VER
+#endif // defined(__APPLE__)
+#endif // ifdef HAVE_OPENGL
 
 
 namespace GAGCore

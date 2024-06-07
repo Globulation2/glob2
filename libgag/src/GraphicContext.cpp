@@ -25,6 +25,14 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#ifdef HAVE_OPENGL
+#include <epoxy/gl.h>
+#ifdef _MSC_VER
+#include <epoxy/wgl.h>
+#else
+#include <epoxy/glx.h>
+#endif // _MSC_VER
+#endif // HAVE_OPENGL
 #include "SDL_ttf.h"
 #include <SDL_image.h>
 #include <math.h>

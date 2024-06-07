@@ -193,6 +193,14 @@ def configure(env, server_only):
         configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
         env.Append(LIBS=gl_libraries)
     
+    #Do checks for epoxy, which handles OpenGL 2+ function pointer loading.
+    if not server_only:
+        if conf.CheckLib('epoxy') and conf.CheckCXXHeader('epoxy/gl.h'):
+            env.Append(LIBS=["epoxy"])
+        else:
+            print("Could not find epoxy/gl.h")
+            #Don't add epoxy to `missing` list because that breaks compiling without OpenGL.
+
     #Do checks for fribidi
     if not server_only and conf.CheckLib('fribidi') and conf.CheckCXXHeader('fribidi/fribidi.h'):
         configfile.add("HAVE_FRIBIDI ", "Defined when FRIBIDI support is present and compiled")
