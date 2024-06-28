@@ -3953,6 +3953,7 @@ void GameGUI::drawFlagView(void)
 		int decX = 8 + ((int)toolManager.getZoneType()) * 40 + dec;
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
 	}
+	globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
 	if(hilights.find(HilightForbiddenZoneOnPanel) != hilights.end())
 	{
 		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));

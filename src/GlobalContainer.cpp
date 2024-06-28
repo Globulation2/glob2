@@ -500,6 +500,7 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 				index = ((randomSeed >> 16) & 0xF) + 128;
 			gfx->drawSprite(x, y, terrain, index);
 		}
+	gfx->finishDrawingSprite(terrain, 255);
 	//gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color::black);
 	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title);
 	//gfx->drawFilledRect(((gfx->getW()-400)>>1), (gfx->getH()>>1)+11+180, (value)<<2, 20, 10, 50, 255, 80);

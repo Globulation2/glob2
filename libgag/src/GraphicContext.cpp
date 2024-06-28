@@ -25,6 +25,12 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <epoxy/gl.h>
+#ifdef _MSC_VER
+#include <epoxy/wgl.h>
+#else
+#include <epoxy/glx.h>
+#endif
 #include "SDL_ttf.h"
 #include <SDL_image.h>
 #include <math.h>
@@ -37,6 +43,7 @@
 #include <config.h>
 #endif
 
+#define GL_GLEXT_PROTOTYPES
 #ifdef HAVE_OPENGL
 	#if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
 		#include <OpenGL/gl.h>
@@ -303,6 +310,8 @@ namespace GAGCore
 	void DrawableSurface::allocateTexture(void)
 	{
 		#ifdef HAVE_OPENGL
+		if (usingAtlas)
+			return;
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
@@ -315,6 +324,12 @@ namespace GAGCore
 	void DrawableSurface::initTextureSize(void)
 	{
 		#ifdef HAVE_OPENGL
+		//if (usingAtlas)
+		//{
+		//	texMultX = 1.f;
+		//	texMultY = 1.f;
+		//	return;
+		//}
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			// only power of two textures are supported
@@ -345,6 +360,11 @@ namespace GAGCore
 	void DrawableSurface::uploadToTexture(void)
 	{
 		#ifdef HAVE_OPENGL
+		if (usingAtlas)
+		{
+			//dirty = false;
+			return;
+		}
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glState.setTexture(texture);
@@ -1049,22 +1069,22 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
@@ -1617,22 +1637,22 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, 0, 0, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
@@ -1682,20 +1702,77 @@ namespace GAGCore
 
 			// draw
 			glState.setTexture(surface->texture);
-			glBegin(GL_QUADS);
-			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
-			glVertex2f(x, y);
-			glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
-			glVertex2f(x+w, y);
-			glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
-			glVertex2f(x+w, y+h);
-			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
-			glVertex2f(x, y+h);
-			glEnd();
+			if (surface->sprite && alpha == Color::ALPHA_OPAQUE)
+			{
+				surface->sprite->vertices.insert(surface->sprite->vertices.end(), { x, y, x + w, y, x + w, y + h, x, y + h });
+				surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), {
+					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
+					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
+				});
+			}
+			else
+			{
+				glBegin(GL_QUADS);
+				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
+				glVertex2f(x, y);
+				glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
+				glVertex2f(x + w, y);
+				glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
+				glVertex2f(x + w, y + h);
+				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
+				glVertex2f(x, y + h);
+				glEnd();
+			}
 		}
 		else
 		#endif
 			DrawableSurface::drawSurface(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), surface, sx, sy, sw, sh, alpha);
+	}
+
+	// Lets us efficiently draw terrain and water.
+	void GraphicContext::finishDrawingSprite(Sprite* sprite, Uint8 alpha)
+	{
+#ifdef HAVE_OPENGL
+		if (_gc->optionFlags & GraphicContext::USEGPU)
+		{
+			if (!sprite->atlas)
+			{
+				// No sprite sheet, so we have nothing to draw.
+				assert(!sprite->vertices.size());
+				assert(!sprite->texCoords.size());
+				return;
+			}
+			if (sprite->vertices.empty() || sprite->texCoords.empty())
+			{
+				// No data.
+				return;
+			}
+			// state change
+			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glState.doBlend(true);
+			glState.doTexture(true);
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glColor4ub(255, 255, 255, alpha);
+			glState.setTexture(sprite->atlas->texture);
+			glBindBuffer(GL_ARRAY_BUFFER, sprite->vbo);
+			glBufferData(GL_ARRAY_BUFFER, sprite->vertices.size() * sizeof(float), &sprite->vertices[0], GL_STREAM_DRAW);
+			glVertexPointer(2, GL_FLOAT, 0, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, sprite->texCoordBuffer);
+			glBufferData(GL_ARRAY_BUFFER, sprite->texCoords.size() * sizeof(float), &sprite->texCoords[0], GL_STREAM_DRAW);
+			glTexCoordPointer(2, GL_FLOAT, 0, 0);
+			glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 2);
+
+			sprite->vertices.clear();
+			sprite->texCoords.clear();
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		}
+#endif
 	}
 
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)

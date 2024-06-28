@@ -158,14 +158,24 @@ namespace GAGCore
 	protected:
 		friend struct Color;
 		friend class GraphicContext;
+		friend class Sprite;
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
+		//! which animation or texture atlas this surface is part of.
+		Sprite* sprite = nullptr;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
 		//! this surface has been modified since latest blit
 		bool dirty;
 		//! texture index if GPU (GL) is used
 		unsigned int texture;
+		//! sprite sheet coordinates
+		int texX = 0;
+		int texY = 0;
+		//! width and height if using atlas
+		int w;
+		int h;
+		bool usingAtlas = false;
 		//! texture divisor
 		float texMultX, texMultY;
 		
@@ -209,8 +219,8 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum);
 		
 		// accessors
-		virtual int getW(void) { return sdlsurface->w; } 
-		virtual int getH(void) { return sdlsurface->h; }
+		virtual int getW(void) { if (usingAtlas && w) return w; return sdlsurface->w; }
+		virtual int getH(void) { if (usingAtlas && h) return h; return sdlsurface->h; }
 		
 		// capability querying
 		virtual bool canDrawStretchedSprite(void) { return false; }
@@ -375,6 +385,8 @@ namespace GAGCore
 		
 		virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
 		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+
+		void finishDrawingSprite(Sprite* sprite, Uint8 alpha);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -416,10 +428,21 @@ namespace GAGCore
 			RotatedImage(DrawableSurface *s) { orig = s; }
 			~RotatedImage();
 		};
+
+		friend class GraphicContext;
 	
 		std::string fileName;
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
+
+		// Sprite sheet stuff to efficiently draw terrain/water/units.
+#ifdef HAVE_OPENGL
+		std::vector <float> vertices;
+		std::vector <float> texCoords;
+		unsigned int vbo;
+		unsigned int texCoordBuffer;
+		DrawableSurface *atlas = nullptr;
+#endif
 		Color actColor;
 	
 		friend class DrawableSurface;
@@ -428,6 +451,7 @@ namespace GAGCore
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
+		void createTextureAtlas();
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
 	

@@ -1964,12 +1964,15 @@ inline void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int
 	for (int y=waterStartY; y<sh; y += 512)
 		for (int x=waterStartX; x<sw; x += 512)
 			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater, 255);
 }
 
 inline void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
+	Sprite* sprite;
 
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
@@ -1985,7 +1988,6 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 			{
 				// draw terrain
 				int id=map.getTerrain(x+viewportX, y+viewportY);
-				Sprite *sprite;
 				if (id<272)
 				{
 					sprite=globalContainer->terrain;
@@ -1999,6 +2001,7 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 				if ((id < 256) || (id >= 256+16))
 					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
 			}
+	globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
 }
 
 inline void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
@@ -2039,6 +2042,7 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
 				}
 			}
+	globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
 }
 
 inline void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
@@ -2223,6 +2227,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 
 	// draw building
 	globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
 	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
 	{

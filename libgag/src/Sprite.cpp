@@ -27,6 +27,24 @@
 #include <iostream>
 #include <sstream>
 
+#define GL_GLEXT_PROTOTYPES
+#ifdef HAVE_OPENGL
+#if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
+#else
+#include <epoxy/gl.h>
+#ifdef _MSC_VER
+#include <epoxy/wgl.h>
+#else
+#include <epoxy/glx.h>
+#endif // _MSC_VER
+#endif // defined(__APPLE__)
+#endif // ifdef HAVE_OPENGL
+
+
 namespace GAGCore
 {
 	Sprite::RotatedImage::~RotatedImage()
@@ -67,8 +85,67 @@ namespace GAGCore
 				SDL_RWclose(rotatedStream);
 			i++;
 		}
+		// TODO: How to cache rotated images?
+		if (getFrameCount() > 1 && (rotated.empty() || std::all_of(rotated.begin(), rotated.end(), [](RotatedImage* r) {return r == nullptr; })))
+		{
+			createTextureAtlas();
+		}
 		
 		return getFrameCount() > 0;
+	}
+
+	// Create texture atlas for images array
+	// Using a sprite sheet lets us efficiently drawn terrain and water with a few calls
+	// to glDrawArrays, rather than 272 individual calls to glBegin...glEnd.
+	void Sprite::createTextureAtlas()
+	{
+#ifdef HAVE_OPENGL
+		size_t numImages = images.size();
+		int w = 0, h = 0;
+		for (auto image : images)
+		{
+			if (!image)
+				return;
+			if (!w || !h)
+			{
+				w = image->getW();
+				h = image->getH();
+			}
+			if (image->getW() != w || image->getH() != h)
+				return;
+		}
+		int tileWidth = images[0]->getW();
+		int tileHeight = images[0]->getH();
+		int sheetWidth = tileWidth * (static_cast<int>(sqrt(numImages)) + 1);
+		int sheetHeight = tileHeight * (static_cast<int>(sqrt(numImages)) + 1);
+		atlas = new DrawableSurface(sheetWidth, sheetHeight);
+		int x = 0, y = 0;
+		for (auto image: images)
+		{
+			atlas->drawSurface(x, y, image);
+			image->texX = x;
+			image->texY = y;
+			image->texMultX = 1.f;
+			image->texMultY = 1.f;
+			image->w = tileWidth;
+			image->h = tileHeight;
+			x += tileWidth;
+			if (sheetWidth - x < tileWidth) {
+				x = 0;
+				y += tileHeight;
+			}
+		}
+		atlas->uploadToTexture();
+		for (auto image : images)
+		{
+			image->texture = atlas->texture;
+			image->usingAtlas = true;
+			image->sprite = this;
+			image->setRes(sheetWidth, sheetHeight);
+		}
+		glGenBuffers(1, &vbo);
+		glGenBuffers(1, &texCoordBuffer);
+#endif
 	}
 	
 	DrawableSurface *Sprite::getRotatedSurface(int index)
@@ -110,6 +187,7 @@ namespace GAGCore
 			if (*rotatedIt)
 				delete (*rotatedIt);
 		}
+		delete atlas;
 	}
 	
 	void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
