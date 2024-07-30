@@ -27,6 +27,22 @@
 #include <iostream>
 #include <sstream>
 
+#if __cplusplus >= 201402L
+#include <memory>
+using std::make_unique;
+#else
+#if BOOST_VERSION >= 107500
+#include <boost/smart_ptr/make_unique.hpp>
+#elif BOOST_VERSION >= 106300
+#include <boost/make_unique.hpp>
+#elif BOOST_VERSION >= 105700
+#include <boost/move/make_unique.hpp>
+#else
+#error "Can't make_unique when there's no Boost and C++ standard is earlier than C++14"
+#endif
+using boost::make_unique;
+#endif // __cplusplus
+
 #define GL_GLEXT_PROTOTYPES
 #ifdef HAVE_OPENGL
 #if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
@@ -118,7 +134,7 @@ namespace GAGCore
 		}
 		int sheetWidth = tileWidth * (static_cast<int>(sqrt(numImages)) + 1);
 		int sheetHeight = tileHeight * (static_cast<int>(sqrt(numImages)) + 1);
-		atlas = new DrawableSurface(sheetWidth, sheetHeight);
+		std::unique_ptr<DrawableSurface> atlas = make_unique<DrawableSurface>(sheetWidth, sheetHeight);
 		int x = 0, y = 0;
 		for (auto image: images)
 		{
@@ -143,6 +159,7 @@ namespace GAGCore
 			image->sprite = this;
 			image->setRes(sheetWidth, sheetHeight);
 		}
+		this->atlas = std::move(atlas);
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &texCoordBuffer);
 #endif
@@ -187,7 +204,6 @@ namespace GAGCore
 			if (*rotatedIt)
 				delete (*rotatedIt);
 		}
-		delete atlas;
 	}
 	
 	void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
