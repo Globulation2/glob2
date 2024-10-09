@@ -1221,7 +1221,6 @@ public:
 	///Retrieves playerID
 	Uint16 getPlayerID() const;
 private:
-private:
 	Uint16 playerID;
 };
 
@@ -1256,7 +1255,6 @@ public:
 
 	///Retrieves playerNum
 	Uint8 getPlayerNumber() const;
-private:
 private:
 	Uint8 playerNum;
 };
@@ -1295,7 +1293,6 @@ public:
 
 	///Retrieves team
 	Uint8 getTeam() const;
-private:
 private:
 	Uint8 player;
 	Uint8 team;
@@ -1359,7 +1356,6 @@ public:
 
 	///Retrieves refusalReason
 	YOGServerGameStartRefusalReason getRefusalReason() const;
-private:
 private:
 	YOGServerGameStartRefusalReason refusalReason;
 };
@@ -1450,7 +1446,6 @@ public:
 	///Retrieves latencyAdjustment
 	Uint8 getLatencyAdjustment() const;
 private:
-private:
 	Uint8 latencyAdjustment;
 };
 
@@ -1489,7 +1484,6 @@ public:
 	///Retrieves playerName
 	std::string getPlayerName() const;
 private:
-private:
 	Uint16 playerID;
 	std::string playerName;
 };
@@ -1526,7 +1520,6 @@ public:
 	///Retrieves type
 	Uint8 getType() const;
 private:
-private:
 	Uint8 type;
 };
 
@@ -1562,7 +1555,6 @@ public:
 	///Retrieves reTeamingInfo
 	NetReTeamingInformation getReTeamingInfo() const;
 private:
-private:
 	NetReTeamingInformation reTeamingInfo;
 };
 
@@ -1597,7 +1589,6 @@ public:
 
 	///Retrieves result
 	YOGGameResult getGameResult() const;
-private:
 private:
 	YOGGameResult result;
 };
@@ -1742,7 +1733,6 @@ public:
 	///Retrieves gameID
 	Uint16 getGameID() const;
 private:
-private:
 	Uint16 gameID;
 };
 
@@ -1777,7 +1767,6 @@ public:
 
 	///Retrieves info
 	YOGAfterJoinGameInformation getAfterJoinGameInformation() const;
-private:
 private:
 	YOGAfterJoinGameInformation info;
 };
@@ -1814,7 +1803,6 @@ public:
 	///Retrieves password
 	std::string getPassword() const;
 private:
-private:
 	std::string password;
 };
 
@@ -1850,7 +1838,6 @@ public:
 	///Retrieves command
 	std::string getCommand() const;
 private:
-private:
 	std::string command;
 };
 
@@ -1885,7 +1872,6 @@ public:
 
 	///Retrieves text
 	std::string getText() const;
-private:
 private:
 	std::string text;
 };
@@ -1949,7 +1935,6 @@ public:
 	///Retrieves reason
 	YOGRouterAdministratorLoginRefusalReason getReason() const;
 private:
-private:
 	YOGRouterAdministratorLoginRefusalReason reason;
 };
 
@@ -1984,7 +1969,6 @@ public:
 
 	///Retrieves maps
 	std::vector<YOGDownloadableMapInfo> getMaps() const;
-private:
 private:
 	std::vector<YOGDownloadableMapInfo> maps;
 };
@@ -2048,7 +2032,6 @@ public:
 	///Retrieves mapInfo
 	YOGDownloadableMapInfo getMapInfo() const;
 private:
-private:
 	YOGDownloadableMapInfo mapInfo;
 };
 
@@ -2083,7 +2066,6 @@ public:
 
 	///Retrieves fileID
 	Uint16 getFileID() const;
-private:
 private:
 	Uint16 fileID;
 };
@@ -2120,7 +2102,6 @@ public:
 	///Retrieves reason
 	YOGMapUploadRefusalReason getReason() const;
 private:
-private:
 	YOGMapUploadRefusalReason reason;
 };
 
@@ -2155,7 +2136,6 @@ public:
 
 	///Retrieves fileID
 	Uint16 getFileID() const;
-private:
 private:
 	Uint16 fileID;
 };
@@ -2192,7 +2172,6 @@ public:
 	///Retrieves fileID
 	Uint16 getFileID() const;
 private:
-private:
 	Uint16 fileID;
 };
 
@@ -2227,7 +2206,6 @@ public:
 
 	///Retrieves mapID
 	Uint16 getMapID() const;
-private:
 private:
 	Uint16 mapID;
 };
@@ -2267,7 +2245,6 @@ public:
 	///Retrieves thumbnail
 	MapThumbnail getThumbnail() const;
 private:
-private:
 	Uint16 mapID;
 	MapThumbnail thumbnail;
 };
@@ -2306,7 +2283,6 @@ public:
 
 	///Retrieves rating
 	Uint8 getRating() const;
-private:
 private:
 	Uint16 mapID;
 	Uint8 rating;

@@ -296,7 +296,7 @@ void Minimap::computeColors(int row, int localTeam)
 		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
 	};
 
-	int pPol[3+MAX_RESOURCES];
+	int pCol[3+MAX_RESOURCES];
 
 	// get data
 	int szX = mini_w;
@@ -315,7 +315,7 @@ void Minimap::computeColors(int row, int localTeam)
 	const int dy = row;
 	for (int dx=0; dx<szX; dx++)
 	{
-		memset(pPol, 0, sizeof(pPol));
+		memset(pCol, 0, sizeof(pCol));
 		int nCount = 0;
 		int UnitOrBuildingIndex = -1;
 		
@@ -369,25 +369,25 @@ void Minimap::computeColors(int row, int localTeam)
 				if (useMapDiscovered || game->map.isMapDiscovered(miniDx, miniDy, visibleTeams))
 				{
 					// get color to add
-					int pPolIndex;
+					int pColIndex;
 					const auto& r = game->map.getResource(miniDx, miniDy);
 					if (r.type!=NO_RES_TYPE)
 					{
-						pPolIndex=r.type + 3;
+						pColIndex=r.type + 3;
 					}
 					else
 					{
-						pPolIndex=game->map.getUMTerrain(miniDx,miniDy);
+						pColIndex=game->map.getUMTerrain(miniDx,miniDy);
 					}
 					
 					// get weight to add
-					int pPolAddValue;
+					int pColAddValue;
 					if (useMapDiscovered || game->map.isFOWDiscovered(miniDx, miniDy, visibleTeams))
-						pPolAddValue=5;
+						pColAddValue=5;
 					else
-						pPolAddValue=3;
+						pColAddValue=3;
 
-					pPol[pPolIndex]+=pPolAddValue;
+					pCol[pColIndex]+=pColAddValue;
 				}
 
 				nCount++;
@@ -413,16 +413,16 @@ void Minimap::computeColors(int row, int localTeam)
 			lr = lg = lb = 0;
 			for (int i=0; i<3; i++)
 			{
-				lr += pPol[i]*terrainColor[i][0];
-				lg += pPol[i]*terrainColor[i][1];
-				lb += pPol[i]*terrainColor[i][2];
+				lr += pCol[i]*terrainColor[i][0];
+				lg += pCol[i]*terrainColor[i][1];
+				lb += pCol[i]*terrainColor[i][2];
 			}
 			for (int i=0; i<MAX_RESOURCES; i++)
 			{
 				ResourceType *rt = globalContainer->resourcesTypes.get(i);
-				lr += pPol[i+3]*(rt->minimapR);
-				lg += pPol[i+3]*(rt->minimapG);
-				lb += pPol[i+3]*(rt->minimapB);
+				lr += pCol[i+3]*(rt->minimapR);
+				lg += pCol[i+3]*(rt->minimapG);
+				lb += pCol[i+3]*(rt->minimapB);
 			}
 
 			r = lr/nCount;

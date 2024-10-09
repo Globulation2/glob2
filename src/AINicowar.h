@@ -151,29 +151,29 @@ public:
 	int upgrading_phase_1_inn_chance;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an hospital
 	int upgrading_phase_1_hospital_chance;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an racetrack
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a racetrack
 	int upgrading_phase_1_racetrack_chance;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an swimming pool
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a swimming pool
 	int upgrading_phase_1_swimmingpool_chance;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an barracks
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a barracks
 	int upgrading_phase_1_barracks_chance;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an school
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a school
 	int upgrading_phase_1_school_chance;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an tower
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a tower
 	int upgrading_phase_1_tower_chance;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an inn
 	int upgrading_phase_2_inn_chance;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an hospital
 	int upgrading_phase_2_hospital_chance;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an racetrack
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a racetrack
 	int upgrading_phase_2_racetrack_chance;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an swimming pool
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a swimming pool
 	int upgrading_phase_2_swimmingpool_chance;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an barracks
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a barracks
 	int upgrading_phase_2_barracks_chance;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an school
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a school
 	int upgrading_phase_2_school_chance;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an tower
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a tower
 	int upgrading_phase_2_tower_chance;
 	///The number of units to assign to an upgrade for upgrading phase level 1
 	int upgrading_phase_1_units_assigned;
@@ -274,7 +274,7 @@ private:
 	bool defend_explorers;
 	///During this phase, Nicowar tries to construct many explorers so that it can launch an attack with them
 	bool explorer_attack_preparation_phase;
-	///During this phase, Nicowar will activity attack its opponents with explorers
+	///During this phase, Nicowar will actively attack its opponents with explorers
 	bool explorer_attack_phase;
 
 
@@ -300,7 +300,7 @@ private:
 	///This counts how many StarvingRecoveryInn's there are under construction
 	int starving_recovery_inns;
 
-	///This function starts construction on buildings that are queued for construction. Its careful
+	///This function starts construction on buildings that are queued for construction. It's careful
 	///not to construct too much or too little at once
 	void order_buildings(AIEcho::Echo& echo);
 	///This function starts construction of a RegularInn, and returns the ID code

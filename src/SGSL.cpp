@@ -74,7 +74,7 @@ SGSLToken::TokenSymbolLookupTable SGSLToken::table[] =
 	{ S_SUMMON_FLAG, "summonFlag" },
 	{ S_DESTROY_FLAG, "destroyFlag" },
 	{ S_WIN, "win" },
-	{ S_LOOSE, "loose" },
+	{ S_LOSE, "loose" },
 	{ S_LABEL, "label" },
 	{ S_JUMP, "jump" },
 	{ S_SET_AREA, "setArea"},
@@ -402,7 +402,7 @@ void Story::setHighlightItem(GameGUI* gui, bool doSet)
 	}
 	else if(n=="forbidden zone on panel")
 	{
-		t=GameGUI::HighlightWorkersWorkingFreeStat;
+		t=GameGUI::HighlightForbiddenZoneOnPanel;
 	}
 	else if(n=="guard zone on panel")
 	{
@@ -503,7 +503,7 @@ void Story::resetAI(GameGUI* gui)
 
 
 static const FunctionArgumentDescription totoDescription[] = {
-	{ SGSLToken::S_WIN, SGSLToken::S_LOOSE },
+	{ SGSLToken::S_WIN, SGSLToken::S_LOSE },
 	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
@@ -631,7 +631,7 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case (SGSLToken::S_LOOSE):
+			case (SGSLToken::S_LOSE):
 			{
 				mapScript->hasLost.at(line[++lineSelector].value)=true;
 				return true;
@@ -2379,7 +2379,7 @@ ErrorReport MapScriptSGSL::parseScript(Acquisition *donnees, Game *game)
 				}
 				break;
 
-				case (SGSLToken::S_LOOSE):
+				case (SGSLToken::S_LOSE):
 				case (SGSLToken::S_WIN):
 				{
 					thisOne.line.push_back(*donnees->getToken());

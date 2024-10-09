@@ -1395,19 +1395,19 @@ bool Building::isHardSpaceForBuildingSite(void)
 
 bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionResultState)
 {
-	int tlTn=-1;
+	int futureBuildingTypeId=-1;
 	if (constructionResultState==UPGRADE)
-		tlTn=type->nextLevel;
+		futureBuildingTypeId=type->nextLevel;
 	else if (constructionResultState==REPAIR)
-		tlTn=type->prevLevel;
+		futureBuildingTypeId=type->prevLevel;
 	else
 		assert(false);
 
-	if (tlTn==-1)
+	if (futureBuildingTypeId==-1)
 		return true;
-	BuildingType *bt=globalContainer->buildingsTypes.get(tlTn);
-	int x=posX+bt->decLeft-type->decLeft;
-	int y=posY+bt->decTop -type->decTop ;
+	BuildingType *bt=globalContainer->buildingsTypes.get(futureBuildingTypeId);
+	int x=posX + bt->decLeft - type->decLeft;
+	int y=posY + bt->decTop - type->decTop ;
 	int w=bt->width;
 	int h=bt->height;
 
@@ -1485,8 +1485,8 @@ bool Building::subscribeToBringResourcesStep()
 		1-the closest the unit is, the better it is.
 		2-the less the unit is hungry, the better it is.
 		3-if the unit has a needed resource, this is better.
-		4-if the unit as a not needed resource, this is worse.
-		5-if the unit is close of a needed resource, this is better
+		4-if the unit has a not-needed resource, this is worse.
+		5-if the unit is close to a needed resource, this is better.
 
 		score_to_max=(rightRes*100/d+noRes*80/(d+dr)+wrongRes*25/(d+dr))/walk+sign(timeLeft>>2 - (d+dr))*500+100/harvest
 		*/
@@ -2531,6 +2531,7 @@ void Building::addResourceIntoBuilding(int resourceType)
 			int totResources=0;
 			for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
 				totResources+=type->maxResource[i];
+			assert(totResources>0);
 			hp += type->hpMax/totResources;
 			hp = std::min(hp, type->hpMax);
 		}

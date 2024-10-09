@@ -3123,13 +3123,8 @@ std::string NetSendReTeamingInformation::format() const
 
 bool NetSendReTeamingInformation::operator==(const NetMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NetSendReTeamingInformation))
-	{
-		const NetSendReTeamingInformation& r = dynamic_cast<const NetSendReTeamingInformation&>(rhs);
-		if(r.reTeamingInfo == reTeamingInfo)
-			return true;
-	}
-	return false;
+	const NetSendReTeamingInformation* r = dynamic_cast<const NetSendReTeamingInformation*>(&rhs);
+	return r != nullptr && r->reTeamingInfo == reTeamingInfo;
 }
 
 

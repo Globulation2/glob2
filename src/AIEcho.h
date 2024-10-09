@@ -346,9 +346,9 @@ namespace AIEcho
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 
-			///Returns true if the provided position matches any of the sources that where added
+			///Returns true if the provided position matches any of the sources that were added
 			bool match_source(Map* map, int posX, int posY);
-			///Returns true if the provided position matches any of the obstacles that where added
+			///Returns true if the provided position matches any of the obstacles that were added
 			bool match_obstacle(Map* map, int posX, int posY);
 			///Returns true if this GradientInfo has any entities that can change, causing it to need to be updated.
 			///This is an optimization, as many gradients don't need to be update
@@ -372,7 +372,7 @@ namespace AIEcho
 
 		///A generic, all purpose gradient. The gradient is referenced by its GradientInfo, which it uses continually in its computation.
 		///Echo gradients are probably the slowest gradients in the game. However, they have one key difference compared to other gradients,
-		///they can be shared, and they are generic, even more so than Nicowar gradients (which where decently generic, but not entirely).
+		///they can be shared, and they are generic, even more so than Nicowar gradients (which were decently generic, but not entirely).
 		class Gradient
 		{
 		public:
@@ -396,7 +396,7 @@ namespace AIEcho
 		///The gradient manager is a very important part of the system, just like the gradient itself is. The gradient manager takes upon the task
 		///of managing and updating various gradients in the game. It returns a matching gradient when provided a GradientInfo.
 		///This object is shared among all Echo AI's, which means gradients that aren't specific to a particular team (such as most Resource
-		///gradients) don't have to be recalculated for every Echo AI separately. This saves allot of cpu time when their are multiple Echo AI's.
+		///gradients) don't have to be recalculated for every Echo AI separately. This saves a lot of cpu time when their are multiple Echo AI's.
 		class GradientManager
 		{
 		public:
@@ -563,7 +563,7 @@ namespace AIEcho
 		};
 		
 
-		///This constraint, against unlike the others, does not use gradients. It only allows the given 
+		///This constraint, again unlike the others, does not use gradients. It only allows the given 
 		///position to be allowed. The resulting building will *not* be centered on it except if it is
 		///a 1x1 building
 		class SinglePosition : public Constraint
@@ -633,7 +633,7 @@ namespace AIEcho
 
 		///The building register is a very important sub system of Echo. It keeps track of buildings.
 		///A seemingly simple process, but very, very important. Buildings you construct are looked for,
-		///found, recorded, etc. Allot of seemingly odd code is found here, meant to work around some
+		///found, recorded, etc. A lot of seemingly odd code is found here, meant to work around some
 		///of the difficulties of other parts of glob2, so that the AI programmer can have a seamless,
 		///comfortable interface. Nothing here is directly important to an AI programmer.
 		///The system puts buildings through three stages. The first is where the building order has been
@@ -728,7 +728,7 @@ namespace AIEcho
 
 	///These are all conditions on a particular Building. They are used in several places, such as when counting numbers of buildings, or
 	///for setting a condition on an order to change the number of units assigned, making them very useful. Its important to note that
-	///none of the conditions work on enemies buildings, they only work on buildings on you're own team.
+	///none of the conditions work on enemies buildings, they only work on buildings on your own team.
 	namespace Conditions
 	{
 		///This is used for loading and saving purposes only
@@ -952,7 +952,7 @@ namespace AIEcho
 		};
 
 		///Similar to BeingUpgraded, but this also takes a level, in which the building is being upgraded
-		///to a particular level. When possible, use this instead od combining BeingUpgraded and BuildingLevel
+		///to a particular level. When possible, use this instead of combining BeingUpgraded and BuildingLevel
 		class BeingUpgradedTo : public BuildingCondition
 		{
 		public:
@@ -1122,7 +1122,7 @@ namespace AIEcho
 			///checks for the conditions for the management order to execute at all. indeterminate means
 			///that its impossible to execute, false means wait some more and true means ready to execute
 			///For example, the ChangeFlagSize order requires that the building be in existence, and
-			///that its a flag.
+			///that it's a flag.
 			virtual boost::logic::tribool wait(Echo& echo)=0;
 
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -1190,9 +1190,9 @@ namespace AIEcho
 		};
 
 
-		///A resource tracker is generally used for management, like most other things. A resource trackers job is to keep
+		///A resource tracker is generally used for management, like most other things. A resource tracker's job is to keep
 		///track of the number of resources in a particular building, and returning averages over a small period of time.
-		///Its better to use a resource tracker than getting the resource amounts directly, because a resource tracker
+		///It's better to use a resource tracker than getting the resource amounts directly, because a resource tracker
 		///returns trends, and small anomalies like an Inn running out of food for only a second don't impact its result greatly.
 		class ResourceTracker
 		{

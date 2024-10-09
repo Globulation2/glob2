@@ -410,14 +410,14 @@ boost::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, con
 
 		int f=estimateFood(b);
 		int numberRequestedTemp=numberRequested;
-		int numberRequestedLocA=b->maxUnitWorking;
+		int numberRequestedLocal=b->maxUnitWorking;
 		if (f<(nbu*3-1))
 			numberRequestedTemp=0;
-		else if (numberRequestedLocA==0)
+		else if (numberRequestedLocal==0)
 			if (f<(nbu*5+1))
 				numberRequestedTemp=0;
 		
-		if (numberRequestedLocA!=numberRequestedTemp)
+		if (numberRequestedLocal!=numberRequestedTemp)
 		{
 			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
 			b->maxUnitWorkingLocal=numberRequestedTemp;

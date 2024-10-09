@@ -179,7 +179,7 @@ void YOGServerPlayer::update()
 	{
 		nGame->startGame();
 	}
-	//This receives requests a map file
+	//This receives a request for a map file
 	else if(type==MNetRequestFile)
 	{
 		shared_ptr<NetRequestFile> info = static_pointer_cast<NetRequestFile>(message);

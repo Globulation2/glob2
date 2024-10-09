@@ -567,9 +567,9 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the upgrading phase 1:
-	///1) Atleast strategy.upgrading_phase_1_school_min schools
-	///2) Atleast strategy.upgrading_phase_1_unit_min units
-	///3) Atleast strategy.upgrading_phase_1_trained_worker_min of them are trained for upgrading to level 2
+	///1) At least strategy.upgrading_phase_1_school_min schools
+	///2) At least strategy.upgrading_phase_1_unit_min units
+	///3) At least strategy.upgrading_phase_1_trained_worker_min of them are trained for upgrading to level 2
 	BuildingSearch schools(echo);
 	schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools.add_condition(new NotUnderConstruction);
@@ -586,9 +586,9 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the upgrading phase 2:
-	///1) Atleast strategy.upgrading_phase_2_school_min level 2 or level 3 schools
-	///2) Atleast strategy.upgrading_phase_2_unit_min units
-	///3) Atleast strategy.upgrading_phase_2_trained_worker_min of them are trained for upgrading to level 3
+	///1) At least strategy.upgrading_phase_2_school_min level 2 or level 3 schools
+	///2) At least strategy.upgrading_phase_2_unit_min units
+	///3) At least strategy.upgrading_phase_2_trained_worker_min of them are trained for upgrading to level 3
 	BuildingSearch schools_2(echo);
 	schools_2.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools_2.add_condition(new NotUnderConstruction);
@@ -609,8 +609,8 @@ void NewNicowar::check_phases(Echo& echo)
 		upgrading_phase_2=false;
 	}
 
-	///Qualifications for the war preperation phase:
-	///1) Atleast strategy.war_preparation_phase_unit_min units
+	///Qualifications for the war preparation phase:
+	///1) At least strategy.war_preparation_phase_unit_min units
 	///2) Less than strategy.war_preparation_phase_barracks_max barracks OR
 	///3) Less than strategy.war_preparation_phase_trained_warrior_max trained warriors
 	BuildingSearch barracks(echo);
@@ -633,7 +633,7 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the war phase:
-	///Atleast strategy.war_phase_trained_warrior_min trained warriors
+	///At least strategy.war_phase_trained_warrior_min trained warriors
 	if(warrior_count >= strategy.war_phase_trained_warrior_min)
 	{
 		war=true;
@@ -644,7 +644,7 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the fruit phase:
-	///Atleast strategy.fruit_phase_unit_min units, and fruits on the map
+	///At least strategy.fruit_phase_unit_min units, and fruits on the map
 	if(echo.is_fruit_on_map() && stat->totalUnit >= strategy.fruit_phase_unit_min)
 	{
 		fruit_phase=true;
@@ -656,7 +656,7 @@ void NewNicowar::check_phases(Echo& echo)
 	
 	///Qualifications for the starving recovery phase:
 	///1) More than strategy.starvation_recovery_phase_starving_no_inn_min_percent % units hungry but not able to eat
-	///2) Atleast one unit (because of division by 0)
+	///2) At least one unit (because of division by 0)
 	if(stat->totalUnit > 1)
 	{
 		int total_starving_percent = stat->needFoodNoInns * 100 / stat->totalUnit;
@@ -677,7 +677,7 @@ void NewNicowar::check_phases(Echo& echo)
 	///Qualifications for the no worker phase:
 	///1) More than strategy.no_workers_phase_free_worker_minimum_percent % workers free
 	///2) No needed jobs
-	///3) Atleast one worker (because of division by 0)
+	///3) At least one worker (because of division by 0)
 	if(stat->numberUnitPerType[WORKER] > 0)
 	{
 		const int workers_free = (stat->isFree[WORKER]  -  stat->totalNeeded) * 100 / stat->numberUnitPerType[WORKER];
@@ -696,7 +696,7 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 	
 	///Qualifications for the can swim phase:
-	///1) Atleast one worker that can swim
+	///1) At least one worker that can swim
 	int total_can_swim=0;
 	for(int i=0; i<4; ++i)
 		total_can_swim += stat->upgradeStatePerType[WORKER][SWIM][i];
@@ -1060,7 +1060,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	//You dont want to be too close to water, so that farm can develop between it and water
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
 
-	//Constraints arround nearby settlement
+	//Constraints around nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
@@ -1126,7 +1126,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	//Constraints about the distance to water.
 	AIEcho::Gradients::GradientInfo gi_water;
 	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
-	//You dont want to be too close to water, so that farm can develop between it and water
+	//You don't want to be too close to water, so that farm can develop between it and water
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, 6));
 
 	//Constraints around nearby settlement
@@ -1218,7 +1218,7 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 
 int NewNicowar::order_regular_swimmingpool(Echo& echo)
 {
-	//The main order for the swimmingpool
+	//The main order for the swimming pool
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, 6);
 
 	//Constraints around the location of wood
@@ -1527,7 +1527,7 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 	else
 		explorer_ratio=0;
 
-	///Warriors are constructed during the war preperation phase
+	///Warriors are constructed during the war preparation phase
 	if(war_preparation)
 	{
 		warrior_ratio=strategy.war_preparation_swarm_warrior_ratio;

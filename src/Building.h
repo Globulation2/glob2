@@ -170,27 +170,27 @@ private:bool fullInside(void);
 	int desiredNumberOfWorkers(void);
 
 	///This is called every step. The building updates the desiredMaxUnitWorking variable using
-	///the function desiredNumberOfWorkers
+	///the function desiredNumberOfWorkers.
 public:void step(void);
-	///This function subscribes any building that needs resources carried to it with units.
-	///It is considered greedy, hiring as many units as it needs in order of its preference
+	///This function subscribes any building that needs resources carried to it by units.
+	///It is considered greedy, hiring as many units as it needs in the order of its preference.
 	///Returns true if a unit was hired
 	bool subscribeToBringResourcesStep(void);
-	///This function subscribes any flag that needs units for a with units.
-	///It is considered greedy, hiring as many units as it needs in order of its preference
+	///This function subscribes any flag that needs units.
+	///It is considered greedy, hiring as many units as it needs in the order of its preference.
 	///Returns true if a unit was hired
 	bool subscribeForFlagingStep();
 	/// Subscribes a unit to go inside the building.
 	void subscribeUnitForInside(Unit* unit);
-	/// This is a step for swarms. Swarms heal themselves and create new units
+	/// This is a step for swarms. Swarms heal themselves and create new units.
 	void swarmStep(void);
-	/// This function searches for enemies, computes the best target, and fires a bullet
+	/// This function searches for enemies, computes the best target, and fires a bullet.
 	void turretStep(Uint32 stepCounter);
 	/// This step updates clearing flag gradients. When there are no more resources remaining, units are to
-	/// be fired. When resources grow back, units have to be rehired.=
+	/// be fired. When resources grow back, units have to be rehired.
 	void clearingFlagStep();
 	/// Kills the building, removing all units that are working or inside the building,
-	/// changing the state and adding it to the list of buildings to be deleted
+	/// changing the state and adding it to the list of buildings to be deleted.
 	void kill(void);
 
 	/// Tells whether a particular unit can work at this building. Takes into account this buildings level,

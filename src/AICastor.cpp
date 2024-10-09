@@ -1835,7 +1835,7 @@ void AICastor::computeCanSwim()
 {
 	//printf("computeCanSwim()...\n");
 	// If our population has more healthy-working-units able to swim than healthy-working-units
-	// unable to swim then we choose to be able to go trough water:
+	// unable to swim then we choose to be able to go through water:
 	Unit **myUnits=team->myUnits;
 	int sumCanSwim=0;
 	int sumCantSwim=0;
@@ -2986,7 +2986,7 @@ void AICastor::computeResourcesCluster()
 
 void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 {
-	//In this algorithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	//In this algorithm, "l" stands for one tile at Left, "r" for one tile at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
 	int w=map->w;
 	int h=map->h;

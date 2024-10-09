@@ -78,7 +78,7 @@ struct SGSLToken
 		S_SUMMON_FLAG,
 		S_DESTROY_FLAG,
 		S_WIN,
-		S_LOOSE,
+		S_LOSE,
 		S_LABEL,
 		S_JUMP,
 		S_SET_AREA,
