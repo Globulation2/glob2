@@ -27,6 +27,24 @@
 #include <iostream>
 #include <sstream>
 
+#define GL_GLEXT_PROTOTYPES
+#ifdef HAVE_OPENGL
+#if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+#endif
+
+#ifdef WIN32
+#include <GL/glext.h>
+#endif
+
+
 namespace GAGCore
 {
 	Sprite::RotatedImage::~RotatedImage()
@@ -74,8 +92,11 @@ namespace GAGCore
 	}
 
 	// Create texture atlas for images array
+	// Using a sprite sheet lets us efficiently drawn terrain and water with a few calls
+	// to glDrawArrays, rather than 272 individual calls to glBegin...glEnd.
 	void Sprite::createTextureAtlas()
 	{
+#ifdef HAVE_OPENGL
 		size_t numImages = images.size();
 		int tileWidth = 0, tileHeight = 0;
 		// Check all tiles have the same size
@@ -115,8 +136,12 @@ namespace GAGCore
 		{
 			image->texture = atlas->texture;
 			image->usingAtlas = true;
+			image->sprite = this;
 			image->setRes(sheetWidth, sheetHeight);
 		}
+		glGenBuffers(1, &vbo);
+		glGenBuffers(1, &texCoordBuffer);
+#endif
 	}
 	
 	DrawableSurface *Sprite::getRotatedSurface(int index)
@@ -158,6 +183,7 @@ namespace GAGCore
 			if (*rotatedIt)
 				delete (*rotatedIt);
 		}
+		delete atlas;
 	}
 	
 	void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
