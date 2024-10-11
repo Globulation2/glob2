@@ -1999,6 +1999,7 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 				if ((id < 256) || (id >= 256+16))
 					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
 			}
+	globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
 }
 
 inline void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)

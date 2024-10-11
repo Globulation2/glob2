@@ -161,6 +161,8 @@ namespace GAGCore
 		friend class Sprite;
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
+		//! which animation or texture atlas this surface is part of.
+		Sprite* sprite = nullptr;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
 		//! this surface has been modified since latest blit
@@ -383,6 +385,8 @@ namespace GAGCore
 		
 		virtual void drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha = Color::ALPHA_OPAQUE);
 		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
+
+		void finishDrawingSprite(Sprite* sprite, Uint8 alpha);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -424,11 +428,21 @@ namespace GAGCore
 			RotatedImage(DrawableSurface *s) { orig = s; }
 			~RotatedImage();
 		};
+
+		friend class GraphicContext;
 	
 		std::string fileName;
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
+
+		// Sprite sheet stuff to efficiently draw terrain/water/units.
+#ifdef HAVE_OPENGL
+		std::vector <float> vertices;
+		std::vector <float> texCoords;
+		unsigned int vbo = 0; // Vertex buffer object
+		unsigned int texCoordBuffer = 0;
 		DrawableSurface *atlas = nullptr;
+#endif
 		Color actColor;
 	
 		friend class DrawableSurface;
