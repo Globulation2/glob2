@@ -41,6 +41,7 @@ void Glob2Screen::paint(void)
 	for (int y = 0; y < getH(); y += 32)
 		for (int x = 0; x < getW(); x += 32)
 			gfx->drawSprite(x, y, globalContainer->terrain, getNextTerrain());
+	dynamic_cast<GraphicContext*>(gfx)->finishDrawingSprite(globalContainer->terrain, 255);
 
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{

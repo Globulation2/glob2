@@ -1685,34 +1685,33 @@ namespace GAGCore
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glState.doBlend(true);
 			glState.doTexture(true);
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glColor4ub(255, 255, 255, alpha);
 
 			// draw
 			glState.setTexture(surface->texture);
-			std::vector<float> vertices = { x, y, x + w, y, x + w, y + h, x, y + h };
-			std::vector<float> texCoords = { static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
-				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
-				static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
-				static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
-			};
-			surface->sprite->vertices.insert(surface->sprite->vertices.end(), vertices.begin(), vertices.end());
-			surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), texCoords.begin(), texCoords.end());
-		    //glDrawElements(GL_QUADS, 4, GL_FLOAT, );
-			/*glBegin(GL_QUADS);
-			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
-			glVertex2f(x, y);
-			glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
-			glVertex2f(x+w, y);
-			glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
-			glVertex2f(x+w, y+h);
-			glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
-			glVertex2f(x, y+h);
-			glEnd();*/
-
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			if (surface->sprite && alpha == Color::ALPHA_OPAQUE)
+			{
+				surface->sprite->vertices.insert(surface->sprite->vertices.end(), { x, y, x + w, y, x + w, y + h, x, y + h });
+				surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), {
+					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
+					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
+					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
+				});
+			}
+			else
+			{
+				glBegin(GL_QUADS);
+				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
+				glVertex2f(x, y);
+				glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
+				glVertex2f(x + w, y);
+				glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
+				glVertex2f(x + w, y + h);
+				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
+				glVertex2f(x, y + h);
+				glEnd();
+			}
 		}
 		else
 		#endif
@@ -1725,6 +1724,18 @@ namespace GAGCore
 #ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
+			if (!sprite->atlas)
+			{
+				// No sprite sheet, so we have nothing to draw.
+				assert(sprite->vertices.empty());
+				assert(sprite->texCoords.empty());
+				return;
+			}
+			if (sprite->vertices.empty() || sprite->texCoords.empty())
+			{
+				// No data.
+				return;
+			}
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glState.doBlend(true);
@@ -1735,12 +1746,11 @@ namespace GAGCore
 			glState.setTexture(sprite->atlas->texture);
 			glBindBuffer(GL_ARRAY_BUFFER, sprite->vbo);
 			glBufferData(GL_ARRAY_BUFFER, sprite->vertices.size() * sizeof(float), sprite->vertices.data(), GL_STREAM_DRAW);
+			glVertexPointer(2, GL_FLOAT, 0, 0);
 			glBindBuffer(GL_ARRAY_BUFFER, sprite->texCoordBuffer);
 			glBufferData(GL_ARRAY_BUFFER, sprite->texCoords.size() * sizeof(float), sprite->texCoords.data(), GL_STREAM_DRAW);
-
-			glVertexPointer(2, GL_FLOAT, 0, sprite->vertices.data());
-			glTexCoordPointer(2, GL_FLOAT, 0, sprite->texCoords.data());
-			glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 4);
+			glTexCoordPointer(2, GL_FLOAT, 0, 0);
+			glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 2);
 
 			sprite->vertices.clear();
 			sprite->texCoords.clear();
