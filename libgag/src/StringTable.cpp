@@ -179,14 +179,14 @@ namespace GAGCore
 		for (std::map<std::string, size_t>::iterator it=stringAccess.begin(); it!=stringAccess.end(); ++it)
 		{
 			// For each entry...
-			bool lcwp=false;
+			bool lastCharWasPct=false;
 			int baseCount=0;
 			const std::string &s = it->first;
-			// we check that we only have valid format (from a FormatableString point of view)...
+			// we check that we only have valid format (from a FormattableString point of view)...
 			for (size_t j=0; j<s.length(); j++)
 			{
 				char c = s[j];
-				if (lcwp && c!=' ' && c!='%')
+				if (lastCharWasPct && c!=' ' && c!='%')
 				{
 					if (isdigit(c))
 						baseCount++;
@@ -197,18 +197,18 @@ namespace GAGCore
 						return false;
 					}
 				}
-				lcwp=(c=='%');
+				lastCharWasPct=(c=='%');
 			}
 			// then we are sure that format are correct in all translation
 			for (size_t i=0; i<strings[it->second]->data.size(); i++)
 			{
 				const std::string &s = strings[it->second]->data[i];
-				bool lcwp=false;
+				bool lastCharWasPct=false;
 				int count=0;
 				for (size_t j=0; j<s.length(); j++)
 				{
 					char c=s[j];
-					if (lcwp && c!=' ' && c!='%')
+					if (lastCharWasPct && c!=' ' && c!='%')
 					{
 						if (isdigit(c))
 							count++;
@@ -219,7 +219,7 @@ namespace GAGCore
 							return false;
 						}
 					}
-					lcwp=(c=='%');
+					lastCharWasPct=(c=='%');
 				}
 				// if not, issue an error message
 				if (baseCount!=count && s!="")
@@ -305,9 +305,9 @@ namespace GAGCore
 		}
 	}
 	
-	bool StringTable::doesStringExist(const std::string stringname) const
+	bool StringTable::doesStringExist(const std::string stringName) const
 	{
-		std::string key(stringname);
+		std::string key(stringName);
 		std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(key);
 		if (accessIt == stringAccess.end())
 		{
@@ -316,15 +316,15 @@ namespace GAGCore
 		return true;
 	}
 	
-	const std::string StringTable::getStringInLang(const std::string stringname, int lang) const
+	const std::string StringTable::getStringInLang(const std::string stringName, int lang) const
 	{
 		if ((lang < languageCount) && (lang >= 0))
 		{
-			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(stringname);
+			std::map<std::string, size_t>::const_iterator accessIt = stringAccess.find(stringName);
 			if (accessIt == stringAccess.end())
 			{
-				std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, no such key." << std::endl;
-				return stringname;
+				std::cerr << "StringTable::getStringInLang(\"" << stringName << ", " << lang << "\") : error, no such key." << std::endl;
+				return stringName;
 			}
 			else
 			{
@@ -333,7 +333,7 @@ namespace GAGCore
 		}
 		else
 		{
-			std::cerr << "StringTable::getStringInLang(\"" << stringname << ", " << lang << "\") : error, bad language selected." << std::endl;
+			std::cerr << "StringTable::getStringInLang(\"" << stringName << ", " << lang << "\") : error, bad language selected." << std::endl;
 			return "ERROR, BAD LANG ID";
 		}
 	}

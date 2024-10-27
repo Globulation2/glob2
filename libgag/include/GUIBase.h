@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIBASE_H
-#define __GUIBASE_H
+#ifndef __GUI_BASE_H
+#define __GUI_BASE_H
 
 #include "GAGSys.h"
 #include "GraphicContext.h"

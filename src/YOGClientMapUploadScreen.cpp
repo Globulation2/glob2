@@ -74,11 +74,11 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> 
 	MapHeader mapHeader = engine.loadMapHeader(mapFile);
 	mapName->setText(mapHeader.getMapName());
 	std::string textTemp;
-	textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
+	textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 	mapInfo->setText(textTemp);
-	textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
+	textTemp = FormattableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
 	mapVersion->setText(textTemp);
-	textTemp = FormatableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
+	textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
 	mapSize->setText(textTemp);
 	isUploading = false;
 }
@@ -123,8 +123,8 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 	uploader.update();
 	if(!client->isConnected())
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map upload failure: connection lost]"), Toolkit::getStringTable()->getString("[ok]"));
-		endExecute(CONNECTIONLOST);
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Map upload failure: connection lost]"), Toolkit::getStringTable()->getString("[ok]"));
+		endExecute(CONNECTION_LOST);
 	}
 	
 	uploadStatus->visible = false;
@@ -134,21 +134,21 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		{
 			if(uploader.getRefusalReason() == YOGMapUploadReasonMapNameAlreadyExists)
 			{
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map upload failure: map name in use]"), Toolkit::getStringTable()->getString("[ok]"));
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Map upload failure: map name in use]"), Toolkit::getStringTable()->getString("[ok]"));
 			}
 			else
 			{
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map upload failure: unknown reason]"), Toolkit::getStringTable()->getString("[ok]"));
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Map upload failure: unknown reason]"), Toolkit::getStringTable()->getString("[ok]"));
 			}
-			endExecute(UPLOADFAILED);
+			endExecute(UPLOAD_FAILED);
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::WaitingForUploadReply)
 		{
-			uploadStatusText->setText(FormatableString(Toolkit::getStringTable()->getString("[Map Upload: Waiting for reply]")));
+			uploadStatusText->setText(FormattableString(Toolkit::getStringTable()->getString("[Map Upload: Waiting for reply]")));
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::Finished)
 		{
-			endExecute(UPLOADFINISHED);
+			endExecute(UPLOAD_FINISHED);
 		}
 		else
 		{

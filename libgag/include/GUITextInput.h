@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUITEXTINPUT_H
-#define __GUITEXTINPUT_H
+#ifndef __GUI_TEXT_INPUT_H
+#define __GUI_TEXT_INPUT_H
 
 #include "GUIBase.h"
 #include <string>
@@ -42,7 +42,7 @@ namespace GAGGUI
 		size_t cursPos;
 		size_t maxLength;
 		bool password;
-		std::vector<std::string> autocompletableWord;
+		std::vector<std::string> autoCompletableWord;
 	
 		// cache, recomputed at least on paint
 		GAGCore::Font *fontPtr;
@@ -93,7 +93,7 @@ namespace GAGGUI
 		// autocompletion
 		void addAutoCompletableWord(const std::string &word);
 		void removeAutoCompletableWord(const std::string &word);
-		bool getAutoCompleteSuggestion(const std::string & word, std::vector<std::string> & wordlist);
+		bool getAutoCompleteSuggestion(const std::string & word, std::vector<std::string> & wordList);
 		std::string getAutoComplete(const std::string & word, int n);
 		
 		bool isActivated(void) { return activated; } 

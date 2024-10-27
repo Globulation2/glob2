@@ -32,7 +32,7 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
-	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, bool readOnly, const std::string text, const std::string spritelocation)
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, bool readOnly, const std::string text, const std::string spriteLocation)
 	{
 		this->x = x;
 		this->y = y;
@@ -61,13 +61,13 @@ namespace GAGGUI
 		
 		this->text = text;
 		
-		if (!spritelocation.empty())
-			sprite = Toolkit::getSprite(spritelocation);
+		if (!spriteLocation.empty())
+			sprite = Toolkit::getSprite(spriteLocation);
 		if (sprite)
 			spriteWidth = sprite->getW(0);	
 	}
 	
-	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string &tooltip, const std::string &tooltipFont, bool readOnly, const std::string text, const std::string spritelocation)
+	TextArea::TextArea(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string &tooltip, const std::string &tooltipFont, bool readOnly, const std::string text, const std::string spriteLocation)
 		: HighlightableWidget(tooltip, tooltipFont)
 	{
 		this->x = x;
@@ -97,8 +97,8 @@ namespace GAGGUI
 		
 		this->text = text;
 		
-		if (!spritelocation.empty())
-			sprite = Toolkit::getSprite(spritelocation);
+		if (!spriteLocation.empty())
+			sprite = Toolkit::getSprite(spriteLocation);
 		if (sprite)
 			spriteWidth = sprite->getW(0);	
 	}

@@ -43,9 +43,9 @@ NetBroadcaster::~NetBroadcaster()
 
 
 	
-void NetBroadcaster::broadcast(LANGameInformation& ainfo)
+void NetBroadcaster::broadcast(LANGameInformation& info)
 {
-	info = ainfo;
+	this->info = info;
 }
 
 
@@ -75,7 +75,7 @@ void NetBroadcaster::update()
 				printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
 			}
 			
-			result = SDLNet_UDP_Send(localsocket, 0, packet);
+			result = SDLNet_UDP_Send(localSocket, 0, packet);
 			if(!result)
 			{
 				printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
@@ -98,8 +98,8 @@ void NetBroadcaster::disableBroadcasting()
 	SDLNet_UDP_Unbind(socket, 0);
 	SDLNet_UDP_Close(socket);
 	
-	SDLNet_UDP_Unbind(localsocket, 0);
-	SDLNet_UDP_Close(localsocket);
+	SDLNet_UDP_Unbind(localSocket, 0);
+	SDLNet_UDP_Close(localSocket);
 }
 
 
@@ -112,8 +112,8 @@ void NetBroadcaster::enableBroadcasting()
 		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
 		exit(2);
 	}
-	localsocket=SDLNet_UDP_Open(0);
-	if(!localsocket)
+	localSocket=SDLNet_UDP_Open(0);
+	if(!localSocket)
 	{
 		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
 		exit(2);
@@ -124,9 +124,9 @@ void NetBroadcaster::enableBroadcasting()
 	address.host = 0xFFFFA8C0;
 	SDLNet_UDP_Bind(socket, 0, &address);
 	
-	IPaddress localaddress;
-	SDLNet_ResolveHost(&localaddress, "127.0.0.1", LAN_BROADCAST_PORT);
-	SDLNet_UDP_Bind(localsocket, 0, &localaddress);
+	IPaddress localAddress;
+	SDLNet_ResolveHost(&localAddress, "127.0.0.1", LAN_BROADCAST_PORT);
+	SDLNet_UDP_Bind(localSocket, 0, &localAddress);
 	
 	lastTime = SDL_GetTicks64();
 }

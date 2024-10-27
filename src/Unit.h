@@ -129,9 +129,9 @@ public:
 		DIS_GOING_TO_FLAG=8,
 		DIS_ATTACKING_AROUND=10,
 		DIS_REMOVING_BLACK_AROUND=12,
-		DIS_CLEARING_RESSOURCES=14,
+		DIS_CLEARING_RESOURCES=14,
 		
-		DIS_GOING_TO_RESSOURCE=16,
+		DIS_GOING_TO_RESOURCE=16,
 		
 		DIS_GOING_TO_BUILDING=18,
 		DIS_ENTERING_BUILDING=20,
@@ -228,11 +228,11 @@ public:
 	Sint32 hp; // (Uint8)
 	Sint32 trigHP; // (Uint8)
 
-	// hungry : maxfood = 100000
+	// hungry : max food = 100000
 	Sint32 hungry; // (Uint16)
-	Sint32 hungryness;
+	Sint32 hungriness;
 	Sint32 trigHungry; // (Uint16)
-	Sint32 trigHungryCarying;
+	Sint32 trigHungryCarrying;
 	Uint32 fruitMask;
 	Uint32 fruitCount;
 
@@ -250,7 +250,7 @@ public:
 	//! no idea what this is. TODO: Explain
 	Building *ownExchangeBuilding;
 	Sint32 destinationPurpose;
-	int carriedRessource;
+	int carriedResource;
 	/// This counts 32 ticks to wait for a job before a unit goes off
 	/// to upgrade or heal when it is otherwise doing nothing.
 	Sint32 jobTimer;
@@ -267,7 +267,7 @@ public:
 public:
 	// optimisation cached values
 	int stepsLeftUntilHungry;
-	int minDistToResource[MAX_RESSOURCES];
+	int minDistToResource[MAX_RESOURCES];
 	bool allResourcesAreTooFar;
 
 public:

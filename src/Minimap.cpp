@@ -59,15 +59,15 @@ Minimap::~Minimap()
 		delete surface;
 }
 
-void Minimap::setGame(Game& ngame)
+void Minimap::setGame(Game& game)
 {
 	if (noX) return;
-	game = &ngame;
+	this->game = &game;
 }
 
 
 
-void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
+void Minimap::draw(int localTeam, int viewportX, int viewportY, int viewportW, int viewportH)
 {
 	if (noX) return;
 
@@ -78,7 +78,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	Uint8 borderG;
 	Uint8 borderB;
 	Uint8 borderA;
-	// draw the either black or transparent border arround the minimap
+	// draw the either black or transparent border around the minimap
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		borderR = 0;
@@ -105,8 +105,8 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	//globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, yOffset+height, width, 0, borderR, borderG, borderB, borderA);
   
   // calculate the offset for the viewport square
-	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;
-	offset_y = game->teams[localteam]->startPosY - game->map.getH() / 2;
+	offset_x = game->teams[localTeam]->startPosX - game->map.getW() / 2;
+	offset_y = game->teams[localTeam]->startPosY - game->map.getH() / 2;
 
 	///What row the scan-line ("radar") is to be drawn at
 	int line_row = 0;
@@ -117,14 +117,14 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	  // clear the minimap by drawing a black rect over it
 		surface->drawFilledRect(0, 0, width, height, 0, 0, 0, Color::ALPHA_OPAQUE);
 		update_row = 0;
-		refreshPixelRows(0, mini_h, localteam);
+		refreshPixelRows(0, mini_h, localTeam);
 	}
 	else
 	{
 		///Render 1/25th of the rows at a time
 		const int rows_to_render = std::max(1, mini_h/25);
 		
-		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localteam);
+		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localTeam);
 		update_row += rows_to_render;
 		update_row %= (mini_h);
 		line_row = update_row;
@@ -133,38 +133,38 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	globalContainer->gfx->drawSurface(gameWidth-menuWidth+xOffset, yOffset, surface);
 
 	//Draw the viewport square, taking into account that it may
-	//wrap arround the sides of the minimap
+	//wrap around the sides of the minimap
 
-	int startx, starty, endx, endy;
-	convertToScreen(viewportX, viewportY, startx, starty);
-	convertToScreen(viewportX + viewportW, viewportY + viewportH, endx, endy);
+	int startX, startY, endX, endY;
+	convertToScreen(viewportX, viewportY, startX, startY);
+	convertToScreen(viewportX + viewportW, viewportY + viewportH, endX, endY);
 
-	for (int n=startx; n!=endx;)
+	for (int n=startX; n!=endX;)
 	{
-		globalContainer->gfx->drawPixel(n, starty, 255, 255, 255);
-		globalContainer->gfx->drawPixel(n, endy, 255, 255, 255);
+		globalContainer->gfx->drawPixel(n, startY, 255, 255, 255);
+		globalContainer->gfx->drawPixel(n, endY, 255, 255, 255);
 		
 		n+=1;
 		if(n == (mini_x + mini_w))
 			n = mini_x;
 	}
-	for (int n=starty; n!=endy;)
+	for (int n=startY; n!=endY;)
 	{
-		globalContainer->gfx->drawPixel(startx, n, 255, 255, 255);
-		globalContainer->gfx->drawPixel(endx, n, 255, 255, 255);
+		globalContainer->gfx->drawPixel(startX, n, 255, 255, 255);
+		globalContainer->gfx->drawPixel(endX, n, 255, 255, 255);
 		n+=1;
 		if(n == (mini_y + mini_h))
 			n = mini_y;
 	}
 	///The lines are out of alignment, so a single pixel in the bottom right hand of the square
 	///is never drawn
-	globalContainer->gfx->drawPixel(endx, endy, 255, 255, 255);
+	globalContainer->gfx->drawPixel(endX, endY, 255, 255, 255);
 
 	///Draw the line that shows where the minimap is currently updating
 	if(minimapMode == HideFOW)
 		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
 	
-	///Draw a 1 pixel border arround the minimap
+	///Draw a 1 pixel border around the minimap
 	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
 	                               yOffset-1, 
 	                               width+2, 
@@ -189,10 +189,10 @@ void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 {
 	if (noX) return;
 
-	int xpos = nx - mini_x;
-	int ypos = ny - mini_y;
-	x = (offset_x + (int)((float)(game->map.getW()) / (float)(mini_w) * (float)(xpos))) % game->map.getW();
-	y = (offset_y + (int)((float)(game->map.getH()) / (float)(mini_h) * (float)(ypos))) % game->map.getH();
+	int xPos = nx - mini_x;
+	int yPos = ny - mini_y;
+	x = (offset_x + (int)((float)(game->map.getW()) / (float)(mini_w) * (float)(xPos))) % game->map.getW();
+	y = (offset_y + (int)((float)(game->map.getH()) / (float)(mini_h) * (float)(yPos))) % game->map.getH();
 }
 
 
@@ -201,11 +201,11 @@ void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 {
 	if (noX) return;
 
-	int xpos = game->map.normalizeX(nx - offset_x);
-	int ypos = game->map.normalizeY(ny - offset_y);
+	int xPos = game->map.normalizeX(nx - offset_x);
+	int yPos = game->map.normalizeY(ny - offset_y);
 
-	x = mini_x + (int)((float)(xpos) * (float)(mini_w) / (float)(game->map.getW())) % (mini_w);
-	y = mini_y + (int)((float)(ypos) * (float)(mini_h) / (float)(game->map.getH())) % (mini_h);
+	x = mini_x + (int)((float)(xPos) * (float)(mini_w) / (float)(game->map.getW())) % (mini_w);
+	y = mini_y + (int)((float)(yPos) * (float)(mini_h) / (float)(game->map.getH())) % (mini_h);
 }
 
 
@@ -256,13 +256,13 @@ void Minimap::computeMinimapPositioning()
 
 
 
-void Minimap::refreshPixelRows(int start, int end, int localteam)
+void Minimap::refreshPixelRows(int start, int end, int localTeam)
 {
 	if (noX) return;
 
 	for(int y=start; y!=end;)
 	{
-		computeColors(y, localteam);
+		computeColors(y, localTeam);
 		
 		y++;
 		if(y == end)
@@ -296,7 +296,7 @@ void Minimap::computeColors(int row, int localTeam)
 		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
 	};
 
-	int pcol[3+MAX_RESSOURCES];
+	int pCol[3+MAX_RESOURCES];
 
 	// get data
 	int szX = mini_w;
@@ -315,24 +315,24 @@ void Minimap::computeColors(int row, int localTeam)
 	const int dy = row;
 	for (int dx=0; dx<szX; dx++)
 	{
-		memset(pcol, 0, sizeof(pcol));
+		memset(pCol, 0, sizeof(pCol));
 		int nCount = 0;
 		int UnitOrBuildingIndex = -1;
 		
 		// compute
-		for (int minidyFP=dMy*dy+decSPY; minidyFP<=(dMy*(dy+1))+decSPY; minidyFP+=(1<<16)) { // Fixed-point numbers
-			int minidy = minidyFP>>16;
-			for (int minidxFP=dMx*dx+decSPX; minidxFP<=(dMx*(dx+1))+decSPX; minidxFP+=(1<<16)) // Fixed-point numbers
+		for (int miniDyFP=dMy*dy+decSPY; miniDyFP<=(dMy*(dy+1))+decSPY; miniDyFP+=(1<<16)) { // Fixed-point numbers
+			int miniDy = miniDyFP>>16;
+			for (int miniDxFP=dMx*dx+decSPX; miniDxFP<=(dMx*(dx+1))+decSPX; miniDxFP+=(1<<16)) // Fixed-point numbers
 			{
-				int minidx = minidxFP>>16;
+				int miniDx = miniDxFP>>16;
 				bool seenUnderFOW = false;
 
-				Uint16 gid=game->map.getAirUnit(minidx, minidy);
+				Uint16 gid=game->map.getAirUnit(miniDx, miniDy);
 				if (gid==NOGUID)
-					gid=game->map.getGroundUnit(minidx, minidy);
+					gid=game->map.getGroundUnit(miniDx, miniDy);
 				if (gid==NOGUID)
 				{
-					gid=game->map.getBuilding(minidx, minidy);
+					gid=game->map.getBuilding(miniDx, miniDy);
 					if (gid!=NOGUID)
 					{
 						if (game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)]->seenByMask & visibleTeams)
@@ -344,7 +344,7 @@ void Minimap::computeColors(int row, int localTeam)
 				if (gid!=NOGUID)
 				{
 					int teamId=gid/Unit::MAX_COUNT;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, visibleTeams))
+					if (useMapDiscovered || game->map.isFOWDiscovered(miniDx, miniDy, visibleTeams))
 					{
 						if (teamId==localTeam)
 							UnitOrBuildingIndex = 0;
@@ -366,28 +366,28 @@ void Minimap::computeColors(int row, int localTeam)
 					}
 				}
 				
-				if (useMapDiscovered || game->map.isMapDiscovered(minidx, minidy, visibleTeams))
+				if (useMapDiscovered || game->map.isMapDiscovered(miniDx, miniDy, visibleTeams))
 				{
 					// get color to add
-					int pcolIndex;
-					const auto& r = game->map.getRessource(minidx, minidy);
+					int pColIndex;
+					const auto& r = game->map.getResource(miniDx, miniDy);
 					if (r.type!=NO_RES_TYPE)
 					{
-						pcolIndex=r.type + 3;
+						pColIndex=r.type + 3;
 					}
 					else
 					{
-						pcolIndex=game->map.getUMTerrain(minidx,minidy);
+						pColIndex=game->map.getUMTerrain(miniDx,miniDy);
 					}
 					
 					// get weight to add
-					int pcolAddValue;
-					if (useMapDiscovered || game->map.isFOWDiscovered(minidx, minidy, visibleTeams))
-						pcolAddValue=5;
+					int pColAddValue;
+					if (useMapDiscovered || game->map.isFOWDiscovered(miniDx, miniDy, visibleTeams))
+						pColAddValue=5;
 					else
-						pcolAddValue=3;
+						pColAddValue=3;
 
-					pcol[pcolIndex]+=pcolAddValue;
+					pCol[pColIndex]+=pColAddValue;
 				}
 
 				nCount++;
@@ -413,16 +413,16 @@ void Minimap::computeColors(int row, int localTeam)
 			lr = lg = lb = 0;
 			for (int i=0; i<3; i++)
 			{
-				lr += pcol[i]*terrainColor[i][0];
-				lg += pcol[i]*terrainColor[i][1];
-				lb += pcol[i]*terrainColor[i][2];
+				lr += pCol[i]*terrainColor[i][0];
+				lg += pCol[i]*terrainColor[i][1];
+				lb += pCol[i]*terrainColor[i][2];
 			}
-			for (int i=0; i<MAX_RESSOURCES; i++)
+			for (int i=0; i<MAX_RESOURCES; i++)
 			{
-				RessourceType *rt = globalContainer->ressourcesTypes.get(i);
-				lr += pcol[i+3]*(rt->minimapR);
-				lg += pcol[i+3]*(rt->minimapG);
-				lb += pcol[i+3]*(rt->minimapB);
+				ResourceType *rt = globalContainer->resourcesTypes.get(i);
+				lr += pCol[i+3]*(rt->minimapR);
+				lg += pCol[i+3]*(rt->minimapG);
+				lb += pCol[i+3]*(rt->minimapB);
 			}
 
 			r = lr/nCount;

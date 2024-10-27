@@ -19,8 +19,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGSCREEN_H
-#define __YOGSCREEN_H
+#ifndef __YOG_CLIENT_LOBBY_SCREEN_H
+#define __YOG_CLIENT_LOBBY_SCREEN_H
 
 #include <vector>
 #include <GUIList.h>
@@ -100,9 +100,9 @@ public:
 	///Handle text message events from IRCTextMessageHandler
 	void handleIRCTextMessage(const std::string& message);
 	///Handles text message events from the YOGClientChatChannel
-	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
+	void receiveTextMessage(boost::shared_ptr<YOGMessage> message);
 	///Handles an internal message
-	void recieveInternalMessage(const std::string& message);
+	void receiveInternalMessage(const std::string& message);
 	///Handles when the game list has been updated from YOGClientGameListManager
 	void gameListUpdated();
 	///Handles when the game list has been updated from YOGClientPlayerListManager
@@ -139,7 +139,7 @@ private:
 	void updateBoxInfo();
 	///This will try to match and auto-complete a half-entered nick name
 	void autoCompleteNick();
-	///This wsill update the visibility of the host and join buttons depnding on whether the player
+	///This will update the visibility of the host and join buttons depending on whether the player
 	///is currently in a game or not
 	void updateButtonVisibility();
 	///Called when this tab is activated

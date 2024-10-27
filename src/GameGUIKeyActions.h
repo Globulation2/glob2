@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GAMEGUI_KEY_ACTIONS_H
-#define __GAMEGUI_KEY_ACTIONS_H
+#ifndef __GAME_GUI_KEY_ACTIONS_H
+#define __GAME_GUI_KEY_ACTIONS_H
 
 #include "SDL.h"
 #include <string>

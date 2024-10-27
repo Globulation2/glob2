@@ -242,10 +242,10 @@ void TeamsEditor::generateGameHeader()
 			}
 			else
 			{
-				AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(aiSelector[i]->getIndex());
-				FormatableString name("%0 %1");
+				AI::ImplementationID iid=static_cast<AI::ImplementationID>(aiSelector[i]->getIndex());
+				FormattableString name("%0 %1");
 				name.arg(AINames::getAIText(iid)).arg(i-1);
-				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, BasePlayer::playerTypeFromImplementitionID(iid));
+				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, BasePlayer::playerTypeFromImplementationID(iid));
 			}
 			gameHeader.setAllyTeamNumber(teamColor, allyTeamNumbers[i]->getIndex()+1);
 			count+=1;

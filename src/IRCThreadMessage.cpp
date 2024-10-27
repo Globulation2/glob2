@@ -185,34 +185,34 @@ bool ITDisconnected::operator==(const IRCThreadMessage& rhs) const
 }
 
 
-ITRecieveMessage::ITRecieveMessage(std::string message)
+ITReceiveMessage::ITReceiveMessage(std::string message)
 	: message(message)
 {
 }
 
 
 
-Uint8 ITRecieveMessage::getMessageType() const
+Uint8 ITReceiveMessage::getMessageType() const
 {
-	return ITMRecieveMessage;
+	return ITMReceiveMessage;
 }
 
 
 
-std::string ITRecieveMessage::format() const
+std::string ITReceiveMessage::format() const
 {
 	std::ostringstream s;
-	s<<"ITRecieveMessage("<<"message="<<message<<"; "<<")";
+	s<<"ITReceiveMessage("<<"message="<<message<<"; "<<")";
 	return s.str();
 }
 
 
 
-bool ITRecieveMessage::operator==(const IRCThreadMessage& rhs) const
+bool ITReceiveMessage::operator==(const IRCThreadMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(ITRecieveMessage))
+	if(typeid(rhs)==typeid(ITReceiveMessage))
 	{
-		const ITRecieveMessage& r = dynamic_cast<const ITRecieveMessage&>(rhs);
+		const ITReceiveMessage& r = dynamic_cast<const ITReceiveMessage&>(rhs);
 		if(r.message == message)
 			return true;
 	}
@@ -220,7 +220,7 @@ bool ITRecieveMessage::operator==(const IRCThreadMessage& rhs) const
 }
 
 
-std::string ITRecieveMessage::getMessage() const
+std::string ITReceiveMessage::getMessage() const
 {
 	return message;
 }

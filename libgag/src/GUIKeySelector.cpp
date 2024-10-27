@@ -83,10 +83,10 @@ namespace GAGGUI
 	
 	
 	
-	void KeySelector::setKey(const KeyPress& nkey)
+	void KeySelector::setKey(const KeyPress& nKey)
 	{
-		key = nkey;
-		this->text = nkey.getTranslated();
+		key = nKey;
+		this->text = nKey.getTranslated();
 	}
 	
 	

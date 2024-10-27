@@ -26,7 +26,7 @@
 
 class YOGServerChatChannel;
 
-///This does serverside management of YOG chat channels
+///This does server-side management of YOG chat channels
 class YOGServerChatChannelManager
 {
 public:
@@ -42,7 +42,7 @@ public:
 	///Creates a new chat channel, returning its number
 	Uint32 createNewChatChannel();
 
-	///Returns the lobbys channel
+	///Returns the lobby's channel
 	Uint32 getLobbyChannel();
 
 	///Returns the YOGServerChatChannel for the particular channel

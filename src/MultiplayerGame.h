@@ -98,7 +98,7 @@ public:
 	///Call this to send the the player-changes to the server
 	void updatePlayerChanges();
 	
-	///Sets the assocciatted net engine to push recieved orders into
+	///Sets the associated net engine to push received orders into
 	void setNetEngine(NetEngine* engine);
 	
 	///Causes the game to be started on all clients.
@@ -111,7 +111,7 @@ public:
 	void updateReadyState();
 	
 	///This is intended to add an AI to the game
-	void addAIPlayer(AI::ImplementitionID type);
+	void addAIPlayer(AI::ImplementationID type);
 
 	///This kicks/removes a player from the game
 	void kickPlayer(int playerNum);
@@ -156,13 +156,13 @@ public:
 	///Sets whether the player (as in the actual person) is ready, usually by clicking a check box
 	void setHumanReady(bool isReady);
 	
-	///This is true if the map and game headers have been recieved and the game is connected to the game router
+	///This is true if the map and game headers have been received and the game is connected to the game router
 	bool isFullyInGame();
 protected:
 	friend class YOGClient;
 
 	///This receives a message that is sent to the game
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void receiveMessage(boost::shared_ptr<NetMessage> message);
 	
 	///This will start the game
 	void startEngine();
@@ -173,8 +173,8 @@ protected:
 	///Sends the event to all listeners
 	void sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event);
 	
-	///Puts together reteaming information from the game header in the file
-	NetReteamingInformation constructReteamingInformation(const std::string& file);
+	///Puts together re-teaming information from the game header in the file
+	NetReTeamingInformation constructReTeamingInformation(const std::string& file);
 	
 	int getLocalPlayer();
 private:
@@ -187,7 +187,7 @@ private:
 	YOGServerGameJoinRefusalReason joinState;
 	YOGKickReason kickReason;
 	
-	//The id of the game, the id of the file (for transfering the map to clients), the ip of the router, and the id of the chat channel
+	//The id of the game, the id of the file (for transferring the map to clients), the ip of the router, and the id of the chat channel
 	Uint16 gameID;
 	Uint16 fileID;
 	Uint32 chatChannel;
@@ -197,13 +197,13 @@ private:
 	GameHeader gameHeader;
 	MapHeader mapHeader;
 	
-	//This is for if whether the player is ready to start or not (all factors considered like all information recieved,
+	//This is for if whether the player is ready to start or not (all factors considered like all information received,
 	//map downloaded if need be etc..)
 	bool wasReadyToStart;
 	bool sentReadyToStart;
 	bool humanReadyToStart;
 	
-	//Miscalaneous
+	//Miscellaneous
 	bool isStarting;
 	bool needToSendMapHeader;
 	Uint8 previousPercentage;

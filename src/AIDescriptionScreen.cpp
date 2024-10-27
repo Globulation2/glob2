@@ -30,10 +30,10 @@ AIDescriptionScreen::AIDescriptionScreen()
 	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
 	
-	ailist = new List(60, 50, 200, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	aiList = new List(60, 50, 200, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	for (int aii=0; aii<AI::SIZE; aii++)
-		ailist->addText(AINames::getAIText(aii));
-	addWidget(ailist);
+		aiList->addText(AINames::getAIText(aii));
+	addWidget(aiList);
 	
 	description = new TextArea(310, 50, 250, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true);
 	addWidget(description);
@@ -55,9 +55,9 @@ void AIDescriptionScreen::onAction(Widget *source, Action action, int par1, int 
 	}
 	if (action == LIST_ELEMENT_SELECTED)
 	{
-		if(ailist->getSelectionIndex() != -1)
+		if(aiList->getSelectionIndex() != -1)
 		{
-			description->setText(AINames::getAIDescription(ailist->getSelectionIndex()).c_str());
+			description->setText(AINames::getAIDescription(aiList->getSelectionIndex()).c_str());
 		}
 	}
 }

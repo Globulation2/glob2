@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GRAPHICCONTEXT_H
-#define __GRAPHICCONTEXT_H
+#ifndef __GRAPHIC_CONTEXT_H
+#define __GRAPHIC_CONTEXT_H
 
 #include "SDLGraphicContext.h"
 

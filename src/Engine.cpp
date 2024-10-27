@@ -136,7 +136,7 @@ int Engine::initCustom(const std::string &gameName)
 	MapHeader mapHeader = loadMapHeader(gameName);
 	GameHeader gameHeader = loadGameHeader(gameName);
 
-	// If the game is a network saved game, we need to toogle net players to ai players:
+	// If the game is a network saved game, we need to toggle net players to ai players:
 	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
 	{
 		if (verbose)
@@ -222,7 +222,7 @@ void Engine::createRandomGame()
 	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
 	
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
-	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
+	std::cout<<"Random Seed game header: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)
 	{
 		std::cout<<"    Player: "<<game.getBasePlayer(p).name<<" for team "<<game.getBasePlayer(p).teamNumber<<std::endl;
@@ -271,7 +271,7 @@ int Engine::run(void)
 		std::vector<std::string> musicDirs;
 		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
 		{
-			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(filename)))
+			if (globalContainer->fileManager->isDir(FormattableString("%0/%1").arg("data/zik/").arg(filename)))
 			{
 				std::cerr << "music dir found: " << filename << std::endl;
 				musicDirs.push_back(filename);
@@ -285,9 +285,9 @@ int Engine::run(void)
 			size_t musicIndex(rand() % musicDirs.size());
 			const std::string& musicDir(musicDirs[musicIndex]);
 			std::cerr << "selecting music dir " << musicDir << std::endl;
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a1.ogg").arg(musicDir), 2);
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a2.ogg").arg(musicDir), 3);
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a3.ogg").arg(musicDir), 4);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a1.ogg").arg(musicDir), 2);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a2.ogg").arg(musicDir), 3);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a3.ogg").arg(musicDir), 4);
 		}
 		else
 		{
@@ -394,7 +394,7 @@ int Engine::run(void)
 				// we get and push ai orders, if they are needed for this frame
 				for (int i=0; i<gui.game.gameHeader.getNumberOfPlayers(); i++)
 				{
-					if (gui.game.players[i]->ai && !net->orderRecieved(i))
+					if (gui.game.players[i]->ai && !net->orderReceived(i))
 					{
 						shared_ptr<Order> order=gui.game.players[i]->ai->getOrder(gui.gamePaused);
 						net->pushOrder(order, i, true);
@@ -417,7 +417,7 @@ int Engine::run(void)
 				}
 
 				// We proceed network:
-				networkReadyToExecute=net->allOrdersRecieved();
+				networkReadyToExecute=net->allOrdersReceived();
 
 
 				if(networkReadyToExecute)
@@ -514,10 +514,10 @@ int Engine::run(void)
 				
 				// if required, save videoshot
 				if (!(globalContainer->videoshotName.empty()) && 
-					!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+					!(globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 					)
 				{
-					FormatableString fileName = FormatableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(frameNumber++, 10, 10, '0');
+					FormattableString fileName = FormattableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(frameNumber++, 10, 10, '0');
 					printf("printing video shot %s\n", fileName.c_str());
 					globalContainer->gfx->printScreen(fileName.c_str());
 				}
@@ -749,7 +749,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		if (!globalContainer->runNoX)
 		{
 			// Display an error message
-			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 		}
 		return EE_CANT_LOAD_MAP;
 	}
@@ -758,7 +758,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	gui.game.clearingUncontrolledTeams();
 
 	// We do some cosmetic fix
-	finalAdjustements();
+	finalAdjustments();
 
 	// we create the net game
 	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
@@ -792,13 +792,13 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& 
 		{
 			localPlayer = playerNumber;
 			localTeam = i;
-			std::string name = FormatableString("Player %0").arg(playerNumber);
+			std::string name = FormattableString("Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_LOCAL);
 			wasHuman=true;
 		}
 		else if (mapHeader.getBaseTeam(i).type==BaseTeam::T_AI || wasHuman)
 		{
-			std::string name = FormatableString("AI Player %0").arg(playerNumber);
+			std::string name = FormattableString("AI Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_AI);
 		}
 		playerNumber+=1;
@@ -880,10 +880,10 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		}
 		else
 		{
-			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
-			FormatableString name("%0 %1");
+			AI::ImplementationID iid=static_cast<AI::ImplementationID>(syncRand() % 5 + 1);
+			FormattableString name("%0 %1");
 			name.arg(AINames::getAIText(iid)).arg(i-1);
-			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementationID(iid));
 		}
 		gameHeader.setAllyTeamNumber(teamColor, teamColor);
 		count+=1;
@@ -914,7 +914,7 @@ int Engine::loadReplay(const std::string &fileName)
 		if (!globalContainer->runNoX)
 		{
 			// Display an error message
-			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 		}
 
 		delete globalContainer->replayReader;
@@ -944,7 +944,7 @@ int Engine::loadReplay(const std::string &fileName)
 	return EE_NO_ERROR;
 }
 
-void Engine::finalAdjustements(void)
+void Engine::finalAdjustments(void)
 {
 	gui.adjustLocalTeam();
 	if (!globalContainer->runNoX)

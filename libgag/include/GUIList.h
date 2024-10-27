@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUILIST_H
-#define __GUILIST_H
+#ifndef __GUI_LIST_H
+#define __GUI_LIST_H
 
 #include "GUIBase.h"
 #include <vector>

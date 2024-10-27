@@ -47,9 +47,9 @@ YOGClientMapUploader::~YOGClientMapUploader()
 
 
 
-void YOGClientMapUploader::startUploading(const std::string& nmapFile, const std::string& newMapName, const std::string& authorName, int w, int h)
+void YOGClientMapUploader::startUploading(const std::string& mapFile, const std::string& newMapName, const std::string& authorName, int w, int h)
 {
-	mapFile = nmapFile;
+	this->mapFile = mapFile;
 	Engine engine;
 	YOGDownloadableMapInfo info;
 	MapHeader header = engine.loadMapHeader(mapFile);
@@ -57,7 +57,7 @@ void YOGClientMapUploader::startUploading(const std::string& nmapFile, const std
 	info.setMapHeader(header);
 	info.setAuthorName(authorName);
 	info.setDimensions(w, h);
-	info.setSize(getCompressedSize(nmapFile));
+	info.setSize(getCompressedSize(mapFile));
 	boost::shared_ptr<NetRequestMapUpload> message(new NetRequestMapUpload(info));
 	client->sendNetMessage(message);
 	state = WaitingForUploadReply;
@@ -76,10 +76,10 @@ void YOGClientMapUploader::cancelUpload()
 
 
 
-void YOGClientMapUploader::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientMapUploader::receiveMessage(boost::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
-	//This recieves the server information
+	//This receives the server information
 	if(type==MNetAcceptMapUpload)
 	{
 		shared_ptr<NetAcceptMapUpload> info = static_pointer_cast<NetAcceptMapUpload>(message);

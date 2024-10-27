@@ -61,13 +61,13 @@
 
 #include "ReplayWriter.h"
 
-#define BULLET_IMGID 0
+#define BULLET_IMG_ID 0
 
-#define MIN_MAX_PRESIGE 500
+#define MIN_MAX_PRESTIGE 500
 #define TEAM_MAX_PRESTIGE 150
 
 Game::Game(GameGUI *gui, MapEdit* edit):
-	mapscript(gui)
+	mapScript(gui)
 {
 	logFile = globalContainer->logFileManager->getFile("Game.log");
 
@@ -177,7 +177,7 @@ void Game::setMapHeader(const MapHeader& newMapHeader)
 {
 	mapHeader = newMapHeader;
 
-	// set the base team, for now the number is corect but we should check that further
+	// set the base team, for now the number is correct but we should check that further
 	for (int i=0; i<newMapHeader.getNumberOfTeams(); i++)
 		teams[i]->setBaseTeam(&newMapHeader.getBaseTeam(i));
 }
@@ -279,7 +279,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 					for (int x=posX; x<posX+w; x++)
 					{
 						size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
-						map.cases[index].forbidden|=teamMask;
+						map.tiles[index].forbidden|=teamMask;
 						if (oc->teamNumber == players[localPlayer]->teamNumber)
 							map.localForbiddenMap.set(index, true);
 					}
@@ -320,12 +320,12 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
 				fprintf(logFile, "ORDER_MODIFY_EXCHANGE");
-				b->receiveRessourceMask=ome->receiveRessourceMask;
-				b->sendRessourceMask=ome->sendRessourceMask;
+				b->receiveResourceMask=ome->receiveResourceMask;
+				b->sendResourceMask=ome->sendResourceMask;
 				if (order->sender!=localPlayer)
 				{
-					b->receiveRessourceMaskLocal=b->receiveRessourceMask;
-					b->sendRessourceMaskLocal=b->sendRessourceMask;
+					b->receiveResourceMaskLocal=b->receiveResourceMask;
+					b->sendResourceMaskLocal=b->sendResourceMask;
 				}
 				b->update();
 			}
@@ -368,10 +368,10 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 							delete[] b->globalGradient[i];
 							b->globalGradient[i]=NULL;
 						}
-						if (b->localRessources[i])
+						if (b->localResources[i])
 						{
-							delete[] b->localRessources[i];
-							b->localRessources[i]=NULL;
+							delete[] b->localResources[i];
+							b->localResources[i]=NULL;
 						}
 					}
 				}
@@ -382,8 +382,8 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderModifyClearingFlag> omcf=boost::static_pointer_cast<OrderModifyClearingFlag>(order);
-			Uint16 gid=omcf->gid;
+			boost::shared_ptr<OrderModifyClearingFlag> oMcf=boost::static_pointer_cast<OrderModifyClearingFlag>(order);
+			Uint16 gid=oMcf->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
@@ -393,9 +393,9 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				&& b->type->zonable[WORKER])
 			{
 				fprintf(logFile, "ORDER_MODIFY_CLEARING_FLAG");
-				memcpy(b->clearingRessources, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
+				memcpy(b->clearingResources, oMcf->clearingResources, sizeof(bool)*BASIC_COUNT);
 				if (order->sender!=localPlayer)
-					memcpy(b->clearingRessourcesLocal, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
+					memcpy(b->clearingResourcesLocal, oMcf->clearingResources, sizeof(bool)*BASIC_COUNT);
 			}
 		}
 		break;
@@ -403,9 +403,9 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderModifyMinLevelToFlag> omwf=boost::static_pointer_cast<OrderModifyMinLevelToFlag>(order);
-			int team=Building::GIDtoTeam(omwf->gid);
-			int id=Building::GIDtoID(omwf->gid);
+			boost::shared_ptr<OrderModifyMinLevelToFlag> oMwf=boost::static_pointer_cast<OrderModifyMinLevelToFlag>(order);
+			int team=Building::GIDtoTeam(oMwf->gid);
+			int id=Building::GIDtoID(oMwf->gid);
 			Building *b=teams[team]->myBuildings[id];
 			if (b
 				&& b->buildingState==Building::ALIVE
@@ -413,7 +413,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 				&& (b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
 			{
 				fprintf(logFile, "ORDER_MODIFY_MIN_LEVEL_TO_FLAG");
-				b->minLevelToFlag = omwf->minLevelToFlag;
+				b->minLevelToFlag = oMwf->minLevelToFlag;
 				// if it was another player, update local
 				if (order->sender != localPlayer)
 					b->minLevelToFlagLocal = b->minLevelToFlag;
@@ -465,10 +465,10 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 							delete[] b->globalGradient[i];
 							b->globalGradient[i]=NULL;
 						}
-						if (b->localRessources[i])
+						if (b->localResources[i])
 						{
-							delete b->localRessources[i];
-							b->localRessources[i]=NULL;
+							delete b->localResources[i];
+							b->localResources[i]=NULL;
 						}
 					}
 				}
@@ -481,10 +481,10 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			}
 		}
 		break;
-		case ORDER_ALTERATE_FORBIDDEN:
+		case ORDER_ALTER_FORBIDDEN:
 		{
-			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
-			boost::shared_ptr<OrderAlterateForbidden> oaa = boost::static_pointer_cast<OrderAlterateForbidden>(order);
+			fprintf(logFile, "ORDER_ALTER_FORBIDDEN");
+			boost::shared_ptr<OrderAlterForbidden> oaa = boost::static_pointer_cast<OrderAlterForbidden>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -496,7 +496,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							map.cases[index].forbidden |= teamMask;
+							map.tiles[index].forbidden |= teamMask;
 							// Update local map
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localForbiddenMap.set(index, true);
@@ -515,7 +515,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							map.cases[index].forbidden &= notTeamMask;
+							map.tiles[index].forbidden &= notTeamMask;
 							// Update local map
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localForbiddenMap.set(index, false);
@@ -523,7 +523,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 						orderMaskIndex++;
 					}
 
-				// We remove, so we need to refresh the gradients, unfortunatly
+				// We remove, so we need to refresh the gradients, unfortunately
 				teams[oaa->teamNumber]->dirtyGlobalGradient();
 				map.dirtyLocalGradient(oaa->centerX+oaa->minX-16, oaa->centerY+oaa->minY-16, oaa->maxX-oaa->minX+32, oaa->maxY-oaa->minY+32, oaa->teamNumber);
 			}
@@ -534,10 +534,10 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			map.updateClearAreasGradient(oaa->teamNumber);
 		}
 		break;
-		case ORDER_ALTERATE_GUARD_AREA:
+		case ORDER_ALTER_GUARD_AREA:
 		{
-			fprintf(logFile, "ORDER_ALTERATE_GUARD_AREA");
-			boost::shared_ptr<OrderAlterateGuardArea> oaa = boost::static_pointer_cast<OrderAlterateGuardArea>(order);
+			fprintf(logFile, "ORDER_ALTER_GUARD_AREA");
+			boost::shared_ptr<OrderAlterGuardArea> oaa = boost::static_pointer_cast<OrderAlterGuardArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -549,7 +549,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							map.cases[index].guardArea |= teamMask;
+							map.tiles[index].guardArea |= teamMask;
 							// Update local map
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localGuardAreaMap.set(index, true);
@@ -568,7 +568,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							map.cases[index].guardArea &= notTeamMask;
+							map.tiles[index].guardArea &= notTeamMask;
 							// Update local map
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localGuardAreaMap.set(index, false);
@@ -581,10 +581,10 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			map.updateGuardAreasGradient(oaa->teamNumber);
 		}
 		break;
-		case ORDER_ALTERATE_CLEAR_AREA:
+		case ORDER_ALTER_CLEAR_AREA:
 		{
-			fprintf(logFile, "ORDER_ALTERATE_CLEAR_AREA");
-			boost::shared_ptr<OrderAlterateClearArea> oaa = boost::static_pointer_cast<OrderAlterateClearArea>(order);
+			fprintf(logFile, "ORDER_ALTER_CLEAR_AREA");
+			boost::shared_ptr<OrderAlterClearArea> oaa = boost::static_pointer_cast<OrderAlterClearArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -596,7 +596,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							map.cases[index].clearArea |= teamMask;
+							map.tiles[index].clearArea |= teamMask;
 							// Update local map
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localClearAreaMap.set(index, true);
@@ -615,7 +615,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 						{
 							size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 							// Update real map
-							map.cases[index].clearArea &= notTeamMask;
+							map.tiles[index].clearArea &= notTeamMask;
 							// Update local map
 							if (oaa->teamNumber == players[localPlayer]->teamNumber)
 								map.localClearAreaMap.set(index, false);
@@ -747,14 +747,14 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_PLAYER_QUIT_GAME:
 		{
-			boost::shared_ptr<PlayerQuitsGameOrder> pqgo=boost::static_pointer_cast<PlayerQuitsGameOrder>(order);
+			boost::shared_ptr<PlayerQuitsGameOrder> pqgO=boost::static_pointer_cast<PlayerQuitsGameOrder>(order);
 
 			bool found = false;
 			for(int i=0; i<Team::MAX_COUNT; ++i)
 			{
-				if(i!=pqgo->player && players[i])
+				if(i!=pqgO->player && players[i])
 				{
-					if(players[i]->teamNumber == players[pqgo->player]->teamNumber)
+					if(players[i]->teamNumber == players[pqgO->player]->teamNumber)
 					{
 						found = true;
 					}
@@ -762,11 +762,11 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 			}
 			if(! found)
 			{
-				teams[players[pqgo->player]->teamNumber]->isAlive = false;
+				teams[players[pqgO->player]->teamNumber]->isAlive = false;
 			}
 
-			players[pqgo->player]->makeItAI(AI::NONE);
-			gameHeader.getBasePlayer(pqgo->player).makeItAI(AI::NONE);
+			players[pqgO->player]->makeItAI(AI::NONE);
+			gameHeader.getBasePlayer(pqgO->player).makeItAI(AI::NONE);
 			fprintf(logFile, "ORDER_PLAYER_QUIT_GAME");
 		}
 		break;
@@ -841,7 +841,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	stream->read(signature, 4, "signatureStart");
 	if (memcmp(signature,"GaBe", 4)!=0)
 	{
-		fprintf(logFile, "Signature missmatch at Game::load begin\n");
+		fprintf(logFile, "Signature mismatch at Game::load begin\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -859,7 +859,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->read(signature, 4, "signatureAfterSyncRand");
 		if (memcmp(signature,"GaSy", 4)!=0)
 		{
-			fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
+			fprintf(logFile, "Signature mismatch after Game::load sync rand\n");
 			stream->readLeaveSection();
 			return false;
 		}
@@ -869,7 +869,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->read(signature, 4, "signatureBeforeTeams");
 		if (memcmp(signature,"GaBt", 4)!=0)
 		{
-			fprintf(logFile, "Signature missmatch before Game::load teams \n");
+			fprintf(logFile, "Signature mismatch before Game::load teams \n");
 			stream->readLeaveSection();
 			return false;
 		}
@@ -888,7 +888,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	stream->read(signature, 4, "signatureAfterTeams");
 	if (memcmp(signature,"GaTe", 4)!=0)
 	{
-		fprintf(logFile, "Signature missmatch after Game::load teams\n");
+		fprintf(logFile, "Signature mismatch after Game::load teams\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -896,7 +896,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	// Load the map. Team has to be saved and loaded first.
 	if(!map.load(stream, mapHeader, this))
 	{
-		fprintf(logFile, "Signature missmatch in map\n");
+		fprintf(logFile, "Signature mismatch in map\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -904,7 +904,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	stream->read(signature, 4, "signatureAfterMap");
 	if (memcmp(signature,"GaMa", 4)!=0)
 	{
-		fprintf(logFile, "Signature missmatch after map\n");
+		fprintf(logFile, "Signature mismatch after map\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -922,7 +922,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	stream->read(signature, 4, "signatureAfterPlayers");
 	if (memcmp(signature,"GaPl", 4)!=0)
 	{
-		fprintf(logFile, "Signature missmatch after players\n");
+		fprintf(logFile, "Signature mismatch after players\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -947,7 +947,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	if(versionMinor >= 82)
 	{
 		// This is the new map script system
-		mapscript.decodeData(stream, mapHeader.getVersionMinor());
+		mapScript.decodeData(stream, mapHeader.getVersionMinor());
 	}
 
 	///Load the campaign text for the game.
@@ -955,7 +955,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->readText("campaignText");
 
 	// default prestige calculation
-	prestigeToReach = std::max(MIN_MAX_PRESIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
+	prestigeToReach = std::max(MIN_MAX_PRESTIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
 
 	if(mapHeader.getVersionMinor() >= 75)
 	{
@@ -1018,14 +1018,14 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 					checkInvariant(buildings[index]==NOGBID);
 					buildings[index] = gid;
 					// heal missing cells
-					if (map.getCase(xi, yi).building != gid)
+					if (map.getTile(xi, yi).building != gid)
 					{
 						std::cerr << "Missing map cell GBID at " << xi << "," << yi
 							<< " for team " << ti
 							<< " building " << bi
 							<< " (" << building->type->type << "), healing!"
 							<< std::endl;
-						map.getCase(xi, yi).building = gid;
+						map.getTile(xi, yi).building = gid;
 					}
 				}
 		}
@@ -1046,7 +1046,7 @@ bool Game::integrity(void)
 	for (int y=0; y<map.getH(); y++)
 		for (int x=0; x<map.getW(); x++)
 		{
-			Case& c = map.getCase(x, y);
+			Tile& c = map.getTile(x, y);
 			if (c.building != NOGBID)
 			{
 				int tid = Building::GIDtoTeam(c.building);
@@ -1063,7 +1063,7 @@ bool Game::integrity(void)
 							<< " with " << #coordH \
 							<< " span [" << building->pos ## coordH << ":" << buildingEnd ## coordH << "[, healing!" \
 							<< std::endl; \
-						map.getCase(x, y).building = NOGBID; \
+						map.getTile(x, y).building = NOGBID; \
 					}
 
 				const auto buildingEndX = building->posX + building->type->width;
@@ -1164,7 +1164,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	sgslScript.save(stream, this);
 
 	// This is the new map script system
-	mapscript.encodeData(stream);
+	mapScript.encodeData(stream);
 
 	///Save game objectives
 	objectives.encodeData(stream);
@@ -1214,7 +1214,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 				{
 					size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.cases[index].forbidden&=notTeamMask;
+					map.tiles[index].forbidden&=notTeamMask;
 					// Update local map
 					if (teamNumber == localTeam)
 						map.localForbiddenMap.set(index, false);
@@ -1236,7 +1236,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 					{
 						size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 						// Update real map
-						map.cases[index].forbidden&=notTeamMask;
+						map.tiles[index].forbidden&=notTeamMask;
 						// Update local map
 						if (teamNumber == localTeam)
 							map.localForbiddenMap.set(index, false);
@@ -1257,7 +1257,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 
 void Game::wonSyncStep(void)
 {
-	//TODO: sideeffects? 
+	//TODO: side effects? 
 	//std::list<boost::shared_ptr<WinningCondition> >& conditions = 
 	gameHeader.getWinningConditions();
 
@@ -1281,7 +1281,7 @@ void Game::scriptSyncStep()
 {
 	// do a script step
 	sgslScript.syncStep(gui);
-	mapscript.syncStep(gui);
+	mapScript.syncStep(gui);
 }
 
 
@@ -1427,7 +1427,7 @@ void Game::addTeam(int pos)
 	for (int i=0; i<pos; i++)
 		teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
 
-	prestigeToReach = std::max(MIN_MAX_PRESIGE, pos*TEAM_MAX_PRESTIGE);
+	prestigeToReach = std::max(MIN_MAX_PRESTIGE, pos*TEAM_MAX_PRESTIGE);
 
 	map.addTeam();
 
@@ -1526,7 +1526,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	if (id==-1)
 		return NULL;
 
-	//ok, now we can safely deposite an unit.
+	//ok, now we can safely deposit an unit.
 	int gid=Unit::GIDfrom(id, team);
 	if (fly)
 		map.setAirUnit(x, y, gid);
@@ -1560,7 +1560,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 		return NULL;
 	}
 
-	//ok, now we can safely deposite an building.
+	//ok, now we can safely deposit an building.
 	int gid=Building::GIDfrom(id, teamNumber);
 
 	int w=globalContainer->buildingsTypes.get(typeNum)->width;
@@ -1583,11 +1583,11 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 	bool found=false;
 	if (flags & DEL_GROUND_UNIT)
 	{
-		Uint16 gauid=map.getAirUnit(x, y);
-		if (gauid!=NOGUID)
+		Uint16 gauId=map.getAirUnit(x, y);
+		if (gauId!=NOGUID)
 		{
-			int id=Unit::GIDtoID(gauid);
-			int team=Unit::GIDtoTeam(gauid);
+			int id=Unit::GIDtoID(gauId);
+			int team=Unit::GIDtoTeam(gauId);
 			map.setAirUnit(x, y, NOGUID);
 			delete (teams[team]->myUnits[id]);
 			teams[team]->myUnits[id]=NULL;
@@ -1596,11 +1596,11 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 	}
 	if (flags & DEL_AIR_UNIT)
 	{
-		Uint16 gguid=map.getGroundUnit(x, y);
-		if (gguid!=NOGUID)
+		Uint16 gguId=map.getGroundUnit(x, y);
+		if (gguId!=NOGUID)
 		{
-			int id=Unit::GIDtoID(gguid);
-			int team=Unit::GIDtoTeam(gguid);
+			int id=Unit::GIDtoID(gguId);
+			int team=Unit::GIDtoTeam(gguId);
 			map.setGroundUnit(x, y, NOGUID);
 			delete (teams[team]->myUnits[id]);
 			teams[team]->myUnits[id]=NULL;
@@ -1609,11 +1609,11 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 	}
 	if (flags & DEL_BUILDING)
 	{
-		Uint16 gbid=map.getBuilding(x, y);
-		if (gbid!=NOGBID)
+		Uint16 gbId=map.getBuilding(x, y);
+		if (gbId!=NOGBID)
 		{
-			int id=Building::GIDtoID(gbid);
-			int team=Building::GIDtoTeam(gbid);
+			int id=Building::GIDtoID(gbId);
+			int team=Building::GIDtoTeam(gbId);
 			Building *b=teams[team]->myBuildings[id];
 			if (!b->type->isVirtual)
 				map.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
@@ -1824,10 +1824,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
 			return;
 
-	int imgid;
+	int imgId;
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
-	imgid=unit->skin->startImage[unit->action];
+	imgId=unit->skin->startImage[unit->action];
 	int px, py;
 	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
 	int deltaLeft=255-unit->delta;
@@ -1849,20 +1849,20 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(delta<256);
 	if (dir==8)
 	{
-		imgid+=8*(delta>>5);
+		imgId+=8*(delta>>5);
 	}
 	else
 	{
-		imgid+=8*dir;
-		imgid+=(delta>>5);
+		imgId+=8*dir;
+		imgId+=(delta>>5);
 	}
 
 	// draw unit
 	Sprite *unitSprite = unit->skin->sprite;
 	unitSprite->setBaseColor(teams[team]->color);
-	int decX = (unitSprite->getW(imgid)-32)>>1;
-	int decY = (unitSprite->getH(imgid)-32)>>1;
-	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+	int decX = (unitSprite->getW(imgId)-32)>>1;
+	int decY = (unitSprite->getH(imgId)-32)>>1;
+	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgId);
 
 	// draw selection
 	if (unit==selectedUnit)
@@ -1891,20 +1891,20 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	{
 		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		{
-			globalContainer->gfx->drawSprite(px+16-(globalContainer->magiceffect->getW(0)>>1), py+16-(globalContainer->magiceffect->getH(0)>>1), globalContainer->magiceffect, 0);
+			globalContainer->gfx->drawSprite(px+16-(globalContainer->magicEffect->getW(0)>>1), py+16-(globalContainer->magicEffect->getH(0)>>1), globalContainer->magicEffect, 0);
 		}
 		else
 		{
 			unsigned alpha = (unit->magicActionAnimation * 255) / MAGIC_ACTION_ANIMATION_FRAME_COUNT;
 			if (globalContainer->gfx->canDrawStretchedSprite())
 			{
-				int stretchW = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->magicActionAnimation) * globalContainer->magiceffect->getW(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
-				int stretchH = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->magicActionAnimation) * globalContainer->magiceffect->getH(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
-				globalContainer->gfx->drawSprite(px+16-stretchW, py+16-stretchH, stretchW*2, stretchH*2, globalContainer->magiceffect, 0, alpha);
+				int stretchW = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->magicActionAnimation) * globalContainer->magicEffect->getW(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
+				int stretchH = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->magicActionAnimation) * globalContainer->magicEffect->getH(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
+				globalContainer->gfx->drawSprite(px+16-stretchW, py+16-stretchH, stretchW*2, stretchH*2, globalContainer->magicEffect, 0, alpha);
 			}
 			else
 			{
-				globalContainer->gfx->drawSprite(px+16-(globalContainer->magiceffect->getW(0)>>1), py+16-(globalContainer->magiceffect->getH(0)>>1), globalContainer->magiceffect, 0, alpha);
+				globalContainer->gfx->drawSprite(px+16-(globalContainer->magicEffect->getW(0)>>1), py+16-(globalContainer->magicEffect->getH(0)>>1), globalContainer->magicEffect, 0, alpha);
 			}
 		}
 	}
@@ -1924,8 +1924,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else
 			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
 
-		if ((unit->performance[HARVEST]) && (unit->carriedRessource>=0))
-			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->carriedRessource);
+		if ((unit->performance[HARVEST]) && (unit->carriedResource>=0))
+			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedResource);
 	}
 
 	if (drawOptions & DRAW_ACCESSIBILITY)
@@ -1942,7 +1942,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 	if(highlightUnitType & (1<<unit->typeNum))
 	{
-		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gamegui, 36);
+		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gameGui, 36);
 	}
 }
 
@@ -1992,8 +1992,8 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 				}
 				else
 				{
-					assert(false); // Now there shouldn't be any more ressources on "terrain".
-					sprite=globalContainer->ressources;
+					assert(false); // Now there shouldn't be any more resources on "terrain".
+					sprite=globalContainer->resources;
 					id-=272;
 				}
 				if ((id < 256) || (id >= 256+16))
@@ -2001,7 +2001,7 @@ inline void Game::drawMapTerrain(int left, int top, int right, int bot, int view
 			}
 }
 
-inline void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+inline void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
@@ -2017,33 +2017,33 @@ inline void Game::drawMapRessources(int left, int top, int right, int bot, int v
 						visibleTeams) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
-				const auto& r = map.getRessource(x+viewportX, y+viewportY);
+				const auto& r = map.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
-					Sprite *sprite=globalContainer->ressources;
+					Sprite *sprite=globalContainer->resources;
 					int type=r.type;
 					int amount=r.amount;
 					int variety=r.variety;
-					const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
-					int imgid=rt->gfxId+(variety*rt->sizesCount)+amount;
+					const ResourceType *rt=globalContainer->resourcesTypes.get(type);
+					int imgId=rt->gfxId+(variety*rt->sizesCount)+amount;
 					if (!rt->eternal)
-						imgid--;
-					int dx=(sprite->getW(imgid)-32)>>1;
-					int dy=(sprite->getH(imgid)-32)>>1;
+						imgId--;
+					int dx=(sprite->getW(imgId)-32)>>1;
+					int dy=(sprite->getH(imgId)-32)>>1;
 					assert(type>=0);
-					assert(type<(int)globalContainer->ressourcesTypes.size());
+					assert(type<(int)globalContainer->resourcesTypes.size());
 					assert(amount>=0);
 					assert(amount<=rt->sizesCount);
 					assert(variety>=0);
 					assert(variety<rt->varietiesCount);
-					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
+					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgId);
 				}
 			}
 }
 
 inline void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
-	//Reset the mouse unit to NULL, as this time arround there may not be a unit
+	//Reset the mouse unit to NULL, as this time around there may not be a unit
 	//under the mouse pointer
 	mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
@@ -2116,14 +2116,14 @@ inline void Game::drawMapDebugAreas(int left, int top, int right, int bot, int s
 			//b=teams[0]->myBuildings[21];
 			//if (teams[0]->virtualBuildings.size())
 			//	b=*teams[0]->virtualBuildings.begin();
-			if (b && b->localRessources[1])
+			if (b && b->localResources[1])
 				for (int y=top-1; y<=bot; y++)
 					for (int x=left-1; x<=right; x++)
 						if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
 						{
 							int lx=(x+viewportX-b->posX+15)&31;
 							int ly=(y+viewportY-b->posY+15)&31;
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localRessources[1][lx+ly*32]);
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localResources[1][lx+ly*32]);
 						}
 		}
 
@@ -2175,7 +2175,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 	BuildingType *type=building->type;
 	Team *team=building->owner;
 
-	int imgid;
+	int imgId;
 	if (type->crossConnectMultiImage)
 	{
 		int add = 0;
@@ -2200,7 +2200,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 		if ((b != NOGBID) &&
 			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
 			add |= (1<<0);
-		imgid = type->gameSpriteImage + add;
+		imgId = type->gameSpriteImage + add;
 	}
 	else
 	{
@@ -2208,7 +2208,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 		int hp = std::min(building->hp, type->hpMax);
 		int damageImgShift = type->gameSpriteCount - ((hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
 		assert(damageImgShift >= 0);
-		imgid = type->gameSpriteImage + damageImgShift;
+		imgId = type->gameSpriteImage + damageImgShift;
 	}
 //	int x, y;
 	int dx, dy;
@@ -2217,12 +2217,12 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 
 	// select buildings and set the team colors
 	Sprite *buildingSprite = type->gameSpritePtr;
-	dx = (type->width<<5)-buildingSprite->getW(imgid);
-	dy = (type->height<<5)-buildingSprite->getH(imgid);
+	dx = (type->width<<5)-buildingSprite->getW(imgId);
+	dy = (type->height<<5)-buildingSprite->getH(imgId);
 	buildingSprite->setBaseColor(team->color);
 
 	// draw building
-	globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgId);
 
 	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
 	{
@@ -2231,13 +2231,13 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 		int typeNum=building->typeNum;
 		globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
 
-		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
+		BuildingType *lastBt=globalContainer->buildingsTypes.get(typeNum);
 		int lastTypeNum=typeNum;
 		int max=0;
-		while(lastbt->nextLevel>=0)
+		while(lastBt->nextLevel>=0)
 		{
-			lastTypeNum=lastbt->nextLevel;
-			lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
+			lastTypeNum=lastBt->nextLevel;
+			lastBt=globalContainer->buildingsTypes.get(lastTypeNum);
 			if (max++>200)
 			{
 				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
@@ -2245,10 +2245,10 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 				break;
 			}
 		}
-		int exBatX=x+((lastbt->decLeft-type->decLeft)<<5);
-		int exBatY=y+((lastbt->decTop-type->decTop)<<5);
-		int exBatW=(lastbt->width)<<5;
-		int exBatH=(lastbt->height)<<5;
+		int exBatX=x+((lastBt->decLeft-type->decLeft)<<5);
+		int exBatY=y+((lastBt->decTop-type->decTop)<<5);
+		int exBatW=(lastBt->width)<<5;
+		int exBatH=(lastBt->height)<<5;
 
 		globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
 	}
@@ -2258,7 +2258,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 
 	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & visibleTeams))
 	{
-		//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
+		//int unitDecX=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 		// TODO : find better color for this
 		// health
 		if (type->hpMax)
@@ -2277,17 +2277,17 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 				actWidth=1+(int)(15.0f*hpRatio);
 				addDec=7;
 			}
-			int decy=(type->height*32);
-			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
+			int decY=(type->height*32);
+			int healDecX=(type->width-(maxWidth>>3))*16+addDec;
 
 			if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
 			{
 				if (hpRatio>0.6)
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
+					drawPointBar(x+healDecX, y+decY-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
 				else if (hpRatio>0.3)
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
+					drawPointBar(x+healDecX, y+decY-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
 				else
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
+					drawPointBar(x+healDecX, y+decY-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
 			}
 		}
 
@@ -2303,9 +2303,9 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 			// compute bar size, prevent oversize
 			int bDiv=1;
 			assert(type->height!=0);
-			while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
+			while ( ((type->maxResource[CORN]*3+1)/bDiv)>((type->height*32)-10))
 				bDiv++;
-			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxResource[CORN]/bDiv, building->resources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
 		}
 
 		// bullets (for defence towers)
@@ -2335,7 +2335,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 
 	if(highlightBuildingType & (1<<building->shortTypeNum))
 	{
-		globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
+		globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgId)/2 - 16, y-36, globalContainer->gameGui, 36);
 	}
 }
 
@@ -2393,23 +2393,23 @@ inline void Game::drawMapAreas(int left, int top, int right, int bot, int sw, in
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
-				if((drawOptions & DRAW_NO_RESSOURCE_GROWTH_AREAS) != 0)
+				if((drawOptions & DRAW_NO_RESOURCE_GROWTH_AREAS) != 0)
 				{
-					if(!map.canRessourcesGrow(x+viewportX, y+viewportY))
+					if(!map.canResourcesGrow(x+viewportX, y+viewportY))
 					{
 						globalContainer->gfx->drawLine((x<<5), 8+(y<<5), 32+(x<<5), 8+(y<<5), 128, 64, 0);
 						globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 32+(x<<5), 16+(y<<5), 128, 64, 0);
 						globalContainer->gfx->drawLine((x<<5), 24+(y<<5), 32+(x<<5), 24+(y<<5), 128, 64, 0);
 //						globalContainer->gfx->drawLine((x<<5), 32+(y<<5), 32+(x<<5), 32+(y<<5), 128, 64, 0);
 
-						if (map.canRessourcesGrow(x+viewportX, y+viewportY-1))
+						if (map.canResourcesGrow(x+viewportX, y+viewportY-1))
 							globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 128, 0);
-						if (map.canRessourcesGrow(x+viewportX, y+viewportY+1))
+						if (map.canResourcesGrow(x+viewportX, y+viewportY+1))
 							globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 128, 0);
 
-						if (map.canRessourcesGrow(x+viewportX-1, y+viewportY))
+						if (map.canResourcesGrow(x+viewportX-1, y+viewportY))
 							globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 128, 0);
-						if (map.canRessourcesGrow(x+viewportX+1, y+viewportY))
+						if (map.canResourcesGrow(x+viewportX+1, y+viewportY))
 							globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 128, 0);
 						}
 				}
@@ -2515,7 +2515,7 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 		{
 			int x=(*it)->px-(viewportX<<5);
 			int y=(*it)->py-(viewportY<<5);
-			int balisticShift = 0;
+			int ballisticShift = 0;
 
 			if (x<0)
 				x+=mapPixW;
@@ -2528,14 +2528,14 @@ inline void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int
 				float speedX = static_cast<float>((*it)->speedX);
 				float speedY = static_cast<float>((*it)->speedX);
 				float K = static_cast<float>(sqrt(speedX * speedX + speedY * speedY));
-				balisticShift = static_cast<int>(K * ((-1.0f * x * x) / T + x));
+				ballisticShift = static_cast<int>(K * ((-1.0f * x * x) / T + x));
 			}
 
 			//printf("px=(%d, %d) vp=(%d, %d)\n", (*it)->px, (*it)->py, viewportX, viewportY);
 			if ( (x<=sw) && (y<=sh) )
 			{
-				globalContainer->gfx->drawSprite(x, y-balisticShift, bulletSprite, BULLET_IMGID);
-				globalContainer->gfx->drawSprite(x+(balisticShift>>1), y, bulletSprite, BULLET_IMGID+1);
+				globalContainer->gfx->drawSprite(x, y-ballisticShift, bulletSprite, BULLET_IMG_ID);
+				globalContainer->gfx->drawSprite(x+(ballisticShift>>1), y, bulletSprite, BULLET_IMG_ID+1);
 			}
 		}
 		// explosions
@@ -2574,7 +2574,7 @@ inline void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw,
 {
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
-		// we have decrease on because we do unalign lookup
+		// we have decrease on because we do unaligned lookup
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 			{
@@ -2641,7 +2641,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 			overlayColor=Color(0, 0, 192);
 		if(overlays->getOverlayType() == OverlayArea::Fertility)
 			overlayColor=Color(0, 192, 128);
-		///Both width and height have +2 to cover half-squares arround the edge of the viewport
+		///Both width and height have +2 to cover half-squares around the edge of the viewport
 		int width = (right - left) + 2;
 		int height = (bot - top) + 2;
 
@@ -2667,7 +2667,7 @@ inline void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int 
 		}
 
 		///This is to correct OpenGL's blending not beeing offset correctly to line up with the map tiles
-		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+		if(globalContainer->gfx->getOptionFlags() & GraphicContext::USE_GPU)
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -16, -16, 32, 32, overlayColor);
 		else
 			globalContainer->gfx->drawAlphaMap(overlayAlphas, width, height, -32, -32, 32, 32, overlayColor);
@@ -2755,7 +2755,7 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 	int i_sw = sw - 40;
 	int i_sh = sh - 40;
 
-	// The units draw position releative to the center of the internal square
+	// The units draw position relative to the center of the internal square
 	int rel_cx = px - i_sx - i_sw/2;
 	int rel_cy = py - i_sy - i_sh/2;
 	if(rel_cx == 0)
@@ -2765,7 +2765,7 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 
 	//globalContainer->gfx->drawLine(sx + sw/2, sy + sh/2, px, py, Color::white);
 
-	// Decide which edge of the screen the box is on, and compute its center cordinates
+	// Decide which edge of the screen the box is on, and compute its center coordinates
 	int bx = 0;
 	int by = 0;
 	float slope = float(rel_cy) / float(rel_cx);
@@ -2796,12 +2796,12 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 	by -= 20;
 
 	// draw unit's image
-	int imgid;
+	int imgId;
 	UnitType *ut=unit->race->getUnitType(unit->typeNum, 0);
 	assert(unit->action>=0);
 
 	assert(unit->action<NB_MOVE);
-	imgid=ut->startImage[unit->action];
+	imgId=ut->startImage[unit->action];
 
 	int dir=unit->direction;
 	int delta=unit->delta;
@@ -2811,18 +2811,18 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 	assert(delta<256);
 	if (dir==8)
 	{
-		imgid+=8*(delta>>5);
+		imgId+=8*(delta>>5);
 	}
 	else
 	{
-		imgid+=8*dir;
-		imgid+=(delta>>5);
+		imgId+=8*dir;
+		imgId+=(delta>>5);
 	}
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(unit->owner->color);
-	int decX = (32-unitSprite->getW(imgid))>>1;
-	int decY = (32-unitSprite->getH(imgid))>>1;
+	int decX = (32-unitSprite->getW(imgId))>>1;
+	int decY = (32-unitSprite->getH(imgId))>>1;
 
 	// Draw the code
 	//globalContainer->gfx->drawFilledRect(bx, by, 40, 40, 0,0,0,128);
@@ -2846,7 +2846,7 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 		bx+20+cosf(angle+M_PI/6)*10,
 		by+20+sinf(angle+M_PI/6)*10,
 		Color::white);
-	globalContainer->gfx->drawSprite(bx+decX+4, by+decY+4, unitSprite, imgid, 160);
+	globalContainer->gfx->drawSprite(bx+decX+4, by+decY+4, unitSprite, imgId, 160);
 }
 
 
@@ -2891,7 +2891,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	time++;
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+	drawMapResources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings);
@@ -2965,7 +2965,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 				int team = building->owner->teamNumber;
 
-				int imgid = type->gameSpriteImage;
+				int imgId = type->gameSpriteImage;
 
 				int x, y;
 				map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
@@ -2973,7 +2973,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				// all flags are hued:
 				Sprite *buildingSprite = type->gameSpritePtr;
 				buildingSprite->setBaseColor(teams[team]->color);
-				globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+				globalContainer->gfx->drawSprite(x, y, buildingSprite, imgId);
 
 				// flag circle:
 				if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==selectedBuilding))
@@ -2982,9 +2982,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				// FIXME : ugly copy past
 				if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
 				{
-					int decy=(type->height*32);
-					int healDecx=(type->width-2)*16+1;
-					//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
+					int decY=(type->height*32);
+					int healDecX=(type->width-2)*16+1;
+					//int unitDecX=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 
 					// TODO : find better color for this
 					// health
@@ -2992,11 +2992,11 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 					{
 						float hpRatio=(float)building->hp/(float)type->hpMax;
 						if (hpRatio>0.6)
-							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
+							drawPointBar(x+healDecX+6, y+decY-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
 						else if (hpRatio>0.3)
-							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
+							drawPointBar(x+healDecX+6, y+decY-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
 						else
-							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
+							drawPointBar(x+healDecX+6, y+decY-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
 					}
 
 					// units
@@ -3012,9 +3012,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						// compute bar size, prevent oversize
 						int bDiv=1;
 						assert(type->height!=0);
-						while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
+						while ( ((type->maxResource[CORN]*3+1)/bDiv)>((type->height*32)-10))
 							bDiv++;
-						drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+						drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxResource[CORN]/bDiv, building->resources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
 					}
 				}
 			}
@@ -3025,14 +3025,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 				for (int pi=0; pi<gameHeader.getNumberOfPlayers(); pi++)
-					if (players[pi] && players[pi]->ai && players[pi]->ai->implementitionID==AI::CASTOR)
+					if (players[pi] && players[pi]->ai && players[pi]->ai->implementationID==AI::CASTOR)
 					{
 						AICastor *ai=(AICastor *)players[pi]->ai->aiImplementation;
 						//Uint8 *gradient=ai->wheatCareMap[1];
 						Uint8 *gradient=ai->hydratationMap;
 						//Uint8 *gradient=ai->enemyWarriorsMap;
 						//Uint8 *gradient=map.forbiddenGradient[1][0];
-						//Uint8 *gradient=map.ressourcesGradient[0][CORN][0];
+						//Uint8 *gradient=map.resourcesGradient[0][CORN][0];
 
 						assert(gradient);
 						size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);

@@ -44,8 +44,8 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 // 	
 	ypos += 30;
 	addWidget(new Text(10, ypos, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hungryness]")));
-	hungryness = new TextInput(10, ypos, 100, 25, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
-	addWidget(hungryness);
+	hungriness = new TextInput(10, ypos, 100, 25, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
+	addWidget(hungriness);
 	
 	// ok / cancel
 	addWidget(new TextButton(10, 10, 135, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
@@ -57,7 +57,7 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	// change widgets's properties
 	globalContainer->unitsSkins->buildSkinsList(skin);
 	skin->setIndexFromText(unit->skinName);
-	hungryness->setText(unit->hungryness);
+	hungriness->setText(unit->hungriness);
 }
 
 UnitEditorScreen::~UnitEditorScreen()
@@ -74,7 +74,7 @@ void UnitEditorScreen::onAction(Widget *source, Action action, int par1, int par
 			endValue = par1;
 			unit->skinName = skin->getText();
 			unit->skinPointerFromName();
-			unit->hungryness = hungryness->getText<Sint32>();
+			unit->hungriness = hungriness->getText<Sint32>();
 		}
 		else if (par1 == CANCEL)
 		{
@@ -84,8 +84,8 @@ void UnitEditorScreen::onAction(Widget *source, Action action, int par1, int par
 	if (action==TEXT_ACTIVATED)
 	{
 		if (source==skin)
-			hungryness->deactivate();
-		else if (source==hungryness)
+			hungriness->deactivate();
+		else if (source==hungriness)
 			skin->deactivate();
 	}*/
 }

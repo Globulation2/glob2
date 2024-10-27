@@ -56,11 +56,11 @@ public:
 	enum
 	{
 		QUIT,
-		ADDMAP,
-		REFRESHMAPLIST,
-		DOWNLOADMAP,
-		SUBMITRATING,
-		SORTMETHOD,
+		ADD_MAP,
+		REFRESH_MAP_LIST,
+		DOWNLOAD_MAP,
+		SUBMIT_RATING,
+		SORT_METHOD,
 	};
 	
 	///Updates the list of maps
@@ -73,7 +73,7 @@ private:
 	void requestMaps();
 	///This updates the map info
 	void updateMapInfo();
-	///This updates the visibilily
+	///This updates the visibility
 	void updateVisibility();
 	///This updates the map preview
 	void updateMapPreview();
@@ -123,7 +123,7 @@ public:
 	};
 	
 	///Creates the sorting functor with the given sort method
-	MapListSorter(SortMethod sortmethod);
+	MapListSorter(SortMethod sortMethod);
 	
 	///Compares two downloadable map info
 	bool operator()(const YOGDownloadableMapInfo& lhs, const YOGDownloadableMapInfo& rhs);

@@ -321,7 +321,7 @@ namespace GAGCore
 			std::vector<std::string> levels;
 			std::string id;
 			std::string fullId;
-			std::stack<unsigned> autovectors; // stack of unsigned used for implicit vectors. If value is 0, the level is not considered using autovector
+			std::stack<unsigned> autoVectors; // stack of unsigned used for implicit vectors. If value is 0, the level is not considered using autoVector
 			
 			assert(table);
 			
@@ -333,15 +333,15 @@ namespace GAGCore
 				{
 					if (levels.size())
 					{
-						// when using autovector, add a count member
-						if (autovectors.top() > 0)
+						// when using autoVector, add a count member
+						if (autoVectors.top() > 0)
 						{
 							std::ostringstream oss;
-							oss << autovectors.top();
+							oss << autoVectors.top();
 							(*table)[fullId + ".count"] = oss.str();
 						}
 						
-						autovectors.pop();
+						autoVectors.pop();
 						levels.pop_back();
 						fullId.clear();
 						
@@ -367,9 +367,9 @@ namespace GAGCore
 				{
 					if (token.type == Token::OPEN_BRACKET)
 					{
-						// autovector entry
+						// autoVector entry
 						std::ostringstream oss;
-						oss << autovectors.top()++;
+						oss << autoVectors.top()++;
 						id = oss.str();
 					}
 					else
@@ -408,7 +408,7 @@ namespace GAGCore
 							fullId += ".";
 						fullId += id;
 						levels.push_back(id);
-						autovectors.push(0);
+						autoVectors.push(0);
 						nextToken();
 						CHECK_NOT_EOF
 					}
@@ -428,7 +428,7 @@ namespace GAGCore
 							fullId += ".";
 						fullId += id;
 						levels.push_back(id);
-						autovectors.push(0);
+						autoVectors.push(0);
 						
 						// copy subkeys to actual
 						size_t len = copyPathSource.length();

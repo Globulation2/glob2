@@ -32,7 +32,7 @@ class Race
 {
 public:
 	static UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
-	static Sint32 hungryness;
+	static Sint32 hungriness;
 
 public:
 	Race();

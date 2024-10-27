@@ -186,7 +186,7 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 			std::string result = client->getCommandManager()->executeClientCommand(textInput->getText());
 			if(!result.empty())
 			{
-				recieveInternalMessage(result);
+				receiveInternalMessage(result);
 				textInput->setText("");
 			}
 			else
@@ -225,19 +225,19 @@ void YOGClientLobbyScreen::onTimer(Uint32 tick)
 		{
 			boost::shared_ptr<MultiplayerGame> game(client->getMultiplayerGame());
 			if(rc == MultiplayerGameScreen::Kicked)
-				recieveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
+				receiveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
 			else if(rc == MultiplayerGameScreen::GameCancelled)
-				recieveInternalMessage(Toolkit::getStringTable()->getString("[The host has cancelled the game]"));
+				receiveInternalMessage(Toolkit::getStringTable()->getString("[The host has cancelled the game]"));
 			else if(rc == MultiplayerGameScreen::GameRefused)
 			{
 				if(game->getGameJoinState() == YOGServerGameHasAlreadyStarted)
-					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
+					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
 				else if(game->getGameJoinState() == YOGServerGameIsFull)
-					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
+					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
 				else if(game->getGameJoinState() == YOGServerGameDoesntExist)
-					recieveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
+					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
 				else if(game->getGameCreationState() == YOGCreateRefusalUnknown)
-					recieveInternalMessage("Game was refused by server");
+					receiveInternalMessage("Game was refused by server");
 			}
 			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
 			gameScreen=-1;
@@ -258,20 +258,20 @@ void YOGClientLobbyScreen::onTimer(Uint32 tick)
 
 void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
 {
-	//std::cout<<"YOGClientLobbyScreen: recieved event "<<event->format()<<std::endl;
+	//std::cout<<"YOGClientLobbyScreen: received event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
 	if(type == YEConnectionLost)
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"), Toolkit::getStringTable()->getString("[ok]"));
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"), Toolkit::getStringTable()->getString("[ok]"));
 		parent->completeEndExecute(ConnectionLost);
 	}
 	else if(type == YEPlayerBanned)
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your username was banned]"), Toolkit::getStringTable()->getString("[ok]"));
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Your username was banned]"), Toolkit::getStringTable()->getString("[ok]"));
 	}
 	else if(type == YEIPBanned)
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Your IP address was temporarily banned]"), Toolkit::getStringTable()->getString("[ok]"));
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONE_BUTTON, Toolkit::getStringTable()->getString("[Your IP address was temporarily banned]"), Toolkit::getStringTable()->getString("[ok]"));
 	}
 }
 
@@ -287,7 +287,7 @@ void YOGClientLobbyScreen::handleIRCTextMessage(const std::string& message)
 
 
 
-void YOGClientLobbyScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
+void YOGClientLobbyScreen::receiveTextMessage(boost::shared_ptr<YOGMessage> message)
 {
 	chatWindow->addText(message->formatForReading());
 	chatWindow->addImage(0);
@@ -297,7 +297,7 @@ void YOGClientLobbyScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> mess
 
 
 
-void YOGClientLobbyScreen::recieveInternalMessage(const std::string& message)
+void YOGClientLobbyScreen::receiveInternalMessage(const std::string& message)
 {
 	chatWindow->addText(message);
 	chatWindow->addText("\n");
@@ -332,7 +332,7 @@ void YOGClientLobbyScreen::hostGame()
 	{
 		boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 		client->setMultiplayerGame(game);
-		std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
+		std::string name = FormattableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
 		game->createNewGame(name);
 
 		game->setMapHeader(cms.getMapHeader());
@@ -431,11 +431,11 @@ void YOGClientLobbyScreen::updateBoxInfo()
 				std::string s;
 				s += game->getGameName() + "\n";
 				gameInfo->addText(s.c_str());
-				s = FormatableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(game->getMapName()) + "\n";
+				s = FormattableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(game->getMapName()) + "\n";
 				gameInfo->addText(s.c_str());
-				s = FormatableString(Toolkit::getStringTable()->getString("[number of players: %0 (%1 AI)]")).arg((int)game->getPlayersJoined() + (int)game->getAIJoined()).arg((int)game->getAIJoined()) + "\n";
+				s = FormattableString(Toolkit::getStringTable()->getString("[number of players: %0 (%1 AI)]")).arg((int)game->getPlayersJoined() + (int)game->getAIJoined()).arg((int)game->getAIJoined()) + "\n";
 				gameInfo->addText(s.c_str());
-				s = FormatableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg((int)game->getNumberOfTeams()) + "\n";
+				s = FormattableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg((int)game->getNumberOfTeams()) + "\n";
 				gameInfo->addText(s.c_str());
 				gameInfo->addChar('\n');
 			}
@@ -450,7 +450,7 @@ void YOGClientLobbyScreen::updateBoxInfo()
 			s += client->getPlayerListManager()->getPlayerInfo(playerList->get()).getPlayerName() + "\n";
 			gameInfo->addText(s.c_str());
 			int r = client->getPlayerListManager()->getPlayerInfo(playerList->get()).getPlayerStoredInfo().getPlayerRating();
-			s = FormatableString(Toolkit::getStringTable()->getString("[player rating %0]")).arg(r) + "\n";
+			s = FormattableString(Toolkit::getStringTable()->getString("[player rating %0]")).arg(r) + "\n";
 			gameInfo->addText(s.c_str());
 		}
 		else
@@ -473,15 +473,15 @@ void YOGClientLobbyScreen::autoCompleteNick()
 	std::string foundNick;
 	std::string msg;
 	std::string beginningOfNick;
-	int startlen;
+	int startLen;
 	int found = 0;
 
-	startlen = message.rfind(' ');
-	if( startlen == -1 )
+	startLen = message.rfind(' ');
+	if( startLen == -1 )
 	{
-		startlen = 0;
+		startLen = 0;
 	}
-	beginningOfNick = message.substr(startlen, msglen);
+	beginningOfNick = message.substr(startLen, msglen);
 
 	if( beginningOfNick.compare("") != 0 )
 	{

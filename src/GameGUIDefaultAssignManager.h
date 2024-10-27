@@ -39,7 +39,7 @@ public:
 	///Constructs a GameGUIDefaultAssignManager
 	GameGUIDefaultAssignManager();
 	
-	///Retrive the default assigned units for a given building typenum (note, not the 
+	///Retrieve the default assigned units for a given building typenum (note, not the 
 	///ntBuildingType typenum, the BuildingTypes typenum)
 	int getDefaultAssignedUnits(int typenum);
 	

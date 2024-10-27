@@ -37,7 +37,7 @@ namespace GAGCore
 		backend->write(data, size);
 	}
 	
-	void BinaryOutputStream::writeEndianIndependant(const void *v, const size_t size, const std::string name)
+	void BinaryOutputStream::writeEndianIndependent(const void *v, const size_t size, const std::string name)
 	{
 		if (size==2)
 		{
@@ -78,7 +78,7 @@ namespace GAGCore
 		SHA1Final(sha1, &sha1Context);
 	}
 	
-	void BinaryInputStream::readEndianIndependant(void *v, size_t size, const std::string name)
+	void BinaryInputStream::readEndianIndependent(void *v, size_t size, const std::string name)
 	{
 		backend->read(v, size);
 		if (size==2)

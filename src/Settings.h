@@ -49,7 +49,7 @@ public:
 
 	/**
 	 * Sets the password in the Settings object.
-	 * Provided an arbitrary string the password in the settingsobject is set
+	 * Provided an arbitrary string the password in the settings object is set
 	 * to the given value.
 	 * @param s The new password to use.
 	 */
@@ -63,7 +63,7 @@ public:
 
 
 	/**
-	 * all variables shoudl really be private, we're working on it
+	 * all variables should really be private, we're working on it
 	 * TODO: make all variables private
 	 */
 private:

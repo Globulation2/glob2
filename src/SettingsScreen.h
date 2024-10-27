@@ -19,8 +19,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SETTINGSSCREEN_H
-#define __SETTINGSSCREEN_H
+#ifndef __SETTINGS_SCREEN_H
+#define __SETTINGS_SCREEN_H
 
 #include "Glob2Screen.h"
 #include "Settings.h"
@@ -49,26 +49,26 @@ public:
 		OK = 1,
 		CANCEL = 2,
 		FULLSCREEN = 3,
-		USEGL = 4,
-		LOWQUALITY = 5,
-		CUSTOMCUR = 6,
+		USE_GL = 4,
+		LOW_QUALITY = 5,
+		CUSTOM_CURSOR = 6,
 		MUTE = 7,
-		REMEMBERUNIT = 8,
-		GENERALSETTINGS = 9,
-		UNITSETTINGS = 10,
-		KEYBOARDSETTINGS = 11,
-		RESTOREDEFAULTSHORTCUTS=12,
-		GAMESHORTCUTS=13,
-		EDITORSHORTCUTS=14,
-		SECONDKEY=15,
-		PRESSEDSELECTOR=15,
-		ADDSHORTCUT=16,
-		REMOVESHORTCUT=17,
+		REMEMBER_UNIT = 8,
+		GENERAL_SETTINGS = 9,
+		UNIT_SETTINGS = 10,
+		KEYBOARD_SETTINGS = 11,
+		RESTORE_DEFAULT_SHORTCUTS=12,
+		GAME_SHORTCUTS=13,
+		EDITOR_SHORTCUTS=14,
+		SECOND_KEY=15,
+		PRESSED_SELECTOR=15,
+		ADD_SHORTCUT=16,
+		REMOVE_SHORTCUT=17,
 		SCROLLWHEEL=18,
-		BUILDINGSETTINGS=19,
-		CONSTRUCTIONSITES=20,
+		BUILDING_SETTINGS=19,
+		CONSTRUCTION_SITES=20,
 		UPGRADES=21,
-		FLAGSETTINGS=22,
+		FLAG_SETTINGS=22,
 	};
 private:
 	Settings old_settings;
@@ -78,8 +78,8 @@ private:
 	TextInput *userName;
 	
 	TextButton *ok, *cancel;
-	TextButton *buildings, *flags, *constructionsites, *upgrades;
-	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
+	TextButton *buildings, *flags, *constructionSites, *upgrades;
+	OnOffButton *fullscreen, *useGpu, *lowQuality, *customCursor, *scrollwheel;
 	Selector *musicVol;
 	Selector *voiceVol;
 	OnOffButton *audioMute, *rememberUnitButton;
@@ -91,7 +91,7 @@ private:
 	int flagRadiusGroupNumbers[3];
 //	Text *title;
 	Text *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
+	Text *fullscreenText, *useGpuText, *lowQualityText, *customCursorText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
 	Text *actDisplay;
 	Text *rebootWarning;
 
@@ -127,7 +127,7 @@ private:
 	void setFullscreen(void);
 
 	///Holds the keyboard layout for the map editor
-	KeyboardManager mapeditKeyboardManager;
+	KeyboardManager mapEditKeyboardManager;
 	///Holds the keyboard layout for the game gui
 	KeyboardManager guiKeyboardManager;
 public:

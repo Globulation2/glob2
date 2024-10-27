@@ -30,7 +30,7 @@ class NetConnection;
 class YOGServerGameRouter;
 class YOGServerRouterPlayer;
 
-///This class acts as a server router. Bassically, it routes the messages for a game between players.
+///This class acts as a server router. Basically, it routes the messages for a game between players.
 ///The main YOG server delegates down to this system, which may be on another server, and quite possibly
 ///on multiple servers
 class YOGServerRouter
@@ -40,7 +40,7 @@ public:
 	YOGServerRouter();
 	
 	///This constructs a router with a specific ip address of the server
-	YOGServerRouter(const std::string& yogip);
+	YOGServerRouter(const std::string& yogIp);
 
 	///This updates the router
 	void update();

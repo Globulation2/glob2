@@ -40,7 +40,7 @@ class OrderVoiceData;
 class VoiceRecorder
 {
 public:
-	// Those variables are public because of C thread API. do not access them ouside VoiceRecorder.cpp
+	// Those variables are public because of C thread API. do not access them outside VoiceRecorder.cpp
 	//! pointer to the structure holding the speex encoder
 	void *speexEncoderState;
 	// Bits for speex encoding

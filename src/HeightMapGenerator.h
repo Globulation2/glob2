@@ -22,18 +22,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
-#ifndef _HEIGHTMAPGENERATOR_H
-#define _HEIGHTMAPGENERATOR_H
+#ifndef __HEIGHT_MAP_GENERATOR_H
+#define __HEIGHT_MAP_GENERATOR_H
 
 #include "PerlinNoise.h"
 
-class HeightMap /// class to generate heightmaps to decide where to put resources, water, sand and grass later
+class HeightMap /// class to generate height maps to decide where to put resources, water, sand and grass later
 {
 	float * _map; /// height values are always [0,1].
 	unsigned int _w, _h; /// map size
 	float * _stamp; /// smooth 0 to 1 gradient lookup to generate craters, islands and rivers
 	unsigned int _r; /// radius of the _stamp
-	PerlinNoise _pn;/// to get reproducable corellated random numbers
+	PerlinNoise _pn;/// to get reproducible correlated random numbers
 public:
 	enum kindOfMap {SWAMP=0,ISLANDS=1,RIVER=2,CRATERS=3,RANDOM=4};
 	
@@ -75,4 +75,4 @@ private:
 	void normalize(); /// fits the values of _map to [0, 1]
 };
 
-#endif /* _HEIGHTMAPGENERATOR_H */
+#endif /* __HEIGHT_MAP_GENERATOR_H */

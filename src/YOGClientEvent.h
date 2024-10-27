@@ -35,7 +35,7 @@ enum YOGClientEventType
 };
 
 
-///This represents an event recieved from  YOGClient
+///This represents an event received from  YOGClient
 ///These are merely data classes, and not much more
 class YOGClientEvent
 {

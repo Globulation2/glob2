@@ -122,7 +122,7 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
 	
-	Case& c=map->cases[square];
+	Tile& c=map->tiles[square];
 	
 	bool isWarFlag=false;
 	bool isWarFlagSquare=false;
@@ -146,7 +146,7 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 			isClearingFlag=true;
 			if(dx * dx + dy * dy < r * r)
 			{
-				if(c.ressource.type != NO_RES_TYPE && building->clearingRessources[c.ressource.type])
+				if(c.resource.type != NO_RES_TYPE && building->clearingResources[c.resource.type])
 				{
 					isClearingFlagSquare=true;
 				}
@@ -160,7 +160,7 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 			return 0;
 		else if(map->immobileUnits[square] != 255)
 			return 0;
-		else if (c.ressource.type!=NO_RES_TYPE && !isClearingFlagSquare)
+		else if (c.resource.type!=NO_RES_TYPE && !isClearingFlagSquare)
 			return 0;
 		else if (!canSwim && map->isWater(square))
 			return 0;
@@ -171,7 +171,7 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 		{
 			return 255;
 		}
-		//Warflags don't consider enemy buildings an obstacle
+		//War flags don't consider enemy buildings an obstacle
 		else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 			return 0;
 	}

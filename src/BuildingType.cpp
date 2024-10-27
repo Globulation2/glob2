@@ -94,55 +94,55 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	configBlock->load(timeToHealUnit, "timeToHealUnit");
 	configBlock->load(insideSpeed, "insideSpeed");
 	configBlock->load(canExchange, "canExchange");
-	configBlock->load(useTeamRessources, "useTeamRessources");
+	configBlock->load(useTeamResources, "useTeamRessources");
 
 	configBlock->load(width, "width");
 	configBlock->load(height, "height");
 	configBlock->load(decLeft, "decLeft");
 	configBlock->load(decTop, "decTop");
 	configBlock->load(isVirtual, "isVirtual");
-	configBlock->load(isCloacked, "isCloacked");
+	configBlock->load(isCloaked, "isCloacked");
 	configBlock->load(shootingRange, "shootingRange");
 	configBlock->load(shootDamage, "shootDamage");
 	configBlock->load(shootSpeed, "shootSpeed");
-	configBlock->load(shootRythme, "shootRythme");
+	configBlock->load(shootRhythm, "shootRhythm");
 	configBlock->load(maxBullets, "maxBullets");
 	configBlock->load(multiplierStoneToBullets, "multiplierStoneToBullets");
 
 	configBlock->load(unitProductionTime, "unitProductionTime");
-	configBlock->load(ressourceForOneUnit, "ressourceForOneUnit");
+	configBlock->load(resourceForOneUnit, "ressourceForOneUnit");
 	
-	assert(MAX_NB_RESSOURCES == 15);
-	configBlock->load(maxRessource[0], "maxWood");
-	configBlock->load(maxRessource[1], "maxCorn");
-	configBlock->load(maxRessource[2], "maxPapyrus");
-	configBlock->load(maxRessource[3], "maxStone");
-	configBlock->load(maxRessource[4], "maxAlgue");
-	configBlock->load(maxRessource[5], "maxFruit0");
-	configBlock->load(maxRessource[6], "maxFruit1");
-	configBlock->load(maxRessource[7], "maxFruit2");
-	configBlock->load(maxRessource[8], "maxFruit3");
-	configBlock->load(maxRessource[9], "maxFruit4");
-	configBlock->load(maxRessource[10], "maxFruit5");
-	configBlock->load(maxRessource[11], "maxFruit6");
-	configBlock->load(maxRessource[12], "maxFruit7");
-	configBlock->load(maxRessource[13], "maxFruit8");
-	configBlock->load(maxRessource[14], "maxFruit9");
-	configBlock->load(multiplierRessource[0], "multiplierWood");
-	configBlock->load(multiplierRessource[1], "multiplierCorn");
-	configBlock->load(multiplierRessource[2], "multiplierPapyrus");
-	configBlock->load(multiplierRessource[3], "multiplierStone");
-	configBlock->load(multiplierRessource[4], "multiplierAlgue");
-	configBlock->load(multiplierRessource[5], "multiplierFruit0");
-	configBlock->load(multiplierRessource[6], "multiplierFruit1");
-	configBlock->load(multiplierRessource[7], "multiplierFruit2");
-	configBlock->load(multiplierRessource[8], "multiplierFruit3");
-	configBlock->load(multiplierRessource[9], "multiplierFruit4");
-	configBlock->load(multiplierRessource[10], "multiplierFruit5");
-	configBlock->load(multiplierRessource[11], "multiplierFruit6");
-	configBlock->load(multiplierRessource[12], "multiplierFruit7");
-	configBlock->load(multiplierRessource[13], "multiplierFruit8");
-	configBlock->load(multiplierRessource[14], "multiplierFruit9");
+	assert(MAX_NB_RESOURCES == 15);
+	configBlock->load(maxResource[0], "maxWood");
+	configBlock->load(maxResource[1], "maxCorn");
+	configBlock->load(maxResource[2], "maxPapyrus");
+	configBlock->load(maxResource[3], "maxStone");
+	configBlock->load(maxResource[4], "maxAlgue");
+	configBlock->load(maxResource[5], "maxFruit0");
+	configBlock->load(maxResource[6], "maxFruit1");
+	configBlock->load(maxResource[7], "maxFruit2");
+	configBlock->load(maxResource[8], "maxFruit3");
+	configBlock->load(maxResource[9], "maxFruit4");
+	configBlock->load(maxResource[10], "maxFruit5");
+	configBlock->load(maxResource[11], "maxFruit6");
+	configBlock->load(maxResource[12], "maxFruit7");
+	configBlock->load(maxResource[13], "maxFruit8");
+	configBlock->load(maxResource[14], "maxFruit9");
+	configBlock->load(multiplierResource[0], "multiplierWood");
+	configBlock->load(multiplierResource[1], "multiplierCorn");
+	configBlock->load(multiplierResource[2], "multiplierPapyrus");
+	configBlock->load(multiplierResource[3], "multiplierStone");
+	configBlock->load(multiplierResource[4], "multiplierAlgue");
+	configBlock->load(multiplierResource[5], "multiplierFruit0");
+	configBlock->load(multiplierResource[6], "multiplierFruit1");
+	configBlock->load(multiplierResource[7], "multiplierFruit2");
+	configBlock->load(multiplierResource[8], "multiplierFruit3");
+	configBlock->load(multiplierResource[9], "multiplierFruit4");
+	configBlock->load(multiplierResource[10], "multiplierFruit5");
+	configBlock->load(multiplierResource[11], "multiplierFruit6");
+	configBlock->load(multiplierResource[12], "multiplierFruit7");
+	configBlock->load(multiplierResource[13], "multiplierFruit8");
+	configBlock->load(multiplierResource[14], "multiplierFruit9");
 
 	configBlock->load(maxUnitInside, "maxUnitInside");
 	configBlock->load(maxUnitWorking, "maxUnitWorking");
@@ -172,7 +172,7 @@ void BuildingType::loadFromConfigFile(const ConfigBlock *configBlock)
 	}
 }
 
-//! Return a chcksum of all parameter that could lead to a game desynchronization
+//! Return a checksum of all parameter that could lead to a game desynchronization
 Uint32 BuildingType::checkSum(void)
 {
 	Uint32 cs = 0;
@@ -210,7 +210,7 @@ Uint32 BuildingType::checkSum(void)
 	cs = (cs<<1) | (cs>>31);
 	cs ^= canExchange;
 	cs = (cs<<1) | (cs>>31);
-	cs ^= useTeamRessources;
+	cs ^= useTeamResources;
 	cs = (cs<<1) | (cs>>31);
 	cs ^= width;
 	cs = (cs<<1) | (cs>>31);
@@ -222,7 +222,7 @@ Uint32 BuildingType::checkSum(void)
 	cs = (cs<<1) | (cs>>31);
 	cs ^= isVirtual;
 	cs = (cs<<1) | (cs>>31);
-	cs ^= isCloacked;
+	cs ^= isCloaked;
 	cs = (cs<<1) | (cs>>31);
 	cs ^= shootingRange;
 	cs = (cs<<1) | (cs>>31);
@@ -230,7 +230,7 @@ Uint32 BuildingType::checkSum(void)
 	cs = (cs<<1) | (cs>>31);
 	cs ^= shootSpeed;
 	cs = (cs<<1) | (cs>>31);
-	cs ^= shootRythme;
+	cs ^= shootRhythm;
 	cs = (cs<<1) | (cs>>31);
 	cs ^= maxBullets;
 	cs = (cs<<1) | (cs>>31);
@@ -238,16 +238,16 @@ Uint32 BuildingType::checkSum(void)
 	cs = (cs<<1) | (cs>>31);
 	cs ^= unitProductionTime;
 	cs = (cs<<1) | (cs>>31);
-	cs ^= ressourceForOneUnit;
+	cs ^= resourceForOneUnit;
 	cs = (cs<<1) | (cs>>31);
-	for (size_t i = 0; i<(size_t)MAX_NB_RESSOURCES; i++)
+	for (size_t i = 0; i<(size_t)MAX_NB_RESOURCES; i++)
 	{
-		cs ^= maxRessource[i];
+		cs ^= maxResource[i];
 		cs = (cs<<1) | (cs>>31);
 	}
-	for (size_t i = 0; i<(size_t)MAX_NB_RESSOURCES; i++)
+	for (size_t i = 0; i<(size_t)MAX_NB_RESOURCES; i++)
 	{
-		cs ^= multiplierRessource[i];
+		cs ^= multiplierResource[i];
 		cs = (cs<<1) | (cs>>31);
 	}
 	cs ^= maxUnitInside;

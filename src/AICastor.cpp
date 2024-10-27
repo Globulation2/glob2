@@ -125,7 +125,7 @@ void AICastor::firstInit()
 	enemyPowerMap=NULL;
 	enemyRangeMap=NULL;
 	
-	ressourcesCluster=NULL;
+	resourcesCluster=NULL;
 }
 
 AICastor::AICastor(Player *player)
@@ -279,9 +279,9 @@ void AICastor::init(Player *player)
 		delete[] enemyWarriorsMap;
 	enemyWarriorsMap=new Uint8[size];
 	
-	if (ressourcesCluster!=NULL)
-		delete[] ressourcesCluster;
-	ressourcesCluster=new Uint16[size];
+	if (resourcesCluster!=NULL)
+		delete[] resourcesCluster;
+	resourcesCluster=new Uint16[size];
 }
 
 AICastor::~AICastor()
@@ -337,8 +337,8 @@ AICastor::~AICastor()
 	if (enemyWarriorsMap!=NULL)
 		delete[] enemyWarriorsMap;
 	
-	if (ressourcesCluster!=NULL)
-		delete[] ressourcesCluster;
+	if (resourcesCluster!=NULL)
+		delete[] resourcesCluster;
 
 	for(std::list<Project *>::iterator i=projects.begin(); i!=projects.end(); ++i)
 	{
@@ -436,7 +436,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 			//computeWheatCareMap();
 			{
 				size_t size=map->w*map->h;
-				Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+				Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 				for (int i=0; i<4; i++)
 					memcpy(oldWheatGradient[i], wheatGradient, size);
 				for (int i=0; i<2; i++)
@@ -468,7 +468,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 		for (int i=3; i>0; i--)
 			oldWheatGradient[i]=oldWheatGradient[i-1];
 		oldWheatGradient[0]=temp;
-		Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+		Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 		memcpy(oldWheatGradient[0], wheatGradient, map->w*map->h);
 		computeObstacleUnitMap();
 		computeWheatCareMap();
@@ -1250,7 +1250,7 @@ bool AICastor::addProject(Project *project)
 {
 	if (buildingSum[project->shortTypeNum][0]>=project->amount)
 	{
-		fprintf(logFile,  "will not add project (%s x%d) as it already succeded\n", project->debugName, project->amount);
+		fprintf(logFile,  "will not add project (%s x%d) as it already succeeded\n", project->debugName, project->amount);
 		delete project;
 		return false;
 	}
@@ -1281,8 +1281,8 @@ bool AICastor::addProject(Project *project)
 
 void AICastor::addProjects()
 {
-	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
-	//	canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
+	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attack=%d+%d, speed=%d+%d\n",
+	//	canFeedUnit, swarms, pool, poolSite, attack, attackSite, speed, speedSite);
 	
 	buildsAmount=-1;
 	
@@ -1376,7 +1376,7 @@ void AICastor::addProjects()
 		if (addProject(project))
 			return;
 	}*/
-	// all critical projects succeded.
+	// all critical projects succeeded.
 	
 	// enough workers
 	//Strategy::Builds buildsCurrent=strategy.buildsBase;
@@ -1492,7 +1492,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 	{
 		// boot phase
 		project->subPhase=2;
-		fprintf(logFile,  "(%s) (boot) (switching to subphase 2)\n", project->debugName);
+		fprintf(logFile,  "(%s) (boot) (switching to sub-phase 2)\n", project->debugName);
 	}
 	else if (project->subPhase==1)
 	{
@@ -1518,9 +1518,9 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
 		
-		boost::shared_ptr<Order>gfbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
+		boost::shared_ptr<Order>gFbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
 		project->timer=timer;
-		if (gfbm)
+		if (gFbm)
 		{
 			if (project->successWait>0)
 			{
@@ -1530,8 +1530,8 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 			else
 			{
 				project->subPhase=2;
-				fprintf(logFile,  "(%s) (one construction site placed) (switching to next subphase 2)\n", project->debugName);
-				return gfbm;
+				fprintf(logFile,  "(%s) (one construction site placed) (switching to next sub-phase 2)\n", project->debugName);
+				return gFbm;
 			}
 		}
 		else if (project->triesLeft>0)
@@ -1557,11 +1557,11 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) ([%d>=%d] building finished) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) ([%d>=%d] building finished) (switching to sub-phase 6).\n",
 				project->debugName, real, project->amount);
 			if (!project->waitFinished)
 			{
-				fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+				fprintf(logFile,  "(%s) (de-blocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
 			}
@@ -1569,17 +1569,17 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
+			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to sub-phase 1)\n",
 				project->debugName, real, site, project->amount);
 		}
 		else
 		{
 			project->subPhase=3;
-			fprintf(logFile,  "(%s) (enough real building site found [%d+%d>=%d]) (switching to next subphase 3)\n",
+			fprintf(logFile,  "(%s) (enough real building site found [%d+%d>=%d]) (switching to next sub-phase 3)\n",
 				project->debugName, real, site, project->amount);
 			if (!project->waitFinished)
 			{
-				fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+				fprintf(logFile,  "(%s) (de-blocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
 			}
@@ -1677,13 +1677,13 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to sub-phase 6).\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
+			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to sub-phase 1)\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (project->multipleStart)
@@ -1693,18 +1693,18 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 			if (isFree>1)
 			{
 				project->subPhase=1;
-				fprintf(logFile,  "(%s) (enough free workers %d) (switching back to subphase 1)\n", project->debugName, isFree);
+				fprintf(logFile,  "(%s) (enough free workers %d) (switching back to sub-phase 1)\n", project->debugName, isFree);
 			}
 			else
 			{
 				project->subPhase=5;
-				fprintf(logFile,  "(%s) (no more free workers) (switching to next subphase 5)\n", project->debugName);
+				fprintf(logFile,  "(%s) (no more free workers) (switching to next sub-phase 5)\n", project->debugName);
 			}
 		}
 		else
 		{
 			project->subPhase=5;
-			fprintf(logFile,  "(%s) (enough construction site [%d+%d>=%d]) (switching to next subphase 5)\n",
+			fprintf(logFile,  "(%s) (enough construction site [%d+%d>=%d]) (switching to next sub-phase 5)\n",
 				project->debugName, real, site, project->amount);
 		}
 	}
@@ -1739,13 +1739,13 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
+			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to sub-phase 6).\n",
 				project->debugName, real, site, project->amount);
 		}
 		else if (sum<project->amount)
 		{
 			project->subPhase=2;
-			fprintf(logFile,  "(%s) (building destroyed! [%d+%d<%d]) (switching to subphase 2).\n",
+			fprintf(logFile,  "(%s) (building destroyed! [%d+%d<%d]) (switching to sub-phase 2).\n",
 				project->debugName, real, site, project->amount);
 		}
 	}
@@ -1755,7 +1755,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		
 		if (project->blocking)
 		{
-			fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
+			fprintf(logFile,  "(%s) (de-blocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 			project->blocking=false;
 			project->critical=false;
 		}
@@ -1784,7 +1784,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (buildingSum[project->shortTypeNum][1]==0)
 		{
 			project->finished=true;
-			fprintf(logFile,  "(%s) (all finalWorkers set) (project succeded)\n", project->debugName);
+			fprintf(logFile,  "(%s) (all finalWorkers set) (project succeeded)\n", project->debugName);
 		}
 	}
 	else
@@ -1834,8 +1834,8 @@ bool AICastor::enoughFreeWorkers()
 void AICastor::computeCanSwim()
 {
 	//printf("computeCanSwim()...\n");
-	// If our population has more healthy-working-units able to swimm than healthy-working-units
-	// unable to swimm then we choose to be able to go trough water:
+	// If our population has more healthy-working-units able to swim than healthy-working-units
+	// unable to swim then we choose to be able to go through water:
 	Unit **myUnits=team->myUnits;
 	int sumCanSwim=0;
 	int sumCantSwim=0;
@@ -2005,18 +2005,18 @@ void AICastor::computeObstacleUnitMap()
 	//int wMask=map->wMask;
 	//int hMask=map->hMask;
 	size_t size=w*h;
-	const auto& cases=map->cases;
+	const auto& tiles=map->tiles;
 	Uint32 teamMask=team->me;
 	for (size_t i=0; i<size; i++)
 	{
-		const auto& c=cases[i];
+		const auto& c=tiles[i];
 		if (c.building!=NOGBID)
 			obstacleUnitMap[i]=0;
-		else if (c.ressource.type!=NO_RES_TYPE)
+		else if (c.resource.type!=NO_RES_TYPE)
 			obstacleUnitMap[i]=0;
 		else if (c.forbidden&teamMask)
 			obstacleUnitMap[i]=0;
-		else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWatter ?
+		else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWater ?
 			obstacleUnitMap[i]=0;
 		else
 			obstacleUnitMap[i]=1;
@@ -2035,15 +2035,15 @@ void AICastor::computeObstacleBuildingMap()
 	//int hDec=map->hDec;
 	//int wDec=map->wDec;
 	size_t size=w*h;
-	const auto& cases=map->cases;
+	const auto& tiles=map->tiles;
 	for (size_t i=0; i<size; i++)
 	{
-		const Case& c=cases[i];
+		const Tile& c=tiles[i];
 		if (c.building!=NOGBID)
 			obstacleBuildingMap[i]=0;
 		else  if (c.terrain>=16) // if (!isGrass)
 			obstacleBuildingMap[i]=0;
-		else if (c.ressource.type!=NO_RES_TYPE)
+		else if (c.resource.type!=NO_RES_TYPE)
 			obstacleBuildingMap[i]=0;
 		else
 			obstacleBuildingMap[i]=1;
@@ -2104,9 +2104,9 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	
 	//size_t size=w*h;
 	Uint8 *gradient=buildingNeighbourMap;
-	const auto& cases=map->cases;
+	const auto& tiles=map->tiles;
 	
-	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	
 	/*int bx=b->posX;
 	int by=b->posY;
@@ -2120,12 +2120,12 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	{
 		int index;
 		index=(xi&wMask)+(((by-1 )&hMask)<<wDec);
-		if (cases[index].building!=NOGBID)
+		if (tiles[index].building!=NOGBID)
 			neighbour=true;
 		//if (wheatGradient[index]==255)
 		//	wheat=true;
 		index=(xi&wMask)+(((by+bh)&hMask)<<wDec);
-		if (cases[index].building!=NOGBID)
+		if (tiles[index].building!=NOGBID)
 			neighbour=true;
 		//if (wheatGradient[index]==255)
 		//	wheat=true;
@@ -2135,12 +2135,12 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 		{
 			int index;
 			index=((bx-1 )&wMask)+((yi&hMask)<<wDec);
-			if (cases[index].building!=NOGBID)
+			if (tiles[index].building!=NOGBID)
 				neighbour=true;
 			//if (wheatGradient[index]==255)
 			//	wheat=true;
 			index=((bx+bw)&wMask)+((yi&hMask)<<wDec);
-			if (cases[index].building!=NOGBID)
+			if (tiles[index].building!=NOGBID)
 				neighbour=true;
 			//if (wheatGradient[index]==255)
 			//	wheat=true;
@@ -2312,7 +2312,7 @@ void AICastor::computeWorkPowerMap()
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>1)/u->race->hungryness;
+			int range=((u->hungry-u->trigHungry)>>1)/u->race->hungriness;
 			if (range<0)
 				continue;
 			//printf(" range=%d\n", range);
@@ -2387,7 +2387,7 @@ void AICastor::computeWorkRangeMap()
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>1)/u->race->hungryness;
+			int range=((u->hungry-u->trigHungry)>>1)/u->race->hungriness;
 			if (range<0)
 				continue;
 			//printf(" range=%d\n", range);
@@ -2438,12 +2438,12 @@ fprintf(logFile,  "computeHydratationMap()...\n");
 	
 	Uint16 *gradient=(Uint16 *)malloc(2*size);
 	memset(gradient, 0, 2*size);
-	const auto& cases=map->cases;
+	const auto& tiles=map->tiles;
 	static const int range=16;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
-			Uint16 t=cases[x+(y<<wDec)].terrain;
+			Uint16 t=tiles[x+(y<<wDec)].terrain;
 			if ((t>=256)&&(t<256+16)) // if SAND
 				for (int r=1; r<range; r++)
 				{
@@ -2492,10 +2492,10 @@ void AICastor::computeNotGrassMap()
 	
 	memset(notGrassMap, 0, size);
 	
-	const auto& cases=map->cases;
+	const auto& tiles=map->tiles;
 	for (size_t i=0; i<size; i++)
 	{
-		Uint16 t=cases[i].terrain;
+		Uint16 t=tiles[i].terrain;
 		if (t>16)// if !GRASS
 			notGrassMap[i]=16;
 	}
@@ -2514,8 +2514,8 @@ void AICastor::computeWheatCareMap()
 	//int wDec=map->wDec;
 	size_t size=w*h;
 	size_t sizeMask=(size-1);
-	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
-	//Case *cases=map->cases;
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
+	//Tile *tiles=map->tiles;
 	//Uint32 teamMask=team->me;
 	
 	Uint8 *temp=wheatCareMap[1];
@@ -2548,7 +2548,7 @@ void AICastor::computeWheatGrowthMap()
 	//int hDec=map->hDec;
 	//int wDec=map->wDec;
 	size_t size=w*h;
-	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	
@@ -2718,7 +2718,7 @@ void AICastor::computeEnemyWarriorsMap()
 	{
 		if ((map->fogOfWar[i]&team->me)==0)
 			continue;
-		Uint16 guid=map->cases[i].groundUnit;
+		Uint16 guid=map->tiles[i].groundUnit;
 		if (guid==NOGUID)
 			continue;
 		Uint32 teamMask=(1<<(guid>>10));
@@ -2793,7 +2793,7 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 	//wheatLimit=(wheatLimit<<2);
 	//printf(" (scaled) minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
 	
-	Uint8 *wheatGradientMap=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	Uint8 *wheatGradientMap=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	memset(goodBuildingMap, 0, size);
 	
 	for (int y=0; y<h; y++)
@@ -2903,33 +2903,33 @@ boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bo
 	return shared_ptr<Order>();
 }
 
-void AICastor::computeRessourcesCluster()
+void AICastor::computeResourcesCluster()
 {
-	fprintf(logFile,  "computeRessourcesCluster()\n");
+	fprintf(logFile,  "computeResourcesCluster()\n");
 	int w=map->w;
 	int h=map->h;
 	//int wMask=map->wMask;
 	int hMask=map->hMask;
 	size_t size=w*h;
 	
-	memset(ressourcesCluster, 0, size*2);
+	memset(resourcesCluster, 0, size*2);
 	
 	//int i=0;
 	Uint8 old=0xFF;
 	Uint16 id=0;
-	bool usedid[65536];
-	memset(usedid, 0, 65536*sizeof(bool));
+	bool usedId[65536];
+	memset(usedId, 0, 65536*sizeof(bool));
 	for (int y=0; y<h; y++)
 	{
 		for (int x=0; x<w; x++)
 		{
-			const auto& c = map->cases[map->coordToIndex(x, y)]; // case
-			const auto& r=c.ressource; // ressource
-			Uint8 rt=r.type; // ressources type
+			const auto& c = map->tiles[map->coordToIndex(x, y)]; // case
+			const auto& r=c.resource; // resource
+			Uint8 rt=r.type; // resources type
 			
-			int rci=x+y*w; // ressource cluster index
-			Uint16 *rcp=&ressourcesCluster[rci]; // ressource cluster pointer
-			Uint16 rc=*rcp; // ressource cluster
+			int rci=x+y*w; // resource cluster index
+			Uint16 *rcp=&resourcesCluster[rci]; // resource cluster pointer
+			Uint16 rc=*rcp; // resource cluster
 			
 			if (rt==0xFF)
 			{
@@ -2938,15 +2938,15 @@ void AICastor::computeRessourcesCluster()
 			}
 			else
 			{
-				fprintf(logFile,  "ressource rt=%d, at (%d, %d)\n", rt, x, y);
+				fprintf(logFile,  "resource rt=%d, at (%d, %d)\n", rt, x, y);
 				if (rt!=old)
 				{
 					fprintf(logFile,  " rt!=old\n");
 					id=1;
-					while (usedid[id])
+					while (usedId[id])
 						id++;
 					if (id)
-						usedid[id]=true;
+						usedId[id]=true;
 					old=rt;
 					fprintf(logFile,  "  id=%d\n", id);
 				}
@@ -2959,13 +2959,13 @@ void AICastor::computeRessourcesCluster()
 					}
 					else
 					{
-						Uint16 oldid=id;
-						usedid[oldid]=false;
+						Uint16 oldId=id;
+						usedId[oldId]=false;
 						id=rc; // newid
-						fprintf(logFile,  " cleaning oldid=%d to id=%d.\n", oldid, id);
-						// We have to correct last ressourcesCluster values:
+						fprintf(logFile,  " cleaning oldId=%d to id=%d.\n", oldId, id);
+						// We have to correct last resourcesCluster values:
 						*rcp=id;
-						while (*rcp==oldid)
+						while (*rcp==oldId)
 						{
 							*rcp=id;
 							rcp--;
@@ -2974,19 +2974,19 @@ void AICastor::computeRessourcesCluster()
 				}
 			}
 		}
-		memcpy(ressourcesCluster+((y+1)&hMask)*w, ressourcesCluster+y*w, w*2);
+		memcpy(resourcesCluster+((y+1)&hMask)*w, resourcesCluster+y*w, w*2);
 	}
 	
 	int used=0;
 	for (int id=1; id<65536; id++)
-		if (usedid[id])
+		if (usedId[id])
 			used++;
-	fprintf(logFile,  "computeRessourcesCluster(), used=%d\n", used);
+	fprintf(logFile,  "computeResourcesCluster(), used=%d\n", used);
 }
 
 void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 {
-	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	//In this algorithm, "l" stands for one tile at Left, "r" for one tile at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
 	int w=map->w;
 	int h=map->h;
@@ -3118,7 +3118,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 
 void AICastor::updateGlobalGradient(Uint8 *gradient)
 {
-	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	//In this algorithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
 	
 	int w=map->w;

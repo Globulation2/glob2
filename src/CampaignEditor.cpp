@@ -33,9 +33,9 @@ CampaignEditor::CampaignEditor(const std::string& name)
 	StringTable& table=*Toolkit::getStringTable();
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", table.getString("[campaign editor]"));
 	mapList = new List(10, 50, 300, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	addMap = new TextButton(10, 360, 145, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[add map]"), ADDMAP);
-	editMap = new TextButton(165, 360, 145, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[edit map]"), EDITMAP);
-	removeMap = new TextButton(10, 410, 145, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[remove map]"), REMOVEMAP);
+	addMap = new TextButton(10, 360, 145, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[add map]"), ADD_MAP);
+	editMap = new TextButton(165, 360, 145, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[edit map]"), EDIT_MAP);
+	removeMap = new TextButton(10, 410, 145, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[remove map]"), REMOVE_MAP);
 	nameEditor = new TextInput(320, 60, 310, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", campaign.getName());
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);
 	cancel = new TextButton(450, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL);
@@ -71,31 +71,31 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		else if (source == addMap)
 		{
 			ChooseMapScreen cms("campaigns", "map", false);
-			int rcms=cms.execute(gfx, 40);
-			if(rcms==ChooseMapScreen::OK)
+			int rCms=cms.execute(gfx, 40);
+			if(rCms==ChooseMapScreen::OK)
 			{
 				MapHeader& mapHeader = cms.getMapHeader();
 				CampaignMapEntry cme(mapHeader.getMapName(), glob2NameToFilename("campaigns", mapHeader.getMapName(), "map"));
-				CampaignMapEntryEditor cmee(campaign, cme);
-				int rcmee = cmee.execute(gfx, 40);
-				if(rcmee==CampaignMapEntryEditor::OK)
+				CampaignMapEntryEditor mee(campaign, cme);
+				int rMee = mee.execute(gfx, 40);
+				if(rMee==CampaignMapEntryEditor::OK)
 				{
 					campaign.appendMap(cme);
 					mapList->addText(mapHeader.getMapName());
 				}
-				else if(rcmee==CampaignMapEntryEditor::CANCEL)
+				else if(rMee==CampaignMapEntryEditor::CANCEL)
 				{
 
 				}
-				else if(rcmee == -1)
+				else if(rMee == -1)
 				{
 					endExecute(-1);
 				}
 			}
-			else if(rcms==ChooseMapScreen::CANCEL)
+			else if(rCms==ChooseMapScreen::CANCEL)
 			{
 			}
-			else if(rcms==-1)
+			else if(rCms==-1)
 			{
 				endExecute(-1);
 			}
@@ -106,13 +106,13 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 			{
 				if(mapList->getSelectionIndex()!=-1 && campaign.getMap(i).getMapName()==mapList->get())
 				{
-					CampaignMapEntryEditor cmee(campaign, campaign.getMap(i));
-					int rcmee = cmee.execute(gfx, 40);
-					if(rcmee==CampaignMapEntryEditor::OK)
+					CampaignMapEntryEditor mee(campaign, campaign.getMap(i));
+					int rMee = mee.execute(gfx, 40);
+					if(rMee==CampaignMapEntryEditor::OK)
 					{
 						mapList->setText(mapList->getSelectionIndex(), campaign.getMap(i).getMapName());
 					}
-					else if(rcmee==CampaignMapEntryEditor::CANCEL)
+					else if(rMee==CampaignMapEntryEditor::CANCEL)
 					{
 					}
 				}

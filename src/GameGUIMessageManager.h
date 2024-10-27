@@ -46,7 +46,7 @@ public:
 	std::string getText() const;
 protected:
 	friend class GameGUIMessageManager;
-	///This draws the message at the given x,y pixel cordinates, and updates the timer
+	///This draws the message at the given x,y pixel coordinates, and updates the timer
 	void draw(int x, int y);
 	int timeLeft;
 private:

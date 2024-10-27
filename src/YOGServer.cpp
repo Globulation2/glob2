@@ -319,12 +319,12 @@ Uint16 YOGServer::createNewGame(const std::string& name)
 			break;
 	}
 	Uint32 chatChannel = chatChannelManager.createNewChatChannel();
-	std::string routerip = routerManager.chooseYOGRouter()->getIPAddress();
-	if(routerip == "127.0.0.1")
-		routerip = "YOGIP";
+	std::string routerIp = routerManager.chooseYOGRouter()->getIPAddress();
+	if(routerIp == "127.0.0.1")
+		routerIp = "YOGIP";
 	
 	gameList.push_back(YOGGameInfo(name, newID));
-	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, routerip, *this));
+	games[newID] = shared_ptr<YOGServerGame>(new YOGServerGame(newID, chatChannel, routerIp, *this));
 	return newID;
 }
 
@@ -456,7 +456,7 @@ YOGServerMapDatabank& YOGServer::getMapDatabank()
 
 
 
-YOGServerFileDistributationManager& YOGServer::getFileDistributionManager()
+YOGServerFileDistributionManager& YOGServer::getFileDistributionManager()
 {
 	return fileDistributionManager;
 }

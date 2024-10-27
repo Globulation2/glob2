@@ -36,10 +36,10 @@ public:
 	YOGPlayerStoredInfo();
 	
 	///Sets this player to be muted until the given time
-	void setMuted(boost::posix_time::ptime unmute_time);
+	void setMuted(boost::posix_time::ptime unMuteTime);
 	
-	///Sets this player to be unmuted
-	void setUnmuted();
+	///Sets this player to be un-muted
+	void setUnMuted();
 	
 	///Returns true if this player is muted, false otherwise
 	bool isMuted() const;
@@ -75,7 +75,7 @@ public:
 	bool operator==(const YOGPlayerStoredInfo& rhs) const;
 	bool operator!=(const YOGPlayerStoredInfo& rhs) const;
 private:
-	boost::posix_time::ptime unmute_time;
+	boost::posix_time::ptime unMuteTime;
 	bool banned;
 	bool moderator;
 	int rating;

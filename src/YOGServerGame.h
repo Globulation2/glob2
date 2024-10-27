@@ -48,7 +48,7 @@ public:
 	void addPlayer(boost::shared_ptr<YOGServerPlayer> player);
 
 	///Adds an AI to the game
-	void addAIPlayer(AI::ImplementitionID type);
+	void addAIPlayer(AI::ImplementationID type);
 
 	///Removes the player from the game
 	void removePlayer(boost::shared_ptr<YOGServerPlayer> player);
@@ -65,8 +65,8 @@ public:
 	///Sets the map header of the game
 	void setMapHeader(const MapHeader& mapHeader);
 
-	///Sets the reteaming information of the game
-	void setReteamingInfo(const NetReteamingInformation& reteamingInfo);
+	///Sets the re-teaming information of the game
+	void setReTeamingInfo(const NetReTeamingInformation& reTeamingInfo);
 
 	///Gets the game header of the game
 	GameHeader& getGameHeader();
@@ -90,10 +90,10 @@ public:
 	///Sends that a player is not ready to start
 	void setNotReadyToStart(int playerID);
 
-	///Recieves a game start request, refuses to the host if not all the players are ready
+	///Receives a game start request, refuses to the host if not all the players are ready
 	///While the host is normally updated with this information, lag from the connection
 	///May cause the host to start the game just as another player has joined
-	void recieveGameStartRequest();
+	void receiveGameStartRequest();
 	
 	///Starts the game
 	void startGame();
@@ -125,7 +125,7 @@ private:
 	bool gameStarted;
 	bool hasAddedHost;
 	bool oldReadyToLaunch;
-	bool recievedMapHeader;
+	bool receivedMapHeader;
 	bool requested;
 	boost::shared_ptr<YOGServerPlayer> host;
 	GameHeader gameHeader;
@@ -134,7 +134,7 @@ private:
 	Uint32 mapFile;
 	MapHeader mapHeader;
 	NetGamePlayerManager playerManager;
-	NetReteamingInformation reteamingInfo;
+	NetReTeamingInformation reTeamingInfo;
 	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
 	Uint16 gameID;
 	Uint32 chatChannel;

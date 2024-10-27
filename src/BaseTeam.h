@@ -45,7 +45,7 @@ public:
 
 	TeamType type;
 	Sint32 teamNumber; // index of the current team in the game::teams[] array.
-	Sint32 numberOfPlayer; // number of controling players
+	Sint32 numberOfPlayer; // number of controlling players
 	GAGCore::Color color;
 	Uint32 playersMask;
 	

@@ -16,8 +16,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef KeyPress_h
-#define KeyPress_h
+#ifndef __KEY_PRESS_H
+#define __KEY_PRESS_H
 
 #include "SDL.h"
 #include <string>
@@ -66,7 +66,7 @@ public:
 	///Returns whether control must be held with the key
 	bool needControl() const;
 	
-	///Returns whether the meta must be helt with the key
+	///Returns whether the meta must be held with the key
 	bool needMeta() const;
 	
 	///Returns whether shift must be held with the key

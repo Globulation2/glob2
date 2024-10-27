@@ -58,7 +58,7 @@ void YOGServerRouterManager::update()
 		if(message)
 		{
 			Uint8 type = message->getMessageType();
-			//This recieves the router information
+			//This receives the router information
 			if(type==MNetRegisterRouter)
 			{
 				shared_ptr<NetRegisterRouter> info = static_pointer_cast<NetRegisterRouter>(message);

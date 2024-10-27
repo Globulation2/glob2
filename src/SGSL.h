@@ -52,10 +52,10 @@ struct SGSLToken
 		// Generic language stuff
 		FUNC_CALL=10,
 
-		// Syntaxic token
-		S_PAROPEN=20,
-		S_PARCLOSE,
-		S_SEMICOL,
+		// Syntactic token
+		S_PAR_OPEN=20,
+		S_PAR_CLOSE,
+		S_SEMI_COL,
 		S_STORY,
 		S_EOF,
 
@@ -72,18 +72,18 @@ struct SGSLToken
 		S_SHOW,
 		S_HIDE,
 		S_ALLIANCE,
-		S_GUIENABLE,
-		S_GUIDISABLE,
-		S_SUMMONUNITS,
-		S_SUMMONFLAG,
-		S_DESTROYFLAG,
+		S_GUI_ENABLE,
+		S_GUI_DISABLE,
+		S_SUMMON_UNITS,
+		S_SUMMON_FLAG,
+		S_DESTROY_FLAG,
 		S_WIN,
-		S_LOOSE,
+		S_LOSE,
 		S_LABEL,
 		S_JUMP,
-		S_SETAREA,
+		S_SET_AREA,
 		S_AREA,
-		S_ISDEAD,
+		S_IS_DEAD,
 		S_ALLY,
 		S_ENEMY,
 		S_ONLY,
@@ -103,7 +103,7 @@ struct SGSLToken
 		S_SCIENCE_B,
 		S_DEFENCE_B,
 
-		S_EXPLOR_F=S_SWARM_B+IntBuildingType::EXPLORATION_FLAG,
+		S_EXPLORATION_F=S_SWARM_B+IntBuildingType::EXPLORATION_FLAG,
 		S_FIGHT_F,
 		S_CLEARING_F,
 		
@@ -111,11 +111,11 @@ struct SGSLToken
 		S_MARKET_B,
 
 		// GUI elements that can be disabled or enabled
-		S_BUILDINGTAB,
-		S_FLAGTAB,
-		S_TEXTSTATTAB,
-		S_GFXSTATTAB,
-		S_ALLIANCESCREEN,
+		S_BUILDING_TAB,
+		S_FLAG_TAB,
+		S_TEXT_STAT_TAB,
+		S_GFX_STAT_TAB,
+		S_ALLIANCE_SCREEN,
 	} type;
 
 	struct TokenSymbolLookupTable
@@ -175,9 +175,9 @@ struct ErrorReport
 		ET_UNDEFINED_AREA_NAME,
 		ET_DUPLICATED_AREA_NAME,
 		ET_UNDEFINED_LABEL,
-		ET_MISSING_PAROPEN,
-		ET_MISSING_PARCLOSE,
-		ET_MISSING_SEMICOL,
+		ET_MISSING_PAR_OPEN,
+		ET_MISSING_PAR_CLOSE,
+		ET_MISSING_SEMI_COL,
 		ET_MISSING_ARGUMENT,
 		ET_INVALID_ALLIANCE_LEVEL,
 		ET_NOT_VALID_LANG_ID,
@@ -198,11 +198,11 @@ struct ErrorReport
 };
 
 // Text parser, returns tokens
-class Aquisition
+class Acquisition
 {
 public:
-	Aquisition(const Functions& functions);
-	virtual ~Aquisition(void);
+	Acquisition(const Functions& functions);
+	virtual ~Acquisition(void);
 
 public:
 	const SGSLToken *getToken() { return &token; }
@@ -223,11 +223,11 @@ private:
 };
 
 // File parser
-class FileAquisition: public Aquisition
+class FileAcquisition: public Acquisition
 {
 public:
-	FileAquisition(const Functions& functions) : Aquisition(functions) { fp=NULL; }
-	virtual ~FileAquisition() { if (fp) fclose(fp); }
+	FileAcquisition(const Functions& functions) : Acquisition(functions) { fp=NULL; }
+	virtual ~FileAcquisition() { if (fp) fclose(fp); }
 	bool open(const std::string filename);
 
 	virtual int getChar(void) { return ::fgetc(fp); }
@@ -238,11 +238,11 @@ private:
 };
 
 //String parser
-class StringAquisition: public Aquisition
+class StringAcquisition: public Acquisition
 {
 public:
-	StringAquisition(const Functions& functions);
-	virtual ~StringAquisition();
+	StringAcquisition(const Functions& functions);
+	virtual ~StringAcquisition();
 	void open(const std::string& text);
 
 	virtual int getChar(void);
@@ -253,12 +253,12 @@ private:
 	int pos;
 };
 
-// Independant story line
+// Independent story line
 class Story
 {
 	static const bool verbose = false;
 public:
-	Story(MapScriptSGSL *mapscript);
+	Story(MapScriptSGSL *mapScript);
 	virtual ~Story();
 
 public:
@@ -270,7 +270,7 @@ public:
 	void syncStep(GameGUI *gui);
 	Sint32 checkSum() { return lineSelector; }
 
-	void sendSpace() { recievedSpace=true; }
+	void sendSpace() { receivedSpace=true; }
 	
 	
 private:
@@ -284,22 +284,22 @@ private:
 	void hintHidden(GameGUI* gui);
 	void hintVisible(GameGUI* gui);
 	void setHighlightItem(GameGUI* gui, bool doSet);
-	void hilightItem(GameGUI* gui);
-	void unhilightItem(GameGUI* gui);
-	void hilightUnits(GameGUI* gui);
-	void unhilightUnits(GameGUI* gui);
-	void hilightBuildings(GameGUI* gui);
-	void unhilightBuildings(GameGUI* gui);
-	void hilightBuildingOnPanel(GameGUI* gui);
-	void unhilightBuildingOnPanel(GameGUI* gui);
+	void highlightItem(GameGUI* gui);
+	void unHighlightItem(GameGUI* gui);
+	void highlightUnits(GameGUI* gui);
+	void unHighlightUnits(GameGUI* gui);
+	void highlightBuildings(GameGUI* gui);
+	void unHighlightBuildings(GameGUI* gui);
+	void highlightBuildingOnPanel(GameGUI* gui);
+	void unHighlightBuildingOnPanel(GameGUI* gui);
 	void resetAI(GameGUI* gui);
 	
 	
 	bool testCondition(GameGUI *gui);
 	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
 	
-	MapScriptSGSL *mapscript;
-	bool recievedSpace;
+	MapScriptSGSL *mapScript;
+	bool receivedSpace;
 };
 
 ///These "areas" are now officially deprecated, replaced by "areas" in Map, which operate on a per-square basis
@@ -351,7 +351,7 @@ public:
 private:
 	friend class Story;
 
-	ErrorReport parseScript(Aquisition *donnees, Game *game);
+	ErrorReport parseScript(Acquisition *donnees, Game *game);
 	bool testMainTimer(void);
 
 	Functions functions;

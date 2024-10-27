@@ -28,7 +28,7 @@
 ///The purpose of this class is to sort Orders, and hand them out in
 ///the correct time slot. It serves partially to hide latency, Orders
 ///are set to execute a fixed number of ticks ahead, and this class
-///handles that discrepency. It is used always, local or net games,
+///handles that discrepancy. It is used always, local or net games,
 ///as the central message pump for Orders.
 class NetEngine
 {
@@ -45,7 +45,7 @@ public:
 	///Clears all the orders at the top of the queues
 	void clearTopOrders();
 
-	//Pushes an order to the NetEngine. AI's are special because they don't have padding arround orders
+	//Pushes an order to the NetEngine. AI's are special because they don't have padding around orders
 	void pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool isAI);
 	
 	///Retrieves the order for the given player for this turn
@@ -56,13 +56,13 @@ public:
 	
 	///Tells whether the network is ready at the current tick. For
 	///the network to be ready, all Orders from all players must be
-	///present, otherwise it will have to hold for recieved Orders.
-	bool allOrdersRecieved();
+	///present, otherwise it will have to hold for received Orders.
+	bool allOrdersReceived();
 	
 	///Returns the current step number
 	int getStep();
 
-	///Sends all pending orders across the network without a checksum. This is used if the game has to end immediettly
+	///Sends all pending orders across the network without a checksum. This is used if the game has to end immediately
 	void flushAllOrders();
 	
 	///Adds padding for the player for the given latency,
@@ -71,7 +71,7 @@ public:
 	void prepareForLatency(int playerNumber, int latency);
 	
 	///Returns true if the given player has provided an order and is ready to go
-	bool orderRecieved(int playerNumber);
+	bool orderReceived(int playerNumber);
 	
 	///Returns the mask representing each player that the NetEngine is waiting
 	///on for this step

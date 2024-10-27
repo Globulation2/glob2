@@ -42,12 +42,12 @@ int GameObjectives::getNumberOfObjectives()
 
 
 
-void GameObjectives::addNewObjective(const std::string& objective, bool ishidden, bool complete, bool nfailed, GameObjectiveType type, int scriptNumber)
+void GameObjectives::addNewObjective(const std::string& objective, bool isHidden, bool complete, bool nFailed, GameObjectiveType type, int scriptNumber)
 {
 	texts.push_back(objective);
-	hidden.push_back(ishidden);
+	hidden.push_back(isHidden);
 	completed.push_back(complete);
-	failed.push_back(nfailed);
+	failed.push_back(nFailed);
 	types.push_back(type);
 	scriptNumbers.push_back(scriptNumber);
 }

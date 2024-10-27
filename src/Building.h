@@ -83,24 +83,24 @@ public:
 	void loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void saveCrossRef(GAGCore::OutputStream *stream);
 
-	bool isRessourceFull(void);
-	int neededRessource(void);
+	bool isResourceFull(void);
+	int neededResource(void);
 	/**
-	 * calls neededRessource(int res) for all possible ressources.
+	 * calls neededResource(int res) for all possible resources.
 	 * @param array of needs that will be filled by this function
 	 */
-	void neededRessources(int needs[MAX_NB_RESSOURCES]);
-	void wishedRessources(int needs[MAX_NB_RESSOURCES]);
+	void neededResources(int needs[MAX_NB_RESOURCES]);
+	void computedNeededResources(int needs[MAX_NB_RESOURCES]);
 	/**
 	 * @param res The resource type
 	 * @return count of resources needed of type res. In case of higher multiplicity
 	 * of the requested resource (fruits have 10) the value is reduced by (multiplicity-1)
 	 * and clipped to >= 0
 	 */
-	int neededRessource(int res);
-	///Wished ressources are any ressources that are needed, and not being carried by a unit already.
-	void computeWishedRessources();
-	int totalWishedRessource();
+	int neededResource(int res);
+	///Wished resources are any resources that are needed, and not being carried by a unit already.
+	void computeWishedResources();
+	int totalWishedResource();
 
 	///Launches construction. Provided with the number of units that should be working during the construction,
 	///and the number of units that should be working after the construction is finished.
@@ -117,11 +117,11 @@ public:
 	///of buildings in Team that need units for work, or can have units "inside"
 	void updateCallLists(void);
 	///When a building is waiting for room, this will make sure that the building is in the
-	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hardspace, etc if
-	///ressources grow into the space or a building is placed, it becomes impossible
+	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hard space, etc if
+	///resources grow into the space or a building is placed, it becomes impossible
 	///to upgrade and the construction is cancelled.
 	void updateConstructionState(void);
-	///Updates the construction state when undergoing construction. If the ressources are full,
+	///Updates the construction state when undergoing construction. If the resources are full,
 	///construction has completed.
 	void updateBuildingSite(void);
 	///This function updates the units working at this building. If there are too many units, it
@@ -140,14 +140,14 @@ public:void update(void);
 	///Sets the area around the building to be discovered, and visible by the building
 	void setMapDiscovered(void);
 
-	///Gets the amount of ressources for each type of ressource that are needed to repair the building.
-public:void getRessourceCountToRepair(int ressources[BASIC_COUNT]);
+	///Gets the amount of resources for each type of resource that are needed to repair the building.
+public:void getResourceCountToRepair(int resources[BASIC_COUNT]);
 
 	///Attempts to find room for a building site. If room is found, the building site is established,
 	///and it returns true.
 	bool tryToBuildingSiteRoom(void);
 
-	///This function puts hidden forbidden area around a new building site. This dispereses units so that
+	///This function puts hidden forbidden area around a new building site. This disperses units so that
 	///the building isn't waiting for space when there are lots of units.
 private:void addForbiddenZoneToUpgradeArea(void);
 	///This function removes the hidden forbidden area placed by addForbiddenToUpgradeArea
@@ -165,32 +165,32 @@ public:bool isHardSpaceForBuildingSite(ConstructionResultState constructionResul
 private:bool fullInside(void);
 
 	///This function tells the number of workers that should be working at this building.
-	///If, for example, the building doesn't need any ressources, then this function will
+	///If, for example, the building doesn't need any resources, then this function will
 	///return 0, because if its already full, it doesn't need any units.
 	int desiredNumberOfWorkers(void);
 
 	///This is called every step. The building updates the desiredMaxUnitWorking variable using
-	///the function desiredNumberOfWorkers
+	///the function desiredNumberOfWorkers.
 public:void step(void);
-	///This function subscribes any building that needs ressources carried to it with units.
-	///It is considered greedy, hiring as many units as it needs in order of its preference
+	///This function subscribes any building that needs resources carried to it by units.
+	///It is considered greedy, hiring as many units as it needs in the order of its preference.
 	///Returns true if a unit was hired
-	bool subscribeToBringRessourcesStep(void);
-	///This function subscribes any flag that needs units for a with units.
-	///It is considered greedy, hiring as many units as it needs in order of its preference
+	bool subscribeToBringResourcesStep(void);
+	///This function subscribes any flag that needs units.
+	///It is considered greedy, hiring as many units as it needs in the order of its preference.
 	///Returns true if a unit was hired
 	bool subscribeForFlagingStep();
 	/// Subscribes a unit to go inside the building.
 	void subscribeUnitForInside(Unit* unit);
-	/// This is a step for swarms. Swarms heal themselves and create new units
+	/// This is a step for swarms. Swarms heal themselves and create new units.
 	void swarmStep(void);
-	/// This function searches for enemies, computes the best target, and fires a bullet
+	/// This function searches for enemies, computes the best target, and fires a bullet.
 	void turretStep(Uint32 stepCounter);
-	/// This step updates clearing flag gradients. When there are no more ressources remaining, units are to
-	/// be fired. When ressources grow back, units have to be rehired.=
+	/// This step updates clearing flag gradients. When there are no more resources remaining, units are to
+	/// be fired. When resources grow back, units have to be rehired.
 	void clearingFlagStep();
 	/// Kills the building, removing all units that are working or inside the building,
-	/// changing the state and adding it to the list of buildings to be deleted
+	/// changing the state and adding it to the list of buildings to be deleted.
 	void kill(void);
 
 	/// Tells whether a particular unit can work at this building. Takes into account this buildings level,
@@ -215,31 +215,31 @@ public:void removeUnitFromWorking(Unit* unit);
 	/// it does not update the units state.
 	void removeUnitFromInside(Unit* unit);
 
-	/// This function updates the ressources pointer. The variable ressources can either point to local ressources
+	/// This function updates the resources pointer. The variable resources can either point to local resources
 	/// or team resources, depending on the BuildingType.
-private:void updateRessourcesPointer();
+private:void updateResourcesPointer();
 
-	/// This function is called when a Unit places a ressource into the building.
-public:void addRessourceIntoBuilding(int ressourceType);
+	/// This function is called when a Unit places a resource into the building.
+public:void addResourceIntoBuilding(int resourceType);
 	
-	/// This function is called when a Unit takes a ressource from a building, such as a market
-	void removeRessourceFromBuilding(int ressourceType);
+	/// This function is called when a Unit takes a resource from a building, such as a market
+	void removeResourceFromBuilding(int resourceType);
 
-	///Gets the middle x cordinate relative to posX
+	///Gets the middle x coordinate relative to posX
 	int getMidX(void);
-	///Gets the middle y cordinate relative to posY
+	///Gets the middle y coordinate relative to posY
 	int getMidY(void);
 
 	/// When a unit leaves a building, this function will find an open spot for that unit to leave,
-	/// and provides the x and y coordinates, along with the direction the unit should be travelling
+	/// and provides the x and y coordinates, along with the direction the unit should be traveling
 	/// when it leaves.
 	bool findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim);
 	/// When a unit leaves a building, this function will find an open spot for that unit to leave,
-	/// and provides the x and y coordinates, along with the direction the unit should be travelling
+	/// and provides the x and y coordinates, along with the direction the unit should be traveling
 	/// when it leaves.
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
 private:
-	/// checkstyle found this block of 26 lines being repeated 4 times.
+	/// check style found this block of 26 lines being repeated 4 times.
 	void checkGroundExitQuality(
 		const int testX,
 		const int testY,
@@ -298,7 +298,7 @@ private:Sint32 maxUnitWorkingPrevious;
 public:Sint32 desiredMaxUnitWorking;
 	///This is the list of units actively working on the building.
 	std::list<Unit *> unitsWorking;
-	///The subscribeToBringRessourcesStep and subscribeForFlagingStep operate every 32 ticks
+	///The subscribeToBringResourcesStep and subscribeForFlagingStep operate every 32 ticks
 private:Sint32 subscriptionWorkingTimer;
 public:Sint32 maxUnitInside;
 	///This counts the number of units that failed the requirements for the building, but where free
@@ -336,21 +336,21 @@ public:
 	Uint8 underAttackTimer;
 
 
-	// Flag usefull :
+	// Flag useful :
 	Sint32 unitStayRange; // (Uint8)
 	Sint32 unitStayRangeLocal;
-	bool clearingRessources[BASIC_COUNT]; // true if the ressource has to be cleared.
-	bool clearingRessourcesLocal[BASIC_COUNT];
+	bool clearingResources[BASIC_COUNT]; // true if the resource has to be cleared.
+	bool clearingResourcesLocal[BASIC_COUNT];
 	Sint32 minLevelToFlag;
 	Sint32 minLevelToFlagLocal;
 
 	// Building specific :
-	/// Amount stocked, or used for building building. Local ressources stores the ressources this particular building contains
-	/// in the event that the building type designates using global ressources instead of local ressources, the ressources pointer
-	/// will be changed to point to the global ressources Team::teamRessources instead of localRessources.
-	Sint32* ressources;
-	Sint32 wishedResources[MAX_NB_RESSOURCES];
-private:Sint32 localRessource[MAX_NB_RESSOURCES];
+	/// Amount stocked, or used for building building. Local resources stores the resources this particular building contains
+	/// in the event that the building type designates using global resources instead of local resources, the resources pointer
+	/// will be changed to point to the global resources Team::teamResources instead of localResources.
+	Sint32* resources;
+	Sint32 wishedResources[MAX_NB_RESOURCES];
+private:Sint32 localResource[MAX_NB_RESOURCES];
 
 	// quality parameters
 public:Sint32 hp; // (Uint16)
@@ -363,10 +363,10 @@ public:Sint32 ratio[NB_UNIT_TYPE];
 private:Sint32 percentUsed[NB_UNIT_TYPE];
 
 	// exchange building parameters
-public:Uint32 receiveRessourceMask;
-	Uint32 sendRessourceMask;
-	Uint32 receiveRessourceMaskLocal;
-	Uint32 sendRessourceMaskLocal;
+public:Uint32 receiveResourceMask;
+	Uint32 sendResourceMask;
+	Uint32 receiveResourceMaskLocal;
+	Uint32 sendResourceMaskLocal;
 
 	// turrets building parameters
 private:Uint32 shootingStep;
@@ -382,9 +382,9 @@ public:Sint32 bullets;
 	bool locked[2]; //True if the building is not reachable.
 	Uint32 lastGlobalGradientUpdateStepCounter[2];
 
-	Uint8 *localRessources[2];
-	int localRessourcesCleanTime[2]; // The time since the localRessources[x] has not been updated.
-	int anyRessourceToClear[2]; // Which localRessources[x] gradient has any ressource. {0: unknow, 1:true, 2:false}
+	Uint8 *localResources[2];
+	int localResourcesCleanTime[2]; // The time since the localResources[x] has not been updated.
+	int anyResourceToClear[2]; // Which localResources[x] gradient has any resource. {0: unknow, 1:true, 2:false}
 
 	// shooting eye-candy data, not net synchronised
 	Uint32 lastShootStep;

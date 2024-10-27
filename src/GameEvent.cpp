@@ -75,7 +75,7 @@ UnitUnderAttackEvent::UnitUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint
 std::string UnitUnderAttackEvent::formatMessage()
 {
 	std::string message;
-	message+=FormatableString(Toolkit::getStringTable()->getString("[Your %0 are under attack]"))
+	message+=FormattableString(Toolkit::getStringTable()->getString("[Your %0 are under attack]"))
 	                         .arg(getUnitName(type));
 	return message;
 }
@@ -108,7 +108,7 @@ UnitLostConversionEvent::UnitLostConversionEvent(Uint32 step, Sint16 x, Sint16 y
 std::string UnitLostConversionEvent::formatMessage()
 {
 	std::string message;
-	message += FormatableString(Toolkit::getStringTable()->getString("[Your unit got converted to %0's team]")).arg(teamName);
+	message += FormattableString(Toolkit::getStringTable()->getString("[Your unit got converted to %0's team]")).arg(teamName);
 	return message;
 }
 
@@ -140,7 +140,7 @@ UnitGainedConversionEvent::UnitGainedConversionEvent(Uint32 step, Sint16 x, Sint
 std::string UnitGainedConversionEvent::formatMessage()
 {
 	std::string message;
-	message += FormatableString(Toolkit::getStringTable()->getString("[%0's team unit got converted to your team]")).arg(teamName);
+	message += FormattableString(Toolkit::getStringTable()->getString("[%0's team unit got converted to your team]")).arg(teamName);
 	return message;
 }
 

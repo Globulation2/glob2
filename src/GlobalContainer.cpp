@@ -110,7 +110,7 @@ GlobalContainer::GlobalContainer(void)
 	terrain = NULL;
 	terrainShader = NULL;
 	terrainBlack = NULL;
-	ressources = NULL;
+	resources = NULL;
 	units = NULL;
 	unitsSkins = NULL;
 
@@ -283,20 +283,20 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		else if (strcmp(argv[i], "-f")==0)
 		{
-			settings.screenFlags |= GraphicContext::FULLSCREEN;
+			settings.screenFlags |= GraphicContext::FULL_SCREEN;
 		}
 		else if (strcmp(argv[i], "-F")==0)
 		{
-			settings.screenFlags &= ~GraphicContext::FULLSCREEN;
+			settings.screenFlags &= ~GraphicContext::FULL_SCREEN;
 		}
 
 		else if (strcmp(argv[i], "-c")==0)
 		{
-			settings.screenFlags |= GraphicContext::CUSTOMCURSOR;
+			settings.screenFlags |= GraphicContext::CUSTOM_CURSOR;
 		}
 		else if (strcmp(argv[i], "-C")==0)
 		{
-			settings.screenFlags &= ~GraphicContext::CUSTOMCURSOR;
+			settings.screenFlags &= ~GraphicContext::CUSTOM_CURSOR;
 		}
 
 		else if (strcmp(argv[i], "-r")==0)
@@ -319,11 +319,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 
 		else if (strcmp(argv[i], "-g")==0)
 		{
-			settings.screenFlags |= GraphicContext::USEGPU;
+			settings.screenFlags |= GraphicContext::USE_GPU;
 		}
 		else if (strcmp(argv[i], "-G")==0)
 		{
-			settings.screenFlags &= ~GraphicContext::USEGPU;
+			settings.screenFlags &= ~GraphicContext::USE_GPU;
 		}
 
 		else if (strcmp(argv[i], "-l")==0)
@@ -369,8 +369,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				i++;
 				const char *resStr=&(argv[i][0]);
 				int ix, iy;
-				int nscaned = sscanf(resStr, "%dx%dx", &ix, &iy);
-				if (nscaned == 2)
+				int nScanned = sscanf(resStr, "%dx%dx", &ix, &iy);
+				if (nScanned == 2)
 				{
 					if (ix!=0 && iy!=0)
 					{
@@ -566,11 +566,11 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(40);
 		
 		// load fonts
-		std::string fontfile = "data/fonts/";
-		fontfile+=+PRIMARY_FONT;
-		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
-		Toolkit::loadFont(fontfile.c_str(), 13, "standard");
-		Toolkit::loadFont(fontfile.c_str(), 10, "little");
+		std::string fontFile = "data/fonts/";
+		fontFile+=+PRIMARY_FONT;
+		Toolkit::loadFont(fontFile.c_str(), 20, "menu");
+		Toolkit::loadFont(fontFile.c_str(), 13, "standard");
+		Toolkit::loadFont(fontFile.c_str(), 10, "little");
 		menuFont = Toolkit::getFont("menu");
 		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		standardFont = Toolkit::getFont("standard");
@@ -592,8 +592,8 @@ void GlobalContainer::loadClient(void)
 		
 		updateLoadProgressScreen(60);
 		// load resources
-		ressources = Toolkit::getSprite("data/gfx/ressource");
-		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
+		resources = Toolkit::getSprite("data/gfx/ressource");
+		resourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
 		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
 		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
 		areaGuard = Toolkit::getSprite("data/gfx/area-guard");
@@ -608,10 +608,10 @@ void GlobalContainer::loadClient(void)
 
 		updateLoadProgressScreen(90);
 		// load graphics for gui
-		unitmini = Toolkit::getSprite("data/gfx/unitmini");
-		gamegui = Toolkit::getSprite("data/gfx/gamegui");
+		unitMini = Toolkit::getSprite("data/gfx/unitmini");
+		gameGui = Toolkit::getSprite("data/gfx/gamegui");
 		brush = Toolkit::getSprite("data/gfx/brush");
-		magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
+		magicEffect = Toolkit::getSprite("data/gfx/magiceffect");
 		particles = Toolkit::getSprite("data/gfx/particle");
 		
 		// use custom style
@@ -643,7 +643,7 @@ void GlobalContainer::load(void)
 	// load default unit types
 	Race::loadDefault();
 	// load resources types
-	ressourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
+	resourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is resources
 
 #ifndef YOG_SERVER_ONLY
 	loadClient();
@@ -662,7 +662,7 @@ void GlobalContainer::load(void)
 Uint32 GlobalContainer::getConfigCheckSum()
 {
 	// TODO: add the units config
-	return buildingsTypes.checkSum() + ressourcesTypes.checkSum() + Race::checkSumDefault();
+	return buildingsTypes.checkSum() + resourcesTypes.checkSum() + Race::checkSumDefault();
 }
 #endif  // !YOG_SERVER_ONLY
 

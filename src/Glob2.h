@@ -30,7 +30,7 @@ public:
 
 public:
 	void drawYOGSplashScreen();
-	void mutiplayerYOG();
+	void multiplayerYOG();
 	int runNoX();
 	///Runs random games non stop until the game crashes
 	int runTestGames();

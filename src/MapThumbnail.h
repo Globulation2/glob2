@@ -57,7 +57,7 @@ public:
 	///Returns the map height
 	int getMapHeight();
 	
-	///Returns true if this thumbnail is laoded
+	///Returns true if this thumbnail is loaded
 	bool isLoaded();
 
 private:

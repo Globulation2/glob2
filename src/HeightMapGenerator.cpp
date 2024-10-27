@@ -27,7 +27,7 @@
 #include <math.h>
 #include "PerlinNoise.h"
 
-/// these faders are factors to be applieable to heightfields. they map (0,0)-(w,h) to [0..1]
+/// these faders are factors to be applicable to height fields. they map (0,0)-(w,h) to [0..1]
 
 inline float faderCenter   (int x, int y, int w, int h) /// to have zero at the borders and 1 in the center
 {
@@ -88,7 +88,7 @@ inline void HeightMap::lower(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in river maps this saves a lot of time
 	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
@@ -110,7 +110,7 @@ inline void HeightMap::maxRise(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in river maps this saves a lot of time
 	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
@@ -131,7 +131,7 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;
 	static unsigned int oldY=(unsigned int)-1;
-	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
+	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in river maps this saves a lot of time
 	{
 		assert(_stamp);
 		for(unsigned int x=0; x<2*_r+1;x++)
@@ -171,9 +171,9 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 	pn.reseed();
 	int * centerX = new int[count];
 	int * centerY = new int[count];
-	float mindist=sqrt(_w*_h/count)/2.0;
-	assert(mindist>0);
-	makeStamp((unsigned int)(mindist*2));
+	float minDist=sqrt(_w*_h/count)/2.0;
+	assert(minDist>0);
+	makeStamp((unsigned int)(minDist*2));
 	centerX[0]=rand()%_w;centerY[0]=rand()%_h;
 	/// find spots with distance>min. distance
 	for (unsigned int i=1; i<count; i++)
@@ -190,13 +190,13 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 			for (unsigned int j=0; j<i; j++) {
 				int distX=std::min(abs(newPosX-centerX[j]),(int)_w-abs(newPosX-centerX[j]));
 				int distY=std::min(abs(newPosY-centerY[j]),(int)_h-abs(newPosY-centerY[j]));
-				if(distX<mindist && distY<mindist)
+				if(distX<minDist && distY<minDist)
 					foundSpot=false;
 			}
 		} while (!foundSpot && tries<count*count*_w*_h);
 		if(!foundSpot)
 		{
-			std::cout <<count << " " << mindist << " " << tries << " " << newPosX << "/" << newPosY << " " << i << "\n";
+			std::cout <<count << " " << minDist << " " << tries << " " << newPosX << "/" << newPosY << " " << i << "\n";
 			assert (false);
 		}
 		centerX[i]=newPosX;centerY[i]=newPosY;
@@ -215,7 +215,7 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 
 void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
 {
-	/// riverRadius referes to the distance between center of the river and the maximum distance that gets lowered.
+	/// riverRadius refers to the distance between center of the river and the maximum distance that gets lowered.
 	makeStamp(maxDiameter/2);
 	/// level the map
 	operator=(1.0);
@@ -224,14 +224,14 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
 	float startingPointX=rand()%_w;
 	float startingPointY=rand()%_h;
 	
-	/// the target=start+(w,h) is set now. tmprand(0,1,2)==position(+h,+w,+w+h)
+	/// the target=start+(w,h) is set now. tmpRand(0,1,2)==position(+h,+w,+w+h)
 	float targetPointX;
 	float targetPointY;
 	if(_w==_h)
 	{
-		unsigned int tmprand=rand()%3;
-		targetPointX=startingPointX+(tmprand>0?_w:0);
-		targetPointY=startingPointY+_h-(tmprand%2)*_h;
+		unsigned int tmpRand=rand()%3;
+		targetPointX=startingPointX+(tmpRand>0?_w:0);
+		targetPointY=startingPointY+_h-(tmpRand%2)*_h;
 	}
 	else if (_w>_h)
 	{

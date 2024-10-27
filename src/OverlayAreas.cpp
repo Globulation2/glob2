@@ -27,9 +27,9 @@
 
 OverlayArea::OverlayArea()
 {
-	lasttype = None;
-	overlaymax = 0;
-//	fertilitymax = 0;
+	lastType = None;
+	overlayMax = 0;
+//	fertilityMax = 0;
 //	fertilityComputed = 0;
 }
 
@@ -40,28 +40,28 @@ OverlayArea::~OverlayArea()
 }
 
 
-void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
+void OverlayArea::compute(Game& game, OverlayType type, int localTeam)
 {
-	type = ntype;
+	this->type = type;
 	height = game.map.getH();
 	width = game.map.getW();
 	overlay.resize(game.map.getW() * game.map.getH());
 	if(type == Starving || type == Damage)
 	{
 		std::fill(overlay.begin(), overlay.end(), 0);
-		overlaymax = 0;
+		overlayMax = 0;
 		for (int i=0; i<Unit::MAX_COUNT; i++)
 		{
-			Unit *u=game.teams[localteam]->myUnits[i];
+			Unit *u=game.teams[localTeam]->myUnits[i];
 			if (u && u->activity != Unit::ACT_UPGRADING)
 			{
 				if (type == Starving && u->isUnitHungry() && u->hp < u->performance[HP])
 				{
-					increasePoint(u->posX, u->posY, 8, overlay, overlaymax);
+					increasePoint(u->posX, u->posY, 8, overlay, overlayMax);
 				}
 				else if(type == Damage && u->medical==Unit::MED_DAMAGED)
 				{
-					increasePoint(u->posX, u->posY, 8, overlay, overlaymax);
+					increasePoint(u->posX, u->posY, 8, overlay, overlayMax);
 				}
 			}
 		}
@@ -69,34 +69,34 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 	else if(type == Defence)
 	{
 		std::fill(overlay.begin(), overlay.end(), 0);
-		overlaymax = 0;
+		overlayMax = 0;
 		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
-			Building *b = game.teams[localteam]->myBuildings[i];
+			Building *b = game.teams[localTeam]->myBuildings[i];
 			if (b)
 			{
 				if(b->type->shootDamage > 0)
 				{
-					int power = (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
-					spreadPoint(b->posX, b->posY, power, b->type->shootingRange, overlay, overlaymax);
+					int power = (b->type->shootDamage*b->type->shootRhythm) >> SHOOTING_COOLDOWN_MAGNITUDE;
+					spreadPoint(b->posX, b->posY, power, b->type->shootingRange, overlay, overlayMax);
 				}
 			}
 
 
 		}
 	}
-	else if(type == Fertility && lasttype != Fertility)
+	else if(type == Fertility && lastType != Fertility)
 	{
 		for(int x=0; x<game.map.getW(); ++x)
 		{
 			for(int y=0; y<game.map.getH(); ++y)
 			{
-				overlay[x * height + y] = game.map.getCase(x, y).fertility;
-				overlaymax = game.map.fertilityMaximum;
+				overlay[x * height + y] = game.map.getTile(x, y).fertility;
+				overlayMax = game.map.fertilityMaximum;
 			}
 		}
 	}
-	lasttype = type;
+	lastType = type;
 }
 
 
@@ -110,7 +110,7 @@ Uint16 OverlayArea::getValue(int x, int y)
 	
 Uint16 OverlayArea::getMaximum()
 {
-	return overlaymax;
+	return overlayMax;
 }
 
 
@@ -124,7 +124,7 @@ OverlayArea::OverlayType OverlayArea::getOverlayType()
 
 void OverlayArea::forceRecompute()
 {
-	lasttype = None;
+	lastType = None;
 }
 
 
@@ -136,15 +136,15 @@ void OverlayArea::increasePoint(int x, int y, int distance, std::vector<Uint16>&
 	{
 		for(int py=0; py<(distance*2+1); ++py)
 		{
-			int relx = (px-distance);
-			int rely = (py-distance);
-			if(relx*relx + rely*rely < distance*distance)
+			int relX = (px-distance);
+			int relY = (py-distance);
+			if(relX*relX + relY*relY < distance*distance)
 			{
-				int posx=(x - distance + px + width) % width;
-				int posy=(y - distance + py + height) % height;
+				int posX=(x - distance + px + width) % width;
+				int posY=(y - distance + py + height) % height;
 
-				field[posx * height + posy]+=distance - (relx*relx + rely*rely) / distance;
-				max=std::max(max, field[posx * height + posy]);
+				field[posX * height + posY]+=distance - (relX*relX + relY*relY) / distance;
+				max=std::max(max, field[posX * height + posY]);
 			}
 		}
 	}
@@ -158,14 +158,14 @@ void OverlayArea::spreadPoint(int x, int y, int value, int distance, std::vector
 	{
 		for (int py=y-distance-1; py<(y+distance+1); py++)
 		{
-			int relx = (px-x);
-			int rely = (py-y);
-			if((relx*relx + rely*rely) <= (distance*distance))
+			int relX = (px-x);
+			int relY = (py-y);
+			if((relX*relX + relY*relY) <= (distance*distance))
 			{
 				int targetX=(px + width) % width;
 				int targetY=(py + height) % height;
 
-				field[targetX * height + targetY]+=distance - (relx*relx + rely*rely) / distance;
+				field[targetX * height + targetY]+=distance - (relX*relX + relY*relY) / distance;
 				max=std::max(max, field[targetX * height + targetY] );
 			}
 		}

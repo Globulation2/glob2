@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __STRINGTABLE_H
-#define __STRINGTABLE_H
+#ifndef __STRING_TABLE_H
+#define __STRING_TABLE_H
 
 #include <vector>
 #include <bitset>
@@ -46,9 +46,9 @@ namespace GAGCore
 		int getNumberOfLanguage(void) { return languageCount; }
 		bool loadIncompleteList(const std::string filename);
 		bool load(const std::string filename);
-		const std::string getString(const std::string stringname) const;
-		bool doesStringExist(const std::string stringname) const;
-		const std::string getStringInLang(const std::string stringname, int lang) const;
+		const std::string getString(const std::string stringName) const;
+		bool doesStringExist(const std::string stringName) const;
+		const std::string getStringInLang(const std::string stringName, int lang) const;
 		void print();
 	
 	private:

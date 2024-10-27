@@ -32,7 +32,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::strin
 	requested=false;
 	gameStarted=false;
 	oldReadyToLaunch=false;
-	recievedMapHeader=false;
+	receivedMapHeader=false;
 	hasAddedHost=false;
 	latencyMode = 0;
 	latencyUpdateTimer = SDL_GetTicks64();
@@ -96,12 +96,12 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 		info.setMapHeader(mapHeader);
 		info.setGameHeader(gameHeader);
 		info.setLatencyAdjustment(latencyMode);
-		info.setReteamingInformation(reteamingInfo);
+		info.setReTeamingInformation(reTeamingInfo);
 		info.setGameRouterIP(routerIP);
 		info.setMapFileID(mapFile);
-		shared_ptr<NetSendAfterJoinGameInformation> afterjoin(new NetSendAfterJoinGameInformation(info));
-		player->sendMessage(afterjoin);
-		///If its the host, we don't add them until we've recieved the NetReteamingInformation
+		shared_ptr<NetSendAfterJoinGameInformation> afterJoin(new NetSendAfterJoinGameInformation(info));
+		player->sendMessage(afterJoin);
+		///If its the host, we don't add them until we've received the NetReTeamingInformation
 		playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
 	}
 	players.push_back(player);
@@ -118,7 +118,7 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 
 
 
-void YOGServerGame::addAIPlayer(AI::ImplementitionID type)
+void YOGServerGame::addAIPlayer(AI::ImplementationID type)
 {
 	playerManager.addAIPlayer(type);
 
@@ -208,22 +208,22 @@ void YOGServerGame::setHost(shared_ptr<YOGServerPlayer> player)
 
 
 
-void YOGServerGame::setMapHeader(const MapHeader& nmapHeader)
+void YOGServerGame::setMapHeader(const MapHeader& mapHeader)
 {
-	mapHeader = nmapHeader;
+	this->mapHeader = mapHeader;
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 	server.getGameInfo(gameID).setMapName(mapHeader.getMapName());
 	server.getGameInfo(gameID).setNumberOfTeams(mapHeader.getNumberOfTeams());
-	recievedMapHeader=true;
+	receivedMapHeader=true;
 	server.getFileDistributionManager().getDistributor(mapFile)->loadFromPlayer(host);
 }
 
 
 
-void YOGServerGame::setReteamingInfo(const NetReteamingInformation& nreteamingInfo)
+void YOGServerGame::setReTeamingInfo(const NetReTeamingInformation& reTeamingInfo)
 {
-	reteamingInfo=nreteamingInfo;
-	playerManager.setReteamingInformation(reteamingInfo);
+	this->reTeamingInfo=reTeamingInfo;
+	playerManager.setReTeamingInformation(reTeamingInfo);
 	
 	if(!hasAddedHost)
 	{
@@ -307,7 +307,7 @@ void YOGServerGame::setNotReadyToStart(int playerID)
 
 
 
-void YOGServerGame::recieveGameStartRequest()
+void YOGServerGame::receiveGameStartRequest()
 {
 	if(playerManager.isEveryoneReadyToGo())
 	{

@@ -64,7 +64,7 @@ static void initInterpolationTable(void)
 	}
 }
 
-void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
+void SoundMixer::handleVoiceInsertion(int *outputSample, int voiceVol)
 {
 	// if no more voice
 	if (voices.empty())
@@ -82,11 +82,11 @@ void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
 		{
 			pv.voiceSubIndex -= 1;
 			pv.voiceVal0 = pv.voiceVal1;
-			pv.voiceDatas.pop();
-			pv.voiceVal1 = pv.voiceDatas.front();
+			pv.voiceData.pop();
+			pv.voiceVal1 = pv.voiceData.front();
 			
 			// if there is no more data in this voice, remove it
-			if (pv.voiceDatas.empty())
+			if (pv.voiceData.empty())
 			{
 				// go to next voice
 				std::map<int, PlayerVoice>::iterator j = i;
@@ -102,24 +102,24 @@ void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
 	// saturate
 	value = std::min(value, 32767.0f);
 	value = std::max(value, -32767.0f);
-	value = (value * voicevol)/256;
+	value = (value * voiceVol)/256;
 	// write sample
 	*outputSample = (static_cast<int>(3.0f * (value)) + (*outputSample)) / 4;
 }
 
-void mixaudio(void *voidMixer, Uint8 *stream, int len)
+void mixAudio(void *voidMixer, Uint8 *stream, int len)
 {
 	SoundMixer *mixer = static_cast<SoundMixer *>(voidMixer);
-	unsigned nsamples = static_cast<unsigned>(len) >> 1;
+	unsigned nSamples = static_cast<unsigned>(len) >> 1;
 	Sint16 *mix = reinterpret_cast<Sint16 *>(stream);
-	int musicvol = static_cast<int>(mixer->musicVolume);
-	int voicevol = static_cast<int>(mixer->voiceVolume);
+	int musicVol = static_cast<int>(mixer->musicVolume);
+	int voiceVol = static_cast<int>(mixer->voiceVolume);
 
 	assert(mixer->actTrack >= 0);
 	assert(mixer->mode != SoundMixer::MODE_STOPPED);
 	// Dejan: this is supposed to fix reported problem on Gentoo
-	// assert(nsamples == SAMPLE_COUNT_PER_SLICE);
-	assert(nsamples);
+	// assert(nSamples == SAMPLE_COUNT_PER_SLICE);
+	assert(nSamples);
 
 	if (mixer->mode == SoundMixer::MODE_EARLY_CHANGE)
 	{
@@ -173,14 +173,14 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		}
 
 		// mix
-		for (unsigned i=0; i<nsamples; i++)
+		for (unsigned i=0; i<nSamples; i++)
 		{
 			int t0 = track0[i];
 			int t1 = track1[i];
 			int intI = interpolationTable[i];
 			int val = (intI*t1+((INTERPOLATION_RANGE-intI)*t0))>>INTERPOLATION_BITS;
-			val = (val * musicvol)>>8;
-			mixer->handleVoiceInsertion(&val, voicevol);
+			val = (val * musicVol)>>8;
+			mixer->handleVoiceInsertion(&val, voiceVol);
 			mix[i] = val;
 		}
 
@@ -215,36 +215,36 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		// volume & fading
 		if (mixer->mode == SoundMixer::MODE_NORMAL)
 		{
-			if (musicvol != 255)
-				for (unsigned i=0; i<nsamples; i++)
+			if (musicVol != 255)
+				for (unsigned i=0; i<nSamples; i++)
 				{
 					int t = mix[i];
-					t = (t * musicvol) >> 8;
-					mixer->handleVoiceInsertion(&t, voicevol);
+					t = (t * musicVol) >> 8;
+					mixer->handleVoiceInsertion(&t, voiceVol);
 					mix[i] = t;
 				}
 		}
 		else if (mixer->mode == SoundMixer::MODE_START)
 		{
-			for (unsigned i=0; i<nsamples; i++)
+			for (unsigned i=0; i<nSamples; i++)
 			{
 				int t = mix[i];
 				t = (interpolationTable[i]*t) >> INTERPOLATION_BITS;
-				t = (t * musicvol) >> 8;
-				mixer->handleVoiceInsertion(&t, voicevol);
+				t = (t * musicVol) >> 8;
+				mixer->handleVoiceInsertion(&t, voiceVol);
 				mix[i] = t;
 			}
 			mixer->mode = SoundMixer::MODE_NORMAL;
 		}
 		else if (mixer->mode == SoundMixer::MODE_STOP)
 		{
-			for (unsigned i=0; i<nsamples; i++)
+			for (unsigned i=0; i<nSamples; i++)
 			{
 				int t = mix[i];
 				int intI = interpolationTable[i];
 				t = ((INTERPOLATION_RANGE-intI)*t) >> INTERPOLATION_BITS;
-				t = (t * musicvol) >> 8;
-				mixer->handleVoiceInsertion(&t, voicevol);
+				t = (t * musicVol) >> 8;
+				mixer->handleVoiceInsertion(&t, voiceVol);
 				mix[i] = t;
 			}
 			mixer->mode = SoundMixer::MODE_STOPPED;
@@ -261,7 +261,7 @@ void SoundMixer::openAudio(void)
 	as.format = AUDIO_S16SYS;
 	as.channels = 2;
 	as.samples = SAMPLE_COUNT_PER_SLICE>>1;
-	as.callback = mixaudio;
+	as.callback = mixAudio;
 	as.userdata = this;
 	
 	// Open the audio device and start playing sound!
@@ -290,12 +290,12 @@ void SoundMixer::openAudio(void)
 	
 }
 
-SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
+SoundMixer::SoundMixer(unsigned musicVol, unsigned voiceVol, bool mute)
 {
 	actTrack = -1;
 	nextTrack = -1;
-	this->musicVolume = musicvol;
-	this->voiceVolume = voicevol;
+	this->musicVolume = musicVol;
+	this->voiceVolume = voiceVol;
 	mode = MODE_STOPPED;
 	speexDecoderState = NULL;
 	
@@ -457,17 +457,17 @@ void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
 		// get or create the voice
 		PlayerVoice &pv = voices[order->sender];
 		// insert 200 ms silence to let packets come if we aer the first
-		if (pv.voiceDatas.empty())
+		if (pv.voiceData.empty())
 		{
 			for (size_t j=0; j<2000; j++)
-				pv.voiceDatas.push(0);
+				pv.voiceData.push(0);
 			pv.voiceVal0 = pv.voiceVal1 = 0;
 			pv.voiceSubIndex = 0;
 		}
 		
 		SpeexBits bits;
 		speex_bits_init(&bits);
-		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDatasLength);
+		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDataLength);
 		// read each frame
 		for (size_t i=0; i<order->frameCount; i++)
 		{
@@ -475,7 +475,7 @@ void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
 			speex_decode(speexDecoderState, &bits, floatBuffer);
 			
 			for (size_t j=0; j<SPEEX_FRAME_SIZE; j++)
-				pv.voiceDatas.push(floatBuffer[j]);
+				pv.voiceData.push(floatBuffer[j]);
 		}
 		speex_bits_destroy(&bits);
 		

@@ -46,7 +46,7 @@ public:
 private:
 	TextButton* ok;
 	TextArea *description;
-	List *ailist;
+	List *aiList;
 	Text *title;
 };
 

@@ -24,7 +24,7 @@
 class YOGServerGame;
 
 ///This class handles the players and AI's that can join, be kicked out of, disconnect, leave
-///and otherwise be mangled arround with in an online game during the setup stage
+///and otherwise be mangled around with in an online game during the setup stage
 class NetGamePlayerManager
 {
 public:
@@ -33,7 +33,7 @@ public:
 	///Adds a person to the gameHeader
 	void addPerson(Uint16 playerID, const std::string& name);
 	///This is intended to add an AI to the game
-	void addAIPlayer(AI::ImplementitionID type);
+	void addAIPlayer(AI::ImplementationID type);
 	///Removes a person from the gameHeader
 	void removePerson(Uint16 playerID);
 	///Removes a player, human or AI
@@ -48,12 +48,12 @@ public:
 	bool isReadyToGo(int playerID);
 	///Sets the number of teams
 	void setNumberOfTeams(int numberOfTeams);
-	///Sets the reteaming information. Reteaming is when you reload a YOG save
+	///Sets the re-teaming information. Re-teaming is when you reload a YOG save
 	///game in YOG, and if the same players join, they are automatically set to
 	///the team they where in the save game
-	void setReteamingInformation(const NetReteamingInformation& information);
-	///This returns the reteaming information
-	const NetReteamingInformation& getReteamingInformation() const;
+	void setReTeamingInformation(const NetReTeamingInformation& information);
+	///This returns the re-teaming information
+	const NetReTeamingInformation& getReTeamingInformation() const;
 private:
 	///Chooses a team number that has the fewest attached players
 	int chooseTeamNumber();
@@ -63,7 +63,7 @@ private:
 	bool readyToStart[Team::MAX_COUNT];
 	int numberOfTeams;
 	bool previousReadyToLaunch;
-	NetReteamingInformation reteamInfo;
+	NetReTeamingInformation reTeamInfo;
 };
 
 #endif

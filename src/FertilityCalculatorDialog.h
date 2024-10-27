@@ -44,7 +44,7 @@ public:
 	///This screen is modal, this executes it
 	void execute();
 private:
-	///This proccesses an incoming event from the fertility calculator thread
+	///This processes an incoming event from the fertility calculator thread
 	void proccessIncoming(GAGCore::DrawableSurface *background);
 	
 	Map& map;

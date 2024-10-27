@@ -63,9 +63,9 @@ void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (fileList->getSelectionIndex()!=-1)
 		{
-			Campaign toload;
-			toload.load(getCampaignName());
-			description->setText(Toolkit::getStringTable()->getString(toload.getDescription()));
+			Campaign toLoad;
+			toLoad.load(getCampaignName());
+			description->setText(Toolkit::getStringTable()->getString(toLoad.getDescription()));
 		}
 		else
 		{

@@ -39,10 +39,10 @@ using namespace GAGGUI;
 
 EditorMainMenu::EditorMainMenu()
 {
-	addWidget(new TextButton(0,  70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new map]"), NEWMAP, 13));
-	addWidget(new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load map]"), LOADMAP));
-	addWidget(new TextButton(0, 190, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new campaign]"), NEWCAMPAIGN));
-	addWidget(new TextButton(0, 250, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load campaign]"), LOADCAMPAIGN));
+	addWidget(new TextButton(0,  70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new map]"), NEW_MAP, 13));
+	addWidget(new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load map]"), LOAD_MAP));
+	addWidget(new TextButton(0, 190, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new campaign]"), NEW_CAMPAIGN));
+	addWidget(new TextButton(0, 250, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load campaign]"), LOAD_CAMPAIGN));
 	addWidget(new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27));
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[editor]")));
 }
@@ -51,7 +51,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-	    if (par1==NEWMAP)
+	    if (par1==NEW_MAP)
 		{
 			bool retryNewMapScreen=true;
 			while (retryNewMapScreen)
@@ -65,7 +65,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 					setRandomSyncRandSeed();
 					if (generator.generateMap(mapEdit.game, newMapScreen.descriptor))
 					{
-						mapEdit.mapHasBeenModiffied(); // make all map as modified by default
+						mapEdit.mapHasBeenModified(); // make all map as modified by default
 						mapEdit.regenerateGameHeader();
 						if (mapEdit.run()==-1)
 							endExecute(-1);
@@ -88,7 +88,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 				}
 			}
 		}
-		else if (par1==LOADMAP)
+		else if (par1==LOAD_MAP)
 		{
 			ChooseMapScreen chooseMapScreen("maps", "map", false, "games", "game", NULL);
 			int rc=chooseMapScreen.execute(globalContainer->gfx, 40);
@@ -103,7 +103,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 			else if (rc==-1)
 				endExecute(-1);
 		}
-		else if (par1==NEWCAMPAIGN)
+		else if (par1==NEW_CAMPAIGN)
 		{
 			CampaignEditor ce("");
 			int rc=ce.execute(globalContainer->gfx, 40);
@@ -111,7 +111,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 				endExecute(-1);
 
 		}
-		else if (par1==LOADCAMPAIGN)
+		else if (par1==LOAD_CAMPAIGN)
 		{
 			CampaignSelectorScreen css;
 			int rc_css=css.execute(globalContainer->gfx, 40);

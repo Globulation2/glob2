@@ -63,8 +63,8 @@ void YOGClientChatChannel::sendMessage(boost::shared_ptr<YOGMessage> message)
 	if(channelID != static_cast<Uint32>(-1))
 	{
 		messageHistory.push_back(boost::make_tuple(message, boost::posix_time::second_clock::local_time()));
-		boost::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channelID, message));
-		client->sendNetMessage(netmessage);
+		boost::shared_ptr<NetSendYOGMessage> netMessage(new NetSendYOGMessage(channelID, message));
+		client->sendNetMessage(netMessage);
 		sendToListeners(message);
 	}
 }
@@ -101,7 +101,7 @@ void YOGClientChatChannel::removeListener(YOGClientChatListener* listener)
 
 
 
-void YOGClientChatChannel::recieveMessage(boost::shared_ptr<YOGMessage> message)
+void YOGClientChatChannel::receiveMessage(boost::shared_ptr<YOGMessage> message)
 {
 	messageHistory.push_back(boost::make_tuple(message, boost::posix_time::second_clock::local_time()));
 	sendToListeners(message);
@@ -113,7 +113,7 @@ void YOGClientChatChannel::sendToListeners(boost::shared_ptr<YOGMessage> message
 {
 	for(std::list<YOGClientChatListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{
-		(*i)->recieveTextMessage(message);
+		(*i)->receiveTextMessage(message);
 	}
 }
 

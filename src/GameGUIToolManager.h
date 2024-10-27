@@ -68,7 +68,7 @@ public:
 	void deactivateTool();
 
 	///Draws the tool on the map
-	void drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
+	void drawTool(int mouseX, int mouseY, int localTeam, int viewportX, int viewportY);
 	
 	///Returns the name of the current building
 	std::string getBuildingName() const;
@@ -77,32 +77,32 @@ public:
 	ZoneType getZoneType() const;
 	
 	///Handles a mouse down
-	void handleMouseDown(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
+	void handleMouseDown(int mouseX, int mouseY, int localTeam, int viewportX, int viewportY);
 	
 	///Handles a mouse up
-	void handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
+	void handleMouseUp(int mouseX, int mouseY, int localTeam, int viewportX, int viewportY);
 	
 	///Handles the dragging of the mouse
-	void handleMouseDrag(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
+	void handleMouseDrag(int mouseX, int mouseY, int localTeam, int viewportX, int viewportY);
 
 	///Returns an order, or shared_ptr() if there are none
 	boost::shared_ptr<Order> getOrder();
 private:
 	///Handles placing a zone on the map
-	void handleZonePlacement(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
+	void handleZonePlacement(int mouseX, int mouseY, int localTeam, int viewportX, int viewportY);
 
 	///Flushes an order for the current brush accumulator
-	void flushBrushOrders(int localteam);
+	void flushBrushOrders(int localTeam);
 	///Places a building at pos x,y
-	void placeBuildingAt(int mapx, int mapy, int localteam);
+	void placeBuildingAt(int mapX, int mapY, int localTeam);
 	///Draws a building at pos x,y
-	void drawBuildingAt(int mapx, int mapy, int localteam, int viewportX, int viewportY);
+	void drawBuildingAt(int mapX, int mapY, int localTeam, int viewportX, int viewportY);
 	///Computes a line going from sx,sy to ex,ey of the current building
 	///if mode is 1, it will draw the buildings, if mode is 2, it will place them
-	void computeBuildingLine(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode);
+	void computeBuildingLine(int sx, int sy, int ex, int ey, int localTeam, int viewportX, int viewportY, int mode);
 	///Computes  a box going from sx,sy to ex,ey of the current building
 	///if mode is 1, it will draw the buildings, if mode is 2, it will place them
-	void computeBuildingBox(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode);
+	void computeBuildingBox(int sx, int sy, int ex, int ey, int localTeam, int viewportX, int viewportY, int mode);
 
 
 	int firstPlacementX;
@@ -119,9 +119,9 @@ private:
 	std::string building;
 	///The type of zone when placing zones
 	ZoneType zoneType;
-	///Used to indicate the stength of hilight, because it blends during the draw
-	float hilightStrength;
-	///Queues up orderws for this manager
+	///Used to indicate the strength of highlight, because it blends during the draw
+	float highlightStrength;
+	///Queues up orders for this manager
 	std::queue<boost::shared_ptr<Order> > orders;
 };
 

@@ -55,7 +55,7 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 		
 		target->drawSprite(x+w-20, y, sprite, 4);
 		
-		// hightlight of buttons
+		// highlight of buttons
 		if (highlight > 0)
 		{
 			target->drawSprite(x, y, sprite, 1, highlight);
@@ -85,7 +85,7 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 		
 		target->drawSprite(x+w-10, y, sprite, 10);
 		
-		// hightlight of buttons
+		// highlight of buttons
 		if (highlight > 0)
 		{
 			target->drawSprite(x, y, sprite, 7, highlight);
@@ -120,7 +120,7 @@ void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, 
 		Height of sprites 17, 18 and 19 must be the same
 	*/
 	
-	// save cliprect
+	// save clip rect
 	int ocrX, ocrY, ocrW, ocrH;
 	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
 	
@@ -144,7 +144,7 @@ void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, 
 		target->drawSprite(x + w - sprite->getW(16), contentY + i, sprite, 16);
 	}
 	
-	// reset cliprect
+	// reset clip rect
 	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
 	
 	// corners
@@ -163,7 +163,7 @@ void Glob2Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, i
 	target->drawSprite(x, y, sprite, 20);
 	target->drawSprite(x, y + h - sprite->getH(22), sprite, 22);
 	
-	// save cliprect
+	// save clip rect
 	int ocrX, ocrY, ocrW, ocrH;
 	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
 	
@@ -181,7 +181,7 @@ void Glob2Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, i
 	for (int i = 0; i < barForegroundHeight; i += sprite->getH(23))
 		target->drawSprite(x + (sprite->getW(21) - sprite->getW(23)) / 2, barForegroundY + i, sprite, 23);
 	
-	// reset cliprect
+	// reset clip rect
 	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
 }
 
@@ -198,14 +198,14 @@ void Glob2Style::drawProgressBar(GAGCore::DrawableSurface *target, int x, int y,
 	
 	target->drawFilledRect(x, y, w, h, Color(168, 150, 90));
 	
-	// save cliprect
+	// save clip rect
 	int ocrX, ocrY, ocrW, ocrH;
 	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
 	target->setClipRect(x, y, len, h);
 	for (int i = 0; i < len; i += sprite->getW(24))
 		target->drawSprite(x + i, y, sprite, 24);
 	
-	// reset cliprect
+	// reset clip rect
 	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
 }
 

@@ -101,7 +101,7 @@ void installCrashHandler(void)
 
 void installCrashHandler(void)
 {
-	printf("DBG : No crash support on this plateform\n");
+	printf("DBG : No crash support on this platform\n");
 }
 
 void printTrace(void)

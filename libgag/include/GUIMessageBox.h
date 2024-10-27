@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIMESSAGEBOX_H
-#define __GUIMESSAGEBOX_H
+#ifndef __GUI_MESSAGE_BOX_H
+#define __GUI_MESSAGE_BOX_H
 
 #include "GUIBase.h"
 
@@ -28,15 +28,15 @@ namespace GAGGUI
 	enum MessageBoxType
 	{
 		//! One button (like OK)
-		MB_ONEBUTTON,
+		MB_ONE_BUTTON,
 		//! Two buttons (like Ok, Cancel)
-		MB_TWOBUTTONS,
+		MB_TWO_BUTTONS,
 		//! three buttons, (like Yes, No, Cancel)
-		MB_THREEBUTTONS
+		MB_THREE_BUTTONS
 	};
 	
 	//! The display a modal message box, with a title and some buttons
-	//! \retval the nummer of the clicked button, -1 on unexpected early-out (CTRL-C, ...)
+	//! \retval the number of the clicked button, -1 on unexpected early-out (CTRL-C, ...)
 	int MessageBox(GAGCore::GraphicContext *parentCtx, const std::string font, MessageBoxType type, std::string title, std::string caption1, std::string caption2 = "", std::string caption3 = "");
 }
 

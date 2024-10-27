@@ -91,15 +91,15 @@ void EndGameStat::paint(void)
 		for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
 			maxValue = std::max(maxValue, game->teams[team]->stats.endOfGameStats[pos].value[type]);
 
-	///You can't draw anything if the game ended so quickly that there wheren't two recorded values to draw a line between
+	///You can't draw anything if the game ended so quickly that there weren't two recorded values to draw a line between
 	if(game->teams[0]->stats.endOfGameStats.size() >= 2)
 	{
 		//Calculate the number of digits used by the max value when rounded up to the nearest 10
 		int num=10;
 		maxValue+=num-(maxValue%num);
-		std::stringstream maxstr;
-		maxstr<<maxValue<<std::endl;
-		int max_digit_count=maxstr.str().size();
+		std::stringstream maxStr;
+		maxStr<<maxValue<<std::endl;
+		int max_digit_count=maxStr.str().size();
 		
 		//Compute the maximum width used by the right-scale
 		int max_width=-1;
@@ -127,10 +127,10 @@ void EndGameStat::paint(void)
 		int e_height = h - max_height - 8;
 
 		//Draw horizontal lines to given the scale of the graphs values.
-		double line_seperate=double(e_height)/double(num);
+		double line_separation=double(e_height)/double(num);
 		for(int n=0; n<num; ++n)
 		{
-			int pos=int(double(n)*line_seperate+0.5);
+			int pos=int(double(n)*line_separation+0.5);
 			int value=maxValue - (maxValue*n)/num;
 			if(n!=0)
 				parent->getSurface()->drawHorzLine(x+e_width-5, y+pos, 10, 255, 255, 255);
@@ -140,10 +140,10 @@ void EndGameStat::paint(void)
 		}
 
 		///Draw vertical lines to give the timescale
-		double time_line_seperate=double(e_width)/double(15);
+		double time_line_separation=double(e_width)/double(15);
 		for(int n=1; n<16; ++n)
 		{
-			int pos = int(double(x)+time_line_seperate*double(n)+0.5);
+			int pos = int(double(x)+time_line_separation*double(n)+0.5);
 			int time = (time_period * n) / 15;
 			if(n!=15)
 				parent->getSurface()->drawVertLine(pos, y+e_height-5, 10, 255, 255, 255);
@@ -201,12 +201,12 @@ void EndGameStat::paint(void)
 		
 		// Draw labels
 		std::string label = Toolkit::getStringTable()->getString("[time]");
-		int textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
-		parent->getSurface()->drawString(x - textwidth/2 + e_width/2, y+e_height-20, globalContainer->standardFont, label);
+		int textWidth = globalContainer->standardFont->getStringWidth(label.c_str());
+		parent->getSurface()->drawString(x - textWidth/2 + e_width/2, y+e_height-20, globalContainer->standardFont, label);
 		
 		label = getStatLabel();
-		textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
-		parent->getSurface()->drawString(x + e_width - textwidth - 4, y + e_height/2, globalContainer->standardFont, label);
+		textWidth = globalContainer->standardFont->getStringWidth(label.c_str());
+		parent->getSurface()->drawString(x + e_width - textWidth - 4, y + e_height/2, globalContainer->standardFont, label);
 	}
 	else
 	{
@@ -355,7 +355,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		}
 		else
 		{
-			FormatableString strText;
+			FormattableString strText;
 			if ((t->allies) & (gui->getLocalTeam()->me))
 				strText = Toolkit::getStringTable()->getString("[Won : your ally %0 has the most prestige]");
 			else
@@ -543,9 +543,9 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 	}
 }
 
-std::string replayFilenameToName(const std::string& fullfilename)
+std::string replayFilenameToName(const std::string& fullFilename)
 {
-	std::string filename = fullfilename;
+	std::string filename = fullFilename;
 	filename.erase(0, 8);
 	filename.erase(filename.find(".replay"));
 	std::replace(filename.begin(), filename.end(), '_', ' ');
@@ -577,8 +577,8 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
-		Uint64 ntime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
+		Uint64 newTime = SDL_GetTicks64();
+		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time)));
 	}
 
 	if (loadSaveScreen->endValue==0)
