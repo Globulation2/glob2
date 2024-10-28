@@ -2240,9 +2240,11 @@ namespace GAGCore
 				cursorManager.draw(this, mx, my);
 			}
 
+
 			#ifdef HAVE_OPENGL
 			if (optionFlags & GraphicContext::USEGPU)
 			{
+				Sprite::checkAllSpritesDrawn();
 				SDL_GL_SwapWindow(window);
 				//fprintf(stderr, "%d allocated GPU textures\n", glState.alocatedTextureCount);
 			}
