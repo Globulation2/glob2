@@ -431,6 +431,10 @@ namespace GAGCore
 		friend class GraphicContext;
 	
 		std::string fileName;
+//#define DEBUG_SPRITE_NOT_DRAWN
+#ifdef DEBUG_SPRITE_NOT_DRAWN
+		static std::vector <Sprite*> sprites;
+#endif
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
 
@@ -442,6 +446,7 @@ namespace GAGCore
 		unsigned int texCoordBuffer = 0;
 		std::unique_ptr<const DrawableSurface> atlas = nullptr;
 #endif
+		static void checkAllSpritesDrawn();
 		Color actColor;
 	
 		friend class DrawableSurface;
