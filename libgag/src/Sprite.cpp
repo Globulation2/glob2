@@ -157,12 +157,10 @@ namespace GAGCore
 		for (auto image: images)
 		{
 			atlas->drawSurface(x, y, image);
-			image->texX = x;
-			image->texY = y;
+			TextureInfo info = { this, x, y, tileWidth, tileHeight };
+			image->textureInfo = info;
 			image->texMultX = 1.f;
 			image->texMultY = 1.f;
-			image->w = tileWidth;
-			image->h = tileHeight;
 			x += tileWidth;
 			if (tileWidth + x > sheetWidth) {
 				x = 0;
@@ -170,12 +168,6 @@ namespace GAGCore
 			}
 		}
 		atlas->uploadToTexture();
-		for (auto image : images)
-		{
-			image->texture = atlas->texture;
-			image->sprite = this;
-			image->setRes(sheetWidth, sheetHeight);
-		}
 		this->atlas = std::move(atlas);
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &texCoordBuffer);
