@@ -27,6 +27,7 @@
 #include <string>
 #include <iostream>
 #include <valarray>
+#include <boost/optional.hpp>
 
 #include <set>
 #include <boost/tuple/tuple.hpp>
@@ -151,6 +152,19 @@ namespace GAGCore
 		virtual void drawString(DrawableSurface *Surface, int x, int y, int w, const std::string text, Uint8 alpha) = 0;
 		virtual void drawString(DrawableSurface *Surface, float x, float y, float w, const std::string text, Uint8 alpha) = 0;
 	};
+
+	// Texture dimensions
+	struct TextureInfo
+	{
+		//! which animation or texture atlas this surface is part of.
+		Sprite* sprite = nullptr;
+		//! sprite sheet coordinates
+		int texX = 0;
+		int texY = 0;
+		//! width and height of this tile if using atlas
+		int w = 0;
+		int h = 0;
+	};
 	
 	//! A surface on which we can draw
 	class DrawableSurface
@@ -161,20 +175,14 @@ namespace GAGCore
 		friend class Sprite;
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
-		//! which animation or texture atlas this surface is part of.
-		Sprite* sprite = nullptr;
+		// Texture dimensions
+		boost::optional<TextureInfo> textureInfo;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
 		//! this surface has been modified since latest blit
 		bool dirty;
 		//! texture index if GPU (GL) is used
 		unsigned int texture;
-		//! sprite sheet coordinates
-		int texX = 0;
-		int texY = 0;
-		//! width and height of this tile if using atlas
-		int w = 0;
-		int h = 0;
 		//! texture divisor
 		float texMultX, texMultY;
 		
@@ -218,8 +226,11 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum);
 		
 		// accessors
-		virtual int getW(void) { if (sprite) return w; return sdlsurface->w; }
-		virtual int getH(void) { if (sprite) return h; return sdlsurface->h; }
+		virtual int getW(void) { if (textureInfo) return textureInfo->w; return sdlsurface->w; }
+		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
+
+		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
+		virtual int getTexY(void) { if (textureInfo) { return textureInfo->texY; } return 0; }
 		
 		// capability querying
 		virtual bool canDrawStretchedSprite(void) { return false; }

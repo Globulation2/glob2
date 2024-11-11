@@ -312,7 +312,7 @@ namespace GAGCore
 	void DrawableSurface::allocateTexture(void)
 	{
 		#ifdef HAVE_OPENGL
-		if (sprite)
+		if (textureInfo)
 			return;
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
@@ -356,7 +356,7 @@ namespace GAGCore
 	void DrawableSurface::uploadToTexture(void)
 	{
 		#ifdef HAVE_OPENGL
-		if (sprite)
+		if (textureInfo)
 		{
 			return;
 		}
@@ -1064,22 +1064,22 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
@@ -1632,22 +1632,22 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
-		drawSurface(x, y, w, h, surface, surface->texX, surface->texY, surface->getW(), surface->getH(), alpha);
+		drawSurface(x, y, w, h, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
@@ -1697,10 +1697,11 @@ namespace GAGCore
 
 			// draw
 			glState.setTexture(surface->texture);
-			if (surface->sprite && alpha == Color::ALPHA_OPAQUE)
+			if (surface->textureInfo && surface->textureInfo->sprite && alpha == Color::ALPHA_OPAQUE)
 			{
-				surface->sprite->vertices.insert(surface->sprite->vertices.end(), { x, y, x + w, y, x + w, y + h, x, y + h });
-				surface->sprite->texCoords.insert(surface->sprite->texCoords.end(), {
+				Sprite* sprite = surface->textureInfo->sprite;
+				sprite->vertices.insert(sprite->vertices.end(), { x, y, x + w, y, x + w, y + h, x, y + h });
+				sprite->texCoords.insert(sprite->texCoords.end(), {
 					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
 					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
 					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
