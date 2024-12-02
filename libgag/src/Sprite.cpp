@@ -85,8 +85,12 @@ namespace GAGCore
 				SDL_RWclose(rotatedStream);
 			i++;
 		}
-		if (!images.empty())
+		// TODO: How to cache rotated images?
+		if (std::any_of(images.begin(), images.end(), [](DrawableSurface *s) {return s != nullptr; }) &&
+			std::all_of(rotated.begin(), rotated.end(), [](RotatedImage *s) {return s == nullptr; }))
+		{
 			createTextureAtlas();
+		}
 		
 		return getFrameCount() > 0;
 	}
