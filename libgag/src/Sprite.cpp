@@ -129,7 +129,7 @@ namespace GAGCore
 	// Create texture atlas for images array
 	// Using a sprite sheet lets us efficiently drawn terrain and water with a few calls
 	// to glDrawArrays, rather than 272 individual calls to glBegin...glEnd.
-	void Sprite::createTextureAtlas()
+	bool Sprite::createTextureAtlas()
 	{
 #ifdef HAVE_OPENGL
 #ifdef DEBUG_SPRITE_NOT_DRAWN
@@ -137,21 +137,33 @@ namespace GAGCore
 #endif
 		size_t numImages = images.size();
 		int tileWidth = 0, tileHeight = 0;
+		static int maxTextureSize = 0;
+		if (!maxTextureSize)
+		{
+			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+			assert(maxTextureSize);
+		}
 		// Check all tiles have the same size
 		for (auto image : images)
 		{
 			if (!image)
-				return;
+				return false; // One of the images is null
 			if (!tileWidth || !tileHeight)
 			{
 				tileWidth = image->getW();
 				tileHeight = image->getH();
 			}
 			if (image->getW() != tileWidth || image->getH() != tileHeight)
-				return;
+				return false; // One of them has a different size
 		}
 		int sheetWidth = tileWidth * (static_cast<int>(sqrt(numImages)) + 1);
 		int sheetHeight = tileHeight * (static_cast<int>(sqrt(numImages)) + 1);
+		if (sheetWidth > maxTextureSize || sheetHeight > maxTextureSize)
+		{
+			std::cerr << "Warning: Sprite sheet " << fileName << " with size " << sheetWidth << "x" << sheetHeight
+				<< " exceeds your graphics card's maximum texture size of " << maxTextureSize << std::endl;
+			return false; // We can't continue, falling back to glBegin/glEnd rendering.
+		}
 		std::unique_ptr<DrawableSurface> atlas = make_unique<DrawableSurface>(sheetWidth, sheetHeight);
 		int x = 0, y = 0;
 		for (auto image: images)
@@ -171,6 +183,7 @@ namespace GAGCore
 		this->atlas = std::move(atlas);
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &texCoordBuffer);
+		return true; // Success
 #endif
 	}
 	
