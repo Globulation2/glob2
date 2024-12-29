@@ -162,6 +162,7 @@ def configure(env, server_only):
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
     if not server_only:
+        has_gl = True
         if isDarwinPlatform:
             print("Using Apple's OpenGL framework")
             env.Append(FRAMEWORKS="OpenGL")
@@ -173,9 +174,10 @@ def configure(env, server_only):
             gl_libraries.append("opengl32")
         else:
             print("Could not find libGL or opengl32, or could not find GL/gl.h or OpenGL/gl.h")
-            missing.append("OpenGL")
-
+            has_gl = False
+        
         #Do checks for GLU, which is different on every system
+        has_glut = True
         if isDarwinPlatform:
             print("Using Apple's GLUT framework")
             env.Append(FRAMEWORKS="GLUT")
@@ -187,19 +189,21 @@ def configure(env, server_only):
             gl_libraries.append("glu32")
         else:
             print("Could not find libGLU or glu32, or could not find GL/glu.h or OpenGL/glu.h")
-            missing.append("GLU")
-    
-    if gl_libraries or isDarwinPlatform:
-        configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
-        env.Append(LIBS=gl_libraries)
-    
-    #Do checks for epoxy, which handles OpenGL 2+ function pointer loading.
-    if not server_only:
+            has_glut = False
+        
+        #Do checks for epoxy, which handles OpenGL 2+ function pointer loading.
+        has_epoxy = True
         if conf.CheckLib('epoxy') and conf.CheckCXXHeader('epoxy/gl.h'):
             env.Append(LIBS=["epoxy"])
         else:
             print("Could not find epoxy/gl.h")
-            #Don't add epoxy to `missing` list because that breaks compiling without OpenGL.
+            has_epoxy = False
+
+        if has_gl and has_glut and has_epoxy:
+            configfile.add("HAVE_OPENGL ", "Defined when OpenGL support is present and compiled")
+            env.Append(LIBS=gl_libraries)
+        else:
+            print("One or more library missing for OpenGL support, disabling OpenGL support.")
 
     #Do checks for fribidi
     if not server_only and conf.CheckLib('fribidi') and conf.CheckCXXHeader('fribidi/fribidi.h'):
