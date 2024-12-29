@@ -196,7 +196,7 @@ def configure(env, server_only):
         if conf.CheckLib('epoxy') and conf.CheckCXXHeader('epoxy/gl.h'):
             gl_libraries.append("epoxy")
         else:
-            print("Could not find libepoxy, or epoxy/gl.h")
+            print("Could not find libepoxy, or could not find epoxy/gl.h")
             has_epoxy = False
 
         if has_gl and has_glut and has_epoxy:
