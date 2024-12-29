@@ -27,6 +27,7 @@
 #include <string>
 #include <iostream>
 #include <valarray>
+#include <memory>
 #include <boost/optional.hpp>
 
 #include <set>
