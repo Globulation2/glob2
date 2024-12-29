@@ -194,7 +194,7 @@ def configure(env, server_only):
         #Do checks for epoxy, which handles OpenGL 2+ function pointer loading.
         has_epoxy = True
         if conf.CheckLib('epoxy') and conf.CheckCXXHeader('epoxy/gl.h'):
-            env.Append(LIBS=["epoxy"])
+            gl_libraries.append("epoxy")
         else:
             print("Could not find epoxy/gl.h")
             has_epoxy = False
