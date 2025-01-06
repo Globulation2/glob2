@@ -1697,9 +1697,20 @@ namespace GAGCore
 
 			// draw
 			glState.setTexture(surface->texture);
-			if (surface->textureInfo && surface->textureInfo->sprite && alpha == Color::ALPHA_OPAQUE)
+			if (surface->textureInfo && surface->textureInfo->sprite)
 			{
 				Sprite* sprite = surface->textureInfo->sprite;
+				std::vector<float> oldVertices, oldCoords;
+				// If drawing with transparency, save vectors, draw immediately, then restore
+				if (alpha != Color::ALPHA_OPAQUE)
+				{
+					// Fix bug #124 - School renders as white square when placing building and there is no room
+					oldVertices = sprite->vertices;
+					oldCoords = sprite->texCoords;
+					sprite->vertices.clear();
+					sprite->texCoords.clear();
+				}
+				// Queue this draw call until finishDrawingSprite is called.
 				sprite->vertices.insert(sprite->vertices.end(), { x, y, x + w, y, x + w, y + h, x, y + h });
 				sprite->texCoords.insert(sprite->texCoords.end(), {
 					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
@@ -1707,6 +1718,12 @@ namespace GAGCore
 					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
 					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
 				});
+				if (alpha != Color::ALPHA_OPAQUE)
+				{
+					finishDrawingSprite(sprite, alpha);
+					sprite->vertices = oldVertices;
+					sprite->texCoords = oldCoords;
+				}
 			}
 			else
 			{
