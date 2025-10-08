@@ -77,6 +77,7 @@ public:
 		OK,
 		CANCEL,
 		ISLOCKED,
+		EDITMAP
 	};
 private:
 	CampaignMapEntry& entry;
@@ -87,6 +88,8 @@ private:
 	Button *ok;
 	/// The cancel button
 	Button *cancel;
+	/// Actually edit the map for real
+	Button* editMap;
 	/// List of maps that unlock the map thats being edited
 	CheckList* mapsUnlockedBy;
 	/// The label for mapsUnlockedBy
