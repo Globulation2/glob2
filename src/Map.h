@@ -523,6 +523,8 @@ public:
 	void mapCaseToPixelCase(int mx, int my, int *px, int *py) const { *px=(mx<<5); *py=(my<<5); }
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a building or an unit to the screen.
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
+	//! Transform coordinate from map (mx,my) to screen (px,py), without wrapping. Use this one to display a building or an unit to the screen.
+	void mapCaseToDisplayableNoWrap(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a pathline to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
 	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid aligned object (buildings, ressources, units)
