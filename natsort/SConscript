@@ -4,7 +4,7 @@ Import("env")
 Import("PackTar")
     
     
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     any=False
     for file in os.listdir("."):
         if file.find(".c") != -1 or file.find(".h") != -1 or file.find(".py") != -1:

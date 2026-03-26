@@ -4,7 +4,7 @@ Import("env")
 Import("PackTar")
     
 #speed increase, much time waisted doing MD5's on the pictures
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
         if file.find(".png") != -1:
             PackTar(env["TARFILE"], file)

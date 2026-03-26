@@ -271,7 +271,7 @@ else:
 Import('env')
 Import("PackTar")
     
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     env.Install(env["BINDIR"], "glob2")
     env.Alias("install", env["BINDIR"])
     

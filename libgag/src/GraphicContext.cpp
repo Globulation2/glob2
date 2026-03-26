@@ -26,12 +26,19 @@
 #include <sstream>
 #include <iostream>
 #ifdef HAVE_OPENGL
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
+#else
 #include <epoxy/gl.h>
 #ifdef _MSC_VER
 #include <epoxy/wgl.h>
 #else
 #include <epoxy/glx.h>
-#endif // _MSC_VER
+#endif
+#endif // defined(__APPLE__)
 #endif // HAVE_OPENGL
 #include "SDL_ttf.h"
 #include <SDL_image.h>
@@ -2138,16 +2145,29 @@ namespace GAGCore
 		}
 		// create the new window and the surface
 		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
-		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
-
-		// check surface
-		if (!sdlsurface)
+		if (!window)
 		{
-			fprintf(stderr, "Toolkit : can't set screen to %dx%d at 32 bpp\n", w, h);
+			fprintf(stderr, "Toolkit : can't create window %dx%d\n", w, h);
 			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
 			return false;
 		}
+		// SDL_GetWindowSurface is incompatible with SDL_WINDOW_OPENGL;
+		// in GPU mode, create a small dummy surface so format-dependent code works.
+		if (optionFlags & USEGPU)
+		{
+			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		}
 		else
+		{
+			sdlsurface = SDL_GetWindowSurface(window);
+		}
+		if (!sdlsurface)
+		{
+			fprintf(stderr, "Toolkit : can't get surface for %dx%d at 32 bpp\n", w, h);
+			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
+			return false;
+		}
 		{
 			_gc = this;
 			// enable GL context

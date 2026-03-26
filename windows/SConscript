@@ -7,7 +7,7 @@ if env['mingwcross']:
 Import("isWindowsPlatform")
 
 
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "glob2.ico")
     PackTar(env["TARFILE"], "header.bmp")
     PackTar(env["TARFILE"], "side.bmp")

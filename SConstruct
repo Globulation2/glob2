@@ -1,4 +1,4 @@
-EnsureSConsVersion(0, 96, 92)
+EnsureSConsVersion(3, 0, 0)
 import sys
 import os
 import glob
@@ -8,7 +8,7 @@ import dmg
 import nsis
 
 isWindowsPlatform = sys.platform=='win32'
-isLinuxPlatform = sys.platform=='linux2'
+isLinuxPlatform = sys.platform.startswith('linux')
 isDarwinPlatform = sys.platform=='darwin'
 
 
@@ -17,7 +17,7 @@ def establish_options(env):
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-        opts.Add(PathOption("INSTALLDIR", "Installation Directory", "./"))
+        opts.Add(PathVariable("INSTALLDIR", "Installation Directory", "./"))
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
@@ -110,9 +110,9 @@ def configure(env, server_only):
         missing.append("zlib")
     else:
         if conf.CheckLib("z"):
-            env.Append(LIBS="z")
+            env.Append(LIBS=["z"])
         elif conf.CheckLib("zlib1"):
-            env.Append(LIBS="zlib1")
+            env.Append(LIBS=["zlib1"])
         else:
             print("Could not find libz or zlib1.dll")
             missing.append("zlib")
@@ -133,14 +133,16 @@ def configure(env, server_only):
     
     boost_date_time = ''
     if conf.CheckLib("boost_date_time") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_thread="boost_thread"
+        boost_date_time="boost_date_time"
     elif conf.CheckLib("boost_date_time-mt") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_thread="boost_thread-mt"
+        boost_date_time="boost_date_time-mt"
     else:
-        print("Could not find libboost_date_time or libboost_date_time-mt or boost/thread/thread.hpp")
+        print("Could not find libboost_date_time or libboost_date_time-mt or boost/date_time/posix_time/posix_time.hpp")
         missing.append("libboost_date_time")
     env.Append(LIBS=[boost_date_time])
-    env.Append(LIBS=["boost_system", "pthread"])
+    if conf.CheckLib("boost_system"):
+        env.Append(LIBS=["boost_system"])
+    env.Append(LIBS=["pthread"])
     
 
     if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
@@ -165,7 +167,7 @@ def configure(env, server_only):
         has_gl = True
         if isDarwinPlatform:
             print("Using Apple's OpenGL framework")
-            env.Append(FRAMEWORKS="OpenGL")
+            env.Append(FRAMEWORKS=["OpenGL", "CoreFoundation"])
         elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h"):
             gl_libraries.append("GL")
         elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h"):
@@ -263,10 +265,6 @@ def main():
             env['AR']  = 'i586-mingw32msvc-ar'
             env['RANLIB'] = 'i586-mingw32msvc-ranlib'
     
-    try:
-        env.Clone()
-    except AttributeError:
-        env.Clone = env.Copy
     
     
     # Add specific paths.
@@ -276,8 +274,18 @@ def main():
         env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
         env.Append(CPPPATH=['/usr/local/include/SDL'])
     if isDarwinPlatform:
-        env.Append(LIBPATH=["/opt/local/lib"])
-        env.Append(CPPPATH=["/opt/local/include"])
+        import subprocess
+        try:
+            brew_prefix = subprocess.check_output(["brew", "--prefix"], text=True).strip()
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            brew_prefix = None
+        if brew_prefix:
+            env.Append(LIBPATH=[brew_prefix + "/lib"])
+            env.Append(CPPPATH=[brew_prefix + "/include"])
+            env['ENV']['PATH'] = brew_prefix + "/bin:" + env['ENV'].get('PATH', '')
+        else:
+            env.Append(LIBPATH=["/opt/local/lib"])
+            env.Append(CPPPATH=["/opt/local/include"])
     if env['mingwcross']:
         if os.path.isabs(env['crossroot']):
             crossroot_abs = env['crossroot']
@@ -303,7 +311,7 @@ def main():
 
     if env['release']:
         env.Append(CXXFLAGS=' -O3 -s')
-        env.Append(LINKFLAGS=' -O3 -s --fwhole-program')
+        env.Append(LINKFLAGS=' -O3 -s -fwhole-program')
     if env['profile']:
         env.Append(CXXFLAGS=' -pg')
         env.Append(LINKFLAGS='-pg')
@@ -315,11 +323,9 @@ def main():
         env.Append(LINKFLAGS=['-mwindows'])
         env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
     elif isDarwinPlatform:
-        env.ParseConfig("/opt/local/bin/sdl-config --cflags")
-        env.ParseConfig("/opt/local/bin/sdl-config --libs")
+        env.ParseConfig("pkg-config sdl2 --cflags --libs")
     else:
-        env.ParseConfig("sdl2-config --cflags")
-        env.ParseConfig("sdl2-config --libs")
+        env.ParseConfig("pkg-config sdl2 --cflags --libs")
     
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
@@ -356,7 +362,8 @@ def main():
         dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
          
         #TODO mac_bundle should be dependency of Dmg:    
-        arch = os.popen("uname -p").read().strip()
+        import subprocess
+        arch = subprocess.check_output(["uname", "-p"], text=True).strip()
 #        mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
 #        env.Alias("package", mac_packages)
 
