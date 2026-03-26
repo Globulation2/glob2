@@ -24,7 +24,7 @@
 #include "YOGServerPlayer.h"
 #include "SDLCompat.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
@@ -56,10 +56,10 @@ void YOGServerPlayer::update()
 		pingCountdown = 0;
 	}
 
-	boost::shared_ptr<YOGServerGame> ngame;
+	std::shared_ptr<YOGServerGame> ngame;
 	if(!game.expired())
 	{
-		ngame = boost::shared_ptr<YOGServerGame>(game);
+		ngame = std::shared_ptr<YOGServerGame>(game);
 	}
 
 	//Parse incoming messages.
@@ -283,12 +283,12 @@ void YOGServerPlayer::update()
 		if(reason == YOGMapUploadReasonUnknown)
 		{
 			Uint16 fileID =  server.getMapDatabank().recieveMapFromPlayer(info->getMapInfo(), server.getPlayer(playerID));
-			boost::shared_ptr<NetAcceptMapUpload> info = boost::shared_ptr<NetAcceptMapUpload>(new NetAcceptMapUpload(fileID));
+			std::shared_ptr<NetAcceptMapUpload> info = std::shared_ptr<NetAcceptMapUpload>(new NetAcceptMapUpload(fileID));
 			sendMessage(info);
 		}
 		else
 		{
-			boost::shared_ptr<NetRefuseMapUpload> info = boost::shared_ptr<NetRefuseMapUpload>(new NetRefuseMapUpload(reason));
+			std::shared_ptr<NetRefuseMapUpload> info = std::shared_ptr<NetRefuseMapUpload>(new NetRefuseMapUpload(reason));
 			sendMessage(info);
 		}
 	}
@@ -375,9 +375,9 @@ std::string YOGServerPlayer::getPlayerIP()
 
 
 
-boost::shared_ptr<YOGServerGame> YOGServerPlayer::getGame()
+std::shared_ptr<YOGServerGame> YOGServerPlayer::getGame()
 {
-	return boost::shared_ptr<YOGServerGame>(game);
+	return std::shared_ptr<YOGServerGame>(game);
 }
 
 
@@ -515,9 +515,9 @@ void YOGServerPlayer::handleCreateGame(const std::string& gameName)
 	{
 		gameID = server.createNewGame(gameName);
 		game = server.getGame(gameID);
-		boost::shared_ptr<YOGServerGame> ngame(game);
+		std::shared_ptr<YOGServerGame> ngame(game);
 		updateGamePlayerLists();
-		std::string ip = boost::shared_ptr<YOGServerGame>(game)->getRouterIP();
+		std::string ip = std::shared_ptr<YOGServerGame>(game)->getRouterIP();
 		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel(), gameID, ip, ngame->getFileID()));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));
@@ -538,7 +538,7 @@ void YOGServerPlayer::handleJoinGame(Uint16 ngameID)
 	{	
 		gameID = ngameID;
 		game = server.getGame(gameID);
-		boost::shared_ptr<YOGServerGame> ngame(game);
+		std::shared_ptr<YOGServerGame> ngame(game);
 		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted(ngame->getChatChannel()));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));

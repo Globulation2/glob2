@@ -36,7 +36,7 @@
 class MultiplayersJoin;
 class NetGame;
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 /// Engine is the backend of the game. It is responsible for loading and setting up games and players,
 /// and its run function is meant to run the game that has been loaded.
@@ -67,7 +67,7 @@ public:
 	int initLoadGame();
 
 	/// Initiate a game with the given MultiplayerGame
-	int initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, boost::shared_ptr<YOGClient> client, int localPlayer);
+	int initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();

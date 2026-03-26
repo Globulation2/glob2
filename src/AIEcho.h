@@ -27,9 +27,8 @@
 #include "TeamStat.h"
 #include "Order.h"
 
-#include <boost/shared_ptr.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp>
+#include <memory>
+#include <tuple>
 #include <boost/logic/tribool.hpp>
 
 #include <vector>
@@ -355,8 +354,8 @@ namespace AIEcho
 			bool needs_updating() const;
 
 			bool operator==(const GradientInfo& rhs) const;
-			std::vector<boost::shared_ptr<Entities::Entity> > sources;
-			std::vector<boost::shared_ptr<Entities::Entity> > obstacles;
+			std::vector<std::shared_ptr<Entities::Entity> > sources;
+			std::vector<std::shared_ptr<Entities::Entity> > obstacles;
 			mutable boost::logic::tribool needs_updated;
 		};
 
@@ -414,7 +413,7 @@ namespace AIEcho
 			friend class AIEcho::Echo;
 			void update();
 			static int increment(const int x) { return x+1; }
-			std::vector<boost::shared_ptr<Gradient> > gradients;
+			std::vector<std::shared_ptr<Gradient> > gradients;
 			std::queue<int> queuedGradients;
 			std::vector<int> ticks_since_update;
 			Map* map;
@@ -610,8 +609,8 @@ namespace AIEcho
 			int building_type;
 			int number_of_workers;
 			int id;
-			std::vector<boost::shared_ptr<Constraint> > constraints;
-			std::vector<boost::shared_ptr<Conditions::Condition> > conditions;
+			std::vector<std::shared_ptr<Constraint> > constraints;
+			std::vector<std::shared_ptr<Conditions::Condition> > conditions;
 		};
 
 		///This class is used for quick lookup of flags, which aren't stored in Map like other buildings.
@@ -708,8 +707,8 @@ namespace AIEcho
 			void set_upgrading(unsigned int id);
 			void tick();
 
-			typedef std::map<int, boost::tuple<int, int, int, int> >::iterator pending_iterator;
-			typedef std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> >::iterator found_iterator;
+			typedef std::map<int, std::tuple<int, int, int, int> >::iterator pending_iterator;
+			typedef std::map<int, std::tuple<int, int, int, int, boost::logic::tribool> >::iterator found_iterator;
 
 			found_iterator begin() { return found_buildings.begin(); }
 			found_iterator end() { return found_buildings.end(); }
@@ -717,8 +716,8 @@ namespace AIEcho
 			///that pending_buildings[id] may create a new object, and the system can't tell the difference between it and something
 			///real. So bassically, the last variable is set to true when the object is supposed to be there, false is
 			///the default value if its accidentilly created.
-			std::map<int, boost::tuple<int, int, int, int> > pending_buildings;
-			std::map<int, boost::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
+			std::map<int, std::tuple<int, int, int, int> > pending_buildings;
+			std::map<int, std::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
 			unsigned int building_id;
 			Player* player;
 			Echo& echo;
@@ -1135,7 +1134,7 @@ namespace AIEcho
 			static ManagementOrder* load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			static void save_order(ManagementOrder* mo, GAGCore::OutputStream *stream);
 
-			std::vector<boost::shared_ptr<Conditions::Condition> > conditions;
+			std::vector<std::shared_ptr<Conditions::Condition> > conditions;
 		};
 
 		///Assigns a particular number of workers to a building
@@ -1494,7 +1493,7 @@ namespace AIEcho
 			friend class AIEcho::SearchTools::building_search_iterator;
 			Echo& echo;
 			bool passes_conditions(int b);
-			std::vector<boost::shared_ptr<Conditions::BuildingCondition> > conditions;
+			std::vector<std::shared_ptr<Conditions::BuildingCondition> > conditions;
 		};
 
 		///This class is a standard iterator that is used to iterate over teams that qualify as "enemies".
@@ -1629,18 +1628,18 @@ namespace AIEcho
 		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 		void save(GAGCore::OutputStream *stream);
 
-		boost::shared_ptr<Order> getOrder(void);
+		std::shared_ptr<Order> getOrder(void);
 
 		unsigned int add_building_order(Construction::BuildingOrder* bo);
 		void add_management_order(Management::ManagementOrder* mo);		
 		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
-		boost::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
+		std::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
 
 		TeamStat& get_team_stats();
 		void flare(int x, int y);
 		Construction::BuildingRegister& get_building_register();
 		Construction::FlagMap& get_flag_map();
-		void push_order(boost::shared_ptr<Order> order);
+		void push_order(std::shared_ptr<Order> order);
 		Gradients::GradientManager& get_gradient_manager();
 		std::set<int>& get_starting_buildings();
 
@@ -1670,15 +1669,15 @@ namespace AIEcho
 		void update_building_orders();
 		void check_fruit();
 
-		std::list<boost::shared_ptr<Order> > orders;
-		boost::shared_ptr<EchoAI> echoai;
-		boost::shared_ptr<Gradients::GradientManager> gm;
+		std::list<std::shared_ptr<Order> > orders;
+		std::shared_ptr<EchoAI> echoai;
+		std::shared_ptr<Gradients::GradientManager> gm;
 		Construction::BuildingRegister br;
 		Construction::FlagMap fm;
-		std::vector<boost::shared_ptr<Construction::BuildingOrder> > building_orders;
-		std::vector<boost::shared_ptr<Management::ManagementOrder> > management_orders;
-		std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> > ressource_trackers;
-		typedef std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator tracker_iterator;
+		std::vector<std::shared_ptr<Construction::BuildingOrder> > building_orders;
+		std::vector<std::shared_ptr<Management::ManagementOrder> > management_orders;
+		std::map<int, std::tuple<std::shared_ptr<Management::RessourceTracker>, bool> > ressource_trackers;
+		typedef std::map<int, std::tuple<std::shared_ptr<Management::RessourceTracker>, bool> >::iterator tracker_iterator;
 		std::set<int> starting_buildings;
 		int timer;
 		///This to keep multiuple buildings from being constructed on the same tick.
@@ -1882,7 +1881,7 @@ inline TeamStat& AIEcho::Echo::get_team_stats()
 
 inline void AIEcho::Echo::flare(int x, int y)
 {
-	orders.push_back(boost::shared_ptr<Order>(new MapMarkOrder(player->team->teamNumber, x, y)));
+	orders.push_back(std::shared_ptr<Order>(new MapMarkOrder(player->team->teamNumber, x, y)));
 }
 
 
@@ -1901,7 +1900,7 @@ inline AIEcho::Construction::FlagMap& AIEcho::Echo::get_flag_map()
 
 
 
-inline void AIEcho::Echo::push_order(boost::shared_ptr<Order> order)
+inline void AIEcho::Echo::push_order(std::shared_ptr<Order> order)
 {
 	orders.push_back(order);
 }

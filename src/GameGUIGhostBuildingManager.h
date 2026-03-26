@@ -20,7 +20,7 @@
 #define GameGUIGhostBuildingManager_h
 
 #include <vector>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 #include <string>
 
 class Game;
@@ -48,7 +48,7 @@ public:
 	void drawAll(int viewportX, int viewportY, int localTeamNo);
 private:
 	Game& game;
-	std::vector<boost::tuple<std::string, int, int> > buildings;
+	std::vector<std::tuple<std::string, int, int> > buildings;
 };
 
 #endif

@@ -21,7 +21,7 @@
 #include "NetConnection.h"
 #include "NetMessage.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 YOGServerRouterManager::YOGServerRouterManager(YOGServer& server)
 	: listener(YOG_SERVER_ROUTER_PORT), server(server)
@@ -32,7 +32,7 @@ YOGServerRouterManager::YOGServerRouterManager(YOGServer& server)
 
 
 
-void YOGServerRouterManager::addRouter(boost::shared_ptr<NetConnection> connection)
+void YOGServerRouterManager::addRouter(std::shared_ptr<NetConnection> connection)
 {
 	shared_ptr<NetAcknowledgeRouter> info(new NetAcknowledgeRouter);
 	connection->sendMessage(info);
@@ -50,7 +50,7 @@ void YOGServerRouterManager::update()
 	}
 
 	//Update all routers
-	for(std::vector<boost::shared_ptr<NetConnection> >::iterator i = routers.begin(); i!=routers.end(); ++i)
+	for(std::vector<std::shared_ptr<NetConnection> >::iterator i = routers.begin(); i!=routers.end(); ++i)
 	{
 		(*i)->update();
 		//Parse incoming messages.
@@ -66,7 +66,7 @@ void YOGServerRouterManager::update()
 		}
 	}
 	
-	for(std::vector<boost::shared_ptr<NetConnection> >::iterator i = routers.begin(); i!=routers.end();)
+	for(std::vector<std::shared_ptr<NetConnection> >::iterator i = routers.begin(); i!=routers.end();)
 	{
 		if(!(*i)->isConnected())
 		{
@@ -82,7 +82,7 @@ void YOGServerRouterManager::update()
 }
 
 
-boost::shared_ptr<NetConnection> YOGServerRouterManager::chooseYOGRouter()
+std::shared_ptr<NetConnection> YOGServerRouterManager::chooseYOGRouter()
 {
 	n+=1;
 	if(n == (int)routers.size())

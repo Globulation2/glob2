@@ -24,7 +24,7 @@
 #include "NetConnection.h"
 #include "YOGGameInfo.h"
 #include "YOGMessage.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 ///This is a basic test system for the low level net classes,
 ///NetConnection, NetListener, NetMessage, YOGGameInfo and YOGMessage

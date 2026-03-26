@@ -449,7 +449,7 @@ bool SoundMixer::isPlayerTransmittingVoice(int player)
 }
 
 
-void SoundMixer::addVoiceData(boost::shared_ptr<OrderVoiceData> order)
+void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 {
 	if (soundEnabled)
 	{

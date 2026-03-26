@@ -34,7 +34,7 @@ class MultiplayerGame
 {
 public:
 	///Creates a game instance and links it with the provided YOGClient
-	MultiplayerGame(boost::shared_ptr<YOGClient> client);
+	MultiplayerGame(std::shared_ptr<YOGClient> client);
 	
 	~MultiplayerGame();
 	
@@ -162,7 +162,7 @@ protected:
 	friend class YOGClient;
 
 	///This receives a message that is sent to the game
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void recieveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This will start the game
 	void startEngine();
@@ -171,14 +171,14 @@ protected:
 	void setDefaultGameHeaderValues();
 	
 	///Sends the event to all listeners
-	void sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event);
+	void sendToListeners(std::shared_ptr<MultiplayerGameEvent> event);
 	
 	///Puts together reteaming information from the game header in the file
 	NetReteamingInformation constructReteamingInformation(const std::string& file);
 	
 	int getLocalPlayer();
 private:
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	
 	//These are various states of the system
 	MultiplayerMode mode;

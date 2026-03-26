@@ -27,7 +27,7 @@ YOGServerChatChannelManager::YOGServerChatChannelManager()
 {
 	currentChannelID = LOBBY_CHAT_CHANNEL+1;
 
-	boost::shared_ptr<YOGServerChatChannel> newChannel(new YOGServerChatChannel(LOBBY_CHAT_CHANNEL));
+	std::shared_ptr<YOGServerChatChannel> newChannel(new YOGServerChatChannel(LOBBY_CHAT_CHANNEL));
 	channels.insert(std::make_pair(LOBBY_CHAT_CHANNEL, newChannel));
 }
 
@@ -42,13 +42,13 @@ YOGServerChatChannelManager::~YOGServerChatChannelManager()
 
 void YOGServerChatChannelManager::update()
 {
-	for(std::map<Uint32, boost::shared_ptr<YOGServerChatChannel> >::iterator i = channels.begin(); i!=channels.end();)
+	for(std::map<Uint32, std::shared_ptr<YOGServerChatChannel> >::iterator i = channels.begin(); i!=channels.end();)
 	{
 		if(i->first != LOBBY_CHAT_CHANNEL)
 		{
 			if(i->second->getNumberOfPlayers() == 0)
 			{
-				std::map<Uint32, boost::shared_ptr<YOGServerChatChannel> >::iterator i2 = i;
+				std::map<Uint32, std::shared_ptr<YOGServerChatChannel> >::iterator i2 = i;
 				i++;
 				channels.erase(i2);
 				continue;
@@ -71,7 +71,7 @@ Uint32 YOGServerChatChannelManager::createNewChatChannel()
 	currentChannelID += 1;
 
 	//Creates the channel
-	boost::shared_ptr<YOGServerChatChannel> newChannel(new YOGServerChatChannel(newChannelID));
+	std::shared_ptr<YOGServerChatChannel> newChannel(new YOGServerChatChannel(newChannelID));
 	channels.insert(std::make_pair(newChannelID, newChannel));
 
 	return newChannelID;
@@ -86,7 +86,7 @@ Uint32 YOGServerChatChannelManager::getLobbyChannel()
 
 
 
-boost::shared_ptr<YOGServerChatChannel> YOGServerChatChannelManager::getChannel(Uint32 channel)
+std::shared_ptr<YOGServerChatChannel> YOGServerChatChannelManager::getChannel(Uint32 channel)
 {
 	return channels[channel];
 }

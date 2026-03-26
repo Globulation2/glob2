@@ -35,7 +35,7 @@
 #include "AINicowar.h"
 #include "AIEcho.h"
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 /*AI::AI(Player *player)
 {
@@ -96,7 +96,7 @@ AI::~AI()
 	aiImplementation=NULL;
 }
 
-boost::shared_ptr<Order> AI::getOrder(bool paused)
+std::shared_ptr<Order> AI::getOrder(bool paused)
 {
 	assert(player);
 	if (paused || !player->team->isAlive)

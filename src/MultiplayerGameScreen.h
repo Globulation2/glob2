@@ -50,7 +50,7 @@ class MultiplayerGameScreen : public TabScreenWindow, public YOGClientChatListen
 {
 public:
 	///The screen must be provided with the client, the irc connection and the multiplayer game
-	MultiplayerGameScreen(TabScreen* parent, boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat = boost::shared_ptr<IRCTextMessageHandler>());
+	MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat = std::shared_ptr<IRCTextMessageHandler>());
 	virtual ~MultiplayerGameScreen();
 
 	enum
@@ -84,9 +84,9 @@ private:
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 
-	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
+	void recieveTextMessage(std::shared_ptr<YOGMessage> message);
 
-	void handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event);
+	void handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event);
 
 	///This function will update the list of joined players
 	void updateJoinedPlayers();
@@ -109,13 +109,13 @@ private:
 	OnOffButton *isReady;
 	Text *isReadyText;
 
-	boost::shared_ptr<MultiplayerGame> game;
+	std::shared_ptr<MultiplayerGame> game;
 
 	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
 	Text *notReadyText;
 	Text *gameStartWaitingText;
 
-	boost::shared_ptr<YOGClientChatChannel> gameChat;
-	boost::shared_ptr<IRCTextMessageHandler> ircChat;
+	std::shared_ptr<YOGClientChatChannel> gameChat;
+	std::shared_ptr<IRCTextMessageHandler> ircChat;
 };
 #endif

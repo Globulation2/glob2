@@ -19,7 +19,7 @@
 #include "AINicowar.h"
 #include "GlobalContainer.h"
 #include "FormatableString.h"
-#include "boost/lexical_cast.hpp"
+#include <string>
 #include "Utilities.h"
 #include "Game.h"
 #include "Unit.h"
@@ -426,14 +426,14 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 {
 	if(message.substr(0,19) == "building completed ")
 	{
-		int placement_num=boost::lexical_cast<int>(message.substr(19, message.size()-1));
+		int placement_num=std::stoi(message.substr(19, message.size()-1));
 		buildings_under_construction-=1;
 		buildings_under_construction_per_type[placement_num]-=1;
 	}
 	if(message.substr(0,22) == "update clearing zone1 ")
 	{
 		MapInfo mi(echo);
-		int id=boost::lexical_cast<int>(message.substr(22, message.size()-1));
+		int id=std::stoi(message.substr(22, message.size()-1));
 		Building* b = echo.get_building_register().get_building(id);		
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
@@ -455,7 +455,7 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 	if(message.substr(0,22) == "update clearing zone2 ")
 	{
 		MapInfo mi(echo);
-		int id=boost::lexical_cast<int>(message.substr(22, message.size()-1));
+		int id=std::stoi(message.substr(22, message.size()-1));
 		Building* b = echo.get_building_register().get_building(id);		
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
@@ -473,27 +473,27 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 	}
 	if(message.substr(0,13) == "update swarm ")
 	{
-		int id=boost::lexical_cast<int>(message.substr(13, message.size()-1));
+		int id=std::stoi(message.substr(13, message.size()-1));
 		manage_swarm(echo, id);
 	}
 	if(message.substr(0,11) == "update inn ")
 	{
-		int id=boost::lexical_cast<int>(message.substr(11, message.size()-1));
+		int id=std::stoi(message.substr(11, message.size()-1));
 		manage_inn(echo, id);
 	}
 	if(message.substr(0,16)  == "attack finished ")
 	{
-		int id=boost::lexical_cast<int>(message.substr(16, message.size()-1));
+		int id=std::stoi(message.substr(16, message.size()-1));
 		attack_flags.erase(std::find(attack_flags.begin(), attack_flags.end(), id));
 	}
 	if(message.substr(0,19)  == "guard flag deleted ")
 	{
-		int id=boost::lexical_cast<int>(message.substr(19, message.size()-1));
+		int id=std::stoi(message.substr(19, message.size()-1));
 		defense_flags.erase(std::find(defense_flags.begin(), defense_flags.end(), id));
 	}
 	if(message.substr(0,29)  == "explorer attack flag deleted ")
 	{
-		int id=boost::lexical_cast<int>(message.substr(29, message.size()-1));
+		int id=std::stoi(message.substr(29, message.size()-1));
 		explorer_attack_flags.erase(std::find(explorer_attack_flags.begin(), explorer_attack_flags.end(), id));
 	}
 	if(message == "finished digging out")
@@ -1020,20 +1020,20 @@ void NewNicowar::order_buildings(Echo& echo)
 
 		///This code keeps track of the number of buildings that are under construction at any one point
 		buildings_under_construction+=1;
-		ManagementOrder* mo_completion_message=new SendMessage("building completed "+boost::lexical_cast<std::string>(int(b)));
+		ManagementOrder* mo_completion_message=new SendMessage("building completed "+std::to_string(int(b)));
 		mo_completion_message->add_condition(new EitherCondition(
 		                             new ParticularBuilding(new NotUnderConstruction, id),
 		                             new BuildingDestroyed(id)));
 		echo.add_management_order(mo_completion_message);
 		if(b == RegularInn || b==RegularSwarm)
 		{		
-			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone1 "+boost::lexical_cast<std::string>(int(id)));
+			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone1 "+std::to_string(int(id)));
 			mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_construction_completion_message);
 		}
 		else
 		{
-			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone2 "+boost::lexical_cast<std::string>(int(id)));
+			ManagementOrder* mo_construction_completion_message=new SendMessage("update clearing zone2 "+std::to_string(int(id)));
 			mo_construction_completion_message->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_construction_completion_message);
 		}
@@ -1811,7 +1811,7 @@ void NewNicowar::attack_building(Echo& echo)
 	mo_destroyed_1->add_condition(new EnemyBuildingDestroyed(echo, building));
 	echo.add_management_order(mo_destroyed_1);
 
-	ManagementOrder* mo_destroyed_2=new SendMessage("attack finished "+boost::lexical_cast<std::string>(id));
+	ManagementOrder* mo_destroyed_2=new SendMessage("attack finished "+std::to_string(id));
 	mo_destroyed_2->add_condition(new BuildingDestroyed(id));
 	echo.add_management_order(mo_destroyed_2);
 	
@@ -2342,7 +2342,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		ManagementOrder* mo_completion=new ChangeFlagSize(4, id_flag);
 		echo.add_management_order(mo_completion);
 		
-		ManagementOrder* mo_destroyed=new SendMessage("guard flag deleted " + boost::lexical_cast<std::string>(id_flag));
+		ManagementOrder* mo_destroyed=new SendMessage("guard flag deleted " + std::to_string(id_flag));
 		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
 		echo.add_management_order(mo_destroyed);
 	}
@@ -2392,7 +2392,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 	const int w = mi.get_width();
 	const int h = mi.get_height();
 
-	std::vector<boost::tuple<int, int, int> > groups;
+	std::vector<std::tuple<int, int, int> > groups;
 	
 	if(explorer_attack_phase && target!=-1)
 	{
@@ -2478,11 +2478,11 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 			group_x = (group_x / group_size + w)%w;
 			group_y = (group_y / group_size + h)%h;
 			
-			groups.push_back(boost::make_tuple(group_size, group_x, group_y));
+			groups.push_back(std::make_tuple(group_size, group_x, group_y));
 		}
 	}
 	
-	std::sort(groups.begin(), groups.end(), std::greater<boost::tuple<int, int, int> >());
+	std::sort(groups.begin(), groups.end(), std::greater<std::tuple<int, int, int> >());
 	int total_attacks = strategy.offense_explorer_flag_number;
 	if(!explorer_attack_phase)
 		total_attacks = 0;
@@ -2502,10 +2502,10 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 			if(echo.get_building_register().is_building_found(*i))
 			{
 				Building* b = echo.get_building_register().get_building(*i);
-				for(std::vector<boost::tuple<int, int, int> >::iterator j = groups.begin(); j!=groups.end(); ++j)
+				for(std::vector<std::tuple<int, int, int> >::iterator j = groups.begin(); j!=groups.end(); ++j)
 				{
-					int flag_x = j->get<1>();
-					int flag_y = j->get<2>();
+					int flag_x = std::get<1>(*j);
+					int flag_y = std::get<2>(*j);
 					int d = echo.player->map->warpDistSquare(flag_x, flag_y, b->posX, b->posY);
 					if(d < min_dist)
 					{
@@ -2552,12 +2552,12 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 	
 	while(total_attacks && !groups.empty())
 	{
-		boost::tuple<int, int, int> groupInfo = *groups.begin();
+		std::tuple<int, int, int> groupInfo = *groups.begin();
 		groups.erase(groups.begin());
 		total_attacks -= 1;
 			
 		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, strategy.offense_explorer_flag_assigned);
-		bo_flag->add_constraint(new Construction::SinglePosition(groupInfo.get<1>(), groupInfo.get<2>()));
+		bo_flag->add_constraint(new Construction::SinglePosition(std::get<1>(groupInfo), std::get<2>(groupInfo)));
 		unsigned int id_flag=echo.add_building_order(bo_flag);
 
 		ManagementOrder* mo_completion=new ChangeFlagSize(6, id_flag);
@@ -2568,7 +2568,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 		
 		explorer_attack_flags.push_back(id_flag);
 		
-		ManagementOrder* mo_destroyed=new SendMessage("explorer attack flag deleted " + boost::lexical_cast<std::string>(id_flag));
+		ManagementOrder* mo_destroyed=new SendMessage("explorer attack flag deleted " + std::to_string(id_flag));
 		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
 		echo.add_management_order(mo_destroyed);
 	}

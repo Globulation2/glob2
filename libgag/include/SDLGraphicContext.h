@@ -31,7 +31,7 @@
 #include <boost/optional.hpp>
 
 #include <set>
-#include <boost/tuple/tuple.hpp>
+#include <tuple>
 
 #include <SDLCompat.h>
 
@@ -307,7 +307,7 @@ namespace GAGCore
 		// This holds texts already drawn to the screen and detected, so that pictures aren't taken twice, which would lag the game badly
 		static std::set<std::string> wroteTexts;
 		// This holds detected texts that will be printed on the next flush
-		static std::vector<boost::tuple<SRectangle, std::string, GAGCore::DrawableSurface*> > drawSquares;
+		static std::vector<std::tuple<SRectangle, std::string, GAGCore::DrawableSurface*> > drawSquares;
 		// This holds the directory the pictures will be stored in. The system is disabled if this string is empty.
 		static std::string translationPicturesDirectory;
 		// This flushes all of the detected texts, making bmp pictures

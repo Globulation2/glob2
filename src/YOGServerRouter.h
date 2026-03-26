@@ -19,7 +19,7 @@
 #ifndef YOGServerRouter_h
 #define YOGServerRouter_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "SDL_net.h"
 #include <vector>
 #include <map>
@@ -49,7 +49,7 @@ public:
 	int run();
 
 	///Returns the game id
-	boost::shared_ptr<YOGServerGameRouter> getGame(Uint16 gameID);
+	std::shared_ptr<YOGServerGameRouter> getGame(Uint16 gameID);
 	
 	///Returns true if the password given is correct for the administrator for this server
 	bool isAdministratorPasswordCorrect(const std::string& password);
@@ -65,10 +65,10 @@ public:
 
 private:
 	NetListener nl;
-	boost::shared_ptr<NetConnection> new_connection;
-	boost::shared_ptr<NetConnection> yog_connection;
-	std::map<Uint16, boost::shared_ptr<YOGServerGameRouter> > games;
-	std::vector<boost::shared_ptr<YOGServerRouterPlayer> > players;
+	std::shared_ptr<NetConnection> new_connection;
+	std::shared_ptr<NetConnection> yog_connection;
+	std::map<Uint16, std::shared_ptr<YOGServerGameRouter> > games;
+	std::vector<std::shared_ptr<YOGServerRouterPlayer> > players;
 	YOGServerRouterAdministrator admin;
 	bool shutdownMode;
 };

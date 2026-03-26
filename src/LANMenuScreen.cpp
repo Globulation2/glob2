@@ -33,7 +33,7 @@
 #include <Toolkit.h>
 #include "YOGServer.h"
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 LANMenuScreen::LANMenuScreen()
 {
@@ -86,7 +86,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 					while(client->getConnectionState() != YOGClient::ClientOnStandby)
 						client->update();
 			
-					boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+					std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 					client->setMultiplayerGame(game);
 					std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(globalContainer->settings.getUsername());
 					game->createNewGame(name);
@@ -96,7 +96,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 					Glob2TabScreen screen(true);
 					MultiplayerGameScreen* mgs = new MultiplayerGameScreen(&screen, game, client);
 					int rc = screen.execute(globalContainer->gfx, 40);
-					client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
+					client->setMultiplayerGame(std::shared_ptr<MultiplayerGame>());
 					if(rc == -1)
 						endExecute(-1);
 					else

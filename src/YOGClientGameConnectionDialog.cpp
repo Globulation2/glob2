@@ -29,7 +29,7 @@
 using namespace GAGCore;
 using namespace GAGGUI;
 
-YOGClientGameConnectionDialog::YOGClientGameConnectionDialog(GraphicContext *parentCtx, boost::shared_ptr<MultiplayerGame> game)
+YOGClientGameConnectionDialog::YOGClientGameConnectionDialog(GraphicContext *parentCtx, std::shared_ptr<MultiplayerGame> game)
 	: OverlayScreen(parentCtx, 200, 100), parentCtx(parentCtx), game(game)
 {
 	addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[connecting to game]")));
@@ -112,7 +112,7 @@ void YOGClientGameConnectionDialog::updateGame()
 
 
 
-void YOGClientGameConnectionDialog::handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event)
+void YOGClientGameConnectionDialog::handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event)
 {
 	Uint8 type = event->getEventType();
 	if(type == MGEGameRefused)

@@ -26,10 +26,10 @@
 #include "NetMessage.h"
 #include "YOGClientGameListManager.h"
 
-using boost::shared_ptr;
-using boost::static_pointer_cast;
+using std::shared_ptr;
+using std::static_pointer_cast;
 
-MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
+MultiplayerGame::MultiplayerGame(std::shared_ptr<YOGClient> client)
 	: client(client), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)
 {
 	netEngine=NULL;
@@ -81,7 +81,7 @@ void MultiplayerGame::update()
 		}
 		if(!client->getGameConnection())
 		{
-			client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(gameRouterIP, YOG_ROUTER_PORT)));
+			client->setGameConnection(std::shared_ptr<NetConnection>(new NetConnection(gameRouterIP, YOG_ROUTER_PORT)));
 		}
 		if(!client->getGameConnection()->isConnected() && !client->getGameConnection()->isConnecting())
 		{
@@ -400,7 +400,7 @@ int MultiplayerGame::getLocalPlayerNumber()
 
 
 
-void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
+void MultiplayerGame::recieveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	//This recieves responces to creating a game
@@ -486,7 +486,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		{
 			shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 			client->sendNetMessage(message);
-			boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
+			std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 			assembler->startRecievingFile(mapHeader.getFileName());
 			client->setYOGClientFileAssembler(fileID, assembler);
 		}
@@ -532,7 +532,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	}
 	if(type==MNetRequestFile)
 	{
-		boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
+		std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 		assembler->startSendingFile(mapHeader.getFileName());
 		client->setYOGClientFileAssembler(fileID,assembler);
 	}
@@ -665,7 +665,7 @@ void MultiplayerGame::setDefaultGameHeaderValues()
 
 
 
-void MultiplayerGame::sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event)
+void MultiplayerGame::sendToListeners(std::shared_ptr<MultiplayerGameEvent> event)
 {
 	for(std::list<MultiplayerGameEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{

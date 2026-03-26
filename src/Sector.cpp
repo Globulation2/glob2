@@ -134,7 +134,7 @@ void Sector::step(void)
 				int id = Unit::GIDtoID(gid);
 				
 				
-				boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->typeNum));
+				std::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->typeNum));
 				game->teams[team]->pushGameEvent(event);
 		
 				if (bullet->revealW > 0 && bullet->revealH > 0)
@@ -160,7 +160,7 @@ void Sector::step(void)
 					Building *building = game->teams[team]->myBuildings[id];
 					int damage = bullet->shootDamage-building->type->armor; 
 					
-					boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, building->shortTypeNum));
+					std::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, building->shortTypeNum));
 					game->teams[team]->pushGameEvent(event);
 					
 					if (damage > 0)

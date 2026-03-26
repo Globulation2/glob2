@@ -20,7 +20,7 @@
 #define __NetEngine_h
 
 #include "Order.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 #include <queue>
 #include "NetConnection.h"
@@ -34,10 +34,10 @@ class NetEngine
 {
 public:
 	///Constructs the NetEngine
-	NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate = 1, boost::shared_ptr<NetConnection> router = boost::shared_ptr<NetConnection>());
+	NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate = 1, std::shared_ptr<NetConnection> router = std::shared_ptr<NetConnection>());
 
 	///Sets the network game info
-	void setNetworkInfo(int networkOrderRate, boost::shared_ptr<NetConnection> client);
+	void setNetworkInfo(int networkOrderRate, std::shared_ptr<NetConnection> client);
 
 	///Advances the step
 	void advanceStep(Uint32 checksum);
@@ -46,13 +46,13 @@ public:
 	void clearTopOrders();
 
 	//Pushes an order to the NetEngine. AI's are special because they don't have padding arround orders
-	void pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool isAI);
+	void pushOrder(std::shared_ptr<Order> order, int playerNumber, bool isAI);
 	
 	///Retrieves the order for the given player for this turn
-	boost::shared_ptr<Order> retrieveOrder(int playerNumber);
+	std::shared_ptr<Order> retrieveOrder(int playerNumber);
 
 	///Adds a order from the local player, which will be queued and sent across the network when needed
-	void addLocalOrder(boost::shared_ptr<Order> order);
+	void addLocalOrder(std::shared_ptr<Order> order);
 	
 	///Tells whether the network is ready at the current tick. For
 	///the network to be ready, all Orders from all players must be
@@ -90,16 +90,16 @@ public:
 private:
 
 	///This stores the queues with the orders from each player
-	std::vector<std::vector<boost::shared_ptr<Order> > > orders;
+	std::vector<std::vector<std::shared_ptr<Order> > > orders;
 	///This queue stores all of the local orders that have to be sent out
 	///on their turn
-	std::queue<boost::shared_ptr<Order> > outgoing;
+	std::queue<std::shared_ptr<Order> > outgoing;
 	int step;
 	int numberOfPlayers;
 	///This count-downs steps until an order is sent across the network
 	int localOrderSendCountdown;
 	int localPlayer;
-	boost::shared_ptr<NetConnection> router;
+	std::shared_ptr<NetConnection> router;
 	int networkOrderRate;
 	int currentLatency;
 };

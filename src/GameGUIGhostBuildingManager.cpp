@@ -31,7 +31,7 @@ GameGUIGhostBuildingManager::GameGUIGhostBuildingManager(Game& game)
 
 void GameGUIGhostBuildingManager::addBuilding(const std::string& type, int x, int y)
 {
-	buildings.push_back(boost::make_tuple(type, x, y));
+	buildings.push_back(std::make_tuple(type, x, y));
 }
 
 
@@ -46,10 +46,10 @@ bool GameGUIGhostBuildingManager::isGhostBuilding(int x, int y, int w, int h)
 			int ly = (y + py + game.map.getH()) % game.map.getH();
 			for(unsigned i=0; i<buildings.size(); ++i)
 			{
-				int bx = buildings[i].get<1>();
-				int by = buildings[i].get<2>();
+				int bx = std::get<1>(buildings[i]);
+				int by = std::get<2>(buildings[i]);
 
-				std::string building = buildings[i].get<0>();
+				std::string building = std::get<0>(buildings[i]);
 				int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, true);
 				if(typeNum == -1)
 					typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
@@ -79,7 +79,7 @@ void GameGUIGhostBuildingManager::removeBuilding(int x, int y)
 {
 	for(unsigned i=0; i<buildings.size();)
 	{
-		if(buildings[i].get<1>() == x && buildings[i].get<2>() == y)
+		if(std::get<1>(buildings[i]) == x && std::get<2>(buildings[i]) == y)
 		{
 			buildings.erase(buildings.begin() + i);
 		}
@@ -96,9 +96,9 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int loca
 {
 	for(unsigned i=0; i<buildings.size(); ++i)
 	{
-		std::string building = buildings[i].get<0>();
-		int px = buildings[i].get<1>();
-		int py = buildings[i].get<2>();
+		std::string building = std::get<0>(buildings[i]);
+		int px = std::get<1>(buildings[i]);
+		int py = std::get<2>(buildings[i]);
 
 		int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, true);
 		if(typeNum == -1)

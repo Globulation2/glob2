@@ -22,7 +22,7 @@
 #ifndef GameGUIToolManager_h
 #define GameGUIToolManager_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "Brush.h"
 #include <string>
 #include <queue>
@@ -86,7 +86,7 @@ public:
 	void handleMouseDrag(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
 
 	///Returns an order, or shared_ptr() if there are none
-	boost::shared_ptr<Order> getOrder();
+	std::shared_ptr<Order> getOrder();
 private:
 	///Handles placing a zone on the map
 	void handleZonePlacement(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
@@ -122,7 +122,7 @@ private:
 	///Used to indicate the stength of hilight, because it blends during the draw
 	float hilightStrength;
 	///Queues up orderws for this manager
-	std::queue<boost::shared_ptr<Order> > orders;
+	std::queue<std::shared_ptr<Order> > orders;
 };
 
 #endif

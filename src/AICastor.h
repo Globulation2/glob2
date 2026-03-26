@@ -26,7 +26,7 @@
 #include "IntBuildingType.h"
 #include "AIImplementation.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 struct Case;
 class Game;
@@ -132,25 +132,25 @@ public:
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
-	boost::shared_ptr<Order>getOrder(void);
+	std::shared_ptr<Order>getOrder(void);
 	
 private:
 	void init(Player *player);
 	void defineStrategy();
 	
-	boost::shared_ptr<Order>controlSwarms();
-	boost::shared_ptr<Order>expandFood();
-	boost::shared_ptr<Order>controlFood();
-	boost::shared_ptr<Order>controlUpgrades();
-	boost::shared_ptr<Order>controlStrikes();
-//	boost::shared_ptr<Order>controlBaseDefense();
+	std::shared_ptr<Order>controlSwarms();
+	std::shared_ptr<Order>expandFood();
+	std::shared_ptr<Order>controlFood();
+	std::shared_ptr<Order>controlUpgrades();
+	std::shared_ptr<Order>controlStrikes();
+//	std::shared_ptr<Order>controlBaseDefense();
 	
 	bool addProject(Project *project);
 	void addProjects();
 	
 	void choosePhase();
 	
-	boost::shared_ptr<Order>continueProject(Project *project);
+	std::shared_ptr<Order>continueProject(Project *project);
 	
 	bool enoughFreeWorkers();
 	void computeCanSwim();
@@ -176,7 +176,7 @@ private:
 	void computeEnemyRangeMap();
 	void computeEnemyWarriorsMap();
 
-	boost::shared_ptr<Order>findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
+	std::shared_ptr<Order>findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
 	
 	void computeRessourcesCluster();
 	

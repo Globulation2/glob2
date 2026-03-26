@@ -20,7 +20,7 @@
 #define YOGServerGameRouter_h
 
 #include <vector>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 class YOGServerRouterPlayer;
 class NetMessage;
@@ -33,7 +33,7 @@ public:
 	YOGServerGameRouter(); 
 
 	///Adds a player to this router group
-	void addPlayer(boost::shared_ptr<YOGServerRouterPlayer> player);
+	void addPlayer(std::shared_ptr<YOGServerRouterPlayer> player);
 	
 	///Updates this game
 	void update();
@@ -42,9 +42,9 @@ public:
 	bool isEmpty();
 	
 	///Removes a net message to all players
-	void routeMessage(boost::shared_ptr<NetMessage> message, YOGServerRouterPlayer* sender);
+	void routeMessage(std::shared_ptr<NetMessage> message, YOGServerRouterPlayer* sender);
 private:
-	std::vector<boost::shared_ptr<YOGServerRouterPlayer> > players;
+	std::vector<std::shared_ptr<YOGServerRouterPlayer> > players;
 };
 
 

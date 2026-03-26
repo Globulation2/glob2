@@ -19,7 +19,7 @@
 #ifndef FertilityCalculatorThread_h
 #define FertilityCalculatorThread_h
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <mutex>
 #include <queue>
 #include "SDL_net.h"
@@ -32,20 +32,20 @@ class FertilityCalculatorThread
 {
 public:
 	///Constructs the functor
-	FertilityCalculatorThread(Map& map, std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
+	FertilityCalculatorThread(Map& map, std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
 
 	///Launches the thread that computes fertility
 	void operator()();
 
 	///Sends this thread a message
-	void sendMessage(boost::shared_ptr<FertilityCalculatorThreadMessage> message);
+	void sendMessage(std::shared_ptr<FertilityCalculatorThreadMessage> message);
 
 	///This returns whether the thread has exited
 	bool hasThreadExited();
 
 private:
 	///Sends this IRC message back to the main thread
-	void sendToMainThread(boost::shared_ptr<FertilityCalculatorThreadMessage> message);
+	void sendToMainThread(std::shared_ptr<FertilityCalculatorThreadMessage> message);
 	
 	///Computes the ressources gradient
 	void computeRessourcesGradient();
@@ -63,8 +63,8 @@ private:
 	
 	int get_pos(int x, int y);
 	
-	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
-	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing;
+	std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
+	std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing;
 	std::recursive_mutex incomingMutex;
 	std::recursive_mutex& outgoingMutex;
 	bool hasExited;

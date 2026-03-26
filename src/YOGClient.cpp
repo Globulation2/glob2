@@ -34,8 +34,8 @@
 #include "YOGMessage.h"
 #include "YOGServer.h"
 
-using boost::static_pointer_cast;
-using boost::shared_ptr;
+using std::static_pointer_cast;
+using std::shared_ptr;
 
 YOGClient::YOGClient(const std::string& server)
 {
@@ -158,8 +158,8 @@ void YOGClient::update()
 			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
-			ratedMapList = boost::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
-			blocked = boost::shared_ptr<YOGClientBlockedList>(new YOGClientBlockedList(username));
+			ratedMapList = std::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
+			blocked = std::shared_ptr<YOGClientBlockedList>(new YOGClientBlockedList(username));
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
@@ -178,8 +178,8 @@ void YOGClient::update()
 			shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
-			ratedMapList = boost::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
-			blocked = boost::shared_ptr<YOGClientBlockedList>(new YOGClientBlockedList(username));
+			ratedMapList = std::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
+			blocked = std::shared_ptr<YOGClientBlockedList>(new YOGClientBlockedList(username));
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
@@ -394,7 +394,7 @@ void YOGClient::update()
 			message = gameConnection->getMessage();
 		}
 	}
-	for(std::map<Uint16, boost::shared_ptr<YOGClientFileAssembler> >::iterator i = assembler.begin(); i!=assembler.end();)
+	for(std::map<Uint16, std::shared_ptr<YOGClientFileAssembler> >::iterator i = assembler.begin(); i!=assembler.end();)
 	{
 		if(i->second)
 		{
@@ -403,7 +403,7 @@ void YOGClient::update()
 		}
 		else
 		{
-			std::map<Uint16, boost::shared_ptr<YOGClientFileAssembler> >::iterator to_erase = i;
+			std::map<Uint16, std::shared_ptr<YOGClientFileAssembler> >::iterator to_erase = i;
 			i++;
 			assembler.erase(to_erase);
 		}
@@ -498,21 +498,21 @@ void YOGClient::createGame(const std::string& name)
 
 
 
-void YOGClient::setMultiplayerGame(boost::shared_ptr<MultiplayerGame> game)
+void YOGClient::setMultiplayerGame(std::shared_ptr<MultiplayerGame> game)
 {
 	joinedGame=game;
 }
 
 
 
-boost::shared_ptr<MultiplayerGame> YOGClient::getMultiplayerGame()
+std::shared_ptr<MultiplayerGame> YOGClient::getMultiplayerGame()
 {
 	return joinedGame;
 }
 
 
 
-void YOGClient::sendNetMessage(boost::shared_ptr<NetMessage> message)
+void YOGClient::sendNetMessage(std::shared_ptr<NetMessage> message)
 {
     nc.sendMessage(message);
 }
@@ -533,7 +533,7 @@ void YOGClient::removeYOGClientChatChannel(YOGClientChatChannel* channel)
 
 
 
-void YOGClient::sendToListeners(boost::shared_ptr<YOGClientEvent> event)
+void YOGClient::sendToListeners(std::shared_ptr<YOGClientEvent> event)
 {
 	for(std::list<YOGClientEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{
@@ -543,14 +543,14 @@ void YOGClient::sendToListeners(boost::shared_ptr<YOGClientEvent> event)
 
 
 
-void YOGClient::setYOGClientFileAssembler(Uint16 fileID, boost::shared_ptr<YOGClientFileAssembler> nassembler)
+void YOGClient::setYOGClientFileAssembler(Uint16 fileID, std::shared_ptr<YOGClientFileAssembler> nassembler)
 {
 	assembler[fileID]=nassembler;
 }
 
 
 
-boost::shared_ptr<YOGClientFileAssembler> YOGClient::getYOGClientFileAssembler(Uint16 fileID)
+std::shared_ptr<YOGClientFileAssembler> YOGClient::getYOGClientFileAssembler(Uint16 fileID)
 {
 	return assembler[fileID];
 }
@@ -571,28 +571,28 @@ void YOGClient::removeEventListener(YOGClientEventListener* listener)
 
 
 
-void YOGClient::setGameConnection(boost::shared_ptr<NetConnection> ngameConnection)
+void YOGClient::setGameConnection(std::shared_ptr<NetConnection> ngameConnection)
 {
 	gameConnection = ngameConnection;
 }
 
 
 
-boost::shared_ptr<NetConnection> YOGClient::getGameConnection()
+std::shared_ptr<NetConnection> YOGClient::getGameConnection()
 {
 	return gameConnection;
 }
 
 
 
-boost::shared_ptr<YOGClientBlockedList> YOGClient::getBlockedList()
+std::shared_ptr<YOGClientBlockedList> YOGClient::getBlockedList()
 {
 	return blocked;
 }
 
 
 
-boost::shared_ptr<YOGClientCommandManager> YOGClient::getCommandManager()
+std::shared_ptr<YOGClientCommandManager> YOGClient::getCommandManager()
 {
 	return commands;
 }
@@ -613,14 +613,14 @@ void YOGClient::setMapUploader(YOGClientMapUploader* nuploader)
 
 
 
-boost::shared_ptr<YOGClientDownloadableMapList> YOGClient::getDownloadableMapList()
+std::shared_ptr<YOGClientDownloadableMapList> YOGClient::getDownloadableMapList()
 {
 	return downloadableMapList;
 }
 
 
 
-boost::shared_ptr<YOGClientRatedMapList> YOGClient::getRatedMapList()
+std::shared_ptr<YOGClientRatedMapList> YOGClient::getRatedMapList()
 {
 	return ratedMapList;
 }
@@ -641,56 +641,56 @@ YOGClientMapDownloader* YOGClient::getMapDownloader()
 
 
 
-void YOGClient::attachGameServer(boost::shared_ptr<YOGServer> nserver)
+void YOGClient::attachGameServer(std::shared_ptr<YOGServer> nserver)
 {
 	server = nserver;
 }
 
 	
 
-boost::shared_ptr<YOGServer> YOGClient::getGameServer()
+std::shared_ptr<YOGServer> YOGClient::getGameServer()
 {
 	return server;
 }
 
 
 
-void  YOGClient::setP2PConnection(boost::shared_ptr<P2PConnection> connection)
+void  YOGClient::setP2PConnection(std::shared_ptr<P2PConnection> connection)
 {
 	p2pconnection = connection;
 }
 
 
 
-boost::shared_ptr<P2PConnection> YOGClient::getP2PConnection()
+std::shared_ptr<P2PConnection> YOGClient::getP2PConnection()
 {
 	return p2pconnection;
 }
 
 
 
-void YOGClient::setGameListManager(boost::shared_ptr<YOGClientGameListManager> ngameListManager)
+void YOGClient::setGameListManager(std::shared_ptr<YOGClientGameListManager> ngameListManager)
 {
 	gameListManager = ngameListManager;
 }
 
 
 
-boost::shared_ptr<YOGClientGameListManager> YOGClient::getGameListManager()
+std::shared_ptr<YOGClientGameListManager> YOGClient::getGameListManager()
 {
 	return gameListManager;
 }
 
 
 
-void YOGClient::setPlayerListManager(boost::shared_ptr<YOGClientPlayerListManager> nplayerListManager)
+void YOGClient::setPlayerListManager(std::shared_ptr<YOGClientPlayerListManager> nplayerListManager)
 {
 	playerListManager = nplayerListManager;
 }
 
 
 
-boost::shared_ptr<YOGClientPlayerListManager> YOGClient::getPlayerListManager()
+std::shared_ptr<YOGClientPlayerListManager> YOGClient::getPlayerListManager()
 {
 	return playerListManager;
 }

@@ -20,7 +20,7 @@
 #ifndef __YOGClientChatListener_h
 #define __YOGClientChatListener_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 class YOGMessage;
 
@@ -31,7 +31,7 @@ public:
 	virtual ~YOGClientChatListener() {}
 
 	///Recieves a text message
-	virtual void recieveTextMessage(boost::shared_ptr<YOGMessage> message)=0;
+	virtual void recieveTextMessage(std::shared_ptr<YOGMessage> message)=0;
 };
 
 #endif

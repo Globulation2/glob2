@@ -113,7 +113,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 	size_t pos = stream->getPosition();
 
 	// Calculate the length of this replay
-	boost::shared_ptr<Order> order;
+	std::shared_ptr<Order> order;
 	numSteps = 0;
 	numOrders = 0;
 	stepsUntilNextOrder = stream->readUint16("replayStepCounter");
@@ -146,7 +146,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 			else
 			{
 				// Overwrite the order as if it were a NullOrder
-				order = boost::shared_ptr<Order>(new NullOrder());
+				order = std::shared_ptr<Order>(new NullOrder());
 			}
 		}
 
@@ -213,12 +213,12 @@ void ReplayReader::setCheckSum(Uint32 checksum)
 	this->checksum = checksum;
 }
 
-boost::shared_ptr<Order> ReplayReader::retrieveOrder()
+std::shared_ptr<Order> ReplayReader::retrieveOrder()
 {
-	if (!hasMoreOrdersThisStep()) return boost::shared_ptr<Order>(new NullOrder());
+	if (!hasMoreOrdersThisStep()) return std::shared_ptr<Order>(new NullOrder());
 	assert(isValid());
 
-	boost::shared_ptr<Order> order;
+	std::shared_ptr<Order> order;
 
 	try
 	{
@@ -239,7 +239,7 @@ boost::shared_ptr<Order> ReplayReader::retrieveOrder()
 
 			delete stream;
 			stream = NULL;
-			return boost::shared_ptr<Order>(new NullOrder());
+			return std::shared_ptr<Order>(new NullOrder());
 		}
 	}
 	catch (const std::ios_base::failure &e)

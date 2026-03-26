@@ -20,7 +20,7 @@
 #define NetConnectionThread_h
 
 #include "NetConnectionThreadMessage.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <mutex>
 #include <queue>
 
@@ -28,7 +28,7 @@
 class NetConnectionThread
 {
 public:
-	NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
+	NetConnectionThread(std::queue<std::shared_ptr<NetConnectionThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
 	
 	~NetConnectionThread();
 	
@@ -36,7 +36,7 @@ public:
 	void operator()();
 
 	///Sends this net thread a message
-	void sendMessage(boost::shared_ptr<NetConnectionThreadMessage> message);
+	void sendMessage(std::shared_ptr<NetConnectionThreadMessage> message);
 
 	///This returns whether the thread has exited
 	bool hasThreadExited();
@@ -49,14 +49,14 @@ private:
 	void closeConnection();
 
 	///Sends this net message back to the main thread
-	void sendToMainThread(boost::shared_ptr<NetConnectionThreadMessage> message);
+	void sendToMainThread(std::shared_ptr<NetConnectionThreadMessage> message);
 	IPaddress address;
 	TCPsocket socket;
 	SDLNet_SocketSet set;
 	bool connected;
 	
-	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
-	std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing;
+	std::queue<std::shared_ptr<NetConnectionThreadMessage> > incoming;
+	std::queue<std::shared_ptr<NetConnectionThreadMessage> >& outgoing;
 	std::recursive_mutex incomingMutex;
 	std::recursive_mutex& outgoingMutex;
 	bool hasExited;

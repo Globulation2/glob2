@@ -23,9 +23,9 @@
 #include "NetConnectionThread.h"
 #include <queue>
 #include <thread>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 class NetListener;
 class NetMessage;
@@ -80,7 +80,7 @@ private:
 	NetConnectionThread connect;
 	std::thread connectThread;
 
-	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
+	std::queue<std::shared_ptr<NetConnectionThreadMessage> > incoming;
 	std::recursive_mutex incomingMutex;
 	std::queue<shared_ptr<NetMessage> > recieved;
 	

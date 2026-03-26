@@ -1124,7 +1124,7 @@ void Team::checkControllingPlayers(void)
 
 
 
-void Team::pushGameEvent(boost::shared_ptr<GameEvent> event)
+void Team::pushGameEvent(std::shared_ptr<GameEvent> event)
 {
 	///Ignore events when the cooldown is above 0
 	if(eventCooldownTimers[event->getEventType()] == 0)
@@ -1136,12 +1136,12 @@ void Team::pushGameEvent(boost::shared_ptr<GameEvent> event)
 	
 
 
-boost::shared_ptr<GameEvent> Team::getEvent()
+std::shared_ptr<GameEvent> Team::getEvent()
 {
 	if(events.empty())
-		return boost::shared_ptr<GameEvent>();
+		return std::shared_ptr<GameEvent>();
 
-	boost::shared_ptr<GameEvent> event = events.front();
+	std::shared_ptr<GameEvent> event = events.front();
 	events.pop();
 	return event;
 }
@@ -1160,7 +1160,7 @@ void Team::updateEvents()
 	bool testAnother=true;
 	while(testAnother && !events.empty())
 	{
-		boost::shared_ptr<GameEvent> event = events.front();
+		std::shared_ptr<GameEvent> event = events.front();
 		if((game->stepCounter - event->getStep()) > 100)
 		{
 			events.pop();
@@ -1332,8 +1332,8 @@ std::string Team::getFirstPlayerName(void) const
 
 void Team::checkWinConditions()
 {
-	std::list<boost::shared_ptr<WinningCondition> >& conditions = game->gameHeader.getWinningConditions();
-	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
+	std::list<std::shared_ptr<WinningCondition> >& conditions = game->gameHeader.getWinningConditions();
+	for(std::list<std::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
 	{
 		if((*i)->hasTeamWon(teamNumber, game))
 		{

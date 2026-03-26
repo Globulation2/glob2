@@ -37,7 +37,7 @@ public:
 	void update();
 	
 	///This returns the file distributor for the given id
-	boost::shared_ptr<YOGServerFileDistributor> getDistributor(Uint16 transferID);
+	std::shared_ptr<YOGServerFileDistributor> getDistributor(Uint16 transferID);
 	
 	///This removes the file distributor
 	void removeDistributor(Uint16 transferID);
@@ -45,7 +45,7 @@ private:
 	///Finds an available transfer id
 	Uint16 chooseTransferID();
 
-	std::map<Uint16, boost::shared_ptr<YOGServerFileDistributor> > files;
+	std::map<Uint16, std::shared_ptr<YOGServerFileDistributor> > files;
 	Uint16 currentID;
 };
 

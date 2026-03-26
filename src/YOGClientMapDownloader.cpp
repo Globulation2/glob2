@@ -22,7 +22,7 @@
 #include "YOGClientFileAssembler.h"
 
 
-YOGClientMapDownloader::YOGClientMapDownloader(boost::shared_ptr<YOGClient> client)
+YOGClientMapDownloader::YOGClientMapDownloader(std::shared_ptr<YOGClient> client)
 	: client(client)
 {
 	client->setMapDownloader(this);
@@ -41,11 +41,11 @@ void YOGClientMapDownloader::startDownloading(const YOGDownloadableMapInfo& map)
 {
 	// construct downloader
 	fileID = map.getFileID();
-	boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
+	std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 	assembler->startRecievingFile(map.getMapHeader().getFileName());
 	client->setYOGClientFileAssembler(fileID, assembler);
 	
-	boost::shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
+	std::shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 	client->sendNetMessage(message);
 	state = DownloadingMap;
 }
@@ -63,7 +63,7 @@ void YOGClientMapDownloader::cancelDownload()
 
 
 
-void YOGClientMapDownloader::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientMapDownloader::recieveMessage(std::shared_ptr<NetMessage> message)
 {
 
 }

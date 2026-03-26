@@ -19,7 +19,7 @@
 #ifndef YOGServerMapDatabank_h
 #define YOGServerMapDatabank_h
 
-#include "boost/tuple/tuple.hpp"
+#include <tuple>
 #include "MapThumbnail.h"
 #include <vector>
 #include "YOGDownloadableMapInfo.h"
@@ -48,13 +48,13 @@ public:
 	YOGMapUploadRefusalReason canRecieveFromPlayer(const YOGDownloadableMapInfo& map);
 
 	///Starts recieving a map from the given player, and returns the file ID for the transfer
-	Uint16 recieveMapFromPlayer(const YOGDownloadableMapInfo& map, boost::shared_ptr<YOGServerPlayer> player);
+	Uint16 recieveMapFromPlayer(const YOGDownloadableMapInfo& map, std::shared_ptr<YOGServerPlayer> player);
 	
 	///Sends the list of maps to the given player
-	void sendMapListToPlayer(boost::shared_ptr<YOGServerPlayer> player);
+	void sendMapListToPlayer(std::shared_ptr<YOGServerPlayer> player);
 	
 	///Sends a map thumbnail to the given player
-	void sendMapThumbnailToPlayer(Uint16 mapID, boost::shared_ptr<YOGServerPlayer> player);
+	void sendMapThumbnailToPlayer(Uint16 mapID, std::shared_ptr<YOGServerPlayer> player);
 	
 	///Submits a rating for a given player.
 	void submitRating(Uint16 mapID, Uint8 rating);
@@ -79,7 +79,7 @@ private:
 	
 	std::vector<YOGDownloadableMapInfo> maps;
 	///List of maps currently being uploaded
-	std::vector<boost::tuple<YOGDownloadableMapInfo, int> > uploadingMaps;
+	std::vector<std::tuple<YOGDownloadableMapInfo, int> > uploadingMaps;
 };
 
 #endif

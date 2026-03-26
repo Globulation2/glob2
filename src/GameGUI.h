@@ -81,14 +81,14 @@ public:
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
 	//! Get order from gui, return NullOrder if
-	boost::shared_ptr<Order> getOrder(void);
+	std::shared_ptr<Order> getOrder(void);
 	//! Return position on x
 	int getViewportX() { return viewportX; }
 	//! Return position on y
 	int getViewportY() { return viewportY; }
 
 	void drawAll(int team);
-	void executeOrder(boost::shared_ptr<Order> order);
+	void executeOrder(std::shared_ptr<Order> order);
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
@@ -396,7 +396,7 @@ private:
 
 	Uint32 chatMask;
 
-	std::list<boost::shared_ptr<Order> > orderQueue;
+	std::list<std::shared_ptr<Order> > orderQueue;
 
 	Minimap minimap;
 
@@ -447,7 +447,7 @@ private:
 	MarkManager markManager;
 	
 	//! add a minimap mark
-	void addMark(boost::shared_ptr<MapMarkOrder> mmo);
+	void addMark(std::shared_ptr<MapMarkOrder> mmo);
 	
 	// records CPU usage percentages 
 	static const unsigned SMOOTHED_CPU_SIZE=32;

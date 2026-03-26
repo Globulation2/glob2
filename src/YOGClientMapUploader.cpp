@@ -28,9 +28,9 @@
 #include "Stream.h"
 #include "BinaryStream.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-YOGClientMapUploader::YOGClientMapUploader(boost::shared_ptr<YOGClient> client)
+YOGClientMapUploader::YOGClientMapUploader(std::shared_ptr<YOGClient> client)
 	: state(Nothing), client(client)
 {
 	client->setMapUploader(this);
@@ -58,7 +58,7 @@ void YOGClientMapUploader::startUploading(const std::string& nmapFile, const std
 	info.setAuthorName(authorName);
 	info.setDimensions(w, h);
 	info.setSize(getCompressedSize(nmapFile));
-	boost::shared_ptr<NetRequestMapUpload> message(new NetRequestMapUpload(info));
+	std::shared_ptr<NetRequestMapUpload> message(new NetRequestMapUpload(info));
 	client->sendNetMessage(message);
 	state = WaitingForUploadReply;
 }
@@ -76,7 +76,7 @@ void YOGClientMapUploader::cancelUpload()
 
 
 
-void YOGClientMapUploader::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientMapUploader::recieveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	//This recieves the server information
@@ -86,7 +86,7 @@ void YOGClientMapUploader::recieveMessage(boost::shared_ptr<NetMessage> message)
 		fileID = info->getFileID();
 		state = UploadingMap;
 		
-		boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
+		std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 		assembler->startSendingFile(mapFile);
 		client->setYOGClientFileAssembler(fileID, assembler);
 	}

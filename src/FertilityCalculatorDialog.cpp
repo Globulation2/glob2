@@ -31,7 +31,7 @@
 
 using namespace GAGCore;
 using namespace GAGGUI;
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 FertilityCalculatorDialog::FertilityCalculatorDialog(GraphicContext *parentCtx, Map& map)
 	: OverlayScreen(parentCtx, 200, 100), map(map), parentCtx(parentCtx), thread(map, incoming, incomingMutex)
@@ -113,14 +113,14 @@ void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
 	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	while(!incoming.empty())
 	{
-		boost::shared_ptr<FertilityCalculatorThreadMessage> message = incoming.front();
+		std::shared_ptr<FertilityCalculatorThreadMessage> message = incoming.front();
 		incoming.pop();
 		Uint8 type = message->getMessageType();
 		switch(type)
 		{
 			case FCTMUpdateCompletionPercent:
 			{
-					boost::shared_ptr<FCTUpdateCompletionPercent> info = static_pointer_cast<FCTUpdateCompletionPercent>(message);
+					std::shared_ptr<FCTUpdateCompletionPercent> info = static_pointer_cast<FCTUpdateCompletionPercent>(message);
 					std::stringstream s;
 					s<<std::setprecision(3)<<(info->getPercent() * 100.0)<<"%"<<std::endl;
 					percentDone->setText(s.str());
@@ -129,7 +129,7 @@ void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
 			break;
 			case FCTMFertilityCompleted:
 			{
-					boost::shared_ptr<FCTFertilityCompleted> info = static_pointer_cast<FCTFertilityCompleted>(message);
+					std::shared_ptr<FCTFertilityCompleted> info = static_pointer_cast<FCTFertilityCompleted>(message);
 					endValue = 1;
 			}
 			break;

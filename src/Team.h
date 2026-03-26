@@ -30,7 +30,7 @@
 #include "TeamStat.h"
 #include "GameEvent.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "BaseTeam.h"
 #include "WinningConditions.h"
@@ -79,10 +79,10 @@ public:
 	void checkControllingPlayers(void);
 
 	///Push a new game event into the queue
-	void pushGameEvent(boost::shared_ptr<GameEvent> event);
+	void pushGameEvent(std::shared_ptr<GameEvent> event);
 	
 	///Return the top-most event from the queue and remove it
-	boost::shared_ptr<GameEvent> getEvent();
+	std::shared_ptr<GameEvent> getEvent();
 	
 	///This returns whether an event of the given type had occurred on the last tick
 	bool wasRecentEvent(GameEventType type);
@@ -186,7 +186,7 @@ public:
 
 private:
 	///Queue of game events
-	std::queue<boost::shared_ptr<GameEvent> > events;
+	std::queue<std::shared_ptr<GameEvent> > events;
 	///These timers indicate the cooldown for a particular event type,
 	///This keeps too many events from being pumped at once. If the
 	///timer isn't at 0 when a new event is received, the new event

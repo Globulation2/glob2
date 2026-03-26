@@ -21,7 +21,7 @@
 
 #include <vector>
 #include "GUITabScreenWindow.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 
 namespace GAGGUI
@@ -45,7 +45,7 @@ class YOGClientOptionsScreen : public TabScreenWindow
 public:
 
 	/// Constructor
-	YOGClientOptionsScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
+	YOGClientOptionsScreen(TabScreen* parent, std::shared_ptr<YOGClient> client);
 
 	///Called when this tab is activated
 	void onActivated();
@@ -67,7 +67,7 @@ private:
 	///Removes a blocked player from the text move
 	void updateBlockedPlayerRemove();
 
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	
 	List* blockedPlayers;
 	Text* blockedPlayersText;

@@ -20,7 +20,7 @@
 #define YOGServerRouterAdministrator_h
 
 #include <string>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include <vector>
 
 class YOGServerRouter;

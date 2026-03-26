@@ -75,7 +75,7 @@ void PaFlushVoiceData(VoiceRecorder* recorder)
 	SpeexBits& bits = recorder->bits;
 	int byteLength = speex_bits_nbytes(&bits);
 	
-	boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, recorder->frameCount, NULL));
+	std::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, recorder->frameCount, NULL));
 	int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 	assert(byteLength == nbBytes);
 	
@@ -295,7 +295,7 @@ int record(void *pointer)
 			int byteLength = speex_bits_nbytes(&bits);
 			if (byteLength > MAX_VOICE_MULTI_FRAME_LENGTH || totalRead > MAX_VOICE_MULTI_FRAME_SAMPLE_COUNT)
 			{
-				boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
+				std::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
 				int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 				assert(byteLength == nbBytes);
 				
@@ -314,7 +314,7 @@ int record(void *pointer)
 		int byteLength = speex_bits_nbytes(&bits);
 		if (byteLength > 0)
 		{
-			boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
+			std::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
 			int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 			assert(byteLength == nbBytes);
 			
@@ -449,13 +449,13 @@ void VoiceRecorder::stopRecording(void)
 	#endif
 }
 
-boost::shared_ptr<OrderVoiceData> VoiceRecorder::getNextOrder(void)
+std::shared_ptr<OrderVoiceData> VoiceRecorder::getNextOrder(void)
 {
-	boost::shared_ptr<OrderVoiceData> order;
+	std::shared_ptr<OrderVoiceData> order;
 	SDL_LockMutex(ordersMutex);
 	if (orders.empty())
 	{
-		order = boost::shared_ptr<OrderVoiceData>();
+		order = std::shared_ptr<OrderVoiceData>();
 	}
 	else
 	{

@@ -28,7 +28,7 @@
 #include "Ressource.h"
 #include "UnitConsts.h"
 #include "BitArray.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class Map;
 
@@ -43,7 +43,7 @@ public:
 	virtual Uint8 getOrderType(void)=0;
 
 	///Takes in an arbitrary amount of information and returns its assocciatted order
-	static boost::shared_ptr<Order> getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor);
+	static std::shared_ptr<Order> getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor);
 
 	///Returns the encoded data buffer of data for the Order
 	virtual Uint8 *getData(void)=0;

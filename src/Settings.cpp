@@ -23,7 +23,7 @@
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <GAG.h>
-#include "boost/lexical_cast.hpp"
+#include <string>
 
 using namespace GAGCore;
 
@@ -134,17 +134,17 @@ void Settings::load(std::string filename)
 		{
 			for(int t=0; t<6; ++t)
 			{
-				std::string keyname="defaultUnitsAssigned["+boost::lexical_cast<std::string>(n)+"]["+boost::lexical_cast<std::string>(t)+"]";
+				std::string keyname="defaultUnitsAssigned["+std::to_string(n)+"]["+std::to_string(t)+"]";
 				if(parsed.find(keyname)!=parsed.end())
-					defaultUnitsAssigned[n][t] = boost::lexical_cast<int>(parsed[keyname]);
+					defaultUnitsAssigned[n][t] = std::stoi(parsed[keyname]);
 			}
 		}
 
 		for(int n=0; n<3; ++n)
 		{
-			std::string keyname="defaultFlagRadius["+boost::lexical_cast<std::string>(n)+"]";
+			std::string keyname="defaultFlagRadius["+std::to_string(n)+"]";
 			if(parsed.find(keyname)!=parsed.end())
-				defaultFlagRadius[n] = boost::lexical_cast<int>(parsed[keyname]);
+				defaultFlagRadius[n] = std::stoi(parsed[keyname]);
 		}
 
 		READ_PARSED_INT(cloudPatchSize);
@@ -198,14 +198,14 @@ void Settings::save(std::string filename)
 		{
 			for(int t=0; t<6; ++t)
 			{
-				std::string keyname="defaultUnitsAssigned["+boost::lexical_cast<std::string>(n)+"]["+boost::lexical_cast<std::string>(t)+"]";
+				std::string keyname="defaultUnitsAssigned["+std::to_string(n)+"]["+std::to_string(t)+"]";
 				Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultUnitsAssigned[n][t]);
 			}
 		}
 
 		for(int n=0; n<3; ++n)
 		{
-			std::string keyname = "defaultFlagRadius["+boost::lexical_cast<std::string>(n)+"]";
+			std::string keyname = "defaultFlagRadius["+std::to_string(n)+"]";
 			Utilities::streamprintf(stream, "%s=%i\n", keyname.c_str(), defaultFlagRadius[n]);
 		}
 

@@ -1320,7 +1320,7 @@ namespace GAGCore
 					int width=font->getStringWidth(i->first.c_str());
 					int height=font->getStringHeight(i->first.c_str());
 					int startx=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
-					drawSquares.push_back(boost::make_tuple(SRectangle(x+startx, y, width, height), i->second, this));
+					drawSquares.push_back(std::make_tuple(SRectangle(x+startx, y, width, height), i->second, this));
 					wroteTexts.insert(i->second);
 					texts.erase(i);
 					break;
@@ -1350,7 +1350,7 @@ namespace GAGCore
 					int width=font->getStringWidth(i->first.c_str());
 					int height=font->getStringHeight(i->first.c_str());
 					int startx=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
-					drawSquares.push_back(boost::make_tuple(SRectangle(int(x+startx), int(y), width, height), i->second, this));
+					drawSquares.push_back(std::make_tuple(SRectangle(int(x+startx), int(y), width, height), i->second, this));
 					wroteTexts.insert(i->second);
 					texts.erase(i);
 					break;
@@ -1390,20 +1390,20 @@ namespace GAGCore
 	//This code is for the textshot code
 	std::map<std::string, std::string> DrawableSurface::texts;
 	std::set<std::string> DrawableSurface::wroteTexts;
-	std::vector<boost::tuple<DrawableSurface::SRectangle, std::string, GAGCore::DrawableSurface*> > DrawableSurface::drawSquares;
+	std::vector<std::tuple<DrawableSurface::SRectangle, std::string, GAGCore::DrawableSurface*> > DrawableSurface::drawSquares;
 	std::string DrawableSurface::translationPicturesDirectory;
 
 	void DrawableSurface::flushTextPictures()
 	{
 		using namespace GAGCore;
-		for(std::vector<boost::tuple<SRectangle, std::string, DrawableSurface*> >::iterator i=drawSquares.begin(); i!=drawSquares.end();)
+		for(std::vector<std::tuple<SRectangle, std::string, DrawableSurface*> >::iterator i=drawSquares.begin(); i!=drawSquares.end();)
 		{
-			DrawableSurface toPrint(i->get<2>()->getW(), i->get<2>()->getH());
-			toPrint.drawSurface(0, 0, i->get<2>());
-			int x=i->get<0>().x;
-			int y=i->get<0>().y;
-			int width=i->get<0>().w;
-			int height=i->get<0>().h;
+			DrawableSurface toPrint(std::get<2>(*i)->getW(), std::get<2>(*i)->getH());
+			toPrint.drawSurface(0, 0, std::get<2>(*i));
+			int x=std::get<0>(*i).x;
+			int y=std::get<0>(*i).y;
+			int width=std::get<0>(*i).w;
+			int height=std::get<0>(*i).h;
 
 			toPrint.drawRect(x-2, y-2, width+4, height+4, Color(255, 126, 21));
 			toPrint.drawRect(x-3, y-3, width+6, height+6, Color(255, 126, 21));
@@ -1414,7 +1414,7 @@ namespace GAGCore
 			// Print it using virtual filesystem
 			for (size_t i2 = 0; i2 < Toolkit::getFileManager()->getDirCount(); i2++)
 			{
-				std::string fullFileName = translationPicturesDirectory + DIR_SEPARATOR_S + "text-" + i->get<1>();
+				std::string fullFileName = translationPicturesDirectory + DIR_SEPARATOR_S + "text-" + std::get<1>(*i);
 				if (SDL_SaveBMP(toPrint.sdlsurface, (fullFileName+".bmp").c_str()) == 0)
 				{
 					break;

@@ -32,9 +32,9 @@
 #include "GlobalContainer.h"
 
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-YOGRegisterScreen::YOGRegisterScreen(boost::shared_ptr<YOGClient> client)
+YOGRegisterScreen::YOGRegisterScreen(std::shared_ptr<YOGClient> client)
 	: client(client)
 {
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]")));
@@ -163,7 +163,7 @@ void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int pa
 
 
 
-void YOGRegisterScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
+void YOGRegisterScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
 	//std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();

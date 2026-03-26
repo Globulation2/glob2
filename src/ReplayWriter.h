@@ -19,7 +19,7 @@
 #ifndef __ReplayWriter_h
 #define __ReplayWriter_h
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <assert.h>
 #include "Types.h"
 
@@ -59,7 +59,7 @@ public:
 	void setCheckSum(Uint32 checksum = 0);
 
 	/// Adds the order to the replay
-	void pushOrder(boost::shared_ptr<Order> order);
+	void pushOrder(std::shared_ptr<Order> order);
 
 	/// Marks the end of the replay
 	void finish();

@@ -20,8 +20,8 @@
 #define __YOGServerFileDistributor_h
 
 #include "boost/date_time/posix_time/posix_time.hpp"
-#include "boost/shared_ptr.hpp"
-#include "boost/tuple/tuple.hpp"
+#include <memory>
+#include <tuple>
 #include "SDL_net.h"
 #include <vector>
 
@@ -42,7 +42,7 @@ public:
 	void loadFromLocally(const std::string& file);
 	
 	///Tells this file distributor to load from the given player
-	void loadFromPlayer(boost::shared_ptr<YOGServerPlayer> player);
+	void loadFromPlayer(std::shared_ptr<YOGServerPlayer> player);
 	
 	///This tells the file distributor to save all data in the file the given filename locally
 	void saveToFile(const std::string& file);
@@ -58,13 +58,13 @@ public:
 	void update();
 
 	///Add the given player as one requesting the file
-	void addMapRequestee(boost::shared_ptr<YOGServerPlayer> player);
+	void addMapRequestee(std::shared_ptr<YOGServerPlayer> player);
 	
 	///Removes the given player from requesting the map
-	void removeMapRequestee(boost::shared_ptr<YOGServerPlayer> player);
+	void removeMapRequestee(std::shared_ptr<YOGServerPlayer> player);
 
 	///Handles the provided message
-	void handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> player);
+	void handleMessage(std::shared_ptr<NetMessage> message, std::shared_ptr<YOGServerPlayer> player);
 private:
 	///Loads from the file
 	void loadDataFromFile();
@@ -77,10 +77,10 @@ private:
 	bool startedLoading;
 	bool downloadFromPlayerCanceled;
 	std::string fileName;
-	boost::shared_ptr<YOGServerPlayer> player;
-	boost::shared_ptr<NetSendFileInformation> fileInfo;
-	std::vector<boost::shared_ptr<NetSendFileChunk> > chunks;
-	std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> > players;
+	std::shared_ptr<YOGServerPlayer> player;
+	std::shared_ptr<NetSendFileInformation> fileInfo;
+	std::vector<std::shared_ptr<NetSendFileChunk> > chunks;
+	std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> > players;
 
 };
 

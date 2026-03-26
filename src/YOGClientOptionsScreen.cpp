@@ -30,7 +30,7 @@
 
 using namespace GAGCore;
 
-YOGClientOptionsScreen::YOGClientOptionsScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client)
+YOGClientOptionsScreen::YOGClientOptionsScreen(TabScreen* parent, std::shared_ptr<YOGClient> client)
 	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Options]")), client(client)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Options]")));

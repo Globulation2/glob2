@@ -41,7 +41,7 @@
 
 using namespace GAGCore;
 
-YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client)
+YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, std::shared_ptr<YOGClient> client)
 	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Download Maps]")), client(client)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Download Maps]")));

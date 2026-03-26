@@ -27,7 +27,7 @@
 #include "YOGConsts.h"
 
 using namespace GAGCore;
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 IRCTextMessageHandler::IRCTextMessageHandler()
 	: irc(incoming, incomingMutex)
@@ -40,7 +40,7 @@ IRCTextMessageHandler::IRCTextMessageHandler()
 IRCTextMessageHandler::~IRCTextMessageHandler()
 {
 	//Tell the thread to exit and wait until it does
-	boost::shared_ptr<ITExitThread> message1(new ITExitThread);
+	std::shared_ptr<ITExitThread> message1(new ITExitThread);
 	irc.sendMessage(message1);
 	if (ircThread.joinable())
 		ircThread.join();
@@ -54,8 +54,8 @@ void IRCTextMessageHandler::startIRC(const std::string& username)
 	{
 		nusername.replace(nusername.find(" "), 1, "_");
 	}
-	boost::shared_ptr<ITConnect> message1(new ITConnect(IRC_SERVER, nusername, 6667));
-	boost::shared_ptr<ITJoinChannel> message2(new ITJoinChannel(IRC_CHAN));
+	std::shared_ptr<ITConnect> message1(new ITConnect(IRC_SERVER, nusername, 6667));
+	std::shared_ptr<ITJoinChannel> message2(new ITJoinChannel(IRC_CHAN));
 
 	irc.sendMessage(message1);
 	irc.sendMessage(message2);
@@ -65,7 +65,7 @@ void IRCTextMessageHandler::startIRC(const std::string& username)
 
 void IRCTextMessageHandler::stopIRC()
 {
-	boost::shared_ptr<ITDisconnect> message1(new ITDisconnect);
+	std::shared_ptr<ITDisconnect> message1(new ITDisconnect);
 	irc.sendMessage(message1);
 }
 
@@ -76,20 +76,20 @@ void IRCTextMessageHandler::update()
 	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	while(!incoming.empty())
 	{
-		boost::shared_ptr<IRCThreadMessage> message = incoming.front();
+		std::shared_ptr<IRCThreadMessage> message = incoming.front();
 		incoming.pop();
 		Uint8 type = message->getMessageType();
 		switch(type)
 		{
 			case ITMRecieveMessage:
 			{
-				boost::shared_ptr<ITRecieveMessage> info = static_pointer_cast<ITRecieveMessage>(message);
+				std::shared_ptr<ITRecieveMessage> info = static_pointer_cast<ITRecieveMessage>(message);
 				sendToAllListeners(info->getMessage());
 			}
 			break;
 			case ITMUserListModified:
 			{
-				boost::shared_ptr<ITUserListModified> info = static_pointer_cast<ITUserListModified>(message);
+				std::shared_ptr<ITUserListModified> info = static_pointer_cast<ITUserListModified>(message);
 				userListModified = true;
 				users = info->getUsers();
 			}
@@ -116,7 +116,7 @@ void IRCTextMessageHandler::removeTextMessageListener(IRCTextMessageListener* li
 
 void IRCTextMessageHandler::sendCommand(const std::string& command)
 {
-	boost::shared_ptr<ITSendMessage> message1(new ITSendMessage(command));
+	std::shared_ptr<ITSendMessage> message1(new ITSendMessage(command));
 	irc.sendMessage(message1);
 }
 

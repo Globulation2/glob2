@@ -80,9 +80,9 @@ bool YOGServerMapDatabank::doesMapExist(const std::string& map)
 
 YOGMapUploadRefusalReason YOGServerMapDatabank::canRecieveFromPlayer(const YOGDownloadableMapInfo& map)
 {
-	for(std::vector<boost::tuple<YOGDownloadableMapInfo, int> >::iterator i = uploadingMaps.begin(); i!=uploadingMaps.end(); ++i)
+	for(std::vector<std::tuple<YOGDownloadableMapInfo, int> >::iterator i = uploadingMaps.begin(); i!=uploadingMaps.end(); ++i)
 	{
-		if(i->get<0>().getMapHeader().getMapName() == map.getMapHeader().getMapName())
+		if(std::get<0>(*i).getMapHeader().getMapName() == map.getMapHeader().getMapName())
 			return YOGMapUploadReasonMapNameAlreadyExists;
 	}
 	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
@@ -95,32 +95,32 @@ YOGMapUploadRefusalReason YOGServerMapDatabank::canRecieveFromPlayer(const YOGDo
 
 
 
-Uint16 YOGServerMapDatabank::recieveMapFromPlayer(const YOGDownloadableMapInfo& map, boost::shared_ptr<YOGServerPlayer> player)
+Uint16 YOGServerMapDatabank::recieveMapFromPlayer(const YOGDownloadableMapInfo& map, std::shared_ptr<YOGServerPlayer> player)
 {
 	int fileID = server->getFileDistributionManager().allocateFileDistributor();
 	server->getFileDistributionManager().getDistributor(fileID)->loadFromPlayer(player);
-	uploadingMaps.push_back(boost::make_tuple(map, fileID));
+	uploadingMaps.push_back(std::make_tuple(map, fileID));
 	return fileID;
 }
 
 
 
-void YOGServerMapDatabank::sendMapListToPlayer(boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerMapDatabank::sendMapListToPlayer(std::shared_ptr<YOGServerPlayer> player)
 {
-	boost::shared_ptr<NetDownloadableMapInfos> infos(new NetDownloadableMapInfos(maps));
+	std::shared_ptr<NetDownloadableMapInfos> infos(new NetDownloadableMapInfos(maps));
 	player->sendMessage(infos);
 }
 
 
 
-void YOGServerMapDatabank::sendMapThumbnailToPlayer(Uint16 mapID, boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerMapDatabank::sendMapThumbnailToPlayer(Uint16 mapID, std::shared_ptr<YOGServerPlayer> player)
 {
 	for(std::vector<YOGDownloadableMapInfo>::iterator i = maps.begin(); i!=maps.end(); ++i)
 	{
 		if(i->getMapID() == mapID)
 		{
 			MapThumbnail thumbnail = loadThumbnail(i->getMapHeader().getMapName(), i->getMapHeader().getFileName());
-			boost::shared_ptr<NetSendMapThumbnail> infos(new NetSendMapThumbnail(mapID, thumbnail));
+			std::shared_ptr<NetSendMapThumbnail> infos(new NetSendMapThumbnail(mapID, thumbnail));
 			player->sendMessage(infos);
 			return;
 		}
@@ -151,20 +151,20 @@ void YOGServerMapDatabank::submitRating(Uint16 mapID, Uint8 rating)
 
 void YOGServerMapDatabank::update()
 {
-	for(std::vector<boost::tuple<YOGDownloadableMapInfo, int> >::iterator i=uploadingMaps.begin(); i!=uploadingMaps.end();)
+	for(std::vector<std::tuple<YOGDownloadableMapInfo, int> >::iterator i=uploadingMaps.begin(); i!=uploadingMaps.end();)
 	{
-		if(server->getFileDistributionManager().getDistributor(i->get<1>())->areAllChunksLoaded())
+		if(server->getFileDistributionManager().getDistributor(std::get<1>(*i))->areAllChunksLoaded())
 		{
-			server->getFileDistributionManager().getDistributor(i->get<1>())->saveToFile(i->get<0>().getMapHeader().getFileName());
-			server->getFileDistributionManager().removeDistributor(i->get<1>());
-			addMap(i->get<0>());
+			server->getFileDistributionManager().getDistributor(std::get<1>(*i))->saveToFile(std::get<0>(*i).getMapHeader().getFileName());
+			server->getFileDistributionManager().removeDistributor(std::get<1>(*i));
+			addMap(std::get<0>(*i));
 			Uint32 n = i - uploadingMaps.begin();
 			uploadingMaps.erase(i);
 			i = uploadingMaps.begin() + n;
 		}
-		else if(server->getFileDistributionManager().getDistributor(i->get<1>())->wasUploadingCanceled())
+		else if(server->getFileDistributionManager().getDistributor(std::get<1>(*i))->wasUploadingCanceled())
 		{
-			server->getFileDistributionManager().removeDistributor(i->get<1>());
+			server->getFileDistributionManager().removeDistributor(std::get<1>(*i));
 			Uint32 n = i - uploadingMaps.begin();
 			uploadingMaps.erase(i);
 			i = uploadingMaps.begin() + n;

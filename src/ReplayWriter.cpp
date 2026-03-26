@@ -30,7 +30,7 @@
 #include <stdio.h>
 
 // Write an Order to the stream, with the given checksum
-inline void writeOrder(GAGCore::OutputStream *stream, boost::shared_ptr<Order> order, Uint32 checksum = 0)
+inline void writeOrder(GAGCore::OutputStream *stream, std::shared_ptr<Order> order, Uint32 checksum = 0)
 {
 	// Write the checksum
 	order->gameCheckSum = checksum;
@@ -101,7 +101,7 @@ void ReplayWriter::setCheckSum(Uint32 checksum)
 	this->checksum = checksum;
 }
 
-void ReplayWriter::pushOrder(boost::shared_ptr<Order> order)
+void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 {
 	if (!isValid()) return;
 	if (order->getOrderType() == ORDER_VOICE_DATA || order->getOrderType() == ORDER_NULL) return;
@@ -125,7 +125,7 @@ void ReplayWriter::finish()
 	buffer->writeUint16(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
 	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
-	writeOrder(buffer, boost::shared_ptr<Order>(new NullOrder()), 0);
+	writeOrder(buffer, std::shared_ptr<Order>(new NullOrder()), 0);
 
 	// Flush the buffer now
 	buffer->flush();
@@ -166,7 +166,7 @@ bool ReplayWriter::write(const std::string &filename) const
 	file->writeUint16(0, "replayStepsSinceLastOrder");
 
 	// Write a NullOrder to the file to make sure it's a NullOrder-terminated replay
-	writeOrder(file, boost::shared_ptr<Order>(new NullOrder()), 0);
+	writeOrder(file, std::shared_ptr<Order>(new NullOrder()), 0);
 
 	// Flush the file
 	file->flush();

@@ -19,7 +19,7 @@
 #ifndef __ReplayReader_h
 #define __ReplayReader_h
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <assert.h>
 #include <string>
 #include "Types.h"
@@ -77,7 +77,7 @@ public:
 	void setCheckSum(Uint32 checksum = 0);
 
 	/// Get the next order on the current step
-	boost::shared_ptr<Order> retrieveOrder();
+	std::shared_ptr<Order> retrieveOrder();
 
 	/// Get the stream that this reader uses, or NULL if there is none
 	GAGCore::InputStream *getStream() const;

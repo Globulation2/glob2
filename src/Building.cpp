@@ -1035,7 +1035,7 @@ void Building::updateBuildingSite(void)
 			owner->clearingFlags.push_back(this);
 
 		setMapDiscovered();
-		boost::shared_ptr<GameEvent> event(new BuildingCompletedEvent(owner->game->stepCounter, getMidX(), getMidY(), shortTypeNum));
+		std::shared_ptr<GameEvent> event(new BuildingCompletedEvent(owner->game->stepCounter, getMidX(), getMidY(), shortTypeNum));
 		owner->pushGameEvent(event);
 
 		// we need to do an update again

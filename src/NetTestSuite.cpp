@@ -25,7 +25,7 @@
 
 
 using namespace GAGCore;
-using boost::shared_ptr;
+using std::shared_ptr;
 
 NetTestSuite::NetTestSuite()
 {
@@ -393,7 +393,7 @@ int NetTestSuite::testNetSendOrder()
 		return 1;
 
 	shared_ptr<NetSendOrder> netSendOrder1(new NetSendOrder);
-	netSendOrder1->changeOrder(boost::shared_ptr<Order>(new OrderDelete(1)));
+	netSendOrder1->changeOrder(std::shared_ptr<Order>(new OrderDelete(1)));
 	if(!testSerialize(netSendOrder1))
 		return 2;
 	

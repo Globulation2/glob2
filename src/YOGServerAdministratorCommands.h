@@ -21,7 +21,7 @@
 
 #include <string>
 #include <vector>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 class YOGServerAdministrator;
 class YOGServer;
@@ -46,7 +46,7 @@ public:
 	virtual bool allowedForModerator()=0;
 	
 	///Executes the code for the administrator command
-	virtual void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)=0;
+	virtual void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)=0;
 };
 
 
@@ -63,7 +63,7 @@ public:
 
 	bool allowedForModerator();
 
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -80,7 +80,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -97,7 +97,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -114,7 +114,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -131,7 +131,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -148,7 +148,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -165,7 +165,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -182,7 +182,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -199,7 +199,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -216,7 +216,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -233,7 +233,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -250,7 +250,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 
@@ -267,7 +267,7 @@ public:
 	
 	bool allowedForModerator();
 	
-	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player);
+	void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player);
 };
 
 #endif

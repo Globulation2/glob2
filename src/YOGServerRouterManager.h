@@ -19,7 +19,7 @@
 #ifndef YOGServerRouterManager_h
 #define YOGServerRouterManager_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include <vector>
 #include "NetListener.h"
 
@@ -34,17 +34,17 @@ public:
 	YOGServerRouterManager(YOGServer& server);
 
 	///Adds a connection to a YOG
-	void addRouter(boost::shared_ptr<NetConnection> connection);
+	void addRouter(std::shared_ptr<NetConnection> connection);
 	
 	///Updates this manager
 	void update();
 	
 	///This chooses a new yog router
-	boost::shared_ptr<NetConnection> chooseYOGRouter();
+	std::shared_ptr<NetConnection> chooseYOGRouter();
 private:
-	std::vector<boost::shared_ptr<NetConnection> > routers;
+	std::vector<std::shared_ptr<NetConnection> > routers;
 	NetListener listener;
-	boost::shared_ptr<NetConnection> new_connection;
+	std::shared_ptr<NetConnection> new_connection;
 	YOGServer& server;
 	int n;
 };

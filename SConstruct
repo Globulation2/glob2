@@ -135,21 +135,9 @@ def configure(env, server_only):
     env.Append(LIBS=["pthread"])
     
 
-    if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
-        print("Could not find boost/shared_ptr.hpp")
-        missing.append("boost/shared_ptr.hpp")
-    if not conf.CheckCXXHeader("boost/tuple/tuple.hpp"):
-        print("Could not find boost/tuple/tuple.hpp")
-        missing.append("boost/tuple/tuple.hpp")
-    if not conf.CheckCXXHeader("boost/tuple/tuple_comparison.hpp"):
-        print("Could not find boost/tuple/tuple_comparison.hpp")
-        missing.append("boost/tuple/tuple_comparison.hpp")
     if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):
         print("Could not find boost/logic/tribool.hpp")
         missing.append("boost/logic/tribool.hpp")
-    if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
-        print("Could not find boost/lexical_cast.hpp")
-        missing.append("boost/lexical_cast.hpp")
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []

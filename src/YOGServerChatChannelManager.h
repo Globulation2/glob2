@@ -22,7 +22,7 @@
 
 #include <map>
 #include "SDL_net.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 class YOGServerChatChannel;
 
@@ -46,11 +46,11 @@ public:
 	Uint32 getLobbyChannel();
 
 	///Returns the YOGServerChatChannel for the particular channel
-	boost::shared_ptr<YOGServerChatChannel> getChannel(Uint32 channel);
+	std::shared_ptr<YOGServerChatChannel> getChannel(Uint32 channel);
 
 private:
 	Uint32 currentChannelID;
-	std::map<Uint32, boost::shared_ptr<YOGServerChatChannel> > channels;
+	std::map<Uint32, std::shared_ptr<YOGServerChatChannel> > channels;
 };
 
 

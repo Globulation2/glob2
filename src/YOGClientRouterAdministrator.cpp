@@ -23,7 +23,7 @@
 #include "YOGClientRouterAdministrator.h"
 #include "YOGConsts.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 	
 YOGClientRouterAdministrator::YOGClientRouterAdministrator()
 {
@@ -68,7 +68,7 @@ int YOGClientRouterAdministrator::execute()
 		return 1;
 	}
 	
-	boost::shared_ptr<NetRouterAdministratorLogin> login(new NetRouterAdministratorLogin(password));
+	std::shared_ptr<NetRouterAdministratorLogin> login(new NetRouterAdministratorLogin(password));
 	connect.sendMessage(login);
 	
 	//Parse incoming messages and generate events
@@ -88,7 +88,7 @@ int YOGClientRouterAdministrator::execute()
 	
 	if(type == MNetRouterAdministratorLoginRefused)
 	{
-		boost::shared_ptr<NetRouterAdministratorLoginRefused> info = static_pointer_cast<NetRouterAdministratorLoginRefused>(message);
+		std::shared_ptr<NetRouterAdministratorLoginRefused> info = static_pointer_cast<NetRouterAdministratorLoginRefused>(message);
 		YOGRouterAdministratorLoginRefusalReason reason = info->getReason();
 		if(reason == YOGRouterLoginWrongPassword)
 		{
@@ -112,7 +112,7 @@ int YOGClientRouterAdministrator::execute()
 			std::cout<<std::endl;
 			return 0;
 		}
-		boost::shared_ptr<NetRouterAdministratorSendCommand> cmd(new NetRouterAdministratorSendCommand(command));
+		std::shared_ptr<NetRouterAdministratorSendCommand> cmd(new NetRouterAdministratorSendCommand(command));
 		connect.sendMessage(cmd);
 		
 		//Parse incoming messages and generate events
@@ -129,7 +129,7 @@ int YOGClientRouterAdministrator::execute()
 			Uint8 type = message->getMessageType();
 			if(type == MNetRouterAdministratorSendText)
 			{
-				boost::shared_ptr<NetRouterAdministratorSendText> info = static_pointer_cast<NetRouterAdministratorSendText>(message);
+				std::shared_ptr<NetRouterAdministratorSendText> info = static_pointer_cast<NetRouterAdministratorSendText>(message);
 				std::cout<<info->getText()<<std::endl;
 			}
 			message = connect.getMessage();

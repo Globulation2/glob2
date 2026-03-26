@@ -37,7 +37,7 @@
 
 using namespace GAGCore;
 
-YOGClientMapUploadScreen::YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> client, const std::string mapFile)
+YOGClientMapUploadScreen::YOGClientMapUploadScreen(std::shared_ptr<YOGClient> client, const std::string mapFile)
 	: client(client), uploader(client), mapFile(mapFile)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]")));

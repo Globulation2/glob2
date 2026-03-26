@@ -19,7 +19,7 @@
 #ifndef __YOGServer_h
 #define __YOGServer_h
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "NetListener.h"
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
@@ -115,13 +115,13 @@ public:
 	YOGServerGameJoinRefusalReason canJoinGame(Uint16 gameID);
 	
 	///Returns the game assocciatted with the given ID
-	boost::shared_ptr<YOGServerGame> getGame(Uint16 gameID);
+	std::shared_ptr<YOGServerGame> getGame(Uint16 gameID);
 
 	///Returns the player assocciatted with the given ID
-	boost::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
+	std::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
 
 	///Returns the player assocciatted with the given name
-	boost::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
+	std::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
 	
 	///This starts LAN broadcasting of the first game, if it exists
 	void enableLANBroadcasting();
@@ -173,11 +173,11 @@ private:
 	static const bool organizedGameTimeEnabled = false;
 
 	NetListener nl;
-	boost::shared_ptr<NetBroadcaster> broadcaster;
-	boost::shared_ptr<NetConnection> new_connection;
+	std::shared_ptr<NetBroadcaster> broadcaster;
+	std::shared_ptr<NetConnection> new_connection;
 	
-	std::map<Uint16, boost::shared_ptr<YOGServerPlayer> > players;
-	std::map<Uint16, boost::shared_ptr<YOGServerGame> > games;
+	std::map<Uint16, std::shared_ptr<YOGServerPlayer> > players;
+	std::map<Uint16, std::shared_ptr<YOGServerGame> > games;
 	std::list<YOGGameInfo> gameList;
 	std::list<YOGPlayerSessionInfo> playerList;
 	

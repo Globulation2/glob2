@@ -21,7 +21,7 @@
 
 #include <vector>
 #include "Glob2Screen.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "YOGClientMapUploader.h"
 
 namespace GAGGUI
@@ -48,7 +48,7 @@ class YOGClientMapUploadScreen : public Glob2Screen
 public:
 
 	/// Constructor
-	YOGClientMapUploadScreen(boost::shared_ptr<YOGClient> client, const std::string mapFile);
+	YOGClientMapUploadScreen(std::shared_ptr<YOGClient> client, const std::string mapFile);
 
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
@@ -69,7 +69,7 @@ private:
 	};
 	
 	MapPreview* preview;
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	YOGClientMapUploader uploader;
 	Text* uploadStatusText;
 	ProgressBar* uploadStatus;

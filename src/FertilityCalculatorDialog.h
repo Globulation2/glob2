@@ -56,7 +56,7 @@ private:
 	
 	FertilityCalculatorThread thread;
 	std::thread computeThread;
-	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
+	std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
 	std::recursive_mutex incomingMutex;
 };
 

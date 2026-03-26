@@ -40,7 +40,7 @@
 
 using namespace GAGCore;
 
-YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(boost::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info)
+YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info)
 	: info(info), client(client), downloader(client)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[downloading map]")));

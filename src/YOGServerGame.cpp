@@ -64,7 +64,7 @@ void YOGServerGame::update()
 					break;
 				}
 			}
-			boost::shared_ptr<Order> order(new PlayerQuitsGameOrder(p));
+			std::shared_ptr<Order> order(new PlayerQuitsGameOrder(p));
 			order->sender = p;
 			shared_ptr<NetSendOrder> message(new NetSendOrder(order));
 			for(std::vector<shared_ptr<YOGServerPlayer> >::iterator j = players.begin(); j!=players.end(); ++j)
@@ -284,8 +284,8 @@ Uint16 YOGServerGame::getGameID() const
 void YOGServerGame::setReadyToStart(int playerID)
 {
 	playerManager.setReadyToGo(playerID, true);
-	boost::shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(playerID));
-	for(std::vector<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	std::shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(playerID));
+	for(std::vector<std::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if((*i)->getPlayerID() != playerID)
 			(*i)->sendMessage(message);
@@ -297,8 +297,8 @@ void YOGServerGame::setReadyToStart(int playerID)
 void YOGServerGame::setNotReadyToStart(int playerID)
 {
 	playerManager.setReadyToGo(playerID, false);
-	boost::shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(playerID));
-	for(std::vector<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	std::shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(playerID));
+	for(std::vector<std::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if((*i)->getPlayerID() != playerID)
 			(*i)->sendMessage(message);
@@ -316,7 +316,7 @@ void YOGServerGame::recieveGameStartRequest()
 	}
 	else
 	{
-		boost::shared_ptr<NetRefuseGameStart> message(new NetRefuseGameStart(YOGNotAllPlayersReady));
+		std::shared_ptr<NetRefuseGameStart> message(new NetRefuseGameStart(YOGNotAllPlayersReady));
 		host->sendMessage(message);
 	}
 }
@@ -327,7 +327,7 @@ void YOGServerGame::startGame()
 {
 	chooseLatencyMode();
 	gameStarted=true;
-	boost::shared_ptr<NetStartGame> message(new NetStartGame);
+	std::shared_ptr<NetStartGame> message(new NetStartGame);
 	routeMessage(message);
 	server.getGameInfo(gameID).setGameState(YOGGameInfo::GameRunning);
 }
@@ -382,14 +382,14 @@ void YOGServerGame::chooseLatencyMode()
 
 	if(latency_adjustment != latencyMode && !gameStarted)
 	{
-		boost::shared_ptr<NetSetLatencyMode> message(new NetSetLatencyMode(latency_adjustment));
+		std::shared_ptr<NetSetLatencyMode> message(new NetSetLatencyMode(latency_adjustment));
 		routeMessage(message);
 		latencyMode = latency_adjustment;
 	}
 }
 
 
-void YOGServerGame::setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result)
+void YOGServerGame::setPlayerGameResult(std::shared_ptr<YOGServerPlayer> sender, YOGGameResult result)
 {
 	if(gameResults.getGameResultState(sender->getPlayerName()) == YOGGameResultUnknown)
 	{

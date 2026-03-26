@@ -22,7 +22,7 @@
 
 #include <vector>
 #include "Glob2Screen.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "YOGDownloadableMapInfo.h"
 #include "YOGClientMapDownloader.h"
 
@@ -49,7 +49,7 @@ class YOGClientDownloadingMapScreen : public Glob2Screen
 public:
 
 	/// Constructor
-	YOGClientDownloadingMapScreen(boost::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info);
+	YOGClientDownloadingMapScreen(std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info);
 
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
@@ -65,7 +65,7 @@ public:
 private:
 	YOGDownloadableMapInfo info;
 	MapPreview* preview;
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	//! The textual informations about the selected map
 	Text *mapName, *mapInfo, *mapSize, *varPrestigeText;
 	Text *authorName;

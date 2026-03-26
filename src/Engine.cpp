@@ -178,7 +178,7 @@ int Engine::initLoadGame()
 		assert(false);
 }
 
-int Engine::initMultiplayer(boost::shared_ptr<MultiplayerGame> multiplayerGame, boost::shared_ptr<YOGClient> client, int localPlayer)
+int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer)
 {
 	gui.localPlayer = localPlayer;
 	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
