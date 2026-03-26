@@ -21,15 +21,14 @@
 
 #include "NetConnectionThreadMessage.h"
 #include <boost/shared_ptr.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/thread/recursive_mutex.hpp>
+#include <mutex>
 #include <queue>
 
 ///IRC thread manages IRC
 class NetConnectionThread
 {
 public:
-	NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex);
+	NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
 	
 	~NetConnectionThread();
 	
@@ -58,8 +57,8 @@ private:
 	
 	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
 	std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing;
-	boost::recursive_mutex incomingMutex;
-	boost::recursive_mutex& outgoingMutex;
+	std::recursive_mutex incomingMutex;
+	std::recursive_mutex& outgoingMutex;
 	bool hasExited;
 	//static Uint32 lastTime;
 	//static Uint32 amount;

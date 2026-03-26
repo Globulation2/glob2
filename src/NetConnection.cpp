@@ -18,6 +18,7 @@
 
 #include "NetConnection.h"
 #include <algorithm>
+#include <functional>
 #include <iostream>
 #include "StreamBackend.h"
 #include "BinaryStream.h"
@@ -35,7 +36,7 @@ using boost::shared_ptr;
 NetConnection::NetConnection(const std::string& naddress, Uint16 port)
 	: connect(incoming, incomingMutex)
 {
-	boost::thread thread(boost::ref(connect));
+	connectThread = std::thread(std::ref(connect));
 	connecting=false;
 	openConnection(naddress, port);
 }
@@ -45,7 +46,7 @@ NetConnection::NetConnection(const std::string& naddress, Uint16 port)
 NetConnection::NetConnection()
 	: connect(incoming, incomingMutex)
 {
-	boost::thread thread(boost::ref(connect));
+	connectThread = std::thread(std::ref(connect));
 }
 
 
@@ -54,7 +55,8 @@ NetConnection::~NetConnection()
 {
 	boost::shared_ptr<NTExitThread> exitthread(new NTExitThread);
 	connect.sendMessage(exitthread);
-	while(!connect.hasThreadExited());
+	if (connectThread.joinable())
+		connectThread.join();
 }
 
 
@@ -93,7 +95,7 @@ bool NetConnection::isConnecting()
 
 void NetConnection::update()
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	while(!incoming.empty())
 	{
 		boost::shared_ptr<NetConnectionThreadMessage> message = incoming.front();

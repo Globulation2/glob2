@@ -21,6 +21,7 @@
 
 #include "GUIBase.h"
 #include "FertilityCalculatorThread.h"
+#include <thread>
 
 class Map;
 namespace GAGGUI
@@ -54,8 +55,9 @@ private:
 	GAGGUI::ProgressBar* progress;
 	
 	FertilityCalculatorThread thread;
+	std::thread computeThread;
 	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
-	boost::recursive_mutex incomingMutex;
+	std::recursive_mutex incomingMutex;
 };
 
 

@@ -22,7 +22,7 @@
 
 using boost::static_pointer_cast;
 
-IRCThread::IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
+IRCThread::IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
 	: outgoing(outgoing), outgoingMutex(outgoingMutex)
 {
 	hasExited = false;
@@ -37,7 +37,7 @@ void IRCThread::operator()()
 		SDL_Delay(20);
 		{
 			//First parse incoming thread messages
-			boost::recursive_mutex::scoped_lock lock(incomingMutex);
+			std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 			while(!incoming.empty())
 			{
 				boost::shared_ptr<IRCThreadMessage> message = incoming.front();
@@ -168,7 +168,7 @@ void IRCThread::operator()()
 
 void IRCThread::sendMessage(boost::shared_ptr<IRCThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	incoming.push(message);
 }
 
@@ -183,7 +183,7 @@ bool IRCThread::hasThreadExited()
 
 void IRCThread::sendToMainThread(boost::shared_ptr<IRCThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(outgoingMutex);
+	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
 	outgoing.push(message);
 }
 

@@ -26,7 +26,7 @@
 using namespace GAGCore;
 using boost::static_pointer_cast;
 
-NetConnectionThread::NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
+NetConnectionThread::NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
 	: outgoing(outgoing),  outgoingMutex(outgoingMutex)
 {
 	set=SDLNet_AllocSocketSet(1);
@@ -54,7 +54,7 @@ void NetConnectionThread::operator()()
 			{
 				boost::shared_ptr<NetConnectionThreadMessage> message;
 				{
-					boost::recursive_mutex::scoped_lock lock(incomingMutex);
+					std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 					if(!incoming.empty())
 					{
 						message = incoming.front();
@@ -262,7 +262,7 @@ void NetConnectionThread::operator()()
 
 void NetConnectionThread::sendMessage(boost::shared_ptr<NetConnectionThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	incoming.push(message);
 }
 
@@ -293,7 +293,7 @@ void NetConnectionThread::closeConnection()
 
 void NetConnectionThread::sendToMainThread(boost::shared_ptr<NetConnectionThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(outgoingMutex);
+	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
 	outgoing.push(message);
 }
 

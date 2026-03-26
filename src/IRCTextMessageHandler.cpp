@@ -21,6 +21,7 @@
 
 #include "IRCTextMessageHandler.h"
 #include "IRCThreadMessage.h"
+#include <functional>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include "YOGConsts.h"
@@ -31,7 +32,7 @@ using boost::static_pointer_cast;
 IRCTextMessageHandler::IRCTextMessageHandler()
 	: irc(incoming, incomingMutex)
 {
-	boost::thread thread(boost::ref(irc));
+	ircThread = std::thread(std::ref(irc));
 	userListModified = false;
 }
 
@@ -41,11 +42,8 @@ IRCTextMessageHandler::~IRCTextMessageHandler()
 	//Tell the thread to exit and wait until it does
 	boost::shared_ptr<ITExitThread> message1(new ITExitThread);
 	irc.sendMessage(message1);
-
-	while(!irc.hasThreadExited())
-	{
-
-	}
+	if (ircThread.joinable())
+		ircThread.join();
 }
 
 
@@ -75,7 +73,7 @@ void IRCTextMessageHandler::stopIRC()
 
 void IRCTextMessageHandler::update()
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	while(!incoming.empty())
 	{
 		boost::shared_ptr<IRCThreadMessage> message = incoming.front();

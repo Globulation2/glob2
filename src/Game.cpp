@@ -977,7 +977,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	    if(globalContainer->runNoX)
 	    {
     	    std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
-    	    boost::recursive_mutex incomingMutex;
+    	    std::recursive_mutex incomingMutex;
     	    FertilityCalculatorThread calculator(map, incoming, incomingMutex);
     	    calculator();
 	    }

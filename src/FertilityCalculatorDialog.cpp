@@ -19,6 +19,7 @@
 
 #include "FertilityCalculatorDialog.h"
 #include "FertilityCalculatorThreadMessage.h"
+#include <functional>
 #include "GUIProgressBar.h"
 #include "GUIText.h"
 #include <iomanip>
@@ -59,7 +60,7 @@ void FertilityCalculatorDialog::execute()
 	background->drawSurface(0, 0, parentCtx);
 
 	// start computing
-	boost::thread new_thread(boost::ref(thread));
+	computeThread = std::thread(std::ref(thread));
 
 	dispatchPaint();
 
@@ -99,6 +100,8 @@ void FertilityCalculatorDialog::execute()
 		SDL_Delay(std::max<Sint64>(40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time), 0));
 	}
 	
+	if (computeThread.joinable())
+		computeThread.join();
 	delete background;
 }
 
@@ -107,7 +110,7 @@ void FertilityCalculatorDialog::execute()
 void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
 {
 	//First parse incoming thread messages
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	while(!incoming.empty())
 	{
 		boost::shared_ptr<FertilityCalculatorThreadMessage> message = incoming.front();

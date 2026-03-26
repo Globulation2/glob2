@@ -20,8 +20,7 @@
 #define FertilityCalculatorThread_h
 
 #include <boost/shared_ptr.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/thread/recursive_mutex.hpp>
+#include <mutex>
 #include <queue>
 #include "SDL_net.h"
 
@@ -33,7 +32,7 @@ class FertilityCalculatorThread
 {
 public:
 	///Constructs the functor
-	FertilityCalculatorThread(Map& map, std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex);
+	FertilityCalculatorThread(Map& map, std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
 
 	///Launches the thread that computes fertility
 	void operator()();
@@ -66,8 +65,8 @@ private:
 	
 	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
 	std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing;
-	boost::recursive_mutex incomingMutex;
-	boost::recursive_mutex& outgoingMutex;
+	std::recursive_mutex incomingMutex;
+	std::recursive_mutex& outgoingMutex;
 	bool hasExited;
 
 	std::vector<Uint16> fertility;

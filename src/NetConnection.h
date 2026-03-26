@@ -22,6 +22,7 @@
 #include "SDL_net.h"
 #include "NetConnectionThread.h"
 #include <queue>
+#include <thread>
 #include <boost/shared_ptr.hpp>
 
 using boost::shared_ptr;
@@ -77,9 +78,10 @@ protected:
 	
 private:
 	NetConnectionThread connect;
-	
+	std::thread connectThread;
+
 	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
-	boost::recursive_mutex incomingMutex;
+	std::recursive_mutex incomingMutex;
 	std::queue<shared_ptr<NetMessage> > recieved;
 	
 	std::string address;

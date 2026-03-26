@@ -121,16 +121,6 @@ def configure(env, server_only):
         print("Could not find regex.h")
         missing.append("regex")
 
-    boost_thread = ''
-    if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
-        boost_thread="boost_thread"
-    elif conf.CheckLib("boost_thread-mt") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
-        boost_thread="boost_thread-mt"
-    else:
-        print("Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp")
-        missing.append("libboost_thread")
-    env.Append(LIBS=[boost_thread])
-    
     boost_date_time = ''
     if conf.CheckLib("boost_date_time") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
         boost_date_time="boost_date_time"

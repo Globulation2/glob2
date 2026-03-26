@@ -21,8 +21,7 @@
 
 #include "IRC.h"
 #include <boost/shared_ptr.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/thread/recursive_mutex.hpp>
+#include <mutex>
 #include <queue>
 
 class IRCThreadMessage;
@@ -31,7 +30,7 @@ class IRCThreadMessage;
 class IRCThread
 {
 public:
-	IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex);
+	IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
 	
 	///Runs the IRC thread
 	void operator()();
@@ -50,8 +49,8 @@ private:
 	
 	std::queue<boost::shared_ptr<IRCThreadMessage> > incoming;
 	std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing;
-	boost::recursive_mutex incomingMutex;
-	boost::recursive_mutex& outgoingMutex;
+	std::recursive_mutex incomingMutex;
+	std::recursive_mutex& outgoingMutex;
 	bool hasExited;
 };
 

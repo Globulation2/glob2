@@ -23,6 +23,7 @@
 #define __IRCTextMessageHandler_H
 
 #include "IRCThread.h"
+#include <thread>
 #include "boost/shared_ptr.hpp"
 
 
@@ -72,10 +73,11 @@ private:
 	void sendToAllListeners(const std::string& message);
 
 	IRCThread irc;
+	std::thread ircThread;
 	std::vector<IRCTextMessageListener* > listeners;
 
 	std::queue<boost::shared_ptr<IRCThreadMessage> > incoming;
-	boost::recursive_mutex incomingMutex;
+	std::recursive_mutex incomingMutex;
 	std::vector<std::string> users;
 
 
