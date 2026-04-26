@@ -1,0 +1,286 @@
+/*
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+
+#include "Map.h"
+#include "Game.h"
+#include "Utilities.h"
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
+#include "Unit.h"
+#include "MapInternal.h"
+
+#include <algorithm>
+#include <valarray>
+#include <Stream.h>
+#include <queue>
+
+
+// Resource grid mutations + ressource availability + points/area names
+
+void Map::decRessource(int x, int y)
+{
+	Ressource &r = getCase(x, y).ressource;
+	
+	if (r.type == NO_RES_TYPE || r.amount == 0)
+		return;
+	
+	const RessourceType *fulltype = globalContainer->ressourcesTypes.get(r.type);
+	
+	if (!fulltype->shrinkable)
+		return;
+	if (fulltype->eternal)
+	{
+		if (r.amount > 0)
+			r.amount--;
+	}
+	else
+	{
+		if (!fulltype->granular || r.amount<=1)
+			r.clear();
+		else
+			r.amount--;
+	}
+}
+
+void Map::decRessource(int x, int y, int ressourceType)
+{
+	if (isRessourceTakeable(x, y, ressourceType))
+		decRessource(x, y);
+}
+
+bool Map::incRessource(int x, int y, int ressourceType, int variety)
+{
+	Ressource &r = getCase(x, y).ressource;
+	const RessourceType *fulltype;
+	incRessourceLog[0]++;
+	if (r.type == NO_RES_TYPE)
+	{
+		incRessourceLog[1]++;
+		if (getBuilding(x, y) != NOGBID)
+			return false;
+		incRessourceLog[2]++;
+		if (getGroundUnit(x, y) != NOGUID)
+			return false;
+		incRessourceLog[3]++;
+		
+		fulltype = globalContainer->ressourcesTypes.get(ressourceType);
+		if (getTerrainType(x, y) == fulltype->terrain)
+		{
+			r.type = ressourceType;
+			r.variety = variety;
+			r.amount = 1;
+			r.animation = 0;
+			incRessourceLog[4]++;
+			return true;
+		}
+		else
+		{
+			incRessourceLog[5]++;
+			return false;
+		}
+	}
+	else
+	{
+		fulltype = globalContainer->ressourcesTypes.get(r.type);
+		incRessourceLog[6]++;
+	}
+	
+	incRessourceLog[7]++;
+	if (r.type != ressourceType)
+		return false;
+	incRessourceLog[8]++;
+	if (!fulltype->shrinkable)
+		return false;
+	incRessourceLog[9]++;
+	if (r.amount < fulltype->sizesCount)
+	{
+		incRessourceLog[10]++;
+		r.amount++;
+		return true;
+	}
+	else
+	{
+		incRessourceLog[11]++;
+		r.amount--;
+	}
+	return false;
+}
+
+
+void Map::setNoRessource(int x, int y, int l)
+{
+	assert(l>=0);
+	assert(l<w);
+	assert(l<h);
+	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
+		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
+			cases[coordToIndex(dx, dy)].ressource.clear();
+}
+
+void Map::setRessource(int x, int y, int type, int l)
+{
+	assert(l>=0);
+	assert(l<w);
+	assert(l<h);
+	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
+		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
+			if (isRessourceAllowed(dx, dy, type))
+			{
+				Ressource& rp=cases[coordToIndex(dx, dy)].ressource;
+				rp.type=type;
+				const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
+				rp.variety=syncRand()%rt->varietiesCount;
+				assert(rt->sizesCount>1);
+				rp.amount=1+syncRand()%(rt->sizesCount-1);
+				rp.animation=0;
+			}
+}
+
+bool Map::isRessourceAllowed(int x, int y, int type)
+{
+	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
+}
+
+bool Map::isPointSet(int n, int x, int y) const
+{
+	return getCase(x, y).scriptAreas & 1<<n;
+}
+
+void Map::setPoint(int n, int x, int y)
+{
+	getCase(x, y).scriptAreas |= 1<<n;
+}
+
+void Map::unsetPoint(int n, int x, int y)
+{
+	getCase(x, y).scriptAreas ^= getCase(x, y).scriptAreas & (1<<n);
+}
+
+std::string Map::getAreaName(int n) const
+{
+	return areaNames[n];
+}
+
+void Map::setAreaName(int n, std::string name)
+{
+	areaNames[n]=name;
+}
+
+
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y) const
+{
+	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
+	return g>1; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
+}
+
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist) const
+{
+	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
+	if (g>1)
+	{
+		*dist = 255-g;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool Map::ressourceAvailableUpdate(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+{
+	// distance and availability
+	bool result;
+	if (dist)
+		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y, dist);
+	else
+		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y);
+		
+	// target position
+	Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
+	ressourceAvailableCount[teamNumber][ressourceType]++;
+	if (getGlobalGradientDestination(gradient, x, y, targetX, targetY))
+		ressourceAvailableCountSuccess[teamNumber][ressourceType]++;
+	else
+		ressourceAvailableCountFailure[teamNumber][ressourceType]++;
+	
+	return result;
+}
+
+bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const
+{
+	// we start from our current position
+	int vx = x & wMask;
+	int vy = y & hMask;
+	// max is initialized to gradient value of current position
+	Uint8 max = gradient[coordToIndex(vx, vy)];
+	
+	bool result = false;
+	// for up to 255 steps, we follow gradient
+	for (int count=0; count<255; count++)
+	{
+		bool found = false;
+		int vddx = 0;
+		int vddy = 0;
+		
+		// search all directions
+		for (int d=0; d<8; d++)
+		{
+			int ddx = deltaOne[d][0];
+			int ddy = deltaOne[d][1];
+			Uint8 g = gradient[coordToIndex(vx + ddx, vy + ddy)];
+			if (g>max)
+			{
+				max = g;
+				vddx = ddx;
+				vddy = ddy;
+				found = true;
+			}
+		}
+		
+		// change position
+		vx = (vx+vddx) & wMask;
+		vy = (vy+vddy) & hMask;
+		
+		// if we have reached destination break
+		if (max == 255)
+		{
+			result = true;
+			break;
+		}
+		// if we haven't found a suitable direction, we break, but we do not have exact destination
+		else if (!found)
+			break;
+	}
+	
+	// return best destination and wether it is exact or not
+	*targetX = vx;
+	*targetY = vy;
+	return result;
+}
+
+
+/*
+This was the old way. I was much more complex but reliable with partially broken gradients. Let's keep it for now in case of such type of gradient reappears
+bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+
+commented out version last seen in revision 0ea2652945a0
+
+*/
+
+

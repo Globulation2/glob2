@@ -1,0 +1,136 @@
+/*
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+
+#include "Map.h"
+#include "Game.h"
+#include "Utilities.h"
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
+#include "Unit.h"
+#include "MapInternal.h"
+
+#include <algorithm>
+#include <valarray>
+#include <Stream.h>
+#include <queue>
+
+
+// Miscellaneous helpers: checkSum, warpDist*, isInLocalGradient, dumpGradient
+
+Uint32 Map::checkSum(bool heavy)
+{
+	Uint32 cs=size;
+	if (heavy)
+	{
+		for (const auto& c: cases)
+		{
+			cs+=
+				c.terrain +
+				c.building +
+				c.ressource.getUint32() +
+				c.groundUnit +
+				c.airUnit +
+				c.forbidden +
+				c.scriptAreas;
+			cs=(cs<<1)|(cs>>31);
+		}
+	};
+	return cs;
+}
+
+Sint32 Map::warpDist1d(int p, int q, int l)
+{
+	Sint32 d=abs(p-q);
+	d%=l;
+	if (d>l/2)
+		d=l-d;
+	return d;
+}
+
+Sint32 Map::warpDistSquare(int px, int py, int qx, int qy)
+{
+	Sint32 dx=warpDist1d(px,qx,w);
+	Sint32 dy=warpDist1d(py,qy,h);
+	return ((dx*dx)+(dy*dy));
+}
+
+Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
+{
+	Sint32 dx=warpDist1d(px,qx,w);
+	Sint32 dy=warpDist1d(py,qy,h);
+	if (dx>dy)
+		return dx;
+	else
+		return dy;
+}
+
+Sint32 Map::warpDistSum(int px, int py, int qx, int qy)
+{
+	Sint32 dx=warpDist1d(px,qx,w);
+	Sint32 dy=warpDist1d(py,qy,h);
+	return dx + dy;
+}
+
+
+bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
+{
+	Sint32 dx=warpDist1d(ux,bx,w);
+	Sint32 dy=warpDist1d(uy,by,h);
+	if (dx>dy)
+	{
+		if (dx<15)
+			return true;
+		if (dx>15)
+			return false;
+		
+		return ((bx+15) & wMask)==(ux & wMask);
+	}
+	else if (dx<dy)
+	{
+		if (dy<15)
+			return true;
+		if (dy>15)
+			return false;
+		
+		return ((by+15) & wMask)==(uy & wMask);
+	}
+	else
+	{
+		if (dx<15)
+			return true;
+		if (dx>15)
+			return false;
+		
+		return (((bx+15) & wMask)==(ux & wMask)) && (((by+15) & wMask)==(uy & wMask));
+	}
+}
+
+void Map::dumpGradient(Uint8 *gradient, const std::string filename)
+{
+	FILE *fp = globalContainer->fileManager->openFP(filename, "wb");
+	if (fp)
+	{
+		fprintf(fp, "P5 %d %d 255\n", w, h);
+		fwrite(gradient, w, h, fp);
+		fclose(fp);
+	}
+}
+
+
