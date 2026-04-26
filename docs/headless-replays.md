@@ -47,6 +47,24 @@ GLOB2_REPLAY_PATH=replays/game-001.replay ./glob2 -test-games-nox 1
 This lets concurrent headless instances write to distinct files (used by the
 AI-trainer replay-generation pipeline).
 
+## Game-End Summary Line
+
+When `automaticEndingGame` fires (set by `--nox`, `-test-games-nox`, and
+`-test-games`), the engine prints a machine-parseable summary line right
+after the existing tick/minute log:
+
+```
+GLOB2_GAME_END ticks=2483 winner_team=1 players=team0:local,team1:Nicowar,team2:Warrush
+```
+
+- `ticks` — total simulation ticks elapsed
+- `winner_team` — first team with `hasWon` set, or `-1` on timeout
+- `players` — comma-separated `teamN:type` pairs; type is `local`, `ip`,
+  `none`, or an AI name from `AINames::getAIText`
+
+The format is intended for grep/regex consumption — fields are
+space-separated key=value with no shell-quoting.
+
 For cross-codebase testing, copy replays to the Rust test fixture directory:
 ```bash
 cp ~/.glob2/replays/last_game.replay ../glob2-rust/test_data/replays/

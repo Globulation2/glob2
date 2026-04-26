@@ -570,6 +570,38 @@ int Engine::run(void)
 			int seconds = (time / 25) % 60;
 			int minutes = (time / 25) / 60;
 			std::cout<< "automaticEndingGame ended: "<<time<<" ticks, "<<minutes<<" minutes, "<<seconds<<" seconds"<<std::endl;
+
+			// Machine-parseable summary line for the AI-trainer pipeline (and any
+			// external driver scraping headless output). One line, key=value pairs,
+			// space-separated. Winner is the first team with hasWon set, else -1
+			// (timeout / no winner).
+			int winnerTeam = -1;
+			for (int t = 0; t < gui.game.mapHeader.getNumberOfTeams(); t++)
+			{
+				if (gui.game.teams[t] && gui.game.teams[t]->hasWon)
+				{
+					winnerTeam = t;
+					break;
+				}
+			}
+			std::cout << "GLOB2_GAME_END ticks=" << time
+				<< " winner_team=" << winnerTeam
+				<< " players=";
+			for (int p = 0; p < gui.game.gameHeader.getNumberOfPlayers(); p++)
+			{
+				const BasePlayer& bp = gui.game.gameHeader.getBasePlayer(p);
+				if (p > 0) std::cout << ",";
+				std::cout << "team" << bp.teamNumber << ":";
+				if (bp.type == BasePlayer::P_LOCAL)
+					std::cout << "local";
+				else if (bp.type == BasePlayer::P_IP)
+					std::cout << "ip";
+				else if (bp.type >= BasePlayer::P_AI)
+					std::cout << AINames::getAIText(BasePlayer::implementitionIdFromPlayerType(bp.type));
+				else
+					std::cout << "none";
+			}
+			std::cout << std::endl;
 		}
 
 		cpuStats.format();
