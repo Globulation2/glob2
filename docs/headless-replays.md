@@ -36,7 +36,16 @@ Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI 
 
 ## Replay Output
 
-All modes write replays to `~/.glob2/replays/last_game.replay`. **Each new game overwrites the previous replay** — copy it out between runs.
+All modes write replays to `~/.glob2/replays/last_game.replay` by default.
+**Each new game overwrites the previous replay** — copy it out between runs,
+or override the path per-game with the `GLOB2_REPLAY_PATH` env var:
+
+```bash
+GLOB2_REPLAY_PATH=replays/game-001.replay ./glob2 -test-games-nox 1
+```
+
+This lets concurrent headless instances write to distinct files (used by the
+AI-trainer replay-generation pipeline).
 
 For cross-codebase testing, copy replays to the Rust test fixture directory:
 ```bash

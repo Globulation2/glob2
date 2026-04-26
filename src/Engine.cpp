@@ -775,12 +775,17 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// we create the net game
 	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
-	// Initialise the replay writer, unless we're showing a replay
+	// Initialise the replay writer, unless we're showing a replay.
+	// GLOB2_REPLAY_PATH overrides the default output path (used by the
+	// AI-trainer pipeline to keep per-game replays without overwriting,
+	// and to allow concurrent headless instances to write to distinct files).
+	const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
+	std::string replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
 	if (!globalContainer->replaying)
 	{
 		assert(globalContainer->replayWriter == NULL);
 		globalContainer->replayWriter = new ReplayWriter();
-		globalContainer->replayWriter->init("replays/last_game.replay", gui);
+		globalContainer->replayWriter->init(replayPath, gui);
 	}
 
 	// Initialise checksum sidecar writer if requested
@@ -788,7 +793,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	{
 		std::string sidecarBase = globalContainer->replaying
 			? globalContainer->replayFileName
-			: std::string("replays/last_game.replay");
+			: replayPath;
 		checksumSidecar = new ChecksumSidecarWriter();
 		checksumSidecar->open(sidecarBase,
 			gui.game.teamsCount(),
