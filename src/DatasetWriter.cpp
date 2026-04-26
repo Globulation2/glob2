@@ -13,11 +13,6 @@ DatasetWriter::~DatasetWriter()
 	close();
 }
 
-void DatasetWriter::writeU16(Uint16 v)
-{
-	fwrite(&v, 2, 1, file);
-}
-
 void DatasetWriter::writeU32(Uint32 v)
 {
 	fwrite(&v, 4, 1, file);
@@ -39,11 +34,13 @@ bool DatasetWriter::open(const std::string& path)
 
 	numRecords = 0;
 
-	// Header: magic + format_version + num_records placeholder + flags.
+	// Header: magic + num_records placeholder. No version field — there's
+	// only one producer and one consumer (in this repo) and regenerating
+	// datasets is cheap, so we'd never need to support multiple versions
+	// in flight. If the format ever changes wire-incompatibly, bump the
+	// magic to "GDS2" and parsers reject by magic mismatch.
 	fwrite("GDS1", 4, 1, file);
-	writeU32(0); // format_version
 	writeU32(0); // num_records placeholder, patched in close()
-	writeU32(0); // flags
 
 	return true;
 }
@@ -67,12 +64,12 @@ void DatasetWriter::writeRecord(Uint32 tick, Order& order)
 	Uint8 sender = (Uint8)order.sender;
 	fwrite(&sender, 1, 1, file);
 	fwrite(&type, 1, 1, file);
-	writeU16(0); // padding to keep the 4-byte alignment after this point
 
-	// State blob (observation features) — empty in format version 0.
-	// Comes online when the trainer's observation representation lands;
-	// at that point format_version bumps to 1 and this field carries
-	// the serialized state.
+	// State blob (observation features) — currently empty (length 0).
+	// Populated when the trainer's observation representation lands; at
+	// that point this header byte changes from 4 zero bytes to a real
+	// length-prefixed serialized state. Length-prefixed so the parser
+	// can read past it without knowing the schema.
 	writeU32(0);
 
 	// Order payload, exactly as Order::getData() returns it.
@@ -89,8 +86,8 @@ void DatasetWriter::close()
 	if (!file)
 		return;
 
-	// Patch num_records (offset 8 in the header: after magic[4] + version[4]).
-	fseek(file, 8, SEEK_SET);
+	// Patch num_records at offset 4 (right after the magic).
+	fseek(file, 4, SEEK_SET);
 	writeU32(numRecords);
 
 	fclose(file);

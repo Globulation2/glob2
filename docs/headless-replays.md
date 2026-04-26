@@ -99,27 +99,27 @@ GLOB2_REPLAY_PATH=/tmp/game.replay \
 Format (little-endian):
 
 ```
-HEADER (16 bytes)
+HEADER (8 bytes)
   [4B] magic "GDS1"
-  [4B] u32 format_version       (currently 0)
   [4B] u32 num_records          (patched at close)
-  [4B] u32 flags                (reserved, 0)
 
 PER-RECORD
   [4B] u32 tick
   [1B] u8  sender_player_index
   [1B] u8  order_type
-  [2B] u16 padding              (0)
-  [4B] u32 state_blob_len       (0 in v0)
-  [state_blob_len bytes]        state features (empty in v0)
+  [4B] u32 state_blob_len
+  [state_blob_len bytes]        state features
   [4B] u32 order_payload_len
   [order_payload_len bytes]     order payload (Order::getData())
 ```
 
-State blob is **empty in format version 0** — the schema is wired up
-but observation features are deferred to a follow-up. Format version
-will bump to 1 when features land. Trainer-side parsers should reject
-unknown versions explicitly.
+`state_blob_len` is currently always 0 — observation features land
+alongside the trainer's training loop. The wire format doesn't change
+shape when that happens; the blob just stops being empty.
+
+No version field: single producer, single consumer, regenerating
+datasets is cheap. If the schema ever changes wire-incompatibly, bump
+the magic to `GDS2` and parsers reject by magic mismatch.
 
 See `glob2/src/DatasetWriter.{h,cpp}` for the writer.
 
