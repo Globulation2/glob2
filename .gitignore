@@ -12,3 +12,4 @@ src/glob2
 __pycache__/
 build/
 vcpkg_installed/
+.DS_Store
