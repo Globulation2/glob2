@@ -27,6 +27,7 @@
 
 #include "AINames.h"
 #include "CustomGameScreen.h"
+#include "DatasetWriter.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
 #include "Game.h"
@@ -691,6 +692,13 @@ int Engine::run(void)
 			checksumSidecar = NULL;
 		}
 
+		if (globalContainer->datasetWriter)
+		{
+			globalContainer->datasetWriter->close();
+			delete globalContainer->datasetWriter;
+			globalContainer->datasetWriter = NULL;
+		}
+
 		delete net;
 		net=NULL;
 		multiplayer.reset();
@@ -876,6 +884,23 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		checksumSidecar->open(sidecarBase,
 			gui.game.teamsCount(),
 			gui.game.gameHeader.getNumberOfPlayers());
+	}
+
+	// Initialise dataset writer if GLOB2_DATASET_PATH is set. Writes
+	// one (state, action) record per executed order — see DatasetWriter.h.
+	// Skipped when replaying (no orders fire that the trainer cares about).
+	const char* envDatasetPath = getenv("GLOB2_DATASET_PATH");
+	if (envDatasetPath && !globalContainer->replaying)
+	{
+		assert(globalContainer->datasetWriter == NULL);
+		globalContainer->datasetWriter = new DatasetWriter();
+		if (!globalContainer->datasetWriter->open(envDatasetPath))
+		{
+			std::cerr << "GLOB2_DATASET_PATH: failed to open dataset file "
+				<< envDatasetPath << std::endl;
+			delete globalContainer->datasetWriter;
+			globalContainer->datasetWriter = NULL;
+		}
 	}
 
 	return EE_NO_ERROR;

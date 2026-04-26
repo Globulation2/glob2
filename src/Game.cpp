@@ -37,6 +37,7 @@
 #include <GraphicContext.h>
 
 #include "BuildingType.h"
+#include "DatasetWriter.h"
 #include "Game.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
@@ -223,6 +224,15 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
 		globalContainer->replayWriter->pushOrder(order);
+	}
+
+	// Mirror the order into the AI-trainer dataset if requested via
+	// GLOB2_DATASET_PATH. One record per executed order, tagged with
+	// the firing tick (the live stepCounter is correct here because
+	// executeOrder runs after Game::syncStep advances it).
+	if (globalContainer->datasetWriter && globalContainer->datasetWriter->isValid())
+	{
+		globalContainer->datasetWriter->writeRecord((Uint32)stepCounter, *order);
 	}
 
 	anyPlayerWaited=false;

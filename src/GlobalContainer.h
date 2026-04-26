@@ -42,6 +42,7 @@ class LogFileManager;
 class UnitsSkins;
 class ReplayReader;
 class ReplayWriter;
+class DatasetWriter;
 
 class GlobalContainer
 {
@@ -160,6 +161,7 @@ public:
 #ifndef YOG_SERVER_ONLY
 	ReplayReader *replayReader; //!< Reads and processes replay files, and outputs orders
 	ReplayWriter *replayWriter; //!< Writes orders into replay files
+	DatasetWriter *datasetWriter; //!< Writes (state, action) records for AI training (GLOB2_DATASET_PATH)
 #endif  // !YOG_SERVER_ONLY
 
 public:

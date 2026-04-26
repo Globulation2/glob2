@@ -16,6 +16,7 @@ Brush.cpp
 Building.cpp
 BuildingsTypes.cpp
 ChecksumSidecar.cpp
+DatasetWriter.cpp
 BuildingType.cpp
 BuildingUtils.cpp
 Bullet.cpp

@@ -141,6 +141,7 @@ GlobalContainer::GlobalContainer(void)
 #ifndef YOG_SERVER_ONLY
 	replayReader = NULL;
 	replayWriter = NULL;
+	datasetWriter = NULL;
 #endif  // !YOG_SERVER_ONLY
 
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
@@ -179,6 +180,7 @@ GlobalContainer::~GlobalContainer(void)
 	// delete replay handlers
 	delete replayReader; replayReader = NULL;
 	delete replayWriter; replayWriter = NULL;
+	delete datasetWriter; datasetWriter = NULL;
 #endif  // !YOG_SERVER_ONLY
 }
 

@@ -83,6 +83,46 @@ expected. Only the matchup AIs issue orders.
 
 Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI behavior.
 
+## AI-Trainer Dataset Output
+
+When `GLOB2_DATASET_PATH` is set, the engine writes one binary record
+per executed order to that path, alongside the normal `.replay`. Used
+by the `glob2-ai-trainer` pipeline to feed BC training without needing
+to re-simulate the replay.
+
+```bash
+GLOB2_DATASET_PATH=/tmp/game.dataset \
+GLOB2_REPLAY_PATH=/tmp/game.replay \
+  ./glob2 -test-games-nox 1 --map A_big_pond --matchup nicowar,warrush,numbi
+```
+
+Format (little-endian):
+
+```
+HEADER (16 bytes)
+  [4B] magic "GDS1"
+  [4B] u32 format_version       (currently 0)
+  [4B] u32 num_records          (patched at close)
+  [4B] u32 flags                (reserved, 0)
+
+PER-RECORD
+  [4B] u32 tick
+  [1B] u8  sender_player_index
+  [1B] u8  order_type
+  [2B] u16 padding              (0)
+  [4B] u32 state_blob_len       (0 in v0)
+  [state_blob_len bytes]        state features (empty in v0)
+  [4B] u32 order_payload_len
+  [order_payload_len bytes]     order payload (Order::getData())
+```
+
+State blob is **empty in format version 0** — the schema is wired up
+but observation features are deferred to a follow-up. Format version
+will bump to 1 when features land. Trainer-side parsers should reject
+unknown versions explicitly.
+
+See `glob2/src/DatasetWriter.{h,cpp}` for the writer.
+
 ## Replay Output
 
 All modes write replays to `~/.glob2/replays/last_game.replay` by default.
