@@ -1205,6 +1205,13 @@ bool MapEdit::save(const std::string filename, const std::string name)
 	{
 		game.save(stream, true, name);
 		delete stream;
+
+		// Game::save() now restores mapHeader.mapName/isSavedGame so that
+		// in-game saves don't permanently clobber the live map name. The
+		// editor relies on the post-save mutation for its "current name"
+		// UI (the LoadSaveScreen default), so re-apply explicitly.
+		game.mapHeader.setMapName(name);
+		game.mapHeader.setIsSavedGame(false);
 		return true;
 	}
 }

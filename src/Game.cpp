@@ -1105,7 +1105,20 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	}
 
 	///Save the two headers, record the position in the file because mapHeader will
-	///will need to be overwritten with the mapOffset known
+	///will need to be overwritten with the mapOffset known.
+	///
+	/// We mutate mapHeader briefly to shape the on-disk record (mapName,
+	/// isSavedGame), then restore it at the end of the function. Without
+	/// the restore, every in-game save (the ReplayWriter's initial state
+	/// dump with name="replayHeader" and the GameGUI auto-save every 256
+	/// ticks with name="Auto save") would permanently overwrite the live
+	/// mapHeader.mapName — observable later in things like the
+	/// GLOB2_GAME_END "map=" field, which would read "Auto save" instead
+	/// of the actual map. Map-editor "Save As" still wants the new name
+	/// to persist; MapEdit::save() explicitly re-sets it after the call.
+	std::string savedMapName = mapHeader.getMapName();
+	bool savedIsSavedGame = mapHeader.getIsSavedGame();
+
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
@@ -1191,6 +1204,12 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	}
 
 	stream->writeLeaveSection();
+
+	// Restore live mapHeader state. See the comment at the top of this
+	// function for why we shouldn't permanently mutate. Order matters
+	// only inasmuch as both fields go back to their pre-save values.
+	mapHeader.setMapName(savedMapName);
+	mapHeader.setIsSavedGame(savedIsSavedGame);
 }
 
 void Game::buildProjectSyncStep(Sint32 localTeam)
