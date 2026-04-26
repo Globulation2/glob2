@@ -98,6 +98,7 @@ GlobalContainer::GlobalContainer(void)
 	adminRouter = false;
 	
 	runTestGames=false;
+	runTestGamesCount=0;
 	runTestMapGeneration=false;
 	automaticEndingGame=false;
 	automaticEndingSteps=-1;
@@ -241,6 +242,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			runTestGames=true;
 			automaticEndingGame = true;
 			automaticGameGlobalEndConditions=true;
+			if (i + 1 < argc && argv[i + 1][0] != '-')
+			{
+				runTestGamesCount = atoi(argv[i + 1]);
+				i++;
+			}
 		}
 		else if (strcmp(argv[i], "-test-games-nox")==0)
 		{
@@ -248,6 +254,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			automaticEndingGame = true;
 			runNoX=true;
 			automaticGameGlobalEndConditions=true;
+			if (i + 1 < argc && argv[i + 1][0] != '-')
+			{
+				runTestGamesCount = atoi(argv[i + 1]);
+				i++;
+			}
 		}
 		else if (strcmp(argv[i], "-test-map-gen")==0)
 		{

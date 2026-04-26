@@ -94,6 +94,22 @@ All clients compute identical game state. Only Orders (player actions) are trans
 - **`campaigns/`** — Campaign definitions
 - **`doc/`** — Architecture documentation
 
+### Headless Mode & Replay Generation
+
+See [docs/headless-replays.md](docs/headless-replays.md) for full details on running headless AI games and generating `.replay` files for cross-codebase testing.
+
+Quick reference:
+```bash
+# Random AI-vs-AI game, headless, runs until game over or 90k ticks (loops forever — kill after first game)
+./glob2 -test-games-nox
+
+# Single game from a .game file, headless
+./glob2 --nox <game-file> <steps> <runs>
+# Example: ./glob2 --nox games/my_ai_game.game 5000 1
+```
+
+Replays are always written to `replays/last_game.replay` (overwritten each game).
+
 ### AI System
 
 Multiple AI implementations in `src/`: AICastor, AIEcho, AINicowar, AINumbi, AIToubib, AIWarrush — all inherit from `AI` base class.

@@ -132,6 +132,8 @@ namespace GAGCore
 	bool Sprite::createTextureAtlas()
 	{
 #ifdef HAVE_OPENGL
+		if (!Toolkit::gc || !(Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU))
+			return false;
 #ifdef DEBUG_SPRITE_NOT_DRAWN
 		sprites.push_back(this);
 #endif

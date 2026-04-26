@@ -145,7 +145,9 @@ int Glob2::runNoX()
 int Glob2::runTestGames()
 {
 	globalContainer->automaticEndingSteps=90000;
-	while(true)
+	int maxRuns = globalContainer->runTestGamesCount;
+	int run = 0;
+	while(maxRuns == 0 || run < maxRuns)
 	{
 		long t = time(NULL);
 		setSyncRandSeed(t);
@@ -153,6 +155,7 @@ int Glob2::runTestGames()
 		Engine engine;
 		engine.createRandomGame();
 		engine.run();
+		run++;
 	}
 	return 0;
 }

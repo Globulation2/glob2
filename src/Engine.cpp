@@ -41,6 +41,7 @@
 #include "GUIMessageBox.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
+#include "ChecksumSidecar.h"
 #include "SDLCompat.h"
 
 #include <iostream>
@@ -49,6 +50,7 @@
 Engine::Engine()
 {
 	net=NULL;
+	checksumSidecar=NULL;
 	logFile = globalContainer->logFileManager->getFile("Engine.log");
 }
 
@@ -414,6 +416,9 @@ int Engine::run(void)
 					// Enable this to do test if checksums in the replay match
 					//if (globalContainer->replayReader) globalContainer->replayReader->setCheckSum(checksum);
 					if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
+
+					if (checksumSidecar)
+						checksumSidecar->writeTick(gui.game.stepCounter, gui.game);
 				}
 
 				// We proceed network:
@@ -601,6 +606,13 @@ int Engine::run(void)
 			}
 		}
 
+		if (checksumSidecar)
+		{
+			checksumSidecar->close();
+			delete checksumSidecar;
+			checksumSidecar = NULL;
+		}
+
 		delete net;
 		net=NULL;
 		multiplayer.reset();
@@ -769,6 +781,18 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		assert(globalContainer->replayWriter == NULL);
 		globalContainer->replayWriter = new ReplayWriter();
 		globalContainer->replayWriter->init("replays/last_game.replay", gui);
+	}
+
+	// Initialise checksum sidecar writer if requested
+	if (getenv("GLOB2_CHECKSUM_SIDECAR"))
+	{
+		std::string sidecarBase = globalContainer->replaying
+			? globalContainer->replayFileName
+			: std::string("replays/last_game.replay");
+		checksumSidecar = new ChecksumSidecarWriter();
+		checksumSidecar->open(sidecarBase,
+			gui.game.teamsCount(),
+			gui.game.gameHeader.getNumberOfPlayers());
 	}
 
 	return EE_NO_ERROR;

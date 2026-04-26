@@ -31,6 +31,7 @@
 #include "NetEngine.h"
 #include "MultiplayerGame.h"
 #include "CPUStatisticsManager.h"
+#include "ChecksumSidecar.h"
 
 
 class MultiplayersJoin;
@@ -130,6 +131,8 @@ private:
 	GameGUI gui;
 	//! The netGame, take care of order queuing and dispatching
 	NetEngine *net;
+	//! Checksum sidecar writer for cross-replay debugging
+	ChecksumSidecarWriter *checksumSidecar;
 	//! The MultiplayerGame, recieves orders from across a network
 	shared_ptr<MultiplayerGame> multiplayer;
 

@@ -739,7 +739,7 @@ void Unit::handleMedical(void)
 	
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
-	
+
 	if (verbose)
 		printf("guid=(%d) handleMedical...\n", gid);
 	hungry -= hungryness;
