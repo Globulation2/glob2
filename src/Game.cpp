@@ -232,7 +232,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 	// executeOrder runs after Game::syncStep advances it).
 	if (globalContainer->datasetWriter && globalContainer->datasetWriter->isValid())
 	{
-		globalContainer->datasetWriter->writeRecord((Uint32)stepCounter, *order);
+		globalContainer->datasetWriter->writeRecord((Uint32)stepCounter, *order, *this);
 	}
 
 	anyPlayerWaited=false;
