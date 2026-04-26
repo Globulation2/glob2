@@ -48,6 +48,7 @@ ReplayWriter::ReplayWriter()
 	buffer = NULL;
 	stepsSinceLastOrder = 0;
 	checksum = 0;
+	ordersWritten = 0;
 }
 
 ReplayWriter::~ReplayWriter()
@@ -122,6 +123,7 @@ void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 	writeOrder(buffer, order, checksum);
 
 	stepsSinceLastOrder = 0;
+	ordersWritten++;
 
 	// Don't flush the buffer. That is done when writing the last Order, in ReplayWriter::finish().
 }

@@ -584,8 +584,13 @@ int Engine::run(void)
 					break;
 				}
 			}
+			Uint32 orders = globalContainer->replayWriter
+				? globalContainer->replayWriter->getOrderCount() : 0;
 			std::cout << "GLOB2_GAME_END ticks=" << time
 				<< " winner_team=" << winnerTeam
+				<< " seed=" << gui.game.gameHeader.getRandomSeed()
+				<< " map=\"" << gui.game.mapHeader.getMapName() << "\""
+				<< " orders=" << orders
 				<< " players=";
 			for (int p = 0; p < gui.game.gameHeader.getNumberOfPlayers(); p++)
 			{

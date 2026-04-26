@@ -73,16 +73,21 @@ When `automaticEndingGame` fires (set by `--nox`, `-test-games-nox`, and
 after the existing tick/minute log:
 
 ```
-GLOB2_GAME_END ticks=2483 winner_team=1 players=team0:local,team1:Nicowar,team2:Warrush
+GLOB2_GAME_END ticks=2483 winner_team=1 seed=1777219846 map="Playground" orders=2525 players=team0:local,team1:Nicowar,team2:Warrush
 ```
 
 - `ticks` — total simulation ticks elapsed
 - `winner_team` — first team with `hasWon` set, or `-1` on timeout
+- `seed` — `GameHeader::getRandomSeed()` value used for this game
+- `map` — map name (`MapHeader::getMapName()`); double-quoted to allow
+  spaces. Value never contains literal `"` characters in practice
+- `orders` — count of orders pushed into the replay (excludes voice and
+  null orders); from `ReplayWriter::getOrderCount()`
 - `players` — comma-separated `teamN:type` pairs; type is `local`, `ip`,
   `none`, or an AI name from `AINames::getAIText`
 
 The format is intended for grep/regex consumption — fields are
-space-separated key=value with no shell-quoting.
+space-separated key=value, with `map` quoted.
 
 For cross-codebase testing, copy replays to the Rust test fixture directory:
 ```bash

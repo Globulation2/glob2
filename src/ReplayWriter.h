@@ -71,6 +71,11 @@ public:
 	/// Get the buffer, if for any reason you would need it
 	GAGCore::OutputStream* getBuffer() const;
 
+	/// Number of orders pushed into the replay (excluding ORDER_VOICE_DATA
+	/// and ORDER_NULL, matching the actual write criteria in pushOrder).
+	/// Used by the AI-trainer pipeline for sidecar metadata.
+	Uint32 getOrderCount() const { return ordersWritten; }
+
 private:
 	/// You shouldn't copy-construct this class
 	ReplayWriter(const ReplayWriter &copy) { assert(false); };
@@ -89,6 +94,10 @@ private:
 
 	/// The game's current checksum (or 0 if it's not given)
 	Uint32 checksum;
+
+	/// Counter of orders actually written to the buffer. Excludes voice and
+	/// null orders (matching the early-return in pushOrder).
+	Uint32 ordersWritten;
 };
 
 #endif
