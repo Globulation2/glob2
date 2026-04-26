@@ -49,6 +49,36 @@ Valid names: `numbi`, `castor`, `warrush`, `reachtoinfinity`, `nicowar`,
 `toubib`. Unknown names are reported on stderr and skipped (an empty
 remaining pool falls back to default behavior).
 
+### `--map <name>` and `--matchup <list>`
+
+Pin the map and per-team AI assignment for `-test-games-nox`, replacing
+the random pieces with explicit choices. Used by the AI-trainer
+pipeline to produce curated datasets (exact counts per matchup).
+
+```bash
+# Nicowar (team 0) vs. Warrush (team 1) on the Playground map:
+./glob2 -test-games-nox 1 --map Playground --matchup nicowar,warrush
+
+# Three-team game on a custom map:
+./glob2 -test-games-nox 1 --map "BigArena" --matchup nicowar,warrush,numbi
+```
+
+- `--map <name>` is the bare map filename without `.map` (resolved as
+  `maps/<name>.map`). On a typo the binary fails fast with a clear
+  message; it does **not** silently retry random maps.
+- `--matchup <list>` is one AI name per team. The list length must
+  match the loaded map's `getNumberOfTeams()` exactly — startup fails
+  otherwise.
+- `--matchup` requires `--map` (we need the map's team count to
+  validate the matchup before launching).
+- `--matchup` is mutually exclusive with `--ai-types` (pool vs. exact).
+
+**Local-player quirk:** the engine still creates a passive `P_LOCAL`
+player on team 0 in `-test-games-nox` mode (the headless engine
+expects one). The `GLOB2_GAME_END players=...` summary will show
+`team0:local` alongside the matchup-assigned AI for team 0; both are
+expected. Only the matchup AIs issue orders.
+
 ### `-test-games`
 
 Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI behavior.

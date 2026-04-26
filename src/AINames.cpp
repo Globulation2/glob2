@@ -19,6 +19,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <algorithm>
+
 #include "AI.h"
 #include "Toolkit.h"
 #include "StringTable.h"
@@ -75,5 +77,28 @@ namespace AINames
 			return "unknown AI";
 		}
 		return Toolkit::getStringTable()->getString(sAi);
+	}
+
+	int parseAIName(const std::string& name)
+	{
+		// Single source of truth for CLI-friendly AI names. Both
+		// --ai-types and --matchup parsers in GlobalContainer.cpp
+		// use this to avoid drift.
+		static const struct { const char* name; int id; } table[] = {
+			{"numbi",           AI::NUMBI},
+			{"castor",          AI::CASTOR},
+			{"warrush",         AI::WARRUSH},
+			{"reachtoinfinity", AI::REACHTOINFINITY},
+			{"nicowar",         AI::NICOWAR},
+			{"toubib",          AI::TOUBIB},
+		};
+		std::string lower = name;
+		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+		for (size_t i = 0; i < sizeof(table)/sizeof(table[0]); i++)
+		{
+			if (lower == table[i].name)
+				return table[i].id;
+		}
+		return -1;
 	}
 }

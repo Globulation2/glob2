@@ -25,6 +25,7 @@
 #include <GUIBase.h>
 
 #include "AI.h"
+#include "AINames.h"
 #include "FileManager.h"
 #include "GameGUIKeyActions.h"
 #include "Glob2Screen.h"
@@ -104,6 +105,8 @@ GlobalContainer::GlobalContainer(void)
 	runTestGames=false;
 	runTestGamesCount=0;
 	testGamesAIPool.clear();
+	testGamesMap.clear();
+	testGamesMatchup.clear();
 	runTestMapGeneration=false;
 	automaticEndingGame=false;
 	automaticEndingSteps=-1;
@@ -274,16 +277,9 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			// Constrain the random AI pool used by createRandomGame for
 			// -test-games / -test-games-nox. Comma-separated AI names,
-			// case-insensitive. Unknown names are reported and skipped.
-			// Empty pool (default) means "use all AIs uniformly".
-			static const struct { const char* name; int id; } aiNameTable[] = {
-				{"numbi",           AI::NUMBI},
-				{"castor",          AI::CASTOR},
-				{"warrush",         AI::WARRUSH},
-				{"reachtoinfinity", AI::REACHTOINFINITY},
-				{"nicowar",         AI::NICOWAR},
-				{"toubib",          AI::TOUBIB},
-			};
+			// case-insensitive (see AINames::parseAIName). Unknown names
+			// are reported on stderr and skipped. Empty pool (default)
+			// means "use all main AIs uniformly".
 			if (i + 1 < argc)
 			{
 				std::string list = argv[i + 1];
@@ -292,17 +288,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				std::string item;
 				while (std::getline(ss, item, ','))
 				{
-					std::string lower = item;
-					std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-					int matched = -1;
-					for (size_t j = 0; j < sizeof(aiNameTable)/sizeof(aiNameTable[0]); j++)
-					{
-						if (lower == aiNameTable[j].name)
-						{
-							matched = aiNameTable[j].id;
-							break;
-						}
-					}
+					int matched = AINames::parseAIName(item);
 					if (matched > 0)
 						testGamesAIPool.push_back(matched);
 					else
@@ -313,6 +299,52 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			else
 			{
 				printf("--ai-types <comma-separated-list> requires an argument\n");
+				exit(0);
+			}
+		}
+		else if (strcmp(argv[i], "--map")==0)
+		{
+			// Pin the random-game map. Bare name, no .map extension —
+			// resolved as maps/<name>.map by Engine::chooseRandomMap.
+			if (i + 1 < argc)
+			{
+				testGamesMap = argv[i + 1];
+				i++;
+			}
+			else
+			{
+				printf("--map <name> requires an argument\n");
+				exit(0);
+			}
+		}
+		else if (strcmp(argv[i], "--matchup")==0)
+		{
+			// Per-team AI assignment for the random-game flow. Comma-
+			// separated AI names; matchup[k] is the AI for team k.
+			// Validated against the loaded map's getNumberOfTeams() in
+			// Engine::createRandomGame() before the game starts.
+			if (i + 1 < argc)
+			{
+				std::string list = argv[i + 1];
+				i++;
+				std::stringstream ss(list);
+				std::string item;
+				while (std::getline(ss, item, ','))
+				{
+					int matched = AINames::parseAIName(item);
+					if (matched > 0)
+						testGamesMatchup.push_back(matched);
+					else
+					{
+						std::cerr << "--matchup: unknown AI '" << item
+							<< "' (valid: numbi, castor, warrush, reachtoinfinity, nicowar, toubib)" << std::endl;
+						exit(1);
+					}
+				}
+			}
+			else
+			{
+				printf("--matchup <comma-separated-list> requires an argument\n");
 				exit(0);
 			}
 		}
@@ -534,6 +566,9 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-test-games-nox\tCreates random games with AI and tests them, without gui\n");
 			printf("--ai-types <list>\tcomma-separated AI names to draw from in -test-games* (default: all)\n");
 			printf("\t\tvalid: numbi, castor, warrush, reachtoinfinity, nicowar, toubib\n");
+			printf("--map <name>\tpin the map for -test-games* (resolved as maps/<name>.map)\n");
+			printf("--matchup <list>\tcomma-separated per-team AI names; matchup[k] plays team k\n");
+			printf("\t\trequires --map; mutually exclusive with --ai-types\n");
 			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
@@ -542,6 +577,23 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-version\tprint the version and exit\n");
 			exit(0);
 		}
+	}
+
+	// Cross-flag validation for the random-game family. Fail-fast here
+	// before any expensive setup (map listing, etc.) runs.
+	if (!testGamesMatchup.empty() && testGamesMap.empty())
+	{
+		std::cerr << "--matchup requires --map; we need to know the map's "
+			<< "team count to validate the matchup before starting a game"
+			<< std::endl;
+		exit(1);
+	}
+	if (!testGamesMatchup.empty() && !testGamesAIPool.empty())
+	{
+		std::cerr << "--matchup and --ai-types are mutually exclusive: "
+			<< "--matchup pins each team's AI; --ai-types randomizes within "
+			<< "a pool. Use one or the other." << std::endl;
+		exit(1);
 	}
 }
 

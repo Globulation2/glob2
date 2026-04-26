@@ -126,7 +126,19 @@ public:
 	//! AI implementation IDs (AI::ImplementitionID values) eligible for random
 	//! AI assignment in createRandomGame. Empty means "all AIs allowed" (legacy
 	//! behavior: NUMBI..NICOWAR uniformly). Set via --ai-types.
+	//! Mutually exclusive with testGamesMatchup.
 	std::vector<int> testGamesAIPool;
+
+	//! Bare map name (no .map extension, no path) to pin createRandomGame to.
+	//! Empty means "pick a random map from maps/" (legacy). Set via --map.
+	std::string testGamesMap;
+
+	//! Per-team AI implementation IDs for createRandomGame. testGamesMatchup[k]
+	//! is the AI assigned to team k. Empty means "use testGamesAIPool or random
+	//! default" (legacy). Set via --matchup. Validated against the loaded map's
+	//! getNumberOfTeams() at game creation time. Requires testGamesMap to be
+	//! set (else we'd have no team count to validate against).
+	std::vector<int> testGamesMatchup;
 	
 	bool runTestMapGeneration; //! runs test map generation
 	

@@ -205,24 +205,65 @@ int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, st
 
 void Engine::createRandomGame()
 {
-	bool validMapChosen = false;
 	MapHeader map;
 
-	while (!validMapChosen)
+	if (!globalContainer->testGamesMap.empty())
 	{
+		// --map: try once, fail loudly. The legacy retry loop below would
+		// spin forever on a typo'd map name. loadMapHeader does NOT throw
+		// on a missing file (it logs to stderr and returns a default-
+		// constructed MapHeader with numberOfTeams=0), so we detect failure
+		// by checking the team count rather than catching an exception.
 		try
 		{
 			map = chooseRandomMap();
-			validMapChosen = true;
 		}
 		catch (std::ios_base::failure &e)
 		{
-			validMapChosen = false;
+			std::cerr << "--map: cannot load maps/"
+				<< globalContainer->testGamesMap << ".map: "
+				<< e.what() << std::endl;
+			exit(1);
+		}
+		if (map.getNumberOfTeams() <= 0)
+		{
+			std::cerr << "--map: cannot load maps/"
+				<< globalContainer->testGamesMap << ".map "
+				<< "(missing or invalid; numberOfTeams=0)" << std::endl;
+			exit(1);
 		}
 	}
-	
+	else
+	{
+		bool validMapChosen = false;
+		while (!validMapChosen)
+		{
+			try
+			{
+				map = chooseRandomMap();
+				validMapChosen = true;
+			}
+			catch (std::ios_base::failure &e)
+			{
+				validMapChosen = false;
+			}
+		}
+	}
+
 	std::cout<<"Randomly Chosen Map: "<<map.getMapName()<<std::endl;
-	
+
+	// Validate matchup-vs-map team count now that we know how many teams
+	// the loaded map has. Self-contained matchup validation already
+	// happened in GlobalContainer::parseArgs; this is the deferred check.
+	if (!globalContainer->testGamesMatchup.empty()
+		&& (int)globalContainer->testGamesMatchup.size() != map.getNumberOfTeams())
+	{
+		std::cerr << "--matchup has " << globalContainer->testGamesMatchup.size()
+			<< " entries but map " << map.getMapName() << " has "
+			<< map.getNumberOfTeams() << " teams" << std::endl;
+		exit(1);
+	}
+
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
 	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)
@@ -911,6 +952,17 @@ bool Engine::loadGame(const std::string &filename)
 
 MapHeader Engine::chooseRandomMap()
 {
+	// --map override: pin to a specific map by bare name. Resolved as
+	// maps/<name>.map. Throws std::ios_base::failure on missing file —
+	// the caller (createRandomGame) handles that with a clear error
+	// rather than letting the legacy retry-loop spin forever.
+	if (!globalContainer->testGamesMap.empty())
+	{
+		std::string fullPath = std::string("maps") + DIR_SEPARATOR
+			+ globalContainer->testGamesMap + ".map";
+		return loadMapHeader(fullPath);
+	}
+
 	std::vector<std::string> maps;
 
 	std::string fullDir = "maps";
@@ -925,9 +977,9 @@ MapHeader Engine::chooseRandomMap()
 			maps.push_back(fullFileName);
 		}
 	}
-	
+
 	int number = syncRand() % maps.size();
-	
+
 	return loadMapHeader(maps[number]);
 }
 
@@ -947,7 +999,18 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		else
 		{
 			AI::ImplementitionID iid;
-			if (!globalContainer->testGamesAIPool.empty())
+			if (!globalContainer->testGamesMatchup.empty())
+			{
+				// --matchup: matchup[k] is the AI for team k. teamColor
+				// here equals the team this AI plays for (the wrap-around
+				// at i==numberOfTeams gives teamColor=0, which gets
+				// matchup[0]). Team-count consistency was verified by the
+				// caller (createRandomGame() parameterless) before we got
+				// here, so direct indexing is safe.
+				iid = static_cast<AI::ImplementitionID>(
+					globalContainer->testGamesMatchup[teamColor]);
+			}
+			else if (!globalContainer->testGamesAIPool.empty())
 			{
 				int idx = syncRand() % globalContainer->testGamesAIPool.size();
 				iid = static_cast<AI::ImplementitionID>(globalContainer->testGamesAIPool[idx]);
