@@ -44,10 +44,16 @@ GameEvent.cpp
 GameGUI.cpp
 GameGUIDefaultAssignManager.cpp
 GameGUIDialog.cpp
+GameGUIDraw.cpp
+GameGUIDrawPanels.cpp
 GameGUIGhostBuildingManager.cpp
+GameGUIInput.cpp
 GameGUIKeyActions.cpp
 GameGUILoadSave.cpp
 GameGUIMessageManager.cpp
+GameGUIParticles.cpp
+GameGUIScript.cpp
+GameGUISelection.cpp
 GameGUIToolManager.cpp
 GameHeader.cpp
 GameHints.cpp
