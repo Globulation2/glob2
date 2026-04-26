@@ -62,10 +62,19 @@ void ReplayWriter::init(const std::string &backend, GameGUI &gui)
 	// Avoid trouble
 	checksum = 0;
 
-	// Initialise the buffer backend
+	// Initialise the buffer backend.
+	// Absolute paths (leading '/') bypass FileManager — its dirList prepend
+	// turns "/tmp/foo.replay" into "~/.glob2//tmp/foo.replay" and fails. The
+	// AI-trainer pipeline relies on this path being arbitrary (via
+	// GLOB2_REPLAY_PATH), so absolute paths must work as written.
 	if (backend == "")
 	{
 		bufferBackend = new MemoryStreamBackend();
+	}
+	else if (!backend.empty() && backend[0] == '/')
+	{
+		FILE* fp = fopen(backend.c_str(), "w+");
+		bufferBackend = new FileStreamBackend(fp);
 	}
 	else
 	{
