@@ -30,6 +30,25 @@ Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~60 
 
 The random game setup (`Engine::createRandomGame`) creates one local player + N AI players with randomly chosen AI types from the map's team count.
 
+### `--ai-types <list>`
+
+Constrains the AI pool that `createRandomGame` draws from when generating
+random matchups for `-test-games` / `-test-games-nox`. Comma-separated,
+case-insensitive AI names. Default (no flag) is the legacy uniform pick
+over `numbi, castor, warrush, reachtoinfinity, nicowar`.
+
+```bash
+# Bias the dataset toward strong AIs only:
+./glob2 -test-games-nox 100 --ai-types nicowar,warrush
+
+# Single-AI self-play replays (every AI slot is Nicowar):
+./glob2 -test-games-nox 50 --ai-types nicowar
+```
+
+Valid names: `numbi`, `castor`, `warrush`, `reachtoinfinity`, `nicowar`,
+`toubib`. Unknown names are reported on stderr and skipped (an empty
+remaining pool falls back to default behavior).
+
 ### `-test-games`
 
 Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI behavior.

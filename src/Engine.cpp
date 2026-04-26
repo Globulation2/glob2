@@ -941,7 +941,16 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		}
 		else
 		{
-			AI::ImplementitionID iid=static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
+			AI::ImplementitionID iid;
+			if (!globalContainer->testGamesAIPool.empty())
+			{
+				int idx = syncRand() % globalContainer->testGamesAIPool.size();
+				iid = static_cast<AI::ImplementitionID>(globalContainer->testGamesAIPool[idx]);
+			}
+			else
+			{
+				iid = static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
+			}
 			FormatableString name("%0 %1");
 			name.arg(AINames::getAIText(iid)).arg(i-1);
 			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));

@@ -17,10 +17,14 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+#include <algorithm>
+#include <sstream>
+
 #include <Toolkit.h>
 #include <GAG.h>
 #include <GUIBase.h>
 
+#include "AI.h"
 #include "FileManager.h"
 #include "GameGUIKeyActions.h"
 #include "Glob2Screen.h"
@@ -99,6 +103,7 @@ GlobalContainer::GlobalContainer(void)
 	
 	runTestGames=false;
 	runTestGamesCount=0;
+	testGamesAIPool.clear();
 	runTestMapGeneration=false;
 	automaticEndingGame=false;
 	automaticEndingSteps=-1;
@@ -264,6 +269,52 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			runTestMapGeneration = true;
 			runNoX=true;
+		}
+		else if (strcmp(argv[i], "--ai-types")==0)
+		{
+			// Constrain the random AI pool used by createRandomGame for
+			// -test-games / -test-games-nox. Comma-separated AI names,
+			// case-insensitive. Unknown names are reported and skipped.
+			// Empty pool (default) means "use all AIs uniformly".
+			static const struct { const char* name; int id; } aiNameTable[] = {
+				{"numbi",           AI::NUMBI},
+				{"castor",          AI::CASTOR},
+				{"warrush",         AI::WARRUSH},
+				{"reachtoinfinity", AI::REACHTOINFINITY},
+				{"nicowar",         AI::NICOWAR},
+				{"toubib",          AI::TOUBIB},
+			};
+			if (i + 1 < argc)
+			{
+				std::string list = argv[i + 1];
+				i++;
+				std::stringstream ss(list);
+				std::string item;
+				while (std::getline(ss, item, ','))
+				{
+					std::string lower = item;
+					std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+					int matched = -1;
+					for (size_t j = 0; j < sizeof(aiNameTable)/sizeof(aiNameTable[0]); j++)
+					{
+						if (lower == aiNameTable[j].name)
+						{
+							matched = aiNameTable[j].id;
+							break;
+						}
+					}
+					if (matched > 0)
+						testGamesAIPool.push_back(matched);
+					else
+						std::cerr << "--ai-types: unknown AI '" << item
+							<< "' (valid: numbi, castor, warrush, reachtoinfinity, nicowar, toubib)" << std::endl;
+				}
+			}
+			else
+			{
+				printf("--ai-types <comma-separated-list> requires an argument\n");
+				exit(0);
+			}
 		}
 		else if (strcmp(argv[i], "-vs")==0)
 		{
@@ -481,6 +532,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-test-games\tCreates random games with AI and tests them\n");
 			printf("-test-games-nox\tCreates random games with AI and tests them, without gui\n");
+			printf("--ai-types <list>\tcomma-separated AI names to draw from in -test-games* (default: all)\n");
+			printf("\t\tvalid: numbi, castor, warrush, reachtoinfinity, nicowar, toubib\n");
 			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");

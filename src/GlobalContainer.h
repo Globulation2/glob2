@@ -20,6 +20,8 @@
 #ifndef __GLOBALCONTAINER_H
 #define __GLOBALCONTAINER_H
 
+#include <vector>
+
 #include "BuildingsTypes.h"
 #include "RessourcesTypes.h"
 #include "Settings.h"
@@ -121,6 +123,10 @@ public:
 	
 	bool runTestGames; //! runs test games
 	int runTestGamesCount; //! number of test games to run (0 = infinite)
+	//! AI implementation IDs (AI::ImplementitionID values) eligible for random
+	//! AI assignment in createRandomGame. Empty means "all AIs allowed" (legacy
+	//! behavior: NUMBI..NICOWAR uniformly). Set via --ai-types.
+	std::vector<int> testGamesAIPool;
 	
 	bool runTestMapGeneration; //! runs test map generation
 	
