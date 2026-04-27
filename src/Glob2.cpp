@@ -421,7 +421,7 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY)
 	/* SDL has this annoying "feature" of setting working directory to parent
 	   of bundle during static initialization.  We want to set it back to the
 	   main bundle directory so we can find our Resources directory. */
@@ -431,11 +431,11 @@ int main(int argc, char *argv[])
 	assert(mainBundleURL);
 	CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
 	assert(cfStringRef);
-	
+
 	char path[MAXPATHLEN];
 	CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
 	chdir(path);
-	
+
 	CFRelease(mainBundleURL);
 	CFRelease(cfStringRef);
 #endif
