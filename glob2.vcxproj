@@ -361,7 +361,12 @@
     <ClCompile Include="src\BaseTeam.cpp" />
     <ClCompile Include="src\BitArray.cpp" />
     <ClCompile Include="src\Brush.cpp" />
-    <ClCompile Include="src\Building.cpp" />
+    <ClCompile Include="src\Building\Lifecycle.cpp" />
+    <ClCompile Include="src\Building\Construction.cpp" />
+    <ClCompile Include="src\Building\Update.cpp" />
+    <ClCompile Include="src\Building\Step.cpp" />
+    <ClCompile Include="src\Building\TypeSteps.cpp" />
+    <ClCompile Include="src\Building\Misc.cpp" />
     <ClCompile Include="src\BuildingsTypes.cpp" />
     <ClCompile Include="src\BuildingType.cpp" />
     <ClCompile Include="src\BuildingUtils.cpp" />

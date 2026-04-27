@@ -33,7 +33,12 @@ BasePlayer.cpp
 BaseTeam.cpp
 BitArray.cpp
 Brush.cpp
-Building.cpp
+Building/Lifecycle.cpp
+Building/Construction.cpp
+Building/Update.cpp
+Building/Step.cpp
+Building/TypeSteps.cpp
+Building/Misc.cpp
 BuildingsTypes.cpp
 ChecksumSidecar.cpp
 DatasetWriter.cpp

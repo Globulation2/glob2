@@ -249,7 +249,22 @@
 				RelativePath=".\src\Brush.cpp">
 			</File>
 			<File
-				RelativePath="src\Building.cpp">
+				RelativePath="src\Building\Lifecycle.cpp">
+			</File>
+			<File
+				RelativePath="src\Building\Construction.cpp">
+			</File>
+			<File
+				RelativePath="src\Building\Update.cpp">
+			</File>
+			<File
+				RelativePath="src\Building\Step.cpp">
+			</File>
+			<File
+				RelativePath="src\Building\TypeSteps.cpp">
+			</File>
+			<File
+				RelativePath="src\Building\Misc.cpp">
 			</File>
 			<File
 				RelativePath=".\src\BuildingsTypes.cpp">
