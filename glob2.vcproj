@@ -201,7 +201,28 @@
 				RelativePath=".\src\AI\AICastor\State.cpp">
 			</File>
 			<File
-				RelativePath=".\src\AI\AINicowar.cpp">
+				RelativePath=".\src\AI\AINicowar\Attack.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AINicowar\Buildings.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AINicowar\Farming.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AINicowar\Flags.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AINicowar\Lifecycle.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AINicowar\Phases.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AINicowar\Strategy.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AINicowar\Upgrade.cpp">
 			</File>
 			<File
 				RelativePath=".\src\AI\AINicowar.h">

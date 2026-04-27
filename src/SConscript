@@ -17,7 +17,14 @@ AI/AIEcho/Management.cpp
 AI/AIEcho/ReachToInfinity.cpp
 AI/AIEcho/SearchTools.cpp
 AI/AINames.cpp
-AI/AINicowar.cpp
+AI/AINicowar/Attack.cpp
+AI/AINicowar/Buildings.cpp
+AI/AINicowar/Farming.cpp
+AI/AINicowar/Flags.cpp
+AI/AINicowar/Lifecycle.cpp
+AI/AINicowar/Phases.cpp
+AI/AINicowar/Strategy.cpp
+AI/AINicowar/Upgrade.cpp
 AI/AINull.cpp
 AI/AINumbi.cpp
 AI/AIToubib.cpp

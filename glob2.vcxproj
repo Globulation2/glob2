@@ -345,7 +345,14 @@
     <ClCompile Include="src\AI\AIEcho\ReachToInfinity.cpp" />
     <ClCompile Include="src\AI\AIEcho\SearchTools.cpp" />
     <ClCompile Include="src\AI\AINames.cpp" />
-    <ClCompile Include="src\AI\AINicowar.cpp" />
+    <ClCompile Include="src\AI\AINicowar\Attack.cpp" />
+    <ClCompile Include="src\AI\AINicowar\Buildings.cpp" />
+    <ClCompile Include="src\AI\AINicowar\Farming.cpp" />
+    <ClCompile Include="src\AI\AINicowar\Flags.cpp" />
+    <ClCompile Include="src\AI\AINicowar\Lifecycle.cpp" />
+    <ClCompile Include="src\AI\AINicowar\Phases.cpp" />
+    <ClCompile Include="src\AI\AINicowar\Strategy.cpp" />
+    <ClCompile Include="src\AI\AINicowar\Upgrade.cpp" />
     <ClCompile Include="src\AI\AINull.cpp" />
     <ClCompile Include="src\AI\AINumbi.cpp" />
     <ClCompile Include="src\AI\AIToubib.cpp" />
