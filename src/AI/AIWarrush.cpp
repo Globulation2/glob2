@@ -21,20 +21,66 @@
 #include "AIWarrush.h"
 #include "Building.h"
 #include "Unit.h"
-#include "Building.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
 #include "Brush.h"
 #include "Utilities.h"
-#include <valarray>
 #include <algorithm>
 
 #define BUILDING_DELAY 30
 #define AREAS_DELAY 50
 
 using std::shared_ptr;
+
+namespace {
+	template<typename Pred>
+	int countUnitsIf(const Team *team, Pred p)
+	{
+		int n = 0;
+		for (int i = 0; i < Unit::MAX_COUNT; i++)
+		{
+			Unit *u = team->myUnits[i];
+			if (u && p(u)) n++;
+		}
+		return n;
+	}
+
+	template<typename Pred>
+	Unit *findUnitIf(const Team *team, Pred p)
+	{
+		for (int i = 0; i < Unit::MAX_COUNT; i++)
+		{
+			Unit *u = team->myUnits[i];
+			if (u && p(u)) return u;
+		}
+		return nullptr;
+	}
+
+	template<typename Pred>
+	int countBuildingsIf(const Team *team, Pred p)
+	{
+		int n = 0;
+		for (int i = 0; i < Building::MAX_COUNT; i++)
+		{
+			Building *b = team->myBuildings[i];
+			if (b && p(b)) n++;
+		}
+		return n;
+	}
+
+	template<typename Pred>
+	Building *findBuildingIf(const Team *team, Pred p)
+	{
+		for (int i = 0; i < Building::MAX_COUNT; i++)
+		{
+			Building *b = team->myBuildings[i];
+			if (b && p(b)) return b;
+		}
+		return nullptr;
+	}
+}
 
 void AIWarrush::init(Player *player)
 {
@@ -78,87 +124,41 @@ void AIWarrush::save(GAGCore::OutputStream *stream)
 
 int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int value)const
 {
-	Unit **myUnits=team->myUnits;
-	int count = 0;
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-	{
-		Unit *u=myUnits[i];
-		if ((u)&&(u->performance[skill]>value))
-		{
-			count++;
-		}
-	}
-	return count;
+	return countUnitsIf(team, [skill, value](Unit *u) { return u->performance[skill] > value; });
 }
 
 int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int value)const
 {
-	Unit **myUnits=team->myUnits;
-	int count = 0;
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-	{
-		Unit *u=myUnits[i];
-		if ((u)&&(u->performance[skill]==value))
-		{
-			count++;
-		}
-	}
-	return count;
+	return countUnitsIf(team, [skill, value](Unit *u) { return u->performance[skill] == value; });
 }
 
 bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 {
-	Unit **myUnits=team->myUnits;
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-	{
-		Unit *u=myUnits[i];
-		if ((u)&&(u->hungry<(Unit::HUNGRY_MAX/2))) //Yeah, it's a half, not a third. Weird huh? :P
-		{
-			return true;
-		}
-	}
-	return false;
+	//Yeah, it's a half, not a third. Weird huh? :P
+	return findUnitIf(team, [](Unit *u) { return u->hungry < (Unit::HUNGRY_MAX/2); }) != nullptr;
 }
 
 Building *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int explorerRatio, const int warriorRatio)const
 {
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		Building *b=myBuildings[i];
-		if (	(b)
-				&& (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING)
-				&& (b->constructionResultState == Building::NO_CONSTRUCTION)
-				&& ((b->ratio[0] != workerRatio) || (b->ratio[1] != explorerRatio) || (b->ratio[2] != warriorRatio))
-					)
-		{
-			return b;
-		}
-	}
-	return NULL;
+	return findBuildingIf(team, [=](Building *b) {
+		return b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING
+			&& b->constructionResultState == Building::NO_CONSTRUCTION
+			&& (b->ratio[0] != workerRatio || b->ratio[1] != explorerRatio || b->ratio[2] != warriorRatio);
+	});
 }
 
 Building *AIWarrush::getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int num_workers)const
 {
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		Building *b=myBuildings[i];
-		if (	(b != NULL)
-				&& (b->type->shortTypeNum == shortTypeNum)
-				&& (b->maxUnitWorking != num_workers)
-				&& (b->constructionResultState != Building::NO_CONSTRUCTION
-					|| ((shortTypeNum != IntBuildingType::ATTACK_BUILDING)
-						&& (shortTypeNum != IntBuildingType::HEAL_BUILDING)
-						&& (shortTypeNum != IntBuildingType::WALKSPEED_BUILDING)
-						&& (shortTypeNum != IntBuildingType::SWIMSPEED_BUILDING)
-						&& (shortTypeNum != IntBuildingType::SCIENCE_BUILDING)
-			)))
-		{
-			return b;
-		}
-	}
-	return NULL;
+	return findBuildingIf(team, [=](Building *b) {
+		return b->type->shortTypeNum == shortTypeNum
+			&& b->maxUnitWorking != num_workers
+			&& (b->constructionResultState != Building::NO_CONSTRUCTION
+				|| (shortTypeNum != IntBuildingType::ATTACK_BUILDING
+					&& shortTypeNum != IntBuildingType::HEAL_BUILDING
+					&& shortTypeNum != IntBuildingType::WALKSPEED_BUILDING
+					&& shortTypeNum != IntBuildingType::SWIMSPEED_BUILDING
+					&& shortTypeNum != IntBuildingType::SCIENCE_BUILDING));
+	});
 }
 
 Building *AIWarrush::getSwarmAtRandom()const
@@ -183,96 +183,46 @@ Building *AIWarrush::getSwarmAtRandom()const
 
 bool AIWarrush::allOfBuildingTypeAreCompleted(Sint32 shortTypeNum)const
 {
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		Building *b=myBuildings[i];
-		if (
-				(b)
-				&& (b->type->shortTypeNum==shortTypeNum)
-				&& (
-						b->constructionResultState != Building::NO_CONSTRUCTION
-						|| b->buildingState == Building::DEAD
-							)
-								)
-		{
-			return false;
-		}
-	}
-	return true;
+	return findBuildingIf(team, [shortTypeNum](Building *b) {
+		return b->type->shortTypeNum == shortTypeNum
+			&& (b->constructionResultState != Building::NO_CONSTRUCTION
+				|| b->buildingState == Building::DEAD);
+	}) == nullptr;
 }
 
 bool AIWarrush::allOfBuildingTypeAreFull(Sint32 shortTypeNum)const
 {
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		Building *b=myBuildings[i];
-		if (
-				(b)
-				&& (b->type->shortTypeNum==shortTypeNum)
-				&& (
-						b->unitsInside.size() < (size_t)b->maxUnitInside
-							)
-								)
-		{
-			return false;
-		}
-	}
-	return true;
+	return findBuildingIf(team, [shortTypeNum](Building *b) {
+		return b->type->shortTypeNum == shortTypeNum
+			&& b->unitsInside.size() < (size_t)b->maxUnitInside;
+	}) == nullptr;
 }
 
 int AIWarrush::numberOfBuildingsOfType(Sint32 shortTypeNum)const
 {
-	Building **myBuildings=team->myBuildings;
-	int count = 0;
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		Building *b=myBuildings[i];
-		if((b)&&(
-				b->shortTypeNum == shortTypeNum
-		))++count;	
-	}
-	return count;
+	return countBuildingsIf(team, [shortTypeNum](Building *b) {
+		return b->shortTypeNum == shortTypeNum;
+	});
 }
 
 
 int AIWarrush::numberOfExtraBuildings()const
 {
-	Building **myBuildings=team->myBuildings;
-	int count = 0;
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		Building *b=myBuildings[i];
-		if((b)&&(
-				b->shortTypeNum == IntBuildingType::HEAL_BUILDING
-				|| b->shortTypeNum == IntBuildingType::WALKSPEED_BUILDING
-				|| b->shortTypeNum == IntBuildingType::SWIMSPEED_BUILDING
-				|| b->shortTypeNum == IntBuildingType::SCIENCE_BUILDING
-				|| b->shortTypeNum == IntBuildingType::DEFENSE_BUILDING
-		))++count;	
-	}
-	return count;
+	return countBuildingsIf(team, [](Building *b) {
+		return b->shortTypeNum == IntBuildingType::HEAL_BUILDING
+			|| b->shortTypeNum == IntBuildingType::WALKSPEED_BUILDING
+			|| b->shortTypeNum == IntBuildingType::SWIMSPEED_BUILDING
+			|| b->shortTypeNum == IntBuildingType::SCIENCE_BUILDING
+			|| b->shortTypeNum == IntBuildingType::DEFENSE_BUILDING;
+	});
 }
 
 bool AIWarrush::allOfBuildingTypeAreFullyWorked(Sint32 shortTypeNum)const
 {
-	Building **myBuildings=team->myBuildings;
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		Building *b=myBuildings[i];
-		if((b)&&(b->shortTypeNum == shortTypeNum))
-		{
-			if(b->unitsWorking.size() == (size_t)b->maxUnitWorking)
-			{
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
-	return true;
+	return findBuildingIf(team, [shortTypeNum](Building *b) {
+		return b->shortTypeNum == shortTypeNum
+			&& b->unitsWorking.size() != (size_t)b->maxUnitWorking;
+	}) == nullptr;
 }
 
 bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
@@ -506,7 +456,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 							{
 								for(int y = 0; y < bt->height; y++)
 								{
-									guard_add_acc.applyBrush(BrushApplication((b->posX+x) % map->getW(), (b->posY+y) & map->getH(),6), map);
+									guard_add_acc.applyBrush(BrushApplication((b->posX+x) % map->getW(), (b->posY+y) % map->getH(),6), map);
 								}
 							}
 						}
