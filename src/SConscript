@@ -13,6 +13,7 @@ AI/AIEcho/Construction.cpp
 AI/AIEcho/Echo.cpp
 AI/AIEcho/Entities.cpp
 AI/AIEcho/Gradient.cpp
+AI/AIEcho/GradientBFS.cpp
 AI/AIEcho/Management.cpp
 AI/AIEcho/ReachToInfinity.cpp
 AI/AIEcho/SearchTools.cpp

@@ -2,12 +2,28 @@ import sys
 
 env = Environment()
 
-if sys.platform.startswith("linux"):
-  ccflags = '-Wall -ansi -g'
-else:
-  ccflags = '/EHsc /MD /GR'
+# Shared include paths so tests can compile against game headers.
+# AIEcho.h transitively pulls in Map.h / Player.h / Team.h / etc., which
+# need libgag and SDL2 headers visible at parse time even when the test
+# itself never references those types.
+common_cpppath = ['..', '../src', '../src/AI', '../libgag/include']
+common_defines = ['HAVE_CONFIG_H', '_THREAD_SAFE']
 
-env.Append(CCFLAGS = ccflags)
+if sys.platform.startswith("linux"):
+  env.Append(CCFLAGS = Split('-Wall -g -std=gnu++14'))
+  env.Append(CPPPATH = common_cpppath + ['/usr/include/SDL2'])
+  env.Append(CPPDEFINES = common_defines)
+elif sys.platform == "darwin":
+  env.Append(CCFLAGS = Split('-Wall -g -std=gnu++14'))
+  env.Append(CPPPATH = common_cpppath + [
+      '/opt/homebrew/include',
+      '/opt/homebrew/include/SDL2',
+      '/usr/local/include',
+      '/usr/local/include/SDL2'])
+  env.Append(LIBPATH = ['/opt/homebrew/lib', '/usr/local/lib'])
+  env.Append(CPPDEFINES = common_defines)
+else:
+  env.Append(CCFLAGS = Split('/EHsc /MD /GR'))
 
 sources = Split("""
 TestsRunner.cpp
@@ -16,6 +32,9 @@ PerlinNoiseTest.cpp
 ../src/PerlinNoise.cpp
 
 HelloWorldTest.cpp
+
+GradientBFSTest.cpp
+../src/AI/AIEcho/GradientBFS.cpp
 
 natsort/NatSortTest.cpp
 """)

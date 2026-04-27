@@ -252,9 +252,6 @@ void ReachToInfinity::tick(Echo& echo)
 	{
 		if(echo.is_fruit_on_map())
 		{
-	//		BuildingSearch bs_flag(echo);
-	//		bs_flag.add_condition(new SpecificBuildingType(IntBuildingType::EXPLORATION_FLAG));
-	//		const int number=bs_flag.count_buildings();
 			if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=6 && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
 			{
 				//Constraints arround nearby settlement
@@ -866,7 +863,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		//The main order for the inn
 		BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
 	
-		//Constraints arround the location of wheat
+		//Constraints around the location of wheat
 		AIEcho::Gradients::GradientInfo gi_wheat;
 		gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
 		//You want to be close to wheat
@@ -874,7 +871,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		//You can't be farther than 10 units from wheat
 		bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, 10));
 
-		//Constraints arround nearby settlement
+		//Constraints around nearby settlement
 		AIEcho::Gradients::GradientInfo gi_building;
 		gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
@@ -887,7 +884,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		//You don't want to be too close
 		bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, 3));
 
-		//Constraints arround the location of fruit
+		//Constraints around the location of fruit
 		if(echo.is_fruit_on_map())
 		{
 			AIEcho::Gradients::GradientInfo gi_fruit;

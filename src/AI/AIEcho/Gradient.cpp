@@ -43,18 +43,6 @@ using namespace boost::logic;
 using std::shared_ptr;
 
 
-GradientInfo::GradientInfo()
-{
-	needs_updated=indeterminate;
-}
-
-
-GradientInfo::~GradientInfo()
-{
-
-}
-
-
 void GradientInfo::add_source(Entities::Entity* source)
 {
 	sources.push_back(std::shared_ptr<Entities::Entity>(source));
@@ -238,22 +226,11 @@ GradientInfo make_gradient_info_obstacle(Entities::Entity* source1, Entities::En
 
 
 
-Gradient::Gradient(const GradientInfo& gi) 
-{
-	gradient_info=gi;
-	width=0;
-}
-
-
 void Gradient::recalculate(Map* map)
 {
 	width=map->getW();
-//	if(gradient==NULL)
-//		gradient=new Sint16[map->getW()*map->getH()];
-//	std::fill(gradient, gradient+(map->getW()*map->getH()),0); 
-
 	gradient.resize(map->getW()*map->getH());
-	std::fill(gradient.begin(), gradient.end(),0); 
+	std::fill(gradient.begin(), gradient.end(),0);
 
 	std::queue<position> positions;
 	for(int x=0; x<map->getW(); ++x)
@@ -269,76 +246,7 @@ void Gradient::recalculate(Map* map)
 				gradient[get_pos(x, y)]=1;
 		}
 	}
-	while(!positions.empty())
-	{
-		position p=positions.front();
-		positions.pop();
-
-		int left=p.x-1;
-		if(left<0)
-			left+=map->getW();
-		int right=p.x+1;
-		if(right>=map->getW())
-			right-=map->getW();
-		int up=p.y-1;
-		if(up<0)
-			up+=map->getH();
-		int down=p.y+1;
-		if(down>=map->getH())
-			down-=map->getH();
-		int center_h=p.x;
-		int center_y=p.y;
-		int n=gradient[get_pos(center_h, center_y)];
-
-		if(gradient[get_pos(left, up)]==0)
-		{
-			gradient[get_pos(left, up)]=n+1;
-			positions.push(position(left, up));
-		}
-
-		if(gradient[get_pos(center_h, up)]==0)
-		{
-			gradient[get_pos(center_h, up)]=n+1;
-			positions.push(position(center_h, up));
-		}
-
-		if(gradient[get_pos(right, up)]==0)
-		{
-			gradient[get_pos(right, up)]=n+1;
-			positions.push(position(right, up));
-		}
-
-		if(gradient[get_pos(left, center_y)]==0)
-		{
-			gradient[get_pos(left, center_y)]=n+1;
-			positions.push(position(left, center_y));
-		}
-
-		if(gradient[get_pos(right, center_y)]==0)
-		{
-			gradient[get_pos(right, center_y)]=n+1;
-			positions.push(position(right, center_y));
-		}
-
-		if(gradient[get_pos(left, down)]==0)
-		{
-			gradient[get_pos(left, down)]=n+1;
-			positions.push(position(left, down));
-		}
-
-		if(gradient[get_pos(center_h, down)]==0)
-		{
-			gradient[get_pos(center_h, down)]=n+1;
-			positions.push(position(center_h, down));
-		}
-
-		if(gradient[get_pos(right, down)]==0)
-		{
-			gradient[get_pos(right, down)]=n+1;
-			positions.push(position(right, down));
-		}
-
-	}
+	expand_bfs(positions);
 }
 
 

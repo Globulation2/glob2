@@ -36,6 +36,8 @@
 #include <iterator>
 #include <set>
 
+class GradientBFSTest;
+
 namespace AIEcho
 {
 	class position;
@@ -384,9 +386,14 @@ namespace AIEcho
 			bool within_dist(int posx, int posy, int max_dist) const;
 		private:
 			friend class AIEcho::Gradients::GradientManager;
+			friend class ::GradientBFSTest;
 
 			///Causes the gradient to be updated
 			void recalculate(Map* map);
+			///Toroidal 8-connected BFS expansion from sources already seeded in `gradient`.
+			///Push order is fixed for deterministic networking; do not change without
+			///verifying lockstep behavior. Drains `positions`.
+			void expand_bfs(std::queue<position>& positions);
 			///Returns the gradient info for comparison
 			const GradientInfo& get_gradient_info() const { return gradient_info; }
 			int width;
