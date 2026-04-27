@@ -38,7 +38,7 @@
 
 void Building::step(void)
 {
-	computeWishedRessources();
+	computeWishedRessources(wishedResources);
 
 	updateCallLists();
 	if(underAttackTimer>0)

@@ -90,7 +90,6 @@ public:
 	 * @param array of needs that will be filled by this function
 	 */
 	void neededRessources(int needs[MAX_NB_RESSOURCES]);
-	void wishedRessources(int needs[MAX_NB_RESSOURCES]);
 	/**
 	 * @param res The resource type
 	 * @return count of resources needed of type res. In case of higher multiplicity
@@ -99,7 +98,8 @@ public:
 	 */
 	int neededRessource(int res);
 	///Wished ressources are any ressources that are needed, and not being carried by a unit already.
-	void computeWishedRessources();
+	///Fills `needs[]` with the result; pass `wishedResources` to refresh the cached member.
+	void computeWishedRessources(int needs[MAX_NB_RESSOURCES]);
 	int totalWishedRessource();
 
 	///Launches construction. Provided with the number of units that should be working during the construction,

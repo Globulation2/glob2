@@ -1106,7 +1106,7 @@ void Unit::handleDisplacement(void)
 						///The location may be a market, or the harvesting the ressource from the
 						///map.
 						int needs[MAX_NB_RESSOURCES];
-						attachedBuilding->wishedRessources(needs);
+						attachedBuilding->computeWishedRessources(needs);
 						int teamNumber=owner->teamNumber;
 						bool canSwim=performance[SWIM];
 						int timeLeft = numberOfStepsLeftUntilHungry();
