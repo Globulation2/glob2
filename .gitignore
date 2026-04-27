@@ -3,6 +3,8 @@ options_cache.py
 libgag.a
 libusl.a
 src/glob2
+test/TestsRunner
+test/testResults.xml
 .sconf_temp
 .sconsign.dblite
 *.o
