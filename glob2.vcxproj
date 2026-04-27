@@ -330,7 +330,14 @@
     <ClCompile Include="src\AI\AI.cpp" />
     <ClCompile Include="src\AI\AICastor.cpp" />
     <ClCompile Include="src\AI\AIDescriptionScreen.cpp" />
-    <ClCompile Include="src\AI\AIEcho.cpp" />
+    <ClCompile Include="src\AI\AIEcho\Conditions.cpp" />
+    <ClCompile Include="src\AI\AIEcho\Construction.cpp" />
+    <ClCompile Include="src\AI\AIEcho\Echo.cpp" />
+    <ClCompile Include="src\AI\AIEcho\Entities.cpp" />
+    <ClCompile Include="src\AI\AIEcho\Gradient.cpp" />
+    <ClCompile Include="src\AI\AIEcho\Management.cpp" />
+    <ClCompile Include="src\AI\AIEcho\ReachToInfinity.cpp" />
+    <ClCompile Include="src\AI\AIEcho\SearchTools.cpp" />
     <ClCompile Include="src\AI\AINames.cpp" />
     <ClCompile Include="src\AI\AINicowar.cpp" />
     <ClCompile Include="src\AI\AINull.cpp" />

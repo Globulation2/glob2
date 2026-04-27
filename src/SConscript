@@ -2,7 +2,14 @@ source_files = Split("""
 AI/AICastor.cpp
 AI/AI.cpp
 AI/AIDescriptionScreen.cpp
-AI/AIEcho.cpp
+AI/AIEcho/Conditions.cpp
+AI/AIEcho/Construction.cpp
+AI/AIEcho/Echo.cpp
+AI/AIEcho/Entities.cpp
+AI/AIEcho/Gradient.cpp
+AI/AIEcho/Management.cpp
+AI/AIEcho/ReachToInfinity.cpp
+AI/AIEcho/SearchTools.cpp
 AI/AINames.cpp
 AI/AINicowar.cpp
 AI/AINull.cpp
