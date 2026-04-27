@@ -1,0 +1,544 @@
+/*
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#include <iostream>
+#include <fstream>
+
+#include "AICastor.h"
+#include "AINicowar.h"
+
+#include <assert.h>
+#include <string.h>
+
+#include <set>
+#include <string>
+#include <functional>
+#include <algorithm>
+#include <sstream>
+#include <cmath>
+
+#include <FileManager.h>
+#include <GraphicContext.h>
+
+#include "BuildingType.h"
+#include "DatasetWriter.h"
+#include "Game.h"
+#include "GameUtilities.h"
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
+#include "Order.h"
+#include "Unit.h"
+#include "UnitSkin.h"
+#include "Integrity.h"
+#include "Utilities.h"
+#include "GameGUI.h"
+#include "SDLCompat.h"
+
+#include "MapEdit.h"
+
+#include "Brush.h"
+#include "DynamicClouds.h"
+#include "Bullet.h"
+#include "TextStream.h"
+#include "FertilityCalculatorDialog.h"
+
+#include "NetMessage.h"
+
+#include "ReplayWriter.h"
+
+#define BULLET_IMGID 0
+
+#define MIN_MAX_PRESIGE 500
+#define TEAM_MAX_PRESTIGE 150
+
+// Save/load, integrity, checksum. Split out of Game.cpp.
+
+bool Game::load(GAGCore::InputStream *stream)
+{
+	assert(stream);
+
+	stream->readEnterSection("Game");
+
+	///Clears any previous game
+	clearGame();
+	mapHeader.reset();
+	gameHeader.reset();
+
+	// We load the map header
+	MapHeader tempMapHeader;
+	if (verbose)
+		printf("Loading map header\n");
+	if (!tempMapHeader.load(stream))
+	{
+		fprintf(logFile, "Game::load::tempMapHeader.load\n");
+		stream->readLeaveSection();
+		return false;
+	}
+	mapHeader=tempMapHeader;
+	Sint32 versionMinor=mapHeader.getVersionMinor();
+
+
+	// We load the game header
+	GameHeader tempGameHeader;
+	if (verbose)
+		printf("Loading game header\n");
+	if (!tempGameHeader.load(stream, versionMinor))
+	{
+		fprintf(logFile, "Game::load::tempMapHeader.load\n");
+		stream->readLeaveSection();
+		return false;
+	}
+	gameHeader=tempGameHeader;
+
+	// Test the beginning signature. Signatures are basic corruption tests.
+	// Since Game loads many other structures, it has many of them.
+	char signature[4];
+	stream->read(signature, 4, "signatureStart");
+	if (memcmp(signature,"GaBe", 4)!=0)
+	{
+		fprintf(logFile, "Signature missmatch at Game::load begin\n");
+		stream->readLeaveSection();
+		return false;
+	}
+
+	///Load the step counter
+	stepCounter = stream->readUint32("stepCounter");
+
+	if(versionMinor < 64)
+	{
+		///Load random seeds, these are no longer used
+		stream->readUint32("SyncRandSeedA");
+		stream->readUint32("SyncRandSeedB");
+		stream->readUint32("SyncRandSeedC");
+
+		stream->read(signature, 4, "signatureAfterSyncRand");
+		if (memcmp(signature,"GaSy", 4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
+			stream->readLeaveSection();
+			return false;
+		}
+	}
+	else
+	{
+		stream->read(signature, 4, "signatureBeforeTeams");
+		if (memcmp(signature,"GaBt", 4)!=0)
+		{
+			fprintf(logFile, "Signature missmatch before Game::load teams \n");
+			stream->readLeaveSection();
+			return false;
+		}
+	}
+
+	///Load teams
+	stream->readEnterSection("teams");
+	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+	{
+		stream->readEnterSection(i);
+		teams[i]=new Team(stream, this, versionMinor);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	stream->read(signature, 4, "signatureAfterTeams");
+	if (memcmp(signature,"GaTe", 4)!=0)
+	{
+		fprintf(logFile, "Signature missmatch after Game::load teams\n");
+		stream->readLeaveSection();
+		return false;
+	}
+
+	// Load the map. Team has to be saved and loaded first.
+	if(!map.load(stream, mapHeader, this))
+	{
+		fprintf(logFile, "Signature missmatch in map\n");
+		stream->readLeaveSection();
+		return false;
+	}
+
+	stream->read(signature, 4, "signatureAfterMap");
+	if (memcmp(signature,"GaMa", 4)!=0)
+	{
+		fprintf(logFile, "Signature missmatch after map\n");
+		stream->readLeaveSection();
+		return false;
+	}
+
+	// Load the players. Both Map and Team must be loaded first.
+	stream->readEnterSection("players");
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
+	{
+		stream->readEnterSection(i);
+		players[i]=new Player(stream, teams, versionMinor);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	stream->read(signature, 4, "signatureAfterPlayers");
+	if (memcmp(signature,"GaPl", 4)!=0)
+	{
+		fprintf(logFile, "Signature missmatch after players\n");
+		stream->readLeaveSection();
+		return false;
+	}
+
+	// We have to finish Team's loading
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+	{
+		teams[i]->update();
+	}
+
+	// Check integrity of loaded game
+	if (!integrity())
+		return false;
+
+	// Now load the old map script
+	if (!sgslScript.load(stream, this))
+	{
+		stream->readLeaveSection();
+		return false;
+	}
+
+	if(versionMinor >= 82)
+	{
+		// This is the new map script system
+		mapscript.decodeData(stream, mapHeader.getVersionMinor());
+	}
+
+	///Load the campaign text for the game.
+	if(versionMinor < 75)
+		stream->readText("campaignText");
+
+	// default prestige calculation
+	prestigeToReach = std::max(MIN_MAX_PRESIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
+
+	if(mapHeader.getVersionMinor() >= 75)
+	{
+		objectives.decodeData(stream, mapHeader.getVersionMinor());
+	}
+
+	if(mapHeader.getVersionMinor() >= 76)
+	{
+		missionBriefing = stream->readText("briefing");
+		gameHints.decodeData(stream, mapHeader.getVersionMinor());
+	}
+
+	stream->readLeaveSection();
+
+	///versions less than 63 did not have fertility computed with the map, but computed it live.
+	///compute it now
+	if(mapHeader.getVersionMinor() < 63)
+	{
+	    if(globalContainer->runNoX)
+	    {
+    	    std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
+    	    std::recursive_mutex incomingMutex;
+    	    FertilityCalculatorThread calculator(map, incoming, incomingMutex);
+    	    calculator();
+	    }
+	    else
+	    {
+    		FertilityCalculatorDialog dialog(globalContainer->gfx, map);
+	    	dialog.execute();
+	    }
+	}
+
+	return true;
+}
+
+bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
+	std::vector<Uint16> buildings(map.getW()*map.getH(), NOGBID);
+	for (int ti=0; ti<mapHeader.getNumberOfTeams(); ti++)
+	{
+		Team *team = teams[ti];
+		for (int bi=0; bi<Building::MAX_COUNT; bi++)
+		{
+			const auto building = team->myBuildings[bi];
+			if (!building)
+				continue;
+			const auto x = building->posX;
+			const auto y = building->posY;
+			const auto type = building->type;
+			const auto w = type->width;
+			const auto h = type->height;
+			const auto gid = building->gid;
+			for (int yi=y; yi<y+h; yi++)
+				for (int xi=x; xi<x+w; xi++)
+				{
+					// virtual buildings (flags) do not participate in this check
+					if (type->isVirtual)
+						continue;
+					// check for overlap
+					const auto index = map.coordToIndex(xi, yi);
+					checkInvariant(buildings[index]==NOGBID);
+					buildings[index] = gid;
+					// heal missing cells
+					if (map.getCase(xi, yi).building != gid)
+					{
+						std::cerr << "Missing map cell GBID at " << xi << "," << yi
+							<< " for team " << ti
+							<< " building " << bi
+							<< " (" << building->type->type << "), healing!"
+							<< std::endl;
+						map.getCase(xi, yi).building = gid;
+					}
+				}
+		}
+	}
+	return true;
+}
+
+bool Game::integrity(void)
+{
+	///Check teams integrity
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+		checkInvariant(teams[i]->integrity());
+
+	///Check that buildings do not overlap, as a pre-condition for healing
+	checkInvariant(checkBuildingsDoNotOverlapAndHealMissing());
+
+	///Check that all ID do point to existing objects
+	for (int y=0; y<map.getH(); y++)
+		for (int x=0; x<map.getW(); x++)
+		{
+			Case& c = map.getCase(x, y);
+			if (c.building != NOGBID)
+			{
+				int tid = Building::GIDtoTeam(c.building);
+				checkInvariant(teams[tid]);
+				int bid = Building::GIDtoID(c.building);
+				const auto building = teams[tid]->myBuildings[bid];
+				checkInvariant(building);
+				#define healBuildingOutsideCoord(expr, coordL, coordH) \
+					if (!(expr)) { \
+						std::cerr << "Invalid coordinate " << #coordH << "=" << coordL \
+							<< " for team " << tid \
+							<< " building " << bid \
+							<< " (" << building->type->type << ")" \
+							<< " with " << #coordH \
+							<< " span [" << building->pos ## coordH << ":" << buildingEnd ## coordH << "[, healing!" \
+							<< std::endl; \
+						map.getCase(x, y).building = NOGBID; \
+					}
+
+				const auto buildingEndX = building->posX + building->type->width;
+				healBuildingOutsideCoord(x >= building->posX || x < (buildingEndX & map.wMask), x, X);
+				healBuildingOutsideCoord(x < buildingEndX, x, X);
+				const auto buildingEndY = building->posY + building->type->height;
+				healBuildingOutsideCoord(y >= building->posY || y < (buildingEndY & map.hMask), y, Y);
+				healBuildingOutsideCoord(y < buildingEndY, y, Y);
+			}
+			if (c.groundUnit != NOGUID)
+			{
+				int tid = Unit::GIDtoTeam(c.groundUnit);
+				checkInvariant(teams[tid]);
+				const auto unit = teams[tid]->myUnits[Unit::GIDtoID(c.groundUnit)];
+				checkInvariant(unit);
+				// checkInvariantText(unit->posX == x, ", unit " << unit->typeNum << " at " << x << "," << y << " has instead posX=" << unit->posX);
+				// checkInvariantText(unit->posY == y, ", unit " << unit->typeNum << " at " << x << "," << y << " has instead posY=" << unit->posY);
+			}
+			if (c.airUnit != NOGUID)
+			{
+				int tid = Unit::GIDtoTeam(c.airUnit);
+				checkInvariant(teams[tid]);
+				const auto unit = teams[tid]->myUnits[Unit::GIDtoID(c.airUnit)];
+				checkInvariant(unit);
+				checkInvariant(unit->posX == x);
+				checkInvariant(unit->posY == y);
+			}
+		}
+	return true;
+}
+
+void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name)
+{
+	assert(stream);
+	stream->writeEnterSection("Game");
+	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+	{
+		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->enableSHA1();
+	}
+
+	///Save the two headers, record the position in the file because mapHeader will
+	///will need to be overwritten with the mapOffset known.
+	///
+	/// We mutate mapHeader briefly to shape the on-disk record (mapName,
+	/// isSavedGame), then restore it at the end of the function. Without
+	/// the restore, every in-game save (the ReplayWriter's initial state
+	/// dump with name="replayHeader" and the GameGUI auto-save every 256
+	/// ticks with name="Auto save") would permanently overwrite the live
+	/// mapHeader.mapName — observable later in things like the
+	/// GLOB2_GAME_END "map=" field, which would read "Auto save" instead
+	/// of the actual map. Map-editor "Save As" still wants the new name
+	/// to persist; MapEdit::save() explicitly re-sets it after the call.
+	std::string savedMapName = mapHeader.getMapName();
+	bool savedIsSavedGame = mapHeader.getIsSavedGame();
+
+	Uint32 mapHeaderOffset = stream->getPosition();
+	mapHeader.setMapName(name);
+	mapHeader.setIsSavedGame(!fileIsAMap);
+	mapHeader.resetGameSHA1();
+
+	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+	{
+		mapHeader.getBaseTeam(i)=*teams[i];
+		mapHeader.getBaseTeam(i).disableRecursiveDestruction=true;
+	}
+
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
+	{
+		gameHeader.getBasePlayer(i)=*players[i];
+		gameHeader.getBasePlayer(i).disableRecursiveDestruction=true;
+	}
+
+	mapHeader.save(stream);
+	gameHeader.save(stream);
+
+	///Save basic informations
+	stream->write("GaBe", 4, "signatureStart");
+	stream->writeUint32(stepCounter, "stepCounter");
+	stream->write("GaBt", 4, "signatureBeforeTeams");
+
+	///Save teams
+	stream->writeEnterSection("teams");
+	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+	{
+		stream->writeEnterSection(i);
+		teams[i]->save(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->write("GaTe", 4, "signatureAfterTeams");
+
+
+	///Save the map offset to the header, before we save the map
+	///Then, save the map
+	mapHeader.setMapOffset(stream->getPosition());
+	map.save(stream);
+	stream->write("GaMa", 4, "signatureAfterMap");
+
+	///Save the players
+	stream->writeEnterSection("players");
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
+	{
+		stream->writeEnterSection(i);
+		players[i]->save(stream);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->write("GaPl", 4, "signatureAfterPlayers");
+
+	// Save the old map script state
+	sgslScript.save(stream, this);
+
+	// This is the new map script system
+	mapscript.encodeData(stream);
+
+	///Save game objectives
+	objectives.encodeData(stream);
+	stream->writeText(missionBriefing, "missionBriefing");
+	gameHints.encodeData(stream);
+
+	Uint8 sha1[20];
+	for(int i=0; i<20; ++i)
+		sha1[i]=0;
+	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+	{
+		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->finishSHA1(sha1);
+	}
+	mapHeader.setGameSHA1(sha1);
+
+	///Overwrite the MapHeader. This is done after the map
+	///offset has been set.
+	if (stream->canSeek())
+	{
+		Uint32 position = stream->getPosition();
+		stream->seekFromStart(mapHeaderOffset);
+		mapHeader.save(stream);
+		stream->seekFromStart(position);
+	}
+
+	stream->writeLeaveSection();
+
+	// Restore live mapHeader state. See the comment at the top of this
+	// function for why we shouldn't permanently mutate. Order matters
+	// only inasmuch as both fields go back to their pre-save values.
+	mapHeader.setMapName(savedMapName);
+	mapHeader.setIsSavedGame(savedIsSavedGame);
+}
+
+Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy)
+{
+	Uint32 cs=0;
+
+	Uint32 headerCs=mapHeader.checkSum();
+	cs^=headerCs;
+	if (checkSumsVector)
+		checkSumsVector->push_back(headerCs);// [0]
+
+	cs=(cs<<31)|(cs>>1);
+
+	Uint32 teamsCs=0;
+	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+	{
+		teamsCs^=teams[i]->checkSum(checkSumsVector, checkSumsVectorForBuildings, checkSumsVectorForUnits);
+		teamsCs=(teamsCs<<31)|(teamsCs>>1);
+		cs=(cs<<31)|(cs>>1);
+	}
+	cs^=teamsCs;
+	if (checkSumsVector)
+		checkSumsVector->push_back(teamsCs);// [1+t*20]
+
+	cs=(cs<<31)|(cs>>1);
+
+	Uint32 playersCs=0;
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	{
+		playersCs^=players[i]->checkSum(checkSumsVector);
+		playersCs=(playersCs<<31)|(playersCs>>1);
+		cs=(cs<<31)|(cs>>1);
+	}
+	cs^=playersCs;
+	if (checkSumsVector)
+		checkSumsVector->push_back(playersCs);// [2+t*20+p*2]
+
+	cs=(cs<<31)|(cs>>1);
+
+	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
+	{
+		if (players[i]->type==BasePlayer::P_IP)
+		{
+			heavy=true;
+			break;
+		}
+	}
+	Uint32 mapCs=map.checkSum(heavy);
+	cs^=mapCs;
+	if (checkSumsVector)
+		checkSumsVector->push_back(mapCs);// [3+t*20+p*2]
+
+	cs=(cs<<31)|(cs>>1);
+
+	Uint32 scriptCs=sgslScript.checkSum();
+	cs^=scriptCs;
+	if (checkSumsVector)
+		checkSumsVector->push_back(scriptCs);// [4+t*20+p*2]
+
+	return cs;
+}

@@ -40,6 +40,11 @@ FertilityCalculatorDialog.cpp
 FertilityCalculatorThread.cpp
 FertilityCalculatorThreadMessage.cpp
 Game.cpp
+Game_orders.cpp
+Game_io.cpp
+Game_sync.cpp
+Game_editor.cpp
+Game_render.cpp
 GameEvent.cpp
 GameGUI.cpp
 GameGUIDefaultAssignManager.cpp
