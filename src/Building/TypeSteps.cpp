@@ -403,12 +403,16 @@ void Building::turretStep(Uint32 stepCounter)
 
 void Building::clearingFlagStep()
 {
+	// PORT: timer is reset inside Map::updateLocalRessources (MapGradientBuilding.cpp:275), not here.
+	// PORT: also bumped by +=16 from MapPathfindRessource.cpp:189 when units find resources unreachable.
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 		for (int canSwim=0; canSwim<2; canSwim++)
 			if (localRessourcesCleanTime[canSwim]++>125) // Update every 5[s]
 			{
 				if (!owner->map->updateLocalRessources(this, canSwim))
 				{
+					// PORT: verify standardRandomActivity() detaches unit->attachedBuilding and updates call lists.
+					// PORT: if not, the Rust port should call removeUnitFromWorking(unit) per unit instead of clear().
 					for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 						(*it)->standardRandomActivity();
 					unitsWorking.clear();

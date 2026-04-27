@@ -272,6 +272,9 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 				gradient[addrl]=0;
 		}
 	}
+	// PORT: this is the SOLE reset for localRessourcesCleanTime[canSwim]; runs unconditionally
+	// PORT: before both the false return below and the true return at function end. Building::clearingFlagStep
+	// PORT: relies on this side effect rather than resetting the timer itself.
 	building->localRessourcesCleanTime[canSwim]=0;
 	if (anyRessourceToClear)
 		building->anyRessourceToClear[canSwim]=1;

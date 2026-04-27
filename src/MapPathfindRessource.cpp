@@ -186,6 +186,9 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	bool found=false;
 	bool gradientUsable=false;
 	
+	// PORT: escalation path — bumps localRessourcesCleanTime by 16 to trigger clearingFlagStep's
+	// PORT: recompute (which checks >125) sooner. The 125/128 thresholds are slightly mismatched;
+	// PORT: align them in the Rust port (probably both should be 125).
 	if (currentg==1 && (building->localRessourcesCleanTime[canSwim]+=16)<128)
 	{
 		// This mean there are still ressources, but they are unreachable.

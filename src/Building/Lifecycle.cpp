@@ -315,7 +315,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	owner->prestige += type->prestige;
 
-	seenByMask = stream->readUint32("seenByMaskk");
+	seenByMask = stream->readUint32("seenByMask");
 
 	inCanFeedUnit=LS_UNKNOWN;
 	inCanHealUnit=LS_UNKNOWN;
