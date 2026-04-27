@@ -180,7 +180,25 @@
 				RelativePath="src\AI\AI.cpp">
 			</File>
 			<File
-				RelativePath=".\src\AI\AICastor.cpp">
+				RelativePath=".\src\AI\AICastor\Control.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AICastor\GetOrder.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AICastor\Lifecycle.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AICastor\Maps.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AICastor\Placement.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AICastor\Projects.cpp">
+			</File>
+			<File
+				RelativePath=".\src\AI\AICastor\State.cpp">
 			</File>
 			<File
 				RelativePath=".\src\AI\AINicowar.cpp">

@@ -1,5 +1,11 @@
 source_files = Split("""
-AI/AICastor.cpp
+AI/AICastor/Control.cpp
+AI/AICastor/GetOrder.cpp
+AI/AICastor/Lifecycle.cpp
+AI/AICastor/Maps.cpp
+AI/AICastor/Placement.cpp
+AI/AICastor/Projects.cpp
+AI/AICastor/State.cpp
 AI/AI.cpp
 AI/AIDescriptionScreen.cpp
 AI/AIEcho/Conditions.cpp

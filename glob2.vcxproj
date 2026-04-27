@@ -328,7 +328,13 @@
     <ClCompile Include="libusl\src\types.cpp" />
     <ClCompile Include="libusl\src\usl.cpp" />
     <ClCompile Include="src\AI\AI.cpp" />
-    <ClCompile Include="src\AI\AICastor.cpp" />
+    <ClCompile Include="src\AI\AICastor\Control.cpp" />
+    <ClCompile Include="src\AI\AICastor\GetOrder.cpp" />
+    <ClCompile Include="src\AI\AICastor\Lifecycle.cpp" />
+    <ClCompile Include="src\AI\AICastor\Maps.cpp" />
+    <ClCompile Include="src\AI\AICastor\Placement.cpp" />
+    <ClCompile Include="src\AI\AICastor\Projects.cpp" />
+    <ClCompile Include="src\AI\AICastor\State.cpp" />
     <ClCompile Include="src\AI\AIDescriptionScreen.cpp" />
     <ClCompile Include="src\AI\AIEcho\Conditions.cpp" />
     <ClCompile Include="src\AI\AIEcho\Construction.cpp" />
