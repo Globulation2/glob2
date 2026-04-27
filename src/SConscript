@@ -13,7 +13,12 @@ BasePlayer.cpp
 BaseTeam.cpp
 BitArray.cpp
 Brush.cpp
-Building.cpp
+building/Lifecycle.cpp
+building/Construction.cpp
+building/Update.cpp
+building/Step.cpp
+building/TypeSteps.cpp
+building/Misc.cpp
 BuildingsTypes.cpp
 BuildingType.cpp
 BuildingUtils.cpp

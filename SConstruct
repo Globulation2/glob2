@@ -291,6 +291,7 @@ def main():
 
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
+    env.Append(CPPPATH=['#src'])
     env.Append(CXXFLAGS=' -Wall -fPIC')
     env.Append(LINKFLAGS=' -Wall')
     env.Append(LIBS=['SDL2_net'])
