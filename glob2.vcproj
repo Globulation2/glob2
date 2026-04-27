@@ -177,31 +177,31 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="src\AI.cpp">
+				RelativePath="src\AI\AI.cpp">
 			</File>
 			<File
-				RelativePath=".\src\AICastor.cpp">
+				RelativePath=".\src\AI\AICastor.cpp">
 			</File>
 			<File
-				RelativePath=".\src\AINicowar.cpp">
+				RelativePath=".\src\AI\AINicowar.cpp">
 			</File>
 			<File
-				RelativePath=".\src\AINicowar.h">
+				RelativePath=".\src\AI\AINicowar.h">
 			</File>
 			<File
-				RelativePath=".\src\AINull.cpp">
+				RelativePath=".\src\AI\AINull.cpp">
 			</File>
 			<File
-				RelativePath="src\AINumbi.cpp">
+				RelativePath="src\AI\AINumbi.cpp">
 			</File>
 			<File
-				RelativePath=".\src\AIToubib.cpp">
+				RelativePath=".\src\AI\AIToubib.cpp">
 			</File>
 			<File
-				RelativePath=".\src\AIWarrush.cpp">
+				RelativePath=".\src\AI\AIWarrush.cpp">
 			</File>
 			<File
-				RelativePath=".\src\AIWarrush.h">
+				RelativePath=".\src\AI\AIWarrush.h">
 			</File>
 			<File
 				RelativePath=".\src\BitArray.cpp">
@@ -532,22 +532,22 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
-				RelativePath="src\AI.h">
+				RelativePath="src\AI\AI.h">
 			</File>
 			<File
-				RelativePath=".\src\AICastor.h">
+				RelativePath=".\src\AI\AICastor.h">
 			</File>
 			<File
-				RelativePath="src\AIImplementation.h">
+				RelativePath="src\AI\AIImplementation.h">
 			</File>
 			<File
-				RelativePath=".\src\AINull.h">
+				RelativePath=".\src\AI\AINull.h">
 			</File>
 			<File
-				RelativePath="src\AINumbi.h">
+				RelativePath="src\AI\AINumbi.h">
 			</File>
 			<File
-				RelativePath=".\src\AIToubib.h">
+				RelativePath=".\src\AI\AIToubib.h">
 			</File>
 			<File
 				RelativePath=".\src\BitArray.h">

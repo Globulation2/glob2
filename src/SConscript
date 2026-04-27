@@ -1,14 +1,14 @@
 source_files = Split("""
-AICastor.cpp
-AI.cpp
-AIDescriptionScreen.cpp
-AIEcho.cpp
-AINames.cpp
-AINicowar.cpp
-AINull.cpp
-AINumbi.cpp
-AIToubib.cpp
-AIWarrush.cpp
+AI/AICastor.cpp
+AI/AI.cpp
+AI/AIDescriptionScreen.cpp
+AI/AIEcho.cpp
+AI/AINames.cpp
+AI/AINicowar.cpp
+AI/AINull.cpp
+AI/AINumbi.cpp
+AI/AIToubib.cpp
+AI/AIWarrush.cpp
 BasePlayer.cpp
 BaseTeam.cpp
 BitArray.cpp
@@ -216,7 +216,7 @@ yog/YOGServerRouterManager.cpp
 yog/YOGServerRouterPlayer.cpp
 """)
 server_source_files=Split("""
-AINames.cpp
+AI/AINames.cpp
 BasePlayer.cpp
 BaseTeam.cpp
 BitArray.cpp
