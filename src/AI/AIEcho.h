@@ -378,6 +378,10 @@ namespace AIEcho
 			explicit Gradient(const GradientInfo& gi);
 			///Gets the distance of the provided position from the nearest source
 			int get_height(int posx, int posy) const;
+			///Returns true if the tile is reachable and within max_dist of the
+			///nearest source. Excludes obstacle (-1) and BFS-unreached (-2) tiles,
+			///which a naive `get_height < max_dist` would silently include.
+			bool within_dist(int posx, int posy, int max_dist) const;
 		private:
 			friend class AIEcho::Gradients::GradientManager;
 

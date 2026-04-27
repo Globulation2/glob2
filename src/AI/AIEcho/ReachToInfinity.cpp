@@ -845,7 +845,7 @@ void ReachToInfinity::tick(Echo& echo)
 						    mi.is_ressource(x, y, CORN)) &&
 						    mi.is_discovered(x, y) &&
 						    !mi.is_forbidden_area(x, y) &&
-						    gradient.get_height(x, y)<10)
+						    gradient.within_dist(x, y, 10))
 						{
 							mo_farming->add_location(x, y);
 						}

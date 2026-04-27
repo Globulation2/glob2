@@ -348,6 +348,13 @@ int Gradient::get_height(int posx, int posy) const
 }
 
 
+bool Gradient::within_dist(int posx, int posy, int max_dist) const
+{
+	int h = get_height(posx, posy);
+	return h >= 0 && h < max_dist;
+}
+
+
 
 GradientManager::GradientManager(Map* map) : map(map), cur_update(0), timer(0)
 {
