@@ -319,7 +319,7 @@ bool Building::tryToBuildingSiteRoom(void)
 
 		if (!type->isVirtual)
 		{
-			owner->map->setBuilding(posX, posY, type->decLeft, type->decLeft, NOGBID);
+			owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 			owner->map->setBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 		}
 
