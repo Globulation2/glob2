@@ -32,6 +32,8 @@
 #include "MapGenerationDescriptor.h"
 #include "MapGenerator.h"
 #include "Map.h"
+
+void simulateRandomMap(int smooth, double baseWater, double baseSand, double baseGrass, double *finalWater, double *finalSand, double *finalGrass);
 #include <map>
 #include <queue>
 #include <set>

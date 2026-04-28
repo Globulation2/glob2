@@ -40,9 +40,6 @@
 #include "SDLCompat.h"
 
 
-#define RIGHT_MENU_WIDTH 160
-#define RIGHT_MENU_OFFSET (160-128)/2
-
 MapEdit::MapEdit()
   : game(NULL, this), keyboardManager(MapEditShortcuts), 
     minimap(globalContainer->runNoX,

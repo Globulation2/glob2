@@ -35,6 +35,9 @@
 #include <string>
 #include <vector>
 
+#define RIGHT_MENU_WIDTH 160
+#define RIGHT_MENU_OFFSET (160-128)/2
+
 ///A generic rectangle structure used for a variety of purposes, but mainly for the convience of the widget system
 struct widgetRectangle
 {

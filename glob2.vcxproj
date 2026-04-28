@@ -94,7 +94,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug SDL|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include\SDL2;$(ProjectDir);$(ProjectDir)src;$(ProjectDir)libwee\include;$(ProjectDir)libgag\include;$(ProjectDir)libusl\src</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include\SDL2;$(ProjectDir);$(ProjectDir)src;$(ProjectDir)src\map;$(ProjectDir)src\map\edit;$(ProjectDir)src\map\generator;$(ProjectDir)src\map\gradient;$(ProjectDir)src\map\io;$(ProjectDir)src\map\pathfind;$(ProjectDir)libwee\include;$(ProjectDir)libgag\include;$(ProjectDir)libusl\src</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release SDL|Win32'">
     <OutDir>Release\</OutDir>
@@ -410,7 +410,7 @@
     <ClCompile Include="src\GlobalContainer.cpp" />
     <ClCompile Include="src\GUIGlob2FileList.cpp" />
     <ClCompile Include="src\GUIMapPreview.cpp" />
-    <ClCompile Include="src\HeightMapGenerator.cpp" />
+    <ClCompile Include="src\map\generator\HeightMapGenerator.cpp" />
     <ClCompile Include="src\IntBuildingType.cpp" />
     <ClCompile Include="src\IRC.cpp" />
     <ClCompile Include="src\IRCTextMessageHandler.cpp" />
@@ -422,19 +422,17 @@
     <ClCompile Include="src\LANMenuScreen.cpp" />
     <ClCompile Include="src\LogFileManager.cpp" />
     <ClCompile Include="src\MainMenuScreen.cpp" />
-    <ClCompile Include="src\Map.cpp" />
-    <ClCompile Include="src\MapEdit.cpp" />
-    <ClCompile Include="src\MapEditDialog.cpp" />
-    <ClCompile Include="src\MapEditKeyActions.cpp" />
-    <ClCompile Include="src\MapGenerationDescriptor.cpp" />
-    <ClCompile Include="src\MapGenerator.cpp" />
-    <ClCompile Include="src\MapHeader.cpp" />
+    <ClCompile Include="src\map\Map.cpp" />
+    <ClCompile Include="src\map\edit\MapEditDialog.cpp" />
+    <ClCompile Include="src\map\edit\MapEditKeyActions.cpp" />
+    <ClCompile Include="src\map\generator\MapGenerationDescriptor.cpp" />
+    <ClCompile Include="src\map\io\MapHeader.cpp" />
     <ClCompile Include="src\MapScript.cpp" />
     <ClCompile Include="src\MapScriptError.cpp" />
     <ClCompile Include="src\MapScriptUSL.cpp" />
-    <ClCompile Include="src\MapThumbnail.cpp" />
+    <ClCompile Include="src\map\io\MapThumbnail.cpp" />
     <ClCompile Include="src\MarkManager.cpp" />
-    <ClCompile Include="src\Minimap.cpp" />
+    <ClCompile Include="src\map\Minimap.cpp" />
     <ClCompile Include="src\MultiplayerGame.cpp" />
     <ClCompile Include="src\MultiplayerGameEvent.cpp" />
     <ClCompile Include="src\MultiplayerGameScreen.cpp" />
@@ -600,9 +598,9 @@
     <ClInclude Include="src\LoadGameScreen.h" />
     <ClInclude Include="src\LogFileManager.h" />
     <ClInclude Include="src\MainMenuScreen.h" />
-    <ClInclude Include="src\Map.h" />
-    <ClInclude Include="src\MapEdit.h" />
-    <ClInclude Include="src\MapGenerationDescriptor.h" />
+    <ClInclude Include="src\map\Map.h" />
+    <ClInclude Include="src\map\edit\MapEdit.h" />
+    <ClInclude Include="src\map\generator\MapGenerationDescriptor.h" />
     <ClInclude Include="src\Marshaling.h" />
     <ClInclude Include="src\MultiplayersChooseMapScreen.h" />
     <ClInclude Include="src\MultiplayersConnectedScreen.h" />
@@ -633,7 +631,7 @@
     <ClInclude Include="src\SoundMixer.h" />
     <ClInclude Include="src\Team.h" />
     <ClInclude Include="src\TeamStat.h" />
-    <ClInclude Include="src\TerrainType.h" />
+    <ClInclude Include="src\map\TerrainType.h" />
     <ClInclude Include="src\Unit.h" />
     <ClInclude Include="src\UnitConsts.h" />
     <ClInclude Include="src\UnitType.h" />

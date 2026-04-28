@@ -342,16 +342,10 @@
 				RelativePath="src\MainMenuScreen.cpp">
 			</File>
 			<File
-				RelativePath="src\Map.cpp">
+				RelativePath="src\map\Map.cpp">
 			</File>
 			<File
-				RelativePath="src\MapEdit.cpp">
-			</File>
-			<File
-				RelativePath="src\MapGenerationDescriptor.cpp">
-			</File>
-			<File
-				RelativePath="src\MapGenerator.cpp">
+				RelativePath="src\map\generator\MapGenerationDescriptor.cpp">
 			</File>
 			<File
 				RelativePath="src\MultiplayersChooseMapScreen.cpp">
@@ -694,13 +688,13 @@
 				RelativePath="src\MainMenuScreen.h">
 			</File>
 			<File
-				RelativePath="src\Map.h">
+				RelativePath="src\map\Map.h">
 			</File>
 			<File
-				RelativePath="src\MapEdit.h">
+				RelativePath="src\map\edit\MapEdit.h">
 			</File>
 			<File
-				RelativePath="src\MapGenerationDescriptor.h">
+				RelativePath="src\map\generator\MapGenerationDescriptor.h">
 			</File>
 			<File
 				RelativePath="src\Marshaling.h">
@@ -793,7 +787,7 @@
 				RelativePath="src\TeamStat.h">
 			</File>
 			<File
-				RelativePath=".\src\TerrainType.h">
+				RelativePath=".\src\map\TerrainType.h">
 			</File>
 			<File
 				RelativePath="src\Unit.h">

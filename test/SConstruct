@@ -6,7 +6,10 @@ env = Environment()
 # AIEcho.h transitively pulls in Map.h / Player.h / Team.h / etc., which
 # need libgag and SDL2 headers visible at parse time even when the test
 # itself never references those types.
-common_cpppath = ['..', '../src', '../src/AI', '../libgag/include']
+common_cpppath = ['..', '../src', '../src/AI',
+                  '../src/map', '../src/map/edit', '../src/map/generator',
+                  '../src/map/gradient', '../src/map/io', '../src/map/pathfind',
+                  '../libgag/include']
 common_defines = ['HAVE_CONFIG_H', '_THREAD_SAFE']
 
 if sys.platform.startswith("linux"):
