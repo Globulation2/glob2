@@ -220,9 +220,14 @@ private:
 	void handleKey(SDL_Keysym key, bool pressed);
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
+	void handleKeySwitchToAreaBrush(int figure);
+	void handleKeySelectConstruct(const char *buildingName);
+	void handleKeySelectPlaceFlag(const char *flagName);
+	void handleKeySelectPlaceArea(GameGUIToolManager::ZoneType zone);
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
+	void handleMenuClickBuildingSelection(int mx, int my, int button);
 	void handleReplayProgressBarClick(int mx, int my, int button);
 
 	void handleActivation(Uint8 state, Uint8 gain);

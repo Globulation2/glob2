@@ -82,6 +82,7 @@ GameGUIInput.cpp
 GameGUIInputKey.cpp
 GameGUIInputMenu.cpp
 GameGUIInputMenuClick.cpp
+GameGUIInputMenuClickBuilding.cpp
 GameGUIInputMouse.cpp
 GameGUIKeyActions.cpp
 GameGUILoadSave.cpp

@@ -43,7 +43,7 @@ void Building::updateBuildingSite(void)
 
 	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
-		// we really uses the resources of the buildingsite:
+		// we really uses the resources of the building site:
 		for(int i=0; i<MAX_RESSOURCES; i++)
 			ressources[i]-=type->maxRessource[i];
 
@@ -109,7 +109,7 @@ void Building::updateUnitsWorking(void)
 {
 	if (maxUnitWorking==0)
 	{
-		// This is only a special optimisation case:
+		// This is only a special optimization case:
 		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 			(*it)->standardRandomActivity();
 		unitsWorking.clear();
@@ -123,7 +123,7 @@ void Building::updateUnitsWorking(void)
 			Unit *fu=NULL;
 			std::list<Unit *>::iterator ittemp;
 
-			// First choice: free an unit who has a not needed ressource..
+			// First choice: free a unit who has a not needed ressource..
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
 				int r=(*it)->carriedRessource;
@@ -138,7 +138,7 @@ void Building::updateUnitsWorking(void)
 				}
 			}
 			if(fu!=NULL) continue;
-			// Second choice: free an unit who has no ressource..
+			// Second choice: free a unit who has no ressource..
 			if (fu==NULL)
 			{
 				int minDistSquare=INT_MAX;
@@ -460,7 +460,7 @@ bool Building::fullInside(void)
 
 int Building::desiredNumberOfWorkers(void)
 {
-	//If its virtual, than this building is a flag and always gets
+	//If It's virtual, then this building is a flag and always gets
 	//full ressources
 	if(type->isVirtual)
 	{

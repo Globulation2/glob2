@@ -320,6 +320,31 @@ void GameGUI::processEvent(SDL_Event *event)
 	}
 }
 
+void GameGUI::handleKeyDump(SDL_KeyboardEvent key)
+{
+	if (key.keysym.sym == SDLK_PRINTSCREEN)
+	{
+		if ((key.keysym.mod & KMOD_SHIFT) != 0)
+		{
+			OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("glob2.dump.txt"));
+			if (stream->isEndOfStream())
+			{
+				std::cerr << "Can't dump full game memory to file glob2.dump.txt" << std::endl;
+			}
+			else
+			{
+				std::cerr << "Dump full game memory" << std::endl;
+				save(stream, "glob2.dump.txt");
+			}
+			delete stream;
+		}
+		else
+		{
+			globalContainer->gfx->printScreen("screenshot.bmp");
+		}
+	}
+}
+
 void GameGUI::handleActivation(Uint8 state, Uint8 gain)
 {
 	if (gain==0)
