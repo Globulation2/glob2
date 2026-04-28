@@ -79,6 +79,10 @@ GameGUIDraw.cpp
 GameGUIDrawPanels.cpp
 GameGUIGhostBuildingManager.cpp
 GameGUIInput.cpp
+GameGUIInputKey.cpp
+GameGUIInputMenu.cpp
+GameGUIInputMenuClick.cpp
+GameGUIInputMouse.cpp
 GameGUIKeyActions.cpp
 GameGUILoadSave.cpp
 GameGUIMessageManager.cpp
