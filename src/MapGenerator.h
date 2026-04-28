@@ -71,9 +71,6 @@ private:
 	///This function computes all of points that are borders
 	void findBorderPoints(Game& game, std::vector<int>& grid, std::vector<MapGeneratorPoint>& points);
 
-	///This function sets all given points as a specific area on the grid
-	void setAsArea(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
-	
 	///This function fills all given points area with a certain ressource. It will fill in a randomly sized
 	///square over each grid space no larger than maxFillSize
 	void fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int ressourceType, int maxFillSize);
@@ -102,29 +99,11 @@ private:
 	void computeDistances(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap);
 	
 	///Computes the average height/distance of a area on a heightmap
-	int computeAverageDistance(Game& game, std::vector<int>& grid, int areaN, std::vector<int> heightmap);
-	
-	//This function computes and prints the percentage of the map allocated to each area
-	void computePercentageOfAreas(Game& game, std::vector<int>& grid);
-	
-	//This function takes a grid, and joins areas that share borders such that you get a smaller number of areas.
-	//The target number of areas should be an integer devisor of the areas being joined
-	void joinAreas(Game& game, std::vector<int>& grid, std::vector<int> toBeJoined, std::vector<int> target);
+	int computeAverageDistance(Game& game, std::vector<int>& grid, int areaN, const std::vector<int>& heightmap);
 
 	///Adds a building to the map with the given typenum, level, under construction, team and location.
 	///Returns the pointer if it could, NULL otherwise
 	Building* addBuilding(Game& game, int x, int y, int team, int typenum, int level, bool underConstruction);
-
-	///This is a node used for the joinAreas algorithm
-	class Node
-	{
-	public:
-		std::vector<int> original;
-		std::vector<bool> borders;
-	};
-	
-	///This is a recursive function used by the joinAreas algorithm
-	bool joinLoop(Game& game, std::vector<Node> nodes, std::vector<Node>& result, int numberOfJoins);
 
 	static const bool verbose=false;
 };
