@@ -1,0 +1,299 @@
+/*
+  Copyright (C) 2007 Bradley Arsenault
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#include "NetMessage.h"
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+#include "Version.h"
+#include "BinaryStream.h"
+
+using namespace GAGCore;
+
+NetSendOrder::NetSendOrder()
+{
+}
+
+
+
+NetSendOrder::NetSendOrder(std::shared_ptr<Order> newOrder)
+{
+	order=newOrder;
+}
+
+
+
+void NetSendOrder::changeOrder(std::shared_ptr<Order> newOrder)
+{
+	order = newOrder;
+}
+
+
+
+std::shared_ptr<Order> NetSendOrder::getOrder()
+{
+	return order;
+}
+
+
+
+Uint8 NetSendOrder::getMessageType() const
+{
+	return MNetSendOrder;
+}
+
+
+
+void NetSendOrder::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSendOrder");
+	Uint32 orderLength = order->getDataLength();
+	stream->writeUint32(orderLength+1, "size");
+	stream->writeUint8(order->getOrderType(), "orderType");
+	stream->write(order->getData(), order->getDataLength(), "data");
+	stream->writeUint8(order->sender, "sender");
+	stream->writeUint32(order->gameCheckSum, "checksum");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSendOrder::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSendOrder");
+	size_t size=stream->readUint32("size");
+	Uint8* buffer = new Uint8[size];
+	stream->read(buffer, size, "data");
+	stream->readLeaveSection();
+
+	order = Order::getOrder(buffer, size, VERSION_MINOR);
+
+	// If this couldn't be interpreted return it returned a NULL order, so we throw.
+	if (order == std::shared_ptr<Order>())
+		throw std::ios_base::failure("Couldn't decode data stream to an Order: bad format.");
+
+	order->sender = stream->readUint8("sender");
+	order->gameCheckSum = stream->readUint32("checksum");
+
+	delete[] buffer;
+}
+
+
+
+std::string NetSendOrder::format() const
+{
+	std::stringstream s;
+	if(order==NULL)
+	{
+		s<<"NetSendOrder()";
+	}
+	else
+	{
+		s<<"NetSendOrder(orderType="<<static_cast<int>(order->getOrderType())<<")";
+	}
+	return s.str();
+}
+
+
+
+bool NetSendOrder::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSendOrder))
+	{
+		const NetSendOrder& r = dynamic_cast<const NetSendOrder&>(rhs);
+		if(order==NULL || r.order==NULL)
+		{
+			return order == r.order;
+		}
+		if(typeid(r.order) == typeid(order))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+NetPing::NetPing()
+{
+
+}
+
+
+
+Uint8 NetPing::getMessageType() const
+{
+	return MNetPing;
+}
+
+
+
+void NetPing::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetPing");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetPing::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetPing");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetPing::format() const
+{
+	std::ostringstream s;
+	s<<"NetPing()";
+	return s.str();
+}
+
+
+
+bool NetPing::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetPing))
+	{
+		//const NetPing& r = dynamic_cast<const NetPing&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetPingReply::NetPingReply()
+{
+
+}
+
+
+
+Uint8 NetPingReply::getMessageType() const
+{
+	return MNetPingReply;
+}
+
+
+
+void NetPingReply::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetPingReply");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetPingReply::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetPingReply");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetPingReply::format() const
+{
+	std::ostringstream s;
+	s<<"NetPingReply()";
+	return s.str();
+}
+
+
+
+bool NetPingReply::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetPingReply))
+	{
+		//const NetPingReply& r = dynamic_cast<const NetPingReply&>(rhs);
+		return true;
+	}
+	return false;
+}
+
+
+
+NetSetLatencyMode::NetSetLatencyMode()
+	: latencyAdjustment(0)
+{
+
+}
+
+
+
+NetSetLatencyMode::NetSetLatencyMode(Uint8 latencyAdjustment)
+	:latencyAdjustment(latencyAdjustment)
+{
+}
+
+
+
+Uint8 NetSetLatencyMode::getMessageType() const
+{
+	return MNetSetLatencyMode;
+}
+
+
+
+void NetSetLatencyMode::encodeData(GAGCore::OutputStream* stream) const
+{
+	stream->writeEnterSection("NetSetLatencyMode");
+	stream->writeUint8(latencyAdjustment, "latencyAdjustment");
+	stream->writeLeaveSection();
+}
+
+
+
+void NetSetLatencyMode::decodeData(GAGCore::InputStream* stream)
+{
+	stream->readEnterSection("NetSetLatencyMode");
+	latencyAdjustment = stream->readUint8("latencyAdjustment");
+	stream->readLeaveSection();
+}
+
+
+
+std::string NetSetLatencyMode::format() const
+{
+	std::ostringstream s;
+	s<<"NetSetLatencyMode("<<"latencyAdjustment="<<static_cast<int>(latencyAdjustment)<<"; "<<")";
+	return s.str();
+}
+
+
+
+bool NetSetLatencyMode::operator==(const NetMessage& rhs) const
+{
+	if(typeid(rhs)==typeid(NetSetLatencyMode))
+	{
+		const NetSetLatencyMode& r = dynamic_cast<const NetSetLatencyMode&>(rhs);
+		if(r.latencyAdjustment == latencyAdjustment)
+			return true;
+	}
+	return false;
+}
+
+
+Uint8 NetSetLatencyMode::getLatencyAdjustment() const
+{
+	return latencyAdjustment;
+}
