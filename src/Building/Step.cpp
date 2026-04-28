@@ -368,12 +368,19 @@ bool Building::subscribeForFlagingStep()
 	subscriptionWorkingTimer++;
 	if (subscriptionWorkingTimer>32)
 	{
+		// Reset stale failure counts for the case where the while loop below
+		// doesn't run (building already fully staffed). When the loop does run,
+		// this is overwritten by the per-iteration reset on iteration 1.
 		for(int i=0; i<UnitCantWorkReasonSize; ++i)
 		{
 			unitsFailingRequirements[i]=0;
 		}
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
 		{
+			// Per-iteration reset: the same Unit::MAX_COUNT array is rescanned
+			// each iteration (already-hired units are filtered via
+			// attachedBuilding==this); without this, the same failing units
+			// would be counted N times across N iterations.
 			for(int i=0; i<UnitCantWorkReasonSize; ++i)
 			{
 				unitsFailingRequirements[i]=0;
