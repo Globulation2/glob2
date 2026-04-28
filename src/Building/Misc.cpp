@@ -430,7 +430,6 @@ bool Building::canConvertUnit(void)
 
 bool Building::integrity()
 {
-	checkInvariant(unitsWorking.size()>=0);
 	checkInvariant((int)unitsWorking.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
@@ -439,7 +438,6 @@ bool Building::integrity()
 		checkInvariant((*it)->attachedBuilding==this);
 	}
 
-	checkInvariant(unitsInside.size()>=0);
 	checkInvariant((int)unitsInside.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
