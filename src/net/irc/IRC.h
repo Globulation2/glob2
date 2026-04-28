@@ -18,8 +18,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __IRC_H
-#define __IRC_H
+#pragma once
 
 #include <SDL_net.h>
 
@@ -178,5 +177,3 @@ private:
 	//! Get a string in IRC format
 	bool getString(char data[IRC_MESSAGE_SIZE]);
 };
-
-#endif

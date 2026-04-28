@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UTILITIES_H_GZ
-#define __UTILITIES_H_GZ
+#pragma once
 
 #include <stdlib.h>
 #include <errno.h>
@@ -150,5 +149,4 @@ namespace Utilities
 	void write(int fd, const void *buf, size_t count);
 };
 
-#endif
 

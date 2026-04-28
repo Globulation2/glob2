@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __END_GAME_SCREEN_H
-#define __END_GAME_SCREEN_H
+#pragma once
 
 #include "GameGUI.h"
 #include "Glob2Screen.h"
@@ -104,4 +103,3 @@ private:
 	void saveReplay(const char *dir, const char *ext);
 };
 
-#endif

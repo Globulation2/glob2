@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __STREAM_H
-#define __STREAM_H
+#pragma once
 
 // For U/SintNN
 #include "Types.h"
@@ -115,5 +114,3 @@ namespace GAGCore
 		bool isEndOfStream(void);
 	};
 }
-
-#endif

@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef GameHints_h
-#define GameHints_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -69,4 +68,3 @@ private:
 	std::vector<int> scriptNumbers;
 };
 
-#endif

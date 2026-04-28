@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NetMessage_h
-#define __NetMessage_h
+#pragma once
 
 #include <memory>
 #include "GameHeader.h"
@@ -2494,4 +2493,3 @@ template<typename container> void NetUpdatePlayerList::applyDifferences(containe
 	}
 }
 
-#endif

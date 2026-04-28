@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UNITSSKINS_H
-#define __UNITSSKINS_H
+#pragma once
 
 #include <map>
 #include <string>
@@ -48,4 +47,3 @@ protected:
 	std::map<std::string, UnitSkin *> unitsSkins;
 };
 
-#endif

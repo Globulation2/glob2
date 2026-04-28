@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ENTITY_TYPE_H
-#define __ENTITY_TYPE_H
+#pragma once
 
 #include <GAGSys.h>
 
@@ -42,5 +41,4 @@ public:
 	virtual void dump(void);
 };
 
-#endif
 

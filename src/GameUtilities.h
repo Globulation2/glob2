@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charriï¿½re
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GAME_UTILITIES_H
-#define __GAME_UTILITIES_H
+#pragma once
 
 class Game;
 
@@ -28,4 +27,3 @@ namespace GameUtilities
 	void globalCoordToLocalView(const Game *game, int localTeam, int globalX, int globalY, int *localX, int *localY);
 };
 
-#endif

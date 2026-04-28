@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GLOB2EDIT_H
-#define __GLOB2EDIT_H
+#pragma once
 
 #include "Brush.h"
 #include "GameGUILoadSave.h"
@@ -777,8 +776,3 @@ private:
 	void handleNoRessourceGrowthClick(int mx, int my);
 
 };
-
-
-
-
-#endif 

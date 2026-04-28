@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __PLAYER_H
-#define __PLAYER_H
+#pragma once
 
 #include <assert.h>
 #include <vector>
@@ -71,4 +70,3 @@ public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 };
 
-#endif

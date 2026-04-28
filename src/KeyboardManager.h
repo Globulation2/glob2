@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __KEYBOARD_MANAGER_H
-#define __KEYBOARD_MANAGER_H
+#pragma once
 
 #include <map>
 #include <list>
@@ -108,4 +107,3 @@ private:
 	ShortcutMode mode;
 };
 
-#endif

@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef CAMPAIGN_EDITOR_H
-#define CAMPAIGN_EDITOR_H
+#pragma once
 
 #include "Glob2Screen.h"
 #include "Campaign.h"
@@ -105,4 +104,3 @@ private:
 	Text *isUnlockedLabel;
 };
 
-#endif

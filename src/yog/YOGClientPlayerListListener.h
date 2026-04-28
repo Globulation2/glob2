@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGClientPlayerListListener_h
-#define YOGClientPlayerListListener_h
+#pragma once
 
 class YOGClientPlayerListListener
 {
@@ -29,4 +28,3 @@ public:
 
 
 
-#endif

@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef INCLUDED_SDL_GRAPHICCONTEXT_H
-#define INCLUDED_SDL_GRAPHICCONTEXT_H
+#pragma once
 
 #include "GAGSys.h"
 #include "CursorManager.h"
@@ -493,5 +492,3 @@ namespace GAGCore
 		virtual int getFrameCount(void);
 	};
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef TOKEN_H
-#define TOKEN_H
+#pragma once
 
 #include "position.h"
 #include <string>
@@ -41,4 +40,3 @@ struct Token
 	size_t length;
 };
 
-#endif // ndef TOKEN_H

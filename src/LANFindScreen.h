@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __LAN_FIND_SCREEN_H
-#define __LAN_FIND_SCREEN_H
+#pragma once
 
 #include "Glob2Screen.h"
 #include "NetBroadcastListener.h"
@@ -68,4 +67,3 @@ private:
 	NetBroadcastListener listener;
 };
 
-#endif

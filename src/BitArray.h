@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __BITARRAY_H
-#define __BITARRAY_H
+#pragma once
 
 #include <valarray>
 
@@ -45,5 +44,3 @@ namespace Utilities
 		void deserialize(const unsigned char *stream, size_t size);
 	};
 }
-
-#endif

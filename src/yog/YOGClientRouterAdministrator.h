@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGClientRouterAdministrator_h
-#define YOGClientRouterAdministrator_h
+#pragma once
 
 ///This class allows a player to connect to a YOG router and send and recieve
 ///administrator commands to it. It is meant to be standalone with control of
@@ -35,4 +34,3 @@ private:
 };
 
 
-#endif

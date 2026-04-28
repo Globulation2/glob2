@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __CPUStatisticsManager_H
-#define __CPUStatisticsManager_H
+#pragma once
 
 #include <vector>
 
@@ -42,4 +41,3 @@ private:
 	std::vector<int> statistics;
 };
 
-#endif

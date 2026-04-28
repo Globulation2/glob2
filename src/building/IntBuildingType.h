@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __INT_BUILDING_TYPE_H
-#define __INT_BUILDING_TYPE_H
+#pragma once
 
 #include <map>
 #include <string>
@@ -60,4 +59,3 @@ struct IntBuildingType
 	static void init(void);
 };
 
-#endif

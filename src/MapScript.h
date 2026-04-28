@@ -18,8 +18,7 @@
 
 
 
-#ifndef MapScript_h
-#define MapScript_h
+#pragma once
 
 #include "SDL.h"
 #include <string>
@@ -84,4 +83,3 @@ private:
 	MapScriptUSL usl;
 };
 
-#endif

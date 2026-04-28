@@ -1,5 +1,4 @@
-#ifndef TYPES_H
-#define TYPES_H
+#pragma once
 
 #include "memory.h"
 
@@ -190,4 +189,3 @@ struct Function: MetaPrototype
 	Function(Heap* heap, Prototype* prototype, Value* outer);
 };
 
-#endif // ndef TYPES_H

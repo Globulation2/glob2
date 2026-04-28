@@ -18,8 +18,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
  
-#ifndef __AI_WARRUSH_H
-#define __AI_WARRUSH_H
+#pragma once
 
 #include "AIImplementation.h"
 #include <valarray>
@@ -105,6 +104,5 @@ private:
 	std::shared_ptr<Order> buildBuildingOfType(Sint32 shortTypeNum);
 };
 
-#endif
 
 

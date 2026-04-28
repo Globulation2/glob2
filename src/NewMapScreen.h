@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NEWMAPSCREEN_H
-#define __NEWMAPSCREEN_H
+#pragma once
 
 #include "Glob2Screen.h"
 #include "MapGenerationDescriptor.h"
@@ -69,4 +68,3 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 };
 
-#endif

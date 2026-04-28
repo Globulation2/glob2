@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UNIT_CONSTS_H
-#define __UNIT_CONSTS_H
+#pragma once
 
 #include <assert.h>
 #include <string>
@@ -63,5 +62,4 @@ const int NB_UNIT_LEVELS=4;
 
 std::string getUnitName(int type);
 
-#endif
  

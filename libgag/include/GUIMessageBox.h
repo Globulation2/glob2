@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIMESSAGEBOX_H
-#define __GUIMESSAGEBOX_H
+#pragma once
 
 #include "GUIBase.h"
 
@@ -39,5 +38,3 @@ namespace GAGGUI
 	//! \retval the nummer of the clicked button, -1 on unexpected early-out (CTRL-C, ...)
 	int MessageBox(GAGCore::GraphicContext *parentCtx, const std::string font, MessageBoxType type, std::string title, std::string caption1, std::string caption2 = "", std::string caption3 = "");
 }
-
-#endif

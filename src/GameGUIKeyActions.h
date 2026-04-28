@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GAMEGUI_KEY_ACTIONS_H
-#define __GAMEGUI_KEY_ACTIONS_H
+#pragma once
 
 #include "SDL.h"
 #include <string>
@@ -98,4 +97,3 @@ namespace GameGUIKeyActions
 	extern std::map<std::string, Uint32> keys;
 };
 
-#endif

@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef OverlayAreas_h
-#define OverlayAreas_h
+#pragma once
 
 #include <vector>
 #include "Types.h"
@@ -71,4 +70,3 @@ protected:
 	void spreadPoint(int x, int y, int value, int distance, std::vector<Uint16>& field, Uint16& msx);
 };
 
-#endif

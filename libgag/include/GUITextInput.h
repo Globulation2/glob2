@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUITEXTINPUT_H
-#define __GUITEXTINPUT_H
+#pragma once
 
 #include "GUIBase.h"
 #include <string>
@@ -106,5 +105,3 @@ namespace GAGGUI
 		virtual void onSDLTextInput(SDL_Event *event);
 	};
 }
-
-#endif

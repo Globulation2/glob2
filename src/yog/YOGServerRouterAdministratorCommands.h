@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGServerRouterAdministratorCommand_h
-#define YOGServerRouterAdministratorCommand_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -99,4 +98,3 @@ public:
 	void execute(YOGServerRouter* router, YOGServerRouterAdministrator* admin, const std::vector<std::string>& tokens, YOGServerRouterPlayer* player);
 };
 
-#endif

@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGMessage_h
-#define __YOGMessage_h
+#pragma once
 
 #include <string>
 #include "YOGConsts.h"
@@ -78,4 +77,3 @@ private:
 
 
 
-#endif

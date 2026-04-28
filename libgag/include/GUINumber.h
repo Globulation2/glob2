@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUI_NUMBER_H
-#define __GUI_NUMBER_H
+#pragma once
 
 #include "GUIBase.h"
 #include <vector>
@@ -64,6 +63,4 @@ namespace GAGGUI
 		virtual void onSDLMouseWheel(SDL_Event* event);
 	};
 }
-
-#endif
 

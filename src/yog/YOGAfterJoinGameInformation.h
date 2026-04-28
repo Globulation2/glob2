@@ -17,8 +17,7 @@
 */
 
 
-#ifndef __YOGAfterJoinGameInformation_h
-#define __YOGAfterJoinGameInformation_h
+#pragma once
 
 #include "GameHeader.h"
 #include "MapHeader.h"
@@ -93,4 +92,3 @@ private:
 	Uint32 fileID;
 };
 
-#endif

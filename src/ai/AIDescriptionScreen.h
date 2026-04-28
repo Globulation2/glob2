@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef AIDescriptionScreen_h
-#define AIDescriptionScreen_h
+#pragma once
 
 #include "Glob2Screen.h"
 
@@ -50,4 +49,3 @@ private:
 	Text *title;
 };
 
-#endif

@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GLOB2_H
-#define __GLOB2_H
+#pragma once
 
 //! This class is used to handle the whole game
 class Glob2
@@ -39,4 +38,3 @@ public:
 	int run(int argc, char *argv[]);
 };
 
-#endif

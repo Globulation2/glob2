@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUISELECTOR_H
-#define __GUISELECTOR_H
+#pragma once
 
 #include "GUIBase.h"
 #include <string>
@@ -62,5 +61,3 @@ namespace GAGGUI
 		virtual void onSDLMouseButtonUp(SDL_Event *event);
 	};
 }
-
-#endif

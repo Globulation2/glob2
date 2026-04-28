@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ORDER_H
-#define __ORDER_H
+#pragma once
 
 #include <assert.h>
 
@@ -558,6 +557,4 @@ public:
 private:
 	Uint8 data[2];
 };
-
-#endif
  

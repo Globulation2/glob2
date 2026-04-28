@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef WinningConditions_h
-#define WinningConditions_h
+#pragma once
 
 #include <memory>
 #include "SDL_net.h"
@@ -130,4 +129,3 @@ public:
 
 
 
-#endif

@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIGLOB2FILELIST_H
-#define __GUIGLOB2FILELIST_H
+#pragma once
 
 #include <GUIFileList.h>
 using namespace GAGGUI;
@@ -41,6 +40,3 @@ public:
 	virtual std::string listToFile(const std::string listName) const;
 
 };
-
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef __PERLINNOISE_H__
-#define __PERLINNOISE_H__
+#pragma once
 
 #include <stdlib.h>
 //#include "Vector.h"
@@ -51,4 +50,3 @@ public:
 
 };
 
-#endif  // __PERLINNOISE_H__

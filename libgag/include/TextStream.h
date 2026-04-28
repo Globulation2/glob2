@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __TEXTSTREAM_H
-#define __TEXTSTREAM_H
+#pragma once
 
 #include <Stream.h>
 #include <StreamBackend.h>
@@ -137,5 +136,3 @@ namespace GAGCore
 		virtual bool isValid(void) { return true; }
 	};
 }
-
-#endif

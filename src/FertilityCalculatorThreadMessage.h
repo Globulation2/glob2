@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef FertilityCalculatorThreadMessage_h
-#define FertilityCalculatorThreadMessage_h
+#pragma once
 
 #include <string>
 #include "SDL_net.h"
@@ -93,5 +92,4 @@ public:
 
 //event_append_marker
 
-#endif
 

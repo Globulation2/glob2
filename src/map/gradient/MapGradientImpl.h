@@ -19,8 +19,7 @@
 // Private header: bodies of the master gradient templates.  Cross-TU template
 // calls (Building/forbidden/guard/clear -> updateGlobalGradient) require these
 // bodies to be visible at every call site.
-#ifndef MAP_GRADIENT_IMPL_H
-#define MAP_GRADIENT_IMPL_H
+#pragma once
 #include "Map.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
@@ -488,4 +487,3 @@ template<typename Tint> void Map::updateGlobalGradient(
 		#error Please select a gradient version
 	#endif
 }
-#endif // MAP_GRADIENT_IMPL_H

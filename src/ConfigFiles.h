@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __CONFIG_FILES_H
-#define __CONFIG_FILES_H
+#pragma once
 
 #include <Toolkit.h>
 #include <FileManager.h>
@@ -187,5 +186,3 @@ public:
 	
 	const std::string getNameById(size_t id) { return entriesToName[id]; }
 };
-
-#endif

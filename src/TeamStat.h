@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __TEAM_STAT_H
-#define __TEAM_STAT_H
+#pragma once
 
 #include "UnitConsts.h"
 #include "IntBuildingType.h"
@@ -144,4 +143,3 @@ public:
 	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }
 };
 
-#endif

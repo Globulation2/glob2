@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __CURSOR_MANAGER_H
-#define __CURSOR_MANAGER_H
+#pragma once
 
 #include <vector>
 
@@ -79,5 +78,3 @@ namespace GAGCore
 		void draw(DrawableSurface *ds, int x, int y);
 	};
 }
-
-#endif

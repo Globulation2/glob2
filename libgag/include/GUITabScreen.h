@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef GUITabScreen_h
-#define GUITabScreen_h
+#pragma once
 
 #include "GUIBase.h"
 #include <map>
@@ -100,5 +99,3 @@ namespace GAGGUI
 		bool longerButtons;
 	};
 };
-
-#endif

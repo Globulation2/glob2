@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOG_CONSTS_H
-#define __YOG_CONSTS_H
+#pragma once
 
 #include <string>
 #include "SDL_net.h"
@@ -177,4 +176,3 @@ enum YOGMapUploadRefusalReason
 	YOGMapUploadReasonUnknown,
 };
 
-#endif 

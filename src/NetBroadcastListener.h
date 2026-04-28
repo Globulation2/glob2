@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NetBroadcastListener_h
-#define __NetBroadcastListener_h
+#pragma once
 
 #include "SDL_net.h"
 #include "LANGameInformation.h"
@@ -54,4 +53,3 @@ private:
 	Uint64 lastTime;
 };
 
-#endif

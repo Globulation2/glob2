@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SCRIPT_EDITOR_SCREEN_H
-#define __SCRIPT_EDITOR_SCREEN_H
+#pragma once
 
 #include <GUIBase.h>
 namespace GAGGUI
@@ -88,4 +87,3 @@ private:
 	void loadSave(bool isLoad, const char *dir, const char *ext);
 };
 
-#endif

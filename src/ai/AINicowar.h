@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef AINicowar_h
-#define AINicowar_h
+#pragma once
 
 #include "AIEcho.h"
 #include "ConfigFiles.h"
@@ -404,4 +403,3 @@ private:
 };
 
 
-#endif

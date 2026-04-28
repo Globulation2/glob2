@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef KeyPress_h
-#define KeyPress_h
+#pragma once
 
 #include "SDL.h"
 #include <string>
@@ -79,6 +78,3 @@ private:
 	bool meta;
 	bool shift;
 };
-
-
-#endif

@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MAPHEADER_H
-#define __MAPHEADER_H
+#pragma once
 
 #include "BaseTeam.h"
 #include "Team.h"
@@ -135,5 +134,3 @@ private:
 std::string glob2FilenameToName(const std::string& filename);
 //! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
 std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension="");
-
-#endif

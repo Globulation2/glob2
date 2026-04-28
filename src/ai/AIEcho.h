@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef AIEcho_h
-#define AIEcho_h
+#pragma once
 
 
 #include "Map.h"
@@ -1933,4 +1932,3 @@ inline std::set<int>& AIEcho::Echo::get_starting_buildings()
 
 
 
-#endif

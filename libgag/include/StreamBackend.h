@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __STREAMBACKEND_H
-#define __STREAMBACKEND_H
+#pragma once
 
 #include <fstream>
 #include <iostream>
@@ -155,5 +154,3 @@ namespace GAGCore
 		virtual Uint32 getHash(void) { return hash; }
 	};
 }
-
-#endif

@@ -17,8 +17,7 @@
 */
 
 
-#ifndef YOGServerBannedIPListManager_h
-#define YOGServerBannedIPListManager_h
+#pragma once
 
 #include <string>
 #include <map>
@@ -54,4 +53,3 @@ private:
 
 
 
-#endif

@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __TRUETYPE_FONT_H
-#define __TRUETYPE_FONT_H
+#pragma once
 
 #include <GAGSys.h>
 #include "GraphicContext.h"
@@ -94,5 +93,3 @@ namespace GAGCore
 		unsigned cacheMiss;
 	};
 }
-
-#endif

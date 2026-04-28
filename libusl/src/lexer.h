@@ -1,5 +1,4 @@
-#ifndef LEXER_H
-#define LEXER_H
+#pragma once
 
 #include "tokenizer.h"
 
@@ -73,4 +72,3 @@ public:
 	Token token;
 };
 
-#endif // ndef LEXER_H

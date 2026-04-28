@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __AI_IMPLEMENTATION_H
-#define __AI_IMPLEMENTATION_H
+#pragma once
 
 /*
 What's in AI ?
@@ -82,7 +81,6 @@ public:
 	virtual std::shared_ptr<Order> getOrder(void)=0;
 };
 
-#endif
 
  
 

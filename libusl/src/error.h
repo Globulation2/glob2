@@ -1,5 +1,4 @@
-#ifndef ERROR_H
-#define ERROR_H
+#pragma once
 
 #include "position.h"
 
@@ -12,4 +11,3 @@ struct Exception: std::runtime_error
 	Position position;
 };
 
-#endif // ndef ERROR_H

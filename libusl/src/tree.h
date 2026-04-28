@@ -1,5 +1,4 @@
-#ifndef TREE_H
-#define TREE_H
+#pragma once
 
 #include "position.h"
 
@@ -240,4 +239,3 @@ struct FunNode: ExpressionNode
 	ExpressionNode* body;
 };
 
-#endif // ndef TREE_H

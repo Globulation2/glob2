@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MARSHALING_H
-#define __MARSHALING_H
+#pragma once
 
 #include <SDL.h>
 #include <SDL_endian.h>
@@ -98,5 +97,4 @@ inline Sint8 getSint8(const Uint8 *data, int pos)
 	return *(((Sint8 *)data)+pos);
 }
 
-#endif
  

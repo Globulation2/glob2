@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGClientEventListener_h
-#define __YOGClientEventListener_h
+#pragma once
 
 #include <memory>
 
@@ -35,4 +34,3 @@ public:
 };
 
 
-#endif

@@ -17,8 +17,7 @@
 */
 
 
-#ifndef YOGServerRouterPlayer_h
-#define YOGServerRouterPlayer_h
+#pragma once
 
 #include <memory>
 #include "YOGServerRouterAdministrator.h"
@@ -58,4 +57,3 @@ private:
 	bool isAdmin;
 };
 
-#endif

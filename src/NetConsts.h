@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NET_CONSTS_H
-#define __NET_CONSTS_H
+#pragma once
 
 const unsigned int LAN_BROADCAST_PORT = 7486;
 ///This is the first port the system will try, and it will go incrementally up from there
@@ -61,4 +60,4 @@ enum OrderTypes
 
 };
 
-#endif 
+ 

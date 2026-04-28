@@ -22,8 +22,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
-#ifndef _HEIGHTMAPGENERATOR_H
-#define _HEIGHTMAPGENERATOR_H
+#pragma once
 
 #include "PerlinNoise.h"
 
@@ -74,5 +73,3 @@ private:
 	void stampOutput(char * filename); /// generates the file ~/.glob2/filename and writes the raw 0..255 values of stamp to it. to see it, use convert -size [width]x[height] -depth 8 gray:[filename] test.png where with==height as _stamp is always a square
 	void normalize(); /// fits the values of _map to [0, 1]
 };
-
-#endif /* _HEIGHTMAPGENERATOR_H */

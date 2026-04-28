@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGClientGameListListener_h
-#define YOGClientGameListListener_h
+#pragma once
 
 ///This class represents a listener for game list changes
 class YOGClientGameListListener
@@ -28,6 +27,4 @@ public:
 	///This is called when the game list is updated
 	virtual void gameListUpdated() = 0;
 };
-
-#endif
 

@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUIBASE_H
-#define __GUIBASE_H
+#pragma once
 
 #include "GAGSys.h"
 #include "GraphicContext.h"
@@ -374,5 +373,3 @@ namespace GAGGUI
 		virtual void paint(void);
 	};
 }
-
-#endif

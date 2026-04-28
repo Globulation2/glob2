@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __RESSOURCE_H
-#define __RESSOURCE_H
+#pragma once
 
 #include <SDL.h>
 
@@ -57,4 +56,3 @@ std::string getRessourceName(int type);
 #define HAPPYNESS_BASE 5
 #define HAPPYNESS_COUNT (MAX_RESSOURCES-BASIC_COUNT)
 
-#endif

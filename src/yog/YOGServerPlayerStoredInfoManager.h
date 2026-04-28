@@ -17,8 +17,7 @@
 */
 
 
-#ifndef YOGServerPlayerStoredInfoManager_h
-#define YOGServerPlayerStoredInfoManager_h
+#pragma once
 
 #include "YOGPlayerStoredInfo.h"
 #include <string>
@@ -67,4 +66,3 @@ private:
 
 
 
-#endif

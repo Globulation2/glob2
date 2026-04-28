@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __AI_CASTOR_H
-#define __AI_CASTOR_H
+#pragma once
 
 #include <list>
 #include <string>
@@ -256,7 +255,6 @@ private:
 	FILE *logFile;
 };
 
-#endif
 
  
 

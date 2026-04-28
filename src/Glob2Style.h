@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GLOB2_STYLE_H
-#define __GLOB2_STYLE_H
+#pragma once
 
 #include <GUIStyle.h>
 
@@ -43,4 +42,3 @@ protected:
 	Sprite *sprite;
 };
 
-#endif

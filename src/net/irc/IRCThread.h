@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef IRCThread_h
-#define IRCThread_h
+#pragma once
 
 #include "IRC.h"
 #include <memory>
@@ -53,5 +52,3 @@ private:
 	std::recursive_mutex& outgoingMutex;
 	bool hasExited;
 };
-
-#endif

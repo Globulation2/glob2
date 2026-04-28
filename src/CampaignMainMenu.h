@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef CampaignMainMenu_h
-#define CampaignMainMenu_h
+#pragma once
 
 #include "Glob2Screen.h"
 #include "GUIButton.h"
@@ -43,4 +42,3 @@ private:
 	Button *cancel;
 };
 
-#endif

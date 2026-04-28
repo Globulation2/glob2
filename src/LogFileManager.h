@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GLOB_LOG_FILE_MANAGER_H
-#define __GLOB_LOG_FILE_MANAGER_H
+#pragma once
 
 #include "Header.h"
 #include <string>
@@ -68,4 +67,3 @@ public:
 	FileManager *fileManager;
 };
 
-#endif

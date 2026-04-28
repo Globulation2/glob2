@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GAME_GUI_LOAD_SAVE_H
-#define __GAME_GUI_LOAD_SAVE_H
+#pragma once
 
 #include <GUIBase.h>
 using namespace GAGGUI;
@@ -68,5 +67,3 @@ public:
 	const char *getFileName(void);
 	const char *getName(void);
 };
-
-#endif

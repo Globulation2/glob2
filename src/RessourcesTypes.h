@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charriï¿½re
   for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
 
   This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __RESSOURCES_TYPES_H
-#define __RESSOURCES_TYPES_H
+#pragma once
 
 #include "EntitiesTypes.h"
 #include "RessourceType.h"
@@ -29,4 +28,3 @@ class RessourcesTypes: public EntitiesTypes<RessourceType>
 		Uint32 checkSum(void);
 };
 
-#endif

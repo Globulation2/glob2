@@ -1,5 +1,4 @@
-#ifndef CHECKSUM_SIDECAR_H
-#define CHECKSUM_SIDECAR_H
+#pragma once
 
 #include <string>
 #include <cstdio>
@@ -29,4 +28,3 @@ private:
 	void writeU32(Uint32 v);
 };
 
-#endif

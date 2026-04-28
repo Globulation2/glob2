@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SECTOR_H
-#define __SECTOR_H
+#pragma once
 
 #include <list>
 
@@ -68,5 +67,4 @@ private:
 	Game *game;
 };
 
-#endif
- 
+

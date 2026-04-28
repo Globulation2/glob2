@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGServerMapDatabank_h
-#define YOGServerMapDatabank_h
+#pragma once
 
 #include <tuple>
 #include "MapThumbnail.h"
@@ -82,4 +81,3 @@ private:
 	std::vector<std::tuple<YOGDownloadableMapInfo, int> > uploadingMaps;
 };
 
-#endif

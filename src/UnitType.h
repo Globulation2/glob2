@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UNITTYPE_H
-#define __UNITTYPE_H
+#pragma once
 
 #include <GAGSys.h>
 #include "UnitConsts.h"
@@ -67,6 +66,4 @@ public:
 	void save(GAGCore::OutputStream *stream);
 	Uint32 checkSum(void);
 };
-
-#endif
 

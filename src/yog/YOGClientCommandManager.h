@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGClientCommandManager_h
-#define YOGClientCommandManager_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -45,4 +44,3 @@ private:
 };
 
 
-#endif

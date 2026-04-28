@@ -20,8 +20,7 @@
 // Constants shared between the split GameGUI*.cpp translation units.
 // This header is intentionally private to those files; do not include it elsewhere.
 
-#ifndef __GAME_GUI_INTERNAL_H
-#define __GAME_GUI_INTERNAL_H
+#pragma once
 
 #include <string>
 
@@ -129,4 +128,3 @@ public:
 	void setText(const std::string text) const { textInput->setText(text); }
 };
 
-#endif

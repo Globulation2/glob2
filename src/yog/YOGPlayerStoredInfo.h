@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGPlayerStoredInfo_h
-#define YOGPlayerStoredInfo_h
+#pragma once
 
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "SDL_net.h"
@@ -81,4 +80,3 @@ private:
 	int rating;
 };
 
-#endif

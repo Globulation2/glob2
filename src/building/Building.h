@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __BUILDING_H
-#define __BUILDING_H
+#pragma once
 
 #include <list>
 #include <vector>
@@ -412,6 +411,4 @@ public:Sint32 bullets;
 protected:
 	FILE *logFile;
 };
-
-#endif
 

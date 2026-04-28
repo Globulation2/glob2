@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MultiplayerGameEvent_h
-#define __MultiplayerGameEvent_h
+#pragma once
 
 #include <string>
 #include "SDL_net.h"
@@ -352,4 +351,3 @@ private:
 
 //event_append_marker
 
-#endif

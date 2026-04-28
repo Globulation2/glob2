@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ReplayReader_h
-#define __ReplayReader_h
+#pragma once
 
 #include <memory>
 #include <assert.h>
@@ -110,5 +109,3 @@ private:
 	/// The game's current checksum (or 0 if it's not given)
 	Uint32 checksum;
 };
-
-#endif

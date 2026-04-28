@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SOUNDMIXER_H
-#define __SOUNDMIXER_H
+#pragma once
 
 #include <SDL.h>
 #include <SDL_audio.h>
@@ -92,7 +91,6 @@ public:
 	void addVoiceData(std::shared_ptr<OrderVoiceData> order);
 };
 
-#endif
 
 
 

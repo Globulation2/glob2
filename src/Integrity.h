@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __INTEGRITY_H
-#define __INTEGRITY_H
+#pragma once
 
 #define checkInvariant(x) \
     if (!(x)) \
@@ -34,4 +33,3 @@
         return false;\
     } \
 
-#endif

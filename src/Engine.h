@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ENGINE_H
-#define __ENGINE_H
+#pragma once
 
 #include "Header.h"
 #include "GameGUI.h"
@@ -145,4 +144,3 @@ private:
 	static const bool verbose = false;
 };
 
-#endif

@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GAME_H
-#define __GAME_H
+#pragma once
 
 #include <iostream>
 
@@ -279,4 +278,3 @@ protected:
 	int ticksGameSum[Team::MAX_COUNT];
 };
 
-#endif

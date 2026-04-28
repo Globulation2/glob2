@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SETTINGS_H
-#define __SETTINGS_H
+#pragma once
 
 #include "Header.h"
 #include <string>
@@ -109,4 +108,3 @@ public:
 //Version 1 - Resets default units assigned and keyboard shortcuts
 #define SETTINGS_VERSION 1
 
-#endif

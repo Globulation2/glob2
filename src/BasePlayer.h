@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef BasePlayer_h
-#define BasePlayer_h
+#pragma once
 
 #include <SDL_net.h>
 #include "AI.h"
@@ -113,4 +112,3 @@ public:
 	bool disableRecursiveDestruction;
 };
 
-#endif

@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __NetConnection_h
-#define __NetConnection_h
+#pragma once
 
 #include "SDL_net.h"
 #include "NetConnectionThread.h"
@@ -89,4 +88,3 @@ private:
 };
 
 
-#endif

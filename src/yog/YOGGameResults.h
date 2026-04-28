@@ -17,8 +17,7 @@
 */
 
 
-#ifndef YOGGameResults_h
-#define YOGGameResults_h
+#pragma once
 
 #include "YOGConsts.h"
 #include <map>
@@ -55,4 +54,3 @@ private:
 	std::map<std::string, YOGGameResult> results;
 };
 
-#endif

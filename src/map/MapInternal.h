@@ -20,8 +20,7 @@
 // Private shared definitions for the Map.cpp family of translation units.
 // Not intended for inclusion outside Map*.cpp.
 
-#ifndef MAP_INTERNAL_H
-#define MAP_INTERNAL_H
+#pragma once
 
 #include <algorithm>
 #include <vector>
@@ -44,4 +43,3 @@ inline void fill(std::vector<T>& vec, const T& value) {
 // Helper for updateLocalGradient and the local-gradient pathfinders.
 inline int clip_0_31(int x) { return (x < 0) ? 0 : (x > 31) ? 31 : x; }
 
-#endif // MAP_INTERNAL_H

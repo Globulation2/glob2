@@ -17,13 +17,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __TYPES_H
-#define __TYPES_H
+#pragma once
 
 #include <SDL_net.h>
 
 namespace GAGCore
 {
 }
-
-#endif

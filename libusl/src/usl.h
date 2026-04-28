@@ -1,5 +1,4 @@
-#ifndef USL_H
-#define USL_H
+#pragma once
 
 #include "memory.h"
 #include "debug.h"
@@ -42,4 +41,3 @@ private:
 	friend struct Load;
 };
 
-#endif // ndef USL_H

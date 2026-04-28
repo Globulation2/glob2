@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __VOICE_RECORDER_H
-#define __VOICE_RECORDER_H
+#pragma once
 
 #include <queue>
 #include <SDL.h>
@@ -83,4 +82,3 @@ public:
 	//! Return the next voice data order from the internal queue
 	std::shared_ptr<OrderVoiceData> getNextOrder(void);
 };
-#endif

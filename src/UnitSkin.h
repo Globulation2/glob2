@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UNITSKIN_H
-#define __UNITSKIN_H
+#pragma once
 
 #include <GAGSys.h>
 #include "UnitConsts.h"
@@ -40,4 +39,3 @@ public:
 	bool load(GAGCore::InputStream *stream);
 };
 
-#endif

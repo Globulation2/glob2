@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef MapGenerator_h
-#define MapGenerator_h
+#pragma once
 
 #include "MapGenerationDescriptor.h"
 
@@ -144,9 +143,3 @@ public:
 		return x < rhs.x;
 	}
 };
-
-
-
-
-
-#endif

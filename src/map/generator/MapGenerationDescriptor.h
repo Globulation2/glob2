@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MAP_GENERATION_DESCRIPTOR_H
-#define __MAP_GENERATION_DESCRIPTOR_H
+#pragma once
 
 #include "Ressource.h"
 #include "TerrainType.h"
@@ -89,6 +88,3 @@ protected:
 	//! Serialized form of MapGenerationDescriptor
 	Uint8 data[DATA_SIZE];
 };
-
-
-#endif

@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef FertilityCalculatorDialog_h
-#define FertilityCalculatorDialog_h
+#pragma once
 
 #include "GUIBase.h"
 #include "FertilityCalculatorThread.h"
@@ -61,4 +60,3 @@ private:
 };
 
 
-#endif

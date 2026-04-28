@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGServerGameLog_h
-#define __YOGServerGameLog_h
+#pragma once
 
 #include "YOGGameResults.h"
 #include "boost/date_time/posix_time/posix_time.hpp"
@@ -50,4 +49,3 @@ private:
 	bool modified;
 };
 
-#endif

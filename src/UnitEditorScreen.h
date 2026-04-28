@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __UNIT_EDITOR_SCREEN_H
-#define __UNIT_EDITOR_SCREEN_H
+#pragma once
 
 #include <GUIBase.h>
 
@@ -54,4 +53,3 @@ protected:
 	TextInput *hungryness;
 };
 
-#endif

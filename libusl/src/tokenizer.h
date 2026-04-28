@@ -1,5 +1,4 @@
-#ifndef TOKENIZER_H
-#define TOKENIZER_H
+#pragma once
 
 #include "token.h"
 #include <vector>
@@ -17,4 +16,3 @@ private:
 	Position position;
 };
 
-#endif // ndef TOKENIZER_H

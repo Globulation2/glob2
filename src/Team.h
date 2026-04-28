@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __TEAM_H
-#define __TEAM_H
+#pragma once
 
 #include <SDL_rwops.h>
 
@@ -218,5 +217,4 @@ protected:
 	FILE *logFile;
 };
 
-#endif
 

@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __FILEMANAGER_H
-#define __FILEMANAGER_H
+#pragma once
 
 #include "GAGSys.h"
 #include <vector>
@@ -129,4 +128,3 @@ namespace GAGCore
 	};
 }
 
-#endif

@@ -51,8 +51,7 @@
   and parsers reject by magic mismatch.
 */
 
-#ifndef DATASET_WRITER_H
-#define DATASET_WRITER_H
+#pragma once
 
 #include <cstdio>
 #include <string>
@@ -100,4 +99,3 @@ private:
 	void writeStateBlob(int senderTeamNum, Game& game);
 };
 
-#endif

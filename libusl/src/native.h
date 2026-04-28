@@ -1,5 +1,4 @@
-#ifndef NATIVE_H
-#define NATIVE_H
+#pragma once
 
 #include "usl.h"
 #include "interpreter.h"
@@ -315,4 +314,3 @@ inline void NativeValuePrototype<int>::initialize()
 	addMethod<bool(int, int)>("!=", boost::lambda::_1 != boost::lambda::_2);
 }
 
-#endif // ndef NATIVE_H

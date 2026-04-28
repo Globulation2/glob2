@@ -1,5 +1,4 @@
-#ifndef POSITION_H
-#define POSITION_H
+#pragma once
 
 #include <string>
 #include <ostream>
@@ -24,4 +23,3 @@ inline std::ostream& operator<<(std::ostream& stream, const Position& position)
 	return stream << position.filename << ":" << position.line << ":" << position.column;
 }
 
-#endif // ndef POSITION_H

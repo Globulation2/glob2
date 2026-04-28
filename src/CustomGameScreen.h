@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __CUSTOM_GAME_SCREEN_H
-#define __CUSTOM_GAME_SCREEN_H
+#pragma once
 
 #include "AI.h"
 #include "ChooseMapScreen.h"
@@ -78,4 +77,3 @@ private:
 
 };
 
-#endif

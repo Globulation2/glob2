@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __SUPPORT_FUNCTION_H
-#define __SUPPORT_FUNCTION_H
+#pragma once
 
 #include "GAGSys.h"
 #include <stdlib.h>
@@ -50,6 +49,4 @@ namespace GAGCore
 	//! return max of f1, f2 and f3
 	float fmax(float f1, float f2, float f3);
 };
-
-#endif
 

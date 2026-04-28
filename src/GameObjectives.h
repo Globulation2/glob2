@@ -17,8 +17,7 @@
 */
 
 
-#ifndef GameObjectives_h
-#define GameObjectives_h
+#pragma once
 
 #include <string>
 #include <vector>
@@ -100,4 +99,3 @@ private:
 	std::string invalidText;
 };
 
-#endif

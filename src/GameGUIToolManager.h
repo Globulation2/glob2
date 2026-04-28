@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef GameGUIToolManager_h
-#define GameGUIToolManager_h
+#pragma once
 
 #include <memory>
 #include "Brush.h"
@@ -125,4 +124,3 @@ private:
 	std::queue<std::shared_ptr<Order> > orders;
 };
 
-#endif

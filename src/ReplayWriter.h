@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __ReplayWriter_h
-#define __ReplayWriter_h
+#pragma once
 
 #include <memory>
 #include <assert.h>
@@ -100,4 +99,3 @@ private:
 	Uint32 ordersWritten;
 };
 
-#endif

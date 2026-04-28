@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef Gradient_h
-#define Gradient_h
+#pragma once
 
 #include "Building.h"
 #include "Map.h"
@@ -182,4 +181,3 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 	return 1;
 }
 
-#endif

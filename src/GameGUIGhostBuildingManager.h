@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef GameGUIGhostBuildingManager_h
-#define GameGUIGhostBuildingManager_h
+#pragma once
 
 #include <vector>
 #include <tuple>
@@ -51,4 +50,3 @@ private:
 	std::vector<std::tuple<std::string, int, int> > buildings;
 };
 
-#endif

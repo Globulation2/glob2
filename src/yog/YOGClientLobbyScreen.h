@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGSCREEN_H
-#define __YOGSCREEN_H
+#pragma once
 
 #include <vector>
 #include <GUIList.h>
@@ -162,4 +161,3 @@ private:
 
 };
 
-#endif

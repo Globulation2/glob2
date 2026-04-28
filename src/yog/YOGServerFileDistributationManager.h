@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGServerFileDistributationManager_h
-#define YOGServerFileDistributationManager_h
+#pragma once
 
 #include <map>
 #include "SDL_net.h"
@@ -49,4 +48,3 @@ private:
 	Uint16 currentID;
 };
 
-#endif

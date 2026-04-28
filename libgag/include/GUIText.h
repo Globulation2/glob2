@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUITEXT_H
-#define __GUITEXT_H
+#pragma once
 
 #include "GUIBase.h"
 #include "GraphicContext.h"
@@ -60,5 +59,3 @@ namespace GAGGUI
 		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int w, int h);
 	};
 }
-
-#endif

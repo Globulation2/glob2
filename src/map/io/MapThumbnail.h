@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef MapThumbnail_h
-#define MapThumbnail_h
+#pragma once
 
 #include <string>
 #include "SDL_net.h"
@@ -66,5 +65,3 @@ private:
 	int lastW;
 	int lastH;
 };
-
-#endif

@@ -19,8 +19,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MAP_H
-#define __MAP_H
+#pragma once
 
 #include <list>
 #include <assert.h>
@@ -859,4 +858,3 @@ protected:
 	Uint32 incRessourceLog[16];
 };
 
-#endif

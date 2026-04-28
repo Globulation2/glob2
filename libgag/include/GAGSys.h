@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GAGSYS_H
-#define __GAGSYS_H
+#pragma once
 
 #ifndef MAX_SINT32
 #define MAX_SINT32 0x7FFFFFFF
@@ -71,5 +70,3 @@
 #define VARARRAY(t,n,s) t n[s]
 #endif
 #endif
-
-#endif 

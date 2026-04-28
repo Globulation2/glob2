@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __GUILIST_H
-#define __GUILIST_H
+#pragma once
 
 #include "GUIBase.h"
 #include <vector>
@@ -125,6 +124,4 @@ namespace GAGGUI
 		virtual void handleItemClick(size_t element, int mx, int my);
 	};
 }
-
-#endif
 

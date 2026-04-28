@@ -23,8 +23,7 @@
 	\brief SGSL: Simple Globulation Scripting Language: definition of classes for map scripting
 */
 
-#ifndef SGSL_H
-#define SGSL_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -365,7 +364,3 @@ private:
 
 	BuildingMap flags;
 };
-
-
-
-#endif

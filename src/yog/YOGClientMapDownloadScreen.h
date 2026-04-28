@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef YOGClientMapDownloadScreen_h
-#define YOGClientMapDownloadScreen_h
+#pragma once
 
 #include "GUITabScreenWindow.h"
 #include <memory>
@@ -131,5 +130,4 @@ private:
 	SortMethod sortMethod;
 };
 
-#endif
 

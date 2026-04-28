@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __AI_H
-#define __AI_H
+#pragma once
 
 #include <SDL_rwops.h>
 
@@ -82,4 +81,3 @@ public:
 //	Uint32 step;
 };
 
-#endif

@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef NetReteamingInformation_h
-#define NetReteamingInformation_h
+#pragma once
 
 #include <string>
 #include <map>
@@ -59,4 +58,3 @@ private:
 	std::map<std::string, int> teams;
 };
 
-#endif

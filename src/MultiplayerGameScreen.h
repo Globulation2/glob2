@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __MultiplayerGameScreen_h
-#define __MultiplayerGameScreen_h
+#pragma once
 
 #include <vector>
 #include "MultiplayerGame.h"
@@ -118,4 +117,3 @@ private:
 	std::shared_ptr<YOGClientChatChannel> gameChat;
 	std::shared_ptr<IRCTextMessageHandler> ircChat;
 };
-#endif

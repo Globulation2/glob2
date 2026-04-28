@@ -18,8 +18,7 @@
 */
 
 
-#ifndef YOGServerChatChannel_h
-#define YOGServerChatChannel_h
+#pragma once
 
 #include <list>
 #include "SDL_net.h"
@@ -51,4 +50,3 @@ private:
 	std::list<std::shared_ptr<YOGServerPlayer> > players;
 };
 
-#endif

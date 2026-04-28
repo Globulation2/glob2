@@ -17,8 +17,7 @@
 */
 
 
-#ifndef __YOGClientChatListener_h
-#define __YOGClientChatListener_h
+#pragma once
 
 #include <memory>
 
@@ -34,4 +33,3 @@ public:
 	virtual void recieveTextMessage(std::shared_ptr<YOGMessage> message)=0;
 };
 
-#endif

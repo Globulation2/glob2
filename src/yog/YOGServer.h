@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __YOGServer_h
-#define __YOGServer_h
+#pragma once
 
 #include <memory>
 #include "NetListener.h"
@@ -199,4 +198,3 @@ private:
 	YOGServerPlayerScoreCalculator scoreCalculator;
 };
 
-#endif

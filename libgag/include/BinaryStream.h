@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __BINARYSTREAM_H
-#define __BINARYSTREAM_H
+#pragma once
 
 #include <Stream.h>
 #include <StreamBackend.h>
@@ -110,5 +109,3 @@ namespace GAGCore
 		virtual bool isValid(void) { return backend->isValid(); }
 	};
 }
-
-#endif

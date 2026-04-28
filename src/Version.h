@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __VERSION_H
-#define __VERSION_H
+#pragma once
 
 // This is the version of map and savegame format, and all of the recorded datas on the server
 #define VERSION_MAJOR 0
@@ -117,4 +116,3 @@
 // version 27 reordered the NetMessages so that reverse compatibility with future game versions can be done, added random seed in GameHeader
 // version 28 Nicowar's behavior was changed
 
-#endif

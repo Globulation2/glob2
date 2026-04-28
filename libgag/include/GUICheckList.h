@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef GUICheckList_h
-#define GUICheckList_h
+#pragma once
 
 #include "GUIList.h"
 
@@ -47,7 +46,3 @@ namespace GAGGUI
 		virtual void handleItemClick(size_t element, int mx, int my);
 	};
 };
-
-
-
-#endif

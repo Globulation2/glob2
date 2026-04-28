@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef __BRUSH_H
-#define __BRUSH_H
+#pragma once
 
 #include <cstddef>
 #include <vector>
@@ -144,4 +143,3 @@ public:
 	size_t getApplicationCount(void) { return applications.size(); }
 };
 
-#endif

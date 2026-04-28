@@ -16,8 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef TextSort_h
-#define TextSort_h
+#pragma once
 
 #include <string>
 
@@ -26,5 +25,3 @@ namespace GAGCore
 	///This compares two strings using the natsort library created by Martin Pool
 	bool naturalStringSort(const std::string& lhs, const std::string& rhs);
 };
-
-#endif
