@@ -1,0 +1,246 @@
+/*
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+
+  Copyright (C) 2006 Bradley Arsenault
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#include <cmath>
+#include <FormatableString.h>
+#include <GAG.h>
+#include "GameGUILoadSave.h"
+#include "Game.h"
+#include "GlobalContainer.h"
+#include "MapEdit.h"
+#include "MapEditKeyActions.h"
+#include "ScriptEditorScreen.h"
+#include <sstream>
+#include <StreamFilter.h>
+#include <Stream.h>
+#include "UnitEditorScreen.h"
+#include "Unit.h"
+#include "UnitType.h"
+#include "Utilities.h"
+#include "FertilityCalculatorDialog.h"
+#include "GUIMessageBox.h"
+#include "SDLCompat.h"
+
+MapEditorWidget::MapEditorWidget(MapEdit& me, const widgetRectangle& rectangle, const std::string& group, const std::string& name, const std::string& action)
+	: me(me), area(rectangle), group(group), name(name), action(action), enabled(false)
+{
+
+}
+
+
+
+void MapEditorWidget::drawSelf()
+{
+	if(enabled)
+		draw();
+}
+
+
+
+void MapEditorWidget::disable()
+{
+	enabled=false;
+}
+
+
+
+void MapEditorWidget::enable()
+{
+	enabled=true;
+}
+
+
+
+void MapEditorWidget::handleClick(int relMouseX, int relMouseY)
+{
+	me.performAction(action, relMouseX, relMouseY);
+}
+
+
+
+BuildingSelectorWidget::BuildingSelectorWidget(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& building_type, bool largeSelector) : MapEditorWidget(me, area, group, name, action), building_type(building_type), largeSelector(largeSelector)
+{
+
+}
+
+
+
+void BuildingSelectorWidget::draw()
+{
+	std::string &type = building_type;
+
+	BuildingType *bt = globalContainer->buildingsTypes.getByType(type.c_str(), me.buildingLevel, false);
+	if(bt==NULL || !me.isUpgradable(IntBuildingType::shortNumberFromType(type)))
+		bt = globalContainer->buildingsTypes.getByType(type.c_str(), 0, false);
+	assert(bt);
+
+	int imgid = bt->miniSpriteImage;
+	int x, y;
+
+	x=area.x;
+	y=area.y;
+
+	Sprite *buildingSprite;
+	if (imgid >= 0)
+	{
+		buildingSprite = bt->miniSpritePtr;
+	}
+	else
+	{
+		buildingSprite = bt->gameSpritePtr;
+		imgid = bt->gameSpriteImage;
+	}
+		
+	buildingSprite->setBaseColor(me.game.teams[me.team]->color);
+	globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+
+	// draw selection if needed
+	if (me.selectionName == type)
+	{
+		if (largeSelector)
+			globalContainer->gfx->drawSprite(x-8, y-5, globalContainer->gamegui, 8);
+		else
+			globalContainer->gfx->drawSprite(x-4, y-3, globalContainer->gamegui, 23);
+	}
+	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
+}
+
+
+
+TeamColorSelector::TeamColorSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
+{
+
+}
+
+
+
+void TeamColorSelector::draw()
+{
+	for(int n=0; n<16; ++n)
+	{
+		const int xpos = area.x + (n%6)*16;
+		const int ypos = area.y + (n/6)*16;
+		if(me.game.teams[n])
+		{
+			if(me.team==n)
+				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, Color(me.game.teams[n]->color.r, me.game.teams[n]->color.g, me.game.teams[n]->color.b, 128));
+			else
+				globalContainer->gfx->drawFilledRect(xpos, ypos, 16, 16, me.game.teams[n]->color);
+
+		}
+	}
+}
+
+
+
+SingleLevelSelector::SingleLevelSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int level, int& levelNum)
+	: MapEditorWidget(me, area, group, name, action), level(level), levelNum(levelNum)
+{
+
+}
+
+
+
+void SingleLevelSelector::draw()
+{
+	globalContainer->gfx->drawSprite(area.x, area.y, me.menu, 30+level-1, (level-1)==levelNum ? 128 : 255);
+}
+
+
+
+PanelIcon::PanelIcon(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int iconNumber, int panelModeHilight)
+	: MapEditorWidget(me, area, group, name, action), iconNumber(iconNumber), panelModeHilight(panelModeHilight)
+{
+
+}
+
+
+
+void PanelIcon::draw()
+{
+	// draw buttons
+	if (me.panelMode==panelModeHilight)
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, iconNumber+1);
+	else
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, iconNumber);
+
+}
+
+
+
+MenuIcon::MenuIcon(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
+{
+
+}
+
+
+
+void MenuIcon::draw()
+{
+	// draw buttons
+	if (me.showingMenuScreen)
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 7);
+	else
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 6);
+
+}
+
+
+
+ZoneSelector::ZoneSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, ZoneType zoneType)
+	: MapEditorWidget(me, area, group, name, action), zoneType(zoneType)
+{
+	
+}
+
+
+
+void ZoneSelector::draw()
+{
+	bool isSelected=false;
+	if(zoneType==ForbiddenZone)
+	{
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 13);
+		if(me.brushType==MapEdit::ForbiddenBrush)
+			isSelected=true;
+	}
+	else if(zoneType==GuardingZone)
+	{
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 14);
+		if(me.brushType==MapEdit::GuardAreaBrush)
+			isSelected=true;
+	}
+	else if(zoneType==ClearingZone)
+	{
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 25);
+		if(me.brushType==MapEdit::ClearAreaBrush)
+			isSelected=true;
+	}
+	if(me.selectionMode==MapEdit::PlaceZone && isSelected)
+	{
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
+	}
+}
+
+
