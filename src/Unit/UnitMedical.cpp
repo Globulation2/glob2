@@ -1,0 +1,266 @@
+/*
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#include "Unit.h"
+#include "Race.h"
+#include "UnitSkin.h"
+#include "UnitsSkins.h"
+#include "Team.h"
+#include "Map.h"
+#include "Game.h"
+
+#include "Building.h"
+#include "Integrity.h"
+
+#include "Utilities.h"
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
+#include <Stream.h>
+#include <set>
+#include <climits>
+
+void Unit::selectPreferredMovement(void)
+{
+	if (performance[FLY])
+		action=FLY;
+	else if ((performance[SWIM]) && (owner->map->isWater(posX, posY)) )
+		action=SWIM;
+	else if ((performance[WALK]) && (!owner->map->isWater(posX, posY)) )
+		action=WALK;
+	else
+		assert(false);
+}
+
+void Unit::selectPreferredGroundMovement(void)
+{
+	assert(!performance[FLY]);
+	if ((performance[SWIM]) && (owner->map->isWater(posX, posY)) )
+		action=SWIM;
+	else if ((performance[WALK]) && (!owner->map->isWater(posX, posY)) )
+		action=WALK;
+	else
+		assert(false);
+}
+
+bool Unit::isUnitHungry(void)
+{
+	int realTrigHungry;
+	if (carriedRessource==-1)
+		realTrigHungry=trigHungry;
+	else
+		realTrigHungry=trigHungryCarying;
+
+	return (hungry<=realTrigHungry);
+}
+
+void Unit::standardRandomActivity()
+{
+	attachedBuilding=NULL;
+	setTargetBuilding(NULL);
+	ownExchangeBuilding=NULL;
+	activity=Unit::ACT_RANDOM;
+	displacement=Unit::DIS_RANDOM;
+	validTarget=false;
+	needToRecheckMedical=true;
+}
+
+void Unit::stopAttachedForBuilding(bool goingInside)
+{
+	if (verbose)
+		printf("guid=(%d) stopAttachedForBuilding()\n", gid);
+	assert(attachedBuilding);
+
+	if (goingInside)
+	{
+		attachedBuilding->removeUnitFromInside(this);
+		if (activity==ACT_UPGRADING)
+		{
+			assert(displacement==DIS_GOING_TO_BUILDING);
+			if (destinationPurpose==HEAL || destinationPurpose==FEED)
+				needToRecheckMedical=true;
+		}
+	}
+	else
+	{
+		for (std::list<Unit *>::iterator  it=attachedBuilding->unitsInside.begin(); it!=attachedBuilding->unitsInside.end(); ++it)
+			assert(*it!=this);
+	}
+
+	activity=ACT_RANDOM;
+	displacement=DIS_RANDOM;
+	validTarget=false;
+
+	attachedBuilding->removeUnitFromWorking(this);
+	attachedBuilding=NULL;
+	setTargetBuilding(NULL);
+	ownExchangeBuilding=NULL;
+	assert(needToRecheckMedical);
+}
+
+void Unit::handleMagic(void)
+{
+	assert(medical==MED_FREE);
+	assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
+
+	magicActionTimeout--;
+	if (magicActionTimeout > 0)
+		return;
+
+	Map *map = &owner->game->map;
+	Team **teams = owner->game->teams;
+
+	bool hasUsedMagicAction = false;
+	if (performance[MAGIC_ATTACK_AIR] || performance[MAGIC_ATTACK_GROUND])
+	{
+		std::set<Uint16> damagedBuildings;
+		damagedBuildings.insert(NOGBID);
+		int ATTACK_RANGE=3;
+		for (int yi=posY-ATTACK_RANGE; yi<=posY+ATTACK_RANGE; yi++)
+			for (int xi=posX-ATTACK_RANGE; xi<=posX+ATTACK_RANGE; xi++)
+			{
+				// damaging enemy units:
+				for (int altitude=0; altitude<2; altitude++)
+				{
+					Uint16 targetGUID;
+					Sint32 attackForce;
+					if ((altitude == 1) && performance[MAGIC_ATTACK_AIR])
+					{
+						targetGUID = map->getAirUnit(xi, yi);
+						attackForce = performance[MAGIC_ATTACK_AIR];
+					}
+					else if ((altitude == 0) && performance[MAGIC_ATTACK_GROUND])
+					{
+						targetGUID = map->getGroundUnit(xi, yi);
+						attackForce = performance[MAGIC_ATTACK_GROUND];
+					}
+					else
+						continue;
+					if (targetGUID != NOGUID)
+					{
+						Sint32 targetTeam = Unit::GIDtoTeam(targetGUID);
+						Uint16 targetID = Unit::GIDtoID(targetGUID);
+						Uint32 targetTeamMask = 1<<targetTeam;
+						if (owner->enemies & targetTeamMask)
+						{
+							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
+							Sint32 damage = attackForce + experienceLevel - enemyUnit->getRealArmor(true);
+							if (damage > 0)
+							{
+								enemyUnit->hp -= damage;
+
+								std::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
+								enemyUnit->owner->pushGameEvent(event);
+
+								incrementExperience(damage);
+								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;
+								hasUsedMagicAction = true;
+							}
+						}
+					}
+				}
+
+				// damaging enemy buildings: this has been removed for balance purposes
+			}
+
+		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
+		if (hasUsedMagicAction)
+			magicActionTimeout = race->getUnitType(typeNum, level[magicLevel])->magicActionCooldown;
+	}
+}
+
+void Unit::handleMedical(void)
+{
+	/* Make sure explorers try to immediately feed after healing to increase their range. */
+	if ((typeNum == EXPLORER) && (displacement == DIS_EXITING_BUILDING))
+	{
+		medical=MED_FREE;
+		if ((destinationPurpose == HEAL) && (hungry < ((HUNGRY_MAX * 9) / 10)))
+		{
+			// fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
+			needToRecheckMedical = 1;
+			medical = MED_HUNGRY;
+			return;
+		}
+		else if ((destinationPurpose == FEED) && (hp < (((performance[HP]) * 9) / 10)))
+		{
+			// fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
+			needToRecheckMedical = 1;
+			medical = MED_DAMAGED;
+			return;
+		}
+	}
+
+	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
+		return;
+
+	if (verbose)
+		printf("guid=(%d) handleMedical...\n", gid);
+	hungry -= hungryness;
+	if (hungry<=0)
+		hp--;
+
+	medical=MED_FREE;
+	if (isUnitHungry())
+		medical=MED_HUNGRY;
+	else if (hp<=trigHP)
+		medical=MED_DAMAGED;
+
+	if (hp<0)
+	{
+		fprintf(logFile, "guid=%d, set isDead(%d), beacause hungry.\n", gid, isDead);
+		if (attachedBuilding)
+			fprintf(logFile, " attachedBuilding->gid=%d.\n", attachedBuilding->gid);
+
+		if (!isDead)
+		{
+			// disconnect from building
+			if (attachedBuilding)
+			{
+				assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
+				attachedBuilding->removeUnitFromWorking(this);
+				attachedBuilding->removeUnitFromInside(this);
+				attachedBuilding=NULL;
+				ownExchangeBuilding=NULL;
+			}
+			setTargetBuilding(NULL);
+            // //TODO: in beta4 this line was ommitted. delete?
+			// ownExchangeBuilding=NULL;
+
+			activity=ACT_RANDOM;
+			validTarget=false;
+
+			// remove from map
+			if (performance[FLY])
+				owner->map->setAirUnit(posX, posY, NOGUID);
+			else
+				owner->map->setGroundUnit(posX, posY, NOGUID);
+
+			if(previousClearingAreaX!=static_cast<unsigned int>(-1))
+			{
+				owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
+			}
+			owner->map->clearImmobileUnit(posX, posY);
+
+			// generate death animation
+			if (!globalContainer->runNoX)
+				owner->map->getSector(posX, posY)->deathAnimations.push_back(new UnitDeathAnimation(posX, posY, owner));
+		}
+		isDead = true;
+	}
+}

@@ -1,0 +1,244 @@
+/*
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#include "Unit.h"
+#include "Race.h"
+#include "UnitSkin.h"
+#include "UnitsSkins.h"
+#include "Team.h"
+#include "Map.h"
+#include "Game.h"
+
+#include "Building.h"
+#include "Integrity.h"
+
+#include "Utilities.h"
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
+#include <Stream.h>
+#include <set>
+#include <climits>
+
+void Unit::setNewValidDirectionGround(void)
+{
+	assert(!performance[FLY]);
+	int i=0;
+	bool swim=(performance[SWIM]>0);
+	Uint32 me=owner->me;
+	while ( i<8 && !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim, me))
+	{
+		direction=(direction+1)&7;
+		dxDyFromDirection();
+		i++;
+	}
+	if (i==8)
+	{
+		direction=8;
+		dxDyFromDirection();
+	}
+}
+
+void Unit::setNewValidDirectionAir(void)
+{
+	assert(performance[FLY]);
+	int i=0;
+	while ( i<8 && !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	{
+		direction=(direction+1)&7;
+		dxDyFromDirection();
+		i++;
+	}
+	if (i==8)
+	{
+		direction=8;
+		dx=0;
+		dy=0;
+	}
+}
+
+void Unit::flyToTarget()
+{
+	assert(performance[FLY]);
+	int ldx=targetX-posX;
+	int ldy=targetY-posY;
+	simplifyDirection(ldx, ldy, &dx, &dy);
+	directionFromDxDy();
+	Map *map=owner->map;
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	int cDirection=direction;
+	direction=(cDirection+1)&7;
+	dxDyFromDirection();
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	direction=(cDirection+7)&7;
+	dxDyFromDirection();
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	direction=(cDirection+2)&7;
+	dxDyFromDirection();
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	direction=(cDirection+6)&7;
+	dxDyFromDirection();
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	direction=(cDirection+3)&7;
+	dxDyFromDirection();
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	direction=(cDirection+5)&7;
+	dxDyFromDirection();
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	direction=(cDirection+4)&7;
+	dxDyFromDirection();
+	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+		return;
+	dx=0;
+	dy=0;
+	direction=8;
+	if (verbose)
+		printf("guid=(%d) flyto failed pos=(%d, %d) \n", gid, posX, posY);
+}
+
+
+void Unit::escapeGroundTarget()
+{
+	int ldx=posX-targetX;
+	int ldy=posY-targetY;
+	simplifyDirection(ldx, ldy, &dx, &dy);
+	directionFromDxDy();
+	bool canSwim=performance[SWIM];
+	Map *map=owner->map;
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+		return;
+	int cDirection=direction;
+	direction=(cDirection+1)&7;
+	dxDyFromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+		return;
+	direction=(cDirection+7)&7;
+	dxDyFromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+		return;
+	direction=(cDirection+2)&7;
+	dxDyFromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+		return;
+	direction=(cDirection+6)&7;
+	dxDyFromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+		return;
+	direction=(cDirection+3)&7;
+	dxDyFromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+		return;
+	direction=(cDirection+5)&7;
+	dxDyFromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+		return;
+	direction=(cDirection+4)&7;
+	dxDyFromDirection();
+	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+		return;
+	dx=0;
+	dy=0;
+	direction=8;
+	if (verbose)
+		printf("guid=(%d) escapeGroundTarget failed pos=(%d, %d) \n", gid, posX, posY);
+}
+
+void Unit::endOfAction(void)
+{
+	handleMedical();
+	if (isDead)
+		return;
+	handleActivity();
+	handleDisplacement();
+	handleMovement();
+	handleAction();
+}
+
+// NOTE : position 0 is top left (-1, -1) then run clockwise
+
+void Unit::directionFromDxDy(void)
+{
+	const int tab[3][3]={	{0, 1, 2},
+							{7, 8, 3},
+							{6, 5, 4} };
+	assert(dx>=-1);
+	assert(dx<=1);
+	assert(dy>=-1);
+	assert(dy<=1);
+	direction=tab[dy+1][dx+1];
+}
+
+void Unit::dxDyFromDirection(void)
+{
+	dxDyFromDirection(direction,&dx,&dy);
+}
+
+int Unit::directionFromDxDy(int dx, int dy)
+{
+	const int tab[3][3]={	{0, 1, 2},
+							{7, 8, 3},
+							{6, 5, 4} };
+	assert(dx>=-1);
+	assert(dx<=1);
+	assert(dy>=-1);
+	assert(dy<=1);
+	return tab[dy+1][dx+1];
+}
+
+void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
+{
+	int mapW=owner->map->getW();
+	int mapH=owner->map->getH();
+	if (ldx>(mapW>>1))
+		ldx-=mapW;
+	else if (ldx<-(mapW>>1))
+		ldx+=mapW;
+	if (ldy>(mapH>>1))
+		ldy-=mapH;
+	else if (ldy<-(mapH>>1))
+		ldy+=mapH;
+
+        /* We consider a cell to be vertical or horizontal in
+           direction (rather than diagonal) if it is 2.41 times more
+           vertical than horizontal, or vice versa.  This is because
+           the halfway point between 45 degrees and 90 degrees is 67.5
+           degrees and sin(67.5 deg) / cos(67.5 deg) =
+           2.41421356237. */
+	if ((100 * abs(ldx)) > (241 * abs(ldy)))
+	{
+		*cdx=SIGN(ldx);
+		*cdy=0;
+	}
+	else if ((100 * abs(ldy)) > (241 * abs(ldx)))
+	{
+		*cdx=0;
+		*cdy=SIGN(ldy);
+	}
+	else
+	{
+		*cdx=SIGN(ldx);
+		*cdy=SIGN(ldy);
+	}
+}
