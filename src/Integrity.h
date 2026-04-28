@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <iostream>
+
 #define checkInvariant(x) \
     if (!(x)) \
     { \
