@@ -28,6 +28,8 @@ scons BINDIR=/path/bin INSTALLDIR=/path/share
 
 **Dependencies:** SDL2, SDL2_net, SDL2_ttf, SDL2_image, libvorbis, libogg, speex, OpenGL, GLU, libepoxy, Boost (thread, date_time, system), zlib, fribidi, pcre. Optional: portaudio (voice chat). See `vcpkg.json` for the full list.
 
+**Server build gotcha:** Always build the YOG server with `scons server=1` — never with a bare `scons build/src/glob2-server`. The `server=1` flag both selects the server target and defines `YOG_SERVER_ONLY` (which strips out GUI/audio code via `#ifndef` guards) and switches `libgag` to its stripped `libgag_server.a` variant. Without the flag, the .o files are compiled with the full GUI code path but link against the stripped libgag, producing dozens of misleading "undefined symbol" errors that look like fundamental rot. SCons also caches the option in `options_cache.py`, so once you've run `server=1`, subsequent `scons` invocations stay in server mode — pass `server=0` explicitly to switch back.
+
 ## Running Tests
 
 ```bash

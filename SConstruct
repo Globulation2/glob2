@@ -281,7 +281,7 @@ def main():
 
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
-    env.Append(CPPPATH=['#src', '#src/yog', '#src/AI',
+    env.Append(CPPPATH=['#src', '#src/yog', '#src/ai',
                         '#src/map', '#src/map/edit', '#src/map/generator',
                         '#src/map/gradient', '#src/map/io', '#src/map/pathfind'])
     env.Append(CXXFLAGS=' -Wall -fPIC')

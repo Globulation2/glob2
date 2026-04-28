@@ -37,7 +37,7 @@ PerlinNoiseTest.cpp
 HelloWorldTest.cpp
 
 GradientBFSTest.cpp
-../src/AI/AIEcho/GradientBFS.cpp
+../src/ai/echo/GradientBFS.cpp
 
 natsort/NatSortTest.cpp
 """)
