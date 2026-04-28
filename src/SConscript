@@ -40,11 +40,11 @@ building/Update.cpp
 building/Step.cpp
 building/TypeSteps.cpp
 building/Misc.cpp
-BuildingsTypes.cpp
+building/BuildingsTypes.cpp
 ChecksumSidecar.cpp
 DatasetWriter.cpp
-BuildingType.cpp
-BuildingUtils.cpp
+building/BuildingType.cpp
+building/BuildingUtils.cpp
 Bullet.cpp
 Campaign.cpp
 CampaignEditor.cpp
@@ -98,7 +98,7 @@ Gradient.cpp
 GUIGlob2FileList.cpp
 GUIMapPreview.cpp
 map/generator/HeightMapGenerator.cpp
-IntBuildingType.cpp
+building/IntBuildingType.cpp
 IRC.cpp
 IRCTextMessageHandler.cpp
 IRCThread.cpp
@@ -298,7 +298,7 @@ yog/YOGGameResults.cpp
 yog/YOGMessage.cpp
 yog/YOGPlayerSessionInfo.cpp
 yog/YOGPlayerStoredInfo.cpp
-BuildingUtils.cpp
+building/BuildingUtils.cpp
 Bullet.cpp
 EntityType.cpp
 Glob2.cpp
