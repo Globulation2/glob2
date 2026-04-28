@@ -99,10 +99,10 @@ GUIGlob2FileList.cpp
 GUIMapPreview.cpp
 map/generator/HeightMapGenerator.cpp
 building/IntBuildingType.cpp
-IRC.cpp
-IRCTextMessageHandler.cpp
-IRCThread.cpp
-IRCThreadMessage.cpp
+net/irc/IRC.cpp
+net/irc/IRCTextMessageHandler.cpp
+net/irc/IRCThread.cpp
+net/irc/IRCThreadMessage.cpp
 KeyboardManager.cpp
 LANFindScreen.cpp
 LANGameInformation.cpp
