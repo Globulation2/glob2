@@ -153,6 +153,8 @@ private:void addForbiddenZoneToUpgradeArea(void);
 	///This function removes the hidden forbidden area placed by addForbiddenToUpgradeArea
 	///It must be done before any type or position state is changed.
 	void removeForbiddenZoneFromUpgradeArea(void);
+	///Shared body for add/remove. `add=true` adds the zone, `add=false` removes it.
+	void modifyForbiddenZoneForUpgradeArea(bool add);
 
 	///Checks if there is hard space for a building. Non hard space is any space occupied by something that
 	///won't move. Units will move, so they are ignored. If there is space for the building site, then this

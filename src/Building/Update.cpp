@@ -390,15 +390,12 @@ bool Building::tryToBuildingSiteRoom(void)
 
 #include "GameGUI.h"
 
-void Building::addForbiddenZoneToUpgradeArea(void)
+void Building::modifyForbiddenZoneForUpgradeArea(bool add)
 {
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 
-	int targetLevelTypeNum=-1;
-	targetLevelTypeNum=type->nextLevel;
-
-	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
+	BuildingType *targetBt=globalContainer->buildingsTypes.get(type->nextLevel);
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
@@ -408,7 +405,10 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	{
 		for(int y=newPosY; y<(newPosY+newHeight); ++y)
 		{
-			owner->map->addForbidden(x, y, owner->teamNumber);
+			if (add)
+				owner->map->addForbidden(x, y, owner->teamNumber);
+			else
+				owner->map->removeForbidden(x, y, owner->teamNumber);
 		}
 	}
 	if(owner == owner->game->gui->getLocalTeam())
@@ -416,33 +416,8 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	owner->map->updateForbiddenGradient(owner->teamNumber);
 }
 
-
-
-void Building::removeForbiddenZoneFromUpgradeArea(void)
-{
-	int midPosX=posX-type->decLeft;
-	int midPosY=posY-type->decTop;
-
-	int targetLevelTypeNum=-1;
-	targetLevelTypeNum=type->nextLevel;
-
-	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
-	int newPosX=midPosX+targetBt->decLeft;
-	int newPosY=midPosY+targetBt->decTop;
-	int newWidth=targetBt->width;
-	int newHeight=targetBt->height;
-
-	for(int x=newPosX; x<(newPosX+newWidth); ++x)
-	{
-		for(int y=newPosY; y<(newPosY+newHeight); ++y)
-		{
-			owner->map->removeForbidden(x, y, owner->teamNumber);
-		}
-	}
-	if(owner == owner->game->gui->getLocalTeam())
-		owner->map->computeLocalForbidden(owner->teamNumber);
-	owner->map->updateForbiddenGradient(owner->teamNumber);
-}
+void Building::addForbiddenZoneToUpgradeArea(void)      { modifyForbiddenZoneForUpgradeArea(true); }
+void Building::removeForbiddenZoneFromUpgradeArea(void) { modifyForbiddenZoneForUpgradeArea(false); }
 
 
 
