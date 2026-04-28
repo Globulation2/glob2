@@ -88,7 +88,6 @@ All clients compute identical game state. Only Orders (player actions) are trans
 - **`src/`** — Main game (382 files): engine, game logic, AI, networking, GUI screens, YOG online system
 - **`libgag/`** — Graphics/GUI toolkit library (widget system, sprites, file I/O, rendering)
 - **`libusl/`** — USL scripting language for maps/campaigns
-- **`libwee/`** — Utility library
 - **`data/`** — Runtime assets (graphics, fonts, music, GUI resources)
 - **`maps/`** — Game maps
 - **`campaigns/`** — Campaign definitions

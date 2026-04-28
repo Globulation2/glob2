@@ -94,7 +94,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug SDL|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include\SDL2;$(ProjectDir);$(ProjectDir)src;$(ProjectDir)src\map;$(ProjectDir)src\map\edit;$(ProjectDir)src\map\generator;$(ProjectDir)src\map\gradient;$(ProjectDir)src\map\io;$(ProjectDir)src\map\pathfind;$(ProjectDir)libwee\include;$(ProjectDir)libgag\include;$(ProjectDir)libusl\src</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\include\SDL2;$(ProjectDir);$(ProjectDir)src;$(ProjectDir)src\map;$(ProjectDir)src\map\edit;$(ProjectDir)src\map\generator;$(ProjectDir)src\map\gradient;$(ProjectDir)src\map\io;$(ProjectDir)src\map\pathfind;$(ProjectDir)libgag\include;$(ProjectDir)libusl\src</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release SDL|Win32'">
     <OutDir>Release\</OutDir>
