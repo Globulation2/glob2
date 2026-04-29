@@ -1,13 +1,15 @@
 libgag_sources = Split("""
 BinaryStream.cpp    CursorManager.cpp     FileManager.cpp   FormatableString.cpp
-GraphicContext.cpp  GUIAnimation.cpp      GUIBase.cpp       GUIButton.cpp
+graphic_context.cpp graphic_context_draw.cpp graphic_context_compound.cpp
+drawable_surface.cpp drawable_surface_draw.cpp drawable_surface_compound.cpp
+GUIAnimation.cpp    GUIBase.cpp           GUIButton.cpp
 GUIFileList.cpp     GUIKeySelector.cpp    GUIList.cpp       GUIMessageBox.cpp
 GUINumber.cpp       GUIRatio.cpp          GUISelector.cpp   GUIStyle.cpp
 GUITextArea.cpp     GUIText.cpp           GUITextInput.cpp  GUIImage.cpp
 GUIProgressBar.cpp  KeyPress.cpp          Sprite.cpp        StreamBackend.cpp
 Stream.cpp          StreamFilter.cpp      StringTable.cpp   SupportFunctions.cpp
 TextStream.cpp      Toolkit.cpp           TrueTypeFont.cpp  win32_dirent.cpp
-GUITabScreen.cpp    GUITabScreenWindow.cpp  TextSort.cpp    GUICheckList.cpp  
+GUITabScreen.cpp    GUITabScreenWindow.cpp  TextSort.cpp    GUICheckList.cpp
 """)
 
 libgag_just_server = Split("""
