@@ -62,8 +62,7 @@
 
 #include "ReplayWriter.h"
 
-// Set to 1 to render AI gradient debug overlays.
-#define DEBUG_RENDER_GRADIENTS 0
+#include "game_render_internal.h"
 
 // Map rendering orchestrator and shared helpers. Split from Game_render.cpp.
 
@@ -141,9 +140,31 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 
 float Game::interpolateValues(float a, float b, float x)
 {
-	float ft = 3.141592653f * x;
+	float ft = static_cast<float>(M_PI) * x;
 	float f = (1.0f - std::cos(ft)) * 0.5f;
 	return  a*(1.0-f) + b*f;
+}
+
+
+void Game::drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio)
+{
+	if (hpRatio > 0.6f)
+		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 78, 187, 78);
+	else if (hpRatio > 0.3f)
+		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 255, 255, 0);
+	else
+		drawPointBar(x, y, LEFT_TO_RIGHT, maxLength, actLength, 255, 0, 0);
+}
+
+
+void Game::drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValue, int currentValue, Uint8 r, Uint8 g, Uint8 b)
+{
+	// Shrink the bar (3px per unit + 1) until it fits within the building's height minus 10px of padding.
+	int bDiv = 1;
+	assert(type->height != 0);
+	while (((maxValue * 3 + 1) / bDiv) > ((type->height * 32) - 10))
+		bDiv++;
+	drawPointBar(x, y, BOTTOM_TO_TOP, maxValue / bDiv, currentValue / bDiv, r, g, b, 1 + bDiv);
 }
 
 
@@ -268,43 +289,25 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==selectedBuilding))
 					globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
 
-				// FIXME : ugly copy past
 				if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
 				{
 					int decy=(type->height*32);
 					int healDecx=(type->width-2)*16+1;
-					//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
 
 					// TODO : find better color for this
-					// health
 					if (type->hpMax)
 					{
 						float hpRatio=(float)building->hp/(float)type->hpMax;
-						if (hpRatio>0.6)
-							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 78, 187, 78);
-						else if (hpRatio>0.3)
-							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 255, 0);
-						else
-							drawPointBar(x+healDecx+6, y+decy-4, LEFT_TO_RIGHT, 16, 1+(int)(15.0f*hpRatio), 255, 0, 0);
+						drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio);
 					}
-
-					// units
 
 					if (building->maxUnitInside>0)
 						drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
 					if (building->maxUnitWorking>0)
 						drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
 
-					// food
 					if ((type->canFeedUnit) || (type->unitProductionTime))
-					{
-						// compute bar size, prevent oversize
-						int bDiv=1;
-						assert(type->height!=0);
-						while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
-							bDiv++;
-						drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
-					}
+						drawBuildingResourceBar(x+1, y+1, type, type->maxRessource[CORN], building->ressources[CORN], 255, 255, 120);
 				}
 			}
 		}

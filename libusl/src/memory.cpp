@@ -3,7 +3,7 @@
 #include "types.h"
 
 using std::for_each;
-using std::mem_fun;
+using std::mem_fn;
 
 void Heap::collectGarbage()
 {
@@ -19,5 +19,5 @@ void Heap::collectGarbage()
 	
 	// clean heap
 	swap(values, marked);
-	for_each(values.begin(), values.end(), mem_fun(&Value::clearGCMark));
+	for_each(values.begin(), values.end(), mem_fn(&Value::clearGCMark));
 }

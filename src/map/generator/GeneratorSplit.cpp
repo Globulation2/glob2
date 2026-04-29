@@ -173,8 +173,10 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 				return 0;
 		}
 	}
-	boost::random_number_generator<boost::mt19937> adapter(randomGenerator);
-	std::random_shuffle(points.begin(), points.end(), adapter);
+	// std::random_shuffle was removed in C++17; std::shuffle takes a URBG directly,
+	// which boost::mt19937 satisfies. Note this is map-generation RNG (not syncRand),
+	// so cross-machine determinism does not apply here.
+	std::shuffle(points.begin(), points.end(), randomGenerator);
 	return int(std::sqrt(double(minDist)));
 }
 

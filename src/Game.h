@@ -200,6 +200,10 @@ private:
 
 	///draws a point bar. This can be health, hunger, fill level, etc. Point bars can have 2 sections of actLength and secondActLength, followed by black until maxLength. r/g/b is for the first section, r2/g2/b2 for the second
 	void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2, int barWidth=2);
+	///draws an HP bar coloured green/yellow/red against the 0.6 / 0.3 hpRatio thresholds
+	void drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio);
+	///draws a building resource bar (food, bullets, ...) auto-shrinking to fit within (height*32)-10 pixels
+	void drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValue, int currentValue, Uint8 r, Uint8 g, Uint8 b);
 	///draws the overlay representing water
 	void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	///draws the terrain tiles of sand and gras

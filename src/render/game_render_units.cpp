@@ -179,12 +179,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, (unit->hungry*10)/Unit::HUNGRY_MAX, 80, 179, 223);
 
 		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
-		if (hpRatio>0.6)
-			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 78, 187, 78);
-		else if (hpRatio>0.3)
-			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 255, 0);
-		else
-			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
+		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio);
 
 		if ((unit->performance[HARVEST]) && (unit->carriedRessource>=0))
 			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->carriedRessource);

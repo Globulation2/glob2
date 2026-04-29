@@ -109,7 +109,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 			if ( (x<=sw) && (y<=sh) )
 			{
 				globalContainer->gfx->drawSprite(x, y-balisticShift, bulletSprite, BULLET_IMGID);
-				globalContainer->gfx->drawSprite(x+(balisticShift>>1), y, bulletSprite, BULLET_IMGID+1);
+				globalContainer->gfx->drawSprite(x+(balisticShift/2), y, bulletSprite, BULLET_IMGID+1);
 			}
 		}
 		globalContainer->gfx->finishDrawingSprite(bulletSprite, 255);

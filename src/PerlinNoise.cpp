@@ -115,7 +115,7 @@ float PerlinNoise::Noise2d( float pos[ 2 ] ) {
   int indexLD, indexRD, indexLU, indexRU;
   float distFromL, distFromR, distFromD, distFromU;
   float *q, sX, sY, a, b, t, u, v;
-  register int indexL, indexR;
+  int indexL, indexR;
 
   if ( ! initialized ) { reseed(); }
 
@@ -160,7 +160,7 @@ float PerlinNoise::Noise3d( float pos[ 3 ] ) {
   int indexLD, indexLU, indexRD, indexRU;
   float distFromL, distFromR, distFromD, distFromU, distFromB, distFromF;
   float *q, sX, sY, sZ, a, b, c, d, t, u, v;
-  register int indexL, indexR;
+  int indexL, indexR;
 
   if ( ! initialized ) { reseed(); }
 

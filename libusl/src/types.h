@@ -73,12 +73,11 @@ struct Prototype: Value
 		transform(members.begin(), members.end(), ostream_iterator<string>(stream, " "), [](auto& member) {return member.first; });
 	}
 	
-	virtual void propagateMarkForGC()
-	{
-		using std::for_each;
-		for_each(members.begin(), members.end(), [this](auto& member) {dynamic_cast<Value*>(member.second)->markForGC(); });
-	}
-	
+	// Defined out-of-line below ThunkPrototype: the lambda dynamic_cast's a
+	// ThunkPrototype* (Members::value_type::second_type), which C++17+ requires
+	// to be a complete type at the point the body is parsed.
+	virtual void propagateMarkForGC();
+
 	virtual ThunkPrototype* lookup(const std::string& name) const
 	{
 		Members::const_iterator method = members.find(name);
@@ -112,6 +111,12 @@ struct ThunkPrototype: Prototype
 		Prototype::propagateMarkForGC();
 	}
 };
+
+inline void Prototype::propagateMarkForGC()
+{
+	using std::for_each;
+	for_each(members.begin(), members.end(), [this](auto& member) {dynamic_cast<Value*>(member.second)->markForGC(); });
+}
 
 struct Thunk: Value
 {
@@ -162,8 +167,8 @@ struct Scope: Thunk
 	virtual void propagateMarkForGC()
 	{
 		using std::for_each;
-		using std::mem_fun;
-		for_each(locals.begin(), locals.end(), mem_fun(&Value::markForGC));
+		using std::mem_fn;
+		for_each(locals.begin(), locals.end(), mem_fn(&Value::markForGC));
 	}
 	
 	ScopePrototype* scopePrototype() const

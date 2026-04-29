@@ -62,18 +62,28 @@
 
 #include "ReplayWriter.h"
 
-// Set to 1 to render gradient/coordinate debug overlays.
-#define DEBUG_RENDER_GRADIENTS 0
+#include "game_render_internal.h"
 
 // Terrain, resource, and area rendering. Split from Game_render.cpp.
 
 
+// TODO: WATER_TILE_SIZE is hardcoded to the dimensions of data/gfx/water and would
+// silently break if that asset is ever resized. Could be replaced with
+// terrainWater->getW(0) / getH(0), but that relies on the sprite being loaded with
+// a valid frame 0, and nothing here or at the load site (GlobalContainer::load)
+// validates that. If terrainWater fails to load or reports zero size, water tiles
+// silently fail to render -- oceans and lakes look visibly broken but the game
+// otherwise plays normally, with no log or crash to flag the asset problem.
+// The right fix is asset validation at load time (covering ~30 sprites loaded the
+// same way in GlobalContainer::load), not a per-render guard here.
 void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
 {
-	int waterStartX = -(((viewportX<<5)+time/2) % 512);
-	int waterStartY = -((viewportY<<5) % 512);
-	for (int y=waterStartY; y<sh; y += 512)
-		for (int x=waterStartX; x<sw; x += 512)
+	// Tile size of the data/gfx/water sprite, in pixels.
+	static const int WATER_TILE_SIZE = 512;
+	int waterStartX = -(((viewportX<<5)+time/2) % WATER_TILE_SIZE);
+	int waterStartY = -((viewportY<<5) % WATER_TILE_SIZE);
+	for (int y=waterStartY; y<sh; y += WATER_TILE_SIZE)
+		for (int x=waterStartX; x<sw; x += WATER_TILE_SIZE)
 			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
 	globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater, 255);
 }

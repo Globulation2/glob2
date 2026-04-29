@@ -287,7 +287,7 @@ def main():
                         '#src/map/gradient', '#src/map/io', '#src/map/pathfind',
                         '#src/net', '#src/net/irc', '#src/net/message',
                         '#src/unit'])
-    env.Append(CXXFLAGS=' -Wall -fPIC')
+    env.Append(CXXFLAGS=' -std=c++20 -Wall -fPIC')
     env.Append(LINKFLAGS=' -Wall')
     env.Append(LIBS=['SDL2_net'])
     if not server_only:
