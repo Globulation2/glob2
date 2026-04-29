@@ -284,7 +284,7 @@ def main():
     env.Append(CPPPATH=['#src', '#src/yog', '#src/ai', '#src/building',
                         '#src/map', '#src/map/edit', '#src/map/generator',
                         '#src/map/gradient', '#src/map/io', '#src/map/pathfind',
-                        '#src/net/irc', '#src/net/message'])
+                        '#src/net', '#src/net/irc', '#src/net/message'])
     env.Append(CXXFLAGS=' -Wall -fPIC')
     env.Append(LINKFLAGS=' -Wall')
     env.Append(LIBS=['SDL2_net'])
