@@ -64,9 +64,6 @@
 
 #define BULLET_IMGID 0
 
-#define MIN_MAX_PRESIGE 500
-#define TEAM_MAX_PRESTIGE 150
-
 // Save/load, integrity, checksum. Split out of Game.cpp.
 
 bool Game::load(GAGCore::InputStream *stream)
@@ -226,7 +223,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->readText("campaignText");
 
 	// default prestige calculation
-	prestigeToReach = std::max(MIN_MAX_PRESIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
+	prestigeToReach = std::max(MIN_MAX_PRESTIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
 
 	if(mapHeader.getVersionMinor() >= 75)
 	{

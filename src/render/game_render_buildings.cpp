@@ -1,0 +1,290 @@
+/*
+  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+*/
+
+#include <iostream>
+#include <fstream>
+
+#include "AICastor.h"
+#include "AINicowar.h"
+
+#include <assert.h>
+#include <string.h>
+
+#include <set>
+#include <string>
+#include <functional>
+#include <algorithm>
+#include <sstream>
+#include <cmath>
+
+#include <FileManager.h>
+#include <GraphicContext.h>
+
+#include "BuildingType.h"
+#include "DatasetWriter.h"
+#include "Game.h"
+#include "GameUtilities.h"
+#include "GlobalContainer.h"
+#include "LogFileManager.h"
+#include "Order.h"
+#include "Unit.h"
+#include "UnitSkin.h"
+#include "Integrity.h"
+#include "Utilities.h"
+#include "GameGUI.h"
+#include "SDLCompat.h"
+
+#include "MapEdit.h"
+
+#include "Brush.h"
+#include "DynamicClouds.h"
+#include "Bullet.h"
+#include "TextStream.h"
+#include "FertilityCalculatorDialog.h"
+
+#include "NetMessage.h"
+
+#include "ReplayWriter.h"
+
+// Building rendering. Split from Game_render.cpp.
+
+
+struct BuildingPosComp
+{
+	bool operator () (Building * const & a, Building * const & b)
+	{
+		if (a->posY != b->posY)
+			return a->posY < b->posY;
+		else
+			return a->posX < b->posX;
+	}
+};
+
+
+void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+{
+	Building *building = teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
+	assert(building);
+	BuildingType *type=building->type;
+	Team *team=building->owner;
+
+	int imgid;
+	if (type->crossConnectMultiImage)
+	{
+		int add = 0;
+		Uint16 b;
+		// Up
+		b = map.getBuilding(building->posXLocal, building->posYLocal-1);
+		if ((b != NOGBID) &&
+			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+			add |= (1<<3);
+		// Bottom
+		b = map.getBuilding(building->posXLocal, building->posYLocal+building->type->height);
+		if ((b != NOGBID) &&
+			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+			add |= (1<<2);
+		// Left
+		b = map.getBuilding(building->posXLocal-1, building->posYLocal);
+		if ((b != NOGBID) &&
+			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+			add |= (1<<1);
+		// Right
+		b = map.getBuilding(building->posXLocal+building->type->width, building->posYLocal);
+		if ((b != NOGBID) &&
+			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+			add |= (1<<0);
+		imgid = type->gameSpriteImage + add;
+	}
+	else
+	{
+		// FIXME : why building->hp is > type->hpMax ?
+		int hp = std::min(building->hp, type->hpMax);
+		int damageImgShift = type->gameSpriteCount - ((hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
+		assert(damageImgShift >= 0);
+		imgid = type->gameSpriteImage + damageImgShift;
+	}
+//	int x, y;
+	int dx, dy;
+
+//	map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
+
+	// select buildings and set the team colors
+	Sprite *buildingSprite = type->gameSpritePtr;
+	dx = (type->width<<5)-buildingSprite->getW(imgid);
+	dy = (type->height<<5)-buildingSprite->getH(imgid);
+	buildingSprite->setBaseColor(team->color);
+
+	// draw building
+	globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
+
+	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
+	{
+		int batW=(type->width )<<5;
+		int batH=(type->height)<<5;
+		int typeNum=building->typeNum;
+		globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
+
+		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
+		int lastTypeNum=typeNum;
+		int max=0;
+		while(lastbt->nextLevel>=0)
+		{
+			lastTypeNum=lastbt->nextLevel;
+			lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
+			if (max++>200)
+			{
+				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
+				assert(false);
+				break;
+			}
+		}
+		int exBatX=x+((lastbt->decLeft-type->decLeft)<<5);
+		int exBatY=y+((lastbt->decTop-type->decTop)<<5);
+		int exBatW=(lastbt->width)<<5;
+		int exBatH=(lastbt->height)<<5;
+
+		globalContainer->gfx->drawRect(exBatX, exBatY, exBatW, exBatH, 255, 255, 255, 127);
+	}
+
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
+	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & visibleTeams))
+	{
+		//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
+		// TODO : find better color for this
+		// health
+		if (type->hpMax)
+		{
+			int maxWidth, actWidth, addDec;
+			float hpRatio=(float)building->hp/(float)type->hpMax;
+			if (type->width==1)
+			{
+				maxWidth=8;
+				actWidth=1+(int)(7.0f*hpRatio);
+				addDec=2;
+			}
+			else
+			{
+				maxWidth=16;
+				actWidth=1+(int)(15.0f*hpRatio);
+				addDec=7;
+			}
+			int decy=(type->height*32);
+			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
+
+			if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
+			{
+				if (hpRatio>0.6)
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
+				else if (hpRatio>0.3)
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
+				else
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
+			}
+		}
+
+		// units
+		if (building->maxUnitInside>0)
+			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+		if (building->maxUnitWorking>0)
+			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
+
+		// food (for inns)
+		if ((type->canFeedUnit) || (type->unitProductionTime))
+		{
+			// compute bar size, prevent oversize
+			int bDiv=1;
+			assert(type->height!=0);
+			while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
+				bDiv++;
+			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+		}
+
+		// bullets (for defence towers)
+		if (type->maxBullets)
+		{
+			// compute bar size, prevent oversize
+			int bDiv=1;
+			assert(type->height!=0);
+			while ( ((type->maxBullets*3+1)/bDiv)>((type->height*32)-10))
+				bDiv++;
+			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxBullets/bDiv, building->bullets/bDiv, 200, 200, 200, 1+bDiv);
+		}
+	}
+
+	if (drawOptions & DRAW_ACCESSIBILITY)
+	{
+		std::ostringstream oss;
+		oss << building->owner->teamNumber;
+		int accessW = globalContainer->littleFont->getStringWidth(oss.str().c_str());
+		int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
+		int accessX = x+(((type->width<<5)-accessW)>>1);
+		int accessY = y+(((type->height<<5)-accessH)>>1);
+		globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, 127));
+		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, 127));
+		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
+	}
+
+	if(highlightBuildingType & (1<<building->shortTypeNum))
+	{
+		globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
+	}
+}
+
+
+void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
+{
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
+	std::set<Building*> drawnBuildings;
+	for (int y=top-1; y<=bot; y++)
+		for (int x=left-1; x<=right; x++)
+		{
+			Uint16 gid=map.getBuilding(x+viewportX, y+viewportY);
+			if (gid!=NOGBID) // Then this is a building
+			{
+				//globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 128, 0);
+				//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 128, 0);
+
+				int id = Building::GIDtoID(gid);
+				int team = Building::GIDtoTeam(gid);
+
+				Building *building=teams[team]->myBuildings[id];
+				if(drawnBuildings.find(building)==drawnBuildings.end())
+				{
+					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
+					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
+						|| Building::GIDtoTeam(gid)==localTeam
+						|| (building->seenByMask & visibleTeams)
+						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
+					{
+						int px,py;
+						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
+					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						drawnBuildings.insert(building);
+					}
+				}
+			}
+		}
+	if(visibleBuildings)
+		*visibleBuildings = drawnBuildings;
+}

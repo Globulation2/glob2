@@ -70,7 +70,11 @@ Game_orders.cpp
 Game_io.cpp
 Game_sync.cpp
 Game_editor.cpp
-Game_render.cpp
+render/game_render.cpp
+render/game_render_units.cpp
+render/game_render_buildings.cpp
+render/game_render_terrain.cpp
+render/game_render_overlay.cpp
 GameEvent.cpp
 GameGUI.cpp
 GameGUIDefaultAssignManager.cpp

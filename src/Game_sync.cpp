@@ -64,9 +64,6 @@
 
 #define BULLET_IMGID 0
 
-#define MIN_MAX_PRESIGE 500
-#define TEAM_MAX_PRESTIGE 150
-
 // Per-tick sync. Split out of Game.cpp.
 
 void Game::buildProjectSyncStep(Sint32 localTeam)

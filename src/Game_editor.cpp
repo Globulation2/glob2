@@ -64,9 +64,6 @@
 
 #define BULLET_IMGID 0
 
-#define MIN_MAX_PRESIGE 500
-#define TEAM_MAX_PRESTIGE 150
-
 // Editor utilities and script-interface queries. Split out of Game.cpp.
 
 // Script interface
@@ -134,7 +131,7 @@ void Game::addTeam(int pos)
 	for (int i=0; i<pos; i++)
 		teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
 
-	prestigeToReach = std::max(MIN_MAX_PRESIGE, pos*TEAM_MAX_PRESTIGE);
+	prestigeToReach = std::max(MIN_MAX_PRESTIGE, pos*TEAM_MAX_PRESTIGE);
 
 	map.addTeam();
 
