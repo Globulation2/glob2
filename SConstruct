@@ -282,9 +282,11 @@ def main():
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
     env.Append(CPPPATH=['#src', '#src/yog', '#src/ai', '#src/building',
+                        '#src/gui',
                         '#src/map', '#src/map/edit', '#src/map/generator',
                         '#src/map/gradient', '#src/map/io', '#src/map/pathfind',
-                        '#src/net', '#src/net/irc', '#src/net/message'])
+                        '#src/net', '#src/net/irc', '#src/net/message',
+                        '#src/unit'])
     env.Append(CXXFLAGS=' -Wall -fPIC')
     env.Append(LINKFLAGS=' -Wall')
     env.Append(LIBS=['SDL2_net'])
