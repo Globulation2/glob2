@@ -269,6 +269,12 @@ private:
 	void drawUnitInfos(void);
 	//! Draw the infos and actions from a building
 	void drawBuildingInfos(void);
+	//! Draw the time-to-leave progress bar showing units' insideTimeout (extracted from drawBuildingInfos)
+	void drawBuildingTimeToLeaveBar(Building* selBuild, BuildingType* buildingType, int& ypos, unsigned& unitInsideBarYDec);
+	//! Draw the flag-type-specific controls for clearing/war/exploration flags (extracted from drawBuildingInfos)
+	void drawBuildingFlagControls(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw the upgrade preview tooltip (cost + new abilities) shown on hover over the upgrade button (extracted from drawBuildingInfos)
+	void drawBuildingUpgradePreview(Building* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
 	//! Draw the infos about a ressource on map (type and number left)
 	void drawRessourceInfos(void);
 	//! Draw the replay panel

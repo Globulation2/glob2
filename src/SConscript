@@ -80,7 +80,11 @@ gui/GameGUI.cpp
 gui/GameGUIDefaultAssignManager.cpp
 gui/GameGUIDialog.cpp
 gui/GameGUIDraw.cpp
-gui/GameGUIDrawPanels.cpp
+gui/game_gui_draw_choice.cpp
+gui/game_gui_draw_unit_infos.cpp
+gui/game_gui_draw_building_infos.cpp
+gui/game_gui_draw_building_helpers.cpp
+gui/game_gui_draw_misc_panels.cpp
 gui/GameGUIGhostBuildingManager.cpp
 gui/GameGUIInput.cpp
 gui/GameGUIInputKey.cpp
