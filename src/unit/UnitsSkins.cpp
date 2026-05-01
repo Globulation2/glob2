@@ -77,23 +77,6 @@ UnitSkin *UnitsSkins::getSkin(const std::string &name)
 		return it->second;
 	else
 		return NULL;
-	/*else
-	{
-		UnitSkin *unitSkin = new UnitSkin;
-		stream->readEnterSection(name.c_str());
-		bool result = unitSkin->load(stream);
-		stream->readLeaveSection();
-		if (result)
-		{
-			unitsSkins[name] = unitSkin;
-			return unitSkin;
-		}
-		else
-		{
-			delete unitSkin;
-			return NULL;
-		}
-	}*/
 }
 
 //! Fill target with the list of names of all available skins
