@@ -29,7 +29,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
-#include "Team.h"
+#include "team.h"
 #include "Unit.h"
 #include "Utilities.h"
 #include "Order.h"

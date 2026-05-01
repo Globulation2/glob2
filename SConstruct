@@ -286,6 +286,7 @@ def main():
                         '#src/map', '#src/map/edit', '#src/map/generator',
                         '#src/map/gradient', '#src/map/io', '#src/map/pathfind',
                         '#src/net', '#src/net/irc', '#src/net/message',
+                        '#src/team',
                         '#src/unit'])
     env.Append(CXXFLAGS=' -std=c++20 -Wall -fPIC')
     env.Append(LINKFLAGS=' -Wall')

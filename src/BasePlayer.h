@@ -23,7 +23,7 @@
 
 #include <SDL_net.h>
 #include "AI.h"
-#include "Team.h"
+#include "team.h"
 #include <string>
 /**
  * Player holds the player's state like name, type, id etc.

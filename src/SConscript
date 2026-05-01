@@ -218,7 +218,11 @@ SettingsScreen.cpp
 SGSL.cpp
 SimplexNoise.cpp
 SoundMixer.cpp
-Team.cpp
+team/team.cpp
+team/team_serialization.cpp
+team/team_lists.cpp
+team/team_routing.cpp
+team/team_step.cpp
 TeamStat.cpp
 unit/Unit.cpp
 unit/UnitAction.cpp

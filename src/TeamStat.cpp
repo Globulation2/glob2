@@ -28,7 +28,7 @@
 
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "Team.h"
+#include "team.h"
 #include "TeamStat.h"
 #include "Unit.h"
 #include "Bullet.h"

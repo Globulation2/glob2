@@ -19,7 +19,7 @@
 #pragma once
 
 #include "BaseTeam.h"
-#include "Team.h"
+#include "team.h"
 
 namespace GAGCore
 {

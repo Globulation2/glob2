@@ -1,6 +1,6 @@
 #include "ChecksumSidecar.h"
 #include "Game.h"
-#include "Team.h"
+#include "team.h"
 #include "Unit.h"
 #include "Building.h"
 #include <cstring>

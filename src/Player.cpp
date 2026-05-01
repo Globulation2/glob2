@@ -25,7 +25,7 @@
 #include "Marshaling.h"
 #include "NetConsts.h"
 #include "Player.h"
-#include "Team.h"
+#include "team.h"
 #include "Utilities.h"
 
 Player::Player()

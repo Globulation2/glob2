@@ -21,7 +21,7 @@
 #include "Race.h"
 #include "UnitSkin.h"
 #include "UnitsSkins.h"
-#include "Team.h"
+#include "team.h"
 #include "Map.h"
 #include "Game.h"
 

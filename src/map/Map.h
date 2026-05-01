@@ -27,7 +27,7 @@
 #include "Building.h"
 #include "Ressource.h"
 #include "Sector.h"
-#include "Team.h"
+#include "team.h"
 #include "TerrainType.h"
 #include "BitArray.h"
 

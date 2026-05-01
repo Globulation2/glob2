@@ -21,7 +21,7 @@
 
 #include "Ressource.h"
 #include "TerrainType.h"
-#include "Team.h"
+#include "team.h"
 
 namespace GAGCore
 {

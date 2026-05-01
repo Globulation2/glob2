@@ -18,7 +18,7 @@
 */
 
 #include "BuildingUtils.h"
-#include "Team.h"
+#include "team.h"
 
 
 Sint32 BuildingUtils::GIDtoID(Uint16 gid)
