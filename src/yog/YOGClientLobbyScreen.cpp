@@ -18,7 +18,7 @@
 */
 
 #include "ChooseMapScreen.h"
-#include "Engine.h"
+#include "engine.h"
 #include <FormatableString.h>
 #include "GlobalContainer.h"
 #include <GraphicContext.h>

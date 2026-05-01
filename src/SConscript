@@ -59,7 +59,10 @@ CustomGameScreen.cpp
 DynamicClouds.cpp
 EditorMainMenu.cpp
 EndGameScreen.cpp
-Engine.cpp
+engine.cpp
+engine_init.cpp
+engine_loaders.cpp
+engine_run.cpp
 EntityType.cpp
 Fatal.cpp
 FertilityCalculatorDialog.cpp

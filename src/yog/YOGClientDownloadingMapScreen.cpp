@@ -19,7 +19,7 @@
 #include "YOGClientDownloadingMapScreen.h"
 
 #include <algorithm>
-#include "Engine.h"
+#include "engine.h"
 #include "FormatableString.h"
 #include "GlobalContainer.h"
 #include <GUIButton.h>

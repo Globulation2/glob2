@@ -18,7 +18,7 @@
 
 #include "MultiplayerGame.h"
 #include <iostream>
-#include "Engine.h"
+#include "engine.h"
 #include "YOGClientFileAssembler.h"
 #include "FormatableString.h"
 #include "Toolkit.h"

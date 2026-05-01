@@ -126,6 +126,10 @@ private:
 	///This function prepares a random set of AI's in a GameHeader, first player is always human + ai team
 	GameHeader createRandomGame(int numberOfTeams);
 
+	/// Body of the outer "play one game and possibly load another" loop in run().
+	/// Sets doRunOnceAgain=true to loop again (e.g. user picked a new save), false to return.
+	void runOneGameSession(bool& doRunOnceAgain);
+
 	//! The GUI, contains the whole game also
 	GameGUI gui;
 	//! The netGame, take care of order queuing and dispatching

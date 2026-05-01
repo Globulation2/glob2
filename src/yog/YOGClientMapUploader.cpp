@@ -16,7 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "Engine.h"
+#include "engine.h"
 #include "NetMessage.h"
 #include "YOGClientFileAssembler.h"
 #include "YOGClient.h"

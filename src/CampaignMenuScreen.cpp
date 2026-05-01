@@ -19,7 +19,7 @@
 #include "CampaignMenuScreen.h"
 #include "Toolkit.h"
 #include "StringTable.h"
-#include "Engine.h"
+#include "engine.h"
 #include "GlobalContainer.h"
 #include "GUIMapPreview.h"
 

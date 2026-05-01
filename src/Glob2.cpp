@@ -30,7 +30,7 @@
 #include "ChooseMapScreen.h"
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
-#include "Engine.h"
+#include "engine.h"
 #include "Game.h"
 #include "GUIMessageBox.h"
 #include "Header.h"
