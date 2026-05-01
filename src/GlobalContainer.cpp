@@ -40,7 +40,7 @@
 #include "Player.h"
 #include "Race.h"
 #include "SoundMixer.h"
-#include "UnitsSkins.h"
+#include "UnitSkin.h"
 #include "VoiceRecorder.h"
 #ifndef YOG_SERVER_ONLY
 #include "ReplayReader.h"
@@ -121,7 +121,6 @@ GlobalContainer::GlobalContainer(void)
 	terrainBlack = NULL;
 	ressources = NULL;
 	units = NULL;
-	unitsSkins = NULL;
 
 	menuFont = NULL;
 	standardFont = NULL;
@@ -154,10 +153,6 @@ GlobalContainer::~GlobalContainer(void)
 	if (!runNoX)
 		delete Style::style;
 	Style::style = &defaultStyle;
-
-	// release unit skins
-	if (unitsSkins)
-		delete unitsSkins;
 
 	// close sound
 	if (mix)
@@ -723,7 +718,7 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(70);
 		// load units
 		units = Toolkit::getSprite("data/gfx/unit");
-		unitsSkins = new UnitsSkins();
+		initUnitSkins();
 
 		updateLoadProgressScreen(90);
 		// load graphics for gui

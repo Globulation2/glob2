@@ -25,7 +25,6 @@
 namespace GAGGUI
 {
 	class TextInput;
-	class MultiTextButton;
 }
 using namespace GAGGUI;
 class Unit;
@@ -49,7 +48,6 @@ protected:
 	
 protected:
 	Unit *unit; //!< unit being edited
-	MultiTextButton *skin;
 	TextInput *hungryness;
 };
 

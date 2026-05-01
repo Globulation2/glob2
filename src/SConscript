@@ -241,7 +241,6 @@ unit/UnitSkin.cpp
 unit/UnitStats.cpp
 unit/UnitType.cpp
 unit/UnitUtils.cpp
-unit/UnitsSkins.cpp
 Utilities.cpp
 VoiceRecorder.cpp
 WinningConditions.cpp

@@ -19,8 +19,6 @@
 
 #include "Unit.h"
 #include "Race.h"
-#include "UnitSkin.h"
-#include "UnitsSkins.h"
 #include "team.h"
 #include "Map.h"
 #include "Game.h"
@@ -68,39 +66,6 @@ void Unit::incrementExperience(int increment)
 		experienceLevel++;
 		nextLevelThreshold = getNextLevelThreshold();
 		levelUpAnimation = LEVEL_UP_ANIMATION_FRAME_COUNT;
-	}
-}
-
-//! Compute the skin pointer from a skin name
-void Unit::skinPointerFromName(void)
-{
-	if (!globalContainer->runNoX)
-	{
-		skin = globalContainer->unitsSkins->getSkin(skinName);
-		if (skin == NULL)
-		{
-			// if skin is invalid, retry with default
-			std::cerr << "Unit::skinPointerFromName : invalid skin name " << skinName << std::endl;
-			defaultSkinNameFromType();
-			skin = globalContainer->unitsSkins->getSkin(skinName);
-			if (!skin)
-				abort();
-		}
-	}
-	else
-		skin = NULL;
-}
-
-
-//! Compute the skin name from the unit type
-void Unit::defaultSkinNameFromType(void)
-{
-	switch (typeNum)
-	{
-		case WORKER: skinName = "worker"; break;
-		case EXPLORER: skinName = "explorer"; break;
-		case WARRIOR: skinName = "warrior"; break;
-		default: assert(false); break;
 	}
 }
 

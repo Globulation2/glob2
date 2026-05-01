@@ -19,8 +19,6 @@
 
 #include "Unit.h"
 #include "Race.h"
-#include "UnitSkin.h"
-#include "UnitsSkins.h"
 #include "team.h"
 #include "Map.h"
 #include "Game.h"
@@ -52,8 +50,6 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 	// unit specification
 	this->typeNum = typeNum;
-	defaultSkinNameFromType();
-	skinPointerFromName();
 
 	assert(team);
 	race=&(team->race);

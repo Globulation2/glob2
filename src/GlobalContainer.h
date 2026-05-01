@@ -38,7 +38,6 @@ using namespace GAGCore;
 class SoundMixer;
 class VoiceRecorder;
 class LogFileManager;
-class UnitsSkins;
 class ReplayReader;
 class ReplayWriter;
 class DatasetWriter;
@@ -99,9 +98,7 @@ public:
 	Sprite *brush;
 	Sprite *magiceffect;
 	Sprite *particles;
-	
-	UnitsSkins *unitsSkins;
-	
+
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;

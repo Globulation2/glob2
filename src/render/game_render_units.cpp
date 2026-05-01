@@ -56,6 +56,7 @@
 #include "DynamicClouds.h"
 #include "Bullet.h"
 #include "TextStream.h"
+#include "UnitSkin.h"
 #include "FertilityCalculatorDialog.h"
 
 #include "NetMessage.h"
@@ -89,7 +90,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int imgid;
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
-	imgid=unit->skin->startImage[unit->action];
+	const UnitSkin &skin = g_unitSkins[unit->typeNum];
+	imgid=skin.startImage[unit->action];
 	int px, py;
 	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
 	int deltaLeft=255-unit->delta;
@@ -120,7 +122,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	// draw unit
-	Sprite *unitSprite = unit->skin->sprite;
+	Sprite *unitSprite = skin.sprite;
 	unitSprite->setBaseColor(teams[team]->color);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;

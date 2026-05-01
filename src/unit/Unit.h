@@ -34,7 +34,6 @@
 
 class Team;
 class Race;
-class UnitSkin;
 class Building;
 
 namespace GAGCore
@@ -94,8 +93,6 @@ public:
 	int getRealAttackStrength(void) const; //!< Return the real attack strength for warriors
 	int getNextLevelThreshold(void) const;
 	void incrementExperience(int increment);
-	
-	void skinPointerFromName(void);
 	
 public:
 
@@ -182,7 +179,6 @@ protected:
 	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
 	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
-	void defaultSkinNameFromType(void);
 
 	bool locationIsInEnemyGuardTowerRange(int x, int y)const;
 	
@@ -191,9 +187,7 @@ public:
 	// unit specification
 	Sint32 typeNum; // Uint8, WORKER, EXPLORER, WARRIOR
 	Race *race;
-	UnitSkin *skin;
-	std::string skinName;
-	
+
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;

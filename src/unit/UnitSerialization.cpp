@@ -19,8 +19,6 @@
 
 #include "Unit.h"
 #include "Race.h"
-#include "UnitSkin.h"
-#include "UnitsSkins.h"
 #include "team.h"
 #include "Map.h"
 #include "Game.h"
@@ -41,8 +39,12 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// unit specification
 	typeNum = stream->readSint32("typeNum");
-	skinName = stream->readText("skinName");
-	skinPointerFromName();
+	if (versionMinor < 84)
+	{
+		// Pre-v84 saves carried a per-unit skinName string; skin is now derived
+		// from typeNum at render time, so read and discard for compatibility.
+		stream->readText("skinName");
+	}
 	race = &(owner->race);
 	assert(race);
 
@@ -134,7 +136,6 @@ void Unit::save(GAGCore::OutputStream *stream)
 	// unit specification
 	// we drop the unittype pointer, we save only the number
 	stream->writeSint32(typeNum, "typeNum");
-	stream->writeText(skinName, "skinName");
 
 	// identity
 	stream->writeUint16(gid, "gid");

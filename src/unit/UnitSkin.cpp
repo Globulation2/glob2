@@ -18,31 +18,31 @@
 */
 
 #include "UnitSkin.h"
-#include <Stream.h>
 #include <Toolkit.h>
-#include <iostream>
 
-bool UnitSkin::load(GAGCore::InputStream *stream)
+UnitSkin g_unitSkins[NB_UNIT_TYPE];
+
+namespace
 {
-	std::string spriteName = stream->readText("spriteName");
-	if (spriteName == "")
-		return false;
-		
-	sprite = Toolkit::getSprite(spriteName);
-	if (!sprite)
+	// Sprite-atlas frame offsets for each unit type, indexed by Abilities enum
+	// values STOP_WALK..ATTACK_SPEED (which are 0..NB_MOVE-1 in UnitConsts.h).
+	// Replaces the legacy data/unitsSkins.txt; offsets are a property of the
+	// data/gfx/unit sprite sheet, not designer-tunable parameters.
+	constexpr Uint32 SKIN_OFFSETS[NB_UNIT_TYPE][NB_MOVE] = {
+		// STOP_WALK, STOP_SWIM, STOP_FLY,  WALK, SWIM, FLY,  BUILD, HARVEST, ATTACK_SPEED
+		/* WORKER   */ {  64, 128, 0,   64, 128, 0,  192, 192,   0 },
+		/* EXPLORER */ {   0,   0, 0,    0,   0, 0,    0,   0,   0 },
+		/* WARRIOR  */ { 256, 320, 0,  256, 320, 0,    0,   0, 384 },
+	};
+}
+
+void initUnitSkins()
+{
+	GAGCore::Sprite *sprite = GAGCore::Toolkit::getSprite("data/gfx/unit");
+	for (int type = 0; type < NB_UNIT_TYPE; ++type)
 	{
-		std::cerr << "Can't load unit sprite " << spriteName << ", abording" << std::endl;
-		return false;
+		g_unitSkins[type].sprite = sprite;
+		for (int move = 0; move < NB_MOVE; ++move)
+			g_unitSkins[type].startImage[move] = SKIN_OFFSETS[type][move];
 	}
-	startImage[STOP_WALK] = stream->readUint32("startImageStopWalk");
-	startImage[STOP_SWIM] = stream->readUint32("startImageStopSwim");
-	startImage[STOP_FLY] = stream->readUint32("startImageStopFly");
-	startImage[WALK] = stream->readUint32("startImageWalk");
-	startImage[SWIM] = stream->readUint32("startImageSwim");
-	startImage[FLY] = stream->readUint32("startImageFly");
-	startImage[BUILD] = stream->readUint32("startImageBuild");
-	startImage[HARVEST] = stream->readUint32("startImageHarvest");
-	startImage[ATTACK_SPEED] = stream->readUint32("startImageAttack");
-	
-	return true;
 }

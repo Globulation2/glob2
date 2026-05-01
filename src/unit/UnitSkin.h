@@ -24,18 +24,18 @@
 
 namespace GAGCore
 {
-	class InputStream;
 	class Sprite;
 }
-using namespace GAGCore;
 
-class UnitSkin
+struct UnitSkin
 {
-public:
-	Sprite *sprite;
+	GAGCore::Sprite *sprite;
 	Uint32 startImage[NB_MOVE];
-	
-public:
-	bool load(GAGCore::InputStream *stream);
 };
 
+// Per-unit-type skin table, indexed by WORKER/EXPLORER/WARRIOR.
+// Sprite pointer is null until initUnitSkins() runs (skipped in headless mode).
+extern UnitSkin g_unitSkins[NB_UNIT_TYPE];
+
+// Loads the shared unit sprite and fills g_unitSkins. Call once at startup.
+void initUnitSkins();
