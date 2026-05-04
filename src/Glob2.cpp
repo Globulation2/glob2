@@ -149,7 +149,12 @@ int Glob2::runTestGames()
 	int run = 0;
 	while(maxRuns == 0 || run < maxRuns)
 	{
-		long t = time(NULL);
+		// GLOB2_TEST_SEED overrides the wall-clock seed for deterministic
+		// regression testing. With a fixed seed (and unchanged maps/), two
+		// runs produce byte-identical replays — the basis for the
+		// behavior-preservation harness used by C++ cleanup work.
+		const char* envSeed = getenv("GLOB2_TEST_SEED");
+		long t = envSeed ? atol(envSeed) : time(NULL);
 		setSyncRandSeed(t);
 		std::cout<<"Random Seed initial: "<<t<<std::endl;
 		Engine engine;

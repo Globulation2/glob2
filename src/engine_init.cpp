@@ -249,6 +249,27 @@ void Engine::createRandomGame()
 	gui.localTeamNo=0;
 
 	initGame(map, game);
+
+	// GLOB2_DUMP_GAME captures the fully-initialised tick-0 game state to a
+	// .game file so the same scenario can later be replayed deterministically
+	// via --nox <file>. Uses gui.save() for the complete game-state format
+	// (matching the GUI Custom-Game save path), not just the headers — partial
+	// dumps fail to load because loadFromHeaders re-reads numberOfTeams from
+	// the saved state. Used to bootstrap a checked-in regression baseline.
+	const char* dumpPath = getenv("GLOB2_DUMP_GAME");
+	if (dumpPath)
+	{
+		OutputStream* dumpStream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(dumpPath));
+		if (dumpStream->isEndOfStream())
+		{
+			std::cerr << "GLOB2_DUMP_GAME: cannot open " << dumpPath << " for writing" << std::endl;
+			delete dumpStream;
+			exit(1);
+		}
+		gui.save(dumpStream, map.getMapName());
+		delete dumpStream;
+		std::cout << "GLOB2_DUMP_GAME: wrote " << dumpPath << std::endl;
+	}
 }
 
 
