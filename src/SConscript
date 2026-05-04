@@ -213,7 +213,7 @@ Race.cpp
 ReplayReader.cpp
 ReplayWriter.cpp
 Ressource.cpp
-RessourcesTypes.cpp
+game/entities/resources.cpp
 ScriptEditorScreen.cpp
 Sector.cpp
 Settings.cpp
@@ -348,6 +348,7 @@ yog/YOGPlayerStoredInfo.cpp
 building/BuildingUtils.cpp
 Bullet.cpp
 EntityType.cpp
+game/entities/resources.cpp
 Glob2.cpp
 GlobalContainer.cpp
 map/Map.cpp

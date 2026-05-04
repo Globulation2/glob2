@@ -20,6 +20,7 @@
 */
 
 #include <cmath>
+#include <BinaryStream.h>
 #include <FormatableString.h>
 #include <GAG.h>
 #include "GameGUILoadSave.h"

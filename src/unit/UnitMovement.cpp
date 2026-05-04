@@ -67,11 +67,8 @@ void Unit::handleMovement(void)
 				Case mapCase = map->cases[(y << map->wDec) + x];
 				if ((mapCase.clearArea & owner->me)
 					&& (mapCase.ressource.type != NO_RES_TYPE)
-					&& ((mapCase.ressource.type == WOOD)
-						|| (mapCase.ressource.type == CORN)
-						|| (mapCase.ressource.type == PAPYRUS)
-						|| (mapCase.ressource.type == ALGA))
-						&& !(mapCase.forbidden & owner->me))
+					&& globalContainer->ressourcesTypes.get(mapCase.ressource.type)->clearable
+					&& !(mapCase.forbidden & owner->me))
 				{
 					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber, gid);
 					previousClearingAreaX = (posX+tdx)  & map->wMask;

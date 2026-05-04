@@ -756,29 +756,13 @@ void GlobalContainer::load(void)
 	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
 	// load default unit types
 	Race::loadDefault();
-	// load resources types
-	ressourcesTypes.load("data/ressources.txt"); ///TODO: coding in english or french? english is resources, french is ressources
+	// Resource types are now a compile-time const table (see
+	// src/game/entities/resources.cpp); nothing to load here.
 
 #ifndef YOG_SERVER_ONLY
 	loadClient();
 #endif  // !YOG_SERVER_ONLY
 }
-
-
-#ifndef YOG_SERVER_ONLY
-/**
- * supposed to return the checksum of all config files, but nobody
- * got around to adding the unit configs to the program. Feel free to do
- * that, thanks in advanced.
- *
- * @return the checksum of all config files
- */
-Uint32 GlobalContainer::getConfigCheckSum()
-{
-	// TODO: add the units config
-	return buildingsTypes.checkSum() + ressourcesTypes.checkSum() + Race::checkSumDefault();
-}
-#endif  // !YOG_SERVER_ONLY
 
 /**
  * returns the hostname of the computer

@@ -33,6 +33,7 @@
 #include <sstream>
 #include <cmath>
 
+#include <BinaryStream.h>
 #include <FileManager.h>
 #include <GraphicContext.h>
 

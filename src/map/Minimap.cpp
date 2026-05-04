@@ -21,8 +21,7 @@
 
 #include "Minimap.h"
 #include "Ressource.h"
-#include "RessourceType.h"
-#include "RessourcesTypes.h"
+#include "ressource_type.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include <iostream>
@@ -419,7 +418,7 @@ void Minimap::computeColors(int row, int localTeam)
 			}
 			for (int i=0; i<MAX_RESSOURCES; i++)
 			{
-				RessourceType *rt = globalContainer->ressourcesTypes.get(i);
+				const RessourceType *rt = globalContainer->ressourcesTypes.get(i);
 				lr += pcol[i+3]*(rt->minimapR);
 				lg += pcol[i+3]*(rt->minimapG);
 				lb += pcol[i+3]*(rt->minimapB);

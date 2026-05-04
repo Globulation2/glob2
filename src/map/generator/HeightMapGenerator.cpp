@@ -25,6 +25,9 @@
 #include "GlobalContainer.h"
 #include "HeightMapGenerator.h"
 #include <math.h>
+#include <BinaryStream.h>
+#include <FileManager.h>
+#include <Toolkit.h>
 #include "PerlinNoise.h"
 
 /// these faders are factors to be applieable to heightfields. they map (0,0)-(w,h) to [0..1]

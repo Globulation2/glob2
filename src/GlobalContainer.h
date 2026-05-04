@@ -22,7 +22,7 @@
 #include <vector>
 
 #include "BuildingsTypes.h"
-#include "RessourcesTypes.h"
+#include "ressource_type.h"
 #include "Settings.h"
 
 namespace GAGCore
@@ -160,10 +160,6 @@ public:
 	DatasetWriter *datasetWriter; //!< Writes (state, action) records for AI training (GLOB2_DATASET_PATH)
 #endif  // !YOG_SERVER_ONLY
 
-public:
-#ifndef YOG_SERVER_ONLY
-	Uint32 getConfigCheckSum();
-#endif  // !YOG_SERVER_ONLY
 };
 
 extern GlobalContainer *globalContainer;
