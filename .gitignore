@@ -4,7 +4,7 @@ libgag.a
 libusl.a
 src/glob2
 test/TestsRunner
-test/testResults.xml
+testResults.xml
 .sconf_temp
 .sconsign.dblite
 *.o
