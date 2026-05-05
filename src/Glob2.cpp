@@ -140,6 +140,14 @@ int Glob2::runTestGames()
 		const char* envSeed = getenv("GLOB2_TEST_SEED");
 		long t = envSeed ? atol(envSeed) : time(NULL);
 		setSyncRandSeed(t);
+		// Capture the seed so createRandomGame can mirror it into
+		// GameHeader::seed — otherwise a saved .game file (from
+		// --save-game-as or GLOB2_DUMP_GAME) would carry the wall-clock
+		// time(NULL) that GameHeader's default ctor wrote, not the seed
+		// that actually drove this run, and reloading via --nox would
+		// diverge from the original.
+		globalContainer->testGamesSeed = (Uint32)t;
+		globalContainer->testGamesSeedSet = true;
 		std::cout<<"Random Seed initial: "<<t<<std::endl;
 		Engine engine;
 		engine.createRandomGame();

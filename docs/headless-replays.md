@@ -73,6 +73,18 @@ pipeline to produce curated datasets (exact counts per matchup).
   validate the matchup before launching).
 - `--matchup` is mutually exclusive with `--ai-types` (pool vs. exact).
 
+### `--save-game-as <path>`
+
+Writes the fully-initialised tick-0 game state to `<path>` as a `.game` file before running. Lets a `-test-games-nox` scenario be replayed deterministically later via `--nox <path>`. Pair with `GLOB2_TEST_SEED` for full reproducibility — the seed is mirrored into the saved `GameHeader` so the reloaded run matches the original.
+
+```bash
+GLOB2_TEST_SEED=42 ./glob2 -test-games-nox 1 \
+  --map BigArena --matchup reachtoinfinity,nicowar \
+  --save-game-as games/cross-replay.game
+```
+
+`<path>` is resolved by the file manager (relative paths land under `~/.glob2/`). Requires `-test-games` or `-test-games-nox`; the save fires at random-game creation time. Without `GLOB2_TEST_SEED`, the wall-clock seed at run-start is captured and the .game file is still reproducible — just not predictable across separate invocations.
+
 **Local-player quirk:** the engine still creates a passive `P_LOCAL`
 player on team 0 in `-test-games-nox` mode (the headless engine
 expects one). The `GLOB2_GAME_END players=...` summary will show
@@ -159,10 +171,7 @@ GLOB2_GAME_END ticks=2483 winner_team=1 seed=1777219846 map="Playground" orders=
 The format is intended for grep/regex consumption — fields are
 space-separated key=value, with `map` quoted.
 
-For cross-codebase testing, copy replays to the Rust test fixture directory:
-```bash
-cp ~/.glob2/replays/last_game.replay ../glob2-rust/test_data/replays/
-```
+For cross-codebase testing, the canonical baselines live in `glob2/tests/baselines/`. See [`docs/replay-verification.md`](../../docs/replay-verification.md) at the workspace root for the full verification workflows and the regeneration procedure.
 
 The `ReplayWriter` records live during gameplay:
 - At game start: writes the full game state header via `GameGUI::save()`, then replay version (`VERSION_MAJOR`, `VERSION_MINOR`)

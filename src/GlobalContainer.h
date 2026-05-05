@@ -120,7 +120,25 @@ public:
 	//! getNumberOfTeams() at game creation time. Requires testGamesMap to be
 	//! set (else we'd have no team count to validate against).
 	std::vector<int> testGamesMatchup;
-	
+
+	//! Path for --save-game-as: write the fully-initialised tick-0 game state
+	//! to this .game file before running, so the same scenario can later be
+	//! replayed deterministically via --nox. Empty means "do not save". Only
+	//! the -test-games / -test-games-nox flow honors this (the save happens
+	//! inside createRandomGame). Pair with GLOB2_TEST_SEED for full
+	//! reproducibility — the seed mirrored into GameHeader::seed is the
+	//! one captured in testGamesSeed below.
+	std::string testGamesSaveGameAs;
+
+	//! Seed actually passed to setSyncRandSeed() at the top of runTestGames().
+	//! createRandomGame() mirrors this into GameHeader::seed so the saved
+	//! .game file (via --save-game-as or GLOB2_DUMP_GAME) loads with the same
+	//! syncRand state. Without this mirror, GameHeader's constructor default
+	//! (time(NULL) at header-construction time) wins and the loaded game
+	//! diverges from the original -test-games-nox run.
+	Uint32 testGamesSeed;
+	bool testGamesSeedSet;
+
 	bool runTestMapGeneration; //! runs test map generation
 	
 	bool hostServer;

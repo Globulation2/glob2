@@ -223,6 +223,18 @@ void Engine::createRandomGame()
 	}
 
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
+	// Mirror the syncRand seed (captured at runTestGames entry) into the
+	// GameHeader so a saved .game file reloads with the same syncRand
+	// state. GameHeader's ctor defaults seed to time(NULL) at header-
+	// construction time, which won't match GLOB2_TEST_SEED (and even
+	// without that env var, can drift seconds away from the time(NULL)
+	// runTestGames already used for setSyncRandSeed). Without this mirror,
+	// --save-game-as / GLOB2_DUMP_GAME produce .game files that diverge
+	// from the original run when reloaded via --nox.
+	if (globalContainer->testGamesSeedSet)
+	{
+		game.setRandomSeed(globalContainer->testGamesSeed);
+	}
 	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)
 	{
@@ -234,12 +246,18 @@ void Engine::createRandomGame()
 
 	initGame(map, game);
 
-	// GLOB2_DUMP_GAME captures the fully-initialised tick-0 game state to a
-	// .game file so the same scenario can later be replayed deterministically
-	// via --nox <file>. Uses gui.save() for the complete game-state format
-	// (matching the GUI Custom-Game save path), not just the headers — partial
-	// dumps fail to load because loadFromHeaders re-reads numberOfTeams from
-	// the saved state. Used to bootstrap a checked-in regression baseline.
+	// Capture the fully-initialised tick-0 game state to a .game file so
+	// the same scenario can later be replayed deterministically via --nox.
+	// Uses gui.save() for the complete game-state format (matching the GUI
+	// Custom-Game save path), not just the headers — partial dumps fail to
+	// load because loadFromHeaders re-reads numberOfTeams from the saved
+	// state. Used to bootstrap checked-in regression baselines.
+	//
+	// Two entry points: GLOB2_DUMP_GAME (legacy env var, used by tooling)
+	// and --save-game-as (CLI flag). They are independent — if both are
+	// set, both files are written. Pair either with GLOB2_TEST_SEED for a
+	// fully reproducible scenario; the seed is mirrored into GameHeader
+	// above before save.
 	const char* dumpPath = getenv("GLOB2_DUMP_GAME");
 	if (dumpPath)
 	{
@@ -253,6 +271,20 @@ void Engine::createRandomGame()
 		gui.save(dumpStream, map.getMapName());
 		delete dumpStream;
 		std::cout << "GLOB2_DUMP_GAME: wrote " << dumpPath << std::endl;
+	}
+	if (!globalContainer->testGamesSaveGameAs.empty())
+	{
+		const std::string& path = globalContainer->testGamesSaveGameAs;
+		OutputStream* dumpStream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(path));
+		if (dumpStream->isEndOfStream())
+		{
+			std::cerr << "--save-game-as: cannot open " << path << " for writing" << std::endl;
+			delete dumpStream;
+			exit(1);
+		}
+		gui.save(dumpStream, map.getMapName());
+		delete dumpStream;
+		std::cout << "--save-game-as: wrote " << path << std::endl;
 	}
 }
 

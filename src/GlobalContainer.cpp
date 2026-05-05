@@ -91,6 +91,9 @@ GlobalContainer::GlobalContainer(void)
 	testGamesAIPool.clear();
 	testGamesMap.clear();
 	testGamesMatchup.clear();
+	testGamesSaveGameAs.clear();
+	testGamesSeed=0;
+	testGamesSeedSet=false;
 	runTestMapGeneration=false;
 	automaticEndingGame=false;
 	automaticEndingSteps=-1;
@@ -329,6 +332,25 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				exit(0);
 			}
 		}
+		else if (strcmp(argv[i], "--save-game-as")==0)
+		{
+			// Write the fully-initialised tick-0 game state to a .game file
+			// before running. Lets a -test-games-nox scenario be replayed
+			// deterministically via --nox <path>. Pair with GLOB2_TEST_SEED
+			// for a fully reproducible scenario: the same env var seeds
+			// syncRand AND gets mirrored into GameHeader::seed at save time
+			// (see Engine::createRandomGame in engine_init.cpp).
+			if (i + 1 < argc)
+			{
+				testGamesSaveGameAs = argv[i + 1];
+				i++;
+			}
+			else
+			{
+				printf("--save-game-as <path> requires an argument\n");
+				exit(0);
+			}
+		}
 		else if (strcmp(argv[i], "-vs")==0)
 		{
 			if (i+1 < argc)
@@ -550,6 +572,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("--map <name>\tpin the map for -test-games* (resolved as maps/<name>.map)\n");
 			printf("--matchup <list>\tcomma-separated per-team AI names; matchup[k] plays team k\n");
 			printf("\t\trequires --map; mutually exclusive with --ai-types\n");
+			printf("--save-game-as <path>\twrite the tick-0 .game file before running -test-games*\n");
+			printf("\t\t(pair with GLOB2_TEST_SEED for a reproducible scenario)\n");
 			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
 			printf("-vs <name>\tsave a videoshot as name\n");
@@ -574,6 +598,13 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		std::cerr << "--matchup and --ai-types are mutually exclusive: "
 			<< "--matchup pins each team's AI; --ai-types randomizes within "
 			<< "a pool. Use one or the other." << std::endl;
+		exit(1);
+	}
+	if (!testGamesSaveGameAs.empty() && !runTestGames)
+	{
+		std::cerr << "--save-game-as requires -test-games or -test-games-nox; "
+			<< "the save happens at random-game creation time, which only "
+			<< "runs in those modes" << std::endl;
 		exit(1);
 	}
 }
