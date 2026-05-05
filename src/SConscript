@@ -64,7 +64,6 @@ engine.cpp
 engine_init.cpp
 engine_loaders.cpp
 engine_run.cpp
-EntityType.cpp
 Fatal.cpp
 FertilityCalculatorDialog.cpp
 FertilityCalculatorThread.cpp
@@ -348,7 +347,6 @@ yog/YOGPlayerSessionInfo.cpp
 yog/YOGPlayerStoredInfo.cpp
 building/BuildingUtils.cpp
 Bullet.cpp
-EntityType.cpp
 game/entities/resources.cpp
 Glob2.cpp
 GlobalContainer.cpp
