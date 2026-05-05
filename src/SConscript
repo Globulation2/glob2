@@ -206,6 +206,9 @@ net/NetReteamingInformation.cpp
 net/NetTestSuite.cpp
 NewMapScreen.cpp
 Order.cpp
+order_building.cpp
+order_modify.cpp
+order_misc.cpp
 OverlayAreas.cpp
 PerlinNoise.cpp
 Player.cpp
@@ -336,6 +339,9 @@ net/message/RouterMessages.cpp
 net/NetReteamingInformation.cpp
 net/NetTestSuite.cpp
 Order.cpp
+order_building.cpp
+order_modify.cpp
+order_misc.cpp
 game/entities/race.cpp
 game/entities/unit_type.cpp
 Utilities.cpp
