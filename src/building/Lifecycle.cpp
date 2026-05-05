@@ -19,13 +19,14 @@
 
 #include <list>
 #include <math.h>
+#include <sstream>
 #include <Stream.h>
 #include <stdlib.h>
 #include <algorithm>
 #include <climits>
 
 #include "Building.h"
-#include "BuildingType.h"
+#include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"

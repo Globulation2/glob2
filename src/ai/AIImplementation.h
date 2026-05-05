@@ -25,7 +25,7 @@ AI represents the behaviour of an artificial intelligence player.
 The main method is std::shared_ptr<Order> getOrder() which return the order to be used by the AI's team.
 */
 
-#include "BuildingType.h"
+#include "building_type.h"
 #include <memory>
 
 namespace GAGCore

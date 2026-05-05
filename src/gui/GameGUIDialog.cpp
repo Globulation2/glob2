@@ -18,6 +18,7 @@
 */
 
 #include <string>
+#include <sstream>
 #include "GameGUIDialog.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"

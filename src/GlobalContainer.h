@@ -21,7 +21,7 @@
 
 #include <vector>
 
-#include "BuildingsTypes.h"
+#include "building_type.h"
 #include "ressource_type.h"
 #include "Settings.h"
 

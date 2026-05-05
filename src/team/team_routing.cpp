@@ -19,7 +19,7 @@
 
 #include <math.h>
 
-#include "BuildingType.h"
+#include "building_type.h"
 #include "Game.h"
 #include "LogFileManager.h"
 #include "Map.h"

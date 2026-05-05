@@ -19,6 +19,8 @@
 
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
+#include <Toolkit.h>
+using namespace GAGCore;
 
 Glob2Style::Glob2Style()
 {

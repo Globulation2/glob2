@@ -40,10 +40,11 @@ building/Update.cpp
 building/Step.cpp
 building/TypeSteps.cpp
 building/Misc.cpp
-building/BuildingsTypes.cpp
+game/entities/buildings.cpp
+game/entities/buildings_part_a.cpp
+game/entities/buildings_part_b.cpp
 ChecksumSidecar.cpp
 DatasetWriter.cpp
-building/BuildingType.cpp
 building/BuildingUtils.cpp
 Bullet.cpp
 Campaign.cpp

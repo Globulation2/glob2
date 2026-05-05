@@ -23,7 +23,7 @@
 
 #include "Building.h"
 #include "Map.h"
-#include "BuildingType.h"
+#include "building_type.h"
 
 ///This class is a generic gradient. Gradients are used for pathfinding, they are otherwise known as
 ///potential fields (pathfinding), or wavefronts (pathfinding). GradientMethod is a class that

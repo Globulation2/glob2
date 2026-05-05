@@ -20,7 +20,7 @@
 */
 
 #include "GameGUIDefaultAssignManager.h"
-#include "BuildingsTypes.h"
+#include "building_type.h"
 #include "IntBuildingType.h"
 #include "GlobalContainer.h"
 #include "Stream.h"

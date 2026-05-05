@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "BuildingType.h"
+#include "building_type.h"
 #include "AIImplementation.h"
 
 class Game;

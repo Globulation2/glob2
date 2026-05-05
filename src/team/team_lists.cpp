@@ -17,7 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "BuildingType.h"
+#include "building_type.h"
 #include "Game.h"
 #include "Map.h"
 #include "team.h"

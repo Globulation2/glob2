@@ -28,6 +28,7 @@ using namespace GAGGUI;
 #include <StringTable.h>
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <FileManager.h>
 using namespace GAGCore;
 // using namespace std;
 

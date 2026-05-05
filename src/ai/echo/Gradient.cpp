@@ -23,7 +23,7 @@
 #include <map>
 #include <limits>
 #include <algorithm>
-#include "BuildingsTypes.h"
+#include "building_type.h"
 #include "IntBuildingType.h"
 #include "Game.h"
 #include "GlobalContainer.h"

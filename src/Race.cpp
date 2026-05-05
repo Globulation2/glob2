@@ -26,6 +26,8 @@
 #include <FileManager.h>
 #include <Stream.h>
 #include <TextStream.h>
+#include <Toolkit.h>
+using namespace GAGCore;
 
 #include "GlobalContainer.h"
 #include "Version.h"

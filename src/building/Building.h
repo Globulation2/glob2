@@ -35,7 +35,7 @@ namespace GAGCore
 
 class Unit;
 class Team;
-class BuildingType;
+struct BuildingType;
 class BuildingsTypes;
 class Order;
 

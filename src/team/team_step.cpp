@@ -19,7 +19,7 @@
 
 #include <algorithm>
 
-#include "BuildingType.h"
+#include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"

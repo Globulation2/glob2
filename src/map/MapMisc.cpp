@@ -26,6 +26,8 @@
 #include "Unit.h"
 #include "MapInternal.h"
 
+#include <FileManager.h>
+
 #include <algorithm>
 #include <valarray>
 #include <Stream.h>

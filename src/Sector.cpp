@@ -21,7 +21,7 @@
 #include "Game.h"
 #include "Sector.h"
 #include "Unit.h"
-#include "BuildingType.h"
+#include "building_type.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 #include <Stream.h>

@@ -18,6 +18,7 @@
 */
 
 #include <Stream.h>
+#include <sstream>
 
 #include "AINumbi.h"
 #include "Game.h"

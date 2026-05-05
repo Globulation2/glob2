@@ -651,8 +651,9 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(15);
 	}
 	
-	// load buildings types
-	buildingsTypes.load();
+	// initialize building types: resolve sprite pointers and prev/next-level
+	// links for the static table baked into game/entities/buildings*.cpp.
+	buildingsTypes.init();
 	IntBuildingType::init();
 	
 	if (!runNoX)

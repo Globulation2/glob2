@@ -25,6 +25,7 @@
 #include <GUITextInput.h>
 #include <GUIButton.h>
 #include <StringTable.h>
+#include <Toolkit.h>
 
 UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	OverlayScreen(globalContainer->gfx, 300, 400)

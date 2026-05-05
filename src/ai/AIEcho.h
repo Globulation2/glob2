@@ -21,7 +21,7 @@
 
 #include "Map.h"
 #include "AIImplementation.h"
-#include "BuildingType.h"
+#include "building_type.h"
 #include "Player.h"
 #include "TeamStat.h"
 #include "Order.h"
