@@ -34,7 +34,7 @@
 #include <Stream.h>
 #include "UnitEditorScreen.h"
 #include "Unit.h"
-#include "UnitType.h"
+#include "unit_type.h"
 #include "Utilities.h"
 #include "FertilityCalculatorDialog.h"
 #include "GUIMessageBox.h"

@@ -18,7 +18,7 @@
 */
 
 #include "Unit.h"
-#include "Race.h"
+#include "race.h"
 #include "team.h"
 #include "Map.h"
 #include "Game.h"

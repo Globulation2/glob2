@@ -21,7 +21,7 @@
 
 #include "BaseTeam.h"
 #include "Marshaling.h"
-#include "Race.h"
+#include "race.h"
 #include "Stream.h"
 
 using namespace GAGCore;

@@ -38,7 +38,7 @@
 #include "MapEditKeyActions.h"
 #include "NonANSICStdWrapper.h"
 #include "Player.h"
-#include "Race.h"
+#include "race.h"
 #include "SoundMixer.h"
 #include "UnitSkin.h"
 #include "VoiceRecorder.h"

@@ -210,7 +210,7 @@ Order.cpp
 OverlayAreas.cpp
 PerlinNoise.cpp
 Player.cpp
-Race.cpp
+game/entities/race.cpp
 ReplayReader.cpp
 ReplayWriter.cpp
 Ressource.cpp
@@ -240,7 +240,7 @@ unit/UnitMovement.cpp
 unit/UnitSerialization.cpp
 unit/UnitSkin.cpp
 unit/UnitStats.cpp
-unit/UnitType.cpp
+game/entities/unit_type.cpp
 unit/UnitUtils.cpp
 Utilities.cpp
 VoiceRecorder.cpp
@@ -337,8 +337,8 @@ net/message/RouterMessages.cpp
 net/NetReteamingInformation.cpp
 net/NetTestSuite.cpp
 Order.cpp
-Race.cpp
-unit/UnitType.cpp
+game/entities/race.cpp
+game/entities/unit_type.cpp
 Utilities.cpp
 yog/YOGConsts.cpp
 yog/YOGGameInfo.cpp

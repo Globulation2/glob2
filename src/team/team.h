@@ -25,7 +25,7 @@
 #include <algorithm>
 #include <queue>
 
-#include "Race.h"
+#include "race.h"
 #include "TeamStat.h"
 #include "GameEvent.h"
 

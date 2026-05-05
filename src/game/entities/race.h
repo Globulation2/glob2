@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "UnitType.h"
+#include "unit_type.h"
 
 namespace GAGCore
 {
@@ -36,15 +36,15 @@ public:
 public:
 	Race();
 	virtual ~Race();
-	
+
 	void load();
+	// Installs the compile-time default unit-type table from race.cpp into
+	// Race::unitTypes (and seeds Race::hungryness). Replaces the previous
+	// runtime parser of data/units.txt.
 	static void loadDefault();
-	static Uint32 checkSumDefault();
-	
+
 	UnitType *getUnitType(int type, int level);
-	
+
 	void save(GAGCore::OutputStream *stream);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
-	static Uint32 checkSum(void);
 };
-
