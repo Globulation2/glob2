@@ -83,7 +83,7 @@ GLOB2_TEST_SEED=42 ./glob2 -test-games-nox 1 \
   --save-game-as games/cross-replay.game
 ```
 
-`<path>` is resolved by the file manager (relative paths land under `~/.glob2/`). Requires `-test-games` or `-test-games-nox`; the save fires at random-game creation time. Without `GLOB2_TEST_SEED`, the wall-clock seed at run-start is captured and the .game file is still reproducible — just not predictable across separate invocations.
+`<path>` is resolved by the file manager: relative paths land under `~/.glob2/` (so `--save-game-as games/foo.game` writes to `~/.glob2/games/foo.game`); absolute paths (`/tmp/foo.game`, `C:\foo.game`) are used as-is. Requires `-test-games` or `-test-games-nox`; the save fires at random-game creation time. Without `GLOB2_TEST_SEED`, the wall-clock seed at run-start is captured and the .game file is still reproducible — just not predictable across separate invocations.
 
 **Local-player quirk:** the engine still creates a passive `P_LOCAL`
 player on team 0 in `-test-games-nox` mode (the headless engine
