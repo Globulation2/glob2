@@ -4,11 +4,19 @@
 #include "MultiplayerGame.h"
 #include <iostream>
 #include "engine.h"
+#include "Player.h"
 #include "YOGClientFileAssembler.h"
 #include "FormatableString.h"
 #include "Toolkit.h"
 #include "StringTable.h"
-#include "NetMessage.h"
+#include "file_transfer_messages.h"
+#include "game_create_messages.h"
+#include "game_header_messages.h"
+#include "game_join_messages.h"
+#include "game_launch_messages.h"
+#include "game_team_messages.h"
+#include "order_messages.h"
+#include "router_messages.h"
 #include "YOGClientGameListManager.h"
 
 using std::shared_ptr;

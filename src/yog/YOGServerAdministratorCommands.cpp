@@ -4,7 +4,7 @@
 #include "YOGServerAdministratorCommands.h"
 #include "YOGServerAdministrator.h"
 #include "YOGServer.h"
-#include "NetMessage.h"
+#include "lobby_messages.h"
 #include "YOGServerPlayer.h"
 #include <string>
 #include <stdexcept>

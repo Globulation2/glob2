@@ -10,13 +10,14 @@
 #include "engine.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "NetMessage.h"
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "SDLCompat.h"
 
 #include <iostream>
+
+using std::shared_ptr;
 
 
 // Body of the outer "play one game and possibly load another" loop in run().

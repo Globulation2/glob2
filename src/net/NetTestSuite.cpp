@@ -8,6 +8,13 @@
 #include "BinaryStream.h"
 #include "NetReteamingInformation.h"
 
+#include "file_transfer_messages.h"
+#include "game_create_messages.h"
+#include "game_header_messages.h"
+#include "game_join_messages.h"
+#include "game_launch_messages.h"
+#include "lobby_messages.h"
+
 
 using namespace GAGCore;
 using std::shared_ptr;

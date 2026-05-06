@@ -2,7 +2,11 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include <algorithm>
-#include "NetMessage.h"
+#include "game_header_messages.h"
+#include "game_join_messages.h"
+#include "game_launch_messages.h"
+#include "game_team_messages.h"
+#include "order_messages.h"
 #include "YOGServerChatChannel.h"
 #include "YOGServerGame.h"
 #include "YOGServer.h"

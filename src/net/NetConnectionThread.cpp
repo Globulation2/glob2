@@ -4,7 +4,7 @@
 #include "NetConnectionThread.h"
 #include "StreamBackend.h"
 #include "BinaryStream.h"
-#include "NetMessage.h"
+#include "net_message.h"
 #include "SDLCompat.h"
 #include <string>
 
@@ -222,7 +222,7 @@ void NetConnectionThread::operator()()
 							BinaryInputStream* bis = new BinaryInputStream(msb);
 
 							//Now interpret the message from the data, and add it to the queue
-							shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
+							std::shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
 							std::shared_ptr<NTRecievedMessage> recieved(new NTRecievedMessage(message));
 							sendToMainThread(recieved);
 

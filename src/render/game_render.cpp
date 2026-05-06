@@ -42,8 +42,6 @@
 #include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 
-#include "NetMessage.h"
-
 #include "ReplayWriter.h"
 
 #include "game_render_internal.h"

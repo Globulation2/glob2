@@ -3,7 +3,6 @@
 
 #include <string>
 #include "FormatableString.h"
-#include "NetMessage.h"
 #include "StringTable.h"
 #include "Toolkit.h"
 #include "YOGClientBlockedList.h"

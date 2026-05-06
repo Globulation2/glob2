@@ -2,7 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "engine.h"
-#include "NetMessage.h"
+#include "map_upload_messages.h"
 #include "YOGClientFileAssembler.h"
 #include "YOGClient.h"
 #include "YOGClientMapUploader.h"

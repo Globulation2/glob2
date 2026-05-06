@@ -3,7 +3,7 @@
 
 #include "BinaryStream.h"
 #include "FileManager.h"
-#include "NetMessage.h"
+#include "file_transfer_messages.h"
 #include "StreamBackend.h"
 #include "Stream.h"
 #include "Toolkit.h"

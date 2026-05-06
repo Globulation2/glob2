@@ -13,7 +13,6 @@
 #include <GUITextArea.h>
 #include <GUIText.h>
 #include <GUITextInput.h>
-#include "NetMessage.h"
 #include "StringTable.h"
 #include "Toolkit.h"
 #include "TextSort.h"

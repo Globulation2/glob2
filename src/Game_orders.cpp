@@ -44,8 +44,6 @@
 #include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 
-#include "NetMessage.h"
-
 #include "ReplayWriter.h"
 
 void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)

@@ -1,19 +1,27 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#include "NetMessage.h"
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-#include "Version.h"
-#include "BinaryStream.h"
+#include "net_message.h"
 
-using namespace GAGCore;
+#include "auth_messages.h"
+#include "file_transfer_messages.h"
+#include "game_create_messages.h"
+#include "game_header_messages.h"
+#include "game_join_messages.h"
+#include "game_launch_messages.h"
+#include "game_team_messages.h"
+#include "lobby_messages.h"
+#include "map_database_messages.h"
+#include "map_upload_messages.h"
+#include "order_messages.h"
+#include "registration_messages.h"
+#include "router_admin_messages.h"
+#include "router_messages.h"
 
-shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
+std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 {
 	Uint8 netType = stream->readUint8("messageType");
-	shared_ptr<NetMessage> message;
+	std::shared_ptr<NetMessage> message;
 	switch(netType)
 	{
 		case MNetSendOrder:
@@ -202,7 +210,6 @@ shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stream)
 		case MNetSubmitRatingOnMap:
 		message.reset(new NetSubmitRatingOnMap);
 		break;
-		///append_create_point
 	}
 	message->decodeData(stream);
 	return message;

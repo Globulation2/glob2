@@ -17,7 +17,6 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "GUIMessageBox.h"
-#include "NetMessage.h"
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"

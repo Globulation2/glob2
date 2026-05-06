@@ -43,8 +43,6 @@
 #include "UnitSkin.h"
 #include "FertilityCalculatorDialog.h"
 
-#include "NetMessage.h"
-
 #include "ReplayWriter.h"
 
 // Unit rendering. Split from Game_render.cpp.

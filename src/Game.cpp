@@ -41,8 +41,6 @@
 #include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 
-#include "NetMessage.h"
-
 #include "ReplayWriter.h"
 
 #define BULLET_IMGID 0

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#include "NetMessage.h"
+#include "registration_messages.h"
 #include <algorithm>
 #include <iostream>
 #include <sstream>

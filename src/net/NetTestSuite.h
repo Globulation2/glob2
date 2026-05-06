@@ -3,7 +3,9 @@
 
 #pragma once
 
-#include "NetMessage.h"
+#include "auth_messages.h"
+#include "order_messages.h"
+#include "registration_messages.h"
 #include "NetListener.h"
 #include "NetConnection.h"
 #include "YOGGameInfo.h"
@@ -26,7 +28,7 @@ public:
 
 	///This generic test tests the serialization of a provided object
 	///by serializing it, deserializing it, and testing for equality
-	template<typename t> bool testSerialize(shared_ptr<t> message);
+	template<typename t> bool testSerialize(std::shared_ptr<t> message);
 
 	///Tests that the initial states of two messages are equal
 	template<typename t> bool testInitial();

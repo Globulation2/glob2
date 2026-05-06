@@ -4,7 +4,7 @@
 #include "YOGServerChatChannel.h"
 #include "YOGServerPlayer.h"
 #include "YOGMessage.h"
-#include "NetMessage.h"
+#include "lobby_messages.h"
 
 
 YOGServerChatChannel::YOGServerChatChannel(Uint32 channel)

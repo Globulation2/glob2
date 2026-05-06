@@ -42,8 +42,6 @@
 #include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 
-#include "NetMessage.h"
-
 #include "ReplayWriter.h"
 
 // Building rendering. Split from Game_render.cpp.

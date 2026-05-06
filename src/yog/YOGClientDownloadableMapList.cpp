@@ -3,7 +3,7 @@
 
 #include "YOGClientDownloadableMapList.h"
 #include "YOGClient.h"
-#include "NetMessage.h"
+#include "map_database_messages.h"
 
 using std::static_pointer_cast;
 

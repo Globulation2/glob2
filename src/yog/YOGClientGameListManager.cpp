@@ -3,7 +3,7 @@
 
 #include "YOGClientGameListManager.h"
 
-#include "NetMessage.h"
+#include "lobby_messages.h"
 #include "YOGClientGameListListener.h"
 
 using std::static_pointer_cast;
@@ -23,7 +23,7 @@ void YOGClientGameListManager::recieveMessage(std::shared_ptr<NetMessage> messag
 	///This recieves a game list update message
 	if(type==MNetUpdateGameList)
 	{
-		shared_ptr<NetUpdateGameList> info = static_pointer_cast<NetUpdateGameList>(message);
+		std::shared_ptr<NetUpdateGameList> info = static_pointer_cast<NetUpdateGameList>(message);
 		info->applyDifferences(games);
 		sendToListeners();
 	}

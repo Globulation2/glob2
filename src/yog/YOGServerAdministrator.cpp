@@ -6,7 +6,7 @@
 #include "YOGServer.h"
 #include "YOGServerPlayer.h"
 #include "YOGMessage.h"
-#include "NetMessage.h"
+#include "lobby_messages.h"
 
 YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 	: server(server)

@@ -3,7 +3,7 @@
 
 #include "YOGClientMapDownloader.h"
 #include "YOGClient.h"
-#include "NetMessage.h"
+#include "file_transfer_messages.h"
 #include "YOGClientFileAssembler.h"
 
 

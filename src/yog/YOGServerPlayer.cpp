@@ -1,7 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#include "NetMessage.h"
+#include "auth_messages.h"
+#include "file_transfer_messages.h"
+#include "game_create_messages.h"
+#include "game_header_messages.h"
+#include "game_join_messages.h"
+#include "game_launch_messages.h"
+#include "game_team_messages.h"
+#include "lobby_messages.h"
+#include "map_database_messages.h"
+#include "map_upload_messages.h"
+#include "order_messages.h"
+#include "registration_messages.h"
+#include "router_admin_messages.h"
 #include "YOGServerChatChannel.h"
 #include "YOGServerGame.h"
 #include "YOGServer.h"
@@ -9,6 +21,7 @@
 #include "YOGServerPlayer.h"
 #include "SDLCompat.h"
 
+using std::shared_ptr;
 using std::static_pointer_cast;
 
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
