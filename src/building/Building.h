@@ -391,8 +391,5 @@ public:Sint32 bullets;
 	};
 
 	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
-
-protected:
-	FILE *logFile;
 };
 

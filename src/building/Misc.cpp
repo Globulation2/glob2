@@ -12,7 +12,6 @@
 #include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "team.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -22,17 +21,14 @@
 
 void Building::kill(void)
 {
-	fprintf(logFile, "kill gid=%d buildingState=%d\n", gid, buildingState);
 	if (buildingState==DEAD)
 		return;
 
 
-	fprintf(logFile, " still %zd unitsInside\n", unitsInside.size());
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		//TODO: We should somehow try to save their lives. In training buildings they should just drop out untrained etc.
 		Unit *u=*it;
-		fprintf(logFile, "  guid=%d\n", u->gid);
 		if (u->displacement==Unit::DIS_INSIDE)
 			u->isDead=true;
 
@@ -49,7 +45,6 @@ void Building::kill(void)
 	}
 	unitsInside.clear();
 
-	fprintf(logFile, " still %zd unitsWorking\n", unitsWorking.size());
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);

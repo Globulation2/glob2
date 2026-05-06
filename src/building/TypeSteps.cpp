@@ -12,7 +12,6 @@
 #include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "team.h"
 #include "Unit.h"
 #include "Utilities.h"

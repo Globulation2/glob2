@@ -13,7 +13,6 @@
 #include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "team.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -28,14 +27,11 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 		globalGradient[i]=NULL;
 		localRessources[i]=NULL;
 	}
-	logFile = globalContainer->logFileManager->getFile("Building.log");
 	load(stream, types, owner, versionMinor);
 }
 
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
-	logFile = globalContainer->logFileManager->getFile("Building.log");
-
 	// identity
 	this->gid=gid;
 	owner=team;
@@ -405,14 +401,12 @@ void Building::save(GAGCore::OutputStream *stream)
 void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	stream->readEnterSection("Building");
-	fprintf(logFile, "loadCrossRef (%d)\n", gid);
 
 	// units
 	maxUnitInside = stream->readSint32("maxUnitInside");
 	assert(maxUnitInside < 65536);
 
 	unsigned nbWorking = stream->readUint32("nbWorking");
-	fprintf(logFile, " nbWorking=%d\n", nbWorking);
 	unitsWorking.clear();
 	for (unsigned i=0; i<nbWorking; i++)
 	{
@@ -452,7 +446,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	}
 
 	unsigned nbInside = stream->readUint32("nbInside");
-	fprintf(logFile, " nbInside=%d\n", nbInside);
 	unitsInside.clear();
 	for (unsigned i=0; i<nbInside; i++)
 	{
@@ -466,7 +459,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	if (versionMinor>=80)
 	{
 		unsigned nbHarvesting = stream->readUint32("nbHarvesting");
-		fprintf(logFile, " nbHarvesting=%d\n", nbHarvesting);
 		unitsHarvesting.clear();
 		for (unsigned i=0; i<nbHarvesting; i++)
 		{
@@ -486,7 +478,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	unsigned i;
 
 	stream->writeEnterSection("Building");
-	fprintf(logFile, "saveCrossRef (%d)\n", gid);
 
 	// units
 	stream->writeSint32(maxUnitInside, "maxUnitInside");
@@ -495,7 +486,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	//steph and nuage suggested to store and update size in a variable
 	//what is faster but also more error prone.
 	stream->writeUint32(unitsWorking.size(), "nbWorking");
-	fprintf(logFile, " nbWorking=%zd\n", unitsWorking.size());
 	i = 0;
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
@@ -523,7 +513,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 
 
 	stream->writeUint32(unitsInside.size(), "nbInside");
-	fprintf(logFile, " nbInside=%zd\n", unitsInside.size());
 	i = 0;
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
@@ -535,7 +524,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	}
 	
 	stream->writeUint32(unitsHarvesting.size(), "nbHarvesting");
-	fprintf(logFile, " nbHarvesting=%zd\n", unitsHarvesting.size());
 	i = 0;
 	for (std::list<Unit *>::iterator  it=unitsHarvesting.begin(); it!=unitsHarvesting.end(); ++it)
 	{

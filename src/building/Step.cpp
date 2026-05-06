@@ -12,7 +12,6 @@
 #include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "team.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -116,7 +115,6 @@ bool Building::subscribeToBringRessourcesStep()
 			(unit->level[SWIM]>0?-200:0);//swimmer's penalty to keep them free for swimmer tasks
 			//std::cout << "d" << dist << " dr" << distUnitRessource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << unit->level[WALK] << " ha" << unit->level[HARVEST] << " va" << value << std::endl << std::flush;
 			unit->destinationPurpose=(rightRes>0?r:nr);
-			fprintf(logFile, "[%d] bdp1 destinationPurpose=%d\n", unit->gid, unit->destinationPurpose);
 			if (value>maxValue)
 			{
 				maxValue=value;
