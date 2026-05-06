@@ -4,7 +4,6 @@
 #include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Marshaling.h"
 #include "team.h"
 #include "Unit.h"

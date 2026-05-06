@@ -196,9 +196,6 @@ public:
 	//! the stat for this team. It is computed every step, so it is always updated.
 	// TeamStat latestStat; this has been moved to *stats.getLatestStat();
 	TeamStats stats;
-
-protected:
-	FILE *logFile;
 };
 
 

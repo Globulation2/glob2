@@ -5,7 +5,6 @@
 
 #include "building_type.h"
 #include "Game.h"
-#include "LogFileManager.h"
 #include "Map.h"
 #include "team.h"
 #include "Unit.h"
@@ -229,8 +228,6 @@ Building *Team::findBestUpgrade(Unit *unit)
 					if (newScore<score)
 					{
 						unit->destinationPurpose=(Sint32)ability;
-						//fprintf(logFile, "[%d] score=%d, newScore=%d\n", unit->gid, score, newScore);
-						fprintf(logFile, "[%d] tdp6 destinationPurpose=%d\n", unit->gid, unit->destinationPurpose);
 						choosen=b;
 						score=newScore;
 					}

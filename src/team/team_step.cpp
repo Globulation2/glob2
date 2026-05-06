@@ -6,7 +6,6 @@
 #include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Map.h"
 #include "team.h"
 #include "Unit.h"
@@ -137,9 +136,6 @@ void Team::syncStep(void)
 			u->syncStep();
 			if (u->isDead)
 			{
-				fprintf(logFile, "unit guid=%d deleted\n", u->gid);
-				if (u->attachedBuilding)
-					fprintf(logFile, " attachedBuilding->bgid=%d\n", u->attachedBuilding->gid);
 				if(game->selectedUnit == u)
 					game->selectedUnit = NULL;
 				delete u;
@@ -184,8 +180,6 @@ void Team::syncStep(void)
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
 	{
 		Building *building=*it;
-		fprintf(logFile, "building guid=%d deleted\n", building->gid);
-		fflush(logFile);
 
 		removeFromAbilitiesLists(building);
 
@@ -247,12 +241,6 @@ void Team::syncStep(void)
 	if (isAlive && isDying)
 	{
 		isAlive=false;
-		fprintf(logFile, "Team %d is dead:\n", teamNumber);
-		fprintf(logFile, " isEnoughFoodInSwarm=%d\n", isEnoughFoodInSwarm);
-		fprintf(logFile, " nbUsefullUnitsAlone=%d\n", nbUsefullUnitsAlone);
-		fprintf(logFile, " nbUsefullUnits=%d\n", nbUsefullUnits);
-		fprintf(logFile, "  canFeedUnit.size()=%zd\n", canFeedUnit.size());
-		fprintf(logFile, "  canHealUnit.size()=%zd\n", canHealUnit.size());
 	}
 
 	stats.step(this);

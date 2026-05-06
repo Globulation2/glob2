@@ -9,7 +9,6 @@
 #include "building_type.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Marshaling.h"
 #include "NetConsts.h"
 #include "team.h"
@@ -21,7 +20,6 @@
 Team::Team(Game *game)
 :BaseTeam()
 {
-	logFile = globalContainer->logFileManager->getFile("Team.log");
 	assert(game);
 	this->game=game;
 	this->map=&game->map;
@@ -34,7 +32,6 @@ Team::Team(Game *game)
 Team::Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 :BaseTeam()
 {
-	logFile = globalContainer->logFileManager->getFile("Team.log");
 	assert(game);
 	this->game=game;
 	this->map=&game->map;
@@ -96,7 +93,6 @@ void Team::setBaseTeam(const BaseTeam *initial)
 	teamNumber=initial->teamNumber;
 	numberOfPlayer=initial->numberOfPlayer;
 	playersMask=initial->playersMask;
-	fprintf(logFile, "Team::setBaseTeam(), teamNumber=%d, playersMask=%d\n", teamNumber, playersMask);
 
 	setCorrectColor(initial->color);
 	setCorrectMasks();
