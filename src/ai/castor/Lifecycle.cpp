@@ -9,7 +9,6 @@
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -114,17 +113,12 @@ void AICastor::firstInit()
 
 AICastor::AICastor(Player *player)
 {
-	logFile=globalContainer->logFileManager->getFile("AICastor.log");
-	//logFile=stdout;
-	
 	firstInit();
 	init(player);
 }
 
 AICastor::AICastor(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
-	logFile=globalContainer->logFileManager->getFile("AICastor.log");
-	
 	firstInit();
 	bool goodLoad=load(stream, player, versionMinor);
 	assert(goodLoad);
@@ -333,7 +327,6 @@ AICastor::~AICastor()
 
 bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
-	fprintf(logFile, "load(%d)\n", versionMinor);
 	init(player);
 	assert(game);
 	
@@ -342,7 +335,6 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	if (aiFileVersion<AI_FILE_MIN_VERSION)
 	{
 		fprintf(stderr, " error: aiFileVersion=%d<AI_FILE_MIN_VERSION=%d\n", aiFileVersion, AI_FILE_MIN_VERSION);
-		fprintf(logFile, " error: aiFileVersion=%d<AI_FILE_MIN_VERSION=%d\n", aiFileVersion, AI_FILE_MIN_VERSION);
 		stream->readLeaveSection();
 		return false;
 	}
@@ -352,7 +344,6 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		timer=0;
 		
 	stream->readLeaveSection();
-	fprintf(logFile, "load success\n");
 	return true;
 }
 

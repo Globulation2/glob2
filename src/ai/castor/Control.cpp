@@ -9,7 +9,6 @@
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -53,18 +52,14 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	
 	starvingWarning=(((unitSumAll>>5)+3)<team->stats.getStarvingUnits());
 	starvingWarningStats[starvingWarning]++;
-	fprintf(logFile,  "starvingWarning=%d\n", starvingWarning);
-	
+
 	bool realFoodLock;
 	
 	if (warriorGoal>1)
 		realFoodLock=((unitSumAll)>=(foodSum*3));
 	else
 		realFoodLock=((unitSumAll)>=(foodSum*2));
-	
-	fprintf(logFile,  "unitSum=[%d, %d, %d], unitSumAll=%d, foodSum=%d, foodWarning=%d, foodLock=%d, realFoodLock=%d, foodLockStats=[%d, %d]\n",
-		unitSum[0], unitSum[1], unitSum[2], unitSumAll, foodSum, foodWarning, foodLock, realFoodLock, foodLockStats[0], foodLockStats[1]);
-	
+
 	if ((timer>2048) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
 	{
 		// Stop making any units!
@@ -119,10 +114,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 		workerGoal=1;
 	else
 		workerGoal=4;
-	
-	fprintf(logFile,  "discovered=%d, seeable=%d, size=%zd, explorerGoal=%d\n",
-		discovered, seeable, size, explorerGoal);
-	
+
 	for (int bi=0; bi<1024; bi++)
 	{
 		Building *b=myBuildings[bi];
@@ -342,14 +334,7 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 	int upgradeAmountGoal=strategy.build[shortTypeNum].baseUpgrade;
 	for (int ai=1; ai<=upgradeLevelGoal; ai++)
 		upgradeAmountGoal+=strategy.build[shortTypeNum].newUpgrade;
-	
-	fprintf(logFile,  "controlUpgrades(%d)\n", bi);
-	fprintf(logFile,  " shortTypeNum=%d\n", shortTypeNum);
-	fprintf(logFile,  " sumOver=%d\n", sumOver);
-	fprintf(logFile,  " upgradeAmountGoal=%d\n", upgradeAmountGoal);
-	//fprintf(logFile,  "controlUpgrades(%d), shortTypeNum=%d, sumOver=%d, upgradeAmountGoal=%d\n",
-	//	bi, shortTypeNum, sumOver, upgradeAmountGoal);
-	
+
 	if (sumOver>=upgradeAmountGoal)
 		return shared_ptr<Order>();
 	
@@ -359,16 +344,13 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 		int buildSum=0;
 		for (int i=0; i<4; i++)
 			buildSum+=team->stats.getWorkersLevel(i);
-		fprintf(logFile,  " buildBase=%d, buildSum=%d\n", buildBase, buildSum);
 		if (buildBase>buildSum)
 			return shared_ptr<Order>();
 		int sumEqual=0;
 		for (int li=level; li<4; li++)
 			sumEqual+=buildingLevels[shortTypeNum][0][li];
-		fprintf(logFile,  " sumEqual=%d\n", sumEqual);
 		if (sumEqual<2)
 		{
-			fprintf(logFile,  " not another building level %d\n", level);
 			return shared_ptr<Order>();
 		}
 	}
@@ -386,7 +368,6 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 		int x, y;
 		team->getEventPos(&x, &y);
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::WAR_FLAG, 0, false);
-		fprintf(logFile, "controlBaseDefense()\n I'm, under attack !\n Defense war flag set at (%d,%d)\n", x, y);
 		onStrike = true;
 		return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum));
 	}
@@ -400,13 +381,11 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	
 	if (!onStrike)
 		return shared_ptr<Order>();
-	fprintf(logFile,  "controlStrikes()\n");
-	
+
 	int warriors=team->stats.getTotalUnits(WARRIOR);
 	int warFlagsGoal=(warriors+16)/32;
 	int warFlagsReal=buildingSum[IntBuildingType::WAR_FLAG][0];
-	fprintf(logFile,  " warriors=%d, warFlagsGoal=%d, warFlagsReal=%d\n", warriors, warFlagsGoal, warFlagsReal);
-	
+
 	if (!strikeTeamSelected)
 	{
 		int bestLevel=-1;
@@ -458,8 +437,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		strikeTeam=bestTeam;
 		strikeTeamSelected=true;
 	}
-	fprintf(logFile,  " strikeTeam=%d\n", strikeTeam);
-	
+
 	// We choose the best buildings to attack:
 	
 	//int w=map->w;
@@ -503,13 +481,10 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	{
 		Sint32 x=bestBuilding->posX+1;
 		Sint32 y=bestBuilding->posY+1;
-		
-		fprintf(logFile,  " target found bestScore=%d, p=(%d, %d)\n", bestScore, x, y);
-		
+
 		if (warFlagsReal<warFlagsGoal)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-			fprintf(logFile,  " create\n");
 			return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1));
 		}
 		else
@@ -530,14 +505,12 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 				}
 			if (maxSqDist>2 && maxFlag!=NULL)
 			{
-				fprintf(logFile,  " move %d\n", maxFlag->gid);
 				return shared_ptr<Order>(new OrderMoveFlag(maxFlag->gid, x, y, true));
 			}
 			for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 				if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG
 					&& (*it)->maxUnitWorking<20)
 				{
-					fprintf(logFile,  " modify %d\n", (*it)->gid);
 					return shared_ptr<Order>(new OrderModifyBuilding((*it)->gid, 20));
 				}
 		}
@@ -547,7 +520,6 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 			if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 			{
-				fprintf(logFile,  " removed %d\n", (*it)->gid);
 				return shared_ptr<Order>(new OrderDelete((*it)->gid));
 			}
 		strikeTeamSelected=false;

@@ -9,7 +9,6 @@
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -51,8 +50,6 @@ bool AICastor::enoughFreeWorkers()
 	}
 	if ((oldEnough[buildsAmount]==2) || (enough!=oldEnough[buildsAmount]))
 	{
-		fprintf(logFile,  "enoughFreeWorkers()=%d, workersBalance=%d, totalWorkers=%d, partFree=%d, buildsAmount=%d, minBalance=%d\n",
-			enough, workersBalance, totalWorkers, partFree, buildsAmount, minBalance);
 		oldEnough[buildsAmount]=enough;
 	}
 	return enough;
@@ -107,8 +104,7 @@ void AICastor::computeNeedSwim()
 			extendedCount++;
 	
 	needSwim=((baseCount<<4)>(7*extendedCount));
-	fprintf(logFile,  "needSwim=%d\n", needSwim);
-	
+
 	computeCanSwim();
 }
 
@@ -153,7 +149,6 @@ void AICastor::computeWarLevel()
 {
 	if (timer>strategy.warTimeTrigger)
 	{
-		fprintf(logFile,  "timer=%d, strategy.warTimeTrigger=%d\n", timer, strategy.warTimeTrigger);
 		warTimeTriggerLevel++;
 		strategy.warTimeTrigger=strategy.warTimeTrigger+((1+strategy.warTimeTrigger)>>1);
 	}
@@ -183,8 +178,6 @@ void AICastor::computeWarLevel()
 	static int oldWarLevel=-1;
 	if (oldWarLevel!=warLevel)
 	{
-		fprintf(logFile,  "warLevel=%d, warTimeTriggerLevelUse=%d, warLevelTriggerLevel=%d, warAmountTriggerLevel=%d\n",
-			warLevel, warTimeTriggerLevelUse, warLevelTriggerLevel, warAmountTriggerLevel);
 		oldWarLevel=warLevel;
 	}
 	
@@ -202,7 +195,6 @@ void AICastor::computeWarLevel()
 	static int oldWarPowerSum=-1;
 	if (oldWarPowerSum!=warPowerSum)
 	{
-		fprintf(logFile,  "warPowerSum=%d\n", warPowerSum);
 		oldWarPowerSum=warPowerSum;
 	}
 	
@@ -215,7 +207,6 @@ void AICastor::computeWarLevel()
 			
 			strikeTimeTrigger=timer+strategy.strikeTimeTrigger;
 			strategy.strikeWarPowerTriggerUp=strategy.strikeWarPowerTriggerUp+strategy.strikeWarPowerTriggerUp/2;
-			fprintf(logFile,  " strategy.strikeWarPowerTriggerUp=%d\n", strategy.strikeWarPowerTriggerUp);
 		}
 	}
 	else if (timer>strikeTimeTrigger || warPowerSum>strategy.strikeWarPowerTriggerUp)

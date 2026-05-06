@@ -9,7 +9,6 @@
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"

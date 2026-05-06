@@ -9,7 +9,6 @@
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -24,7 +23,6 @@ bool AICastor::addProject(Project *project)
 {
 	if (buildingSum[project->shortTypeNum][0]>=project->amount)
 	{
-		fprintf(logFile,  "will not add project (%s x%d) as it already succeded\n", project->debugName, project->amount);
 		delete project;
 		return false;
 	}
@@ -33,16 +31,12 @@ bool AICastor::addProject(Project *project)
 		{
 			if (project->amount<=(*pi)->amount)
 			{
-				//fprintf(logFile,  "will not add project (%s x%d) as project (%s x%d) has shortTypeNum (%d) too\n",
-				//	project->debugName, project->amount, (*pi)->debugName, (*pi)->amount, project->shortTypeNum);
 				(*pi)->timer=timer;
 				delete project;
 				return false;
 			}
 			else
 			{
-				fprintf(logFile,  "adding project (%s x%d) as project (%s x%d) has shortTypeNum (%d) too will replace it\n",
-					project->debugName, project->amount, (*pi)->debugName, (*pi)->amount, project->shortTypeNum);
 				delete (*pi);
 				projects.erase(pi);
 				projects.push_back(project);
@@ -253,7 +247,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 	
 	if (foodLock && !project->critical && project->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 	{
-		fprintf(logFile,  "(%s) (give up by foodLock [%d, %d])\n", project->debugName, project->blocking, project->critical);
 		if (starvingWarning)
 			project->timer=timer+8192; // 5min28s
 		else
@@ -266,7 +259,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 	{
 		// boot phase
 		project->subPhase=2;
-		fprintf(logFile,  "(%s) (boot) (switching to subphase 2)\n", project->debugName);
 	}
 	else if (project->subPhase==1)
 	{
@@ -298,13 +290,11 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		{
 			if (project->successWait>0)
 			{
-				fprintf(logFile,  "(%s) (successWait [%d])\n", project->debugName, project->successWait);
 				project->successWait--;
 			}
 			else
 			{
 				project->subPhase=2;
-				fprintf(logFile,  "(%s) (one construction site placed) (switching to next subphase 2)\n", project->debugName);
 				return gfbm;
 			}
 		}
@@ -314,7 +304,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		}
 		else
 		{
-			fprintf(logFile,  "(%s) (give up by failures [%d, %d])\n", project->debugName, project->blocking, project->critical);
 			project->timer=timer+8192; // 5min27s
 			project->blocking=false;
 			project->critical=false;
@@ -331,11 +320,8 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) ([%d>=%d] building finished) (switching to subphase 6).\n",
-				project->debugName, real, project->amount);
 			if (!project->waitFinished)
 			{
-				fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
 			}
@@ -343,17 +329,12 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
-				project->debugName, real, site, project->amount);
 		}
 		else
 		{
 			project->subPhase=3;
-			fprintf(logFile,  "(%s) (enough real building site found [%d+%d>=%d]) (switching to next subphase 3)\n",
-				project->debugName, real, site, project->amount);
 			if (!project->waitFinished)
 			{
-				fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 				project->blocking=false;
 				project->critical=false;
 			}
@@ -451,35 +432,25 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
-				project->debugName, real, site, project->amount);
 		}
 		else if (sum<project->amount)
 		{
 			project->subPhase=1;
-			fprintf(logFile,  "(%s) (need more construction site [%d+%d<%d]) (switching back to subphase 1)\n",
-				project->debugName, real, site, project->amount);
 		}
 		else if (project->multipleStart)
 		{
-			fprintf(logFile,  "(%s) (want more construction site [%d+%d>=%d])\n",
-				project->debugName, real, site, project->amount);
 			if (isFree>1)
 			{
 				project->subPhase=1;
-				fprintf(logFile,  "(%s) (enough free workers %d) (switching back to subphase 1)\n", project->debugName, isFree);
 			}
 			else
 			{
 				project->subPhase=5;
-				fprintf(logFile,  "(%s) (no more free workers) (switching to next subphase 5)\n", project->debugName);
 			}
 		}
 		else
 		{
 			project->subPhase=5;
-			fprintf(logFile,  "(%s) (enough construction site [%d+%d>=%d]) (switching to next subphase 5)\n",
-				project->debugName, real, site, project->amount);
 		}
 	}
 	else if (project->subPhase==5)
@@ -513,14 +484,10 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (real>=project->amount)
 		{
 			project->subPhase=6;
-			fprintf(logFile,  "(%s) (building finished [%d+%d>=%d]) (switching to subphase 6).\n",
-				project->debugName, real, site, project->amount);
 		}
 		else if (sum<project->amount)
 		{
 			project->subPhase=2;
-			fprintf(logFile,  "(%s) (building destroyed! [%d+%d<%d]) (switching to subphase 2).\n",
-				project->debugName, real, site, project->amount);
 		}
 	}
 	else if (project->subPhase==6)
@@ -529,7 +496,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		
 		if (project->blocking)
 		{
-			fprintf(logFile,  "(%s) (deblocking [%d, %d])\n", project->debugName, project->blocking, project->critical);
 			project->blocking=false;
 			project->critical=false;
 		}
@@ -545,8 +511,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 				if (b && b->type->shortTypeNum==project->shortTypeNum && b->maxUnitWorking!=finalWorkers)
 				{
 					assert(b->type->maxUnitWorking!=0);
-					fprintf(logFile,  "(%s) (set finalWorkers [current=%d, final=%d])\n",
-						project->debugName, b->maxUnitWorking, finalWorkers);
 					b->maxUnitWorking=finalWorkers;
 					b->maxUnitWorkingLocal=finalWorkers;
 					b->update();
@@ -558,7 +522,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (buildingSum[project->shortTypeNum][1]==0)
 		{
 			project->finished=true;
-			fprintf(logFile,  "(%s) (all finalWorkers set) (project succeded)\n", project->debugName);
 		}
 	}
 	else

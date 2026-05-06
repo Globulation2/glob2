@@ -9,7 +9,6 @@
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -450,7 +449,6 @@ void AICastor::computeWorkAbilityMap()
 
 void AICastor::computeHydratationMap()
 {
-fprintf(logFile,  "computeHydratationMap()...\n");
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -501,12 +499,10 @@ fprintf(logFile,  "computeHydratationMap()...\n");
 			hydratationMap[i]=255;
 	}
 	free(gradient);
-	fprintf(logFile,  "...computeHydratationMap() done\n");
 }
 
 void AICastor::computeNotGrassMap()
 {
-	fprintf(logFile,  "computeNotGrassMap()...\n");
 	int w=map->w;
 	int h=map->h;
 	//int wMask=map->wMask;
@@ -524,7 +520,6 @@ void AICastor::computeNotGrassMap()
 	}
 	
 	updateGlobalGradientNoObstacle(notGrassMap);
-	fprintf(logFile,  "...computeNotGrassMap() done\n");
 }
 
 void AICastor::computeWheatCareMap()

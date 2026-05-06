@@ -9,7 +9,6 @@
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -34,8 +33,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	size_t size=w*h;
 	Uint32 *mapDiscovered=&(map->mapDiscovered[0]);
 	Uint32 me=team->me;
-	fprintf(logFile,  "findGoodBuilding(%d, %d, %d) b=(%d, %d)\n", typeNum, food, critical, bw, bh);
-	
+
 	// minWork computation:
 	Sint32 bestWorkScore=2;
 	for (size_t i=0; i<size; i++)
@@ -57,8 +55,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 		if (minWork>30*4)
 			minWork=30*4;
 	}
-	fprintf(logFile,  " bestWorkScore=%d, minWork=%d\n", bestWorkScore, minWork/4);
-	
+
 	// wheatGradientLimit computation:
 	Uint32 wheatGradientLimit;
 	if (food)
@@ -75,8 +72,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 		else
 			wheatGradientLimit=(255-7)*4;
 	}
-	fprintf(logFile,  " wheatGradientLimit=%d\n", wheatGradientLimit/4);
-	
+
 	// we find the best place possible:
 	size_t bestIndex=0;
 	Sint32 bestScore=0;
@@ -175,17 +171,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	
 	if (bestScore>0)
 	{
-		fprintf(logFile,  " found a cool place");
-		fprintf(logFile,  "  score=%d, wheatGrowth=%d, wheatGradientMap=%d, work=%d\n",
-			bestScore, wheatGrowthMap[bestIndex], wheatGradientMap[bestIndex], workAbilityMap[bestIndex]);
-		
-		Uint8 neighbour=buildingNeighbourMap[bestIndex];
-		Uint8 directNeighboursCount=(neighbour>>1)&7; // [0, 7]
-		Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7]
-			
-		fprintf(logFile,  " directNeighboursCount=%d, farNeighboursCount=%d\n",
-			directNeighboursCount, farNeighboursCount);
-		
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
 		return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1));
@@ -196,7 +181,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 
 void AICastor::computeRessourcesCluster()
 {
-	fprintf(logFile,  "computeRessourcesCluster()\n");
 	int w=map->w;
 	int h=map->h;
 	//int wMask=map->wMask;
@@ -229,31 +213,26 @@ void AICastor::computeRessourcesCluster()
 			}
 			else
 			{
-				fprintf(logFile,  "ressource rt=%d, at (%d, %d)\n", rt, x, y);
 				if (rt!=old)
 				{
-					fprintf(logFile,  " rt!=old\n");
 					id=1;
 					while (usedid[id])
 						id++;
 					if (id)
 						usedid[id]=true;
 					old=rt;
-					fprintf(logFile,  "  id=%d\n", id);
 				}
 				if (rc!=id)
 				{
 					if (rc==0)
 					{
 						*rcp=id;
-						fprintf(logFile,  " wrote.\n");
 					}
 					else
 					{
 						Uint16 oldid=id;
 						usedid[oldid]=false;
 						id=rc; // newid
-						fprintf(logFile,  " cleaning oldid=%d to id=%d.\n", oldid, id);
 						// We have to correct last ressourcesCluster values:
 						*rcp=id;
 						while (*rcp==oldid)
@@ -268,11 +247,6 @@ void AICastor::computeRessourcesCluster()
 		memcpy(ressourcesCluster+((y+1)&hMask)*w, ressourcesCluster+y*w, w*2);
 	}
 	
-	int used=0;
-	for (int id=1; id<65536; id++)
-		if (usedid[id])
-			used++;
-	fprintf(logFile,  "computeRessourcesCluster(), used=%d\n", used);
 }
 
 void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)

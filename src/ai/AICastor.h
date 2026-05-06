@@ -234,9 +234,6 @@ public:
 	Uint8 *enemyWarriorsMap;
 	
 	Uint16 *ressourcesCluster;
-	
-private:
-	FILE *logFile;
 };
 
 
