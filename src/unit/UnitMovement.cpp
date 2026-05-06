@@ -27,7 +27,7 @@ void Unit::handleMovement(void)
 	}
 
 
-	// clearArea code, override behaviour locally
+	// clearArea code, override behavior locally
 	if (typeNum == WORKER &&
 		medical == MED_FREE &&
 		(displacement == DIS_RANDOM
@@ -69,8 +69,6 @@ void Unit::handleMovement(void)
 		case DIS_REMOVING_BLACK_AROUND:
 		{
 			assert(performance[FLY]);
-			if (verbose)
-				printf("guid=(%d) DIS_REMOVING_BLACK_AROUND\n", gid);
 			if (attachedBuilding)
 			{
 				movement=MOV_GOING_DX_DY;
@@ -112,10 +110,6 @@ void Unit::handleMovement(void)
 					//also move around enemy towers:
 					if(locationIsInEnemyGuardTowerRange(posX + dxTab[i], posY + dyTab[i]))tab[i]=1;
 				}
-				//printf("tab ");
-				//for (int i = 0; i < 8; i++)
-				//	printf("%3d; ", tab[i]);
-				//printf("d=%d\n", direction);
 				for (int di = 0; di < 8; di++)
 				{
 					int d = (di + direction + 4) % 8;
@@ -127,12 +121,6 @@ void Unit::handleMovement(void)
 						dxDyFromDirection();
 						movement = MOV_GOING_DX_DY;
 						found = true;
-                                                /*
-                                                fprintf (stderr, "gid = %d; changed direction: direction = %d, dx = %d, dy = %d; tab = {", gid, direction, dx, dy);
-                                                for (int i = 0; i < 8; i++) {
-                                                  fprintf (stderr, "%d%s", tab[i], ((i < 7) ? ", " : "")); }
-                                                fprintf (stderr, "}\n");
-                                                */
 						break;
 					}
 				}
@@ -158,7 +146,7 @@ void Unit::handleMovement(void)
                                           }
 					int cdx, cdy;
 					simplifyDirection(scoreX, scoreY, &cdx, &cdy);
-					// fprintf(stderr, "gid = %d, maxRange = %d, score = (%2d, %2d), cd = (%d, %d)\n", gid, maxRange, scoreX, scoreY, cdx, cdy);
+
 					if (cdx == 0 && cdy == 0)
 						movement = MOV_RANDOM_FLY;
 					else
@@ -180,8 +168,6 @@ void Unit::handleMovement(void)
 			assert(performance[ATTACK_SPEED]);
 			int quality=INT_MAX; // Smaller is better.
 			movement=MOV_RANDOM_GROUND;
-			if (verbose)
-				printf("guid=(%d) selecting movement\n", gid);
 
 			///Don't change targets if we still have a valid target
 			if (auto off = owner->map->doesUnitTouchEnemy(this))
@@ -219,8 +205,7 @@ void Unit::handleMovement(void)
 									BuildingType *bt=b->type;
 									int shootDamage=bt->shootDamage;
 									newQuality/=(1+shootDamage);
-									if (verbose)
-										printf("guid=(%d) warrior found building with newQuality=%d\n", this->gid, newQuality);
+
 									if (newQuality<quality)
 									{
 										bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, 12);
@@ -258,8 +243,7 @@ void Unit::handleMovement(void)
 									{
 										int attackStrength=u->getRealAttackStrength();
 										int newQuality=((x*x+y*y)<<8)/(1+attackStrength);
-										if (verbose)
-											printf("guid=(%d) warrior found unit with newQuality=%d\n", this->gid, newQuality);
+
 										if (newQuality<quality)
 										{
 											bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, 12);
@@ -290,7 +274,7 @@ void Unit::handleMovement(void)
 				}
 			}
 
-			// if we haven't find anything satisfactory, follow guard area gradients
+			// if we haven't found anything satisfactory, follow guard area gradients
 			if (movement == MOV_RANDOM_GROUND)
 			{
 				if (!attachedBuilding && owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
@@ -303,7 +287,7 @@ void Unit::handleMovement(void)
 				}
 				else if (attachedBuilding || (owner->map->getGuardAreasGradient(posX, posY, performance[SWIM]>0, owner->teamNumber) == 255))
 				{
-					// are we into the guard area or war flag and we have to go to the least known area.
+					// are we into the guard area or war flag, and we have to go to the least known area.
 					int bestExplored = 3*255;
 					int bestDirection = -1;
 					for (int di = 0; di < 8; di++)
@@ -464,7 +448,7 @@ void Unit::handleMovement(void)
 							}
 						}
 
-						//Find clearing ressource
+						//Find clearing resource
 						directionFromDxDy();
 						movement = MOV_GOING_DX_DY;
 						owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber, gid);
@@ -502,14 +486,10 @@ void Unit::handleMovement(void)
 			}
 			else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy, verbose))
 			{
-				if (verbose)
-					printf("guid=(%d) Unit found path b pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
 				movement=MOV_GOING_DX_DY;
 			}
 			else
 			{
-				if (verbose)
-					printf("guid=(%d) Unit failed path b pos=(%d, %d) to building %d, d=(%d, %d)\n", gid, posX, posY, attachedBuilding->gid, dx, dy);
 				stopAttachedForBuilding(true);
 				movement=MOV_RANDOM_GROUND;
 			}
@@ -561,16 +541,11 @@ void Unit::handleMovement(void)
 			bool stopWork;
 			if (map->pathfindRessource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork, verbose))
 			{
-				if (verbose)
-					printf("guid=(%d) Unit found path r pos=(%d, %d) to ressource %d, d=(%d, %d)\n", gid, posX, posY, destinationPurpose, dx, dy);
 				directionFromDxDy();
 				movement=MOV_GOING_DX_DY;
 			}
 			else
 			{
-				if (verbose)
-					printf("guid=(%d) Unit failed path r pos=(%d, %d) to ressource %d, aborting work.\n", gid, posX, posY, destinationPurpose);
-
 				if (stopWork)
 					stopAttachedForBuilding(false);
 				movement=MOV_RANDOM_GROUND;
