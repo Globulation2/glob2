@@ -7,9 +7,13 @@ env = Environment()
 # which need libgag and SDL2 headers visible at parse time even when the
 # test itself never references those types.
 common_cpppath = ['..', '../src', '../src/AI',
+                  '../src/building', '../src/game/entities',
+                  '../src/gui', '../src/team', '../src/unit',
+                  '../src/net', '../src/net/irc', '../src/net/message',
+                  '../src/yog',
                   '../src/map', '../src/map/edit', '../src/map/generator',
                   '../src/map/gradient', '../src/map/io', '../src/map/pathfind',
-                  '../libgag/include']
+                  '../libgag/include', '../libusl/src']
 common_defines = ['HAVE_CONFIG_H', '_THREAD_SAFE']
 
 if sys.platform.startswith("linux"):
@@ -38,6 +42,16 @@ HelloWorldTest.cpp
 
 GradientBFSTest.cpp
 ../src/ai/echo/GradientBFS.cpp
+
+MapQueryTest.cpp
+MapQueryTestStubs.cpp
+../src/map/Map.cpp
+../src/map/MapQuery.cpp
+../src/map/MapTerrain.cpp
+../src/BitArray.cpp
+../src/Utilities.cpp
+../src/building/BuildingUtils.cpp
+../src/unit/UnitUtils.cpp
 
 natsort/NatSortTest.cpp
 """)
