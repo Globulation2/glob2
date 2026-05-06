@@ -159,6 +159,15 @@ std::optional<Offset> Map::doesPosTouchRessource(int x, int y, int ressourceType
 
 //! Picks a direction for a warrior to hit. Prefers turrets, then units, then
 //! other buildings. Returns nullopt if no enemy is touching.
+//!
+//! Tie-break rules (preserve carefully — they affect replay determinism):
+//!   * Shooter (`shootingRange`): unconditional `bestTime=0` write. So if the
+//!     3x3 contains two shooters, the later-iterated one wins.
+//!   * Non-shooter enemy building: `else if (bestTime>255)` — only set if no
+//!     candidate has been seen yet (initial bestTime=256). Once any candidate
+//!     exists, subsequent non-shooters are ignored.
+//!   * Unit: strict `<`, so a unit with score 0 (e.g. delta=255 speed=2) does
+//!     NOT displace an already-found shooter at the same score.
 std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 {
 	int x=unit->posX;
@@ -185,12 +194,15 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 					{
 						if (b->type->shootingRange)
 						{
+							// Unconditional write — later shooter wins ties.
 							bdx=tdx;
 							bdy=tdy;
 							bestTime=0;
 						}
 						else if (bestTime>255)
 						{
+							// Only fall back to a non-shooting enemy building
+							// when no other candidate has been seen yet.
 							bdx=tdx;
 							bdy=tdy;
 							bestTime=255;
@@ -212,6 +224,7 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 					if ((unit->owner->sharedVisionExchange & otherTeamMask)==0)
 					{
 						int time=(256-otherUnit->delta)/otherUnit->speed;
+						// Strict `<` — a unit never displaces a tied candidate.
 						if (time<bestTime)
 						{
 							bestTime=time;
