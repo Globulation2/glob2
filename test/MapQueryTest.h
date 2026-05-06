@@ -52,6 +52,15 @@ class MapQueryTest: public CppUnit::TestFixture
 		CPPUNIT_TEST( testHardSpaceForBuilding_RectAllGrassPasses );
 		CPPUNIT_TEST( testHardSpaceForBuilding_RectGidTolerantSameGidPasses );
 		CPPUNIT_TEST( testHardSpaceForBuilding_RectGidTolerantDifferentGidFails );
+
+		// Pure scoring helpers from MapQueryScoring.h — used by doesUnitTouchEnemy.
+		CPPUNIT_TEST( testScoreEnemyBuilding_StayRangeReturnsNullopt );
+		CPPUNIT_TEST( testScoreEnemyBuilding_StayRangeWinsOverShooter );
+		CPPUNIT_TEST( testScoreEnemyBuilding_ShooterScoresZero );
+		CPPUNIT_TEST( testScoreEnemyBuilding_NonShooterScoresLastResort );
+		CPPUNIT_TEST( testScoreEnemyUnit_StationaryHasMaxScore );
+		CPPUNIT_TEST( testScoreEnemyUnit_AlmostCrossingHasMinScore );
+		CPPUNIT_TEST( testScoreEnemyUnit_FasterUnitScoresLower );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -91,4 +100,12 @@ public:
 	void testHardSpaceForBuilding_RectAllGrassPasses();
 	void testHardSpaceForBuilding_RectGidTolerantSameGidPasses();
 	void testHardSpaceForBuilding_RectGidTolerantDifferentGidFails();
+
+	void testScoreEnemyBuilding_StayRangeReturnsNullopt();
+	void testScoreEnemyBuilding_StayRangeWinsOverShooter();
+	void testScoreEnemyBuilding_ShooterScoresZero();
+	void testScoreEnemyBuilding_NonShooterScoresLastResort();
+	void testScoreEnemyUnit_StationaryHasMaxScore();
+	void testScoreEnemyUnit_AlmostCrossingHasMinScore();
+	void testScoreEnemyUnit_FasterUnitScoresLower();
 };

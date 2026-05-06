@@ -3,6 +3,7 @@
 
 #include "Map.h"
 #include "Game.h"
+#include "MapQueryScoring.h"
 #include "Utilities.h"
 #include "building_type.h"
 #include "Unit.h"
@@ -159,14 +160,20 @@ std::optional<Offset> Map::doesPosTouchRessource(int x, int y, int ressourceType
 
 //! Picks a direction for a warrior to hit. Prefers turrets, then units, then
 //! other buildings. Returns nullopt if no enemy is touching.
+//!
+//! The per-tile scoring lives in MapQueryScoring.h as pure functions; this
+//! method is just the 3x3 iteration plus the gid → Team::myBuildings/myUnits
+//! reach-throughs needed to pull the scoring inputs out of game state.
 std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	int bestTime=256;//Shorter is better
+	int bestTime=map_query::kNoEnemyScore; // Shorter is better
 	int bdx=0, bdy=0;
 
-	Uint32 enemies=unit->owner->enemies;
+	const Uint32 enemies=unit->owner->enemies;
+	const Uint32 sharedVision=unit->owner->sharedVisionExchange;
+
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
 		{
@@ -181,19 +188,20 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 					assert(game->teams[otherTeam]);
 					int otherID=Building::GIDtoID(gbid);
 					Building *b=game->teams[otherTeam]->myBuildings[otherID];
-					if (!b->type->defaultUnitStayRange)
+					if (auto score=map_query::scoreEnemyBuilding(
+							b->type->defaultUnitStayRange,
+							b->type->shootingRange))
 					{
-						if (b->type->shootingRange)
+						// Shooter (score 0): unconditional set — preserves the
+						// original quirk where a later-iterated shooter wins
+						// over an earlier one.
+						// Non-shooter (score 255): only if no candidate yet,
+						// i.e. bestTime is still the kNoEnemyScore sentinel.
+						if (*score==0 || *score<bestTime)
 						{
+							bestTime=*score;
 							bdx=tdx;
 							bdy=tdy;
-							bestTime=0;
-						}
-						else if (bestTime>255)
-						{
-							bdx=tdx;
-							bdy=tdy;
-							bestTime=255;
 						}
 					}
 				}
@@ -209,9 +217,11 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 					assert(game->teams[otherTeam]);
 					int otherID=Unit::GIDtoID(guid);
 					Unit *otherUnit=game->teams[otherTeam]->myUnits[otherID];
-					if ((unit->owner->sharedVisionExchange & otherTeamMask)==0)
+					if ((sharedVision & otherTeamMask)==0)
 					{
-						int time=(256-otherUnit->delta)/otherUnit->speed;
+						int time=map_query::scoreEnemyUnit(otherUnit->delta, otherUnit->speed);
+						// Strict `<`: a unit never displaces a tied candidate
+						// (in particular, never displaces a shooter at 0).
 						if (time<bestTime)
 						{
 							bestTime=time;
@@ -224,7 +234,7 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 			//TODO: can ground WARRIOR hit flying EXPLORER ?
 		}
 
-	if (bestTime<256)
+	if (bestTime<map_query::kNoEnemyScore)
 		return Offset{bdx, bdy};
 
 	return std::nullopt;
