@@ -4,8 +4,7 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
+#include "building_type.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
@@ -19,7 +18,6 @@
 
 bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork, bool verbose)
 {
-	pathToRessourceCountTot++;
 	if (verbose)
 		printf("pathfindingRessource...\n");
 	assert(ressourceType<MAX_RESSOURCES);
@@ -31,7 +29,6 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	{
 		if (verbose)
 			printf("...pathfindedRessource pathfindForbidden() v1\n");
-		pathToRessourceCountFailure++;
 		*stopWork=true;
 		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy, verbose);
 	}
@@ -39,25 +36,20 @@ bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, i
 	{
 		if (verbose)
 			printf("...pathfindedRessource failure v2\n");
-		pathToRessourceCountFailure++;
 		*stopWork=true;
 		return false;
 	}
-	
+
 	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true, verbose))
 	{
-		pathToRessourceCountSuccess++;
 		if (verbose)
 			printf("...pathfindedRessource success v3\n");
 		return true;
 	}
 	else
 	{
-		pathToRessourceCountFailure++;
 		if (verbose)
 			printf("...pathfindedRessource failure locked v4\n");
-		//printf("locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
-		fprintf(logFile, "locked at (%d, %d) for r=%d, max=%d\n", x, y, ressourceType, max);
 		*stopWork=false;
 		return false;
 	}
@@ -139,7 +131,6 @@ void Map::pathfindRandom(Unit *unit, bool verbose)
 
 bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
-	pathfindLocalRessourceCount++;
 	assert(building);
 	assert(building->type);
 	assert(building->type->isVirtual);
@@ -178,7 +169,6 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		// We wait 5[s] before recomputing anything.
 		if (verbose)
 			printf("...pathfindedLocalRessource v0 failure waiting\n");
-		pathfindLocalRessourceCountWait++;
 		return false;
 	}
 	
@@ -207,7 +197,6 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		{
 			if (found)
 			{
-				pathfindLocalRessourceCountSuccessBase++;
 				//printf("...pathfindedLocalRessource v1\n");
 				return true;
 			}
@@ -215,7 +204,6 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			{
 				*dx=0;
 				*dy=0;
-				pathfindLocalRessourceCountSuccessLocked++;
 				if (verbose)
 					printf("...pathfindedLocalRessource v2 locked\n");
 				return true;
@@ -232,7 +220,6 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	
 	if (currentg==1)
 	{
-		pathfindLocalRessourceCountFailureNone++;
 		//printf("...pathfindedLocalRessource v3 No ressource\n");
 		return false;
 	}
@@ -261,7 +248,6 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		{
 			if (found)
 			{
-				pathfindLocalRessourceCountSuccessUpdate++;
 				//printf("...pathfindedLocalRessource v3\n");
 				return true;
 			}
@@ -269,7 +255,6 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 			{
 				*dx=0;
 				*dy=0;
-				pathfindLocalRessourceCountSuccessUpdateLocked++;
 				if (verbose)
 					printf("...pathfindedLocalRessource v4 locked\n");
 				return true;
@@ -277,8 +262,6 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		}
 		else
 		{
-			pathfindLocalRessourceCountFailureUnusable++;
-			fprintf(logFile, "lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			if (verbose)
 				printf("lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
@@ -286,8 +269,6 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	}
 	else
 	{
-		pathfindLocalRessourceCountFailureBad++;
-		fprintf(logFile, "lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		if (verbose)
 			printf("lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 		return false;

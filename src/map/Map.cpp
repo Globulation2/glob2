@@ -4,8 +4,6 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
@@ -100,84 +98,7 @@ Map::Map()
 	sizeSector=0;
 	
 	immobileUnits=NULL;
-	
-	//Gradients stats:
-	for (int t=0; t<16; t++)
-		for (int r=0; r<MAX_RESSOURCES; r++)
-		{
-			ressourceAvailableCount[t][r]=0;
-			ressourceAvailableCountSuccess[t][r]=0;
-			ressourceAvailableCountFailure[t][r]=0;
-		}
-	
-	pathToRessourceCountTot=0;
-	pathToRessourceCountSuccess=0;
-	pathToRessourceCountFailure=0;
-	
-	localRessourcesUpdateCount=0;
-	pathfindLocalRessourceCount=0;
-	pathfindLocalRessourceCountWait=0;
-	pathfindLocalRessourceCountSuccessBase=0;
-	pathfindLocalRessourceCountSuccessLocked=0;
-	pathfindLocalRessourceCountSuccessUpdate=0;
-	pathfindLocalRessourceCountSuccessUpdateLocked=0;
-	pathfindLocalRessourceCountFailureUnusable=0;
-	pathfindLocalRessourceCountFailureNone=0;
-	pathfindLocalRessourceCountFailureBad=0;
-	
-	pathToBuildingCountTot=0;
-	pathToBuildingCountClose=0;
-	pathToBuildingCountCloseSuccessStand=0;
-	pathToBuildingCountCloseSuccessBase=0;
-	pathToBuildingCountCloseSuccessUpdated=0;
-	pathToBuildingCountCloseFailureLocked=0;
-	pathToBuildingCountCloseFailureEnd=0;
-	
-	pathToBuildingCountIsFar=0;
-	pathToBuildingCountFar=0;
-	pathToBuildingCountFarIsNew=0;
-	pathToBuildingCountFarOldSuccess=0;
-	pathToBuildingCountFarOldFailureLocked=0;
-	pathToBuildingCountFarOldFailureBad=0;
-	pathToBuildingCountFarOldFailureRepeat=0;
-	pathToBuildingCountFarOldFailureUnusable=0;
-	pathToBuildingCountFarUpdateSuccess=0;
-	pathToBuildingCountFarUpdateFailureLocked=0;
-	pathToBuildingCountFarUpdateFailureVirtual=0;
-	pathToBuildingCountFarUpdateFailureBad=0;
-	
-	localBuildingGradientUpdate=0;
-	localBuildingGradientUpdateLocked=0;
-	globalBuildingGradientUpdate=0;
-	globalBuildingGradientUpdateLocked=0;
-	
-	buildingAvailableCountTot=0;
-	buildingAvailableCountClose=0;
-	buildingAvailableCountCloseSuccessFast=0;
-	buildingAvailableCountCloseSuccessAround=0;
-	buildingAvailableCountCloseSuccessUpdate=0;
-	buildingAvailableCountCloseSuccessUpdateAround=0;
-	buildingAvailableCountCloseFailureLocked=0;
-	buildingAvailableCountCloseFailureEnd=0;
-	
-	buildingAvailableCountIsFar=0;
-	buildingAvailableCountFar=0;
-	buildingAvailableCountFarNew=0;
-	buildingAvailableCountFarNewSuccessFast=0;
-	buildingAvailableCountFarNewSuccessClosely=0;
-	buildingAvailableCountFarNewFailureLocked=0;
-	buildingAvailableCountFarNewFailureVirtual=0;
-	buildingAvailableCountFarNewFailureEnd=0;
-	buildingAvailableCountFarOld=0;
-	buildingAvailableCountFarOldSuccessFast=0;
-	buildingAvailableCountFarOldSuccessAround=0;
-	buildingAvailableCountFarOldFailureLocked=0;
-	buildingAvailableCountFarOldFailureEnd=0;
-	
-	pathfindForbiddenCount=0;
-	pathfindForbiddenCountSuccess=0;
-	pathfindForbiddenCountFailure=0;
-	
+
 	#ifdef check_disorderable_gradient_error_probability
 	// stats to check the probability of an error:
 	for (int i = 0; i < GT_SIZE; i++)
@@ -186,9 +107,6 @@ Map::Map()
 		listCountSizeStatsOver[i] = 0;
 	}
 	#endif
-	
-	logFile = globalContainer->logFileManager->getFile("Map.log");
-	std::fill(incRessourceLog, incRessourceLog + 16, 0);
 
 	areaNames.resize(9);
 	
@@ -197,17 +115,11 @@ Map::Map()
 
 Map::~Map(void)
 {
-	FILE *resLogFile = globalContainer->logFileManager->getFile("IncRessourceLog.log");
-	for (int i=0; i<=11; i++)
-		fprintf(resLogFile, "incRessourceLog[%2d] =%8d\n", i, incRessourceLog[i]);
-	fprintf(resLogFile, "\n");
-	fflush(resLogFile);
 	clear();
 }
 
 void Map::clear()
 {
-	logAtClear();
 	if (arraysBuilt)
 	{
 		for (int t=0; t<Team::MAX_COUNT; t++)
@@ -396,7 +308,6 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 void Map::setGame(Game *game)
 {
 	assert(game);
-	fprintf(logFile, "Map::setGame(%p)\n", game);
 	this->game=game;
 	assert(arraysBuilt);
 	assert(sectors);

@@ -4,8 +4,7 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
+#include "building_type.h"
 #include "Unit.h"
 #include "MapInternal.h"
 

@@ -4,8 +4,7 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
+#include "building_type.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
@@ -29,7 +28,6 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 
 template<typename Tint> void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
-	globalBuildingGradientUpdate++;
 	assert(building);
 	assert(building->type);
 	//printf("updatingGlobalGradient (gbid=%d)\n", building->gid);
@@ -174,7 +172,6 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			}
 		
 		assert(building->locked[canSwim]);
-		globalBuildingGradientUpdateLocked++;
 		//printf("...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
 		//fprintf(logFile, "...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
 		delete[] listedAddr;
@@ -191,12 +188,11 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 
 bool Map::updateLocalRessources(Building *building, bool canSwim)
 {
-	localRessourcesUpdateCount++;
 	assert(building);
 	assert(building->type);
 	assert(building->type->isVirtual);
-	fprintf(logFile, "updatingLocalRessources[%d] (gbid=%d)...\n", canSwim, building->gid);
-	
+
+
 	int posX=building->posX;
 	int posY=building->posY;
 	Uint32 teamMask=building->owner->me;

@@ -4,8 +4,7 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
+#include "building_type.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
@@ -35,7 +34,6 @@ void propagateLocalGradients(Uint8* gradient);
 
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
-	localBuildingGradientUpdate++;
 	//fprintf(logFile, "updatingLocalGradient (gbid=%d)...\n", building->gid);
 	//printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
@@ -212,7 +210,6 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			}
 		
 		assert(building->locked[canSwim]);
-		localBuildingGradientUpdateLocked++;
 		//fprintf(logFile, "...not updatedLocalGradient! building bgid=%d is locked!\n", building->gid);
 		//printf("...not updatedLocalGradient! building bgid=%d is locked!\n", building->gid);
 		memcpy(tgtGradient, gradient, 1024); // Don't leave gradient as-is (it might be dirty)

@@ -4,8 +4,6 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
@@ -21,7 +19,6 @@ bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool ca
 {
 	if (verbose)
 		printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
-	pathfindForbiddenCount++;
 	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
 	if (verbose && !gradient)
 		printf("error, Map::pathfindForbidden(), forbiddenGradient[teamNumber=%d][canSwim=%d] is NULL\n", teamNumber, canSwim);
@@ -67,14 +64,12 @@ bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool ca
 		*dy=tabClose[maxd][1];
 		if (verbose)
 			printf(" Success (%d:%d) (%d, %d)\n", (maxValue>>8), (maxValue&0xFF), *dx, *dy);
-		pathfindForbiddenCountSuccess++;
 		return true;
 	}
 	else
 	{
 		if (verbose)
 			printf(" Failure (%d)\n", maxValue);
-		pathfindForbiddenCountFailure++;
 		return false;
 	}
 }

@@ -5,7 +5,6 @@
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
@@ -52,17 +51,13 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 {
 	Ressource &r = getCase(x, y).ressource;
 	const RessourceType *fulltype;
-	incRessourceLog[0]++;
 	if (r.type == NO_RES_TYPE)
 	{
-		incRessourceLog[1]++;
 		if (getBuilding(x, y) != NOGBID)
 			return false;
-		incRessourceLog[2]++;
 		if (getGroundUnit(x, y) != NOGUID)
 			return false;
-		incRessourceLog[3]++;
-		
+
 		fulltype = globalContainer->ressourcesTypes.get(ressourceType);
 		if (getTerrainType(x, y) == fulltype->terrain)
 		{
@@ -70,37 +65,29 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 			r.variety = variety;
 			r.amount = 1;
 			r.animation = 0;
-			incRessourceLog[4]++;
 			return true;
 		}
 		else
 		{
-			incRessourceLog[5]++;
 			return false;
 		}
 	}
 	else
 	{
 		fulltype = globalContainer->ressourcesTypes.get(r.type);
-		incRessourceLog[6]++;
 	}
-	
-	incRessourceLog[7]++;
+
 	if (r.type != ressourceType)
 		return false;
-	incRessourceLog[8]++;
 	if (!fulltype->shrinkable)
 		return false;
-	incRessourceLog[9]++;
 	if (r.amount < fulltype->sizesCount)
 	{
-		incRessourceLog[10]++;
 		r.amount++;
 		return true;
 	}
 	else
 	{
-		incRessourceLog[11]++;
 		r.amount--;
 	}
 	return false;
@@ -196,12 +183,8 @@ bool Map::ressourceAvailableUpdate(int teamNumber, int ressourceType, bool canSw
 		
 	// target position
 	Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
-	ressourceAvailableCount[teamNumber][ressourceType]++;
-	if (getGlobalGradientDestination(gradient, x, y, targetX, targetY))
-		ressourceAvailableCountSuccess[teamNumber][ressourceType]++;
-	else
-		ressourceAvailableCountFailure[teamNumber][ressourceType]++;
-	
+	getGlobalGradientDestination(gradient, x, y, targetX, targetY);
+
 	return result;
 }
 

@@ -78,7 +78,6 @@ public:
 	virtual ~Map(void);
 	//! Reset map and free arrays
 	void clear();
-	void logAtClear();
 
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, TerrainType terrainType=WATER);
@@ -613,82 +612,6 @@ public:
 	void updateExploredArea(int teamNumber);
 	
 protected:
-	// computationals pathfinding statistics:
-	int ressourceAvailableCount[16][MAX_RESSOURCES];
-	int ressourceAvailableCountSuccess[16][MAX_RESSOURCES];
-	int ressourceAvailableCountFailure[16][MAX_RESSOURCES];
-	
-	int pathToRessourceCountTot;
-	int pathToRessourceCountSuccess;
-	int pathToRessourceCountFailure;
-	
-	int localRessourcesUpdateCount;
-	
-	int pathfindLocalRessourceCount;
-	int pathfindLocalRessourceCountWait;
-	int pathfindLocalRessourceCountSuccessBase;
-	int pathfindLocalRessourceCountSuccessLocked;
-	int pathfindLocalRessourceCountSuccessUpdate;
-	int pathfindLocalRessourceCountSuccessUpdateLocked;
-	int pathfindLocalRessourceCountFailureUnusable;
-	int pathfindLocalRessourceCountFailureNone;
-	int pathfindLocalRessourceCountFailureBad;
-	
-	int pathToBuildingCountTot;
-	
-	int pathToBuildingCountClose;
-	int pathToBuildingCountCloseSuccessStand;
-	int pathToBuildingCountCloseSuccessBase;
-	int pathToBuildingCountCloseSuccessUpdated;
-	int pathToBuildingCountCloseFailureLocked;
-	int pathToBuildingCountCloseFailureEnd;
-	
-	int pathToBuildingCountIsFar;
-	int pathToBuildingCountFar;
-	int pathToBuildingCountFarIsNew;
-	int pathToBuildingCountFarOldSuccess;
-	int pathToBuildingCountFarOldFailureLocked;
-	int pathToBuildingCountFarOldFailureBad;
-	int pathToBuildingCountFarOldFailureRepeat;
-	int pathToBuildingCountFarOldFailureUnusable;
-	int pathToBuildingCountFarUpdateSuccess;
-	int pathToBuildingCountFarUpdateFailureLocked;
-	int pathToBuildingCountFarUpdateFailureVirtual;
-	int pathToBuildingCountFarUpdateFailureBad;
-	
-	int localBuildingGradientUpdate;
-	int localBuildingGradientUpdateLocked;
-	int globalBuildingGradientUpdate;
-	int globalBuildingGradientUpdateLocked;
-	
-	int buildingAvailableCountTot;
-	
-	int buildingAvailableCountClose;
-	int buildingAvailableCountCloseSuccessFast;
-	int buildingAvailableCountCloseSuccessAround;
-	int buildingAvailableCountCloseSuccessUpdate;
-	int buildingAvailableCountCloseSuccessUpdateAround;
-	int buildingAvailableCountCloseFailureLocked;
-	int buildingAvailableCountCloseFailureEnd;
-	
-	int buildingAvailableCountIsFar;
-	int buildingAvailableCountFar;
-	int buildingAvailableCountFarNew;
-	int buildingAvailableCountFarNewSuccessFast;
-	int buildingAvailableCountFarNewSuccessClosely;
-	int buildingAvailableCountFarNewFailureLocked;
-	int buildingAvailableCountFarNewFailureVirtual;
-	int buildingAvailableCountFarNewFailureEnd;
-	int buildingAvailableCountFarOld;
-	int buildingAvailableCountFarOldSuccessFast;
-	int buildingAvailableCountFarOldSuccessAround;
-	int buildingAvailableCountFarOldFailureLocked;
-	int buildingAvailableCountFarOldFailureEnd;
-	
-	int pathfindForbiddenCount;
-	int pathfindForbiddenCountSuccess;
-	int pathfindForbiddenCountFailure;
-	
 	//#define check_disorderable_gradient_error_probability
 	#ifdef check_disorderable_gradient_error_probability
 	// stats to check the probability of an error in the updateGlobalGradientVersionDisorderable gradient computation
@@ -836,8 +759,5 @@ public:
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
 	void oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor);
 
-protected:
-	FILE *logFile;
-	Uint32 incRessourceLog[16];
 };
 
