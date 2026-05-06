@@ -46,8 +46,10 @@ void Unit::handleDisplacement(void)
 
 			if (displacement==DIS_GOING_TO_RESSOURCE)
 			{
-				if (owner->map->doesUnitTouchRessource(this, destinationPurpose, &dx, &dy))
+				if (auto off = owner->map->doesUnitTouchRessource(this, destinationPurpose))
 				{
+					dx = off->dx;
+					dy = off->dy;
 					displacement=DIS_HARVESTING;
 					validTarget=false;
 				}
@@ -62,8 +64,10 @@ void Unit::handleDisplacement(void)
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to aditionaly decRessource() the same ressource.
 
 				setTargetBuilding(attachedBuilding);
-				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
+				if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
 				{
+					dx = off->dx;
+					dy = off->dy;
 					displacement=DIS_FILLING_BUILDING;
 					validTarget=false;
 				}
@@ -78,8 +82,10 @@ void Unit::handleDisplacement(void)
 			else if (displacement==DIS_GOING_TO_BUILDING)
 			{
 				assert(targetBuilding);
-				if (owner->map->doesUnitTouchBuilding(this, targetBuilding->gid, &dx, &dy))
+				if (auto off = owner->map->doesUnitTouchBuilding(this, targetBuilding->gid))
 				{
+					dx = off->dx;
+					dy = off->dy;
 					displacement=DIS_FILLING_BUILDING;
 					validTarget=false;
 				}
@@ -218,8 +224,10 @@ void Unit::handleDisplacement(void)
 								else
 								{
 									int dummyDist;
-									if (owner->map->doesUnitTouchRessource(this, destinationPurpose, &dx, &dy))
+									if (auto off = owner->map->doesUnitTouchRessource(this, destinationPurpose))
 									{
+										dx = off->dx;
+										dy = off->dy;
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
@@ -266,8 +274,10 @@ void Unit::handleDisplacement(void)
 
 			if (displacement==DIS_GOING_TO_BUILDING)
 			{
-				if (owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid, &dx, &dy))
+				if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
 				{
+					dx = off->dx;
+					dy = off->dy;
 					displacement=DIS_ENTERING_BUILDING;
 					validTarget=false;
 				}

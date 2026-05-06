@@ -185,8 +185,10 @@ void Unit::handleMovement(void)
 				printf("guid=(%d) selecting movement\n", gid);
 
 			///Don't change targets if we still have a valid target
-			if(owner->map->doesUnitTouchEnemy(this, &dx, &dy))
+			if (auto off = owner->map->doesUnitTouchEnemy(this))
 			{
+				dx = off->dx;
+				dy = off->dy;
 				targetX = posX+dx;
 				targetY = posY+dy;
 				movement=MOV_ATTACKING_TARGET;
@@ -401,8 +403,15 @@ void Unit::handleMovement(void)
 		case DIS_RANDOM:
 		{
 			Map *map=owner->map;
-			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (map->doesUnitTouchEnemy(this, &dx, &dy)))
+			std::optional<Offset> enemyOff;
+			if (performance[ATTACK_SPEED] && medical==MED_FREE)
+				enemyOff = map->doesUnitTouchEnemy(this);
+			if (enemyOff)
+			{
+				dx = enemyOff->dx;
+				dy = enemyOff->dy;
 				movement=MOV_ATTACKING_TARGET;
+			}
 			else if (performance[FLY])
 				movement=MOV_RANDOM_FLY;
 			else if (map->getForbidden(posX, posY)&owner->me)
@@ -479,8 +488,15 @@ void Unit::handleMovement(void)
 			Map *map=owner->map;
 			bool canSwim=performance[SWIM];
 
-			if ((performance[ATTACK_SPEED]) && (medical==MED_FREE) && (owner->map->doesUnitTouchEnemy(this, &dx, &dy)))
+			std::optional<Offset> enemyOff;
+			if (performance[ATTACK_SPEED] && medical==MED_FREE)
+				enemyOff = map->doesUnitTouchEnemy(this);
+			if (enemyOff)
+			{
+				dx = enemyOff->dx;
+				dy = enemyOff->dy;
 				movement=MOV_ATTACKING_TARGET;
+			}
 			else if (performance[FLY])
 			{
 				movement=MOV_FLYING_TARGET;

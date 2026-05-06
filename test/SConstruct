@@ -17,11 +17,11 @@ common_cpppath = ['..', '../src', '../src/AI',
 common_defines = ['HAVE_CONFIG_H', '_THREAD_SAFE']
 
 if sys.platform.startswith("linux"):
-  env.Append(CCFLAGS = Split('-Wall -g -std=gnu++14'))
+  env.Append(CCFLAGS = Split('-Wall -g -std=gnu++17'))
   env.Append(CPPPATH = common_cpppath + ['/usr/include/SDL2'])
   env.Append(CPPDEFINES = common_defines)
 elif sys.platform == "darwin":
-  env.Append(CCFLAGS = Split('-Wall -g -std=gnu++14'))
+  env.Append(CCFLAGS = Split('-Wall -g -std=gnu++17'))
   env.Append(CPPPATH = common_cpppath + [
       '/opt/homebrew/include',
       '/opt/homebrew/include/SDL2',

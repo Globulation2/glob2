@@ -5,6 +5,7 @@
 #pragma once
 
 #include <list>
+#include <optional>
 #include <assert.h>
 
 #include "Building.h"
@@ -27,6 +28,14 @@ class Game;
 class MapGenerationDescriptor;
 class SessionGame;
 class MapHeader;
+
+//! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
+//! dx and dy are each in {-1, 0, +1}.
+struct Offset
+{
+	int dx;
+	int dy;
+};
 
 // a 1x1 piece of map
 struct Case
@@ -437,21 +446,19 @@ public:
 	bool isHardSpaceForBuilding(int x, int y, int w, int h) const;
 	bool isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid) const;
 	
-	//! Return true if unit has contact with building gbid. If true, put contact direction in dx, dy
-	bool doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy) const;
-	//! Return true if (x,y) has contact with building gbid.
-	bool doesPosTouchBuilding(int x, int y, Uint16 gbid) const;
-	//! Return true if (x,y) has contact with building gbid. If true, put contact direction in dx, dy
-	bool doesPosTouchBuilding(int x, int y, Uint16 gbid, int *dx, int *dy) const;
-	
-	//! Return true if unit has contact with ressource of any ressourceType. If true, put contact direction in dx, dy
-	bool doesUnitTouchRessource(Unit *unit, int *dx, int *dy) const;
-	//! Return true if unit has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
-	bool doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy) const;
-	//! Return true if (x,y) has contact with ressource of type ressourceType. If true, put contact direction in dx, dy
-	bool doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *dy) const;
-	//! Return true if unit has contact with enemy. If true, put contact direction in dx, dy
-	bool doesUnitTouchEnemy(Unit *unit, int *dx, int *dy) const;
+	//! Return contact direction (dx, dy) if unit touches building gbid; nullopt otherwise.
+	std::optional<Offset> doesUnitTouchBuilding(Unit *unit, Uint16 gbid) const;
+	//! Return contact direction (dx, dy) if (x, y) touches building gbid; nullopt otherwise.
+	std::optional<Offset> doesPosTouchBuilding(int x, int y, Uint16 gbid) const;
+
+	//! Return contact direction (dx, dy) if unit touches a ressource of any type; nullopt otherwise.
+	std::optional<Offset> doesUnitTouchRessource(Unit *unit) const;
+	//! Return contact direction (dx, dy) if unit touches a ressource of the given type; nullopt otherwise.
+	std::optional<Offset> doesUnitTouchRessource(Unit *unit, int ressourceType) const;
+	//! Return contact direction (dx, dy) if (x, y) touches a ressource of the given type; nullopt otherwise.
+	std::optional<Offset> doesPosTouchRessource(int x, int y, int ressourceType) const;
+	//! Return contact direction (dx, dy) if unit touches an enemy; nullopt otherwise.
+	std::optional<Offset> doesUnitTouchEnemy(Unit *unit) const;
 
 	//! Sets this particular clearing area location as claimed
 	void setClearingAreaClaimed(int x, int y, int teamNumber, int gid);

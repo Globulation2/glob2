@@ -103,45 +103,28 @@ bool Map::isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid) const
 	return true;
 }
 
-bool Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid, int *dx, int *dy) const
+std::optional<Offset> Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	
+
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
 			if (getBuilding(x+tdx, y+tdy)==gbid)
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-	return false;
+				return Offset{tdx, tdy};
+	return std::nullopt;
 }
 
-bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid) const
+std::optional<Offset> Map::doesPosTouchBuilding(int x, int y, Uint16 gbid) const
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
 			if (getBuilding(x+tdx, y+tdy)==gbid)
-				return true;
-	return false;
+				return Offset{tdx, tdy};
+	return std::nullopt;
 }
 
-bool Map::doesPosTouchBuilding(int x, int y, Uint16 gbid, int *dx, int *dy) const
-{
-	for (int tdx=-1; tdx<=1; tdx++)
-		for (int tdy=-1; tdy<=1; tdy++)
-			if (getBuilding(x+tdx, y+tdy)==gbid)
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-	return false;
-}
-
-bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy) const
+std::optional<Offset> Map::doesUnitTouchRessource(Unit *unit) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -149,15 +132,11 @@ bool Map::doesUnitTouchRessource(Unit *unit, int *dx, int *dy) const
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
 			if (isRessource(x+tdx, y+tdy) && ((getForbidden(x+tdx, y+tdy)&me)==0))
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-	return false;
+				return Offset{tdx, tdy};
+	return std::nullopt;
 }
 
-bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy) const
+std::optional<Offset> Map::doesUnitTouchRessource(Unit *unit, int ressourceType) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -165,30 +144,22 @@ bool Map::doesUnitTouchRessource(Unit *unit, int ressourceType, int *dx, int *dy
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
 			if (isRessourceTakeable(x+tdx, y+tdy, ressourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-	return false;
+				return Offset{tdx, tdy};
+	return std::nullopt;
 }
 
-bool Map::doesPosTouchRessource(int x, int y, int ressourceType, int *dx, int *dy) const
+std::optional<Offset> Map::doesPosTouchRessource(int x, int y, int ressourceType) const
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRessourceTakeable(x+tdx, y+tdy,ressourceType))
-			{
-				*dx=tdx;
-				*dy=tdy;
-				return true;
-			}
-	return false;
+			if (isRessourceTakeable(x+tdx, y+tdy, ressourceType))
+				return Offset{tdx, tdy};
+	return std::nullopt;
 }
 
-//! This method gives a good direction to hit for a warrior, and return false if nothing was found.
-//! Currently, it chooses to hit any turret if available, then units, then other buildings.
-bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy) const
+//! Picks a direction for a warrior to hit. Prefers turrets, then units, then
+//! other buildings. Returns nullopt if no enemy is touching.
+std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
@@ -252,15 +223,11 @@ bool Map::doesUnitTouchEnemy(Unit *unit, int *dx, int *dy) const
 			}
 			//TODO: can ground WARRIOR hit flying EXPLORER ?
 		}
-	
-	if (bestTime<256)
-	{
-		*dx=bdx;
-		*dy=bdy;
-		return true;
-	}
 
-	return false;
+	if (bestTime<256)
+		return Offset{bdx, bdy};
+
+	return std::nullopt;
 }
 
 

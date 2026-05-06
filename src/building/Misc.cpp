@@ -270,10 +270,10 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	}
 	if (exitQuality>0)
 	{
-		bool shouldBeTrue=owner->map->doesPosTouchBuilding(exitX, exitY, gid, dx, dy);
-		assert(shouldBeTrue);
-		*dx=-*dx;
-		*dy=-*dy;
+		auto off = owner->map->doesPosTouchBuilding(exitX, exitY, gid);
+		assert(off);
+		*dx=-off->dx;
+		*dy=-off->dy;
 		*posX=exitX & owner->map->getMaskW();
 		*posY=exitY & owner->map->getMaskH();
 		return true;
