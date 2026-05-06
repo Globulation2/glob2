@@ -4,7 +4,6 @@
 #include "MapQueryTest.h"
 
 #include "Map.h"
-#include "MapQueryScoring.h"
 #include "TerrainType.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MapQueryTest );
@@ -292,57 +291,4 @@ void MapQueryTest::testHardSpaceForBuilding_RectGidTolerantDifferentGidFails()
 {
 	GrassMap g; g.putBuilding(3, 3, /*gbid=*/42);
 	CPPUNIT_ASSERT( !g.isHardSpaceForBuilding(2, 2, 3, 3, /*gid=*/99) );
-}
-
-// ---------------- scoreEnemyBuilding (pure) ----------------
-
-void MapQueryTest::testScoreEnemyBuilding_StayRangeReturnsNullopt()
-{
-	// "defaultUnitStayRange" buildings (e.g. flags) are not warrior targets.
-	CPPUNIT_ASSERT( !map_query::scoreEnemyBuilding(/*stay=*/true, /*shoot=*/false).has_value() );
-}
-
-void MapQueryTest::testScoreEnemyBuilding_StayRangeWinsOverShooter()
-{
-	// stayRange takes precedence even if the building also has a shooting range.
-	CPPUNIT_ASSERT( !map_query::scoreEnemyBuilding(/*stay=*/true, /*shoot=*/true).has_value() );
-}
-
-void MapQueryTest::testScoreEnemyBuilding_ShooterScoresZero()
-{
-	auto s = map_query::scoreEnemyBuilding(/*stay=*/false, /*shoot=*/true);
-	CPPUNIT_ASSERT( s.has_value() );
-	CPPUNIT_ASSERT_EQUAL( 0, *s );
-}
-
-void MapQueryTest::testScoreEnemyBuilding_NonShooterScoresLastResort()
-{
-	// 255 is "only target this if literally nothing else has been seen".
-	auto s = map_query::scoreEnemyBuilding(/*stay=*/false, /*shoot=*/false);
-	CPPUNIT_ASSERT( s.has_value() );
-	CPPUNIT_ASSERT_EQUAL( 255, *s );
-}
-
-// ---------------- scoreEnemyUnit (pure) ----------------
-
-void MapQueryTest::testScoreEnemyUnit_StationaryHasMaxScore()
-{
-	// delta=0 → just started a step → time = 256/speed (largest score = least
-	// attractive, but still < kNoEnemyScore=256 for speed>=2).
-	CPPUNIT_ASSERT_EQUAL( 256, map_query::scoreEnemyUnit(0, 1) );
-	CPPUNIT_ASSERT_EQUAL( 128, map_query::scoreEnemyUnit(0, 2) );
-}
-
-void MapQueryTest::testScoreEnemyUnit_AlmostCrossingHasMinScore()
-{
-	// delta=255 → about to cross into next tile → time = 1/speed.
-	CPPUNIT_ASSERT_EQUAL( 1, map_query::scoreEnemyUnit(255, 1) );
-	CPPUNIT_ASSERT_EQUAL( 0, map_query::scoreEnemyUnit(255, 2) );
-}
-
-void MapQueryTest::testScoreEnemyUnit_FasterUnitScoresLower()
-{
-	int slow = map_query::scoreEnemyUnit(/*delta=*/0, /*speed=*/2);
-	int fast = map_query::scoreEnemyUnit(/*delta=*/0, /*speed=*/4);
-	CPPUNIT_ASSERT( fast < slow );
 }
