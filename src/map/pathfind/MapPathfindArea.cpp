@@ -17,11 +17,7 @@
 
 bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
 {
-	if (verbose)
-		printf("pathfindForbidden(%d, %d, (%d, %d))\n", teamNumber, canSwim, x, y);
 	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
-	if (verbose && !gradient)
-		printf("error, Map::pathfindForbidden(), forbiddenGradient[teamNumber=%d][canSwim=%d] is NULL\n", teamNumber, canSwim);
 	assert(gradient);
 	
 	Uint32 maxValue=0;
@@ -32,29 +28,19 @@ bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool ca
 		int ry=tabClose[di][1];
 		int xg=(x+rx)&wMask;
 		int yg=(y+ry)&hMask;
-		if (verbose)
-			printf("[di=%d], r=(%d, %d), g=(%d, %d)\n", di, rx, ry, xg, yg);
 		if (!isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
 			continue;
 		size_t addr=xg+(yg<<wDec);
 		Uint8 base=gradient[addr];
-		if (verbose)
-			printf("gradient[%d]=%d\n", static_cast<unsigned>(addr), gradient[addr]);
 		Uint8 option;
 		if (optionGradient!=NULL)
 			option=optionGradient[addr];
 		else
 			option=0;
-		if (verbose)
-			printf("option=%d @ %p\n", option, optionGradient);
 		Uint32 value=(base<<8)|option;
-		if (verbose)
-			printf("value=%d \n", value);
 		if (maxValue<value)
 		{
 			maxValue=value;
-			if (verbose)
-				printf("new maxValue=%d \n", maxValue);
 			maxd=di;
 		}
 	}
@@ -62,14 +48,10 @@ bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool ca
 	{
 		*dx=tabClose[maxd][0];
 		*dy=tabClose[maxd][1];
-		if (verbose)
-			printf(" Success (%d:%d) (%d, %d)\n", (maxValue>>8), (maxValue&0xFF), *dx, *dy);
 		return true;
 	}
 	else
 	{
-		if (verbose)
-			printf(" Failure (%d)\n", maxValue);
 		return false;
 	}
 }
