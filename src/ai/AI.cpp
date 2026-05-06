@@ -17,7 +17,7 @@
 #include "AIToubib.h"
 #include "AIWarrush.h"
 #include "AINicowar.h"
-#include "AIEcho.h"
+#include "echo/Echo.h"
 
 using std::shared_ptr;
 

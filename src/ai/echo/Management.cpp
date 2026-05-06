@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
-#include "AIEcho.h"
+#include "echo/Echo.h"
 #include "Building.h"
 #include <stack>
 #include <queue>

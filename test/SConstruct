@@ -3,9 +3,9 @@ import sys
 env = Environment()
 
 # Shared include paths so tests can compile against game headers.
-# AIEcho.h transitively pulls in Map.h / Player.h / Team.h / etc., which
-# need libgag and SDL2 headers visible at parse time even when the test
-# itself never references those types.
+# echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
+# which need libgag and SDL2 headers visible at parse time even when the
+# test itself never references those types.
 common_cpppath = ['..', '../src', '../src/AI',
                   '../src/map', '../src/map/edit', '../src/map/generator',
                   '../src/map/gradient', '../src/map/io', '../src/map/pathfind',

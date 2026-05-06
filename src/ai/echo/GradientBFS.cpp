@@ -5,7 +5,7 @@
 // kept separate so that determinism tests for `Gradient::expand_bfs` can link
 // without dragging in the full game (Map, Game, GlobalContainer, ...).
 
-#include "AIEcho.h"
+#include "echo/Echo.h"
 
 #include <queue>
 

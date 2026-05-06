@@ -17,7 +17,7 @@
  */
 
 #include "GradientBFSTest.h"
-#include "AIEcho.h"
+#include "echo/Echo.h"
 
 #include <algorithm>
 #include <cstdlib>
