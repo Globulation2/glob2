@@ -12,7 +12,6 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include <Stream.h>
 #include <set>
 #include <climits>
@@ -205,10 +204,6 @@ void Unit::handleMedical(void)
 
 	if (hp<0)
 	{
-		fprintf(logFile, "guid=%d, set isDead(%d), beacause hungry.\n", gid, isDead);
-		if (attachedBuilding)
-			fprintf(logFile, " attachedBuilding->gid=%d.\n", attachedBuilding->gid);
-
 		if (!isDead)
 		{
 			// disconnect from building

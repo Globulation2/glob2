@@ -12,7 +12,6 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include <Stream.h>
 #include <set>
 #include <climits>
@@ -540,7 +539,6 @@ void Unit::handleMovement(void)
 			{
 				activity=ACT_RANDOM;
 				movement=MOV_EXITING_BUILDING;
-				fprintf(logFile, "guid=(%d) exiting gbid=%d\n", gid, attachedBuilding->gid);
 				attachedBuilding->removeUnitFromInside(this);
 				attachedBuilding->updateConstructionState();
 				attachedBuilding=NULL;
@@ -550,7 +548,6 @@ void Unit::handleMovement(void)
 			}
 			else
 			{
-				fprintf(logFile, "guid=(%d) can't find exit, gbid=%d\n", gid, attachedBuilding->gid);
 				movement=MOV_INSIDE;
 			}
 		}

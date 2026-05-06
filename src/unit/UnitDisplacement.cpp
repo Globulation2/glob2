@@ -12,7 +12,6 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include <Stream.h>
 #include <set>
 #include <climits>
@@ -58,7 +57,6 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the ressource.
 				carriedRessource=destinationPurpose;
-				fprintf(logFile, "[%d] sdp5 destinationPurpose=%d\n", gid, destinationPurpose);
 				owner->map->decRessource(posX+dx, posY+dy, carriedRessource);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to aditionaly decRessource() the same ressource.
@@ -114,7 +112,6 @@ void Unit::handleDisplacement(void)
 					{
 						targetBuilding->removeRessourceFromBuilding(destinationPurpose);
 						carriedRessource=destinationPurpose;
-						fprintf(logFile, "[%d] sdp6 destinationPurpose=%d\n", gid, destinationPurpose);
 
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
@@ -211,7 +208,6 @@ void Unit::handleDisplacement(void)
 							if (bestRessource>=0)
 							{
 								destinationPurpose=bestRessource;
-								fprintf(logFile, "[%d] sdp7 destinationPurpose=%d\n", gid, destinationPurpose);
 								assert(activity==ACT_FILLING);
 								if (takeInExchangeBuilding)
 								{
@@ -233,7 +229,6 @@ void Unit::handleDisplacement(void)
 									}
 									else if (map->ressourceAvailableUpdate(teamNumber, destinationPurpose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
 									{
-										fprintf(logFile, "[%d] rab targetXY=(%d, %d)\n", gid, targetX, targetY);
 										displacement=DIS_GOING_TO_RESSOURCE;
 										validTarget=true;
 									}

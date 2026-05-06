@@ -12,7 +12,6 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include <Stream.h>
 #include <set>
 #include <climits>
@@ -70,7 +69,6 @@ void Unit::handleActivity(void)
 					if (b)
 					{
 						destinationPurpose=HEAL;
-						fprintf(logFile, "[%d] sdp2 destinationPurpose=%d\n", gid, destinationPurpose);
 						activity=ACT_UPGRADING;
 						attachedBuilding=b;
 						setTargetBuilding(b);
@@ -162,7 +160,6 @@ void Unit::handleActivity(void)
 				}
 
 				destinationPurpose=FEED;
-				fprintf(logFile, "[%d] sdp3 destinationPurpose=%d\n", gid, destinationPurpose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				setTargetBuilding(b);
@@ -181,7 +178,6 @@ void Unit::handleActivity(void)
 			if (b!=NULL)
 			{
 				destinationPurpose=HEAL;
-				fprintf(logFile, "[%d] sdp4 destinationPurpose=%d\n", gid, destinationPurpose);
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				setTargetBuilding(b);

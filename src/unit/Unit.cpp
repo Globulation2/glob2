@@ -12,7 +12,6 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include <Stream.h>
 #include <set>
 #include <climits>
@@ -30,8 +29,6 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
-	logFile = globalContainer->logFileManager->getFile("Unit.log");
-
 	// unit specification
 	this->typeNum = typeNum;
 
@@ -147,7 +144,6 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 	if (building->type->isVirtual)
 	{
 		destinationPurpose=-1;
-		fprintf(logFile, "[%d] sdp1 destinationPurpose=%d\n", gid, destinationPurpose);
 		activity=ACT_FLAG;
 		attachedBuilding=b;
 	    setTargetBuilding(b);
@@ -219,7 +215,6 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 						targetBuilding=NULL;
 						owner->map->ressourceAvailableUpdate(owner->teamNumber, destinationPurpose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 						validTarget=true;
-						//fprintf(logFile, "[%d] raa targetXY=(%d, %d)=%d\n", gid, targetX, targetY, rv);
 					}
 				}
 				break;
