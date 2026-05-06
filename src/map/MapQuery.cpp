@@ -16,46 +16,43 @@
 
 // Spatial queries: isFree*, isHardSpace*, doesUnitTouch*, immobile units, clearing area
 
-bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const
+// Shared per-tile predicate that drives every isFree*/isHardSpace* overload.
+// Each TileChecks flag toggles one occupancy/terrain test; ignoreGid lets the
+// gid-tolerant building overloads accept a specific occupant gid.
+// C++: Map.cpp historically inlined the same five tests in eight near-duplicate
+// bodies — see the original isFree*/isHardSpace* implementations.
+bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
+                    Uint32 teamMask, Uint16 ignoreGid) const
 {
-	if (isRessource(x, y))
+	if (c.noRessource && isRessource(x, y))
 		return false;
-	if (getBuilding(x, y)!=NOGBID)
+	Uint16 buid = getBuilding(x, y);
+	if (buid != NOGBID && buid != ignoreGid)
 		return false;
-	if (getGroundUnit(x, y)!=NOGUID)
+	if (c.noUnit && getGroundUnit(x, y) != NOGUID)
 		return false;
-	if (!canSwim && isWater(x, y))
+	if (c.waterBlocks && !canSwim && isWater(x, y))
 		return false;
-	if (getForbidden(x, y)&teamMask)
+	if (c.requireGrass && !isGrass(x, y))
+		return false;
+	if (c.checkForbidden && (getForbidden(x, y) & teamMask))
 		return false;
 	return true;
+}
+
+bool Map::isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const
+{
+	return checkTile(x, y, {true, true, true, false, true}, canSwim, teamMask, NOGBID);
 }
 
 bool Map::isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim) const
 {
-	if (isRessource(x, y))
-		return false;
-	if (getBuilding(x, y)!=NOGBID)
-		return false;
-	if (getGroundUnit(x, y)!=NOGUID)
-		return false;
-	if (!canSwim && isWater(x, y))
-		return false;
-	return true;
+	return checkTile(x, y, {true, true, true, false, false}, canSwim, 0, NOGBID);
 }
 
 bool Map::isFreeForBuilding(int x, int y) const
 {
-	if (isRessource(x, y))
-		return false;
-	if (getBuilding(x, y)!=NOGBID)
-		return false;
-	if (getGroundUnit(x, y)!=NOGUID)
-		return false;
-	if (isGrass(x, y))
-		return true;
-	else
-		return false;
+	return checkTile(x, y, {true, true, false, true, false}, false, 0, NOGBID);
 }
 
 bool Map::isFreeForBuilding(int x, int y, int w, int h) const
@@ -69,46 +66,22 @@ bool Map::isFreeForBuilding(int x, int y, int w, int h) const
 
 bool Map::isFreeForBuilding(int x, int y, int w, int h, Uint16 gid) const
 {
+	const TileChecks checks{true, true, false, true, false};
 	for (int yi=y; yi<y+h; yi++)
 		for (int xi=x; xi<x+w; xi++)
-			if (!isFreeForBuilding(xi, yi))
-			{
-				if (isRessource(xi, yi))
-					return false;
-				Uint16 buid=getBuilding(xi, yi);
-				if (buid!=NOGBID && buid!=gid)
-					return false;
-				if (getGroundUnit(xi, yi)!=NOGUID)
-					return false;
-				if (!isGrass(xi, yi))
-					return false;
-			}
+			if (!checkTile(xi, yi, checks, false, 0, gid))
+				return false;
 	return true;
 }
 
 bool Map::isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me) const
 {
-	if (isRessource(x, y))
-		return false;
-	if (getBuilding(x, y)!=NOGBID)
-		return false;
-	if (!canSwim && isWater(x, y))
-		return false;
-	if (getForbidden(x, y)&me)
-		return false;
-	return true;
+	return checkTile(x, y, {true, false, true, false, true}, canSwim, me, NOGBID);
 }
 
 bool Map::isHardSpaceForBuilding(int x, int y) const
 {
-	if (isRessource(x, y))
-		return false;
-	if (getBuilding(x, y)!=NOGBID)
-		return false;
-	if (isGrass(x, y))
-		return true;
-	else
-		return false;
+	return checkTile(x, y, {true, false, false, true, false}, false, 0, NOGBID);
 }
 
 bool Map::isHardSpaceForBuilding(int x, int y, int w, int h) const
@@ -122,17 +95,11 @@ bool Map::isHardSpaceForBuilding(int x, int y, int w, int h) const
 
 bool Map::isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid) const
 {
+	const TileChecks checks{true, false, false, true, false};
 	for (int yi=y; yi<y+h; yi++)
 		for (int xi=x; xi<x+w; xi++)
-		{
-			if (isRessource(xi, yi))
+			if (!checkTile(xi, yi, checks, false, 0, gid))
 				return false;
-			Uint16 buid=getBuilding(xi, yi);
-			if (buid!=NOGBID && buid!=gid)
-				return false;
-			if (!isGrass(xi, yi))
-				return false;
-		}
 	return true;
 }
 

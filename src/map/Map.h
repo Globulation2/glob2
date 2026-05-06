@@ -405,7 +405,25 @@ public:
 	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
 	void decRessource(int x, int y, int ressourceType);
 	bool incRessource(int x, int y, int ressourceType, int variety);
-	
+
+private:
+	//! Per-tile predicate driver shared by isFree*/isHardSpace*.
+	//! Each flag toggles whether one occupancy/terrain test contributes to rejection.
+	struct TileChecks {
+		bool noRessource    : 1; //!< reject if a ressource sits on the tile
+		bool noUnit         : 1; //!< reject if a ground unit sits on the tile
+		bool waterBlocks    : 1; //!< reject water tiles unless canSwim is true
+		bool requireGrass   : 1; //!< reject any tile whose terrain isn't grass
+		bool checkForbidden : 1; //!< reject if the tile's forbidden mask intersects teamMask
+	};
+	//! Returns true iff (x,y) passes every enabled check. A building whose gid
+	//! equals ignoreGid is treated as not present (used by the gid-tolerant
+	//! isFreeForBuilding/isHardSpaceForBuilding overloads); pass NOGBID to make
+	//! every occupant building reject.
+	bool checkTile(int x, int y, TileChecks c, bool canSwim,
+	               Uint32 teamMask, Uint16 ignoreGid) const;
+
+public:
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const;
 	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim) const;
