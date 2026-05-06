@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <optional>
 
 #include <FileManager.h>
 #include <GUITextInput.h>
@@ -390,15 +391,12 @@ void GameGUI::step(void)
 	}
 
 	assert(localTeam);
-	std::shared_ptr<GameEvent> gevent = localTeam->getEvent();
-	while(gevent)
+	while(std::optional<GameEvent> gevent = localTeam->getEvent())
 	{
-		Color c = gevent->formatColor();
-		addMessage(c, gevent->formatMessage(), false);
+		addMessage(gevent->formatColor(), gevent->formatMessage(), false);
 		eventGoPosX = gevent->getX();
 		eventGoPosY = gevent->getY();
 		eventGoType = gevent->getEventType();
-		gevent = localTeam->getEvent();
 	}
 
 	// voice step

@@ -117,12 +117,10 @@ void Unit::handleActivity(void)
 					// Unit conversion code
 
 					// Send events and keep track of number of unit converted
-					std::shared_ptr<GameEvent> event(new UnitLostConversionEvent(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
-					currentTeam->pushGameEvent(event);
+					currentTeam->pushGameEvent(GameEvent::unitLostConversion(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
 					currentTeam->unitConversionLost++;
 
-					std::shared_ptr<GameEvent> event2(new UnitGainedConversionEvent(owner->game->stepCounter, posX, posY, currentTeam->getFirstPlayerName()));
-					targetTeam->pushGameEvent(event2);
+					targetTeam->pushGameEvent(GameEvent::unitGainedConversion(owner->game->stepCounter, posX, posY, currentTeam->getFirstPlayerName()));
 					targetTeam->unitConversionGained++;
 
 					// Find free slot in other team

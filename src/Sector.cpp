@@ -118,8 +118,7 @@ void Sector::step(void)
 				int id = Unit::GIDtoID(gid);
 				
 				
-				std::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->typeNum));
-				game->teams[team]->pushGameEvent(event);
+				game->teams[team]->pushGameEvent(GameEvent::unitUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->typeNum));
 		
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
@@ -144,8 +143,7 @@ void Sector::step(void)
 					Building *building = game->teams[team]->myBuildings[id];
 					int damage = bullet->shootDamage-building->type->armor; 
 					
-					std::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(game->stepCounter, bullet->targetX, bullet->targetY, building->shortTypeNum));
-					game->teams[team]->pushGameEvent(event);
+					game->teams[team]->pushGameEvent(GameEvent::buildingUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, building->shortTypeNum));
 					
 					if (damage > 0)
 						building->hp -= damage;

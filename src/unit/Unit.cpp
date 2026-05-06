@@ -251,8 +251,7 @@ void Unit::syncStep(void)
 
 			enemy->underAttackTimer = 240;
 
-			std::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
-			enemy->owner->pushGameEvent(event);
+			enemy->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
 
 			incrementExperience(degats);
 		}
@@ -271,8 +270,7 @@ void Unit::syncStep(void)
 
 				enemy->underAttackTimer = 240;
 
-				std::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
-				enemy->owner->pushGameEvent(event);
+				enemy->owner->pushGameEvent(GameEvent::buildingUnderAttack(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
 
 				if (enemy->hp<0)
 					enemy->kill();

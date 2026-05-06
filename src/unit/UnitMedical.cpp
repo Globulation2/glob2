@@ -145,8 +145,7 @@ void Unit::handleMagic(void)
 							{
 								enemyUnit->hp -= damage;
 
-								std::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
-								enemyUnit->owner->pushGameEvent(event);
+								enemyUnit->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
 
 								incrementExperience(damage);
 								magicActionAnimation = MAGIC_ACTION_ANIMATION_FRAME_COUNT;

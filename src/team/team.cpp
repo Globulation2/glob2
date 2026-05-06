@@ -205,24 +205,25 @@ void Team::checkControllingPlayers(void)
 
 
 
-void Team::pushGameEvent(std::shared_ptr<GameEvent> event)
+void Team::pushGameEvent(GameEvent event)
 {
 	///Ignore events when the cooldown is above 0
-	if(eventCooldownTimers[event->getEventType()] == 0)
+	GameEventType eventType = event.getEventType();
+	if(eventCooldownTimers[eventType] == 0)
 	{
-		events.push(event);
-		eventCooldownTimers[event->getEventType()]=50;
+		events.push(std::move(event));
+		eventCooldownTimers[eventType] = 50;
 	}
 }
 
 
 
-std::shared_ptr<GameEvent> Team::getEvent()
+std::optional<GameEvent> Team::getEvent()
 {
 	if(events.empty())
-		return std::shared_ptr<GameEvent>();
+		return std::nullopt;
 
-	std::shared_ptr<GameEvent> event = events.front();
+	GameEvent event = std::move(events.front());
 	events.pop();
 	return event;
 }
@@ -238,17 +239,16 @@ void Team::updateEvents()
 	}
 
 
-	bool testAnother=true;
-	while(testAnother && !events.empty())
+	while(!events.empty())
 	{
-		std::shared_ptr<GameEvent> event = events.front();
-		if((game->stepCounter - event->getStep()) > 100)
+		const GameEvent& event = events.front();
+		if((game->stepCounter - event.getStep()) > 100)
 		{
 			events.pop();
 		}
 		else
 		{
-			testAnother=false;
+			break;
 		}
 	}
 }
