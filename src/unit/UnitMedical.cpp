@@ -228,9 +228,9 @@ void Unit::handleMedical(void)
 			else
 				owner->map->setGroundUnit(posX, posY, NOGUID);
 
-			if(previousClearingAreaX!=static_cast<unsigned int>(-1))
+			if (previousClearingArea)
 			{
-				owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
+				owner->map->setClearingAreaUnclaimed(previousClearingArea->x, previousClearingArea->y, owner->teamNumber);
 			}
 			owner->map->clearImmobileUnit(posX, posY);
 

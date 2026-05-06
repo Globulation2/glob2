@@ -18,15 +18,62 @@
 
 void Unit::handleMovement(void)
 {
-	// This variable says whether the unit is going to a clearing area
-	if(previousClearingAreaX != static_cast<unsigned int>(-1))
+	// Release any clearing-area claim from a prior tick before this unit decides
+	// what to do this tick. Note: distance is intentionally NOT reset here — it
+	// must survive the per-tick reset (see Unit.h declaration comment).
+	if (previousClearingArea)
 	{
-		owner->map->setClearingAreaUnclaimed(previousClearingAreaX, previousClearingAreaY, owner->teamNumber);
-		previousClearingAreaX = static_cast<unsigned int>(-1);
-		previousClearingAreaY = static_cast<unsigned int>(-1);
+		owner->map->setClearingAreaUnclaimed(previousClearingArea->x, previousClearingArea->y, owner->teamNumber);
+		previousClearingArea.reset();
 	}
 
+	if (tryClaimClearingAreaForHarvesting())
+		return;
 
+	switch (displacement)
+	{
+		case DIS_REMOVING_BLACK_AROUND:
+			handleMovementRemovingBlackAround();
+			break;
+		case DIS_ATTACKING_AROUND:
+			handleMovementAttackingAround();
+			break;
+		case DIS_CLEARING_RESSOURCES:
+			handleMovementClearingResources();
+			break;
+		case DIS_RANDOM:
+			handleMovementRandom();
+			break;
+		case DIS_GOING_TO_FLAG:
+		case DIS_GOING_TO_BUILDING:
+			handleMovementGoingToFlagOrBuilding();
+			break;
+		case DIS_ENTERING_BUILDING:
+			handleMovementEnteringBuilding();
+			break;
+		case DIS_INSIDE:
+			handleMovementInside();
+			break;
+		case DIS_EXITING_BUILDING:
+			handleMovementExitingBuilding();
+			break;
+		case DIS_GOING_TO_RESSOURCE:
+			handleMovementGoingToRessource();
+			break;
+		case DIS_HARVESTING:
+			handleMovementHarvesting();
+			break;
+		case DIS_FILLING_BUILDING:
+			handleMovementFillingBuilding();
+			break;
+		default:
+			assert(false);
+			break;
+	}
+}
+
+bool Unit::tryClaimClearingAreaForHarvesting()
+{
 	// clearArea code, override behavior locally
 	if (typeNum == WORKER &&
 		medical == MED_FREE &&
@@ -54,80 +101,82 @@ void Unit::handleMovement(void)
 					&& !(mapCase.forbidden & owner->me))
 				{
 					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber, gid);
-					previousClearingAreaX = (posX+tdx)  & map->wMask;
-					previousClearingAreaY = (posY+tdy)  & map->hMask;
+					previousClearingArea = ClearingAreaClaim{
+						static_cast<Uint32>((posX+tdx) & map->wMask),
+						static_cast<Uint32>((posY+tdy) & map->hMask)
+					};
 					dx = tdx;
 					dy = tdy;
 					movement = MOV_HARVESTING;
-					return;
+					return true;
 				}
 			}
 	}
+	return false;
+}
 
-	switch (displacement)
+void Unit::handleMovementRemovingBlackAround()
+{
+	assert(performance[FLY]);
+	if (attachedBuilding)
 	{
-		case DIS_REMOVING_BLACK_AROUND:
+		movement=MOV_GOING_DX_DY;
+		int bposX=attachedBuilding->posX;
+		int bposY=attachedBuilding->posY;
+
+		int ldx=bposX-posX;
+		int ldy=bposY-posY;
+		int cdx, cdy;
+		simplifyDirection(ldx, ldy, &cdx, &cdy);
+
+		dx=-cdy;
+		dy=cdx;
+		if (!owner->map->isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->sharedVisionOther))
 		{
-			assert(performance[FLY]);
-			if (attachedBuilding)
+			dx=cdx;
+			dy=cdy;
+		}
+	}
+	else if ((movement!=MOV_GOING_DX_DY)||((syncRand()&0xFF)<0xEF))
+	{
+		// "c" is the center of the unit, "x" are the sample spots:
+		// oxoooxo
+		//ooooooooo
+		//xooooooox
+		//ooooooooo
+		//oooocoooo
+		//ooooooooo
+		//xooooooox
+		//ooooooooo
+		// oxoooxo
+		bool found = false;
+		const int dxTab[8] = {-4, -2, +2, +4, +4, +2, -2, -4};
+		const int dyTab[8] = {-2, -4, -4, -2, +2, +4, +4, +2};
+		int tab[8];
+		for (int i = 0; i < 8; i++)
+		{
+			tab[i] = owner->map->getExplored(posX + dxTab[i], posY + dyTab[i], owner->teamNumber);
+			//also move around enemy towers:
+			if(locationIsInEnemyGuardTowerRange(posX + dxTab[i], posY + dyTab[i]))tab[i]=1;
+		}
+		for (int di = 0; di < 8; di++)
+		{
+			int d = (di + direction + 4) % 8;
+			//Move in a direction in which you circle counter-clockwise
+			//about explored area, while exploring.
+			if ((tab[d] > 0) && (tab[(d + 1) % 8] == 0) && (tab[(d + 2) % 8] == 0))
 			{
-				movement=MOV_GOING_DX_DY;
-				int bposX=attachedBuilding->posX;
-				int bposY=attachedBuilding->posY;
-
-				int ldx=bposX-posX;
-				int ldy=bposY-posY;
-				int cdx, cdy;
-				simplifyDirection(ldx, ldy, &cdx, &cdy);
-
-				dx=-cdy;
-				dy=cdx;
-				if (!owner->map->isMapDiscovered(posX+4*cdx, posY+4*cdy, owner->sharedVisionOther))
-				{
-					dx=cdx;
-					dy=cdy;
-				}
+				direction = (d + 1) % 8;
+				dxDyFromDirection();
+				movement = MOV_GOING_DX_DY;
+				found = true;
+				break;
 			}
-			else if ((movement!=MOV_GOING_DX_DY)||((syncRand()&0xFF)<0xEF))
-			{
-				// "c" is the center of the unit, "x" are the sample spots:
-				// oxoooxo
-				//ooooooooo
-				//xooooooox
-				//ooooooooo
-				//oooocoooo
-				//ooooooooo
-				//xooooooox
-				//ooooooooo
-				// oxoooxo
-				bool found = false;
-				const int dxTab[8] = {-4, -2, +2, +4, +4, +2, -2, -4};
-				const int dyTab[8] = {-2, -4, -4, -2, +2, +4, +4, +2};
-				int tab[8];
-				for (int i = 0; i < 8; i++)
-				{
-					tab[i] = owner->map->getExplored(posX + dxTab[i], posY + dyTab[i], owner->teamNumber);
-					//also move around enemy towers:
-					if(locationIsInEnemyGuardTowerRange(posX + dxTab[i], posY + dyTab[i]))tab[i]=1;
-				}
-				for (int di = 0; di < 8; di++)
-				{
-					int d = (di + direction + 4) % 8;
-					//Move in a direction in which you circle counter-clockwise
-					//about explored area, while exploring.
-					if ((tab[d] > 0) && (tab[(d + 1) % 8] == 0) && (tab[(d + 2) % 8] == 0))
-					{
-						direction = (d + 1) % 8;
-						dxDyFromDirection();
-						movement = MOV_GOING_DX_DY;
-						found = true;
-						break;
-					}
-				}
-				if (!found)
-				{
-					int scoreX = 0;
-					int scoreY = 0;
+		}
+		if (!found)
+		{
+			int scoreX = 0;
+			int scoreY = 0;
                                         /* The next line should really be calculated only once per game.  How to do this?  The point is to avoid wrapping around the torus in considering what area is closer to us. */
                                         int maxRange = (std::min(owner->map->getW(), owner->map->getH())) / 2;
                                         /* We sample cells at various
@@ -138,437 +187,396 @@ void Unit::handleMovement(void)
                                           {
                                             for (int delta = -3; delta <= 3; delta++)
                                               {
-						scoreX += owner->map->getExplored(posX - (4*range), posY + (delta*range), owner->teamNumber);
-						scoreX -= owner->map->getExplored(posX + (4*range), posY + (delta*range), owner->teamNumber);
-						scoreY += owner->map->getExplored(posX + (delta*range), posY - (4*range), owner->teamNumber);
-						scoreY -= owner->map->getExplored(posX + (delta*range), posY + (4*range), owner->teamNumber);
+					scoreX += owner->map->getExplored(posX - (4*range), posY + (delta*range), owner->teamNumber);
+					scoreX -= owner->map->getExplored(posX + (4*range), posY + (delta*range), owner->teamNumber);
+					scoreY += owner->map->getExplored(posX + (delta*range), posY - (4*range), owner->teamNumber);
+					scoreY -= owner->map->getExplored(posX + (delta*range), posY + (4*range), owner->teamNumber);
                                               }
                                           }
-					int cdx, cdy;
-					simplifyDirection(scoreX, scoreY, &cdx, &cdy);
+			int cdx, cdy;
+			simplifyDirection(scoreX, scoreY, &cdx, &cdy);
 
-					if (cdx == 0 && cdy == 0)
-						movement = MOV_RANDOM_FLY;
-					else
-					{
-						dx = cdx;
-						dy = cdy;
-						directionFromDxDy();
-						movement = MOV_GOING_DX_DY;
-					}
-				}
-			}
-			if (movement!=MOV_GOING_DX_DY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
-				movement=MOV_RANDOM_FLY;
-		}
-		break;
-
-		case DIS_ATTACKING_AROUND:
-		{
-			assert(performance[ATTACK_SPEED]);
-			int quality=INT_MAX; // Smaller is better.
-			movement=MOV_RANDOM_GROUND;
-
-			///Don't change targets if we still have a valid target
-			if (auto off = owner->map->doesUnitTouchEnemy(this))
-			{
-				dx = off->dx;
-				dy = off->dy;
-				targetX = posX+dx;
-				targetY = posY+dy;
-				movement=MOV_ATTACKING_TARGET;
-			}
+			if (cdx == 0 && cdy == 0)
+				movement = MOV_RANDOM_FLY;
 			else
 			{
-				Building *tempTargetBuilding=NULL;
-				// we look for the best target to attack around us
-				for (int x=-8; x<=8; x++)
-				{
-					for (int y=-8; y<=8; y++)
-					{
-						if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVisionOther))
-						{
-							if (attachedBuilding &&
-								owner->map->warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
-									>((int)attachedBuilding->unitStayRange*(int)attachedBuilding->unitStayRange))
-								continue;
-							Uint16 gid;
-							gid=owner->map->getBuilding(posX+x, posY+y);
-							if (gid!=NOGBID)
-							{
-								int team=Building::GIDtoTeam(gid);
-								if (owner->enemies & (1<<team))
-								{
-									int id=Building::GIDtoID(gid);
-									int newQuality=((x*x+y*y)<<8);
-									Building *b=owner->game->teams[team]->myBuildings[id];
-									BuildingType *bt=b->type;
-									int shootDamage=bt->shootDamage;
-									newQuality/=(1+shootDamage);
-
-									if (newQuality<quality)
-									{
-										bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, 12);
-										if(pathfind)
-										{
-											if (abs(x)<=1 && abs(y)<=1)
-											{
-												movement=MOV_ATTACKING_TARGET;
-												dx=x;
-												dy=y;
-											}
-											else
-											{
-												movement=MOV_GOING_TARGET;
-												tempTargetBuilding=b;
-											}
-											targetX=posX+x;
-											targetY=posY+y;
-											validTarget=true;
-											quality=newQuality;
-										}
-									}
-								}
-							}
-							gid=owner->map->getGroundUnit(posX+x, posY+y);
-							if (gid!=NOGUID)
-							{
-								int team=Unit::GIDtoTeam(gid);
-								Uint32 tm=(1<<team);
-								if (owner->enemies & tm)
-								{
-									int id=Building::GIDtoID(gid);
-									Unit *u=owner->game->teams[team]->myUnits[id];
-									if (((owner->sharedVisionExchange & tm)==0))
-									{
-										int attackStrength=u->getRealAttackStrength();
-										int newQuality=((x*x+y*y)<<8)/(1+attackStrength);
-
-										if (newQuality<quality)
-										{
-											bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, 12);
-											if(pathfind)
-											{
-												if (abs(x)<=1 && abs(y)<=1)
-												{
-													movement=MOV_ATTACKING_TARGET;
-													dx=x;
-													dy=y;
-												}
-												else
-												{
-													movement=MOV_GOING_TARGET;
-													tempTargetBuilding=NULL;
-												}
-												targetX=posX+x;
-												targetY=posY+y;
-												validTarget=true;
-												quality=newQuality;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
-			// if we haven't found anything satisfactory, follow guard area gradients
-			if (movement == MOV_RANDOM_GROUND)
-			{
-				if (!attachedBuilding && owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
-				{
-					directionFromDxDy();
-					movement = MOV_GOING_DX_DY;
-					// get the target position of guard area for display
-					owner->map->getGlobalGradientDestination(owner->map->guardAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
-					validTarget=true;
-				}
-				else if (attachedBuilding || (owner->map->getGuardAreasGradient(posX, posY, performance[SWIM]>0, owner->teamNumber) == 255))
-				{
-					// are we into the guard area or war flag, and we have to go to the least known area.
-					int bestExplored = 3*255;
-					int bestDirection = -1;
-					for (int di = 0; di < 8; di++)
-					{
-						int d = (direction + di) & 7;
-						int cdx, cdy;
-						dxDyFromDirection(d, &cdx, &cdy);
-						if (!owner->map->isFreeForGroundUnit(posX + cdx, posY + cdy, performance[SWIM]>0, owner->me))
-							continue;
-						if (attachedBuilding)
-						{
-							if (owner->map->warpDistSquare(posX + cdx, posY + cdy, attachedBuilding->posX, attachedBuilding->posY)
-								> ((int)attachedBuilding->unitStayRange * (int)attachedBuilding->unitStayRange))
-								continue;
-						}
-						else
-						{
-							if (owner->map->getGuardAreasGradient(posX + cdx, posY + cdy, performance[SWIM]>0, owner->teamNumber) != 255)
-								continue;
-						}
-						Uint8 explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);
-						explored += owner->map->getExplored(posX + 2*cdx - cdy, posY + 2*cdy + cdx, owner->teamNumber);
-						explored += owner->map->getExplored(posX + 2*cdx + cdy, posY + 2*cdy - cdx, owner->teamNumber);
-						if (bestExplored > explored)
-						{
-							bestExplored = explored;
-							bestDirection = d;
-						}
-					}
-					if (bestDirection >= 0)
-					{
-						direction = bestDirection;
-						dxDyFromDirection();
-						movement = MOV_GOING_DX_DY;
-						validTarget = false;
-					}
-					else
-					{
-						movement = MOV_RANDOM_GROUND;
-						validTarget = false;
-					}
-				}
-				else
-				{
-					// this case happens when no movement could be found because of busy places or because we are in a guard area or because there is no guard area
-					movement = MOV_RANDOM_GROUND;
-					validTarget = false;
-				}
-			}
-		}
-		break;
-
-		case DIS_CLEARING_RESSOURCES:
-		{
-			Map *map=owner->map;
-			if (movement==MOV_HARVESTING)
-			{
-				map->decRessource(posX+dx, posY+dy);
-				hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
-			}
-
-			int bx=attachedBuilding->posX;
-			int by=attachedBuilding->posY;
-			int usr=attachedBuilding->unitStayRange;
-			int usr2=usr*usr;
-			for (int tdx=-1; tdx<=1; tdx++)
-				for (int tdy=-1; tdy<=1; tdy++)
-				{
-					int x=posX+tdx;
-					int y=posY+tdy;
-					if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isRessourceTakeable(x, y, attachedBuilding->clearingRessources) && !(owner->map->isForbidden(x, y, owner->me)))
-					{
-						dx=tdx;
-						dy=tdy;
-						movement=MOV_HARVESTING;
-						return;
-					}
-				}
-			bool canSwim=performance[SWIM];
-			assert(attachedBuilding);
-			if (map->pathfindLocalRessource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
-			{
+				dx = cdx;
+				dy = cdy;
 				directionFromDxDy();
-				movement=MOV_GOING_DX_DY;
-			}
-			else if (attachedBuilding->anyRessourceToClear[canSwim]==2)
-			{
-				stopAttachedForBuilding(false);
-				movement=MOV_RANDOM_GROUND;
-			}
-			else
-				movement=MOV_RANDOM_GROUND;
-		}
-		break;
-
-		case DIS_RANDOM:
-		{
-			Map *map=owner->map;
-			std::optional<Offset> enemyOff;
-			if (performance[ATTACK_SPEED] && medical==MED_FREE)
-				enemyOff = map->doesUnitTouchEnemy(this);
-			if (enemyOff)
-			{
-				dx = enemyOff->dx;
-				dy = enemyOff->dy;
-				movement=MOV_ATTACKING_TARGET;
-			}
-			else if (performance[FLY])
-				movement=MOV_RANDOM_FLY;
-			else if (map->getForbidden(posX, posY)&owner->me)
-			{
-				if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
-					directionFromDxDy();
-				else
-				{
-					dx=0;
-					dy=0;
-					direction=8;
-				}
-				movement=MOV_GOING_DX_DY;
-			}
-			else if(performance[HARVEST])
-			{
-				///Value of 254 means nothing found
-				int distance = 255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
-				if(distance < ((hungry-trigHungry) / race->hungryness) && distance < 254 && medical == MED_FREE)
-				{
-					int tempTargetX, tempTargetY;
-					bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
-					int guid = owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber);
-					int other_distance = INT_MAX;
-					if(guid != NOGUID)
-					{
-						Unit* unit = owner->myUnits[GIDtoID(guid)];
-						if(unit)
-							other_distance = unit->previousClearingAreaDistance;
-					}
-					if(path && distance < other_distance)
-					{
-						dx=0;
-						dy=0;
-						owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
-
-						targetX = tempTargetX;
-						targetY = tempTargetY;
-						previousClearingAreaX = tempTargetX;
-						previousClearingAreaY = tempTargetY;
-						previousClearingAreaDistance = distance;
-
-						if(guid != NOGUID)
-						{
-							Unit* unit = owner->myUnits[GIDtoID(guid)];
-							if(unit)
-							{
-								unit->previousClearingAreaX=static_cast<unsigned int>(-1);
-								unit->previousClearingAreaY=static_cast<unsigned int>(-1);
-								unit->previousClearingAreaDistance=static_cast<unsigned int>(-1);
-							}
-						}
-
-						//Find clearing resource
-						directionFromDxDy();
-						movement = MOV_GOING_DX_DY;
-						owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber, gid);
-						validTarget=true;
-					}
-					else
-						movement=MOV_RANDOM_GROUND;
-				}
-				else
-					movement=MOV_RANDOM_GROUND;
-			}
-			else
-				movement=MOV_RANDOM_GROUND;
-		}
-		break;
-
-		case DIS_GOING_TO_FLAG:
-		case DIS_GOING_TO_BUILDING:
-		{
-			Map *map=owner->map;
-			bool canSwim=performance[SWIM];
-
-			std::optional<Offset> enemyOff;
-			if (performance[ATTACK_SPEED] && medical==MED_FREE)
-				enemyOff = map->doesUnitTouchEnemy(this);
-			if (enemyOff)
-			{
-				dx = enemyOff->dx;
-				dy = enemyOff->dy;
-				movement=MOV_ATTACKING_TARGET;
-			}
-			else if (performance[FLY])
-			{
-				movement=MOV_FLYING_TARGET;
-			}
-			else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy, verbose))
-			{
-				movement=MOV_GOING_DX_DY;
-			}
-			else
-			{
-				stopAttachedForBuilding(true);
-				movement=MOV_RANDOM_GROUND;
+				movement = MOV_GOING_DX_DY;
 			}
 		}
-		break;
-
-		case DIS_ENTERING_BUILDING:
-		{
-			movement=MOV_ENTERING_BUILDING;
-		}
-		break;
-
-		case DIS_INSIDE:
-		{
-			movement=MOV_INSIDE;
-		}
-		break;
-
-		case DIS_EXITING_BUILDING:
-		{
-			bool exitFound;
-			if (performance[FLY])
-				exitFound=attachedBuilding->findAirExit(&posX, &posY, &dx, &dy);
-			else
-				exitFound=attachedBuilding->findGroundExit(&posX, &posY, &dx, &dy, performance[SWIM]);
-			if (exitFound)
-			{
-				activity=ACT_RANDOM;
-				movement=MOV_EXITING_BUILDING;
-				attachedBuilding->removeUnitFromInside(this);
-				attachedBuilding->updateConstructionState();
-				attachedBuilding=NULL;
-				setTargetBuilding(NULL);
-				assert(ownExchangeBuilding==NULL);
-				assert(needToRecheckMedical);
-			}
-			else
-			{
-				movement=MOV_INSIDE;
-			}
-		}
-		break;
-
-		case DIS_GOING_TO_RESSOURCE:
-		{
-			Map *map=owner->map;
-			int teamNumber=owner->teamNumber;
-			bool canSwim=performance[SWIM]>0;
-			bool stopWork;
-			if (map->pathfindRessource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork, verbose))
-			{
-				directionFromDxDy();
-				movement=MOV_GOING_DX_DY;
-			}
-			else
-			{
-				if (stopWork)
-					stopAttachedForBuilding(false);
-				movement=MOV_RANDOM_GROUND;
-			}
-		}
-		break;
-
-		case DIS_HARVESTING:
-		{
-			movement=MOV_HARVESTING;
-		}
-		break;
-
-		case DIS_FILLING_BUILDING:
-		{
-			movement=MOV_FILLING;
-		}
-		break;
-
-		default:
-		{
-			assert (false);
-		}
-		break;
 	}
+	if (movement!=MOV_GOING_DX_DY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
+		movement=MOV_RANDOM_FLY;
+}
+
+void Unit::handleMovementAttackingAround()
+{
+	assert(performance[ATTACK_SPEED]);
+	int quality=INT_MAX; // Smaller is better.
+	movement=MOV_RANDOM_GROUND;
+
+	///Don't change targets if we still have a valid target
+	if (auto off = owner->map->doesUnitTouchEnemy(this))
+	{
+		dx = off->dx;
+		dy = off->dy;
+		targetX = posX+dx;
+		targetY = posY+dy;
+		movement=MOV_ATTACKING_TARGET;
+	}
+	else
+	{
+		// we look for the best target to attack around us
+		for (int x=-8; x<=8; x++)
+		{
+			for (int y=-8; y<=8; y++)
+			{
+				if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVisionOther))
+				{
+					if (attachedBuilding &&
+						owner->map->warpDistSquare(posX+x, posY+y, attachedBuilding->posX, attachedBuilding->posY)
+							>((int)attachedBuilding->unitStayRange*(int)attachedBuilding->unitStayRange))
+						continue;
+					Uint16 gid;
+					gid=owner->map->getBuilding(posX+x, posY+y);
+					if (gid!=NOGBID)
+					{
+						int team=Building::GIDtoTeam(gid);
+						if (owner->enemies & (1<<team))
+						{
+							int id=Building::GIDtoID(gid);
+							int newQuality=((x*x+y*y)<<8);
+							Building *b=owner->game->teams[team]->myBuildings[id];
+							BuildingType *bt=b->type;
+							int shootDamage=bt->shootDamage;
+							newQuality/=(1+shootDamage);
+							tryAcquireAttackTarget(x, y, newQuality, quality);
+						}
+					}
+					gid=owner->map->getGroundUnit(posX+x, posY+y);
+					if (gid!=NOGUID)
+					{
+						int team=Unit::GIDtoTeam(gid);
+						Uint32 tm=(1<<team);
+						if (owner->enemies & tm)
+						{
+							int id=Building::GIDtoID(gid);
+							Unit *u=owner->game->teams[team]->myUnits[id];
+							if (((owner->sharedVisionExchange & tm)==0))
+							{
+								int attackStrength=u->getRealAttackStrength();
+								int newQuality=((x*x+y*y)<<8)/(1+attackStrength);
+								tryAcquireAttackTarget(x, y, newQuality, quality);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// if we haven't found anything satisfactory, follow guard area gradients
+	if (movement == MOV_RANDOM_GROUND)
+	{
+		if (!attachedBuilding && owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+		{
+			directionFromDxDy();
+			movement = MOV_GOING_DX_DY;
+			// get the target position of guard area for display
+			owner->map->getGlobalGradientDestination(owner->map->guardAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
+			validTarget=true;
+		}
+		else if (attachedBuilding || (owner->map->getGuardAreasGradient(posX, posY, performance[SWIM]>0, owner->teamNumber) == 255))
+		{
+			// are we into the guard area or war flag, and we have to go to the least known area.
+			int bestExplored = 3*255;
+			int bestDirection = -1;
+			for (int di = 0; di < 8; di++)
+			{
+				int d = (direction + di) & 7;
+				int cdx, cdy;
+				dxDyFromDirection(d, &cdx, &cdy);
+				if (!owner->map->isFreeForGroundUnit(posX + cdx, posY + cdy, performance[SWIM]>0, owner->me))
+					continue;
+				if (attachedBuilding)
+				{
+					if (owner->map->warpDistSquare(posX + cdx, posY + cdy, attachedBuilding->posX, attachedBuilding->posY)
+						> ((int)attachedBuilding->unitStayRange * (int)attachedBuilding->unitStayRange))
+						continue;
+				}
+				else
+				{
+					if (owner->map->getGuardAreasGradient(posX + cdx, posY + cdy, performance[SWIM]>0, owner->teamNumber) != 255)
+						continue;
+				}
+				Uint8 explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);
+				explored += owner->map->getExplored(posX + 2*cdx - cdy, posY + 2*cdy + cdx, owner->teamNumber);
+				explored += owner->map->getExplored(posX + 2*cdx + cdy, posY + 2*cdy - cdx, owner->teamNumber);
+				if (bestExplored > explored)
+				{
+					bestExplored = explored;
+					bestDirection = d;
+				}
+			}
+			if (bestDirection >= 0)
+			{
+				direction = bestDirection;
+				dxDyFromDirection();
+				movement = MOV_GOING_DX_DY;
+				validTarget = false;
+			}
+			else
+			{
+				movement = MOV_RANDOM_GROUND;
+				validTarget = false;
+			}
+		}
+		else
+		{
+			// this case happens when no movement could be found because of busy places or because we are in a guard area or because there is no guard area
+			movement = MOV_RANDOM_GROUND;
+			validTarget = false;
+		}
+	}
+}
+
+void Unit::tryAcquireAttackTarget(int x, int y, int newQuality, int& quality)
+{
+	if (newQuality >= quality)
+		return;
+	bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, 12);
+	if (!pathfind)
+		return;
+	if (abs(x)<=1 && abs(y)<=1)
+	{
+		movement=MOV_ATTACKING_TARGET;
+		dx=x;
+		dy=y;
+	}
+	else
+	{
+		movement=MOV_GOING_TARGET;
+	}
+	targetX=posX+x;
+	targetY=posY+y;
+	validTarget=true;
+	quality=newQuality;
+}
+
+void Unit::handleMovementClearingResources()
+{
+	Map *map=owner->map;
+	if (movement==MOV_HARVESTING)
+	{
+		map->decRessource(posX+dx, posY+dy);
+		hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
+	}
+
+	int bx=attachedBuilding->posX;
+	int by=attachedBuilding->posY;
+	int usr=attachedBuilding->unitStayRange;
+	int usr2=usr*usr;
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+		{
+			int x=posX+tdx;
+			int y=posY+tdy;
+			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isRessourceTakeable(x, y, attachedBuilding->clearingRessources) && !(owner->map->isForbidden(x, y, owner->me)))
+			{
+				dx=tdx;
+				dy=tdy;
+				movement=MOV_HARVESTING;
+				return;
+			}
+		}
+	bool canSwim=performance[SWIM];
+	assert(attachedBuilding);
+	if (map->pathfindLocalRessource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
+	{
+		directionFromDxDy();
+		movement=MOV_GOING_DX_DY;
+	}
+	else if (attachedBuilding->anyRessourceToClear[canSwim]==2)
+	{
+		stopAttachedForBuilding(false);
+		movement=MOV_RANDOM_GROUND;
+	}
+	else
+		movement=MOV_RANDOM_GROUND;
+}
+
+void Unit::handleMovementRandom()
+{
+	Map *map=owner->map;
+	std::optional<Offset> enemyOff;
+	if (performance[ATTACK_SPEED] && medical==MED_FREE)
+		enemyOff = map->doesUnitTouchEnemy(this);
+	if (enemyOff)
+	{
+		dx = enemyOff->dx;
+		dy = enemyOff->dy;
+		movement=MOV_ATTACKING_TARGET;
+	}
+	else if (performance[FLY])
+		movement=MOV_RANDOM_FLY;
+	else if (map->getForbidden(posX, posY)&owner->me)
+	{
+		if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
+			directionFromDxDy();
+		else
+		{
+			dx=0;
+			dy=0;
+			direction=8;
+		}
+		movement=MOV_GOING_DX_DY;
+	}
+	else if(performance[HARVEST])
+	{
+		///Value of 254 means nothing found
+		int distance = 255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
+		if(distance < ((hungry-trigHungry) / race->hungryness) && distance < 254 && medical == MED_FREE)
+		{
+			int tempTargetX, tempTargetY;
+			bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
+			int guid = owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber);
+			int other_distance = INT_MAX;
+			if(guid != NOGUID)
+			{
+				Unit* unit = owner->myUnits[GIDtoID(guid)];
+				if(unit)
+					other_distance = unit->previousClearingAreaDistance;
+			}
+			if(path && distance < other_distance)
+			{
+				dx=0;
+				dy=0;
+				owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
+
+				targetX = tempTargetX;
+				targetY = tempTargetY;
+				previousClearingArea = ClearingAreaClaim{
+					static_cast<Uint32>(tempTargetX),
+					static_cast<Uint32>(tempTargetY)
+				};
+				previousClearingAreaDistance = distance;
+
+				if(guid != NOGUID)
+				{
+					Unit* unit = owner->myUnits[GIDtoID(guid)];
+					if(unit)
+					{
+						unit->previousClearingArea.reset();
+						unit->previousClearingAreaDistance=static_cast<Uint32>(-1);
+					}
+				}
+
+				//Find clearing resource
+				directionFromDxDy();
+				movement = MOV_GOING_DX_DY;
+				owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber, gid);
+				validTarget=true;
+			}
+			else
+				movement=MOV_RANDOM_GROUND;
+		}
+		else
+			movement=MOV_RANDOM_GROUND;
+	}
+	else
+		movement=MOV_RANDOM_GROUND;
+}
+
+void Unit::handleMovementGoingToFlagOrBuilding()
+{
+	Map *map=owner->map;
+	bool canSwim=performance[SWIM];
+
+	std::optional<Offset> enemyOff;
+	if (performance[ATTACK_SPEED] && medical==MED_FREE)
+		enemyOff = map->doesUnitTouchEnemy(this);
+	if (enemyOff)
+	{
+		dx = enemyOff->dx;
+		dy = enemyOff->dy;
+		movement=MOV_ATTACKING_TARGET;
+	}
+	else if (performance[FLY])
+	{
+		movement=MOV_FLYING_TARGET;
+	}
+	else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy, verbose))
+	{
+		movement=MOV_GOING_DX_DY;
+	}
+	else
+	{
+		stopAttachedForBuilding(true);
+		movement=MOV_RANDOM_GROUND;
+	}
+}
+
+void Unit::handleMovementEnteringBuilding()
+{
+	movement=MOV_ENTERING_BUILDING;
+}
+
+void Unit::handleMovementInside()
+{
+	movement=MOV_INSIDE;
+}
+
+void Unit::handleMovementExitingBuilding()
+{
+	bool exitFound;
+	if (performance[FLY])
+		exitFound=attachedBuilding->findAirExit(&posX, &posY, &dx, &dy);
+	else
+		exitFound=attachedBuilding->findGroundExit(&posX, &posY, &dx, &dy, performance[SWIM]);
+	if (exitFound)
+	{
+		activity=ACT_RANDOM;
+		movement=MOV_EXITING_BUILDING;
+		attachedBuilding->removeUnitFromInside(this);
+		attachedBuilding->updateConstructionState();
+		attachedBuilding=NULL;
+		setTargetBuilding(NULL);
+		assert(ownExchangeBuilding==NULL);
+		assert(needToRecheckMedical);
+	}
+	else
+	{
+		movement=MOV_INSIDE;
+	}
+}
+
+void Unit::handleMovementGoingToRessource()
+{
+	Map *map=owner->map;
+	int teamNumber=owner->teamNumber;
+	bool canSwim=performance[SWIM]>0;
+	bool stopWork;
+	if (map->pathfindRessource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork, verbose))
+	{
+		directionFromDxDy();
+		movement=MOV_GOING_DX_DY;
+	}
+	else
+	{
+		if (stopWork)
+			stopAttachedForBuilding(false);
+		movement=MOV_RANDOM_GROUND;
+	}
+}
+
+void Unit::handleMovementHarvesting()
+{
+	movement=MOV_HARVESTING;
+}
+
+void Unit::handleMovementFillingBuilding()
+{
+	movement=MOV_FILLING;
 }

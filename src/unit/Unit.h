@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 #include <assert.h>
 #include <string.h>
 
@@ -153,6 +154,26 @@ protected:
 	void handleActivity(void);
 	void handleDisplacement(void);
 	void handleMovement(void);
+	// handleMovement() helpers — one per Displacement state, plus the pre-switch
+	// "claim adjacent clearing-area cell" check. Behavior-preserving split of the
+	// original 555-line switch; keep helpers in lockstep with the dispatcher.
+	bool tryClaimClearingAreaForHarvesting();
+	void handleMovementRemovingBlackAround();
+	void handleMovementAttackingAround();
+	void handleMovementClearingResources();
+	void handleMovementRandom();
+	void handleMovementGoingToFlagOrBuilding();
+	void handleMovementEnteringBuilding();
+	void handleMovementInside();
+	void handleMovementExitingBuilding();
+	void handleMovementGoingToRessource();
+	void handleMovementHarvesting();
+	void handleMovementFillingBuilding();
+	// Shared post-quality-comparison logic for handleMovementAttackingAround().
+	// If newQuality beats `quality`, calls pathfindPointToPoint and on success
+	// updates movement/dx/dy/targetX/targetY/validTarget and lowers `quality`.
+	// pathfindPointToPoint writes &dx,&dy regardless of success — by design.
+	void tryAcquireAttackTarget(int x, int y, int newQuality, int& quality);
 	void handleAction(void);
 	
 	void endOfAction(void);
@@ -236,9 +257,15 @@ public:
 	int levelUpAnimation;
 	int magicActionAnimation;
 	
-	// These store the previous clearing area target coordinates
-	Uint32 previousClearingAreaX;
-	Uint32 previousClearingAreaY;
+	// (x, y) of the clearing-area cell this unit has claimed on the map. nullopt =
+	// no current claim. The pre-tick reset in handleMovement() releases the claim
+	// and resets this back to nullopt.
+	struct ClearingAreaClaim { Uint32 x; Uint32 y; };
+	std::optional<ClearingAreaClaim> previousClearingArea;
+	// Distance from this unit's position to its claimed cell at the time of the
+	// last gradient-based claim (handleMovementRandom only — tryClaimClearingArea
+	// ForHarvesting does not update this). Read by other units via the cross-unit
+	// theft check; intentionally retains its prior value across the per-tick reset.
 	Uint32 previousClearingAreaDistance;
 	
 public:

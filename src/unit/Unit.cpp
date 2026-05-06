@@ -111,8 +111,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	carriedRessource=-1;
 	jobTimer = 0;
 
-	previousClearingAreaX=static_cast<unsigned int>(-1);
-	previousClearingAreaY=static_cast<unsigned int>(-1);
+	previousClearingArea=std::nullopt;
 	previousClearingAreaDistance=0;
 
 	// gui

@@ -98,8 +98,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	jobTimer = stream->readSint32("jobTimer");
 
-	previousClearingAreaX=static_cast<unsigned int>(-1);
-	previousClearingAreaY=static_cast<unsigned int>(-1);
+	previousClearingArea=std::nullopt;
 	previousClearingAreaDistance=0;
 
 	// gui
