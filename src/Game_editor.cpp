@@ -25,7 +25,6 @@
 #include "Game.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Unit.h"
 #include "UnitSkin.h"
@@ -154,7 +153,6 @@ void Game::clearingUncontrolledTeams(void)
 		Team *team=teams[ti];
 		if (team->playersMask==0)
 		{
-			fprintf(logFile, "clearing team %d\n", ti);
 			team->clearMap();
 			team->clearLists();
 			team->clearMem();

@@ -25,7 +25,6 @@
 #include "Game.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Unit.h"
 #include "UnitSkin.h"
@@ -64,7 +63,6 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 		int h=bt->height;
 		if (!map.isHardSpaceForBuilding(posX, posY, w, h))
 		{
-			fprintf(logFile, "BuildProject failure (%d, %d)\n", posX, posY);
 			Uint32 notTeamMask=~Team::teamNumberToMask(teamNumber);
 			for (int y=posY; y<posY+h; y++)
 				for (int x=posX; x<posX+w; x++)
@@ -101,7 +99,6 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 				map.updateForbiddenGradient(teamNumber);
 				b->owner->addToStaticAbilitiesLists(b);
 				b->update();
-				fprintf(logFile, "BuildProject success (%d, %d)\n", posX, posY);
 				std::list<BuildProject>::iterator to_erase=bpi;
 				bpi++;
 				buildProjects.erase(to_erase);

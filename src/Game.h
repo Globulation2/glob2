@@ -266,7 +266,6 @@ public:
 	bool generateMap(MapGenerationDescriptor &descriptor);
 
 protected:
-	FILE *logFile;
 	int ticksGameSum[Team::MAX_COUNT];
 };
 

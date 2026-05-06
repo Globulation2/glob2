@@ -26,7 +26,6 @@
 #include "Game.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Unit.h"
 #include "UnitSkin.h"
@@ -68,7 +67,6 @@ bool Game::load(GAGCore::InputStream *stream)
 		printf("Loading map header\n");
 	if (!tempMapHeader.load(stream))
 	{
-		fprintf(logFile, "Game::load::tempMapHeader.load\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -82,7 +80,6 @@ bool Game::load(GAGCore::InputStream *stream)
 		printf("Loading game header\n");
 	if (!tempGameHeader.load(stream, versionMinor))
 	{
-		fprintf(logFile, "Game::load::tempMapHeader.load\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -94,7 +91,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	stream->read(signature, 4, "signatureStart");
 	if (memcmp(signature,"GaBe", 4)!=0)
 	{
-		fprintf(logFile, "Signature missmatch at Game::load begin\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -112,7 +108,6 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->read(signature, 4, "signatureAfterSyncRand");
 		if (memcmp(signature,"GaSy", 4)!=0)
 		{
-			fprintf(logFile, "Signature missmatch after Game::load sync rand\n");
 			stream->readLeaveSection();
 			return false;
 		}
@@ -122,7 +117,6 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->read(signature, 4, "signatureBeforeTeams");
 		if (memcmp(signature,"GaBt", 4)!=0)
 		{
-			fprintf(logFile, "Signature missmatch before Game::load teams \n");
 			stream->readLeaveSection();
 			return false;
 		}
@@ -141,7 +135,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	stream->read(signature, 4, "signatureAfterTeams");
 	if (memcmp(signature,"GaTe", 4)!=0)
 	{
-		fprintf(logFile, "Signature missmatch after Game::load teams\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -149,7 +142,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	// Load the map. Team has to be saved and loaded first.
 	if(!map.load(stream, mapHeader, this))
 	{
-		fprintf(logFile, "Signature missmatch in map\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -157,7 +149,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	stream->read(signature, 4, "signatureAfterMap");
 	if (memcmp(signature,"GaMa", 4)!=0)
 	{
-		fprintf(logFile, "Signature missmatch after map\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -175,7 +166,6 @@ bool Game::load(GAGCore::InputStream *stream)
 	stream->read(signature, 4, "signatureAfterPlayers");
 	if (memcmp(signature,"GaPl", 4)!=0)
 	{
-		fprintf(logFile, "Signature missmatch after players\n");
 		stream->readLeaveSection();
 		return false;
 	}

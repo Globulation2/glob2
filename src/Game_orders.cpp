@@ -28,7 +28,6 @@
 #include "Game.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Unit.h"
 #include "UnitSkin.h"
@@ -102,7 +101,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 						b->unitStayRange = oc->flagRadius;
 						b->unitStayRangeLocal = oc->flagRadius;
 					}
-					fprintf(logFile, "ORDER_CREATE (%d, %d, %d)", posX, posY, bt->shortTypeNum);
 					b->owner->addToStaticAbilitiesLists(b);
 					b->update();
 				}
@@ -112,7 +110,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 				BuildProject buildProject;
 				buildProject.posX = posX;
 				buildProject.posY = posY;
-				fprintf(logFile, "new BuildProject (%d, %d)", posX, posY);
 				buildProject.teamNumber = oc->teamNumber;
 				buildProject.typeNum = oc->typeNum;
 				buildProject.unitWorking = oc->unitWorking;
@@ -142,7 +139,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
-				fprintf(logFile, "ORDER_MODIFY_BUILDING");
 				assert(omb->numberRequested <= 20);
 				b->maxUnitWorking=omb->numberRequested;
 				b->maxUnitWorkingPreferred=b->maxUnitWorking;
@@ -163,7 +159,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
-				fprintf(logFile, "ORDER_MODIFY_EXCHANGE");
 				b->receiveRessourceMask=ome->receiveRessourceMask;
 				b->sendRessourceMask=ome->sendRessourceMask;
 				if (order->sender!=localPlayer)
@@ -186,7 +181,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->defaultUnitStayRange))
 			{
-				fprintf(logFile, "ORDER_MODIFY_FLAG");
 				int oldRange=b->unitStayRange;
 				int newRange=omf->range;
 				b->unitStayRange=newRange;
@@ -236,7 +230,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 				&& b->type->defaultUnitStayRange
 				&& b->type->zonable[WORKER])
 			{
-				fprintf(logFile, "ORDER_MODIFY_CLEARING_FLAG");
 				memcpy(b->clearingRessources, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
 				if (order->sender!=localPlayer)
 					memcpy(b->clearingRessourcesLocal, omcf->clearingRessources, sizeof(bool)*BASIC_COUNT);
@@ -256,7 +249,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 				&& b->type->defaultUnitStayRange
 				&& (b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
 			{
-				fprintf(logFile, "ORDER_MODIFY_MIN_LEVEL_TO_FLAG");
 				b->minLevelToFlag = omwf->minLevelToFlag;
 				// if it was another player, update local
 				if (order->sender != localPlayer)
@@ -283,7 +275,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->isVirtual))
 			{
-				fprintf(logFile, "ORDER_MOVE_FLAG");
 				if (drop && b->type->zonableForbidden)
 				{
 					int range=b->unitStayRange;
@@ -327,7 +318,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_ALTERATE_FORBIDDEN:
 		{
-			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
 			std::shared_ptr<OrderAlterateForbidden> oaa = std::static_pointer_cast<OrderAlterateForbidden>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
@@ -380,7 +370,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_ALTERATE_GUARD_AREA:
 		{
-			fprintf(logFile, "ORDER_ALTERATE_GUARD_AREA");
 			std::shared_ptr<OrderAlterateGuardArea> oaa = std::static_pointer_cast<OrderAlterateGuardArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
@@ -427,7 +416,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_ALTERATE_CLEAR_AREA:
 		{
-			fprintf(logFile, "ORDER_ALTERATE_CLEAR_AREA");
 			std::shared_ptr<OrderAlterateClearArea> oaa = std::static_pointer_cast<OrderAlterateClearArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
@@ -483,7 +471,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE) && (b->type->unitProductionTime))
 			{
-				fprintf(logFile, "ORDER_MODIFY_SWARM");
 				for (int j=0; j<NB_UNIT_TYPE; j++)
 				{
 					b->ratio[j]=oms->ratio[j];
@@ -502,7 +489,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if (b)
 			{
-				fprintf(logFile, "ORDER_DELETE");
 				b->launchDelete();
 				assert(b->type);
 				if (b->type->zonableForbidden)
@@ -523,7 +509,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if (b)
 			{
-				fprintf(logFile, "ORDER_CHANGE_PRIORITY");
 				b->priority = priority;
 				b->updateCallLists();
 			}
@@ -537,7 +522,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if (b)
 			{
-				fprintf(logFile, "ORDER_CANCEL_DELETE");
 				b->cancelDelete();
 			}
 		}
@@ -555,7 +539,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=t->myBuildings[id];
 			if (b)
 			{
-				fprintf(logFile, "ORDER_CONSTRUCTION");
 				b->launchConstruction(oc->unitWorking, oc->unitWorkingFuture);
 			}
 		}
@@ -572,7 +555,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=t->myBuildings[id];
 			if (b)
 			{
-				fprintf(logFile, "ORDER_CANCEL_CONSTRUCTION");
 				b->cancelConstruction(oc->unitWorking);
 			}
 		}
@@ -586,7 +568,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			teams[team]->sharedVisionExchange=sao->visionExchangeMask;
 			teams[team]->sharedVisionFood=sao->visionFoodMask;
 			teams[team]->sharedVisionOther=sao->visionOtherMask;
-			fprintf(logFile, "ORDER_SET_ALLIANCE");
 		}
 		break;
 		case ORDER_PLAYER_QUIT_GAME:
@@ -611,7 +592,6 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 
 			players[pqgo->player]->makeItAI(AI::NONE);
 			gameHeader.getBasePlayer(pqgo->player).makeItAI(AI::NONE);
-			fprintf(logFile, "ORDER_PLAYER_QUIT_GAME");
 		}
 		break;
 	}

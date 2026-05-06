@@ -25,7 +25,6 @@
 #include "Game.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Order.h"
 #include "Unit.h"
 #include "UnitSkin.h"
@@ -51,31 +50,11 @@
 Game::Game(GameGUI *gui, MapEdit* edit):
 	mapscript(gui)
 {
-	logFile = globalContainer->logFileManager->getFile("Game.log");
-
 	init(gui, edit);
 }
 
 Game::~Game()
 {
-	int sum=0;
-	for (int i=0; i<Team::MAX_COUNT; i++)
-		sum+=ticksGameSum[i];
-	if (sum)
-	{
-		fprintf(logFile, "(sync)stepCounter=%d\n", stepCounter);
-		fprintf(logFile, "execution time of Game::step: sum=%d\n", sum);
-		for (int i=0; i<Team::MAX_COUNT; i++)
-			fprintf(logFile, "ticksGameSum[%2d]=%8d, (%f %%)\n", i, ticksGameSum[i], (float)ticksGameSum[i]*100./(float)sum);
-		fprintf(logFile, "\n");
-		for (int i=0; i<Team::MAX_COUNT; i++)
-		{
-			fprintf(logFile, "ticksGameSum[%2d]=", i);
-			for (int j=0; j<(int)(0.5+(float)ticksGameSum[i]*100./(float)sum); j++)
-				fprintf(logFile, "*");
-			fprintf(logFile, "\n");
-		}
-	}
 
 	overlayAlphas.resize(0);
 
