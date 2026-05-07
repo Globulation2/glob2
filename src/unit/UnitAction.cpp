@@ -12,190 +12,190 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include <Stream.h>
-#include <set>
-#include <climits>
+
+namespace
+{
+	// In MOV_RANDOM_FLY, we resample (dx,dy) up to this many times trying to find a
+	// step that doesn't cross into an enemy guard tower's range. If all attempts
+	// land inside tower range, the last sampled (dx,dy) is used as a fallback —
+	// the unit takes the hit rather than stalling.
+	constexpr int RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS = 5;
+
+	// Maximum path length budget for MOV_GOING_TARGET's pathfindPointToPoint call.
+	constexpr int GOING_TARGET_MAX_PATH_LENGTH = 12;
+}
+
+void Unit::wrapPosition()
+{
+	posX=(posX+dx)&(owner->map->getMaskW());
+	posY=(posY+dy)&(owner->map->getMaskH());
+}
+
+void Unit::clearOccupiedMapSlot()
+{
+	if (performance[FLY])
+		owner->map->setAirUnit(posX, posY, NOGUID);
+	else
+		owner->map->setGroundUnit(posX, posY, NOGUID);
+}
+
+void Unit::claimOccupiedMapSlot()
+{
+	if (performance[FLY])
+	{
+		assert(owner->map->getAirUnit(posX, posY)==NOGUID);
+		owner->map->setAirUnit(posX, posY, gid);
+	}
+	else
+	{
+		assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
+		owner->map->setGroundUnit(posX, posY, gid);
+	}
+}
+
+void Unit::handleActionRandomGround()
+{
+	assert(!performance[FLY]);
+	clearOccupiedMapSlot();
+	owner->map->pathfindRandom(this, verbose);
+	wrapPosition();
+	selectPreferredGroundMovement();
+	speed=performance[action];
+	claimOccupiedMapSlot();
+}
+
+void Unit::handleActionRandomFly()
+{
+	assert(performance[FLY]);
+	clearOccupiedMapSlot();
+	for(int q = 0; q < RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS; ++q)
+	{
+		dx=-1+syncRand()%3;
+		dy=-1+syncRand()%3;
+		if(!locationIsInEnemyGuardTowerRange(posX + dx, posY + dy))
+			break;
+	}
+	directionFromDxDy();
+	setNewValidDirectionAir();
+	wrapPosition();
+	action=FLY;
+	speed=performance[FLY];
+	claimOccupiedMapSlot();
+}
+
+void Unit::handleActionGoingTarget()
+{
+	assert(!performance[FLY]);
+	clearOccupiedMapSlot();
+	owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, &dx, &dy, performance[SWIM] > 0, owner->me, GOING_TARGET_MAX_PATH_LENGTH);
+	directionFromDxDy();
+	wrapPosition();
+
+	if(dx == 0 && dy == 0)
+		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+
+	selectPreferredGroundMovement();
+	speed=performance[action];
+	claimOccupiedMapSlot();
+}
+
+void Unit::handleActionFlyingTarget()
+{
+	// No assert(getAirUnit==NOGUID) on the final claim — two flyers can
+	// converge on the same target tile, so the destination slot may be
+	// non-empty. Direct setAirUnit calls preserve that, unlike claimOccupiedMapSlot().
+	owner->map->setAirUnit(posX, posY, NOGUID);
+
+	flyToTarget();
+
+	wrapPosition();
+
+	action=FLY;
+	speed=performance[FLY];
+
+	owner->map->setAirUnit(posX, posY, gid);
+}
+
+void Unit::handleActionGoingDxDy()
+{
+	clearOccupiedMapSlot();
+
+	directionFromDxDy();
+
+	wrapPosition();
+
+	if(dx == 0 && dy == 0)
+		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+
+	selectPreferredMovement();
+	speed=performance[action];
+
+	claimOccupiedMapSlot();
+
+	if (verbose)
+		printf("guid=(%d) MOV_GOING_DX_DY d=(%d, %d; %d).\n", gid, direction, dx, dy);
+}
+
+void Unit::handleActionEnteringBuilding()
+{
+	// NOTE : this is a hack : We don't delete the unit on the map
+	// because we have to draw it while it is entering.
+	// owner->map->setUnit(posX, posY, NOUID);
+	wrapPosition();
+	directionFromDxDy();
+	selectPreferredMovement();
+	speed=performance[action];
+}
+
+void Unit::handleActionExitingBuilding()
+{
+	directionFromDxDy();
+	selectPreferredMovement();
+	speed=performance[action];
+	claimOccupiedMapSlot();
+}
+
+void Unit::handleActionFilling()
+{
+	owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	directionFromDxDy();
+	action=BUILD;
+	speed=performance[action];
+}
+
+void Unit::handleActionAttackingTarget()
+{
+	owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	directionFromDxDy();
+	action=ATTACK_SPEED;
+	speed=performance[action];
+}
+
+void Unit::handleActionHarvesting()
+{
+	owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	directionFromDxDy();
+	action=HARVEST;
+	speed=performance[action];
+	assert(speed!=0);
+}
 
 void Unit::handleAction(void)
 {
 	owner->map->clearImmobileUnit(posX, posY);
 	switch (movement)
 	{
-		case MOV_RANDOM_GROUND:
-		{
-			assert(!performance[FLY]);
-			owner->map->setGroundUnit(posX, posY, NOGUID);
-			owner->map->pathfindRandom(this, verbose);
-			posX=(posX+dx)&(owner->map->getMaskW());
-			posY=(posY+dy)&(owner->map->getMaskH());
-			selectPreferredGroundMovement();
-			speed=performance[action];
-			assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
-			owner->map->setGroundUnit(posX, posY, gid);
-			break;
-		}
-
-		case MOV_RANDOM_FLY:
-		{
-			assert(performance[FLY]);
-			owner->map->setAirUnit(posX, posY, NOGUID);
-			for(int q = 0; q < 5; ++q) //hack - look for a direction safe from guard towers
-			{
-				dx=-1+syncRand()%3;
-				dy=-1+syncRand()%3;
-				if(locationIsInEnemyGuardTowerRange(posX + dx, posY + dy))continue;
-				else break;
-			}
-			directionFromDxDy();
-			setNewValidDirectionAir();
-			posX=(posX+dx)&(owner->map->getMaskW());
-			posY=(posY+dy)&(owner->map->getMaskH());
-			action=FLY;
-			speed=performance[FLY];
-			assert(owner->map->getAirUnit(posX, posY)==NOGUID);
-			owner->map->setAirUnit(posX, posY, gid);
-			break;
-		}
-
-		case MOV_GOING_TARGET:
-		{
-			assert(!performance[FLY]);
-			owner->map->setGroundUnit(posX, posY, NOGUID);
-			owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, 12);
-			directionFromDxDy();
-			posX=(posX+dx)&(owner->map->getMaskW());
-			posY=(posY+dy)&(owner->map->getMaskH());
-
-			if(dx == 0 && dy == 0)
-				owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
-
-			selectPreferredGroundMovement();
-			speed=performance[action];
-			assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
-			owner->map->setGroundUnit(posX, posY, gid);
-			break;
-		}
-
-		case MOV_FLYING_TARGET:
-		{
-			owner->map->setAirUnit(posX, posY, NOGUID);
-
-			flyToTarget();
-
-			posX=(posX+dx)&(owner->map->getMaskW());
-			posY=(posY+dy)&(owner->map->getMaskH());
-
-			action=FLY;
-			speed=performance[FLY];
-
-			owner->map->setAirUnit(posX, posY, gid);
-			break;
-		}
-
-		case MOV_GOING_DX_DY:
-		{
-			bool fly=performance[FLY];
-			if (fly)
-				owner->map->setAirUnit(posX, posY, NOGUID);
-			else
-				owner->map->setGroundUnit(posX, posY, NOGUID);
-
-			directionFromDxDy();
-
-			posX=(posX+dx)&(owner->map->getMaskW());
-			posY=(posY+dy)&(owner->map->getMaskH());
-
-			if(dx == 0 && dy == 0)
-				owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
-
-			selectPreferredMovement();
-			speed=performance[action];
-
-			if (fly)
-			{
-				assert(owner->map->getAirUnit(posX, posY)==NOGUID);
-				owner->map->setAirUnit(posX, posY, gid);
-			}
-			else
-			{
-				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
-				owner->map->setGroundUnit(posX, posY, gid);
-			}
-
-			if (verbose)
-				printf("guid=(%d) MOV_GOING_DX_DY d=(%d, %d; %d).\n", gid, direction, dx, dy);
-			break;
-		}
-
-		case MOV_ENTERING_BUILDING:
-		{
-			// NOTE : this is a hack : We don't delete the unit on the map
-			// because we have to draw it while it is entering.
-			// owner->map->setUnit(posX, posY, NOUID);
-			posX=(posX+dx)&(owner->map->getMaskW());
-			posY=(posY+dy)&(owner->map->getMaskH());
-			directionFromDxDy();
-			selectPreferredMovement();
-			speed=performance[action];
-			break;
-		}
-
-		case MOV_EXITING_BUILDING:
-		{
-			directionFromDxDy();
-			selectPreferredMovement();
-			speed=performance[action];
-
-			if (performance[FLY])
-			{
-				assert(owner->map->getAirUnit(posX, posY)==NOGUID);
-				owner->map->setAirUnit(posX, posY, gid);
-			}
-			else
-			{
-				assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
-				owner->map->setGroundUnit(posX, posY, gid);
-			}
-			break;
-		}
-
-		case MOV_INSIDE:
-		{
-			break;
-		}
-
-		case MOV_FILLING:
-		{
-			owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
-			directionFromDxDy();
-			action=BUILD;
-			speed=performance[action];
-			break;
-		}
-
-		case MOV_ATTACKING_TARGET:
-		{
-			owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
-			directionFromDxDy();
-			action=ATTACK_SPEED;
-			speed=performance[action];
-			break;
-		}
-
-		case MOV_HARVESTING:
-		{
-			owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
-			directionFromDxDy();
-			action=HARVEST;
-			speed=performance[action];
-			assert(speed!=0);
-			break;
-		}
-
-		default:
-		{
-			assert (false);
-			break;
-		}
+		case MOV_RANDOM_GROUND:     handleActionRandomGround();     break;
+		case MOV_RANDOM_FLY:        handleActionRandomFly();        break;
+		case MOV_GOING_TARGET:      handleActionGoingTarget();      break;
+		case MOV_FLYING_TARGET:     handleActionFlyingTarget();     break;
+		case MOV_GOING_DX_DY:       handleActionGoingDxDy();        break;
+		case MOV_ENTERING_BUILDING: handleActionEnteringBuilding(); break;
+		case MOV_EXITING_BUILDING:  handleActionExitingBuilding();  break;
+		case MOV_INSIDE:                                            break;
+		case MOV_FILLING:           handleActionFilling();          break;
+		case MOV_ATTACKING_TARGET:  handleActionAttackingTarget();  break;
+		case MOV_HARVESTING:        handleActionHarvesting();       break;
+		default:                    assert(false);                  break;
 	}
 }

@@ -175,7 +175,25 @@ protected:
 	// pathfindPointToPoint writes &dx,&dy regardless of success — by design.
 	void tryAcquireAttackTarget(int x, int y, int newQuality, int& quality);
 	void handleAction(void);
-	
+	// handleAction() helpers — collapse the repeated clear-slot/wrap-move/claim-slot
+	// pattern. Air vs ground is selected by performance[FLY], matching the existing
+	// asserts in cases that hardcode one or the other.
+	void wrapPosition();
+	void clearOccupiedMapSlot();
+	void claimOccupiedMapSlot();
+	// One per Movement (MOV_*) enum value. handleAction() switches into these.
+	// MOV_INSIDE is a no-op so it has no helper.
+	void handleActionRandomGround();
+	void handleActionRandomFly();
+	void handleActionGoingTarget();
+	void handleActionFlyingTarget();
+	void handleActionGoingDxDy();
+	void handleActionEnteringBuilding();
+	void handleActionExitingBuilding();
+	void handleActionFilling();
+	void handleActionAttackingTarget();
+	void handleActionHarvesting();
+
 	void endOfAction(void);
 	
 	void setNewValidDirectionGround(void);
