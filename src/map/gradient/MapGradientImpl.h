@@ -311,19 +311,16 @@ template<typename Tint> void Map::updateGlobalGradientVersionChamfer(Uint8 *grad
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
-	#define USE_DYNAMICAL_GRADIENT_VERSION_SR
-
 #if defined(LOG_SIMON_GRADIENT)
 	FILE *logSimon = globalContainer->logFileManager->getFile("Simon.log");
 	fprintf(logSimon, "gradientType: %d\n", gradientType);
 	fprintf(logSimon, "canSwim: %d\n", canSwim);
 #endif
 
-	// Phase 2 dual-run probe: when GLOB2_GRADIENT_DUAL_RUN is set, snapshot the
-	// seeded gradient twice (one for chamfer to consume, one preserved for the
-	// divergence dump), run BFS on the original, run chamfer on the snapshot,
-	// and compare. Any divergence aborts with the offending gradientType plus
-	// the first eight differing cells (x, y, bfs, chamfer).
+	// Phase 4: chamfer is production. Dual-run snapshots the seeded gradient
+	// before chamfer runs, then runs the SR-style BFS on the snapshot as a
+	// conformance reference and compares. Any divergence aborts with the
+	// offending gradientType plus the first 64 differing cells.
 	static const bool dualRun = getenv("GLOB2_GRADIENT_DUAL_RUN") != nullptr;
 	Uint8 *bfsCopy = nullptr;
 	Uint8 *seedSnap = nullptr;
@@ -335,63 +332,16 @@ template<typename Tint> void Map::updateGlobalGradient(
 		memcpy(seedSnap, gradient, size);
 	}
 
-	#if defined(USE_GRADIENT_VERSION_SIMON)
-		updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
-
-	#elif defined(USE_GRADIENT_VERSION_SIMPLE)
-		updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-
-	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION_SR)
-		if (gradientType == GT_RESOURCE)
-			updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
-		else
-			updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-
-	#elif defined(USE_DYNAMICAL_GRADIENT_VERSION)
-		// use the fastest gradient computation for each GradientType:
-		switch (gradientType)
-		{
-			case GT_UNDEFINED:
-				updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
-				// speed 105.09% compare to simple on test
-			break;
-
-			case GT_RESOURCE:
-				updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
-				//speed 104.76% compare to simple on test
-			break;
-
-			case GT_BUILDING:
-				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-			break;
-
-			case GT_FORBIDDEN:
-				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-			break;
-
-			case GT_GUARD_AREA:
-				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-				// fastest one here
-			break;
-
-			case GT_CLEAR_AREA:
-				updateGlobalGradientVersionSimple<Tint>(gradient, listedAddr, listCountWrite, gradientType);
-				// fastest one here
-			break;
-
-			default:
-				assert(false);
-				abort();
-			break;
-		}
-
-	#else
-		#error Please select a gradient version
-	#endif
+	updateGlobalGradientVersionChamfer<Tint>(gradient, gradientType);
 
 	if (dualRun)
 	{
-		updateGlobalGradientVersionChamfer<Tint>(bfsCopy, gradientType);
+		// SR-style BFS reference: Simon for GT_RESOURCE, Simple otherwise.
+		if (gradientType == GT_RESOURCE)
+			updateGlobalGradientVersionSimon<Tint>(bfsCopy, listedAddr, listCountWrite);
+		else
+			updateGlobalGradientVersionSimple<Tint>(bfsCopy, listedAddr, listCountWrite, gradientType);
+
 		if (memcmp(gradient, bfsCopy, size) != 0)
 		{
 			static const char* gtNames[GT_SIZE] = {
@@ -413,7 +363,7 @@ template<typename Tint> void Map::updateGlobalGradient(
 					{
 						size_t y = i >> wDec;
 						size_t x = i & wMask;
-						fprintf(dump, "  (x=%zu y=%zu) bfs=%u chamfer=%u\n",
+						fprintf(dump, "  (x=%zu y=%zu) chamfer=%u bfs=%u\n",
 							x, y, (unsigned)gradient[i], (unsigned)bfsCopy[i]);
 						shown++;
 					}
@@ -435,8 +385,8 @@ template<typename Tint> void Map::updateGlobalGradient(
 				                  (Uint32)listCountWrite, (Uint32)sizeof(Tint) };
 				fwrite(hdr, sizeof(hdr), 1, binDump);
 				fwrite(seedSnap, 1, size, binDump);
-				fwrite(gradient, 1, size, binDump);   // BFS result
-				fwrite(bfsCopy,  1, size, binDump);   // chamfer result
+				fwrite(bfsCopy,  1, size, binDump);   // BFS result
+				fwrite(gradient, 1, size, binDump);   // chamfer result
 				fwrite(listedAddr, sizeof(Tint), listCountWrite, binDump);
 				fclose(binDump);
 			}
