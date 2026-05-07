@@ -418,6 +418,13 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+	// Line-buffer stderr/stdout so abort() and assert failures don't swallow
+	// the last log line. macOS block-buffers redirected stdio, and abort()
+	// is not required to flush — without this, "fprintf(stderr, ...) ; abort()"
+	// loses the message whenever stderr is a redirected file.
+	setvbuf(stderr, NULL, _IOLBF, 0);
+	setvbuf(stdout, NULL, _IOLBF, 0);
+
 #if defined(__APPLE__) && !defined(YOG_SERVER_ONLY)
 	/* SDL has this annoying "feature" of setting working directory to parent
 	   of bundle during static initialization.  We want to set it back to the
