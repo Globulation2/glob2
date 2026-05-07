@@ -48,11 +48,59 @@
 
 // Save/load, integrity, checksum. Split out of Game.cpp.
 
+namespace
+{
+	// RAII guard: enters a stream section on construction, leaves it on
+	// destruction unless commit() was called. Lets failure paths just
+	// `return false;` without remembering to call readLeaveSection().
+	// Note: readLeaveSection is a no-op for BinaryStream (the format used
+	// for save files); it only affects TextStream nesting.
+	class ReadSectionGuard
+	{
+		GAGCore::InputStream *stream;
+		bool committed = false;
+	public:
+		ReadSectionGuard(GAGCore::InputStream *s, const char *name) : stream(s)
+		{
+			stream->readEnterSection(name);
+		}
+		ReadSectionGuard(const ReadSectionGuard &) = delete;
+		ReadSectionGuard &operator=(const ReadSectionGuard &) = delete;
+		void commit()
+		{
+			stream->readLeaveSection();
+			committed = true;
+		}
+		~ReadSectionGuard()
+		{
+			if (!committed)
+				stream->readLeaveSection();
+		}
+	};
+
+	// Read a 4-byte signature and check it equals `expected`. Signatures are
+	// basic corruption tests scattered through the save format.
+	bool readMatchingSignature(GAGCore::InputStream *stream,
+	                           const char *expected,
+	                           const char *fieldName)
+	{
+		char signature[4];
+		stream->read(signature, 4, fieldName);
+		return memcmp(signature, expected, 4) == 0;
+	}
+
+	// Right-rotate by 1 bit. Used to mix per-section checksums into the
+	// running game checksum so that re-ordered identical inputs produce
+	// different outputs. Match this exactly in the Rust port — the rotation
+	// is part of the on-the-wire checksum, not just a stylistic choice.
+	inline Uint32 rotr1(Uint32 x) { return (x << 31) | (x >> 1); }
+}
+
 bool Game::load(GAGCore::InputStream *stream)
 {
 	assert(stream);
 
-	stream->readEnterSection("Game");
+	ReadSectionGuard gameSection(stream, "Game");
 
 	///Clears any previous game
 	clearGame();
@@ -64,10 +112,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (verbose)
 		printf("Loading map header\n");
 	if (!tempMapHeader.load(stream))
-	{
-		stream->readLeaveSection();
 		return false;
-	}
 	mapHeader=tempMapHeader;
 	Sint32 versionMinor=mapHeader.getVersionMinor();
 
@@ -77,21 +122,11 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (verbose)
 		printf("Loading game header\n");
 	if (!tempGameHeader.load(stream, versionMinor))
-	{
-		stream->readLeaveSection();
 		return false;
-	}
 	gameHeader=tempGameHeader;
 
-	// Test the beginning signature. Signatures are basic corruption tests.
-	// Since Game loads many other structures, it has many of them.
-	char signature[4];
-	stream->read(signature, 4, "signatureStart");
-	if (memcmp(signature,"GaBe", 4)!=0)
-	{
-		stream->readLeaveSection();
+	if (!readMatchingSignature(stream, "GaBe", "signatureStart"))
 		return false;
-	}
 
 	///Load the step counter
 	stepCounter = stream->readUint32("stepCounter");
@@ -103,21 +138,13 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->readUint32("SyncRandSeedB");
 		stream->readUint32("SyncRandSeedC");
 
-		stream->read(signature, 4, "signatureAfterSyncRand");
-		if (memcmp(signature,"GaSy", 4)!=0)
-		{
-			stream->readLeaveSection();
+		if (!readMatchingSignature(stream, "GaSy", "signatureAfterSyncRand"))
 			return false;
-		}
 	}
 	else
 	{
-		stream->read(signature, 4, "signatureBeforeTeams");
-		if (memcmp(signature,"GaBt", 4)!=0)
-		{
-			stream->readLeaveSection();
+		if (!readMatchingSignature(stream, "GaBt", "signatureBeforeTeams"))
 			return false;
-		}
 	}
 
 	///Load teams
@@ -130,26 +157,15 @@ bool Game::load(GAGCore::InputStream *stream)
 	}
 	stream->readLeaveSection();
 
-	stream->read(signature, 4, "signatureAfterTeams");
-	if (memcmp(signature,"GaTe", 4)!=0)
-	{
-		stream->readLeaveSection();
+	if (!readMatchingSignature(stream, "GaTe", "signatureAfterTeams"))
 		return false;
-	}
 
 	// Load the map. Team has to be saved and loaded first.
 	if(!map.load(stream, mapHeader, this))
-	{
-		stream->readLeaveSection();
 		return false;
-	}
 
-	stream->read(signature, 4, "signatureAfterMap");
-	if (memcmp(signature,"GaMa", 4)!=0)
-	{
-		stream->readLeaveSection();
+	if (!readMatchingSignature(stream, "GaMa", "signatureAfterMap"))
 		return false;
-	}
 
 	// Load the players. Both Map and Team must be loaded first.
 	stream->readEnterSection("players");
@@ -161,12 +177,8 @@ bool Game::load(GAGCore::InputStream *stream)
 	}
 	stream->readLeaveSection();
 
-	stream->read(signature, 4, "signatureAfterPlayers");
-	if (memcmp(signature,"GaPl", 4)!=0)
-	{
-		stream->readLeaveSection();
+	if (!readMatchingSignature(stream, "GaPl", "signatureAfterPlayers"))
 		return false;
-	}
 
 	// We have to finish Team's loading
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
@@ -180,10 +192,7 @@ bool Game::load(GAGCore::InputStream *stream)
 
 	// Now load the old map script
 	if (!sgslScript.load(stream, this))
-	{
-		stream->readLeaveSection();
 		return false;
-	}
 
 	if(versionMinor >= 82)
 	{
@@ -209,7 +218,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		gameHints.decodeData(stream, mapHeader.getVersionMinor());
 	}
 
-	stream->readLeaveSection();
+	gameSection.commit();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
 	///compute it now
@@ -295,24 +304,33 @@ bool Game::integrity(void)
 				int bid = Building::GIDtoID(c.building);
 				const auto building = teams[tid]->myBuildings[bid];
 				checkInvariant(building);
-				#define healBuildingOutsideCoord(expr, coordL, coordH) \
-					if (!(expr)) { \
-						std::cerr << "Invalid coordinate " << #coordH << "=" << coordL \
-							<< " for team " << tid \
-							<< " building " << bid \
-							<< " (" << building->type->type << ")" \
-							<< " with " << #coordH \
-							<< " span [" << building->pos ## coordH << ":" << buildingEnd ## coordH << "[, healing!" \
-							<< std::endl; \
-						map.getCase(x, y).building = NOGBID; \
+
+				// If a cell points at a building whose footprint doesn't
+				// actually cover this cell, log it and clear the bad GBID.
+				auto healOutsideCoord = [&](bool predicate, const char *coordName,
+				                            int coordValue, int posValue, int endValue)
+				{
+					if (!predicate)
+					{
+						std::cerr << "Invalid coordinate " << coordName << "=" << coordValue
+							<< " for team " << tid
+							<< " building " << bid
+							<< " (" << building->type->type << ")"
+							<< " with " << coordName
+							<< " span [" << posValue << ":" << endValue << "[, healing!"
+							<< std::endl;
+						map.getCase(x, y).building = NOGBID;
 					}
+				};
 
 				const auto buildingEndX = building->posX + building->type->width;
-				healBuildingOutsideCoord(x >= building->posX || x < (buildingEndX & map.wMask), x, X);
-				healBuildingOutsideCoord(x < buildingEndX, x, X);
+				healOutsideCoord(x >= building->posX || x < (buildingEndX & map.wMask),
+				                 "X", x, building->posX, buildingEndX);
+				healOutsideCoord(x < buildingEndX, "X", x, building->posX, buildingEndX);
 				const auto buildingEndY = building->posY + building->type->height;
-				healBuildingOutsideCoord(y >= building->posY || y < (buildingEndY & map.hMask), y, Y);
-				healBuildingOutsideCoord(y < buildingEndY, y, Y);
+				healOutsideCoord(y >= building->posY || y < (buildingEndY & map.hMask),
+				                 "Y", y, building->posY, buildingEndY);
+				healOutsideCoord(y < buildingEndY, "Y", y, building->posY, buildingEndY);
 			}
 			if (c.groundUnit != NOGUID)
 			{
@@ -349,16 +367,29 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	///will need to be overwritten with the mapOffset known.
 	///
 	/// We mutate mapHeader briefly to shape the on-disk record (mapName,
-	/// isSavedGame), then restore it at the end of the function. Without
-	/// the restore, every in-game save (the ReplayWriter's initial state
-	/// dump with name="replayHeader" and the GameGUI auto-save every 256
-	/// ticks with name="Auto save") would permanently overwrite the live
-	/// mapHeader.mapName — observable later in things like the
+	/// isSavedGame), then restore it on scope exit via the RAII guard
+	/// below. Without the restore, every in-game save (the ReplayWriter's
+	/// initial state dump with name="replayHeader" and the GameGUI auto-save
+	/// every 256 ticks with name="Auto save") would permanently overwrite
+	/// the live mapHeader.mapName — observable later in things like the
 	/// GLOB2_GAME_END "map=" field, which would read "Auto save" instead
 	/// of the actual map. Map-editor "Save As" still wants the new name
 	/// to persist; MapEdit::save() explicitly re-sets it after the call.
-	std::string savedMapName = mapHeader.getMapName();
-	bool savedIsSavedGame = mapHeader.getIsSavedGame();
+	struct MapHeaderRestoreGuard
+	{
+		MapHeader &header;
+		std::string savedMapName;
+		bool savedIsSavedGame;
+		MapHeaderRestoreGuard(MapHeader &h)
+			: header(h), savedMapName(h.getMapName()), savedIsSavedGame(h.getIsSavedGame()) {}
+		MapHeaderRestoreGuard(const MapHeaderRestoreGuard &) = delete;
+		MapHeaderRestoreGuard &operator=(const MapHeaderRestoreGuard &) = delete;
+		~MapHeaderRestoreGuard()
+		{
+			header.setMapName(savedMapName);
+			header.setIsSavedGame(savedIsSavedGame);
+		}
+	} mapHeaderRestore(mapHeader);
 
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
@@ -446,11 +477,8 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 
 	stream->writeLeaveSection();
 
-	// Restore live mapHeader state. See the comment at the top of this
-	// function for why we shouldn't permanently mutate. Order matters
-	// only inasmuch as both fields go back to their pre-save values.
-	mapHeader.setMapName(savedMapName);
-	mapHeader.setIsSavedGame(savedIsSavedGame);
+	// mapHeaderRestore's destructor restores the pre-save mapName and
+	// isSavedGame on scope exit.
 }
 
 Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy)
@@ -462,33 +490,33 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	if (checkSumsVector)
 		checkSumsVector->push_back(headerCs);// [0]
 
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 
 	Uint32 teamsCs=0;
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
 		teamsCs^=teams[i]->checkSum(checkSumsVector, checkSumsVectorForBuildings, checkSumsVectorForUnits);
-		teamsCs=(teamsCs<<31)|(teamsCs>>1);
-		cs=(cs<<31)|(cs>>1);
+		teamsCs=rotr1(teamsCs);
+		cs=rotr1(cs);
 	}
 	cs^=teamsCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(teamsCs);// [1+t*20]
 
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 
 	Uint32 playersCs=0;
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 	{
 		playersCs^=players[i]->checkSum(checkSumsVector);
-		playersCs=(playersCs<<31)|(playersCs>>1);
-		cs=(cs<<31)|(cs>>1);
+		playersCs=rotr1(playersCs);
+		cs=rotr1(cs);
 	}
 	cs^=playersCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(playersCs);// [2+t*20+p*2]
 
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
 	{
@@ -503,7 +531,7 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	if (checkSumsVector)
 		checkSumsVector->push_back(mapCs);// [3+t*20+p*2]
 
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 
 	Uint32 scriptCs=sgslScript.checkSum();
 	cs^=scriptCs;
