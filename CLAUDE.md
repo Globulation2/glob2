@@ -30,6 +30,8 @@ scons BINDIR=/path/bin INSTALLDIR=/path/share
 
 **Server build gotcha:** Always build the YOG server with `scons server=1` — never with a bare `scons build/src/glob2-server`. The `server=1` flag both selects the server target and defines `YOG_SERVER_ONLY` (which strips out GUI/audio code via `#ifndef` guards) and switches `libgag` to its stripped `libgag_server.a` variant. Without the flag, the .o files are compiled with the full GUI code path but link against the stripped libgag, producing dozens of misleading "undefined symbol" errors that look like fundamental rot. SCons also caches the option in `options_cache.py`, so once you've run `server=1`, subsequent `scons` invocations stay in server mode — pass `server=0` explicitly to switch back.
 
+**Use `release=1` for headless runs.** The default `scons` build is `-g` with no `-O` flag, so `--nox` / `-test-games-nox` runs a debug binary that's roughly 10× slower than necessary. Always build with `scons release=1 -j16` for replay generation, benchmarking, or any throughput-sensitive headless work. Drop back to the default build only when you need a debugger, sanitizers, or fast incremental rebuilds. The flag is sticky via `options_cache.py`, so once set it persists until you pass `release=0`.
+
 ## Running Tests
 
 ```bash
