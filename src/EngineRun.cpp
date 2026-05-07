@@ -141,7 +141,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 				if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
 
 				if (checksumSidecar)
-					checksumSidecar->writeTick(gui.game.stepCounter, gui.game);
+					checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game);
 			}
 
 			// We proceed network:

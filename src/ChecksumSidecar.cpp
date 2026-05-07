@@ -47,7 +47,7 @@ bool ChecksumSidecarWriter::open(const std::string& replayPath, int numTeams, in
 	return true;
 }
 
-void ChecksumSidecarWriter::writeTick(Uint32 tick, Game& game)
+void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& game)
 {
 	if (!file)
 		return;
@@ -61,11 +61,10 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Game& game)
 			return;
 	}
 
-	// Total game checksum
-	Uint32 totalCs = game.checkSum(NULL, NULL, NULL);
-
 	writeU32(tick);
-	writeU32(totalCs);
+	writeU32(totalChecksum);
+
+	std::vector<Uint32> vec;
 
 	for (int t = 0; t < numTeams; t++)
 	{
@@ -87,7 +86,7 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Game& game)
 			if (!team->myUnits[i])
 				continue;
 			Unit* u = team->myUnits[i];
-			std::vector<Uint32> vec;
+			vec.clear();
 			Uint32 uCs = u->checkSum(&vec);
 			writeU16((Uint16)u->gid);
 			writeU32(uCs);
@@ -108,7 +107,7 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Game& game)
 			if (!team->myBuildings[i])
 				continue;
 			Building* b = team->myBuildings[i];
-			std::vector<Uint32> vec;
+			vec.clear();
 			Uint32 bCs = b->checkSum(&vec);
 			writeU16((Uint16)b->gid);
 			writeU32(bCs);

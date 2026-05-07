@@ -15,7 +15,7 @@ public:
 	~ChecksumSidecarWriter();
 
 	bool open(const std::string& replayPath, int numTeams, int numPlayers);
-	void writeTick(Uint32 tick, Game& game);
+	void writeTick(Uint32 tick, Uint32 totalChecksum, Game& game);
 	void close();
 
 private:
