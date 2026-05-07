@@ -577,7 +577,6 @@ public:
 	template<typename Tint> void updateGlobalGradientVersionSimple(
 		Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType);
 	template<typename Tint> void updateGlobalGradientVersionSimon(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
-	template<typename Tint> void updateGlobalGradientVersionKai(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
 	template<typename Tint> void updateGlobalGradient(
 		Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim);
 	//void updateGlobalGradientSmall(Uint8 *gradient);
