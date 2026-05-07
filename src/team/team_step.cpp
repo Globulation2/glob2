@@ -43,7 +43,12 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 		{
 			int ratio_lhs_ressource = lhs->totalWishedRessource();
 			int ratio_rhs_ressource = rhs->totalWishedRessource();
-			return ratio_lhs_ressource > ratio_rhs_ressource;
+			if(ratio_lhs_ressource != ratio_rhs_ressource)
+				return ratio_lhs_ressource > ratio_rhs_ressource;
+			// Tiebreak on gid: std::sort is unstable, so without a final
+			// total order the position of tied buildings is unspecified
+			// and can diverge across binaries (= multiplayer desync).
+			return lhs->gid < rhs->gid;
 		}
 		else
 		{
