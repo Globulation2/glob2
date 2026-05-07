@@ -99,19 +99,6 @@ Map::Map()
 	
 	immobileUnits=NULL;
 
-	#ifdef check_disorderable_gradient_error_probability
-	// stats to check the probability of an error:
-	for (int i = 0; i < GT_SIZE; i++)
-	{
-		listCountSizeStats[i] = NULL;
-		listCountSizeStatsOver[i] = 0;
-	}
-	#endif
-
-	for (int i = 0; i < GT_SIZE; i++)
-		gradientOverflowCount[i] = 0;
-	simonGradientOverflowCount = 0;
-
 	areaNames.resize(9);
 	
 	fertilityMaximum = 0;
@@ -295,17 +282,6 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	}
 
 	arraysBuilt=true;
-	
-	#ifdef check_disorderable_gradient_error_probability
-	// stats to check the probability of an error:
-	for (int i = 0; i < GT_SIZE; i++)
-	{
-		if (listCountSizeStats[i])
-			delete[] listCountSizeStats[i];
-		listCountSizeStats[i] = new int[size];
-		listCountSizeStatsOver[i] = 0;
-	}
-	#endif
 }
 
 
@@ -317,17 +293,6 @@ void Map::setGame(Game *game)
 	assert(sectors);
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
-	
-	#ifdef check_disorderable_gradient_error_probability
-	// stats to check the probability of an error:
-	for (int i = 0; i < GT_SIZE; i++)
-	{
-		if (listCountSizeStats[i])
-			delete[] listCountSizeStats[i];
-		listCountSizeStats[i] = new int[size];
-		listCountSizeStatsOver[i] = 0;
-	}
-	#endif
 }
 
 

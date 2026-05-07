@@ -571,23 +571,16 @@ public:
 		return gradient[coordToIndex(x, y)];
 	}
 	
-	void updateGlobalGradientSlow(Uint8 *gradient);
-	template<typename Tint> void updateGlobalGradientSlow(Uint8 *gradient);
-	
-	template<typename Tint> void updateGlobalGradientVersionSimple(
-		Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType);
-	template<typename Tint> void updateGlobalGradientVersionSimon(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
-	// Chamfer distance transform, weights orthogonal=1, diagonal=1 (Chebyshev,
-	// matching BFS output byte-for-byte). Reads seeded gradient buffer, ignores
-	// listedAddr (not needed). Iterates forward+backward sweeps until stable.
-	template<typename Tint> void updateGlobalGradientVersionChamfer(Uint8 *gradient, GradientType gradientType);
+	// Chamfer distance transform on a pre-seeded gradient buffer (255=source,
+	// 0=obstacle, 1=free, intermediate values=propagation seeds). Sweeps
+	// forward+backward until stable. Defined in MapGradientImpl.h.
 	template<typename Tint> void updateGlobalGradient(
-		Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim);
-	//void updateGlobalGradientSmall(Uint8 *gradient);
-	//void updateGlobalGradientBig(Uint8 *gradient);
-	//void updateGlobalGradient(Uint8 *gradient);
+		Uint8 *gradient, GradientType gradientType, bool canSwim);
+	// Auto-seed wrapper: scans the supplied buffer for cells >= 3 as sources
+	// and runs the chamfer pass with GT_UNDEFINED. Used by Castor/Warrush
+	// AIs that build their own custom gradient buffers.
+	void updateGlobalGradient(Uint8 *gradient);
 	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
-	template<typename Tint> void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict) const;
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, const Uint8 *gradient, bool strict) const;
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict) const;
@@ -598,7 +591,6 @@ public:
 
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
-	template<typename Tint> void updateGlobalGradient(Building *building, bool canSwim);
 	//!A special gradient for clearing flags. Returns false if there is nothing to clear.
 	bool updateLocalRessources(Building *building, bool canSwim); 
 	void expandLocalGradient(Uint8 *gradient);
@@ -618,17 +610,14 @@ public:
 	bool pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
-	template<typename Tint> void updateForbiddenGradient(int teamNumber, bool canSwim);
 	void updateForbiddenGradient(int teamNumber);
 	void updateForbiddenGradient();
 	//! Update the guard area gradient
 	void updateGuardAreasGradient(int teamNumber, bool canSwim);
-	template<typename Tint> void updateGuardAreasGradient(int teamNumber, bool canSwim);
 	void updateGuardAreasGradient(int teamNumber);
 	void updateGuardAreasGradient();
 	//! Update the clear area gradient
 	void updateClearAreasGradient(int teamNumber, bool canSwim);
-	template<typename Tint> void updateClearAreasGradient(int teamNumber, bool canSwim);
 	void updateClearAreasGradient(int teamNumber);
 	void updateClearAreasGradient();
 	
@@ -639,23 +628,6 @@ public:
 	void makeDiscoveredAreasExplored(int teamNumber);
 	void updateExploredArea(int teamNumber);
 	
-public:
-	// Per-game instrumentation: counts how many propagation writes were dropped
-	// because the listedAddr[] circular buffer was full. Indexed by GradientType
-	// for the Simple path; simonGradientOverflowCount is incremented for the
-	// Simon path (which currently has no overflow guard — counted but not
-	// dropped, so Simon behavior is preserved).
-	Uint64 gradientOverflowCount[GT_SIZE];
-	Uint64 simonGradientOverflowCount;
-
-protected:
-	//#define check_disorderable_gradient_error_probability
-	#ifdef check_disorderable_gradient_error_probability
-	// stats to check the probability of an error in the updateGlobalGradientVersionDisorderable gradient computation
-	int *listCountSizeStats[GT_SIZE];
-	int listCountSizeStatsOver[GT_SIZE];
-	#endif
-
 public:
 	Game *game;
 public:

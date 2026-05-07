@@ -17,44 +17,20 @@
 
 #include "MapGradientImpl.h"
 
-// updateGlobalGradientSlow + dispatcher (slow O(n^2) reference path)
-void Map::updateGlobalGradientSlow(Uint8 *gradient)
+// Auto-seed wrapper for caller-supplied gradient buffers (Castor/Warrush AIs).
+// Just runs the chamfer pass with GT_UNDEFINED — chamfer reads sources from
+// the buffer directly (cells with value >= 3), so no listedAddr is needed.
+void Map::updateGlobalGradient(Uint8 *gradient)
 {
-	if (size <= 65536)
-		updateGlobalGradientSlow<Uint16>(gradient);
-	else
-		updateGlobalGradientSlow<Uint32>(gradient);
-}
-
-template<typename Tint> void Map::updateGlobalGradientSlow(Uint8 *gradient)
-{
-	Tint *listedAddr = new Tint[size];
-	size_t listCountWrite = 0;
-	// make the first list:
-	for (size_t i = 0; i < size; i++)
-		if (gradient[i] >= 3)
-			listedAddr[listCountWrite++] = i;
-	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_UNDEFINED, true);
-	delete[] listedAddr;
+	updateGlobalGradient<Uint32>(gradient, GT_UNDEFINED, true);
 }
 
 
-// updateRessourcesGradient + dispatcher
 void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
-{
-	if (size <= 65536)
-		updateRessourcesGradient<Uint16>(teamNumber, ressourceType, canSwim);
-	else
-		updateRessourcesGradient<Uint32>(teamNumber, ressourceType, canSwim);
-}
-
-template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
 {
 	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
-	Tint *listedAddr = new Tint[size];
-	size_t listCountWrite = 0;
-	
+
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
 	for (size_t i=0; i<size; i++)
@@ -78,16 +54,12 @@ template<typename Tint> void Map::updateRessourcesGradient(int teamNumber, Uint8
 			if (globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected && !(fogOfWar[i]&teamMask))
 				gradient[i]=0;
 			else
-			{
 				gradient[i]=255;
-				listedAddr[listCountWrite++] = i;
-			}
 		}
 		else
 			gradient[i]=0;
 	}
-	
-	updateGlobalGradient(gradient, (Tint *)listedAddr, listCountWrite, GT_RESOURCE, canSwim);
-	delete[] listedAddr;
+
+	updateGlobalGradient<Uint32>(gradient, GT_RESOURCE, canSwim);
 }
 

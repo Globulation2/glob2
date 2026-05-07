@@ -16,40 +16,26 @@
 
 #include "MapGradientImpl.h"
 
-// updateGlobalGradient(Building*) + template, updateLocalRessources, expandLocalGradient
+// updateGlobalGradient(Building*), updateLocalRessources, expandLocalGradient
 
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
-	if (size <= 65536)
-		updateGlobalGradient<Uint16>(building, canSwim);
-	else
-		updateGlobalGradient<Uint32>(building, canSwim);
-}
-
-template<typename Tint> void Map::updateGlobalGradient(Building *building, bool canSwim)
-{
 	assert(building);
 	assert(building->type);
-	//printf("updatingGlobalGradient (gbid=%d)\n", building->gid);
-	//fprintf(logFile, "updatingGlobalGradient (gbid=%d)...", building->gid);
 	int posX=building->posX;
 	int posY=building->posY;
 	int posW=building->type->width;
-	//int posH=building->type->height;
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
-	
+
 	Uint8 *gradient=building->globalGradient[canSwim];
 	assert(gradient);
-	
-	Tint *listedAddr = new Tint[size];
-	size_t listCountWrite = 0;
 
 	bool isClearingFlag=false;
 	bool isWarFlag=false;
 	if (building->type->isVirtual && building->type->zonable[WARRIOR])
 		isWarFlag=true;
-	
+
 	memset(gradient, 1, size);
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
@@ -64,10 +50,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				{
 					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
 					if(gradient[addr] == 1)
-					{
 						gradient[addr] = 255;
-						listedAddr[listCountWrite++] = addr;
-					}
 				}
 		}
 	}
@@ -87,10 +70,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 					if(cases[addr].ressource.type!=NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
 					{
 						if(gradient[addr] == 1)
-						{
 							gradient[addr] = 255;
-							listedAddr[listCountWrite++] = addr;
-						}
 					}
 				}
 		}
@@ -119,10 +99,7 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			else
 			{
 				if (c.building==bgid)
-				{
 					gradient[wyx] = 255;
-					listedAddr[listCountWrite++] = wyx;
-				}
 				//Warflags don't consider enemy buildings an obstacle
 				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 					gradient[wyx] = 0;
@@ -130,23 +107,6 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 					gradient[wyx] = 1;
 			}
 		}
-	}
-
-	// Prune stale listedAddr entries: the radius scans above (war/guard/clear flag
-	// seeding) push every cell within unitStayRange into listedAddr, but the
-	// subsequent obstacle scan can overwrite gradient[addr] back to 0 (forbidden,
-	// resource, immobile unit, water, non-allied building). BFS pops those stale
-	// entries and reads gradient[addr]-1 = 255 (Uint8 underflow), which then
-	// propagates phantom 255s outward from obstacle cells inside the flag radius.
-	// Compact in place so BFS sees only true sources.
-	{
-		size_t writeIdx = 0;
-		for (size_t readIdx = 0; readIdx < listCountWrite; readIdx++)
-		{
-			if (gradient[listedAddr[readIdx]] == 255)
-				listedAddr[writeIdx++] = listedAddr[readIdx];
-		}
-		listCountWrite = writeIdx;
 	}
 
 	if (!building->type->isVirtual)
@@ -163,7 +123,6 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				assert(x<w);
 				assert(y<h);
 				Uint8 g=gradient[w*y+x];
-				//printf("ai=%d, mi=%d, (%d, %d), g=%d\n", ai, mi, x, y, g);
 				if (g)
 				{
 					building->locked[canSwim]=false;
@@ -187,19 +146,15 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 				x=(x+w)&wMask;
 				y=(y+h)&hMask;
 			}
-		
+
 		assert(building->locked[canSwim]);
-		//printf("...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
-		//fprintf(logFile, "...not updatedGlobalGradient! building bgid=%d is locked!\n", building->gid);
-		delete[] listedAddr;
 		return;
 		doubleBreak:;
 	}
 	else
 		building->locked[canSwim]=false;
-	
-	updateGlobalGradient(gradient, listedAddr, listCountWrite, GT_BUILDING, canSwim);
-	delete[] listedAddr;
+
+	updateGlobalGradient<Uint32>(gradient, GT_BUILDING, canSwim);
 }
 
 

@@ -475,7 +475,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 			}
 		}
 	}
-	map->updateGlobalGradientSlow(water_gradient.c_array());
+	map->updateGlobalGradient(water_gradient.c_array());
 
 	BrushAccumulator del_acc;
 	BrushAccumulator add_acc;
@@ -680,7 +680,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 		}
 	}
 	
-	map->updateGlobalGradientSlow(gradient.c_array());
+	map->updateGlobalGradient(gradient.c_array());
 	
 	for(int x=0;x<map->w;x++)
 	{
@@ -737,7 +737,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		}
 	}
 	
-	map->updateGlobalGradientSlow(availability_gradient.c_array());
+	map->updateGlobalGradient(availability_gradient.c_array());
 	
 	Building *swarm = getSwarmAtRandom();
 	if (!swarm)

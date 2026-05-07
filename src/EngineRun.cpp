@@ -373,25 +373,6 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		checksumSidecar = NULL;
 	}
 
-	{
-		Uint64 simpleTotal = 0;
-		for (int i = 0; i < Map::GT_SIZE; i++)
-			simpleTotal += gui.game.map.gradientOverflowCount[i];
-		if (simpleTotal != 0 || gui.game.map.simonGradientOverflowCount != 0)
-		{
-			static const char* gtNames[Map::GT_SIZE] = {
-				"GT_UNDEFINED", "GT_RESOURCE", "GT_BUILDING",
-				"GT_FORBIDDEN", "GT_GUARD_AREA", "GT_CLEAR_AREA"
-			};
-			fprintf(stderr, "[gradient-overflow] Simple path drops:\n");
-			for (int i = 0; i < Map::GT_SIZE; i++)
-				fprintf(stderr, "  %-14s %llu\n", gtNames[i],
-					(unsigned long long)gui.game.map.gradientOverflowCount[i]);
-			fprintf(stderr, "[gradient-overflow] Simon  path overruns: %llu (counted, NOT dropped)\n",
-				(unsigned long long)gui.game.map.simonGradientOverflowCount);
-		}
-	}
-
 	if (globalContainer->datasetWriter)
 	{
 		globalContainer->datasetWriter->close();

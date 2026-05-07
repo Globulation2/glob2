@@ -56,16 +56,6 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	aStarPoints=new AStarAlgorithmPoint[size];
 	immobileUnits = new Uint8[size];
 	memset(immobileUnits, 255, size*sizeof(Uint8));
-	
-	#ifdef check_disorderable_gradient_error_probability
-	for (int i = 0; i < GT_SIZE; i++)
-	{
-		if (listCountSizeStats[i])
-			delete[] listCountSizeStats[i];
-		listCountSizeStats[i] = new int[size];
-		listCountSizeStatsOver[i] = 0;
-	}
-	#endif
 
 	// We read what's inside the map:
 	stream->read(undermap, size, "undermap");

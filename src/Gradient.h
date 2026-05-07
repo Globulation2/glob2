@@ -74,23 +74,9 @@ template<typename Tint, typename GradientMethod> Gradient<Tint, GradientMethod>:
 
 template<typename Tint, typename GradientMethod> void Gradient<Tint, GradientMethod>::computeFullGradient(Map* map)
 {
-	Tint *listedAddr = new Tint[width*height];
-	size_t listCountWrite = 0;
-	
-	// We set the obstacle and free places
 	for (size_t i=0; i<(width*height); i++)
-	{
-		int n = method.getValue(map, i);
-		gradient[i] = n;
-		if(n == 255)
-			listedAddr[listCountWrite++] = i;
-	}
-	
-	// Route through the dispatcher (rather than calling updateGlobalGradientVersionSimple
-	// directly) so the GLOB2_GRADIENT_DUAL_RUN conformance probe covers this call site too.
-	// canSwim is unknown at this layer (the GradientMethod encodes it into its seed values);
-	// the dispatcher only uses canSwim for divergence-dump labels, not algorithm correctness.
-	map->updateGlobalGradient(gradient, listedAddr, listCountWrite, Map::GT_UNDEFINED, false);
+		gradient[i] = method.getValue(map, i);
+	map->updateGlobalGradient(gradient);
 }
 
 template<typename Tint, bool canSwim> BuildingGradientMethod<Tint, canSwim>::BuildingGradientMethod(Building* building)
