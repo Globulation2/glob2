@@ -75,7 +75,6 @@ enum AreaType
 */
 class Map
 {
-	static const bool verbose = false;
 public:
 	//! Type of terrain (used for undermap)
 
@@ -586,12 +585,12 @@ public:
 	//void updateGlobalGradient(Uint8 *gradient);
 	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	template<typename Tint> void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
-	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose) const;
-	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, const Uint8 *gradient, bool strict, bool verbose) const;
-	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose) const;
-	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork, bool verbose);
+	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict) const;
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, const Uint8 *gradient, bool strict) const;
+	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict) const;
+	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork);
 #ifndef YOG_SERVER_ONLY
-	void pathfindRandom(Unit *unit, bool verbose);
+	void pathfindRandom(Unit *unit);
 #endif  // !YOG_SERVER_ONLY
 
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
@@ -601,18 +600,19 @@ public:
 	bool updateLocalRessources(Building *building, bool canSwim); 
 	void expandLocalGradient(Uint8 *gradient);
 	
+	//! Probe a full-map gradient at (x, y) and its 8 neighbors; sets *dist = GRADIENT_AT_GOAL - g if reachable.
+	bool probeGlobalGradient(const Uint8 *gradient, int x, int y, int *dist) const;
 	bool buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y) provided the unit canSwim.
-	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
+	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
 	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all ressources mixed in clearing flags.
 	
 	//! Make local gradient dirty in the area. Wrap-safe on x,y
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
-	bool pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose);
-	//! Find the best direction toward guard area, return true if one has been found, false otherwise
-	bool pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
-	//! Find the best direction toward clearing area, return true if one has been found, false otherwise
-	bool pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	enum class AreaKind { Guard, Clear };
+	//! Find the best direction toward a guard or clear area; return true if one has been found.
+	bool pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
 	template<typename Tint> void updateForbiddenGradient(int teamNumber, bool canSwim);

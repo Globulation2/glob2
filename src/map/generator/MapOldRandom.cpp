@@ -43,9 +43,6 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 		baseSand =(float)sandRatio /(float)totalRatio;
 		baseGrass=(float)grassRatio/(float)totalRatio;
 	}
-	if (verbose)
-		printf("makeRandomMap::old-base=(%f, %f, %f).\n", baseWater, baseSand, baseGrass);
-	
 	//Sorry, the equation is too complex for me. We use a numeric approach:
 	double alphaWater=baseWater;
 	double alphaSand =baseSand ;
@@ -147,14 +144,9 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 		}
 	}
 	
-	if (verbose)
-		printf("makeRandomMap::new-base =(%f, %f, %f).\n", alphaWater, alphaSand, alphaGrass);
-	
 	double simWater, simSand, simGrass;
 	simulateRandomMap(smooth, alphaWater, alphaSand, alphaGrass, &simWater, &simSand, &simGrass);
-	if (verbose)
-		printf("makeRandomMap::simulateRandomMap=(%f, %f, %f).\n", simWater, simSand, simGrass);
-	
+
 	totalRatio=0x7FFF;
 	waterRatio=(int)(((double)alphaWater)*((double)totalRatio));
 	sandRatio =(int)(((double)alphaSand )*((double)totalRatio));
@@ -215,9 +207,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 			}
 		}
 	double totalCount=(double)(waterCount+sandCount+grassCount);
-	if (verbose)
-		printf("makeRandomMap::beforeCount=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
-	
+
 	for (int i=0; i<smooth; i++)
 	{
 		// What's in now?
@@ -380,16 +370,12 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 			}
 		}
 	totalCount=(double)(waterCount+sandCount+grassCount);
-	if (verbose)
-		printf("makeRandomMap::final count=(%f, %f, %f).\n", waterCount/totalCount, sandCount/totalCount, grassCount/totalCount);
-	
+
 	controlSand();
-	
+
 	//Now, we have to find suitable places for teams:
 	int nbTeams=descriptor.nbTeams;
 	int minDistSquare=(int)((double)((double)w*(double)h*(double)grassCount)/(double)((double)nbTeams*(double)totalCount));
-	if (verbose)
-		printf("minDistSquare=%d (%f).\n", minDistSquare, sqrt((double)minDistSquare));
 	if (minDistSquare<=0)
 		return false;
 	assert(minDistSquare>0);
@@ -464,8 +450,6 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	
 	// Let's add some green space for teams:
 	int squareSize=5+(int)(sqrt((double)minDistSquare)/4.5);
-	if (verbose)
-		printf("squareSize=%d.\n", squareSize);
 	for (int team=0; team<nbTeams; team++)
 	{
 		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+0, GRASS, squareSize);
@@ -474,9 +458,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	
 	controlSand();
 	regenerateMap(0, 0, w, h);
-	
-	if (verbose)
-		printf("makeRandomMap::success\n");
+
 	return true;
 }
 

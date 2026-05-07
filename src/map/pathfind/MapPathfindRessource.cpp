@@ -16,67 +16,45 @@
 
 // Ressource pathfinding for units (pathfindRessource, pathfindLocalRessource, pathfindRandom)
 
-bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork, bool verbose)
+bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
 {
-	if (verbose)
-		printf("pathfindingRessource...\n");
 	assert(ressourceType<MAX_RESSOURCES);
 	const Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
 	assert(gradient);
 	Uint8 max=gradient[x+y*w];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	if (max==0)
+	if (max==GRADIENT_FORBIDDEN)
 	{
-		if (verbose)
-			printf("...pathfindedRessource pathfindForbidden() v1\n");
 		*stopWork=true;
-		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy, verbose);
+		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy);
 	}
 	if (max<2)
 	{
-		if (verbose)
-			printf("...pathfindedRessource failure v2\n");
 		*stopWork=true;
 		return false;
 	}
 
-	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true, verbose))
-	{
-		if (verbose)
-			printf("...pathfindedRessource success v3\n");
+	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true))
 		return true;
-	}
-	else
-	{
-		if (verbose)
-			printf("...pathfindedRessource failure locked v4\n");
-		*stopWork=false;
-		return false;
-	}
+
+	*stopWork=false;
+	return false;
 }
 
 
 #ifndef YOG_SERVER_ONLY
-void Map::pathfindRandom(Unit *unit, bool verbose)
+void Map::pathfindRandom(Unit *unit)
 {
-	if (verbose)
-		printf("pathfindRandom()\n");
 	int x=unit->posX;
 	int y=unit->posY;
 	if ((cases[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
-		if (verbose)
-			printf(" forbidden\n");
-		if (pathfindForbidden(NULL, unit->owner->teamNumber, (unit->performance[SWIM]>0), x, y, &unit->dx, &unit->dy, verbose))
+		if (pathfindForbidden(NULL, unit->owner->teamNumber, (unit->performance[SWIM]>0), x, y, &unit->dx, &unit->dy))
 		{
-			if (verbose)
-				printf(" success\n");
 			unit->directionFromDxDy();
 		}
 		else
 		{
-			if (verbose)
-				printf(" failed\n");
 			unit->dx=0;
 			unit->dy=0;
 			unit->direction=8;
@@ -98,12 +76,6 @@ void Map::pathfindRandom(Unit *unit, bool verbose)
 			else
 				da[di]=false;
 		}
-		if (verbose)
-		{
-			printf("count=%d\n", count);
-			for (int di=0; di<8; di++)
-				printf("da[%d]=%d\n", di, da[di]);
-		}
 		if (count==0)
 		{
 			unit->dx=0;
@@ -112,16 +84,12 @@ void Map::pathfindRandom(Unit *unit, bool verbose)
 			return;
 		}
 		int dir=syncRand()%count;
-		if (verbose)
-			printf(" dir=%d\n", dir);
 		for (int di=0; di<8; di++)
 			if (da[di] && dir--==0)
 			{
 				unit->dx=tabClose[di][0];
 				unit->dy=tabClose[di][1];
 				unit->direction=di;
-				if (verbose)
-					printf("d=(%d, %d), d=%d\n", unit->dx, unit->dy, unit->direction);
 				return;
 			}
 		assert(false);
@@ -134,12 +102,11 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	assert(building);
 	assert(building->type);
 	assert(building->type->isVirtual);
-	//printf("pathfindingLocalRessource[%d] (gbid=%d)...\n", canSwim, building->gid);
-	
+
 	int bx=building->posX;
 	int by=building->posY;
 	Uint32 teamMask=building->owner->me;
-	
+
 	Uint8 *gradient=building->localRessources[canSwim];
 	if (gradient==NULL)
 	{
@@ -151,28 +118,25 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	//HACK: I have no idea what is going on or why isInLocalGradient(x, y, bx, by) was asserted and why isInLocalGradient(x, y, bx, by) checks for the rectangle it is checking for, but this fixes a rare crash.
 	if(!isInLocalGradient(x, y, bx, by))
 		return false;
-//	assert(isInLocalGradient(x, y, bx, by));
-	
+
 	int lx=(x-bx+15+32)&31;
 	int ly=(y-by+15+32)&31;
 	int max=0;
 	Uint8 currentg=gradient[lx+(ly<<5)];
 	bool found=false;
 	bool gradientUsable=false;
-	
+
 	// PORT: escalation path — bumps localRessourcesCleanTime by 16 to trigger clearingFlagStep's
 	// PORT: recompute (which checks >125) sooner. The 125/128 thresholds are slightly mismatched;
 	// PORT: align them in the Rust port (probably both should be 125).
-	if (currentg==1 && (building->localRessourcesCleanTime[canSwim]+=16)<128)
+	if (currentg==GRADIENT_UNREACHABLE && (building->localRessourcesCleanTime[canSwim]+=16)<128)
 	{
-		// This mean there are still ressources, but they are unreachable.
+		// This means there are still ressources, but they are unreachable.
 		// We wait 5[s] before recomputing anything.
-		if (verbose)
-			printf("...pathfindedLocalRessource v0 failure waiting\n");
 		return false;
 	}
-	
-	if (currentg>1 && currentg!=255)
+
+	if (currentg>GRADIENT_UNREACHABLE && currentg!=GRADIENT_AT_GOAL)
 	{
 		for (int sd=0; sd<=1; sd++)
 			for (int d=sd; d<8; d+=2)
@@ -195,84 +159,54 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 
 		if (gradientUsable)
 		{
-			if (found)
-			{
-				//printf("...pathfindedLocalRessource v1\n");
-				return true;
-			}
-			else
+			if (!found)
 			{
 				*dx=0;
 				*dy=0;
-				if (verbose)
-					printf("...pathfindedLocalRessource v2 locked\n");
-				return true;
 			}
+			return true;
 		}
 	}
 
 	updateLocalRessources(building, canSwim);
-	
+
 	max=0;
 	currentg=gradient[lx+(ly<<5)];
 	found=false;
 	gradientUsable=false;
-	
-	if (currentg==1)
-	{
-		//printf("...pathfindedLocalRessource v3 No ressource\n");
-		return false;
-	}
-	else if ((currentg!=0) && (currentg!=255))
-	{
-		for (int sd=0; sd<=1; sd++)
-			for (int d=sd; d<8; d+=2)
-			{
-				int ddx, ddy;
-				Unit::dxDyFromDirection(d, &ddx, &ddy);
-				int lxddx=clip_0_31(lx+ddx);
-				int lyddy=clip_0_31(ly+ddy);
-				Uint8 g=gradient[lxddx+(lyddy<<5)];
-				if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
-					gradientUsable=true;
-				if (g>=max && isFreeForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
-				{
-					max=g;
-					*dx=ddx;
-					*dy=ddy;
-					found=true;
-				}
-			}
 
-		if (gradientUsable)
-		{
-			if (found)
-			{
-				//printf("...pathfindedLocalRessource v3\n");
-				return true;
-			}
-			else
-			{
-				*dx=0;
-				*dy=0;
-				if (verbose)
-					printf("...pathfindedLocalRessource v4 locked\n");
-				return true;
-			}
-		}
-		else
-		{
-			if (verbose)
-				printf("lr-a- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-			return false;
-		}
-	}
-	else
-	{
-		if (verbose)
-			printf("lr-b- failed to pathfind localRessource bgid=%d@(%d, %d) p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+	if (currentg==GRADIENT_UNREACHABLE)
 		return false;
+
+	if (currentg==GRADIENT_FORBIDDEN || currentg==GRADIENT_AT_GOAL)
+		return false;
+
+	for (int sd=0; sd<=1; sd++)
+		for (int d=sd; d<8; d+=2)
+		{
+			int ddx, ddy;
+			Unit::dxDyFromDirection(d, &ddx, &ddy);
+			int lxddx=clip_0_31(lx+ddx);
+			int lyddy=clip_0_31(ly+ddy);
+			Uint8 g=gradient[lxddx+(lyddy<<5)];
+			if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
+				gradientUsable=true;
+			if (g>=max && isFreeForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
+			{
+				max=g;
+				*dx=ddx;
+				*dy=ddy;
+				found=true;
+			}
+		}
+
+	if (!gradientUsable)
+		return false;
+
+	if (!found)
+	{
+		*dx=0;
+		*dy=0;
 	}
+	return true;
 }
-
-

@@ -57,7 +57,7 @@ void Unit::handleActionRandomGround()
 {
 	assert(!performance[FLY]);
 	clearOccupiedMapSlot();
-	owner->map->pathfindRandom(this, verbose);
+	owner->map->pathfindRandom(this);
 	wrapPosition();
 	selectPreferredGroundMovement();
 	speed=performance[action];

@@ -15,13 +15,17 @@
 
 // Area pathfinding (forbidden, guard, clear, point-to-point)
 
-bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
+bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
 {
 	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
 	assert(gradient);
-	
-	Uint32 maxValue=0;
-	int maxd=0;
+
+	// Pick the neighbor with the highest (base, option) lexicographically. The base gradient
+	// dominates; the option gradient is used as a tiebreaker. Reject results where the chosen
+	// base is unreachable (i.e. require base > GRADIENT_UNREACHABLE).
+	Uint8 bestBase = 0;
+	Uint8 bestOption = 0;
+	int maxd = 0;
 	for (int di=0; di<8; di++)
 	{
 		int rx=tabClose[di][0];
@@ -32,76 +36,45 @@ bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool ca
 			continue;
 		size_t addr=xg+(yg<<wDec);
 		Uint8 base=gradient[addr];
-		Uint8 option;
-		if (optionGradient!=NULL)
-			option=optionGradient[addr];
-		else
-			option=0;
-		Uint32 value=(base<<8)|option;
-		if (maxValue<value)
+		Uint8 option = (optionGradient!=NULL) ? optionGradient[addr] : 0;
+		if (base > bestBase || (base == bestBase && option > bestOption))
 		{
-			maxValue=value;
-			maxd=di;
+			bestBase = base;
+			bestOption = option;
+			maxd = di;
 		}
 	}
-	if (maxValue>=(2<<8))
+	if (bestBase > GRADIENT_UNREACHABLE)
 	{
 		*dx=tabClose[maxd][0];
 		*dy=tabClose[maxd][1];
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
-bool Map::pathfindGuardArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
 {
-	Uint8 *gradient = guardAreasGradient[teamNumber][canSwim];
+	Uint8 *gradient = (kind == AreaKind::Guard)
+		? guardAreasGradient[teamNumber][canSwim]
+		: clearAreasGradient[teamNumber][canSwim];
 	Uint8 max = gradient[x + (y<<wDec)];
-	if (max == 255)
+	if (max == GRADIENT_AT_GOAL)
 		return false; // we already are in an area.
 	if (max < 2)
-		return false; // any existing area are too far away.
-	bool found = false;
-	
-	// we look around us, searching for a usable position with a bigger gradient value 
-	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true, verbose))
+		return false; // any existing area is too far away.
+
+	// we look around us, searching for a usable position with a bigger gradient value
+	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true))
+		return true;
+
+	// we are in a blocked situation, so we have to regenerate the gradient
+	switch (kind)
 	{
-		found = true;
+		case AreaKind::Guard: updateGuardAreasGradient(teamNumber, canSwim); break;
+		case AreaKind::Clear: updateClearAreasGradient(teamNumber, canSwim); break;
 	}
-	
-	// we are in a blocked situation, so we have to regenerate the forbidden gradient
-	if (!found)
-		updateGuardAreasGradient(teamNumber, canSwim);
-	
-	return found;
-}
-
-
-
-bool Map::pathfindClearArea(int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
-{
-	Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
-	Uint8 max = gradient[x + (y<<wDec)];
-	if (max == 255)
-		return false; // we already are in an area.
-	if (max < 2)
-		return false; // any existing area are too far away.
-	bool found = false;
-	
-	// we look around us, searching for a usable position with a bigger gradient value 
-	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true, verbose))
-	{
-		found = true;
-	}
-	
-	// we are in a blocked situation, so we have to regenerate the forbidden gradient
-	if (!found)
-		updateClearAreasGradient(teamNumber, canSwim);
-	
-	return found;
+	return false;
 }
 
 
@@ -116,20 +89,20 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	//the initial node, a small optimization since we don't need the whole path
 	targetX = (targetX + w) & wMask;
 	targetY = (targetY + h) & hMask;
-	
+
 	AStarComparator compare(aStarPoints);
-	
+
 	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
 	std::priority_queue<int, std::vector<int>, AStarComparator> openList(compare);
 	openList.push((x << hDec) + y);
 	aStarPoints[(x << hDec) + y] = AStarAlgorithmPoint(x,y,0,0,0,0,false);
-	
+
 	//These are all the examined points, so that these positions on aStarPoints
 	//Can be reset later. Why not reset or re-allocate the whole thing every
 	//call? Its slow! Use reserve to avoid doing this multiple times
 	aStarExaminedPoints.reserve(maximumLength*2 + 6);
 	aStarExaminedPoints.push_back((x << hDec) + y);
-	
+
 	while(!openList.empty())
 	{
 		///Get the smallest from the heap
@@ -138,12 +111,12 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 
 		AStarAlgorithmPoint& pos = aStarPoints[position];
 		pos.isClosed = true;
-				
+
 		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumLength))
 		{
 			break;
 		}
-		
+
 		for(int lx=-1; lx<=1; ++lx)
 		{
 			for(int ly=-1; ly<=1; ++ly)
@@ -160,7 +133,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 				{
 					int moveCost = pos.moveCost + 1;
 					int totalCost = moveCost +  warpDistMax(targetX, targetY, nx, ny);
-					
+
 					//If this cell hasn't been examined at all yet
 					if(npos.x == -1)
 					{
@@ -193,7 +166,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 			}
 		}
 	}
-	
+
 	AStarAlgorithmPoint final = aStarPoints[(targetX << hDec) + targetY];
 
 	//Clear all of the examined points for the next call to this algorithm
@@ -201,19 +174,15 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	{
 		aStarPoints[aStarExaminedPoints[i]] = AStarAlgorithmPoint();
 	}
-	
+
 	aStarExaminedPoints.clear();
 
 	//It was never examined, thus there is no paths
 	if(final.x == -1)
 		return false;
-	
+
 	//Input direction of the final square to the unit
 	*dx = final.dx;
 	*dy = final.dy;
 	return true;
 }
-
-
-
-

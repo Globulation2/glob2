@@ -16,6 +16,60 @@
 
 // Building pathfinding (buildingAvailable, pathfindBuilding, dirtyLocalGradient)
 
+namespace {
+
+// Probe a 32x32 local gradient at (lx, ly) and its 8 neighbors. If any cell has a
+// reachable gradient (g > GRADIENT_UNREACHABLE), set *dist = GRADIENT_AT_GOAL - g
+// (distance to the building) and return true.
+bool probeLocalGradient(const Uint8 *gradient, int lx, int ly, int *dist)
+{
+	Uint8 currentg = gradient[lx + (ly << 5)];
+	if (currentg > GRADIENT_UNREACHABLE)
+	{
+		*dist = GRADIENT_AT_GOAL - currentg;
+		return true;
+	}
+	for (int d = 0; d < 8; d++)
+	{
+		int ddx, ddy;
+		Unit::dxDyFromDirection(d, &ddx, &ddy);
+		int lxddx = clip_0_31(lx + ddx);
+		int lyddy = clip_0_31(ly + ddy);
+		Uint8 g = gradient[lxddx + (lyddy << 5)];
+		if (g > GRADIENT_UNREACHABLE)
+		{
+			*dist = GRADIENT_AT_GOAL - g;
+			return true;
+		}
+	}
+	return false;
+}
+
+} // namespace
+
+// Probe a full-map global gradient at (x, y) and its 8 neighbors.
+bool Map::probeGlobalGradient(const Uint8 *gradient, int x, int y, int *dist) const
+{
+	Uint8 currentg = gradient[coordToIndex(x, y)];
+	if (currentg > GRADIENT_UNREACHABLE)
+	{
+		*dist = GRADIENT_AT_GOAL - currentg;
+		return true;
+	}
+	for (int d = 0; d < 8; d++)
+	{
+		int ddx, ddy;
+		Unit::dxDyFromDirection(d, &ddx, &ddy);
+		Uint8 g = gradient[coordToIndex(x + ddx, y + ddy)];
+		if (g > GRADIENT_UNREACHABLE)
+		{
+			*dist = GRADIENT_AT_GOAL - g;
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist)
 {
 	assert(building);
@@ -26,136 +80,46 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 	assert(x>=0);
 	assert(y>=0);
 
-	Uint8 *gradient=building->localGradient[canSwim];
-
 	if (isInLocalGradient(x, y, bx, by))
 	{
+		Uint8 *gradient=building->localGradient[canSwim];
 		int lx=(x-bx+15+32)&31;
 		int ly=(y-by+15+32)&31;
-		if (!building->dirtyLocalGradient[canSwim])
-		{
-			Uint8 currentg=gradient[lx+(ly<<5)];
-			if (currentg>1)
-			{
-				*dist=255-currentg;
-				return true;
-			}
-			else
-			{
-				for (int d=0; d<8; d++)
-				{
-					int ddx, ddy;
-					Unit::dxDyFromDirection(d, &ddx, &ddy);
-					int lxddx=clip_0_31(lx+ddx);
-					int lyddy=clip_0_31(ly+ddy);
-					Uint8 g=gradient[lxddx+(lyddy<<5)];
-					if (g>1)
-					{
-						*dist=255-g;
-						return true;
-					}
-				}
-			}
-		}
+
+		if (!building->dirtyLocalGradient[canSwim] && probeLocalGradient(gradient, lx, ly, dist))
+			return true;
 
 		updateLocalGradient(building, canSwim);
 		if (building->locked[canSwim])
 			return false;
 
-		Uint8 currentg=gradient[lx+ly*32];
-
-		if (currentg>1)
-		{
-			*dist=255-currentg;
-			return true;
-		}
-		else
-		{
-			for (int d=0; d<8; d++)
-			{
-				int ddx, ddy;
-				Unit::dxDyFromDirection(d, &ddx, &ddy);
-				int lxddx=clip_0_31(lx+ddx);
-				int lyddy=clip_0_31(ly+ddy);
-				Uint8 g=gradient[lxddx+(lyddy<<5)];
-				if (g>1)
-				{
-					*dist=255-g;
-					return true;
-				}
-			}
-		}
-		return false;
+		return probeLocalGradient(gradient, lx, ly, dist);
 	}
 
-	gradient=building->globalGradient[canSwim];
-	if (gradient==NULL)
+	Uint8 *gradient=building->globalGradient[canSwim];
+	if (gradient!=NULL)
 	{
-		gradient=new Uint8[size];
-		building->globalGradient[canSwim]=gradient;
-	}
-	else
-	{
+		// Existing global gradient: probe without recomputing. Recomputing the full-map
+		// gradient on every miss is too expensive — callers fall back to other strategies.
 		if (building->locked[canSwim])
 			return false;
-		Uint8 currentg=gradient[coordToIndex(x, y)];
-		if (currentg>1)
-		{
-			*dist=255-currentg;
-			return true;
-		}
-		else
-		{
-			for (int d=0; d<8; d++)
-			{
-				int ddx, ddy;
-				Unit::dxDyFromDirection(d, &ddx, &ddy);
-				Uint8 g=gradient[coordToIndex(x + ddx, y + ddy)];
-				if (g>1)
-				{
-					*dist=255-g;
-					return true;
-				}
-			}
-			return false;
-		}
+		return probeGlobalGradient(gradient, x, y, dist);
 	}
+
+	gradient=new Uint8[size];
+	building->globalGradient[canSwim]=gradient;
 
 	updateGlobalGradient(building, canSwim);
 	if (building->locked[canSwim])
 		return false;
 
-	Uint8 currentg=gradient[coordToIndex(x, y)];
-	if (currentg>1)
-	{
-		*dist=255-currentg;
-		return true;
-	}
-	else
-	{
-		for (int d=0; d<8; d++)
-		{
-			int ddx, ddy;
-			Unit::dxDyFromDirection(d, &ddx, &ddy);
-			Uint8 g=gradient[coordToIndex(x + ddx, y + ddy)];
-			if (g>1)
-			{
-				*dist=255-g;
-				return true;
-			}
-		}
-		if (!building->type->isVirtual && building->verbose)
-			printf("ba-f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-		return false;
-	}
+	return probeGlobalGradient(gradient, x, y, dist);
 }
 
 
-bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, bool verbose)
+bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
 	assert(building);
-	if (verbose)
-		printf("pathfindingBuilding (gbid=%d)...\n", building->gid);
 	int bx=building->posX;
 	int by=building->posY;
 	assert(x>=0);
@@ -164,9 +128,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	if (((cases[x+y*w].forbidden) & teamMask)!=0)
 	{
 		int teamNumber=building->owner->teamNumber;
-		if (verbose)
-			printf(" ...pathfindForbidden(%d, %d, %d, %d)\n", teamNumber, canSwim, x, y);
-		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy, verbose);
+		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy);
 	}
 	Uint8 *gradient=building->localGradient[canSwim];
 	if (isInLocalGradient(x, y, bx, by))
@@ -175,119 +137,67 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		int ly=(y-by+15+32)&31;
 		Uint8 currentg=gradient[lx+(ly<<5)];
 
-		if (!building->dirtyLocalGradient[canSwim] && currentg==255)
+		if (!building->dirtyLocalGradient[canSwim] && currentg==GRADIENT_AT_GOAL)
 		{
 			*dx=0;
 			*dy=0;
-			if (verbose)
-				printf("...pathfindedBuilding v1\n");
 			return true;
 		}
 
-		if (!building->dirtyLocalGradient[canSwim] && currentg>1)
+		if (!building->dirtyLocalGradient[canSwim] && currentg>GRADIENT_UNREACHABLE)
 		{
-			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, true, verbose))
-			{
-				if (verbose)
-					printf("...pathfindedBuilding v2\n");
+			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, true))
 				return true;
-			}
 		}
 
 		updateLocalGradient(building, canSwim);
 		if (building->locked[canSwim])
-		{
-			if (verbose)
-				printf("a- local gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
-		}
 
 		currentg=gradient[lx+ly*32];
-		if (currentg>1)
+		if (currentg>GRADIENT_UNREACHABLE)
 		{
-			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, true, verbose))
-			{
-				if (verbose)
-					printf("...pathfindedBuilding v4\n");
+			if (directionByMinigrad(teamMask, canSwim, x, y, bx, by, dx, dy, gradient, true))
 				return true;
-			}
 		}
 	}
-	//Here the "local-32*32-cases-gradient-pathfinding-system" has failed, then we look for a full size gradient.
+	// Local 32x32 gradient pathfinding has failed, fall back to the full-size gradient.
 
 	gradient=building->globalGradient[canSwim];
 	if (gradient==NULL)
 	{
 		gradient=new Uint8[size];
-		if (verbose)
-			printf("allocating globalGradient for gbid=%d (%p)\n", building->gid, gradient);
 		building->globalGradient[canSwim]=gradient;
 	}
 	else
 	{
-		bool found=false;
-		Uint8 currentg=gradient[coordToIndex(x, y)];
 		if (building->locked[canSwim])
-		{
-			if (verbose)
-				printf("b- global gradient to building bgid=%d@(%d, %d) failed, locked. p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
 			return false;
-		}
-		else if (currentg==1)
-		{
-			if (verbose)
-				printf("c- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
+		Uint8 currentg=gradient[coordToIndex(x, y)];
+		if (currentg==GRADIENT_UNREACHABLE)
 			return false;
-		}
-		else
-			found=directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true, verbose);
 
-		if (found)
-		{
-			if (verbose)
-				printf("...pathfindedBuilding v6\n");
+		if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true))
 			return true;
-		}
-		else if (building->lastGlobalGradientUpdateStepCounter[canSwim]+128>game->stepCounter) // not faster than 5.12s
-		{
-			if (verbose)
-				printf("d- global gradient to building bgid=%d@(%d, %d) failed, repeat.\n", building->gid, building->posX, building->posY);
-			return directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, false, verbose);
-		}
+
+		// Recomputing the global gradient is expensive; throttle to once every 128 ticks (~5.12s).
+		if (building->lastGlobalGradientUpdateStepCounter[canSwim]+128>game->stepCounter)
+			return directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, false);
 	}
 
 	updateGlobalGradient(building, canSwim);
 	building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
 
 	if (building->locked[canSwim])
-	{
-		if (verbose)
-			printf("e- global gradient to building bgid=%d@(%d, %d) failed, locked.\n", building->gid, building->posX, building->posY);
 		return false;
-	}
 
 	Uint8 currentg=gradient[coordToIndex(x, y)];
-	if (currentg>1)
+	if (currentg>GRADIENT_UNREACHABLE)
 	{
-		if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true, verbose))
-		{
-			if (verbose)
-				printf("...pathfindedBuilding v7\n");
+		if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true))
 			return true;
-		}
 	}
 
-	if (building->type->isVirtual)
-	{
-		if (verbose)
-			printf("f- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d)\n", building->gid, building->posX, building->posY, x, y);
-	}
-	else
-	{
-		// TODO: find why this happend so often
-		if (verbose)
-			printf("g- global gradient to building bgid=%d@(%d, %d) failed! p=(%d, %d), canSwim=%d\n", building->gid, building->posX, building->posY, x, y, canSwim);
-	}
 	return false;
 }
 
@@ -319,5 +229,3 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 		}
 	}
 }
-
-

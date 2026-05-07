@@ -311,8 +311,6 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			}
 		}
 	}
-	if (verbose)
-		printf("makeRandomMap::success\n");
 	return true;
 }
 

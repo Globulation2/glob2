@@ -17,7 +17,7 @@
 
 // 5x5 minigrad direction queries (directionFromMinigrad, directionByMinigrad)
 
-bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict, bool verbose) const
+bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict) const
 {
 	Uint8 max;
 	Uint8 mxd; // max in direction
@@ -140,27 +140,6 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 		}
 	}
 	
-	if (verbose)
-	{
-		if (verbose)
-			printf("miniGrad (%d):\n", strict);
-		for (int ry=0; ry<5; ry++)
-		{
-			for (int rx=0; rx<5; rx++)
-			if (verbose)
-				printf("%4d", miniGrad[rx+ry*5]);
-			if (verbose)
-				printf("\n");
-		}
-		if (verbose)
-		{
-			printf("maxs:\n");
-			for (int d=0; d<8; d++)
-				printf("%4d.%4d (%d)\n", maxs[d]>>8, maxs[d]&0xFF, maxs[d]);
-			printf("max=%4d.%4d (%d), d=%d, good=%d\n", maxs[maxd]>>8, maxs[maxd]&0xFF, maxs[maxd], maxd, good);
-		};
-	}
-	
 	if (!good)
 		return false;
 	
@@ -178,7 +157,7 @@ bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool
 	return true;
 }
 
-bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, const Uint8 *gradient, bool strict, bool verbose) const
+bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, const Uint8 *gradient, bool strict) const
 {
 	Uint8 miniGrad[25];
 	miniGrad[2+2*5]=gradient[x+y*w];
@@ -206,12 +185,10 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *
 		else
 			miniGrad[rx+ry*5+12]=0;
 	}
-	if (verbose)
-		printf("directionByMinigrad global %d\n", canSwim);
-	return directionFromMinigrad(miniGrad, dx, dy, strict, verbose);
+	return directionFromMinigrad(miniGrad, dx, dy, strict);
 }
 
-bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict, bool verbose) const
+bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict) const
 {
 	Uint8 miniGrad[25];
 	for (int ry=0; ry<5; ry++)
@@ -262,9 +239,7 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int b
 				if (!isFreeForGroundUnit(gx, gy, canSwim, teamMask))
 					miniGrad[rx+ry*5]=0;
 			}
-	if (verbose)
-		printf("directionByMinigrad local %d\n", canSwim);
-	return directionFromMinigrad(miniGrad, dx, dy, strict, verbose);
+	return directionFromMinigrad(miniGrad, dx, dy, strict);
 }
 
 

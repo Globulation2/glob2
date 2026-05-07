@@ -280,7 +280,7 @@ void Unit::handleMovementAttackingAround()
 	// if we haven't found anything satisfactory, follow guard area gradients
 	if (movement == MOV_RANDOM_GROUND)
 	{
-		if (!attachedBuilding && owner->map->pathfindGuardArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+		if (!attachedBuilding && owner->map->pathfindArea(Map::AreaKind::Guard, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
 		{
 			directionFromDxDy();
 			movement = MOV_GOING_DX_DY;
@@ -423,7 +423,7 @@ void Unit::handleMovementRandom()
 		movement=MOV_RANDOM_FLY;
 	else if (map->getForbidden(posX, posY)&owner->me)
 	{
-		if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy, verbose))
+		if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
 			directionFromDxDy();
 		else
 		{
@@ -453,7 +453,7 @@ void Unit::handleMovementRandom()
 			{
 				dx=0;
 				dy=0;
-				owner->map->pathfindClearArea(owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
+				owner->map->pathfindArea(Map::AreaKind::Clear, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
 
 				targetX = tempTargetX;
 				targetY = tempTargetY;
@@ -507,7 +507,7 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy, verbose))
+	else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy))
 	{
 		movement=MOV_GOING_DX_DY;
 	}
@@ -558,7 +558,7 @@ void Unit::handleMovementGoingToRessource()
 	int teamNumber=owner->teamNumber;
 	bool canSwim=performance[SWIM]>0;
 	bool stopWork;
-	if (map->pathfindRessource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork, verbose))
+	if (map->pathfindRessource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
