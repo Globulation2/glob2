@@ -1,7 +1,7 @@
 #include "usl.h"
 #include "code.h"
 #include "parser.h"
-#include "error.h"
+#include "position.h"
 #include "interpreter.h"
 #include "native.h"
 #include <iostream>

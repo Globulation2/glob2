@@ -8,7 +8,7 @@ using namespace GAGCore;
 #include "MapScriptUSL.h"
 #include "GameGUI.h"
 
-#include "error.h"
+#include "position.h"
 #include "native.h"
 
 #include "Stream.h"

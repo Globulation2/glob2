@@ -1,16 +1,24 @@
 #pragma once
 
-#include "memory.h"
-
 #include <cassert>
 #include <algorithm>
-#include <typeinfo>
 #include <iterator>
 #include <map>
 #include <ostream>
 #include <string>
 #include <vector>
 #include <functional>
+
+struct Value;
+
+struct Heap
+{
+	typedef std::vector<Value*> Values;
+
+	Values values;
+
+	void collectGarbage();
+};
 
 struct Prototype;
 struct Value
@@ -115,7 +123,7 @@ struct ThunkPrototype: Prototype
 inline void Prototype::propagateMarkForGC()
 {
 	using std::for_each;
-	for_each(members.begin(), members.end(), [this](auto& member) {dynamic_cast<Value*>(member.second)->markForGC(); });
+	for_each(members.begin(), members.end(), [](auto& member) {dynamic_cast<Value*>(member.second)->markForGC(); });
 }
 
 struct Thunk: Value

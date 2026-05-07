@@ -1,6 +1,19 @@
 #pragma once
 
-#include "tokenizer.h"
+#include "token.h"
+
+class Tokenizer
+{
+public:
+	Tokenizer(const Token::Type *tokenTypes, const size_t tokenTypesSize, const std::string& filename, const char* text);
+	const Token next();
+
+private:
+	const Token::Type *tokenTypes;
+	const size_t tokenTypesSize;
+	const char* text;
+	Position position;
+};
 
 class Lexer: Tokenizer
 {

@@ -1,7 +1,7 @@
 #include "tree.h"
 #include "code.h"
 #include "debug.h"
-#include "error.h"
+#include "position.h"
 #include "types.h"
 #include <sstream>
 
