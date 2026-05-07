@@ -17,3 +17,5 @@ vcpkg_installed/
 .DS_Store
 compile_commands.json
 .cache/
+Glob2.app/
+Glob2-*.dmg
