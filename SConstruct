@@ -235,6 +235,10 @@ def main():
     env = Environment()
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
+
+    # Emit compile_commands.json for clangd / IDE LSPs.
+    env.Tool('compilation_db')
+    env.CompilationDatabase()
     
     if env['mingwcross']:
             env.Platform('cygwin')
