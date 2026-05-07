@@ -131,7 +131,24 @@ template<typename Tint> void Map::updateGlobalGradient(Building *building, bool 
 			}
 		}
 	}
-	
+
+	// Prune stale listedAddr entries: the radius scans above (war/guard/clear flag
+	// seeding) push every cell within unitStayRange into listedAddr, but the
+	// subsequent obstacle scan can overwrite gradient[addr] back to 0 (forbidden,
+	// resource, immobile unit, water, non-allied building). BFS pops those stale
+	// entries and reads gradient[addr]-1 = 255 (Uint8 underflow), which then
+	// propagates phantom 255s outward from obstacle cells inside the flag radius.
+	// Compact in place so BFS sees only true sources.
+	{
+		size_t writeIdx = 0;
+		for (size_t readIdx = 0; readIdx < listCountWrite; readIdx++)
+		{
+			if (gradient[listedAddr[readIdx]] == 255)
+				listedAddr[writeIdx++] = listedAddr[readIdx];
+		}
+		listCountWrite = writeIdx;
+	}
+
 	if (!building->type->isVirtual)
 	{
 		building->locked[canSwim]=true;

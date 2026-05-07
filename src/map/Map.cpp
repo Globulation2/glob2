@@ -108,6 +108,10 @@ Map::Map()
 	}
 	#endif
 
+	for (int i = 0; i < GT_SIZE; i++)
+		gradientOverflowCount[i] = 0;
+	simonGradientOverflowCount = 0;
+
 	areaNames.resize(9);
 	
 	fertilityMaximum = 0;

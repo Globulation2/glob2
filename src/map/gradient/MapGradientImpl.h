@@ -9,6 +9,14 @@
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include "MapInternal.h"
+
+// LogFileManager.h does `#define fprintf if(false)fprintf` to silence stale
+// log code. We need real fprintf for the dual-run divergence dump, so undo
+// the macro here. (Local restore lasts until any subsequent re-include of
+// LogFileManager.h, which doesn't happen in this header.)
+#ifdef fprintf
+#undef fprintf
+#endif
 /*! Note that you can't provide any listedAddr[], or the gradient may technically end up
 	wrong. Given the results of the tests, this will never happen. The easiest way to provide
 	a listedAddr[] which guarantee a correct result, is to put only references to gradient
@@ -68,7 +76,7 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimple(
 				if (listCountWrite + 1 + size!= listCountRead)
 					listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
 				else
-					fprintf(stderr, "Map::updateGlobalGradientVersionSimple(): listedAddr[] overflow error");
+					gradientOverflowCount[gradientType]++;
 			}
 		}
 	}
@@ -156,6 +164,12 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 				if (side > 0 && side < g)
 				{
 					*addr = g;
+					// Instrumentation only: Simon has no overflow guard, so a
+					// full queue silently overwrites unread entries. Count the
+					// occurrence but preserve the existing write so Simon's
+					// behavior is unchanged for Phase 0 measurement.
+					if (listCountWrite + 1 + size == listCountRead)
+						simonGradientOverflowCount++;
 					listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
 				}
 				else if (side == 0)            // If field is inaccessable,
@@ -178,10 +192,14 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 				if (side > 0 && side < g)
 				{
 					*addr = g;
-                                // Only mark this as a new source, 
+                                // Only mark this as a new source,
                                 // if its left or right was inaccessable.
 					if (flag & 1) // Information is in the first bit
+					{
+						if (listCountWrite + 1 + size == listCountRead)
+							simonGradientOverflowCount++;
 						listedAddr[(listCountWrite++)&(size-1)] = deltaAddrC[ci];
+					}
 #if defined(LOG_SIMON_GRADIENT)
 					else
 						spared++;
@@ -198,6 +216,98 @@ template<typename Tint> void Map::updateGlobalGradientVersionSimon(Uint8 *gradie
 	//assert(listCountWrite<=size);
 }
 
+// Chamfer distance transform with orthogonal=1, diagonal=1 weights — produces
+// the same byte output as the BFS version on convergence. Two sweep directions
+// per pass (forward then backward), repeated until a full pass writes nothing.
+//
+// Saturation rules mirror BFS exactly:
+//   - cells with value 0 are obstacles and never written
+//   - sources keep their seed value (a propagation candidate cand = vn - 1
+//     is always lower than vn, never raises a higher cell)
+//   - propagation floor is 2: a neighbor whose value is < 3 cannot lift this
+//     cell (cand = vn - 1 must be >= 2 to exceed any free cell's seed of 1).
+//     This matches BFS's `if (g - 1 <= 1) continue` early-out.
+//
+// `gradientType` is currently unused but kept for symmetry with the BFS path.
+template<typename Tint> void Map::updateGlobalGradientVersionChamfer(Uint8 *gradient, GradientType /*gradientType*/)
+{
+	int passes = 0;
+	bool changed;
+	do
+	{
+		changed = false;
+
+		// Forward sweep: in-set neighbors are NW, N, NE, W (already visited).
+		for (size_t y = 0; y < (size_t)h; y++)
+		{
+			size_t yu = ((y - 1) & hMask);
+			for (size_t x = 0; x < (size_t)w; x++)
+			{
+				Uint8 g = gradient[(y << wDec) | x];
+				if (g == 0)
+					continue;
+				size_t xl = ((x - 1) & wMask);
+				size_t xr = ((x + 1) & wMask);
+				Uint8 best = g;
+				Uint8 vNW = gradient[(yu << wDec) | xl];
+				Uint8 vN  = gradient[(yu << wDec) | x ];
+				Uint8 vNE = gradient[(yu << wDec) | xr];
+				Uint8 vW  = gradient[(y  << wDec) | xl];
+				if (vNW >= 3 && (Uint8)(vNW - 1) > best) best = vNW - 1;
+				if (vN  >= 3 && (Uint8)(vN  - 1) > best) best = vN  - 1;
+				if (vNE >= 3 && (Uint8)(vNE - 1) > best) best = vNE - 1;
+				if (vW  >= 3 && (Uint8)(vW  - 1) > best) best = vW  - 1;
+				if (best != g)
+				{
+					gradient[(y << wDec) | x] = best;
+					changed = true;
+				}
+			}
+		}
+
+		// Backward sweep: in-set neighbors are SE, S, SW, E (already visited).
+		for (size_t y = (size_t)h; y-- > 0; )
+		{
+			size_t yd = ((y + 1) & hMask);
+			for (size_t x = (size_t)w; x-- > 0; )
+			{
+				Uint8 g = gradient[(y << wDec) | x];
+				if (g == 0)
+					continue;
+				size_t xl = ((x - 1) & wMask);
+				size_t xr = ((x + 1) & wMask);
+				Uint8 best = g;
+				Uint8 vSE = gradient[(yd << wDec) | xr];
+				Uint8 vS  = gradient[(yd << wDec) | x ];
+				Uint8 vSW = gradient[(yd << wDec) | xl];
+				Uint8 vE  = gradient[(y  << wDec) | xr];
+				if (vSE >= 3 && (Uint8)(vSE - 1) > best) best = vSE - 1;
+				if (vS  >= 3 && (Uint8)(vS  - 1) > best) best = vS  - 1;
+				if (vSW >= 3 && (Uint8)(vSW - 1) > best) best = vSW - 1;
+				if (vE  >= 3 && (Uint8)(vE  - 1) > best) best = vE  - 1;
+				if (best != g)
+				{
+					gradient[(y << wDec) | x] = best;
+					changed = true;
+				}
+			}
+		}
+
+		passes++;
+		if (passes >= 32)
+		{
+			FILE* dump = fopen("/tmp/glob2-gradient-divergence.txt", "w");
+			if (dump)
+			{
+				fprintf(dump, "[chamfer] passes >= 32 - algorithm not converging. w=%d h=%d size=%zu\n",
+					(int)w, (int)h, size);
+				fclose(dump);
+			}
+			abort();
+		}
+	} while (changed);
+}
+
 template<typename Tint> void Map::updateGlobalGradient(
 	Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim)
 {
@@ -208,6 +318,22 @@ template<typename Tint> void Map::updateGlobalGradient(
 	fprintf(logSimon, "gradientType: %d\n", gradientType);
 	fprintf(logSimon, "canSwim: %d\n", canSwim);
 #endif
+
+	// Phase 2 dual-run probe: when GLOB2_GRADIENT_DUAL_RUN is set, snapshot the
+	// seeded gradient twice (one for chamfer to consume, one preserved for the
+	// divergence dump), run BFS on the original, run chamfer on the snapshot,
+	// and compare. Any divergence aborts with the offending gradientType plus
+	// the first eight differing cells (x, y, bfs, chamfer).
+	static const bool dualRun = getenv("GLOB2_GRADIENT_DUAL_RUN") != nullptr;
+	Uint8 *bfsCopy = nullptr;
+	Uint8 *seedSnap = nullptr;
+	if (dualRun)
+	{
+		bfsCopy = new Uint8[size];
+		seedSnap = new Uint8[size];
+		memcpy(bfsCopy, gradient, size);
+		memcpy(seedSnap, gradient, size);
+	}
 
 	#if defined(USE_GRADIENT_VERSION_SIMON)
 		updateGlobalGradientVersionSimon<Tint>(gradient, listedAddr, listCountWrite);
@@ -262,4 +388,63 @@ template<typename Tint> void Map::updateGlobalGradient(
 	#else
 		#error Please select a gradient version
 	#endif
+
+	if (dualRun)
+	{
+		updateGlobalGradientVersionChamfer<Tint>(bfsCopy, gradientType);
+		if (memcmp(gradient, bfsCopy, size) != 0)
+		{
+			static const char* gtNames[GT_SIZE] = {
+				"GT_UNDEFINED", "GT_RESOURCE", "GT_BUILDING",
+				"GT_FORBIDDEN", "GT_GUARD_AREA", "GT_CLEAR_AREA"
+			};
+			// Dump to a file with explicit fclose: stdio buffers attached to
+			// stderr/stdout are not reliably flushed by abort() on macOS when
+			// the streams are redirected, so direct file I/O is safer here.
+			FILE* dump = fopen("/tmp/glob2-gradient-divergence.txt", "w");
+			if (dump)
+			{
+				fprintf(dump, "[gradient-dual-run] DIVERGENCE gradientType=%s canSwim=%d size=%zu w=%d h=%d\n",
+					gtNames[gradientType], (int)canSwim, size, (int)w, (int)h);
+				int shown = 0;
+				for (size_t i = 0; i < size && shown < 64; i++)
+				{
+					if (gradient[i] != bfsCopy[i])
+					{
+						size_t y = i >> wDec;
+						size_t x = i & wMask;
+						fprintf(dump, "  (x=%zu y=%zu) bfs=%u chamfer=%u\n",
+							x, y, (unsigned)gradient[i], (unsigned)bfsCopy[i]);
+						shown++;
+					}
+				}
+				size_t totalDiff = 0;
+				for (size_t i = 0; i < size; i++)
+					if (gradient[i] != bfsCopy[i]) totalDiff++;
+				fprintf(dump, "  ... total differing cells = %zu\n", totalDiff);
+				fclose(dump);
+			}
+			// Also dump the seed state, BFS result, and chamfer result as
+			// raw bytes so an offline reproducer can replay the exact same
+			// inputs.  Three contiguous size-byte blobs in dim w x h.
+			FILE* binDump = fopen("/tmp/glob2-gradient-divergence.bin", "wb");
+			if (binDump)
+			{
+				Uint32 hdr[7] = { (Uint32)w, (Uint32)h, (Uint32)size,
+				                  (Uint32)gradientType, (Uint32)canSwim,
+				                  (Uint32)listCountWrite, (Uint32)sizeof(Tint) };
+				fwrite(hdr, sizeof(hdr), 1, binDump);
+				fwrite(seedSnap, 1, size, binDump);
+				fwrite(gradient, 1, size, binDump);   // BFS result
+				fwrite(bfsCopy,  1, size, binDump);   // chamfer result
+				fwrite(listedAddr, sizeof(Tint), listCountWrite, binDump);
+				fclose(binDump);
+			}
+			delete[] bfsCopy;
+			delete[] seedSnap;
+			abort();
+		}
+		delete[] bfsCopy;
+		delete[] seedSnap;
+	}
 }

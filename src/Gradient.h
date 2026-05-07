@@ -86,7 +86,11 @@ template<typename Tint, typename GradientMethod> void Gradient<Tint, GradientMet
 			listedAddr[listCountWrite++] = i;
 	}
 	
-	map->updateGlobalGradientVersionSimple(gradient, listedAddr, listCountWrite, Map::GT_UNDEFINED);
+	// Route through the dispatcher (rather than calling updateGlobalGradientVersionSimple
+	// directly) so the GLOB2_GRADIENT_DUAL_RUN conformance probe covers this call site too.
+	// canSwim is unknown at this layer (the GradientMethod encodes it into its seed values);
+	// the dispatcher only uses canSwim for divergence-dump labels, not algorithm correctness.
+	map->updateGlobalGradient(gradient, listedAddr, listCountWrite, Map::GT_UNDEFINED, false);
 }
 
 template<typename Tint, bool canSwim> BuildingGradientMethod<Tint, canSwim>::BuildingGradientMethod(Building* building)

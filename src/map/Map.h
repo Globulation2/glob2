@@ -577,6 +577,10 @@ public:
 	template<typename Tint> void updateGlobalGradientVersionSimple(
 		Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType);
 	template<typename Tint> void updateGlobalGradientVersionSimon(Uint8 *gradient, Tint *listedAddr, size_t listCountWrite);
+	// Chamfer distance transform, weights orthogonal=1, diagonal=1 (Chebyshev,
+	// matching BFS output byte-for-byte). Reads seeded gradient buffer, ignores
+	// listedAddr (not needed). Iterates forward+backward sweeps until stable.
+	template<typename Tint> void updateGlobalGradientVersionChamfer(Uint8 *gradient, GradientType gradientType);
 	template<typename Tint> void updateGlobalGradient(
 		Uint8 *gradient, Tint *listedAddr, size_t listCountWrite, GradientType gradientType, bool canSwim);
 	//void updateGlobalGradientSmall(Uint8 *gradient);
@@ -635,6 +639,15 @@ public:
 	void makeDiscoveredAreasExplored(int teamNumber);
 	void updateExploredArea(int teamNumber);
 	
+public:
+	// Per-game instrumentation: counts how many propagation writes were dropped
+	// because the listedAddr[] circular buffer was full. Indexed by GradientType
+	// for the Simple path; simonGradientOverflowCount is incremented for the
+	// Simon path (which currently has no overflow guard — counted but not
+	// dropped, so Simon behavior is preserved).
+	Uint64 gradientOverflowCount[GT_SIZE];
+	Uint64 simonGradientOverflowCount;
+
 protected:
 	//#define check_disorderable_gradient_error_probability
 	#ifdef check_disorderable_gradient_error_probability
