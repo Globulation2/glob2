@@ -3,7 +3,7 @@
 
 #include "YOGServerGameRouter.h"
 #include "YOGServerRouterPlayer.h"
-#include "net_message.h"
+#include "NetMessage.h"
 
 
 YOGServerGameRouter::YOGServerGameRouter()

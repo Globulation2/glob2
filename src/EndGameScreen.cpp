@@ -14,7 +14,7 @@
 #include <sstream>
 #include <iomanip>
 #include "GlobalContainer.h"
-#include "team.h"
+#include "Team.h"
 #include "GameGUILoadSave.h"
 #include "StreamBackend.h"
 #include "ReplayWriter.h"

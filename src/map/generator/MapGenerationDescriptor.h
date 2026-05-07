@@ -5,7 +5,7 @@
 
 #include "Ressource.h"
 #include "TerrainType.h"
-#include "team.h"
+#include "Team.h"
 
 namespace GAGCore
 {

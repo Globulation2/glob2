@@ -10,10 +10,10 @@
 #include <climits>
 
 #include "Building.h"
-#include "building_type.h"
+#include "BuildingType.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "team.h"
+#include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
 #include "Order.h"

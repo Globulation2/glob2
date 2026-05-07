@@ -2,7 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "ChooseMapScreen.h"
-#include "engine.h"
+#include "Engine.h"
 #include <FormatableString.h>
 #include "GlobalContainer.h"
 #include <GraphicContext.h>

@@ -7,7 +7,7 @@
 #include "Glob2Screen.h"
 #include "GameHeader.h"
 #include "MapHeader.h"
-#include "team.h"
+#include "Team.h"
 
 using namespace GAGGUI;
 

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <istream>
 #include "NetConnection.h"
-#include "router_admin_messages.h"
+#include "RouterAdminMessages.h"
 #include "YOGClientRouterAdministrator.h"
 #include "YOGConsts.h"
 

@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include "auth_messages.h"
-#include "order_messages.h"
-#include "registration_messages.h"
+#include "AuthMessages.h"
+#include "OrderMessages.h"
+#include "RegistrationMessages.h"
 #include "NetListener.h"
 #include "NetConnection.h"
 #include "YOGGameInfo.h"

@@ -5,7 +5,7 @@
 #include "Version.h"
 #include "NetBroadcaster.h"
 #include "NetConnection.h"
-#include "lobby_messages.h"
+#include "LobbyMessages.h"
 #include "NetTestSuite.h"
 #include "YOGServerChatChannel.h"
 #include "YOGServerGame.h"

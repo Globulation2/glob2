@@ -22,7 +22,7 @@
 #include "MapEditKeyActions.h"
 #include "NonANSICStdWrapper.h"
 #include "Player.h"
-#include "race.h"
+#include "Race.h"
 #include "SoundMixer.h"
 #include "UnitSkin.h"
 #include "VoiceRecorder.h"

@@ -3,7 +3,7 @@
 
 #include "BinaryStream.h"
 #include "FileManager.h"
-#include "map_database_messages.h"
+#include "MapDatabaseMessages.h"
 #include "Toolkit.h"
 #include "YOGServer.h"
 #include "YOGServerMapDatabank.h"

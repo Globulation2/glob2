@@ -8,7 +8,7 @@
 #include <iostream>
 #include "StreamBackend.h"
 #include "BinaryStream.h"
-#include "net_message.h"
+#include "NetMessage.h"
 
 using namespace GAGCore;
 using std::static_pointer_cast;

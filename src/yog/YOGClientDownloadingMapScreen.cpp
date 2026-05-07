@@ -4,7 +4,7 @@
 #include "YOGClientDownloadingMapScreen.h"
 
 #include <algorithm>
-#include "engine.h"
+#include "Engine.h"
 #include "FormatableString.h"
 #include "GlobalContainer.h"
 #include <GUIButton.h>

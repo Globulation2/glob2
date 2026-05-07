@@ -5,8 +5,8 @@
 
 #include <vector>
 
-#include "building_type.h"
-#include "ressource_type.h"
+#include "BuildingType.h"
+#include "RessourceType.h"
 #include "Settings.h"
 
 namespace GAGCore

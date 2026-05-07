@@ -3,7 +3,7 @@
 
 #include "YOGClientGameListManager.h"
 
-#include "lobby_messages.h"
+#include "LobbyMessages.h"
 #include "YOGClientGameListListener.h"
 
 using std::static_pointer_cast;

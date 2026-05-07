@@ -14,7 +14,7 @@
 #include "ChooseMapScreen.h"
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
-#include "engine.h"
+#include "Engine.h"
 #include "Game.h"
 #include "GUIMessageBox.h"
 #include "Header.h"

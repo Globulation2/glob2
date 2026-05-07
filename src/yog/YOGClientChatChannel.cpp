@@ -5,7 +5,7 @@
 #include "YOGClient.h"
 #include "YOGMessage.h"
 #include "YOGClientChatListener.h"
-#include "lobby_messages.h"
+#include "LobbyMessages.h"
 
 YOGClientChatChannel::YOGClientChatChannel(Uint32 channelID, std::shared_ptr<YOGClient> client)
 	: client(client), channelID(channelID)

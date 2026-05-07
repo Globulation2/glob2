@@ -4,7 +4,7 @@
 #include "CampaignMenuScreen.h"
 #include "Toolkit.h"
 #include "StringTable.h"
-#include "engine.h"
+#include "Engine.h"
 #include "GlobalContainer.h"
 #include "GUIMapPreview.h"
 

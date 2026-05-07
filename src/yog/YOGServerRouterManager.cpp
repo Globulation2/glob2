@@ -4,7 +4,7 @@
 #include "YOGServerRouterManager.h"
 #include "YOGServer.h"
 #include "NetConnection.h"
-#include "router_messages.h"
+#include "RouterMessages.h"
 
 using std::static_pointer_cast;
 

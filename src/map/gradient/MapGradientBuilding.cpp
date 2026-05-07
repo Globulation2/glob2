@@ -4,7 +4,7 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "building_type.h"
+#include "BuildingType.h"
 #include "Unit.h"
 #include "MapInternal.h"
 

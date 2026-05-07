@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
 
-#include "engine.h"
-#include "map_upload_messages.h"
+#include "Engine.h"
+#include "MapUploadMessages.h"
 #include "YOGClientFileAssembler.h"
 #include "YOGClient.h"
 #include "YOGClientMapUploader.h"

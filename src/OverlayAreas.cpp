@@ -4,7 +4,7 @@
 #include "OverlayAreas.h"
 #include <algorithm>
 #include "Unit.h"
-#include "building_type.h"
+#include "BuildingType.h"
 #include <cmath>
 #include "Game.h"
 #include "Bullet.h"

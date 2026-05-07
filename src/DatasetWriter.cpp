@@ -12,7 +12,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Ressource.h"
-#include "team.h"
+#include "Team.h"
 #include "TeamStat.h"
 #include "Toolkit.h"
 #include "Unit.h"

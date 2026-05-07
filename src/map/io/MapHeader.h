@@ -4,7 +4,7 @@
 #pragma once
 
 #include "BaseTeam.h"
-#include "team.h"
+#include "Team.h"
 
 namespace GAGCore
 {

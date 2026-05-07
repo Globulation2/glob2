@@ -4,7 +4,7 @@
 #include "NetConnectionThread.h"
 #include "StreamBackend.h"
 #include "BinaryStream.h"
-#include "net_message.h"
+#include "NetMessage.h"
 #include "SDLCompat.h"
 #include <string>
 

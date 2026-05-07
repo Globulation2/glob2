@@ -6,7 +6,7 @@
 #include "echo/Gradients.h"
 #include "echo/Position.h"
 #include "Player.h"
-#include "building_type.h"
+#include "BuildingType.h"
 
 #include <map>
 #include <memory>

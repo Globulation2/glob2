@@ -21,7 +21,7 @@
 #include <FileManager.h>
 #include <GraphicContext.h>
 
-#include "building_type.h"
+#include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
 #include "GameUtilities.h"

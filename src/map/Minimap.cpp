@@ -4,7 +4,7 @@
 
 #include "Minimap.h"
 #include "Ressource.h"
-#include "ressource_type.h"
+#include "RessourceType.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include <iostream>

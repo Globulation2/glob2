@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "router_admin_messages.h"
+#include "RouterAdminMessages.h"
 #include "YOGServerRouterAdministrator.h"
 #include "YOGServerRouterAdministratorCommands.h"
 #include "YOGServerRouterPlayer.h"

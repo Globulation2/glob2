@@ -3,9 +3,9 @@
 
 #include "YOGServerRouterPlayer.h"
 #include "NetConnection.h"
-#include "order_messages.h"
-#include "router_admin_messages.h"
-#include "router_messages.h"
+#include "OrderMessages.h"
+#include "RouterAdminMessages.h"
+#include "RouterMessages.h"
 #include "YOGServerGameRouter.h"
 #include "YOGServerRouter.h"
 

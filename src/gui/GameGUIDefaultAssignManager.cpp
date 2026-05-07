@@ -3,7 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GameGUIDefaultAssignManager.h"
-#include "building_type.h"
+#include "BuildingType.h"
 #include "IntBuildingType.h"
 #include "GlobalContainer.h"
 #include "Stream.h"

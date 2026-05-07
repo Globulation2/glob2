@@ -12,7 +12,7 @@
 
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "team.h"
+#include "Team.h"
 #include "TeamStat.h"
 #include "Unit.h"
 #include "Bullet.h"

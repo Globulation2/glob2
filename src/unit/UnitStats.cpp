@@ -2,8 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Unit.h"
-#include "race.h"
-#include "team.h"
+#include "Race.h"
+#include "Team.h"
 #include "Map.h"
 #include "Game.h"
 

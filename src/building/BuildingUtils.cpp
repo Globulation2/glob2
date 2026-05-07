@@ -2,7 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "BuildingUtils.h"
-#include "team.h"
+#include "Team.h"
 
 
 Sint32 BuildingUtils::GIDtoID(Uint16 gid)

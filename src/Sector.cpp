@@ -5,7 +5,7 @@
 #include "Game.h"
 #include "Sector.h"
 #include "Unit.h"
-#include "building_type.h"
+#include "BuildingType.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 #include <Stream.h>

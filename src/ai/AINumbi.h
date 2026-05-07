@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "building_type.h"
+#include "BuildingType.h"
 #include "AIImplementation.h"
 
 class Game;

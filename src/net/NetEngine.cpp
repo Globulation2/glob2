@@ -3,7 +3,7 @@
 
 #include "NetEngine.h"
 #include <iostream>
-#include "order_messages.h"
+#include "OrderMessages.h"
 
 
 NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, std::shared_ptr<NetConnection> router)

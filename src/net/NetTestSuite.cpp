@@ -8,12 +8,12 @@
 #include "BinaryStream.h"
 #include "NetReteamingInformation.h"
 
-#include "file_transfer_messages.h"
-#include "game_create_messages.h"
-#include "game_header_messages.h"
-#include "game_join_messages.h"
-#include "game_launch_messages.h"
-#include "lobby_messages.h"
+#include "FileTransferMessages.h"
+#include "GameCreateMessages.h"
+#include "GameHeaderMessages.h"
+#include "GameJoinMessages.h"
+#include "GameLaunchMessages.h"
+#include "LobbyMessages.h"
 
 
 using namespace GAGCore;
