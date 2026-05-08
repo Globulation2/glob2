@@ -83,7 +83,7 @@ std::string YOGClientCommandManager::executeClientCommand(const std::string& mes
 		{
 			if(tokens[0] == commands[i]->getCommandName())
 			{
-				if(!commands[i]->matchesArity(tokens.size()))
+				if(!commands[i]->doesMatch(tokens.size()))
 				{
 					text = commands[i]->getHelpMessage();
 				}

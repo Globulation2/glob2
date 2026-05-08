@@ -90,7 +90,7 @@ bool YOGServerRouterAdministrator::executeAdministrativeCommand(const std::strin
 		{
 			if(tokens[0] == commands[i]->getCommandName())
 			{
-				if(!commands[i]->matchesArity(tokens.size()))
+				if(!commands[i]->doesMatch(tokens.size()))
 				{
 					sendTextMessage(commands[i]->getHelpMessage(), player);
 				}

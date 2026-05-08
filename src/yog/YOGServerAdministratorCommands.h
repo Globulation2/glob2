@@ -30,7 +30,7 @@ public:
 	virtual void execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)=0;
 
 	///Returns true if the token count is within this command's accepted range.
-	bool matchesArity(std::size_t count) const
+	bool doesMatch(std::size_t count) const
 	{
 		return int(count) >= minTokens && int(count) <= maxTokens;
 	}

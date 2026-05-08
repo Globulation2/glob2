@@ -27,7 +27,7 @@ public:
 	virtual void execute(YOGServerRouter* router, YOGServerRouterAdministrator* admin, const std::vector<std::string>& tokens, YOGServerRouterPlayer* player)=0;
 
 	///Returns true if the token count is within this command's accepted range.
-	bool matchesArity(std::size_t count) const
+	bool doesMatch(std::size_t count) const
 	{
 		return int(count) >= minTokens && int(count) <= maxTokens;
 	}
