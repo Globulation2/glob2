@@ -35,7 +35,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	Uint32 me=team->me;
 
 	// minWork computation:
-	Sint32 bestWorkScore=2;
+	Sint32 bestWorkScore=AI_CASTOR_BEST_WORK_SCORE_FLOOR;
 	for (size_t i=0; i<size; i++)
 	{
 		if ((mapDiscovered[i]&me)==0)
@@ -44,16 +44,16 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 		if (bestWorkScore<work)
 			bestWorkScore=work;
 	}
-	Sint32 minWork=bestWorkScore*2;
+	Sint32 minWork=bestWorkScore*AI_CASTOR_MINWORK_MULT;
 	if (critical)
 	{
-		if (minWork>15*4)
-			minWork=15*4;
+		if (minWork>AI_CASTOR_MINWORK_CRITICAL_CAP_PER_CORNER*AI_CASTOR_CORNERS)
+			minWork=AI_CASTOR_MINWORK_CRITICAL_CAP_PER_CORNER*AI_CASTOR_CORNERS;
 	}
 	else
 	{
-		if (minWork>30*4)
-			minWork=30*4;
+		if (minWork>AI_CASTOR_MINWORK_NORMAL_CAP_PER_CORNER*AI_CASTOR_CORNERS)
+			minWork=AI_CASTOR_MINWORK_NORMAL_CAP_PER_CORNER*AI_CASTOR_CORNERS;
 	}
 
 	// wheatGradientLimit computation:
@@ -61,16 +61,16 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	if (food)
 	{
 		if (critical)
-			wheatGradientLimit=(255-16)*4;
+			wheatGradientLimit=(AI_CASTOR_WHEAT_GRADIENT_PEAK-AI_CASTOR_WHEAT_GRADIENT_CRITICAL_FOOD_OFFSET)*AI_CASTOR_CORNERS;
 		else
-			wheatGradientLimit=(255-4)*4;
+			wheatGradientLimit=(AI_CASTOR_WHEAT_GRADIENT_PEAK-AI_CASTOR_WHEAT_GRADIENT_NORMAL_FOOD_OFFSET)*AI_CASTOR_CORNERS;
 	}
 	else
 	{
 		if (critical)
-			wheatGradientLimit=(255-5)*4;
+			wheatGradientLimit=(AI_CASTOR_WHEAT_GRADIENT_PEAK-AI_CASTOR_WHEAT_GRADIENT_CRITICAL_OTHER_OFFSET)*AI_CASTOR_CORNERS;
 		else
-			wheatGradientLimit=(255-7)*4;
+			wheatGradientLimit=(AI_CASTOR_WHEAT_GRADIENT_PEAK-AI_CASTOR_WHEAT_GRADIENT_NORMAL_OTHER_OFFSET)*AI_CASTOR_CORNERS;
 	}
 
 	// we find the best place possible:
@@ -130,36 +130,36 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 			//goodBuildingMap[corner0]=4;
 			
 			Uint32 enemyRange=enemyRangeMap[corner0]+enemyRangeMap[corner1]+enemyRangeMap[corner2]+enemyRangeMap[corner3];
-			if (enemyRange>4*(255-8))
+			if (enemyRange>AI_CASTOR_CORNERS*(AI_CASTOR_WHEAT_GRADIENT_PEAK-AI_CASTOR_ENEMY_RANGE_REJECT_OFFSET))
 				continue;
 			//goodBuildingMap[corner0]=5;
-			
+
 			Sint32 wheatGrowth=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
-			
+
 			Uint8 neighbour=buildingNeighbourMap[corner0];
-			Uint8 directNeighboursCount=(neighbour>>1)&7; // [0, 7]
-			Uint8 farNeighboursCount=(neighbour>>5)&7; // [0, 7]
-			if ((neighbour&1)||(directNeighboursCount>1))
+			Uint8 directNeighboursCount=(neighbour>>AI_CASTOR_NEIGHBOUR_DIRECT_SHIFT)&AI_CASTOR_NEIGHBOUR_MASK; // [0, 7]
+			Uint8 farNeighboursCount=(neighbour>>AI_CASTOR_NEIGHBOUR_FAR_SHIFT)&AI_CASTOR_NEIGHBOUR_MASK; // [0, 7]
+			if ((neighbour&AI_CASTOR_NEIGHBOUR_DIRTY_BIT)||(directNeighboursCount>AI_CASTOR_NEIGHBOUR_MAX_DIRECT))
 				continue;
-			
+
 			//goodBuildingMap[corner0]=6;
-			
+
 			Sint32 score;
 			if (defense)
-				score=((work<<1)+wheatGradient+(enemyRange<<4))*(16+(directNeighboursCount<<2)+farNeighboursCount);
+				score=((work<<AI_CASTOR_SCORE_DEFENSE_WORK_SHIFT)+wheatGradient+(enemyRange<<AI_CASTOR_SCORE_DEFENSE_ENEMY_SHIFT))*(AI_CASTOR_SCORE_DEFENSE_NEIGHBOUR_BIAS+(directNeighboursCount<<AI_CASTOR_SCORE_NEIGHBOUR_DIRECT_SHIFT)+farNeighboursCount);
 			else if (food)
-				score=((wheatGrowth<<8)+work+(wheatGradient>>1)-enemyRange)*(8+(directNeighboursCount<<2)+farNeighboursCount);
+				score=((wheatGrowth<<AI_CASTOR_SCORE_FOOD_GROWTH_SHIFT)+work+(wheatGradient>>AI_CASTOR_SCORE_FOOD_GRADIENT_SHIFT)-enemyRange)*(AI_CASTOR_SCORE_FOOD_NEIGHBOUR_BIAS+(directNeighboursCount<<AI_CASTOR_SCORE_NEIGHBOUR_DIRECT_SHIFT)+farNeighboursCount);
 			else
-				score=(4096+work-(wheatGrowth<<8)-enemyRange)*(8+(directNeighboursCount<<2)+farNeighboursCount);
-			
+				score=(AI_CASTOR_SCORE_NORMAL_BIAS+work-(wheatGrowth<<AI_CASTOR_SCORE_NORMAL_GROWTH_SHIFT)-enemyRange)*(AI_CASTOR_SCORE_NORMAL_NEIGHBOUR_BIAS+(directNeighboursCount<<AI_CASTOR_SCORE_NEIGHBOUR_DIRECT_SHIFT)+farNeighboursCount);
+
 			if (defense)
 			{
 				if (score<0)
 					goodBuildingMap[corner0]=0;
-				else if ((score>>12)>=255)
-					goodBuildingMap[corner0]=255;
+				else if ((score>>AI_CASTOR_DEFENSE_SCORE_NORMALISE_SHIFT)>=AI_CASTOR_DEFENSE_SCORE_CAP)
+					goodBuildingMap[corner0]=AI_CASTOR_DEFENSE_SCORE_CAP;
 				else
-					goodBuildingMap[corner0]=(score>>12);
+					goodBuildingMap[corner0]=(score>>AI_CASTOR_DEFENSE_SCORE_NORMALISE_SHIFT);
 			}
 			
 			if (bestScore<score)
@@ -192,8 +192,8 @@ void AICastor::computeRessourcesCluster()
 	//int i=0;
 	Uint8 old=NO_RES_TYPE;
 	Uint16 id=0;
-	bool usedid[65536];
-	memset(usedid, 0, 65536*sizeof(bool));
+	bool usedid[AI_CASTOR_CLUSTER_ID_SPACE];
+	memset(usedid, 0, AI_CASTOR_CLUSTER_ID_SPACE*sizeof(bool));
 	for (int y=0; y<h; y++)
 	{
 		for (int x=0; x<w; x++)
@@ -215,7 +215,7 @@ void AICastor::computeRessourcesCluster()
 			{
 				if (rt!=old)
 				{
-					id=1;
+					id=AI_CASTOR_CLUSTER_FIRST_ID;
 					while (usedid[id])
 						id++;
 					if (id)
@@ -268,7 +268,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 		{
 			int x=xi&wMask;
 			Uint8 max=gradient[wy+x];
-			if (max!=16)
+			if (max!=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE)
 			{
 				int xl=(x-1)&wMask;
 				int xr=(x+1)&wMask;
@@ -299,7 +299,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 		{
 			int x=xi&wMask;
 			Uint8 max=gradient[wy+x];
-			if (max!=16)
+			if (max!=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE)
 			{
 				int xl=(x-1)&wMask;
 				int xr=(x+1)&wMask;
@@ -331,7 +331,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 			int wyu=(((yi-1)&hMask)<<wDec);
 			int wyd=(((yi+1)&hMask)<<wDec);
 			Uint8 max=gradient[wy+x];
-			if (max!=16)
+			if (max!=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE)
 			{
 				Uint8 side[4];
 				side[0]=gradient[wyu+xl];
@@ -360,7 +360,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 			int wyu=(((yi-1)&hMask)<<wDec);
 			int wyd=(((yi+1)&hMask)<<wDec);
 			Uint8 max=gradient[wy+x];
-			if (max!=16)
+			if (max!=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE)
 			{
 				Uint8 side[4];
 				side[0]=gradient[wyu+xr];
@@ -401,7 +401,7 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
 		{
 			int x=xi&wMask;
 			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
+			if (max && max!=AI_CASTOR_GRADIENT_WALL)
 			{
 				int xl=(x-1)&wMask;
 				int xr=(x+1)&wMask;
@@ -432,7 +432,7 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
 		{
 			int x=xi&wMask;
 			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
+			if (max && max!=AI_CASTOR_GRADIENT_WALL)
 			{
 				int xl=(x-1)&wMask;
 				int xr=(x+1)&wMask;
@@ -464,7 +464,7 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
 			int wyu=(((yi-1)&hMask)<<wDec);
 			int wyd=(((yi+1)&hMask)<<wDec);
 			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
+			if (max && max!=AI_CASTOR_GRADIENT_WALL)
 			{
 				Uint8 side[4];
 				side[0]=gradient[wyu+xl];
@@ -493,7 +493,7 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
 			int wyu=(((yi-1)&hMask)<<wDec);
 			int wyd=(((yi+1)&hMask)<<wDec);
 			Uint8 max=gradient[wy+x];
-			if (max && max!=255)
+			if (max && max!=AI_CASTOR_GRADIENT_WALL)
 			{
 				Uint8 side[4];
 				side[0]=gradient[wyu+xr];

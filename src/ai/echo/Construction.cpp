@@ -799,7 +799,7 @@ void BuildingRegister::tick()
 		if(std::get<3>(i->second)!=AI_ECHO_PENDING_NOT_ISSUED)
 		{
 			std::get<3>(i->second)++;
-			if(std::get<3>(i->second) > 300)
+			if(std::get<3>(i->second) > AI_ECHO_PENDING_BUILDING_TIMEOUT_TICKS)
 			{
 				pending_iterator current=i;
 				++i;

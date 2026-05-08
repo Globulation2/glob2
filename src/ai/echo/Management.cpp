@@ -343,7 +343,7 @@ RessourceTracker::RessourceTracker(Echo& echo, int building_id, int length, int 
 void RessourceTracker::tick()
 {
 	timer++;
-	if((timer%10)==0)
+	if((timer%AI_ECHO_TRACKER_SAMPLE_INTERVAL_TICKS)==0)
 	{
 		Building* b = echo.get_building_register().get_building(building_id);
 		record[position]=b->ressources[ressource];
@@ -730,11 +730,11 @@ void AdjustPriority::modify(Echo& echo)
 {
 	int p=0;
 	if(priority == Low)
-		p=-1;
+		p=AI_ECHO_PRIORITY_LOW;
 	else if(priority == Medium)
-		p=0;
+		p=AI_ECHO_PRIORITY_MEDIUM;
 	else if(priority == High)
-		p=1;
+		p=AI_ECHO_PRIORITY_HIGH;
 	echo.push_order(shared_ptr<Order>(new OrderChangePriority(echo.get_building_register().get_building(building_id)->gid, p)));
 }
 
@@ -765,11 +765,11 @@ bool AdjustPriority::load(GAGCore::InputStream *stream, Player *player, Sint32 v
 	ManagementOrder::load(stream, player, versionMinor);
 	building_id=stream->readUint32("building_id");
 	int p = stream->readSint32("p");
-	if(p==-1)
+	if(p==AI_ECHO_PRIORITY_LOW)
 		priority = Low;
-	else if(p==0)
+	else if(p==AI_ECHO_PRIORITY_MEDIUM)
 		priority = Medium;
-	else if(p==1)
+	else if(p==AI_ECHO_PRIORITY_HIGH)
 		priority = High;
 	stream->readLeaveSection();
 	return true;
@@ -784,11 +784,11 @@ void AdjustPriority::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(building_id, "building_id");
 	int p=0;
 	if(priority == Low)
-		p=-1;
+		p=AI_ECHO_PRIORITY_LOW;
 	else if(priority == Medium)
-		p=0;
+		p=AI_ECHO_PRIORITY_MEDIUM;
 	else if(priority == High)
-		p=1;
+		p=AI_ECHO_PRIORITY_HIGH;
 	stream->writeSint32(p, "priority");
 	stream->writeLeaveSection();
 }

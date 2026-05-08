@@ -57,40 +57,40 @@ void AICastor::addProjects()
 	if (buildingSum[IntBuildingType::FOOD_BUILDING][0]==0)
 	{
 		Project *project=new Project(IntBuildingType::FOOD_BUILDING, "boot");
-		
+
 		project->successWait=strategy.successWait;
 		project->critical=true;
-		project->priority=0;
+		project->priority=AI_CASTOR_PROJECT_PRIORITY_CRITICAL;
 		project->food=true;
-		
-		project->mainWorkers=3;
-		project->foodWorkers=2;
-		project->otherWorkers=0;
-		
+
+		project->mainWorkers=AI_CASTOR_BOOT_FOOD_MAIN_WORKERS;
+		project->foodWorkers=AI_CASTOR_BOOT_FOOD_FOOD_WORKERS;
+		project->otherWorkers=AI_CASTOR_BOOT_OTHER_WORKERS_OFF;
+
 		project->multipleStart=true;
 		project->waitFinished=true;
-		project->finalWorkers=1;
-		
+		project->finalWorkers=AI_CASTOR_BOOT_FOOD_FINAL_WORKERS;
+
 		if (addProject(project))
 			return;
 	}
 	if (buildingSum[IntBuildingType::SWARM_BUILDING][0]+buildingSum[IntBuildingType::SWARM_BUILDING][1]==0)
 	{
 		Project *project=new Project(IntBuildingType::SWARM_BUILDING, "boot");
-		
+
 		project->successWait=strategy.successWait;
 		project->critical=true;
-		project->priority=0;
+		project->priority=AI_CASTOR_PROJECT_PRIORITY_CRITICAL;
 		project->food=true;
-		
-		project->mainWorkers=10;
-		project->foodWorkers=1;
-		project->otherWorkers=0;
-		
+
+		project->mainWorkers=AI_CASTOR_BOOT_SWARM_MAIN_WORKERS;
+		project->foodWorkers=AI_CASTOR_BOOT_SWARM_FOOD_WORKERS;
+		project->otherWorkers=AI_CASTOR_BOOT_OTHER_WORKERS_OFF;
+
 		project->multipleStart=false;
 		project->waitFinished=true;
-		project->finalWorkers=2;
-		
+		project->finalWorkers=AI_CASTOR_BOOT_SWARM_FINAL_WORKERS;
+
 		if (addProject(project))
 			return;
 	}
@@ -98,22 +98,22 @@ void AICastor::addProjects()
 	{
 		if (timer>computeNeedSwimTimer)
 		{
-			computeNeedSwimTimer=timer+1024;// every 41s
+			computeNeedSwimTimer=timer+AI_CASTOR_NEED_SWIM_REFRESH;// every 41s
 			computeNeedSwim();
 		}
 		if (needSwim)
 		{
-			Project *project=new Project(IntBuildingType::SWIMSPEED_BUILDING, 1, 2, "boot");
+			Project *project=new Project(IntBuildingType::SWIMSPEED_BUILDING, AI_CASTOR_BOOT_SWIM_AMOUNT, AI_CASTOR_BOOT_SWIM_MAIN_WORKERS, "boot");
 			project->successWait=strategy.successWait;
 			project->critical=true;
-			project->priority=0;
+			project->priority=AI_CASTOR_PROJECT_PRIORITY_CRITICAL;
 			if (addProject(project))
 				return;
 		}
 	}
 	if (buildingSum[IntBuildingType::ATTACK_BUILDING][0]+buildingSum[IntBuildingType::ATTACK_BUILDING][1]==0)
 	{
-		Project *project=new Project(IntBuildingType::ATTACK_BUILDING, 1, 2, "boot");
+		Project *project=new Project(IntBuildingType::ATTACK_BUILDING, AI_CASTOR_BOOT_ATTACK_AMOUNT, AI_CASTOR_BOOT_ATTACK_MAIN_WORKERS, "boot");
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		if (addProject(project))
@@ -175,7 +175,7 @@ void AICastor::addProjects()
 	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 	{
 		int upgradeSum=0;
-		for (int li=1; li<NB_UNIT_LEVELS; li++)
+		for (int li=AI_CASTOR_FIRST_UPGRADE_LEVEL; li<NB_UNIT_LEVELS; li++)
 			upgradeSum+=buildingLevels[bi][0][li];
 		if (upgradeSum<strategy.build[bi].baseUpgrade)
 			return;
@@ -192,12 +192,12 @@ void AICastor::addProjects()
 	
 	for (Sint32 agi=1; agi<NB_UNIT_LEVELS; agi++)
 	{
-		buildsAmount=0+(agi<<1);
+		buildsAmount=AI_CASTOR_BUILDS_TIER_BASE_PRE+(agi<<AI_CASTOR_BUILDS_TIER_SHIFT);
 		if (!enoughFreeWorkers())
 			return;
 		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 			amountGoal[bi]+=strategy.build[bi].news;
-		
+
 		for (int bpi=0; bpi<NB_HARD_BUILDING; bpi++)
 			for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 				if (bi==strategy.build[bpi].newOrder)
@@ -210,14 +210,14 @@ void AICastor::addProjects()
 								|| starvingWarningStats[1]>starvingWarningStats[0]))
 							continue;
 						Project *project=new Project((IntBuildingType::Number)bi,
-							amountGoal[bi], strategy.build[bi].newWorkers+(agi-1), "loop");
+							amountGoal[bi], strategy.build[bi].newWorkers+(agi-AI_CASTOR_TIER_WORKERS_SCALE_BIAS), "loop");
 						project->successWait=strategy.successWait;
 						project->finalWorkers=strategy.build[bi].finalWorkers;
 						if (addProject(project))
 							return;
 					}
-		buildsAmount=1+(agi<<1);
-		
+		buildsAmount=AI_CASTOR_BUILDS_TIER_BASE_MID+(agi<<AI_CASTOR_BUILDS_TIER_SHIFT);
+
 		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 			upgradeGoal[bi]+=strategy.build[bi].newUpgrade;
 		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
@@ -228,8 +228,8 @@ void AICastor::addProjects()
 			if (upgradeSum<upgradeGoal[bi])
 				return;
 		}
-		
-		buildsAmount=2+(agi<<1);
+
+		buildsAmount=AI_CASTOR_BUILDS_TIER_BASE_POST+(agi<<AI_CASTOR_BUILDS_TIER_SHIFT);
 	}
 }
 
@@ -242,15 +242,15 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 	//	project->mainWorkers, project->foodWorkers, project->otherWorkers,
 	//	project->multipleStart, project->waitFinished, project->subPhase);
 	
-	if (timer<project->timer+32)
+	if (timer<project->timer+AI_CASTOR_PROJECT_STEP_INTERVAL)
 		return shared_ptr<Order>();
-	
+
 	if (foodLock && !project->critical && project->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 	{
 		if (starvingWarning)
-			project->timer=timer+8192; // 5min28s
+			project->timer=timer+AI_CASTOR_SWARM_STARVE_BACKOFF; // 5min28s
 		else
-			project->timer=timer+2048; // 1min22s
+			project->timer=timer+AI_CASTOR_SWARM_FOODLOCK_BACKOFF; // 1min22s
 		project->blocking=false;
 		project->critical=false;
 	}
@@ -304,7 +304,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		}
 		else
 		{
-			project->timer=timer+8192; // 5min27s
+			project->timer=timer+AI_CASTOR_PROJECT_ABORT_BACKOFF; // 5min27s
 			project->blocking=false;
 			project->critical=false;
 		}
@@ -347,12 +347,12 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		int isFree=team->stats.getWorkersBalance();
 		Sint32 mainWorkers=project->mainWorkers;
 		Sint32 finalWorkers=project->finalWorkers;
-		if (isFree<=3)
+		if (isFree<=AI_CASTOR_FREE_WORKERS_LOW)
 		{
-			if (mainWorkers>3)
-				mainWorkers=((3+mainWorkers)>>1);
-			//if (finalWorkers>3)
-			//	finalWorkers=3;
+			if (mainWorkers>AI_CASTOR_FREE_WORKERS_LOW)
+				mainWorkers=((AI_CASTOR_FREE_WORKERS_LOW+mainWorkers)>>1);
+			//if (finalWorkers>AI_CASTOR_FREE_WORKERS_LOW)
+			//	finalWorkers=AI_CASTOR_FREE_WORKERS_LOW;
 		}
 		else
 		{
@@ -439,7 +439,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		}
 		else if (project->multipleStart)
 		{
-			if (isFree>1)
+			if (isFree>AI_CASTOR_FREE_WORKERS_SPARE)
 			{
 				project->subPhase=AICastor::AI_CASTOR_SUBPHASE_FIND_PLACE;
 			}

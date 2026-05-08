@@ -31,16 +31,16 @@ using std::shared_ptr;
 
 void AIEcho::signature_write(GAGCore::OutputStream *stream)
 {
-	stream->write("EchoSig", 7, "signature");
+	stream->write("EchoSig", AI_ECHO_SIGNATURE_LENGTH, "signature");
 }
 
 
 
 void AIEcho::signature_check(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
-	char signature[7];
-	stream->read(signature, 7, "signature");
-	if (memcmp(signature,"EchoSig", 7)!=0)
+	char signature[AI_ECHO_SIGNATURE_LENGTH];
+	stream->read(signature, AI_ECHO_SIGNATURE_LENGTH, "signature");
+	if (memcmp(signature,"EchoSig", AI_ECHO_SIGNATURE_LENGTH)!=0)
 	{
 
 		std::cerr<<"Signature match failed. Expected \"EchoSig\", recieved \""<<signature<<"\""<<std::endl;

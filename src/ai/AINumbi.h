@@ -5,6 +5,7 @@
 
 #include "BuildingType.h"
 #include "AIImplementation.h"
+#include "AINumbiTuning.h"
 
 class Game;
 class Map;
@@ -38,7 +39,11 @@ private:
 	int critticalWarriors;
 	int critticalTime;
 	int attackTimer;
-	int mainBuilding[15]; //BuildingType::NB_BUILDING=15 with lover versions
+	// [POSSIBLE BUG M7] Sized AI_NUMBI_LEGACY_NB_BUILDING (=15) for save-format
+	// compatibility; comment originally read "BuildingType::NB_BUILDING=15 with
+	// lover versions". Today IntBuildingType::NB_BUILDING is smaller, but the
+	// loops below still index by NB_BUILDING — preserved verbatim.
+	int mainBuilding[AI_NUMBI_LEGACY_NB_BUILDING];
 	void init(Player *player);
 	int estimateFood(Building *building);
 	int countUnits(void);

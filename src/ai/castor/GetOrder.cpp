@@ -27,14 +27,14 @@ std::shared_ptr<Order>AICastor::getOrder()
 	if (!strategy.defined)
 		defineStrategy();
 	
-	if (computeBoot<32)
+	if (computeBoot<AI_CASTOR_BOOT_IDLE_TICKS)
 	{
 		computeBoot++;
 		return shared_ptr<Order>(new NullOrder());
 	}
-	else if (computeBoot<17+32)
+	else if (computeBoot<AI_CASTOR_BOOT_COMPUTE_STEPS+AI_CASTOR_BOOT_IDLE_TICKS)
 	{
-		switch (computeBoot-32)
+		switch (computeBoot-AI_CASTOR_BOOT_IDLE_TICKS)
 		{
 			case 0:
 			computeHydratationMap();
@@ -102,7 +102,7 @@ std::shared_ptr<Order>AICastor::getOrder()
 		return shared_ptr<Order>(new NullOrder());
 	}
 	
-	if ((timer&511)==0)
+	if ((timer&AI_CASTOR_WHEAT_HISTORY_INTERVAL_MASK)==0)
 	{
 		Uint8 *temp=oldWheatGradient[3];
 		for (int i=3; i>0; i--)
@@ -148,7 +148,7 @@ std::shared_ptr<Order>AICastor::getOrder()
 	if (timer>controlSwarmsTimer)
 	{
 		computeWarLevel();
-		controlSwarmsTimer=timer+256; // each 10s
+		controlSwarmsTimer=timer+AI_CASTOR_CONTROL_SWARMS_INTERVAL; // each 10s
 		std::shared_ptr<Order>order=controlSwarms();
 		if (order)
 			return order;
@@ -159,7 +159,7 @@ std::shared_ptr<Order>AICastor::getOrder()
 	//	if ((*pi)->critical)
 	//		critical=true;
 	
-	int minReal=1024;
+	int minReal=Building::MAX_COUNT;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->priority<=priority)
 		{
@@ -192,29 +192,29 @@ std::shared_ptr<Order>AICastor::getOrder()
 	
 	if (priority>0 && timer>expandFoodTimer)
 	{
-		expandFoodTimer=timer+256; // each 10s
+		expandFoodTimer=timer+AI_CASTOR_EXPAND_FOOD_INTERVAL; // each 10s
 		std::shared_ptr<Order>order=expandFood();
 		if (order)
 			return order;
 	}
 	
-	if (timer>lastEnemyRangeMapComputed+1024) // each 41s
+	if (timer>lastEnemyRangeMapComputed+AI_CASTOR_ENEMY_RANGE_REFRESH) // each 41s
 	{
 		computeEnemyRangeMap();
 	}
-	if (timer>lastEnemyWarriorsMapComputed+1024) // each 41s
+	if (timer>lastEnemyWarriorsMapComputed+AI_CASTOR_ENEMY_WARRIORS_REFRESH) // each 41s
 	{
 		computeEnemyWarriorsMap();
 	}
-	
+
 	/*if (onStrike)
 	{
-		if (timer>lastEnemyPowerMapComputed+128) // each 5s
+		if (timer>lastEnemyPowerMapComputed+AI_CASTOR_ENEMY_POWER_STRIKE_REFRESH) // each 5s
 			computeEnemyPowerMap();
 	}
 	else
 	{
-		if (timer>lastEnemyPowerMapComputed+4096) // each 2min44s
+		if (timer>lastEnemyPowerMapComputed+AI_CASTOR_ENEMY_POWER_IDLE_REFRESH) // each 2min44s
 			computeEnemyPowerMap();
 	}*/
 	

@@ -10,6 +10,7 @@
 #include "echo/Management.h"
 #include "echo/SearchTools.h"
 
+#include "AIEchoTuning.h"
 #include "AIImplementation.h"
 #include "Order.h"
 #include "Player.h"

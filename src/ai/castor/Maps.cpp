@@ -39,7 +39,7 @@ void AICastor::computeObstacleUnitMap()
 			obstacleUnitMap[i]=0;
 		else if (c.forbidden&teamMask)
 			obstacleUnitMap[i]=0;
-		else if (!canSwim && (c.terrain>=256) && (c.terrain<256+16)) // !canSwim && isWatter ?
+		else if (!canSwim && (c.terrain>=AI_CASTOR_TERRAIN_WATER_FIRST) && (c.terrain<AI_CASTOR_TERRAIN_WATER_FIRST+AI_CASTOR_TERRAIN_WATER_COUNT)) // !canSwim && isWatter ?
 			obstacleUnitMap[i]=0;
 		else
 			obstacleUnitMap[i]=1;
@@ -64,7 +64,7 @@ void AICastor::computeObstacleBuildingMap()
 		const Case& c=cases[i];
 		if (c.building!=NOGBID)
 			obstacleBuildingMap[i]=0;
-		else  if (c.terrain>=16) // if (!isGrass)
+		else  if (c.terrain>=AI_CASTOR_TERRAIN_GRASS_COUNT) // if (!isGrass)
 			obstacleBuildingMap[i]=0;
 		else if (c.ressource.type!=NO_RES_TYPE)
 			obstacleBuildingMap[i]=0;
@@ -101,11 +101,11 @@ void AICastor::computeSpaceForBuildingMap(int max)
 				wyx[1]=wy0+((x+1)&wMask);
 				wyx[2]=wy1+x+0;
 				wyx[3]=wy1+((x+1)&wMask);
-				Uint8 obs[4];
-				for (int i=0; i<4; i++)
+				Uint8 obs[AI_CASTOR_CORNERS];
+				for (int i=0; i<AI_CASTOR_CORNERS; i++)
 					obs[i]=spaceForBuildingMap[wyx[i]];
-				Uint8 min=255;
-				for (int i=0; i<4; i++)
+				Uint8 min=AI_CASTOR_UINT8_MAX_VALUE;
+				for (int i=0; i<AI_CASTOR_CORNERS; i++)
 					if (min>obs[i])
 						min=obs[i];
 				if (min!=0)
@@ -171,77 +171,77 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	
 	Uint8 dirty;
 	if (neighbour || /*!wheat ||*/ bw!=dw || bh!=dh)
-		dirty=1;
+		dirty=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
 	else
 		dirty=0;
-	
+
 	// dirty at a range of 1 space case, without corners;
 	for (int xi=bx-dw+1; xi<bx+bw; xi++)
 	{
-		gradient[(xi&wMask)+(((by-dh-1)&hMask)<<wDec)]|=1;
-		gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)]|=1;
+		gradient[(xi&wMask)+(((by-dh-1)&hMask)<<wDec)]|=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
+		gradient[(xi&wMask)+(((by+bh+1)&hMask)<<wDec)]|=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
 	}
 	for (int yi=by-dh+1; yi<by+bh; yi++)
 	{
-		gradient[((bx-dw-1)&wMask)+((yi&hMask)<<wDec)]|=1;
-		gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)]|=1;
+		gradient[((bx-dw-1)&wMask)+((yi&hMask)<<wDec)]|=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
+		gradient[((bx+bw+1)&wMask)+((yi&hMask)<<wDec)]|=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
 	}
 	{
 		// the same with inner inner corners:
-		gradient[((bx-dw)&wMask)+(((by-dh)&hMask)<<wDec)]|=1;
-		gradient[((bx-dw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
-		gradient[((bx+bw)&wMask)+(((by-dh)&hMask)<<wDec)]|=1;
-		gradient[((bx+bw)&wMask)+(((by+bh)&hMask)<<wDec)]|=1;
+		gradient[((bx-dw)&wMask)+(((by-dh)&hMask)<<wDec)]|=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
+		gradient[((bx-dw)&wMask)+(((by+bh)&hMask)<<wDec)]|=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
+		gradient[((bx+bw)&wMask)+(((by-dh)&hMask)<<wDec)]|=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
+		gradient[((bx+bw)&wMask)+(((by+bh)&hMask)<<wDec)]|=AI_CASTOR_NEIGHBOUR_DIRTY_BIT;
 	}
-	
+
 	// At a range of 0 space case (neighbours), without corners,
 	// we increment (bit 1 to 3), and dirty bit 0 in case:
 	for (int xi=bx-dw+1; xi<bx+bw; xi++)
 	{
 		Uint8 *p;
 		p=&gradient[(xi&wMask)+(((by-dh)&hMask)<<wDec)];
-		*p=((*p+2)|dirty)&(~16);
+		*p=((*p+AI_CASTOR_NEIGHBOUR_DIRECT_INCR)|dirty)&(~AI_CASTOR_NEIGHBOUR_CENTRE_BIT);
 		p=&gradient[(xi&wMask)+(((by+bh)&hMask)<<wDec)];
-		*p=((*p+2)|dirty)&(~16);
+		*p=((*p+AI_CASTOR_NEIGHBOUR_DIRECT_INCR)|dirty)&(~AI_CASTOR_NEIGHBOUR_CENTRE_BIT);
 	}
 	for (int yi=by-dh+1; yi<by+bh; yi++)
 	{
 		Uint8 *p;
 		p=&gradient[((bx-dw)&wMask)+((yi&hMask)<<wDec)];
-		*p=((*p+2)|dirty)&(~16);
+		*p=((*p+AI_CASTOR_NEIGHBOUR_DIRECT_INCR)|dirty)&(~AI_CASTOR_NEIGHBOUR_CENTRE_BIT);
 		p=&gradient[((bx+bw)&wMask)+((yi&hMask)<<wDec)];
-		*p=((*p+2)|dirty)&(~16);
+		*p=((*p+AI_CASTOR_NEIGHBOUR_DIRECT_INCR)|dirty)&(~AI_CASTOR_NEIGHBOUR_CENTRE_BIT);
 	}
-	
+
 	// At a range of 2 space case, without corners,
 	// we increment (bit 5 to 7):
 	for (int xi=bx-dw; xi<bx+bw+1; xi++)
 	{
 		Uint8 *p;
 		p=&gradient[(xi&wMask)+(((by-dh-2)&hMask)<<wDec)];
-		(*p)+=32;
+		(*p)+=AI_CASTOR_NEIGHBOUR_FAR_INCR;
 		p=&gradient[(xi&wMask)+(((by+bh+2)&hMask)<<wDec)];
-		(*p)+=32;
+		(*p)+=AI_CASTOR_NEIGHBOUR_FAR_INCR;
 	}
 	for (int yi=by-dh; yi<by+bh+1; yi++)
 	{
 		Uint8 *p;
 		p=&gradient[((bx-dw-2)&wMask)+((yi&hMask)<<wDec)];
-		(*p)+=32;
+		(*p)+=AI_CASTOR_NEIGHBOUR_FAR_INCR;
 		p=&gradient[((bx+bw+2)&wMask)+((yi&hMask)<<wDec)];
-		(*p)+=32;
+		(*p)+=AI_CASTOR_NEIGHBOUR_FAR_INCR;
 	}
 	{
 		// the same with inner inner corners:
 		Uint8 *p;
 		p=&gradient[((bx-dw-1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
-		(*p)+=32;
+		(*p)+=AI_CASTOR_NEIGHBOUR_FAR_INCR;
 		p=&gradient[((bx-dw-1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
-		(*p)+=32;
+		(*p)+=AI_CASTOR_NEIGHBOUR_FAR_INCR;
 		p=&gradient[((bx+bw+1)&wMask)+(((by-dh-1)&hMask)<<wDec)];
-		(*p)+=32;
+		(*p)+=AI_CASTOR_NEIGHBOUR_FAR_INCR;
 		p=&gradient[((bx+bw+1)&wMask)+(((by+bh+1)&hMask)<<wDec)];
-		(*p)+=32;
+		(*p)+=AI_CASTOR_NEIGHBOUR_FAR_INCR;
 	}
 }
 
@@ -270,7 +270,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 					if ((map->mapDiscovered[index]&visionMask))
 						goto doubleBreak;
 				}
-			gradient[(y<<wDec)+x]=127;
+			gradient[(y<<wDec)+x]=AI_CASTOR_NEIGHBOUR_OUT_OF_VISION;
 			continue;
 		doubleBreak:
 			gradient[(y<<wDec)+x]=0;
@@ -321,11 +321,11 @@ void AICastor::computeWorkPowerMap()
 	int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=workPowerMap;
-	Uint8 maxRange=64;
-	if (maxRange>w/2)
-		maxRange=w/2;
-	if (maxRange>h/2)
-		maxRange=h/2;
+	Uint8 maxRange=AI_CASTOR_WORK_POWER_MAX_RANGE;
+	if (maxRange>w/AI_CASTOR_HALFMAP_DIV)
+		maxRange=w/AI_CASTOR_HALFMAP_DIV;
+	if (maxRange>h/AI_CASTOR_HALFMAP_DIV)
+		maxRange=h/AI_CASTOR_HALFMAP_DIV;
 	
 	memset(gradient, 0, size);
 	
@@ -335,7 +335,7 @@ void AICastor::computeWorkPowerMap()
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>1)/u->race->hungryness;
+			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungryness;
 			if (range<0)
 				continue;
 			//printf(" range=%d\n", range);
@@ -343,12 +343,12 @@ void AICastor::computeWorkPowerMap()
 				range=maxRange;
 			int ux=u->posX;
 			int uy=u->posY;
-			static const int reducer=3;
+			static const int reducer=AI_CASTOR_POWER_STAMP_REDUCER;
 			{
 				Uint8 *gp=&gradient[(ux&wMask)+((uy&hMask)<<wDec)];
 				Uint16 sum=*gp+(range>>reducer);
-				if (sum>255)
-					sum=255;
+				if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+					sum=AI_CASTOR_UINT8_MAX_VALUE;
 				*gp=sum;
 			}
 			for (int r=1; r<range; r++)
@@ -357,32 +357,32 @@ void AICastor::computeWorkPowerMap()
 				{
 					Uint8 *gp=&gradient[((ux+dx)&wMask)+(((uy -r)&hMask)<<wDec)];
 					Uint16 sum=*gp+((range-r)>>reducer);
-					if (sum>255)
-						sum=255;
+					if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+						sum=AI_CASTOR_UINT8_MAX_VALUE;
 					*gp=sum;
 				}
 				for (int dx=-r; dx<=r; dx++)
 				{
 					Uint8 *gp=&gradient[((ux+dx)&wMask)+(((uy +r)&hMask)<<wDec)];
 					Uint16 sum=*gp+((range-r)>>reducer);
-					if (sum>255)
-						sum=255;
+					if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+						sum=AI_CASTOR_UINT8_MAX_VALUE;
 					*gp=sum;
 				}
 				for (int dy=(1-r); dy<r; dy++)
 				{
 					Uint8 *gp=&gradient[((ux -r)&wMask)+(((uy+dy)&hMask)<<wDec)];
 					Uint16 sum=*gp+((range-r)>>reducer);
-					if (sum>255)
-						sum=255;
+					if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+						sum=AI_CASTOR_UINT8_MAX_VALUE;
 					*gp=sum;
 				}
 				for (int dy=(1-r); dy<r; dy++)
 				{
 					Uint8 *gp=&gradient[((ux +r)&wMask)+(((uy+dy)&hMask)<<wDec)];
 					Uint16 sum=*gp+((range-r)>>reducer);
-					if (sum>255)
-						sum=255;
+					if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+						sum=AI_CASTOR_UINT8_MAX_VALUE;
 					*gp=sum;
 				}
 			}
@@ -410,7 +410,7 @@ void AICastor::computeWorkRangeMap()
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>1)/u->race->hungryness;
+			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungryness;
 			if (range<0)
 				continue;
 			//printf(" range=%d\n", range);
@@ -440,7 +440,7 @@ void AICastor::computeWorkAbilityMap()
 		Uint8 workPower=workPowerMap[i];
 		Uint8 workRange=workRangeMap[i];
 		
-		Uint32 workAbility=((workPower*workRange)>>5);
+		Uint32 workAbility=((workPower*workRange)>>AI_CASTOR_WORK_ABILITY_NORM_SHIFT);
 		if (workAbility>GRADIENT_AT_GOAL)
 			workAbility=GRADIENT_AT_GOAL;
 
@@ -461,12 +461,12 @@ void AICastor::computeHydratationMap()
 	Uint16 *gradient=(Uint16 *)malloc(2*size);
 	memset(gradient, 0, 2*size);
 	const auto& cases=map->cases;
-	static const int range=16;
+	static const int range=AI_CASTOR_HYDRATATION_RANGE;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
 			Uint16 t=cases[x+(y<<wDec)].terrain;
-			if ((t>=256)&&(t<256+16)) // if SAND
+			if ((t>=AI_CASTOR_TERRAIN_SAND_FIRST)&&(t<AI_CASTOR_TERRAIN_SAND_FIRST+AI_CASTOR_TERRAIN_SAND_COUNT)) // if SAND
 				for (int r=1; r<range; r++)
 				{
 					for (int dx=-r; dx<=r; dx++)
@@ -493,7 +493,7 @@ void AICastor::computeHydratationMap()
 		}
 	for (size_t i=0; i<size; i++)
 	{
-		Uint16 value=gradient[i]>>4;
+		Uint16 value=gradient[i]>>AI_CASTOR_HYDRATATION_NORM_SHIFT;
 		if (value<GRADIENT_AT_GOAL)
 			hydratationMap[i]=value;
 		else
@@ -516,8 +516,9 @@ void AICastor::computeNotGrassMap()
 	for (size_t i=0; i<size; i++)
 	{
 		Uint16 t=cases[i].terrain;
-		if (t>16)// if !GRASS
-			notGrassMap[i]=16;
+		// Preserve >16 (not >=16 like obstacleBuildingMap above) — see bug M6.
+		if (t>AI_CASTOR_TERRAIN_GRASS_COUNT)// if !GRASS
+			notGrassMap[i]=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE;
 	}
 	
 	updateGlobalGradientNoObstacle(notGrassMap);
@@ -543,14 +544,14 @@ void AICastor::computeWheatCareMap()
 	
 	memcpy(wheatCareMap[0], obstacleUnitMap, size);
 	for (size_t i=0; i<=sizeMask; i++)
-		if (wheatCareMap[0][i]!=0 && notGrassMap[i]==15 && hydratationMap[i]>0
-			&& ((wheatCareMap[1][i]>7)
-				|| ((oldWheatGradient[3][i]==255 || oldWheatGradient[2][i]==255) && (oldWheatGradient[1][i]<255 || oldWheatGradient[0][i]<255))))
+		if (wheatCareMap[0][i]!=0 && notGrassMap[i]==AI_CASTOR_NOTGRASS_NEIGHBOUR_VAL && hydratationMap[i]>0
+			&& ((wheatCareMap[1][i]>AI_CASTOR_WHEATCARE_PREV_HIGH_THRESHOLD)
+				|| ((oldWheatGradient[3][i]==AI_CASTOR_WHEAT_GRADIENT_PEAK || oldWheatGradient[2][i]==AI_CASTOR_WHEAT_GRADIENT_PEAK) && (oldWheatGradient[1][i]<AI_CASTOR_WHEAT_GRADIENT_PEAK || oldWheatGradient[0][i]<AI_CASTOR_WHEAT_GRADIENT_PEAK))))
 		{
-			if (oldWheatGradient[1][i]<254 || oldWheatGradient[0][i]<254)
-				wheatCareMap[0][i]=10;
+			if (oldWheatGradient[1][i]<AI_CASTOR_WHEAT_GRADIENT_NEAR_PEAK || oldWheatGradient[0][i]<AI_CASTOR_WHEAT_GRADIENT_NEAR_PEAK)
+				wheatCareMap[0][i]=AI_CASTOR_WHEATCARE_HIGH;
 			else
-				wheatCareMap[0][i]=8;
+				wheatCareMap[0][i]=AI_CASTOR_WHEATCARE_LOW;
 		}
 	map->updateGlobalGradient(wheatCareMap[0]);
 }
@@ -572,22 +573,22 @@ void AICastor::computeWheatGrowthMap()
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	
 	for (size_t i=0; i<size; i++)
-		if (wheatGradient[i]==255)
-			wheatGrowthMap[i]=1+(hydratationMap[i]>>3);
-	
+		if (wheatGradient[i]==AI_CASTOR_WHEAT_GRADIENT_PEAK)
+			wheatGrowthMap[i]=AI_CASTOR_WHEAT_GROWTH_BASE+(hydratationMap[i]>>AI_CASTOR_WHEAT_GROWTH_HYDRATATION_SHIFT);
+
 	map->updateGlobalGradient(wheatGrowthMap);
-	
+
 	for (size_t i=0; i<size; i++)
 	{
 		Uint8 care=wheatCareMap[0][i];
-		if (care>1)
+		if (care>AI_CASTOR_WHEAT_CARE_SUBTRACT_THRESHOLD)
 		{
 			Uint8 *p=&wheatGrowthMap[i];
 			Uint8 growth=*p;
 			if (growth>care)
 				(*p)=growth-care;
 			else
-				(*p)=1;
+				(*p)=AI_CASTOR_WHEAT_GROWTH_MIN;
 		}
 	}
 	lastWheatGrowthMapComputed=timer;
@@ -624,13 +625,13 @@ void AICastor::computeEnemyPowerMap()
 				continue;
 			int bx=b->posX;
 			int by=b->posY;
-			static const int reducer=3;
-			static const int range=32; // max 32
+			static const int reducer=AI_CASTOR_POWER_STAMP_REDUCER;
+			static const int range=AI_CASTOR_ENEMY_POWER_RANGE; // max 32
 			{
 				Uint8 *gp=&gradient[(bx&wMask)+((by&hMask)<<wDec)];
 				Uint16 sum=*gp+(range>>reducer);
-				if (sum>255)
-					sum=255;
+				if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+					sum=AI_CASTOR_UINT8_MAX_VALUE;
 				*gp=sum;
 			}
 			for (int r=1; r<range; r++)
@@ -639,32 +640,32 @@ void AICastor::computeEnemyPowerMap()
 				{
 					Uint8 *gp=&gradient[((bx+dx)&wMask)+(((by -r)&hMask)<<wDec)];
 					Uint16 sum=*gp+((range-r)>>reducer);
-					if (sum>255)
-						sum=255;
+					if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+						sum=AI_CASTOR_UINT8_MAX_VALUE;
 					*gp=sum;
 				}
 				for (int dx=-r; dx<=r; dx++)
 				{
 					Uint8 *gp=&gradient[((bx+dx)&wMask)+(((by +r)&hMask)<<wDec)];
 					Uint16 sum=*gp+((range-r)>>reducer);
-					if (sum>255)
-						sum=255;
+					if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+						sum=AI_CASTOR_UINT8_MAX_VALUE;
 					*gp=sum;
 				}
 				for (int dy=(1-r); dy<r; dy++)
 				{
 					Uint8 *gp=&gradient[((bx -r)&wMask)+(((by+dy)&hMask)<<wDec)];
 					Uint16 sum=*gp+((range-r)>>reducer);
-					if (sum>255)
-						sum=255;
+					if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+						sum=AI_CASTOR_UINT8_MAX_VALUE;
 					*gp=sum;
 				}
 				for (int dy=(1-r); dy<r; dy++)
 				{
 					Uint8 *gp=&gradient[((bx +r)&wMask)+(((by+dy)&hMask)<<wDec)];
 					Uint16 sum=*gp+((range-r)>>reducer);
-					if (sum>255)
-						sum=255;
+					if (sum>AI_CASTOR_UINT8_MAX_VALUE)
+						sum=AI_CASTOR_UINT8_MAX_VALUE;
 					*gp=sum;
 				}
 			}
@@ -740,10 +741,10 @@ void AICastor::computeEnemyWarriorsMap()
 		Uint16 guid=map->cases[i].groundUnit;
 		if (guid==NOGUID)
 			continue;
-		Uint32 teamMask=(1<<(guid>>10));
+		Uint32 teamMask=(1<<(guid>>AI_CASTOR_GUID_TEAM_SHIFT));
 		if ((teamMask&team->enemies)==0)
 			continue;
-		gradient[i]=32;
+		gradient[i]=AI_CASTOR_ENEMY_WARRIOR_GRADIENT_SEED;
 	}
 	map->updateGlobalGradient(gradient);
 }

@@ -35,25 +35,25 @@ AICastor::Project::Project(IntBuildingType::Number shortTypeNum, int amount, Sin
 }
 void AICastor::Project::init(const char *suffix)
 {
-	amount=1;
+	amount=AI_CASTOR_PROJECT_DEFAULT_AMOUNT;
 	food=(this->shortTypeNum==IntBuildingType::SWARM_BUILDING
 		|| this->shortTypeNum==IntBuildingType::FOOD_BUILDING);
 	defense=(this->shortTypeNum==IntBuildingType::DEFENSE_BUILDING);
-	
+
 	debugStdName += IntBuildingType::typeFromShortNumber(this->shortTypeNum);
 	debugStdName += "-";
 	debugStdName += suffix;
 	this->debugName=debugStdName.c_str();
-	
+
 	//printf("new project(%s)\n", debugName);
-	
+
 	subPhase=AI_CASTOR_SUBPHASE_BOOT;
 
 	successWait=0;
 	blocking=true;
 	critical=false;
-	priority=1;
-	triesLeft=64;
+	priority=AI_CASTOR_PROJECT_DEFAULT_PRIORITY;
+	triesLeft=AI_CASTOR_PROJECT_TRIES_LEFT;
 
 	mainWorkers=AI_CASTOR_WORKERS_UNSET;
 	foodWorkers=AI_CASTOR_WORKERS_UNSET;
@@ -142,7 +142,7 @@ void AICastor::init(Player *player)
 	expandFoodTimer=0;
 	controlFoodTimer=0;
 	controlUpgradeTimer=0;
-	controlUpgradeDelay=32;
+	controlUpgradeDelay=AI_CASTOR_UPGRADE_DELAY_TICKS;
 	controlStrikesTimer=0;
 	
 	warLevel=0;

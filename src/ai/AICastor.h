@@ -8,6 +8,7 @@
 
 #include "IntBuildingType.h"
 #include "AIImplementation.h"
+#include "AICastorTuning.h"
 
 #include <memory>
 

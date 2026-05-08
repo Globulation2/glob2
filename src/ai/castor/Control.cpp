@@ -43,24 +43,24 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	}
 	
 	int unitSumAll=unitSum[0]+unitSum[1]+unitSum[2];
-	
-	foodWarning=((unitSumAll+11)>=(foodSum<<1));
-	foodLock=((unitSumAll+3)>=(foodSum<<1));
+
+	foodWarning=((unitSumAll+AI_CASTOR_FOODWARN_OFFSET)>=(foodSum<<1));
+	foodLock=((unitSumAll+AI_CASTOR_FOODLOCK_OFFSET)>=(foodSum<<1));
 	foodLockStats[foodLock]++;
-	
-	foodSurplus=(unitSumAll+4<foodSum);
-	
-	starvingWarning=(((unitSumAll>>5)+3)<team->stats.getStarvingUnits());
+
+	foodSurplus=(unitSumAll+AI_CASTOR_FOODSURPLUS_OFFSET<foodSum);
+
+	starvingWarning=(((unitSumAll>>AI_CASTOR_STARVING_RATIO_SHIFT)+AI_CASTOR_STARVING_OFFSET)<team->stats.getStarvingUnits());
 	starvingWarningStats[starvingWarning]++;
 
 	bool realFoodLock;
-	
-	if (warriorGoal>1)
-		realFoodLock=((unitSumAll)>=(foodSum*3));
-	else
-		realFoodLock=((unitSumAll)>=(foodSum*2));
 
-	if ((timer>2048) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
+	if (warriorGoal>1)
+		realFoodLock=((unitSumAll)>=(foodSum*AI_CASTOR_REAL_FOODLOCK_MULT_WAR));
+	else
+		realFoodLock=((unitSumAll)>=(foodSum*AI_CASTOR_REAL_FOODLOCK_MULT_PEACE));
+
+	if ((timer>AI_CASTOR_FOODLOCK_GRACE_TICKS) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
 	{
 		// Stop making any units!
 		Building **myBuildings=team->myBuildings;
@@ -98,22 +98,22 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 			seeable++;
 	}
 	Sint32 explorerGoal;
-	if (unitSum[WORKER]<4)
+	if (unitSum[WORKER]<AI_CASTOR_EXPLORER_MIN_WORKERS)
 		explorerGoal=0;
 	else if (unitSum[EXPLORER]==0)
-		explorerGoal=2;
-	else if (unitSum[EXPLORER]<3 && (unitSum[EXPLORER]<<2)<unitSum[WORKER] && (discovered+seeable<((int)size<<2)))
-		explorerGoal=2;
-	else if ((unitSum[EXPLORER]<<4)<unitSum[WORKER])
-		explorerGoal=1;
+		explorerGoal=AI_CASTOR_EXPLORER_GOAL_HIGH;
+	else if (unitSum[EXPLORER]<AI_CASTOR_EXPLORER_COUNT_TARGET && (unitSum[EXPLORER]<<AI_CASTOR_EXPLORER_RATIO_SHIFT_EARLY)<unitSum[WORKER] && (discovered+seeable<((int)size<<AI_CASTOR_DISCOVERY_RATIO_SHIFT)))
+		explorerGoal=AI_CASTOR_EXPLORER_GOAL_HIGH;
+	else if ((unitSum[EXPLORER]<<AI_CASTOR_EXPLORER_RATIO_SHIFT_LATE)<unitSum[WORKER])
+		explorerGoal=AI_CASTOR_EXPLORER_GOAL_LOW;
 	else
 		explorerGoal=0;
-	
+
 	Sint32 workerGoal;
 	if (overWorkers)
-		workerGoal=1;
+		workerGoal=AI_CASTOR_WORKER_GOAL_LOW;
 	else
-		workerGoal=4;
+		workerGoal=AI_CASTOR_WORKER_GOAL_HIGH;
 
 	for (int bi=0; bi<Building::MAX_COUNT; bi++)
 	{
@@ -178,7 +178,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 	int bi=(controlFoodTimer++)&(Building::MAX_COUNT-1);
 	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[bi];
-	for (int i=0; i<8; i++)
+	for (int i=0; i<AI_CASTOR_CONTROL_FOOD_RETRIES; i++)
 		if (b==NULL)
 		{
 			bi=(controlFoodTimer++)&(Building::MAX_COUNT-1);
@@ -216,7 +216,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 			worstCare=wheatCare;
 	}
 	
-	if (worstCare>4)
+	if (worstCare>AI_CASTOR_WHEATCARE_STOP_THRESHOLD)
 	{
 		if (b->maxUnitWorking!=0)
 		{
@@ -228,7 +228,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, 0));
 		}
 	}
-	else if (worstCare>2)
+	else if (worstCare>AI_CASTOR_WHEATCARE_LIMIT_THRESHOLD)
 	{
 		if (b->maxUnitWorking>1)
 		{
@@ -246,9 +246,9 @@ std::shared_ptr<Order>AICastor::controlFood()
 		{
 			Sint32 workers;
 			if (foodWarning && b->type->isBuildingSite)
-				workers=3+b->type->level; //TODO: random 2 or 3
+				workers=AI_CASTOR_FOODWARN_INN_SITE_WORKERS+b->type->level; //TODO: random 2 or 3
 			else
-				workers=1+b->type->level;
+				workers=AI_CASTOR_INN_WORKERS_BASE+b->type->level;
 			b->maxUnitWorking=workers;
 			b->maxUnitWorkingLocal=workers;
 			b->update();
@@ -258,9 +258,9 @@ std::shared_ptr<Order>AICastor::controlFood()
 		{
 			Sint32 workers;
 			if (foodWarning)
-				workers=1;
+				workers=AI_CASTOR_SWARM_WORKERS_FOODWARN;
 			else
-				workers=2;
+				workers=AI_CASTOR_SWARM_WORKERS_NORMAL;
 			b->maxUnitWorking=workers;
 			b->maxUnitWorkingLocal=workers;
 			b->update();
@@ -294,25 +294,27 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 		return shared_ptr<Order>(new OrderModifyBuilding(b->gid, 1));
 	int numberOfFreeWorkers = team->stats.getLatestStat()->isFree[WORKER];
 	int numberOfAbleWorkers = team->stats.getLatestStat()->upgradeState[BUILD][b->type->level];
-	if (numberOfAbleWorkers <= 2 || numberOfFreeWorkers <= 4 || numberOfAbleWorkers <= (numberOfFreeWorkers/8))
+	if (numberOfAbleWorkers <= AI_CASTOR_UPGRADE_MIN_ABLE_WORKERS
+		|| numberOfFreeWorkers <= AI_CASTOR_UPGRADE_MIN_FREE_WORKERS
+		|| numberOfAbleWorkers <= (numberOfFreeWorkers/AI_CASTOR_UPGRADE_ABLE_FREE_RATIO_DIV))
 		return shared_ptr<Order>();
 	// Is it any repair:
 	if (!b->type->isBuildingSite)
 	{
 		if (b->type->type == "defencetower")
 		{
-			if (b->hp*4<b->type->hpMax*1)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->type->hpMax*AI_CASTOR_REPAIR_HP_RATIO_DEFENCE_NUM)
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
 		}
 		else if (b->type->maxUnitInside)
 		{
-			if (b->hp*4<b->type->hpMax*3)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->type->hpMax*AI_CASTOR_REPAIR_HP_RATIO_INSIDE_NUM)
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
 		}
 		else
 		{
-			if (b->hp*4<b->type->hpMax*2)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+			if (b->hp*AI_CASTOR_REPAIR_HP_RATIO_DIV<b->type->hpMax*AI_CASTOR_REPAIR_HP_RATIO_OTHER_NUM)
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
 		}
 	}
 	// Do we want to upgrade it:
@@ -321,9 +323,9 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 	if (shortTypeNum>=NB_HARD_BUILDING)
 		return shared_ptr<Order>();
 	int level=b->type->level;
-	int upgradeLevelGoal=((buildsAmount+1)>>1);
-	if (upgradeLevelGoal>3)
-		upgradeLevelGoal=3;
+	int upgradeLevelGoal=((buildsAmount+AI_CASTOR_UPGRADE_LEVEL_FORMULA_BIAS)>>AI_CASTOR_UPGRADE_LEVEL_FORMULA_SHIFT);
+	if (upgradeLevelGoal>AI_CASTOR_UPGRADE_LEVEL_MAX)
+		upgradeLevelGoal=AI_CASTOR_UPGRADE_LEVEL_MAX;
 	if (level>=upgradeLevelGoal)
 		return shared_ptr<Order>();
 	int sumOver=0;
@@ -342,20 +344,20 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 	{
 		int buildBase=team->stats.getWorkersLevel(0);
 		int buildSum=0;
-		for (int i=0; i<4; i++)
+		for (int i=0; i<NB_UNIT_LEVELS; i++)
 			buildSum+=team->stats.getWorkersLevel(i);
 		if (buildBase>buildSum)
 			return shared_ptr<Order>();
 		int sumEqual=0;
-		for (int li=level; li<4; li++)
+		for (int li=level; li<NB_UNIT_LEVELS; li++)
 			sumEqual+=buildingLevels[shortTypeNum][0][li];
-		if (sumEqual<2)
+		if (sumEqual<AI_CASTOR_SCIENCE_UPGRADE_MIN_COUNT)
 		{
 			return shared_ptr<Order>();
 		}
 	}
-	controlUpgradeDelay=32;
-	return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+	controlUpgradeDelay=AI_CASTOR_UPGRADE_DELAY_TICKS;
+	return shared_ptr<Order>(new OrderConstruction(b->gid, AI_CASTOR_CONSTRUCTION_ORDER_UNITS, AI_CASTOR_CONSTRUCTION_ORDER_UNITS));
 }
 
 
@@ -377,13 +379,13 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 
 std::shared_ptr<Order>AICastor::controlStrikes()
 {
-	controlStrikesTimer=timer+64;
-	
+	controlStrikesTimer=timer+AI_CASTOR_CONTROL_STRIKES_INTERVAL;
+
 	if (!onStrike)
 		return shared_ptr<Order>();
 
 	int warriors=team->stats.getTotalUnits(WARRIOR);
-	int warFlagsGoal=(warriors+16)/32;
+	int warFlagsGoal=(warriors+AI_CASTOR_WARFLAG_FORMULA_BIAS)/AI_CASTOR_WARRIORS_PER_WARFLAG;
 	int warFlagsReal=buildingSum[IntBuildingType::WAR_FLAG][0];
 
 	if (!strikeTeamSelected)
@@ -424,9 +426,9 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 				int shortTypeNum=b->type->shortTypeNum;
 				if (shortTypeNum==IntBuildingType::ATTACK_BUILDING
 					|| shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
-					score+=2;
+					score+=AI_CASTOR_STRIKE_TEAM_SCORE_HIGH;
 				else
-					score++;
+					score+=AI_CASTOR_STRIKE_TEAM_SCORE_LOW;
 			}
 			if (bestScore<score)
 			{
@@ -462,13 +464,13 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		size_t index=(x&wMask)+((y&hMask)<<wDec);
 		Uint8 workRange=workRangeMap[index];
 		Sint32 level=b->type->level;
-		Uint32 score=(1+workRange)*(1+level);
+		Uint32 score=(AI_CASTOR_STRIKE_BUILDING_SCORE_BIAS+workRange)*(AI_CASTOR_STRIKE_BUILDING_SCORE_BIAS+level);
 		if (b->type->isBuildingSite)
-			score=(score>>2);
+			score=(score>>AI_CASTOR_STRIKE_BUILDING_SITE_SHIFT);
 		int shortTypeNum=b->type->shortTypeNum;
 		if (shortTypeNum==IntBuildingType::ATTACK_BUILDING
 			||shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
-			score=(score<<1);
+			score=(score<<AI_CASTOR_STRIKE_HIGH_VALUE_SHIFT);
 		if (bestScore<score)
 		{
 			bestScore=score;
@@ -503,15 +505,15 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 						maxFlag=*it;
 					}
 				}
-			if (maxSqDist>2 && maxFlag!=NULL)
+			if (maxSqDist>AI_CASTOR_FLAG_MOVE_SQ_DIST && maxFlag!=NULL)
 			{
 				return shared_ptr<Order>(new OrderMoveFlag(maxFlag->gid, x, y, true));
 			}
 			for (std::list<Building *>::iterator it=virtualBuildings->begin(); it!=virtualBuildings->end(); ++it)
 				if ((*it)->type->shortTypeNum==IntBuildingType::WAR_FLAG
-					&& (*it)->maxUnitWorking<20)
+					&& (*it)->maxUnitWorking<AI_CASTOR_WARFLAG_WORKER_GOAL)
 				{
-					return shared_ptr<Order>(new OrderModifyBuilding((*it)->gid, 20));
+					return shared_ptr<Order>(new OrderModifyBuilding((*it)->gid, AI_CASTOR_WARFLAG_WORKER_GOAL));
 				}
 		}
 	}

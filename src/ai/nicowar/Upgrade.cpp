@@ -57,7 +57,7 @@ int NewNicowar::choose_building_upgrade_type_level2(Echo& echo)
 
 	///Schools are only upgraded one at a time
 	int school_chance = strategy.upgrading_phase_2_school_chance;
-	if(school_counts_upgrading>0 || (school_counts_level2 + school_counts_level3)<2)
+	if(school_counts_upgrading>0 || (school_counts_level2 + school_counts_level3)<AI_NICOWAR_LVL2_SCHOOL_THRESHOLD)
 		school_chance=0;
 
 	return choose_building_upgrade_type(echo, 2, strategy.upgrading_phase_2_inn_chance, strategy.upgrading_phase_2_hospital_chance, strategy.upgrading_phase_2_racetrack_chance, strategy.upgrading_phase_2_swimmingpool_chance, strategy.upgrading_phase_2_barracks_chance, school_chance, strategy.upgrading_phase_2_tower_chance);
@@ -120,9 +120,9 @@ int NewNicowar::choose_building_upgrade_type(Echo& echo, int level, int inn_rati
 	}
 
 	if(buildings.size()==0)
-		return -1;
+		return AI_NICOWAR_NO_BUILDING_TYPE;
 
-	//Now choose a building, or return -1 for none available
+	//Now choose a building, or return AI_NICOWAR_NO_BUILDING_TYPE for none available
 	int random = syncRand() % buildings.size();
 
 	return buildings[random];
@@ -185,7 +185,7 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 	if(num_upgrading_level1 < num_to_upgrade_level1)
 	{
 		int building_type=choose_building_upgrade_type_level1(echo);
-		if(building_type!=-1)
+		if(building_type!=AI_NICOWAR_NO_BUILDING_TYPE)
 		{
 			std::string type=IntBuildingType::typeFromShortNumber(building_type);
 
@@ -210,7 +210,7 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 	if(num_upgrading_level2 < num_to_upgrade_level2)
 	{
 		int building_type=choose_building_upgrade_type_level2(echo);
-		if(building_type!=-1)
+		if(building_type!=AI_NICOWAR_NO_BUILDING_TYPE)
 		{
 			std::string type=IntBuildingType::typeFromShortNumber(building_type);
 

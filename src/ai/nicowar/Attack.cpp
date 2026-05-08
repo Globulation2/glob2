@@ -32,7 +32,7 @@ int NewNicowar::choose_building_to_attack(Echo& echo)
 	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
 		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
-		if(gradient.get_height(b->posX, b->posY) != -2)
+		if(gradient.get_height(b->posX, b->posY) != AI_NICOWAR_GRADIENT_UNREACHABLE)
 			buildings_to_attack.push_back(*ebi);
 	}
 
@@ -60,7 +60,7 @@ void NewNicowar::attack_building(Echo& echo)
 	bo->add_constraint(new CenterOfBuilding(building));
 	unsigned int id=echo.add_building_order(bo);
 
-	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(2,id);
+	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(AI_NICOWAR_WAR_FLAG_MIN_LEVEL,id);
 	echo.add_management_order(mo_minimum);
 
 	ManagementOrder* mo_destroyed_1=new DestroyBuilding(id);
@@ -109,7 +109,7 @@ void NewNicowar::control_attacks(Echo& echo)
 		if(echo.get_building_register().is_building_found(attack_flags[i]))
 		{
 			Building* b = echo.get_building_register().get_building(attack_flags[i]);
-			if(b && gradient.get_height(b->posX, b->posY) == -2)
+			if(b && gradient.get_height(b->posX, b->posY) == AI_NICOWAR_GRADIENT_UNREACHABLE)
 			{
 				ManagementOrder* mo_destroy=new DestroyBuilding(attack_flags[i]);
 				echo.add_management_order(mo_destroy);
@@ -147,7 +147,7 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 				for(; ebi != enemy_building_iterator(); ++ebi)
 				{
 					Building* b=echo.player->game->teams[*i]->myBuildings[Building::GIDtoID(*ebi)];
-					if(gradient.get_height(b->posX, b->posY) != -2)
+					if(gradient.get_height(b->posX, b->posY) != AI_NICOWAR_GRADIENT_UNREACHABLE)
 					{
 						available_reachable_targets.push_back(*i);
 						break;
@@ -183,8 +183,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	{
 		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
 		int bx = (b->posX + mi.get_width()) % mi.get_width();
-		int by = (b->posY + mi.get_height()) % mi.get_height(); 
-		if(gradient.get_height(bx, by) == -2)
+		int by = (b->posY + mi.get_height()) % mi.get_height();
+		if(gradient.get_height(bx, by) == AI_NICOWAR_GRADIENT_UNREACHABLE)
 			buildings_to_attack.push_back(*ebi);
 	}
 
@@ -206,7 +206,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	///Next, find the closest point manhattan distance wise, to the building that is accessible
 	int closest_x=0;
 	int closest_y=0;
-	int closest_distance=10000;
+	int closest_distance=AI_NICOWAR_DIG_OUT_INIT_DIST;
 	for(int x=0; x<mi.get_width(); ++x)
 	{
 		for(int y=0; y<mi.get_height(); ++y)
@@ -230,7 +230,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	int xpos=closest_x;
 	int ypos=closest_y;
 
-	int flag_dist_count=3;
+	int flag_dist_count=AI_NICOWAR_DIG_FLAG_INIT_COUNTER;
 
 	int w=mi.get_width();
 	int h=mi.get_height();
@@ -243,7 +243,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		int lx=(xpos-1+w) % w;
 		int dy=(ypos+1+h) % h;
 		int uy=(ypos-1+h) % h;
-		int lowest_entity=gradient_pathfind.get_height(xpos, ypos)+2;
+		int lowest_entity=gradient_pathfind.get_height(xpos, ypos)+AI_NICOWAR_PATHFIND_TOLERANCE;
 
 		if(lowest_entity == 0)
 			break;
@@ -303,11 +303,11 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		flag_dist_count+=1;
 
 
-		if(flag_dist_count>3)
+		if(flag_dist_count>AI_NICOWAR_DIG_FLAG_INTERVAL)
 		{
 			flag_dist_count=0;
 			//The main order for the clearing flag
-			BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::CLEARING_FLAG, 10);
+			BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::CLEARING_FLAG, AI_NICOWAR_DIG_CLEARING_WORKERS);
 			//Place it on the current point
 			bo_flag->add_constraint(new Construction::SinglePosition(xpos, ypos));
 			//Add the building order to the list of orders
@@ -318,7 +318,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 			echo.add_management_order(mo_destroyed);
 
 
-			ManagementOrder* mo_completion=new ChangeFlagSize(3, id_flag);
+			ManagementOrder* mo_completion=new ChangeFlagSize(AI_NICOWAR_DIG_FLAG_SIZE, id_flag);
 			echo.add_management_order(mo_completion);
 		}
 		xpos = nxpos;

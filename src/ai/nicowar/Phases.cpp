@@ -97,7 +97,7 @@ void NewNicowar::check_phases(Echo& echo)
 	int barracks_count=barracks.count_buildings();
 
 	int warrior_count=0;
-	for(int i=strategy.minimum_warrior_level_for_trained; i<=3; ++i)
+	for(int i=strategy.minimum_warrior_level_for_trained; i<=AI_NICOWAR_MAX_UPGRADE_LEVEL; ++i)
 	{
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
 	}
@@ -136,7 +136,7 @@ void NewNicowar::check_phases(Echo& echo)
 	///Qualifications for the starving recovery phase:
 	///1) More than strategy.starvation_recovery_phase_starving_no_inn_min_percent % units hungry but not able to eat
 	///2) Atleast one unit (because of devision by 0)
-	if(stat->totalUnit > 1)
+	if(stat->totalUnit > AI_NICOWAR_STARVATION_MIN_UNITS)
 	{
 		int total_starving_percent = stat->needFoodNoInns * 100 / stat->totalUnit;
 		if(total_starving_percent >= strategy.starvation_recovery_phase_starving_no_inn_min_percent)
@@ -177,7 +177,7 @@ void NewNicowar::check_phases(Echo& echo)
 	///Qualifications for the can swim phase:
 	///1) Atleast one worker that can swim
 	int total_can_swim=0;
-	for(int i=0; i<4; ++i)
+	for(int i=0; i<AI_NICOWAR_LEVEL_COUNT; ++i)
 		total_can_swim += stat->upgradeStatePerType[WORKER][SWIM][i];
 	if(total_can_swim>0)
 	{
@@ -212,7 +212,7 @@ void NewNicowar::check_phases(Echo& echo)
 	
 	///Qualifications for the explorer attack phase
 	//1) The minimum number of trained explorers is greater than offense_explorer_minimum
-	if(stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][3] > strategy.offense_explorer_minimum)
+	if(stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][AI_NICOWAR_EXPLORER_MAX_LEVEL] > strategy.offense_explorer_minimum)
 	{
 		explorer_attack_phase = true;
 	}

@@ -558,7 +558,7 @@ bool Upgradable::passes(Echo& echo, int id)
 	    building->type->shortTypeNum==IntBuildingType::SCIENCE_BUILDING ||
 	    building->type->shortTypeNum==IntBuildingType::DEFENSE_BUILDING) &&
 	   building->constructionResultState==Building::NO_CONSTRUCTION &&
-	   building->type->level!=2 &&
+	   building->type->level!=AI_ECHO_MAX_BUILDING_LEVEL_INDEX &&
 	   building->isHardSpaceForBuildingSite(Building::UPGRADE) &&
 	   building->hp == building->type->hpMax
 	    )

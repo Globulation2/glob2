@@ -27,28 +27,28 @@ bool AICastor::enoughFreeWorkers()
 	int minBalance;
 	if (buildsAmount<=0)
 		minBalance=-partFree;
-	else if (buildsAmount<=2)
+	else if (buildsAmount<=AI_CASTOR_BUILDS_LOW)
 		minBalance=0;
-	else if (buildsAmount<=4)
+	else if (buildsAmount<=AI_CASTOR_BUILDS_MID)
 		minBalance=partFree;
 	else
-		minBalance=(partFree<<1);
+		minBalance=(partFree<<AI_CASTOR_BALANCE_LATE_SHIFT);
 	if (foodLock)
-		minBalance+=3;
+		minBalance+=AI_CASTOR_FOODLOCK_BALANCE_BIAS;
 	int minOverWorkers=minBalance+partFree;
-	
+
 	bool enough=(workersBalance>minBalance);
 	overWorkers=(workersBalance>minOverWorkers);
-	
+
 	assert(buildsAmount<Building::MAX_COUNT);
 	static int oldEnough[Building::MAX_COUNT];
 	static bool first=true;
 	if (first)
 	{
-		memset(oldEnough, 2, Building::MAX_COUNT*sizeof(*oldEnough));
+		memset(oldEnough, AI_CASTOR_TRISTATE_UNKNOWN, Building::MAX_COUNT*sizeof(*oldEnough));
 		first=false;
 	}
-	if ((oldEnough[buildsAmount]==2) || (enough!=oldEnough[buildsAmount]))
+	if ((oldEnough[buildsAmount]==AI_CASTOR_TRISTATE_UNKNOWN) || (enough!=oldEnough[buildsAmount]))
 	{
 		oldEnough[buildsAmount]=enough;
 	}
@@ -103,7 +103,7 @@ void AICastor::computeNeedSwim()
 		if (workRangeMap[i]!=0)
 			extendedCount++;
 	
-	needSwim=((baseCount<<4)>(7*extendedCount));
+	needSwim=((baseCount<<AI_CASTOR_SWIM_GAIN_NUMER_SHIFT)>(AI_CASTOR_SWIM_GAIN_DENOM*extendedCount));
 
 	computeCanSwim();
 }
@@ -140,7 +140,7 @@ void AICastor::computeBuildingSum()
 		for (int si=0; si<2; si++)
 			for (int li=0; li<NB_UNIT_LEVELS; li++)
 				if (buildingLevels[bi][si][li]>0)
-					if ((timer&8191)==0)
+					if ((timer&AI_CASTOR_VERBOSE_LOG_INTERVAL_MASK)==0)
 						if (verbose)
 							printf("buildingLevels[%d][%d][%d]=%d\n", bi, si, li, buildingLevels[bi][si][li]);
 }
@@ -150,40 +150,40 @@ void AICastor::computeWarLevel()
 	if (timer>strategy.warTimeTrigger)
 	{
 		warTimeTriggerLevel++;
-		strategy.warTimeTrigger=strategy.warTimeTrigger+((1+strategy.warTimeTrigger)>>1);
+		strategy.warTimeTrigger=strategy.warTimeTrigger+((AI_CASTOR_WARTIME_TRIGGER_GROWTH_BIAS+strategy.warTimeTrigger)>>AI_CASTOR_WARTIME_TRIGGER_GROWTH_SHIFT);
 	}
 	int warTimeTriggerLevelUse=warTimeTriggerLevel;
-	if (warTimeTriggerLevelUse>2)
-		warTimeTriggerLevelUse=2;
-	
+	if (warTimeTriggerLevelUse>AI_CASTOR_WARTIME_LEVEL_CAP)
+		warTimeTriggerLevelUse=AI_CASTOR_WARTIME_LEVEL_CAP;
+
 	int sum=0;
 	for (int si=0; si<2; si++)
 		for (int li=strategy.warLevelTrigger; li<NB_UNIT_LEVELS; li++)
 			sum+=buildingLevels[IntBuildingType::ATTACK_BUILDING][si][li];
-	if (sum>1)
-		warLevelTriggerLevel=2;
+	if (sum>AI_CASTOR_WARLEVEL_BUILDINGS_HIGH)
+		warLevelTriggerLevel=AI_CASTOR_WAR_LEVEL_HIGH;
 	else if (sum>0)
-		warLevelTriggerLevel=1;
+		warLevelTriggerLevel=AI_CASTOR_WAR_LEVEL_MID;
 	else
 		warLevelTriggerLevel=0;
-	
+
 	if (buildsAmount>strategy.warAmountTrigger)
-		warAmountTriggerLevel=2;
+		warAmountTriggerLevel=AI_CASTOR_WAR_LEVEL_HIGH;
 	else if (buildsAmount>=strategy.warAmountTrigger)
-		warAmountTriggerLevel=1;
+		warAmountTriggerLevel=AI_CASTOR_WAR_LEVEL_MID;
 	else
 		warAmountTriggerLevel=0;
 	warLevel=warTimeTriggerLevelUse+warLevelTriggerLevel+warAmountTriggerLevel;
-	
-	static int oldWarLevel=-1;
+
+	static int oldWarLevel=AI_CASTOR_WAR_LEVEL_UNSET;
 	if (oldWarLevel!=warLevel)
 	{
 		oldWarLevel=warLevel;
 	}
-	
+
 	if (warLevel==0)
 		return;
-	
+
 	int warPowerSum=0;
 	Unit **myUnits=team->myUnits;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
@@ -192,21 +192,21 @@ void AICastor::computeWarLevel()
 		if (u && u->medical==Unit::MED_FREE && u->typeNum==WARRIOR)
 			warPowerSum+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH];
 	}
-	static int oldWarPowerSum=-1;
+	static int oldWarPowerSum=AI_CASTOR_WAR_POWER_UNSET;
 	if (oldWarPowerSum!=warPowerSum)
 	{
 		oldWarPowerSum=warPowerSum;
 	}
-	
+
 	if (warPowerSum<strategy.strikeWarPowerTriggerDown)
 	{
 		if (onStrike)
 		{
 			strikeTeamSelected=false;
 			onStrike=false;
-			
+
 			strikeTimeTrigger=timer+strategy.strikeTimeTrigger;
-			strategy.strikeWarPowerTriggerUp=strategy.strikeWarPowerTriggerUp+strategy.strikeWarPowerTriggerUp/2;
+			strategy.strikeWarPowerTriggerUp=strategy.strikeWarPowerTriggerUp+strategy.strikeWarPowerTriggerUp/AI_CASTOR_STRIKE_TRIGGER_GROWTH_DIV;
 		}
 	}
 	else if (timer>strikeTimeTrigger || warPowerSum>strategy.strikeWarPowerTriggerUp)

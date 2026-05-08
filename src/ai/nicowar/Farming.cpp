@@ -35,8 +35,8 @@ void NewNicowar::update_farming(Echo& echo)
 		{
 			if(mi.is_discovered(x, y))
 			{
-				const int wood_dist = 6;
-				const int wheat_dist = 10;
+				const int wood_dist = AI_NICOWAR_FARM_WOOD_WATER_DIST;
+				const int wheat_dist = AI_NICOWAR_FARM_WHEAT_WATER_DIST;
 
 				bool is_wood = mi.is_ressource(x, y, WOOD);
 				bool is_wheat = mi.is_ressource(x, y, CORN);
@@ -47,7 +47,7 @@ void NewNicowar::update_farming(Echo& echo)
 				bool farm_spot = false;
 
 				//Permament farming exists for every second row and column
-				if(x%2==1 && y%2==1)
+				if(x%AI_NICOWAR_FARM_PATTERN_STRIDE==1 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==1)
 				{
 					if((is_wood && is_in_wood_zone) || (is_wheat && is_in_wheat_zone))
 					{
@@ -56,7 +56,7 @@ void NewNicowar::update_farming(Echo& echo)
 				}
 
 				//Expand the farm horizontally
-				if((x%2==0 && y%2==1))
+				if((x%AI_NICOWAR_FARM_PATTERN_STRIDE==0 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==1))
 				{
 					if(is_wood && mi.is_ressource(x-1, y, WOOD) && !mi.is_ressource(x+1,y) && water_gradient.within_dist(x+1, y, wood_dist) && mi.is_grass(x+1,y))
 					{
@@ -77,7 +77,7 @@ void NewNicowar::update_farming(Echo& echo)
 				}
 
 				//Expand the farm vertically
-				if((x%2==1 && y%2==0))
+				if((x%AI_NICOWAR_FARM_PATTERN_STRIDE==1 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==0))
 				{
 					if(is_wood && mi.is_ressource(x, y-1, WOOD) && !mi.is_ressource(x,y+1) && water_gradient.within_dist(x, y+1, wood_dist) && mi.is_grass(x,y+1))
 					{
@@ -134,48 +134,48 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 
 
 		//The main order for the exploration flag on cherry
-		BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+		BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, AI_NICOWAR_FRUIT_FLAG_WORKERS);
 		//You want the closest fruit to your settlement possible
-		bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+		bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		//Constraint arround the location of fruit
 		AIEcho::Gradients::GradientInfo gi_cherry;
 		gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
 		//You want to be ontop of the cherry trees
-		bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 0));
+		bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		//Add the building order to the list of orders
 		unsigned int id_cherry=echo.add_building_order(bo_cherry);
 
-		ManagementOrder* mo_completion_cherry=new ChangeFlagSize(4, id_cherry);
+		ManagementOrder* mo_completion_cherry=new ChangeFlagSize(AI_NICOWAR_FRUIT_FLAG_SIZE, id_cherry);
 		echo.add_management_order(mo_completion_cherry);
 
 
 
 		//The main order for the exploration flag in orange
-		BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+		BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, AI_NICOWAR_FRUIT_FLAG_WORKERS);
 		//You want the closest fruit to your settlement possible
-		bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+		bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		//Constraints arround the location of fruit
 		AIEcho::Gradients::GradientInfo gi_orange;
 		gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
 		//You want to be ontop of the orange trees
-		bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 0));
+		bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		unsigned int id_orange=echo.add_building_order(bo_orange);
 
-		ManagementOrder* mo_completion_orange=new ChangeFlagSize(4, id_orange);
+		ManagementOrder* mo_completion_orange=new ChangeFlagSize(AI_NICOWAR_FRUIT_FLAG_SIZE, id_orange);
 		echo.add_management_order(mo_completion_orange);
 
 		//The main order for the exploration flag on prunes
-		BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+		BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, AI_NICOWAR_FRUIT_FLAG_WORKERS);
 		//You want the closest fruit to your settlement possible
-		bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
+		bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		AIEcho::Gradients::GradientInfo gi_prune;
 		gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
 		//You want to be ontop of the prune trees
-		bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 0));
+		bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		//Add the building order to the list of orders
 		unsigned int id_prune=echo.add_building_order(bo_prune);
 
-		ManagementOrder* mo_completion_prune=new ChangeFlagSize(4, id_prune);
+		ManagementOrder* mo_completion_prune=new ChangeFlagSize(AI_NICOWAR_FRUIT_FLAG_SIZE, id_prune);
 		echo.add_management_order(mo_completion_prune);
 
 

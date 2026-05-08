@@ -29,10 +29,10 @@ void AINumbi::init(Player *player)
 {
 	timer=0;
 	phase=0;
-	phaseTime=1024;
+	phaseTime=AI_NUMBI_PHASE_TIME_DEFAULT_TICKS;
 	attackPhase=0;
-	critticalWarriors=20;
-	critticalTime=1024;
+	critticalWarriors=AI_NUMBI_CRITICAL_WARRIORS_DEFAULT;
+	critticalTime=AI_NUMBI_CRITICAL_TIME_DEFAULT_TICKS;
 	attackTimer=0;
 	for (int i=0; i<IntBuildingType::NB_BUILDING; i++)
 		mainBuilding[i]=0;
@@ -113,132 +113,132 @@ std::shared_ptr<Order>AINumbi::getOrder(void)
 	if (phase==0)
 	{
 		// rush for food building, explore for room.
-		switch (timer&0x1F)
+		switch (timer&AI_NUMBI_DECISION_SLOT_MASK)
 		{
 			case 0:
-				return swarmsForWorkers(1, 4, 7, 1, 0);
+				return swarmsForWorkers(AI_NUMBI_PHASE0_SWARM_MIN, AI_NUMBI_PHASE0_SWARM_FACTOR, AI_NUMBI_PHASE0_SWARM_WORKERS, AI_NUMBI_PHASE0_SWARM_EXPLORER, AI_NUMBI_PHASE0_SWARM_WARRIOR);
 			case 1:
-				return adjustBuildings(4, 1, 3, IntBuildingType::FOOD_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE0_INN_NUMBERS, AI_NUMBI_PHASE0_INN_NUMBERS_INC, AI_NUMBI_PHASE0_INN_WORKERS, IntBuildingType::FOOD_BUILDING);
 		}
 	}
 	else if (phase==1)
 	{
 		// rush for food building
-		switch (timer&0x1F)
+		switch (timer&AI_NUMBI_DECISION_SLOT_MASK)
 		{
 			case 0:
-				return swarmsForWorkers(1, 5, 14, 0, 0);
+				return swarmsForWorkers(AI_NUMBI_PHASE1_SWARM_MIN, AI_NUMBI_PHASE1_SWARM_FACTOR, AI_NUMBI_PHASE1_SWARM_WORKERS, AI_NUMBI_PHASE1_SWARM_EXPLORER, AI_NUMBI_PHASE1_SWARM_WARRIOR);
 			case 1:
-				return adjustBuildings(4, 1, 3, IntBuildingType::FOOD_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE1_INN_NUMBERS, AI_NUMBI_PHASE1_INN_NUMBERS_INC, AI_NUMBI_PHASE1_INN_WORKERS, IntBuildingType::FOOD_BUILDING);
 		}
 	}
-	else if (phase<4)
+	else if (phase<AI_NUMBI_MID_GAME_PHASE)
 	{
 		// mainly produce units, improve health and science if possible
-		switch (timer&0x1F)
+		switch (timer&AI_NUMBI_DECISION_SLOT_MASK)
 		{
 			case 0:
-				return swarmsForWorkers(1, 9, 14, 0, 0);
+				return swarmsForWorkers(AI_NUMBI_PHASE2_SWARM_MIN, AI_NUMBI_PHASE2_SWARM_FACTOR, AI_NUMBI_PHASE2_SWARM_WORKERS, AI_NUMBI_PHASE2_SWARM_EXPLORER, AI_NUMBI_PHASE2_SWARM_WARRIOR);
 			case 1:
-				return adjustBuildings(4, 1, 1, IntBuildingType::FOOD_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE2_INN_NUMBERS, AI_NUMBI_PHASE2_INN_NUMBERS_INC, AI_NUMBI_PHASE2_INN_WORKERS, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(44, 1, 1, IntBuildingType::HEAL_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE2_HEAL_NUMBERS, AI_NUMBI_PHASE2_HEAL_NUMBERS_INC, AI_NUMBI_PHASE2_HEAL_WORKERS, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(40, 1, 2, IntBuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE2_SCIENCE_NUMBERS, AI_NUMBI_PHASE2_SCIENCE_NUMBERS_INC, AI_NUMBI_PHASE2_SCIENCE_WORKERS, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return adjustBuildings(70, 1, 0, IntBuildingType::WALKSPEED_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE2_RACETRACK_NUMBERS, AI_NUMBI_PHASE2_RACETRACK_NUMBERS_INC, AI_NUMBI_PHASE2_RACETRACK_WORKERS, IntBuildingType::WALKSPEED_BUILDING);
 			case 5:
-				return adjustBuildings(70, 1, 0, IntBuildingType::ATTACK_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE2_BARRACKS_NUMBERS, AI_NUMBI_PHASE2_BARRACKS_NUMBERS_INC, AI_NUMBI_PHASE2_BARRACKS_WORKERS, IntBuildingType::ATTACK_BUILDING);
 			case 6:
-				return adjustBuildings(25, 1, 1, IntBuildingType::DEFENSE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE2_DEFENSE_NUMBERS, AI_NUMBI_PHASE2_DEFENSE_NUMBERS_INC, AI_NUMBI_PHASE2_DEFENSE_WORKERS, IntBuildingType::DEFENSE_BUILDING);
 		}
 	}
-	else if (phase<6)
+	else if (phase<AI_NUMBI_LATE_MID_PHASE)
 	{
 		// mainly produce units, improve health and science if possible
-		switch (timer&0x1F)
+		switch (timer&AI_NUMBI_DECISION_SLOT_MASK)
 		{
 			case 0:
-				return swarmsForWorkers(1, 9, 14, 1, 0);
+				return swarmsForWorkers(AI_NUMBI_PHASE4_SWARM_MIN, AI_NUMBI_PHASE4_SWARM_FACTOR, AI_NUMBI_PHASE4_SWARM_WORKERS, AI_NUMBI_PHASE4_SWARM_EXPLORER, AI_NUMBI_PHASE4_SWARM_WARRIOR);
 			case 1:
-				return adjustBuildings(5, 1, 1, IntBuildingType::FOOD_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE4_INN_NUMBERS, AI_NUMBI_PHASE4_INN_NUMBERS_INC, AI_NUMBI_PHASE4_INN_WORKERS, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(37, 1, 1, IntBuildingType::HEAL_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE4_HEAL_NUMBERS, AI_NUMBI_PHASE4_HEAL_NUMBERS_INC, AI_NUMBI_PHASE4_HEAL_WORKERS, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(32, 1, 2, IntBuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE4_SCIENCE_NUMBERS, AI_NUMBI_PHASE4_SCIENCE_NUMBERS_INC, AI_NUMBI_PHASE4_SCIENCE_WORKERS, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return adjustBuildings(25, 1, 1, IntBuildingType::DEFENSE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE4_DEFENSE_NUMBERS, AI_NUMBI_PHASE4_DEFENSE_NUMBERS_INC, AI_NUMBI_PHASE4_DEFENSE_WORKERS, IntBuildingType::DEFENSE_BUILDING);
 			case 5:
-				return mayUpgrade(16, 8);
+				return mayUpgrade(AI_NUMBI_PHASE4_UPGRADE_PTRIGGER, AI_NUMBI_PHASE4_UPGRADE_NTRIGGER);
 		}
 	}
-	else if (phase<8)
+	else if (phase<AI_NUMBI_SCIENCE_PHASE)
 	{
 		// improve science now
-		switch (timer&0x1F)
+		switch (timer&AI_NUMBI_DECISION_SLOT_MASK)
 		{
 			case 0:
-				return swarmsForWorkers(1, 4, 14, 0, 0);
+				return swarmsForWorkers(AI_NUMBI_PHASE6_SWARM_MIN, AI_NUMBI_PHASE6_SWARM_FACTOR, AI_NUMBI_PHASE6_SWARM_WORKERS, AI_NUMBI_PHASE6_SWARM_EXPLORER, AI_NUMBI_PHASE6_SWARM_WARRIOR);
 			case 1:
-				return adjustBuildings(5, 1, 1, IntBuildingType::FOOD_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE6_INN_NUMBERS, AI_NUMBI_PHASE6_INN_NUMBERS_INC, AI_NUMBI_PHASE6_INN_WORKERS, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(34, 2, 1, IntBuildingType::HEAL_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE6_HEAL_NUMBERS, AI_NUMBI_PHASE6_HEAL_NUMBERS_INC, AI_NUMBI_PHASE6_HEAL_WORKERS, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(32, 2, 4, IntBuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE6_SCIENCE_NUMBERS, AI_NUMBI_PHASE6_SCIENCE_NUMBERS_INC, AI_NUMBI_PHASE6_SCIENCE_WORKERS, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return mayUpgrade(16, 4);
+				return mayUpgrade(AI_NUMBI_PHASE6_UPGRADE_PTRIGGER, AI_NUMBI_PHASE6_UPGRADE_NTRIGGER);
 		}
 	}
-	else if (phase<10)
+	else if (phase<AI_NUMBI_DEFEND_PHASE)
 	{
 		// produce good units, defend too.
-		switch (timer&0x1F)
+		switch (timer&AI_NUMBI_DECISION_SLOT_MASK)
 		{
 			case 0:
-				return swarmsForWorkers(1, 9, 14, 1, 1);
+				return swarmsForWorkers(AI_NUMBI_PHASE8_SWARM_MIN, AI_NUMBI_PHASE8_SWARM_FACTOR, AI_NUMBI_PHASE8_SWARM_WORKERS, AI_NUMBI_PHASE8_SWARM_EXPLORER, AI_NUMBI_PHASE8_SWARM_WARRIOR);
 			case 1:
-				return adjustBuildings(5, 1, 1, IntBuildingType::FOOD_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE8_INN_NUMBERS, AI_NUMBI_PHASE8_INN_NUMBERS_INC, AI_NUMBI_PHASE8_INN_WORKERS, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(32, 2, 1, IntBuildingType::HEAL_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE8_HEAL_NUMBERS, AI_NUMBI_PHASE8_HEAL_NUMBERS_INC, AI_NUMBI_PHASE8_HEAL_WORKERS, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(40, 2, 3, IntBuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE8_SCIENCE_NUMBERS, AI_NUMBI_PHASE8_SCIENCE_NUMBERS_INC, AI_NUMBI_PHASE8_SCIENCE_WORKERS, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return adjustBuildings(70, 1, 5, IntBuildingType::WALKSPEED_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE8_RACETRACK_NUMBERS, AI_NUMBI_PHASE8_RACETRACK_NUMBERS_INC, AI_NUMBI_PHASE8_RACETRACK_WORKERS, IntBuildingType::WALKSPEED_BUILDING);
 			case 5:
-				return adjustBuildings(20, 1, 1, IntBuildingType::DEFENSE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE8_DEFENSE_NUMBERS, AI_NUMBI_PHASE8_DEFENSE_NUMBERS_INC, AI_NUMBI_PHASE8_DEFENSE_WORKERS, IntBuildingType::DEFENSE_BUILDING);
 			case 6:
-				return adjustBuildings(70, 1, 3, IntBuildingType::ATTACK_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE8_BARRACKS_NUMBERS, AI_NUMBI_PHASE8_BARRACKS_NUMBERS_INC, AI_NUMBI_PHASE8_BARRACKS_WORKERS, IntBuildingType::ATTACK_BUILDING);
 			case 7:
-				return checkoutExpands(80, 5);
+				return checkoutExpands(AI_NUMBI_PHASE8_EXPAND_NUMBERS, AI_NUMBI_PHASE8_EXPAND_WORKERS);
 			case 8:
-				return mayUpgrade(16, 4);
+				return mayUpgrade(AI_NUMBI_PHASE8_UPGRADE_PTRIGGER, AI_NUMBI_PHASE8_UPGRADE_NTRIGGER);
 		}
 	}
 	else
 	{
 		// produce warriors
-		switch (timer&0x1F)
+		switch (timer&AI_NUMBI_DECISION_SLOT_MASK)
 		{
 			case 0:
-				return swarmsForWorkers(1, 10, 3, 1, 14);
+				return swarmsForWorkers(AI_NUMBI_PHASE10_SWARM_MIN, AI_NUMBI_PHASE10_SWARM_FACTOR, AI_NUMBI_PHASE10_SWARM_WORKERS, AI_NUMBI_PHASE10_SWARM_EXPLORER, AI_NUMBI_PHASE10_SWARM_WARRIOR);
 			case 1:
-				return adjustBuildings(6, 2, 1, IntBuildingType::FOOD_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE10_INN_NUMBERS, AI_NUMBI_PHASE10_INN_NUMBERS_INC, AI_NUMBI_PHASE10_INN_WORKERS, IntBuildingType::FOOD_BUILDING);
 			case 2:
-				return adjustBuildings(37, 2, 1, IntBuildingType::HEAL_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE10_HEAL_NUMBERS, AI_NUMBI_PHASE10_HEAL_NUMBERS_INC, AI_NUMBI_PHASE10_HEAL_WORKERS, IntBuildingType::HEAL_BUILDING);
 			case 3:
-				return adjustBuildings(38, 2, 2, IntBuildingType::SCIENCE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE10_SCIENCE_NUMBERS, AI_NUMBI_PHASE10_SCIENCE_NUMBERS_INC, AI_NUMBI_PHASE10_SCIENCE_WORKERS, IntBuildingType::SCIENCE_BUILDING);
 			case 4:
-				return adjustBuildings(70, 2, 5, IntBuildingType::WALKSPEED_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE10_RACETRACK_NUMBERS, AI_NUMBI_PHASE10_RACETRACK_NUMBERS_INC, AI_NUMBI_PHASE10_RACETRACK_WORKERS, IntBuildingType::WALKSPEED_BUILDING);
 			case 5:
-				return adjustBuildings(20, 2, 2, IntBuildingType::DEFENSE_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE10_DEFENSE_NUMBERS, AI_NUMBI_PHASE10_DEFENSE_NUMBERS_INC, AI_NUMBI_PHASE10_DEFENSE_WORKERS, IntBuildingType::DEFENSE_BUILDING);
 			case 6:
-				return adjustBuildings(70, 2, 3, IntBuildingType::ATTACK_BUILDING);
+				return adjustBuildings(AI_NUMBI_PHASE10_BARRACKS_NUMBERS, AI_NUMBI_PHASE10_BARRACKS_NUMBERS_INC, AI_NUMBI_PHASE10_BARRACKS_WORKERS, IntBuildingType::ATTACK_BUILDING);
 			case 7:
-				return mayAttack(critticalWarriors, critticalTime, 10);
+				return mayAttack(critticalWarriors, critticalTime, AI_NUMBI_WAR_FLAG_UNITS);
 			case 8:
-				return checkoutExpands(40, 5);
+				return checkoutExpands(AI_NUMBI_PHASE10_EXPAND_NUMBERS, AI_NUMBI_PHASE10_EXPAND_WORKERS);
 			case 9:
-				return mayUpgrade(16, 4);
+				return mayUpgrade(AI_NUMBI_PHASE10_UPGRADE_PTRIGGER, AI_NUMBI_PHASE10_UPGRADE_NTRIGGER);
 		}
 	}
 
@@ -271,15 +271,15 @@ int AINumbi::estimateFood(Building *building)
 		int rxl, rxr, ryt, ryb;
 		int hole;
 
-		hole=2;
-		for (i=0; i<32; i++)
+		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
+		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
 			if (map->isRessourceTakeable(rx+i, ry, CORN)||map->isRessourceTakeable(rx+i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		rxr=rx+i;
-		hole=2;
-		for (i=0; i<32; i++)
+		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
+		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
 			if (map->isRessourceTakeable(rx-i, ry, CORN)||map->isRessourceTakeable(rx-i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
@@ -288,15 +288,15 @@ int AINumbi::estimateFood(Building *building)
 
 		rx=((rxr+rxl)>>1);
 
-		hole=2;
-		for (i=0; i<32; i++)
+		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
+		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
 			if (map->isRessourceTakeable(rx, ry+i, CORN)||map->isRessourceTakeable(rx-1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
-		hole=2;
-		for (i=0; i<32; i++)
+		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
+		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
 			if (map->isRessourceTakeable(rx, ry-i, CORN)||map->isRessourceTakeable(rx-1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
@@ -306,15 +306,15 @@ int AINumbi::estimateFood(Building *building)
 		ry=((ryb+ryt)>>1);
 
 
-		hole=2;
-		for (i=0; i<32; i++)
+		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
+		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
 			if (map->isRessourceTakeable(rx, ry+i, CORN)||map->isRessourceTakeable(rx+1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
-		hole=2;
-		for (i=0; i<32; i++)
+		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
+		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
 			if (map->isRessourceTakeable(rx, ry-i, CORN)||map->isRessourceTakeable(rx+1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
@@ -323,14 +323,14 @@ int AINumbi::estimateFood(Building *building)
 
 		ry=((ryt+ryb)>>1);
 		w=0;
-		hole=2;
-		for (i=0; i<32; i++)
+		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
+		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
 			if (map->isRessourceTakeable(rx+i, ry, CORN)||map->isRessourceTakeable(rx+i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
-		hole=2;
-		for (i=0; i<32; i++)
+		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
+		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
 			if (map->isRessourceTakeable(rx-i, ry, CORN)||map->isRessourceTakeable(rx-i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
@@ -396,10 +396,10 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 		int f=estimateFood(b);
 		int numberRequestedTemp=numberRequested;
 		int numberRequestedLoca=b->maxUnitWorking;
-		if (f<(nbu*3-1))
+		if (f<(nbu*AI_NUMBI_LOW_FOOD_PER_UNIT-1))
 			numberRequestedTemp=0;
 		else if (numberRequestedLoca==0)
-			if (f<(nbu*5+1))
+			if (f<(nbu*AI_NUMBI_HIGH_FOOD_PER_UNIT+1))
 				numberRequestedTemp=0;
 		
 		if (numberRequestedLoca!=numberRequestedTemp)
@@ -450,15 +450,16 @@ void AINumbi::nextMainBuilding(const int buildingType)
 	{
 		//printf("AI: nextMainBuilding uid=%d\n", b->UID);
 		int id=Building::GIDtoID(b->gid);
-		// [POSSIBLE BUG H1] The mask 0xFF (=255) is hardcoded but the loop bound is
-		// Building::MAX_COUNT (=1024). When (i+id) exceeds 255 the index wraps within
-		// the first 256 building slots, missing buildings 256..1023. Renaming this
-		// literal to Building::MAX_COUNT-1 would change behavior, so the literal is
-		// preserved verbatim. Flagged for fix-time review (do not "fix" here).
+		// [POSSIBLE BUG H1] The mask AI_NUMBI_BUILDING_INDEX_MASK (=0xFF, i.e. 255)
+		// is hardcoded but the loop bound is Building::MAX_COUNT (=1024). When
+		// (i+id) exceeds 255 the index wraps within the first 256 building slots,
+		// missing buildings 256..1023. The constant intentionally does NOT alias
+		// `Building::MAX_COUNT - 1` — renaming would change behavior. Preserved
+		// verbatim; flagged for fix-time review (do not "fix" here).
 		for (int i=1; i<Building::MAX_COUNT; i++)
-			if ((myBuildings[(i+id)&0xFF])/*&&((myBuildings[(i+id)&0xFF]->type->shortTypeNum==buildingType)||(myBuildings[(i+id)&0xFF]->type->shortTypeNum==0))*/)
+			if ((myBuildings[(i+id)&AI_NUMBI_BUILDING_INDEX_MASK])/*&&((myBuildings[(i+id)&AI_NUMBI_BUILDING_INDEX_MASK]->type->shortTypeNum==buildingType)||(myBuildings[(i+id)&AI_NUMBI_BUILDING_INDEX_MASK]->type->shortTypeNum==0))*/)
 			{
-				b=myBuildings[(i+id)&0xFF];
+				b=myBuildings[(i+id)&AI_NUMBI_BUILDING_INDEX_MASK];
 				break;
 			}
 		mainBuilding[buildingType]=Building::GIDtoID(b->gid);
@@ -472,23 +473,23 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 	int py=posY+map->getH();
 	int x, y;
 	
-	int valid=256+96;
+	int valid=AI_NUMBI_PLACEMENT_SCORE_INIT;
 	int r;
-	for (r=2; r<=3; r++)
+	for (r=AI_NUMBI_OUTER_MARGIN_R_MIN; r<=AI_NUMBI_OUTER_MARGIN_R_MAX; r++)
 	{
 		y=py-r;
 		int ew=1;
 		for (x=px-ew; x<px+width+ew; x++)
 			if (!map->isFreeForBuilding(x, y))
 			{
-				valid-=4+(r-2)*4;
+				valid-=AI_NUMBI_OUTER_EDGE_PENALTY+(r-AI_NUMBI_OUTER_MARGIN_R_MIN)*AI_NUMBI_OUTER_EDGE_PENALTY;
 				break;
 			}
 		y=py+height-1+r;
 		for (x=px-ew; x<px+width+ew; x++)
 			if (!map->isFreeForBuilding(x, y))
 			{
-				valid-=4+(r-2)*4;
+				valid-=AI_NUMBI_OUTER_EDGE_PENALTY+(r-AI_NUMBI_OUTER_MARGIN_R_MIN)*AI_NUMBI_OUTER_EDGE_PENALTY;
 				break;
 			}
 
@@ -496,14 +497,14 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 		for (y=py-ew; y<py+height+ew; y++)
 			if (!map->isFreeForBuilding(x, y))
 			{
-				valid-=4+(r-2)*4;
+				valid-=AI_NUMBI_OUTER_EDGE_PENALTY+(r-AI_NUMBI_OUTER_MARGIN_R_MIN)*AI_NUMBI_OUTER_EDGE_PENALTY;
 				break;
 			}
 		x=px+width-1+r;
 		for (y=py-ew; y<py+height+ew; y++)
 			if (!map->isFreeForBuilding(x, y))
 			{
-				valid-=4+(r-2)*4;
+				valid-=AI_NUMBI_OUTER_EDGE_PENALTY+(r-AI_NUMBI_OUTER_MARGIN_R_MIN)*AI_NUMBI_OUTER_EDGE_PENALTY;
 				break;
 			}
 	}
@@ -513,14 +514,14 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 		for (x=px; x<px+width; x++)
 			if (!map->isFreeForBuilding(x, y))
 			{
-				valid-=12;
+				valid-=AI_NUMBI_INNER_EDGE_PENALTY;
 				break;
 			}
 		y=py+height-1+r;
 		for (x=px; x<px+width; x++)
 			if (!map->isFreeForBuilding(x, y))
 			{
-				valid-=12;
+				valid-=AI_NUMBI_INNER_EDGE_PENALTY;
 				break;
 			}
 
@@ -528,19 +529,19 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 		for (y=py; y<py+height; y++)
 			if (!map->isFreeForBuilding(x, y))
 			{
-				valid-=12;
+				valid-=AI_NUMBI_INNER_EDGE_PENALTY;
 				break;
 			}
 		x=px+width-1+r;
 		for (y=py; y<py+height; y++)
 			if (!map->isFreeForBuilding(x, y))
 			{
-				valid-=12;
+				valid-=AI_NUMBI_INNER_EDGE_PENALTY;
 				break;
 			}
 	}
 	
-	for (r=1; r<=8; r++)
+	for (r=1; r<=AI_NUMBI_FREE_REGION_SCAN_RANGE; r++)
 	{
 		y=py-r;
 		bool anyBuild=false;
@@ -554,7 +555,7 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 			break;
 	}
 	int wu=r;
-	for (r=1; r<=8; r++)
+	for (r=1; r<=AI_NUMBI_FREE_REGION_SCAN_RANGE; r++)
 	{
 		y=py+height-1+r;
 		bool anyBuild=false;
@@ -568,7 +569,7 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 			break;
 	}
 	wu+=r;
-	for (r=1; r<=8; r++)
+	for (r=1; r<=AI_NUMBI_FREE_REGION_SCAN_RANGE; r++)
 	{
 		bool anyBuild=false;
 		x=px-r;
@@ -582,7 +583,7 @@ int AINumbi::nbFreeAround(const int buildingType, int posX, int posY, int width,
 			break;
 	}
 	int hu=r;
-	for (r=1; r<=8; r++)
+	for (r=1; r<=AI_NUMBI_FREE_REGION_SCAN_RANGE; r++)
 	{
 		bool anyBuild=false;
 		x=px+width-1+r;
@@ -669,13 +670,16 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	
 	int valid=nbFreeAround(buildingType, b->posX, b->posY, width, height);
 	//printf("AI: findNewEmplacement(%d) valid=(%d), uid=(%d), s=(%d, %d).\n", buildingType, valid, b->UID, width, height);
-	if (valid>299)
+	if (valid>AI_NUMBI_PLACEMENT_SCORE_MIN)
 	{
+		// [POSSIBLE BUG L9] `maxr` is computed below but never read — the spiral
+		// scan further down uses AI_NUMBI_SCAN_ITERATIONS (=4096) directly.
+		// Preserved verbatim for replay determinism; do not "fix".
 		int maxr;
 		if (b->type->shortTypeNum==0)
-			maxr=64;
+			maxr=AI_NUMBI_SWARM_SEARCH_RADIUS;
 		else
-			maxr=16;
+			maxr=AI_NUMBI_NONSWARM_SEARCH_RADIUS;
 		//for (int r=0; r<=maxr; r++)
 		//	for (int d=0; d<8; d++)
 
@@ -684,7 +688,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		if (b->type->shortTypeNum)
 			margin=0;
 		else
-			margin=2;
+			margin=AI_NUMBI_SWARM_MARGIN;
 
 		int bposX=b->posX+map->getW();
 		int bposY=b->posY+map->getH();
@@ -704,7 +708,9 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		dy=0;
 		
 		int bestValid=-1;
-		for (int i=0; i<4096; i++)
+		// Note: AI_NUMBI_SCAN_ITERATIONS is intentionally NOT derived from `maxr`
+		// above (see L9 comment); it is the original literal preserved as-is.
+		for (int i=0; i<AI_NUMBI_SCAN_ITERATIONS; i++)
 		{
 			squareCircleScann(dx, dy, sx, sy, px, py, mx, my);
 			//printf("AI:i=%d, d=(%d, %d), s=(%d, %d), p=(%d, %d), m=(%d, %d).\n", i, dx, dy, sx, sy, px, py, mx, my);
@@ -717,14 +723,14 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 			if (map->isFreeForBuilding(px, py, width, height))
 			{
 				int valid=nbFreeAround(buildingType, px, py, width, height);
-				if ((valid>299)&&(game->checkRoomForBuilding(px, py, bt, player->team->teamNumber)))
+				if ((valid>AI_NUMBI_PLACEMENT_SCORE_MIN)&&(game->checkRoomForBuilding(px, py, bt, player->team->teamNumber)))
 				{
 					int rx, ry, dist;
 					bool nr=map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
 					if (nr)
 					{
 						//int dist=map->warpDistSquare(px+1, py+1, rx, ry);
-						if (((dist<=(64+width*height))&&(buildingType<=1))||((dist>=(64+width*height))&&(buildingType>1)))
+						if (((dist<=(AI_NUMBI_CORN_DISTANCE_BIAS+width*height))&&(buildingType<=AI_NUMBI_NEAR_CORN_TYPE_CUTOFF))||((dist>=(AI_NUMBI_CORN_DISTANCE_BIAS+width*height))&&(buildingType>AI_NUMBI_NEAR_CORN_TYPE_CUTOFF)))
 						{
 							//printf("AI: findNewEmplacement d=%d valid=%d.\n", d, valid);
 							if (valid>bestValid)
@@ -737,7 +743,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 							}
 						}
 					}
-					else if (buildingType!=1)
+					else if (buildingType!=AI_NUMBI_NEAR_CORN_TYPE_CUTOFF)
 					{
 						//printf("AI: findNewEmplacement d=%d valid=%d.\n", d, valid);
 						if (valid>bestValid)
@@ -787,7 +793,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout
 	}
 	else if (attackPhase==1)
 	{
-		if (ft<=(critticalMass/2))
+		if (ft<=(critticalMass/AI_NUMBI_STOP_ATTACK_DIVISOR))
 		{
 			attackPhase=3;
 			//printf("AI:stop attack.\n");
@@ -831,7 +837,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout
 				ex=b->posX;
 				ey=b->posY;
 
-				if ((syncRand()&0x1F)==0)
+				if ((syncRand()&AI_NUMBI_ENEMY_FLAG_CHANCE_MASK)==0)
 				{
 					bool already=false;
 					count=0;
@@ -854,11 +860,11 @@ std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout
 			}
 		}
 
-		if (ex!=-1 && ey!=-1 && found && count<5)
+		if (ex!=-1 && ey!=-1 && found && count<AI_NUMBI_MAX_WAR_FLAGS)
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
 			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
-			return shared_ptr<Order>(new OrderCreate(teamNumber, ex, ey, typeNum, 1, 1));
+			return shared_ptr<Order>(new OrderCreate(teamNumber, ex, ey, typeNum, AI_NUMBI_WAR_FLAG_INIT_UNITS_WORKING, AI_NUMBI_WAR_FLAG_INIT_FLAG_RADIUS));
 		}
 		else
 			return shared_ptr<Order>(new NullOrder);
@@ -874,8 +880,8 @@ std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout
 			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 				return shared_ptr<Order>(new OrderDelete((*bit)->gid));
 		attackPhase=0;
-		critticalWarriors*=2;
-		critticalTime*=2;
+		critticalWarriors*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
+		critticalTime*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
 		return shared_ptr<Order>(new NullOrder);
 	}
 	else
@@ -907,9 +913,9 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 	int wr=countUnits();
 	
 	if (buildingType==IntBuildingType::FOOD_BUILDING)
-		wr+=2*countUnits(Unit::MED_HUNGRY);
+		wr+=AI_NUMBI_HUNGRY_INN_DEMAND_MULT*countUnits(Unit::MED_HUNGRY);
 	else if (buildingType==IntBuildingType::HEAL_BUILDING)
-		wr+=4*countUnits(Unit::MED_DAMAGED);
+		wr+=AI_NUMBI_DAMAGED_HEAL_DEMAND_MULT*countUnits(Unit::MED_DAMAGED);
 	
 	if (fb<((wr/numbers)+numbersInc))
 	{
@@ -919,7 +925,7 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
 			int teamNumber=team->teamNumber;
-			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, 1, 1));
+			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, AI_NUMBI_BUILD_ORDER_UNITS_WORKING, AI_NUMBI_BUILD_ORDER_FLAG_RADIUS));
 		}
 		//printf("AI: findNewEmplacement(%d) failed.\n", buildingType);
 		return shared_ptr<Order>(new NullOrder);
@@ -952,7 +958,7 @@ std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int work
 		{
 			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, true);
 			int teamNumber=team->teamNumber;
-			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, 1, 1));
+			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, AI_NUMBI_BUILD_ORDER_UNITS_WORKING, AI_NUMBI_BUILD_ORDER_FLAG_RADIUS));
 		}
 		return shared_ptr<Order>(new NullOrder);
 	}
@@ -1068,7 +1074,7 @@ std::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger
 	//printf("sbu=(%d, %d, %d, %d) wun=(%d, %d, %d, %d)\n", sbu[0], sbu[1], sbu[2], sbu[3], wun[0], wun[1], wun[2], wun[3]);
 	
 	// We calculate if we may upgrade to level 1:
-	int potential=wun[1]+wun[2]+wun[3]+4*(numberScience[0]+numberScience[1]+numberScience[2]+numberScience[3]);
+	int potential=wun[1]+wun[2]+wun[3]+AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT*(numberScience[0]+numberScience[1]+numberScience[2]+numberScience[3]);
 	int now=fun[1]+fun[2]+fun[3];
 	//printf("potential=(%d/%d), now=(%d/%d).\n", potential, ptrigger, now, ntrigger);
 	if ((potential>ptrigger)&&(now>ntrigger))
@@ -1077,36 +1083,36 @@ std::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 		if (numberHealth[0]>numberUpgradingHealth[1])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 		if (numberAttack[0]>numberUpgradingAttack[1])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
-		if (numberScience[0]>numberUpgradingScience[1]+1)
+		if (numberScience[0]>numberUpgradingScience[1]+AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 		if (numberDefense[0]>numberUpgradingDefense[1])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 	}
 	
 	// We calculate if we may upgrade to leverl 2:
-	potential=wun[2]+wun[3]+4*(numberScience[1]+numberScience[2]+numberScience[3]);
+	potential=wun[2]+wun[3]+AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT*(numberScience[1]+numberScience[2]+numberScience[3]);
 	now=fun[2]+fun[3];
 	if ((potential>ptrigger)&&(now>ntrigger))
 	{
@@ -1114,31 +1120,31 @@ std::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger
 		{
 			Building *b=foodBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 		if (numberHealth[1]>numberUpgradingHealth[2])
 		{
 			Building *b=healthBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 		if (numberAttack[1]>numberUpgradingAttack[2])
 		{
 			Building *b=attackBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
-		if (numberScience[1]>numberUpgradingScience[2]+1)
+		if (numberScience[1]>numberUpgradingScience[2]+AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE)
 		{
 			Building *b=scienceBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 		if (numberDefense[1]>numberUpgradingDefense[2])
 		{
 			Building *b=defenseBuilding[0];
 			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, 1, 1));
+				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 	}
 	

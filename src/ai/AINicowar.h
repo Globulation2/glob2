@@ -4,6 +4,7 @@
 #pragma once
 
 #include "echo/Echo.h"
+#include "AINicowarTuning.h"
 #include "ConfigFiles.h"
 
 ///This class represents the configuragle strategy that Nicowar will take. It uses the same algorithms,

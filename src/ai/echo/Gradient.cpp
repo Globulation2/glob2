@@ -262,7 +262,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
-			if(ticks_since_update[i-gradients.begin()]>150)
+			if(ticks_since_update[i-gradients.begin()]>AI_ECHO_GRADIENT_STALE_TICKS)
 			{
 				ticks_since_update[i-gradients.begin()]=0;
 				(*i)->recalculate(map);
@@ -294,7 +294,7 @@ void GradientManager::queue_gradient(const GradientInfo& gi)
 	}
 	//Did not find a matching gradient
 	gradients.push_back(std::shared_ptr<Gradient>(new Gradient(gi)));
-	ticks_since_update.push_back(200);
+	ticks_since_update.push_back(AI_ECHO_GRADIENT_INITIAL_AGE_TICKS);
 	queuedGradients.push(gradients.size()-1);
 }
 
@@ -305,7 +305,7 @@ bool GradientManager::is_updated(const GradientInfo& gi)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
-			if(ticks_since_update[i-gradients.begin()]>150 && (*i)->get_gradient_info().needs_updating())
+			if(ticks_since_update[i-gradients.begin()]>AI_ECHO_GRADIENT_STALE_TICKS && (*i)->get_gradient_info().needs_updating())
 			{
 				return false;
 			}
@@ -323,10 +323,13 @@ void GradientManager::update()
 	timer++;
 	std::transform(ticks_since_update.begin(), ticks_since_update.end(), ticks_since_update.begin(), increment);
 
+	// (timer%1)==0 is a tautology — preserved verbatim per audit note L8
+	// (bugs_surfaced_during_magic_number_audit.md). Looks like a disabled
+	// throttle; do NOT name as a constant or restore an intended period.
 	if((timer%1)==0 && !queuedGradients.empty())
 	{
 		int g=queuedGradients.front();
-		if(ticks_since_update[g]>50)
+		if(ticks_since_update[g]>AI_ECHO_GRADIENT_QUEUE_MIN_AGE_TICKS)
 		{
 			gradients[g]->recalculate(map);
 			ticks_since_update[g]=0;

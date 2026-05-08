@@ -6,6 +6,7 @@
 #include <Stream.h>
 
 #include "AIToubib.h"
+#include "AIToubibTuning.h"
 #include "Order.h"
 #include "Player.h"
 
@@ -82,7 +83,7 @@ std::shared_ptr<Order> AIToubib::getOrder(void)
 {
 	now++;
 	
-	switch (now % 2)
+	switch (now % AI_TOUBIB_STEP_MODULUS)
 	{
 		case 0: return getOrderBuildingStep();
 		default: computeMyStatsStep(); return shared_ptr<Order>(new NullOrder());

@@ -50,9 +50,9 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 {
 	stream->readEnterSection("NewNicowar");
 	timer=stream->readUint32("timer");
-	if(versionMinor >= 59)
+	if(versionMinor >= AI_NICOWAR_SAVE_FORMAT_V59)
 	{
-		if(versionMinor >= 60)
+		if(versionMinor >= AI_NICOWAR_SAVE_FORMAT_V60)
 		{
 			std::string strategyName = stream->readText("strategy_name");
 			NicowarStrategyLoader loader;
@@ -72,7 +72,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		fruit_phase=stream->readUint8("fruit_phase");
 		starving_recovery=stream->readUint8("starving_recovery");
 		no_workers_phase=stream->readUint8("no_workers_phase");
-		if(versionMinor >= 60)
+		if(versionMinor >= AI_NICOWAR_SAVE_FORMAT_V60)
 			can_swim=stream->readUint8("can_swim");
 		
 		starving_recovery_inns=stream->readUint8("starving_recovery_inns");
@@ -118,7 +118,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		}
 		stream->readLeaveSection();
 
-		if(versionMinor >= 66)
+		if(versionMinor >= AI_NICOWAR_SAVE_FORMAT_V66)
 		{
 			stream->readEnterSection("defense_flags");
 			size = stream->readUint16("size");
@@ -237,49 +237,49 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 void NewNicowar::tick(Echo& echo)
 {
 	timer++;
-	if(timer==1)
+	if(timer==AI_NICOWAR_INIT_TICK)
 	{
 		selectStrategy();
 		check_phases(echo);
 		initialize(echo);
 	}
-	if(timer%100 == 0)
+	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_QUEUE_BUILDINGS_PHASE)
 	{
 		queue_buildings(echo);
 	}
-	if(timer%100 == 17)
+	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_CHECK_PHASES_PHASE)
 	{
 		check_phases(echo);
 	}
-	if(timer%100 == 33)
+	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_MANAGE_BUILDINGS_PHASE)
 	{
 		manage_buildings(echo);
 	}
-	if(timer%100 == 50)
+	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_UPGRADE_PHASE)
 	{
 		upgrade_buildings(echo);
 	}
-	if(timer%100 == 67)
+	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_CONTROL_ATTACKS_PHASE)
 	{
 		control_attacks(echo);
 	}
-	if(timer%100 == 84)
+	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_DEFENSE_FLAG_PHASE)
 	{
 		compute_defense_flag_positioning(echo);
 	}
-	if(timer%250 == 0)
+	if(timer%AI_NICOWAR_FARMING_INTERVAL_TICKS == 0)
 	{
 		update_farming(echo);
 	}
-	if(timer%250 == 85)
+	if(timer%AI_NICOWAR_FARMING_INTERVAL_TICKS == AI_NICOWAR_FRUIT_PHASE_OFFSET)
 	{
 		update_fruit_flags(echo);
 	}
-	if(timer%1000 == 570)
+	if(timer%AI_NICOWAR_EXPLORER_ATTACK_INTERVAL_TICKS == AI_NICOWAR_EXPLORER_ATTACK_OFFSET)
 	{
 		compute_explorer_flag_attack_positioning(echo);
 	}
-	
+
 	order_buildings(echo);
 }
 
@@ -386,13 +386,13 @@ void NewNicowar::initialize(Echo& echo)
 	{	
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
-			ManagementOrder* mo_tracker=new AddRessourceTracker(25, CORN, *i);
+			ManagementOrder* mo_tracker=new AddRessourceTracker(AI_NICOWAR_RESSOURCE_TRACKER_DEPTH, CORN, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			echo.add_management_order(mo_tracker);
 		}
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 		{
-			ManagementOrder* mo_tracker=new AddRessourceTracker(25, CORN, *i);
+			ManagementOrder* mo_tracker=new AddRessourceTracker(AI_NICOWAR_RESSOURCE_TRACKER_DEPTH, CORN, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			echo.add_management_order(mo_tracker);
 		}
