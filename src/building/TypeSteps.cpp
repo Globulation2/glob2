@@ -35,7 +35,7 @@ void Building::swarmStep(void)
 	{
 		// We find the kind of unit we have to create:
 		Sint32 fProportion;
-		Sint32 fMinProportion=0x7FFFFFFF;
+		Sint32 fMinProportion = MIN_PROPORTION_INIT;
 		int minType=-1;
 		for (int i=0; i<NB_UNIT_TYPE; i++)
 			if (ratio[i]!=0)
@@ -123,11 +123,11 @@ void Building::turretStep(Uint32 stepCounter)
 		return;
 
 	//for some reason, any turret that is not 2x2 makes no sense at all to the game
-	assert(type->width ==2);
-	assert(type->height==2);
+	assert(type->width == TURRET_SIZE);
+	assert(type->height == TURRET_SIZE);
 
 	int range = type->shootingRange;
-	shootingStep = (shootingStep+1)&0x7;
+	shootingStep = (shootingStep+1) & (SHOOTING_ANIMATION_FRAMES - 1);
 
 	Uint32 enemies = owner->enemies;
 	Map *map = owner->map;

@@ -126,8 +126,8 @@ void ChecksumSidecarWriter::close()
 	if (!file)
 		return;
 
-	// Patch total_ticks in header (offset 12)
-	fseek(file, 12, SEEK_SET);
+	// Patch total_ticks in header
+	fseek(file, CHECKSUM_SIDECAR_TOTALTICKS_OFFSET, SEEK_SET);
 	writeU32(ticksWritten);
 
 	fclose(file);

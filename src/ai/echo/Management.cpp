@@ -621,7 +621,7 @@ ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int minimum_level, int building_i
 
 void ChangeFlagMinimumLevel::modify(Echo& echo)
 {
-	echo.push_order(shared_ptr<Order>(new OrderModifyMinLevelToFlag(echo.get_building_register().get_building(building_id)->gid, minimum_level-1)));
+	echo.push_order(shared_ptr<Order>(new OrderModifyMinLevelToFlag(echo.get_building_register().get_building(building_id)->gid, minimum_level-AI_ECHO_LEVEL_OFFSET_USER_TO_ENGINE)));
 }
 
 
@@ -1041,43 +1041,43 @@ bool ChangeAlliances::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	team=stream->readUint32("team");
 
 	Uint8 tmp=stream->readUint8("is_allied");
-	if(tmp==1)
+	if(tmp==AI_ECHO_TRIBOOL_TRUE)
 		is_allied=true;
-	else if(tmp==0)
+	else if(tmp==AI_ECHO_TRIBOOL_FALSE)
 		is_allied=false;
-	else if(tmp==2)
+	else if(tmp==AI_ECHO_TRIBOOL_INDETERMINATE)
 		is_allied=indeterminate;
 
 	tmp=stream->readUint8("is_enemy");
-	if(tmp==1)
+	if(tmp==AI_ECHO_TRIBOOL_TRUE)
 		is_enemy=true;
-	else if(tmp==0)
+	else if(tmp==AI_ECHO_TRIBOOL_FALSE)
 		is_enemy=false;
-	else if(tmp==2)
+	else if(tmp==AI_ECHO_TRIBOOL_INDETERMINATE)
 		is_enemy=indeterminate;
 
 	tmp=stream->readUint8("view_market");
-	if(tmp==1)
+	if(tmp==AI_ECHO_TRIBOOL_TRUE)
 		view_market=true;
-	else if(tmp==0)
+	else if(tmp==AI_ECHO_TRIBOOL_FALSE)
 		view_market=false;
-	else if(tmp==2)
+	else if(tmp==AI_ECHO_TRIBOOL_INDETERMINATE)
 		view_market=indeterminate;
 
 	tmp=stream->readUint8("view_inn");
-	if(tmp==1)
+	if(tmp==AI_ECHO_TRIBOOL_TRUE)
 		view_inn=true;
-	else if(tmp==0)
+	else if(tmp==AI_ECHO_TRIBOOL_FALSE)
 		view_inn=false;
-	else if(tmp==2)
+	else if(tmp==AI_ECHO_TRIBOOL_INDETERMINATE)
 		view_inn=indeterminate;
 
 	tmp=stream->readUint8("view_other");
-	if(tmp==1)
+	if(tmp==AI_ECHO_TRIBOOL_TRUE)
 		view_other=true;
-	else if(tmp==0)
+	else if(tmp==AI_ECHO_TRIBOOL_FALSE)
 		view_other=false;
-	else if(tmp==2)
+	else if(tmp==AI_ECHO_TRIBOOL_INDETERMINATE)
 		view_other=indeterminate;
 
 	return true;
@@ -1092,39 +1092,39 @@ void ChangeAlliances::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(team, "team");
 
 	if(is_allied)
-		stream->writeUint8(1, "is_allied");
+		stream->writeUint8(AI_ECHO_TRIBOOL_TRUE, "is_allied");
 	else if(!is_allied)
-		stream->writeUint8(0, "is_allied");
+		stream->writeUint8(AI_ECHO_TRIBOOL_FALSE, "is_allied");
 	else
-		stream->writeUint8(2, "is_allied");
+		stream->writeUint8(AI_ECHO_TRIBOOL_INDETERMINATE, "is_allied");
 
 	if(is_enemy)
-		stream->writeUint8(1, "is_enemy");
+		stream->writeUint8(AI_ECHO_TRIBOOL_TRUE, "is_enemy");
 	else if(!is_enemy)
-		stream->writeUint8(0, "is_enemy");
+		stream->writeUint8(AI_ECHO_TRIBOOL_FALSE, "is_enemy");
 	else
-		stream->writeUint8(2, "is_enemy");
+		stream->writeUint8(AI_ECHO_TRIBOOL_INDETERMINATE, "is_enemy");
 
 	if(view_market)
-		stream->writeUint8(1, "view_market");
+		stream->writeUint8(AI_ECHO_TRIBOOL_TRUE, "view_market");
 	else if(!view_market)
-		stream->writeUint8(0, "view_market");
+		stream->writeUint8(AI_ECHO_TRIBOOL_FALSE, "view_market");
 	else
-		stream->writeUint8(2, "view_market");
+		stream->writeUint8(AI_ECHO_TRIBOOL_INDETERMINATE, "view_market");
 
 	if(view_inn)
-		stream->writeUint8(1, "view_inn");
+		stream->writeUint8(AI_ECHO_TRIBOOL_TRUE, "view_inn");
 	else if(!view_inn)
-		stream->writeUint8(0, "view_inn");
+		stream->writeUint8(AI_ECHO_TRIBOOL_FALSE, "view_inn");
 	else
-		stream->writeUint8(2, "view_inn");
+		stream->writeUint8(AI_ECHO_TRIBOOL_INDETERMINATE, "view_inn");
 
 	if(view_other)
-		stream->writeUint8(1, "view_other");
+		stream->writeUint8(AI_ECHO_TRIBOOL_TRUE, "view_other");
 	else if(!view_other)
-		stream->writeUint8(0, "view_other");
+		stream->writeUint8(AI_ECHO_TRIBOOL_FALSE, "view_other");
 	else
-		stream->writeUint8(2, "view_other");
+		stream->writeUint8(AI_ECHO_TRIBOOL_INDETERMINATE, "view_other");
 
 	stream->writeLeaveSection();
 }

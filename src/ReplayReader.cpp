@@ -121,7 +121,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 			std::cout << "Error reading replay: " << e.what() << std::endl;
 
 			// If it was a replay with at least a few orders that were correct so far, use to plan B: play the replay up to this order
-			if (numOrders < 5)
+			if (numOrders < REPLAY_MIN_VALID_ORDERS)
 			{
 				// Fail
 				delete stream;

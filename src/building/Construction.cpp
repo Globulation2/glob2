@@ -33,8 +33,8 @@ bool Building::isRessourceFull(void)
 
 int Building::neededRessource(void)
 {
-	Sint32 minProportion=0x7FFFFFFF;
-	int minType=-1;
+	Sint32 minProportion = MIN_PROPORTION_INIT;
+	int minType = RESSOURCE_TYPE_NONE;
 	int deci=syncRand()%MAX_RESSOURCES;
 	for (int ib=0; ib<MAX_RESSOURCES; ib++)
 	{
@@ -63,7 +63,7 @@ void Building::computeWishedRessources(int needs[MAX_NB_RESSOURCES])
 {
 	 // we balance the system with Units working on it:
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		needs[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
+		needs[ri] = (WISHED_RESOURCE_NUM * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * WISHED_RESOURCE_DEN);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurpose >= 0)
 		{
@@ -96,13 +96,13 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 	{
 		if (hp<type->hpMax)
 		{
-			if ((type->prevLevel==-1) || !isHardSpaceForBuildingSite(REPAIR))
+			if ((type->prevLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(REPAIR))
 				return;
 			constructionResultState=REPAIR;
 		}
 		else
 		{
-			if ((type->nextLevel==-1) || !isHardSpaceForBuildingSite(UPGRADE))
+			if ((type->nextLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(UPGRADE))
 				return;
 			constructionResultState=UPGRADE;
 		}
@@ -157,7 +157,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	if (type->isBuildingSite)
 	{
 		assert(buildingState==ALIVE);
-		int targetLevelTypeNum=-1;
+		int targetLevelTypeNum=BUILDING_LEVEL_NONE;
 
 		if (constructionResultState==UPGRADE)
 			targetLevelTypeNum=type->prevLevel;
@@ -166,7 +166,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		else
 			assert(false);
 
-		if (targetLevelTypeNum!=-1)
+		if (targetLevelTypeNum!=BUILDING_LEVEL_NONE)
 		{
 			recoverTypeNum=targetLevelTypeNum;
 			recoverType=globalContainer->buildingsTypes.get(targetLevelTypeNum);

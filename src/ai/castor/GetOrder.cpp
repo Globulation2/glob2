@@ -140,7 +140,7 @@ std::shared_ptr<Order>AICastor::getOrder()
 	
 	if (!blocking)// No blocking project, we can start a new one:
 		addProjects();
-	Sint32 priority=0x7FFFFFFF;
+	Sint32 priority=AICastor::AI_CASTOR_PRIORITY_NONE;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if (priority>(*pi)->priority && (*pi)->critical)
 			priority=(*pi)->priority;

@@ -29,6 +29,31 @@ static constexpr int GAME_TICK_MS = 40;
 //! EngineRun.cpp.
 static constexpr int MAX_CATCHUP_MS = 500;
 
+//! Tick interval (ms) the engine targets while replaying with fast-forward
+//! enabled. Pairs with REPLAY_FAST_FORWARD_DRAW_RATIO so the GUI is drawn
+//! once per N game-steps. ~3.33x normal speed at GAME_TICK_MS=40. See
+//! EngineRun.cpp.
+static constexpr int REPLAY_FAST_FORWARD_MS = 12;
+
+//! During replay fast-forward, draw 1 frame per (RATIO+1) simulation steps.
+//! Encoded in the loop as `nextGuiStep = REPLAY_FAST_FORWARD_DRAW_RATIO - 1`
+//! after each draw, so the GUI updates every (RATIO+1)-th tick. See
+//! EngineRun.cpp.
+static constexpr int REPLAY_FAST_FORWARD_DRAW_RATIO = 3;
+
+// === Engine init-time constants ===
+
+//! Number of selectable AI implementations picked from when generating a
+//! random matchup. The pick is `syncRand() % AI_RANDOM_PICK_COUNT + 1`,
+//! skipping AI::NONE=0. Tracks the count of AICastor / AIEcho / AINicowar
+//! / AIToubib / AIWarrush. See EngineLoaders.cpp.
+static constexpr int AI_RANDOM_PICK_COUNT = 5;
+
+//! Bitmask value meaning "every team is visible" for replay viewing. Used
+//! as the initial value of GlobalContainer::replayVisibleTeams (a Uint32
+//! per-team bitmask). See EngineInit.cpp.
+static constexpr unsigned int REPLAY_VISIBLE_TEAMS_ALL = 0xFFFFFFFFu;
+
 // === Per-team / per-unit gameplay timers (in ticks) ===
 
 //! How long a unit / building stays flagged as "under attack" after taking

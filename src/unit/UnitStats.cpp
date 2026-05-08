@@ -70,7 +70,7 @@ void Unit::computeMinDistToResources(void)
 	bool allResourcesAreTooFar = true;
 	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
 		if (!owner->map->ressourceAvailable(owner->teamNumber, ri, performance[SWIM], posX, posY, &minDistToResource[ri]))
-			minDistToResource[ri] = -1;
+			minDistToResource[ri] = UNIT_MIN_DIST_NOT_REACHABLE;
 		else if (minDistToResource[ri] < stepsLeftUntilHungry)
 			allResourcesAreTooFar = false;
 	// the dist to an already carried resource is zero

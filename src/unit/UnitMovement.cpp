@@ -471,7 +471,7 @@ void Unit::handleMovementRandom()
 					if(unit)
 					{
 						unit->previousClearingArea.reset();
-						unit->previousClearingAreaDistance=static_cast<Uint32>(-1);
+						unit->previousClearingAreaDistance=UNIT_CLEAR_AREA_DISTANCE_NONE;
 					}
 				}
 

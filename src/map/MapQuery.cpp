@@ -161,18 +161,19 @@ std::optional<Offset> Map::doesPosTouchRessource(int x, int y, int ressourceType
 //! other buildings. Returns nullopt if no enemy is touching.
 //!
 //! Tie-break rules (preserve carefully — they affect replay determinism):
-//!   * Shooter (`shootingRange`): unconditional `bestTime=0` write. So if the
-//!     3x3 contains two shooters, the later-iterated one wins.
-//!   * Non-shooter enemy building: `else if (bestTime>255)` — only set if no
-//!     candidate has been seen yet (initial bestTime=256). Once any candidate
-//!     exists, subsequent non-shooters are ignored.
+//!   * Shooter (`shootingRange`): unconditional `bestTime=ENEMY_TOUCH_SCORE_SHOOTER`
+//!     write. So if the 3x3 contains two shooters, the later-iterated one wins.
+//!   * Non-shooter enemy building: `else if (bestTime>ENEMY_TOUCH_SCORE_BUILDING_FALLBACK)`
+//!     — only set if no candidate has been seen yet (initial bestTime is
+//!     ENEMY_TOUCH_BEST_TIME_NONE). Once any candidate exists, subsequent
+//!     non-shooters are ignored.
 //!   * Unit: strict `<`, so a unit with score 0 (e.g. delta=255 speed=2) does
 //!     NOT displace an already-found shooter at the same score.
 std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	int bestTime=256;//Shorter is better
+	int bestTime=ENEMY_TOUCH_BEST_TIME_NONE;//Shorter is better
 	int bdx=0, bdy=0;
 
 	Uint32 enemies=unit->owner->enemies;
@@ -197,15 +198,15 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 							// Unconditional write — later shooter wins ties.
 							bdx=tdx;
 							bdy=tdy;
-							bestTime=0;
+							bestTime=ENEMY_TOUCH_SCORE_SHOOTER;
 						}
-						else if (bestTime>255)
+						else if (bestTime>ENEMY_TOUCH_SCORE_BUILDING_FALLBACK)
 						{
 							// Only fall back to a non-shooting enemy building
 							// when no other candidate has been seen yet.
 							bdx=tdx;
 							bdy=tdy;
-							bestTime=255;
+							bestTime=ENEMY_TOUCH_SCORE_BUILDING_FALLBACK;
 						}
 					}
 				}
@@ -237,7 +238,7 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 			//TODO: can ground WARRIOR hit flying EXPLORER ?
 		}
 
-	if (bestTime<256)
+	if (bestTime<ENEMY_TOUCH_BEST_TIME_NONE)
 		return Offset{bdx, bdy};
 
 	return std::nullopt;
@@ -275,13 +276,13 @@ void Map::markImmobileUnit(int x, int y, int teamNumber)
 
 void Map::clearImmobileUnit(int x, int y)
 {
-	immobileUnits[coordToIndex(x, y)] = 255;
+	immobileUnits[coordToIndex(x, y)] = IMMOBILE_UNIT_NONE;
 }
 
 
 bool Map::isImmobileUnit(int x, int y) const
 {
-	return immobileUnits[coordToIndex(x, y)] != 255;
+	return immobileUnits[coordToIndex(x, y)] != IMMOBILE_UNIT_NONE;
 }
 
 

@@ -50,7 +50,7 @@ void TeamStat::reset()
 	for(int i=0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
 		numberBuildingPerType[i]=0;
-		for(int j=0; j<6; ++j)
+		for(int j=0; j<NB_BUILDING_LONG_LEVELS; ++j)
 			numberBuildingPerTypePerLevel[i][j]=0;
 	}
 	needFoodCritical=0;
@@ -119,7 +119,7 @@ TeamStats::~TeamStats()
 void TeamStats::step(Team *team, bool reloaded)
 {
 	// handle end of game stat step
-	if (((team->game->stepCounter & 0x1FF) == 0) && !reloaded)
+	if (((team->game->stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) == 0) && !reloaded)
 	{
 		endOfGameStats.push_back(EndOfGameStat(stats[statsIndex].totalUnit, stats[statsIndex].totalBuilding, team->prestige,
 			stats[statsIndex].totalHP, stats[statsIndex].totalAttackPower, stats[statsIndex].totalDefensePower));
@@ -251,7 +251,7 @@ void TeamStats::step(Team *team, bool reloaded)
 			stat.numberBuildingPerType[b->type->shortTypeNum]++;
 			int longLevel=b->getLongLevel();
 			assert(longLevel>=0);
-			assert(longLevel<=5);
+			assert(longLevel<=MAX_BUILDING_LONG_LEVEL);
 			stat.numberBuildingPerTypePerLevel[b->type->shortTypeNum][longLevel]++;
 			stat.totalHP += b->hp;
 			stat.totalDefensePower += (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;

@@ -24,6 +24,55 @@ class AICastor : public AIImplementation
 	static const bool verbose = false;
 public:
 	static const int NB_HARD_BUILDING=8;
+
+	// "Never run yet" sentinel for AICastor's per-map computation timers
+	// (lastFreeWorkersComputed, lastWheatGrowthMapComputed, lastEnemy*MapComputed,
+	// and Project::timer). Stored as Uint32, compared as ">timer+N" so the
+	// all-ones bit pattern always reads as "in the distant future" until first set.
+	// C++: Lifecycle.cpp:68, 135-139.
+	static constexpr Uint32 AI_CASTOR_TIMER_NEVER = static_cast<Uint32>(-1);
+
+	// "Unset" sentinel for Project worker counts (mainWorkers, foodWorkers,
+	// otherWorkers, finalWorkers). A negative value means "this project does
+	// not override this worker class"; continueProject only writes worker
+	// counts when the field is >= 0.
+	// C++: Lifecycle.cpp:58-64.
+	static constexpr Sint32 AI_CASTOR_WORKERS_UNSET = -1;
+
+	// "No critical project found" sentinel for the lower-is-better project
+	// priority scan in getOrder(). Set to INT32_MAX so the first real
+	// project priority always wins the min-search.
+	// C++: GetOrder.cpp:143.
+	static constexpr Sint32 AI_CASTOR_PRIORITY_NONE = 0x7FFFFFFF;
+
+	// "No enemy building seen yet" sentinel in controlStrikes() while
+	// scanning for the highest enemy building level.
+	// C++: Control.cpp:391.
+	static constexpr int AI_CASTOR_LEVEL_NONE = -1;
+
+	// "No candidate target team yet" sentinel for the controlStrikes()
+	// per-team score search. Score is non-negative; -1 forces the first
+	// real score to win.
+	// C++: Control.cpp:410.
+	static constexpr int AI_CASTOR_SCORE_NONE = -1;
+
+	// Project::subPhase state-machine values. The original code uses raw
+	// ints 0,1,2,3,5,6 — value 4 is intentionally absent (a retired phase
+	// that was never renumbered). Names mirror the comments at each
+	// branch in continueProject() (Projects.cpp:258 onward).
+	// C++: Projects.cpp:258-499.
+	enum SubPhase : int
+	{
+		AI_CASTOR_SUBPHASE_BOOT           = 0, // initial / boot
+		AI_CASTOR_SUBPHASE_FIND_PLACE     = 1, // find good building place
+		AI_CASTOR_SUBPHASE_CHECK_SITES    = 2, // do we have enough building sites?
+		AI_CASTOR_SUBPHASE_BALANCE_MAIN   = 3, // balance workers across building/food/other
+		// value 4 unused — retired phase, intentionally skipped to preserve
+		// numeric values of the surviving phases.
+		AI_CASTOR_SUBPHASE_WAIT_FINISHED  = 5, // wait for buildings to finish
+		AI_CASTOR_SUBPHASE_BALANCE_FINAL  = 6, // balance final workers
+	};
+
 	class Project
 	{
 	public:

@@ -8,6 +8,17 @@
 
 class Game;
 
+//! Byte offset of the `total_ticks` Uint32 inside the sidecar header.
+//! Header layout:
+//!   [0..3]   FILE_SIG_CHECKSUM_SIDECAR (4-byte ASCII magic)
+//!   [4..7]   numTeams (Uint32)
+//!   [8..11]  numPlayers (Uint32)
+//!   [12..15] total_ticks (Uint32)        <-- this offset
+//!   [16..19] flags (Uint32, reserved)
+//! Patched at close() once the final tick count is known. If the header
+//! layout changes, this offset must change too. See ChecksumSidecar.cpp.
+static constexpr long CHECKSUM_SIDECAR_TOTALTICKS_OFFSET = 12;
+
 class ChecksumSidecarWriter
 {
 public:

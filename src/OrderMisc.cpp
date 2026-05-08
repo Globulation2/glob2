@@ -34,7 +34,7 @@ MessageOrder::MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMino
 
 MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text)
 {
-	length=Utilities::strmlen(text, 256)+9;
+	length=Utilities::strmlen(text, ORDER_TEXT_MESSAGE_MAX_LEN)+9;
 	data=(Uint8 *)malloc(length);
 	memcpy(data+9, text, length-9);
 	data[length-1]=0;
@@ -70,7 +70,7 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMino
 	memcpy(this->data, data, dataLength);
 	if (this->data[dataLength-1]!=0)
 		return false;
-	if (textLength!=Utilities::strmlen((const char *)(this->data+9), 256))
+	if (textLength!=Utilities::strmlen((const char *)(this->data+9), ORDER_TEXT_MESSAGE_MAX_LEN))
 		return false;
 	if (textLength!=dataLength-9)
 		return false;

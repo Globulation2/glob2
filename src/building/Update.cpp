@@ -257,7 +257,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 
-	int targetLevelTypeNum=-1;
+	int targetLevelTypeNum=BUILDING_LEVEL_NONE;
 	if (constructionResultState==UPGRADE)
 		targetLevelTypeNum=type->nextLevel;
 	else if (constructionResultState==REPAIR)
@@ -265,7 +265,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	else
 		assert(false);
 
-	if (targetLevelTypeNum==-1)
+	if (targetLevelTypeNum==BUILDING_LEVEL_NONE)
 		return false;
 
 	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
@@ -411,7 +411,7 @@ bool Building::isHardSpaceForBuildingSite(void)
 
 bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionResultState)
 {
-	int tltn=-1;
+	int tltn=BUILDING_LEVEL_NONE;
 	if (constructionResultState==UPGRADE)
 		tltn=type->nextLevel;
 	else if (constructionResultState==REPAIR)
@@ -419,7 +419,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionRe
 	else
 		assert(false);
 
-	if (tltn==-1)
+	if (tltn==BUILDING_LEVEL_NONE)
 		return true;
 	BuildingType *bt=globalContainer->buildingsTypes.get(tltn);
 	int x=posX+bt->decLeft-type->decLeft;
@@ -459,7 +459,7 @@ int Building::desiredNumberOfWorkers(void)
 			neededRessourcesSum += neededRessources;
 	}
 	int user_num = maxUnitWorking;
-	int max_considering_ressources = (4 * neededRessourcesSum) / 3;
+	int max_considering_ressources = (WISHED_RESOURCE_NUM * neededRessourcesSum) / WISHED_RESOURCE_DEN;
 	return std::min(user_num, max_considering_ressources);
 }
 

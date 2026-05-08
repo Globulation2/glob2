@@ -143,7 +143,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	verbose=false;
 
-	lastShootStep = 0xFFFFFFFF;
+	lastShootStep = LAST_SHOOT_STEP_NEVER;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
 
@@ -312,7 +312,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	verbose = false;
 	stream->readLeaveSection();
 
-	lastShootStep = 0xFFFFFFFF;
+	lastShootStep = LAST_SHOOT_STEP_NEVER;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
 
@@ -406,7 +406,7 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 
 	// units
 	maxUnitInside = stream->readSint32("maxUnitInside");
-	assert(maxUnitInside < 65536);
+	assert(maxUnitInside < MAX_UNIT_INSIDE_LIMIT);
 
 	unsigned nbWorking = stream->readUint32("nbWorking");
 	unitsWorking.clear();

@@ -63,7 +63,7 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 		{
 			r.type = ressourceType;
 			r.variety = variety;
-			r.amount = 1;
+			r.amount = RESSOURCE_INITIAL_AMOUNT;
 			r.animation = 0;
 			return true;
 		}
@@ -118,7 +118,7 @@ void Map::setRessource(int x, int y, int type, int l)
 				const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
 				rp.variety=syncRand()%rt->varietiesCount;
 				assert(rt->sizesCount>1);
-				rp.amount=1+syncRand()%(rt->sizesCount-1);
+				rp.amount=RESSOURCE_INITIAL_AMOUNT+syncRand()%(rt->sizesCount-1);
 				rp.animation=0;
 			}
 }

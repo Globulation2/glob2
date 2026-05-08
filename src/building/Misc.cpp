@@ -235,28 +235,28 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 
 	// TODO: Introduce a border iterator for rectangles
 
-	// if (exitQuality<4)
+	// if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		testY=this->posY-1;
 		oldQuality=0;
 		for (testX=this->posX-1; testX<=this->posX+type->width ; testX++)
 			checkGroundExitQuality(testX,testY,testX,testY-1,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
-	if (exitQuality<4)
+	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		testY=this->posY+type->height;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
 			checkGroundExitQuality(testX,testY,testX,testY+1,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
-	if (exitQuality<4)
+	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		oldQuality=0;
 		testX=this->posX-1;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
 			checkGroundExitQuality(testX,testY,testX-1,testY,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
-	if (exitQuality<4)
+	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		oldQuality=0;
 		testX=this->posX+type->width;
@@ -294,9 +294,9 @@ void Building::checkGroundExitQuality(
 			oldQuality++;
 		if (owner->map->isRessource(testX, testY-1))
 		{
-			if (exitQuality<1+oldQuality)
+			if (exitQuality<EXIT_QUALITY_NEAR_RESSOURCE+oldQuality)
 			{
-				exitQuality=1+oldQuality;
+				exitQuality=EXIT_QUALITY_NEAR_RESSOURCE+oldQuality;
 				exitX=testX;
 				exitY=testY;
 			}
@@ -304,13 +304,13 @@ void Building::checkGroundExitQuality(
 		}
 		else
 		{
-			if (exitQuality<2+oldQuality)
+			if (exitQuality<EXIT_QUALITY_OPEN_GROUND+oldQuality)
 			{
-				exitQuality=2+oldQuality;
+				exitQuality=EXIT_QUALITY_OPEN_GROUND+oldQuality;
 				exitX=testX;
 				exitY=testY;
 			}
-			oldQuality=1;
+			oldQuality=EXIT_QUALITY_NEAR_RESSOURCE;
 		}
 	}
 }

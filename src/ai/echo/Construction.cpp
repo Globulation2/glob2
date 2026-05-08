@@ -93,7 +93,7 @@ bool MinimumDistance::passes_constraint(Echo& echo, int x, int y)
 	if(gradient_cache==NULL)
 		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	int height=gradient_cache->get_height(x, y);
-	if(height==-2)
+	if(height==AI_ECHO_GRADIENT_HEIGHT_UNREACHED)
 		return false;
 	if(height>=distance)
 		return true;
@@ -146,7 +146,7 @@ bool MaximumDistance::passes_constraint(Echo& echo, int x, int y)
 	if(gradient_cache==NULL)
 		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
 	int height=gradient_cache->get_height(x, y);
-	if(height==-2)
+	if(height==AI_ECHO_GRADIENT_HEIGHT_UNREACHED)
 		return false;
 	if(height<=distance)
 		return true;
@@ -200,7 +200,7 @@ bool MinimizedDistance::passes_constraint(Echo& echo, int x, int y)
 {
 	if(gradient_cache==NULL)
 		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
-	return gradient_cache->get_height(x, y)!=-2;
+	return gradient_cache->get_height(x, y)!=AI_ECHO_GRADIENT_HEIGHT_UNREACHED;
 }
 
 
@@ -250,7 +250,7 @@ bool MaximizedDistance::passes_constraint(Echo& echo, int x, int y)
 {
 	if(gradient_cache==NULL)
 		gradient_cache=&echo.get_gradient_manager().get_gradient(gi);
-	return gradient_cache->get_height(x, y)!=-2;
+	return gradient_cache->get_height(x, y)!=AI_ECHO_GRADIENT_HEIGHT_UNREACHED;
 }
 
 
@@ -664,7 +664,7 @@ void BuildingRegister::initiate()
 
 unsigned int BuildingRegister::register_building()
 {
-	pending_buildings[building_id]=std::make_tuple(-1, -1, -1, -1);
+	pending_buildings[building_id]=std::make_tuple(-1, -1, -1, AI_ECHO_PENDING_NOT_ISSUED);
 	return building_id++;
 }
 
@@ -715,9 +715,9 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 gid=stream->readUint32("gid");
 		Uint8 upgrade_status=stream->readUint8("upgrade_status");
 		boost::logic::tribool t;
-		if(upgrade_status==0)
+		if(upgrade_status==AI_ECHO_TRIBOOL_FALSE)
 			t=false;
-		else if(upgrade_status==1)
+		else if(upgrade_status==AI_ECHO_TRIBOOL_TRUE)
 			t=true;
 		else
 			t=indeterminate;
@@ -765,11 +765,11 @@ void BuildingRegister::save(GAGCore::OutputStream *stream)
 		stream->writeUint32(std::get<2>(i->second), "building_type");
 		stream->writeUint32(std::get<3>(i->second), "gid");
 		if(std::get<4>(i->second))
-			stream->writeUint8(1, "upgrade_status");
+			stream->writeUint8(AI_ECHO_TRIBOOL_TRUE, "upgrade_status");
 		else if(!std::get<4>(i->second))
-			stream->writeUint8(0, "upgrade_status");
+			stream->writeUint8(AI_ECHO_TRIBOOL_FALSE, "upgrade_status");
 		else
-			stream->writeUint8(2, "upgrade_status");
+			stream->writeUint8(AI_ECHO_TRIBOOL_INDETERMINATE, "upgrade_status");
 		stream->writeLeaveSection();
 		found_size++;
 	}
@@ -793,9 +793,10 @@ void BuildingRegister::tick()
 {
 	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end();)
 	{
-		//When get<3>() is -1, it means that the building order hasen't been sent to the glob2 engine yet.
-		//This is used when the building is registered, but awaiting conditions to be satisfied.
-		if(std::get<3>(i->second)!=-1)
+		//When get<3>() is AI_ECHO_PENDING_NOT_ISSUED, it means that the building order
+		//hasen't been sent to the glob2 engine yet. This is used when the building is
+		//registered, but awaiting conditions to be satisfied.
+		if(std::get<3>(i->second)!=AI_ECHO_PENDING_NOT_ISSUED)
 		{
 			std::get<3>(i->second)++;
 			if(std::get<3>(i->second) > 300)

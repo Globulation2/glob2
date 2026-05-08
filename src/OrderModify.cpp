@@ -300,8 +300,8 @@ OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumula
 	minY = dim.minY;
 	maxX = dim.maxX;
 	maxY = dim.maxY;
-	assert(maxX-minX <= 512);
-	assert(maxY-minY <= 512);
+	assert(maxX-minX <= ORDER_AREA_BRUSH_MAX_SIDE);
+	assert(maxY-minY <= ORDER_AREA_BRUSH_MAX_SIDE);
 }
 #endif
 
@@ -348,8 +348,8 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versio
 	minY = getSint16(data, 8);
 	maxX = getUint16(data, 10);
 	maxY = getUint16(data, 12);
-	assert(maxX-minX <= 512);
-	assert(maxY-minY <= 512);
+	assert(maxX-minX <= ORDER_AREA_BRUSH_MAX_SIDE);
+	assert(maxY-minY <= ORDER_AREA_BRUSH_MAX_SIDE);
 	mask.deserialize(data+14, (maxX-minX)*(maxY-minY));
 
 	return true;

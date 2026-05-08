@@ -255,12 +255,12 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		project->critical=false;
 	}
 	
-	if (project->subPhase==0)
+	if (project->subPhase==AICastor::AI_CASTOR_SUBPHASE_BOOT)
 	{
 		// boot phase
-		project->subPhase=2;
+		project->subPhase=AICastor::AI_CASTOR_SUBPHASE_CHECK_SITES;
 	}
-	else if (project->subPhase==1)
+	else if (project->subPhase==AICastor::AI_CASTOR_SUBPHASE_FIND_PLACE)
 	{
 		if (!project->critical && !enoughFreeWorkers())
 		{
@@ -294,7 +294,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 			}
 			else
 			{
-				project->subPhase=2;
+				project->subPhase=AICastor::AI_CASTOR_SUBPHASE_CHECK_SITES;
 				return gfbm;
 			}
 		}
@@ -309,17 +309,17 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 			project->critical=false;
 		}
 	}
-	else if (project->subPhase==2)
+	else if (project->subPhase==AICastor::AI_CASTOR_SUBPHASE_CHECK_SITES)
 	{
 		// do we have enough building sites ?
-		
+
 		int real=buildingSum[project->shortTypeNum][0];
 		int site=buildingSum[project->shortTypeNum][1];
 		int sum=real+site;
-		
+
 		if (real>=project->amount)
 		{
-			project->subPhase=6;
+			project->subPhase=AICastor::AI_CASTOR_SUBPHASE_BALANCE_FINAL;
 			if (!project->waitFinished)
 			{
 				project->blocking=false;
@@ -328,11 +328,11 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		}
 		else if (sum<project->amount)
 		{
-			project->subPhase=1;
+			project->subPhase=AICastor::AI_CASTOR_SUBPHASE_FIND_PLACE;
 		}
 		else
 		{
-			project->subPhase=3;
+			project->subPhase=AICastor::AI_CASTOR_SUBPHASE_BALANCE_MAIN;
 			if (!project->waitFinished)
 			{
 				project->blocking=false;
@@ -340,7 +340,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 			}
 		}
 	}
-	else if (project->subPhase==3)
+	else if (project->subPhase==AICastor::AI_CASTOR_SUBPHASE_BALANCE_MAIN)
 	{
 		// balance workers:
 		
@@ -431,29 +431,29 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		
 		if (real>=project->amount)
 		{
-			project->subPhase=6;
+			project->subPhase=AICastor::AI_CASTOR_SUBPHASE_BALANCE_FINAL;
 		}
 		else if (sum<project->amount)
 		{
-			project->subPhase=1;
+			project->subPhase=AICastor::AI_CASTOR_SUBPHASE_FIND_PLACE;
 		}
 		else if (project->multipleStart)
 		{
 			if (isFree>1)
 			{
-				project->subPhase=1;
+				project->subPhase=AICastor::AI_CASTOR_SUBPHASE_FIND_PLACE;
 			}
 			else
 			{
-				project->subPhase=5;
+				project->subPhase=AICastor::AI_CASTOR_SUBPHASE_WAIT_FINISHED;
 			}
 		}
 		else
 		{
-			project->subPhase=5;
+			project->subPhase=AICastor::AI_CASTOR_SUBPHASE_WAIT_FINISHED;
 		}
 	}
-	else if (project->subPhase==5)
+	else if (project->subPhase==AICastor::AI_CASTOR_SUBPHASE_WAIT_FINISHED)
 	{
 		// We simply wait for the building to be finished,
 		// and add free workers if available and project.waitFinished:
@@ -483,14 +483,14 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		
 		if (real>=project->amount)
 		{
-			project->subPhase=6;
+			project->subPhase=AICastor::AI_CASTOR_SUBPHASE_BALANCE_FINAL;
 		}
 		else if (sum<project->amount)
 		{
-			project->subPhase=2;
+			project->subPhase=AICastor::AI_CASTOR_SUBPHASE_CHECK_SITES;
 		}
 	}
-	else if (project->subPhase==6)
+	else if (project->subPhase==AICastor::AI_CASTOR_SUBPHASE_BALANCE_FINAL)
 	{
 		// balance final workers:
 		

@@ -6,6 +6,7 @@
 
 #include <assert.h>
 #include <string>
+#include <GAGSys.h>
 
 enum Abilities
 {
@@ -84,6 +85,84 @@ static constexpr int GOING_TARGET_MAX_PATH_LENGTH = 12;
 //! Minimum damage a bullet can inflict — clamps any negative-armor or
 //! over-mitigated calculation to at least this. See Sector.cpp:127, 128, 151.
 static constexpr int BULLET_MIN_DAMAGE = 1;
+
+// === Per-slice "none" sentinels ===
+// `-1` is overloaded inside the unit slice (destination purpose, carried
+// resource, free-slot search, "resource unreachable"); each gets its own
+// name so the meaning is explicit at the call site, even though they share
+// the integer value.
+
+//! `Unit::destinationPurpose` sentinel meaning "no destination chosen yet".
+static constexpr int UNIT_DEST_PURPOSE_NONE = -1;
+//! `Unit::carriedRessource` sentinel meaning "not carrying anything".
+static constexpr int UNIT_CARRIED_RESSOURCE_NONE = -1;
+//! Free-slot search sentinel: starting `targetID = -1` means "no free slot
+//! found yet" (UnitActivity.cpp conversion code).
+static constexpr int UNIT_TARGETID_NONE = -1;
+//! `Unit::minDistToResource[]` sentinel meaning "this resource is not
+//! reachable from the unit's current position" (UnitStats.cpp).
+static constexpr int UNIT_MIN_DIST_NOT_REACHABLE = -1;
+//! `Unit::previousClearingAreaDistance` (`Uint32`) sentinel meaning "no
+//! claim recorded". Stored as `0xFFFFFFFF`. UnitMovement.cpp:474.
+static constexpr Uint32 UNIT_CLEAR_AREA_DISTANCE_NONE = static_cast<Uint32>(-1);
+// NOTE: the "no clearing-gradient target" sentinel (254) lives in the map
+// slice as `GRADIENT_FORBIDDEN_BORDER` / `GRADIENT_AT_GOAL` and is consumed
+// from UnitMovement.cpp:441-442 — no per-slice unit constant is needed.
+
+// === HP / hunger trigger ratios ===
+//! Numerator of the "low HP, retreat to heal" trigger: `trigHP = (hp*3)/10`.
+//! Set in `Unit::init` after `hp` is overwritten from `performance[HP]`.
+static constexpr int UNIT_HP_TRIG_NUM = 3;
+//! Denominator of the low-HP retreat trigger.
+static constexpr int UNIT_HP_TRIG_DEN = 10;
+
+//! Numerator for warriors' hunger retreat trigger:
+//! `trigHungry = (hungry * 2) / 10` (≈20% remaining food).
+static constexpr int UNIT_HUNGRY_TRIG_NUM_WARRIOR = 2;
+//! Denominator for warriors' hunger retreat trigger.
+static constexpr int UNIT_HUNGRY_TRIG_DEN = 10;
+
+//! Divisor for non-warriors' hunger retreat trigger:
+//! `trigHungry = hungry / 4` (25% remaining food).
+static constexpr int UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT = 4;
+//! Divisor for the carrying-a-resource hunger trigger:
+//! `trigHungryCarying = hungry / 10` (10% remaining food).
+static constexpr int UNIT_HUNGRY_TRIG_DIVISOR_CARRYING = 10;
+
+//! Vision radius (in tiles) granted to flying units; produces a 7x7 reveal
+//! window centered on the unit. See Unit.cpp:310-313.
+static constexpr int UNIT_VISION_RADIUS_FLY = 3;
+//! Vision radius (in tiles) granted to ground units; produces a 3x3 reveal
+//! window centered on the unit. See Unit.cpp:316-319.
+static constexpr int UNIT_VISION_RADIUS_GROUND = 1;
+
+//! HP threshold below which a unit is considered dead. The check is
+//! strictly `<`, so a unit with `hp == UNIT_HP_DEATH_THRESHOLD` is still
+//! alive (UnitMedical.cpp:204).
+static constexpr int UNIT_HP_DEATH_THRESHOLD = 0;
+
+//! Inverse fraction of HP missing that triggers an idle worker to seek
+//! healing: `hp + (performance[HP] / N) < performance[HP]`, where
+//! `N == UNIT_HEAL_TRIGGER_INV_RATIO`. UnitActivity.cpp:65.
+static constexpr int UNIT_HEAL_TRIGGER_INV_RATIO = 10;
+
+//! Numerator of the "explorer must be ≥90% fed before exiting heal /
+//! ≥90% healed before exiting feed" forced-rebound checks.
+//! UnitMedical.cpp:173, 180.
+static constexpr int EXPLORER_FORCE_FEED_RATIO_NUM = 9;
+//! Denominator of the explorer ≥90% rebound check.
+static constexpr int EXPLORER_FORCE_FEED_RATIO_DEN = 10;
+
+//! Magic-attack square radius (tiles) around the casting unit. Used as
+//! the half-extent of the loop bounds in UnitMedical.cpp:114.
+static constexpr int UNIT_MAGIC_ATTACK_RANGE = 3;
+
+//! Midpoint of the per-action `delta` window at which a warrior's swing
+//! actually lands a hit: hits trigger when `delta` is in
+//! [UNIT_ATTACK_HIT_DELTA, UNIT_ATTACK_HIT_DELTA + speed). With
+//! `delta` in [0, UNIT_DELTA_QUANTUM), this is the second half of the
+//! tick. See Unit.cpp:239.
+static constexpr int UNIT_ATTACK_HIT_DELTA = 128;
 
 std::string getUnitName(int type);
 

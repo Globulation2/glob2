@@ -190,6 +190,14 @@ public:
 	NicowarStrategy getParticularStrategy(const std::string& name);
 };
 
+/// Sentinel value for `NewNicowar::target` meaning "no enemy team
+/// currently targeted." `target` is a Sint8/int that otherwise holds an
+/// enemy team index. Used at init, when a chosen target dies/becomes
+/// unreachable, and as a guard before launching attacks.
+/// Distinct from AINames::AI_UNKNOWN_NAME and from the Echo
+/// enemy_building_iterator wildcard `-1` args (those are kept literal).
+static const int AI_NICOWAR_NO_TARGET = -1;
+
 ///Nicowar is a new powerhouse AI for Globulation 2
 class NewNicowar : public AIEcho::EchoAI
 {

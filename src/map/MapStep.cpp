@@ -54,9 +54,9 @@ void Map::growRessources(void)
 				else if (r.type == CORN)
 					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
 
-				// Growth rate of corn is 1/3
+				// Growth rate of corn is 1/CORN_GROWTH_DIVISOR
 				if(r.type == CORN && expand)
-					if(syncRand() % 3 != 0)
+					if(syncRand() % CORN_GROWTH_DIVISOR != 0)
 						expand = false;
 
 				if (expand)
@@ -194,15 +194,15 @@ void Map::setMapExploredByUnit(int x, int y, int w, int h, int team)
 {
 	for (int dx = x; dx < x + w; dx++)
 		for (int dy = y; dy < y + h; dy++)
-			exploredArea[team][coordToIndex(dx, dy)] = 255;
+			exploredArea[team][coordToIndex(dx, dy)] = EXPLORED_FRESH;
 }
 
 void Map::setMapExploredByBuilding(int x, int y, int w, int h, int team)
 {
 	for (int dx = x; dx < x + w; dx++)
 		for (int dy = y; dy < y + h; dy++)
-			if (exploredArea[team][coordToIndex(dx, dy)] < 2)
-				exploredArea[team][coordToIndex(dx, dy)] = 2;
+			if (exploredArea[team][coordToIndex(dx, dy)] < EXPLORED_BY_BUILDING_MIN)
+				exploredArea[team][coordToIndex(dx, dy)] = EXPLORED_BY_BUILDING_MIN;
 }
 
 void Map::unsetMapDiscovered(void)

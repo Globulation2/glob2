@@ -36,6 +36,12 @@ public:
 	//! that need to be recomputed on the next pass. Shared between team
 	//! routing and building gradient propagation. See TeamStep.cpp:163.
 	static constexpr int GRADIENT_DIRTY_PADDING = 16;
+
+	//! HSV saturation/value used to derive default team colours from a
+	//! hue (see Team::setCorrectColor(float)). Saturation 0.8 keeps the
+	//! palette readable; value 0.9 keeps it bright but not blown out.
+	static constexpr float TEAM_COLOR_SATURATION = 0.8f;
+	static constexpr float TEAM_COLOR_VALUE = 0.9f;
 	Team(Game *game);
 	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 

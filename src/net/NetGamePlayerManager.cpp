@@ -204,7 +204,7 @@ int NetGamePlayerManager::chooseTeamNumber()
 			numberOfPlayersPerTeam[bp.teamNumber] += 1;
 	}
 	//Chooes a team number that has the lowest number of players attached
-	int lowest_number = 10000;
+	int lowest_number = TEAM_PLAYERCOUNT_INFINITY;
 	int team_number = 0;
 	for(int x=0; x<numberOfTeams; ++x)
 	{

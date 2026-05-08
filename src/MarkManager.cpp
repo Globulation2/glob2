@@ -29,8 +29,8 @@ void Mark::draw(int x, int y, float scale)
 	ray = (std::abs(ray) * showTicks) / totalTime * scale;
 
 	int pixel_ray = static_cast<int>(ray);
-	int line_length = static_cast<int>(8 * scale);
-	int line_pos = static_cast<int>(4 * scale);
+	int line_length = static_cast<int>(MARK_LINE_LENGTH_PX * scale);
+	int line_pos = static_cast<int>(MARK_LINE_OFFSET_PX * scale);
 	globalContainer->gfx->drawCircle(x, y, pixel_ray, color);
 	globalContainer->gfx->drawHorzLine(x + pixel_ray-line_pos+1, y, line_length, color.r, color.g, color.b);
 	globalContainer->gfx->drawHorzLine(x-pixel_ray-line_pos, y, line_length, color.r, color.g, color.b);

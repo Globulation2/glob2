@@ -88,6 +88,15 @@ public:
 	//! Half-tile in pixels — used when centring sprites / bullets on a tile.
 	static constexpr int HALF_TILE_PX = 16;
 
+	//! Sentinel returned by Map::getTerrainType when the underlying terrain
+	//! sprite ID does not fall in any of the registered terrain ranges
+	//! (GRASS / SAND / WATER). Callers test for `< 0` / `== TERRAIN_TYPE_UNKNOWN`.
+	static constexpr int TERRAIN_TYPE_UNKNOWN = -1;
+
+	//! "Infinity" / "unvisited" sentinel for the A* algorithm's Uint16 cost fields
+	//! (moveCost, totalCost). All real costs fit within 0..0xFFFE so 0xFFFF is safe.
+	static constexpr Uint16 ASTAR_COST_INFINITY = static_cast<Uint16>(-1);
+
 public:
 	//! Map constructor
 	Map();
@@ -278,7 +287,7 @@ public:
 		else if ((t>=256) && (t<256+16))
 			return WATER;
 		else
-			return -1;
+			return TERRAIN_TYPE_UNKNOWN;
 	}
 
 	const Ressource& getRessource(int x, int y) const
@@ -718,7 +727,7 @@ protected:
 	///This is a single point in the array used for A* algorithm
 	struct AStarAlgorithmPoint
 	{
-		AStarAlgorithmPoint() : x(-1), y(-1), dx(-1), dy(-1), moveCost(static_cast<Uint16>(-1)), totalCost(static_cast<Uint16>(-1)), isClosed(false) { }
+		AStarAlgorithmPoint() : x(-1), y(-1), dx(-1), dy(-1), moveCost(ASTAR_COST_INFINITY), totalCost(ASTAR_COST_INFINITY), isClosed(false) { }
 		AStarAlgorithmPoint(Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Uint16 moveCost, Uint16 totalCost, bool isClosed) : x(x), y(y), dx(dx), dy(dy), moveCost(moveCost), totalCost(totalCost), isClosed(isClosed) {}
 		//Pos x
 		Sint16 x;

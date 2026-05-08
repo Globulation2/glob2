@@ -94,22 +94,22 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	hungry = HUNGRY_MAX;
 	hungryness = race->hungryness;
 	if (performance[ATTACK_SPEED])
-		trigHungry = (hungry*2)/10;
+		trigHungry = (hungry*UNIT_HUNGRY_TRIG_NUM_WARRIOR)/UNIT_HUNGRY_TRIG_DEN;
 	else
-		trigHungry = hungry/4;
-	trigHungryCarying = hungry/10;
+		trigHungry = hungry/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
+	trigHungryCarying = hungry/UNIT_HUNGRY_TRIG_DIVISOR_CARRYING;
 	fruitMask = 0;
 	fruitCount = 0;
 
 	// NOTE : rewrite hp from level
 	hp = this->performance[HP];
-	trigHP = (hp*3)/10;
+	trigHP = (hp*UNIT_HP_TRIG_NUM)/UNIT_HP_TRIG_DEN;
 
 	attachedBuilding=NULL;
 	targetBuilding=NULL;
 	ownExchangeBuilding=NULL;
-	destinationPurpose=-1;
-	carriedRessource=-1;
+	destinationPurpose=UNIT_DEST_PURPOSE_NONE;
+	carriedRessource=UNIT_CARRIED_RESSOURCE_NONE;
 	jobTimer = 0;
 
 	previousClearingArea=std::nullopt;
@@ -143,7 +143,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 
 	if (building->type->isVirtual)
 	{
-		destinationPurpose=-1;
+		destinationPurpose=UNIT_DEST_PURPOSE_NONE;
 		activity=ACT_FLAG;
 		attachedBuilding=b;
 	    setTargetBuilding(b);
@@ -236,7 +236,7 @@ void Unit::syncStep(void)
 {
 	//warrior attacks?
 	assert(speed>0);
-	if ((action==ATTACK_SPEED) && (delta>=128) && (delta<(128+speed)))
+	if ((action==ATTACK_SPEED) && (delta>=UNIT_ATTACK_HIT_DELTA) && (delta<(UNIT_ATTACK_HIT_DELTA+speed)))
 	{
 		Uint16 enemyGUID=owner->map->getGroundUnit(posX+dx, posY+dy);
 		if (enemyGUID!=NOGUID)
@@ -308,15 +308,19 @@ void Unit::syncStep(void)
 
 		if (performance[FLY])
 		{
-			owner->map->setMapDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther);
-			owner->map->setMapBuildingsDiscovered(posX-3, posY-3, 7, 7, owner->sharedVisionOther, owner->game->teams);
-			owner->map->setMapExploredByUnit(posX-3, posY-3, 7, 7, owner->teamNumber);
+			constexpr int r = UNIT_VISION_RADIUS_FLY;
+			constexpr int d = 2*UNIT_VISION_RADIUS_FLY + 1;
+			owner->map->setMapDiscovered(posX-r, posY-r, d, d, owner->sharedVisionOther);
+			owner->map->setMapBuildingsDiscovered(posX-r, posY-r, d, d, owner->sharedVisionOther, owner->game->teams);
+			owner->map->setMapExploredByUnit(posX-r, posY-r, d, d, owner->teamNumber);
 		}
 		else
 		{
-			owner->map->setMapDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther);
-			owner->map->setMapBuildingsDiscovered(posX-1, posY-1, 3, 3, owner->sharedVisionOther, owner->game->teams);
-			owner->map->setMapExploredByUnit(posX-1, posY-1, 3, 3, owner->teamNumber);
+			constexpr int r = UNIT_VISION_RADIUS_GROUND;
+			constexpr int d = 2*UNIT_VISION_RADIUS_GROUND + 1;
+			owner->map->setMapDiscovered(posX-r, posY-r, d, d, owner->sharedVisionOther);
+			owner->map->setMapBuildingsDiscovered(posX-r, posY-r, d, d, owner->sharedVisionOther, owner->game->teams);
+			owner->map->setMapExploredByUnit(posX-r, posY-r, d, d, owner->teamNumber);
 		}
 	}
 

@@ -461,7 +461,7 @@ int Engine::loadReplay(const std::string &fileName)
 	// Reset the replay's options
 	gui.localPlayer = 0;
 	gui.localTeamNo = 0;
-	globalContainer->replayVisibleTeams = 0xFFFFFFFF;
+	globalContainer->replayVisibleTeams = REPLAY_VISIBLE_TEAMS_ALL;
 	globalContainer->replayFastForward = false;
 
 	// Initialize the ReplayReader in GlobalContainer

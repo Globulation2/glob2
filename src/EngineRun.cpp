@@ -50,8 +50,8 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		{
 			if (globalContainer->replayFastForward && !gui.gamePaused)
 			{
-				speed = 12;
-				if (nextGuiStep < 0) nextGuiStep = 2;
+				speed = REPLAY_FAST_FORWARD_MS;
+				if (nextGuiStep < 0) nextGuiStep = REPLAY_FAST_FORWARD_DRAW_RATIO - 1;
 			}
 			else
 			{

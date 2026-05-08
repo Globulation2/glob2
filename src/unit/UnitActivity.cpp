@@ -62,7 +62,7 @@ void Unit::handleActivity(void)
 				}
 
 				// we go to a heal building if we'r not fully healed: (1/8 trigger)
-				if (hp+(performance[HP]/10) < performance[HP])
+				if (hp+(performance[HP]/UNIT_HEAL_TRIGGER_INV_RATIO) < performance[HP])
 				{
 					Building *b;
 					b=owner->findNearestHeal(this);
@@ -124,7 +124,7 @@ void Unit::handleActivity(void)
 					targetTeam->unitConversionGained++;
 
 					// Find free slot in other team
-					int targetID=-1;
+					int targetID=UNIT_TARGETID_NONE;
 					for (int i=0; i<Unit::MAX_COUNT; i++)//we search for a free place for a unit.
 						if (targetTeam->myUnits[i]==NULL)
 						{
@@ -133,7 +133,7 @@ void Unit::handleActivity(void)
 						}
 
 					// If free slot, do the conversion, change owner and ID
-					if (targetID!=-1)
+					if (targetID!=UNIT_TARGETID_NONE)
 					{
 						Sint32 currentID=Unit::GIDtoID(gid);
 						assert(currentTeam->myUnits[currentID]);

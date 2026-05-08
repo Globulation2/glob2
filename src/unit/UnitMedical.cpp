@@ -111,7 +111,7 @@ void Unit::handleMagic(void)
 	{
 		std::set<Uint16> damagedBuildings;
 		damagedBuildings.insert(NOGBID);
-		int ATTACK_RANGE=3;
+		constexpr int ATTACK_RANGE = UNIT_MAGIC_ATTACK_RANGE;
 		for (int yi=posY-ATTACK_RANGE; yi<=posY+ATTACK_RANGE; yi++)
 			for (int xi=posX-ATTACK_RANGE; xi<=posX+ATTACK_RANGE; xi++)
 			{
@@ -170,14 +170,14 @@ void Unit::handleMedical(void)
 	if ((typeNum == EXPLORER) && (displacement == DIS_EXITING_BUILDING))
 	{
 		medical=MED_FREE;
-		if ((destinationPurpose == HEAL) && (hungry < ((HUNGRY_MAX * 9) / 10)))
+		if ((destinationPurpose == HEAL) && (hungry < ((HUNGRY_MAX * EXPLORER_FORCE_FEED_RATIO_NUM) / EXPLORER_FORCE_FEED_RATIO_DEN)))
 		{
 			// fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
 			needToRecheckMedical = 1;
 			medical = MED_HUNGRY;
 			return;
 		}
-		else if ((destinationPurpose == FEED) && (hp < (((performance[HP]) * 9) / 10)))
+		else if ((destinationPurpose == FEED) && (hp < (((performance[HP]) * EXPLORER_FORCE_FEED_RATIO_NUM) / EXPLORER_FORCE_FEED_RATIO_DEN)))
 		{
 			// fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
 			needToRecheckMedical = 1;
@@ -201,7 +201,7 @@ void Unit::handleMedical(void)
 	else if (hp<=trigHP)
 		medical=MED_DAMAGED;
 
-	if (hp<0)
+	if (hp<UNIT_HP_DEATH_THRESHOLD)
 	{
 		if (!isDead)
 		{

@@ -47,25 +47,25 @@ void AICastor::Project::init(const char *suffix)
 	
 	//printf("new project(%s)\n", debugName);
 	
-	subPhase=0;
-	
+	subPhase=AI_CASTOR_SUBPHASE_BOOT;
+
 	successWait=0;
 	blocking=true;
 	critical=false;
 	priority=1;
 	triesLeft=64;
-	
-	mainWorkers=-1;
-	foodWorkers=-1;
-	otherWorkers=-1;
-	
+
+	mainWorkers=AI_CASTOR_WORKERS_UNSET;
+	foodWorkers=AI_CASTOR_WORKERS_UNSET;
+	otherWorkers=AI_CASTOR_WORKERS_UNSET;
+
 	multipleStart=false;
 	waitFinished=false;
-	finalWorkers=-1;
-	
+	finalWorkers=AI_CASTOR_WORKERS_UNSET;
+
 	finished=false;
-	
-	timer=(Uint32)-1;
+
+	timer=AI_CASTOR_TIMER_NEVER;
 }
 
 
@@ -132,11 +132,11 @@ void AICastor::init(Player *player)
 	timer=0;
 	canSwim=false;
 	needSwim=false;
-	lastFreeWorkersComputed=(Uint32)-1;
-	lastWheatGrowthMapComputed=(Uint32)-1;
-	lastEnemyRangeMapComputed=(Uint32)-1;
-	lastEnemyPowerMapComputed=(Uint32)-1;
-	lastEnemyWarriorsMapComputed=(Uint32)-1;
+	lastFreeWorkersComputed=AI_CASTOR_TIMER_NEVER;
+	lastWheatGrowthMapComputed=AI_CASTOR_TIMER_NEVER;
+	lastEnemyRangeMapComputed=AI_CASTOR_TIMER_NEVER;
+	lastEnemyPowerMapComputed=AI_CASTOR_TIMER_NEVER;
+	lastEnemyWarriorsMapComputed=AI_CASTOR_TIMER_NEVER;
 	computeNeedSwimTimer=0;
 	controlSwarmsTimer=0;
 	expandFoodTimer=0;

@@ -29,13 +29,13 @@ using std::shared_ptr;
 
 
 
-building_search_iterator::building_search_iterator() : found_id(-1), is_end(true), search(NULL)
+building_search_iterator::building_search_iterator() : found_id(AI_ECHO_ITER_NOT_STARTED), is_end(true), search(NULL)
 {
 
 }
 
 
-building_search_iterator::building_search_iterator(BuildingSearch& search) : found_id(-1), is_end(false), search(&search)
+building_search_iterator::building_search_iterator(BuildingSearch& search) : found_id(AI_ECHO_ITER_NOT_STARTED), is_end(false), search(&search)
 {
 	set_to_next();
 }
@@ -80,7 +80,7 @@ void building_search_iterator::set_to_next()
 	Construction::BuildingRegister::found_iterator positionSaved = position;
 	if(is_end)
 		return;
-	if(found_id==-1)
+	if(found_id==AI_ECHO_ITER_NOT_STARTED)
 	{
 		position=search->echo.get_building_register().begin();
 	}
@@ -94,7 +94,7 @@ void building_search_iterator::set_to_next()
 		is_end=true;
 		return;
 	}
-	if(position->first==-1 && positionSaved==position)
+	if(position->first==AI_ECHO_ITER_NOT_STARTED && positionSaved==position)
 	{                        // This fixes an infinit loop.
 		is_end=true;     // In some special cases the program Logic 
 		return;          // must have been wrong.
@@ -158,13 +158,13 @@ bool BuildingSearch::passes_conditions(int b)
 }
 
 
-enemy_team_iterator::enemy_team_iterator(Echo& echo) :  team_number(-1), is_end(false), echo(&echo)
+enemy_team_iterator::enemy_team_iterator(Echo& echo) :  team_number(AI_ECHO_ITER_NOT_STARTED), is_end(false), echo(&echo)
 {
 	set_to_next();
 }
 
 
-enemy_team_iterator::enemy_team_iterator() : team_number(-1), is_end(true), echo(NULL)
+enemy_team_iterator::enemy_team_iterator() : team_number(AI_ECHO_ITER_NOT_STARTED), is_end(true), echo(NULL)
 {
 
 }
@@ -203,7 +203,7 @@ void enemy_team_iterator::set_to_next()
 {
 	if(is_end)
 		return;
-	if(team_number==-1)
+	if(team_number==AI_ECHO_ITER_NOT_STARTED)
 	{
 		team_number=0;
 	}
@@ -252,7 +252,7 @@ enemy_building_iterator::enemy_building_iterator() : is_end(true)
 
 
 
-enemy_building_iterator::enemy_building_iterator(Echo& echo, int team, int building_type, int level, boost::logic::tribool construction_site) : current_gid(-1), team(team), building_type(building_type), level(level), construction_site(construction_site), is_end(false), echo(&echo)
+enemy_building_iterator::enemy_building_iterator(Echo& echo, int team, int building_type, int level, boost::logic::tribool construction_site) : current_gid(AI_ECHO_ITER_NOT_STARTED), team(team), building_type(building_type), level(level), construction_site(construction_site), is_end(false), echo(&echo)
 {
 	set_to_next();
 }
@@ -294,7 +294,7 @@ bool enemy_building_iterator::operator!=(const enemy_building_iterator& rhs) con
 
 void enemy_building_iterator::set_to_next()
 {
-	if(current_gid==-1)
+	if(current_gid==AI_ECHO_ITER_NOT_STARTED)
 	{
 		current_index=0;
 	}
@@ -310,8 +310,8 @@ void enemy_building_iterator::set_to_next()
                              // Don't allow AIs to cheat!!!!!!
                              // || echo->get_starting_buildings().find(b->gid)!=echo->get_starting_buildings().end()
                              ) &&
-				(building_type==-1 || b->type->shortTypeNum==building_type) &&
-				(level==-1 || b->type->level==(level-1)))
+				(building_type==AI_ECHO_WILDCARD_TYPE || b->type->shortTypeNum==building_type) &&
+				(level==AI_ECHO_WILDCARD_LEVEL || b->type->level==(level-AI_ECHO_LEVEL_OFFSET_USER_TO_ENGINE)))
 			{
 				if(construction_site)
 				{

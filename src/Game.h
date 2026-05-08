@@ -79,6 +79,22 @@ static constexpr int MAX_BUILDING_LEVELS = 6;
 //! building. See Game_orders.cpp:140.
 static constexpr int MAX_BUILDING_WORKER_REQUEST = 20;
 
+//! Sentinel returned by the linear search for a free unit/building slot
+//! in Game::addUnit / Game::addBuilding when every slot is occupied.
+//! See Game_editor.cpp:203, 234. Distinct from any other -1 sentinel.
+static constexpr int SLOT_INDEX_NONE = -1;
+
+//! Full HSV hue range in degrees, used to spread team colours evenly
+//! around the colour wheel: hue = (i * TEAM_COLOR_HUE_DEGREES) / numTeams.
+//! See Game_editor.cpp:113, 139.
+static constexpr float TEAM_COLOR_HUE_DEGREES = 360.0f;
+
+//! Padding (in tiles) added on each side of the rectangle passed to
+//! Map::dirtyLocalGradient when a building/flag changes. The width/height
+//! of the dirty rect therefore grows by 2 * GRADIENT_DIRTY_BORDER_TILES.
+//! See Game_orders.cpp:193, 279, 360, 496.
+static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
+
 class Game
 {
 	static const bool verbose = false;

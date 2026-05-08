@@ -478,12 +478,12 @@ bool BeingUpgradedTo::passes(Echo& echo, int id)
 		return false;
 	if(b->type->isBuildingSite)
 	{
-		if(b->type->level==(level-1))
+		if(b->type->level==(level-AI_ECHO_LEVEL_OFFSET_USER_TO_ENGINE))
 		{
 			return true;
 		}
 	}
-	else if(b->type->level==(level-2))
+	else if(b->type->level==(level-AI_ECHO_LEVEL_OFFSET_FINISHED_TO_TARGET))
 	{
 		return true;
 	}
@@ -521,7 +521,7 @@ BuildingLevel::BuildingLevel(int building_level) : building_level(building_level
 bool BuildingLevel::passes(Echo& echo, int id)
 {
 	Building* building = echo.get_building_register().get_building(id);
-	if(building->type->level==building_level-1)
+	if(building->type->level==building_level-AI_ECHO_LEVEL_OFFSET_USER_TO_ENGINE)
 		return true;
 	return false;
 }

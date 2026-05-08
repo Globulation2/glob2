@@ -88,7 +88,7 @@ int Game::buildingsCount(int team, int type, int level)
 	if (
 		(team >= 0) && (team < mapHeader.getNumberOfTeams()) &&
 		(type >= 0) && (type < IntBuildingType::NB_BUILDING) &&
-		(level >= 0) && (level < 6)
+		(level >= 0) && (level < MAX_BUILDING_LEVELS)
 	)
 		return teams[team]->stats.getLatestStat()->numberBuildingPerTypePerLevel[type][level];
 	else
@@ -110,7 +110,7 @@ void Game::addTeam(int pos)
 	pos+=1;
 	mapHeader.setNumberOfTeams(pos);
 	for (int i=0; i<pos; i++)
-		teams[i]->setCorrectColor( ((float)i*360.0f) /(float)pos );
+		teams[i]->setCorrectColor( ((float)i*TEAM_COLOR_HUE_DEGREES) /(float)pos );
 
 	prestigeToReach = std::max(MIN_MAX_PRESTIGE, pos*TEAM_MAX_PRESTIGE);
 
@@ -136,7 +136,7 @@ void Game::removeTeam(int pos)
 		delete team;
 		assert (mapHeader.getNumberOfTeams()!=0);
 		for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
-			teams[i]->setCorrectColor(((float)i*360.0f)/(float)mapHeader.getNumberOfTeams());
+			teams[i]->setCorrectColor(((float)i*TEAM_COLOR_HUE_DEGREES)/(float)mapHeader.getNumberOfTeams());
 
 		map.removeTeam();
 		sgslScript.removeTeam(pos);
@@ -200,14 +200,14 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	if (!free)
 		return NULL;
 
-	int id=-1;
+	int id=SLOT_INDEX_NONE;
 	for (int i=0; i<Unit::MAX_COUNT; i++)//we search for a free place for a unit.
 		if (teams[team]->myUnits[i]==NULL)
 		{
 			id=i;
 			break;
 		}
-	if (id==-1)
+	if (id==SLOT_INDEX_NONE)
 		return NULL;
 
 	//ok, now we can safely deposite an unit.
@@ -231,14 +231,14 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	Team *team=teams[teamNumber];
 	assert(team);
 
-	int id=-1;
+	int id=SLOT_INDEX_NONE;
 	for (int i=0; i<Building::MAX_COUNT; i++)//we search for a free place for a building.
 		if (team->myBuildings[i]==NULL)
 		{
 			id=i;
 			break;
 		}
-	if (id==-1)
+	if (id==SLOT_INDEX_NONE)
 	{
 		//TODO:Building limit reached!
 		return NULL;

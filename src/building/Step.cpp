@@ -177,7 +177,7 @@ bool Building::subscribeToBringRessourcesStep()
 						else
 						{
 							int bestDist = 100000;
-							int bestResource = -1;
+							int bestResource = RESSOURCE_TYPE_NONE;
 							bool regularFound=false;
 							bool fruitFound=false;
 							bool regularFoundTooFar=false;
@@ -216,7 +216,7 @@ bool Building::subscribeToBringRessourcesStep()
 									}
 								}
 							}
-							if(bestResource == -1)
+							if(bestResource == RESSOURCE_TYPE_NONE)
 							{
 								if(regularFound)
 								{

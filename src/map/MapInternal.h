@@ -51,6 +51,33 @@ constexpr std::uint8_t GRADIENT_UNREACHABLE      = 1;
 constexpr std::uint8_t GRADIENT_FORBIDDEN_BORDER = 254;
 constexpr std::uint8_t GRADIENT_AT_GOAL          = 255;
 
+// Sentinel for Map::immobileUnits[]: byte stores the team number of the immobile
+// unit on the tile, or IMMOBILE_UNIT_NONE if no immobile unit is present.
+// Team::MAX_COUNT == 32, so the 0..31 team-number range never collides with 255.
+constexpr std::uint8_t IMMOBILE_UNIT_NONE = 255;
+
+// Map::doesUnitTouchEnemy scoring sentinels. The "bestTime" is in 0..255 for any
+// real candidate; 256 acts as a "no candidate yet" sentinel above the valid range.
+//   ENEMY_TOUCH_BEST_TIME_NONE        (256): initial value / "no candidate".
+//   ENEMY_TOUCH_SCORE_SHOOTER         (0)  : highest priority — turret/shooter found.
+//   ENEMY_TOUCH_SCORE_BUILDING_FALLBACK(255): non-shooter enemy building fallback.
+constexpr int ENEMY_TOUCH_BEST_TIME_NONE         = 256;
+constexpr int ENEMY_TOUCH_SCORE_SHOOTER          = 0;
+constexpr int ENEMY_TOUCH_SCORE_BUILDING_FALLBACK = 255;
+
+// exploredArea[team][] cell values. The byte counts down each tick (in MapStep);
+// EXPLORED_FRESH is the max stamp written when a unit/building reveals a tile,
+// EXPLORED_BY_BUILDING_MIN is the floor a stationary building keeps a tile at.
+constexpr std::uint8_t EXPLORED_FRESH           = 255;
+constexpr std::uint8_t EXPLORED_BY_BUILDING_MIN = 2;
+
+// Initial Ressource::amount when a fresh resource is seeded onto a tile.
+constexpr int RESSOURCE_INITIAL_AMOUNT = 1;
+
+// Corn growth probability denominator: corn grows on 1-in-CORN_GROWTH_DIVISOR
+// random rolls. Comment in Map::growRessources says "Growth rate of corn is 1/3".
+constexpr int CORN_GROWTH_DIVISOR = 3;
+
 // Chamfer-dilate a LOCAL_GRID_W * LOCAL_GRID_W gradient buffer in-place. Each free cell is
 // raised to max(self, max(neighbor) - 1); 0 (obstacle) and 255 (source) are preserved.
 // Used by both Map::updateLocalGradient and Map::updateLocalRessources.

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <climits>
 #include <list>
 #include <vector>
 
@@ -24,10 +25,57 @@ struct BuildingType;
 class BuildingsTypes;
 class Order;
 
+/// Sentinel for `BuildingType::prevLevel` / `nextLevel` meaning
+/// "no upgrade/downgrade exists in this chain" (signed int).
+/// Distinct from the wire-format `NB_BUILDING` size sentinel.
+static constexpr int BUILDING_LEVEL_NONE = -1;
+
+/// Sentinel for "no resource type chosen yet" on signed integers
+/// (e.g. `Building::neededRessource()` return, `bestResource` in
+/// scoring loops). Distinct from `NO_RES_TYPE` (Uint8 0xFF) used
+/// on the `Ressource` value-type field.
+static constexpr int RESSOURCE_TYPE_NONE = -1;
+
 class Building : public BuildingUtils
 {
 public:
 	static const int MAX_COUNT=1024;
+
+	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
+	/// not fired yet this game; the field is `Uint32` step counter.
+	static constexpr Uint32 LAST_SHOOT_STEP_NEVER = static_cast<Uint32>(-1);
+
+	/// Initial value for proportion-finding loops in `neededRessource`
+	/// and `swarmStep`: every real proportion compares less. Same as
+	/// `INT32_MAX`; named for clarity at the call site.
+	static constexpr Sint32 MIN_PROPORTION_INIT = INT32_MAX;
+
+	/// Wished-resources scaling factor: `wishedResources = (NUM/DEN) *
+	/// missing` ≈ 1.33×, so workers can be subscribed before resources
+	/// are actually depleted.
+	static constexpr int WISHED_RESOURCE_NUM = 4;
+	static constexpr int WISHED_RESOURCE_DEN = 3;
+
+	/// `findGroundExit` quality scoring (per-tile bonuses):
+	///  - +1 when the candidate exit is next to a ressource
+	///  - +2 when the candidate exit is on open ground
+	/// Search aborts once any side reaches `EXIT_QUALITY_GOOD_ENOUGH`.
+	static constexpr int EXIT_QUALITY_NEAR_RESSOURCE = 1;
+	static constexpr int EXIT_QUALITY_OPEN_GROUND = 2;
+	static constexpr int EXIT_QUALITY_GOOD_ENOUGH = 4;
+
+	/// Sanity bound on `maxUnitInside` reads from old saves; the value
+	/// is logically a `Uint16` so anything ≥ 65536 is corrupt data.
+	static constexpr Sint32 MAX_UNIT_INSIDE_LIMIT = 65536;
+
+	/// Turret rotating-shoot sprite has this many animation frames;
+	/// `shootingStep` cycles `0..SHOOTING_ANIMATION_FRAMES-1`.
+	static constexpr Uint32 SHOOTING_ANIMATION_FRAMES = 8;
+
+	/// Turret types are required to be `TURRET_SIZE × TURRET_SIZE`
+	/// tiles. Bullet-spawn math (e.g. `<<4` half-tile offsets) bakes
+	/// in this assumption.
+	static constexpr int TURRET_SIZE = 2;
 	///This is the buildings basic state of existence.
 	enum BuildingState
 	{

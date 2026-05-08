@@ -15,6 +15,12 @@ namespace GAGCore
 
 class Order;
 
+//! Minimum number of well-formed orders read from a replay before the
+//! reader will treat a corrupt order as recoverable (substituting a
+//! NullOrder). Below this threshold a malformed order aborts the replay.
+//! See ReplayReader.cpp.
+static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
+
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
 /// If this replay stores checksums, they are checked every time an order is read.

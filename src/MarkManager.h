@@ -8,6 +8,15 @@
 
 class Game;
 
+//! Length (in pixels at scale 1.0) of each cross-arm in the four-line
+//! "+" decoration drawn around a Mark's pulsing circle. See MarkManager.cpp.
+static constexpr int MARK_LINE_LENGTH_PX = 8;
+
+//! Inset (in pixels at scale 1.0) from the circle edge to where each
+//! cross-arm starts. Half of MARK_LINE_LENGTH_PX so the line is centred
+//! on the circle's tangent point. See MarkManager.cpp.
+static constexpr int MARK_LINE_OFFSET_PX = 4;
+
 ///This class represents a mark on the screen. Players are able to mark
 ///places on the map that show briefly to other players. This class
 ///manages and draws those marks

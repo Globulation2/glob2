@@ -31,7 +31,7 @@ int NetReteamingInformation::getPlayersTeam(const std::string& playerName) const
 {
 	if(doesPlayerHaveTeam(playerName))
 		return teams.find(playerName)->second;
-	return -1;
+	return RETEAM_NO_TEAM;
 }
 
 

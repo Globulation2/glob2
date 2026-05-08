@@ -388,7 +388,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 
 	if (!strikeTeamSelected)
 	{
-		int bestLevel=-1;
+		int bestLevel=AI_CASTOR_LEVEL_NONE;
 		for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
 		{
 			Team *enemyTeam=game->teams[ti];
@@ -407,7 +407,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			}
 		}
 		int bestTeam=0;
-		int bestScore=-1;
+		int bestScore=AI_CASTOR_SCORE_NONE;
 		for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
 		{
 			int score=0;

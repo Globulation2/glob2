@@ -224,11 +224,11 @@ void Gradient::recalculate(Map* map)
 		{
 			if(gradient_info.match_source(map, x, y))
 			{
-				gradient[get_pos(x, y)]=2;
+				gradient[get_pos(x, y)]=AI_ECHO_GRADIENT_SOURCE_SEED;
 				positions.push(position(x, y));
 			}
 			else if(gradient_info.match_obstacle(map, x, y))
-				gradient[get_pos(x, y)]=1;
+				gradient[get_pos(x, y)]=AI_ECHO_GRADIENT_OBSTACLE_MARKER;
 		}
 	}
 	expand_bfs(positions);
@@ -237,7 +237,9 @@ void Gradient::recalculate(Map* map)
 
 int Gradient::get_height(int posx, int posy) const
 {
-	return gradient[get_pos(posx, posy)]-2;
+	// Reverses the +SOURCE_SEED offset applied at recalculate(): source tiles
+	// (internal value 2) → height 0; obstacles (1) → -1; unreached (0) → -2.
+	return gradient[get_pos(posx, posy)]-AI_ECHO_GRADIENT_SOURCE_SEED;
 }
 
 

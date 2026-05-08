@@ -11,6 +11,22 @@
 
 class Map;
 
+//! Number of "long level" slots for the per-building-type histogram. The
+//! long level is `(type->level << 1) + 1 - isBuildingSite` (see
+//! Building::getLongLevel in building/Misc.cpp), giving the range 0..5
+//! inclusive — six slots — so that finished buildings and their sites at
+//! each level land in distinct bins. Distinct from Game.h's
+//! MAX_BUILDING_LEVELS even though they happen to share the value 6.
+static constexpr int NB_BUILDING_LONG_LEVELS = 6;
+//! Highest valid long-level index (= NB_BUILDING_LONG_LEVELS - 1).
+//! Used by the assertion in TeamStat.cpp guarding the histogram write.
+static constexpr int MAX_BUILDING_LONG_LEVEL = NB_BUILDING_LONG_LEVELS - 1;
+
+//! Bitmask used by TeamStats::step to append an EndOfGameStat snapshot
+//! every 512 ticks (~20.5 s at 25 Hz): `(stepCounter & MASK) == 0`.
+//! 0x1FF == 511 == 16 * Team::MAX_COUNT - 1. See TeamStat.cpp:122.
+static constexpr int END_OF_GAME_STAT_INTERVAL_MASK = 0x1FF;
+
 struct TeamStat
 {
 	TeamStat();
@@ -25,7 +41,7 @@ struct TeamStat
 
 	int totalBuilding; // Note that this is the total number of *finished* buildings, building sites are ignored
 	int numberBuildingPerType[IntBuildingType::NB_BUILDING];
-	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][6];
+	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS];
 
 	int needFoodCritical;
 	// Number of units that are hungry but there aren't able to eat

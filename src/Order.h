@@ -32,6 +32,17 @@ static constexpr int ORDER_SENDER_NONE = -1;
 //! NetBroadcastListener.cpp:38.
 static constexpr int NET_FRAME_LENGTH_PREFIX_BYTES = 2;
 
+//! Maximum chat-message text length (including NUL terminator) used by
+//! MessageOrder when validating wire-side text payloads, and matched by
+//! the MultiplayerGameScreen TextInput widget's max-length.
+//! See OrderMisc.cpp:37, 73; MultiplayerGameScreen.cpp:115.
+static constexpr int ORDER_TEXT_MESSAGE_MAX_LEN = 256;
+
+//! Maximum width or height (in tiles) for the bounding box of an
+//! area-alteration brush stroke encoded by OrderAlterateArea.
+//! See OrderModify.cpp:302-303, 350-351.
+static constexpr int ORDER_AREA_BRUSH_MAX_SIDE = 512;
+
 //! An Order represents a synchronized event in the game
 class Order
 {

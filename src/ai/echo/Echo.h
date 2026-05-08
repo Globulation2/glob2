@@ -131,6 +131,63 @@ namespace AIEcho
 
 	const unsigned int INVALID_BUILDING=65535;
 
+	// --- AI Echo per-slice magic-number renames (Phase 3b) ---
+	// Sentinels — distinct meanings; do not collapse into a single constant.
+
+	/// BuildingRegister: pending-building tuple's "ticks since registered" slot
+	/// is set to this value to signal "engine order not yet sent — still waiting
+	/// on conditions" (Construction.cpp:667, 798).
+	static constexpr int AI_ECHO_PENDING_NOT_ISSUED = -1;
+
+	/// SearchTools iterator initial state — "iteration has not yet started; the
+	/// first set_to_next() call will seed the cursor". Distinct from the
+	/// wildcard sentinels below (SearchTools.cpp building_search_iterator,
+	/// enemy_team_iterator, enemy_building_iterator).
+	static constexpr int AI_ECHO_ITER_NOT_STARTED = -1;
+
+	/// enemy_building_iterator: building_type == this means "match any building
+	/// type" (SearchTools.h:113-116, SearchTools.cpp:313).
+	static constexpr int AI_ECHO_WILDCARD_TYPE = -1;
+
+	/// enemy_building_iterator: level == this means "match any level"
+	/// (SearchTools.h:113-116, SearchTools.cpp:314).
+	static constexpr int AI_ECHO_WILDCARD_LEVEL = -1;
+
+	// On-disk encoding of boost::logic::tribool inside AI Echo save streams.
+	// Used by BuildingRegister and ChangeAlliances. NOT a wire-format enum —
+	// these bytes only appear in saved-game/AI snapshots.
+	static constexpr int AI_ECHO_TRIBOOL_FALSE = 0;
+	static constexpr int AI_ECHO_TRIBOOL_TRUE = 1;
+	static constexpr int AI_ECHO_TRIBOOL_INDETERMINATE = 2;
+
+	/// Convert the AI Echo "user-facing" 1-based building level (the level
+	/// number a script writer types) to the engine's 0-based BuildingType::level
+	/// (Conditions.cpp:481, 524, Management.cpp:624, SearchTools.cpp:314).
+	static constexpr int AI_ECHO_LEVEL_OFFSET_USER_TO_ENGINE = 1;
+
+	/// In BeingUpgradedTo::passes, a finished (non-site) building's current
+	/// engine level is target-2: the user level is 1-based AND the building
+	/// hasn't yet stepped up. Distinct from the offset above (Conditions.cpp:486).
+	static constexpr int AI_ECHO_LEVEL_OFFSET_FINISHED_TO_TARGET = 2;
+
+	// AI Echo's internal Gradient encoding (in echo/Gradient.cpp). This is
+	// SEPARATE from the engine's Map gradient sentinels (GRADIENT_FORBIDDEN
+	// etc. in MapInternal.h) — Echo BFS uses a tiny 3-value encoding offset by
+	// 2 so that Gradient::get_height() returns 0 at sources, -1 on obstacles,
+	// and -2 on cells the BFS never reached.
+
+	/// Returned by Gradient::get_height() for tiles that BFS never reached
+	/// (Construction.cpp:96, 149, 203, 253; corresponds to internal value 0).
+	static constexpr int AI_ECHO_GRADIENT_HEIGHT_UNREACHED = -2;
+
+	/// Internal seed value written for source tiles before BFS expansion; the
+	/// +2 offset is reversed by Gradient::get_height() (Gradient.cpp:227, 240).
+	static constexpr int AI_ECHO_GRADIENT_SOURCE_SEED = 2;
+
+	/// Internal value written for obstacle tiles; never expanded by BFS (which
+	/// only fills cells == 0). get_height() returns -1 on these (Gradient.cpp:231).
+	static constexpr int AI_ECHO_GRADIENT_OBSTACLE_MARKER = 1;
+
 	void signature_write(GAGCore::OutputStream *stream);
 	void signature_check(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 };

@@ -40,7 +40,7 @@ MultiplayerGame::MultiplayerGame(std::shared_ptr<YOGClient> client)
 	
 	isStarting=false;
 	needToSendMapHeader=false;
-	previousPercentage = 255;
+	previousPercentage = MP_DOWNLOAD_PCT_UNREPORTED;
 	numberOfConnectionAttempts=0;
 }
 
@@ -308,7 +308,7 @@ void MultiplayerGame::updateReadyState()
 
 	if(client->getYOGClientFileAssembler(fileID))
 	{
-		if(client->getYOGClientFileAssembler(fileID)->getPercentage() != 100)
+		if(client->getYOGClientFileAssembler(fileID)->getPercentage() != DOWNLOAD_PCT_COMPLETE)
 			ready = false;
 	}
 	
@@ -652,8 +652,8 @@ void MultiplayerGame::startEngine()
 
 void MultiplayerGame::setDefaultGameHeaderValues()
 {
-	gameHeader.setGameLatency(12);
-	gameHeader.setOrderRate(6);
+	gameHeader.setGameLatency(MP_DEFAULT_GAME_LATENCY_TICKS);
+	gameHeader.setOrderRate(MP_DEFAULT_ORDER_RATE_TICKS);
 }
 
 
@@ -693,7 +693,7 @@ int MultiplayerGame::getLocalPlayer()
 			return gameHeader.getBasePlayer(i).number;
 		}
 	}
-	return -1;
+	return LOCAL_PLAYER_NONE;
 }
 
 
@@ -715,7 +715,7 @@ Uint32 MultiplayerGame::getChatChannel() const
 Uint8 MultiplayerGame::percentageDownloadFinished()
 {
 	if(!client->getYOGClientFileAssembler(fileID))
-		return 100;
+		return DOWNLOAD_PCT_COMPLETE;
 	return client->getYOGClientFileAssembler(fileID)->getPercentage();
 }
 

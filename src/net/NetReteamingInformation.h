@@ -12,6 +12,11 @@ namespace GAGCore
 	class InputStream;
 }
 
+//! Sentinel returned by NetReteamingInformation::getPlayersTeam() when the
+//! given player has no auto-assigned team (i.e. did not appear in the
+//! source save-game). See NetReteamingInformation.cpp:34.
+static constexpr int RETEAM_NO_TEAM = -1;
+
 
 ///Reteaming is when you load a YOG save-game in YOG, and if the same players join, it automatically sets their team color
 ///This class stores reteaming information

@@ -40,7 +40,7 @@ NewNicowar::NewNicowar()
 	exploration_on_fruit=false;
 	for(int n=0; n<PlacementSize; ++n)
 		buildings_under_construction_per_type[n]=0;
-	target=-1;
+	target=AI_NICOWAR_NO_TARGET;
 	attack_flags.clear();
 	is_digging_out=false;
 }

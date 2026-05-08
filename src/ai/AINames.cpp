@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "AI.h"
+#include "AINames.h"
 #include "Toolkit.h"
 #include "StringTable.h"
 
@@ -82,6 +83,6 @@ namespace AINames
 			if (lower == table[i].name)
 				return table[i].id;
 		}
-		return -1;
+		return AI_UNKNOWN_NAME;
 	}
 }

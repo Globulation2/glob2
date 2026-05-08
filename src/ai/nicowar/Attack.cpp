@@ -52,7 +52,7 @@ void NewNicowar::attack_building(Echo& echo)
 		if(!is_digging_out)
 			if(!dig_out_enemy(echo))
 			{
-				target = -1;
+				target = AI_NICOWAR_NO_TARGET;
 			}
 		return;
 	}
@@ -79,7 +79,7 @@ void NewNicowar::control_attacks(Echo& echo)
 {
 	choose_enemy_target(echo);
 
-	if(target!=-1)
+	if(target!=AI_NICOWAR_NO_TARGET)
 	{
 		unsigned number_attacks=0;
 		if(war)
@@ -127,7 +127,7 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 	gi_building.add_obstacle(new Entities::AnyRessource);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
 
-	if(target==-1 || !echo.player->game->teams[target]->isAlive)
+	if(target==AI_NICOWAR_NO_TARGET || !echo.player->game->teams[target]->isAlive)
 	{
 		std::vector<int> available_reachable_targets;
 		std::vector<int> available_targets;
@@ -160,7 +160,7 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 		else if(available_targets.size()!=0)
 			target=available_targets[syncRand() % available_targets.size()];
 		else
-			target=-1;
+			target=AI_NICOWAR_NO_TARGET;
 	}
 }
 

@@ -137,7 +137,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			Building *b=teams[team]->myBuildings[id];
 			if ((b) && (b->buildingState==Building::ALIVE))
 			{
-				assert(omb->numberRequested <= 20);
+				assert(omb->numberRequested <= MAX_BUILDING_WORKER_REQUEST);
 				b->maxUnitWorking=omb->numberRequested;
 				b->maxUnitWorkingPreferred=b->maxUnitWorking;
 				if (order->sender!=localPlayer)
@@ -190,7 +190,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 					if (newRange<oldRange)
 					{
 						teams[team]->dirtyGlobalGradient();
-						map.dirtyLocalGradient(b->posX-oldRange-16, b->posY-oldRange-16, 32+oldRange*2, 32+oldRange*2, team);
+						map.dirtyLocalGradient(b->posX-oldRange-GRADIENT_DIRTY_BORDER_TILES, b->posY-oldRange-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, team);
 					}
 				}
 				else
@@ -276,7 +276,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 				if (drop && b->type->zonableForbidden)
 				{
 					int range=b->unitStayRange;
-					map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
+					map.dirtyLocalGradient(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, team);
 				}
 
 				b->posX=omf->x;
@@ -357,7 +357,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 
 				// We remove, so we need to refresh the gradients, unfortunatly
 				teams[oaa->teamNumber]->dirtyGlobalGradient();
-				map.dirtyLocalGradient(oaa->centerX+oaa->minX-16, oaa->centerY+oaa->minY-16, oaa->maxX-oaa->minX+32, oaa->maxY-oaa->minY+32, oaa->teamNumber);
+				map.dirtyLocalGradient(oaa->centerX+oaa->minX-GRADIENT_DIRTY_BORDER_TILES, oaa->centerY+oaa->minY-GRADIENT_DIRTY_BORDER_TILES, oaa->maxX-oaa->minX+2*GRADIENT_DIRTY_BORDER_TILES, oaa->maxY-oaa->minY+2*GRADIENT_DIRTY_BORDER_TILES, oaa->teamNumber);
 			}
 			else
 				assert(false);
@@ -493,7 +493,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 				{
 					teams[team]->dirtyGlobalGradient();
 					int range=b->unitStayRange;
-					map.dirtyLocalGradient(b->posX-range-16, b->posY-range-16, 32+range*2, 32+range*2, team);
+					map.dirtyLocalGradient(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, team);
 				}
 			}
 		}

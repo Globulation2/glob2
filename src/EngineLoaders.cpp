@@ -9,6 +9,7 @@
 
 #include "AINames.h"
 #include "Engine.h"
+#include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "Player.h"
 #include "Utilities.h"
@@ -164,7 +165,7 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 			}
 			else
 			{
-				iid = static_cast<AI::ImplementitionID>(syncRand() % 5 + 1);
+				iid = static_cast<AI::ImplementitionID>(syncRand() % AI_RANDOM_PICK_COUNT + 1);
 			}
 			FormatableString name("%0 %1");
 			name.arg(AINames::getAIText(iid)).arg(i-1);

@@ -5,6 +5,15 @@
 
 #include "GameHeader.h"
 #include "NetReteamingInformation.h"
+
+//! "Plus-infinity" initializer for the min-search loop in
+//! NetGamePlayerManager::chooseTeamNumber(). Any non-empty team count must
+//! be strictly less than this. The value is just "comfortably larger than
+//! any plausible team population" — it pre-dates Team::MAX_COUNT and stays
+//! at 10000 to preserve identical behavior.
+//! See NetGamePlayerManager.cpp:207.
+static constexpr int TEAM_PLAYERCOUNT_INFINITY = 10000;
+
 class YOGServerGame;
 
 ///This class handles the players and AI's that can join, be kicked out of, disconnect, leave
