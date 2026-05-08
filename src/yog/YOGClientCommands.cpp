@@ -26,13 +26,6 @@ std::string YOGClientBlockPlayerCommand::getCommandName()
 
 
 
-bool YOGClientBlockPlayerCommand::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-
-
-
 std::string YOGClientBlockPlayerCommand::execute(YOGClient* client, const std::vector<std::string>& tokens)
 {
 	if(client->getPlayerListManager()->doesPlayerExist(tokens[1]))

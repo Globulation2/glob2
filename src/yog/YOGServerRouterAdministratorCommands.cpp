@@ -18,15 +18,6 @@ std::string YOGServerRouterAbortCommand::getCommandName()
 
 
 
-bool YOGServerRouterAbortCommand::doesMatch(const std::vector<std::string>& tokens)
-{
-	if(tokens.size() == 1)
-		return true;
-	return false;
-}
-
-
-
 void YOGServerRouterAbortCommand::execute(YOGServerRouter* router, YOGServerRouterAdministrator* admin, const std::vector<std::string>& tokens, YOGServerRouterPlayer* player)
 {
 	exit(0);
@@ -44,15 +35,6 @@ std::string YOGServerRouterShutdownCommand::getHelpMessage()
 std::string YOGServerRouterShutdownCommand::getCommandName()
 {
 	return "shutdown";
-}
-
-
-
-bool YOGServerRouterShutdownCommand::doesMatch(const std::vector<std::string>& tokens)
-{
-	if(tokens.size() == 1)
-		return true;
-	return false;
 }
 
 
@@ -75,15 +57,6 @@ std::string YOGServerRouterStatusCommand::getHelpMessage()
 std::string YOGServerRouterStatusCommand::getCommandName()
 {
 	return "status";
-}
-
-
-
-bool YOGServerRouterStatusCommand::doesMatch(const std::vector<std::string>& tokens)
-{
-	if(tokens.size() == 1)
-		return true;
-	return false;
 }
 
 

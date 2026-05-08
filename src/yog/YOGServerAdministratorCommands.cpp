@@ -23,15 +23,6 @@ std::string YOGServerRestart::getCommandName()
 
 
 
-bool YOGServerRestart::doesMatch(const std::vector<std::string>& tokens)
-{
-	if(tokens.size() != 1)
-		return false;
-	return true;
-}
-	
-
-
 bool YOGServerRestart::allowedForModerator()
 {
 	return false;
@@ -60,28 +51,6 @@ std::string YOGMutePlayer::getCommandName()
 
 
 
-bool YOGMutePlayer::doesMatch(const std::vector<std::string>& tokens)
-{
-	if(tokens.size() == 2)
-		return true;
-	
-	if(tokens.size() == 3)
-	{
-		try
-		{
-			std::stoi(tokens[2]);
-		}
-		catch(const std::invalid_argument&)
-		{
-			return false;
-		}
-		return true;
-	}
-	return false;
-}
-	
-
-
 bool YOGMutePlayer::allowedForModerator()
 {
 	return true;
@@ -94,7 +63,17 @@ void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, co
 	std::string name = tokens[1];
 	int time = 10;
 	if(tokens.size() == 3)
-		time = std::stoi(tokens[2]);
+	{
+		try
+		{
+			time = std::stoi(tokens[2]);
+		}
+		catch(const std::invalid_argument&)
+		{
+			admin->sendTextMessage("Could not parse mute duration: "+tokens[2], player);
+			return;
+		}
+	}
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
 		boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(time);
@@ -121,13 +100,6 @@ std::string YOGUnmutePlayer::getHelpMessage()
 std::string YOGUnmutePlayer::getCommandName()
 {
 	return ".unmute_player";
-}
-
-
-
-bool YOGUnmutePlayer::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
 }
 
 
@@ -171,13 +143,6 @@ std::string YOGResetPassword::getCommandName()
 
 
 
-bool YOGResetPassword::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
-
-
 bool YOGResetPassword::allowedForModerator()
 {
 	return false;
@@ -206,13 +171,6 @@ std::string YOGBanPlayer::getCommandName()
 	return ".ban_player";
 }
 
-
-
-bool YOGBanPlayer::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
 
 
 bool YOGBanPlayer::allowedForModerator()
@@ -261,13 +219,6 @@ std::string YOGUnbanPlayer::getCommandName()
 
 
 
-bool YOGUnbanPlayer::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
-
-
 bool YOGUnbanPlayer::allowedForModerator()
 {
 	return false;
@@ -307,13 +258,6 @@ std::string YOGShowBannedPlayers::getCommandName()
 
 
 
-bool YOGShowBannedPlayers::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 1;
-}
-	
-
-
 bool YOGShowBannedPlayers::allowedForModerator()
 {
 	return false;
@@ -351,13 +295,6 @@ std::string YOGBanIP::getCommandName()
 	return ".ban_ip";
 }
 
-
-
-bool YOGBanIP::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
 
 
 bool YOGBanIP::allowedForModerator()
@@ -402,13 +339,6 @@ std::string YOGAddAdministrator::getCommandName()
 
 
 
-bool YOGAddAdministrator::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
-
-
 bool YOGAddAdministrator::allowedForModerator()
 {
 	return false;
@@ -447,13 +377,6 @@ std::string YOGRemoveAdministrator::getCommandName()
 
 
 
-bool YOGRemoveAdministrator::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
-
-
 bool YOGRemoveAdministrator::allowedForModerator()
 {
 	return false;
@@ -489,13 +412,6 @@ std::string YOGAddModerator::getCommandName()
 	return ".add_moderator";
 }
 
-
-
-bool YOGAddModerator::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
 
 
 bool YOGAddModerator::allowedForModerator()
@@ -537,13 +453,6 @@ std::string YOGRemoveModerator::getCommandName()
 
 
 
-bool YOGRemoveModerator::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
-
-
 bool YOGRemoveModerator::allowedForModerator()
 {
 	return false;
@@ -581,13 +490,6 @@ std::string YOGRemoveMap::getCommandName()
 	return ".remove_map";
 }
 
-
-
-bool YOGRemoveMap::doesMatch(const std::vector<std::string>& tokens)
-{
-	return tokens.size() == 2;
-}
-	
 
 
 bool YOGRemoveMap::allowedForModerator()

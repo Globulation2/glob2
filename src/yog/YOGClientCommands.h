@@ -17,30 +17,34 @@ public:
 
 	///Returns this YOGClientCommand help message
 	virtual std::string getHelpMessage()=0;
-	
+
 	///Returns the command name for this YOGClientCommand
 	virtual std::string getCommandName()=0;
-	
-	///Returns true if the given set of tokens match whats required for this YOGClientCommand
-	virtual bool doesMatch(const std::vector<std::string>& tokens)=0;
-	
+
 	///Executes the code for the administrator command, returns the output from the command
 	virtual std::string execute(YOGClient* client, const std::vector<std::string>& tokens)=0;
+
+	///Returns true if the token count is within this command's accepted range.
+	bool matchesArity(std::size_t count) const
+	{
+		return int(count) >= minTokens && int(count) <= maxTokens;
+	}
+
+protected:
+	explicit YOGClientCommand(int fixedTokens) : minTokens(fixedTokens), maxTokens(fixedTokens) {}
+	YOGClientCommand(int min, int max) : minTokens(min), maxTokens(max) {}
+
+private:
+	int minTokens;
+	int maxTokens;
 };
 
 class YOGClientBlockPlayerCommand : public YOGClientCommand
 {
 public:
-	///Returns this YOGClientCommand help message
+	YOGClientBlockPlayerCommand() : YOGClientCommand(2) {}
 	std::string getHelpMessage();
-	
-	///Returns the command name for this YOGClientCommand
 	std::string getCommandName();
-	
-	///Returns true if the given set of tokens match whats required for this YOGClientCommand
-	bool doesMatch(const std::vector<std::string>& tokens);
-	
-	///Executes the code for the administrator command
 	std::string execute(YOGClient* client, const std::vector<std::string>& tokens);
 };
 

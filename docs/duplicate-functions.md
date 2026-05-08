@@ -106,12 +106,6 @@ These function names appear in multiple files. Many are simple getters returning
 | 4 | `stringIP`, `setValues`, `getValue`, `getRessource`, `getReason`, `getPlayerName` |
 | 4 | `getName`, `getMapID`, `getIPAddress`, `getGameHeader`, `getError`, `getChatChannel`, `getAction`, `addPlayer` |
 
-### doesMatch (11 copies, identical body)
-
-All 11 copies of `doesMatch` have the same body:
-- YOGClientCommands.cpp:45
-- YOGServerAdministratorCommands.cpp: lines 143, 189, 226, 279, 371, 420, 465, 509, 555, 601
-
 ---
 
 ## Methodology
