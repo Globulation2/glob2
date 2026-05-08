@@ -571,14 +571,10 @@ public:
 		return gradient[coordToIndex(x, y)];
 	}
 	
-	// Chamfer distance transform on a pre-seeded gradient buffer (255=source,
-	// 0=obstacle, 1=free, intermediate values=propagation seeds). Sweeps
-	// forward+backward until stable. Defined in MapGradientImpl.h.
-	template<typename Tint> void updateGlobalGradient(
-		Uint8 *gradient, GradientType gradientType, bool canSwim);
-	// Auto-seed wrapper: scans the supplied buffer for cells >= 3 as sources
-	// and runs the chamfer pass with GT_UNDEFINED. Used by Castor/Warrush
-	// AIs that build their own custom gradient buffers.
+	// Chamfer distance transform on a pre-seeded gradient buffer. Caller
+	// fills the buffer (0 = obstacle, 1 = free, any cell >= 3 = source);
+	// chamfer sweeps it forward and backward until stable. Defined in
+	// MapGradientGlobal.cpp.
 	void updateGlobalGradient(Uint8 *gradient);
 	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
 	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict) const;

@@ -14,8 +14,6 @@
 #include <queue>
 
 
-#include "MapGradientImpl.h"
-
 // updateGlobalGradient(Building*), updateLocalRessources, expandLocalGradient
 
 void Map::updateGlobalGradient(Building *building, bool canSwim)
@@ -154,7 +152,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	else
 		building->locked[canSwim]=false;
 
-	updateGlobalGradient<Uint32>(gradient, GT_BUILDING, canSwim);
+	updateGlobalGradient(gradient);
 }
 
 
@@ -272,7 +270,6 @@ void Map::expandLocalGradient(Uint8 *gradient)
 					{
 						for (int mi=0; mi<di; mi++) //move-iterator
 						{
-							//printf("di=%d, ai=%d, mi=%d, p=(%d, %d)\n", di, ai, mi, x, y);
 							assert(x>=0);
 							assert(y>=0);
 							assert(x<32);

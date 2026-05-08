@@ -15,8 +15,6 @@
 #include <queue>
 
 
-#include "MapGradientImpl.h"
-
 // Forbidden / Guard area / Clear area gradients
 
 void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
@@ -75,7 +73,7 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 		}
 	}
 
-	updateGlobalGradient<Uint32>(gradient, GT_FORBIDDEN, canSwim);
+	updateGlobalGradient(gradient);
 }
 
 void Map::updateForbiddenGradient(int teamNumber)
@@ -116,7 +114,7 @@ void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
 			gradient[i] = 1;
 	}
 
-	updateGlobalGradient<Uint32>(gradient, GT_GUARD_AREA, canSwim);
+	updateGlobalGradient(gradient);
 }
 
 void Map::updateGuardAreasGradient(int teamNumber)
@@ -157,7 +155,7 @@ void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
 			gradient[i] = 1;
 	}
 
-	updateGlobalGradient<Uint32>(gradient, GT_CLEAR_AREA, canSwim);
+	updateGlobalGradient(gradient);
 }
 
 void Map::updateClearAreasGradient(int teamNumber)
