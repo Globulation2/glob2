@@ -31,7 +31,6 @@ namespace AIEcho
 		class BuildingLevel;
 		class Upgradable;
 		class EnemyBuildingDestroyed;
-		class TicksPassed;
 	}
 
 	namespace Management
@@ -316,7 +315,6 @@ namespace AIEcho
 			friend class AIEcho::Conditions::BuildingLevel;
 			friend class AIEcho::Conditions::Upgradable;
 			friend class AIEcho::Conditions::EnemyBuildingDestroyed;
-			friend class AIEcho::Conditions::TicksPassed;
 
 			friend class AIEcho::Management::AssignWorkers;
 			friend class AIEcho::Management::ChangeSwarm;

@@ -3,20 +3,9 @@
 
 #include "echo/Echo.h"
 #include "Building.h"
-#include <stack>
-#include <queue>
-#include <map>
-#include <limits>
-#include <algorithm>
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include "Game.h"
-#include "GlobalContainer.h"
-#include "Order.h"
-#include <iterator>
-#include "Utilities.h"
-#include <tuple>
-#include "Brush.h"
 
 using namespace AIEcho;
 using namespace AIEcho::Gradients;
@@ -25,7 +14,16 @@ using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
 using namespace boost::logic;
-using std::shared_ptr;
+
+// Helper for the load_condition switches: each case constructs a new T,
+// calls its load(), and breaks. T's protected/private members are accessible
+// because this macro expands inside Condition::load_condition (or
+// BuildingCondition::load_condition), which is a friend of every derived class.
+#define LOAD_CASE(EnumVal, Type) \
+	case EnumVal: \
+		condition = new Type; \
+		condition->load(stream, player, versionMinor); \
+		break;
 
 
 Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
@@ -35,30 +33,11 @@ Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *playe
 	Condition* condition=NULL;
 	switch(type)
 	{
-		case CParticularBuilding:
-			condition=new ParticularBuilding;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CBuildingDestroyed:
-			condition=new BuildingDestroyed;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CEnemyBuildingDestroyed:
-			condition=new EnemyBuildingDestroyed;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CEitherCondition:
-			condition=new EitherCondition;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CAllConditions:
-			condition=new AllConditions;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CPopulation:
-			condition=new Population;
-			condition->load(stream, player, versionMinor);
-		break;
+		LOAD_CASE(CParticularBuilding,     ParticularBuilding)
+		LOAD_CASE(CBuildingDestroyed,      BuildingDestroyed)
+		LOAD_CASE(CEnemyBuildingDestroyed, EnemyBuildingDestroyed)
+		LOAD_CASE(CEitherCondition,        EitherCondition)
+		LOAD_CASE(CPopulation,             Population)
 	}
 	stream->readLeaveSection();
 	return condition;
@@ -76,13 +55,6 @@ void Condition::save_condition(Condition* condition, GAGCore::OutputStream *stre
 
 
 
-ParticularBuilding::ParticularBuilding() : condition(NULL), id(-1)
-{
-
-}
-
-
-
 ParticularBuilding::ParticularBuilding(BuildingCondition* condition, int id) : condition(condition), id(id)
 {
 
@@ -92,8 +64,7 @@ ParticularBuilding::ParticularBuilding(BuildingCondition* condition, int id) : c
 
 ParticularBuilding::~ParticularBuilding()
 {
-	if(condition)
-		delete condition;
+	delete condition;
 }
 
 
@@ -299,162 +270,7 @@ void EitherCondition::save(GAGCore::OutputStream *stream)
 
 
 
-EitherCondition::EitherCondition()
-{
-
-}
-
-
-AllConditions::AllConditions(Condition* a, Condition* b, Condition* c, Condition* d) : a(a), b(b), c(c), d(d)
-{
-
-}
-
-
-
-AllConditions::~AllConditions()
-{
-	if(a)
-		delete a;
-	if(b)
-		delete b;
-	if(c)
-		delete c;
-	if(d)
-		delete d;
-
-}
-
-
-
-boost::logic::tribool AllConditions::passes(Echo& echo)
-{
-	tribool a2=true;
-	tribool b2=true;
-	tribool c2=true;
-	tribool d2=true;
-
-	if(a)
-		a2=a->passes(echo);
-	if(b)
-		b2=b->passes(echo);
-	if(c)
-		c2=c->passes(echo);
-	if(d)
-		d2=d->passes(echo);
-
-	if(a2 && b2 && c2 && d2)
-		return true;
-
-	if(a2==indeterminate)
-		return indeterminate;
-	if(b2==indeterminate)
-		return indeterminate;
-	if(c2==indeterminate)
-		return indeterminate;
-	if(d2==indeterminate)
-		return indeterminate;
-
-	return false;
-}
-
-
-
-ConditionType AllConditions::get_type()
-{
-	return CAllConditions;
-}
-
-
-
-bool AllConditions::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
-{
-	stream->readEnterSection("EitherCondition");
-	bool condition_is_null=stream->readUint8("condition_is_null");
-	if(condition_is_null)
-		a=NULL;
-	else
-		a=Condition::load_condition(stream, player, versionMinor);
-
-	condition_is_null=stream->readUint8("condition_is_null");
-	if(condition_is_null)
-		b=NULL;
-	else
-		b=Condition::load_condition(stream, player, versionMinor);
-
-	condition_is_null=stream->readUint8("condition_is_null");
-	if(condition_is_null)
-		c=NULL;
-	else
-		c=Condition::load_condition(stream, player, versionMinor);
-
-	condition_is_null=stream->readUint8("condition_is_null");
-	if(condition_is_null)
-		d=NULL;
-	else
-		d=Condition::load_condition(stream, player, versionMinor);
-
-	stream->readLeaveSection();
-	return true;
-}
-
-
-
-void AllConditions::save(GAGCore::OutputStream *stream)
-{
-	stream->writeEnterSection("AllConditions");
-	if(a)
-	{
-		stream->writeUint8(false, "condition_is_null");
-		Condition::save_condition(a, stream);
-	}
-	else
-		stream->writeUint8(true, "condition_is_null");
-
-	if(b)
-	{
-		stream->writeUint8(false, "condition_is_null");
-		Condition::save_condition(b, stream);
-	}
-	else
-		stream->writeUint8(true, "condition_is_null");
-
-	if(c)
-	{
-		stream->writeUint8(false, "condition_is_null");
-		Condition::save_condition(c, stream);
-	}
-	else
-		stream->writeUint8(true, "condition_is_null");
-
-	if(d)
-	{
-		stream->writeUint8(false, "condition_is_null");
-		Condition::save_condition(d, stream);
-	}
-	else
-		stream->writeUint8(true, "condition_is_null");
-
-	stream->writeLeaveSection();
-}
-
-
-
-AllConditions::AllConditions()
-{
-
-}
-
-
-
 Population::Population(bool workers, bool explorers, bool warriors, int num, PopulationMethod method) : workers(workers), explorers(explorers), warriors(warriors), num(num), method(method)
-{
-
-}
-
-
-
-Population::~Population()
 {
 
 }
@@ -517,13 +333,6 @@ void Population::save(GAGCore::OutputStream *stream)
 
 
 
-Population::Population()
-{
-
-}
-
-
-
 BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("BuildingCondition");
@@ -531,55 +340,22 @@ BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *strea
 	BuildingCondition* condition=NULL;
 	switch(type)
 	{
-		case CNotUnderConstruction:
-			condition=new NotUnderConstruction;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CUnderConstruction:
-			condition=new UnderConstruction;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CBeingUpgraded:
-			condition=new BeingUpgraded;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CBeingUpgradedTo:
-			condition=new BeingUpgradedTo;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CSpecificBuildingType:
-			condition=new SpecificBuildingType;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CNotSpecificBuildingType:
-			condition=new NotSpecificBuildingType;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CBuildingLevel:
-			condition=new BuildingLevel;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CUpgradable:
-			condition=new Upgradable;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CRessourceTrackerAmount:
-			condition=new RessourceTrackerAmount;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CRessourceTrackerAge:
-			condition=new RessourceTrackerAge;
-			condition->load(stream, player, versionMinor);
-		break;
-		case CTicksPassed:
-			condition=new TicksPassed;
-			condition->load(stream, player, versionMinor);
-		break;
-
+		LOAD_CASE(CNotUnderConstruction,    NotUnderConstruction)
+		LOAD_CASE(CUnderConstruction,       UnderConstruction)
+		LOAD_CASE(CBeingUpgraded,           BeingUpgraded)
+		LOAD_CASE(CBeingUpgradedTo,         BeingUpgradedTo)
+		LOAD_CASE(CSpecificBuildingType,    SpecificBuildingType)
+		LOAD_CASE(CNotSpecificBuildingType, NotSpecificBuildingType)
+		LOAD_CASE(CBuildingLevel,           BuildingLevel)
+		LOAD_CASE(CUpgradable,              Upgradable)
+		LOAD_CASE(CRessourceTrackerAmount,  RessourceTrackerAmount)
+		LOAD_CASE(CRessourceTrackerAge,     RessourceTrackerAge)
 	}
 	stream->readLeaveSection();
 	return condition;
 }
+
+#undef LOAD_CASE
 
 
 
@@ -602,45 +378,10 @@ bool NotUnderConstruction::passes(Echo& echo, int id)
 
 
 
-bool NotUnderConstruction::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
-{
-	stream->readEnterSection("NotUnderConstruction");
-	stream->readLeaveSection();
-	return true;
-}
-
-
-
-void NotUnderConstruction::save(GAGCore::OutputStream *stream)
-{
-	stream->writeEnterSection("NotUnderConstruction");
-	stream->writeLeaveSection();
-
-}
-
-
-
 bool UnderConstruction::passes(Echo& echo, int id)
 {
 	Building* building = echo.get_building_register().get_building(id);
 	return building->constructionResultState!=::Building::NO_CONSTRUCTION && building->buildingState==Building::ALIVE;
-}
-
-
-
-bool UnderConstruction::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
-{
-	stream->readEnterSection("UnderConstruction");
-	stream->readLeaveSection();
-	return true;
-}
-
-
-
-void UnderConstruction::save(GAGCore::OutputStream *stream)
-{
-	stream->writeEnterSection("UnderConstruction");
-	stream->writeLeaveSection();
 }
 
 
@@ -718,21 +459,6 @@ void NotSpecificBuildingType::save(GAGCore::OutputStream *stream)
 bool BeingUpgraded::passes(Echo& echo, int id)
 {
 	return echo.get_building_register().is_building_upgrading(id);
-}
-
-bool BeingUpgraded::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
-{
-	stream->readEnterSection("BeingUpgraded");
-	stream->readLeaveSection();
-	return true;
-}
-
-
-
-void BeingUpgraded::save(GAGCore::OutputStream *stream)
-{
-	stream->writeEnterSection("BeingUpgraded");
-	stream->writeLeaveSection();
 }
 
 
@@ -842,31 +568,7 @@ bool Upgradable::passes(Echo& echo, int id)
 
 
 
-bool Upgradable::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
-{
-	stream->readEnterSection("Upgradable");
-	stream->readLeaveSection();
-	return true;
-}
-
-
-
-void Upgradable::save(GAGCore::OutputStream *stream)
-{
-	stream->writeEnterSection("Upgradable");
-	stream->writeLeaveSection();
-}
-
-
-
 RessourceTrackerAmount::RessourceTrackerAmount(int amount, TrackerMethod tracker_method) : amount(amount), tracker_method(tracker_method)
-{
-
-}
-
-
-
-RessourceTrackerAmount::RessourceTrackerAmount()
 {
 
 }
@@ -917,13 +619,6 @@ void RessourceTrackerAmount::save(GAGCore::OutputStream *stream)
 
 
 RessourceTrackerAge::RessourceTrackerAge(int age, TrackerMethod tracker_method) : age(age), tracker_method(tracker_method)
-{
-
-}
-
-
-
-RessourceTrackerAge::RessourceTrackerAge()
 {
 
 }

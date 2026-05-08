@@ -5,6 +5,7 @@
 
 #include "echo/Position.h"
 #include "Player.h"
+#include "Stream.h"
 
 #include <boost/logic/tribool.hpp>
 
@@ -32,15 +33,16 @@ namespace AIEcho
 	///none of the conditions work on enemies buildings, they only work on buildings on you're own team.
 	namespace Conditions
 	{
-		///This is used for loading and saving purposes only
+		///This is used for loading and saving purposes only.
+		///Values are part of the on-disk save format — never renumber.
 		enum ConditionType
 		{
-			CParticularBuilding,
-			CBuildingDestroyed,
-			CEnemyBuildingDestroyed,
-			CEitherCondition,
-			CAllConditions,
-			CPopulation,
+			CParticularBuilding = 0,
+			CBuildingDestroyed = 1,
+			CEnemyBuildingDestroyed = 2,
+			CEitherCondition = 3,
+			// value 4 reserved (was CAllConditions, removed — never instantiated by any AI)
+			CPopulation = 5,
 		};
 
 		class BuildingCondition;
@@ -54,7 +56,6 @@ namespace AIEcho
 			friend class Management::ManagementOrder;
 			friend class Construction::BuildingOrder;
 			friend class EitherCondition;
-			friend class AllConditions;
 			///This function checks if the condition passes. The third state, indeterminate, means that the condition
 			///is impossible to fullfill. For example, a condition on a particular building could never pass if that
 			///building is destroyed.
@@ -79,9 +80,9 @@ namespace AIEcho
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
-			ParticularBuilding();
-			BuildingCondition* condition;
-			int id;
+			ParticularBuilding() = default;
+			BuildingCondition* condition = nullptr;
+			int id = -1;
 		};
 
 		///This condition matches when one of your own buildings are destroyed. It also matches when the building
@@ -92,13 +93,13 @@ namespace AIEcho
 			BuildingDestroyed(int id);
 		protected:
 			friend class Condition;
-			BuildingDestroyed() {}
+			BuildingDestroyed() = default;
 			boost::logic::tribool passes(Echo& echo);
 			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
-			int id;
+			int id = 0;
 		};
 
 		///This condition matches when the provided gid of the enemy building, obtained from an enemy_building_iterator,
@@ -109,15 +110,15 @@ namespace AIEcho
 			EnemyBuildingDestroyed(Echo& echo, int gbid);
 		protected:
 			friend class Condition;
-			EnemyBuildingDestroyed() {}
+			EnemyBuildingDestroyed() = default;
 			boost::logic::tribool passes(Echo& echo);
 			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
-			int gbid;
-			int type;
-			int level;
+			int gbid = 0;
+			int type = 0;
+			int level = 0;
 			position location;
 		};
 
@@ -134,30 +135,9 @@ namespace AIEcho
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
-			EitherCondition();
-			Condition* condition1;
-			Condition* condition2;
-		};
-
-		///Matches if the given conditions are true. Anywhere between 1 and 4 conditions can be given.
-		///This is made to be used in conjuction with EitherCondition
-		class AllConditions : public Condition
-		{
-		public:
-			AllConditions(Condition* a, Condition* b=NULL, Condition* c=NULL, Condition* d=NULL);
-		protected:
-			friend class Condition;
-			~AllConditions();
-			boost::logic::tribool passes(Echo& echo);
-			ConditionType get_type();
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream);
-		private:
-			AllConditions();
-			Condition* a;
-			Condition* b;
-			Condition* c;
-			Condition* d;
+			EitherCondition() = default;
+			Condition* condition1 = nullptr;
+			Condition* condition2 = nullptr;
 		};
 
 		///Matches when the population of the specified group of units is reached in the given method
@@ -173,34 +153,34 @@ namespace AIEcho
 			Population(bool workers, bool explorers, bool warriors, int num, PopulationMethod method);
 		protected:
 			friend class Condition;
-			~Population();
 			boost::logic::tribool passes(Echo& echo);
 			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
-			Population();
-			bool workers;
-			bool explorers;
-			bool warriors;
-			int num;
-			PopulationMethod method;
+			Population() = default;
+			bool workers = false;
+			bool explorers = false;
+			bool warriors = false;
+			int num = 0;
+			PopulationMethod method = Greater;
 		};
 
-		///This is used for loading and saving purposes only
+		///This is used for loading and saving purposes only.
+		///Values are part of the on-disk save format — never renumber.
 		enum BuildingConditionType
 		{
-			CNotUnderConstruction,
-			CUnderConstruction,
-			CBeingUpgraded,
-			CBeingUpgradedTo,
-			CSpecificBuildingType,
-			CNotSpecificBuildingType,
-			CBuildingLevel,
-			CUpgradable,
-			CRessourceTrackerAmount,
-			CRessourceTrackerAge,
-			CTicksPassed
+			CNotUnderConstruction = 0,
+			CUnderConstruction = 1,
+			CBeingUpgraded = 2,
+			CBeingUpgradedTo = 3,
+			CSpecificBuildingType = 4,
+			CNotSpecificBuildingType = 5,
+			CBuildingLevel = 6,
+			CUpgradable = 7,
+			CRessourceTrackerAmount = 8,
+			CRessourceTrackerAge = 9,
+			// value 10 reserved (was CTicksPassed, removed — debug-only, never instantiated by any AI)
 		};
 
 		///A generic building condition has one important function, one that checks whether the condition is satisfied
@@ -224,34 +204,37 @@ namespace AIEcho
 		///This condition waits for a building not to be under construction.
 		class NotUnderConstruction : public BuildingCondition
 		{
-		public:
 		protected:
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream);
+			bool load(GAGCore::InputStream *s, Player *, Sint32)
+			{ s->readEnterSection("NotUnderConstruction"); s->readLeaveSection(); return true; }
+			void save(GAGCore::OutputStream *s)
+			{ s->writeEnterSection("NotUnderConstruction"); s->writeLeaveSection(); }
 		};
 
 		///This condition waits for a building to be under construction
 		class UnderConstruction : public BuildingCondition
 		{
-		public:
 		protected:
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream);
+			bool load(GAGCore::InputStream *s, Player *, Sint32)
+			{ s->readEnterSection("UnderConstruction"); s->readLeaveSection(); return true; }
+			void save(GAGCore::OutputStream *s)
+			{ s->writeEnterSection("UnderConstruction"); s->writeLeaveSection(); }
 		};
 
 		///This condition tells whether a building is being upgraded
 		class BeingUpgraded : public BuildingCondition
 		{
-		public:
 		protected:
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream);
+			bool load(GAGCore::InputStream *s, Player *, Sint32)
+			{ s->readEnterSection("BeingUpgraded"); s->readLeaveSection(); return true; }
+			void save(GAGCore::OutputStream *s)
+			{ s->writeEnterSection("BeingUpgraded"); s->writeLeaveSection(); }
 		};
 
 		///Similair to BeingUpgraded, but this also takes a level, in which the building is being upgraded
@@ -318,12 +301,13 @@ namespace AIEcho
 		///This condition matches a building that can be upgraded
 		class Upgradable : public BuildingCondition
 		{
-		public:
 		protected:
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream);
+			bool load(GAGCore::InputStream *s, Player *, Sint32)
+			{ s->readEnterSection("Upgradable"); s->readLeaveSection(); return true; }
+			void save(GAGCore::OutputStream *s)
+			{ s->writeEnterSection("Upgradable"); s->writeLeaveSection(); }
 		};
 
 		///This class compares the total amount of ressources recorded by a ressource tracker.
@@ -339,13 +323,13 @@ namespace AIEcho
 			explicit RessourceTrackerAmount(int amount, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			RessourceTrackerAmount();
+			RessourceTrackerAmount() = default;
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
-			int amount;
-			int tracker_method;
+			int amount = 0;
+			int tracker_method = 0;
 		};
 
 		///This class compares the age provided by a ressource tracker
@@ -361,30 +345,15 @@ namespace AIEcho
 			explicit RessourceTrackerAge(int age, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			RessourceTrackerAge();
+			RessourceTrackerAge() = default;
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
-			int age;
-			int tracker_method;
+			int age = 0;
+			int tracker_method = 0;
 		};
 
-		///This is a debug condition that waits for a certain number of tries before it passes.
-		///Not to be used under normal circumstances. Only for debugging!
-		class TicksPassed : public BuildingCondition
-		{
-		public:
-			TicksPassed() : num(0) {}
-			explicit TicksPassed(int num) : num(num) {}
-		protected:
-			bool passes(Echo& echo, int id);
-			BuildingConditionType get_type();
-			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
-			void save(GAGCore::OutputStream *stream);
-		private:
-			int num;
-		};
 	};
 }
 
@@ -449,32 +418,4 @@ inline AIEcho::Conditions::BuildingConditionType AIEcho::Conditions::BuildingLev
 inline AIEcho::Conditions::ConditionType AIEcho::Conditions::EnemyBuildingDestroyed::get_type()
 {
 	return CEnemyBuildingDestroyed;
-}
-
-
-
-inline bool AIEcho::Conditions::TicksPassed::passes(AIEcho::Echo& echo, int id)
-{
-	num--; if(num==0) return true; return false;
-}
-
-
-
-inline AIEcho::Conditions::BuildingConditionType AIEcho::Conditions::TicksPassed::get_type()
-{
-	return CTicksPassed;
-}
-
-
-
-inline bool AIEcho::Conditions::TicksPassed::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
-{
-	return false;
-}
-
-
-
-inline void AIEcho::Conditions::TicksPassed::save(GAGCore::OutputStream *stream)
-{
-
 }
