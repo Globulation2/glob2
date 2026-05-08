@@ -40,6 +40,7 @@
 #include "DynamicClouds.h"
 #include "Bullet.h"
 #include "TextStream.h"
+#include "FertilityCalculator.h"
 #include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"
@@ -226,15 +227,12 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 	    if(globalContainer->runNoX)
 	    {
-    	    std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
-    	    std::recursive_mutex incomingMutex;
-    	    FertilityCalculatorThread calculator(map, incoming, incomingMutex);
-    	    calculator();
+	        FertilityCalculator::compute(map, {});
 	    }
 	    else
 	    {
-    		FertilityCalculatorDialog dialog(globalContainer->gfx, map);
-	    	dialog.execute();
+	        FertilityCalculatorDialog dialog(globalContainer->gfx, map);
+	        dialog.execute();
 	    }
 	}
 

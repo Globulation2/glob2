@@ -65,9 +65,8 @@ EngineInit.cpp
 EngineLoaders.cpp
 EngineRun.cpp
 Fatal.cpp
+FertilityCalculator.cpp
 FertilityCalculatorDialog.cpp
-FertilityCalculatorThread.cpp
-FertilityCalculatorThreadMessage.cpp
 Game.cpp
 Game_orders.cpp
 Game_io.cpp
