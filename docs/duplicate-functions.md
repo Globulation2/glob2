@@ -13,18 +13,6 @@ Generated 2026-04-09.
 
 ## Identical Function Bodies Across Files
 
-### Threading Pattern (3 classes, 3 methods each)
-
-`FertilityCalculatorThread`, `IRCThread`, and `NetConnectionThread` share identical implementations of:
-
-| Method | Files |
-|--------|-------|
-| `sendMessage` | FertilityCalculatorThread.cpp:83, IRCThread.cpp:169, NetConnectionThread.cpp:263 |
-| `sendToMainThread` | FertilityCalculatorThread.cpp:98, IRCThread.cpp:184, NetConnectionThread.cpp:294 |
-| `hasThreadExited` | FertilityCalculatorThread.cpp:91, IRCThread.cpp:177, NetConnectionThread.cpp:271 |
-
-**Rust port note:** Extract into a shared trait or base struct for thread communication.
-
 ### GameHints / GameObjectives (near-identical classes)
 
 These two classes have the same structure with only naming differences:

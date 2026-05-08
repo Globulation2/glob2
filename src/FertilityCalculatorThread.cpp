@@ -7,7 +7,7 @@
 #include "FertilityCalculatorThreadMessage.h"
 
 FertilityCalculatorThread::FertilityCalculatorThread(Map& map, std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
-	: outgoing(outgoing), outgoingMutex(outgoingMutex), map(map)
+	: ThreadMessageQueues<FertilityCalculatorThreadMessage>(outgoing, outgoingMutex), map(map)
 {
 }
 
@@ -62,30 +62,6 @@ void FertilityCalculatorThread::operator()()
 	std::shared_ptr<FCTFertilityCompleted> message(new FCTFertilityCompleted);
 	sendToMainThread(message);
 }
-
-
-
-void FertilityCalculatorThread::sendMessage(std::shared_ptr<FertilityCalculatorThreadMessage> message)
-{
-	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
-	incoming.push(message);
-}
-
-
-
-bool FertilityCalculatorThread::hasThreadExited()
-{
-	return hasExited;
-}
-
-
-
-void FertilityCalculatorThread::sendToMainThread(std::shared_ptr<FertilityCalculatorThreadMessage> message)
-{
-	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
-	outgoing.push(message);
-}
-
 
 
 

@@ -3,14 +3,12 @@
 
 #include "IRCThread.h"
 #include "IRCThreadMessage.h"
-#include <iostream>
 
 using std::static_pointer_cast;
 
 IRCThread::IRCThread(std::queue<std::shared_ptr<IRCThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
-	: outgoing(outgoing), outgoingMutex(outgoingMutex)
+	: ThreadMessageQueues<IRCThreadMessage>(outgoing, outgoingMutex)
 {
-	hasExited = false;
 }
 
 
@@ -149,27 +147,5 @@ void IRCThread::operator()()
 	}
 }
 
-
-
-void IRCThread::sendMessage(std::shared_ptr<IRCThreadMessage> message)
-{
-	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
-	incoming.push(message);
-}
-
-
-
-bool IRCThread::hasThreadExited()
-{
-	return hasExited;
-}
-
-
-
-void IRCThread::sendToMainThread(std::shared_ptr<IRCThreadMessage> message)
-{
-	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
-	outgoing.push(message);
-}
 
 

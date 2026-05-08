@@ -12,11 +12,10 @@ using namespace GAGCore;
 using std::static_pointer_cast;
 
 NetConnectionThread::NetConnectionThread(std::queue<std::shared_ptr<NetConnectionThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
-	: outgoing(outgoing),  outgoingMutex(outgoingMutex)
+	: ThreadMessageQueues<NetConnectionThreadMessage>(outgoing, outgoingMutex)
 {
 	set=SDLNet_AllocSocketSet(1);
 	connected=false;
-	hasExited = false;
 }
 
 
@@ -245,21 +244,6 @@ void NetConnectionThread::operator()()
 
 
 
-void NetConnectionThread::sendMessage(std::shared_ptr<NetConnectionThreadMessage> message)
-{
-	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
-	incoming.push(message);
-}
-
-
-
-bool NetConnectionThread::hasThreadExited()
-{
-	return hasExited;
-}
-
-
-
 bool NetConnectionThread::isConnected()
 {
 	return connected;
@@ -273,15 +257,3 @@ void NetConnectionThread::closeConnection()
 	SDLNet_TCP_Close(socket);
 	connected=false;
 }
-
-
-
-void NetConnectionThread::sendToMainThread(std::shared_ptr<NetConnectionThreadMessage> message)
-{
-	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
-	outgoing.push(message);
-}
-
-
-
-

@@ -4,48 +4,28 @@
 #pragma once
 
 #include "NetConnectionThreadMessage.h"
-#include <memory>
-#include <mutex>
-#include <queue>
+#include "ThreadMessageQueues.h"
 
-///IRC thread manages IRC
-class NetConnectionThread
+///Manages a single TCP connection on a worker thread
+class NetConnectionThread : public ThreadMessageQueues<NetConnectionThreadMessage>
 {
 public:
 	NetConnectionThread(std::queue<std::shared_ptr<NetConnectionThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
-	
+
 	~NetConnectionThread();
-	
+
 	///Runs the net thread
 	void operator()();
 
-	///Sends this net thread a message
-	void sendMessage(std::shared_ptr<NetConnectionThreadMessage> message);
-
-	///This returns whether the thread has exited
-	bool hasThreadExited();
-
 	///Returns true if this object is connected
 	bool isConnected();
-private:
 
+private:
 	///Closes the connection
 	void closeConnection();
 
-	///Sends this net message back to the main thread
-	void sendToMainThread(std::shared_ptr<NetConnectionThreadMessage> message);
 	IPaddress address;
 	TCPsocket socket;
 	SDLNet_SocketSet set;
 	bool connected;
-	
-	std::queue<std::shared_ptr<NetConnectionThreadMessage> > incoming;
-	std::queue<std::shared_ptr<NetConnectionThreadMessage> >& outgoing;
-	std::recursive_mutex incomingMutex;
-	std::recursive_mutex& outgoingMutex;
-	bool hasExited;
-	//static Uint32 lastTime;
-	//static Uint32 amount;
 };
-
-
