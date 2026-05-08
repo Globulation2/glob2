@@ -168,10 +168,10 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *
 		int xg = x + rx;
 		int yg = y + ry;
 		int g=gradient[coordToIndex(xg, yg)];
-		if (g==0 || g==255 || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
+		if (g==GRADIENT_FORBIDDEN || g==GRADIENT_AT_GOAL || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
 			miniGrad[rx+ry*5+12]=g;
 		else
-			miniGrad[rx+ry*5+12]=0;
+			miniGrad[rx+ry*5+12]=GRADIENT_FORBIDDEN;
 	}
 	for (int di=0; di<8; di++)
 	{
@@ -180,10 +180,10 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *
 		int xg = x + rx;
 		int yg = y + ry;
 		int g=gradient[coordToIndex(xg, yg)];
-		if (g==0 || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
+		if (g==GRADIENT_FORBIDDEN || isFreeForGroundUnit(xg, yg, canSwim, teamMask))
 			miniGrad[rx+ry*5+12]=g;
 		else
-			miniGrad[rx+ry*5+12]=0;
+			miniGrad[rx+ry*5+12]=GRADIENT_FORBIDDEN;
 	}
 	return directionFromMinigrad(miniGrad, dx, dy, strict);
 }
@@ -196,48 +196,46 @@ bool Map::directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int b
 		{
 			int gx=(x+rx-2)&wMask;
 			int gy=(y+ry-2)&hMask;
-			int lx=(x-bx+15+rx-2)&wMask;
-			int ly=(y-by+15+ry-2)&hMask;
-			//printf("+r=(%d, %d), b=(%d, %d), g=(%d, %d), l=(%d, %d)\n", rx, ry, bx, by, gx, gy, lx, ly);
+			int lx=(x-bx+LOCAL_GRID_CENTER+rx-2)&wMask;
+			int ly=(y-by+LOCAL_GRID_CENTER+ry-2)&hMask;
 			if (lx==wMask)
 			{
 				gx=(gx+1)&wMask;
 				lx=0;
 			}
-			else if (lx==32)
+			else if (lx==LOCAL_GRID_W)
 			{
 				gx=(gx-1)&wMask;
-				lx=31;
+				lx=LOCAL_GRID_W-1;
 			}
 			if (ly==hMask)
 			{
 				gy=(gy+1)&hMask;
 				ly=0;
 			}
-			else if (ly==32)
+			else if (ly==LOCAL_GRID_W)
 			{
 				gy=(gy-1)&hMask;
-				ly=31;
+				ly=LOCAL_GRID_W-1;
 			}
 			assert(lx>=0);
 			assert(ly>=0);
-			assert(lx<32);
-			assert(ly<32);
-			int g=localGradient[lx+ly*32];
-			//printf("|r=(%d, %d), b=(%d, %d), g=(%d, %d), l=(%d, %d), g=%d\n", rx, ry, bx, by, gx, gy, lx, ly, g);
-			if (g==0 || g==255 || (rx==2 && ry==2) || isFreeForGroundUnit(gx, gy, canSwim, teamMask))
+			assert(lx<LOCAL_GRID_W);
+			assert(ly<LOCAL_GRID_W);
+			int g=localGradient[lx+(ly<<LOCAL_GRID_SHIFT)];
+			if (g==GRADIENT_FORBIDDEN || g==GRADIENT_AT_GOAL || (rx==2 && ry==2) || isFreeForGroundUnit(gx, gy, canSwim, teamMask))
 				miniGrad[rx+ry*5]=g;
 			else
-				miniGrad[rx+ry*5]=0;
+				miniGrad[rx+ry*5]=GRADIENT_FORBIDDEN;
 		}
 	for (int ry=1; ry<=3; ry++)
 		for (int rx=1; rx<=3; rx++)
-			if (miniGrad[rx+ry*5]==255)
+			if (miniGrad[rx+ry*5]==GRADIENT_AT_GOAL)
 			{
 				int gx=(x+rx-2)&wMask;
 				int gy=(y+ry-2)&hMask;
 				if (!isFreeForGroundUnit(gx, gy, canSwim, teamMask))
-					miniGrad[rx+ry*5]=0;
+					miniGrad[rx+ry*5]=GRADIENT_FORBIDDEN;
 			}
 	return directionFromMinigrad(miniGrad, dx, dy, strict);
 }

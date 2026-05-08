@@ -23,29 +23,31 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 	assert(gradient);
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 
-	// We set the obstacle and free places
+	// Seed: free cells are sources (255), forbidden interiors are placeholder 1
+	// (promoted to 254 in the second pass if they border a free cell), all other
+	// blockers (resources, buildings, water, immobileUnits) are obstacles.
 	for (size_t i=0; i<size; i++)
 	{
 		const Case& c=cases[i];
 		if (c.ressource.type!=NO_RES_TYPE)
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building!=NOGBID)
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (!canSwim && isWater(i))
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != 255)
-			gradient[i]=0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.forbidden&teamMask)
-			gradient[i] = 1;  // forbidden interior; bumped to 254 below if it borders a free cell
+			gradient[i] = GRADIENT_UNREACHABLE;  // promoted to GRADIENT_FORBIDDEN_BORDER below if it borders a free cell
 		else
-			gradient[i] = 255;
+			gradient[i] = GRADIENT_AT_GOAL;
 	}
 
-	// Forbidden cells bordering free cells become 254 sources so the gradient
-	// fades outward into the forbidden zone.
+	// Forbidden cells bordering free cells become GRADIENT_FORBIDDEN_BORDER sources
+	// so the gradient fades outward into the forbidden zone.
 	for (size_t i=0; i<size; i++)
 	{
-		if (gradient[i] != 1)
+		if (gradient[i] != GRADIENT_UNREACHABLE)
 			continue;
 		size_t y = i >> wDec;
 		size_t x = i & wMask;
@@ -65,9 +67,9 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 		};
 		for (int ci=0; ci<8; ci++)
 		{
-			if (gradient[deltaAddrC[ci]] == 255)
+			if (gradient[deltaAddrC[ci]] == GRADIENT_AT_GOAL)
 			{
-				gradient[i] = 254;
+				gradient[i] = GRADIENT_FORBIDDEN_BORDER;
 				break;
 			}
 		}
@@ -99,19 +101,19 @@ void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
 	{
 		const Case& c=cases[i];
 		if (c.forbidden & teamMask)
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != 255)
-			gradient[i]=0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.ressource.type != NO_RES_TYPE)
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building != NOGBID && (1<<Building::GIDtoTeam(c.building)) & (game->teams[teamNumber]->allies))
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (!canSwim && isWater(i))
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.guardArea & teamMask)
-			gradient[i] = 255;
+			gradient[i] = GRADIENT_AT_GOAL;
 		else
-			gradient[i] = 1;
+			gradient[i] = GRADIENT_UNREACHABLE;
 	}
 
 	updateGlobalGradient(gradient);
@@ -140,19 +142,19 @@ void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
 	{
 		const Case& c=cases[i];
 		if (c.forbidden & teamMask)
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(c.clearArea & teamMask && c.ressource.type != NO_RES_TYPE && globalContainer->ressourcesTypes.get(c.ressource.type)->clearable)
-			gradient[i] = 255;
+			gradient[i] = GRADIENT_AT_GOAL;
 		else if(immobileUnits[i] != 255)
-			gradient[i]=0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.ressource.type != NO_RES_TYPE)
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building != NOGBID)
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (!canSwim && isWater(i))
-			gradient[i] = 0;
+			gradient[i] = GRADIENT_FORBIDDEN;
 		else
-			gradient[i] = 1;
+			gradient[i] = GRADIENT_UNREACHABLE;
 	}
 
 	updateGlobalGradient(gradient);

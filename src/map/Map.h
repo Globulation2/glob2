@@ -588,8 +588,7 @@ public:
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
 	//!A special gradient for clearing flags. Returns false if there is nothing to clear.
-	bool updateLocalRessources(Building *building, bool canSwim); 
-	void expandLocalGradient(Uint8 *gradient);
+	bool updateLocalRessources(Building *building, bool canSwim);
 	
 	//! Probe a full-map gradient at (x, y) and its 8 neighbors; sets *dist = GRADIENT_AT_GOAL - g if reachable.
 	bool probeGlobalGradient(const Uint8 *gradient, int x, int y, int *dist) const;

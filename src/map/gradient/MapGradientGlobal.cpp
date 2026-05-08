@@ -133,27 +133,27 @@ void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool can
 	{
 		const Case& c=cases[i];
 		if (c.forbidden & teamMask)
-			gradient[i]=0;
+			gradient[i]=GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != 255)
-			gradient[i]=0;
+			gradient[i]=GRADIENT_FORBIDDEN;
 		else if (c.ressource.type==NO_RES_TYPE)
 		{
 			if (c.building!=NOGBID)
-				gradient[i]=0;
+				gradient[i]=GRADIENT_FORBIDDEN;
 			else if (!canSwim && (c.terrain>=256 && c.terrain<16+256)) //!canSwim && isWater
-				gradient[i]=0;
+				gradient[i]=GRADIENT_FORBIDDEN;
 			else
-				gradient[i]=1;
+				gradient[i]=GRADIENT_UNREACHABLE;
 		}
 		else if (c.ressource.type==ressourceType)
 		{
 			if (globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected && !(fogOfWar[i]&teamMask))
-				gradient[i]=0;
+				gradient[i]=GRADIENT_FORBIDDEN;
 			else
-				gradient[i]=255;
+				gradient[i]=GRADIENT_AT_GOAL;
 		}
 		else
-			gradient[i]=0;
+			gradient[i]=GRADIENT_FORBIDDEN;
 	}
 
 	updateGlobalGradient(gradient);
