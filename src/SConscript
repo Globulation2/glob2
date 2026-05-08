@@ -110,6 +110,7 @@ Glob2.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
 GlobalContainer.cpp
+GlobalContainerArgs.cpp
 Gradient.cpp
 GUIGlob2FileList.cpp
 GUIMapPreview.cpp
@@ -355,6 +356,7 @@ Bullet.cpp
 game/entities/Resources.cpp
 Glob2.cpp
 GlobalContainer.cpp
+GlobalContainerArgs.cpp
 map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
