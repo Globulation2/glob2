@@ -3,6 +3,7 @@
 
 #include "NetBroadcaster.h"
 #include "NetConsts.h"
+#include "Order.h"
 #include "Stream.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
@@ -50,10 +51,10 @@ void NetBroadcaster::update()
 			Uint32 length = msb->getPosition();
 			msb->seekFromStart(0);
 
-			UDPpacket* packet = SDLNet_AllocPacket(length+2);
-			packet->len = length+2;
+			UDPpacket* packet = SDLNet_AllocPacket(length+NET_FRAME_LENGTH_PREFIX_BYTES);
+			packet->len = length+NET_FRAME_LENGTH_PREFIX_BYTES;
 			SDLNet_Write16(length, packet->data);
-			msb->read(packet->data+2, length);
+			msb->read(packet->data+NET_FRAME_LENGTH_PREFIX_BYTES, length);
 			int result = SDLNet_UDP_Send(socket, 0, packet);
 			if(!result)
 			{

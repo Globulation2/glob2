@@ -3,6 +3,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Minimap.h"
+#include "EngineTiming.h"
+#include "FixedPoint.h"
 #include "Ressource.h"
 #include "RessourceType.h"
 #include "GlobalContainer.h"
@@ -104,7 +106,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	else
 	{
 		///Render 1/25th of the rows at a time
-		const int rows_to_render = std::max(1, mini_h/25);
+		const int rows_to_render = std::max(1, mini_h/MINIMAP_REFRESH_TICKS);
 		
 		refreshPixelRows(update_row, (update_row + rows_to_render) % (mini_h), localteam);
 		update_row += rows_to_render;
@@ -286,9 +288,9 @@ void Minimap::computeColors(int row, int localTeam)
 
 	// Variables for traversing each map square within a minimap square.
 	// Using ?.16 fixed-point representation (gives a 2x speedup):
-	const int dMx = ((game->map.getW())<<16) / (mini_w);
-	const int dMy = ((game->map.getH())<<16) / (mini_h);
-	const int decSPX=offset_x<<16, decSPY=offset_y<<16;
+	const int dMx = ((game->map.getW())<<FIXED_POINT_SHIFT_16) / (mini_w);
+	const int dMy = ((game->map.getH())<<FIXED_POINT_SHIFT_16) / (mini_h);
+	const int decSPX=offset_x<<FIXED_POINT_SHIFT_16, decSPY=offset_y<<FIXED_POINT_SHIFT_16;
 	bool useMapDiscovered = (minimapMode == HideFOW);
 
 	Uint32 visibleTeams = game->teams[localTeam]->me;
@@ -302,11 +304,11 @@ void Minimap::computeColors(int row, int localTeam)
 		int UnitOrBuildingIndex = -1;
 		
 		// compute
-		for (int minidyFP=dMy*dy+decSPY; minidyFP<=(dMy*(dy+1))+decSPY; minidyFP+=(1<<16)) { // Fixed-point numbers
-			int minidy = minidyFP>>16;
-			for (int minidxFP=dMx*dx+decSPX; minidxFP<=(dMx*(dx+1))+decSPX; minidxFP+=(1<<16)) // Fixed-point numbers
+		for (int minidyFP=dMy*dy+decSPY; minidyFP<=(dMy*(dy+1))+decSPY; minidyFP+=FIXED_POINT_ONE) { // Fixed-point numbers
+			int minidy = minidyFP>>FIXED_POINT_SHIFT_16;
+			for (int minidxFP=dMx*dx+decSPX; minidxFP<=(dMx*(dx+1))+decSPX; minidxFP+=FIXED_POINT_ONE) // Fixed-point numbers
 			{
-				int minidx = minidxFP>>16;
+				int minidx = minidxFP>>FIXED_POINT_SHIFT_16;
 				bool seenUnderFOW = false;
 
 				Uint16 gid=game->map.getAirUnit(minidx, minidy);

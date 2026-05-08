@@ -10,6 +10,7 @@
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "FixedPoint.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Team.h"
@@ -235,16 +236,16 @@ void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 	int repairLevelTypeNum=type->prevLevel;
 	BuildingType *repairBt=globalContainer->buildingsTypes.get(repairLevelTypeNum);
 	assert(repairBt);
-	Sint32 fDestructionRatio=(hp<<16)/type->hpMax;
+	Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
 	Sint32 fTotErr=0;
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
 		int fVal=fDestructionRatio*repairBt->maxRessource[i];
-		int iVal=(fVal>>16);
-		fTotErr+=fVal&65535;
-		if (fTotErr>=65536)
+		int iVal=(fVal>>FIXED_POINT_SHIFT_16);
+		fTotErr+=fVal&(int)FIXED_POINT_FRAC_MASK;
+		if (fTotErr>=(int)FIXED_POINT_ONE)
 		{
-			fTotErr-=65536;
+			fTotErr-=(int)FIXED_POINT_ONE;
 			iVal++;
 		}
 		ressources[i]=repairBt->maxRessource[i]-iVal;
@@ -283,16 +284,16 @@ bool Building::tryToBuildingSiteRoom(void)
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
-			Sint32 fDestructionRatio=(hp<<16)/type->hpMax;
+			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
 			Sint32 fTotErr=0;
 			for (int i=0; i<MAX_RESSOURCES; i++)
 			{
 				int fVal=fDestructionRatio*targetBt->maxRessource[i];
-				int iVal=(fVal>>16);
-				fTotErr+=fVal&65535;
-				if (fTotErr>=65536)
+				int iVal=(fVal>>FIXED_POINT_SHIFT_16);
+				fTotErr+=fVal&(int)FIXED_POINT_FRAC_MASK;
+				if (fTotErr>=(int)FIXED_POINT_ONE)
 				{
-					fTotErr-=65536;
+					fTotErr-=(int)FIXED_POINT_ONE;
 					iVal++;
 				}
 				ressources[i]=iVal;

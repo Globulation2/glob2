@@ -160,7 +160,7 @@ void Team::syncStep(void)
 				if (!building->type->isVirtual)
 				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
-					map->dirtyLocalGradient(building->posX-16, building->posY-16, 31+building->type->width, 31+building->type->height, teamNumber);
+					map->dirtyLocalGradient(building->posX-Team::GRADIENT_DIRTY_PADDING, building->posY-Team::GRADIENT_DIRTY_PADDING, 31+building->type->width, 31+building->type->height, teamNumber);
 					isDirtyGlobalGradient=true;
 				}
 				building->buildingState=Building::DEAD;

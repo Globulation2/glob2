@@ -10,6 +10,8 @@
 #include "Building.h"
 #include "Integrity.h"
 
+#include "FixedPoint.h"
+#include "MapInternal.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include <Stream.h>
@@ -229,9 +231,9 @@ void Unit::handleMovementAttackingAround()
 	else
 	{
 		// we look for the best target to attack around us
-		for (int x=-8; x<=8; x++)
+		for (int x=-UNIT_ATTACK_SEARCH_RADIUS; x<=UNIT_ATTACK_SEARCH_RADIUS; x++)
 		{
-			for (int y=-8; y<=8; y++)
+			for (int y=-UNIT_ATTACK_SEARCH_RADIUS; y<=UNIT_ATTACK_SEARCH_RADIUS; y++)
 			{
 				if (owner->map->isFOWDiscovered(posX+x, posY+y, owner->sharedVisionOther))
 				{
@@ -247,7 +249,7 @@ void Unit::handleMovementAttackingAround()
 						if (owner->enemies & (1<<team))
 						{
 							int id=Building::GIDtoID(gid);
-							int newQuality=((x*x+y*y)<<8);
+							int newQuality=((x*x+y*y)<<Q8_FIXED_POINT_SHIFT);
 							Building *b=owner->game->teams[team]->myBuildings[id];
 							BuildingType *bt=b->type;
 							int shootDamage=bt->shootDamage;
@@ -267,7 +269,7 @@ void Unit::handleMovementAttackingAround()
 							if (((owner->sharedVisionExchange & tm)==0))
 							{
 								int attackStrength=u->getRealAttackStrength();
-								int newQuality=((x*x+y*y)<<8)/(1+attackStrength);
+								int newQuality=((x*x+y*y)<<Q8_FIXED_POINT_SHIFT)/(1+attackStrength);
 								tryAcquireAttackTarget(x, y, newQuality, quality);
 							}
 						}
@@ -288,14 +290,14 @@ void Unit::handleMovementAttackingAround()
 			owner->map->getGlobalGradientDestination(owner->map->guardAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
 			validTarget=true;
 		}
-		else if (attachedBuilding || (owner->map->getGuardAreasGradient(posX, posY, performance[SWIM]>0, owner->teamNumber) == 255))
+		else if (attachedBuilding || (owner->map->getGuardAreasGradient(posX, posY, performance[SWIM]>0, owner->teamNumber) == GRADIENT_AT_GOAL))
 		{
 			// are we into the guard area or war flag, and we have to go to the least known area.
-			int bestExplored = 3*255;
+			int bestExplored = 3*GRADIENT_AT_GOAL;
 			int bestDirection = -1;
 			for (int di = 0; di < 8; di++)
 			{
-				int d = (direction + di) & 7;
+				int d = (direction + di) & UNIT_DIRECTION_MASK;
 				int cdx, cdy;
 				dxDyFromDirection(d, &cdx, &cdy);
 				if (!owner->map->isFreeForGroundUnit(posX + cdx, posY + cdy, performance[SWIM]>0, owner->me))
@@ -308,7 +310,7 @@ void Unit::handleMovementAttackingAround()
 				}
 				else
 				{
-					if (owner->map->getGuardAreasGradient(posX + cdx, posY + cdy, performance[SWIM]>0, owner->teamNumber) != 255)
+					if (owner->map->getGuardAreasGradient(posX + cdx, posY + cdy, performance[SWIM]>0, owner->teamNumber) != GRADIENT_AT_GOAL)
 						continue;
 				}
 				Uint8 explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);
@@ -346,7 +348,7 @@ void Unit::tryAcquireAttackTarget(int x, int y, int newQuality, int& quality)
 {
 	if (newQuality >= quality)
 		return;
-	bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, 12);
+	bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
 	if (!pathfind)
 		return;
 	if (abs(x)<=1 && abs(y)<=1)
@@ -429,15 +431,15 @@ void Unit::handleMovementRandom()
 		{
 			dx=0;
 			dy=0;
-			direction=8;
+			direction=UNIT_DIRECTION_NONE;
 		}
 		movement=MOV_GOING_DX_DY;
 	}
 	else if(performance[HARVEST])
 	{
-		///Value of 254 means nothing found
-		int distance = 255-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
-		if(distance < ((hungry-trigHungry) / race->hungryness) && distance < 254 && medical == MED_FREE)
+		///Value of GRADIENT_FORBIDDEN_BORDER means nothing found
+		int distance = GRADIENT_AT_GOAL-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
+		if(distance < ((hungry-trigHungry) / race->hungryness) && distance < GRADIENT_FORBIDDEN_BORDER && medical == MED_FREE)
 		{
 			int tempTargetX, tempTargetY;
 			bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);

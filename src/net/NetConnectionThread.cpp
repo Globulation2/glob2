@@ -2,6 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "NetConnectionThread.h"
+#include "Order.h"
 #include "StreamBackend.h"
 #include "BinaryStream.h"
 #include "NetMessage.h"
@@ -108,12 +109,12 @@ void NetConnectionThread::operator()()
 							Uint32 length = msb->getPosition();
 							msb->seekFromStart(0);
 							
-							Uint8* newData = new Uint8[length+2];
+							Uint8* newData = new Uint8[length+NET_FRAME_LENGTH_PREFIX_BYTES];
 							SDLNet_Write16(length, newData);
-							msb->read(newData+2, length);
+							msb->read(newData+NET_FRAME_LENGTH_PREFIX_BYTES, length);
 
-							Uint32 result=SDLNet_TCP_Send(socket, newData, length+2);
-							if(result<(length+2))
+							Uint32 result=SDLNet_TCP_Send(socket, newData, length+NET_FRAME_LENGTH_PREFIX_BYTES);
+							if(result<(length+NET_FRAME_LENGTH_PREFIX_BYTES))
 							{
 								std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
 								sendToMainThread(error);
@@ -179,8 +180,8 @@ void NetConnectionThread::operator()()
 				else if(numReady)
 				{
 					//Read and interpret the length of the message
-					Uint8* lengthData = new Uint8[2];
-					int amount = SDLNet_TCP_Recv(socket, lengthData, 2);
+					Uint8* lengthData = new Uint8[NET_FRAME_LENGTH_PREFIX_BYTES];
+					int amount = SDLNet_TCP_Recv(socket, lengthData, NET_FRAME_LENGTH_PREFIX_BYTES);
 					if(amount <= 0)
 					{
 						std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));

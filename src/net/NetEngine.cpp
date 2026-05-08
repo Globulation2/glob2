@@ -155,7 +155,7 @@ void NetEngine::flushAllOrders()
 		std::shared_ptr<Order> localOrder;
 		localOrder = outgoing.front();
 		outgoing.pop();
-		localOrder->gameCheckSum = static_cast<unsigned int>(-1);
+		localOrder->gameCheckSum = ORDER_CHECKSUM_NONE;
 
 		if(router)
 		{
@@ -208,15 +208,15 @@ Uint32 NetEngine::getWaitingOnMask()
 
 bool NetEngine::matchCheckSums()
 {
-	Uint32 checksum = static_cast<unsigned int>(-1);
+	Uint32 checksum = ORDER_CHECKSUM_NONE;
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
 		if(!orders[p].empty())
 		{
 			Uint32 playerCheckSum = orders[p].front()->gameCheckSum;
-			if(playerCheckSum != static_cast<unsigned int>(-1))
+			if(playerCheckSum != ORDER_CHECKSUM_NONE)
 			{
-				if(checksum == static_cast<unsigned int>(-1))
+				if(checksum == ORDER_CHECKSUM_NONE)
 					checksum = playerCheckSum;
 				else if(playerCheckSum != checksum)
 				{

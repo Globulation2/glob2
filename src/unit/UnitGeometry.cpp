@@ -24,13 +24,13 @@ void Unit::setNewValidDirectionGround(void)
 	Uint32 me=owner->me;
 	while ( i<8 && !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim, me))
 	{
-		direction=(direction+1)&7;
+		direction=(direction+1)&UNIT_DIRECTION_MASK;
 		dxDyFromDirection();
 		i++;
 	}
-	if (i==8)
+	if (i==UNIT_DIRECTION_COUNT)
 	{
-		direction=8;
+		direction=UNIT_DIRECTION_NONE;
 		dxDyFromDirection();
 	}
 }
@@ -41,13 +41,13 @@ void Unit::setNewValidDirectionAir(void)
 	int i=0;
 	while ( i<8 && !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
 	{
-		direction=(direction+1)&7;
+		direction=(direction+1)&UNIT_DIRECTION_MASK;
 		dxDyFromDirection();
 		i++;
 	}
-	if (i==8)
+	if (i==UNIT_DIRECTION_COUNT)
 	{
-		direction=8;
+		direction=UNIT_DIRECTION_NONE;
 		dx=0;
 		dy=0;
 	}
@@ -64,37 +64,37 @@ void Unit::flyToTarget()
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
 	int cDirection=direction;
-	direction=(cDirection+1)&7;
+	direction=(cDirection+1)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	direction=(cDirection+7)&7;
+	direction=(cDirection+7)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	direction=(cDirection+2)&7;
+	direction=(cDirection+2)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	direction=(cDirection+6)&7;
+	direction=(cDirection+6)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	direction=(cDirection+3)&7;
+	direction=(cDirection+3)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	direction=(cDirection+5)&7;
+	direction=(cDirection+5)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
-	direction=(cDirection+4)&7;
+	direction=(cDirection+4)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForAirUnit(posX+dx, posY+dy))
 		return;
 	dx=0;
 	dy=0;
-	direction=8;
+	direction=UNIT_DIRECTION_NONE;
 	if (verbose)
 		printf("guid=(%d) flyto failed pos=(%d, %d) \n", gid, posX, posY);
 }
@@ -111,37 +111,37 @@ void Unit::escapeGroundTarget()
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	int cDirection=direction;
-	direction=(cDirection+1)&7;
+	direction=(cDirection+1)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
-	direction=(cDirection+7)&7;
+	direction=(cDirection+7)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
-	direction=(cDirection+2)&7;
+	direction=(cDirection+2)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
-	direction=(cDirection+6)&7;
+	direction=(cDirection+6)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
-	direction=(cDirection+3)&7;
+	direction=(cDirection+3)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
-	direction=(cDirection+5)&7;
+	direction=(cDirection+5)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
-	direction=(cDirection+4)&7;
+	direction=(cDirection+4)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
 	if (map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
 		return;
 	dx=0;
 	dy=0;
-	direction=8;
+	direction=UNIT_DIRECTION_NONE;
 	if (verbose)
 		printf("guid=(%d) escapeGroundTarget failed pos=(%d, %d) \n", gid, posX, posY);
 }

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "EngineTiming.h"
 #include "GraphicContext.h"
 
 class Game;
@@ -15,7 +16,7 @@ class Mark
 public:
 	///Construct a Mark. The px and py cordinates are on the map, not on the screen
 	///r, g, and b are colors and time is how long the Mark is to stay on the screen
-	Mark(int px, int py, GAGCore::Color color, const int time=50);
+	Mark(int px, int py, GAGCore::Color color, const int time=MARK_DEFAULT_LIFETIME_TICKS);
 
 	///Construct an empty mark
 	Mark();

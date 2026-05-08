@@ -10,8 +10,11 @@
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "EngineTiming.h"
+#include "FixedPoint.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include "Map.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -37,7 +40,7 @@ void Building::swarmStep(void)
 		for (int i=0; i<NB_UNIT_TYPE; i++)
 			if (ratio[i]!=0)
 			{
-				fProportion=(percentUsed[i]<<16)/ratio[i];
+				fProportion=(percentUsed[i]<<FIXED_POINT_SHIFT_16)/ratio[i];
 				if (fProportion<=fMinProportion)
 				{
 					fMinProportion=fProportion;
@@ -151,7 +154,7 @@ void Building::turretStep(Uint32 stepCounter)
 	for (int i=0; i<=range ; i++)
 	{
 		// The number of ticks before the bullet hits the target at range "i".
-		int ticksToHit = ((i << 5) + ((type->width) << 4)) / (type->shootSpeed>>8);
+		int ticksToHit = ((i << Map::TILE_PIXEL_SHIFT) + ((type->width) << 4)) / (type->shootSpeed>>Q8_FIXED_POINT_SHIFT);
 		for (int j=0; j<=i ; j++)
 		{
 			for (int k=0; k<8; k++)
@@ -328,24 +331,24 @@ void Building::turretStep(Uint32 stepCounter)
 		Sector *s=owner->map->getSector(getMidX(), getMidY());
 
 		int px, py;
-		px=((posX)<<5)+((type->width)<<4);
-		py=((posY)<<5)+((type->height)<<4);
+		px=((posX)<<Map::TILE_PIXEL_SHIFT)+((type->width)<<4);
+		py=((posY)<<Map::TILE_PIXEL_SHIFT)+((type->height)<<4);
 
 		int speedX, speedY, ticksLeft;
 
 		// TODO : shall we really uses shootSpeed ?
 		// FIXME : is it correct this way ? Is there a function for this ?
-		int dpx=(bestTargetX*32)+16-4-px; // 4 is the half size of the bullet
-		int dpy=(bestTargetY*32)+16-4-py;
+		int dpx=(bestTargetX*Map::TILE_PX)+Map::HALF_TILE_PX-4-px; // 4 is the half size of the bullet
+		int dpy=(bestTargetY*Map::TILE_PX)+Map::HALF_TILE_PX-4-py;
 		//printf("%d insert: dp=(%d, %d).\n", gid, dpx, dpy);
 		if (dpx>(map->getW()<<4))
-			dpx=dpx-(map->getW()<<5);
+			dpx=dpx-(map->getW()<<Map::TILE_PIXEL_SHIFT);
 		if (dpx<-(map->getW()<<4))
-			dpx=dpx+(map->getW()<<5);
+			dpx=dpx+(map->getW()<<Map::TILE_PIXEL_SHIFT);
 		if (dpy>(map->getH()<<4))
-			dpy=dpy-(map->getH()<<5);
+			dpy=dpy-(map->getH()<<Map::TILE_PIXEL_SHIFT);
 		if (dpy<-(map->getH()<<4))
-			dpy=dpy+(map->getH()<<5);
+			dpy=dpy+(map->getH()<<Map::TILE_PIXEL_SHIFT);
 
 		int mdp;
 
@@ -354,16 +357,16 @@ void Building::turretStep(Uint32 stepCounter)
 		if (abs(dpx)>abs(dpy)) //we avoid a square root, since all ditances are squares lengthed.
 		{
 			mdp=abs(dpx);
-			speedX=((dpx*type->shootSpeed)/(mdp<<8));
-			speedY=((dpy*type->shootSpeed)/(mdp<<8));
+			speedX=((dpx*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
+			speedY=((dpy*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
 			assert(speedX!=0);
 			ticksLeft=abs(mdp/speedX);
 		}
 		else
 		{
 			mdp=abs(dpy);
-			speedX=((dpx*type->shootSpeed)/(mdp<<8));
-			speedY=((dpy*type->shootSpeed)/(mdp<<8));
+			speedX=((dpx*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
+			speedY=((dpy*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
 			assert(speedY!=0);
 			ticksLeft=abs(mdp/speedY);
 		}
@@ -390,7 +393,7 @@ void Building::clearingFlagStep()
 	// PORT: also bumped by +=16 from MapPathfindRessource.cpp:189 when units find resources unreachable.
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
 		for (int canSwim=0; canSwim<2; canSwim++)
-			if (localRessourcesCleanTime[canSwim]++>125) // Update every 5[s]
+			if (localRessourcesCleanTime[canSwim]++>CLEARING_FLAG_REFRESH_TICKS) // Update every 5[s]
 			{
 				if (!owner->map->updateLocalRessources(this, canSwim))
 				{

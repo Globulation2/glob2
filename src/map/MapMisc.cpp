@@ -80,30 +80,30 @@ bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
 	Sint32 dy=warpDist1d(uy,by,h);
 	if (dx>dy)
 	{
-		if (dx<15)
+		if (dx<LOCAL_GRID_CENTER)
 			return true;
-		if (dx>15)
+		if (dx>LOCAL_GRID_CENTER)
 			return false;
-		
-		return ((bx+15) & wMask)==(ux & wMask);
+
+		return ((bx+LOCAL_GRID_CENTER) & wMask)==(ux & wMask);
 	}
 	else if (dx<dy)
 	{
-		if (dy<15)
+		if (dy<LOCAL_GRID_CENTER)
 			return true;
-		if (dy>15)
+		if (dy>LOCAL_GRID_CENTER)
 			return false;
-		
-		return ((by+15) & wMask)==(uy & wMask);
+
+		return ((by+LOCAL_GRID_CENTER) & wMask)==(uy & wMask);
 	}
 	else
 	{
-		if (dx<15)
+		if (dx<LOCAL_GRID_CENTER)
 			return true;
-		if (dx>15)
+		if (dx>LOCAL_GRID_CENTER)
 			return false;
-		
-		return (((bx+15) & wMask)==(ux & wMask)) && (((by+15) & wMask)==(uy & wMask));
+
+		return (((bx+LOCAL_GRID_CENTER) & wMask)==(ux & wMask)) && (((by+LOCAL_GRID_CENTER) & wMask)==(uy & wMask));
 	}
 }
 

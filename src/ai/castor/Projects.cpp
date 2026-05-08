@@ -175,7 +175,7 @@ void AICastor::addProjects()
 	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 	{
 		int upgradeSum=0;
-		for (int li=1; li<4; li++)
+		for (int li=1; li<NB_UNIT_LEVELS; li++)
 			upgradeSum+=buildingLevels[bi][0][li];
 		if (upgradeSum<strategy.build[bi].baseUpgrade)
 			return;
@@ -190,7 +190,7 @@ void AICastor::addProjects()
 	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 		upgradeGoal[bi]=strategy.build[bi].baseUpgrade;
 	
-	for (Sint32 agi=1; agi<4; agi++)
+	for (Sint32 agi=1; agi<NB_UNIT_LEVELS; agi++)
 	{
 		buildsAmount=0+(agi<<1);
 		if (!enoughFreeWorkers())
@@ -223,7 +223,7 @@ void AICastor::addProjects()
 		for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 		{
 			int upgradeSum=0;
-			for (int li=agi; li<4; li++)
+			for (int li=agi; li<NB_UNIT_LEVELS; li++)
 				upgradeSum+=buildingLevels[bi][0][li];
 			if (upgradeSum<upgradeGoal[bi])
 				return;

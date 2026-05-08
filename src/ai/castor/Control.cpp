@@ -115,7 +115,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	else
 		workerGoal=4;
 
-	for (int bi=0; bi<1024; bi++)
+	for (int bi=0; bi<Building::MAX_COUNT; bi++)
 	{
 		Building *b=myBuildings[bi];
 		if (b && b->type->unitProductionTime)
@@ -175,13 +175,13 @@ std::shared_ptr<Order>AICastor::controlFood()
 	int wDec=map->wDec;
 	//size_t size=w*h;
 	
-	int bi=(controlFoodTimer++)&1023;
+	int bi=(controlFoodTimer++)&(Building::MAX_COUNT-1);
 	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[bi];
 	for (int i=0; i<8; i++)
 		if (b==NULL)
 		{
-			bi=(controlFoodTimer++)&1023;
+			bi=(controlFoodTimer++)&(Building::MAX_COUNT-1);
 			b=myBuildings[bi];
 		}
 	if (b==NULL)
@@ -283,7 +283,7 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 	}
 	if (buildsAmount<1 || !enoughFreeWorkers())
 		return shared_ptr<Order>();
-	int bi=((controlUpgradeTimer++)&1023);
+	int bi=((controlUpgradeTimer++)&(Building::MAX_COUNT-1));
 	Building **myBuildings=team->myBuildings;
 	Building *b=myBuildings[bi];
 	if (b==NULL)
@@ -327,7 +327,7 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 	if (level>=upgradeLevelGoal)
 		return shared_ptr<Order>();
 	int sumOver=0;
-	for (int li=(level+1); li<4; li++)
+	for (int li=(level+1); li<NB_UNIT_LEVELS; li++)
 		for (int si=0; si<2; si++)
 			sumOver+=buildingLevels[shortTypeNum][si][li];
 	

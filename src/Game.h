@@ -32,6 +32,53 @@ class MapEdit;
 // Each team contributes this much to the prestige-victory threshold.
 #define TEAM_MAX_PRESTIGE 150
 
+// === Game-loop sentinels (cross-slice) ===
+
+//! Returned by winner-tracking code to mean "no team has won yet". Used by
+//! EngineRun.cpp:301 against winnerTeam.
+static constexpr int WINNER_TEAM_NONE = -1;
+
+//! Default `pos` argument to Game::addTeam / removeTeam meaning "append
+//! at the end of the team list" (Game.cpp:171; Game_editor.cpp:102, 124).
+//! Distinct from any other -1 sentinel — see glossary §2.
+static constexpr int TEAM_POS_END = -1;
+
+//! Length of the rolling tick-time profile buffer in Game::ticksGameSum.
+//! Currently equal to Team::MAX_COUNT (32) only by coincidence; the buffer
+//! is indexed by `stepCounter & 31`, not by team id (bug #11). Naming this
+//! separately documents the actual meaning.
+static constexpr int TICK_PROFILE_BUF_LEN = 32;
+
+//! Fog-of-war switch cadence: every (mask + 1) ticks, perform the FOW
+//! switch when (stepCounter & FOW_SWITCH_TICK_MASK) == FOW_SWITCH_TICK_PHASE.
+//! See Game_sync.cpp:175.
+static constexpr int FOW_SWITCH_TICK_MASK  = 31;
+static constexpr int FOW_SWITCH_TICK_PHASE = 16;
+
+//! Build-project step cadence: every 16 ticks, run buildProjectSyncStep
+//! when (stepCounter & MASK) == PHASE. See Game_sync.cpp:194.
+static constexpr int BUILD_PROJECT_TICK_MASK  = 15;
+static constexpr int BUILD_PROJECT_TICK_PHASE = 1;
+
+//! World-logic step cadence: every 32 ticks, run the world-logic pass when
+//! (stepCounter & MASK) == PHASE. See Game_sync.cpp:197.
+static constexpr int WORLD_LOGIC_TICK_MASK  = 31;
+static constexpr int WORLD_LOGIC_TICK_PHASE = 0;
+
+//! Upper bound of the (team * Building::MAX_COUNT + buildingId) global id
+//! space, equal to Team::MAX_COUNT * Building::MAX_COUNT = 32 * 1024.
+//! Asserted in OrderBuilding.cpp:78, 109, 141, 179, 214; OrderModify.cpp:29;
+//! UnitSerialization.cpp:235.
+static constexpr int BUILDING_GID_MAX = 32768;
+
+//! Number of distinct levels a building can reach (0..MAX_BUILDING_LEVELS-1).
+//! Used by Game_editor.cpp:91. Distinct from NB_UNIT_LEVELS.
+static constexpr int MAX_BUILDING_LEVELS = 6;
+
+//! Cap on how many workers an OrderModifyBuilding may request for one
+//! building. See Game_orders.cpp:140.
+static constexpr int MAX_BUILDING_WORKER_REQUEST = 20;
+
 class Game
 {
 	static const bool verbose = false;
@@ -111,8 +158,8 @@ public:
 
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator
-	void addTeam(int pos=-1);
-	void removeTeam(int pos=-1);
+	void addTeam(int pos=TEAM_POS_END);
+	void removeTeam(int pos=TEAM_POS_END);
 	//! If a team is uncontrolled (playerMask == 0), remove units and buildings from map
 	void clearingUncontrolledTeams(void);
 	void regenerateDiscoveryMap(void);
@@ -266,6 +313,6 @@ public:
 	bool generateMap(MapGenerationDescriptor &descriptor);
 
 protected:
-	int ticksGameSum[Team::MAX_COUNT];
+	int ticksGameSum[TICK_PROFILE_BUF_LEN];
 };
 

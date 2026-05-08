@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "BuildingUtils.h"
+#include "MapInternal.h"
 #include "Ressource.h"
 #include "UnitConsts.h"
 
@@ -362,7 +363,7 @@ public:Sint32 bullets;
 	Uint32 seenByMask;
 
 	bool dirtyLocalGradient[2];
-	Uint8 localGradient[2][1024];
+	Uint8 localGradient[2][LOCAL_GRID_AREA];
 	Uint8 *globalGradient[2];
 	bool locked[2]; //True if the building is not reachable.
 	Uint32 lastGlobalGradientUpdateStepCounter[2];

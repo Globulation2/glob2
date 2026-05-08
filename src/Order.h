@@ -14,6 +14,24 @@
 
 class Map;
 
+// === Order-protocol sentinels (cross-slice) ===
+
+//! "Checksum not yet set" sentinel for Order::gameCheckSum. The Order is
+//! sent before the receiving end has computed its post-tick checksum, so
+//! this value means "skip the cross-check this tick". See Order.cpp:9,
+//! MultiplayerGame.cpp:522, NetEngine.cpp:158, 211, 217-219.
+static constexpr Uint32 ORDER_CHECKSUM_NONE = static_cast<Uint32>(-1);
+
+//! "Sender unset" sentinel for Order::sender (set by NetGame::getOrder()
+//! once the wire data has been mapped to a player number). See Order.cpp:8.
+static constexpr int ORDER_SENDER_NONE = -1;
+
+//! Length, in bytes, of the big-endian length prefix that precedes every
+//! framed network message (TCP and UDP alike). See
+//! NetConnectionThread.cpp:111-115, 182, 192-194; NetBroadcaster.cpp:53-55;
+//! NetBroadcastListener.cpp:38.
+static constexpr int NET_FRAME_LENGTH_PREFIX_BYTES = 2;
+
 //! An Order represents a synchronized event in the game
 class Order
 {

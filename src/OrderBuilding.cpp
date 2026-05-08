@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#include "FileFormatVersions.h"
+#include "Game.h"
 #include "Marshaling.h"
 #include "Order.h"
 
@@ -44,9 +46,9 @@ Uint8 *OrderCreate::getData(void)
 
 bool OrderCreate::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	if(versionMinor<=77 && dataLength!=20)
+	if(versionMinor<FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS && dataLength!=20)
 		return false;
-	else if (versionMinor>=78 && dataLength!=getDataLength())
+	else if (versionMinor>=FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS && dataLength!=getDataLength())
 		return false;
 
 	this->teamNumber=getSint32(data, 0);
@@ -75,7 +77,7 @@ OrderDelete::OrderDelete(const Uint8 *data, int dataLength, Uint32 versionMinor)
 
 OrderDelete::OrderDelete(Uint16 gid)
 {
-	assert(gid<32768);
+	assert(gid<BUILDING_GID_MAX);
 	this->gid=gid;
 }
 
@@ -106,7 +108,7 @@ OrderCancelDelete::OrderCancelDelete(const Uint8 *data, int dataLength, Uint32 v
 
 OrderCancelDelete::OrderCancelDelete(Uint16 gid)
 {
-	assert(gid<32768);
+	assert(gid<BUILDING_GID_MAX);
 	this->gid=gid;
 }
 
@@ -138,7 +140,7 @@ OrderConstruction::OrderConstruction(const Uint8 *data, int dataLength, Uint32 v
 
 OrderConstruction::OrderConstruction(Uint16 gid, Uint32 unitWorking, Uint32 unitWorkingFuture)
 {
-	assert(gid<32768);
+	assert(gid<BUILDING_GID_MAX);
 	this->gid=gid;
 	this->unitWorking=unitWorking;
 	this->unitWorkingFuture=unitWorkingFuture;
@@ -176,7 +178,7 @@ OrderCancelConstruction::OrderCancelConstruction(const Uint8 *data, int dataLeng
 
 OrderCancelConstruction::OrderCancelConstruction(Uint16 gid, Uint32 unitWorking)
 {
-	assert(gid<32768);
+	assert(gid<BUILDING_GID_MAX);
 	this->gid=gid;
 	this->unitWorking=unitWorking;
 }
@@ -211,7 +213,7 @@ OrderChangePriority::OrderChangePriority(const Uint8 *data, int dataLength, Uint
 
 OrderChangePriority::OrderChangePriority(Uint16 gid, Sint32 priority)
 {
-	assert(gid<32768);
+	assert(gid<BUILDING_GID_MAX);
 	this->gid=gid;
 	this->priority=priority;
 }

@@ -10,6 +10,7 @@
 #include "Building.h"
 #include "Integrity.h"
 
+#include "FileFormatVersions.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include <Stream.h>
@@ -22,7 +23,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// unit specification
 	typeNum = stream->readSint32("typeNum");
-	if (versionMinor < 84)
+	if (versionMinor < FILE_FORMAT_VERSION_DROP_UNIT_SKIN_NAME)
 	{
 		// Pre-v84 saves carried a per-unit skinName string; skin is now derived
 		// from typeNum at render time, so read and discard for compatibility.
@@ -59,7 +60,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	magicActionTimeout = stream->readSint32("magicActionTimeout");
 
 	// under attack timer
-	if(versionMinor >= 61)
+	if(versionMinor >= FILE_FORMAT_VERSION_UNDER_ATTACK_TIMER)
 		underAttackTimer = stream->readUint8("underAttackTimer");
 	else
 		underAttackTimer = 0;

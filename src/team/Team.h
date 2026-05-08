@@ -31,6 +31,11 @@ class Team:public BaseTeam
 	static const bool verbose = false;
 public:
 	static const int MAX_COUNT=32;
+
+	//! Tile-padding added around a dirty rect when invalidating gradients
+	//! that need to be recomputed on the next pass. Shared between team
+	//! routing and building gradient propagation. See TeamStep.cpp:163.
+	static constexpr int GRADIENT_DIRTY_PADDING = 16;
 	Team(Game *game);
 	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 

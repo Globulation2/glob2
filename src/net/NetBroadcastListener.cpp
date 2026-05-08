@@ -3,6 +3,7 @@
 
 #include "NetBroadcastListener.h"
 #include "NetConsts.h"
+#include "Order.h"
 #include "Stream.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
@@ -36,7 +37,7 @@ void NetBroadcastListener::update()
 		while(result == 1)
 		{
 			Uint16 length = SDLNet_Read16(packet->data);
-			MemoryStreamBackend* msb = new MemoryStreamBackend(packet->data+2, length);
+			MemoryStreamBackend* msb = new MemoryStreamBackend(packet->data+NET_FRAME_LENGTH_PREFIX_BYTES, length);
 			msb->seekFromStart(0);
 			BinaryInputStream* bis = new BinaryInputStream(msb);
 

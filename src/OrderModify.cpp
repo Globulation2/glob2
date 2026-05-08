@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#include "Game.h"
 #include "Marshaling.h"
 #include "Order.h"
 #include "Brush.h"
@@ -26,7 +27,7 @@ OrderModifyBuilding::OrderModifyBuilding(const Uint8 *data, int dataLength, Uint
 
 OrderModifyBuilding::OrderModifyBuilding(Uint16 gid, Uint16 numberRequested)
 {
-	assert(gid<32768);
+	assert(gid<BUILDING_GID_MAX);
 	this->gid=gid;
 	this->numberRequested=numberRequested;
 }

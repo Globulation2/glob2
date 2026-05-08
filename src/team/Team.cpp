@@ -7,6 +7,7 @@
 #include <StringTable.h>
 
 #include "BuildingType.h"
+#include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Marshaling.h"
@@ -212,7 +213,7 @@ void Team::pushGameEvent(GameEvent event)
 	if(eventCooldownTimers[eventType] == 0)
 	{
 		events.push(std::move(event));
-		eventCooldownTimers[eventType] = 50;
+		eventCooldownTimers[eventType] = GAME_EVENT_COOLDOWN_TICKS;
 	}
 }
 
@@ -242,7 +243,7 @@ void Team::updateEvents()
 	while(!events.empty())
 	{
 		const GameEvent& event = events.front();
-		if((game->stepCounter - event.getStep()) > 100)
+		if((game->stepCounter - event.getStep()) > GAME_EVENT_MAX_AGE_TICKS)
 		{
 			events.pop();
 		}
@@ -256,7 +257,10 @@ void Team::updateEvents()
 
 bool Team::wasRecentEvent(GameEventType type)
 {
-	return eventCooldownTimers[type]==50;
+	// NOTE: structurally coupled to pushGameEvent — strict-equal returns true
+	// only on the exact tick the event fired (updateEvents decrements next).
+	// See bug #8 in the magic-number glossary.
+	return eventCooldownTimers[type]==GAME_EVENT_COOLDOWN_TICKS;
 }
 
 

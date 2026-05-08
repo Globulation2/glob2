@@ -44,7 +44,7 @@ void TeamStat::reset()
 	}
 	totalFree=0;
 	totalNeeded=0;
-	for(int i=0; i<4; ++i)
+	for(int i=0; i<NB_UNIT_LEVELS; ++i)
 		totalNeededPerLevel[i]=0;
 	totalBuilding=0;
 	for(int i=0; i<IntBuildingType::NB_BUILDING; ++i)
@@ -59,14 +59,14 @@ void TeamStat::reset()
 	needHeal=0;
 	needNothing=0;
 	for(int i=0; i<NB_ABILITY; ++i)
-		for(int j=0; j<4; ++j)
+		for(int j=0; j<NB_UNIT_LEVELS; ++j)
 		{
 			upgradeState[i][j]=0;
 		}
 	for(int k=0; k<NB_UNIT_TYPE; ++k)
 	{
 		for(int i=0; i<NB_ABILITY; ++i)
-			for(int j=0; j<4; ++j)
+			for(int j=0; j<NB_UNIT_LEVELS; ++j)
 				upgradeStatePerType[k][i][j]=0;
 	}
 	totalFood=0;
@@ -98,7 +98,7 @@ void TeamSmoothedStat::reset()
 		isFree[i]=0;
 	}
 	totalNeeded=0;
-	for(int i=0; i<4; ++i)
+	for(int i=0; i<NB_UNIT_LEVELS; ++i)
 		totalNeededPerLevel[i]=0;
 }
 
@@ -171,7 +171,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		{
 			maxStat.totalNeeded=smoothedStat.totalNeeded;
 		}
-		for(int k=0; k<4; ++k)
+		for(int k=0; k<NB_UNIT_LEVELS; ++k)
 		{
 			if (smoothedStat.totalNeededPerLevel[k]>maxStat.totalNeededPerLevel[k])
 				maxStat.totalNeededPerLevel[k]=smoothedStat.totalNeededPerLevel[k];
@@ -265,7 +265,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	for (int j=0; j<NB_UNIT_TYPE; j++)
 		stat.isFree[j]=maxStat.isFree[j];
 	stat.totalNeeded=maxStat.totalNeeded;
-	for(int k=0; k<4; ++k)
+	for(int k=0; k<NB_UNIT_LEVELS; ++k)
 		stat.totalNeededPerLevel[k]=maxStat.totalNeededPerLevel[k];
 }
 
@@ -287,23 +287,23 @@ void TeamStats::drawText(int posx, int posy)
 	if (newStats.totalUnit)
 	{
 		// worker
-		int free=newStats.isFree[0]-newStats.totalNeeded;
+		int free=newStats.isFree[WORKER]-newStats.totalNeeded;
 		int seeking=newStats.totalNeeded;
 		if (free<0)
 		{
 			free=0;
-			seeking=newStats.isFree[0];
+			seeking=newStats.isFree[WORKER];
 		}
-		gfx->drawString(textStartPosX, textStartPosY+30, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[0]).arg(strings->getString("[workers]")).arg(((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+30, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[WORKER]).arg(strings->getString("[workers]")).arg(((float)newStats.numberUnitPerType[WORKER])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
 		gfx->drawString(textStartPosX+5, textStartPosY+42, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(free).arg(strings->getString("[free]")).c_str());
 		gfx->drawString(textStartPosX+5, textStartPosY+54, font, FormatableString("%0 %1 %2").arg(strings->getString("[and]")).arg(seeking).arg(strings->getString("[seeking a job]")).c_str());
 
 		// explorer
-		gfx->drawString(textStartPosX, textStartPosY+69, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[1]).arg(strings->getString("[explorers]")).arg(((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
-		gfx->drawString(textStartPosX+5, textStartPosY+81, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[1]).arg(strings->getString("[free]")).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+69, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[EXPLORER]).arg(strings->getString("[explorers]")).arg(((float)newStats.numberUnitPerType[EXPLORER])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX+5, textStartPosY+81, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[EXPLORER]).arg(strings->getString("[free]")).c_str());
 		// warrior
-		gfx->drawString(textStartPosX, textStartPosY+96, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[2]).arg(strings->getString("[warriors]")).arg(((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
-		gfx->drawString(textStartPosX+5, textStartPosY+108, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[2]).arg(strings->getString("[free]")).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+96, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[WARRIOR]).arg(strings->getString("[warriors]")).arg(((float)newStats.numberUnitPerType[WARRIOR])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX+5, textStartPosY+108, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[WARRIOR]).arg(strings->getString("[free]")).c_str());
 
 		// living state
 		gfx->drawString(textStartPosX, textStartPosY+123, font, FormatableString("%0 %1 (%2 %)").arg(newStats.needNothing).arg(strings->getString("[are ok]")).arg(((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
@@ -354,8 +354,8 @@ void TeamStats::drawStat(int posx, int posy)
 	}*/
 	int maxWorker=0;
 	for (int i=0; i<STATS_SIZE; i++)
-		if (stats[i].numberUnitPerType[0]>maxWorker)
-			maxWorker=stats[i].numberUnitPerType[0];
+		if (stats[i].numberUnitPerType[WORKER]>maxWorker)
+			maxWorker=stats[i].numberUnitPerType[WORKER];
 
 	if (maxWorker==0)
 		return;
@@ -428,10 +428,10 @@ void TeamStats::drawStat(int posx, int posy)
 	}
 
 	// graph
-	for (int i=0; i<128; i++)
+	for (int i=0; i<STATS_SIZE; i++)
 	{
-		int index=(statsIndex+i+1)&0x7F;
-		
+		int index=(statsIndex+i+1)&(STATS_SIZE - 1);
+
 		int free=stats[index].isFree[WORKER]-stats[index].totalNeeded;
 		int seeking=stats[index].totalNeeded;
 		if (free<0)
@@ -508,7 +508,7 @@ int TeamStats::getWorkersNeeded()
 
 int TeamStats::getWorkersBalance()
 {
-	return (stats[statsIndex].isFree[0]-stats[statsIndex].totalNeeded);
+	return (stats[statsIndex].isFree[WORKER]-stats[statsIndex].totalNeeded);
 }
 
 int TeamStats::getWorkersLevel(int level)

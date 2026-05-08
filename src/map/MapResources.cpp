@@ -157,15 +157,15 @@ void Map::setAreaName(int n, std::string name)
 bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y) const
 {
 	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
-	return g>1; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
+	return g>GRADIENT_UNREACHABLE; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
 bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist) const
 {
 	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
-	if (g>1)
+	if (g>GRADIENT_UNREACHABLE)
 	{
-		*dist = 255-g;
+		*dist = GRADIENT_AT_GOAL-g;
 		return true;
 	}
 	else
@@ -224,7 +224,7 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 		vy = (vy+vddy) & hMask;
 		
 		// if we have reached destination break
-		if (max == 255)
+		if (max == GRADIENT_AT_GOAL)
 		{
 			result = true;
 			break;

@@ -25,6 +25,15 @@ struct UnitDeathAnimation
 class Sector
 {
 public:
+	// === Sector geometry (cross-slice) ===
+	//! Bit-shift converting a tile coordinate to its sector index, i.e.
+	//! log2 of SECTOR_TILES. Used by Map::getSector and Map.cpp's sector
+	//! grid math.
+	static constexpr int SECTOR_SHIFT = 4;
+	//! Side length of a sector in tiles (1 << SECTOR_SHIFT). A sector is
+	//! the unit of bullet / explosion / death-animation bookkeeping.
+	static constexpr int SECTOR_TILES = 16;
+
 	Sector() {}
 	Sector(Game *);
 	virtual ~Sector(void);

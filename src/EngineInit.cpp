@@ -14,6 +14,7 @@
 #include "CustomGameScreen.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "GUIMessageBox.h"
@@ -70,7 +71,7 @@ int Engine::initCustom(void)
 {
 	CustomGameScreen customGameScreen;
 
-	int cgs=customGameScreen.execute(globalContainer->gfx, 40);
+	int cgs=customGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
 
 	if (cgs==CustomGameScreen::CANCEL)
 		return EE_CANCEL;
@@ -120,7 +121,7 @@ int Engine::initCustom(const std::string &gameName)
 int Engine::initLoadGame()
 {
 	ChooseMapScreen loadGameScreen("games", "game", true, "replays", "replay", false);
-	int lgs = loadGameScreen.execute(globalContainer->gfx, 40);
+	int lgs = loadGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
 	if (lgs == ChooseMapScreen::CANCEL)
 		return EE_CANCEL;
 	else if(lgs == -1)

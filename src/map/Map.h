@@ -78,6 +78,15 @@ class Map
 public:
 	//! Type of terrain (used for undermap)
 
+	// === Tile geometry (cross-slice) ===
+	//! Bit-shift converting a tile index to its top-left pixel coordinate
+	//! (i.e. log2 of TILE_PX). Used by mapCaseToPixelCase and friends in
+	//! MapView.cpp / TypeSteps.cpp.
+	static constexpr int TILE_PIXEL_SHIFT = 5;
+	//! Side length of one map tile in screen pixels (1 << TILE_PIXEL_SHIFT).
+	static constexpr int TILE_PX = 32;
+	//! Half-tile in pixels — used when centring sprites / bullets on a tile.
+	static constexpr int HALF_TILE_PX = 16;
 
 public:
 	//! Map constructor
@@ -490,7 +499,7 @@ public:
 	}
 	
 	//! Return sector at (x,y).
-	Sector *getSector(int x, int y) { return &(sectors[wSector*((y&hMask)>>4)+((x&wMask)>>4)]); }
+	Sector *getSector(int x, int y) { return &(sectors[wSector*((y&hMask)>>Sector::SECTOR_SHIFT)+((x&wMask)>>Sector::SECTOR_SHIFT)]); }
 	//! Return a sector in the sector array. It is not clean because too high level
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 

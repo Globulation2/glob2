@@ -9,6 +9,7 @@
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
+#include "MapInternal.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -413,8 +414,8 @@ void AICastor::computeWorkRangeMap()
 			if (range<0)
 				continue;
 			//printf(" range=%d\n", range);
-			if (range>255)
-				range=255;
+			if (range>GRADIENT_AT_GOAL)
+				range=GRADIENT_AT_GOAL;
 			int index=(u->posX&wMask)+((u->posY&hMask)<<wDec);
 			gradient[index]=(Uint8)range;
 		}
@@ -440,9 +441,9 @@ void AICastor::computeWorkAbilityMap()
 		Uint8 workRange=workRangeMap[i];
 		
 		Uint32 workAbility=((workPower*workRange)>>5);
-		if (workAbility>255)
-			workAbility=255;
-		
+		if (workAbility>GRADIENT_AT_GOAL)
+			workAbility=GRADIENT_AT_GOAL;
+
 		workAbilityMap[i]=(Uint8)workAbility;
 	}
 }
@@ -493,10 +494,10 @@ void AICastor::computeHydratationMap()
 	for (size_t i=0; i<size; i++)
 	{
 		Uint16 value=gradient[i]>>4;
-		if (value<255)
+		if (value<GRADIENT_AT_GOAL)
 			hydratationMap[i]=value;
 		else
-			hydratationMap[i]=255;
+			hydratationMap[i]=GRADIENT_AT_GOAL;
 	}
 	free(gradient);
 }
@@ -707,7 +708,7 @@ void AICastor::computeEnemyRangeMap()
 			int bh=b->type->height;
 			for (int dy=by; dy<by+bh; dy++)
 				for (int dx=bx; dx<bx+bw; dx++)
-					gradient[(dx&wMask)+((dy&hMask)<<wDec)]=255;
+					gradient[(dx&wMask)+((dy&hMask)<<wDec)]=GRADIENT_AT_GOAL;
 		}
 	}
 	

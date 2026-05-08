@@ -23,6 +23,7 @@
 
 #include "BuildingType.h"
 #include "DatasetWriter.h"
+#include "FileFormatVersions.h"
 #include "Game.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
@@ -85,9 +86,9 @@ namespace
 	                           const char *expected,
 	                           const char *fieldName)
 	{
-		char signature[4];
-		stream->read(signature, 4, fieldName);
-		return memcmp(signature, expected, 4) == 0;
+		char signature[FILE_SIG_LEN];
+		stream->read(signature, FILE_SIG_LEN, fieldName);
+		return memcmp(signature, expected, FILE_SIG_LEN) == 0;
 	}
 
 	// Right-rotate by 1 bit. Used to mix per-section checksums into the
@@ -126,25 +127,25 @@ bool Game::load(GAGCore::InputStream *stream)
 		return false;
 	gameHeader=tempGameHeader;
 
-	if (!readMatchingSignature(stream, "GaBe", "signatureStart"))
+	if (!readMatchingSignature(stream, FILE_SIG_GAME_BEGIN, "signatureStart"))
 		return false;
 
 	///Load the step counter
 	stepCounter = stream->readUint32("stepCounter");
 
-	if(versionMinor < 64)
+	if(versionMinor < FILE_FORMAT_VERSION_UNIFIED_SEED)
 	{
 		///Load random seeds, these are no longer used
 		stream->readUint32("SyncRandSeedA");
 		stream->readUint32("SyncRandSeedB");
 		stream->readUint32("SyncRandSeedC");
 
-		if (!readMatchingSignature(stream, "GaSy", "signatureAfterSyncRand"))
+		if (!readMatchingSignature(stream, FILE_SIG_GAME_SYNC, "signatureAfterSyncRand"))
 			return false;
 	}
 	else
 	{
-		if (!readMatchingSignature(stream, "GaBt", "signatureBeforeTeams"))
+		if (!readMatchingSignature(stream, FILE_SIG_GAME_BUILT, "signatureBeforeTeams"))
 			return false;
 	}
 
@@ -158,14 +159,14 @@ bool Game::load(GAGCore::InputStream *stream)
 	}
 	stream->readLeaveSection();
 
-	if (!readMatchingSignature(stream, "GaTe", "signatureAfterTeams"))
+	if (!readMatchingSignature(stream, FILE_SIG_GAME_TEAM, "signatureAfterTeams"))
 		return false;
 
 	// Load the map. Team has to be saved and loaded first.
 	if(!map.load(stream, mapHeader, this))
 		return false;
 
-	if (!readMatchingSignature(stream, "GaMa", "signatureAfterMap"))
+	if (!readMatchingSignature(stream, FILE_SIG_GAME_MAP, "signatureAfterMap"))
 		return false;
 
 	// Load the players. Both Map and Team must be loaded first.
@@ -178,7 +179,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	}
 	stream->readLeaveSection();
 
-	if (!readMatchingSignature(stream, "GaPl", "signatureAfterPlayers"))
+	if (!readMatchingSignature(stream, FILE_SIG_GAME_PLAYER, "signatureAfterPlayers"))
 		return false;
 
 	// We have to finish Team's loading
@@ -195,25 +196,25 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (!sgslScript.load(stream, this))
 		return false;
 
-	if(versionMinor >= 82)
+	if(versionMinor >= FILE_FORMAT_VERSION_USL_MAPSCRIPT)
 	{
 		// This is the new map script system
 		mapscript.decodeData(stream, mapHeader.getVersionMinor());
 	}
 
 	///Load the campaign text for the game.
-	if(versionMinor < 75)
+	if(versionMinor < FILE_FORMAT_VERSION_CAMPAIGN_TEXT_OBJECTIVES)
 		stream->readText("campaignText");
 
 	// default prestige calculation
 	prestigeToReach = std::max(MIN_MAX_PRESTIGE, mapHeader.getNumberOfTeams()*TEAM_MAX_PRESTIGE);
 
-	if(mapHeader.getVersionMinor() >= 75)
+	if(mapHeader.getVersionMinor() >= FILE_FORMAT_VERSION_CAMPAIGN_TEXT_OBJECTIVES)
 	{
 		objectives.decodeData(stream, mapHeader.getVersionMinor());
 	}
 
-	if(mapHeader.getVersionMinor() >= 76)
+	if(mapHeader.getVersionMinor() >= FILE_FORMAT_VERSION_BRIEFING_HINTS_OBJ_FAILED)
 	{
 		missionBriefing = stream->readText("briefing");
 		gameHints.decodeData(stream, mapHeader.getVersionMinor());
@@ -223,7 +224,7 @@ bool Game::load(GAGCore::InputStream *stream)
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
 	///compute it now
-	if(mapHeader.getVersionMinor() < 63)
+	if(mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_PRE_FERTILITY)
 	{
 	    if(globalContainer->runNoX)
 	    {
@@ -410,9 +411,9 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	gameHeader.save(stream);
 
 	///Save basic informations
-	stream->write("GaBe", 4, "signatureStart");
+	stream->write(FILE_SIG_GAME_BEGIN, FILE_SIG_LEN, "signatureStart");
 	stream->writeUint32(stepCounter, "stepCounter");
-	stream->write("GaBt", 4, "signatureBeforeTeams");
+	stream->write(FILE_SIG_GAME_BUILT, FILE_SIG_LEN, "signatureBeforeTeams");
 
 	///Save teams
 	stream->writeEnterSection("teams");
@@ -423,14 +424,14 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-	stream->write("GaTe", 4, "signatureAfterTeams");
+	stream->write(FILE_SIG_GAME_TEAM, FILE_SIG_LEN, "signatureAfterTeams");
 
 
 	///Save the map offset to the header, before we save the map
 	///Then, save the map
 	mapHeader.setMapOffset(stream->getPosition());
 	map.save(stream);
-	stream->write("GaMa", 4, "signatureAfterMap");
+	stream->write(FILE_SIG_GAME_MAP, FILE_SIG_LEN, "signatureAfterMap");
 
 	///Save the players
 	stream->writeEnterSection("players");
@@ -441,7 +442,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-	stream->write("GaPl", 4, "signatureAfterPlayers");
+	stream->write(FILE_SIG_GAME_PLAYER, FILE_SIG_LEN, "signatureAfterPlayers");
 
 	// Save the old map script state
 	sgslScript.save(stream, this);
@@ -454,8 +455,8 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	stream->writeText(missionBriefing, "missionBriefing");
 	gameHints.encodeData(stream);
 
-	Uint8 sha1[20];
-	for(int i=0; i<20; ++i)
+	Uint8 sha1[SHA1_BYTE_LEN];
+	for(int i=0; i<SHA1_BYTE_LEN; ++i)
 		sha1[i]=0;
 	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
 	{

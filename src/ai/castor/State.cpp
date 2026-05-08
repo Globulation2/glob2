@@ -40,12 +40,12 @@ bool AICastor::enoughFreeWorkers()
 	bool enough=(workersBalance>minBalance);
 	overWorkers=(workersBalance>minOverWorkers);
 	
-	assert(buildsAmount<1024);
-	static int oldEnough[1024];
+	assert(buildsAmount<Building::MAX_COUNT);
+	static int oldEnough[Building::MAX_COUNT];
 	static bool first=true;
 	if (first)
 	{
-		memset(oldEnough, 2, 1024*sizeof(*oldEnough));
+		memset(oldEnough, 2, Building::MAX_COUNT*sizeof(*oldEnough));
 		first=false;
 	}
 	if ((oldEnough[buildsAmount]==2) || (enough!=oldEnough[buildsAmount]))
@@ -112,7 +112,7 @@ void AICastor::computeBuildingSum()
 {
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		for (int si=0; si<2; si++)
-			for (int li=0; li<4; li++)
+			for (int li=0; li<NB_UNIT_LEVELS; li++)
 				buildingLevels[bi][si][li]=0;
 	
 	Building **myBuildings=team->myBuildings;
@@ -131,14 +131,14 @@ void AICastor::computeBuildingSum()
 		for (int si=0; si<2; si++)
 		{
 			int sum=0;
-			for (int li=0; li<4; li++)
+			for (int li=0; li<NB_UNIT_LEVELS; li++)
 				sum+=buildingLevels[bi][si][li];
 			buildingSum[bi][si]=sum;
 		}
-	
+
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
 		for (int si=0; si<2; si++)
-			for (int li=0; li<4; li++)
+			for (int li=0; li<NB_UNIT_LEVELS; li++)
 				if (buildingLevels[bi][si][li]>0)
 					if ((timer&8191)==0)
 						if (verbose)
@@ -158,7 +158,7 @@ void AICastor::computeWarLevel()
 	
 	int sum=0;
 	for (int si=0; si<2; si++)
-		for (int li=strategy.warLevelTrigger; li<4; li++)
+		for (int li=strategy.warLevelTrigger; li<NB_UNIT_LEVELS; li++)
 			sum+=buildingLevels[IntBuildingType::ATTACK_BUILDING][si][li];
 	if (sum>1)
 		warLevelTriggerLevel=2;

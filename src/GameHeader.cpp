@@ -3,6 +3,8 @@
 
 #include "GameHeader.h"
 
+#include "FileFormatVersions.h"
+
 #include <ctime>
 
 GameHeader::GameHeader()
@@ -51,7 +53,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readLeaveSection(i);
 	}
 	stream->readLeaveSection();
-	if(versionMinor >= 71)
+	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
 		stream->readEnterSection("allyTeamNumbers");
 		for(int i=0; i<Team::MAX_COUNT; ++i)
@@ -60,7 +62,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
-		
+
 		stream->readEnterSection("winningConditions");
 		winningConditions.clear();
 		Uint32 size = stream->readUint32("size");
@@ -72,9 +74,9 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 	}
-	if(versionMinor >= 64)
+	if(versionMinor >= FILE_FORMAT_VERSION_UNIFIED_SEED)
 		seed = stream->readUint32("seed");
-	if(versionMinor >=  72)
+	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
 	stream->readLeaveSection();
 	return true;
@@ -126,7 +128,7 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	stream->readEnterSection("GameHeader");
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
-	if(versionMinor >= 71)
+	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
 		stream->readEnterSection("allyTeamNumbers");
 		for(int i=0; i<Team::MAX_COUNT; ++i)
@@ -135,7 +137,7 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
-		
+
 		stream->readEnterSection("winningConditions");
 		winningConditions.clear();
 		Uint32 size = stream->readUint32("size");
@@ -147,9 +149,9 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		}
 		stream->readLeaveSection();
 	}
-	if(versionMinor >= 64)
+	if(versionMinor >= FILE_FORMAT_VERSION_UNIFIED_SEED)
 		seed = stream->readUint32("seed");
-	if(versionMinor >=  72)
+	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
 	stream->readLeaveSection();
 	return true;

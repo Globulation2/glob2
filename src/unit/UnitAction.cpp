@@ -21,8 +21,8 @@ namespace
 	// the unit takes the hit rather than stalling.
 	constexpr int RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS = 5;
 
-	// Maximum path length budget for MOV_GOING_TARGET's pathfindPointToPoint call.
-	constexpr int GOING_TARGET_MAX_PATH_LENGTH = 12;
+	// GOING_TARGET_MAX_PATH_LENGTH lives in UnitConsts.h so UnitMovement.cpp's
+	// tryAcquireAttackTarget can share the same path-budget value.
 }
 
 void Unit::wrapPosition()

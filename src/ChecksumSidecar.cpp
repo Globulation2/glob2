@@ -1,4 +1,5 @@
 #include "ChecksumSidecar.h"
+#include "FileFormatVersions.h"
 #include "Game.h"
 #include "Team.h"
 #include "Unit.h"
@@ -38,7 +39,7 @@ bool ChecksumSidecarWriter::open(const std::string& replayPath, int numTeams, in
 	ticksWritten = 0;
 
 	// Header: magic + counts + placeholder for total_ticks + flags
-	fwrite("GCS1", 4, 1, file);
+	fwrite(FILE_SIG_CHECKSUM_SIDECAR, FILE_SIG_LEN, 1, file);
 	writeU32(numTeams);
 	writeU32(numPlayers);
 	writeU32(0); // total_ticks placeholder

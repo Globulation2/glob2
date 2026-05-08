@@ -10,6 +10,8 @@
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "EngineTiming.h"
+#include "FixedPoint.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Team.h"
@@ -40,7 +42,7 @@ int Building::neededRessource(void)
 		int maxr=type->maxRessource[i];
 		if (maxr)
 		{
-			Sint32 proportion=(ressources[i]<<16)/maxr;
+			Sint32 proportion=(ressources[i]<<FIXED_POINT_SHIFT_16)/maxr;
 			if (proportion<minProportion)
 			{
 				minProportion=proportion;
@@ -346,8 +348,8 @@ void Building::updateCallLists(void)
 				if (inCanFeedUnit!=LS_IN)
 				{
 					owner->canFeedUnit.push_front(this);
-					//A Building newly getting available to feed is locked to conversion for 150 frames
-					canNotConvertUnitTimer=150;
+					//A Building newly getting available to feed is locked to conversion for CANNOT_CONVERT_TIMER_INIT frames
+					canNotConvertUnitTimer=CANNOT_CONVERT_TIMER_INIT;
 					inCanFeedUnit=LS_IN;
 				}
 			}

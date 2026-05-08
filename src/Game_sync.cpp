@@ -172,7 +172,7 @@ void Game::syncStep(Sint32 localTeam)
 
 		syncRand();
 
-		if ((stepCounter&31)==16)
+		if ((stepCounter&FOW_SWITCH_TICK_MASK)==FOW_SWITCH_TICK_PHASE)
 		{
 			map.switchFogOfWar();
 			for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
@@ -191,10 +191,10 @@ void Game::syncStep(Sint32 localTeam)
 				}
 		}
 
-		if ((stepCounter&15)==1)
+		if ((stepCounter&BUILD_PROJECT_TICK_MASK)==BUILD_PROJECT_TICK_PHASE)
 			buildProjectSyncStep(localTeam);
 
-		if ((stepCounter&31)==0)
+		if ((stepCounter&WORLD_LOGIC_TICK_MASK)==WORLD_LOGIC_TICK_PHASE)
 		{
 			prestigeSyncStep();
 			scriptSyncStep();
@@ -202,7 +202,7 @@ void Game::syncStep(Sint32 localTeam)
 		}
 
 		Uint64 endTick=SDL_GetTicks64();
-		ticksGameSum[stepCounter&31]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
+		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		stepCounter++;
 		anyPlayerWaitedTimeFor+=1;
 	}

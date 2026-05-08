@@ -7,6 +7,7 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include "SoundMixer.h"
@@ -99,7 +100,7 @@ int Engine::run(void)
 
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);
-		int result = endGameScreen.execute(globalContainer->gfx, 40);
+		int result = endGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
 
 		// Return to default color
 		globalContainer->gfx->cursorManager.setDefaultColor();

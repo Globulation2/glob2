@@ -84,7 +84,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	stepCounter=0;
 	prestigeToReach=0;
 
-	for (int i=0; i<Team::MAX_COUNT; i++)
+	for (int i=0; i<TICK_PROFILE_BUF_LEN; i++)
 		ticksGameSum[i]=0;
 
 	anyPlayerWaitedTimeFor = 0;

@@ -10,6 +10,7 @@
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "FixedPoint.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Team.h"
@@ -197,7 +198,7 @@ bool Building::subscribeToBringRessourcesStep()
 									{
 										if(distResource<timeLeft)
 										{
-											int dist = (distBuilding + distResource)<<8;
+											int dist = (distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
 											int value = dist / need;
 											if(value < bestDist)
 											{

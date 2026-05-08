@@ -4,6 +4,7 @@
 #include <StringTable.h>
 #include <Stream.h>
 
+#include "FileFormatVersions.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include "Marshaling.h"
@@ -102,9 +103,9 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[Team::MAX_COUN
 bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor)
 {
 	stream->readEnterSection("Player");
-	char signature[4];
-	stream->read(signature, 4, "signatureStart");
-	if (memcmp(signature,"PLYb",4)!=0)
+	char signature[FILE_SIG_LEN];
+	stream->read(signature, FILE_SIG_LEN, "signatureStart");
+	if (memcmp(signature,FILE_SIG_PLAYER_BEGIN,FILE_SIG_LEN)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
 		stream->readLeaveSection();
@@ -148,8 +149,8 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Si
 		team->type = BaseTeam::T_HUMAN;
 	}
 	
-	stream->read(signature, 4, "signatureEnd");
-	if (memcmp(signature,"PLYe",4)!=0)
+	stream->read(signature, FILE_SIG_LEN, "signatureEnd");
+	if (memcmp(signature,FILE_SIG_PLAYER_END,FILE_SIG_LEN)!=0)
 	{
 		fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
 		stream->readLeaveSection();
@@ -163,7 +164,7 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Si
 void Player::save(GAGCore::OutputStream  *stream)
 {
 	stream->writeEnterSection("Player");
-	stream->write("PLYb", 4, "signatureStart");
+	stream->write(FILE_SIG_PLAYER_BEGIN, FILE_SIG_LEN, "signatureStart");
 	// base player
 	BasePlayer::save(stream);
 
@@ -172,7 +173,7 @@ void Player::save(GAGCore::OutputStream  *stream)
 	stream->writeSint32(startPositionY, "startPositionY");
 	if (type>=P_AI)
 		ai->save(stream);
-	stream->write("PLYe", 4, "signatureEnd");
+	stream->write(FILE_SIG_PLAYER_END, FILE_SIG_LEN, "signatureEnd");
 	stream->writeLeaveSection();
 }
 

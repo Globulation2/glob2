@@ -21,51 +21,51 @@ void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, 
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
-	if (x > (w - 16))
+	if (x > (w - HALF_TILE_PX))
 		x-=w;
-	if (y > (h - 16))
+	if (y > (h - HALF_TILE_PX))
 		y-=h;
-	*px=x<<5;
-	*py=y<<5;
+	*px=x<<TILE_PIXEL_SHIFT;
+	*py=y<<TILE_PIXEL_SHIFT;
 }
 
 void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
-	if (x > (w/2 + (screenW/64)))
+	if (x > (w/2 + (screenW/(TILE_PX*2))))
 		x-=w;
-	if (y > (h/2 + (screenH/64)))
+	if (y > (h/2 + (screenH/(TILE_PX*2))))
 		y-=h;
-	*px=x<<5;
-	*py=y<<5;
+	*px=x<<TILE_PIXEL_SHIFT;
+	*py=y<<TILE_PIXEL_SHIFT;
 }
 
 void Map::displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
 {
-	*px=((mx>>5)+viewportX)&getMaskW();
-	*py=((my>>5)+viewportY)&getMaskH();
+	*px=((mx>>TILE_PIXEL_SHIFT)+viewportX)&getMaskW();
+	*py=((my>>TILE_PIXEL_SHIFT)+viewportY)&getMaskH();
 }
 
 void Map::displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
 {
-	*px=(((mx+16)>>5)+viewportX)&getMaskW();
-	*py=(((my+16)>>5)+viewportY)&getMaskH();
+	*px=(((mx+HALF_TILE_PX)>>TILE_PIXEL_SHIFT)+viewportX)&getMaskW();
+	*py=(((my+HALF_TILE_PX)>>TILE_PIXEL_SHIFT)+viewportY)&getMaskH();
 }
 
 void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY) const
 {
 	int tempX, tempY;
 	if (buildingWidth&0x1)
-		tempX=((mx)>>5)+viewportX;
+		tempX=((mx)>>TILE_PIXEL_SHIFT)+viewportX;
 	else
-		tempX=((mx+16)>>5)+viewportX;
-			
+		tempX=((mx+HALF_TILE_PX)>>TILE_PIXEL_SHIFT)+viewportX;
+
 	if (buildingHeight&0x1)
-		tempY=((my)>>5)+viewportY;
+		tempY=((my)>>TILE_PIXEL_SHIFT)+viewportY;
 	else
-		tempY=((my+16)>>5)+viewportY;
-		
+		tempY=((my+HALF_TILE_PX)>>TILE_PIXEL_SHIFT)+viewportY;
+
 	*px=tempX&getMaskW();
 	*py=tempY&getMaskH();
 }
@@ -73,8 +73,8 @@ void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHei
 void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY) const
 {
 	mapCaseToDisplayable(px, py, mx, my, viewportX, viewportY);
-	*mx+=buildingWidth*16;
-	*my+=buildingHeight*16;
+	*mx+=buildingWidth*HALF_TILE_PX;
+	*my+=buildingHeight*HALF_TILE_PX;
 }
 
 

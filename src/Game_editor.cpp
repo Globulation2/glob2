@@ -99,7 +99,7 @@ int Game::buildingsCount(int team, int type, int level)
 void Game::addTeam(int pos)
 {
 	assert(mapHeader.getNumberOfTeams()<Team::MAX_COUNT);
-	if(pos==-1)
+	if(pos==TEAM_POS_END)
 		pos=mapHeader.getNumberOfTeams();
 	teams[pos]=new Team(this);
 	teams[pos]->teamNumber=mapHeader.getNumberOfTeams();
@@ -121,7 +121,7 @@ void Game::addTeam(int pos)
 
 void Game::removeTeam(int pos)
 {
-	if(pos==-1)
+	if(pos==TEAM_POS_END)
 	{
 		pos=mapHeader.getNumberOfTeams();
 		pos-=1;

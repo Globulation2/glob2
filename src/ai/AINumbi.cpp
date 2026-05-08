@@ -450,6 +450,11 @@ void AINumbi::nextMainBuilding(const int buildingType)
 	{
 		//printf("AI: nextMainBuilding uid=%d\n", b->UID);
 		int id=Building::GIDtoID(b->gid);
+		// [POSSIBLE BUG H1] The mask 0xFF (=255) is hardcoded but the loop bound is
+		// Building::MAX_COUNT (=1024). When (i+id) exceeds 255 the index wraps within
+		// the first 256 building slots, missing buildings 256..1023. Renaming this
+		// literal to Building::MAX_COUNT-1 would change behavior, so the literal is
+		// preserved verbatim. Flagged for fix-time review (do not "fix" here).
 		for (int i=1; i<Building::MAX_COUNT; i++)
 			if ((myBuildings[(i+id)&0xFF])/*&&((myBuildings[(i+id)&0xFF]->type->shortTypeNum==buildingType)||(myBuildings[(i+id)&0xFF]->type->shortTypeNum==0))*/)
 			{
@@ -958,25 +963,25 @@ std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int work
 std::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
 	Building **myBuildings=team->myBuildings;
-	int numberFood[4]={0, 0, 0, 0}; // number of food buildings
-	int numberUpgradingFood[4]={0, 0, 0, 0}; // number of upgrading food buildings
-	Building *foodBuilding[4]={0, 0, 0, 0};
-	
-	int numberHealth[4]={0, 0, 0, 0}; // number of food buildings
-	int numberUpgradingHealth[4]={0, 0, 0, 0}; // number of upgrading food buildings
-	Building *healthBuilding[4]={0, 0, 0, 0};
-	
-	int numberAttack[4]={0, 0, 0, 0}; // number of food buildings
-	int numberUpgradingAttack[4]={0, 0, 0, 0}; // number of upgrading food buildings
-	Building *attackBuilding[4]={0, 0, 0, 0};
-	
-	int numberScience[4]={0, 0, 0, 0}; // number of Science buildings
-	int numberUpgradingScience[4]={0, 0, 0, 0}; // number of upgrading Science buildings
-	Building *scienceBuilding[4]={0, 0, 0, 0};
-	
-	int numberDefense[4]={0, 0, 0, 0}; // number of Defense buildings
-	int numberUpgradingDefense[4]={0, 0, 0, 0}; // number of upgrading Science buildings
-	Building *defenseBuilding[4]={0, 0, 0, 0};
+	int numberFood[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of food buildings
+	int numberUpgradingFood[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading food buildings
+	Building *foodBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
+
+	int numberHealth[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of food buildings
+	int numberUpgradingHealth[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading food buildings
+	Building *healthBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
+
+	int numberAttack[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of food buildings
+	int numberUpgradingAttack[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading food buildings
+	Building *attackBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
+
+	int numberScience[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of Science buildings
+	int numberUpgradingScience[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading Science buildings
+	Building *scienceBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
+
+	int numberDefense[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of Defense buildings
+	int numberUpgradingDefense[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading Science buildings
+	Building *defenseBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
 	
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
@@ -1044,8 +1049,8 @@ std::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger
 	}
 	
 	Unit **myUnits=team->myUnits;
-	int wun[4]={0, 0, 0, 0};//working units
-	int fun[4]={0, 0, 0, 0};//free units
+	int wun[NB_UNIT_LEVELS]={0, 0, 0, 0};//working units
+	int fun[NB_UNIT_LEVELS]={0, 0, 0, 0};//free units
 	{
 		for (int i=0; i<Unit::MAX_COUNT; i++)
 		{

@@ -8,6 +8,7 @@
 #include "ChecksumSidecar.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Player.h"
@@ -26,7 +27,7 @@ using std::shared_ptr;
 // (e.g. user picked a save during play); false means run() returns.
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
-	int speed=40;
+	int speed=GAME_TICK_MS;
 	bool networkReadyToExecute = true;
 
 	// If playing in fast-forward, we process the GUI and draw everything only once every 3 game-steps
@@ -54,7 +55,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 			}
 			else
 			{
-				speed = 40;
+				speed = GAME_TICK_MS;
 				if (nextGuiStep < 0) nextGuiStep = 0;
 			}
 		}
@@ -253,11 +254,11 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 			// we compute timing
 			needToBeTime += speed;
 			Sint64 currentTime = static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(startTime);
-			//if we are more than 500 milliseconds behind where we should be,
+			//if we are more than MAX_CATCHUP_MS milliseconds behind where we should be,
 			//then truncate it. This is to avoid playing "catchup" for long
 			//periods of time if Glob2 recieved allmost no cpu time
-			if((currentTime - needToBeTime) > 500)
-				needToBeTime = currentTime - 500;
+			if((currentTime - needToBeTime) > MAX_CATCHUP_MS)
+				needToBeTime = currentTime - MAX_CATCHUP_MS;
 
 			//Any inconsistancies in the delays will be smoothed throughout the following frames,
 			Uint64 delay = std::max<Sint64>(0, needToBeTime - currentTime);
@@ -290,15 +291,15 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 	if(globalContainer->automaticEndingGame)
 	{
 		int time = gui.game.stepCounter;
-		int seconds = (time / 25) % 60;
-		int minutes = (time / 25) / 60;
+		int seconds = (time / GAME_TICKS_PER_SECOND) % 60;
+		int minutes = (time / GAME_TICKS_PER_SECOND) / 60;
 		std::cout<< "automaticEndingGame ended: "<<time<<" ticks, "<<minutes<<" minutes, "<<seconds<<" seconds"<<std::endl;
 
 		// Machine-parseable summary line for the AI-trainer pipeline (and any
 		// external driver scraping headless output). One line, key=value pairs,
-		// space-separated. Winner is the first team with hasWon set, else -1
-		// (timeout / no winner).
-		int winnerTeam = -1;
+		// space-separated. Winner is the first team with hasWon set, else
+		// WINNER_TEAM_NONE (timeout / no winner).
+		int winnerTeam = WINNER_TEAM_NONE;
 		for (int t = 0; t < gui.game.mapHeader.getNumberOfTeams(); t++)
 		{
 			if (gui.game.teams[t] && gui.game.teams[t]->hasWon)

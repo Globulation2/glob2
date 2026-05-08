@@ -264,8 +264,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 	regenerateMap(0, 0, w, h);
 
-	wSector=w>>4;
-	hSector=h>>4;
+	wSector=w>>Sector::SECTOR_SHIFT;
+	hSector=h>>Sector::SECTOR_SHIFT;
 	sizeSector=wSector*hSector;
 
 	if(sectors)

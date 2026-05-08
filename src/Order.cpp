@@ -5,8 +5,8 @@
 
 Order::Order(void)
 {
-	sender=-1;
-	gameCheckSum=static_cast<unsigned int>(-1);
+	sender=ORDER_SENDER_NONE;
+	gameCheckSum=ORDER_CHECKSUM_NONE;
 }
 
 std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)

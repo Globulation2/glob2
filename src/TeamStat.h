@@ -56,7 +56,7 @@ struct TeamSmoothedStat
 	int totalFree;
 	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
-	int totalNeededPerLevel[4];
+	int totalNeededPerLevel[NB_UNIT_LEVELS];
 };
 
 struct EndOfGameStat

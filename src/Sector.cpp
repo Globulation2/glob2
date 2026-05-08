@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Sector.h"
 #include "Unit.h"
+#include "UnitConsts.h"
 #include "BuildingType.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
@@ -125,7 +126,7 @@ void Sector::step(void)
 				
 				int degats = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor(false);
 				if (degats <= 0)
-					degats = 1;
+					degats = BULLET_MIN_DAMAGE;
 				game->teams[team]->myUnits[id]->hp -= degats;
 			}
 			else
@@ -148,7 +149,7 @@ void Sector::step(void)
 					if (damage > 0)
 						building->hp -= damage;
 					else
-						building->hp--;
+						building->hp -= BULLET_MIN_DAMAGE;
 					if (building->hp <= 0)
 						building->kill();
 				}

@@ -190,7 +190,7 @@ void AICastor::computeRessourcesCluster()
 	memset(ressourcesCluster, 0, size*2);
 	
 	//int i=0;
-	Uint8 old=0xFF;
+	Uint8 old=NO_RES_TYPE;
 	Uint16 id=0;
 	bool usedid[65536];
 	memset(usedid, 0, 65536*sizeof(bool));
@@ -206,10 +206,10 @@ void AICastor::computeRessourcesCluster()
 			Uint16 *rcp=&ressourcesCluster[rci]; // ressource cluster pointer
 			Uint16 rc=*rcp; // ressource cluster
 			
-			if (rt==0xFF)
+			if (rt==NO_RES_TYPE)
 			{
 				*rcp=0;
-				old=0xFF;
+				old=NO_RES_TYPE;
 			}
 			else
 			{

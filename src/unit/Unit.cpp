@@ -10,6 +10,7 @@
 #include "Building.h"
 #include "Integrity.h"
 
+#include "EngineTiming.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include <Stream.h>
@@ -47,7 +48,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	delta=0;
 	dx=0;
 	dy=0;
-	direction=8;
+	direction=UNIT_DIRECTION_NONE;
 	insideTimeout=0;
 	speed=32;
 
@@ -249,7 +250,7 @@ void Unit::syncStep(void)
 				degats=1;
 			enemy->hp-=degats;
 
-			enemy->underAttackTimer = 240;
+			enemy->underAttackTimer = UNDER_ATTACK_TIMER_TICKS;
 
 			enemy->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
 
@@ -268,7 +269,7 @@ void Unit::syncStep(void)
 					degats=1;
 				enemy->hp-=degats;
 
-				enemy->underAttackTimer = 240;
+				enemy->underAttackTimer = UNDER_ATTACK_TIMER_TICKS;
 
 				enemy->owner->pushGameEvent(GameEvent::buildingUnderAttack(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
 
@@ -293,7 +294,7 @@ void Unit::syncStep(void)
 #ifdef BURST_UNIT_MODE
 	delta=0;
 #else
-	if (delta<=255-speed)
+	if (delta<=UNIT_DELTA_MAX-speed)
 	{
 		delta+=speed;
 	}
@@ -301,7 +302,7 @@ void Unit::syncStep(void)
 #endif
 	{
 		//printf("action=%d, speed=%d, perf[a]=%d, t->perf[a]=%d\n", action, speed, performance[action], race->getUnitType(typeNum, 0)->performance[action]);
-		delta+=(speed-256);
+		delta+=(speed-UNIT_DELTA_QUANTUM);
 
 		endOfAction();
 

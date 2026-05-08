@@ -11,6 +11,8 @@
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "EngineTiming.h"
+#include "FileFormatVersions.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Team.h"
@@ -198,17 +200,17 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	posXLocal = posX;
 	posYLocal = posY;
 
-	if(versionMinor>=61)
+	if(versionMinor>=FILE_FORMAT_VERSION_UNDER_ATTACK_TIMER)
 		underAttackTimer = stream->readUint8("underAttackTimer");
 	else
 		underAttackTimer = 0;
-	if(versionMinor>=81)
+	if(versionMinor>=FILE_FORMAT_VERSION_CANNOT_CONVERT_TIMER)
 		canNotConvertUnitTimer = stream->readUint8("canNotConvertUnitTimer");
 	else
-		canNotConvertUnitTimer = 150;
+		canNotConvertUnitTimer = CANNOT_CONVERT_TIMER_INIT;
 
 	// priority
-	if(versionMinor>=79)
+	if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_PRIORITY_FIELD)
 	{
 		priority = stream->readSint32("priority");
 		priorityLocal = stream->readSint32("priorityLocal");
@@ -420,20 +422,20 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
-	if(versionMinor>=65)
+	if(versionMinor>=FILE_FORMAT_VERSION_MAX_UNIT_WORKING_PREVIOUS)
 		maxUnitWorkingPrevious = stream->readSint32("maxUnitWorkingPrevious");
 	else
 		maxUnitWorkingPrevious = maxUnitWorkingPreferred;
-	if(versionMinor>=70)
+	if(versionMinor>=FILE_FORMAT_VERSION_MAX_UNIT_WORKING_FUTURE)
 		maxUnitWorkingFuture = stream->readSint32("maxUnitWorkingFuture");
 	maxUnitWorkingLocal = maxUnitWorking;
 	desiredMaxUnitWorking = maxUnitWorking;
 
-	if(versionMinor>=74 && versionMinor<77)
+	if(versionMinor>=FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_INT && versionMinor<FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_ARRAY)
 	{
 		stream->readSint32("unitsFailingRequirements");
 	}
-	else if(versionMinor>=77)
+	else if(versionMinor>=FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_ARRAY)
 	{
 		stream->readEnterSection("unitsFailingRequirements");
 		for(int i=0; i<UnitCantWorkReasonSize; ++i)
@@ -456,7 +458,7 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		unitsInside.push_front(unit);
 	}
 	
-	if (versionMinor>=80)
+	if (versionMinor>=FILE_FORMAT_VERSION_UNITS_HARVESTING_LIST)
 	{
 		unsigned nbHarvesting = stream->readUint32("nbHarvesting");
 		unitsHarvesting.clear();

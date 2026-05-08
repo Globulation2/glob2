@@ -2,6 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "GameObjectives.h"
+#include "FileFormatVersions.h"
 #include "Stream.h"
 #include <cassert>
 #include <iostream>
@@ -222,7 +223,7 @@ void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMino
 		texts.push_back(stream->readText("text"));
 		hidden.push_back(stream->readUint8("hidden"));
 		completed.push_back(stream->readUint8("completed"));
-		if(versionMinor>=76)
+		if(versionMinor>=FILE_FORMAT_VERSION_BRIEFING_HINTS_OBJ_FAILED)
 			failed.push_back(stream->readUint8("failed"));
 		else
 			failed.push_back(false);
