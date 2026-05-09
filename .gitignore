@@ -4,6 +4,7 @@ libgag.a
 libusl.a
 src/glob2
 test/TestsRunner
+test/WinningConditionsHarness
 testResults.xml
 .sconf_temp
 .sconsign.dblite
