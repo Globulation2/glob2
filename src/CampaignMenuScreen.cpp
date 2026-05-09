@@ -10,7 +10,8 @@
 
 CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 {
-	campaign.load(name);
+	if (!campaign.load(name))
+		campaign.setName(name);
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", campaign.getName());
 	addWidget(title);
 	startMission = new TextButton(10, 430, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[start mission]"), START);

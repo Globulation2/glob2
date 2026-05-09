@@ -7,8 +7,13 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include <iostream>
-#include "Game.h"
-#include "GlobalContainer.h"
+
+// Defined in map/io/MapHeader.cpp. Forward-declared here to avoid pulling
+// MapHeader.h, which transitively includes Team.h / WinningConditions.h /
+// Map.h — none of which Campaign.cpp itself uses.
+std::string glob2NameToFilename(const std::string& dir,
+                                const std::string& name,
+                                const std::string& extension="");
 
 using namespace GAGCore;
 
@@ -175,36 +180,47 @@ Campaign::Campaign()
 bool Campaign::load(const std::string& fileName)
 {
 	StreamBackend* backend = Toolkit::getFileManager()->openInputStreamBackend(fileName);
-	if (backend->isEndOfStream())
+	// openInputStreamBackend never returns nullptr; missing files surface as
+	// a backend wrapping a NULL FILE*, which fails isValid().
+	if (!backend->isValid())
 	{
-		//std::cerr << "Campaign::load(\"" << fileName << "\") : error, can't open file." << std::endl;
+		std::cerr << "Campaign::load(\"" << fileName << "\") : error, can't open file." << std::endl;
 		delete backend;
 		return false;
 	}
-	else
+
+	TextInputStream* stream = new TextInputStream(backend);
+	Uint32 versionMinor = stream->readUint32("versionMinor");
+	// Parser failure on empty/corrupt files leaves versionMinor at the
+	// uninitialized-istream-extract default (0). Reject anything outside the
+	// supported range so corrupt files don't silently produce blank campaigns.
+	if (versionMinor < MINIMUM_VERSION_MINOR || versionMinor > VERSION_MINOR)
 	{
-		TextInputStream* stream = new TextInputStream(backend);
-		Uint32 versionMinor = stream->readUint32("versionMinor");
-		name = stream->readText("campaignName");
-		playerName = stream->readText("playerName");
-		stream->readEnterSection("maps");
-		Uint32 size=stream->readUint32("mapNum");
-		maps.resize(size);
-		for(Uint32 n=0; n<size; ++n)
-		{
-			stream->readEnterSection(n);
-			maps[n].load(stream, versionMinor);
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
-		if(versionMinor >= 83)
-		{
-			description = stream->readText("description");	
-		}
+		std::cerr << "Campaign::load(\"" << fileName << "\") : unsupported or corrupt versionMinor "
+		          << versionMinor << std::endl;
 		delete stream;
 		delete backend;
-		return true;
+		return false;
 	}
+
+	name = stream->readText("campaignName");
+	playerName = stream->readText("playerName");
+	stream->readEnterSection("maps");
+	Uint32 size = stream->readUint32("mapNum");
+	maps.resize(size);
+	for (Uint32 n = 0; n < size; ++n)
+	{
+		stream->readEnterSection(n);
+		maps[n].load(stream, versionMinor);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	if (versionMinor >= 83)
+		description = stream->readText("description");
+
+	delete stream;
+	delete backend;
+	return true;
 }
 
 

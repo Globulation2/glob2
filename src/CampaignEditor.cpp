@@ -13,8 +13,8 @@
 
 CampaignEditor::CampaignEditor(const std::string& name)
 {
-	if(name!="")
-		campaign.load(name);
+	if (name != "" && !campaign.load(name))
+		campaign.setName(name);
 	StringTable& table=*Toolkit::getStringTable();
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", table.getString("[campaign editor]"));
 	mapList = new List(10, 50, 300, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");

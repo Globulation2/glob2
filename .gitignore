@@ -5,6 +5,7 @@ libusl.a
 src/glob2
 test/TestsRunner
 test/WinningConditionsHarness
+test/CampaignLoadHarness
 testResults.xml
 .sconf_temp
 .sconsign.dblite

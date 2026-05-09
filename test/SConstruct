@@ -75,3 +75,29 @@ WinningConditionsTestStubs.cpp
 
 env.Program( target = 'WinningConditionsHarness', source = harness_sources )
 
+
+# Standalone behaviour-equivalence harness for src/Campaign.cpp::load.
+# Verifies that load() correctly distinguishes valid campaigns from missing,
+# empty, garbage, and bogus-version files. Pre-fix tree silently returns true
+# for the four broken cases; post-fix tree returns false. Self-contained:
+# synthesizes its own /tmp fixture files. Links libgag.a (built by the main
+# scons) for FileManager / TextStream / Toolkit; a small stubs file covers
+# the unused glob2NameToFilename symbol that Campaign::save references.
+campaign_env = env.Clone()
+# Use the server-mode libgag (libgag_server.a) so we don't drag in OpenGL /
+# SDL_ttf / SDL_image / fribidi etc. Campaign loading only needs FileManager
+# / Toolkit / TextStream / StreamBackend, all of which are server-safe.
+campaign_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
+campaign_env.Append(LIBPATH = ['../build/libgag/src'])
+campaign_env.Append(LIBS = ['gag_server', 'z'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  campaign_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+campaign_sources = Split("""
+CampaignLoadHarness.cpp
+CampaignLoadTestStubs.cpp
+../src/Campaign.cpp
+""")
+
+campaign_env.Program( target = 'CampaignLoadHarness', source = campaign_sources )
+
