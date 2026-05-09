@@ -3,29 +3,10 @@
 
 #include "echo/Echo.h"
 #include "Building.h"
-#include <stack>
-#include <queue>
-#include <map>
-#include <limits>
-#include <algorithm>
-#include "BuildingType.h"
-#include "IntBuildingType.h"
-#include "Game.h"
-#include "GlobalContainer.h"
-#include "Order.h"
-#include <iterator>
-#include "Utilities.h"
-#include <tuple>
-#include "Brush.h"
 
 using namespace AIEcho;
-using namespace AIEcho::Gradients;
-using namespace AIEcho::Construction;
 using namespace AIEcho::Management;
-using namespace AIEcho::Conditions;
-using namespace AIEcho::SearchTools;
 using namespace boost::logic;
-using std::shared_ptr;
 
 
 RessourceTracker::RessourceTracker(Echo& echo, int building_id, int length, int ressource) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id), ressource(ressource)

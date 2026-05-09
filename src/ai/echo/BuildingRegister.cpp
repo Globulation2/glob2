@@ -3,29 +3,14 @@
 
 #include "echo/Echo.h"
 #include "Building.h"
-#include <stack>
-#include <queue>
-#include <map>
-#include <limits>
-#include <algorithm>
 #include "BuildingType.h"
 #include "IntBuildingType.h"
-#include "Game.h"
-#include "GlobalContainer.h"
-#include "Order.h"
-#include <iterator>
-#include "Utilities.h"
 #include <tuple>
-#include "Brush.h"
 
 using namespace AIEcho;
-using namespace AIEcho::Gradients;
 using namespace AIEcho::Construction;
-using namespace AIEcho::Management;
-using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
 using namespace boost::logic;
-using std::shared_ptr;
 
 
 FlagMap::FlagMap(Echo& echo) : flagmap(echo.player->map->getW()*echo.player->map->getH(), NOGBID), width(echo.player->map->getW()), echo(echo)
@@ -370,7 +355,7 @@ bool BuildingRegister::is_building_upgrading(unsigned int id)
 	{
 		return false;
 	}
-	
+
 	tribool v=std::get<4>(found_buildings[id]);
 	if(v)
 		return true;

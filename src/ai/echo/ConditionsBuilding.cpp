@@ -3,16 +3,10 @@
 
 #include "echo/Echo.h"
 #include "Building.h"
-#include "BuildingType.h"
-#include "IntBuildingType.h"
 #include "Game.h"
 
 using namespace AIEcho;
-using namespace AIEcho::Gradients;
-using namespace AIEcho::Construction;
-using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
-using namespace AIEcho::SearchTools;
 using namespace boost::logic;
 
 
