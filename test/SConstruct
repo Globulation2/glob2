@@ -61,3 +61,17 @@ env.Append(LIBS=['cppunit'])
 
 env.Program( sources )
 
+
+# Standalone behaviour-equivalence harness for WinningConditions.cpp.
+# Emits a deterministic golden text stream covering every WC predicate
+# (Death/Allies/Prestige/Script/OpponentsDefeated). To verify a refactor of
+# WinningConditions.cpp is behaviour-preserving, run on the cleaned-up tree,
+# save stdout, then `git stash` / re-run / diff. Doesn't use cppunit.
+harness_sources = Split("""
+WinningConditionsHarness.cpp
+WinningConditionsTestStubs.cpp
+../src/WinningConditions.cpp
+""")
+
+env.Program( target = 'WinningConditionsHarness', source = harness_sources )
+

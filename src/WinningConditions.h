@@ -32,13 +32,15 @@ enum WinningConditionType
 class WinningCondition
 {
 public:
+	virtual ~WinningCondition() = default;
+
 	// These two methods in WinningConditionScript depend on SGSL.cpp,
 	// but they aren't needed for server.
 #ifndef YOG_SERVER_ONLY
 	///Returns true if the particular player has won according to this winning condition
-	virtual bool hasTeamWon(int team, Game* game)=0;
+	virtual bool hasTeamWon(int team, const Game* game) const = 0;
 	///Returns true if the particular player has lost according to this winning condition
-	virtual bool hasTeamLost(int team, Game* game)=0;
+	virtual bool hasTeamLost(int team, const Game* game) const = 0;
 #endif  // !YOG_SERVER_ONLY
 	///Returns the winning condition type
 	virtual WinningConditionType getType() const=0;
@@ -46,34 +48,34 @@ public:
 	virtual void encodeData(GAGCore::OutputStream* stream) const = 0;
 	///This will decode data. It is important that, unlike encodeData, this must ignore the initial Uint8
 	virtual void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)=0;
-	
+
 	///This will reconstruct a winning condition from serialized data
 	static std::shared_ptr<WinningCondition> getWinningCondition(GAGCore::InputStream* stream, Uint32 versionMinor);
 	///This will set the given list to the default set of winning conditions, in their default order
 	static std::list<std::shared_ptr<WinningCondition> > getDefaultWinningConditions();
-	
+
 };
 
 ///A team has lost if its dead.
 class WinningConditionDeath : public WinningCondition
 {
 public:
-	bool hasTeamWon(int team, Game* game);
-	bool hasTeamLost(int team, Game* game);
-	WinningConditionType getType() const;
-	void encodeData(GAGCore::OutputStream* stream) const;
-	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+	bool hasTeamWon(int team, const Game* game) const override;
+	bool hasTeamLost(int team, const Game* game) const override;
+	WinningConditionType getType() const override;
+	void encodeData(GAGCore::OutputStream* stream) const override;
+	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
 };
 
 ///A team has won if one of its allies has won
 class WinningConditionAllies : public WinningCondition
 {
 public:
-	bool hasTeamWon(int team, Game* game);
-	bool hasTeamLost(int team, Game* game);
-	WinningConditionType getType() const;
-	void encodeData(GAGCore::OutputStream* stream) const;
-	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+	bool hasTeamWon(int team, const Game* game) const override;
+	bool hasTeamLost(int team, const Game* game) const override;
+	WinningConditionType getType() const override;
+	void encodeData(GAGCore::OutputStream* stream) const override;
+	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
 };
 
 ///A team has won if the prestige limit is reached and its above the prestige amount
@@ -81,11 +83,11 @@ public:
 class WinningConditionPrestige : public WinningCondition
 {
 public:
-	bool hasTeamWon(int team, Game* game);
-	bool hasTeamLost(int team, Game* game);
-	WinningConditionType getType() const;
-	void encodeData(GAGCore::OutputStream* stream) const;
-	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+	bool hasTeamWon(int team, const Game* game) const override;
+	bool hasTeamLost(int team, const Game* game) const override;
+	WinningConditionType getType() const override;
+	void encodeData(GAGCore::OutputStream* stream) const override;
+	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
 };
 
 ///A team has won if the script says it has won, and lost if the script says it has lost
@@ -93,23 +95,23 @@ class WinningConditionScript : public WinningCondition
 {
 public:
 #ifndef YOG_SERVER_ONLY
-	bool hasTeamWon(int team, Game* game);
-	bool hasTeamLost(int team, Game* game);
+	bool hasTeamWon(int team, const Game* game) const override;
+	bool hasTeamLost(int team, const Game* game) const override;
 #endif  // !YOG_SERVER_ONLY
-	WinningConditionType getType() const;
-	void encodeData(GAGCore::OutputStream* stream) const;
-	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+	WinningConditionType getType() const override;
+	void encodeData(GAGCore::OutputStream* stream) const override;
+	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
 };
 
 ///A team has won if all enemies have lost
 class WinningConditionOpponentsDefeated : public WinningCondition
 {
 public:
-	bool hasTeamWon(int team, Game* game);
-	bool hasTeamLost(int team, Game* game);
-	WinningConditionType getType() const;
-	void encodeData(GAGCore::OutputStream* stream) const;
-	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+	bool hasTeamWon(int team, const Game* game) const override;
+	bool hasTeamLost(int team, const Game* game) const override;
+	WinningConditionType getType() const override;
+	void encodeData(GAGCore::OutputStream* stream) const override;
+	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
 };
 
 

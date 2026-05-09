@@ -6,50 +6,46 @@
 #include <algorithm>
 #include "Stream.h"
 
+namespace
+{
+	bool teamsAreMutuallyAllied(const Game* game, int a, int b)
+	{
+		const Uint32 aInBsAllies = game->teams[a]->me & game->teams[b]->allies;
+		const Uint32 bInAsAllies = game->teams[b]->me & game->teams[a]->allies;
+		return aInBsAllies && bInAsAllies;
+	}
+
+	int maximumPrestige(const Game* game)
+	{
+		int maximum = 0;
+		for (int i = 0; i < game->mapHeader.getNumberOfTeams(); ++i)
+			maximum = std::max(maximum, game->teams[i]->prestige);
+		return maximum;
+	}
+
+	template <class T>
+	std::shared_ptr<WinningCondition> decodeAs(GAGCore::InputStream* stream, Uint32 versionMinor)
+	{
+		auto condition = std::make_shared<T>();
+		condition->decodeData(stream, versionMinor);
+		return condition;
+	}
+}
+
 std::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
 	if (stream->isEndOfStream())
 		return std::shared_ptr<WinningCondition>();
-	
+
 	Uint8 type = stream->readUint8("type");
-	
+
 	switch (type)
 	{
-		case WCDeath:
-		{
-			std::shared_ptr<WinningConditionDeath> condition(new WinningConditionDeath);
-			condition->decodeData(stream, versionMinor);
-			return condition;
-		}
-		break;
-		case WCAllies:
-		{
-			std::shared_ptr<WinningConditionAllies> condition(new WinningConditionAllies);
-			condition->decodeData(stream, versionMinor);
-			return condition;
-		}
-		break;
-		case WCPrestige:
-		{
-			std::shared_ptr<WinningConditionPrestige> condition(new WinningConditionPrestige);
-			condition->decodeData(stream, versionMinor);
-			return condition;
-		}
-		break;
-		case WCScript:
-		{
-			std::shared_ptr<WinningConditionScript> condition(new WinningConditionScript);
-			condition->decodeData(stream, versionMinor);
-			return condition;
-		}
-		break;
-		case WCOpponentsDefeated:
-		{
-			std::shared_ptr<WinningConditionOpponentsDefeated> condition(new WinningConditionOpponentsDefeated);
-			condition->decodeData(stream, versionMinor);
-			return condition;
-		}
-		break;
+		case WCDeath:             return decodeAs<WinningConditionDeath>(stream, versionMinor);
+		case WCAllies:            return decodeAs<WinningConditionAllies>(stream, versionMinor);
+		case WCPrestige:          return decodeAs<WinningConditionPrestige>(stream, versionMinor);
+		case WCScript:            return decodeAs<WinningConditionScript>(stream, versionMinor);
+		case WCOpponentsDefeated: return decodeAs<WinningConditionOpponentsDefeated>(stream, versionMinor);
 		case WCUnknown:
 		default:
 			break;
@@ -61,29 +57,27 @@ std::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCore:
 
 std::list<std::shared_ptr<WinningCondition> > WinningCondition::getDefaultWinningConditions()
 {
-	std::list<std::shared_ptr<WinningCondition> > conditions;
-	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionDeath));
-	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionAllies));
-	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionPrestige));
-	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionScript));
-	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionOpponentsDefeated));
-	return conditions;
+	return {
+		std::make_shared<WinningConditionDeath>(),
+		std::make_shared<WinningConditionAllies>(),
+		std::make_shared<WinningConditionPrestige>(),
+		std::make_shared<WinningConditionScript>(),
+		std::make_shared<WinningConditionOpponentsDefeated>(),
+	};
 }
 
 
 
-bool WinningConditionDeath::hasTeamWon(int team, Game* game)
+bool WinningConditionDeath::hasTeamWon(int team, const Game* game) const
 {
 	return false;
 }
 
 
 
-bool WinningConditionDeath::hasTeamLost(int team, Game* game)
+bool WinningConditionDeath::hasTeamLost(int team, const Game* game) const
 {
-	if(game->teams[team]->isAlive)
-		return false;
-	return true;
+	return !game->teams[team]->isAlive;
 }
 
 
@@ -112,25 +106,21 @@ void WinningConditionDeath::decodeData(GAGCore::InputStream* stream, Uint32 vers
 
 
 
-bool WinningConditionAllies::hasTeamWon(int team, Game* game)
+bool WinningConditionAllies::hasTeamWon(int team, const Game* game) const
 {
 	for(int i=0; i<game->mapHeader.getNumberOfTeams(); ++i)
 	{
-		Uint32 playerToMeAllyMask = game->teams[team]->me & game->teams[i]->allies;
-		Uint32 meToPlayerAllyMask = game->teams[i]->me & game->teams[team]->allies;
-		if(playerToMeAllyMask && meToPlayerAllyMask && game->teams[i]->hasWon)
-		{
+		if(teamsAreMutuallyAllied(game, team, i) && game->teams[i]->hasWon)
 			return true;
-		}
 	}
 	return false;
 }
 
 
 
-bool WinningConditionAllies::hasTeamLost(int team, Game* game)
+bool WinningConditionAllies::hasTeamLost(int team, const Game* game) const
 {
-	return false;	
+	return false;
 }
 
 
@@ -159,42 +149,20 @@ void WinningConditionAllies::decodeData(GAGCore::InputStream* stream, Uint32 ver
 
 
 
-bool WinningConditionPrestige::hasTeamWon(int team, Game* game)
+bool WinningConditionPrestige::hasTeamWon(int team, const Game* game) const
 {
-	if(game->totalPrestige >= game->prestigeToReach)
-	{
-		int totalPrestige=0;
-		int maximum = 0;
-		for(int i=0; i<game->mapHeader.getNumberOfTeams(); ++i)
-		{
-			totalPrestige += game->teams[i]->prestige;
-			maximum = std::max(maximum, game->teams[i]->prestige);
-		}
-	
-		if(game->teams[team]->prestige == maximum)
-			return true;
-	}
-	return false;
+	if(game->totalPrestige < game->prestigeToReach)
+		return false;
+	return game->teams[team]->prestige == maximumPrestige(game);
 }
 
 
 
-bool WinningConditionPrestige::hasTeamLost(int team, Game* game)
+bool WinningConditionPrestige::hasTeamLost(int team, const Game* game) const
 {
-	if(game->totalPrestige >= game->prestigeToReach)
-	{
-		int totalPrestige=0;
-		int maximum = 0;
-		for(int i=0; i<game->mapHeader.getNumberOfTeams(); ++i)
-		{
-			totalPrestige += game->teams[i]->prestige;
-			maximum = std::max(maximum, game->teams[i]->prestige);
-		}
-	
-		if(game->teams[team]->prestige < maximum)
-			return true;
-	}
-	return false;
+	if(game->totalPrestige < game->prestigeToReach)
+		return false;
+	return game->teams[team]->prestige < maximumPrestige(game);
 }
 
 
@@ -223,24 +191,16 @@ void WinningConditionPrestige::decodeData(GAGCore::InputStream* stream, Uint32 v
 
 
 #ifndef YOG_SERVER_ONLY
-bool WinningConditionScript::hasTeamWon(int team, Game* game)
+bool WinningConditionScript::hasTeamWon(int team, const Game* game) const
 {
-	if(game->sgslScript.hasTeamWon(team))
-	{
-		return true;
-	}
-	return false;
+	return game->sgslScript.hasTeamWon(team);
 }
 
 
 
-bool WinningConditionScript::hasTeamLost(int team, Game* game)
+bool WinningConditionScript::hasTeamLost(int team, const Game* game) const
 {
-	if(game->sgslScript.hasTeamLost(team))
-	{
-		return true;
-	}
-	return false;
+	return game->sgslScript.hasTeamLost(team);
 }
 #endif  // !YOG_SERVER_ONLY
 
@@ -269,26 +229,19 @@ void WinningConditionScript::decodeData(GAGCore::InputStream* stream, Uint32 ver
 
 
 
-bool WinningConditionOpponentsDefeated::hasTeamWon(int team, Game* game)
+bool WinningConditionOpponentsDefeated::hasTeamWon(int team, const Game* game) const
 {
-	bool allEnemiesLost = true;
 	for(int i=0; i<game->mapHeader.getNumberOfTeams(); ++i)
 	{
-		Uint32 playerToMeAllyMask = game->teams[team]->me & game->teams[i]->allies;
-		Uint32 meToPlayerAllyMask = game->teams[i]->me & game->teams[team]->allies;
-		if((playerToMeAllyMask == 0 || meToPlayerAllyMask==0) && game->teams[i]->hasLost == false)
-		{
-			allEnemiesLost=false;
-		}
+		if(!teamsAreMutuallyAllied(game, team, i) && !game->teams[i]->hasLost)
+			return false;
 	}
-	if(allEnemiesLost)
-		return true;
-	return false;
+	return true;
 }
 
 
 
-bool WinningConditionOpponentsDefeated::hasTeamLost(int team, Game* game)
+bool WinningConditionOpponentsDefeated::hasTeamLost(int team, const Game* game) const
 {
 	return false;
 }

@@ -1504,7 +1504,7 @@ void MapScriptSGSL::reset(void)
 	flags.clear();
 }
 
-bool MapScriptSGSL::testMainTimer()
+bool MapScriptSGSL::testMainTimer() const
 {
 	return (mainTimer <= 0);
 }
@@ -2426,7 +2426,7 @@ ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
 	return er;
 }
 
-bool MapScriptSGSL::hasTeamWon(unsigned teamNumber)
+bool MapScriptSGSL::hasTeamWon(unsigned teamNumber) const
 {
 	// Seb: Cheapo hack. Script should intialize hasWon first :-)
 	if (testMainTimer() && hasWon.size()>teamNumber)
@@ -2436,7 +2436,7 @@ bool MapScriptSGSL::hasTeamWon(unsigned teamNumber)
 	return false;
 }
 
-bool MapScriptSGSL::hasTeamLost(unsigned teamNumber)
+bool MapScriptSGSL::hasTeamLost(unsigned teamNumber) const
 {
 	// Seb: Cheapo hack. Script should intialize hasLost first :-)
 	if(hasLost.size()>teamNumber)

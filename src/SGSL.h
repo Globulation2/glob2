@@ -314,8 +314,8 @@ public:
 
 	void syncStep(GameGUI *gui);
 	Sint32 checkSum();
-	bool hasTeamWon(unsigned teamNumber);
-	bool hasTeamLost(unsigned teamNumber);
+	bool hasTeamWon(unsigned teamNumber) const;
+	bool hasTeamLost(unsigned teamNumber) const;
 	int getMainTimer(void) { return mainTimer; }
 	
 	/// Adds a team
@@ -335,7 +335,7 @@ private:
 	friend class Story;
 
 	ErrorReport parseScript(Aquisition *donnees, Game *game);
-	bool testMainTimer(void);
+	bool testMainTimer(void) const;
 
 	Functions functions;
 
