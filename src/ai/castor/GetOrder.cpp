@@ -242,108 +242,102 @@ std::shared_ptr<Order>AICastor::getOrder()
 	return shared_ptr<Order>(new NullOrder());
 }
 
+// Default build-policy table for AICastor::defineStrategy().
+//
+// One row per hard building, indexed by IntBuildingType::Number 0..7
+// (SWARM, FOOD, HEAL, WALKSPEED, SWIMSPEED, ATTACK, SCIENCE, DEFENSE).
+// Field names mirror Strategy::Build exactly so the table copies into
+// strategy.build[i] field-for-field.
+//
+// finalWorkers is -1 for HEAL / WALKSPEED / SWIMSPEED / ATTACK / SCIENCE
+// because the original defineStrategy() left those slots at the -1 set
+// by the pre-fill loop (only SWARM, FOOD, DEFENSE were re-assigned).
+// Encoding -1 explicitly here preserves identical post-init state.
+//
+// Behavior is byte-for-byte preserved vs the previous column-by-column
+// init in GetOrder.cpp:257-333. Network checksums and replay output
+// are unaffected.
+namespace
+{
+	struct CastorStrategyDefaults
+	{
+		Sint32 successWait;
+		Sint32 isFreePart;
+		Sint32 warLevelTrigger;
+		Uint32 warTimeTrigger;
+		Sint32 warAmountTrigger;
+		Sint32 strikeWarPowerTriggerUp;
+		Sint32 strikeWarPowerTriggerDown;
+		Uint32 strikeTimeTrigger;
+		Sint32 maxAmountGoal;
+	};
+
+	// Per-hard-building base/new policy table.
+	// Column order matches Strategy::Build field order.
+	// Row order matches IntBuildingType::Number 0..7.
+	static constexpr AICastor::Strategy::Build DEFAULT_BUILD_POLICIES[AICastor::NB_HARD_BUILDING] =
+	{
+		// baseOrder, base, baseWorkers, baseUpgrade, finalWorkers, newOrder, news, newWorkers, newUpgrade
+		/* 0 SWARM_BUILDING     */ { 1, 2, 2, 0,  2, 1,  1, 3,  0 },
+		/* 1 FOOD_BUILDING      */ { 4, 4, 3, 2,  1, 2,  7, 2,  3 },
+		/* 2 HEAL_BUILDING      */ { 5, 2, 1, 2, -1, 5,  5, 2,  5 },
+		/* 3 WALKSPEED_BUILDING */ { 7, 1, 5, 0, -1, 6,  1, 4,  0 },
+		/* 4 SWIMSPEED_BUILDING */ { 6, 1, 3, 0, -1, 7,  1, 4,  0 },
+		/* 5 ATTACK_BUILDING    */ { 2, 2, 2, 2, -1, 4,  2, 5,  2 },
+		/* 6 SCIENCE_BUILDING   */ { 0, 2, 5, 2, -1, 3,  2, 7,  2 },
+		/* 7 DEFENSE_BUILDING   */ { 3, 2, 2, 1,  2, 0, 10, 4, 10 },
+	};
+
+	// Scalar strategy defaults set once per game by defineStrategy().
+	// strikeTimeTrigger = 32768 ticks ≈ 21 min 51 s.
+	// isFreePart = 10 (denominator for "1/N of pop = excess"; "good in [3..20]" per source comment).
+	static constexpr CastorStrategyDefaults DEFAULTS =
+	{
+		/* successWait               */ 0,     // TODO: use a "lowDiscovered" flag instead
+		/* isFreePart                */ 10,    // good in [3..20]
+		/* warLevelTrigger           */ 1,
+		/* warTimeTrigger            */ 8192,
+		/* warAmountTrigger          */ 3,
+		/* strikeWarPowerTriggerUp   */ 4096,
+		/* strikeWarPowerTriggerDown */ 2048,
+		/* strikeTimeTrigger         */ 32768, // 21 min 51 s
+		/* maxAmountGoal             */ 10,
+	};
+}
+
 void AICastor::defineStrategy()
 {
 	strategy.defined=true;
-	
+
+	// Pre-fill all NB_BUILDING (=13) slots, including the non-hard
+	// EXPLORATION_FLAG / WAR_FLAG / CLEARING_FLAG / STONE_WALL /
+	// MARKET_BUILDING entries, with the "unset" sentinel for the three
+	// fields the original code touched in this pre-pass. The remaining
+	// six Build fields stay uninitialized for slots 8..12, matching the
+	// pre-refactor behavior (Strategy::Build has no default ctor).
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
-		strategy.build[bi].baseOrder=-1;
-	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
-		strategy.build[bi].newOrder=-1;
-	
-	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
-		strategy.build[bi].finalWorkers=-1;
-	
-	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseOrder=0;
-	strategy.build[IntBuildingType::SWARM_BUILDING].baseOrder=1;
-	strategy.build[IntBuildingType::ATTACK_BUILDING].baseOrder=2;
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].baseOrder=3;
-	strategy.build[IntBuildingType::FOOD_BUILDING].baseOrder=4;
-	strategy.build[IntBuildingType::HEAL_BUILDING].baseOrder=5;
-	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseOrder=6;
-	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseOrder=7;
-	
-	strategy.build[IntBuildingType::SCIENCE_BUILDING].base=2;
-	strategy.build[IntBuildingType::SWARM_BUILDING].base=2;
-	strategy.build[IntBuildingType::ATTACK_BUILDING].base=2;
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].base=2;
-	strategy.build[IntBuildingType::FOOD_BUILDING].base=4;
-	strategy.build[IntBuildingType::HEAL_BUILDING].base=2;
-	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].base=1;
-	strategy.build[IntBuildingType::WALKSPEED_BUILDING].base=1;
-	
-	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseWorkers=5;
-	strategy.build[IntBuildingType::SWARM_BUILDING].baseWorkers=2;
-	strategy.build[IntBuildingType::ATTACK_BUILDING].baseWorkers=2;
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].baseWorkers=2;
-	strategy.build[IntBuildingType::FOOD_BUILDING].baseWorkers=3;
-	strategy.build[IntBuildingType::HEAL_BUILDING].baseWorkers=1;
-	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseWorkers=3;
-	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseWorkers=5;
-	
-	strategy.build[IntBuildingType::SCIENCE_BUILDING].baseUpgrade=2;
-	strategy.build[IntBuildingType::SWARM_BUILDING].baseUpgrade=0;
-	strategy.build[IntBuildingType::ATTACK_BUILDING].baseUpgrade=2;
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].baseUpgrade=1;
-	strategy.build[IntBuildingType::FOOD_BUILDING].baseUpgrade=2;
-	strategy.build[IntBuildingType::HEAL_BUILDING].baseUpgrade=2;
-	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].baseUpgrade=0;
-	strategy.build[IntBuildingType::WALKSPEED_BUILDING].baseUpgrade=0;
-	
-	
-	strategy.build[IntBuildingType::SWARM_BUILDING].finalWorkers=2;
-	strategy.build[IntBuildingType::FOOD_BUILDING].finalWorkers=1;
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].finalWorkers=2;
-	
-	
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].newOrder=0;
-	strategy.build[IntBuildingType::SWARM_BUILDING].newOrder=1;
-	strategy.build[IntBuildingType::FOOD_BUILDING].newOrder=2;
-	strategy.build[IntBuildingType::SCIENCE_BUILDING].newOrder=3;
-	strategy.build[IntBuildingType::ATTACK_BUILDING].newOrder=4;
-	strategy.build[IntBuildingType::HEAL_BUILDING].newOrder=5;
-	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newOrder=6;
-	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newOrder=7;
-	
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].news=10;
-	strategy.build[IntBuildingType::SWARM_BUILDING].news=1;
-	strategy.build[IntBuildingType::FOOD_BUILDING].news=7;
-	strategy.build[IntBuildingType::SCIENCE_BUILDING].news=2;
-	strategy.build[IntBuildingType::ATTACK_BUILDING].news=2;
-	strategy.build[IntBuildingType::HEAL_BUILDING].news=5;
-	strategy.build[IntBuildingType::WALKSPEED_BUILDING].news=1;
-	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].news=1;
-	
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].newWorkers=4;
-	strategy.build[IntBuildingType::SWARM_BUILDING].newWorkers=3;
-	strategy.build[IntBuildingType::FOOD_BUILDING].newWorkers=2;
-	strategy.build[IntBuildingType::SCIENCE_BUILDING].newWorkers=7;
-	strategy.build[IntBuildingType::ATTACK_BUILDING].newWorkers=5;
-	strategy.build[IntBuildingType::HEAL_BUILDING].newWorkers=2;
-	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newWorkers=4;
-	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newWorkers=4;
-	
-	strategy.build[IntBuildingType::DEFENSE_BUILDING].newUpgrade=10;
-	strategy.build[IntBuildingType::SWARM_BUILDING].newUpgrade=0;
-	strategy.build[IntBuildingType::FOOD_BUILDING].newUpgrade=3;
-	strategy.build[IntBuildingType::SCIENCE_BUILDING].newUpgrade=2;
-	strategy.build[IntBuildingType::ATTACK_BUILDING].newUpgrade=2;
-	strategy.build[IntBuildingType::HEAL_BUILDING].newUpgrade=5;
-	strategy.build[IntBuildingType::WALKSPEED_BUILDING].newUpgrade=0;
-	strategy.build[IntBuildingType::SWIMSPEED_BUILDING].newUpgrade=0;
-	
-	strategy.successWait=0; // TODO: use a "lowDiscovered" flag instead
-	strategy.isFreePart=10; // good in [3..20]
-	
-	strategy.warLevelTrigger=1;
-	strategy.warTimeTrigger=8192;
-	strategy.warAmountTrigger=3;
-	
-	strategy.strikeWarPowerTriggerUp=4096;
-	strategy.strikeWarPowerTriggerDown=2048;
-	strategy.strikeTimeTrigger=32768; //21min51s
-	strikeTimeTrigger=strategy.strikeTimeTrigger;
-	
-	strategy.maxAmountGoal=10;
+	{
+		strategy.build[bi].baseOrder    = -1;
+		strategy.build[bi].newOrder     = -1;
+		strategy.build[bi].finalWorkers = -1;
+	}
+
+	// Apply the per-hard-building default policy table to slots 0..7.
+	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
+		strategy.build[bi] = DEFAULT_BUILD_POLICIES[bi];
+
+	strategy.successWait              = DEFAULTS.successWait;
+	strategy.isFreePart               = DEFAULTS.isFreePart;
+
+	strategy.warLevelTrigger          = DEFAULTS.warLevelTrigger;
+	strategy.warTimeTrigger           = DEFAULTS.warTimeTrigger;
+	strategy.warAmountTrigger         = DEFAULTS.warAmountTrigger;
+
+	strategy.strikeWarPowerTriggerUp  = DEFAULTS.strikeWarPowerTriggerUp;
+	strategy.strikeWarPowerTriggerDown= DEFAULTS.strikeWarPowerTriggerDown;
+	strategy.strikeTimeTrigger        = DEFAULTS.strikeTimeTrigger;
+	strikeTimeTrigger                 = strategy.strikeTimeTrigger;
+
+	strategy.maxAmountGoal            = DEFAULTS.maxAmountGoal;
 }
 
