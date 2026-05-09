@@ -74,6 +74,11 @@ public:
 	size_t getMapCount() const;
 	///Returns the name of the map n
 	CampaignMapEntry& getMap(unsigned n);
+	///Looks up an unlocked map by its display name.
+	///Returns nullptr if no map with that name exists or if the matching map is still locked.
+	///Use this from UI selection paths so a list-index mismatch (the displayed list shows
+	///only unlocked maps; campaign.maps holds locked entries too) cannot confuse the lookup.
+	CampaignMapEntry* findUnlockedMap(const std::string& mapName);
 	///Appends a map to the list of maps
 	void appendMap(CampaignMapEntry& map);
 	///Removes map n

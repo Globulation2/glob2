@@ -101,3 +101,19 @@ CampaignLoadTestStubs.cpp
 
 campaign_env.Program( target = 'CampaignLoadHarness', source = campaign_sources )
 
+
+# Standalone regression harness for CS-051 (CampaignMenuScreen selection
+# index/name divergence). Builds a non-linear-unlock campaign in memory,
+# proves the old `campaign.getMap(displayedIndex)` algorithm picks the
+# wrong map, and proves `Campaign::findUnlockedMap(name)` picks the right
+# one. Pre-fix tree fails to LINK (helper does not exist); post-fix tree
+# builds and exits 0. Reuses the same env / libgag_server.a / stubs as
+# CampaignLoadHarness because Campaign.cpp's link surface is identical.
+campaign_sel_sources = Split("""
+CampaignSelectionHarness.cpp
+CampaignLoadTestStubs.cpp
+../src/Campaign.cpp
+""")
+
+campaign_env.Program( target = 'CampaignSelectionHarness', source = campaign_sel_sources )
+

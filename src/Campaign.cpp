@@ -265,6 +265,18 @@ CampaignMapEntry& Campaign::getMap(unsigned n)
 
 
 
+CampaignMapEntry* Campaign::findUnlockedMap(const std::string& mapName)
+{
+	for (size_t n = 0; n < maps.size(); ++n)
+	{
+		if (maps[n].getMapName() == mapName && maps[n].isUnlocked())
+			return &maps[n];
+	}
+	return nullptr;
+}
+
+
+
 void Campaign::appendMap(CampaignMapEntry& map)
 {
 	maps.push_back(map);

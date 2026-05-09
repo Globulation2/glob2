@@ -21,11 +21,7 @@ CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 	playerName = new TextInput(330, 225, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", campaign.getPlayerName());
 	addWidget(playerName);
 	availableMissions = new CheckList(10, 50, 300, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	for(unsigned i=0; i<campaign.getMapCount(); ++i)
-	{
-		if(campaign.getMap(i).isUnlocked())
-			availableMissions->addItem(campaign.getMap(i).getMapName(), campaign.getMap(i).isCompleted());
-	}
+	repopulateAvailableMissions();
 	addWidget(availableMissions);
 	
 	
@@ -47,10 +43,11 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if((par1==START))
 		{
-			if (availableMissions->getSelectionIndex() >= 0)
+			CampaignMapEntry* selected = campaign.findUnlockedMap(availableMissions->get());
+			if (selected)
 			{
 				Engine engine;
-				int rc_e = engine.initCampaign(getMissionName(), campaign, availableMissions->get());
+				int rc_e = engine.initCampaign(selected->getMapFileName(), campaign, selected->getMapName());
 				if (rc_e == Engine::EE_NO_ERROR)
 				{
 	    			int rcr = engine.run();
@@ -61,12 +58,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 				{
 					endExecute(-1);
 				}
-				availableMissions->clear();
-				for(unsigned i=0; i<campaign.getMapCount(); ++i)
-				{
-					if(campaign.getMap(i).isUnlocked())
-						availableMissions->addItem(campaign.getMap(i).getMapName(), campaign.getMap(i).isCompleted());
-				}
+				repopulateAvailableMissions();
 				campaign.save(true);
 			}
 		}
@@ -80,26 +72,25 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action == LIST_ELEMENT_SELECTED)
 	{
-		std::string mapFileName = campaign.getMap(availableMissions->getSelectionIndex()).getMapFileName();
-		mapPreview->setMapThumbnail(mapFileName.c_str());
-		description->setText(Toolkit::getStringTable()->getString(campaign.getMap(availableMissions->getSelectionIndex()).getDescription()));
+		CampaignMapEntry* selected = campaign.findUnlockedMap(availableMissions->get());
+		if (selected)
+		{
+			mapPreview->setMapThumbnail(selected->getMapFileName().c_str());
+			description->setText(Toolkit::getStringTable()->getString(selected->getDescription()));
+		}
 	}
 }
 
 
 
-
-std::string CampaignMenuScreen::getMissionName()
+void CampaignMenuScreen::repopulateAvailableMissions()
 {
-	for(unsigned n=0; n<campaign.getMapCount(); ++n)
+	availableMissions->clear();
+	for (unsigned i = 0; i < campaign.getMapCount(); ++i)
 	{
-		if(campaign.getMap(n).getMapName() == availableMissions->get())
-		{
-			return campaign.getMap(n).getMapFileName();
-		}
+		if (campaign.getMap(i).isUnlocked())
+			availableMissions->addItem(campaign.getMap(i).getMapName(), campaign.getMap(i).isCompleted());
 	}
-	assert(false);
-	return "";
 }
 
 

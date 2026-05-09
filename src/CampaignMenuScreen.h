@@ -19,7 +19,6 @@ class CampaignMenuScreen : public Glob2Screen
 public:
 	CampaignMenuScreen(const std::string& name);
 	void onAction(Widget *source, Action action, int par1, int par2);
-	std::string getMissionName();
 	void setNewCampaign();
 	enum
 	{
@@ -48,6 +47,8 @@ private:
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 
+	//! Rebuild the displayed mission list from the current campaign state.
+	void repopulateAvailableMissions();
 };
 
 
