@@ -26,35 +26,33 @@ void ChangeAlliances::modify(Echo& echo)
 	Uint32 inn_mask=echo.inn_view;
 	Uint32 other_mask=echo.other_view;
 	Team* t=echo.player->game->teams[team];
+	// t->me is always a single bit (Team::teamNumberToMask = 1 << teamNumber),
+	// so &= ~t->me clears it cleanly; the legacy `if(mask&t->me) mask^=t->me;`
+	// pattern was equivalent but obscured the intent.
 	if(is_allied)
 		alliedmask|=t->me;
 	else if(!is_allied)
-		if(alliedmask&t->me)
-			alliedmask^=t->me;
+		alliedmask&=~t->me;
 
 	if(is_enemy)
 		enemymask|=t->me;
 	else if(!is_enemy)
-		if(enemymask&t->me)
-			enemymask^=t->me;
+		enemymask&=~t->me;
 
 	if(view_market)
 		market_mask|=t->me;
 	else if(!view_market)
-		if(market_mask&t->me)
-			market_mask^=t->me;
+		market_mask&=~t->me;
 
 	if(view_inn)
 		inn_mask|=t->me;
 	else if(!view_inn)
-		if(inn_mask&t->me)
-			inn_mask^=t->me;
+		inn_mask&=~t->me;
 
 	if(view_other)
 		other_mask|=t->me;
 	else if(!view_other)
-		if(other_mask&t->me)
-			other_mask^=t->me;
+		other_mask&=~t->me;
 
 	echo.allies=alliedmask;
 	echo.enemies=enemymask;
@@ -120,6 +118,7 @@ bool ChangeAlliances::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	else if(tmp==AI_ECHO_TRIBOOL_INDETERMINATE)
 		view_other=indeterminate;
 
+	stream->readLeaveSection();
 	return true;
 }
 
@@ -186,12 +185,7 @@ void UpgradeRepair::modify(Echo& echo)
 
 boost::logic::tribool UpgradeRepair::wait(Echo& echo)
 {
-	if(echo.get_building_register().is_building_found(id))
-		return true;
-	else if(echo.get_building_register().is_building_pending(id))
-		return false;
-	else
-		return indeterminate;
+	return wait_for_building(echo, id);
 }
 
 

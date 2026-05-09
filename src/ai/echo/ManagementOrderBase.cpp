@@ -73,10 +73,7 @@ boost::logic::tribool ManagementOrder::passes_conditions(Echo& echo)
 		return true;
 	if(!passes)
 		return false;
-	else
-		return indeterminate;
-
-	return true;
+	return indeterminate;
 }
 
 
@@ -96,12 +93,7 @@ void AssignWorkers::modify(Echo& echo)
 
 boost::logic::tribool AssignWorkers::wait(Echo& echo)
 {
-	if(echo.get_building_register().is_building_found(building_id))
-		return true;
-	else if(echo.get_building_register().is_building_pending(building_id))
-		return false;
-	else
-		return indeterminate;
+	return wait_for_building(echo, building_id);
 }
 
 
@@ -148,12 +140,7 @@ void ChangeSwarm::modify(Echo& echo)
 
 boost::logic::tribool ChangeSwarm::wait(Echo& echo)
 {
-	if(echo.get_building_register().is_building_found(building_id))
-		return true;
-	else if(echo.get_building_register().is_building_pending(building_id))
-		return false;
-	else
-		return indeterminate;
+	return wait_for_building(echo, building_id);
 }
 
 
@@ -202,12 +189,7 @@ void DestroyBuilding::modify(Echo& echo)
 
 boost::logic::tribool DestroyBuilding::wait(Echo& echo)
 {
-	if(echo.get_building_register().is_building_found(building_id))
-		return true;
-	else if(echo.get_building_register().is_building_pending(building_id))
-		return false;
-	else
-		return indeterminate;
+	return wait_for_building(echo, building_id);
 }
 
 

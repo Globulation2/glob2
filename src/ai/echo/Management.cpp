@@ -75,6 +75,7 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 			mo->load(stream, player, versionMinor);
 			break;
 	}
+	stream->readLeaveSection();
 	return mo;
 }
 
@@ -86,5 +87,16 @@ void ManagementOrder::save_order(ManagementOrder* mo, GAGCore::OutputStream *str
 	stream->writeUint32(mo->get_type(), "type");
 	mo->save(stream);
 	stream->writeLeaveSection();
+}
+
+
+
+boost::logic::tribool ManagementOrder::wait_for_building(Echo& echo, int building_id)
+{
+	if(echo.get_building_register().is_building_found(building_id))
+		return true;
+	if(echo.get_building_register().is_building_pending(building_id))
+		return false;
+	return boost::logic::indeterminate;
 }
 

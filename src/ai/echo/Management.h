@@ -66,6 +66,11 @@ namespace AIEcho
 			virtual void save(GAGCore::OutputStream *stream);
 			virtual ManagementOrderType get_type()=0;
 
+			///Shared wait() implementation for orders that target a single building:
+			///true once the building is constructed, false while it's pending,
+			///indeterminate once it has gone away (so the order is dropped).
+			static boost::logic::tribool wait_for_building(Echo& echo, int building_id);
+
 		private:
 			friend class AIEcho::Echo;
 			boost::logic::tribool passes_conditions(Echo& echo);
@@ -330,9 +335,9 @@ namespace AIEcho
 			///on each of the possible alliances. If you pass in true, that alliance mode is set. If you pass in false, that alliance
 			///mode is unset. If you pass in undeterminate, that alliance mode is not changed, keeping whatever value it had before.
 			ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other);
+		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
-		protected:
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -350,11 +355,11 @@ namespace AIEcho
 		{
 		public:
 			UpgradeRepair(int id);
-			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
 		protected:
 			friend class ManagementOrder;
 			UpgradeRepair() {}
+			void modify(Echo& echo);
+			boost::logic::tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -371,11 +376,11 @@ namespace AIEcho
 		{
 		public:
 			SendMessage(const std::string& message);
-			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
 		protected:
 			friend class ManagementOrder;
 			SendMessage() {}
+			void modify(Echo& echo);
+			boost::logic::tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);

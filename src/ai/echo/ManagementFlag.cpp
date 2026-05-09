@@ -11,6 +11,55 @@ using namespace boost::logic;
 using std::shared_ptr;
 
 
+namespace
+{
+	int priority_to_int(AdjustPriority::BuildingPriority priority)
+	{
+		switch(priority)
+		{
+			case AdjustPriority::Low:    return AI_ECHO_PRIORITY_LOW;
+			case AdjustPriority::Medium: return AI_ECHO_PRIORITY_MEDIUM;
+			case AdjustPriority::High:   return AI_ECHO_PRIORITY_HIGH;
+		}
+		return AI_ECHO_PRIORITY_MEDIUM;
+	}
+
+	AdjustPriority::BuildingPriority int_to_priority(int p)
+	{
+		if(p == AI_ECHO_PRIORITY_LOW)  return AdjustPriority::Low;
+		if(p == AI_ECHO_PRIORITY_HIGH) return AdjustPriority::High;
+		return AdjustPriority::Medium;
+	}
+
+	void apply_area_modification(Echo& echo, AreaType areatype,
+	                             const std::vector<position>& locations,
+	                             Uint8 mode)
+	{
+		BrushAccumulator acc;
+		for(std::vector<position>::const_iterator i=locations.begin(); i!=locations.end(); ++i)
+		{
+			acc.applyBrush(BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0), echo.player->map);
+		}
+		if(acc.getApplicationCount()==0)
+			return;
+		Uint8 team = echo.player->team->teamNumber;
+		const Map* map = echo.player->map;
+		switch(areatype)
+		{
+			case ClearingArea:
+				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(team, mode, &acc, map)));
+				break;
+			case ForbiddenArea:
+				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(team, mode, &acc, map)));
+				break;
+			case GuardArea:
+				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(team, mode, &acc, map)));
+				break;
+		}
+	}
+}
+
+
 ChangeFlagSize::ChangeFlagSize(int size, int building_id) : size(size), building_id(building_id)
 {
 
@@ -27,18 +76,7 @@ void ChangeFlagSize::modify(Echo& echo)
 
 boost::logic::tribool ChangeFlagSize::wait(Echo& echo)
 {
-	if(echo.get_building_register().is_building_found(building_id))
-	{
-		return true;
-	}
-	else if(echo.get_building_register().is_building_pending(building_id))
-	{
-		return false;
-	}
-	else
-	{
-		return indeterminate;
-	}
+	return wait_for_building(echo, building_id);
 }
 
 
@@ -82,12 +120,7 @@ void ChangeFlagMinimumLevel::modify(Echo& echo)
 
 boost::logic::tribool ChangeFlagMinimumLevel::wait(Echo& echo)
 {
-	if(echo.get_building_register().is_building_found(building_id))
-		return true;
-	else if(echo.get_building_register().is_building_pending(building_id))
-		return false;
-	else
-		return indeterminate;
+	return wait_for_building(echo, building_id);
 }
 
 
@@ -131,12 +164,7 @@ void ChangeFlagPosition::modify(Echo& echo)
 
 boost::logic::tribool ChangeFlagPosition::wait(Echo& echo)
 {
-	if(echo.get_building_register().is_building_found(building_id))
-		return true;
-	else if(echo.get_building_register().is_building_pending(building_id))
-		return false;
-	else
-		return indeterminate;
+	return wait_for_building(echo, building_id);
 }
 
 
@@ -182,26 +210,14 @@ AdjustPriority::AdjustPriority(int building_id, AdjustPriority::BuildingPriority
 
 void AdjustPriority::modify(Echo& echo)
 {
-	int p=0;
-	if(priority == Low)
-		p=AI_ECHO_PRIORITY_LOW;
-	else if(priority == Medium)
-		p=AI_ECHO_PRIORITY_MEDIUM;
-	else if(priority == High)
-		p=AI_ECHO_PRIORITY_HIGH;
-	echo.push_order(shared_ptr<Order>(new OrderChangePriority(echo.get_building_register().get_building(building_id)->gid, p)));
+	echo.push_order(shared_ptr<Order>(new OrderChangePriority(echo.get_building_register().get_building(building_id)->gid, priority_to_int(priority))));
 }
 
 
 
 boost::logic::tribool AdjustPriority::wait(Echo& echo)
 {
-	if(echo.get_building_register().is_building_found(building_id))
-		return true;
-	else if(echo.get_building_register().is_building_pending(building_id))
-		return false;
-	else
-		return indeterminate;
+	return wait_for_building(echo, building_id);
 }
 
 
@@ -218,13 +234,7 @@ bool AdjustPriority::load(GAGCore::InputStream *stream, Player *player, Sint32 v
 	stream->readEnterSection("AdjustPriority");
 	ManagementOrder::load(stream, player, versionMinor);
 	building_id=stream->readUint32("building_id");
-	int p = stream->readSint32("p");
-	if(p==AI_ECHO_PRIORITY_LOW)
-		priority = Low;
-	else if(p==AI_ECHO_PRIORITY_MEDIUM)
-		priority = Medium;
-	else if(p==AI_ECHO_PRIORITY_HIGH)
-		priority = High;
+	priority = int_to_priority(stream->readSint32("priority"));
 	stream->readLeaveSection();
 	return true;
 }
@@ -236,14 +246,7 @@ void AdjustPriority::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("AdjustPriority");
 	ManagementOrder::save(stream);
 	stream->writeUint32(building_id, "building_id");
-	int p=0;
-	if(priority == Low)
-		p=AI_ECHO_PRIORITY_LOW;
-	else if(priority == Medium)
-		p=AI_ECHO_PRIORITY_MEDIUM;
-	else if(priority == High)
-		p=AI_ECHO_PRIORITY_HIGH;
-	stream->writeSint32(p, "priority");
+	stream->writeSint32(priority_to_int(priority), "priority");
 	stream->writeLeaveSection();
 }
 
@@ -266,26 +269,7 @@ void AddArea::add_location(int x, int y)
 
 void AddArea::modify(Echo& echo)
 {
-	BrushAccumulator acc;
-	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
-	{
-		acc.applyBrush(BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0), echo.player->map);
-	}
-	if(acc.getApplicationCount()>0)
-	{
-		switch(areatype)
-		{
-			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
-				break;
-			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
-				break;
-			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_ADD, &acc, echo.player->map)));
-				break;
-		}
-	}
+	apply_area_modification(echo, areatype, locations, BrushTool::MODE_ADD);
 }
 
 
@@ -354,26 +338,7 @@ void RemoveArea::add_location(int x, int y)
 
 void RemoveArea::modify(Echo& echo)
 {
-	BrushAccumulator acc;
-	for(std::vector<position>::iterator i=locations.begin(); i!=locations.end(); ++i)
-	{
-		acc.applyBrush(BrushApplication(echo.player->map->normalizeX(i->x), echo.player->map->normalizeY(i->y), 0), echo.player->map);
-	}
-	if(acc.getApplicationCount()>0)
-	{
-		switch(areatype)
-		{
-			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
-				break;
-			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
-				break;
-			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(echo.player->team->teamNumber, BrushTool::MODE_DEL, &acc, echo.player->map)));
-				break;
-		}
-	}
+	apply_area_modification(echo, areatype, locations, BrushTool::MODE_DEL);
 }
 
 
