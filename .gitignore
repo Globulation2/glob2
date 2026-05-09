@@ -21,3 +21,4 @@ compile_commands.json
 .cache/
 Glob2.app/
 Glob2-*.dmg
+test/CampaignSelectionHarness

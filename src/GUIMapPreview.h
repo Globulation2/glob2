@@ -25,6 +25,9 @@ using namespace GAGCore;
 class MapPreview: public RectangularWidget
 {
 public:
+	//! Fixed pixel size of the preview tile (square).
+	static constexpr int PreviewSize = 128;
+
 	//! Constructor, takes position, alignement and initial map name
 	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign);
 	//! Constructor, takes position, alignement, initial map name and a tooltip
