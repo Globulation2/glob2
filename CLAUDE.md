@@ -34,9 +34,9 @@ scons BINDIR=/path/bin INSTALLDIR=/path/share
 
 ## Running Tests
 
-```bash
-# Tests are in test/ - built as part of scons, run the test binary after build
-```
+Tests live in `glob2/test/` and are built as part of the SCons build. After `scons -j16`, run the resulting binaries (`TestsRunner`, `WinningConditionsHarness`).
+
+See [`test/README.md`](test/README.md) for the **Map subclass test pattern** — the trick used in `MapQueryTest.cpp` to unit-test Map predicates without pulling in `globalContainer`, `Bullet`, `Team`, or the full simulation surface.
 
 ## Build System Internals
 
@@ -124,3 +124,29 @@ All player actions are serialized as `Order` objects (see `src/Order.h`). `NullO
 ### YOG (Online Gaming)
 
 Server/client architecture for online play. `YOGServer` handles matchmaking, chat channels, ratings, map database. LAN play is peer-to-peer. Build server-only binary with `scons server=1`.
+
+## Conventions
+
+**Filenames:** PascalCase (`Game.cpp`, `GameRenderUnits.cpp`). Do NOT introduce snake_case C++ filenames in `glob2/`. When splitting an existing PascalCase file, the new pieces stay PascalCase too.
+
+**Header guards:** `#pragma once`. We are moving away from legacy `#ifndef` guards.
+
+**macOS rename caveat:** Case-only filename renames need `git mv -f Foo.cpp foo_tmp.cpp && git mv -f foo_tmp.cpp Foo.cpp` — plain `git mv foo.cpp Foo.cpp` may silently no-op on a case-insensitive filesystem.
+
+## Logging is dead — do not restore
+
+`glob2/src/LogFileManager.h` defines `#define fprintf if(false)fprintf`. Every translation unit that includes that header gets all `fprintf` calls rewritten to a runtime `if(false)` branch the compiler dead-code-eliminates. ~60 files include `LogFileManager.h`. Original devs disabled logging "for bugs" (per the deprecation comment) and never came back; the infrastructure has been load-bearing in constructors but doing nothing for 15+ years.
+
+**Cleanup pattern when refactoring a class with a `FILE* logFile` member and a `globalContainer->logFileManager->getFile(...)` call in its constructor:** drop the field, drop the `getFile()` call, drop every `fprintf(logFile, …)` site (already no-ops), drop the include of `LogFileManager.h`. No replacement needed — there's no live consumer.
+
+`LogFileManager.h` itself stays — it carries the silencing macro.
+
+**Don't propose adding `spdlog` or another logging library to "preserve diagnostic intent."** There's no consumer asking for the data and 15 years of silence means there's no demand. Re-introduce only when something concrete needs it.
+
+## Pathfinding gotcha — chamfer pass cap
+
+For the chamfer distance transform in `glob2/src/map/gradient/MapGradientGlobal.cpp`, the convergence-pass cap is bounded by the Uint8 value range (256), **not** by the Borgefors 1986 1-pass result.
+
+Borgefors 1-pass holds only on an obstacle-free grid. With obstacles forcing the propagation path to bend (mountains, water channels, building footprints), each direction change costs ~K/2 passes. Real glob2 maps (128×128, e.g. `G2.game`) need significantly more than 4 passes — empirically 32 was sufficient and 8 was not.
+
+Use the value-range bound (256). The cap is a tripwire for monotonicity violations, not a real-workload throttle. Do not try to derive a tighter bound from grid geometry — obstacle topology dominates.
