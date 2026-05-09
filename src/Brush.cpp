@@ -147,112 +147,80 @@ int BrushTool::getBrushHeight(unsigned figure)
 	return dim[figure];
 }
 
-int BrushTool::getBrushDimXMinus(unsigned figure)
-{
-	if (getBrushWidth(figure) % 2)
-		return getBrushWidth(figure) / 2;
-	else
-		return getBrushWidth(figure) / 2;
-}
-
-int BrushTool::getBrushDimXPlus(unsigned figure)
-{
-	if (getBrushWidth(figure) % 2)
-		return (getBrushWidth(figure) / 2) + 1;
-	else
-		return getBrushWidth(figure) / 2;
-}
-
-int BrushTool::getBrushDimYMinus(unsigned figure)
-{
-	if (getBrushHeight(figure) % 2)
-		return getBrushHeight(figure) / 2;
-	else
-		return getBrushHeight(figure) / 2;
-}
-
-int BrushTool::getBrushDimYPlus(unsigned figure)
-{
-	if (getBrushHeight(figure) % 2)
-		return (getBrushHeight(figure) / 2) + 1;
-	else
-		return getBrushHeight(figure) / 2;
-}
-/*
-int BrushTool::getBrushDimX(unsigned figure)
-{
-	if (getBrushWidth(figure) % 2)
-		return (getBrushWidth(figure) - 1) >> 1;
-	else
-		return getBrushWidth(figure) >> 1;
-}
-
-int BrushTool::getBrushDimY(unsigned figure)
-{
-	if (getBrushHeight(figure) % 2)
-		return (getBrushHeight(figure) - 1) >> 1;
-	else
-		return getBrushHeight(figure) >> 1;
-}*/
+// For odd widths the center cell counts on the Plus side, so Plus = ceil(w/2)
+// and Minus = floor(w/2). For even widths the brush is symmetric.
+int BrushTool::getBrushDimXMinus(unsigned figure) { return getBrushWidth(figure) / 2; }
+int BrushTool::getBrushDimXPlus(unsigned figure)  { return (getBrushWidth(figure) + 1) / 2; }
+int BrushTool::getBrushDimYMinus(unsigned figure) { return getBrushHeight(figure) / 2; }
+int BrushTool::getBrushDimYPlus(unsigned figure)  { return (getBrushHeight(figure) + 1) / 2; }
 
 
 bool BrushTool::getBrushValue(unsigned figure, int x, int y, int centerX, int centerY, int originalX, int originalY)
 {
-	int brush0[] = { 	1 };
-	int brush1[] = { 	0, 1, 0,
-						1, 1, 1,
-						0, 1, 0 };
-	int brush2[] = {	1, 0, 0,
-						0, 1, 0,
-						0, 0, 1, };
-	int brush3[] = {	0, 0, 1,
-						0, 1, 0,
-						1, 0, 0, };
-	/*int brush4[] = { 	1, 0, 1, 0, 1,
-						0, 1, 0, 1, 0,
-						1, 0, 1, 0, 1,
-						0, 1, 0, 1, 0,
-						1, 0, 1, 0, 1 };
-	int brush5[] = { 	1, 0, 1, 0, 1,
-						0, 0, 0, 0, 0,
-						1, 0, 1, 0, 1,
-						0, 0, 0, 0, 0,
-						1, 0, 1, 0, 1 };
-						*/
-	int brush4[] = { 	1, 0, 1, 0,
-						0, 1, 0, 1,
-						1, 0, 1, 0,
-						0, 1, 0, 1 };
-	int brush5[] = { 	1, 0, 1, 0,
-						0, 0, 0, 0,
-						1, 0, 1, 0,
-						0, 0, 0, 0 };
-	int brush6[] = { 	1, 1, 1,
-						1, 1, 1,
-						1, 1, 1 };
-	int brush7[] = {	1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1 };
-	int *brushes[BRUSH_COUNT] = { brush0, brush1, brush2, brush3, brush4, brush5, brush6, brush7 };
-	
+	static constexpr int brush0[] = { 1 };
+	static constexpr int brush1[] = {
+		0, 1, 0,
+		1, 1, 1,
+		0, 1, 0,
+	};
+	static constexpr int brush2[] = {
+		1, 0, 0,
+		0, 1, 0,
+		0, 0, 1,
+	};
+	static constexpr int brush3[] = {
+		0, 0, 1,
+		0, 1, 0,
+		1, 0, 0,
+	};
+	static constexpr int brush4[] = {
+		1, 0, 1, 0,
+		0, 1, 0, 1,
+		1, 0, 1, 0,
+		0, 1, 0, 1,
+	};
+	static constexpr int brush5[] = {
+		1, 0, 1, 0,
+		0, 0, 0, 0,
+		1, 0, 1, 0,
+		0, 0, 0, 0,
+	};
+	static constexpr int brush6[] = {
+		1, 1, 1,
+		1, 1, 1,
+		1, 1, 1,
+	};
+	static constexpr int brush7[] = {
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+	};
+	static constexpr const int* brushes[BRUSH_COUNT] = {
+		brush0, brush1, brush2, brush3, brush4, brush5, brush6, brush7,
+	};
+	// Brushes 4 and 5 are checkerboard patterns: their cells must be aligned to
+	// the parity of the stroke origin so neighbouring strokes tile seamlessly.
+	static constexpr bool needsParityAlignment[BRUSH_COUNT] = {
+		false, false, false, false, true, true, false, false,
+	};
+
 	assert(figure < BRUSH_COUNT);
 	int w = getBrushWidth(figure);
 	int h = getBrushHeight(figure);
 	assert(x < w);
 	assert(y < h);
-	
-	if ((figure == 4) || (figure == 5))
+
+	if (needsParityAlignment[figure])
 	{
-		// do alignment on specific brush (4 and 5)
-		if (centerX % 2 == originalX%2)
+		if (centerX % 2 == originalX % 2)
 			x++;
-		if (centerY % 2 == originalY%2)
+		if (centerY % 2 == originalY % 2)
 			y++;
 	}
-	
-	return (brushes[figure][(y%h) * getBrushWidth(figure) + (x%w)] != 0);
+
+	return (brushes[figure][(y % h) * getBrushWidth(figure) + (x % w)] != 0);
 }
 
 void BrushTool::setAddRemoveEnabledState(bool value)
