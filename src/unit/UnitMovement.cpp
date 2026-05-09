@@ -437,9 +437,11 @@ void Unit::handleMovementRandom()
 	}
 	else if(performance[HARVEST])
 	{
-		///Value of GRADIENT_FORBIDDEN_BORDER means nothing found
-		int distance = GRADIENT_AT_GOAL-owner->map->getClearingGradient(owner->teamNumber,performance[SWIM]>0, posX, posY);
-		if(distance < ((hungry-trigHungry) / race->hungryness) && distance < GRADIENT_FORBIDDEN_BORDER && medical == MED_FREE)
+		// g==0: on obstacle. g==1: chamfer never propagated here, so no clearing
+		// area reachable from this cell. Both cases mean "nothing found".
+		Uint8 g = owner->map->getClearingGradient(owner->teamNumber, performance[SWIM]>0, posX, posY);
+		int distance = GRADIENT_AT_GOAL - g;
+		if(g > GRADIENT_UNREACHABLE && distance < ((hungry-trigHungry) / race->hungryness) && medical == MED_FREE)
 		{
 			int tempTargetX, tempTargetY;
 			bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);

@@ -244,7 +244,7 @@ public:
 	Sint32 hp; // (Uint8)
 	Sint32 trigHP; // (Uint8)
 
-	// hungry : maxfood = 100000
+	// hungry
 	Sint32 hungry; // (Uint16)
 	Sint32 hungryness;
 	Sint32 trigHungry; // (Uint16)
