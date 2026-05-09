@@ -52,6 +52,24 @@ namespace AIEcho
 		void tick(Echo& echo);
 		void handle_message(Echo& echo, const std::string& message);
 	private:
+		// Tick helpers — each guards on its own timer condition and is invoked
+		// unconditionally from tick(). Implementations are split across
+		// ReachToInfinity.cpp, ReachToInfinityBuilding.cpp, and
+		// ReachToInfinityFlags.cpp; the call order in tick() matches the
+		// original sequence of if-blocks.
+		void tick_initial_setup(Echo& echo);
+		void tick_explorer_flags_fruit(Echo& echo);
+		void tick_explorer_flags_enemies(Echo& echo);
+		void tick_inns_near_wheat(Echo& echo);
+		void tick_swarms_near_wheat(Echo& echo);
+		void tick_racetrack_near_stone_wood(Echo& echo);
+		void tick_swimmingpool_near_wheat_wood(Echo& echo);
+		void tick_school_inland(Echo& echo);
+		void tick_upgrade_l1_to_l2(Echo& echo);
+		void tick_upgrade_l2_to_l3(Echo& echo);
+		void tick_delete_old_inns_swarms(Echo& echo);
+		void tick_farming_areas(Echo& echo);
+
 		int timer;
 		bool flag_on_cherry;
 		bool flag_on_orange;
