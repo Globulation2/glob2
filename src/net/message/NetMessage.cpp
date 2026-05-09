@@ -3,6 +3,8 @@
 
 #include "NetMessage.h"
 
+#include <iostream>
+
 #include "AuthMessages.h"
 #include "FileTransferMessages.h"
 #include "GameCreateMessages.h"
@@ -210,6 +212,12 @@ std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stre
 		case MNetSubmitRatingOnMap:
 		message.reset(new NetSubmitRatingOnMap);
 		break;
+		default:
+		// Untrusted byte from the wire didn't match any known opcode.
+		// Drop the message and let the caller handle the null shared_ptr
+		// (existing call sites already guard with `if(!message) return;`).
+		std::cerr << "NetMessage::getNetMessage: unknown opcode " << (int)netType << std::endl;
+		return std::shared_ptr<NetMessage>();
 	}
 	message->decodeData(stream);
 	return message;
