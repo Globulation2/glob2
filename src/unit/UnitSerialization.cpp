@@ -252,29 +252,29 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=typeNum;
 	if (checkSumsVector)
 		checkSumsVector->push_back(typeNum);// [0]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	cs^=isDead;
 	if (checkSumsVector)
 		checkSumsVector->push_back(isDead);// [1]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=gid;
 	if (checkSumsVector)
 		checkSumsVector->push_back(gid);// [2]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	cs^=posX;
 	if (checkSumsVector)
 		checkSumsVector->push_back(posX);// [3]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=posY;
 	if (checkSumsVector)
 		checkSumsVector->push_back(posY);// [4]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=delta;
 	if (checkSumsVector)
 		checkSumsVector->push_back(delta);// [5]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=dx;
 	if (checkSumsVector)
 		checkSumsVector->push_back(dx);// [6]
@@ -284,20 +284,20 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=direction;
 	if (checkSumsVector)
 		checkSumsVector->push_back(direction);// [8]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=insideTimeout;
 	if (checkSumsVector)
 		checkSumsVector->push_back(insideTimeout);// [9]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=speed;
 	if (checkSumsVector)
 		checkSumsVector->push_back(speed);// [10]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	cs^=(int)needToRecheckMedical;
 	if (checkSumsVector)
 		checkSumsVector->push_back(needToRecheckMedical);// [11]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=medical;
 	if (checkSumsVector)
 		checkSumsVector->push_back(medical);// [12]
@@ -313,14 +313,14 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=action;
 	if (checkSumsVector)
 		checkSumsVector->push_back(action);// [16]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=targetX;
 	if (checkSumsVector)
 		checkSumsVector->push_back(targetX);// [17]
 	cs^=targetY;
 	if (checkSumsVector)
 		checkSumsVector->push_back(targetY);// [18]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	cs^=hp;
 	if (checkSumsVector)
@@ -328,7 +328,7 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=trigHP;
 	if (checkSumsVector)
 		checkSumsVector->push_back(trigHP);// [20]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	cs^=hungry;
 	if (checkSumsVector)
@@ -339,7 +339,7 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=trigHungryCarying;
 	if (checkSumsVector)
 		checkSumsVector->push_back(trigHungryCarying);// [23]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	cs^=fruitMask;
 	if (checkSumsVector)
@@ -347,32 +347,32 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=fruitCount;
 	if (checkSumsVector)
 		checkSumsVector->push_back(fruitCount);// [25]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	for (int i=0; i<NB_ABILITY; i++)
 	{
 		cs^=performance[i];
-		cs=(cs<<1)|(cs>>31);
+		cs=rotl1(cs);
 		cs^=level[i];
-		cs=(cs<<1)|(cs>>31);
+		cs=rotl1(cs);
 		cs^=(Uint32)canLearn[i];
-		cs=(cs<<1)|(cs>>31);
+		cs=rotl1(cs);
 	}
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [26]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	cs^=(attachedBuilding!=NULL ? 1:0);
 	if (checkSumsVector)
 		checkSumsVector->push_back((attachedBuilding!=NULL ? 1:0));// [27]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 	cs^=(targetBuilding!=NULL ? 1:0);
 	if (checkSumsVector)
 		checkSumsVector->push_back((targetBuilding!=NULL ? 1:0));// [28]
 	cs^=(ownExchangeBuilding!=NULL ? 2:0);
 	if (checkSumsVector)
 		checkSumsVector->push_back((ownExchangeBuilding!=NULL ? 1:0));// [29]
-	cs=(cs<<1)|(cs>>31);
+	cs=rotl1(cs);
 
 	cs^=destinationPurpose;
 	if (checkSumsVector)

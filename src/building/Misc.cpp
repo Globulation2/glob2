@@ -434,6 +434,13 @@ bool Building::integrity()
 
 Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 {
+	// `cs` is signed `int` so the open-coded `(cs<<31)|(cs>>1)` rotates
+	// use arithmetic right-shift (sign-extending). Do NOT replace these
+	// with the unsigned `rotr1(Uint32)` helper in Utilities.h: when XOR
+	// mixing leaves bit 31 set, signed `>>1` and unsigned `>>1` produce
+	// different bit patterns, and the network checksum diverges. The
+	// Rust port should preserve the arithmetic-shift behavior — i.e.
+	// `((cs as i32) >> 1) as u32` — not `cs.rotate_right(1)`.
 	int cs=0;
 
 	cs^=typeNum;

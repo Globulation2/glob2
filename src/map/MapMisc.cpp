@@ -34,7 +34,7 @@ Uint32 Map::checkSum(bool heavy)
 				c.airUnit +
 				c.forbidden +
 				c.scriptAreas;
-			cs=(cs<<1)|(cs>>31);
+			cs=rotl1(cs);
 		}
 	};
 	return cs;

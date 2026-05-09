@@ -223,6 +223,10 @@ void MapHeader::resetGameSHA1()
 
 Uint32 MapHeader::checkSum() const
 {
+	// `cs` is signed `Sint32` so the open-coded `(cs<<31)|(cs>>1)` rotate
+	// uses arithmetic right-shift (sign-extending). See the matching note
+	// in Building::checkSum — do NOT replace with the unsigned `rotr1`
+	// helper or the network checksum diverges.
 	Sint32 cs = 0;
 	cs^=versionMajor;
 	cs^=versionMinor;

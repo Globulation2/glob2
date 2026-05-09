@@ -6,6 +6,7 @@
 #include "Marshaling.h"
 #include "Race.h"
 #include "Stream.h"
+#include "Utilities.h"
 
 using namespace GAGCore;
 
@@ -115,11 +116,11 @@ Uint32 BaseTeam::checkSum()
 	Uint32 cs=0;
 
 	cs^=teamNumber;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	cs^=numberOfPlayer;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	cs^=playersMask;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 
 	return cs;
 }

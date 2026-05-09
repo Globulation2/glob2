@@ -24,6 +24,22 @@ inline Uint32 syncRand(void)
 	return randomGenerator();
 }
 
+// 32-bit right-rotate by 1 bit. Used to mix per-section checksums into the
+// running game/network checksum so that re-ordered identical inputs produce
+// different outputs. Open-coded as `(x<<31)|(x>>1)` so the compiler emits a
+// single ROR instruction without a branch on the shift amount; modern
+// compilers also recognize this exact named-helper form.
+//
+// Determinism note: this rotate feeds the on-the-wire lockstep checksum --
+// match it exactly in the Rust port (use `u32::rotate_right(1)`). Do not
+// substitute a similar-looking expression like `x >> 1` (a divide).
+inline Uint32 rotr1(Uint32 x) { return (x << 31) | (x >> 1); }
+
+// 32-bit left-rotate by 1 bit. Sibling of rotr1 -- used by Unit and Map
+// checksum mixers. Same determinism caveats apply: the Rust port must use
+// `u32::rotate_left(1)`.
+inline Uint32 rotl1(Uint32 x) { return (x << 1) | (x >> 31); }
+
 ///The actual random seeds are stored in GameHeader, which automatically randomizes them
 void setSyncRandSeed();
 void setSyncRandSeed(Uint32 seed);

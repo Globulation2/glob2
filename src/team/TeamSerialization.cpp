@@ -7,6 +7,7 @@
 #include "Marshaling.h"
 #include "Team.h"
 #include "Unit.h"
+#include "Utilities.h"
 
 bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
 {
@@ -255,7 +256,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	Uint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [1+t*20]
 
@@ -263,7 +264,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 		if (myUnits[i])
 	{
 		cs^=myUnits[i]->checkSum(checkSumsVectorForUnits);
-		cs=(cs<<31)|(cs>>1);
+		cs=rotr1(cs);
 	}
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [2+t*20]
@@ -272,7 +273,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 		if (myBuildings[i])
 	{
 		cs^=myBuildings[i]->checkSum(checkSumsVectorForBuildings);
-		cs=(cs<<31)|(cs>>1);
+		cs=rotr1(cs);
 	}
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [3+t*20]
@@ -280,72 +281,72 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	for (int i=0; i<NB_ABILITY; i++)
 	{
 		cs^=upgrade[i].size();
-		cs=(cs<<31)|(cs>>1);
+		cs=rotr1(cs);
 	}
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [4+t*20]
 
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [7+t*20]
 
 	cs^=canExchange.size();
 	cs^=canFeedUnit.size();
 	cs^=canHealUnit.size();
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [8+t*20]
 
 	cs^=buildingsToBeDestroyed.size();
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [9+t*20]
 	cs^=buildingsTryToBuildingSiteRoom.size();
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [10+t*20]
 
 	cs^=swarms.size();
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [11+t*20]
 	cs^=turrets.size();
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [12+t*20]
 
 	cs^=allies;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [13+t*20]
 	cs^=enemies;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [14+t*20]
 	cs^=sharedVisionExchange;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [15+t*20]
 	cs^=sharedVisionFood;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [16+t*20]
 	cs^=sharedVisionOther;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [17+t*20]
 	cs^=me;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [18+t*20]
 
 	cs^=noMoreBuildingSitesCountdown;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [19+t*20]
 
 	cs^=prestige;
-	cs=(cs<<31)|(cs>>1);
+	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [20+t*20]
 

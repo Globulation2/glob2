@@ -91,11 +91,8 @@ namespace
 		return memcmp(signature, expected, FILE_SIG_LEN) == 0;
 	}
 
-	// Right-rotate by 1 bit. Used to mix per-section checksums into the
-	// running game checksum so that re-ordered identical inputs produce
-	// different outputs. Match this exactly in the Rust port — the rotation
-	// is part of the on-the-wire checksum, not just a stylistic choice.
-	inline Uint32 rotr1(Uint32 x) { return (x << 31) | (x >> 1); }
+	// Note: the rotr1 helper used below now lives in Utilities.h so all
+	// checksum mixers in the codebase share one definition.
 }
 
 bool Game::load(GAGCore::InputStream *stream)
