@@ -119,7 +119,10 @@ public:
 	//! Compute team checksum
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 
-	//! Return the name of the first player in the team
+	//! Return the name of the first human/AI player on this team, or an
+	//! empty string if no player owns the team (uncontrolled). Locale-
+	//! agnostic; UI callers wanting the localized "[Uncontrolled]"
+	//! placeholder must use displayPlayerName() (gui/TeamDisplay.h).
 	std::string getFirstPlayerName(void) const;
 
 	//!  This checks all of the win conditions and updates hasWon, hasLost and winCondition

@@ -11,6 +11,7 @@
 #include "MapEdit.h"
 #include "MapEditKeyActions.h"
 #include "ScriptEditorScreen.h"
+#include "TeamDisplay.h"
 #include <sstream>
 #include <StreamFilter.h>
 #include <Stream.h>
@@ -42,10 +43,7 @@ void BuildingInfoTitle::draw()
 	title += Toolkit::getStringTable()->getString(key.c_str());
 	{
 		title += " (";
-		std::string textT=selBuild->owner->getFirstPlayerName();
-		if (textT.empty())
-			textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
-		title += textT;
+		title += displayPlayerName(*selBuild->owner);
 		title += ")";
 	}
 

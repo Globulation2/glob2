@@ -12,7 +12,9 @@
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Player.h"
+#include "TeamDisplay.h"
 #include "Unit.h"
+#include "UnitDisplayNames.h"
 
 void GameGUI::drawUnitInfos(void)
 {
@@ -26,10 +28,7 @@ void GameGUI::drawUnitInfos(void)
 	title += getUnitName(selUnit->typeNum);
 	title += " (";
 
-	std::string textT=selUnit->owner->getFirstPlayerName();
-	if (textT.empty())
-		textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
-	title += textT;
+	title += displayPlayerName(*selUnit->owner);
 	title += ")";
 
 	if (localTeam->teamNumber == selUnit->owner->teamNumber)

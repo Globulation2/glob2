@@ -15,6 +15,7 @@
 #include <iomanip>
 #include "GlobalContainer.h"
 #include "Team.h"
+#include "TeamDisplay.h"
 #include "GameGUILoadSave.h"
 #include "StreamBackend.h"
 #include "ReplayWriter.h"
@@ -344,8 +345,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 			else
 				strText = Toolkit::getStringTable()->getString("[Lost : %0 has more prestige than you]");
 
-			std::string playerText = t->getFirstPlayerName();
-			strText.arg(playerText);
+			strText.arg(displayPlayerName(*t));
 			titleText = strText;
 		}
 	}

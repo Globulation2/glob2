@@ -14,6 +14,8 @@
 #include <sstream>
 #include <StreamFilter.h>
 #include <Stream.h>
+#include "TeamDisplay.h"
+#include "UnitDisplayNames.h"
 #include "UnitEditorScreen.h"
 #include "Unit.h"
 #include "UnitType.h"
@@ -42,10 +44,7 @@ void UnitInfoTitle::draw()
 	title += getUnitName(u->typeNum);
 	title += " (";
 
-	std::string textT=u->owner->getFirstPlayerName();
-	if (textT.empty())
-		textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
-	title += textT;
+	title += displayPlayerName(*u->owner);
 	title += ")";
 
 	r=160;

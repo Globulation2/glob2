@@ -2,10 +2,13 @@
 // Copyright (C) Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <assert.h>
+
 #include "Toolkit.h"
 #include "StringTable.h"
 
 #include "UnitConsts.h"
+#include "UnitDisplayNames.h"
 
 using namespace GAGCore;
 
@@ -21,6 +24,6 @@ std::string getUnitName(int type)
 		return Toolkit::getStringTable()->getString("[Explorer]");
 	default:
 		assert(false);
-		return "";//to satisfy -Wall
+		return {};
 	}
 }

@@ -11,7 +11,9 @@
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
+#include "TeamDisplay.h"
 #include "Unit.h"
+#include "UnitDisplayNames.h"
 
 void GameGUI::drawBuildingInfos(void)
 {
@@ -28,10 +30,7 @@ void GameGUI::drawBuildingInfos(void)
 	title += Toolkit::getStringTable()->getString(key.c_str());
 	{
 		title += " (";
-		std::string textT=selBuild->owner->getFirstPlayerName();
-		if (textT.empty())
-			textT=Toolkit::getStringTable()->getString("[Uncontrolled]");
-		title += textT;
+		title += displayPlayerName(*selBuild->owner);
 		title += ")";
 	}
 

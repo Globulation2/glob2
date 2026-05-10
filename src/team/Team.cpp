@@ -3,9 +3,6 @@
 
 #include <climits>
 
-#include <Toolkit.h>
-#include <StringTable.h>
-
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "Game.h"
@@ -273,7 +270,7 @@ std::string Team::getFirstPlayerName(void) const
 		if (game->players[i]->team == this)
 			return game->players[i]->name;
 	}
-	return Toolkit::getStringTable()->getString("[Uncontrolled]");
+	return {};
 }
 
 

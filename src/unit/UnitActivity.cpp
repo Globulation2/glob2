@@ -117,10 +117,10 @@ void Unit::handleActivity(void)
 					// Unit conversion code
 
 					// Send events and keep track of number of unit converted
-					currentTeam->pushGameEvent(GameEvent::unitLostConversion(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
+					currentTeam->pushGameEvent(GameEvent::unitLostConversion(owner->game->stepCounter, posX, posY, targetTeam->teamNumber));
 					currentTeam->unitConversionLost++;
 
-					targetTeam->pushGameEvent(GameEvent::unitGainedConversion(owner->game->stepCounter, posX, posY, currentTeam->getFirstPlayerName()));
+					targetTeam->pushGameEvent(GameEvent::unitGainedConversion(owner->game->stepCounter, posX, posY, currentTeam->teamNumber));
 					targetTeam->unitConversionGained++;
 
 					// Find free slot in other team

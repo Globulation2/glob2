@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "SoundMixer.h"
+#include "TeamDisplay.h"
 #include "Unit.h"
 #include "VoiceRecorder.h"
 
@@ -195,11 +196,11 @@ void GameGUI::drawPanel(void)
 				drawReplayPanel();
 				break;
 			case RDM_STAT_TEXT_VIEW:
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(localTeam->getFirstPlayerName()).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
 				teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
 				break;
 			case RDM_STAT_GRAPH_VIEW:
-				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(localTeam->getFirstPlayerName()).c_str());
+				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
 				teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
 				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
 				drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);

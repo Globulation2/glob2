@@ -4,47 +4,48 @@
 
 #include "GameEvent.h"
 
-#include <utility>
-
 #include "FormatableString.h"
+#include "Game.h"
 #include "IntBuildingType.h"
 #include "StringTable.h"
+#include "Team.h"
+#include "TeamDisplay.h"
 #include "Toolkit.h"
-#include "UnitConsts.h"
+#include "UnitDisplayNames.h"
 
 using namespace GAGCore;
 
-GameEvent::GameEvent(GameEventType type, Uint32 step, Sint16 x, Sint16 y, Uint32 typeNum, std::string teamName)
-	: type(type), step(step), x(x), y(y), typeNum(typeNum), teamName(std::move(teamName))
+GameEvent::GameEvent(GameEventType type, Uint32 step, Sint16 x, Sint16 y, Uint32 typeNum, Uint8 otherTeamNumber)
+	: type(type), step(step), x(x), y(y), typeNum(typeNum), otherTeamNumber(otherTeamNumber)
 {
 }
 
 GameEvent GameEvent::unitUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint32 unitType)
 {
-	return GameEvent(GEUnitUnderAttack, step, x, y, unitType, std::string());
+	return GameEvent(GEUnitUnderAttack, step, x, y, unitType, 0);
 }
 
-GameEvent GameEvent::unitLostConversion(Uint32 step, Sint16 x, Sint16 y, std::string teamName)
+GameEvent GameEvent::unitLostConversion(Uint32 step, Sint16 x, Sint16 y, Uint8 otherTeamNumber)
 {
-	return GameEvent(GEUnitLostConversion, step, x, y, 0, std::move(teamName));
+	return GameEvent(GEUnitLostConversion, step, x, y, 0, otherTeamNumber);
 }
 
-GameEvent GameEvent::unitGainedConversion(Uint32 step, Sint16 x, Sint16 y, std::string teamName)
+GameEvent GameEvent::unitGainedConversion(Uint32 step, Sint16 x, Sint16 y, Uint8 otherTeamNumber)
 {
-	return GameEvent(GEUnitGainedConversion, step, x, y, 0, std::move(teamName));
+	return GameEvent(GEUnitGainedConversion, step, x, y, 0, otherTeamNumber);
 }
 
 GameEvent GameEvent::buildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint8 buildingType)
 {
-	return GameEvent(GEBuildingUnderAttack, step, x, y, buildingType, std::string());
+	return GameEvent(GEBuildingUnderAttack, step, x, y, buildingType, 0);
 }
 
 GameEvent GameEvent::buildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint8 buildingType)
 {
-	return GameEvent(GEBuildingCompleted, step, x, y, buildingType, std::string());
+	return GameEvent(GEBuildingCompleted, step, x, y, buildingType, 0);
 }
 
-std::string GameEvent::formatMessage() const
+std::string GameEvent::formatMessage(const Game& game) const
 {
 	StringTable* table = Toolkit::getStringTable();
 	switch (type)
@@ -54,10 +55,10 @@ std::string GameEvent::formatMessage() const
 		           .arg(getUnitName(typeNum));
 	case GEUnitLostConversion:
 		return FormatableString(table->getString("[Your unit got converted to %0's team]"))
-		           .arg(teamName);
+		           .arg(displayPlayerName(*game.teams[otherTeamNumber]));
 	case GEUnitGainedConversion:
 		return FormatableString(table->getString("[%0's team unit got converted to your team]"))
-		           .arg(teamName);
+		           .arg(displayPlayerName(*game.teams[otherTeamNumber]));
 	case GEBuildingUnderAttack:
 	{
 		std::string key = "[the ";

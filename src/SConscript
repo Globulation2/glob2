@@ -118,6 +118,8 @@ gui/GameGUIParticles.cpp
 gui/GameGUIScript.cpp
 gui/GameGUISelection.cpp
 gui/GameGUIToolManager.cpp
+gui/TeamDisplay.cpp
+gui/UnitDisplayNames.cpp
 GameHeader.cpp
 GameHints.cpp
 GameObjectives.cpp
@@ -249,7 +251,6 @@ TeamStat.cpp
 unit/Unit.cpp
 unit/UnitAction.cpp
 unit/UnitActivity.cpp
-unit/UnitConsts.cpp
 unit/UnitDisplacement.cpp
 unit/UnitEditorScreen.cpp
 unit/UnitGeometry.cpp

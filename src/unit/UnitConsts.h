@@ -5,7 +5,6 @@
 #pragma once
 
 #include <assert.h>
-#include <string>
 #include <GAGSys.h>
 
 enum Abilities
@@ -164,6 +163,4 @@ static constexpr int UNIT_MAGIC_ATTACK_RANGE = 3;
 //! tick. See Unit.cpp:239.
 static constexpr int UNIT_ATTACK_HIT_DELTA = 128;
 
-std::string getUnitName(int type);
 
- 

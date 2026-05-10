@@ -393,7 +393,7 @@ void GameGUI::step(void)
 	assert(localTeam);
 	while(std::optional<GameEvent> gevent = localTeam->getEvent())
 	{
-		addMessage(gevent->formatColor(), gevent->formatMessage(), false);
+		addMessage(gevent->formatColor(), gevent->formatMessage(game), false);
 		eventGoPosX = gevent->getX();
 		eventGoPosY = gevent->getY();
 		eventGoType = gevent->getEventType();
