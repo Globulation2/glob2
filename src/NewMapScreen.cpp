@@ -306,14 +306,20 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		// eUNIFORM
 		if (source==terrains)
-			descriptor.terrainType=(TerrainType)terrains->getSelectionIndex();
-		
+		{
+			if (auto sel = terrains->selection())
+				descriptor.terrainType = (TerrainType)*sel;
+		}
+
 		// all
 		if (source==methodes)
 		{
+			auto sel = methodes->selection();
+			if (!sel)
+				return;
 			MapGenerationDescriptor::Methode old=descriptor.methode;
-			descriptor.methode=(MapGenerationDescriptor::Methode)methodes->getSelectionIndex();
-			
+			descriptor.methode=(MapGenerationDescriptor::Methode)*sel;
+
 			if (old!=descriptor.methode)
 			{
 				terrains->visible=false;
