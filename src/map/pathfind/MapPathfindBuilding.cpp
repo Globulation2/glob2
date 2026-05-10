@@ -215,16 +215,7 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 				if (Building::GIDtoTeam(bgid)==teamNumber)
 				{
 					Building *b=game->teams[teamNumber]->myBuildings[Building::GIDtoID(bgid)];
-					for (int canSwim=0; canSwim<2; canSwim++)
-					{
-						b->dirtyLocalGradient[canSwim]=true;
-						b->locked[canSwim]=false;
-						if (b->localRessources[canSwim])
-						{
-							delete b->localRessources[canSwim];
-							b->localRessources[canSwim]=NULL;
-						}
-					}
+					b->resetLocalRessources();
 				}
 		}
 	}

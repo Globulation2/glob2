@@ -195,21 +195,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 				}
 				else
 				{
-					for (int i=0; i<2; i++)
-					{
-						b->dirtyLocalGradient[i]=true;
-						b->locked[i]=false;
-						if (b->globalGradient[i])
-						{
-							delete[] b->globalGradient[i];
-							b->globalGradient[i]=NULL;
-						}
-						if (b->localRessources[i])
-						{
-							delete[] b->localRessources[i];
-							b->localRessources[i]=NULL;
-						}
-					}
+					b->resetPathfindGradients();
 				}
 			}
 		}
@@ -289,21 +275,7 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 				}
 				else
 				{
-					for (int i=0; i<2; i++)
-					{
-						b->dirtyLocalGradient[i]=true;
-						b->locked[i]=false;
-						if (b->globalGradient[i])
-						{
-							delete[] b->globalGradient[i];
-							b->globalGradient[i]=NULL;
-						}
-						if (b->localRessources[i])
-						{
-							delete b->localRessources[i];
-							b->localRessources[i]=NULL;
-						}
-					}
+					b->resetPathfindGradients();
 				}
 
 				if (order->sender!=localPlayer || globalContainer->replaying)

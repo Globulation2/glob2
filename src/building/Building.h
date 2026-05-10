@@ -109,6 +109,10 @@ public:
 	Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture);
 	virtual ~Building(void);
 	void freeGradients();
+	// Drop both pathfinding buffers (call after the building moves or its range changes).
+	void resetPathfindGradients();
+	// Drop only the local-ressources buffer (call when a tile inside the footprint changes).
+	void resetLocalRessources();
 
 	void load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);

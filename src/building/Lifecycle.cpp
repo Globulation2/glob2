@@ -159,24 +159,36 @@ Building::~Building()
 	freeGradients();
 }
 
-void Building::freeGradients()
+void Building::resetLocalRessources()
 {
 	for (int i=0; i<2; i++)
 	{
-		if (globalGradient[i])
-		{
-			delete[] globalGradient[i];
-			globalGradient[i] = NULL;
-		}
-		if (localRessources[i])
-		{
-			delete[] localRessources[i];
-			localRessources[i] = NULL;
-		}
 		dirtyLocalGradient[i] = true;
 		locked[i] = false;
-		lastGlobalGradientUpdateStepCounter[i] = 0;
+		delete[] localRessources[i];
+		localRessources[i] = NULL;
+	}
+}
 
+void Building::resetPathfindGradients()
+{
+	for (int i=0; i<2; i++)
+	{
+		dirtyLocalGradient[i] = true;
+		locked[i] = false;
+		delete[] globalGradient[i];
+		globalGradient[i] = NULL;
+		delete[] localRessources[i];
+		localRessources[i] = NULL;
+	}
+}
+
+void Building::freeGradients()
+{
+	resetPathfindGradients();
+	for (int i=0; i<2; i++)
+	{
+		lastGlobalGradientUpdateStepCounter[i] = 0;
 		localRessourcesCleanTime[i] = 0;
 		anyRessourceToClear[i] = 0;
 	}
