@@ -311,8 +311,13 @@ void Building::updateCallLists(void)
 				callListState = 1;
 				oldPriority = priority;
 			}
-			// if i am in the call lists, update my then my position will need to be updated
-			else if(callListState == 1 && oldPriority == priority)
+			// I am in the call list. Re-register at current priority. This
+			// handles both BH-230 (priority changed -> move to new bucket)
+			// and the original same-priority re-sort, which is observable
+			// because Team::updateAllBuildingTasks calls subscribe* on each
+			// building in the bucket, and subscribe* -> updateCallLists
+			// mutates the bucket mid-iteration.
+			else
 			{
 				owner->remove_building_needing_work(this, oldPriority);
 				owner->add_building_needing_work(this, priority);
