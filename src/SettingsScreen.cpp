@@ -829,7 +829,7 @@ void SettingsScreen::updateShortcutList(int an)
 void SettingsScreen::updateActionList()
 {
 	action_list->clear();
-	if(shortcut_list->getSelectionIndex() != -1)
+	if(shortcut_list->selection())
 	{
 		if(currentMode == GameGUIShortcuts)
 		{
@@ -861,9 +861,9 @@ void SettingsScreen::updateShortcutInfoFromSelection()
 		m = &mapeditKeyboardManager;
 
 	const std::list<KeyboardShortcut>& shortcuts = m->getKeyboardShortcuts();
-	int selection_n = shortcut_list->getSelectionIndex();
+	auto sel = shortcut_list->selection();
 
-	if(selection_n == -1)
+	if(!sel)
 	{
 		select_key_1->visible=false;
 		key_2_active->visible=false;
@@ -873,7 +873,7 @@ void SettingsScreen::updateShortcutInfoFromSelection()
 	else
 	{
 		std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin();
-		std::advance(i, selection_n);
+		std::advance(i, *sel);
 		select_key_1->setKey(i->getKeyPress(0));
 		if(i->getKeyPressCount() == 1)
 		{
@@ -908,23 +908,23 @@ void SettingsScreen::updateKeyboardManagerFromShortcutInfo()
 		m = &mapeditKeyboardManager;
 
 	std::list<KeyboardShortcut>& shortcuts = m->getKeyboardShortcuts();
-	int selection_n = shortcut_list->getSelectionIndex();
+	auto sel = shortcut_list->selection();
 
-	if(selection_n != -1)
+	if(sel)
 	{
 		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
-		std::advance(i, selection_n);
+		std::advance(i, *sel);
 		KeyboardShortcut new_shortcut;
-		
+
 		KeyPress first = KeyPress(select_key_1->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
 		KeyPress second = KeyPress(select_key_2->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
-		
+
 		new_shortcut.addKeyPress(first);
 		if(key_2_active->getState())
 			new_shortcut.addKeyPress(second);
 		new_shortcut.setAction(action_list->getSelectionIndex());
 		(*i) = new_shortcut;
-		updateShortcutList(selection_n);
+		updateShortcutList(*sel);
 	}
 }
 

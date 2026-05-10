@@ -214,10 +214,7 @@ void YOGClientMapDownloadScreen::requestMaps()
 
 void YOGClientMapDownloadScreen::updateMapInfo()
 {
-	if(mapList->getSelectionIndex() != -1)
-		mapValid=true;
-	else
-		mapValid=false;
+	mapValid = mapList->selection().has_value();
 
 	updateMapPreview();
 	if(mapValid)

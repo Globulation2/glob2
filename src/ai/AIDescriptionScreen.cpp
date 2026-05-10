@@ -40,9 +40,9 @@ void AIDescriptionScreen::onAction(Widget *source, Action action, int par1, int 
 	}
 	if (action == LIST_ELEMENT_SELECTED)
 	{
-		if(ailist->getSelectionIndex() != -1)
+		if (auto sel = ailist->selection())
 		{
-			description->setText(AINames::getAIDescription(ailist->getSelectionIndex()).c_str());
+			description->setText(AINames::getAIDescription(*sel).c_str());
 		}
 	}
 }

@@ -334,7 +334,7 @@ void YOGClientLobbyScreen::hostGame()
 
 void YOGClientLobbyScreen::joinGame()
 {
-	if(gameList->getSelectionIndex() != -1)
+	if(gameList->selection())
 	{
 		std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 		client->setMultiplayerGame(game);
@@ -405,7 +405,7 @@ void YOGClientLobbyScreen::updatePlayerList(void)
 
 void YOGClientLobbyScreen::updateBoxInfo()
 {
-	if (gameList->getSelectionIndex() != -1)
+	if (gameList->selection())
 	{
 		for (std::list<YOGGameInfo>::const_iterator game=client->getGameListManager()->getGameList().begin(); game!=client->getGameListManager()->getGameList().end(); ++game)
 		{
@@ -425,7 +425,7 @@ void YOGClientLobbyScreen::updateBoxInfo()
 			}
 		}
 	}
-	else if(playerList->getSelectionIndex() != -1)
+	else if(playerList->selection())
 	{
 		if(client->getPlayerListManager()->doesPlayerExist(playerList->get()))
 		{

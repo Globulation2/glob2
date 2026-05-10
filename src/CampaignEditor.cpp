@@ -93,25 +93,30 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (source == editMap)
 		{
-			for(unsigned i=0; i<campaign.getMapCount(); ++i)
+			auto sel = mapList->selection();
+			if (sel)
 			{
-				if(mapList->getSelectionIndex()!=-1 && campaign.getMap(i).getMapName()==mapList->get())
+				for(unsigned i=0; i<campaign.getMapCount(); ++i)
 				{
-					CampaignMapEntryEditor cmee(campaign, campaign.getMap(i));
-					int rcmee = cmee.execute(gfx, 40);
-					if(rcmee==CampaignMapEntryEditor::OK)
+					if(campaign.getMap(i).getMapName()==mapList->get())
 					{
-						mapList->setText(mapList->getSelectionIndex(), campaign.getMap(i).getMapName());
-					}
-					else if(rcmee==CampaignMapEntryEditor::CANCEL)
-					{
+						CampaignMapEntryEditor cmee(campaign, campaign.getMap(i));
+						int rcmee = cmee.execute(gfx, 40);
+						if(rcmee==CampaignMapEntryEditor::OK)
+						{
+							mapList->setText(*sel, campaign.getMap(i).getMapName());
+						}
+						else if(rcmee==CampaignMapEntryEditor::CANCEL)
+						{
+						}
 					}
 				}
 			}
 		}
 		else if (source == removeMap)
 		{
-			if(mapList->getSelectionIndex()!=-1)
+			auto sel = mapList->selection();
+			if (sel)
 			{
 				for(unsigned i=0; i<campaign.getMapCount(); ++i)
 				{
@@ -121,8 +126,8 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 						campaign.getMap(i).getUnlockedByMaps().erase(iter);
 					}
 				}
-				campaign.removeMap(mapList->getSelectionIndex());
-				mapList->removeText(mapList->getSelectionIndex());
+				campaign.removeMap(*sel);
+				mapList->removeText(*sel);
 			}
 		}
 	}

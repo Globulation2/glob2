@@ -425,6 +425,11 @@ namespace GAGGUI
 	{
 		return nth;
 	}
+
+	std::optional<size_t> List::selection(void) const
+	{
+		return nth >= 0 ? std::optional<size_t>(static_cast<size_t>(nth)) : std::nullopt;
+	}
 	
 	void List::setSelectionIndex(int index)
 	{

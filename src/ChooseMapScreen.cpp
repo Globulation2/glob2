@@ -105,7 +105,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		//if (currentDirectoryMode == DisplayRegular) currentDirectoryType = type1;
 		//else currentDirectoryType = type2;
 
-		if((currentDirectoryMode == DisplayRegular && fileList->getSelectionIndex() != -1) || (currentDirectoryMode == DisplayAlternate && alternateFileList->getSelectionIndex() != -1))
+		if((currentDirectoryMode == DisplayRegular && fileList->selection()) || (currentDirectoryMode == DisplayAlternate && alternateFileList->selection()))
 		{
 			std::string mapFileName;
 			if(currentDirectoryMode == DisplayRegular)
@@ -185,28 +185,28 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 
 			if(currentDirectoryMode == DisplayRegular)
 			{
-				if (fileList->getSelectionIndex() >= 0)
+				if (auto sel = fileList->selection())
 				{
-					size_t i = fileList->getSelectionIndex();
+					size_t i = *sel;
 					std::string mapFileName = fileList->listToFile(fileList->get().c_str());
 
 					Toolkit::getFileManager()->remove(mapFileName);
 					fileList->generateList();
-					
+
 					fileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
 					fileList->selectionChanged();
 				}
 			}
 			else
 			{
-				if (alternateFileList->getSelectionIndex() >= 0)
+				if (auto sel = alternateFileList->selection())
 				{
-					size_t i = alternateFileList->getSelectionIndex();
+					size_t i = *sel;
 					std::string mapFileName = alternateFileList->listToFile(alternateFileList->get().c_str());
 
 					Toolkit::getFileManager()->remove(mapFileName);
 					alternateFileList->generateList();
-					
+
 					alternateFileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
 					alternateFileList->selectionChanged();
 				}

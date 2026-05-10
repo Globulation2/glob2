@@ -4,6 +4,7 @@
 #pragma once
 
 #include "GUIBase.h"
+#include <optional>
 #include <vector>
 #include <string>
 
@@ -90,6 +91,8 @@ namespace GAGGUI
 	
 		//! Return the index of the current selection. Returns -1 if no selection
 		int getSelectionIndex(void) const;
+		//! Return the current selection as an optional index. std::nullopt if no selection.
+		std::optional<size_t> selection(void) const;
 		//! Set the index of the current selection. Set -1 for no selection
 		void setSelectionIndex(int index);
 		

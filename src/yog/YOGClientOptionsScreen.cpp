@@ -102,13 +102,12 @@ void YOGClientOptionsScreen::updateBlockedPlayerAdd()
 
 void YOGClientOptionsScreen::updateBlockedPlayerRemove()
 {
-	if(blockedPlayers->getSelectionIndex()!=-1)
+	if (auto sel = blockedPlayers->selection())
 	{
 		std::string name = blockedPlayers->get();
 		client->getBlockedList()->removeBlockedPlayer(name);
-		int n = blockedPlayers->getSelectionIndex();
-		blockedPlayers->removeText(blockedPlayers->getSelectionIndex());
-		blockedPlayers->setSelectionIndex(std::min(int(blockedPlayers->getCount())-1, n));
+		blockedPlayers->removeText(*sel);
+		blockedPlayers->setSelectionIndex(std::min(int(blockedPlayers->getCount())-1, int(*sel)));
 		client->getBlockedList()->save();
 	}
 }
