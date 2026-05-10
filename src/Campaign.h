@@ -68,8 +68,10 @@ public:
 
 	///Loads the campaign with the provided name
 	bool load(const std::string& fileName);
-	///Save the campaign
-	void save(bool isGameSave=false);
+	///Save the campaign. Returns false if the destination file cannot be opened
+	///(read-only directory, full disk, missing path); callers should react instead
+	///of silently dropping the user's progress / edits.
+	bool save(bool isGameSave=false);
 	///Gets the number of maps in this campaign
 	size_t getMapCount() const;
 	///Returns the name of the map n

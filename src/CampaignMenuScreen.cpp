@@ -7,6 +7,7 @@
 #include "Engine.h"
 #include "GlobalContainer.h"
 #include "GUIMapPreview.h"
+#include "GUIMessageBox.h"
 
 CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 {
@@ -38,6 +39,9 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 	{
 		if ((par1==EXIT))
 		{
+			// Player is leaving the campaign menu; if the save fails (read-only
+			// dir, full disk) we still proceed with the exit but the stderr log
+			// in Campaign::save records why progress wasn't persisted.
 			campaign.save(true);
 			endExecute(par1);
 		}
@@ -59,7 +63,14 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 					endExecute(-1);
 				}
 				repopulateAvailableMissions();
-				campaign.save(true);
+				// Post-mission save persists completion / unlock state. If it
+				// silently dropped, the player would re-launch a "completed"
+				// mission or find the next one still locked, so surface the
+				// failure instead of swallowing it.
+				if (!campaign.save(true))
+					GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
+						Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
+						Toolkit::getStringTable()->getString("[ok]"));
 			}
 		}
 	}

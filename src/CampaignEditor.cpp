@@ -6,6 +6,8 @@
 #include "StringTable.h"
 #include "ChooseMapScreen.h"
 #include "Game.h"
+#include "GlobalContainer.h"
+#include "GUIMessageBox.h"
 #include <set>
 #include <algorithm>
 #include "GUICheckList.h"
@@ -46,8 +48,12 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (source == ok)
 		{
-			campaign.save();
-			endExecute(OK);
+			if (campaign.save())
+				endExecute(OK);
+			else
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
+					Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
+					Toolkit::getStringTable()->getString("[ok]"));
 		}
 		else if (source == cancel)
 		{

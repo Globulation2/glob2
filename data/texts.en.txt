@@ -308,6 +308,8 @@ enter
 equals
 [ERROR_CANT_LOAD_MAP]
 The map couldn't be loaded because the file is either damaged or an incompatible version.
+[ERROR_CANT_SAVE_CAMPAIGN]
+The campaign couldn't be saved. Check that the destination directory exists, is writable, and has free space.
 [escape]
 escape
 [explorationflag explanation 2]

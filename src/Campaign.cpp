@@ -7,6 +7,7 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include <iostream>
+#include <memory>
 
 // Defined in map/io/MapHeader.cpp. Forward-declared here to avoid pulling
 // MapHeader.h, which transitively includes Team.h / WinningConditions.h /
@@ -225,14 +226,30 @@ bool Campaign::load(const std::string& fileName)
 
 
 
-void Campaign::save(bool isGameSave)
+bool Campaign::save(bool isGameSave)
 {
 	std::string filename;
 	if(!isGameSave)
 		filename = glob2NameToFilename("campaigns", name.c_str(), "txt");
 	else
 		filename = glob2NameToFilename("games", name.c_str(), "txt");
-	TextOutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
+
+	// openOutputStreamBackend never returns nullptr; on fopen failure it
+	// returns a backend wrapping NULL, which fails isValid() and would crash
+	// (assert(fp) in debug, raw fwrite(NULL) UB in release) on the first
+	// write. Mirrors the pattern in Campaign::load and MapEdit::save.
+	std::unique_ptr<StreamBackend> backend(
+		Toolkit::getFileManager()->openOutputStreamBackend(filename));
+	if (!backend->isValid())
+	{
+		std::cerr << "Campaign::save(\"" << filename << "\") : error, can't open file." << std::endl;
+		return false;
+	}
+
+	// TextOutputStream takes ownership of the backend and frees it in its
+	// destructor, so release() at the point of handoff. unique_ptr on the
+	// stream itself protects against leak-on-throw from any future write.
+	auto stream = std::make_unique<TextOutputStream>(backend.release());
 	stream->writeUint32(VERSION_MINOR, "versionMinor");
 	stream->writeText(name, "campaignName");
 	stream->writeText(playerName, "playerName");
@@ -241,12 +258,12 @@ void Campaign::save(bool isGameSave)
 	for(unsigned n=0; n<maps.size(); ++n)
 	{
 		stream->writeEnterSection(n);
-		maps[n].save(stream);
+		maps[n].save(stream.get());
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeText(description, "description");
-	delete stream;
+	return true;
 }
 
 
