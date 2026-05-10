@@ -182,7 +182,7 @@ NewMapScreen::NewMapScreen()
 	extraIslands->add(6);
 	extraIslands->add(7);
 	extraIslands->add(8);
-	extraIslands->setNth(descriptor.extraIslands+1);
+	extraIslands->setNth(descriptor.extraIslands);
 	extraIslands->visible=false;
 	addWidget(extraIslands);
  
@@ -298,6 +298,9 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.nbWorkers=nbWorkers->getNth()+1;
 
 		descriptor.logRepeatAreaTimes=logRepeatAreaTimes->getNth();
+
+		// eISLANDS
+		descriptor.extraIslands=extraIslands->getNth();
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
@@ -463,7 +466,6 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.fruitRatio=fruitRatio->get();
 		descriptor.riverDiameter=riverDiameter->get();
 		descriptor.craterDensity=craterDensity->get();
-		descriptor.extraIslands=extraIslands->get();
 		//eISLANDS
 		descriptor.oldIslandSize=oldIslandSize->get();
 	}
