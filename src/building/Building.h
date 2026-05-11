@@ -76,6 +76,7 @@ public:
 	/// tiles. Bullet-spawn math (e.g. `<<4` half-tile offsets) bakes
 	/// in this assumption.
 	static constexpr int TURRET_SIZE = 2;
+
 	///This is the buildings basic state of existence.
 	enum BuildingState
 	{
@@ -104,7 +105,8 @@ public:
 		LS_OUT=2
 	};
 
-public:
+	// ─── Public methods ─────────────────────────────────────────────
+
 	Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture);
 	virtual ~Building(void);
@@ -164,52 +166,28 @@ public:
 	///fires some.
 	void updateUnitsWorking(void);
 
-	/// This function updates the units harvesting at this building. In
-	/// particular, it unsubscribes them when the building is being destroyed or
-	/// turns invisible when for example the other teams switches the view for
-	/// its markets.
-private:void updateUnitsHarvesting(void);
-
 	///This function is called after important events in order to update the building
-public:void update(void);
+	void update(void);
 
 	///Sets the area around the building to be discovered, and visible by the building
 	void setMapDiscovered(void);
 
 	///Gets the amount of ressources for each type of ressource that are needed to repair the building.
-public:void getRessourceCountToRepair(int ressources[BASIC_COUNT]);
+	void getRessourceCountToRepair(int ressources[BASIC_COUNT]);
 
 	///Attempts to find room for a building site. If room is found, the building site is established,
 	///and it returns true.
 	bool tryToBuildingSiteRoom(void);
 
-	///This function puts hidden forbidden area around a new building site. This dispereses units so that
-	///the building isn't waiting for space when there are lots of units.
-private:void addForbiddenZoneToUpgradeArea(void);
-	///This function removes the hidden forbidden area placed by addForbiddenToUpgradeArea
-	///It must be done before any type or position state is changed.
-	void removeForbiddenZoneFromUpgradeArea(void);
-	///Shared body for add/remove. `add=true` adds the zone, `add=false` removes it.
-	void modifyForbiddenZoneForUpgradeArea(bool add);
-
-	///Checks if there is hard space for a building. Non hard space is any space occupied by something that
-	///won't move. Units will move, so they are ignored. If there is space for the building site, then this
-	///returns true.
-	bool isHardSpaceForBuildingSite(void);
-public:bool isHardSpaceForBuildingSite(ConstructionResultState requestedState);
-
-	///Designates whether we are full inside. For Inns, takes into account how much wheat is left
-	///and whether there is enough wheat for more units.
-private:bool fullInside(void);
-
-	///This function tells the number of workers that should be working at this building.
-	///If, for example, the building doesn't need any ressources, then this function will
-	///return 0, because if its already full, it doesn't need any units.
-	int desiredNumberOfWorkers(void);
+	///Checks if there is hard space for a building site under the given construction result state.
+	///Non hard space is any space occupied by something that won't move. Units will move, so they
+	///are ignored. If there is space for the building site, then this returns true. The no-arg
+	///private overload defers to this one using the building's current `constructionResultState`.
+	bool isHardSpaceForBuildingSite(ConstructionResultState requestedState);
 
 	///This is called every step. The building updates the desiredMaxUnitWorking variable using
 	///the function desiredNumberOfWorkers
-public:void step(void);
+	void step(void);
 	///This function subscribes any building that needs ressources carried to it with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
@@ -231,19 +209,14 @@ public:void step(void);
 	/// changing the state and adding it to the list of buildings to be deleted
 	void kill(void);
 
-	/// Tells whether a particular unit can work at this building. Takes into account this buildings level,
-	/// the units type and level, and whether this building is a flag, because flags get a couple of special
-	/// rules.
-private:bool canUnitWorkHere(Unit* unit);
-
 	/// This function removes the unit from the list of units working on the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
-public:void removeUnitFromWorking(Unit* unit);
-	
+	void removeUnitFromWorking(Unit* unit);
+
 	/// Insert into the harvesting unit, when the unit has decided to do so.
 	/// This does not handle units state, just the buildings.
 	void insertUnitToHarvesting(Unit* unit);
-	
+
 	/// This function removes the unit from the list of units harvesting from the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
 	/// It is safe to call this function even if the unit is not harvesting at the building.
@@ -253,13 +226,9 @@ public:void removeUnitFromWorking(Unit* unit);
 	/// it does not update the units state.
 	void removeUnitFromInside(Unit* unit);
 
-	/// This function updates the ressources pointer. The variable ressources can either point to local ressources
-	/// or team resources, depending on the BuildingType.
-private:void updateRessourcesPointer();
-
 	/// This function is called when a Unit places a ressource into the building.
-public:void addRessourceIntoBuilding(int ressourceType);
-	
+	void addRessourceIntoBuilding(int ressourceType);
+
 	/// This function is called when a Unit takes a ressource from a building, such as a market
 	void removeRessourceFromBuilding(int ressourceType);
 
@@ -276,21 +245,10 @@ public:void addRessourceIntoBuilding(int ressourceType);
 	/// and provides the x and y coordinates, along with the direction the unit should be travelling
 	/// when it leaves.
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
-private:
-	/// checkstyle found this block of 26 lines being repeated 4 times.
-	void checkGroundExitQuality(
-		const int testX,
-		const int testY,
-		const int extraTestX,
-		const int extraTestY,
-		int & exitX,
-		int & exitY,
-		int & exitQuality,
-		int & oldQuality,
-		bool canSwim);
+
 	/// Returns the script level number. Construction sites are odd numbers and completed buildings
 	/// even, from 0 to 5
-public:int getLongLevel(void);
+	int getLongLevel(void);
 
 	/// get flag from units attached to flag.
 	void computeFlagStatLocal(int *goingTo, int *onSpot);
@@ -310,11 +268,66 @@ public:int getLongLevel(void);
 
 	bool integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
-int verbose;
-private:std::list<Order *> orderQueue;
+
+private:
+	// ─── Private helper methods ─────────────────────────────────────
+
+	/// This function updates the units harvesting at this building. In
+	/// particular, it unsubscribes them when the building is being destroyed or
+	/// turns invisible when for example the other teams switches the view for
+	/// its markets.
+	void updateUnitsHarvesting(void);
+
+	///This function puts hidden forbidden area around a new building site. This dispereses units so that
+	///the building isn't waiting for space when there are lots of units.
+	void addForbiddenZoneToUpgradeArea(void);
+	///This function removes the hidden forbidden area placed by addForbiddenToUpgradeArea
+	///It must be done before any type or position state is changed.
+	void removeForbiddenZoneFromUpgradeArea(void);
+	///Shared body for add/remove. `add=true` adds the zone, `add=false` removes it.
+	void modifyForbiddenZoneForUpgradeArea(bool add);
+
+	///No-arg overload: defers to the public `isHardSpaceForBuildingSite(requestedState)` using the
+	///building's current `constructionResultState`.
+	bool isHardSpaceForBuildingSite(void);
+
+	///Designates whether we are full inside. For Inns, takes into account how much wheat is left
+	///and whether there is enough wheat for more units.
+	bool fullInside(void);
+
+	///This function tells the number of workers that should be working at this building.
+	///If, for example, the building doesn't need any ressources, then this function will
+	///return 0, because if its already full, it doesn't need any units.
+	int desiredNumberOfWorkers(void);
+
+	/// Tells whether a particular unit can work at this building. Takes into account this buildings level,
+	/// the units type and level, and whether this building is a flag, because flags get a couple of special
+	/// rules.
+	bool canUnitWorkHere(Unit* unit);
+
+	/// This function updates the ressources pointer. The variable ressources can either point to local ressources
+	/// or team resources, depending on the BuildingType.
+	void updateRessourcesPointer();
+
+	/// checkstyle found this block of 26 lines being repeated 4 times.
+	void checkGroundExitQuality(
+		const int testX,
+		const int testY,
+		const int extraTestX,
+		const int extraTestY,
+		int & exitX,
+		int & exitY,
+		int & exitQuality,
+		int & oldQuality,
+		bool canSwim);
 
 	static std::string getBuildingName(int type);
+
 public:
+	// ─── Public data ────────────────────────────────────────────────
+
+	int verbose;
+
 	// type
 	Sint32 typeNum; // number in BuildingTypes
 	///This is the typenum from IntBuildingType
@@ -328,40 +341,19 @@ public:
 	// units
 	Sint32 maxUnitWorkingLocal;
 	Sint32 maxUnitWorking;  // (Uint16)
-private:Sint32 maxUnitWorkingFuture;
-public:Sint32 maxUnitWorkingPreferred;
-private:Sint32 maxUnitWorkingPrevious;
+	Sint32 maxUnitWorkingPreferred;
 	///This is a constantly updated number that indicates the buildings desired number of units,
 	///say for example that the building is full, it needs no units, so this is 0
-public:Sint32 desiredMaxUnitWorking;
+	Sint32 desiredMaxUnitWorking;
 	///This is the list of units actively working on the building.
 	std::list<Unit *> unitsWorking;
-	///The subscribeToBringRessourcesStep and subscribeForFlagingStep operate every 32 ticks
-private:Sint32 subscriptionWorkingTimer;
-public:Sint32 maxUnitInside;
+	Sint32 maxUnitInside;
 	///This counts the number of units that failed the requirements for the building, but where free
 	std::list<Unit *> unitsInside;
 	///This stores the priority of the building, 0 is normal, -1 is low, +1 is high
 	Sint32 priority;
 	Sint32 priorityLocal;
-	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
-private:Sint32 oldPriority;
 
-	///This is the list of units harvesting from the building (if it is a market for instance)
-private:std::list<Unit *> unitsHarvesting;
-	
-private:
-	// optimisation and consistency
-	InListState inCanFeedUnit;
-	Uint8 canNotConvertUnitTimer; //counts down 150 frames after the building was last unable to feed a unit
-	InListState inCanHealUnit;
-	InListState inUpgrade[NB_ABILITY];
-	/// This variable indicates whether this building is already in the team call list
-	/// to receive units. A 1 indicates its already in the call list, and 0 indicates
-	/// that it is not.
-	Uint8 callListState;
-
-public:
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
@@ -388,28 +380,23 @@ public:
 	/// will be changed to point to the global ressources Team::teamRessources instead of localRessources.
 	Sint32* ressources;
 	Sint32 wishedResources[MAX_NB_RESSOURCES];
-private:Sint32 localRessource[MAX_NB_RESSOURCES];
 
 	// quality parameters
-public:Sint32 hp; // (Uint16)
+	Sint32 hp; // (Uint16)
 
 	// swarm building parameters
 	Sint32 productionTimeout;
-private:Sint32 totalRatio;
-public:Sint32 ratio[NB_UNIT_TYPE];
+	Sint32 ratio[NB_UNIT_TYPE];
 	Sint32 ratioLocal[NB_UNIT_TYPE];
-private:Sint32 percentUsed[NB_UNIT_TYPE];
 
 	// exchange building parameters
-public:Uint32 receiveRessourceMask;
+	Uint32 receiveRessourceMask;
 	Uint32 sendRessourceMask;
 	Uint32 receiveRessourceMaskLocal;
 	Uint32 sendRessourceMaskLocal;
 
 	// turrets building parameters
-private:Uint32 shootingStep;
-private:Sint32 shootingCooldown;
-public:Sint32 bullets;
+	Sint32 bullets;
 
 	// A true bit meant that the corresponding team can see this building, under FOW or not.
 	Uint32 seenByMask;
@@ -444,5 +431,42 @@ public:Sint32 bullets;
 	};
 
 	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
-};
 
+private:
+	// ─── Private data ───────────────────────────────────────────────
+
+	// pending player orders (consumed by step())
+	std::list<Order *> orderQueue;
+
+	// units: scratch counters for subscription / priority diff
+	Sint32 maxUnitWorkingFuture;
+	Sint32 maxUnitWorkingPrevious;
+	///The subscribeToBringRessourcesStep and subscribeForFlagingStep operate every 32 ticks
+	Sint32 subscriptionWorkingTimer;
+	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
+	Sint32 oldPriority;
+
+	///This is the list of units harvesting from the building (if it is a market for instance)
+	std::list<Unit *> unitsHarvesting;
+
+	// optimisation and consistency
+	InListState inCanFeedUnit;
+	Uint8 canNotConvertUnitTimer; //counts down 150 frames after the building was last unable to feed a unit
+	InListState inCanHealUnit;
+	InListState inUpgrade[NB_ABILITY];
+	/// This variable indicates whether this building is already in the team call list
+	/// to receive units. A 1 indicates its already in the call list, and 0 indicates
+	/// that it is not.
+	Uint8 callListState;
+
+	// Building specific (private):
+	Sint32 localRessource[MAX_NB_RESSOURCES];
+
+	// swarm building parameters (private):
+	Sint32 totalRatio;
+	Sint32 percentUsed[NB_UNIT_TYPE];
+
+	// turrets building parameters (private):
+	Uint32 shootingStep;
+	Sint32 shootingCooldown;
+};
