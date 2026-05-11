@@ -416,12 +416,12 @@ bool Building::isHardSpaceForBuildingSite(void)
 	return isHardSpaceForBuildingSite(constructionResultState);
 }
 
-bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionResultState)
+bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState)
 {
 	int tltn=BUILDING_LEVEL_NONE;
-	if (constructionResultState==UPGRADE)
+	if (requestedState==UPGRADE)
 		tltn=type->nextLevel;
-	else if (constructionResultState==REPAIR)
+	else if (requestedState==REPAIR)
 		tltn=type->prevLevel;
 	else
 		assert(false);

@@ -196,7 +196,7 @@ private:void addForbiddenZoneToUpgradeArea(void);
 	///won't move. Units will move, so they are ignored. If there is space for the building site, then this
 	///returns true.
 	bool isHardSpaceForBuildingSite(void);
-public:bool isHardSpaceForBuildingSite(ConstructionResultState constructionResultState);
+public:bool isHardSpaceForBuildingSite(ConstructionResultState requestedState);
 
 	///Designates whether we are full inside. For Inns, takes into account how much wheat is left
 	///and whether there is enough wheat for more units.
