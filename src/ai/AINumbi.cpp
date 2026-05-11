@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <Stream.h>
+#include <array>
 #include <sstream>
 
 #include "AINumbi.h"
@@ -966,189 +967,167 @@ std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int work
 		return shared_ptr<Order>(new NullOrder);
 }
 
-std::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
+namespace {
+
+// The five building kinds AINumbi considers for level upgrades. Iteration
+// order is the upgrade-priority order — food first, defense last — and is
+// part of the deterministic order stream; do not reorder without rebaselining.
+enum UpgradeKind
 {
-	Building **myBuildings=team->myBuildings;
-	int numberFood[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of food buildings
-	int numberUpgradingFood[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading food buildings
-	Building *foodBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
+	UK_FOOD = 0,
+	UK_HEAL,
+	UK_ATTACK,
+	UK_SCIENCE,
+	UK_DEFENSE,
+	NB_UPGRADE_KINDS
+};
 
-	int numberHealth[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of food buildings
-	int numberUpgradingHealth[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading food buildings
-	Building *healthBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
+// Extra in-flight upgrades tolerated at each kind's rung threshold. Only
+// SCIENCE carries a non-zero value; the original C++ added
+// AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE inline in two of ten copy-pasted
+// conditionals.
+constexpr int kUpgradeKindTolerance[NB_UPGRADE_KINDS] = {
+	0,                                  // UK_FOOD
+	0,                                  // UK_HEAL
+	0,                                  // UK_ATTACK
+	AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE, // UK_SCIENCE
+	0,                                  // UK_DEFENSE
+};
 
-	int numberAttack[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of food buildings
-	int numberUpgradingAttack[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading food buildings
-	Building *attackBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
+struct UpgradeInventory
+{
+	int number[NB_UNIT_LEVELS] = {};      // completed (non-site) buildings per level
+	int upgrading[NB_UNIT_LEVELS] = {};   // sites currently upgrading to this level
+	Building *exemplar[NB_UNIT_LEVELS] = {}; // a chosen instance per level, or null
+};
 
-	int numberScience[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of Science buildings
-	int numberUpgradingScience[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading Science buildings
-	Building *scienceBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
-
-	int numberDefense[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of Defense buildings
-	int numberUpgradingDefense[NB_UNIT_LEVELS]={0, 0, 0, 0}; // number of upgrading Science buildings
-	Building *defenseBuilding[NB_UNIT_LEVELS]={0, 0, 0, 0};
-	
-	for (int i=0; i<Building::MAX_COUNT; i++)
+int upgradeKindFor(int shortTypeNum)
+{
+	switch (shortTypeNum)
 	{
-		Building *b=myBuildings[i];
-		if (b)
+		case IntBuildingType::FOOD_BUILDING:    return UK_FOOD;
+		case IntBuildingType::HEAL_BUILDING:    return UK_HEAL;
+		case IntBuildingType::ATTACK_BUILDING:  return UK_ATTACK;
+		case IntBuildingType::SCIENCE_BUILDING: return UK_SCIENCE;
+		case IntBuildingType::DEFENSE_BUILDING: return UK_DEFENSE;
+		default:                                return -1;
+	}
+}
+
+// Walks every building owned by `team` and tallies, per (kind, level): the
+// count of completed buildings, the count of upgrading sites, and one
+// "exemplar" — a deterministically chosen building used as the target for
+// the next upgrade order. The exemplar is selected by an unbiased syncRand
+// coin flip on each completed building, so for k buildings at one (kind,
+// level) the last one wins with probability 1/2, the previous with 1/4,
+// etc. syncRand() is the lockstep RNG, so the result is identical across
+// networked clients.
+std::array<UpgradeInventory, NB_UPGRADE_KINDS> collectUpgradeInventory(Team *team)
+{
+	std::array<UpgradeInventory, NB_UPGRADE_KINDS> inv{};
+	Building **myBuildings = team->myBuildings;
+	for (int i = 0; i < Building::MAX_COUNT; i++)
+	{
+		Building *b = myBuildings[i];
+		if (!b)
+			continue;
+		const int kind = upgradeKindFor(b->type->shortTypeNum);
+		if (kind < 0)
+			continue;
+		const int l = b->type->level;
+		if (b->type->isBuildingSite)
+			inv[kind].upgrading[l]++;
+		else
 		{
-			BuildingType *bt=b->type;
-			int l=bt->level;
-			if (bt->shortTypeNum==IntBuildingType::FOOD_BUILDING)
-			{
-				if (bt->isBuildingSite)
-					numberUpgradingFood[l]++;
-				else
-				{
-					numberFood[l]++;
-					if (syncRand()&1)
-						foodBuilding[l]=b;
-				}
-			}
-			else if (bt->shortTypeNum==IntBuildingType::HEAL_BUILDING)
-			{
-				if (bt->isBuildingSite)
-					numberUpgradingHealth[l]++;
-				else
-				{
-					numberHealth[l]++;
-					if (syncRand()&1)
-						healthBuilding[l]=b;
-				}
-			}
-			else if (bt->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
-			{
-				if (bt->isBuildingSite)
-					numberUpgradingAttack[l]++;
-				else
-				{
-					numberAttack[l]++;
-					if (syncRand()&1)
-						attackBuilding[l]=b;
-				}
-			}
-			else if (bt->shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
-			{
-				if (bt->isBuildingSite)
-					numberUpgradingScience[l]++;
-				else
-				{
-					numberScience[l]++;
-					if (syncRand()&1)
-						scienceBuilding[l]=b;
-				}
-			}
-			else if (bt->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)
-			{
-				if (bt->isBuildingSite)
-					numberUpgradingDefense[l]++;
-				else
-				{
-					numberDefense[l]++;
-					if (syncRand()&1)
-						defenseBuilding[l]=b;
-				}
-			}
+			inv[kind].number[l]++;
+			if (syncRand() & 1)
+				inv[kind].exemplar[l] = b;
 		}
 	}
-	
-	Unit **myUnits=team->myUnits;
-	int wun[NB_UNIT_LEVELS]={0, 0, 0, 0};//working units
-	int fun[NB_UNIT_LEVELS]={0, 0, 0, 0};//free units
+	return inv;
+}
+
+// Tries one ladder rung: for each upgradeable kind in priority order,
+// checks whether the colony has more completed level-srcLevel buildings
+// than are currently being upgraded to level srcLevel+1 (plus the per-kind
+// tolerance). Returns an OrderConstruction targeting the first eligible
+// kind's exemplar at srcLevel, or nullptr if none.
+//
+// Pre BH-220, the C++ original passed exemplar[0] for both rungs (level
+// 0→1 and 1→2), so the level-1→2 path always re-issued level-0→1 upgrades
+// and AINumbi's tech tree stalled at level 1. This helper reads
+// exemplar[srcLevel] uniformly, fixing that behavior.
+std::shared_ptr<Order> tryUpgradeRung(
+	const std::array<UpgradeInventory, NB_UPGRADE_KINDS> &inv,
+	int srcLevel)
+{
+	for (int kind = 0; kind < NB_UPGRADE_KINDS; ++kind)
 	{
-		for (int i=0; i<Unit::MAX_COUNT; i++)
+		const UpgradeInventory &slot = inv[kind];
+		if (slot.number[srcLevel] > slot.upgrading[srcLevel + 1] + kUpgradeKindTolerance[kind])
 		{
-			Unit *u=myUnits[i];
-			if (u)
-			{
-				int l=u->level[BUILD];
-				if (u->activity==Unit::ACT_RANDOM)
-					fun[l]++;
-				wun[l]++;
-			}
+			Building *b = slot.exemplar[srcLevel];
+			if (b)
+				return std::make_shared<OrderConstruction>(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR);
 		}
 	}
-	
-	//printf("sbu=(%d, %d, %d, %d) wun=(%d, %d, %d, %d)\n", sbu[0], sbu[1], sbu[2], sbu[3], wun[0], wun[1], wun[2], wun[3]);
-	
-	// We calculate if we may upgrade to level 1:
-	int potential=wun[1]+wun[2]+wun[3]+AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT*(numberScience[0]+numberScience[1]+numberScience[2]+numberScience[3]);
-	int now=fun[1]+fun[2]+fun[3];
-	//printf("potential=(%d/%d), now=(%d/%d).\n", potential, ptrigger, now, ntrigger);
-	if ((potential>ptrigger)&&(now>ntrigger))
+	return nullptr;
+}
+
+} // namespace
+
+// Issues one building-upgrade order if (a) the colony has enough free or
+// schooled units to staff higher-level buildings — gated against ptrigger
+// (potential = working units at higher levels, weighted by SCIENCE stock)
+// and ntrigger (now = free units at higher levels) — and (b) there is a
+// completed building of an upgradeable kind that is not already saturated
+// with in-flight upgrades. Tries level 0→1 first, then 1→2; returns
+// NullOrder if neither rung is eligible.
+std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
+{
+	const auto inv = collectUpgradeInventory(team);
+
+	Unit **myUnits = team->myUnits;
+	int wun[NB_UNIT_LEVELS] = {}; // working units per BUILD level
+	int fun[NB_UNIT_LEVELS] = {}; // free (ACT_RANDOM) units per BUILD level
+	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
-		if (numberFood[0]>numberUpgradingFood[1])
+		Unit *u = myUnits[i];
+		if (!u)
+			continue;
+		const int l = u->level[BUILD];
+		if (u->activity == Unit::ACT_RANDOM)
+			fun[l]++;
+		wun[l]++;
+	}
+
+	const UpgradeInventory &science = inv[UK_SCIENCE];
+
+	// Level 0 → 1 rung.
+	{
+		const int sciencePool = science.number[0] + science.number[1] + science.number[2] + science.number[3];
+		const int potential = wun[1] + wun[2] + wun[3] + AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT * sciencePool;
+		const int now = fun[1] + fun[2] + fun[3];
+		if (potential > ptrigger && now > ntrigger)
 		{
-			Building *b=foodBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
-		}
-		if (numberHealth[0]>numberUpgradingHealth[1])
-		{
-			Building *b=healthBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
-		}
-		if (numberAttack[0]>numberUpgradingAttack[1])
-		{
-			Building *b=attackBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
-		}
-		if (numberScience[0]>numberUpgradingScience[1]+AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE)
-		{
-			Building *b=scienceBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
-		}
-		if (numberDefense[0]>numberUpgradingDefense[1])
-		{
-			Building *b=defenseBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
+			if (auto order = tryUpgradeRung(inv, 0))
+				return order;
 		}
 	}
-	
-	// We calculate if we may upgrade to leverl 2:
-	potential=wun[2]+wun[3]+AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT*(numberScience[1]+numberScience[2]+numberScience[3]);
-	now=fun[2]+fun[3];
-	if ((potential>ptrigger)&&(now>ntrigger))
+
+	// Level 1 → 2 rung.
 	{
-		if (numberFood[1]>numberUpgradingFood[2])
+		const int sciencePool = science.number[1] + science.number[2] + science.number[3];
+		const int potential = wun[2] + wun[3] + AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT * sciencePool;
+		const int now = fun[2] + fun[3];
+		if (potential > ptrigger && now > ntrigger)
 		{
-			Building *b=foodBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
-		}
-		if (numberHealth[1]>numberUpgradingHealth[2])
-		{
-			Building *b=healthBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
-		}
-		if (numberAttack[1]>numberUpgradingAttack[2])
-		{
-			Building *b=attackBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
-		}
-		if (numberScience[1]>numberUpgradingScience[2]+AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE)
-		{
-			Building *b=scienceBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
-		}
-		if (numberDefense[1]>numberUpgradingDefense[2])
-		{
-			Building *b=defenseBuilding[0];
-			if (b)
-				return shared_ptr<Order>(new OrderConstruction(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
+			if (auto order = tryUpgradeRung(inv, 1))
+				return order;
 		}
 	}
-	
-	return shared_ptr<Order>(new NullOrder);
+
+	return std::make_shared<NullOrder>();
 }
 
 
