@@ -180,6 +180,10 @@ void GameGUI::adjustLocalTeam()
 	assert(localTeam);
 	teamStats = &localTeam->stats;
 
+	// Mirror the local-team identity onto Map so sim code can consult it without
+	// reaching into the GUI layer.
+	game.map.setLocalTeam(localTeamNo);
+
 	// recompute local forbidden and guard areas
 	game.map.computeLocalForbidden(localTeamNo);
 	game.map.computeLocalGuardArea(localTeamNo);

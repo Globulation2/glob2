@@ -251,6 +251,15 @@ public:
 	void computeLocalGuardArea(int localTeamNo);
 	//! Compute localClearAreaMap from cases array
 	void computeLocalClearArea(int localTeamNo);
+
+	//! Sentinel for "no local team yet" — used before GameGUI::adjustLocalTeam has run.
+	static constexpr Sint32 NO_LOCAL_TEAM = -1;
+	//! Register the team whose view is currently displayed. Sim code may consult
+	//! getLocalTeam() to decide whether to refresh localForbiddenMap / localGuardAreaMap /
+	//! localClearAreaMap caches. This identity is per-client display state — not in
+	//! checkSum() — and must be kept in sync with GameGUI's localTeamNo.
+	void setLocalTeam(Sint32 teamNo) { localTeamNo = teamNo; }
+	Sint32 getLocalTeam() const { return localTeamNo; }
 	
 	//! Return the case at a given position
 	inline Case &getCase(int x, int y)
@@ -676,6 +685,9 @@ public:
 	Utilities::BitArray localGuardAreaMap;
 	//! true = clear area
 	Utilities::BitArray localClearAreaMap;
+	//! Team whose view is locally displayed. Mirror of GameGUI::localTeamNo, used by
+	//! sim code to decide whether to refresh the local*Map caches above. Not in checkSum.
+	Sint32 localTeamNo = NO_LOCAL_TEAM;
 	
 	///This is the maximum fertility of any point on the map
 	Uint16 fertilityMaximum;

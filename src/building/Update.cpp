@@ -371,8 +371,15 @@ bool Building::tryToBuildingSiteRoom(void)
 	return isRoom;
 }
 
-#include "GameGUI.h"
-
+/// Toggle (add or remove) the forbidden zone covering the footprint this building would
+/// occupy if it completed its current upgrade. Dispereses units so the building site
+/// isn't waiting for space when there are lots of units around.
+///
+/// The post-mutation refresh of localForbiddenMap is per-client display state
+/// (not in Map::checkSum) — it runs only when this building's team is the locally-
+/// displayed team, identified via Map::getLocalTeam() (mirrored from GameGUI's
+/// localTeamNo). updateForbiddenGradient, by contrast, is sim state and runs
+/// unconditionally for the owning team.
 void Building::modifyForbiddenZoneForUpgradeArea(bool add)
 {
 	int midPosX=posX-type->decLeft;
@@ -394,7 +401,7 @@ void Building::modifyForbiddenZoneForUpgradeArea(bool add)
 				owner->map->removeForbidden(x, y, owner->teamNumber);
 		}
 	}
-	if(owner == owner->game->gui->getLocalTeam())
+	if(owner->teamNumber == owner->map->getLocalTeam())
 		owner->map->computeLocalForbidden(owner->teamNumber);
 	owner->map->updateForbiddenGradient(owner->teamNumber);
 }

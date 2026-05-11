@@ -14,6 +14,7 @@
 #include <GAGSys.h>
 #include <Stream.h>
 #include "Sector.h"
+#include "render/GameAnimations.h"
 
 Sector::Sector(Game *) {}
 Sector::~Sector(void) {}
@@ -28,4 +29,8 @@ bool Sector::load(GAGCore::InputStream *, Game *, Sint32) { return false; }
 #ifndef YOG_SERVER_ONLY
 UnitDeathAnimation::UnitDeathAnimation(int x_, int y_, Team *t)
 	: x(x_), y(y_), ticksLeft(0), team(t) {}
+
+// Stub for Map::setGame's animations->resize() call. MapQueryTest never invokes
+// setGame (the GrassMap fixture bypasses it), but Map.o's symbol is still linked.
+void GameAnimations::resize(int) {}
 #endif

@@ -52,6 +52,12 @@ class MapQueryTest: public CppUnit::TestFixture
 		CPPUNIT_TEST( testHardSpaceForBuilding_RectAllGrassPasses );
 		CPPUNIT_TEST( testHardSpaceForBuilding_RectGidTolerantSameGidPasses );
 		CPPUNIT_TEST( testHardSpaceForBuilding_RectGidTolerantDifferentGidFails );
+
+		// Local-team mirror (CS-546): Map carries the locally-displayed team identity
+		// so sim code can consult it without reaching into GameGUI.
+		CPPUNIT_TEST( testLocalTeam_DefaultsToSentinel );
+		CPPUNIT_TEST( testLocalTeam_SetAndGet );
+		CPPUNIT_TEST( testLocalTeam_SentinelValueIsMinusOne );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -91,4 +97,8 @@ public:
 	void testHardSpaceForBuilding_RectAllGrassPasses();
 	void testHardSpaceForBuilding_RectGidTolerantSameGidPasses();
 	void testHardSpaceForBuilding_RectGidTolerantDifferentGidFails();
+
+	void testLocalTeam_DefaultsToSentinel();
+	void testLocalTeam_SetAndGet();
+	void testLocalTeam_SentinelValueIsMinusOne();
 };

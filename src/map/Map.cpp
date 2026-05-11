@@ -225,7 +225,8 @@ void Map::clear()
 	wDec=hDec=0;
 	wSector=hSector=0;
 	sizeSector=0;
-	
+	localTeamNo = NO_LOCAL_TEAM;
+
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
 			for (int s=0; s<2; s++)
