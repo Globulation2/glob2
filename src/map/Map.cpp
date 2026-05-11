@@ -7,6 +7,10 @@
 #include "Unit.h"
 #include "MapInternal.h"
 
+#ifndef YOG_SERVER_ONLY
+#include "render/GameAnimations.h"
+#endif  // !YOG_SERVER_ONLY
+
 #include <algorithm>
 #include <valarray>
 #include <Stream.h>
@@ -293,6 +297,9 @@ void Map::setGame(Game *game)
 	assert(sectors);
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
+#ifndef YOG_SERVER_ONLY
+	game->animations->resize(sizeSector);
+#endif  // !YOG_SERVER_ONLY
 }
 
 

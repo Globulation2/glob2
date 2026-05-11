@@ -5,6 +5,7 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 
 #include "Map.h"
 #include "SGSL.h"
@@ -26,6 +27,9 @@ using namespace GAGCore;
 class MapGenerationDescriptor;
 class GameGUI;
 class MapEdit;
+#ifndef YOG_SERVER_ONLY
+class GameAnimations;
+#endif  // !YOG_SERVER_ONLY
 
 // Minimum value of the prestige-victory threshold.
 #define MIN_MAX_PRESTIGE 500
@@ -296,6 +300,13 @@ public:
 	std::string missionBriefing;
 	GameGUI *gui;
 	MapEdit *edit;
+#ifndef YOG_SERVER_ONLY
+	//! Render-side container for bullet explosions and unit death
+	//! animations. Always non-null in non-server builds; the runNoX
+	//! gate is internal to GameAnimations. See
+	//! src/render/GameAnimations.h.
+	std::unique_ptr<GameAnimations> animations;
+#endif  // !YOG_SERVER_ONLY
 	std::list<BuildProject> buildProjects;
 	///Stores alpha values to be passed to the drawing system. kept here so it isn't re-allocated
 	///every frame

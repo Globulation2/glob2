@@ -94,6 +94,7 @@ render/GameRenderUnits.cpp
 render/GameRenderBuildings.cpp
 render/GameRenderTerrain.cpp
 render/GameRenderOverlay.cpp
+render/GameAnimations.cpp
 GameEvent.cpp
 gui/GameGUI.cpp
 gui/GameGUIDefaultAssignManager.cpp

@@ -44,6 +44,8 @@
 
 #include "ReplayWriter.h"
 
+#include "GameAnimations.h"
+
 #define BULLET_IMGID 0
 
 // Bullets/explosions/death animations, fog of war, and overlay maps. Split from Game_render.cpp.
@@ -96,13 +98,13 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 		}
 		globalContainer->gfx->finishDrawingSprite(bulletSprite, 255);
 		// explosions
-		for (std::list<BulletExplosion *>::iterator it=s->explosions.begin();it!=s->explosions.end();it++)
+		for (BulletExplosion *e : animations->getExplosions(i))
 		{
-			if (map.isFOWDiscovered((*it)->x, (*it)->y, visibleTeams))
+			if (map.isFOWDiscovered(e->x, e->y, visibleTeams))
 			{
 				int x, y;
-				map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
-				int frame = globalContainer->bulletExplosion->getFrameCount() - (*it)->ticksLeft - 1;
+				map.mapCaseToDisplayable(e->x, e->y, &x, &y, viewportX, viewportY);
+				int frame = globalContainer->bulletExplosion->getFrameCount() - e->ticksLeft - 1;
 				int decX = globalContainer->bulletExplosion->getW(frame)>>1;
 				int decY = globalContainer->bulletExplosion->getH(frame)>>1;
 				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, globalContainer->bulletExplosion, frame);
@@ -110,16 +112,16 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 		}
 		globalContainer->gfx->finishDrawingSprite(globalContainer->bulletExplosion, 255);
 		// death animations
-		for (std::list<UnitDeathAnimation *>::iterator it=s->deathAnimations.begin();it!=s->deathAnimations.end();++it)
+		for (UnitDeathAnimation *a : animations->getDeathAnimations(i))
 		{
-			if (map.isFOWDiscovered((*it)->x, (*it)->y, visibleTeams))
+			if (map.isFOWDiscovered(a->x, a->y, visibleTeams))
 			{
 				int x, y;
-				map.mapCaseToDisplayable((*it)->x, (*it)->y, &x, &y, viewportX, viewportY);
-				int frame = globalContainer->deathAnimation->getFrameCount() - (*it)->ticksLeft - 1;
+				map.mapCaseToDisplayable(a->x, a->y, &x, &y, viewportX, viewportY);
+				int frame = globalContainer->deathAnimation->getFrameCount() - a->ticksLeft - 1;
 				int decX = globalContainer->deathAnimation->getW(frame)>>1;
 				int decY = globalContainer->deathAnimation->getH(frame)>>1;
-				Team *team = (*it)->team;
+				Team *team = a->team;
 
 				globalContainer->deathAnimation->setBaseColor(team->color);
 				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY-frame, globalContainer->deathAnimation, frame);

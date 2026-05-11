@@ -507,8 +507,14 @@ public:
 				cases[coordToIndex(xi, yi)].building = gbid;
 	}
 	
+	//! Return the sector index of the sector containing tile (x,y). The
+	//! formula is: y is wrapped to the map height, divided by SECTOR_TILES
+	//! to get the sector row, then multiplied by sector-grid width and
+	//! offset by the wrapped/divided x. Used by Map::getSector and by
+	//! GameAnimations to bucket render effects per sector.
+	int getSectorIndex(int x, int y) const { return wSector*((y&hMask)>>Sector::SECTOR_SHIFT)+((x&wMask)>>Sector::SECTOR_SHIFT); }
 	//! Return sector at (x,y).
-	Sector *getSector(int x, int y) { return &(sectors[wSector*((y&hMask)>>Sector::SECTOR_SHIFT)+((x&wMask)>>Sector::SECTOR_SHIFT)]); }
+	Sector *getSector(int x, int y) { return &(sectors[getSectorIndex(x, y)]); }
 	//! Return a sector in the sector array. It is not clean because too high level
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 

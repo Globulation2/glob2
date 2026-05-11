@@ -12,6 +12,9 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#ifndef YOG_SERVER_ONLY
+#include "render/GameAnimations.h"
+#endif  // !YOG_SERVER_ONLY
 #include <Stream.h>
 #include <set>
 #include <climits>
@@ -233,9 +236,8 @@ void Unit::handleMedical(void)
 			}
 			owner->map->clearImmobileUnit(posX, posY);
 
-			// generate death animation
-			if (!globalContainer->runNoX)
-				owner->map->getSector(posX, posY)->deathAnimations.push_back(new UnitDeathAnimation(posX, posY, owner));
+			// generate death animation (no-op in headless mode)
+			owner->game->animations->onUnitDeath(*owner->map, posX, posY, owner);
 		}
 		isDead = true;
 	}

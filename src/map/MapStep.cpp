@@ -8,6 +8,9 @@
 #include "LogFileManager.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#ifndef YOG_SERVER_ONLY
+#include "render/GameAnimations.h"
+#endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
 #include <valarray>
@@ -90,7 +93,8 @@ void Map::syncStep(Uint32 stepCounter)
 	growRessources();
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
-	
+	game->animations->step();
+
 	if (stepCounter & 1)
 	{
 		int team = (stepCounter >> 1) & 31;

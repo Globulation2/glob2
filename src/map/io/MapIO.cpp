@@ -9,6 +9,10 @@
 #include "Unit.h"
 #include "MapInternal.h"
 
+#ifndef YOG_SERVER_ONLY
+#include "render/GameAnimations.h"
+#endif  // !YOG_SERVER_ONLY
+
 #include <algorithm>
 #include <valarray>
 #include <Stream.h>
@@ -150,7 +154,15 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
-	
+
+#ifndef YOG_SERVER_ONLY
+	// Map::setGame is bypassed on the loaded-game path (Game::load uses
+	// Map::load directly and the game pointer is set inline above), so
+	// the per-sector render buckets must be sized here too.
+	if (game)
+		game->animations->resize(sizeSector);
+#endif  // !YOG_SERVER_ONLY
+
 	arraysBuilt = true;
 	
 	stream->readEnterSection("sectors");
