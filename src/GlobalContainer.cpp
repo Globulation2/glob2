@@ -19,7 +19,7 @@
 #include "Player.h"
 #include "Race.h"
 #include "SoundMixer.h"
-#include "UnitSkin.h"
+#include "render/UnitSkin.h"
 #include "VoiceRecorder.h"
 #ifndef YOG_SERVER_ONLY
 #include "ReplayReader.h"

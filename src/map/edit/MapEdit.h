@@ -11,7 +11,7 @@
 #include "KeyboardManager.h"
 #include <map>
 #include "MapEditDialog.h"
-#include "Minimap.h"
+#include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
 #include <string>

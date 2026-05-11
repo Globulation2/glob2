@@ -30,7 +30,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
-#include "UnitSkin.h"
+#include "render/UnitSkin.h"
 #include "Integrity.h"
 #include "Utilities.h"
 #include "GameGUI.h"

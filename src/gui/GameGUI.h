@@ -14,7 +14,7 @@
 #include "KeyboardManager.h"
 #include "MarkManager.h"
 #include "GameGUIMessageManager.h"
-#include "Minimap.h"
+#include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"

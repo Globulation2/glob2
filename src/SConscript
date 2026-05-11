@@ -160,7 +160,7 @@ map/MapQuery.cpp
 map/MapResources.cpp
 map/MapStep.cpp
 map/MapTerrain.cpp
-map/MapView.cpp
+render/MapView.cpp
 map/edit/Widgets.cpp
 map/edit/WidgetsTools.cpp
 map/edit/WidgetsUnit.cpp
@@ -193,7 +193,7 @@ MapScriptError.cpp
 MapScriptUSL.cpp
 map/io/MapThumbnail.cpp
 MarkManager.cpp
-map/Minimap.cpp
+render/Minimap.cpp
 MultiplayerGame.cpp
 MultiplayerGameEvent.cpp
 MultiplayerGameEventListener.cpp
@@ -253,12 +253,12 @@ unit/Unit.cpp
 unit/UnitAction.cpp
 unit/UnitActivity.cpp
 unit/UnitDisplacement.cpp
-unit/UnitEditorScreen.cpp
+UnitEditorScreen.cpp
 unit/UnitGeometry.cpp
 unit/UnitMedical.cpp
 unit/UnitMovement.cpp
 unit/UnitSerialization.cpp
-unit/UnitSkin.cpp
+render/UnitSkin.cpp
 unit/UnitStats.cpp
 game/entities/UnitType.cpp
 unit/UnitUtils.cpp
@@ -390,7 +390,7 @@ map/MapQuery.cpp
 map/MapResources.cpp
 map/MapStep.cpp
 map/MapTerrain.cpp
-map/MapView.cpp
+render/MapView.cpp
 map/io/MapThumbnail.cpp
 Sector.cpp
 Settings.cpp
