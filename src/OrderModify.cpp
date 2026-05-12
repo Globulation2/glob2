@@ -17,12 +17,18 @@ OrderModify::OrderModify()
 
 // OrderModifyBuildings' code
 
+// Deserialize wire format: Uint16 gid || Uint16 numberRequested (4 bytes total).
+// On malformed input (wrong length), fields remain zero-initialized — caller should
+// drop invalid orders. The Rust port should use a Result-returning factory instead.
 OrderModifyBuilding::OrderModifyBuilding(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
-	assert(dataLength==4);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	gid = 0;
+	numberRequested = 0;
+	if (!setData(data, dataLength, versionMinor))
+	{
+		// Malformed packet — fields stay zeroed.
+	}
 }
 
 OrderModifyBuilding::OrderModifyBuilding(Uint16 gid, Uint16 numberRequested)
@@ -51,12 +57,18 @@ bool OrderModifyBuilding::setData(const Uint8 *data, int dataLength, Uint32 vers
 
 // OrderModifyExchange' code
 
+// Deserialize wire format: Uint16 gid || Uint32 receiveRessourceMask || Uint32 sendRessourceMask (10 bytes).
+// On malformed input, fields remain zero-initialized.
 OrderModifyExchange::OrderModifyExchange(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
-	assert(dataLength==10);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	gid = 0;
+	receiveRessourceMask = 0;
+	sendRessourceMask = 0;
+	if (!setData(data, dataLength, versionMinor))
+	{
+		// Malformed packet — fields stay zeroed.
+	}
 }
 
 OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask)
@@ -87,12 +99,18 @@ bool OrderModifyExchange::setData(const Uint8 *data, int dataLength, Uint32 vers
 
 // OrderModifySwarm's code
 
+// Deserialize wire format: Uint16 gid || Sint32 ratio[NB_UNIT_TYPE].
+// On malformed input, fields remain zero-initialized.
 OrderModifySwarm::OrderModifySwarm(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
-	assert(dataLength == getDataLength());
-	bool good = setData(data, dataLength, versionMinor);
-	assert(good);
+	gid = 0;
+	for (int i = 0; i < NB_UNIT_TYPE; i++)
+		ratio[i] = 0;
+	if (!setData(data, dataLength, versionMinor))
+	{
+		// Malformed packet — fields stay zeroed.
+	}
 }
 
 OrderModifySwarm::OrderModifySwarm(Uint16 gid, Sint32 ratio[NB_UNIT_TYPE])
@@ -122,12 +140,17 @@ bool OrderModifySwarm::setData(const Uint8 *data, int dataLength, Uint32 version
 
 // OrderModifyFlag' code
 
+// Deserialize wire format: Uint16 gid || Sint32 range (6 bytes).
+// On malformed input, fields remain zero-initialized.
 OrderModifyFlag::OrderModifyFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
-	assert(dataLength==6);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	gid = 0;
+	range = 0;
+	if (!setData(data, dataLength, versionMinor))
+	{
+		// Malformed packet — fields stay zeroed.
+	}
 }
 
 OrderModifyFlag::OrderModifyFlag(Uint16 gid, Sint32 range)
@@ -155,13 +178,19 @@ bool OrderModifyFlag::setData(const Uint8 *data, int dataLength, Uint32 versionM
 
 // OrderModifyClearingFlags' code
 
+// Deserialize wire format: Uint16 gid || Uint8 clearingRessources[BASIC_COUNT].
+// On malformed input, fields remain zero-initialized.
 OrderModifyClearingFlag::OrderModifyClearingFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
-	this->data=NULL;
-	assert(dataLength==2+BASIC_COUNT);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	this->data = NULL;
+	gid = 0;
+	for (int i = 0; i < BASIC_COUNT; i++)
+		clearingRessources[i] = false;
+	if (!setData(data, dataLength, versionMinor))
+	{
+		// Malformed packet — fields stay zeroed.
+	}
 }
 
 OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT])
@@ -200,12 +229,17 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength, Uint32 
 
 // OrderModifyMinLevelToFlag's code
 
+// Deserialize wire format: Uint16 gid || Uint16 minLevelToFlag (4 bytes).
+// On malformed input, fields remain zero-initialized.
 OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
-	assert(dataLength==4);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	gid = 0;
+	minLevelToFlag = 0;
+	if (!setData(data, dataLength, versionMinor))
+	{
+		// Malformed packet — fields stay zeroed.
+	}
 }
 
 OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag)
@@ -237,12 +271,19 @@ bool OrderModifyMinLevelToFlag::setData(const Uint8 *data, int dataLength, Uint3
 
 // OrderMoveFlags' code
 
+// Deserialize wire format: Uint16 gid || Sint32 x || Sint32 y || Uint8 drop (11 bytes).
+// On malformed input, fields remain zero-initialized.
 OrderMoveFlag::OrderMoveFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
 :OrderModify()
 {
-	assert(dataLength==11);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	gid = 0;
+	x = 0;
+	y = 0;
+	drop = false;
+	if (!setData(data, dataLength, versionMinor))
+	{
+		// Malformed packet — fields stay zeroed.
+	}
 }
 
 OrderMoveFlag::OrderMoveFlag(Uint16 gid, Sint32 x, Sint32 y, bool drop)
@@ -276,12 +317,24 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMin
 
 // OrderAlterateArea's code
 
+// Deserialize wire format: Uint8 teamNumber || Uint8 type || Sint16 centerX || Sint16 centerY ||
+// Sint16 minX || Sint16 minY || Uint16 maxX || Uint16 maxY || BitArray mask.
+// On malformed input, fields remain zero-initialized.
 OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	_data = NULL;
-
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	teamNumber = 0;
+	type = 0;
+	centerX = 0;
+	centerY = 0;
+	minX = 0;
+	minY = 0;
+	maxX = 0;
+	maxY = 0;
+	if (!setData(data, dataLength, versionMinor))
+	{
+		// Malformed packet — fields stay zeroed.
+	}
 }
 
 #ifndef YOG_SERVER_ONLY
