@@ -256,7 +256,9 @@ public:
 	Sint32 ratio[NB_UNIT_TYPE];
 
 protected:
-	Uint8 data[14];
+	//! Wire encoding buffer: Uint16 gid || Sint32 ratio[NB_UNIT_TYPE].
+	//! Size must track getDataLength() — keep both as 2+4*NB_UNIT_TYPE.
+	Uint8 data[2+4*NB_UNIT_TYPE];
 };
 
 class OrderModifyFlag:public OrderModify
