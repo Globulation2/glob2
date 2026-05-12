@@ -23,13 +23,36 @@ NullOrder::NullOrder()
 
 // MessageOrder's code
 
-MessageOrder::MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
+MessageOrder::MessageOrder()
 :MiscOrder()
 {
-	this->data=NULL;
-	assert(dataLength>=9);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	data = NULL;
+	length = 0;
+}
+
+std::optional<std::shared_ptr<MessageOrder>> MessageOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint32 recepientsMask || Uint32 messageOrderType || Uint8
+	// textLength || char text[textLength] || NUL terminator.
+	if (dataLength<9)
+		return std::nullopt;
+
+	std::shared_ptr<MessageOrder> order = std::make_shared<MessageOrder>();
+	// Initialize data to NULL so the destructor is safe even on partial failure.
+	order->data = NULL;
+	order->length=dataLength;
+	order->recepientsMask=getUint32(data, 0);
+	order->messageOrderType=getUint32(data, 4);
+	Uint8 textLength=getUint8(data, 8);
+	order->data=(Uint8 *)malloc(dataLength);
+	memcpy(order->data, data, dataLength);
+	if (order->data[dataLength-1]!=0)
+		return std::nullopt;
+	if (textLength!=Utilities::strmlen((const char *)(order->data+9), ORDER_TEXT_MESSAGE_MAX_LEN))
+		return std::nullopt;
+	if (textLength!=dataLength-9)
+		return std::nullopt;
+	return order;
 }
 
 MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text)
@@ -79,13 +102,30 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMino
 
 // OrderVoiceData's code
 
-OrderVoiceData::OrderVoiceData(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderVoiceData::OrderVoiceData()
 :MiscOrder()
 {
-	this->data = NULL;
-	assert(dataLength >= 5);
-	bool good = setData(data, dataLength, versionMinor);
-	assert(good);
+	data = NULL;
+	framesDatasLength = 0;
+	frameCount = 0;
+}
+
+std::optional<std::shared_ptr<OrderVoiceData>> OrderVoiceData::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint32 recepientsMask || Uint8 frameCount || Uint8
+	// frames[frameCount].
+	if (dataLength < 5)
+		return std::nullopt;
+
+	std::shared_ptr<OrderVoiceData> order = std::make_shared<OrderVoiceData>();
+	order->data = NULL;
+	order->framesDatasLength = (size_t)dataLength - 5;
+	order->recepientsMask = getUint32(data, 0);
+	order->frameCount = getUint8(data, 4);
+
+	order->data = (Uint8 *)malloc(dataLength);
+	memcpy(order->data, data, dataLength);
+	return order;
 }
 
 OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas)
@@ -131,12 +171,28 @@ bool OrderVoiceData::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 
 // SetAllianceOrder's code
 
-SetAllianceOrder::SetAllianceOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
+SetAllianceOrder::SetAllianceOrder()
 :MiscOrder()
 {
-	assert(dataLength==24);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<SetAllianceOrder>> SetAllianceOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint32 teamNumber || Uint32 alliedMask || Uint32 enemyMask ||
+	// Uint32 visionExchangeMask || Uint32 visionFoodMask || Uint32 visionOtherMask.
+	if(dataLength!=24)
+		return std::nullopt;
+
+	std::shared_ptr<SetAllianceOrder> order = std::make_shared<SetAllianceOrder>();
+	order->teamNumber=getUint32(data, 0);
+	order->alliedMask=getUint32(data, 4);
+	order->enemyMask=getUint32(data, 8);
+	order->visionExchangeMask=getUint32(data, 12);
+	order->visionFoodMask=getUint32(data, 16);
+	order->visionOtherMask=getUint32(data, 20);
+	memcpy(order->data, data, dataLength);
+	return order;
 }
 
 SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, Uint32 enemyMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask)
@@ -177,12 +233,24 @@ bool SetAllianceOrder::setData(const Uint8 *data, int dataLength, Uint32 version
 
 // MapMarkOrder's code
 
-MapMarkOrder::MapMarkOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
+MapMarkOrder::MapMarkOrder()
 :MiscOrder()
 {
-	assert(dataLength==12);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<MapMarkOrder>> MapMarkOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint32 teamNumber || Sint32 x || Sint32 y.
+	if(dataLength!=12)
+		return std::nullopt;
+
+	std::shared_ptr<MapMarkOrder> order = std::make_shared<MapMarkOrder>();
+	order->teamNumber=getUint32(data, 0);
+	order->x=getSint32(data, 4);
+	order->y=getSint32(data, 8);
+	memcpy(order->data, data, dataLength);
+	return order;
 }
 
 MapMarkOrder::MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y)
@@ -217,12 +285,22 @@ bool MapMarkOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMino
 
 // PauseGameOrder's code
 
-PauseGameOrder::PauseGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
+PauseGameOrder::PauseGameOrder()
 :MiscOrder()
 {
-	assert(dataLength==1);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<PauseGameOrder>> PauseGameOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint8 pause.
+	if(dataLength!=1)
+		return std::nullopt;
+
+	std::shared_ptr<PauseGameOrder> order = std::make_shared<PauseGameOrder>();
+	order->pause=(bool)data[0];
+	memcpy(order->data, data, dataLength);
+	return order;
 }
 
 PauseGameOrder::PauseGameOrder(bool pause)
@@ -248,12 +326,22 @@ bool PauseGameOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 
 // PlayerQuitsGameOrder code
 
-PlayerQuitsGameOrder::PlayerQuitsGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
+PlayerQuitsGameOrder::PlayerQuitsGameOrder()
 :MiscOrder()
 {
-	assert(dataLength==4);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<PlayerQuitsGameOrder>> PlayerQuitsGameOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint32 player.
+	if(dataLength!=4)
+		return std::nullopt;
+
+	std::shared_ptr<PlayerQuitsGameOrder> order = std::make_shared<PlayerQuitsGameOrder>();
+	order->player=getUint32(data, 0);
+	memcpy(order->data, data, dataLength);
+	return order;
 }
 
 PlayerQuitsGameOrder::PlayerQuitsGameOrder(Sint32 player)
@@ -282,12 +370,22 @@ bool PlayerQuitsGameOrder::setData(const Uint8 *data, int dataLength, Uint32 ver
 
 // AdjustLatency code
 
-AdjustLatency::AdjustLatency(const Uint8 *data, int dataLength, Uint32 versionMinor)
+AdjustLatency::AdjustLatency()
 :MiscOrder()
 {
-	assert(dataLength==2);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<AdjustLatency>> AdjustLatency::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint16 latencyAdjustment.
+	if(dataLength!=2)
+		return std::nullopt;
+
+	std::shared_ptr<AdjustLatency> order = std::make_shared<AdjustLatency>();
+	order->latencyAdjustment=getUint16(data, 0);
+	memcpy(order->data, data, dataLength);
+	return order;
 }
 
 AdjustLatency::AdjustLatency(Uint16 latencyAdjustment)

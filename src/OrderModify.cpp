@@ -17,12 +17,22 @@ OrderModify::OrderModify()
 
 // OrderModifyBuildings' code
 
-OrderModifyBuilding::OrderModifyBuilding(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderModifyBuilding::OrderModifyBuilding()
 :OrderModify()
 {
-	assert(dataLength==4);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<OrderModifyBuilding>> OrderModifyBuilding::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint16 gid at offset 0 || Uint16 numberRequested at offset 2.
+	if (dataLength!=4)
+		return std::nullopt;
+
+	std::shared_ptr<OrderModifyBuilding> order = std::make_shared<OrderModifyBuilding>();
+	order->gid=getUint16(data, 0);
+	order->numberRequested=getUint16(data, 2);
+	return order;
 }
 
 OrderModifyBuilding::OrderModifyBuilding(Uint16 gid, Uint16 numberRequested)
@@ -51,12 +61,23 @@ bool OrderModifyBuilding::setData(const Uint8 *data, int dataLength, Uint32 vers
 
 // OrderModifyExchange' code
 
-OrderModifyExchange::OrderModifyExchange(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderModifyExchange::OrderModifyExchange()
 :OrderModify()
 {
-	assert(dataLength==10);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<OrderModifyExchange>> OrderModifyExchange::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint16 gid at offset 0 || Uint32 receiveRessourceMask at offset 2 || Uint32 sendRessourceMask at offset 6.
+	if (dataLength!=10)
+		return std::nullopt;
+
+	std::shared_ptr<OrderModifyExchange> order = std::make_shared<OrderModifyExchange>();
+	order->gid=getUint16(data, 0);
+	order->receiveRessourceMask=getUint32(data, 2);
+	order->sendRessourceMask=getUint32(data, 6);
+	return order;
 }
 
 OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask)
@@ -87,12 +108,23 @@ bool OrderModifyExchange::setData(const Uint8 *data, int dataLength, Uint32 vers
 
 // OrderModifySwarm's code
 
-OrderModifySwarm::OrderModifySwarm(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderModifySwarm::OrderModifySwarm()
 :OrderModify()
 {
-	assert(dataLength == getDataLength());
-	bool good = setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(ratio, 0, sizeof(ratio));
+}
+
+std::optional<std::shared_ptr<OrderModifySwarm>> OrderModifySwarm::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint16 gid at offset 0 || Sint32 ratio[NB_UNIT_TYPE] at offset 2.
+	if (dataLength != 2+4*NB_UNIT_TYPE)
+		return std::nullopt;
+
+	std::shared_ptr<OrderModifySwarm> order = std::make_shared<OrderModifySwarm>();
+	order->gid = getUint16(data, 0);
+	for (int i=0; i<NB_UNIT_TYPE; i++)
+		order->ratio[i] = getSint32(data, 2+4*i);
+	return order;
 }
 
 OrderModifySwarm::OrderModifySwarm(Uint16 gid, Sint32 ratio[NB_UNIT_TYPE])
@@ -122,12 +154,22 @@ bool OrderModifySwarm::setData(const Uint8 *data, int dataLength, Uint32 version
 
 // OrderModifyFlag' code
 
-OrderModifyFlag::OrderModifyFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderModifyFlag::OrderModifyFlag()
 :OrderModify()
 {
-	assert(dataLength==6);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<OrderModifyFlag>> OrderModifyFlag::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint16 gid at offset 0 || Sint32 range at offset 2.
+	if (dataLength!=6)
+		return std::nullopt;
+
+	std::shared_ptr<OrderModifyFlag> order = std::make_shared<OrderModifyFlag>();
+	order->gid=getUint16(data, 0);
+	order->range=getSint32(data,2);
+	return order;
 }
 
 OrderModifyFlag::OrderModifyFlag(Uint16 gid, Sint32 range)
@@ -153,15 +195,26 @@ bool OrderModifyFlag::setData(const Uint8 *data, int dataLength, Uint32 versionM
 	return true;
 }
 
-// OrderModifyClearingFlags' code
+// OrderModifyClearingFlag' code
 
-OrderModifyClearingFlag::OrderModifyClearingFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderModifyClearingFlag::OrderModifyClearingFlag()
 :OrderModify()
 {
-	this->data=NULL;
-	assert(dataLength==2+BASIC_COUNT);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	data = NULL;
+	memset(clearingRessources, 0, sizeof(clearingRessources));
+}
+
+std::optional<std::shared_ptr<OrderModifyClearingFlag>> OrderModifyClearingFlag::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint16 gid at offset 0 || bool clearingRessources[BASIC_COUNT] at offset 2.
+	if (dataLength!=2+BASIC_COUNT)
+		return std::nullopt;
+
+	std::shared_ptr<OrderModifyClearingFlag> order = std::make_shared<OrderModifyClearingFlag>();
+	order->gid=getUint16(data, 0);
+	for (int i=0; i<BASIC_COUNT; i++)
+		order->clearingRessources[i]=(bool)getUint8(data, 2+i);
+	return order;
 }
 
 OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT])
@@ -200,12 +253,22 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength, Uint32 
 
 // OrderModifyMinLevelToFlag's code
 
-OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag()
 :OrderModify()
 {
-	assert(dataLength==4);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<OrderModifyMinLevelToFlag>> OrderModifyMinLevelToFlag::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint16 gid at offset 0 || Uint16 minLevelToFlag at offset 2.
+	if (dataLength!=4)
+		return std::nullopt;
+
+	std::shared_ptr<OrderModifyMinLevelToFlag> order = std::make_shared<OrderModifyMinLevelToFlag>();
+	order->gid=getUint16(data, 0);
+	order->minLevelToFlag=getUint16(data, 2);
+	return order;
 }
 
 OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag)
@@ -237,12 +300,24 @@ bool OrderModifyMinLevelToFlag::setData(const Uint8 *data, int dataLength, Uint3
 
 // OrderMoveFlags' code
 
-OrderMoveFlag::OrderMoveFlag(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderMoveFlag::OrderMoveFlag()
 :OrderModify()
 {
-	assert(dataLength==11);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	memset(data, 0, sizeof(data));
+}
+
+std::optional<std::shared_ptr<OrderMoveFlag>> OrderMoveFlag::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint16 gid at offset 0 || Sint32 x at offset 2 || Sint32 y at offset 6 || Uint8 drop at offset 10.
+	if (dataLength!=11)
+		return std::nullopt;
+
+	std::shared_ptr<OrderMoveFlag> order = std::make_shared<OrderMoveFlag>();
+	order->gid=getUint16(data, 0);
+	order->x=getSint32(data, 2);
+	order->y=getSint32(data, 6);
+	order->drop=(bool)getUint8(data, 10);
+	return order;
 }
 
 OrderMoveFlag::OrderMoveFlag(Uint16 gid, Sint32 x, Sint32 y, bool drop)
@@ -276,12 +351,35 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMin
 
 // OrderAlterateArea's code
 
-OrderAlterateArea::OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 versionMinor)
+OrderAlterateArea::OrderAlterateArea()
 {
 	_data = NULL;
+}
 
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+std::optional<std::shared_ptr<OrderAlterateArea>> OrderAlterateArea::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+{
+	// Wire encoding: Uint8 teamNumber || Uint8 type || Sint16 centerX || Sint16
+	// centerY || Sint16 minX || Sint16 minY || Uint16 maxX || Uint16 maxY ||
+	// BitArray mask.
+	if (dataLength < 14)
+		return std::nullopt;
+
+	std::shared_ptr<OrderAlterateArea> order(new OrderAlterateArea());
+	order->_data = NULL;
+
+	order->teamNumber = getUint8(data, 0);
+	order->type = getUint8(data, 1);
+	order->centerX = getSint16(data, 2);
+	order->centerY = getSint16(data, 4);
+	order->minX = getSint16(data, 6);
+	order->minY = getSint16(data, 8);
+	order->maxX = getUint16(data, 10);
+	order->maxY = getUint16(data, 12);
+	assert(order->maxX-order->minX <= ORDER_AREA_BRUSH_MAX_SIDE);
+	assert(order->maxY-order->minY <= ORDER_AREA_BRUSH_MAX_SIDE);
+	order->mask.deserialize(data+14, (order->maxX-order->minX)*(order->maxY-order->minY));
+
+	return order;
 }
 
 #ifndef YOG_SERVER_ONLY

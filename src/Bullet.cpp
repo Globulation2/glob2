@@ -6,10 +6,30 @@
 #include <SDL_endian.h>
 #include <Stream.h>
 
+std::optional<std::shared_ptr<Bullet>> Bullet::deserialize(GAGCore::InputStream *stream, Sint32 versionMinor)
+{
+	// Load from stream — always returns true (stream read is the validation).
+	std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	bullet->px = stream->readSint32("px");
+	bullet->py = stream->readSint32("py");
+	bullet->speedX = stream->readSint32("speedX");
+	bullet->speedY = stream->readSint32("speedY");
+	bullet->ticksInitial = 0;
+	bullet->ticksLeft = stream->readSint32("ticksLeft");
+	bullet->shootDamage = stream->readSint32("shootDamage");
+	bullet->targetX = stream->readSint32("targetX");
+	bullet->targetY = stream->readSint32("targetY");
+
+	bullet->revealX = stream->readSint32("revealX");
+	bullet->revealY = stream->readSint32("revealY");
+	bullet->revealW = stream->readSint32("revealW");
+	bullet->revealH = stream->readSint32("revealH");
+	return bullet;
+}
+
 Bullet::Bullet(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	bool good = load(stream, versionMinor);
-	assert(good);
+	load(stream, versionMinor);
 }
 
 Bullet::Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY, Sint32 revealX, Sint32 revealY, Sint32 revealW, Sint32 revealH)
@@ -74,4 +94,3 @@ void Bullet::step(void)
 		ticksLeft--;
 	}
 }
-

@@ -3,6 +3,9 @@
 
 #pragma once
 
+#include <memory>
+#include <optional>
+
 #define SHOOTING_COOLDOWN_MAX 65536
 //! Number of bit before any significant one, to avoid overflow while computing totalDefensePower in TeamStat.cpp
 #define SHOOTING_COOLDOWN_MAGNITUDE 10
@@ -18,6 +21,7 @@ namespace GAGCore
 class Bullet
 {
 public:
+	static std::optional<std::shared_ptr<Bullet>> deserialize(GAGCore::InputStream *stream, Sint32 versionMinor);
 	Bullet(GAGCore::InputStream *stream, Sint32 versionMinor);
 	Bullet(Sint32 px, Sint32 py, Sint32 speedX, Sint32 speedY, Sint32 ticksLeft, Sint32 shootDamage, Sint32 targetX, Sint32 targetY, Sint32 revealX, Sint32 revealY, Sint32 revealW, Sint32 revealH);
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
