@@ -10,12 +10,12 @@
 
 // OrderCreate's code
 
-OrderCreate::OrderCreate(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:Order()
+std::shared_ptr<OrderCreate> OrderCreate::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==28);//if changed don't forget order.h update
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<OrderCreate>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, Sint32 flagRadius)
@@ -60,19 +60,17 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength, Uint32 versionMinor
 	if(versionMinor>=78)
 		this->flagRadius=getSint32(data, 24);
 
-	memcpy(this->data, data, dataLength);
-
 	return true;
 }
 
 // OrderDelete's code
 
-OrderDelete::OrderDelete(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:Order()
+std::shared_ptr<OrderDelete> OrderDelete::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==2);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<OrderDelete>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 OrderDelete::OrderDelete(Uint16 gid)
@@ -93,17 +91,17 @@ bool OrderDelete::setData(const Uint8 *data, int dataLength, Uint32 versionMinor
 	if (dataLength!=getDataLength())
 		return false;
 	this->gid=getUint16(data, 0);
-	memcpy(this->data, data, dataLength);
 	return true;
 }
 
 // OrderCancelDelete's code
 
-OrderCancelDelete::OrderCancelDelete(const Uint8 *data, int dataLength, Uint32 versionMinor)
+std::shared_ptr<OrderCancelDelete> OrderCancelDelete::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==2);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<OrderCancelDelete>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 OrderCancelDelete::OrderCancelDelete(Uint16 gid)
@@ -124,18 +122,17 @@ bool OrderCancelDelete::setData(const Uint8 *data, int dataLength, Uint32 versio
 	if(dataLength != getDataLength())
 		return false;
 	this->gid = getUint16(data, 0);
-	memcpy(this->data, data, dataLength);
 	return true;
 }
 
 // OrderConstruction's code
 
-OrderConstruction::OrderConstruction(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:Order()
+std::shared_ptr<OrderConstruction> OrderConstruction::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==10);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<OrderConstruction>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 OrderConstruction::OrderConstruction(Uint16 gid, Uint32 unitWorking, Uint32 unitWorkingFuture)
@@ -162,18 +159,17 @@ bool OrderConstruction::setData(const Uint8 *data, int dataLength, Uint32 versio
 	this->gid=getUint16(data, 0);
 	this->unitWorking=getUint32(data, 2);
 	this->unitWorkingFuture=getUint32(data, 6);
-	memcpy(this->data, data, dataLength);
 	return true;
 }
 
 // OrderCancelConstruction's code
 
-OrderCancelConstruction::OrderCancelConstruction(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:Order()
+std::shared_ptr<OrderCancelConstruction> OrderCancelConstruction::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==6);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<OrderCancelConstruction>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 OrderCancelConstruction::OrderCancelConstruction(Uint16 gid, Uint32 unitWorking)
@@ -197,18 +193,17 @@ bool OrderCancelConstruction::setData(const Uint8 *data, int dataLength, Uint32 
 		return false;
 	this->gid=getUint16(data, 0);
 	this->unitWorking=getUint32(data, 2);
-	memcpy(this->data, data, dataLength);
 	return true;
 }
 
 // OrderChangePriority's code
 
-OrderChangePriority::OrderChangePriority(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:Order()
+std::shared_ptr<OrderChangePriority> OrderChangePriority::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==6);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<OrderChangePriority>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 OrderChangePriority::OrderChangePriority(Uint16 gid, Sint32 priority)
@@ -232,6 +227,5 @@ bool OrderChangePriority::setData(const Uint8 *data, int dataLength, Uint32 vers
 		return false;
 	this->gid=getUint16(data, 0);
 	this->priority=getUint32(data, 2);
-	memcpy(this->data, data, dataLength);
 	return true;
 }

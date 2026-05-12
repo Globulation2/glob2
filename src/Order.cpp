@@ -17,15 +17,15 @@ std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, 
 	switch (netData[0])
 	{
 	case ORDER_CREATE:
-		return std::shared_ptr<Order>(new OrderCreate(netData+1, netDataLength-1, versionMinor));
+		return OrderCreate::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_DELETE:
-		return std::shared_ptr<Order>(new OrderDelete(netData+1, netDataLength-1, versionMinor));
+		return OrderDelete::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_CANCEL_DELETE:
-		return std::shared_ptr<Order>(new OrderCancelDelete(netData+1, netDataLength-1, versionMinor));
+		return OrderCancelDelete::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_CONSTRUCTION:
-		return std::shared_ptr<Order>(new OrderConstruction(netData+1, netDataLength-1, versionMinor));
+		return OrderConstruction::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_CANCEL_CONSTRUCTION:
-		return std::shared_ptr<Order>(new OrderCancelConstruction(netData+1, netDataLength-1, versionMinor));
+		return OrderCancelConstruction::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MODIFY_BUILDING:
 		return OrderModifyBuilding::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MODIFY_EXCHANGE:
@@ -41,7 +41,7 @@ std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, 
 	case ORDER_MOVE_FLAG:
 		return OrderMoveFlag::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_CHANGE_PRIORITY:
-		return std::shared_ptr<Order>(new OrderChangePriority(netData+1, netDataLength-1, versionMinor));
+		return OrderChangePriority::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_ALTERATE_FORBIDDEN:
 		return OrderAlterateForbidden::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_ALTERATE_GUARD_AREA:
@@ -51,19 +51,19 @@ std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, 
 	case ORDER_NULL:
 		return std::shared_ptr<Order>(new NullOrder());
 	case ORDER_TEXT_MESSAGE:
-		return std::shared_ptr<Order>(new MessageOrder(netData+1, netDataLength-1, versionMinor));
+		return MessageOrder::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_VOICE_DATA:
-		return std::shared_ptr<Order>(new OrderVoiceData(netData+1, netDataLength-1, versionMinor));
+		return OrderVoiceData::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_SET_ALLIANCE:
-		return std::shared_ptr<Order>(new SetAllianceOrder(netData+1, netDataLength-1, versionMinor));
+		return SetAllianceOrder::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MAP_MARK:
-		return std::shared_ptr<Order>(new MapMarkOrder(netData+1, netDataLength-1, versionMinor));
+		return MapMarkOrder::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_PAUSE_GAME:
-		return std::shared_ptr<Order>(new PauseGameOrder(netData+1, netDataLength-1, versionMinor));
+		return PauseGameOrder::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_PLAYER_QUIT_GAME :
-		return std::shared_ptr<Order>(new PlayerQuitsGameOrder(netData+1, netDataLength-1, versionMinor));
+		return PlayerQuitsGameOrder::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_ADJUST_LATENCY :
-		return std::shared_ptr<Order>(new AdjustLatency(netData+1, netDataLength-1, versionMinor));
+		return AdjustLatency::deserialize(netData+1, netDataLength-1, versionMinor);
 	default:
 		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
 	}

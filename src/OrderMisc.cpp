@@ -23,13 +23,12 @@ NullOrder::NullOrder()
 
 // MessageOrder's code
 
-MessageOrder::MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:MiscOrder()
+std::shared_ptr<MessageOrder> MessageOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	this->data=NULL;
-	assert(dataLength>=9);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<MessageOrder>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text)
@@ -47,8 +46,8 @@ MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const
 
 MessageOrder::~MessageOrder()
 {
-	assert(data);
-	free(data);
+	if (data)
+		free(data);
 }
 
 Uint8 *MessageOrder::getData(void)
@@ -79,13 +78,12 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMino
 
 // OrderVoiceData's code
 
-OrderVoiceData::OrderVoiceData(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:MiscOrder()
+std::shared_ptr<OrderVoiceData> OrderVoiceData::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	this->data = NULL;
-	assert(dataLength >= 5);
-	bool good = setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<OrderVoiceData>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas)
@@ -101,8 +99,8 @@ OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, 
 
 OrderVoiceData::~OrderVoiceData()
 {
-	assert(data);
-	free(data);
+	if (data)
+		free(data);
 }
 
 Uint8 *OrderVoiceData::getData(void)
@@ -114,7 +112,6 @@ Uint8 *OrderVoiceData::getData(void)
 
 bool OrderVoiceData::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength >= 5);
 	if (dataLength<5)
 		return false;
 
@@ -131,12 +128,12 @@ bool OrderVoiceData::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 
 // SetAllianceOrder's code
 
-SetAllianceOrder::SetAllianceOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:MiscOrder()
+std::shared_ptr<SetAllianceOrder> SetAllianceOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==24);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<SetAllianceOrder>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, Uint32 enemyMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask)
@@ -171,18 +168,17 @@ bool SetAllianceOrder::setData(const Uint8 *data, int dataLength, Uint32 version
 	this->visionExchangeMask=getUint32(data, 12);
 	this->visionFoodMask=getUint32(data, 16);
 	this->visionOtherMask=getUint32(data, 20);
-	memcpy(this->data, data, dataLength);
 	return true;
 }
 
 // MapMarkOrder's code
 
-MapMarkOrder::MapMarkOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:MiscOrder()
+std::shared_ptr<MapMarkOrder> MapMarkOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==12);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<MapMarkOrder>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 MapMarkOrder::MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y)
@@ -210,19 +206,17 @@ bool MapMarkOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMino
 	this->x=getSint32(data, 4);
 	this->y=getSint32(data, 8);
 
-	memcpy(this->data, data, dataLength);
-
 	return true;
 }
 
 // PauseGameOrder's code
 
-PauseGameOrder::PauseGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:MiscOrder()
+std::shared_ptr<PauseGameOrder> PauseGameOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==1);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<PauseGameOrder>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 PauseGameOrder::PauseGameOrder(bool pause)
@@ -242,18 +236,17 @@ bool PauseGameOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 	if(dataLength!=getDataLength())
 		return false;
 	pause=(bool)data[0];
-	memcpy(this->data, data, dataLength);
 	return true;
 }
 
 // PlayerQuitsGameOrder code
 
-PlayerQuitsGameOrder::PlayerQuitsGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:MiscOrder()
+std::shared_ptr<PlayerQuitsGameOrder> PlayerQuitsGameOrder::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==4);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<PlayerQuitsGameOrder>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 PlayerQuitsGameOrder::PlayerQuitsGameOrder(Sint32 player)
@@ -275,19 +268,17 @@ bool PlayerQuitsGameOrder::setData(const Uint8 *data, int dataLength, Uint32 ver
 
 	this->player=getUint32(data, 0);
 
-	memcpy(this->data, data, dataLength);
-
 	return true;
 }
 
 // AdjustLatency code
 
-AdjustLatency::AdjustLatency(const Uint8 *data, int dataLength, Uint32 versionMinor)
-:MiscOrder()
+std::shared_ptr<AdjustLatency> AdjustLatency::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	assert(dataLength==2);
-	bool good=setData(data, dataLength, versionMinor);
-	assert(good);
+	auto order = std::make_shared<AdjustLatency>();
+	if (!order->setData(data, dataLength, versionMinor))
+		return nullptr;
+	return order;
 }
 
 AdjustLatency::AdjustLatency(Uint16 latencyAdjustment)
@@ -308,8 +299,6 @@ bool AdjustLatency::setData(const Uint8 *data, int dataLength, Uint32 versionMin
 		return false;
 
 	this->latencyAdjustment=getUint16(data, 0);
-
-	memcpy(this->data, data, dataLength);
 
 	return true;
 }
