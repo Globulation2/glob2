@@ -27,27 +27,27 @@ std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, 
 	case ORDER_CANCEL_CONSTRUCTION:
 		return std::shared_ptr<Order>(new OrderCancelConstruction(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MODIFY_BUILDING:
-		return std::shared_ptr<Order>(new OrderModifyBuilding(netData+1, netDataLength-1, versionMinor));
+		return OrderModifyBuilding::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MODIFY_EXCHANGE:
-		return std::shared_ptr<Order>(new OrderModifyExchange(netData+1, netDataLength-1, versionMinor));
+		return OrderModifyExchange::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MODIFY_SWARM:
-		return std::shared_ptr<Order>(new OrderModifySwarm(netData+1, netDataLength-1, versionMinor));
+		return OrderModifySwarm::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MODIFY_FLAG:
-		return std::shared_ptr<Order>(new OrderModifyFlag(netData+1, netDataLength-1, versionMinor));
+		return OrderModifyFlag::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MODIFY_CLEARING_FLAG:
-		return std::shared_ptr<Order>(new OrderModifyClearingFlag(netData+1, netDataLength-1, versionMinor));
+		return OrderModifyClearingFlag::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
-		return std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(netData+1, netDataLength-1, versionMinor));
+		return OrderModifyMinLevelToFlag::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_MOVE_FLAG:
-		return std::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1, versionMinor));
+		return OrderMoveFlag::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_CHANGE_PRIORITY:
 		return std::shared_ptr<Order>(new OrderChangePriority(netData+1, netDataLength-1, versionMinor));
 	case ORDER_ALTERATE_FORBIDDEN:
-		return std::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1, versionMinor));
+		return OrderAlterateForbidden::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_ALTERATE_GUARD_AREA:
-		return std::shared_ptr<Order>(new OrderAlterateGuardArea(netData+1, netDataLength-1, versionMinor));
+		return OrderAlterateGuardArea::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_ALTERATE_CLEAR_AREA:
-		return std::shared_ptr<Order>(new OrderAlterateClearArea(netData+1, netDataLength-1, versionMinor));
+		return OrderAlterateClearArea::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_NULL:
 		return std::shared_ptr<Order>(new NullOrder());
 	case ORDER_TEXT_MESSAGE:
