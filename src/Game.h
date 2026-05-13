@@ -27,6 +27,24 @@ using namespace GAGCore;
 class MapGenerationDescriptor;
 class GameGUI;
 class MapEdit;
+
+class OrderCreate;
+class OrderModifyBuilding;
+class OrderModifyExchange;
+class OrderModifyFlag;
+class OrderModifyClearingFlag;
+class OrderModifyMinLevelToFlag;
+class OrderMoveFlag;
+class OrderAlterateForbidden;
+class OrderAlterateGuardArea;
+class OrderAlterateClearArea;
+class OrderModifySwarm;
+class OrderDelete;
+class OrderChangePriority;
+class OrderCancelDelete;
+class OrderConstruction;
+class SetAllianceOrder;
+class PlayerQuitsGameOrder;
 #ifndef YOG_SERVER_ONLY
 class GameAnimations;
 #endif  // !YOG_SERVER_ONLY
@@ -232,6 +250,39 @@ private:
 
 	///Clears existing game information, deleting the teams and players, in preperation of a new game.
 	void clearGame();
+
+	/// Look up a Building by its global ID. Returns nullptr if the slot is empty.
+	/// Collapses the gid → team-index → building-index → pointer decode that
+	/// would otherwise appear inline at every executeOrder caller.
+	Building* lookupBuilding(Uint16 gid) const;
+
+	/// Per-order-type executors. The dispatcher executeOrder() downcasts the
+	/// shared_ptr<Order> to its concrete type and calls the matching helper.
+	/// Helpers do NOT re-check team aliveness — the dispatcher gates that.
+	void executeCreate(const OrderCreate& order, int localPlayer);
+	void executeModifyBuilding(const OrderModifyBuilding& order, int localPlayer);
+	void executeModifyExchange(const OrderModifyExchange& order, int localPlayer);
+	void executeModifyFlag(const OrderModifyFlag& order, int localPlayer);
+	void executeModifyClearingFlag(const OrderModifyClearingFlag& order, int localPlayer);
+	/// Sets minLevelToFlag and flushes currently-assigned units by toggling
+	/// maxUnitWorking through zero so the building releases them on update().
+	void executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& order, int localPlayer);
+	void executeMoveFlag(const OrderMoveFlag& order, int localPlayer);
+	void executeAlterateForbidden(const OrderAlterateForbidden& order, int localPlayer);
+	void executeAlterateGuardArea(const OrderAlterateGuardArea& order, int localPlayer);
+	void executeAlterateClearArea(const OrderAlterateClearArea& order, int localPlayer);
+	void executeModifySwarm(const OrderModifySwarm& order, int localPlayer);
+	/// Delete-building. Bypasses the team-alive gate: dead-team buildings
+	/// can still be torn down.
+	void executeDelete(const OrderDelete& order);
+	void executeChangePriority(const OrderChangePriority& order);
+	void executeCancelDelete(const OrderCancelDelete& order);
+	void executeConstruction(const OrderConstruction& order);
+	void executeCancelConstruction(const OrderConstruction& order);
+	void executeSetAlliance(const SetAllianceOrder& order);
+	/// Marks the leaving player's team dead only if no other player still
+	/// controls that team; either way, the leaving player slot becomes AI::NONE.
+	void executePlayerQuitGame(const PlayerQuitsGameOrder& order);
 
 public:
 	bool anyPlayerWaited;
