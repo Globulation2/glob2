@@ -73,14 +73,7 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	{
 		assert(type2 != NONE);
 
-		std::string alternativeTypeName;
-
-		if (type2 == GAME) alternativeTypeName = Toolkit::getStringTable()->getString("[the games]");
-		else if (type2 == MAP) alternativeTypeName = Toolkit::getStringTable()->getString("[the maps]");
-		else if (type2 == REPLAY) alternativeTypeName = Toolkit::getStringTable()->getString("[the replays]");
-		else assert(false);
-
-		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", alternativeTypeName.c_str(), SWITCHTYPE, 27);
+		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", loadableTypeName(type2).c_str(), SWITCHTYPE, 27);
 		addWidget(switchType);
 
 		alternateFileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", alternateDirectory, alternateExtension, alternateRecurse);
@@ -100,18 +93,10 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 {
 	if (action == LIST_ELEMENT_SELECTED)
 	{
-		//LoadableType currentDirectoryType;
-
-		//if (currentDirectoryMode == DisplayRegular) currentDirectoryType = type1;
-		//else currentDirectoryType = type2;
-
-		if((currentDirectoryMode == DisplayRegular && fileList->selection()) || (currentDirectoryMode == DisplayAlternate && alternateFileList->selection()))
+		Glob2FileList* active = activeFileList();
+		if (active->selection())
 		{
-			std::string mapFileName;
-			if(currentDirectoryMode == DisplayRegular)
-				mapFileName = fileList->listToFile(fileList->getText(par1).c_str());
-			else
-				mapFileName = alternateFileList->listToFile(alternateFileList->getText(par1).c_str());
+			std::string mapFileName = active->listToFile(active->getText(par1).c_str());
 
 			try
 			{
@@ -138,10 +123,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 						time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
 						mapDate->setText(ctime(&mtime));
 
-						if (currentDirectoryMode == DisplayRegular)
-							selectedType = type1;
-						else
-							selectedType = type2;
+						selectedType = activeType();
 					}
 					else
 						std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
@@ -182,72 +164,22 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		else if (source == deleteMap)
 		{
 			// if a valid file is selected, delete it
-
-			if(currentDirectoryMode == DisplayRegular)
+			Glob2FileList* active = activeFileList();
+			if (auto sel = active->selection())
 			{
-				if (auto sel = fileList->selection())
-				{
-					size_t i = *sel;
-					std::string mapFileName = fileList->listToFile(fileList->get().c_str());
+				size_t i = *sel;
+				std::string mapFileName = active->listToFile(active->get().c_str());
 
-					Toolkit::getFileManager()->remove(mapFileName);
-					fileList->generateList();
+				Toolkit::getFileManager()->remove(mapFileName);
+				active->generateList();
 
-					fileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
-					fileList->selectionChanged();
-				}
-			}
-			else
-			{
-				if (auto sel = alternateFileList->selection())
-				{
-					size_t i = *sel;
-					std::string mapFileName = alternateFileList->listToFile(alternateFileList->get().c_str());
-
-					Toolkit::getFileManager()->remove(mapFileName);
-					alternateFileList->generateList();
-
-					alternateFileList->setSelectionIndex(std::min(i, fileList->getCount()-1));
-					alternateFileList->selectionChanged();
-				}
+				active->setSelectionIndex(std::min(i, active->getCount() - 1));
+				active->selectionChanged();
 			}
 		}
 		else if (source == switchType)
 		{
-			if(currentDirectoryMode == DisplayRegular)
-			{
-				assert(type1 != NONE);
-
-				std::string newTypeName;
-
-				if (type1 == GAME) newTypeName = Toolkit::getStringTable()->getString("[the games]");
-				else if (type1 == MAP) newTypeName = Toolkit::getStringTable()->getString("[the maps]");
-				else if (type1 == REPLAY) newTypeName = Toolkit::getStringTable()->getString("[the replays]");
-				else assert(false);
-
-				currentDirectoryMode = DisplayAlternate;
-				fileList->visible=false;
-				alternateFileList->visible=true;
-				switchType->setText(newTypeName);
-				alternateFileList->selectionChanged();
-			}
-			else
-			{
-				assert(type2 != NONE);
-
-				std::string newTypeName;
-
-				if (type2 == GAME) newTypeName = Toolkit::getStringTable()->getString("[the games]");
-				else if (type2 == MAP) newTypeName = Toolkit::getStringTable()->getString("[the maps]");
-				else if (type2 == REPLAY) newTypeName = Toolkit::getStringTable()->getString("[the replays]");
-				else assert(false);
-
-				currentDirectoryMode = DisplayRegular;
-				fileList->visible=true;
-				alternateFileList->visible=false;
-				switchType->setText(newTypeName);
-				fileList->selectionChanged();
-			}
+			setDirectoryMode(currentDirectoryMode == DisplayRegular ? DisplayAlternate : DisplayRegular);
 		}
 	}
 }
@@ -284,4 +216,38 @@ GameHeader& ChooseMapScreen::getGameHeader()
 ChooseMapScreen::LoadableType ChooseMapScreen::getSelectedType()
 {
 	return selectedType;
+}
+
+Glob2FileList* ChooseMapScreen::activeFileList() const
+{
+	return (currentDirectoryMode == DisplayRegular) ? fileList : alternateFileList;
+}
+
+ChooseMapScreen::LoadableType ChooseMapScreen::activeType() const
+{
+	return (currentDirectoryMode == DisplayRegular) ? type1 : type2;
+}
+
+std::string ChooseMapScreen::loadableTypeName(LoadableType type)
+{
+	switch (type)
+	{
+		case GAME:   return Toolkit::getStringTable()->getString("[the games]");
+		case MAP:    return Toolkit::getStringTable()->getString("[the maps]");
+		case REPLAY: return Toolkit::getStringTable()->getString("[the replays]");
+		case NONE:   break;
+	}
+	assert(false);
+	return {};
+}
+
+void ChooseMapScreen::setDirectoryMode(DirectoryMode newMode)
+{
+	currentDirectoryMode = newMode;
+	const bool regular = (newMode == DisplayRegular);
+	fileList->visible = regular;
+	alternateFileList->visible = !regular;
+	// After switching, the button label points back to the list we just left.
+	switchType->setText(loadableTypeName(regular ? type2 : type1));
+	activeFileList()->selectionChanged();
 }
