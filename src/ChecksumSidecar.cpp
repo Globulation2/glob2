@@ -19,12 +19,12 @@ ChecksumSidecarWriter::~ChecksumSidecarWriter()
 
 void ChecksumSidecarWriter::writeU16(Uint16 v)
 {
-	fwrite(&v, 2, 1, file);
+	fwrite(&v, sizeof(v), 1, file);
 }
 
 void ChecksumSidecarWriter::writeU32(Uint32 v)
 {
-	fwrite(&v, 4, 1, file);
+	fwrite(&v, sizeof(v), 1, file);
 }
 
 bool ChecksumSidecarWriter::open(const std::string& replayPath, int numTeams, int numPlayers)
