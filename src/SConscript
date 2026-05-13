@@ -384,7 +384,6 @@ map/io/MapIO.cpp
 map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
-map/pathfind/MapPathfindBuilding.cpp
 map/pathfind/MapPathfindRessource.cpp
 map/MapQuery.cpp
 map/MapResources.cpp

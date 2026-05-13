@@ -190,19 +190,31 @@ void WinningConditionPrestige::decodeData(GAGCore::InputStream* stream, Uint32 v
 }
 
 
-#ifndef YOG_SERVER_ONLY
 bool WinningConditionScript::hasTeamWon(int team, const Game* game) const
 {
+#ifdef YOG_SERVER_ONLY
+	// SGSL.cpp is not linked into the server; the server never calls this
+	// (Team::checkWinConditions is client-only). Stub keeps the class concrete.
+	(void)team;
+	(void)game;
+	return false;
+#else
 	return game->sgslScript.hasTeamWon(team);
+#endif
 }
 
 
 
 bool WinningConditionScript::hasTeamLost(int team, const Game* game) const
 {
+#ifdef YOG_SERVER_ONLY
+	(void)team;
+	(void)game;
+	return false;
+#else
 	return game->sgslScript.hasTeamLost(team);
+#endif
 }
-#endif  // !YOG_SERVER_ONLY
 
 
 WinningConditionType WinningConditionScript::getType() const

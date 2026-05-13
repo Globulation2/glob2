@@ -34,14 +34,10 @@ class WinningCondition
 public:
 	virtual ~WinningCondition() = default;
 
-	// These two methods in WinningConditionScript depend on SGSL.cpp,
-	// but they aren't needed for server.
-#ifndef YOG_SERVER_ONLY
 	///Returns true if the particular player has won according to this winning condition
 	virtual bool hasTeamWon(int team, const Game* game) const = 0;
 	///Returns true if the particular player has lost according to this winning condition
 	virtual bool hasTeamLost(int team, const Game* game) const = 0;
-#endif  // !YOG_SERVER_ONLY
 	///Returns the winning condition type
 	virtual WinningConditionType getType() const=0;
 	///This will encode the data in this winning condition to a stream. All derived class must start by saving a Uint8 from getType()
@@ -90,14 +86,14 @@ public:
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
 };
 
-///A team has won if the script says it has won, and lost if the script says it has lost
+///A team has won if the script says it has won, and lost if the script says it has lost.
+///In server builds, hasTeamWon/hasTeamLost are stubbed to false: SGSL.cpp is not in the
+///server link, and Team::checkWinConditions (the sole caller) is client-only.
 class WinningConditionScript : public WinningCondition
 {
 public:
-#ifndef YOG_SERVER_ONLY
 	bool hasTeamWon(int team, const Game* game) const override;
 	bool hasTeamLost(int team, const Game* game) const override;
-#endif  // !YOG_SERVER_ONLY
 	WinningConditionType getType() const override;
 	void encodeData(GAGCore::OutputStream* stream) const override;
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
