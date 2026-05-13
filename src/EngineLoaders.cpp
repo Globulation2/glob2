@@ -15,12 +15,17 @@
 #include "Utilities.h"
 
 #include <iostream>
+#include <memory>
 
 
+// Loads a map header from disk. The two failure modes are asymmetric:
+//   * Missing or unreadable file: logs to stderr and returns a default-constructed
+//     MapHeader (numberOfTeams == 0). Callers must check.
+//   * Malformed file contents: re-throws std::ios_base::failure after logging.
 MapHeader Engine::loadMapHeader(const std::string &filename)
 {
 	MapHeader mapHeader;
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	std::unique_ptr<InputStream> stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(filename));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Engine::loadMapHeader : error, can't open file " << filename  << std::endl;
@@ -34,7 +39,7 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 
 		try
 		{
-			validMapSelected = mapHeader.load(stream);
+			validMapSelected = mapHeader.load(stream.get());
 		}
 		catch (std::ios_base::failure &e)
 		{
@@ -49,20 +54,7 @@ MapHeader Engine::loadMapHeader(const std::string &filename)
 		if (!validMapSelected)
 			std::cerr << "Engine::loadMapHeader : invalid map header for map " << filename << std::endl;
 	}
-	delete stream;
 
-	//Map name is the filename without underscores or .map, it has to be updated in case the map file itself was renamed
-	std::string mapName;
-	if(mapHeader.getIsSavedGame())
-		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
-	else
-		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
-	size_t pos = mapName.find("_");
-	while(pos != std::string::npos)
-	{
-		mapName.replace(pos, 1, " ");
-		pos = mapName.find("_");
-	}
 	mapHeader.setMapName(glob2FilenameToName(filename));
 
 	return mapHeader;
