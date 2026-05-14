@@ -113,6 +113,62 @@ private:
 	/// Sets doRunOnceAgain=true to loop again (e.g. user picked a new save), false to return.
 	void runOneGameSession(bool& doRunOnceAgain);
 
+	// --- runOneGameSession phase helpers ---
+	//
+	// The single 380-line body was decomposed into the helpers below. Each
+	// helper is one phase of the main loop or the post-loop teardown. They
+	// must be called in the order they appear here; the comments at each
+	// definition site name preconditions and which caller state each one
+	// mutates. See EngineRun.cpp.
+
+	/// Choose this tick's sim interval (GAME_TICK_MS / REPLAY_FAST_FORWARD_MS)
+	/// and the GUI-draw cadence. Caller has already decremented nextGuiStep.
+	void selectReplaySpeed(int& speed, int& nextGuiStep);
+
+	/// Headless / scripted-test polling: under --nox automaticEndingGame, flip
+	/// gui.isRunning=false once a local end condition fires. Records
+	/// automaticGameEndTick.
+	void pollAutomaticEndingConditions();
+
+	/// Push this tick's local + AI orders into the net layer and (if the
+	/// previous tick committed) call advanceStep + write the checksum sidecar.
+	/// Called only from inside the !hardPause branch.
+	void gatherAndAdvanceOrders(bool wasReadyLastTick);
+
+	/// Once allOrdersRecieved() is true for this tick, validate checksums,
+	/// execute the matched orders, pump the replay reader, and run
+	/// game.syncStep. Called only from inside the !hardPause branch.
+	void executeOrdersAndStep(bool readyNow);
+
+	/// Draw the frame (subject to the fast-forward cadence), save a videoshot
+	/// if requested, then SDL_Delay to maintain wall-clock pacing and feed
+	/// cpuStats. Updates needToBeTime + frameNumber across iterations.
+	void frameTimingAndDraw(int speed, int nextGuiStep, Sint64& needToBeTime,
+	                        unsigned& frameNumber, Uint64 startTime, bool readyNow);
+
+	/// If the GUI requested a clean exit, drain remaining local orders and
+	/// flush the net layer. Returns true if the engine loop should break.
+	bool flushOutgoingAndExit();
+
+	/// Print the headless end-of-game summary plus the GLOB2_GAME_END
+	/// key=value line that the AI-trainer pipeline scrapes. Caller checks
+	/// automaticEndingGame.
+	void printAutomaticEndingSummary();
+
+	/// Tell the YOG multiplayer session how this match ended (won, lost,
+	/// quit). Caller checks `multiplayer` is non-null.
+	void reportMultiplayerResult();
+
+	/// Close cross-replay sinks (sidecar, dataset) and tear down the network
+	/// + multiplayer state. The Engine itself stays alive for a possible
+	/// reload (see armReloadOrExit).
+	void teardownSession();
+
+	/// Decide whether run() should loop back into runOneGameSession (a
+	/// load-game request was armed in the GUI) or return to the menu. Always
+	/// clears toLoadGameFileName so a follow-up pass doesn't re-trigger it.
+	void armReloadOrExit(bool& doRunOnceAgain);
+
 	//! The GUI, contains the whole game also
 	GameGUI gui;
 	//! The netGame, take care of order queuing and dispatching
