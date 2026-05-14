@@ -120,14 +120,6 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 }
 
 
-float Game::interpolateValues(float a, float b, float x)
-{
-	float ft = static_cast<float>(M_PI) * x;
-	float f = (1.0f - std::cos(ft)) * 0.5f;
-	return  a*(1.0-f) + b*f;
-}
-
-
 void Game::drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio)
 {
 	if (hpRatio > 0.6f)
