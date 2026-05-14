@@ -11,6 +11,7 @@
 #include "UnitConsts.h"
 #include "BitArray.h"
 #include <memory>
+#include <optional>
 
 class Map;
 
@@ -402,8 +403,33 @@ public:
 	virtual ~OrderAlterateArea(void);
 
 	Uint8 *getData(void);
+
+	//! Parse the wire format for an OrderAlterate{Forbidden,GuardArea,ClearArea}
+	//! packet. Layout: 14-byte fixed header
+	//! (teamNumber, type, centerX/Y, minX/Y, maxX/Y, all big-endian)
+	//! followed by ceil((maxX-minX) * (maxY-minY) / 8) bitmap bytes.
+	//!
+	//! Returns false (without mutating the bitmap) on any of:
+	//!   - dataLength < ALTERATE_AREA_HEADER_BYTES
+	//!   - maxX < minX or maxY < minY (negative-side dimensions)
+	//!   - maxX-minX or maxY-minY > ORDER_AREA_BRUSH_MAX_SIDE
+	//!   - dataLength does not equal header + expected bitmap byte count
+	//!
+	//! These rejections are required because the source `data` buffer comes
+	//! from network or replay traffic and its length is the only ground
+	//! truth for the bitmap-payload size — the header-declared dimensions
+	//! cannot be trusted, and BitArray::deserialize does no bound check.
+	//! See BH-195.
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void);
+
+	//! Returns the expected number of bitmap payload bytes for the given
+	//! brush bounding box, or std::nullopt if the box is invalid (negative
+	//! side, or side > ORDER_AREA_BRUSH_MAX_SIDE). Pure helper, separated
+	//! from setData so the malformed-packet rejections can be unit-tested
+	//! without a full wire-buffer round-trip.
+	static std::optional<size_t> expectedBitmapBytes(Sint16 minX, Sint16 minY,
+	                                                 Sint16 maxX, Sint16 maxY);
 
 	Uint8 teamNumber;
 	Uint8 type;

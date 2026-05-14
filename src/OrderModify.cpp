@@ -319,6 +319,21 @@ Uint8 *OrderAlterateArea::getData(void)
 	return _data;
 }
 
+std::optional<size_t> OrderAlterateArea::expectedBitmapBytes(Sint16 minX, Sint16 minY,
+                                                              Sint16 maxX, Sint16 maxY)
+{
+	// Promote to int so the subtraction can't overflow Sint16. The brush-side
+	// cap below keeps the eventual size_t multiplication safely under 2^20.
+	const int sideX = static_cast<int>(maxX) - static_cast<int>(minX);
+	const int sideY = static_cast<int>(maxY) - static_cast<int>(minY);
+	if (sideX < 0 || sideY < 0)
+		return std::nullopt;
+	if (sideX > ORDER_AREA_BRUSH_MAX_SIDE || sideY > ORDER_AREA_BRUSH_MAX_SIDE)
+		return std::nullopt;
+	const size_t bits = static_cast<size_t>(sideX) * static_cast<size_t>(sideY);
+	return (bits + 7) / 8;
+}
+
 bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
 	if (dataLength < ALTERATE_AREA_HEADER_BYTES)
@@ -337,9 +352,19 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versio
 	minY = getSint16(data, 8);
 	maxX = getUint16(data, 10);
 	maxY = getUint16(data, 12);
-	assert(maxX-minX <= ORDER_AREA_BRUSH_MAX_SIDE);
-	assert(maxY-minY <= ORDER_AREA_BRUSH_MAX_SIDE);
-	mask.deserialize(data+ALTERATE_AREA_HEADER_BYTES, (maxX-minX)*(maxY-minY));
+
+	// BH-195: reject malformed packets before BitArray::deserialize would read
+	// past the end of `data`. The header-declared dimensions are wire bytes
+	// and cannot be trusted; release builds previously stripped the asserts
+	// that were the only guard here.
+	const auto expectedPayload = expectedBitmapBytes(minX, minY, maxX, maxY);
+	if (!expectedPayload)
+		return false;
+	if (static_cast<size_t>(dataLength) != ALTERATE_AREA_HEADER_BYTES + *expectedPayload)
+		return false;
+
+	mask.deserialize(data + ALTERATE_AREA_HEADER_BYTES,
+		static_cast<size_t>(maxX - minX) * static_cast<size_t>(maxY - minY));
 
 	return true;
 }

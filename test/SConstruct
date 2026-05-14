@@ -117,3 +117,26 @@ CampaignLoadTestStubs.cpp
 
 campaign_env.Program( target = 'CampaignSelectionHarness', source = campaign_sel_sources )
 
+
+# Standalone regression harness for BH-195 (OrderAlterateArea::setData
+# OOB read on malformed bitmap payload). Builds synthetic Uint8 buffers
+# and checks that setData rejects them. Compiled with YOG_SERVER_ONLY so
+# OrderModify.cpp's BrushAccumulator constructor is stripped, removing
+# the Brush/Map link dependency — only OrderModify.o + BitArray.o are
+# needed because the other Order classes in OrderModify.cpp are pure
+# byte marshalers with no Game/Team/Unit references.
+alterate_env = env.Clone()
+alterate_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  alterate_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+# Give the YOG_SERVER_ONLY builds of OrderModify.cpp / BitArray.cpp unique
+# object names so they don't collide with the main-env builds used by
+# TestsRunner above (different -D flags → different actions).
+alterate_objs = [
+  alterate_env.Object('OrderAlterateAreaTest.o', 'OrderAlterateAreaTest.cpp'),
+  alterate_env.Object('OrderModify-alterate.o', '../src/OrderModify.cpp'),
+  alterate_env.Object('BitArray-alterate.o', '../src/BitArray.cpp'),
+]
+alterate_env.Program( target = 'OrderAlterateAreaTest', source = alterate_objs )
+

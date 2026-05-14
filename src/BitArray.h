@@ -25,6 +25,9 @@ namespace Utilities
 		void set(size_t pos, bool value);
 		bool get(size_t pos) const;
 		void serialize(unsigned char *stream) const;
+		//! Copies ceil(size/8) bytes from `stream` into the internal buffer.
+		//! Performs no bound check on `stream` — the caller must guarantee
+		//! that at least ceil(size/8) bytes are readable. See BH-195.
 		void deserialize(const unsigned char *stream, size_t size);
 	};
 }
