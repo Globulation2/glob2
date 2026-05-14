@@ -7,6 +7,7 @@
 #include "GlobalContainer.h"
 #include "Game.h"
 #include <cmath>
+#include <numbers>
 
 Mark::Mark(int px, int py, GAGCore::Color color, int time)
   : showTicks(time), totalTime(time), px(px), py(py), color(color)
@@ -24,8 +25,15 @@ Mark::Mark()
 
 void Mark::draw(int x, int y, float scale) const
 {
-	double ray = (sin((double)(showTicks * 2.0)/(double)(totalTime)*3.141592)*totalTime/2);
-	ray = (std::abs(ray) * showTicks) / totalTime * scale;
+	// Pulsing-circle radius. showTicks counts down from totalTime to 0 over
+	// the mark's lifetime, so lifetime_fraction ramps 1.0 -> 0.0. The phase
+	// sweeps a full 2π over that lifetime; |sin(phase)| is the oscillation
+	// envelope, and the trailing lifetime_fraction factor decays the pulse
+	// to zero as the mark expires. amplitude is in pixels at scale 1.0.
+	const double lifetime_fraction = static_cast<double>(showTicks) / totalTime;
+	const double phase = lifetime_fraction * 2.0 * std::numbers::pi_v<double>;
+	const double amplitude = totalTime / 2.0;
+	const double ray = std::abs(std::sin(phase)) * amplitude * lifetime_fraction * scale;
 
 	int pixel_ray = static_cast<int>(ray);
 	int line_length = static_cast<int>(MARK_LINE_LENGTH_PX * scale);
