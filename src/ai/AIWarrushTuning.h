@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include "Team.h"
+
 // ---------------------------------------------------------------------------
 // Tick / phase delays (formerly the BUILDING_DELAY and AREAS_DELAY #defines
 // at the top of AIWarrush.cpp).
@@ -30,11 +32,14 @@ static constexpr int AI_WARRUSH_AREAS_DELAY_TICKS = 50;
 // ---------------------------------------------------------------------------
 // Bootstrap: place an exploration flag on each enemy team's starting swarm
 // during the first AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW ticks of the game,
-// stepping by AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL (so two enemies per
-// step pair, mapping tick -> teamIndex via division by the interval).
+// stepping by AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL (so two ticks per team,
+// mapping tick -> teamIndex via division by the interval). The window must
+// cover exactly Team::MAX_COUNT teams — making it any longer would index past
+// the end of game->teams[] (this was a latent OOB read when MAX_COUNT was 32
+// and the literal 64 happened to match; the derived form keeps them aligned).
 // ---------------------------------------------------------------------------
-static constexpr int AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW   = 64;
 static constexpr int AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL = 2;
+static constexpr int AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW   = Team::MAX_COUNT * AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL;
 
 // ---------------------------------------------------------------------------
 // Guard-area cycle phase shifts. Original code:

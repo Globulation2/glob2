@@ -5,6 +5,7 @@
 #pragma once
 
 #include "GUIBase.h"
+#include "Team.h"
 #include <string>
 
 namespace GAGCore
@@ -69,8 +70,6 @@ private:
 	std::string currentText;
 };
 
-
-const int NumberOfPlayerSelectors = 12;
 
 ///This is the teams editor screen. This is the editor that allows the map creator to choose alliances and arrange teams
 ///in the map. This is primarily for campaign missions since these settings are overridden for custom games

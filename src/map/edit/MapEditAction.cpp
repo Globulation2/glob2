@@ -764,7 +764,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		int y;
 		game.map.displayToMapCaseAligned(mouseX, mouseY, &x, &y, viewportX, viewportY);
 		int gid=NOGBID;
-		for(int t=0; t<32; ++t)
+		for(int t=0; t<Team::MAX_COUNT; ++t)
 		{
 			if(game.teams[t] && gid==NOGBID)
 			{

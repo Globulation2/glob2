@@ -21,7 +21,7 @@
 CustomGameScreen::CustomGameScreen() :
 	ChooseMapScreen("maps", "map", true)
 {
-	for (int i=0; i<NumberOfPlayerSelectors; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		isPlayerActive[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, i == 0, 100+i);
 		addWidget(isPlayerActive[i]);
@@ -65,11 +65,16 @@ CustomGameScreen::~CustomGameScreen()
 
 
 
+// Invoked by ChooseMapScreen::updateMapInformation when the user picks a map.
+// Lays out the player-selector widgets to match the map's team count. The
+// widget arrays are sized Team::MAX_COUNT, which is also the engine-wide cap
+// on team count (enforced by MapHeader::load), so the loops below cannot
+// index past array end.
 void CustomGameScreen::validMapSelectedhandler(void)
 {
 	int i;
 	// set the correct number of colors
-	for (i = 0; i<NumberOfPlayerSelectors; i++)
+	for (i = 0; i<Team::MAX_COUNT; i++)
 	{
 		color[i]->clearColors();
 		for (int j = 0; j<mapHeader.getNumberOfTeams(); j++)
@@ -97,7 +102,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 		aiSelector[i]->show();
 	}
 	// Close the rest
-	for (; i<NumberOfPlayerSelectors; i++)
+	for (; i<Team::MAX_COUNT; i++)
 	{
 		isPlayerActive[i]->setState(false);
 		color[i]->hide();
@@ -184,7 +189,7 @@ void CustomGameScreen::updatePlayers()
 {
 	int count = 0;
 	int humanColor = 0;
-	for (int i=0; i<NumberOfPlayerSelectors; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		if (isActive(i))
 		{

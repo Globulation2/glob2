@@ -66,9 +66,8 @@ static constexpr int WINNER_TEAM_NONE = -1;
 static constexpr int TEAM_POS_END = -1;
 
 //! Length of the rolling tick-time profile buffer in Game::ticksGameSum.
-//! Currently equal to Team::MAX_COUNT (32) only by coincidence; the buffer
-//! is indexed by `stepCounter & 31`, not by team id (bug #11). Naming this
-//! separately documents the actual meaning.
+//! Indexed by `stepCounter & 31`, not by team id (bug #11). Naming this
+//! separately documents the actual meaning — it is unrelated to team count.
 static constexpr int TICK_PROFILE_BUF_LEN = 32;
 
 //! Fog-of-war switch cadence: every (mask + 1) ticks, perform the FOW
@@ -88,10 +87,10 @@ static constexpr int WORLD_LOGIC_TICK_MASK  = 31;
 static constexpr int WORLD_LOGIC_TICK_PHASE = 0;
 
 //! Upper bound of the (team * Building::MAX_COUNT + buildingId) global id
-//! space, equal to Team::MAX_COUNT * Building::MAX_COUNT = 32 * 1024.
+//! space, equal to Team::MAX_COUNT * Building::MAX_COUNT.
 //! Asserted in OrderBuilding.cpp:78, 109, 141, 179, 214; OrderModify.cpp:29;
 //! UnitSerialization.cpp:235.
-static constexpr int BUILDING_GID_MAX = 32768;
+static constexpr int BUILDING_GID_MAX = Team::MAX_COUNT * Building::MAX_COUNT;
 
 //! Number of distinct levels a building can reach (0..MAX_BUILDING_LEVELS-1).
 //! Used by Game_editor.cpp:91. Distinct from NB_UNIT_LEVELS.

@@ -30,7 +30,21 @@ class Team:public BaseTeam
 {
 	static const bool verbose = false;
 public:
-	static const int MAX_COUNT=32;
+	//! In-memory cap on simultaneous teams (and players). All gameplay arrays
+	//! and loops over active teams use this value. The engine has never been
+	//! tested above 12 — see `docs/replay-verification.md`.
+	static const int MAX_COUNT=12;
+
+	//! Legacy on-disk slot count baked into the GameHeader player/ally
+	//! arrays. Every `.map`, `.game`, `.replay`, and save file written by
+	//! pre-2026 builds reserves this many BasePlayer + allyTeamNumber
+	//! entries in the GameHeader section, even though only the first
+	//! MAX_COUNT are ever populated with real data. GameHeader::load reads
+	//! all MAX_COUNT_ON_DISK entries (discarding the trailing tail) and
+	//! GameHeader::save writes them back (padded with default values), so
+	//! the on-disk format stays byte-equal with the existing content
+	//! library. Do not change without a file-format version bump.
+	static const int MAX_COUNT_ON_DISK=32;
 
 	//! Tile-padding added around a dirty rect when invalidating gradients
 	//! that need to be recomputed on the next pass. Shared between team

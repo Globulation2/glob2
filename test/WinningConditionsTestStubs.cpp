@@ -18,6 +18,7 @@
 
 #include "MapHeader.h"
 #include "SGSL.h"
+#include "Team.h"
 
 Sint32 MapHeader::getNumberOfTeams() const
 {
@@ -30,16 +31,16 @@ void MapHeader::setNumberOfTeams(Sint32 teamNum)
 }
 
 namespace harness {
-	bool sgslTeamWon[32]  = {};
-	bool sgslTeamLost[32] = {};
+	bool sgslTeamWon[Team::MAX_COUNT]  = {};
+	bool sgslTeamLost[Team::MAX_COUNT] = {};
 }
 
 bool MapScriptSGSL::hasTeamWon(unsigned teamNumber) const
 {
-	return teamNumber < 32 && harness::sgslTeamWon[teamNumber];
+	return teamNumber < Team::MAX_COUNT && harness::sgslTeamWon[teamNumber];
 }
 
 bool MapScriptSGSL::hasTeamLost(unsigned teamNumber) const
 {
-	return teamNumber < 32 && harness::sgslTeamLost[teamNumber];
+	return teamNumber < Team::MAX_COUNT && harness::sgslTeamLost[teamNumber];
 }

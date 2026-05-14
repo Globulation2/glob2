@@ -46,19 +46,29 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		return false;
 	}
 	stream->readEnterSection("players");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
 		stream->readEnterSection(i);
-		players[i].load(stream, versionMinor);
+		if (i < Team::MAX_COUNT)
+		{
+			players[i].load(stream, versionMinor);
+		}
+		else
+		{
+			BasePlayer scratch;
+			scratch.load(stream, versionMinor);
+		}
 		stream->readLeaveSection(i);
 	}
 	stream->readLeaveSection();
 	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
 		stream->readEnterSection("allyTeamNumbers");
-		for(int i=0; i<Team::MAX_COUNT; ++i)
+		for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 		{
-			allyTeamNumbers[i] = stream->readUint8("allyTeamNumber");
+			Uint8 v = stream->readUint8("allyTeamNumber");
+			if (i < Team::MAX_COUNT)
+				allyTeamNumbers[i] = v;
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
@@ -91,17 +101,21 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(orderRate, "orderRate");
 	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeEnterSection("players");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
 		stream->writeEnterSection(i);
-		players[i].save(stream);
+		if (i < Team::MAX_COUNT)
+			players[i].save(stream);
+		else
+			BasePlayer().save(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeEnterSection("allyTeamNumbers");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
-		stream->writeUint8(allyTeamNumbers[i], "allyTeamNumber");
+		const Uint8 v = (i < Team::MAX_COUNT) ? allyTeamNumbers[i] : static_cast<Uint8>(i + 1);
+		stream->writeUint8(v, "allyTeamNumber");
 	}
 	stream->writeLeaveSection();
 	stream->writeUint8(allyTeamsFixed, "allyTeamsFixed");
@@ -131,9 +145,11 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
 		stream->readEnterSection("allyTeamNumbers");
-		for(int i=0; i<Team::MAX_COUNT; ++i)
+		for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 		{
-			allyTeamNumbers[i] = stream->readUint8("allyTeamNumber");
+			Uint8 v = stream->readUint8("allyTeamNumber");
+			if (i < Team::MAX_COUNT)
+				allyTeamNumbers[i] = v;
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
@@ -165,9 +181,10 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeSint32(gameLatency, "gameLatency");
 	stream->writeUint8(orderRate, "orderRate");
 	stream->writeEnterSection("allyTeamNumbers");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
-		stream->writeUint8(allyTeamNumbers[i], "allyTeamNumber");
+		const Uint8 v = (i < Team::MAX_COUNT) ? allyTeamNumbers[i] : static_cast<Uint8>(i + 1);
+		stream->writeUint8(v, "allyTeamNumber");
 	}
 	stream->writeLeaveSection();
 	stream->writeUint8(allyTeamsFixed, "allyTeamsFixed");
@@ -194,10 +211,18 @@ bool GameHeader::loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMino
 	stream->readEnterSection("GameHeader");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	stream->readEnterSection("players");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
 		stream->readEnterSection(i);
-		players[i].load(stream, versionMinor);
+		if (i < Team::MAX_COUNT)
+		{
+			players[i].load(stream, versionMinor);
+		}
+		else
+		{
+			BasePlayer scratch;
+			scratch.load(stream, versionMinor);
+		}
 		stream->readLeaveSection(i);
 	}
 	stream->readLeaveSection();
@@ -212,10 +237,13 @@ void GameHeader::savePlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("GameHeader");
 	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeEnterSection("players");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
 		stream->writeEnterSection(i);
-		players[i].save(stream);
+		if (i < Team::MAX_COUNT)
+			players[i].save(stream);
+		else
+			BasePlayer().save(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();

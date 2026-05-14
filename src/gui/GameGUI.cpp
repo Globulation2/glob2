@@ -173,7 +173,7 @@ void GameGUI::adjustLocalTeam()
 	assert(localTeamNo>=0);
 	assert(localTeamNo<Team::MAX_COUNT);
 	assert(game.gameHeader.getNumberOfPlayers()>0);
-	assert(game.gameHeader.getNumberOfPlayers()<Team::MAX_COUNT);
+	assert(game.gameHeader.getNumberOfPlayers()<=Team::MAX_COUNT);
 	assert(localTeamNo<game.mapHeader.getNumberOfTeams());
 
 	localTeam = game.teams[localTeamNo];

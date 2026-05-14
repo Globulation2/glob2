@@ -53,7 +53,7 @@ constexpr std::uint8_t GRADIENT_AT_GOAL          = 255;
 
 // Sentinel for Map::immobileUnits[]: byte stores the team number of the immobile
 // unit on the tile, or IMMOBILE_UNIT_NONE if no immobile unit is present.
-// Team::MAX_COUNT == 32, so the 0..31 team-number range never collides with 255.
+// Team::MAX_COUNT is well under 255, so the team-number range never collides.
 constexpr std::uint8_t IMMOBILE_UNIT_NONE = 255;
 
 // Map::doesUnitTouchEnemy scoring sentinels. The "bestTime" is in 0..255 for any

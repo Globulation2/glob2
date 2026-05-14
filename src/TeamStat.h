@@ -24,7 +24,8 @@ static constexpr int MAX_BUILDING_LONG_LEVEL = NB_BUILDING_LONG_LEVELS - 1;
 
 //! Bitmask used by TeamStats::step to append an EndOfGameStat snapshot
 //! every 512 ticks (~20.5 s at 25 Hz): `(stepCounter & MASK) == 0`.
-//! 0x1FF == 511 == 16 * Team::MAX_COUNT - 1. See TeamStat.cpp:122.
+//! The 512-tick cadence is the gameplay-meaningful constant — the mask
+//! width is independent of Team::MAX_COUNT. See TeamStat.cpp:122.
 static constexpr int END_OF_GAME_STAT_INTERVAL_MASK = 0x1FF;
 
 struct TeamStat

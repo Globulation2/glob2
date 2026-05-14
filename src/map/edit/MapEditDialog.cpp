@@ -85,7 +85,7 @@ TeamsEditor::TeamsEditor(Game* game)
 	GameHeader& gameHeader = game->gameHeader;
 	MapHeader& mapHeader = game->mapHeader;
 	
-	for(int i=0; i<NumberOfPlayerSelectors; ++i)
+	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		isPlayerActive[i] = new OnOffButton(10, 60+i*25, 21, 21, ALIGN_LEFT, ALIGN_TOP, gameHeader.getBasePlayer(i).type != BasePlayer::P_NONE, 100+i);
 		addWidget(isPlayerActive[i]);
@@ -172,7 +172,7 @@ void TeamsEditor::onAction(Widget *source, Action action, int par1, int par2)
 		if(par1>=200 && par1<300)
 		{
 			int n = par1-200;
-			for(int i=0; i<NumberOfPlayerSelectors; ++i)
+			for(int i=0; i<Team::MAX_COUNT; ++i)
 			{
 				if(color[i]->getSelectedColor() == color[n]->getSelectedColor() && i!=n)
 				{
@@ -214,7 +214,7 @@ void TeamsEditor::generateGameHeader()
 {
 	GameHeader gameHeader;
 	int count = 0;
-	for (int i=0; i<NumberOfPlayerSelectors; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		if (isPlayerActive[i]->getState())
 		{
