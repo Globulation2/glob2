@@ -22,9 +22,8 @@ Mark::Mark()
 
 
 
-void Mark::draw(int x, int y, float scale)
+void Mark::draw(int x, int y, float scale) const
 {
-	showTicks -= 1;
 	double ray = (sin((double)(showTicks * 2.0)/(double)(totalTime)*3.141592)*totalTime/2);
 	ray = (std::abs(ray) * showTicks) / totalTime * scale;
 
@@ -40,7 +39,7 @@ void Mark::draw(int x, int y, float scale)
 
 
 
-void Mark::drawInMinimap(int s, int local, int x, int y, Game& game)
+void Mark::drawInMinimap(int s, int local, int x, int y, Game& game) const
 {
 	int mMax;
 	int szX, szY;
@@ -60,7 +59,7 @@ void Mark::drawInMinimap(int s, int local, int x, int y, Game& game)
 
 
 
-void Mark::drawInMainView(int viewportX, int viewportY, Game& game)
+void Mark::drawInMainView(int viewportX, int viewportY, Game& game) const
 {
 	int nx, ny;
 	game.map.mapCaseToDisplayable(px, py, &nx, &ny, viewportX, viewportY);
@@ -81,12 +80,15 @@ void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimap
 {
 	for(std::vector<Mark>::iterator i=marks.begin(); i!=marks.end();)
 	{
+		i->tick();
+		if(i->expired())
+		{
+			i = marks.erase(i);
+			continue;
+		}
 		i->drawInMinimap(minimapSize, localTeam, minimapX, minimapY, game);
 		i->drawInMainView(viewportX, viewportY, game);
-		if(i->showTicks == 0)
-			i = marks.erase(i);
-		else
-			i++;
+		++i;
 	}
 }
 

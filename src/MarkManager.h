@@ -30,20 +30,28 @@ public:
 	///Construct an empty mark
 	Mark();
 
-protected:
+private:
 	friend class MarkManager;
+	///Advances the mark's lifetime by one engine tick. Called once per
+	///MarkManager::drawAll iteration — the draw* methods are pure rendering
+	///and must not mutate state. After tick(), the mark is expired iff
+	///showTicks <= 0.
+	void tick() { showTicks -= 1; }
+	///True once the mark's lifetime has elapsed and it should be erased.
+	///Use <= rather than == to be robust against any future caller passing
+	///an odd lifetime or any future code path that skips a tick.
+	bool expired() const { return showTicks <= 0; }
 	///x and y here indicate the x and y screen cordinates
-	void draw(int x, int y, float scale);
+	void draw(int x, int y, float scale) const;
 	///This draws the mark in a minimap where s is the size of the minimap (in pixels),
 	///local is the local team number, x and y are the locations of the minimap in
 	///pixels, and g is the game
-	void drawInMinimap(int s, int local, int x, int y, Game& game);
+	void drawInMinimap(int s, int local, int x, int y, Game& game) const;
 	///Draws this mark on the screen, where viewport x and viewport y are the
 	///positions of the viewport and game is the game
-	void drawInMainView(int viewportX, int viewportY, Game& game);
+	void drawInMainView(int viewportX, int viewportY, Game& game) const;
 	int showTicks;
 	int totalTime;
-private:
 	int px;
 	int py;
 	GAGCore::Color color;
