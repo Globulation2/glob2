@@ -185,36 +185,59 @@ int CustomGameScreen::getSelectedColor(int i)
 
 
 
+namespace
+{
+	// 1-based ally-team IDs. GameHeader::reset() seeds allyTeamNumbers[i] = i+1,
+	// so team 1 and team 2 are the lowest two groups available.
+	constexpr Uint8 HUMAN_ALLY_TEAM = 1;
+	constexpr Uint8 ENEMY_ALLY_TEAM = 2;
+
+	FormatableString aiSelectorName(AI::ImplementitionID iid, int selectorIndex)
+	{
+		// selectorIndex is the position in the visible selector list; selector 0
+		// is the human, so AI selectors start at 1 and display as "AI Name N"
+		// with N = selectorIndex - 1.
+		FormatableString name("%0 %1");
+		name.arg(AINames::getAIText(iid)).arg(selectorIndex - 1);
+		return name;
+	}
+}
+
+// Rebuilds gameHeader.players[] from the current selector widget state.
+// Active selectors are packed into slots [0..count); slots [count..MAX_COUNT)
+// are cleared to default BasePlayer{} so stale entries from earlier edits
+// (or earlier map selections) cannot leak into save files or network packets,
+// which serialize all MAX_COUNT_ON_DISK slots regardless of numberOfPlayers.
+// Ally teams: the human's color goes on HUMAN_ALLY_TEAM, every other color
+// on ENEMY_ALLY_TEAM.
 void CustomGameScreen::updatePlayers()
 {
+	for (int i = 0; i < Team::MAX_COUNT; i++)
+		gameHeader.getBasePlayer(i) = BasePlayer();
+
 	int count = 0;
 	int humanColor = 0;
-	for (int i=0; i<Team::MAX_COUNT; i++)
+	for (int i = 0; i < Team::MAX_COUNT; i++)
 	{
-		if (isActive(i))
+		if (!isActive(i))
+			continue;
+
+		int teamColor = getSelectedColor(i);
+		if (i == 0)
 		{
-			int teamColor=getSelectedColor(i);
-			if (i==0)
-			{
-				gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
-				humanColor = teamColor;
-				gameHeader.setAllyTeamNumber(teamColor, 1);
-			}
-			else
-			{
-				AI::ImplementitionID iid=getAiImplementation(i);
-				FormatableString name("%0 %1");
-				name.arg(AINames::getAIText(iid)).arg(i-1);
-				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
-				if(teamColor != humanColor)
-					gameHeader.setAllyTeamNumber(teamColor, 2);
-			}
-			count+=1;
+			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+			humanColor = teamColor;
+			gameHeader.setAllyTeamNumber(teamColor, HUMAN_ALLY_TEAM);
 		}
 		else
 		{
-			gameHeader.getBasePlayer(i) = BasePlayer();
+			AI::ImplementitionID iid = getAiImplementation(i);
+			FormatableString name = aiSelectorName(iid, i);
+			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+			if (teamColor != humanColor)
+				gameHeader.setAllyTeamNumber(teamColor, ENEMY_ALLY_TEAM);
 		}
+		count += 1;
 	}
 	gameHeader.setNumberOfPlayers(count);
 }
