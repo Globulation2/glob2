@@ -312,8 +312,8 @@ Uint8 *OrderAlterateArea::getData(void)
 	addSint16(_data, centerY, 4);
 	addSint16(_data, minX, 6);
 	addSint16(_data, minY, 8);
-	addUint16(_data, maxX, 10);
-	addUint16(_data, maxY, 12);
+	addSint16(_data, maxX, 10);
+	addSint16(_data, maxY, 12);
 	mask.serialize(_data+ALTERATE_AREA_HEADER_BYTES);
 
 	return _data;
@@ -350,8 +350,8 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versio
 	centerY = getSint16(data, 4);
 	minX = getSint16(data, 6);
 	minY = getSint16(data, 8);
-	maxX = getUint16(data, 10);
-	maxY = getUint16(data, 12);
+	maxX = getSint16(data, 10);
+	maxY = getSint16(data, 12);
 
 	// BH-195: reject malformed packets before BitArray::deserialize would read
 	// past the end of `data`. The header-declared dimensions are wire bytes

@@ -406,7 +406,8 @@ public:
 
 	//! Parse the wire format for an OrderAlterate{Forbidden,GuardArea,ClearArea}
 	//! packet. Layout: 14-byte fixed header
-	//! (teamNumber, type, centerX/Y, minX/Y, maxX/Y, all big-endian)
+	//! (teamNumber: Uint8, type: Uint8, centerX/Y: Sint16, minX/Y: Sint16,
+	//! maxX/Y: Sint16, all big-endian)
 	//! followed by ceil((maxX-minX) * (maxY-minY) / 8) bitmap bytes.
 	//!
 	//! Returns false (without mutating the bitmap) on any of:
