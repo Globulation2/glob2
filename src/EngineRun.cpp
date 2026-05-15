@@ -391,7 +391,7 @@ void Engine::armReloadOrExit(bool& doRunOnceAgain)
 
 	doRunOnceAgain = false;
 
-	if (gui.toLoadGameFileName[0])
+	if (!gui.toLoadGameFileName.empty())
 	{
 		int rv;
 
@@ -400,7 +400,7 @@ void Engine::armReloadOrExit(bool& doRunOnceAgain)
 
 		if (rv == EE_NO_ERROR)
 			doRunOnceAgain = true;
-		gui.toLoadGameFileName[0] = 0; // Avoid the communication system between GameGUI and Engine to loop.
+		gui.toLoadGameFileName.clear(); // Avoid the communication system between GameGUI and Engine to loop.
 	}
 }
 
