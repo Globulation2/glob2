@@ -58,7 +58,7 @@ namespace AIEcho
 			protected:
 				virtual bool is_entity(Map* map, int posx, int posy)=0;
 				///The comparison operator is used to reference gradients by the entities and sources that was use to compute them
-				virtual bool operator==(const Entity& rhs)=0;
+				virtual bool operator==(const Entity& rhs) const=0;
 
 				///This function says whether the entity can change during runtime. For example, water never changes during
 				///the coarse of the game, however the layout of buildings can.
@@ -80,7 +80,7 @@ namespace AIEcho
 				Building() : building_type(-1), team(-1), under_construction(false) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
-				bool operator==(const Entity& rhs);
+				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -100,7 +100,7 @@ namespace AIEcho
 				AnyTeamBuilding() : team(-1), under_construction(false) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
-				bool operator==(const Entity& rhs);
+				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -119,7 +119,7 @@ namespace AIEcho
 				AnyBuilding() : under_construction(false) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
-				bool operator==(const Entity& rhs);
+				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -137,7 +137,7 @@ namespace AIEcho
 				Ressource() : ressource_type(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
-				bool operator==(const Entity& rhs);
+				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -154,7 +154,7 @@ namespace AIEcho
 			protected:
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
-				bool operator==(const Entity& rhs);
+				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -169,7 +169,7 @@ namespace AIEcho
 			protected:
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
-				bool operator==(const Entity& rhs);
+				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -185,7 +185,7 @@ namespace AIEcho
 				Position() : x(-1), y(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
-				bool operator==(const Entity& rhs);
+				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -202,7 +202,7 @@ namespace AIEcho
 			protected:
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
-				bool operator==(const Entity& rhs);
+				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);

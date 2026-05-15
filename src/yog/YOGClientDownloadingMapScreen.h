@@ -51,7 +51,7 @@ private:
 	MapPreview* preview;
 	std::shared_ptr<YOGClient> client;
 	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapSize, *varPrestigeText;
+	Text *mapName, *mapInfo, *mapSize;
 	Text *authorName;
 	ProgressBar* downloadStatus;
 	YOGClientMapDownloader downloader;

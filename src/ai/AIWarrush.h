@@ -24,19 +24,22 @@ public:
 	
 	DynamicGradientMapArray(std::size_t w, std::size_t h) :
 		width(w),
-		height(h),
 		array(w*h)
 	{
 	}
-	
+
 	//usage: gradient(x, y)
 	const element_type &operator()(size_t x, size_t y) const { return array[y * width + x]; }
 	element_type &operator()(size_t x, size_t y) { return array[y * width + x]; }
 	element_type* c_array() { return &array[0]; }
-	
+
 private:
+	// Only width is stored: it's the row stride for the row-major flat
+	// buffer below (array[y*width + x]). Height isn't needed for indexing
+	// and we don't bounds-check, so storing it would be dead weight. All
+	// callers size the array to map->w * map->h and iterate within those
+	// dimensions, so the height bound is enforced externally.
 	std::size_t width;
-	std::size_t height;
 	std::valarray<element_type> array;
 };
 

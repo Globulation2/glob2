@@ -28,6 +28,7 @@ public:
 	virtual ~YOGClientGameConnectionDialog();
 	virtual void onAction(GAGGUI::Widget *source, GAGGUI::Action action, int par1, int par2);
 	
+	using OverlayScreen::execute; // keep base 2-arg execute visible alongside our no-arg overload
 	///This screen is modal, this executes it
 	void execute();
 
@@ -43,7 +44,6 @@ private:
 	///This handles an event from the multiplayer game
 	void handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event);
 
-	GAGGUI::Text* information;
 	GAGCore::GraphicContext *parentCtx;
 	std::shared_ptr<MultiplayerGame> game;
 };

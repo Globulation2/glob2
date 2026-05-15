@@ -1101,7 +1101,7 @@ std::string ErrorReport::getErrorString(void) const
 	};
 	assert(type >= 0);
 	assert(type < ET_NB_ET);
-	assert(ET_NB_ET == sizeof(strings)/sizeof(const char *));
+	assert(ET_NB_ET == std::size(strings));
 	return strings[(int)type];
 }
 

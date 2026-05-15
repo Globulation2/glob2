@@ -282,10 +282,10 @@ BuildingType g_buildingsPartB[] = {
 	  .miniSpriteImage = -1,
 	  .hueImage = 1,
 	  .fillable = 1,
-	  .maxRessource = { /*wood*/0, /*corn*/0, /*papyrus*/0, /*stone*/1 },
 	  .width = 1, .height = 1,
-	  .hpInit = 1, .hpMax = 180, .hpInc = 180,
+	  .maxRessource = { /*wood*/0, /*corn*/0, /*papyrus*/0, /*stone*/1 },
 	  .maxUnitWorking = 1,
+	  .hpInit = 1, .hpMax = 180, .hpInc = 180,
 	  .level = 0, .shortTypeNum = 11, .isBuildingSite = 1 },
 
 	// 48: stonewall0

@@ -118,6 +118,6 @@ Uint32 BasePlayer::checkSum()
 
 void BasePlayer::makeItAI(AI::ImplementitionID aiType)
 {
-	type=(PlayerType)(P_AI+aiType);
+	type=playerTypeFromImplementitionID(aiType);
 }
 

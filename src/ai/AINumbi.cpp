@@ -676,7 +676,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		// [POSSIBLE BUG L9] `maxr` is computed below but never read — the spiral
 		// scan further down uses AI_NUMBI_SCAN_ITERATIONS (=4096) directly.
 		// Preserved verbatim for replay determinism; do not "fix".
-		int maxr;
+		[[maybe_unused]] int maxr;
 		if (b->type->shortTypeNum==0)
 			maxr=AI_NUMBI_SWARM_SEARCH_RADIUS;
 		else

@@ -8,8 +8,8 @@
 
 using std::static_pointer_cast;
 
-YOGServerRouterManager::YOGServerRouterManager(YOGServer& server)
-	: listener(YOG_SERVER_ROUTER_PORT), server(server)
+YOGServerRouterManager::YOGServerRouterManager(YOGServer& /*server*/)
+	: listener(YOG_SERVER_ROUTER_PORT)
 {
 	new_connection.reset(new NetConnection);
 	n=0;

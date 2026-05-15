@@ -8,10 +8,8 @@
 
 using std::static_pointer_cast;
 
-YOGClientGameListManager::YOGClientGameListManager(YOGClient* client)
-	: client(client)
+YOGClientGameListManager::YOGClientGameListManager(YOGClient* /*client*/)
 {
-	
 }
 
 

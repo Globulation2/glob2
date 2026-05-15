@@ -89,6 +89,5 @@ private:
 	
 	GameHeader& gameHeader;
 	GameHeader oldGameHeader;
-	MapHeader& mapHeader;
 };
 

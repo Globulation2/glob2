@@ -25,7 +25,7 @@ bool Entities::Ressource::is_entity(Map* map, int posx, int posy)
 
 
 
-bool Entities::Ressource::operator==(const Entity& rhs)
+bool Entities::Ressource::operator==(const Entity& rhs) const
 {
 	if(typeid(rhs)==typeid(Entities::Ressource) &&
 	   static_cast<const Entities::Ressource&>(rhs).ressource_type==ressource_type
@@ -89,7 +89,7 @@ bool Entities::AnyRessource:: is_entity(Map* map, int posx, int posy)
 
 
 
-bool Entities::AnyRessource::operator==(const Entity& rhs)
+bool Entities::AnyRessource::operator==(const Entity& rhs) const
 {
 	if(typeid(rhs)==typeid(Entities::AnyRessource))
 		return true;

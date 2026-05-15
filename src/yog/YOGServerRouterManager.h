@@ -29,7 +29,6 @@ private:
 	std::vector<std::shared_ptr<NetConnection> > routers;
 	NetListener listener;
 	std::shared_ptr<NetConnection> new_connection;
-	YOGServer& server;
 	int n;
 };
 

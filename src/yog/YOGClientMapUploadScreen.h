@@ -48,17 +48,13 @@ public:
 		CONNECTIONLOST,
 	};
 private:
-	enum
-	{
-	};
-	
 	MapPreview* preview;
 	std::shared_ptr<YOGClient> client;
 	YOGClientMapUploader uploader;
 	Text* uploadStatusText;
 	ProgressBar* uploadStatus;
 	//! The textual informations about the selected map
-	Text *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
+	Text *mapInfo, *mapVersion, *mapSize, *mapDate;
 	TextInput* mapName;
 	Text *authorNameText;
 	TextInput* authorName;

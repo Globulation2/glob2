@@ -186,7 +186,6 @@ void TeamsEditor::onAction(Widget *source, Action action, int par1, int par2)
 			GameHeader& gameHeader = game->gameHeader;
 			int team = -1;
 			int nth = 0;
-			int n = 0;
 			///Find which team number this widget is for
 			for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 			{
@@ -194,7 +193,6 @@ void TeamsEditor::onAction(Widget *source, Action action, int par1, int par2)
 				{
 					team = color[i]->getSelectedColor();
 					nth = allyTeamNumbers[i]->getIndex();
-					n = nth+1;
 					break;
 				}
 			}

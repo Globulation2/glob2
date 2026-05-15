@@ -40,7 +40,7 @@ void FertilityCalculatorDialog::onAction(Widget*, Action, int, int)
 {
 }
 
-void FertilityCalculatorDialog::execute()
+void FertilityCalculatorDialog::runModal()
 {
 	// Save the screen behind us into a backing surface.
 	parentCtx->setClipRect();

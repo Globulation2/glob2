@@ -37,7 +37,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		if ((par1==EXIT))
+		if (par1==EXIT)
 		{
 			// Player is leaving the campaign menu; if the save fails (read-only
 			// dir, full disk) we still proceed with the exit but the stderr log
@@ -45,7 +45,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 			campaign.save(true);
 			endExecute(par1);
 		}
-		else if((par1==START))
+		else if(par1==START)
 		{
 			CampaignMapEntry* selected = campaign.findUnlockedMap(availableMissions->get());
 			if (selected)
@@ -74,7 +74,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 			}
 		}
 	}
-	else if((action==TEXT_MODIFIED))
+	else if(action==TEXT_MODIFIED)
 	{
 		if(source==playerName)
 		{

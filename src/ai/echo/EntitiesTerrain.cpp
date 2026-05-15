@@ -25,7 +25,7 @@ bool Entities::Water::is_entity(Map* map, int posx, int posy)
 
 
 
-bool Entities::Water::operator==(const Entity& rhs)
+bool Entities::Water::operator==(const Entity& rhs) const
 {
 	if(typeid(rhs)==typeid(Entities::Water))
 		return true;
@@ -80,7 +80,7 @@ bool Entities::Position::is_entity(Map* map, int posx, int posy)
 }
 
 
-bool Entities::Position::operator==(const Entity& rhs)
+bool Entities::Position::operator==(const Entity& rhs) const
 {
 	if(typeid(rhs)==typeid(Entities::Position) &&
 	   static_cast<const Entities::Position&>(rhs).x==x &&
@@ -140,7 +140,7 @@ bool Entities::Sand::is_entity(Map* map, int posx, int posy)
 
 
 
-bool Entities::Sand::operator==(const Entity& rhs)
+bool Entities::Sand::operator==(const Entity& rhs) const
 {
 	if(typeid(rhs)==typeid(Entities::Sand))
 		return true;

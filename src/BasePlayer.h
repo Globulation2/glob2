@@ -16,6 +16,26 @@ class BasePlayer
 public:
 	/**
 	 * Players can be AI or human players at the local machine or connected via a network.
+	 *
+	 * RUST PORT: don't replicate this layout. PlayerType conflates two
+	 * orthogonal facts — "what kind of slot" (none / lost / network /
+	 * local / AI) and "which AI implementation" — by reserving P_AI=5
+	 * as a base and treating P_AI+n as "AI implementation n". That's a
+	 * sentinel-by-arithmetic encoding with no type safety: nothing
+	 * prevents adding a real PlayerType in the trailing range, and
+	 * round-tripping requires the helpers below. It survives in C++
+	 * only because the value is serialized into saves, replays, and
+	 * the network protocol, so renumbering would break wire compat.
+	 *
+	 * The Rust version should split this into two fields, e.g.:
+	 *     enum PlayerKind { None, LostDropping, LostFinal, Network, Local, AI }
+	 *     struct BasePlayer {
+	 *         kind: PlayerKind,
+	 *         ai_type: Option<AI::ImplementitionID>,  // Some iff kind == AI
+	 *         ...
+	 *     }
+	 * Saves get re-versioned in the port anyway, so this is the right
+	 * moment to fix it.
 	 */
  	enum PlayerType
 	{

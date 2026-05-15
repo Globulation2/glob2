@@ -153,11 +153,11 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 			game->leaveGame();
 			endExecute(Cancelled);
 		}
-		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + AI::SIZE))
+		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + static_cast<int>(AI::SIZE)))
 		{
 			game->addAIPlayer((AI::ImplementitionID)(par1-ADD_AI));
 		}
-		else if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
+		else if ((par1>=CLOSE_BUTTONS)&&(par1<static_cast<int>(CLOSE_BUTTONS)+MAX_NUMBER_OF_PLAYERS))
 		{
 			game->kickPlayer(par1 - CLOSE_BUTTONS);
 		}

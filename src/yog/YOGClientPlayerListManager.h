@@ -47,6 +47,5 @@ private:
 
 	std::list<YOGPlayerSessionInfo> players;
 	std::list<YOGClientPlayerListListener*> listeners;
-	YOGClient* client;
 };
 

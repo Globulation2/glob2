@@ -32,7 +32,7 @@ bool Entities::Building::is_entity(Map* map, int posx, int posy)
 	return false;
 }
 
-bool Entities::Building::operator==(const Entity& rhs)
+bool Entities::Building::operator==(const Entity& rhs) const
 {
 	if(typeid(rhs)==typeid(Entities::Building) &&
 	   static_cast<const Entities::Building&>(rhs).building_type==building_type &&
@@ -107,7 +107,7 @@ bool Entities::AnyTeamBuilding::is_entity(Map* map, int posx, int posy)
 
 
 
-bool Entities::AnyTeamBuilding::operator==(const Entity& rhs)
+bool Entities::AnyTeamBuilding::operator==(const Entity& rhs) const
 {
 	if(typeid(rhs)==typeid(Entities::AnyTeamBuilding) &&
 	   static_cast<const Entities::AnyTeamBuilding&>(rhs).team==team &&
@@ -174,7 +174,7 @@ bool Entities::AnyBuilding::is_entity(Map* map, int posx, int posy)
 
 
 
-bool Entities::AnyBuilding::operator==(const Entity& rhs)
+bool Entities::AnyBuilding::operator==(const Entity& rhs) const
 {
 	if(typeid(rhs)==typeid(Entities::AnyBuilding) &&
 	   static_cast<const Entities::AnyBuilding&>(rhs).under_construction==under_construction

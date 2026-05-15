@@ -5,6 +5,7 @@
 #include <float.h>
 #include <time.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "boost/integer_traits.hpp"
 #include "boost/integer/common_factor.hpp"
@@ -92,7 +93,7 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 	int h=w;
 	int s=w*h;
 	int m=s-1;
-	VARARRAY(int,undermap,w*h);
+	std::vector<int> undermap(w*h);
 	
 	int totalRatio=0x7FFF;
 	int waterRatio=(int)(baseWater*((double)totalRatio));
@@ -248,9 +249,9 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 void fastSimulateRandomMap(int smooth, double baseWater, double baseSand, double baseGrass, double *finalWater, double *finalSand, double *finalGrass)
 {
 	int n=smooth*2+1;
-	VARARRAY(double,finalWaters,n);
-	VARARRAY(double,finalSands,n);
-	VARARRAY(double,finalGrasses,n);
+	std::vector<double> finalWaters(n);
+	std::vector<double> finalSands(n);
+	std::vector<double> finalGrasses(n);
 	
 	for (int i=0; i<n; i++)
 		simulateRandomMap(4, baseWater, baseSand, baseGrass, &finalWaters[i], &finalSands[i], &finalGrasses[i]);

@@ -55,7 +55,6 @@ private:
 	GameHeader& gameHeader;
 	bool readyToStart[Team::MAX_COUNT];
 	int numberOfTeams;
-	bool previousReadyToLaunch;
 	NetReteamingInformation reteamInfo;
 };
 

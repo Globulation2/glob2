@@ -1080,7 +1080,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		if(isFertilityOn)
 		{
 			FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
-			dialog.execute();
+			dialog.runModal();
 			overlay.forceRecompute();
 			overlay.compute(game, OverlayArea::Fertility, team);
 		}

@@ -170,12 +170,13 @@ void GameGUI::centerViewportOnSelection(void)
 {
 	if ((selectionMode==BUILDING_SELECTION) || (selectionMode==UNIT_SELECTION))
 	{
-		Sint32 posX, posY;
+		// Default-init so a future selectionMode that slips past the outer
+		// guard can't read uninitialized stack in release builds (where
+		// the asserts below are stripped).
+		Sint32 posX = 0, posY = 0;
 		if (selectionMode==BUILDING_SELECTION)
 		{
 			Building* b=selection.building;
-			//assert (selBuild);
-			//Building *b=game.teams[Building::GIDtoTeam(selectionGBID)]->myBuildings[Building::GIDtoID(selectionGBID)];
 			assert(b);
 			posX = b->getMidX();
 			posY = b->getMidY();

@@ -84,7 +84,7 @@ bool MapEdit::load(const std::string filename)
 bool MapEdit::save(const std::string filename, const std::string name)
 {
 	FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
-	dialog.execute();
+	dialog.runModal();
 
 	assert(filename.size());
 	assert(name.size());

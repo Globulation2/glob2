@@ -25,7 +25,7 @@ void CampaignMainMenu::onAction(Widget *source, Action action, int par1, int par
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		if ((par1==LOADCAMPAIGN))
+		if (par1==LOADCAMPAIGN)
 		{
 			CampaignSelectorScreen css(true);
 			int rc_css=css.execute(globalContainer->gfx, 40);
@@ -49,7 +49,7 @@ void CampaignMainMenu::onAction(Widget *source, Action action, int par1, int par
 				endExecute(-1);
 			}
 		}
-		else if((par1==NEWCAMPAIGN))
+		else if(par1==NEWCAMPAIGN)
 		{
 			CampaignSelectorScreen css;
 			int rc_css=css.execute(globalContainer->gfx, 40);
@@ -74,7 +74,7 @@ void CampaignMainMenu::onAction(Widget *source, Action action, int par1, int par
 				endExecute(-1);
 			}
 		}
-		else if((par1==CANCEL))
+		else if(par1==CANCEL)
 		{
 			endExecute(CANCEL);
 		}

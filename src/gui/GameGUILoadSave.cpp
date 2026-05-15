@@ -29,14 +29,17 @@ public:
 	{}
 
 private:
-	std::string fileToList(const char* fileName) const
+	// Signatures here must match FileList's virtual base methods exactly,
+	// otherwise the override silently degenerates to a hidden non-virtual
+	// method and FileList::generateList() picks up the base default instead.
+	std::string fileToList(const std::string fileName) const override
 	{
-		return filenameToNameFunc(fullName(fileName).c_str());
+		return filenameToNameFunc(fullName(fileName));
 	}
-	
-	std::string listToFile(const char* listName) const
+
+	std::string listToFile(const std::string listName) const override
 	{
-		return nameToFilenameFunc(fullDir().c_str(), listName, extension.c_str());
+		return nameToFilenameFunc(fullDir(), listName, extension);
 	}
 
 private:

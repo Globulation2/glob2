@@ -22,6 +22,7 @@
 #include "render/UnitSkin.h"
 #include "VoiceRecorder.h"
 #ifndef YOG_SERVER_ONLY
+#include "DatasetWriter.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #endif  // !YOG_SERVER_ONLY

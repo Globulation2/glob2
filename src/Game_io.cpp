@@ -230,7 +230,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	    else
 	    {
 	        FertilityCalculatorDialog dialog(globalContainer->gfx, map);
-	        dialog.execute();
+	        dialog.runModal();
 	    }
 	}
 

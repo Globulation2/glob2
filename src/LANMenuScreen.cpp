@@ -47,7 +47,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if(par1 == HOST)
 		{
-			ChooseMapScreen cms("maps", "map", false, "games", "game", NULL);
+			ChooseMapScreen cms("maps", "map", false, "games", "game", false);
 			int rc = cms.execute(globalContainer->gfx, 40);
 			if(rc == ChooseMapScreen::OK)
 			{
@@ -97,12 +97,6 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 			endExecute(QuitMenu);
 		}
 	}
-}
-
-void LANMenuScreen::paint(int x, int y, int w, int h)
-{
-	gfx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	//gfxCtx->drawSprite(0, 0, arch, 0);
 }
 
 int LANMenuScreen::menu(void)

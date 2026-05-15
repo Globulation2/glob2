@@ -28,7 +28,7 @@ public:
 	void onAction(GAGGUI::Widget* source, GAGGUI::Action action, int par1, int par2) override;
 
 	/// Modal: blocks until the background computation finishes.
-	void execute();
+	void runModal();
 
 private:
 	void refreshProgressDisplay();

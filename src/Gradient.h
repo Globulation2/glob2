@@ -90,15 +90,13 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 {
 	int posX=building->posX;
 	int posY=building->posY;
-	int posW=building->type->width;
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
-	
+
 	Case& c=map->cases[square];
-	
+
 	bool isWarFlag=false;
 	bool isWarFlagSquare=false;
-	bool isClearingFlag=false;
 	bool isClearingFlagSquare=false;
 	if (building->type->isVirtual)
 	{
@@ -115,7 +113,6 @@ template<typename Tint, bool canSwim> Uint8 BuildingGradientMethod<Tint, canSwim
 		}
 		else
 		{
-			isClearingFlag=true;
 			if(dx * dx + dy * dy < r * r)
 			{
 				if(c.ressource.type != NO_RES_TYPE && building->clearingRessources[c.ressource.type])
