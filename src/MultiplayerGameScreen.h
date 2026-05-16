@@ -7,6 +7,7 @@
 #include "MultiplayerGame.h"
 #include "AI.h"
 #include "MapHeader.h"
+#include "Team.h"
 #include "YOGClientChatChannel.h"
 #include "YOGClientChatListener.h"
 #include "MultiplayerGameEventListener.h"
@@ -58,12 +59,10 @@ private:
 		
 		COLOR_BUTTONS=32,
 		CLOSE_BUTTONS=64,
-		
-		
+
+
 		ADD_AI = 100
 	};
-
-	enum { MAX_NUMBER_OF_PLAYERS = 16};
 
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
@@ -75,27 +74,27 @@ private:
 	///This function will update the list of joined players
 	void updateJoinedPlayers();
 	void updateVisibleButtons();
-	
+
 	virtual void onActivated();
 
 	TextButton *startButton;
 	TextButton *cancelButton;
 	std::vector<TextButton *> addAI;
-	ColorButton *color[MAX_NUMBER_OF_PLAYERS];
-	Text *text[MAX_NUMBER_OF_PLAYERS];
-	TextButton *kickButton[MAX_NUMBER_OF_PLAYERS];
+	ColorButton *color[Team::MAX_COUNT];
+	Text *text[Team::MAX_COUNT];
+	TextButton *kickButton[Team::MAX_COUNT];
 	ProgressBar *percentDownloaded;
 	TextButton *otherOptions;
 
 	TextInput *textInput;
 	TextArea *chatWindow;
-	
+
 	OnOffButton *isReady;
 	Text *isReadyText;
 
 	std::shared_ptr<MultiplayerGame> game;
 
-	bool wasSlotUsed[MAX_NUMBER_OF_PLAYERS];
+	bool wasSlotUsed[Team::MAX_COUNT];
 	Text *notReadyText;
 	Text *gameStartWaitingText;
 

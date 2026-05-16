@@ -83,7 +83,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<
 
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
 
-	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		int dx=320*(i/8);
 		int dy=20*(i%8);
@@ -157,7 +157,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		{
 			game->addAIPlayer((AI::ImplementitionID)(par1-ADD_AI));
 		}
-		else if ((par1>=CLOSE_BUTTONS)&&(par1<static_cast<int>(CLOSE_BUTTONS)+MAX_NUMBER_OF_PLAYERS))
+		else if ((par1>=CLOSE_BUTTONS)&&(par1<static_cast<int>(CLOSE_BUTTONS)+Team::MAX_COUNT))
 		{
 			game->kickPlayer(par1 - CLOSE_BUTTONS);
 		}
@@ -175,7 +175,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	{
 		if(par1 == READY)
 			game->setHumanReady(isReady->getState());
-		else if(par1 > COLOR_BUTTONS)
+		else if((par1 >= COLOR_BUTTONS) && (par1 < static_cast<int>(COLOR_BUTTONS) + Team::MAX_COUNT))
 			game->changeTeam(par1 - COLOR_BUTTONS, par2);
 	}
 	else if (action==TEXT_VALIDATED)
@@ -270,7 +270,7 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(std::shared_ptr<Multiplay
 	{
 		shared_ptr<MGPlayerReadyStatusChanged> info = static_pointer_cast<MGPlayerReadyStatusChanged>(event);
 		GameHeader& gh = game->getGameHeader();
-		for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+		for (int i=0; i<Team::MAX_COUNT; i++)
 		{
 			BasePlayer& bp = gh.getBasePlayer(i);
 			if(bp.playerID == info->getPlayerID())
@@ -295,7 +295,7 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 {
 	GameHeader& gh = game->getGameHeader();
 	MapHeader& mh = game->getMapHeader();
-	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		color[i]->clearColors();
 		for (int j=0; j<mh.getNumberOfTeams(); j++)
