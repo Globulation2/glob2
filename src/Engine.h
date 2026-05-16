@@ -6,6 +6,7 @@
 
 #include "Header.h"
 #include "GameGUI.h"
+#include <optional>
 #include <string>
 #include "Campaign.h"
 #include "MapHeader.h"
@@ -103,8 +104,12 @@ private:
 	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
 	void finalAdjustements(void);
 
-	///This function will choose a random map from the available maps
-	MapHeader chooseRandomMap();
+	/// Choose a random map from the available maps. Returns std::nullopt
+	/// if maps/ is empty or unreadable (caller must surface this as a
+	/// fatal config error). Throws std::ios_base::failure if a randomly
+	/// selected .map file is malformed (caller's retry loop picks again).
+	/// See definition in EngineLoaders.cpp for the full behavior contract.
+	std::optional<MapHeader> chooseRandomMap();
 	
 	///This function prepares a random set of AI's in a GameHeader, first player is always human + ai team
 	GameHeader createRandomGame(int numberOfTeams);

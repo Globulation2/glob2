@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <memory>
+#include <optional>
 
 
 // Loads a map header from disk. The two failure modes are asymmetric:
@@ -90,12 +91,23 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 
 
 
-MapHeader Engine::chooseRandomMap()
+// Pick one map from the maps/ directory at random and load its header.
+// Three outcomes for the caller to handle:
+//   * --map override set: returns the named map (still throws on missing
+//     file, since a typo'd name is a fatal user error).
+//   * No override + maps/ has at least one .map file: consumes one
+//     syncRand() call to index uniformly into the listing and returns
+//     the loaded MapHeader.
+//   * No override + maps/ is empty or unreadable: returns std::nullopt
+//     without consuming RNG state. Callers must surface this as a clear
+//     fatal-config error — previously this path was undefined behavior
+//     (syncRand() % 0 → SIGFPE on x86, bypassing the createRandomGame
+//     retry-on-malformed-file loop and terminating the process).
+// Loaded maps that turn out to be malformed propagate via
+// std::ios_base::failure (the existing retry loop in createRandomGame
+// catches that and picks again).
+std::optional<MapHeader> Engine::chooseRandomMap()
 {
-	// --map override: pin to a specific map by bare name. Resolved as
-	// maps/<name>.map. Throws std::ios_base::failure on missing file —
-	// the caller (createRandomGame) handles that with a clear error
-	// rather than letting the legacy retry-loop spin forever.
 	if (!globalContainer->testGamesMap.empty())
 	{
 		std::string fullPath = std::string("maps") + DIR_SEPARATOR
@@ -117,6 +129,9 @@ MapHeader Engine::chooseRandomMap()
 			maps.push_back(fullFileName);
 		}
 	}
+
+	if (maps.empty())
+		return std::nullopt;
 
 	int number = syncRand() % maps.size();
 

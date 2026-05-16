@@ -172,9 +172,10 @@ void Engine::createRandomGame()
 		// on a missing file (it logs to stderr and returns a default-
 		// constructed MapHeader with numberOfTeams=0), so we detect failure
 		// by checking the team count rather than catching an exception.
+		std::optional<MapHeader> chosen;
 		try
 		{
-			map = chooseRandomMap();
+			chosen = chooseRandomMap();
 		}
 		catch (std::ios_base::failure &e)
 		{
@@ -183,13 +184,17 @@ void Engine::createRandomGame()
 				<< e.what() << std::endl;
 			exit(1);
 		}
-		if (map.getNumberOfTeams() <= 0)
+		// With --map set, chooseRandomMap never returns nullopt (the
+		// override path either loads or throws), but defend against it
+		// anyway so a future refactor doesn't reintroduce undefined state.
+		if (!chosen || chosen->getNumberOfTeams() <= 0)
 		{
 			std::cerr << "--map: cannot load maps/"
 				<< globalContainer->testGamesMap << ".map "
 				<< "(missing or invalid; numberOfTeams=0)" << std::endl;
 			exit(1);
 		}
+		map = *chosen;
 	}
 	else
 	{
@@ -198,7 +203,20 @@ void Engine::createRandomGame()
 		{
 			try
 			{
-				map = chooseRandomMap();
+				std::optional<MapHeader> chosen = chooseRandomMap();
+				if (!chosen)
+				{
+					// Empty or unreadable maps/ directory. Previously this
+					// path produced syncRand() % 0 (UB / SIGFPE) inside
+					// chooseRandomMap; now we exit cleanly so the user
+					// gets an actionable message instead of a crash or a
+					// retry loop that can never succeed.
+					std::cerr << "createRandomGame: no maps available in "
+						<< "maps/ directory (empty or unreadable). "
+						<< "Cannot pick a random map." << std::endl;
+					exit(1);
+				}
+				map = *chosen;
 				validMapChosen = true;
 			}
 			catch (std::ios_base::failure &e)
