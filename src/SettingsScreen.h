@@ -43,7 +43,6 @@ public:
 		GAMESHORTCUTS=13,
 		EDITORSHORTCUTS=14,
 		SECONDKEY=15,
-		PRESSEDSELECTOR=15,
 		ADDSHORTCUT=16,
 		REMOVESHORTCUT=17,
 		SCROLLWHEEL=18,
@@ -51,6 +50,7 @@ public:
 		CONSTRUCTIONSITES=20,
 		UPGRADES=21,
 		FLAGSETTINGS=22,
+		PRESSEDSELECTOR=23,
 	};
 private:
 	Settings old_settings;
@@ -78,6 +78,32 @@ private:
 	Text *rebootWarning;
 
 	void addNumbersFor(int low, int high, Number* widget);
+
+	// Constructor helpers — each builds a logical chunk of widgets for the screen.
+	// Split out so the construction order reads top-to-bottom without buried sub-loops.
+	void buildOkCancelButtons();
+	void buildLanguageWidgets();
+	void buildDisplayWidgets();
+	void buildGraphicsToggles();
+	void buildUsernameWidgets();
+	void buildAudioWidgets();
+	void buildBuildingDefaultsTab();
+	void buildCompletedBuildingsGroup();
+	void buildNewConstructionGroup();
+	void buildUpgradesGroup();
+	void buildFlagsGroup();
+	void buildKeyboardShortcutsTab();
+
+	// onAction dispatch helpers — one per event kind.
+	void handleButtonAction(int par1);
+	void flushDefaultsToSettings();
+	void handleListSelected(Widget* source, int par1);
+	void handleValueChanged();
+	void handleButtonStateChanged(Widget* source);
+	// Re-applies the current locale to every string-bearing widget. Called after the
+	// user picks a new language in the language list — every label, button, and text
+	// has to be re-resolved against the new string table.
+	void retranslateUiStrings();
 
 	TextButton* game_shortcuts;
 	TextButton* editor_shortcuts;
