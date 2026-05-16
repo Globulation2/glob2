@@ -52,6 +52,15 @@ public:
 		FLAGSETTINGS=22,
 		PRESSEDSELECTOR=23,
 	};
+
+	// IDs for the four sub-groups inside the "Building Defaults" tab. Stored in
+	// unitRatioGroupNumbers / flagRadiusGroupNumbers and matched in
+	// activateDefaultAssignedGroupNumber to control which set of widgets is
+	// currently visible.
+	static constexpr int kBuildingGroupCompleted = 1;
+	static constexpr int kBuildingGroupNewConstruction = 2;
+	static constexpr int kBuildingGroupUpgrades = 3;
+	static constexpr int kBuildingGroupFlags = 4;
 private:
 	Settings old_settings;
 	List *languageList;
