@@ -428,7 +428,10 @@ private:
 	int eventGoType; //!< type of last event
 	int eventGoTypeIterator; //!< iterator to iter on ctrl + space press
 	
-	//! Transform a text to multi line according to screen width
+	//! Word-wrap \a input into \a output, breaking at spaces so each line fits the
+	//! message-panel pixel width (screen width minus right menu and side padding),
+	//! measured via globalContainer->standardFont. Continuation lines are prefixed
+	//! with \a indent. Empty input yields an empty output (no lines pushed).
 	void setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent="");
 	
 	// Typing stuff :

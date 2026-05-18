@@ -847,7 +847,7 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 	std::string lastWord;
 	std::string lastLine;
 	std::string ninput=input;
-	if(ninput[ninput.length()-1] != ' ')
+	if(!ninput.empty() && ninput.back() != ' ')
 		ninput += " ";
 
 	while (pos<ninput.length())
