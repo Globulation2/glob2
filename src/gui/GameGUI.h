@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <optional>
 #include <queue>
 #include <valarray>
 
@@ -244,8 +245,19 @@ private:
 	void drawPanelButtons(int y);
 	//! Draw a single button of the panel
 	void drawPanelButton(int y, int pos, int numButtons, int sprite);
-	//! Draw a choice of buildings or flags
-	void drawChoice(int pos, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine = 2);
+	//! Draw a choice of buildings or flags. Thin coordinator over the four helpers below.
+	//! `panelTopY` is the Y anchor used for mouse hit-testing; note that the sprite grid is
+	//! drawn at YPOS_BASE_BUILDING (panelTopY + 5), producing a 5-pixel offset — see BH-290.
+	void drawChoice(int panelTopY, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine = 2);
+	//! Paint the icon grid for the choice panel and queue any tutorial-hilight arrows.
+	void drawChoiceSprites(const std::vector<std::string>& types, const std::vector<bool>& states, unsigned numberPerLine);
+	//! Paint the selection-highlight sprite over cell `selIdx`.
+	void drawChoiceHighlight(size_t selIdx, unsigned numberPerLine);
+	//! Return the cell index the mouse is currently over, or nullopt if not over any cell.
+	//! `panelTopY` is the Y origin of the hit grid (caller's `pos`).
+	std::optional<size_t> pickChoiceUnderMouse(int panelTopY, size_t count, unsigned numberPerLine) const;
+	//! Paint the resource/info text block at the bottom of the right panel for the given type.
+	void drawChoiceInfoPanel(const std::string& type);
 	//! Draw a choice of flags
 	void drawFlagView(void);
 	//! Draw the infos from a unit
