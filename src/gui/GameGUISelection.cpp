@@ -83,6 +83,10 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 	}
 }
 
+// Validate the current selection's referent and clear it if the referent is gone.
+// Called from drawPanel() before dispatching to the per-mode draw routines so
+// that those routines can assume the selection is still valid. Keep selection
+// validation here rather than in draw functions — draws should be pure.
 void GameGUI::checkSelection(void)
 {
 	if ((selectionMode==BUILDING_SELECTION) && (game.selectedBuilding==NULL))
@@ -90,6 +94,11 @@ void GameGUI::checkSelection(void)
 		clearSelection();
 	}
 	else if ((selectionMode==UNIT_SELECTION) && (game.selectedUnit==NULL))
+	{
+		clearSelection();
+	}
+	else if ((selectionMode==RESSOURCE_SELECTION)
+		&& (game.map.getRessource(selection.ressource).type==NO_RES_TYPE))
 	{
 		clearSelection();
 	}

@@ -18,37 +18,37 @@
 
 void GameGUI::drawRessourceInfos(void)
 {
+	// Precondition (established by checkSelection() in drawPanel): when we
+	// reach here the resource selection still references a live resource tile.
+	// The early-return is defensive — should never trigger.
 	const Ressource &r = game.map.getRessource(selection.ressource);
+	if (r.type==NO_RES_TYPE)
+		return;
+
 	int ypos = YPOS_BASE_RESSOURCE;
-	if (r.type!=NO_RES_TYPE)
-	{
-		// Draw ressource name
-		const std::string &ressourceName = getRessourceName(r.type);
-		int titleLen = globalContainer->littleFont->getStringWidth(ressourceName.c_str());
-		int titlePos = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+((RIGHT_MENU_WIDTH-titleLen)>>1);
-		globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, ressourceName.c_str());
-		ypos += 2*YOFFSET_TEXT_PARA;
 
-		// Draw ressource image
-		const RessourceType* rt = globalContainer->ressourcesTypes.get(r.type);
-		unsigned resImg = rt->gfxId + r.variety*rt->sizesCount + r.amount;
-		if (!rt->eternal)
-			resImg--;
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+16, ypos, globalContainer->ressources, resImg);
+	// Draw ressource name
+	const std::string &ressourceName = getRessourceName(r.type);
+	int titleLen = globalContainer->littleFont->getStringWidth(ressourceName.c_str());
+	int titlePos = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+((RIGHT_MENU_WIDTH-titleLen)>>1);
+	globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, ressourceName.c_str());
+	ypos += 2*YOFFSET_TEXT_PARA;
 
-		// Draw ressource count
-		if (rt->granular)
-		{
-			int sizesCount=rt->sizesCount;
-			int amount=r.amount;
-			const std::string amountS = FormatableString("%0/%1").arg(amount).arg(sizesCount);
-			int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
-		}
-	}
-	else
+	// Draw ressource image
+	const RessourceType* rt = globalContainer->ressourcesTypes.get(r.type);
+	unsigned resImg = rt->gfxId + r.variety*rt->sizesCount + r.amount;
+	if (!rt->eternal)
+		resImg--;
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+16, ypos, globalContainer->ressources, resImg);
+
+	// Draw ressource count
+	if (rt->granular)
 	{
-		clearSelection();
+		int sizesCount=rt->sizesCount;
+		int amount=r.amount;
+		const std::string amountS = FormatableString("%0/%1").arg(amount).arg(sizesCount);
+		int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
 	}
 }
 
