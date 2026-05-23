@@ -163,7 +163,7 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 
 
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState)
 {
 	static int time = 0;
 	static DynamicClouds ds(&globalContainer->settings);
@@ -178,7 +178,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings);
+	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings, buildingGuiState);
 	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
@@ -252,7 +252,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				int imgid = type->gameSpriteImage;
 
 				int x, y;
-				map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
+				const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, *building) : building->posX;
+				const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, *building) : building->posY;
+				map.mapCaseToDisplayable(dispX, dispY, &x, &y, viewportX, viewportY);
 
 				// all flags are hued:
 				Sprite *buildingSprite = type->gameSpritePtr;

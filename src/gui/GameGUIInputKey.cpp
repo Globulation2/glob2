@@ -124,10 +124,11 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					if (selectionMode==BUILDING_SELECTION)
 					{
 						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING))
+						const int current = displayedMaxUnitWorking(*selBuild);
+						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current<MAX_UNIT_WORKING))
 						{
-							int nbReq=std::min(20, selBuild->maxUnitWorkingLocal+1);
-							selBuild->maxUnitWorkingLocal = nbReq;
+							int nbReq=std::min(20, current+1);
+							pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
@@ -139,10 +140,11 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					if (selectionMode==BUILDING_SELECTION)
 					{
 						Building* selBuild=selection.building;
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (selBuild->maxUnitWorkingLocal>0))
+						const int current = displayedMaxUnitWorking(*selBuild);
+						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current>0))
 						{
-							int nbReq=std::max(0, selBuild->maxUnitWorkingLocal-1);
-							selBuild->maxUnitWorkingLocal = nbReq;
+							int nbReq=std::max(0, current-1);
+							pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
 							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}

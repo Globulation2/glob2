@@ -140,9 +140,13 @@ void GameGUI::drawBuildingInfos(void)
 	// it is a unit ranged attractor (aka flag)
 	if (buildingType->defaultUnitStayRange && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
-		// get flag stat
+		// get flag stat — feed the displayed (optimistic) position and range
+		// so the count tracks the cursor during a flag drag or scroll-resize.
 		int goingTo, onSpot;
-		selBuild->computeFlagStatLocal(&goingTo, &onSpot);
+		computeFlagStatDisplayed(*selBuild,
+			displayedPosX(*selBuild), displayedPosY(*selBuild),
+			displayedUnitStayRange(*selBuild),
+			&goingTo, &onSpot);
 		// display flag stat
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos, globalContainer->littleFont, FormatableString("%0").arg(Toolkit::getStringTable()->getString("[In way]")).c_str());
@@ -165,7 +169,7 @@ void GameGUI::drawBuildingInfos(void)
 			if (selBuild->buildingState==Building::ALIVE)
 			{
 				// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
-				const int maxUnitsWorking = (globalContainer->replaying?selBuild->maxUnitWorking:selBuild->maxUnitWorkingLocal);
+				const int maxUnitsWorking = (globalContainer->replaying?selBuild->maxUnitWorking:displayedMaxUnitWorking(*selBuild));
 
 				std::string working = Toolkit::getStringTable()->getString("[working]");
 				const int len = globalContainer->littleFont->getStringWidth(working)+4;
@@ -235,7 +239,7 @@ void GameGUI::drawBuildingInfos(void)
 		if ((selBuild->owner->allies)&(1<<localTeamNo))
 		{
 			// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
-			const int unitStayRange = (globalContainer->replaying?selBuild->unitStayRange:selBuild->unitStayRangeLocal);
+			const int unitStayRange = (globalContainer->replaying?selBuild->unitStayRange:displayedUnitStayRange(*selBuild));
 
 			std::string range = Toolkit::getStringTable()->getString("[range]");
 			const int len = globalContainer->littleFont->getStringWidth(range)+4;

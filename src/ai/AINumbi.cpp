@@ -406,7 +406,6 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 		if (numberRequestedLoca!=numberRequestedTemp)
 		{
 			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
-			b->maxUnitWorkingLocal=numberRequestedTemp;
 			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequestedTemp));
 		}
 	}

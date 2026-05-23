@@ -84,6 +84,65 @@ GameGUI::~GameGUI()
 		delete *it;
 }
 
+Sint32 GameGUI::displayedPosX(const Building& b) const { return ::displayedPosX(buildingGuiState, b); }
+Sint32 GameGUI::displayedPosY(const Building& b) const { return ::displayedPosY(buildingGuiState, b); }
+Sint32 GameGUI::displayedMaxUnitWorking(const Building& b) const { return ::displayedMaxUnitWorking(buildingGuiState, b); }
+Sint32 GameGUI::displayedUnitStayRange(const Building& b) const { return ::displayedUnitStayRange(buildingGuiState, b); }
+
+void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order>& order)
+{
+	// When an order executes that updates the authoritative Building state,
+	// drop the corresponding pending shadow so the display falls back to
+	// authoritative. For the LOCAL player's own orders during live play we
+	// leave pending alone — the user may have already queued a newer change
+	// past the one that just landed, and we want the display to track the
+	// latest user intent, not flicker back to the now-stale authoritative
+	// value. Replays clear pending unconditionally because every order
+	// represents the authoritative timeline.
+	const bool replaying = globalContainer->replaying;
+	switch (order->getOrderType())
+	{
+		case ORDER_MOVE_FLAG:
+		{
+			auto omf = std::static_pointer_cast<OrderMoveFlag>(order);
+			if (omf->sender != localPlayer || replaying)
+			{
+				auto it = buildingGuiState.find(omf->gid);
+				if (it != buildingGuiState.end())
+				{
+					it->second.pendingPosX.reset();
+					it->second.pendingPosY.reset();
+				}
+			}
+			break;
+		}
+		case ORDER_MODIFY_BUILDING:
+		{
+			auto omb = std::static_pointer_cast<OrderModifyBuilding>(order);
+			if (omb->sender != localPlayer || replaying)
+			{
+				auto it = buildingGuiState.find(omb->gid);
+				if (it != buildingGuiState.end())
+					it->second.pendingMaxUnitWorking.reset();
+			}
+			break;
+		}
+		case ORDER_MODIFY_FLAG:
+		{
+			auto omf = std::static_pointer_cast<OrderModifyFlag>(order);
+			if (omf->sender != localPlayer || replaying)
+			{
+				auto it = buildingGuiState.find(omf->gid);
+				if (it != buildingGuiState.end())
+					it->second.pendingUnitStayRange.reset();
+			}
+			break;
+		}
+		default:
+			break;
+	}
+}
+
 void GameGUI::init()
 {
 	notmenu = false;
@@ -211,8 +270,8 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	int posX, posY;
 	Building* selBuild=selection.building;
 	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
-	if ((selBuild->posXLocal!=posX)
-		||(selBuild->posYLocal!=posY)
+	if ((displayedPosX(*selBuild)!=posX)
+		||(displayedPosY(*selBuild)!=posY)
 		||(drop && (selectionPushedPosX!=posX || selectionPushedPosY!=posY)))
 	{
 		Uint16 gid=selBuild->gid;
@@ -233,8 +292,9 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 		}
 		if (!found)
 			orderQueue.push_back(oms);
-		selBuild->posXLocal=posX;
-		selBuild->posYLocal=posY;
+		BuildingGuiState& s = pendingFor(gid);
+		s.pendingPosX = posX;
+		s.pendingPosY = posY;
 	}
 }
 
@@ -699,6 +759,7 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 			game.executeOrder(order, localPlayer);
 		}
 	}
+	reconcileBuildingGuiState(order);
 }
 
 bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
@@ -921,17 +982,17 @@ void GameGUI::flushScrollWheelOrders()
 			if ((selBuild->type->maxUnitWorking) &&
                                             (!globalContainer->settings.scrollWheelEnabled ? (modState & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 			{
-				selBuild->maxUnitWorkingLocal+=scrollWheelChanges;
-				int nbReq=selBuild->maxUnitWorkingLocal=std::min(20, std::max(0, (selBuild->maxUnitWorkingLocal)));
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
+				const int requested = std::min(20, std::max(0, displayedMaxUnitWorking(*selBuild) + scrollWheelChanges));
+				pendingFor(selBuild->gid).pendingMaxUnitWorking = requested;
+				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, requested)));
+				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, requested);
 			}
 			else if ((selBuild->type->defaultUnitStayRange) &&
 				(SDL_GetModState()&KMOD_SHIFT))
 			{
-				selBuild->unitStayRangeLocal+=scrollWheelChanges;
-				int nbReq=selBuild->unitStayRangeLocal=std::min(selBuild->type->maxUnitStayRange, std::max(0, (selBuild->unitStayRangeLocal)));
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
+				const int requested = std::min((int)selBuild->type->maxUnitStayRange, std::max(0, displayedUnitStayRange(*selBuild) + scrollWheelChanges));
+				pendingFor(selBuild->gid).pendingUnitStayRange = requested;
+				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, requested)));
 			}
 		}
 	}

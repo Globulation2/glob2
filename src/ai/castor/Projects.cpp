@@ -376,7 +376,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 						if (mainWorkers>=0 && b->maxUnitWorking!=mainWorkers)
 						{
 							b->maxUnitWorking=mainWorkers;
-							b->maxUnitWorkingLocal=mainWorkers;
 							b->update();
 							project->timer=timer;
 							return shared_ptr<Order>(new OrderModifyBuilding(b->gid, mainWorkers));
@@ -388,7 +387,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 						if (finalWorkers>=0 && b->maxUnitWorking!=finalWorkers)
 						{
 							b->maxUnitWorking=finalWorkers;
-							b->maxUnitWorkingLocal=finalWorkers;
 							b->update();
 							project->timer=timer;
 							return shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers));
@@ -402,7 +400,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 					if (project->foodWorkers>=0 && b->maxUnitWorking!=project->foodWorkers)
 					{
 						b->maxUnitWorking=project->foodWorkers;
-						b->maxUnitWorkingLocal=project->foodWorkers;
 						b->update();
 						project->timer=timer;
 						return shared_ptr<Order>(new OrderModifyBuilding(b->gid, project->foodWorkers));
@@ -414,7 +411,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 					if (project->otherWorkers>=0 && b->maxUnitWorking!=project->otherWorkers)
 					{
 						b->maxUnitWorking=project->otherWorkers;
-						b->maxUnitWorkingLocal=project->otherWorkers;
 						b->update();
 						project->timer=timer;
 						return shared_ptr<Order>(new OrderModifyBuilding(b->gid, project->otherWorkers));
@@ -469,7 +465,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 					//printf("(%s) (incrementing workers) isFree=%d, current=%d\n",
 					//	project->debugName, isFree, b->maxUnitWorking);
 					b->maxUnitWorking++;
-					b->maxUnitWorkingLocal=b->maxUnitWorking;
 					b->update();
 					project->timer=timer;
 					return shared_ptr<Order>(new OrderModifyBuilding(b->gid, b->maxUnitWorking));
@@ -512,7 +507,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 				{
 					assert(b->type->maxUnitWorking!=0);
 					b->maxUnitWorking=finalWorkers;
-					b->maxUnitWorkingLocal=finalWorkers;
 					b->update();
 					project->timer=timer;
 					return shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers));

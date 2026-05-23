@@ -133,7 +133,6 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
-		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists();
@@ -142,7 +141,6 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		//following reassigns units to work on upgrade, certain buildings will
 		//glitch if units are not unassigned and then reassigned like this
 		maxUnitWorking = unitWorking;
-		maxUnitWorkingLocal = maxUnitWorking;
 		maxUnitWorkingPreferred = maxUnitWorking;
 		maxUnitWorkingFuture = unitWorkingFuture;
 		updateConstructionState(); // To switch to a real building site, if all units have been freed from building.
@@ -211,14 +209,11 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
-	posXLocal=posX;
-	posYLocal=posY;
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
 
 	maxUnitWorking=maxUnitWorkingPrevious;
-	maxUnitWorkingLocal=maxUnitWorking; //maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();
@@ -259,7 +254,6 @@ void Building::launchDelete(void)
 		buildingState=WAITING_FOR_DESTRUCTION;
 		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
-		maxUnitWorkingLocal=0;
 		maxUnitInside=0;
 		desiredMaxUnitWorking = 0;
 		updateCallLists();
@@ -273,7 +267,6 @@ void Building::cancelDelete(void)
 {
 	buildingState=ALIVE;
 	maxUnitWorking=maxUnitWorkingPrevious;
-	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();

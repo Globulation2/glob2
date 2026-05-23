@@ -54,7 +54,6 @@ void Building::updateBuildingSite(void)
 		}
 		else
 			maxUnitWorking=0;
-		maxUnitWorkingLocal=maxUnitWorking;
 
 		// The working units still works for us, but
 		// we don't have any unit in buildings
@@ -338,7 +337,6 @@ bool Building::tryToBuildingSiteRoom(void)
 		if (verbose)
 			printf("bgid=%d, uses maxUnitWorkingPreferred=%d\n", gid, maxUnitWorkingPreferred);
 		maxUnitWorking=maxUnitWorkingPreferred;
-		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
 		updateCallLists();
 		updateUnitsWorking();
@@ -347,12 +345,9 @@ bool Building::tryToBuildingSiteRoom(void)
 		// position
 		posX=newPosX;
 		posY=newPosY;
-		posXLocal=posX;
-		posYLocal=posY;
 
 		// flag usefull :
 		unitStayRange=type->defaultUnitStayRange;
-		unitStayRangeLocal=unitStayRange;
 
 		// quality parameters
 		// hp=type->hpInit; // (Uint16)

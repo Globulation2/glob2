@@ -6,6 +6,7 @@
 
 #include <optional>
 #include <queue>
+#include <unordered_map>
 #include <valarray>
 
 #include "Game.h"
@@ -20,6 +21,7 @@
 #include "GameGUIToolManager.h"
 #include "GameGUIDefaultAssignManager.h"
 #include "GameGUIGhostBuildingManager.h"
+#include "BuildingGuiState.h"
 
 namespace GAGCore
 {
@@ -476,6 +478,22 @@ private:
 	
 	///This function flushes orders from the scrollWheel at the end of every frame
 	void flushScrollWheelOrders();
+
+	///Per-building GUI-side pending order state (optimistic shadow).
+	///See BuildingGuiState.h. Public so render code can read pending positions.
+	BuildingGuiStateMap buildingGuiState;
+
+	///Accessor: pending value if set, else authoritative from `b`.
+	Sint32 displayedPosX(const Building& b) const;
+	Sint32 displayedPosY(const Building& b) const;
+	Sint32 displayedMaxUnitWorking(const Building& b) const;
+	Sint32 displayedUnitStayRange(const Building& b) const;
+
+	///Get-or-create the pending state for a building (used by GUI mutators).
+	BuildingGuiState& pendingFor(Uint16 gid) { return buildingGuiState[gid]; }
+
+	///Called from executeOrder: clear pending fields the order has now made authoritative.
+	void reconcileBuildingGuiState(const std::shared_ptr<Order>& order);
 	
 	//! A particle is cute and only for eye candy
 	struct Particle

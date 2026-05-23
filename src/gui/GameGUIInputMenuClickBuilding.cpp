@@ -52,26 +52,30 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			&& lmx < 128)
 		{
 			int nbReq;
+			const int current = displayedMaxUnitWorking(*selBuild);
 			if (lmx<18)
 			{
-				if(selBuild->maxUnitWorkingLocal>0)
+				if(current>0)
 				{
-					nbReq=(selBuild->maxUnitWorkingLocal-=1);
+					nbReq = current - 1;
+					pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 			        defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 				}
 			}
 			else if (lmx<(128-18))
 			{
-				nbReq=selBuild->maxUnitWorkingLocal=((lmx-18)*MAX_UNIT_WORKING)/(128-36);
+				nbReq = ((lmx-18)*MAX_UNIT_WORKING)/(128-36);
+				pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
 				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 	        	defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 			}
 			else
 			{
-				if(selBuild->maxUnitWorkingLocal<MAX_UNIT_WORKING)
+				if(current<MAX_UNIT_WORKING)
 				{
-					nbReq=(selBuild->maxUnitWorkingLocal+=1);
+					nbReq = current + 1;
+					pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 		        	defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 				}
@@ -119,25 +123,29 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			&& (lmx < 128))
 		{
 			int nbReq;
+			const int current = displayedUnitStayRange(*selBuild);
 			if (lmx<18)
 			{
-				if(selBuild->unitStayRangeLocal>0)
+				if(current>0)
 				{
-					nbReq=(selBuild->unitStayRangeLocal-=1);
+					nbReq = current - 1;
+					pendingFor(selBuild->gid).pendingUnitStayRange = nbReq;
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 				}
 			}
 			else if (lmx<RIGHT_MENU_WIDTH-18)
 			{
-				nbReq=selBuild->unitStayRangeLocal=((lmx-18)*(unsigned)selBuild->type->maxUnitStayRange)/(128-36);
+				nbReq = ((lmx-18)*(unsigned)selBuild->type->maxUnitStayRange)/(128-36);
+				pendingFor(selBuild->gid).pendingUnitStayRange = nbReq;
 				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 			}
 			else
 			{
 				// TODO : check in orderQueue to avoid useless orders.
-				if (selBuild->unitStayRangeLocal < selBuild->type->maxUnitStayRange)
+				if (current < selBuild->type->maxUnitStayRange)
 				{
-					nbReq=(selBuild->unitStayRangeLocal+=1);
+					nbReq = current + 1;
+					pendingFor(selBuild->gid).pendingUnitStayRange = nbReq;
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
 				}
 			}

@@ -170,7 +170,6 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 			if(isVirtual && oc.flagRadius>=0)
 			{
 				b->unitStayRange = oc.flagRadius;
-				b->unitStayRangeLocal = oc.flagRadius;
 			}
 			b->owner->addToStaticAbilitiesLists(b);
 			b->update();
@@ -207,8 +206,6 @@ void Game::executeModifyBuilding(const OrderModifyBuilding& omb, int localPlayer
 		assert(omb.numberRequested <= MAX_BUILDING_WORKER_REQUEST);
 		b->maxUnitWorking=omb.numberRequested;
 		b->maxUnitWorkingPreferred=b->maxUnitWorking;
-		if (omb.sender!=localPlayer)
-			b->maxUnitWorkingLocal=b->maxUnitWorking;
 		b->update();
 	}
 }
@@ -237,8 +234,6 @@ void Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 		int oldRange=b->unitStayRange;
 		int newRange=omf.range;
 		b->unitStayRange=newRange;
-		if (omf.sender!=localPlayer)
-			b->unitStayRangeLocal=newRange;
 
 		if (b->type->zonableForbidden)
 		{
@@ -314,12 +309,6 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		else
 		{
 			b->resetPathfindGradients();
-		}
-
-		if (omf.sender!=localPlayer || globalContainer->replaying)
-		{
-			b->posXLocal=b->posX;
-			b->posYLocal=b->posY;
 		}
 	}
 }

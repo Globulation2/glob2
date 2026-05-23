@@ -58,7 +58,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	shortTypeNum = type->shortTypeNum;
 	maxUnitInside = type->maxUnitInside;
 	maxUnitWorking = unitWorking;
-	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = maxUnitWorking;
 	maxUnitWorkingFuture = unitWorkingFuture;
 	maxUnitWorkingPrevious = 0;
@@ -71,15 +70,12 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	// position
 	posX=x;
 	posY=y;
-	posXLocal=posX;
-	posYLocal=posY;
 
 	underAttackTimer=0;
 	canNotConvertUnitTimer=0;
 
 	// flag usefull :
 	unitStayRange=type->defaultUnitStayRange;
-	unitStayRangeLocal=unitStayRange;
 	for(int i=0; i<BASIC_COUNT; i++)
 		clearingRessources[i]=true;
 	clearingRessources[STONE]=false;
@@ -209,8 +205,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	// position
 	posX = stream->readSint32("posX");
 	posY = stream->readSint32("posY");
-	posXLocal = posX;
-	posYLocal = posY;
 
 	if(versionMinor>=FILE_FORMAT_VERSION_UNDER_ATTACK_TIMER)
 		underAttackTimer = stream->readUint8("underAttackTimer");
@@ -237,7 +231,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
-	unitStayRangeLocal = unitStayRange;
 
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
@@ -302,7 +295,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	maxUnitWorking = type->maxUnitWorking;
 
 	// init data not loaded
-	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = 1;
 	maxUnitWorkingFuture = 1;
 	desiredMaxUnitWorking = maxUnitWorking;
@@ -440,7 +432,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		maxUnitWorkingPrevious = maxUnitWorkingPreferred;
 	if(versionMinor>=FILE_FORMAT_VERSION_MAX_UNIT_WORKING_FUTURE)
 		maxUnitWorkingFuture = stream->readSint32("maxUnitWorkingFuture");
-	maxUnitWorkingLocal = maxUnitWorking;
 	desiredMaxUnitWorking = maxUnitWorking;
 
 	if(versionMinor>=FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_INT && versionMinor<FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_ARRAY)

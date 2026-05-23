@@ -250,9 +250,6 @@ public:
 	/// even, from 0 to 5
 	int getLongLevel(void);
 
-	/// get flag from units attached to flag.
-	void computeFlagStatLocal(int *goingTo, int *onSpot);
-
 	/// Eats one wheat and one of each of the available fruit from the building.
 	/// Return the number of different fruits in this building. If mask is non-null,
 	/// set masks value to the mask as well
@@ -339,7 +336,6 @@ public:
 	ConstructionResultState constructionResultState;
 
 	// units
-	Sint32 maxUnitWorkingLocal;
 	Sint32 maxUnitWorking;  // (Uint16)
 	Sint32 maxUnitWorkingPreferred;
 	///This is a constantly updated number that indicates the buildings desired number of units,
@@ -360,7 +356,6 @@ public:
 
 	// position
 	Sint32 posX, posY; // (Uint16)
-	Sint32 posXLocal, posYLocal;
 
 	// Counts down 240 frames from when a unit was attacked
 	Uint8 underAttackTimer;
@@ -368,7 +363,6 @@ public:
 
 	// Flag usefull :
 	Sint32 unitStayRange; // (Uint8)
-	Sint32 unitStayRangeLocal;
 	bool clearingRessources[BASIC_COUNT]; // true if the ressource has to be cleared.
 	bool clearingRessourcesLocal[BASIC_COUNT];
 	Sint32 minLevelToFlag;

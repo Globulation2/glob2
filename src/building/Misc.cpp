@@ -53,7 +53,6 @@ void Building::kill(void)
 	unitsWorking.clear();
 
 	maxUnitWorking=0;
-	maxUnitWorkingLocal=0;
 	maxUnitInside=0;
 	desiredMaxUnitWorking = 0;
 	updateCallLists();
@@ -347,23 +346,6 @@ int Building::getLongLevel(void)
 {
 	return ((type->level)<<1)+1-type->isBuildingSite;
 }
-
-void Building::computeFlagStatLocal(int *goingTo, int *onSpot)
-{
-	*goingTo = 0;
-	*onSpot = 0;
-
-	Sint32 unitStayRangeLocalSquare = (1+unitStayRangeLocal)*(1+unitStayRangeLocal);
-	for (std::list<Unit *>::iterator ui=unitsWorking.begin(); ui!=unitsWorking.end(); ++ui)
-	{
-		Sint32 distSquareLocal = owner->map->warpDistSquare(posXLocal, posYLocal, (*ui)->posX, (*ui)->posY);
-		if (distSquareLocal < unitStayRangeLocalSquare)
-			(*onSpot)++;
-		else
-			(*goingTo)++;
-	}
-}
-
 
 Uint32 Building::eatOnce(Uint32 *mask)
 {

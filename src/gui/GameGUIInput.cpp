@@ -391,7 +391,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 		if ((building->type->regenerationSpeed == 0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
 			(localTeam->maxBuildLevel() >= buildingType->level))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, building->maxUnitWorkingLocal)));
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, displayedMaxUnitWorking(*building))));
 	}
 	else if (upgrade)
 	{

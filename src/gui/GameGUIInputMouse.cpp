@@ -119,7 +119,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				virtualIt!=localTeam->virtualBuildings.end(); ++virtualIt)
 			{
 				Building *b=*virtualIt;
-				if ((b->posXLocal==mapX) && (b->posYLocal==mapY))
+				if ((displayedPosX(*b)==mapX) && (displayedPosY(*b)==mapY))
 				{
 					setSelection(BUILDING_SELECTION, b);
 					selectionPushed=true;

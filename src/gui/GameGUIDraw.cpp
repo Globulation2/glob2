@@ -361,7 +361,7 @@ void GameGUI::drawOverlayInfos(void)
 		Building* selBuild=selection.building;
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 		int centerX, centerY;
-		game.map.buildingPosToCursor(selBuild->posXLocal, selBuild->posYLocal,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
+		game.map.buildingPosToCursor(displayedPosX(*selBuild), displayedPosY(*selBuild),  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
 		if (selBuild->owner->teamNumber==localTeamNo)
 			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 0, 0, 190);
 		else if ((localTeam->allies) & (selBuild->owner->me))
@@ -606,7 +606,7 @@ void GameGUI::drawAll(int team)
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);
+		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions, nullptr, &buildingGuiState);
 	}
 	else
 	{
@@ -614,7 +614,7 @@ void GameGUI::drawAll(int team)
 
 		globalContainer->gfx->setClipRect();
 
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
+		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings, &buildingGuiState);
 
 		// generate and draw particles
 		generateNewParticles(&visibleBuildings);

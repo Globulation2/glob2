@@ -221,7 +221,6 @@ std::shared_ptr<Order>AICastor::controlFood()
 		if (b->maxUnitWorking!=0)
 		{
 			b->maxUnitWorking=0;
-			b->maxUnitWorkingLocal=0;
 			b->update();
 			if (verbose)
 				printf("controlFood(), worstCare=%d\n", worstCare);
@@ -233,7 +232,6 @@ std::shared_ptr<Order>AICastor::controlFood()
 		if (b->maxUnitWorking>1)
 		{
 			b->maxUnitWorking=1;
-			b->maxUnitWorkingLocal=1;
 			b->update();
 			if (verbose)
 				printf("controlFood(), beta, worstCare=%d\n", worstCare);
@@ -250,7 +248,6 @@ std::shared_ptr<Order>AICastor::controlFood()
 			else
 				workers=AI_CASTOR_INN_WORKERS_BASE+b->type->level;
 			b->maxUnitWorking=workers;
-			b->maxUnitWorkingLocal=workers;
 			b->update();
 			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers));
 		}
@@ -262,7 +259,6 @@ std::shared_ptr<Order>AICastor::controlFood()
 			else
 				workers=AI_CASTOR_SWARM_WORKERS_NORMAL;
 			b->maxUnitWorking=workers;
-			b->maxUnitWorkingLocal=workers;
 			b->update();
 			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers));
 		}

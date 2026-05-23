@@ -16,6 +16,7 @@
 #include "GameObjectives.h"
 #include "GameHints.h"
 #include "MapScript.h"
+#include "BuildingGuiState.h"
 
 namespace GAGCore
 {
@@ -216,7 +217,11 @@ public:
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions);
-	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0);
+	/// `buildingGuiState` (optional) provides per-flag pending positions so
+	/// drag-targets render before the move-flag order has executed. The map
+	/// editor passes nullptr — it mutates buildings directly without an
+	/// orderQueue, so there is no pending shadow to consult.
+	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr);
 
 	///Sets the mask respresenting which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
@@ -314,7 +319,7 @@ private:
 	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	///draws debug information. switched in the code.
 	void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings);
+	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState);
 	void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType);

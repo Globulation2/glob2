@@ -69,25 +69,29 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	int imgid;
 	if (type->crossConnectMultiImage)
 	{
+		// Cross-connect grid lookup. Only non-virtual buildings have
+		// crossConnectMultiImage, and non-virtual buildings can never be
+		// moved by the player, so the authoritative posX/posY is correct
+		// here — no pending shadow to consult.
 		int add = 0;
 		Uint16 b;
 		// Up
-		b = map.getBuilding(building->posXLocal, building->posYLocal-1);
+		b = map.getBuilding(building->posX, building->posY-1);
 		if ((b != NOGBID) &&
 			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
 			add |= (1<<3);
 		// Bottom
-		b = map.getBuilding(building->posXLocal, building->posYLocal+building->type->height);
+		b = map.getBuilding(building->posX, building->posY+building->type->height);
 		if ((b != NOGBID) &&
 			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
 			add |= (1<<2);
 		// Left
-		b = map.getBuilding(building->posXLocal-1, building->posYLocal);
+		b = map.getBuilding(building->posX-1, building->posY);
 		if ((b != NOGBID) &&
 			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
 			add |= (1<<1);
 		// Right
-		b = map.getBuilding(building->posXLocal+building->type->width, building->posYLocal);
+		b = map.getBuilding(building->posX+building->type->width, building->posY);
 		if ((b != NOGBID) &&
 			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
 			add |= (1<<0);
@@ -107,7 +111,6 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 //	int x, y;
 	int dx, dy;
 
-//	map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
 
 	// select buildings and set the team colors
 	Sprite *buildingSprite = type->gameSpritePtr;
@@ -209,7 +212,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 }
 
 
-void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
+void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
@@ -237,7 +240,9 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
 						int px,py;
-						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
+						const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, *building) : building->posX;
+						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, *building) : building->posY;
+						map.mapCaseToDisplayable(dispX, dispY, &px, &py, viewportX, viewportY);
 					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
 						drawnBuildings.insert(building);
 					}

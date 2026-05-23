@@ -69,7 +69,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 		Building* building = *it;
 		BuildingType* type = building->type;
 		int x, y;
-		game.map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &x, &y, viewportX, viewportY);
+		game.map.mapCaseToDisplayable(displayedPosX(*building), displayedPosY(*building), &x, &y, viewportX, viewportY);
 
 		if (!type->isBuildingSite)
 		{
