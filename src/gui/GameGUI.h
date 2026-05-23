@@ -264,12 +264,63 @@ private:
 	void drawFlagView(void);
 	//! Draw the infos from a unit
 	void drawUnitInfos(void);
-	//! Draw the infos and actions from a building
+	//! Draw the infos and actions from a building. Thin coordinator that calls
+	//! the per-section helpers below in vertical order.
 	void drawBuildingInfos(void);
+	//! Draw the centered title row ("<building> (<player>)") and the
+	//! subtitle ("level N — (building site) — Prestige"). Advances ypos past
+	//! the title block.
+	void drawBuildingHeader(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw the building's mini-sprite icon framed by the panel icon backing,
+	//! at the current ypos. Does not advance ypos.
+	void drawBuildingIcon(Building* selBuild, BuildingType* buildingType, int ypos);
+	//! Draw the HP label and current/max value (red below 1/5th max). No
+	//! ypos advance — sits in the icon row next to the icon.
+	void drawBuildingHP(Building* selBuild, BuildingType* buildingType, int ypos);
+	//! Draw the units-inside count ("N/maxUnitInside" when ALIVE, otherwise
+	//! the "still N units" message). Ally-gated. No ypos advance.
+	void drawBuildingInsideStats(Building* selBuild, BuildingType* buildingType, int ypos);
+	//! Draw a flag building's "in way" / "on the spot" unit counts using the
+	//! displayed (optimistic) flag position/range so the numbers track a drag
+	//! or scroll-resize. Ally-gated. No ypos advance.
+	void drawBuildingFlagInfo(Building* selBuild, BuildingType* buildingType, int ypos);
+	//! Draw the "working" label, count, and the maxUnitWorking scrollbox.
+	//! Queues the tutorial hilight arrow when active. Ally-gated. Advances
+	//! ypos past the working bar when present.
+	void drawBuildingWorkingControls(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw the three priority radio buttons (low / medium / high) for
+	//! buildings with maxUnitWorking>0. Ally-gated. Advances ypos.
+	void drawBuildingPriorityControls(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw the flag's stay-range scrollbox. Ally-gated. Advances ypos.
+	void drawBuildingRangeControls(Building* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the time-to-leave progress bar showing units' insideTimeout (extracted from drawBuildingInfos)
 	void drawBuildingTimeToLeaveBar(Building* selBuild, BuildingType* buildingType, int& ypos, unsigned& unitInsideBarYDec);
 	//! Draw the flag-type-specific controls for clearing/war/exploration flags (extracted from drawBuildingInfos)
 	void drawBuildingFlagControls(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw armor / shoot damage / shoot range text rows for combat buildings.
+	//! Advances ypos.
+	void drawBuildingCombatStats(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw the market exchange panel (per-happyness ressource readouts) for
+	//! buildings that can exchange and that the local team has shared-vision
+	//! exchange visibility on. Advances ypos.
+	void drawBuildingExchange(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw non-exchange resource readouts ("name: cur/max") and the bullets
+	//! row for shooters. Ally-gated; skipped for exchange buildings. Advances
+	//! ypos.
+	void drawBuildingResources(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw the swarm production progress bar plus the per-unit-type ratio
+	//! scrollboxes (worker / explorer / warrior). Queues the ratio-bar
+	//! tutorial hilight arrow when active. Ally-gated. Advances ypos.
+	void drawBuildingSwarmRatios(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw any "X units can't access resource"-style explanations of why the
+	//! building isn't filling its assigned worker slots. Ally-gated. Advances
+	//! ypos.
+	void drawBuildingFailureReasons(Building* selBuild, BuildingType* buildingType, int& ypos);
+	//! Draw the repair / upgrade / destroy / cancel action buttons at the
+	//! bottom of the panel, plus the upgrade-preview tooltip on hover. Only
+	//! shown when the local team owns the building. Uses absolute
+	//! bottom-of-screen Y; does not consume ypos.
+	void drawBuildingActionButtons(Building* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
 	//! Draw the upgrade preview tooltip (cost + new abilities) shown on hover over the upgrade button (extracted from drawBuildingInfos)
 	void drawBuildingUpgradePreview(Building* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
 	//! Draw the infos about a ressource on map (type and number left)

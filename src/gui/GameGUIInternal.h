@@ -46,6 +46,19 @@ using namespace GAGGUI;
 
 #define YOFFSET_BRUSH 56
 
+// Per-row pitches inside the building info panel resource/swarm sections.
+#define YOFFSET_RESSOURCE_LINE 11
+#define YOFFSET_RESSOURCE_SECTION_PAD 5
+#define YOFFSET_SWARM_PROGRESS_BAR 15
+#define YOFFSET_SWARM_RATIO_LINE 20
+
+// Y-offsets (measured from the bottom of the screen) of the repair/upgrade
+// and destroy action buttons in the building info panel, and the button height
+// used for hit-testing the upgrade-preview tooltip hover.
+#define BOTTOM_BUTTON_PRIMARY_YOFFSET 48
+#define BOTTOM_BUTTON_SECONDARY_YOFFSET 24
+#define BOTTOM_BUTTON_HEIGHT 16
+
 // The sidebar on the right
 #define RIGHT_MENU_WIDTH 160
 #define RIGHT_MENU_HALF_WIDTH (RIGHT_MENU_WIDTH / 2)
