@@ -205,10 +205,9 @@ void Engine::executeOrdersAndStep(bool readyNow)
 // Draw the frame (skipped during replay fast-forward when not at a cadence
 // boundary), save a videoshot if requested, then sleep to maintain wall-clock
 // pacing relative to startTime. Mutates needToBeTime (accumulated tick budget)
-// and frameNumber (videoshot index) across iterations. readyNow gates whether
-// this tick's wall time is folded into the CPU-load smoothing window.
+// and frameNumber (videoshot index) across iterations.
 void Engine::frameTimingAndDraw(int speed, int nextGuiStep, Sint64& needToBeTime,
-                                unsigned& frameNumber, Uint64 startTime, bool readyNow)
+                                unsigned& frameNumber, Uint64 startTime)
 {
 	if (nextGuiStep == 0)
 	{
@@ -248,10 +247,6 @@ void Engine::frameTimingAndDraw(int speed, int nextGuiStep, Sint64& needToBeTime
 	const int loadPercent = static_cast<int>(
 		(GAME_TICK_MS * 100 - delay * 100) / GAME_TICK_MS);
 	gui.setCpuLoad(loadPercent);
-	if (readyNow && !gui.gamePaused)
-	{
-		cpuStats.addFrameData(delay);
-	}
 }
 
 // If the GUI requested a clean exit, drain remaining local orders into the
@@ -417,7 +412,7 @@ void Engine::armReloadOrExit(bool& doRunOnceAgain)
 //   5. (gate flip) readyNow = net->allOrdersRecieved()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
-//   8. frameTimingAndDraw         - draw, videoshot, sleep, cpustats
+//   8. frameTimingAndDraw         - draw, videoshot, sleep
 //   9. flushOutgoingAndExit       - drain on exit request
 //
 // `wasReadyLastTick` and `readyNow` make the two semantic phases of network
@@ -430,8 +425,6 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 	// If playing in fast-forward, we process the GUI and draw everything only
 	// once every 3 game-steps so the overall fps stays about the same.
 	int nextGuiStep = 1;
-
-	cpuStats.reset(speed);
 
 	Sint64 needToBeTime = 0;
 	Uint64 startTime = SDL_GetTicks64();
@@ -450,9 +443,9 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 
 		// readyNow defaults to wasReadyLastTick so that a hardPause iteration
 		// (which skips the gate flip below) carries the previous tick's
-		// network-readiness through to the timing/cpustats stage and into the
-		// next iteration's wasReadyLastTick — matching the original semantics
-		// where networkReadyToExecute was simply left untouched under hardPause.
+		// network-readiness through into the next iteration's wasReadyLastTick
+		// — matching the original semantics where networkReadyToExecute was
+		// simply left untouched under hardPause.
 		bool readyNow = wasReadyLastTick;
 
 		if (!gui.hardPause)
@@ -481,7 +474,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		}
 
 		if (!globalContainer->runNoX)
-			frameTimingAndDraw(speed, nextGuiStep, needToBeTime, frameNumber, startTime, readyNow);
+			frameTimingAndDraw(speed, nextGuiStep, needToBeTime, frameNumber, startTime);
 
 		if (flushOutgoingAndExit())
 			break;
@@ -491,8 +484,6 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 
 	if (globalContainer->automaticEndingGame)
 		printAutomaticEndingSummary();
-
-	cpuStats.format();
 
 	if (multiplayer)
 		reportMultiplayerResult();

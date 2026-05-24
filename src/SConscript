@@ -70,7 +70,6 @@ CampaignMainMenu.cpp
 CampaignMenuScreen.cpp
 CampaignSelectorScreen.cpp
 ChooseMapScreen.cpp
-CPUStatisticsManager.cpp
 CreditScreen.cpp
 CustomGameOtherOptions.cpp
 CustomGameScreen.cpp

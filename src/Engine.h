@@ -13,7 +13,6 @@
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGame.h"
-#include "CPUStatisticsManager.h"
 #include "ChecksumSidecar.h"
 
 
@@ -146,10 +145,10 @@ private:
 	void executeOrdersAndStep(bool readyNow);
 
 	/// Draw the frame (subject to the fast-forward cadence), save a videoshot
-	/// if requested, then SDL_Delay to maintain wall-clock pacing and feed
-	/// cpuStats. Updates needToBeTime + frameNumber across iterations.
+	/// if requested, then SDL_Delay to maintain wall-clock pacing. Updates
+	/// needToBeTime + frameNumber across iterations.
 	void frameTimingAndDraw(int speed, int nextGuiStep, Sint64& needToBeTime,
-	                        unsigned& frameNumber, Uint64 startTime, bool readyNow);
+	                        unsigned& frameNumber, Uint64 startTime);
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.
@@ -182,8 +181,6 @@ private:
 	ChecksumSidecarWriter *checksumSidecar;
 	//! The MultiplayerGame, recieves orders from across a network
 	shared_ptr<MultiplayerGame> multiplayer;
-
-	CPUStatisticsManager cpuStats;
 
 	Uint64 automaticGameStartTick, automaticGameEndTick;
 
