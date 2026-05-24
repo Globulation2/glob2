@@ -250,7 +250,7 @@ void GameGUI::drawBuildingRangeControls(Building* selBuild, BuildingType* buildi
 
 	if ((selBuild->owner->allies)&(1<<localTeamNo))
 	{
-		// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
+		// If we're replaying, display the actual number, not the locally cached one (changeable by the gui user)
 		const int unitStayRange = (globalContainer->replaying?selBuild->unitStayRange:displayedUnitStayRange(*selBuild));
 
 		std::string range = Toolkit::getStringTable()->getString("[range]");

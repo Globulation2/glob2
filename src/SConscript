@@ -116,9 +116,12 @@ gui/GameGUIInputMouse.cpp
 gui/GameGUIKeyActions.cpp
 gui/GameGUILoadSave.cpp
 gui/GameGUIMessageManager.cpp
+gui/GameGUIOrders.cpp
 gui/GameGUIParticles.cpp
+gui/GameGUIPersistence.cpp
 gui/GameGUIScript.cpp
 gui/GameGUISelection.cpp
+gui/GameGUIStep.cpp
 gui/GameGUIToolManager.cpp
 gui/TeamDisplay.cpp
 gui/UnitDisplayNames.cpp
