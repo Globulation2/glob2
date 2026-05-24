@@ -386,22 +386,21 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	}
 }
 
+// All writes to musicVolume/voiceVolume must hold SDL_LockAudio — mixaudio()
+// reads them on the audio thread. openAudio() is called *before* taking the
+// lock: SDL_OpenAudio opens the device in the paused state, so the callback
+// cannot fire until SDL_PauseAudio(0) is called from setNextTrack().
 void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute)
 {
 	if (!soundEnabled)
 	{
-		if (!mute)
-		{
-			openAudio();
-			this->musicVolume = musicVolume;
-			this->voiceVolume = voiceVolume;
-		}
-		else
-		{
+		if (mute)
 			return;
-		}
+		openAudio();
 	}
-	else if (mute)
+
+	SDL_LockAudio();
+	if (mute)
 	{
 		this->musicVolume = 0;
 		this->voiceVolume = 0;
@@ -411,11 +410,15 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 		this->musicVolume = musicVolume;
 		this->voiceVolume = voiceVolume;
 	}
+	SDL_UnlockAudio();
 }
 
+// mode is read by mixaudio() on the audio thread; the write must hold the lock.
 void SoundMixer::stopMusic(void)
 {
+	SDL_LockAudio();
 	mode = MODE_STOP;
+	SDL_UnlockAudio();
 }
 
 
