@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <iostream>
+#include <optional>
 
 #include <SDL_keycode.h>
 
@@ -32,6 +33,34 @@
 using std::shared_ptr;
 using std::static_pointer_cast;
 
+namespace {
+
+struct SlashCommand
+{
+	std::string name;
+	std::string body;
+};
+
+// Parse a chat-input string into a slash-command name and message body.
+//   "/cmd body words..." → name="cmd", body="body words..."
+//   "/cmd"               → name="cmd", body=""
+//   ""  or non-'/' first char → std::nullopt
+// The body is the substring after the first space; if the message is just
+// "/<name>" with no space, body is empty and the caller's empty-message guard
+// suppresses sending an order. Pivots on a single find(' ') — no past-end
+// reads even when the user types "/a" and hits Enter.
+std::optional<SlashCommand> parseSlashCommand(const std::string& message)
+{
+	if (message.empty() || message[0] != '/')
+		return std::nullopt;
+	const std::string::size_type sp = message.find(' ');
+	if (sp == std::string::npos)
+		return SlashCommand{message.substr(1), std::string()};
+	return SlashCommand{message.substr(1, sp - 1), message.substr(sp + 1)};
+}
+
+} // namespace
+
 bool GameGUI::processScrollableWidget(SDL_Event *event)
 {
 	scrollableText->translateAndProcessEvent(event);
@@ -56,21 +85,18 @@ void GameGUI::processEvent(SDL_Event *event)
 			//Interpret message
 			std::string message = typingInputScreen->getText();
 			Uint32 nchatMask = chatMask;
-			if(message[0] == '/')
+			if (auto cmd = parseSlashCommand(message))
 			{
-				std::string name;
-				for(int i=1; message[i]!=' '; ++i)
-					name += message[i];
-				message = message.substr(message.find(' ')+1);
-				if(name=="a")
+				message = cmd->body;
+				if (cmd->name == "a")
 				{
 					nchatMask = localTeam->allies;
 				}
 				else
 				{
-					for(int i=0; i<game.gameHeader.getNumberOfPlayers(); ++i)
+					for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
 					{
-						if(name == game.gameHeader.getBasePlayer(i).name)
+						if (cmd->name == game.gameHeader.getBasePlayer(i).name)
 						{
 							nchatMask = game.gameHeader.getBasePlayer(i).teamNumberMask | localTeam->me;
 							break;
