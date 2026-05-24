@@ -720,7 +720,12 @@ void GameGUI::drawTextCenter(int x, int y, std::string caption)
 	globalContainer->gfx->drawString(x+dec, y, globalContainer->littleFont, text);
 }
 
-void GameGUI::drawScrollBox(int x, int y, int value, int valueLocal, int act, int max)
+// Draws a two-channel scrollbox bar. `valueLocal` is the local/pending value the
+// user has dialed in (drawn as the lighter localBar); `act` is the simulation-
+// confirmed value (drawn as the darker actualBar on top). When the two agree
+// the actualBar fully overlays the localBar; while an order is in flight they
+// differ briefly. `max` is the divisor for both channels.
+void GameGUI::drawScrollBox(int x, int y, int valueLocal, int act, int max)
 {
 	//scrollbar borders
 	globalContainer->gfx->setClipRect(x+8, y, 112, 16);

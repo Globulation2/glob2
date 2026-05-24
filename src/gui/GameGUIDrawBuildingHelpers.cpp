@@ -187,7 +187,7 @@ void GameGUI::drawBuildingWorkingControls(Building* selBuild, BuildingType* buil
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, working);
 			globalContainer->littleFont->popStyle();
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0/%1").arg((int)selBuild->unitsWorking.size()).arg(maxUnitsWorking).c_str());
-			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, maxUnitsWorking, maxUnitsWorking, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
+			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, maxUnitsWorking, selBuild->unitsWorking.size(), MAX_UNIT_WORKING);
 		}
 		else
 		{
@@ -259,7 +259,7 @@ void GameGUI::drawBuildingRangeControls(Building* selBuild, BuildingType* buildi
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, range);
 		globalContainer->littleFont->popStyle();
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormatableString("%0").arg(selBuild->unitStayRange).c_str());
-		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, selBuild->unitStayRange, unitStayRange, 0, selBuild->type->maxUnitStayRange);
+		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, unitStayRange, 0, selBuild->type->maxUnitStayRange);
 	}
 	ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 }
@@ -340,6 +340,14 @@ void GameGUI::drawBuildingResources(Building* selBuild, BuildingType* buildingTy
 	ypos += YOFFSET_RESSOURCE_SECTION_PAD;
 }
 
+// Draws the swarm-building production-timeout progress bar followed by one
+// scrollbox per unit type for the local-vs-actual unit ratios. The progress
+// bar is split into an "elapsed" (blue) and "remaining" (gray) segment scaled
+// to SWARM_PROGRESS_BAR_WIDTH. Each ratio scrollbox shows two channels:
+// ratioLocal[i] (the user's pending input, drawn as the lighter bar) and
+// ratio[i] (the simulation-confirmed value, drawn as the darker overlay).
+// During replay both channels equal ratio[i] and overlay exactly; during
+// normal play they differ briefly while OrderModifySwarm is in flight.
 void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* buildingType, int& ypos)
 {
 	if (!((selBuild->owner->allies) & (1<<localTeamNo)))
@@ -347,10 +355,10 @@ void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* building
 	if (!buildingType->unitProductionTime)
 		return;
 
-	int left=(selBuild->productionTimeout*128)/buildingType->unitProductionTime;
-	int elapsed=128-left;
-	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, elapsed, 7, 100, 100, 255);
-	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+elapsed, ypos, left, 7, 128, 128, 128);
+	int left=(selBuild->productionTimeout*SWARM_PROGRESS_BAR_WIDTH)/buildingType->unitProductionTime;
+	int elapsed=SWARM_PROGRESS_BAR_WIDTH-left;
+	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, elapsed, SWARM_PROGRESS_BAR_HEIGHT, 100, 100, 255);
+	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+elapsed, ypos, left, SWARM_PROGRESS_BAR_HEIGHT, 128, 128, 128);
 
 	ypos += YOFFSET_SWARM_PROGRESS_BAR;
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -358,7 +366,7 @@ void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* building
 		// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
 		const int ratio = (globalContainer->replaying?selBuild->ratio[i]:selBuild->ratioLocal[i]);
 
-		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selBuild->ratio[i], ratio, 0, MAX_RATIO_RANGE);
+		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, ratio, selBuild->ratio[i], MAX_RATIO_RANGE);
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+24, ypos, globalContainer->littleFont, getUnitName(i));
 
 		if(i==1 && hilights.find(HilightRatioBar) != hilights.end())

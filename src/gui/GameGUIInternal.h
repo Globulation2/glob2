@@ -52,6 +52,12 @@ using namespace GAGGUI;
 #define YOFFSET_SWARM_PROGRESS_BAR 15
 #define YOFFSET_SWARM_RATIO_LINE 20
 
+// Dimensions of the production-timeout progress bar that sits above the swarm
+// ratio scrollboxes. The width matches the right-menu content area (same
+// literal appears in RIGHT_MENU_OFFSET below).
+#define SWARM_PROGRESS_BAR_WIDTH 128
+#define SWARM_PROGRESS_BAR_HEIGHT 7
+
 // Y-offsets (measured from the bottom of the screen) of the repair/upgrade
 // and destroy action buttons in the building info panel, and the button height
 // used for hit-testing the upgrade-preview tooltip hover.

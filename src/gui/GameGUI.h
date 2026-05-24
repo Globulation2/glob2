@@ -221,7 +221,7 @@ private:
 	void minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport);
 
 	// Drawing support functions
-	void drawScrollBox(int x, int y, int value, int valueLocal, int act, int max);
+	void drawScrollBox(int x, int y, int valueLocal, int act, int max);
 	void drawXPProgressBar(int x, int y, int act, int max);
 	void drawButton(int x, int y, std::string caption, int r=128, int g=128, int b=128, bool doLanguageLookup=true);
 	void drawBlueButton(int x, int y, std::string caption, bool doLanguageLookup=true);
