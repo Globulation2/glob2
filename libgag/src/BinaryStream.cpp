@@ -3,6 +3,7 @@
 
 #include <BinaryStream.h>
 
+#include <string>
 #include <valarray>
 #include <assert.h>
 // For htons/htonl
@@ -82,6 +83,11 @@ namespace GAGCore
 			assert(false);
 	}
 	
+	// Upper bound on any string written by writeText. Beyond this the bits on
+	// the wire are taken to be garbage rather than a real string. Mirrors the
+	// 1 MiB cap used by NetSendOrder::decodeData (see MAX_NET_SEND_ORDER_SIZE).
+	constexpr size_t MAX_BINARY_STRING_LENGTH = 1024 * 1024;
+
 	std::string BinaryInputStream::readText(const std::string name)
 	{
 		size_t len = readUint32("");
@@ -89,14 +95,14 @@ namespace GAGCore
 		read(&buffer[0], len, "");
 		buffer[len] = 0;
 
-		// We don't use strings longer than 1024*1024, so if len > 1024*1024 these bits don't represent a string.
-		if (len > 1024*1024)
+		// We don't use strings longer than MAX_BINARY_STRING_LENGTH, so beyond that the bits don't represent a string.
+		if (len > MAX_BINARY_STRING_LENGTH)
 		{
 			// TODO: Make a BadFileFormatException (or similar) class and if necessary update the catch'es at
 			//  - ChooseMapScreen.cpp : 167
 			//  - Engine.cpp : 218, 688, 754, 932
 			//  - MapEdit.cpp : 1135
-			throw std::ios_base::failure("String "+name+" length > 1024*1024");
+			throw std::ios_base::failure("String "+name+" length > "+std::to_string(MAX_BINARY_STRING_LENGTH));
 		}
 
 		return std::string(&buffer[0]);

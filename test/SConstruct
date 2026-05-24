@@ -140,3 +140,23 @@ alterate_objs = [
 ]
 alterate_env.Program( target = 'OrderAlterateAreaTest', source = alterate_objs )
 
+
+# Standalone regression harness for BH-207 (NetSendOrder::decodeData allocating
+# a multi-GB Uint8[] from an attacker-supplied size and letting std::bad_alloc
+# escape, while callers — loadReplay / retrieveOrder / getNetMessage — only
+# catch std::ios_base::failure). The harness stubs Order::getOrder so it
+# doesn't need to link the full Order class hierarchy; it just needs
+# OrderMessages.cpp + libgag_server.a (for BinaryStream + MemoryStreamBackend).
+netsend_env = env.Clone()
+netsend_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
+netsend_env.Append(LIBPATH = ['../build/libgag/src'])
+netsend_env.Append(LIBS = ['gag_server', 'z'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  netsend_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+netsend_objs = [
+  netsend_env.Object('NetSendOrderDecodeTest.o', 'NetSendOrderDecodeTest.cpp'),
+  netsend_env.Object('OrderMessages-netsend.o', '../src/net/message/OrderMessages.cpp'),
+]
+netsend_env.Program( target = 'NetSendOrderDecodeTest', source = netsend_objs )
+

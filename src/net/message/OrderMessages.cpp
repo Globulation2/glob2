@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include "Version.h"
 #include "BinaryStream.h"
 
@@ -61,12 +62,25 @@ void NetSendOrder::encodeData(GAGCore::OutputStream* stream) const
 void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendOrder");
-	size_t size=stream->readUint32("size");
-	Uint8* buffer = new Uint8[size];
-	stream->read(buffer, size, "data");
+	const Uint32 size = stream->readUint32("size");
+
+	// Validate before allocating: an attacker- or corruption-supplied multi-GB
+	// size would otherwise either throw std::bad_alloc (which callers catch
+	// only as ios_base::failure and therefore miss) or waste a large
+	// allocation before the downstream "bad format" path fires. The buffer
+	// below is RAII-managed so any subsequent throw can't leak it.
+	if (size > MAX_NET_SEND_ORDER_SIZE)
+	{
+		std::ostringstream msg;
+		msg << "NetSendOrder size " << size << " exceeds max " << MAX_NET_SEND_ORDER_SIZE;
+		throw std::ios_base::failure(msg.str());
+	}
+
+	std::vector<Uint8> buffer(size);
+	stream->read(buffer.data(), size, "data");
 	stream->readLeaveSection();
 
-	order = Order::getOrder(buffer, size, VERSION_MINOR);
+	order = Order::getOrder(buffer.data(), size, VERSION_MINOR);
 
 	// If this couldn't be interpreted return it returned a NULL order, so we throw.
 	if (order == std::shared_ptr<Order>())
@@ -74,8 +88,6 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
-
-	delete[] buffer;
 }
 
 
