@@ -216,6 +216,25 @@ void GameGUI::centerViewportOnSelection(void)
 }
 
 
+// Called from the sim path (Team::syncStep) when a unit is about to be
+// deleted. Clears the GUI's selected-unit pointer if it referred to the
+// dying unit. The sim never reads game.selectedUnit directly — going
+// through this hook keeps the per-client GUI read out of the sim path,
+// where a divergent predicate could become a desync if anyone extended
+// the branch with sim-touching code.
+void GameGUI::onUnitDestroyed(Unit *u)
+{
+	if (game.selectedUnit == u)
+		game.selectedUnit = NULL;
+}
+
+// Mirror of onUnitDestroyed for building demolition. See that comment.
+void GameGUI::onBuildingDestroyed(Building *b)
+{
+	if (game.selectedBuilding == b)
+		game.selectedBuilding = NULL;
+}
+
 void GameGUI::dumpUnitInformation(void)
 {
 	if(game.selectedUnit != NULL)

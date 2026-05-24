@@ -5,6 +5,7 @@
 
 #include "BuildingType.h"
 #include "Game.h"
+#include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "Team.h"
@@ -141,8 +142,9 @@ void Team::syncStep(void)
 			u->syncStep();
 			if (u->isDead)
 			{
-				if(game->selectedUnit == u)
-					game->selectedUnit = NULL;
+				// Sim must not read GameGUI state. Route the selection
+				// clear through a GUI hook (see GameGUI::onUnitDestroyed).
+				game->gui->onUnitDestroyed(u);
 				delete u;
 				myUnits[i] = NULL;
 			}
@@ -194,8 +196,9 @@ void Team::syncStep(void)
 		//TODO: optimisation: we can avoid some of thoses remove(Building *) by keeping a building state to detect which remove() are needed.
 		buildingsTryToBuildingSiteRoom.remove(building);
 
-		if (game->selectedBuilding==building)
-			game->selectedBuilding=NULL;
+		// Sim must not read GameGUI state. Route the selection
+		// clear through a GUI hook (see GameGUI::onBuildingDestroyed).
+		game->gui->onBuildingDestroyed(building);
 
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 		delete building;

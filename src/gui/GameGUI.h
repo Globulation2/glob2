@@ -89,6 +89,17 @@ public:
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
+	// Sim → GUI lifecycle hooks. The simulation path (Team::syncStep)
+	// calls these when a unit dies or a building is demolished, so the
+	// sim itself never reads GameGUI-owned selection state. The hook
+	// runs entirely on the local client's GUI state; checkSelection()
+	// picks up the resulting NULL on the next draw and tears down the
+	// rest of the panel. In the Rust port, do not duplicate selection
+	// between sim and GUI — keep it solely on per-viewer GUI state and
+	// drop these hooks entirely.
+	void onUnitDestroyed(Unit *u);
+	void onBuildingDestroyed(Building *b);
+
 	// Script interface
 	void enableBuildingsChoice(const std::string &name);
 	void disableBuildingsChoice(const std::string &name);
