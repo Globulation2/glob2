@@ -336,6 +336,108 @@ bool Building::subscribeToBringRessourcesStep()
 	return hired;
 }
 
+bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist)
+{
+	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+	{
+		unitsFailingRequirements[UnitNotAvailable] += 1;
+		return false;
+	}
+	if (!canUnitWorkHere(unit))
+	{
+		unitsFailingRequirements[UnitTooLowLevel] += 1;
+		return false;
+	}
+	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungryness;
+	// warpDistSquare returns squared Euclidean distance, so timeLeft is
+	// squared here to keep the comparison in the same units. Worker/warrior
+	// flags compare against Map::buildingAvailable (linear gradient
+	// distance) and must NOT square — see considerUnitForWorkerFlag.
+	int timeLeftSquared = timeLeft * timeLeft;
+	int directdist = owner->map->warpDistSquare(unit->posX, unit->posY, posX, posY);
+	if (timeLeftSquared < directdist)
+	{
+		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+		return false;
+	}
+	*dist = directdist;
+	return true;
+}
+
+bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
+{
+	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+	{
+		unitsFailingRequirements[UnitNotAvailable] += 1;
+		return false;
+	}
+	if (!canUnitWorkHere(unit))
+	{
+		unitsFailingRequirements[UnitTooLowLevel] += 1;
+		return false;
+	}
+	int distBuilding = 0;
+	// timeLeft and distBuilding are both linear (in ticks-remaining and
+	// linear gradient steps respectively); compare as-is. The corresponding
+	// check in subscribeToBringRessourcesStep uses the same pairing.
+	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungryness;
+	bool canSwim = unit->performance[SWIM];
+	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	{
+		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+		return false;
+	}
+	if (distBuilding >= timeLeft)
+	{
+		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+		return false;
+	}
+	if (anyRessourceToClear[canSwim] == 2)
+	{
+		unitsFailingRequirements[UnitCantAccessResource] += 1;
+		return false;
+	}
+	*dist = distBuilding;
+	return true;
+}
+
+bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist)
+{
+	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+	{
+		unitsFailingRequirements[UnitNotAvailable] += 1;
+		return false;
+	}
+	if (!canUnitWorkHere(unit))
+	{
+		unitsFailingRequirements[UnitTooLowLevel] += 1;
+		return false;
+	}
+	if (unit->movement == Unit::MOV_ATTACKING_TARGET)
+	{
+		unitsFailingRequirements[UnitNotAvailable] += 1;
+		return false;
+	}
+	int distBuilding = 0;
+	// timeLeft and distBuilding are both linear (in ticks-remaining and
+	// linear gradient steps respectively); compare as-is. The corresponding
+	// check in subscribeToBringRessourcesStep uses the same pairing.
+	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungryness;
+	bool canSwim = unit->performance[SWIM];
+	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	{
+		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+		return false;
+	}
+	if (distBuilding >= timeLeft)
+	{
+		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+		return false;
+	}
+	*dist = distBuilding;
+	return true;
+}
+
 bool Building::subscribeForFlagingStep()
 {
 	if (buildingState==DEAD)
@@ -377,68 +479,30 @@ bool Building::subscribeForFlagingStep()
 				possibleUnits[n]=NULL;
 				distances[n] = 0;
 				Unit* unit=owner->myUnits[n];
-				if(unit)
+				if(!unit)
+					continue;
+				if(unit->attachedBuilding == this)
+					continue;
+				if(type->zonable[EXPLORER])
 				{
-					if(unit->attachedBuilding == this)
-					{
+					if(unit->typeNum != EXPLORER)
 						continue;
-					}
-					else if(type->zonable[EXPLORER] && unit->typeNum != EXPLORER)
-					{
+					if(considerUnitForExplorerFlag(unit, &distances[n]))
+						possibleUnits[n]=unit;
+				}
+				else if(type->zonable[WORKER])
+				{
+					if(unit->typeNum != WORKER)
 						continue;
-					}
-					else if(type->zonable[WORKER] && unit->typeNum != WORKER)
-					{
+					if(considerUnitForWorkerFlag(unit, &distances[n]))
+						possibleUnits[n]=unit;
+				}
+				else if(type->zonable[WARRIOR])
+				{
+					if(unit->typeNum != WARRIOR)
 						continue;
-					}
-					else if(type->zonable[WARRIOR] && unit->typeNum != WARRIOR)
-					{
-						continue;
-					}
-					else if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
-					{
-						unitsFailingRequirements[UnitNotAvailable] += 1;
-					}
-					else if(!canUnitWorkHere(unit))
-					{
-						unitsFailingRequirements[UnitTooLowLevel] += 1;
-					}
-					else if(type->zonable[WARRIOR] && unit->movement == Unit::MOV_ATTACKING_TARGET)
-					{
-						unitsFailingRequirements[UnitNotAvailable] += 1;
-					}
-					else
-					{
-						int distBuilding=0;
-						int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-						timeLeft*=timeLeft;
-						int directdist=owner->map->warpDistSquare(unit->posX, unit->posY, posX, posY);
-						bool canSwim=unit->performance[SWIM];
-						if(type->zonable[EXPLORER] && timeLeft < directdist)
-						{
-							unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
-						}
-						else if(!type->zonable[EXPLORER] && !owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
-						{
-							unitsFailingRequirements[UnitCantAccessBuilding] += 1;
-						}
-						else if(!type->zonable[EXPLORER] && distBuilding >= timeLeft)
-						{
-							unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
-						}
-						else if(type->zonable[WORKER] && anyRessourceToClear[canSwim]==2)
-						{
-							unitsFailingRequirements[UnitCantAccessResource] += 1;
-						}
-						else
-						{
-							if(type->zonable[EXPLORER])
-								distances[n]=directdist;
-							else
-								distances[n]=distBuilding;
-							possibleUnits[n]=unit;
-						}
-					}
+					if(considerUnitForWarriorFlag(unit, &distances[n]))
+						possibleUnits[n]=unit;
 				}
 			}
 

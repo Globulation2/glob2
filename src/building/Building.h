@@ -302,6 +302,22 @@ private:
 	/// rules.
 	bool canUnitWorkHere(Unit* unit);
 
+	/// Per-zonable candidate-selection helpers for subscribeForFlagingStep.
+	/// Each tests one unit against the per-flag-type requirements (activity,
+	/// level, distance reachability) and either populates *dist with the
+	/// distance metric used for scoring, or increments
+	/// unitsFailingRequirements with the rejection reason.
+	/// Returns true iff the unit is accepted as a candidate.
+	///
+	/// Distance metrics differ by flag type and are NOT interchangeable:
+	///   - Explorer flag: squared Euclidean distance from Map::warpDistSquare,
+	///     compared against timeLeft^2.
+	///   - Worker / Warrior flag: linear gradient distance from
+	///     Map::buildingAvailable (range 0..~254), compared against timeLeft.
+	bool considerUnitForExplorerFlag(Unit* unit, int* dist);
+	bool considerUnitForWorkerFlag(Unit* unit, int* dist);
+	bool considerUnitForWarriorFlag(Unit* unit, int* dist);
+
 	/// This function updates the ressources pointer. The variable ressources can either point to local ressources
 	/// or team resources, depending on the BuildingType.
 	void updateRessourcesPointer();
