@@ -16,6 +16,24 @@
 #include "Unit.h"
 #include "UnitDisplayNames.h"
 
+namespace {
+// Render one "[label] (displayLevel) : performance" row of the unit-info panel.
+// Caller chooses what number to show: WALK/BUILD/HARVEST/ATTACK_SPEED store
+// 0-based levels and pass `1 + level[X]` for a 1-based display. SWIM is stored
+// 1-based already (`level[SWIM]==0` means "can't swim", which is also the
+// guard on whether the row renders at all) and passes the raw value.
+void drawAbilityRow(int xpos, int ypos, const char* labelKey, int displayLevel, int performance)
+{
+	globalContainer->gfx->drawString(
+		xpos, ypos, globalContainer->littleFont,
+		FormatableString("%0 (%1) : %2")
+			.arg(Toolkit::getStringTable()->getString(labelKey))
+			.arg(displayLevel)
+			.arg(performance)
+			.c_str());
+}
+} // namespace
+
 void GameGUI::drawUnitInfos(void)
 {
 	Unit* selUnit=selection.unit;
@@ -142,24 +160,27 @@ void GameGUI::drawUnitInfos(void)
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[levels]")).c_str());
 	ypos += YOFFSET_TEXT_PARA;
 
+	const int rowX = globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4;
+
 	if (selUnit->performance[WALK])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Walk]")).arg((1+selUnit->level[WALK])).arg(selUnit->performance[WALK]).c_str());
+		drawAbilityRow(rowX, ypos, "[Walk]", 1 + selUnit->level[WALK], selUnit->performance[WALK]);
 	ypos += YOFFSET_TEXT_LINE;
 
+	// SWIM is stored 1-based (0 = can't swim); pass raw, not 1+.
 	if (selUnit->performance[SWIM])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Swim]")).arg(selUnit->level[SWIM]).arg(selUnit->performance[SWIM]).c_str());
+		drawAbilityRow(rowX, ypos, "[Swim]", selUnit->level[SWIM], selUnit->performance[SWIM]);
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[BUILD])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Build]")).arg(1+selUnit->level[BUILD]).arg(selUnit->performance[BUILD]).c_str());
+		drawAbilityRow(rowX, ypos, "[Build]", 1 + selUnit->level[BUILD], selUnit->performance[BUILD]);
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[HARVEST])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[Harvest]")).arg(1+selUnit->level[HARVEST]).arg(selUnit->performance[HARVEST]).c_str());
+		drawAbilityRow(rowX, ypos, "[Harvest]", 1 + selUnit->level[HARVEST], selUnit->performance[HARVEST]);
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[ATTACK_SPEED])
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1) : %2").arg(Toolkit::getStringTable()->getString("[At. speed]")).arg(1+selUnit->level[ATTACK_SPEED]).arg(selUnit->performance[ATTACK_SPEED]).c_str());
+		drawAbilityRow(rowX, ypos, "[At. speed]", 1 + selUnit->level[ATTACK_SPEED], selUnit->performance[ATTACK_SPEED]);
 	ypos += YOFFSET_TEXT_LINE;
 
 	if (selUnit->performance[ATTACK_STRENGTH])
