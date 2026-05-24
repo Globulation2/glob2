@@ -330,28 +330,32 @@ int SoundMixer::loadTrack(const std::string name, int index)
 		return -1;
 	}
 
-	OggVorbis_File *oggFile = new OggVorbis_File;
+	// Hold the OggVorbis_File in a unique_ptr until ownership transfers into
+	// `tracks` via release(). If ov_open fails, the unique_ptr's destructor frees
+	// it on return — fixing the leak that existed when this was raw `new`.
+	auto oggFile = std::make_unique<OggVorbis_File>();
 #ifdef _MSC_VER
-	if (ov_open_callbacks(fp, oggFile, NULL, 0, OV_CALLBACKS_DEFAULT) < 0)
+	if (ov_open_callbacks(fp, oggFile.get(), NULL, 0, OV_CALLBACKS_DEFAULT) < 0)
 #else
-	if (ov_open(fp, oggFile, NULL, 0) < 0)
+	if (ov_open(fp, oggFile.get(), NULL, 0) < 0)
 #endif
 	{
 		std::cerr << "SoundMixer : File " << name << " does not appear to be an Ogg bitstream." << std::endl;
 		fclose(fp);
 		return -2;
 	}
+	// ov_open succeeded: the OggVorbis_File now owns `fp` and will close it via ov_clear.
 
 	SDL_LockAudio();
 	if (index >= 0 && index< (int)tracks.size())
 	{
 		ov_clear(tracks[index]);
 		delete tracks[index];
-		tracks[index] = oggFile;
+		tracks[index] = oggFile.release();
 	}
 	else
 	{
-		tracks.push_back(oggFile);
+		tracks.push_back(oggFile.release());
 		index = (int)tracks.size()-1;
 	}
 	SDL_UnlockAudio();

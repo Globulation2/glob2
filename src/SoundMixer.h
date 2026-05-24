@@ -59,7 +59,11 @@ public:
 
 	~SoundMixer();
 
-	//! load an ogg file. Return the index in the track list. If index is given, attempt to replace the current track at this index
+	//! Load an ogg file and add (or replace at `index`) into the track list.
+	//! Returns the resulting track index on success, -1 if the file cannot be
+	//! opened, or -2 if it is not a valid ogg bitstream. On success the
+	//! OggVorbis_File takes ownership of the underlying FILE* and closes it via
+	//! ov_clear in ~SoundMixer.
 	int loadTrack(const std::string name, int index = -1);
 
 	void setNextTrack(unsigned i, bool earlyChange=false);
