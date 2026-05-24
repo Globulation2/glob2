@@ -86,27 +86,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		handleMenuClickBuildingSelection(mx, my, button);
 	}
-	else if (selectionMode==UNIT_SELECTION)
-	{
-		Unit* selUnit=selection.unit;
-		assert(selUnit);
-		selUnit->verbose=!selUnit->verbose;
-		printf("unit gid=(%d) verbose %d\n", selUnit->gid, selUnit->verbose);
-		printf(" pos=(%d, %d)\n", selUnit->posX, selUnit->posY);
-		printf(" needToRecheckMedical=%d\n", selUnit->needToRecheckMedical);
-		printf(" medical=%d\n", selUnit->medical);
-		printf(" activity=%d\n", selUnit->activity);
-		printf(" displacement=%d\n", selUnit->displacement);
-		printf(" movement=%d\n", selUnit->movement);
-		printf(" action=%d\n", selUnit->action);
-
-		if (selUnit->attachedBuilding)
-			printf(" attachedBuilding bgid=%d\n", selUnit->attachedBuilding->gid);
-		else
-			printf(" attachedBuilding NULL\n");
-		printf(" destinationPurpose=%d\n", selUnit->destinationPurpose);
-		printf(" carriedRessource=%d\n", selUnit->carriedRessource);
-	}
 	else if ((displayMode==CONSTRUCTION_VIEW && !globalContainer->replaying))
 	{
 		int xNum=mx/(RIGHT_MENU_WIDTH/2);
