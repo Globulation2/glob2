@@ -378,6 +378,37 @@ void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* building
 	}
 }
 
+// Returns the string-table key for a unit-can't-work reason. The two
+// access/too-far-from-building rows reword "building" → "flag" when the
+// selected building type is virtual (a flag), so isVirtual is consulted
+// only for those two reasons. Table is indexed by Building::UnitCantWorkReason;
+// the static_assert keeps it locked to the enum size so future additions
+// to UnitCantWorkReason can't silently fall off the end.
+static const char* failureReasonKey(Building::UnitCantWorkReason reason, bool isVirtual)
+{
+	static constexpr const char* kReasonKey[Building::UnitCantWorkReasonSize] = {
+		/* UnitNotAvailable        */ "[%0 units not available]",
+		/* UnitTooLowLevel         */ "[%0 units too low level]",
+		/* UnitCantAccessBuilding  */ "[%0 units can't access building]",
+		/* UnitTooFarFromBuilding  */ "[%0 units too far from building]",
+		/* UnitCantAccessResource  */ "[%0 units can't access resource]",
+		/* UnitCantAccessFruit     */ "[%0 units can't access fruit]",
+		/* UnitTooFarFromResource  */ "[%0 units too far from resource]",
+		/* UnitTooFarFromFruit     */ "[%0 units too far from fruit]",
+	};
+	static_assert(Building::UnitCantWorkReasonSize == 8,
+		"failureReasonKey table must stay in sync with Building::UnitCantWorkReason");
+
+	if (isVirtual)
+	{
+		if (reason == Building::UnitCantAccessBuilding)
+			return "[%0 units can't access flag]";
+		if (reason == Building::UnitTooFarFromBuilding)
+			return "[%0 units too far from flag]";
+	}
+	return kReasonKey[reason];
+}
+
 void GameGUI::drawBuildingFailureReasons(Building* selBuild, BuildingType* buildingType, int& ypos)
 {
 	if (!((selBuild->owner->allies) & (1<<localTeamNo)))
@@ -399,33 +430,8 @@ void GameGUI::drawBuildingFailureReasons(Building* selBuild, BuildingType* build
 		int n = selBuild->unitsFailingRequirements[j];
 		if(n>0 && (int)selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
 		{
-			std::string s;
-			if(j == Building::UnitNotAvailable)
-				s = FormatableString(Toolkit::getStringTable()->getString("[%0 units not available]")).arg(n);
-			if(j == Building::UnitTooLowLevel)
-				s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too low level]")).arg(n);
-			else if(j == Building::UnitCantAccessBuilding)
-			{
-				if (buildingType->isVirtual)
-					s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access flag]")).arg(n);
-				else
-					s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access building]")).arg(n);
-			}
-			else if(j == Building::UnitTooFarFromBuilding)
-			{
-				if (buildingType->isVirtual)
-					s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from flag]")).arg(n);
-				else
-					s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from building]")).arg(n);
-			}
-			else if(j == Building::UnitCantAccessResource)
-				s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access resource]")).arg(n);
-			else if(j == Building::UnitCantAccessFruit)
-				s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from resource]")).arg(n);
-			else if(j == Building::UnitTooFarFromResource)
-				s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access fruit]")).arg(n);
-			else if(j == Building::UnitTooFarFromFruit)
-				s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from fruit]")).arg(n);
+			const char* key = failureReasonKey(static_cast<Building::UnitCantWorkReason>(j), buildingType->isVirtual);
+			std::string s = FormatableString(Toolkit::getStringTable()->getString(key)).arg(n);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos, globalContainer->littleFont, s.c_str());
 			ypos += YOFFSET_RESSOURCE_LINE;
 		}
