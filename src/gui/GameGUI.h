@@ -22,6 +22,7 @@
 #include "GameGUIDefaultAssignManager.h"
 #include "GameGUIGhostBuildingManager.h"
 #include "BuildingGuiState.h"
+#include "GameMusicController.h"
 
 namespace GAGCore
 {
@@ -354,9 +355,10 @@ private:
 	//! on each step, check if we have won or lost
 	void checkWonConditions(void);
 	
-	//! given the game state, change the music
-	void musicStep(void);
-	
+	//! Owns the in-game music state machine. Reset by init() at the start of
+	//! every loaded game; advanced once per simulation tick from stepGameLogic.
+	GameMusicController musicController;
+
 	friend class InGameAllianceScreen;
 
 	//! Display mode

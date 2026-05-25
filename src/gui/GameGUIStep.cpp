@@ -291,7 +291,14 @@ void GameGUI::step(void)
 	}
 
 	// music step
-	musicStep();
+	GameMusicEvents musicEvents;
+	musicEvents.unitUnderAttack       = localTeam->wasRecentEvent(GEUnitUnderAttack);
+	musicEvents.unitLostConversion    = localTeam->wasRecentEvent(GEUnitLostConversion);
+	musicEvents.unitGainedConversion  = localTeam->wasRecentEvent(GEUnitGainedConversion);
+	musicEvents.buildingUnderAttack   = localTeam->wasRecentEvent(GEBuildingUnderAttack);
+	musicEvents.buildingCompleted     = localTeam->wasRecentEvent(GEBuildingCompleted);
+	if (auto nextTrack = musicController.tick(musicEvents))
+		globalContainer->mix->setNextTrack(*nextTrack, true);
 
 	std::shared_ptr<Order> order = toolManager.getOrder();
 	while(order)
@@ -332,39 +339,6 @@ void GameGUI::step(void)
 
 	if (game.anyPlayerWaited) // TODO: warning valgrind
 		game.anyPlayerWaitedTimeFor++;
-}
-
-void GameGUI::musicStep(void)
-{
-	static unsigned warTimeout = 0;
-	static unsigned buildingTimeout = 0;
-
-	// something bad happened
-	if (localTeam->wasRecentEvent(GEUnitUnderAttack) ||
-		localTeam->wasRecentEvent(GEUnitLostConversion) ||
-		localTeam->wasRecentEvent(GEBuildingUnderAttack))
-	{
-	   warTimeout = 220;
-	   globalContainer->mix->setNextTrack(4, true);
-	}
-
-	// something good happened
-	if (localTeam->wasRecentEvent(GEUnitGainedConversion) ||
-		localTeam->wasRecentEvent(GEBuildingCompleted))
-	{
-		buildingTimeout = 220;
-		globalContainer->mix->setNextTrack(3, true);
-	}
-
-	// if end of special thing
-	if ((buildingTimeout == 1) || (warTimeout == 1))
-		globalContainer->mix->setNextTrack(2, true);
-
-	// decay variables
-	if (warTimeout > 0)
-		warTimeout--;
-	if (buildingTimeout > 0)
-		buildingTimeout--;
 }
 
 void GameGUI::syncStep(void)

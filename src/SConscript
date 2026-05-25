@@ -116,6 +116,7 @@ gui/GameGUIKeyActions.cpp
 gui/GameGUILoadSave.cpp
 gui/GameGUIMessageManager.cpp
 gui/GameGUIOrders.cpp
+gui/GameMusicController.cpp
 gui/GameGUIParticles.cpp
 gui/GameGUIPersistence.cpp
 gui/GameGUIScript.cpp

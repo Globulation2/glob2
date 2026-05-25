@@ -64,9 +64,9 @@ int Engine::run(void)
 			size_t musicIndex(rand() % musicDirs.size());
 			const std::string& musicDir(musicDirs[musicIndex]);
 			std::cerr << "selecting music dir " << musicDir << std::endl;
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a1.ogg").arg(musicDir), 2);
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a2.ogg").arg(musicDir), 3);
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a3.ogg").arg(musicDir), 4);
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a1.ogg").arg(musicDir), MusicTrack::InGameDefault);
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a2.ogg").arg(musicDir), MusicTrack::BuildingEvent);
+			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a3.ogg").arg(musicDir), MusicTrack::WarEvent);
 		}
 		else
 		{
@@ -74,7 +74,7 @@ int Engine::run(void)
 		}
 
 		// Stop menu music, load game music
-		globalContainer->mix->setNextTrack(2, true);
+		globalContainer->mix->setNextTrack(MusicTrack::InGameDefault, true);
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
 	}
 
@@ -96,7 +96,7 @@ int Engine::run(void)
 	{
 		// Restart menu music
 		assert(globalContainer->mix);
-		globalContainer->mix->setNextTrack(1, true);
+		globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
 
 		// Display End Game Screen
 		EndGameScreen endGameScreen(&gui);

@@ -12,6 +12,8 @@
 #include <map>
 #include <memory>
 
+#include "MusicTrack.h"
+
 class OrderVoiceData;
 
 class SoundMixer
@@ -66,7 +68,16 @@ public:
 	//! ov_clear in ~SoundMixer.
 	int loadTrack(const std::string name, int index = -1);
 
+	//! Load `name` into the slot for the given enum track. Convenience wrapper
+	//! over the int-indexed overload so callers don't hard-code track numbers.
+	int loadTrack(const std::string name, MusicTrack track);
+
 	void setNextTrack(unsigned i, bool earlyChange=false);
+
+	//! Enum-typed overload of setNextTrack. Prefer this in new code so call
+	//! sites read as `setNextTrack(MusicTrack::WarEvent, true)` rather than
+	//! `setNextTrack(4, true)`.
+	void setNextTrack(MusicTrack track, bool earlyChange=false);
 
 	void setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute);
 	

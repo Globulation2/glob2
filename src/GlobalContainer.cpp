@@ -198,13 +198,15 @@ void GlobalContainer::loadClient(void)
 		
 		// create mixer
 		mix = new SoundMixer(settings.musicVolume, settings.voiceVolume, settings.mute);
-		mix->loadTrack("data/zik/intro.ogg");
-		mix->loadTrack("data/zik/menu.ogg");
-		mix->loadTrack("data/zik/original/a1.ogg");
-		mix->loadTrack("data/zik/original/a2.ogg");
-		mix->loadTrack("data/zik/original/a3.ogg");
-		mix->setNextTrack(0);
-		mix->setNextTrack(1);
+		// Track slots must match the MusicTrack enum order. Engine::run may
+		// later overwrite the InGame* slots with a randomly chosen music dir.
+		mix->loadTrack("data/zik/intro.ogg",            MusicTrack::Intro);
+		mix->loadTrack("data/zik/menu.ogg",             MusicTrack::Menu);
+		mix->loadTrack("data/zik/original/a1.ogg",      MusicTrack::InGameDefault);
+		mix->loadTrack("data/zik/original/a2.ogg",      MusicTrack::BuildingEvent);
+		mix->loadTrack("data/zik/original/a3.ogg",      MusicTrack::WarEvent);
+		mix->setNextTrack(MusicTrack::Intro);
+		mix->setNextTrack(MusicTrack::Menu);
 		
 		// create voice recorder
 		voiceRecorder = new VoiceRecorder();

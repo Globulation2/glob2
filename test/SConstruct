@@ -53,6 +53,9 @@ MapQueryTestStubs.cpp
 ../src/building/BuildingUtils.cpp
 ../src/unit/UnitUtils.cpp
 
+GameMusicControllerTest.cpp
+../src/gui/GameMusicController.cpp
+
 natsort/NatSortTest.cpp
 """)
 

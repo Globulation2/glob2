@@ -171,6 +171,8 @@ void GameGUI::init()
 	scrollWheelChanges=0;
 
 	hilights.clear();
+
+	musicController.reset();
 }
 
 void GameGUI::adjustLocalTeam()

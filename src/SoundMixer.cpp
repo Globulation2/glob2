@@ -368,13 +368,13 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	if ((soundEnabled) && (i<tracks.size()))
 	{
 		SDL_LockAudio();
-		
+
 		// Select next tracks
 		if (actTrack >= 0)
 			nextTrack = i;
 		else
 			nextTrack = actTrack = i;
-		
+
 		// Select mode
 		if (mode == MODE_STOPPED)
 		{
@@ -385,9 +385,19 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		{
 			mode = MODE_EARLY_CHANGE;
 		}
-		
+
 		SDL_UnlockAudio();
 	}
+}
+
+int SoundMixer::loadTrack(const std::string name, MusicTrack track)
+{
+	return loadTrack(name, static_cast<int>(track));
+}
+
+void SoundMixer::setNextTrack(MusicTrack track, bool earlyChange)
+{
+	setNextTrack(static_cast<unsigned>(track), earlyChange);
 }
 
 // All writes to musicVolume/voiceVolume must hold SDL_LockAudio — mixaudio()
