@@ -64,6 +64,12 @@ void BasePlayer::setTeamNumber(Sint32 teamNumber)
 	this->teamNumberMask=1<<teamNumber;
 };
 
+// Wire/storage validation point: reads a BasePlayer from a .game, .replay,
+// save file, or network packet. `number` and `teamNumber` are bounds-checked
+// against Team::MAX_COUNT here so every downstream consumer
+// (Game::setGameHeader, Player::setBasePlayer, ...) can safely index
+// teams[teamNumber] and players[number] without re-validating. Returns false
+// on bad input; the outer GameHeader/Player load propagates the failure.
 bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("BasePlayer");
@@ -75,6 +81,18 @@ bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	teamNumber = stream->readSint32("teamNumber");
 	teamNumberMask = stream->readUint32("teamNumberMask");
 	stream->readLeaveSection();
+	if (number < 0 || number >= Team::MAX_COUNT)
+	{
+		fprintf(stderr, "BasePlayer::load: out-of-range player number %d (must be in [0, %d))\n",
+			(int)number, Team::MAX_COUNT);
+		return false;
+	}
+	if (teamNumber < 0 || teamNumber >= Team::MAX_COUNT)
+	{
+		fprintf(stderr, "BasePlayer::load: out-of-range teamNumber %d (must be in [0, %d))\n",
+			(int)teamNumber, Team::MAX_COUNT);
+		return false;
+	}
 	return true;
 }
 

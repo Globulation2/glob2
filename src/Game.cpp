@@ -151,6 +151,15 @@ void Game::setMapHeader(const MapHeader& newMapHeader)
 
 
 
+// Precondition: every players[i]->teamNumber must satisfy
+// 0 <= teamNumber < mapHeader.getNumberOfTeams() AND teams[teamNumber] must
+// be non-null. The two in-memory callers (MapEditClicks, MapEditDialog)
+// build their GameHeader from a getNumberOfTeams() loop, so they're
+// well-formed by construction. The loader path (GameGUIPersistence ->
+// GameHeader::load -> BasePlayer::load) bounds-checks teamNumber against
+// Team::MAX_COUNT before reaching here; the assert catches the residual
+// case where teamNumber is in [getNumberOfTeams(), MAX_COUNT) — a stale
+// header paired with a smaller-team map.
 void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 {
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
@@ -168,8 +177,11 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 			players[i]=new Player();
 			players[i]->setBasePlayer(&newGameHeader.getBasePlayer(i), teams);
 		}
-		teams[players[i]->teamNumber]->numberOfPlayer+=1;
-		teams[players[i]->teamNumber]->playersMask|=(1<<i);
+		const Sint32 tn = players[i]->teamNumber;
+		assert(tn >= 0 && tn < mapHeader.getNumberOfTeams());
+		assert(teams[tn] != NULL);
+		teams[tn]->numberOfPlayer+=1;
+		teams[tn]->playersMask|=(1<<i);
 	}
 
 	setSyncRandSeed(newGameHeader.getRandomSeed());

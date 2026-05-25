@@ -51,11 +51,20 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readEnterSection(i);
 		if (i < Team::MAX_COUNT)
 		{
-			players[i].load(stream, versionMinor);
+			if (!players[i].load(stream, versionMinor))
+			{
+				stream->readLeaveSection(i);
+				stream->readLeaveSection();
+				stream->readLeaveSection();
+				return false;
+			}
 		}
 		else
 		{
 			BasePlayer scratch;
+			// Trailing on-disk slots beyond Team::MAX_COUNT are padding; their
+			// teamNumber field is never consumed, so a bad value here is not a
+			// crash hazard. Discard validation failures.
 			scratch.load(stream, versionMinor);
 		}
 		stream->readLeaveSection(i);
