@@ -13,6 +13,7 @@
 #include <StringTable.h>
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <memory>
 
 #include "Game.h"
 
@@ -102,7 +103,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			{
 				mapPreview->setMapThumbnail(mapFileName.c_str());
 
-				InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName));
+				auto stream = std::unique_ptr<InputStream>(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName)));
 				if (stream->isEndOfStream())
 				{
 					std::cerr << "ChooseMapScreen::onAction() : error, can't open file " << mapFileName  << std::endl;
@@ -111,7 +112,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				{
 					if (verbose)
 						std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
-					validMapSelected = mapHeader.load(stream);
+					validMapSelected = mapHeader.load(stream.get());
 
 					if (!validMapSelected) selectedType = NONE;
 
@@ -128,7 +129,6 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 					else
 						std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
 				}
-				delete stream;
 			}
 			catch (std::exception &e)
 			{
