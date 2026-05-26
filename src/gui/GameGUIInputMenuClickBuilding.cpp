@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <iostream>
+#include <optional>
 
 #include <SDL_keycode.h>
 
@@ -32,6 +33,38 @@
 using std::shared_ptr;
 using std::static_pointer_cast;
 
+// Interpret a click on a three-zone scrollbox widget. The widget is laid out
+// as [<-arrow][===proportional drag track===][->arrow] inside a strip
+// SCROLLBOX_BAR_WIDTH wide, with each arrow SCROLLBOX_ARROW_WIDTH wide.
+//
+// `lmx` is the click x-coordinate relative to the strip's left edge; the
+// caller is responsible for having already y-band-gated and confirmed
+// lmx is inside [0, SCROLLBOX_BAR_WIDTH). `current` is the value the
+// widget currently shows, `max` its upper bound (inclusive; lower bound
+// is 0).
+//
+// Returns the value the user just requested:
+//   - left arrow click  → current - 1 (or nullopt if already at 0)
+//   - drag-track click  → proportional value in [0, max)
+//   - right arrow click → current + 1 (or nullopt if already at max)
+// nullopt means "no order should be issued" — the click was an arrow press
+// against an already-clamped value.
+static std::optional<int> interpretScrollBoxClick(int lmx, int current, int max)
+{
+	if (lmx < SCROLLBOX_ARROW_WIDTH)
+	{
+		if (current > 0) return current - 1;
+		return std::nullopt;
+	}
+	if (lmx < SCROLLBOX_BAR_WIDTH - SCROLLBOX_ARROW_WIDTH)
+	{
+		const int track = SCROLLBOX_BAR_WIDTH - 2 * SCROLLBOX_ARROW_WIDTH;
+		return ((lmx - SCROLLBOX_ARROW_WIDTH) * max) / track;
+	}
+	if (current < max) return current + 1;
+	return std::nullopt;
+}
+
 void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 {
 	Building* selBuild=selection.building;
@@ -49,36 +82,14 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			&& my>ypos+YOFFSET_TEXT_BAR
 			&& my<ypos+YOFFSET_TEXT_BAR+16
 			&& selBuild->buildingState==Building::ALIVE
-			&& lmx < 128)
+			&& lmx < SCROLLBOX_BAR_WIDTH)
 		{
-			int nbReq;
 			const int current = displayedMaxUnitWorking(*selBuild);
-			if (lmx<18)
+			if (auto nbReq = interpretScrollBoxClick(lmx, current, MAX_UNIT_WORKING))
 			{
-				if(current>0)
-				{
-					nbReq = current - 1;
-					pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-			        defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
-				}
-			}
-			else if (lmx<(128-18))
-			{
-				nbReq = ((lmx-18)*MAX_UNIT_WORKING)/(128-36);
-				pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-	        	defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
-			}
-			else
-			{
-				if(current<MAX_UNIT_WORKING)
-				{
-					nbReq = current + 1;
-					pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
-		        	defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
-				}
+				pendingFor(selBuild->gid).pendingMaxUnitWorking = *nbReq;
+				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, *nbReq)));
+				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, *nbReq);
 			}
 		}
 		ypos += YOFFSET_BAR + YOFFSET_B_SEP;
@@ -120,34 +131,13 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		if (((selBuild->owner->allies)&(1<<localTeamNo))
 			&& (my>ypos+YOFFSET_TEXT_BAR)
 			&& (my<ypos+YOFFSET_TEXT_BAR+16)
-			&& (lmx < 128))
+			&& (lmx < SCROLLBOX_BAR_WIDTH))
 		{
-			int nbReq;
 			const int current = displayedUnitStayRange(*selBuild);
-			if (lmx<18)
+			if (auto nbReq = interpretScrollBoxClick(lmx, current, selBuild->type->maxUnitStayRange))
 			{
-				if(current>0)
-				{
-					nbReq = current - 1;
-					pendingFor(selBuild->gid).pendingUnitStayRange = nbReq;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
-				}
-			}
-			else if (lmx<RIGHT_MENU_WIDTH-18)
-			{
-				nbReq = ((lmx-18)*(unsigned)selBuild->type->maxUnitStayRange)/(128-36);
-				pendingFor(selBuild->gid).pendingUnitStayRange = nbReq;
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
-			}
-			else
-			{
-				// TODO : check in orderQueue to avoid useless orders.
-				if (current < selBuild->type->maxUnitStayRange)
-				{
-					nbReq = current + 1;
-					pendingFor(selBuild->gid).pendingUnitStayRange = nbReq;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, nbReq)));
-				}
+				pendingFor(selBuild->gid).pendingUnitStayRange = *nbReq;
+				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, *nbReq)));
 			}
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -279,30 +269,13 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		ypos+=15;
 		for (int i=0; i<NB_UNIT_TYPE; i++)
 		{
-			if ((my>ypos+(i*20))&&(my<ypos+(i*20)+16)&&(lmx<128))
+			if ((my>ypos+(i*20))&&(my<ypos+(i*20)+16)&&(lmx<SCROLLBOX_BAR_WIDTH))
 			{
-				if (lmx<18)
+				if (auto nbReq = interpretScrollBoxClick(lmx, selBuild->ratioLocal[i], MAX_RATIO_RANGE))
 				{
-					if (selBuild->ratioLocal[i]>0)
-					{
-						selBuild->ratioLocal[i]--;
-						orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
-					}
-				}
-				else if (lmx<(128-18))
-				{
-					selBuild->ratioLocal[i]=((lmx-18)*MAX_RATIO_RANGE)/(128-36);
+					selBuild->ratioLocal[i] = *nbReq;
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
 				}
-				else
-				{
-					if (selBuild->ratioLocal[i]<MAX_RATIO_RANGE)
-					{
-						selBuild->ratioLocal[i]++;
-						orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
-					}
-				}
-				//printf("ratioLocal[%d]=%d\n", i, selBuild->ratioLocal[i]);
 			}
 		}
 	}

@@ -430,7 +430,7 @@ void GameGUI::flushScrollWheelOrders()
 			if ((selBuild->type->maxUnitWorking) &&
                                             (!globalContainer->settings.scrollWheelEnabled ? (modState & KMOD_CTRL) : !(SDL_GetModState()&KMOD_SHIFT)))
 			{
-				const int requested = std::min(20, std::max(0, displayedMaxUnitWorking(*selBuild) + scrollWheelChanges));
+				const int requested = std::min((int)MAX_UNIT_WORKING, std::max(0, displayedMaxUnitWorking(*selBuild) + scrollWheelChanges));
 				pendingFor(selBuild->gid).pendingMaxUnitWorking = requested;
 				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, requested)));
 				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, requested);

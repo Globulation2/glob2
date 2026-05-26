@@ -71,6 +71,15 @@ using namespace GAGGUI;
 #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
 #define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 
+// Geometry of the three-zone scrollbox widget used for worker count, flag
+// stay-range and swarm-ratio sliders. The visual strip is laid out as
+//   [<-arrow][===proportional drag track===][->arrow]
+// inside the right-menu's 128px content area. Click x-coordinates are
+// interpreted relative to the strip's left edge (see
+// interpretScrollBoxClick in GameGUIInputMenuClickBuilding.cpp).
+constexpr int SCROLLBOX_BAR_WIDTH = 128;
+constexpr int SCROLLBOX_ARROW_WIDTH = 18;
+
 // Icons for main menu, alliance and objectives buttons.
 #define IGM_ICON_HEIGHT 36
 #define IGM_MAIN_MENU_ICON_Y 0
