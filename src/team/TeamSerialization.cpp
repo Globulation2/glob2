@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "BuildingType.h"
+#include "FileFormatVersions.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Marshaling.h"
@@ -132,7 +133,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	}
 	stats.step(this, true);
 
-	if(versionMinor >= 73)
+	if(versionMinor >= FILE_FORMAT_VERSION_RACE_FIELD)
 	{
 		if(!race.load(stream, versionMinor))
 		{

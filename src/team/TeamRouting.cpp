@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "BuildingType.h"
+#include "FixedPoint.h"
 #include "Game.h"
 #include "Map.h"
 #include "Team.h"
@@ -205,7 +206,7 @@ Building *Team::findNearestFood(Unit *unit)
 Building *Team::findBestUpgrade(Unit *unit)
 {
 	Building *choosen=NULL;
-	Sint32 score=0x7FFFFFFF;
+	Sint32 score=Team::UPGRADE_SCORE_NONE;
 	int x=unit->posX;
 	int y=unit->posY;
 	//TODO: This is bad code. If WALK ever ceases to be the first ability or ARMOR ever ceases
@@ -224,7 +225,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 					printf("guid=(%d)  b->gid=%d, b->type->level=%d, actLevel=%d\n", unit->gid, b->gid, b->type->level, actLevel);
 				if (b->type->level >= actLevel)
 				{
-					Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<8)/(b->maxUnitInside-b->unitsInside.size());
+					Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<Q8_FIXED_POINT_SHIFT)/(b->maxUnitInside-b->unitsInside.size());
 					if (newScore<score)
 					{
 						unit->destinationPurpose=(Sint32)ability;

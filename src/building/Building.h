@@ -36,6 +36,19 @@ static constexpr int BUILDING_LEVEL_NONE = -1;
 /// on the `Ressource` value-type field.
 static constexpr int RESSOURCE_TYPE_NONE = -1;
 
+/// Length of the per-building "no-swim variant" / "can-swim variant"
+/// pair. Every per-building gradient/lock/resource array is indexed
+/// `[canSwim]` where `canSwim == 0` means the no-swim variant and
+/// `canSwim == 1` means the can-swim variant. Used both as the array
+/// dimension and as the loop bound in `for (canSwim=0; canSwim<...; …)`.
+static constexpr int SWIM_VARIANT_COUNT = 2;
+
+/// Index into a `[SWIM_VARIANT_COUNT]` array selecting the variant
+/// reachable by units that have the SWIM ability. Used at sites that
+/// hard-pick the swim variant (e.g. swarms only emit swimming workers
+/// once the can-swim path is reachable).
+static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
+
 class Building : public BuildingUtils
 {
 public:
@@ -411,15 +424,18 @@ public:
 	// A true bit meant that the corresponding team can see this building, under FOW or not.
 	Uint32 seenByMask;
 
-	bool dirtyLocalGradient[2];
-	Uint8 localGradient[2][LOCAL_GRID_AREA];
-	Uint8 *globalGradient[2];
-	bool locked[2]; //True if the building is not reachable.
-	Uint32 lastGlobalGradientUpdateStepCounter[2];
+	bool dirtyLocalGradient[SWIM_VARIANT_COUNT];
+	Uint8 localGradient[SWIM_VARIANT_COUNT][LOCAL_GRID_AREA];
+	Uint8 *globalGradient[SWIM_VARIANT_COUNT];
+	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
+	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_VARIANT_COUNT];
 
-	Uint8 *localRessources[2];
-	int localRessourcesCleanTime[2]; // The time since the localRessources[x] has not been updated.
-	int anyRessourceToClear[2]; // Which localRessources[x] gradient has any ressource. {0: unknow, 1:true, 2:false}
+	Uint8 *localRessources[SWIM_VARIANT_COUNT];
+	int localRessourcesCleanTime[SWIM_VARIANT_COUNT]; // The time since the localRessources[x] has not been updated.
+	// Per-swim-variant tri-state cache of whether `localRessources[canSwim]`
+	// currently has any ressource. Stored value at each slot: 0 = unknown
+	// (not yet computed), 1 = true (has at least one), 2 = false (none).
+	int anyRessourceToClear[SWIM_VARIANT_COUNT];
 
 	// shooting eye-candy data, not net synchronised
 	Uint32 lastShootStep;

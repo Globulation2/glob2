@@ -392,7 +392,7 @@ void Building::clearingFlagStep()
 	// PORT: timer is reset inside Map::updateLocalRessources (MapGradientBuilding.cpp:275), not here.
 	// PORT: also bumped by +=16 from MapPathfindRessource.cpp:189 when units find resources unreachable.
 	if (unitsWorking.size()<(unsigned)maxUnitWorking)
-		for (int canSwim=0; canSwim<2; canSwim++)
+		for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
 			if (localRessourcesCleanTime[canSwim]++>CLEARING_FLAG_REFRESH_TICKS) // Update every 5[s]
 			{
 				if (!owner->map->updateLocalRessources(this, canSwim))

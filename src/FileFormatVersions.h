@@ -43,6 +43,9 @@ static constexpr int FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS = 71;
 //! mapDiscovered flag added (GameHeader.cpp:77, 152).
 static constexpr int FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG = 72;
 
+//! Team::race field added (TeamSerialization.cpp:135).
+static constexpr int FILE_FORMAT_VERSION_RACE_FIELD = 73;
+
 //! Building::unitsFailingRequirements stored as int (Lifecycle.cpp:432).
 //! Predates the array form (see _ARRAY below).
 static constexpr int FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_INT = 74;

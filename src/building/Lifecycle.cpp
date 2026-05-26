@@ -24,7 +24,7 @@
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
-	for (int i=0; i<2; i++)
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
 		localRessources[i]=NULL;
@@ -124,7 +124,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<NB_ABILITY; i++)
 		inUpgrade[i]=LS_UNKNOWN;
 
-	for (int i=0; i<2; i++)
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
 		localRessources[i]=NULL;
@@ -157,7 +157,7 @@ Building::~Building()
 
 void Building::resetLocalRessources()
 {
-	for (int i=0; i<2; i++)
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		dirtyLocalGradient[i] = true;
 		locked[i] = false;
@@ -168,7 +168,7 @@ void Building::resetLocalRessources()
 
 void Building::resetPathfindGradients()
 {
-	for (int i=0; i<2; i++)
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		dirtyLocalGradient[i] = true;
 		locked[i] = false;
@@ -182,7 +182,7 @@ void Building::resetPathfindGradients()
 void Building::freeGradients()
 {
 	resetPathfindGradients();
-	for (int i=0; i<2; i++)
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		lastGlobalGradientUpdateStepCounter[i] = 0;
 		localRessourcesCleanTime[i] = 0;

@@ -162,7 +162,7 @@ void Team::syncStep(void)
 				if (!building->type->isVirtual)
 				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
-					map->dirtyLocalGradient(building->posX-Team::GRADIENT_DIRTY_PADDING, building->posY-Team::GRADIENT_DIRTY_PADDING, 31+building->type->width, 31+building->type->height, teamNumber);
+					map->dirtyLocalGradient(building->posX-Team::GRADIENT_DIRTY_PADDING, building->posY-Team::GRADIENT_DIRTY_PADDING, Team::GRADIENT_DIRTY_SIZE_OFFSET+building->type->width, Team::GRADIENT_DIRTY_SIZE_OFFSET+building->type->height, teamNumber);
 					isDirtyGlobalGradient=true;
 				}
 				building->buildingState=Building::DEAD;
@@ -233,7 +233,7 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
-			if (!(*it)->locked[1] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
+			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
 				isEnoughFoodInSwarm=true;
 			(*it)->swarmStep();
 		}
@@ -265,7 +265,7 @@ void Team::dirtyGlobalGradient()
 	{
 		Building *b=myBuildings[id];
 		if (b)
-			for (int canSwim=0; canSwim<2; canSwim++)
+			for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
 				if (b->globalGradient[canSwim])
 				{
 					//printf("freeing globalGradient for gbid=%d (%p)\n", b->gid, b->globalGradient[canSwim]);
@@ -282,7 +282,7 @@ void Team::dirtyWarFlagGradient()
 	{
 		Building *b = *it;
 		if (b->type->zonable[WARRIOR])
-			for (int canSwim=0; canSwim<2; canSwim++)
+			for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
 				if (b->globalGradient[canSwim])
 				{
 					delete[] b->globalGradient[canSwim];

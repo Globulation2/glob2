@@ -5,6 +5,7 @@
 
 #include <SDL_rwops.h>
 
+#include <climits>
 #include <list>
 #include <algorithm>
 #include <queue>
@@ -51,11 +52,26 @@ public:
 	//! routing and building gradient propagation. See TeamStep.cpp:163.
 	static constexpr int GRADIENT_DIRTY_PADDING = 16;
 
+	//! Width/height added to a building's footprint when marking the
+	//! surrounding tiles dirty: pad on each side then subtract 1 so the
+	//! resulting rect ends one tile inside the second padding band, matching
+	//! the original literal `31+building->type->width` at TeamStep.cpp:165.
+	static constexpr int GRADIENT_DIRTY_SIZE_OFFSET = 2 * GRADIENT_DIRTY_PADDING - 1;
+
+	//! Initial value for the "no candidate found yet" score in upgrade
+	//! pathing (Team::findBestUpgrade): every real score compares less.
+	//! Equal to INT32_MAX; named at the call site so the intent is clear.
+	static constexpr Sint32 UPGRADE_SCORE_NONE = INT32_MAX;
+
 	//! HSV saturation/value used to derive default team colours from a
 	//! hue (see Team::setCorrectColor(float)). Saturation 0.8 keeps the
 	//! palette readable; value 0.9 keeps it bright but not blown out.
 	static constexpr float TEAM_COLOR_SATURATION = 0.8f;
 	static constexpr float TEAM_COLOR_VALUE = 0.9f;
+
+	//! Float multiplier used to convert a 0..1 HSV channel into a 0..255
+	//! 8-bit colour value (see Team::setCorrectColor).
+	static constexpr float COLOR_CHANNEL_MAX = 255.0f;
 	Team(Game *game);
 	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 

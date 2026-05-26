@@ -157,7 +157,7 @@ void Team::setCorrectColor(float value)
 {
 	float r, g, b;
 	Utilities::HSVtoRGB(&r, &g, &b, value, TEAM_COLOR_SATURATION, TEAM_COLOR_VALUE);
-	color = Color((Uint8)(255.0f*r), (Uint8)(255.0f*g), (Uint8)(255.0f*b));
+	color = Color((Uint8)(COLOR_CHANNEL_MAX*r), (Uint8)(COLOR_CHANNEL_MAX*g), (Uint8)(COLOR_CHANNEL_MAX*b));
 }
 
 
