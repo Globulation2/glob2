@@ -105,14 +105,20 @@ void GameGUI::checkSelection(void)
 }
 
 
+// Cycle the local team's selection forward to the next building or unit of
+// the same type, wrapping at MAX_COUNT. No-op when the selection cache is
+// stale (e.g. the selected building was destroyed in the previous sim tick
+// and the keyboard shortcut fires before checkSelection() runs at draw time),
+// when no peer of the same type exists, or when the selected entity is not
+// owned by the local team. Invoked from the local keyboard handler only —
+// never produces a network order, never reads RNG, never mutates sim state.
 void GameGUI::iterateSelection(void)
 {
 	if (selectionMode==BUILDING_SELECTION)
 	{
 		Building* selBuild=selection.building;
+		if (!selBuild) return;
 		Uint16 selectionGBID=selBuild->gid;
-		assert(selBuild);
-		assert(selectionGBID!=NOGBID);
 		int pos=Building::GIDtoID(selectionGBID);
 		int team=Building::GIDtoTeam(selectionGBID);
 		int i=pos;
