@@ -89,8 +89,7 @@ void GameGUI::drawChoiceSprites(const std::vector<std::string>& types, const std
 		globalContainer->gfx->setClipRect();
 		if (hilights.find(HilightBuildingOnPanel + IntBuildingType::shortNumberFromType(type)) != hilights.end())
 		{
-			// Note: `y-6+decX` is preserved verbatim — see BH-291 for the X-into-Y typo.
-			arrowPositions.push_back(HilightArrowPosition(x + decX - 36, y - 6 + decX, 38));
+			arrowPositions.push_back(HilightArrowPosition(x + decX - 36, y - 6 + decY, 38));
 		}
 	}
 }
