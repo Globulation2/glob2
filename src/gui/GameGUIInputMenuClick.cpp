@@ -88,24 +88,22 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if ((displayMode==CONSTRUCTION_VIEW && !globalContainer->replaying))
 	{
-		int xNum=mx/(RIGHT_MENU_WIDTH/2);
-		int yNum=(my-YPOS_BASE_CONSTRUCTION)/46;
-		int id=yNum*2+xNum;
-		if (id<(int)buildingsChoiceName.size())
-			if (buildingsChoiceState[id])
-				setSelection(TOOL_SELECTION, (void *)buildingsChoiceName[id].c_str());
+		// Use the same hit grid as the hover preview so click and hover cannot drift.
+		const auto id = pickChoiceUnderMouse(YPOS_BASE_CONSTRUCTION, buildingsChoiceName.size(), 2);
+		if (id && buildingsChoiceState[*id])
+			setSelection(TOOL_SELECTION, (void *)buildingsChoiceName[*id].c_str());
 	}
 	else if ((displayMode==FLAG_VIEW && !globalContainer->replaying))
 	{
 		int dec = (RIGHT_MENU_WIDTH - 128)/2;
-		my -= YPOS_BASE_FLAG;
+		int relY = my - YPOS_BASE_FLAG;
 		int nmx = mx - dec;
-		if (my > YOFFSET_BRUSH)
+		if (relY > YOFFSET_BRUSH)
 		{
 			// set the selection
 			setSelection(BRUSH_SELECTION);
 			// change the brush type (forbidden, guard, clear) if necessary
-			if (my < YOFFSET_BRUSH+40)
+			if (relY < YOFFSET_BRUSH+40)
 			{
 				if (nmx < 44)
 					toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
@@ -115,17 +113,15 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					toolManager.activateZoneTool(GameGUIToolManager::Clearing);
 			}
 			// anyway, update the tool
-			brush.handleClick(mx-dec, my-YOFFSET_BRUSH-40);
+			brush.handleClick(mx-dec, relY-YOFFSET_BRUSH-40);
 			toolManager.activateZoneTool();
 		}
 		else
 		{
-			int xNum=mx / (RIGHT_MENU_WIDTH/3);
-			int yNum=my / 46;
-			int id=yNum*3+xNum;
-			if (id<(int)flagsChoiceName.size())
-				if (flagsChoiceState[id])
-					setSelection(TOOL_SELECTION, (void*)flagsChoiceName[id].c_str());
+			// Use the same hit grid as the hover preview so click and hover cannot drift.
+			const auto id = pickChoiceUnderMouse(YPOS_BASE_FLAG, flagsChoiceName.size(), 3);
+			if (id && flagsChoiceState[*id])
+				setSelection(TOOL_SELECTION, (void*)flagsChoiceName[*id].c_str());
 		}
 	}
 	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->replaying) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->replaying))

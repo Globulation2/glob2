@@ -19,7 +19,7 @@
 namespace {
 
 // Layout of the choice panel (file-private; the constants drive both the sprite grid
-// and the mouse hit grid, except for the Y origin — see BH-290).
+// and the mouse hit grid, which share one Y origin — the caller's `panelTopY`).
 constexpr int CHOICE_ROW_HEIGHT_PX = 46;
 // Width of the per-cell clip rect used when blitting the building icon. This is a
 // sprite-tile width, not the cell width (which is RIGHT_MENU_WIDTH/numberPerLine).
@@ -49,7 +49,7 @@ std::optional<size_t> findChoiceIndex(const std::vector<std::string>& types, con
 
 } // namespace
 
-void GameGUI::drawChoiceSprites(const std::vector<std::string>& types, const std::vector<bool>& states, unsigned numberPerLine)
+void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& types, const std::vector<bool>& states, unsigned numberPerLine)
 {
 	const int width = RIGHT_MENU_WIDTH / static_cast<int>(numberPerLine);
 	const int panelLeftX = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
@@ -65,7 +65,7 @@ void GameGUI::drawChoiceSprites(const std::vector<std::string>& types, const std
 		int imgid = bt->miniSpriteImage;
 
 		const int x = (static_cast<int>(i % numberPerLine) * width) + panelLeftX;
-		const int y = (static_cast<int>(i / numberPerLine) * CHOICE_ROW_HEIGHT_PX) + YPOS_BASE_BUILDING;
+		const int y = (static_cast<int>(i / numberPerLine) * CHOICE_ROW_HEIGHT_PX) + panelTopY;
 		globalContainer->gfx->setClipRect(x, y, CHOICE_SPRITE_CLIP_W_PX, CHOICE_ROW_HEIGHT_PX);
 
 		Sprite *buildingSprite;
@@ -94,7 +94,7 @@ void GameGUI::drawChoiceSprites(const std::vector<std::string>& types, const std
 	}
 }
 
-void GameGUI::drawChoiceHighlight(size_t selIdx, unsigned numberPerLine)
+void GameGUI::drawChoiceHighlight(int panelTopY, size_t selIdx, unsigned numberPerLine)
 {
 	const int width = RIGHT_MENU_WIDTH / static_cast<int>(numberPerLine);
 	const int panelLeftX = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
@@ -104,7 +104,7 @@ void GameGUI::drawChoiceHighlight(size_t selIdx, unsigned numberPerLine)
 	const int sw = globalContainer->gamegui->getW(spriteId);
 
 	const int x = (static_cast<int>(selIdx % numberPerLine) * width) + panelLeftX;
-	const int y = (static_cast<int>(selIdx / numberPerLine) * CHOICE_ROW_HEIGHT_PX) + YPOS_BASE_BUILDING;
+	const int y = (static_cast<int>(selIdx / numberPerLine) * CHOICE_ROW_HEIGHT_PX) + panelTopY;
 	const int decX = (width - sw) / 2;
 
 	globalContainer->gfx->drawSprite(x + decX, y + decYNudge, globalContainer->gamegui, spriteId);
@@ -172,7 +172,7 @@ void GameGUI::drawChoice(int panelTopY, std::vector<std::string> &types, std::ve
 	assert(numberPerLine <= 3);
 
 	// 1. Paint icon grid (and queue tutorial-hilight arrows).
-	drawChoiceSprites(types, states, numberPerLine);
+	drawChoiceSprites(panelTopY, types, states, numberPerLine);
 
 	// 2. Paint the selection highlight over the active tool's icon, if any.
 	globalContainer->gfx->setClipRect(
@@ -185,7 +185,7 @@ void GameGUI::drawChoice(int panelTopY, std::vector<std::string> &types, std::ve
 	{
 		const auto selIdx = findChoiceIndex(types, toolManager.getBuildingName());
 		assert(selIdx);
-		drawChoiceHighlight(*selIdx, numberPerLine);
+		drawChoiceHighlight(panelTopY, *selIdx, numberPerLine);
 	}
 
 	// 3. Resolve which icon to show info for: prefer mouse-hover, fall back to the
