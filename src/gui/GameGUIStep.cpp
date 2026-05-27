@@ -259,34 +259,16 @@ void GameGUI::step(void)
 	// Check if the text being displayed has changed, and if it has, add it to the history box
 	if(game.sgslScript.isTextShown && game.sgslScript.textShown != previousSGSLText)
 	{
-		//Split into one per line
-		std::vector<std::string> messages;
-		setMultiLine(game.sgslScript.textShown, &messages, "    ");
-
-		///Add each line as a seperate message to the message manager.
-		///Must be done backwards to appear in the right order
-		for (int i=messages.size()-1; i>=0; i--)
-		{
-			messageManager.addChatMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
-		}
-
+		publishMessageHistoryLines(game.sgslScript.textShown, HistoryList::Chat,
+			Color(255, 255, 255), kHistoryOnlyTimeoutMs, kScriptTextContinuationIndent);
 		previousSGSLText = game.sgslScript.textShown;
 	}
 
 	// Check if the text being displayed has changed, and if it has, add it to the history box
 	if (scriptTextUpdated)
 	{
-		// Split into one per line
-		std::vector<std::string> messages;
-		setMultiLine(scriptText, &messages, "    ");
-
-		// Add each line as a seperate message to the message manager.
-		// Must be done backwards to appear in the right order
-		for (int i=messages.size()-1; i>=0; i--)
-		{
-			messageManager.addChatMessage(InGameMessage(messages[i], Color(255, 255, 255), 0));
-		}
-
+		publishMessageHistoryLines(scriptText, HistoryList::Chat,
+			Color(255, 255, 255), kHistoryOnlyTimeoutMs, kScriptTextContinuationIndent);
 		scriptTextUpdated = false;
 	}
 

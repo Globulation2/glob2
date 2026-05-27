@@ -269,23 +269,37 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
 		output->push_back(lastLine);
 }
 
+void GameGUI::publishMessageHistoryLines(const std::string& text, HistoryList target,
+	const GAGCore::Color& lineColor, int lineTimeoutMs, const std::string& indent)
+{
+	std::vector<std::string> lines;
+	setMultiLine(text, &lines, indent);
+
+	// Reverse iteration is load-bearing: GameGUIMessageManager::addChatMessage
+	// and addGameMessage both push_front, so feeding wrapped lines in
+	// natural top-to-bottom order would flip them on screen. Iterate
+	// tail-first so the on-screen reading order matches the source text.
+	for (auto it = lines.rbegin(); it != lines.rend(); ++it)
+	{
+		const InGameMessage line(*it, lineColor, lineTimeoutMs);
+		if (target == HistoryList::Chat)
+			messageManager.addChatMessage(line);
+		else
+			messageManager.addGameMessage(line);
+	}
+}
+
 void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat)
 {
-	//Split into one per line
-	std::vector<std::string> messages;
+	// Wrap-measure the text in bold so the line breaks match the bold
+	// rendering used by InGameMessage::draw. The font color pushed here is
+	// irrelevant to glyph widths but matches the historical call site.
 	globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_BOLD, 255, 255, 255));
-	setMultiLine(msgText, &messages);
+	if (chat)
+		publishMessageHistoryLines(msgText, HistoryList::Chat, color, kChatBroadcastTimeoutMs, "");
+	else
+		publishMessageHistoryLines(msgText, HistoryList::Game, color, kGameMessageDefaultTimeoutMs, "");
 	globalContainer->standardFont->popStyle();
-
-	///Add each line as a seperate message to the message manager.
-	///Must be done backwards to appear in the right order
-	for (int i=messages.size()-1; i>=0; i--)
-	{
-		if(!chat)
-			messageManager.addGameMessage(InGameMessage(messages[i], color));
-		else
-			messageManager.addChatMessage(InGameMessage(messages[i], color, 16000));
-	}
 }
 
 void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)

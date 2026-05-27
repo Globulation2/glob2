@@ -501,8 +501,37 @@ private:
 	GameGUIMessageManager messageManager;
 	InGameScrollableHistory* scrollableText;
 
+	/// Selects which message-history list a wrapped line is appended to.
+	enum class HistoryList { Game, Chat };
+
+	/// Continuation-line indent applied when word-wrapping script text into
+	/// the chat history. Distinguishes wrapped continuation visually from a
+	/// new message.
+	static constexpr const char* kScriptTextContinuationIndent = "    ";
+	/// timeLeft sentinel meaning "do not draw as a transient floating
+	/// message". The line is still appended to the history list and remains
+	/// visible only via the scrollable history overlay.
+	static constexpr int kHistoryOnlyTimeoutMs = 0;
+	/// Default lifetime (ms) for a transient game-event toast. Mirrors the
+	/// default argument of the InGameMessage constructor; named here so
+	/// callers can pass it explicitly instead of relying on the default.
+	static constexpr int kGameMessageDefaultTimeoutMs = 8000;
+	/// Lifetime (ms) for a transient chat broadcast — kept on screen
+	/// longer than normal so multi-line broadcasts are readable before
+	/// fading.
+	static constexpr int kChatBroadcastTimeoutMs = 16000;
+
 	/// Add a message to the list of messages
 	void addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat);
+
+	//! Word-wrap \a text via setMultiLine and append every resulting line to
+	//! one of the message-history lists. Both histories are LIFO
+	//! (push_front), so the wrapped lines are fed in reverse to preserve
+	//! the original top-to-bottom reading order on screen. \a target picks
+	//! which list receives them; \a lineColor and \a lineTimeoutMs are
+	//! passed straight through to each per-line InGameMessage.
+	void publishMessageHistoryLines(const std::string& text, HistoryList target,
+		const GAGCore::Color& lineColor, int lineTimeoutMs, const std::string& indent);
 
 	// Message stuff
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
