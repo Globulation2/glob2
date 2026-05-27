@@ -351,9 +351,9 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			std::cout << "Glob2 will fuse the following directories into its virtual filesystem:\n";
 			const unsigned dirCount(fileManager->getDirCount());
-			for (unsigned i = 0; i < dirCount; ++i)
+			for (unsigned d = 0; d < dirCount; ++d)
 			{
-				std::cout << i << "\t" << fileManager->getDir(i) << std::endl;
+				std::cout << d << "\t" << fileManager->getDir(d) << std::endl;
 			}
 			exit(0);
 		}
