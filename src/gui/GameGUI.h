@@ -253,8 +253,18 @@ private:
 	void drawOverlayInfos(void);
 	//! Draw the particles (eye-candy)
 	void drawParticles(void);
-	//! Draw the panel
+	//! Draw the panel: clip rect, background, tutorial hilight, panel buttons,
+	//! then defers to dispatchSelectionPanel for the body.
 	void drawPanel(void);
+	//! Dispatch on selectionMode. BUILDING_/UNIT_/RESSOURCE_SELECTION each draw
+	//! their per-selection panel; the default arm forwards to either
+	//! dispatchDisplayModePanel or dispatchReplayDisplayModePanel depending on
+	//! globalContainer->replaying.
+	void dispatchSelectionPanel(void);
+	//! Dispatch on displayMode (non-replay path). Asserts on an unknown mode.
+	void dispatchDisplayModePanel(void);
+	//! Dispatch on replayDisplayMode (replay path). Asserts on an unknown mode.
+	void dispatchReplayDisplayModePanel(void);
 	//! Draw the buttons associated to the panel
 	void drawPanelButtons(int y);
 	//! Draw a single button of the panel
