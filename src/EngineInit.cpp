@@ -364,8 +364,8 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	std::string replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
 	if (!globalContainer->replaying)
 	{
-		assert(globalContainer->replayWriter == NULL);
-		globalContainer->replayWriter = new ReplayWriter();
+		assert(globalContainer->replayWriter == nullptr);
+		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
 		globalContainer->replayWriter->init(replayPath, gui);
 	}
 
@@ -387,14 +387,13 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	const char* envDatasetPath = getenv("GLOB2_DATASET_PATH");
 	if (envDatasetPath && !globalContainer->replaying)
 	{
-		assert(globalContainer->datasetWriter == NULL);
-		globalContainer->datasetWriter = new DatasetWriter();
+		assert(globalContainer->datasetWriter == nullptr);
+		globalContainer->datasetWriter = std::make_unique<DatasetWriter>();
 		if (!globalContainer->datasetWriter->open(envDatasetPath))
 		{
 			std::cerr << "GLOB2_DATASET_PATH: failed to open dataset file "
 				<< envDatasetPath << std::endl;
-			delete globalContainer->datasetWriter;
-			globalContainer->datasetWriter = NULL;
+			globalContainer->datasetWriter.reset();
 		}
 	}
 
@@ -483,7 +482,7 @@ int Engine::loadReplay(const std::string &fileName)
 	globalContainer->replayFastForward = false;
 
 	// Initialize the ReplayReader in GlobalContainer
-	globalContainer->replayReader = new ReplayReader();
+	globalContainer->replayReader = std::make_unique<ReplayReader>();
 	bool replayLoaded = globalContainer->replayReader->loadReplay(fileName);
 
 	// If the reader found that the replay isn't valid, show an error message and return
@@ -495,8 +494,7 @@ int Engine::loadReplay(const std::string &fileName)
 			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 		}
 
-		delete globalContainer->replayReader;
-		globalContainer->replayReader = NULL;
+		globalContainer->replayReader.reset();
 		return EE_CANT_LOAD_MAP;
 	}
 

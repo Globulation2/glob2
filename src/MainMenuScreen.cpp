@@ -48,7 +48,7 @@ MainMenuScreen::MainMenuScreen()
 	
 	addWidget(new Text(3, 0, ALIGN_LEFT, ALIGN_BOTTOM, "standard", PACKAGE_VERSION));
 	
-	Image *title = new Image(0, 18, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->title);
+	Image *title = new Image(0, 18, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->title.get());
 	addWidget(title);
 }
 

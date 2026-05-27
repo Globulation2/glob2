@@ -364,8 +364,7 @@ void Engine::teardownSession()
 	if (globalContainer->datasetWriter)
 	{
 		globalContainer->datasetWriter->close();
-		delete globalContainer->datasetWriter;
-		globalContainer->datasetWriter = NULL;
+		globalContainer->datasetWriter.reset();
 	}
 
 	delete net;

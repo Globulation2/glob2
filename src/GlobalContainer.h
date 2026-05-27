@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include "BuildingType.h"
@@ -53,15 +54,15 @@ public:
 	const char *getComputerHostName(void);
 
 public:
-	FileManager *fileManager;
-	LogFileManager *logFileManager;
+	FileManager *fileManager; //!< Borrowed from Toolkit; not owned by GlobalContainer.
+	std::unique_ptr<LogFileManager> logFileManager; //!< Owned.
 
 #ifndef YOG_SERVER_ONLY
-	GraphicContext *gfx;
-	SoundMixer *mix;
-	VoiceRecorder *voiceRecorder;
-	
-	DrawableSurface *title;
+	GraphicContext *gfx; //!< Borrowed from Toolkit; not owned by GlobalContainer.
+	std::unique_ptr<SoundMixer> mix; //!< Owned.
+	std::unique_ptr<VoiceRecorder> voiceRecorder; //!< Owned.
+
+	std::unique_ptr<DrawableSurface> title; //!< Owned.
 	
 	Sprite *terrain;
 	Sprite *terrainWater;
@@ -157,9 +158,9 @@ public:
 	bool replayShowFlags; //!< Show all flags or show none. Can be edited real-time.
 
 #ifndef YOG_SERVER_ONLY
-	ReplayReader *replayReader; //!< Reads and processes replay files, and outputs orders
-	ReplayWriter *replayWriter; //!< Writes orders into replay files
-	DatasetWriter *datasetWriter; //!< Writes (state, action) records for AI training (GLOB2_DATASET_PATH)
+	std::unique_ptr<ReplayReader> replayReader; //!< Owned. Reads and processes replay files, and outputs orders.
+	std::unique_ptr<ReplayWriter> replayWriter; //!< Owned. Writes orders into replay files.
+	std::unique_ptr<DatasetWriter> datasetWriter; //!< Owned. Writes (state, action) records for AI training (GLOB2_DATASET_PATH).
 #endif  // !YOG_SERVER_ONLY
 
 };

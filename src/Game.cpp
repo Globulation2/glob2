@@ -62,8 +62,7 @@ Game::~Game()
 
 	clearGame();
 
-	delete globalContainer->replayWriter;
-	globalContainer->replayWriter = NULL;
+	globalContainer->replayWriter.reset();
 }
 
 void Game::init(GameGUI *gui, MapEdit* edit)

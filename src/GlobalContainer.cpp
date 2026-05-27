@@ -53,11 +53,7 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
-	logFileManager = new LogFileManager(fileManager);
-
-#ifndef YOG_SERVER_ONLY
-	title = nullptr;
-#endif  // !YOG_SERVER_ONLY
+	logFileManager = std::make_unique<LogFileManager>(fileManager);
 
 	// load user preference
 	settings.load();
@@ -87,8 +83,6 @@ GlobalContainer::GlobalContainer(void)
 
 #ifndef YOG_SERVER_ONLY
 	gfx = NULL;
-	mix = NULL;
-	voiceRecorder = NULL;
 
 	terrain = NULL;
 	terrainShader = NULL;
@@ -111,12 +105,6 @@ GlobalContainer::GlobalContainer(void)
 	replayShowAreas = false;
 	replayShowFlags = true;
 
-#ifndef YOG_SERVER_ONLY
-	replayReader = NULL;
-	replayWriter = NULL;
-	datasetWriter = NULL;
-#endif  // !YOG_SERVER_ONLY
-
 	assert((int)USERNAME_MAX_LENGTH==(int)BasePlayer::MAX_NAME_LENGTH);
 }
 
@@ -128,29 +116,19 @@ GlobalContainer::~GlobalContainer(void)
 		delete Style::style;
 	Style::style = &defaultStyle;
 
-	// close sound
-	if (mix)
-		delete mix;
-
-	if (voiceRecorder)
-		delete voiceRecorder;
-
-	// delete title image
-	delete title;
+	// Release sound and the title surface before Toolkit::close() pulls the
+	// underlying graphics/audio backends out from under them.
+	mix.reset();
+	voiceRecorder.reset();
+	title.reset();
 #endif  // !YOG_SERVER_ONLY
 
 	// release resources
 	Toolkit::close();
 
-	// close virtual filesystem
-	delete logFileManager;
-
-#ifndef YOG_SERVER_ONLY
-	// delete replay handlers
-	delete replayReader; replayReader = NULL;
-	delete replayWriter; replayWriter = NULL;
-	delete datasetWriter; datasetWriter = NULL;
-#endif  // !YOG_SERVER_ONLY
+	// Remaining owned members (logFileManager, replayReader, replayWriter,
+	// datasetWriter) are destroyed by the implicit member destruction that
+	// runs after this body — no manual cleanup needed.
 }
 
 // parseArgs is defined in GlobalContainerArgs.cpp.
@@ -176,7 +154,7 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 		}
 	gfx->finishDrawingSprite(terrain, 255);
 	//gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color::black);
-	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title);
+	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title.get());
 	//gfx->drawFilledRect(((gfx->getW()-400)>>1), (gfx->getH()>>1)+11+180, (value)<<2, 20, 10, 50, 255, 80);
 	gfx->nextFrame();
 }
@@ -192,12 +170,12 @@ void GlobalContainer::loadClient(void)
 		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
 		
 		// load data required for drawing progress screen
-		title = new DrawableSurface("data/gfx/title.png");
+		title = std::make_unique<DrawableSurface>("data/gfx/title.png");
 		terrain = Toolkit::getSprite("data/gfx/terrain");
 		updateLoadProgressScreen(0);
-		
+
 		// create mixer
-		mix = new SoundMixer(settings.musicVolume, settings.voiceVolume, settings.mute);
+		mix = std::make_unique<SoundMixer>(settings.musicVolume, settings.voiceVolume, settings.mute);
 		// Track slots must match the MusicTrack enum order. Engine::run may
 		// later overwrite the InGame* slots with a randomly chosen music dir.
 		mix->loadTrack("data/zik/intro.ogg",            MusicTrack::Intro);
@@ -209,7 +187,7 @@ void GlobalContainer::loadClient(void)
 		mix->setNextTrack(MusicTrack::Menu);
 		
 		// create voice recorder
-		voiceRecorder = new VoiceRecorder();
+		voiceRecorder = std::make_unique<VoiceRecorder>();
 		
 		updateLoadProgressScreen(15);
 	}

@@ -38,7 +38,7 @@ int Engine::run(void)
 	bool doRunOnceAgain=true;
 	if (globalContainer->runNoX)
 	{
-		assert(globalContainer->mix==NULL);
+		assert(globalContainer->mix==nullptr);
 		printf("nox::game started\n");
 		automaticGameStartTick = SDL_GetTicks64();
 	}
