@@ -56,6 +56,8 @@ MapQueryTestStubs.cpp
 GameMusicControllerTest.cpp
 ../src/gui/GameMusicController.cpp
 
+TurretScanTileTest.cpp
+
 natsort/NatSortTest.cpp
 """)
 

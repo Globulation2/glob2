@@ -21,6 +21,7 @@ namespace GAGCore
 
 class Unit;
 class Team;
+class Map;
 struct BuildingType;
 class BuildingsTypes;
 class Order;
@@ -287,6 +288,81 @@ public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 
 private:
+	// ─── Turret targeting (turretStep helpers) ──────────────────────
+
+	/// Classification of what a turret's target search found, ordered by
+	/// firing priority. Explorers short-circuit the ring scan; workers are
+	/// only considered when no warrior has been found; buildings only when
+	/// no unit at all has been found.
+	enum TurretTargetType
+	{
+		TARGETTYPE_NONE,
+		TARGETTYPE_BUILDING,
+		TARGETTYPE_WORKER,
+		TARGETTYPE_WARRIOR,
+		TARGETTYPE_EXPLORER,
+	};
+
+	/// Result of a turret's ring scan: the best target found and the data
+	/// needed to fire at it. `score` uses INT_MIN as "nothing yet"; higher
+	/// scores override lower ones. `ticks` is the number of ticks the target
+	/// is expected to remain reachable (buildings use 256, i.e. "stationary").
+	struct TurretTarget
+	{
+		TurretTargetType type = TARGETTYPE_NONE;
+		int score = INT_MIN;
+		int ticks = 0;
+		int x = 0, y = 0;
+		bool found() const { return type != TARGETTYPE_NONE; }
+	};
+
+	/// Firing solution computed from a target tile: the bullet spawn origin in
+	/// pixels (`originX/originY`), its Q8 fixed-point velocity (`speedX/speedY`),
+	/// and `ticksLeft` until it reaches the target.
+	struct TurretFiringSolution
+	{
+		int originX, originY;
+		int speedX, speedY;
+		int ticksLeft;
+	};
+
+	/// Phase 1 of turretStep: convert one stone in stock into bullets if there
+	/// is bullet capacity for a full multiplierStoneToBullets batch.
+	void convertStoneToBullet();
+
+	/// Phase 2 of turretStep: advance the shooting cooldown. Returns true when
+	/// the turret is off cooldown and may search for a target this tick; when
+	/// still cooling it decrements by shootRythme and returns false.
+	bool tickShootingCooldown();
+
+	/// Scan outward ring-by-ring for the best enemy target in range. Pure query
+	/// over map/units/buildings; mutates nothing on the turret.
+	TurretTarget findBestTarget() const;
+
+	/// Evaluate the single tile (targetX,targetY) on ring `ring` and update
+	/// `best` if it holds a higher-priority/higher-scoring target. `ticksToHit`
+	/// is how long a bullet would take to reach this ring; targets that will
+	/// move away before then are skipped (and, matching the original, skipping a
+	/// ground unit also skips the air/building checks at the same tile).
+	void considerScanTile(int targetX, int targetY, int ring, int ticksToHit,
+	                      Uint32 enemies, Map* map, TurretTarget& best) const;
+
+	/// Score a warrior target (offense + weakness + proximity); higher is more
+	/// urgent. `ring` is the scan ring distance used for the proximity term.
+	int scoreWarriorTarget(const Unit* target, int ring) const;
+
+	/// Overwrite `best` with this candidate when its score beats the incumbent.
+	static void applyCandidate(TurretTarget& best, int score, int ticks,
+	                           int x, int y, TurretTargetType type);
+
+	/// Phase 5 geometry: compute the bullet spawn origin and velocity aimed at
+	/// the target tile, accounting for toroidal map wrap.
+	TurretFiringSolution computeFiringSolution(int targetX, int targetY) const;
+
+	/// Phase 5 spawn: if the bullet would reach the target before it moves away,
+	/// create it, consume a bullet, and arm the cooldown.
+	void fireBullet(const TurretTarget& target, Uint32 stepCounter);
+
 	// ─── Private helper methods ─────────────────────────────────────
 
 	/// This function updates the units harvesting at this building. In
