@@ -385,13 +385,14 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 		Building *b=*it;
 		if ((b->ratio[WORKER]!=workers)||(b->ratio[EXPLORER]!=explorers)||(b->ratio[WARRIOR]!=warriors))
 		{
-			b->ratioLocal[WORKER]=workers;
-			b->ratioLocal[EXPLORER]=explorers;
-			b->ratioLocal[WARRIOR]=warriors;
-
-			//printf("AI: (%d) ratioLocal changed.\n", b->gid);
-
-			return shared_ptr<Order>(new OrderModifySwarm(b->gid, b->ratioLocal));
+			// Stack buffer for the order payload — the per-viewer GUI shadow
+			// that used to back this lives in BuildingGuiState now and is
+			// off-limits to AI code.
+			Sint32 newRatio[NB_UNIT_TYPE];
+			newRatio[WORKER]=workers;
+			newRatio[EXPLORER]=explorers;
+			newRatio[WARRIOR]=warriors;
+			return shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio));
 		}
 
 		int f=estimateFood(b);

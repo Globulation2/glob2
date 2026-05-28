@@ -109,17 +109,17 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			if(lmx>=0 && lmx<=12)
 			{
 				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, -1)));
-				selBuild->priorityLocal = -1;
+				pendingFor(selBuild->gid).pendingPriority = -1;
 			}
 			else if(lmx>=(width) && lmx<(width+12))
 			{
 				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 0)));
-				selBuild->priorityLocal = 0;
+				pendingFor(selBuild->gid).pendingPriority = 0;
 			}
 			else if(lmx>=(width*2) && lmx<=(width*2+12))
 			{
 				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 1)));
-				selBuild->priorityLocal = 1;
+				pendingFor(selBuild->gid).pendingPriority = 1;
 			}
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -158,8 +158,14 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 				{
 					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
-						selBuild->clearingRessourcesLocal[i]=!selBuild->clearingRessourcesLocal[i];
-						orderQueue.push_back(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, selBuild->clearingRessourcesLocal)));
+						std::array<bool, BASIC_COUNT> next;
+						for (int k=0; k<BASIC_COUNT; k++)
+							next[k] = displayedClearingResource(*selBuild, k);
+						next[i] = !next[i];
+						pendingFor(selBuild->gid).pendingClearingRessources = next;
+						bool wire[BASIC_COUNT];
+						for (int k=0; k<BASIC_COUNT; k++) wire[k] = next[k];
+						orderQueue.push_back(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, wire)));
 					}
 
 					ypos+=YOFFSET_TEXT_PARA;
@@ -173,8 +179,8 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			{
 				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
-					selBuild->minLevelToFlagLocal=i;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal)));
+					pendingFor(selBuild->gid).pendingMinLevelToFlag = i;
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i)));
 				}
 
 				ypos+=YOFFSET_TEXT_PARA;
@@ -193,8 +199,8 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			{
 				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
-					selBuild->minLevelToFlagLocal=i;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, selBuild->minLevelToFlagLocal)));
+					pendingFor(selBuild->gid).pendingMinLevelToFlag = i;
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i)));
 				}
 
 				ypos+=YOFFSET_TEXT_PARA;
@@ -213,6 +219,10 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	//Exchannge building
 	//Exchanging as a feature is broken
 	/*
+	// If revived: build the next masks in local Uint32 variables, stash them
+	// as pending state on BuildingGuiState (add pendingReceiveRessourceMask /
+	// pendingSendRessourceMask there), then emit the order. Same pattern as
+	// pendingMaxUnitWorking / pendingPriority / pendingRatio.
 	if (selBuild->type->canExchange && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		int startY = ypos+YOFFSET_TEXT_PARA;
@@ -220,32 +230,34 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		if ((my>startY) && (my<endY))
 		{
 			int r = (my-startY)/YOFFSET_TEXT_PARA;
+			Uint32 nextRecv = selBuild->receiveRessourceMask;
+			Uint32 nextSend = selBuild->sendRessourceMask;
 			if ((lmx>92) && (lmx<104))
 			{
 				if (selBuild->receiveRessourceMask & (1<<r))
 				{
-					selBuild->receiveRessourceMaskLocal &= ~(1<<r);
+					nextRecv &= ~(1<<r);
 				}
 				else
 				{
-					selBuild->receiveRessourceMaskLocal |= (1<<r);
-					selBuild->sendRessourceMaskLocal &= ~(1<<r);
+					nextRecv |= (1<<r);
+					nextSend &= ~(1<<r);
 				}
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
+				orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, nextRecv, nextSend)));
 			}
 
 			if ((lmx>110) && (lmx<122))
 			{
 				if (selBuild->sendRessourceMask & (1<<r))
 				{
-					selBuild->sendRessourceMaskLocal &= ~(1<<r);
+					nextSend &= ~(1<<r);
 				}
 				else
 				{
-					selBuild->receiveRessourceMaskLocal &= ~(1<<r);
-					selBuild->sendRessourceMaskLocal |= (1<<r);
+					nextRecv &= ~(1<<r);
+					nextSend |= (1<<r);
 				}
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, selBuild->receiveRessourceMaskLocal, selBuild->sendRessourceMaskLocal)));
+				orderQueue.push_back(shared_ptr<Order>(new OrderModifyExchange(selBuild->gid, nextRecv, nextSend)));
 			}
 		}
 	}
@@ -271,10 +283,16 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		{
 			if ((my>ypos+(i*20))&&(my<ypos+(i*20)+16)&&(lmx<SCROLLBOX_BAR_WIDTH))
 			{
-				if (auto nbReq = interpretScrollBoxClick(lmx, selBuild->ratioLocal[i], MAX_RATIO_RANGE))
+				const std::array<Sint32, NB_UNIT_TYPE> current = displayedRatio(*selBuild);
+				if (auto nbReq = interpretScrollBoxClick(lmx, current[i], MAX_RATIO_RANGE))
 				{
-					selBuild->ratioLocal[i] = *nbReq;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, selBuild->ratioLocal)));
+					std::array<Sint32, NB_UNIT_TYPE> next = current;
+					next[i] = *nbReq;
+					pendingFor(selBuild->gid).pendingRatio = next;
+					// OrderModifySwarm wants a raw Sint32[NB_UNIT_TYPE]; copy out.
+					Sint32 wire[NB_UNIT_TYPE];
+					for (int k=0; k<NB_UNIT_TYPE; k++) wire[k] = next[k];
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, wire)));
 				}
 			}
 		}

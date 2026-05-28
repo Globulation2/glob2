@@ -64,7 +64,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
 	priority = 0;
-	priorityLocal = 0;
 	oldPriority = 0;
 
 	// position
@@ -79,9 +78,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for(int i=0; i<BASIC_COUNT; i++)
 		clearingRessources[i]=true;
 	clearingRessources[STONE]=false;
-	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
 	minLevelToFlag=0;
-	minLevelToFlagLocal=minLevelToFlag;
 
 	// building specific :
 	for(int i=0; i<MAX_NB_RESSOURCES; i++)
@@ -96,20 +93,18 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	productionTimeout=type->unitProductionTime;
 
 	totalRatio=0;
-	ratioLocal[0]=ratio[0]=1;
+	ratio[0]=1;
 	totalRatio++;
 	percentUsed[0]=0;
 	for (int i=1; i<NB_UNIT_TYPE; i++)
 	{
-		ratioLocal[i]=ratio[i]=0;
+		ratio[i]=0;
 		//totalRatio++;
 		percentUsed[i]=0;
 	}
 
 	receiveRessourceMask=0;
 	sendRessourceMask=0;
-	receiveRessourceMaskLocal=0;
-	sendRessourceMaskLocal=0;
 
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
@@ -219,13 +214,15 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_PRIORITY_FIELD)
 	{
 		priority = stream->readSint32("priority");
-		priorityLocal = stream->readSint32("priorityLocal");
+		// Legacy "priorityLocal" slot — was a per-viewer GUI shadow that now
+		// lives in BuildingGuiState. Read and discard to keep the on-disk
+		// format byte-equivalent for replay-baseline determinism.
+		(void)stream->readSint32("priorityLocal");
 		oldPriority = priority;
 	}
 	else
 	{
 		priority = 0;
-		priorityLocal = 0;
 		oldPriority = 0;
 	}
 
@@ -240,10 +237,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	}
 	assert(clearingRessources[STONE] == false);
 
-	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
-
 	minLevelToFlag = stream->readSint32("minLevelToFlag");
-	minLevelToFlagLocal = minLevelToFlag;
 
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
@@ -264,7 +258,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		{
 			std::ostringstream oss;
 			oss << "ratio[" << i << "]";
-			ratioLocal[i] = ratio[i] = stream->readSint32(oss.str().c_str());
+			ratio[i] = stream->readSint32(oss.str().c_str());
 		}
 		{
 			std::ostringstream oss;
@@ -275,8 +269,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	receiveRessourceMask = stream->readUint32("receiveRessourceMask");
 	sendRessourceMask = stream->readUint32("sendRessourceMask");
-	receiveRessourceMaskLocal = receiveRessourceMask;
-	sendRessourceMaskLocal = sendRessourceMask;
 
 	shootingStep = stream->readUint32("shootingStep");
 	shootingCooldown = stream->readSint32("shootingCooldown");
@@ -348,7 +340,12 @@ void Building::save(GAGCore::OutputStream *stream)
 
 	// priority
 	stream->writeSint32(priority, "priority");
-	stream->writeSint32(priorityLocal, "priorityLocal");
+	// Legacy "priorityLocal" slot, preserved for save-format compatibility.
+	// The per-viewer GUI shadow lives in BuildingGuiState now; the slot is
+	// filled with `priority` so on-disk bytes are unchanged during headless
+	// determinism baselines (no GUI is ever attached, so the old value would
+	// always have equalled `priority` anyway).
+	stream->writeSint32(priority, "priorityLocal");
 
 	// Flag specific
 	stream->writeUint32(unitStayRange, "unitStayRange");

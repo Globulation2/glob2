@@ -2,10 +2,14 @@
 
 #pragma once
 
+#include <array>
 #include <optional>
 #include <unordered_map>
 
 #include <SDL_types.h>
+
+#include "Ressource.h" // BASIC_COUNT
+#include "UnitConsts.h" // NB_UNIT_TYPE
 
 class Building;
 
@@ -31,6 +35,27 @@ struct BuildingGuiState
 	std::optional<Sint32> pendingPosY;
 	std::optional<Sint32> pendingMaxUnitWorking;
 	std::optional<Sint32> pendingUnitStayRange;
+
+	/// Pending priority radio (-1, 0, +1). Cleared by reconcileBuildingGuiState
+	/// when ORDER_CHANGE_PRIORITY for this gid arrives from a non-local sender
+	/// or during replay.
+	std::optional<Sint32> pendingPriority;
+
+	/// Pending clearing-flag resource mask. Whole array replaces wholesale (the
+	/// OrderModifyClearingFlag payload also carries the whole array). Cleared
+	/// by reconcileBuildingGuiState on ORDER_MODIFY_CLEARING_FLAG (non-local /
+	/// replay).
+	std::optional<std::array<bool, BASIC_COUNT>> pendingClearingRessources;
+
+	/// Pending min-level-to-flag (warflag / explorationflag). Cleared by
+	/// reconcileBuildingGuiState on ORDER_MODIFY_MIN_LEVEL_TO_FLAG (non-local /
+	/// replay).
+	std::optional<Sint32> pendingMinLevelToFlag;
+
+	/// Pending per-unit-type swarm ratios. Whole array replaces wholesale (the
+	/// OrderModifySwarm payload also carries the whole array). Cleared by
+	/// reconcileBuildingGuiState on ORDER_MODIFY_SWARM (non-local / replay).
+	std::optional<std::array<Sint32, NB_UNIT_TYPE>> pendingRatio;
 };
 
 /// Map from Building::gid to its pending GUI state.
@@ -43,6 +68,10 @@ Sint32 displayedPosX(const BuildingGuiStateMap& m, const Building& b);
 Sint32 displayedPosY(const BuildingGuiStateMap& m, const Building& b);
 Sint32 displayedMaxUnitWorking(const BuildingGuiStateMap& m, const Building& b);
 Sint32 displayedUnitStayRange(const BuildingGuiStateMap& m, const Building& b);
+Sint32 displayedPriority(const BuildingGuiStateMap& m, const Building& b);
+bool displayedClearingResource(const BuildingGuiStateMap& m, const Building& b, int i);
+Sint32 displayedMinLevelToFlag(const BuildingGuiStateMap& m, const Building& b);
+std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const BuildingGuiStateMap& m, const Building& b);
 
 /// Count workers currently inside vs. en route to the flag's pending area.
 /// `posX`, `posY`, `stayRange` should be the displayed values (caller already

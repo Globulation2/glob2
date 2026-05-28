@@ -19,6 +19,16 @@
 #include "Bullet.h"
 #include "Integrity.h"
 
+void Building::releaseAllWorkers()
+{
+	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+	{
+		assert(*it);
+		(*it)->standardRandomActivity();
+	}
+	unitsWorking.clear();
+}
+
 void Building::kill(void)
 {
 	if (buildingState==DEAD)
@@ -45,12 +55,7 @@ void Building::kill(void)
 	}
 	unitsInside.clear();
 
-	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-	{
-		assert(*it);
-		(*it)->standardRandomActivity();
-	}
-	unitsWorking.clear();
+	releaseAllWorkers();
 
 	maxUnitWorking=0;
 	maxUnitInside=0;

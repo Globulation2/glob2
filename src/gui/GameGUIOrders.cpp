@@ -96,6 +96,50 @@ void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order>& order)
 			}
 			break;
 		}
+		case ORDER_CHANGE_PRIORITY:
+		{
+			auto ocp = std::static_pointer_cast<OrderChangePriority>(order);
+			if (ocp->sender != localPlayer || replaying)
+			{
+				auto it = buildingGuiState.find(ocp->gid);
+				if (it != buildingGuiState.end())
+					it->second.pendingPriority.reset();
+			}
+			break;
+		}
+		case ORDER_MODIFY_CLEARING_FLAG:
+		{
+			auto omcf = std::static_pointer_cast<OrderModifyClearingFlag>(order);
+			if (omcf->sender != localPlayer || replaying)
+			{
+				auto it = buildingGuiState.find(omcf->gid);
+				if (it != buildingGuiState.end())
+					it->second.pendingClearingRessources.reset();
+			}
+			break;
+		}
+		case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
+		{
+			auto omw = std::static_pointer_cast<OrderModifyMinLevelToFlag>(order);
+			if (omw->sender != localPlayer || replaying)
+			{
+				auto it = buildingGuiState.find(omw->gid);
+				if (it != buildingGuiState.end())
+					it->second.pendingMinLevelToFlag.reset();
+			}
+			break;
+		}
+		case ORDER_MODIFY_SWARM:
+		{
+			auto oms = std::static_pointer_cast<OrderModifySwarm>(order);
+			if (oms->sender != localPlayer || replaying)
+			{
+				auto it = buildingGuiState.find(oms->gid);
+				if (it != buildingGuiState.end())
+					it->second.pendingRatio.reset();
+			}
+			break;
+		}
 		default:
 			break;
 	}

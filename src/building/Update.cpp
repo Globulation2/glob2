@@ -43,9 +43,7 @@ void Building::updateBuildingSite(void)
 
 
 		//now that building is complete clear the workers
-		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
-			(*it)->standardRandomActivity();
-		unitsWorking.clear();
+		releaseAllWorkers();
 
 		if (type->maxUnitWorking)
 		{
@@ -92,9 +90,7 @@ void Building::updateUnitsWorking(void)
 	if (maxUnitWorking==0)
 	{
 		// This is only a special optimization case:
-		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-			(*it)->standardRandomActivity();
-		unitsWorking.clear();
+		releaseAllWorkers();
 	}
 	else
 	{

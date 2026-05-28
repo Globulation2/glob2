@@ -71,13 +71,18 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 				for (int ri=0; ri<NB_UNIT_TYPE; ri++)
 					if (b->ratio[ri]!=0)
 					{
-						for (int ri=0; ri<NB_UNIT_TYPE; ri++)
+						// Zero out the authoritative ratios; build a stack
+						// buffer for the order payload. The per-viewer GUI
+						// shadow that used to live as b->ratioLocal is now
+						// in BuildingGuiState and off-limits to AI code.
+						Sint32 newRatio[NB_UNIT_TYPE];
+						for (int rj=0; rj<NB_UNIT_TYPE; rj++)
 						{
-							b->ratio[ri]=0;
-							b->ratioLocal[ri]=0;
+							b->ratio[rj]=0;
+							newRatio[rj]=0;
 						}
 						b->update();
-						return shared_ptr<Order>(new OrderModifySwarm(b->gid, b->ratioLocal));
+						return shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio));
 					}
 		}
 		
@@ -125,13 +130,16 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 				|| b->ratio[WARRIOR]!=warriorGoal)
 			{
 				b->ratio[EXPLORER]=explorerGoal;
-				b->ratioLocal[EXPLORER]=explorerGoal;
 				b->ratio[WORKER]=workerGoal;
-				b->ratioLocal[WORKER]=workerGoal;
 				b->ratio[WARRIOR]=warriorGoal;
-				b->ratioLocal[WARRIOR]=warriorGoal;
+				// Stack buffer for the order payload — see also the foodlock
+				// branch above. AI must not touch BuildingGuiState.
+				Sint32 newRatio[NB_UNIT_TYPE];
+				newRatio[EXPLORER]=explorerGoal;
+				newRatio[WORKER]=workerGoal;
+				newRatio[WARRIOR]=warriorGoal;
 				b->update();
-				return shared_ptr<Order>(new OrderModifySwarm(b->gid, b->ratioLocal));
+				return shared_ptr<Order>(new OrderModifySwarm(b->gid, newRatio));
 			}
 		}
 	}

@@ -217,11 +217,6 @@ void Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer
 	{
 		b->receiveRessourceMask=ome.receiveRessourceMask;
 		b->sendRessourceMask=ome.sendRessourceMask;
-		if (ome.sender!=localPlayer)
-		{
-			b->receiveRessourceMaskLocal=b->receiveRessourceMask;
-			b->sendRessourceMaskLocal=b->sendRessourceMask;
-		}
 		b->update();
 	}
 }
@@ -259,8 +254,6 @@ void Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 		&& b->type->zonable[WORKER])
 	{
 		memcpy(b->clearingRessources, omcf.clearingRessources, sizeof(bool)*BASIC_COUNT);
-		if (omcf.sender!=localPlayer)
-			memcpy(b->clearingRessourcesLocal, omcf.clearingRessources, sizeof(bool)*BASIC_COUNT);
 	}
 }
 
@@ -273,9 +266,6 @@ void Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, in
 		&& (b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
 	{
 		b->minLevelToFlag = omwf.minLevelToFlag;
-		// if it was another player, update local
-		if (omwf.sender != localPlayer)
-			b->minLevelToFlagLocal = b->minLevelToFlag;
 
 		// flush all the actual units
 		int maxUnitWorkingSaved = b->maxUnitWorking;
@@ -462,8 +452,6 @@ void Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)
 		for (int j=0; j<NB_UNIT_TYPE; j++)
 		{
 			b->ratio[j]=oms.ratio[j];
-			if (oms.sender!=localPlayer)
-				b->ratioLocal[j]=b->ratio[j];
 		}
 		b->update();
 	}

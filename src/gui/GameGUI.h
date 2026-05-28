@@ -594,6 +594,10 @@ private:
 	Sint32 displayedPosY(const Building& b) const;
 	Sint32 displayedMaxUnitWorking(const Building& b) const;
 	Sint32 displayedUnitStayRange(const Building& b) const;
+	Sint32 displayedPriority(const Building& b) const;
+	bool displayedClearingResource(const Building& b, int i) const;
+	Sint32 displayedMinLevelToFlag(const Building& b) const;
+	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const Building& b) const;
 
 	///Get-or-create the pending state for a building (used by GUI mutators).
 	BuildingGuiState& pendingFor(Uint16 gid) { return buildingGuiState[gid]; }

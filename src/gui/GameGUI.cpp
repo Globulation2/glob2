@@ -88,6 +88,10 @@ Sint32 GameGUI::displayedPosX(const Building& b) const { return ::displayedPosX(
 Sint32 GameGUI::displayedPosY(const Building& b) const { return ::displayedPosY(buildingGuiState, b); }
 Sint32 GameGUI::displayedMaxUnitWorking(const Building& b) const { return ::displayedMaxUnitWorking(buildingGuiState, b); }
 Sint32 GameGUI::displayedUnitStayRange(const Building& b) const { return ::displayedUnitStayRange(buildingGuiState, b); }
+Sint32 GameGUI::displayedPriority(const Building& b) const { return ::displayedPriority(buildingGuiState, b); }
+bool GameGUI::displayedClearingResource(const Building& b, int i) const { return ::displayedClearingResource(buildingGuiState, b, i); }
+Sint32 GameGUI::displayedMinLevelToFlag(const Building& b) const { return ::displayedMinLevelToFlag(buildingGuiState, b); }
+std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) const { return ::displayedRatio(buildingGuiState, b); }
 
 void GameGUI::init()
 {

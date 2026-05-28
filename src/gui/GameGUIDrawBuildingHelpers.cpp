@@ -218,8 +218,10 @@ void GameGUI::drawBuildingPriorityControls(Building* selBuild, BuildingType* bui
 	if (selBuild->buildingState != Building::ALIVE)
 		return;
 
-	// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
-	const int priority = (globalContainer->replaying?selBuild->priority:selBuild->priorityLocal);
+	// Pending priority radio (if the user has just clicked) overlays the
+	// authoritative value until the corresponding OrderChangePriority lands;
+	// during replay the map is empty, so this resolves to selBuild->priority.
+	const int priority = displayedPriority(*selBuild);
 
 	ypos += YOFFSET_B_SEP;
 
@@ -299,12 +301,17 @@ void GameGUI::drawBuildingExchange(Building* selBuild, BuildingType* buildingTyp
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormatableString("%0 (%1/%2)").arg(getRessourceName(i+HAPPYNESS_BASE)).arg(selBuild->ressources[i+HAPPYNESS_BASE]).arg(buildingType->maxRessource[i+HAPPYNESS_BASE]).c_str());
 
 		/*
+		// Exchange feature is broken/disabled. If revived, this should use
+		// BuildingGuiState::pendingReceiveRessourceMask /
+		// pendingSendRessourceMask (TODO: add) for the in-flight mask, falling
+		// back to receiveRessourceMask / sendRessourceMask. See the equivalent
+		// pattern for ratio / priority.
 		int inId, outId;
-		if (selBuild->receiveRessourceMaskLocal & (1<<i))
+		if (selBuild->receiveRessourceMask & (1<<i))
 			inId = 20;
 		else
 			inId = 19;
-		if (selBuild->sendRessourceMaskLocal & (1<<i))
+		if (selBuild->sendRessourceMask & (1<<i))
 			outId = 20;
 		else
 			outId = 19;
@@ -341,13 +348,14 @@ void GameGUI::drawBuildingResources(Building* selBuild, BuildingType* buildingTy
 }
 
 // Draws the swarm-building production-timeout progress bar followed by one
-// scrollbox per unit type for the local-vs-actual unit ratios. The progress
-// bar is split into an "elapsed" (blue) and "remaining" (gray) segment scaled
-// to SWARM_PROGRESS_BAR_WIDTH. Each ratio scrollbox shows two channels:
-// ratioLocal[i] (the user's pending input, drawn as the lighter bar) and
-// ratio[i] (the simulation-confirmed value, drawn as the darker overlay).
-// During replay both channels equal ratio[i] and overlay exactly; during
-// normal play they differ briefly while OrderModifySwarm is in flight.
+// scrollbox per unit type for the pending-vs-authoritative unit ratios. The
+// progress bar is split into an "elapsed" (blue) and "remaining" (gray)
+// segment scaled to SWARM_PROGRESS_BAR_WIDTH. Each ratio scrollbox shows two
+// channels: the pending value (the user's in-flight slider input, drawn as the
+// lighter bar) and ratio[i] (the simulation-confirmed value, drawn as the
+// darker overlay). During replay no pending state exists, so both channels
+// equal ratio[i] and overlay exactly; during normal play they differ briefly
+// while OrderModifySwarm is in flight.
 void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* buildingType, int& ypos)
 {
 	if (!((selBuild->owner->allies) & (1<<localTeamNo)))
@@ -361,12 +369,10 @@ void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* building
 	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+elapsed, ypos, left, SWARM_PROGRESS_BAR_HEIGHT, 128, 128, 128);
 
 	ypos += YOFFSET_SWARM_PROGRESS_BAR;
+	const std::array<Sint32, NB_UNIT_TYPE> displayed = displayedRatio(*selBuild);
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
-		// If we're replaying, display the actual number, not the locally cached one (changable by the gui user)
-		const int ratio = (globalContainer->replaying?selBuild->ratio[i]:selBuild->ratioLocal[i]);
-
-		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, ratio, selBuild->ratio[i], MAX_RATIO_RANGE);
+		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, displayed[i], selBuild->ratio[i], MAX_RATIO_RANGE);
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+24, ypos, globalContainer->littleFont, getUnitName(i));
 
 		if(i==1 && hilights.find(HilightRatioBar) != hilights.end())
@@ -583,7 +589,7 @@ void GameGUI::drawBuildingFlagControls(Building* selBuild, BuildingType* buildin
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,
 					getRessourceName(i));
 				int spriteId;
-				if (globalContainer->replaying?selBuild->clearingRessources[i]:selBuild->clearingRessourcesLocal[i])
+				if (displayedClearingResource(*selBuild, i))
 					spriteId=20;
 				else
 					spriteId=19;
@@ -603,7 +609,7 @@ void GameGUI::drawBuildingFlagControls(Building* selBuild, BuildingType* buildin
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont, 1+i);
 			int spriteId;
-			if (i==(globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal))
+			if (i==displayedMinLevelToFlag(*selBuild))
 				spriteId=20;
 			else
 				spriteId=19;
@@ -626,7 +632,7 @@ void GameGUI::drawBuildingFlagControls(Building* selBuild, BuildingType* buildin
 		// 0 == any explorer
 		// 1 == must be able to attack ground
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[any explorer]"));
-		if ((globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal) == 0)
+		if (displayedMinLevelToFlag(*selBuild) == 0)
 			spriteId = 20;
 		else
 			spriteId = 19;
@@ -634,7 +640,7 @@ void GameGUI::drawBuildingFlagControls(Building* selBuild, BuildingType* buildin
 
 		ypos += YOFFSET_TEXT_PARA;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[ground attack]"));
-		if ((globalContainer->replaying?selBuild->minLevelToFlag:selBuild->minLevelToFlagLocal) == 1)
+		if (displayedMinLevelToFlag(*selBuild) == 1)
 			spriteId = 20;
 		else
 			spriteId = 19;

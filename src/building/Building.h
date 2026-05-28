@@ -226,6 +226,13 @@ public:
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
 	void removeUnitFromWorking(Unit* unit);
 
+	/// Detach every worker from this building: each unit gets `standardRandomActivity()`
+	/// (which clears its `attachedBuilding` link and puts it back in the free pool), and
+	/// then `unitsWorking` is emptied. The list is required to contain no null pointers.
+	/// Used when a building becomes incapable of holding workers (completion, kill, max=0,
+	/// or unreachable clearing-flag resources).
+	void releaseAllWorkers();
+
 	/// Insert into the harvesting unit, when the unit has decided to do so.
 	/// This does not handle units state, just the buildings.
 	void insertUnitToHarvesting(Unit* unit);
@@ -375,9 +382,12 @@ public:
 	Sint32 maxUnitInside;
 	///This counts the number of units that failed the requirements for the building, but where free
 	std::list<Unit *> unitsInside;
-	///This stores the priority of the building, 0 is normal, -1 is low, +1 is high
+	///This stores the priority of the building, 0 is normal, -1 is low, +1 is high.
+	///Authoritative simulation value — written only by OrderChangePriority via
+	///Game::executeChangePriority. The per-viewer pending value used by the
+	///right-panel radio while the order is in flight lives in
+	///BuildingGuiState::pendingPriority, not on this struct.
 	Sint32 priority;
-	Sint32 priorityLocal;
 
 	// identity
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
@@ -393,9 +403,7 @@ public:
 	// Flag usefull :
 	Sint32 unitStayRange; // (Uint8)
 	bool clearingRessources[BASIC_COUNT]; // true if the ressource has to be cleared.
-	bool clearingRessourcesLocal[BASIC_COUNT];
 	Sint32 minLevelToFlag;
-	Sint32 minLevelToFlagLocal;
 
 	// Building specific :
 	/// Amount stocked, or used for building building. Local ressources stores the ressources this particular building contains
@@ -409,14 +417,15 @@ public:
 
 	// swarm building parameters
 	Sint32 productionTimeout;
+	/// Authoritative per-unit-type swarm ratios — written only by
+	/// OrderModifySwarm via Game::executeModifySwarm. The per-viewer pending
+	/// value used while a slider drag is in flight lives in
+	/// BuildingGuiState::pendingRatio, not on this struct.
 	Sint32 ratio[NB_UNIT_TYPE];
-	Sint32 ratioLocal[NB_UNIT_TYPE];
 
 	// exchange building parameters
 	Uint32 receiveRessourceMask;
 	Uint32 sendRessourceMask;
-	Uint32 receiveRessourceMaskLocal;
-	Uint32 sendRessourceMaskLocal;
 
 	// turrets building parameters
 	Sint32 bullets;
