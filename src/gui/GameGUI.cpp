@@ -131,7 +131,7 @@ void GameGUI::init()
 	showFertilityMap=false;
 
 	inGameMenu=IGM_NONE;
-	gameMenuScreen=NULL;
+	gameMenuScreen.reset();
 	typingInputScreen=NULL;
 	scrollableText=NULL;
 	typingInputScreenPos=0;

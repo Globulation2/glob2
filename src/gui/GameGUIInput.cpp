@@ -164,8 +164,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			{
 				if (inGameMenu != IGM_NONE)
 				{
-					delete gameMenuScreen;
-					gameMenuScreen = NULL;
+					gameMenuScreen.reset();
 				}
 				if (inGameMenu == menu)
 					inGameMenu = IGM_NONE;
@@ -175,13 +174,13 @@ void GameGUI::processEvent(SDL_Event *event)
 				switch (menu)
 				{
 				case IGM_MAIN:
-					gameMenuScreen = new InGameMainScreen(globalContainer->replaying);
+					gameMenuScreen.reset(new InGameMainScreen(globalContainer->replaying));
 					break;
 				case IGM_ALLIANCE:
-					gameMenuScreen = new InGameAllianceScreen(this);
+					gameMenuScreen.reset(new InGameAllianceScreen(this));
 					break;
 				case IGM_OBJECTIVES:
-					gameMenuScreen = new InGameObjectivesScreen(this, false);
+					gameMenuScreen.reset(new InGameObjectivesScreen(this, false));
 					break;
 				default:
 					assert(false);

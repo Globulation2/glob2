@@ -43,44 +43,39 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case InGameMainScreen::LOAD_GAME:
 				{
-					delete gameMenuScreen;
 					inGameMenu=IGM_LOAD;
 					if (globalContainer->replaying)
-						gameMenuScreen = new LoadSaveScreen("replays", "replay", true, std::string(Toolkit::getStringTable()->getString("[load replay]")), defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+						gameMenuScreen.reset(new LoadSaveScreen("replays", "replay", true, std::string(Toolkit::getStringTable()->getString("[load replay]")), defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					else
-						gameMenuScreen = new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+						gameMenuScreen.reset(new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					return true;
 				}
 				break;
 				case InGameMainScreen::SAVE_GAME:
 				{
-					delete gameMenuScreen;
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen = new LoadSaveScreen("games", "game", false, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename);
+					gameMenuScreen.reset(new LoadSaveScreen("games", "game", false, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					return true;
 				}
 				break;
 				case InGameMainScreen::OPTIONS:
 				{
-					delete gameMenuScreen;
 					inGameMenu=IGM_OPTION;
-					gameMenuScreen = new InGameOptionScreen(this);
+					gameMenuScreen.reset(new InGameOptionScreen(this));
 					return true;
 				}
 				break;
 				case InGameMainScreen::RETURN_GAME:
 				{
-					delete gameMenuScreen;
 					inGameMenu=IGM_NONE;
-					gameMenuScreen=NULL;
+					gameMenuScreen.reset();
 					return true;
 				}
 				break;
 				case InGameMainScreen::QUIT_GAME:
 				{
-					delete gameMenuScreen;
 					inGameMenu=IGM_NONE;
-					gameMenuScreen=NULL;
+					gameMenuScreen.reset();
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					flushOutgoingAndExit=true;
 					return true;
@@ -99,11 +94,11 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					Uint32 playerMask[5];
 					Uint32 teamMask[5];
-					playerMask[0]=((InGameAllianceScreen *)gameMenuScreen)->getAlliedMask();
-					playerMask[1]=((InGameAllianceScreen *)gameMenuScreen)->getEnemyMask();
-					playerMask[2]=((InGameAllianceScreen *)gameMenuScreen)->getExchangeVisionMask();
-					playerMask[3]=((InGameAllianceScreen *)gameMenuScreen)->getFoodVisionMask();
-					playerMask[4]=((InGameAllianceScreen *)gameMenuScreen)->getOtherVisionMask();
+					playerMask[0]=((InGameAllianceScreen *)gameMenuScreen.get())->getAlliedMask();
+					playerMask[1]=((InGameAllianceScreen *)gameMenuScreen.get())->getEnemyMask();
+					playerMask[2]=((InGameAllianceScreen *)gameMenuScreen.get())->getExchangeVisionMask();
+					playerMask[3]=((InGameAllianceScreen *)gameMenuScreen.get())->getFoodVisionMask();
+					playerMask[4]=((InGameAllianceScreen *)gameMenuScreen.get())->getOtherVisionMask();
 					teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
 
 					// mask are for players, we need to convert them to team.
@@ -128,10 +123,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 					orderQueue.push_back(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,
 						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4])));
-					chatMask=((InGameAllianceScreen *)gameMenuScreen)->getChatMask();
+					chatMask=((InGameAllianceScreen *)gameMenuScreen.get())->getChatMask();
 					inGameMenu=IGM_NONE;
-					delete gameMenuScreen;
-					gameMenuScreen=NULL;
+					gameMenuScreen.reset();
 				}
 				return true;
 
@@ -145,8 +139,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			if (gameMenuScreen->endValue == InGameOptionScreen::OK)
 			{
 				inGameMenu=IGM_NONE;
-				delete gameMenuScreen;
-				gameMenuScreen=NULL;
+				gameMenuScreen.reset();
 				return true;
 			}
 			else
@@ -160,8 +153,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			if (gameMenuScreen->endValue == InGameObjectivesScreen::OK)
 			{
 				inGameMenu=IGM_NONE;
-				delete gameMenuScreen;
-				gameMenuScreen=NULL;
+				gameMenuScreen.reset();
 				return true;
 			}
 			else
@@ -177,7 +169,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			{
 				case LoadSaveScreen::OK:
 				{
-					std::string locationName=((LoadSaveScreen *)gameMenuScreen)->getFileName();
+					std::string locationName=((LoadSaveScreen *)gameMenuScreen.get())->getFileName();
 					if (inGameMenu==IGM_LOAD)
 					{
 						toLoadGameFileName = locationName;
@@ -186,7 +178,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					else
 					{
-						defualtGameSaveName=((LoadSaveScreen *)gameMenuScreen)->getName();
+						defualtGameSaveName=((LoadSaveScreen *)gameMenuScreen.get())->getName();
 						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
 						if (stream->isEndOfStream())
 						{
@@ -194,7 +186,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						}
 						else
 						{
-							const std::string name = ((LoadSaveScreen *)gameMenuScreen)->getName();
+							const std::string name = ((LoadSaveScreen *)gameMenuScreen.get())->getName();
 							assert(name.size());
 							save(stream, name);
 						}
@@ -204,8 +196,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 				case LoadSaveScreen::CANCEL:
 				inGameMenu=IGM_NONE;
-				delete gameMenuScreen;
-				gameMenuScreen=NULL;
+				gameMenuScreen.reset();
 				return true;
 
 				default:
@@ -223,15 +214,13 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 				case InGameEndOfGameScreen::CONTINUE:
 				inGameMenu=IGM_NONE;
-				delete gameMenuScreen;
-				gameMenuScreen=NULL;
+				gameMenuScreen.reset();
 				return true;
 
 				case InGameEndOfGameScreen::WATCH_AGAIN:
 				assert(globalContainer->replaying);
 				inGameMenu=IGM_NONE;
-				delete gameMenuScreen;
-				gameMenuScreen=NULL;
+				gameMenuScreen.reset();
 				toLoadGameFileName = globalContainer->replayFileName;
 				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 				flushOutgoingAndExit=true;

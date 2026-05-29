@@ -294,13 +294,8 @@ void GameGUI::step(void)
 	{
 		if(game.missionBriefing != "")
 		{
-			if(gameMenuScreen)
-			{
-				delete gameMenuScreen;
-				gameMenuScreen=NULL;
-			}
 			inGameMenu=IGM_OBJECTIVES;
-			gameMenuScreen = new InGameObjectivesScreen(this, true);
+			gameMenuScreen.reset(new InGameObjectivesScreen(this, true));
 		}
 	}
 
@@ -355,7 +350,7 @@ void GameGUI::checkWonConditions(void)
 		if (inGameMenu==IGM_NONE)
 		{
 			inGameMenu=IGM_END_OF_GAME;
-			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Total prestige reached]"), true);
+			gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Total prestige reached]"), true));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}
@@ -365,7 +360,7 @@ void GameGUI::checkWonConditions(void)
 		if (inGameMenu==IGM_NONE)
 		{
 			inGameMenu=IGM_END_OF_GAME;
-			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have lost]"), true);
+			gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have lost]"), true));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}
@@ -379,7 +374,7 @@ void GameGUI::checkWonConditions(void)
 				campaign->setCompleted(missionName);
 			}
 			inGameMenu=IGM_END_OF_GAME;
-			gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have won]"), true);
+			gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have won]"), true));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}
@@ -395,7 +390,7 @@ void GameGUI::showEndOfReplayScreen()
 		hasEndOfGameDialogBeenShown = true;
 
 		inGameMenu=IGM_END_OF_GAME;
-		gameMenuScreen=new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true);
+		gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true));
 		miniMapPushed=false;
 	}
 }

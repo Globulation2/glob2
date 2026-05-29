@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <memory>
 #include <optional>
 #include <queue>
 #include <unordered_map>
@@ -500,7 +501,11 @@ private:
 		IGM_OBJECTIVES,
 		IGM_END_OF_GAME
 	} inGameMenu;
-	OverlayScreen *gameMenuScreen;
+	/// The single active in-game overlay (main menu, alliances, options, save/load,
+	/// objectives, or end-of-game dialog). Non-null iff inGameMenu != IGM_NONE.
+	/// Owned here: reset()/assignment auto-deletes the previous overlay, so callers
+	/// never pair delete with NULL by hand. (Rust port: Option<Box<dyn OverlayScreen>>.)
+	std::unique_ptr<OverlayScreen> gameMenuScreen;
 
 	///Denotes the name of the game save for saving,
 	///set on loading the map	

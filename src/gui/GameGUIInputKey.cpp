@@ -100,7 +100,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 					if (inGameMenu==IGM_NONE)
 					{
-						gameMenuScreen=new InGameMainScreen(globalContainer->replaying);
+						gameMenuScreen.reset(new InGameMainScreen(globalContainer->replaying));
 						inGameMenu=IGM_MAIN;
 					}
 				}
