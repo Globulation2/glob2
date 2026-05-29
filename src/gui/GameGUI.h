@@ -509,7 +509,7 @@ private:
 
 	///Denotes the name of the game save for saving,
 	///set on loading the map	
-	std::string defualtGameSaveName;
+	std::string defaultGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
 	

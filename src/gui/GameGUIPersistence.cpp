@@ -90,7 +90,7 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		return false;
 	}
-	defualtGameSaveName = game.mapHeader.getMapName();
+	defaultGameSaveName = game.mapHeader.getMapName();
 	if (game.mapHeader.getIsSavedGame())
 	{
 		// load gui's specific infos

@@ -45,16 +45,16 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 				{
 					inGameMenu=IGM_LOAD;
 					if (globalContainer->replaying)
-						gameMenuScreen.reset(new LoadSaveScreen("replays", "replay", true, std::string(Toolkit::getStringTable()->getString("[load replay]")), defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
+						gameMenuScreen.reset(new LoadSaveScreen("replays", "replay", true, std::string(Toolkit::getStringTable()->getString("[load replay]")), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					else
-						gameMenuScreen.reset(new LoadSaveScreen("games", "game", true, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
+						gameMenuScreen.reset(new LoadSaveScreen("games", "game", true, false, defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					return true;
 				}
 				break;
 				case InGameMainScreen::SAVE_GAME:
 				{
 					inGameMenu=IGM_SAVE;
-					gameMenuScreen.reset(new LoadSaveScreen("games", "game", false, false, defualtGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
+					gameMenuScreen.reset(new LoadSaveScreen("games", "game", false, false, defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					return true;
 				}
 				break;
@@ -178,7 +178,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					}
 					else
 					{
-						defualtGameSaveName=((LoadSaveScreen *)gameMenuScreen.get())->getName();
+						defaultGameSaveName=((LoadSaveScreen *)gameMenuScreen.get())->getName();
 						OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(locationName));
 						if (stream->isEndOfStream())
 						{
