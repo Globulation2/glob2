@@ -414,6 +414,56 @@ private:
 	bool considerUnitForWorkerFlag(Unit* unit, int* dist);
 	bool considerUnitForWarriorFlag(Unit* unit, int* dist);
 
+	/// One worker that could be hired to carry ressources to this building,
+	/// with the metrics the three selection passes of
+	/// subscribeToBringRessourcesStep score on. A null `unit` means the slot
+	/// holds no candidate. `distance` is the linear gradient distance to the
+	/// building when the unit already carries a needed ressource, or the
+	/// need-scaled (building + ressource) distance when the unit must first
+	/// fetch one. `resource` is the ressource the unit carries or will fetch.
+	struct BringRessourcesCandidate
+	{
+		Unit* unit;
+		int distance;
+		int resource;
+	};
+
+	/// Running best-candidate state shared, in order, across the three
+	/// selection passes. Later passes run only while `choosen` is still null.
+	/// Candidates are ranked by `maxLevel` first, then by smallest `minValue`.
+	struct BringRessourcesSelection
+	{
+		int maxLevel;
+		int minValue;
+		Unit* choosen;
+	};
+
+	/// Per-unit predicate for subscribeToBringRessourcesStep, mirroring the
+	/// considerUnitFor*Flag helpers: tests one harvest-capable unit against
+	/// availability, level, and building/ressource reachability. On success it
+	/// fills *dist and *resource for a hireable candidate and returns true; on
+	/// failure it tallies the rejection reason in unitsFailingRequirements and
+	/// returns false. Callers must pre-filter units lacking the HARVEST
+	/// ability or already filling this building.
+	bool considerUnitForRessources(Unit* unit, int* dist, int* resource);
+
+	/// Fills candidates[Unit::MAX_COUNT] with hireable workers (null `unit`
+	/// where the slot is empty or the unit was rejected), tallying rejection
+	/// reasons via considerUnitForRessources.
+	void gatherBringRessourcesCandidates(BringRessourcesCandidate* candidates);
+
+	/// The three priority-ordered selection passes of
+	/// subscribeToBringRessourcesStep. Each scans all candidates and updates
+	/// `sel` with the best match. The carrying-needed pass also assigns
+	/// destinationPurpose to every carrying candidate it inspects and scores
+	/// on a hunger-discounted distance; the empty-handed and unwanted passes
+	/// assign destinationPurpose only to the unit they actually choose and
+	/// score on the candidate distance directly. These differences are
+	/// deliberate and must be preserved.
+	void selectUnitCarryingNeededRessource(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel);
+	void selectEmptyHandedUnit(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel);
+	void selectUnitCarryingUnwantedRessource(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel);
+
 	/// This function updates the ressources pointer. The variable ressources can either point to local ressources
 	/// or team resources, depending on the BuildingType.
 	void updateRessourcesPointer();

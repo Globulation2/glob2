@@ -20,6 +20,25 @@
 #include "Bullet.h"
 #include "Integrity.h"
 
+namespace
+{
+	/// Sentinel for the best need-scaled ressource distance found so far: larger
+	/// than any real value, so the first reachable needed ressource always wins
+	/// the running-minimum comparison.
+	constexpr int UNREACHABLE_RESSOURCE_DIST = 100000;
+
+	/// Weight of the harvest level in a ressource candidate's ranking key. The
+	/// harvest level dominates the comparison; the walk level breaks ties.
+	constexpr int HARVEST_LEVEL_WEIGHT = 10;
+
+	/// Composite "experience" key used to rank ressource-carrying candidates;
+	/// higher is preferred.
+	int bringRessourcesLevel(const Unit* unit)
+	{
+		return unit->level[HARVEST] * HARVEST_LEVEL_WEIGHT + unit->level[WALK];
+	}
+}
+
 void Building::step(void)
 {
 	computeWishedRessources(wishedResources);
@@ -33,6 +52,213 @@ void Building::step(void)
 }
 
 
+bool Building::considerUnitForRessources(Unit* unit, int* dist, int* resource)
+{
+	if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+	{
+		unitsFailingRequirements[UnitNotAvailable] += 1;
+		return false;
+	}
+	if(!canUnitWorkHere(unit))
+	{
+		unitsFailingRequirements[UnitTooLowLevel] += 1;
+		return false;
+	}
+
+	Map* map = owner->map;
+	int distBuilding=0;
+	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+	bool canSwim=unit->performance[SWIM];
+	if(!map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	{
+		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
+		return false;
+	}
+	if(distBuilding >= timeLeft)
+	{
+		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
+		return false;
+	}
+
+	// A unit already carrying a needed ressource is taken as-is; its distance
+	// metric is just the gradient distance to the building.
+	int unitr = unit->carriedRessource;
+	if((unitr>=0) && neededRessource(unitr))
+	{
+		*dist = distBuilding;
+		*resource = unitr;
+		return true;
+	}
+
+	// Otherwise look for the best reachable needed ressource the unit could
+	// fetch, scoring by combined (building + ressource) distance scaled by how
+	// badly the ressource is needed. Track whether the only candidates were
+	// out of hunger range, and whether they were regular ressources or fruit,
+	// so the rejection reason is specific.
+	int bestDist = UNREACHABLE_RESSOURCE_DIST;
+	int bestResource = RESSOURCE_TYPE_NONE;
+	bool regularFound=false;
+	bool fruitFound=false;
+	bool regularFoundTooFar=false;
+	bool fruitFoundTooFar=false;
+	int x=unit->posX;
+	int y=unit->posY;
+	for(int r=0; r<MAX_NB_RESSOURCES; ++r)
+	{
+		int need = neededRessource(r);
+		if(need>0)
+		{
+			if(r<BASIC_COUNT)
+				regularFound=true;
+			else
+				fruitFound=true;
+			int distResource = 0;
+			if (map->ressourceAvailable(owner->teamNumber, r, canSwim, x, y, &distResource))
+			{
+				if(distResource<timeLeft)
+				{
+					int dist = (distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
+					int value = dist / need;
+					if(value < bestDist)
+					{
+						bestDist = value;
+						bestResource=r;
+					}
+				}
+				else
+				{
+					if(r<BASIC_COUNT)
+						regularFoundTooFar=true;
+					else
+						fruitFoundTooFar=true;
+				}
+			}
+		}
+	}
+	if(bestResource == RESSOURCE_TYPE_NONE)
+	{
+		if(regularFound)
+		{
+			if(regularFoundTooFar)
+				unitsFailingRequirements[UnitTooFarFromResource] += 1;
+			else
+				unitsFailingRequirements[UnitCantAccessResource] += 1;
+		}
+		else if(fruitFound)
+		{
+			if(fruitFoundTooFar)
+				unitsFailingRequirements[UnitCantAccessFruit] += 1;
+			else
+				unitsFailingRequirements[UnitTooFarFromFruit] += 1;
+		}
+		return false;
+	}
+
+	*resource = bestResource;
+	*dist = bestDist;
+	return true;
+}
+
+void Building::gatherBringRessourcesCandidates(BringRessourcesCandidate* candidates)
+{
+	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	{
+		candidates[n].unit = NULL;
+		candidates[n].distance = 0;
+		candidates[n].resource = -1;
+		Unit* unit=owner->myUnits[n];
+		if(!unit)
+			continue;
+		if(!unit->performance[HARVEST])
+			continue;
+		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
+			continue;
+
+		int dist;
+		int resource;
+		if(considerUnitForRessources(unit, &dist, &resource))
+		{
+			candidates[n].unit = unit;
+			candidates[n].distance = dist;
+			candidates[n].resource = resource;
+		}
+	}
+}
+
+void Building::selectUnitCarryingNeededRessource(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel)
+{
+	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	{
+		Unit* unit=candidates[n].unit;
+		if(unit==NULL)
+			continue;
+
+		int r=unit->carriedRessource;
+		int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+		if ((r>=0) && neededRessource(r))
+		{
+			int value=candidates[n].distance-(timeLeft>>1);
+			int level = bringRessourcesLevel(unit);
+			// Every carrying candidate has its destinationPurpose set to the
+			// ressource it carries, not only the one finally chosen.
+			unit->destinationPurpose=r;
+			if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
+			{
+				sel.minValue=value;
+				sel.maxLevel=level;
+				sel.choosen=unit;
+			}
+		}
+	}
+}
+
+void Building::selectEmptyHandedUnit(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel)
+{
+	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	{
+		Unit* unit=candidates[n].unit;
+		if(unit==NULL)
+			continue;
+
+		if (unit->carriedRessource<0)
+		{
+			int value=candidates[n].distance;
+			int level = bringRessourcesLevel(unit);
+			if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
+			{
+				sel.minValue=value;
+				sel.maxLevel=level;
+				sel.choosen=unit;
+				unit->destinationPurpose=candidates[n].resource;
+			}
+		}
+	}
+}
+
+void Building::selectUnitCarryingUnwantedRessource(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel)
+{
+	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	{
+		Unit* unit=candidates[n].unit;
+		if(unit==NULL)
+			continue;
+
+		int r2=unit->carriedRessource;
+		if ((r2>=0) && !neededRessource(r2))
+		{
+			int value=candidates[n].distance;
+			int level = bringRessourcesLevel(unit);
+			if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
+			{
+				sel.minValue=value;
+				sel.maxLevel=level;
+				sel.choosen=unit;
+				unit->destinationPurpose=candidates[n].resource;
+			}
+		}
+	}
+}
+
 bool Building::subscribeToBringRessourcesStep()
 {
 	for(int i=0; i<UnitCantWorkReasonSize; ++i)
@@ -45,286 +271,30 @@ bool Building::subscribeToBringRessourcesStep()
 		printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
 
 	bool hired=false;
-	if (((Sint32)unitsWorking.size()<desiredMaxUnitWorking) /* && !unitsWorkingSubscribe.empty() */ )
+	if ((Sint32)unitsWorking.size()<desiredMaxUnitWorking)
 	{
-		Unit *choosen=NULL;
-		Map *map=owner->map;
-		for(int i=0; i<UnitCantWorkReasonSize; ++i)
+		BringRessourcesCandidate candidates[Unit::MAX_COUNT];
+		gatherBringRessourcesCandidates(candidates);
+
+		// Hire the best candidate in strict priority tiers: a unit already
+		// carrying a needed ressource first, then an empty-handed unit, then a
+		// unit carrying an unwanted ressource. A later tier is only consulted
+		// when the earlier tiers found nobody.
+		BringRessourcesSelection sel;
+		sel.maxLevel = -1;
+		sel.minValue = INT_MAX;
+		sel.choosen = NULL;
+
+		selectUnitCarryingNeededRessource(candidates, sel);
+		if (sel.choosen==NULL)
+			selectEmptyHandedUnit(candidates, sel);
+		if (sel.choosen==NULL)
+			selectUnitCarryingUnwantedRessource(candidates, sel);
+
+		if (sel.choosen)
 		{
-			unitsFailingRequirements[i]=0;
-		}
-		/* To choose a good unit, we get a composition of things:
-		1-the closest the unit is, the better it is.
-		2-the less the unit is hungry, the better it is.
-		3-if the unit has a needed ressource, this is better.
-		4-if the unit as a not needed ressource, this is worse.
-		5-if the unit is close of a needed ressource, this is better
-
-		score_to_max=(rightRes*100/d+noRes*80/(d+dr)+wrongRes*25/(d+dr))/walk+sign(timeleft>>2 - (d+dr))*500+100/harvest
-		*/
-		/*
-		int maxValue=-INT_MAX;
-		for(int n=0; n<Building::MAX_COUNT; ++n)
-		{
-			Unit* unit=owner->myUnits[n];
-			if(unit==NULL
-			|| unit->activity != Unit::ACT_RANDOM
-			|| unit->medical != Unit::MED_FREE
-			|| !unit->performance[HARVEST])
-				continue;
-			if(!canUnitWorkHere(unit))
-				continue;
-
-			int r=unit->carriedRessource;
-			int dist;
-			if(!map->buildingAvailable(this, unit->performance[SWIM], unit->posX, unit->posY, &dist))
-			{
-				//std::cout << ":" << std::flush;
-				continue; //also to fill dist
-			}
-			int distUnitRessource;
-			int nr;
-			for (nr=0; nr<MAX_RESSOURCES; nr++)
-			{
-				if (neededRessource(nr)>0)
-				{
-					if(map->ressourceAvailable(owner->teamNumber, nr, unit->performance[SWIM], unit->posX, unit->posY, &distUnitRessource)) //to fill distUnitRessource
-						break;
-					else
-						continue;
-				}
-			}
-			if (neededRessource(nr)<=0)
-			{
-				//std::cout << "," << std::flush;
-				continue;
-			}
-			int rightRes=(((r>=0) && neededRessource(r))?1:0);
-			if(rightRes==1 && (unit->hungry-unit->trigHungry)/unit->race->hungryness/2<dist)
-				continue;
-			else if(rightRes!=1 && (unit->hungry-unit->trigHungry)/unit->race->hungryness/2<(dist+distUnitRessource))
-				continue;
-			int noRes=(r<0?1:0);
-			int wrongRes=(((r>=0) && !neededRessource(r))?1:0);
-			int value = (
-				rightRes*10*(512-dist)+
-				noRes*8*(512-dist-distUnitRessource)+
-				wrongRes*2*(512-dist-distUnitRessource)
-			)*(unit->level[WALK]+1)+
-			//enoughTimeLeft*5000+
-			50*(unit->level[HARVEST]+1)+
-			(unit->level[SWIM]>0?-200:0);//swimmer's penalty to keep them free for swimmer tasks
-			//std::cout << "d" << dist << " dr" << distUnitRessource << " rr" << rightRes << " nr" << noRes << " wr" << wrongRes << " wa" << unit->level[WALK] << " ha" << unit->level[HARVEST] << " va" << value << std::endl << std::flush;
-			unit->destinationPurpose=(rightRes>0?r:nr);
-			if (value>maxValue)
-			{
-				maxValue=value;
-				choosen=unit;
-			}
-		}
-*/
-		// Compute the list of candidate units
-		Unit* possibleUnits[Unit::MAX_COUNT];
-		int distances[Unit::MAX_COUNT];
-		int resource[Unit::MAX_COUNT];
-		int teamNumber=owner->teamNumber;
-		for(int n=0; n<Unit::MAX_COUNT; ++n)
-		{
-			possibleUnits[n]=NULL;
-			distances[n] = 0;
-			resource[n] = -1;
-			Unit* unit=owner->myUnits[n];
-			if(unit)
-			{
-				if(!unit->performance[HARVEST])
-				{
-					continue;
-				}
-				else if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
-				{
-					continue;
-				}
-				else if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
-				{
-					unitsFailingRequirements[UnitNotAvailable] += 1;
-				}
-				else if(!canUnitWorkHere(unit))
-				{
-					unitsFailingRequirements[UnitTooLowLevel] += 1;
-				}
-				else
-				{
-					int distBuilding=0;
-					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-					bool canSwim=unit->performance[SWIM];
-					if(!map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
-					{
-						unitsFailingRequirements[UnitCantAccessBuilding] += 1;
-					}
-					else if(distBuilding >= timeLeft)
-					{
-						unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
-					}
-					else
-					{
-						int unitr = unit->carriedRessource;
-						if((unitr>=0) && neededRessource(unitr))
-						{
-							possibleUnits[n] = unit;
-							distances[n] = distBuilding;
-							resource[n] = unitr;
-						}
-						else
-						{
-							int bestDist = 100000;
-							int bestResource = RESSOURCE_TYPE_NONE;
-							bool regularFound=false;
-							bool fruitFound=false;
-							bool regularFoundTooFar=false;
-							bool fruitFoundTooFar=false;
-							int x=unit->posX;
-							int y=unit->posY;
-							for(int r=0; r<MAX_NB_RESSOURCES; ++r)
-							{
-								int need = neededRessource(r);
-								if(need>0)
-								{
-									if(r<BASIC_COUNT)
-										regularFound=true;
-									else
-										fruitFound=true;
-									int distResource = 0;
-									if (map->ressourceAvailable(teamNumber, r, canSwim, x, y, &distResource))
-									{
-										if(distResource<timeLeft)
-										{
-											int dist = (distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
-											int value = dist / need;
-											if(value < bestDist)
-											{
-												bestDist = value;
-												bestResource=r;
-											}
-										}
-										else
-										{
-											if(r<BASIC_COUNT)
-												regularFoundTooFar=true;
-											else
-												fruitFoundTooFar=true;
-										}
-									}
-								}
-							}
-							if(bestResource == RESSOURCE_TYPE_NONE)
-							{
-								if(regularFound)
-								{
-									if(regularFoundTooFar)
-										unitsFailingRequirements[UnitTooFarFromResource] += 1;
-									else
-										unitsFailingRequirements[UnitCantAccessResource] += 1;
-								}
-								else if(fruitFound)
-								{
-									if(fruitFoundTooFar)
-										unitsFailingRequirements[UnitCantAccessFruit] += 1;
-									else
-										unitsFailingRequirements[UnitTooFarFromFruit] += 1;
-								}
-							}
-							else
-							{
-								resource[n] = bestResource;
-								distances[n] = bestDist;
-								possibleUnits[n]=unit;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		int maxLevel = -1;
-		int minValue = INT_MAX;
-		//First: we look only for units with a needed resource:
-		for(int n=0; n<Unit::MAX_COUNT; ++n)
-		{
-			Unit* unit=possibleUnits[n];
-			if(unit==NULL)
-				continue;
-
-			int r=unit->carriedRessource;
-			int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-			if ((r>=0) && neededRessource(r))
-			{
-				int dist = distances[n];
-				int value=dist-(timeLeft>>1);
-				int level = unit->level[HARVEST]*10 + unit->level[WALK];
-				unit->destinationPurpose=r;
-				if ((level>maxLevel) || (level==maxLevel && value<minValue))
-				{
-					minValue=value;
-					maxLevel=level;
-					choosen=unit;
-				}
-			}
-		}
-
-		//Second: we look for an unit who is not carying a ressource:
-		if (choosen==NULL)
-		{
-			for(int n=0; n<Unit::MAX_COUNT; ++n)
-			{
-				Unit* unit=possibleUnits[n];
-				if(unit==NULL)
-					continue;
-
-				if (unit->carriedRessource<0)
-				{
-					int r = resource[n];
-					int value=distances[n];
-					int level = unit->level[HARVEST]*10 + unit->level[WALK];
-					if ((level>maxLevel) || (level==maxLevel && value<minValue))
-					{
-						minValue=value;
-						maxLevel=level;
-						choosen=unit;
-						unit->destinationPurpose=r;
-					}
-				}
-			}
-		}
-
-		//Third: we look for an unit who is carrying an unwanted resource:
-		if (choosen==NULL)
-		{
-			for(int n=0; n<Unit::MAX_COUNT; ++n)
-			{
-				Unit* unit=possibleUnits[n];
-				if(unit==NULL)
-					continue;
-
-				int r2=unit->carriedRessource;
-				if ((r2>=0) && !neededRessource(r2))
-				{
-					int r = resource[n];
-					int value=distances[n];
-					int level = unit->level[HARVEST]*10 + unit->level[WALK];
-					if ((level>maxLevel) || (level==maxLevel && value<minValue))
-					{
-						minValue=value;
-						maxLevel=level;
-						choosen=unit;
-						unit->destinationPurpose=r;
-					}
-				}
-			}
-		}
-		if (choosen)
-		{
-			unitsWorking.push_back(choosen);
-			choosen->subscriptionSuccess(this, false);
+			unitsWorking.push_back(sel.choosen);
+			sel.choosen->subscriptionSuccess(this, false);
 			hired=true;
 		}
 	}
