@@ -45,8 +45,9 @@ static constexpr int REPLAY_FAST_FORWARD_DRAW_RATIO = 3;
 
 //! Number of selectable AI implementations picked from when generating a
 //! random matchup. The pick is `syncRand() % AI_RANDOM_PICK_COUNT + 1`,
-//! skipping AI::NONE=0. Tracks the count of AICastor / AIEcho / AINicowar
-//! / AIToubib / AIWarrush. See EngineLoaders.cpp.
+//! skipping AI::NONE=0. Tracks the count of real AIs (AINumbi / AICastor /
+//! AIWarrush / AIReachToInfinity / AINicowar) = AI::SIZE - 1.
+//! See EngineLoaders.cpp.
 static constexpr int AI_RANDOM_PICK_COUNT = 5;
 
 //! Bitmask value meaning "every team is visible" for replay viewing. Used

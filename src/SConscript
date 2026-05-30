@@ -45,7 +45,6 @@ ai/nicowar/Strategy.cpp
 ai/nicowar/Upgrade.cpp
 ai/AINull.cpp
 ai/AINumbi.cpp
-ai/AIToubib.cpp
 ai/AIWarrush.cpp
 BasePlayer.cpp
 BaseTeam.cpp

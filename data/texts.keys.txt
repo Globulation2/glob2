@@ -34,8 +34,6 @@
 [AINumbi]
 [AIReachToInfinity-Description]
 [AIReachToInfinity]
-[AIToubib-Description]
-[AIToubib]
 [AIWarrush-Description]
 [AIWarrush]
 [Alga]

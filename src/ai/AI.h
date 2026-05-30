@@ -36,10 +36,7 @@ public:
 		///Reference to the AIEcho based AINicowar
 		NICOWAR=5,
 
-		SIZE,
-		TOUBIB,
-
-		EXPERIMENTAL_SIZE
+		SIZE
 	};
 	static const ImplementitionID toggleAI=CASTOR;
 

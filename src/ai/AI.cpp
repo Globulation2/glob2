@@ -14,7 +14,6 @@
 #include "AINull.h"
 #include "AINumbi.h"
 #include "AICastor.h"
-#include "AIToubib.h"
 #include "AIWarrush.h"
 #include "AINicowar.h"
 #include "echo/Echo.h"
@@ -51,9 +50,6 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		break;
 		case REACHTOINFINITY:
 			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
-		break;
-		case TOUBIB:
-			aiImplementation=new AIToubib(player);
 		break;
 		default:
 			assert(false);
@@ -128,9 +124,6 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		case REACHTOINFINITY:
 			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
 			aiImplementation->load(stream, player, versionMinor);
-		break;
-		case TOUBIB:
-			aiImplementation=new AIToubib(stream, player, versionMinor);
 		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(stream, player, versionMinor);

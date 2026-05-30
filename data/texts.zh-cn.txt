@@ -70,10 +70,6 @@ AINumbi
 AIReachToInfinity-描述
 [AIReachToInfinity]
 AIReachToInfinity
-[AIToubib-Description]
-AIToubib-描述
-[AIToubib]
-AIToubib
 [AIWarrush-Description]
 AIWarrush-描述
 [AIWarrush]

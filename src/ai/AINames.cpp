@@ -30,8 +30,6 @@ namespace AINames
 			break;
 		case AI::NICOWAR: sAi="[AINicowar]";
 			break;
-		case AI::TOUBIB: sAi="[AIToubib]";
-			break;
 		default:
 			return "unknown AI";
 		}
@@ -55,8 +53,6 @@ namespace AINames
 			break;
 		case AI::NICOWAR: sAi="[AINicowar-Description]";
 			break;
-		case AI::TOUBIB: sAi="[AIToubib-Description]";
-			break;
 		default:
 			return "unknown AI";
 		}
@@ -74,7 +70,6 @@ namespace AINames
 			{"warrush",         AI::WARRUSH},
 			{"reachtoinfinity", AI::REACHTOINFINITY},
 			{"nicowar",         AI::NICOWAR},
-			{"toubib",          AI::TOUBIB},
 		};
 		std::string lower = name;
 		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);

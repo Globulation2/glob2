@@ -70,10 +70,6 @@ Numbi
 ReachToInfinity ne atakas, sed konstruas monstrajn fundojn kaj avide konvertigas globulojn. Ĝi facilas.
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Tubibo
-[AIToubib]
-Tubibo
 [AIWarrush-Description]
 Warrush atakas rapide kaj sovaĝe, kaj ofte puŝas denendanta ludanto al la bordo de sia ludo. Ĝi mezfacilas.
 [AIWarrush]

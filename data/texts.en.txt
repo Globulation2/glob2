@@ -70,10 +70,6 @@ Numbi
 ReachToInfinity - Does not attack, but builds monstrous bases and aggressively converts units. Easy Difficulty.
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Toubib
-[AIToubib]
-Toubib
 [AIWarrush-Description]
 Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]

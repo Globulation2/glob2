@@ -70,10 +70,6 @@ AINumbi
 Description de ReachToInfinity
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Description d'AIToubib
-[AIToubib]
-AIToubib
 [AIWarrush-Description]
 Description d'AICastor
 [AIWarrush]

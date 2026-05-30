@@ -48,7 +48,7 @@ namespace
 			else
 			{
 				std::cerr << flagName << ": unknown AI '" << item
-					<< "' (valid: numbi, castor, warrush, reachtoinfinity, nicowar, toubib)" << std::endl;
+					<< "' (valid: numbi, castor, warrush, reachtoinfinity, nicowar)" << std::endl;
 				if (exitOnUnknown)
 					exit(1);
 			}
@@ -420,7 +420,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-test-games\tCreates random games with AI and tests them\n");
 			printf("-test-games-nox\tCreates random games with AI and tests them, without gui\n");
 			printf("--ai-types <list>\tcomma-separated AI names to draw from in -test-games* (default: all)\n");
-			printf("\t\tvalid: numbi, castor, warrush, reachtoinfinity, nicowar, toubib\n");
+			printf("\t\tvalid: numbi, castor, warrush, reachtoinfinity, nicowar\n");
 			printf("--map <name>\tpin the map for -test-games* (resolved as maps/<name>.map)\n");
 			printf("--matchup <list>\tcomma-separated per-team AI names; matchup[k] plays team k\n");
 			printf("\t\trequires --map; mutually exclusive with --ai-types\n");

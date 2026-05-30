@@ -45,8 +45,8 @@ over `numbi, castor, warrush, reachtoinfinity, nicowar`.
 ./glob2 -test-games-nox 50 --ai-types nicowar
 ```
 
-Valid names: `numbi`, `castor`, `warrush`, `reachtoinfinity`, `nicowar`,
-`toubib`. Unknown names are reported on stderr and skipped (an empty
+Valid names: `numbi`, `castor`, `warrush`, `reachtoinfinity`, `nicowar`.
+Unknown names are reported on stderr and skipped (an empty
 remaining pool falls back to default behavior).
 
 ### `--map <name>` and `--matchup <list>`
@@ -206,8 +206,7 @@ The `ReplayWriter` records live during gameplay:
 | 2 | Castor | `AI::CASTOR` | Default toggle AI, moderate |
 | 3 | Warrush | `AI::WARRUSH` | Aggressive rush strategy |
 | 4 | ReachToInfinity | `AI::REACHTOINFINITY` | Expansionist (Echo wrapper) |
-| 5 | Nicowar | `AI::NICOWAR` | Strongest all-round AI (Echo wrapper) |
-| 6 | Toubib | `AI::TOUBIB` | Simple AI |
+| 5 | Nicowar | `AI::NICOWAR` | Strongest economy-focused AI (Echo wrapper) |
 
 Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The player type encodes which AI: `P_AI + implementationID` maps to the enum above.
 
