@@ -112,8 +112,7 @@ void GameGUI::init()
 	replayDisplayMode=RDM_REPLAY_VIEW;
 	selectionMode=NO_SELECTION;
 	selectionPushed=false;
-	selection.building = NULL;
-	selection.unit = NULL;
+	selection = std::monostate{};
 	miniMapPushed=false;
 	putMark=false;
 	showUnitWorkingToBuilding=true;

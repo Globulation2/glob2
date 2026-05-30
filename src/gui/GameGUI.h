@@ -9,6 +9,7 @@
 #include <queue>
 #include <unordered_map>
 #include <valarray>
+#include <variant>
 
 #include "Game.h"
 #include "Brush.h"
@@ -404,12 +405,13 @@ private:
 		TOOL_SELECTION,
 		BRUSH_SELECTION
 	} selectionMode;
-	union
-	{
-		Building* building;
-		Unit* unit;
-		int ressource;
-	} selection;
+	//! Payload for the current selection, tagged by selectionMode. std::monostate
+	//! is the active alternative for the three payload-less modes (NO_SELECTION,
+	//! and TOOL_/BRUSH_SELECTION, whose real state lives in toolManager/brush).
+	//! BUILDING_/UNIT_/RESSOURCE_SELECTION hold Building*/Unit*/int respectively.
+	//! Read it through selectionBuilding()/selectionUnit()/selectionRessource(),
+	//! which assert (via std::get) that the active alternative matches the mode.
+	std::variant<std::monostate, Building*, Unit*, int> selection;
 	
 	// Brushes
 	BrushTool brush;
@@ -420,6 +422,13 @@ private:
 	void setSelection(SelectionMode newSelMode, void* newSelection=NULL);
 	void setSelection(SelectionMode newSelMode, unsigned newSelection);
 	void clearSelection(void) { setSelection(NO_SELECTION); }
+	//! Typed selection-payload accessors. Each asserts (via std::get) that the
+	//! active variant alternative matches selectionMode; a tag/payload desync
+	//! throws std::bad_variant_access rather than silently reinterpreting bytes.
+	//! Precondition: selectionMode is the matching mode (caller-guaranteed).
+	Building* selectionBuilding() const { return std::get<Building*>(selection); }
+	Unit* selectionUnit() const { return std::get<Unit*>(selection); }
+	int selectionRessource() const { return std::get<int>(selection); }
 	void checkSelection(void);
 	
 	/// This function causes all information about the selected unit to be dumped

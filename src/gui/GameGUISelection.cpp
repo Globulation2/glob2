@@ -29,6 +29,9 @@ void GameGUI::cleanOldSelection(void)
 	{
 		toolManager.deactivateTool();
 	}
+	// Drop any payload so the about-to-be-set mode starts from monostate; the
+	// payload-bearing setters below re-establish the matching alternative.
+	selection = std::monostate{};
 }
 
 void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
@@ -43,19 +46,21 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 	{
 		int id=Building::GIDtoID(newSelection);
 		int team=Building::GIDtoTeam(newSelection);
-		selection.building=game.teams[team]->myBuildings[id];
-		game.selectedBuilding=selection.building;
+		Building* b=game.teams[team]->myBuildings[id];
+		selection=b;
+		game.selectedBuilding=b;
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
 		int id=Unit::GIDtoID(newSelection);
 		int team=Unit::GIDtoTeam(newSelection);
-		selection.unit=game.teams[team]->myUnits[id];
-		game.selectedUnit=selection.unit;
+		Unit* u=game.teams[team]->myUnits[id];
+		selection=u;
+		game.selectedUnit=u;
 	}
 	else if (selectionMode==RESSOURCE_SELECTION)
 	{
-		selection.ressource=newSelection;
+		selection=static_cast<int>(newSelection);
 	}
 }
 
@@ -69,13 +74,15 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 
 	if (selectionMode==BUILDING_SELECTION)
 	{
-		selection.building=(Building*)newSelection;
-		game.selectedBuilding=selection.building;
+		Building* b=(Building*)newSelection;
+		selection=b;
+		game.selectedBuilding=b;
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
-		selection.unit=(Unit*)newSelection;
-		game.selectedUnit=selection.unit;
+		Unit* u=(Unit*)newSelection;
+		selection=u;
+		game.selectedUnit=u;
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
@@ -98,7 +105,7 @@ void GameGUI::checkSelection(void)
 		clearSelection();
 	}
 	else if ((selectionMode==RESSOURCE_SELECTION)
-		&& (game.map.getRessource(selection.ressource).type==NO_RES_TYPE))
+		&& (game.map.getRessource(selectionRessource()).type==NO_RES_TYPE))
 	{
 		clearSelection();
 	}
@@ -116,7 +123,7 @@ void GameGUI::iterateSelection(void)
 {
 	if (selectionMode==BUILDING_SELECTION)
 	{
-		Building* selBuild=selection.building;
+		Building* selBuild=selectionBuilding();
 		if (!selBuild) return;
 		Uint16 selectionGBID=selBuild->gid;
 		int pos=Building::GIDtoID(selectionGBID);
@@ -153,7 +160,7 @@ void GameGUI::iterateSelection(void)
 	}
 	else if (selectionMode == UNIT_SELECTION)
 	{
-		Unit * selUnit = selection.unit;
+		Unit * selUnit = selectionUnit();
 		assert(selUnit);
 		Uint16 gid = selUnit->gid;
 		/* to be safe should check if gid is valid here? */
@@ -191,14 +198,14 @@ void GameGUI::centerViewportOnSelection(void)
 		Sint32 posX = 0, posY = 0;
 		if (selectionMode==BUILDING_SELECTION)
 		{
-			Building* b=selection.building;
+			Building* b=selectionBuilding();
 			assert(b);
 			posX = b->getMidX();
 			posY = b->getMidY();
 		}
 		else if (selectionMode==UNIT_SELECTION)
 		{
-			Unit * u = selection.unit;
+			Unit * u = selectionUnit();
 			assert (u);
 			posX = u->posX;
 			posY = u->posY;

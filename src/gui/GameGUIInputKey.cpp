@@ -109,7 +109,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild = selection.building;
+						Building* selBuild = selectionBuilding();
 						int typeNum = selBuild->typeNum; //determines type of updated building
 						int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
 						if (selBuild->constructionResultState == Building::UPGRADE)
@@ -123,7 +123,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selection.building;
+						Building* selBuild=selectionBuilding();
 						const int current = displayedMaxUnitWorking(*selBuild);
 						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current<MAX_UNIT_WORKING))
 						{
@@ -139,7 +139,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selection.building;
+						Building* selBuild=selectionBuilding();
 						const int current = displayedMaxUnitWorking(*selBuild);
 						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current>0))
 						{
@@ -209,7 +209,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selection.building;
+						Building* selBuild=selectionBuilding();
 						if (selBuild->owner->teamNumber==localTeamNo)
 						{
 							if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
@@ -228,7 +228,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild = selection.building;
+						Building* selBuild = selectionBuilding();
 						int typeNum = selBuild->typeNum; //determines type of updated building
 						int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
 						if (selBuild->constructionResultState == Building::REPAIR)

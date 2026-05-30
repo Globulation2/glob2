@@ -370,7 +370,7 @@ void GameGUI::drawOverlayInfos(void)
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
-		Building* selBuild=selection.building;
+		Building* selBuild=selectionBuilding();
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 		int centerX, centerY;
 		game.map.buildingPosToCursor(displayedPosX(*selBuild), displayedPosY(*selBuild),  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
@@ -402,8 +402,9 @@ void GameGUI::drawOverlayInfos(void)
 	}
 	else if (selectionMode==RESSOURCE_SELECTION)
 	{
-		int rx = selection.ressource & game.map.getMaskW();
-		int ry = selection.ressource >> game.map.getShiftW();
+		int ressource = selectionRessource();
+		int rx = ressource & game.map.getMaskW();
+		int ry = ressource >> game.map.getShiftW();
 		int px, py;
 		game.map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);

@@ -21,7 +21,7 @@ void GameGUI::drawRessourceInfos(void)
 	// Precondition (established by checkSelection() in drawPanel): when we
 	// reach here the resource selection still references a live resource tile.
 	// The early-return is defensive — should never trigger.
-	const Ressource &r = game.map.getRessource(selection.ressource);
+	const Ressource &r = game.map.getRessource(selectionRessource());
 	if (r.type==NO_RES_TYPE)
 		return;
 

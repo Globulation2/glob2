@@ -180,9 +180,10 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 						}
 						else
 						{
-							std::cerr << "Dump building " << selection.building->gid << " memory" << std::endl;
-							selection.building->save(stream);
-							selection.building->saveCrossRef(stream);
+							Building* selBuild=selectionBuilding();
+							std::cerr << "Dump building " << selBuild->gid << " memory" << std::endl;
+							selBuild->save(stream);
+							selBuild->saveCrossRef(stream);
 						}
 						delete stream;
 					}

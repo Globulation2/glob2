@@ -52,7 +52,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	if (globalContainer->replaying) return;
 
 	int posX, posY;
-	Building* selBuild=selection.building;
+	Building* selBuild=selectionBuilding();
 	game.map.cursorToBuildingPos(mx, my, selBuild->type->width, selBuild->type->height, &posX, &posY, viewportX, viewportY);
 	if ((displayedPosX(*selBuild)!=posX)
 		||(displayedPosY(*selBuild)!=posY)
@@ -99,7 +99,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
 		{
-			Building* selBuild=selection.building;
+			Building* selBuild=selectionBuilding();
 			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
 				moveFlag(mx, my, false);
 		}
@@ -400,7 +400,7 @@ void GameGUI::flushScrollWheelOrders()
 	SDL_Keymod modState = SDL_GetModState();
 	if (scrollWheelChanges!=0 && selectionMode==BUILDING_SELECTION)
 	{
-		Building* selBuild=selection.building;
+		Building* selBuild=selectionBuilding();
 		if ((selBuild->owner->teamNumber==localTeamNo) &&
 			(selBuild->buildingState==Building::ALIVE))
 		{

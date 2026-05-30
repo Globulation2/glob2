@@ -233,7 +233,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			{
 				if ((selectionMode==BUILDING_SELECTION) && (globalContainer->gfx->getW()-event->button.x<RIGHT_MENU_WIDTH))
 				{
-					Building* selBuild=selection.building;
+					Building* selBuild=selectionBuilding();
 					assert (selBuild);
 //					selBuild->verbose=(selBuild->verbose+1)%5;
 //					printf("building gid=(%d)\n", selBuild->gid);
@@ -276,7 +276,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			int button=event->button.button;
 			if ((button==SDL_BUTTON_LEFT) && (event->button.x < globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 			{
-				if ((selectionMode==BUILDING_SELECTION) && selectionPushed && selection.building->type->isVirtual)
+				if ((selectionMode==BUILDING_SELECTION) && selectionPushed && selectionBuilding()->type->isVirtual)
 				{
 					// update flag
 					moveFlag(event->button.x, event->button.y, true);

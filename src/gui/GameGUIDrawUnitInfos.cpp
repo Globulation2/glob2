@@ -36,7 +36,7 @@ void drawAbilityRow(int xpos, int ypos, const char* labelKey, int displayLevel, 
 
 void GameGUI::drawUnitInfos(void)
 {
-	Unit* selUnit=selection.unit;
+	Unit* selUnit=selectionUnit();
 	assert(selUnit);
 	int ypos = YPOS_BASE_UNIT;
 	Uint8 r, g, b;

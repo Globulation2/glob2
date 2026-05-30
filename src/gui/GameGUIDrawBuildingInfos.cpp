@@ -10,7 +10,7 @@
 
 void GameGUI::drawBuildingInfos(void)
 {
-	Building* selBuild = selection.building;
+	Building* selBuild = selectionBuilding();
 	assert(selBuild);
 	BuildingType *buildingType = selBuild->type;
 	int ypos = YPOS_BASE_BUILDING;
