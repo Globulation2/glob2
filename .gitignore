@@ -23,3 +23,4 @@ Glob2.app/
 Glob2-*.dmg
 test/CampaignSelectionHarness
 test/NetSendOrderDecodeTest
+test/OrderAlterateAreaTest
