@@ -13,71 +13,66 @@ using namespace GAGCore;
 
 namespace AINames
 {
+	namespace
+	{
+		// Single source of truth for the AI roster, in display order — one
+		// row per AI::ImplementitionID. Everything user-facing about an AI's
+		// identity is derived from here, so the CLI parsers, their error/help
+		// text, and the localized UI labels can never drift apart.
+		//   cliName   — lowercase name accepted by --ai-types/--matchup, or
+		//               nullptr when the AI can't be picked from the CLI (NONE).
+		//   stringKey — StringTable base key: the display name is "[<key>]"
+		//               and the description "[<key>-Description]".
+		const struct { int id; const char* cliName; const char* stringKey; } aiTable[] = {
+			{AI::NONE,            nullptr,           "AINone"},
+			{AI::NUMBI,           "numbi",           "AINumbi"},
+			{AI::CASTOR,          "castor",          "AICastor"},
+			{AI::WARRUSH,         "warrush",         "AIWarrush"},
+			{AI::REACHTOINFINITY, "reachtoinfinity", "AIReachToInfinity"},
+			{AI::NICOWAR,         "nicowar",         "AINicowar"},
+			{AI::CORTEX,          "cortex",          "AICortex"},
+		};
+	}
+
 	std::string getAIText(int id)
 	{
-		std::string sAi;
-		switch(id)
-		{
-		case AI::NONE: sAi="[AINone]";
-			break;
-		case AI::NUMBI: sAi="[AINumbi]";
-			break;
-		case AI::CASTOR: sAi="[AICastor]";
-			break;
-		case AI::WARRUSH: sAi="[AIWarrush]";
-			break;
-		case AI::REACHTOINFINITY: sAi="[AIReachToInfinity]";
-			break;
-		case AI::NICOWAR: sAi="[AINicowar]";
-			break;
-		default:
-			return "unknown AI";
-		}
-		return Toolkit::getStringTable()->getString(sAi);
+		for (const auto& entry : aiTable)
+			if (entry.id == id)
+				return Toolkit::getStringTable()->getString("[" + std::string(entry.stringKey) + "]");
+		return "unknown AI";
 	}
-	
+
 	std::string getAIDescription(int id)
 	{
-		std::string sAi;
-		switch(id)
-		{
-		case AI::NONE: sAi="[AINone-Description]";
-			break;
-		case AI::NUMBI: sAi="[AINumbi-Description]";
-			break;
-		case AI::CASTOR: sAi="[AICastor-Description]";
-			break;
-		case AI::WARRUSH: sAi="[AIWarrush-Description]";
-			break;
-		case AI::REACHTOINFINITY: sAi="[AIReachToInfinity-Description]";
-			break;
-		case AI::NICOWAR: sAi="[AINicowar-Description]";
-			break;
-		default:
-			return "unknown AI";
-		}
-		return Toolkit::getStringTable()->getString(sAi);
+		for (const auto& entry : aiTable)
+			if (entry.id == id)
+				return Toolkit::getStringTable()->getString("[" + std::string(entry.stringKey) + "-Description]");
+		return "unknown AI";
 	}
 
 	int parseAIName(const std::string& name)
 	{
-		// Single source of truth for CLI-friendly AI names. Both
-		// --ai-types and --matchup parsers in GlobalContainer.cpp
-		// use this to avoid drift.
-		static const struct { const char* name; int id; } table[] = {
-			{"numbi",           AI::NUMBI},
-			{"castor",          AI::CASTOR},
-			{"warrush",         AI::WARRUSH},
-			{"reachtoinfinity", AI::REACHTOINFINITY},
-			{"nicowar",         AI::NICOWAR},
-		};
 		std::string lower = name;
 		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-		for (size_t i = 0; i < sizeof(table)/sizeof(table[0]); i++)
+		for (const auto& entry : aiTable)
 		{
-			if (lower == table[i].name)
-				return table[i].id;
+			if (entry.cliName && lower == entry.cliName)
+				return entry.id;
 		}
 		return AI_UNKNOWN_NAME;
+	}
+
+	std::string validAINames()
+	{
+		std::string list;
+		for (const auto& entry : aiTable)
+		{
+			if (!entry.cliName)
+				continue;
+			if (!list.empty())
+				list += ", ";
+			list += entry.cliName;
+		}
+		return list;
 	}
 }

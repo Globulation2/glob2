@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "MultiplayerGameScreen.h"
+#include "AI.h"
 #include "AINames.h"
 #include "YOGClientLobbyScreen.h"
 #include "Utilities.h"

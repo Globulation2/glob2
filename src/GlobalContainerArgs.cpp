@@ -22,9 +22,6 @@
 	#define PACKAGE_VERSION "System Specific - not using autoconf"
 #endif
 #include "Version.h"
-#include "NetConsts.h"
-
-#include "GraphicContext.h"
 
 namespace
 {
@@ -48,7 +45,7 @@ namespace
 			else
 			{
 				std::cerr << flagName << ": unknown AI '" << item
-					<< "' (valid: numbi, castor, warrush, reachtoinfinity, nicowar)" << std::endl;
+					<< "' (valid: " << AINames::validAINames() << ")" << std::endl;
 				if (exitOnUnknown)
 					exit(1);
 			}
@@ -373,7 +370,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		else
 #endif  // !YOG_SERVER_ONLY
-			if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
+		if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
 		{
 			printf("\nGlobulation 2 - %s\n\n", PACKAGE_VERSION);
 			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
@@ -420,7 +417,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-test-games\tCreates random games with AI and tests them\n");
 			printf("-test-games-nox\tCreates random games with AI and tests them, without gui\n");
 			printf("--ai-types <list>\tcomma-separated AI names to draw from in -test-games* (default: all)\n");
-			printf("\t\tvalid: numbi, castor, warrush, reachtoinfinity, nicowar\n");
+			printf("\t\tvalid: %s\n", AINames::validAINames().c_str());
 			printf("--map <name>\tpin the map for -test-games* (resolved as maps/<name>.map)\n");
 			printf("--matchup <list>\tcomma-separated per-team AI names; matchup[k] plays team k\n");
 			printf("\t\trequires --map; mutually exclusive with --ai-types\n");

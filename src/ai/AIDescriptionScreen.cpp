@@ -8,6 +8,7 @@
 #include "GUIText.h"
 #include "Toolkit.h"
 #include "StringTable.h"
+#include "AI.h"
 #include "AINames.h"
 
 AIDescriptionScreen::AIDescriptionScreen()
