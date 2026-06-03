@@ -26,6 +26,8 @@
 [ai]
 [AICastor-Description]
 [AICastor]
+[AICortex-Description]
+[AICortex]
 [AINicowar-Description]
 [AINicowar]
 [AINone-Description]

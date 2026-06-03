@@ -54,6 +54,10 @@ AI
 Castor plays a conservative game and does very well on maps with few resources. Medium Difficulty.
 [AICastor]
 Castor
+[AICortex-Description]
+Cortex - Experimental three-layer AI. Work in progress.
+[AICortex]
+Cortex
 [AINicowar-Description]
 Nicowar plays aggressively, grows large fast and throws huge armies at its opponents. Hard Difficulty.
 [AINicowar]

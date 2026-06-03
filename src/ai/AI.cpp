@@ -17,6 +17,7 @@
 #include "AIWarrush.h"
 #include "AINicowar.h"
 #include "echo/Echo.h"
+#include "cortex/AICortex.h"
 
 using std::shared_ptr;
 
@@ -51,11 +52,14 @@ AI::AI(ImplementitionID implementitionID, Player *player)
 		case REACHTOINFINITY:
 			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
 		break;
+		case CORTEX:
+			aiImplementation=new AICortex(player);
+		break;
 		default:
 			assert(false);
 		break;
 	}
-	
+
 	this->implementitionID=implementitionID;
 	this->player=player;
 }
@@ -127,6 +131,9 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(stream, player, versionMinor);
+		break;
+		case CORTEX:
+			aiImplementation=new AICortex(stream, player, versionMinor);
 		break;
 		default:
 			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementitionID);

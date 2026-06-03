@@ -35,6 +35,8 @@ public:
 		REACHTOINFINITY=4,
 		///Reference to the AIEcho based AINicowar
 		NICOWAR=5,
+		///Reference to AICortex (direct AIImplementation binding)
+		CORTEX=6,
 
 		SIZE
 	};
