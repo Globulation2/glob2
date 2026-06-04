@@ -17,6 +17,7 @@ namespace GAGCore
 }
 class Player;
 class Order;
+class Building;
 
 // AICortex — variant A of the parent-class spike (docs/AI/cortex/NEXT.md open
 // question #1). Subclasses AIImplementation DIRECTLY, owning the full
@@ -58,6 +59,29 @@ private:
 	/// observation is passed alongside because an ACTION_BUILD only carries a
 	/// candidate-slot index — the (x, y) lives in obs.buildCandidates.
 	void translateAction(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+
+	/// Find our team's single live WAR_FLAG virtual building, or NULL if none.
+	/// Cortex keeps at most one war flag and does NOT persist its gid; it is
+	/// re-found each decision cycle by scanning team->virtualBuildings (a list,
+	/// iterated in deterministic insertion order — never a std::set).
+	Building* findOwnWarFlag() const;
+
+	/// Ensure our single war flag sits at map tile (tx, ty): create it there if
+	/// we have none (respecting the build cooldown and the virtual-building room
+	/// check), or move the existing one if it is far from the target. radius/count
+	/// come from the action (clamped). Appends at most one Order to orderQueue.
+	void ensureWarFlagAt(int tx, int ty, const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+
+	/// Remove our war flag (OrderDelete) if one exists.
+	void clearOwnWarFlag();
+
+	/// Find the single best finished instance of `buildingType` (an
+	/// IntBuildingType shortTypeNum) to upgrade to its next level, or NULL if no
+	/// instance currently passes the full engine Upgradable predicate. Scans
+	/// team->myBuildings by ARRAY INDEX (never a std::set) and ranks eligible
+	/// instances deterministically — improving on Nicowar's random pick. See the
+	/// .cpp for the predicate and the bottleneck ranking.
+	Building* findUpgradeTarget(int buildingType) const;
 
 	Player* player;
 

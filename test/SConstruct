@@ -58,6 +58,8 @@ GameMusicControllerTest.cpp
 
 TurretScanTileTest.cpp
 
+CortexUpgradeTest.cpp
+
 natsort/NatSortTest.cpp
 """)
 

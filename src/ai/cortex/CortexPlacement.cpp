@@ -156,6 +156,38 @@ namespace Cortex
 			if (count < CORTEX_BUILD_CANDIDATES)
 				count++;
 		}
+
+		// Same strict-greater, first-seen-wins ranked insert as insertTopK, but
+		// bounded at an arbitrary K passed by the caller. placeFlagTargets needs
+		// K == CORTEX_FLAG_TARGETS (8) whereas insertTopK is hardwired to
+		// CORTEX_BUILD_CANDIDATES (4); rather than retune the build path we keep a
+		// parallel, parameterized version so both K values stay deterministic.
+		void insertTopKBounded(ScoredSpot* heap, int& count, int k, const ScoredSpot& spot)
+		{
+			// First slot whose score is strictly less than the new spot's. Ties
+			// keep the incumbent (earlier scan order), so we only move past >= score.
+			int pos = count;
+			for (int i = 0; i < count; i++)
+			{
+				if (spot.score > heap[i].score)
+				{
+					pos = i;
+					break;
+				}
+			}
+
+			if (pos >= k)
+				return; // not good enough to make the top-K
+
+			// Shift lower-ranked entries down by one, dropping the tail if full.
+			int last = (count < k) ? count : (k - 1);
+			for (int i = last; i > pos; i--)
+				heap[i] = heap[i - 1];
+
+			heap[pos] = spot;
+			if (count < k)
+				count++;
+		}
 	} // namespace
 
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
@@ -243,6 +275,118 @@ namespace Cortex
 			{
 				// Coin flip is drawn from the lockstep RNG, so identical on all
 				// machines. Swap (keep both, just order) on heads.
+				if ((syncRand() & 1) != 0)
+				{
+					ScoredSpot tmp = heap[i];
+					heap[i] = heap[i + 1];
+					heap[i + 1] = tmp;
+				}
+			}
+		}
+
+		for (int i = 0; i < count; i++)
+		{
+			out[i].valid = 1;
+			out[i].x = heap[i].x;
+			out[i].y = heap[i].y;
+			out[i].score = heap[i].score;
+		}
+
+		return count;
+	}
+
+	// AICortex war-flag offense-target surface.
+	//
+	// Answers "which enemy buildings should our warriors attack next?", ranked so
+	// slot 0 is the closest reachable target — the one a war flag would summon
+	// warriors onto fastest. The policy then picks a target by slot index, never
+	// an unbounded coordinate (same discrete-action rule as placeCandidates).
+	//
+	// FAIRNESS GATE (no fog-of-war cheat): we only ever consider enemy buildings
+	// the team has legitimately discovered. Each Building carries the engine's own
+	// per-team discovery record, seenByMask (building/Building.h:560), and we
+	// include a building ONLY when (b->seenByMask & team->me) != 0. We never read
+	// unfogged enemy state — an undiscovered enemy base is invisible to this scan,
+	// exactly as it is on the player's minimap. The same enemy/alive test as the
+	// observation opponents loop (CortexObservation.cpp:171-172) selects which
+	// teams to scan: an enemy is (team->enemies & other->me) != 0 and alive is
+	// other->isAlive.
+	//
+	// SCORING (nearer == higher): we reuse scoreFromDistance on the Chebyshev
+	// distance from the enemy building to our NEAREST live building
+	// (distanceToNearestBuilding, passed OUR team). Its "near my colony" semantics
+	// are exactly reachability for an offense flag, so a closer enemy building
+	// scores higher and lands in an earlier slot. If we somehow have no buildings
+	// (mid-game this should not happen) distanceToNearestBuilding returns -1 and
+	// scoreFromDistance falls back to a flat base, so every discovered target still
+	// gets a well-defined, equal score and ranking degrades to scan order.
+	//
+	// DETERMINISM: teams are iterated by index over game->teams[], buildings by
+	// index over other->myBuildings[] (never an std::set); ties break first by scan
+	// order (strict-greater insert) and finally by syncRand() — never rand(), never
+	// wall-clock — exactly as placeCandidates does.
+	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS])
+	{
+		// Always leave the output well-defined, even on the error paths below.
+		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
+		{
+			out[i].valid = 0;
+			out[i].x = 0;
+			out[i].y = 0;
+			out[i].score = 0;
+		}
+
+		if (game == NULL || team == NULL)
+			return 0;
+
+		ScoredSpot heap[CORTEX_FLAG_TARGETS];
+		int count = 0;
+
+		// Enumerate enemy teams strictly by index.
+		for (int i = 0; i < game->teamsCount(); i++)
+		{
+			Team* other = game->teams[i];
+			if (other == NULL)
+				continue;
+			const bool isEnemy = (team->enemies & other->me) != 0;
+			if (!isEnemy || !other->isAlive)
+				continue;
+
+			// Scan this enemy's buildings by index (never an std::set).
+			for (int j = 0; j < Building::MAX_COUNT; j++)
+			{
+				Building* b = other->myBuildings[j];
+				if (b == NULL || b->buildingState == Building::DEAD)
+					continue;
+
+				// Fairness gate: only buildings we have legitimately seen. An
+				// undiscovered enemy building is invisible to this scan.
+				if ((b->seenByMask & team->me) == 0)
+					continue;
+
+				// Distance from the enemy building to our nearest live building;
+				// nearer enemies score higher (slot 0 == closest reachable).
+				const int distToColony = distanceToNearestBuilding(game, team, b->posX, b->posY);
+				const int score = scoreFromDistance(distToColony);
+
+				ScoredSpot spot;
+				spot.x = b->posX;
+				spot.y = b->posY;
+				spot.score = score;
+				spot.distToColony = distToColony;
+				insertTopKBounded(heap, count, CORTEX_FLAG_TARGETS, spot);
+			}
+		}
+
+		// Deterministic final tie-break among retained targets that are
+		// indistinguishable by both score AND distance-to-colony. The coin flip
+		// comes from the lockstep RNG, so it is identical on every client and just
+		// reorders equals — we never re-sort across distinct scores.
+		for (int i = 0; i + 1 < count; i++)
+		{
+			if (heap[i].score == heap[i + 1].score &&
+			    heap[i].distToColony == heap[i + 1].distToColony)
+			{
 				if ((syncRand() & 1) != 0)
 				{
 					ScoredSpot tmp = heap[i];

@@ -32,4 +32,20 @@ namespace Cortex
 	/// Returns 0 (and leaves all slots valid == 0) when no legal placement exists.
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
 	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES]);
+
+	/// Fill `out` with up to CORTEX_FLAG_TARGETS DISCOVERED enemy buildings, ranked
+	/// nearest-first to our colony, to serve as war-flag offense targets. Each
+	/// BuildCandidate's (x, y) is the enemy building's tile (its center/posX,posY,
+	/// the coordinate an OrderCreate for a WAR_FLAG consumes) and `score` ranks
+	/// proximity (nearer == higher, slot 0 is the closest reachable target).
+	///
+	/// FAIRNESS: only buildings the team has legitimately seen are included —
+	/// gate strictly on Building::seenByMask & team->me (the engine's own per-
+	/// building discovery record). NEVER read unfogged enemy state. Iterate enemy
+	/// myBuildings[] by index (never an std::set); break ties deterministically by
+	/// scan order / syncRand(), exactly as placeCandidates does.
+	///
+	/// Returns the number of valid targets written (0..CORTEX_FLAG_TARGETS); 0 when
+	/// we have not yet discovered any enemy building.
+	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS]);
 }

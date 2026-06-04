@@ -31,10 +31,23 @@ namespace Cortex
 	/// v1 was the first economy-phase layout. v2 (2026-06-02) dropped the dead
 	/// totalFood/totalFoodCapacity mirrors (TeamStat never writes them — always 0)
 	/// and added feedCapacity + swarmsProducing for the production-throttle.
-	static const Uint32 OBSERVATION_VERSION = 2;
+	/// v3 (2026-06-03, Phase-3 combat increment) filled the visibility-gated enemy
+	/// intel (EnemySlot.totalUnit/totalBuilding) and added the war-flag targeting
+	/// surface (flagTargets[], defenseTarget), own-army signals
+	/// (attackStrengthLevel[], warFlagsActive) and the defense trigger
+	/// (unitsUnderAttack/buildingsUnderAttack).
+	/// v4 (2026-06-04, Phase-2 upgrade increment) added the upgrade-decision
+	/// signals: maxBuildLevel (== team->maxBuildLevel(), the engine gate on whether
+	/// a building can be upgraded) and upgradableCount[] (per-type count of
+	/// finished instances that pass the full engine Upgradable predicate right now).
+	static const Uint32 OBSERVATION_VERSION = 4;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
-	static const Uint32 ACTION_VERSION = 2;
+	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
+	/// ACTION_PLACE_DEFENSE_FLAG, ACTION_CLEAR_FLAGS) + flagRadius/unitCount.
+	/// v4 (2026-06-04) added ACTION_UPGRADE_BUILDING (upgrade an existing finished
+	/// building to its next level via OrderConstruction; reuses buildingType).
+	static const Uint32 ACTION_VERSION = 4;
 
 	/// Fixed upper bound on enemy team slots in an Observation. 32 ==
 	/// Team::MAX_COUNT_ON_DISK; it is a safe over-bound on the live team ceiling
@@ -78,14 +91,28 @@ namespace Cortex
 	/// distribution (ML rule: no unbounded "(x, y)" — see README action rules).
 	static const int CORTEX_BUILD_CANDIDATES = 4;
 
+	/// Number of war-flag target candidates surfaced into the observation
+	/// (discovered enemy buildings, nearest-first). Same discrete-slot rationale
+	/// as CORTEX_BUILD_CANDIDATES: the policy picks a target by slot index, never
+	/// an unbounded coordinate. Cortex-local bound, no engine mirror.
+	static const int CORTEX_FLAG_TARGETS = 8;
+	/// Self-imposed upper bound on a war flag's attraction radius (the building's
+	/// unitStayRange). The engine clamps nothing, so this is Cortex's bound for a
+	/// discrete/normalizable action param; the action layer clamps to it. Roughly
+	/// the GUI's war-flag scale (Settings defaultFlagRadius[war] == 4).
+	static const int CORTEX_MAX_FLAG_RADIUS = 16;
+	/// Self-imposed upper bound on warriors assigned to one war flag (the flag's
+	/// maxUnitWorking). Cortex's own bound for the action param, not an engine cap.
+	static const int CORTEX_MAX_FLAG_UNITS = 32;
+
 	/// One enemy team projected into the observation. POD, bounded.
 	struct EnemySlot
 	{
 		Sint32 active;        ///< 0 = no enemy in this slot (sentinel), 1 = present and alive.
 		Sint32 teamNumber;    ///< Engine team id, or -1 when inactive.
-		Sint32 totalUnit;     ///< Visible unit count (caller must gate on fog-of-war).
-		Sint32 totalBuilding; ///< Visible finished-building count.
-		Sint32 prestige;      ///< Enemy prestige.
+		Sint32 totalUnit;     ///< Count of this enemy's units on tiles CURRENTLY visible to us (FOW-gated; not ground truth).
+		Sint32 totalBuilding; ///< Count of this enemy's buildings we have ever discovered (Building::seenByMask & team->me).
+		Sint32 prestige;      ///< Always 0 — prestige is not a visible signal, left unfilled to avoid a fog-of-war cheat.
 	};
 
 	/// One candidate location for placing a building, produced by the placement
@@ -139,9 +166,27 @@ namespace Cortex
 		// --- training / upgrade levels, indexed by unit level 0..CORTEX_UNIT_LEVELS-1 ---
 		// Each array mirrors one TeamStat upgrade slice that Nicowar's phases read.
 		Sint32 buildLevel[CORTEX_UNIT_LEVELS];               ///< stat->upgradeState[BUILD][lvl] (any unit type).
-		Sint32 attackSpeedLevel[CORTEX_UNIT_LEVELS];         ///< stat->upgradeState[ATTACK_SPEED][lvl].
+		Sint32 attackSpeedLevel[CORTEX_UNIT_LEVELS];         ///< stat->upgradeState[ATTACK_SPEED][lvl] (== trained-warrior count by level).
+		Sint32 attackStrengthLevel[CORTEX_UNIT_LEVELS];      ///< stat->upgradeState[ATTACK_STRENGTH][lvl]. A warrior joins a flag only if its min(ATTACK_SPEED,ATTACK_STRENGTH) level clears the flag's minLevelToFlag.
 		Sint32 workerSwimLevel[CORTEX_UNIT_LEVELS];          ///< stat->upgradeStatePerType[WORKER][SWIM][lvl]; index 0 == cannot swim.
 		Sint32 explorerMagicGroundLevel[CORTEX_UNIT_LEVELS]; ///< stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][lvl].
+
+		// --- upgrade-decision signals (Phase-2 v4) ---
+		// maxBuildLevel == team->maxBuildLevel() (team/TeamRouting.cpp:245-259): the
+		// highest BUILD level among our workers (0..CORTEX_UNIT_LEVELS-1). This is the
+		// exact engine gate on whether a building can be upgraded — a finished
+		// building at level L can be upgraded only when maxBuildLevel > L
+		// (gui/GameGUIInput.cpp:426). It rises when workers train BUILD at a school,
+		// so it is the dependency that ties "build a school" to "now I can upgrade".
+		Sint32 maxBuildLevel;
+		// Per building type: count of FINISHED instances that pass the full engine
+		// Upgradable predicate RIGHT NOW — ALIVE, not a site, hp == hpMax, no
+		// construction in progress (constructionResultState == NO_CONSTRUCTION),
+		// nextLevel != -1 (not already max level 2), maxBuildLevel > type->level, and
+		// the larger next-level footprint fits (isHardSpaceForBuildingSite(UPGRADE)).
+		// Lets the pure policy ask "can I upgrade a barracks/school?" without
+		// re-deriving the engine's spatial/hp predicates. Bounded by Building::MAX_COUNT.
+		Sint32 upgradableCount[CORTEX_BUILDING_TYPES];
 
 		// --- buildings: full per-type, per-long-level histogram ---
 		// Direct mirror of stat->numberBuildingPerTypePerLevel. Read it through
@@ -153,6 +198,25 @@ namespace Cortex
 		// other types' slots stay valid==0. ACTION_BUILD.locationSlot indexes the
 		// second dimension for ACTION_BUILD.buildingType.
 		BuildCandidate buildCandidates[CORTEX_BUILDING_TYPES][CORTEX_BUILD_CANDIDATES];
+
+		// --- combat: war-flag targeting surface (Phase-3 v3) ---
+		// OFFENSE targets: discovered enemy buildings, nearest-first (BuildCandidate
+		// reused — x/y is the enemy building's tile, score ranks proximity). Filled
+		// ONLY from buildings we have legitimately seen (Building::seenByMask), never
+		// from unfogged truth. ACTION_PLACE_WAR_FLAG.locationSlot indexes this array.
+		BuildCandidate flagTargets[CORTEX_FLAG_TARGETS];
+		// DEFENSE target: the single best spot to recall the army to — the position
+		// of the friendly building currently taking the most fire (underAttackTimer).
+		// valid==0 when nothing is under attack. ACTION_PLACE_DEFENSE_FLAG uses this.
+		BuildCandidate defenseTarget;
+		// Count of our own live WAR_FLAG virtual buildings (reading our OWN state is
+		// not a cheat). Lets the policy/action layer know a flag already exists so it
+		// moves/clears rather than stacking duplicates.
+		Sint32 warFlagsActive;
+		// Defense triggers: how many of our own units / buildings are currently under
+		// attack (underAttackTimer > 0). Nonzero => recall the army to defend.
+		Sint32 unitsUnderAttack;
+		Sint32 buildingsUnderAttack;
 
 		// --- map / global facts ---
 		Sint32 fruitOnMap;    ///< 1 if any fruit resource exists on the map (Map query).
@@ -169,9 +233,13 @@ namespace Cortex
 	/// version bump).
 	enum CortexActionKind
 	{
-		ACTION_NOOP = 0,      ///< Do nothing this decision cycle.
-		ACTION_BUILD,         ///< Place buildingType at buildCandidates[buildingType][locationSlot].
-		ACTION_SET_PRODUCTION,///< Set every finished swarm's production ratio to productionRatio[].
+		ACTION_NOOP = 0,        ///< Do nothing this decision cycle.
+		ACTION_BUILD,           ///< Place buildingType at buildCandidates[buildingType][locationSlot].
+		ACTION_SET_PRODUCTION,  ///< Set every finished swarm's production ratio to productionRatio[].
+		ACTION_PLACE_WAR_FLAG,  ///< Offense: ensure our single war flag sits on flagTargets[locationSlot] (create or move there), radius=flagRadius, warriors=unitCount.
+		ACTION_PLACE_DEFENSE_FLAG,///< Defense: ensure our single war flag sits on defenseTarget (create or move there), radius=flagRadius, warriors=unitCount.
+		ACTION_CLEAR_FLAGS,     ///< Remove our war flag (OrderDelete) if one exists — no offense/defense wanted right now.
+		ACTION_UPGRADE_BUILDING,///< Upgrade one finished `buildingType` instance to its next level (engine OrderConstruction). The action layer resolves which instance (the bottleneck-eligible one) and the worker counts.
 
 		ACTION_KIND_COUNT
 	};
@@ -184,8 +252,10 @@ namespace Cortex
 		Uint32 version;      ///< == ACTION_VERSION.
 		Sint32 kind;         ///< A CortexActionKind value.
 		Sint32 buildingType; ///< For ACTION_BUILD: an IntBuildingType::Number in [0, CORTEX_BUILDING_TYPES). Else -1.
-		Sint32 locationSlot; ///< For ACTION_BUILD: index in [0, CORTEX_BUILD_CANDIDATES). Else -1.
+		Sint32 locationSlot; ///< For ACTION_BUILD: index in [0, CORTEX_BUILD_CANDIDATES). For ACTION_PLACE_WAR_FLAG: index in [0, CORTEX_FLAG_TARGETS). Else -1.
 		Sint32 productionRatio[CORTEX_UNIT_TYPES]; ///< For ACTION_SET_PRODUCTION: target swarm ratio [WORKER,EXPLORER,WARRIOR], each 0..CORTEX_MAX_RATIO ({0,0,0} = halt). Else all 0.
+		Sint32 flagRadius;   ///< For ACTION_PLACE_*_FLAG: war-flag attraction radius (unitStayRange), clamped to [1, CORTEX_MAX_FLAG_RADIUS]. Else -1.
+		Sint32 unitCount;    ///< For ACTION_PLACE_*_FLAG: warriors to summon (flag maxUnitWorking), clamped to [0, CORTEX_MAX_FLAG_UNITS]. Else -1.
 	};
 
 	// --- building-histogram accessors -------------------------------------
@@ -212,6 +282,26 @@ namespace Cortex
 		return obs.buildingCountPerLevel[type][0]
 		     + obs.buildingCountPerLevel[type][2]
 		     + obs.buildingCountPerLevel[type][4];
+	}
+
+	/// Highest FINISHED building level (0,1,2) of `type`, or -1 if none finished.
+	/// Reads the odd long-level slots (finished) high-to-low.
+	inline Sint32 cortexMaxFinishedLevel(const CortexObservation& obs, int type)
+	{
+		for (int level = 2; level >= 0; level--)
+			if (obs.buildingCountPerLevel[type][(level << 1) + 1] > 0)
+				return level;
+		return -1;
+	}
+
+	/// Count of `type` buildings currently mid-UPGRADE: a construction site of an
+	/// already-raised level (1 or 2). A fresh level-0 site (even slot 0) is a NEW
+	/// build, not an upgrade, so it is excluded. Lets the policy avoid stacking a
+	/// second upgrade on a type that is already upgrading.
+	inline Sint32 cortexBuildingsUpgrading(const CortexObservation& obs, int type)
+	{
+		return obs.buildingCountPerLevel[type][2]  // site of level 1 (0->1 upgrade)
+		     + obs.buildingCountPerLevel[type][4]; // site of level 2 (1->2 upgrade)
 	}
 
 	/// Construct an empty/no-op observation with the current version stamped.
@@ -245,12 +335,16 @@ namespace Cortex
 		{
 			obs.buildLevel[i] = 0;
 			obs.attackSpeedLevel[i] = 0;
+			obs.attackStrengthLevel[i] = 0;
 			obs.workerSwimLevel[i] = 0;
 			obs.explorerMagicGroundLevel[i] = 0;
 		}
 
+		obs.maxBuildLevel = 0;
+
 		for (int t = 0; t < CORTEX_BUILDING_TYPES; t++)
 		{
+			obs.upgradableCount[t] = 0;
 			for (int l = 0; l < CORTEX_BUILDING_LONG_LEVELS; l++)
 				obs.buildingCountPerLevel[t][l] = 0;
 			for (int c = 0; c < CORTEX_BUILD_CANDIDATES; c++)
@@ -261,6 +355,21 @@ namespace Cortex
 				obs.buildCandidates[t][c].score = 0;
 			}
 		}
+
+		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
+		{
+			obs.flagTargets[i].valid = 0;
+			obs.flagTargets[i].x = 0;
+			obs.flagTargets[i].y = 0;
+			obs.flagTargets[i].score = 0;
+		}
+		obs.defenseTarget.valid = 0;
+		obs.defenseTarget.x = 0;
+		obs.defenseTarget.y = 0;
+		obs.defenseTarget.score = 0;
+		obs.warFlagsActive = 0;
+		obs.unitsUnderAttack = 0;
+		obs.buildingsUnderAttack = 0;
 
 		obs.fruitOnMap = 0;
 		obs.totalPrestige = 0;
@@ -287,6 +396,8 @@ namespace Cortex
 		action.locationSlot = -1;
 		for (int i = 0; i < CORTEX_UNIT_TYPES; i++)
 			action.productionRatio[i] = 0;
+		action.flagRadius = -1;
+		action.unitCount = -1;
 		return action;
 	}
 
@@ -309,6 +420,48 @@ namespace Cortex
 		action.productionRatio[0] = workerRatio;
 		action.productionRatio[1] = explorerRatio;
 		action.productionRatio[2] = warriorRatio;
+		return action;
+	}
+
+	/// Offense: recall/commit our single war flag onto flagTargets[locationSlot].
+	/// radius/unitCount are clamped to [1,CORTEX_MAX_FLAG_RADIUS]/[0,CORTEX_MAX_FLAG_UNITS]
+	/// by the action layer.
+	inline CortexAction makeWarFlagAction(int locationSlot, int flagRadius, int unitCount)
+	{
+		CortexAction action = makeNoOpAction();
+		action.kind = ACTION_PLACE_WAR_FLAG;
+		action.locationSlot = locationSlot;
+		action.flagRadius = flagRadius;
+		action.unitCount = unitCount;
+		return action;
+	}
+
+	/// Defense: recall our single war flag onto obs.defenseTarget.
+	inline CortexAction makeDefenseFlagAction(int flagRadius, int unitCount)
+	{
+		CortexAction action = makeNoOpAction();
+		action.kind = ACTION_PLACE_DEFENSE_FLAG;
+		action.flagRadius = flagRadius;
+		action.unitCount = unitCount;
+		return action;
+	}
+
+	/// Remove our war flag if one exists (no offense/defense wanted right now).
+	inline CortexAction makeClearFlagsAction()
+	{
+		CortexAction action = makeNoOpAction();
+		action.kind = ACTION_CLEAR_FLAGS;
+		return action;
+	}
+
+	/// Upgrade one finished instance of `buildingType` to its next level. The
+	/// action layer picks the specific eligible (bottleneck) instance and the
+	/// engine-default worker counts; the policy only names the type to upgrade.
+	inline CortexAction makeUpgradeAction(int buildingType)
+	{
+		CortexAction action = makeNoOpAction();
+		action.kind = ACTION_UPGRADE_BUILDING;
+		action.buildingType = buildingType;
 		return action;
 	}
 }
