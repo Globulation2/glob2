@@ -144,11 +144,13 @@ protected:
 		CPPUNIT_ASSERT_EQUAL((Sint32)-1, a.unitCount);
 	}
 
-	// C++: CortexTypes.h:43,50 — the Phase-2 increment bumped both versions to 4.
+	// C++: CortexTypes.h:43,50 — the wheat-protection increment bumped both
+	// versions to 5 (v5 added the wheat-sustainability obs fields +
+	// ACTION_PROTECT_WHEAT / wheatOpenMargin).
 	void testVersionBump(void)
 	{
-		CPPUNIT_ASSERT_EQUAL((Uint32)4, (Uint32)OBSERVATION_VERSION);
-		CPPUNIT_ASSERT_EQUAL((Uint32)4, (Uint32)ACTION_VERSION);
+		CPPUNIT_ASSERT_EQUAL((Uint32)5, (Uint32)OBSERVATION_VERSION);
+		CPPUNIT_ASSERT_EQUAL((Uint32)5, (Uint32)ACTION_VERSION);
 		// makeEmptyObservation must stamp the current version (so a stale
 		// observation from an old layout is rejected by the policy).
 		CortexObservation obs = makeEmptyObservation();

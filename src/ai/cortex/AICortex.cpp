@@ -3,6 +3,7 @@
 
 #include "AICortex.h"
 #include "CortexObservation.h"
+#include "CortexWheat.h"
 
 #include "Order.h"
 #include "Player.h"
@@ -15,6 +16,8 @@
 #include "unit/UnitConsts.h"
 #include "Game.h"
 #include "map/Map.h"
+#include "Brush.h"
+#include "Utilities.h"
 #include <Stream.h>
 
 using std::shared_ptr;
@@ -44,6 +47,8 @@ void AICortex::init(Player* player)
 	this->player = player;
 	timer = 0;
 	buildCooldownUntil = 0;
+	flagCooldownUntil = 0;
+	wheatOpenMargin = -1; // sentinel: drawn lazily on the first decision cycle.
 }
 
 bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor)
@@ -52,6 +57,11 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	stream->readEnterSection("AICortex");
 	timer = stream->readUint32("timer");
 	buildCooldownUntil = stream->readSint32("buildCooldownUntil");
+	flagCooldownUntil = stream->readSint32("flagCooldownUntil");
+	// Persisted, NOT redrawn on load: re-drawing would consume a fresh syncRand on
+	// every load and desync replays. -1 means a pre-wheat save (or a game that has
+	// not reached its first decision cycle yet) — getOrder draws it next cycle.
+	wheatOpenMargin = stream->readSint32("wheatOpenMargin");
 	stream->readLeaveSection();
 	// orderQueue is transient working state, not persisted; it refills on the
 	// next decision cycle after load.
@@ -63,6 +73,8 @@ void AICortex::save(GAGCore::OutputStream* stream)
 	stream->writeEnterSection("AICortex");
 	stream->writeUint32(timer, "timer");
 	stream->writeSint32(buildCooldownUntil, "buildCooldownUntil");
+	stream->writeSint32(flagCooldownUntil, "flagCooldownUntil");
+	stream->writeSint32(wheatOpenMargin, "wheatOpenMargin");
 	stream->writeLeaveSection();
 }
 
@@ -104,9 +116,11 @@ void AICortex::ensureWarFlagAt(int tx, int ty, const Cortex::CortexAction& actio
 	if (existing == NULL)
 	{
 		// No flag yet: create one. An OrderCreate takes several ticks to execute
-		// and register the virtual building; without the same cooldown ACTION_BUILD
-		// uses, the policy re-issues the create before the flag appears.
-		if (obs.tick < buildCooldownUntil)
+		// and register the virtual building; without a cooldown the policy re-issues
+		// the create before the flag appears. This is the flag's OWN cooldown, NOT
+		// the build cooldown — a queued economy build must never delay a flag (and
+		// especially not a defensive recall) by up to BUILD_COOLDOWN_TICKS.
+		if (obs.tick < flagCooldownUntil)
 			return;
 
 		// Resolve WAR_FLAG the VIRTUAL way: flags have no building-site variant, so
@@ -129,7 +143,7 @@ void AICortex::ensureWarFlagAt(int tx, int ty, const Cortex::CortexAction& actio
 		orderQueue.push(shared_ptr<Order>(new OrderCreate(
 			player->team->teamNumber, tx, ty, typeNum,
 			count, count, radius)));
-		buildCooldownUntil = obs.tick + BUILD_COOLDOWN_TICKS;
+		flagCooldownUntil = obs.tick + BUILD_COOLDOWN_TICKS;
 		return;
 	}
 
@@ -415,6 +429,27 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			break;
 		}
 
+		case Cortex::ACTION_PROTECT_WHEAT:
+		{
+			// Rebuild the ADD/DEL checkerboard masks for our wheat (the bounded
+			// colony-region scan) and emit one OrderAlterateForbidden per non-empty
+			// diff. No build cooldown: these are area-paint orders, not OrderCreates,
+			// and the reconcile is self-correcting — a paint already in place yields
+			// an empty diff next cycle, so re-deciding the same intent is free.
+			Cortex::WheatReconcile wr =
+				Cortex::reconcileWheatForbidden(player, action.wheatOpenMargin, /*buildMasks=*/true);
+			const Map* map = &player->team->game->map;
+			const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
+			// DEL first so freeing dead tiles never races the ADD of fresh ones.
+			if (wr.del.getApplicationCount() > 0)
+				orderQueue.push(shared_ptr<Order>(new OrderAlterateForbidden(
+					teamNumber, BrushTool::MODE_DEL, &wr.del, map)));
+			if (wr.add.getApplicationCount() > 0)
+				orderQueue.push(shared_ptr<Order>(new OrderAlterateForbidden(
+					teamNumber, BrushTool::MODE_ADD, &wr.add, map)));
+			break;
+		}
+
 		default:
 			// Unknown intent: ignore rather than emit a bogus Order.
 			break;
@@ -435,7 +470,20 @@ shared_ptr<Order> AICortex::getOrder(void)
 	timer++;
 	if ((timer % OBSERVE_INTERVAL) == 0)
 	{
-		Cortex::CortexObservation obs = Cortex::observe(player);
+		// Draw the per-game wheat open-margin N exactly once, lazily, on the first
+		// decision cycle — not in the constructor — so the sync RNG is live and the
+		// draw lands at the same point in the shared stream on every client (all
+		// clients run getOrder in lockstep). syncRand(), NEVER rand(): this value
+		// must be identical across machines. The draw shifts the shared RNG stream,
+		// so it is replay-relevant (validated against the deterministic harness).
+		if (wheatOpenMargin < 0)
+		{
+			const int span = Cortex::WHEAT_OPEN_MARGIN_MAX - Cortex::WHEAT_OPEN_MARGIN_MIN + 1;
+			wheatOpenMargin = Cortex::WHEAT_OPEN_MARGIN_MIN
+			                + static_cast<int>(syncRand() % span);
+		}
+
+		Cortex::CortexObservation obs = Cortex::observe(player, wheatOpenMargin);
 		Cortex::CortexAction action = policy.decide(obs);
 		translateAction(action, obs);
 

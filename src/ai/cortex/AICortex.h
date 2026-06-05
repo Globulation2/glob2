@@ -67,7 +67,7 @@ private:
 	Building* findOwnWarFlag() const;
 
 	/// Ensure our single war flag sits at map tile (tx, ty): create it there if
-	/// we have none (respecting the build cooldown and the virtual-building room
+	/// we have none (respecting the flag cooldown and the virtual-building room
 	/// check), or move the existing one if it is far from the target. radius/count
 	/// come from the action (clamped). Appends at most one Order to orderQueue.
 	void ensureWarFlagAt(int tx, int ty, const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
@@ -91,6 +91,23 @@ private:
 	/// Game tick before which translateAction refuses to issue another build
 	/// (see BUILD_COOLDOWN_TICKS). 0 = no build pending.
 	int buildCooldownUntil;
+
+	/// Game tick before which ensureWarFlagAt refuses to create another war flag.
+	/// Same BUILD_COOLDOWN_TICKS latency (an OrderCreate for a virtual flag also
+	/// takes several ticks to register before findOwnWarFlag can see it), but a
+	/// SEPARATE timer from buildCooldownUntil: a queued economy build must never
+	/// stall a time-critical flag placement — above all a defensive recall when the
+	/// base is under attack — by up to BUILD_COOLDOWN_TICKS. 0 = no flag create
+	/// pending.
+	int flagCooldownUntil;
+
+	/// Per-game wheat open-margin N: the first N rows of wheat nearest the harvest
+	/// source stay unpainted; the checkerboard starts at depth N+1. Drawn ONCE via
+	/// syncRand on the first decision cycle (sentinel -1 = not yet drawn) and then
+	/// persisted (NOT redrawn on load) so same-seed replays stay byte-identical.
+	/// The draw consumes one syncRand() → it shifts the shared RNG stream, so this
+	/// is replay-relevant (validated against the deterministic harness).
+	Sint32 wheatOpenMargin;
 
 	/// Orders awaiting emission, one popped per getOrder() call.
 	std::queue<std::shared_ptr<Order> > orderQueue;

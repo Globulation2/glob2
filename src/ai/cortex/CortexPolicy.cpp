@@ -155,10 +155,13 @@ namespace Cortex
 		// Combat-phase production mixes in explorers (to scout enemy buildings so
 		// flagTargets can populate) and warriors (the army). Warrior-weighted so a
 		// defensible force builds up fast; one explorer is enough to reveal the
-		// enemy base on these maps. Pure-economy phase is workers only.
+		// enemy base on these maps. Pure-economy phase is workers only — EXCEPT one
+		// early explorer (below) to reveal our own wheat fast (the wheat paint is
+		// FOW-gated, so coverage only reaches wheat we can currently see).
 		// {WORKER, EXPLORER, WARRIOR}.
+		const bool wantEarlyExplorer = (!combatPhase && swarms >= 1 && obs.explorers == 0);
 		const int growWorker   = 1;
-		const int growExplorer = combatPhase ? 1 : 0;
+		const int growExplorer = (combatPhase || wantEarlyExplorer) ? 1 : 0;
 		const int growWarrior  = combatPhase ? 2 : 0;
 
 		// --- Priority 1: production control (this is what bounds population). ---
@@ -177,6 +180,19 @@ namespace Cortex
 		if (combatPhase && shouldGrow && swarms > 0
 		 && obs.swarmsProducing == swarms && warriors == 0)
 			return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+		// One-shot early-explorer flip (economy phase): all swarms producing but
+		// none set to explorers and we have none — retarget once to fold one in.
+		// Guarded by swarmsProducingExplorer == 0 so it fires exactly once.
+		if (wantEarlyExplorer && shouldGrow && swarms > 0
+		 && obs.swarmsProducing == swarms && obs.swarmsProducingExplorer == 0)
+			return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+		// Revert: once an explorer exists and a swarm is still set to produce them,
+		// drop the economy swarms back to workers-only so we don't keep over-
+		// producing explorers. Stops as soon as no swarm carries an explorer ratio.
+		if (!combatPhase && shouldGrow && swarms > 0
+		 && obs.swarmsProducing == swarms
+		 && obs.swarmsProducingExplorer > 0 && obs.explorers >= 1)
+			return makeSetProductionAction(1, 0, 0);
 
 		// --- Priority 2: food capacity (build inns to raise the sustainable cap). ---
 		// One inn at a time. Build when there is no inn, when units are hungry with
@@ -257,6 +273,17 @@ namespace Cortex
 		if (combatPhase && obs.buildingsUnderAttack > 0
 		 && warriors >= DEFENSE_MIN_WARRIORS && obs.defenseTarget.valid)
 			return makeDefenseFlagAction(DEFENSE_FLAG_RADIUS, warriors);
+
+		// --- Priority 7.5: wheat sustainability (checkerboard forbidden paint). ---
+		// Ungated by combat phase — this is early-economy field maintenance that
+		// runs from the first inn. Placed below defense (reacting to an active
+		// attack outranks farm upkeep) but above the sticky offense default (upkeep
+		// outranks "keep attacking"). Gated on !starving so we never wall off wheat
+		// while the colony is dying, and emits only when the reconcile has real work
+		// (ADD newly-revealed tiles or DEL ones where the wheat is gone).
+		if (!starving
+		 && (obs.wheatProtectAddCount > 0 || obs.wheatProtectDelCount > 0))
+			return makeProtectWheatAction(obs.wheatOpenMargin);
 
 		// --- Priority 8: offense (plant the war flag on the nearest known enemy). ---
 		// Once we have an army (turtle-then-commit; the warriors have been training to

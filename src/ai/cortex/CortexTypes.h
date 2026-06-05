@@ -40,14 +40,21 @@ namespace Cortex
 	/// signals: maxBuildLevel (== team->maxBuildLevel(), the engine gate on whether
 	/// a building can be upgraded) and upgradableCount[] (per-type count of
 	/// finished instances that pass the full engine Upgradable predicate right now).
-	static const Uint32 OBSERVATION_VERSION = 4;
+	/// v5 (2026-06-04, wheat-protection increment) added the wheat-sustainability
+	/// signals: wheatOpenMargin (the seeded open-margin N echoed into the action),
+	/// wheatProtectAddCount/wheatProtectDelCount (the reconcile diff against the
+	/// team's current forbidden paint), and swarmsProducingExplorer (so the policy
+	/// can revert the early-explorer mix cleanly without reading raw swarm ratios).
+	static const Uint32 OBSERVATION_VERSION = 5;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
 	/// ACTION_PLACE_DEFENSE_FLAG, ACTION_CLEAR_FLAGS) + flagRadius/unitCount.
 	/// v4 (2026-06-04) added ACTION_UPGRADE_BUILDING (upgrade an existing finished
 	/// building to its next level via OrderConstruction; reuses buildingType).
-	static const Uint32 ACTION_VERSION = 4;
+	/// v5 (2026-06-04) added ACTION_PROTECT_WHEAT + wheatOpenMargin (paint the
+	/// checkerboard forbidden pattern over our wheat for sustainability).
+	static const Uint32 ACTION_VERSION = 5;
 
 	/// Fixed upper bound on enemy team slots in an Observation. 32 ==
 	/// Team::MAX_COUNT_ON_DISK; it is a safe over-bound on the live team ceiling
@@ -104,6 +111,30 @@ namespace Cortex
 	/// Self-imposed upper bound on warriors assigned to one war flag (the flag's
 	/// maxUnitWorking). Cortex's own bound for the action param, not an engine cap.
 	static const int CORTEX_MAX_FLAG_UNITS = 32;
+
+	// --- wheat-protection tuning (all tunable AI design choices) -----------
+	// Cortex paints a checkerboard `forbidden` pattern over its wheat (CORN) so
+	// workers harvest one half while the protected half stays full and reseeds it
+	// (forbidden blocks harvest, MapGradientGlobal.cpp:135, but NOT growth,
+	// MapStep.cpp:80). See docs/AI/cortex/wheat-protection-plan.md and the
+	// geometry core in CortexWheat.h/.cpp.
+
+	/// Open margin N range: the first N rows of wheat nearest the harvest source
+	/// stay fully open (unpainted); the checkerboard begins at depth N+1. N is
+	/// drawn once per game via syncRand (per-game variety + the ML-learnable knob).
+	/// Capped LOW because real starter fields are only ~5-7 tiles deep — an open
+	/// margin of 3-4 would leave nothing to checkerboard.
+	static const int WHEAT_OPEN_MARGIN_MIN = 0;
+	static const int WHEAT_OPEN_MARGIN_MAX = 2;
+	/// Checkerboard parity: a reachable CORN tile with depth > N is painted
+	/// forbidden when (x+y)&1 == WHEAT_PARITY. A fixed constant for determinism
+	/// (0 vs 1 is arbitrary). Used by the geometry core (CortexWheat.cpp).
+	static const int WHEAT_PARITY = 0;
+	/// How far past our building bounding box the wheat scan reaches, in tiles.
+	/// Catches field tiles extending just beyond the outermost colony building;
+	/// smaller than the -dump-wheat debug tool's larger fake margin because the
+	/// live colony bbox already includes the inn built next to the field.
+	static const int WHEAT_REGION_MARGIN = 10;
 
 	/// One enemy team projected into the observation. POD, bounded.
 	struct EnemySlot
@@ -218,6 +249,23 @@ namespace Cortex
 		Sint32 unitsUnderAttack;
 		Sint32 buildingsUnderAttack;
 
+		// --- wheat sustainability (v5) ---
+		// The open margin N drawn once per game (AICortex, via syncRand) and echoed
+		// through the observation so the pure policy reads it like any other feature
+		// and passes it into ACTION_PROTECT_WHEAT — the ML seam (a learned policy
+		// later OUTPUTS N here instead of echoing the seeded value).
+		Sint32 wheatOpenMargin;
+		// Reconcile diff between the checkerboard we WANT over our wheat right now and
+		// the team's CURRENT forbidden paint (footprints excluded). Counts-only summary
+		// from a bounded colony-region scan; the full tile masks are rebuilt in the
+		// action layer. The policy emits ACTION_PROTECT_WHEAT only when either is > 0.
+		Sint32 wheatProtectAddCount; ///< tiles to newly forbid (desired - current).
+		Sint32 wheatProtectDelCount; ///< tiles to un-forbid (current - desired: wheat gone/out of view).
+		// Count of FINISHED swarms whose EXPLORER production ratio is nonzero. Lets the
+		// pure policy revert the one-shot early-explorer mix back to workers-only after
+		// the explorer is made, without reading raw per-swarm ratios (which it can't).
+		Sint32 swarmsProducingExplorer;
+
 		// --- map / global facts ---
 		Sint32 fruitOnMap;    ///< 1 if any fruit resource exists on the map (Map query).
 		Sint32 totalPrestige; ///< game->totalPrestige (all teams; for the explorer-defence heuristic).
@@ -240,6 +288,7 @@ namespace Cortex
 		ACTION_PLACE_DEFENSE_FLAG,///< Defense: ensure our single war flag sits on defenseTarget (create or move there), radius=flagRadius, warriors=unitCount.
 		ACTION_CLEAR_FLAGS,     ///< Remove our war flag (OrderDelete) if one exists — no offense/defense wanted right now.
 		ACTION_UPGRADE_BUILDING,///< Upgrade one finished `buildingType` instance to its next level (engine OrderConstruction). The action layer resolves which instance (the bottleneck-eligible one) and the worker counts.
+		ACTION_PROTECT_WHEAT,   ///< Reconcile the checkerboard forbidden paint over our wheat at open-margin wheatOpenMargin. The action layer builds the ADD/DEL tile masks and emits OrderAlterateForbidden(MODE_ADD/DEL).
 
 		ACTION_KIND_COUNT
 	};
@@ -256,6 +305,7 @@ namespace Cortex
 		Sint32 productionRatio[CORTEX_UNIT_TYPES]; ///< For ACTION_SET_PRODUCTION: target swarm ratio [WORKER,EXPLORER,WARRIOR], each 0..CORTEX_MAX_RATIO ({0,0,0} = halt). Else all 0.
 		Sint32 flagRadius;   ///< For ACTION_PLACE_*_FLAG: war-flag attraction radius (unitStayRange), clamped to [1, CORTEX_MAX_FLAG_RADIUS]. Else -1.
 		Sint32 unitCount;    ///< For ACTION_PLACE_*_FLAG: warriors to summon (flag maxUnitWorking), clamped to [0, CORTEX_MAX_FLAG_UNITS]. Else -1.
+		Sint32 wheatOpenMargin; ///< For ACTION_PROTECT_WHEAT: the open-margin N (depth <= N stays unpainted), echoed from the seeded obs.wheatOpenMargin. Else -1.
 	};
 
 	// --- building-histogram accessors -------------------------------------
@@ -371,6 +421,11 @@ namespace Cortex
 		obs.unitsUnderAttack = 0;
 		obs.buildingsUnderAttack = 0;
 
+		obs.wheatOpenMargin = 0;
+		obs.wheatProtectAddCount = 0;
+		obs.wheatProtectDelCount = 0;
+		obs.swarmsProducingExplorer = 0;
+
 		obs.fruitOnMap = 0;
 		obs.totalPrestige = 0;
 
@@ -398,6 +453,7 @@ namespace Cortex
 			action.productionRatio[i] = 0;
 		action.flagRadius = -1;
 		action.unitCount = -1;
+		action.wheatOpenMargin = -1;
 		return action;
 	}
 
@@ -462,6 +518,17 @@ namespace Cortex
 		CortexAction action = makeNoOpAction();
 		action.kind = ACTION_UPGRADE_BUILDING;
 		action.buildingType = buildingType;
+		return action;
+	}
+
+	/// Reconcile the checkerboard forbidden paint over our wheat at open-margin
+	/// `openMargin`. The action layer builds the ADD/DEL tile masks (the bounded
+	/// colony-region scan) and emits the OrderAlterateForbidden orders.
+	inline CortexAction makeProtectWheatAction(int openMargin)
+	{
+		CortexAction action = makeNoOpAction();
+		action.kind = ACTION_PROTECT_WHEAT;
+		action.wheatOpenMargin = openMargin;
 		return action;
 	}
 }

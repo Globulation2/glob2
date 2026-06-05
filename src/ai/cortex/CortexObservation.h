@@ -22,5 +22,7 @@ namespace Cortex
 {
 	/// Project the player's current game state into a fixed feature vector.
 	/// Returns an observation with version == OBSERVATION_VERSION and valid == 1.
-	CortexObservation observe(Player* player);
+	/// `openMargin` is the per-game wheat open-margin N (drawn once via syncRand in
+	/// AICortex); it is echoed into obs.wheatOpenMargin and drives the wheat scan.
+	CortexObservation observe(Player* player, int openMargin);
 }

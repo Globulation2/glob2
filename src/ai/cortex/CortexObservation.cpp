@@ -3,6 +3,7 @@
 
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
+#include "CortexWheat.h"
 
 #include "Player.h"
 #include "Game.h"
@@ -43,9 +44,13 @@ static_assert(Cortex::CORTEX_BUILD_SCIENCE == IntBuildingType::SCIENCE_BUILDING,
 
 namespace Cortex
 {
-	CortexObservation observe(Player* player)
+	CortexObservation observe(Player* player, int openMargin)
 	{
 		CortexObservation obs = makeEmptyObservation();
+
+		// Echo the seeded open margin N regardless; even an early-return (no team)
+		// observation carries it, and decide() ignores invalid observations anyway.
+		obs.wheatOpenMargin = openMargin;
 
 		if (player == NULL || player->team == NULL)
 			return obs; // valid stays 0 — caller treats as "no observation".
@@ -115,9 +120,10 @@ namespace Cortex
 		//                    maxBuildLevel gate, and its larger next-level footprint
 		//                    must fit. Lets the policy ask "can I upgrade this type?"
 		//                    without re-deriving the engine's spatial/hp predicates.
-		obs.feedCapacity    = 0;
-		obs.swarmsProducing = 0;
-		obs.warFlagsActive  = 0;
+		obs.feedCapacity            = 0;
+		obs.swarmsProducing         = 0;
+		obs.swarmsProducingExplorer = 0;
+		obs.warFlagsActive          = 0;
 		for (int i = 0; i < Building::MAX_COUNT; i++)
 		{
 			Building* b = team->myBuildings[i];
@@ -128,9 +134,15 @@ namespace Cortex
 				obs.feedCapacity += bt->maxUnitInside;
 			if (bt->shortTypeNum == IntBuildingType::SWARM_BUILDING
 			 && b->buildingState == Building::ALIVE
-			 && !bt->isBuildingSite   // exclude swarm sites / swarms under upgrade
-			 && (b->ratio[0] | b->ratio[1] | b->ratio[2]))
-				obs.swarmsProducing++;
+			 && !bt->isBuildingSite)  // exclude swarm sites / swarms under upgrade
+			{
+				if (b->ratio[0] | b->ratio[1] | b->ratio[2])
+					obs.swarmsProducing++;
+				// EXPLORER == unit-type index 1; lets the policy revert the one-shot
+				// early-explorer mix once an explorer is actually being produced.
+				if (b->ratio[EXPLORER] > 0)
+					obs.swarmsProducingExplorer++;
+			}
 			// C++: IntBuildingType::WAR_FLAG == 9, building/IntBuildingType.h:26
 			if (bt->shortTypeNum == IntBuildingType::WAR_FLAG
 			 && b->buildingState == Building::ALIVE)
@@ -322,6 +334,17 @@ namespace Cortex
 				slot++;
 			}
 			obs.enemyCount = slot;
+		}
+
+		// --- wheat sustainability: counts-only reconcile over the colony region ---
+		// The full per-tile masks are rebuilt in the action layer (which has the
+		// Map to paint into); the observation carries only the cheap diff counts so
+		// the pure policy can tell whether ACTION_PROTECT_WHEAT has real work to do.
+		{
+			const Cortex::WheatReconcile wr =
+				Cortex::reconcileWheatForbidden(player, openMargin, /*buildMasks=*/false);
+			obs.wheatProtectAddCount = wr.addCount;
+			obs.wheatProtectDelCount = wr.delCount;
 		}
 
 		obs.valid = 1;

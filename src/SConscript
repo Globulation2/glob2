@@ -49,6 +49,7 @@ ai/AIWarrush.cpp
 ai/cortex/CortexObservation.cpp
 ai/cortex/CortexPlacement.cpp
 ai/cortex/CortexPolicy.cpp
+ai/cortex/CortexWheat.cpp
 ai/cortex/AICortex.cpp
 BasePlayer.cpp
 BaseTeam.cpp
