@@ -55,7 +55,18 @@ namespace Cortex
 	/// on a *trained* count instead only delayed the attack and made us turtle to a
 	/// draw against a stronger economy (measured: it cost ~13 pts vs Castor and added
 	/// timeout draws), so we commit on raw numbers.
-	static const int ATTACK_MIN_WARRIORS = 12;
+	///
+	/// COMMIT-SIZE LESSON (measured, SmallForTwo --swap-sides, with the offense-hold
+	/// hysteresis in the action layer): RAISING this delays the attack and turtles us
+	/// into a stronger enemy economy — 18 dropped Castor from ~51% to ~24% (and added
+	/// timeout draws) with no gain vs Nicowar/Warrush. LOWERING it to commit earlier,
+	/// now that the hysteresis lets the early push actually advance instead of
+	/// oscillating home, was strictly better: 8 beat 10 and 12 vs Nicowar (~2.5% vs
+	/// ~1.2%/~0%) and lifted Castor to ~51% with only sporadic draws. Warrush is
+	/// insensitive to this knob (its all-in rush wins on tempo regardless). So we
+	/// commit early at 8 — a smaller but EARLIER force that harasses before the enemy
+	/// army matures, paired with the hysteresis so the push holds instead of melting.
+	static const int ATTACK_MIN_WARRIORS = 8;
 	/// Standing warriors required to bother recalling for defense — defend with
 	/// whatever we have the moment the base is touched.
 	static const int DEFENSE_MIN_WARRIORS = 1;

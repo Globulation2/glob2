@@ -52,6 +52,26 @@ private:
 	/// policy decides again (otherwise it re-issues duplicates the engine drops).
 	static const int BUILD_COOLDOWN_TICKS = 250;
 
+	/// Offense-hold hysteresis (the thrash damper). Once we commit an offensive
+	/// war flag we hold that posture for at least this many ticks; within the
+	/// hold window a DEFENSE recall from the policy is IGNORED unless the base
+	/// threat is "serious" (>= DEFENSE_SERIOUS_BUILDINGS buildings taking fire at
+	/// once). This stops the single flag oscillating between the enemy base and
+	/// home every decision cycle whenever a lone harasser pokes the colony — the
+	/// measured failure mode where the army never advanced and melted short of the
+	/// objective. Sized as several OBSERVE_INTERVAL cycles so the flag actually
+	/// reaches and engages the enemy before any minor-harassment recall is even
+	/// considered. RAM-only damping; the policy stays pure.
+	static const int OFFENSE_HOLD_TICKS = 600;
+	/// How many of our buildings must be under attack AT ONCE for a defensive
+	/// recall to override an in-progress offense hold. A single transient hit
+	/// (1 building) is "harassment" and does not break the push; multiple
+	/// buildings under fire is a real base assault that earns the recall.
+	static const int DEFENSE_SERIOUS_BUILDINGS = 2;
+
+	/// Flag posture the action layer last committed (RAM-only hysteresis state).
+	enum FlagPosture { POSTURE_NONE = 0, POSTURE_OFFENSE = 1, POSTURE_DEFENSE = 2 };
+
 	void init(Player* player);
 
 	/// Action layer (direct binding): translate an action intent into zero or
@@ -100,6 +120,16 @@ private:
 	/// base is under attack — by up to BUILD_COOLDOWN_TICKS. 0 = no flag create
 	/// pending.
 	int flagCooldownUntil;
+
+	/// Offense-hold hysteresis state (RAM-only, persisted symmetrically). The
+	/// posture the flag is currently committed to, and the tick until which an
+	/// OFFENSE commitment is protected from a minor-harassment defensive recall.
+	/// See OFFENSE_HOLD_TICKS / DEFENSE_SERIOUS_BUILDINGS for the policy. These
+	/// gate flag *re-tasking* in translateAction; they do not change the pure
+	/// policy. flagPosture is one of FlagPosture; offenseHoldUntil == 0 means no
+	/// hold is active.
+	int flagPosture;
+	int offenseHoldUntil;
 
 	/// Per-game wheat open-margin N: the first N rows of wheat nearest the harvest
 	/// source stay unpainted; the checkerboard starts at depth N+1. Drawn ONCE via

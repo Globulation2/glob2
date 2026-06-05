@@ -48,6 +48,8 @@ void AICortex::init(Player* player)
 	timer = 0;
 	buildCooldownUntil = 0;
 	flagCooldownUntil = 0;
+	flagPosture = POSTURE_NONE;
+	offenseHoldUntil = 0;
 	wheatOpenMargin = -1; // sentinel: drawn lazily on the first decision cycle.
 }
 
@@ -58,6 +60,8 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	timer = stream->readUint32("timer");
 	buildCooldownUntil = stream->readSint32("buildCooldownUntil");
 	flagCooldownUntil = stream->readSint32("flagCooldownUntil");
+	flagPosture = stream->readSint32("flagPosture");
+	offenseHoldUntil = stream->readSint32("offenseHoldUntil");
 	// Persisted, NOT redrawn on load: re-drawing would consume a fresh syncRand on
 	// every load and desync replays. -1 means a pre-wheat save (or a game that has
 	// not reached its first decision cycle yet) — getOrder draws it next cycle.
@@ -74,6 +78,8 @@ void AICortex::save(GAGCore::OutputStream* stream)
 	stream->writeUint32(timer, "timer");
 	stream->writeSint32(buildCooldownUntil, "buildCooldownUntil");
 	stream->writeSint32(flagCooldownUntil, "flagCooldownUntil");
+	stream->writeSint32(flagPosture, "flagPosture");
+	stream->writeSint32(offenseHoldUntil, "offenseHoldUntil");
 	stream->writeSint32(wheatOpenMargin, "wheatOpenMargin");
 	stream->writeLeaveSection();
 }
@@ -348,8 +354,16 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			    || !obs.flagTargets[slot].valid)
 			{
 				clearOwnWarFlag();
+				flagPosture = POSTURE_NONE;
+				offenseHoldUntil = 0;
 				break;
 			}
+			// Commit (or re-commit) the offense push and (re)arm the hold window so
+			// the flag is protected from a minor-harassment defensive recall while it
+			// advances on and engages the enemy. Re-arming each offense cycle keeps
+			// the push alive as long as the policy keeps choosing offense.
+			flagPosture = POSTURE_OFFENSE;
+			offenseHoldUntil = obs.tick + OFFENSE_HOLD_TICKS;
 			const Cortex::BuildCandidate& target = obs.flagTargets[slot];
 			ensureWarFlagAt(target.x, target.y, action, obs);
 			break;
@@ -362,8 +376,27 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			if (!obs.defenseTarget.valid)
 			{
 				clearOwnWarFlag();
+				flagPosture = POSTURE_NONE;
+				offenseHoldUntil = 0;
 				break;
 			}
+
+			// THRASH HYSTERESIS: if we are mid-offense-push (POSTURE_OFFENSE and still
+			// inside the hold window) and the base threat is merely harassment — fewer
+			// than DEFENSE_SERIOUS_BUILDINGS of our buildings taking fire at once — do
+			// NOT recall. Leaving the offense flag where it is (a war flag is a standing
+			// building, so it keeps summoning) lets the army actually reach and break
+			// the enemy line instead of oscillating home every decision cycle. A real
+			// base assault (>= DEFENSE_SERIOUS_BUILDINGS under fire) still earns the
+			// recall and ends the offense hold.
+			const bool seriousThreat = (obs.buildingsUnderAttack >= DEFENSE_SERIOUS_BUILDINGS);
+			if (flagPosture == POSTURE_OFFENSE
+			 && obs.tick < offenseHoldUntil
+			 && !seriousThreat)
+				break; // hold the offense; ignore the minor-harassment recall.
+
+			flagPosture = POSTURE_DEFENSE;
+			offenseHoldUntil = 0;
 			ensureWarFlagAt(obs.defenseTarget.x, obs.defenseTarget.y, action, obs);
 			break;
 		}
@@ -371,6 +404,8 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 		case Cortex::ACTION_CLEAR_FLAGS:
 			// No offense/defense wanted right now — remove our war flag if any.
 			clearOwnWarFlag();
+			flagPosture = POSTURE_NONE;
+			offenseHoldUntil = 0;
 			break;
 
 		case Cortex::ACTION_UPGRADE_BUILDING:
