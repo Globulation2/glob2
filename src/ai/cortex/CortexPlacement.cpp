@@ -105,6 +105,29 @@ namespace Cortex
 			return best;
 		}
 
+		// Chebyshev distance from tile (x, y) to the nearest live SWARM_BUILDING
+		// owned by `team`. Returns -1 when the team has no swarms yet. Used to
+		// enforce CORTEX_SWARM_MIN_SPACING so two swarms do not share one wheat
+		// catchment. Mirrors distanceToNearestBuilding but filtered to swarms.
+		// C++: shortTypeNum == IntBuildingType::SWARM_BUILDING (same test as
+		// AICortex.cpp:324).
+		int distanceToNearestSwarm(Game* game, Team* team, int x, int y)
+		{
+			int best = -1;
+			for (int i = 0; i < Building::MAX_COUNT; i++)
+			{
+				Building* b = team->myBuildings[i];
+				if (b == NULL || b->buildingState == Building::DEAD)
+					continue;
+				if (b->type == NULL || b->type->shortTypeNum != IntBuildingType::SWARM_BUILDING)
+					continue;
+				int d = game->map.warpDistMax(x, y, b->posX, b->posY);
+				if (best < 0 || d < best)
+					best = d;
+			}
+			return best;
+		}
+
 		// Translate a Chebyshev distance-to-colony into a placement score.
 		// Closer is better; we want a compact colony but not literally stacked,
 		// so distance 0 (impossible for a real footprint anyway) and tiny
@@ -190,16 +213,97 @@ namespace Cortex
 		}
 	} // namespace
 
+	// Chebyshev distance from tile (x, y) to the nearest CORN (wheat) resource
+	// tile, found by an outward "ring" scan capped at `cap`. Shared utility used
+	// by placeCandidates (wheatDist of each retained BuildCandidate) and by
+	// Cortex::observe (TrackedBuilding::nearestWheatDist for each tracked swarm
+	// and inn), so the wheat-proximity metric is defined in exactly one place.
+	//
+	// Algorithm: for r = 0, 1, 2, ..., cap, iterate every tile at EXACTLY
+	// Chebyshev distance r from (x, y) — the square ring of side 2r+1. Return
+	// the first r at which a CORN tile is found. The scan terminates immediately
+	// on the first hit at the current radius, not at the first hit overall, so we
+	// never report a radius larger than the true minimum. Return -1 if no CORN is
+	// found within `cap`.
+	//
+	// CORN detection: map.getRessource(x, y).type == CORN — identical to the
+	// isCorn() predicate in CortexWheat.cpp (anonymous namespace, line ~29) so
+	// the two subsystems agree on what counts as wheat.
+	// C++: Ressource.h:#define CORN 1; Map::getRessource (map/Map.h:302).
+	//
+	// Determinism: fixed ring/scan order (top row → right col → bottom row →
+	// left col, no rand, no pointer reads), warp-safe via normalizeX/normalizeY.
+	int nearestCornDist(const Map& map, int x, int y, int cap)
+	{
+		for (int r = 0; r <= cap; r++)
+		{
+			if (r == 0)
+			{
+				// Centre tile: radius-0 ring is just (x, y) itself.
+				if (map.getRessource(map.normalizeX(x), map.normalizeY(y)).type == CORN)
+					return 0;
+				continue;
+			}
+
+			// Iterate the square ring at Chebyshev distance exactly r.
+			// The ring has four sides; adjacent corners are shared — use half-
+			// open intervals to avoid double-counting corners.
+			//
+			// Top row:    y - r,  x in [x-r, x+r)   (left-to-right, right col excluded)
+			// Right col:  x + r,  y in [y-r, y+r)   (top-to-bottom, bottom row excluded)
+			// Bottom row: y + r,  x in (x-r, x+r]   (right-to-left, left col excluded)
+			// Left col:   x - r,  y in (y-r, y+r]   (bottom-to-top, top row excluded)
+
+			// Top row: (x-r .. x+r-1, y-r)
+			for (int dx = -r; dx < r; dx++)
+			{
+				const int nx = map.normalizeX(x + dx);
+				const int ny = map.normalizeY(y - r);
+				if (map.getRessource(nx, ny).type == CORN)
+					return r;
+			}
+			// Right column: (x+r, y-r .. y+r-1)
+			for (int dy = -r; dy < r; dy++)
+			{
+				const int nx = map.normalizeX(x + r);
+				const int ny = map.normalizeY(y + dy);
+				if (map.getRessource(nx, ny).type == CORN)
+					return r;
+			}
+			// Bottom row: (x+r .. x-r+1, y+r) — right-to-left
+			for (int dx = r; dx > -r; dx--)
+			{
+				const int nx = map.normalizeX(x + dx);
+				const int ny = map.normalizeY(y + r);
+				if (map.getRessource(nx, ny).type == CORN)
+					return r;
+			}
+			// Left column: (x-r, y+r .. y-r+1) — bottom-to-top
+			for (int dy = r; dy > -r; dy--)
+			{
+				const int nx = map.normalizeX(x - r);
+				const int ny = map.normalizeY(y + dy);
+				if (map.getRessource(nx, ny).type == CORN)
+					return r;
+			}
+		}
+		return -1; // no CORN within cap tiles
+	}
+
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
 	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES])
 	{
 		// Always leave the output well-defined, even on the error paths below.
+		// wheatDist is initialised to -1 (no wheat in reach) matching the
+		// makeEmptyObservation() sentinel so the policy never reads garbage on
+		// valid == 0 slots.
 		for (int i = 0; i < CORTEX_BUILD_CANDIDATES; i++)
 		{
 			out[i].valid = 0;
 			out[i].x = 0;
 			out[i].y = 0;
 			out[i].score = 0;
+			out[i].wheatDist = -1;
 		}
 
 		if (game == NULL || team == NULL)
@@ -230,6 +334,14 @@ namespace Cortex
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
 
+		// Determine up front whether this building type is wheat-fed (swarm or
+		// inn). SWARM_BUILDING == CORTEX_BUILD_SWARM == 0;
+		// FOOD_BUILDING == CORTEX_BUILD_FOOD == 1.
+		// C++: IntBuildingType enum (building/IntBuildingType.h:14-15).
+		const bool isWheatFed = (buildingType == IntBuildingType::SWARM_BUILDING ||
+		                         buildingType == IntBuildingType::FOOD_BUILDING);
+		const bool isSwarm    = (buildingType == IntBuildingType::SWARM_BUILDING);
+
 		// Deterministic scan: fixed (x, y) order over every top-left corner.
 		for (int x = 0; x < mapW; x++)
 		{
@@ -247,6 +359,32 @@ namespace Cortex
 				    !map.isMapDiscovered(map.normalizeX(x + w - 1),
 				                         map.normalizeY(y + h - 1), team->allies))
 					continue;
+
+				// Geography rejects for wheat-fed buildings.
+				//
+				// HARD REJECT (swarm and inn): no CORN within the maximum haul
+				// distance. Engine fact: a swarm L0 stalls when its CORN buffer
+				// drops below 5 (building/TypeSteps.cpp:31); a unit on a field tile
+				// more than ~5 tiles away cannot keep the buffer above the stall
+				// line within one production cycle of 150 ticks. CORTEX_WHEAT_MAX_DIST
+				// encodes this. Use the cheap bounded scan (cap == WHEAT_MAX_DIST) to
+				// avoid scanning far on a reject; the full SCAN_CAP is used only for
+				// the retained candidates' wheatDist field at copy-out.
+				if (isWheatFed &&
+				    nearestCornDist(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
+					continue;
+
+				// HARD REJECT (swarm only): must sit at least CORTEX_SWARM_MIN_SPACING
+				// Chebyshev tiles from every existing live swarm of this team so that
+				// two swarms do not compete for the same wheat catchment.
+				// distanceToNearestSwarm returns -1 when no swarms exist; skip the
+				// reject in that case (first swarm goes wherever wheat exists).
+				if (isSwarm)
+				{
+					const int swarmDist = distanceToNearestSwarm(game, team, x, y);
+					if (swarmDist >= 0 && swarmDist < CORTEX_SWARM_MIN_SPACING)
+						continue;
+				}
 
 				const int distToColony = distanceToNearestBuilding(game, team, x, y);
 				int score = scoreFromDistance(distToColony);
@@ -284,12 +422,20 @@ namespace Cortex
 			}
 		}
 
+		// Copy-out: fill the retained candidates' wheatDist using the full scan
+		// cap (CORTEX_WHEAT_SCAN_CAP > CORTEX_WHEAT_MAX_DIST) so the signal can
+		// report "just out of haul range" for supply-distance expansion decisions
+		// in the policy. Applies to all building types; harmless for non-wheat ones
+		// (a barracks or school will get -1 if there is no wheat nearby, which the
+		// policy ignores).
 		for (int i = 0; i < count; i++)
 		{
 			out[i].valid = 1;
 			out[i].x = heap[i].x;
 			out[i].y = heap[i].y;
 			out[i].score = heap[i].score;
+			out[i].wheatDist = nearestCornDist(map, heap[i].x, heap[i].y,
+			                                   CORTEX_WHEAT_SCAN_CAP);
 		}
 
 		return count;

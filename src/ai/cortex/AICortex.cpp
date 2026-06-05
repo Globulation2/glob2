@@ -485,6 +485,127 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			break;
 		}
 
+		case Cortex::ACTION_TUNE_WORKERS:
+		{
+			// Apply the per-building desired worker counts (maxUnitWorking) to our
+			// tracked swarms and inns. The policy nudges each building +/-1 per cycle
+			// inside a deadband — these are small, frequent adjustments. We dedup
+			// against the building's current maxUnitWorking so a steady-state policy
+			// that re-decides the same target each cycle doesn't flood the order queue.
+			// Mirror AICastor's pattern (Control.cpp:229-271): set b->maxUnitWorking
+			// locally AND emit the order so the AI's own view updates immediately and
+			// the dedup won't re-fire next cycle. This is deterministic — every client
+			// runs the identical AI and queues the identical order in the same tick.
+			Team* team = player->team;
+
+			// --- swarms ---
+			for (int i = 0; i < obs.swarmCount; i++)
+			{
+				const Cortex::TrackedBuilding& tb = obs.trackedSwarms[i];
+				const int desired = action.swarmWorkers[i];
+
+				// Skip: invalid slot, "leave unchanged" sentinel, or already at target.
+				if (!tb.valid)
+					continue;
+				if (desired < 0)
+					continue;
+				if (desired == tb.maxUnitWorking)
+					continue; // DEDUP: current state already matches; don't re-emit.
+
+				// Resolve gid → Building* via the canonical decode
+				// (Building::GIDtoID, inherited from BuildingUtils). This is an O(1)
+				// array-index lookup — not a linear scan — so it is both deterministic
+				// and cheap. GIDtoID returns the per-team array slot; GIDtoTeam is not
+				// needed here because trackedSwarms only contains our own buildings
+				// (filled from team->myBuildings in CortexTypes.h observe()).
+				const int bid = Building::GIDtoID(static_cast<Uint16>(tb.gid));
+				Building* b = team->myBuildings[bid];
+				if (!b)
+					continue;
+				// Verify the building is still the finished swarm we observed — it
+				// could have been destroyed, replaced, or started an upgrade between
+				// the observation and now. Only a finished, alive swarm accepts
+				// OrderModifyBuilding (mirrors executeModifyBuilding's guard).
+				if (b->buildingState != Building::ALIVE || b->type->isBuildingSite)
+					continue;
+				if (b->type->shortTypeNum != IntBuildingType::SWARM_BUILDING)
+					continue;
+
+				// Update the AI's local view immediately (AICastor pattern) so the
+				// dedup won't re-trigger on the next cycle before the order executes.
+				b->maxUnitWorking = desired;
+				b->update();
+				orderQueue.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, desired)));
+			}
+
+			// --- inns (FOOD_BUILDING) ---
+			for (int i = 0; i < obs.innCount; i++)
+			{
+				const Cortex::TrackedBuilding& tb = obs.trackedInns[i];
+				const int desired = action.innWorkers[i];
+
+				if (!tb.valid)
+					continue;
+				if (desired < 0)
+					continue;
+				if (desired == tb.maxUnitWorking)
+					continue; // DEDUP.
+
+				const int bid = Building::GIDtoID(static_cast<Uint16>(tb.gid));
+				Building* b = team->myBuildings[bid];
+				if (!b)
+					continue;
+				if (b->buildingState != Building::ALIVE || b->type->isBuildingSite)
+					continue;
+				if (b->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+					continue;
+
+				b->maxUnitWorking = desired;
+				b->update();
+				orderQueue.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, desired)));
+			}
+			break;
+		}
+
+		case Cortex::ACTION_SET_PRIORITY:
+		{
+			// Set every tracked swarm's engine priority to the action's target
+			// (-1/0/+1). The panic defense raises swarms to HIGH so they win worker
+			// contention while pumping warriors, then restores NORMAL afterwards.
+			// Dedup against each swarm's current Building::priority, and mirror the
+			// engine executor (Game_orders.cpp:476-484 executeChangePriority sets
+			// b->priority then b->updateCallLists()) locally so the AI's view updates
+			// immediately and the dedup won't re-fire before the order executes.
+			// Deterministic: identical AI + identical queued order on every client.
+			const int target = action.priorityTarget;
+			if (target < Cortex::CORTEX_PRIORITY_LOW || target > Cortex::CORTEX_PRIORITY_HIGH)
+				break; // not a valid priority (e.g. the CORTEX_PRIORITY_NONE sentinel).
+
+			Team* team = player->team;
+			for (int i = 0; i < obs.swarmCount; i++)
+			{
+				const Cortex::TrackedBuilding& tb = obs.trackedSwarms[i];
+				if (!tb.valid)
+					continue;
+				if (tb.priority == target)
+					continue; // DEDUP: already at the target priority.
+
+				const int bid = Building::GIDtoID(static_cast<Uint16>(tb.gid));
+				Building* b = team->myBuildings[bid];
+				if (!b)
+					continue;
+				if (b->buildingState != Building::ALIVE || b->type->isBuildingSite)
+					continue;
+				if (b->type->shortTypeNum != IntBuildingType::SWARM_BUILDING)
+					continue;
+
+				b->priority = target;
+				b->updateCallLists();
+				orderQueue.push(shared_ptr<Order>(new OrderChangePriority(b->gid, target)));
+			}
+			break;
+		}
+
 		default:
 			// Unknown intent: ignore rather than emit a bogus Order.
 			break;

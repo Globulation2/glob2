@@ -106,6 +106,63 @@ namespace Cortex
 		return -1;
 	}
 
+	// --- Worker-hauling capacity helpers ------------------------------------
+	// These are pure functions of the observation used in two places: the
+	// worker-tuning loop (Priority 1.5) and the swarm-expansion gate
+	// (Priority 5). Centralising them avoids the two sites drifting apart.
+
+	/// The per-swarm maxUnitWorking ceiling that applies right now.
+	/// Early/mid game it is the conservative cap (7); once workers have trained
+	/// BUILD to level CORTEX_SWARM_CAP_LIFT_BUILDLEVEL AND at least one idle
+	/// worker exists (so promoting a hauler doesn't starve construction), the
+	/// ceiling lifts to the late-game value (12).
+	static int swarmWorkerCap(const CortexObservation& obs)
+	{
+		if (obs.maxBuildLevel >= CORTEX_SWARM_CAP_LIFT_BUILDLEVEL && obs.freeWorkers > 0)
+			return CORTEX_SWARM_WORKER_CAP_LATE;
+		return CORTEX_SWARM_WORKER_CAP;
+	}
+
+	/// True if any valid tracked swarm is already running at (or above) its
+	/// worker cap — meaning the only remaining lever to increase wheat throughput
+	/// for that swarm is a second swarm, not more workers at this one.
+	static bool anySwarmAtWorkerCap(const CortexObservation& obs)
+	{
+		const int cap = swarmWorkerCap(obs);
+		for (int i = 0; i < obs.swarmCount; i++)
+			if (obs.trackedSwarms[i].valid && obs.trackedSwarms[i].maxUnitWorking >= cap)
+				return true;
+		return false;
+	}
+
+	/// True if any valid tracked inn is "getting busy": already at its worker
+	/// cap AND still wheat-starved (corn < CORTEX_INN_CORN_ADD_LO), meaning it
+	/// cannot haul any faster even with more workers.  This is the signal to
+	/// build a second inn before the first one falls over entirely.
+	static bool anyInnSaturated(const CortexObservation& obs)
+	{
+		for (int i = 0; i < obs.innCount; i++) {
+			const TrackedBuilding& t = obs.trackedInns[i];
+			if (t.valid
+			 && t.maxUnitWorking >= CORTEX_INN_WORKER_CAP
+			 && t.corn < CORTEX_INN_CORN_ADD_LO)
+				return true;
+		}
+		return false;
+	}
+
+	/// True if any valid tracked swarm's engine priority differs from `target`.
+	/// Drives the panic defense's raise-to-HIGH and the restore-to-NORMAL steps:
+	/// each fires only while a swarm is not yet at the wanted priority, and the
+	/// action layer dedups, so the orders stop as soon as every swarm matches.
+	static bool anySwarmPriorityNot(const CortexObservation& obs, int target)
+	{
+		for (int i = 0; i < obs.swarmCount; i++)
+			if (obs.trackedSwarms[i].valid && obs.trackedSwarms[i].priority != target)
+				return true;
+		return false;
+	}
+
 	CortexPolicy::CortexPolicy()
 	{
 	}
@@ -125,6 +182,8 @@ namespace Cortex
 		const Sint32 barracksSites = cortexBuildingSites(obs, CORTEX_BUILD_ATTACK);
 		const Sint32 school        = cortexFinishedBuildings(obs, CORTEX_BUILD_SCIENCE);
 		const Sint32 schoolSites   = cortexBuildingSites(obs, CORTEX_BUILD_SCIENCE);
+		const Sint32 heal          = cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL);
+		const Sint32 healSites     = cortexBuildingSites(obs, CORTEX_BUILD_HEAL);
 		const Sint32 warriors      = obs.warriors;
 
 		// How many units the colony can actually sustain right now.
@@ -175,45 +234,163 @@ namespace Cortex
 		const int growExplorer = (combatPhase || wantEarlyExplorer) ? 1 : 0;
 		const int growWarrior  = combatPhase ? 2 : 0;
 
+		// --- Priority 0: pre-combat panic defense. ---
+		// Before the combat phase unlocks (it needs COMBAT_ECON_MIN_UNITS units + an
+		// inn + a swarm), Cortex has no army and the combat-gated defense flag /
+		// barracks are unreachable — so an early all-in rush kills a defenceless
+		// colony (the measured Warrush failure mode). This is the economy-phase
+		// emergency response. It PREEMPTS the economy priorities while it still has
+		// setup work, firing only when we are NOT yet in combat phase AND something
+		// of ours is under attack. Response, in order (each step dedups, so once
+		// satisfied it falls through to the next):
+		//   (1) flip every swarm to 100%-warrior production — start making fighters
+		//       now (raw level-0/1 warriors still buy time and bodies),
+		//   (2) raise the swarms to HIGH engine priority so they win worker
+		//       contention and keep the warrior pump fed,
+		//   (3) panic-build a hospital (HEAL_BUILDING) to heal the defenders.
+		// Once all three are set the block falls through entirely to the normal
+		// economy beneath, which keeps the swarms fed (Priority 1.5) while they pump
+		// warriors. The trigger is reactive (underAttackTimer-based), so when the
+		// attack ends the panic clears and the economy resumes on its own; the
+		// restore branch then drops the swarms back to NORMAL priority.
+		const bool underAttack = (obs.buildingsUnderAttack > 0 || obs.unitsUnderAttack > 0);
+		const bool panic       = (!combatPhase && underAttack);
+		if (panic)
+		{
+			// (1) 100% warriors — fire until every swarm is warrior-only.
+			if (swarms > 0 && obs.swarmsProducingWarrior < swarms)
+				return makeSetProductionAction(0, 0, 1);
+			// (2) Swarms to HIGH priority.
+			if (anySwarmPriorityNot(obs, CORTEX_PRIORITY_HIGH))
+				return makeSetPriorityAction(CORTEX_PRIORITY_HIGH);
+			// (3) Panic-build one hospital if none is up or already building.
+			if (heal == 0 && healSites == 0)
+			{
+				const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
+				if (slot >= 0)
+					return makeBuildAction(CORTEX_BUILD_HEAL, slot);
+			}
+			// Panic setup complete — fall through to the normal economy, which keeps
+			// the swarms fed while they produce the defending army.
+		}
+		else if (anySwarmPriorityNot(obs, CORTEX_PRIORITY_NORMAL))
+		{
+			// Not under attack, but a prior panic left swarms at HIGH priority —
+			// restore NORMAL so they stop over-pulling workers during ordinary play.
+			return makeSetPriorityAction(CORTEX_PRIORITY_NORMAL);
+		}
+
 		// --- Priority 1: production control (this is what bounds population). ---
+		// Suppressed entirely while panicking: the panic block owns production then
+		// (it has flipped the swarms to all-warrior), so these halt/resume/explorer
+		// rules must not fight it by reverting the ratio back toward workers.
 		// The policy is pure, so it can't read swarm ratios directly — it uses
 		// obs.swarmsProducing (count of finished swarms currently producing) to
 		// tell whether a halt/resume order is actually needed, and the action
 		// layer dedups per-swarm, so re-deciding the same intent each cycle is free.
-		if (!shouldGrow && obs.swarmsProducing > 0)
+		if (!panic && !shouldGrow && obs.swarmsProducing > 0)
 			return makeSetProductionAction(0, 0, 0); // halt: hold population steady.
-		if (shouldGrow && obs.swarmsProducing < swarms)
+		if (!panic && shouldGrow && obs.swarmsProducing < swarms)
 			return makeSetProductionAction(growWorker, growExplorer, growWarrior); // resume.
 		// One-shot economy->combat ratio flip: all swarms are producing but still
 		// worker-only (warriors == 0), so retarget them to the combat mix. Once
 		// warriors start appearing this stops firing, freeing cycles for the flag
 		// actions below (the action layer dedups, so a stray re-issue is harmless).
-		if (combatPhase && shouldGrow && swarms > 0
+		if (!panic && combatPhase && shouldGrow && swarms > 0
 		 && obs.swarmsProducing == swarms && warriors == 0)
 			return makeSetProductionAction(growWorker, growExplorer, growWarrior);
 		// One-shot early-explorer flip (economy phase): all swarms producing but
 		// none set to explorers and we have none — retarget once to fold one in.
 		// Guarded by swarmsProducingExplorer == 0 so it fires exactly once.
-		if (wantEarlyExplorer && shouldGrow && swarms > 0
+		if (!panic && wantEarlyExplorer && shouldGrow && swarms > 0
 		 && obs.swarmsProducing == swarms && obs.swarmsProducingExplorer == 0)
 			return makeSetProductionAction(growWorker, growExplorer, growWarrior);
 		// Revert: once an explorer exists and a swarm is still set to produce them,
 		// drop the economy swarms back to workers-only so we don't keep over-
 		// producing explorers. Stops as soon as no swarm carries an explorer ratio.
-		if (!combatPhase && shouldGrow && swarms > 0
+		if (!panic && !combatPhase && shouldGrow && swarms > 0
 		 && obs.swarmsProducing == swarms
 		 && obs.swarmsProducingExplorer > 0 && obs.explorers >= 1)
 			return makeSetProductionAction(1, 0, 0);
 
+		// --- Priority 1.5: worker-hauling tuning (closed-loop wheat-economy). ---
+		// Each cycle we nudge each swarm's and inn's maxUnitWorking by AT MOST +/-1
+		// based on its corn-buffer level, then return the tune action if anything
+		// actually changed. This self-damps naturally: when a building's corn level
+		// sits in the deadband (ADD_LO <= corn < REM_HI) no adjustment fires; only
+		// when it crosses a threshold does the count move, and the +/-1 step rate
+		// prevents the chunky 5-CORN-per-unit production schedule from driving
+		// oscillation (a single step per cycle is slower than the buffer responds,
+		// so it converges rather than hunting).
+		//
+		// Rationale for sitting here — ABOVE the build priorities but BELOW the
+		// halt/resume logic:
+		//   • Keeping existing buildings fed always outranks starting new ones.
+		//     If a swarm is draining because it has too few haulers, the right
+		//     first response is to add a hauler, not to immediately build another
+		//     swarm.
+		//   • However, we fire only when a building actually crosses a threshold,
+		//     so in steady state (buffers in the deadband) this block falls through
+		//     completely, leaving every cycle available for the build priorities.
+		//   • The action layer deduplicates tune targets: if the desired value
+		//     equals the current value it emits no order, so re-deciding the same
+		//     intent is free.
+		//
+		// Note: makeTuneWorkersAction() returns an action with all
+		// swarmWorkers[]/innWorkers[] preset to -1 (leave unchanged); we only
+		// overwrite entries for buildings that actually need adjustment.
+		{
+			CortexAction tune = makeTuneWorkersAction();
+			bool anyChange = false;
+			const int sCap = swarmWorkerCap(obs);
+			for (int i = 0; i < obs.swarmCount; i++) {
+				const TrackedBuilding& t = obs.trackedSwarms[i];
+				if (!t.valid) continue;
+				int desired = t.maxUnitWorking;
+				// Buffer draining: bring one more hauler in before the swarm stalls.
+				// CORTEX_SWARM_CORN_ADD_LO is the stall threshold (swarm stops
+				// producing at < 5 corn); catching it early buys a cycle of slack.
+				if (t.corn < CORTEX_SWARM_CORN_ADD_LO && t.maxUnitWorking < sCap)
+					desired = t.maxUnitWorking + 1;
+				// Buffer saturated: the buffer is full enough that this hauler could
+				// do more useful work elsewhere — release one.
+				else if (t.corn >= CORTEX_SWARM_CORN_REM_HI && t.maxUnitWorking > CORTEX_SWARM_WORKER_MIN)
+					desired = t.maxUnitWorking - 1;
+				if (desired != t.maxUnitWorking) { tune.swarmWorkers[i] = desired; anyChange = true; }
+			}
+			for (int i = 0; i < obs.innCount; i++) {
+				const TrackedBuilding& t = obs.trackedInns[i];
+				if (!t.valid) continue;
+				int desired = t.maxUnitWorking;
+				// Inns feed ~5× faster than swarms consume, so they exhaust their
+				// buffer quicker; the same add/remove logic applies with the inn-
+				// specific thresholds and ceiling.
+				if (t.corn < CORTEX_INN_CORN_ADD_LO && t.maxUnitWorking < CORTEX_INN_WORKER_CAP)
+					desired = t.maxUnitWorking + 1;
+				else if (t.corn >= CORTEX_INN_CORN_REM_HI && t.maxUnitWorking > CORTEX_INN_WORKER_MIN)
+					desired = t.maxUnitWorking - 1;
+				if (desired != t.maxUnitWorking) { tune.innWorkers[i] = desired; anyChange = true; }
+			}
+			if (anyChange) return tune;
+		}
+
 		// --- Priority 2: food capacity (build inns to raise the sustainable cap). ---
 		// One inn at a time. Build when there is no inn, when units are hungry with
-		// nowhere to eat, or when current capacity can't yet sustain the pop goal.
+		// nowhere to eat, when current capacity can't yet sustain the pop goal, OR
+		// when an existing inn is saturated — at its worker cap AND still corn-starved
+		// (anyInnSaturated), meaning it cannot haul any faster even with more workers.
+		// That last trigger fires early, while the first inn is "getting busy", so
+		// the second inn is underway before the first falls over entirely.
+		// CortexPlacement already rejects sites that are too far from wheat or too
+		// close to another inn, so any valid candidate slot is geographically sound —
+		// we do not re-check wheat distance here.
 		if (innSites == 0)
 		{
 			const bool noInnYet      = (inns == 0 && obs.totalUnit > 0);
 			const bool hungryNoInn   = (obs.needFoodNoInns > 0);
 			const bool capacityShort = (obs.totalUnit > 0 && sustainable < popCap);
-			if (noInnYet || hungryNoInn || capacityShort)
+			const bool innSaturated  = anyInnSaturated(obs);
+			if (noInnYet || hungryNoInn || capacityShort || innSaturated)
 			{
 				const int slot = firstValidCandidate(obs, CORTEX_BUILD_FOOD);
 				if (slot >= 0)
@@ -251,7 +428,23 @@ namespace Cortex
 		// Needs an inn first (so new units have somewhere to eat), one site at a
 		// time, capped. A fresh swarm defaults to producing workers; the
 		// production-control step above retargets/halts it as needed.
-		if (shouldGrow && swarmSites == 0 && inns > 0 && swarms < swarmCap)
+		//
+		// Expansion trigger: build a new swarm ONLY when we genuinely need one —
+		// either this is the bootstrap (swarms == 0, first swarm ever) OR some
+		// existing swarm is already pinned at its worker cap. The "at worker cap"
+		// signal matters because swarm production is timeout-gated (one unit per
+		// ~150 ticks regardless of worker count beyond the minimum needed to keep
+		// the corn buffer from stalling), so more workers at the SAME swarm can't
+		// speed production — only an additional swarm can. The tuning loop
+		// (Priority 1.5) tries workers first; once it saturates at the cap this
+		// block correctly concludes that a new swarm is the only remaining lever.
+		//
+		// swarms < swarmCap remains the hard backstop ceiling so we never over-build.
+		// CortexPlacement rejects any candidate site that is too far from wheat or
+		// too close to an existing swarm; the valid candidate slots are already
+		// geographically sound — we do not re-check those predicates here.
+		if (shouldGrow && swarmSites == 0 && inns > 0 && swarms < swarmCap
+		 && (swarms == 0 || anySwarmAtWorkerCap(obs)))
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)

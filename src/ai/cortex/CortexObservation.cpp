@@ -123,7 +123,10 @@ namespace Cortex
 		obs.feedCapacity            = 0;
 		obs.swarmsProducing         = 0;
 		obs.swarmsProducingExplorer = 0;
+		obs.swarmsProducingWarrior  = 0;
 		obs.warFlagsActive          = 0;
+		obs.swarmCount              = 0;
+		obs.innCount                = 0;
 		for (int i = 0; i < Building::MAX_COUNT; i++)
 		{
 			Building* b = team->myBuildings[i];
@@ -142,6 +145,75 @@ namespace Cortex
 				// early-explorer mix once an explorer is actually being produced.
 				if (b->ratio[EXPLORER] > 0)
 					obs.swarmsProducingExplorer++;
+				// 100%-warrior swarm: WARRIOR ratio set, WORKER+EXPLORER both zero.
+				// Tells the panic defense the all-warrior flip is complete.
+				if (b->ratio[WARRIOR] > 0 && b->ratio[WORKER] == 0 && b->ratio[EXPLORER] == 0)
+					obs.swarmsProducingWarrior++;
+
+				// Wheat-economy tracking: record per-swarm supply signals up to the
+				// bounded POD array. Buildings beyond CORTEX_MAX_TRACKED_SWARMS are
+				// not individually tracked — that's intentional (bounded array).
+				// C++: Building::ressources (Sint32*), building/Building.h:538
+				// C++: BuildingType::maxRessource[], maxUnitWorking, maxUnitInside
+				//      game/entities/BuildingType.h:76,80,79
+				// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
+				// C++: nearestCornDist: Chebyshev to nearest CORN tile, ai/cortex/CortexPlacement
+				// NOTE: b->ressources[CORN] is safe — for buildings with local (not
+				// global) ressources it points to localRessources; for global-ressource
+				// buildings it points to Team::teamRessources. The swarm is always a
+				// local-ressource building, so this is the building's own wheat stock.
+				if (obs.swarmCount < CORTEX_MAX_TRACKED_SWARMS)
+				{
+					TrackedBuilding& t = obs.trackedSwarms[obs.swarmCount];
+					t.valid           = 1;
+					t.gid             = b->gid;
+					t.corn            = b->ressources[CORN];
+					t.maxCorn         = bt->maxRessource[CORN];
+					t.maxUnitWorking  = b->maxUnitWorking;
+					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
+					t.maxUnitInside   = bt->maxUnitInside;
+					// Only call nearestCornDist when game is available — the Map
+					// reference is owned by Game and the building scan is NOT guarded
+					// by (game != NULL). When game is absent, leave -1 (no result).
+					t.nearestWheatDist = (game != NULL)
+						? Cortex::nearestCornDist(game->map, b->posX, b->posY,
+						                          CORTEX_WHEAT_SCAN_CAP)
+						: -1;
+					// C++: Building::priority (-1/0/+1), building/Building.h:516
+					t.priority        = b->priority;
+					obs.swarmCount++;
+				}
+			}
+			// Finished inns: food-supply per-building signals for the wheat-economy
+			// policy (corn stock, capacity, worker slots, wheat proximity).
+			// FOOD_BUILDING == IntBuildingType::FOOD_BUILDING; guarded by the same
+			// ALIVE/!isBuildingSite predicate used for swarmsProducing above.
+			// Buildings beyond CORTEX_MAX_TRACKED_INNS are silently not tracked.
+			// C++: Building::ressources[CORN], building/Building.h:538
+			// C++: BuildingType::maxRessource[CORN], maxUnitInside, maxUnitWorking
+			//      game/entities/BuildingType.h:76,79,80
+			// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
+			if (bt->shortTypeNum == IntBuildingType::FOOD_BUILDING
+			 && b->buildingState == Building::ALIVE
+			 && !bt->isBuildingSite)  // exclude inn sites / inns under upgrade
+			{
+				if (obs.innCount < CORTEX_MAX_TRACKED_INNS)
+				{
+					TrackedBuilding& t = obs.trackedInns[obs.innCount];
+					t.valid           = 1;
+					t.gid             = b->gid;
+					t.corn            = b->ressources[CORN];
+					t.maxCorn         = bt->maxRessource[CORN];
+					t.maxUnitWorking  = b->maxUnitWorking;
+					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
+					t.maxUnitInside   = bt->maxUnitInside;
+					t.nearestWheatDist = (game != NULL)
+						? Cortex::nearestCornDist(game->map, b->posX, b->posY,
+						                          CORTEX_WHEAT_SCAN_CAP)
+						: -1;
+					t.priority        = b->priority; // C++: building/Building.h:516
+					obs.innCount++;
+				}
 			}
 			// C++: IntBuildingType::WAR_FLAG == 9, building/IntBuildingType.h:26
 			if (bt->shortTypeNum == IntBuildingType::WAR_FLAG
@@ -263,6 +335,7 @@ namespace Cortex
 			// slots (zero-filling unused trailing ones).
 			placeCandidates(game, team, IntBuildingType::FOOD_BUILDING,    0, obs.buildCandidates[IntBuildingType::FOOD_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::SWARM_BUILDING,   0, obs.buildCandidates[IntBuildingType::SWARM_BUILDING]);
+			placeCandidates(game, team, IntBuildingType::HEAL_BUILDING,    0, obs.buildCandidates[IntBuildingType::HEAL_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::SCIENCE_BUILDING, 0, obs.buildCandidates[IntBuildingType::SCIENCE_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::ATTACK_BUILDING,  0, obs.buildCandidates[IntBuildingType::ATTACK_BUILDING]);
 
