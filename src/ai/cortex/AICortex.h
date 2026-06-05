@@ -141,4 +141,14 @@ private:
 
 	/// Orders awaiting emission, one popped per getOrder() call.
 	std::queue<std::shared_ptr<Order> > orderQueue;
+
+	/// DIAGNOSTIC ONLY (not serialized, never read by the policy, emits no Order).
+	/// One-shot guard so the under-attack state dump fires only the FIRST decision
+	/// cycle on which the colony is taking fire. Gated behind the CORTEX_DUMP_ATTACK
+	/// env var; pure read of the observation + ground-truth Game state to stderr, so
+	/// it cannot perturb the sync stream. RAM-only like orderQueue.
+	bool attackDumped;
+	/// Print the under-attack characterization (scouting / economy / timing / enemy)
+	/// to stderr. Diagnostic; does not touch RNG, orders, or any persisted state.
+	void dumpAttackState(const Cortex::CortexObservation& obs) const;
 };
