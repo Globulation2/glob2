@@ -334,7 +334,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 	
 	if(explorer_attack_phase && target!=-1)
 	{
-		Unit** units = new Unit*[Unit::MAX_COUNT];
+		std::vector<Unit*> units(Unit::MAX_COUNT, nullptr);
 		Unit* first = NULL;
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
