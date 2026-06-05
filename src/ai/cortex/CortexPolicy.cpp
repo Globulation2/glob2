@@ -5,37 +5,23 @@
 
 namespace Cortex
 {
-	// --- Phase-1 economy tuning -------------------------------------------
+	// --- economy tuning ---------------------------------------------------
 	// Hand-picked thresholds for the v0 rules. These are AI design choices for
 	// a brand-new AI (not ported engine mechanics), so they are tunable; later
-	// phases / an ML policy replace this whole function. The goal of Phase 1 is
-	// a colony that feeds itself, GROWS to a target size, and then HOLDS there
-	// instead of overpopulating into starvation.
+	// phases / an ML policy replace this whole function. The colony ALWAYS keeps
+	// producing and ALWAYS keeps expanding in some form: the swarm's ratio is
+	// never zeroed, and idle labour is continuously turned into capacity (more
+	// inns to stay ahead of population) and tech (school → racetrack → hospital)
+	// rather than parked at an artificial population ceiling. The only real size
+	// governor is physical: a swarm stalls when its CORN buffer runs below 5
+	// (engine), and feeding is kept ahead of the population by inn-led growth.
 
-	/// Target colony size BEFORE the combat phase. The policy halts unit
-	/// production at this population while it is still a pure economy.
-	static const int GROWTH_UNIT_MAX = 24;
-	/// Target colony size once the combat phase is active. A standing army needs
-	/// a bigger population; the real ceiling is still feeding capacity
-	/// (overCapacity below), this is just the upper clamp.
-	static const int COMBAT_UNIT_MAX = 48;
-	/// Sustainable population per unit of feeding capacity. AICastor's foodLock
-	/// uses `unitSum >= foodSum << 1` (2x), but Castor also actively manages wheat
-	/// supply (clearing flags); Cortex does not yet, so its effective carrying
-	/// capacity is lower — be conservative until farming management lands.
-	static const int FEED_SUSTAIN_MULT = 2;
-	/// Halt production if at least this percent of the colony is actively
-	/// starving (losing HP) — the reactive safety net for when feedCapacity
-	/// overestimates (e.g. an inn exists but its wheat is exhausted).
+	/// Reactive thresholds that suppress *expansion spending* (never swarm
+	/// production) while the colony is in food trouble: percent of units actively
+	/// starving (losing HP) / merely hungry (not yet losing HP) above which we
+	/// stop starting new tech/expansion builds until feeding recovers.
 	static const int STARVE_HALT_PERCENT = 6;
-	/// Halt production earlier, while units are merely hungry (not yet losing
-	/// HP), to catch a food shortfall before it becomes a death spiral. Mirrors
-	/// Nicowar halving production on its hungry-fraction trigger.
 	static const int HUNGRY_HALT_PERCENT = 20;
-	/// Cap on swarms during the pure-economy phase (more = faster repopulation).
-	static const int MAX_SWARMS = 3;
-	/// Cap on swarms once in the combat phase (more production = faster army).
-	static const int COMBAT_MAX_SWARMS = 5;
 
 	// --- Phase-3 combat tuning --------------------------------------------
 	// All AI design choices, tunable against the benchmark.
@@ -87,14 +73,14 @@ namespace Cortex
 	// (maxBuildLevel -> 1) -> upgrade the barracks -> warriors train to attack
 	// level 2.
 	//
-	// CRITICAL TEMPO LESSON (measured): on SmallForTwo this tech investment costs
-	// more tempo than the extra warrior level returns if it competes with growth or
-	// the army — eagerly building a school + tearing the only barracks down to a
-	// site dropped us from 55% to 42% vs Castor (with new timeout draws). So the
-	// whole Phase-2 tech layer is gated SURPLUS-ONLY: it fires only once the colony
-	// has hit its population ceiling and is healthy (economySurplus below), where
-	// idle workers exist and growth/army production is not being starved. Worst case
-	// it never fires (== Phase-3 behaviour); best case it strengthens a mature army.
+	// TEMPO NOTE (historical, measured): an earlier design parked the colony at a
+	// population ceiling and only spent on tech once "surplus", because eagerly
+	// teching while the economy was frozen at a tiny size cost more tempo than it
+	// returned. The economy is no longer frozen — it always produces and always
+	// expands — so the school/racetrack/barracks-upgrade builds are now gated on
+	// `canExpand` (spare idle workers + not in food trouble) instead: the build crew
+	// still comes off idle hands, never off hauling or army production, but tech is
+	// no longer withheld behind an artificial ceiling that the colony never reached.
 
 	/// First valid candidate slot for `type` (the placement helper already ranks
 	/// them best-first), or -1 if the observation surfaced no legal location.
@@ -121,34 +107,6 @@ namespace Cortex
 		if (obs.maxBuildLevel >= CORTEX_SWARM_CAP_LIFT_BUILDLEVEL && obs.freeWorkers > 0)
 			return CORTEX_SWARM_WORKER_CAP_LATE;
 		return CORTEX_SWARM_WORKER_CAP;
-	}
-
-	/// True if any valid tracked swarm is already running at (or above) its
-	/// worker cap — meaning the only remaining lever to increase wheat throughput
-	/// for that swarm is a second swarm, not more workers at this one.
-	static bool anySwarmAtWorkerCap(const CortexObservation& obs)
-	{
-		const int cap = swarmWorkerCap(obs);
-		for (int i = 0; i < obs.swarmCount; i++)
-			if (obs.trackedSwarms[i].valid && obs.trackedSwarms[i].maxUnitWorking >= cap)
-				return true;
-		return false;
-	}
-
-	/// True if any valid tracked inn is "getting busy": already at its worker
-	/// cap AND still wheat-starved (corn < CORTEX_INN_CORN_ADD_LO), meaning it
-	/// cannot haul any faster even with more workers.  This is the signal to
-	/// build a second inn before the first one falls over entirely.
-	static bool anyInnSaturated(const CortexObservation& obs)
-	{
-		for (int i = 0; i < obs.innCount; i++) {
-			const TrackedBuilding& t = obs.trackedInns[i];
-			if (t.valid
-			 && t.maxUnitWorking >= CORTEX_INN_WORKER_CAP
-			 && t.corn < CORTEX_INN_CORN_ADD_LO)
-				return true;
-		}
-		return false;
 	}
 
 	/// True if any valid tracked swarm's engine priority differs from `target`.
@@ -186,53 +144,44 @@ namespace Cortex
 		const Sint32 healSites     = cortexBuildingSites(obs, CORTEX_BUILD_HEAL);
 		const Sint32 warriors      = obs.warriors;
 
-		// How many units the colony can actually sustain right now.
-		const Sint32 sustainable   = obs.feedCapacity * FEED_SUSTAIN_MULT;
 		const Sint32 starvingPct   = (obs.totalUnit > 0)
 			? (obs.starvingUnits * 100 / obs.totalUnit) : 0;
 		const Sint32 hungryPct     = (obs.totalUnit > 0)
 			? (obs.needFood * 100 / obs.totalUnit) : 0;
-
 		const bool starving        = (starvingPct >= STARVE_HALT_PERCENT);
 		const bool hungry          = (hungryPct >= HUNGRY_HALT_PERCENT);
 
-		// Combat phase gate: a self-feeding colony with real production capacity,
-		// not currently starving. Below this we are still a pure economy and play
-		// exactly like Phase 1 (workers only, halt at GROWTH_UNIT_MAX).
+		// "Established economy" gate, and also the army-pivot trigger: a self-feeding
+		// colony with a swarm + an inn and a real population, not starving. Below it
+		// Cortex is still bootstrapping (workers only); at or above it the colony both
+		// techs up AND folds warriors into the production mix. There is NO population
+		// ceiling and NO production halt — feeding is kept ahead of population by
+		// inn-led expansion (Priority 2), and the engine's CORN-buffer stall is the
+		// real supply governor.
 		const bool combatPhase     = (inns   >= COMBAT_ECON_MIN_INNS
 		                           && swarms >= COMBAT_ECON_MIN_SWARMS
 		                           && obs.totalUnit >= COMBAT_ECON_MIN_UNITS
 		                           && !starving);
 
-		// Phase-dependent population ceiling and swarm cap.
-		const Sint32 popCap        = combatPhase ? COMBAT_UNIT_MAX : GROWTH_UNIT_MAX;
-		const Sint32 swarmCap      = combatPhase ? COMBAT_MAX_SWARMS : MAX_SWARMS;
+		// Spare labour: idle workers exist, so a tech/expansion build can be started
+		// without stealing the haulers that keep the swarm + inn CORN buffers full.
+		// The economy expands whenever this holds — there is never an idle
+		// "surplus, do nothing" state. Feeding (the inn, Priority 2) is exempt: it is
+		// built on the capacity trigger regardless of spare labour, because feeding
+		// is existential and a starving colony has no spare labour yet.
+		const bool canExpand       = (obs.freeWorkers > 0 && !starving && !hungry);
 
-		const bool atPopGoal       = (obs.totalUnit >= popCap);
-		// feedCapacity == 0 before the first inn: don't treat the bootstrap colony
-		// as "over capacity" or it would halt the workers needed to build that inn.
-		const bool overCapacity    = (obs.feedCapacity > 0 && obs.totalUnit >= sustainable);
-		const bool shouldGrow      = !atPopGoal && !overCapacity && !starving && !hungry;
-
-		// Surplus state: the colony has hit its population ceiling (or feeding cap)
-		// and is healthy. This is the ONLY time we spend on Phase-2 tech (school +
-		// barracks upgrade) — at that point growth has stopped and idle workers are
-		// available, so the school build and the barracks teardown-to-upgrade no
-		// longer steal tempo from growth or army production. (Spending eagerly here
-		// is what regressed the benchmark; see the Phase-2 tempo lesson above.)
-		const bool economySurplus  = (atPopGoal || overCapacity) && !starving && !hungry;
-
-		// Combat-phase production mixes in explorers (to scout enemy buildings so
-		// flagTargets can populate) and warriors (the army). Warrior-weighted so a
-		// defensible force builds up fast; one explorer is enough to reveal the
-		// enemy base on these maps. Pure-economy phase is workers only — EXCEPT one
-		// early explorer (below) to reveal our own wheat fast (the wheat paint is
-		// FOW-gated, so coverage only reaches wheat we can currently see).
-		// {WORKER, EXPLORER, WARRIOR}.
+		// Production mix {WORKER, EXPLORER, WARRIOR} — a HARD rule: NEVER {0,0,0}.
+		// Bootstrap is worker-biased with one early explorer (reveal our wheat /
+		// scout). Once established, stay worker-DOMINANT (2:1 over warriors) so the
+		// worker pool keeps growing to staff new buildings and haul corn, while a
+		// warrior slice builds the army and one explorer stays out to scout the
+		// enemy base (so flagTargets can populate for offense).
 		const bool wantEarlyExplorer = (!combatPhase && swarms >= 1 && obs.explorers == 0);
-		const int growWorker   = 1;
-		const int growExplorer = (combatPhase || wantEarlyExplorer) ? 1 : 0;
-		const int growWarrior  = combatPhase ? 2 : 0;
+		const bool wantScout         = (obs.explorers == 0); // keep ≥1 explorer out.
+		const int growWorker   = combatPhase ? 2 : 1;
+		const int growExplorer = (wantEarlyExplorer || (combatPhase && wantScout)) ? 1 : 0;
+		const int growWarrior  = combatPhase ? 1 : 0;
 
 		// --- Priority 0: pre-combat panic defense. ---
 		// Before the combat phase unlocks (it needs COMBAT_ECON_MIN_UNITS units + an
@@ -280,38 +229,35 @@ namespace Cortex
 			return makeSetPriorityAction(CORTEX_PRIORITY_NORMAL);
 		}
 
-		// --- Priority 1: production control (this is what bounds population). ---
-		// Suppressed entirely while panicking: the panic block owns production then
-		// (it has flipped the swarms to all-warrior), so these halt/resume/explorer
-		// rules must not fight it by reverting the ratio back toward workers.
-		// The policy is pure, so it can't read swarm ratios directly — it uses
-		// obs.swarmsProducing (count of finished swarms currently producing) to
-		// tell whether a halt/resume order is actually needed, and the action
-		// layer dedups per-swarm, so re-deciding the same intent each cycle is free.
-		if (!panic && !shouldGrow && obs.swarmsProducing > 0)
-			return makeSetProductionAction(0, 0, 0); // halt: hold population steady.
-		if (!panic && shouldGrow && obs.swarmsProducing < swarms)
-			return makeSetProductionAction(growWorker, growExplorer, growWarrior); // resume.
-		// One-shot economy->combat ratio flip: all swarms are producing but still
-		// worker-only (warriors == 0), so retarget them to the combat mix. Once
-		// warriors start appearing this stops firing, freeing cycles for the flag
-		// actions below (the action layer dedups, so a stray re-issue is harmless).
-		if (!panic && combatPhase && shouldGrow && swarms > 0
-		 && obs.swarmsProducing == swarms && warriors == 0)
-			return makeSetProductionAction(growWorker, growExplorer, growWarrior);
-		// One-shot early-explorer flip (economy phase): all swarms producing but
-		// none set to explorers and we have none — retarget once to fold one in.
-		// Guarded by swarmsProducingExplorer == 0 so it fires exactly once.
-		if (!panic && wantEarlyExplorer && shouldGrow && swarms > 0
-		 && obs.swarmsProducing == swarms && obs.swarmsProducingExplorer == 0)
-			return makeSetProductionAction(growWorker, growExplorer, growWarrior);
-		// Revert: once an explorer exists and a swarm is still set to produce them,
-		// drop the economy swarms back to workers-only so we don't keep over-
-		// producing explorers. Stops as soon as no swarm carries an explorer ratio.
-		if (!panic && !combatPhase && shouldGrow && swarms > 0
-		 && obs.swarmsProducing == swarms
-		 && obs.swarmsProducingExplorer > 0 && obs.explorers >= 1)
-			return makeSetProductionAction(1, 0, 0);
+		// --- Priority 1: production control. HARD RULE: the swarm always produces;
+		// the ratio is NEVER {0,0,0}. We only (re)issue a ratio when the swarm's
+		// current output does not match the desired mix — detected from the bounded
+		// count signals (the pure policy cannot read raw ratios) — so once the mix is
+		// applied this whole block falls through and stops preempting the build
+		// priorities below. Suppressed while panicking (the panic block owns the
+		// ratio then). The action layer dedups per-swarm, so a stray re-issue of an
+		// already-applied ratio emits no order.
+		if (!panic)
+		{
+			// (a) (Re)start any swarm producing nothing — freshly built, or a halted
+			//     {0,0,0} ratio loaded from an old save.
+			if (obs.swarmsProducing < swarms)
+				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			// (b) Establish the warrior mix once the economy is established but no
+			//     warriors are being made yet. Self-terminating: stops firing as soon
+			//     as the first warrior appears (re-fires if the army is wiped to 0).
+			if (combatPhase && swarms > 0 && warriors == 0)
+				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			// (c) Fold an explorer into the mix when we want one out but none is being
+			//     produced and we have none yet (reveals our wheat / the enemy base).
+			if (growExplorer > 0 && swarms > 0
+			 && obs.swarmsProducingExplorer == 0 && obs.explorers == 0)
+				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			// (d) Drop the explorer slice back out once an explorer exists, so we do
+			//     not keep over-producing them. Stops once no swarm carries it.
+			if (growExplorer == 0 && swarms > 0 && obs.swarmsProducingExplorer > 0)
+				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+		}
 
 		// --- Priority 1.5: worker-hauling tuning (closed-loop wheat-economy). ---
 		// Each cycle we nudge each swarm's and inn's maxUnitWorking by AT MOST +/-1
@@ -374,23 +320,18 @@ namespace Cortex
 			if (anyChange) return tune;
 		}
 
-		// --- Priority 2: food capacity (build inns to raise the sustainable cap). ---
-		// One inn at a time. Build when there is no inn, when units are hungry with
-		// nowhere to eat, when current capacity can't yet sustain the pop goal, OR
-		// when an existing inn is saturated — at its worker cap AND still corn-starved
-		// (anyInnSaturated), meaning it cannot haul any faster even with more workers.
-		// That last trigger fires early, while the first inn is "getting busy", so
-		// the second inn is underway before the first falls over entirely.
-		// CortexPlacement already rejects sites that are too far from wheat or too
-		// close to another inn, so any valid candidate slot is geographically sound —
-		// we do not re-check wheat distance here.
+		// --- Priority 2: feed capacity (inns). FEED-LED, not wheat-led: build an inn
+		// whenever the inns' feeding capacity has fallen behind the current
+		// population (or there is no inn yet). An existing inn short of WHEAT SUPPLY
+		// is the worker-tuning loop's problem (add haulers), NEVER a reason to place
+		// another inn here. One site at a time; placement already rejects sites too
+		// far from wheat. Ungated by spare labour — feeding is existential, and this
+		// is what keeps the swarm from ever needing to halt for overpopulation.
 		if (innSites == 0)
 		{
 			const bool noInnYet      = (inns == 0 && obs.totalUnit > 0);
-			const bool hungryNoInn   = (obs.needFoodNoInns > 0);
-			const bool capacityShort = (obs.totalUnit > 0 && sustainable < popCap);
-			const bool innSaturated  = anyInnSaturated(obs);
-			if (noInnYet || hungryNoInn || capacityShort || innSaturated)
+			const bool capacityShort = (obs.feedCapacity < obs.totalUnit);
+			if (noInnYet || capacityShort)
 			{
 				const int slot = firstValidCandidate(obs, CORTEX_BUILD_FOOD);
 				if (slot >= 0)
@@ -398,9 +339,53 @@ namespace Cortex
 			}
 		}
 
-		// --- Priority 3: barracks (train/heal warriors; combat phase only). ---
-		// One barracks is enough for the first increment — it lets produced
-		// warriors level up and get healed between fights.
+		// --- Priority 2.5: swarm RECOVERY only. We deliberately do NOT build a
+		// second swarm for now (may revisit) — a team starts with one swarm, so this
+		// fires only if that swarm was destroyed, restoring the ability to produce.
+		if (swarms == 0 && swarmSites == 0 && inns > 0)
+		{
+			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
+			if (slot >= 0)
+				return makeBuildAction(CORTEX_BUILD_SWARM, slot);
+		}
+
+		// --- Priority 3: school (SCIENCE) — the first tech building. Trains workers'
+		// HARVEST (more CORN carried per haul → fuller swarm/inn buffers, easing the
+		// very supply pressure the economy lives on) and BUILD (faster construction +
+		// raises team maxBuildLevel, the engine gate that unlocks every building
+		// upgrade). Built once the economy is established and spare labour exists, so
+		// the build crew comes off idle hands rather than off hauling.
+		if (combatPhase && canExpand && school == 0 && schoolSites == 0)
+		{
+			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SCIENCE);
+			if (slot >= 0)
+				return makeBuildAction(CORTEX_BUILD_SCIENCE, slot);
+		}
+
+		// --- Priority 4: racetrack (WALKSPEED) — second tech building. Trains WALK,
+		// speeding every unit: shorter hauling round-trips (more economy throughput)
+		// and faster army repositioning. After the school so HARVEST/BUILD land first.
+		if (combatPhase && canExpand && school > 0
+		 && cortexFinishedBuildings(obs, CORTEX_BUILD_WALKSPEED) == 0
+		 && cortexBuildingSites(obs, CORTEX_BUILD_WALKSPEED) == 0)
+		{
+			const int slot = firstValidCandidate(obs, CORTEX_BUILD_WALKSPEED);
+			if (slot >= 0)
+				return makeBuildAction(CORTEX_BUILD_WALKSPEED, slot);
+		}
+
+		// --- Priority 5: hospital (HEAL) — survivability for the standing army.
+		// The panic path also builds one reactively under attack; this is the
+		// planned, non-emergency one once the economy can spare the labour.
+		if (combatPhase && canExpand && heal == 0 && healSites == 0)
+		{
+			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
+			if (slot >= 0)
+				return makeBuildAction(CORTEX_BUILD_HEAL, slot);
+		}
+
+		// --- Priority 6: barracks (ATTACK) — the army pivot. Lets produced warriors
+		// train to attack level 1 and get healed between fights. One is enough.
 		if (combatPhase && barracks == 0 && barracksSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_ATTACK);
@@ -408,63 +393,15 @@ namespace Cortex
 				return makeBuildAction(CORTEX_BUILD_ATTACK, slot);
 		}
 
-		// --- Priority 4: school (SCIENCE_BUILDING) — the upgrade prerequisite. ---
-		// A school trains our workers' BUILD skill, which raises team maxBuildLevel,
-		// the engine gate that lets us upgrade the barracks (and so train level-2
-		// warriors). Build one only when the economy is in SURPLUS (at the population
-		// ceiling, healthy) so the ~5-worker build crew comes off idle hands, never
-		// off growth or army production — building it eagerly regressed the benchmark.
-		// One school suffices for this increment; upgrading the school itself (toward
-		// level-3 warriors) is deferred to the next increment.
-		if (combatPhase && economySurplus && barracks > 0
-		 && school == 0 && schoolSites == 0)
-		{
-			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SCIENCE);
-			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_SCIENCE, slot);
-		}
-
-		// --- Priority 5: swarms (production capacity, only while growing). ---
-		// Needs an inn first (so new units have somewhere to eat), one site at a
-		// time, capped. A fresh swarm defaults to producing workers; the
-		// production-control step above retargets/halts it as needed.
-		//
-		// Expansion trigger: build a new swarm ONLY when we genuinely need one —
-		// either this is the bootstrap (swarms == 0, first swarm ever) OR some
-		// existing swarm is already pinned at its worker cap. The "at worker cap"
-		// signal matters because swarm production is timeout-gated (one unit per
-		// ~150 ticks regardless of worker count beyond the minimum needed to keep
-		// the corn buffer from stalling), so more workers at the SAME swarm can't
-		// speed production — only an additional swarm can. The tuning loop
-		// (Priority 1.5) tries workers first; once it saturates at the cap this
-		// block correctly concludes that a new swarm is the only remaining lever.
-		//
-		// swarms < swarmCap remains the hard backstop ceiling so we never over-build.
-		// CortexPlacement rejects any candidate site that is too far from wheat or
-		// too close to an existing swarm; the valid candidate slots are already
-		// geographically sound — we do not re-check those predicates here.
-		if (shouldGrow && swarmSites == 0 && inns > 0 && swarms < swarmCap
-		 && (swarms == 0 || anySwarmAtWorkerCap(obs)))
-		{
-			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
-			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_SWARM, slot);
-		}
-
-		// --- Priority 6: upgrade the barracks (the unit-strength lever). ---
+		// --- Priority 6.5: upgrade the barracks (the unit-strength lever). ---
 		// obs.upgradableCount already encodes the FULL engine Upgradable predicate
 		// (finished, full HP, not already upgrading, has a higher level, the larger
 		// footprint fits, and crucially maxBuildLevel > level) — so a nonzero count
 		// means "a school has lifted our BUILD skill and a barracks is ready to go to
-		// the next level." We upgrade one at a time (cortexBuildingsUpgrading guards
-		// against stacking a second upgrade on a type already in progress) and let
-		// the action layer choose the bottleneck instance — beating Nicowar's
-		// uniform syncRand()%buildings.size() target pick (ai/nicowar/Upgrade.cpp:141).
-		// Gated on economySurplus so we only tear a working barracks down to an
-		// upgrade site when growth has stopped and idle workers exist — never while
-		// still growing the army (that teardown gap, where the lone barracks can't
-		// train or heal, is what made the eager version lose tempo).
-		if (combatPhase && economySurplus
+		// the next level." One at a time (cortexBuildingsUpgrading guards against
+		// stacking a second upgrade); the action layer picks the bottleneck instance.
+		// Gated on spare labour so the teardown-to-upgrade comes off idle hands.
+		if (combatPhase && canExpand
 		 && obs.upgradableCount[CORTEX_BUILD_ATTACK] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_ATTACK) == 0)
 			return makeUpgradeAction(CORTEX_BUILD_ATTACK);

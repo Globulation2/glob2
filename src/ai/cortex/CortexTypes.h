@@ -109,11 +109,12 @@ namespace Cortex
 	// names directly. The policy layer must not include engine headers, so it
 	// refers to building types through these; CortexObservation.cpp
 	// static_asserts each against IntBuildingType so they cannot drift.
-	static const int CORTEX_BUILD_SWARM   = 0; ///< IntBuildingType::SWARM_BUILDING
-	static const int CORTEX_BUILD_FOOD    = 1; ///< IntBuildingType::FOOD_BUILDING (inn)
-	static const int CORTEX_BUILD_HEAL    = 2; ///< IntBuildingType::HEAL_BUILDING (hospital)
-	static const int CORTEX_BUILD_ATTACK  = 5; ///< IntBuildingType::ATTACK_BUILDING (barracks)
-	static const int CORTEX_BUILD_SCIENCE = 6; ///< IntBuildingType::SCIENCE_BUILDING (school)
+	static const int CORTEX_BUILD_SWARM     = 0; ///< IntBuildingType::SWARM_BUILDING
+	static const int CORTEX_BUILD_FOOD      = 1; ///< IntBuildingType::FOOD_BUILDING (inn)
+	static const int CORTEX_BUILD_HEAL      = 2; ///< IntBuildingType::HEAL_BUILDING (hospital)
+	static const int CORTEX_BUILD_WALKSPEED = 3; ///< IntBuildingType::WALKSPEED_BUILDING (racetrack; trains WALK)
+	static const int CORTEX_BUILD_ATTACK    = 5; ///< IntBuildingType::ATTACK_BUILDING (barracks)
+	static const int CORTEX_BUILD_SCIENCE   = 6; ///< IntBuildingType::SCIENCE_BUILDING (school; trains BUILD+HARVEST)
 
 	/// Engine building-priority values (Building::priority; OrderChangePriority).
 	/// -1 = low, 0 = normal, +1 = high. The panic defense raises a swarm to HIGH so

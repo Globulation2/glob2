@@ -41,6 +41,8 @@ static_assert(Cortex::CORTEX_BUILD_ATTACK == IntBuildingType::ATTACK_BUILDING,
 	"CORTEX_BUILD_ATTACK must match IntBuildingType::ATTACK_BUILDING");
 static_assert(Cortex::CORTEX_BUILD_SCIENCE == IntBuildingType::SCIENCE_BUILDING,
 	"CORTEX_BUILD_SCIENCE must match IntBuildingType::SCIENCE_BUILDING");
+static_assert(Cortex::CORTEX_BUILD_WALKSPEED == IntBuildingType::WALKSPEED_BUILDING,
+	"CORTEX_BUILD_WALKSPEED must match IntBuildingType::WALKSPEED_BUILDING");
 
 namespace Cortex
 {
@@ -337,6 +339,7 @@ namespace Cortex
 			placeCandidates(game, team, IntBuildingType::SWARM_BUILDING,   0, obs.buildCandidates[IntBuildingType::SWARM_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::HEAL_BUILDING,    0, obs.buildCandidates[IntBuildingType::HEAL_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::SCIENCE_BUILDING, 0, obs.buildCandidates[IntBuildingType::SCIENCE_BUILDING]);
+			placeCandidates(game, team, IntBuildingType::WALKSPEED_BUILDING, 0, obs.buildCandidates[IntBuildingType::WALKSPEED_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::ATTACK_BUILDING,  0, obs.buildCandidates[IntBuildingType::ATTACK_BUILDING]);
 
 			// OFFENSE targets: discovered enemy buildings, nearest-first. Filled
