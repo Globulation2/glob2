@@ -255,6 +255,10 @@ namespace Cortex
 		for (int lvl = 0; lvl < CORTEX_UNIT_LEVELS; lvl++)
 		{
 			obs.buildLevel[lvl]               = stat->upgradeState[BUILD][lvl];
+			// WALK == 3 (unit/UnitConsts.h:13). Any-type row == workers+warriors:
+			// explorers have performance[WALK]==0 at every level (game/entities/Race.cpp),
+			// so they never enter this bucket. Racetrack expand-vs-upgrade gate.
+			obs.walkLevel[lvl]                = stat->upgradeState[WALK][lvl];
 			obs.attackSpeedLevel[lvl]         = stat->upgradeState[ATTACK_SPEED][lvl];
 			// C++: ATTACK_STRENGTH == 9, unit/UnitConsts.h:22
 			obs.attackStrengthLevel[lvl]      = stat->upgradeState[ATTACK_STRENGTH][lvl];

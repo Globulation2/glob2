@@ -59,7 +59,14 @@ namespace Cortex
 	/// -1/0/+1, so the policy can raise swarms to high priority under attack and
 	/// restore them afterwards). HEAL_BUILDING (hospital) build candidates are now
 	/// surfaced too, for the panic hospital build.
-	static const Uint32 OBSERVATION_VERSION = 7;
+	/// v8 (2026-06-05, expand-vs-upgrade increment) added walkLevel[] — the WALK
+	/// ability-level histogram (stat->upgradeState[WALK][lvl], i.e. workers AND
+	/// warriors; explorers have zero WALK performance so never contribute). It is
+	/// the racetrack (WALKSPEED) expand-vs-upgrade gate's "% of speed-eligible units
+	/// already maxed at the current racetrack level" numerator, the WALK analogue of
+	/// the existing buildLevel[] (school gate) and attackStrengthLevel[] (barracks
+	/// gate) slices.
+	static const Uint32 OBSERVATION_VERSION = 8;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -308,7 +315,8 @@ namespace Cortex
 
 		// --- training / upgrade levels, indexed by unit level 0..CORTEX_UNIT_LEVELS-1 ---
 		// Each array mirrors one TeamStat upgrade slice that Nicowar's phases read.
-		Sint32 buildLevel[CORTEX_UNIT_LEVELS];               ///< stat->upgradeState[BUILD][lvl] (any unit type).
+		Sint32 buildLevel[CORTEX_UNIT_LEVELS];               ///< stat->upgradeState[BUILD][lvl] (any unit type; only workers have BUILD performance, so effectively per-worker). School (SCIENCE) expand-vs-upgrade gate.
+		Sint32 walkLevel[CORTEX_UNIT_LEVELS];                ///< stat->upgradeState[WALK][lvl] (workers AND warriors; explorers have zero WALK performance). Racetrack (WALKSPEED) expand-vs-upgrade gate. Denominator is workers+warriors.
 		Sint32 attackSpeedLevel[CORTEX_UNIT_LEVELS];         ///< stat->upgradeState[ATTACK_SPEED][lvl] (== trained-warrior count by level).
 		Sint32 attackStrengthLevel[CORTEX_UNIT_LEVELS];      ///< stat->upgradeState[ATTACK_STRENGTH][lvl]. A warrior joins a flag only if its min(ATTACK_SPEED,ATTACK_STRENGTH) level clears the flag's minLevelToFlag.
 		Sint32 workerSwimLevel[CORTEX_UNIT_LEVELS];          ///< stat->upgradeStatePerType[WORKER][SWIM][lvl]; index 0 == cannot swim.
@@ -517,6 +525,7 @@ namespace Cortex
 		for (int i = 0; i < CORTEX_UNIT_LEVELS; i++)
 		{
 			obs.buildLevel[i] = 0;
+			obs.walkLevel[i] = 0;
 			obs.attackSpeedLevel[i] = 0;
 			obs.attackStrengthLevel[i] = 0;
 			obs.workerSwimLevel[i] = 0;

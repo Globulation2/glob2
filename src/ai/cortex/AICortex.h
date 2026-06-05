@@ -52,6 +52,14 @@ private:
 	/// policy decides again (otherwise it re-issues duplicates the engine drops).
 	static const int BUILD_COOLDOWN_TICKS = 250;
 
+	/// Safety-net lifetime of the pendingUpgradeType guard (below). An issued
+	/// upgrade is normally cleared the moment it becomes a visible construction
+	/// site; this only bounds the rare case where the upgrade order is silently
+	/// dropped or reverted (cancelConstruction) and never becomes a site, so the
+	/// guard would otherwise block that type forever. Generously larger than the
+	/// invisible issue->site window (a few hundred ticks at most).
+	static const int UPGRADE_PENDING_TIMEOUT_TICKS = 2000;
+
 	/// Offense-hold hysteresis (the thrash damper). Once we commit an offensive
 	/// war flag we hold that posture for at least this many ticks; within the
 	/// hold window a DEFENSE recall from the policy is IGNORED unless the base
@@ -111,6 +119,23 @@ private:
 	/// Game tick before which translateAction refuses to issue another build
 	/// (see BUILD_COOLDOWN_TICKS). 0 = no build pending.
 	int buildCooldownUntil;
+
+	/// Guard against stacking two upgrades of the SAME building class while the
+	/// first is still converting. An issued upgrade (OrderConstruction) does not
+	/// appear in the observation as a site for a while — the building first evicts
+	/// its trainees and waits for the larger footprint to clear
+	/// (building/Construction.cpp:394-423) — so without this guard the policy,
+	/// still seeing the pre-upgrade count finished and none upgrading, re-issues a
+	/// SECOND upgrade and blacks out the whole class at once (measured: both
+	/// barracks offline simultaneously). Holds the shortTypeNum of an upgrade we
+	/// issued that has not yet become a visible site; -1 == none pending. Cleared
+	/// the cycle the upgrade becomes visible (the policy's own
+	/// cortexBuildingsUpgrading / finished-count gates take over then) or after
+	/// UPGRADE_PENDING_TIMEOUT_TICKS. Serialized for lockstep determinism (it
+	/// gates order emission, like buildCooldownUntil).
+	int pendingUpgradeType;
+	/// Safety-net expiry tick for pendingUpgradeType. 0 when nothing is pending.
+	int pendingUpgradeUntil;
 
 	/// Game tick before which ensureWarFlagAt refuses to create another war flag.
 	/// Same BUILD_COOLDOWN_TICKS latency (an OrderCreate for a virtual flag also

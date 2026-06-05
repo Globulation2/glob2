@@ -82,6 +82,84 @@ namespace Cortex
 	// still comes off idle hands, never off hauling or army production, but tech is
 	// no longer withheld behind an artificial ceiling that the colony never reached.
 
+	/// --- expand-vs-upgrade tuning (all tunable AI design choices) ---------
+	// A finished level-L training building trains its eligible units to ability
+	// level L+1 (the most that level can give). Once most of those units are
+	// already at L+1 the building's current level has little left to do, so the
+	// lever to keep improving units is to UPGRADE it to L+1 (which then trains to
+	// L+2). But an upgrade tears the building fully offline for a resource- and
+	// footprint-gated rebuild window (~hundreds to ~2000 ticks — NOT a fixed
+	// timer; see docs/AI/cortex/upgrade-expand-mechanics.md section 4), training
+	// and feeding nobody meanwhile. So we (a) only upgrade once the current level
+	// is mostly "done" (UPGRADE_MAXED_PERCENT), and (b) for buildings whose offline
+	// window is a capability blackout (barracks: no warrior training/healing; inn:
+	// no feeding) we EXPAND first — build a second instance so one keeps working
+	// through the upgrade. School/racetrack upgrades are single-instance: their
+	// blackout only pauses a tech ramp, it does not strand the army or starve.
+
+	/// Percent of a training building's eligible units that must already be MAXED at
+	/// its current level (trained to level+1) before we spend on upgrading it. Below
+	/// this the level still has trainees to serve and upgrading would strand them.
+	/// The user's spec put this at ~50-70%; 60 is the midpoint, tunable.
+	static const int UPGRADE_MAXED_PERCENT = 60;
+	/// Minimum FINISHED barracks before an upgrade is allowed. The upgrade blacks a
+	/// barracks out for ~hundreds-to-2000 ticks (measured ~1900) during which it
+	/// trains and heals no warriors; with only one barracks that is a total army
+	/// blackout. Requiring two means an upgrade always leaves one training, and the
+	/// laggard-first findUpgradeTarget (AICortex.cpp) lifts them one at a time.
+	static const int BARRACKS_MIN_BEFORE_UPGRADE = 2;
+	/// Minimum FINISHED inns before an upgrade is allowed, so feeding never hits
+	/// zero during the blackout. Paired with the post-upgrade feed-slack check below.
+	static const int INN_MIN_BEFORE_UPGRADE = 2;
+	/// Hospital (HEAL) expansion. We scale hospital COUNT with ARMY SIZE rather than
+	/// the instantaneous needHeal: a hurt warrior out on the offense flag is fighting
+	/// or dying, not queued at a hospital, so needHeal badly understates true demand.
+	/// One hospital per HOSPITAL_WARRIORS_PER standing warriors keeps heal throughput
+	/// (a hospital heals only 2/5/7 units at once at L0/1/2, slowly) ahead of a
+	/// growing army — up to HOSPITAL_MAX instances (footprint/labour bound). Both are
+	/// hand-picked AI design choices, tunable against the benchmark.
+	static const int HOSPITAL_MAX          = 3;
+	static const int HOSPITAL_WARRIORS_PER = 8;
+
+	/// Percent of `total` eligible units already trained to >= `servedLevel` on an
+	/// ability, from a per-level histogram slice `dist` (an upgradeState row). A unit
+	/// at >= servedLevel cannot be improved further by a building of the level that
+	/// produces `servedLevel` (== buildingLevel+1), so this is the "% already maxed at
+	/// the current building level" the expand-vs-upgrade gate keys on. Returns 0 for
+	/// an empty pool so "no units" never reads as "all maxed".
+	static int unitsServedPct(const Sint32 dist[CORTEX_UNIT_LEVELS], Sint32 total, int servedLevel)
+	{
+		if (total <= 0)
+			return 0;
+		if (servedLevel < 0)
+			servedLevel = 0;
+		Sint32 served = 0;
+		for (int lvl = servedLevel; lvl < CORTEX_UNIT_LEVELS; lvl++)
+			served += dist[lvl];
+		if (served > total) // guard a transient count race (dist slightly ahead of total).
+			served = total;
+		return static_cast<int>(served * 100 / total);
+	}
+
+	/// Smallest feeding capacity (type->maxUnitInside) among our finished inns, or a
+	/// large sentinel when none are tracked. This is the capacity an inn UPGRADE takes
+	/// offline (findUpgradeTarget lifts the lowest-level == smallest inn first), so the
+	/// inn-upgrade gate checks feedCapacity-minus-this against population first, to
+	/// guarantee the blackout never starves the colony.
+	static int smallestFinishedInnCapacity(const CortexObservation& obs)
+	{
+		int smallest = -1;
+		for (int i = 0; i < obs.innCount; i++)
+		{
+			const TrackedBuilding& t = obs.trackedInns[i];
+			if (!t.valid)
+				continue;
+			if (smallest < 0 || t.maxUnitInside < smallest)
+				smallest = t.maxUnitInside;
+		}
+		return (smallest < 0) ? 9999 : smallest; // none tracked → force the spare-inn path.
+	}
+
 	/// First valid candidate slot for `type` (the placement helper already ranks
 	/// them best-first), or -1 if the observation surfaced no legal location.
 	static int firstValidCandidate(const CortexObservation& obs, int type)
@@ -142,6 +220,8 @@ namespace Cortex
 		const Sint32 schoolSites   = cortexBuildingSites(obs, CORTEX_BUILD_SCIENCE);
 		const Sint32 heal          = cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL);
 		const Sint32 healSites     = cortexBuildingSites(obs, CORTEX_BUILD_HEAL);
+		const Sint32 race          = cortexFinishedBuildings(obs, CORTEX_BUILD_WALKSPEED);
+		const Sint32 raceSites     = cortexBuildingSites(obs, CORTEX_BUILD_WALKSPEED);
 		const Sint32 warriors      = obs.warriors;
 
 		const Sint32 starvingPct   = (obs.totalUnit > 0)
@@ -366,8 +446,7 @@ namespace Cortex
 		// speeding every unit: shorter hauling round-trips (more economy throughput)
 		// and faster army repositioning. After the school so HARVEST/BUILD land first.
 		if (combatPhase && canExpand && school > 0
-		 && cortexFinishedBuildings(obs, CORTEX_BUILD_WALKSPEED) == 0
-		 && cortexBuildingSites(obs, CORTEX_BUILD_WALKSPEED) == 0)
+		 && race == 0 && raceSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_WALKSPEED);
 			if (slot >= 0)
@@ -393,18 +472,130 @@ namespace Cortex
 				return makeBuildAction(CORTEX_BUILD_ATTACK, slot);
 		}
 
-		// --- Priority 6.5: upgrade the barracks (the unit-strength lever). ---
-		// obs.upgradableCount already encodes the FULL engine Upgradable predicate
+		// --- Priorities 6.3-6.8: unified EXPAND-vs-UPGRADE ladder. ----------------
+		// For each training/feeding class we decide, from two signals, whether the
+		// current building level still has work (keep it / expand for redundancy) or is
+		// mostly done and worth UPGRADING:
+		//   • "% of eligible units already maxed at the current level" (unitsServedPct
+		//     over the matching upgradeState slice, vs the matching unit pool), and
+		//   • spare labour (canExpand) to pay for the build/teardown.
+		// obs.upgradableCount[T] already encodes the FULL engine Upgradable predicate
 		// (finished, full HP, not already upgrading, has a higher level, the larger
-		// footprint fits, and crucially maxBuildLevel > level) — so a nonzero count
-		// means "a school has lifted our BUILD skill and a barracks is ready to go to
-		// the next level." One at a time (cortexBuildingsUpgrading guards against
-		// stacking a second upgrade); the action layer picks the bottleneck instance.
-		// Gated on spare labour so the teardown-to-upgrade comes off idle hands.
-		if (combatPhase && canExpand
+		// footprint fits, and crucially maxBuildLevel > level — so a nonzero count means
+		// a school has lifted our BUILD skill and a class-T building can actually go up a
+		// level). cortexBuildingsUpgrading(T) guards against stacking two upgrades of the
+		// same class. The action layer's findUpgradeTarget picks the laggard (lowest
+		// level) instance, so with two buildings it lifts them one at a time.
+
+		// --- Priority 6.3 + 6.5: barracks (ATTACK) — the unit-strength lever. ---
+		// Warriors train ATTACK_SPEED+ATTACK_STRENGTH (in parallel) to barracksLevel+1.
+		// EXPAND first: an upgrade blacks a barracks out for ~hundreds-to-2000 ticks,
+		// during which it trains and heals no warriors — with one barracks that is a
+		// total army blackout (the measured ~1900-tick defect this ladder fixes). So we
+		// require a SECOND barracks before upgrading; the new one keeps training the
+		// warrior stream while the laggard upgrades. Gated on canExpand so the build/
+		// teardown comes off idle hands, never off hauling or army production.
+		const Sint32 barracksLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_ATTACK);
+		const int attackMaxedPct   = unitsServedPct(obs.attackStrengthLevel, warriors, barracksLevel + 1);
+		const bool barracksUpgradeWanted = combatPhase && canExpand
+		 && barracks >= 1
 		 && obs.upgradableCount[CORTEX_BUILD_ATTACK] > 0
-		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_ATTACK) == 0)
+		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_ATTACK) == 0
+		 && attackMaxedPct >= UPGRADE_MAXED_PERCENT;
+		if (barracksUpgradeWanted && barracks < BARRACKS_MIN_BEFORE_UPGRADE && barracksSites == 0)
+		{
+			const int slot = firstValidCandidate(obs, CORTEX_BUILD_ATTACK);
+			if (slot >= 0)
+				return makeBuildAction(CORTEX_BUILD_ATTACK, slot);
+		}
+		if (barracksUpgradeWanted && barracks >= BARRACKS_MIN_BEFORE_UPGRADE)
 			return makeUpgradeAction(CORTEX_BUILD_ATTACK);
+
+		// --- Priority 6.6: school (SCIENCE) upgrade. ---
+		// Workers train BUILD+HARVEST (in parallel) to schoolLevel+1; buildLevel[] is
+		// the worker BUILD distribution (only workers have BUILD performance), and
+		// because the school upgrades both abilities in one visit HARVEST tracks it, so
+		// the BUILD slice alone gates both. Single-instance: a school blackout only
+		// pauses worker tech (maxBuildLevel, already earned, does NOT drop), it strands
+		// no army and starves no one — and the maxed gate means few workers are waiting.
+		const Sint32 schoolLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_SCIENCE);
+		const int buildMaxedPct  = unitsServedPct(obs.buildLevel, obs.workers, schoolLevel + 1);
+		if (combatPhase && canExpand && school >= 1
+		 && obs.upgradableCount[CORTEX_BUILD_SCIENCE] > 0
+		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_SCIENCE) == 0
+		 && buildMaxedPct >= UPGRADE_MAXED_PERCENT)
+			return makeUpgradeAction(CORTEX_BUILD_SCIENCE);
+
+		// --- Priority 6.7: racetrack (WALKSPEED) upgrade. ---
+		// Workers AND warriors train WALK to raceLevel+1; walkLevel[] sums both (the
+		// racetrack's eligible pool), explorers excluded (zero WALK performance).
+		// Single-instance: a racetrack blackout only leaves units at their current
+		// speed for the window — no capability loss.
+		const Sint32 raceLevel  = cortexMaxFinishedLevel(obs, CORTEX_BUILD_WALKSPEED);
+		const int walkMaxedPct  = unitsServedPct(obs.walkLevel, obs.workers + warriors, raceLevel + 1);
+		if (combatPhase && canExpand && race >= 1
+		 && obs.upgradableCount[CORTEX_BUILD_WALKSPEED] > 0
+		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_WALKSPEED) == 0
+		 && walkMaxedPct >= UPGRADE_MAXED_PERCENT)
+			return makeUpgradeAction(CORTEX_BUILD_WALKSPEED);
+
+		// --- Priority 6.8: inn (FOOD) upgrade — spare-first, feed-safe. ---
+		// An inn is a feeding building, not a trainer, so there is no "% maxed" signal;
+		// the gate is purely feed safety. Upgrading raises maxUnitInside (4→7→17) and
+		// speeds feeding, but the blackout removes that inn's whole feeding capacity. We
+		// upgrade only with (a) a redundant inn so feeding never hits zero, and (b)
+		// enough capacity left over (feedCapacity minus the inn we'd take offline) to
+		// still feed the population through the blackout. Feed-led growth (Priority 2)
+		// keeps feedCapacity ≈ population, so that slack rarely exists — when an upgrade
+		// is wanted but unsafe we build ONE spare inn first to create it (the added inn
+		// is at the current max level, ≥ the lowest-level inn we'd upgrade, so one spare
+		// suffices). Priority 2 remains the backstop if growth erodes the slack mid-blackout.
+		const bool innUpgradeWanted = combatPhase && canExpand && inns >= 1
+		 && obs.upgradableCount[CORTEX_BUILD_FOOD] > 0
+		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_FOOD) == 0;
+		if (innUpgradeWanted)
+		{
+			const int lostCapacity = smallestFinishedInnCapacity(obs);
+			const bool feedSlackOk = (obs.feedCapacity - lostCapacity) >= obs.totalUnit;
+			const bool innRedundant = (inns >= INN_MIN_BEFORE_UPGRADE);
+			if (innRedundant && feedSlackOk)
+				return makeUpgradeAction(CORTEX_BUILD_FOOD);
+			// Not safe yet: build one spare inn to create the redundancy / slack.
+			if (innSites == 0)
+			{
+				const int slot = firstValidCandidate(obs, CORTEX_BUILD_FOOD);
+				if (slot >= 0)
+					return makeBuildAction(CORTEX_BUILD_FOOD, slot);
+			}
+		}
+
+		// --- Priority 6.9: hospital (HEAL) expand + upgrade. ---
+		// More hospitals AND higher-level ones both grow army sustain: a level-L
+		// hospital heals maxUnitInside units at once (2/5/7 at L0/1/2) and faster per
+		// unit (30/18/6 ticks), so an upgrade is a big jump on both axes.
+		//   EXPAND: one hospital per HOSPITAL_WARRIORS_PER standing warriors, up to
+		//     HOSPITAL_MAX. The first hospital is Priority 5 / the panic path; this
+		//     grows the count as the army grows. (Army-scaled, not needHeal-scaled —
+		//     see the constant: wounded warriors out on the flag never queue to heal.)
+		//   UPGRADE: best timed for a LULL — nothing under attack and no war flag out
+		//     (so we are neither defending nor attacking) — because the heal blackout
+		//     then costs nothing; or when a redundant hospital already covers healing.
+		//     One at a time (the in-flight guard / cortexBuildingsUpgrading).
+		if (combatPhase && canExpand && heal >= 1 && healSites == 0
+		 && heal < HOSPITAL_MAX
+		 && warriors >= heal * HOSPITAL_WARRIORS_PER)
+		{
+			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
+			if (slot >= 0)
+				return makeBuildAction(CORTEX_BUILD_HEAL, slot);
+		}
+		const bool peaceful = (obs.buildingsUnderAttack == 0 && obs.unitsUnderAttack == 0
+		                       && obs.warFlagsActive == 0);
+		if (combatPhase && canExpand && heal >= 1
+		 && obs.upgradableCount[CORTEX_BUILD_HEAL] > 0
+		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL) == 0
+		 && (peaceful || heal >= 2))
+			return makeUpgradeAction(CORTEX_BUILD_HEAL);
 
 		// --- Priority 7: defense (recall the army to a threatened building). ---
 		// War flags are standing buildings: once placed they keep summoning

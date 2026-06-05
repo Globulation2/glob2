@@ -50,6 +50,8 @@ void AICortex::init(Player* player)
 	this->player = player;
 	timer = 0;
 	buildCooldownUntil = 0;
+	pendingUpgradeType = -1; // no upgrade in flight.
+	pendingUpgradeUntil = 0;
 	flagCooldownUntil = 0;
 	flagPosture = POSTURE_NONE;
 	offenseHoldUntil = 0;
@@ -63,6 +65,8 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	stream->readEnterSection("AICortex");
 	timer = stream->readUint32("timer");
 	buildCooldownUntil = stream->readSint32("buildCooldownUntil");
+	pendingUpgradeType = stream->readSint32("pendingUpgradeType");
+	pendingUpgradeUntil = stream->readSint32("pendingUpgradeUntil");
 	flagCooldownUntil = stream->readSint32("flagCooldownUntil");
 	flagPosture = stream->readSint32("flagPosture");
 	offenseHoldUntil = stream->readSint32("offenseHoldUntil");
@@ -81,6 +85,8 @@ void AICortex::save(GAGCore::OutputStream* stream)
 	stream->writeEnterSection("AICortex");
 	stream->writeUint32(timer, "timer");
 	stream->writeSint32(buildCooldownUntil, "buildCooldownUntil");
+	stream->writeSint32(pendingUpgradeType, "pendingUpgradeType");
+	stream->writeSint32(pendingUpgradeUntil, "pendingUpgradeUntil");
 	stream->writeSint32(flagCooldownUntil, "flagCooldownUntil");
 	stream->writeSint32(flagPosture, "flagPosture");
 	stream->writeSint32(offenseHoldUntil, "offenseHoldUntil");
@@ -423,6 +429,14 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			if (type < 0 || type >= Cortex::CORTEX_BUILDING_TYPES)
 				break;
 
+			// One upgrade of a given class in flight at a time. A prior upgrade of
+			// this type is still converting (issued but not yet a visible site), so
+			// the observation still shows it finished — issuing a second now would
+			// black out the whole class (e.g. both barracks offline at once). The
+			// guard is released (in getOrder) the cycle the site becomes visible.
+			if (pendingUpgradeType == type)
+				break;
+
 			// Same cooldown discipline as ACTION_BUILD: an OrderConstruction takes
 			// ticks to convert the building into a site, and the observation's
 			// upgradableCount won't drop until then. Without the cooldown the policy
@@ -465,6 +479,10 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 
 			orderQueue.push(shared_ptr<Order>(new OrderConstruction(b->gid, unitWorking, unitWorkingFuture)));
 			buildCooldownUntil = obs.tick + BUILD_COOLDOWN_TICKS;
+			// Mark this class's upgrade in flight until it shows up as a site (or
+			// the safety timeout), so the policy can't stack a second one meanwhile.
+			pendingUpgradeType = type;
+			pendingUpgradeUntil = obs.tick + UPGRADE_PENDING_TIMEOUT_TICKS;
 			break;
 		}
 
@@ -782,6 +800,10 @@ shared_ptr<Order> AICortex::getOrder(void)
 			          << "/" << cortexBuildingSites(obs, CORTEX_BUILD_ATTACK) << "s"
 			          << " sch=" << cortexFinishedBuildings(obs, CORTEX_BUILD_SCIENCE)
 			          << "/" << cortexBuildingSites(obs, CORTEX_BUILD_SCIENCE) << "s"
+			          << " hosp=" << cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL)
+			          << "/" << cortexBuildingSites(obs, CORTEX_BUILD_HEAL) << "s"
+			          << " hospUpg=" << cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL)
+			          << " needHeal=" << obs.needHeal
 			          << " feedCap=" << obs.feedCapacity
 			          << " prod=" << obs.swarmsProducing << "/" << obs.swarmCount
 			          << " maxBuildLvl=" << obs.maxBuildLevel
@@ -802,6 +824,17 @@ shared_ptr<Order> AICortex::getOrder(void)
 		{
 			dumpAttackState(obs);
 			attackDumped = true;
+		}
+
+		// Release the one-upgrade-in-flight guard once the issued upgrade is visible
+		// as a construction site (the policy's own cortexBuildingsUpgrading /
+		// finished-count gates take over from here) or the safety timeout lapses.
+		if (pendingUpgradeType >= 0
+		 && (Cortex::cortexBuildingsUpgrading(obs, pendingUpgradeType) > 0
+		     || obs.tick >= pendingUpgradeUntil))
+		{
+			pendingUpgradeType = -1;
+			pendingUpgradeUntil = 0;
 		}
 
 		Cortex::CortexAction action = policy.decide(obs);
