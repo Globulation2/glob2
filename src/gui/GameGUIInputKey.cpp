@@ -200,7 +200,12 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
 					break;
 				case GameGUIKeyActions::HardPause:
-					hardPause=!hardPause;
+					// Hard-pause freezes this client's entire order/checksum
+					// exchange loop (EngineRun.cpp), so it must not fire in a
+					// live networked game or peers desync. Single-player,
+					// AI-only and replay playback have no live peer and are safe.
+					if (globalContainer->replaying || !game.gameHeader.hasNetworkPlayer())
+						hardPause=!hardPause;
 					break;
 				case GameGUIKeyActions::ToggleDrawUnitPaths:
 					drawPathLines=!drawPathLines;

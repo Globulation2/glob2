@@ -71,7 +71,18 @@ public:
 		assert(n<Team::MAX_COUNT && n>=0);
 		return players[n];
 	}
-	
+
+	///True if any player in this game is a live network peer (BasePlayer::P_IP,
+	///covering both YOG and LAN). Used to disable local-only controls such as
+	///hard-pause that would desync a networked game if one client toggled them.
+	inline bool hasNetworkPlayer() const
+	{
+		for (int n=0; n<numberOfPlayers; n++)
+			if (players[n].type==BasePlayer::P_IP)
+				return true;
+		return false;
+	}
+
 	///Returns the ally-team number for the given team for pre-game alliances
 	inline Uint8 getAllyTeamNumber(int teamNumber) { return allyTeamNumbers[teamNumber]; }
 	
