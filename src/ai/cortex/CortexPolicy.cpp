@@ -310,7 +310,17 @@ namespace Cortex
 		// ceiling and NO production halt — feeding is kept ahead of population by
 		// inn-led expansion (Priority 2), and the engine's CORN-buffer stall is the
 		// real supply governor.
-		const bool combatPhase     = (inns   >= COMBAT_ECON_MIN_INNS
+		//
+		// The inn requirement is "feeding is established", not "the first inn has
+		// finished": when free workers exist we do NOT make them sit idle waiting for
+		// the inn to top out — if an inn is at least UNDERWAY (built or building) spare
+		// labour starts the rest of the build-out (and the army ramp) now, in parallel
+		// with the inn finishing. Without free workers we hold for the finished inn as
+		// before, so nothing is pulled off hauling while the colony is labour-tight.
+		const bool innEstablished  = (inns >= COMBAT_ECON_MIN_INNS)
+		                          || (obs.freeWorkers > 0
+		                           && (inns + innSites) >= COMBAT_ECON_MIN_INNS);
+		const bool combatPhase     = (innEstablished
 		                           && swarms >= COMBAT_ECON_MIN_SWARMS
 		                           && obs.totalUnit >= COMBAT_ECON_MIN_UNITS
 		                           && !starving);
@@ -458,118 +468,12 @@ namespace Cortex
 				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
 		}
 
-		// --- Priority 1.5: worker-hauling tuning (closed-loop wheat-economy). ---
-		// Each cycle we nudge each swarm's and inn's maxUnitWorking by AT MOST +/-1
-		// based on its corn-buffer level, then return the tune action if anything
-		// actually changed. This self-damps naturally: when a building's corn level
-		// sits in the deadband (ADD_LO <= corn < REM_HI) no adjustment fires; only
-		// when it crosses a threshold does the count move, and the +/-1 step rate
-		// prevents the chunky 5-CORN-per-unit production schedule from driving
-		// oscillation (a single step per cycle is slower than the buffer responds,
-		// so it converges rather than hunting).
-		//
-		// Rationale for sitting here — ABOVE the build priorities but BELOW the
-		// halt/resume logic:
-		//   • Keeping existing buildings fed always outranks starting new ones.
-		//     If a swarm is draining because it has too few haulers, the right
-		//     first response is to add a hauler, not to immediately build another
-		//     swarm.
-		//   • However, we fire only when a building actually crosses a threshold,
-		//     so in steady state (buffers in the deadband) this block falls through
-		//     completely, leaving every cycle available for the build priorities.
-		//   • The action layer deduplicates tune targets: if the desired value
-		//     equals the current value it emits no order, so re-deciding the same
-		//     intent is free.
-		//
-		// Note: makeTuneWorkersAction() returns an action with all
-		// swarmWorkers[]/innWorkers[] preset to -1 (leave unchanged); we only
-		// overwrite entries for buildings that actually need adjustment.
-		{
-			CortexAction tune = makeTuneWorkersAction();
-			bool anyChange = false;
-			const int sCap = swarmWorkerCap(obs);
-			for (int i = 0; i < obs.swarmCount; i++) {
-				const TrackedBuilding& t = obs.trackedSwarms[i];
-				if (!t.valid) continue;
-				int desired = t.maxUnitWorking;
-				// Wheat-starved override: a swarm whose catchment holds too little
-				// HARVESTABLE wheat cannot use more than a single hauler — extra workers
-				// find no wheat to harvest and just idle or thrash the depleted patch. Cap
-				// it at CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP outright (not the gentle
-				// +/-1 step), regardless of the corn buffer. harvestableWheatNearby is -1
-				// when unknown (game absent); only act on a real count. Takes precedence
-				// over the buffer-driven add/remove below.
-				if (t.harvestableWheatNearby >= 0
-				 && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES)
-					desired = CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP;
-				// Buffer draining: bring one more hauler in before the swarm stalls.
-				// CORTEX_SWARM_CORN_ADD_LO is the stall threshold (swarm stops
-				// producing at < 5 corn); catching it early buys a cycle of slack.
-				else if (t.corn < CORTEX_SWARM_CORN_ADD_LO && t.maxUnitWorking < sCap)
-					desired = t.maxUnitWorking + 1;
-				// Buffer saturated: the buffer is full enough that this hauler could
-				// do more useful work elsewhere — release one.
-				else if (t.corn >= CORTEX_SWARM_CORN_REM_HI && t.maxUnitWorking > CORTEX_SWARM_WORKER_MIN)
-					desired = t.maxUnitWorking - 1;
-				if (desired != t.maxUnitWorking) { tune.swarmWorkers[i] = desired; anyChange = true; }
-			}
-			for (int i = 0; i < obs.innCount; i++) {
-				const TrackedBuilding& t = obs.trackedInns[i];
-				if (!t.valid) continue;
-				// Post-build settle window: a freshly finished inn starts with an empty
-				// buffer (a large restock deficit) and its as-built worker count. Hold that
-				// count for CORTEX_INN_TUNE_DELAY_TICKS before applying the demand ceiling,
-				// so a brand-new inn does not immediately pull a crowd of haulers off the
-				// rest of the economy — it fills gradually meanwhile.
-				if (t.ticksSinceFinished >= 0
-				 && t.ticksSinceFinished < CORTEX_INN_TUNE_DELAY_TICKS)
-					continue;
-				// Inn hauler ceiling = the COLLECTABLE restock demand. CortexObservation
-				// fills restockTripsNeeded = the inn's corn + IN-SIGHT fruit deficit in
-				// hauler trips (fogged/unreachable resources excluded — fruit is
-				// visibleToBeCollected, so it can't be hauled under fog, and the engine's
-				// own desiredNumberOfWorkers counts the RAW deficit and would over-request
-				// haulers that then idle). We set maxUnitWorking to that demand, clamped to
-				// [MIN, CAP]; the engine self-regulates the actual hauler count below this
-				// ceiling each tick. Scales with inn LEVEL (bigger corn/fruit caps → more
-				// trips → more haulers) instead of the old fixed corn thresholds that
-				// collapsed a level-2 inn to one hauler, and it does not forget fruit.
-				// restockTripsNeeded == -1 means unknown (game absent): leave it untouched.
-				int desired = t.maxUnitWorking;
-				if (t.restockTripsNeeded >= 0)
-				{
-					int target = t.restockTripsNeeded;
-					if (target < CORTEX_INN_WORKER_MIN) target = CORTEX_INN_WORKER_MIN;
-					if (target > CORTEX_INN_WORKER_CAP) target = CORTEX_INN_WORKER_CAP;
-					desired = target;
-				}
-				if (desired != t.maxUnitWorking) { tune.innWorkers[i] = desired; anyChange = true; }
-			}
-			// Construction sites: pour idle workers into in-progress builds. A site's
-			// worker cap may rise to match the number of FREE workers, bounded by the
-			// resource hauler-trips it still needs (more workers than that find no
-			// delivery job). We only RAISE the cap (never lower it — that would slow a
-			// build already underway), and draw down a running free-worker budget
-			// across sites in index order so the caps we raise do not collectively
-			// over-subscribe the idle pool. maxUnitWorking is a ceiling, not a
-			// reservation: the engine still only assigns units that are actually idle,
-			// and the HIGH-priority swarm keeps its own haulers regardless.
-			int freeBudget = obs.freeWorkers;
-			for (int i = 0; i < obs.siteCount && freeBudget > 0; i++) {
-				const TrackedSite& s = obs.trackedSites[i];
-				if (!s.valid || s.deliveriesLeft <= 0) continue;
-				int want = s.deliveriesLeft < freeBudget ? s.deliveriesLeft : freeBudget;
-				// The engine asserts any worker request <= CORTEX_MAX_BUILDING_WORKERS
-				// (Game_orders.cpp:206); a big site can need far more deliveries.
-				if (want > CORTEX_MAX_BUILDING_WORKERS) want = CORTEX_MAX_BUILDING_WORKERS;
-				if (want > s.maxUnitWorking) {
-					tune.siteWorkers[i] = want;
-					anyChange = true;
-					freeBudget -= (want - s.maxUnitWorking); // extra idle hands this claims.
-				}
-			}
-			if (anyChange) return tune;
-		}
+		// Worker-hauling tuning (swarms + inns + construction sites) no longer lives
+		// in this priority ladder — it runs EVERY decision cycle in PARALLEL with
+		// whatever single action this ladder returns, so keeping existing buildings
+		// fed never preempts nor waits behind a build/upgrade decision (and vice
+		// versa). See CortexPolicy::tuneWorkers(), enqueued alongside decide() by the
+		// engine binding (AICortex::getOrder) the same way wheat-forbidden upkeep is.
 
 		// --- Priority 2: feed capacity (inns). FEED-LED, not wheat-led: build an inn
 		// whenever the population has reached INN_BUILD_CAPACITY_PERCENT of the inns'
@@ -610,7 +514,18 @@ namespace Cortex
 		// raises team maxBuildLevel, the engine gate that unlocks every building
 		// upgrade). Built once the economy is established and spare labour exists, so
 		// the build crew comes off idle hands rather than off hauling.
-		if (combatPhase && canExpand && school == 0 && schoolSites == 0)
+		//
+		// ALGA gate: a school costs ALGA to build at EVERY level (2/12/10), and algae is
+		// harvestable only off water. If no algae is reachable from shore (a landlocked
+		// map, or algae walled off by resources/deep water with no ground path) a school
+		// site can never be supplied and would stall forever — so we hold the school
+		// until a harvestable algae tile is found. This must NOT block the rest of the
+		// build-out: the racetrack (Priority 4) is decoupled from the school below so it
+		// proceeds anyway, and the engine's maxBuildLevel gate naturally holds upgrades
+		// (which need a school) until one exists. Once algae is discovered the school
+		// builds on the next cycle.
+		if (combatPhase && canExpand && obs.algaeReachable
+		 && school == 0 && schoolSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SCIENCE);
 			if (slot >= 0)
@@ -619,8 +534,14 @@ namespace Cortex
 
 		// --- Priority 4: racetrack (WALKSPEED) — second tech building. Trains WALK,
 		// speeding every unit: shorter hauling round-trips (more economy throughput)
-		// and faster army repositioning. After the school so HARVEST/BUILD land first.
-		if (combatPhase && canExpand && school > 0
+		// and faster army repositioning. Normally held until the school is finished so
+		// HARVEST/BUILD land first — BUT the school needs ALGA, so on a map with no
+		// reachable algae no school will ever come; we must not let that permanently
+		// block the racetrack and everything behind it. Decouple ONLY when the school is
+		// genuinely unbuildable (no reachable algae): when algae IS reachable the school
+		// is coming, so keep waiting for it (Priority 3 also fires first by ordering, so
+		// the racetrack never races ahead of an in-progress school on a normal map).
+		if (combatPhase && canExpand && (school > 0 || !obs.algaeReachable)
 		 && race == 0 && raceSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_WALKSPEED);
@@ -729,9 +650,13 @@ namespace Cortex
 		// the BUILD slice alone gates both. Single-instance: a school blackout only
 		// pauses worker tech (maxBuildLevel, already earned, does NOT drop), it strands
 		// no army and starves no one — and the maxed gate means few workers are waiting.
+		// A school UPGRADE consumes ALGA too (12 at L1, 10 at L2), so like the build it
+		// needs reachable algae — gate on algaeReachable so an upgrade is never started
+		// against a site that can no longer be supplied (e.g. the shoreline algae has
+		// since been depleted).
 		const Sint32 schoolLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_SCIENCE);
 		const int buildMaxedPct  = unitsServedPct(obs.buildLevel, obs.workers, schoolLevel + 1);
-		if (combatPhase && canExpand && school >= 1
+		if (combatPhase && canExpand && school >= 1 && obs.algaeReachable
 		 && obs.upgradableCount[CORTEX_BUILD_SCIENCE] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_SCIENCE) == 0
 		 && buildMaxedPct >= UPGRADE_MAXED_PERCENT)
@@ -899,6 +824,113 @@ namespace Cortex
 		// economy rungs and respects the straggler-grace hold — see above.)
 
 		return makeNoOpAction();
+	}
+
+	// Worker-hauling tuning (closed-loop wheat-economy), run EVERY decision cycle in
+	// PARALLEL with decide()'s single primary action — see the header doc. Each cycle
+	// we nudge each swarm's maxUnitWorking by AT MOST +/-1 based on its corn-buffer
+	// level, set each inn's to its collectable restock demand, and raise construction
+	// sites toward the free-worker pool. This self-damps: when a building's corn level
+	// sits in the deadband (ADD_LO <= corn < REM_HI) no adjustment fires; only when it
+	// crosses a threshold does the count move, and the +/-1 step rate prevents the
+	// chunky 5-CORN-per-unit production schedule from driving oscillation (a single
+	// step per cycle is slower than the buffer responds, so it converges rather than
+	// hunting). In steady state (buffers in the deadband) this returns ACTION_NOOP and
+	// emits no order; the action layer also dedups per-building, so a re-issued
+	// already-applied count is free.
+	//
+	// Note: makeTuneWorkersAction() returns an action with all
+	// swarmWorkers[]/innWorkers[]/siteWorkers[] preset to -1 (leave unchanged); we
+	// only overwrite entries for buildings that actually need adjustment.
+	CortexAction CortexPolicy::tuneWorkers(const CortexObservation& obs) const
+	{
+		if (obs.version != OBSERVATION_VERSION || !obs.valid)
+			return makeNoOpAction();
+
+		CortexAction tune = makeTuneWorkersAction();
+		bool anyChange = false;
+		const int sCap = swarmWorkerCap(obs);
+		for (int i = 0; i < obs.swarmCount; i++) {
+			const TrackedBuilding& t = obs.trackedSwarms[i];
+			if (!t.valid) continue;
+			int desired = t.maxUnitWorking;
+			// Wheat-starved override: a swarm whose catchment holds too little
+			// HARVESTABLE wheat cannot use more than a single hauler — extra workers
+			// find no wheat to harvest and just idle or thrash the depleted patch. Cap
+			// it at CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP outright (not the gentle
+			// +/-1 step), regardless of the corn buffer. harvestableWheatNearby is -1
+			// when unknown (game absent); only act on a real count. Takes precedence
+			// over the buffer-driven add/remove below.
+			if (t.harvestableWheatNearby >= 0
+			 && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES)
+				desired = CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP;
+			// Buffer draining: bring one more hauler in before the swarm stalls.
+			// CORTEX_SWARM_CORN_ADD_LO is the stall threshold (swarm stops
+			// producing at < 5 corn); catching it early buys a cycle of slack.
+			else if (t.corn < CORTEX_SWARM_CORN_ADD_LO && t.maxUnitWorking < sCap)
+				desired = t.maxUnitWorking + 1;
+			// Buffer saturated: the buffer is full enough that this hauler could
+			// do more useful work elsewhere — release one.
+			else if (t.corn >= CORTEX_SWARM_CORN_REM_HI && t.maxUnitWorking > CORTEX_SWARM_WORKER_MIN)
+				desired = t.maxUnitWorking - 1;
+			if (desired != t.maxUnitWorking) { tune.swarmWorkers[i] = desired; anyChange = true; }
+		}
+		for (int i = 0; i < obs.innCount; i++) {
+			const TrackedBuilding& t = obs.trackedInns[i];
+			if (!t.valid) continue;
+			// Post-build settle window: a freshly finished inn starts with an empty
+			// buffer (a large restock deficit) and its as-built worker count. Hold that
+			// count for CORTEX_INN_TUNE_DELAY_TICKS before applying the demand ceiling,
+			// so a brand-new inn does not immediately pull a crowd of haulers off the
+			// rest of the economy — it fills gradually meanwhile.
+			if (t.ticksSinceFinished >= 0
+			 && t.ticksSinceFinished < CORTEX_INN_TUNE_DELAY_TICKS)
+				continue;
+			// Inn hauler ceiling = the COLLECTABLE restock demand. CortexObservation
+			// fills restockTripsNeeded = the inn's corn + IN-SIGHT fruit deficit in
+			// hauler trips (fogged/unreachable resources excluded — fruit is
+			// visibleToBeCollected, so it can't be hauled under fog, and the engine's
+			// own desiredNumberOfWorkers counts the RAW deficit and would over-request
+			// haulers that then idle). We set maxUnitWorking to that demand, clamped to
+			// [MIN, CAP]; the engine self-regulates the actual hauler count below this
+			// ceiling each tick. Scales with inn LEVEL (bigger corn/fruit caps → more
+			// trips → more haulers) instead of the old fixed corn thresholds that
+			// collapsed a level-2 inn to one hauler, and it does not forget fruit.
+			// restockTripsNeeded == -1 means unknown (game absent): leave it untouched.
+			int desired = t.maxUnitWorking;
+			if (t.restockTripsNeeded >= 0)
+			{
+				int target = t.restockTripsNeeded;
+				if (target < CORTEX_INN_WORKER_MIN) target = CORTEX_INN_WORKER_MIN;
+				if (target > CORTEX_INN_WORKER_CAP) target = CORTEX_INN_WORKER_CAP;
+				desired = target;
+			}
+			if (desired != t.maxUnitWorking) { tune.innWorkers[i] = desired; anyChange = true; }
+		}
+		// Construction sites: pour idle workers into in-progress builds. A site's
+		// worker cap may rise to match the number of FREE workers, bounded by the
+		// resource hauler-trips it still needs (more workers than that find no
+		// delivery job). We only RAISE the cap (never lower it — that would slow a
+		// build already underway), and draw down a running free-worker budget
+		// across sites in index order so the caps we raise do not collectively
+		// over-subscribe the idle pool. maxUnitWorking is a ceiling, not a
+		// reservation: the engine still only assigns units that are actually idle,
+		// and the HIGH-priority swarm keeps its own haulers regardless.
+		int freeBudget = obs.freeWorkers;
+		for (int i = 0; i < obs.siteCount && freeBudget > 0; i++) {
+			const TrackedSite& s = obs.trackedSites[i];
+			if (!s.valid || s.deliveriesLeft <= 0) continue;
+			int want = s.deliveriesLeft < freeBudget ? s.deliveriesLeft : freeBudget;
+			// The engine asserts any worker request <= CORTEX_MAX_BUILDING_WORKERS
+			// (Game_orders.cpp:206); a big site can need far more deliveries.
+			if (want > CORTEX_MAX_BUILDING_WORKERS) want = CORTEX_MAX_BUILDING_WORKERS;
+			if (want > s.maxUnitWorking) {
+				tune.siteWorkers[i] = want;
+				anyChange = true;
+				freeBudget -= (want - s.maxUnitWorking); // extra idle hands this claims.
+			}
+		}
+		return anyChange ? tune : makeNoOpAction();
 	}
 
 	bool CortexPolicy::wantWheatProtection(const CortexObservation& obs) const

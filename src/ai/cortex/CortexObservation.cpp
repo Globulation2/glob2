@@ -156,9 +156,29 @@ namespace Cortex
 			// units than fit inside at once because each visit is brief — see
 			// cortexInnUnitSupport / CORTEX_UNIT_WORK_TICKS_PER_FEED. Using the raw
 			// slot count made the second-inn gate (Priority 2) fire at ~4 population.
+			//
+			// An inn with no harvestable wheat in reach cannot be restocked with corn,
+			// so it keeps nobody fed — counting its slot throughput here would inflate
+			// feedCapacity and suppress the second-inn build gate (Priority 2), leaving
+			// the colony short of real feeding capacity. Gate the contribution on the
+			// SAME wheat test inn placement uses (CortexPlacement.cpp: at least
+			// CORTEX_WHEAT_MIN_TILES non-forbidden CORN tiles within
+			// CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint), so an inn whose field has
+			// drained or been checkerboarded below the placement threshold stops
+			// counting — exactly as it would now fail placement. game==NULL (no-map
+			// test path): can't measure, so fall back to counting it (prior behavior).
 			if (b->maxUnitWorking && bt->canFeedUnit)
-				obs.feedCapacity += Cortex::cortexInnUnitSupport(
-					bt->maxUnitInside, bt->timeToFeedUnit);
+			{
+				const bool innHasWheat = (game == NULL)
+					|| Cortex::countHarvestableCornWithin(game->map, team->me,
+					                                      b->posX, b->posY,
+					                                      bt->width, bt->height,
+					                                      CORTEX_WHEAT_MIN_TILES_RADIUS)
+					   >= CORTEX_WHEAT_MIN_TILES;
+				if (innHasWheat)
+					obs.feedCapacity += Cortex::cortexInnUnitSupport(
+						bt->maxUnitInside, bt->timeToFeedUnit);
+			}
 			if (bt->shortTypeNum == IntBuildingType::SWARM_BUILDING
 			 && b->buildingState == Building::ALIVE
 			 && !bt->isBuildingSite)  // exclude swarm sites / swarms under upgrade
@@ -473,20 +493,21 @@ namespace Cortex
 			// gating discipline as the enemy-intel pass below) by placeFlagTargets.
 			placeFlagTargets(game, team, obs.flagTargets);
 
-			// Swim/pool decision signals (algae in reach + land-vs-swim reach). The
-			// reach flood-fill is the only non-trivial cost in the observation, so
-			// skip it once a pool already exists or is building — the policy gates the
-			// pool build on the pool count and would not build a second one anyway, so
-			// the signals are only ever read while there is no pool. The building
-			// histogram is populated above, so the pool count is available here.
-			if (cortexFinishedBuildings(obs, CORTEX_BUILD_SWIMSPEED) == 0
-			 && cortexBuildingSites(obs, CORTEX_BUILD_SWIMSPEED) == 0)
-			{
-				const Cortex::SwimAssessment sw = Cortex::assessSwim(player);
-				obs.algaeDiscovered = sw.algaeDiscovered;
-				obs.swimLandReach   = sw.landReach;
-				obs.swimWaterReach  = sw.waterReach;
-			}
+			// Swim/water signals. algaeDiscovered + algaeReachable (shore-harvestable
+			// algae) gate the ALGA-consuming school build/upgrade, which can fire at any
+			// stage, so they are computed EVERY cycle. The land-vs-swim reach COUNTS feed
+			// only the one-shot swimming-pool decision, which never re-fires once a pool
+			// exists; the pool-pass flood-fill is the one non-trivial cost here, so we
+			// skip it (wantSwimReach=false) when a pool is already up or building. The
+			// building histogram is populated above, so the pool count is available here.
+			const bool noPoolYet =
+			    cortexFinishedBuildings(obs, CORTEX_BUILD_SWIMSPEED) == 0
+			 && cortexBuildingSites(obs, CORTEX_BUILD_SWIMSPEED) == 0;
+			const Cortex::SwimAssessment sw = Cortex::assessSwim(player, noPoolYet);
+			obs.algaeDiscovered = sw.algaeDiscovered;
+			obs.swimLandReach   = sw.landReach;
+			obs.swimWaterReach  = sw.waterReach;
+			obs.algaeReachable  = sw.algaeReachable;
 		}
 
 		// --- opponents ---

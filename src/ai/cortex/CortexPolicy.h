@@ -23,6 +23,17 @@ namespace Cortex
 		/// Scaffold: always returns NoOp. Both engine bindings share this.
 		CortexAction decide(const CortexObservation& obs);
 
+		/// Worker-hauling tuning, evaluated EVERY decision cycle in PARALLEL with
+		/// decide()'s single primary action — NOT as a competing ACTION_* the
+		/// build/upgrade/offense ladder could starve or be delayed by. Returns an
+		/// ACTION_TUNE_WORKERS action setting each tracked swarm/inn/site's
+		/// maxUnitWorking, or ACTION_NOOP when nothing crosses a threshold this cycle.
+		/// Keeping existing buildings fed is independent of starting new ones: the
+		/// tune emits OrderModifyBuilding (a worker-count change), which need not
+		/// contend for the cycle's one build/upgrade slot — the action layer drains
+		/// both alongside each other, exactly like wantWheatProtection().
+		CortexAction tuneWorkers(const CortexObservation& obs) const;
+
 		/// Wheat-forbidden upkeep decision, evaluated EVERY decision cycle in
 		/// PARALLEL with decide()'s single primary action — not as a competing
 		/// ACTION_* the build/upgrade ladder could starve. Painting the checkerboard

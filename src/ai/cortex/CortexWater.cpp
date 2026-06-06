@@ -30,7 +30,14 @@ namespace Cortex
 		// The returned COUNT is independent of visitation order (it is the size of a
 		// connected component), so a plain FIFO is deterministic without any tie-
 		// breaking. Warp-safe via Map's coordinate normalization.
-		int countReach(Map& map, const Team* team, int cx, int cy, bool canSwim)
+		//
+		// If algaeAdjacent is non-null, it is set to true the moment any reachable tile
+		// is found 8-adjacent to a DISCOVERED, takeable ALGA tile — i.e. a worker could
+		// stand on reachable ground and harvest that algae from the shore. (Only
+		// meaningful with canSwim=false: a non-swimmer's reachable region tells us
+		// whether algae can be hauled to a building site WITHOUT a swimming pool.)
+		int countReach(Map& map, const Team* team, int cx, int cy, bool canSwim,
+		               bool* algaeAdjacent = NULL)
 		{
 			const int w = map.getW();
 			const int h = map.getH();
@@ -74,6 +81,16 @@ namespace Cortex
 							continue;
 						const int nx = map.normalizeX(x + dx);
 						const int ny = map.normalizeY(y + dy);
+						// Shore-harvest probe: this neighbour of the reachable tile we just
+						// popped is a discovered, takeable ALGA tile, so a worker standing on
+						// that reachable tile could harvest it with no swimming pool. Tested
+						// BEFORE the gates below: algae sits on water (never itself a reachable
+						// tile, so the passability gate would reject it) and may lie one step
+						// past the reach radius while still harvestable from inside it.
+						if (algaeAdjacent != NULL && !*algaeAdjacent
+						 && map.isRessourceTakeable(nx, ny, ALGA)
+						 && map.isMapDiscovered(nx, ny, team->allies))
+							*algaeAdjacent = true;
 						// Stay within the colony vicinity ("relative proximity"): a
 						// far-off lake the colony will never work must not by itself
 						// argue for a pool.
@@ -92,12 +109,13 @@ namespace Cortex
 		}
 	} // namespace
 
-	SwimAssessment assessSwim(Player* player)
+	SwimAssessment assessSwim(Player* player, bool wantSwimReach)
 	{
 		SwimAssessment out;
 		out.algaeDiscovered = 0;
 		out.landReach = 0;
 		out.waterReach = 0;
+		out.algaeReachable = 0;
 
 		if (player == NULL || player->team == NULL)
 			return out;
@@ -142,8 +160,19 @@ namespace Cortex
 		if (anchorX < 0)
 			return out;
 
-		out.landReach  = countReach(map, team, anchorX, anchorY, /*canSwim=*/false);
-		out.waterReach = countReach(map, team, anchorX, anchorY, /*canSwim=*/true);
+		// Ground pass (always): the no-swim reachable region, which also tells us whether
+		// any discovered algae is harvestable from shore (algaeReachable) — the signal the
+		// school gate needs at every stage of the game.
+		bool algaeAdjacent = false;
+		out.landReach = countReach(map, team, anchorX, anchorY, /*canSwim=*/false,
+		                           &algaeAdjacent);
+		out.algaeReachable = algaeAdjacent ? 1 : 0;
+
+		// Swim pass (only when asked): the land-vs-water reach gap feeds the one-shot
+		// swimming-pool decision, which never re-fires once a pool exists — so the caller
+		// skips this second fill in that case to bound observation cost.
+		if (wantSwimReach)
+			out.waterReach = countReach(map, team, anchorX, anchorY, /*canSwim=*/true);
 		return out;
 	}
 }

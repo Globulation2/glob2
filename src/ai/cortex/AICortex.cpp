@@ -954,6 +954,18 @@ shared_ptr<Order> AICortex::getOrder(void)
 		Cortex::CortexAction action = policy.decide(obs);
 		translateAction(action, obs);
 
+		// Worker-hauling tuning (swarms / inns / construction sites) runs EVERY
+		// decision cycle, in PARALLEL with the primary action above — it emits
+		// OrderModifyBuilding worker-count changes, not an OrderCreate competing for
+		// the build/upgrade ladder's single action slot, so keeping existing
+		// buildings fed never preempts nor waits behind a build decision (and vice
+		// versa). translateAction queues its OrderModifyBuildings alongside whatever
+		// the primary action queued; they drain one-per-tick over the ticks until the
+		// next decision cycle, so both go out. ACTION_NOOP (steady state, buffers in
+		// the deadband) enqueues nothing.
+		Cortex::CortexAction tune = policy.tuneWorkers(obs);
+		translateAction(tune, obs);
+
 		// Wheat-forbidden upkeep runs EVERY decision cycle, in PARALLEL with the
 		// primary action above — it is not an ACTION_* the build/upgrade/offense
 		// ladder could starve, nor does it consume the cycle's single action slot.

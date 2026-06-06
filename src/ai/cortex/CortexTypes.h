@@ -98,7 +98,7 @@ namespace Cortex
 	/// so fogged fruit is excluded). The worker-tuning loop sets the inn's maxUnitWorking
 	/// to this (clamped), so the hauler ceiling scales with inn level and includes fruit
 	/// without over-staffing for fogged/unreachable resources. -1 for swarms / unknown.
-	static const Uint32 OBSERVATION_VERSION = 13;
+	static const Uint32 OBSERVATION_VERSION = 14;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -646,9 +646,18 @@ namespace Cortex
 		// swimWaterReach >= swimLandReach always; the gap measures how much the map
 		// opens up if our units learn to swim. Computed only while no pool exists yet
 		// (CortexWater.assessSwim, gated in observe to bound cost); both 0 otherwise.
+		// algaeReachable: 1 if a DISCOVERED takeable ALGA tile is 8-adjacent to a tile
+		// the colony can reach by a GROUND path (the no-swim flood-fill) — i.e. a worker
+		// can stand on the shore and harvest it now, with no swimming pool. Distinct from
+		// algaeDiscovered (which counts any seen algae, including deep/walled-off algae a
+		// non-swimmer can never reach): this is the "can we actually deliver algae to a
+		// site" signal that gates ALGA-consuming builds (the school and its upgrades).
+		// Computed every cycle (unlike the reach counts), since school upgrades happen
+		// late, when a pool may already exist.
 		Sint32 algaeDiscovered;
 		Sint32 swimLandReach;
 		Sint32 swimWaterReach;
+		Sint32 algaeReachable;
 
 		// --- opponents ---
 		Sint32 enemyCount;    ///< Number of active slots below.
@@ -866,6 +875,7 @@ namespace Cortex
 		obs.algaeDiscovered = 0;
 		obs.swimLandReach = 0;
 		obs.swimWaterReach = 0;
+		obs.algaeReachable = 0;
 
 		obs.enemyCount = 0;
 		for (int i = 0; i < MAX_ENEMY_SLOTS; i++)
