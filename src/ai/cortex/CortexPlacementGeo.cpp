@@ -40,7 +40,48 @@ namespace Cortex
 		static const int SIDE_RIGHT  = 2;
 		static const int SIDE_TOP    = 4;
 		static const int SIDE_BOTTOM = 8;
+
+		// Signed gap between two intervals on a circular axis of size `dim`.
+		// Interval A = [a0, a0+alen-1], B = [b0, b0+blen-1], both mod dim.
+		// Returns -1 if the intervals overlap (share a cell); otherwise the number of
+		// empty cells in the smaller gap between them (0 == touching/adjacent).
+		//
+		// The map wraps (toroidal), so two boxes have a gap on each side of the seam;
+		// we take the smaller. Working in d = b's start relative to a's start (mod dim)
+		// lets the same integer arithmetic cover the wrap case without a branch on which
+		// box is "first" — the wrap distance is just (dim - d). All-integer, no rand,
+		// no float: safe for lockstep.
+		static int axisSignedGap(int a0, int alen, int b0, int blen, int dim)
+		{
+			const int d = ((b0 - a0) % dim + dim) % dim; // b's start relative to a's start
+			const int forwardGap  = d - alen;            // a's end -> b's start
+			const int backwardGap = (dim - d) - blen;    // b's end -> a's start (wrap)
+			if (forwardGap < 0 || backwardGap < 0)
+				return -1;                               // overlap on this axis
+			return forwardGap < backwardGap ? forwardGap : backwardGap;
+		}
 	} // namespace
+
+	int rectEdgeChebyshev(int ax, int aw, int ay, int ah,
+	                      int bx, int bw, int by, int bh, int mapW, int mapH)
+	{
+		// Chebyshev (max-axis) edge gap between two warp-wrapped boxes. Per-axis
+		// overlap (gap < 0) clamps to 0 so a box that overlaps on one axis but is
+		// separated on the other still reports the real separation along that axis;
+		// boxes that overlap on both axes report 0 (touching/inside).
+		int gx = axisSignedGap(ax, aw, bx, bw, mapW); if (gx < 0) gx = 0;
+		int gy = axisSignedGap(ay, ah, by, bh, mapH); if (gy < 0) gy = 0;
+		return gx > gy ? gx : gy;
+	}
+
+	bool rectsOverlap(int ax, int aw, int ay, int ah,
+	                  int bx, int bw, int by, int bh, int mapW, int mapH)
+	{
+		// Two boxes share at least one tile iff they overlap on BOTH axes
+		// (axisSignedGap returns -1 on an overlapping axis).
+		return axisSignedGap(ax, aw, bx, bw, mapW) < 0
+		    && axisSignedGap(ay, ah, by, bh, mapH) < 0;
+	}
 
 	int innOccupiedSides(const Map& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH)
@@ -197,6 +238,48 @@ namespace Cortex
 			const int baseline = innOccupiedSides(map, b->posX, b->posY, iw, ih,
 			                                       -1, -1, 0, 0);
 			if (withCand > baseline)
+				return true;
+		}
+		return false;
+	}
+
+	bool candidateOverlapsReservedExpansion(Game* game, Team* team, const Map& map,
+	                                        int cgx, int cgy, int cew, int ceh)
+	{
+		if (game == NULL || team == NULL)
+			return false;
+
+		const int mapW = map.getW();
+		const int mapH = map.getH();
+
+		// Today only inns are protected by candidateCrowdsInn (side-clearance). But
+		// racetracks (WALKSPEED) and pools (SWIMSPEED) also reserve a grown box at
+		// placement, yet once built only their level-0 footprint occupies the map —
+		// so a later building can land in the ring they will expand into and block the
+		// upgrade forever. Generalize the inn rule to all three growing types: a new
+		// candidate's grown box must not overlap the still-reserved grown box of any
+		// existing inn / racetrack / pool. grownFootprintBox on the building's CURRENT
+		// type returns the box covering its current footprint plus all remaining upgrade
+		// levels, anchored relative to the current corner (posX, posY), so this works
+		// whether the existing building is level 0 or already partly upgraded.
+		for (int i = 0; i < Building::MAX_COUNT; i++)
+		{
+			Building* b = team->myBuildings[i];
+			if (b == NULL || b->buildingState == Building::DEAD)
+				continue;
+			if (b->type == NULL)
+				continue;
+			const int t = b->type->shortTypeNum;
+			if (t != IntBuildingType::FOOD_BUILDING
+			 && t != IntBuildingType::WALKSPEED_BUILDING
+			 && t != IntBuildingType::SWIMSPEED_BUILDING)
+				continue;
+
+			int bgox, bgoy, bew, beh;
+			grownFootprintBox(b->type, bgox, bgoy, bew, beh);
+			const int bx = b->posX + bgox;
+			const int by = b->posY + bgoy;
+			if (rectsOverlap(cgx, cew, cgy, ceh, bx, bew, by, beh, mapW, mapH))
 				return true;
 		}
 		return false;

@@ -312,6 +312,11 @@ namespace Cortex
 	/// honour WHEAT_MAX_DIST too (same haul logic, hungrier). Chebyshev tiles.
 	static const int CORTEX_SWARM_MIN_SPACING = 6;
 	static const int CORTEX_WHEAT_MAX_DIST    = 5;
+	/// A swarm's footprint edge must sit within this many Chebyshev tiles of a CORN
+	/// tile so haulers reach wheat in one short trip. Stricter than the shared
+	/// CORTEX_WHEAT_MAX_DIST corner check (which still gates inns); measured from the
+	/// footprint EDGE via anyCornWithin, not the top-left corner. AI-design rule.
+	static const int CORTEX_SWARM_WHEAT_EDGE_DIST = 2;
 	/// Bound on the nearest-CORN radial scan (CortexPlacement::nearestCornDist):
 	/// tiles beyond this report "no wheat in reach" (-1). A few past WHEAT_MAX_DIST
 	/// so the supply-distance expansion trigger can still measure "just out of range".
@@ -341,6 +346,12 @@ namespace Cortex
 	/// > CORTEX_WHEAT_CLEAR_DIST so it does not block workers harvesting the field.
 	/// Inclusive reject (distance == CLEAR_DIST is still "within").
 	static const int CORTEX_WHEAT_CLEAR_DIST    = 4;
+	/// Maximum Chebyshev gap between a NEW non-wheat-fed building's footprint EDGE and
+	/// the nearest existing building's footprint edge. Keeps tech/military buildings
+	/// (school, racetrack, hospital, pool, barracks) clustered with the colony instead
+	/// of being placed far away by the soft compactness score alone. Inns and swarms
+	/// are exempt (they follow the wheat, not the colony). AI-design rule.
+	static const int CORTEX_MAX_BUILD_EDGE_DIST = 10;
 
 	/// Upper bound on swarms the colony will grow to (recovery + wheat-patch
 	/// expansion). A team starts with one swarm; once the opening build-out is done

@@ -106,6 +106,36 @@ namespace Cortex
 			return best;
 		}
 
+		// Chebyshev edge-to-edge gap from the candidate footprint (x, y, w x h) to the
+		// nearest live building owned by `team`. Returns -1 when the team has no
+		// buildings (first placement: the cap is meaningless). Warp-safe.
+		//
+		// distanceToNearestBuilding above measures CORNER-to-corner Chebyshev distance,
+		// which inflates with the footprint size; this measures EDGE-to-edge gap (0 when
+		// the boxes touch), the right quantity for the hard "stay clustered" cap so a
+		// large building is not penalised for its own extent.
+		int nearestBuildingEdgeDist(Game* game, Team* team, const Map& map,
+		                            int x, int y, int w, int h)
+		{
+			const int mapW = map.getW();
+			const int mapH = map.getH();
+			int best = -1;
+			for (int i = 0; i < Building::MAX_COUNT; i++)
+			{
+				Building* b = team->myBuildings[i];
+				if (b == NULL || b->buildingState == Building::DEAD)
+					continue;
+				if (b->type == NULL)
+					continue;
+				const int g = rectEdgeChebyshev(x, w, y, h,
+				                                b->posX, b->type->width,
+				                                b->posY, b->type->height, mapW, mapH);
+				if (best < 0 || g < best)
+					best = g;
+			}
+			return best;
+		}
+
 		// Chebyshev distance from tile (x, y) to the nearest live SWARM_BUILDING
 		// owned by `team`. Returns -1 when the team has no swarms yet. Used to
 		// enforce CORTEX_SWARM_MIN_SPACING so two swarms do not share one wheat
@@ -425,6 +455,16 @@ namespace Cortex
 				    nearestCornDist(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
 					continue;
 
+				// HARD REJECT (swarm only): the swarm's footprint EDGE must sit within
+				// CORTEX_SWARM_WHEAT_EDGE_DIST tiles of a CORN tile. This is STRICTER
+				// than the shared corner-based nearestCornDist check above (which still
+				// gates inns): a swarm spawns the haulers that feed the whole colony, so
+				// it must hug the wheat far more tightly than an inn does. anyCornWithin
+				// is edge-aware (it scans the footprint expanded by `dist`), so this is
+				// measured from the footprint edge, not the top-left corner.
+				if (isSwarm && !anyCornWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
+					continue;
+
 				// HARD REJECT (swarm only): must sit at least CORTEX_SWARM_MIN_SPACING
 				// Chebyshev tiles from every existing live swarm of this team so that
 				// two swarms do not compete for the same wheat catchment.
@@ -455,6 +495,18 @@ namespace Cortex
 				if (!isWheatFed && anyCornWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
 					continue;
 
+				// EDGE-DISTANCE CAP (non-wheat-fed only): keep tech/military buildings
+				// clustered with the colony. The soft compactness score alone can let a
+				// far-flung spot win; this hard cap forbids any spot whose footprint edge
+				// is more than CORTEX_MAX_BUILD_EDGE_DIST tiles from the nearest existing
+				// building. Skipped when the team has no buildings yet (first placement).
+				if (!isInn && !isSwarm)
+				{
+					const int edgeDist = nearestBuildingEdgeDist(game, team, map, x, y, w, h);
+					if (edgeDist >= 0 && edgeDist > CORTEX_MAX_BUILD_EDGE_DIST)
+						continue;
+				}
+
 				// INN SIDE-CLEARANCE (placing an inn): the inn may touch a building on
 				// at most CORTEX_INN_MAX_TOUCH_SIDES of its four sides; the rest keep
 				// CORTEX_INN_SIDE_CLEARANCE empty tiles so workers can reach it and the
@@ -472,6 +524,16 @@ namespace Cortex
 				// (ew x eh) so an inn's expansion tiles are accounted for. Keeps the
 				// rule symmetric regardless of build order.
 				if (candidateCrowdsInn(game, team, map, gx, gy, ew, eh))
+					continue;
+
+				// RESERVED-EXPANSION CLEARANCE: do not place into the expansion tiles an
+				// existing inn / racetrack / pool reserved for its own upgrades. Those
+				// types grow on upgrade but only occupy their current footprint on the
+				// map, so the soft checks above can let a new building land in the ring
+				// they will expand into and block the upgrade. We test the candidate's
+				// own GROWN box (gx, gy, ew x eh) against each existing growable type's
+				// reserved box, so neither side's future expansion collides.
+				if (candidateOverlapsReservedExpansion(game, team, map, gx, gy, ew, eh))
 					continue;
 
 				const int distToColony = distanceToNearestBuilding(game, team, x, y);

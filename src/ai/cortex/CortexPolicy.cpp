@@ -71,6 +71,13 @@ namespace Cortex
 	/// Standing warriors required to bother recalling for defense — defend with
 	/// whatever we have the moment the base is touched.
 	static const int DEFENSE_MIN_WARRIORS = 1;
+	/// Above this many standing warriors the pre-combat panic defense is
+	/// suppressed: a colony with a real army of its own can absorb a hit through
+	/// the normal defense path (war flags, barracks healing) and does not need to
+	/// derail its economy into the emergency 100%-warrior / HIGH-priority / panic-
+	/// hospital response. Panic is for the defenceless early colony, not one that
+	/// already fields a force.
+	static const int PANIC_MAX_WARRIORS = 15;
 	/// War-flag attraction radii (the flag's unitStayRange). Offense reaches a
 	/// little wider to engage units around the target building; defense is tight
 	/// around the threatened building. Clamped to CORTEX_MAX_FLAG_RADIUS by the
@@ -361,7 +368,10 @@ namespace Cortex
 		// attack ends the panic clears and the economy resumes on its own; the
 		// restore branch then drops the swarms back to NORMAL priority.
 		const bool underAttack = (obs.buildingsUnderAttack > 0 || obs.unitsUnderAttack > 0);
-		const bool panic       = (!combatPhase && underAttack);
+		// Suppressed once we field a real army (warriors > PANIC_MAX_WARRIORS): such a
+		// colony defends through the normal path and need not derail its economy.
+		const bool panic       = (!combatPhase && underAttack
+		                          && warriors <= PANIC_MAX_WARRIORS);
 		if (panic)
 		{
 			// (1) 100% warriors — fire until every swarm is warrior-only.
@@ -613,11 +623,12 @@ namespace Cortex
 		 && obs.swimWaterReach * CORTEX_SWIM_REACH_GAIN_DENOM
 		  > obs.swimLandReach * CORTEX_SWIM_REACH_GAIN_NUMER);
 		const bool wantPool = (obs.algaeDiscovered != 0 || swimExpandsReach);
-		// Prerequisite: never commit a swimming pool before the colony has a school,
-		// barracks, or racetrack standing. SWIM is a late convenience; the core tech
-		// and military buildings come first in the build order. Without at least one
-		// of the three finished, hold the pool regardless of the swim signals.
-		const bool poolPrereq = (school > 0 || barracks > 0 || race > 0);
+		// Prerequisite: hold the swimming pool until the racetrack is actually built
+		// (finished). The racetrack's placement is what defines the colony's compact
+		// footprint; SWIM is a later convenience that only makes sense once that core
+		// layout exists. Without a finished racetrack, hold the pool regardless of the
+		// swim signals.
+		const bool poolPrereq = (race > 0);
 		// Not until the army ramp has actually begun: swimming is not mandatory for
 		// workers in the opening, so we hold the pool until warriors are in the swarm
 		// mix (warriors > 0, which only happens in the combat phase). This keeps the

@@ -66,4 +66,27 @@ namespace Cortex
 	/// violation does not block every nearby placement.
 	bool candidateCrowdsInn(Game* game, Team* team, const Map& map,
 	                        int x, int y, int w, int h);
+
+	/// Chebyshev edge-to-edge gap between two warp-wrapped boxes A (ax, ay, aw x ah)
+	/// and B (bx, by, bw x bh) on a map of size (mapW, mapH). Returns 0 when the boxes
+	/// overlap or merely touch, otherwise the number of empty tiles in the larger of
+	/// the two axis gaps (Chebyshev == max of the per-axis gaps). All-integer and
+	/// warp-safe — deterministic for lockstep.
+	int rectEdgeChebyshev(int ax, int aw, int ay, int ah,
+	                      int bx, int bw, int by, int bh, int mapW, int mapH);
+
+	/// True iff two warp-wrapped boxes A (ax, ay, aw x ah) and B (bx, by, bw x bh)
+	/// share at least one tile on a map of size (mapW, mapH). All-integer, warp-safe.
+	bool rectsOverlap(int ax, int aw, int ay, int ah,
+	                  int bx, int bw, int by, int bh, int mapW, int mapH);
+
+	/// True if the candidate's grown footprint (cgx, cgy, cew x ceh) overlaps the
+	/// still-reserved grown footprint of any existing live inn (FOOD_BUILDING),
+	/// racetrack (WALKSPEED_BUILDING) or pool (SWIMSPEED_BUILDING) owned by `team`.
+	/// These three types grow on upgrade and reserved that room at placement; a new
+	/// building must not occupy tiles they will expand into. Uses grownFootprintBox on
+	/// each existing building's CURRENT type, anchored at its (posX, posY), so it is
+	/// correct whether the building is level 0 or already partly upgraded. Warp-safe.
+	bool candidateOverlapsReservedExpansion(Game* game, Team* team, const Map& map,
+	                                        int cgx, int cgy, int cew, int ceh);
 }

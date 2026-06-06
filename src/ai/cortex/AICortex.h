@@ -45,8 +45,9 @@ public:
 
 private:
 	/// Ticks between policy invocations. The observation/policy run at this
-	/// cadence; Order emission stays at tick rate via the queue.
-	static const int OBSERVE_INTERVAL = 50;
+	/// cadence; Order emission stays at tick rate via the queue. 25 ticks = 1
+	/// second at the engine's 40 ms tick.
+	static const int OBSERVE_INTERVAL = 25;
 
 	/// Worker count forced onto the pre-placed starting swarm on the first decision
 	/// cycle. The map gives the initial swarm an arbitrary maxUnitWorking; jump it
