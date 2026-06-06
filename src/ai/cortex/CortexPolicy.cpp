@@ -517,20 +517,32 @@ namespace Cortex
 				const TrackedBuilding& t = obs.trackedInns[i];
 				if (!t.valid) continue;
 				// Post-build settle window: a freshly finished inn starts with an empty
-				// 0/10 buffer and its as-built worker count (2 for L0). Don't let the
-				// corn<ADD_LO rule spike workers before the first haulers have had time
-				// to fill it — hold the as-built count for CORTEX_INN_TUNE_DELAY_TICKS.
+				// buffer (a large restock deficit) and its as-built worker count. Hold that
+				// count for CORTEX_INN_TUNE_DELAY_TICKS before applying the demand ceiling,
+				// so a brand-new inn does not immediately pull a crowd of haulers off the
+				// rest of the economy — it fills gradually meanwhile.
 				if (t.ticksSinceFinished >= 0
 				 && t.ticksSinceFinished < CORTEX_INN_TUNE_DELAY_TICKS)
 					continue;
+				// Inn hauler ceiling = the COLLECTABLE restock demand. CortexObservation
+				// fills restockTripsNeeded = the inn's corn + IN-SIGHT fruit deficit in
+				// hauler trips (fogged/unreachable resources excluded — fruit is
+				// visibleToBeCollected, so it can't be hauled under fog, and the engine's
+				// own desiredNumberOfWorkers counts the RAW deficit and would over-request
+				// haulers that then idle). We set maxUnitWorking to that demand, clamped to
+				// [MIN, CAP]; the engine self-regulates the actual hauler count below this
+				// ceiling each tick. Scales with inn LEVEL (bigger corn/fruit caps → more
+				// trips → more haulers) instead of the old fixed corn thresholds that
+				// collapsed a level-2 inn to one hauler, and it does not forget fruit.
+				// restockTripsNeeded == -1 means unknown (game absent): leave it untouched.
 				int desired = t.maxUnitWorking;
-				// Inns feed ~5× faster than swarms consume, so they exhaust their
-				// buffer quicker; the same add/remove logic applies with the inn-
-				// specific thresholds and ceiling.
-				if (t.corn < CORTEX_INN_CORN_ADD_LO && t.maxUnitWorking < CORTEX_INN_WORKER_CAP)
-					desired = t.maxUnitWorking + 1;
-				else if (t.corn >= CORTEX_INN_CORN_REM_HI && t.maxUnitWorking > CORTEX_INN_WORKER_MIN)
-					desired = t.maxUnitWorking - 1;
+				if (t.restockTripsNeeded >= 0)
+				{
+					int target = t.restockTripsNeeded;
+					if (target < CORTEX_INN_WORKER_MIN) target = CORTEX_INN_WORKER_MIN;
+					if (target > CORTEX_INN_WORKER_CAP) target = CORTEX_INN_WORKER_CAP;
+					desired = target;
+				}
 				if (desired != t.maxUnitWorking) { tune.innWorkers[i] = desired; anyChange = true; }
 			}
 			// Construction sites: pour idle workers into in-progress builds. A site's

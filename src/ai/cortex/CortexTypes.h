@@ -90,7 +90,15 @@ namespace Cortex
 	/// CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP workers while this is below
 	/// CORTEX_SWARM_WHEAT_STARVED_TILES — no point staffing more haulers than there is
 	/// reachable wheat to harvest.
-	static const Uint32 OBSERVATION_VERSION = 12;
+	/// v13 (2026-06-06, inn hauler ceiling = collectable demand) added
+	/// TrackedBuilding.restockTripsNeeded — for inns, the sum over every stocked
+	/// resource of its (capacity - stock)/multiplier deficit in hauler TRIPS, counting
+	/// ONLY resources currently collectable from the inn (Map::ressourceAvailable: corn
+	/// that is reachable, fruit whose tile is in sight — fruit is visibleToBeCollected,
+	/// so fogged fruit is excluded). The worker-tuning loop sets the inn's maxUnitWorking
+	/// to this (clamped), so the hauler ceiling scales with inn level and includes fruit
+	/// without over-staffing for fogged/unreachable resources. -1 for swarms / unknown.
+	static const Uint32 OBSERVATION_VERSION = 13;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -265,10 +273,12 @@ namespace Cortex
 	static const int CORTEX_SWARM_CAP_LIFT_BUILDLEVEL = 3;
 	static const int CORTEX_SWARM_WORKER_CAP_LATE     = 12;
 
-	/// Inn buffer control. Hungrier than a swarm, so a higher worker ceiling. Add a
-	/// worker below ADD_LO, drop one near the 10-CORN cap (REM_HI).
-	static const int CORTEX_INN_CORN_ADD_LO = 5;
-	static const int CORTEX_INN_CORN_REM_HI = 8;
+	/// Inn hauler ceiling bounds. The inn's maxUnitWorking is set to its collectable
+	/// restock demand (TrackedBuilding::restockTripsNeeded — corn + in-sight fruit
+	/// deficit in trips), clamped to [MIN, CAP]. The engine self-regulates the actual
+	/// hauler count below this ceiling each tick (Building::desiredNumberOfWorkers), so
+	/// these are just the floor (always keep one maintaining hauler) and the cap (never
+	/// pull more than this many onto a single inn, however large its deficit).
 	static const int CORTEX_INN_WORKER_MIN  = 1;
 	static const int CORTEX_INN_WORKER_CAP  = 6;
 
@@ -460,6 +470,7 @@ namespace Cortex
 		Sint32 maxUnitInside;  ///< type->maxUnitInside — occupancy ceiling.
 		Sint32 nearestWheatDist; ///< Chebyshev to the nearest CORN tile (supply-distance expansion signal), or -1 if none within CORTEX_WHEAT_SCAN_CAP.
 		Sint32 harvestableWheatNearby; ///< Swarms only: count of non-forbidden CORN tiles within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the footprint (the wheat-starved worker-throttle signal). -1 for inns / when unknown (game absent).
+		Sint32 restockTripsNeeded; ///< Inns only: collectable restock demand in hauler trips (Σ over stocked resources of (cap-stock)/multiplier, counting only resources currently reachable/in-sight via Map::ressourceAvailable). The inn-hauler ceiling. -1 for swarms / when unknown (game absent).
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy raise/restore swarm priority for the panic defense.
 		Sint32 ticksSinceFinished; ///< Inns only: ticks since Cortex first saw this inn finished (the post-build tune-cooldown clock); -1 = unknown / not tracked. Stamped by AICortex after observe(); swarms leave it -1.
 	};
@@ -823,6 +834,7 @@ namespace Cortex
 			obs.trackedSwarms[i].maxUnitInside = 0;
 			obs.trackedSwarms[i].nearestWheatDist = -1;
 			obs.trackedSwarms[i].harvestableWheatNearby = -1;
+			obs.trackedSwarms[i].restockTripsNeeded = -1;
 			obs.trackedSwarms[i].priority = 0;
 		}
 		for (int i = 0; i < CORTEX_MAX_TRACKED_INNS; i++)
@@ -836,6 +848,7 @@ namespace Cortex
 			obs.trackedInns[i].maxUnitInside = 0;
 			obs.trackedInns[i].nearestWheatDist = -1;
 			obs.trackedInns[i].harvestableWheatNearby = -1;
+			obs.trackedInns[i].restockTripsNeeded = -1;
 			obs.trackedInns[i].priority = 0;
 		}
 		obs.siteCount = 0;

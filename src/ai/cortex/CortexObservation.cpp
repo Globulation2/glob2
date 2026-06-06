@@ -219,6 +219,7 @@ namespace Cortex
 						                                     bt->width, bt->height,
 						                                     CORTEX_SWARM_WHEAT_STARVED_RADIUS)
 						: -1;
+					t.restockTripsNeeded = -1; // inn-only hauler-ceiling signal; unused for swarms.
 					// C++: Building::priority (-1/0/+1), building/Building.h:516
 					t.priority        = b->priority;
 					t.ticksSinceFinished = -1; // swarms do not use the inn tune-cooldown.
@@ -253,6 +254,41 @@ namespace Cortex
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
 					t.harvestableWheatNearby = -1; // swarm-only throttle signal; unused for inns.
+					// Collectable restock demand (the inn-hauler ceiling, CortexPolicy
+					// Priority 1.5): sum the per-resource deficit in HAULER TRIPS over every
+					// resource the inn stocks, counting ONLY resources currently collectable
+					// from here. ressourceAvailable reads the team resource gradient, which
+					// marks visibleToBeCollected fruit under fog as unreachable AND excludes
+					// a depleted/unreachable corn field — so fogged fruit and a drained
+					// wheat patch contribute zero. (The engine's own desiredNumberOfWorkers
+					// counts the RAW deficit and would over-request haulers that then idle.)
+					// One trip delivers multiplierRessource[r] units (1 corn / 10 fruit), so
+					// divide the deficit by it. canSwim=false: water-locked resources are
+					// treated as out of reach (conservative). C++: maxRessource/
+					// multiplierRessource game/entities/BuildingType.h:76,78;
+					// Map::ressourceAvailable map/MapResources.cpp:157.
+					if (game != NULL)
+					{
+						int trips = 0;
+						for (int r = 0; r < MAX_RESSOURCES; r++)
+						{
+							const int capR = bt->maxRessource[r];
+							if (capR <= 0)
+								continue;
+							const int deficit = capR - b->ressources[r];
+							if (deficit <= 0)
+								continue;
+							if (!game->map.ressourceAvailable(team->teamNumber, r, false,
+							                                  b->posX, b->posY))
+								continue;
+							const int mult = (bt->multiplierRessource[r] > 0)
+								? bt->multiplierRessource[r] : 1;
+							trips += deficit / mult;
+						}
+						t.restockTripsNeeded = trips;
+					}
+					else
+						t.restockTripsNeeded = -1;
 					t.priority        = b->priority; // C++: building/Building.h:516
 					t.ticksSinceFinished = -1; // stamped post-observe by AICortex.
 					obs.innCount++;
