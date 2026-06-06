@@ -205,6 +205,31 @@ namespace Cortex
 		return false;
 	}
 
+	int countHarvestableCornWithin(const Map& map, Uint32 teamMask,
+	                               int x, int y, int w, int h, int dist)
+	{
+		// Same expanded-footprint scan box as anyCornWithin ([x-dist, x+w+dist) x
+		// [y-dist, y+h+dist)), but COUNTS the CORN tiles this team may actually
+		// harvest: a tile counts only when it is CORN AND not forbidden for teamMask.
+		// Depleted field tiles are no longer CORN, and the checkerboard wheat-
+		// protection paint sets `forbidden` on the protected half (which blocks
+		// harvest but not regrowth), so both are excluded — leaving the live,
+		// harvestable wheat the caller's MIN_TILES threshold is measured against.
+		int count = 0;
+		for (int dy = -dist; dy < h + dist; dy++)
+			for (int dx = -dist; dx < w + dist; dx++)
+			{
+				const int nx = map.normalizeX(x + dx);
+				const int ny = map.normalizeY(y + dy);
+				if (map.getRessource(nx, ny).type != CORN)
+					continue;
+				if (map.isForbidden(nx, ny, teamMask))
+					continue;
+				count++;
+			}
+		return count;
+	}
+
 	bool candidateCrowdsInn(Game* game, Team* team, const Map& map,
 	                        int x, int y, int w, int h)
 	{

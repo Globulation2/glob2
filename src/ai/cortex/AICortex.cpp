@@ -504,27 +504,6 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			break;
 		}
 
-		case Cortex::ACTION_PROTECT_WHEAT:
-		{
-			// Rebuild the ADD/DEL checkerboard masks for our wheat (the bounded
-			// colony-region scan) and emit one OrderAlterateForbidden per non-empty
-			// diff. No build cooldown: these are area-paint orders, not OrderCreates,
-			// and the reconcile is self-correcting — a paint already in place yields
-			// an empty diff next cycle, so re-deciding the same intent is free.
-			Cortex::WheatReconcile wr =
-				Cortex::reconcileWheatForbidden(player, action.wheatOpenMargin, /*buildMasks=*/true);
-			const Map* map = &player->team->game->map;
-			const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
-			// DEL first so freeing dead tiles never races the ADD of fresh ones.
-			if (wr.del.getApplicationCount() > 0)
-				orderQueue.push(shared_ptr<Order>(new OrderAlterateForbidden(
-					teamNumber, BrushTool::MODE_DEL, &wr.del, map)));
-			if (wr.add.getApplicationCount() > 0)
-				orderQueue.push(shared_ptr<Order>(new OrderAlterateForbidden(
-					teamNumber, BrushTool::MODE_ADD, &wr.add, map)));
-			break;
-		}
-
 		case Cortex::ACTION_TUNE_WORKERS:
 		{
 			// Apply the per-building desired worker counts (maxUnitWorking) to our
@@ -688,6 +667,29 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			// Unknown intent: ignore rather than emit a bogus Order.
 			break;
 	}
+}
+
+void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs)
+{
+	(void)obs; // reserved: the gate already ran in CortexPolicy::wantWheatProtection.
+
+	// Rebuild the ADD/DEL checkerboard masks for our wheat (the bounded colony-region
+	// scan, RNG-free) at the per-game open-margin and emit one OrderAlterateForbidden
+	// per non-empty diff. No build cooldown: these are area-paint orders, not
+	// OrderCreates, and the reconcile is self-correcting — a paint already in place
+	// yields an empty diff next cycle, so re-running it every cycle is free. The
+	// margin is the AICortex member (the seeded per-game N), == obs.wheatOpenMargin.
+	Cortex::WheatReconcile wr =
+		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true);
+	const Map* map = &player->team->game->map;
+	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
+	// DEL first so freeing dead tiles never races the ADD of fresh ones.
+	if (wr.del.getApplicationCount() > 0)
+		orderQueue.push(shared_ptr<Order>(new OrderAlterateForbidden(
+			teamNumber, BrushTool::MODE_DEL, &wr.del, map)));
+	if (wr.add.getApplicationCount() > 0)
+		orderQueue.push(shared_ptr<Order>(new OrderAlterateForbidden(
+			teamNumber, BrushTool::MODE_ADD, &wr.add, map)));
 }
 
 void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
@@ -951,6 +953,16 @@ shared_ptr<Order> AICortex::getOrder(void)
 
 		Cortex::CortexAction action = policy.decide(obs);
 		translateAction(action, obs);
+
+		// Wheat-forbidden upkeep runs EVERY decision cycle, in PARALLEL with the
+		// primary action above — it is not an ACTION_* the build/upgrade/offense
+		// ladder could starve, nor does it consume the cycle's single action slot.
+		// The policy still owns whether to paint (starving gate + real diff); when it
+		// says yes we enqueue the full ADD/DEL paint here, alongside whatever orders
+		// translateAction queued. They drain one-per-tick over the many ticks until
+		// the next decision cycle, so both go out — they no longer compete for a turn.
+		if (policy.wantWheatProtection(obs))
+			enqueueWheatForbidden(obs);
 
 		if (!orderQueue.empty())
 		{

@@ -455,6 +455,20 @@ namespace Cortex
 				    nearestCornDist(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
 					continue;
 
+				// HARD REJECT (swarm and inn): the field must hold a real CLUSTER of
+				// harvestable wheat, not just the single tile the check above needs.
+				// Require at least CORTEX_WHEAT_MIN_TILES non-forbidden CORN tiles
+				// within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. "Non-forbidden"
+				// drops the half of the field Cortex checkerboards for protection (which
+				// blocks harvest), and depleted tiles are no longer CORN — so this
+				// rejects a swarm hugging a nearly-exhausted patch and an inn dropped on
+				// a field whose harvestable wheat is already gone (both observed in play).
+				if (isWheatFed &&
+				    countHarvestableCornWithin(map, team->me, x, y, w, h,
+				                               CORTEX_WHEAT_MIN_TILES_RADIUS)
+				        < CORTEX_WHEAT_MIN_TILES)
+					continue;
+
 				// HARD REJECT (swarm only): the swarm's footprint EDGE must sit within
 				// CORTEX_SWARM_WHEAT_EDGE_DIST tiles of a CORN tile. This is STRICTER
 				// than the shared corner-based nearestCornDist check above (which still

@@ -3,6 +3,7 @@
 
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
+#include "CortexPlacementGeo.h"
 #include "CortexWheat.h"
 #include "CortexWater.h"
 
@@ -207,6 +208,17 @@ namespace Cortex
 						? Cortex::nearestCornDist(game->map, b->posX, b->posY,
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
+					// Harvestable-wheat count in the swarm's catchment — the input to the
+					// wheat-starved worker throttle (CortexPolicy Priority 1.5). Counts
+					// non-forbidden CORN within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the
+					// footprint, so it tracks the field draining/being checkerboarded over
+					// time, not just the spot the swarm was built on.
+					t.harvestableWheatNearby = (game != NULL)
+						? Cortex::countHarvestableCornWithin(game->map, team->me,
+						                                     b->posX, b->posY,
+						                                     bt->width, bt->height,
+						                                     CORTEX_SWARM_WHEAT_STARVED_RADIUS)
+						: -1;
 					// C++: Building::priority (-1/0/+1), building/Building.h:516
 					t.priority        = b->priority;
 					t.ticksSinceFinished = -1; // swarms do not use the inn tune-cooldown.
@@ -240,6 +252,7 @@ namespace Cortex
 						? Cortex::nearestCornDist(game->map, b->posX, b->posY,
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
+					t.harvestableWheatNearby = -1; // swarm-only throttle signal; unused for inns.
 					t.priority        = b->priority; // C++: building/Building.h:516
 					t.ticksSinceFinished = -1; // stamped post-observe by AICortex.
 					obs.innCount++;
@@ -512,7 +525,8 @@ namespace Cortex
 		// --- wheat sustainability: counts-only reconcile over the colony region ---
 		// The full per-tile masks are rebuilt in the action layer (which has the
 		// Map to paint into); the observation carries only the cheap diff counts so
-		// the pure policy can tell whether ACTION_PROTECT_WHEAT has real work to do.
+		// the pure policy (CortexPolicy::wantWheatProtection) can tell whether the
+		// per-cycle wheat-forbidden pass has real work to do.
 		{
 			const Cortex::WheatReconcile wr =
 				Cortex::reconcileWheatForbidden(player, openMargin, /*buildMasks=*/false);

@@ -100,6 +100,16 @@ private:
 	/// candidate-slot index — the (x, y) lives in obs.buildCandidates.
 	void translateAction(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
 
+	/// Wheat-forbidden executor, run EVERY decision cycle in parallel with
+	/// translateAction (gated by CortexPolicy::wantWheatProtection) — not as a
+	/// competing action. Rebuilds the full ADD/DEL checkerboard tile masks over our
+	/// wheat (a bounded colony-region scan, RNG-free) at the per-game open-margin
+	/// wheatOpenMargin and appends one OrderAlterateForbidden per non-empty diff
+	/// (DEL before ADD). A single order carries the whole diff, so all newly-revealed
+	/// wheat is fenced in one cycle. Self-correcting: an already-painted diff is empty
+	/// next cycle, so re-running each cycle is free when there is no new work.
+	void enqueueWheatForbidden(const Cortex::CortexObservation& obs);
+
 	/// Find our team's single live WAR_FLAG virtual building, or NULL if none.
 	/// Cortex keeps at most one war flag and does NOT persist its gid; it is
 	/// re-found each decision cycle by scanning team->virtualBuildings (a list,

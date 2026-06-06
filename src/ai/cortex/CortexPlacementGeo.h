@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <SDL_stdinc.h>
+
 class Game;
 class Team;
 class Map;
@@ -38,6 +40,15 @@ namespace Cortex
 	/// footprint (innX, innY, w x h). Used to keep non-wheat-fed buildings off the
 	/// wheat lanes. Early-outs on the first CORN found.
 	bool anyCornWithin(const Map& map, int x, int y, int w, int h, int dist);
+
+	/// Counts the HARVESTABLE wheat tiles within `dist` Chebyshev tiles of the
+	/// footprint (x, y, w x h): tiles that are CORN AND not forbidden for `teamMask`.
+	/// Depleted tiles (no longer CORN) and the team's own checkerboard-protected
+	/// (forbidden) half of a field are excluded, so the result is the live wheat the
+	/// team's workers can actually take. Used by placeCandidates to require a real
+	/// cluster of harvestable wheat (CORTEX_WHEAT_MIN_TILES) around a new swarm/inn.
+	int countHarvestableCornWithin(const Map& map, Uint32 teamMask,
+	                               int x, int y, int w, int h, int dist);
 
 	/// Fills (w, h) with the LARGEST footprint a building of type `bt` can grow into
 	/// by walking its upgrade chain (BuildingType::nextLevel). For an inn this yields

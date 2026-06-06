@@ -23,6 +23,13 @@ namespace Cortex
 	static const int STARVE_HALT_PERCENT = 6;
 	static const int HUNGRY_HALT_PERCENT = 20;
 
+	/// Percent of current inn feeding capacity the population must reach to trigger
+	/// the next inn (Priority 2). Building at 100% means waiting until feeding is
+	/// already exhausted before the next inn even breaks ground, so the colony spends
+	/// the whole inn-build window over capacity. Triggering at 80% gives that lead
+	/// time back — feeding stays ahead of population growth.
+	static const int INN_BUILD_CAPACITY_PERCENT = 80;
+
 	/// --- worker-surplus production throttle (tunable AI design choice) -----
 	// "Available workers" is the engine's own player-facing free-worker figure:
 	// idle workers minus open job requests (isFree[WORKER] - totalNeeded; see
@@ -485,10 +492,20 @@ namespace Cortex
 				const TrackedBuilding& t = obs.trackedSwarms[i];
 				if (!t.valid) continue;
 				int desired = t.maxUnitWorking;
+				// Wheat-starved override: a swarm whose catchment holds too little
+				// HARVESTABLE wheat cannot use more than a single hauler — extra workers
+				// find no wheat to harvest and just idle or thrash the depleted patch. Cap
+				// it at CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP outright (not the gentle
+				// +/-1 step), regardless of the corn buffer. harvestableWheatNearby is -1
+				// when unknown (game absent); only act on a real count. Takes precedence
+				// over the buffer-driven add/remove below.
+				if (t.harvestableWheatNearby >= 0
+				 && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES)
+					desired = CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP;
 				// Buffer draining: bring one more hauler in before the swarm stalls.
 				// CORTEX_SWARM_CORN_ADD_LO is the stall threshold (swarm stops
 				// producing at < 5 corn); catching it early buys a cycle of slack.
-				if (t.corn < CORTEX_SWARM_CORN_ADD_LO && t.maxUnitWorking < sCap)
+				else if (t.corn < CORTEX_SWARM_CORN_ADD_LO && t.maxUnitWorking < sCap)
 					desired = t.maxUnitWorking + 1;
 				// Buffer saturated: the buffer is full enough that this hauler could
 				// do more useful work elsewhere — release one.
@@ -543,16 +560,20 @@ namespace Cortex
 		}
 
 		// --- Priority 2: feed capacity (inns). FEED-LED, not wheat-led: build an inn
-		// whenever the inns' feeding capacity has fallen behind the current
-		// population (or there is no inn yet). An existing inn short of WHEAT SUPPLY
-		// is the worker-tuning loop's problem (add haulers), NEVER a reason to place
-		// another inn here. One site at a time; placement already rejects sites too
-		// far from wheat. Ungated by spare labour — feeding is existential, and this
-		// is what keeps the swarm from ever needing to halt for overpopulation.
+		// whenever the population has reached INN_BUILD_CAPACITY_PERCENT of the inns'
+		// feeding capacity (or there is no inn yet) — placing the next inn at 80% full
+		// rather than 100% so its build window overlaps the climb to capacity instead
+		// of starting after feeding is already exhausted. An existing inn short of
+		// WHEAT SUPPLY is the worker-tuning loop's problem (add haulers), NEVER a
+		// reason to place another inn here. One site at a time; placement already
+		// rejects sites too far from wheat. Ungated by spare labour — feeding is
+		// existential, and this is what keeps the swarm from ever needing to halt for
+		// overpopulation.
 		if (innSites == 0)
 		{
 			const bool noInnYet      = (inns == 0 && obs.totalUnit > 0);
-			const bool capacityShort = (obs.feedCapacity < obs.totalUnit);
+			const bool capacityShort =
+				(obs.totalUnit * 100 >= obs.feedCapacity * INN_BUILD_CAPACITY_PERCENT);
 			if (noInnYet || capacityShort)
 			{
 				const int slot = firstValidCandidate(obs, CORTEX_BUILD_FOOD);
@@ -843,16 +864,11 @@ namespace Cortex
 				return makeClearFlagsAction();
 		}
 
-		// --- Priority 7.5: wheat sustainability (checkerboard forbidden paint). ---
-		// Ungated by combat phase — this is early-economy field maintenance that
-		// runs from the first inn. Placed below defense (reacting to an active
-		// attack outranks farm upkeep) but above the sticky offense default (upkeep
-		// outranks "keep attacking"). Gated on !starving so we never wall off wheat
-		// while the colony is dying, and emits only when the reconcile has real work
-		// (ADD newly-revealed tiles or DEL ones where the wheat is gone).
-		if (!starving
-		 && (obs.wheatProtectAddCount > 0 || obs.wheatProtectDelCount > 0))
-			return makeProtectWheatAction(obs.wheatOpenMargin);
+		// Wheat sustainability (checkerboard forbidden paint) is NO LONGER a rung
+		// here: it runs every decision cycle in parallel with whatever primary action
+		// this ladder picks, so it can never be starved by build/upgrade/offense work
+		// (and conversely never steals a cycle from them). See wantWheatProtection()
+		// below and AICortex::enqueueWheatForbidden, called each cycle in getOrder().
 
 		// --- Priority 8: offense (plant the war flag on the nearest known enemy). ---
 		// Once we have an army (turtle-then-commit; the warriors have been training to
@@ -871,5 +887,26 @@ namespace Cortex
 		// economy rungs and respects the straggler-grace hold — see above.)
 
 		return makeNoOpAction();
+	}
+
+	bool CortexPolicy::wantWheatProtection(const CortexObservation& obs) const
+	{
+		// Reject an observation built against a layout this policy wasn't written
+		// for, or one that was never populated — same guard decide() uses.
+		if (obs.version != OBSERVATION_VERSION || !obs.valid)
+			return false;
+
+		// Same starving gate as decide()'s economy rungs: never wall off wheat
+		// while the colony is dying. Computed here independently because this runs
+		// in parallel with (not inside) the primary-action ladder.
+		const Sint32 starvingPct = (obs.totalUnit > 0)
+			? (obs.starvingUnits * 100 / obs.totalUnit) : 0;
+		const bool starving = (starvingPct >= STARVE_HALT_PERCENT);
+
+		// Emit only when the reconcile has real work: ADD newly-revealed wheat tiles
+		// or DEL tiles where the wheat is gone / out of view. An empty diff means the
+		// paint already matches what we want, so there is nothing to order this cycle.
+		return !starving
+		    && (obs.wheatProtectAddCount > 0 || obs.wheatProtectDelCount > 0);
 	}
 }

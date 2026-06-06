@@ -41,7 +41,7 @@ namespace Cortex
 	/// a building can be upgraded) and upgradableCount[] (per-type count of
 	/// finished instances that pass the full engine Upgradable predicate right now).
 	/// v5 (2026-06-04, wheat-protection increment) added the wheat-sustainability
-	/// signals: wheatOpenMargin (the seeded open-margin N echoed into the action),
+	/// signals: wheatOpenMargin (the seeded open-margin N; the wheat executor reads it),
 	/// wheatProtectAddCount/wheatProtectDelCount (the reconcile diff against the
 	/// team's current forbidden paint), and swarmsProducingExplorer (so the policy
 	/// can revert the early-explorer mix cleanly without reading raw swarm ratios).
@@ -83,7 +83,14 @@ namespace Cortex
 	/// nonzero, the symmetric peer of swarmsProducingExplorer/Warrior. It lets the
 	/// policy stop minting workers (warriors-and-scout mix) once idle labour piles
 	/// up and resume once it drains, reading the on/off state without raw ratios.
-	static const Uint32 OBSERVATION_VERSION = 11;
+	/// v12 (2026-06-06, wheat-starved swarm throttle) added
+	/// TrackedBuilding.harvestableWheatNearby — the count of non-forbidden CORN tiles
+	/// within CORTEX_SWARM_WHEAT_STARVED_RADIUS of a swarm's footprint (filled for
+	/// swarms; -1 for inns / when unknown). The worker-tuning loop caps a swarm at
+	/// CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP workers while this is below
+	/// CORTEX_SWARM_WHEAT_STARVED_TILES — no point staffing more haulers than there is
+	/// reachable wheat to harvest.
+	static const Uint32 OBSERVATION_VERSION = 12;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -91,7 +98,8 @@ namespace Cortex
 	/// v4 (2026-06-04) added ACTION_UPGRADE_BUILDING (upgrade an existing finished
 	/// building to its next level via OrderConstruction; reuses buildingType).
 	/// v5 (2026-06-04) added ACTION_PROTECT_WHEAT + wheatOpenMargin (paint the
-	/// checkerboard forbidden pattern over our wheat for sustainability).
+	/// checkerboard forbidden pattern over our wheat for sustainability). REMOVED in
+	/// v10 — wheat upkeep moved to a per-cycle parallel pass (see below).
 	/// v6 (2026-06-05) added ACTION_TUNE_WORKERS + swarmWorkers[]/innWorkers[]:
 	/// the per-tracked-building desired maxUnitWorking (-1 == leave unchanged),
 	/// applied via OrderModifyBuilding with action-layer dedup. Arrays are indexed
@@ -107,7 +115,12 @@ namespace Cortex
 	/// v9 (2026-06-05) added siteWorkers[] to ACTION_TUNE_WORKERS: desired worker cap
 	/// per construction site (trackedSites[]), to pour idle workers into in-progress
 	/// builds. Applied via OrderModifyBuilding with the same per-target dedup.
-	static const Uint32 ACTION_VERSION = 9;
+	/// v10 (2026-06-06) removed ACTION_PROTECT_WHEAT + the wheatOpenMargin field
+	/// (the v5 additions): wheat-forbidden upkeep no longer competes for the cycle's
+	/// single action slot. It now runs every decision cycle in parallel with the
+	/// primary action — CortexPolicy::wantWheatProtection decides, AICortex::
+	/// enqueueWheatForbidden paints — reading the open-margin from the AICortex member.
+	static const Uint32 ACTION_VERSION = 10;
 
 	/// Fixed upper bound on enemy team slots in an Observation. 32 ==
 	/// Team::MAX_COUNT_ON_DISK; it is a safe over-bound on the live team ceiling
@@ -317,6 +330,30 @@ namespace Cortex
 	/// CORTEX_WHEAT_MAX_DIST corner check (which still gates inns); measured from the
 	/// footprint EDGE via anyCornWithin, not the top-left corner. AI-design rule.
 	static const int CORTEX_SWARM_WHEAT_EDGE_DIST = 2;
+	/// A new swarm or inn must have at least CORTEX_WHEAT_MIN_TILES HARVESTABLE wheat
+	/// (CORN) tiles within CORTEX_WHEAT_MIN_TILES_RADIUS Chebyshev tiles of its
+	/// footprint edge. "Harvestable" == CORN AND not forbidden for this team: the
+	/// checkerboard wheat-protection paint forbids half the field (forbidden blocks
+	/// harvest, MapGradientGlobal.cpp:135), and depleted tiles are no longer CORN at
+	/// all. The other wheat gates (nearestCornDist / anyCornWithin) only require ONE
+	/// CORN tile in reach and count forbidden tiles, which let a swarm land next to a
+	/// nearly-exhausted patch and an inn land on a field whose harvestable half was
+	/// already gone. Requiring a real cluster of harvestable wheat keeps wheat-fed
+	/// buildings on a field that can actually sustain them. AI-design rule, no engine
+	/// analogue.
+	static const int CORTEX_WHEAT_MIN_TILES        = 5;
+	static const int CORTEX_WHEAT_MIN_TILES_RADIUS = 5;
+	/// Runtime wheat-starvation throttle for an EXISTING swarm (the worker-tuning loop,
+	/// CortexPolicy Priority 1.5): while a swarm has fewer than
+	/// CORTEX_SWARM_WHEAT_STARVED_TILES non-forbidden CORN tiles within
+	/// CORTEX_SWARM_WHEAT_STARVED_RADIUS Chebyshev tiles of its footprint, cap its
+	/// worker count at CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP — extra haulers cannot
+	/// find wheat to harvest and just idle or thrash the depleted patch. A wider radius
+	/// than the placement gate (the swarm is already there; this watches its catchment
+	/// drain over time, not just the spot it was built on). AI-design rule.
+	static const int CORTEX_SWARM_WHEAT_STARVED_TILES      = 5;
+	static const int CORTEX_SWARM_WHEAT_STARVED_RADIUS     = 10;
+	static const int CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP = 1;
 	/// Bound on the nearest-CORN radial scan (CortexPlacement::nearestCornDist):
 	/// tiles beyond this report "no wheat in reach" (-1). A few past WHEAT_MAX_DIST
 	/// so the supply-distance expansion trigger can still measure "just out of range".
@@ -422,6 +459,7 @@ namespace Cortex
 		Sint32 unitsInside;    ///< unitsInside.size() — occupancy (inns: units feeding/queued).
 		Sint32 maxUnitInside;  ///< type->maxUnitInside — occupancy ceiling.
 		Sint32 nearestWheatDist; ///< Chebyshev to the nearest CORN tile (supply-distance expansion signal), or -1 if none within CORTEX_WHEAT_SCAN_CAP.
+		Sint32 harvestableWheatNearby; ///< Swarms only: count of non-forbidden CORN tiles within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the footprint (the wheat-starved worker-throttle signal). -1 for inns / when unknown (game absent).
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy raise/restore swarm priority for the panic defense.
 		Sint32 ticksSinceFinished; ///< Inns only: ticks since Cortex first saw this inn finished (the post-build tune-cooldown clock); -1 = unknown / not tracked. Stamped by AICortex after observe(); swarms leave it -1.
 	};
@@ -539,14 +577,15 @@ namespace Cortex
 
 		// --- wheat sustainability (v5) ---
 		// The open margin N drawn once per game (AICortex, via syncRand) and echoed
-		// through the observation so the pure policy reads it like any other feature
-		// and passes it into ACTION_PROTECT_WHEAT — the ML seam (a learned policy
-		// later OUTPUTS N here instead of echoing the seeded value).
+		// through the observation so the pure policy reads it like any other feature.
+		// It is the ML seam (a learned policy later OUTPUTS N here instead of echoing
+		// the seeded value); the wheat executor reads it each cycle via the AICortex
+		// member to drive the checkerboard scan.
 		Sint32 wheatOpenMargin;
 		// Reconcile diff between the checkerboard we WANT over our wheat right now and
 		// the team's CURRENT forbidden paint (footprints excluded). Counts-only summary
 		// from a bounded colony-region scan; the full tile masks are rebuilt in the
-		// action layer. The policy emits ACTION_PROTECT_WHEAT only when either is > 0.
+		// action layer. CortexPolicy::wantWheatProtection returns true only when either is > 0.
 		Sint32 wheatProtectAddCount; ///< tiles to newly forbid (desired - current).
 		Sint32 wheatProtectDelCount; ///< tiles to un-forbid (current - desired: wheat gone/out of view).
 		// Count of FINISHED swarms whose EXPLORER production ratio is nonzero. Lets the
@@ -618,7 +657,9 @@ namespace Cortex
 		ACTION_PLACE_DEFENSE_FLAG,///< Defense: ensure our single war flag sits on defenseTarget (create or move there), radius=flagRadius, warriors=unitCount.
 		ACTION_CLEAR_FLAGS,     ///< Remove our war flag (OrderDelete) if one exists — no offense/defense wanted right now.
 		ACTION_UPGRADE_BUILDING,///< Upgrade one finished `buildingType` instance to its next level (engine OrderConstruction). The action layer resolves which instance (the bottleneck-eligible one) and the worker counts.
-		ACTION_PROTECT_WHEAT,   ///< Reconcile the checkerboard forbidden paint over our wheat at open-margin wheatOpenMargin. The action layer builds the ADD/DEL tile masks and emits OrderAlterateForbidden(MODE_ADD/DEL).
+		// (Wheat-forbidden paint is NOT an action kind: it runs every cycle in
+		// parallel with the primary action — see CortexPolicy::wantWheatProtection
+		// and AICortex::enqueueWheatForbidden.)
 		ACTION_TUNE_WORKERS,    ///< Set each tracked swarm/inn/site's maxUnitWorking to swarmWorkers[i]/innWorkers[i]/siteWorkers[i] (indexed in lockstep with obs.trackedSwarms[]/trackedInns[]/trackedSites[]); -1 == leave unchanged. The action layer dedups against the building's current maxUnitWorking and emits one OrderModifyBuilding per real change.
 		ACTION_SET_PRIORITY,    ///< Set tracked-swarm engine priority via OrderChangePriority: the FIRST swarm (trackedSwarms[0], the primary/starting swarm) to priorityTarget, every other swarm to priorityRest (-1/0/+1 each). The action layer dedups against each swarm's current Building::priority and emits one order per real change.
 
@@ -637,7 +678,6 @@ namespace Cortex
 		Sint32 productionRatio[CORTEX_UNIT_TYPES]; ///< For ACTION_SET_PRODUCTION: target swarm ratio [WORKER,EXPLORER,WARRIOR], each 0..CORTEX_MAX_RATIO ({0,0,0} = halt). Else all 0.
 		Sint32 flagRadius;   ///< For ACTION_PLACE_*_FLAG: war-flag attraction radius (unitStayRange), clamped to [1, CORTEX_MAX_FLAG_RADIUS]. Else -1.
 		Sint32 unitCount;    ///< For ACTION_PLACE_*_FLAG: warriors to summon (flag maxUnitWorking), clamped to [0, CORTEX_MAX_FLAG_UNITS]. Else -1.
-		Sint32 wheatOpenMargin; ///< For ACTION_PROTECT_WHEAT: the open-margin N (depth <= N stays unpainted), echoed from the seeded obs.wheatOpenMargin. Else -1.
 		Sint32 swarmWorkers[CORTEX_MAX_TRACKED_SWARMS]; ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedSwarms[i], or -1 to leave unchanged. Else all -1.
 		Sint32 innWorkers[CORTEX_MAX_TRACKED_INNS];     ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedInns[i], or -1 to leave unchanged. Else all -1.
 		Sint32 siteWorkers[CORTEX_MAX_TRACKED_SITES];   ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedSites[i] (pour idle workers into construction), or -1 to leave unchanged. Else all -1.
@@ -782,6 +822,7 @@ namespace Cortex
 			obs.trackedSwarms[i].unitsInside = 0;
 			obs.trackedSwarms[i].maxUnitInside = 0;
 			obs.trackedSwarms[i].nearestWheatDist = -1;
+			obs.trackedSwarms[i].harvestableWheatNearby = -1;
 			obs.trackedSwarms[i].priority = 0;
 		}
 		for (int i = 0; i < CORTEX_MAX_TRACKED_INNS; i++)
@@ -794,6 +835,7 @@ namespace Cortex
 			obs.trackedInns[i].unitsInside = 0;
 			obs.trackedInns[i].maxUnitInside = 0;
 			obs.trackedInns[i].nearestWheatDist = -1;
+			obs.trackedInns[i].harvestableWheatNearby = -1;
 			obs.trackedInns[i].priority = 0;
 		}
 		obs.siteCount = 0;
@@ -836,7 +878,6 @@ namespace Cortex
 			action.productionRatio[i] = 0;
 		action.flagRadius = -1;
 		action.unitCount = -1;
-		action.wheatOpenMargin = -1;
 		for (int i = 0; i < CORTEX_MAX_TRACKED_SWARMS; i++)
 			action.swarmWorkers[i] = -1;
 		for (int i = 0; i < CORTEX_MAX_TRACKED_INNS; i++)
@@ -909,17 +950,6 @@ namespace Cortex
 		CortexAction action = makeNoOpAction();
 		action.kind = ACTION_UPGRADE_BUILDING;
 		action.buildingType = buildingType;
-		return action;
-	}
-
-	/// Reconcile the checkerboard forbidden paint over our wheat at open-margin
-	/// `openMargin`. The action layer builds the ADD/DEL tile masks (the bounded
-	/// colony-region scan) and emits the OrderAlterateForbidden orders.
-	inline CortexAction makeProtectWheatAction(int openMargin)
-	{
-		CortexAction action = makeNoOpAction();
-		action.kind = ACTION_PROTECT_WHEAT;
-		action.wheatOpenMargin = openMargin;
 		return action;
 	}
 
