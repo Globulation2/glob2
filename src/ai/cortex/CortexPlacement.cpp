@@ -3,6 +3,7 @@
 
 #include "CortexPlacement.h"
 
+#include "CortexPlacementGeo.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
@@ -120,6 +121,28 @@ namespace Cortex
 				if (b == NULL || b->buildingState == Building::DEAD)
 					continue;
 				if (b->type == NULL || b->type->shortTypeNum != IntBuildingType::SWARM_BUILDING)
+					continue;
+				int d = game->map.warpDistMax(x, y, b->posX, b->posY);
+				if (best < 0 || d < best)
+					best = d;
+			}
+			return best;
+		}
+
+		// Chebyshev distance from tile (x, y) to the nearest live FOOD_BUILDING (inn)
+		// owned by `team`. Returns -1 when the team has no inns yet. Used to enforce
+		// CORTEX_INN_MIN_SPACING so inns do not pile on top of each other (workers
+		// would contend for the same wheat and the colony loses feed coverage).
+		// Mirrors distanceToNearestSwarm but filtered to inns.
+		int distanceToNearestInn(Game* game, Team* team, int x, int y)
+		{
+			int best = -1;
+			for (int i = 0; i < Building::MAX_COUNT; i++)
+			{
+				Building* b = team->myBuildings[i];
+				if (b == NULL || b->buildingState == Building::DEAD)
+					continue;
+				if (b->type == NULL || b->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
 					continue;
 				int d = game->map.warpDistMax(x, y, b->posX, b->posY);
 				if (best < 0 || d < best)
@@ -341,23 +364,51 @@ namespace Cortex
 		const bool isWheatFed = (buildingType == IntBuildingType::SWARM_BUILDING ||
 		                         buildingType == IntBuildingType::FOOD_BUILDING);
 		const bool isSwarm    = (buildingType == IntBuildingType::SWARM_BUILDING);
+		const bool isInn      = (buildingType == IntBuildingType::FOOD_BUILDING);
+
+		// Effective footprint used for space reservation. Some buildings grow on
+		// upgrade and must reserve room for the final size at placement time, or the
+		// upgrade can never fit:
+		//   * inn: 2x2 -> 3x3, anchored at the same top-left (constant decLeft),
+		//   * racetrack (WALKSPEED) and pool (SWIMSPEED): 4x4 -> 6x6, CENTERED — the
+		//     decLeft shrinks (-2 -> -3) so they expand on every side, not just down-
+		//     right. grownFootprintBox returns the box offset (gox, goy) from the
+		//     placed corner plus its size (ew x eh); for the inn the offset is 0 and
+		//     it matches the old grownFootprint. Other types reserve what we place.
+		int gox = 0, goy = 0;
+		int ew = w, eh = h;
+		const bool reserveGrown = isInn
+			|| buildingType == IntBuildingType::WALKSPEED_BUILDING
+			|| buildingType == IntBuildingType::SWIMSPEED_BUILDING;
+		if (reserveGrown)
+			grownFootprintBox(bt, gox, goy, ew, eh);
 
 		// Deterministic scan: fixed (x, y) order over every top-left corner.
 		for (int x = 0; x < mapW; x++)
 		{
 			for (int y = 0; y < mapH; y++)
 			{
+				// Grown-footprint top-left corner: the placed corner shifted by the
+				// upgrade box offset (zero for non-growing types and for the inn; up/
+				// left for the centered racetrack/pool growth).
+				const int gx = x + gox;
+				const int gy = y + goy;
+
 				// Canonical engine validity gate — identical to the predicate
 				// behind Game::checkHardRoomForBuilding for a non-virtual
-				// building, so a resulting OrderCreate will not be rejected.
-				if (!map.isHardSpaceForBuilding(x, y, w, h))
+				// building, so a resulting OrderCreate will not be rejected. We gate
+				// on the GROWN footprint (gx, gy, ew x eh) so the spot also has room
+				// for the eventual upgrades; the placed footprint is a subset of it.
+				if (!map.isHardSpaceForBuilding(gx, gy, ew, eh))
 					continue;
 
 				// Fog-of-war: the footprint must be discovered (mirrors AIEcho's
-				// find_location). Check both corners, like the engine path does.
-				if (!map.isMapDiscovered(x, y, team->allies) ||
-				    !map.isMapDiscovered(map.normalizeX(x + w - 1),
-				                         map.normalizeY(y + h - 1), team->allies))
+				// find_location). Check both corners of the grown box, like the
+				// engine path does.
+				if (!map.isMapDiscovered(map.normalizeX(gx), map.normalizeY(gy),
+				                         team->allies) ||
+				    !map.isMapDiscovered(map.normalizeX(gx + ew - 1),
+				                         map.normalizeY(gy + eh - 1), team->allies))
 					continue;
 
 				// Geography rejects for wheat-fed buildings.
@@ -385,6 +436,43 @@ namespace Cortex
 					if (swarmDist >= 0 && swarmDist < CORTEX_SWARM_MIN_SPACING)
 						continue;
 				}
+
+				// HARD REJECT (inn only): keep inns at least CORTEX_INN_MIN_SPACING
+				// Chebyshev tiles apart so they do not pile on top of each other and
+				// split the same wheat catchment. distanceToNearestInn returns -1 when
+				// no inn exists yet; the first inn places freely.
+				if (isInn)
+				{
+					const int innDist = distanceToNearestInn(game, team, x, y);
+					if (innDist >= 0 && innDist < CORTEX_INN_MIN_SPACING)
+						continue;
+				}
+
+				// WHEAT-LANE CLEARANCE (non-wheat-fed only): only swarms and inns may
+				// sit close to wheat. Every other building type is pushed back beyond
+				// CORTEX_WHEAT_CLEAR_DIST so its footprint does not block workers'
+				// paths into the field. AI-design rule, no engine analogue.
+				if (!isWheatFed && anyCornWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
+					continue;
+
+				// INN SIDE-CLEARANCE (placing an inn): the inn may touch a building on
+				// at most CORTEX_INN_MAX_TOUCH_SIDES of its four sides; the rest keep
+				// CORTEX_INN_SIDE_CLEARANCE empty tiles so workers can reach it and the
+				// wheat behind it. Measured against the GROWN (ew x eh) footprint.
+				// innOccupiedSides counts sides already occupied by existing buildings
+				// (no hypothetical candidate here — the inn IS the candidate).
+				if (isInn &&
+				    innOccupiedSides(map, gx, gy, ew, eh, -1, -1, 0, 0) >
+				        CORTEX_INN_MAX_TOUCH_SIDES)
+					continue;
+
+				// INN SIDE-CLEARANCE (other direction): placing ANY building — swarm,
+				// inn, or otherwise — must not open a second occupied side on one of our
+				// existing inns. The candidate is offered at its grown footprint
+				// (ew x eh) so an inn's expansion tiles are accounted for. Keeps the
+				// rule symmetric regardless of build order.
+				if (candidateCrowdsInn(game, team, map, gx, gy, ew, eh))
+					continue;
 
 				const int distToColony = distanceToNearestBuilding(game, team, x, y);
 				int score = scoreFromDistance(distToColony);

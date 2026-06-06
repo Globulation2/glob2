@@ -7,6 +7,7 @@
 #include "CortexTypes.h"
 #include "CortexPolicy.h"
 
+#include <map>
 #include <memory>
 #include <queue>
 
@@ -47,9 +48,19 @@ private:
 	/// cadence; Order emission stays at tick rate via the queue.
 	static const int OBSERVE_INTERVAL = 50;
 
-	/// Ticks to suppress new build orders after issuing one, so the in-flight
-	/// OrderCreate has time to execute and show up as a building site before the
-	/// policy decides again (otherwise it re-issues duplicates the engine drops).
+	/// Worker count forced onto the pre-placed starting swarm on the first decision
+	/// cycle. The map gives the initial swarm an arbitrary maxUnitWorking; jump it
+	/// straight to a productive hauler count so the early worker economy ramps at
+	/// once instead of crawling up one hauler per cycle through the ±1 worker-tuning
+	/// loop. One-shot (see swarmKickstarted); tuning takes over from this baseline.
+	static const int SWARM_START_WORKERS = 4;
+
+	/// Ticks to suppress a new build order OF THE SAME TYPE after issuing one, so
+	/// the in-flight OrderCreate has time to execute and show up as a building site
+	/// before the policy decides again (otherwise it re-issues duplicates the engine
+	/// drops). Applied per-type via buildCooldownUntil[], so the cooldown bridges only
+	/// the issue->visible-site window for that one type and never stalls placing a
+	/// different building while units are free.
 	static const int BUILD_COOLDOWN_TICKS = 250;
 
 	/// Safety-net lifetime of the pendingUpgradeType guard (below). An issued
@@ -117,8 +128,14 @@ private:
 	int timer;
 
 	/// Game tick before which translateAction refuses to issue another build
-	/// (see BUILD_COOLDOWN_TICKS). 0 = no build pending.
-	int buildCooldownUntil;
+	/// (see BUILD_COOLDOWN_TICKS), indexed by building type. 0 = no build of that
+	/// type pending. Per-type (not a single global gate) so issuing one building
+	/// only suppresses re-issuing the SAME type while its OrderCreate is in flight
+	/// — a different type can be placed on the very next decision cycle the moment
+	/// spare labour exists, instead of waiting out a colony-wide build cooldown.
+	/// The duplicate-build the cooldown prevents is inherently per-type (the policy
+	/// only ever re-issues the same intent), so a per-type window loses no safety.
+	int buildCooldownUntil[Cortex::CORTEX_BUILDING_TYPES];
 
 	/// Guard against stacking two upgrades of the SAME building class while the
 	/// first is still converting. An issued upgrade (OrderConstruction) does not
@@ -163,6 +180,25 @@ private:
 	/// The draw consumes one syncRand() → it shifts the shared RNG stream, so this
 	/// is replay-relevant (validated against the deterministic harness).
 	Sint32 wheatOpenMargin;
+
+	/// Per-inn post-build settle clock: maps an inn's Building::gid to the game tick
+	/// at which Cortex FIRST observed it finished. The decision cycle stamps
+	/// obs.trackedInns[i].ticksSinceFinished = now - firstSeen so the policy's
+	/// worker-tuning loop can hold a fresh inn at its as-built worker count for
+	/// CORTEX_INN_TUNE_DELAY_TICKS (it starts at an empty 0/10 buffer and must not be
+	/// worker-spiked before its first haulers fill it). Keyed by gid (deterministic);
+	/// never iterated to PRODUCE an order, only for keyed lookup/insert/prune, so
+	/// std::map order does not affect lockstep. RAM-only (NOT serialized): it rebuilds
+	/// identically from the same seed on a continuous run, and all clients reload a
+	/// save together and re-stamp in lockstep, so a reload merely re-arms the settle
+	/// window uniformly — no desync. (Cortex has no persisted saves to preserve yet.)
+	std::map<Uint16, Sint32> innFinishedTick;
+
+	/// One-shot guard for the start-of-game swarm worker kickstart
+	/// (SWARM_START_WORKERS): set once the starting swarm has been jumped to its
+	/// baseline hauler count. RAM-only — reloading a (hypothetical) save merely
+	/// re-kickstarts uniformly on every client, and Cortex has no persisted saves.
+	bool swarmKickstarted;
 
 	/// Orders awaiting emission, one popped per getOrder() call.
 	std::queue<std::shared_ptr<Order> > orderQueue;

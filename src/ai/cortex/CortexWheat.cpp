@@ -40,6 +40,11 @@ namespace Cortex
 	{
 		WheatScanResult res;
 
+		// The open margin is disabled: every reachable wheat row is checkerboarded,
+		// so `openMargin` no longer gates classification. The parameter is retained
+		// only to keep the observation/action layout and call sites unchanged.
+		(void)openMargin;
+
 		const int w = map.getW();
 		const int h = map.getH();
 		if (w <= 0 || h <= 0)
@@ -151,7 +156,6 @@ namespace Cortex
 		}
 
 		// --- Classify field wheat and collect the desired forbidden set. ---
-		std::vector<bool> desiredBit(static_cast<size_t>(w) * h, false);
 		for (int idx : fieldTiles)
 		{
 			const int x = idx % w;
@@ -162,17 +166,16 @@ namespace Cortex
 			if (wantDebug)
 				res.depthOf[idx] = static_cast<Sint16>(d < 32767 ? d : 32767);
 
+			// Open margin removed: EVERY reachable row of wheat is checkerboarded,
+			// with no exempt rows nearest the harvest source. Classification is purely
+			// by parity — half the field (the WHEAT_PARITY half) is protected, the
+			// other half harvest-open, all the way in to depth 1. (`openMargin` is no
+			// longer consulted; it is retained only for the observation/action layout.)
 			Uint8 cls;
-			if (d <= openMargin)
-			{
-				cls = WC_OPEN_MARGIN;
-				res.openCount++;
-			}
-			else if (((x + y) & 1) == WHEAT_PARITY)
+			if (((x + y) & 1) == WHEAT_PARITY)
 			{
 				cls = WC_FORBIDDEN;
 				res.desired.push_back(idx);
-				desiredBit[idx] = true;
 			}
 			else
 			{
@@ -242,9 +245,27 @@ namespace Cortex
 		for (int idx : res.desired)
 			if (!currentBit[idx])
 				res.add.push_back(idx);
+		// A forbidden tile is retired ONLY when we can currently SEE it (no fog of
+		// war) AND the wheat under it is gone. This is deliberately INDEPENDENT of the
+		// desired checkerboard: the desired pattern drives where we ADD paint, never
+		// where we remove it. Stripping paint from a tile that still has wheat — just
+		// because it fell in the harvest half, the open margin, or briefly went
+		// unreachable — tears protection off field we are trying to maintain and lets
+		// workers harvest the reseed half, which is exactly what breaks the field.
+		//   - fogged tile          -> keep paint (we cannot confirm depletion);
+		//   - visible, still wheat -> keep paint (reachable or not, it is still field);
+		//   - visible, wheat gone  -> retire paint.
+		// The debug/static path (ignoreFOW) treats every tile as visible.
 		for (int idx : current)
-			if (!desiredBit[idx])
-				res.del.push_back(idx);
+		{
+			const int x = idx % w;
+			const int y = idx / w;
+			if (!ignoreFOW && !map.isFOWDiscovered(x, y, teamMask))
+				continue; // in fog: confirmation pending, leave the paint.
+			if (isCorn(map, x, y))
+				continue; // still field wheat: keep protecting it.
+			res.del.push_back(idx);
+		}
 		res.addCount = static_cast<Sint32>(res.add.size());
 		res.delCount = static_cast<Sint32>(res.del.size());
 

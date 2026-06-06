@@ -144,13 +144,14 @@ protected:
 		CPPUNIT_ASSERT_EQUAL((Sint32)-1, a.unitCount);
 	}
 
-	// C++: CortexTypes.h:43,50 — the wheat-protection increment bumped both
-	// versions to 5 (v5 added the wheat-sustainability obs fields +
-	// ACTION_PROTECT_WHEAT / wheatOpenMargin).
+	// C++: CortexTypes.h — the observation layout is at v11 (worker-surplus
+	// production-throttle added swarmsProducingWorker); the action layout is at v9
+	// (siteWorkers[] for the idle-worker-into-construction pour). Bump these in
+	// lockstep with the OBSERVATION_VERSION / ACTION_VERSION constants.
 	void testVersionBump(void)
 	{
-		CPPUNIT_ASSERT_EQUAL((Uint32)5, (Uint32)OBSERVATION_VERSION);
-		CPPUNIT_ASSERT_EQUAL((Uint32)5, (Uint32)ACTION_VERSION);
+		CPPUNIT_ASSERT_EQUAL((Uint32)11, (Uint32)OBSERVATION_VERSION);
+		CPPUNIT_ASSERT_EQUAL((Uint32)9, (Uint32)ACTION_VERSION);
 		// makeEmptyObservation must stamp the current version (so a stale
 		// observation from an old layout is rejected by the policy).
 		CortexObservation obs = makeEmptyObservation();

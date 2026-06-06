@@ -23,6 +23,21 @@ namespace Cortex
 	static const int STARVE_HALT_PERCENT = 6;
 	static const int HUNGRY_HALT_PERCENT = 20;
 
+	/// --- worker-surplus production throttle (tunable AI design choice) -----
+	// "Available workers" is the engine's own player-facing free-worker figure:
+	// idle workers minus open job requests (isFree[WORKER] - totalNeeded; see
+	// TeamStat.cpp:290, where it is shown as "free" and, when negative, the units
+	// are "seeking a job"). When that surplus climbs above WORKER_SURPLUS_HI the
+	// colony has more idle hands than it can place, so the swarm stops minting
+	// workers and pours into warriors (plus the usual scout explorer) instead. It
+	// resumes worker production only once the surplus drains back below zero — job
+	// requests once again outnumber idle workers. The gap between the two
+	// thresholds (HI on the way in, 0 on the way out) is deliberate hysteresis so
+	// the production mix does not flip every cycle while the figure hovers near the
+	// line. Combat-phase only: the throttle needs a warrior slice to fall back on,
+	// else dropping workers would leave the swarm at the forbidden {0,0,0} halt.
+	static const int WORKER_SURPLUS_HI = 3;
+
 	// --- Phase-3 combat tuning --------------------------------------------
 	// All AI design choices, tunable against the benchmark.
 
@@ -187,6 +202,28 @@ namespace Cortex
 		return CORTEX_SWARM_WORKER_CAP;
 	}
 
+	/// True if any tracked swarm is "supply-stressed": pinned at the base worker cap
+	/// (CORTEX_SWARM_WORKER_CAP — the "7 workers" ceiling) yet its CORN buffer is
+	/// still draining below the add-a-hauler line (CORTEX_SWARM_CORN_ADD_LO). Such a
+	/// swarm wants more haulers but cannot take any (already capped), so piling labour
+	/// on it can no longer keep it fed — its local wheat catchment is the bottleneck.
+	/// THAT is the signal to expand onto a fresh wheat patch with a second swarm,
+	/// rather than starve the first. (The late-game cap lift to 12 only happens once
+	/// BUILD tech has matured; checking the base cap here keeps the trigger at the
+	/// user's "can't keep up with 7 workers" threshold.)
+	static bool anySwarmSupplyStressed(const CortexObservation& obs)
+	{
+		for (int i = 0; i < obs.swarmCount; i++)
+		{
+			const TrackedBuilding& t = obs.trackedSwarms[i];
+			if (t.valid
+			 && t.maxUnitWorking >= CORTEX_SWARM_WORKER_CAP
+			 && t.corn < CORTEX_SWARM_CORN_ADD_LO)
+				return true;
+		}
+		return false;
+	}
+
 	/// True if any valid tracked swarm's engine priority differs from `target`.
 	/// Drives the panic defense's raise-to-HIGH and the restore-to-NORMAL steps:
 	/// each fires only while a swarm is not yet at the wanted priority, and the
@@ -196,6 +233,27 @@ namespace Cortex
 		for (int i = 0; i < obs.swarmCount; i++)
 			if (obs.trackedSwarms[i].valid && obs.trackedSwarms[i].priority != target)
 				return true;
+		return false;
+	}
+
+	/// True if the swarm priorities do not yet match the steady-state split: the
+	/// FIRST/primary swarm (the first valid tracked swarm) at `firstTarget` and every
+	/// other swarm at `restTarget`. Drives the always-keep-the-primary-swarm-HIGH
+	/// posture; the action layer dedups, so it stops firing once the split holds.
+	static bool swarmPrioritiesNeedSplit(const CortexObservation& obs,
+	                                     int firstTarget, int restTarget)
+	{
+		bool seenFirst = false;
+		for (int i = 0; i < obs.swarmCount; i++)
+		{
+			const TrackedBuilding& t = obs.trackedSwarms[i];
+			if (!t.valid)
+				continue;
+			const int want = seenFirst ? restTarget : firstTarget;
+			seenFirst = true;
+			if (t.priority != want)
+				return true;
+		}
 		return false;
 	}
 
@@ -259,9 +317,29 @@ namespace Cortex
 		// enemy base (so flagTargets can populate for offense).
 		const bool wantEarlyExplorer = (!combatPhase && swarms >= 1 && obs.explorers == 0);
 		const bool wantScout         = (obs.explorers == 0); // keep ≥1 explorer out.
-		const int growWorker   = combatPhase ? 2 : 1;
 		const int growExplorer = (wantEarlyExplorer || (combatPhase && wantScout)) ? 1 : 0;
 		const int growWarrior  = combatPhase ? 1 : 0;
+
+		// Worker-surplus throttle (see WORKER_SURPLUS_HI): stop minting workers while
+		// idle labour piles up and resume once it is spent. "Available workers" is the
+		// engine's own free-worker figure — idle workers minus open job requests
+		// (TeamStat.cpp:290). Hysteresis: suppress above the high watermark, resume
+		// once it goes negative, and HOLD the current mode in the band between so the
+		// mix does not oscillate. The held mode is read back from swarmsProducingWorker
+		// (no raw-ratio access). Combat-phase only — outside it growWarrior is 0, so
+		// dropping workers would halt the swarm at the forbidden {0,0,0}.
+		const int availableWorkers = obs.freeWorkers - obs.totalNeeded;
+		const bool suppressingNow  =
+		    (swarms > 0 && obs.swarmsProducing > 0 && obs.swarmsProducingWorker == 0);
+		bool suppressWorkers;
+		if (availableWorkers > WORKER_SURPLUS_HI)
+			suppressWorkers = true;            // idle hands to spare -> make warriors
+		else if (availableWorkers < 0)
+			suppressWorkers = false;           // labour scarce again -> make workers
+		else
+			suppressWorkers = suppressingNow;  // hold within the hysteresis band
+		const int growWorker = (combatPhase && suppressWorkers) ? 0
+		                     : (combatPhase ? 2 : 1);
 
 		// --- Priority 0: pre-combat panic defense. ---
 		// Before the combat phase unlocks (it needs COMBAT_ECON_MIN_UNITS units + an
@@ -289,9 +367,10 @@ namespace Cortex
 			// (1) 100% warriors — fire until every swarm is warrior-only.
 			if (swarms > 0 && obs.swarmsProducingWarrior < swarms)
 				return makeSetProductionAction(0, 0, 1);
-			// (2) Swarms to HIGH priority.
+			// (2) Swarms to HIGH priority — EVERY swarm, not just the primary, so the
+			//     whole warrior pump wins worker contention while the base is hit.
 			if (anySwarmPriorityNot(obs, CORTEX_PRIORITY_HIGH))
-				return makeSetPriorityAction(CORTEX_PRIORITY_HIGH);
+				return makeSetPriorityAction(CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_HIGH);
 			// (3) Panic-build one hospital if none is up or already building.
 			if (heal == 0 && healSites == 0)
 			{
@@ -302,11 +381,13 @@ namespace Cortex
 			// Panic setup complete — fall through to the normal economy, which keeps
 			// the swarms fed while they produce the defending army.
 		}
-		else if (anySwarmPriorityNot(obs, CORTEX_PRIORITY_NORMAL))
+		else if (swarmPrioritiesNeedSplit(obs, CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_NORMAL))
 		{
-			// Not under attack, but a prior panic left swarms at HIGH priority —
-			// restore NORMAL so they stop over-pulling workers during ordinary play.
-			return makeSetPriorityAction(CORTEX_PRIORITY_NORMAL);
+			// Steady-state priority split: keep the FIRST/primary swarm at HIGH so it
+			// always wins worker/hauler contention and pumps the early worker economy,
+			// while any later (second) swarm sits at NORMAL. This also restores the
+			// primary swarm to HIGH after a panic ends (the panic raised every swarm).
+			return makeSetPriorityAction(CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_NORMAL);
 		}
 
 		// --- Priority 1: production control. HARD RULE: the swarm always produces;
@@ -323,6 +404,18 @@ namespace Cortex
 			//     {0,0,0} ratio loaded from an old save.
 			if (obs.swarmsProducing < swarms)
 				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			// (a2) End-of-panic recovery. The pre-combat panic defense flips swarms to
+			//      100%-warrior production (growWarrior is 0 before the combat phase, so
+			//      that mix exists ONLY as a panic leftover). When the attack ends the
+			//      `panic` flag clears, but nothing here would revert the ratio: rules
+			//      (a)/(c)/(d) never fire (the swarm IS producing, just warriors), and
+			//      (b) is combat-phase-only — so the swarm would pump warriors forever
+			//      and the worker economy never resumes. Detect the leftover via the
+			//      swarmsProducingWarrior count and pull the mix back to the no-warrior
+			//      economy ratio. Self-terminating: once no swarm makes warriors it
+			//      stops firing (and re-fires only if another panic flips them again).
+			if (!combatPhase && swarms > 0 && obs.swarmsProducingWarrior > 0)
+				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
 			// (b) Establish the warrior mix once the economy is established but no
 			//     warriors are being made yet. Self-terminating: stops firing as soon
 			//     as the first warrior appears (re-fires if the army is wiped to 0).
@@ -336,6 +429,15 @@ namespace Cortex
 			// (d) Drop the explorer slice back out once an explorer exists, so we do
 			//     not keep over-producing them. Stops once no swarm carries it.
 			if (growExplorer == 0 && swarms > 0 && obs.swarmsProducingExplorer > 0)
+				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			// (e) Apply / revert the worker-surplus throttle: re-issue the mix
+			//     whenever the swarm's worker output disagrees with the desired
+			//     growWorker (workers on <-> off). The symmetric peer of (c)/(d) for
+			//     the explorer slice; only ever meaningful in the combat phase, where
+			//     growWorker can be 0. Self-terminating and action-layer dedup'd, so a
+			//     no-op re-issue emits no order.
+			if (combatPhase && swarms > 0
+			 && (growWorker > 0) != (obs.swarmsProducingWorker > 0))
 				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
 		}
 
@@ -387,6 +489,13 @@ namespace Cortex
 			for (int i = 0; i < obs.innCount; i++) {
 				const TrackedBuilding& t = obs.trackedInns[i];
 				if (!t.valid) continue;
+				// Post-build settle window: a freshly finished inn starts with an empty
+				// 0/10 buffer and its as-built worker count (2 for L0). Don't let the
+				// corn<ADD_LO rule spike workers before the first haulers have had time
+				// to fill it — hold the as-built count for CORTEX_INN_TUNE_DELAY_TICKS.
+				if (t.ticksSinceFinished >= 0
+				 && t.ticksSinceFinished < CORTEX_INN_TUNE_DELAY_TICKS)
+					continue;
 				int desired = t.maxUnitWorking;
 				// Inns feed ~5× faster than swarms consume, so they exhaust their
 				// buffer quicker; the same add/remove logic applies with the inn-
@@ -396,6 +505,29 @@ namespace Cortex
 				else if (t.corn >= CORTEX_INN_CORN_REM_HI && t.maxUnitWorking > CORTEX_INN_WORKER_MIN)
 					desired = t.maxUnitWorking - 1;
 				if (desired != t.maxUnitWorking) { tune.innWorkers[i] = desired; anyChange = true; }
+			}
+			// Construction sites: pour idle workers into in-progress builds. A site's
+			// worker cap may rise to match the number of FREE workers, bounded by the
+			// resource hauler-trips it still needs (more workers than that find no
+			// delivery job). We only RAISE the cap (never lower it — that would slow a
+			// build already underway), and draw down a running free-worker budget
+			// across sites in index order so the caps we raise do not collectively
+			// over-subscribe the idle pool. maxUnitWorking is a ceiling, not a
+			// reservation: the engine still only assigns units that are actually idle,
+			// and the HIGH-priority swarm keeps its own haulers regardless.
+			int freeBudget = obs.freeWorkers;
+			for (int i = 0; i < obs.siteCount && freeBudget > 0; i++) {
+				const TrackedSite& s = obs.trackedSites[i];
+				if (!s.valid || s.deliveriesLeft <= 0) continue;
+				int want = s.deliveriesLeft < freeBudget ? s.deliveriesLeft : freeBudget;
+				// The engine asserts any worker request <= CORTEX_MAX_BUILDING_WORKERS
+				// (Game_orders.cpp:206); a big site can need far more deliveries.
+				if (want > CORTEX_MAX_BUILDING_WORKERS) want = CORTEX_MAX_BUILDING_WORKERS;
+				if (want > s.maxUnitWorking) {
+					tune.siteWorkers[i] = want;
+					anyChange = true;
+					freeBudget -= (want - s.maxUnitWorking); // extra idle hands this claims.
+				}
 			}
 			if (anyChange) return tune;
 		}
@@ -461,6 +593,41 @@ namespace Cortex
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_HEAL, slot);
+		}
+
+		// --- Priority 5.5: swimming pool (SWIMSPEED) — train SWIM so our workers and
+		// warriors can cross water. Built when an explorer has revealed reachable ALGA
+		// (a food resource that grows only on water, so harvestable only by swimmers)
+		// OR when allowing swim MATERIALLY expands the colony's reachable area — a
+		// water-separated wheat patch / stretch of land, or the only-or-much-shorter
+		// route to a water-locked enemy. The reach test compares the bounded land-only
+		// vs land+water flood-fill counts surfaced by CortexWater (swimWaterReach is
+		// always >= swimLandReach; we want a pool when the swim count is more than
+		// NUMER/DENOM larger). This mirrors the INTENT of AICastor's computeNeedSwim
+		// (the swim-helps predicate). One pool suffices — SWIM is a team-wide trained
+		// ability, not per-building capacity. Gated on the established economy + spare
+		// labour like the other tech builds, so the build crew comes off idle hands.
+		const Sint32 pool      = cortexFinishedBuildings(obs, CORTEX_BUILD_SWIMSPEED);
+		const Sint32 poolSites = cortexBuildingSites(obs, CORTEX_BUILD_SWIMSPEED);
+		const bool swimExpandsReach = (obs.swimLandReach > 0
+		 && obs.swimWaterReach * CORTEX_SWIM_REACH_GAIN_DENOM
+		  > obs.swimLandReach * CORTEX_SWIM_REACH_GAIN_NUMER);
+		const bool wantPool = (obs.algaeDiscovered != 0 || swimExpandsReach);
+		// Prerequisite: never commit a swimming pool before the colony has a school,
+		// barracks, or racetrack standing. SWIM is a late convenience; the core tech
+		// and military buildings come first in the build order. Without at least one
+		// of the three finished, hold the pool regardless of the swim signals.
+		const bool poolPrereq = (school > 0 || barracks > 0 || race > 0);
+		// Not until the army ramp has actually begun: swimming is not mandatory for
+		// workers in the opening, so we hold the pool until warriors are in the swarm
+		// mix (warriors > 0, which only happens in the combat phase). This keeps the
+		// pool from competing with the early economy/army build-up.
+		if (combatPhase && canExpand && warriors > 0 && wantPool && poolPrereq
+		 && pool == 0 && poolSites == 0)
+		{
+			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWIMSPEED);
+			if (slot >= 0)
+				return makeBuildAction(CORTEX_BUILD_SWIMSPEED, slot);
 		}
 
 		// --- Priority 6: barracks (ATTACK) — the army pivot. Lets produced warriors
@@ -577,10 +744,13 @@ namespace Cortex
 		//     HOSPITAL_MAX. The first hospital is Priority 5 / the panic path; this
 		//     grows the count as the army grows. (Army-scaled, not needHeal-scaled —
 		//     see the constant: wounded warriors out on the flag never queue to heal.)
-		//   UPGRADE: best timed for a LULL — nothing under attack and no war flag out
-		//     (so we are neither defending nor attacking) — because the heal blackout
-		//     then costs nothing; or when a redundant hospital already covers healing.
-		//     One at a time (the in-flight guard / cortexBuildingsUpgrading).
+		//   UPGRADE: only ever upgrade a hospital when a SECOND finished hospital
+		//     exists to cover healing (heal >= 2). An upgrade turns the building into
+		//     a construction site — a heal blackout for that hospital — so upgrading
+		//     the only one would leave the army with nowhere to heal. With a redundant
+		//     hospital, the one-at-a-time guard (cortexBuildingsUpgrading == 0) keeps
+		//     the other finished and available throughout. This guarantees that once a
+		//     hospital is built, at least one stays available to heal units.
 		if (combatPhase && canExpand && heal >= 1 && healSites == 0
 		 && heal < HOSPITAL_MAX
 		 && warriors >= heal * HOSPITAL_WARRIORS_PER)
@@ -589,13 +759,44 @@ namespace Cortex
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_HEAL, slot);
 		}
-		const bool peaceful = (obs.buildingsUnderAttack == 0 && obs.unitsUnderAttack == 0
-		                       && obs.warFlagsActive == 0);
-		if (combatPhase && canExpand && heal >= 1
+		if (combatPhase && canExpand && heal >= 2
 		 && obs.upgradableCount[CORTEX_BUILD_HEAL] > 0
-		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL) == 0
-		 && (peaceful || heal >= 2))
+		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL) == 0)
 			return makeUpgradeAction(CORTEX_BUILD_HEAL);
+
+		// --- Priority 6.95: second swarm on a freshly-discovered wheat patch. ------
+		// A team starts with one swarm; Priority 2.5 only ever REBUILDS that one if it
+		// is destroyed. Here we EXPAND: add swarms one per nearby wheat patch, up to
+		// CORTEX_MAX_SWARMS. The placement helper already forces CORTEX_SWARM_MIN_SPACING
+		// between swarms AND CORTEX_WHEAT_MAX_DIST to CORN, so a VALID swarm candidate
+		// necessarily sits on a DIFFERENT patch within haul range — i.e. this fires
+		// exactly when "another wheat patch is found in relative proximity to the base".
+		// Placed AFTER the whole opening ladder (inn → school → racetrack → hospital →
+		// barracks) and gated on that ladder being finished (openingBuildOutDone), so a
+		// second swarm never disrupts the initial build run; gated on canExpand (spare
+		// idle workers, not in food trouble) so the new swarm has labour to staff it.
+		//
+		// "Initial run done" means each core building TYPE has been built at least once
+		// (inn, school, racetrack, hospital, barracks all finished). We deliberately do
+		// NOT also require zero in-flight sites of those types: Cortex's feed-led growth
+		// builds inns indefinitely, so an inn site is almost always pending — gating on
+		// "no sites" would make this unsatisfiable on a healthy, ever-expanding colony.
+		// The swarmSites==0 guard alone prevents queuing two swarms at once.
+		// SUPPLY-STRESS GATE: also hold until the existing swarm(s) genuinely cannot
+		// keep up — at least one is pinned at the 7-worker cap with a still-draining
+		// CORN buffer (anySwarmSupplyStressed). Until then a single swarm + more
+		// haulers is the cheaper answer; only a wheat-catchment bottleneck warrants a
+		// whole new swarm on a fresh patch.
+		const bool openingBuildOutDone =
+		    inns >= 1 && school >= 1 && race >= 1 && heal >= 1 && barracks >= 1;
+		if (combatPhase && canExpand && openingBuildOutDone
+		 && anySwarmSupplyStressed(obs)
+		 && swarms >= 1 && swarms < CORTEX_MAX_SWARMS && swarmSites == 0)
+		{
+			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
+			if (slot >= 0)
+				return makeBuildAction(CORTEX_BUILD_SWARM, slot);
+		}
 
 		// --- Priority 7: defense (recall the army to a threatened building). ---
 		// War flags are standing buildings: once placed they keep summoning
@@ -605,6 +806,31 @@ namespace Cortex
 		if (combatPhase && obs.buildingsUnderAttack > 0
 		 && warriors >= DEFENSE_MIN_WARRIORS && obs.defenseTarget.valid)
 			return makeDefenseFlagAction(DEFENSE_FLAG_RADIUS, warriors);
+
+		// --- Priority 7.2: retire a purposeless war flag. ---
+		// A flag (defense flags plant with as few as DEFENSE_MIN_WARRIORS == 1) is
+		// stranded the moment the threat clears yet the army is too thin to attack:
+		// defense (above) no longer fires, and offense (below) needs ATTACK_MIN_WARRIORS
+		// plus a seen target. Without this rung the flag sat forever in that dead band —
+		// neither moved nor removed — pinning its warriors to an empty spot. We retire it
+		// whenever it has no combat purpose THIS cycle (offense will not claim it) and we
+		// are not defending. RETIRE-AND-RETURN: deleting the flag frees the warriors back
+		// to the pool; once they rebuild to ATTACK_MIN_WARRIORS with a seen target, the
+		// offense rung re-commits a fresh flag (the create cooldown damps threshold thrash).
+		//
+		// Hoisted ABOVE wheat/economy on purpose: flag teardown is a cheap one-shot and
+		// must not be starvable by per-cycle farm upkeep or build/upgrade work.
+		//
+		// HOLD-ONLY straggler grace: while visible enemy units still loiter inside the
+		// flag's stay-range (enemyUnitsNearFlag > 0) we hold position so the army finishes
+		// them off; the flag is retired only once the area is genuinely clear.
+		{
+			const bool offenseWillClaim =
+				combatPhase && warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid;
+			if (obs.warFlagsActive > 0 && obs.buildingsUnderAttack == 0
+			 && !offenseWillClaim && obs.enemyUnitsNearFlag == 0)
+				return makeClearFlagsAction();
+		}
 
 		// --- Priority 7.5: wheat sustainability (checkerboard forbidden paint). ---
 		// Ungated by combat phase — this is early-economy field maintenance that
@@ -630,12 +856,8 @@ namespace Cortex
 			return makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count);
 		}
 
-		// --- Priority 9: clear a stranded flag. ---
-		// We have a flag up but nothing to point it at (target lost, not under
-		// attack): remove it so warriors are not pinned to an empty spot.
-		if (obs.warFlagsActive > 0 && obs.buildingsUnderAttack == 0
-		 && !obs.flagTargets[0].valid)
-			return makeClearFlagsAction();
+		// (Stranded-flag teardown moved up to Priority 7.2 so it is reachable above the
+		// economy rungs and respects the straggler-grace hold — see above.)
 
 		return makeNoOpAction();
 	}

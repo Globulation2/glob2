@@ -66,7 +66,24 @@ namespace Cortex
 	/// already maxed at the current racetrack level" numerator, the WALK analogue of
 	/// the existing buildLevel[] (school gate) and attackStrengthLevel[] (barracks
 	/// gate) slices.
-	static const Uint32 OBSERVATION_VERSION = 8;
+	/// v9 (2026-06-05, swim/pool increment) added the swimming-pool decision signals:
+	/// algaeDiscovered (an explorer has revealed a takeable ALGA tile — a swim-only
+	/// food source), and swimLandReach/swimWaterReach (tiles reachable from the colony
+	/// WITHOUT vs WITH swimming, from a bounded flood-fill in CortexWater). The policy
+	/// builds a swimming pool when algae is in reach OR swimming meaningfully expands
+	/// the reachable area (the Castor-style reach-expansion predicate). SWIMSPEED
+	/// build candidates are surfaced too, for the pool placement.
+	/// v10 (2026-06-05, idle-worker-into-construction increment) added the
+	/// construction-site signals: trackedSites[]/siteCount, each carrying a site's
+	/// gid, current maxUnitWorking, and deliveriesLeft (resource hauler-trips still
+	/// needed) — the inputs to the rule that pours free workers into in-progress
+	/// builds, bounded by the work remaining.
+	/// v11 (2026-06-05, worker-surplus production-throttle) added
+	/// swarmsProducingWorker - the count of finished swarms whose WORKER ratio is
+	/// nonzero, the symmetric peer of swarmsProducingExplorer/Warrior. It lets the
+	/// policy stop minting workers (warriors-and-scout mix) once idle labour piles
+	/// up and resume once it drains, reading the on/off state without raw ratios.
+	static const Uint32 OBSERVATION_VERSION = 11;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -83,7 +100,14 @@ namespace Cortex
 	/// swarm's engine priority to priorityTarget (-1/0/+1) via OrderChangePriority,
 	/// action-layer dedup'd against each building's current priority. The panic
 	/// defense raises swarms to +1 under attack and drops them back to 0 after.
-	static const Uint32 ACTION_VERSION = 7;
+	/// v8 (2026-06-05) split ACTION_SET_PRIORITY into priorityTarget (the FIRST/
+	/// primary swarm) + priorityRest (all other swarms): the primary swarm is held at
+	/// HIGH in steady state so it wins worker contention, while later swarms stay
+	/// NORMAL. Panic still raises every swarm to HIGH (first == rest).
+	/// v9 (2026-06-05) added siteWorkers[] to ACTION_TUNE_WORKERS: desired worker cap
+	/// per construction site (trackedSites[]), to pour idle workers into in-progress
+	/// builds. Applied via OrderModifyBuilding with the same per-target dedup.
+	static const Uint32 ACTION_VERSION = 9;
 
 	/// Fixed upper bound on enemy team slots in an Observation. 32 ==
 	/// Team::MAX_COUNT_ON_DISK; it is a safe over-bound on the live team ceiling
@@ -120,6 +144,7 @@ namespace Cortex
 	static const int CORTEX_BUILD_FOOD      = 1; ///< IntBuildingType::FOOD_BUILDING (inn)
 	static const int CORTEX_BUILD_HEAL      = 2; ///< IntBuildingType::HEAL_BUILDING (hospital)
 	static const int CORTEX_BUILD_WALKSPEED = 3; ///< IntBuildingType::WALKSPEED_BUILDING (racetrack; trains WALK)
+	static const int CORTEX_BUILD_SWIMSPEED = 4; ///< IntBuildingType::SWIMSPEED_BUILDING (swimming pool; trains SWIM)
 	static const int CORTEX_BUILD_ATTACK    = 5; ///< IntBuildingType::ATTACK_BUILDING (barracks)
 	static const int CORTEX_BUILD_SCIENCE   = 6; ///< IntBuildingType::SCIENCE_BUILDING (school; trains BUILD+HARVEST)
 
@@ -161,13 +186,16 @@ namespace Cortex
 	// MapStep.cpp:80). See docs/AI/cortex/wheat-protection-plan.md and the
 	// geometry core in CortexWheat.h/.cpp.
 
-	/// Open margin N range: the first N rows of wheat nearest the harvest source
-	/// stay fully open (unpainted); the checkerboard begins at depth N+1. N is
-	/// drawn once per game via syncRand (per-game variety + the ML-learnable knob).
-	/// Capped LOW because real starter fields are only ~5-7 tiles deep — an open
-	/// margin of 3-4 would leave nothing to checkerboard.
+	/// Open margin N range. The open margin is DISABLED: every reachable row of
+	/// wheat gets the checkerboard, with no exempt rows nearest the harvest source.
+	/// Pinned to 0 (min == max) so the per-game seed always yields 0 and the
+	/// classification in CortexWheat.cpp never exempts a row. Kept as named
+	/// constants (rather than ripping the field out of the observation/action POD
+	/// and the AICortex save/replay layout) so the struct layout and version stay
+	/// put; the value is inert. See scanWheatForbidden for where the margin used to
+	/// gate classification.
 	static const int WHEAT_OPEN_MARGIN_MIN = 0;
-	static const int WHEAT_OPEN_MARGIN_MAX = 2;
+	static const int WHEAT_OPEN_MARGIN_MAX = 0;
 	/// Checkerboard parity: a reachable CORN tile with depth > N is painted
 	/// forbidden when (x+y)&1 == WHEAT_PARITY. A fixed constant for determinism
 	/// (0 vs 1 is arbitrary). Used by the geometry core (CortexWheat.cpp).
@@ -199,6 +227,16 @@ namespace Cortex
 	/// past these counts (index-scan order) are simply not individually tuned.
 	static const int CORTEX_MAX_TRACKED_SWARMS = 8;
 	static const int CORTEX_MAX_TRACKED_INNS   = 16;
+	/// Construction sites we individually track to pour idle workers into (Rule:
+	/// raise a site's worker cap toward the free-worker count, bounded by deliveries
+	/// left). A colony rarely has many sites open at once; extras are not tuned.
+	static const int CORTEX_MAX_TRACKED_SITES  = 24;
+	/// Hard engine ceiling on any building's worker request: the executor asserts
+	/// numberRequested <= MAX_BUILDING_WORKER_REQUEST (Game.h / Game_orders.cpp:206),
+	/// so EVERY maxUnitWorking we order must be clamped to this. Mirrors the engine
+	/// constant; CortexObservation.cpp static_asserts they stay equal. A 6x6 racetrack
+	/// site needs far more than 20 deliveries, so the idle-worker pour can exceed it.
+	static const int CORTEX_MAX_BUILDING_WORKERS = 20;
 
 	/// Swarm buffer control. Add a hauler at/below ADD_LO (one unit from a stall),
 	/// drop one at/above REM_HI (saturated: 3 units already buffered). The cap is
@@ -221,6 +259,52 @@ namespace Cortex
 	static const int CORTEX_INN_WORKER_MIN  = 1;
 	static const int CORTEX_INN_WORKER_CAP  = 6;
 
+	/// Post-build settle window for a freshly finished inn. A new inn finishes with
+	/// an EMPTY corn buffer (0/10) and the engine's default worker count (2 for a
+	/// level-0 inn, Settings.cpp). Left ungated, the worker-tuning loop (Priority
+	/// 1.5) reads corn==0 < ADD_LO the very next decision cycle and spikes the
+	/// worker count upward immediately — chasing a buffer that simply has not been
+	/// filled yet. Hold the inn at its as-built worker count for this many ticks
+	/// (25 ticks/s × 60 s = one minute) so its first haulers can fill the buffer
+	/// before the loop is allowed to react to the level. Counted from when Cortex
+	/// first OBSERVES the inn finished (AICortex stamps it; up to one OBSERVE_INTERVAL
+	/// of detection latency, negligible against a 1500-tick window).
+	static const int CORTEX_INN_TUNE_DELAY_TICKS = 1500;
+
+	/// How many units one inn actually sustains — the FEED-capacity metric for the
+	/// second-inn build gate (Priority 2). NOT maxUnitInside: that is only how many
+	/// globs can stand inside eating AT ONCE, not the population an inn keeps fed.
+	///
+	/// Derivation (all from the engine, verified): a worker drains from full
+	/// (HUNGRY_MAX 150000) to its eat trigger (trigHungry = HUNGRY_MAX/4 = 37500) at
+	/// hungryness 350/tick while active → it needs feeding once per
+	/// (150000-37500)/350 ≈ 321 ticks (UnitMedical.cpp:53,197; Unit.cpp:99). One
+	/// feeding occupies a single inn slot for timeToFeedUnit ticks and refills it to
+	/// full (UnitDisplacement.cpp:294,321). An inn has maxUnitInside such slots, so
+	/// its zero-travel throughput ceiling is
+	///     maxUnitInside × (WORK_TICKS + timeToFeedUnit) / timeToFeedUnit
+	/// units (L0: 4×345/24 ≈ 57; L1: 7×336/15 ≈ 156; L2: 17×330/9 ≈ 623). We then
+	/// take half (SAFETY_NUM/DEN) as the design figure, reserving headroom for walk
+	/// time to/from the inn, slot queueing, and corn-supply lag — so an inn is
+	/// "good for" ~28 units (L0), ~78 (L1), ~311 (L2), versus the old 4/7/17.
+	static const int CORTEX_UNIT_WORK_TICKS_PER_FEED = 321;
+	static const int CORTEX_INN_CAPACITY_SAFETY_NUM  = 1;
+	static const int CORTEX_INN_CAPACITY_SAFETY_DEN  = 2;
+
+	/// Sustainable population one inn (with maxUnitInside slots and timeToFeedUnit
+	/// feed time) keeps fed — see CORTEX_UNIT_WORK_TICKS_PER_FEED for the model.
+	/// Pure function of the building type's two feeding numbers; no engine state.
+	inline int cortexInnUnitSupport(int maxUnitInside, int timeToFeedUnit)
+	{
+		if (timeToFeedUnit <= 0 || maxUnitInside <= 0)
+			return maxUnitInside; // degenerate type: fall back to the raw slot count.
+		const long long ceiling = static_cast<long long>(maxUnitInside)
+			* (CORTEX_UNIT_WORK_TICKS_PER_FEED + timeToFeedUnit) / timeToFeedUnit;
+		const long long support = ceiling * CORTEX_INN_CAPACITY_SAFETY_NUM
+			/ CORTEX_INN_CAPACITY_SAFETY_DEN;
+		return support > 0 ? static_cast<int>(support) : 1; // always good for ≥1.
+	}
+
 	/// Placement geometry for wheat-fed buildings. A new swarm must sit at least
 	/// MIN_SPACING from any existing swarm (so two swarms don't share one wheat
 	/// catchment) and no farther than WHEAT_MAX_DIST from a CORN tile (beyond that
@@ -236,6 +320,61 @@ namespace Cortex
 	/// nearest CORN is beyond this has outrun its local wheat — warrant a NEW swarm
 	/// near fresh wheat rather than piling more haulers onto the starved one.
 	static const int CORTEX_SWARM_SUPPLY_RADIUS = 5;
+
+	/// Inn worker-access clearance (AI-design placement rule, no engine analogue).
+	/// An inn may touch a building on at most CORTEX_INN_MAX_TOUCH_SIDES of its four
+	/// sides — the side that connects it to the colony. Every other side keeps at
+	/// least CORTEX_INN_SIDE_CLEARANCE empty tiles between the inn and any building so
+	/// workers can stream to the inn and to the wheat behind it. Diagonal corners
+	/// count toward both adjacent sides, so a corner building occupies two sides.
+	/// Chebyshev tiles. Enforced in both directions by Cortex::placeCandidates:
+	/// placing an inn checks its own sides; placing any other building checks it does
+	/// not open a second side on an existing inn.
+	static const int CORTEX_INN_MAX_TOUCH_SIDES = 1;
+	static const int CORTEX_INN_SIDE_CLEARANCE  = 2;
+	/// Minimum Chebyshev spacing between two inns. Inns piled together split one
+	/// wheat catchment and waste feed coverage, so a new inn must sit at least this
+	/// far from every existing inn (same rationale as CORTEX_SWARM_MIN_SPACING).
+	static const int CORTEX_INN_MIN_SPACING     = 6;
+	/// Wheat-lane clearance: only swarms and inns may sit within this many Chebyshev
+	/// tiles of a CORN tile. Every other building type is pushed back to a distance
+	/// > CORTEX_WHEAT_CLEAR_DIST so it does not block workers harvesting the field.
+	/// Inclusive reject (distance == CLEAR_DIST is still "within").
+	static const int CORTEX_WHEAT_CLEAR_DIST    = 4;
+
+	/// Upper bound on swarms the colony will grow to (recovery + wheat-patch
+	/// expansion). A team starts with one swarm; once the opening build-out is done
+	/// the policy may add more, one per newly-discovered nearby wheat patch (the
+	/// placement helper already forces CORTEX_SWARM_MIN_SPACING between swarms, so a
+	/// second swarm necessarily sits on a DIFFERENT patch). Capped low to avoid a
+	/// swarm sprawling onto every wheat tile on the map. Tunable AI design choice.
+	static const int CORTEX_MAX_SWARMS = 3;
+
+	// --- swim / pool tuning (v9, all tunable AI design choices) -------------
+	// A swimming pool (SWIMSPEED_BUILDING) trains the SWIM ability of WORKERS and
+	// WARRIORS (explorers fly and have zero SWIM performance — game/entities/Race.cpp).
+	// A swimmer crosses water tiles that block a non-swimmer entirely
+	// (Map::isHardSpaceForGroundUnit's canSwim gate), which (a) unlocks ALGA — a
+	// basic food resource that grows only on water and so is reachable only by
+	// swimmers — and (b) opens water-separated land: fresh wheat patches across a
+	// channel, and a shorter/only route to a water-locked enemy. We build a pool
+	// when an explorer has revealed reachable algae OR when allowing swim materially
+	// expands the colony's reachable area (mirrors the intent of AICastor's
+	// computeNeedSwim, ai/castor/State.cpp:82-109 — though we use the correct
+	// direction: swim WANTED when the swim-reach is the larger of the two).
+
+	/// Reach-expansion gate: build a pool when the swim-reachable tile count exceeds
+	/// the land-only count by more than NUMER/DENOM (here 7/5 == 1.4, i.e. swimming
+	/// reaches >40% more of the map than walking does). Integer ratio so the test is
+	/// exact and deterministic: swimWaterReach * DENOM > swimLandReach * NUMER.
+	static const int CORTEX_SWIM_REACH_GAIN_NUMER = 7;
+	static const int CORTEX_SWIM_REACH_GAIN_DENOM = 5;
+	/// Bound on the reach flood-fill radius (Chebyshev tiles from the colony). Keeps
+	/// the twice-per-decision-cycle BFS cheap and scopes "reach" to the colony's
+	/// vicinity ("relative proximity"), so a far-off lake the colony will never work
+	/// does not by itself justify a pool. Generous enough to span a normal starter
+	/// region plus the water channel beside it.
+	static const int CORTEX_SWIM_REACH_RADIUS = 24;
 
 	/// One enemy team projected into the observation. POD, bounded.
 	struct EnemySlot
@@ -273,6 +412,18 @@ namespace Cortex
 		Sint32 maxUnitInside;  ///< type->maxUnitInside — occupancy ceiling.
 		Sint32 nearestWheatDist; ///< Chebyshev to the nearest CORN tile (supply-distance expansion signal), or -1 if none within CORTEX_WHEAT_SCAN_CAP.
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy raise/restore swarm priority for the panic defense.
+		Sint32 ticksSinceFinished; ///< Inns only: ticks since Cortex first saw this inn finished (the post-build tune-cooldown clock); -1 = unknown / not tracked. Stamped by AICortex after observe(); swarms leave it -1.
+	};
+
+	/// One of our own CONSTRUCTION SITES (a new build or an in-progress upgrade),
+	/// projected into the observation so the policy can pour idle workers into it.
+	/// POD, bounded; gid targets an OrderModifyBuilding without holding a pointer.
+	struct TrackedSite
+	{
+		Sint32 valid;          ///< 0 = empty slot.
+		Sint32 gid;            ///< Building::gid (OrderModifyBuilding target), or -1 when invalid.
+		Sint32 maxUnitWorking; ///< Current maxUnitWorking (worker cap) on the site.
+		Sint32 deliveriesLeft; ///< Resource hauler-trips still needed to finish the site = sum over resources of ceil((maxRessource-ressources)/multiplier). Caps how many workers can usefully build it.
 	};
 
 	/// The full feature vector handed to the policy layer. Built by
@@ -364,6 +515,12 @@ namespace Cortex
 		// not a cheat). Lets the policy/action layer know a flag already exists so it
 		// moves/clears rather than stacking duplicates.
 		Sint32 warFlagsActive;
+		// Count of VISIBLE enemy units currently inside our war flag's stay-range (the
+		// flag's own unitStayRange, warp-safe Chebyshev distance). Drives the hold-only
+		// straggler grace: while >0 the policy holds a purposeless flag in place so the
+		// army finishes off survivors before the flag is retired. FOW-gated like
+		// enemies[].totalUnit, so it is never a fog-of-war cheat. 0 when no flag exists.
+		Sint32 enemyUnitsNearFlag;
 		// Defense triggers: how many of our own units / buildings are currently under
 		// attack (underAttackTimer > 0). Nonzero => recall the army to defend.
 		Sint32 unitsUnderAttack;
@@ -390,6 +547,13 @@ namespace Cortex
 		// all-warrior production is complete, so it stops re-issuing and moves on to
 		// the next panic step — without reading raw per-swarm ratios.
 		Sint32 swarmsProducingWarrior;
+		// Count of FINISHED swarms whose WORKER production ratio is nonzero. The
+		// symmetric counterpart of the explorer/warrior counts above: it lets the
+		// pure policy read the worker-surplus suppression state (workers on vs off)
+		// without reaching at raw per-swarm ratios, so it can both apply and revert
+		// the "stop minting workers while idle labour piles up" mix with the same
+		// per-cycle dedup the explorer slice uses.
+		Sint32 swarmsProducingWorker;
 
 		// --- closed-loop wheat economy (v6) ---
 		// Our own FINISHED swarms and inns, one TrackedBuilding each (index-scan
@@ -402,9 +566,28 @@ namespace Cortex
 		Sint32 innCount;
 		TrackedBuilding trackedInns[CORTEX_MAX_TRACKED_INNS];
 
+		// Our own construction sites (new builds + in-progress upgrades), one
+		// TrackedSite each. The policy raises each site's worker cap toward the free-
+		// worker count, bounded by the deliveries still needed (ACTION_TUNE_WORKERS).
+		Sint32 siteCount;
+		TrackedSite trackedSites[CORTEX_MAX_TRACKED_SITES];
+
 		// --- map / global facts ---
 		Sint32 fruitOnMap;    ///< 1 if any fruit resource exists on the map (Map query).
 		Sint32 totalPrestige; ///< game->totalPrestige (all teams; for the explorer-defence heuristic).
+
+		// --- swim / pool decision (v9) ---
+		// algaeDiscovered: 1 if any takeable ALGA tile is currently DISCOVERED (an
+		// explorer/colony has revealed it; FOW-gated, not unfogged truth). Algae is a
+		// swim-only food source, so reachable algae is a direct reason to train SWIM.
+		// swimLandReach / swimWaterReach: count of tiles reachable from the colony by a
+		// bounded flood-fill WITHOUT swim (water blocks) vs WITH swim (water passes).
+		// swimWaterReach >= swimLandReach always; the gap measures how much the map
+		// opens up if our units learn to swim. Computed only while no pool exists yet
+		// (CortexWater.assessSwim, gated in observe to bound cost); both 0 otherwise.
+		Sint32 algaeDiscovered;
+		Sint32 swimLandReach;
+		Sint32 swimWaterReach;
 
 		// --- opponents ---
 		Sint32 enemyCount;    ///< Number of active slots below.
@@ -425,8 +608,8 @@ namespace Cortex
 		ACTION_CLEAR_FLAGS,     ///< Remove our war flag (OrderDelete) if one exists — no offense/defense wanted right now.
 		ACTION_UPGRADE_BUILDING,///< Upgrade one finished `buildingType` instance to its next level (engine OrderConstruction). The action layer resolves which instance (the bottleneck-eligible one) and the worker counts.
 		ACTION_PROTECT_WHEAT,   ///< Reconcile the checkerboard forbidden paint over our wheat at open-margin wheatOpenMargin. The action layer builds the ADD/DEL tile masks and emits OrderAlterateForbidden(MODE_ADD/DEL).
-		ACTION_TUNE_WORKERS,    ///< Set each tracked swarm/inn's maxUnitWorking to swarmWorkers[i]/innWorkers[i] (indexed in lockstep with obs.trackedSwarms[]/trackedInns[]); -1 == leave unchanged. The action layer dedups against the building's current maxUnitWorking and emits one OrderModifyBuilding per real change.
-		ACTION_SET_PRIORITY,    ///< Set every tracked swarm's engine priority to priorityTarget (-1/0/+1) via OrderChangePriority. The action layer dedups against each swarm's current Building::priority and emits one order per real change.
+		ACTION_TUNE_WORKERS,    ///< Set each tracked swarm/inn/site's maxUnitWorking to swarmWorkers[i]/innWorkers[i]/siteWorkers[i] (indexed in lockstep with obs.trackedSwarms[]/trackedInns[]/trackedSites[]); -1 == leave unchanged. The action layer dedups against the building's current maxUnitWorking and emits one OrderModifyBuilding per real change.
+		ACTION_SET_PRIORITY,    ///< Set tracked-swarm engine priority via OrderChangePriority: the FIRST swarm (trackedSwarms[0], the primary/starting swarm) to priorityTarget, every other swarm to priorityRest (-1/0/+1 each). The action layer dedups against each swarm's current Building::priority and emits one order per real change.
 
 		ACTION_KIND_COUNT
 	};
@@ -446,7 +629,9 @@ namespace Cortex
 		Sint32 wheatOpenMargin; ///< For ACTION_PROTECT_WHEAT: the open-margin N (depth <= N stays unpainted), echoed from the seeded obs.wheatOpenMargin. Else -1.
 		Sint32 swarmWorkers[CORTEX_MAX_TRACKED_SWARMS]; ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedSwarms[i], or -1 to leave unchanged. Else all -1.
 		Sint32 innWorkers[CORTEX_MAX_TRACKED_INNS];     ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedInns[i], or -1 to leave unchanged. Else all -1.
-		Sint32 priorityTarget; ///< For ACTION_SET_PRIORITY: target engine priority (-1/0/+1) for every tracked swarm. Else CORTEX_PRIORITY_NONE.
+		Sint32 siteWorkers[CORTEX_MAX_TRACKED_SITES];   ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedSites[i] (pour idle workers into construction), or -1 to leave unchanged. Else all -1.
+		Sint32 priorityTarget; ///< For ACTION_SET_PRIORITY: target engine priority (-1/0/+1) for the FIRST swarm (trackedSwarms[0]). Else CORTEX_PRIORITY_NONE.
+		Sint32 priorityRest;   ///< For ACTION_SET_PRIORITY: target engine priority (-1/0/+1) for every NON-first swarm (trackedSwarms[1..]). Else CORTEX_PRIORITY_NONE.
 	};
 
 	// --- building-histogram accessors -------------------------------------
@@ -563,6 +748,7 @@ namespace Cortex
 		obs.defenseTarget.score = 0;
 		obs.defenseTarget.wheatDist = -1;
 		obs.warFlagsActive = 0;
+		obs.enemyUnitsNearFlag = 0;
 		obs.unitsUnderAttack = 0;
 		obs.buildingsUnderAttack = 0;
 
@@ -571,6 +757,7 @@ namespace Cortex
 		obs.wheatProtectDelCount = 0;
 		obs.swarmsProducingExplorer = 0;
 		obs.swarmsProducingWarrior = 0;
+		obs.swarmsProducingWorker = 0;
 
 		obs.swarmCount = 0;
 		obs.innCount = 0;
@@ -598,9 +785,21 @@ namespace Cortex
 			obs.trackedInns[i].nearestWheatDist = -1;
 			obs.trackedInns[i].priority = 0;
 		}
+		obs.siteCount = 0;
+		for (int i = 0; i < CORTEX_MAX_TRACKED_SITES; i++)
+		{
+			obs.trackedSites[i].valid = 0;
+			obs.trackedSites[i].gid = -1;
+			obs.trackedSites[i].maxUnitWorking = 0;
+			obs.trackedSites[i].deliveriesLeft = 0;
+		}
 
 		obs.fruitOnMap = 0;
 		obs.totalPrestige = 0;
+
+		obs.algaeDiscovered = 0;
+		obs.swimLandReach = 0;
+		obs.swimWaterReach = 0;
 
 		obs.enemyCount = 0;
 		for (int i = 0; i < MAX_ENEMY_SLOTS; i++)
@@ -631,7 +830,10 @@ namespace Cortex
 			action.swarmWorkers[i] = -1;
 		for (int i = 0; i < CORTEX_MAX_TRACKED_INNS; i++)
 			action.innWorkers[i] = -1;
+		for (int i = 0; i < CORTEX_MAX_TRACKED_SITES; i++)
+			action.siteWorkers[i] = -1;
 		action.priorityTarget = CORTEX_PRIORITY_NONE;
+		action.priorityRest   = CORTEX_PRIORITY_NONE;
 		return action;
 	}
 
@@ -722,15 +924,18 @@ namespace Cortex
 		return action;
 	}
 
-	/// Set every tracked swarm's engine priority to `priority` (-1/0/+1). The action
-	/// layer dedups against each swarm's current Building::priority, so re-issuing the
-	/// same target every cycle emits no order. Used by the panic defense to raise
-	/// swarms to CORTEX_PRIORITY_HIGH under attack and restore CORTEX_PRIORITY_NORMAL.
-	inline CortexAction makeSetPriorityAction(int priority)
+	/// Set the FIRST swarm's engine priority to `first` and every other swarm's to
+	/// `rest` (each -1/0/+1). The action layer dedups against each swarm's current
+	/// Building::priority, so re-issuing the same targets every cycle emits no order.
+	/// Steady state keeps the primary swarm at CORTEX_PRIORITY_HIGH (first) so it wins
+	/// worker/hauler contention while later swarms stay CORTEX_PRIORITY_NORMAL (rest);
+	/// the panic defense raises ALL swarms to HIGH (first == rest == HIGH).
+	inline CortexAction makeSetPriorityAction(int first, int rest)
 	{
 		CortexAction action = makeNoOpAction();
 		action.kind = ACTION_SET_PRIORITY;
-		action.priorityTarget = priority;
+		action.priorityTarget = first;
+		action.priorityRest   = rest;
 		return action;
 	}
 }

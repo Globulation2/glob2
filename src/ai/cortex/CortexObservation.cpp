@@ -4,6 +4,7 @@
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
 #include "CortexWheat.h"
+#include "CortexWater.h"
 
 #include "Player.h"
 #include "Game.h"
@@ -33,6 +34,9 @@ static_assert(Cortex::CORTEX_BUILDING_LONG_LEVELS == NB_BUILDING_LONG_LEVELS,
 	"CORTEX_BUILDING_LONG_LEVELS must match TeamStat.h NB_BUILDING_LONG_LEVELS");
 static_assert(Cortex::MAX_ENEMY_SLOTS >= Team::MAX_COUNT,
 	"MAX_ENEMY_SLOTS must cover the engine team array bound Team::MAX_COUNT");
+static_assert(Cortex::CORTEX_MAX_BUILDING_WORKERS == MAX_BUILDING_WORKER_REQUEST,
+	"CORTEX_MAX_BUILDING_WORKERS must match the engine worker-request ceiling "
+	"asserted in Game::executeModifyBuilding");
 static_assert(Cortex::CORTEX_BUILD_SWARM == IntBuildingType::SWARM_BUILDING,
 	"CORTEX_BUILD_SWARM must match IntBuildingType::SWARM_BUILDING");
 static_assert(Cortex::CORTEX_BUILD_FOOD == IntBuildingType::FOOD_BUILDING,
@@ -43,6 +47,8 @@ static_assert(Cortex::CORTEX_BUILD_SCIENCE == IntBuildingType::SCIENCE_BUILDING,
 	"CORTEX_BUILD_SCIENCE must match IntBuildingType::SCIENCE_BUILDING");
 static_assert(Cortex::CORTEX_BUILD_WALKSPEED == IntBuildingType::WALKSPEED_BUILDING,
 	"CORTEX_BUILD_WALKSPEED must match IntBuildingType::WALKSPEED_BUILDING");
+static_assert(Cortex::CORTEX_BUILD_SWIMSPEED == IntBuildingType::SWIMSPEED_BUILDING,
+	"CORTEX_BUILD_SWIMSPEED must match IntBuildingType::SWIMSPEED_BUILDING");
 
 namespace Cortex
 {
@@ -126,17 +132,32 @@ namespace Cortex
 		obs.swarmsProducing         = 0;
 		obs.swarmsProducingExplorer = 0;
 		obs.swarmsProducingWarrior  = 0;
+		obs.swarmsProducingWorker   = 0;
 		obs.warFlagsActive          = 0;
+		obs.enemyUnitsNearFlag      = 0;
 		obs.swarmCount              = 0;
 		obs.innCount                = 0;
+		// Captured from our live war flag (if any) so the opponents pass below can
+		// count enemy stragglers still inside its stay-range. Cortex only ever runs a
+		// single flag; if more than one were live, the last seen wins (harmless).
+		bool   warFlagFound = false;
+		Sint32 warFlagX     = 0;
+		Sint32 warFlagY     = 0;
+		Sint32 warFlagRange = 0;
 		for (int i = 0; i < Building::MAX_COUNT; i++)
 		{
 			Building* b = team->myBuildings[i];
 			if (b == NULL)
 				continue;
 			BuildingType* bt = b->type;
+			// Feed capacity = the population this inn actually keeps fed, NOT its
+			// maxUnitInside (the simultaneous-eaters count). One inn cycles many more
+			// units than fit inside at once because each visit is brief — see
+			// cortexInnUnitSupport / CORTEX_UNIT_WORK_TICKS_PER_FEED. Using the raw
+			// slot count made the second-inn gate (Priority 2) fire at ~4 population.
 			if (b->maxUnitWorking && bt->canFeedUnit)
-				obs.feedCapacity += bt->maxUnitInside;
+				obs.feedCapacity += Cortex::cortexInnUnitSupport(
+					bt->maxUnitInside, bt->timeToFeedUnit);
 			if (bt->shortTypeNum == IntBuildingType::SWARM_BUILDING
 			 && b->buildingState == Building::ALIVE
 			 && !bt->isBuildingSite)  // exclude swarm sites / swarms under upgrade
@@ -147,6 +168,11 @@ namespace Cortex
 				// early-explorer mix once an explorer is actually being produced.
 				if (b->ratio[EXPLORER] > 0)
 					obs.swarmsProducingExplorer++;
+				// WORKER == unit-type index 0; the worker-surplus throttle reads this
+				// to tell whether the swarm is currently minting workers, so it can
+				// stop (idle labour piling up) and resume (labour scarce) cleanly.
+				if (b->ratio[WORKER] > 0)
+					obs.swarmsProducingWorker++;
 				// 100%-warrior swarm: WARRIOR ratio set, WORKER+EXPLORER both zero.
 				// Tells the panic defense the all-warrior flip is complete.
 				if (b->ratio[WARRIOR] > 0 && b->ratio[WORKER] == 0 && b->ratio[EXPLORER] == 0)
@@ -183,6 +209,7 @@ namespace Cortex
 						: -1;
 					// C++: Building::priority (-1/0/+1), building/Building.h:516
 					t.priority        = b->priority;
+					t.ticksSinceFinished = -1; // swarms do not use the inn tune-cooldown.
 					obs.swarmCount++;
 				}
 			}
@@ -214,13 +241,24 @@ namespace Cortex
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
 					t.priority        = b->priority; // C++: building/Building.h:516
+					t.ticksSinceFinished = -1; // stamped post-observe by AICortex.
 					obs.innCount++;
 				}
 			}
 			// C++: IntBuildingType::WAR_FLAG == 9, building/IntBuildingType.h:26
 			if (bt->shortTypeNum == IntBuildingType::WAR_FLAG
 			 && b->buildingState == Building::ALIVE)
+			{
 				obs.warFlagsActive++;
+				// Remember the flag's footprint so the enemy-unit pass can detect
+				// stragglers still loitering inside its attraction radius.
+				// C++: Building::posX/posY, building/Building.h:523;
+				//      Building::unitStayRange, building/Building.h:530
+				warFlagFound = true;
+				warFlagX     = b->posX;
+				warFlagY     = b->posY;
+				warFlagRange = b->unitStayRange;
+			}
 
 			// Upgradable predicate. All clauses must hold; ordered cheap-first so
 			// the spatial isHardSpaceForBuildingSite query runs only on candidates
@@ -248,6 +286,39 @@ namespace Cortex
 				const int idx = bt->shortTypeNum;
 				if (idx >= 0 && idx < CORTEX_BUILDING_TYPES)
 					obs.upgradableCount[idx]++;
+			}
+
+			// Construction sites (new builds AND in-progress upgrades): record the
+			// resource hauler-trips still needed so the policy can pour idle workers
+			// into them. A delivery adds multiplierRessource[r] to ressources[r]
+			// (building/Misc.cpp:178), so the trips left for resource r are
+			// ceil((maxRessource[r] - ressources[r]) / multiplierRessource[r]); the
+			// sum over the basic resource types bounds how many workers can usefully
+			// build it. b->ressources is the site's own (local) build stock.
+			// C++: BuildingType::isBuildingSite game/entities/BuildingType.h:92,
+			//      maxRessource/multiplierRessource :76,78; Building::ressources :538.
+			if (bt->isBuildingSite && b->buildingState == Building::ALIVE
+			 && obs.siteCount < CORTEX_MAX_TRACKED_SITES)
+			{
+				int deliveriesLeft = 0;
+				for (int r = 0; r < MAX_RESSOURCES; r++)
+				{
+					const int mult = bt->multiplierRessource[r];
+					if (mult <= 0)
+						continue;
+					const int rem = bt->maxRessource[r] - b->ressources[r];
+					if (rem > 0)
+						deliveriesLeft += (rem + mult - 1) / mult; // ceil to whole trips.
+				}
+				if (deliveriesLeft > 0)
+				{
+					TrackedSite& s = obs.trackedSites[obs.siteCount];
+					s.valid          = 1;
+					s.gid            = b->gid;
+					s.maxUnitWorking = b->maxUnitWorking;
+					s.deliveriesLeft = deliveriesLeft;
+					obs.siteCount++;
+				}
 			}
 		}
 
@@ -344,6 +415,7 @@ namespace Cortex
 			placeCandidates(game, team, IntBuildingType::HEAL_BUILDING,    0, obs.buildCandidates[IntBuildingType::HEAL_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::SCIENCE_BUILDING, 0, obs.buildCandidates[IntBuildingType::SCIENCE_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::WALKSPEED_BUILDING, 0, obs.buildCandidates[IntBuildingType::WALKSPEED_BUILDING]);
+			placeCandidates(game, team, IntBuildingType::SWIMSPEED_BUILDING, 0, obs.buildCandidates[IntBuildingType::SWIMSPEED_BUILDING]);
 			placeCandidates(game, team, IntBuildingType::ATTACK_BUILDING,  0, obs.buildCandidates[IntBuildingType::ATTACK_BUILDING]);
 
 			// OFFENSE targets: discovered enemy buildings, nearest-first. Filled
@@ -351,6 +423,21 @@ namespace Cortex
 			// never from unfogged truth — implemented (with the same visibility
 			// gating discipline as the enemy-intel pass below) by placeFlagTargets.
 			placeFlagTargets(game, team, obs.flagTargets);
+
+			// Swim/pool decision signals (algae in reach + land-vs-swim reach). The
+			// reach flood-fill is the only non-trivial cost in the observation, so
+			// skip it once a pool already exists or is building — the policy gates the
+			// pool build on the pool count and would not build a second one anyway, so
+			// the signals are only ever read while there is no pool. The building
+			// histogram is populated above, so the pool count is available here.
+			if (cortexFinishedBuildings(obs, CORTEX_BUILD_SWIMSPEED) == 0
+			 && cortexBuildingSites(obs, CORTEX_BUILD_SWIMSPEED) == 0)
+			{
+				const Cortex::SwimAssessment sw = Cortex::assessSwim(player);
+				obs.algaeDiscovered = sw.algaeDiscovered;
+				obs.swimLandReach   = sw.landReach;
+				obs.swimWaterReach  = sw.waterReach;
+			}
 		}
 
 		// --- opponents ---
@@ -405,8 +492,14 @@ namespace Cortex
 					if (u == NULL)
 						continue;
 					// C++: Unit::posX/posY, unit/Unit.h:220
-					if (game->map.isFOWDiscovered(u->posX, u->posY, team->me))
-						es.totalUnit++;
+					if (!game->map.isFOWDiscovered(u->posX, u->posY, team->me))
+						continue;
+					es.totalUnit++;
+					// Straggler grace: visible enemy still inside our flag's stay-range.
+					// Same warp-safe Chebyshev metric placeFlagTargets/ensureWarFlagAt use.
+					if (warFlagFound
+					 && game->map.warpDistMax(u->posX, u->posY, warFlagX, warFlagY) <= warFlagRange)
+						obs.enemyUnitsNearFlag++;
 				}
 
 				es.prestige = 0; // prestige is not a visible signal; left unfilled

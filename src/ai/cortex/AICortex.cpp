@@ -49,7 +49,8 @@ void AICortex::init(Player* player)
 {
 	this->player = player;
 	timer = 0;
-	buildCooldownUntil = 0;
+	for (int t = 0; t < Cortex::CORTEX_BUILDING_TYPES; t++)
+		buildCooldownUntil[t] = 0; // per-type build cooldown; none pending at start.
 	pendingUpgradeType = -1; // no upgrade in flight.
 	pendingUpgradeUntil = 0;
 	flagCooldownUntil = 0;
@@ -57,6 +58,8 @@ void AICortex::init(Player* player)
 	offenseHoldUntil = 0;
 	wheatOpenMargin = -1; // sentinel: drawn lazily on the first decision cycle.
 	attackDumped = false; // diagnostic one-shot; never serialized.
+	innFinishedTick.clear(); // RAM-only inn settle clock; rebuilt as inns are seen.
+	swarmKickstarted = false; // start-of-game swarm worker kickstart not yet done.
 }
 
 bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor)
@@ -64,7 +67,14 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	this->player = player;
 	stream->readEnterSection("AICortex");
 	timer = stream->readUint32("timer");
-	buildCooldownUntil = stream->readSint32("buildCooldownUntil");
+	stream->readEnterSection("buildCooldownUntil");
+	for (int t = 0; t < Cortex::CORTEX_BUILDING_TYPES; t++)
+	{
+		stream->readEnterSection(t);
+		buildCooldownUntil[t] = stream->readSint32("buildCooldownUntil");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
 	pendingUpgradeType = stream->readSint32("pendingUpgradeType");
 	pendingUpgradeUntil = stream->readSint32("pendingUpgradeUntil");
 	flagCooldownUntil = stream->readSint32("flagCooldownUntil");
@@ -84,7 +94,14 @@ void AICortex::save(GAGCore::OutputStream* stream)
 {
 	stream->writeEnterSection("AICortex");
 	stream->writeUint32(timer, "timer");
-	stream->writeSint32(buildCooldownUntil, "buildCooldownUntil");
+	stream->writeEnterSection("buildCooldownUntil");
+	for (int t = 0; t < Cortex::CORTEX_BUILDING_TYPES; t++)
+	{
+		stream->writeEnterSection(t);
+		stream->writeSint32(buildCooldownUntil[t], "buildCooldownUntil");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	stream->writeSint32(pendingUpgradeType, "pendingUpgradeType");
 	stream->writeSint32(pendingUpgradeUntil, "pendingUpgradeUntil");
 	stream->writeSint32(flagCooldownUntil, "flagCooldownUntil");
@@ -283,8 +300,9 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			// as a building site, which is longer than one decision cycle. Without
 			// a cooldown the policy re-issues the same build on the next cycle
 			// (the site isn't visible yet), stacking duplicate orders the engine
-			// then rejects. Suppress new builds until the in-flight one can land.
-			if (obs.tick < buildCooldownUntil)
+			// then rejects. Suppress new builds OF THIS TYPE until the in-flight one
+			// can land; a different type is free to be placed this cycle.
+			if (obs.tick < buildCooldownUntil[type])
 				break;
 
 			const Cortex::BuildCandidate& cand = obs.buildCandidates[type][slot];
@@ -306,7 +324,7 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			orderQueue.push(shared_ptr<Order>(new OrderCreate(
 				player->team->teamNumber, cand.x, cand.y, typeNum,
 				unitWorking, unitWorkingFuture)));
-			buildCooldownUntil = obs.tick + BUILD_COOLDOWN_TICKS;
+			buildCooldownUntil[type] = obs.tick + BUILD_COOLDOWN_TICKS;
 			break;
 		}
 
@@ -441,7 +459,7 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			// ticks to convert the building into a site, and the observation's
 			// upgradableCount won't drop until then. Without the cooldown the policy
 			// would re-issue the upgrade on the next decision cycle.
-			if (obs.tick < buildCooldownUntil)
+			if (obs.tick < buildCooldownUntil[type])
 				break;
 
 			Building* b = findUpgradeTarget(type);
@@ -478,7 +496,7 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 			const int unitWorkingFuture = globalContainer->settings.defaultUnitsAssigned[type][finishedCol];
 
 			orderQueue.push(shared_ptr<Order>(new OrderConstruction(b->gid, unitWorking, unitWorkingFuture)));
-			buildCooldownUntil = obs.tick + BUILD_COOLDOWN_TICKS;
+			buildCooldownUntil[type] = obs.tick + BUILD_COOLDOWN_TICKS;
 			// Mark this class's upgrade in flight until it shows up as a site (or
 			// the safety timeout), so the policy can't stack a second one meanwhile.
 			pendingUpgradeType = type;
@@ -586,29 +604,67 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 				b->update();
 				orderQueue.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, desired)));
 			}
+
+			// --- construction sites (pour idle workers into in-progress builds) ---
+			for (int i = 0; i < obs.siteCount; i++)
+			{
+				const Cortex::TrackedSite& ts = obs.trackedSites[i];
+				int desired = action.siteWorkers[i];
+
+				if (!ts.valid)
+					continue;
+				if (desired < 0)
+					continue;
+				// Engine ceiling: executeModifyBuilding asserts the request is
+				// <= MAX_BUILDING_WORKER_REQUEST. The policy already clamps, but guard
+				// here too so no tune value can ever abort the game.
+				if (desired > Cortex::CORTEX_MAX_BUILDING_WORKERS)
+					desired = Cortex::CORTEX_MAX_BUILDING_WORKERS;
+				if (desired == ts.maxUnitWorking)
+					continue; // DEDUP.
+
+				const int bid = Building::GIDtoID(static_cast<Uint16>(ts.gid));
+				Building* b = team->myBuildings[bid];
+				if (!b)
+					continue;
+				// Must still be a live construction site (it may have finished, been
+				// destroyed, or otherwise changed between observation and now). A
+				// finished building is no longer isBuildingSite, so this naturally
+				// stops us writing a site cap onto a just-completed building.
+				if (b->buildingState != Building::ALIVE || !b->type->isBuildingSite)
+					continue;
+
+				b->maxUnitWorking = desired;
+				b->update();
+				orderQueue.push(shared_ptr<Order>(new OrderModifyBuilding(b->gid, desired)));
+			}
 			break;
 		}
 
 		case Cortex::ACTION_SET_PRIORITY:
 		{
-			// Set every tracked swarm's engine priority to the action's target
-			// (-1/0/+1). The panic defense raises swarms to HIGH so they win worker
-			// contention while pumping warriors, then restores NORMAL afterwards.
-			// Dedup against each swarm's current Building::priority, and mirror the
-			// engine executor (Game_orders.cpp:476-484 executeChangePriority sets
-			// b->priority then b->updateCallLists()) locally so the AI's view updates
-			// immediately and the dedup won't re-fire before the order executes.
-			// Deterministic: identical AI + identical queued order on every client.
-			const int target = action.priorityTarget;
-			if (target < Cortex::CORTEX_PRIORITY_LOW || target > Cortex::CORTEX_PRIORITY_HIGH)
-				break; // not a valid priority (e.g. the CORTEX_PRIORITY_NONE sentinel).
-
+			// Set tracked-swarm engine priority: the FIRST/primary swarm to
+			// priorityTarget, every other swarm to priorityRest (-1/0/+1 each). Steady
+			// state keeps the primary swarm HIGH so it wins worker contention; the
+			// panic defense raises every swarm to HIGH (target == rest). Dedup against
+			// each swarm's current Building::priority, and mirror the engine executor
+			// (Game_orders.cpp:476-484 executeChangePriority sets b->priority then
+			// b->updateCallLists()) locally so the AI's view updates immediately and
+			// the dedup won't re-fire before the order executes. Deterministic:
+			// identical AI + identical queued order on every client.
 			Team* team = player->team;
+			bool seenFirstSwarm = false;
 			for (int i = 0; i < obs.swarmCount; i++)
 			{
 				const Cortex::TrackedBuilding& tb = obs.trackedSwarms[i];
 				if (!tb.valid)
 					continue;
+				// First valid tracked swarm gets priorityTarget; the rest priorityRest.
+				const int target = seenFirstSwarm ? action.priorityRest
+				                                  : action.priorityTarget;
+				seenFirstSwarm = true;
+				if (target < Cortex::CORTEX_PRIORITY_LOW || target > Cortex::CORTEX_PRIORITY_HIGH)
+					continue; // not a valid priority (e.g. CORTEX_PRIORITY_NONE).
 				if (tb.priority == target)
 					continue; // DEDUP: already at the target priority.
 
@@ -678,6 +734,7 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 	     << " swarmsProducing=" << obs.swarmsProducing
 	     << " producingWarrior=" << obs.swarmsProducingWarrior
 	     << " producingExplorer=" << obs.swarmsProducingExplorer
+	     << " producingWorker=" << obs.swarmsProducingWorker
 	     << " maxBuildLevel=" << obs.maxBuildLevel
 	     << " warFlagsActive=" << obs.warFlagsActive << "\n";
 
@@ -783,6 +840,55 @@ shared_ptr<Order> AICortex::getOrder(void)
 
 		Cortex::CortexObservation obs = Cortex::observe(player, wheatOpenMargin);
 
+		// Stamp each tracked inn's post-build settle clock. The first cycle we see an
+		// inn finished we record obs.tick; thereafter ticksSinceFinished is the age,
+		// which the policy uses to suppress worker-tuning during the settle window.
+		// Prune gids no longer present so a long game's map stays bounded (an inn that
+		// died, or upgraded into a site and dropped out of the observation, is forgotten
+		// — if it reappears finished it settles afresh, which is the intended behaviour).
+		{
+			std::map<Uint16, Sint32> stillAlive;
+			for (int i = 0; i < obs.innCount; i++)
+			{
+				Cortex::TrackedBuilding& t = obs.trackedInns[i];
+				if (!t.valid || t.gid < 0)
+					continue;
+				const Uint16 gid = static_cast<Uint16>(t.gid);
+				std::map<Uint16, Sint32>::iterator it = innFinishedTick.find(gid);
+				const Sint32 firstSeen = (it != innFinishedTick.end()) ? it->second
+				                                                       : obs.tick;
+				stillAlive[gid] = firstSeen;
+				t.ticksSinceFinished = obs.tick - firstSeen;
+			}
+			innFinishedTick.swap(stillAlive);
+		}
+
+		// Start-of-game swarm kickstart: jump the pre-placed starting swarm straight
+		// to SWARM_START_WORKERS haulers the first cycle we see it, so the early
+		// worker economy ramps immediately instead of crawling up one hauler per
+		// cycle from the map's arbitrary initial maxUnitWorking. One-shot. We mirror
+		// the change into obs as well (and the engine executor pattern: local write +
+		// Order) so the policy's worker-tuning loop tunes FROM this baseline this same
+		// cycle rather than fighting it. trackedSwarms[0] is the primary/starting
+		// swarm (observe fills by array index, lowest first).
+		if (!swarmKickstarted && obs.swarmCount > 0 && obs.trackedSwarms[0].valid
+		 && obs.trackedSwarms[0].maxUnitWorking != SWARM_START_WORKERS)
+		{
+			Cortex::TrackedBuilding& t0 = obs.trackedSwarms[0];
+			const int bid = Building::GIDtoID(static_cast<Uint16>(t0.gid));
+			Building* b = player->team->myBuildings[bid];
+			if (b && b->buildingState == Building::ALIVE && !b->type->isBuildingSite
+			 && b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
+			{
+				b->maxUnitWorking = SWARM_START_WORKERS;
+				b->update();
+				orderQueue.push(shared_ptr<Order>(
+					new OrderModifyBuilding(b->gid, SWARM_START_WORKERS)));
+				t0.maxUnitWorking = SWARM_START_WORKERS;
+				swarmKickstarted = true;
+			}
+		}
+
 		// DIAGNOSTIC (gated): compact per-decision-cycle econ trace, to watch the
 		// economy ramp. Pure read → stderr; no RNG/order/state touched.
 		if (getenv("CORTEX_DUMP_PERIODIC"))
@@ -794,6 +900,12 @@ shared_ptr<Order> AICortex::getOrder(void)
 			          << " freeW=" << obs.freeWorkers
 			          << " swarm=" << cortexFinishedBuildings(obs, CORTEX_BUILD_SWARM)
 			          << "/" << cortexBuildingSites(obs, CORTEX_BUILD_SWARM) << "s"
+			          << " pool=" << cortexFinishedBuildings(obs, CORTEX_BUILD_SWIMSPEED)
+			          << "/" << cortexBuildingSites(obs, CORTEX_BUILD_SWIMSPEED) << "s"
+			          << " algae=" << obs.algaeDiscovered
+			          << " reach=" << obs.swimLandReach << "/" << obs.swimWaterReach
+			          << " race=" << cortexFinishedBuildings(obs, CORTEX_BUILD_WALKSPEED)
+			          << " swarmCand=" << (obs.buildCandidates[CORTEX_BUILD_SWARM][0].valid ? 1 : 0)
 			          << " inn=" << cortexFinishedBuildings(obs, CORTEX_BUILD_FOOD)
 			          << "/" << cortexBuildingSites(obs, CORTEX_BUILD_FOOD) << "s"
 			          << " brk=" << cortexFinishedBuildings(obs, CORTEX_BUILD_ATTACK)

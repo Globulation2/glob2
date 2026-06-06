@@ -52,7 +52,7 @@ namespace Cortex
 		// Reconcile diffs against the team's CURRENT forbidden paint (our building
 		// footprints excluded, since the engine auto-forbids those):
 		std::vector<int> add; //!< desired - current
-		std::vector<int> del; //!< current - desired
+		std::vector<int> del; //!< current - desired; fog & visible-unreachable wheat keep paint
 		Sint32 addCount = 0;
 		Sint32 delCount = 0;
 		Sint32 forbiddenCount = 0; //!< == desired.size()
