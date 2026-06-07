@@ -62,6 +62,45 @@ namespace Cortex
 		}
 	} // namespace
 
+	// Chebyshev distance from the footprint's top-left corner to the nearest
+	// live building owned by `team`. Returns -1 when the team has no
+	// buildings yet (first placement: distance is meaningless).
+	int distanceToNearestBuilding(Game* game, Team* team, int x, int y)
+	{
+		int best = -1;
+		for (int i = 0; i < Building::MAX_COUNT; i++)
+		{
+			Building* b = team->myBuildings[i];
+			if (b == NULL || b->buildingState == Building::DEAD)
+				continue;
+			int d = game->map.warpDistMax(x, y, b->posX, b->posY);
+			if (best < 0 || d < best)
+				best = d;
+		}
+		return best;
+	}
+
+	// Translate a Chebyshev distance-to-colony into a placement score.
+	// Closer is better; we want a compact colony but not literally stacked,
+	// so distance 0 (impossible for a real footprint anyway) and tiny
+	// distances are fine, and the score decays linearly with distance.
+	// A team with no buildings gets a flat base so the very first building
+	// is placed on the first legal, discovered tile in scan order.
+	int scoreFromDistance(int distToColony)
+	{
+		static const int FIRST_BUILDING_BASE = 1000;
+		static const int NEAR_COLONY_BASE = 10000;
+
+		if (distToColony < 0)
+			return FIRST_BUILDING_BASE;
+		// Subtract distance so nearer spots rank higher; clamp at 0 so very
+		// far candidates do not go negative and disorder the ranking.
+		int score = NEAR_COLONY_BASE - distToColony;
+		if (score < 0)
+			score = 0;
+		return score;
+	}
+
 	int rectEdgeChebyshev(int ax, int aw, int ay, int ah,
 	                      int bx, int bw, int by, int bh, int mapW, int mapH)
 	{

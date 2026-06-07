@@ -23,6 +23,30 @@ struct BuildingType;
 
 namespace Cortex
 {
+	/// One scored candidate during a placement/target scan, before it is copied
+	/// into the caller's POD BuildCandidate array. Shared by placeCandidates
+	/// (CortexPlacementCandidates.cpp) and placeFlagTargets (CortexPlacement.cpp)
+	/// so the two ranked-insert scans agree on the intermediate record layout.
+	struct ScoredSpot
+	{
+		int x;
+		int y;
+		int score;
+		int distToColony; // secondary key for deterministic tie-breaking
+	};
+
+	/// Chebyshev distance from the footprint's top-left corner to the nearest
+	/// live building owned by `team`. Returns -1 when the team has no buildings
+	/// yet (first placement: distance is meaningless). Shared by placeCandidates
+	/// and placeFlagTargets.
+	int distanceToNearestBuilding(Game* game, Team* team, int x, int y);
+
+	/// Translate a Chebyshev distance-to-colony into a placement score. Closer is
+	/// better; we want a compact colony but not literally stacked, so the score
+	/// decays linearly with distance. A team with no buildings (distToColony < 0)
+	/// gets a flat base. Shared by placeCandidates and placeFlagTargets.
+	int scoreFromDistance(int distToColony);
+
 	/// Counts how many of an inn's four sides are "occupied" — i.e. have a building
 	/// within CORTEX_INN_SIDE_CLEARANCE tiles of that edge. The inn footprint is
 	/// (innX, innY) top-left, innW x innH. A hypothetical candidate footprint may be

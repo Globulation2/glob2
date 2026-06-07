@@ -6,6 +6,8 @@
 #include "CortexTypes.h"
 
 class Player;
+class Team;
+class Game;
 
 // AICortex observation layer. This is the ONLY place that reads live engine
 // state (Game*/Team*/Map*) to fill a CortexObservation. Both the direct
@@ -25,4 +27,15 @@ namespace Cortex
 	/// `openMargin` is the per-game wheat open-margin N (drawn once via syncRand in
 	/// AICortex); it is echoed into obs.wheatOpenMargin and drives the wheat scan.
 	CortexObservation observe(Player* player, int openMargin);
+
+	/// Internal observe() helper: the single index pass over team->myBuildings
+	/// that fills the building-derived signals (feedCapacity, swarm/inn tracking,
+	/// upgradable counts, construction sites) and captures the live war flag's
+	/// footprint into warFlag* for the later enemy-straggler pass. Split out of
+	/// observe() purely so each .cpp stays under the file-size cap; the iteration
+	/// order is lockstep-determinism-critical and is preserved verbatim. Called
+	/// exactly once, at the same point observe() previously ran the loop inline.
+	void observeBuildings(CortexObservation& obs, Team* team, Game* game,
+		int maxBuildLevel, bool& warFlagFound,
+		Sint32& warFlagX, Sint32& warFlagY, Sint32& warFlagRange);
 }
