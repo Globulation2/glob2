@@ -54,7 +54,22 @@ namespace Cortex
 		SCORE_RACETRACK_UPGRADE  =  5300,
 		SCORE_INN_UPGRADE        =  5200,
 		SCORE_HOSPITAL_UPGRADE   =  5100,
-		SCORE_SECOND_SWARM       =  5000,
+
+		// Second swarm — GRADED, computed in scoreSecondSwarm as
+		// SCORE_SECOND_SWARM_BASE + severity*SCORE_SECOND_SWARM_STEP where severity
+		// is the worst wheat-bottlenecked swarm's CORN deficit (1..5). It fires only
+		// when an existing swarm is pinned at the worker cap with a draining CORN
+		// buffer — the wheat catchment is the bottleneck, and a fresh swarm on a new
+		// patch is the cure. Lands at 6200..6600: ABOVE the whole tech/upgrade band
+		// (more valuable than another upgrade when wheat is the binding constraint)
+		// but below swarm recovery (7000) and a first/healthy inn (8000).
+		SCORE_SECOND_SWARM_BASE  =  6100,
+		SCORE_SECOND_SWARM_STEP  =   100,
+		// A wheat-bottlenecked inn — GRADED DOWN. When the feeding deficit is a
+		// wheat-SUPPLY problem (a swarm is bottlenecked) another inn cannot be
+		// stocked, so its marginal value collapses below the second-swarm score and
+		// the tech band. Above retire/offense but below defense's flag work.
+		SCORE_FEED_BOTTLENECKED  =  3500,
 
 		// Military band (repositioning standing flags; below economy by design —
 		// the pre-combat emergency is SCORE_PANIC_DEFENSE, not these).
