@@ -24,10 +24,14 @@ namespace Cortex
 	static const int HUNGRY_HALT_PERCENT = 20;
 
 	/// --- worker-surplus production throttle (tunable AI design choice) -----
-	// "Available workers" is the engine's own player-facing free-worker figure:
-	// idle workers minus open job requests (isFree[WORKER] - totalNeeded; see
-	// TeamStat.cpp:290, where it is shown as "free" and, when negative, the units
-	// are "seeking a job"). When that surplus climbs above WORKER_SURPLUS_HI the
+	// "Available workers" is idle workers minus only the FILLABLE open job requests
+	// (isFree[WORKER] - fillableNeeded). It is NOT the engine's raw free-worker
+	// figure (isFree[WORKER] - totalNeeded; TeamStat.cpp:290): totalNeeded counts
+	// open slots at buildings whose type->level exceeds the workforce's HARVEST
+	// level, which no current-level worker can ever take (building/Misc.cpp:127). We
+	// subtract only the slots the current workforce can actually staff, so those
+	// unfillable jobs don't mask an idle-worker surplus. When that surplus climbs
+	// above WORKER_SURPLUS_HI the
 	// colony has more idle hands than it can place, so the swarm stops minting
 	// workers and pours into warriors (plus the usual scout explorer) instead. It
 	// resumes worker production only once the surplus drains back below zero — job
@@ -127,15 +131,38 @@ namespace Cortex
 		f.growExplorer = (wantEarlyExplorer || (f.combatPhase && wantScout)) ? 1 : 0;
 		f.growWarrior  = f.combatPhase ? 1 : 0;
 
+		// Split open-job demand by whether the current workforce can fill it. A worker
+		// works at a building of level L only if its HARVEST level >= L
+		// (building/Misc.cpp:127); maxBuildLevel == the max worker HARVEST level
+		// (schools train BUILD and HARVEST in lockstep), so a job at building level L is
+		// FILLABLE iff L <= maxBuildLevel. fillableNeeded + unfillableNeeded ==
+		// totalNeeded by construction (the two slices partition totalNeededPerLevel[]).
+		int cap = obs.maxBuildLevel;
+		if (cap < 0) cap = 0;
+		if (cap > CORTEX_UNIT_LEVELS - 1) cap = CORTEX_UNIT_LEVELS - 1;
+		f.fillableNeeded   = 0;
+		f.unfillableNeeded = 0;
+		for (int lvl = 0; lvl < CORTEX_UNIT_LEVELS; lvl++)
+		{
+			if (lvl <= cap)
+				f.fillableNeeded   += obs.totalNeededPerLevel[lvl];
+			else
+				f.unfillableNeeded += obs.totalNeededPerLevel[lvl];
+		}
+
 		// Worker-surplus throttle (see WORKER_SURPLUS_HI): stop minting workers while
-		// idle labour piles up and resume once it is spent. "Available workers" is the
-		// engine's own free-worker figure — idle workers minus open job requests
-		// (TeamStat.cpp:290). Hysteresis: suppress above the high watermark, resume
-		// once it goes negative, and HOLD the current mode in the band between so the
-		// mix does not oscillate. The held mode is read back from swarmsProducingWorker
-		// (no raw-ratio access). Combat-phase only — outside it growWarrior is 0, so
-		// dropping workers would halt the swarm at the forbidden {0,0,0}.
-		const int availableWorkers = obs.freeWorkers - obs.totalNeeded;
+		// idle labour piles up and resume once it is spent. "Available workers" is idle
+		// workers minus only the FILLABLE open jobs — jobs at building levels above the
+		// workforce's HARVEST level (maxBuildLevel) cannot be taken by ANY number of
+		// current-level workers (building/Misc.cpp:127), so minting more workers cannot
+		// satisfy them; only training (a school raising HARVEST/BUILD level) can. Those
+		// unfillable jobs must NOT mask the idle-worker surplus, or the swarm would keep
+		// producing workers that also can't take the jobs. Hysteresis: suppress above
+		// the high watermark, resume once it goes negative, and HOLD the current mode in
+		// the band between so the mix does not oscillate. The held mode is read back from
+		// swarmsProducingWorker (no raw-ratio access). Combat-phase only — outside it
+		// growWarrior is 0, so dropping workers would halt the swarm at the forbidden {0,0,0}.
+		const int availableWorkers = obs.freeWorkers - f.fillableNeeded;
 		const bool suppressingNow  =
 		    (f.swarms > 0 && obs.swarmsProducing > 0 && obs.swarmsProducingWorker == 0);
 		bool suppressWorkers;

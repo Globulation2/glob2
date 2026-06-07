@@ -48,6 +48,8 @@ namespace Cortex
 		obs.freeWorkers       = stat->isFree[WORKER];
 		obs.totalFree         = stat->totalFree;
 		obs.totalNeeded       = stat->totalNeeded;
+		for (int lvl = 0; lvl < CORTEX_UNIT_LEVELS; lvl++)
+			obs.totalNeededPerLevel[lvl] = stat->totalNeededPerLevel[lvl];
 
 		// food / health pressure
 		obs.totalBuilding     = stat->totalBuilding;

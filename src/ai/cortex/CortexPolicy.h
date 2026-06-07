@@ -72,6 +72,9 @@ namespace Cortex
 
 			int growWorker, growExplorer, growWarrior;
 			bool panic;
+
+			int fillableNeeded;    ///< open jobs at building levels the current workforce (HARVEST<=maxBuildLevel) can staff.
+			int unfillableNeeded;  ///< open jobs at building levels above the workforce's level — only training (a school) clears these, not more workers.
 		};
 
 		/// Build the shared fact bundle from the observation (see DecideFacts).

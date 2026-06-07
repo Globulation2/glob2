@@ -98,6 +98,7 @@ namespace Cortex
 			obs.attackStrengthLevel[i] = 0;
 			obs.workerSwimLevel[i] = 0;
 			obs.explorerMagicGroundLevel[i] = 0;
+			obs.totalNeededPerLevel[i] = 0;
 		}
 
 		obs.maxBuildLevel = 0;

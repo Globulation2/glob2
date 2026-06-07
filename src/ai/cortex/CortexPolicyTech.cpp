@@ -96,7 +96,17 @@ namespace Cortex
 	// builds on the next cycle.
 	std::optional<CortexAction> CortexPolicy::trySchool(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.combatPhase && f.canExpand && obs.algaeReachable
+		// Unfillable-jobs override: when there is open work blocked purely on worker
+		// training level (jobs at building levels above the workforce's HARVEST level —
+		// f.unfillableNeeded > 0; building/Misc.cpp:127), the first school is no longer
+		// optional. Only a school raises HARVEST/BUILD level to unlock those jobs; more
+		// workers cannot. So allow building the first school even when the normal
+		// canExpand gate (spare labour) would defer it — but never while starving/hungry
+		// (reuse canExpand's food-trouble guard) and only with a real spare-labour or
+		// blocked-work reason, so we don't pull the last haulers off a labour-tight colony.
+		const bool unfillableUrges = (f.unfillableNeeded > 0 && !f.starving && !f.hungry
+		 && f.school == 0 && f.schoolSites == 0);
+		if (f.combatPhase && (f.canExpand || unfillableUrges) && obs.algaeReachable
 		 && f.school == 0 && f.schoolSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SCIENCE);
@@ -252,7 +262,18 @@ namespace Cortex
 	{
 		const Sint32 schoolLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_SCIENCE);
 		const int buildMaxedPct  = unitsServedPct(obs.buildLevel, obs.workers, schoolLevel + 1);
-		if (f.combatPhase && f.canExpand && f.school >= 1 && obs.algaeReachable
+		// Unfillable-jobs override on the spare-labour gate ONLY: when open work is
+		// blocked purely on worker training level (f.unfillableNeeded > 0; jobs at
+		// building levels above the workforce's HARVEST level — building/Misc.cpp:127),
+		// a school upgrade raises that level and is the only thing that unlocks the
+		// jobs. So let unfillable demand stand in for canExpand's spare-labour check —
+		// but never while starving/hungry (reuse canExpand's food-trouble guard), and
+		// keep EVERY engine-permission check (upgradableCount encodes maxBuildLevel >
+		// level + footprint fit; cortexBuildingsUpgrading guards stacking; algaeReachable
+		// is the supply requirement) and the maxed-trainees gate exactly as-is — this
+		// only relaxes spare labour, never the engine's upgrade permission.
+		const bool sparedByUnfillable = (f.unfillableNeeded > 0 && !f.starving && !f.hungry);
+		if (f.combatPhase && (f.canExpand || sparedByUnfillable) && f.school >= 1 && obs.algaeReachable
 		 && obs.upgradableCount[CORTEX_BUILD_SCIENCE] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_SCIENCE) == 0
 		 && buildMaxedPct >= UPGRADE_MAXED_PERCENT)

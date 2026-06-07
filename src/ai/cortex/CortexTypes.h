@@ -114,7 +114,8 @@ namespace Cortex
 	/// it living in the downstream action layer. AICortex still OWNS/mutates the state
 	/// on flag placement and persists it; these obs fields are a per-cycle read-only
 	/// mirror (not serialized — the observation is recomputed every cycle).
-	static const Uint32 OBSERVATION_VERSION = 15;
+	/// v16 (2026-06-07) added totalNeededPerLevel[]: open-job slots split by building level, so the worker-surplus throttle can ignore jobs the current (under-leveled) workforce cannot fill.
+	static const Uint32 OBSERVATION_VERSION = 16;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -218,6 +219,7 @@ namespace Cortex
 		Sint32 freeWorkers;   ///< stat->isFree[WORKER] (workers not assigned a job).
 		Sint32 totalFree;     ///< stat->totalFree (idle units of all types).
 		Sint32 totalNeeded;   ///< stat->totalNeeded (jobs requested across all buildings).
+		Sint32 totalNeededPerLevel[CORTEX_UNIT_LEVELS]; ///< stat->totalNeededPerLevel[lvl]: the totalNeeded open-job slots split by the building's type->level. Lets the policy separate jobs the current workforce can staff (building level <= max worker HARVEST level) from jobs only higher-trained workers can take. Index = building level 0..CORTEX_UNIT_LEVELS-1.
 
 		// --- own economy: food / health pressure ---
 		Sint32 totalBuilding;     ///< stat->totalBuilding (finished buildings only).
