@@ -64,14 +64,14 @@ namespace Cortex
 	// priorities below. Suppressed while panicking (the panic block owns the
 	// ratio then). The action layer dedups, so a stray re-issue of an
 	// already-applied ratio emits no order.
-	std::optional<CortexAction> CortexPolicy::tryProductionControl(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreProductionControl(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (!f.panic)
 		{
 			// (a) (Re)start any swarm producing nothing — freshly built, or a halted
 			//     {0,0,0} ratio loaded from an old save.
 			if (obs.swarmsProducing < f.swarms)
-				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
+				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 			// (a2) End-of-panic recovery. The pre-combat panic defense flips swarms to
 			//      100%-warrior production (growWarrior is 0 before the combat phase, so
 			//      that mix exists ONLY as a panic leftover). When the attack ends the
@@ -83,21 +83,21 @@ namespace Cortex
 			//      economy ratio. Self-terminating: once no swarm makes warriors it
 			//      stops firing (and re-fires only if another panic flips them again).
 			if (!f.combatPhase && f.swarms > 0 && obs.swarmsProducingWarrior > 0)
-				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
+				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 			// (b) Establish the warrior mix once the economy is established but no
 			//     warriors are being made yet. Self-terminating: stops firing as soon
 			//     as the first warrior appears (re-fires if the army is wiped to 0).
 			if (f.combatPhase && f.swarms > 0 && f.warriors == 0)
-				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
+				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 			// (c) Fold an explorer into the mix when we want one out but none is being
 			//     produced and we have none yet (reveals our wheat / the enemy base).
 			if (f.growExplorer > 0 && f.swarms > 0
 			 && obs.swarmsProducingExplorer == 0 && obs.explorers == 0)
-				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
+				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 			// (d) Drop the explorer slice back out once an explorer exists, so we do
 			//     not keep over-producing them. Stops once no swarm carries it.
 			if (f.growExplorer == 0 && f.swarms > 0 && obs.swarmsProducingExplorer > 0)
-				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
+				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 			// (e) Apply / revert the worker-surplus throttle: re-issue the mix
 			//     whenever the swarm's worker output disagrees with the desired
 			//     growWorker (workers on <-> off). The symmetric peer of (c)/(d) for
@@ -106,7 +106,7 @@ namespace Cortex
 			//     no-op re-issue emits no order.
 			if (f.combatPhase && f.swarms > 0
 			 && (f.growWorker > 0) != (obs.swarmsProducingWorker > 0))
-				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
+				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 		}
 
 		// Worker-hauling tuning (swarms + inns + construction sites) no longer lives
@@ -115,7 +115,7 @@ namespace Cortex
 		// fed never preempts nor waits behind a build/upgrade decision (and vice
 		// versa). See CortexPolicy::tuneWorkers(), enqueued alongside decide() by the
 		// engine binding (AICortex::getOrder) the same way wheat-forbidden upkeep is.
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 2: feed capacity (inns). FEED-LED, not wheat-led: build an inn
@@ -128,7 +128,7 @@ namespace Cortex
 	// rejects sites too far from wheat. Ungated by spare labour — feeding is
 	// existential, and this is what keeps the swarm from ever needing to halt for
 	// overpopulation.
-	std::optional<CortexAction> CortexPolicy::tryFeedCapacity(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreFeedCapacity(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.innSites == 0)
 		{
@@ -139,24 +139,24 @@ namespace Cortex
 			{
 				const int slot = firstValidCandidate(obs, CORTEX_BUILD_FOOD);
 				if (slot >= 0)
-					return makeBuildAction(CORTEX_BUILD_FOOD, slot);
+					return { SCORE_FEED_CAPACITY, makeBuildAction(CORTEX_BUILD_FOOD, slot) };
 			}
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 2.5: swarm RECOVERY only. We deliberately do NOT build a
 	// second swarm for now (may revisit) — a team starts with one swarm, so this
 	// fires only if that swarm was destroyed, restoring the ability to produce.
-	std::optional<CortexAction> CortexPolicy::trySwarmRecovery(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreSwarmRecovery(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.swarms == 0 && f.swarmSites == 0 && f.inns > 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_SWARM, slot);
+				return { SCORE_SWARM_RECOVERY, makeBuildAction(CORTEX_BUILD_SWARM, slot) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 6.95: second swarm on a freshly-discovered wheat patch. ------
@@ -182,7 +182,7 @@ namespace Cortex
 	// CORN buffer (anySwarmSupplyStressed). Until then a single swarm + more
 	// haulers is the cheaper answer; only a wheat-catchment bottleneck warrants a
 	// whole new swarm on a fresh patch.
-	std::optional<CortexAction> CortexPolicy::trySecondSwarm(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreSecondSwarm(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		const bool openingBuildOutDone =
 		    f.inns >= 1 && f.school >= 1 && f.race >= 1 && f.heal >= 1 && f.barracks >= 1;
@@ -192,9 +192,9 @@ namespace Cortex
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_SWARM, slot);
+				return { SCORE_SECOND_SWARM, makeBuildAction(CORTEX_BUILD_SWARM, slot) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// Worker-hauling tuning (closed-loop wheat-economy), run EVERY decision cycle in

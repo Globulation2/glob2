@@ -216,31 +216,35 @@ namespace Cortex
 
 		const DecideFacts f = computeFacts(obs);
 
-		// Seven-priority decision ladder, FIRST-MATCH-WINS: evaluate each priority in
-		// strict order and return the first that engages this cycle. Each helper
-		// returns std::nullopt to fall through to the next — preserving exactly the
-		// original ladder's precedence (the inline version early-returned on the first
-		// matching branch; no later priority could override an earlier one). The
-		// helpers are listed here in the SAME order as the old inline rungs.
-		if (auto a = tryPanicDefense(obs, f))          return *a; // Priority 0
-		if (auto a = tryProductionControl(obs, f))     return *a; // Priority 1
-		if (auto a = tryFeedCapacity(obs, f))          return *a; // Priority 2
-		if (auto a = trySwarmRecovery(obs, f))         return *a; // Priority 2.5
-		if (auto a = trySchool(obs, f))                return *a; // Priority 3
-		if (auto a = tryRacetrack(obs, f))             return *a; // Priority 4
-		if (auto a = tryHospital(obs, f))              return *a; // Priority 5
-		if (auto a = trySwimmingPool(obs, f))          return *a; // Priority 5.5
-		if (auto a = tryBarracks(obs, f))              return *a; // Priority 6
-		if (auto a = tryBarracksUpgrade(obs, f))       return *a; // Priority 6.3+6.5
-		if (auto a = trySchoolUpgrade(obs, f))         return *a; // Priority 6.6
-		if (auto a = tryRacetrackUpgrade(obs, f))      return *a; // Priority 6.7
-		if (auto a = tryInnUpgrade(obs, f))            return *a; // Priority 6.8
-		if (auto a = tryHospitalExpandUpgrade(obs, f)) return *a; // Priority 6.9
-		if (auto a = trySecondSwarm(obs, f))           return *a; // Priority 6.95
-		if (auto a = tryDefense(obs, f))               return *a; // Priority 7
-		if (auto a = tryRetireFlag(obs, f))            return *a; // Priority 7.2
-		if (auto a = tryOffense(obs, f))               return *a; // Priority 8
-
-		return makeNoOpAction();
+		// Utility selection: every decision scores itself from the observation;
+		// the highest score wins. Evaluated in a fixed order so equal scores fall
+		// to the earlier decision (deterministic). This replaces the old
+		// first-match-wins ladder — a low-urgency decision can no longer be
+		// permanently starved behind a higher one.
+		const ScoredAction candidates[] = {
+			scorePanicDefense(obs, f),
+			scoreProductionControl(obs, f),
+			scoreFeedCapacity(obs, f),
+			scoreSwarmRecovery(obs, f),
+			scoreSchool(obs, f),
+			scoreRacetrack(obs, f),
+			scoreHospital(obs, f),
+			scoreSwimmingPool(obs, f),
+			scoreBarracks(obs, f),
+			scoreBarracksUpgrade(obs, f),
+			scoreSchoolUpgrade(obs, f),
+			scoreRacetrackUpgrade(obs, f),
+			scoreInnUpgrade(obs, f),
+			scoreHospitalExpandUpgrade(obs, f),
+			scoreSecondSwarm(obs, f),
+			scoreDefense(obs, f),
+			scoreRetireFlag(obs, f),
+			scoreOffense(obs, f),
+		};
+		ScoredAction best{ SCORE_NONE, makeNoOpAction() };
+		for (const ScoredAction& c : candidates)
+			if (c.score > best.score) // strict: earlier candidate wins ties
+				best = c;
+		return best.action;
 	}
 }

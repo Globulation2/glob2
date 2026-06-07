@@ -102,23 +102,23 @@ namespace Cortex
 	// warriors. The trigger is reactive (underAttackTimer-based), so when the
 	// attack ends the panic clears and the economy resumes on its own; the
 	// restore branch then drops the swarms back to NORMAL priority.
-	std::optional<CortexAction> CortexPolicy::tryPanicDefense(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scorePanicDefense(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.panic)
 		{
 			// (1) 100% warriors — fire until every swarm is warrior-only.
 			if (f.swarms > 0 && obs.swarmsProducingWarrior < f.swarms)
-				return makeSetProductionAction(0, 0, 1);
+				return { SCORE_PANIC_DEFENSE, makeSetProductionAction(0, 0, 1) };
 			// (2) Swarms to HIGH priority — EVERY swarm, not just the primary, so the
 			//     whole warrior pump wins worker contention while the base is hit.
 			if (anySwarmPriorityNot(obs, CORTEX_PRIORITY_HIGH))
-				return makeSetPriorityAction(CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_HIGH);
+				return { SCORE_PANIC_DEFENSE, makeSetPriorityAction(CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_HIGH) };
 			// (3) Panic-build one hospital if none is up or already building.
 			if (f.heal == 0 && f.healSites == 0)
 			{
 				const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 				if (slot >= 0)
-					return makeBuildAction(CORTEX_BUILD_HEAL, slot);
+					return { SCORE_PANIC_DEFENSE, makeBuildAction(CORTEX_BUILD_HEAL, slot) };
 			}
 			// Panic setup complete — fall through to the normal economy, which keeps
 			// the swarms fed while they produce the defending army.
@@ -129,9 +129,9 @@ namespace Cortex
 			// always wins worker/hauler contention and pumps the early worker economy,
 			// while any later (second) swarm sits at NORMAL. This also restores the
 			// primary swarm to HIGH after a panic ends (the panic raised every swarm).
-			return makeSetPriorityAction(CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_NORMAL);
+			return { SCORE_PANIC_DEFENSE, makeSetPriorityAction(CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_NORMAL) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 7: defense (recall the army to a threatened building). ---
@@ -139,7 +139,7 @@ namespace Cortex
 	// warriors without being re-issued, so this need not fire every cycle —
 	// it just (re)positions the single flag onto the current threat. Defense
 	// outranks offense: when our base is under attack the lone flag comes home.
-	std::optional<CortexAction> CortexPolicy::tryDefense(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreDefense(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.combatPhase && obs.buildingsUnderAttack > 0
 		 && f.warriors >= DEFENSE_MIN_WARRIORS && obs.defenseTarget.valid)
@@ -165,11 +165,11 @@ namespace Cortex
 			if (obs.flagPosture == CORTEX_POSTURE_OFFENSE
 			 && obs.tick < obs.offenseHoldUntil
 			 && !seriousThreat)
-				return makeNoOpAction(); // hold the offense; ignore the minor-harassment recall.
+				return { SCORE_DEFENSE, makeNoOpAction() }; // hold the offense; ignore the minor-harassment recall.
 
-			return makeDefenseFlagAction(DEFENSE_FLAG_RADIUS, f.warriors);
+			return { SCORE_DEFENSE, makeDefenseFlagAction(DEFENSE_FLAG_RADIUS, f.warriors) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 7.2: retire a purposeless war flag. ---
@@ -189,14 +189,14 @@ namespace Cortex
 	// HOLD-ONLY straggler grace: while visible enemy units still loiter inside the
 	// flag's stay-range (enemyUnitsNearFlag > 0) we hold position so the army finishes
 	// them off; the flag is retired only once the area is genuinely clear.
-	std::optional<CortexAction> CortexPolicy::tryRetireFlag(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreRetireFlag(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		const bool offenseWillClaim =
 			f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid;
 		if (obs.warFlagsActive > 0 && obs.buildingsUnderAttack == 0
 		 && !offenseWillClaim && obs.enemyUnitsNearFlag == 0)
-			return makeClearFlagsAction();
-		return std::nullopt;
+			return { SCORE_RETIRE_FLAG, makeClearFlagsAction() };
+		return cortexDecline();
 	}
 
 	// --- Priority 8: offense (plant the war flag on the nearest known enemy). ---
@@ -212,14 +212,14 @@ namespace Cortex
 	// picks, so it can never be starved by build/upgrade/offense work (and conversely
 	// never steals a cycle from them). See wantWheatProtection() below and
 	// AICortex::enqueueWheatForbidden, called each cycle in getOrder().
-	std::optional<CortexAction> CortexPolicy::tryOffense(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreOffense(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid)
 		{
 			const int count = (f.warriors < CORTEX_MAX_FLAG_UNITS) ? f.warriors : CORTEX_MAX_FLAG_UNITS;
-			return makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count);
+			return { SCORE_OFFENSE, makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	bool CortexPolicy::wantWheatProtection(const CortexObservation& obs) const

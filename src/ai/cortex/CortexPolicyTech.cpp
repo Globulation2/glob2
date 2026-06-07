@@ -94,7 +94,7 @@ namespace Cortex
 	// proceeds anyway, and the engine's maxBuildLevel gate naturally holds upgrades
 	// (which need a school) until one exists. Once algae is discovered the school
 	// builds on the next cycle.
-	std::optional<CortexAction> CortexPolicy::trySchool(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreSchool(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		// Unfillable-jobs override: when there is open work blocked purely on worker
 		// training level (jobs at building levels above the workforce's HARVEST level —
@@ -111,9 +111,9 @@ namespace Cortex
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SCIENCE);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_SCIENCE, slot);
+				return { SCORE_SCHOOL, makeBuildAction(CORTEX_BUILD_SCIENCE, slot) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 4: racetrack (WALKSPEED) — second tech building. Trains WALK,
@@ -125,30 +125,30 @@ namespace Cortex
 	// genuinely unbuildable (no reachable algae): when algae IS reachable the school
 	// is coming, so keep waiting for it (Priority 3 also fires first by ordering, so
 	// the racetrack never races ahead of an in-progress school on a normal map).
-	std::optional<CortexAction> CortexPolicy::tryRacetrack(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreRacetrack(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.combatPhase && f.canExpand && (f.school > 0 || !obs.algaeReachable)
 		 && f.race == 0 && f.raceSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_WALKSPEED);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_WALKSPEED, slot);
+				return { SCORE_RACETRACK, makeBuildAction(CORTEX_BUILD_WALKSPEED, slot) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 5: hospital (HEAL) — survivability for the standing army.
 	// The panic path also builds one reactively under attack; this is the
 	// planned, non-emergency one once the economy can spare the labour.
-	std::optional<CortexAction> CortexPolicy::tryHospital(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreHospital(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.combatPhase && f.canExpand && f.heal == 0 && f.healSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_HEAL, slot);
+				return { SCORE_HOSPITAL, makeBuildAction(CORTEX_BUILD_HEAL, slot) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 5.5: swimming pool (SWIMSPEED) — train SWIM so our workers and
@@ -163,7 +163,7 @@ namespace Cortex
 	// (the swim-helps predicate). One pool suffices — SWIM is a team-wide trained
 	// ability, not per-building capacity. Gated on the established economy + spare
 	// labour like the other tech builds, so the build crew comes off idle hands.
-	std::optional<CortexAction> CortexPolicy::trySwimmingPool(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreSwimmingPool(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		const Sint32 pool      = cortexFinishedBuildings(obs, CORTEX_BUILD_SWIMSPEED);
 		const Sint32 poolSites = cortexBuildingSites(obs, CORTEX_BUILD_SWIMSPEED);
@@ -186,22 +186,22 @@ namespace Cortex
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWIMSPEED);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_SWIMSPEED, slot);
+				return { SCORE_SWIMMING_POOL, makeBuildAction(CORTEX_BUILD_SWIMSPEED, slot) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 6: barracks (ATTACK) — the army pivot. Lets produced warriors
 	// train to attack level 1 and get healed between fights. One is enough.
-	std::optional<CortexAction> CortexPolicy::tryBarracks(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreBarracks(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.combatPhase && f.barracks == 0 && f.barracksSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_ATTACK);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_ATTACK, slot);
+				return { SCORE_BARRACKS, makeBuildAction(CORTEX_BUILD_ATTACK, slot) };
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priorities 6.3-6.8: unified EXPAND-vs-UPGRADE ladder. ----------------
@@ -227,7 +227,7 @@ namespace Cortex
 	// require a SECOND barracks before upgrading; the new one keeps training the
 	// warrior stream while the laggard upgrades. Gated on canExpand so the build/
 	// teardown comes off idle hands, never off hauling or army production.
-	std::optional<CortexAction> CortexPolicy::tryBarracksUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreBarracksUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		const Sint32 barracksLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_ATTACK);
 		const int attackMaxedPct   = unitsServedPct(obs.attackStrengthLevel, f.warriors, barracksLevel + 1);
@@ -240,11 +240,11 @@ namespace Cortex
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_ATTACK);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_ATTACK, slot);
+				return { SCORE_BARRACKS_UPGRADE, makeBuildAction(CORTEX_BUILD_ATTACK, slot) };
 		}
 		if (barracksUpgradeWanted && f.barracks >= BARRACKS_MIN_BEFORE_UPGRADE)
-			return makeUpgradeAction(CORTEX_BUILD_ATTACK);
-		return std::nullopt;
+			return { SCORE_BARRACKS_UPGRADE, makeUpgradeAction(CORTEX_BUILD_ATTACK) };
+		return cortexDecline();
 	}
 
 	// --- Priority 6.6: school (SCIENCE) upgrade. ---
@@ -258,7 +258,7 @@ namespace Cortex
 	// needs reachable algae — gate on algaeReachable so an upgrade is never started
 	// against a site that can no longer be supplied (e.g. the shoreline algae has
 	// since been depleted).
-	std::optional<CortexAction> CortexPolicy::trySchoolUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreSchoolUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		const Sint32 schoolLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_SCIENCE);
 		const int buildMaxedPct  = unitsServedPct(obs.buildLevel, obs.workers, schoolLevel + 1);
@@ -277,8 +277,8 @@ namespace Cortex
 		 && obs.upgradableCount[CORTEX_BUILD_SCIENCE] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_SCIENCE) == 0
 		 && buildMaxedPct >= UPGRADE_MAXED_PERCENT)
-			return makeUpgradeAction(CORTEX_BUILD_SCIENCE);
-		return std::nullopt;
+			return { SCORE_SCHOOL_UPGRADE, makeUpgradeAction(CORTEX_BUILD_SCIENCE) };
+		return cortexDecline();
 	}
 
 	// --- Priority 6.7: racetrack (WALKSPEED) upgrade. ---
@@ -286,7 +286,7 @@ namespace Cortex
 	// racetrack's eligible pool), explorers excluded (zero WALK performance).
 	// Single-instance: a racetrack blackout only leaves units at their current
 	// speed for the window — no capability loss.
-	std::optional<CortexAction> CortexPolicy::tryRacetrackUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreRacetrackUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		const Sint32 raceLevel  = cortexMaxFinishedLevel(obs, CORTEX_BUILD_WALKSPEED);
 		const int walkMaxedPct  = unitsServedPct(obs.walkLevel, obs.workers + f.warriors, raceLevel + 1);
@@ -294,8 +294,8 @@ namespace Cortex
 		 && obs.upgradableCount[CORTEX_BUILD_WALKSPEED] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_WALKSPEED) == 0
 		 && walkMaxedPct >= UPGRADE_MAXED_PERCENT)
-			return makeUpgradeAction(CORTEX_BUILD_WALKSPEED);
-		return std::nullopt;
+			return { SCORE_RACETRACK_UPGRADE, makeUpgradeAction(CORTEX_BUILD_WALKSPEED) };
+		return cortexDecline();
 	}
 
 	// --- Priority 6.8: inn (FOOD) upgrade — spare-first, feed-safe. ---
@@ -309,7 +309,7 @@ namespace Cortex
 	// is wanted but unsafe we build ONE spare inn first to create it (the added inn
 	// is at the current max level, ≥ the lowest-level inn we'd upgrade, so one spare
 	// suffices). Priority 2 remains the backstop if growth erodes the slack mid-blackout.
-	std::optional<CortexAction> CortexPolicy::tryInnUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreInnUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		const bool innUpgradeWanted = f.combatPhase && f.canExpand && f.inns >= 1
 		 && obs.upgradableCount[CORTEX_BUILD_FOOD] > 0
@@ -320,16 +320,16 @@ namespace Cortex
 			const bool feedSlackOk = (obs.feedCapacity - lostCapacity) >= obs.totalUnit;
 			const bool innRedundant = (f.inns >= INN_MIN_BEFORE_UPGRADE);
 			if (innRedundant && feedSlackOk)
-				return makeUpgradeAction(CORTEX_BUILD_FOOD);
+				return { SCORE_INN_UPGRADE, makeUpgradeAction(CORTEX_BUILD_FOOD) };
 			// Not safe yet: build one spare inn to create the redundancy / slack.
 			if (f.innSites == 0)
 			{
 				const int slot = firstValidCandidate(obs, CORTEX_BUILD_FOOD);
 				if (slot >= 0)
-					return makeBuildAction(CORTEX_BUILD_FOOD, slot);
+					return { SCORE_INN_UPGRADE, makeBuildAction(CORTEX_BUILD_FOOD, slot) };
 			}
 		}
-		return std::nullopt;
+		return cortexDecline();
 	}
 
 	// --- Priority 6.9: hospital (HEAL) expand + upgrade. ---
@@ -347,7 +347,7 @@ namespace Cortex
 	//     hospital, the one-at-a-time guard (cortexBuildingsUpgrading == 0) keeps
 	//     the other finished and available throughout. This guarantees that once a
 	//     hospital is built, at least one stays available to heal units.
-	std::optional<CortexAction> CortexPolicy::tryHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	ScoredAction CortexPolicy::scoreHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		if (f.combatPhase && f.canExpand && f.heal >= 1 && f.healSites == 0
 		 && f.heal < HOSPITAL_MAX
@@ -355,12 +355,12 @@ namespace Cortex
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
-				return makeBuildAction(CORTEX_BUILD_HEAL, slot);
+				return { SCORE_HOSPITAL_UPGRADE, makeBuildAction(CORTEX_BUILD_HEAL, slot) };
 		}
 		if (f.combatPhase && f.canExpand && f.heal >= 2
 		 && obs.upgradableCount[CORTEX_BUILD_HEAL] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL) == 0)
-			return makeUpgradeAction(CORTEX_BUILD_HEAL);
-		return std::nullopt;
+			return { SCORE_HOSPITAL_UPGRADE, makeUpgradeAction(CORTEX_BUILD_HEAL) };
+		return cortexDecline();
 	}
 }

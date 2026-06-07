@@ -6,29 +6,92 @@
 #include "CortexTypes.h"
 #include "CortexNet.h"
 
-#include <optional>
-
 // AICortex policy layer. Maps an Observation to an Action intent and NOTHING
 // else. It must not include Game.h / Team.h / Order.h or touch any engine
 // pointer — its entire input is the CortexObservation, its entire output is a
 // CortexAction. That isolation is what lets v0 (hand rules, here) be swapped for
 // a behavior tree or a neural net later without rewriting observation or action
 // code (see docs/AI/cortex/README.md).
+//
+// DECISION MODEL — utility selection. Every candidate decision is a function
+// that SCORES itself from the observation (a ScoredAction: a score plus the
+// action it would emit). decide() evaluates them ALL and emits the highest
+// scorer. This replaces the old first-match-wins priority ladder: urgency is now
+// a number each decision computes, not its position in a list, so a low-urgency
+// decision can never be permanently starved behind a higher one — it simply
+// loses cycles until its score wins. A score of 0 means "I decline to act this
+// cycle"; a positive score with a NoOp action is a deliberate hold (claim the
+// cycle, do nothing). See CortexScore for the banding.
 
 namespace Cortex
 {
+	/// Decision score bands. decide() picks the highest-scoring decision each
+	/// cycle, so these define both urgency and the tie-order. They are grouped
+	/// into bands with gaps so a future graded score component (e.g. marginal
+	/// value) can reorder decisions WITHIN a band without crossing into another.
+	/// The initial values are strictly descending in the historical
+	/// priority-ladder order, so the converted policy reproduces the old
+	/// first-match-wins behaviour exactly as a baseline; tuning the per-decision
+	/// scores into genuinely graded utilities is the follow-up work.
+	enum CortexScore
+	{
+		SCORE_NONE               = 0, ///< Decline: do not act this cycle.
+
+		// Existential / preemption — survival and the never-{0,0,0} rule.
+		SCORE_PANIC_DEFENSE      = 10000,
+		SCORE_PRODUCTION_CONTROL =  9000,
+		SCORE_FEED_CAPACITY      =  8000,
+		SCORE_SWARM_RECOVERY     =  7000,
+
+		// Economy / tech build-out band.
+		SCORE_SCHOOL             =  6000,
+		SCORE_RACETRACK          =  5900,
+		SCORE_HOSPITAL           =  5800,
+		SCORE_SWIMMING_POOL      =  5700,
+		SCORE_BARRACKS           =  5600,
+		SCORE_BARRACKS_UPGRADE   =  5500,
+		SCORE_SCHOOL_UPGRADE     =  5400,
+		SCORE_RACETRACK_UPGRADE  =  5300,
+		SCORE_INN_UPGRADE        =  5200,
+		SCORE_HOSPITAL_UPGRADE   =  5100,
+		SCORE_SECOND_SWARM       =  5000,
+
+		// Military band (repositioning standing flags; below economy by design —
+		// the pre-combat emergency is SCORE_PANIC_DEFENSE, not these).
+		SCORE_DEFENSE            =  4000,
+		SCORE_RETIRE_FLAG        =  3000,
+		SCORE_OFFENSE            =  2000,
+	};
+
+	/// A scored decision: the score (0 == decline; higher wins) and the action
+	/// to emit if this decision wins the cycle. The action may be a deliberate
+	/// NoOp paired with a positive score — that claims the cycle and does
+	/// nothing, exactly as the old ladder did when a rung returned NoOp to halt.
+	struct ScoredAction
+	{
+		int score;
+		CortexAction action;
+	};
+
+	/// Convenience: "I decline to act this cycle" (score 0, NoOp action).
+	inline ScoredAction cortexDecline()
+	{
+		return ScoredAction{ SCORE_NONE, makeNoOpAction() };
+	}
+
 	class CortexPolicy
 	{
 	public:
 		CortexPolicy();
 
-		/// Decide the next action intent from the current observation.
-		/// Scaffold: always returns NoOp. Both engine bindings share this.
+		/// Decide the next action intent from the current observation. Scores
+		/// every candidate decision and returns the highest-scoring action (NoOp
+		/// when none wants to act). Both engine bindings share this.
 		CortexAction decide(const CortexObservation& obs);
 
 		/// Worker-hauling tuning, evaluated EVERY decision cycle in PARALLEL with
-		/// decide()'s single primary action — NOT as a competing ACTION_* the
-		/// build/upgrade/offense ladder could starve or be delayed by. Returns an
+		/// decide()'s single primary action — NOT as a competing decision the
+		/// build/upgrade/offense scorers could starve or be delayed by. Returns an
 		/// ACTION_TUNE_WORKERS action setting each tracked swarm/inn/site's
 		/// maxUnitWorking, or ACTION_NOOP when nothing crosses a threshold this cycle.
 		/// Keeping existing buildings fed is independent of starting new ones: the
@@ -39,7 +102,7 @@ namespace Cortex
 
 		/// Wheat-forbidden upkeep decision, evaluated EVERY decision cycle in
 		/// PARALLEL with decide()'s single primary action — not as a competing
-		/// ACTION_* the build/upgrade ladder could starve. Painting the checkerboard
+		/// decision the build/upgrade scorers could starve. Painting the checkerboard
 		/// is area-paint (OrderAlterateForbidden), not an OrderCreate, so it need not
 		/// contend for the cycle's one action slot. The policy still owns the gate:
 		/// true only when the colony is not starving (never wall off wheat while the
@@ -52,11 +115,9 @@ namespace Cortex
 
 	private:
 		/// Facts derived ONCE from the (const) observation at the top of decide() and
-		/// shared, unchanged, by every priority helper. obs is a const input, so none
+		/// shared, unchanged, by every score helper. obs is a const input, so none
 		/// of these can change during a single decide() call — caching them just avoids
-		/// recomputing the same finished-building counts / ratios many times. The VALUES
-		/// are identical to what the old inline decide() computed; only the redundant
-		/// recomputation is removed.
+		/// recomputing the same finished-building counts / ratios many times.
 		struct DecideFacts
 		{
 			Sint32 inns, innSites;
@@ -81,52 +142,49 @@ namespace Cortex
 		/// Build the shared fact bundle from the observation (see DecideFacts).
 		static DecideFacts computeFacts(const CortexObservation& obs);
 
-		// --- decide() priority helpers ----------------------------------------
-		// Each returns the action for its priority when that priority fires this
-		// cycle, or std::nullopt to fall through to the next. decide() evaluates them
-		// in the SAME order the old inline ladder did and returns the first engaged
-		// one — preserving the original first-match-wins precedence exactly. They take
-		// the same (const obs, const facts) inputs and mutate nothing.
+		// --- decide() decision scorers ----------------------------------------
+		// Each returns a ScoredAction: a CortexScore-band score plus the action it
+		// would emit, or cortexDecline() (score 0) when it does not want to act this
+		// cycle. They take the same (const obs, const facts) inputs and mutate
+		// nothing. decide() evaluates every one and emits the highest scorer.
 
-		/// Priority 0: pre-combat panic defense (and the steady-state priority-split
-		/// branch that shares its if/else-if). Returns an action while it still has
-		/// setup work; nullopt once panic setup is complete (so the economy runs) or
-		/// when no panic and the split already holds.
-		std::optional<CortexAction> tryPanicDefense(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 1: production control (the swarm-ratio block). nullopt while panicking.
-		std::optional<CortexAction> tryProductionControl(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 2: feed capacity (inns).
-		std::optional<CortexAction> tryFeedCapacity(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 2.5: swarm recovery (rebuild a destroyed-only swarm).
-		std::optional<CortexAction> trySwarmRecovery(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 3: school (SCIENCE) — first tech building.
-		std::optional<CortexAction> trySchool(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 4: racetrack (WALKSPEED) — second tech building.
-		std::optional<CortexAction> tryRacetrack(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 5: hospital (HEAL) — planned first hospital.
-		std::optional<CortexAction> tryHospital(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 5.5: swimming pool (SWIMSPEED).
-		std::optional<CortexAction> trySwimmingPool(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 6: barracks (ATTACK) — the army pivot.
-		std::optional<CortexAction> tryBarracks(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priorities 6.3+6.5: barracks expand-then-upgrade.
-		std::optional<CortexAction> tryBarracksUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 6.6: school upgrade.
-		std::optional<CortexAction> trySchoolUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 6.7: racetrack upgrade.
-		std::optional<CortexAction> tryRacetrackUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 6.8: inn (FOOD) upgrade — spare-first, feed-safe.
-		std::optional<CortexAction> tryInnUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 6.9: hospital expand + upgrade.
-		std::optional<CortexAction> tryHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 6.95: second swarm on a freshly-discovered wheat patch.
-		std::optional<CortexAction> trySecondSwarm(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 7: defense (recall the army to a threatened building).
-		std::optional<CortexAction> tryDefense(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 7.2: retire a purposeless war flag.
-		std::optional<CortexAction> tryRetireFlag(const CortexObservation& obs, const DecideFacts& f) const;
-		/// Priority 8: offense (plant the war flag on the nearest known enemy).
-		std::optional<CortexAction> tryOffense(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Pre-combat panic defense (and the steady-state priority-split branch that
+		/// shares its if/else-if).
+		ScoredAction scorePanicDefense(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Production control (the swarm-ratio block). Declines while panicking.
+		ScoredAction scoreProductionControl(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Feed capacity (inns).
+		ScoredAction scoreFeedCapacity(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Swarm recovery (rebuild a destroyed-only swarm).
+		ScoredAction scoreSwarmRecovery(const CortexObservation& obs, const DecideFacts& f) const;
+		/// School (SCIENCE) — first tech building.
+		ScoredAction scoreSchool(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Racetrack (WALKSPEED) — second tech building.
+		ScoredAction scoreRacetrack(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Hospital (HEAL) — planned first hospital.
+		ScoredAction scoreHospital(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Swimming pool (SWIMSPEED).
+		ScoredAction scoreSwimmingPool(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Barracks (ATTACK) — the army pivot.
+		ScoredAction scoreBarracks(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Barracks expand-then-upgrade.
+		ScoredAction scoreBarracksUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
+		/// School upgrade.
+		ScoredAction scoreSchoolUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Racetrack upgrade.
+		ScoredAction scoreRacetrackUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Inn (FOOD) upgrade — spare-first, feed-safe.
+		ScoredAction scoreInnUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Hospital expand + upgrade.
+		ScoredAction scoreHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Second swarm on a freshly-discovered wheat patch.
+		ScoredAction scoreSecondSwarm(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Defense (recall the army to a threatened building).
+		ScoredAction scoreDefense(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Retire a purposeless war flag.
+		ScoredAction scoreRetireFlag(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Offense (plant the war flag on the nearest known enemy).
+		ScoredAction scoreOffense(const CortexObservation& obs, const DecideFacts& f) const;
 
 		// --- ML swarm worker-cap policy (effort B pilot) ----------------------
 		// When GLOB2_CORTEX_POLICY=ml and a net loads from GLOB2_CORTEX_NET,

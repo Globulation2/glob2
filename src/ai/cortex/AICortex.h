@@ -86,7 +86,7 @@ private:
 	/// This constant is used ONLY here, to (re-)arm offenseHoldUntil when a war flag
 	/// is placed — an execution side-effect the action layer owns. The hold-vs-recall
 	/// DECISION that consults the resulting offenseHoldUntil now lives in the policy
-	/// (CortexPolicy::tryDefense), which reads it through the observation; the policy
+	/// (CortexPolicy::scoreDefense), which reads it through the observation; the policy
 	/// stays pure and never sees this constant.
 	static const int OFFENSE_HOLD_TICKS = 600;
 	/// How many of our buildings must be under attack AT ONCE for a defensive
@@ -229,7 +229,7 @@ private:
 	/// AICortex OWNS this state: it is MUTATED only here, as an execution side-effect
 	/// when a flag is actually (re)placed (translateActionPlaceWarFlag re-arms the
 	/// hold; the defense/clear helpers reset it). The hold-vs-recall DECISION lives in
-	/// the policy (CortexPolicy::tryDefense), which READS these values through the
+	/// the policy (CortexPolicy::scoreDefense), which READS these values through the
 	/// observation (obs.flagPosture / obs.offenseHoldUntil, echoed each cycle in
 	/// getOrder() before decide()). flagPosture is one of FlagPosture; offenseHoldUntil
 	/// == 0 means no hold is active.

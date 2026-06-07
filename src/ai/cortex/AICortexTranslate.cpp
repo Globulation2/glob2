@@ -174,7 +174,7 @@ void AICortex::translateActionPlaceDefenseFlag(const Cortex::CortexAction& actio
 {
 	// PURE TRANSLATION: execute the recall the policy decided. The thrash-
 	// hysteresis (hold an in-progress offense push through minor harassment) now
-	// lives in the policy (CortexPolicy::tryDefense) — when the hold should win, the
+	// lives in the policy (CortexPolicy::scoreDefense) — when the hold should win, the
 	// policy returns NoOp and this helper is never reached, so the existing offense
 	// flag is left untouched. By the time ACTION_PLACE_DEFENSE_FLAG arrives here the
 	// recall has already been authorised; we just commit it.
