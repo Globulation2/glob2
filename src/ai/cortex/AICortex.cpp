@@ -43,6 +43,8 @@ AICortex::AICortex(GAGCore::InputStream* stream, Player* player, Sint32 versionM
 
 AICortex::~AICortex()
 {
+	if (traceFile) // flush + release the gated training trace (RAM-only handle).
+		std::fclose(traceFile);
 }
 
 void AICortex::init(Player* player)
@@ -58,6 +60,8 @@ void AICortex::init(Player* player)
 	offenseHoldUntil = 0;
 	wheatOpenMargin = -1; // sentinel: drawn lazily on the first decision cycle.
 	attackDumped = false; // diagnostic one-shot; never serialized.
+	traceFile = nullptr; // gated ML training trace; lazily opened, never serialized.
+	traceOpenAttempted = false; // open the trace at most once, even if it fails.
 	innFinishedTick.clear(); // RAM-only inn settle clock; rebuilt as inns are seen.
 	swarmKickstarted = false; // start-of-game swarm worker kickstart not yet done.
 }
@@ -440,6 +444,13 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// the deadband) enqueues nothing.
 		Cortex::CortexAction tune = policy.tuneWorkers(obs);
 		translateAction(tune, obs);
+
+		// TRAINING TRACE (gated): record this cycle's per-swarm (state, hand-action)
+		// pairs for the ML worker-tuning pilot. Pure read of obs + the tune action we
+		// just computed; writing a file touches no RNG/order/sync state. See
+		// docs/AI/cortex/PILOT.md.
+		if (getenv("GLOB2_CORTEX_TRACE"))
+			dumpWorkerTrace(obs, tune);
 
 		// Wheat-forbidden upkeep runs EVERY decision cycle, in PARALLEL with the
 		// primary action above — it is not an ACTION_* the build/upgrade/offense

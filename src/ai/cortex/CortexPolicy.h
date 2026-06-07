@@ -4,6 +4,7 @@
 #pragma once
 
 #include "CortexTypes.h"
+#include "CortexNet.h"
 
 #include <optional>
 
@@ -126,5 +127,16 @@ namespace Cortex
 		std::optional<CortexAction> tryRetireFlag(const CortexObservation& obs, const DecideFacts& f) const;
 		/// Priority 8: offense (plant the war flag on the nearest known enemy).
 		std::optional<CortexAction> tryOffense(const CortexObservation& obs, const DecideFacts& f) const;
+
+		// --- ML swarm worker-cap policy (effort B pilot) ----------------------
+		// When GLOB2_CORTEX_POLICY=ml and a net loads from GLOB2_CORTEX_NET,
+		// tuneWorkers() picks each SWARM's worker cap from swarmNet_ instead of the
+		// hand rule (inn/site caps stay hand-coded). The net is integer/I16F16 and
+		// the choice is a pure function of the observation, so orders stay
+		// deterministic in lockstep — but every client must load the SAME blob (a
+		// deployment concern; for the headless benchmark it is one process). Loaded
+		// once in the ctor; mlSwarmCaps_ stays false (→ hand rule) if loading fails.
+		bool mlSwarmCaps_;
+		CortexNet swarmNet_;
 	};
 }

@@ -7,6 +7,7 @@
 #include "CortexTypes.h"
 #include "CortexPolicy.h"
 
+#include <cstdio>
 #include <map>
 #include <memory>
 #include <queue>
@@ -274,4 +275,21 @@ private:
 	/// Print the under-attack characterization (scouting / economy / timing / enemy)
 	/// to stderr. Diagnostic; does not touch RNG, orders, or any persisted state.
 	void dumpAttackState(const Cortex::CortexObservation& obs) const;
+
+	/// TRAINING TRACE (gated, not serialized, never read by the policy, emits no
+	/// Order). When GLOB2_CORTEX_TRACE=<prefix> is set, every decision cycle appends
+	/// one CSV row per valid tracked swarm to <prefix>.team<N>.csv — the (state,
+	/// hand-action) pairs the ML pilot trains on (see docs/AI/cortex/PILOT.md). Pure
+	/// read of the observation + the already-computed worker-tune action; opening and
+	/// writing a file touches no RNG/order/sync state, so the lockstep stream is
+	/// unaffected. Lazily opened on first use, closed in the destructor; RAM-only
+	/// handle. `tune` is the action returned by CortexPolicy::tuneWorkers this cycle.
+	/// GLOB2_CORTEX_TRACE MUST be an ABSOLUTE path: glob2 chdir()s to its resource
+	/// directory at startup (Glob2.cpp), so a relative path would resolve there, not in
+	/// the launch directory. The open is attempted once (traceOpenAttempted); on failure
+	/// it warns to stderr and disables the trace instead of retrying every cycle.
+	std::FILE* traceFile;
+	bool traceOpenAttempted;
+	void dumpWorkerTrace(const Cortex::CortexObservation& obs,
+	                     const Cortex::CortexAction& tune);
 };

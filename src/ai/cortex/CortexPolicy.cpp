@@ -3,6 +3,10 @@
 
 #include "CortexPolicy.h"
 
+#include <cstdlib>
+#include <iostream>
+#include <string>
+
 namespace Cortex
 {
 	// --- economy tuning ---------------------------------------------------
@@ -62,7 +66,24 @@ namespace Cortex
 	static const int PANIC_MAX_WARRIORS = 15;
 
 	CortexPolicy::CortexPolicy()
+		: mlSwarmCaps_(false)
 	{
+		// Opt into the learned swarm worker-cap policy (effort B pilot) only when
+		// asked AND the net actually loads; otherwise stay on the hand rule. Reading
+		// the env + loading the blob happens once here, at AI construction — never
+		// during a tick — so the per-tick decision stays a pure, deterministic
+		// function of the observation. See docs/AI/cortex/PILOT.md.
+		const char* mode = getenv("GLOB2_CORTEX_POLICY");
+		if (mode && std::string(mode) == "ml")
+		{
+			const char* netPath = getenv("GLOB2_CORTEX_NET");
+			if (netPath && netPath[0] && swarmNet_.load(netPath))
+				mlSwarmCaps_ = true;
+			else
+				std::cerr << "CORTEX_POLICY=ml but the swarm-cap net failed to load"
+				             " (GLOB2_CORTEX_NET='" << (netPath ? netPath : "")
+				          << "') — falling back to the hand rule.\n";
+		}
 	}
 
 	CortexPolicy::DecideFacts CortexPolicy::computeFacts(const CortexObservation& obs)

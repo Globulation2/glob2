@@ -21,6 +21,9 @@
 #include "TeamStat.h"
 #include <Stream.h>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <cstdio>
 #include <cstdlib>
 
 using std::shared_ptr;
@@ -144,4 +147,74 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 		     << " atkSpeedLvls=[" << sp0 << "," << sp1 << "," << sp2 << "," << sp3 << "]\n";
 	}
 	cerr << "CORTEX_DUMP ==== end snapshot ====" << std::endl;
+}
+
+// TRAINING TRACE for the ML worker-tuning pilot (docs/AI/cortex/PILOT.md). Appends
+// one CSV row per valid tracked swarm to <prefix>.team<N>.csv, where <prefix> is
+// GLOB2_CORTEX_TRACE. Each row is the swarm's observed state this decision cycle
+// plus the cap the HAND RULE chose (the BC target). Pure read of obs + the tune
+// action already computed for gameplay; opening/writing a file never touches RNG,
+// orders, or persisted state, so the lockstep sync stream is unaffected. One file
+// per AI instance avoids interleaving and lets each write its own header once.
+//
+// NOTE: fputs (not fprintf) — LogFileManager.h rewrites every fprintf in this TU to
+// a dead-code no-op (see glob2/CLAUDE.md), which would silently drop the trace.
+void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
+                               const Cortex::CortexAction& tune)
+{
+	using namespace Cortex;
+	const int me = player->team->teamNumber;
+
+	if (!traceFile)
+	{
+		if (traceOpenAttempted) return; // already tried (and failed) once; do not retry.
+		traceOpenAttempted = true;
+		const char* prefix = getenv("GLOB2_CORTEX_TRACE");
+		if (!prefix || !prefix[0]) return;
+		std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
+		traceFile = std::fopen(path.c_str(), "a");
+		if (!traceFile)
+		{
+			// glob2 chdir()s to its resource dir at startup, so a relative prefix
+			// resolves there, not in the launch dir — pass an ABSOLUTE path. Warn
+			// once (traceOpenAttempted gate above) rather than silently dumping nothing.
+			std::cerr << "CORTEX_TRACE: cannot open '" << path
+			          << "' for the worker-tuning trace — pass an ABSOLUTE GLOB2_CORTEX_TRACE"
+			             " path (glob2 chdir()s at startup). Trace disabled.\n";
+			return;
+		}
+		// "a" positions at end, so a non-zero offset means the file already has rows;
+		// only the first writer emits the header.
+		if (std::ftell(traceFile) == 0)
+			std::fputs("tick,team,swarm_index,gid,corn,maxCorn,maxUnitWorking,"
+			           "unitsInside,maxUnitInside,nearestWheatDist,harvestableWheatNearby,"
+			           "freeWorkers,totalFree,totalNeeded,workers,swarmCount,feedCapacity,"
+			           "starvingUnits,needFood,maxBuildLevel,desired\n", traceFile);
+	}
+
+	const bool haveTune = (tune.kind == ACTION_TUNE_WORKERS);
+	std::ostringstream row;
+	for (int i = 0; i < obs.swarmCount && i < CORTEX_MAX_TRACKED_SWARMS; i++)
+	{
+		const TrackedBuilding& t = obs.trackedSwarms[i];
+		if (!t.valid) continue;
+		// The cap the hand rule chose this cycle: tune.swarmWorkers[i] when it set one
+		// (>= 0), else the swarm is left unchanged at its current maxUnitWorking.
+		const int desired = (haveTune && tune.swarmWorkers[i] >= 0)
+		                  ? tune.swarmWorkers[i] : t.maxUnitWorking;
+		row << obs.tick << ',' << me << ',' << i << ',' << t.gid << ','
+		    << t.corn << ',' << t.maxCorn << ',' << t.maxUnitWorking << ','
+		    << t.unitsInside << ',' << t.maxUnitInside << ','
+		    << t.nearestWheatDist << ',' << t.harvestableWheatNearby << ','
+		    << obs.freeWorkers << ',' << obs.totalFree << ',' << obs.totalNeeded << ','
+		    << obs.workers << ',' << obs.swarmCount << ',' << obs.feedCapacity << ','
+		    << obs.starvingUnits << ',' << obs.needFood << ',' << obs.maxBuildLevel << ','
+		    << desired << '\n';
+	}
+	const std::string text = row.str();
+	if (!text.empty())
+	{
+		std::fputs(text.c_str(), traceFile);
+		std::fflush(traceFile); // once per ~25 ticks; survive a killed headless run.
+	}
 }

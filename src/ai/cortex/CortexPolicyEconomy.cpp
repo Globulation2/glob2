@@ -225,6 +225,22 @@ namespace Cortex
 			const TrackedBuilding& t = obs.trackedSwarms[i];
 			if (!t.valid) continue;
 			int desired = t.maxUnitWorking;
+			if (mlSwarmCaps_)
+			{
+				// Effort-B pilot: the learned net picks the absolute cap. It applies
+				// the SAME wheat-starved clamp + [WORKER_MIN..swarmWorkerCap] mask +
+				// argmax internally (ML_CONTRACT.md), so we hand it the 16 features in
+				// the contract's exact order and use its choice directly. Integer/
+				// I16F16 → deterministic. Inn/site caps below stay hand-coded.
+				const int features[CortexNet::NUM_FEATURES] = {
+					t.corn, t.maxCorn, t.maxUnitWorking, t.unitsInside, t.maxUnitInside,
+					t.nearestWheatDist, t.harvestableWheatNearby,
+					obs.freeWorkers, obs.totalFree, obs.totalNeeded, obs.workers,
+					obs.swarmCount, obs.feedCapacity, obs.starvingUnits, obs.needFood,
+					obs.maxBuildLevel };
+				desired = swarmNet_.chooseSwarmWorkers(features, obs.maxBuildLevel,
+				                                       obs.freeWorkers, t.harvestableWheatNearby);
+			}
 			// Wheat-starved override: a swarm whose catchment holds too little
 			// HARVESTABLE wheat cannot use more than a single hauler — extra workers
 			// find no wheat to harvest and just idle or thrash the depleted patch. Cap
@@ -232,7 +248,7 @@ namespace Cortex
 			// +/-1 step), regardless of the corn buffer. harvestableWheatNearby is -1
 			// when unknown (game absent); only act on a real count. Takes precedence
 			// over the buffer-driven add/remove below.
-			if (t.harvestableWheatNearby >= 0
+			else if (t.harvestableWheatNearby >= 0
 			 && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES)
 				desired = CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP;
 			// Buffer draining: bring one more hauler in before the swarm stalls.

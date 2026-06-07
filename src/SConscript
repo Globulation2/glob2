@@ -57,6 +57,7 @@ ai/cortex/CortexPolicyTech.cpp
 ai/cortex/CortexPolicyCombat.cpp
 ai/cortex/CortexWheat.cpp
 ai/cortex/CortexWater.cpp
+ai/cortex/CortexNet.cpp
 ai/cortex/AICortex.cpp
 ai/cortex/AICortexTranslate.cpp
 ai/cortex/AICortexDebug.cpp
