@@ -98,7 +98,13 @@ namespace Cortex
 	/// so fogged fruit is excluded). The worker-tuning loop sets the inn's maxUnitWorking
 	/// to this (clamped), so the hauler ceiling scales with inn level and includes fruit
 	/// without over-staffing for fogged/unreachable resources. -1 for swarms / unknown.
-	static const Uint32 OBSERVATION_VERSION = 14;
+	/// v15 (2026-06-06, offense-hold relocation) added flagPosture + offenseHoldUntil:
+	/// the action layer's RAM-only hysteresis state, echoed into the observation so the
+	/// PURE policy makes the hold-vs-recall (thrash-damper) decision itself instead of
+	/// it living in the downstream action layer. AICortex still OWNS/mutates the state
+	/// on flag placement and persists it; these obs fields are a per-cycle read-only
+	/// mirror (not serialized — the observation is recomputed every cycle).
+	static const Uint32 OBSERVATION_VERSION = 15;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -199,6 +205,28 @@ namespace Cortex
 	/// Self-imposed upper bound on warriors assigned to one war flag (the flag's
 	/// maxUnitWorking). Cortex's own bound for the action param, not an engine cap.
 	static const int CORTEX_MAX_FLAG_UNITS = 32;
+
+	/// Offense-hold hysteresis posture (the thrash damper). The single source of
+	/// truth for the posture the flag is committed to: shared by the observation
+	/// (CortexObservation.flagPosture echoes it so the PURE policy can reason about
+	/// the in-progress commitment), the policy (which now makes the hold-vs-recall
+	/// decision), and the action layer (which OWNS and mutates the state when it
+	/// actually places a flag). AICortex::FlagPosture aliases these so the action
+	/// layer keeps its established enumerator names while the value stays single-
+	/// sourced here. POD-friendly: stored in the observation as a plain Sint32.
+	enum CortexFlagPosture
+	{
+		CORTEX_POSTURE_NONE    = 0,
+		CORTEX_POSTURE_OFFENSE = 1,
+		CORTEX_POSTURE_DEFENSE = 2
+	};
+	/// How many of our buildings must be under attack AT ONCE for a defensive
+	/// recall to override an in-progress offense hold. A single transient hit
+	/// (1 building) is "harassment" and does not break the push; multiple buildings
+	/// under fire is a real base assault that earns the recall. Shared by the policy
+	/// (the hold-vs-recall decision, moved here from the action layer) — the value
+	/// must match AICortex::DEFENSE_SERIOUS_BUILDINGS, which aliases it.
+	static const int CORTEX_DEFENSE_SERIOUS_BUILDINGS = 2;
 
 	// --- wheat-protection tuning (all tunable AI design choices) -----------
 	// Cortex paints a checkerboard `forbidden` pattern over its wheat (CORN) so
@@ -586,6 +614,21 @@ namespace Cortex
 		Sint32 unitsUnderAttack;
 		Sint32 buildingsUnderAttack;
 
+		// --- offense-hold hysteresis state (v15) ---
+		// The flag posture the action layer last committed (a CortexFlagPosture), and
+		// the tick until which an OFFENSE commitment is protected from a minor-
+		// harassment defensive recall (0 == no hold active). These mirror the AICortex
+		// RAM-only members of the same names: AICortex OWNS and MUTATES the state when
+		// it actually places a flag (re-arming offenseHoldUntil on a war-flag placement
+		// is an execution side-effect), and echoes the current values into the
+		// observation each cycle BEFORE policy.decide() so the PURE policy can make the
+		// hold-vs-recall hysteresis decision itself instead of having it hidden in the
+		// downstream executor. Not derived from engine state and NOT serialized via the
+		// observation (the observation is recomputed every cycle and never saved); the
+		// canonical persisted copy lives in AICortex (load/save), unchanged.
+		Sint32 flagPosture;     ///< == AICortex.flagPosture (a CortexFlagPosture).
+		Sint32 offenseHoldUntil;///< == AICortex.offenseHoldUntil (tick the offense hold expires; 0 == none).
+
 		// --- wheat sustainability (v5) ---
 		// The open margin N drawn once per game (AICortex, via syncRand) and echoed
 		// through the observation so the pure policy reads it like any other feature.
@@ -822,6 +865,12 @@ namespace Cortex
 		obs.enemyUnitsNearFlag = 0;
 		obs.unitsUnderAttack = 0;
 		obs.buildingsUnderAttack = 0;
+
+		// Neutral defaults; AICortex overwrites these with its live RAM-only
+		// hysteresis state after observe() returns, before policy.decide() (the
+		// wheatOpenMargin pattern: observe leaves a placeholder, AICortex injects).
+		obs.flagPosture = CORTEX_POSTURE_NONE;
+		obs.offenseHoldUntil = 0;
 
 		obs.wheatOpenMargin = 0;
 		obs.wheatProtectAddCount = 0;

@@ -275,33 +275,30 @@ namespace Cortex
 	{
 	}
 
-	CortexAction CortexPolicy::decide(const CortexObservation& obs)
+	CortexPolicy::DecideFacts CortexPolicy::computeFacts(const CortexObservation& obs)
 	{
-		// Reject an observation built against a layout this policy wasn't
-		// written for, or one that was never populated. Either way: do nothing.
-		if (obs.version != OBSERVATION_VERSION || !obs.valid)
-			return makeNoOpAction();
+		DecideFacts f;
 
-		const Sint32 inns          = cortexFinishedBuildings(obs, CORTEX_BUILD_FOOD);
-		const Sint32 innSites      = cortexBuildingSites(obs, CORTEX_BUILD_FOOD);
-		const Sint32 swarms        = cortexFinishedBuildings(obs, CORTEX_BUILD_SWARM);
-		const Sint32 swarmSites    = cortexBuildingSites(obs, CORTEX_BUILD_SWARM);
-		const Sint32 barracks      = cortexFinishedBuildings(obs, CORTEX_BUILD_ATTACK);
-		const Sint32 barracksSites = cortexBuildingSites(obs, CORTEX_BUILD_ATTACK);
-		const Sint32 school        = cortexFinishedBuildings(obs, CORTEX_BUILD_SCIENCE);
-		const Sint32 schoolSites   = cortexBuildingSites(obs, CORTEX_BUILD_SCIENCE);
-		const Sint32 heal          = cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL);
-		const Sint32 healSites     = cortexBuildingSites(obs, CORTEX_BUILD_HEAL);
-		const Sint32 race          = cortexFinishedBuildings(obs, CORTEX_BUILD_WALKSPEED);
-		const Sint32 raceSites     = cortexBuildingSites(obs, CORTEX_BUILD_WALKSPEED);
-		const Sint32 warriors      = obs.warriors;
+		f.inns          = cortexFinishedBuildings(obs, CORTEX_BUILD_FOOD);
+		f.innSites      = cortexBuildingSites(obs, CORTEX_BUILD_FOOD);
+		f.swarms        = cortexFinishedBuildings(obs, CORTEX_BUILD_SWARM);
+		f.swarmSites    = cortexBuildingSites(obs, CORTEX_BUILD_SWARM);
+		f.barracks      = cortexFinishedBuildings(obs, CORTEX_BUILD_ATTACK);
+		f.barracksSites = cortexBuildingSites(obs, CORTEX_BUILD_ATTACK);
+		f.school        = cortexFinishedBuildings(obs, CORTEX_BUILD_SCIENCE);
+		f.schoolSites   = cortexBuildingSites(obs, CORTEX_BUILD_SCIENCE);
+		f.heal          = cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL);
+		f.healSites     = cortexBuildingSites(obs, CORTEX_BUILD_HEAL);
+		f.race          = cortexFinishedBuildings(obs, CORTEX_BUILD_WALKSPEED);
+		f.raceSites     = cortexBuildingSites(obs, CORTEX_BUILD_WALKSPEED);
+		f.warriors      = obs.warriors;
 
 		const Sint32 starvingPct   = (obs.totalUnit > 0)
 			? (obs.starvingUnits * 100 / obs.totalUnit) : 0;
 		const Sint32 hungryPct     = (obs.totalUnit > 0)
 			? (obs.needFood * 100 / obs.totalUnit) : 0;
-		const bool starving        = (starvingPct >= STARVE_HALT_PERCENT);
-		const bool hungry          = (hungryPct >= HUNGRY_HALT_PERCENT);
+		f.starving        = (starvingPct >= STARVE_HALT_PERCENT);
+		f.hungry          = (hungryPct >= HUNGRY_HALT_PERCENT);
 
 		// "Established economy" gate, and also the army-pivot trigger: a self-feeding
 		// colony with a swarm + an inn and a real population, not starving. Below it
@@ -317,13 +314,13 @@ namespace Cortex
 		// labour starts the rest of the build-out (and the army ramp) now, in parallel
 		// with the inn finishing. Without free workers we hold for the finished inn as
 		// before, so nothing is pulled off hauling while the colony is labour-tight.
-		const bool innEstablished  = (inns >= COMBAT_ECON_MIN_INNS)
+		const bool innEstablished  = (f.inns >= COMBAT_ECON_MIN_INNS)
 		                          || (obs.freeWorkers > 0
-		                           && (inns + innSites) >= COMBAT_ECON_MIN_INNS);
-		const bool combatPhase     = (innEstablished
-		                           && swarms >= COMBAT_ECON_MIN_SWARMS
+		                           && (f.inns + f.innSites) >= COMBAT_ECON_MIN_INNS);
+		f.combatPhase     = (innEstablished
+		                           && f.swarms >= COMBAT_ECON_MIN_SWARMS
 		                           && obs.totalUnit >= COMBAT_ECON_MIN_UNITS
-		                           && !starving);
+		                           && !f.starving);
 
 		// Spare labour: idle workers exist, so a tech/expansion build can be started
 		// without stealing the haulers that keep the swarm + inn CORN buffers full.
@@ -331,7 +328,7 @@ namespace Cortex
 		// "surplus, do nothing" state. Feeding (the inn, Priority 2) is exempt: it is
 		// built on the capacity trigger regardless of spare labour, because feeding
 		// is existential and a starving colony has no spare labour yet.
-		const bool canExpand       = (obs.freeWorkers > 0 && !starving && !hungry);
+		f.canExpand       = (obs.freeWorkers > 0 && !f.starving && !f.hungry);
 
 		// Production mix {WORKER, EXPLORER, WARRIOR} — a HARD rule: NEVER {0,0,0}.
 		// Bootstrap is worker-biased with one early explorer (reveal our wheat /
@@ -339,10 +336,10 @@ namespace Cortex
 		// worker pool keeps growing to staff new buildings and haul corn, while a
 		// warrior slice builds the army and one explorer stays out to scout the
 		// enemy base (so flagTargets can populate for offense).
-		const bool wantEarlyExplorer = (!combatPhase && swarms >= 1 && obs.explorers == 0);
+		const bool wantEarlyExplorer = (!f.combatPhase && f.swarms >= 1 && obs.explorers == 0);
 		const bool wantScout         = (obs.explorers == 0); // keep ≥1 explorer out.
-		const int growExplorer = (wantEarlyExplorer || (combatPhase && wantScout)) ? 1 : 0;
-		const int growWarrior  = combatPhase ? 1 : 0;
+		f.growExplorer = (wantEarlyExplorer || (f.combatPhase && wantScout)) ? 1 : 0;
+		f.growWarrior  = f.combatPhase ? 1 : 0;
 
 		// Worker-surplus throttle (see WORKER_SURPLUS_HI): stop minting workers while
 		// idle labour piles up and resume once it is spent. "Available workers" is the
@@ -354,7 +351,7 @@ namespace Cortex
 		// dropping workers would halt the swarm at the forbidden {0,0,0}.
 		const int availableWorkers = obs.freeWorkers - obs.totalNeeded;
 		const bool suppressingNow  =
-		    (swarms > 0 && obs.swarmsProducing > 0 && obs.swarmsProducingWorker == 0);
+		    (f.swarms > 0 && obs.swarmsProducing > 0 && obs.swarmsProducingWorker == 0);
 		bool suppressWorkers;
 		if (availableWorkers > WORKER_SURPLUS_HI)
 			suppressWorkers = true;            // idle hands to spare -> make warriors
@@ -362,44 +359,89 @@ namespace Cortex
 			suppressWorkers = false;           // labour scarce again -> make workers
 		else
 			suppressWorkers = suppressingNow;  // hold within the hysteresis band
-		const int growWorker = (combatPhase && suppressWorkers) ? 0
-		                     : (combatPhase ? 2 : 1);
+		f.growWorker = (f.combatPhase && suppressWorkers) ? 0
+		                     : (f.combatPhase ? 2 : 1);
 
-		// --- Priority 0: pre-combat panic defense. ---
-		// Before the combat phase unlocks (it needs COMBAT_ECON_MIN_UNITS units + an
-		// inn + a swarm), Cortex has no army and the combat-gated defense flag /
-		// barracks are unreachable — so an early all-in rush kills a defenceless
-		// colony (the measured Warrush failure mode). This is the economy-phase
-		// emergency response. It PREEMPTS the economy priorities while it still has
-		// setup work, firing only when we are NOT yet in combat phase AND something
-		// of ours is under attack. Response, in order (each step dedups, so once
-		// satisfied it falls through to the next):
-		//   (1) flip every swarm to 100%-warrior production — start making fighters
-		//       now (raw level-0/1 warriors still buy time and bodies),
-		//   (2) raise the swarms to HIGH engine priority so they win worker
-		//       contention and keep the warrior pump fed,
-		//   (3) panic-build a hospital (HEAL_BUILDING) to heal the defenders.
-		// Once all three are set the block falls through entirely to the normal
-		// economy beneath, which keeps the swarms fed (Priority 1.5) while they pump
-		// warriors. The trigger is reactive (underAttackTimer-based), so when the
-		// attack ends the panic clears and the economy resumes on its own; the
-		// restore branch then drops the swarms back to NORMAL priority.
+		// Pre-combat panic flag (Priority 0). Shared because Priority 1 keys its whole
+		// block on !panic. Suppressed once we field a real army (warriors >
+		// PANIC_MAX_WARRIORS): such a colony defends through the normal path and need
+		// not derail its economy.
 		const bool underAttack = (obs.buildingsUnderAttack > 0 || obs.unitsUnderAttack > 0);
-		// Suppressed once we field a real army (warriors > PANIC_MAX_WARRIORS): such a
-		// colony defends through the normal path and need not derail its economy.
-		const bool panic       = (!combatPhase && underAttack
-		                          && warriors <= PANIC_MAX_WARRIORS);
-		if (panic)
+		f.panic       = (!f.combatPhase && underAttack
+		                          && f.warriors <= PANIC_MAX_WARRIORS);
+
+		return f;
+	}
+
+	CortexAction CortexPolicy::decide(const CortexObservation& obs)
+	{
+		// Reject an observation built against a layout this policy wasn't
+		// written for, or one that was never populated. Either way: do nothing.
+		if (obs.version != OBSERVATION_VERSION || !obs.valid)
+			return makeNoOpAction();
+
+		const DecideFacts f = computeFacts(obs);
+
+		// Seven-priority decision ladder, FIRST-MATCH-WINS: evaluate each priority in
+		// strict order and return the first that engages this cycle. Each helper
+		// returns std::nullopt to fall through to the next — preserving exactly the
+		// original ladder's precedence (the inline version early-returned on the first
+		// matching branch; no later priority could override an earlier one). The
+		// helpers are listed here in the SAME order as the old inline rungs.
+		if (auto a = tryPanicDefense(obs, f))          return *a; // Priority 0
+		if (auto a = tryProductionControl(obs, f))     return *a; // Priority 1
+		if (auto a = tryFeedCapacity(obs, f))          return *a; // Priority 2
+		if (auto a = trySwarmRecovery(obs, f))         return *a; // Priority 2.5
+		if (auto a = trySchool(obs, f))                return *a; // Priority 3
+		if (auto a = tryRacetrack(obs, f))             return *a; // Priority 4
+		if (auto a = tryHospital(obs, f))              return *a; // Priority 5
+		if (auto a = trySwimmingPool(obs, f))          return *a; // Priority 5.5
+		if (auto a = tryBarracks(obs, f))              return *a; // Priority 6
+		if (auto a = tryBarracksUpgrade(obs, f))       return *a; // Priority 6.3+6.5
+		if (auto a = trySchoolUpgrade(obs, f))         return *a; // Priority 6.6
+		if (auto a = tryRacetrackUpgrade(obs, f))      return *a; // Priority 6.7
+		if (auto a = tryInnUpgrade(obs, f))            return *a; // Priority 6.8
+		if (auto a = tryHospitalExpandUpgrade(obs, f)) return *a; // Priority 6.9
+		if (auto a = trySecondSwarm(obs, f))           return *a; // Priority 6.95
+		if (auto a = tryDefense(obs, f))               return *a; // Priority 7
+		if (auto a = tryRetireFlag(obs, f))            return *a; // Priority 7.2
+		if (auto a = tryOffense(obs, f))               return *a; // Priority 8
+
+		return makeNoOpAction();
+	}
+
+	// --- Priority 0: pre-combat panic defense. ---
+	// Before the combat phase unlocks (it needs COMBAT_ECON_MIN_UNITS units + an
+	// inn + a swarm), Cortex has no army and the combat-gated defense flag /
+	// barracks are unreachable — so an early all-in rush kills a defenceless
+	// colony (the measured Warrush failure mode). This is the economy-phase
+	// emergency response. It PREEMPTS the economy priorities while it still has
+	// setup work, firing only when we are NOT yet in combat phase AND something
+	// of ours is under attack. Response, in order (each step dedups, so once
+	// satisfied it falls through to the next):
+	//   (1) flip every swarm to 100%-warrior production — start making fighters
+	//       now (raw level-0/1 warriors still buy time and bodies),
+	//   (2) raise the swarms to HIGH engine priority so they win worker
+	//       contention and keep the warrior pump fed,
+	//   (3) panic-build a hospital (HEAL_BUILDING) to heal the defenders.
+	// Once all three are set the block falls through entirely to the normal
+	// economy beneath, which keeps the swarms fed (Priority 1.5) while they pump
+	// warriors. The trigger is reactive (underAttackTimer-based), so when the
+	// attack ends the panic clears and the economy resumes on its own; the
+	// restore branch then drops the swarms back to NORMAL priority.
+	std::optional<CortexAction> CortexPolicy::tryPanicDefense(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.panic)
 		{
 			// (1) 100% warriors — fire until every swarm is warrior-only.
-			if (swarms > 0 && obs.swarmsProducingWarrior < swarms)
+			if (f.swarms > 0 && obs.swarmsProducingWarrior < f.swarms)
 				return makeSetProductionAction(0, 0, 1);
 			// (2) Swarms to HIGH priority — EVERY swarm, not just the primary, so the
 			//     whole warrior pump wins worker contention while the base is hit.
 			if (anySwarmPriorityNot(obs, CORTEX_PRIORITY_HIGH))
 				return makeSetPriorityAction(CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_HIGH);
 			// (3) Panic-build one hospital if none is up or already building.
-			if (heal == 0 && healSites == 0)
+			if (f.heal == 0 && f.healSites == 0)
 			{
 				const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 				if (slot >= 0)
@@ -416,21 +458,25 @@ namespace Cortex
 			// primary swarm to HIGH after a panic ends (the panic raised every swarm).
 			return makeSetPriorityAction(CORTEX_PRIORITY_HIGH, CORTEX_PRIORITY_NORMAL);
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 1: production control. HARD RULE: the swarm always produces;
-		// the ratio is NEVER {0,0,0}. We only (re)issue a ratio when the swarm's
-		// current output does not match the desired mix — detected from the bounded
-		// count signals (the pure policy cannot read raw ratios) — so once the mix is
-		// applied this whole block falls through and stops preempting the build
-		// priorities below. Suppressed while panicking (the panic block owns the
-		// ratio then). The action layer dedups per-swarm, so a stray re-issue of an
-		// already-applied ratio emits no order.
-		if (!panic)
+	// --- Priority 1: production control. HARD RULE: the swarm always produces;
+	// the ratio is NEVER {0,0,0}. We only (re)issue a ratio when the swarm's
+	// current output does not match the desired mix — detected from the bounded
+	// count signals (the pure policy cannot read raw ratios) — so once the mix is
+	// applied this whole block falls through and stops preempting the build
+	// priorities below. Suppressed while panicking (the panic block owns the
+	// ratio then). The action layer dedups, so a stray re-issue of an
+	// already-applied ratio emits no order.
+	std::optional<CortexAction> CortexPolicy::tryProductionControl(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (!f.panic)
 		{
 			// (a) (Re)start any swarm producing nothing — freshly built, or a halted
 			//     {0,0,0} ratio loaded from an old save.
-			if (obs.swarmsProducing < swarms)
-				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			if (obs.swarmsProducing < f.swarms)
+				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
 			// (a2) End-of-panic recovery. The pre-combat panic defense flips swarms to
 			//      100%-warrior production (growWarrior is 0 before the combat phase, so
 			//      that mix exists ONLY as a panic leftover). When the attack ends the
@@ -441,31 +487,31 @@ namespace Cortex
 			//      swarmsProducingWarrior count and pull the mix back to the no-warrior
 			//      economy ratio. Self-terminating: once no swarm makes warriors it
 			//      stops firing (and re-fires only if another panic flips them again).
-			if (!combatPhase && swarms > 0 && obs.swarmsProducingWarrior > 0)
-				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			if (!f.combatPhase && f.swarms > 0 && obs.swarmsProducingWarrior > 0)
+				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
 			// (b) Establish the warrior mix once the economy is established but no
 			//     warriors are being made yet. Self-terminating: stops firing as soon
 			//     as the first warrior appears (re-fires if the army is wiped to 0).
-			if (combatPhase && swarms > 0 && warriors == 0)
-				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			if (f.combatPhase && f.swarms > 0 && f.warriors == 0)
+				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
 			// (c) Fold an explorer into the mix when we want one out but none is being
 			//     produced and we have none yet (reveals our wheat / the enemy base).
-			if (growExplorer > 0 && swarms > 0
+			if (f.growExplorer > 0 && f.swarms > 0
 			 && obs.swarmsProducingExplorer == 0 && obs.explorers == 0)
-				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
 			// (d) Drop the explorer slice back out once an explorer exists, so we do
 			//     not keep over-producing them. Stops once no swarm carries it.
-			if (growExplorer == 0 && swarms > 0 && obs.swarmsProducingExplorer > 0)
-				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			if (f.growExplorer == 0 && f.swarms > 0 && obs.swarmsProducingExplorer > 0)
+				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
 			// (e) Apply / revert the worker-surplus throttle: re-issue the mix
 			//     whenever the swarm's worker output disagrees with the desired
 			//     growWorker (workers on <-> off). The symmetric peer of (c)/(d) for
 			//     the explorer slice; only ever meaningful in the combat phase, where
 			//     growWorker can be 0. Self-terminating and action-layer dedup'd, so a
 			//     no-op re-issue emits no order.
-			if (combatPhase && swarms > 0
-			 && (growWorker > 0) != (obs.swarmsProducingWorker > 0))
-				return makeSetProductionAction(growWorker, growExplorer, growWarrior);
+			if (f.combatPhase && f.swarms > 0
+			 && (f.growWorker > 0) != (obs.swarmsProducingWorker > 0))
+				return makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior);
 		}
 
 		// Worker-hauling tuning (swarms + inns + construction sites) no longer lives
@@ -474,20 +520,24 @@ namespace Cortex
 		// fed never preempts nor waits behind a build/upgrade decision (and vice
 		// versa). See CortexPolicy::tuneWorkers(), enqueued alongside decide() by the
 		// engine binding (AICortex::getOrder) the same way wheat-forbidden upkeep is.
+		return std::nullopt;
+	}
 
-		// --- Priority 2: feed capacity (inns). FEED-LED, not wheat-led: build an inn
-		// whenever the population has reached INN_BUILD_CAPACITY_PERCENT of the inns'
-		// feeding capacity (or there is no inn yet) — placing the next inn at 80% full
-		// rather than 100% so its build window overlaps the climb to capacity instead
-		// of starting after feeding is already exhausted. An existing inn short of
-		// WHEAT SUPPLY is the worker-tuning loop's problem (add haulers), NEVER a
-		// reason to place another inn here. One site at a time; placement already
-		// rejects sites too far from wheat. Ungated by spare labour — feeding is
-		// existential, and this is what keeps the swarm from ever needing to halt for
-		// overpopulation.
-		if (innSites == 0)
+	// --- Priority 2: feed capacity (inns). FEED-LED, not wheat-led: build an inn
+	// whenever the population has reached INN_BUILD_CAPACITY_PERCENT of the inns'
+	// feeding capacity (or there is no inn yet) — placing the next inn at 80% full
+	// rather than 100% so its build window overlaps the climb to capacity instead
+	// of starting after feeding is already exhausted. An existing inn short of
+	// WHEAT SUPPLY is the worker-tuning loop's problem (add haulers), NEVER a
+	// reason to place another inn here. One site at a time; placement already
+	// rejects sites too far from wheat. Ungated by spare labour — feeding is
+	// existential, and this is what keeps the swarm from ever needing to halt for
+	// overpopulation.
+	std::optional<CortexAction> CortexPolicy::tryFeedCapacity(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.innSites == 0)
 		{
-			const bool noInnYet      = (inns == 0 && obs.totalUnit > 0);
+			const bool noInnYet      = (f.inns == 0 && obs.totalUnit > 0);
 			const bool capacityShort =
 				(obs.totalUnit * 100 >= obs.feedCapacity * INN_BUILD_CAPACITY_PERCENT);
 			if (noInnYet || capacityShort)
@@ -497,80 +547,100 @@ namespace Cortex
 					return makeBuildAction(CORTEX_BUILD_FOOD, slot);
 			}
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 2.5: swarm RECOVERY only. We deliberately do NOT build a
-		// second swarm for now (may revisit) — a team starts with one swarm, so this
-		// fires only if that swarm was destroyed, restoring the ability to produce.
-		if (swarms == 0 && swarmSites == 0 && inns > 0)
+	// --- Priority 2.5: swarm RECOVERY only. We deliberately do NOT build a
+	// second swarm for now (may revisit) — a team starts with one swarm, so this
+	// fires only if that swarm was destroyed, restoring the ability to produce.
+	std::optional<CortexAction> CortexPolicy::trySwarmRecovery(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.swarms == 0 && f.swarmSites == 0 && f.inns > 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_SWARM, slot);
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 3: school (SCIENCE) — the first tech building. Trains workers'
-		// HARVEST (more CORN carried per haul → fuller swarm/inn buffers, easing the
-		// very supply pressure the economy lives on) and BUILD (faster construction +
-		// raises team maxBuildLevel, the engine gate that unlocks every building
-		// upgrade). Built once the economy is established and spare labour exists, so
-		// the build crew comes off idle hands rather than off hauling.
-		//
-		// ALGA gate: a school costs ALGA to build at EVERY level (2/12/10), and algae is
-		// harvestable only off water. If no algae is reachable from shore (a landlocked
-		// map, or algae walled off by resources/deep water with no ground path) a school
-		// site can never be supplied and would stall forever — so we hold the school
-		// until a harvestable algae tile is found. This must NOT block the rest of the
-		// build-out: the racetrack (Priority 4) is decoupled from the school below so it
-		// proceeds anyway, and the engine's maxBuildLevel gate naturally holds upgrades
-		// (which need a school) until one exists. Once algae is discovered the school
-		// builds on the next cycle.
-		if (combatPhase && canExpand && obs.algaeReachable
-		 && school == 0 && schoolSites == 0)
+	// --- Priority 3: school (SCIENCE) — the first tech building. Trains workers'
+	// HARVEST (more CORN carried per haul → fuller swarm/inn buffers, easing the
+	// very supply pressure the economy lives on) and BUILD (faster construction +
+	// raises team maxBuildLevel, the engine gate that unlocks every building
+	// upgrade). Built once the economy is established and spare labour exists, so
+	// the build crew comes off idle hands rather than off hauling.
+	//
+	// ALGA gate: a school costs ALGA to build at EVERY level (2/12/10), and algae is
+	// harvestable only off water. If no algae is reachable from shore (a landlocked
+	// map, or algae walled off by resources/deep water with no ground path) a school
+	// site can never be supplied and would stall forever — so we hold the school
+	// until a harvestable algae tile is found. This must NOT block the rest of the
+	// build-out: the racetrack (Priority 4) is decoupled from the school below so it
+	// proceeds anyway, and the engine's maxBuildLevel gate naturally holds upgrades
+	// (which need a school) until one exists. Once algae is discovered the school
+	// builds on the next cycle.
+	std::optional<CortexAction> CortexPolicy::trySchool(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.combatPhase && f.canExpand && obs.algaeReachable
+		 && f.school == 0 && f.schoolSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SCIENCE);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_SCIENCE, slot);
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 4: racetrack (WALKSPEED) — second tech building. Trains WALK,
-		// speeding every unit: shorter hauling round-trips (more economy throughput)
-		// and faster army repositioning. Normally held until the school is finished so
-		// HARVEST/BUILD land first — BUT the school needs ALGA, so on a map with no
-		// reachable algae no school will ever come; we must not let that permanently
-		// block the racetrack and everything behind it. Decouple ONLY when the school is
-		// genuinely unbuildable (no reachable algae): when algae IS reachable the school
-		// is coming, so keep waiting for it (Priority 3 also fires first by ordering, so
-		// the racetrack never races ahead of an in-progress school on a normal map).
-		if (combatPhase && canExpand && (school > 0 || !obs.algaeReachable)
-		 && race == 0 && raceSites == 0)
+	// --- Priority 4: racetrack (WALKSPEED) — second tech building. Trains WALK,
+	// speeding every unit: shorter hauling round-trips (more economy throughput)
+	// and faster army repositioning. Normally held until the school is finished so
+	// HARVEST/BUILD land first — BUT the school needs ALGA, so on a map with no
+	// reachable algae no school will ever come; we must not let that permanently
+	// block the racetrack and everything behind it. Decouple ONLY when the school is
+	// genuinely unbuildable (no reachable algae): when algae IS reachable the school
+	// is coming, so keep waiting for it (Priority 3 also fires first by ordering, so
+	// the racetrack never races ahead of an in-progress school on a normal map).
+	std::optional<CortexAction> CortexPolicy::tryRacetrack(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.combatPhase && f.canExpand && (f.school > 0 || !obs.algaeReachable)
+		 && f.race == 0 && f.raceSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_WALKSPEED);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_WALKSPEED, slot);
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 5: hospital (HEAL) — survivability for the standing army.
-		// The panic path also builds one reactively under attack; this is the
-		// planned, non-emergency one once the economy can spare the labour.
-		if (combatPhase && canExpand && heal == 0 && healSites == 0)
+	// --- Priority 5: hospital (HEAL) — survivability for the standing army.
+	// The panic path also builds one reactively under attack; this is the
+	// planned, non-emergency one once the economy can spare the labour.
+	std::optional<CortexAction> CortexPolicy::tryHospital(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.combatPhase && f.canExpand && f.heal == 0 && f.healSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_HEAL, slot);
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 5.5: swimming pool (SWIMSPEED) — train SWIM so our workers and
-		// warriors can cross water. Built when an explorer has revealed reachable ALGA
-		// (a food resource that grows only on water, so harvestable only by swimmers)
-		// OR when allowing swim MATERIALLY expands the colony's reachable area — a
-		// water-separated wheat patch / stretch of land, or the only-or-much-shorter
-		// route to a water-locked enemy. The reach test compares the bounded land-only
-		// vs land+water flood-fill counts surfaced by CortexWater (swimWaterReach is
-		// always >= swimLandReach; we want a pool when the swim count is more than
-		// NUMER/DENOM larger). This mirrors the INTENT of AICastor's computeNeedSwim
-		// (the swim-helps predicate). One pool suffices — SWIM is a team-wide trained
-		// ability, not per-building capacity. Gated on the established economy + spare
-		// labour like the other tech builds, so the build crew comes off idle hands.
+	// --- Priority 5.5: swimming pool (SWIMSPEED) — train SWIM so our workers and
+	// warriors can cross water. Built when an explorer has revealed reachable ALGA
+	// (a food resource that grows only on water, so harvestable only by swimmers)
+	// OR when allowing swim MATERIALLY expands the colony's reachable area — a
+	// water-separated wheat patch / stretch of land, or the only-or-much-shorter
+	// route to a water-locked enemy. The reach test compares the bounded land-only
+	// vs land+water flood-fill counts surfaced by CortexWater (swimWaterReach is
+	// always >= swimLandReach; we want a pool when the swim count is more than
+	// NUMER/DENOM larger). This mirrors the INTENT of AICastor's computeNeedSwim
+	// (the swim-helps predicate). One pool suffices — SWIM is a team-wide trained
+	// ability, not per-building capacity. Gated on the established economy + spare
+	// labour like the other tech builds, so the build crew comes off idle hands.
+	std::optional<CortexAction> CortexPolicy::trySwimmingPool(const CortexObservation& obs, const DecideFacts& f) const
+	{
 		const Sint32 pool      = cortexFinishedBuildings(obs, CORTEX_BUILD_SWIMSPEED);
 		const Sint32 poolSites = cortexBuildingSites(obs, CORTEX_BUILD_SWIMSPEED);
 		const bool swimExpandsReach = (obs.swimLandReach > 0
@@ -582,248 +652,307 @@ namespace Cortex
 		// footprint; SWIM is a later convenience that only makes sense once that core
 		// layout exists. Without a finished racetrack, hold the pool regardless of the
 		// swim signals.
-		const bool poolPrereq = (race > 0);
+		const bool poolPrereq = (f.race > 0);
 		// Not until the army ramp has actually begun: swimming is not mandatory for
 		// workers in the opening, so we hold the pool until warriors are in the swarm
 		// mix (warriors > 0, which only happens in the combat phase). This keeps the
 		// pool from competing with the early economy/army build-up.
-		if (combatPhase && canExpand && warriors > 0 && wantPool && poolPrereq
+		if (f.combatPhase && f.canExpand && f.warriors > 0 && wantPool && poolPrereq
 		 && pool == 0 && poolSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWIMSPEED);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_SWIMSPEED, slot);
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 6: barracks (ATTACK) — the army pivot. Lets produced warriors
-		// train to attack level 1 and get healed between fights. One is enough.
-		if (combatPhase && barracks == 0 && barracksSites == 0)
+	// --- Priority 6: barracks (ATTACK) — the army pivot. Lets produced warriors
+	// train to attack level 1 and get healed between fights. One is enough.
+	std::optional<CortexAction> CortexPolicy::tryBarracks(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.combatPhase && f.barracks == 0 && f.barracksSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_ATTACK);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_ATTACK, slot);
 		}
+		return std::nullopt;
+	}
 
-		// --- Priorities 6.3-6.8: unified EXPAND-vs-UPGRADE ladder. ----------------
-		// For each training/feeding class we decide, from two signals, whether the
-		// current building level still has work (keep it / expand for redundancy) or is
-		// mostly done and worth UPGRADING:
-		//   • "% of eligible units already maxed at the current level" (unitsServedPct
-		//     over the matching upgradeState slice, vs the matching unit pool), and
-		//   • spare labour (canExpand) to pay for the build/teardown.
-		// obs.upgradableCount[T] already encodes the FULL engine Upgradable predicate
-		// (finished, full HP, not already upgrading, has a higher level, the larger
-		// footprint fits, and crucially maxBuildLevel > level — so a nonzero count means
-		// a school has lifted our BUILD skill and a class-T building can actually go up a
-		// level). cortexBuildingsUpgrading(T) guards against stacking two upgrades of the
-		// same class. The action layer's findUpgradeTarget picks the laggard (lowest
-		// level) instance, so with two buildings it lifts them one at a time.
+	// --- Priorities 6.3-6.8: unified EXPAND-vs-UPGRADE ladder. ----------------
+	// For each training/feeding class we decide, from two signals, whether the
+	// current building level still has work (keep it / expand for redundancy) or is
+	// mostly done and worth UPGRADING:
+	//   • "% of eligible units already maxed at the current level" (unitsServedPct
+	//     over the matching upgradeState slice, vs the matching unit pool), and
+	//   • spare labour (canExpand) to pay for the build/teardown.
+	// obs.upgradableCount[T] already encodes the FULL engine Upgradable predicate
+	// (finished, full HP, not already upgrading, has a higher level, the larger
+	// footprint fits, and crucially maxBuildLevel > level — so a nonzero count means
+	// a school has lifted our BUILD skill and a class-T building can actually go up a
+	// level). cortexBuildingsUpgrading(T) guards against stacking two upgrades of the
+	// same class. The action layer's findUpgradeTarget picks the laggard (lowest
+	// level) instance, so with two buildings it lifts them one at a time.
 
-		// --- Priority 6.3 + 6.5: barracks (ATTACK) — the unit-strength lever. ---
-		// Warriors train ATTACK_SPEED+ATTACK_STRENGTH (in parallel) to barracksLevel+1.
-		// EXPAND first: an upgrade blacks a barracks out for ~hundreds-to-2000 ticks,
-		// during which it trains and heals no warriors — with one barracks that is a
-		// total army blackout (the measured ~1900-tick defect this ladder fixes). So we
-		// require a SECOND barracks before upgrading; the new one keeps training the
-		// warrior stream while the laggard upgrades. Gated on canExpand so the build/
-		// teardown comes off idle hands, never off hauling or army production.
+	// --- Priority 6.3 + 6.5: barracks (ATTACK) — the unit-strength lever. ---
+	// Warriors train ATTACK_SPEED+ATTACK_STRENGTH (in parallel) to barracksLevel+1.
+	// EXPAND first: an upgrade blacks a barracks out for ~hundreds-to-2000 ticks,
+	// during which it trains and heals no warriors — with one barracks that is a
+	// total army blackout (the measured ~1900-tick defect this ladder fixes). So we
+	// require a SECOND barracks before upgrading; the new one keeps training the
+	// warrior stream while the laggard upgrades. Gated on canExpand so the build/
+	// teardown comes off idle hands, never off hauling or army production.
+	std::optional<CortexAction> CortexPolicy::tryBarracksUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	{
 		const Sint32 barracksLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_ATTACK);
-		const int attackMaxedPct   = unitsServedPct(obs.attackStrengthLevel, warriors, barracksLevel + 1);
-		const bool barracksUpgradeWanted = combatPhase && canExpand
-		 && barracks >= 1
+		const int attackMaxedPct   = unitsServedPct(obs.attackStrengthLevel, f.warriors, barracksLevel + 1);
+		const bool barracksUpgradeWanted = f.combatPhase && f.canExpand
+		 && f.barracks >= 1
 		 && obs.upgradableCount[CORTEX_BUILD_ATTACK] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_ATTACK) == 0
 		 && attackMaxedPct >= UPGRADE_MAXED_PERCENT;
-		if (barracksUpgradeWanted && barracks < BARRACKS_MIN_BEFORE_UPGRADE && barracksSites == 0)
+		if (barracksUpgradeWanted && f.barracks < BARRACKS_MIN_BEFORE_UPGRADE && f.barracksSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_ATTACK);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_ATTACK, slot);
 		}
-		if (barracksUpgradeWanted && barracks >= BARRACKS_MIN_BEFORE_UPGRADE)
+		if (barracksUpgradeWanted && f.barracks >= BARRACKS_MIN_BEFORE_UPGRADE)
 			return makeUpgradeAction(CORTEX_BUILD_ATTACK);
+		return std::nullopt;
+	}
 
-		// --- Priority 6.6: school (SCIENCE) upgrade. ---
-		// Workers train BUILD+HARVEST (in parallel) to schoolLevel+1; buildLevel[] is
-		// the worker BUILD distribution (only workers have BUILD performance), and
-		// because the school upgrades both abilities in one visit HARVEST tracks it, so
-		// the BUILD slice alone gates both. Single-instance: a school blackout only
-		// pauses worker tech (maxBuildLevel, already earned, does NOT drop), it strands
-		// no army and starves no one — and the maxed gate means few workers are waiting.
-		// A school UPGRADE consumes ALGA too (12 at L1, 10 at L2), so like the build it
-		// needs reachable algae — gate on algaeReachable so an upgrade is never started
-		// against a site that can no longer be supplied (e.g. the shoreline algae has
-		// since been depleted).
+	// --- Priority 6.6: school (SCIENCE) upgrade. ---
+	// Workers train BUILD+HARVEST (in parallel) to schoolLevel+1; buildLevel[] is
+	// the worker BUILD distribution (only workers have BUILD performance), and
+	// because the school upgrades both abilities in one visit HARVEST tracks it, so
+	// the BUILD slice alone gates both. Single-instance: a school blackout only
+	// pauses worker tech (maxBuildLevel, already earned, does NOT drop), it strands
+	// no army and starves no one — and the maxed gate means few workers are waiting.
+	// A school UPGRADE consumes ALGA too (12 at L1, 10 at L2), so like the build it
+	// needs reachable algae — gate on algaeReachable so an upgrade is never started
+	// against a site that can no longer be supplied (e.g. the shoreline algae has
+	// since been depleted).
+	std::optional<CortexAction> CortexPolicy::trySchoolUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	{
 		const Sint32 schoolLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_SCIENCE);
 		const int buildMaxedPct  = unitsServedPct(obs.buildLevel, obs.workers, schoolLevel + 1);
-		if (combatPhase && canExpand && school >= 1 && obs.algaeReachable
+		if (f.combatPhase && f.canExpand && f.school >= 1 && obs.algaeReachable
 		 && obs.upgradableCount[CORTEX_BUILD_SCIENCE] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_SCIENCE) == 0
 		 && buildMaxedPct >= UPGRADE_MAXED_PERCENT)
 			return makeUpgradeAction(CORTEX_BUILD_SCIENCE);
+		return std::nullopt;
+	}
 
-		// --- Priority 6.7: racetrack (WALKSPEED) upgrade. ---
-		// Workers AND warriors train WALK to raceLevel+1; walkLevel[] sums both (the
-		// racetrack's eligible pool), explorers excluded (zero WALK performance).
-		// Single-instance: a racetrack blackout only leaves units at their current
-		// speed for the window — no capability loss.
+	// --- Priority 6.7: racetrack (WALKSPEED) upgrade. ---
+	// Workers AND warriors train WALK to raceLevel+1; walkLevel[] sums both (the
+	// racetrack's eligible pool), explorers excluded (zero WALK performance).
+	// Single-instance: a racetrack blackout only leaves units at their current
+	// speed for the window — no capability loss.
+	std::optional<CortexAction> CortexPolicy::tryRacetrackUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	{
 		const Sint32 raceLevel  = cortexMaxFinishedLevel(obs, CORTEX_BUILD_WALKSPEED);
-		const int walkMaxedPct  = unitsServedPct(obs.walkLevel, obs.workers + warriors, raceLevel + 1);
-		if (combatPhase && canExpand && race >= 1
+		const int walkMaxedPct  = unitsServedPct(obs.walkLevel, obs.workers + f.warriors, raceLevel + 1);
+		if (f.combatPhase && f.canExpand && f.race >= 1
 		 && obs.upgradableCount[CORTEX_BUILD_WALKSPEED] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_WALKSPEED) == 0
 		 && walkMaxedPct >= UPGRADE_MAXED_PERCENT)
 			return makeUpgradeAction(CORTEX_BUILD_WALKSPEED);
+		return std::nullopt;
+	}
 
-		// --- Priority 6.8: inn (FOOD) upgrade — spare-first, feed-safe. ---
-		// An inn is a feeding building, not a trainer, so there is no "% maxed" signal;
-		// the gate is purely feed safety. Upgrading raises maxUnitInside (4→7→17) and
-		// speeds feeding, but the blackout removes that inn's whole feeding capacity. We
-		// upgrade only with (a) a redundant inn so feeding never hits zero, and (b)
-		// enough capacity left over (feedCapacity minus the inn we'd take offline) to
-		// still feed the population through the blackout. Feed-led growth (Priority 2)
-		// keeps feedCapacity ≈ population, so that slack rarely exists — when an upgrade
-		// is wanted but unsafe we build ONE spare inn first to create it (the added inn
-		// is at the current max level, ≥ the lowest-level inn we'd upgrade, so one spare
-		// suffices). Priority 2 remains the backstop if growth erodes the slack mid-blackout.
-		const bool innUpgradeWanted = combatPhase && canExpand && inns >= 1
+	// --- Priority 6.8: inn (FOOD) upgrade — spare-first, feed-safe. ---
+	// An inn is a feeding building, not a trainer, so there is no "% maxed" signal;
+	// the gate is purely feed safety. Upgrading raises maxUnitInside (4→7→17) and
+	// speeds feeding, but the blackout removes that inn's whole feeding capacity. We
+	// upgrade only with (a) a redundant inn so feeding never hits zero, and (b)
+	// enough capacity left over (feedCapacity minus the inn we'd take offline) to
+	// still feed the population through the blackout. Feed-led growth (Priority 2)
+	// keeps feedCapacity ≈ population, so that slack rarely exists — when an upgrade
+	// is wanted but unsafe we build ONE spare inn first to create it (the added inn
+	// is at the current max level, ≥ the lowest-level inn we'd upgrade, so one spare
+	// suffices). Priority 2 remains the backstop if growth erodes the slack mid-blackout.
+	std::optional<CortexAction> CortexPolicy::tryInnUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		const bool innUpgradeWanted = f.combatPhase && f.canExpand && f.inns >= 1
 		 && obs.upgradableCount[CORTEX_BUILD_FOOD] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_FOOD) == 0;
 		if (innUpgradeWanted)
 		{
 			const int lostCapacity = smallestFinishedInnCapacity(obs);
 			const bool feedSlackOk = (obs.feedCapacity - lostCapacity) >= obs.totalUnit;
-			const bool innRedundant = (inns >= INN_MIN_BEFORE_UPGRADE);
+			const bool innRedundant = (f.inns >= INN_MIN_BEFORE_UPGRADE);
 			if (innRedundant && feedSlackOk)
 				return makeUpgradeAction(CORTEX_BUILD_FOOD);
 			// Not safe yet: build one spare inn to create the redundancy / slack.
-			if (innSites == 0)
+			if (f.innSites == 0)
 			{
 				const int slot = firstValidCandidate(obs, CORTEX_BUILD_FOOD);
 				if (slot >= 0)
 					return makeBuildAction(CORTEX_BUILD_FOOD, slot);
 			}
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 6.9: hospital (HEAL) expand + upgrade. ---
-		// More hospitals AND higher-level ones both grow army sustain: a level-L
-		// hospital heals maxUnitInside units at once (2/5/7 at L0/1/2) and faster per
-		// unit (30/18/6 ticks), so an upgrade is a big jump on both axes.
-		//   EXPAND: one hospital per HOSPITAL_WARRIORS_PER standing warriors, up to
-		//     HOSPITAL_MAX. The first hospital is Priority 5 / the panic path; this
-		//     grows the count as the army grows. (Army-scaled, not needHeal-scaled —
-		//     see the constant: wounded warriors out on the flag never queue to heal.)
-		//   UPGRADE: only ever upgrade a hospital when a SECOND finished hospital
-		//     exists to cover healing (heal >= 2). An upgrade turns the building into
-		//     a construction site — a heal blackout for that hospital — so upgrading
-		//     the only one would leave the army with nowhere to heal. With a redundant
-		//     hospital, the one-at-a-time guard (cortexBuildingsUpgrading == 0) keeps
-		//     the other finished and available throughout. This guarantees that once a
-		//     hospital is built, at least one stays available to heal units.
-		if (combatPhase && canExpand && heal >= 1 && healSites == 0
-		 && heal < HOSPITAL_MAX
-		 && warriors >= heal * HOSPITAL_WARRIORS_PER)
+	// --- Priority 6.9: hospital (HEAL) expand + upgrade. ---
+	// More hospitals AND higher-level ones both grow army sustain: a level-L
+	// hospital heals maxUnitInside units at once (2/5/7 at L0/1/2) and faster per
+	// unit (30/18/6 ticks), so an upgrade is a big jump on both axes.
+	//   EXPAND: one hospital per HOSPITAL_WARRIORS_PER standing warriors, up to
+	//     HOSPITAL_MAX. The first hospital is Priority 5 / the panic path; this
+	//     grows the count as the army grows. (Army-scaled, not needHeal-scaled —
+	//     see the constant: wounded warriors out on the flag never queue to heal.)
+	//   UPGRADE: only ever upgrade a hospital when a SECOND finished hospital
+	//     exists to cover healing (heal >= 2). An upgrade turns the building into
+	//     a construction site — a heal blackout for that hospital — so upgrading
+	//     the only one would leave the army with nowhere to heal. With a redundant
+	//     hospital, the one-at-a-time guard (cortexBuildingsUpgrading == 0) keeps
+	//     the other finished and available throughout. This guarantees that once a
+	//     hospital is built, at least one stays available to heal units.
+	std::optional<CortexAction> CortexPolicy::tryHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.combatPhase && f.canExpand && f.heal >= 1 && f.healSites == 0
+		 && f.heal < HOSPITAL_MAX
+		 && f.warriors >= f.heal * HOSPITAL_WARRIORS_PER)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_HEAL, slot);
 		}
-		if (combatPhase && canExpand && heal >= 2
+		if (f.combatPhase && f.canExpand && f.heal >= 2
 		 && obs.upgradableCount[CORTEX_BUILD_HEAL] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL) == 0)
 			return makeUpgradeAction(CORTEX_BUILD_HEAL);
+		return std::nullopt;
+	}
 
-		// --- Priority 6.95: second swarm on a freshly-discovered wheat patch. ------
-		// A team starts with one swarm; Priority 2.5 only ever REBUILDS that one if it
-		// is destroyed. Here we EXPAND: add swarms one per nearby wheat patch, up to
-		// CORTEX_MAX_SWARMS. The placement helper already forces CORTEX_SWARM_MIN_SPACING
-		// between swarms AND CORTEX_WHEAT_MAX_DIST to CORN, so a VALID swarm candidate
-		// necessarily sits on a DIFFERENT patch within haul range — i.e. this fires
-		// exactly when "another wheat patch is found in relative proximity to the base".
-		// Placed AFTER the whole opening ladder (inn → school → racetrack → hospital →
-		// barracks) and gated on that ladder being finished (openingBuildOutDone), so a
-		// second swarm never disrupts the initial build run; gated on canExpand (spare
-		// idle workers, not in food trouble) so the new swarm has labour to staff it.
-		//
-		// "Initial run done" means each core building TYPE has been built at least once
-		// (inn, school, racetrack, hospital, barracks all finished). We deliberately do
-		// NOT also require zero in-flight sites of those types: Cortex's feed-led growth
-		// builds inns indefinitely, so an inn site is almost always pending — gating on
-		// "no sites" would make this unsatisfiable on a healthy, ever-expanding colony.
-		// The swarmSites==0 guard alone prevents queuing two swarms at once.
-		// SUPPLY-STRESS GATE: also hold until the existing swarm(s) genuinely cannot
-		// keep up — at least one is pinned at the 7-worker cap with a still-draining
-		// CORN buffer (anySwarmSupplyStressed). Until then a single swarm + more
-		// haulers is the cheaper answer; only a wheat-catchment bottleneck warrants a
-		// whole new swarm on a fresh patch.
+	// --- Priority 6.95: second swarm on a freshly-discovered wheat patch. ------
+	// A team starts with one swarm; Priority 2.5 only ever REBUILDS that one if it
+	// is destroyed. Here we EXPAND: add swarms one per nearby wheat patch, up to
+	// CORTEX_MAX_SWARMS. The placement helper already forces CORTEX_SWARM_MIN_SPACING
+	// between swarms AND CORTEX_WHEAT_MAX_DIST to CORN, so a VALID swarm candidate
+	// necessarily sits on a DIFFERENT patch within haul range — i.e. this fires
+	// exactly when "another wheat patch is found in relative proximity to the base".
+	// Placed AFTER the whole opening ladder (inn → school → racetrack → hospital →
+	// barracks) and gated on that ladder being finished (openingBuildOutDone), so a
+	// second swarm never disrupts the initial build run; gated on canExpand (spare
+	// idle workers, not in food trouble) so the new swarm has labour to staff it.
+	//
+	// "Initial run done" means each core building TYPE has been built at least once
+	// (inn, school, racetrack, hospital, barracks all finished). We deliberately do
+	// NOT also require zero in-flight sites of those types: Cortex's feed-led growth
+	// builds inns indefinitely, so an inn site is almost always pending — gating on
+	// "no sites" would make this unsatisfiable on a healthy, ever-expanding colony.
+	// The swarmSites==0 guard alone prevents queuing two swarms at once.
+	// SUPPLY-STRESS GATE: also hold until the existing swarm(s) genuinely cannot
+	// keep up — at least one is pinned at the 7-worker cap with a still-draining
+	// CORN buffer (anySwarmSupplyStressed). Until then a single swarm + more
+	// haulers is the cheaper answer; only a wheat-catchment bottleneck warrants a
+	// whole new swarm on a fresh patch.
+	std::optional<CortexAction> CortexPolicy::trySecondSwarm(const CortexObservation& obs, const DecideFacts& f) const
+	{
 		const bool openingBuildOutDone =
-		    inns >= 1 && school >= 1 && race >= 1 && heal >= 1 && barracks >= 1;
-		if (combatPhase && canExpand && openingBuildOutDone
+		    f.inns >= 1 && f.school >= 1 && f.race >= 1 && f.heal >= 1 && f.barracks >= 1;
+		if (f.combatPhase && f.canExpand && openingBuildOutDone
 		 && anySwarmSupplyStressed(obs)
-		 && swarms >= 1 && swarms < CORTEX_MAX_SWARMS && swarmSites == 0)
+		 && f.swarms >= 1 && f.swarms < CORTEX_MAX_SWARMS && f.swarmSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)
 				return makeBuildAction(CORTEX_BUILD_SWARM, slot);
 		}
+		return std::nullopt;
+	}
 
-		// --- Priority 7: defense (recall the army to a threatened building). ---
-		// War flags are standing buildings: once placed they keep summoning
-		// warriors without being re-issued, so this need not fire every cycle —
-		// it just (re)positions the single flag onto the current threat. Defense
-		// outranks offense: when our base is under attack the lone flag comes home.
-		if (combatPhase && obs.buildingsUnderAttack > 0
-		 && warriors >= DEFENSE_MIN_WARRIORS && obs.defenseTarget.valid)
-			return makeDefenseFlagAction(DEFENSE_FLAG_RADIUS, warriors);
-
-		// --- Priority 7.2: retire a purposeless war flag. ---
-		// A flag (defense flags plant with as few as DEFENSE_MIN_WARRIORS == 1) is
-		// stranded the moment the threat clears yet the army is too thin to attack:
-		// defense (above) no longer fires, and offense (below) needs ATTACK_MIN_WARRIORS
-		// plus a seen target. Without this rung the flag sat forever in that dead band —
-		// neither moved nor removed — pinning its warriors to an empty spot. We retire it
-		// whenever it has no combat purpose THIS cycle (offense will not claim it) and we
-		// are not defending. RETIRE-AND-RETURN: deleting the flag frees the warriors back
-		// to the pool; once they rebuild to ATTACK_MIN_WARRIORS with a seen target, the
-		// offense rung re-commits a fresh flag (the create cooldown damps threshold thrash).
-		//
-		// Hoisted ABOVE wheat/economy on purpose: flag teardown is a cheap one-shot and
-		// must not be starvable by per-cycle farm upkeep or build/upgrade work.
-		//
-		// HOLD-ONLY straggler grace: while visible enemy units still loiter inside the
-		// flag's stay-range (enemyUnitsNearFlag > 0) we hold position so the army finishes
-		// them off; the flag is retired only once the area is genuinely clear.
+	// --- Priority 7: defense (recall the army to a threatened building). ---
+	// War flags are standing buildings: once placed they keep summoning
+	// warriors without being re-issued, so this need not fire every cycle —
+	// it just (re)positions the single flag onto the current threat. Defense
+	// outranks offense: when our base is under attack the lone flag comes home.
+	std::optional<CortexAction> CortexPolicy::tryDefense(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.combatPhase && obs.buildingsUnderAttack > 0
+		 && f.warriors >= DEFENSE_MIN_WARRIORS && obs.defenseTarget.valid)
 		{
-			const bool offenseWillClaim =
-				combatPhase && warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid;
-			if (obs.warFlagsActive > 0 && obs.buildingsUnderAttack == 0
-			 && !offenseWillClaim && obs.enemyUnitsNearFlag == 0)
-				return makeClearFlagsAction();
+			// THRASH HYSTERESIS (relocated from the action layer): if we are mid-
+			// offense-push (CORTEX_POSTURE_OFFENSE and still inside the hold window)
+			// and the base threat is merely harassment — fewer than
+			// CORTEX_DEFENSE_SERIOUS_BUILDINGS of our buildings taking fire at once —
+			// do NOT recall. Holding the offense flag where it stands (a war flag is a
+			// standing building, so it keeps summoning) lets the army actually reach and
+			// break the enemy line instead of oscillating home every decision cycle. A
+			// real base assault (>= CORTEX_DEFENSE_SERIOUS_BUILDINGS under fire) still
+			// earns the recall. We HOLD by returning NoOp — NOT std::nullopt — so the
+			// ladder stops here exactly as it did when this was Priority 7's match: the
+			// action layer then changes nothing (no flag re-task, no posture mutation),
+			// leaving the existing offense flag in place. Falling through instead would
+			// let tryRetireFlag/tryOffense run, which they never did before — a behavior
+			// change. The hold-window re-arm and posture mutation stay an EXECUTION
+			// side-effect in AICortex::translateActionPlaceWarFlag (state ownership did
+			// not move; only this DECISION did).
+			const bool seriousThreat =
+				(obs.buildingsUnderAttack >= CORTEX_DEFENSE_SERIOUS_BUILDINGS);
+			if (obs.flagPosture == CORTEX_POSTURE_OFFENSE
+			 && obs.tick < obs.offenseHoldUntil
+			 && !seriousThreat)
+				return makeNoOpAction(); // hold the offense; ignore the minor-harassment recall.
+
+			return makeDefenseFlagAction(DEFENSE_FLAG_RADIUS, f.warriors);
 		}
+		return std::nullopt;
+	}
 
-		// Wheat sustainability (checkerboard forbidden paint) is NO LONGER a rung
-		// here: it runs every decision cycle in parallel with whatever primary action
-		// this ladder picks, so it can never be starved by build/upgrade/offense work
-		// (and conversely never steals a cycle from them). See wantWheatProtection()
-		// below and AICortex::enqueueWheatForbidden, called each cycle in getOrder().
+	// --- Priority 7.2: retire a purposeless war flag. ---
+	// A flag (defense flags plant with as few as DEFENSE_MIN_WARRIORS == 1) is
+	// stranded the moment the threat clears yet the army is too thin to attack:
+	// defense (above) no longer fires, and offense (below) needs ATTACK_MIN_WARRIORS
+	// plus a seen target. Without this rung the flag sat forever in that dead band —
+	// neither moved nor removed — pinning its warriors to an empty spot. We retire it
+	// whenever it has no combat purpose THIS cycle (offense will not claim it) and we
+	// are not defending. RETIRE-AND-RETURN: deleting the flag frees the warriors back
+	// to the pool; once they rebuild to ATTACK_MIN_WARRIORS with a seen target, the
+	// offense rung re-commits a fresh flag (the create cooldown damps threshold thrash).
+	//
+	// Hoisted ABOVE wheat/economy on purpose: flag teardown is a cheap one-shot and
+	// must not be starvable by per-cycle farm upkeep or build/upgrade work.
+	//
+	// HOLD-ONLY straggler grace: while visible enemy units still loiter inside the
+	// flag's stay-range (enemyUnitsNearFlag > 0) we hold position so the army finishes
+	// them off; the flag is retired only once the area is genuinely clear.
+	std::optional<CortexAction> CortexPolicy::tryRetireFlag(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		const bool offenseWillClaim =
+			f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid;
+		if (obs.warFlagsActive > 0 && obs.buildingsUnderAttack == 0
+		 && !offenseWillClaim && obs.enemyUnitsNearFlag == 0)
+			return makeClearFlagsAction();
+		return std::nullopt;
+	}
 
-		// --- Priority 8: offense (plant the war flag on the nearest known enemy). ---
-		// Once we have an army (turtle-then-commit; the warriors have been training to
-		// attack level 1 at the barracks during the build-up) and have actually
-		// scouted an enemy building (flagTargets[0] is the nearest discovered one).
-		// Sticky by design: this is the default "keep attacking" action, and it sits
-		// last so every economy / build / upgrade action above preempts it whenever
-		// real work exists. The action layer moves the existing flag, not stacks it.
-		if (combatPhase && warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid)
+	// --- Priority 8: offense (plant the war flag on the nearest known enemy). ---
+	// Once we have an army (turtle-then-commit; the warriors have been training to
+	// attack level 1 at the barracks during the build-up) and have actually
+	// scouted an enemy building (flagTargets[0] is the nearest discovered one).
+	// Sticky by design: this is the default "keep attacking" action, and it sits
+	// last so every economy / build / upgrade action above preempts it whenever
+	// real work exists. The action layer moves the existing flag, not stacks it.
+	//
+	// Wheat sustainability (checkerboard forbidden paint) is NOT a rung here: it
+	// runs every decision cycle in parallel with whatever primary action this ladder
+	// picks, so it can never be starved by build/upgrade/offense work (and conversely
+	// never steals a cycle from them). See wantWheatProtection() below and
+	// AICortex::enqueueWheatForbidden, called each cycle in getOrder().
+	std::optional<CortexAction> CortexPolicy::tryOffense(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid)
 		{
-			const int count = (warriors < CORTEX_MAX_FLAG_UNITS) ? warriors : CORTEX_MAX_FLAG_UNITS;
+			const int count = (f.warriors < CORTEX_MAX_FLAG_UNITS) ? f.warriors : CORTEX_MAX_FLAG_UNITS;
 			return makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count);
 		}
-
-		// (Stranded-flag teardown moved up to Priority 7.2 so it is reachable above the
-		// economy rungs and respects the straggler-grace hold — see above.)
-
-		return makeNoOpAction();
+		return std::nullopt;
 	}
 
 	// Worker-hauling tuning (closed-loop wheat-economy), run EVERY decision cycle in

@@ -74,31 +74,79 @@ private:
 
 	/// Offense-hold hysteresis (the thrash damper). Once we commit an offensive
 	/// war flag we hold that posture for at least this many ticks; within the
-	/// hold window a DEFENSE recall from the policy is IGNORED unless the base
-	/// threat is "serious" (>= DEFENSE_SERIOUS_BUILDINGS buildings taking fire at
-	/// once). This stops the single flag oscillating between the enemy base and
-	/// home every decision cycle whenever a lone harasser pokes the colony — the
-	/// measured failure mode where the army never advanced and melted short of the
-	/// objective. Sized as several OBSERVE_INTERVAL cycles so the flag actually
-	/// reaches and engages the enemy before any minor-harassment recall is even
-	/// considered. RAM-only damping; the policy stays pure.
+	/// hold window a DEFENSE recall is IGNORED unless the base threat is "serious"
+	/// (>= DEFENSE_SERIOUS_BUILDINGS buildings taking fire at once). This stops the
+	/// single flag oscillating between the enemy base and home every decision cycle
+	/// whenever a lone harasser pokes the colony — the measured failure mode where
+	/// the army never advanced and melted short of the objective. Sized as several
+	/// OBSERVE_INTERVAL cycles so the flag actually reaches and engages the enemy
+	/// before any minor-harassment recall is even considered.
+	///
+	/// This constant is used ONLY here, to (re-)arm offenseHoldUntil when a war flag
+	/// is placed — an execution side-effect the action layer owns. The hold-vs-recall
+	/// DECISION that consults the resulting offenseHoldUntil now lives in the policy
+	/// (CortexPolicy::tryDefense), which reads it through the observation; the policy
+	/// stays pure and never sees this constant.
 	static const int OFFENSE_HOLD_TICKS = 600;
 	/// How many of our buildings must be under attack AT ONCE for a defensive
 	/// recall to override an in-progress offense hold. A single transient hit
 	/// (1 building) is "harassment" and does not break the push; multiple
 	/// buildings under fire is a real base assault that earns the recall.
-	static const int DEFENSE_SERIOUS_BUILDINGS = 2;
+	/// Single-sourced in CortexTypes.h (the hold-vs-recall decision now lives in
+	/// the policy, which reads it from there); aliased here so the action layer's
+	/// established name keeps working and the value can never drift.
+	static const int DEFENSE_SERIOUS_BUILDINGS = Cortex::CORTEX_DEFENSE_SERIOUS_BUILDINGS;
 
 	/// Flag posture the action layer last committed (RAM-only hysteresis state).
-	enum FlagPosture { POSTURE_NONE = 0, POSTURE_OFFENSE = 1, POSTURE_DEFENSE = 2 };
+	/// Aliases Cortex::CortexFlagPosture (single source of truth) so the value
+	/// stored in flagPosture / echoed into the observation is identical everywhere.
+	enum FlagPosture {
+		POSTURE_NONE    = Cortex::CORTEX_POSTURE_NONE,
+		POSTURE_OFFENSE = Cortex::CORTEX_POSTURE_OFFENSE,
+		POSTURE_DEFENSE = Cortex::CORTEX_POSTURE_DEFENSE
+	};
 
 	void init(Player* player);
 
 	/// Action layer (direct binding): translate an action intent into zero or
 	/// more engine Orders, appended to orderQueue. NoOp queues nothing. The
 	/// observation is passed alongside because an ACTION_BUILD only carries a
-	/// candidate-slot index — the (x, y) lives in obs.buildCandidates.
+	/// candidate-slot index — the (x, y) lives in obs.buildCandidates. Dispatches
+	/// to one per-action-kind helper below; each helper owns that kind's cooldown
+	/// gates, state mutations, dedup checks, and order-push sequence.
 	void translateAction(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+
+	// --- Per-action-kind translate helpers --------------------------------
+	// One method per ACTION_* kind. Each appends zero or more Orders to
+	// orderQueue and mutates only the state the original inline case mutated
+	// (buildCooldownUntil[], pendingUpgradeType/Until, flagPosture,
+	// offenseHoldUntil). The order in which orders are pushed is preserved
+	// byte-for-byte from the pre-decomposition switch.
+	void translateActionBuild(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+	void translateActionSetProduction(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+	void translateActionPlaceWarFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+	void translateActionPlaceDefenseFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+	void translateActionClearFlags();
+	void translateActionUpgradeBuilding(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+	void translateActionTuneWorkers(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+	void translateActionSetPriority(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+
+	/// Shared "decode GID → verify building → dedup → push OrderModifyBuilding"
+	/// loop used by translateActionTuneWorkers for all three building sets
+	/// (swarms, inns, construction sites). `tracked`/`count` is the observed
+	/// building array (TrackedBuilding or TrackedSite — both expose valid, gid,
+	/// maxUnitWorking); `desiredArr[i]` is the requested maxUnitWorking for
+	/// tracked[i] (-1 == leave unchanged). `maxClamp >= 0` clamps the request to
+	/// that ceiling before the dedup check (the sites path; pass -1 for the
+	/// swarm/inn paths, which do not clamp). `accept` is the per-set guard that
+	/// confirms the decoded Building is still the kind we observed (finished swarm,
+	/// finished inn, or live construction site) before issuing the order. On each
+	/// accepted change it mirrors the engine executor locally (b->maxUnitWorking =
+	/// desired; b->update()) and pushes one OrderModifyBuilding — identical to the
+	/// original three inline loops, in the same index order.
+	template <typename Tracked, typename Accept>
+	void applyWorkerCounts(const Tracked* tracked, int count, const Sint32* desiredArr,
+	                       int maxClamp, Accept accept);
 
 	/// Wheat-forbidden executor, run EVERY decision cycle in parallel with
 	/// translateAction (gated by CortexPolicy::wantWheatProtection) — not as a
@@ -177,10 +225,13 @@ private:
 	/// Offense-hold hysteresis state (RAM-only, persisted symmetrically). The
 	/// posture the flag is currently committed to, and the tick until which an
 	/// OFFENSE commitment is protected from a minor-harassment defensive recall.
-	/// See OFFENSE_HOLD_TICKS / DEFENSE_SERIOUS_BUILDINGS for the policy. These
-	/// gate flag *re-tasking* in translateAction; they do not change the pure
-	/// policy. flagPosture is one of FlagPosture; offenseHoldUntil == 0 means no
-	/// hold is active.
+	/// AICortex OWNS this state: it is MUTATED only here, as an execution side-effect
+	/// when a flag is actually (re)placed (translateActionPlaceWarFlag re-arms the
+	/// hold; the defense/clear helpers reset it). The hold-vs-recall DECISION lives in
+	/// the policy (CortexPolicy::tryDefense), which READS these values through the
+	/// observation (obs.flagPosture / obs.offenseHoldUntil, echoed each cycle in
+	/// getOrder() before decide()). flagPosture is one of FlagPosture; offenseHoldUntil
+	/// == 0 means no hold is active.
 	int flagPosture;
 	int offenseHoldUntil;
 
