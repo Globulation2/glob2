@@ -157,7 +157,7 @@ private:
 	/// (DEL before ADD). A single order carries the whole diff, so all newly-revealed
 	/// wheat is fenced in one cycle. Self-correcting: an already-painted diff is empty
 	/// next cycle, so re-running each cycle is free when there is no new work.
-	void enqueueWheatForbidden(const Cortex::CortexObservation& obs);
+	void enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool liftAll = false);
 
 	/// Find our team's single live WAR_FLAG virtual building, or NULL if none.
 	/// Cortex keeps at most one war flag and does NOT persist its gid; it is
@@ -292,4 +292,22 @@ private:
 	bool traceOpenAttempted;
 	void dumpWorkerTrace(const Cortex::CortexObservation& obs,
 	                     const Cortex::CortexAction& tune);
+
+	/// DECISION-SELECTION TRACE for the decide() ML pilot (docs/AI/cortex/
+	/// DECIDE_CONTRACT.md). When GLOB2_CORTEX_DECIDE_TRACE=<abs prefix> is set,
+	/// every decision cycle appends ONE CSV row per AI instance to
+	/// <prefix>.team<N>.csv: tick, team, the 48 decision features (in
+	/// DECIDE_CONTRACT idx order, via CortexPolicy::extractDecideFeatures), the
+	/// per-cycle eligibility bitmask, and the chosen class index. The training
+	/// (state, eligible-mask, chosen) tuples for the utility-score net. Pure read
+	/// of the observation + the DecideTrace decide() already produced; opening and
+	/// writing a file touches no RNG/order/sync state, so the lockstep stream is
+	/// unaffected. SEPARATE file handle + open-attempt guard from the worker trace
+	/// (they are distinct CSVs with distinct schemas). GLOB2_CORTEX_DECIDE_TRACE
+	/// MUST be an ABSOLUTE path (glob2 chdir()s at startup); on open failure it
+	/// warns once and disables rather than retrying every cycle.
+	std::FILE* decideTraceFile;
+	bool decideTraceOpenAttempted;
+	void dumpDecideTrace(const Cortex::CortexObservation& obs,
+	                     const Cortex::DecideTrace& trace);
 };

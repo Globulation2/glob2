@@ -30,6 +30,11 @@ namespace Cortex
 	/// commit early at 8 — a smaller but EARLIER force that harasses before the enemy
 	/// army matures, paired with the hysteresis so the push holds instead of melting.
 	static const int ATTACK_MIN_WARRIORS = 8;
+	/// Blitz commit size: when the colony is past wheat capacity and starving
+	/// (foodSaturated), it will die in place if it sits still — so we spend whatever
+	/// army we have on the enemy NOW, at a lower bar than the patient turtle-then-
+	/// commit ATTACK_MIN_WARRIORS. Tunable.
+	static const int BLITZ_MIN_WARRIORS = 4;
 	/// Standing warriors required to bother recalling for defense — defend with
 	/// whatever we have the moment the base is touched.
 	static const int DEFENSE_MIN_WARRIORS = 1;
@@ -214,10 +219,19 @@ namespace Cortex
 	// AICortex::enqueueWheatForbidden, called each cycle in getOrder().
 	ScoredAction CortexPolicy::scoreOffense(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid)
+		// Normal offense: a healthy colony (combatPhase) with a real army and a
+		// scouted target — the patient turtle-then-commit.
+		const bool normalCommit = f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS;
+		// BLITZ: the colony is past wheat capacity and starving (foodSaturated). Sitting
+		// still means starving in place, so spend whatever army we have NOW — a lower
+		// bar (BLITZ_MIN_WARRIORS) than the patient commit. Scores ABOVE the economy/
+		// tech band (more economy can't be fed anyway) but below the existential rungs.
+		const bool blitzCommit = f.foodSaturated && f.warriors >= BLITZ_MIN_WARRIORS;
+		if ((normalCommit || blitzCommit) && obs.flagTargets[0].valid)
 		{
 			const int count = (f.warriors < CORTEX_MAX_FLAG_UNITS) ? f.warriors : CORTEX_MAX_FLAG_UNITS;
-			return { SCORE_OFFENSE, makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count) };
+			const int score = (blitzCommit && !normalCommit) ? SCORE_OFFENSE_BLITZ : SCORE_OFFENSE;
+			return { score, makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count) };
 		}
 		return cortexDecline();
 	}
@@ -241,5 +255,22 @@ namespace Cortex
 		// paint already matches what we want, so there is nothing to order this cycle.
 		return !starving
 		    && (obs.wheatProtectAddCount > 0 || obs.wheatProtectDelCount > 0);
+	}
+
+	bool CortexPolicy::wantWheatBlitzLift(const CortexObservation& obs) const
+	{
+		// Reject an unpopulated / wrong-layout observation — same guard decide() uses.
+		if (obs.version != OBSERVATION_VERSION || !obs.valid)
+			return false;
+
+		// The blitz is the foodSaturated regime with a committable army and a scouted
+		// target — exactly scoreOffense's blitzCommit branch. Source the famine
+		// condition from computeFacts (a private STATIC member, callable from this
+		// const method) so foodSaturated stays single-sourced with decide(), rather
+		// than recomputing the starving percentage here.
+		const DecideFacts f = computeFacts(obs);
+		return f.foodSaturated
+		    && obs.warriors >= BLITZ_MIN_WARRIORS
+		    && obs.flagTargets[0].valid;
 	}
 }

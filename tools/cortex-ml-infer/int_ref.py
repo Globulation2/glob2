@@ -92,6 +92,45 @@ class CortexNet:
         return acts
 
 
+# --- decision net (DECIDE_CONTRACT.md) ------------------------------------
+NUM_DECIDE_LOGITS = 18
+
+
+def _to_sint32(v):
+    """Two's-complement narrowing of a full-precision int to signed 32-bit,
+    mirroring the C++ static_cast<Sint32>(Sint64) the parity runner does when it
+    prints the 18 logits. The argmax itself uses the un-narrowed Sint64 values."""
+    return ((v + (1 << 31)) % (1 << 32)) - (1 << 31)
+
+
+def forward_decide_logits_i32(net, features):
+    """The 18 logits as the C++ --decide runner emits them: full-precision Sint64
+    forward pass, then narrowed to Sint32. Matches CortexNetParityMain.cpp."""
+    return [_to_sint32(v) for v in net.forward(features)]
+
+
+def score_decision(net, features, eligible_mask):
+    """DECIDE_CONTRACT.md inference rule, mirroring CortexNet::scoreDecision:
+      0. eligible_mask == 0  -> -1 (NoOp; never run the net).
+      1. integer forward pass -> 18 I16F16 logits (full Sint64 precision).
+      2. mask every class k whose eligible_mask bit k is 0.
+      3. argmax over the unmasked logits, ties -> lowest class index.
+    No floats, no softmax. Returns the chosen class index, or -1."""
+    if eligible_mask == 0:
+        return -1
+    logits = net.forward(features)  # full-precision (Sint64-equivalent) ints
+    best_idx = -1
+    best_val = None
+    for k in range(NUM_DECIDE_LOGITS):
+        if (eligible_mask & (1 << k)) == 0:
+            continue
+        v = logits[k]
+        if best_idx < 0 or v > best_val:
+            best_val = v
+            best_idx = k
+    return best_idx
+
+
 def swarm_worker_cap(max_build_level, free_workers):
     if max_build_level >= CORTEX_SWARM_CAP_LIFT_BUILDLEVEL and free_workers > 0:
         return CORTEX_SWARM_WORKER_CAP_LATE

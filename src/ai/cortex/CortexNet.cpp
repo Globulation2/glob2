@@ -62,42 +62,67 @@ namespace Cortex
 		}
 	}
 
+	namespace
+	{
+		// Slurp a blob from disk into `buf`. Returns true on success; writes one
+		// std::cerr diagnostic and returns false otherwise. Shared by both loaders.
+		bool readBlobFile(const std::string& path, std::vector<Uint8>& buf)
+		{
+			FILE* fp = std::fopen(path.c_str(), "rb");
+			if (!fp)
+			{
+				std::cerr << "CortexNet: cannot open blob '" << path << "'\n";
+				return false;
+			}
+			std::fseek(fp, 0, SEEK_END);
+			long len = std::ftell(fp);
+			std::fseek(fp, 0, SEEK_SET);
+			if (len <= 0)
+			{
+				std::cerr << "CortexNet: empty/invalid blob '" << path << "'\n";
+				std::fclose(fp);
+				return false;
+			}
+			buf.resize(static_cast<size_t>(len));
+			size_t got = std::fread(buf.data(), 1, buf.size(), fp);
+			std::fclose(fp);
+			if (got != buf.size())
+			{
+				std::cerr << "CortexNet: short read on blob '" << path << "'\n";
+				return false;
+			}
+			return true;
+		}
+	}
+
 	bool CortexNet::load(const std::string& path)
 	{
 		loaded_ = false;
-		FILE* fp = std::fopen(path.c_str(), "rb");
-		if (!fp)
-		{
-			std::cerr << "CortexNet: cannot open blob '" << path << "'\n";
+		std::vector<Uint8> buf;
+		if (!readBlobFile(path, buf))
 			return false;
-		}
-		std::fseek(fp, 0, SEEK_END);
-		long len = std::ftell(fp);
-		std::fseek(fp, 0, SEEK_SET);
-		if (len <= 0)
-		{
-			std::cerr << "CortexNet: empty/invalid blob '" << path << "'\n";
-			std::fclose(fp);
-			return false;
-		}
-		std::vector<Uint8> buf(static_cast<size_t>(len));
-		size_t got = std::fread(buf.data(), 1, buf.size(), fp);
-		std::fclose(fp);
-		if (got != buf.size())
-		{
-			std::cerr << "CortexNet: short read on blob '" << path << "'\n";
-			return false;
-		}
-		return loadFromMemory(buf.data(), buf.size());
+		return loadFromMemory(buf.data(), buf.size(), NUM_FEATURES, NUM_LOGITS);
 	}
 
-	bool CortexNet::loadFromMemory(const Uint8* data, size_t size)
+	bool CortexNet::loadDecide(const std::string& path)
 	{
-		loaded_ = parse(data, size);
+		loaded_ = false;
+		std::vector<Uint8> buf;
+		if (!readBlobFile(path, buf))
+			return false;
+		return loadFromMemory(buf.data(), buf.size(),
+		                      NUM_DECIDE_FEATURES, NUM_DECIDE_LOGITS);
+	}
+
+	bool CortexNet::loadFromMemory(const Uint8* data, size_t size,
+	                               int expectIn, int expectOut)
+	{
+		loaded_ = parse(data, size, expectIn, expectOut);
 		return loaded_;
 	}
 
-	bool CortexNet::parse(const Uint8* data, size_t size)
+	bool CortexNet::parse(const Uint8* data, size_t size,
+	                      int expectIn, int expectOut)
 	{
 		arch_.clear();
 		layers_.clear();
@@ -144,12 +169,15 @@ namespace Cortex
 			arch_[i] = static_cast<int>(v);
 		}
 
-		// Validate against the fixed contract architecture: 16 -> 32 -> 32 -> 20.
-		if (arch_.front() != NUM_FEATURES || arch_.back() != NUM_LOGITS)
+		// Validate against the caller's contract architecture endpoints (the
+		// worker-cap net pins 16..20, the decision net pins 48..18). The blob
+		// carries the full arch; only the endpoints distinguish the two nets, so a
+		// wrong-net blob is rejected here at load.
+		if (arch_.front() != expectIn || arch_.back() != expectOut)
 		{
 			std::cerr << "CortexNet: arch endpoints (" << arch_.front() << ".."
-			          << arch_.back() << ") != contract (" << NUM_FEATURES << ".."
-			          << NUM_LOGITS << ")\n";
+			          << arch_.back() << ") != contract (" << expectIn << ".."
+			          << expectOut << ")\n";
 			return false;
 		}
 
@@ -196,12 +224,16 @@ namespace Cortex
 		return true;
 	}
 
-	void CortexNet::forwardWide(const int features[NUM_FEATURES], Sint64 logits[NUM_LOGITS]) const
+	void CortexNet::forwardWide(const int* features, Sint64* logits) const
 	{
-		// Promote raw int features to I16F16 (x << 16). Sint64 activations so the
-		// per-product fxmul and the accumulation never overflow.
-		std::vector<Sint64> acts(NUM_FEATURES);
-		for (int i = 0; i < NUM_FEATURES; i++)
+		// Dim-agnostic: the input width and logit count come from the loaded
+		// architecture (arch_.front()/back()), not from compile-time constants, so
+		// the SAME arithmetic serves both the worker-cap (16->20) and decision
+		// (48->18) nets. Promote raw int features to I16F16 (x << 16). Sint64
+		// activations so the per-product fxmul and the accumulation never overflow.
+		const int inDim = arch_.front();
+		std::vector<Sint64> acts(inDim);
+		for (int i = 0; i < inDim; i++)
 			acts[i] = static_cast<Sint64>(features[i]) << FRAC_BITS;
 
 		const size_t last = layers_.size() - 1;
@@ -223,7 +255,8 @@ namespace Cortex
 			acts.swap(out);
 		}
 
-		for (int o = 0; o < NUM_LOGITS; o++)
+		const int outDim = arch_.back();
+		for (int o = 0; o < outDim; o++)
 			logits[o] = acts[o];
 	}
 
@@ -232,6 +265,15 @@ namespace Cortex
 		Sint64 wide[NUM_LOGITS];
 		forwardWide(features, wide);
 		for (int o = 0; o < NUM_LOGITS; o++)
+			logits[o] = static_cast<Sint32>(wide[o]);
+	}
+
+	void CortexNet::forwardDecide(const int features[NUM_DECIDE_FEATURES],
+	                              Sint32 logits[NUM_DECIDE_LOGITS]) const
+	{
+		Sint64 wide[NUM_DECIDE_LOGITS];
+		forwardWide(features, wide);
+		for (int o = 0; o < NUM_DECIDE_LOGITS; o++)
 			logits[o] = static_cast<Sint32>(wide[o]);
 	}
 
@@ -272,5 +314,36 @@ namespace Cortex
 		if (bestIdx < 0)
 			return CORTEX_SWARM_WORKER_MIN; // degenerate: no valid class
 		return bestIdx + 1;
+	}
+
+	int CortexNet::scoreDecision(const int features[NUM_DECIDE_FEATURES],
+	                             Uint32 eligibleMask) const
+	{
+		// 0. Nothing eligible -> NoOp (matches decide()'s "no candidate wants to
+		// act"). Checked first so we never run the net for an empty mask.
+		if (eligibleMask == 0)
+			return -1;
+
+		// 1. Integer forward pass. Argmax on the full-precision Sint64 logits so the
+		// comparison matches the numpy reference, which never narrows the values.
+		Sint64 logits[NUM_DECIDE_LOGITS];
+		forwardWide(features, logits);
+
+		// 2. Mask every class whose eligibleMask bit is 0; 3. argmax over the
+		// unmasked logits, ties -> lowest class index (== decide()'s earliest-
+		// candidate-wins). No softmax, no floats.
+		int bestIdx = -1;
+		Sint64 bestVal = 0;
+		for (int k = 0; k < NUM_DECIDE_LOGITS; k++)
+		{
+			if ((eligibleMask & (static_cast<Uint32>(1u) << k)) == 0)
+				continue; // class k is not eligible this cycle
+			if (bestIdx < 0 || logits[k] > bestVal)
+			{
+				bestVal = logits[k];
+				bestIdx = k;
+			}
+		}
+		return bestIdx; // -1 only if mask bits were all outside [0,18) (unreachable)
 	}
 }

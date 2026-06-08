@@ -33,11 +33,16 @@ def to_i16f16(v):
     return q
 
 
+# Accepted f32 interchange formats. Both nets share the byte layout / arithmetic;
+# only the architecture (carried in the JSON) and the inference rule differ.
+SUPPORTED_FORMATS = ("cortex-mlp-f32-v1", "cortex-decide-mlp-f32-v1")
+
+
 def load_f32(path):
     with open(path, "r") as f:
         net = json.load(f)
-    if net.get("format") != "cortex-mlp-f32-v1":
-        sys.exit("error: input is not cortex-mlp-f32-v1 (got %r)" % net.get("format"))
+    if net.get("format") not in SUPPORTED_FORMATS:
+        sys.exit("error: input format %r not in %r" % (net.get("format"), SUPPORTED_FORMATS))
     if net.get("activation") != "relu":
         sys.exit("error: only relu activation supported (got %r)" % net.get("activation"))
     return net

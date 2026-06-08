@@ -71,6 +71,15 @@ namespace Cortex
 		// the tech band. Above retire/offense but below defense's flag work.
 		SCORE_FEED_BOTTLENECKED  =  3500,
 
+		// Wheat-blitz offense. During a famine (foodSaturated) the colony will die
+		// in place if it sits still, so spending the army NOW outranks building more
+		// (unfeedable) economy: above the whole economy/tech build-out band
+		// (SCORE_SCHOOL=6000, second-swarm tops out ~6600) but below
+		// SCORE_SWARM_RECOVERY=7000 and SCORE_FEED_CAPACITY=8000 — it never preempts
+		// survival/production-control. Only the foodSaturated blitz uses this score;
+		// the normal turtle-then-commit offense stays low (SCORE_OFFENSE below).
+		SCORE_OFFENSE_BLITZ      =  6700,
+
 		// Military band (repositioning standing flags; below economy by design —
 		// the pre-combat emergency is SCORE_PANIC_DEFENSE, not these).
 		SCORE_DEFENSE            =  4000,
@@ -94,15 +103,48 @@ namespace Cortex
 		return ScoredAction{ SCORE_NONE, makeNoOpAction() };
 	}
 
+	/// Per-cycle decision-selection trace, filled by decide() only when a caller
+	/// asks for it (the optional out-param). eligibleMask has bit k set for each
+	/// candidate k whose hand score > SCORE_NONE (i.e. its decline gate passed);
+	/// chosen is the winning candidate's class index, or -1 when nothing was
+	/// eligible (the initial NoOp held). This is the per-cycle ML training label
+	/// (eligibility mask + the hand rule's choice); see DECIDE_CONTRACT.md.
+	struct DecideTrace
+	{
+		Uint32 eligibleMask;
+		int chosen;
+	};
+
 	class CortexPolicy
 	{
 	public:
+		/// Number of features in the decide() feature vector (the ML decision-net
+		/// input width). The single source of truth for the trace CSV columns and
+		/// the future inference path; see docs/AI/cortex/DECIDE_CONTRACT.md for the
+		/// fixed idx order. extractDecideFeatures fills exactly this many.
+		static const int NUM_DECIDE_FEATURES = 48;
+
 		CortexPolicy();
 
 		/// Decide the next action intent from the current observation. Scores
 		/// every candidate decision and returns the highest-scoring action (NoOp
 		/// when none wants to act). Both engine bindings share this.
-		CortexAction decide(const CortexObservation& obs);
+		///
+		/// When `trace != nullptr` it is filled with the per-cycle eligibility mask
+		/// and the winning class index (the ML training label) — a pure read-out of
+		/// the decision already made. Behaviour is byte-identical to the trace ==
+		/// nullptr path (the trace is determinism-neutral: no RNG, no orders, no
+		/// persisted state). See DecideTrace and docs/AI/cortex/DECIDE_CONTRACT.md.
+		CortexAction decide(const CortexObservation& obs, DecideTrace* trace = nullptr);
+
+		/// Fill `features` with the 48-element decision feature vector in the EXACT
+		/// idx order of docs/AI/cortex/DECIDE_CONTRACT.md. SINGLE SOURCE OF TRUTH:
+		/// the trace CSV columns and the future decision-net inference path both
+		/// reuse this. Pure function of the observation (raw colony state — no
+		/// derived judgment booleans); reuses computeFacts for the building counts
+		/// and the fillable/unfillable open-job partition.
+		static void extractDecideFeatures(const CortexObservation& obs,
+		                                   int features[NUM_DECIDE_FEATURES]);
 
 		/// Worker-hauling tuning, evaluated EVERY decision cycle in PARALLEL with
 		/// decide()'s single primary action — NOT as a competing decision the
@@ -128,6 +170,19 @@ namespace Cortex
 		/// the full ADD/DEL tile masks and emits the orders.
 		bool wantWheatProtection(const CortexObservation& obs) const;
 
+		/// Wheat-blitz lift gate, evaluated EVERY decision cycle in PARALLEL with
+		/// decide() (alongside wantWheatProtection). True exactly when the wheat-blitz
+		/// is active: the colony is past wheat capacity and starving (foodSaturated)
+		/// with a committable army and a scouted target. When true the wheat executor
+		/// runs in lift-all mode (un-forbid the WHOLE field for a one-time harvest
+		/// burst to fuel the attack) instead of the steady-state checkerboard. This is
+		/// a deliberate strategic-mode override, NOT a change to the reconcile invariant
+		/// (which only retires paint when wheat is visibly depleted); normal protection
+		/// resumes once the famine ends. Mutually exclusive with wantWheatProtection
+		/// (which returns false while starving), and takes precedence when both could
+		/// apply, so the executor never double-emits.
+		bool wantWheatBlitzLift(const CortexObservation& obs) const;
+
 	private:
 		/// Facts derived ONCE from the (const) observation at the top of decide() and
 		/// shared, unchanged, by every score helper. obs is a const input, so none
@@ -145,6 +200,8 @@ namespace Cortex
 
 			bool starving, hungry;
 			bool combatPhase;
+			bool economyEstablished;  ///< inn+swarm+pop established, REGARDLESS of starvation.
+			bool foodSaturated;       ///< established AND starving — past what wheat can feed (famine).
 			bool canExpand;
 
 			int growWorker, growExplorer, growWarrior;
@@ -211,5 +268,19 @@ namespace Cortex
 		// once in the ctor; mlSwarmCaps_ stays false (→ hand rule) if loading fails.
 		bool mlSwarmCaps_;
 		CortexNet swarmNet_;
+
+		// --- ML decision-selection policy (DECIDE pilot) ----------------------
+		// When GLOB2_CORTEX_POLICY=ml-decide and a net loads from
+		// GLOB2_CORTEX_DECISION_NET, decide() selects among the eligible candidates
+		// with decisionNet_'s learned utility scores instead of the hand SCORE_*
+		// argmax. The hand decline gates (eligibility) are unchanged — only the
+		// selection among eligible candidates is learned (DECIDE_CONTRACT.md). The
+		// net is integer/I16F16 and the choice is a pure function of the observation,
+		// so orders stay deterministic in lockstep — every client must load the SAME
+		// blob. Loaded once in the ctor; mlDecide_ stays false (→ hand argmax) if
+		// loading fails. This mode is INDEPENDENT of the worker-cap "ml" mode above:
+		// a user selects exactly one via GLOB2_CORTEX_POLICY; combining is out of scope.
+		bool mlDecide_;
+		CortexNet decisionNet_;
 	};
 }

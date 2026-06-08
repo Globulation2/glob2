@@ -121,12 +121,17 @@ namespace Cortex
 			//      swarmsProducingWarrior count and pull the mix back to the no-warrior
 			//      economy ratio. Self-terminating: once no swarm makes warriors it
 			//      stops firing (and re-fires only if another panic flips them again).
-			if (!f.combatPhase && f.swarms > 0 && obs.swarmsProducingWarrior > 0)
+			//      Gated on !economyEstablished (NOT !combatPhase): this reverts the
+			//      PRE-ESTABLISHMENT panic-leftover warrior mix only. An established-but-
+			//      starving (foodSaturated) colony legitimately KEEPS its warriors now
+			//      (growWarrior is set for any established colony), so it must not be
+			//      reverted here — otherwise the famine blitz would lose its army.
+			if (!f.economyEstablished && f.swarms > 0 && obs.swarmsProducingWarrior > 0)
 				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 			// (b) Establish the warrior mix once the economy is established but no
 			//     warriors are being made yet. Self-terminating: stops firing as soon
 			//     as the first warrior appears (re-fires if the army is wiped to 0).
-			if (f.combatPhase && f.swarms > 0 && f.warriors == 0)
+			if (f.economyEstablished && f.swarms > 0 && f.warriors == 0)
 				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 			// (c) Fold an explorer into the mix when we want one out but none is being
 			//     produced and we have none yet (reveals our wheat / the enemy base).
@@ -137,14 +142,21 @@ namespace Cortex
 			//     not keep over-producing them. Stops once no swarm carries it.
 			if (f.growExplorer == 0 && f.swarms > 0 && obs.swarmsProducingExplorer > 0)
 				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
-			// (e) Apply / revert the worker-surplus throttle: re-issue the mix
-			//     whenever the swarm's worker output disagrees with the desired
-			//     growWorker (workers on <-> off). The symmetric peer of (c)/(d) for
-			//     the explorer slice; only ever meaningful in the combat phase, where
-			//     growWorker can be 0. Self-terminating and action-layer dedup'd, so a
-			//     no-op re-issue emits no order.
-			if (f.combatPhase && f.swarms > 0
-			 && (f.growWorker > 0) != (obs.swarmsProducingWorker > 0))
+			// (e) Apply / revert the worker-surplus throttle AND the famine governor:
+			//     re-issue the mix whenever the swarm's actual output disagrees with the
+			//     desired one on EITHER the worker slice (workers on <-> off, the
+			//     surplus throttle / feeding governor) OR the warrior slice (so a famine
+			//     colony that wants warriors but isn't making them re-issues the mix).
+			//     The symmetric peer of (c)/(d) for those slices. Gated on
+			//     economyEstablished (NOT combatPhase) so it also fires in the
+			//     foodSaturated famine regime, where growWorker is forced to 0 and
+			//     growWarrior to 1 — without this the governor's mix would be computed
+			//     but never issued as an order. Since economyEstablished ⊇ combatPhase,
+			//     the only NEW firings are in foodSaturated; healthy combat-phase
+			//     colonies behave identically. Self-terminating and action-layer dedup'd.
+			if (f.economyEstablished && f.swarms > 0
+			 && ((f.growWorker  > 0) != (obs.swarmsProducingWorker  > 0)
+			  || (f.growWarrior > 0) != (obs.swarmsProducingWarrior > 0)))
 				return { SCORE_PRODUCTION_CONTROL, makeSetProductionAction(f.growWorker, f.growExplorer, f.growWarrior) };
 		}
 

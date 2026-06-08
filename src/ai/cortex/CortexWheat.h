@@ -77,11 +77,18 @@ namespace Cortex
 	//!   openMargin    : N — CORN with wheat-depth <= N stays open (unpainted).
 	//!   ignoreFOW     : true skips the isFOWDiscovered gate (static-map debug).
 	//!   wantDebug     : true fills classOf/depthOf.
+	//!   liftAll       : WHEAT-BLITZ override. When true, NO reachable wheat tile is
+	//!                   classified WC_FORBIDDEN (treated WC_CHECKER_OPEN instead), so
+	//!                   `desired` stays empty — the reconcile then un-forbids the WHOLE
+	//!                   field (del = all current paint, add empty) for a one-time food
+	//!                   burst. The index-ordered scan / BFS / add-del diff are otherwise
+	//!                   identical, so determinism is preserved. Default false leaves
+	//!                   every existing caller unchanged.
 	WheatScanResult scanWheatForbidden(
 		Map& map, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
-		int openMargin, bool ignoreFOW, bool wantDebug);
+		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false);
 
 	//! Result of the live reconcile: the diff counts plus (when buildMasks) the
 	//! two BrushAccumulators ready to hand to OrderAlterateForbidden(MODE_ADD/DEL).
@@ -98,5 +105,9 @@ namespace Cortex
 	//! return the reconcile diff. Always fills the counts; only builds the
 	//! BrushAccumulator masks when `buildMasks` is true (the observation path
 	//! wants counts only; the action path wants the masks). Emits no Orders.
-	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks);
+	//! `liftAll` (default false) is passed through to scanWheatForbidden: when true
+	//! the whole field is un-forbidden for the wheat-blitz food burst (only the DEL
+	//! mask is non-empty). Default false keeps every existing caller unchanged.
+	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks,
+	                                       bool liftAll = false);
 }

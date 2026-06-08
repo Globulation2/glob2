@@ -45,6 +45,8 @@ AICortex::~AICortex()
 {
 	if (traceFile) // flush + release the gated training trace (RAM-only handle).
 		std::fclose(traceFile);
+	if (decideTraceFile) // flush + release the gated decision trace (RAM-only handle).
+		std::fclose(decideTraceFile);
 }
 
 void AICortex::init(Player* player)
@@ -62,6 +64,8 @@ void AICortex::init(Player* player)
 	attackDumped = false; // diagnostic one-shot; never serialized.
 	traceFile = nullptr; // gated ML training trace; lazily opened, never serialized.
 	traceOpenAttempted = false; // open the trace at most once, even if it fails.
+	decideTraceFile = nullptr; // gated ML decision trace; lazily opened, never serialized.
+	decideTraceOpenAttempted = false; // open the decision trace at most once, even if it fails.
 	innFinishedTick.clear(); // RAM-only inn settle clock; rebuilt as inns are seen.
 	swarmKickstarted = false; // start-of-game swarm worker kickstart not yet done.
 }
@@ -430,7 +434,20 @@ shared_ptr<Order> AICortex::getOrder(void)
 		obs.flagPosture = flagPosture;
 		obs.offenseHoldUntil = offenseHoldUntil;
 
-		Cortex::CortexAction action = policy.decide(obs);
+		// DECISION-SELECTION TRACE (gated): when GLOB2_CORTEX_DECIDE_TRACE is set,
+		// ask decide() to fill the per-cycle eligibility mask + chosen class index
+		// and record one CSV row. The trace is a pure read-out of the decision
+		// decide() makes anyway — passing &trace does not change the action — so it
+		// touches no RNG/order/sync state, like the worker trace. See DECIDE_CONTRACT.md.
+		Cortex::CortexAction action;
+		if (getenv("GLOB2_CORTEX_DECIDE_TRACE"))
+		{
+			Cortex::DecideTrace decideTrace;
+			action = policy.decide(obs, &decideTrace);
+			dumpDecideTrace(obs, decideTrace);
+		}
+		else
+			action = policy.decide(obs);
 		translateAction(action, obs);
 
 		// Worker-hauling tuning (swarms / inns / construction sites) runs EVERY
@@ -459,7 +476,14 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// says yes we enqueue the full ADD/DEL paint here, alongside whatever orders
 		// translateAction queued. They drain one-per-tick over the many ticks until
 		// the next decision cycle, so both go out — they no longer compete for a turn.
-		if (policy.wantWheatProtection(obs))
+		// WHEAT-BLITZ takes precedence: during a famine (foodSaturated with a
+		// committable army and a target) we LIFT all wheat protection for a one-time
+		// food burst to fuel the attack. wantWheatProtection returns false while
+		// starving, so the two gates are mutually exclusive and the executor never
+		// double-emits; blitz-lift wins when both could apply.
+		if (policy.wantWheatBlitzLift(obs))
+			enqueueWheatForbidden(obs, /*liftAll=*/true);
+		else if (policy.wantWheatProtection(obs))
 			enqueueWheatForbidden(obs);
 
 		if (!orderQueue.empty())

@@ -403,9 +403,10 @@ void AICortex::translateActionSetPriority(const Cortex::CortexAction& action, co
 	}
 }
 
-void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs)
+void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool liftAll)
 {
-	(void)obs; // reserved: the gate already ran in CortexPolicy::wantWheatProtection.
+	(void)obs; // reserved: the gate already ran in CortexPolicy::wantWheatProtection /
+	           // wantWheatBlitzLift; liftAll selects the wheat-blitz full-lift mode.
 
 	// Rebuild the ADD/DEL checkerboard masks for our wheat (the bounded colony-region
 	// scan, RNG-free) at the per-game open-margin and emit one OrderAlterateForbidden
@@ -413,8 +414,10 @@ void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs)
 	// OrderCreates, and the reconcile is self-correcting — a paint already in place
 	// yields an empty diff next cycle, so re-running it every cycle is free. The
 	// margin is the AICortex member (the seeded per-game N), == obs.wheatOpenMargin.
+	// In liftAll (wheat-blitz) mode `desired` is forced empty, so only the DEL mask is
+	// non-empty — the whole field is un-forbidden for a one-time food burst.
 	Cortex::WheatReconcile wr =
-		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true);
+		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true, liftAll);
 	const Map* map = &player->team->game->map;
 	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
 	// DEL first so freeing dead tiles never races the ADD of fresh ones.

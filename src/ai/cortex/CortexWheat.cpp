@@ -36,7 +36,7 @@ namespace Cortex
 		Map& map, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
-		int openMargin, bool ignoreFOW, bool wantDebug)
+		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll)
 	{
 		WheatScanResult res;
 
@@ -171,8 +171,12 @@ namespace Cortex
 			// by parity — half the field (the WHEAT_PARITY half) is protected, the
 			// other half harvest-open, all the way in to depth 1. (`openMargin` is no
 			// longer consulted; it is retained only for the observation/action layout.)
+			// WHEAT-BLITZ liftAll: classify what WOULD be the protected half as
+			// WC_CHECKER_OPEN instead of WC_FORBIDDEN so `desired` stays empty — the
+			// reconcile then un-forbids the WHOLE field. Iteration order, BFS, depths,
+			// and the add/del diff are untouched, so determinism is preserved.
 			Uint8 cls;
-			if (((x + y) & 1) == WHEAT_PARITY)
+			if (!liftAll && ((x + y) & 1) == WHEAT_PARITY)
 			{
 				cls = WC_FORBIDDEN;
 				res.desired.push_back(idx);
@@ -256,14 +260,25 @@ namespace Cortex
 		//   - visible, still wheat -> keep paint (reachable or not, it is still field);
 		//   - visible, wheat gone  -> retire paint.
 		// The debug/static path (ignoreFOW) treats every tile as visible.
+		//
+		// WHEAT-BLITZ liftAll: the steady-state depletion guards above are SKIPPED —
+		// we retire ALL current paint (DEL = current, ADD empty since `desired` is
+		// empty), un-forbidding the whole field for a one-time harvest burst even
+		// though the wheat is still standing. This is the deliberate famine override,
+		// distinct from the steady-state "retire only when depleted" invariant; normal
+		// protection re-paints the checkerboard once the famine clears. Iterating
+		// `current` in index order keeps the DEL list deterministic.
 		for (int idx : current)
 		{
-			const int x = idx % w;
-			const int y = idx / w;
-			if (!ignoreFOW && !map.isFOWDiscovered(x, y, teamMask))
-				continue; // in fog: confirmation pending, leave the paint.
-			if (isCorn(map, x, y))
-				continue; // still field wheat: keep protecting it.
+			if (!liftAll)
+			{
+				const int x = idx % w;
+				const int y = idx / w;
+				if (!ignoreFOW && !map.isFOWDiscovered(x, y, teamMask))
+					continue; // in fog: confirmation pending, leave the paint.
+				if (isCorn(map, x, y))
+					continue; // still field wheat: keep protecting it.
+			}
 			res.del.push_back(idx);
 		}
 		res.addCount = static_cast<Sint32>(res.add.size());
@@ -272,7 +287,8 @@ namespace Cortex
 		return res;
 	}
 
-	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks)
+	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks,
+	                                       bool liftAll)
 	{
 		WheatReconcile out;
 		if (player == NULL || player->team == NULL || player->team->game == NULL)
@@ -342,7 +358,7 @@ namespace Cortex
 		WheatScanResult r = scanWheatForbidden(
 			map, teamMask, teamNumber, seeds,
 			boxMinX, boxMinY, boxMaxX, boxMaxY,
-			openMargin, /*ignoreFOW=*/false, /*wantDebug=*/false);
+			openMargin, /*ignoreFOW=*/false, /*wantDebug=*/false, liftAll);
 
 		out.addCount = r.addCount;
 		out.delCount = r.delCount;

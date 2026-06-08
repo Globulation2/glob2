@@ -9,6 +9,23 @@
 
 namespace Cortex
 {
+	// Reduce a per-level upgrade-state histogram (attackStrength/walk/build) to one
+	// RAW feature for the decision vector: the highest unit level that has any units
+	// (the achieved tech tier, 0..CORTEX_UNIT_LEVELS-1). The DECIDE_CONTRACT names
+	// these as the *array* fields (obs.attackStrengthLevel/walkLevel/buildLevel) but
+	// the 48-wide vector takes one scalar per row, so a reduction is needed. The max
+	// occupied level is the threshold-free choice — it bakes in NONE of the teacher's
+	// unitsServedPct / target-level judgment (CortexPolicyTech.cpp), matching the
+	// contract's stated reason for excluding the derived booleans. See the report
+	// for this discrepancy.
+	static int cortexLevelSignal(const Sint32 hist[CORTEX_UNIT_LEVELS])
+	{
+		int top = 0;
+		for (int lvl = 0; lvl < CORTEX_UNIT_LEVELS; lvl++)
+			if (hist[lvl] > 0) top = lvl;
+		return top;
+	}
+
 	// --- economy tuning ---------------------------------------------------
 	// Hand-picked thresholds for the v0 rules. These are AI design choices for
 	// a brand-new AI (not ported engine mechanics), so they are tunable; later
@@ -67,14 +84,18 @@ namespace Cortex
 
 	CortexPolicy::CortexPolicy()
 		: mlSwarmCaps_(false)
+		, mlDecide_(false)
 	{
-		// Opt into the learned swarm worker-cap policy (effort B pilot) only when
-		// asked AND the net actually loads; otherwise stay on the hand rule. Reading
-		// the env + loading the blob happens once here, at AI construction — never
-		// during a tick — so the per-tick decision stays a pure, deterministic
-		// function of the observation. See docs/AI/cortex/PILOT.md.
+		// Opt into a learned policy (effort B pilots) only when asked AND the net
+		// actually loads; otherwise stay on the hand rule. Reading the env + loading
+		// the blob happens once here, at AI construction — never during a tick — so
+		// the per-tick decision stays a pure, deterministic function of the
+		// observation. The two modes are mutually exclusive env values (a user picks
+		// one); each loads its own net independently. See docs/AI/cortex/PILOT.md and
+		// docs/AI/cortex/DECIDE_PILOT.md.
 		const char* mode = getenv("GLOB2_CORTEX_POLICY");
-		if (mode && std::string(mode) == "ml")
+		const std::string modeStr = (mode ? mode : "");
+		if (modeStr == "ml")
 		{
 			const char* netPath = getenv("GLOB2_CORTEX_NET");
 			if (netPath && netPath[0] && swarmNet_.load(netPath))
@@ -82,6 +103,16 @@ namespace Cortex
 			else
 				std::cerr << "CORTEX_POLICY=ml but the swarm-cap net failed to load"
 				             " (GLOB2_CORTEX_NET='" << (netPath ? netPath : "")
+				          << "') — falling back to the hand rule.\n";
+		}
+		else if (modeStr == "ml-decide")
+		{
+			const char* netPath = getenv("GLOB2_CORTEX_DECISION_NET");
+			if (netPath && netPath[0] && decisionNet_.loadDecide(netPath))
+				mlDecide_ = true;
+			else
+				std::cerr << "CORTEX_POLICY=ml-decide but the decision net failed to load"
+				             " (GLOB2_CORTEX_DECISION_NET='" << (netPath ? netPath : "")
 				          << "') — falling back to the hand rule.\n";
 		}
 	}
@@ -128,10 +159,18 @@ namespace Cortex
 		const bool innEstablished  = (f.inns >= COMBAT_ECON_MIN_INNS)
 		                          || (obs.freeWorkers > 0
 		                           && (f.inns + f.innSites) >= COMBAT_ECON_MIN_INNS);
-		f.combatPhase     = (innEstablished
+		// economyEstablished = a mature colony (inn + swarm + real population),
+		// REGARDLESS of food: it stays true through a famine. combatPhase splits off
+		// the healthy slice (mature AND not starving) — it gates offense/defense/
+		// barracks and the steady-state production mix, which all want a healthy
+		// colony. foodSaturated is the complementary famine slice (mature BUT starving):
+		// the population has overshot what the wheat catchment can feed. The two are
+		// mutually exclusive and partition economyEstablished by f.starving.
+		f.economyEstablished = (innEstablished
 		                           && f.swarms >= COMBAT_ECON_MIN_SWARMS
-		                           && obs.totalUnit >= COMBAT_ECON_MIN_UNITS
-		                           && !f.starving);
+		                           && obs.totalUnit >= COMBAT_ECON_MIN_UNITS);
+		f.combatPhase   = f.economyEstablished && !f.starving;
+		f.foodSaturated = f.economyEstablished &&  f.starving;
 
 		// Spare labour: idle workers exist, so a tech/expansion build can be started
 		// without stealing the haulers that keep the swarm + inn CORN buffers full.
@@ -150,7 +189,10 @@ namespace Cortex
 		const bool wantEarlyExplorer = (!f.combatPhase && f.swarms >= 1 && obs.explorers == 0);
 		const bool wantScout         = (obs.explorers == 0); // keep ≥1 explorer out.
 		f.growExplorer = (wantEarlyExplorer || (f.combatPhase && wantScout)) ? 1 : 0;
-		f.growWarrior  = f.combatPhase ? 1 : 0;
+		// An established colony keeps building/replacing its army even while starving
+		// (foodSaturated): the swarm converts the doomed surplus food into SOLDIERS
+		// instead of more starving mouths, which is exactly the army the blitz commits.
+		f.growWarrior  = f.economyEstablished ? 1 : 0;
 
 		// Split open-job demand by whether the current workforce can fill it. A worker
 		// works at a building of level L only if its HARVEST level >= L
@@ -193,8 +235,19 @@ namespace Cortex
 			suppressWorkers = false;           // labour scarce again -> make workers
 		else
 			suppressWorkers = suppressingNow;  // hold within the hysteresis band
-		f.growWorker = (f.combatPhase && suppressWorkers) ? 0
-		                     : (f.combatPhase ? 2 : 1);
+		// FEEDING GOVERNOR: once the colony is at/over what wheat can feed, stop minting
+		// workers — adding mouths during a famine only deepens it. The warrior slice
+		// (growWarrior, set above for any established colony) keeps the swarm off the
+		// forbidden {0,0,0} halt. Two stages: f.hungry is the proactive brake (units
+		// waiting for food but not yet losing HP); f.foodSaturated is the hard governor
+		// (units actively starving). Both apply only to an established colony — a
+		// bootstrapping colony still needs workers to raise its first inn.
+		if (f.foodSaturated || (f.economyEstablished && f.hungry))
+			f.growWorker = 0;
+		else if (f.combatPhase)
+			f.growWorker = suppressWorkers ? 0 : 2;
+		else
+			f.growWorker = 1;
 
 		// Pre-combat panic flag (Priority 0). Shared because Priority 1 keys its whole
 		// block on !panic. Suppressed once we field a real army (warriors >
@@ -207,8 +260,14 @@ namespace Cortex
 		return f;
 	}
 
-	CortexAction CortexPolicy::decide(const CortexObservation& obs)
+	CortexAction CortexPolicy::decide(const CortexObservation& obs, DecideTrace* trace)
 	{
+		if (trace)
+		{
+			trace->eligibleMask = 0;
+			trace->chosen = -1;
+		}
+
 		// Reject an observation built against a layout this policy wasn't
 		// written for, or one that was never populated. Either way: do nothing.
 		if (obs.version != OBSERVATION_VERSION || !obs.valid)
@@ -241,10 +300,132 @@ namespace Cortex
 			scoreRetireFlag(obs, f),
 			scoreOffense(obs, f),
 		};
+		// Eligibility mask + hand argmax in ONE pass over candidates. The mask is now
+		// built unconditionally (not only when tracing) because the ML decision-net
+		// path needs it every cycle; the hand argmax (best/bestIndex) is computed
+		// alongside so the trace label and the off-path behaviour are unchanged.
+		Uint32 eligibleMask = 0;
 		ScoredAction best{ SCORE_NONE, makeNoOpAction() };
-		for (const ScoredAction& c : candidates)
+		int bestIndex = -1;
+		const int n = static_cast<int>(sizeof(candidates) / sizeof(candidates[0]));
+		for (int k = 0; k < n; k++)
+		{
+			const ScoredAction& c = candidates[k];
+			// Eligibility (the decline gate): a positive score means this candidate
+			// did not decline this cycle — the ML mask bit. The candidate array index
+			// IS the class index (DECIDE_CONTRACT action map); never reorder it.
+			if (c.score > SCORE_NONE)
+				eligibleMask |= (Uint32(1) << k);
 			if (c.score > best.score) // strict: earlier candidate wins ties
+			{
 				best = c;
+				bestIndex = k;
+			}
+		}
+		if (trace)
+		{
+			// The trace ALWAYS reflects the HAND rule (the BC training label): mask =
+			// hand decline gates, chosen = hand argmax. Even when mlDecide_ is on, the
+			// trace records the hand choice (label semantics) while selection below uses
+			// the net — these are kept distinct on purpose. In practice we never trace
+			// and run-ml at once, but the semantics stay clean either way.
+			trace->eligibleMask = eligibleMask;
+			trace->chosen = bestIndex; // -1 when nothing eligible (initial NoOp held)
+		}
+
+		// ML decision-selection (DECIDE pilot): select among the eligible candidates
+		// with the learned net's utility scores instead of the hand SCORE_* argmax.
+		// The eligible set (decline gates) is identical to the hand path — only the
+		// selection differs (DECIDE_CONTRACT.md §Inference rule). The net is integer/
+		// I16F16 and loaded once in the ctor, so the choice stays deterministic in
+		// lockstep (no per-tick load, no new save/load state). When mlDecide_ is off
+		// this whole block is skipped and behaviour is byte-identical to the hand path.
+		if (mlDecide_)
+		{
+			int features[NUM_DECIDE_FEATURES];
+			extractDecideFeatures(obs, features);
+			const int k = decisionNet_.scoreDecision(features, eligibleMask);
+			if (k >= 0)
+				return candidates[k].action;
+			return makeNoOpAction(); // nothing eligible — same NoOp as the hand path
+		}
+
 		return best.action;
+	}
+
+	void CortexPolicy::extractDecideFeatures(const CortexObservation& obs,
+	                                         int features[NUM_DECIDE_FEATURES])
+	{
+		// Reuse the same fact bundle decide() builds: the finished-building / site
+		// counts (idx 0-11) and the fillable/unfillable open-job partition (idx
+		// 20-21) come straight from computeFacts, so the trace and the live policy
+		// can never disagree on those derivations. Everything else is a raw
+		// CortexObservation scalar — the net relearns the teacher's thresholds, so
+		// the derived judgment booleans are deliberately NOT exposed (DECIDE_CONTRACT).
+		const DecideFacts f = computeFacts(obs);
+
+		// idx 40: count of valid offense flag targets (discovered enemy buildings).
+		int flagTargetsValid = 0;
+		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
+			if (obs.flagTargets[i].valid) flagTargetsValid++;
+
+		// idx 12: upgradableCount is a per-building-type array; the 48-wide vector
+		// takes one scalar, so sum it — total finished buildings that pass the engine
+		// Upgradable predicate right now. The raw "how much upgrade work is available"
+		// signal, no per-type threshold baked in. (Discrepancy: contract names the
+		// array obs.upgradableCount; see the report.)
+		int upgradableTotal = 0;
+		for (int t = 0; t < CORTEX_BUILDING_TYPES; t++)
+			upgradableTotal += obs.upgradableCount[t];
+
+		int i = 0;
+		features[i++] = f.swarms;          // 0
+		features[i++] = f.swarmSites;      // 1
+		features[i++] = f.inns;            // 2
+		features[i++] = f.innSites;        // 3
+		features[i++] = f.school;          // 4
+		features[i++] = f.schoolSites;     // 5
+		features[i++] = f.race;            // 6
+		features[i++] = f.raceSites;       // 7
+		features[i++] = f.heal;            // 8
+		features[i++] = f.healSites;       // 9
+		features[i++] = f.barracks;        // 10
+		features[i++] = f.barracksSites;   // 11
+		features[i++] = upgradableTotal;   // 12 upgradableCount (sum over types)
+		features[i++] = obs.totalUnit;     // 13
+		features[i++] = obs.workers;       // 14
+		features[i++] = obs.explorers;     // 15
+		features[i++] = obs.warriors;      // 16
+		features[i++] = obs.freeWorkers;   // 17
+		features[i++] = obs.totalFree;     // 18
+		features[i++] = obs.totalNeeded;   // 19
+		features[i++] = f.fillableNeeded;  // 20
+		features[i++] = f.unfillableNeeded;// 21
+		features[i++] = obs.feedCapacity;  // 22
+		features[i++] = obs.needFood;      // 23
+		features[i++] = obs.starvingUnits; // 24
+		features[i++] = obs.maxBuildLevel; // 25
+		features[i++] = obs.swarmCount;    // 26
+		features[i++] = obs.innCount;      // 27
+		features[i++] = obs.swarmsProducing;        // 28
+		features[i++] = obs.swarmsProducingWorker;  // 29
+		features[i++] = obs.swarmsProducingWarrior; // 30
+		features[i++] = obs.swarmsProducingExplorer;// 31
+		features[i++] = cortexLevelSignal(obs.attackStrengthLevel); // 32 attackStrengthLevel
+		features[i++] = cortexLevelSignal(obs.walkLevel);           // 33 walkLevel
+		features[i++] = cortexLevelSignal(obs.buildLevel);          // 34 buildLevel
+		features[i++] = obs.buildingsUnderAttack; // 35
+		features[i++] = obs.unitsUnderAttack;     // 36
+		features[i++] = obs.warFlagsActive;       // 37
+		features[i++] = obs.enemyCount;           // 38
+		features[i++] = obs.enemyUnitsNearFlag;   // 39
+		features[i++] = flagTargetsValid;         // 40 flagTargetsValid
+		features[i++] = obs.flagPosture;          // 41
+		features[i++] = obs.defenseTarget.valid ? 1 : 0; // 42 haveDefenseTarget
+		features[i++] = obs.algaeReachable;       // 43
+		features[i++] = obs.algaeDiscovered;      // 44
+		features[i++] = obs.swimLandReach;        // 45
+		features[i++] = obs.swimWaterReach;       // 46
+		features[i++] = obs.tick;                 // 47
 	}
 }

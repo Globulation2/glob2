@@ -218,3 +218,72 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 		std::fflush(traceFile); // once per ~25 ticks; survive a killed headless run.
 	}
 }
+
+// DECISION-SELECTION TRACE for the decide() ML pilot (docs/AI/cortex/DECIDE_CONTRACT.md).
+// Appends ONE CSV row per decision cycle to <prefix>.team<N>.csv, where <prefix> is
+// GLOB2_CORTEX_DECIDE_TRACE. Each row is: tick, team, the 48 decision features (in
+// DECIDE_CONTRACT idx order, computed by CortexPolicy::extractDecideFeatures — the
+// single source of truth the future inference path reuses), the per-cycle eligibility
+// bitmask, and the chosen class index. Pure read of obs + the DecideTrace decide()
+// already produced for gameplay; opening/writing a file never touches RNG, orders, or
+// persisted state, so the lockstep sync stream is unaffected. SEPARATE file handle +
+// open-attempt guard from the worker trace (distinct CSV, distinct schema).
+//
+// NOTE: fputs (not fprintf) — LogFileManager.h rewrites every fprintf in this TU to a
+// dead-code no-op (see glob2/CLAUDE.md), which would silently drop the trace.
+void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
+                               const Cortex::DecideTrace& trace)
+{
+	using namespace Cortex;
+	const int me = player->team->teamNumber;
+
+	if (!decideTraceFile)
+	{
+		if (decideTraceOpenAttempted) return; // already tried (and failed) once; do not retry.
+		decideTraceOpenAttempted = true;
+		const char* prefix = getenv("GLOB2_CORTEX_DECIDE_TRACE");
+		if (!prefix || !prefix[0]) return;
+		std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
+		decideTraceFile = std::fopen(path.c_str(), "a");
+		if (!decideTraceFile)
+		{
+			// glob2 chdir()s to its resource dir at startup, so a relative prefix
+			// resolves there, not in the launch dir — pass an ABSOLUTE path. Warn
+			// once (decideTraceOpenAttempted gate above) rather than silently dumping nothing.
+			std::cerr << "CORTEX_DECIDE_TRACE: cannot open '" << path
+			          << "' for the decision-selection trace — pass an ABSOLUTE"
+			             " GLOB2_CORTEX_DECIDE_TRACE path (glob2 chdir()s at startup)."
+			             " Trace disabled.\n";
+			return;
+		}
+		// "a" positions at end, so a non-zero offset means the file already has rows;
+		// only the first writer emits the header. The 48 feature names are in
+		// DECIDE_CONTRACT idx order — they MUST match extractDecideFeatures 1:1.
+		if (std::ftell(decideTraceFile) == 0)
+			std::fputs("tick,team,"
+			           "swarms,swarmSites,inns,innSites,school,schoolSites,race,raceSites,"
+			           "heal,healSites,barracks,barracksSites,upgradableCount,totalUnit,"
+			           "workers,explorers,warriors,freeWorkers,totalFree,totalNeeded,"
+			           "fillableNeeded,unfillableNeeded,feedCapacity,needFood,starvingUnits,"
+			           "maxBuildLevel,swarmCount,innCount,swarmsProducing,swarmsProducingWorker,"
+			           "swarmsProducingWarrior,swarmsProducingExplorer,attackStrengthLevel,"
+			           "walkLevel,buildLevel,buildingsUnderAttack,unitsUnderAttack,"
+			           "warFlagsActive,enemyCount,enemyUnitsNearFlag,flagTargetsValid,"
+			           "flagPosture,haveDefenseTarget,algaeReachable,algaeDiscovered,"
+			           "swimLandReach,swimWaterReach,tick,"
+			           "eligible_mask,chosen\n", decideTraceFile);
+	}
+
+	int features[CortexPolicy::NUM_DECIDE_FEATURES];
+	CortexPolicy::extractDecideFeatures(obs, features);
+
+	std::ostringstream row;
+	row << obs.tick << ',' << me;
+	for (int k = 0; k < CortexPolicy::NUM_DECIDE_FEATURES; k++)
+		row << ',' << features[k];
+	row << ',' << trace.eligibleMask << ',' << trace.chosen << '\n';
+
+	const std::string text = row.str();
+	std::fputs(text.c_str(), decideTraceFile);
+	std::fflush(decideTraceFile); // once per ~25 ticks; survive a killed headless run.
+}
