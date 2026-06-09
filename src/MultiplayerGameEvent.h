@@ -35,252 +35,42 @@ public:
 
 	///Returns the event type
 	virtual Uint8 getEventType() const = 0;
-	
+
 	///Returns a formatted version of the event
 	virtual std::string format() const = 0;
-	
+
 	///Compares two MultiplayerGameEvent
 	virtual bool operator==(const MultiplayerGameEvent& rhs) const = 0;
 };
 
 
-
-
-///MGPlayerListChangedEvent
-class MGPlayerListChangedEvent : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGPlayerListChangedEvent event
-	MGPlayerListChangedEvent();
-
-	///Returns MGEPlayerListChanged
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGReadyToStartEvent
-class MGReadyToStartEvent : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGReadyToStartEvent event
-	MGReadyToStartEvent();
-
-	///Returns MGEReadyToStart
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGNotReadyToStartEvent
-class MGNotReadyToStartEvent : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGNotReadyToStartEvent event
-	MGNotReadyToStartEvent();
-
-	///Returns MGENotReadyToStart
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-///MGGameExitEvent
-class MGGameExitEvent : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGGameExitEvent event
-	MGGameExitEvent();
-
-	///Returns MGEGameExit
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGGameEndedNormallyEvent
-class MGGameEndedNormallyEvent : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGGameEndedNormallyEvent event
-	MGGameEndedNormallyEvent();
-
-	///Returns MGEGameEndedNormally
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGGameRefusedEvent
-class MGGameRefusedEvent : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGGameRefusedEvent event
-	MGGameRefusedEvent();
-
-	///Returns MGEGameRefused
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGKickedByHostEvent
-class MGKickedByHostEvent : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGKickedByHostEvent event
-	MGKickedByHostEvent();
-
-	///Returns MGEKickedByHost
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGHostCancelledGameEvent
-class MGHostCancelledGameEvent : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGHostCancelledGameEvent event
-	MGHostCancelledGameEvent();
-
-	///Returns MGEHostCancelledGame
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGGameStarted
-class MGGameStarted : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGGameStarted event
-	MGGameStarted();
-
-	///Returns MGEGameStarted
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGServerDisconnected
-class MGServerDisconnected : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGServerDisconnected event
-	MGServerDisconnected();
-
-	///Returns MGEServerDisconnected
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGGameStartRefused
-class MGGameStartRefused : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGGameStartRefused event
-	MGGameStartRefused();
-
-	///Returns MGEGameStartRefused
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
-
-
-
-
-///MGGameHostJoinAccepted
-class MGGameHostJoinAccepted : public MultiplayerGameEvent
-{
-public:
-	///Creates a MGGameHostJoinAccepted event
-	MGGameHostJoinAccepted();
-
-	///Returns MGEGameHostJoinAccepted
-	Uint8 getEventType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two MultiplayerGameEvent
-	bool operator==(const MultiplayerGameEvent& rhs) const;
-};
+/// Declares a payload-free MultiplayerGameEvent subclass. The class carries no
+/// data, so getEventType() (the enum tag), format() (the class-name literal)
+/// and operator== (a typeid match) are fully determined by the class name and
+/// its one enum tag — see DEFINE_EMPTY_MULTIPLAYER_GAME_EVENT in the .cpp for
+/// the (class, tag) table. Payload-carrying events are declared explicitly.
+#define DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(ClassName) \
+	class ClassName : public MultiplayerGameEvent \
+	{ \
+	public: \
+		ClassName(); \
+		Uint8 getEventType() const; \
+		std::string format() const; \
+		bool operator==(const MultiplayerGameEvent& rhs) const; \
+	};
+
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGPlayerListChangedEvent)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGReadyToStartEvent)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGNotReadyToStartEvent)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGGameExitEvent)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGGameEndedNormallyEvent)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGGameRefusedEvent)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGKickedByHostEvent)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGHostCancelledGameEvent)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGGameStarted)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGServerDisconnected)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGGameStartRefused)
+DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(MGGameHostJoinAccepted)
 
 
 
