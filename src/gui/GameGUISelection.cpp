@@ -246,6 +246,14 @@ void GameGUI::onBuildingDestroyed(Building *b)
 {
 	if (game.selectedBuilding == b)
 		game.selectedBuilding = NULL;
+
+	// Drop this building's pending GUI shadow. buildingGuiState is keyed by
+	// gid, and gids are recycled by Game::addBuilding (lowest free slot), so a
+	// leftover entry would be inherited by the next building created on the
+	// same slot. For a dragged-then-destroyed flag that left pendingPosX/Y set,
+	// a freshly placed flag reusing the gid would render at the dead flag's
+	// position while the simulation used the real posX/posY.
+	buildingGuiState.erase(b->gid);
 }
 
 void GameGUI::dumpUnitInformation(void)
