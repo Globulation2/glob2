@@ -24,9 +24,13 @@ namespace Cortex
 	/// or dying, not queued at a hospital, so needHeal badly understates true demand.
 	/// One hospital per HOSPITAL_WARRIORS_PER standing warriors keeps heal throughput
 	/// (a hospital heals only 2/5/7 units at once at L0/1/2, slowly) ahead of a
-	/// growing army — up to HOSPITAL_MAX instances (footprint/labour bound). Both are
-	/// hand-picked AI design choices, tunable against the benchmark.
-	static const int HOSPITAL_MAX          = 3;
+	/// growing army. There is NO fixed count cap: the army-size scaling rule IS the
+	/// bound (a larger army earns another hospital, a small one does not), so an army
+	/// that keeps growing keeps earning sustain instead of plateauing at an arbitrary
+	/// ceiling. Hospitals are not individually tracked, so unlike swarms/barracks
+	/// there is no tracking-array wall either — the scaling rule alone governs count.
+	/// HOSPITAL_WARRIORS_PER is a hand-picked AI design choice, tunable against the
+	/// benchmark.
 	static const int HOSPITAL_WARRIORS_PER = 8;
 
 	/// Percent of `total` eligible units already trained to >= `servedLevel` on an
@@ -140,9 +144,21 @@ namespace Cortex
 	// --- Priority 5: hospital (HEAL) — survivability for the standing army.
 	// The panic path also builds one reactively under attack; this is the
 	// planned, non-emergency one once the economy can spare the labour.
+	//
+	// Gate on economyEstablished (not combatPhase): combatPhase = established AND
+	// !starving, so it froze hospital provisioning the moment the colony starved —
+	// exactly when a famine army most needs HP sustain. economyEstablished drops the
+	// !starving freeze, so the hospital provisions proactively in peace and stays
+	// available through a famine rather than vanishing on the first hungry tick.
+	// freeWorkers>0 replaces canExpand as the staffing discipline: canExpand folds in
+	// !starving/!hungry too, which would re-impose the same freeze; the spare-labour
+	// term alone keeps the build crew off idle hands and never steals feeding haulers.
+	// Hospitals stay at tech-band scores, so survival (blitz / relocation / feeding)
+	// still outranks them during a famine — correct, since a hospital heals HP, not
+	// hunger.
 	ScoredAction CortexPolicy::scoreHospital(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.combatPhase && f.canExpand && f.heal == 0 && f.healSites == 0)
+		if (f.economyEstablished && obs.freeWorkers > 0 && f.heal == 0 && f.healSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
@@ -336,10 +352,12 @@ namespace Cortex
 	// More hospitals AND higher-level ones both grow army sustain: a level-L
 	// hospital heals maxUnitInside units at once (2/5/7 at L0/1/2) and faster per
 	// unit (30/18/6 ticks), so an upgrade is a big jump on both axes.
-	//   EXPAND: one hospital per HOSPITAL_WARRIORS_PER standing warriors, up to
-	//     HOSPITAL_MAX. The first hospital is Priority 5 / the panic path; this
-	//     grows the count as the army grows. (Army-scaled, not needHeal-scaled —
-	//     see the constant: wounded warriors out on the flag never queue to heal.)
+	//   EXPAND: one hospital per HOSPITAL_WARRIORS_PER standing warriors, with NO
+	//     fixed count cap — the army-size scaling rule IS the bound, so a growing
+	//     army keeps earning sustain instead of plateauing at an arbitrary ceiling.
+	//     The first hospital is Priority 5 / the panic path; this grows the count as
+	//     the army grows. (Army-scaled, not needHeal-scaled — see the constant:
+	//     wounded warriors out on the flag never queue to heal.)
 	//   UPGRADE: only ever upgrade a hospital when a SECOND finished hospital
 	//     exists to cover healing (heal >= 2). An upgrade turns the building into
 	//     a construction site — a heal blackout for that hospital — so upgrading
@@ -347,17 +365,24 @@ namespace Cortex
 	//     hospital, the one-at-a-time guard (cortexBuildingsUpgrading == 0) keeps
 	//     the other finished and available throughout. This guarantees that once a
 	//     hospital is built, at least one stays available to heal units.
+	//
+	// Gate on economyEstablished + freeWorkers>0 (not combatPhase + canExpand), same
+	// reasoning as scoreHospital: combatPhase's !starving term froze the count exactly
+	// when a famine army grew, so the army outran its heal capacity right when it most
+	// needed sustain. economyEstablished provisions proactively through peace and
+	// famine; freeWorkers>0 is the spare-labour discipline without re-importing the
+	// !starving freeze that canExpand folds in. Tech-band scores keep survival ahead
+	// of hospitals during a famine — correct, since a hospital heals HP, not hunger.
 	ScoredAction CortexPolicy::scoreHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.combatPhase && f.canExpand && f.heal >= 1 && f.healSites == 0
-		 && f.heal < HOSPITAL_MAX
+		if (f.economyEstablished && obs.freeWorkers > 0 && f.heal >= 1 && f.healSites == 0
 		 && f.warriors >= f.heal * HOSPITAL_WARRIORS_PER)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
 				return { SCORE_HOSPITAL_UPGRADE, makeBuildAction(CORTEX_BUILD_HEAL, slot) };
 		}
-		if (f.combatPhase && f.canExpand && f.heal >= 2
+		if (f.economyEstablished && obs.freeWorkers > 0 && f.heal >= 2
 		 && obs.upgradableCount[CORTEX_BUILD_HEAL] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL) == 0)
 			return { SCORE_HOSPITAL_UPGRADE, makeUpgradeAction(CORTEX_BUILD_HEAL) };
