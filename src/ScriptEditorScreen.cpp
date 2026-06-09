@@ -542,7 +542,8 @@ std::string filenameToName(const std::string& fullfilename)
 void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 {
 	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, isLoad, true, game->mapHeader.getMapName().c_str(), filenameToName, glob2NameToFilename);
+	std::string title=Toolkit::getStringTable()->getString(isLoad ? "[load script]" : "[save script]");
+	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, isLoad, title, game->mapHeader.getMapName().c_str(), filenameToName, glob2NameToFilename);
 	loadSaveScreen->dispatchPaint();
 
 	// save screen
