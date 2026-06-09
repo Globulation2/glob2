@@ -148,7 +148,6 @@ Glob2Screen.cpp
 Glob2Style.cpp
 GlobalContainer.cpp
 GlobalContainerArgs.cpp
-Gradient.cpp
 GUIGlob2FileList.cpp
 GUIMapPreview.cpp
 map/generator/HeightMapGenerator.cpp
