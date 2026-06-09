@@ -65,6 +65,18 @@ namespace Cortex
 		// but below swarm recovery (7000) and a first/healthy inn (8000).
 		SCORE_SECOND_SWARM_BASE  =  6100,
 		SCORE_SECOND_SWARM_STEP  =   100,
+		// FAMINE RELOCATION. When the colony is established BUT starving (foodSaturated)
+		// because its wheat catchment is spent, the second swarm is not a luxury upgrade
+		// — it is the escape from the depletion trap (relocating the economy onto a fresh
+		// patch is what lifts feedCapacity back off zero). A valid swarm candidate
+		// guarantees real fresh wheat to move to, so relocation outranks the wheat-blitz
+		// (SCORE_OFFENSE_BLITZ=6700, the spend-the-army-before-we-die desperation):
+		// recovery beats a hail-mary when recovery is genuinely possible. Sits ABOVE the
+		// blitz but still below swarm recovery (7000) and survival/production-control.
+		// scoreSecondSwarm's swarmSites==0 guard makes this claim only the ONE cycle that
+		// places the swarm; the standing war flag then lets the blitz resume, so the two
+		// coexist (we both spend the army AND fix the economy).
+		SCORE_SECOND_SWARM_FAMINE =  6800,
 		// A wheat-bottlenecked inn — GRADED DOWN. When the feeding deficit is a
 		// wheat-SUPPLY problem (a swarm is bottlenecked) another inn cannot be
 		// stocked, so its marginal value collapses below the second-swarm score and

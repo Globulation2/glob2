@@ -148,9 +148,14 @@ namespace Cortex
 	// explicit per-building timer (the user's "don't adjust too often" constraint).
 
 	/// Max swarms / inns the observation tracks individually (bounded POD arrays).
-	/// Over-bounds the economy (MAX_SWARMS==3) and combat (COMBAT_MAX_SWARMS==5)
-	/// swarm caps; inns can be more numerous, so its bound is larger. Buildings
-	/// past these counts (index-scan order) are simply not individually tuned.
+	/// This is ALSO the swarm BUILD cap (scoreSecondSwarm): a swarm past this count
+	/// would be built but never individually tracked — invisible to the fresh-patch
+	/// trigger (anySwarmWantsFreshPatch) and the per-swarm hauler tuning — so we stop
+	/// expanding at the tracking wall. There is no separate arbitrary count cap; WHEN
+	/// and WHERE a swarm is added is governed by the placement gate (spacing +
+	/// fresh-wheat candidate + spare labour), not by a fixed number. Inns can be more
+	/// numerous, so their bound is larger. Buildings past these counts (index-scan
+	/// order) are simply not individually tuned.
 	static const int CORTEX_MAX_TRACKED_SWARMS = 8;
 	static const int CORTEX_MAX_TRACKED_INNS   = 16;
 	/// Construction sites we individually track to pour idle workers into (Rule:
@@ -304,14 +309,6 @@ namespace Cortex
 	/// of being placed far away by the soft compactness score alone. Inns and swarms
 	/// are exempt (they follow the wheat, not the colony). AI-design rule.
 	static const int CORTEX_MAX_BUILD_EDGE_DIST = 10;
-
-	/// Upper bound on swarms the colony will grow to (recovery + wheat-patch
-	/// expansion). A team starts with one swarm; once the opening build-out is done
-	/// the policy may add more, one per newly-discovered nearby wheat patch (the
-	/// placement helper already forces CORTEX_SWARM_MIN_SPACING between swarms, so a
-	/// second swarm necessarily sits on a DIFFERENT patch). Capped low to avoid a
-	/// swarm sprawling onto every wheat tile on the map. Tunable AI design choice.
-	static const int CORTEX_MAX_SWARMS = 3;
 
 	// --- swim / pool tuning (v9, all tunable AI design choices) -------------
 	// A swimming pool (SWIMSPEED_BUILDING) trains the SWIM ability of WORKERS and

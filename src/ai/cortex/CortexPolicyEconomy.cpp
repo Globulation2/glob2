@@ -220,8 +220,11 @@ namespace Cortex
 
 	// --- Priority 6.95: second swarm on a freshly-discovered wheat patch. ------
 	// A team starts with one swarm; Priority 2.5 only ever REBUILDS that one if it
-	// is destroyed. Here we EXPAND: add swarms one per nearby wheat patch, up to
-	// CORTEX_MAX_SWARMS. The placement helper already forces CORTEX_SWARM_MIN_SPACING
+	// is destroyed. Here we EXPAND: add swarms one per nearby wheat patch, up to the
+	// tracking wall (CORTEX_MAX_TRACKED_SWARMS — a swarm past it would be untracked,
+	// invisible to the fresh-patch trigger and hauler tuning). There is no arbitrary
+	// count cap below that: WHEN/WHERE to add a swarm is governed by the placement gate
+	// below, not a fixed number. The placement helper already forces CORTEX_SWARM_MIN_SPACING
 	// between swarms AND CORTEX_WHEAT_MAX_DIST to CORN, so a VALID swarm candidate
 	// necessarily sits on a DIFFERENT patch within haul range — i.e. this fires
 	// exactly when "another wheat patch is found in relative proximity to the base".
@@ -241,26 +244,45 @@ namespace Cortex
 	// draining CORN buffer OR its harvestable wheat exhausted (anySwarmWantsFreshPatch).
 	// Until then a single swarm + more haulers is the cheaper answer; only a spent
 	// catchment warrants a whole new swarm on a fresh patch.
+	//
+	// FAMINE RELOCATION (the depletion-trap escape): gated on economyEstablished, NOT
+	// combatPhase. combatPhase = established && !starving, so the old gate locked this
+	// rung out exactly when a depleted catchment had already pushed the colony into
+	// starvation (foodSaturated) — feedCapacity recedes to zero, the inn rung discounts
+	// itself (anySwarmWantsFreshPatch → SCORE_FEED_BOTTLENECKED) but the swarm it was
+	// clearing room for could never fire, so the colony stacked inns on the dead field
+	// and starved in place. Admitting foodSaturated lets the established-but-starving
+	// colony relocate onto the fresh patch this candidate sits on. We still require
+	// spare labour (freeWorkers > 0) to STAFF it — without it relocation declines rather
+	// than steal the haulers that keep the buffers full — and a VALID candidate (slot >= 0)
+	// guarantees genuinely fresh wheat to move to, so we never pour labour onto a dead
+	// field. Healthy (combatPhase) colonies are unchanged: same graded score as before,
+	// so non-famine behaviour (and its replays) is byte-identical.
 	ScoredAction CortexPolicy::scoreSecondSwarm(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		const bool openingBuildOutDone =
 		    f.inns >= 1 && f.school >= 1 && f.race >= 1 && f.heal >= 1 && f.barracks >= 1;
-		// Gate relaxed vs the old canExpand: a wheat bottleneck makes the colony
-		// hungry, so requiring !hungry (canExpand) blocked the very swarm that would
-		// cure it. We require only spare labour to STAFF the new swarm
-		// (freeWorkers > 0); combatPhase still guards !starving and a mature colony.
-		if (f.combatPhase && obs.freeWorkers > 0 && openingBuildOutDone
+		// economyEstablished (⊇ combatPhase) admits the foodSaturated famine slice; the
+		// only NEW firings vs the old combatPhase gate are established-AND-starving. We
+		// require only spare labour to STAFF the new swarm (freeWorkers > 0); the old
+		// canExpand's !hungry was already dropped (a wheat bottleneck makes the colony
+		// hungry, so requiring !hungry blocked the very swarm that would cure it).
+		if (f.economyEstablished && obs.freeWorkers > 0 && openingBuildOutDone
 		 && anySwarmWantsFreshPatch(obs)
-		 && f.swarms >= 1 && f.swarms < CORTEX_MAX_SWARMS && f.swarmSites == 0)
+		 && f.swarms >= 1 && f.swarms < CORTEX_MAX_TRACKED_SWARMS && f.swarmSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)
 			{
-				// Score scales with how spent the worst catchment is (severity 1..5),
-				// landing above the tech/upgrade band so the fresh wheat patch outranks
-				// another upgrade when wheat is the binding constraint.
+				// Healthy colony: score scales with how spent the worst catchment is
+				// (severity 1..5), landing above the tech/upgrade band so the fresh wheat
+				// patch outranks another upgrade when wheat is the binding constraint.
+				// Famine (foodSaturated): relocation is the trap escape and must outrank
+				// the wheat-blitz — see SCORE_SECOND_SWARM_FAMINE.
 				const int severity = swarmFreshPatchSeverity(obs);
-				const int score = SCORE_SECOND_SWARM_BASE + severity * SCORE_SECOND_SWARM_STEP;
+				const int score = f.foodSaturated
+					? SCORE_SECOND_SWARM_FAMINE
+					: SCORE_SECOND_SWARM_BASE + severity * SCORE_SECOND_SWARM_STEP;
 				return { score, makeBuildAction(CORTEX_BUILD_SWARM, slot) };
 			}
 		}
