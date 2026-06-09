@@ -25,6 +25,62 @@
 
 namespace
 {
+	// Smallest window the renderer supports; the -s flag clamps a requested
+	// resolution up to these floors before storing it.
+	constexpr int MIN_SCREEN_WIDTH = 640;
+	constexpr int MIN_SCREEN_HEIGHT = 480;
+
+	// ---- argv consumption helpers for parseArgs ----
+	//
+	// parseArgs walks argv once. Historically every flag that takes a value
+	// re-typed the same "if (i+1 < argc) { use argv[i+1]; i++; } else { usage;
+	// exit; }" block, ~22 times, each diverging in small but load-bearing ways.
+	// These helpers centralise the three recurring shapes so each flag branch
+	// reduces to a single helper call whose arguments make the divergence
+	// explicit. Two of those divergences are deliberately preserved here
+	// because they have their own bug entries (BH-096, BH-097) — see the
+	// per-helper notes — and fixing them is a behaviour change, out of scope
+	// for this cleanup. The genuinely one-off flags (-nox, -s) stay inline.
+
+	// Consume and return the token after argv[i], advancing i past it. If no
+	// token follows, print `usageMessage` verbatim to stdout and exit(0). The
+	// caller passes the exact historical usage text so stdout stays
+	// byte-identical across the flags that share this shape.
+	const char* requireStringArg(int& i, int argc, char* argv[],
+	                             const char* usageMessage)
+	{
+		if (i + 1 < argc)
+			return argv[++i];
+		printf("%s", usageMessage);
+		exit(0);
+	}
+
+	// Consume and return the token after argv[i], advancing i past it. If no
+	// token follows, return `fallback` and leave i unchanged.
+	// NOTE: unlike optionalIntArg, this does NOT reject a following flag token
+	// (e.g. "-textshot -f" stores "-f" as the directory); that quirk is BH-097
+	// and is preserved deliberately.
+	const char* optionalStringArg(int& i, int argc, char* argv[],
+	                              const char* fallback)
+	{
+		if (i + 1 < argc)
+			return argv[++i];
+		return fallback;
+	}
+
+	// Consume the token after argv[i] as a count, advancing i past it, but
+	// only when it does not look like another flag (first char != '-').
+	// Returns `fallback` (leaving i unchanged) when the token is absent or
+	// flag-like.
+	// NOTE: parses via atoi, so a non-numeric token yields 0 silently; that
+	// silent-zero behaviour is BH-096 and is preserved deliberately.
+	int optionalIntArg(int& i, int argc, char* argv[], int fallback)
+	{
+		if (i + 1 < argc && argv[i + 1][0] != '-')
+			return atoi(argv[++i]);
+		return fallback;
+	}
+
 	// Parse a comma-separated AI name list into AI::ImplementitionID values.
 	// Used by --ai-types (which warns and skips on unknown) and --matchup
 	// (which warns and exits(1) on unknown). The flag name is included in the
@@ -111,11 +167,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			automaticGameGlobalEndConditions=true;
 			if (strcmp(argv[i], "-test-games-nox")==0)
 				runNoX=true;
-			if (i + 1 < argc && argv[i + 1][0] != '-')
-			{
-				runTestGamesCount = atoi(argv[i + 1]);
-				i++;
-			}
+			runTestGamesCount = optionalIntArg(i, argc, argv, runTestGamesCount);
 		}
 		else if (strcmp(argv[i], "-test-map-gen")==0)
 		{
@@ -129,31 +181,17 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			// case-insensitive (see AINames::parseAIName). Unknown names
 			// are reported on stderr and skipped. Empty pool (default)
 			// means "use all main AIs uniformly".
-			if (i + 1 < argc)
-			{
-				parseAIList("--ai-types", argv[i + 1], testGamesAIPool, false);
-				i++;
-			}
-			else
-			{
-				printf("--ai-types <comma-separated-list> requires an argument\n");
-				exit(0);
-			}
+			parseAIList("--ai-types",
+				requireStringArg(i, argc, argv,
+					"--ai-types <comma-separated-list> requires an argument\n"),
+				testGamesAIPool, false);
 		}
 		else if (strcmp(argv[i], "--map")==0)
 		{
 			// Pin the random-game map. Bare name, no .map extension —
 			// resolved as maps/<name>.map by Engine::chooseRandomMap.
-			if (i + 1 < argc)
-			{
-				testGamesMap = argv[i + 1];
-				i++;
-			}
-			else
-			{
-				printf("--map <name> requires an argument\n");
-				exit(0);
-			}
+			testGamesMap = requireStringArg(i, argc, argv,
+				"--map <name> requires an argument\n");
 		}
 		else if (strcmp(argv[i], "--matchup")==0)
 		{
@@ -161,16 +199,10 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			// separated AI names; matchup[k] is the AI for team k.
 			// Validated against the loaded map's getNumberOfTeams() in
 			// Engine::createRandomGame() before the game starts.
-			if (i + 1 < argc)
-			{
-				parseAIList("--matchup", argv[i + 1], testGamesMatchup, true);
-				i++;
-			}
-			else
-			{
-				printf("--matchup <comma-separated-list> requires an argument\n");
-				exit(0);
-			}
+			parseAIList("--matchup",
+				requireStringArg(i, argc, argv,
+					"--matchup <comma-separated-list> requires an argument\n"),
+				testGamesMatchup, true);
 		}
 		else if (strcmp(argv[i], "--save-game-as")==0)
 		{
@@ -180,42 +212,18 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			// for a fully reproducible scenario: the same env var seeds
 			// syncRand AND gets mirrored into GameHeader::seed at save time
 			// (see Engine::createRandomGame in engine_init.cpp).
-			if (i + 1 < argc)
-			{
-				testGamesSaveGameAs = argv[i + 1];
-				i++;
-			}
-			else
-			{
-				printf("--save-game-as <path> requires an argument\n");
-				exit(0);
-			}
+			testGamesSaveGameAs = requireStringArg(i, argc, argv,
+				"--save-game-as <path> requires an argument\n");
 		}
 		else if (strcmp(argv[i], "-vs")==0)
 		{
-			if (i+1 < argc)
-			{
-				videoshotName = argv[i+1];
-				i++;
-			}
-			else
-			{
-				printf("usage:\n");
-				printf("-vs <videoshot name>");
-				exit(0);
-			}
+			videoshotName = requireStringArg(i, argc, argv,
+				"usage:\n-vs <videoshot name>");
 		}
 		else if (strcmp(argv[i], "-textshot")==0)
 		{
-			if(i+1 < argc)
-			{
-				GAGCore::DrawableSurface::translationPicturesDirectory = argv[i+1];
-				i++;
-			}
-			else
-			{
-				GAGCore::DrawableSurface::translationPicturesDirectory = ".";
-			}
+			GAGCore::DrawableSurface::translationPicturesDirectory =
+				optionalStringArg(i, argc, argv, ".");
 		}
 		else if (strcmp(argv[i], "-f")==0)
 		{
@@ -280,33 +288,15 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		else if (strcmp(argv[i], "-replay")==0)
 		{
-			if (i+1 < argc)
-			{
-				replaying=true;
-				replayFileName=argv[i+1];
-				i++;
-			}
-			else
-			{
-				printf("usage:\n");
-				printf("-replay <replay file name>\n");
-				exit(0);
-			}
+			replaying=true;
+			replayFileName = requireStringArg(i, argc, argv,
+				"usage:\n-replay <replay file name>\n");
 		}
 		else if (strcmp(argv[i], "-y")==0)
 		{
-			if(i+1 < argc)
-			{
-				// TODO: Let this option really change hostname.
-				yogHostName = argv[i+1];
-				i++;
-			}
-			else
-			{
-				printf("usage:\n");
-				printf("-y <hostname>");
-				exit(0);
-			}
+			// TODO: Let this option really change hostname.
+			yogHostName = requireStringArg(i, argc, argv,
+				"usage:\n-y <hostname>");
 		}
 		else if (strcmp(argv[i],"-s")==0)
 		{
@@ -320,11 +310,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				{
 					if (ix!=0 && iy!=0)
 					{
-						if (ix<640)
-							ix=640;
+						if (ix<MIN_SCREEN_WIDTH)
+							ix=MIN_SCREEN_WIDTH;
 						settings.screenWidth = ix;
-						if (iy<480)
-							iy=480;
+						if (iy<MIN_SCREEN_HEIGHT)
+							iy=MIN_SCREEN_HEIGHT;
 						settings.screenHeight = iy;
 					}
 				}
@@ -332,17 +322,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		else if (strcmp(argv[i], "-d")==0)
 		{
-			if(i+1 < argc)
-			{
-				fileManager->addDir(argv[i+1]);
-				i++;
-			}
-			else
-			{
-				printf("usage:\n");
-				printf("-d <directory>");
-				exit(0);
-			}
+			fileManager->addDir(requireStringArg(i, argc, argv,
+				"usage:\n-d <directory>"));
 		}
 		else if (strcmp(argv[i], "-dl")==0)
 		{
@@ -356,17 +337,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		else if (strcmp(argv[i], "-u")==0)
 		{
-			if(i+1 < argc)
-			{
-				settings.setUsername(argv[i+1]);
-				i++;
-			}
-			else
-			{
-				printf("usage:\n");
-				printf("-u <username>");
-				exit(0);
-			}
+			settings.setUsername(requireStringArg(i, argc, argv,
+				"usage:\n-u <username>"));
 		}
 		else
 #endif  // !YOG_SERVER_ONLY
