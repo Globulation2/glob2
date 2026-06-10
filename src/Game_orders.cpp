@@ -192,7 +192,7 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 				size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 				map.cases[index].forbidden|=teamMask;
 				if (oc.teamNumber == players[localPlayer]->teamNumber)
-					map.localForbiddenMap.set(index, true);
+					map.displayedForbiddenView.set(index, true);
 			}
 		map.updateForbiddenGradient(oc.teamNumber);
 	}
@@ -319,7 +319,7 @@ void Game::executeAlterateForbidden(const OrderAlterateForbidden& oaa, int local
 					map.cases[index].forbidden |= teamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.localForbiddenMap.set(index, true);
+						map.displayedForbiddenView.set(index, true);
 				}
 				orderMaskIndex++;
 			}
@@ -338,7 +338,7 @@ void Game::executeAlterateForbidden(const OrderAlterateForbidden& oaa, int local
 					map.cases[index].forbidden &= notTeamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.localForbiddenMap.set(index, false);
+						map.displayedForbiddenView.set(index, false);
 				}
 				orderMaskIndex++;
 			}
@@ -370,7 +370,7 @@ void Game::executeAlterateGuardArea(const OrderAlterateGuardArea& oaa, int local
 					map.cases[index].guardArea |= teamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.localGuardAreaMap.set(index, true);
+						map.displayedGuardAreaView.set(index, true);
 				}
 				orderMaskIndex++;
 			}
@@ -389,7 +389,7 @@ void Game::executeAlterateGuardArea(const OrderAlterateGuardArea& oaa, int local
 					map.cases[index].guardArea &= notTeamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.localGuardAreaMap.set(index, false);
+						map.displayedGuardAreaView.set(index, false);
 				}
 				orderMaskIndex++;
 			}
@@ -415,7 +415,7 @@ void Game::executeAlterateClearArea(const OrderAlterateClearArea& oaa, int local
 					map.cases[index].clearArea |= teamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.localClearAreaMap.set(index, true);
+						map.displayedClearAreaView.set(index, true);
 				}
 				orderMaskIndex++;
 			}
@@ -434,7 +434,7 @@ void Game::executeAlterateClearArea(const OrderAlterateClearArea& oaa, int local
 					map.cases[index].clearArea &= notTeamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.localClearAreaMap.set(index, false);
+						map.displayedClearAreaView.set(index, false);
 				}
 				orderMaskIndex++;
 			}

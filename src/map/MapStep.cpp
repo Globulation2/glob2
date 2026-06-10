@@ -235,34 +235,25 @@ void Map::setMapDiscovered(void)
 	fill(mapDiscovered, ~0u);
 }
 
-void Map::computeLocalForbidden(int localTeamNo)
+void Map::computeDisplayedForbidden(int teamNumber)
 {
-	int localTeamMask = 1<<localTeamNo;
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		if ((cases[i].forbidden & localTeamMask) != 0)
-			localForbiddenMap.set(i, true);
-		else
-			localForbiddenMap.set(i, false);
+		displayedForbiddenView.set(i, (cases[i].forbidden & teamMask) != 0);
 }
 
-void Map::computeLocalGuardArea(int localTeamNo)
+void Map::computeDisplayedGuardArea(int teamNumber)
 {
-	int localTeamMask = 1<<localTeamNo;
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		if ((cases[i].guardArea & localTeamMask) != 0)
-			localGuardAreaMap.set(i, true);
-		else
-			localGuardAreaMap.set(i, false);
+		displayedGuardAreaView.set(i, (cases[i].guardArea & teamMask) != 0);
 }
 
-void Map::computeLocalClearArea(int localTeamNo)
+void Map::computeDisplayedClearArea(int teamNumber)
 {
-	int localTeamMask = 1<<localTeamNo;
+	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		if ((cases[i].clearArea & localTeamMask) != 0)
-			localClearAreaMap.set(i, true);
-		else
-			localClearAreaMap.set(i, false);
+		displayedClearAreaView.set(i, (cases[i].clearArea & teamMask) != 0);
 }
 
 

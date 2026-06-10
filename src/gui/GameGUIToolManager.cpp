@@ -286,11 +286,11 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (zoneType == Forbidden)
-						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					else if (zoneType == Guard)
-						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+						game.map.displayedGuardAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					else if (zoneType == Clearing)
-						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+						game.map.displayedClearAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 				}
 			}
 		}
@@ -304,11 +304,11 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
 				{
 					if (zoneType == Forbidden)
-						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					else if (zoneType == Guard)
-						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+						game.map.displayedGuardAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					else if (zoneType == Clearing)
-						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+						game.map.displayedClearAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 				}
 			}
 		}

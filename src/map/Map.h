@@ -204,11 +204,11 @@ public:
 		return ((fogOfWar[coordToIndex(x, y)]) & visionMask) != 0;
 	}
 	
-	//! Return true if the position (x,y) is a forbidden area set by the user
-	// or rather, by the team computeLocalForbidden was last called for
-	bool isForbiddenLocal(int x, int y) const
+	//! Return true if (x,y) is forbidden in the locally-displayed team's overlay cache
+	//! (i.e. the team computeDisplayedForbidden was last refreshed for). Render-only.
+	bool isForbiddenInDisplayedView(int x, int y) const
 	{
-		return localForbiddenMap.get(coordToIndex(x, y));
+		return displayedForbiddenView.get(coordToIndex(x, y));
 	}
 	
 	//! Returns true if the position(x, y) is a forbidden area for the given team
@@ -217,11 +217,11 @@ public:
 		return cases[coordToIndex(x, y)].forbidden&teamMask;
 	}
 
-	//! Return true if the position (x,y) is a guard area set by the user
-	// or rather, by the team computeLocalGuardArea was last called for
-	bool isGuardAreaLocal(int x, int y) const
+	//! Return true if (x,y) is a guard area in the locally-displayed team's overlay cache
+	//! (i.e. the team computeDisplayedGuardArea was last refreshed for). Render-only.
+	bool isGuardAreaInDisplayedView(int x, int y) const
 	{
-		return localGuardAreaMap.get(coordToIndex(x, y));
+		return displayedGuardAreaView.get(coordToIndex(x, y));
 	}
 	
 	//! Returns true if the position(x, y) is a guard area for the given team
@@ -230,11 +230,11 @@ public:
 		return cases[coordToIndex(x, y)].guardArea&teamMask;
 	}
 
-	//! Return true if the position (x,y) is a clear area set by the user
-	// or rather, by the team computeLocalClearArea was last called for
-	bool isClearAreaLocal(int x, int y) const
+	//! Return true if (x,y) is a clear area in the locally-displayed team's overlay cache
+	//! (i.e. the team computeDisplayedClearArea was last refreshed for). Render-only.
+	bool isClearAreaInDisplayedView(int x, int y) const
 	{
-		return localClearAreaMap.get(coordToIndex(x, y));
+		return displayedClearAreaView.get(coordToIndex(x, y));
 	}
 
 	//! Returns true if the position(x, y) is a clear area for the given team
@@ -243,23 +243,24 @@ public:
 		return cases[coordToIndex(x, y)].clearArea&teamMask;
 	}
 	
-	// note - these are only meant to be called for the LOCAL team
-	// (the one whose stuff is displayed on the screen)
-	//! Compute localForbiddenMap from cases array
-	void computeLocalForbidden(int localTeamNo);
-	//! Compute localGuardAreaMap from cases array
-	void computeLocalGuardArea(int localTeamNo);
-	//! Compute localClearAreaMap from cases array
-	void computeLocalClearArea(int localTeamNo);
+	// These rebuild the render-only displayed*View caches from the authoritative
+	// cases[] bits, and are only meaningful for the locally-displayed team (the one
+	// whose areas are drawn on screen). They do not touch checkSum() state.
+	//! Rebuild displayedForbiddenView from cases[].forbidden for the given team.
+	void computeDisplayedForbidden(int teamNumber);
+	//! Rebuild displayedGuardAreaView from cases[].guardArea for the given team.
+	void computeDisplayedGuardArea(int teamNumber);
+	//! Rebuild displayedClearAreaView from cases[].clearArea for the given team.
+	void computeDisplayedClearArea(int teamNumber);
 
-	//! Sentinel for "no local team yet" — used before GameGUI::adjustLocalTeam has run.
-	static constexpr Sint32 NO_LOCAL_TEAM = -1;
-	//! Register the team whose view is currently displayed. Sim code may consult
-	//! getLocalTeam() to decide whether to refresh localForbiddenMap / localGuardAreaMap /
-	//! localClearAreaMap caches. This identity is per-client display state — not in
-	//! checkSum() — and must be kept in sync with GameGUI's localTeamNo.
-	void setLocalTeam(Sint32 teamNo) { localTeamNo = teamNo; }
-	Sint32 getLocalTeam() const { return localTeamNo; }
+	//! Sentinel for "no displayed team yet" — used before GameGUI::adjustLocalTeam has run.
+	static constexpr Sint32 NO_DISPLAYED_TEAM = -1;
+	//! Register the team whose view is currently displayed. Used only to decide whether
+	//! to refresh the displayedForbiddenView / displayedGuardAreaView / displayedClearAreaView
+	//! caches. This identity is per-client display state — not in checkSum() — and must be
+	//! kept in sync with GameGUI's localTeamNo. Never branch sim/network state on it.
+	void setDisplayedTeam(Sint32 teamNo) { displayedTeam = teamNo; }
+	Sint32 getDisplayedTeam() const { return displayedTeam; }
 	
 	//! Return the case at a given position
 	inline Case &getCase(int x, int y)
@@ -679,15 +680,17 @@ public:
 	std::vector<Uint32> fogOfWarA;
 	std::vector<Uint32> fogOfWarB;
 	Uint32* fogOfWar = nullptr; // if valid, either points to &fogOfWarA[0] or &fogOfWarB[0]
-	//! true = forbidden
-	Utilities::BitArray localForbiddenMap;
-	//! true = guard area
-	Utilities::BitArray localGuardAreaMap;
-	//! true = clear area
-	Utilities::BitArray localClearAreaMap;
-	//! Team whose view is locally displayed. Mirror of GameGUI::localTeamNo, used by
-	//! sim code to decide whether to refresh the local*Map caches above. Not in checkSum.
-	Sint32 localTeamNo = NO_LOCAL_TEAM;
+	//! Render-only overlay caches for the locally-displayed team's areas (forbidden /
+	//! guard / clear). These mirror the per-team bits in cases[].{forbidden,guardArea,
+	//! clearArea} but only for displayedTeam, so the renderer can query one tile cheaply.
+	//! They are NOT in checkSum() and must never be read from a sim path — doing so would
+	//! desync, because displayedTeam differs per client. true = bit set.
+	Utilities::BitArray displayedForbiddenView;
+	Utilities::BitArray displayedGuardAreaView;
+	Utilities::BitArray displayedClearAreaView;
+	//! Team whose view is locally displayed. Mirror of GameGUI::localTeamNo, used only to
+	//! decide whether to refresh the displayed*View caches above. Not in checkSum.
+	Sint32 displayedTeam = NO_DISPLAYED_TEAM;
 	
 	///This is the maximum fertility of any point on the map
 	Uint16 fertilityMaximum;

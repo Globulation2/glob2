@@ -561,9 +561,9 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		if(game.teams[n])
 		{
 			team=n;
-			game.map.computeLocalForbidden(team);
-			game.map.computeLocalClearArea(team);
-			game.map.computeLocalGuardArea(team);
+			game.map.computeDisplayedForbidden(team);
+			game.map.computeDisplayedClearArea(team);
+			game.map.computeDisplayedGuardArea(team);
 		}
 	}
 	else if(action=="select worker")

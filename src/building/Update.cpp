@@ -366,9 +366,9 @@ bool Building::tryToBuildingSiteRoom(void)
 /// occupy if it completed its current upgrade. Dispereses units so the building site
 /// isn't waiting for space when there are lots of units around.
 ///
-/// The post-mutation refresh of localForbiddenMap is per-client display state
+/// The post-mutation refresh of displayedForbiddenView is per-client display state
 /// (not in Map::checkSum) — it runs only when this building's team is the locally-
-/// displayed team, identified via Map::getLocalTeam() (mirrored from GameGUI's
+/// displayed team, identified via Map::getDisplayedTeam() (mirrored from GameGUI's
 /// localTeamNo). updateForbiddenGradient, by contrast, is sim state and runs
 /// unconditionally for the owning team.
 void Building::modifyForbiddenZoneForUpgradeArea(bool add)
@@ -392,8 +392,8 @@ void Building::modifyForbiddenZoneForUpgradeArea(bool add)
 				owner->map->removeForbidden(x, y, owner->teamNumber);
 		}
 	}
-	if(owner->teamNumber == owner->map->getLocalTeam())
-		owner->map->computeLocalForbidden(owner->teamNumber);
+	if(owner->teamNumber == owner->map->getDisplayedTeam())
+		owner->map->computeDisplayedForbidden(owner->teamNumber);
 	owner->map->updateForbiddenGradient(owner->teamNumber);
 }
 

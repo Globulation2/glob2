@@ -70,7 +70,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 					map.cases[index].forbidden&=notTeamMask;
 					// Update local map
 					if (teamNumber == localTeam)
-						map.localForbiddenMap.set(index, false);
+						map.displayedForbiddenView.set(index, false);
 				}
 			map.updateForbiddenGradient(teamNumber);
 			std::list<BuildProject>::iterator to_erase=bpi;
@@ -92,7 +92,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 						map.cases[index].forbidden&=notTeamMask;
 						// Update local map
 						if (teamNumber == localTeam)
-							map.localForbiddenMap.set(index, false);
+							map.displayedForbiddenView.set(index, false);
 					}
 				map.updateForbiddenGradient(teamNumber);
 				b->owner->addToStaticAbilitiesLists(b);

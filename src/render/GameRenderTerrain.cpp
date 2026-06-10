@@ -269,9 +269,9 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->replaying || globalContainer->replayShowAreas))
 	{
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isForbiddenLocal, areaAnimationTick, ForbiddenArea);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isGuardAreaLocal, areaAnimationTick, GuardArea);
-		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isClearAreaLocal, areaAnimationTick, ClearingArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea);
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{

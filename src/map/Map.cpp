@@ -225,7 +225,7 @@ void Map::clear()
 	wDec=hDec=0;
 	wSector=hSector=0;
 	sizeSector=0;
-	localTeamNo = NO_LOCAL_TEAM;
+	displayedTeam = NO_DISPLAYED_TEAM;
 
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_RESSOURCES; r++)
@@ -252,9 +252,9 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	fogOfWarB.assign(size, 0);
 	fogOfWar = &fogOfWarA[0];
 	
-	localForbiddenMap.resize(size, false);
-	localGuardAreaMap.resize(size, false);
-	localClearAreaMap.resize(size, false);
+	displayedForbiddenView.resize(size, false);
+	displayedGuardAreaView.resize(size, false);
+	displayedClearAreaView.resize(size, false);
 	
 	cases.assign(size, Case());
 

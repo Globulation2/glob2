@@ -129,17 +129,17 @@ void MapEdit::handleBrushClick(int mx, int my)
 					if (brushType == ForbiddenBrush)
 					{
 						game.map.getCase(x, y).forbidden |= (1<<team);
-						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					}
 					else if (brushType == GuardAreaBrush)
 					{
 						game.map.getCase(x, y).guardArea |= (1<<team);
-						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+						game.map.displayedGuardAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					}
 					else if (brushType == ClearAreaBrush)
 					{
 						game.map.getCase(x, y).clearArea |= (1<<team);
-						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
+						game.map.displayedClearAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
 					}
 					else
 						assert(false);
@@ -154,17 +154,17 @@ void MapEdit::handleBrushClick(int mx, int my)
 					if (brushType == ForbiddenBrush)
 					{
 						game.map.getCase(x, y).forbidden ^= game.map.getCase(x, y).forbidden & (1<<team);
-						game.map.localForbiddenMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					}
 					else if (brushType == GuardAreaBrush)
 					{
 						game.map.getCase(x, y).guardArea ^= game.map.getCase(x, y).guardArea & (1<<team);
-						game.map.localGuardAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+						game.map.displayedGuardAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					}
 					else if (brushType == ClearAreaBrush)
 					{
 						game.map.getCase(x, y).clearArea ^= game.map.getCase(x, y).clearArea & (1<<team);
-						game.map.localClearAreaMap.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
+						game.map.displayedClearAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
 					}
 					else
 						assert(false);

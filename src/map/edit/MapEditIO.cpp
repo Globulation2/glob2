@@ -69,9 +69,9 @@ bool MapEdit::load(const std::string filename)
 		
 		minimap.resetMinimapDrawing();
 		
-		game.map.computeLocalForbidden(team);
-		game.map.computeLocalClearArea(team);
-		game.map.computeLocalGuardArea(team);
+		game.map.computeDisplayedForbidden(team);
+		game.map.computeDisplayedClearArea(team);
+		game.map.computeDisplayedGuardArea(team);
 	
 		hasMapBeenModified = false;
 		return true;

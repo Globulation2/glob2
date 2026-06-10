@@ -190,14 +190,14 @@ void GameGUI::adjustLocalTeam()
 	assert(localTeam);
 	teamStats = &localTeam->stats;
 
-	// Mirror the local-team identity onto Map so sim code can consult it without
-	// reaching into the GUI layer.
-	game.map.setLocalTeam(localTeamNo);
+	// Mirror the displayed-team identity onto Map so the renderer's overlay caches can
+	// track which team's areas to draw. This is render-only display state, not sim state.
+	game.map.setDisplayedTeam(localTeamNo);
 
-	// recompute local forbidden and guard areas
-	game.map.computeLocalForbidden(localTeamNo);
-	game.map.computeLocalGuardArea(localTeamNo);
-	game.map.computeLocalClearArea(localTeamNo);
+	// Rebuild the render-only forbidden / guard / clear overlay caches for the new view.
+	game.map.computeDisplayedForbidden(localTeamNo);
+	game.map.computeDisplayedGuardArea(localTeamNo);
+	game.map.computeDisplayedClearArea(localTeamNo);
 
 	// set default event position
 	eventGoPosX = localTeam->startPosX;

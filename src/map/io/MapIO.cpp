@@ -51,9 +51,9 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	fogOfWarA.assign(size, 0);
 	fogOfWarB.assign(size, 0);
 	fogOfWar = &fogOfWarA[0];
-	localForbiddenMap.resize(size, false);
-	localGuardAreaMap.resize(size, false);
-	localClearAreaMap.resize(size, false);
+	displayedForbiddenView.resize(size, false);
+	displayedGuardAreaView.resize(size, false);
+	displayedClearAreaView.resize(size, false);
 	cases.resize(size);
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
