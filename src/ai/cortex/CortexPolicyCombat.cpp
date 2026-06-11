@@ -55,6 +55,44 @@ namespace Cortex
 		return -1;
 	}
 
+	/// Highest warrior flag-level L (0 .. CORTEX_UNIT_LEVELS-1) at which we can
+	/// still field at least `minForce` qualifying warriors. The offense flag is
+	/// given this as its minLevelToFlag so it marches the STRONGEST cohort that is
+	/// still numerous enough to fight, while the lower-level warriors stay home
+	/// training. A warrior qualifies for level L when
+	/// min(level[ATTACK_SPEED], level[ATTACK_STRENGTH]) >= L (building/Misc.cpp:106).
+	///
+	/// We have only the two PER-ABILITY histograms (obs.attackSpeedLevel[],
+	/// obs.attackStrengthLevel[]), not the joint min-distribution, so we bound the
+	/// qualifying count by the SMALLER of the two cumulative tails. That is exact
+	/// when the two abilities are trained in lockstep (the barracks trains both in
+	/// parallel) and never an OVER-count otherwise, so the force actually marched
+	/// can only come out at or above this estimate. Returns 0 (every warrior) when
+	/// no higher level clears `minForce`, so the marched force size never drops
+	/// below today's raw commit — this RAISES the average level of the attacking
+	/// force without SHRINKING it (which is the regression the commit-gate comment
+	/// in scoreOffense warns about).
+	static int veteranFlagLevel(const CortexObservation& obs, int minForce)
+	{
+		int chosen = 0;
+		for (int L = 1; L < CORTEX_UNIT_LEVELS; L++)
+		{
+			int speedTail = 0;
+			int strengthTail = 0;
+			for (int l = L; l < CORTEX_UNIT_LEVELS; l++)
+			{
+				speedTail    += obs.attackSpeedLevel[l];
+				strengthTail += obs.attackStrengthLevel[l];
+			}
+			const int qualifying = (speedTail < strengthTail) ? speedTail : strengthTail;
+			if (qualifying >= minForce)
+				chosen = L;
+			else
+				break; // tails are non-increasing in L; no higher L can qualify.
+		}
+		return chosen;
+	}
+
 	/// True if any valid tracked swarm's engine priority differs from `target`.
 	/// Drives the panic defense's raise-to-HIGH and the restore-to-NORMAL steps:
 	/// each fires only while a swarm is not yet at the wanted priority, and the
@@ -146,7 +184,12 @@ namespace Cortex
 	// outranks offense: when our base is under attack the lone flag comes home.
 	ScoredAction CortexPolicy::scoreDefense(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.combatPhase && obs.buildingsUnderAttack > 0
+		// Gate on economyEstablished, NOT combatPhase: combatPhase == economyEstablished &&
+		// !starving, so the old gate DISABLED the recall during a famine — exactly when the
+		// foodSaturated blitz throws the army forward and the base most needs defending. A
+		// mature colony defends regardless of food. (Pre-economy emergencies still route
+		// through scorePanicDefense.)
+		if (f.economyEstablished && obs.buildingsUnderAttack > 0
 		 && f.warriors >= DEFENSE_MIN_WARRIORS && obs.defenseTarget.valid)
 		{
 			// THRASH HYSTERESIS (relocated from the action layer): if we are mid-
@@ -172,7 +215,11 @@ namespace Cortex
 			 && !seriousThreat)
 				return { SCORE_DEFENSE, makeNoOpAction() }; // hold the offense; ignore the minor-harassment recall.
 
-			return { SCORE_DEFENSE, makeDefenseFlagAction(DEFENSE_FLAG_RADIUS, f.warriors) };
+			// minLevel 0: a base assault recalls every warrior regardless of level.
+			// A serious assault must beat the famine-blitz (SCORE_OFFENSE_BLITZ); minor
+			// harassment keeps the lower SCORE_DEFENSE urgency.
+			const int score = seriousThreat ? SCORE_DEFENSE_SERIOUS : SCORE_DEFENSE;
+			return { score, makeDefenseFlagAction(DEFENSE_FLAG_RADIUS, f.warriors, 0) };
 		}
 		return cortexDecline();
 	}
@@ -230,8 +277,16 @@ namespace Cortex
 		if ((normalCommit || blitzCommit) && obs.flagTargets[0].valid)
 		{
 			const int count = (f.warriors < CORTEX_MAX_FLAG_UNITS) ? f.warriors : CORTEX_MAX_FLAG_UNITS;
-			const int score = (blitzCommit && !normalCommit) ? SCORE_OFFENSE_BLITZ : SCORE_OFFENSE;
-			return { score, makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count) };
+			const bool blitzOnly = blitzCommit && !normalCommit;
+			// BLITZ is the desperate foodSaturated push — field every body, no veteran
+			// filter. The patient NORMAL commit marches only the trained cohort: it
+			// asks for the highest minLevelToFlag that still fields ATTACK_MIN_WARRIORS
+			// qualifying veterans, so low-level warriors stay home at the barracks while
+			// the strong ones attack. The floor guarantees the marched force is never
+			// smaller than the raw commit (see veteranFlagLevel / ATTACK_MIN_WARRIORS).
+			const int minLevel = blitzOnly ? 0 : veteranFlagLevel(obs, ATTACK_MIN_WARRIORS);
+			const int score = blitzOnly ? SCORE_OFFENSE_BLITZ : SCORE_OFFENSE;
+			return { score, makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count, minLevel) };
 		}
 		return cortexDecline();
 	}

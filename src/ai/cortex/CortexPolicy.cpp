@@ -260,6 +260,25 @@ namespace Cortex
 		return f;
 	}
 
+	// DECIDE_CONTRACT action-map class indices for the three war-flag decisions.
+	// They are still EVALUATED inside decide() (for the 18-class eligibility mask +
+	// trace), but their SELECTION moved to decideCombat() so a busy economy can never
+	// starve a war-flag move (and vice versa). Identified by explicit class index
+	// rather than "the last three" so a future appended ECONOMY candidate stays
+	// selectable in decide(). Keep in lockstep with CortexPolicy::decide()'s
+	// candidates[] order and docs/AI/cortex/DECIDE_CONTRACT.md.
+	enum {
+		DECIDE_CLASS_DEFENSE     = 15,
+		DECIDE_CLASS_RETIRE_FLAG = 16,
+		DECIDE_CLASS_OFFENSE     = 17
+	};
+	static bool isCombatDecideClass(int k)
+	{
+		return k == DECIDE_CLASS_DEFENSE
+		    || k == DECIDE_CLASS_RETIRE_FLAG
+		    || k == DECIDE_CLASS_OFFENSE;
+	}
+
 	CortexAction CortexPolicy::decide(const CortexObservation& obs, DecideTrace* trace)
 	{
 		if (trace)
@@ -304,7 +323,18 @@ namespace Cortex
 		// built unconditionally (not only when tracing) because the ML decision-net
 		// path needs it every cycle; the hand argmax (best/bestIndex) is computed
 		// alongside so the trace label and the off-path behaviour are unchanged.
-		Uint32 eligibleMask = 0;
+		//
+		// SELECTION is restricted to the ECONOMY candidates: the three war-flag
+		// decisions (Defense/RetireFlag/Offense) split out to decideCombat(), which
+		// runs them on its own parallel pass in getOrder(). decide() must NOT also
+		// select them or it would double-emit the same flag action this cycle. They
+		// are still EVALUATED here so the full 18-class eligibleMask + trace stay
+		// intact for the DECIDE_CONTRACT pilot (training continuity); only the
+		// economyMask feeds selection. Combat classes are excluded by explicit class
+		// index (DECIDE_CONTRACT action map), so a future appended ECONOMY candidate
+		// stays selectable here.
+		Uint32 eligibleMask = 0; // full 18-class mask: trace + ML contract.
+		Uint32 economyMask = 0;  // economy-only subset that decide() may select.
 		ScoredAction best{ SCORE_NONE, makeNoOpAction() };
 		int bestIndex = -1;
 		const int n = static_cast<int>(sizeof(candidates) / sizeof(candidates[0]));
@@ -315,11 +345,17 @@ namespace Cortex
 			// did not decline this cycle — the ML mask bit. The candidate array index
 			// IS the class index (DECIDE_CONTRACT action map); never reorder it.
 			if (c.score > SCORE_NONE)
-				eligibleMask |= (Uint32(1) << k);
-			if (c.score > best.score) // strict: earlier candidate wins ties
 			{
-				best = c;
-				bestIndex = k;
+				eligibleMask |= (Uint32(1) << k);
+				if (!isCombatDecideClass(k))
+				{
+					economyMask |= (Uint32(1) << k);
+					if (c.score > best.score) // strict: earlier candidate wins ties
+					{
+						best = c;
+						bestIndex = k;
+					}
+				}
 			}
 		}
 		if (trace)
@@ -344,12 +380,43 @@ namespace Cortex
 		{
 			int features[NUM_DECIDE_FEATURES];
 			extractDecideFeatures(obs, features);
-			const int k = decisionNet_.scoreDecision(features, eligibleMask);
+			// Select over the ECONOMY subset only: the combat classes are owned by
+			// decideCombat()'s parallel pass, so the net must not pick them here either
+			// (else the flag action double-emits with the combat pass this cycle).
+			const int k = decisionNet_.scoreDecision(features, economyMask);
 			if (k >= 0)
 				return candidates[k].action;
 			return makeNoOpAction(); // nothing eligible — same NoOp as the hand path
 		}
 
+		return best.action;
+	}
+
+	CortexAction CortexPolicy::decideCombat(const CortexObservation& obs) const
+	{
+		// Same guard decide() uses: reject an unpopulated / wrong-layout observation.
+		if (obs.version != OBSERVATION_VERSION || !obs.valid)
+			return makeNoOpAction();
+
+		const DecideFacts f = computeFacts(obs);
+
+		// Utility-argmax over ONLY the three war-flag scorers, in the same fixed order
+		// and with the same strict earlier-wins-ties rule as decide(). Their SCORE_*
+		// bands are unchanged, so the combat-internal priority is preserved exactly:
+		// serious-defense (SCORE_DEFENSE_SERIOUS) > blitz-offense (SCORE_OFFENSE_BLITZ)
+		// > defense (SCORE_DEFENSE) > retire (SCORE_RETIRE_FLAG) > offense
+		// (SCORE_OFFENSE). decide() evaluates these same three for the trace/ML mask but
+		// no longer selects them; this is where a war-flag move is actually chosen.
+		const ScoredAction combat[] = {
+			scoreDefense(obs, f),
+			scoreRetireFlag(obs, f),
+			scoreOffense(obs, f),
+		};
+		ScoredAction best{ SCORE_NONE, makeNoOpAction() };
+		const int n = static_cast<int>(sizeof(combat) / sizeof(combat[0]));
+		for (int k = 0; k < n; k++)
+			if (combat[k].score > best.score) // strict: earlier candidate wins ties
+				best = combat[k];
 		return best.action;
 	}
 

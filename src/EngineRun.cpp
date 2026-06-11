@@ -15,6 +15,10 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "SDLCompat.h"
+#include "team/Team.h"
+#include "TeamStat.h"
+#include "building/IntBuildingType.h"
+#include "unit/UnitConsts.h"
 
 #include <iostream>
 
@@ -314,6 +318,79 @@ void Engine::printAutomaticEndingSummary()
 			std::cout << "none";
 	}
 	std::cout << std::endl;
+
+	// Optional per-team economic/military timeline for AI debugging. Gated by
+	// GLOB2_TEAM_TIMELINE so normal headless runs are unaffected. Dumps the
+	// 512-tick EndOfGameStat history (units/buildings/prestige/hp/atk/def) plus
+	// a final detailed snapshot (workers/explorers/warriors, food state, and a
+	// per-building-type count) for every team, so two AIs' trajectories can be
+	// compared side by side after a single game.
+	if (getenv("GLOB2_TEAM_TIMELINE"))
+		printTeamTimeline();
+}
+
+// Per-team timeline dump (see GLOB2_TEAM_TIMELINE in printAutomaticEndingSummary).
+void Engine::printTeamTimeline()
+{
+	Game& game = gui.game;
+	const int nbTeams = game.mapHeader.getNumberOfTeams();
+
+	// Map team number -> AI label from the game header.
+	std::vector<std::string> aiLabel(nbTeams, "?");
+	for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); p++)
+	{
+		const BasePlayer& bp = game.gameHeader.getBasePlayer(p);
+		if (bp.teamNumber < 0 || bp.teamNumber >= nbTeams)
+			continue;
+		if (bp.type >= BasePlayer::P_AI)
+			aiLabel[bp.teamNumber] = AINames::getAIText(BasePlayer::implementitionIdFromPlayerType(bp.type));
+		else if (bp.type == BasePlayer::P_LOCAL)
+			aiLabel[bp.teamNumber] = "local";
+	}
+
+	for (int t = 0; t < nbTeams; t++)
+	{
+		Team* team = game.teams[t];
+		if (!team)
+			continue;
+		const std::vector<EndOfGameStat>& hist = team->stats.getEndOfGameStats();
+		std::cout << "GLOB2_TIMELINE team=" << t << " ai=" << aiLabel[t]
+			<< " result=" << (team->hasWon ? "won" : team->hasLost ? "lost" : "alive")
+			<< " samples=" << hist.size() << std::endl;
+		for (size_t i = 0; i < hist.size(); i++)
+		{
+			const EndOfGameStat& s = hist[i];
+			std::cout << "GLOB2_TL team=" << t
+				<< " tick=" << (i * (END_OF_GAME_STAT_INTERVAL_MASK + 1))
+				<< " units=" << s.value[EndOfGameStat::TYPE_UNITS]
+				<< " bld=" << s.value[EndOfGameStat::TYPE_BUILDINGS]
+				<< " prestige=" << s.value[EndOfGameStat::TYPE_PRESTIGE]
+				<< " hp=" << s.value[EndOfGameStat::TYPE_HP]
+				<< " atk=" << s.value[EndOfGameStat::TYPE_ATTACK]
+				<< " def=" << s.value[EndOfGameStat::TYPE_DEFENSE]
+				<< std::endl;
+		}
+
+		// Final detailed snapshot: composition + food economy + building mix.
+		TeamStat* fin = team->stats.getLatestStat();
+		std::cout << "GLOB2_FINAL team=" << t
+			<< " workers=" << fin->numberUnitPerType[WORKER]
+			<< " explorers=" << fin->numberUnitPerType[EXPLORER]
+			<< " warriors=" << fin->numberUnitPerType[WARRIOR]
+			<< " food=" << fin->totalFood << "/" << fin->totalFoodCapacity
+			<< " fooded=" << fin->totalUnitFooded << "/" << fin->totalUnitFoodable
+			<< " foodCritical=" << fin->needFoodCritical
+			<< " needFood=" << fin->needFood
+			<< " bld:";
+		for (int b = 0; b < IntBuildingType::NB_BUILDING; b++)
+		{
+			if (fin->numberBuildingPerType[b] == 0)
+				continue;
+			std::cout << " " << IntBuildingType::typeFromShortNumber(b)
+				<< "=" << fin->numberBuildingPerType[b];
+		}
+		std::cout << std::endl;
+	}
 }
 
 // Tell the YOG multiplayer session how this match ended (won, lost, quit) so

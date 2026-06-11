@@ -155,6 +155,7 @@ namespace Cortex
 					// C++: Building::priority (-1/0/+1), building/Building.h:516
 					t.priority        = b->priority;
 					t.ticksSinceFinished = -1; // swarms do not use the inn tune-cooldown.
+					t.diagBlindCornNearby = -1; // inn-only diagnostic; unused for swarms.
 					obs.swarmCount++;
 				}
 			}
@@ -185,7 +186,28 @@ namespace Cortex
 						? Cortex::nearestCornDist(game->map, b->posX, b->posY,
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
-					t.harvestableWheatNearby = -1; // swarm-only throttle signal; unused for inns.
+					// DIAGNOSTIC (Phase-1 feedCap root-cause): the EXACT quantity the
+					// feedCapacity gate tests for this inn — count of non-forbidden CORN
+					// tiles within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. An inn
+					// contributes to feedCapacity iff this is >= CORTEX_WHEAT_MIN_TILES.
+					// Paired with nearestWheatDist (forbidden-BLIND) this discriminates
+					// (b) corn-present-but-forbidden from (c) corn-depleted/absent. No
+					// policy reads inn harvestableWheatNearby (verified swarm-only), so
+					// this is purely a trace signal. -1 when game absent (no map).
+					t.harvestableWheatNearby = (game != NULL)
+						? Cortex::countHarvestableCornWithin(game->map, team->me,
+						                                     b->posX, b->posY,
+						                                     bt->width, bt->height,
+						                                     CORTEX_WHEAT_MIN_TILES_RADIUS)
+						: -1;
+					// Forbidden-BLIND corn count over the SAME box: (blind - harvestable)
+					// is the forbidden-but-present corn. blind>=MIN & harvestable<MIN =>
+					// checkerboard-forbidding (b); blind<MIN => field depleted/absent (c).
+					t.diagBlindCornNearby = (game != NULL)
+						? Cortex::countCornWithin(game->map, b->posX, b->posY,
+						                          bt->width, bt->height,
+						                          CORTEX_WHEAT_MIN_TILES_RADIUS)
+						: -1;
 					// Collectable restock demand (the inn-hauler ceiling, CortexPolicy
 					// Priority 1.5): sum the per-resource deficit in HAULER TRIPS over every
 					// resource the inn stocks, counting ONLY resources currently collectable

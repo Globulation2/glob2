@@ -74,6 +74,12 @@ namespace Cortex
 	int countHarvestableCornWithin(const Map& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist);
 
+	/// Forbidden-BLIND corn-tile count within `dist` Chebyshev tiles of the footprint:
+	/// every CORN tile regardless of the forbidden mask. (countHarvestableCornWithin
+	/// minus this is the forbidden-but-present corn.) Diagnostic discriminator between
+	/// checkerboard-forbidding and field depletion; no policy reads it.
+	int countCornWithin(const Map& map, int x, int y, int w, int h, int dist);
+
 	/// Fills (w, h) with the LARGEST footprint a building of type `bt` can grow into
 	/// by walking its upgrade chain (BuildingType::nextLevel). For an inn this yields
 	/// 3 x 3 (the top-level inn2 footprint, BuildingsPartA.cpp); for a type that never

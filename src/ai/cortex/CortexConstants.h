@@ -79,9 +79,15 @@ namespace Cortex
 	/// discrete/normalizable action param; the action layer clamps to it. Roughly
 	/// the GUI's war-flag scale (Settings defaultFlagRadius[war] == 4).
 	static const int CORTEX_MAX_FLAG_RADIUS = 16;
-	/// Self-imposed upper bound on warriors assigned to one war flag (the flag's
-	/// maxUnitWorking). Cortex's own bound for the action param, not an engine cap.
-	static const int CORTEX_MAX_FLAG_UNITS = 32;
+	/// Upper bound on warriors assigned to one war flag. A war flag is a building
+	/// and its summon count is its maxUnitWorking (the worker request), so it is
+	/// bound by the SAME engine ceiling as any other building: the executor asserts
+	/// numberRequested <= MAX_BUILDING_WORKER_REQUEST (== 20, Game.h /
+	/// Game_orders.cpp:206) and the GUI war-flag scrollbox caps at MAX_UNIT_WORKING
+	/// (== 20, gui/GameGUI.h). A flag ordered with 32 trips that assert in a debug
+	/// build (and requests more than the engine can ever staff in release), so this
+	/// MUST equal the engine cap, not exceed it. Mirrors CORTEX_MAX_BUILDING_WORKERS.
+	static const int CORTEX_MAX_FLAG_UNITS = 20;
 
 	/// Offense-hold hysteresis posture (the thrash damper). The single source of
 	/// truth for the posture the flag is committed to: shared by the observation
@@ -104,6 +110,19 @@ namespace Cortex
 	/// (the hold-vs-recall decision, moved here from the action layer) — the value
 	/// must match AICortex::DEFENSE_SERIOUS_BUILDINGS, which aliases it.
 	static const int CORTEX_DEFENSE_SERIOUS_BUILDINGS = 2;
+
+	/// Radius (warp-safe Chebyshev tiles) around a building taking fire within which
+	/// VISIBLE enemy units are counted as the "threat" sizing the defensive recall.
+	/// The defense flag is sized to CORTEX_DEFENSE_THREAT_MULTIPLE x that count, so
+	/// the recall scales to the actual assaulting force instead of a fixed number.
+	/// Set to the defense flag's own stay-range (DEFENSE_FLAG_RADIUS == 5 in
+	/// CortexPolicyCombat.cpp) so we count exactly the enemies the planted flag will
+	/// engage. Cortex-local tunable; the engine clamps nothing.
+	static const int CORTEX_THREAT_SCAN_RADIUS = 5;
+	/// Multiplier on the visible threat count that sets the defensive recall's summon
+	/// size: enough warriors to overpower the assault, not just match it. Clamped to
+	/// [1, CORTEX_MAX_FLAG_UNITS] at the action layer.
+	static const int CORTEX_DEFENSE_THREAT_MULTIPLE = 3;
 
 	// --- wheat-protection tuning (all tunable AI design choices) -----------
 	// Cortex paints a checkerboard `forbidden` pattern over its wheat (CORN) so

@@ -106,6 +106,8 @@ namespace Cortex
 		obs.swarmsProducingWorker   = 0;
 		obs.warFlagsActive          = 0;
 		obs.enemyUnitsNearFlag      = 0;
+		obs.enemyUnitsNearThreat    = 0;
+		obs.freeWarriors            = 0;
 		obs.swarmCount              = 0;
 		obs.innCount                = 0;
 		// Captured from our live war flag (if any) so the opponents pass below can
@@ -183,6 +185,13 @@ namespace Cortex
 			// C++: Unit::underAttackTimer (Uint8), unit/Unit.h:241
 			if (u->underAttackTimer > 0)
 				obs.unitsUnderAttack++;
+			// Free warriors: the exact pool a war flag's recruiter will draw from
+			// (Building::considerUnitForWarriorFlag requires activity == ACT_RANDOM &&
+			// medical == MED_FREE). A warrior already on a flag is ACT_FLAG and is never
+			// poached, so this counts only the immediately-recruitable reserve.
+			if (u->typeNum == WARRIOR
+			 && u->activity == Unit::ACT_RANDOM && u->medical == Unit::MED_FREE)
+				obs.freeWarriors++;
 		}
 
 		// --- map / global facts ---
@@ -298,10 +307,18 @@ namespace Cortex
 						continue;
 					es.totalUnit++;
 					// Straggler grace: visible enemy still inside our flag's stay-range.
-					// Same warp-safe Chebyshev metric placeFlagTargets/ensureWarFlagAt use.
+					// Same warp-safe Chebyshev metric placeFlagTargets/ensureFlagAt use.
 					if (warFlagFound
 					 && game->map.warpDistMax(u->posX, u->posY, warFlagX, warFlagY) <= warFlagRange)
 						obs.enemyUnitsNearFlag++;
+					// Threat sizing: visible enemy near the building taking the most fire.
+					// defenseTarget is already resolved (the building scan above ran first),
+					// so this measures the assaulting force the defensive recall must match.
+					if (obs.defenseTarget.valid
+					 && game->map.warpDistMax(u->posX, u->posY,
+					        obs.defenseTarget.x, obs.defenseTarget.y)
+					    <= CORTEX_THREAT_SCAN_RADIUS)
+						obs.enemyUnitsNearThreat++;
 				}
 
 				es.prestige = 0; // prestige is not a visible signal; left unfilled

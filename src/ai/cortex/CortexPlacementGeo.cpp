@@ -244,6 +244,24 @@ namespace Cortex
 		return false;
 	}
 
+	int countCornWithin(const Map& map, int x, int y, int w, int h, int dist)
+	{
+		// Forbidden-BLIND companion to countHarvestableCornWithin: counts every CORN
+		// tile in the expanded footprint regardless of the forbidden mask. The gap
+		// between this and the harvestable count is exactly the forbidden-but-present
+		// corn — the discriminator between checkerboard-forbidding and field depletion.
+		int count = 0;
+		for (int dy = -dist; dy < h + dist; dy++)
+			for (int dx = -dist; dx < w + dist; dx++)
+			{
+				const int nx = map.normalizeX(x + dx);
+				const int ny = map.normalizeY(y + dy);
+				if (map.getRessource(nx, ny).type == CORN)
+					count++;
+			}
+		return count;
+	}
+
 	int countHarvestableCornWithin(const Map& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist)
 	{

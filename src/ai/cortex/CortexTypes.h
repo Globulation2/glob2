@@ -145,7 +145,9 @@ namespace Cortex
 	/// single action slot. It now runs every decision cycle in parallel with the
 	/// primary action — CortexPolicy::wantWheatProtection decides, AICortex::
 	/// enqueueWheatForbidden paints — reading the open-margin from the AICortex member.
-	static const Uint32 ACTION_VERSION = 10;
+	/// v11 (added CortexAction.minLevelToFlag — per-flag veteran filter for offense/
+	/// defense war flags).
+	static const Uint32 ACTION_VERSION = 11;
 
 	// --- tunable constants + enums: see CortexConstants.h (included above) ---
 
@@ -188,6 +190,7 @@ namespace Cortex
 		Sint32 restockTripsNeeded; ///< Inns only: collectable restock demand in hauler trips (Σ over stocked resources of (cap-stock)/multiplier, counting only resources currently reachable/in-sight via Map::ressourceAvailable). The inn-hauler ceiling. -1 for swarms / when unknown (game absent).
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy raise/restore swarm priority for the panic defense.
 		Sint32 ticksSinceFinished; ///< Inns only: ticks since Cortex first saw this inn finished (the post-build tune-cooldown clock); -1 = unknown / not tracked. Stamped by AICortex after observe(); swarms leave it -1.
+		Sint32 diagBlindCornNearby; ///< DIAGNOSTIC (inns only): forbidden-BLIND CORN-tile count within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. (diagBlindCornNearby - harvestableWheatNearby) is the forbidden-but-present corn — separates checkerboard-forbidding from field depletion at a feedCap blackout. No policy reads it; -1 when unknown. NOT networked (observation is rebuilt each cycle).
 	};
 
 	/// One of our own CONSTRUCTION SITES (a new build or an in-progress upgrade),
@@ -301,6 +304,19 @@ namespace Cortex
 		// attack (underAttackTimer > 0). Nonzero => recall the army to defend.
 		Sint32 unitsUnderAttack;
 		Sint32 buildingsUnderAttack;
+		// Count of VISIBLE enemy units within CORTEX_THREAT_SCAN_RADIUS of defenseTarget
+		// (the building taking the most fire). FOW-gated like enemies[].totalUnit, so it
+		// is never a fog-of-war cheat. The defensive recall is sized to
+		// CORTEX_DEFENSE_THREAT_MULTIPLE x this count, so the army summoned home scales to
+		// the actual assaulting force. 0 when nothing is under attack.
+		Sint32 enemyUnitsNearThreat;
+		// Count of our own WARRIORs that are currently FREE (activity == ACT_RANDOM &&
+		// medical == MED_FREE) — i.e. not committed to any flag and immediately
+		// recruitable. This is the exact eligibility a war flag's recruiter applies
+		// (Building::considerUnitForWarriorFlag), so it tells the action layer how many
+		// warriors a new defense flag can draw from the pool WITHOUT cannibalising the
+		// offense flag's committed army. Reading our OWN units is not a fog cheat.
+		Sint32 freeWarriors;
 
 		// --- offense-hold hysteresis state (v15) ---
 		// The flag posture the action layer last committed (a CortexFlagPosture), and
@@ -429,6 +445,7 @@ namespace Cortex
 		Sint32 productionRatio[CORTEX_UNIT_TYPES]; ///< For ACTION_SET_PRODUCTION: target swarm ratio [WORKER,EXPLORER,WARRIOR], each 0..CORTEX_MAX_RATIO ({0,0,0} = halt). Else all 0.
 		Sint32 flagRadius;   ///< For ACTION_PLACE_*_FLAG: war-flag attraction radius (unitStayRange), clamped to [1, CORTEX_MAX_FLAG_RADIUS]. Else -1.
 		Sint32 unitCount;    ///< For ACTION_PLACE_*_FLAG: warriors to summon (flag maxUnitWorking), clamped to [0, CORTEX_MAX_FLAG_UNITS]. Else -1.
+		Sint32 minLevelToFlag; ///< For ACTION_PLACE_*_FLAG: the flag's minLevelToFlag — a warrior answers the flag only if min(level[ATTACK_SPEED],level[ATTACK_STRENGTH]) >= this (engine: building/Misc.cpp:106). 0 == every warrior (used for defense); a higher value marches only the trained cohort and keeps low-level warriors home. Else -1.
 		Sint32 swarmWorkers[CORTEX_MAX_TRACKED_SWARMS]; ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedSwarms[i], or -1 to leave unchanged. Else all -1.
 		Sint32 innWorkers[CORTEX_MAX_TRACKED_INNS];     ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedInns[i], or -1 to leave unchanged. Else all -1.
 		Sint32 siteWorkers[CORTEX_MAX_TRACKED_SITES];   ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedSites[i] (pour idle workers into construction), or -1 to leave unchanged. Else all -1.

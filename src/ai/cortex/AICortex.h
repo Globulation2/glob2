@@ -107,6 +107,17 @@ private:
 		POSTURE_DEFENSE = Cortex::CORTEX_POSTURE_DEFENSE
 	};
 
+	/// Cortex now keeps TWO independent war flags at once — an offense flag pushing
+	/// on the enemy and a defense flag recalling the home reserve — instead of a
+	/// single shared flag that had to be teleported back and forth. FlagRole indexes
+	/// the per-role flag gid and create-cooldown arrays. Order matters: it is the
+	/// array index, so OFFENSE==0 / DEFENSE==1 are fixed.
+	enum FlagRole {
+		FLAG_OFFENSE = 0,
+		FLAG_DEFENSE = 1,
+		FLAG_ROLE_COUNT = 2
+	};
+
 	void init(Player* player);
 
 	/// Action layer (direct binding): translate an action intent into zero or
@@ -159,20 +170,40 @@ private:
 	/// next cycle, so re-running each cycle is free when there is no new work.
 	void enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool liftAll = false);
 
-	/// Find our team's single live WAR_FLAG virtual building, or NULL if none.
-	/// Cortex keeps at most one war flag and does NOT persist its gid; it is
-	/// re-found each decision cycle by scanning team->virtualBuildings (a list,
-	/// iterated in deterministic insertion order — never a std::set).
-	Building* findOwnWarFlag() const;
+	/// Resolve a tracked flag gid to its live ALIVE WAR_FLAG building, or NULL if the
+	/// gid is unset (NOGBID) or the flag no longer exists (died / was deleted).
+	/// Scans team->virtualBuildings (a list, deterministic insertion order — never a
+	/// std::set).
+	Building* findFlagByGid(Uint16 gid) const;
 
-	/// Ensure our single war flag sits at map tile (tx, ty): create it there if
-	/// we have none (respecting the flag cooldown and the virtual-building room
-	/// check), or move the existing one if it is far from the target. radius/count
-	/// come from the action (clamped). Appends at most one Order to orderQueue.
-	void ensureWarFlagAt(int tx, int ty, const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+	/// After an OrderCreate for `role` lands (it takes several ticks), claim the new
+	/// WAR_FLAG: the one in team->virtualBuildings nearest (tx, ty) whose gid is not
+	/// already owned by the OTHER role. Returns the claimed building (and stores its
+	/// gid in the role's slot), or NULL if none has appeared yet. Position-matching
+	/// disambiguates the two roles' flags (their targets — enemy base vs. a building
+	/// under fire — are far apart) even in the rare both-pending-same-tick case.
+	Building* rediscoverFlag(FlagRole role, int tx, int ty);
 
-	/// Remove our war flag (OrderDelete) if one exists.
-	void clearOwnWarFlag();
+	/// Ensure the `role` flag sits at (tx, ty) with the given summon count, veteran
+	/// minLevel, and engine priority: create it if we have none (respecting the
+	/// per-role create cooldown and the virtual-building room check), else move it
+	/// when far and reconcile count/minLevel/priority. Keyed on the role's own gid, so
+	/// the offense and defense flags are managed fully independently. Appends Orders to
+	/// orderQueue (mirroring each engine executor locally so the dedup won't re-fire).
+	void ensureFlagAt(FlagRole role, int tx, int ty, int radius, int count,
+	                  int minLevel, int priority, const Cortex::CortexObservation& obs);
+
+	/// Remove the `role` flag (OrderDelete) if it exists, and clear its tracked gid.
+	/// Deleting a flag releases its committed warriors back to the free pool, where a
+	/// higher-priority flag can then recruit them.
+	void clearFlag(FlagRole role);
+
+	/// Tear down a stale DEFENSE flag once the assault is over (no building under
+	/// attack). Runs every decision cycle in getOrder() — in parallel with the action
+	/// ladder, NOT gated on winning it — because scoreDefense DECLINES when there is no
+	/// threat, so the ladder would never pick a teardown action. Cheap and idempotent
+	/// (a no-op once the flag is already gone).
+	void reconcileStaleDefenseFlag(const Cortex::CortexObservation& obs);
 
 	/// Find the single best finished instance of `buildingType` (an
 	/// IntBuildingType shortTypeNum) to upgrade to its next level, or NULL if no
@@ -214,14 +245,21 @@ private:
 	/// Safety-net expiry tick for pendingUpgradeType. 0 when nothing is pending.
 	int pendingUpgradeUntil;
 
-	/// Game tick before which ensureWarFlagAt refuses to create another war flag.
-	/// Same BUILD_COOLDOWN_TICKS latency (an OrderCreate for a virtual flag also
-	/// takes several ticks to register before findOwnWarFlag can see it), but a
-	/// SEPARATE timer from buildCooldownUntil: a queued economy build must never
-	/// stall a time-critical flag placement — above all a defensive recall when the
-	/// base is under attack — by up to BUILD_COOLDOWN_TICKS. 0 = no flag create
-	/// pending.
-	int flagCooldownUntil;
+	/// Game tick before which ensureFlagAt refuses to create another war flag, indexed
+	/// by FlagRole (offense / defense have INDEPENDENT cooldowns — a pending offense
+	/// create must never stall a time-critical defensive recall). Same
+	/// BUILD_COOLDOWN_TICKS latency (an OrderCreate for a virtual flag also takes
+	/// several ticks to register before the new gid can be claimed), but a SEPARATE
+	/// timer from buildCooldownUntil: a queued economy build must never stall a flag
+	/// placement. 0 = no create pending for that role.
+	int flagCooldownUntil[FLAG_ROLE_COUNT];
+
+	/// The two persistent war flags' building gids (NOGBID == none). offenseFlagGid
+	/// pushes on the enemy; defenseFlagGid recalls the home reserve. Tracked by gid
+	/// (not re-found by a bare WAR_FLAG scan) because two WAR_FLAGs coexist and must be
+	/// told apart. Serialized for lockstep determinism alongside flagPosture.
+	Uint16 offenseFlagGid;
+	Uint16 defenseFlagGid;
 
 	/// Offense-hold hysteresis state (RAM-only, persisted symmetrically). The
 	/// posture the flag is currently committed to, and the tick until which an

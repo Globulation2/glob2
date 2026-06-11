@@ -92,6 +92,17 @@ namespace Cortex
 		// the normal turtle-then-commit offense stays low (SCORE_OFFENSE below).
 		SCORE_OFFENSE_BLITZ      =  6700,
 
+		/// A SERIOUS base assault (>= CORTEX_DEFENSE_SERIOUS_BUILDINGS buildings under
+		/// attack at once) recalling the army home. Ranked ABOVE the famine-blitz
+		/// (SCORE_OFFENSE_BLITZ) and the famine second-swarm (SCORE_SECOND_SWARM_FAMINE)
+		/// so that when the colony is starving — which is exactly when combatPhase is
+		/// false and the blitz wants to throw the army forward — defending the base wins
+		/// instead. Deliberately kept BELOW the existential food-recovery rungs
+		/// (SCORE_SWARM_RECOVERY=7000, SCORE_FEED_CAPACITY=8000) and the pre-combat
+		/// panic (SCORE_PANIC_DEFENSE): if the economy itself is collapsing those still
+		/// take priority. Minor (single-building) harassment stays at SCORE_DEFENSE.
+		SCORE_DEFENSE_SERIOUS    =  6900,
+
 		// Military band (repositioning standing flags; below economy by design —
 		// the pre-combat emergency is SCORE_PANIC_DEFENSE, not these).
 		SCORE_DEFENSE            =  4000,
@@ -148,6 +159,20 @@ namespace Cortex
 		/// nullptr path (the trace is determinism-neutral: no RNG, no orders, no
 		/// persisted state). See DecideTrace and docs/AI/cortex/DECIDE_CONTRACT.md.
 		CortexAction decide(const CortexObservation& obs, DecideTrace* trace = nullptr);
+
+		/// War-flag management decision, evaluated EVERY decision cycle in PARALLEL
+		/// with decide()'s economy action — NOT as a competing candidate the economy
+		/// scorers could starve (nor vice versa). Runs the utility-argmax over only the
+		/// three war-flag scorers (Defense / RetireFlag / Offense) and returns the
+		/// winning flag action, or ACTION_NOOP when none wants to act this cycle. Their
+		/// SCORE_* bands are unchanged, so the combat-internal priority is preserved
+		/// exactly: serious-defense > blitz-offense > defense > retire > offense.
+		/// Split out of decide() so a busy economy never preempts a war-flag move; the
+		/// action layer drains the combat orders alongside the economy ones, exactly
+		/// like tuneWorkers() / wantWheatProtection(). The 18-class DECIDE_CONTRACT
+		/// trace/ML mask still EVALUATES these three (training continuity); only the
+		/// SELECTION moved here — decide() no longer acts on them.
+		CortexAction decideCombat(const CortexObservation& obs) const;
 
 		/// Fill `features` with the 48-element decision feature vector in the EXACT
 		/// idx order of docs/AI/cortex/DECIDE_CONTRACT.md. SINGLE SOURCE OF TRUTH:

@@ -142,5 +142,8 @@ private:
 
 public:
 	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }
+	//! Read-only access to the 512-tick EndOfGameStat history, used by the
+	//! headless team-timeline dump (Engine::printAutomaticEndingSummary).
+	const std::vector<EndOfGameStat> &getEndOfGameStats(void) const { return endOfGameStats; }
 };
 

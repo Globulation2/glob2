@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <sstream>
+#include <iostream>
+#include <cstdlib>
 
 #include <FormatableString.h>
 #include <GraphicContext.h>
@@ -123,6 +125,30 @@ void TeamStats::step(Team *team, bool reloaded)
 	{
 		endOfGameStats.push_back(EndOfGameStat(stats[statsIndex].totalUnit, stats[statsIndex].totalBuilding, team->prestige,
 			stats[statsIndex].totalHP, stats[statsIndex].totalAttackPower, stats[statsIndex].totalDefensePower));
+
+		// Optional rich per-team economy/food trace for AI debugging. Gated by
+		// GLOB2_TEAM_TIMELINE (same flag as Engine::printTeamTimeline). Emitted
+		// here so it captures the live food/worker state at each 512-tick sample
+		// — data that the archived EndOfGameStat (6 scalars) cannot carry.
+		if (getenv("GLOB2_TEAM_TIMELINE"))
+		{
+			const TeamStat &s = stats[statsIndex];
+			std::cout << "GLOB2_ECON team=" << team->teamNumber
+				<< " tick=" << team->game->stepCounter
+				<< " workers=" << s.numberUnitPerType[WORKER]
+				<< " warriors=" << s.numberUnitPerType[WARRIOR]
+				<< " explorers=" << s.numberUnitPerType[EXPLORER]
+				<< " food=" << s.totalFood << "/" << s.totalFoodCapacity
+				<< " fooded=" << s.totalUnitFooded << "/" << s.totalUnitFoodable
+				<< " foodCritical=" << s.needFoodCritical
+				<< " needFood=" << s.needFood
+				<< " swarm=" << s.numberBuildingPerType[IntBuildingType::SWARM_BUILDING]
+				<< " inn=" << s.numberBuildingPerType[IntBuildingType::FOOD_BUILDING]
+				<< " school=" << s.numberBuildingPerType[IntBuildingType::SCIENCE_BUILDING]
+				<< " barracks=" << s.numberBuildingPerType[IntBuildingType::ATTACK_BUILDING]
+				<< " tower=" << s.numberBuildingPerType[IntBuildingType::DEFENSE_BUILDING]
+				<< std::endl;
+		}
 	}
 	
 	// handle in game stat step

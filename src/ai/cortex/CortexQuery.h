@@ -135,6 +135,8 @@ namespace Cortex
 		obs.enemyUnitsNearFlag = 0;
 		obs.unitsUnderAttack = 0;
 		obs.buildingsUnderAttack = 0;
+		obs.enemyUnitsNearThreat = 0;
+		obs.freeWarriors = 0;
 
 		// Neutral defaults; AICortex overwrites these with its live RAM-only
 		// hysteresis state after observe() returns, before policy.decide() (the
@@ -177,6 +179,7 @@ namespace Cortex
 			obs.trackedInns[i].nearestWheatDist = -1;
 			obs.trackedInns[i].harvestableWheatNearby = -1;
 			obs.trackedInns[i].restockTripsNeeded = -1;
+			obs.trackedInns[i].diagBlindCornNearby = -1;
 			obs.trackedInns[i].priority = 0;
 		}
 		obs.siteCount = 0;
@@ -220,6 +223,7 @@ namespace Cortex
 			action.productionRatio[i] = 0;
 		action.flagRadius = -1;
 		action.unitCount = -1;
+		action.minLevelToFlag = -1;
 		for (int i = 0; i < CORTEX_MAX_TRACKED_SWARMS; i++)
 			action.swarmWorkers[i] = -1;
 		for (int i = 0; i < CORTEX_MAX_TRACKED_INNS; i++)
@@ -255,24 +259,30 @@ namespace Cortex
 
 	/// Offense: recall/commit our single war flag onto flagTargets[locationSlot].
 	/// radius/unitCount are clamped to [1,CORTEX_MAX_FLAG_RADIUS]/[0,CORTEX_MAX_FLAG_UNITS]
-	/// by the action layer.
-	inline CortexAction makeWarFlagAction(int locationSlot, int flagRadius, int unitCount)
+	/// by the action layer. minLevelToFlag is the flag's veteran filter: a warrior
+	/// answers only if min(level[ATTACK_SPEED],level[ATTACK_STRENGTH]) >= it, so a
+	/// nonzero value marches only the trained cohort and keeps low-level warriors home.
+	inline CortexAction makeWarFlagAction(int locationSlot, int flagRadius, int unitCount, int minLevelToFlag)
 	{
 		CortexAction action = makeNoOpAction();
 		action.kind = ACTION_PLACE_WAR_FLAG;
 		action.locationSlot = locationSlot;
 		action.flagRadius = flagRadius;
 		action.unitCount = unitCount;
+		action.minLevelToFlag = minLevelToFlag;
 		return action;
 	}
 
-	/// Defense: recall our single war flag onto obs.defenseTarget.
-	inline CortexAction makeDefenseFlagAction(int flagRadius, int unitCount)
+	/// Defense: recall our single war flag onto obs.defenseTarget. minLevelToFlag is
+	/// the flag's veteran filter (a warrior answers only if min(level[ATTACK_SPEED],
+	/// level[ATTACK_STRENGTH]) >= it); 0 summons every warrior for the defense.
+	inline CortexAction makeDefenseFlagAction(int flagRadius, int unitCount, int minLevelToFlag)
 	{
 		CortexAction action = makeNoOpAction();
 		action.kind = ACTION_PLACE_DEFENSE_FLAG;
 		action.flagRadius = flagRadius;
 		action.unitCount = unitCount;
+		action.minLevelToFlag = minLevelToFlag;
 		return action;
 	}
 

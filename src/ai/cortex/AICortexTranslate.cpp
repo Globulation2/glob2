@@ -149,13 +149,14 @@ void AICortex::translateActionSetProduction(const Cortex::CortexAction& action, 
 
 void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
 {
-	// Offense: ensure our single war flag sits on the chosen enemy-building
-	// target. An out-of-range or invalid slot means "no target" — clear.
+	// Offense: ensure the OFFENSE flag sits on the chosen enemy-building target. An
+	// out-of-range or invalid slot means "no target" — clear the offense flag only
+	// (the defense flag is managed independently).
 	const int slot = action.locationSlot;
 	if (slot < 0 || slot >= Cortex::CORTEX_FLAG_TARGETS
 	    || !obs.flagTargets[slot].valid)
 	{
-		clearOwnWarFlag();
+		clearFlag(FLAG_OFFENSE);
 		flagPosture = POSTURE_NONE;
 		offenseHoldUntil = 0;
 		return;
@@ -167,41 +168,68 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 	flagPosture = POSTURE_OFFENSE;
 	offenseHoldUntil = obs.tick + OFFENSE_HOLD_TICKS;
 	const Cortex::BuildCandidate& target = obs.flagTargets[slot];
-	ensureWarFlagAt(target.x, target.y, action, obs);
+	// NORMAL priority: the offense flag must rank BELOW the defense flag (HIGH) so a
+	// home assault out-recruits it for the free-warrior pool. Count/minLevel/radius come
+	// from the action (veteran-filtered cohort; see scoreOffense).
+	ensureFlagAt(FLAG_OFFENSE, target.x, target.y, action.flagRadius, action.unitCount,
+	             action.minLevelToFlag, Cortex::CORTEX_PRIORITY_NORMAL, obs);
 }
 
 void AICortex::translateActionPlaceDefenseFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
 {
 	// PURE TRANSLATION: execute the recall the policy decided. The thrash-
-	// hysteresis (hold an in-progress offense push through minor harassment) now
-	// lives in the policy (CortexPolicy::scoreDefense) — when the hold should win, the
-	// policy returns NoOp and this helper is never reached, so the existing offense
-	// flag is left untouched. By the time ACTION_PLACE_DEFENSE_FLAG arrives here the
-	// recall has already been authorised; we just commit it.
+	// hysteresis (hold an in-progress offense push through minor harassment) lives in
+	// the policy (CortexPolicy::scoreDefense) — when the hold should win, the policy
+	// returns NoOp and this helper is never reached, so the offense flag is left
+	// untouched. By the time ACTION_PLACE_DEFENSE_FLAG arrives the recall is authorised.
 	//
-	// Defense: ensure our single war flag sits on the under-fire spot. No valid
-	// defense target means nothing is under attack — clear. (The policy only emits
-	// this action with a valid defenseTarget; this stays as a defensive guard.)
+	// Defense and offense are now INDEPENDENT flags: this manages only the DEFENSE flag.
+	// No valid defense target means nothing is under attack — clear the defense flag.
 	if (!obs.defenseTarget.valid)
 	{
-		clearOwnWarFlag();
+		clearFlag(FLAG_DEFENSE);
 		flagPosture = POSTURE_NONE;
 		offenseHoldUntil = 0;
 		return;
 	}
 
-	// Commit the defensive recall. Setting POSTURE_DEFENSE and clearing the hold
-	// window is the EXECUTION side-effect of actually re-tasking the flag (state
-	// ownership stays here, in the action layer — only the DECISION moved).
+	// Size the recall to the assault: 3x the visible enemy units near the building
+	// taking the most fire, floored at 1 (DEFENSE_MIN_WARRIORS) and capped at the flag
+	// ceiling. A bigger threat pulls more warriors home; a lone harasser pulls few.
+	int neededDefense = Cortex::CORTEX_DEFENSE_THREAT_MULTIPLE * obs.enemyUnitsNearThreat;
+	if (neededDefense < 1)
+		neededDefense = 1;
+	else if (neededDefense > Cortex::CORTEX_MAX_FLAG_UNITS)
+		neededDefense = Cortex::CORTEX_MAX_FLAG_UNITS;
+
+	// Free-pool-first: the HIGH-priority defense flag out-recruits everything for any
+	// FREE warriors, so it fills from the idle reserve without disturbing the forward
+	// army. Only when the free pool cannot cover the remaining deficit do we release the
+	// committed army — deleting the offense flag frees its warriors, which the defense
+	// flag (HIGH priority) then claims. (Priority alone never poaches a flagged warrior;
+	// the army comes home only by clearing the flag it is bound to.)
+	const Building* curDefense = findFlagByGid(defenseFlagGid);
+	const int curUnits = curDefense ? static_cast<int>(curDefense->unitsWorking.size()) : 0;
+	const int deficit = neededDefense - curUnits;
+	if (deficit > 0 && obs.freeWarriors < deficit)
+		clearFlag(FLAG_OFFENSE);
+
+	// Commit the defensive recall: POSTURE_DEFENSE, hold cleared. Defense flag rides at
+	// HIGH priority, minLevel 0 (recall every warrior regardless of level), radius from
+	// the action (DEFENSE_FLAG_RADIUS).
 	flagPosture = POSTURE_DEFENSE;
 	offenseHoldUntil = 0;
-	ensureWarFlagAt(obs.defenseTarget.x, obs.defenseTarget.y, action, obs);
+	ensureFlagAt(FLAG_DEFENSE, obs.defenseTarget.x, obs.defenseTarget.y,
+	             action.flagRadius, neededDefense, 0, Cortex::CORTEX_PRIORITY_HIGH, obs);
 }
 
 void AICortex::translateActionClearFlags()
 {
-	// No offense/defense wanted right now — remove our war flag if any.
-	clearOwnWarFlag();
+	// Retire the purposeless OFFENSE flag (scoreRetireFlag's job: the threat has
+	// cleared and the army is too thin to attack). The DEFENSE flag is torn down
+	// separately by reconcileStaleDefenseFlag when nothing is under attack, so it is
+	// left alone here.
+	clearFlag(FLAG_OFFENSE);
 	flagPosture = POSTURE_NONE;
 	offenseHoldUntil = 0;
 }

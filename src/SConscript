@@ -59,6 +59,7 @@ ai/cortex/CortexWheat.cpp
 ai/cortex/CortexWater.cpp
 ai/cortex/CortexNet.cpp
 ai/cortex/AICortex.cpp
+ai/cortex/AICortexFlags.cpp
 ai/cortex/AICortexTranslate.cpp
 ai/cortex/AICortexDebug.cpp
 BasePlayer.cpp

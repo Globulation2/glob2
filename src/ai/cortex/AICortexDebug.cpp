@@ -85,7 +85,26 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 		     << " maxUnitWorking=" << s.maxUnitWorking
 		     << " inside=" << s.unitsInside
 		     << " priority=" << s.priority
-		     << " nearestWheat=" << s.nearestWheatDist << "\n";
+		     << " nearestWheat=" << s.nearestWheatDist
+		     << " harvestable=" << s.harvestableWheatNearby << "\n";
+	}
+
+	// per-inn wheat-gate detail (DIAGNOSTIC: feedCap root-cause). feedCapacity sums
+	// only inns that pass the gate (harvestable >= CORTEX_WHEAT_MIN_TILES). nearestWheat
+	// is forbidden-BLIND; harvestable is the forbidden-AWARE gate count. corn-present
+	// (nearestWheat small) but gate-fail (harvestable < MIN) => wheat is FORBIDDEN (b);
+	// nearestWheat large/-1 => wheat DEPLETED/ABSENT (c).
+	for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
+	{
+		const TrackedBuilding& n = obs.trackedInns[i];
+		if (!n.valid) continue;
+		const bool feeds = (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES);
+		cerr << "CORTEX_DUMP   inn[" << i << "] corn=" << n.corn << "/" << n.maxCorn
+		     << " maxUnitWorking=" << n.maxUnitWorking
+		     << " inside=" << n.unitsInside << "/" << n.maxUnitInside
+		     << " nearestWheat=" << n.nearestWheatDist
+		     << " harvestable=" << n.harvestableWheatNearby
+		     << " feedsGate=" << (feeds ? 1 : 0) << "\n";
 	}
 
 	// --- placement: can the policy even site a new inn / swarm right now? ---

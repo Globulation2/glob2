@@ -25,11 +25,6 @@
 
 using std::shared_ptr;
 
-// Map distance (warp-safe) beyond which an existing war flag is recalled to a
-// new target rather than left in place. Small slack so a flag already sitting on
-// (or right next to) the target isn't pointlessly re-ordered every cycle.
-static const int FLAG_MOVE_THRESHOLD = 3;
-
 AICortex::AICortex(Player* player)
 {
 	init(player);
@@ -57,7 +52,10 @@ void AICortex::init(Player* player)
 		buildCooldownUntil[t] = 0; // per-type build cooldown; none pending at start.
 	pendingUpgradeType = -1; // no upgrade in flight.
 	pendingUpgradeUntil = 0;
-	flagCooldownUntil = 0;
+	for (int r = 0; r < FLAG_ROLE_COUNT; r++)
+		flagCooldownUntil[r] = 0; // per-role flag create cooldown; none pending at start.
+	offenseFlagGid = NOGBID; // no offense flag yet.
+	defenseFlagGid = NOGBID; // no defense flag yet.
 	flagPosture = POSTURE_NONE;
 	offenseHoldUntil = 0;
 	wheatOpenMargin = -1; // sentinel: drawn lazily on the first decision cycle.
@@ -85,7 +83,16 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	stream->readLeaveSection();
 	pendingUpgradeType = stream->readSint32("pendingUpgradeType");
 	pendingUpgradeUntil = stream->readSint32("pendingUpgradeUntil");
-	flagCooldownUntil = stream->readSint32("flagCooldownUntil");
+	stream->readEnterSection("flagCooldownUntil");
+	for (int r = 0; r < FLAG_ROLE_COUNT; r++)
+	{
+		stream->readEnterSection(r);
+		flagCooldownUntil[r] = stream->readSint32("flagCooldownUntil");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	offenseFlagGid = static_cast<Uint16>(stream->readUint32("offenseFlagGid"));
+	defenseFlagGid = static_cast<Uint16>(stream->readUint32("defenseFlagGid"));
 	flagPosture = stream->readSint32("flagPosture");
 	offenseHoldUntil = stream->readSint32("offenseHoldUntil");
 	// Persisted, NOT redrawn on load: re-drawing would consume a fresh syncRand on
@@ -112,96 +119,20 @@ void AICortex::save(GAGCore::OutputStream* stream)
 	stream->writeLeaveSection();
 	stream->writeSint32(pendingUpgradeType, "pendingUpgradeType");
 	stream->writeSint32(pendingUpgradeUntil, "pendingUpgradeUntil");
-	stream->writeSint32(flagCooldownUntil, "flagCooldownUntil");
+	stream->writeEnterSection("flagCooldownUntil");
+	for (int r = 0; r < FLAG_ROLE_COUNT; r++)
+	{
+		stream->writeEnterSection(r);
+		stream->writeSint32(flagCooldownUntil[r], "flagCooldownUntil");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeUint32(offenseFlagGid, "offenseFlagGid");
+	stream->writeUint32(defenseFlagGid, "defenseFlagGid");
 	stream->writeSint32(flagPosture, "flagPosture");
 	stream->writeSint32(offenseHoldUntil, "offenseHoldUntil");
 	stream->writeSint32(wheatOpenMargin, "wheatOpenMargin");
 	stream->writeLeaveSection();
-}
-
-Building* AICortex::findOwnWarFlag() const
-{
-	// War flags are VIRTUAL buildings: they live in team->virtualBuildings, not
-	// team->myBuildings (which holds only real, map-footprint buildings). The
-	// container is a std::list — iterate it in insertion order (deterministic);
-	// never a std::set. Cortex keeps at most one war flag, so return the first.
-	Team* team = player->team;
-	for (Building* b : team->virtualBuildings)
-	{
-		if (b
-		    && b->type->shortTypeNum == IntBuildingType::WAR_FLAG
-		    && b->buildingState == Building::ALIVE)
-			return b;
-	}
-	return NULL;
-}
-
-void AICortex::ensureWarFlagAt(int tx, int ty, const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
-{
-	// Clamp the discrete action params to Cortex's own bounds (the engine clamps
-	// nothing on its own). radius == flag unitStayRange, count == warriors summoned.
-	int radius = action.flagRadius;
-	if (radius < 1)
-		radius = 1;
-	else if (radius > Cortex::CORTEX_MAX_FLAG_RADIUS)
-		radius = Cortex::CORTEX_MAX_FLAG_RADIUS;
-	int count = action.unitCount;
-	if (count < 0)
-		count = 0;
-	else if (count > Cortex::CORTEX_MAX_FLAG_UNITS)
-		count = Cortex::CORTEX_MAX_FLAG_UNITS;
-
-	Game* game = player->team->game;
-
-	Building* existing = findOwnWarFlag();
-	if (existing == NULL)
-	{
-		// No flag yet: create one. An OrderCreate takes several ticks to execute
-		// and register the virtual building; without a cooldown the policy re-issues
-		// the create before the flag appears. This is the flag's OWN cooldown, NOT
-		// the build cooldown — a queued economy build must never delay a flag (and
-		// especially not a defensive recall) by up to BUILD_COOLDOWN_TICKS.
-		if (obs.tick < flagCooldownUntil)
-			return;
-
-		// Resolve WAR_FLAG the VIRTUAL way: flags have no building-site variant, so
-		// pass isBuildingSite==false. (The economy path passes true, which returns
-		// -1 for flags — that is exactly why the build path skips them.)
-		const std::string& name = IntBuildingType::reverseConversionMap[IntBuildingType::WAR_FLAG];
-		Sint32 typeNum = globalContainer->buildingsTypes.getTypeNum(name, 0, false);
-		if (typeNum < 0)
-			return;
-
-		// Virtual-building room gate: for a flag this just checks no other own-flag
-		// occupies the tile and ignores fog (checkFow defaulted true is harmless here).
-		BuildingType* bt = globalContainer->buildingsTypes.get(typeNum);
-		if (!game->checkRoomForBuilding(tx, ty, bt, player->team->teamNumber))
-			return;
-
-		// 7-arg OrderCreate: the trailing flagRadius sets the flag's unitStayRange at
-		// execution (Game_orders.cpp executeCreate). For a flag, unitWorking ==
-		// unitWorkingFuture == warriors summoned, so both are `count`.
-		orderQueue.push(shared_ptr<Order>(new OrderCreate(
-			player->team->teamNumber, tx, ty, typeNum,
-			count, count, radius)));
-		flagCooldownUntil = obs.tick + BUILD_COOLDOWN_TICKS;
-		return;
-	}
-
-	// Flag already exists: move it only if it is far from the target; otherwise
-	// leave it where it is. We intentionally do NOT re-issue radius/count changes
-	// here for v1 — keeping the per-cycle work minimal (retargeting radius/count
-	// for an in-place flag is deferred).
-	int dist = game->map.warpDistMax(existing->posX, existing->posY, tx, ty);
-	if (dist > FLAG_MOVE_THRESHOLD)
-		orderQueue.push(shared_ptr<Order>(new OrderMoveFlag(existing->gid, tx, ty, false)));
-}
-
-void AICortex::clearOwnWarFlag()
-{
-	Building* existing = findOwnWarFlag();
-	if (existing)
-		orderQueue.push(shared_ptr<Order>(new OrderDelete(existing->gid)));
 }
 
 Building* AICortex::findUpgradeTarget(int buildingType) const
@@ -401,7 +332,26 @@ shared_ptr<Order> AICortex::getOrder(void)
 			          << " upgBrk=" << obs.upgradableCount[CORTEX_BUILD_ATTACK]
 			          << " brkUpgrading=" << cortexBuildingsUpgrading(obs, CORTEX_BUILD_ATTACK)
 			          << " underAtk=" << (obs.buildingsUnderAttack + obs.unitsUnderAttack)
+			          << " starv=" << obs.starvingUnits
 			          << "\n";
+			// Per-inn wheat-gate detail (feedCap root-cause). feedCapacity sums only
+			// inns that pass the gate (harvestable >= CORTEX_WHEAT_MIN_TILES=5).
+			// nearestWheat is forbidden-BLIND; harvestable is forbidden-AWARE. When
+			// feedCap==0: corn-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
+			// nearestWheat large/-1 => DEPLETED/ABSENT (c).
+			for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
+			{
+				const Cortex::TrackedBuilding& n = obs.trackedInns[i];
+				if (!n.valid) continue;
+				std::cerr << "CORTEX_INN t=" << obs.tick << " inn=" << i
+				          << " corn=" << n.corn << "/" << n.maxCorn
+				          << " inside=" << n.unitsInside << "/" << n.maxUnitInside
+				          << " nearestWheat=" << n.nearestWheatDist
+				          << " blindCorn=" << n.diagBlindCornNearby
+				          << " harvestable=" << n.harvestableWheatNearby
+				          << " feedsGate=" << (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES ? 1 : 0)
+				          << "\n";
+			}
 		}
 
 		// DIAGNOSTIC (gated, one-shot): characterize the game state the first cycle
@@ -449,6 +399,27 @@ shared_ptr<Order> AICortex::getOrder(void)
 		else
 			action = policy.decide(obs);
 		translateAction(action, obs);
+
+		// War-flag management runs EVERY decision cycle, in PARALLEL with decide()'s
+		// economy action above — NOT as a competing candidate in the same argmax.
+		// Previously the three war-flag scorers (Defense / RetireFlag / Offense) shared
+		// decide()'s single action slot with the whole economy/tech ladder, so a busy
+		// economy could starve a flag move (and a flag move could steal the economy's
+		// only slot). decideCombat() now owns the war-flag argmax and we emit its action
+		// here, alongside the economy action: both sets of Orders queue and drain
+		// one-per-tick over the ticks until the next decision cycle, so economy and
+		// combat each get one decision per second. The combat-INTERNAL priority is
+		// unchanged (serious-defense > blitz > defense > retire > offense — the SCORE_*
+		// bands did not move); only the economy-vs-combat single-slot contention is
+		// gone. ACTION_NOOP when no flag wants to move this cycle enqueues nothing.
+		Cortex::CortexAction combat = policy.decideCombat(obs);
+		translateAction(combat, obs);
+
+		// Defense-flag teardown runs EVERY decision cycle, in PARALLEL with the action
+		// ladder (not gated on winning it) — the assault is over the instant nothing of
+		// ours is taking fire, but scoreDefense declines then so the ladder can't place
+		// the teardown itself. Idempotent once the flag is gone.
+		reconcileStaleDefenseFlag(obs);
 
 		// Worker-hauling tuning (swarms / inns / construction sites) runs EVERY
 		// decision cycle, in PARALLEL with the primary action above — it emits
