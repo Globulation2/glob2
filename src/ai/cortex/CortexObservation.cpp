@@ -54,7 +54,7 @@ static_assert(Cortex::CORTEX_BUILD_SWIMSPEED == IntBuildingType::SWIMSPEED_BUILD
 namespace Cortex
 {
 	void observeBuildings(CortexObservation& obs, Team* team, Game* game,
-		int maxBuildLevel, bool& warFlagFound,
+		int maxBuildLevel, Uint16 offenseFlagGid, bool& warFlagFound,
 		Sint32& warFlagX, Sint32& warFlagY, Sint32& warFlagRange)
 	{
 		for (int i = 0; i < Building::MAX_COUNT; i++)
@@ -253,14 +253,21 @@ namespace Cortex
 			 && b->buildingState == Building::ALIVE)
 			{
 				obs.warFlagsActive++;
-				// Remember the flag's footprint so the enemy-unit pass can detect
-				// stragglers still loitering inside its attraction radius.
-				// C++: Building::posX/posY, building/Building.h:523;
-				//      Building::unitStayRange, building/Building.h:530
-				warFlagFound = true;
-				warFlagX     = b->posX;
-				warFlagY     = b->posY;
-				warFlagRange = b->unitStayRange;
+				// Remember the OFFENSE flag's footprint (gid match) so the enemy-unit
+				// pass can detect stragglers still loitering inside its attraction radius
+				// AND the own-units pass can count our warriors present at the front.
+				// Cortex runs two flags now (offense + defense); capturing by gid keeps
+				// these front-line signals tied to the offense push the retire/retreat
+				// decisions reason about, rather than whichever flag was scanned last.
+				// C++: Building::gid building/Building.h:514; posX/posY building/Building.h:523;
+				//      unitStayRange building/Building.h:530
+				if (offenseFlagGid != NOGBID && b->gid == offenseFlagGid)
+				{
+					warFlagFound = true;
+					warFlagX     = b->posX;
+					warFlagY     = b->posY;
+					warFlagRange = b->unitStayRange;
+				}
 			}
 
 			// Upgradable predicate. All clauses must hold; ordered cheap-first so

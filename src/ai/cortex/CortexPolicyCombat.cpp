@@ -55,44 +55,6 @@ namespace Cortex
 		return -1;
 	}
 
-	/// Highest warrior flag-level L (0 .. CORTEX_UNIT_LEVELS-1) at which we can
-	/// still field at least `minForce` qualifying warriors. The offense flag is
-	/// given this as its minLevelToFlag so it marches the STRONGEST cohort that is
-	/// still numerous enough to fight, while the lower-level warriors stay home
-	/// training. A warrior qualifies for level L when
-	/// min(level[ATTACK_SPEED], level[ATTACK_STRENGTH]) >= L (building/Misc.cpp:106).
-	///
-	/// We have only the two PER-ABILITY histograms (obs.attackSpeedLevel[],
-	/// obs.attackStrengthLevel[]), not the joint min-distribution, so we bound the
-	/// qualifying count by the SMALLER of the two cumulative tails. That is exact
-	/// when the two abilities are trained in lockstep (the barracks trains both in
-	/// parallel) and never an OVER-count otherwise, so the force actually marched
-	/// can only come out at or above this estimate. Returns 0 (every warrior) when
-	/// no higher level clears `minForce`, so the marched force size never drops
-	/// below today's raw commit — this RAISES the average level of the attacking
-	/// force without SHRINKING it (which is the regression the commit-gate comment
-	/// in scoreOffense warns about).
-	static int veteranFlagLevel(const CortexObservation& obs, int minForce)
-	{
-		int chosen = 0;
-		for (int L = 1; L < CORTEX_UNIT_LEVELS; L++)
-		{
-			int speedTail = 0;
-			int strengthTail = 0;
-			for (int l = L; l < CORTEX_UNIT_LEVELS; l++)
-			{
-				speedTail    += obs.attackSpeedLevel[l];
-				strengthTail += obs.attackStrengthLevel[l];
-			}
-			const int qualifying = (speedTail < strengthTail) ? speedTail : strengthTail;
-			if (qualifying >= minForce)
-				chosen = L;
-			else
-				break; // tails are non-increasing in L; no higher L can qualify.
-		}
-		return chosen;
-	}
-
 	/// True if any valid tracked swarm's engine priority differs from `target`.
 	/// Drives the panic defense's raise-to-HIGH and the restore-to-NORMAL steps:
 	/// each fires only while a swarm is not yet at the wanted priority, and the
@@ -208,8 +170,15 @@ namespace Cortex
 			// change. The hold-window re-arm and posture mutation stay an EXECUTION
 			// side-effect in AICortex::translateActionPlaceWarFlag (state ownership did
 			// not move; only this DECISION did).
+			// A base assault is "serious" — earns the recall even mid-offense-hold —
+			// when it caves multiple buildings AT ONCE *or* is butchering our units en
+			// masse. The units trigger is the one the Muka collapse needed: the harasser
+			// picks off our standing units (unitsUnderAttack in the teens) long before it
+			// flattens a second building, so a buildings-only gate let the colony bleed
+			// out before the army ever came home.
 			const bool seriousThreat =
-				(obs.buildingsUnderAttack >= CORTEX_DEFENSE_SERIOUS_BUILDINGS);
+				(obs.buildingsUnderAttack >= CORTEX_DEFENSE_SERIOUS_BUILDINGS)
+			 || (obs.unitsUnderAttack    >= CORTEX_DEFENSE_SERIOUS_UNITS);
 			if (obs.flagPosture == CORTEX_POSTURE_OFFENSE
 			 && obs.tick < obs.offenseHoldUntil
 			 && !seriousThreat)
@@ -266,8 +235,10 @@ namespace Cortex
 	// AICortex::enqueueWheatForbidden, called each cycle in getOrder().
 	ScoredAction CortexPolicy::scoreOffense(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		// Normal offense: a healthy colony (combatPhase) with a real army and a
-		// scouted target — the patient turtle-then-commit.
+		// Normal offense: a healthy colony (combatPhase) with a real army and a scouted
+		// target. The action layer turns this into the WAVE PIPELINE — mustering and
+		// marching successive cohesive waves — so this scorer just expresses "we want to
+		// be attacking"; it need not (and must not) micro-manage individual flags.
 		const bool normalCommit = f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS;
 		// BLITZ: the colony is past wheat capacity and starving (foodSaturated). Sitting
 		// still means starving in place, so spend whatever army we have NOW — a lower
@@ -278,15 +249,14 @@ namespace Cortex
 		{
 			const int count = (f.warriors < CORTEX_MAX_FLAG_UNITS) ? f.warriors : CORTEX_MAX_FLAG_UNITS;
 			const bool blitzOnly = blitzCommit && !normalCommit;
-			// BLITZ is the desperate foodSaturated push — field every body, no veteran
-			// filter. The patient NORMAL commit marches only the trained cohort: it
-			// asks for the highest minLevelToFlag that still fields ATTACK_MIN_WARRIORS
-			// qualifying veterans, so low-level warriors stay home at the barracks while
-			// the strong ones attack. The floor guarantees the marched force is never
-			// smaller than the raw commit (see veteranFlagLevel / ATTACK_MIN_WARRIORS).
-			const int minLevel = blitzOnly ? 0 : veteranFlagLevel(obs, ATTACK_MIN_WARRIORS);
+			// minLevel 0 (every warrior) for BOTH commit kinds: muster-then-march (the
+			// action layer) gathers and marches the WHOLE wave as one mass, so the old
+			// veteran filter — which kept low-level warriors home and marched only the
+			// trained cohort — is gone (it would shrink the wave and, worse, peel low-
+			// level warriors off the flag mid-march, breaking cohesion). The action layer
+			// owns the flag's level filter now and pins it to 0.
 			const int score = blitzOnly ? SCORE_OFFENSE_BLITZ : SCORE_OFFENSE;
-			return { score, makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count, minLevel) };
+			return { score, makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count, 0) };
 		}
 		return cortexDecline();
 	}

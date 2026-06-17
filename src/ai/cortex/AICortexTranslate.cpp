@@ -149,45 +149,45 @@ void AICortex::translateActionSetProduction(const Cortex::CortexAction& action, 
 
 void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
 {
-	// Offense: ensure the OFFENSE flag sits on the chosen enemy-building target. An
-	// out-of-range or invalid slot means "no target" — clear the offense flag only
-	// (the defense flag is managed independently).
+	// Offense: drive the WAVE PIPELINE toward the chosen enemy-building target. An
+	// out-of-range or invalid slot means "no target" — stand the whole offense down (the
+	// defense flag is managed independently).
 	const int slot = action.locationSlot;
 	if (slot < 0 || slot >= Cortex::CORTEX_FLAG_TARGETS
 	    || !obs.flagTargets[slot].valid)
 	{
-		clearFlag(FLAG_OFFENSE);
+		clearAllOffenseFlags();
 		flagPosture = POSTURE_NONE;
 		offenseHoldUntil = 0;
 		return;
 	}
-	// Commit (or re-commit) the offense push and (re)arm the hold window so
-	// the flag is protected from a minor-harassment defensive recall while it
-	// advances on and engages the enemy. Re-arming each offense cycle keeps
-	// the push alive as long as the policy keeps choosing offense.
-	flagPosture = POSTURE_OFFENSE;
-	offenseHoldUntil = obs.tick + OFFENSE_HOLD_TICKS;
 	const Cortex::BuildCandidate& target = obs.flagTargets[slot];
-	// NORMAL priority: the offense flag must rank BELOW the defense flag (HIGH) so a
-	// home assault out-recruits it for the free-warrior pool. Count/minLevel/radius come
-	// from the action (veteran-filtered cohort; see scoreOffense).
-	ensureFlagAt(FLAG_OFFENSE, target.x, target.y, action.flagRadius, action.unitCount,
-	             action.minLevelToFlag, Cortex::CORTEX_PRIORITY_NORMAL, obs);
+
+	// Arm the hold window on a FRESH commit (a posture transition INTO offense), so a
+	// minor-harassment defensive recall is ignored while the first wave forms and
+	// marches; it lapses after OFFENSE_HOLD_TICKS so real and post-engagement threats
+	// can still pull the army home. The pipeline itself (muster->march, retire spent
+	// waves, always-muster-the-next) is what keeps pressure continuous; see
+	// manageOffenseWaves. Count/minLevel are owned by the pipeline (full waves, minLevel
+	// 0 so the whole army marches as one); we pass it the target, flag radius, and our
+	// warrior count (whether there is anything left to muster).
+	if (flagPosture != POSTURE_OFFENSE)
+		offenseHoldUntil = obs.tick + OFFENSE_HOLD_TICKS;
+	flagPosture = POSTURE_OFFENSE;
+	manageOffenseWaves(target.x, target.y, action.flagRadius, obs.warriors, obs);
 }
 
 void AICortex::translateActionPlaceDefenseFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
 {
-	// PURE TRANSLATION: execute the recall the policy decided. The thrash-
-	// hysteresis (hold an in-progress offense push through minor harassment) lives in
-	// the policy (CortexPolicy::scoreDefense) — when the hold should win, the policy
-	// returns NoOp and this helper is never reached, so the offense flag is left
-	// untouched. By the time ACTION_PLACE_DEFENSE_FLAG arrives the recall is authorised.
-	//
-	// Defense and offense are now INDEPENDENT flags: this manages only the DEFENSE flag.
-	// No valid defense target means nothing is under attack — clear the defense flag.
+	// PURE TRANSLATION: execute the recall the policy decided. The thrash-hysteresis
+	// (hold an in-progress offense push through minor harassment) lives in the policy
+	// (CortexPolicy::scoreDefense) — when the hold should win, the policy returns NoOp and
+	// this helper is never reached. This manages only the single DEFENSE flag; the offense
+	// waves are managed independently. No valid defense target means nothing is under
+	// attack — clear the defense flag.
 	if (!obs.defenseTarget.valid)
 	{
-		clearFlag(FLAG_DEFENSE);
+		clearOneFlag(defenseFlagGid);
 		flagPosture = POSTURE_NONE;
 		offenseHoldUntil = 0;
 		return;
@@ -202,34 +202,33 @@ void AICortex::translateActionPlaceDefenseFlag(const Cortex::CortexAction& actio
 	else if (neededDefense > Cortex::CORTEX_MAX_FLAG_UNITS)
 		neededDefense = Cortex::CORTEX_MAX_FLAG_UNITS;
 
-	// Free-pool-first: the HIGH-priority defense flag out-recruits everything for any
-	// FREE warriors, so it fills from the idle reserve without disturbing the forward
-	// army. Only when the free pool cannot cover the remaining deficit do we release the
-	// committed army — deleting the offense flag frees its warriors, which the defense
-	// flag (HIGH priority) then claims. (Priority alone never poaches a flagged warrior;
-	// the army comes home only by clearing the flag it is bound to.)
+	// Free-pool-first: the HIGH-priority defense flag out-recruits everything for any FREE
+	// warriors, so it fills from the idle reserve without disturbing the forward army.
+	// Only when the free pool cannot cover the remaining deficit do we release the
+	// committed army — tearing down ALL offense waves frees their warriors, which the
+	// defense flag (HIGH priority) then claims. (Priority alone never poaches a flagged
+	// warrior; the army comes home only by clearing the flag it is bound to.)
 	const Building* curDefense = findFlagByGid(defenseFlagGid);
 	const int curUnits = curDefense ? static_cast<int>(curDefense->unitsWorking.size()) : 0;
 	const int deficit = neededDefense - curUnits;
 	if (deficit > 0 && obs.freeWarriors < deficit)
-		clearFlag(FLAG_OFFENSE);
+		clearAllOffenseFlags();
 
 	// Commit the defensive recall: POSTURE_DEFENSE, hold cleared. Defense flag rides at
 	// HIGH priority, minLevel 0 (recall every warrior regardless of level), radius from
 	// the action (DEFENSE_FLAG_RADIUS).
 	flagPosture = POSTURE_DEFENSE;
 	offenseHoldUntil = 0;
-	ensureFlagAt(FLAG_DEFENSE, obs.defenseTarget.x, obs.defenseTarget.y,
+	ensureFlagAt(defenseFlagGid, defenseCooldown, obs.defenseTarget.x, obs.defenseTarget.y,
 	             action.flagRadius, neededDefense, 0, Cortex::CORTEX_PRIORITY_HIGH, obs);
 }
 
 void AICortex::translateActionClearFlags()
 {
-	// Retire the purposeless OFFENSE flag (scoreRetireFlag's job: the threat has
-	// cleared and the army is too thin to attack). The DEFENSE flag is torn down
-	// separately by reconcileStaleDefenseFlag when nothing is under attack, so it is
-	// left alone here.
-	clearFlag(FLAG_OFFENSE);
+	// Stand the offense down (scoreRetireFlag's job: the threat has cleared and the army
+	// is too thin to attack). Tear down every offense wave. The DEFENSE flag is torn
+	// down separately by reconcileStaleDefenseFlag when nothing is under attack.
+	clearAllOffenseFlags();
 	flagPosture = POSTURE_NONE;
 	offenseHoldUntil = 0;
 }

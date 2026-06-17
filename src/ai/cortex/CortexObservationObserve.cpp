@@ -21,7 +21,7 @@
 
 namespace Cortex
 {
-	CortexObservation observe(Player* player, int openMargin)
+	CortexObservation observe(Player* player, int openMargin, Uint16 offenseFlagGid)
 	{
 		CortexObservation obs = makeEmptyObservation();
 
@@ -122,7 +122,7 @@ namespace Cortex
 		// (CortexObservation.cpp) only to keep each .cpp under the file-size cap;
 		// the call sits exactly where the loop ran inline, so the determinism-
 		// critical iteration order is unchanged.
-		observeBuildings(obs, team, game, maxBuildLevel,
+		observeBuildings(obs, team, game, maxBuildLevel, offenseFlagGid,
 			warFlagFound, warFlagX, warFlagY, warFlagRange);
 
 		// training / upgrade level buckets (one slice per array)

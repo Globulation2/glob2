@@ -324,8 +324,8 @@ namespace Cortex
 		// path needs it every cycle; the hand argmax (best/bestIndex) is computed
 		// alongside so the trace label and the off-path behaviour are unchanged.
 		//
-		// SELECTION is restricted to the ECONOMY candidates: the three war-flag
-		// decisions (Defense/RetireFlag/Offense) split out to decideCombat(), which
+		// SELECTION is restricted to the ECONOMY candidates: the war-flag decisions
+		// (Defense/RetireFlag/Offense) split out to decideCombat(), which
 		// runs them on its own parallel pass in getOrder(). decide() must NOT also
 		// select them or it would double-emit the same flag action this cycle. They
 		// are still EVALUATED here so the full 18-class eligibleMask + trace stay
@@ -402,11 +402,11 @@ namespace Cortex
 
 		// Utility-argmax over ONLY the three war-flag scorers, in the same fixed order
 		// and with the same strict earlier-wins-ties rule as decide(). Their SCORE_*
-		// bands are unchanged, so the combat-internal priority is preserved exactly:
+		// bands give a fixed combat-internal priority:
 		// serious-defense (SCORE_DEFENSE_SERIOUS) > blitz-offense (SCORE_OFFENSE_BLITZ)
-		// > defense (SCORE_DEFENSE) > retire (SCORE_RETIRE_FLAG) > offense
-		// (SCORE_OFFENSE). decide() evaluates these same three for the trace/ML mask but
-		// no longer selects them; this is where a war-flag move is actually chosen.
+		// > defense (SCORE_DEFENSE) > retire (SCORE_RETIRE_FLAG) > offense (SCORE_OFFENSE).
+		// decide() evaluates these same scorers for the trace/ML mask but no longer
+		// selects them; this is where a war-flag move is actually chosen.
 		const ScoredAction combat[] = {
 			scoreDefense(obs, f),
 			scoreRetireFlag(obs, f),

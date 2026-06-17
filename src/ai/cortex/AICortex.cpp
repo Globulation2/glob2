@@ -13,6 +13,8 @@
 #include "IntBuildingType.h"
 #include "BuildingType.h"
 #include "building/Building.h"
+#include "Ressource.h"
+#include "unit/Unit.h"
 #include "unit/UnitConsts.h"
 #include "Game.h"
 #include "map/Map.h"
@@ -52,9 +54,13 @@ void AICortex::init(Player* player)
 		buildCooldownUntil[t] = 0; // per-type build cooldown; none pending at start.
 	pendingUpgradeType = -1; // no upgrade in flight.
 	pendingUpgradeUntil = 0;
-	for (int r = 0; r < FLAG_ROLE_COUNT; r++)
-		flagCooldownUntil[r] = 0; // per-role flag create cooldown; none pending at start.
-	offenseFlagGid = NOGBID; // no offense flag yet.
+	for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
+	{
+		offenseWaves[i].gid = NOGBID;       // no offense waves yet.
+		offenseWaves[i].musterUntil = 0;
+		offenseWaves[i].createCooldown = 0;
+	}
+	defenseCooldown = 0; // no defense flag create pending at start.
 	defenseFlagGid = NOGBID; // no defense flag yet.
 	flagPosture = POSTURE_NONE;
 	offenseHoldUntil = 0;
@@ -83,15 +89,17 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	stream->readLeaveSection();
 	pendingUpgradeType = stream->readSint32("pendingUpgradeType");
 	pendingUpgradeUntil = stream->readSint32("pendingUpgradeUntil");
-	stream->readEnterSection("flagCooldownUntil");
-	for (int r = 0; r < FLAG_ROLE_COUNT; r++)
+	stream->readEnterSection("offenseWaves");
+	for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
 	{
-		stream->readEnterSection(r);
-		flagCooldownUntil[r] = stream->readSint32("flagCooldownUntil");
+		stream->readEnterSection(i);
+		offenseWaves[i].gid = static_cast<Uint16>(stream->readUint32("gid"));
+		offenseWaves[i].musterUntil = stream->readSint32("musterUntil");
+		offenseWaves[i].createCooldown = stream->readSint32("createCooldown");
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	offenseFlagGid = static_cast<Uint16>(stream->readUint32("offenseFlagGid"));
+	defenseCooldown = stream->readSint32("defenseCooldown");
 	defenseFlagGid = static_cast<Uint16>(stream->readUint32("defenseFlagGid"));
 	flagPosture = stream->readSint32("flagPosture");
 	offenseHoldUntil = stream->readSint32("offenseHoldUntil");
@@ -119,15 +127,17 @@ void AICortex::save(GAGCore::OutputStream* stream)
 	stream->writeLeaveSection();
 	stream->writeSint32(pendingUpgradeType, "pendingUpgradeType");
 	stream->writeSint32(pendingUpgradeUntil, "pendingUpgradeUntil");
-	stream->writeEnterSection("flagCooldownUntil");
-	for (int r = 0; r < FLAG_ROLE_COUNT; r++)
+	stream->writeEnterSection("offenseWaves");
+	for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
 	{
-		stream->writeEnterSection(r);
-		stream->writeSint32(flagCooldownUntil[r], "flagCooldownUntil");
+		stream->writeEnterSection(i);
+		stream->writeUint32(offenseWaves[i].gid, "gid");
+		stream->writeSint32(offenseWaves[i].musterUntil, "musterUntil");
+		stream->writeSint32(offenseWaves[i].createCooldown, "createCooldown");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-	stream->writeUint32(offenseFlagGid, "offenseFlagGid");
+	stream->writeSint32(defenseCooldown, "defenseCooldown");
 	stream->writeUint32(defenseFlagGid, "defenseFlagGid");
 	stream->writeSint32(flagPosture, "flagPosture");
 	stream->writeSint32(offenseHoldUntil, "offenseHoldUntil");
@@ -245,7 +255,11 @@ shared_ptr<Order> AICortex::getOrder(void)
 			                + static_cast<int>(syncRand() % span);
 		}
 
-		Cortex::CortexObservation obs = Cortex::observe(player, wheatOpenMargin);
+		// Pass the FIRST offense wave's flag gid: the observation captures that flag's
+		// footprint for enemyUnitsNearFlag (scoreRetireFlag's straggler grace on the
+		// primary push). The per-wave warrior counts the pipeline needs are computed
+		// directly in the action layer (countWarriorsNear), not via the observation.
+		Cortex::CortexObservation obs = Cortex::observe(player, wheatOpenMargin, offenseWaves[0].gid);
 
 		// Stamp each tracked inn's post-build settle clock. The first cycle we see an
 		// inn finished we record obs.tick; thereafter ticksSinceFinished is the age,
@@ -324,6 +338,8 @@ shared_ptr<Order> AICortex::getOrder(void)
 			          << " hospUpg=" << cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL)
 			          << " needHeal=" << obs.needHeal
 			          << " feedCap=" << obs.feedCapacity
+			          << " need=" << obs.totalNeeded << " totFree=" << obs.totalFree
+			          << " prodW=" << obs.swarmsProducingWorker
 			          << " prod=" << obs.swarmsProducing << "/" << obs.swarmCount
 			          << " maxBuildLvl=" << obs.maxBuildLevel
 			          << " brkLvl=" << cortexMaxFinishedLevel(obs, CORTEX_BUILD_ATTACK)
@@ -345,11 +361,109 @@ shared_ptr<Order> AICortex::getOrder(void)
 				if (!n.valid) continue;
 				std::cerr << "CORTEX_INN t=" << obs.tick << " inn=" << i
 				          << " corn=" << n.corn << "/" << n.maxCorn
+				          << " haulers=" << n.maxUnitWorking
+				          << " restockReq=" << n.restockTripsNeeded
 				          << " inside=" << n.unitsInside << "/" << n.maxUnitInside
 				          << " nearestWheat=" << n.nearestWheatDist
 				          << " blindCorn=" << n.diagBlindCornNearby
 				          << " harvestable=" << n.harvestableWheatNearby
 				          << " feedsGate=" << (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES ? 1 : 0)
+				          << "\n";
+			}
+			// Per-swarm corn buffer + assigned haulers: contrast against the inns above to
+			// see whether the scarce haulers are feeding PRODUCTION (swarm corn full) while
+			// the inns (FEEDING) sit empty.
+			for (int i = 0; i < obs.swarmCount && i < CORTEX_MAX_TRACKED_SWARMS; i++)
+			{
+				const Cortex::TrackedBuilding& s = obs.trackedSwarms[i];
+				if (!s.valid) continue;
+				std::cerr << "CORTEX_SWARM t=" << obs.tick << " swarm=" << i
+				          << " corn=" << s.corn << "/" << s.maxCorn
+				          << " haulers=" << s.maxUnitWorking
+				          << " prio=" << s.priority
+				          << " harvestable=" << s.harvestableWheatNearby
+				          << "\n";
+			}
+			// Direct engine-gradient probe per real inn: is COLLECTABLE (ripe, reachable)
+			// corn actually available at the inn? cornAvail=0 with corn tiles nearby ⇒ the
+			// local wheat is unripe/over-harvested, not merely fogged — that is why
+			// restockTripsNeeded computes 0 and the inn never refills.
+			{
+				Game* g = player->team->game;
+				Team* tm = player->team;
+				int innIdx = 0;
+				for (int b = 0; b < Building::MAX_COUNT; b++)
+				{
+					Building* bb = tm->myBuildings[b];
+					if (bb == NULL || bb->buildingState == Building::DEAD)
+						continue;
+					if (bb->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+						continue;
+					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
+					          << " at=" << bb->posX << "," << bb->posY
+					          << " corn=" << bb->ressources[CORN] << "/" << bb->type->maxRessource[CORN]
+					          << " cornAvail=" << (g->map.ressourceAvailable(tm->teamNumber, CORN, false, bb->posX, bb->posY) ? 1 : 0)
+					          << " cornGrad=" << (int)g->map.getGradient(tm->teamNumber, CORN, false, bb->posX, bb->posY)
+					          << "\n";
+				}
+			}
+		}
+
+		// DIAGNOSTIC (gated): per-offense-wave cohort medical/HP state. Answers "are the
+		// DEPLOYED warriors starving in the field?" — walk each live offense flag's bound
+		// cohort (unitsWorking) and tally medical state, HP, hunger, and arrival, plus the
+		// flag's distance to the nearest own inn (food source). Pure read → stderr.
+		if (getenv("CORTEX_DUMP_OFFENSE"))
+		{
+			Game* game = player->team->game;
+			Team* team = player->team;
+			for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
+			{
+				Building* flag = findFlagByGid(offenseWaves[i].gid);
+				if (flag == NULL)
+					continue;
+				const bool mustering = offenseWaves[i].musterUntil != 0;
+				int n = 0, hungry = 0, damaged = 0, free = 0, arrived = 0;
+				long hpSum = 0, hungrySum = 0;
+				int minHp = 1 << 30, minHungry = 1 << 30;
+				for (Unit* u : flag->unitsWorking)
+				{
+					if (u == NULL)
+						continue;
+					n++;
+					hpSum += u->hp;
+					hungrySum += u->hungry;
+					if (u->hp < minHp) minHp = u->hp;
+					if (u->hungry < minHungry) minHungry = u->hungry;
+					if (u->medical == Unit::MED_HUNGRY) hungry++;
+					else if (u->medical == Unit::MED_DAMAGED) damaged++;
+					else free++;
+					if (game->map.warpDistMax(u->posX, u->posY, flag->posX, flag->posY)
+					    <= flag->unitStayRange)
+						arrived++;
+				}
+				// Distance from the flag (the front) to the nearest own inn (food).
+				int innDist = -1;
+				for (int b = 0; b < Building::MAX_COUNT; b++)
+				{
+					Building* bb = team->myBuildings[b];
+					if (bb == NULL || bb->buildingState == Building::DEAD)
+						continue;
+					if (bb->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+						continue;
+					int d = game->map.warpDistMax(flag->posX, flag->posY, bb->posX, bb->posY);
+					if (innDist < 0 || d < innDist)
+						innDist = d;
+				}
+				std::cerr << "CORTEX_OFF t=" << obs.tick << " wave=" << i
+				          << " state=" << (mustering ? "muster" : "march")
+				          << " at=" << flag->posX << "," << flag->posY
+				          << " cohort=" << n << " arrived=" << arrived
+				          << " free=" << free << " hungry=" << hungry << " damaged=" << damaged
+				          << " avgHp=" << (n ? hpSum / n : 0) << " minHp=" << (n ? minHp : 0)
+				          << " avgHungry=" << (n ? hungrySum / n : 0)
+				          << " minHungry=" << (n ? minHungry : 0)
+				          << " innDist=" << innDist
 				          << "\n";
 			}
 		}

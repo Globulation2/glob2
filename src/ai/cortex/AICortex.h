@@ -89,6 +89,30 @@ private:
 	/// (CortexPolicy::scoreDefense), which reads it through the observation; the policy
 	/// stays pure and never sees this constant.
 	static const int OFFENSE_HOLD_TICKS = 600;
+	/// Offense WAVE PIPELINE (the "keep the army moving as cohesive waves, no downtime"
+	/// design). Cortex runs up to MAX_OFFENSE_FLAGS offense war flags at once. At any
+	/// moment AT MOST ONE is MUSTERING — planted at the home rally point, at NORMAL
+	/// priority so freshly-trained warriors flow into it and gather as a mass — while the
+	/// others are MARCHING on the enemy at LOW priority (they keep their mustered cohort
+	/// but never pull solo replacements: the engine never poaches a warrior already bound
+	/// to a flag, so a marching wave stays intact and a new wave forms behind it). The
+	/// moment a mustering wave is "near full" it marches and a fresh musterer is spawned,
+	/// so pressure is continuous and never collapses to a single all-or-nothing push.
+	/// One flag deploys at most CORTEX_MAX_FLAG_UNITS (engine cap); the pipeline is how
+	/// Cortex fields a large army instead of leaving it idle behind a 20-unit cap.
+	static const int MAX_OFFENSE_FLAGS = 3;
+	/// A muster lasts at most this many ticks: once it elapses the wave marches with
+	/// whatever has gathered, so a slow/scattered army never stalls the offense forever.
+	static const int OFFENSE_MUSTER_TIMEOUT_TICKS = 500;
+	/// A wave is "massed enough to march" once the warriors gathered at its rally flag
+	/// reach this fraction (num/den) of the flag's requested summon count — "near full",
+	/// not exactly full, since a unit is always dying or being born. Floored at 1.
+	static const int OFFENSE_MUSTER_READY_NUM = 3;
+	static const int OFFENSE_MUSTER_READY_DEN = 4;
+	/// A MARCHING wave is retired (its slot freed for a fresh muster) once the warriors
+	/// still present around its flag fall to or below this — the cohort is spent, so we
+	/// recycle the slot rather than leave a near-empty flag dribbling at the enemy.
+	static const int OFFENSE_WAVE_SPENT_WARRIORS = 2;
 	/// How many of our buildings must be under attack AT ONCE for a defensive
 	/// recall to override an in-progress offense hold. A single transient hit
 	/// (1 building) is "harassment" and does not break the push; multiple
@@ -107,15 +131,15 @@ private:
 		POSTURE_DEFENSE = Cortex::CORTEX_POSTURE_DEFENSE
 	};
 
-	/// Cortex now keeps TWO independent war flags at once — an offense flag pushing
-	/// on the enemy and a defense flag recalling the home reserve — instead of a
-	/// single shared flag that had to be teleported back and forth. FlagRole indexes
-	/// the per-role flag gid and create-cooldown arrays. Order matters: it is the
-	/// array index, so OFFENSE==0 / DEFENSE==1 are fixed.
-	enum FlagRole {
-		FLAG_OFFENSE = 0,
-		FLAG_DEFENSE = 1,
-		FLAG_ROLE_COUNT = 2
+	/// One offense wave in the pipeline. `gid` is its live WAR_FLAG (NOGBID == empty
+	/// slot); `musterUntil` is the muster-timeout tick while the wave is MUSTERING at the
+	/// rally (> 0), and 0 once it has MARCHED onto the enemy. `createCooldown` gates
+	/// re-issuing this slot's OrderCreate until the flag registers (an OrderCreate takes
+	/// several ticks to land). Iterated by array index — deterministic, never a set.
+	struct OffenseWave {
+		Uint16 gid;
+		Sint32 musterUntil;
+		Sint32 createCooldown;
 	};
 
 	void init(Player* player);
@@ -176,27 +200,49 @@ private:
 	/// std::set).
 	Building* findFlagByGid(Uint16 gid) const;
 
-	/// After an OrderCreate for `role` lands (it takes several ticks), claim the new
-	/// WAR_FLAG: the one in team->virtualBuildings nearest (tx, ty) whose gid is not
-	/// already owned by the OTHER role. Returns the claimed building (and stores its
-	/// gid in the role's slot), or NULL if none has appeared yet. Position-matching
-	/// disambiguates the two roles' flags (their targets — enemy base vs. a building
-	/// under fire — are far apart) even in the rare both-pending-same-tick case.
-	Building* rediscoverFlag(FlagRole role, int tx, int ty);
+	/// True if `gid` is currently owned by ANY tracked flag (the defense flag or any
+	/// offense wave). Used by rediscoverFlag so a newly-landed flag is never double-
+	/// claimed by two slots.
+	bool isOwnedGid(Uint16 gid) const;
 
-	/// Ensure the `role` flag sits at (tx, ty) with the given summon count, veteran
-	/// minLevel, and engine priority: create it if we have none (respecting the
-	/// per-role create cooldown and the virtual-building room check), else move it
-	/// when far and reconcile count/minLevel/priority. Keyed on the role's own gid, so
-	/// the offense and defense flags are managed fully independently. Appends Orders to
-	/// orderQueue (mirroring each engine executor locally so the dedup won't re-fire).
-	void ensureFlagAt(FlagRole role, int tx, int ty, int radius, int count,
+	/// After an OrderCreate lands (it takes several ticks), claim the new WAR_FLAG into
+	/// `gid`: the live WAR_FLAG nearest (tx, ty) whose gid is not already owned by
+	/// another tracked flag. Returns the claimed building (and stores its gid in `gid`),
+	/// or NULL if none has appeared yet. Position-matching disambiguates concurrently
+	/// created flags (their targets are far apart).
+	Building* rediscoverFlag(Uint16& gid, int tx, int ty);
+
+	/// Ensure the flag tracked by `gid` sits at (tx, ty) with the given summon count,
+	/// minLevel, and engine priority: create it if absent (respecting `cooldown` and the
+	/// virtual-building room check), else move it when far and reconcile
+	/// count/minLevel/priority. Operates on a gid/cooldown REFERENCE so any flag (defense
+	/// or any offense wave) is managed independently. Appends Orders to orderQueue
+	/// (mirroring each engine executor locally so the dedup won't re-fire).
+	void ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int radius, int count,
 	                  int minLevel, int priority, const Cortex::CortexObservation& obs);
 
-	/// Remove the `role` flag (OrderDelete) if it exists, and clear its tracked gid.
-	/// Deleting a flag releases its committed warriors back to the free pool, where a
-	/// higher-priority flag can then recruit them.
-	void clearFlag(FlagRole role);
+	/// Remove the flag tracked by `gid` (OrderDelete) if it exists, and reset `gid` to
+	/// NOGBID. Deleting a flag releases its committed warriors back to the free pool.
+	void clearOneFlag(Uint16& gid);
+
+	/// Tear down every offense wave (delete each live flag, clear all slots). Used to
+	/// recall the whole army (a serious defense) or to stand the offense down.
+	void clearAllOffenseFlags();
+
+	/// Drive the offense WAVE PIPELINE one decision cycle toward (targetX, targetY) (the
+	/// enemy building to assault), each flag with stay-range `radius`: reconcile every
+	/// live wave (muster->march, retire spent marchers) and, if a slot is free and spare
+	/// warriors exist, (keep) mustering the next wave at the home rally. `warriors` is the
+	/// colony's current warrior count (whether there is anything left to muster). See
+	/// MAX_OFFENSE_FLAGS and the OffenseWave doc.
+	void manageOffenseWaves(int targetX, int targetY, int radius, int warriors,
+	                        const Cortex::CortexObservation& obs);
+
+	/// Home RALLY point for the muster-then-march offense: the colony's heart (its
+	/// first/primary swarm, falling back to the first alive building). A single valid
+	/// colony tile — no centroid/map-wrap math — where each offense wave gathers before
+	/// marching out as one. Returns false (no buildings) so the caller can skip mustering.
+	bool computeRallyPoint(int& rx, int& ry) const;
 
 	/// Tear down a stale DEFENSE flag once the assault is over (no building under
 	/// attack). Runs every decision cycle in getOrder() — in parallel with the action
@@ -245,32 +291,30 @@ private:
 	/// Safety-net expiry tick for pendingUpgradeType. 0 when nothing is pending.
 	int pendingUpgradeUntil;
 
-	/// Game tick before which ensureFlagAt refuses to create another war flag, indexed
-	/// by FlagRole (offense / defense have INDEPENDENT cooldowns — a pending offense
-	/// create must never stall a time-critical defensive recall). Same
-	/// BUILD_COOLDOWN_TICKS latency (an OrderCreate for a virtual flag also takes
-	/// several ticks to register before the new gid can be claimed), but a SEPARATE
-	/// timer from buildCooldownUntil: a queued economy build must never stall a flag
-	/// placement. 0 = no create pending for that role.
-	int flagCooldownUntil[FLAG_ROLE_COUNT];
+	/// Create-cooldown for the single DEFENSE flag: the tick before which ensureFlagAt
+	/// refuses to re-issue its OrderCreate (a virtual flag takes several ticks to
+	/// register before the new gid can be claimed). Each offense wave carries its OWN
+	/// createCooldown in OffenseWave, so a pending offense create never stalls a
+	/// time-critical defensive recall. 0 = no defense create pending.
+	int defenseCooldown;
 
-	/// The two persistent war flags' building gids (NOGBID == none). offenseFlagGid
-	/// pushes on the enemy; defenseFlagGid recalls the home reserve. Tracked by gid
-	/// (not re-found by a bare WAR_FLAG scan) because two WAR_FLAGs coexist and must be
-	/// told apart. Serialized for lockstep determinism alongside flagPosture.
-	Uint16 offenseFlagGid;
+	/// The offense WAVE PIPELINE: up to MAX_OFFENSE_FLAGS concurrent offense flags, each
+	/// MUSTERING at the rally then MARCHING on the enemy (see OffenseWave / the pipeline
+	/// constants). Plus the single persistent DEFENSE flag's gid (NOGBID == none), which
+	/// recalls the home reserve. Tracked by gid (not a bare WAR_FLAG scan) because
+	/// several WAR_FLAGs coexist and must be told apart. Serialized for lockstep
+	/// determinism alongside flagPosture.
+	OffenseWave offenseWaves[MAX_OFFENSE_FLAGS];
 	Uint16 defenseFlagGid;
 
-	/// Offense-hold hysteresis state (RAM-only, persisted symmetrically). The
-	/// posture the flag is currently committed to, and the tick until which an
-	/// OFFENSE commitment is protected from a minor-harassment defensive recall.
-	/// AICortex OWNS this state: it is MUTATED only here, as an execution side-effect
-	/// when a flag is actually (re)placed (translateActionPlaceWarFlag re-arms the
-	/// hold; the defense/clear helpers reset it). The hold-vs-recall DECISION lives in
-	/// the policy (CortexPolicy::scoreDefense), which READS these values through the
-	/// observation (obs.flagPosture / obs.offenseHoldUntil, echoed each cycle in
-	/// getOrder() before decide()). flagPosture is one of FlagPosture; offenseHoldUntil
-	/// == 0 means no hold is active.
+	/// Offense-hold hysteresis state (RAM-only, persisted symmetrically). The posture
+	/// the flags are currently committed to, and the tick until which an OFFENSE
+	/// commitment is protected from a minor-harassment defensive recall. AICortex OWNS
+	/// this state: it is MUTATED only here, as an execution side-effect when flags are
+	/// (re)placed. The hold-vs-recall DECISION lives in the policy
+	/// (CortexPolicy::scoreDefense), which READS these through the observation
+	/// (obs.flagPosture / obs.offenseHoldUntil, echoed each cycle before decide()).
+	/// flagPosture is one of FlagPosture; offenseHoldUntil == 0 means no hold is active.
 	int flagPosture;
 	int offenseHoldUntil;
 

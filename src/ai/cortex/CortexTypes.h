@@ -115,7 +115,8 @@ namespace Cortex
 	/// on flag placement and persists it; these obs fields are a per-cycle read-only
 	/// mirror (not serialized — the observation is recomputed every cycle).
 	/// v16 (2026-06-07) added totalNeededPerLevel[]: open-job slots split by building level, so the worker-surplus throttle can ignore jobs the current (under-leveled) workforce cannot fill.
-	static const Uint32 OBSERVATION_VERSION = 16;
+	/// v17 (2026-06-13) clarified enemyUnitsNearFlag as measured around the first offense WAVE flag (offense pipeline); layout otherwise unchanged from v16.
+	static const Uint32 OBSERVATION_VERSION = 17;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -147,7 +148,9 @@ namespace Cortex
 	/// enqueueWheatForbidden paints — reading the open-margin from the AICortex member.
 	/// v11 (added CortexAction.minLevelToFlag — per-flag veteran filter for offense/
 	/// defense war flags).
-	static const Uint32 ACTION_VERSION = 11;
+	/// v12 (2026-06-13) ACTION_CLEAR_FLAGS now stands down ALL offense waves (the offense
+	/// pipeline), not a single offense flag; no field-layout change.
+	static const Uint32 ACTION_VERSION = 12;
 
 	// --- tunable constants + enums: see CortexConstants.h (included above) ---
 
@@ -299,6 +302,8 @@ namespace Cortex
 		// straggler grace: while >0 the policy holds a purposeless flag in place so the
 		// army finishes off survivors before the flag is retired. FOW-gated like
 		// enemies[].totalUnit, so it is never a fog-of-war cheat. 0 when no flag exists.
+		// With the offense WAVE PIPELINE this is measured around the FIRST offense wave's
+		// flag (the primary push); it gates scoreRetireFlag's straggler grace.
 		Sint32 enemyUnitsNearFlag;
 		// Defense triggers: how many of our own units / buildings are currently under
 		// attack (underAttackTimer > 0). Nonzero => recall the army to defend.
@@ -422,7 +427,7 @@ namespace Cortex
 		ACTION_SET_PRODUCTION,  ///< Set every finished swarm's production ratio to productionRatio[].
 		ACTION_PLACE_WAR_FLAG,  ///< Offense: ensure our single war flag sits on flagTargets[locationSlot] (create or move there), radius=flagRadius, warriors=unitCount.
 		ACTION_PLACE_DEFENSE_FLAG,///< Defense: ensure our single war flag sits on defenseTarget (create or move there), radius=flagRadius, warriors=unitCount.
-		ACTION_CLEAR_FLAGS,     ///< Remove our war flag (OrderDelete) if one exists — no offense/defense wanted right now.
+		ACTION_CLEAR_FLAGS,     ///< Stand the offense down: remove ALL offense war flags (OrderDelete each). The defense flag is managed separately.
 		ACTION_UPGRADE_BUILDING,///< Upgrade one finished `buildingType` instance to its next level (engine OrderConstruction). The action layer resolves which instance (the bottleneck-eligible one) and the worker counts.
 		// (Wheat-forbidden paint is NOT an action kind: it runs every cycle in
 		// parallel with the primary action — see CortexPolicy::wantWheatProtection

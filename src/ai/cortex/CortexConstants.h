@@ -124,6 +124,15 @@ namespace Cortex
 	/// [1, CORTEX_MAX_FLAG_UNITS] at the action layer.
 	static const int CORTEX_DEFENSE_THREAT_MULTIPLE = 3;
 
+	/// How many of our own units must be under fire AT ONCE for a defensive recall to
+	/// override an in-progress offense hold, the unit-side companion of
+	/// CORTEX_DEFENSE_SERIOUS_BUILDINGS. A base assault picks our units off well before
+	/// it caves a second building (measured: the Muka collapse runs with
+	/// unitsUnderAttack in the teens while buildingsUnderAttack stays 0-1), so gating
+	/// the serious-defense override on buildings ALONE lets the harasser butcher the
+	/// colony before the army is recalled. Either trigger now earns the override.
+	static const int CORTEX_DEFENSE_SERIOUS_UNITS = 6;
+
 	// --- wheat-protection tuning (all tunable AI design choices) -----------
 	// Cortex paints a checkerboard `forbidden` pattern over its wheat (CORN) so
 	// workers harvest one half while the protected half stays full and reseeds it
