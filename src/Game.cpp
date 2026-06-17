@@ -94,7 +94,6 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	for (int i=0; i<TICK_PROFILE_BUF_LEN; i++)
 		ticksGameSum[i]=0;
 
-	anyPlayerWaitedTimeFor = 0;
 	maskAwayPlayer = 0;
 }
 
@@ -219,19 +218,8 @@ void Game::setAlliances(void)
 
 void Game::setWaitingOnMask(Uint32 mask)
 {
-	Uint32 oldMask = maskAwayPlayer;
 	maskAwayPlayer = mask;
-
-	if(mask != 0)
-	{
-		if(oldMask == 0)
-			anyPlayerWaitedTimeFor = 0;
-		anyPlayerWaited = true;
-	}
-	else
-	{
-		anyPlayerWaited = false;
-	}
+	anyPlayerWaited = (mask != 0);
 }
 
 

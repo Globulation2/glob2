@@ -210,6 +210,12 @@ public:
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer, localTeamNo;
 	int viewportX, viewportY;
+	/// Number of consecutive GUI steps the local view has been blocked waiting
+	/// on an away/late player (i.e. game.anyPlayerWaited has stayed true). Reset
+	/// to 0 as soon as the wait clears. Used only to debounce the on-screen
+	/// "[waiting for X]" notice in GameGUIDraw — it is not part of simulation or
+	/// network state and is never checksummed, networked, or saved.
+	int anyPlayerWaitedTimeFor;
 private:
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);

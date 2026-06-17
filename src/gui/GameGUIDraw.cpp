@@ -411,7 +411,10 @@ void GameGUI::drawOverlayInfos(void)
 	}
 
 	// draw message List
-	if (game.anyPlayerWaited && game.maskAwayPlayer && game.anyPlayerWaitedTimeFor>2)
+	// Suppress the "[waiting for X]" notice until the wait has lasted longer
+	// than this many GUI steps, so brief network hiccups don't flash the box.
+	constexpr int WAIT_NOTICE_DEBOUNCE_STEPS = 2;
+	if (game.anyPlayerWaited && game.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;

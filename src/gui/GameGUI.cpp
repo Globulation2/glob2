@@ -99,6 +99,7 @@ void GameGUI::init()
 	isRunning=true;
 	gamePaused=false;
 	hardPause=false;
+	anyPlayerWaitedTimeFor=0;
 	exitGlobCompletely=false;
 	flushOutgoingAndExit=false;
 	drawHealthFoodBar=true;

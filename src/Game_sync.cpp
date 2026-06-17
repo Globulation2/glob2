@@ -204,7 +204,6 @@ void Game::syncStep(Sint32 localTeam)
 		Uint64 endTick=SDL_GetTicks64();
 		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		stepCounter++;
-		anyPlayerWaitedTimeFor+=1;
 	}
 }
 

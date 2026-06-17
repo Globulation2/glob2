@@ -314,8 +314,10 @@ void GameGUI::step(void)
 	// do we have won or lost conditions
 	checkWonConditions();
 
-	if (game.anyPlayerWaited) // TODO: warning valgrind
-		game.anyPlayerWaitedTimeFor++;
+	if (game.anyPlayerWaited)
+		anyPlayerWaitedTimeFor++;
+	else
+		anyPlayerWaitedTimeFor = 0;
 }
 
 void GameGUI::syncStep(void)
