@@ -270,11 +270,6 @@ static constexpr int AI_CASTOR_BALANCE_LATE_SHIFT = 1;
 // C++: State.cpp:37.
 static constexpr int AI_CASTOR_FOODLOCK_BALANCE_BIAS = 3;
 
-// Initial value memset into the static `oldEnough[]` cache: a tri-state
-// "unknown" marker (vs the boolean 0/1 the cache later holds).
-// C++: State.cpp:48.
-static constexpr int AI_CASTOR_TRISTATE_UNKNOWN = 2;
-
 // "Uninitialised" sentinels for the per-step verbose log statics. -1 is
 // never a real warLevel / warPowerSum so the first comparison always
 // triggers a log update.

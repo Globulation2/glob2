@@ -40,18 +40,6 @@ bool AICastor::enoughFreeWorkers()
 	bool enough=(workersBalance>minBalance);
 	overWorkers=(workersBalance>minOverWorkers);
 
-	assert(buildsAmount<Building::MAX_COUNT);
-	static int oldEnough[Building::MAX_COUNT];
-	static bool first=true;
-	if (first)
-	{
-		memset(oldEnough, AI_CASTOR_TRISTATE_UNKNOWN, Building::MAX_COUNT*sizeof(*oldEnough));
-		first=false;
-	}
-	if ((oldEnough[buildsAmount]==AI_CASTOR_TRISTATE_UNKNOWN) || (enough!=oldEnough[buildsAmount]))
-	{
-		oldEnough[buildsAmount]=enough;
-	}
 	return enough;
 }
 
