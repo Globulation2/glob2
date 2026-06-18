@@ -327,6 +327,7 @@ namespace Cortex
 					s.gid            = b->gid;
 					s.maxUnitWorking = b->maxUnitWorking;
 					s.deliveriesLeft = deliveriesLeft;
+					s.priority       = b->priority; // C++: building/Building.h:516
 					obs.siteCount++;
 				}
 			}

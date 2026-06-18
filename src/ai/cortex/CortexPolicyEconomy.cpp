@@ -357,6 +357,19 @@ namespace Cortex
 		for (int i = 0; i < obs.innCount; i++) {
 			const TrackedBuilding& t = obs.trackedInns[i];
 			if (!t.valid) continue;
+			// Restore a finished inn to NORMAL engine priority. An inn spends its
+			// construction-site phase pinned to LOW (see the site loop below) so it
+			// does not out-recruit feeding/production while building; the engine
+			// carries that LOW onto the finished building (Update.cpp
+			// updateBuildingSite does not reset priority), which would then make the
+			// inn LOSE feeding contention — the opposite of what we want. Lift it
+			// back to NORMAL the first cycle we see it finished. Independent of the
+			// settle window below (priority is a contention bucket, not a hauler
+			// count); dedup against the observed priority so a steady-state NORMAL
+			// inn emits no order.
+			if (t.priority != CORTEX_PRIORITY_NORMAL) {
+				tune.innPriority[i] = CORTEX_PRIORITY_NORMAL; anyChange = true;
+			}
 			// Post-build settle window: a freshly finished inn starts with an empty
 			// buffer (a large restock deficit) and its as-built worker count. Hold that
 			// count for CORTEX_INN_TUNE_DELAY_TICKS before applying the demand ceiling,
@@ -385,6 +398,25 @@ namespace Cortex
 				desired = target;
 			}
 			if (desired != t.maxUnitWorking) { tune.innWorkers[i] = desired; anyChange = true; }
+		}
+		// Construction priority: pin EVERY construction site (new build or
+		// in-progress upgrade) to LOW engine priority. The engine serves
+		// worker-assignment buckets highest-priority-first
+		// (Team::prioritize_building, TeamStep.cpp), so a LOW site only draws
+		// workers once every NORMAL/HIGH building (feeding inns, producing swarms)
+		// is satisfied — construction can never out-recruit feeding or production.
+		// This is orthogonal to the worker-cap pour below (which only RAISES the
+		// ceiling): idle hands still flow into the site, just after the economy is
+		// fed. The LOW carries onto the finished building (the engine does not reset
+		// it); finished inns are lifted back to NORMAL in the inn loop above, and
+		// swarms by the HIGH/NORMAL priority split (CortexPolicyCombat). Dedup
+		// against the observed priority so an already-LOW site emits no order.
+		for (int i = 0; i < obs.siteCount; i++) {
+			const TrackedSite& s = obs.trackedSites[i];
+			if (!s.valid) continue;
+			if (s.priority != CORTEX_PRIORITY_LOW) {
+				tune.sitePriority[i] = CORTEX_PRIORITY_LOW; anyChange = true;
+			}
 		}
 		// Construction sites: pour idle workers into in-progress builds. A site's
 		// worker cap may rise to match the number of FREE workers, bounded by the

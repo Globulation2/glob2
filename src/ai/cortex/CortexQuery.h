@@ -230,6 +230,10 @@ namespace Cortex
 			action.innWorkers[i] = -1;
 		for (int i = 0; i < CORTEX_MAX_TRACKED_SITES; i++)
 			action.siteWorkers[i] = -1;
+		for (int i = 0; i < CORTEX_MAX_TRACKED_INNS; i++)
+			action.innPriority[i] = CORTEX_PRIORITY_NONE;
+		for (int i = 0; i < CORTEX_MAX_TRACKED_SITES; i++)
+			action.sitePriority[i] = CORTEX_PRIORITY_NONE;
 		action.priorityTarget = CORTEX_PRIORITY_NONE;
 		action.priorityRest   = CORTEX_PRIORITY_NONE;
 		return action;

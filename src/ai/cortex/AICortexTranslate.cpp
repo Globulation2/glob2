@@ -347,6 +347,41 @@ void AICortex::applyWorkerCounts(const Tracked* tracked, int count, const Sint32
 	}
 }
 
+template <typename Tracked, typename Accept>
+void AICortex::applyPriorities(const Tracked* tracked, int count, const Sint32* desiredArr,
+                               Accept accept)
+{
+	Team* team = player->team;
+	for (int i = 0; i < count; i++)
+	{
+		const Tracked& tb = tracked[i];
+		const int desired = desiredArr[i];
+
+		// Skip: invalid slot, "leave unchanged" sentinel (CORTEX_PRIORITY_NONE) or
+		// any value outside the valid -1/0/+1 range, or already at target.
+		if (!tb.valid)
+			continue;
+		if (desired < Cortex::CORTEX_PRIORITY_LOW || desired > Cortex::CORTEX_PRIORITY_HIGH)
+			continue;
+		if (desired == tb.priority)
+			continue; // DEDUP: current state already matches; don't re-emit.
+
+		const int bid = Building::GIDtoID(static_cast<Uint16>(tb.gid));
+		Building* b = team->myBuildings[bid];
+		if (!b)
+			continue;
+		if (!accept(b))
+			continue;
+
+		// Mirror the engine executor (Game_orders.cpp:476-484 executeChangePriority:
+		// set b->priority then b->updateCallLists()) locally so the AI's view updates
+		// immediately and the dedup won't re-fire before the order executes.
+		b->priority = desired;
+		b->updateCallLists();
+		orderQueue.push(shared_ptr<Order>(new OrderChangePriority(b->gid, desired)));
+	}
+}
+
 void AICortex::translateActionTuneWorkers(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
 {
 	// Apply the per-building desired worker counts (maxUnitWorking) to our
@@ -383,6 +418,24 @@ void AICortex::translateActionTuneWorkers(const Cortex::CortexAction& action, co
 	// writing a site cap onto a just-completed building).
 	applyWorkerCounts(obs.trackedSites, obs.siteCount, action.siteWorkers,
 		/*maxClamp=*/Cortex::CORTEX_MAX_BUILDING_WORKERS,
+		[](const Building* b) {
+			return b->buildingState == Building::ALIVE && b->type->isBuildingSite;
+		});
+
+	// --- inn priority: restore finished inns to NORMAL (undo the LOW inherited
+	//     from their construction-site phase, which the engine carries over).
+	//     Finished, alive FOOD_BUILDING only. ---
+	applyPriorities(obs.trackedInns, obs.innCount, action.innPriority,
+		[](const Building* b) {
+			return b->buildingState == Building::ALIVE && !b->type->isBuildingSite
+			    && b->type->shortTypeNum == IntBuildingType::FOOD_BUILDING;
+		});
+
+	// --- site priority: pin construction sites to LOW so construction never
+	//     out-recruits feeding/production. Must still be a live building site
+	//     (a just-finished building is no longer isBuildingSite, so we naturally
+	//     stop writing a site priority onto a completed building). ---
+	applyPriorities(obs.trackedSites, obs.siteCount, action.sitePriority,
 		[](const Building* b) {
 			return b->buildingState == Building::ALIVE && b->type->isBuildingSite;
 		});

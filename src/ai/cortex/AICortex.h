@@ -184,6 +184,18 @@ private:
 	void applyWorkerCounts(const Tracked* tracked, int count, const Sint32* desiredArr,
 	                       int maxClamp, Accept accept);
 
+	/// Sibling of applyWorkerCounts for Building::priority. `desiredArr[i]` is the
+	/// requested priority for tracked[i] (CORTEX_PRIORITY_NONE, or any value outside
+	/// -1/0/+1, == leave unchanged). Used by translateActionTuneWorkers to pin
+	/// construction sites to LOW and restore finished inns to NORMAL. Dedups against
+	/// the observed priority, mirrors the engine executor locally (b->priority then
+	/// b->updateCallLists(), per executeChangePriority) and pushes one
+	/// OrderChangePriority per accepted change. `tracked` may be TrackedBuilding or
+	/// TrackedSite — both expose valid, gid, priority.
+	template <typename Tracked, typename Accept>
+	void applyPriorities(const Tracked* tracked, int count, const Sint32* desiredArr,
+	                     Accept accept);
+
 	/// Wheat-forbidden executor, run EVERY decision cycle in parallel with
 	/// translateAction (gated by CortexPolicy::wantWheatProtection) — not as a
 	/// competing action. Rebuilds the full ADD/DEL checkerboard tile masks over our

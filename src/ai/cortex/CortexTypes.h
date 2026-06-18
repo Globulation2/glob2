@@ -202,9 +202,10 @@ namespace Cortex
 	struct TrackedSite
 	{
 		Sint32 valid;          ///< 0 = empty slot.
-		Sint32 gid;            ///< Building::gid (OrderModifyBuilding target), or -1 when invalid.
+		Sint32 gid;            ///< Building::gid (OrderModifyBuilding/OrderChangePriority target), or -1 when invalid.
 		Sint32 maxUnitWorking; ///< Current maxUnitWorking (worker cap) on the site.
 		Sint32 deliveriesLeft; ///< Resource hauler-trips still needed to finish the site = sum over resources of ceil((maxRessource-ressources)/multiplier). Caps how many workers can usefully build it.
+		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy pin every construction site to LOW so construction never out-recruits feeding/production. C++: building/Building.h:516
 	};
 
 	/// The full feature vector handed to the policy layer. Built by
@@ -454,6 +455,8 @@ namespace Cortex
 		Sint32 swarmWorkers[CORTEX_MAX_TRACKED_SWARMS]; ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedSwarms[i], or -1 to leave unchanged. Else all -1.
 		Sint32 innWorkers[CORTEX_MAX_TRACKED_INNS];     ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedInns[i], or -1 to leave unchanged. Else all -1.
 		Sint32 siteWorkers[CORTEX_MAX_TRACKED_SITES];   ///< For ACTION_TUNE_WORKERS: desired maxUnitWorking for trackedSites[i] (pour idle workers into construction), or -1 to leave unchanged. Else all -1.
+		Sint32 innPriority[CORTEX_MAX_TRACKED_INNS];    ///< For ACTION_TUNE_WORKERS: desired Building::priority for trackedInns[i] — restores a finished inn to NORMAL after the LOW it inherited from its own construction-site phase (the engine carries site priority onto the finished building). CORTEX_PRIORITY_NONE to leave unchanged. Else all CORTEX_PRIORITY_NONE.
+		Sint32 sitePriority[CORTEX_MAX_TRACKED_SITES];  ///< For ACTION_TUNE_WORKERS: desired Building::priority for trackedSites[i] — pins construction to LOW so it never out-recruits feeding/production. CORTEX_PRIORITY_NONE to leave unchanged. Else all CORTEX_PRIORITY_NONE.
 		Sint32 priorityTarget; ///< For ACTION_SET_PRIORITY: target engine priority (-1/0/+1) for the FIRST swarm (trackedSwarms[0]). Else CORTEX_PRIORITY_NONE.
 		Sint32 priorityRest;   ///< For ACTION_SET_PRIORITY: target engine priority (-1/0/+1) for every NON-first swarm (trackedSwarms[1..]). Else CORTEX_PRIORITY_NONE.
 	};
