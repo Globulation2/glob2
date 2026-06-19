@@ -244,6 +244,7 @@ namespace Cortex
 			int growWorker, growExplorer, growWarrior;
 			bool panic;
 
+			int workersNeeded;     ///< target worker count = Σ swarm + inn hauler requests (maxUnitWorking) + a small buffer. Below it the swarm mints workers; at/above it it switches to warriors/explorers.
 			int fillableNeeded;    ///< open jobs at building levels the current workforce (HARVEST<=maxBuildLevel) can staff.
 			int unfillableNeeded;  ///< open jobs at building levels above the workforce's level — only training (a school) clears these, not more workers.
 		};

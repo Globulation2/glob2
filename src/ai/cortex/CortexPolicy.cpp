@@ -44,24 +44,11 @@ namespace Cortex
 	static const int STARVE_HALT_PERCENT = 6;
 	static const int HUNGRY_HALT_PERCENT = 20;
 
-	/// --- worker-surplus production throttle (tunable AI design choice) -----
-	// "Available workers" is idle workers minus only the FILLABLE open job requests
-	// (isFree[WORKER] - fillableNeeded). It is NOT the engine's raw free-worker
-	// figure (isFree[WORKER] - totalNeeded; TeamStat.cpp:290): totalNeeded counts
-	// open slots at buildings whose type->level exceeds the workforce's HARVEST
-	// level, which no current-level worker can ever take (building/Misc.cpp:127). We
-	// subtract only the slots the current workforce can actually staff, so those
-	// unfillable jobs don't mask an idle-worker surplus. When that surplus climbs
-	// above WORKER_SURPLUS_HI the
-	// colony has more idle hands than it can place, so the swarm stops minting
-	// workers and pours into warriors (plus the usual scout explorer) instead. It
-	// resumes worker production only once the surplus drains back below zero — job
-	// requests once again outnumber idle workers. The gap between the two
-	// thresholds (HI on the way in, 0 on the way out) is deliberate hysteresis so
-	// the production mix does not flip every cycle while the figure hovers near the
-	// line. Combat-phase only: the throttle needs a warrior slice to fall back on,
-	// else dropping workers would leave the swarm at the forbidden {0,0,0} halt.
-	static const int WORKER_SURPLUS_HI = 3;
+	/// Buffer added to the swarm+inn hauler demand to form the worker target (see
+	/// computeFacts). A couple of spare workers above what the hauling jobs strictly
+	/// require absorbs construction deliveries and hauler replacement without tipping
+	/// the colony into a worker shortage every time a building finishes.
+	static const int WORKER_TARGET_BUFFER = 2;
 
 	// --- Phase-3 combat tuning --------------------------------------------
 	// All AI design choices, tunable against the benchmark.
@@ -180,19 +167,13 @@ namespace Cortex
 		// is existential and a starving colony has no spare labour yet.
 		f.canExpand       = (obs.freeWorkers > 0 && !f.starving && !f.hungry);
 
-		// Production mix {WORKER, EXPLORER, WARRIOR} — a HARD rule: NEVER {0,0,0}.
-		// Bootstrap is worker-biased with one early explorer (reveal our wheat /
-		// scout). Once established, stay worker-DOMINANT (2:1 over warriors) so the
-		// worker pool keeps growing to staff new buildings and haul corn, while a
-		// warrior slice builds the army and one explorer stays out to scout the
-		// enemy base (so flagTargets can populate for offense).
+		// Explorer slice of the production mix. Bootstrap puts one early explorer
+		// out (reveal our wheat / scout); once established we keep ≥1 explorer out
+		// at all times (so flagTargets can populate for offense). The WORKER and
+		// WARRIOR slices are decided by the worker-target rule below.
 		const bool wantEarlyExplorer = (!f.combatPhase && f.swarms >= 1 && obs.explorers == 0);
 		const bool wantScout         = (obs.explorers == 0); // keep ≥1 explorer out.
 		f.growExplorer = (wantEarlyExplorer || (f.combatPhase && wantScout)) ? 1 : 0;
-		// An established colony keeps building/replacing its army even while starving
-		// (foodSaturated): the swarm converts the doomed surplus food into SOLDIERS
-		// instead of more starving mouths, which is exactly the army the blitz commits.
-		f.growWarrior  = f.economyEstablished ? 1 : 0;
 
 		// Split open-job demand by whether the current workforce can fill it. A worker
 		// works at a building of level L only if its HARVEST level >= L
@@ -213,40 +194,41 @@ namespace Cortex
 				f.unfillableNeeded += obs.totalNeededPerLevel[lvl];
 		}
 
-		// Worker-surplus throttle (see WORKER_SURPLUS_HI): stop minting workers while
-		// idle labour piles up and resume once it is spent. "Available workers" is idle
-		// workers minus only the FILLABLE open jobs — jobs at building levels above the
-		// workforce's HARVEST level (maxBuildLevel) cannot be taken by ANY number of
-		// current-level workers (building/Misc.cpp:127), so minting more workers cannot
-		// satisfy them; only training (a school raising HARVEST/BUILD level) can. Those
-		// unfillable jobs must NOT mask the idle-worker surplus, or the swarm would keep
-		// producing workers that also can't take the jobs. Hysteresis: suppress above
-		// the high watermark, resume once it goes negative, and HOLD the current mode in
-		// the band between so the mix does not oscillate. The held mode is read back from
-		// swarmsProducingWorker (no raw-ratio access). Combat-phase only — outside it
-		// growWarrior is 0, so dropping workers would halt the swarm at the forbidden {0,0,0}.
-		const int availableWorkers = obs.freeWorkers - f.fillableNeeded;
-		const bool suppressingNow  =
-		    (f.swarms > 0 && obs.swarmsProducing > 0 && obs.swarmsProducingWorker == 0);
-		bool suppressWorkers;
-		if (availableWorkers > WORKER_SURPLUS_HI)
-			suppressWorkers = true;            // idle hands to spare -> make warriors
-		else if (availableWorkers < 0)
-			suppressWorkers = false;           // labour scarce again -> make workers
-		else
-			suppressWorkers = suppressingNow;  // hold within the hysteresis band
-		// FEEDING GOVERNOR: once the colony is at/over what wheat can feed, stop minting
-		// workers — adding mouths during a famine only deepens it. The warrior slice
-		// (growWarrior, set above for any established colony) keeps the swarm off the
-		// forbidden {0,0,0} halt. Two stages: f.hungry is the proactive brake (units
-		// waiting for food but not yet losing HP); f.foodSaturated is the hard governor
-		// (units actively starving). Both apply only to an established colony — a
-		// bootstrapping colony still needs workers to raise its first inn.
-		if (f.foodSaturated || (f.economyEstablished && f.hungry))
-			f.growWorker = 0;
-		else if (f.combatPhase)
-			f.growWorker = suppressWorkers ? 0 : 2;
-		else
+		// Worker target: enough workers to staff every swarm + inn hauling job, plus
+		// a small buffer (WORKER_TARGET_BUFFER). The hauler demand is each tracked
+		// building's CURRENT requested maxUnitWorking — the tuneWorkers loop already
+		// converges those to the level the corn buffers / restock deficits call for,
+		// so summing them is the live "how many haulers does the economy want" figure.
+		// Reading our OWN buildings is not a fog cheat.
+		//
+		// Below the target the colony is hauler-short -> mint workers EXCLUSIVELY (the
+		// warrior slice stays off), so the worker base is filled before any population
+		// is diverted to the army — this is what stops warriors out-pacing workers and
+		// cannibalising the economy into a famine spiral. At/above the target the
+		// hauling jobs are covered, so spare population goes to warriors (once the
+		// economy is established) and the scout explorer instead of more idle haulers.
+		int workersNeeded = WORKER_TARGET_BUFFER;
+		for (int i = 0; i < obs.swarmCount; i++)
+			if (obs.trackedSwarms[i].valid)
+				workersNeeded += obs.trackedSwarms[i].maxUnitWorking;
+		for (int i = 0; i < obs.innCount; i++)
+			if (obs.trackedInns[i].valid)
+				workersNeeded += obs.trackedInns[i].maxUnitWorking;
+		f.workersNeeded = workersNeeded;
+		const bool workersShort = (obs.workers < workersNeeded);
+
+		// An established colony folds warriors into the mix ONLY once its worker
+		// target is met. During a famine (foodSaturated) the population has overshot
+		// what the wheat can feed, so workers are NOT short -> the swarm converts the
+		// doomed surplus food into SOLDIERS rather than more starving mouths, which is
+		// exactly the army the blitz commits.
+		f.growWarrior = (f.economyEstablished && !workersShort) ? 1 : 0;
+		f.growWorker  = workersShort ? 2 : 0;
+
+		// HARD rule: the production mix is NEVER {0,0,0} (a halted swarm). If the
+		// worker target is met but nothing else is being produced (not yet
+		// established, scout already out), keep one worker going.
+		if (f.growWorker == 0 && f.growWarrior == 0 && f.growExplorer == 0)
 			f.growWorker = 1;
 
 		// Pre-combat panic flag (Priority 0). Shared because Priority 1 keys its whole
