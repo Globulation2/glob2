@@ -191,17 +191,17 @@ namespace Cortex
 		const int slot = firstValidCandidate(obs, CORTEX_BUILD_FOOD);
 		if (slot < 0)
 			return cortexDecline();
-		// MARGINAL VALUE: when a swarm's wheat catchment is exhausted (it wants a
-		// fresh patch — pinned at the worker cap with a draining CORN buffer, or its
-		// harvestable wheat run out), the feeding deficit is a wheat-SUPPLY problem,
-		// not an inn-CAPACITY one — another inn beside the same depleted field can
-		// never be stocked, so its marginal value collapses. Discount it below the
-		// second-swarm score (the real fix: a fresh swarm on a new patch) so expansion
-		// can win the cycle. The FIRST inn is existential and is never discounted.
-		int score = SCORE_FEED_CAPACITY;
-		if (!noInnYet && anySwarmWantsFreshPatch(obs))
-			score = SCORE_FEED_BOTTLENECKED;
-		return { score, makeBuildAction(CORTEX_BUILD_FOOD, slot) };
+		// EXPERIMENT: the marginal-value discount (drop to SCORE_FEED_BOTTLENECKED
+		// when anySwarmWantsFreshPatch, so swarm expansion wins) is REMOVED. Its
+		// premise — "an inn beside a depleted field can never be stocked, so the
+		// deficit is wheat-SUPPLY not inn-CAPACITY" — is contradicted by the Muka
+		// inn trace: during the famine the inns sit at 5-10/10 corn with one hauler
+		// (restockReq ~0), full of eaters (inside maxed). They are NOT corn-starved;
+		// the shortage is feeding THROUGHPUT (inn eating-slots vs a 120-unit
+		// population), which only MORE inns fix. Discounting inns toward swarms then
+		// added breeding instead of feeding — the wrong lever. Keep the inn at full
+		// SCORE_FEED_CAPACITY so feeding capacity wins the cycle over expansion.
+		return { SCORE_FEED_CAPACITY, makeBuildAction(CORTEX_BUILD_FOOD, slot) };
 	}
 
 	// --- Priority 2.5: swarm RECOVERY only. We deliberately do NOT build a
