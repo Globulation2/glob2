@@ -288,6 +288,7 @@ VoiceRecorder.cpp
 WinningConditions.cpp
 yog/YOGAfterJoinGameInformation.cpp
 yog/YOGClientBlockedList.cpp
+yog/YOGClientBringup.cpp
 yog/YOGClientChatChannel.cpp
 yog/YOGClientChatListener.cpp
 yog/YOGClientCommandManager.cpp

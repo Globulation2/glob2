@@ -14,6 +14,7 @@
 #include <StringTable.h>
 #include <GraphicContext.h>
 #include "MultiplayerGameScreen.h"
+#include "YOGClientBringup.h"
 #include "YOGClientGameListManager.h"
 
 using namespace GAGGUI;
@@ -96,17 +97,26 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
 				return;
 			}
-			while(client->getConnectionState() != YOGClient::WaitingForLoginInformation)
-				client->update();
+			if(LANBringup::waitForConnectionState(*client, YOGClient::WaitingForLoginInformation) != LANBringup::Result::Reached)
+			{
+				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
+				return;
+			}
 			client->attemptLogin(playerName->getText());
-			while(client->getConnectionState() != YOGClient::ClientOnStandby)
-				client->update();
-				
+			if(LANBringup::waitForConnectionState(*client, YOGClient::ClientOnStandby) != LANBringup::Result::Reached)
+			{
+				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
+				return;
+			}
+
 			std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 			client->setMultiplayerGame(game);
 
-			while (client->getGameListManager()->getGameList().size() == 0)
-    			client->update();
+			if(LANBringup::waitForGameList(*client) != LANBringup::Result::Reached)
+			{
+				MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
+				return;
+			}
 
 			if((*client->getGameListManager()->getGameList().begin()).getGameState()==YOGGameInfo::GameRunning)
 			{
