@@ -44,11 +44,19 @@ namespace Cortex
 	static const int STARVE_HALT_PERCENT = 6;
 	static const int HUNGRY_HALT_PERCENT = 20;
 
-	/// Buffer added to the swarm+inn hauler demand to form the worker target (see
-	/// computeFacts). A couple of spare workers above what the hauling jobs strictly
-	/// require absorbs construction deliveries and hauler replacement without tipping
-	/// the colony into a worker shortage every time a building finishes.
+	/// Buffer added to the swarm+inn hauler demand to form the worker target's lower
+	/// bound `base` (see computeFacts). A couple of spare workers above what the
+	/// hauling jobs strictly require absorbs construction deliveries and hauler
+	/// replacement without tipping the colony into a worker shortage every time a
+	/// building finishes.
 	static const int WORKER_TARGET_BUFFER = 2;
+	/// Swarm production-mix worker ratios for the three-tier worker-target rule
+	/// (computeFacts). Below the hauler floor the swarm makes workers (TIER1, vs the
+	/// single scout explorer); in the middle band (floor..mid) it stays
+	/// worker-DOMINANT — "half the bar" of workers to one warrior — while it grows the
+	/// worker base toward full staffing; above mid it drops to the army.
+	static const int WORKER_RATIO_TIER1 = 2;
+	static const int WORKER_RATIO_TIER2 = CORTEX_MAX_RATIO / 2; // half the 16-wide ratio bar.
 
 	// --- Phase-3 combat tuning --------------------------------------------
 	// All AI design choices, tunable against the benchmark.
@@ -194,36 +202,65 @@ namespace Cortex
 				f.unfillableNeeded += obs.totalNeededPerLevel[lvl];
 		}
 
-		// Worker target: enough workers to staff every swarm + inn hauling job, plus
-		// a small buffer (WORKER_TARGET_BUFFER). The hauler demand is each tracked
-		// building's CURRENT requested maxUnitWorking — the tuneWorkers loop already
-		// converges those to the level the corn buffers / restock deficits call for,
-		// so summing them is the live "how many haulers does the economy want" figure.
-		// Reading our OWN buildings is not a fog cheat.
+		// --- Three-tier worker-target production mix --------------------------
+		// Two worker-COUNT boundaries gate the {worker, warrior} slices:
 		//
-		// Below the target the colony is hauler-short -> mint workers EXCLUSIVELY (the
-		// warrior slice stays off), so the worker base is filled before any population
-		// is diverted to the army — this is what stops warriors out-pacing workers and
-		// cannibalising the economy into a famine spiral. At/above the target the
-		// hauling jobs are covered, so spare population goes to warriors (once the
-		// economy is established) and the scout explorer instead of more idle haulers.
-		int workersNeeded = WORKER_TARGET_BUFFER;
+		//   base  = Σ(swarm + inn hauler requests) + WORKER_TARGET_BUFFER — the hauler
+		//           floor: enough workers to staff every swarm + inn hauling job plus a
+		//           small buffer. Each building's CURRENT maxUnitWorking is its live
+		//           hauler request (tuneWorkers converges it to the level the corn
+		//           buffer / restock deficit calls for), so summing them is the live
+		//           "how many haulers does the economy want" figure.
+		//   needs = obs.workers + fillableNeeded — the full STAFFABLE worker demand:
+		//           the count at which every job the current workforce can take is
+		//           filled. Jobs above the workers' HARVEST level are excluded
+		//           (only a school clears those, not more workers).
+		//   mid   = base + (needs - base)/2 — halfway across the gap between the bare
+		//           hauler floor and full staffing.
+		//
+		// The swarm grows its worker base all the way to `mid` before it commits the
+		// army, instead of flipping to warriors the instant the bare hauler floor is
+		// met. (That early flip pinned workers at the floor while jobs went unstaffed
+		// and the colony starved — the famine-spiral the Muka trace exposed.) Reading
+		// our OWN buildings is not a fog cheat.
+		int base = WORKER_TARGET_BUFFER;
 		for (int i = 0; i < obs.swarmCount; i++)
 			if (obs.trackedSwarms[i].valid)
-				workersNeeded += obs.trackedSwarms[i].maxUnitWorking;
+				base += obs.trackedSwarms[i].maxUnitWorking;
 		for (int i = 0; i < obs.innCount; i++)
 			if (obs.trackedInns[i].valid)
-				workersNeeded += obs.trackedInns[i].maxUnitWorking;
-		f.workersNeeded = workersNeeded;
-		const bool workersShort = (obs.workers < workersNeeded);
+				base += obs.trackedInns[i].maxUnitWorking;
+		f.workersNeeded = base;
+		const int needs = obs.workers + f.fillableNeeded;
+		const int mid   = base + (needs - base) / 2; // mid <= base when demand is already met by the floor.
 
-		// An established colony folds warriors into the mix ONLY once its worker
-		// target is met. During a famine (foodSaturated) the population has overshot
-		// what the wheat can feed, so workers are NOT short -> the swarm converts the
-		// doomed surplus food into SOLDIERS rather than more starving mouths, which is
-		// exactly the army the blitz commits.
-		f.growWarrior = (f.economyEstablished && !workersShort) ? 1 : 0;
-		f.growWorker  = workersShort ? 2 : 0;
+		// Warriors are only ever folded in once the economy is established (below that
+		// there are no warriors to make, and the colony still needs every worker to
+		// raise its first inn). The three tiers, all keyed on the worker COUNT:
+		//   workers < base       -> workers only: grow the hauler base, no army yet.
+		//   base <= workers < mid -> worker-DOMINANT mix (half-bar workers : 1 warrior):
+		//        keep growing workers toward full staffing while the army starts.
+		//   workers >= mid       -> warriors: the worker base has covered half the gap
+		//        to full staffing (and since `needs` tracks live demand, in practice
+		//        nearly all of it), so spare population goes to the army. During a
+		//        famine the population has overshot what wheat can feed, so few jobs
+		//        are open (needs low, mid ~ base) and the swarm converts the doomed
+		//        surplus food into SOLDIERS rather than more starving mouths.
+		if (obs.workers < base)
+		{
+			f.growWorker  = WORKER_RATIO_TIER1;
+			f.growWarrior = 0;
+		}
+		else if (obs.workers < mid)
+		{
+			f.growWorker  = WORKER_RATIO_TIER2;
+			f.growWarrior = f.economyEstablished ? 1 : 0;
+		}
+		else
+		{
+			f.growWorker  = 0;
+			f.growWarrior = f.economyEstablished ? 1 : 0;
+		}
 
 		// HARD rule: the production mix is NEVER {0,0,0} (a halted swarm). If the
 		// worker target is met but nothing else is being produced (not yet
