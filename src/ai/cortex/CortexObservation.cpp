@@ -74,18 +74,22 @@ namespace Cortex
 			// feedCapacity and suppress the second-inn build gate (Priority 2), leaving
 			// the colony short of real feeding capacity. Gate the contribution on the
 			// SAME wheat test inn placement uses (CortexPlacement.cpp: at least
-			// CORTEX_WHEAT_MIN_TILES non-forbidden CORN tiles within
-			// CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint), so an inn whose field has
-			// drained or been checkerboarded below the placement threshold stops
-			// counting — exactly as it would now fail placement. game==NULL (no-map
-			// test path): can't measure, so fall back to counting it (prior behavior).
+			// CORTEX_WHEAT_MIN_TILES wheat tiles within CORTEX_WHEAT_MIN_TILES_RADIUS of
+			// the footprint), measured as the SURVIVING (open-parity) corn the protection
+			// checkerboard leaves harvestable — NOT the live non-forbidden count. The live
+			// count reads ~zero on a fully-checkerboarded field even when its open half
+			// feeds fine, so it conflated "field drained" (genuinely can't feed) with
+			// "field checkerboarded" (still feeds from the open half) and collapsed
+			// feedCapacity to 0 mid-game, making the inn-build gate fire forever (the Muka
+			// inn-spam spiral). The surviving count drops to 0 only on real depletion.
+			// game==NULL (no-map test path): can't measure, so fall back to counting it.
 			if (b->maxUnitWorking && bt->canFeedUnit)
 			{
 				const bool innHasWheat = (game == NULL)
-					|| Cortex::countHarvestableCornWithin(game->map, team->me,
-					                                      b->posX, b->posY,
-					                                      bt->width, bt->height,
-					                                      CORTEX_WHEAT_MIN_TILES_RADIUS)
+					|| Cortex::countSurvivingCornWithin(game->map,
+					                                    b->posX, b->posY,
+					                                    bt->width, bt->height,
+					                                    CORTEX_WHEAT_MIN_TILES_RADIUS)
 					   >= CORTEX_WHEAT_MIN_TILES;
 				if (innHasWheat)
 					obs.feedCapacity += Cortex::cortexInnUnitSupport(
@@ -208,38 +212,32 @@ namespace Cortex
 						                          bt->width, bt->height,
 						                          CORTEX_WHEAT_MIN_TILES_RADIUS)
 						: -1;
-					// Collectable restock demand (the inn-hauler ceiling, CortexPolicy
-					// Priority 1.5): sum the per-resource deficit in HAULER TRIPS over every
-					// resource the inn stocks, counting ONLY resources currently collectable
-					// from here. ressourceAvailable reads the team resource gradient, which
-					// marks visibleToBeCollected fruit under fog as unreachable AND excludes
-					// a depleted/unreachable corn field — so fogged fruit and a drained
-					// wheat patch contribute zero. (The engine's own desiredNumberOfWorkers
-					// counts the RAW deficit and would over-request haulers that then idle.)
-					// One trip delivers multiplierRessource[r] units (1 corn / 10 fruit), so
-					// divide the deficit by it. canSwim=false: water-locked resources are
-					// treated as out of reach (conservative). C++: maxRessource/
-					// multiplierRessource game/entities/BuildingType.h:76,78;
-					// Map::ressourceAvailable map/MapResources.cpp:157.
+					// Restock demand (the inn-hauler ceiling, CortexPolicy Priority 1.5):
+					// the inn's CORN deficit expressed in HAULER TRIPS. Corn is the feed
+					// resource that limits how many units the inn sustains, so the hauler
+					// count tracks how empty the corn buffer is; fruit is happiness garnish
+					// and does not drive feeding, so it is deliberately excluded. One trip
+					// delivers multiplierRessource[CORN] units, so divide the deficit by it.
+					//
+					// We do NOT gate on Map::ressourceAvailable here: it reads the team
+					// resource gradient at (posX, posY), but updateRessourcesGradient marks
+					// every building-occupied tile GRADIENT_FORBIDDEN (MapGradientGlobal.cpp
+					// :141), so probing the inn's OWN footprint corner always returned false
+					// and zeroed the deficit — pinning every inn to one hauler. "No corn in
+					// reach" is instead handled coarsely in the policy via nearestWheatDist
+					// (CORTEX_INN_WHEAT_STARVED_RADIUS). C++: maxRessource/multiplierRessource
+					// game/entities/BuildingType.h:76,78.
 					if (game != NULL)
 					{
-						int trips = 0;
-						for (int r = 0; r < MAX_RESSOURCES; r++)
+						const int cornDeficit = bt->maxRessource[CORN] - b->ressources[CORN];
+						if (cornDeficit > 0)
 						{
-							const int capR = bt->maxRessource[r];
-							if (capR <= 0)
-								continue;
-							const int deficit = capR - b->ressources[r];
-							if (deficit <= 0)
-								continue;
-							if (!game->map.ressourceAvailable(team->teamNumber, r, false,
-							                                  b->posX, b->posY))
-								continue;
-							const int mult = (bt->multiplierRessource[r] > 0)
-								? bt->multiplierRessource[r] : 1;
-							trips += deficit / mult;
+							const int mult = (bt->multiplierRessource[CORN] > 0)
+								? bt->multiplierRessource[CORN] : 1;
+							t.restockTripsNeeded = cornDeficit / mult;
 						}
-						t.restockTripsNeeded = trips;
+						else
+							t.restockTripsNeeded = 0;
 					}
 					else
 						t.restockTripsNeeded = -1;

@@ -60,11 +60,17 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
 		Building* building = echo.player->team->myBuildings[i];
-		if(building && building->underAttackTimer && buildingGID[building->posX * h + building->posY] == NOGBID)
+		// Wrap the building corner (posX/posY can be negative when a building
+		// straddles the map seam) before indexing buildingGID, exactly as the unit
+		// loop above does. Without the wrap a negative coord aliases the GID marker
+		// onto a far tile the decrement scan below (which reads wrapped nx/ny) can
+		// never reach, so that square's count never clears and the same tile is
+		// chosen as a flag position twice — tripping the assert() below.
+		if(building && building->underAttackTimer && buildingGID[(building->posX+w)%w * h + (building->posY+h)%h] == NOGBID)
 		{
 			int nx = (building->posX - building->type->decLeft + w) %w;
 			int ny = (building->posY - building->type->decTop + h) %h;
-			buildingGID[building->posX * h + building->posY] = building->gid;
+			buildingGID[(building->posX+w)%w * h + (building->posY+h)%h] = building->gid;
 			modify_points(counts, w, h, nx, ny, RADIUS, 1, locations);
 		}
 	}

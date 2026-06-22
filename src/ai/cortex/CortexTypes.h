@@ -100,14 +100,17 @@ namespace Cortex
 	/// CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP workers while this is below
 	/// CORTEX_SWARM_WHEAT_STARVED_TILES — no point staffing more haulers than there is
 	/// reachable wheat to harvest.
-	/// v13 (2026-06-06, inn hauler ceiling = collectable demand) added
-	/// TrackedBuilding.restockTripsNeeded — for inns, the sum over every stocked
-	/// resource of its (capacity - stock)/multiplier deficit in hauler TRIPS, counting
-	/// ONLY resources currently collectable from the inn (Map::ressourceAvailable: corn
-	/// that is reachable, fruit whose tile is in sight — fruit is visibleToBeCollected,
-	/// so fogged fruit is excluded). The worker-tuning loop sets the inn's maxUnitWorking
-	/// to this (clamped), so the hauler ceiling scales with inn level and includes fruit
-	/// without over-staffing for fogged/unreachable resources. -1 for swarms / unknown.
+	/// v13 (2026-06-06, inn hauler ceiling = corn-deficit demand) added
+	/// TrackedBuilding.restockTripsNeeded — for inns, the CORN deficit (maxCorn - corn)
+	/// expressed in hauler TRIPS (deficit / multiplierRessource[CORN]). Corn is the feed
+	/// resource that limits how many units the inn sustains, so the hauler ceiling tracks
+	/// how empty the corn buffer is; fruit is happiness garnish and is excluded. The
+	/// worker-tuning loop sets the inn's maxUnitWorking to this (clamped to [MIN, CAP]),
+	/// EXCEPT when nearestWheatDist puts all corn beyond CORTEX_INN_WHEAT_STARVED_RADIUS,
+	/// which forces the floor (haulers would have nothing to fetch). It does NOT gate on
+	/// Map::ressourceAvailable: that probes the inn's own footprint tile, which the
+	/// resource gradient always marks forbidden, so it zeroed the deficit and pinned
+	/// every inn to one hauler. -1 for swarms / unknown.
 	/// v15 (2026-06-06, offense-hold relocation) added flagPosture + offenseHoldUntil:
 	/// the action layer's RAM-only hysteresis state, echoed into the observation so the
 	/// PURE policy makes the hold-vs-recall (thrash-damper) decision itself instead of

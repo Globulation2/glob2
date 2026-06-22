@@ -267,15 +267,19 @@ namespace Cortex
 
 				// HARD REJECT (swarm and inn): the field must hold a real CLUSTER of
 				// harvestable wheat, not just the single tile the check above needs.
-				// Require at least CORTEX_WHEAT_MIN_TILES non-forbidden CORN tiles
-				// within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. "Non-forbidden"
-				// drops the half of the field Cortex checkerboards for protection (which
-				// blocks harvest), and depleted tiles are no longer CORN — so this
-				// rejects a swarm hugging a nearly-exhausted patch and an inn dropped on
-				// a field whose harvestable wheat is already gone (both observed in play).
+				// Require at least CORTEX_WHEAT_MIN_TILES wheat tiles that will SURVIVE
+				// the protection checkerboard (the open-parity half) within
+				// CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. We count the SURVIVING
+				// set, not the live non-forbidden set, so the gate measures the field as
+				// it WILL be once the checkerboard settles: a candidate near freshly-
+				// revealed wheat (not yet painted) no longer passes on the full field only
+				// to have the reconcile paint half of it away and leave the inn below the
+				// threshold within a cycle. Depleted tiles are no longer CORN, so this
+				// still rejects a swarm hugging a nearly-exhausted patch and an inn dropped
+				// on a field whose wheat is already gone (both observed in play).
 				if (isWheatFed &&
-				    countHarvestableCornWithin(map, team->me, x, y, w, h,
-				                               CORTEX_WHEAT_MIN_TILES_RADIUS)
+				    countSurvivingCornWithin(map, x, y, w, h,
+				                             CORTEX_WHEAT_MIN_TILES_RADIUS)
 				        < CORTEX_WHEAT_MIN_TILES)
 					continue;
 
@@ -287,6 +291,20 @@ namespace Cortex
 				// is edge-aware (it scans the footprint expanded by `dist`), so this is
 				// measured from the footprint edge, not the top-left corner.
 				if (isSwarm && !anyCornWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
+					continue;
+
+				// HARD REJECT (inn only): the inn's GROWN footprint edge must sit within
+				// CORTEX_INN_WHEAT_EDGE_DIST tiles of a HARVESTABLE (surviving-parity) CORN
+				// tile. Unlike the cluster gate above (which counts surviving corn within a
+				// wide radius of the PLACED 2x2 to prove a real field exists), this measures
+				// from the GROWN box (gx, gy, ew x eh) so the expansion area is included: the
+				// inn — at its final size — hugs the wheat with at most a one-tile gap and
+				// never blocks the lane its haulers use to reach the field. countSurviving
+				// CornWithin scans the box expanded by `dist`, so dist == 1 means "wheat
+				// touching or one tile off the grown edge".
+				if (isInn &&
+				    countSurvivingCornWithin(map, gx, gy, ew, eh, CORTEX_INN_WHEAT_EDGE_DIST)
+				        < 1)
 					continue;
 
 				// HARD REJECT (swarm only): must sit at least CORTEX_SWARM_MIN_SPACING

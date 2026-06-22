@@ -80,6 +80,16 @@ namespace Cortex
 	/// checkerboard-forbidding and field depletion; no policy reads it.
 	int countCornWithin(const Map& map, int x, int y, int w, int h, int dist);
 
+	/// Count of the CORN tiles within `dist` Chebyshev tiles of the footprint that
+	/// SURVIVE Cortex's wheat-protection checkerboard — the open-parity half the paint
+	/// leaves harvestable (((x+y)&1) != WHEAT_PARITY). Unlike countHarvestableCornWithin
+	/// (which reads the LIVE forbidden mask and so swings with paint timing and reads ~0
+	/// on freshly-revealed wheat the reconcile has not yet covered), this is the SUSTAINED
+	/// harvestable set — paint-timing independent. The durable wheat signal both inn/swarm
+	/// placement and feedCapacity want: depleted tiles drop out (no longer CORN), but our
+	/// own recoverable checkerboard does not zero it.
+	int countSurvivingCornWithin(const Map& map, int x, int y, int w, int h, int dist);
+
 	/// Fills (w, h) with the LARGEST footprint a building of type `bt` can grow into
 	/// by walking its upgrade chain (BuildingType::nextLevel). For an inn this yields
 	/// 3 x 3 (the top-level inn2 footprint, BuildingsPartA.cpp); for a type that never

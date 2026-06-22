@@ -378,19 +378,25 @@ namespace Cortex
 			if (t.ticksSinceFinished >= 0
 			 && t.ticksSinceFinished < CORTEX_INN_TUNE_DELAY_TICKS)
 				continue;
-			// Inn hauler ceiling = the COLLECTABLE restock demand. CortexObservation
-			// fills restockTripsNeeded = the inn's corn + IN-SIGHT fruit deficit in
-			// hauler trips (fogged/unreachable resources excluded — fruit is
-			// visibleToBeCollected, so it can't be hauled under fog, and the engine's
-			// own desiredNumberOfWorkers counts the RAW deficit and would over-request
-			// haulers that then idle). We set maxUnitWorking to that demand, clamped to
-			// [MIN, CAP]; the engine self-regulates the actual hauler count below this
-			// ceiling each tick. Scales with inn LEVEL (bigger corn/fruit caps → more
-			// trips → more haulers) instead of the old fixed corn thresholds that
-			// collapsed a level-2 inn to one hauler, and it does not forget fruit.
-			// restockTripsNeeded == -1 means unknown (game absent): leave it untouched.
+			// Inn hauler ceiling = the inn's CORN-deficit restock demand.
+			// CortexObservation fills restockTripsNeeded = (maxCorn - corn) in hauler
+			// trips: how empty the corn buffer is. We set maxUnitWorking to that demand,
+			// clamped to [MIN, CAP]; the engine self-regulates the actual hauler count
+			// below this ceiling each tick. Scales with inn LEVEL (bigger corn cap means
+			// more trips, more haulers) instead of the old fixed corn thresholds that
+			// collapsed a level-2 inn to one hauler. restockTripsNeeded == -1 means
+			// unknown (game absent): leave it untouched.
 			int desired = t.maxUnitWorking;
-			if (t.restockTripsNeeded >= 0)
+			// Wheat-starvation override: if the inn has no CORN within
+			// CORTEX_INN_WHEAT_STARVED_RADIUS tiles (nearestWheatDist < 0 means none
+			// within the scan cap), its haulers have nothing to fetch — hold it at the
+			// floor regardless of the corn deficit. Mirrors the swarm wheat-starved
+			// clamp; without it a corn-deficit inn beside an exhausted or too-distant
+			// field would pull a crowd of haulers that just idle.
+			if (t.nearestWheatDist < 0
+			 || t.nearestWheatDist > CORTEX_INN_WHEAT_STARVED_RADIUS)
+				desired = CORTEX_INN_WORKER_MIN;
+			else if (t.restockTripsNeeded >= 0)
 			{
 				int target = t.restockTripsNeeded;
 				if (target < CORTEX_INN_WORKER_MIN) target = CORTEX_INN_WORKER_MIN;
