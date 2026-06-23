@@ -18,7 +18,7 @@ std::shared_ptr<OrderCreate> OrderCreate::deserialize(const Uint8 *data, int dat
 	return order;
 }
 
-OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, Sint32 flagRadius)
+OrderCreate::OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, std::optional<Sint32> flagRadius)
 {
 	this->teamNumber=teamNumber;
 	this->posX=posX;
@@ -39,7 +39,7 @@ Uint8 *OrderCreate::getData(void)
 	addSint32(data, this->typeNum, 12);
 	addSint32(data, this->unitWorking, 16);
 	addSint32(data, this->unitWorkingFuture, 20);
-	addSint32(data, this->flagRadius, 24);
+	addSint32(data, this->flagRadius.value_or(ORDER_CREATE_NO_FLAG_RADIUS), 24);
 
 	return data;
 }
@@ -57,8 +57,14 @@ bool OrderCreate::setData(const Uint8 *data, int dataLength, Uint32 versionMinor
 	this->typeNum=getSint32(data, 12);
 	this->unitWorking=getSint32(data, 16);
 	this->unitWorkingFuture=getSint32(data, 20);
-	if(versionMinor>=78)
-		this->flagRadius=getSint32(data, 24);
+	if(versionMinor>=FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS)
+	{
+		const Sint32 wireRadius=getSint32(data, 24);
+		this->flagRadius=(wireRadius==ORDER_CREATE_NO_FLAG_RADIUS)
+			? std::nullopt : std::optional<Sint32>(wireRadius);
+	}
+	else
+		this->flagRadius=std::nullopt;
 
 	return true;
 }

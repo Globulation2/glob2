@@ -27,6 +27,14 @@ static constexpr Uint32 ORDER_CHECKSUM_NONE = static_cast<Uint32>(-1);
 //! once the wire data has been mapped to a player number). See Order.cpp:8.
 static constexpr int ORDER_SENDER_NONE = -1;
 
+//! Wire encoding of an absent OrderCreate::flagRadius. The field is only
+//! meaningful for virtual (flag) buildings, where it carries a non-negative
+//! unitStayRange; for every other building the in-memory value is
+//! std::nullopt and this sentinel is what travels on the wire (offset 24 of
+//! the 28-byte payload). See OrderBuilding.cpp getData/setData and
+//! Game::executeCreate (Game_orders.cpp).
+static constexpr Sint32 ORDER_CREATE_NO_FLAG_RADIUS = -1;
+
 //! Length, in bytes, of the big-endian length prefix that precedes every
 //! framed network message (TCP and UDP alike). See
 //! NetConnectionThread.cpp:111-115, 182, 192-194; NetBroadcaster.cpp:53-55;
@@ -76,7 +84,7 @@ class OrderCreate:public Order
 {
 public:
 	OrderCreate() = default;
-	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, Sint32 flagRadius=-1);
+	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, std::optional<Sint32> flagRadius=std::nullopt);
 	virtual ~OrderCreate(void) {}
 
 	//! See OrderModifyBuilding::deserialize.
@@ -93,7 +101,10 @@ public:
 	Sint32 typeNum;
 	Sint32 unitWorking;
 	Sint32 unitWorkingFuture;
-	Sint32 flagRadius;
+	//! Flag attraction radius (unitStayRange), set only for virtual (flag)
+	//! buildings; std::nullopt for ordinary buildings. On the wire an absent
+	//! value is encoded as ORDER_CREATE_NO_FLAG_RADIUS.
+	std::optional<Sint32> flagRadius;
 
  private:
 	Uint8 data[28];

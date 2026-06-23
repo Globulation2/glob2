@@ -167,9 +167,9 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 		Building *b=addBuilding(posX, posY, oc.typeNum, oc.teamNumber, oc.unitWorking, oc.unitWorkingFuture);
 		if (b)
 		{
-			if(isVirtual && oc.flagRadius>=0)
+			if(isVirtual && oc.flagRadius.has_value())
 			{
-				b->unitStayRange = oc.flagRadius;
+				b->unitStayRange = *oc.flagRadius;
 			}
 			b->owner->addToStaticAbilitiesLists(b);
 			b->update();
