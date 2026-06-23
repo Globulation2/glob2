@@ -11,7 +11,6 @@ namespace GAGCore
 {
 	class FileManager;
 }
-using namespace GAGCore;
 
 ///This is a hack to temporarilly disable log files
 #define fprintf if(false)fprintf
@@ -40,7 +39,7 @@ using namespace GAGCore;
 class LogFileManager
 {
 public:
-	LogFileManager(FileManager *fileManager);
+	LogFileManager(GAGCore::FileManager *fileManager);
 	virtual ~LogFileManager();
 	
 	typedef std::map<std::string, FILE *> NameFileMap;
@@ -48,6 +47,6 @@ public:
 	
 	FILE *getFile(const std::string filename);
 	
-	FileManager *fileManager;
+	GAGCore::FileManager *fileManager;
 };
 
