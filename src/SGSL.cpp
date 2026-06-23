@@ -486,6 +486,51 @@ void Story::resetAI(GameGUI* gui)
 }
 
 
+//! Enable or disable the GUI panel choice named by an SGSL object token, as
+//! requested by the guiEnable / guiDisable script commands.
+//!
+//! The SGSL building/flag tokens are NOT laid out as one contiguous range:
+//! building tokens straddle the flag tokens
+//! (S_SWARM_B..S_DEFENCE_B, then S_EXPLOR_F..S_CLEARING_F, then S_WALL_B..S_MARKET_B).
+//! Flags must therefore be matched before the "<= S_MARKET_B" buildings range,
+//! otherwise flag tokens fall into the buildings branch and silently no-op
+//! (a flag name is never found in the buildings choice list). The Lua port will
+//! need three explicit flag dispatches here, not a single numeric range slip.
+void Story::setGUIChoice(GameGUI* gui, SGSLToken::TokenType object, bool enable)
+{
+	if (object <= SGSLToken::S_WARRIOR)
+	{
+		// Units : TODO (no GUI panel choice for unit tokens yet)
+	}
+	else if (object >= SGSLToken::S_EXPLOR_F && object <= SGSLToken::S_CLEARING_F)
+	{
+		const std::string& flag = IntBuildingType::typeFromShortNumber(
+			object - SGSLToken::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG);
+		if (enable)
+			gui->enableFlagsChoice(flag);
+		else
+			gui->disableFlagsChoice(flag);
+	}
+	else if (object <= SGSLToken::S_MARKET_B)
+	{
+		const std::string& building = IntBuildingType::typeFromShortNumber(
+			object - SGSLToken::S_SWARM_B);
+		if (enable)
+			gui->enableBuildingsChoice(building);
+		else
+			gui->disableBuildingsChoice(building);
+	}
+	else if (object <= SGSLToken::S_ALLIANCESCREEN)
+	{
+		const int element = object - SGSLToken::S_BUILDINGTAB;
+		if (enable)
+			gui->enableGUIElement(element);
+		else
+			gui->disableGUIElement(element);
+	}
+}
+
+
 static const FunctionArgumentDescription totoDescription[] = {
 	{ SGSLToken::S_WIN, SGSLToken::S_LOOSE },
 	{ SGSLToken::INT, SGSLToken::INT },
@@ -695,46 +740,15 @@ bool Story::testCondition(GameGUI *gui)
 
 			case (SGSLToken::S_GUIENABLE):
 			{
-				// TODO : be clean and dynamic and generic here !
 				SGSLToken::TokenType object = line[++lineSelector].type;
-				if (object <= SGSLToken::S_WARRIOR)
-				{
-					// Units : TODO
-				}
-				else if (object <= SGSLToken::S_MARKET_B)
-				{
-					gui->enableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - SGSLToken::S_SWARM_B));
-				}
-				else if (object <= SGSLToken::S_CLEARING_F)
-				{
-					gui->enableFlagsChoice(IntBuildingType::typeFromShortNumber(object - SGSLToken::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
-				}
-				else if (object <= SGSLToken::S_ALLIANCESCREEN)
-				{
-					gui->enableGUIElement(object - SGSLToken::S_BUILDINGTAB);
-				}
+				setGUIChoice(gui, object, true);
 				return true;
 			}
 
 			case (SGSLToken::S_GUIDISABLE):
 			{
 				SGSLToken::TokenType object = line[++lineSelector].type;
-				if (object <= SGSLToken::S_WARRIOR)
-				{
-					// Units : TODO
-				}
-				else if (object <= SGSLToken::S_MARKET_B)
-				{
-					gui->disableBuildingsChoice(IntBuildingType::typeFromShortNumber(object - SGSLToken::S_SWARM_B));
-				}
-				else if (object <= SGSLToken::S_CLEARING_F)
-				{
-					gui->disableFlagsChoice(IntBuildingType::typeFromShortNumber(object - SGSLToken::S_EXPLOR_F + IntBuildingType::EXPLORATION_FLAG));
-				}
-				else if (object <= SGSLToken::S_ALLIANCESCREEN)
-				{
-					gui->disableGUIElement(object - SGSLToken::S_BUILDINGTAB);
-				}
+				setGUIChoice(gui, object, false);
 				return true;
 			}
 

@@ -267,6 +267,7 @@ private:
 	void hintHidden(GameGUI* gui);
 	void hintVisible(GameGUI* gui);
 	void setHighlightItem(GameGUI* gui, bool doSet);
+	void setGUIChoice(GameGUI* gui, SGSLToken::TokenType object, bool enable);
 	void hilightItem(GameGUI* gui);
 	void unhilightItem(GameGUI* gui);
 	void hilightUnits(GameGUI* gui);
