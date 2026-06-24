@@ -232,6 +232,6 @@ bool OrderChangePriority::setData(const Uint8 *data, int dataLength, Uint32 vers
 	if (dataLength!=getDataLength())
 		return false;
 	this->gid=getUint16(data, 0);
-	this->priority=getUint32(data, 2);
+	this->priority=getSint32(data, 2);
 	return true;
 }
