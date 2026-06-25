@@ -121,6 +121,11 @@ class Game
 {
 	static const bool verbose = false;
 public:
+	/// Per-client viewer state (selection + mouse). Defined below; forward-
+	/// declared here because the render-method declarations reference it.
+	/// Owned by the front-end (GameGUI/MapEdit), never by Game — see CS-661.
+	struct ViewState;
+
 	///Constructor. GUI can be NULL
 	Game(GameGUI *gui, MapEdit* edit=NULL);
 
@@ -216,12 +221,15 @@ public:
 	bool checkHardRoomForBuilding(int coordX, int coordY, const BuildingType *bt, int *mapX, int *mapY);
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
-	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions);
-	/// `buildingGuiState` (optional) provides per-flag pending positions so
-	/// drag-targets render before the move-flag order has executed. The map
-	/// editor passes nullptr — it mutates buildings directly without an
-	/// orderQueue, so there is no pending shadow to consult.
-	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr);
+	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view);
+	/// `view` carries the calling front-end's selection/mouse state (see
+	/// ViewState); render reads selectedUnit/selectedBuilding for highlights and
+	/// writes back mouseUnit from hit-testing. `buildingGuiState` (optional)
+	/// provides per-flag pending positions so drag-targets render before the
+	/// move-flag order has executed. The map editor passes nullptr for it — it
+	/// mutates buildings directly without an orderQueue, so there is no pending
+	/// shadow to consult.
+	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr);
 
 	///Sets the mask respresenting which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
@@ -315,19 +323,19 @@ private:
 	///draws the resources like algues, wheat or fruit trees
 	void drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	///draws the ground units. up till now those are workers and warriors
-	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	///draws debug information. switched in the code.
-	void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState);
 	void drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMapArea(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Map * map, bool (Map::*mapIs)(int, int) const, int areaAnimationTick, AreaType areaType);
-	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawMapAirUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
 	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
 	void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, Unit* unit, Uint32 drawOptions);
 	bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y);
@@ -368,11 +376,11 @@ public:
 public:
 	/// Non-simulation view scratch. These fields are NOT part of game state:
 	/// they are never serialized, never checksummed, and no simulation code
-	/// reads them. They are written by the GUI/map-editor input handlers and
-	/// by Game::draw* hit-testing (mouseUnit is recomputed each render pass),
-	/// and read back only by render and GUI code. They live on Game only
-	/// because Game owns its render methods and the state is shared between the
-	/// in-game GUI (GameGUI) and the map editor (MapEdit).
+	/// reads them. They are owned by the per-client front-end — GameGUI for the
+	/// in-game view, MapEdit for the editor — and passed into Game's render
+	/// methods (drawMap and below) as a `ViewState&` parameter, the same way
+	/// buildingGuiState is. Input handlers write the selection/mouse fields;
+	/// Game::draw* hit-testing recomputes mouseUnit each render pass.
 	///
 	/// Rust port: keep this in a GUI-side Selection/InputState resource, NOT on
 	/// the simulation ECS. See cpp-bugs CS-661.
@@ -383,7 +391,6 @@ public:
 		Unit *selectedUnit = nullptr;     //!< Currently selected unit, or null.
 		Building *selectedBuilding = nullptr; //!< Currently selected building, or null.
 	};
-	ViewState view;
 
 	Uint32 stepCounter;
 	int totalPrestige;

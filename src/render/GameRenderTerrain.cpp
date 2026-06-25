@@ -147,7 +147,7 @@ void Game::drawMapRessources(int left, int top, int right, int bot, int viewport
 	globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
 }
 
-void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
 	if (DEBUG_RENDER_GRADIENTS)
 		for (int y=top-1; y<=bot; y++)

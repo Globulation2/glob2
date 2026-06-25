@@ -395,6 +395,12 @@ public:
 	void regenerateGameHeader();
 
 	Game game;
+
+	///Per-client viewer state (selection + mouse). NOT simulation state — see
+	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
+	///The editor only ever uses selectedUnit.
+	Game::ViewState view;
+
 	friend class MapEditorWidget;
 	friend class BuildingSelectorWidget;
 	friend class TeamColorSelector;

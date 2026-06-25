@@ -86,7 +86,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		terrainType=TerrainSelector::NoTerrain;
 		placingUnit=NoUnit;
 		selectedUnitGID=NOGUID;
-		game.view.selectedUnit=NULL;
+		view.selectedUnit=NULL;
 		deleteButton->setUnselected();
 		areasButton->setUnselected();
 		noRessourceGrowthButton->setUnselected();
@@ -646,59 +646,59 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		{
 			performAction("unselect");
 			selectedUnitGID=gid;
-			game.view.selectedUnit=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
+			view.selectedUnit=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 			selectionMode=EditingUnit;
 			panelMode=UnitEditor;
-			unitInfoTitle->setUnit(game.view.selectedUnit);
-			unitPicture->setUnit(game.view.selectedUnit);
-			unitHPLabel->setValues(&game.view.selectedUnit->hp, &game.view.selectedUnit->performance[HP]);
-			unitHPScrollBox ->setValues(&game.view.selectedUnit->hp, &game.view.selectedUnit->performance[HP]);
-			unitWalkLevelLabel->setValues(&game.view.selectedUnit->level[WALK]);
-			unitWalkLevelScrollBox->setValues(&game.view.selectedUnit->level[WALK]);
-			unitSwimLevelLabel->setValues(&game.view.selectedUnit->level[SWIM]);
-			unitSwimLevelScrollBox->setValues(&game.view.selectedUnit->level[SWIM]);
-			unitHarvestLevelLabel->setValues(&game.view.selectedUnit->level[HARVEST]);
-			unitHarvestLevelScrollBox->setValues(&game.view.selectedUnit->level[HARVEST]);
-			unitBuildLevelLabel->setValues(&game.view.selectedUnit->level[BUILD]);
-			unitBuildLevelScrollBox->setValues(&game.view.selectedUnit->level[BUILD]);
-			unitAttackSpeedLevelLabel->setValues(&game.view.selectedUnit->level[ATTACK_SPEED]);
-			unitAttackSpeedLevelScrollBox->setValues(&game.view.selectedUnit->level[ATTACK_SPEED]);
-			unitAttackStrengthLevelLabel->setValues(&game.view.selectedUnit->level[ATTACK_STRENGTH]);
-			unitAttackStrengthLevelScrollBox->setValues(&game.view.selectedUnit->level[ATTACK_STRENGTH]);
-			unitMagicGroundAttackLevelLabel->setValues(&game.view.selectedUnit->level[MAGIC_ATTACK_GROUND]);
-			unitMagicGroundAttackLevelScrollBox->setValues(&game.view.selectedUnit->level[MAGIC_ATTACK_GROUND]);
+			unitInfoTitle->setUnit(view.selectedUnit);
+			unitPicture->setUnit(view.selectedUnit);
+			unitHPLabel->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP]);
+			unitHPScrollBox ->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP]);
+			unitWalkLevelLabel->setValues(&view.selectedUnit->level[WALK]);
+			unitWalkLevelScrollBox->setValues(&view.selectedUnit->level[WALK]);
+			unitSwimLevelLabel->setValues(&view.selectedUnit->level[SWIM]);
+			unitSwimLevelScrollBox->setValues(&view.selectedUnit->level[SWIM]);
+			unitHarvestLevelLabel->setValues(&view.selectedUnit->level[HARVEST]);
+			unitHarvestLevelScrollBox->setValues(&view.selectedUnit->level[HARVEST]);
+			unitBuildLevelLabel->setValues(&view.selectedUnit->level[BUILD]);
+			unitBuildLevelScrollBox->setValues(&view.selectedUnit->level[BUILD]);
+			unitAttackSpeedLevelLabel->setValues(&view.selectedUnit->level[ATTACK_SPEED]);
+			unitAttackSpeedLevelScrollBox->setValues(&view.selectedUnit->level[ATTACK_SPEED]);
+			unitAttackStrengthLevelLabel->setValues(&view.selectedUnit->level[ATTACK_STRENGTH]);
+			unitAttackStrengthLevelScrollBox->setValues(&view.selectedUnit->level[ATTACK_STRENGTH]);
+			unitMagicGroundAttackLevelLabel->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND]);
+			unitMagicGroundAttackLevelScrollBox->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND]);
 			enableOnlyGroup("unit editor");
-			if(!game.view.selectedUnit->canLearn[WALK])
+			if(!view.selectedUnit->canLearn[WALK])
 			{
 				unitWalkLevelLabel->disable();
 				unitWalkLevelScrollBox->disable();
 			}
-			if(!game.view.selectedUnit->canLearn[SWIM])
+			if(!view.selectedUnit->canLearn[SWIM])
 			{
 				unitSwimLevelLabel->disable();
 				unitSwimLevelScrollBox->disable();
 			}
-			if(!game.view.selectedUnit->canLearn[HARVEST])
+			if(!view.selectedUnit->canLearn[HARVEST])
 			{
 				unitHarvestLevelLabel->disable();
 				unitHarvestLevelScrollBox->disable();
 			}
-			if(!game.view.selectedUnit->canLearn[BUILD])
+			if(!view.selectedUnit->canLearn[BUILD])
 			{
 				unitBuildLevelLabel->disable();
 				unitBuildLevelScrollBox->disable();
 			}
-			if(!game.view.selectedUnit->canLearn[ATTACK_SPEED])
+			if(!view.selectedUnit->canLearn[ATTACK_SPEED])
 			{
 				unitAttackSpeedLevelLabel->disable();
 				unitAttackSpeedLevelScrollBox->disable();
 			}
-			if(!game.view.selectedUnit->canLearn[ATTACK_STRENGTH])
+			if(!view.selectedUnit->canLearn[ATTACK_STRENGTH])
 			{
 				unitAttackStrengthLevelLabel->disable();
 				unitAttackStrengthLevelScrollBox->disable();
 			}
-			if(!game.view.selectedUnit->canLearn[MAGIC_ATTACK_GROUND])
+			if(!view.selectedUnit->canLearn[MAGIC_ATTACK_GROUND])
 			{
 				unitMagicGroundAttackLevelLabel->disable();
 				unitMagicGroundAttackLevelScrollBox->disable();

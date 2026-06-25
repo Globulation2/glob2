@@ -15,11 +15,11 @@ void GameGUI::cleanOldSelection(void)
 {
 	if (selectionMode==BUILDING_SELECTION)
 	{
-		game.view.selectedBuilding=NULL;
+		view.selectedBuilding=NULL;
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
-		game.view.selectedUnit=NULL;
+		view.selectedUnit=NULL;
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
@@ -48,7 +48,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 		int team=Building::GIDtoTeam(newSelection);
 		Building* b=game.teams[team]->myBuildings[id];
 		selection=b;
-		game.view.selectedBuilding=b;
+		view.selectedBuilding=b;
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
@@ -56,7 +56,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 		int team=Unit::GIDtoTeam(newSelection);
 		Unit* u=game.teams[team]->myUnits[id];
 		selection=u;
-		game.view.selectedUnit=u;
+		view.selectedUnit=u;
 	}
 	else if (selectionMode==RESSOURCE_SELECTION)
 	{
@@ -76,13 +76,13 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 	{
 		Building* b=(Building*)newSelection;
 		selection=b;
-		game.view.selectedBuilding=b;
+		view.selectedBuilding=b;
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
 		Unit* u=(Unit*)newSelection;
 		selection=u;
-		game.view.selectedUnit=u;
+		view.selectedUnit=u;
 	}
 	else if (selectionMode==TOOL_SELECTION)
 	{
@@ -96,11 +96,11 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 // validation here rather than in draw functions — draws should be pure.
 void GameGUI::checkSelection(void)
 {
-	if ((selectionMode==BUILDING_SELECTION) && (game.view.selectedBuilding==NULL))
+	if ((selectionMode==BUILDING_SELECTION) && (view.selectedBuilding==NULL))
 	{
 		clearSelection();
 	}
-	else if ((selectionMode==UNIT_SELECTION) && (game.view.selectedUnit==NULL))
+	else if ((selectionMode==UNIT_SELECTION) && (view.selectedUnit==NULL))
 	{
 		clearSelection();
 	}
@@ -231,21 +231,21 @@ void GameGUI::centerViewportOnSelection(void)
 
 // Called from the sim path (Team::syncStep) when a unit is about to be
 // deleted. Clears the GUI's selected-unit pointer if it referred to the
-// dying unit. The sim never reads game.view.selectedUnit directly — going
+// dying unit. The sim never reads view.selectedUnit directly — going
 // through this hook keeps the per-client GUI read out of the sim path,
 // where a divergent predicate could become a desync if anyone extended
 // the branch with sim-touching code.
 void GameGUI::onUnitDestroyed(Unit *u)
 {
-	if (game.view.selectedUnit == u)
-		game.view.selectedUnit = NULL;
+	if (view.selectedUnit == u)
+		view.selectedUnit = NULL;
 }
 
 // Mirror of onUnitDestroyed for building demolition. See that comment.
 void GameGUI::onBuildingDestroyed(Building *b)
 {
-	if (game.view.selectedBuilding == b)
-		game.view.selectedBuilding = NULL;
+	if (view.selectedBuilding == b)
+		view.selectedBuilding = NULL;
 
 	// Drop this building's pending GUI shadow. buildingGuiState is keyed by
 	// gid, and gids are recycled by Game::addBuilding (lowest free slot), so a
@@ -258,9 +258,9 @@ void GameGUI::onBuildingDestroyed(Building *b)
 
 void GameGUI::dumpUnitInformation(void)
 {
-	if(game.view.selectedUnit != NULL)
+	if(view.selectedUnit != NULL)
 	{
-		Unit* unit = game.view.selectedUnit;
+		Unit* unit = view.selectedUnit;
 		std::cout<<"unit->posx = "<<unit->posX<<std::endl;
 		std::cout<<"unit->posy = "<<unit->posY<<std::endl;
 		std::cout<<"unit->gid = "<<unit->gid<<std::endl;

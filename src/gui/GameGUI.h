@@ -609,6 +609,10 @@ private:
 	///See BuildingGuiState.h. Public so render code can read pending positions.
 	BuildingGuiStateMap buildingGuiState;
 
+	///Per-client viewer state (selection + mouse). NOT simulation state — see
+	///Game::ViewState. Owned here (not on Game) and passed into game.drawMap.
+	Game::ViewState view;
+
 	///Accessor: pending value if set, else authoritative from `b`.
 	Sint32 displayedPosX(const Building& b) const;
 	Sint32 displayedPosY(const Building& b) const;

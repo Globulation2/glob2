@@ -48,8 +48,8 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
 	const int scrollZoneWidth = 10;
-	game.view.mouseX=mouseX=mx;
-	game.view.mouseY=mouseY=my;
+	view.mouseX=mouseX=mx;
+	view.mouseY=mouseY=my;
 
 	int oldViewportX = viewportX;
 	int oldViewportY = viewportY;
@@ -127,10 +127,10 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				}
 			}
 		// then for unit
-		if (game.view.mouseUnit)
+		if (view.mouseUnit)
 		{
 			// a unit is selected:
-			setSelection(UNIT_SELECTION, game.view.mouseUnit);
+			setSelection(UNIT_SELECTION, view.mouseUnit);
 			selectionPushed = true;
 			// handle dump of unit characteristics
 			if ((SDL_GetModState() & KMOD_SHIFT) != 0)
@@ -142,13 +142,13 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				}
 				else
 				{
-					std::cerr << "Dump unit " << game.view.mouseUnit->gid << " memory" << std::endl;
-					game.view.mouseUnit->save(stream);
-					game.view.mouseUnit->saveCrossRef(stream);
-					if (game.view.mouseUnit->attachedBuilding)
+					std::cerr << "Dump unit " << view.mouseUnit->gid << " memory" << std::endl;
+					view.mouseUnit->save(stream);
+					view.mouseUnit->saveCrossRef(stream);
+					if (view.mouseUnit->attachedBuilding)
 					{
-						game.view.mouseUnit->attachedBuilding->save(stream);
-						game.view.mouseUnit->attachedBuilding->saveCrossRef(stream);
+						view.mouseUnit->attachedBuilding->save(stream);
+						view.mouseUnit->attachedBuilding->saveCrossRef(stream);
 					}
 				}
 				delete stream;
