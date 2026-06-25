@@ -85,8 +85,8 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	}
 	clearGame();
 
-	mouseX=0;
-	mouseY=0;
+	view.mouseX=0;
+	view.mouseY=0;
 
 	stepCounter=0;
 	prestigeToReach=0;
@@ -128,9 +128,9 @@ void Game::clearGame()
 	isGameEnded=false;
 
 	// Clears selections
-	mouseUnit = NULL;
-	selectedUnit = NULL;
-	selectedBuilding = NULL;
+	view.mouseUnit = NULL;
+	view.selectedUnit = NULL;
+	view.selectedBuilding = NULL;
 
 	highlightBuildingType=0;
 	highlightUnitType=0;

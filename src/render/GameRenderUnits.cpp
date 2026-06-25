@@ -111,7 +111,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
 
 	// draw selection
-	if (unit==selectedUnit)
+	if (unit==view.selectedUnit)
 	{
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 255);
 		if (unit->owner->teamNumber == localTeam)
@@ -155,8 +155,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		}
 	}
 
-	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
-		mouseUnit=unit;
+	if ((px<view.mouseX)&&((px+32)>view.mouseX)&&(py<view.mouseY)&&((py+32)>view.mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
+		view.mouseUnit=unit;
 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
@@ -193,7 +193,7 @@ void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int
 {
 	//Reset the mouse unit to NULL, as this time arround there may not be a unit
 	//under the mouse pointer
-	mouseUnit=NULL;
+	view.mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -229,9 +229,9 @@ void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int 
 			}
 		}
 	}
-	if(selectedUnit != NULL)
+	if(view.selectedUnit != NULL)
 	{
-		drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, selectedUnit);
+		drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view.selectedUnit);
 	}
 }
 

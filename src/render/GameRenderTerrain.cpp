@@ -175,7 +175,7 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 	if (DEBUG_RENDER_GRADIENTS)
 	{
 		assert(teams[0]);
-		Building *b=selectedBuilding;
+		Building *b=view.selectedBuilding;
 		if (b)
 			for (int y=top-1; y<=bot; y++)
 				for (int x=left-1; x<=right; x++)
@@ -201,10 +201,10 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 
 	// We draw debug area:
 	if (DEBUG_RENDER_GRADIENTS)
-		if (selectedUnit && selectedUnit->verbose)
+		if (view.selectedUnit && view.selectedUnit->verbose)
 		{
 			//assert(teams[0]);
-			Building *b=selectedUnit->attachedBuilding;
+			Building *b=view.selectedUnit->attachedBuilding;
 			//b=teams[0]->myBuildings[21];
 			//if (teams[0]->virtualBuildings.size())
 			//	b=*teams[0]->virtualBuildings.begin();
@@ -221,10 +221,10 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 
 	// We draw debug area:
 	//if (selectedUnit && selectedUnit->verbose)
-	if (selectedBuilding && selectedBuilding->verbose)
+	if (view.selectedBuilding && view.selectedBuilding->verbose)
 	{
 		//Building *b=NULL;
-		Building *b=selectedBuilding;
+		Building *b=view.selectedBuilding;
 		//Building *b=selectedUnit->attachedBuilding;
 
 		//assert(teams[0]);

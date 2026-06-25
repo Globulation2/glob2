@@ -205,9 +205,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if(selectedBuilding != NULL && (selectedBuilding->owner->sharedVisionOther & visibleTeams))
+	if(view.selectedBuilding != NULL && (view.selectedBuilding->owner->sharedVisionOther & visibleTeams))
 	{
-		for(std::list<Unit*>::iterator i = selectedBuilding->unitsWorking.begin(); i!=selectedBuilding->unitsWorking.end(); ++i)
+		for(std::list<Unit*>::iterator i = view.selectedBuilding->unitsWorking.begin(); i!=view.selectedBuilding->unitsWorking.end(); ++i)
 		{
 			Unit* unit = *i;
 			if(!isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY))
@@ -262,7 +262,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 				// flag circle:
-				if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==selectedBuilding))
+				if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==view.selectedBuilding))
 					globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
 
 				if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)

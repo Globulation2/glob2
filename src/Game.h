@@ -366,10 +366,24 @@ public:
 	std::valarray<unsigned char> overlayAlphas;
 
 public:
-	int mouseX, mouseY;
-	Unit *mouseUnit;
-	Unit *selectedUnit;
-	Building *selectedBuilding;
+	/// Non-simulation view scratch. These fields are NOT part of game state:
+	/// they are never serialized, never checksummed, and no simulation code
+	/// reads them. They are written by the GUI/map-editor input handlers and
+	/// by Game::draw* hit-testing (mouseUnit is recomputed each render pass),
+	/// and read back only by render and GUI code. They live on Game only
+	/// because Game owns its render methods and the state is shared between the
+	/// in-game GUI (GameGUI) and the map editor (MapEdit).
+	///
+	/// Rust port: keep this in a GUI-side Selection/InputState resource, NOT on
+	/// the simulation ECS. See cpp-bugs CS-661.
+	struct ViewState
+	{
+		int mouseX = 0, mouseY = 0;       //!< Mouse position, mirror of GameGUI's own.
+		Unit *mouseUnit = nullptr;        //!< Unit under the cursor; hit-tested during render.
+		Unit *selectedUnit = nullptr;     //!< Currently selected unit, or null.
+		Building *selectedBuilding = nullptr; //!< Currently selected building, or null.
+	};
+	ViewState view;
 
 	Uint32 stepCounter;
 	int totalPrestige;
