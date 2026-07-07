@@ -156,18 +156,10 @@ GameGUIToolManager::ZoneType GameGUIToolManager::getZoneType() const
 void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
 {
 	if(mode == PlaceBuilding)
-	{		
+	{
 		// we get the type of building
-		// try to get the building site, if it doesn't exists, get the finished building (for flags)
-		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
-		if (typeNum==-1)
-		{
-			typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
-			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
-		}
-		assert (typeNum!=-1);
-
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		Sint32 typeNum = globalContainer->buildingsTypes.getPlaceableTypeNum(building);
+		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 		firstPlacement = FirstPlacement{tempX, tempY};
@@ -200,19 +192,11 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		flushBrushOrders(localteam);
 	}
 	if(mode == PlaceBuilding)
-	{		
+	{
 		// we get the type of building
-		// try to get the building site, if it doesn't exists, get the finished building (for flags)
-		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
-		if (typeNum==-1)
-		{
-			typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
-			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
-		}
-		assert (typeNum!=-1);
+		Sint32 typeNum = globalContainer->buildingsTypes.getPlaceableTypeNum(building);
+		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-		
 		int mapX, mapY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
@@ -348,16 +332,8 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 	if (game.teams[localteam]->noMoreBuildingSitesCountdown==0)
 	{
 		// we get the type of building
-		// try to get the building site, if it doesn't exists, get the finished building (for flags)
-		Sint32  typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, true);
-		if (typeNum==-1)
-		{
-			typeNum=globalContainer->buildingsTypes.getTypeNum(building, 0, false);
-			assert(globalContainer->buildingsTypes.get(typeNum)->isVirtual);
-		}
-		assert (typeNum!=-1);
-
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		Sint32 typeNum = globalContainer->buildingsTypes.getPlaceableTypeNum(building);
+		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 
 		int tempX = mapX, tempY = mapY;
 		bool isRoom;

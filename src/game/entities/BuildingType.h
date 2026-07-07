@@ -127,6 +127,12 @@ public:
 
 	Sint32 getTypeNum(const char *type, int level, bool isBuildingSite);
 	Sint32 getTypeNum(const std::string &s, int level, bool isBuildingSite);
+	// Resolve the variant a new player placement of `name` creates: the
+	// level-0 construction site if one exists, otherwise the finished
+	// level-0 building (flags and other virtual buildings have no
+	// construction site). Asserts that the fallback only happens for
+	// virtual buildings and that the name resolves at all.
+	Sint32 getPlaceableTypeNum(const std::string &name);
 	BuildingType *getByType(const char *type, int level, bool isBuildingSite);
 	BuildingType *getByType(const std::string &s, int level, bool isBuildingSite);
 };

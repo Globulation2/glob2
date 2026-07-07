@@ -230,6 +230,20 @@ Sint32 BuildingsTypes::getTypeNum(const std::string &s, int level, bool isBuildi
 	return getTypeNum(s.c_str(), level, isBuildingSite);
 }
 
+Sint32 BuildingsTypes::getPlaceableTypeNum(const std::string &name)
+{
+	// Try to get the building site; if it doesn't exist, get the finished
+	// building (for flags).
+	Sint32 typeNum = getTypeNum(name, 0, true);
+	if (typeNum == -1)
+	{
+		typeNum = getTypeNum(name, 0, false);
+		assert(get(typeNum)->isVirtual);
+	}
+	assert(typeNum != -1);
+	return typeNum;
+}
+
 BuildingType *BuildingsTypes::getByType(const char *type, int level, bool isBuildingSite)
 {
 	assert(type);
