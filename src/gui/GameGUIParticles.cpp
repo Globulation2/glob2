@@ -104,7 +104,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 			}
 
 			// turret firing
-			if (building->lastShootStep != 0xFFFFFFFF)
+			if (building->lastShootStep != Building::LAST_SHOOT_STEP_NEVER)
 			{
 				if ((game.stepCounter - building->lastShootStep < 6) && (game.stepCounter % 2 == 0))
 				{
