@@ -28,14 +28,25 @@ public:
 
 	bool open(const std::string& replayPath, int numTeams, int numPlayers);
 	void writeTick(Uint32 tick, Uint32 totalChecksum, Game& game);
-	void close();
+	//! Patches total_ticks into the header and closes the file. Returns
+	//! false if any write, seek, or close failed since open(); in that case
+	//! the on-disk file has been deleted, because a truncated sidecar would
+	//! otherwise parse as a shorter-but-valid run and be silently treated
+	//! as authoritative by the cross-replay verification tooling.
+	bool close();
 
 private:
 	FILE* file;
+	std::string path;
 	int numTeams;
 	int numPlayers;
 	Uint32 ticksWritten;
+	//! Sticky success flag: cleared by the first failed write/seek/close and
+	//! never set again until the next open(). Once cleared, all further
+	//! writes are no-ops so we don't keep hammering a broken stream.
+	bool ok;
 
+	void writeBytes(const void* data, size_t size);
 	void writeU16(Uint16 v);
 	void writeU32(Uint32 v);
 };

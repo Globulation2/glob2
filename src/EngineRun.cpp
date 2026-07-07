@@ -433,7 +433,9 @@ void Engine::teardownSession()
 {
 	if (checksumSidecar)
 	{
-		checksumSidecar->close();
+		if (!checksumSidecar->close())
+			std::cerr << "GLOB2_CHECKSUM_SIDECAR: a sidecar write or close failed; "
+				"the truncated .checksums file has been deleted" << std::endl;
 		delete checksumSidecar;
 		checksumSidecar = NULL;
 	}

@@ -9,7 +9,7 @@
 #include <vector>
 
 ChecksumSidecarWriter::ChecksumSidecarWriter()
-	: file(NULL), numTeams(0), numPlayers(0), ticksWritten(0)
+	: file(NULL), numTeams(0), numPlayers(0), ticksWritten(0), ok(true)
 {
 }
 
@@ -23,21 +23,32 @@ ChecksumSidecarWriter::~ChecksumSidecarWriter()
 // glob2-sim/src/cross_replay/sidecar.rs decodes with from_le_bytes.
 // SDL_SwapLE* is a no-op on little-endian hosts, so sidecars written
 // before this conversion existed remain valid there.
+// All writes funnel through here so a single short write flips the sticky
+// `ok` flag and turns every subsequent write into a no-op (disk full, EIO,
+// quota — there is no point writing more of a record that is already broken).
+void ChecksumSidecarWriter::writeBytes(const void* data, size_t size)
+{
+	if (!ok)
+		return;
+	if (fwrite(data, size, 1, file) != 1)
+		ok = false;
+}
+
 void ChecksumSidecarWriter::writeU16(Uint16 v)
 {
 	v = SDL_SwapLE16(v);
-	fwrite(&v, sizeof(v), 1, file);
+	writeBytes(&v, sizeof(v));
 }
 
 void ChecksumSidecarWriter::writeU32(Uint32 v)
 {
 	v = SDL_SwapLE32(v);
-	fwrite(&v, sizeof(v), 1, file);
+	writeBytes(&v, sizeof(v));
 }
 
 bool ChecksumSidecarWriter::open(const std::string& replayPath, int numTeams, int numPlayers)
 {
-	std::string path = replayPath + ".checksums";
+	path = replayPath + ".checksums";
 	file = GAGCore::Toolkit::getFileManager()->openFP(path, "wb");
 	if (!file)
 		return false;
@@ -45,20 +56,30 @@ bool ChecksumSidecarWriter::open(const std::string& replayPath, int numTeams, in
 	this->numTeams = numTeams;
 	this->numPlayers = numPlayers;
 	ticksWritten = 0;
+	ok = true;
 
 	// Header: magic + counts + placeholder for total_ticks + flags
-	fwrite(FILE_SIG_CHECKSUM_SIDECAR, FILE_SIG_LEN, 1, file);
+	writeBytes(FILE_SIG_CHECKSUM_SIDECAR, FILE_SIG_LEN);
 	writeU32(numTeams);
 	writeU32(numPlayers);
 	writeU32(0); // total_ticks placeholder
 	writeU32(0); // flags
 
+	if (!ok)
+	{
+		// Could not even write the 20-byte header: close and delete the
+		// stub so no reader ever sees a headerless/partial sidecar.
+		fclose(file);
+		file = NULL;
+		GAGCore::Toolkit::getFileManager()->remove(path);
+		return false;
+	}
 	return true;
 }
 
 void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& game)
 {
-	if (!file)
+	if (!file || !ok)
 		return;
 
 	// Check optional max ticks limit
@@ -129,15 +150,28 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& g
 	ticksWritten++;
 }
 
-void ChecksumSidecarWriter::close()
+bool ChecksumSidecarWriter::close()
 {
 	if (!file)
-		return;
+		return ok;
 
 	// Patch total_ticks in header
-	fseek(file, CHECKSUM_SIDECAR_TOTALTICKS_OFFSET, SEEK_SET);
-	writeU32(ticksWritten);
+	if (fseek(file, CHECKSUM_SIDECAR_TOTALTICKS_OFFSET, SEEK_SET) != 0)
+		ok = false;
+	else
+		writeU32(ticksWritten);
 
-	fclose(file);
+	// fclose flushes buffered data, so its return catches deferred write
+	// errors (e.g. ENOSPC surfacing only at flush time).
+	if (fclose(file) != 0)
+		ok = false;
 	file = NULL;
+
+	if (!ok)
+	{
+		// A truncated sidecar parses as a valid shorter run on the reader
+		// side — delete it so it can never be mistaken for authoritative.
+		GAGCore::Toolkit::getFileManager()->remove(path);
+	}
+	return ok;
 }

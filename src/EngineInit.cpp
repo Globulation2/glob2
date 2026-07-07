@@ -376,9 +376,15 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 			? globalContainer->replayFileName
 			: replayPath;
 		checksumSidecar = new ChecksumSidecarWriter();
-		checksumSidecar->open(sidecarBase,
+		if (!checksumSidecar->open(sidecarBase,
 			gui.game.teamsCount(),
-			gui.game.gameHeader.getNumberOfPlayers());
+			gui.game.gameHeader.getNumberOfPlayers()))
+		{
+			std::cerr << "GLOB2_CHECKSUM_SIDECAR: failed to open checksum sidecar for "
+				<< sidecarBase << std::endl;
+			delete checksumSidecar;
+			checksumSidecar = NULL;
+		}
 	}
 
 	// Initialise dataset writer if GLOB2_DATASET_PATH is set. Writes
