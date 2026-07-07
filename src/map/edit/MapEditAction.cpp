@@ -319,8 +319,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingZone=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
-		firstPlacementX=-1;
-		firstPlacementY=-1;
+		firstPlacement.reset();
 	}
 	else if(action=="select grass")
 	{
@@ -461,8 +460,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingTerrain=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
-		firstPlacementX=-1;
-		firstPlacementY=-1;
+		firstPlacement.reset();
 	}
 	else if(action=="delete drag start")
 	{
@@ -480,8 +478,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingDelete=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
-		firstPlacementX=-1;
-		firstPlacementY=-1;
+		firstPlacement.reset();
 	}
 	else if(action=="update script area number")
 	{
@@ -513,8 +510,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingArea=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
-		firstPlacementX=-1;
-		firstPlacementY=-1;
+		firstPlacement.reset();
 	}
 	else if(action=="no ressource growth area drag start")
 	{
@@ -532,8 +528,7 @@ void MapEdit::performAction(const std::string& action, int relMouseX, int relMou
 		isDraggingNoRessourceGrowthArea=false;
 		lastPlacementX=-1;
 		lastPlacementY=-1;
-		firstPlacementX=-1;
-		firstPlacementY=-1;
+		firstPlacement.reset();
 	}
 	else if(action=="add team")
 	{

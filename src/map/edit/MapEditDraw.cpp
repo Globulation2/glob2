@@ -40,16 +40,19 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 
 	if(widgetRectangle(sx, sy, sw, sh).is_in(mouseX, mouseY))
 	{
+		// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
+		const int firstX = firstPlacement ? firstPlacement->x : -1;
+		const int firstY = firstPlacement ? firstPlacement->y : -1;
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
 		if(selectionMode==EditingBuilding)
 		{
 			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
@@ -68,10 +71,10 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 		}
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
 		}
 		if(selectionMode==ChangeNoRessourceGrowthAreas)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstPlacementX, firstPlacementY);
+			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
 	}
 
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());

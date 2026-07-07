@@ -107,10 +107,7 @@ void MapEdit::handleBrushClick(int mx, int my)
 		return;
 		
 	if(lastPlacementX == -1)
-	{
-		firstPlacementX=mapX;
-		firstPlacementY=mapY;
-	}
+		firstPlacement = FirstPlacement{mapX, mapY};
 	
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
@@ -119,12 +116,15 @@ void MapEdit::handleBrushClick(int mx, int my)
 	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
+	// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
+	const int firstX = firstPlacement ? firstPlacement->x : -1;
+	const int firstY = firstPlacement ? firstPlacement->y : -1;
 	// we update local values
 	if (brush.getType() == BrushTool::MODE_ADD)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					if (brushType == ForbiddenBrush)
 					{
@@ -149,7 +149,7 @@ void MapEdit::handleBrushClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					if (brushType == ForbiddenBrush)
 					{
@@ -192,10 +192,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 		return;
 		
 	if(lastPlacementX == -1)
-	{
-		firstPlacementX=mapX;
-		firstPlacementY=mapY;
-	}
+		firstPlacement = FirstPlacement{mapX, mapY};
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
@@ -203,6 +200,9 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
+	// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
+	const int firstX = firstPlacement ? firstPlacement->x : -1;
+	const int firstY = firstPlacement ? firstPlacement->y : -1;
 	// we update local values
 	if (brush.getType() == BrushTool::MODE_ADD)
 	{
@@ -210,7 +210,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					int resToSet=-1;
 					switch(terrainType)
@@ -269,7 +269,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					switch(terrainType)
 					{
@@ -326,10 +326,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 		return;
 
 	if(lastPlacementX == -1)
-	{
-		firstPlacementX=mapX;
-		firstPlacementY=mapY;
-	}
+		firstPlacement = FirstPlacement{mapX, mapY};
 	int fig = brush.getFigure();
 	brushAccumulator.applyBrush(BrushApplication(mapX, mapY, fig), &game.map);
 	// we get coordinates
@@ -337,12 +334,15 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
+	// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
+	const int firstX = firstPlacement ? firstPlacement->x : -1;
+	const int firstY = firstPlacement ? firstPlacement->y : -1;
 	// we update local values
 	if (brush.getType() == BrushTool::MODE_ADD)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					switch(clickType)
 					{
@@ -363,7 +363,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 	{
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					switch(clickType)
 					{

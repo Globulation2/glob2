@@ -285,8 +285,6 @@ MapEdit::MapEdit()
 
 	lastPlacementX=-1;
 	lastPlacementY=-1;
-	firstPlacementX=-1;
-	firstPlacementY=-1;
 
 	menuScreen = NULL;
 	scriptEditor=NULL;

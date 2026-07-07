@@ -11,6 +11,7 @@
 #include "KeyboardManager.h"
 #include <map>
 #include "MapEditDialog.h"
+#include <optional>
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
@@ -676,10 +677,14 @@ private:
 	int lastPlacementX;
 	///This is the last placement of terrain, zones, or else, so that the game doesn't use allot of cpu by small mouse movements
 	int lastPlacementY;
-	///This is the first placement of terrain, zones or else
-	int firstPlacementX;
-	///This is the first placement of terrain, zones, or else
-	int firstPlacementY;
+	///Map coordinates recorded at the start of a brush stroke, the anchor for
+	///checkerboard parity alignment in BrushTool. Empty until the stroke's first click.
+	struct FirstPlacement
+	{
+		int x;
+		int y;
+	};
+	std::optional<FirstPlacement> firstPlacement;
 
 	///Tells whether the menu screen is being drawn right now
 	bool showingMenuScreen;
