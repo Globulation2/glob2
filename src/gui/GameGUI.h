@@ -222,6 +222,7 @@ private:
 	
 	bool processGameMenu(SDL_Event *event);
 	bool processScrollableWidget(SDL_Event *event);
+	bool processTypingInput(SDL_Event *event);
 	void handleRightClick(void);
 	void handleKey(SDL_Keysym key, bool pressed);
 	void handleKeyAlways(void);
@@ -231,6 +232,9 @@ private:
 	void handleKeySelectPlaceFlag(const char *flagName);
 	void handleKeySelectPlaceArea(GameGUIToolManager::ZoneType zone);
 	void handleMouseMotion(int mx, int my, int button);
+	void handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent);
+	void handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent);
+	void handleMenuIconClick(SDL_MouseButtonEvent mouseEvent);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);
 	void handleMenuClickBuildingSelection(int mx, int my, int button);
