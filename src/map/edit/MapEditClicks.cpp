@@ -120,60 +120,46 @@ void MapEdit::handleBrushClick(int mx, int my)
 	const int firstX = firstPlacement ? firstPlacement->x : -1;
 	const int firstY = firstPlacement ? firstPlacement->y : -1;
 	// we update local values
-	if (brush.getType() == BrushTool::MODE_ADD)
+	const unsigned brushMode = brush.getType();
+	if (brushMode == BrushTool::MODE_ADD || brushMode == BrushTool::MODE_DEL)
 	{
+		const bool add = (brushMode == BrushTool::MODE_ADD);
+		const AreaBrushTarget target = areaBrushTarget();
+		const Uint32 teamBit = 1u << team;
 		for (int y=startY; y<startY+height; y++)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
-					if (brushType == ForbiddenBrush)
-					{
-						game.map.getCase(x, y).forbidden |= (1<<team);
-						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					}
-					else if (brushType == GuardAreaBrush)
-					{
-						game.map.getCase(x, y).guardArea |= (1<<team);
-						game.map.displayedGuardAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					}
-					else if (brushType == ClearAreaBrush)
-					{
-						game.map.getCase(x, y).clearArea |= (1<<team);
-						game.map.displayedClearAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					}
+					Uint32& caseMask = game.map.getCase(x, y).*target.caseMask;
+					if (add)
+						caseMask |= teamBit;
 					else
-						assert(false);
-				}
-	}
-	else if (brush.getType() == BrushTool::MODE_DEL)
-	{
-		for (int y=startY; y<startY+height; y++)
-			for (int x=startX; x<startX+width; x++)
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
-				{
-					if (brushType == ForbiddenBrush)
-					{
-						game.map.getCase(x, y).forbidden ^= game.map.getCase(x, y).forbidden & (1<<team);
-						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					}
-					else if (brushType == GuardAreaBrush)
-					{
-						game.map.getCase(x, y).guardArea ^= game.map.getCase(x, y).guardArea & (1<<team);
-						game.map.displayedGuardAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					}
-					else if (brushType == ClearAreaBrush)
-					{
-						game.map.getCase(x, y).clearArea ^= game.map.getCase(x, y).clearArea & (1<<team);
-						game.map.displayedClearAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					}
-					else
-						assert(false);
+						caseMask &= ~teamBit; // clears the team bit, same as the old `mask ^= mask & teamBit`
+					target.view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), add);
 				}
 	}
 	else
 		assert(false);
 	lastPlacementX=mapX;
 	lastPlacementY=mapY;
+}
+
+
+
+MapEdit::AreaBrushTarget MapEdit::areaBrushTarget()
+{
+	switch (brushType)
+	{
+	case ForbiddenBrush:
+		return {&Case::forbidden, game.map.displayedForbiddenView};
+	case GuardAreaBrush:
+		return {&Case::guardArea, game.map.displayedGuardAreaView};
+	case ClearAreaBrush:
+		return {&Case::clearArea, game.map.displayedClearAreaView};
+	default:
+		assert(false);
+		return {&Case::forbidden, game.map.displayedForbiddenView};
+	}
 }
 
 

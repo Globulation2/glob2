@@ -720,6 +720,14 @@ private:
 	BrushAccumulator brushAccumulator;
 	///Handles brush click to place a zone
 	void handleBrushClick(int mx, int my);
+	///The pair of map fields a zone brush edits: the per-case team bitmask and the local (display-only) overlay
+	struct AreaBrushTarget
+	{
+		Uint32 Case::* caseMask;
+		Utilities::BitArray& view;
+	};
+	///Returns the map fields edited by the current brushType
+	AreaBrushTarget areaBrushTarget();
 	///Tells whether the user is dragging the brush, continually placing zone
 	bool isDraggingZone;
 
