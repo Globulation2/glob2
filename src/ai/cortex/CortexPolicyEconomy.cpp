@@ -34,30 +34,38 @@ namespace Cortex
 		return CORTEX_SWARM_WORKER_CAP;
 	}
 
+	/// FIELD-DEPLETED face of the wheat bottleneck: the swarm's harvestable wheat has
+	/// run out (harvestableWheatNearby below CORTEX_SWARM_WHEAT_STARVED_TILES), so the
+	/// wheat-starved throttle has pinned it to a single hauler — it can no longer be
+	/// at the worker cap, yet it produces almost nothing. The catchment is DEAD, not
+	/// merely strained. harvestableWheatNearby is -1 when unknown (game absent) —
+	/// guarded with >= 0. Shared by the fresh-patch trigger, its severity grade, and
+	/// the opening-ladder bypass in scoreSecondSwarm.
+	static bool swarmFieldDepleted(const TrackedBuilding& t)
+	{
+		return t.valid
+		    && t.harvestableWheatNearby >= 0
+		    && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES;
+	}
+
 	/// A swarm "wants a fresh wheat patch" when its current catchment can no longer
 	/// sustain it. Two faces of the same bottleneck:
 	///   (1) CAPPED-DRAINING: pinned at the worker cap (CORTEX_SWARM_WORKER_CAP) yet
 	///       its CORN buffer is still draining below the add-a-hauler line
 	///       (CORTEX_SWARM_CORN_ADD_LO) — demand outruns supply even at full haulers.
-	///   (2) FIELD-DEPLETED: its harvestable wheat has run out (harvestableWheatNearby
-	///       below CORTEX_SWARM_WHEAT_STARVED_TILES), so the wheat-starved throttle has
-	///       pinned it to a single hauler — it can no longer be at the worker cap, so
-	///       (1) can never fire for it again, yet it produces almost nothing.
+	///   (2) FIELD-DEPLETED: see swarmFieldDepleted — (1) can never fire for such a
+	///       swarm again (the throttle holds it below the cap).
 	/// Either way the fix is the same: expand onto a NEW patch with another swarm
 	/// rather than pour more labour (or more inns) onto an exhausted catchment. On a
 	/// boxed-in map like Muka the first swarm's field depletes mid-game, so (2) is the
 	/// dominant trigger; (1) catches the early "can't keep up at 7 workers" case.
-	/// harvestableWheatNearby is -1 when unknown (game absent) — guarded with >= 0.
 	static bool swarmWantsFreshPatch(const TrackedBuilding& t)
 	{
 		if (!t.valid)
 			return false;
 		const bool cappedDraining =
 			(t.maxUnitWorking >= CORTEX_SWARM_WORKER_CAP && t.corn < CORTEX_SWARM_CORN_ADD_LO);
-		const bool fieldDepleted =
-			(t.harvestableWheatNearby >= 0
-			 && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES);
-		return cappedDraining || fieldDepleted;
+		return cappedDraining || swarmFieldDepleted(t);
 	}
 
 	/// True if ANY tracked swarm wants a fresh wheat patch (see swarmWantsFreshPatch).
@@ -67,6 +75,18 @@ namespace Cortex
 	{
 		for (int i = 0; i < obs.swarmCount; i++)
 			if (swarmWantsFreshPatch(obs.trackedSwarms[i]))
+				return true;
+		return false;
+	}
+
+	/// True if ANY tracked swarm's catchment is FIELD-DEPLETED (see swarmFieldDepleted).
+	/// Strictly stronger than anySwarmWantsFreshPatch: only this face bypasses the
+	/// opening-ladder gate in scoreSecondSwarm — a merely CAPPED-DRAINING swarm still
+	/// waits for the full opening build-out.
+	static bool anySwarmFieldDepleted(const CortexObservation& obs)
+	{
+		for (int i = 0; i < obs.swarmCount; i++)
+			if (swarmFieldDepleted(obs.trackedSwarms[i]))
 				return true;
 		return false;
 	}
@@ -86,8 +106,7 @@ namespace Cortex
 			int sev = 0;
 			if (t.maxUnitWorking >= CORTEX_SWARM_WORKER_CAP && t.corn < CORTEX_SWARM_CORN_ADD_LO)
 				sev = CORTEX_SWARM_CORN_ADD_LO - t.corn; // corn in [0,4] -> 1..5
-			if (t.harvestableWheatNearby >= 0
-			 && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES)
+			if (swarmFieldDepleted(t))
 				sev = CORTEX_SWARM_CORN_ADD_LO; // exhausted catchment: max severity
 			if (sev > worst)
 				worst = sev;
@@ -229,9 +248,10 @@ namespace Cortex
 	// necessarily sits on a DIFFERENT patch within haul range — i.e. this fires
 	// exactly when "another wheat patch is found in relative proximity to the base".
 	// Placed AFTER the whole opening ladder (inn → school → racetrack → hospital →
-	// barracks) and gated on that ladder being finished (openingBuildOutDone), so a
-	// second swarm never disrupts the initial build run; gated on canExpand (spare
-	// idle workers, not in food trouble) so the new swarm has labour to staff it.
+	// barracks) and gated on that ladder being finished (openingBuildOutDone) — with
+	// ONE exception, the FIELD-DEPLETED ladder bypass below — so a second swarm never
+	// disrupts the initial build run; gated on canExpand (spare idle workers, not in
+	// food trouble) so the new swarm has labour to staff it.
 	//
 	// "Initial run done" means each core building TYPE has been built at least once
 	// (inn, school, racetrack, hospital, barracks all finished). We deliberately do
@@ -262,12 +282,27 @@ namespace Cortex
 	{
 		const bool openingBuildOutDone =
 		    f.inns >= 1 && f.school >= 1 && f.race >= 1 && f.heal >= 1 && f.barracks >= 1;
+		// FIELD-DEPLETED LADDER BYPASS. openingBuildOutDone protects the opening build
+		// run, but its completion tick varies wildly (a slow school alone can take 12k
+		// ticks), and a colony whose harvestable wheat has ALREADY run out gains nothing
+		// from finishing racetrack/hospital/barracks first — it sits pinned on a dead
+		// patch for thousands of ticks while the ladder crawls, which is exactly the
+		// traced Muka loss mechanism. When any swarm's catchment is FIELD-DEPLETED (the
+		// harvestable wheat is GONE, not merely capped-draining), expansion onto fresh
+		// wheat may not wait for the rest of the ladder. The bootstrap stays protected:
+		// f.inns >= 1 requires the FIRST inn actually FINISHED (economyEstablished alone
+		// admits an inn merely underway when freeWorkers > 0), and every other guard —
+		// economyEstablished, spare labour, swarm count/site gates, a valid fresh-wheat
+		// candidate — still applies. The weaker CAPPED-DRAINING face keeps waiting for
+		// the full ladder as before.
+		const bool fieldDepletedBypass = (f.inns >= 1 && anySwarmFieldDepleted(obs));
 		// economyEstablished (⊇ combatPhase) admits the foodSaturated famine slice; the
 		// only NEW firings vs the old combatPhase gate are established-AND-starving. We
 		// require only spare labour to STAFF the new swarm (freeWorkers > 0); the old
 		// canExpand's !hungry was already dropped (a wheat bottleneck makes the colony
 		// hungry, so requiring !hungry blocked the very swarm that would cure it).
-		if (f.economyEstablished && obs.freeWorkers > 0 && openingBuildOutDone
+		if (f.economyEstablished && obs.freeWorkers > 0
+		 && (openingBuildOutDone || fieldDepletedBypass)
 		 && anySwarmWantsFreshPatch(obs)
 		 && f.swarms >= 1 && f.swarms < CORTEX_MAX_TRACKED_SWARMS && f.swarmSites == 0)
 		{
