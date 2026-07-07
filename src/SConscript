@@ -45,6 +45,9 @@ ai/nicowar/Strategy.cpp
 ai/nicowar/Upgrade.cpp
 ai/AINull.cpp
 ai/AINumbi.cpp
+ai/AINumbiEconomy.cpp
+ai/AINumbiMilitary.cpp
+ai/AINumbiPlacement.cpp
 ai/AIWarrush.cpp
 ai/cortex/CortexObservation.cpp
 ai/cortex/CortexObservationObserve.cpp
