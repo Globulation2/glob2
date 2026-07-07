@@ -9,6 +9,7 @@
 class Game;
 
 //! Byte offset of the `total_ticks` Uint32 inside the sidecar header.
+//! All multi-byte integers in the sidecar are little-endian on disk.
 //! Header layout:
 //!   [0..3]   FILE_SIG_CHECKSUM_SIDECAR (4-byte ASCII magic)
 //!   [4..7]   numTeams (Uint32)

@@ -4,6 +4,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Building.h"
+#include <SDL_endian.h>
 #include <cstring>
 #include <vector>
 
@@ -17,13 +18,20 @@ ChecksumSidecarWriter::~ChecksumSidecarWriter()
 	close();
 }
 
+// The on-disk sidecar format is canonically little-endian (see
+// docs/replay-verification.md); the Rust reader in
+// glob2-sim/src/cross_replay/sidecar.rs decodes with from_le_bytes.
+// SDL_SwapLE* is a no-op on little-endian hosts, so sidecars written
+// before this conversion existed remain valid there.
 void ChecksumSidecarWriter::writeU16(Uint16 v)
 {
+	v = SDL_SwapLE16(v);
 	fwrite(&v, sizeof(v), 1, file);
 }
 
 void ChecksumSidecarWriter::writeU32(Uint32 v)
 {
+	v = SDL_SwapLE32(v);
 	fwrite(&v, sizeof(v), 1, file);
 }
 
