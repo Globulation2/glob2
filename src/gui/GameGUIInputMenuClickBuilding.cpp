@@ -149,7 +149,8 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		&& lmx<22)
 	{
 
-		// cleared ressources for clearing flags:
+		// cleared ressources for clearing flags: one checkbox row per clearable
+		// resource (stone is never cleared, so it has no row)
 		if (buildingType->type == "clearingflag")
 		{
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
@@ -172,10 +173,12 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 				}
 		}
 
+		// minimum warrior level for war flags: one radio row per warrior level;
+		// row i requests minLevelToFlag==i (drawn as level 1+i)
 		if (buildingType->type == "warflag")
 		{
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
-			for (int i=0; i<4; i++)
+			for (int i=0; i<NB_UNIT_LEVELS; i++)
 			{
 				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
@@ -188,14 +191,13 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 
 		}
 
+		// explorer requirement for exploration flags: one radio row per
+		// EXPLORATION_FLAG_OPTION_* value (see GameGUIInternal.h — the flag
+		// reuses minLevelToFlag as a which-explorers-may-answer choice)
 		if (buildingType->type == "explorationflag")
 		{
-			// we use minLevelToFlag as an int which says what magic effect at minimum an explorer
-			// must be able to do to be accepted at this flag
-			// 0 == any explorer
-			// 1 == must be able to attack ground
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
-			for (int i=0; i<2; i++)
+			for (int i=0; i<EXPLORATION_FLAG_OPTION_COUNT; i++)
 			{
 				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{

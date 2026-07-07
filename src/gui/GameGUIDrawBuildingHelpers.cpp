@@ -576,7 +576,8 @@ void GameGUI::drawBuildingFlagControls(Building* selBuild, BuildingType* buildin
 	if (!((selBuild->owner->allies) & (1<<localTeamNo)))
 		return;
 
-	// cleared ressources for clearing flags:
+	// cleared ressources for clearing flags: one checkbox row per clearable
+	// resource (stone is never cleared, so it has no row)
 	if (buildingType->type == "clearingflag")
 	{
 		ypos += YOFFSET_B_SEP;
@@ -598,14 +599,15 @@ void GameGUI::drawBuildingFlagControls(Building* selBuild, BuildingType* buildin
 				ypos+=YOFFSET_TEXT_PARA;
 			}
 	}
-	// min war level for war flags:
+	// min war level for war flags: one radio row per warrior level;
+	// row i means minLevelToFlag==i, shown to the player as level 1+i
 	else if (buildingType->type == "warflag")
 	{
 		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
 			Toolkit::getStringTable()->getString("[Min required level:]"));
 		ypos += YOFFSET_TEXT_PARA;
-		for (int i=0; i<4; i++)
+		for (int i=0; i<NB_UNIT_LEVELS; i++)
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont, 1+i);
 			int spriteId;
@@ -618,34 +620,34 @@ void GameGUI::drawBuildingFlagControls(Building* selBuild, BuildingType* buildin
 			ypos+=YOFFSET_TEXT_PARA;
 		}
 	}
+	// explorer requirement for exploration flags: one radio row per
+	// EXPLORATION_FLAG_OPTION_* value (see GameGUIInternal.h — the flag
+	// reuses minLevelToFlag as a which-explorers-may-answer choice)
 	else if (buildingType->type == "explorationflag")
 	{
-		int spriteId;
+		static const char* const optionKeys[EXPLORATION_FLAG_OPTION_COUNT] = {
+			"[any explorer]",  // EXPLORATION_FLAG_OPTION_ANY_EXPLORER
+			"[ground attack]", // EXPLORATION_FLAG_OPTION_GROUND_ATTACK
+		};
 
 		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
 			Toolkit::getStringTable()->getString("[Min required level:]"));
 		ypos += YOFFSET_TEXT_PARA;
 
-		// we use minLevelToFlag as an int which says what magic effect at minimum an explorer
-		// must be able to do to be accepted at this flag
-		// 0 == any explorer
-		// 1 == must be able to attack ground
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[any explorer]"));
-		if (displayedMinLevelToFlag(*selBuild) == 0)
-			spriteId = 20;
-		else
-			spriteId = 19;
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
+		for (int i=0; i<EXPLORATION_FLAG_OPTION_COUNT; i++)
+		{
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,
+				Toolkit::getStringTable()->getString(optionKeys[i]));
+			int spriteId;
+			if (displayedMinLevelToFlag(*selBuild) == i)
+				spriteId = 20;
+			else
+				spriteId = 19;
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
 
-		ypos += YOFFSET_TEXT_PARA;
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,Toolkit::getStringTable()->getString("[ground attack]"));
-		if (displayedMinLevelToFlag(*selBuild) == 1)
-			spriteId = 20;
-		else
-			spriteId = 19;
-		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
-		ypos += YOFFSET_TEXT_PARA;
+			ypos += YOFFSET_TEXT_PARA;
+		}
 	}
 }
 

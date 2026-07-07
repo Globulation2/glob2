@@ -71,6 +71,17 @@ using namespace GAGGUI;
 #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
 #define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
 
+// The exploration flag reuses Building::minLevelToFlag as a two-option choice
+// of which explorers may answer the flag (see Building::canUnitWorkHere):
+//   ANY_EXPLORER (0)  — any explorer is accepted
+//   GROUND_ATTACK (1) — only explorers that can cast ground attack
+// The option list drawn in the building panel (and its click hit-test) has one
+// row per option, in this order. War flags use minLevelToFlag literally as a
+// minimum warrior level, so their list has NB_UNIT_LEVELS rows instead.
+constexpr int EXPLORATION_FLAG_OPTION_ANY_EXPLORER = 0;
+constexpr int EXPLORATION_FLAG_OPTION_GROUND_ATTACK = 1;
+constexpr int EXPLORATION_FLAG_OPTION_COUNT = 2;
+
 // Geometry of the three-zone scrollbox widget used for worker count, flag
 // stay-range and swarm-ratio sliders. The visual strip is laid out as
 //   [<-arrow][===proportional drag track===][->arrow]
