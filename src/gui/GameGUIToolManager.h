@@ -6,6 +6,7 @@
 
 #include <memory>
 #include "Brush.h"
+#include <optional>
 #include <string>
 #include <queue>
 
@@ -87,8 +88,14 @@ private:
 	void computeBuildingBox(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode);
 
 
-	int firstPlacementX;
-	int firstPlacementY;
+	///Map coordinates recorded on mouse-down, the anchor for drag operations
+	///(building lines/boxes, zone brush alignment). Empty until the first click.
+	struct FirstPlacement
+	{
+		int x;
+		int y;
+	};
+	std::optional<FirstPlacement> firstPlacement;
 
 	Game& game;
 	BrushTool& brush;

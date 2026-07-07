@@ -21,8 +21,6 @@ GameGUIToolManager::GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefa
 	hilightStrength = 0;
 	mode = NoTool;
 	zoneType = Forbidden;
-	firstPlacementX=-1;
-	firstPlacementY=-1;
 }
 
 
@@ -31,8 +29,7 @@ void GameGUIToolManager::activateBuildingTool(const std::string& nbuilding)
 {
 	mode = PlaceBuilding;
 	building = nbuilding;
-	firstPlacementX = -1;
-	firstPlacementY = -1;
+	firstPlacement.reset();
 }
 
 
@@ -83,19 +80,19 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		
 		
 		SDL_Keymod modState = SDL_GetModState();
-		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || firstPlacementX==-1)
+		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
 		{
 			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
 		}
 		///This allows the drag-placing of walls
 		else if(modState & KMOD_CTRL)
 		{
-			computeBuildingLine(firstPlacementX, firstPlacementY, mapX, mapY, localteam, viewportX, viewportY, 1);
+			computeBuildingLine(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 1);
 		}
 		///This allows the placing of a square of buildings
 		else if(modState & KMOD_SHIFT)
 		{
-			computeBuildingBox(firstPlacementX, firstPlacementY, mapX, mapY, localteam, viewportX, viewportY, 1);
+			computeBuildingBox(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 1);
 		}
 	}
 	else if(mode == PlaceZone)
@@ -133,7 +130,10 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		case BrushTool::MODE_ADD:
 			break;
 		}
-		brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY, firstPlacementX, firstPlacementY);
+		if (firstPlacement)
+			brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY, firstPlacement->x, firstPlacement->y);
+		else
+			brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY);
 	}
 }
 
@@ -170,8 +170,7 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 		int tempX, tempY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
-		firstPlacementX=tempX;
-		firstPlacementY=tempY;
+		firstPlacement = FirstPlacement{tempX, tempY};
 	}
 	if(mode == PlaceZone)
 	{
@@ -181,10 +180,9 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 		int mapX, mapY;
 		game.map.displayToMapCaseAligned(mouseX, mouseY, &mapX, &mapY,  viewportX, viewportY);
 		
-		if(firstPlacementX == -1)
+		if(!firstPlacement)
 		{
-			firstPlacementX=mapX;
-			firstPlacementY=mapY;
+			firstPlacement = FirstPlacement{mapX, mapY};
 			brushAccumulator.firstX=mapX;
 			brushAccumulator.firstY=mapY;
 		}
@@ -219,23 +217,22 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
 		SDL_Keymod modState = SDL_GetModState();
-		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || firstPlacementX==-1)
+		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
 		{
 			placeBuildingAt(mapX, mapY, localteam);
 		}
 		///This allows the placing of a line of buildings
 		else if(modState & KMOD_CTRL)
 		{
-			computeBuildingLine(firstPlacementX, firstPlacementY, mapX, mapY, localteam, viewportX, viewportY, 2);
+			computeBuildingLine(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 2);
 		}
 		///This allows the placing of a square of buildings
 		else if(modState & KMOD_SHIFT)
 		{
-			computeBuildingBox(firstPlacementX, firstPlacementY, mapX, mapY, localteam, viewportX, viewportY, 2);
+			computeBuildingBox(firstPlacement->x, firstPlacement->y, mapX, mapY, localteam, viewportX, viewportY, 2);
 		}
 	}
-	firstPlacementX=-1;
-	firstPlacementY=-1;
+	firstPlacement.reset();
 }
 
 
@@ -276,6 +273,9 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 	int startY = mapY-BrushTool::getBrushDimYMinus(fig);
 	int width  = BrushTool::getBrushWidth(fig);
 	int height = BrushTool::getBrushHeight(fig);
+	// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
+	const int firstX = firstPlacement ? firstPlacement->x : -1;
+	const int firstY = firstPlacement ? firstPlacement->y : -1;
 	// we update local values
 	if (brush.getType() == BrushTool::MODE_ADD)
 	{
@@ -283,7 +283,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					if (zoneType == Forbidden)
 						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
@@ -301,7 +301,7 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstPlacementX, firstPlacementY))
+				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					if (zoneType == Forbidden)
 						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
