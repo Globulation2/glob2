@@ -148,7 +148,6 @@ SetAllianceOrder::SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, Uint32 
 
 Uint8 *SetAllianceOrder::getData(void)
 {
-	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->teamNumber, 0);
 	addUint32(data, this->alliedMask, 4);
 	addUint32(data, this->enemyMask, 8);
@@ -190,7 +189,6 @@ MapMarkOrder::MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y)
 
 Uint8 *MapMarkOrder::getData(void)
 {
-	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->teamNumber, 0);
 	addSint32(data, this->x, 4);
 	addSint32(data, this->y, 8);
@@ -226,7 +224,6 @@ PauseGameOrder::PauseGameOrder(bool pause)
 
 Uint8 *PauseGameOrder::getData(void)
 {
-	assert(sizeof(data) == getDataLength());
 	data[0]=(Uint8)pause;
 	return data;
 }
@@ -256,7 +253,6 @@ PlayerQuitsGameOrder::PlayerQuitsGameOrder(Sint32 player)
 
 Uint8 *PlayerQuitsGameOrder::getData(void)
 {
-	assert(sizeof(data) == getDataLength());
 	addUint32(data, this->player, 0);
 	return data;
 }
@@ -288,7 +284,6 @@ AdjustLatency::AdjustLatency(Uint16 latencyAdjustment)
 
 Uint8 *AdjustLatency::getData(void)
 {
-	assert(sizeof(data) == getDataLength());
 	addUint16(data, this->latencyAdjustment, 0);
 	return data;
 }

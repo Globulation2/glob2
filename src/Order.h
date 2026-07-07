@@ -589,7 +589,7 @@ public:
 	Uint8 getOrderType(void) { return ORDER_SET_ALLIANCE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 24; }
+	int getDataLength(void) { return DATA_LENGTH; }
 
 	Uint32 teamNumber;
 	Uint32 alliedMask;
@@ -599,7 +599,9 @@ public:
 	Uint32 visionOtherMask;
 
  protected:
-	Uint8 data[24];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 24;
+	Uint8 data[DATA_LENGTH];
 };
 
 class MapMarkOrder:public MiscOrder
@@ -615,14 +617,16 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MAP_MARK; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 12; }
+	int getDataLength(void) { return DATA_LENGTH; }
 
 	Uint32 teamNumber;
 	Sint32 x;
 	Sint32 y;
 
 private:
-	Uint8 data[12];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 12;
+	Uint8 data[DATA_LENGTH];
 };
 
 // Net orders
@@ -640,12 +644,14 @@ public:
 	Uint8 getOrderType(void) { return ORDER_PAUSE_GAME; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 1; }
+	int getDataLength(void) { return DATA_LENGTH; }
 
 	bool pause;
-	
+
 private:
-	Uint8 data[1];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 1;
+	Uint8 data[DATA_LENGTH];
 };
 
 class PlayerQuitsGameOrder:public MiscOrder
@@ -661,12 +667,14 @@ public:
 	Uint8 getOrderType(void) { return ORDER_PLAYER_QUIT_GAME; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 4; }
-	
+	int getDataLength(void) { return DATA_LENGTH; }
+
 	Sint32 player;
-	
+
 private:
-	Uint8 data[4];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 4;
+	Uint8 data[DATA_LENGTH];
 };
 
 
@@ -683,11 +691,13 @@ public:
 	Uint8 getOrderType(void) { return ORDER_ADJUST_LATENCY; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 2; }
-	
+	int getDataLength(void) { return DATA_LENGTH; }
+
 	Uint16 latencyAdjustment;
-	
+
 private:
-	Uint8 data[2];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 2;
+	Uint8 data[DATA_LENGTH];
 };
  
