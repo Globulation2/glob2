@@ -47,7 +47,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 		}
 		else if(par1==START)
 		{
-			CampaignMapEntry* selected = campaign.findUnlockedMap(availableMissions->get());
+			CampaignMapEntry* selected = getSelectedMission();
 			if (selected)
 			{
 				Engine engine;
@@ -83,13 +83,25 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action == LIST_ELEMENT_SELECTED)
 	{
-		CampaignMapEntry* selected = campaign.findUnlockedMap(availableMissions->get());
+		CampaignMapEntry* selected = getSelectedMission();
 		if (selected)
 		{
 			mapPreview->setMapThumbnail(selected->getMapFileName().c_str());
 			description->setText(Toolkit::getStringTable()->getString(selected->getDescription()));
 		}
 	}
+}
+
+
+
+CampaignMapEntry* CampaignMenuScreen::getSelectedMission()
+{
+	// List::get() asserts (and is undefined behavior in release builds) when the
+	// list has no selection. The list starts unselected and repopulateAvailableMissions()
+	// clears the selection after every mission run, so guard before dereferencing it.
+	if (availableMissions->getSelectionIndex() < 0)
+		return nullptr;
+	return campaign.findUnlockedMap(availableMissions->get());
 }
 
 
