@@ -404,4 +404,25 @@ private:
 	bool decideTraceOpenAttempted;
 	void dumpDecideTrace(const Cortex::CortexObservation& obs,
 	                     const Cortex::DecideTrace& trace);
+
+	/// INN DIAGNOSTIC TRACE (gated, not serialized, never read by the policy, emits
+	/// no Order). When GLOB2_CORTEX_INN_TRACE=<abs prefix> is set, every decision
+	/// cycle appends one CSV row per valid tracked INN to <prefix>.team<N>.csv — the
+	/// inn-side companion to the swarm worker trace, for debugging worker allocation
+	/// to inns (restock demand, wheat gate, the production-mix tiers). Each row is the
+	/// inn's observed state this cycle (corn buffer, restockTripsNeeded, wheat
+	/// diagnostics), the worker cap the tune action chose (or the current one when it
+	/// left the inn unchanged), and the colony-level context + tier facts (recomputed
+	/// via the pure CortexPolicy::computeFacts, since getOrder() has no DecideFacts to
+	/// pass through). Pure read of the observation + the already-computed tune action;
+	/// opening and writing a file touches no RNG/order/sync state, so the lockstep
+	/// stream is unaffected. SEPARATE file handle + open-attempt guard from the worker
+	/// and decision traces (distinct CSV, distinct schema). GLOB2_CORTEX_INN_TRACE MUST
+	/// be an ABSOLUTE path (glob2 chdir()s at startup); on open failure it warns once
+	/// and disables rather than retrying every cycle. `tune` is the action returned by
+	/// CortexPolicy::tuneWorkers this cycle.
+	std::FILE* innTraceFile;
+	bool innTraceOpenAttempted;
+	void dumpInnTrace(const Cortex::CortexObservation& obs,
+	                  const Cortex::CortexAction& tune);
 };

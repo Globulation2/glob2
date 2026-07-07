@@ -306,3 +306,93 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 	std::fputs(text.c_str(), decideTraceFile);
 	std::fflush(decideTraceFile); // once per ~25 ticks; survive a killed headless run.
 }
+
+// INN DIAGNOSTIC TRACE (docs debugging Cortex-vs-Nicowar worker allocation to inns).
+// The inn-side companion to dumpWorkerTrace: appends one CSV row per valid tracked
+// inn to <prefix>.team<N>.csv, where <prefix> is GLOB2_CORTEX_INN_TRACE. Each row is
+// the inn's observed state this decision cycle (corn buffer, restock demand, the
+// forbidden-blind/aware wheat diagnostics), the worker cap the tune action chose (the
+// same `desired` convention as the swarm trace), plus colony-level context and the
+// production-mix tier facts. The tiers are recomputed here via the pure
+// CortexPolicy::computeFacts because getOrder() has no DecideFacts to pass through
+// (decide() builds one internally) — re-deriving it is byte-identical and avoids
+// duplicating the tier formula. Pure read of obs + the tune action already computed
+// for gameplay; opening/writing a file never touches RNG, orders, or persisted state,
+// so the lockstep sync stream is unaffected. SEPARATE FILE* handle + open-attempt
+// guard from the worker/decision traces (distinct CSV, distinct schema).
+//
+// NOTE: fputs (not fprintf) — LogFileManager.h rewrites every fprintf in this TU to a
+// dead-code no-op (see glob2/CLAUDE.md), which would silently drop the trace.
+void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
+                            const Cortex::CortexAction& tune)
+{
+	using namespace Cortex;
+	const int me = player->team->teamNumber;
+
+	if (!innTraceFile)
+	{
+		if (innTraceOpenAttempted) return; // already tried (and failed) once; do not retry.
+		innTraceOpenAttempted = true;
+		const char* prefix = getenv("GLOB2_CORTEX_INN_TRACE");
+		if (!prefix || !prefix[0]) return;
+		std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
+		innTraceFile = std::fopen(path.c_str(), "a");
+		if (!innTraceFile)
+		{
+			// glob2 chdir()s to its resource dir at startup, so a relative prefix
+			// resolves there, not in the launch dir — pass an ABSOLUTE path. Warn
+			// once (innTraceOpenAttempted gate above) rather than silently dumping nothing.
+			std::cerr << "CORTEX_INN_TRACE: cannot open '" << path
+			          << "' for the inn-diagnostic trace — pass an ABSOLUTE GLOB2_CORTEX_INN_TRACE"
+			             " path (glob2 chdir()s at startup). Trace disabled.\n";
+			return;
+		}
+		// "a" positions at end, so a non-zero offset means the file already has rows;
+		// only the first writer emits the header.
+		if (std::ftell(innTraceFile) == 0)
+			std::fputs("tick,team,inn_index,gid,corn,maxCorn,maxUnitWorking,unitsInside,"
+			           "maxUnitInside,nearestWheatDist,harvestableWheatNearby,"
+			           "diagBlindCornNearby,restockTripsNeeded,priority,ticksSinceFinished,"
+			           "desired,freeWorkers,workers,warriors,totalUnit,feedCapacity,"
+			           "starvingUnits,needFood,growWorker,growWarrior,tierBase,tierMid,"
+			           "tierNeeds\n", innTraceFile);
+	}
+
+	// Recompute the production-mix tier facts (CortexPolicy.cpp:205-269) from the pure
+	// computeFacts: tierBase = the hauler floor (Σ swarm+inn maxUnitWorking +
+	// WORKER_TARGET_BUFFER, == f.workersNeeded), tierNeeds = full staffable demand
+	// (obs.workers + fillableNeeded), tierMid = halfway between. growWorker/growWarrior
+	// are the resulting production slices this cycle.
+	const CortexPolicy::DecideFacts f = CortexPolicy::computeFacts(obs);
+	const int tierBase  = f.workersNeeded;
+	const int tierNeeds = obs.workers + f.fillableNeeded;
+	const int tierMid   = tierBase + (tierNeeds - tierBase) / 2;
+
+	const bool haveTune = (tune.kind == ACTION_TUNE_WORKERS);
+	std::ostringstream row;
+	for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
+	{
+		const TrackedBuilding& n = obs.trackedInns[i];
+		if (!n.valid) continue;
+		// The cap the tune chose this cycle: tune.innWorkers[i] when it set one (>= 0),
+		// else the inn is left unchanged at its current maxUnitWorking.
+		const int desired = (haveTune && tune.innWorkers[i] >= 0)
+		                  ? tune.innWorkers[i] : n.maxUnitWorking;
+		row << obs.tick << ',' << me << ',' << i << ',' << n.gid << ','
+		    << n.corn << ',' << n.maxCorn << ',' << n.maxUnitWorking << ','
+		    << n.unitsInside << ',' << n.maxUnitInside << ','
+		    << n.nearestWheatDist << ',' << n.harvestableWheatNearby << ','
+		    << n.diagBlindCornNearby << ',' << n.restockTripsNeeded << ','
+		    << n.priority << ',' << n.ticksSinceFinished << ',' << desired << ','
+		    << obs.freeWorkers << ',' << obs.workers << ',' << obs.warriors << ','
+		    << obs.totalUnit << ',' << obs.feedCapacity << ',' << obs.starvingUnits << ','
+		    << obs.needFood << ',' << f.growWorker << ',' << f.growWarrior << ','
+		    << tierBase << ',' << tierMid << ',' << tierNeeds << '\n';
+	}
+	const std::string text = row.str();
+	if (!text.empty())
+	{
+		std::fputs(text.c_str(), innTraceFile);
+		std::fflush(innTraceFile); // once per ~25 ticks; survive a killed headless run.
+	}
+}

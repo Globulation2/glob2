@@ -44,6 +44,8 @@ AICortex::~AICortex()
 		std::fclose(traceFile);
 	if (decideTraceFile) // flush + release the gated decision trace (RAM-only handle).
 		std::fclose(decideTraceFile);
+	if (innTraceFile) // flush + release the gated inn-diagnostic trace (RAM-only handle).
+		std::fclose(innTraceFile);
 }
 
 void AICortex::init(Player* player)
@@ -70,6 +72,8 @@ void AICortex::init(Player* player)
 	traceOpenAttempted = false; // open the trace at most once, even if it fails.
 	decideTraceFile = nullptr; // gated ML decision trace; lazily opened, never serialized.
 	decideTraceOpenAttempted = false; // open the decision trace at most once, even if it fails.
+	innTraceFile = nullptr; // gated inn-diagnostic trace; lazily opened, never serialized.
+	innTraceOpenAttempted = false; // open the inn trace at most once, even if it fails.
 	innFinishedTick.clear(); // RAM-only inn settle clock; rebuilt as inns are seen.
 	swarmKickstarted = false; // start-of-game swarm worker kickstart not yet done.
 }
@@ -553,6 +557,12 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// docs/AI/cortex/PILOT.md.
 		if (getenv("GLOB2_CORTEX_TRACE"))
 			dumpWorkerTrace(obs, tune);
+
+		// INN DIAGNOSTIC TRACE (gated): the inn-side companion to the worker trace,
+		// for debugging worker allocation to inns. Pure read of obs + the same tune
+		// action; writing a file touches no RNG/order/sync state. See dumpInnTrace.
+		if (getenv("GLOB2_CORTEX_INN_TRACE"))
+			dumpInnTrace(obs, tune);
 
 		// Wheat-forbidden upkeep runs EVERY decision cycle, in PARALLEL with the
 		// primary action above — it is not an ACTION_* the build/upgrade/offense

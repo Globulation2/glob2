@@ -6,6 +6,11 @@
 #include "CortexTypes.h"
 #include "CortexNet.h"
 
+// Owning AI class (global namespace) — befriended by CortexPolicy below so its
+// gated inn-diagnostic trace can reuse the private, pure computeFacts(). Forward
+// declaration only; CortexPolicy stays free of any engine include.
+class AICortex;
+
 // AICortex policy layer. Maps an Observation to an Action intent and NOTHING
 // else. It must not include Game.h / Team.h / Order.h or touch any engine
 // pointer — its entire input is the CortexObservation, its entire output is a
@@ -140,6 +145,13 @@ namespace Cortex
 
 	class CortexPolicy
 	{
+		// AICortex's gated inn-diagnostic trace (AICortex::dumpInnTrace) recomputes the
+		// production-mix tier facts for its CSV by calling the private, pure static
+		// computeFacts(). getOrder() has no DecideFacts to pass through (decide() builds
+		// it internally), so the trace re-derives it exactly rather than duplicating the
+		// tier formula. Read-only, diagnostic use — no policy logic or public API widened.
+		friend class ::AICortex;
+
 	public:
 		/// Number of features in the decide() feature vector (the ML decision-net
 		/// input width). The single source of truth for the trace CSV columns and
