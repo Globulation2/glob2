@@ -277,39 +277,17 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 	const int firstX = firstPlacement ? firstPlacement->x : -1;
 	const int firstY = firstPlacement ? firstPlacement->y : -1;
 	// we update local values
-	if (brush.getType() == BrushTool::MODE_ADD)
+	const unsigned brushMode = brush.getType();
+	if (brushMode == BrushTool::MODE_ADD || brushMode == BrushTool::MODE_DEL)
 	{
+		const bool value = (brushMode == BrushTool::MODE_ADD);
+		Utilities::BitArray& view = displayedViewForZone(zoneType);
 		for (int y=startY; y<startY+height; y++)
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
-				{
-					if (zoneType == Forbidden)
-						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					else if (zoneType == Guard)
-						game.map.displayedGuardAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-					else if (zoneType == Clearing)
-						game.map.displayedClearAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), true);
-				}
-			}
-		}
-	}
-	else if (brush.getType() == BrushTool::MODE_DEL)
-	{
-		for (int y=startY; y<startY+height; y++)
-		{
-			for (int x=startX; x<startX+width; x++)
-			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
-				{
-					if (zoneType == Forbidden)
-						game.map.displayedForbiddenView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					else if (zoneType == Guard)
-						game.map.displayedGuardAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-					else if (zoneType == Clearing)
-						game.map.displayedClearAreaView.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), false);
-				}
+					view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), value);
 			}
 		}
 	}
@@ -319,6 +297,23 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 	{
 		flushBrushOrders(localteam);
 	}
+}
+
+
+
+Utilities::BitArray& GameGUIToolManager::displayedViewForZone(ZoneType type)
+{
+	switch (type)
+	{
+	case Forbidden:
+		return game.map.displayedForbiddenView;
+	case Guard:
+		return game.map.displayedGuardAreaView;
+	case Clearing:
+		return game.map.displayedClearAreaView;
+	}
+	assert(false);
+	return game.map.displayedForbiddenView;
 }
 
 

@@ -15,6 +15,11 @@ class GameGUIDefaultAssignManager;
 class GameGUIGhostBuildingManager;
 class Order;
 
+namespace Utilities
+{
+	class BitArray;
+}
+
 ///This class is meant to manage the game gui tool, such as placing a building, flag or zone
 class GameGUIToolManager
 {
@@ -73,6 +78,9 @@ public:
 private:
 	///Handles placing a zone on the map
 	void handleZonePlacement(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
+
+	///Returns the local (display-only) map overlay for the given zone type
+	Utilities::BitArray& displayedViewForZone(ZoneType type);
 
 	///Flushes an order for the current brush accumulator
 	void flushBrushOrders(int localteam);
