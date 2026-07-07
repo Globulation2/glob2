@@ -444,7 +444,11 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 	objectives = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[objectives]"));
 	briefing = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[briefing]"));
 	hints = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[hints]"));
-	
+
+	std::vector<Widget*>& objectivesWidgets = widgetsForTab(OBJECTIVES);
+	std::vector<Widget*>& briefingWidgets = widgetsForTab(BRIEFING);
+	std::vector<Widget*>& hintsWidgets = widgetsForTab(HINTS);
+
 	objectivesWidgets.push_back(objectives);
 	briefingWidgets.push_back(briefing);
 	hintsWidgets.push_back(hints);
@@ -542,22 +546,13 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 	}
 	
 	//Add the widgets to the menu
-	for(unsigned int i=0; i<objectivesWidgets.size(); i++)
+	for(int tab=0; tab<TAB_COUNT; tab++)
 	{
-		objectivesWidgets[i]->visible=!showBriefing;
-		addWidget(objectivesWidgets[i]);
+		for(unsigned int i=0; i<tabWidgets[tab].size(); i++)
+			addWidget(tabWidgets[tab][i]);
 	}
-	for(unsigned int i=0; i<briefingWidgets.size(); i++)
-	{
-		briefingWidgets[i]->visible=showBriefing;
-		addWidget(briefingWidgets[i]);
-	}
-	for(unsigned int i=0; i<hintsWidgets.size(); i++)
-	{
-		hintsWidgets[i]->visible=false;
-		addWidget(hintsWidgets[i]);
-	}
-	
+	showTab(showBriefing ? BRIEFING : OBJECTIVES);
+
 	// add ok button
 	addWidget(new TextButton(0, 340, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	dispatchInit();
@@ -573,51 +568,30 @@ void InGameObjectivesScreen::onAction(Widget *source, Action action, int par1, i
 		{
 			endValue=par1;
 		}
-		else if(par1 == OBJECTIVES)
+		else if(par1 == OBJECTIVES || par1 == BRIEFING || par1 == HINTS)
 		{
-			for(unsigned int i=0; i<objectivesWidgets.size(); i++)
-			{
-				objectivesWidgets[i]->visible=true;
-			}
-			for(unsigned int i=0; i<briefingWidgets.size(); i++)
-			{
-				briefingWidgets[i]->visible=false;
-			}
-			for(unsigned int i=0; i<hintsWidgets.size(); i++)
-			{
-				hintsWidgets[i]->visible=false;
-			}
+			showTab(par1);
 		}
-		else if(par1 == BRIEFING)
-		{
-			for(unsigned int i=0; i<objectivesWidgets.size(); i++)
-			{
-				objectivesWidgets[i]->visible=false;
-			}
-			for(unsigned int i=0; i<briefingWidgets.size(); i++)
-			{
-				briefingWidgets[i]->visible=true;
-			}
-			for(unsigned int i=0; i<hintsWidgets.size(); i++)
-			{
-				hintsWidgets[i]->visible=false;
-			}
-		}
-		else if(par1 == HINTS)
-		{
-			for(unsigned int i=0; i<objectivesWidgets.size(); i++)
-			{
-				objectivesWidgets[i]->visible=false;
-			}
-			for(unsigned int i=0; i<briefingWidgets.size(); i++)
-			{
-				briefingWidgets[i]->visible=false;
-			}
-			for(unsigned int i=0; i<hintsWidgets.size(); i++)
-			{
-				hintsWidgets[i]->visible=true;
-			}
-		}
+	}
+}
+
+
+
+std::vector<Widget*>& InGameObjectivesScreen::widgetsForTab(int tab)
+{
+	assert(tab >= FIRST_TAB && tab < FIRST_TAB + TAB_COUNT);
+	return tabWidgets[tab - FIRST_TAB];
+}
+
+
+
+void InGameObjectivesScreen::showTab(int tab)
+{
+	for(int t=0; t<TAB_COUNT; t++)
+	{
+		bool isShownTab = (FIRST_TAB + t == tab);
+		for(unsigned int i=0; i<tabWidgets[t].size(); i++)
+			tabWidgets[t][i]->visible = isShownTab;
 	}
 }
 

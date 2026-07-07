@@ -123,18 +123,26 @@ public:
 		HINTS = 3,
 		OK = 4,
 	};
+	enum
+	{
+		FIRST_TAB = OBJECTIVES,
+		TAB_COUNT = 3,
+	};
 public:
 	//If show briefing is enabled, then the briefing tab will be shown rather than the objectives tab
 	InGameObjectivesScreen(GameGUI* gui, bool showBriefing);
 	virtual ~InGameObjectivesScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	
+
 	Text* objectives;
 	Text* briefing;
 	Text* hints;
-	std::vector<Widget*> objectivesWidgets;
-	std::vector<Widget*> briefingWidgets;
-	std::vector<Widget*> hintsWidgets;
+	///The widgets belonging to each tab, indexed by tab id minus FIRST_TAB
+	std::vector<Widget*> tabWidgets[TAB_COUNT];
+	///Returns the widgets belonging to the given tab (OBJECTIVES, BRIEFING or HINTS)
+	std::vector<Widget*>& widgetsForTab(int tab);
+	///Makes the given tab's widgets visible and hides those of the other tabs
+	void showTab(int tab);
 };
 
 
