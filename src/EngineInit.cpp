@@ -142,8 +142,15 @@ int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, st
 {
 	gui.localPlayer = localPlayer;
 	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
+
+	// On failure, initGame has not created `net`; propagate the error before
+	// touching it, and leave `multiplayer` unset so the engine is not left
+	// half-initialised (mirrors the clean state teardownSession leaves).
+	int ret = initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
+	if (ret != EE_NO_ERROR)
+		return ret;
+
 	multiplayer = multiplayerGame;
-	initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
 	multiplayer->setNetEngine(net);
 
 	for (int p=0; p<multiplayerGame->getGameHeader().getNumberOfPlayers(); p++)
