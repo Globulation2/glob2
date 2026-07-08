@@ -39,8 +39,7 @@ namespace Cortex
 	/// wheat-starved throttle has pinned it to a single hauler — it can no longer be
 	/// at the worker cap, yet it produces almost nothing. The catchment is DEAD, not
 	/// merely strained. harvestableWheatNearby is -1 when unknown (game absent) —
-	/// guarded with >= 0. Shared by the fresh-patch trigger, its severity grade, and
-	/// the opening-ladder bypass in scoreSecondSwarm.
+	/// guarded with >= 0. Shared by the fresh-patch trigger and its severity grade.
 	static bool swarmFieldDepleted(const TrackedBuilding& t)
 	{
 		return t.valid
@@ -75,18 +74,6 @@ namespace Cortex
 	{
 		for (int i = 0; i < obs.swarmCount; i++)
 			if (swarmWantsFreshPatch(obs.trackedSwarms[i]))
-				return true;
-		return false;
-	}
-
-	/// True if ANY tracked swarm's catchment is FIELD-DEPLETED (see swarmFieldDepleted).
-	/// Strictly stronger than anySwarmWantsFreshPatch: only this face bypasses the
-	/// opening-ladder gate in scoreSecondSwarm — a merely CAPPED-DRAINING swarm still
-	/// waits for the full opening build-out.
-	static bool anySwarmFieldDepleted(const CortexObservation& obs)
-	{
-		for (int i = 0; i < obs.swarmCount; i++)
-			if (swarmFieldDepleted(obs.trackedSwarms[i]))
 				return true;
 		return false;
 	}
@@ -226,9 +213,11 @@ namespace Cortex
 	// --- Priority 2.5: swarm RECOVERY only. We deliberately do NOT build a
 	// second swarm for now (may revisit) — a team starts with one swarm, so this
 	// fires only if that swarm was destroyed, restoring the ability to produce.
+	// A finished first inn is required so the rebuild happens behind a working
+	// feed loop — that precondition is GATE_BOOTSTRAP in decide()'s gate table.
 	ScoredAction CortexPolicy::scoreSwarmRecovery(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.swarms == 0 && f.swarmSites == 0 && f.inns > 0)
+		if (f.swarms == 0 && f.swarmSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)
@@ -247,19 +236,31 @@ namespace Cortex
 	// between swarms AND CORTEX_WHEAT_MAX_DIST to CORN, so a VALID swarm candidate
 	// necessarily sits on a DIFFERENT patch within haul range — i.e. this fires
 	// exactly when "another wheat patch is found in relative proximity to the base".
-	// Placed AFTER the whole opening ladder (inn → school → racetrack → hospital →
-	// barracks) and gated on that ladder being finished (openingBuildOutDone) — with
-	// ONE exception, the FIELD-DEPLETED ladder bypass below — so a second swarm never
-	// disrupts the initial build run; gated on canExpand (spare idle workers, not in
-	// food trouble) so the new swarm has labour to staff it.
+	// EXPANSION IS DECIDED BY RANKING, NOT LADDER COMPLETION. There is deliberately
+	// no "opening build-out finished" precondition serializing the second swarm
+	// behind the tech ladder (school/racetrack/hospital/barracks). A hard ladder
+	// gate couples expansion to preconditions that have nothing to do with wheat:
+	// the school (correctly) hard-waits on reachable algae, so on a map where algae
+	// is discovered late the ladder can sit incomplete for tens of thousands of
+	// ticks — vetoing expansion the whole time even when fresh wheat is in reach
+	// and the catchment is the real constraint, which loses the macro game against
+	// a multi-swarm boom. When expansion should win a cycle is already encoded in
+	// this scorer's own machinery: anySwarmWantsFreshPatch is the desire gate (no
+	// swarm is added until an existing catchment genuinely cannot keep up), the
+	// severity grade lifts the score above the tech band exactly when wheat is the
+	// binding constraint, and the famine score handles the trap-escape case — so
+	// against the tech candidates the second swarm competes on urgency, not on
+	// ladder position. Bootstrap protection lives in decide()'s gate table
+	// (GATE_BOOTSTRAP: the first inn must actually FINISH before any expansion) and
+	// staffing discipline is GATE_LABOR (spare labour, so the new swarm never
+	// steals the haulers that keep the buffers full).
 	//
-	// "Initial run done" means each core building TYPE has been built at least once
-	// (inn, school, racetrack, hospital, barracks all finished). We deliberately do
-	// NOT also require zero in-flight sites of those types: Cortex's feed-led growth
-	// builds inns indefinitely, so an inn site is almost always pending — gating on
-	// "no sites" would make this unsatisfiable on a healthy, ever-expanding colony.
-	// The swarmSites==0 guard alone prevents queuing two swarms at once.
-	// FRESH-PATCH GATE: also hold until an existing swarm genuinely cannot keep up —
+	// We deliberately do NOT require zero in-flight sites of the core building
+	// types: Cortex's feed-led growth builds inns indefinitely, so an inn site is
+	// almost always pending — gating on "no sites" would make this unsatisfiable on
+	// a healthy, ever-expanding colony. The swarmSites==0 guard alone prevents
+	// queuing two swarms at once.
+	// FRESH-PATCH GATE: hold until an existing swarm genuinely cannot keep up —
 	// its wheat catchment is the bottleneck, either pinned at the worker cap with a
 	// draining CORN buffer OR its harvestable wheat exhausted (anySwarmWantsFreshPatch).
 	// Until then a single swarm + more haulers is the cheaper answer; only a spent
@@ -273,36 +274,22 @@ namespace Cortex
 	// clearing room for could never fire, so the colony stacked inns on the dead field
 	// and starved in place. Admitting foodSaturated lets the established-but-starving
 	// colony relocate onto the fresh patch this candidate sits on. We still require
-	// spare labour (freeWorkers > 0) to STAFF it — without it relocation declines rather
-	// than steal the haulers that keep the buffers full — and a VALID candidate (slot >= 0)
-	// guarantees genuinely fresh wheat to move to, so we never pour labour onto a dead
-	// field. Healthy (combatPhase) colonies are unchanged: same graded score as before,
-	// so non-famine behaviour (and its replays) is byte-identical.
+	// spare labour (freeWorkers >= 1, GATE_LABOR) to STAFF it — without it relocation
+	// declines rather than steal the haulers that keep the buffers full — and a VALID
+	// candidate (slot >= 0) guarantees genuinely fresh wheat to move to, so we never
+	// pour labour onto a dead field. Healthy (combatPhase) colonies keep the graded
+	// severity score; only the famine slice takes SCORE_SECOND_SWARM_FAMINE.
 	ScoredAction CortexPolicy::scoreSecondSwarm(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		const bool openingBuildOutDone =
-		    f.inns >= 1 && f.school >= 1 && f.race >= 1 && f.heal >= 1 && f.barracks >= 1;
-		// FIELD-DEPLETED LADDER BYPASS. openingBuildOutDone protects the opening build
-		// run, but its completion tick varies wildly (a slow school alone can take 12k
-		// ticks), and a colony whose harvestable wheat has ALREADY run out gains nothing
-		// from finishing racetrack/hospital/barracks first — it sits pinned on a dead
-		// patch for thousands of ticks while the ladder crawls, which is exactly the
-		// traced Muka loss mechanism. When any swarm's catchment is FIELD-DEPLETED (the
-		// harvestable wheat is GONE, not merely capped-draining), expansion onto fresh
-		// wheat may not wait for the rest of the ladder. The bootstrap stays protected:
-		// f.inns >= 1 requires the FIRST inn actually FINISHED (economyEstablished alone
-		// admits an inn merely underway when freeWorkers > 0), and every other guard —
-		// economyEstablished, spare labour, swarm count/site gates, a valid fresh-wheat
-		// candidate — still applies. The weaker CAPPED-DRAINING face keeps waiting for
-		// the full ladder as before.
-		const bool fieldDepletedBypass = (f.inns >= 1 && anySwarmFieldDepleted(obs));
-		// economyEstablished (⊇ combatPhase) admits the foodSaturated famine slice; the
-		// only NEW firings vs the old combatPhase gate are established-AND-starving. We
-		// require only spare labour to STAFF the new swarm (freeWorkers > 0); the old
-		// canExpand's !hungry was already dropped (a wheat bottleneck makes the colony
-		// hungry, so requiring !hungry blocked the very swarm that would cure it).
-		if (f.economyEstablished && obs.freeWorkers > 0
-		 && (openingBuildOutDone || fieldDepletedBypass)
+		// economyEstablished (⊇ combatPhase) admits the foodSaturated famine slice
+		// (a mature colony may relocate while starving). The bootstrap stays
+		// protected by GATE_BOOTSTRAP in decide()'s gate table (economyEstablished
+		// alone admits an inn merely underway when freeWorkers > 0; the gate
+		// requires the FIRST inn actually FINISHED), and spare labour to STAFF the
+		// new swarm is GATE_LABOR; canExpand's !hungry is deliberately not required
+		// (a wheat bottleneck makes the colony hungry, so requiring !hungry would
+		// block the very swarm that cures it).
+		if (f.economyEstablished
 		 && anySwarmWantsFreshPatch(obs)
 		 && f.swarms >= 1 && f.swarms < CORTEX_MAX_TRACKED_SWARMS && f.swarmSites == 0)
 		{

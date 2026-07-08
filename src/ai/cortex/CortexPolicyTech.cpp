@@ -150,15 +150,16 @@ namespace Cortex
 	// exactly when a famine army most needs HP sustain. economyEstablished drops the
 	// !starving freeze, so the hospital provisions proactively in peace and stays
 	// available through a famine rather than vanishing on the first hungry tick.
-	// freeWorkers>0 replaces canExpand as the staffing discipline: canExpand folds in
-	// !starving/!hungry too, which would re-impose the same freeze; the spare-labour
-	// term alone keeps the build crew off idle hands and never steals feeding haulers.
+	// Spare labour (GATE_LABOR in decide()'s gate table) replaces canExpand as the
+	// staffing discipline: canExpand folds in !starving/!hungry too, which would
+	// re-impose the same freeze; the spare-labour term alone keeps the build crew
+	// off idle hands and never steals feeding haulers.
 	// Hospitals stay at tech-band scores, so survival (blitz / relocation / feeding)
 	// still outranks them during a famine — correct, since a hospital heals HP, not
 	// hunger.
 	ScoredAction CortexPolicy::scoreHospital(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.economyEstablished && obs.freeWorkers > 0 && f.heal == 0 && f.healSites == 0)
+		if (f.economyEstablished && f.heal == 0 && f.healSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
@@ -325,9 +326,11 @@ namespace Cortex
 	// is wanted but unsafe we build ONE spare inn first to create it (the added inn
 	// is at the current max level, ≥ the lowest-level inn we'd upgrade, so one spare
 	// suffices). Priority 2 remains the backstop if growth erodes the slack mid-blackout.
+	// The finished-first-inn precondition (there must be an inn to upgrade) is
+	// GATE_BOOTSTRAP in decide()'s gate table.
 	ScoredAction CortexPolicy::scoreInnUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		const bool innUpgradeWanted = f.combatPhase && f.canExpand && f.inns >= 1
+		const bool innUpgradeWanted = f.combatPhase && f.canExpand
 		 && obs.upgradableCount[CORTEX_BUILD_FOOD] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_FOOD) == 0;
 		if (innUpgradeWanted)
@@ -366,23 +369,24 @@ namespace Cortex
 	//     the other finished and available throughout. This guarantees that once a
 	//     hospital is built, at least one stays available to heal units.
 	//
-	// Gate on economyEstablished + freeWorkers>0 (not combatPhase + canExpand), same
-	// reasoning as scoreHospital: combatPhase's !starving term froze the count exactly
-	// when a famine army grew, so the army outran its heal capacity right when it most
-	// needed sustain. economyEstablished provisions proactively through peace and
-	// famine; freeWorkers>0 is the spare-labour discipline without re-importing the
-	// !starving freeze that canExpand folds in. Tech-band scores keep survival ahead
-	// of hospitals during a famine — correct, since a hospital heals HP, not hunger.
+	// Gate on economyEstablished + spare labour (GATE_LABOR in decide()'s gate table,
+	// not combatPhase + canExpand), same reasoning as scoreHospital: combatPhase's
+	// !starving term froze the count exactly when a famine army grew, so the army
+	// outran its heal capacity right when it most needed sustain. economyEstablished
+	// provisions proactively through peace and famine; spare labour is the staffing
+	// discipline without re-importing the !starving freeze that canExpand folds in.
+	// Tech-band scores keep survival ahead of hospitals during a famine — correct,
+	// since a hospital heals HP, not hunger.
 	ScoredAction CortexPolicy::scoreHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.economyEstablished && obs.freeWorkers > 0 && f.heal >= 1 && f.healSites == 0
+		if (f.economyEstablished && f.heal >= 1 && f.healSites == 0
 		 && f.warriors >= f.heal * HOSPITAL_WARRIORS_PER)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_HEAL);
 			if (slot >= 0)
 				return { SCORE_HOSPITAL_UPGRADE, makeBuildAction(CORTEX_BUILD_HEAL, slot) };
 		}
-		if (f.economyEstablished && obs.freeWorkers > 0 && f.heal >= 2
+		if (f.economyEstablished && f.heal >= 2
 		 && obs.upgradableCount[CORTEX_BUILD_HEAL] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL) == 0)
 			return { SCORE_HOSPITAL_UPGRADE, makeUpgradeAction(CORTEX_BUILD_HEAL) };

@@ -243,7 +243,9 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 // GLOB2_CORTEX_DECIDE_TRACE. Each row is: tick, team, the 48 decision features (in
 // DECIDE_CONTRACT idx order, computed by CortexPolicy::extractDecideFeatures — the
 // single source of truth the future inference path reuses), the per-cycle eligibility
-// bitmask, and the chosen class index. Pure read of obs + the DecideTrace decide()
+// bitmask, the chosen class index, and the cycle's failed feasibility-gate bitmask
+// (CortexGate bits — ANDed with a candidate's candidateGates[] mask this shows WHY a
+// gated candidate was vetoed). Pure read of obs + the DecideTrace decide()
 // already produced for gameplay; opening/writing a file never touches RNG, orders, or
 // persisted state, so the lockstep sync stream is unaffected. SEPARATE file handle +
 // open-attempt guard from the worker trace (distinct CSV, distinct schema).
@@ -290,7 +292,7 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 			           "warFlagsActive,enemyCount,enemyUnitsNearFlag,flagTargetsValid,"
 			           "flagPosture,haveDefenseTarget,algaeReachable,algaeDiscovered,"
 			           "swimLandReach,swimWaterReach,tick,"
-			           "eligible_mask,chosen\n", decideTraceFile);
+			           "eligible_mask,chosen,failedGates\n", decideTraceFile);
 	}
 
 	int features[CortexPolicy::NUM_DECIDE_FEATURES];
@@ -300,7 +302,8 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 	row << obs.tick << ',' << me;
 	for (int k = 0; k < CortexPolicy::NUM_DECIDE_FEATURES; k++)
 		row << ',' << features[k];
-	row << ',' << trace.eligibleMask << ',' << trace.chosen << '\n';
+	row << ',' << trace.eligibleMask << ',' << trace.chosen
+	    << ',' << trace.failedGates << '\n';
 
 	const std::string text = row.str();
 	std::fputs(text.c_str(), decideTraceFile);

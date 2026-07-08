@@ -304,6 +304,7 @@ namespace Cortex
 		{
 			trace->eligibleMask = 0;
 			trace->chosen = -1;
+			trace->failedGates = 0;
 		}
 
 		// Reject an observation built against a layout this policy wasn't
@@ -312,6 +313,15 @@ namespace Cortex
 			return makeNoOpAction();
 
 		const DecideFacts f = computeFacts(obs);
+
+		// Feasibility gates (see CortexGate): each bit evaluated ONCE per cycle
+		// from the shared facts, then applied declaratively per candidate via
+		// candidateGates[] below. A set bit means the gate FAILED this cycle.
+		Uint32 failedGates = 0;
+		if (f.inns < 1)
+			failedGates |= GATE_BOOTSTRAP;
+		if (obs.freeWorkers < 1)
+			failedGates |= GATE_LABOR;
 
 		// Utility selection: every decision scores itself from the observation;
 		// the highest score wins. Evaluated in a fixed order so equal scores fall
@@ -338,6 +348,37 @@ namespace Cortex
 			scoreRetireFlag(obs, f),
 			scoreOffense(obs, f),
 		};
+		// Per-candidate required feasibility gates (CortexGate bits), in EXACT
+		// lockstep with candidates[] above — the shared array index IS the
+		// DECIDE_CONTRACT class index; never reorder either, append only. A
+		// candidate whose required gate failed this cycle is treated exactly as
+		// if its scorer had declined. Mask 0 = never gated: the candidate either
+		// has no shared feasibility precondition, or its precondition is
+		// entangled in a composite fact (canExpand / economyEstablished /
+		// combatPhase) that stays inside the scorer.
+		static const Uint32 candidateGates[] = {
+			0,                           // PanicDefense — the emergency must never be vetoed.
+			0,                           // ProductionControl — the swarm always produces.
+			0,                           // FeedCapacity — feeding is existential, deliberately ungated.
+			GATE_BOOTSTRAP,              // SwarmRecovery — rebuild only behind a finished inn.
+			0,                           // School — spare labour entangled in canExpand.
+			0,                           // Racetrack — spare labour entangled in canExpand.
+			GATE_LABOR,                  // Hospital — build crew comes off idle hands.
+			0,                           // SwimmingPool — spare labour entangled in canExpand.
+			0,                           // Barracks — combatPhase-gated in the scorer.
+			0,                           // BarracksUpgrade — spare labour entangled in canExpand.
+			0,                           // SchoolUpgrade — canExpand relaxed by unfillable-jobs override.
+			0,                           // RacetrackUpgrade — spare labour entangled in canExpand.
+			GATE_BOOTSTRAP,              // InnUpgrade — needs a first inn to upgrade.
+			GATE_LABOR,                  // HospitalExpandUpgrade — build crew off idle hands.
+			GATE_BOOTSTRAP | GATE_LABOR, // SecondSwarm — bootstrap protected, staffable.
+			0,                           // Defense — war flags are never feasibility-gated.
+			0,                           // RetireFlag — war flags are never feasibility-gated.
+			0,                           // Offense — war flags are never feasibility-gated.
+		};
+		static_assert(sizeof(candidateGates) / sizeof(candidateGates[0])
+		           == sizeof(candidates) / sizeof(candidates[0]),
+		              "candidateGates[] must stay in lockstep with candidates[]");
 		// Eligibility mask + hand argmax in ONE pass over candidates. The mask is now
 		// built unconditionally (not only when tracing) because the ML decision-net
 		// path needs it every cycle; the hand argmax (best/bestIndex) is computed
@@ -360,6 +401,11 @@ namespace Cortex
 		for (int k = 0; k < n; k++)
 		{
 			const ScoredAction& c = candidates[k];
+			// Feasibility veto: a candidate whose required gate failed this cycle
+			// is exactly a decline — excluded from selection AND from the mask,
+			// identical to its scorer returning cortexDecline().
+			if (candidateGates[k] & failedGates)
+				continue;
 			// Eligibility (the decline gate): a positive score means this candidate
 			// did not decline this cycle — the ML mask bit. The candidate array index
 			// IS the class index (DECIDE_CONTRACT action map); never reorder it.
@@ -386,6 +432,7 @@ namespace Cortex
 			// and run-ml at once, but the semantics stay clean either way.
 			trace->eligibleMask = eligibleMask;
 			trace->chosen = bestIndex; // -1 when nothing eligible (initial NoOp held)
+			trace->failedGates = failedGates; // why a gated candidate was vetoed (CortexGate bits)
 		}
 
 		// ML decision-selection (DECIDE pilot): select among the eligible candidates

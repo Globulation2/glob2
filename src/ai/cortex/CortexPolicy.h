@@ -131,16 +131,43 @@ namespace Cortex
 		return ScoredAction{ SCORE_NONE, makeNoOpAction() };
 	}
 
+	/// Feasibility gates — the centralized binary-veto layer of decide(). The
+	/// split of concerns: DESIRE (how urgent an action is) stays in each scorer's
+	/// score; FEASIBILITY (a shared precondition without which the action cannot
+	/// sensibly be attempted at all) is declared once per candidate in decide()'s
+	/// candidateGates[] table. Each cycle decide() evaluates every gate bit once
+	/// against the shared DecideFacts/observation; a candidate whose required
+	/// gate failed is treated exactly as if its scorer had declined (score 0) —
+	/// excluded from selection AND from the eligibility mask.
+	enum CortexGate
+	{
+		/// First inn FINISHED (f.inns >= 1). The bootstrap discipline: until the
+		/// colony's first inn actually completes, gated candidates must not pull
+		/// labour or resources away from raising it.
+		GATE_BOOTSTRAP = 1u << 0,
+		/// Spare labour exists (obs.freeWorkers >= 1), so a gated build/upgrade
+		/// crew comes off idle hands rather than off the hauling that keeps the
+		/// swarm + inn CORN buffers full. Deliberately WEAKER than f.canExpand
+		/// (which folds in the !starving/!hungry food-trouble terms): scorers
+		/// whose spare-labour requirement is entangled in canExpand keep it there.
+		GATE_LABOR     = 1u << 1,
+	};
+
 	/// Per-cycle decision-selection trace, filled by decide() only when a caller
 	/// asks for it (the optional out-param). eligibleMask has bit k set for each
-	/// candidate k whose hand score > SCORE_NONE (i.e. its decline gate passed);
-	/// chosen is the winning candidate's class index, or -1 when nothing was
-	/// eligible (the initial NoOp held). This is the per-cycle ML training label
-	/// (eligibility mask + the hand rule's choice); see DECIDE_CONTRACT.md.
+	/// candidate k whose hand score > SCORE_NONE (i.e. its decline gate passed)
+	/// AND whose required feasibility gates all passed (candidateGates[k] — a
+	/// failed gate is exactly a decline); chosen is the winning candidate's class
+	/// index, or -1 when nothing was eligible (the initial NoOp held). This is
+	/// the per-cycle ML training label (eligibility mask + the hand rule's
+	/// choice); see DECIDE_CONTRACT.md. failedGates is the cycle's failed-gate
+	/// bitmask (CortexGate bits): AND it with a candidate's candidateGates[] mask
+	/// to see whether — and why — that candidate was vetoed rather than scored out.
 	struct DecideTrace
 	{
 		Uint32 eligibleMask;
 		int chosen;
+		Uint32 failedGates;
 	};
 
 	class CortexPolicy
