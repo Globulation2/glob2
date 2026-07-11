@@ -550,6 +550,49 @@ Artifacts: `glob2/.tmp/muka-diag/` (CSVs, timelines, scripts); benchmarks
 `glob2/.tmp/bench-{baseline,lever1,lever2,stacked,stuck}-{muka,s42}*`; per-seed tables
 `glob2/.tmp/{baseline,lever2,stacked,stuck}-{muka,s42}-perseed.txt`.
 
+### Rank-gate Muka rev regression diagnosed + tuning seam & knob-search driver (2026-07-10)
+
+Traced seed-1-rev (W→L flip under `c9f9d7ad`) vs the pre-lever baseline binary: runs are
+decision-identical until t=2968, where the **CAPPED-DRAINING face fires on production-cycle
+corn noise** (mUW=7 latched — corn never reaches REM_HI=15 on Muka — corn dip 3, severity 2)
+while the patch holds **47 harvestable tiles**; wheat was NOT binding. The site drags 7.6k
+ticks at LOW priority, its delivery jobs inflate tierMid → worker-dominant mix → warrior
+ramp ~2k ticks late (8-13 vs baseline 13-17 in the 5-8k window) → Nicowar's punish window
+lands on the thin army; baseline instead banks the army, fires expansion at t=7104 with
+harvWheat=10 (genuinely near-spent) and kills Nicowar by 24k. Seed-4-rev control: same early
+fire + tax, but that seed's Nicowar never builds an army → unpunished → per-seed churn.
+Trigger also re-fires the moment swarm #2 finishes (orders a #3 that never completes).
+Full dissection: `glob2/.tmp/rankgate-diag/FINDINGS.md` (+ traces/replays alongside).
+
+**Params seam committed to disk (uncommitted): `CortexTuning`** (`src/ai/cortex/
+CortexTuning.{h,cpp}`) — 11 integer knobs (trigger: expandCornLo / swarmWorkerCap /
+swarmCornRemHi / wheatStarvedTiles / NEW expandWheatVeto / NEW expandDebounceCycles;
+ranking: scoreSecondSwarmBase/Step / NEW expandSeverityFloor; mix: tierMidDiv /
+workerRatioTier2), loaded once from `GLOB2_CORTEX_TUNING=<abs file>` ("key value" lines),
+parse errors abort the process (search integrity). Defaults verified **replay-identical**
+to `c9f9d7ad` on Muka seeds 1+4 rev (no-env AND explicit-defaults file); debounce streak is
+RAM-only (settle-window precedent). Anecdote: `expandSeverityFloor 5` alone flips seed-1-rev
+back to a W. **Search driver `tools/cortex-knob-search.py`**: successive halving (blocks
+20/+30/+50 paired seeds, keeps 6→3), fitness = MIN across {Muka, SmallForTwo, Mazury},
+control always alive with per-seed flip counting, 4 hypothesis configs + 16 random,
+checkpoint/resume via `state.json`, holdout mode ({Dejans, balanced_for_2, strange2}, fresh
+seeds) kept out of fitness. ~4.5k games ≈ overnight. NOT yet launched.
+
+### Knob search run1 — no winner, defaults stand (2026-07-10)
+
+Full search ran (~4,980 games, 3 rungs, artifacts in `glob2/.tmp/knob-search/run1/`,
+`RESULTS.md` + driver log alongside). **Nothing beat the control** on min-across-maps at
+100 paired seeds: control min 46.5% (Muka 67.5 / SmallForTwo 96.0 / Mazury 46.5). All 16
+random configs died at rung 0; `floor5` (the seed-1-rev anecdote knob) died at rung 1 —
+its rung-0 lead was small-sample noise. Finalists: `base5800` ties control's min only by
+being decision-identical on Mazury+S42 (+0/−0 flips) while net −3 on Muka; `debounce6`
+net-loses both non-trivial maps; `veto24` is a textbook **map trade** — Muka +30/−18
+(net +12/48 discordant, ≈1.7σ, best Muka number seen at 73.5%) bought with Mazury +38/−47.
+Holdout/dissection skipped (winner-only steps). Takeaway: the expansion-trigger knob space
+can shift Muka (consistent with the CAPPED-DRAINING diagnosis) but does NOT touch the
+binding constraint — **Mazury ~46% is not an expansion-trigger problem**; further tuning
+here only trades maps. Defaults kept; seam + driver remain uncommitted on the working tree.
+
 ---
 
 ## 3. ML pilot (effort B)

@@ -2,6 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #include "CortexPolicy.h"
+#include "CortexTuning.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -53,10 +54,11 @@ namespace Cortex
 	/// Swarm production-mix worker ratios for the three-tier worker-target rule
 	/// (computeFacts). Below the hauler floor the swarm makes workers (TIER1, vs the
 	/// single scout explorer); in the middle band (floor..mid) it stays
-	/// worker-DOMINANT — "half the bar" of workers to one warrior — while it grows the
-	/// worker base toward full staffing; above mid it drops to the army.
+	/// worker-DOMINANT — tuning.workerRatioTier2 (default half the bar) workers to
+	/// one warrior — while it grows the worker base toward full staffing; above mid
+	/// it drops to the army. The tier-2 ratio and the mid divisor are tuning knobs
+	/// (CortexTuning); TIER1 stays fixed.
 	static const int WORKER_RATIO_TIER1 = 2;
-	static const int WORKER_RATIO_TIER2 = CORTEX_MAX_RATIO / 2; // half the 16-wide ratio bar.
 
 	// --- Phase-3 combat tuning --------------------------------------------
 	// All AI design choices, tunable against the benchmark.
@@ -78,7 +80,8 @@ namespace Cortex
 	static const int PANIC_MAX_WARRIORS = 15;
 
 	CortexPolicy::CortexPolicy()
-		: mlSwarmCaps_(false)
+		: expandWantStreak_(0)
+		, mlSwarmCaps_(false)
 		, mlDecide_(false)
 	{
 		// Opt into a learned policy (effort B pilots) only when asked AND the net
@@ -232,7 +235,11 @@ namespace Cortex
 				base += obs.trackedInns[i].maxUnitWorking;
 		f.workersNeeded = base;
 		const int needs = obs.workers + f.fillableNeeded;
-		const int mid   = base + (needs - base) / 2; // mid <= base when demand is already met by the floor.
+		// mid <= base when demand is already met by the floor. The divisor
+		// (default 2 = halfway) is a tuning knob: construction-site jobs inflate
+		// `needs`, so it also sets how hard an in-flight expansion delays the
+		// warrior ramp (.tmp/rankgate-diag/FINDINGS.md).
+		const int mid   = base + (needs - base) / cortexTuning().tierMidDiv;
 
 		// Warriors are only ever folded in once the economy is established (below that
 		// there are no warriors to make, and the colony still needs every worker to
@@ -253,7 +260,7 @@ namespace Cortex
 		}
 		else if (obs.workers < mid)
 		{
-			f.growWorker  = WORKER_RATIO_TIER2;
+			f.growWorker  = cortexTuning().workerRatioTier2;
 			f.growWarrior = f.economyEstablished ? 1 : 0;
 		}
 		else
@@ -311,6 +318,10 @@ namespace Cortex
 		// written for, or one that was never populated. Either way: do nothing.
 		if (obs.version != OBSERVATION_VERSION || !obs.valid)
 			return makeNoOpAction();
+
+		// The one per-cycle mutation: advance the fresh-patch debounce streak
+		// scoreSecondSwarm reads (see CortexPolicyEconomy.cpp).
+		updateExpandStreak(obs);
 
 		const DecideFacts f = computeFacts(obs);
 

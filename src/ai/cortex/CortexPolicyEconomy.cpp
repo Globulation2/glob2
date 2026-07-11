@@ -2,9 +2,16 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #include "CortexPolicy.h"
+#include "CortexTuning.h"
 
 namespace Cortex
 {
+	// The tuning defaults must reproduce the committed scores exactly (the
+	// zero-behavior-change contract of the params seam).
+	static_assert(CortexTuning{}.scoreSecondSwarmBase == SCORE_SECOND_SWARM_BASE
+	           && CortexTuning{}.scoreSecondSwarmStep == SCORE_SECOND_SWARM_STEP,
+	              "CortexTuning score defaults must stay in lockstep with CortexScore");
+
 	/// Percent of current inn feeding capacity the population must reach to trigger
 	/// the next inn (Priority 2). Building at 100% means waiting until feeding is
 	/// already exhausted before the next inn even breaks ground, so the colony spends
@@ -23,19 +30,20 @@ namespace Cortex
 	}
 
 	/// The per-swarm maxUnitWorking ceiling that applies right now.
-	/// Early/mid game it is the conservative cap (7); once workers have trained
-	/// BUILD to level CORTEX_SWARM_CAP_LIFT_BUILDLEVEL AND at least one idle
-	/// worker exists (so promoting a hauler doesn't starve construction), the
-	/// ceiling lifts to the late-game value (12).
+	/// Early/mid game it is the conservative cap (tuning.swarmWorkerCap, default
+	/// 7); once workers have trained BUILD to level
+	/// CORTEX_SWARM_CAP_LIFT_BUILDLEVEL AND at least one idle worker exists (so
+	/// promoting a hauler doesn't starve construction), the ceiling lifts to the
+	/// late-game value (12).
 	static int swarmWorkerCap(const CortexObservation& obs)
 	{
 		if (obs.maxBuildLevel >= CORTEX_SWARM_CAP_LIFT_BUILDLEVEL && obs.freeWorkers > 0)
 			return CORTEX_SWARM_WORKER_CAP_LATE;
-		return CORTEX_SWARM_WORKER_CAP;
+		return cortexTuning().swarmWorkerCap;
 	}
 
 	/// FIELD-DEPLETED face of the wheat bottleneck: the swarm's harvestable wheat has
-	/// run out (harvestableWheatNearby below CORTEX_SWARM_WHEAT_STARVED_TILES), so the
+	/// run out (harvestableWheatNearby below tuning.wheatStarvedTiles), so the
 	/// wheat-starved throttle has pinned it to a single hauler — it can no longer be
 	/// at the worker cap, yet it produces almost nothing. The catchment is DEAD, not
 	/// merely strained. harvestableWheatNearby is -1 when unknown (game absent) —
@@ -44,7 +52,27 @@ namespace Cortex
 	{
 		return t.valid
 		    && t.harvestableWheatNearby >= 0
-		    && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES;
+		    && t.harvestableWheatNearby < cortexTuning().wheatStarvedTiles;
+	}
+
+	/// CAPPED-DRAINING face of the wheat bottleneck: pinned at the worker cap yet
+	/// the CORN buffer is draining below the expansion line — demand outruns supply
+	/// even at full haulers. Shared by the fresh-patch trigger and its severity
+	/// grade so the two can never disagree. The Muka seed-1 diagnosis
+	/// (.tmp/rankgate-diag/FINDINGS.md) showed this face fires on production-cycle
+	/// corn noise while the patch still holds abundant wheat, so it takes the
+	/// optional wheat-abundance veto: with tuning.expandWheatVeto > 0, a swarm that
+	/// can still see that many harvestable tiles is NOT capped-draining, whatever
+	/// its buffer does this cycle (0 = veto off, the committed behavior).
+	static bool swarmCappedDraining(const TrackedBuilding& t)
+	{
+		const CortexTuning& tuning = cortexTuning();
+		if (t.maxUnitWorking < tuning.swarmWorkerCap || t.corn >= tuning.expandCornLo)
+			return false;
+		if (tuning.expandWheatVeto > 0
+		 && t.harvestableWheatNearby >= tuning.expandWheatVeto)
+			return false;
+		return true;
 	}
 
 	/// A swarm "wants a fresh wheat patch" when its current catchment can no longer
@@ -62,9 +90,7 @@ namespace Cortex
 	{
 		if (!t.valid)
 			return false;
-		const bool cappedDraining =
-			(t.maxUnitWorking >= CORTEX_SWARM_WORKER_CAP && t.corn < CORTEX_SWARM_CORN_ADD_LO);
-		return cappedDraining || swarmFieldDepleted(t);
+		return swarmCappedDraining(t) || swarmFieldDepleted(t);
 	}
 
 	/// True if ANY tracked swarm wants a fresh wheat patch (see swarmWantsFreshPatch).
@@ -78,12 +104,32 @@ namespace Cortex
 		return false;
 	}
 
-	/// Severity of the worst swarm that wants a fresh patch, in [1, CORTEX_SWARM_CORN_ADD_LO];
+	// Debounce counter for the fresh-patch desire gate: how many CONSECUTIVE
+	// decision cycles (decide() calls, ~25 ticks apart) anySwarmWantsFreshPatch
+	// has held, so scoreSecondSwarm can require it to persist
+	// tuning.expandDebounceCycles cycles before firing — a corn-buffer dip that
+	// self-heals next cycle is production noise, not a spent catchment. Called
+	// EXACTLY ONCE per decision cycle, at the top of decide(); decideCombat and
+	// extractDecideFeatures never touch it. RAM-only on purpose (same precedent
+	// as the inn settle window / hauler kickstart): a save reload restarts the
+	// streak at 0 on every client in lockstep, so no desync — the trigger merely
+	// re-arms. At the default of 1 cycle, streak >= 1 is exactly
+	// anySwarmWantsFreshPatch(obs) this cycle: the committed behavior.
+	void CortexPolicy::updateExpandStreak(const CortexObservation& obs)
+	{
+		if (anySwarmWantsFreshPatch(obs))
+			expandWantStreak_++;
+		else
+			expandWantStreak_ = 0;
+	}
+
+	/// Severity of the worst swarm that wants a fresh patch, in [1, tuning.expandCornLo];
 	/// 0 when none does. The second-swarm score scales with this. A FIELD-DEPLETED
 	/// catchment is the strongest expand signal, so it scores the maximum; a
 	/// CAPPED-DRAINING swarm scales with how far its CORN buffer sits below the line.
 	static int swarmFreshPatchSeverity(const CortexObservation& obs)
 	{
+		const CortexTuning& tuning = cortexTuning();
 		int worst = 0;
 		for (int i = 0; i < obs.swarmCount; i++)
 		{
@@ -91,10 +137,10 @@ namespace Cortex
 			if (!t.valid)
 				continue;
 			int sev = 0;
-			if (t.maxUnitWorking >= CORTEX_SWARM_WORKER_CAP && t.corn < CORTEX_SWARM_CORN_ADD_LO)
-				sev = CORTEX_SWARM_CORN_ADD_LO - t.corn; // corn in [0,4] -> 1..5
+			if (swarmCappedDraining(t))
+				sev = tuning.expandCornLo - t.corn; // corn in [0,expandCornLo-1] -> 1..expandCornLo
 			if (swarmFieldDepleted(t))
-				sev = CORTEX_SWARM_CORN_ADD_LO; // exhausted catchment: max severity
+				sev = tuning.expandCornLo; // exhausted catchment: max severity
 			if (sev > worst)
 				worst = sev;
 		}
@@ -289,23 +335,35 @@ namespace Cortex
 		// new swarm is GATE_LABOR; canExpand's !hungry is deliberately not required
 		// (a wheat bottleneck makes the colony hungry, so requiring !hungry would
 		// block the very swarm that cures it).
+		// The desire gate is the DEBOUNCED anySwarmWantsFreshPatch: the streak
+		// decide() maintains (updateExpandStreak) must have held for
+		// tuning.expandDebounceCycles consecutive cycles. At the default of 1 this
+		// is exactly anySwarmWantsFreshPatch(obs) this cycle.
+		const CortexTuning& tuning = cortexTuning();
 		if (f.economyEstablished
-		 && anySwarmWantsFreshPatch(obs)
+		 && expandWantStreak_ >= tuning.expandDebounceCycles
 		 && f.swarms >= 1 && f.swarms < CORTEX_MAX_TRACKED_SWARMS && f.swarmSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)
 			{
 				// Healthy colony: score scales with how spent the worst catchment is
-				// (severity 1..5), landing above the tech/upgrade band so the fresh wheat
-				// patch outranks another upgrade when wheat is the binding constraint.
+				// (severity 1..expandCornLo), landing above the tech/upgrade band so the
+				// fresh wheat patch outranks another upgrade when wheat is the binding
+				// constraint. The severity floor (default 1 = any) lets the search
+				// demand a genuinely spent catchment before expansion fires at all;
+				// it gates the famine branch too (a famine catchment is field-depleted
+				// in practice, i.e. already at max severity).
 				// Famine (foodSaturated): relocation is the trap escape and must outrank
 				// the wheat-blitz — see SCORE_SECOND_SWARM_FAMINE.
 				const int severity = swarmFreshPatchSeverity(obs);
-				const int score = f.foodSaturated
-					? SCORE_SECOND_SWARM_FAMINE
-					: SCORE_SECOND_SWARM_BASE + severity * SCORE_SECOND_SWARM_STEP;
-				return { score, makeBuildAction(CORTEX_BUILD_SWARM, slot) };
+				if (severity >= tuning.expandSeverityFloor)
+				{
+					const int score = f.foodSaturated
+						? SCORE_SECOND_SWARM_FAMINE
+						: tuning.scoreSecondSwarmBase + severity * tuning.scoreSecondSwarmStep;
+					return { score, makeBuildAction(CORTEX_BUILD_SWARM, slot) };
+				}
 			}
 		}
 		return cortexDecline();
@@ -363,7 +421,7 @@ namespace Cortex
 			// when unknown (game absent); only act on a real count. Takes precedence
 			// over the buffer-driven add/remove below.
 			else if (t.harvestableWheatNearby >= 0
-			 && t.harvestableWheatNearby < CORTEX_SWARM_WHEAT_STARVED_TILES)
+			 && t.harvestableWheatNearby < cortexTuning().wheatStarvedTiles)
 				desired = CORTEX_SWARM_WHEAT_STARVED_WORKER_CAP;
 			// Buffer draining: bring one more hauler in before the swarm stalls.
 			// CORTEX_SWARM_CORN_ADD_LO is the stall threshold (swarm stops
@@ -372,7 +430,7 @@ namespace Cortex
 				desired = t.maxUnitWorking + 1;
 			// Buffer saturated: the buffer is full enough that this hauler could
 			// do more useful work elsewhere — release one.
-			else if (t.corn >= CORTEX_SWARM_CORN_REM_HI && t.maxUnitWorking > CORTEX_SWARM_WORKER_MIN)
+			else if (t.corn >= cortexTuning().swarmCornRemHi && t.maxUnitWorking > CORTEX_SWARM_WORKER_MIN)
 				desired = t.maxUnitWorking - 1;
 			if (desired != t.maxUnitWorking) { tune.swarmWorkers[i] = desired; anyChange = true; }
 		}

@@ -291,6 +291,15 @@ namespace Cortex
 		/// Build the shared fact bundle from the observation (see DecideFacts).
 		static DecideFacts computeFacts(const CortexObservation& obs);
 
+		/// Advance the fresh-patch debounce streak (expandWantStreak_) from this
+		/// cycle's observation. Called EXACTLY ONCE per decision cycle at the top
+		/// of decide(); see the implementation note in CortexPolicyEconomy.cpp.
+		void updateExpandStreak(const CortexObservation& obs);
+		/// Consecutive decide() cycles anySwarmWantsFreshPatch has held. RAM-only
+		/// (a save reload restarts it at 0 uniformly on every client — the
+		/// trigger just re-arms, same precedent as the inn settle window).
+		int expandWantStreak_;
+
 		// --- decide() decision scorers ----------------------------------------
 		// Each returns a ScoredAction: a CortexScore-band score plus the action it
 		// would emit, or cortexDecline() (score 0) when it does not want to act this
