@@ -272,6 +272,24 @@ namespace Cortex
 				if (!map.isHardSpaceForBuilding(gx, gy, ew, eh))
 					continue;
 
+				// FORWARD-BASE: require an IMMEDIATE construction site, not a deferred
+				// buildProject. Game::executeCreate (Game_orders.cpp:164-198) turns an
+				// OrderCreate into an immediate site only when checkRoomForBuilding holds
+				// — that is Map::isFreeForBuilding on the placed footprint (w x h)
+				// (Game_editor.cpp:373). When only isHardSpaceForBuilding holds it instead
+				// defers into a buildProject that clears the footprint first, so no site
+				// appears this tick. AICortex's getOrder reconcile latches "forward base
+				// underway" by tracking a real construction site at the ordered position;
+				// a deferred buildProject leaves nothing to latch, the latch expires on the
+				// 250-tick buildCooldown, and the AI re-orders (churn) or never starts the
+				// base. isFreeForBuilding is isHardSpaceForBuilding plus "no ground unit on
+				// the footprint", so it is strictly stronger — the grown-footprint upgrade
+				// reservation gated above still holds. Only the forward path needs this: the
+				// near-colony path tolerates a one-tick buildProject because it does not use
+				// the same site-position latch.
+				if (forward != NULL && !map.isFreeForBuilding(x, y, w, h))
+					continue;
+
 				// Fog-of-war: the footprint must be discovered (mirrors AIEcho's
 				// find_location). Check both corners of the grown box, like the
 				// engine path does.

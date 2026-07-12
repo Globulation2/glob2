@@ -705,6 +705,32 @@ sensitivity), no longer a single mechanism. Knob surface for a search now exists
 attackRangeBase / attackRangePerWalkLevel / attackRangeGraceTicks / warPrepLevelMatch.
 Bench artifacts: `.tmp/gatefix-bench/`. NOT adopted; awaiting user decision.
 
+### Forward-build terrain fix + residual diagnosis — 2026-07-12
+
+Forward-base candidates now also require `Map::isFreeForBuilding` (the exact
+`Game::executeCreate` predicate for an immediate construction site). The old
+`isHardSpaceForBuilding`-only check let a ground unit on the footprint defer the order
+into a buildProject, which the site-position latch can't track — the latch expired on
+the 250-tick buildCooldown and the AI churned re-orders or never started the base.
+Verified on 87-rev (pre-fix: order t=7237 / latch lost t=7999 / re-order t=10791;
+post-fix: one stable latch t=8193→t=12045, win). Smoke 87/51/18 both sides clean.
+
+**Benchmark (100 paired seeds, swap-sides, vs Nicowar, Muka): 63.5% (127/200,
+CI 56.8–70.2) vs 58.5% committed / 67.5% clean control** — the fix recovers ~+5pp and
+kills the seed-43 hard 2→0 flip. Artifacts: `.tmp/fwdfix-bench/`, per-seed tables in
+`.tmp/fwdfix/`. Committed.
+
+**Residual −4pp diagnosed = the attack-range grace window.** On 43-rev both binaries
+are bit-identical through t=5896; control launches a 4-flag first strike t≈6.4–6.8k and
+wins t=14562, while the envelope build holds fire (warFlags=0, inRangeSlot=-1 — zero
+enemy buildings discovered inside the envelope) until the 2400-tick grace waives
+t≈8.5–9k, then loses the long game. Knockouts on 5 sampled lost games:
+`attackRangeBase 0` flips 4/5 (43-rev reproduces control bit-for-bit);
+`attackRangeGraceTicks 600` flips 3/5 but made 7-rev worse; `warPrepLevelMatch 0` no
+effect. 90-fwd resists both knockouts — diagnostics captured in `.tmp/fwdfix/s90-*`,
+not yet analyzed. Options (grace 600–1200 / zero-buildings-discovered waiver / accept):
+awaiting user decision.
+
 ---
 
 ## 3. ML pilot (effort B)
