@@ -45,6 +45,86 @@ namespace Cortex
 	static const int OFFENSE_FLAG_RADIUS = 8;
 	static const int DEFENSE_FLAG_RADIUS = 5;
 
+	/// Warriors available for the NORMAL offense commit under the war-preparation
+	/// level match: with the gate on (warPrepLevelMatch), only warriors whose
+	/// ATTACK_STRENGTH level >= the highest enemy-warrior level ever OBSERVED
+	/// (FOW-gated, latched by AICortex) count toward the commit bar — sending
+	/// level-0 warriors into a level-2 army just feeds it kills. The required
+	/// level is capped by what our barracks can currently train (finished level
+	/// + 1, the engine training rule — unit/UnitDisplacement.cpp:347), so the
+	/// gate converts into training/upgrade pressure and can never deadlock the
+	/// offense behind a level we cannot reach yet.
+	static int matchedWarriors(const CortexObservation& obs)
+	{
+		int required = (cortexTuning().warPrepLevelMatch != 0)
+			? obs.enemyWarriorLevelLatched : 0;
+		const int brkLevel  = cortexMaxFinishedLevel(obs, CORTEX_BUILD_ATTACK);
+		const int trainable = (brkLevel < 0) ? 0 : brkLevel + 1;
+		if (required > trainable)
+			required = trainable;
+		if (required > CORTEX_UNIT_LEVELS - 1)
+			required = CORTEX_UNIT_LEVELS - 1;
+		if (required < 0)
+			required = 0;
+		int count = 0;
+		for (int lvl = required; lvl < CORTEX_UNIT_LEVELS; lvl++)
+			count += obs.attackStrengthLevel[lvl];
+		return count;
+	}
+
+	/// The offense commit decision, shared by scoreOffense and scoreRetireFlag
+	/// (whose "offense will claim the standing flags" test must mirror the commit
+	/// exactly or the flags thrash between the two).
+	struct OffenseCommit
+	{
+		bool normal; ///< patient turtle-then-commit fires this cycle.
+		bool blitz;  ///< famine desperation fires this cycle.
+		int  slot;   ///< flag-target slot to assault; -1 when neither fires.
+	};
+	static OffenseCommit computeOffenseCommit(const CortexObservation& obs,
+	                                          bool combatPhase, bool foodSaturated,
+	                                          int warriors, bool sustain)
+	{
+		OffenseCommit c = { false, false, -1 };
+		if (!obs.flagTargets[0].valid)
+			return c; // nothing scouted: nothing to commit to.
+		if (sustain)
+		{
+			// SUSTAIN path (scoreRetireFlag): a war is already standing. Gates govern
+			// STARTING an offense, never sustaining one — so skip BOTH the attack-range
+			// gate and the war-prep level match. slot 0 (the nearest target) with the
+			// RAW warrior count is a strictly WEAKER-to-fail condition than the gated
+			// start, so whenever the gated START commit fires the ungated SUSTAIN commit
+			// fires too: the flag is abandoned only when even the ungated commit would
+			// not claim it, and there is no retire/re-commit thrash.
+			c.normal = combatPhase && warriors >= ATTACK_MIN_WARRIORS;
+			c.blitz  = foodSaturated && warriors >= BLITZ_MIN_WARRIORS;
+			if (c.normal || c.blitz)
+				c.slot = 0; // flagTargets[0] is valid (guarded above).
+			return c;
+		}
+		// START path (scoreOffense). ATTACK-RANGE gate: assault the nearest target
+		// inside the support envelope (see cortexInRangeTargetSlot). When every target
+		// is out of range the gate binds ONLY while a forward base could cure it AND
+		// the cure is younger than the grace window (obs.rangeGateWaived == 0) — no
+		// legal forward spot/none underway, or a grace-expired one, means attack anyway
+		// (pre-v18 behavior) rather than turtling forever while the forward base keeps
+		// building.
+		int slot = cortexInRangeTargetSlot(obs);
+		const bool forwardPossible = obs.forwardInn.valid || obs.forwardHeal.valid
+		                          || obs.forwardInnUnderway || obs.forwardHealUnderway;
+		if (slot < 0 && (!forwardPossible || obs.rangeGateWaived != 0))
+			slot = 0;
+		c.normal = combatPhase && slot >= 0
+		        && matchedWarriors(obs) >= ATTACK_MIN_WARRIORS;
+		// BLITZ ignores both gates: the colony is starving in place, so it spends
+		// whatever army it has NOW, on the nearest known target.
+		c.blitz = foodSaturated && warriors >= BLITZ_MIN_WARRIORS;
+		if (c.normal || c.blitz)
+			c.slot = (slot >= 0) ? slot : 0;
+		return c;
+	}
+
 	/// First valid candidate slot for `type` (the placement helper already ranks
 	/// them best-first), or -1 if the observation surfaced no legal location.
 	static int firstValidCandidate(const CortexObservation& obs, int type)
@@ -152,7 +232,7 @@ namespace Cortex
 		// mature colony defends regardless of food. (Pre-economy emergencies still route
 		// through scorePanicDefense.)
 		if (f.economyEstablished && obs.buildingsUnderAttack > 0
-		 && f.warriors >= DEFENSE_MIN_WARRIORS && obs.defenseTarget.valid)
+		 && f.warriors >= DEFENSE_MIN_WARRIORS && obs.defenseTargets[0].valid)
 		{
 			// THRASH HYSTERESIS (relocated from the action layer): if we are mid-
 			// offense-push (CORTEX_POSTURE_OFFENSE and still inside the hold window)
@@ -212,8 +292,19 @@ namespace Cortex
 	// them off; the flag is retired only once the area is genuinely clear.
 	ScoredAction CortexPolicy::scoreRetireFlag(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		const bool offenseWillClaim =
-			f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS && obs.flagTargets[0].valid;
+		// "Offense will claim the standing flags" — this reuses computeOffenseCommit
+		// (compute the same commit, read its firing bits) so the retire and re-commit
+		// decisions cannot disagree by hand-inlining divergent conditions. It passes
+		// sustain=true: gates govern STARTING an offense (scoreOffense, sustain=false),
+		// never SUSTAINING one, so the sustain commit skips the attack-range gate and
+		// the war-prep level match and tests only the raw army against a target. That is
+		// strictly WEAKER-to-fail than the gated start, so whenever the gated START
+		// commit fires the SUSTAIN commit fires too — no retire/re-commit thrash — and
+		// an already-standing war is abandoned only when even the ungated commit would
+		// not claim it.
+		const OffenseCommit commit =
+			computeOffenseCommit(obs, f.combatPhase, f.foodSaturated, f.warriors, true);
+		const bool offenseWillClaim = (commit.normal || commit.blitz);
 		if (obs.warFlagsActive > 0 && obs.buildingsUnderAttack == 0
 		 && !offenseWillClaim && obs.enemyUnitsNearFlag == 0)
 			return { SCORE_RETIRE_FLAG, makeClearFlagsAction() };
@@ -235,29 +326,64 @@ namespace Cortex
 	// AICortex::enqueueWheatForbidden, called each cycle in getOrder().
 	ScoredAction CortexPolicy::scoreOffense(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		// Normal offense: a healthy colony (combatPhase) with a real army and a scouted
-		// target. The action layer turns this into the WAVE PIPELINE — mustering and
-		// marching successive cohesive waves — so this scorer just expresses "we want to
-		// be attacking"; it need not (and must not) micro-manage individual flags.
-		const bool normalCommit = f.combatPhase && f.warriors >= ATTACK_MIN_WARRIORS;
-		// BLITZ: the colony is past wheat capacity and starving (foodSaturated). Sitting
-		// still means starving in place, so spend whatever army we have NOW — a lower
-		// bar (BLITZ_MIN_WARRIORS) than the patient commit. Scores ABOVE the economy/
-		// tech band (more economy can't be fed anyway) but below the existential rungs.
-		const bool blitzCommit = f.foodSaturated && f.warriors >= BLITZ_MIN_WARRIORS;
-		if ((normalCommit || blitzCommit) && obs.flagTargets[0].valid)
-		{
-			const int count = (f.warriors < CORTEX_MAX_FLAG_UNITS) ? f.warriors : CORTEX_MAX_FLAG_UNITS;
-			const bool blitzOnly = blitzCommit && !normalCommit;
-			// minLevel 0 (every warrior) for BOTH commit kinds: muster-then-march (the
-			// action layer) gathers and marches the WHOLE wave as one mass, so the old
-			// veteran filter — which kept low-level warriors home and marched only the
-			// trained cohort — is gone (it would shrink the wave and, worse, peel low-
-			// level warriors off the flag mid-march, breaking cohesion). The action layer
-			// owns the flag's level filter now and pins it to 0.
-			const int score = blitzOnly ? SCORE_OFFENSE_BLITZ : SCORE_OFFENSE;
-			return { score, makeWarFlagAction(0, OFFENSE_FLAG_RADIUS, count, 0) };
-		}
+		// The commit decision lives in computeOffenseCommit (shared with scoreRetireFlag
+		// so the START and SUSTAIN decisions cannot disagree). This is the START path
+		// (sustain=false): it applies the ATTACK-RANGE gate (with the grace-timeout
+		// waiver) and the war-prep level match (matchedWarriors) to the NORMAL turtle-
+		// then-commit path, waives both for the famine BLITZ, and hands back the target
+		// slot to assault. scoreRetireFlag calls the SAME function with sustain=true —
+		// a strictly WEAKER-to-fail condition — so the retire test never fires while
+		// this start commit does. commit.slot < 0 means neither the normal nor the blitz
+		// commit fires this cycle. The action layer turns a firing commit into the WAVE
+		// PIPELINE — mustering and marching successive cohesive waves — so this scorer
+		// just expresses "we want to be attacking (this target)"; it need not (and must
+		// not) micro-manage individual flags.
+		const OffenseCommit commit = computeOffenseCommit(obs, f.combatPhase, f.foodSaturated, f.warriors, false);
+		if (commit.slot < 0)
+			return cortexDecline();
+		const int count = (f.warriors < CORTEX_MAX_FLAG_UNITS) ? f.warriors : CORTEX_MAX_FLAG_UNITS;
+		// minLevel 0 (every warrior) for BOTH commit kinds: muster-then-march (the
+		// action layer) gathers and marches the WHOLE wave as one mass, so the old
+		// veteran filter — which kept low-level warriors home and marched only the
+		// trained cohort — is gone (it would shrink the wave and, worse, peel low-
+		// level warriors off the flag mid-march, breaking cohesion). The action layer
+		// owns the flag's level filter now and pins it to 0.
+		const bool blitzOnly = commit.blitz && !commit.normal;
+		const int score = blitzOnly ? SCORE_OFFENSE_BLITZ : SCORE_OFFENSE;
+		return { score, makeWarFlagAction(commit.slot, OFFENSE_FLAG_RADIUS, count, 0) };
+	}
+
+	// --- Priority 4.5: forward base (extend the attack-range support envelope). ---
+	// This fires in exactly ONE state: we WANT to attack but can't reach — a
+	// war-ready colony (combatPhase) with a scouted target, yet EVERY known target
+	// sits outside the attack range (cortexInRangeTargetSlot < 0). The cure is to
+	// push our food/heal support toward the front so the target falls inside the
+	// envelope. The INN leads: food is the binding support (an army with no forward
+	// inn starves on the march; a hospital only speeds recovery), so we plant the
+	// forward inn first and the forward hospital only once the inn is placed.
+	//
+	// NOT gated on matchedWarriors: the war-preparation level match delays STARTING
+	// the offense (scoreOffense), but it must never delay the envelope cure. Building
+	// an inn is workers' business — a colony that will want to attack once its
+	// warriors mature should already be projecting its support forward, not waiting
+	// for the army to level up before it lays the foundation. The observation surfaces
+	// forwardInn/forwardHeal ONLY in this out-of-range state (valid==0 otherwise), so
+	// no separate "should we?" guard is needed beyond the gate here; the *Underway
+	// flags (AICortex's position-tracked latch) stop us from ordering a second forward
+	// site while one is building. Re-issue pacing (the per-type build cooldown) lives
+	// in the action layer, so this may fire every cycle until a site actually appears.
+	//
+	// Gated GATE_BOOTSTRAP | GATE_LABOR in decide() (a build crew off idle hands,
+	// behind the first inn) and canExpand-checked here, exactly like the other builds.
+	ScoredAction CortexPolicy::scoreForwardBase(const CortexObservation& obs, const DecideFacts& f) const
+	{
+		if (!f.combatPhase || !f.canExpand || !obs.flagTargets[0].valid
+		 || cortexInRangeTargetSlot(obs) >= 0)
+			return cortexDecline();
+		if (obs.forwardInn.valid && !obs.forwardInnUnderway)
+			return { SCORE_FORWARD_BASE, makeBuildForwardAction(CORTEX_BUILD_FOOD) };
+		if (obs.forwardHeal.valid && !obs.forwardHealUnderway)
+			return { SCORE_FORWARD_BASE, makeBuildForwardAction(CORTEX_BUILD_HEAL) };
 		return cortexDecline();
 	}
 

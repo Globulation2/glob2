@@ -133,6 +133,36 @@ namespace Cortex
 	/// colony before the army is recalled. Either trigger now earns the override.
 	static const int CORTEX_DEFENSE_SERIOUS_UNITS = 6;
 
+	/// Maximum simultaneous DEFENSE flags (multi-point defense). A single recalled
+	/// flag can cover one assault point; a spread-out colony on a big map takes fire
+	/// at several at once (Nicowar's defense planner covers every threatened point —
+	/// ai/nicowar/Flags.cpp:22-297). Cortex plants up to this many defense flags, one
+	/// per distinct threatened building, each sized to its own local visible threat.
+	static const int CORTEX_MAX_DEFENSE_FLAGS = 3;
+	/// Minimum Chebyshev separation between two defense TARGETS. Two adjacent
+	/// buildings shelled by the same assault are ONE defense point — a second flag
+	/// there would split the recall for no coverage gain. A further target earns its
+	/// own flag only beyond this distance (2x the flag's threat-scan radius, so the
+	/// two flags' engagement areas don't overlap).
+	static const int CORTEX_DEFENSE_TARGET_SEPARATION = 2 * CORTEX_THREAT_SCAN_RADIUS;
+
+	// --- forward base (attack-range support envelope) -----------------------
+	// A war party fights only as far from its FOOD (inn) and HEALING (hospital) as
+	// the hunger clock and HP allow: a flag beyond that support radius bleeds its
+	// cohort into round-trips home. When every known target is beyond the radius
+	// (see CortexTuning attackRangeBase/attackRangePerWalkLevel), the cure is not to
+	// attack anyway and melt — it is to EXTEND the envelope: build a forward inn
+	// (and hospital) toward the front, then attack once the target is in range.
+
+	/// A forward-base candidate must keep at least this Chebyshev distance from the
+	/// attack target: building inside the enemy's base gets the site (and its
+	/// builders) shelled before it ever stands.
+	static const int CORTEX_FORWARD_MIN_ENEMY_DIST = 10;
+	/// A forward-base candidate must bring the target inside the attack range by
+	/// this margin (candidate-to-target distance <= range - slack), so the finished
+	/// forward base doesn't leave the target teetering exactly on the range edge.
+	static const int CORTEX_FORWARD_RANGE_SLACK = 4;
+
 	// --- wheat-protection tuning (all tunable AI design choices) -----------
 	// Cortex paints a checkerboard `forbidden` pattern over its wheat (CORN) so
 	// workers harvest one half while the protected half stays full and reseeds it

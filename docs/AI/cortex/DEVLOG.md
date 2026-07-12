@@ -593,6 +593,118 @@ can shift Muka (consistent with the CAPPED-DRAINING diagnosis) but does NOT touc
 binding constraint — **Mazury ~46% is not an expansion-trigger problem**; further tuning
 here only trades maps. Defaults kept; seam + driver remain uncommitted on the working tree.
 
+### Combat envelope batch (attack range + forward base, multi-defense, war-prep level match) — Muka regression (2026-07-11)
+
+Implemented all three Nicowar-gap combat features at once on top of `12947373`
+(user-directed batch; observation v18 / action v13, uncommitted): (1) attack-range
+gate — offense commits only on a target within `attackRangeBase + perWalkLevel×slowest
+warrior WALK` of the nearest finished inn (maxed w/ hospital when one exists), with a
+NEW forward-inn/hospital build (`scoreForwardBase`, decide class 18) when every target
+is out of range, waived when no legal forward spot exists; (2) defense flag → SET of up
+to 3 flags on separated threatened buildings, each sized 3× local visible threat;
+(3) war-prep level match — normal commit counts only warriors with ATTACK_STRENGTH ≥
+highest enemy level ever seen (FOW-latched, serialized), capped at barracks-trainable
+(level+1, no deadlock); blitz bypasses all gates. Knobs: `attackRangeBase 32`,
+`attackRangePerWalkLevel 8`, `warPrepLevelMatch 1`. Mechanically verified live (class 18
+fires, forward inns built, waves muster at innDist≈5).
+
+**Benchmark (100 paired seeds, swap-sides, vs run1 control): Muka 44.0% (−23.5pp, flips
++10/−57 — a real, large regression), Mazury 43.5% (flips +43/−49, net −6 ≈ noise; huge
+churn though), SmallForTwo 96.5% (+4/−3, unchanged).** Batch is net-negative; per the
+one-at-a-time lesson the three features can't be attributed from this run alone, but the
+prior measured commit-size lesson (ATTACK_MIN_WARRIORS comment: anything that DELAYS the
+first strike turtles us into Nicowar's maturing economy) points at the two delay-adding
+gates (range/forward-base detour + level match) as prime suspects on Muka, which the old
+early-harassment commit was winning at 67.5%. Attribution is cheap without new code: the
+knob seam can disable each gate (`attackRangeBase 0`, `warPrepLevelMatch 0`) — a 3-config
+paired run isolates each feature's delta; multi-defense is the only unknobbed structural
+change. NOT adopted; working tree left as-is pending user decision.
+
+### Muka flip diagnosis: range gate never opens, level gate throttles its own cure (2026-07-11)
+
+Per-seed analysis of the hard-flipped Muka seeds (control 2/2 → batch 0/2: 18, 25, 41,
+51, 63, 64, 68, 87, 95, 96), deep-traced on 87-rev (fastest collapse, 18,786 ticks) with
+a new gated `CORTEX_DUMP_GATES` stderr dump (AICortex.cpp, prints latch / own-level
+histogram / effective range / inRangeSlot / fwdInn-fwdHeal valid+underway / per-target
+supportDist each cycle; read-only, sync-safe). Key facts, all measured:
+
+- **The range gate never opened**: `inRangeTargetSlot = -1` from tick 0 to t=15151.
+  Muka targets sit at supportDist 46–64 vs range 32–40, every cycle. Normal offense was
+  hard-blocked the whole game; the only attacks were famine-blitz pulses (foodSaturated
+  bypass). Control (same seed, clean 12947373) attacked continuously from t≈7700 with
+  the raw `warriors>=8` commit and won at 21,634.
+- **The envelope needs TWO forward buildings, not one**: supportDist = max(nearest
+  finished inn, nearest finished hospital) (CortexObservationObserve.cpp support pass),
+  so once the colony owns its home hospital a forward INN alone can never open the gate
+  — the home hospital's distance dominates the max. 87-rev opened the envelope only at
+  t=15151 (d52→d13) after BOTH a forward inn and a forward hospital finished, ~7,600
+  ticks after the first forward site went up. By then the colony was being razed.
+- **The level gate throttles the range gate's cure**: scoreForwardBase requires
+  `matchedWarriors >= ATTACK_MIN_WARRIORS`. Latch hit 1 at t=8049 while ownStr was
+  [8,0,0,0] → matched=0 → class 18 blocked; it fired (10766) exactly when the level-1
+  count reached 8, ~2,700 ticks after a forward candidate was first valid.
+- **forwardInnUnderway false-positives**: ANY friendly food/heal construction site
+  within maxD of tgt0 counts as "the forward base is underway" — including ordinary
+  economy inn sites near mid-map wheat — and tgt0 itself reorders as new enemy buildings
+  are discovered, so valid/underway flapped for thousands of ticks while contested
+  forward sites never finished. "Waived when no legal forward spot exists" never
+  triggers in this state: a spot exists, it just can't be completed → turtle forever.
+
+**Knockout matrix (seeds 87, 51, 18, both sides, tuning-seam knockouts, multi-defense
+always on): all-on 0/6, rangeoff 5/6, lvloff 1/6, bothoff 6/6.** bothoff reproduced the
+control games BIT-IDENTICALLY (same ticks + order counts) on all six — multi-defense and
+the rest of the batch are behaviorally inert on these seeds; the whole regression is the
+two gates. Range gate = dominant (on s51 rangeoff == bothoff bit-identical; level gate
+never binds there), level gate = real secondary (needed on 87-rev, flips 18-rev alone).
+
+Implementation defects (design kept, per user direction): (1) hospital term makes the
+support max conjunctive — a forward inn alone should extend the envelope; (2)
+scoreForwardBase must not be gated on matchedWarriors — building an inn is workers'
+business; (3) no fallback while the cure is pending — the waiver keys off placement
+LEGALITY (`forwardPossible`), but ordering the build additionally needs canExpand +
+GATE_BOOTSTRAP|GATE_LABOR + winning the economy argmax, so a merely-"possible" forward
+base that is never even ordered holds the gate shut indefinitely, with no
+progress/timeout check; (4) underway detection should track sites the forward path
+actually ordered (gid), not any food site near a reordering tgt0; (5) minor: effective
+range flickers 40→32 whenever a fresh walk-0 warrior spawns (slowest-occupied-level
+formula). Related, unmeasured on Muka: multi-defense sums its recall deficit across up
+to 3 flags (each 3× local threat) vs the old single 3× count, so lighter harassment now
+triggers clearAllOffenseFlags() — inert on the three seeds tested, but a prime
+candidate for the Mazury ±43/49 churn. No fixes applied yet; artifacts in
+`.tmp/flip87/` (traces, replays, knockout logs, tuning files).
+
+### Gate fixes implemented — Muka mostly recovered, freeze mode eliminated (2026-07-12)
+
+Implemented the five defects above (uncommitted, on top of the batch): (1) supportDist
+= nearest finished inn only, hospital advisory (CortexObservationObserve.cpp); (2)
+scoreForwardBase ungated from matchedWarriors; (3) forward-site underway now
+position-tracked in AICortex (serialized forwardInnX/Y, forwardHealX/Y set when
+translateActionBuildForward emits the order; reconciled each cycle: site at pos →
+underway, finished → clear, gone past buildCooldown → clear) replacing the proximity
+scan and its candidate-surfacing guards; (4) grace waiver — NEW knob
+`attackRangeGraceTicks` (default 2400, 0 = never waive), serialized
+`rangeGateBindingSince` armed while (targets valid ∧ warriors>0 ∧ inRangeSlot<0)
+holds; past the grace the commit attacks out-of-envelope while the forward base keeps
+building (`obs.rangeGateWaived` echo); (5) computeOffenseCommit gained `sustain`:
+scoreRetireFlag now sustains on the UNGATED commit (raw warriors ≥ bar), strictly
+weaker-to-fail than the gated start — gates govern starting an offense, never
+abandoning one. CORTEX_GATES dump extended with `waived=`.
+
+Mechanically verified on 87-rev: waiver fires at binding+2400, waves march through a
+mid-war latch rise 1→2, the forward inn ALONE opens the envelope (supportDist 52→32→14
+as it finishes), tracked site clears on completion. Smoke matrix (the 3 worst flipped
+seeds × both sides, all gates on): 5/6 wins, was 0/6. The one loss (51-rev) is a
+genuine attrition war (30-warrior peak, continuous waves), not a gate freeze.
+
+**Benchmark (100 paired seeds, swap-sides, vs run1 control): Muka 58.5% (batch was
+44.0%, control 67.0%; flips vs control +13/−31, hard 2→0 flips 1 — seed 43 — down from
+10), Mazury 46.5% (== control 46.5), SmallForTwo 95.0% (control 96.0, noise).** The
+freeze failure mode is gone; the residual Muka −8.5pp is a broad shallow spread — the
+by-design cost of gated first strikes (and possibly the multi-defense recall
+sensitivity), no longer a single mechanism. Knob surface for a search now exists:
+attackRangeBase / attackRangePerWalkLevel / attackRangeGraceTicks / warPrepLevelMatch.
+Bench artifacts: `.tmp/gatefix-bench/`. NOT adopted; awaiting user decision.
+
 ---
 
 ## 3. ML pilot (effort B)

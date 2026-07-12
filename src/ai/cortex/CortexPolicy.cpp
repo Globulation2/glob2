@@ -287,11 +287,13 @@ namespace Cortex
 	}
 
 	// DECIDE_CONTRACT action-map class indices for the three war-flag decisions.
-	// They are still EVALUATED inside decide() (for the 18-class eligibility mask +
+	// They are still EVALUATED inside decide() (for the 19-class eligibility mask +
 	// trace), but their SELECTION moved to decideCombat() so a busy economy can never
 	// starve a war-flag move (and vice versa). Identified by explicit class index
-	// rather than "the last three" so a future appended ECONOMY candidate stays
-	// selectable in decide(). Keep in lockstep with CortexPolicy::decide()'s
+	// rather than "the last three" so an appended ECONOMY candidate stays selectable
+	// in decide(): the contract has since grown to 19 classes with class 18 =
+	// ForwardBase (economy, selectable), appended after Offense (class 17) exactly so
+	// these combat indices did not move. Keep in lockstep with CortexPolicy::decide()'s
 	// candidates[] order and docs/AI/cortex/DECIDE_CONTRACT.md.
 	enum {
 		DECIDE_CLASS_DEFENSE     = 15,
@@ -358,6 +360,7 @@ namespace Cortex
 			scoreDefense(obs, f),
 			scoreRetireFlag(obs, f),
 			scoreOffense(obs, f),
+			scoreForwardBase(obs, f),
 		};
 		// Per-candidate required feasibility gates (CortexGate bits), in EXACT
 		// lockstep with candidates[] above — the shared array index IS the
@@ -386,6 +389,7 @@ namespace Cortex
 			0,                           // Defense — war flags are never feasibility-gated.
 			0,                           // RetireFlag — war flags are never feasibility-gated.
 			0,                           // Offense — war flags are never feasibility-gated.
+			GATE_BOOTSTRAP | GATE_LABOR, // ForwardBase — a build crew off idle hands, behind the first inn.
 		};
 		static_assert(sizeof(candidateGates) / sizeof(candidateGates[0])
 		           == sizeof(candidates) / sizeof(candidates[0]),
@@ -399,12 +403,12 @@ namespace Cortex
 		// (Defense/RetireFlag/Offense) split out to decideCombat(), which
 		// runs them on its own parallel pass in getOrder(). decide() must NOT also
 		// select them or it would double-emit the same flag action this cycle. They
-		// are still EVALUATED here so the full 18-class eligibleMask + trace stay
+		// are still EVALUATED here so the full 19-class eligibleMask + trace stay
 		// intact for the DECIDE_CONTRACT pilot (training continuity); only the
 		// economyMask feeds selection. Combat classes are excluded by explicit class
-		// index (DECIDE_CONTRACT action map), so a future appended ECONOMY candidate
-		// stays selectable here.
-		Uint32 eligibleMask = 0; // full 18-class mask: trace + ML contract.
+		// index (DECIDE_CONTRACT action map), so the appended ForwardBase economy
+		// candidate (class 18) stays selectable here.
+		Uint32 eligibleMask = 0; // full 19-class mask: trace + ML contract.
 		Uint32 economyMask = 0;  // economy-only subset that decide() may select.
 		ScoredAction best{ SCORE_NONE, makeNoOpAction() };
 		int bestIndex = -1;
@@ -565,7 +569,7 @@ namespace Cortex
 		features[i++] = obs.enemyUnitsNearFlag;   // 39
 		features[i++] = flagTargetsValid;         // 40 flagTargetsValid
 		features[i++] = obs.flagPosture;          // 41
-		features[i++] = obs.defenseTarget.valid ? 1 : 0; // 42 haveDefenseTarget
+		features[i++] = obs.defenseTargets[0].valid ? 1 : 0; // 42 haveDefenseTarget (slot 0 == worst threat)
 		features[i++] = obs.algaeReachable;       // 43
 		features[i++] = obs.algaeDiscovered;      // 44
 		features[i++] = obs.swimLandReach;        // 45

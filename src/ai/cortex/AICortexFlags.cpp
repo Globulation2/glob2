@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
-// War-flag lifecycle for Cortex. Cortex runs TWO independent war flags at once —
-// an OFFENSE flag pushing on the enemy and a DEFENSE flag recalling the home
-// reserve — each tracked by its own gid, sized, and given its own engine priority
-// (defense HIGH so it out-recruits offense for the free-warrior pool; offense
-// NORMAL). This decoupling replaces the old single-flag model where a "recall" was
-// just an OrderMoveFlag that teleported the lone flag's anchor home while its
-// committed army stayed forward. Split out of AICortex.cpp to keep both files under
-// the source-size cap; the determinism-relevant logic is unchanged from the inline
-// single-flag version, only generalised to the offense WAVE PIPELINE (an array of
-// offense flags managed by gid) plus the single defense flag.
+// War-flag lifecycle for Cortex. Cortex runs two independent war-flag systems at once
+// — the OFFENSE WAVE PIPELINE pushing on the enemy and the DEFENSE flag SET (up to
+// CORTEX_MAX_DEFENSE_FLAGS flags) recalling the home reserve to each point under fire —
+// each flag tracked by its own gid, sized, and given its own engine priority (defense
+// HIGH so it out-recruits offense for the free-warrior pool; offense NORMAL). This
+// decoupling replaces the old single-flag model where a "recall" was just an
+// OrderMoveFlag that teleported the lone flag's anchor home while its committed army
+// stayed forward. Split out of AICortex.cpp to keep both files under the source-size
+// cap; the determinism-relevant logic is unchanged from the inline single-flag version,
+// only generalised to the offense WAVE PIPELINE (an array of offense flags managed by
+// gid) plus the multi-point DEFENSE flag set (an array of defense flags managed by gid).
 
 #include "AICortex.h"
 #include "CortexObservation.h"
@@ -59,10 +60,11 @@ bool AICortex::isOwnedGid(Uint16 gid) const
 {
 	if (gid == NOGBID)
 		return false;
-	if (gid == defenseFlagGid)
-		return true;
 	for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
 		if (offenseWaves[i].gid == gid)
+			return true;
+	for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
+		if (defenseFlags[i].gid == gid)
 			return true;
 	return false;
 }
@@ -257,13 +259,14 @@ bool AICortex::computeRallyPoint(int& rx, int& ry) const
 
 void AICortex::reconcileStaleDefenseFlag(const Cortex::CortexObservation& obs)
 {
-	// The assault is over the moment nothing of ours is taking fire — tear the defense
-	// flag down so its HIGH-priority pull stops hogging warriors the offense waves want.
-	// scoreDefense DECLINES when buildingsUnderAttack == 0, so the action ladder would
-	// never place a teardown; this runs unconditionally each cycle instead. Idempotent:
-	// clearOneFlag is a no-op once the flag is already gone.
+	// The assault is over the moment nothing of ours is taking fire — tear the WHOLE
+	// defense flag set down so its HIGH-priority pull stops hogging warriors the offense
+	// waves want. scoreDefense DECLINES when buildingsUnderAttack == 0, so the action
+	// ladder would never place a teardown; this runs unconditionally each cycle instead.
+	// Idempotent: clearOneFlag is a no-op on any slot already gone.
 	if (obs.buildingsUnderAttack == 0)
-		clearOneFlag(defenseFlagGid);
+		for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
+			clearOneFlag(defenseFlags[i].gid);
 }
 
 void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warriors,

@@ -108,6 +108,14 @@ namespace Cortex
 		/// take priority. Minor (single-building) harassment stays at SCORE_DEFENSE.
 		SCORE_DEFENSE_SERIOUS    =  6900,
 
+		/// Forward base: extend the attack-range support envelope (a forward inn,
+		/// then hospital) toward a front every known target sits beyond. Fires only
+		/// when the colony WANTS to attack but can't reach — below the whole tech/
+		/// upgrade band (finish the build-out first) but above the bottlenecked-inn
+		/// rung, so a war-ready colony actually projects its support forward instead
+		/// of idling.
+		SCORE_FORWARD_BASE       =  4500,
+
 		// Military band (repositioning standing flags; below economy by design —
 		// the pre-combat emergency is SCORE_PANIC_DEFENSE, not these).
 		SCORE_DEFENSE            =  4000,
@@ -208,7 +216,7 @@ namespace Cortex
 		/// exactly: serious-defense > blitz-offense > defense > retire > offense.
 		/// Split out of decide() so a busy economy never preempts a war-flag move; the
 		/// action layer drains the combat orders alongside the economy ones, exactly
-		/// like tuneWorkers() / wantWheatProtection(). The 18-class DECIDE_CONTRACT
+		/// like tuneWorkers() / wantWheatProtection(). The 19-class DECIDE_CONTRACT
 		/// trace/ML mask still EVALUATES these three (training continuity); only the
 		/// SELECTION moved here — decide() no longer acts on them.
 		CortexAction decideCombat(const CortexObservation& obs) const;
@@ -337,6 +345,8 @@ namespace Cortex
 		ScoredAction scoreHospitalExpandUpgrade(const CortexObservation& obs, const DecideFacts& f) const;
 		/// Second swarm on a freshly-discovered wheat patch.
 		ScoredAction scoreSecondSwarm(const CortexObservation& obs, const DecideFacts& f) const;
+		/// Forward base (inn, then hospital) toward an out-of-range front.
+		ScoredAction scoreForwardBase(const CortexObservation& obs, const DecideFacts& f) const;
 		/// Defense (recall the army to a threatened building).
 		ScoredAction scoreDefense(const CortexObservation& obs, const DecideFacts& f) const;
 		/// Retire a purposeless war flag.

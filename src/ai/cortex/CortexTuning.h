@@ -64,6 +64,34 @@ namespace Cortex
 		/// only. 1 = any severity (committed behavior).
 		int expandSeverityFloor = 1;
 
+		// --- combat envelope (attack range / war preparation) -----------------
+		/// Base attack range in Chebyshev tiles: an offensive commit requires a
+		/// known target within this distance of our nearest FINISHED inn (maxed
+		/// with the nearest finished hospital when one exists) — a war party
+		/// fights only as far from food/healing as the hunger clock allows. When
+		/// every target is out of range Cortex builds a FORWARD inn/hospital
+		/// toward the front instead of attacking and melting (scoreForwardBase);
+		/// if no legal forward site exists the gate is waived. <= 0 disables the
+		/// gate entirely (pre-v18 behavior).
+		int attackRangeBase = 32;
+		/// Range added per WALK level of the wave's SLOWEST warrior (racetrack
+		/// training): faster marchers survive longer supply round-trips.
+		int attackRangePerWalkLevel = 8;
+		/// War-preparation level match: when 1, the normal offense commit counts
+		/// only warriors whose ATTACK_STRENGTH level >= the highest enemy-warrior
+		/// level ever observed (FOW-gated, latched), capped by what our barracks
+		/// can currently train (finished barracks level + 1) so the gate creates
+		/// training pressure instead of a deadlock. The famine blitz ignores it.
+		/// 0 disables (raw-count commit, pre-v18 behavior).
+		int warPrepLevelMatch = 1;
+		/// Grace window (ticks) the attack-range gate may BIND — the army wants to
+		/// attack and every known target is out of the support envelope — before the
+		/// gate is WAIVED and the offense commits out-of-envelope anyway (pre-v18
+		/// behavior) while the forward base keeps building. Prevents a "possible" but
+		/// never-ordered forward base from holding the gate shut forever. 0 = never
+		/// waive (the gate binds indefinitely while a forward base could cure it).
+		int attackRangeGraceTicks = 2400;
+
 		// --- production-mix worker-target tiers (the expansion-tax side) ------
 		/// Divisor D in mid = base + (needs - base)/D: how far past the hauler
 		/// floor the worker base grows before production flips to pure warriors.

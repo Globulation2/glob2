@@ -153,8 +153,27 @@ namespace Cortex
 		}
 	} // namespace
 
-	int placeCandidates(Game* game, Team* team, int buildingType, int level,
-	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES])
+	namespace
+	{
+		// Forward-base bias for placeCandidatesImpl: restrict candidates to a
+		// distance WINDOW around the attack target (close enough that the finished
+		// building brings the target inside the attack range, far enough not to be
+		// built under enemy fire) and drop the stay-clustered-with-the-colony cap
+		// (a forward base is far from the colony by definition). The near-colony
+		// compactness SCORE is kept, so among all legal forward spots the one
+		// closest to home wins — the safest spot that does the job.
+		struct ForwardBias
+		{
+			int targetX;
+			int targetY;
+			int minTargetDist;
+			int maxTargetDist;
+		};
+	}
+
+	static int placeCandidatesImpl(Game* game, Team* team, int buildingType, int level,
+	                               BuildCandidate out[CORTEX_BUILD_CANDIDATES],
+	                               const ForwardBias* forward)
 	{
 		// Always leave the output well-defined, even on the error paths below.
 		// wheatDist is initialised to -1 (no wheat in reach) matching the
@@ -233,6 +252,17 @@ namespace Cortex
 				// left for the centered racetrack/pool growth).
 				const int gx = x + gox;
 				const int gy = y + goy;
+
+				// FORWARD-BASE WINDOW: the candidate must sit inside the requested
+				// distance band around the attack target — near enough to bring the
+				// target inside the attack range once built, far enough not to be
+				// raised under enemy fire. Cheapest gate, so it runs first.
+				if (forward != NULL)
+				{
+					const int td = map.warpDistMax(x, y, forward->targetX, forward->targetY);
+					if (td < forward->minTargetDist || td > forward->maxTargetDist)
+						continue;
+				}
 
 				// Canonical engine validity gate — identical to the predicate
 				// behind Game::checkHardRoomForBuilding for a non-virtual
@@ -341,8 +371,10 @@ namespace Cortex
 				// clustered with the colony. The soft compactness score alone can let a
 				// far-flung spot win; this hard cap forbids any spot whose footprint edge
 				// is more than CORTEX_MAX_BUILD_EDGE_DIST tiles from the nearest existing
-				// building. Skipped when the team has no buildings yet (first placement).
-				if (!isInn && !isSwarm)
+				// building. Skipped when the team has no buildings yet (first placement),
+				// and in FORWARD mode (a forward hospital is far from the colony by
+				// design — the target-distance window above bounds it instead).
+				if (!isInn && !isSwarm && forward == NULL)
 				{
 					const int edgeDist = nearestBuildingEdgeDist(game, team, map, x, y, w, h);
 					if (edgeDist >= 0 && edgeDist > CORTEX_MAX_BUILD_EDGE_DIST)
@@ -431,5 +463,43 @@ namespace Cortex
 		}
 
 		return count;
+	}
+
+	int placeCandidates(Game* game, Team* team, int buildingType, int level,
+	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES])
+	{
+		return placeCandidatesImpl(game, team, buildingType, level, out, NULL);
+	}
+
+	int placeForwardCandidate(Game* game, Team* team, int buildingType,
+	                          int targetX, int targetY,
+	                          int minTargetDist, int maxTargetDist,
+	                          BuildCandidate& out)
+	{
+		// Same scan, same legality gates (a forward inn still needs harvestable
+		// wheat at the front), restricted to the target-distance window and with
+		// the colony edge-distance cap lifted. The compactness score is unchanged,
+		// so the retained best (slot 0) is the legal forward spot CLOSEST to the
+		// colony — the safest one that does the job.
+		out.valid = 0;
+		out.x = 0;
+		out.y = 0;
+		out.score = 0;
+		out.wheatDist = -1;
+		if (maxTargetDist < minTargetDist)
+			return 0; // degenerate window (range too short for the standoff) — no spot.
+
+		ForwardBias bias;
+		bias.targetX = targetX;
+		bias.targetY = targetY;
+		bias.minTargetDist = minTargetDist;
+		bias.maxTargetDist = maxTargetDist;
+
+		BuildCandidate slots[CORTEX_BUILD_CANDIDATES];
+		const int n = placeCandidatesImpl(game, team, buildingType, 0, slots, &bias);
+		if (n <= 0)
+			return 0;
+		out = slots[0];
+		return 1;
 	}
 } // namespace Cortex

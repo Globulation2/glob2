@@ -34,6 +34,20 @@ namespace Cortex
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
 	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES]);
 
+	/// Forward-base variant of placeCandidates: the single best legal spot for
+	/// `buildingType` whose distance to the attack target (targetX, targetY) lies
+	/// in [minTargetDist, maxTargetDist] — near enough that the finished building
+	/// brings the target inside the attack-range support envelope, far enough not
+	/// to be built under enemy fire. All normal legality gates for the type still
+	/// apply (a forward inn still needs harvestable wheat at the front); only the
+	/// stay-clustered-with-the-colony cap is lifted. Among legal spots the one
+	/// closest to the colony wins (safest that does the job). Returns 1 and fills
+	/// `out`, or 0 (out.valid == 0) when no legal forward spot exists.
+	int placeForwardCandidate(Game* game, Team* team, int buildingType,
+	                          int targetX, int targetY,
+	                          int minTargetDist, int maxTargetDist,
+	                          BuildCandidate& out);
+
 	/// Fill `out` with up to CORTEX_FLAG_TARGETS DISCOVERED enemy buildings, ranked
 	/// nearest-first to our colony, to serve as war-flag offense targets. Each
 	/// BuildCandidate's (x, y) is the enemy building's tile (its center/posX,posY,

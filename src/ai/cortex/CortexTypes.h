@@ -119,7 +119,24 @@ namespace Cortex
 	/// mirror (not serialized — the observation is recomputed every cycle).
 	/// v16 (2026-06-07) added totalNeededPerLevel[]: open-job slots split by building level, so the worker-surplus throttle can ignore jobs the current (under-leveled) workforce cannot fill.
 	/// v17 (2026-06-13) clarified enemyUnitsNearFlag as measured around the first offense WAVE flag (offense pipeline); layout otherwise unchanged from v16.
-	static const Uint32 OBSERVATION_VERSION = 17;
+	/// v18 (2026-07-11, combat-envelope increment) — the three war-capability signals:
+	/// (a) MULTI-POINT DEFENSE: defenseTarget/enemyUnitsNearThreat became
+	/// defenseTargets[CORTEX_MAX_DEFENSE_FLAGS]/defenseThreatCount[] — up to K
+	/// spatially-separated buildings under fire, worst-first ([0] is the old single
+	/// target), each with its own local visible-threat count sizing its flag.
+	/// (b) ATTACK-RANGE ENVELOPE: flagTargetSupportDist[] (per offense target, the
+	/// distance to our nearest FINISHED inn, maxed with the nearest finished hospital
+	/// when one exists — how far the target sits from the army's food/heal support),
+	/// warriorWalkLevel[] (per-level WARRIOR WALK histogram — the wave marches at its
+	/// slowest member's speed), and the forward-base surface: forwardInn/forwardHeal
+	/// (best legal forward build spot toward the primary target when every target is
+	/// out of range; valid==0 otherwise) + forwardInnUnderway/forwardHealUnderway
+	/// (a forward site is already building — don't order another).
+	/// (c) ENEMY WARRIOR INTEL: enemyWarriorLevelVisible (this cycle's max
+	/// ATTACK_STRENGTH level among FOW-visible enemy warriors) and
+	/// enemyWarriorLevelLatched (AICortex's persisted highest-ever-seen echo, the
+	/// flagPosture pattern) — the war-preparation level-match gate's inputs.
+	static const Uint32 OBSERVATION_VERSION = 18;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -153,7 +170,12 @@ namespace Cortex
 	/// defense war flags).
 	/// v12 (2026-06-13) ACTION_CLEAR_FLAGS now stands down ALL offense waves (the offense
 	/// pipeline), not a single offense flag; no field-layout change.
-	static const Uint32 ACTION_VERSION = 12;
+	/// v13 (2026-07-11) added ACTION_BUILD_FORWARD (build buildingType at the
+	/// observation's forward-base candidate — obs.forwardInn / obs.forwardHeal — to
+	/// extend the attack-range support envelope toward the front). No field-layout
+	/// change (reuses buildingType); ACTION_PLACE_DEFENSE_FLAG now reconciles the
+	/// whole defenseTargets[] SET (one flag per valid target), not a single flag.
+	static const Uint32 ACTION_VERSION = 13;
 
 	// --- tunable constants + enums: see CortexConstants.h (included above) ---
 
@@ -254,6 +276,7 @@ namespace Cortex
 		// Each array mirrors one TeamStat upgrade slice that Nicowar's phases read.
 		Sint32 buildLevel[CORTEX_UNIT_LEVELS];               ///< stat->upgradeState[BUILD][lvl] (any unit type; only workers have BUILD performance, so effectively per-worker). School (SCIENCE) expand-vs-upgrade gate.
 		Sint32 walkLevel[CORTEX_UNIT_LEVELS];                ///< stat->upgradeState[WALK][lvl] (workers AND warriors; explorers have zero WALK performance). Racetrack (WALKSPEED) expand-vs-upgrade gate. Denominator is workers+warriors.
+		Sint32 warriorWalkLevel[CORTEX_UNIT_LEVELS];         ///< stat->upgradeStatePerType[WARRIOR][WALK][lvl] — the WARRIOR-only WALK slice. The attack-range envelope scales with the wave's SLOWEST member (lowest occupied level), so the per-type slice is needed; the any-type walkLevel[] above mixes in workers.
 		Sint32 attackSpeedLevel[CORTEX_UNIT_LEVELS];         ///< stat->upgradeState[ATTACK_SPEED][lvl] (== trained-warrior count by level).
 		Sint32 attackStrengthLevel[CORTEX_UNIT_LEVELS];      ///< stat->upgradeState[ATTACK_STRENGTH][lvl]. A warrior joins a flag only if its min(ATTACK_SPEED,ATTACK_STRENGTH) level clears the flag's minLevelToFlag.
 		Sint32 workerSwimLevel[CORTEX_UNIT_LEVELS];          ///< stat->upgradeStatePerType[WORKER][SWIM][lvl]; index 0 == cannot swim.
@@ -293,10 +316,24 @@ namespace Cortex
 		// ONLY from buildings we have legitimately seen (Building::seenByMask), never
 		// from unfogged truth. ACTION_PLACE_WAR_FLAG.locationSlot indexes this array.
 		BuildCandidate flagTargets[CORTEX_FLAG_TARGETS];
-		// DEFENSE target: the single best spot to recall the army to — the position
-		// of the friendly building currently taking the most fire (underAttackTimer).
-		// valid==0 when nothing is under attack. ACTION_PLACE_DEFENSE_FLAG uses this.
-		BuildCandidate defenseTarget;
+		// Per-flag-target SUPPORT DISTANCE (v18): warp-safe Chebyshev distance from
+		// flagTargets[i] to our nearest FINISHED inn, maxed with the distance to our
+		// nearest finished hospital when at least one hospital exists — how far the
+		// target sits from the food/heal support an attacking army fights from. -1
+		// for invalid slots (or when we have no finished inn at all). The offense
+		// commit gate compares this against the tuned attack range; reading our OWN
+		// buildings is not a fog cheat.
+		Sint32 flagTargetSupportDist[CORTEX_FLAG_TARGETS];
+		// DEFENSE targets (v18, multi-point): up to CORTEX_MAX_DEFENSE_FLAGS friendly
+		// buildings currently taking fire, worst-first (highest underAttackTimer in
+		// slot 0 — the old single defenseTarget), each at least
+		// CORTEX_DEFENSE_TARGET_SEPARATION from every earlier slot so two flags never
+		// cover one assault point. valid==0 slots are unused. defenseThreatCount[i] is
+		// the count of VISIBLE enemy units within CORTEX_THREAT_SCAN_RADIUS of
+		// defenseTargets[i] (FOW-gated, never a fog cheat) — it sizes that point's
+		// defense flag. ACTION_PLACE_DEFENSE_FLAG reconciles the whole set.
+		BuildCandidate defenseTargets[CORTEX_MAX_DEFENSE_FLAGS];
+		Sint32 defenseThreatCount[CORTEX_MAX_DEFENSE_FLAGS];
 		// Count of our own live WAR_FLAG virtual buildings (reading our OWN state is
 		// not a cheat). Lets the policy/action layer know a flag already exists so it
 		// moves/clears rather than stacking duplicates.
@@ -313,12 +350,6 @@ namespace Cortex
 		// attack (underAttackTimer > 0). Nonzero => recall the army to defend.
 		Sint32 unitsUnderAttack;
 		Sint32 buildingsUnderAttack;
-		// Count of VISIBLE enemy units within CORTEX_THREAT_SCAN_RADIUS of defenseTarget
-		// (the building taking the most fire). FOW-gated like enemies[].totalUnit, so it
-		// is never a fog-of-war cheat. The defensive recall is sized to
-		// CORTEX_DEFENSE_THREAT_MULTIPLE x this count, so the army summoned home scales to
-		// the actual assaulting force. 0 when nothing is under attack.
-		Sint32 enemyUnitsNearThreat;
 		// Count of our own WARRIORs that are currently FREE (activity == ACT_RANDOM &&
 		// medical == MED_FREE) — i.e. not committed to any flag and immediately
 		// recruitable. This is the exact eligibility a war flag's recruiter applies
@@ -415,6 +446,44 @@ namespace Cortex
 		Sint32 swimWaterReach;
 		Sint32 algaeReachable;
 
+		// --- enemy warrior intel (v18, the war-preparation gate's inputs) ---
+		// enemyWarriorLevelVisible: the highest ATTACK_STRENGTH level among enemy
+		// WARRIORs on tiles CURRENTLY in our fog-of-war view this cycle (FOW-gated
+		// exactly like enemies[].totalUnit — never unfogged truth); -1 when no enemy
+		// warrior is visible. enemyWarriorLevelLatched: the highest value
+		// enemyWarriorLevelVisible has EVER reached this game — AICortex owns and
+		// persists the latch (serialized, monotone; the flagPosture echo pattern) and
+		// stamps it here after observe(), so the pure policy reads a stable "how
+		// strong has their army been seen to be" signal that a lull in visibility
+		// never resets. 0 until the first enemy warrior is sighted.
+		Sint32 enemyWarriorLevelVisible;
+		Sint32 enemyWarriorLevelLatched;
+
+		// --- forward base (v18, the attack-range envelope's cure) ---
+		// The best legal spot to build a forward inn / hospital toward the primary
+		// attack target, computed ONLY when at least one offense target exists and
+		// NONE is inside the attack range (valid==0 otherwise — including when the
+		// range gate is disabled). A candidate satisfies every normal placement rule
+		// for its type (an inn still needs harvestable wheat at the front) plus the
+		// forward constraints: at least CORTEX_FORWARD_MIN_ENEMY_DIST from the target
+		// and close enough that the finished building brings the target in range
+		// (<= range - CORTEX_FORWARD_RANGE_SLACK). *Underway flags: the forward site
+		// AICortex last ORDERED (tracked by position, serialized) is still building —
+		// AICortex echoes these in before decide() so the policy does not order a
+		// second one.
+		BuildCandidate forwardInn;
+		BuildCandidate forwardHeal;
+		Sint32 forwardInnUnderway;
+		Sint32 forwardHealUnderway;
+		// Attack-range grace waiver: 1 once the range gate has BOUND (army wants to
+		// attack, every target out of the support envelope) for longer than
+		// attackRangeGraceTicks, telling computeOffenseCommit to attack out-of-envelope
+		// anyway while the forward base keeps building. AICortex owns/serializes the
+		// bind-start tick (rangeGateBindingSince) and echoes this derived flag in before
+		// decide() (the flagPosture echo pattern). 0 while the gate is unbound or still
+		// inside the grace window.
+		Sint32 rangeGateWaived;
+
 		// --- opponents ---
 		Sint32 enemyCount;    ///< Number of active slots below.
 		EnemySlot enemies[MAX_ENEMY_SLOTS];
@@ -430,7 +499,7 @@ namespace Cortex
 		ACTION_BUILD,           ///< Place buildingType at buildCandidates[buildingType][locationSlot].
 		ACTION_SET_PRODUCTION,  ///< Set every finished swarm's production ratio to productionRatio[].
 		ACTION_PLACE_WAR_FLAG,  ///< Offense: ensure our single war flag sits on flagTargets[locationSlot] (create or move there), radius=flagRadius, warriors=unitCount.
-		ACTION_PLACE_DEFENSE_FLAG,///< Defense: ensure our single war flag sits on defenseTarget (create or move there), radius=flagRadius, warriors=unitCount.
+		ACTION_PLACE_DEFENSE_FLAG,///< Defense: reconcile the defense-flag SET against obs.defenseTargets[] — one flag per valid target (create/move/resize; clear slots whose target is gone), radius=flagRadius; each flag is sized to CORTEX_DEFENSE_THREAT_MULTIPLE x its target's defenseThreatCount.
 		ACTION_CLEAR_FLAGS,     ///< Stand the offense down: remove ALL offense war flags (OrderDelete each). The defense flag is managed separately.
 		ACTION_UPGRADE_BUILDING,///< Upgrade one finished `buildingType` instance to its next level (engine OrderConstruction). The action layer resolves which instance (the bottleneck-eligible one) and the worker counts.
 		// (Wheat-forbidden paint is NOT an action kind: it runs every cycle in
@@ -438,6 +507,7 @@ namespace Cortex
 		// and AICortex::enqueueWheatForbidden.)
 		ACTION_TUNE_WORKERS,    ///< Set each tracked swarm/inn/site's maxUnitWorking to swarmWorkers[i]/innWorkers[i]/siteWorkers[i] (indexed in lockstep with obs.trackedSwarms[]/trackedInns[]/trackedSites[]); -1 == leave unchanged. The action layer dedups against the building's current maxUnitWorking and emits one OrderModifyBuilding per real change.
 		ACTION_SET_PRIORITY,    ///< Set tracked-swarm engine priority via OrderChangePriority: the FIRST swarm (trackedSwarms[0], the primary/starting swarm) to priorityTarget, every other swarm to priorityRest (-1/0/+1 each). The action layer dedups against each swarm's current Building::priority and emits one order per real change.
+		ACTION_BUILD_FORWARD,   ///< Build buildingType (CORTEX_BUILD_FOOD or CORTEX_BUILD_HEAL) at the observation's forward-base candidate (obs.forwardInn / obs.forwardHeal) to extend the attack-range support envelope toward the front. Appended (never reorder existing kinds).
 
 		ACTION_KIND_COUNT
 	};

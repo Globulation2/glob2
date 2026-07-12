@@ -62,8 +62,17 @@ void AICortex::init(Player* player)
 		offenseWaves[i].musterUntil = 0;
 		offenseWaves[i].createCooldown = 0;
 	}
-	defenseCooldown = 0; // no defense flag create pending at start.
-	defenseFlagGid = NOGBID; // no defense flag yet.
+	for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
+	{
+		defenseFlags[i].gid = NOGBID;       // no defense flags yet.
+		defenseFlags[i].createCooldown = 0; // no defense create pending at start.
+	}
+	enemyWarriorLevelSeen = 0; // no enemy warrior sighted yet (monotone intel latch).
+	forwardInnX = -1; // no forward inn ordered yet (position-tracked underway latch).
+	forwardInnY = -1;
+	forwardHealX = -1; // no forward hospital ordered yet.
+	forwardHealY = -1;
+	rangeGateBindingSince = 0; // the attack-range gate is not binding at start.
 	flagPosture = POSTURE_NONE;
 	offenseHoldUntil = 0;
 	wheatOpenMargin = -1; // sentinel: drawn lazily on the first decision cycle.
@@ -103,8 +112,21 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	defenseCooldown = stream->readSint32("defenseCooldown");
-	defenseFlagGid = static_cast<Uint16>(stream->readUint32("defenseFlagGid"));
+	stream->readEnterSection("defenseFlags");
+	for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
+	{
+		stream->readEnterSection(i);
+		defenseFlags[i].gid = static_cast<Uint16>(stream->readUint32("gid"));
+		defenseFlags[i].createCooldown = stream->readSint32("createCooldown");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	enemyWarriorLevelSeen = stream->readSint32("enemyWarriorLevelSeen");
+	forwardInnX = stream->readSint32("forwardInnX");
+	forwardInnY = stream->readSint32("forwardInnY");
+	forwardHealX = stream->readSint32("forwardHealX");
+	forwardHealY = stream->readSint32("forwardHealY");
+	rangeGateBindingSince = stream->readSint32("rangeGateBindingSince");
 	flagPosture = stream->readSint32("flagPosture");
 	offenseHoldUntil = stream->readSint32("offenseHoldUntil");
 	// Persisted, NOT redrawn on load: re-drawing would consume a fresh syncRand on
@@ -141,8 +163,21 @@ void AICortex::save(GAGCore::OutputStream* stream)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-	stream->writeSint32(defenseCooldown, "defenseCooldown");
-	stream->writeUint32(defenseFlagGid, "defenseFlagGid");
+	stream->writeEnterSection("defenseFlags");
+	for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
+	{
+		stream->writeEnterSection(i);
+		stream->writeUint32(defenseFlags[i].gid, "gid");
+		stream->writeSint32(defenseFlags[i].createCooldown, "createCooldown");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeSint32(enemyWarriorLevelSeen, "enemyWarriorLevelSeen");
+	stream->writeSint32(forwardInnX, "forwardInnX");
+	stream->writeSint32(forwardInnY, "forwardInnY");
+	stream->writeSint32(forwardHealX, "forwardHealX");
+	stream->writeSint32(forwardHealY, "forwardHealY");
+	stream->writeSint32(rangeGateBindingSince, "rangeGateBindingSince");
 	stream->writeSint32(flagPosture, "flagPosture");
 	stream->writeSint32(offenseHoldUntil, "offenseHoldUntil");
 	stream->writeSint32(wheatOpenMargin, "wheatOpenMargin");
@@ -501,6 +536,119 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// decide(), exactly like wheatOpenMargin's per-game value is echoed in.
 		obs.flagPosture = flagPosture;
 		obs.offenseHoldUntil = offenseHoldUntil;
+
+		// Monotone latch of the highest enemy-warrior ATTACK_STRENGTH level ever seen.
+		// enemyWarriorLevelVisible is FOW-gated (-1 when no enemy warrior is in view), so
+		// we only ever RAISE the persisted latch — a lull in visibility must not reset the
+		// war-preparation level-match gate. AICortex OWNS and serializes enemyWarriorLevelSeen;
+		// we echo the current value into the observation each cycle for the PURE policy,
+		// the same flagPosture echo pattern used just above (injected after observe(),
+		// before decide()).
+		if (obs.enemyWarriorLevelVisible > enemyWarriorLevelSeen)
+			enemyWarriorLevelSeen = obs.enemyWarriorLevelVisible;
+		obs.enemyWarriorLevelLatched = enemyWarriorLevelSeen;
+
+		// FORWARD-SITE UNDERWAY LATCH (position-tracked): AICortex OWNS and serializes
+		// the position of the forward inn / hospital it last ORDERED (forwardInnX/Y,
+		// forwardHealX/Y, set in translateActionBuildForward). Reconcile each tracked
+		// pair against the live buildings and echo obs.forwardInnUnderway/
+		// forwardHealUnderway for the PURE policy — the flagPosture/latch echo pattern,
+		// and the replacement for the old proximity scan (a tracked position never
+		// false-positives on an unrelated economy food/heal site). A tracked site that
+		// is a construction site marks underway; one that has FINISHED clears the pair
+		// (the finished inn now opens the envelope via supportDist); one that never
+		// appears holds underway while its build cooldown is still in flight, else
+		// clears (order rejected or site destroyed).
+		{
+			Sint32* trackX[2]      = { &forwardInnX,  &forwardHealX };
+			Sint32* trackY[2]      = { &forwardInnY,  &forwardHealY };
+			const int types[2]     = { Cortex::CORTEX_BUILD_FOOD, Cortex::CORTEX_BUILD_HEAL };
+			const int shortTypes[2] = { IntBuildingType::FOOD_BUILDING, IntBuildingType::HEAL_BUILDING };
+			Sint32* underway[2]    = { &obs.forwardInnUnderway, &obs.forwardHealUnderway };
+			for (int p = 0; p < 2; p++)
+			{
+				if (*trackX[p] < 0)
+					continue; // nothing ordered for this slot.
+				Building* found = NULL;
+				for (int i = 0; i < Building::MAX_COUNT; i++)
+				{
+					Building* b = player->team->myBuildings[i];
+					if (b == NULL || b->buildingState != Building::ALIVE)
+						continue;
+					if (b->type->shortTypeNum != shortTypes[p])
+						continue;
+					if (b->posX == *trackX[p] && b->posY == *trackY[p])
+					{
+						found = b;
+						break;
+					}
+				}
+				if (found != NULL)
+				{
+					if (found->type->isBuildingSite)
+						*underway[p] = 1; // still building: don't order a second one.
+					else
+					{
+						*trackX[p] = -1; // finished: the inn now opens the envelope.
+						*trackY[p] = -1;
+					}
+				}
+				else if (obs.tick < buildCooldownUntil[types[p]])
+					*underway[p] = 1; // order still in flight (not yet a visible site).
+				else
+				{
+					*trackX[p] = -1; // site destroyed or order rejected: stop tracking.
+					*trackY[p] = -1;
+				}
+			}
+		}
+
+		// RANGE-GATE GRACE WAIVER: the offense range gate binds while the army wants to
+		// attack but every known target sits outside the support envelope. AICortex OWNS
+		// and serializes rangeGateBindingSince (the tick the bind began; 0 == not
+		// binding) and echoes obs.rangeGateWaived — 1 once the bind has outlived the
+		// grace window — into the observation for the PURE policy (the flagPosture echo
+		// pattern). Past the grace, computeOffenseCommit attacks out-of-envelope anyway
+		// while the forward base keeps building, so a never-ordered "possible" forward
+		// base cannot hold the gate shut forever.
+		{
+			const bool binding = obs.flagTargets[0].valid && obs.warriors > 0
+			                  && Cortex::cortexInRangeTargetSlot(obs) < 0;
+			if (binding)
+			{
+				if (rangeGateBindingSince == 0)
+					rangeGateBindingSince = obs.tick;
+			}
+			else
+				rangeGateBindingSince = 0;
+			const int grace = Cortex::cortexTuning().attackRangeGraceTicks;
+			obs.rangeGateWaived = (grace > 0 && rangeGateBindingSince > 0
+			                    && obs.tick - rangeGateBindingSince >= grace) ? 1 : 0;
+		}
+
+		// DIAGNOSTIC (gated): per-cycle inputs of the v18 offense-commit gates (attack
+		// range + war-prep level match), which decideCombat() consumes invisibly — the
+		// decide trace only covers the economy argmax. Pure read → stderr; no RNG, no
+		// order, no persisted state touched, so the sync stream is unaffected.
+		if (getenv("CORTEX_DUMP_GATES"))
+		{
+			std::cerr << "CORTEX_GATES t=" << obs.tick
+			          << " latch=" << obs.enemyWarriorLevelLatched
+			          << " visible=" << obs.enemyWarriorLevelVisible
+			          << " ownStr=[" << obs.attackStrengthLevel[0] << "," << obs.attackStrengthLevel[1]
+			          << "," << obs.attackStrengthLevel[2] << "," << obs.attackStrengthLevel[3] << "]"
+			          << " range=" << Cortex::cortexAttackRange(obs)
+			          << " inRangeSlot=" << Cortex::cortexInRangeTargetSlot(obs)
+			          << " fwdInn=" << obs.forwardInn.valid << "/" << obs.forwardInnUnderway
+			          << " fwdHeal=" << obs.forwardHeal.valid << "/" << obs.forwardHealUnderway
+			          << " waived=" << obs.rangeGateWaived
+			          << " freeWarriors=" << obs.freeWarriors;
+			for (int i = 0; i < Cortex::CORTEX_FLAG_TARGETS; i++)
+				if (obs.flagTargets[i].valid)
+					std::cerr << " tgt" << i << "=(" << obs.flagTargets[i].x << ","
+					          << obs.flagTargets[i].y << ")d" << obs.flagTargetSupportDist[i];
+			std::cerr << "\n";
+		}
 
 		// DECISION-SELECTION TRACE (gated): when GLOB2_CORTEX_DECIDE_TRACE is set,
 		// ask decide() to fill the per-cycle eligibility mask + chosen class index

@@ -106,7 +106,6 @@ namespace Cortex
 		obs.swarmsProducingWorker   = 0;
 		obs.warFlagsActive          = 0;
 		obs.enemyUnitsNearFlag      = 0;
-		obs.enemyUnitsNearThreat    = 0;
 		obs.freeWarriors            = 0;
 		obs.swarmCount              = 0;
 		obs.innCount                = 0;
@@ -133,6 +132,10 @@ namespace Cortex
 			// explorers have performance[WALK]==0 at every level (game/entities/Race.cpp),
 			// so they never enter this bucket. Racetrack expand-vs-upgrade gate.
 			obs.walkLevel[lvl]                = stat->upgradeState[WALK][lvl];
+			// WARRIOR-only WALK slice: the attack-range envelope scales with the
+			// wave's SLOWEST warrior (lowest occupied level), so the per-type slice
+			// is needed — the any-type row above mixes in workers.
+			obs.warriorWalkLevel[lvl]         = stat->upgradeStatePerType[WARRIOR][WALK][lvl];
 			obs.attackSpeedLevel[lvl]         = stat->upgradeState[ATTACK_SPEED][lvl];
 			// C++: ATTACK_STRENGTH == 9, unit/UnitConsts.h:22
 			obs.attackStrengthLevel[lvl]      = stat->upgradeState[ATTACK_STRENGTH][lvl];
@@ -150,12 +153,15 @@ namespace Cortex
 		// --- defense triggers: our own entities currently taking fire ---
 		// Reading our OWN units/buildings is not a fog cheat. underAttackTimer is
 		// the engine's "this entity was shot recently" countdown; nonzero => under
-		// attack right now. The building scan also picks defenseTarget: the friendly
-		// building taking the MOST fire (highest underAttackTimer), the spot to
-		// recall the army to. Iterate by index, never a std::set.
+		// attack right now. The building scan also picks defenseTargets[]: up to
+		// CORTEX_MAX_DEFENSE_FLAGS friendly buildings taking fire, worst-first
+		// (highest underAttackTimer in slot 0), each at least
+		// CORTEX_DEFENSE_TARGET_SEPARATION from every earlier pick so two flags
+		// never cover one assault point. Greedy K-pass selection over the index
+		// scan: deterministic (strict > keeps the first-seen on timer ties), and
+		// K * MAX_COUNT stays trivially cheap. Iterate by index, never a std::set.
 		obs.buildingsUnderAttack = 0;
 		obs.unitsUnderAttack     = 0;
-		Uint8 worstUnderAttack   = 0;
 		for (int i = 0; i < Building::MAX_COUNT; i++)
 		{
 			Building* b = team->myBuildings[i];
@@ -163,19 +169,47 @@ namespace Cortex
 				continue;
 			// C++: Building::underAttackTimer (Uint8), building/Building.h:526
 			if (b->underAttackTimer > 0)
-			{
 				obs.buildingsUnderAttack++;
+		}
+		for (int k = 0; k < CORTEX_MAX_DEFENSE_FLAGS; k++)
+		{
+			Building* pick  = NULL;
+			Uint8 pickTimer = 0;
+			for (int i = 0; i < Building::MAX_COUNT; i++)
+			{
+				Building* b = team->myBuildings[i];
+				if (b == NULL || b->buildingState == Building::DEAD)
+					continue;
+				if (b->underAttackTimer == 0)
+					continue;
+				// Too close to an earlier (worse) pick: same assault point.
+				// (game is non-NULL in any real match; the guard only covers the
+				// degenerate no-game observation, where separation can't be measured.)
+				bool nearEarlier = false;
+				for (int j = 0; game != NULL && j < k; j++)
+					if (game->map.warpDistMax(b->posX, b->posY,
+					        obs.defenseTargets[j].x, obs.defenseTargets[j].y)
+					    < CORTEX_DEFENSE_TARGET_SEPARATION)
+					{
+						nearEarlier = true;
+						break;
+					}
+				if (nearEarlier)
+					continue;
 				// strict > so the first-seen worst wins ties (deterministic).
-				if (b->underAttackTimer > worstUnderAttack)
+				if (b->underAttackTimer > pickTimer)
 				{
-					worstUnderAttack = b->underAttackTimer;
-					obs.defenseTarget.valid = 1;
-					// C++: Building::posX/posY, building/Building.h:523
-					obs.defenseTarget.x     = b->posX;
-					obs.defenseTarget.y     = b->posY;
-					obs.defenseTarget.score = b->underAttackTimer;
+					pick      = b;
+					pickTimer = b->underAttackTimer;
 				}
 			}
+			if (pick == NULL)
+				break; // no further separated threat point.
+			obs.defenseTargets[k].valid = 1;
+			// C++: Building::posX/posY, building/Building.h:523
+			obs.defenseTargets[k].x     = pick->posX;
+			obs.defenseTargets[k].y     = pick->posY;
+			obs.defenseTargets[k].score = pick->underAttackTimer;
 		}
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
 		{
@@ -233,6 +267,66 @@ namespace Cortex
 			// never from unfogged truth — implemented (with the same visibility
 			// gating discipline as the enemy-intel pass below) by placeFlagTargets.
 			placeFlagTargets(game, team, obs.flagTargets);
+
+			// Per-target SUPPORT DISTANCE (v18): how far each offense target sits
+			// from our nearest FINISHED inn — the attack-range gate's input. Food is
+			// the binding support: a war party fights only as far from its inn as the
+			// hunger clock allows. A forward HOSPITAL is advisory — it speeds recovery
+			// and is still surfaced/built below when a finished hospital exists, but it
+			// does NOT bind the envelope. Reading our OWN buildings is not a fog cheat.
+			// -1 when we have no finished inn (an army with no food source projects
+			// nowhere).
+			for (int t = 0; t < CORTEX_FLAG_TARGETS; t++)
+			{
+				if (!obs.flagTargets[t].valid)
+					continue;
+				int innDist = -1;
+				for (int i = 0; i < Building::MAX_COUNT; i++)
+				{
+					Building* b = team->myBuildings[i];
+					if (b == NULL || b->buildingState != Building::ALIVE
+					 || b->type->isBuildingSite)
+						continue;
+					if (b->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+						continue;
+					const int d = map.warpDistMax(obs.flagTargets[t].x, obs.flagTargets[t].y,
+					                              b->posX, b->posY);
+					if (innDist < 0 || d < innDist)
+						innDist = d;
+				}
+				obs.flagTargetSupportDist[t] = innDist;
+			}
+
+			// FORWARD-BASE candidates (v18): computed only in the state they cure —
+			// we have an army, know a target, and EVERY known target is beyond the
+			// attack range. The two full-map placement scans are gated to exactly
+			// that state, so the steady-state observe cost is unchanged. The
+			// double-order guard (forwardInnUnderway/forwardHealUnderway) is NOT
+			// derived here by proximity — AICortex tracks the ordered forward site by
+			// POSITION and echoes underway into the observation before decide() (the
+			// flagPosture/latch echo pattern); the policy's `valid && !underway` check
+			// suppresses double-ordering. Candidates are surfaced whenever the
+			// out-of-range state holds.
+			{
+				const int range = cortexAttackRange(obs);
+				if (range > 0 && obs.warriors > 0 && obs.flagTargets[0].valid
+				 && cortexInRangeTargetSlot(obs) < 0)
+				{
+					const int maxD = range - CORTEX_FORWARD_RANGE_SLACK;
+					const int tx = obs.flagTargets[0].x;
+					const int ty = obs.flagTargets[0].y;
+					placeForwardCandidate(game, team, IntBuildingType::FOOD_BUILDING,
+					                      tx, ty, CORTEX_FORWARD_MIN_ENEMY_DIST, maxD,
+					                      obs.forwardInn);
+					// A forward hospital is surfaced only when a finished hospital
+					// already exists (advisory support; the inn binds the envelope);
+					// the forward inn always leads.
+					if (cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL) > 0)
+						placeForwardCandidate(game, team, IntBuildingType::HEAL_BUILDING,
+						                      tx, ty, CORTEX_FORWARD_MIN_ENEMY_DIST, maxD,
+						                      obs.forwardHeal);
+				}
+			}
 
 			// Swim/water signals. algaeDiscovered + algaeReachable (shore-harvestable
 			// algae) gate the ALGA-consuming school build/upgrade, which can fire at any
@@ -311,14 +405,23 @@ namespace Cortex
 					if (warFlagFound
 					 && game->map.warpDistMax(u->posX, u->posY, warFlagX, warFlagY) <= warFlagRange)
 						obs.enemyUnitsNearFlag++;
-					// Threat sizing: visible enemy near the building taking the most fire.
-					// defenseTarget is already resolved (the building scan above ran first),
-					// so this measures the assaulting force the defensive recall must match.
-					if (obs.defenseTarget.valid
-					 && game->map.warpDistMax(u->posX, u->posY,
-					        obs.defenseTarget.x, obs.defenseTarget.y)
-					    <= CORTEX_THREAT_SCAN_RADIUS)
-						obs.enemyUnitsNearThreat++;
+					// Threat sizing, per defense point: visible enemy near each building
+					// taking fire. defenseTargets[] is already resolved (the building scan
+					// above ran first), so each count measures the assaulting force THAT
+					// point's flag must match.
+					for (int k = 0; k < CORTEX_MAX_DEFENSE_FLAGS; k++)
+						if (obs.defenseTargets[k].valid
+						 && game->map.warpDistMax(u->posX, u->posY,
+						        obs.defenseTargets[k].x, obs.defenseTargets[k].y)
+						    <= CORTEX_THREAT_SCAN_RADIUS)
+							obs.defenseThreatCount[k]++;
+					// Enemy warrior intel (the war-preparation gate): the highest
+					// ATTACK_STRENGTH level among enemy warriors we can SEE this cycle.
+					// Already inside the FOW gate above, so never unfogged truth.
+					// C++: Unit::level[] (unit/Unit.h), ATTACK_STRENGTH == 9.
+					if (u->typeNum == WARRIOR
+					 && u->level[ATTACK_STRENGTH] > obs.enemyWarriorLevelVisible)
+						obs.enemyWarriorLevelVisible = u->level[ATTACK_STRENGTH];
 				}
 
 				es.prestige = 0; // prestige is not a visible signal; left unfilled

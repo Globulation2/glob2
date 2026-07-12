@@ -35,6 +35,9 @@ void AICortex::translateAction(const Cortex::CortexAction& action, const Cortex:
 		case Cortex::ACTION_BUILD:
 			translateActionBuild(action, obs);
 			break;
+		case Cortex::ACTION_BUILD_FORWARD:
+			translateActionBuildForward(action, obs);
+			break;
 		case Cortex::ACTION_SET_PRODUCTION:
 			translateActionSetProduction(action, obs);
 			break;
@@ -84,12 +87,61 @@ void AICortex::translateActionBuild(const Cortex::CortexAction& action, const Co
 	if (!cand.valid)
 		return; // policy chose a stale/empty slot; drop rather than misbuild.
 
+	emitBuildOrder(type, cand.x, cand.y, obs.tick);
+}
+
+void AICortex::translateActionBuildForward(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
+{
+	// Forward base: build a FOOD inn or HEAL hospital at the observation's forward-base
+	// candidate to extend the attack-range support envelope toward the front (the cure
+	// when every enemy target sits beyond the army's food/heal support radius). Unlike
+	// ACTION_BUILD the candidate does NOT come from buildCandidates[type][slot]; it is the
+	// observation's precomputed forward spot: obs.forwardInn for CORTEX_BUILD_FOOD or
+	// obs.forwardHeal for CORTEX_BUILD_HEAL. Any other building type is ignored — no
+	// forward variant is defined for it.
+	const int type = action.buildingType;
+	const Cortex::BuildCandidate* cand;
+	if (type == Cortex::CORTEX_BUILD_FOOD)
+		cand = &obs.forwardInn;
+	else if (type == Cortex::CORTEX_BUILD_HEAL)
+		cand = &obs.forwardHeal;
+	else
+		return;
+
+	// Same per-type cooldown discipline as translateActionBuild: suppress a re-issue of
+	// this type until the in-flight OrderCreate lands as a visible site.
+	if (obs.tick < buildCooldownUntil[type])
+		return;
+
+	if (!cand->valid)
+		return; // no legal forward spot this cycle; drop rather than misbuild.
+
+	// Record the ordered position by POSITION (not proximity) ONLY when the
+	// OrderCreate is actually emitted, so getOrder()'s reconcile can echo the
+	// underway guard and later detect the site finishing / vanishing (FIX 3).
+	if (emitBuildOrder(type, cand->x, cand->y, obs.tick))
+	{
+		if (type == Cortex::CORTEX_BUILD_FOOD)
+		{
+			forwardInnX = cand->x;
+			forwardInnY = cand->y;
+		}
+		else
+		{
+			forwardHealX = cand->x;
+			forwardHealY = cand->y;
+		}
+	}
+}
+
+bool AICortex::emitBuildOrder(int type, int x, int y, int tick)
+{
 	// Resolve the long building-site type id for a fresh (level 0)
 	// building, exactly as the GUI/Echo build path does.
 	const std::string& name = IntBuildingType::reverseConversionMap[type];
 	Sint32 typeNum = globalContainer->buildingsTypes.getTypeNum(name, 0, true);
 	if (typeNum < 0)
-		return; // no buildable site type (e.g. a virtual/flag type) — skip.
+		return false; // no buildable site type (e.g. a virtual/flag type) — skip.
 
 	// Worker counts from the engine's canonical defaults: column 0 is the
 	// construction-site assignment, column 1 the finished-building one.
@@ -97,9 +149,10 @@ void AICortex::translateActionBuild(const Cortex::CortexAction& action, const Co
 	const int unitWorkingFuture = globalContainer->settings.defaultUnitsAssigned[type][1];
 
 	orderQueue.push(shared_ptr<Order>(new OrderCreate(
-		player->team->teamNumber, cand.x, cand.y, typeNum,
+		player->team->teamNumber, x, y, typeNum,
 		unitWorking, unitWorkingFuture)));
-	buildCooldownUntil[type] = obs.tick + BUILD_COOLDOWN_TICKS;
+	buildCooldownUntil[type] = tick + BUILD_COOLDOWN_TICKS;
+	return true;
 }
 
 void AICortex::translateActionSetProduction(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
@@ -179,48 +232,76 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 
 void AICortex::translateActionPlaceDefenseFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
 {
-	// PURE TRANSLATION: execute the recall the policy decided. The thrash-hysteresis
-	// (hold an in-progress offense push through minor harassment) lives in the policy
-	// (CortexPolicy::scoreDefense) — when the hold should win, the policy returns NoOp and
-	// this helper is never reached. This manages only the single DEFENSE flag; the offense
-	// waves are managed independently. No valid defense target means nothing is under
-	// attack — clear the defense flag.
-	if (!obs.defenseTarget.valid)
+	// PURE TRANSLATION: execute the multi-point recall the policy decided. The thrash-
+	// hysteresis (hold an in-progress offense push through minor harassment) lives in the
+	// policy (CortexPolicy::scoreDefense) — when the hold should win, the policy returns
+	// NoOp and this helper is never reached. This manages only the DEFENSE flag SET (up to
+	// CORTEX_MAX_DEFENSE_FLAGS flags, one per distinct building under fire in
+	// obs.defenseTargets[], worst-first); the offense waves are managed independently.
+
+	// Reconcile the SET slot-by-slot. An invalid target slot has its flag torn down; a
+	// valid one is sized to its OWN local assault — 3x the visible enemy units near THAT
+	// building (defenseThreatCount[i]), floored at 1 and capped at the flag ceiling. A
+	// bigger local threat pulls more warriors home to that point; a lone harasser few.
+	int needed[Cortex::CORTEX_MAX_DEFENSE_FLAGS];
+	int totalDeficit = 0;
+	bool anyValid = false;
+	for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
 	{
-		clearOneFlag(defenseFlagGid);
+		needed[i] = 0;
+		if (!obs.defenseTargets[i].valid)
+		{
+			clearOneFlag(defenseFlags[i].gid); // target gone: tear this slot's flag down.
+			continue;
+		}
+		anyValid = true;
+		int n = Cortex::CORTEX_DEFENSE_THREAT_MULTIPLE * obs.defenseThreatCount[i];
+		if (n < 1)
+			n = 1;
+		else if (n > Cortex::CORTEX_MAX_FLAG_UNITS)
+			n = Cortex::CORTEX_MAX_FLAG_UNITS;
+		needed[i] = n;
+
+		// Free-pool-first accounting, summed ACROSS the whole set: each valid slot's
+		// shortfall over its CURRENT cohort (0 when the flag is absent). The HIGH-priority
+		// defense flags out-recruit everything for FREE warriors, so each fills from the
+		// idle reserve without disturbing the forward army; we release the committed army
+		// only when the free pool cannot cover the combined recall (below).
+		const Building* cur = findFlagByGid(defenseFlags[i].gid);
+		const int curUnits = cur ? static_cast<int>(cur->unitsWorking.size()) : 0;
+		if (n > curUnits)
+			totalDeficit += n - curUnits;
+	}
+
+	// No slot has a valid target — nothing is under attack. Every defense flag was already
+	// cleared in the loop above; drop the posture and hold.
+	if (!anyValid)
+	{
 		flagPosture = POSTURE_NONE;
 		offenseHoldUntil = 0;
 		return;
 	}
 
-	// Size the recall to the assault: 3x the visible enemy units near the building
-	// taking the most fire, floored at 1 (DEFENSE_MIN_WARRIORS) and capped at the flag
-	// ceiling. A bigger threat pulls more warriors home; a lone harasser pulls few.
-	int neededDefense = Cortex::CORTEX_DEFENSE_THREAT_MULTIPLE * obs.enemyUnitsNearThreat;
-	if (neededDefense < 1)
-		neededDefense = 1;
-	else if (neededDefense > Cortex::CORTEX_MAX_FLAG_UNITS)
-		neededDefense = Cortex::CORTEX_MAX_FLAG_UNITS;
-
-	// Free-pool-first: the HIGH-priority defense flag out-recruits everything for any FREE
-	// warriors, so it fills from the idle reserve without disturbing the forward army.
-	// Only when the free pool cannot cover the remaining deficit do we release the
-	// committed army — tearing down ALL offense waves frees their warriors, which the
-	// defense flag (HIGH priority) then claims. (Priority alone never poaches a flagged
-	// warrior; the army comes home only by clearing the flag it is bound to.)
-	const Building* curDefense = findFlagByGid(defenseFlagGid);
-	const int curUnits = curDefense ? static_cast<int>(curDefense->unitsWorking.size()) : 0;
-	const int deficit = neededDefense - curUnits;
-	if (deficit > 0 && obs.freeWarriors < deficit)
+	// Only when the free pool cannot cover the combined deficit do we release the committed
+	// army — tearing down ALL offense waves frees their warriors, which the HIGH-priority
+	// defense flags then claim. (Priority alone never poaches a flagged warrior; the army
+	// comes home only by clearing the flag it is bound to.)
+	if (totalDeficit > 0 && obs.freeWarriors < totalDeficit)
 		clearAllOffenseFlags();
 
-	// Commit the defensive recall: POSTURE_DEFENSE, hold cleared. Defense flag rides at
-	// HIGH priority, minLevel 0 (recall every warrior regardless of level), radius from
-	// the action (DEFENSE_FLAG_RADIUS).
+	// Commit the defensive recall: POSTURE_DEFENSE, hold cleared. Each defense flag rides
+	// at HIGH priority, minLevel 0 (recall every warrior regardless of level), radius from
+	// the action (DEFENSE_FLAG_RADIUS), each on its own per-slot createCooldown.
 	flagPosture = POSTURE_DEFENSE;
 	offenseHoldUntil = 0;
-	ensureFlagAt(defenseFlagGid, defenseCooldown, obs.defenseTarget.x, obs.defenseTarget.y,
-	             action.flagRadius, neededDefense, 0, Cortex::CORTEX_PRIORITY_HIGH, obs);
+	for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
+	{
+		if (!obs.defenseTargets[i].valid)
+			continue;
+		const Cortex::BuildCandidate& target = obs.defenseTargets[i];
+		ensureFlagAt(defenseFlags[i].gid, defenseFlags[i].createCooldown, target.x, target.y,
+		             action.flagRadius, needed[i], 0, Cortex::CORTEX_PRIORITY_HIGH, obs);
+	}
 }
 
 void AICortex::translateActionClearFlags()

@@ -142,6 +142,16 @@ private:
 		Sint32 createCooldown;
 	};
 
+	/// One DEFENSE flag slot (multi-point defense). `gid` is its live WAR_FLAG (NOGBID ==
+	/// empty slot); `createCooldown` gates re-issuing THIS slot's OrderCreate until the
+	/// flag registers, so a pending create in one slot never stalls another slot's
+	/// placement or a time-critical recall (the per-wave cooldown pattern). Iterated by
+	/// array index — deterministic, never a set. Serialized for lockstep determinism.
+	struct DefenseFlag {
+		Uint16 gid;
+		Sint32 createCooldown;
+	};
+
 	void init(Player* player);
 
 	/// Action layer (direct binding): translate an action intent into zero or
@@ -159,6 +169,7 @@ private:
 	// offenseHoldUntil). The order in which orders are pushed is preserved
 	// byte-for-byte from the pre-decomposition switch.
 	void translateActionBuild(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+	void translateActionBuildForward(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
 	void translateActionSetProduction(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
 	void translateActionPlaceWarFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
 	void translateActionPlaceDefenseFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
@@ -166,6 +177,16 @@ private:
 	void translateActionUpgradeBuilding(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
 	void translateActionTuneWorkers(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
 	void translateActionSetPriority(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs);
+
+	/// Shared build-order tail for translateActionBuild / translateActionBuildForward:
+	/// resolve the level-0 building-site type id for `type`, push one OrderCreate at
+	/// (x, y) with the engine's canonical default worker counts, and arm the per-type
+	/// build cooldown until `tick` + BUILD_COOLDOWN_TICKS. Both callers have already gated
+	/// on the cooldown and validated their candidate; this is only the shared
+	/// resolve->emit->arm step (the candidate SOURCE is all that differs between them).
+	/// Returns true when an OrderCreate was actually queued (false when the type has no
+	/// buildable site), so translateActionBuildForward can record the ordered position.
+	bool emitBuildOrder(int type, int x, int y, int tick);
 
 	/// Shared "decode GID → verify building → dedup → push OrderModifyBuilding"
 	/// loop used by translateActionTuneWorkers for all three building sets
@@ -212,7 +233,7 @@ private:
 	/// std::set).
 	Building* findFlagByGid(Uint16 gid) const;
 
-	/// True if `gid` is currently owned by ANY tracked flag (the defense flag or any
+	/// True if `gid` is currently owned by ANY tracked flag (any defense flag or any
 	/// offense wave). Used by rediscoverFlag so a newly-landed flag is never double-
 	/// claimed by two slots.
 	bool isOwnedGid(Uint16 gid) const;
@@ -256,8 +277,9 @@ private:
 	/// marching out as one. Returns false (no buildings) so the caller can skip mustering.
 	bool computeRallyPoint(int& rx, int& ry) const;
 
-	/// Tear down a stale DEFENSE flag once the assault is over (no building under
-	/// attack). Runs every decision cycle in getOrder() — in parallel with the action
+	/// Tear down the stale DEFENSE flag SET once the assault is over (no building under
+	/// attack) — every defense slot's flag is cleared. Runs every decision cycle in
+	/// getOrder() — in parallel with the action
 	/// ladder, NOT gated on winning it — because scoreDefense DECLINES when there is no
 	/// threat, so the ladder would never pick a teardown action. Cheap and idempotent
 	/// (a no-op once the flag is already gone).
@@ -303,21 +325,47 @@ private:
 	/// Safety-net expiry tick for pendingUpgradeType. 0 when nothing is pending.
 	int pendingUpgradeUntil;
 
-	/// Create-cooldown for the single DEFENSE flag: the tick before which ensureFlagAt
-	/// refuses to re-issue its OrderCreate (a virtual flag takes several ticks to
-	/// register before the new gid can be claimed). Each offense wave carries its OWN
-	/// createCooldown in OffenseWave, so a pending offense create never stalls a
-	/// time-critical defensive recall. 0 = no defense create pending.
-	int defenseCooldown;
-
 	/// The offense WAVE PIPELINE: up to MAX_OFFENSE_FLAGS concurrent offense flags, each
 	/// MUSTERING at the rally then MARCHING on the enemy (see OffenseWave / the pipeline
-	/// constants). Plus the single persistent DEFENSE flag's gid (NOGBID == none), which
-	/// recalls the home reserve. Tracked by gid (not a bare WAR_FLAG scan) because
-	/// several WAR_FLAGs coexist and must be told apart. Serialized for lockstep
-	/// determinism alongside flagPosture.
+	/// constants). Tracked by gid (not a bare WAR_FLAG scan) because several WAR_FLAGs
+	/// coexist and must be told apart. Serialized for lockstep determinism alongside
+	/// flagPosture.
 	OffenseWave offenseWaves[MAX_OFFENSE_FLAGS];
-	Uint16 defenseFlagGid;
+
+	/// The DEFENSE flag SET (multi-point defense): up to CORTEX_MAX_DEFENSE_FLAGS
+	/// persistent defense flags, one per distinct building under fire (obs.defenseTargets[]),
+	/// each recalling the home reserve to its own threatened point. Each slot carries its
+	/// OWN createCooldown (in DefenseFlag), so a pending create in one slot never stalls
+	/// another slot's placement or a time-critical recall. Tracked by gid (not a bare
+	/// WAR_FLAG scan) because several WAR_FLAGs coexist and must be told apart. Serialized
+	/// for lockstep determinism alongside flagPosture.
+	DefenseFlag defenseFlags[Cortex::CORTEX_MAX_DEFENSE_FLAGS];
+
+	/// Persisted monotone latch of the highest enemy-warrior ATTACK_STRENGTH level ever
+	/// observed. FOW-gated intel from the observation (obs.enemyWarriorLevelVisible),
+	/// latched so a visibility lull never resets the war-preparation gate; echoed into
+	/// obs.enemyWarriorLevelLatched each cycle (the flagPosture echo pattern) and
+	/// serialized for lockstep determinism.
+	Sint32 enemyWarriorLevelSeen;
+
+	/// Position of the forward inn / hospital AICortex last ORDERED (-1 == none
+	/// tracked). Set in translateActionBuildForward when the OrderCreate is actually
+	/// emitted; reconciled each cycle in getOrder() against the live buildings to echo
+	/// obs.forwardInnUnderway/forwardHealUnderway (the double-order guard) and cleared
+	/// once the site finishes (the finished inn opens the envelope via supportDist),
+	/// is destroyed, or its build cooldown lapses with no site. This replaces the old
+	/// proximity heuristic — a tracked position never false-positives on an unrelated
+	/// economy food/heal site. Serialized for lockstep determinism.
+	Sint32 forwardInnX, forwardInnY;
+	Sint32 forwardHealX, forwardHealY;
+
+	/// Tick the attack-range gate began BINDING (army wants to attack, every target
+	/// out of the support envelope); 0 == not binding. Advanced/reset each cycle in
+	/// getOrder() and echoed as obs.rangeGateWaived once the bind outlives
+	/// attackRangeGraceTicks — the grace-timeout that stops a never-ordered "possible"
+	/// forward base from holding the gate shut forever. Serialized for lockstep
+	/// determinism.
+	Sint32 rangeGateBindingSince;
 
 	/// Offense-hold hysteresis state (RAM-only, persisted symmetrically). The posture
 	/// the flags are currently committed to, and the tick until which an OFFENSE

@@ -31,6 +31,10 @@ namespace Cortex
 		{ "scoreSecondSwarmBase", &CortexTuning::scoreSecondSwarmBase, 1 },
 		{ "scoreSecondSwarmStep", &CortexTuning::scoreSecondSwarmStep, 0 },
 		{ "expandSeverityFloor",  &CortexTuning::expandSeverityFloor,  1 },
+		{ "attackRangeBase",      &CortexTuning::attackRangeBase,      0 }, // 0 == gate disabled
+		{ "attackRangePerWalkLevel", &CortexTuning::attackRangePerWalkLevel, 0 },
+		{ "warPrepLevelMatch",    &CortexTuning::warPrepLevelMatch,    0 }, // 0/1
+		{ "attackRangeGraceTicks", &CortexTuning::attackRangeGraceTicks, 0 }, // 0 == never waive
 		{ "tierMidDiv",           &CortexTuning::tierMidDiv,           1 },
 		{ "workerRatioTier2",     &CortexTuning::workerRatioTier2,     1 },
 	};

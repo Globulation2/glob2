@@ -14,6 +14,7 @@
 // the structs).
 
 #include "CortexTypes.h"
+#include "CortexTuning.h"
 
 namespace Cortex
 {
@@ -94,6 +95,7 @@ namespace Cortex
 		{
 			obs.buildLevel[i] = 0;
 			obs.walkLevel[i] = 0;
+			obs.warriorWalkLevel[i] = 0;
 			obs.attackSpeedLevel[i] = 0;
 			obs.attackStrengthLevel[i] = 0;
 			obs.workerSwimLevel[i] = 0;
@@ -125,18 +127,37 @@ namespace Cortex
 			obs.flagTargets[i].y = 0;
 			obs.flagTargets[i].score = 0;
 			obs.flagTargets[i].wheatDist = -1;
+			obs.flagTargetSupportDist[i] = -1;
 		}
-		obs.defenseTarget.valid = 0;
-		obs.defenseTarget.x = 0;
-		obs.defenseTarget.y = 0;
-		obs.defenseTarget.score = 0;
-		obs.defenseTarget.wheatDist = -1;
+		for (int i = 0; i < CORTEX_MAX_DEFENSE_FLAGS; i++)
+		{
+			obs.defenseTargets[i].valid = 0;
+			obs.defenseTargets[i].x = 0;
+			obs.defenseTargets[i].y = 0;
+			obs.defenseTargets[i].score = 0;
+			obs.defenseTargets[i].wheatDist = -1;
+			obs.defenseThreatCount[i] = 0;
+		}
 		obs.warFlagsActive = 0;
 		obs.enemyUnitsNearFlag = 0;
 		obs.unitsUnderAttack = 0;
 		obs.buildingsUnderAttack = 0;
-		obs.enemyUnitsNearThreat = 0;
 		obs.freeWarriors = 0;
+		obs.enemyWarriorLevelVisible = -1;
+		obs.enemyWarriorLevelLatched = 0;
+		obs.forwardInn.valid = 0;
+		obs.forwardInn.x = 0;
+		obs.forwardInn.y = 0;
+		obs.forwardInn.score = 0;
+		obs.forwardInn.wheatDist = -1;
+		obs.forwardHeal.valid = 0;
+		obs.forwardHeal.x = 0;
+		obs.forwardHeal.y = 0;
+		obs.forwardHeal.score = 0;
+		obs.forwardHeal.wheatDist = -1;
+		obs.forwardInnUnderway = 0;
+		obs.forwardHealUnderway = 0;
+		obs.rangeGateWaived = 0;
 
 		// Neutral defaults; AICortex overwrites these with its live RAM-only
 		// hysteresis state after observe() returns, before policy.decide() (the
@@ -277,9 +298,12 @@ namespace Cortex
 		return action;
 	}
 
-	/// Defense: recall our single war flag onto obs.defenseTarget. minLevelToFlag is
-	/// the flag's veteran filter (a warrior answers only if min(level[ATTACK_SPEED],
-	/// level[ATTACK_STRENGTH]) >= it); 0 summons every warrior for the defense.
+	/// Defense: reconcile the defense-flag set against obs.defenseTargets[] — one
+	/// flag per valid target, each sized in the action layer to its target's own
+	/// defenseThreatCount. minLevelToFlag is the flags' veteran filter (a warrior
+	/// answers only if min(level[ATTACK_SPEED], level[ATTACK_STRENGTH]) >= it);
+	/// 0 summons every warrior for the defense. unitCount is the total-recall upper
+	/// bound (informational; per-flag sizing happens in the action layer).
 	inline CortexAction makeDefenseFlagAction(int flagRadius, int unitCount, int minLevelToFlag)
 	{
 		CortexAction action = makeNoOpAction();
@@ -287,6 +311,17 @@ namespace Cortex
 		action.flagRadius = flagRadius;
 		action.unitCount = unitCount;
 		action.minLevelToFlag = minLevelToFlag;
+		return action;
+	}
+
+	/// Build buildingType (CORTEX_BUILD_FOOD or CORTEX_BUILD_HEAL) at the
+	/// observation's forward-base candidate (obs.forwardInn / obs.forwardHeal),
+	/// extending the attack-range support envelope toward the front.
+	inline CortexAction makeBuildForwardAction(int buildingType)
+	{
+		CortexAction action = makeNoOpAction();
+		action.kind = ACTION_BUILD_FORWARD;
+		action.buildingType = buildingType;
 		return action;
 	}
 
@@ -319,6 +354,52 @@ namespace Cortex
 		CortexAction action = makeNoOpAction();
 		action.kind = ACTION_TUNE_WORKERS;
 		return action;
+	}
+
+	// --- attack-range envelope (v18) ---------------------------------------
+	// Shared by the observation side (deciding whether to compute forward-base
+	// candidates) and the pure policy (the offense commit gate), so the in-range
+	// predicate is defined in exactly one place.
+
+	/// Effective attack range in Chebyshev tiles: how far from its nearest inn
+	/// (+hospital) support an offensive commit may reach. Scales with the wave's
+	/// SLOWEST warrior's WALK level (a wave marches as one; its slowest member sets
+	/// the pace and the hunger-clock round-trip cost). Returns 0 when the gate is
+	/// disabled (attackRangeBase <= 0) — callers treat 0 as "unlimited".
+	inline int cortexAttackRange(const CortexObservation& obs)
+	{
+		const int base = cortexTuning().attackRangeBase;
+		if (base <= 0)
+			return 0; // gate disabled: unlimited range.
+		int slowest = 0;
+		for (int lvl = 0; lvl < CORTEX_UNIT_LEVELS; lvl++)
+			if (obs.warriorWalkLevel[lvl] > 0)
+			{
+				slowest = lvl;
+				break; // lowest occupied level == the wave's pace-setter.
+			}
+		return base + cortexTuning().attackRangePerWalkLevel * slowest;
+	}
+
+	/// First (nearest — placeFlagTargets ranks nearest-first) offense target whose
+	/// support distance sits inside the attack range, or -1 when every known target
+	/// is out of range (or none is known). With the gate disabled this is simply the
+	/// nearest valid target, the pre-v18 behaviour. A -1 supportDist (no finished
+	/// inn) counts as out of range — an army with no food source projects nowhere.
+	inline int cortexInRangeTargetSlot(const CortexObservation& obs)
+	{
+		const int range = cortexAttackRange(obs);
+		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
+		{
+			if (!obs.flagTargets[i].valid)
+				continue;
+			if (range == 0)
+				return i; // gate disabled: nearest valid target.
+			if (obs.flagTargetSupportDist[i] >= 0
+			 && obs.flagTargetSupportDist[i] <= range)
+				return i;
+		}
+		return -1;
 	}
 
 	/// Set the FIRST swarm's engine priority to `first` and every other swarm's to
