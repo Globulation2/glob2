@@ -91,6 +91,14 @@ namespace Cortex
 		/// never-ordered forward base from holding the gate shut forever. 0 = never
 		/// waive (the gate binds indefinitely while a forward base could cure it).
 		int attackRangeGraceTicks = 2400;
+		/// When 1, the attack-range gate is waived IMMEDIATELY (no grace wait) while
+		/// AT MOST ONE enemy building is discovered: the gate first binds at first
+		/// contact (flag targets ARE discovered buildings), and against a
+		/// still-unscouted colony that lone out-of-envelope data point is no basis
+		/// for holding the first strike through the grace window. Once the enemy
+		/// base is mapped (>= 2 buildings discovered) the normal bind-then-grace
+		/// behavior applies. 0 disables (always wait out the grace).
+		int attackRangeUnscoutedWaiver = 1;
 
 		// --- production-mix worker-target tiers (the expansion-tax side) ------
 		/// Divisor D in mid = base + (needs - base)/D: how far past the hauler

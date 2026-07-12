@@ -35,6 +35,7 @@ namespace Cortex
 		{ "attackRangePerWalkLevel", &CortexTuning::attackRangePerWalkLevel, 0 },
 		{ "warPrepLevelMatch",    &CortexTuning::warPrepLevelMatch,    0 }, // 0/1
 		{ "attackRangeGraceTicks", &CortexTuning::attackRangeGraceTicks, 0 }, // 0 == never waive
+		{ "attackRangeUnscoutedWaiver", &CortexTuning::attackRangeUnscoutedWaiver, 0 }, // 0/1
 		{ "tierMidDiv",           &CortexTuning::tierMidDiv,           1 },
 		{ "workerRatioTier2",     &CortexTuning::workerRatioTier2,     1 },
 	};

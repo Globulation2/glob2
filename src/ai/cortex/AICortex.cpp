@@ -624,6 +624,28 @@ shared_ptr<Order> AICortex::getOrder(void)
 			const int grace = Cortex::cortexTuning().attackRangeGraceTicks;
 			obs.rangeGateWaived = (grace > 0 && rangeGateBindingSince > 0
 			                    && obs.tick - rangeGateBindingSince >= grace) ? 1 : 0;
+			// FIRST-CONTACT WAIVER: flag targets ARE discovered enemy buildings
+			// (placeFlagTargets gates on the same seenByMask predicate as the
+			// totalBuilding intel), so the gate first binds the moment the FIRST
+			// enemy building is discovered — and when that lone data point is out
+			// of the envelope, holding fire for the full grace forfeits the first
+			// strike against a still-unscouted colony (the diagnosed Muka residual:
+			// the ungated build attacks at first contact and wins). Waive while at
+			// most ONE enemy building is discovered; the normal bind-then-grace
+			// behavior governs once the enemy base is actually mapped. (totalBuilding
+			// counts LIVE discovered buildings, so razing them can re-arm the waiver
+			// — acceptable: an enemy reduced to one known standing building is as
+			// good as unscouted again.)
+			if (binding && obs.rangeGateWaived == 0
+			 && Cortex::cortexTuning().attackRangeUnscoutedWaiver != 0)
+			{
+				Sint32 discovered = 0;
+				for (int i = 0; i < obs.enemyCount; i++)
+					if (obs.enemies[i].active)
+						discovered += obs.enemies[i].totalBuilding;
+				if (discovered <= 1)
+					obs.rangeGateWaived = 1;
+			}
 		}
 
 		// DIAGNOSTIC (gated): per-cycle inputs of the v18 offense-commit gates (attack

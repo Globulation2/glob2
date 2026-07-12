@@ -477,11 +477,13 @@ namespace Cortex
 		Sint32 forwardHealUnderway;
 		// Attack-range grace waiver: 1 once the range gate has BOUND (army wants to
 		// attack, every target out of the support envelope) for longer than
-		// attackRangeGraceTicks, telling computeOffenseCommit to attack out-of-envelope
-		// anyway while the forward base keeps building. AICortex owns/serializes the
-		// bind-start tick (rangeGateBindingSince) and echoes this derived flag in before
-		// decide() (the flagPosture echo pattern). 0 while the gate is unbound or still
-		// inside the grace window.
+		// attackRangeGraceTicks — or immediately while AT MOST ONE enemy building is
+		// discovered (attackRangeUnscoutedWaiver: first contact with a lone distant
+		// building is no basis for holding the first strike) — telling computeOffenseCommit to attack
+		// out-of-envelope anyway while the forward base keeps building. AICortex
+		// owns/serializes the bind-start tick (rangeGateBindingSince) and echoes this
+		// derived flag in before decide() (the flagPosture echo pattern). 0 while the
+		// gate is unbound or still inside the grace window.
 		Sint32 rangeGateWaived;
 
 		// --- opponents ---

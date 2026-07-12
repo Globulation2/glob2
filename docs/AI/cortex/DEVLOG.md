@@ -731,6 +731,28 @@ effect. 90-fwd resists both knockouts — diagnostics captured in `.tmp/fwdfix/s
 not yet analyzed. Options (grace 600–1200 / zero-buildings-discovered waiver / accept):
 awaiting user decision.
 
+### First-contact waiver (attackRangeUnscoutedWaiver) — 2026-07-12
+
+User picked the unscouted waiver. As specced ("waive while ZERO enemy buildings
+discovered") it is provably dead code — flag targets ARE discovered enemy buildings
+(placeFlagTargets gates on the same seenByMask predicate as the totalBuilding intel),
+so the gate can only bind once ≥1 building is discovered; the smoke run was
+bit-identical to the pre-waiver 43-rev loss. Gate dumps showed the real shape: 43-rev
+discovers its FIRST enemy building at t=6321 already out of envelope (d55 vs range 32),
+binds immediately, and holds the full 2400-tick grace while ungated control strikes at
+first contact and wins. Reworked to a FIRST-CONTACT waiver: waive while ≤1 enemy
+building is discovered (`attackRangeUnscoutedWaiver`, default 1; 0 restores
+bind-then-grace always); the envelope governs once the enemy base is actually mapped.
+Smoke: flips 43-rev/51-rev/100-fwd, 7-rev bit-identical (≥2 discovered at bind — no
+grace-600-style worsening), 90-fwd still resists (separate mechanism, unanalyzed).
+
+**Benchmarks (100 paired seeds, swap-sides, vs Nicowar): Muka 66.0% (132/200,
+CI 59.4–72.6; was 63.5 fwdfix / 67.5 control — within noise of control with the
+envelope kept), Mazury 51.0% (was 46.5 == control), SmallForTwo 95.0% (== fwdfix,
+control 96.0).** Muka per-seed vs control: net −3 games, broad shallow spread, one
+1→0 (seed 71), no 2→0 hard flips. Artifacts: `.tmp/waiver-bench*/`,
+`.tmp/fwdfix/waiver-per-seed.txt`. Committed, default ON.
+
 ---
 
 ## 3. ML pilot (effort B)
