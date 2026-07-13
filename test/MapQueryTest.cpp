@@ -298,22 +298,22 @@ void MapQueryTest::testHardSpaceForBuilding_RectGidTolerantDifferentGidFails()
 void MapQueryTest::testLocalTeam_DefaultsToSentinel()
 {
 	GrassMap g;
-	CPPUNIT_ASSERT_EQUAL( Map::NO_LOCAL_TEAM, g.getLocalTeam() );
+	CPPUNIT_ASSERT_EQUAL( Map::NO_DISPLAYED_TEAM, g.getDisplayedTeam() );
 }
 
 void MapQueryTest::testLocalTeam_SetAndGet()
 {
 	GrassMap g;
-	g.setLocalTeam(3);
-	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(3), g.getLocalTeam() );
-	g.setLocalTeam(0);
-	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(0), g.getLocalTeam() );
+	g.setDisplayedTeam(3);
+	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(3), g.getDisplayedTeam() );
+	g.setDisplayedTeam(0);
+	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(0), g.getDisplayedTeam() );
 }
 
 void MapQueryTest::testLocalTeam_SentinelValueIsMinusOne()
 {
-	// Pinned: sim sites that consult getLocalTeam() compare against teamNumber (>=0),
+	// Pinned: sim sites that consult getDisplayedTeam() compare against teamNumber (>=0),
 	// so the sentinel must never collide with a real team index. -1 is the convention
 	// used elsewhere for "no team" (see Game::syncStep's localTeam parameter).
-	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(-1), Map::NO_LOCAL_TEAM );
+	CPPUNIT_ASSERT_EQUAL( static_cast<Sint32>(-1), Map::NO_DISPLAYED_TEAM );
 }
