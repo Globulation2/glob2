@@ -237,6 +237,12 @@ void Gradient::recalculate(Map* map)
 
 int Gradient::get_height(int posx, int posy) const
 {
+	// Torus-wrap: callers (e.g. Nicowar farming) query x±1/y±1 neighbours that
+	// step off the map edge; unwrapped, y=-1 indexed before the buffer and read
+	// uninitialized heap, making farming decisions non-deterministic run-to-run.
+	const int height = static_cast<int>(gradient.size()) / width;
+	posx = (posx + width) % width;
+	posy = (posy + height) % height;
 	// Reverses the +SOURCE_SEED offset applied at recalculate(): source tiles
 	// (internal value 2) → height 0; obstacles (1) → -1; unreached (0) → -2.
 	return gradient[get_pos(posx, posy)]-AI_ECHO_GRADIENT_SOURCE_SEED;
