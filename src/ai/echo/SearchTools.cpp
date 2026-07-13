@@ -276,7 +276,7 @@ enemy_building_iterator& enemy_building_iterator::operator++()
 
 enemy_building_iterator enemy_building_iterator::operator++(int)
 {
-	enemy_building_iterator copy;
+	enemy_building_iterator copy(*this);
 	set_to_next();
 	return copy;
 }
