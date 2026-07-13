@@ -55,13 +55,14 @@ BasePlayer::~BasePlayer(void)
 void BasePlayer::setNumber(Sint32 number)
 {
 	this->number=number;
-	this->numberMask=1<<number;
+	// Player-slot bit, not a team bit — Uint32(1) avoids signed-shift UB at slot 31.
+	this->numberMask=Uint32(1)<<number;
 };
 
 void BasePlayer::setTeamNumber(Sint32 teamNumber)
 {
 	this->teamNumber=teamNumber;
-	this->teamNumberMask=1<<teamNumber;
+	this->teamNumberMask=Team::teamNumberToMask(teamNumber);
 };
 
 // Wire/storage validation point: reads a BasePlayer from a .game, .replay,

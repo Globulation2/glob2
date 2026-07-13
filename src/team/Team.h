@@ -119,7 +119,10 @@ public:
 	void setCorrectMasks(void);
 	void setCorrectColor(const GAGCore::Color& color);
 	void setCorrectColor(float value);
-	inline static Uint32 teamNumberToMask(int team) { return 1<<team; }
+	/// Bit for team `team` in team-mask bitfields (Case::forbidden, discovery
+	/// masks, alliance masks, ...). Valid range: [0, MAX_COUNT), i.e. up to 31.
+	/// The unsigned one matters: `1<<31` on signed int is UB.
+	inline static Uint32 teamNumberToMask(int team) { return Uint32(1)<<team; }
 
 	void update();
 	bool openMarket();
