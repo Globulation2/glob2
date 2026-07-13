@@ -294,6 +294,12 @@ def main():
                         '#src/team',
                         '#src/unit'])
     env.Append(CXXFLAGS=' -std=c++20 -Wall -fPIC')
+    # Uninitialized-read diagnostics: DET_INIT=zero|pattern forces deterministic
+    # stack initialization (see CLAUDE.md). Env var, not a cached scons option.
+    _detinit = os.environ.get('DET_INIT')
+    if _detinit:
+        env.Append(CXXFLAGS=' -ftrivial-auto-var-init=' + _detinit)
+        env.Append(CCFLAGS=' -ftrivial-auto-var-init=' + _detinit)
     env.Append(LINKFLAGS=' -Wall')
     env.Append(LIBS=['SDL2_net'])
     if not server_only:

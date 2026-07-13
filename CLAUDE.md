@@ -24,7 +24,13 @@ scons mingw=true         # Windows cross-compile
 
 # Custom paths
 scons BINDIR=/path/bin INSTALLDIR=/path/share
+
+# Uninitialized-read diagnostics (env var, NOT cached in options_cache.py)
+DET_INIT=zero scons -j16     # compile with -ftrivial-auto-var-init=zero
+DET_INIT=pattern scons -j16  # compile with -ftrivial-auto-var-init=pattern
 ```
+
+**`DET_INIT` — hunting uninitialized-read nondeterminism.** Valgrind/MSan don't work on modern macOS, so instead build twice (`DET_INIT=zero` and `DET_INIT=pattern`) and hammer one seed serially per build (run `MallocPreScribble=1 MallocScribble=1` to also scribble the heap). If each build is internally stable but the two disagree, an uninitialized stack read is confirmed; if a scribbled build is still unstable run-to-run, the cause is not uninitialized memory. Rebuild affected objects when toggling — the env var is invisible to scons's dependency tracking.
 
 **Dependencies:** SDL2, SDL2_net, SDL2_ttf, SDL2_image, libvorbis, libogg, speex, OpenGL, GLU, libepoxy, Boost (thread, date_time, system), zlib, fribidi, pcre. Optional: portaudio (voice chat). See `vcpkg.json` for the full list.
 
