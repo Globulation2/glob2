@@ -12,8 +12,12 @@
 class NicowarStrategy : LoadableFromConfigFile
 {
 public:
-	///Constructs a new NicowarStrategy
-	NicowarStrategy();
+	///Constructs a new NicowarStrategy with all values zeroed. Real values
+	///come from loadFromConfigFile; every live strategy is copy-constructed
+	///from the fully-loaded default entry (see ConfigVector::addBlock), so
+	///the zeros are never read — they only guard against a future field
+	///being added without a matching key in data/nicowar.default.txt.
+	NicowarStrategy() = default;
 
 	///Loads the strategy from the configuration block
 	void loadFromConfigFile(const ConfigBlock *configBlock);
@@ -25,153 +29,153 @@ public:
 	void setStrategyName(const std::string& name);
 	
 	///Maximum number of units for the growth phase
-	int growth_phase_unit_max;
+	int growth_phase_unit_max = 0;
 	///Minimum number of units for the skilled work phase
-	int skilled_work_phase_unit_min;
+	int skilled_work_phase_unit_min = 0;
 	///Minimum number of schools to activate the upgrading phase 1
-	int upgrading_phase_1_school_min;
+	int upgrading_phase_1_school_min = 0;
 	///Minimum number of units to activate the upgrading phase 1
-	int upgrading_phase_1_unit_min;
+	int upgrading_phase_1_unit_min = 0;
 	///Minimum number of trained workers to activate the upgrading phase 1
-	int upgrading_phase_1_trained_worker_min;
+	int upgrading_phase_1_trained_worker_min = 0;
 	///Minimum number of level 2/3 schools to activate the upgrading phase 2
-	int upgrading_phase_2_school_min;
+	int upgrading_phase_2_school_min = 0;
 	///Minimum number of units to activate the upgrading phase 2
-	int upgrading_phase_2_unit_min;
+	int upgrading_phase_2_unit_min = 0;
 	///Minimum number of trained workers to activate the upgrading phase 2
-	int upgrading_phase_2_trained_worker_min;
+	int upgrading_phase_2_trained_worker_min = 0;
 	///The minimum warrior level to be considered "trained" for the war preperation and war phases, starting at 0
-	int minimum_warrior_level_for_trained;
+	int minimum_warrior_level_for_trained = 0;
 	///Minimum number of units to activate the war preperation phase
-	int war_preperation_phase_unit_min;
+	int war_preperation_phase_unit_min = 0;
 	///Maximum number of barracks to activate the war preperation phase
-	int war_preperation_phase_barracks_max;
+	int war_preperation_phase_barracks_max = 0;
 	///Maximum number of trained warriors to activate the war preperation phase
-	int war_preperation_phase_trained_warrior_max;
+	int war_preperation_phase_trained_warrior_max = 0;
 	///Minimum number of trained warriors to activate the war phase
-	int war_phase_trained_warrior_min;
+	int war_phase_trained_warrior_min = 0;
 	///Minimum number of units to activate the fruit phase
-	int fruit_phase_unit_min;
+	int fruit_phase_unit_min = 0;
 	///Minimum percentage of starving units that can't find an Inn to eat at to trigger the starvation recovery phase
-	int starvation_recovery_phase_starving_no_inn_min_percent;
+	int starvation_recovery_phase_starving_no_inn_min_percent = 0;
 	///How many un-fed units to trigger placing a starving recovery Inn when in the starving recovery phase
-	int starving_recovery_phase_unfed_per_new_inn;
+	int starving_recovery_phase_unfed_per_new_inn = 0;
 	///Minimum, percentage of workers free to trigger the no workers phase
-	int no_workers_phase_free_worker_minimum_percent;
+	int no_workers_phase_free_worker_minimum_percent = 0;
 	///How many units a level 1 Inn can feed, used to determine when more inns are needed
-	int level_1_inn_units_can_feed;
+	int level_1_inn_units_can_feed = 0;
 	///How many units a level 2 Inn can feed, used to determine when more inns are needed
-	int level_2_inn_units_can_feed;
+	int level_2_inn_units_can_feed = 0;
 	///How many units a level 3 Inn can feed, used to determine when more inns are needed
-	int level_3_inn_units_can_feed;
+	int level_3_inn_units_can_feed = 0;
 	///How many units it takes to consitute a new swarm when in the growth phase
-	int growth_phase_units_per_swarm;
+	int growth_phase_units_per_swarm = 0;
 	///How many units it takes to consitute a new swarm when not in the growth phase
-	int non_growth_phase_units_per_swarm;
+	int non_growth_phase_units_per_swarm = 0;
 	///The maximum number of swarms that can be made during the growth phase
-	int growth_phase_maximum_swarms;
+	int growth_phase_maximum_swarms = 0;
 	///The number of racetracks to be built during the skilled work phase
-	int skilled_work_phase_number_of_racetracks;
+	int skilled_work_phase_number_of_racetracks = 0;
 	///The number of swimmingpools to be built during the skilled work phase
-	int skilled_work_phase_number_of_swimmingpools;
+	int skilled_work_phase_number_of_swimmingpools = 0;
 	///The number of schools to be built during the skilled work phase
-	int skilled_work_phase_number_of_schools;
+	int skilled_work_phase_number_of_schools = 0;
 	///The number of barracks to be built during the war preperation phase
-	int war_preparation_phase_number_of_barracks;
+	int war_preparation_phase_number_of_barracks = 0;
 	///The base number of hospitals to build, these are only built when there is first demand
-	int base_number_of_hospitals;
+	int base_number_of_hospitals = 0;
 	///The number of warriors required to trigger another hospital
-	int war_preperation_phase_warriors_per_hospital;
+	int war_preperation_phase_warriors_per_hospital = 0;
 	///The base number of construction sites that can go at once
-	int base_number_of_construction_sites;
+	int base_number_of_construction_sites = 0;
 	///The number of extra construction sites when in starving recovery mode (to facilitate extra inns to be constructed0
-	int starving_recovery_phase_number_of_extra_construction_sites;
+	int starving_recovery_phase_number_of_extra_construction_sites = 0;
 	///The ammount of wheat that triggers a level 1 inn to increase the units working
-	int level_1_inn_low_wheat_trigger_ammount;
+	int level_1_inn_low_wheat_trigger_ammount = 0;
 	///The ammount of wheat that triggers a level 2 inn to increase the units working
-	int level_2_inn_low_wheat_trigger_ammount;
+	int level_2_inn_low_wheat_trigger_ammount = 0;
 	///The ammount of wheat that triggers a level 3 inn to increase the units working
-	int level_3_inn_low_wheat_trigger_ammount;
+	int level_3_inn_low_wheat_trigger_ammount = 0;
 	///The number of units to assign to an level 1 inn when its wheat is above the trigger
-	int level_1_inn_units_assigned_normal_wheat;
+	int level_1_inn_units_assigned_normal_wheat = 0;
 	///The number of units to assign to an level 2 inn when its wheat is above the trigger
-	int level_2_inn_units_assigned_normal_wheat;
+	int level_2_inn_units_assigned_normal_wheat = 0;
 	///The number of units to assign to an level 3 inn when its wheat is above the trigger
-	int level_3_inn_units_assigned_normal_wheat;
+	int level_3_inn_units_assigned_normal_wheat = 0;
 	///The number of units to assign to an level 1 inn when its wheat is below the trigger
-	int level_1_inn_units_assigned_low_wheat;
+	int level_1_inn_units_assigned_low_wheat = 0;
 	///The number of units to assign to an level 2 inn when its wheat is below the trigger
-	int level_2_inn_units_assigned_low_wheat;
+	int level_2_inn_units_assigned_low_wheat = 0;
 	///The number of units to assign to an level 3 inn when its wheat is below the trigger
-	int level_3_inn_units_assigned_low_wheat;
+	int level_3_inn_units_assigned_low_wheat = 0;
 	///The base number of units to assign to a swarm, which is doubled/halved based on conditions
-	int base_swarm_units_assigned;
+	int base_swarm_units_assigned = 0;
 	///The ammount of ressources that caused a swarm to double its units assigned if it goes below this ammount
-	int base_swarm_low_wheat_trigger_ammount;
+	int base_swarm_low_wheat_trigger_ammount = 0;
 	///The percentage of units that are hungry/starving that will cause swarms to halve the number of units assigned, (more wheat to inns)
-	int base_swarm_hungry_reduce_trigger_percent;
+	int base_swarm_hungry_reduce_trigger_percent = 0;
 	///The ratio of workers assigned to swarms during the growth phase
-	int growth_phase_swarm_worker_ratio;
+	int growth_phase_swarm_worker_ratio = 0;
 	///The ratio of workers assigned to swarms when not in the growth phase
-	int non_growth_phase_swarm_worker_ratio;
+	int non_growth_phase_swarm_worker_ratio = 0;
 	///The base number of explorers needed
-	int base_number_of_explorers;
+	int base_number_of_explorers = 0;
 	///The extra number of explorers needed during the fruit phase
-	int fruit_phase_extra_number_of_explorers;
+	int fruit_phase_extra_number_of_explorers = 0;
 	///The base ratio of explorers to use when explorers are needed
-	int base_swarm_explorer_ratio;
+	int base_swarm_explorer_ratio = 0;
 	///The warrior ratio during the war preperation phase
-	int war_preperation_swarm_warrior_ratio;
+	int war_preperation_swarm_warrior_ratio = 0;
 	///The percentage of total population that should be dedicated to defense explorers, when they are created
-	int defense_explorer_population_percent;
+	int defense_explorer_population_percent = 0;
 	///The number of explorers to produce for attacks
-	int offense_explorer_number;
+	int offense_explorer_number = 0;
 	///The minimum number of trained explorers before it will start attacking with them
-	int offense_explorer_minimum;
+	int offense_explorer_minimum = 0;
 	///The number of explorer attack flags to do at once
-	int offense_explorer_flag_number;
+	int offense_explorer_flag_number = 0;
 	///The number of explorers per explorer attack flag
-	int offense_explorer_flag_assigned;
+	int offense_explorer_flag_assigned = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an inn
-	int upgrading_phase_1_inn_chance;
+	int upgrading_phase_1_inn_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an hospital
-	int upgrading_phase_1_hospital_chance;
+	int upgrading_phase_1_hospital_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an racetrack
-	int upgrading_phase_1_racetrack_chance;
+	int upgrading_phase_1_racetrack_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an swimmingpool
-	int upgrading_phase_1_swimmingpool_chance;
+	int upgrading_phase_1_swimmingpool_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an barracks
-	int upgrading_phase_1_barracks_chance;
+	int upgrading_phase_1_barracks_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an school
-	int upgrading_phase_1_school_chance;
+	int upgrading_phase_1_school_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an tower
-	int upgrading_phase_1_tower_chance;
+	int upgrading_phase_1_tower_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an inn
-	int upgrading_phase_2_inn_chance;
+	int upgrading_phase_2_inn_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an hospital
-	int upgrading_phase_2_hospital_chance;
+	int upgrading_phase_2_hospital_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an racetrack
-	int upgrading_phase_2_racetrack_chance;
+	int upgrading_phase_2_racetrack_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an swimmingpool
-	int upgrading_phase_2_swimmingpool_chance;
+	int upgrading_phase_2_swimmingpool_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an barracks
-	int upgrading_phase_2_barracks_chance;
+	int upgrading_phase_2_barracks_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an school
-	int upgrading_phase_2_school_chance;
+	int upgrading_phase_2_school_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an tower
-	int upgrading_phase_2_tower_chance;
+	int upgrading_phase_2_tower_chance = 0;
 	///The number of units to assign to an upgrade for upgrading phase level 1
-	int upgrading_phase_1_units_assigned;
+	int upgrading_phase_1_units_assigned = 0;
 	///The number of units to assign to an upgrade for upgrading phase level 2
-	int upgrading_phase_2_units_assigned;
+	int upgrading_phase_2_units_assigned = 0;
 	///The number of level 1 or higher units needed to count for upgrading one more building
-	int upgrading_phase_1_num_units;
+	int upgrading_phase_1_num_units = 0;
 	///The number of level 1 or higher units needed to count for upgrading one more building
-	int upgrading_phase_2_num_units;
+	int upgrading_phase_2_num_units = 0;
 	///The number of units to assign to a war flag attacking an enemy building
-	int war_phase_war_flag_units_assigned;
+	int war_phase_war_flag_units_assigned = 0;
 	///The number of flags to attack with at any one time
-	unsigned war_phase_num_attack_flags;
+	unsigned war_phase_num_attack_flags = 0;
 private:
 	///The name of the strategy.
 	std::string name;

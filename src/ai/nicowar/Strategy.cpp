@@ -18,13 +18,6 @@ using namespace AIEcho::SearchTools;
 using namespace boost::logic;
 
 
-NicowarStrategy::NicowarStrategy()
-{
-
-}
-
-
-
 void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)
 {
 	configBlock->load(growth_phase_unit_max, "growth_phase_unit_max");
