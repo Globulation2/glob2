@@ -2,16 +2,10 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
-#include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "Unit.h"
 #include "MapInternal.h"
 
-#include <algorithm>
-#include <valarray>
-#include <Stream.h>
-#include <queue>
 
 
 // Resource grid mutations + ressource availability + points/area names

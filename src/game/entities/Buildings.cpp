@@ -20,7 +20,6 @@
 #include <iostream>
 
 #include <Toolkit.h>
-#include <GraphicContext.h>
 
 #include "BuildingType.h"
 #include "GlobalContainer.h"

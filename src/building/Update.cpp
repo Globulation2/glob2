@@ -3,7 +3,6 @@
 
 #include <list>
 #include <math.h>
-#include <Stream.h>
 #include <stdlib.h>
 #include <algorithm>
 #include <climits>
@@ -17,8 +16,6 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "Order.h"
-#include "Bullet.h"
-#include "Integrity.h"
 
 
 void Building::updateBuildingSite(void)

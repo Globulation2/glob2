@@ -3,7 +3,6 @@
 
 #include <FileManager.h>
 #include <FormatableString.h>
-#include <GraphicContext.h>
 
 #include "EndGameScreen.h"
 #include "Engine.h"

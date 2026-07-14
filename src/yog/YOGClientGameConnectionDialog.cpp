@@ -3,9 +3,6 @@
 
 #include "YOGClientGameConnectionDialog.h"
 #include "GUIText.h"
-#include <iomanip>
-#include "Map.h"
-#include <sstream>
 #include "StringTable.h"
 #include "Toolkit.h"
 #include "SDLCompat.h"

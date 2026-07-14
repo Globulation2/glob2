@@ -2,23 +2,16 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <math.h>
-#include <float.h>
 #include <time.h>
 #include <stdlib.h>
 
-#include "boost/integer_traits.hpp"
-#include "boost/integer/common_factor.hpp"
 //also the Perlin Noise stuff uses random that is not based on syncRand
-#include "boost/random.hpp"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "HeightMapGenerator.h"
-#include "MapGenerationDescriptor.h"
 #include "MapGenerator.h"
 #include "Map.h"
-#include <map>
 #include <queue>
-#include <set>
 #include "Unit.h"
 #include "Utilities.h"
 

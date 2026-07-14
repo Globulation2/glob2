@@ -9,7 +9,6 @@
 #include <assert.h>
 #include <Stream.h>
 
-#include "StringTable.h"
 
 #include "AINull.h"
 #include "AINumbi.h"

@@ -6,12 +6,9 @@
 #include "AI.h"
 #include "AINames.h"
 #include "YOGClientLobbyScreen.h"
-#include "Utilities.h"
 #include "GlobalContainer.h"
-#include "NetConsts.h"
 #include "Order.h"
 
-#include <FormatableString.h>
 #include <GUIText.h>
 #include <GUITextArea.h>
 #include <GUITextInput.h>
@@ -20,7 +17,6 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 
-#include "IRC.h"
 #include "YOGMessage.h"
 #include "CustomGameOtherOptions.h"
 

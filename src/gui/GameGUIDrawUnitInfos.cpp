@@ -2,14 +2,12 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <FormatableString.h>
-#include <GraphicContext.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
-#include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Player.h"
 #include "TeamDisplay.h"

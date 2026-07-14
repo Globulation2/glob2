@@ -2,19 +2,13 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Unit.h"
-#include "Race.h"
 #include "Team.h"
 #include "Map.h"
 #include "Game.h"
 
 #include "Building.h"
-#include "Integrity.h"
 
 #include "Utilities.h"
-#include "GlobalContainer.h"
-#include <Stream.h>
-#include <set>
-#include <climits>
 
 void Unit::handleActivity(void)
 {

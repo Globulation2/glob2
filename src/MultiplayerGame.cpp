@@ -2,13 +2,9 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "MultiplayerGame.h"
-#include <iostream>
 #include "Engine.h"
 #include "Player.h"
 #include "YOGClientFileAssembler.h"
-#include "FormatableString.h"
-#include "Toolkit.h"
-#include "StringTable.h"
 #include "FileTransferMessages.h"
 #include "GameCreateMessages.h"
 #include "GameHeaderMessages.h"

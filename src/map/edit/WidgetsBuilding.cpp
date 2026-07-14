@@ -2,25 +2,13 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
-#include <cmath>
-#include <FormatableString.h>
 #include <GAG.h>
-#include "GameGUILoadSave.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
-#include "MapEditKeyActions.h"
-#include "ScriptEditorScreen.h"
 #include "TeamDisplay.h"
 #include <sstream>
-#include <StreamFilter.h>
-#include <Stream.h>
-#include "UnitEditorScreen.h"
 #include "Unit.h"
-#include "UnitType.h"
-#include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
-#include "GUIMessageBox.h"
 #include "SDLCompat.h"
 
 BuildingInfoTitle::BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building)

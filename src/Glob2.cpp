@@ -7,24 +7,15 @@
 
 #ifndef YOG_SERVER_ONLY
 
-#include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
 #include "CampaignMainMenu.h"
-#include "CampaignSelectorScreen.h"
-#include "ChooseMapScreen.h"
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Game.h"
-#include "GUIMessageBox.h"
-#include "Header.h"
-#include "LANFindScreen.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
-#include "MapEdit.h"
-#include "NetBroadcastListener.h"
 #include "MapGenerator.h"
-#include "NewMapScreen.h"
 #include "SettingsScreen.h"
 #include <StringTable.h>
 #include "Utilities.h"
@@ -46,13 +37,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
 
 #endif  // !YOG_SERVER_ONLY
 
 #ifndef WIN32
 #	include <unistd.h>
-#	include <sys/time.h>
 #else
 #	include <time.h>
 #endif

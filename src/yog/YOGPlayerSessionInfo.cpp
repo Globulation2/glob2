@@ -2,7 +2,6 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "YOGPlayerSessionInfo.h"
-#include "SDL_net.h"
 #include "Stream.h"
 #include "Version.h"
 

@@ -1,22 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
 
-#include <algorithm>
 #include "Engine.h"
 #include "FormatableString.h"
 #include "GlobalContainer.h"
 #include <GUIButton.h>
-#include <GUIList.h>
 #include "GUIMapPreview.h"
 #include "GUIMessageBox.h"
-#include "GUITabScreen.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
 #include <GUIProgressBar.h>
 #include "MapHeader.h"
 #include "StringTable.h"
 #include "Toolkit.h"
-#include "YOGClientBlockedList.h"
 #include "YOGClient.h"
 #include "YOGClientMapUploadScreen.h"
 

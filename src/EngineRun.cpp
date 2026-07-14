@@ -2,7 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <FormatableString.h>
-#include <GraphicContext.h>
 
 #include "AINames.h"
 #include "ChecksumSidecar.h"

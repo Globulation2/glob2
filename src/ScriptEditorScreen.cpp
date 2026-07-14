@@ -10,8 +10,6 @@
 #include <FormatableString.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <SupportFunctions.h>
-#include <Stream.h>
 using namespace GAGCore;
 #include <GUIText.h>
 #include <GUITextArea.h>

@@ -8,16 +8,12 @@
 #include "Game.h"
 
 #include "Building.h"
-#include "Integrity.h"
 
 #include "Utilities.h"
-#include "GlobalContainer.h"
 #ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
 #endif  // !YOG_SERVER_ONLY
-#include <Stream.h>
 #include <set>
-#include <climits>
 
 void Unit::selectPreferredMovement(void)
 {

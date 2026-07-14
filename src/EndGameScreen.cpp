@@ -9,7 +9,6 @@
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <GraphicContext.h>
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
@@ -17,7 +16,6 @@
 #include "Team.h"
 #include "TeamDisplay.h"
 #include "GameGUILoadSave.h"
-#include "StreamBackend.h"
 #include "ReplayWriter.h"
 #include "SDLCompat.h"
 

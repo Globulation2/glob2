@@ -2,17 +2,10 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
-#include "Game.h"
-#include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
-#include <algorithm>
-#include <valarray>
-#include <Stream.h>
-#include <queue>
 
 
 // LogFileManager.h does `#define fprintf if(false)fprintf` to silence stale

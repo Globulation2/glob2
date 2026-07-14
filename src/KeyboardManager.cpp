@@ -3,9 +3,7 @@
 
 #include <string>
 #include "FileManager.h"
-#include "FormatableString.h"
 #include "GameGUIKeyActions.h"
-#include <iostream>
 #include "KeyboardManager.h"
 #include "MapEditKeyActions.h"
 #include "Stream.h"

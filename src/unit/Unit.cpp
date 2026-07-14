@@ -8,14 +8,11 @@
 #include "Game.h"
 
 #include "Building.h"
-#include "Integrity.h"
 
 #include "EngineTiming.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include <Stream.h>
-#include <set>
-#include <climits>
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {

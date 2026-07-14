@@ -5,7 +5,6 @@
 #include <assert.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <GraphicContext.h>
 using namespace GAGCore;
 #include <GUIText.h>
 #include <GUINumber.h>

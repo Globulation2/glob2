@@ -4,7 +4,6 @@
 
 #include "YOGGameResults.h"
 
-#include <iostream>
 #include "Stream.h"
 
 YOGGameResults::YOGGameResults()

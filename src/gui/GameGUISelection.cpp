@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include <GraphicContext.h>
 
 #include "Game.h"
 #include "GameGUI.h"

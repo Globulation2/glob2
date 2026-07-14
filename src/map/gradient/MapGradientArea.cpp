@@ -5,14 +5,9 @@
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
-#include <algorithm>
-#include <valarray>
-#include <Stream.h>
-#include <queue>
 
 
 // Forbidden / Guard area / Clear area gradients

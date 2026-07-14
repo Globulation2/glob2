@@ -6,21 +6,16 @@
 #include <sstream>
 #include <Stream.h>
 #include <stdlib.h>
-#include <algorithm>
-#include <climits>
 
 #include "Building.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FileFormatVersions.h"
 #include "Game.h"
-#include "GlobalContainer.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "Order.h"
 #include "Bullet.h"
-#include "Integrity.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {

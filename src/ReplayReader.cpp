@@ -6,7 +6,6 @@
 #include "BinaryStream.h"
 #include "Order.h"
 #include "OrderMessages.h"
-#include "GUIMessageBox.h"
 #include "GameGUI.h"
 #include "Version.h"
 #include "Toolkit.h"

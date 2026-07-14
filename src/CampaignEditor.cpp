@@ -5,7 +5,6 @@
 #include "Toolkit.h"
 #include "StringTable.h"
 #include "ChooseMapScreen.h"
-#include "Game.h"
 #include "GlobalContainer.h"
 #include "GUIMessageBox.h"
 #include <set>

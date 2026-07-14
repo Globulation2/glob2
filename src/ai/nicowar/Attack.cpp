@@ -2,8 +2,6 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "AINicowar.h"
-#include "GlobalContainer.h"
-#include "FormatableString.h"
 #include <string>
 #include "Utilities.h"
 #include "Game.h"

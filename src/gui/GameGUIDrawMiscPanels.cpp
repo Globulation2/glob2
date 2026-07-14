@@ -3,7 +3,6 @@
 
 #include <FormatableString.h>
 #include <GUIStyle.h>
-#include <GraphicContext.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 

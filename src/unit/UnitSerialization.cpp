@@ -12,10 +12,7 @@
 
 #include "FileFormatVersions.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
 #include <Stream.h>
-#include <set>
-#include <climits>
 
 void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {

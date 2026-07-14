@@ -6,7 +6,6 @@
 #include "Stream.h"
 #include "Toolkit.h"
 #include "FileManager.h"
-#include <iostream>
 #include "YOGConsts.h"
 
 using namespace GAGCore;

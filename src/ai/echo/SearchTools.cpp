@@ -3,20 +3,11 @@
 
 #include "echo/Echo.h"
 #include "Building.h"
-#include <stack>
-#include <queue>
 #include <map>
-#include <limits>
-#include <algorithm>
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include "Game.h"
-#include "GlobalContainer.h"
-#include "Order.h"
-#include <iterator>
 #include "Utilities.h"
-#include <tuple>
-#include "Brush.h"
 
 using namespace AIEcho;
 using namespace AIEcho::Gradients;

@@ -4,14 +4,9 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "BuildingType.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
-#include <algorithm>
-#include <valarray>
-#include <Stream.h>
-#include <queue>
 
 
 // Building pathfinding (buildingAvailable, pathfindBuilding, dirtyLocalGradient)

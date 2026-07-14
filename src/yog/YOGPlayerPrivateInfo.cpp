@@ -4,7 +4,6 @@
 #include <assert.h>
 
 #include "YOGPlayerPrivateInfo.h"
-#include "SDL_net.h"
 #include "Stream.h"
 
 YOGPlayerPrivateInfo::YOGPlayerPrivateInfo()

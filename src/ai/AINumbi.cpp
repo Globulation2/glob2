@@ -9,12 +9,10 @@
 // All share the single AINumbi declaration in AINumbi.h.
 
 #include <Stream.h>
-#include <array>
 #include <sstream>
 
 #include "AINumbi.h"
 #include "Game.h"
-#include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
 #include "Utilities.h"

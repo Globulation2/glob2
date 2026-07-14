@@ -4,11 +4,9 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <GraphicContext.h>
 
 #include "Game.h"
 #include "GameGUI.h"
-#include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "ParticleCrossfade.h"
 

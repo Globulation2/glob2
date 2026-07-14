@@ -7,7 +7,6 @@
 #include <StringTable.h>
 #include <GUIButton.h>
 #include <GUIText.h>
-#include <GUINumber.h>
 #include <sstream>
 
 CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)

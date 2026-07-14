@@ -2,8 +2,6 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "GameHeaderMessages.h"
-#include <algorithm>
-#include <iostream>
 #include <sstream>
 #include "Version.h"
 #include "BinaryStream.h"

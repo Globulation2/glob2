@@ -3,10 +3,8 @@
 
 #include "Game.h"
 #include "GameGUI.h"
-#include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
-#include "Unit.h"
 
 void GameGUI::enableBuildingsChoice(const std::string &name)
 {

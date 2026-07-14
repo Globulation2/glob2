@@ -2,17 +2,12 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "CustomGameScreen.h"
-#include "Utilities.h"
 #include "AINames.h"
-#include "Game.h"
 #include "GlobalContainer.h"
-#include "GUIGlob2FileList.h"
-#include "GUIMapPreview.h"
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <Stream.h>
 #include <FormatableString.h>
 #include "Player.h"
 #include "CustomGameOtherOptions.h"

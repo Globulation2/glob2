@@ -3,7 +3,6 @@
 
 #include "Bullet.h"
 #include <assert.h>
-#include <SDL_endian.h>
 #include <Stream.h>
 
 Bullet::Bullet(GAGCore::InputStream *stream, Sint32 versionMinor)

@@ -2,11 +2,8 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "GameTeamMessages.h"
-#include <algorithm>
 #include <iostream>
 #include <sstream>
-#include "Version.h"
-#include "BinaryStream.h"
 
 using namespace GAGCore;
 

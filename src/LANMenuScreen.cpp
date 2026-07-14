@@ -5,7 +5,6 @@
 #include "ChooseMapScreen.h"
 #include "FormatableString.h"
 #include "GlobalContainer.h"
-#include <GraphicContext.h>
 #include <GUIButton.h>
 #include "GUIMessageBox.h"
 #include <GUIText.h>

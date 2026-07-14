@@ -5,7 +5,6 @@
 #include "FileManager.h"
 #include "FileTransferMessages.h"
 #include "StreamBackend.h"
-#include "Stream.h"
 #include "Toolkit.h"
 #include "YOGClientFileAssembler.h"
 #include "YOGClient.h"

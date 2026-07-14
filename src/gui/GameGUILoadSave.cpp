@@ -3,7 +3,6 @@
 
 #include "GameGUILoadSave.h"
 #include "GlobalContainer.h"
-#include "Utilities.h"
 #include <GUIFileList.h>
 #include <GUIButton.h>
 #include <GUIText.h>

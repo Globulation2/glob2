@@ -3,22 +3,16 @@
 
 #include <list>
 #include <math.h>
-#include <Stream.h>
 #include <stdlib.h>
-#include <algorithm>
 #include <climits>
 
 #include "Building.h"
 #include "BuildingType.h"
 #include "FixedPoint.h"
 #include "Game.h"
-#include "GlobalContainer.h"
 #include "Team.h"
 #include "Unit.h"
-#include "Utilities.h"
 #include "Order.h"
-#include "Bullet.h"
-#include "Integrity.h"
 
 namespace
 {

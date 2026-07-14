@@ -6,22 +6,12 @@
 #include <time.h>
 #include <stdlib.h>
 
-#include "boost/integer_traits.hpp"
-#include "boost/integer/common_factor.hpp"
 //also the Perlin Noise stuff uses random that is not based on syncRand
-#include "boost/random.hpp"
 #include "Game.h"
-#include "GlobalContainer.h"
-#include "HeightMapGenerator.h"
 #include "MapGenerationDescriptor.h"
-#include "MapGenerator.h"
 #include "Map.h"
 
 void simulateRandomMap(int smooth, double baseWater, double baseSand, double baseGrass, double *finalWater, double *finalSand, double *finalGrass);
-#include <map>
-#include <queue>
-#include <set>
-#include "Unit.h"
 #include "Utilities.h"
 
 bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)

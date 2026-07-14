@@ -15,7 +15,6 @@ using namespace GAGCore;
 #include <iostream>
 #include <sstream>
 #include <memory>
-#include <boost/functional.hpp>
 
 using std::string;
 using std::unique_ptr;

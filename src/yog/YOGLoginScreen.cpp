@@ -3,7 +3,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GlobalContainer.h"
-#include <GraphicContext.h>
 #include <GUIAnimation.h>
 #include <GUIButton.h>
 #include <GUITextArea.h>

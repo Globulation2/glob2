@@ -4,8 +4,6 @@
 #include "BuildingType.h"
 #include "FileFormatVersions.h"
 #include "Game.h"
-#include "GlobalContainer.h"
-#include "Marshaling.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"

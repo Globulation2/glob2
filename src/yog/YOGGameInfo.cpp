@@ -2,7 +2,6 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "YOGGameInfo.h"
-#include <iostream>
 #include "Stream.h"
 
 YOGGameInfo::YOGGameInfo()

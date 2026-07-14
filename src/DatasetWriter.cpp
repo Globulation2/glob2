@@ -1,10 +1,8 @@
 #include "DatasetWriter.h"
 
 #include <algorithm>
-#include <vector>
 
 #include "Building.h"
-#include "BuildingUtils.h"
 #include "FileManager.h"
 #include "Game.h"
 #include "IntBuildingType.h"
@@ -17,7 +15,6 @@
 #include "Toolkit.h"
 #include "Unit.h"
 #include "UnitConsts.h"
-#include "UnitUtils.h"
 
 DatasetWriter::DatasetWriter()
 	: file(NULL), numRecords(0)

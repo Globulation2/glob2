@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <algorithm>
 
 #include <Toolkit.h>
 #include <GAG.h>
@@ -9,14 +8,12 @@
 
 #include "FileManager.h"
 #include "GameGUIKeyActions.h"
-#include "Glob2Screen.h"
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "KeyboardManager.h"
 #include "LogFileManager.h"
 #include "MapEditKeyActions.h"
-#include "Player.h"
 #include "Race.h"
 #include "SoundMixer.h"
 #include "render/UnitSkin.h"
@@ -29,7 +26,6 @@
 
 #include "YOGConsts.h"
 
-#include "GraphicContext.h"
 
 /**
  * The GlobalContainer basically holds all preferences, data,

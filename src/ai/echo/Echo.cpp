@@ -237,7 +237,6 @@ void Echo::check_fruit()
 	}
 }
 
-#include "TextStream.h"
 
 std::shared_ptr<Order> Echo::getOrder(void)
 {

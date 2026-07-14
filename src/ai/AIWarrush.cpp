@@ -12,7 +12,6 @@
 #include "Player.h"
 #include "Brush.h"
 #include "Utilities.h"
-#include <algorithm>
 
 using std::shared_ptr;
 

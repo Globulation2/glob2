@@ -6,7 +6,6 @@
 #include "IRCThreadMessage.h"
 #include <functional>
 #include <StringTable.h>
-#include <Toolkit.h>
 #include "YOGConsts.h"
 
 using namespace GAGCore;

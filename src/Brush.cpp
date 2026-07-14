@@ -5,7 +5,6 @@
 #include "BitArray.h"
 #include "GlobalContainer.h"
 #include "Map.h"
-#include <GraphicContext.h>
 
 BrushTool::BrushTool()
 {

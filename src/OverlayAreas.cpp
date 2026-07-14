@@ -5,7 +5,6 @@
 #include <algorithm>
 #include "Unit.h"
 #include "BuildingType.h"
-#include <cmath>
 #include "Game.h"
 #include "Bullet.h"
 

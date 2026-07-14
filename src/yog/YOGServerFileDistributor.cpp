@@ -4,8 +4,6 @@
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "FileTransferMessages.h"
-#include "StreamBackend.h"
-#include "Stream.h"
 #include "Toolkit.h"
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"

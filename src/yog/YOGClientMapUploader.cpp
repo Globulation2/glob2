@@ -10,7 +10,6 @@
 
 #include "Toolkit.h"
 #include "FileManager.h"
-#include "Stream.h"
 #include "BinaryStream.h"
 
 using std::static_pointer_cast;

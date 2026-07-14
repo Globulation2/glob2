@@ -6,7 +6,6 @@
 #include "BuildingType.h"
 #include "Game.h"
 #include "GameGUI.h"
-#include "GlobalContainer.h"
 #include "Map.h"
 #include "Team.h"
 #include "Unit.h"

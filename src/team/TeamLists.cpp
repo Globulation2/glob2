@@ -2,7 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "BuildingType.h"
-#include "Game.h"
 #include "Map.h"
 #include "Team.h"
 #include "Unit.h"

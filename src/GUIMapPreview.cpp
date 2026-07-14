@@ -1,19 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <FileManager.h>
-#include <GraphicContext.h>
 #include <StringTable.h>
 #include <Toolkit.h>
-#include <Stream.h>
-#include <StreamFilter.h>
-#include <BinaryStream.h>
 #include <GUIStyle.h>
 using namespace GAGCore;
 
 #include "GUIMapPreview.h"
-#include "Map.h"
-#include "Utilities.h"
 
 MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign)
 {

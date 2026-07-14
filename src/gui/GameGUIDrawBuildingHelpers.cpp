@@ -4,14 +4,12 @@
 #include <algorithm>
 
 #include <FormatableString.h>
-#include <GraphicContext.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
-#include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "TeamDisplay.h"
 #include "Unit.h"

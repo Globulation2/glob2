@@ -6,10 +6,8 @@
 #include <cstdlib>
 
 #include <FormatableString.h>
-#include <GraphicContext.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <SupportFunctions.h>
 #include <Stream.h>
 
 #include "Game.h"

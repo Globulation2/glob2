@@ -2,12 +2,8 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "NetConnection.h"
-#include <algorithm>
 #include <string>
 #include <functional>
-#include <iostream>
-#include "StreamBackend.h"
-#include "BinaryStream.h"
 #include "NetMessage.h"
 
 using namespace GAGCore;

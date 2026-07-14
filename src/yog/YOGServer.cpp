@@ -11,7 +11,6 @@
 #include "YOGServerGame.h"
 #include "YOGServer.h"
 #include "YOGServerPlayer.h"
-#include "boost/date_time/posix_time/posix_time.hpp"
 #include "SDLCompat.h"
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy)

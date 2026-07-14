@@ -5,7 +5,6 @@
 #include "FileFormatVersions.h"
 #include "Stream.h"
 #include <cassert>
-#include <iostream>
 
 
 GameObjectives::GameObjectives() :

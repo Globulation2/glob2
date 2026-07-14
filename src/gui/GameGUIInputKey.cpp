@@ -3,16 +3,9 @@
 
 #include <stdio.h>
 #include <algorithm>
-#include <iostream>
 
 #include <SDL_keycode.h>
 
-#include <FileManager.h>
-#include <GraphicContext.h>
-#include <StringTable.h>
-#include <Stream.h>
-#include <BinaryStream.h>
-#include <TextStream.h>
 #include <Toolkit.h>
 
 #include "Game.h"
@@ -20,12 +13,10 @@
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameGUIKeyActions.h"
-#include "GameGUILoadSave.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
-#include "SoundMixer.h"
 #include "Unit.h"
 #include "VoiceRecorder.h"
 

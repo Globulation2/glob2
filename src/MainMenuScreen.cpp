@@ -4,17 +4,13 @@
 #include "MainMenuScreen.h"
 #include "GlobalContainer.h"
 #include "Version.h"
-#include "YOGConsts.h"
-#include "NetConsts.h"
 #include <FormatableString.h>
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <GUIImage.h>
-#include <GUIProgressBar.h>
 using namespace GAGGUI;
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <SupportFunctions.h>
 using namespace GAGCore;
 
 // version related stuff

@@ -2,12 +2,10 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "OrderMessages.h"
-#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <vector>
 #include "Version.h"
-#include "BinaryStream.h"
 
 using namespace GAGCore;
 

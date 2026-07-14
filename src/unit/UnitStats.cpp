@@ -5,15 +5,9 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
-#include "Game.h"
 
 #include "Building.h"
-#include "Integrity.h"
 
-#include "Utilities.h"
-#include "GlobalContainer.h"
-#include <Stream.h>
-#include <set>
 #include <climits>
 
 //! Return the real armor, taking into account the reduction due to fruits

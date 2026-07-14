@@ -1,24 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <iostream>
-#include <fstream>
 
 #include "AICastor.h"
-#include "AINicowar.h"
 
 #include <assert.h>
 #include <string.h>
 
-#include <set>
-#include <string>
-#include <functional>
-#include <algorithm>
-#include <sstream>
-#include <cmath>
 
-#include <FileManager.h>
-#include <GraphicContext.h>
 
 #include "BuildingType.h"
 #include "DatasetWriter.h"
@@ -27,18 +16,11 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
-#include "render/UnitSkin.h"
-#include "Integrity.h"
 #include "Utilities.h"
-#include "GameGUI.h"
 #include "SDLCompat.h"
 
-#include "MapEdit.h"
 
 #include "Brush.h"
-#include "DynamicClouds.h"
-#include "Bullet.h"
-#include "TextStream.h"
 #include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"

@@ -7,12 +7,9 @@
 #include <GUIButton.h>
 #include <GUIList.h>
 #include "GUIMapPreview.h"
-#include "GUIMessageBox.h"
 #include "GUINumber.h"
 #include "GUITabScreen.h"
-#include <GUITextArea.h>
 #include <GUIText.h>
-#include <GUITextInput.h>
 #include "StringTable.h"
 #include "Toolkit.h"
 #include "TextSort.h"

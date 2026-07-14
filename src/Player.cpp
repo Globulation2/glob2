@@ -1,14 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <StringTable.h>
 #include <Stream.h>
 
 #include "FileFormatVersions.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
-#include "Marshaling.h"
-#include "NetConsts.h"
 #include "Player.h"
 #include "Team.h"
 #include "Utilities.h"

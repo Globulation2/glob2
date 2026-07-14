@@ -11,10 +11,6 @@
 #include "render/GameAnimations.h"
 #endif  // !YOG_SERVER_ONLY
 
-#include <algorithm>
-#include <valarray>
-#include <Stream.h>
-#include <queue>
 
 
 // Definitions of shared direction tables declared in MapInternal.h.

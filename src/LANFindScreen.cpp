@@ -3,7 +3,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "LANFindScreen.h"
-#include "Utilities.h"
 #include "GlobalContainer.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
@@ -12,7 +11,6 @@
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <GraphicContext.h>
 #include "MultiplayerGameScreen.h"
 #include "YOGClientBringup.h"
 #include "YOGClientGameListManager.h"

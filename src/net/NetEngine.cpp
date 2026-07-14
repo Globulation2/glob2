@@ -2,7 +2,6 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "NetEngine.h"
-#include <iostream>
 #include "OrderMessages.h"
 
 

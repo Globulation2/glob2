@@ -6,7 +6,6 @@
 #include <optional>
 
 #include <FormatableString.h>
-#include <GraphicContext.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 

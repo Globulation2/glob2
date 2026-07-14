@@ -8,14 +8,11 @@
 #include "Game.h"
 
 #include "Building.h"
-#include "Integrity.h"
 
 #include "FixedPoint.h"
 #include "MapInternal.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include <Stream.h>
-#include <set>
 #include <climits>
 
 void Unit::handleMovement(void)

@@ -13,7 +13,6 @@
 #include "MapUploadMessages.h"
 #include "OrderMessages.h"
 #include "RegistrationMessages.h"
-#include "RouterAdminMessages.h"
 #include "YOGServerChatChannel.h"
 #include "YOGServerGame.h"
 #include "YOGServer.h"

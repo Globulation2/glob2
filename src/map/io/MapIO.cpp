@@ -4,19 +4,14 @@
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Unit.h"
-#include "MapInternal.h"
 
 #ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
 #endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
-#include <valarray>
 #include <Stream.h>
-#include <queue>
 
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)

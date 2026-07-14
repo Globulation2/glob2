@@ -139,6 +139,8 @@ Server/client architecture for online play. `YOGServer` handles matchmaking, cha
 
 **macOS rename caveat:** Case-only filename renames need `git mv -f Foo.cpp foo_tmp.cpp && git mv -f foo_tmp.cpp Foo.cpp` — plain `git mv foo.cpp Foo.cpp` may silently no-op on a case-insensitive filesystem.
 
+**Unused includes:** remove them with the compile-gated `clang-tidy misc-include-cleaner` pipeline in [`docs/unused-include-cleanup.md`](docs/unused-include-cleanup.md) — never hand-guess or `--fix` blindly. Verify with a fixed-tick replay A/B, not the stale byte baseline.
+
 ## Logging is dead — do not restore
 
 `glob2/src/LogFileManager.h` defines `#define fprintf if(false)fprintf`. Every translation unit that includes that header gets all `fprintf` calls rewritten to a runtime `if(false)` branch the compiler dead-code-eliminates. ~60 files include `LogFileManager.h`. Original devs disabled logging "for bugs" (per the deprecation comment) and never came back; the infrastructure has been load-bearing in constructors but doing nothing for 15+ years.

@@ -7,7 +7,6 @@
 #include "Unit.h"
 #include "UnitConsts.h"
 #include "BuildingType.h"
-#include "GlobalContainer.h"
 #include <Stream.h>
 
 #ifndef YOG_SERVER_ONLY

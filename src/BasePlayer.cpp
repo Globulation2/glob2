@@ -4,9 +4,7 @@
 
 #include "BasePlayer.h"
 
-#include "GlobalContainer.h"
 #include "Stream.h"
-#include "LogFileManager.h"
 
 BasePlayer::BasePlayer()
 {

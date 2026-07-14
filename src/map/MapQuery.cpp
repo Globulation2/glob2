@@ -8,10 +8,6 @@
 #include "Unit.h"
 #include "MapInternal.h"
 
-#include <algorithm>
-#include <valarray>
-#include <Stream.h>
-#include <queue>
 
 
 // Spatial queries: isFree*, isHardSpace*, doesUnitTouch*, immobile units, clearing area

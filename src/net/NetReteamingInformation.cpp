@@ -3,7 +3,6 @@
 
 #include "NetReteamingInformation.h"
 
-#include <iostream>
 #include "Stream.h"
 
 NetReteamingInformation::NetReteamingInformation()

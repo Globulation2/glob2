@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <climits>
 
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "Marshaling.h"
-#include "NetConsts.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"

@@ -6,7 +6,6 @@
 using namespace GAGCore;
 #include <assert.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include "GlobalContainer.h"
 

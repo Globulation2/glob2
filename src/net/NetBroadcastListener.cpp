@@ -4,7 +4,6 @@
 #include "NetBroadcastListener.h"
 #include "NetConsts.h"
 #include "Order.h"
-#include "Stream.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include <SDLCompat.h>

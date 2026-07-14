@@ -5,7 +5,6 @@
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Unit.h"
 #include "MapInternal.h"
 #ifndef YOG_SERVER_ONLY
@@ -13,9 +12,6 @@
 #endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
-#include <valarray>
-#include <Stream.h>
-#include <queue>
 
 
 // growRessources, syncStep, fog of war, discovery, explored area
