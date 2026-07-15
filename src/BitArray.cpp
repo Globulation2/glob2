@@ -15,7 +15,7 @@ namespace Utilities
 	
 	void BitArray::assertPos(size_t pos) const
 	{
-		size_t wordPos = pos / 8;
+		size_t wordPos = pos / BITS_PER_BYTE;
 		if (wordPos >= values.size())
 		{
 			std::cerr << "BitArray::assertPos(" << pos << ") : index out of bounds. Max size is " << bitLength << std::endl;
@@ -34,31 +34,33 @@ namespace Utilities
 	
 	size_t BitArray::bitToByte(size_t v) const
 	{
-		if (v&0x7)
-			return (v>>3)+1;
+		if (v % BITS_PER_BYTE)
+			return (v / BITS_PER_BYTE) + 1;
 		else
-			return v>>3;
+			return v / BITS_PER_BYTE;
 	}
-	
+
+	//! Sets bit `pos` to `value`. See the class comment for bit ordering.
 	void BitArray::set(size_t pos, bool value)
 	{
 		assertPos(pos);
-		
-		size_t wordPos = pos / 8;
-		size_t bitPos = pos % 8;
-		
+
+		size_t wordPos = pos / BITS_PER_BYTE;
+		size_t bitPos = pos % BITS_PER_BYTE;
+
 		if (value)
 			values[wordPos] |= (1<<bitPos);
 		else
 			values[wordPos] &= ~(1<<bitPos);
 	}
-	
+
+	//! Returns bit `pos`. See the class comment for bit ordering.
 	bool BitArray::get(size_t pos) const
 	{
 		assertPos(pos);
-		
-		size_t wordPos = pos / 8;
-		size_t bitPos = pos % 8;
+
+		size_t wordPos = pos / BITS_PER_BYTE;
+		size_t bitPos = pos % BITS_PER_BYTE;
 
 		return (values[wordPos] & (1<<bitPos)) != 0;
 	}

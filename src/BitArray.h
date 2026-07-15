@@ -7,15 +7,26 @@
 
 namespace Utilities
 {
+	//! A packed array of bits, stored 8 to a byte.
+	//!
+	//! Bit `pos` lives in byte `pos/8` at bit `pos%8`, counting from the
+	//! least significant bit of each byte. This ordering is part of the wire
+	//! format — OrderAlterateArea transmits a BitArray mask verbatim via
+	//! serialize()/deserialize(), so both ends must agree on it. Do not
+	//! reorder to MSB-first: it would silently corrupt masks between a
+	//! patched and an unpatched peer rather than fail loudly.
 	class BitArray
 	{
 	private:
+		static constexpr size_t BITS_PER_BYTE = 8;
+
 		std::valarray<unsigned char> values;
 		size_t bitLength;
-		
+
+		//! Number of whole bytes needed to hold `v` bits, i.e. ceil(v/8).
 		size_t bitToByte(size_t v) const;
 		void assertPos(size_t pos) const;
-		
+
 	public:
 		BitArray() { bitLength = 0; }
 		BitArray(size_t size, bool defaultValue = false);
