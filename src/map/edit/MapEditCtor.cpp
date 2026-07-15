@@ -96,7 +96,7 @@ MapEdit::MapEdit()
 	guardZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+40+decX, 216, 32, 32), "flag view", "guard zone", "select guard zone", ZoneSelector::GuardingZone);
 	clearingZone = new ZoneSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+80+decX, 216, 32, 32), "flag view", "clearing zone", "select clearing zone", ZoneSelector::ClearingZone);
 	deleteButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 216+40, 112, 16), "flag view", "delete button", "select delete objects", "[delete]");
-	zoneBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 216+65, 128, 96), "flag view", "zone brush selector", "handle zone click", brush);
+	zoneBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 216+65, BrushTool::WIDTH, BrushTool::HEIGHT), "flag view", "zone brush selector", "handle zone click", brush);
 	worker = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 385, 38, 38), "flag view", "worker selector", "select worker", WORKER);
 	explorer = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+48+decX, 385, 38, 38), "flag view", "explorer selector", "select explorer", EXPLORER);
 	warrior = new UnitSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+88+decX, 385, 38, 38), "flag view", "warrior selector", "select warrior", WARRIOR);
@@ -137,7 +137,7 @@ MapEdit::MapEdit()
 	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 320, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
 	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 336, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
 	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24+decX, 336, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
-	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 362, 128, 96), "terrain view", "terrain brush selector", "handle terrain click", brush);
+	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 362, BrushTool::WIDTH, BrushTool::HEIGHT), "terrain view", "terrain brush selector", "handle terrain click", brush);
 	showFertilityOverlay = new Checkbox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 466, 128, 16), "terrain view", "fertility checkbox", "compute fertility", "[Fertility Map]", isFertilityOn);
 	addWidget(grass);
 	addWidget(sand);

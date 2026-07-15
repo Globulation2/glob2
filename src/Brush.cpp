@@ -17,15 +17,16 @@ void BrushTool::draw(int x, int y)
 {
 	if(addRemoveEnabled)
 	{
-		globalContainer->gfx->drawSprite(x+16, y, globalContainer->brush, 0);
-		globalContainer->gfx->drawSprite(x+64+16, y, globalContainer->brush, 1);
+		globalContainer->gfx->drawSprite(x+MODE_BUTTON_SPRITE_INSET, y, globalContainer->brush, 0);
+		globalContainer->gfx->drawSprite(x+MODE_BUTTON_WIDTH+MODE_BUTTON_SPRITE_INSET, y, globalContainer->brush, 1);
 		if (mode)
-			globalContainer->gfx->drawSprite(x+(static_cast<int>(mode)-1)*64+16, y, globalContainer->gamegui, 22);
+			globalContainer->gfx->drawSprite(x+(static_cast<int>(mode)-1)*MODE_BUTTON_WIDTH+MODE_BUTTON_SPRITE_INSET, y, globalContainer->gamegui, 22);
 	}
-	for (unsigned i=0; i<8; i++)
+	for (unsigned i=0; i<BRUSH_COUNT; i++)
 	{
-		int decX = (i%4)*32;
-		int decY = 32*(i/4)+36;
+		// The inverse of hitTest's figure-grid mapping.
+		int decX = (static_cast<int>(i)%FIGURE_COLUMNS)*FIGURE_CELL_SIZE;
+		int decY = (static_cast<int>(i)/FIGURE_COLUMNS)*FIGURE_CELL_SIZE+MODE_ROW_HEIGHT;
 		globalContainer->gfx->drawSprite(x+decX, y+decY, globalContainer->brush, 2+i);
 		if ((mode != MODE_NONE) && (figure == i))
 			globalContainer->gfx->drawSprite(x+decX, y+decY, globalContainer->gamegui, 22);
@@ -38,18 +39,17 @@ void BrushTool::handleClick(int x, int y)
 {
 	if (mode == MODE_NONE)
 		mode = MODE_ADD;
-	if (y>0 && x>0 && x<128)
+	const std::optional<Hit> hit = hitTest(x, y);
+	if (!hit)
+		return;
+	if (hit->kind == Hit::ModeButton)
 	{
-		if (y<36)
-		{
-			if(addRemoveEnabled)
-				mode = static_cast<Mode>((x/64)+1);
-		}
-		else if (y<36+64)
-		{
-			y -= 36;
-			figure = (y/32)*4 + ((x/32)%4);
-		}
+		if (addRemoveEnabled)
+			mode = static_cast<Mode>(hit->value);
+	}
+	else
+	{
+		figure = hit->value;
 	}
 }
 
@@ -123,8 +123,6 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 	}
 	*/
 }
-
-#define BRUSH_COUNT 8
 
 void BrushTool::setFigure(unsigned f)
 {

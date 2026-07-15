@@ -26,7 +26,10 @@ struct widgetRectangle
 {
 	widgetRectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
 	widgetRectangle() : x(0), y(0), width(0), height(0) {}
-	bool is_in(int posx, int posy) { return posx>x && posx<(x+width) && posy>y && posy<(y+height); }
+	//! Half-open on both axes: the top and left edges are inside, the bottom and
+	//! right edges are not. This makes abutting rectangles tile without either
+	//! overlapping or leaving a dead pixel line between them.
+	bool is_in(int posx, int posy) { return posx>=x && posx<(x+width) && posy>=y && posy<(y+height); }
 
 	int x;
 	int y;

@@ -58,6 +58,8 @@ GameMusicControllerTest.cpp
 
 GhostBuildingOverlapTest.cpp
 
+BrushToolHitTest.cpp
+
 TurretScanTileTest.cpp
 
 ParticleCrossfadeTest.cpp

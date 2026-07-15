@@ -24,7 +24,11 @@ bool MapEdit::findAction(int x, int y)
 		MapEditorWidget* mi=*i;
 		if(mi->is_in(x, y) && mi->enabled)
 		{
-			mi->handleClick(mouseX-mi->area.x, mouseY-mi->area.y);
+			// Make the widget relative to the same point we hit-tested. Using the
+			// mouseX/mouseY members here instead would take the last *motion*
+			// position, which a warped or synthetic click can leave elsewhere —
+			// hitting one widget while telling it about a coordinate outside itself.
+			mi->handleClick(x-mi->area.x, y-mi->area.y);
 			return true;
 		}
 	}
