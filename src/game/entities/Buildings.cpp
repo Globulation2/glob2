@@ -237,8 +237,17 @@ Sint32 BuildingsTypes::getPlaceableTypeNum(const std::string &name)
 	if (typeNum == -1)
 	{
 		typeNum = getTypeNum(name, 0, false);
+		// Check the name resolved at all before handing it to get(), which
+		// would otherwise convert -1 to SIZE_MAX and return nullptr.
+		assert(typeNum != -1);
 		assert(get(typeNum)->isVirtual);
 	}
+	return typeNum;
+}
+
+Sint32 BuildingsTypes::getFinishedTypeNum(const std::string &name)
+{
+	Sint32 typeNum = getTypeNum(name, 0, false);
 	assert(typeNum != -1);
 	return typeNum;
 }

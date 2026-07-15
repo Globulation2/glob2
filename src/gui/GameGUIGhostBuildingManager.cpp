@@ -6,6 +6,13 @@
 #include "GlobalContainer.h"
 #include "Game.h"
 
+namespace
+{
+	/// Alpha the ghost sprite is blended with, so it reads as "ordered but not
+	/// built yet" against the terrain underneath.
+	constexpr int GHOST_SPRITE_ALPHA = 200;
+}
+
 GameGUIGhostBuildingManager::GameGUIGhostBuildingManager(Game& game)
 	: game(game)
 {
@@ -14,46 +21,23 @@ GameGUIGhostBuildingManager::GameGUIGhostBuildingManager(Game& game)
 
 
 
-void GameGUIGhostBuildingManager::addBuilding(const std::string& type, int x, int y)
+void GameGUIGhostBuildingManager::addBuilding(Sint32 typeNum, int x, int y)
 {
-	buildings.push_back(std::make_tuple(type, x, y));
+	buildings.push_back(GhostBuilding{typeNum, x, y});
 }
 
 
 
 bool GameGUIGhostBuildingManager::isGhostBuilding(int x, int y, int w, int h)
 {
-	for(int px = 0; px < w; ++px)
+	for(const GhostBuilding& ghost : buildings)
 	{
-		for(int py = 0; py < h; ++py)
-		{
-			int lx = (x + px + game.map.getW()) % game.map.getW();
-			int ly = (y + py + game.map.getH()) % game.map.getH();
-			for(unsigned i=0; i<buildings.size(); ++i)
-			{
-				int bx = std::get<1>(buildings[i]);
-				int by = std::get<2>(buildings[i]);
-
-				std::string building = std::get<0>(buildings[i]);
-				int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, true);
-				if(typeNum == -1)
-					typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
-				BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
-				
-				for(int dx=0; dx<bt->width; ++dx)
-				{
-					for(int dy=0; dy<bt->height; ++dy)
-					{
-						int nx = (bx + dx + game.map.getW()) % game.map.getW();
-						int ny = (by + dy + game.map.getH()) % game.map.getH();
-						if(lx == nx && ly == ny)
-						{
-							return true;
-						}
-					}
-				}
-			}
-	}
+		const BuildingType *bt = globalContainer->buildingsTypes.get(ghost.typeNum);
+		// Two footprints on a torus collide only if they overlap on both axes
+		// independently.
+		if(wrappedRangesOverlap(x, w, ghost.x, bt->width, game.map.getW()) &&
+		   wrappedRangesOverlap(y, h, ghost.y, bt->height, game.map.getH()))
+			return true;
 	}
 	return false;
 }
@@ -64,7 +48,7 @@ void GameGUIGhostBuildingManager::removeBuilding(int x, int y)
 {
 	for(unsigned i=0; i<buildings.size();)
 	{
-		if(std::get<1>(buildings[i]) == x && std::get<2>(buildings[i]) == y)
+		if(buildings[i].x == x && buildings[i].y == y)
 		{
 			buildings.erase(buildings.begin() + i);
 		}
@@ -79,29 +63,20 @@ void GameGUIGhostBuildingManager::removeBuilding(int x, int y)
 
 void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int localTeam)
 {
-	for(unsigned i=0; i<buildings.size(); ++i)
+	for(const GhostBuilding& ghost : buildings)
 	{
-		std::string building = std::get<0>(buildings[i]);
-		int px = std::get<1>(buildings[i]);
-		int py = std::get<2>(buildings[i]);
-
-		int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, true);
-		if(typeNum == -1)
-			typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
-
-		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
+		BuildingType *bt = globalContainer->buildingsTypes.get(ghost.typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
 		sprite->setBaseColor(game.teams[localTeam]->color);
 
-		//Find position to draw
-		int batW = (bt->width) * 32;
-		int batH = sprite->getH(bt->gameSpriteImage);
-		int batX = (((px-viewportX)&(game.map.wMask)) * 32)-(batW-(bt->width * 32));
-		int batY = (((py-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
+		//Find position to draw. The sprite is anchored at the bottom-left of the
+		//footprint: its width always matches the footprint, but it may be taller
+		//(roofs, flag poles), so only Y is pulled up by the overhang.
+		int spriteH = sprite->getH(bt->gameSpriteImage);
+		int batX = ((ghost.x - viewportX) & game.map.wMask) * Map::TILE_PX;
+		int batY = (((ghost.y - viewportY) & game.map.hMask) * Map::TILE_PX) - (spriteH - bt->height * Map::TILE_PX);
 
 		//Draw
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, 200);
+		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, GHOST_SPRITE_ALPHA);
 	}
 }
-
-

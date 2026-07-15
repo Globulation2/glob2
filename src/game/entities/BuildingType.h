@@ -133,6 +133,12 @@ public:
 	// construction site). Asserts that the fallback only happens for
 	// virtual buildings and that the name resolves at all.
 	Sint32 getPlaceableTypeNum(const std::string &name);
+	// Resolve the finished level-0 variant of `name` — the form wanted for
+	// placement previews and footprint queries, where the construction-site
+	// sprite is not. Every placeable name has a finished level-0 variant, so
+	// unlike getTypeNum this never legitimately misses: a miss is a
+	// programming error and asserts rather than returning -1.
+	Sint32 getFinishedTypeNum(const std::string &name);
 	BuildingType *getByType(const char *type, int level, bool isBuildingSite);
 	BuildingType *getByType(const std::string &s, int level, bool isBuildingSite);
 };

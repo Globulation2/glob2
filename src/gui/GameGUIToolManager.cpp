@@ -70,7 +70,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 	if(mode == PlaceBuilding)
 	{
 		// Get the type and sprite
-		int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+		int typeNum = globalContainer->buildingsTypes.getFinishedTypeNum(building);
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		
 		// Translate the mouse position to a building position, and check if there is room
@@ -354,7 +354,7 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 			int r = 0;
 			if(bt->isVirtual)
 				r = globalContainer->settings.defaultFlagRadius[bt->shortTypeNum - IntBuildingType::EXPLORATION_FLAG];
-			ghostManager.addBuilding(building, mapX, mapY);
+			ghostManager.addBuilding(typeNum, mapX, mapY);
 			orders.push(std::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
 		}
 	}
@@ -365,7 +365,7 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int viewportX, int viewportY)
 {
 	// Get the type and sprite
-	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+	int typeNum = globalContainer->buildingsTypes.getFinishedTypeNum(building);
 	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 	Sprite *sprite = bt->gameSpritePtr;
 		
@@ -454,7 +454,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode)
 {
 	// Get the type and sprite
-	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+	int typeNum = globalContainer->buildingsTypes.getFinishedTypeNum(building);
 	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		
 	int startx = sx;
@@ -582,7 +582,7 @@ void GameGUIToolManager::computeBuildingLine(int sx, int sy, int ex, int ey, int
 void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int localteam, int viewportX, int viewportY, int mode)
 {
 	// Get the type and sprite
-	int typeNum = globalContainer->buildingsTypes.getTypeNum(building, 0, false);
+	int typeNum = globalContainer->buildingsTypes.getFinishedTypeNum(building);
 	BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 	
 	int startx = sx;
