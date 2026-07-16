@@ -82,7 +82,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	}
 	else if ((displayMode==FLAG_VIEW && !globalContainer->replaying))
 	{
-		int dec = (RIGHT_MENU_WIDTH - 128)/2;
+		int dec = (RIGHT_MENU_WIDTH - BrushTool::WIDTH)/2;
 		int relY = my - YPOS_BASE_FLAG;
 		int nmx = mx - dec;
 		if (relY > YOFFSET_BRUSH)
@@ -90,7 +90,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			// set the selection
 			setSelection(BRUSH_SELECTION);
 			// change the brush type (forbidden, guard, clear) if necessary
-			if (relY < YOFFSET_BRUSH+40)
+			if (relY < YOFFSET_BRUSH+ZONE_STRIP_HEIGHT)
 			{
 				if (nmx < 44)
 					toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
@@ -100,7 +100,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 					toolManager.activateZoneTool(GameGUIToolManager::Clearing);
 			}
 			// anyway, update the tool
-			brush.handleClick(mx-dec, relY-YOFFSET_BRUSH-40);
+			brush.handleClick(mx-dec, relY-YOFFSET_BRUSH-ZONE_STRIP_HEIGHT);
 			toolManager.activateZoneTool();
 		}
 		else

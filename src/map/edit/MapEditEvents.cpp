@@ -72,7 +72,33 @@ void MapEdit::processEvent(SDL_Event& event)
 			performAction("no ressource growth area drag motion", relMouseX, relMouseY);
 		}
 	}
-	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
+	else if(event.type==SDL_MOUSEBUTTONDOWN || event.type==SDL_MOUSEBUTTONUP)
+	{
+		// Button events carry their own position; resync the cached motion
+		// position to it before dispatching. A warped or synthetic click can
+		// arrive without a preceding motion event, and every hit-test and
+		// performAction handler below reads mouseX/mouseY — without the
+		// resync they would act at the stale motion position instead of
+		// where the click landed.
+		mouseX=event.button.x;
+		mouseY=event.button.y;
+		handleMouseButtonEvent(event);
+	}
+	else if(event.type==SDL_KEYDOWN)
+	{
+		handleKeyPressed(event.key.keysym, true);
+	}
+	else if(event.type==SDL_KEYUP)
+	{
+		handleKeyPressed(event.key.keysym, false);
+	}
+}
+
+
+
+void MapEdit::handleMouseButtonEvent(SDL_Event& event)
+{
+	if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
 		if(!findAction(event.button.x, event.button.y) && widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
@@ -130,14 +156,6 @@ void MapEdit::processEvent(SDL_Event& event)
 	{
 		if(isScrollDragging)
 			performAction("scroll drag stop");
-	}
-	else if(event.type==SDL_KEYDOWN)
-	{
-		handleKeyPressed(event.key.keysym, true);
-	}
-	else if(event.type==SDL_KEYUP)
-	{
-		handleKeyPressed(event.key.keysym, false);
 	}
 }
 

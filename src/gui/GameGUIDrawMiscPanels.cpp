@@ -176,7 +176,7 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 
 void GameGUI::drawFlagView(void)
 {
-	int dec = (RIGHT_MENU_WIDTH - 128)/2;
+	int dec = (RIGHT_MENU_WIDTH - BrushTool::WIDTH)/2;
 	// draw flags
 	drawChoice(YPOS_BASE_FLAG, flagsChoiceName, flagsChoiceState, 3);
 
@@ -204,18 +204,18 @@ void GameGUI::drawFlagView(void)
 	}
 
 	// draw brush
-	brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40);
+	brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+ZONE_STRIP_HEIGHT);
 
 	if(hilights.find(HilightBrushSelector) != hilights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+40+30, 38));
+		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+ZONE_STRIP_HEIGHT+30, 38));
 	}
 
 	// draw brush help text
 	if ((mouseX>globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec) && (mouseY>YPOS_BASE_FLAG+YOFFSET_BRUSH))
 	{
 		int buildingInfoStart = globalContainer->gfx->getH()-50;
-		if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+40)
+		if (mouseY<YPOS_BASE_FLAG+YOFFSET_BRUSH+ZONE_STRIP_HEIGHT)
 		{
 			int panelMouseX = mouseX - globalContainer->gfx->getW() + RIGHT_MENU_WIDTH;
 			if (panelMouseX < 44)

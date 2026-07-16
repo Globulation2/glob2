@@ -461,6 +461,9 @@ private:
 
 	///This proccesses an event from the SDL
 	void processEvent(SDL_Event& event);
+	///Dispatches a mouse button press or release. processEvent has already
+	///resynced mouseX/mouseY to the event's own position when this runs.
+	void handleMouseButtonEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
 	void handleKeyPressed(SDL_Keysym key, bool pressed);
 	///This performs an action in the form of the string. This is where allot of code goes. As opposed to using seperate functions for such a large

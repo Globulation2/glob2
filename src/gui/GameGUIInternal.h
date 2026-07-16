@@ -46,6 +46,12 @@ using namespace GAGGUI;
 
 #define YOFFSET_BRUSH 56
 
+// The flag view's zone-type strip (forbidden/guard/clearing buttons) sits at
+// YPOS_BASE_FLAG+YOFFSET_BRUSH and is this tall; the brush tool panel starts
+// directly below it. Shared by the draw path (GameGUIDrawMiscPanels.cpp) and
+// the click path (GameGUIInputMenuClick.cpp) so they cannot drift apart.
+constexpr int ZONE_STRIP_HEIGHT = 40;
+
 // Per-row pitches inside the building info panel resource/swarm sections.
 #define YOFFSET_RESSOURCE_LINE 11
 #define YOFFSET_RESSOURCE_SECTION_PAD 5
