@@ -269,6 +269,59 @@ void AICortex::reconcileStaleDefenseFlag(const Cortex::CortexObservation& obs)
 			clearOneFlag(defenseFlags[i].gid);
 }
 
+void AICortex::sweepOrphanWarFlags(const Cortex::CortexObservation& obs)
+{
+	// Delete own war flags that no tracker owns and never will. ensureFlagAt fires
+	// OrderCreate blind: the new flag's gid is claimed only by rediscoverFlag on a LATER
+	// cycle, so a teardown in that window (retire / defense-deficit release / no-target
+	// stand-down / reconcileStaleDefenseFlag) leaves the slot NOGBID while the flag lands
+	// UNTRACKED. Nothing else deletes it and it summons warriors forever, draining the
+	// free pool the offense pipeline needs. This sweep runs LAST in the decision cycle,
+	// after every slot's management pass — so any live slot that will claim its pending
+	// create already has (rediscoverFlag runs each cycle the slot is managed). What is
+	// still unowned here is either a flag that just registered this cycle (a pending
+	// create we may yet latch) or a genuine orphan. We separate the two with a two-cycle
+	// settle window: a flag is swept only once it has been unowned across two consecutive
+	// decision cycles, by which point no live slot is still waiting for it.
+	Team* team = player->team;
+
+	// Record this cycle's unowned flags, carrying each gid's ORIGINAL first-seen tick
+	// forward. A flag can appear more than once when walking virtualBuildings; keying by
+	// gid dedups the bookkeeping so a duplicate entry cannot reset (or advance) the window.
+	std::map<Uint16, Sint32> seenNow;
+	for (Building* b : team->virtualBuildings)
+	{
+		if (!b
+		    || b->type->shortTypeNum != IntBuildingType::WAR_FLAG
+		    || b->buildingState != Building::ALIVE
+		    || isOwnedGid(b->gid))
+			continue;
+		std::map<Uint16, Sint32>::const_iterator prev = unownedFlagSeen.find(b->gid);
+		seenNow[b->gid] = (prev != unownedFlagSeen.end()) ? prev->second : obs.tick;
+	}
+
+	// Sweep the flags that survived a full decision cycle unowned (first seen before this
+	// cycle). Iterate virtualBuildings in insertion order (deterministic — never a set) to
+	// emit the OrderDeletes; erase each swept gid from seenNow so a duplicate list entry
+	// neither re-deletes it nor keeps it armed for next cycle.
+	for (Building* b : team->virtualBuildings)
+	{
+		if (!b
+		    || b->type->shortTypeNum != IntBuildingType::WAR_FLAG
+		    || b->buildingState != Building::ALIVE
+		    || isOwnedGid(b->gid))
+			continue;
+		std::map<Uint16, Sint32>::iterator it = seenNow.find(b->gid);
+		if (it != seenNow.end() && it->second < obs.tick)
+		{
+			orderQueue.push(shared_ptr<Order>(new OrderDelete(b->gid)));
+			seenNow.erase(it);
+		}
+	}
+
+	unownedFlagSeen.swap(seenNow);
+}
+
 void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warriors,
                                   const Cortex::CortexObservation& obs)
 {

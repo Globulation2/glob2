@@ -285,6 +285,17 @@ private:
 	/// (a no-op once the flag is already gone).
 	void reconcileStaleDefenseFlag(const Cortex::CortexObservation& obs);
 
+	/// OrderDelete any own ALIVE WAR_FLAG whose gid no tracker owns (isOwnedGid) and that
+	/// has stayed unowned across two consecutive decision cycles. ensureFlagAt issues its
+	/// OrderCreate fire-and-forget — the gid is latched only by rediscoverFlag on a LATER
+	/// cycle — so a teardown in that window (retire / defense-deficit release / no-target
+	/// stand-down / reconcileStaleDefenseFlag) can wipe the tracker slot while the flag
+	/// lands UNTRACKED, summoning warriors forever with nothing to delete it. This runs
+	/// LAST each decision cycle (after all flag management, so any slot that will claim its
+	/// pending create already has); the two-cycle settle window (unownedFlagSeen) then
+	/// guarantees no live slot is still waiting for a flag before it is swept. Idempotent.
+	void sweepOrphanWarFlags(const Cortex::CortexObservation& obs);
+
 	/// Find the single best finished instance of `buildingType` (an
 	/// IntBuildingType shortTypeNum) to upgrade to its next level, or NULL if no
 	/// instance currently passes the full engine Upgradable predicate. Scans
@@ -398,6 +409,19 @@ private:
 	/// save together and re-stamp in lockstep, so a reload merely re-arms the settle
 	/// window uniformly — no desync. (Cortex has no persisted saves to preserve yet.)
 	std::map<Uint16, Sint32> innFinishedTick;
+
+	/// Orphan-sweep settle window: maps each currently-UNOWNED own WAR_FLAG's gid to the
+	/// game tick it was FIRST observed unowned. sweepOrphanWarFlags deletes a flag only
+	/// once it has been unowned across two consecutive decision cycles (firstSeen tick is
+	/// older than this cycle's), so a flag transiently untracked between its OrderCreate
+	/// and rediscoverFlag's latch is spared — only a truly orphaned flag (its slot torn
+	/// down mid-create) is swept. Keyed lookup only; the OrderDeletes are produced by
+	/// iterating team->virtualBuildings (insertion order, deterministic), so std::map order
+	/// never affects lockstep. RAM-only (NOT serialized) like innFinishedTick: it rebuilds
+	/// identically from the same seed on a continuous run, and all clients reload a save
+	/// together and re-arm the window in lockstep, so a reload merely re-settles uniformly —
+	/// no desync.
+	std::map<Uint16, Sint32> unownedFlagSeen;
 
 	/// One-shot guard for the start-of-game swarm worker kickstart
 	/// (SWARM_START_WORKERS): set once the starting swarm has been jumped to its

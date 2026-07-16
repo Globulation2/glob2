@@ -709,6 +709,14 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// the teardown itself. Idempotent once the flag is gone.
 		reconcileStaleDefenseFlag(obs);
 
+		// Orphan-flag sweep runs LAST — after every flag-management pass above, so any
+		// live slot that will latch its pending create already has. Deletes any own war
+		// flag that no tracker owns and has stayed unowned across two decision cycles: a
+		// flag whose slot was torn down (retire / defense-deficit release / no-target
+		// stand-down / reconcileStaleDefenseFlag) while its OrderCreate was in flight,
+		// which otherwise summons warriors forever with nothing to delete it.
+		sweepOrphanWarFlags(obs);
+
 		// Worker-hauling tuning (swarms / inns / construction sites) runs EVERY
 		// decision cycle, in PARALLEL with the primary action above — it emits
 		// OrderModifyBuilding worker-count changes, not an OrderCreate competing for

@@ -209,6 +209,9 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 	if (slot < 0 || slot >= Cortex::CORTEX_FLAG_TARGETS
 	    || !obs.flagTargets[slot].valid)
 	{
+		if (getenv("CORTEX_DUMP_POSTURE") && obs.warFlagsActive > 0)
+			std::cerr << "CORTEX_POSTURE t=" << obs.tick << " team=" << (int)player->team->teamNumber
+			          << " teardown=no-target flags=" << obs.warFlagsActive << "\n";
 		clearAllOffenseFlags();
 		flagPosture = POSTURE_NONE;
 		offenseHoldUntil = 0;
@@ -225,7 +228,13 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 	// 0 so the whole army marches as one); we pass it the target, flag radius, and our
 	// warrior count (whether there is anything left to muster).
 	if (flagPosture != POSTURE_OFFENSE)
+	{
 		offenseHoldUntil = obs.tick + OFFENSE_HOLD_TICKS;
+		if (getenv("CORTEX_DUMP_POSTURE"))
+			std::cerr << "CORTEX_POSTURE t=" << obs.tick << " team=" << (int)player->team->teamNumber
+			          << " commit target=(" << target.x << "," << target.y << ")"
+			          << " warriors=" << obs.warriors << "\n";
+	}
 	flagPosture = POSTURE_OFFENSE;
 	manageOffenseWaves(target.x, target.y, action.flagRadius, obs.warriors, obs);
 }
@@ -285,9 +294,23 @@ void AICortex::translateActionPlaceDefenseFlag(const Cortex::CortexAction& actio
 	// Only when the free pool cannot cover the combined deficit do we release the committed
 	// army — tearing down ALL offense waves frees their warriors, which the HIGH-priority
 	// defense flags then claim. (Priority alone never poaches a flagged warrior; the army
-	// comes home only by clearing the flag it is bound to.)
-	if (totalDeficit > 0 && obs.freeWarriors < totalDeficit)
+	// comes home only by clearing the flag it is bound to.) Gate the release on a SERIOUS
+	// assault (same predicate as CortexPolicy::scoreDefense — multiple buildings caving at
+	// once OR our units being butchered en masse): light harassment (a lone poker hitting
+	// one building) must NOT collapse the whole offense pipeline, since the free-pool
+	// defense flags above already answer it. Only a real base assault earns the teardown.
+	const bool seriousThreat =
+		(obs.buildingsUnderAttack >= Cortex::CORTEX_DEFENSE_SERIOUS_BUILDINGS)
+	 || (obs.unitsUnderAttack    >= Cortex::CORTEX_DEFENSE_SERIOUS_UNITS);
+	if (totalDeficit > 0 && obs.freeWarriors < totalDeficit && seriousThreat)
+	{
+		if (getenv("CORTEX_DUMP_POSTURE") && obs.warFlagsActive > 0)
+			std::cerr << "CORTEX_POSTURE t=" << obs.tick << " team=" << (int)player->team->teamNumber
+			          << " teardown=defense-deficit flags=" << obs.warFlagsActive
+			          << " deficit=" << totalDeficit << " freeWarriors=" << obs.freeWarriors
+			          << " bldgsHit=" << obs.buildingsUnderAttack << " unitsHit=" << obs.unitsUnderAttack << "\n";
 		clearAllOffenseFlags();
+	}
 
 	// Commit the defensive recall: POSTURE_DEFENSE, hold cleared. Each defense flag rides
 	// at HIGH priority, minLevel 0 (recall every warrior regardless of level), radius from
@@ -309,6 +332,18 @@ void AICortex::translateActionClearFlags()
 	// Stand the offense down (scoreRetireFlag's job: the threat has cleared and the army
 	// is too thin to attack). Tear down every offense wave. The DEFENSE flag is torn
 	// down separately by reconcileStaleDefenseFlag when nothing is under attack.
+	if (getenv("CORTEX_DUMP_POSTURE"))
+	{
+		std::cerr << "CORTEX_POSTURE t=" << (player->team->game ? (int)player->team->game->stepCounter : -1)
+		          << " team=" << (int)player->team->teamNumber << " teardown=retire";
+		for (Building* b : player->team->virtualBuildings)
+			if (b && b->type->shortTypeNum == IntBuildingType::WAR_FLAG
+			      && b->buildingState == Building::ALIVE)
+				std::cerr << " flag[gid=" << b->gid << " at=" << b->posX << "," << b->posY
+				          << " units=" << b->unitsWorking.size() << "/" << b->maxUnitWorking
+				          << " owned=" << (isOwnedGid(b->gid) ? 1 : 0) << "]";
+		std::cerr << "\n";
+	}
 	clearAllOffenseFlags();
 	flagPosture = POSTURE_NONE;
 	offenseHoldUntil = 0;
