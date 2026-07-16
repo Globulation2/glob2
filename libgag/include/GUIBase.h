@@ -245,7 +245,10 @@ namespace GAGGUI
 	protected:
 		//! Compute the actual position from the layout informations
 		virtual void getScreenPos(int *sx, int *sy, int *sw, int *sh);
-		bool isPtInRect(int px, int py, int x, int y, int w, int h) { if ((px>x) && (py>y) && (px<x+w) && (py<y+h)) return true; else return false; }
+		//! Half-open on both axes: the top and left edges are inside, the bottom
+		//! and right edges are not. This makes abutting rectangles tile without
+		//! either overlapping or leaving a dead pixel line between them.
+		bool isPtInRect(int px, int py, int x, int y, int w, int h) { return (px>=x) && (py>=y) && (px<x+w) && (py<y+h); }
 		//! Screen that contains the widget
 	};
 	
