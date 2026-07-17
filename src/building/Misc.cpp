@@ -57,6 +57,12 @@ void Building::kill(void)
 	desiredMaxUnitWorking = 0;
 	updateCallLists();
 
+	// A building waiting for upgrade room has a forbidden zone stamped over
+	// its would-be footprint (addForbiddenZoneToUpgradeArea). The other exits
+	// from that state (tryToBuildingSiteRoom, cancelConstruction) remove it;
+	// dying must too, or the zone leaks and corrupts the team's pathfinding.
+	if (buildingState==WAITING_FOR_CONSTRUCTION_ROOM && constructionResultState==UPGRADE)
+		removeForbiddenZoneFromUpgradeArea();
 
 	if (!type->isVirtual)
 	{
