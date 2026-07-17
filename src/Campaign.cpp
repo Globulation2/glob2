@@ -122,6 +122,11 @@ std::vector<std::string>& CampaignMapEntry::getUnlockedByMaps()
 
 bool CampaignMapEntry::load(InputStream* stream, Uint32 versionMinor)
 {
+	// Default the version-gated fields so old-format campaigns (pre-75 lack
+	// description, pre-76 lack completed) produce fully-defined state instead
+	// of retaining whatever the object held before load() ran.
+	description = "";
+	completed = false;
 	stream->readEnterSection("CampaignMap");
 	mapName = stream->readText("mapName");
 	mapFileName = stream->readText("mapFileName");
@@ -206,6 +211,10 @@ bool Campaign::load(const std::string& fileName)
 		return false;
 	}
 
+	// Default the version-gated field so pre-83 campaigns (which lack the
+	// campaign-level description) produce fully-defined state rather than
+	// retaining a stale value from a previously loaded campaign.
+	description = "";
 	name = stream->readText("campaignName");
 	playerName = stream->readText("playerName");
 	stream->readEnterSection("maps");
