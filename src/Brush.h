@@ -178,8 +178,19 @@ public:
 	int firstX;
 	int firstY;
 protected:
+	//! A recorded brush application: the raw click plus its offset from
+	//! dim.center*, wrapped across the torus seam once at apply time.
+	//! getBitmap derives array indices from this stored offset — the same
+	//! value that grew the bounding box — so they are in bounds by
+	//! construction instead of relying on re-deriving the identical wrap.
+	struct AppliedBrush
+	{
+		BrushApplication brush;
+		int offsetX;
+		int offsetY;
+	};
 	//! The list of brush applications
-	std::vector<BrushApplication> applications;
+	std::vector<AppliedBrush> applications;
 	//! The actual dimensions of the resulting applications
 	AreaDimensions dim;
 	

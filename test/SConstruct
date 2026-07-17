@@ -42,6 +42,10 @@ HelloWorldTest.cpp
 
 BitArrayTest.cpp
 
+BrushAccumulatorTest.cpp
+BrushTestStubs.cpp
+../src/Brush.cpp
+
 GradientBFSTest.cpp
 ../src/ai/echo/GradientBFS.cpp
 

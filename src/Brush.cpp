@@ -233,8 +233,23 @@ BrushAccumulator::BrushAccumulator()
 	firstY=0;
 }
 
+//! Wrap a coordinate delta across the torus seam to the representative
+//! closest to zero. A single correction is enough because both operands
+//! are map coordinates, so the raw delta lies within (-mapDim, mapDim).
+static int wrapDeltaToNearest(int delta, int mapDim)
+{
+	if (delta < -(mapDim / 2))
+		return delta + mapDim;
+	if (delta > mapDim / 2)
+		return delta - mapDim;
+	return delta;
+}
+
 void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 {
+	// the first application defines the center, so its offset is zero
+	int px = 0;
+	int py = 0;
 	if (applications.size() == 0)
 	{
 		// init dimensions
@@ -248,28 +263,18 @@ void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 	else
 	{
 		// consider brush relative to center
-		int px = brush.x - dim.centerX;
-		int py = brush.y - dim.centerY;
-		int mapW = map->getW();
-		int mapH = map->getH();
-		if (px < -(mapW/2))
-			px += mapW;
-		else if (px > (mapW/2))
-			px -= mapW;
-		if (py < -(mapH/2))
-			py += mapH;
-		else if (py > (mapH/2))
-			py -= mapH;
-		
+		px = wrapDeltaToNearest(brush.x - dim.centerX, map->getW());
+		py = wrapDeltaToNearest(brush.y - dim.centerY, map->getH());
+
 		// extend dimensions
 		dim.minX = std::min(dim.minX, px - BrushTool::getBrushDimXMinus(brush.figure));
 		dim.maxX = std::max(dim.maxX, px + BrushTool::getBrushDimXPlus(brush.figure));
 		dim.minY = std::min(dim.minY, py - BrushTool::getBrushDimYMinus(brush.figure));
 		dim.maxY = std::max(dim.maxY, py + BrushTool::getBrushDimYPlus(brush.figure));
 	}
-	
+
 	// and add to vector
-	applications.push_back(brush);
+	applications.push_back(AppliedBrush{brush, px, py});
 }
 
 bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim, const Map *map)
@@ -290,28 +295,22 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 		// fill array
 		for (size_t i=0; i<applications.size(); ++i)
 		{
-			for (int y=0; y<BrushTool::getBrushHeight(applications[i].figure); y++)
+			const BrushApplication &brush = applications[i].brush;
+			const int brushW = BrushTool::getBrushWidth(brush.figure);
+			const int brushH = BrushTool::getBrushHeight(brush.figure);
+			// Array position of the brush's top-left cell, from the offset
+			// stored when this application grew the bounding box — so the
+			// whole brush footprint is inside the array by construction.
+			const int arrayX0 = applications[i].offsetX - dim->minX - BrushTool::getBrushDimXMinus(brush.figure);
+			const int arrayY0 = applications[i].offsetY - dim->minY - BrushTool::getBrushDimYMinus(brush.figure);
+			assert(arrayX0 >= 0 && arrayX0 + brushW <= arrayW);
+			assert(arrayY0 >= 0 && arrayY0 + brushH <= arrayH);
+			for (int y=0; y<brushH; y++)
 			{
-				for (int x=0; x<BrushTool::getBrushWidth(applications[i].figure); x++)
+				for (int x=0; x<brushW; x++)
 				{
-					int px = applications[i].x - dim->centerX;
-					int py = applications[i].y - dim->centerY;
-					int mapW = map->getW();
-					int mapH = map->getH();
-					if (px < -(mapW/2))
-						px += mapW;
-					else if (px > (mapW/2))
-						px -= mapW;
-					if (py < -(mapH/2))
-						py += mapH;
-					else if (py > (mapH/2))
-						py -= mapH;
-					
-					int arrayX = px - dim->minX - BrushTool::getBrushDimXMinus(applications[i].figure) + x;
-					int arrayY = py - dim->minY - BrushTool::getBrushDimYMinus(applications[i].figure) + y;
-					
-					size_t arrayPos = static_cast<size_t>(arrayY * arrayW + arrayX);
-					if (BrushTool::getBrushValue(applications[i].figure, x, y, applications[i].x, applications[i].y, firstX, firstY))
+					size_t arrayPos = static_cast<size_t>((arrayY0 + y) * arrayW + (arrayX0 + x));
+					if (BrushTool::getBrushValue(brush.figure, x, y, brush.x, brush.y, firstX, firstY))
 						array->set(arrayPos, true);
 				}
 			}
