@@ -203,12 +203,18 @@ namespace
 // are cleared to default BasePlayer{} so stale entries from earlier edits
 // (or earlier map selections) cannot leak into save files or network packets,
 // which serialize all MAX_COUNT_ON_DISK slots regardless of numberOfPlayers.
-// Ally teams: the human's color goes on HUMAN_ALLY_TEAM, every other color
+// Ally teams are likewise reset to GameHeader's fresh default (each team its
+// own singleton group, i+1) before reassignment, so colors dropped from the
+// selection cannot keep an ally number from a previous configuration.
+// Then the human's color goes on HUMAN_ALLY_TEAM, every other selected color
 // on ENEMY_ALLY_TEAM.
 void CustomGameScreen::updatePlayers()
 {
 	for (int i = 0; i < Team::MAX_COUNT; i++)
+	{
 		gameHeader.getBasePlayer(i) = BasePlayer();
+		gameHeader.setAllyTeamNumber(i, i + 1);
+	}
 
 	int count = 0;
 	int humanColor = 0;
