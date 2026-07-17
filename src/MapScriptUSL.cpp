@@ -93,14 +93,15 @@ inline void NativeValuePrototype<GameObjectives*>::initialize()
 
 void MapScriptUSL::addGlob2Values(GameGUI* gui)
 {
-	usl.setConstant("gui", new NativeValue<GameGUI*>(&usl.heap, gui));
-	usl.setConstant("engine", new NativeValue<Game*>(&usl.heap, &(gui->game)));
-	usl.setConstant("hints", new NativeValue<GameHints*>(&usl.heap, &(gui->game.gameHints)));
-	usl.setConstant("objectives", new NativeValue<GameObjectives*>(&usl.heap, &(gui->game.objectives)));
+	usl->setConstant("gui", new NativeValue<GameGUI*>(&usl->heap, gui));
+	usl->setConstant("engine", new NativeValue<Game*>(&usl->heap, &(gui->game)));
+	usl->setConstant("hints", new NativeValue<GameHints*>(&usl->heap, &(gui->game.gameHints)));
+	usl->setConstant("objectives", new NativeValue<GameObjectives*>(&usl->heap, &(gui->game.objectives)));
 }
 
 
 MapScriptUSL::MapScriptUSL(GameGUI* gui)
+	: usl(std::make_unique<Usl>())
 {
 	addGlob2Values(gui);
 }
@@ -119,8 +120,8 @@ void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 /*
 	// serialize heap
 	stream->writeEnterSection("heap");
-	for (Heap::Values::size_type i = 0; i != usl.heap.values.size(); ++i) {
-		Value* value = usl.heap.values[i];
+	for (Heap::Values::size_type i = 0; i != usl->heap.values.size(); ++i) {
+		Value* value = usl->heap.values[i];
 		stream->writeEnterSection(i);
 		stream->writeLeaveSection();
 	}
@@ -128,8 +129,8 @@ void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 
 	// serialize threads
 	stream->writeEnterSection("threads");
-	for (Heap::Values::size_type i = 0; i != usl.threads.size(); ++i) {
-		const Thread* thread = &usl.threads[i];
+	for (Heap::Values::size_type i = 0; i != usl->threads.size(); ++i) {
+		const Thread* thread = &usl->threads[i];
 		stream->writeEnterSection(i);
 		stream->writeLeaveSection();
 	}
@@ -149,8 +150,11 @@ void MapScriptUSL::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 
 bool MapScriptUSL::compileCode(const std::string& code)
 {
-	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl.getConstant("gui"))->value;
-	new (&usl) Usl();
+	GameGUI* gui = dynamic_cast<NativeValue<GameGUI*>*>(usl->getConstant("gui"))->value;
+	// Replace the interpreter wholesale; the old instance's destructor frees its
+	// GC heap, scopes and threads. Nothing outside this class holds pointers into
+	// the old heap, so this cannot dangle.
+	usl = std::make_unique<Usl>();
 	addGlob2Values(gui);
 	
 	const char* dirsToLoad[] = { "data/usl/Language/Runtime" , "data/usl/Glob2/Runtime", 0 };
@@ -172,7 +176,7 @@ bool MapScriptUSL::compileCode(const std::string& code)
 						#ifdef DEBUG_USL
 							cout << "* Loading " << fullFileName << endl;
 						#endif
-						usl.includeScript(fileName, *file.get());
+						usl->includeScript(fileName, *file.get());
 					}
 					else
 					{
@@ -197,7 +201,7 @@ bool MapScriptUSL::compileCode(const std::string& code)
 	try
 	{
 		istringstream codeStream(code);
-		usl.createThread("<mapscript>", codeStream);
+		usl->createThread("<mapscript>", codeStream);
 	}
 	catch(Exception& e)
 	{
@@ -219,10 +223,10 @@ void MapScriptUSL::syncStep(GameGUI *gui)
 	const size_t stepsMax = 10000;
 	
 	#ifdef DEBUG_USL
-		size_t stepsCount = usl.run(stepsMax);
+		size_t stepsCount = usl->run(stepsMax);
 		std::cout << "* USL executed " << stepsCount << " steps" << std::endl;
 	#else
-		usl.run(stepsMax);
+		usl->run(stepsMax);
 	#endif
 }
 
