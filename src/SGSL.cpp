@@ -8,9 +8,12 @@
 */
 
 #include <iostream>
+#include <iterator>
+#include <optional>
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cstddef>
 #include <string.h>
 #include <math.h>
 
@@ -348,68 +351,81 @@ void Story::hintVisible(GameGUI* gui)
 	}
 }
 
+namespace
+{
+	/// One row of the script-name to GUI-object mapping used by hilightItem /
+	/// unhilightItem.
+	struct HilightItemName
+	{
+		const char* name;
+		GameGUI::HilightObject object;
+	};
+
+	/// The sole authority for which GUI item each script hilight name points at.
+	/// The names are the SGSL surface — they appear verbatim in campaign scripts
+	/// (`hilightItem("main menu icon")`), so they cannot be reworded. The draw sites
+	/// in GameGUIDraw*.cpp find their arrow by looking the object back up in
+	/// GameGUI::hilights, so each name must resolve to a distinct object; see
+	/// hilightItemObjectsAreDistinct below.
+	constexpr HilightItemName hilightItemNames[] =
+	{
+		{ "main menu icon",              GameGUI::HilightMainMenuIcon },
+		{ "right side panel",            GameGUI::HilightRightSidePanel },
+		{ "under minimap icons",         GameGUI::HilightUnderMinimapIcon },
+		{ "units assigned bar",          GameGUI::HilightUnitsAssignedBar },
+		{ "units ratio bar",             GameGUI::HilightRatioBar },
+		{ "workers working free stat",   GameGUI::HilightWorkersWorkingFreeStat },
+		{ "explorers working free stat", GameGUI::HilightExplorersWorkingFreeStat },
+		{ "warriors working free stat",  GameGUI::HilightWarriorsWorkingFreeStat },
+		{ "forbidden zone on panel",     GameGUI::HilightForbiddenZoneOnPanel },
+		{ "guard zone on panel",         GameGUI::HilightGuardZoneOnPanel },
+		{ "clearing zone on panel",      GameGUI::HilightClearingZoneOnPanel },
+		{ "brush selector",              GameGUI::HilightBrushSelector },
+	};
+
+	/// True when no two rows share a HilightObject. A duplicate means a row was
+	/// copy-pasted and kept the object it was copied from, which aims one script
+	/// name at another name's arrow and leaves its own arrow unreachable.
+	constexpr bool hilightItemObjectsAreDistinct()
+	{
+		for (std::size_t i = 0; i < std::size(hilightItemNames); ++i)
+			for (std::size_t j = i + 1; j < std::size(hilightItemNames); ++j)
+				if (hilightItemNames[i].object == hilightItemNames[j].object)
+					return false;
+		return true;
+	}
+
+	static_assert(hilightItemObjectsAreDistinct(),
+		"two SGSL hilight item names resolve to the same GameGUI::HilightObject");
+
+	/// Resolves a script hilight item name to the GUI object it selects, or nullopt
+	/// if the name is not hilightable. An unknown name is not an error — it is
+	/// silently ignored, as it always has been.
+	std::optional<GameGUI::HilightObject> hilightObjectFromName(const std::string& name)
+	{
+		for (const HilightItemName& entry : hilightItemNames)
+		{
+			if (name == entry.name)
+				return entry.object;
+		}
+		return std::nullopt;
+	}
+}
+
 void Story::setHighlightItem(GameGUI* gui, bool doSet)
 {
-	std::string n = line[++lineSelector].msg;
-	int t=0;
-	if(n=="main menu icon")
+	const std::string n = line[++lineSelector].msg;
+	const std::optional<GameGUI::HilightObject> object = hilightObjectFromName(n);
+	if(!object)
+		return;
+
+	if(doSet)
 	{
-		t=GameGUI::HilightMainMenuIcon;
+		gui->hilights.insert(*object);
 	}
-	else if(n=="right side panel")
+	else
 	{
-		t=GameGUI::HilightRightSidePanel;
-	}
-	else if(n=="under minimap icons")
-	{
-		t=GameGUI::HilightUnderMinimapIcon;
-	}
-	else if(n=="units assigned bar")
-	{
-		t=GameGUI::HilightUnitsAssignedBar;
-	}
-	else if(n=="units ratio bar")
-	{
-		t=GameGUI::HilightRatioBar;
-	}
-	else if(n=="workers working free stat")
-	{
-		t=GameGUI::HilightWorkersWorkingFreeStat;
-	}
-	else if(n=="explorers working free stat")
-	{
-		t=GameGUI::HilightExplorersWorkingFreeStat;
-	}
-	else if(n=="warriors working free stat")
-	{
-		t=GameGUI::HilightWarriorsWorkingFreeStat;
-	}
-	else if(n=="forbidden zone on panel")
-	{
-		t=GameGUI::HilightWorkersWorkingFreeStat;
-	}
-	else if(n=="guard zone on panel")
-	{
-		t=GameGUI::HilightGuardZoneOnPanel;
-	}
-	else if(n=="clearing zone on panel")
-	{
-		t=GameGUI::HilightClearingZoneOnPanel;
-	}
-	else if(n=="brush selector")
-	{
-		t=GameGUI::HilightBrushSelector;
-	}
-	if(t!=0)
-	{
-		if(doSet)
-		{
-			gui->hilights.insert(t);
-		}
-		else
-		{
-			gui->hilights.erase(t);
-		}
+		gui->hilights.erase(*object);
 	}
 }
 
