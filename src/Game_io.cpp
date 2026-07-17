@@ -184,7 +184,8 @@ bool Game::load(GAGCore::InputStream *stream)
 	if(versionMinor >= FILE_FORMAT_VERSION_USL_MAPSCRIPT)
 	{
 		// This is the new map script system
-		mapscript.decodeData(stream, mapHeader.getVersionMinor());
+		if (!mapscript.decodeData(stream, mapHeader.getVersionMinor()))
+			return false;
 	}
 
 	///Load the campaign text for the game.
