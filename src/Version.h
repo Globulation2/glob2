@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded datas on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 85
+#define VERSION_MINOR 86
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -87,6 +87,7 @@
 // version 83 added a description to campaigns
 // version 84 dropped per-unit skinName (skin is now derived from typeNum)
 // version 85 added Bullet::ticksInitial to the saved file
+// version 86 widened BasePlayer::playerID from Uint16 to Uint32 in the saved file
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above

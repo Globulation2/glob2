@@ -215,3 +215,17 @@ bullet_objs = [
 ]
 wcdecode_env.Program( target = 'BulletSaveLoadTest', source = bullet_objs )
 
+
+# Standalone regression harness for BasePlayer::playerID serialization
+# (the field is Uint32 but save/load moved it as Uint16, truncating YOG
+# identifiers above 0xFFFF). Checks a version-86 round-trip with a wide
+# playerID and the pre-86 Uint16 wire layout. BasePlayer.cpp only needs
+# Stream plus inline Team helpers, so it reuses the wcdecode env's
+# libgag_server.a link surface. Distinct object name for BasePlayer.cpp
+# because the main build compiles it with different flags.
+baseplayer_objs = [
+  wcdecode_env.Object('BasePlayerSaveLoadTest.o', 'BasePlayerSaveLoadTest.cpp'),
+  wcdecode_env.Object('BasePlayer-saveload.o', '../src/BasePlayer.cpp'),
+]
+wcdecode_env.Program( target = 'BasePlayerSaveLoadTest', source = baseplayer_objs )
+

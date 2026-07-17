@@ -75,7 +75,11 @@ bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	type = (PlayerType)stream->readUint32("type");
 	number = stream->readSint32("number");
 	numberMask = stream->readUint32("numberMask");
-	playerID = stream->readUint16("playerID");
+	// The field is Uint32 (YOG identifier); pre-86 saves truncated it to Uint16.
+	if (versionMinor >= 86)
+		playerID = stream->readUint32("playerID");
+	else
+		playerID = stream->readUint16("playerID");
 	name = stream->readText("name");
 	teamNumber = stream->readSint32("teamNumber");
 	teamNumberMask = stream->readUint32("teamNumberMask");
@@ -101,7 +105,7 @@ void BasePlayer::save(GAGCore::OutputStream *stream) const
 	stream->writeUint32((Uint32)type, "type");
 	stream->writeSint32(number, "number");
 	stream->writeUint32(numberMask, "numberMask");
-	stream->writeUint16(playerID, "playerID");
+	stream->writeUint32(playerID, "playerID");
 	stream->writeText(name, "name");
 	stream->writeSint32(teamNumber, "teamNumber");
 	stream->writeUint32(teamNumberMask, "teamNumberMask");
