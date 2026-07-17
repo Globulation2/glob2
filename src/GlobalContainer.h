@@ -49,10 +49,6 @@ public:
 #endif  // !YOG_SERVER_ONLY
 	void load(void);
 
-	//void setUsername(const std::string &name);
-	//const std::string &getUsername(void) { return settings.getUsername(); }
-	const char *getComputerHostName(void);
-
 public:
 	FileManager *fileManager; //!< Borrowed from Toolkit; not owned by GlobalContainer.
 	std::unique_ptr<LogFileManager> logFileManager; //!< Owned.

@@ -301,16 +301,3 @@ void GlobalContainer::load(void)
 	loadClient();
 #endif  // !YOG_SERVER_ONLY
 }
-
-/**
- * returns the hostname of the computer
- * @return local computer's name
- */
-const char *GlobalContainer::getComputerHostName(void)
-{
-	const char *hostNameFromEnvVar = getenv("HOSTNAME");
-	if (hostNameFromEnvVar)
-		return hostNameFromEnvVar;
-	else
-		return "localhost";
-}
