@@ -35,10 +35,15 @@ namespace Utilities
 		size_t getByteLength(void) const { return values.size(); }
 		void set(size_t pos, bool value);
 		bool get(size_t pos) const;
+		//! Writes getByteLength() == ceil(getBitLength()/8) BYTES to `stream`.
+		//! The bit length itself is not written — the caller must transmit it
+		//! out-of-band and pass it back to deserialize() as `bitCount`.
 		void serialize(unsigned char *stream) const;
-		//! Copies ceil(size/8) bytes from `stream` into the internal buffer.
+		//! Copies ceil(bitCount/8) bytes from `stream` into the internal
+		//! buffer and sets the bit length to `bitCount`. `bitCount` is a BIT
+		//! count, not a byte count — do not pass getByteLength() here.
 		//! Performs no bound check on `stream` — the caller must guarantee
-		//! that at least ceil(size/8) bytes are readable. See BH-195.
-		void deserialize(const unsigned char *stream, size_t size);
+		//! that at least ceil(bitCount/8) bytes are readable. See BH-195.
+		void deserialize(const unsigned char *stream, size_t bitCount);
 	};
 }

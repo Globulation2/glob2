@@ -71,10 +71,10 @@ namespace Utilities
 		std::copy(&values[0], l + &values[0], stream);
 	}
 	
-	void BitArray::deserialize(const unsigned char *stream, size_t size)
+	void BitArray::deserialize(const unsigned char *stream, size_t bitCount)
 	{
-		bitLength = size;
-		values.resize(bitToByte(size));
+		bitLength = bitCount;
+		values.resize(bitToByte(bitCount));
 		std::copy(stream, stream+values.size(), &values[0]);
 	}
 }

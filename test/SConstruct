@@ -40,6 +40,8 @@ PerlinNoiseTest.cpp
 
 HelloWorldTest.cpp
 
+BitArrayTest.cpp
+
 GradientBFSTest.cpp
 ../src/ai/echo/GradientBFS.cpp
 
