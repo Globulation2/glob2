@@ -12,9 +12,9 @@ GameHints::GameHints()
 
 
 
-int GameHints::getNumberOfHints()
+int GameHints::getNumberOfHints() const
 {
-	return texts.size();
+	return static_cast<int>(texts.size());
 }
 
 
@@ -45,7 +45,7 @@ void GameHints::setGameHintText(int n, const std::string& hint)
 
 
 
-const std::string& GameHints::getGameHintText(int n)
+const std::string& GameHints::getGameHintText(int n) const
 {
 	assert (n < (int)texts.size());
 	return texts[n];
@@ -69,7 +69,7 @@ void GameHints::setHintVisible(int n)
 
 
 
-bool GameHints::isHintVisible(int n)
+bool GameHints::isHintVisible(int n) const
 {
 	if (n >= 0 && n < (int)hidden.size())
 		return !hidden[n];
@@ -87,7 +87,7 @@ void GameHints::setScriptNumber(int n, int scriptNumber)
 
 
 
-int GameHints::getScriptNumber(int n)
+int GameHints::getScriptNumber(int n) const
 {
 	assert(n < (int)scriptNumbers.size());
 	return scriptNumbers[n];

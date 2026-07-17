@@ -18,8 +18,11 @@ class GameHints
 public:
 	GameHints();
 	
-	///This gets the number of hints there are
-	int getNumberOfHints();
+	///Returns the number of hints. The count is returned as int (not size_t)
+	///because every caller indexes hints with int (script numbers, UI loops)
+	///and the serialized count is a Uint32; hint lists are tiny (campaign
+	///hints, single digits), so the narrowing can never overflow in practice.
+	int getNumberOfHints() const;
 	///This adds a new hint
 	void addNewHint(const std::string& hint, bool hidden, int scriptNumber);
 	///This removes the given hint
@@ -28,7 +31,7 @@ public:
 	///This sets the text for the game hint at n
 	void setGameHintText(int n, const std::string& hint);
 	///This returns the text for the game hint at n
-	const std::string& getGameHintText(int n);
+	const std::string& getGameHintText(int n) const;
 	
 	
 	///This sets the given hint text as hidden
@@ -36,12 +39,12 @@ public:
 	///This sets the given hint text as visible
 	void setHintVisible(int n);
 	///This returns true if the given hint text is visible
-	bool isHintVisible(int n);
+	bool isHintVisible(int n) const;
 	
 	///This sets the script number, which is how scripts will reference the given object
 	void setScriptNumber(int n, int scriptNumber);
 	///This returns the script number, which is how scripts will reference the given object
-	int getScriptNumber(int n);
+	int getScriptNumber(int n) const;
 
 	///Encodes this GameObjectives into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
