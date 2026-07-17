@@ -262,7 +262,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 			for (int dy=0; dy<dh; dy++)
 				for (int dx=0; dx<dw; dx++)
 				{
-					size_t index=(((y+dy)&hMask)<<wDec)+((x+dw)&wMask);
+					size_t index=(((y+dy)&hMask)<<wDec)+((x+dx)&wMask);
 					if ((map->mapDiscovered[index]&visionMask))
 						goto doubleBreak;
 				}
