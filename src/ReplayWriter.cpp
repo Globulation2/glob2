@@ -102,7 +102,7 @@ void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 	if (order->getOrderType() == ORDER_VOICE_DATA || order->getOrderType() == ORDER_NULL) return;
 
 	// Write the number of steps since last order to this order (can be 0)
-	buffer->writeUint16(stepsSinceLastOrder, "replayStepsSinceLastOrder");
+	buffer->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
 	// Write the Order to the file
 	writeOrder(buffer, order, checksum);
@@ -118,7 +118,7 @@ void ReplayWriter::finish()
 	if (!isValid()) return;
 
 	// Write the number of steps since last order to the end of the replay
-	buffer->writeUint16(stepsSinceLastOrder, "replayStepsSinceLastOrder");
+	buffer->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
 	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
 	writeOrder(buffer, std::shared_ptr<Order>(new NullOrder()), 0);
@@ -159,7 +159,7 @@ bool ReplayWriter::write(const std::string &filename) const
 	}
 
 	// Write the number of steps since last order to the end of the replay
-	file->writeUint16(0, "replayStepsSinceLastOrder");
+	file->writeUint32(0, "replayStepsSinceLastOrder");
 
 	// Write a NullOrder to the file to make sure it's a NullOrder-terminated replay
 	writeOrder(file, std::shared_ptr<Order>(new NullOrder()), 0);

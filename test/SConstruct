@@ -229,3 +229,22 @@ baseplayer_objs = [
 ]
 wcdecode_env.Program( target = 'BasePlayerSaveLoadTest', source = baseplayer_objs )
 
+
+# Standalone regression harness for the replay inter-order step counter
+# (stepsSinceLastOrder was Uint16 and wrapped after 65535 order-less ticks,
+# silently corrupting tick-to-order alignment; version 87 widened it to
+# Uint32, gated on the replay's VERSION_MINOR). Checks a round-trip with
+# >65535 quiet steps, the pre-87 Uint16 wire layout through the gated read,
+# and version floor/ceiling rejection. GameGUI and the Order hierarchy are
+# stubbed in the test file (same trick as NetSendOrderDecodeTest.cpp);
+# reuses the YOG_SERVER_ONLY OrderMessages object and the wcdecode env's
+# libgag_server.a link surface. Distinct object names for Replay*.cpp
+# because the main build compiles them with different flags.
+replay_objs = [
+  wcdecode_env.Object('ReplayStepCounterTest.o', 'ReplayStepCounterTest.cpp'),
+  wcdecode_env.Object('ReplayWriter-steptest.o', '../src/ReplayWriter.cpp'),
+  wcdecode_env.Object('ReplayReader-steptest.o', '../src/ReplayReader.cpp'),
+  netsend_objs[1],
+]
+wcdecode_env.Program( target = 'ReplayStepCounterTest', source = replay_objs )
+

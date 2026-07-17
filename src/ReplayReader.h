@@ -21,6 +21,15 @@ class Order;
 //! See ReplayReader.cpp.
 static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 
+//! Oldest replay format (the VERSION_MINOR the replay was written with) that
+//! the reader still accepts. Replays older than this are rejected.
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 86;
+
+//! Replays written at this VERSION_MINOR or later store the inter-order step
+//! counter as Uint32. Older replays used Uint16, which silently wrapped after
+//! 65535 order-less steps (~44 minutes without an order).
+static constexpr Uint16 REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR = 87;
+
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
 /// If this replay stores checksums, they are checked every time an order is read.
@@ -79,6 +88,10 @@ private:
 	/// You shouldn't use assignment on this class
 	void operator=(const ReplayReader &reader) { assert(false); };
 
+	/// Reads an inter-order step counter from the stream, honouring the
+	/// width used by the replay's format version (see wideStepCounter).
+	Uint32 readStepCounter();
+
 	/// The stream it reads the replay from
 	GAGCore::InputStream *stream;
 
@@ -95,7 +108,11 @@ private:
 	Uint32 numOrders;
 
 	/// The number of steps until the next order
-	Uint16 stepsUntilNextOrder;
+	Uint32 stepsUntilNextOrder;
+
+	/// True if the loaded replay stores step counters as Uint32
+	/// (format version >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR)
+	bool wideStepCounter;
 
 	/// The game's current checksum (or 0 if it's not given)
 	Uint32 checksum;

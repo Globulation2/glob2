@@ -74,7 +74,7 @@ private:
 	GAGCore::OutputStream *buffer;
 
 	/// The number of steps since the last order
-	Uint16 stepsSinceLastOrder;
+	Uint32 stepsSinceLastOrder;
 
 	/// The game's current checksum (or 0 if it's not given)
 	Uint32 checksum;
