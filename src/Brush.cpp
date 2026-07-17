@@ -49,7 +49,7 @@ void BrushTool::handleClick(int x, int y)
 	}
 	else
 	{
-		figure = hit->value;
+		setFigure(hit->value);
 	}
 }
 
@@ -126,22 +126,23 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 
 void BrushTool::setFigure(unsigned f)
 {
-	assert (figure < BRUSH_COUNT);
+	assert(f < BRUSH_COUNT);
 	figure = f;
 }
 
+//! Side length of each (square) brush figure, in map cells.
+static constexpr int BRUSH_DIM[BrushTool::BRUSH_COUNT] = { 1, 3, 3, 3, 4, 4, 3, 5 };
+
 int BrushTool::getBrushWidth(unsigned figure)
 {
-	int dim[BRUSH_COUNT] = { 1, 3, 3, 3, 4, 4, 3, 5};
 	assert(figure < BRUSH_COUNT);
-	return dim[figure];
+	return BRUSH_DIM[figure];
 }
 
 int BrushTool::getBrushHeight(unsigned figure)
 {
-	int dim[BRUSH_COUNT] = { 1, 3, 3, 3, 4, 4, 3, 5};
 	assert(figure < BRUSH_COUNT);
-	return dim[figure];
+	return BRUSH_DIM[figure];
 }
 
 // For odd widths the center cell counts on the Plus side, so Plus = ceil(w/2)

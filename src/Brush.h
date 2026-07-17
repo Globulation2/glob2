@@ -113,9 +113,11 @@ public:
 	unsigned getType(void) { return static_cast<unsigned>(mode); }
 	//! Set the mode of the brush
 	void setType(Mode m) { mode = m; }
-	//! Return the id of the actual figure
+	//! Return the id of the actual figure, always in [0, BRUSH_COUNT).
 	unsigned getFigure(void) { return figure; }
-	//! Set the id of the actual figure
+	/*! Set the id of the actual figure; f must be in [0, BRUSH_COUNT).
+		Sole mutation point for figure — handleClick routes through here too,
+		so the range invariant is enforced in one place. */
 	void setFigure(unsigned f);
 	
 	//! Return the full width of a brush
