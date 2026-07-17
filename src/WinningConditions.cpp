@@ -48,10 +48,30 @@ std::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCore:
 		case WCOpponentsDefeated: return decodeAs<WinningConditionOpponentsDefeated>(stream, versionMinor);
 		case WCUnknown:
 		default:
-			break;
+			// Unrecognized tag: corrupt or truncated input, not a broken
+			// invariant -- report failure via null instead of asserting.
+			return std::shared_ptr<WinningCondition>();
 	}
-	assert(false);
-	return std::shared_ptr<WinningCondition>();//to satisfy -Wall
+}
+
+
+
+bool WinningCondition::loadWinningConditions(GAGCore::InputStream* stream, Uint32 versionMinor, std::list<std::shared_ptr<WinningCondition> >& conditions)
+{
+	stream->readEnterSection("winningConditions");
+	conditions.clear();
+	Uint32 size = stream->readUint32("size");
+	for (Uint32 i = 0; i < size; ++i)
+	{
+		stream->readEnterSection(i);
+		std::shared_ptr<WinningCondition> condition = getWinningCondition(stream, versionMinor);
+		if (!condition)
+			return false;
+		conditions.push_back(condition);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	return true;
 }
 
 

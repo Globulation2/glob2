@@ -45,8 +45,19 @@ public:
 	///This will decode data. It is important that, unlike encodeData, this must ignore the initial Uint8
 	virtual void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)=0;
 
-	///This will reconstruct a winning condition from serialized data
+	///This will reconstruct a winning condition from serialized data.
+	///Returns null if the stream ends before the type tag or the tag is not a
+	///known WinningConditionType -- corrupt or truncated input, which the
+	///caller must handle. Prefer loadWinningConditions for reading a whole list.
 	static std::shared_ptr<WinningCondition> getWinningCondition(GAGCore::InputStream* stream, Uint32 versionMinor);
+	///Reads a serialized winning-condition list section ("winningConditions":
+	///a Uint32 size followed by one numbered subsection per condition, the
+	///format written by GameHeader::save). On success `conditions` holds the
+	///decoded list and true is returned. On corrupt or truncated input (EOF
+	///mid-list, unrecognized type tag) false is returned; `conditions` then
+	///holds only the entries decoded so far -- never a null pointer -- and the
+	///stream position is undefined.
+	static bool loadWinningConditions(GAGCore::InputStream* stream, Uint32 versionMinor, std::list<std::shared_ptr<WinningCondition> >& conditions);
 	///This will set the given list to the default set of winning conditions, in their default order
 	static std::list<std::shared_ptr<WinningCondition> > getDefaultWinningConditions();
 

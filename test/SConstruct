@@ -173,3 +173,25 @@ netsend_objs = [
 ]
 netsend_env.Program( target = 'NetSendOrderDecodeTest', source = netsend_objs )
 
+
+# Standalone regression harness for BH-066 (null WinningCondition shared_ptr
+# pushed unchecked into GameHeader::winningConditions on corrupt/truncated
+# input). Exercises WinningCondition::loadWinningConditions -- the shared
+# read loop both GameHeader loaders now go through -- against a round-trip,
+# an unknown type tag, and a truncated stream. Reuses the harness stubs for
+# MapHeader/SGSL and links libgag_server.a for BinaryStream +
+# MemoryStreamBackend. Distinct object names: pkg-config sdl2 cflags differ
+# from the main env's compile action.
+wcdecode_env = env.Clone()
+wcdecode_env.Append(LIBPATH = ['../build/libgag/src'])
+wcdecode_env.Append(LIBS = ['gag_server', 'z'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  wcdecode_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+wcdecode_objs = [
+  wcdecode_env.Object('WinningConditionDecodeTest.o', 'WinningConditionDecodeTest.cpp'),
+  wcdecode_env.Object('WinningConditions-decode.o', '../src/WinningConditions.cpp'),
+  wcdecode_env.Object('WinningConditionsTestStubs-decode.o', 'WinningConditionsTestStubs.cpp'),
+]
+wcdecode_env.Program( target = 'WinningConditionDecodeTest', source = wcdecode_objs )
+

@@ -82,16 +82,8 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
 
-		stream->readEnterSection("winningConditions");
-		winningConditions.clear();
-		Uint32 size = stream->readUint32("size");
-		for(unsigned int i=0; i<size; ++i)
-		{
-			stream->readEnterSection(i);
-			winningConditions.push_back(WinningCondition::getWinningCondition(stream, versionMinor));
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
+		if (!WinningCondition::loadWinningConditions(stream, versionMinor, winningConditions))
+			return false;
 	}
 	if(versionMinor >= FILE_FORMAT_VERSION_UNIFIED_SEED)
 		seed = stream->readUint32("seed");
@@ -163,16 +155,8 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
 
-		stream->readEnterSection("winningConditions");
-		winningConditions.clear();
-		Uint32 size = stream->readUint32("size");
-		for(unsigned int i=0; i<size; ++i)
-		{
-			stream->readEnterSection(i);
-			winningConditions.push_back(WinningCondition::getWinningCondition(stream, versionMinor));
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
+		if (!WinningCondition::loadWinningConditions(stream, versionMinor, winningConditions))
+			return false;
 	}
 	if(versionMinor >= FILE_FORMAT_VERSION_UNIFIED_SEED)
 		seed = stream->readUint32("seed");
