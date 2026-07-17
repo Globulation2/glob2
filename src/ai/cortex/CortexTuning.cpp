@@ -36,6 +36,10 @@ namespace Cortex
 		{ "warPrepLevelMatch",    &CortexTuning::warPrepLevelMatch,    0 }, // 0/1
 		{ "attackRangeGraceTicks", &CortexTuning::attackRangeGraceTicks, 0 }, // 0 == never waive
 		{ "attackRangeUnscoutedWaiver", &CortexTuning::attackRangeUnscoutedWaiver, 0 }, // 0/1
+		{ "landingStandoffTiles", &CortexTuning::landingStandoffTiles, 0 },
+		{ "crossTimeoutTicks",    &CortexTuning::crossTimeoutTicks,    1 },
+		{ "fleetReleaseArrived",  &CortexTuning::fleetReleaseArrived,  1 },
+		{ "amphibiousMinSwimWarriors", &CortexTuning::amphibiousMinSwimWarriors, 0 },
 		{ "tierMidDiv",           &CortexTuning::tierMidDiv,           1 },
 		{ "workerRatioTier2",     &CortexTuning::workerRatioTier2,     1 },
 	};

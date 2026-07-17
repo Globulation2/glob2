@@ -9,10 +9,13 @@
 #include "team/Team.h"
 #include "building/Building.h"
 #include "game/entities/BuildingType.h"
+#include "IntBuildingType.h"
 #include "map/Map.h"
 #include "Ressource.h"
 
 #include <vector>
+#include <cstdlib>  // getenv (gated diagnostics)
+#include <iostream> // std::cerr (gated diagnostics)
 
 namespace Cortex
 {
@@ -173,6 +176,262 @@ namespace Cortex
 		// skips this second fill in that case to bound observation cost.
 		if (wantSwimReach)
 			out.waterReach = countReach(map, team, anchorX, anchorY, /*canSwim=*/true);
+		return out;
+	}
+
+	namespace
+	{
+		// Full-map BFS over tiles passable for a ground unit with the given canSwim
+		// ability, seeded from the 8-neighbourhood of (seedX, seedY). The seed tile is
+		// a building footprint (occupied), so it is never itself enqueued — the same
+		// anchor trick countReach uses. Fills `dist` (size w*h, -1 == unreached) with
+		// the hop distance from the seed ring. Plain FIFO: the hop-distance field of an
+		// unweighted 8-connected grid is visitation-order independent, so no tie-break
+		// is needed for determinism. Warp-safe via Map normalization; no floats / RNG /
+		// std::set. Unbounded (whole map) — unlike countReach's radius-bounded fill.
+		void bfsGroundField(Map& map, Uint32 me, int seedX, int seedY, bool canSwim,
+		                    std::vector<int>& dist)
+		{
+			const int w = map.getW();
+			const int h = map.getH();
+			dist.assign(static_cast<size_t>(w) * h, -1);
+			std::vector<int> frontier; // queue of flattened indices, drained by head.
+			frontier.reserve(1024);
+
+			for (int dy = -1; dy <= 1; dy++)
+				for (int dx = -1; dx <= 1; dx++)
+				{
+					if (dx == 0 && dy == 0)
+						continue;
+					const int nx = map.normalizeX(seedX + dx);
+					const int ny = map.normalizeY(seedY + dy);
+					const size_t idx = static_cast<size_t>(ny) * w + nx;
+					if (dist[idx] >= 0)
+						continue;
+					if (!map.isHardSpaceForGroundUnit(nx, ny, canSwim, me))
+						continue;
+					dist[idx] = 1;
+					frontier.push_back(static_cast<int>(idx));
+				}
+
+			for (size_t head = 0; head < frontier.size(); head++)
+			{
+				const int cur = frontier[head];
+				const int x = cur % w;
+				const int y = cur / w;
+				const int nd = dist[cur] + 1;
+				for (int dy = -1; dy <= 1; dy++)
+					for (int dx = -1; dx <= 1; dx++)
+					{
+						if (dx == 0 && dy == 0)
+							continue;
+						const int nx = map.normalizeX(x + dx);
+						const int ny = map.normalizeY(y + dy);
+						const size_t idx = static_cast<size_t>(ny) * w + nx;
+						if (dist[idx] >= 0)
+							continue;
+						if (!map.isHardSpaceForGroundUnit(nx, ny, canSwim, me))
+							continue;
+						dist[idx] = nd;
+						frontier.push_back(static_cast<int>(idx));
+					}
+			}
+		}
+
+		// Smallest hop distance among the 8 tiles adjacent to (tx, ty) in `dist`. The
+		// target tile is an enemy-building footprint (never passable, so never in the
+		// field), so we read its 8-neighbourhood — the same "reached when BFS touches
+		// any 8-adjacent tile" trick countReach uses for its anchor. -1 when none of
+		// the 8 neighbours was reached (the target's land region is unreachable).
+		int distToTarget(Map& map, const std::vector<int>& dist, int tx, int ty)
+		{
+			const int w = map.getW();
+			int best = -1;
+			for (int dy = -1; dy <= 1; dy++)
+				for (int dx = -1; dx <= 1; dx++)
+				{
+					if (dx == 0 && dy == 0)
+						continue;
+					const int nx = map.normalizeX(tx + dx);
+					const int ny = map.normalizeY(ty + dy);
+					const int d = dist[static_cast<size_t>(ny) * w + nx];
+					if (d >= 0 && (best < 0 || d < best))
+						best = d;
+				}
+			return best;
+		}
+
+		// The colony rally tile: its first (lowest-index) alive SWARM_BUILDING, else the
+		// first alive building. Mirrors AICortex::computeRallyPoint (including its lack of
+		// a virtual-building skip) so the landing-zone swim ranking measures from the same
+		// muster origin the offense pipeline gathers at. Returns false when the team has
+		// no building.
+		bool rallyTile(const Team* team, int& rx, int& ry)
+		{
+			Building* fallback = NULL;
+			for (int i = 0; i < Building::MAX_COUNT; i++)
+			{
+				Building* b = team->myBuildings[i];
+				if (b == NULL || b->buildingState == Building::DEAD)
+					continue;
+				if (fallback == NULL)
+					fallback = b;
+				if (b->type != NULL
+				 && b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
+				{
+					rx = b->posX;
+					ry = b->posY;
+					return true;
+				}
+			}
+			if (fallback != NULL)
+			{
+				rx = fallback->posX;
+				ry = fallback->posY;
+				return true;
+			}
+			return false;
+		}
+	} // namespace
+
+	AmphibiousAssessment assessAmphibious(Player* player, int targetX, int targetY,
+	                                      const Sint32* standoffX, const Sint32* standoffY,
+	                                      int standoffCount, int landingStandoffTiles)
+	{
+		AmphibiousAssessment out;
+		out.amphibious   = 0;
+		out.landDist     = -1;
+		out.swimDist     = -1;
+		out.landingValid = 0;
+		out.landingX     = -1;
+		out.landingY     = -1;
+
+		if (player == NULL || player->team == NULL)
+			return out;
+		Team* team = player->team;
+		Game* game = team->game;
+		if (game == NULL)
+			return out;
+		Map& map = game->map;
+		const Uint32 me = team->me;
+		const int w = map.getW();
+		const int h = map.getH();
+
+		int rallyX = -1, rallyY = -1;
+		if (!rallyTile(team, rallyX, rallyY))
+			return out; // no colony anchor to march from.
+
+		// Two full-map BFS from the rally: the LAND path (water blocks) and the SWIM
+		// path (water passes). Each distance is measured to the target's 8-neighbourhood.
+		std::vector<int> landField, swimField;
+		bfsGroundField(map, me, rallyX, rallyY, /*canSwim=*/false, landField);
+		bfsGroundField(map, me, rallyX, rallyY, /*canSwim=*/true,  swimField);
+		out.landDist = distToTarget(map, landField, targetX, targetY);
+		out.swimDist = distToTarget(map, swimField, targetX, targetY);
+
+		// AMPHIBIOUS iff swimDist reachable AND (landDist unreachable OR swimDist <
+		// landDist). A land-only path is also a valid swim path, so the swimmer's
+		// distance can never exceed the walker's; swimDist < landDist therefore means
+		// the true shortest path to the target's land region crosses water.
+		const bool amphibious = out.swimDist >= 0
+		    && (out.landDist < 0 || out.swimDist < out.landDist);
+		// DIAGNOSTIC (gated): the classifier's raw inputs — per-field reached-tile
+		// counts (and how much of the swim field is actually water) alongside the two
+		// distances. Locked-equal distances with a large swimWater count means the
+		// shortest route genuinely gains nothing from water (e.g. a resource-walled
+		// approach), not that the swim toggle is broken. Pure read -> stderr.
+		if (getenv("CORTEX_DUMP_AMPHIB"))
+		{
+			int landReached = 0, swimReached = 0, swimWater = 0;
+			for (int y = 0; y < h; y++)
+				for (int x = 0; x < w; x++)
+				{
+					const size_t idx = static_cast<size_t>(y) * w + x;
+					if (landField[idx] >= 0)
+						landReached++;
+					if (swimField[idx] >= 0)
+					{
+						swimReached++;
+						if (map.isWater(x, y))
+							swimWater++;
+					}
+				}
+			std::cerr << "CORTEX_AMPHIB rally=" << rallyX << "," << rallyY
+			          << " tgt=" << targetX << "," << targetY
+			          << " landDist=" << out.landDist << " swimDist=" << out.swimDist
+			          << " landReached=" << landReached
+			          << " swimReached=" << swimReached << " swimWater=" << swimWater
+			          << " amphibious=" << (amphibious ? 1 : 0) << "\n";
+		}
+		if (!amphibious)
+			return out; // land campaign: caller keeps today's (non-amphibious) behavior.
+		out.amphibious = 1;
+
+		// Third BFS (amphibious branch only): the TARGET's own land COMPONENT (canSwim=
+		// false reachable set from the target). The landing zone must sit in it — that is
+		// the land the swimmers climb out onto and then walk to the enemy.
+		std::vector<int> targetLand;
+		bfsGroundField(map, me, targetX, targetY, /*canSwim=*/false, targetLand);
+
+		// Scan the component for shore tiles (8-adjacent to a water tile — where a
+		// swimmer leaves the water). Track two bests: one that clears the standoff and,
+		// as a never-fail fallback, the best ignoring standoff. "Best" == lowest swim-BFS
+		// distance from the rally, tie-broken by lowest flattened index (deterministic).
+		int bestIdx = -1, bestSwim = 0;
+		int bestIdxAny = -1, bestSwimAny = 0;
+		for (int y = 0; y < h; y++)
+			for (int x = 0; x < w; x++)
+			{
+				const size_t idx = static_cast<size_t>(y) * w + x;
+				if (targetLand[idx] < 0)
+					continue; // not in the target's land component.
+				const int swim = swimField[idx];
+				if (swim < 0)
+					continue; // the swimmers can't even reach this component tile.
+
+				bool shore = false;
+				for (int dy = -1; dy <= 1 && !shore; dy++)
+					for (int dx = -1; dx <= 1 && !shore; dx++)
+					{
+						if (dx == 0 && dy == 0)
+							continue;
+						if (map.isWater(map.normalizeX(x + dx), map.normalizeY(y + dy)))
+							shore = true;
+					}
+				if (!shore)
+					continue;
+
+				// Never-fail fallback: best shore tile regardless of standoff.
+				if (bestIdxAny < 0 || swim < bestSwimAny
+				 || (swim == bestSwimAny && static_cast<int>(idx) < bestIdxAny))
+				{
+					bestSwimAny = swim;
+					bestIdxAny = static_cast<int>(idx);
+				}
+
+				// Standoff: keep clear of every discovered enemy building so the swimmers
+				// form up out of shelling range before pushing inland.
+				bool tooClose = false;
+				for (int s = 0; s < standoffCount && !tooClose; s++)
+					if (map.warpDistMax(x, y, standoffX[s], standoffY[s]) < landingStandoffTiles)
+						tooClose = true;
+				if (tooClose)
+					continue;
+
+				if (bestIdx < 0 || swim < bestSwim
+				 || (swim == bestSwim && static_cast<int>(idx) < bestIdx))
+				{
+					bestSwim = swim;
+					bestIdx = static_cast<int>(idx);
+				}
+			}
+
+		const int chosen = (bestIdx >= 0) ? bestIdx : bestIdxAny;
+		if (chosen < 0)
+			return out; // no reachable shore tile: cannot amphibious-assault this target.
+		out.landingValid = 1;
+		out.landingX = chosen % w;
+		out.landingY = chosen / w;
 		return out;
 	}
 }

@@ -141,8 +141,18 @@ namespace Cortex
 			obs.attackStrengthLevel[lvl]      = stat->upgradeState[ATTACK_STRENGTH][lvl];
 			// SWIM is 1-based in storage (index 0 == cannot swim); copied verbatim.
 			obs.workerSwimLevel[lvl]          = stat->upgradeStatePerType[WORKER][SWIM][lvl];
+			// WARRIOR SWIM slice, same 1-based storage — the amphibious commit gate and
+			// the swim-staging hold count the swim-capable warriors from it (levels >= 1).
+			obs.warriorSwimLevel[lvl]         = stat->upgradeStatePerType[WARRIOR][SWIM][lvl];
 			obs.explorerMagicGroundLevel[lvl] = stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][lvl];
 		}
+
+		// Swim-capable warriors: SWIM is 1-based in storage (index 0 == cannot swim), so
+		// the swim-capable count is the sum over levels >= 1. This is the army that can
+		// actually reach a water-locked target; the amphibious offense gate uses it.
+		obs.swimWarriors = 0;
+		for (int lvl = 1; lvl < CORTEX_UNIT_LEVELS; lvl++)
+			obs.swimWarriors += obs.warriorSwimLevel[lvl];
 
 		// full per-type, per-long-level building histogram (verbatim mirror;
 		// the long-level encoding is decoded by the cortex* helpers, not here).
@@ -295,6 +305,37 @@ namespace Cortex
 						innDist = d;
 				}
 				obs.flagTargetSupportDist[t] = innDist;
+			}
+
+			// AMPHIBIOUS CAMPAIGN (v19): classify the PRIMARY target (flagTargets[0], the
+			// nearest discovered enemy building) and, when the shortest path to it crosses
+			// water, pick a landing zone. Two full-map BFS (three when amphibious) via the
+			// CortexWater classifier — the offense-decision-path cost the design accepts.
+			// The standoff set is the discovered enemy buildings the observation already
+			// carries (the valid flagTargets); keeping the swimmers clear of them is why the
+			// landing zone stands off. Computed only when a target exists.
+			if (obs.flagTargets[0].valid)
+			{
+				Sint32 standoffX[CORTEX_FLAG_TARGETS];
+				Sint32 standoffY[CORTEX_FLAG_TARGETS];
+				int standoffCount = 0;
+				for (int t = 0; t < CORTEX_FLAG_TARGETS; t++)
+					if (obs.flagTargets[t].valid)
+					{
+						standoffX[standoffCount] = obs.flagTargets[t].x;
+						standoffY[standoffCount] = obs.flagTargets[t].y;
+						standoffCount++;
+					}
+				const Cortex::AmphibiousAssessment amp = Cortex::assessAmphibious(
+					player, obs.flagTargets[0].x, obs.flagTargets[0].y,
+					standoffX, standoffY, standoffCount,
+					Cortex::cortexTuning().landingStandoffTiles);
+				obs.campaignAmphibious = amp.amphibious;
+				obs.campaignLandDist   = amp.landDist;
+				obs.campaignSwimDist   = amp.swimDist;
+				obs.landingZoneValid   = amp.landingValid;
+				obs.landingZoneX       = amp.landingX;
+				obs.landingZoneY       = amp.landingY;
 			}
 
 			// FORWARD-BASE candidates (v18): computed only in the state they cure —

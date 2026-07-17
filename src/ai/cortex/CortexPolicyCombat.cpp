@@ -72,6 +72,22 @@ namespace Cortex
 		return count;
 	}
 
+	/// Warriors that count toward an offense commit against `rawCount`. For an
+	/// AMPHIBIOUS campaign only swim-capable warriors (obs.swimWarriors) can cross the
+	/// water to the target, so the count is capped there — sending land-bound warriors
+	/// at a water-locked target just strands them on the near shore. A land campaign
+	/// (campaignAmphibious == 0) returns rawCount unchanged, so non-water games are
+	/// bit-identical to before. Capping (rather than replacing) keeps the commit
+	/// monotone in rawCount, so the sustain path stays strictly weaker-to-fail than the
+	/// start path (swimWarriors <= warriors and matchedWarriors <= warriors both hold),
+	/// preserving the no-retire/re-commit-thrash invariant.
+	static int commitWarriors(const CortexObservation& obs, int rawCount)
+	{
+		if (obs.campaignAmphibious == 0)
+			return rawCount;
+		return (rawCount < obs.swimWarriors) ? rawCount : obs.swimWarriors;
+	}
+
 	/// The offense commit decision, shared by scoreOffense and scoreRetireFlag
 	/// (whose "offense will claim the standing flags" test must mirror the commit
 	/// exactly or the flags thrash between the two).
@@ -97,8 +113,8 @@ namespace Cortex
 			// start, so whenever the gated START commit fires the ungated SUSTAIN commit
 			// fires too: the flag is abandoned only when even the ungated commit would
 			// not claim it, and there is no retire/re-commit thrash.
-			c.normal = combatPhase && warriors >= ATTACK_MIN_WARRIORS;
-			c.blitz  = foodSaturated && warriors >= BLITZ_MIN_WARRIORS;
+			c.normal = combatPhase && commitWarriors(obs, warriors) >= ATTACK_MIN_WARRIORS;
+			c.blitz  = foodSaturated && commitWarriors(obs, warriors) >= BLITZ_MIN_WARRIORS;
 			if (c.normal || c.blitz)
 				c.slot = 0; // flagTargets[0] is valid (guarded above).
 			return c;
@@ -116,10 +132,11 @@ namespace Cortex
 		if (slot < 0 && (!forwardPossible || obs.rangeGateWaived != 0))
 			slot = 0;
 		c.normal = combatPhase && slot >= 0
-		        && matchedWarriors(obs) >= ATTACK_MIN_WARRIORS;
+		        && commitWarriors(obs, matchedWarriors(obs)) >= ATTACK_MIN_WARRIORS;
 		// BLITZ ignores both gates: the colony is starving in place, so it spends
-		// whatever army it has NOW, on the nearest known target.
-		c.blitz = foodSaturated && warriors >= BLITZ_MIN_WARRIORS;
+		// whatever army it has NOW, on the nearest known target — but an amphibious
+		// target still needs swimmers to reach it, so the swim cap applies here too.
+		c.blitz = foodSaturated && commitWarriors(obs, warriors) >= BLITZ_MIN_WARRIORS;
 		if (c.normal || c.blitz)
 			c.slot = (slot >= 0) ? slot : 0;
 		return c;

@@ -100,6 +100,27 @@ namespace Cortex
 		/// behavior applies. 0 disables (always wait out the grace).
 		int attackRangeUnscoutedWaiver = 1;
 
+		// --- amphibious offense (water-crossing wave pipeline) ----------------
+		/// Landing-zone standoff: an amphibious campaign's landing zone (where swimmers
+		/// climb out and mass) must keep at least this many Chebyshev tiles from every
+		/// discovered enemy building, so the fleet forms up out of shelling range before
+		/// pushing inland. If no shore tile clears it, the best shore tile is used anyway.
+		int landingStandoffTiles = 12;
+		/// Ticks a wave may hold in the CROSS phase (massing swimmers at the landing zone)
+		/// before it releases to the ASSAULT regardless of arrival count — so a slow or
+		/// depleted crossing never stalls the amphibious offense forever.
+		int crossTimeoutTicks = 3000;
+		/// Fleet-release trigger: once the COMBINED arrived count of all waves currently
+		/// CROSSing at the same landing zone reaches this, they release TOGETHER (a massed
+		/// amphibious assault) rather than each waiting out its own crossReady fraction.
+		int fleetReleaseArrived = 15;
+		/// Swim-capable warriors (obs.swimWarriors) required before an amphibious campaign
+		/// spawns its first musterer. Below it, no muster flag exists to bind fresh
+		/// warriors, so they idle (ACT_RANDOM) and train SWIM at the pool — breaking the
+		/// "flag-bound from birth so never learns to swim" loop. Default mirrors the
+		/// ATTACK_MIN_WARRIORS commit bar (8) in CortexPolicyCombat.cpp.
+		int amphibiousMinSwimWarriors = 8;
+
 		// --- production-mix worker-target tiers (the expansion-tax side) ------
 		/// Divisor D in mid = base + (needs - base)/D: how far past the hauler
 		/// floor the worker base grows before production flips to pure warriors.

@@ -136,7 +136,15 @@ namespace Cortex
 	/// ATTACK_STRENGTH level among FOW-visible enemy warriors) and
 	/// enemyWarriorLevelLatched (AICortex's persisted highest-ever-seen echo, the
 	/// flagPosture pattern) — the war-preparation level-match gate's inputs.
-	static const Uint32 OBSERVATION_VERSION = 18;
+	/// v19 (2026-07-16, amphibious-wave increment) added the water-campaign signals:
+	/// warriorSwimLevel[] (per-level WARRIOR SWIM histogram, mirroring workerSwimLevel;
+	/// index 0 == cannot swim) and swimWarriors (total warriors with SWIM level >= 1);
+	/// campaignAmphibious/campaignLandDist/campaignSwimDist (the CortexWater classifier's
+	/// verdict + BFS hop distances for the PRIMARY target flagTargets[0]); and the landing
+	/// zone (landingZoneValid/landingZoneX/landingZoneY) where swimmers form up before the
+	/// inland assault. All precomputed on the observation side (CortexObservationObserve)
+	/// like rangeGateWaived/support distances, so the pure policy only reads scalars.
+	static const Uint32 OBSERVATION_VERSION = 19;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -280,6 +288,7 @@ namespace Cortex
 		Sint32 attackSpeedLevel[CORTEX_UNIT_LEVELS];         ///< stat->upgradeState[ATTACK_SPEED][lvl] (== trained-warrior count by level).
 		Sint32 attackStrengthLevel[CORTEX_UNIT_LEVELS];      ///< stat->upgradeState[ATTACK_STRENGTH][lvl]. A warrior joins a flag only if its min(ATTACK_SPEED,ATTACK_STRENGTH) level clears the flag's minLevelToFlag.
 		Sint32 workerSwimLevel[CORTEX_UNIT_LEVELS];          ///< stat->upgradeStatePerType[WORKER][SWIM][lvl]; index 0 == cannot swim.
+		Sint32 warriorSwimLevel[CORTEX_UNIT_LEVELS];         ///< stat->upgradeStatePerType[WARRIOR][SWIM][lvl]; index 0 == cannot swim. Swim-capable warriors == sum of levels >= 1 (see swimWarriors). The amphibious commit gate counts only these toward the attack thresholds.
 		Sint32 explorerMagicGroundLevel[CORTEX_UNIT_LEVELS]; ///< stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][lvl].
 
 		// --- upgrade-decision signals (Phase-2 v4) ---
@@ -485,6 +494,27 @@ namespace Cortex
 		// derived flag in before decide() (the flagPosture echo pattern). 0 while the
 		// gate is unbound or still inside the grace window.
 		Sint32 rangeGateWaived;
+
+		// --- amphibious campaign (v19, the water-crossing offense) ---
+		// swimWarriors: total warriors with SWIM level >= 1 (Σ warriorSwimLevel[1..]) —
+		// the swim-capable army that can actually cross water to a water-locked target.
+		// SWIM is 1-based in storage (index 0 == cannot swim), so level >= 1 is the
+		// swim-capable count. campaignAmphibious/campaignLandDist/campaignSwimDist: the
+		// CortexWater classifier's verdict for the PRIMARY target (flagTargets[0]) — 1
+		// when the shortest path to the target's land region crosses water, plus the
+		// land/swim BFS hop distances (-1 unreachable). landingZoneValid/X/Y: the shore
+		// tile in the target's land component where swimmers form up before the inland
+		// assault (valid==0 when the target is not amphibious, has no reachable shore, or
+		// there is no target). All precomputed on the observation side and read-only to
+		// the pure policy (the commit gate counts only swimWarriors when amphibious); the
+		// action layer reads the landing zone to place the CROSS-phase flag.
+		Sint32 swimWarriors;
+		Sint32 campaignAmphibious;
+		Sint32 campaignLandDist;
+		Sint32 campaignSwimDist;
+		Sint32 landingZoneValid;
+		Sint32 landingZoneX;
+		Sint32 landingZoneY;
 
 		// --- opponents ---
 		Sint32 enemyCount;    ///< Number of active slots below.

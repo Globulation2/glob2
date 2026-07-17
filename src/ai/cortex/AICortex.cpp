@@ -23,6 +23,7 @@
 #include "TeamStat.h"
 #include <Stream.h>
 #include <iostream>
+#include <string>
 #include <cstdlib>
 
 using std::shared_ptr;
@@ -59,7 +60,10 @@ void AICortex::init(Player* player)
 	for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
 	{
 		offenseWaves[i].gid = NOGBID;       // no offense waves yet.
-		offenseWaves[i].musterUntil = 0;
+		offenseWaves[i].phase = WAVE_NONE;
+		offenseWaves[i].phaseDeadline = 0;
+		offenseWaves[i].landingX = -1;
+		offenseWaves[i].landingY = -1;
 		offenseWaves[i].createCooldown = 0;
 	}
 	for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
@@ -107,7 +111,10 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	{
 		stream->readEnterSection(i);
 		offenseWaves[i].gid = static_cast<Uint16>(stream->readUint32("gid"));
-		offenseWaves[i].musterUntil = stream->readSint32("musterUntil");
+		offenseWaves[i].phase = stream->readSint32("phase");
+		offenseWaves[i].phaseDeadline = stream->readSint32("phaseDeadline");
+		offenseWaves[i].landingX = stream->readSint32("landingX");
+		offenseWaves[i].landingY = stream->readSint32("landingY");
 		offenseWaves[i].createCooldown = stream->readSint32("createCooldown");
 		stream->readLeaveSection();
 	}
@@ -158,7 +165,10 @@ void AICortex::save(GAGCore::OutputStream* stream)
 	{
 		stream->writeEnterSection(i);
 		stream->writeUint32(offenseWaves[i].gid, "gid");
-		stream->writeSint32(offenseWaves[i].musterUntil, "musterUntil");
+		stream->writeSint32(offenseWaves[i].phase, "phase");
+		stream->writeSint32(offenseWaves[i].phaseDeadline, "phaseDeadline");
+		stream->writeSint32(offenseWaves[i].landingX, "landingX");
+		stream->writeSint32(offenseWaves[i].landingY, "landingY");
 		stream->writeSint32(offenseWaves[i].createCooldown, "createCooldown");
 		stream->writeLeaveSection();
 	}
@@ -446,6 +456,37 @@ shared_ptr<Order> AICortex::getOrder(void)
 					          << "\n";
 				}
 			}
+			// Ground-truth per-team snapshot (diagnostic only; never fed to the policy).
+			// One line per team every decision cycle so training pace, food health, and
+			// army size can be compared side-by-side against the opponent.
+			{
+				Game* g = player->team->game;
+				for (int t = 0; t < g->teamsCount(); t++)
+				{
+					Team* et = g->teams[t];
+					if (!et) continue;
+					const TeamStat* es = et->stats.getLatestStat();
+					if (!es) continue;
+					std::cerr << "CORTEX_TRUTH t=" << obs.tick
+					          << " team=" << et->teamNumber
+					          << (et->teamNumber == player->team->teamNumber ? " self" : " enemy")
+					          << " u=" << es->totalUnit
+					          << " W=" << es->numberUnitPerType[WORKER]
+					          << " E=" << es->numberUnitPerType[EXPLORER]
+					          << " A=" << es->numberUnitPerType[WARRIOR]
+					          << " bld=" << es->totalBuilding
+					          << " hp=" << es->totalHP
+					          << " atkPow=" << es->totalAttackPower
+					          << " food=" << es->totalFood << "/" << es->totalFoodCapacity
+					          << " hungryNoInn=" << es->needFoodNoInns
+					          << " starving=" << es->needFoodCritical
+					          << " atkLvls=[" << es->upgradeState[ATTACK_STRENGTH][0]
+					          << "," << es->upgradeState[ATTACK_STRENGTH][1]
+					          << "," << es->upgradeState[ATTACK_STRENGTH][2]
+					          << "," << es->upgradeState[ATTACK_STRENGTH][3] << "]"
+					          << "\n";
+				}
+			}
 		}
 
 		// DIAGNOSTIC (gated): per-offense-wave cohort medical/HP state. Answers "are the
@@ -461,8 +502,12 @@ shared_ptr<Order> AICortex::getOrder(void)
 				Building* flag = findFlagByGid(offenseWaves[i].gid);
 				if (flag == NULL)
 					continue;
-				const bool mustering = offenseWaves[i].musterUntil != 0;
-				int n = 0, hungry = 0, damaged = 0, free = 0, arrived = 0;
+				const int phase = offenseWaves[i].phase;
+				const char* phaseName = (phase == WAVE_MUSTER) ? "muster"
+				                      : (phase == WAVE_CROSS)  ? "cross"
+				                      : (phase == WAVE_ASSAULT) ? "assault" : "none";
+				const int arrived = countArrivedAtFlag(flag);
+				int n = 0, hungry = 0, damaged = 0, free = 0;
 				long hpSum = 0, hungrySum = 0;
 				int minHp = 1 << 30, minHungry = 1 << 30;
 				for (Unit* u : flag->unitsWorking)
@@ -477,9 +522,6 @@ shared_ptr<Order> AICortex::getOrder(void)
 					if (u->medical == Unit::MED_HUNGRY) hungry++;
 					else if (u->medical == Unit::MED_DAMAGED) damaged++;
 					else free++;
-					if (game->map.warpDistMax(u->posX, u->posY, flag->posX, flag->posY)
-					    <= flag->unitStayRange)
-						arrived++;
 				}
 				// Distance from the flag (the front) to the nearest own inn (food).
 				int innDist = -1;
@@ -495,9 +537,12 @@ shared_ptr<Order> AICortex::getOrder(void)
 						innDist = d;
 				}
 				std::cerr << "CORTEX_OFF t=" << obs.tick << " wave=" << i
-				          << " state=" << (mustering ? "muster" : "march")
-				          << " at=" << flag->posX << "," << flag->posY
-				          << " cohort=" << n << " arrived=" << arrived
+				          << " phase=" << phaseName
+				          << " at=" << flag->posX << "," << flag->posY;
+				if (phase == WAVE_CROSS)
+					std::cerr << " landing=" << offenseWaves[i].landingX << ","
+					          << offenseWaves[i].landingY;
+				std::cerr << " cohort=" << n << " arrived=" << arrived
 				          << " free=" << free << " hungry=" << hungry << " damaged=" << damaged
 				          << " avgHp=" << (n ? hpSum / n : 0) << " minHp=" << (n ? minHp : 0)
 				          << " avgHungry=" << (n ? hungrySum / n : 0)
@@ -664,7 +709,14 @@ shared_ptr<Order> AICortex::getOrder(void)
 			          << " fwdInn=" << obs.forwardInn.valid << "/" << obs.forwardInnUnderway
 			          << " fwdHeal=" << obs.forwardHeal.valid << "/" << obs.forwardHealUnderway
 			          << " waived=" << obs.rangeGateWaived
-			          << " freeWarriors=" << obs.freeWarriors;
+			          << " freeWarriors=" << obs.freeWarriors
+			          << " amphibious=" << obs.campaignAmphibious
+			          << " landDist=" << obs.campaignLandDist
+			          << " swimDist=" << obs.campaignSwimDist
+			          << " swimWarriors=" << obs.swimWarriors
+			          << " landing=" << (obs.landingZoneValid
+			               ? (std::to_string(obs.landingZoneX) + "," + std::to_string(obs.landingZoneY))
+			               : std::string("none"));
 			for (int i = 0; i < Cortex::CORTEX_FLAG_TARGETS; i++)
 				if (obs.flagTargets[i].valid)
 					std::cerr << " tgt" << i << "=(" << obs.flagTargets[i].x << ","

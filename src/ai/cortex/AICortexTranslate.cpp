@@ -227,16 +227,33 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 	// manageOffenseWaves. Count/minLevel are owned by the pipeline (full waves, minLevel
 	// 0 so the whole army marches as one); we pass it the target, flag radius, and our
 	// warrior count (whether there is anything left to muster).
+	// AMPHIBIOUS campaign: the observation classified the PRIMARY target (flagTargets[0])
+	// and, when its shortest path crosses water, picked a landing zone. Apply the CROSS
+	// phase only when we are marching on THAT classified target (slot 0) and a landing
+	// zone exists; any other committed slot (a nearer in-range land target) runs the plain
+	// MUSTER -> ASSAULT pipeline exactly as before.
+	const bool amphibious = (slot == 0) && obs.campaignAmphibious && obs.landingZoneValid;
+	const int landingX = amphibious ? obs.landingZoneX : -1;
+	const int landingY = amphibious ? obs.landingZoneY : -1;
+
 	if (flagPosture != POSTURE_OFFENSE)
 	{
 		offenseHoldUntil = obs.tick + OFFENSE_HOLD_TICKS;
 		if (getenv("CORTEX_DUMP_POSTURE"))
+		{
 			std::cerr << "CORTEX_POSTURE t=" << obs.tick << " team=" << (int)player->team->teamNumber
 			          << " commit target=(" << target.x << "," << target.y << ")"
-			          << " warriors=" << obs.warriors << "\n";
+			          << " warriors=" << obs.warriors
+			          << " amphibious=" << (amphibious ? 1 : 0)
+			          << " swimWarriors=" << obs.swimWarriors;
+			if (amphibious)
+				std::cerr << " landing=(" << landingX << "," << landingY << ")";
+			std::cerr << "\n";
+		}
 	}
 	flagPosture = POSTURE_OFFENSE;
-	manageOffenseWaves(target.x, target.y, action.flagRadius, obs.warriors, obs);
+	manageOffenseWaves(target.x, target.y, action.flagRadius, obs.warriors,
+	                   amphibious, landingX, landingY, obs);
 }
 
 void AICortex::translateActionPlaceDefenseFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)

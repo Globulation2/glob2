@@ -51,4 +51,47 @@ namespace Cortex
 	/// skipped otherwise, leaving both counts 0); algaeReachable's ground-pass fill runs
 	/// regardless.
 	SwimAssessment assessSwim(Player* player, bool wantSwimReach);
+
+	/// Result of the amphibious-campaign assessment for one (rally -> target) push.
+	/// POD; the caller copies it into the observation (obs.campaign*/landingZone*).
+	struct AmphibiousAssessment
+	{
+		Sint32 amphibious;   ///< 1 if the shortest path to the target's land region crosses water.
+		Sint32 landDist;     ///< BFS hop distance rally->target with canSwim=false; -1 == unreachable.
+		Sint32 swimDist;     ///< BFS hop distance rally->target with canSwim=true;  -1 == unreachable.
+		Sint32 landingValid; ///< 1 if a landing zone was found (only meaningful when amphibious==1).
+		Sint32 landingX;     ///< Landing-zone tile x (a shore tile in the target's land component). Valid iff landingValid.
+		Sint32 landingY;     ///< Landing-zone tile y.
+	};
+
+	/// Classify the (rally -> target) offense campaign and, when it crosses water,
+	/// pick a landing zone. Two full-map BFS from the colony rally (the same passability
+	/// predicate family as countReach — Map::isHardSpaceForGroundUnit with the canSwim
+	/// toggle, warp-safe, plain FIFO, no std::set / floats / RNG): landDist with
+	/// canSwim=false and swimDist with canSwim=true, each the hop distance to the
+	/// target's 8-neighbourhood (the target tile is an enemy-building footprint, so —
+	/// like countReach's anchor seed — the target is "reached" when the BFS touches any
+	/// tile 8-adjacent to it).
+	///
+	/// AMPHIBIOUS iff swimDist is reachable AND (landDist unreachable OR swimDist <
+	/// landDist): a land-only path is also a valid swim path, so a swimmer never does
+	/// worse than a walker; therefore swimDist < landDist holds exactly when the true
+	/// shortest path crosses water (the user-approved formulation).
+	///
+	/// For an amphibious campaign it also runs a third BFS from the TARGET (canSwim=false)
+	/// to isolate the target's land COMPONENT, then picks the landing zone: a walkable
+	/// component tile 8-adjacent to water (a shore where swimmers climb out), at least
+	/// `landingStandoffTiles` (warp-safe Chebyshev) from every discovered enemy building
+	/// in standoffX/standoffY[0..standoffCount) (the observation's obs.flagTargets[]),
+	/// minimizing swim-BFS distance from the rally, tie-broken by lowest flattened index.
+	/// If no tile clears the standoff, the best shore tile ignoring standoff is used; if
+	/// the component has no reachable shore tile at all, landingValid stays 0 (the campaign
+	/// cannot be amphibious-assaulted and the caller falls back to today's behavior).
+	///
+	/// The third BFS + landing scan run ONLY on the amphibious branch, so a land campaign
+	/// costs exactly two BFS. Deterministic and safe inside lockstep. Returns all-zero /
+	/// unreachable when the player/team/game/map is unavailable or the team has no anchor.
+	AmphibiousAssessment assessAmphibious(Player* player, int targetX, int targetY,
+	                                      const Sint32* standoffX, const Sint32* standoffY,
+	                                      int standoffCount, int landingStandoffTiles);
 }

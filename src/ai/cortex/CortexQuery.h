@@ -99,6 +99,7 @@ namespace Cortex
 			obs.attackSpeedLevel[i] = 0;
 			obs.attackStrengthLevel[i] = 0;
 			obs.workerSwimLevel[i] = 0;
+			obs.warriorSwimLevel[i] = 0;
 			obs.explorerMagicGroundLevel[i] = 0;
 			obs.totalNeededPerLevel[i] = 0;
 		}
@@ -158,6 +159,14 @@ namespace Cortex
 		obs.forwardInnUnderway = 0;
 		obs.forwardHealUnderway = 0;
 		obs.rangeGateWaived = 0;
+
+		obs.swimWarriors = 0;
+		obs.campaignAmphibious = 0;
+		obs.campaignLandDist = -1;
+		obs.campaignSwimDist = -1;
+		obs.landingZoneValid = 0;
+		obs.landingZoneX = -1;
+		obs.landingZoneY = -1;
 
 		// Neutral defaults; AICortex overwrites these with its live RAM-only
 		// hysteresis state after observe() returns, before policy.decide() (the

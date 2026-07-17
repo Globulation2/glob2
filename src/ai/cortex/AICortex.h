@@ -131,14 +131,30 @@ private:
 		POSTURE_DEFENSE = Cortex::CORTEX_POSTURE_DEFENSE
 	};
 
-	/// One offense wave in the pipeline. `gid` is its live WAR_FLAG (NOGBID == empty
-	/// slot); `musterUntil` is the muster-timeout tick while the wave is MUSTERING at the
-	/// rally (> 0), and 0 once it has MARCHED onto the enemy. `createCooldown` gates
-	/// re-issuing this slot's OrderCreate until the flag registers (an OrderCreate takes
-	/// several ticks to land). Iterated by array index — deterministic, never a set.
+	/// Explicit phase of an offense wave. A land campaign runs MUSTER -> ASSAULT
+	/// (exactly the historical muster-then-march); an amphibious campaign inserts a
+	/// CROSS phase (mass swimmers at the landing zone) between the two. WAVE_NONE is the
+	/// empty-slot sentinel (replaces the old "gid == NOGBID && musterUntil == 0" test).
+	enum WavePhase {
+		WAVE_NONE    = 0, ///< empty slot: no wave here.
+		WAVE_MUSTER  = 1, ///< gathering at the home rally (NORMAL priority, recruits fresh warriors).
+		WAVE_CROSS   = 2, ///< amphibious only: massing swimmers at the landing zone (LOW priority).
+		WAVE_ASSAULT = 3  ///< marching/holding on the enemy target (LOW priority).
+	};
+
+	/// One offense wave in the pipeline. `gid` is its live WAR_FLAG (NOGBID when the
+	/// flag has not registered yet or the slot is empty). `phase` is a WavePhase
+	/// (WAVE_NONE == empty slot). `phaseDeadline` is the timeout tick of the current
+	/// timed phase — the muster timeout in WAVE_MUSTER, the cross timeout in WAVE_CROSS
+	/// — and 0 in WAVE_ASSAULT / WAVE_NONE (no deadline). `landingX/landingY` are the
+	/// CROSS-phase landing-zone tile (-1 when none). `createCooldown` gates re-issuing
+	/// this slot's OrderCreate until the flag registers (an OrderCreate takes several
+	/// ticks to land). Iterated by array index — deterministic, never a set.
 	struct OffenseWave {
 		Uint16 gid;
-		Sint32 musterUntil;
+		Sint32 phase;
+		Sint32 phaseDeadline;
+		Sint32 landingX, landingY;
 		Sint32 createCooldown;
 	};
 
@@ -264,12 +280,23 @@ private:
 
 	/// Drive the offense WAVE PIPELINE one decision cycle toward (targetX, targetY) (the
 	/// enemy building to assault), each flag with stay-range `radius`: reconcile every
-	/// live wave (muster->march, retire spent marchers) and, if a slot is free and spare
-	/// warriors exist, (keep) mustering the next wave at the home rally. `warriors` is the
-	/// colony's current warrior count (whether there is anything left to muster). See
-	/// MAX_OFFENSE_FLAGS and the OffenseWave doc.
+	/// live wave (advance phases, retire spent assaulters) and, if a slot is free and
+	/// spare warriors exist, (keep) mustering the next wave at the home rally. `warriors`
+	/// is the colony's current warrior count (whether there is anything left to muster).
+	/// `amphibious` (with a valid landing zone at landingX/landingY) inserts the CROSS
+	/// phase between MUSTER and ASSAULT so the army masses on the far shore before the
+	/// inland push; a land campaign (amphibious false) runs MUSTER -> ASSAULT unchanged.
+	/// See MAX_OFFENSE_FLAGS and the OffenseWave doc.
 	void manageOffenseWaves(int targetX, int targetY, int radius, int warriors,
+	                        bool amphibious, int landingX, int landingY,
 	                        const Cortex::CortexObservation& obs);
+
+	/// Warriors of `flag`'s bound cohort (unitsWorking) currently ARRIVED — within the
+	/// flag's unitStayRange (warp-safe Chebyshev). Reads deterministic simulation state
+	/// (every client runs the same AI over the same state), so it is safe to drive phase
+	/// transitions from it. Shared by manageOffenseWaves and the CORTEX_DUMP_OFFENSE
+	/// diagnostic. 0 for a NULL flag.
+	int countArrivedAtFlag(Building* flag) const;
 
 	/// Home RALLY point for the muster-then-march offense: the colony's heart (its
 	/// first/primary swarm, falling back to the first alive building). A single valid
