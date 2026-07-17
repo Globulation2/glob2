@@ -30,6 +30,8 @@ CampaignMapEntry::CampaignMapEntry(const std::string& name, const std::string& f
 {
 	mapName=name;
 	mapFileName=fileName;
+	isLocked=false;
+	completed=false;
 }
 
 
