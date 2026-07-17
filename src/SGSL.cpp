@@ -189,8 +189,21 @@ int Story::valueOfVariable(const Game *game, SGSLToken::TokenType type, int team
 			return latestStat->numberBuildingPerTypePerLevel[6][level];
 		case(SGSLToken::S_DEFENCE_B):
 			return latestStat->numberBuildingPerTypePerLevel[7][level];
+		// The flag and late-building tokens are NOT contiguous with
+		// S_SWARM_B..S_DEFENCE_B (see the token enum in SGSL.h), so they need
+		// their own cases; the indices are the IntBuildingType short numbers.
+		// The Lua port must cover these too — the parser accepts any token in
+		// [S_WORKER, S_MARKET_B] as a wait-condition variable.
+		case(SGSLToken::S_EXPLOR_F):
+			return latestStat->numberBuildingPerTypePerLevel[8][level];
+		case(SGSLToken::S_FIGHT_F):
+			return latestStat->numberBuildingPerTypePerLevel[9][level];
+		case(SGSLToken::S_CLEARING_F):
+			return latestStat->numberBuildingPerTypePerLevel[10][level];
 		case(SGSLToken::S_WALL_B):
 			return latestStat->numberBuildingPerTypePerLevel[11][level];
+		case(SGSLToken::S_MARKET_B):
+			return latestStat->numberBuildingPerTypePerLevel[12][level];
 		default:
 			assert(false);
 			return 0;
