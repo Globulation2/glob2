@@ -113,13 +113,6 @@ AICastor::AICastor(Player *player)
 	init(player);
 }
 
-AICastor::AICastor(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
-{
-	firstInit();
-	bool goodLoad=load(stream, player, versionMinor);
-	assert(goodLoad);
-}
-
 void AICastor::init(Player *player)
 {
 	assert(player);

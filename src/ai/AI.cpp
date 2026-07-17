@@ -118,7 +118,13 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AINumbi(stream, player, versionMinor);
 		break;
 		case CASTOR:
-			aiImplementation=new AICastor(stream, player, versionMinor);
+			aiImplementation=new AICastor(player);
+			if (!aiImplementation->load(stream, player, versionMinor))
+			{
+				fprintf(stderr, "AI::load: AICastor load failed\n");
+				stream->readLeaveSection();
+				return false;
+			}
 		break;
 		case NICOWAR:
 			aiImplementation=new AIEcho::Echo(new NewNicowar, player);

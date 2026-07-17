@@ -154,7 +154,6 @@ private:
 	void firstInit();
 public:
 	AICastor(Player *player);
-	AICastor(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AICastor();
 
 	Player *player;
