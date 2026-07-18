@@ -31,7 +31,7 @@ private:
 	/// Title of the screen
 	Text* title;
 	/// The exit to menuscreen button
-	Button* exit;
+	Button* exitButton;
 	/// The "start mission" buttion
 	Button* startMission;
 
