@@ -111,6 +111,16 @@ public:
 
 	void setNumber(Sint32 number);
 	void setTeamNumber(Sint32 teamNumber);
+	/// True iff a raw serialized type value is a valid PlayerType. Because of
+	/// the P_AI+n encoding (see the PlayerType comment above), the valid range
+	/// is [P_NONE, P_AI + AI::SIZE): the base kinds 0..P_AI-1 plus one slot per
+	/// AI implementation. Anything else came from a corrupt or hostile stream —
+	/// casting it to PlayerType would be undefined behavior, and using it would
+	/// index AI dispatch tables out of range.
+	static bool isValidSerializedType(Uint32 rawType)
+	{
+		return rawType < Uint32(P_AI) + Uint32(AI::SIZE);
+	}
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream) const;
 

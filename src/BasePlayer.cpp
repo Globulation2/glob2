@@ -67,12 +67,25 @@ void BasePlayer::setTeamNumber(Sint32 teamNumber)
 // save file, or network packet. `number` and `teamNumber` are bounds-checked
 // against Team::MAX_COUNT here so every downstream consumer
 // (Game::setGameHeader, Player::setBasePlayer, ...) can safely index
-// teams[teamNumber] and players[number] without re-validating. Returns false
-// on bad input; the outer GameHeader/Player load propagates the failure.
+// teams[teamNumber] and players[number] without re-validating, and `type` is
+// range-checked before the enum cast so `type >= P_AI` branches can safely
+// derive an AI::ImplementitionID from it. Returns false on bad input; the
+// outer GameHeader/Player load propagates the failure.
 bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+	// An invalid or already-exhausted stream (truncated save, short packet)
+	// would make every read below return garbage or zero-fill. Checking EOS
+	// *after* the reads would be unsound: MemoryStreamBackend reports EOS
+	// when a valid record ends exactly at the buffer end, and does not
+	// advance past a failed overread. So guard at entry and rely on the
+	// per-field range checks below to catch mid-record corruption.
+	if (!stream->isValid() || stream->isEndOfStream())
+	{
+		fprintf(stderr, "BasePlayer::load: stream invalid or exhausted before BasePlayer record\n");
+		return false;
+	}
 	stream->readEnterSection("BasePlayer");
-	type = (PlayerType)stream->readUint32("type");
+	const Uint32 rawType = stream->readUint32("type");
 	number = stream->readSint32("number");
 	numberMask = stream->readUint32("numberMask");
 	// The field is Uint32 (YOG identifier); pre-86 saves truncated it to Uint16.
@@ -84,6 +97,13 @@ bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	teamNumber = stream->readSint32("teamNumber");
 	teamNumberMask = stream->readUint32("teamNumberMask");
 	stream->readLeaveSection();
+	if (!isValidSerializedType(rawType))
+	{
+		fprintf(stderr, "BasePlayer::load: invalid player type %u (must be below %u)\n",
+			(unsigned)rawType, (unsigned)(P_AI + AI::SIZE));
+		return false;
+	}
+	type = (PlayerType)rawType;
 	if (number < 0 || number >= Team::MAX_COUNT)
 	{
 		fprintf(stderr, "BasePlayer::load: out-of-range player number %d (must be in [0, %d))\n",

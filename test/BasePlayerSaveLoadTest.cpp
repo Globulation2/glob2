@@ -10,6 +10,10 @@
 //      following field still decodes correctly
 //   2. hand-written pre-86 stream (Uint16 playerID on the wire) -> loads
 //      correctly, with the fields after playerID still aligned
+// Also covers BasePlayer::load's corruption validation: out-of-range type
+// values are rejected before the enum cast (including the highest valid
+// P_AI+n slot on the accept side), out-of-range number/teamNumber are
+// rejected, and an exhausted stream fails at entry instead of zero-filling.
 // Links libgag_server.a for BinaryStream + MemoryStreamBackend.
 
 #include <cstdio>
@@ -94,12 +98,78 @@ void testPre86StreamReadsUint16PlayerID()
 	      "pre86: teamNumber still aligned");
 }
 
+// Hand-write a current-version wire record with arbitrary raw field values,
+// so corruption cases the type-safe save() cannot produce are expressible.
+std::unique_ptr<BinaryInputStream> makeRawRecordStream(Uint32 rawType, Sint32 number,
+                                                       Sint32 teamNumber)
+{
+	MemoryStreamBackend* backend = new MemoryStreamBackend;
+	BinaryOutputStream ostream(backend);
+	ostream.writeUint32(rawType, "type");
+	ostream.writeSint32(number, "number");
+	ostream.writeUint32(number >= 0 ? Uint32(1) << number : 0, "numberMask");
+	ostream.writeUint32(42, "playerID");
+	ostream.writeText("Raw Player", "name");
+	ostream.writeSint32(teamNumber, "teamNumber");
+	ostream.writeUint32(teamNumber >= 0 ? Uint32(1) << teamNumber : 0, "teamNumberMask");
+	return makeInputStream(*backend);
+}
+
+void testTypeValidation()
+{
+	const Uint32 firstInvalidType = Uint32(BasePlayer::P_AI) + Uint32(AI::SIZE);
+
+	auto istream = makeRawRecordStream(firstInvalidType, 1, 1);
+	BasePlayer loaded;
+	check(!loaded.load(istream.get(), VERSION_MINOR),
+	      "typeValidation: first out-of-range type rejected");
+
+	istream = makeRawRecordStream(0xFFFFFFFFu, 1, 1);
+	check(!loaded.load(istream.get(), VERSION_MINOR),
+	      "typeValidation: hostile 0xFFFFFFFF type rejected");
+
+	// Highest valid slot: P_AI + last AI implementation.
+	const Uint32 maxValidType = firstInvalidType - 1;
+	istream = makeRawRecordStream(maxValidType, 1, 1);
+	check(loaded.load(istream.get(), VERSION_MINOR),
+	      "typeValidation: highest P_AI+n type accepted");
+	check((Uint32)loaded.type == maxValidType, "typeValidation: type value preserved");
+}
+
+void testNumberAndTeamNumberValidation()
+{
+	BasePlayer loaded;
+
+	auto istream = makeRawRecordStream((Uint32)BasePlayer::P_LOCAL, Team::MAX_COUNT, 1);
+	check(!loaded.load(istream.get(), VERSION_MINOR),
+	      "rangeValidation: number == Team::MAX_COUNT rejected");
+
+	istream = makeRawRecordStream((Uint32)BasePlayer::P_LOCAL, -1, 1);
+	check(!loaded.load(istream.get(), VERSION_MINOR),
+	      "rangeValidation: negative number rejected");
+
+	istream = makeRawRecordStream((Uint32)BasePlayer::P_LOCAL, 1, Team::MAX_COUNT);
+	check(!loaded.load(istream.get(), VERSION_MINOR),
+	      "rangeValidation: teamNumber == Team::MAX_COUNT rejected");
+}
+
+void testExhaustedStreamFails()
+{
+	// Empty stream: load must fail at entry, not zero-fill a "valid" player.
+	BinaryInputStream istream(new MemoryStreamBackend);
+	BasePlayer loaded;
+	check(!loaded.load(&istream, VERSION_MINOR), "exhausted: empty stream rejected");
+}
+
 }  // namespace
 
 int main(int /*argc*/, char* /*argv*/[])
 {
 	testRoundTripCurrentVersion();
 	testPre86StreamReadsUint16PlayerID();
+	testTypeValidation();
+	testNumberAndTeamNumberValidation();
+	testExhaustedStreamFails();
 	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
 	return failures == 0 ? 0 : 1;
 }
