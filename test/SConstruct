@@ -230,6 +230,21 @@ baseplayer_objs = [
 wcdecode_env.Program( target = 'BasePlayerSaveLoadTest', source = baseplayer_objs )
 
 
+# Standalone regression harness for the BaseTeam "colorPAD" wire byte
+# (load() pins color.a to ALPHA_OPAQUE but save() used to write the live
+# alpha, so save->load->save drifted when alpha was non-opaque). Checks
+# that a round-trip pins alpha opaque and that the byte stream is stable.
+# Race is stubbed in the test file (only reached for pre-73 streams), so
+# BaseTeam.cpp reuses the wcdecode env's libgag_server.a link surface.
+# Distinct object name for BaseTeam.cpp because the main build compiles
+# it with different flags.
+baseteam_objs = [
+  wcdecode_env.Object('BaseTeamSaveLoadTest.o', 'BaseTeamSaveLoadTest.cpp'),
+  wcdecode_env.Object('BaseTeam-saveload.o', '../src/BaseTeam.cpp'),
+]
+wcdecode_env.Program( target = 'BaseTeamSaveLoadTest', source = baseteam_objs )
+
+
 # Standalone regression harness for the replay inter-order step counter
 # (stepsSinceLastOrder was Uint16 and wrapped after 65535 order-less ticks,
 # silently corrupting tick-to-order alignment; version 87 widened it to

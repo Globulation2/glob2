@@ -33,7 +33,12 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	stream->read(&color.r, 1, "colorR");
 	stream->read(&color.g, 1, "colorG");
 	stream->read(&color.b, 1, "colorB");
-	stream->read(&color.a, 1, "colorPAD");
+	// "colorPAD" is a wire padding byte, not persisted state: team alpha is
+	// always Color::ALPHA_OPAQUE in memory, so the byte is discarded on load
+	// and written as ALPHA_OPAQUE on save. Keep both sides symmetric so
+	// save->load->save round-trips byte-identically.
+	Uint8 colorPad;
+	stream->read(&colorPad, 1, "colorPAD");
 	color.a = Color::ALPHA_OPAQUE;
 	playersMask = stream->readUint32("playersMask");
 	if(versionMinor < 73)
@@ -58,7 +63,10 @@ void BaseTeam::save(GAGCore::OutputStream *stream) const
 	stream->write(&color.r, 1, "colorR");
 	stream->write(&color.g, 1, "colorG");
 	stream->write(&color.b, 1, "colorB");
-	stream->write(&color.a, 1, "colorPAD");
+	// See load(): "colorPAD" is a padding byte pinned to ALPHA_OPAQUE, not
+	// the live alpha value, so the round-trip cannot drift.
+	const Uint8 colorPad = Color::ALPHA_OPAQUE;
+	stream->write(&colorPad, 1, "colorPAD");
 	stream->writeUint32(playersMask, "playersMask");
 	stream->writeLeaveSection();
 }
