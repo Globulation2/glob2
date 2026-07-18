@@ -441,7 +441,7 @@ namespace GAGGUI
 					case SDL_QUIT:
 					{
 						run=false;
-						returnCode=-1;
+						returnCode=QUIT_APPLICATION;
 						break;
 					}
 					break;
@@ -475,7 +475,7 @@ namespace GAGGUI
 						if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
 						{
 							run=false;
-							returnCode=-1;
+							returnCode=QUIT_APPLICATION;
 							break;
 						}
 #						endif
@@ -483,7 +483,7 @@ namespace GAGGUI
 						if(event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 						{
 							run=false;
-							returnCode=-1;
+							returnCode=QUIT_APPLICATION;
 							break;
 						}
 #						endif

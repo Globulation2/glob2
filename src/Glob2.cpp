@@ -518,7 +518,7 @@ int Glob2::run(int argc, char *argv[])
 			{
 				CampaignMainMenu ccs;
 				int rccs=ccs.execute(globalContainer->gfx, 40);
-				if(rccs == -1)
+				if(rccs == Screen::QUIT_APPLICATION)
 				{
 					isRunning = false;
 				}

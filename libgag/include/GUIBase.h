@@ -299,8 +299,16 @@ namespace GAGGUI
 		static bool scrollWheelEnabled;
 		
 	public:
+		//! Returned by execute() when the application itself is being quit
+		//! (window close, Cmd+Q on macOS, Alt+F4 on Windows). Produced by the
+		//! execute() event loop, not by endExecute(). Screens that run nested
+		//! screens must propagate it to their own caller so every menu level
+		//! unwinds and the process can exit.
+		static constexpr int QUIT_APPLICATION = -1;
+
+	public:
 		Screen();
-	
+
 		virtual ~Screen();
 	
 		//! Method called for each timer's tick
