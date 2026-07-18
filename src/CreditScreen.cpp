@@ -79,20 +79,21 @@ ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	this->filename = filename;
 	fontPtr = NULL;
 	
-	// load text
-	InputLineStream *inputLineStream = new InputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
-	if (inputLineStream->isEndOfStream())
+	// load text; InputLineStream owns the backend and deletes it in its
+	// destructor, so a stack object releases the file handle even if
+	// readLine() throws
+	InputLineStream inputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (inputLineStream.isEndOfStream())
 	{
 		std::cerr << "ScrollingText::ScrollingText() : error, can't open file " << filename << std::endl;
 	}
 	else
 	{
-		while (!inputLineStream->isEndOfStream())
+		while (!inputLineStream.isEndOfStream())
 		{	// This is the nice way to do it
-			text.push_back(inputLineStream->readLine());
+			text.push_back(inputLineStream.readLine());
 		}
 	}
-	delete inputLineStream;
 }
 
 void ScrollingText::internalInit(void)
