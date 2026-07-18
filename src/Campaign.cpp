@@ -288,7 +288,10 @@ size_t Campaign::getMapCount() const
 
 CampaignMapEntry& Campaign::getMap(unsigned n)
 {
-	return maps[n];
+	// at() turns an out-of-range index into a deterministic std::out_of_range
+	// instead of the silent UB of operator[]. Every current caller iterates
+	// [0, getMapCount()), so the check only fires on a genuine caller bug.
+	return maps.at(n);
 }
 
 

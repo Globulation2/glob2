@@ -74,7 +74,10 @@ public:
 	bool save(bool isGameSave=false);
 	///Gets the number of maps in this campaign
 	size_t getMapCount() const;
-	///Returns the name of the map n
+	///Returns the entry for map n. Precondition: n < getMapCount(); violating
+	///it throws std::out_of_range rather than invoking undefined behavior.
+	///Rust port: plain Vec indexing (which panics) has the same contract.
+	///For name-based UI selection use findUnlockedMap instead of an index.
 	CampaignMapEntry& getMap(unsigned n);
 	///Looks up an unlocked map by its display name.
 	///Returns nullptr if no map with that name exists or if the matching map is still locked.
