@@ -137,6 +137,19 @@ CampaignLoadTestStubs.cpp
 campaign_env.Program( target = 'CampaignSelectionHarness', source = campaign_sel_sources )
 
 
+# Standalone regression harness for the Campaign map-list bounds fixes:
+# removeMap ignoring out-of-range indices and getMap failing deterministically
+# instead of invoking UB. Reuses the same env / libgag_server.a / stubs as the
+# other Campaign harnesses because Campaign.cpp's link surface is identical.
+campaign_bounds_sources = Split("""
+CampaignBoundsHarness.cpp
+CampaignLoadTestStubs.cpp
+../src/Campaign.cpp
+""")
+
+campaign_env.Program( target = 'CampaignBoundsHarness', source = campaign_bounds_sources )
+
+
 # Standalone regression harness for BH-195 (OrderAlterateArea::setData
 # OOB read on malformed bitmap payload). Builds synthetic Uint8 buffers
 # and checks that setData rejects them. Compiled with YOG_SERVER_ONLY so

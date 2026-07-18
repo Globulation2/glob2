@@ -83,7 +83,8 @@ public:
 	CampaignMapEntry* findUnlockedMap(const std::string& mapName);
 	///Appends a map to the list of maps
 	void appendMap(CampaignMapEntry& map);
-	///Removes map n
+	///Removes map n. Out-of-range n is silently ignored (stale UI indices must
+	///not corrupt the map list). Rust port: guard the index before Vec::remove.
 	void removeMap(unsigned n);
 
 	///Sets a particular map as completed and unlocks all the maps that are unlocked by this "played" map

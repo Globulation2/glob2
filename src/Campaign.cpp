@@ -314,7 +314,13 @@ void Campaign::appendMap(CampaignMapEntry& map)
 
 void Campaign::removeMap(unsigned n)
 {
-	maps.erase(maps.begin()+n);
+	// A stale index (e.g. the editor's list widget briefly out of sync with
+	// maps[]) must not corrupt the campaign: erase(begin()+n) with n past the
+	// end is undefined behavior. Ignoring the request matches this class's
+	// defensive style (findUnlockedMap -> nullptr, load -> false).
+	if (n >= maps.size())
+		return;
+	maps.erase(maps.begin() + n);
 }
 
 
