@@ -265,17 +265,19 @@ void GameGUI::drawTopScreenBar(void)
 		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, FormatableString("%0 / %1").arg(free).arg(tot).c_str());
 		globalContainer->littleFont->popStyle();
 
-		if(i==WORKER && hilights.find(HilightWorkersWorkingFreeStat) != hilights.end())
-		{
-			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
-		}
-
-		else if(i==WARRIOR && hilights.find(HilightExplorersWorkingFreeStat) != hilights.end())
-		{
-			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
-		}
-
-		else if(i==EXPLORER && hilights.find(HilightWarriorsWorkingFreeStat) != hilights.end())
+		// Tutorial hilight arrow for this counter. The sprite, the free/total
+		// counter, and the arrow position above all key off the unit-type index
+		// i (WORKER=0, EXPLORER=1, WARRIOR=2 from UnitConsts.h); the matching
+		// hilight id must too. This table keeps that pairing in one place so it
+		// cannot be silently swapped. Indices follow the UnitConsts ordering,
+		// NOT the Hilight* enum's numeric order (which lists explorer/warrior
+		// the other way around), so the mapping is spelled out explicitly.
+		static const int hilightForUnitType[3] = {
+			HilightWorkersWorkingFreeStat,   // i == WORKER
+			HilightExplorersWorkingFreeStat, // i == EXPLORER
+			HilightWarriorsWorkingFreeStat,  // i == WARRIOR
+		};
+		if(hilights.find(hilightForUnitType[i]) != hilights.end())
 		{
 			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
 		}
