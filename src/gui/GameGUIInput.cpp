@@ -5,6 +5,7 @@
 #include <iostream>
 #include <optional>
 
+#include <SDL_keyboard.h>
 #include <SDL_keycode.h>
 
 #include <FileManager.h>
@@ -20,6 +21,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
+#include "ScrollWheelTarget.h"
 #include "Unit.h"
 
 using std::shared_ptr;
@@ -169,7 +171,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		else if (event->type==SDL_MOUSEWHEEL)
 		{
 			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
-			scrollWheelChanges += event->wheel.y * factor;
+			accumulateScrollWheelDelta(event->wheel.y * factor);
 		}
 	}
 
@@ -200,6 +202,28 @@ void GameGUI::processEvent(SDL_Event *event)
 			newH=480;
 		printf("New size : %dx%d\n", newW, newH);
 		globalContainer->gfx->setRes(newW, newH);*/
+	}
+}
+
+// Route one scroll-wheel delta into the pending accumulators. The modifier
+// keys are sampled here, at event time, so deltas scrolled while SHIFT was held
+// are committed to the stay-range accumulator even if SHIFT is released before
+// the frame's flushScrollWheelOrders() runs. The building-type gate is deferred
+// to flush time.
+void GameGUI::accumulateScrollWheelDelta(int delta)
+{
+	SDL_Keymod mod = SDL_GetModState();
+	switch (scrollWheelTarget(mod & KMOD_SHIFT, mod & KMOD_CTRL,
+	                          globalContainer->settings.scrollWheelEnabled))
+	{
+	case ScrollWheelTarget::MaxUnitWorking:
+		scrollWheelWorkingChanges += delta;
+		break;
+	case ScrollWheelTarget::UnitStayRange:
+		scrollWheelStayRangeChanges += delta;
+		break;
+	case ScrollWheelTarget::None:
+		break;
 	}
 }
 
@@ -318,12 +342,11 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 	}
 	else if (button==4)
 	{
-		scrollWheelChanges += 1;
-
+		accumulateScrollWheelDelta(1);
 	}
 	else if (button==5)
 	{
-		scrollWheelChanges -= 1;
+		accumulateScrollWheelDelta(-1);
 	}
 }
 

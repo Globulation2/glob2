@@ -602,10 +602,18 @@ private:
 	
 	GameGUIGhostBuildingManager ghostManager;
 
-	///Because its possible to move the scrollwheel faster than the engine can handle it
-	///multiple scroll wheel events compound
-	int scrollWheelChanges;
-	
+	///Because it's possible to move the scroll wheel faster than the engine can
+	///handle it, multiple scroll wheel events compound within one frame. The
+	///modifier keys are sampled per event (see accumulateScrollWheelDelta), so a
+	///SHIFT release mid-frame can no longer misroute the deltas scrolled while it
+	///was held. Each accumulator holds the net delta destined for one field.
+	int scrollWheelWorkingChanges;   ///< pending assigned-worker delta this frame
+	int scrollWheelStayRangeChanges; ///< pending stay-range delta this frame
+
+	///Route one scroll-wheel delta into the pending accumulators, sampling the
+	///modifier keys now (at event time) rather than at frame flush.
+	void accumulateScrollWheelDelta(int delta);
+
 	///This function flushes orders from the scrollWheel at the end of every frame
 	void flushScrollWheelOrders();
 

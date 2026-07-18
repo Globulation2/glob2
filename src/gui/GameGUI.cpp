@@ -158,7 +158,8 @@ void GameGUI::init()
 	campaign=NULL;
 	missionName="";
 
-	scrollWheelChanges=0;
+	scrollWheelWorkingChanges=0;
+	scrollWheelStayRangeChanges=0;
 
 	hilights.clear();
 

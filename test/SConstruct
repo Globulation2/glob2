@@ -79,6 +79,8 @@ FilenameStripTest.cpp
 
 GUIListSelectionTest.cpp
 
+ScrollWheelTargetTest.cpp
+
 OverlayFillTest.cpp
 ../src/OverlayFill.cpp
 
