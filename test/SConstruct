@@ -299,6 +299,20 @@ baseteam_objs = [
 wcdecode_env.Program( target = 'BaseTeamSaveLoadTest', source = baseteam_objs )
 
 
+# Standalone regression harness for GameObjectives index handling and
+# scriptNumber serialization: removeObjective and the assert-only accessors
+# used to invoke UB on out-of-range indices, and scriptNumber (an int in
+# memory) is serialized as Uint8, so the entry points clamp to the [0..255]
+# wire domain. GameObjectives.cpp only needs Stream, so it reuses the
+# wcdecode env's libgag_server.a link surface. Distinct object name because
+# the main build compiles it with different flags.
+gameobjectives_objs = [
+  wcdecode_env.Object('GameObjectivesTest.o', 'GameObjectivesTest.cpp'),
+  wcdecode_env.Object('GameObjectives-test.o', '../src/GameObjectives.cpp'),
+]
+wcdecode_env.Program( target = 'GameObjectivesTest', source = gameobjectives_objs )
+
+
 # Standalone regression harness for the replay inter-order step counter
 # (stepsSinceLastOrder was Uint16 and wrapped after 65535 order-less ticks,
 # silently corrupting tick-to-order alignment; version 87 widened it to

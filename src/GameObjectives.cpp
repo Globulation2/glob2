@@ -39,8 +39,24 @@ void GameObjectives::addNewObjective(const std::string& objective, bool ishidden
 
 
 
+bool GameObjectives::isValidObjectiveIndex(int n) const
+{
+	// The six vectors are parallel arrays over the same objectives; texts
+	// is the reference for the current count.
+	assert(hidden.size() == texts.size());
+	assert(completed.size() == texts.size());
+	assert(failed.size() == texts.size());
+	assert(types.size() == texts.size());
+	assert(scriptNumbers.size() == texts.size());
+	return n >= 0 && n < (int)texts.size();
+}
+
+
+
 void GameObjectives::removeObjective(int n)
 {
+	if (!isValidObjectiveIndex(n))
+		return;
 	texts.erase(texts.begin() + n);
 	hidden.erase(hidden.begin() + n);
 	completed.erase(completed.begin() + n);

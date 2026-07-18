@@ -74,6 +74,11 @@ public:
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
 	
 private:
+	///True if n indexes an existing objective. All accessors share this
+	///guard: out-of-range indices are silently ignored by setters and give
+	///the documented defaults from getters.
+	bool isValidObjectiveIndex(int n) const;
+
 	std::vector<std::string> texts;
 	std::vector<bool> hidden;
 	std::vector<bool> completed;
