@@ -435,8 +435,7 @@ void Engine::teardownSession()
 		if (!checksumSidecar->close())
 			std::cerr << "GLOB2_CHECKSUM_SIDECAR: a sidecar write or close failed; "
 				"the truncated .checksums file has been deleted" << std::endl;
-		delete checksumSidecar;
-		checksumSidecar = NULL;
+		checksumSidecar.reset();
 	}
 
 	if (globalContainer->datasetWriter)
@@ -445,8 +444,7 @@ void Engine::teardownSession()
 		globalContainer->datasetWriter.reset();
 	}
 
-	delete net;
-	net = NULL;
+	net.reset();
 	multiplayer.reset();
 }
 

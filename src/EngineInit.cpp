@@ -150,7 +150,7 @@ int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, st
 		return ret;
 
 	multiplayer = multiplayerGame;
-	multiplayer->setNetEngine(net);
+	multiplayer->setNetEngine(net.get());
 
 	for (int p=0; p<multiplayerGame->getGameHeader().getNumberOfPlayers(); p++)
 	{
@@ -360,7 +360,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	finalAdjustements();
 
 	// we create the net game
-	net=new NetEngine(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
+	net = std::make_unique<NetEngine>(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
 	// Initialise the replay writer, unless we're showing a replay.
 	// GLOB2_REPLAY_PATH overrides the default output path (used by the
@@ -381,15 +381,14 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		std::string sidecarBase = globalContainer->replaying
 			? globalContainer->replayFileName
 			: replayPath;
-		checksumSidecar = new ChecksumSidecarWriter();
+		checksumSidecar = std::make_unique<ChecksumSidecarWriter>();
 		if (!checksumSidecar->open(sidecarBase,
 			gui.game.teamsCount(),
 			gui.game.gameHeader.getNumberOfPlayers()))
 		{
 			std::cerr << "GLOB2_CHECKSUM_SIDECAR: failed to open checksum sidecar for "
 				<< sidecarBase << std::endl;
-			delete checksumSidecar;
-			checksumSidecar = NULL;
+			checksumSidecar.reset();
 		}
 	}
 

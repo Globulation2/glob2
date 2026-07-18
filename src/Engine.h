@@ -6,6 +6,7 @@
 
 #include "Header.h"
 #include "GameGUI.h"
+#include <memory>
 #include <optional>
 #include <string>
 #include "Campaign.h"
@@ -30,6 +31,12 @@ public:
 	Engine();
 	//! Destructor
 	~Engine();
+
+	// Engine uniquely owns its net engine and checksum sidecar (unique_ptr
+	// members already make the class non-copyable); deleted explicitly for
+	// documentation value.
+	Engine(const Engine&) = delete;
+	Engine& operator=(const Engine&) = delete;
 
 	/// Initiates a campaign map. This first loads the MapHeader, and then generates a GameHeader for
 	/// the campaign map. It then informs GameGUI that this map is a campaign, and if the player wins
@@ -181,15 +188,15 @@ private:
 	//! The GUI, contains the whole game also
 	GameGUI gui;
 	//! The netGame, take care of order queuing and dispatching
-	NetEngine *net;
-	//! Checksum sidecar writer for cross-replay debugging
-	ChecksumSidecarWriter *checksumSidecar;
+	std::unique_ptr<NetEngine> net;
+	//! Checksum sidecar writer for cross-replay debugging. Destroying it
+	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
+	//! flushed even when run() is never reached after initGame allocated it.
+	std::unique_ptr<ChecksumSidecarWriter> checksumSidecar;
 	//! The MultiplayerGame, recieves orders from across a network
 	shared_ptr<MultiplayerGame> multiplayer;
 
 	Uint64 automaticGameStartTick, automaticGameEndTick;
-
-	FILE *logFile;
 
 	static const bool verbose = false;
 };

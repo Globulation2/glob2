@@ -8,29 +8,14 @@
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "SoundMixer.h"
 
 #include <iostream>
 
 
-Engine::Engine()
-{
-	net=NULL;
-	checksumSidecar=NULL;
-	logFile = globalContainer->logFileManager->getFile("Engine.log");
-}
+Engine::Engine() = default;
 
-Engine::~Engine()
-{
-	fprintf(logFile, "\n");
-
-	if (net)
-	{
-		delete net;
-		net=NULL;
-	}
-}
+Engine::~Engine() = default;
 
 int Engine::run(void)
 {
