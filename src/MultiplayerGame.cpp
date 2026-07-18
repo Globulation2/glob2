@@ -57,8 +57,7 @@ void MultiplayerGame::update()
 		sendToListeners(event);
 		mode = NoMode;
 		state=NothingYet;
-		if(client->getGameConnection())
-			client->getGameConnection()->closeConnection();
+		client->closeGameConnection();
 	}
 	
 	if(state == ConnectingToGameRouter)
@@ -167,10 +166,9 @@ void MultiplayerGame::leaveGame()
 {	
 	shared_ptr<NetLeaveGame> message(new NetLeaveGame);
 	client->sendNetMessage(message);
-	
-	if(client->getGameConnection())
-		client->getGameConnection()->closeConnection();
-		
+
+	client->closeGameConnection();
+
 	mode = NoMode;
 	state=NothingYet;
 }

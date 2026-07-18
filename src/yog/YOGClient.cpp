@@ -489,6 +489,14 @@ void YOGClient::createGame(const std::string& name)
 
 void YOGClient::setMultiplayerGame(std::shared_ptr<MultiplayerGame> game)
 {
+	// The game-router connection belongs to the joined game. Whenever the
+	// joined game is detached (cleared on exit, or replaced by a new one),
+	// tear the router connection down so a stale/leaked socket from the
+	// previous game cannot bleed into the next one. This is the single point
+	// that guarantees the connection is closed on every exit path (leave,
+	// kick, host-cancel, server-disconnect), all of which funnel through here.
+	if(joinedGame != game)
+		closeGameConnection();
 	joinedGame=game;
 }
 
@@ -570,6 +578,14 @@ void YOGClient::setGameConnection(std::shared_ptr<NetConnection> ngameConnection
 std::shared_ptr<NetConnection> YOGClient::getGameConnection()
 {
 	return gameConnection;
+}
+
+
+
+void YOGClient::closeGameConnection()
+{
+	if(gameConnection)
+		gameConnection->closeConnection();
 }
 
 

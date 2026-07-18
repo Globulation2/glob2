@@ -163,6 +163,12 @@ public:
 	///This retrieves the NetConnection of this clients game-router connection
 	std::shared_ptr<NetConnection> getGameConnection();
 
+	///Tears down the game-router connection if one is open. This is the single
+	///owner of the router-connection teardown: the connection belongs to the
+	///joined game, so it is closed here rather than from each game-exit path in
+	///MultiplayerGame. Safe to call when no connection exists (no-op).
+	void closeGameConnection();
+
 	///This retrieves the YOGClientBlockedList of this client
 	std::shared_ptr<YOGClientBlockedList> getBlockedList();
 
