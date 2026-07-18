@@ -133,6 +133,69 @@ void testGettersReturnDefaultsForOutOfRangeIndices()
 	      "isObjectiveFailed is false out of range");
 }
 
+std::unique_ptr<BinaryInputStream> makeInputStream(const MemoryStreamBackend& written)
+{
+	// BinaryInputStream takes ownership of the backend.
+	MemoryStreamBackend* copy = new MemoryStreamBackend(written);
+	copy->seekFromStart(0);
+	return std::make_unique<BinaryInputStream>(copy);
+}
+
+void testScriptNumberClampedToWireDomain()
+{
+	GameObjectives objectives;
+
+	objectives.setScriptNumber(0, 300);
+	check(objectives.getScriptNumber(0) == GameObjectives::MaxScriptNumber,
+	      "setScriptNumber clamps values above 255 to MaxScriptNumber");
+
+	objectives.setScriptNumber(0, -5);
+	check(objectives.getScriptNumber(0) == 0,
+	      "setScriptNumber clamps negative values to 0");
+
+	objectives.addNewObjective("wide", false, false, false,
+	                           GameObjectives::Primary, 999);
+	check(objectives.getScriptNumber(1) == GameObjectives::MaxScriptNumber,
+	      "addNewObjective clamps values above 255 to MaxScriptNumber");
+
+	objectives.setScriptNumber(1, GameObjectives::MaxScriptNumber);
+	check(objectives.getScriptNumber(1) == GameObjectives::MaxScriptNumber,
+	      "setScriptNumber stores 255 unchanged");
+}
+
+void testEncodeDecodeRoundTripMatchesMemory()
+{
+	GameObjectives original;
+	original.addNewObjective("secondary goal", true, false, true,
+	                         GameObjectives::Secondary, 16);
+	original.addNewObjective("wide script number", false, true, false,
+	                         GameObjectives::Primary, 4000);
+
+	MemoryStreamBackend* backend = new MemoryStreamBackend;
+	BinaryOutputStream ostream(backend);
+	original.encodeData(&ostream);
+
+	GameObjectives loaded;
+	std::unique_ptr<BinaryInputStream> istream = makeInputStream(*backend);
+	loaded.decodeData(istream.get(), VERSION_MINOR);
+
+	check(loaded.getNumberOfObjectives() == original.getNumberOfObjectives(),
+	      "round-trip preserves the objective count");
+	bool allMatch = true;
+	for (int i = 0; i < original.getNumberOfObjectives(); ++i)
+	{
+		allMatch = allMatch
+			&& loaded.getGameObjectiveText(i) == original.getGameObjectiveText(i)
+			&& loaded.getObjectiveType(i) == original.getObjectiveType(i)
+			&& loaded.isObjectiveVisible(i) == original.isObjectiveVisible(i)
+			&& loaded.isObjectiveComplete(i) == original.isObjectiveComplete(i)
+			&& loaded.isObjectiveFailed(i) == original.isObjectiveFailed(i)
+			&& loaded.getScriptNumber(i) == original.getScriptNumber(i);
+	}
+	check(allMatch,
+	      "round-trip preserves every field, including clamped script numbers");
+}
+
 } // namespace
 
 int main()
@@ -142,6 +205,8 @@ int main()
 	testRemoveObjectiveOnEmptyListIsNoOp();
 	testSettersIgnoreOutOfRangeIndices();
 	testGettersReturnDefaultsForOutOfRangeIndices();
+	testScriptNumberClampedToWireDomain();
+	testEncodeDecodeRoundTripMatchesMemory();
 
 	if (failures == 0)
 		std::printf("all tests passed\n");

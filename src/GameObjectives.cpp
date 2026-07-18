@@ -4,7 +4,16 @@
 #include "GameObjectives.h"
 #include "FileFormatVersions.h"
 #include "Stream.h"
+#include <algorithm>
 #include <cassert>
+
+
+///Clamps a script number to the [0..MaxScriptNumber] domain the Uint8 wire
+///format can carry, so memory and a save/load round-trip can never diverge.
+static int clampScriptNumberToWireDomain(int scriptNumber)
+{
+	return std::clamp(scriptNumber, 0, GameObjectives::MaxScriptNumber);
+}
 
 
 GameObjectives::GameObjectives() :
@@ -34,7 +43,7 @@ void GameObjectives::addNewObjective(const std::string& objective, bool ishidden
 	completed.push_back(complete);
 	failed.push_back(nfailed);
 	types.push_back(type);
-	scriptNumbers.push_back(scriptNumber);
+	scriptNumbers.push_back(clampScriptNumberToWireDomain(scriptNumber));
 }
 
 
@@ -186,7 +195,7 @@ GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
 void GameObjectives::setScriptNumber(int n, int scriptNumber)
 {
 	if (isValidObjectiveIndex(n))
-		scriptNumbers[n] = scriptNumber;
+		scriptNumbers[n] = clampScriptNumberToWireDomain(scriptNumber);
 }
 
 
@@ -213,6 +222,8 @@ void GameObjectives::encodeData(GAGCore::OutputStream* stream) const
 		stream->writeUint8(completed[i], "completed");
 		stream->writeUint8(failed[i], "failed");
 		stream->writeUint8(types[i], "type");
+		// Fits by construction: every scriptNumbers entry point clamps to
+		// the [0..MaxScriptNumber] Uint8 wire domain.
 		stream->writeUint8(scriptNumbers[i], "scriptNumber");
 		stream->writeLeaveSection();
 	}

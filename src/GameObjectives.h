@@ -32,9 +32,15 @@ public:
 	///an objective a script can reference.
 	static constexpr int InvalidScriptNumber = 0;
 
+	///Script numbers travel as a single byte on the wire (encodeData writes
+	///Uint8), so the storable domain is [0..MaxScriptNumber]. addNewObjective
+	///and setScriptNumber clamp to this range so the in-memory value always
+	///matches what a save/load round-trip yields. Stock content uses 1..16.
+	static constexpr int MaxScriptNumber = 255;
+
 	///This gets the number of objectives there are
 	int getNumberOfObjectives();
-	///This adds a new objective
+	///This adds a new objective. scriptNumber is clamped to [0..MaxScriptNumber]
 	void addNewObjective(const std::string& objective, bool hidden, bool complete, bool failed, GameObjectiveType type, int scriptNumber);
 	///This removes the given objective
 	void removeObjective(int n);
@@ -69,7 +75,7 @@ public:
 	GameObjectiveType getObjectiveType(int n);
 
 	///This sets the script number, which is how scripts will reference the given object;
-	///ignored if n is out of range
+	///ignored if n is out of range. The value is clamped to [0..MaxScriptNumber]
 	void setScriptNumber(int n, int scriptNumber);
 	///This returns the script number, which is how scripts will reference the given object,
 	///or InvalidScriptNumber if n is out of range
