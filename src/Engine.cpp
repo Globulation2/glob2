@@ -8,6 +8,7 @@
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
+#include "ReplayWriter.h"
 #include "SoundMixer.h"
 
 #include <iostream>
@@ -15,7 +16,15 @@
 
 Engine::Engine() = default;
 
-Engine::~Engine() = default;
+Engine::~Engine()
+{
+	// Finalize the replay of the session this Engine ran, if any.
+	// initGame allocated the writer; destroying it (ReplayWriter::finish)
+	// writes the NullOrder terminator and flushes the replay file. This must
+	// happen after run() returns because the EndGameScreen shown there needs
+	// the writer alive to offer "save replay".
+	globalContainer->replayWriter.reset();
+}
 
 int Engine::run(void)
 {

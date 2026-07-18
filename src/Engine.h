@@ -29,7 +29,8 @@ class Engine
 public:
 	//! Constructor
 	Engine();
-	//! Destructor
+	//! Destructor. Also finalizes globalContainer->replayWriter (which
+	//! initGame allocated), writing the replay file's NullOrder terminator.
 	~Engine();
 
 	// Engine uniquely owns its net engine and checksum sidecar (unique_ptr

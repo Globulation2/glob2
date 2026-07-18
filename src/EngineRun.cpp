@@ -465,6 +465,12 @@ void Engine::armReloadOrExit(bool& doRunOnceAgain)
 	{
 		int rv;
 
+		// A new game session is starting, so no EndGameScreen will be shown
+		// for the finished one: finalize its replay now (ReplayWriter::finish
+		// writes the NullOrder terminator and flushes). initGame requires the
+		// writer slot to be empty before it allocates the next session's.
+		globalContainer->replayWriter.reset();
+
 		if (globalContainer->replaying) rv = loadReplay(gui.toLoadGameFileName);
 		else rv = initCustom(gui.toLoadGameFileName);
 

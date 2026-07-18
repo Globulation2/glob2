@@ -46,12 +46,7 @@ Game::Game(GameGUI *gui, MapEdit* edit):
 
 Game::~Game()
 {
-
-	overlayAlphas.resize(0);
-
 	clearGame();
-
-	globalContainer->replayWriter.reset();
 }
 
 void Game::init(GameGUI *gui, MapEdit* edit)
