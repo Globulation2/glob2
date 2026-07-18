@@ -180,11 +180,16 @@ void GameGUI::drawChoice(int panelTopY, std::vector<std::string> &types, std::ve
 		RIGHT_MENU_WIDTH,
 		globalContainer->gfx->getH() - CHOICE_PANEL_CLIP_TOP_Y);
 
+	// Highlight the active tool's cell, but only when that tool belongs to THIS panel.
+	// selectionMode and displayMode are independent axes: the user can tab-cycle the
+	// display panel (CONSTRUCTION_VIEW <-> FLAG_VIEW) while a tool stays selected, which
+	// leaves e.g. a building tool active over the flag panel. In that desynced state the
+	// tool has no cell in `types`, so there is simply nothing to highlight here — a
+	// legitimate UI state, not an error. (findChoiceIndex returns nullopt for it.)
 	if (selectionMode == TOOL_SELECTION)
 	{
-		const auto selIdx = findChoiceIndex(types, toolManager.getBuildingName());
-		assert(selIdx);
-		drawChoiceHighlight(panelTopY, *selIdx, numberPerLine);
+		if (const auto selIdx = findChoiceIndex(types, toolManager.getBuildingName()))
+			drawChoiceHighlight(panelTopY, *selIdx, numberPerLine);
 	}
 
 	// 3. Resolve which icon to show info for: prefer mouse-hover, fall back to the
