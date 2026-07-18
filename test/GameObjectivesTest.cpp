@@ -93,6 +93,46 @@ void testRemoveObjectiveOnEmptyListIsNoOp()
 	      "removeObjective on an empty list is a no-op");
 }
 
+void testSettersIgnoreOutOfRangeIndices()
+{
+	GameObjectives objectives;
+
+	objectives.setGameObjectiveText(-1, "clobbered");
+	objectives.setGameObjectiveText(5, "clobbered");
+	check(objectives.getGameObjectiveText(0) == "[Defeat Your Oppenents]",
+	      "setGameObjectiveText ignores out-of-range indices");
+
+	objectives.setObjectiveType(-1, GameObjectives::Secondary);
+	objectives.setObjectiveType(5, GameObjectives::Secondary);
+	check(objectives.getObjectiveType(0) == GameObjectives::Primary,
+	      "setObjectiveType ignores out-of-range indices");
+
+	objectives.setScriptNumber(-1, 42);
+	objectives.setScriptNumber(5, 42);
+	check(objectives.getScriptNumber(0) == 1,
+	      "setScriptNumber ignores out-of-range indices");
+}
+
+void testGettersReturnDefaultsForOutOfRangeIndices()
+{
+	GameObjectives objectives;
+
+	check(objectives.getScriptNumber(-1) == GameObjectives::InvalidScriptNumber,
+	      "getScriptNumber returns InvalidScriptNumber for negative index");
+	check(objectives.getScriptNumber(5) == GameObjectives::InvalidScriptNumber,
+	      "getScriptNumber returns InvalidScriptNumber past the end");
+	check(objectives.getGameObjectiveText(-1) == "invalid",
+	      "getGameObjectiveText returns the invalid marker out of range");
+	check(objectives.getObjectiveType(-1) == GameObjectives::Invalid,
+	      "getObjectiveType returns Invalid out of range");
+	check(!objectives.isObjectiveVisible(-1),
+	      "isObjectiveVisible is false out of range");
+	check(!objectives.isObjectiveComplete(-1),
+	      "isObjectiveComplete is false out of range");
+	check(!objectives.isObjectiveFailed(-1),
+	      "isObjectiveFailed is false out of range");
+}
+
 } // namespace
 
 int main()
@@ -100,6 +140,8 @@ int main()
 	testRemoveObjectiveOutOfRangeIsNoOp();
 	testRemoveObjectiveInRangeRemovesAcrossAllFields();
 	testRemoveObjectiveOnEmptyListIsNoOp();
+	testSettersIgnoreOutOfRangeIndices();
+	testGettersReturnDefaultsForOutOfRangeIndices();
 
 	if (failures == 0)
 		std::printf("all tests passed\n");

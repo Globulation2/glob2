@@ -27,6 +27,11 @@ public:
 		Invalid
 	};
 
+	///Returned by getScriptNumber for an out-of-range index. Real script
+	///numbers are 1-based (the editor assigns 1..16), so 0 never matches
+	///an objective a script can reference.
+	static constexpr int InvalidScriptNumber = 0;
+
 	///This gets the number of objectives there are
 	int getNumberOfObjectives();
 	///This adds a new objective
@@ -34,9 +39,9 @@ public:
 	///This removes the given objective
 	void removeObjective(int n);
 
-	///This sets the text for the game objective at n
+	///This sets the text for the game objective at n; ignored if n is out of range
 	void setGameObjectiveText(int n, const std::string& objective);
-	///This returns the text for the game objective at n
+	///This returns the text for the game objective at n, or "invalid" if n is out of range
 	const std::string& getGameObjectiveText(int n);
 	
 	
@@ -58,14 +63,16 @@ public:
 	///This returns true if the given objective is failed
 	bool isObjectiveFailed(int n);
 	
-	///This sets the given objective type
+	///This sets the given objective type; ignored if n is out of range
 	void setObjectiveType(int n, GameObjectiveType type);
-	///This returns the given objective type
+	///This returns the given objective type, or Invalid if n is out of range
 	GameObjectiveType getObjectiveType(int n);
-	
-	///This sets the script number, which is how scripts will reference the given object
+
+	///This sets the script number, which is how scripts will reference the given object;
+	///ignored if n is out of range
 	void setScriptNumber(int n, int scriptNumber);
-	///This returns the script number, which is how scripts will reference the given object
+	///This returns the script number, which is how scripts will reference the given object,
+	///or InvalidScriptNumber if n is out of range
 	int getScriptNumber(int n);
 
 	///Encodes this GameObjectives into a bit stream
