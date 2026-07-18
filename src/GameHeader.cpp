@@ -35,6 +35,28 @@ void GameHeader::reset()
 
 
 
+namespace
+{
+	// 1-based ally-team IDs. reset() seeds allyTeamNumbers[i] = i+1, so
+	// team 1 and team 2 are the lowest two groups available.
+	constexpr Uint8 HUMAN_ALLY_TEAM = 1;
+	constexpr Uint8 ENEMY_ALLY_TEAM = 2;
+}
+
+void GameHeader::setDefaultAlliances(std::optional<int> humanColor, const std::vector<int>& aiColors)
+{
+	for (int i = 0; i < Team::MAX_COUNT; ++i)
+		setAllyTeamNumber(i, i + 1);
+	if (!humanColor)
+		return;
+	setAllyTeamNumber(*humanColor, HUMAN_ALLY_TEAM);
+	for (int aiColor : aiColors)
+		if (aiColor != *humanColor)
+			setAllyTeamNumber(aiColor, ENEMY_ALLY_TEAM);
+}
+
+
+
 bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("GameHeader");

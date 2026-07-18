@@ -6,6 +6,8 @@
 #include "BasePlayer.h"
 #include "Stream.h"
 #include <list>
+#include <optional>
+#include <vector>
 #include "WinningConditions.h"
 #include <assert.h>
 
@@ -100,6 +102,16 @@ public:
 		assert(teamNumber >= 0 && teamNumber < Team::MAX_COUNT);
 		allyTeamNumbers[teamNumber]=allyTeam;
 	}
+
+	///Applies the custom-game default alliance layout. All ally-team numbers
+	///are first reset to the free-for-all default (team i on singleton group
+	///i+1, as in reset()), then the human's team joins ally team 1 and every
+	///AI team with a different color joins ally team 2. An AI sharing the
+	///human's color shares its team -- alliances are per-team -- so it stays
+	///on the human's ally group. With no human selection (humanColor empty)
+	///the free-for-all layout is kept: a human-vs-AI split is meaningless
+	///without a human. Colors are team indices, [0, Team::MAX_COUNT).
+	void setDefaultAlliances(std::optional<int> humanColor, const std::vector<int>& aiColors);
 	
 	///Returns whether allying and de-allying are allowed mid-game
 	inline bool areAllyTeamsFixed() { return allyTeamsFixed; }

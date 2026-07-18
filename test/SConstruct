@@ -298,6 +298,25 @@ wcdecode_env.Program( target = 'GameHeaderTextSaveLoadTest',
                       ] )
 
 
+# Standalone regression harness for GameHeader::setDefaultAlliances, the
+# widget-free custom-game alliance layout used by
+# CustomGameScreen::updatePlayers (which used to track the human's color with
+# an `int humanColor = 0;` sentinel, so a missing human silently made team 0
+# "the human's team"). Checks the human/enemy split, the shared-color case,
+# the explicit no-human free-for-all, and the stale-layout reset. Pre-fix
+# tree fails to LINK (the helper does not exist). Reuses the GameHeader
+# object and its link surface.
+default_alliances_objs = [
+  wcdecode_env.Object('GameHeaderDefaultAlliancesTest.o', 'GameHeaderDefaultAlliancesTest.cpp'),
+  gameheader_objs[1],
+]
+wcdecode_env.Program( target = 'GameHeaderDefaultAlliancesTest',
+                      source = default_alliances_objs + [
+                        wcdecode_objs[1], wcdecode_objs[2],
+                        baseplayer_objs[1],
+                      ] )
+
+
 # Standalone regression harness for the BaseTeam "colorPAD" wire byte
 # (load() pins color.a to ALPHA_OPAQUE but save() used to write the live
 # alpha, so save->load->save drifted when alpha was non-opaque). Checks
