@@ -62,7 +62,11 @@ public:
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
 
-	/// Load a replay
+	/// Load a replay. Commits the global "we are replaying" state
+	/// (globalContainer->replaying, replayFileName, replayReader) only after
+	/// the replay file has been successfully parsed; on any failure the
+	/// global replay state is cleared so the next game starts as a normal
+	/// game. Returns EE_NO_ERROR or EE_CANT_LOAD_MAP.
 	int loadReplay(const std::string &fileName);
 	
 	///Tells whether a map matching mapHeader is located on this system
@@ -97,6 +101,12 @@ private:
 	/// GameGUI data in the file, such as viewport position and localTeam. This is
 	/// needed for when your loading a save game over the internet
 	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false);
+
+	/// Reset globalContainer's replay state (replaying flag, replay file name,
+	/// replay reader) so the next game session starts as a normal game.
+	/// Called on every loadReplay failure path — including when the caller
+	/// (e.g. the -replay command line path) set `replaying` before calling.
+	void clearReplayState();
 
 	/// Prepares a GameHeader for the given mapHeader as a campaign map
 	/// Campaign maps have one player per team, and the player can be

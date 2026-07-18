@@ -482,19 +482,10 @@ bool Engine::loadGame(const std::string &filename)
 
 int Engine::loadReplay(const std::string &fileName)
 {
-	// Let globalContainer know what we are doing
-	globalContainer->replaying = true;
-	globalContainer->replayFileName = fileName;
-
-	// Reset the replay's options
-	gui.localPlayer = 0;
-	gui.localTeamNo = 0;
-	globalContainer->replayVisibleTeams = REPLAY_VISIBLE_TEAMS_ALL;
-	globalContainer->replayFastForward = false;
-
-	// Initialize the ReplayReader in GlobalContainer
-	globalContainer->replayReader = std::make_unique<ReplayReader>();
-	bool replayLoaded = globalContainer->replayReader->loadReplay(fileName);
+	// Parse the replay file before committing any global state, so a failed
+	// load leaves globalContainer as if no replay had been requested.
+	auto replayReader = std::make_unique<ReplayReader>();
+	bool replayLoaded = replayReader->loadReplay(fileName);
 
 	// If the reader found that the replay isn't valid, show an error message and return
 	if (!replayLoaded)
@@ -505,11 +496,24 @@ int Engine::loadReplay(const std::string &fileName)
 			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 		}
 
-		globalContainer->replayReader.reset();
+		clearReplayState();
 		return EE_CANT_LOAD_MAP;
 	}
 
-	assert(globalContainer->replayReader->isValid());
+	assert(replayReader->isValid());
+
+	// The replay parsed: let globalContainer know we are now replaying.
+	// initGame below branches on `replaying` (it skips the replay writer
+	// and dataset writer, and keys the checksum sidecar off replayFileName).
+	globalContainer->replaying = true;
+	globalContainer->replayFileName = fileName;
+	globalContainer->replayReader = std::move(replayReader);
+
+	// Reset the replay's options
+	gui.localPlayer = 0;
+	gui.localTeamNo = 0;
+	globalContainer->replayVisibleTeams = REPLAY_VISIBLE_TEAMS_ALL;
+	globalContainer->replayFastForward = false;
 
 	// Load the map and settings.
 	MapHeader mapHeader = loadMapHeader(fileName);
@@ -529,6 +533,13 @@ int Engine::loadReplay(const std::string &fileName)
 		return -1;
 
 	return EE_NO_ERROR;
+}
+
+void Engine::clearReplayState()
+{
+	globalContainer->replaying = false;
+	globalContainer->replayFileName.clear();
+	globalContainer->replayReader.reset();
 }
 
 void Engine::finalAdjustements(void)
