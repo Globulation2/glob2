@@ -13,6 +13,7 @@
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
+#include "PanelButtonHit.h"
 #include "Player.h"
 #include "Unit.h"
 
@@ -46,25 +47,24 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		if (!globalContainer->replaying)
 		{
-			int dec = (RIGHT_MENU_WIDTH-128)/2;
-			int dm=(mx-dec)/32;
-			if (!((1<<dm) & hiddenGUIElements))
+			const int dec = (RIGHT_MENU_WIDTH - NB_VIEWS*PANEL_BUTTON_WIDTH)/2;
+			if (const auto button = panelButtonIndex(mx, dec, NB_VIEWS))
 			{
-				if (dm < NB_VIEWS)
+				// index is a validated button in [0, NB_VIEWS), so the mask
+				// shift can never be undefined.
+				if (!((1 << *button) & hiddenGUIElements))
 				{
-					displayMode=DisplayMode(dm);
+					displayMode = DisplayMode(*button);
 					clearSelection();
 				}
 			}
 		}
 		else
 		{
-			int dec = (RIGHT_MENU_WIDTH-96)/2;
-			int dm=(mx-dec)/32;
-
-			if (dm < RDM_NB_VIEWS)
+			const int dec = (RIGHT_MENU_WIDTH - RDM_NB_VIEWS*PANEL_BUTTON_WIDTH)/2;
+			if (const auto button = panelButtonIndex(mx, dec, RDM_NB_VIEWS))
 			{
-				replayDisplayMode=ReplayDisplayMode(dm);
+				replayDisplayMode = ReplayDisplayMode(*button);
 				clearSelection();
 			}
 		}

@@ -11,6 +11,7 @@
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
+#include "PanelButtonHit.h"
 #include "Player.h"
 #include "ReplayReader.h"
 #include "SoundMixer.h"
@@ -80,9 +81,9 @@ void GameGUI::drawPanelButtons(int y)
 
 void GameGUI::drawPanelButton(int y, int pos, int numButtons, int sprite)
 {
-	int dec = (RIGHT_MENU_WIDTH - numButtons*32)/2;
+	int dec = (RIGHT_MENU_WIDTH - numButtons*PANEL_BUTTON_WIDTH)/2;
 
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + dec + pos*32, y, globalContainer->gamegui, sprite);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + dec + pos*PANEL_BUTTON_WIDTH, y, globalContainer->gamegui, sprite);
 }
 
 void GameGUI::drawValueAlignedRight(int y, int v)

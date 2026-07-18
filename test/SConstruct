@@ -91,6 +91,8 @@ MessageRecipientsTest.cpp
 
 SpriteCenteringTest.cpp
 
+PanelButtonHitTest.cpp
+
 natsort/NatSortTest.cpp
 """)
 
