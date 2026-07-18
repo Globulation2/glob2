@@ -163,9 +163,6 @@ public:
 		DRAW_OVERLAY = 0x100,
 	};
 
-	/// This method will prepare the game with this mapHeader
-	void setMapHeader(const MapHeader& mapHeader);
-
 	/// This method will prepare the game with the provided gameHeader,
 	/// including initiating the Players
 	void setGameHeader(const GameHeader& gameHeader, bool saveAI=false);

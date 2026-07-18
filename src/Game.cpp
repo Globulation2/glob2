@@ -119,17 +119,6 @@ void Game::clearGame()
 
 
 
-void Game::setMapHeader(const MapHeader& newMapHeader)
-{
-	mapHeader = newMapHeader;
-
-	// set the base team, for now the number is corect but we should check that further
-	for (int i=0; i<newMapHeader.getNumberOfTeams(); i++)
-		teams[i]->setBaseTeam(&newMapHeader.getBaseTeam(i));
-}
-
-
-
 // Precondition: every players[i]->teamNumber must satisfy
 // 0 <= teamNumber < mapHeader.getNumberOfTeams() AND teams[teamNumber] must
 // be non-null. The two in-memory callers (MapEditClicks, MapEditDialog)
