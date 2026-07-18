@@ -525,12 +525,15 @@ int Engine::loadReplay(const std::string &fileName)
 		gameHeader.getBasePlayer(p).makeItAI(AI::NONE);
 	}
 
-	// Finally, initialise the Game
+	// Finally, initialise the Game. If the map embedded in the replay fails
+	// to load, drop the replay state committed above so the next game
+	// session starts as a normal game.
 	int ret = initGame(mapHeader, gameHeader, true, false, true);
 	if(ret != EE_NO_ERROR)
+	{
+		clearReplayState();
 		return EE_CANT_LOAD_MAP;
-	else if(ret == -1)
-		return -1;
+	}
 
 	return EE_NO_ERROR;
 }
