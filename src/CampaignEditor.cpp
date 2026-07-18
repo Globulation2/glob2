@@ -163,7 +163,7 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	nameEditorLabel = new Text(405, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map name]"));
 	nameEditor=new TextInput(420, 105, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", entry.getMapName());
 	isUnlockedLabel = new Text(430, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[unlocked at start]"));
-	isUnlocked = new OnOffButton(405, 140, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, entry.isUnlocked(), ISLOCKED);
+	isUnlocked = new OnOffButton(405, 140, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, entry.isUnlocked(), ISUNLOCKED);
 	descriptionEditorLabel = new Text(405, 170, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map description]"));
 	descriptionEditor = new TextArea(420, 195, 180, 225, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false, entry.getDescription().c_str());
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);

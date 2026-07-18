@@ -60,7 +60,7 @@ public:
 	{
 		OK,
 		CANCEL,
-		ISLOCKED,
+		ISUNLOCKED,
 	};
 private:
 	CampaignMapEntry& entry;
@@ -85,7 +85,7 @@ private:
 	Text *descriptionEditorLabel;
 	/// The button that says whether this entry is unlocked by default
 	OnOffButton* isUnlocked;
-	/// The is locked label
+	/// The label for isUnlocked
 	Text *isUnlockedLabel;
 };
 
