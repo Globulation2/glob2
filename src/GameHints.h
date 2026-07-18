@@ -17,13 +17,21 @@ class GameHints
 {
 public:
 	GameHints();
-	
+
+	///Script numbers travel as a single byte on the wire (encodeData writes
+	///Uint8), so the storable domain is [0..MaxScriptNumber]. addNewHint and
+	///setScriptNumber clamp to this range so the in-memory value always
+	///matches what a save/load round-trip yields. Stock content uses 1..8
+	///(the script editor has eight hint slots). Mirrors
+	///GameObjectives::MaxScriptNumber.
+	static constexpr int MaxScriptNumber = 255;
+
 	///Returns the number of hints. The count is returned as int (not size_t)
 	///because every caller indexes hints with int (script numbers, UI loops)
 	///and the serialized count is a Uint32; hint lists are tiny (campaign
 	///hints, single digits), so the narrowing can never overflow in practice.
 	int getNumberOfHints() const;
-	///This adds a new hint
+	///This adds a new hint. scriptNumber is clamped to [0..MaxScriptNumber]
 	void addNewHint(const std::string& hint, bool hidden, int scriptNumber);
 	///This removes the given hint
 	void removeHint(int n);
@@ -41,7 +49,8 @@ public:
 	///This returns true if the given hint text is visible
 	bool isHintVisible(int n) const;
 	
-	///This sets the script number, which is how scripts will reference the given object
+	///This sets the script number, which is how scripts will reference the given object.
+	///The value is clamped to [0..MaxScriptNumber]
 	void setScriptNumber(int n, int scriptNumber);
 	///This returns the script number, which is how scripts will reference the given object
 	int getScriptNumber(int n) const;
