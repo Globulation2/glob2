@@ -24,6 +24,13 @@ using namespace GAGCore;
 // #include "GUIBase.h"
 // #include <string>
 
+// Lines marked with a '*' in the credits file are decorated with a walking
+// worker taken from the shared units sprite. The worker walk cycle starts at
+// frame 64 with 8 frames per facing direction; the credits use direction 3,
+// i.e. frames 88..95, cycling through all 8 frames as the text scrolls.
+static constexpr int kWorkerWalkFrameBase = 88;
+static constexpr int kWorkerWalkFrameCount = 8;
+
 class ScrollingText:public RectangularWidget
 {
 protected:
@@ -32,7 +39,9 @@ protected:
 	std::vector<std::string> text;
 	std::vector<int> xPos; // Pre-calculated postions for text centering
 	int offset;
-	int imgid, imgid0;
+	// whether the units sprite contains the worker walk frames; when false,
+	// the '*' decoration is skipped instead of indexing the sprite out of range
+	bool unitFramesAvailable;
 
 	// cache, recomputed on internalInit
 	GAGCore::Font *fontPtr;
@@ -62,9 +71,8 @@ ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 v
 	this->vAlignFlag = vAlign;
 	
 	offset = 0;
-	imgid = 0;
-	imgid0 = 88;
-	
+	unitFramesAvailable = false;
+
 	assert(font.size());
 	assert(filename.size());
 	this->font = font;
@@ -91,7 +99,15 @@ void ScrollingText::internalInit(void)
 {
 	fontPtr = Toolkit::getFont(font.c_str());
 	assert(fontPtr);
-	int x, y, w, h;	
+
+	unitFramesAvailable = globalContainer->units
+		&& (globalContainer->units->getFrameCount() >= kWorkerWalkFrameBase + kWorkerWalkFrameCount);
+	if (!unitFramesAvailable)
+		std::cerr << "ScrollingText::internalInit() : warning, units sprite lacks worker walk frames "
+			<< kWorkerWalkFrameBase << ".." << (kWorkerWalkFrameBase + kWorkerWalkFrameCount - 1)
+			<< ", credits decoration disabled" << std::endl;
+
+	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
 	offset = -h + 25;
 	
@@ -124,7 +140,9 @@ void ScrollingText::paint()
 	assert(parent->getSurface());
 
 	int yPos = y;
-	imgid = imgid0 + (offset & 0x7);
+	// offset can be negative (it starts at -h + 25), so mask rather than
+	// modulo to stay within the 8-frame walk cycle
+	const int imgid = kWorkerWalkFrameBase + (offset & (kWorkerWalkFrameCount - 1));
 
 	for (size_t i = 0; i < text.size(); i++)
 	{
@@ -137,15 +155,18 @@ void ScrollingText::paint()
 			// If we can find a star in this line
 			if (deco != std::string::npos)
 			{
-				int px = 2*h+(offset-yPos)*4;
-				int py = yPos-offset;
-				
-				Sprite *unitSprite=globalContainer->units;
-				unitSprite->setBaseColor(128, 128, 128);
-				int decX = (unitSprite->getW(imgid)-32)>>1;
-				int decY = (unitSprite->getH(imgid)-32)>>1;
-				globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
-				
+				if (unitFramesAvailable)
+				{
+					int px = 2*h+(offset-yPos)*4;
+					int py = yPos-offset;
+
+					Sprite *unitSprite=globalContainer->units;
+					unitSprite->setBaseColor(128, 128, 128);
+					int decX = (unitSprite->getW(imgid)-32)>>1;
+					int decY = (unitSprite->getH(imgid)-32)>>1;
+					globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+				}
+
 				yPos += 20;
 			}
 			else
