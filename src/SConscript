@@ -250,6 +250,7 @@ OrderBuilding.cpp
 OrderModify.cpp
 OrderMisc.cpp
 OverlayAreas.cpp
+OverlayFill.cpp
 PerlinNoise.cpp
 Player.cpp
 game/entities/Race.cpp
