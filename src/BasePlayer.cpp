@@ -100,7 +100,7 @@ bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	if (!isValidSerializedType(rawType))
 	{
 		fprintf(stderr, "BasePlayer::load: invalid player type %u (must be below %u)\n",
-			(unsigned)rawType, (unsigned)(P_AI + AI::SIZE));
+			(unsigned)rawType, (unsigned)P_AI + (unsigned)AI::SIZE);
 		return false;
 	}
 	type = (PlayerType)rawType;
