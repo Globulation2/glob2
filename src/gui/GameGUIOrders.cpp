@@ -41,6 +41,7 @@
 #include "ReplayWriter.h"
 #include "config.h"
 #include "Order.h"
+#include "net/message/MessageRecipients.h"
 
 #include <SDL_keycode.h>
 
@@ -166,17 +167,12 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 					addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()), true);
 				else if (sp==localPlayer)
 				{
-					Uint32 rm=mo->recepientsMask;
-					int k;
-					for (k=0; k<Team::MAX_COUNT; k++)
-						if (rm==1)
-						{
-							addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
-							break;
-						}
-						else
-							rm=rm>>1;
-					assert(k<Team::MAX_COUNT);
+					// Echo the outgoing private message once per recipient. The
+					// mask can carry several recipients, so iterate every set
+					// bit; messageRecipientPlayers drops any bit outside the
+					// live player range instead of indexing an empty slot.
+					for (int k : messageRecipientPlayers(mo->recepientsMask, game.gameHeader.getNumberOfPlayers()))
+						addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
 				}
 			}
 			else

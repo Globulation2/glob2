@@ -238,6 +238,7 @@ net/message/GameTeamMessages.cpp
 net/message/LobbyMessages.cpp
 net/message/MapDatabaseMessages.cpp
 net/message/MapUploadMessages.cpp
+net/message/MessageRecipients.cpp
 net/message/OrderMessages.cpp
 net/message/RegistrationMessages.cpp
 net/message/RouterAdminMessages.cpp
@@ -377,6 +378,7 @@ net/message/GameTeamMessages.cpp
 net/message/LobbyMessages.cpp
 net/message/MapDatabaseMessages.cpp
 net/message/MapUploadMessages.cpp
+net/message/MessageRecipients.cpp
 net/message/OrderMessages.cpp
 net/message/RegistrationMessages.cpp
 net/message/RouterAdminMessages.cpp
