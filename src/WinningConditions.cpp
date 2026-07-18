@@ -88,6 +88,48 @@ std::list<std::shared_ptr<WinningCondition> > WinningCondition::getDefaultWinnin
 
 
 
+void WinningCondition::setPrestigeWinCondition(std::list<std::shared_ptr<WinningCondition> >& conditions, bool enabled)
+{
+	const auto isPrestige = [](const std::shared_ptr<WinningCondition>& condition)
+	{
+		return condition->getType() == WCPrestige;
+	};
+	const auto existing = std::find_if(conditions.begin(), conditions.end(), isPrestige);
+
+	if (!enabled)
+	{
+		if (existing != conditions.end())
+			conditions.erase(existing);
+		return;
+	}
+	if (existing != conditions.end())
+		return;
+
+	// Rank types by their position in getDefaultWinningConditions so the
+	// default order stays the single source of truth for evaluation priority.
+	const std::list<std::shared_ptr<WinningCondition> > defaults = getDefaultWinningConditions();
+	const auto defaultRank = [&defaults](WinningConditionType type) -> size_t
+	{
+		size_t rank = 0;
+		for (const auto& condition : defaults)
+		{
+			if (condition->getType() == type)
+				return rank;
+			++rank;
+		}
+		return defaults.size();
+	};
+	const size_t prestigeRank = defaultRank(WCPrestige);
+	const auto insertBefore = std::find_if(conditions.begin(), conditions.end(),
+		[&](const std::shared_ptr<WinningCondition>& condition)
+		{
+			return defaultRank(condition->getType()) > prestigeRank;
+		});
+	conditions.insert(insertBefore, std::make_shared<WinningConditionPrestige>());
+}
+
+
+
 bool WinningConditionDeath::hasTeamWon(int team, const Game* game) const
 {
 	return false;

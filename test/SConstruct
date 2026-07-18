@@ -236,6 +236,20 @@ wcdecode_objs = [
 wcdecode_env.Program( target = 'WinningConditionDecodeTest', source = wcdecode_objs )
 
 
+# Standalone regression harness for WinningCondition::setPrestigeWinCondition,
+# the in-place prestige toggle used by CustomGameOtherOptions (which used to
+# reset the whole winning-condition list to defaults before maybe erasing
+# prestige). Checks removal/insertion is scoped to the prestige entry and that
+# re-insertion lands at the default-order evaluation position. Pre-fix tree
+# fails to LINK (the helper does not exist). Reuses the wcdecode env's
+# WinningConditions object and stubs.
+prestige_toggle_objs = [
+  wcdecode_env.Object('WinningConditionPrestigeToggleTest.o', 'WinningConditionPrestigeToggleTest.cpp'),
+  wcdecode_objs[1], wcdecode_objs[2],
+]
+wcdecode_env.Program( target = 'WinningConditionPrestigeToggleTest', source = prestige_toggle_objs )
+
+
 # Standalone regression harness for Bullet::ticksInitial serialization
 # (save() used to omit the field and load() zeroed it, flattening the
 # ballistic-arc rendering of in-flight bullets after a reload). Checks a

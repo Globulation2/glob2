@@ -60,6 +60,13 @@ public:
 	static bool loadWinningConditions(GAGCore::InputStream* stream, Uint32 versionMinor, std::list<std::shared_ptr<WinningCondition> >& conditions);
 	///This will set the given list to the default set of winning conditions, in their default order
 	static std::list<std::shared_ptr<WinningCondition> > getDefaultWinningConditions();
+	///Enables or disables the prestige winning condition, editing `conditions`
+	///in place: every other entry is left untouched. List order is evaluation
+	///priority -- Team::checkWinConditions stops at the first condition that
+	///declares a win or loss -- so when prestige is re-added it is inserted at
+	///its default-order position (see getDefaultWinningConditions), not
+	///appended. Enabling when present and disabling when absent are no-ops.
+	static void setPrestigeWinCondition(std::list<std::shared_ptr<WinningCondition> >& conditions, bool enabled);
 
 };
 
