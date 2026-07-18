@@ -266,6 +266,7 @@ SettingsScreenBuildings.cpp
 SettingsScreenKeyboard.cpp
 SGSL.cpp
 SimplexNoise.cpp
+PlayerVoice.cpp
 SoundMixer.cpp
 team/Team.cpp
 team/TeamSerialization.cpp

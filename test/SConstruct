@@ -62,6 +62,9 @@ MapQueryTestStubs.cpp
 GameMusicControllerTest.cpp
 ../src/gui/GameMusicController.cpp
 
+PlayerVoiceDrainTest.cpp
+../src/PlayerVoice.cpp
+
 GhostBuildingOverlapTest.cpp
 
 BrushToolHitTest.cpp

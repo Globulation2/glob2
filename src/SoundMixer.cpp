@@ -57,31 +57,12 @@ void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
 	float value = 0;
 	for (std::map<int, PlayerVoice>::iterator i = voices.begin(); i != voices.end();)
 	{
-		struct PlayerVoice &pv = i->second;
-		value += (1-pv.voiceSubIndex) * pv.voiceVal0 + pv.voiceSubIndex * pv.voiceVal1;
-	
-		// increment index, keep track of stereo
-		pv.voiceSubIndex += (8000.0f/44100.0f)*0.5f;
-		if (pv.voiceSubIndex > 1)
-		{
-			pv.voiceSubIndex -= 1;
-			pv.voiceVal0 = pv.voiceVal1;
-			pv.voiceDatas.pop();
-			pv.voiceVal1 = pv.voiceDatas.front();
-			
-			// if there is no more data in this voice, remove it
-			if (pv.voiceDatas.empty())
-			{
-				// go to next voice
-				std::map<int, PlayerVoice>::iterator j = i;
-				++i;
-				voices.erase(j);
-				continue;
-			}
-		}
-		
-		// go to next voice
-		++i;
+		bool exhausted = false;
+		value += i->second.advanceOutputSample(exhausted);
+		if (exhausted)
+			i = voices.erase(i);
+		else
+			++i;
 	}
 	// saturate
 	value = std::min(value, 32767.0f);
