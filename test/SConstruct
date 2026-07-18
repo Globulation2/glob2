@@ -81,6 +81,8 @@ GUIListSelectionTest.cpp
 
 ScrollWheelTargetTest.cpp
 
+BuildingFailureDisplayTest.cpp
+
 OverlayFillTest.cpp
 ../src/OverlayFill.cpp
 

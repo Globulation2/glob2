@@ -7,6 +7,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 
+#include "BuildingFailureDisplay.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
@@ -418,15 +419,12 @@ void GameGUI::drawBuildingFailureReasons(Building* selBuild, BuildingType* build
 	if (!((selBuild->owner->allies) & (1<<localTeamNo)))
 		return;
 
-	// data on whether or not the building is recieving units
-	bool otherFailure=true;
-	for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
-	{
-		int n = selBuild->unitsFailingRequirements[j];
-		if(j!=0 && n>0)
-			otherFailure=true;
-	}
-	if(!otherFailure)
+	// Only show the failure-reason rows when a *real* obstruction exists.
+	// A building that merely lacks spare idle units (UnitNotAvailable only) is
+	// in its normal state and gets no rows; see shouldShowBuildingFailureReasons.
+	if (!shouldShowBuildingFailureReasons(selBuild->unitsFailingRequirements,
+	                                      Building::UnitCantWorkReasonSize,
+	                                      Building::UnitNotAvailable))
 		return;
 
 	for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
