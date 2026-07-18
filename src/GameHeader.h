@@ -83,11 +83,23 @@ public:
 		return false;
 	}
 
-	///Returns the ally-team number for the given team for pre-game alliances
-	inline Uint8 getAllyTeamNumber(int teamNumber) { return allyTeamNumbers[teamNumber]; }
-	
-	///Sets the ally-team number for the given team
-	inline void setAllyTeamNumber(int teamNumber, Uint8 allyTeam) { allyTeamNumbers[teamNumber]=allyTeam; }
+	///Returns the ally-team number for the given team for pre-game alliances.
+	///Ally team numbers are 1-based (the constructor assigns team i the value
+	///i+1); 0 only appears in a malformed or hand-edited header.
+	inline Uint8 getAllyTeamNumber(int teamNumber)
+	{
+		assert(teamNumber >= 0 && teamNumber < Team::MAX_COUNT);
+		return allyTeamNumbers[teamNumber];
+	}
+
+	///Sets the ally-team number (1-based, see getAllyTeamNumber) for the given
+	///team. The header is replicated to all clients, so an out-of-range write
+	///here would silently corrupt shared state -- hence the assert.
+	inline void setAllyTeamNumber(int teamNumber, Uint8 allyTeam)
+	{
+		assert(teamNumber >= 0 && teamNumber < Team::MAX_COUNT);
+		allyTeamNumbers[teamNumber]=allyTeam;
+	}
 	
 	///Returns whether allying and de-allying are allowed mid-game
 	inline bool areAllyTeamsFixed() { return allyTeamsFixed; }

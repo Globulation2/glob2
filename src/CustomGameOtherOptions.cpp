@@ -7,6 +7,7 @@
 #include <StringTable.h>
 #include <GUIButton.h>
 #include <GUIText.h>
+#include <optional>
 #include <sstream>
 
 CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)
@@ -103,29 +104,32 @@ void CustomGameOtherOptions::onAction(Widget *source, Action action, int par1, i
 	{
 		if(par1>=200 && par1<300)
 		{
-			int team = -1;
-			int nth = 0;
-			int n = 0;
-			///Find which team number this widget is for
+			///Find which player row this widget is for. The lookup can
+			///genuinely fail (e.g. a stale event for a widget of a player
+			///slot that no longer exists); there is nothing to update then.
+			std::optional<int> playerRow;
 			for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 			{
 				if(allyTeamNumbers[i] == source)
 				{
-					team = gameHeader.getBasePlayer(i).teamNumber;
-					nth = allyTeamNumbers[i]->getIndex();
-					n = nth+1;
+					playerRow = i;
 					break;
 				}
 			}
+			if(!playerRow)
+				return;
+			const int team = gameHeader.getBasePlayer(*playerRow).teamNumber;
+			const int allyIndex = allyTeamNumbers[*playerRow]->getIndex();
 			///Adjust all widgets that have this team number
 			for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 			{
 				if(gameHeader.getBasePlayer(i).teamNumber == team)
 				{
-					allyTeamNumbers[i]->setIndex(nth);
+					allyTeamNumbers[i]->setIndex(allyIndex);
 				}
 			}
-			gameHeader.setAllyTeamNumber(team, n);
+			///Widget indices are 0-based; ally team numbers are 1-based
+			gameHeader.setAllyTeamNumber(team, allyIndex+1);
 		}
 		else if(par1 == TEAMSFIXED)
 		{
