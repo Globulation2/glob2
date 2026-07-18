@@ -233,6 +233,10 @@ def main():
               default='build',
               help='build directory')
     env = Environment()
+    # SCons scrubs the shell environment for build commands; without TMPDIR,
+    # tools like ar fall back to /tmp, which sandboxed environments may block.
+    if 'TMPDIR' in os.environ:
+        env['ENV']['TMPDIR'] = os.environ['TMPDIR']
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
 
