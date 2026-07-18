@@ -20,13 +20,22 @@ class Game;
 //! layout changes, this offset must change too. See ChecksumSidecar.cpp.
 static constexpr long CHECKSUM_SIDECAR_TOTALTICKS_OFFSET = 12;
 
+//! Streams per-tick simulation checksums to `<replayPath>.checksums`.
+//!
+//! Lifecycle contract: open(game) once, then writeTick(..., game) with the
+//! SAME game object every tick, then close(). The writer is single-use — to
+//! record a different game, destroy it and construct a new one; there is no
+//! reopen. The team/player counts in the header are read from `game` at
+//! open(), and writeTick() re-reads the live counts from `game` each tick,
+//! so the two can only disagree if the counts change mid-game (the engine
+//! never does this: Game::teamsCount() comes from the immutable MapHeader).
 class ChecksumSidecarWriter
 {
 public:
 	ChecksumSidecarWriter();
 	~ChecksumSidecarWriter();
 
-	bool open(const std::string& replayPath, int numTeams, int numPlayers);
+	bool open(const std::string& replayPath, const Game& game);
 	void writeTick(Uint32 tick, Uint32 totalChecksum, Game& game);
 	//! Patches total_ticks into the header and closes the file. Returns
 	//! false if any write, seek, or close failed since open(); in that case
@@ -38,8 +47,6 @@ public:
 private:
 	FILE* file;
 	std::string path;
-	int numTeams;
-	int numPlayers;
 	Uint32 ticksWritten;
 	//! Sticky success flag: cleared by the first failed write/seek/close and
 	//! never set again until the next open(). Once cleared, all further

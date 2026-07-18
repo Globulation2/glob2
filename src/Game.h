@@ -189,7 +189,7 @@ public:
 	void dirtyWarFlagGradient();
 
 	// Script interface
-	int teamsCount() { return mapHeader.getNumberOfTeams(); }
+	int teamsCount() const { return mapHeader.getNumberOfTeams(); }
 	int isTeamAlive(int team);
 	int unitsCount(int team, int type);
 	int buildingsCount(int team, int type, int level);

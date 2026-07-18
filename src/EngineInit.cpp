@@ -382,9 +382,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 			? globalContainer->replayFileName
 			: replayPath;
 		checksumSidecar = std::make_unique<ChecksumSidecarWriter>();
-		if (!checksumSidecar->open(sidecarBase,
-			gui.game.teamsCount(),
-			gui.game.gameHeader.getNumberOfPlayers()))
+		if (!checksumSidecar->open(sidecarBase, gui.game))
 		{
 			std::cerr << "GLOB2_CHECKSUM_SIDECAR: failed to open checksum sidecar for "
 				<< sidecarBase << std::endl;

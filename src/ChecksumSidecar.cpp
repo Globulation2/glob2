@@ -5,11 +5,12 @@
 #include "Unit.h"
 #include "Building.h"
 #include <SDL_endian.h>
+#include <cassert>
 #include <cstring>
 #include <vector>
 
 ChecksumSidecarWriter::ChecksumSidecarWriter()
-	: file(NULL), numTeams(0), numPlayers(0), ticksWritten(0), ok(true)
+	: file(NULL), ticksWritten(0), ok(true)
 {
 }
 
@@ -46,15 +47,22 @@ void ChecksumSidecarWriter::writeU32(Uint32 v)
 	writeBytes(&v, sizeof(v));
 }
 
-bool ChecksumSidecarWriter::open(const std::string& replayPath, int numTeams, int numPlayers)
+bool ChecksumSidecarWriter::open(const std::string& replayPath, const Game& game)
 {
+	const int numTeams = game.teamsCount();
+	const int numPlayers = game.gameHeader.getNumberOfPlayers();
+	// A count outside the live array bounds would make writeTick index past
+	// game.teams[] — refuse to open rather than emit a sidecar whose header
+	// promises data we could never write.
+	if (numTeams < 1 || numTeams > Team::MAX_COUNT
+		|| numPlayers < 1 || numPlayers > Team::MAX_COUNT)
+		return false;
+
 	path = replayPath + ".checksums";
 	file = GAGCore::Toolkit::getFileManager()->openFP(path, "wb");
 	if (!file)
 		return false;
 
-	this->numTeams = numTeams;
-	this->numPlayers = numPlayers;
 	ticksWritten = 0;
 	ok = true;
 
@@ -96,9 +104,17 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& g
 
 	std::vector<Uint32> vec;
 
+	// Counts come from the live game, not from state captured at open() —
+	// so a stale writer can never index past game.teams[]. teamsCount() is
+	// fixed for the whole game (MapHeader), so this always matches the
+	// header written by open().
+	const int numTeams = game.teamsCount();
+	assert(numTeams >= 1 && numTeams <= Team::MAX_COUNT);
+
 	for (int t = 0; t < numTeams; t++)
 	{
 		Team* team = game.teams[t];
+		assert(team);
 
 		// Team-level checksum
 		Uint32 teamCs = team->checkSum(NULL, NULL, NULL);
