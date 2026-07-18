@@ -6,6 +6,7 @@
 #include "SDL.h"
 #include <string>
 #include <map>
+#include <optional>
 #include <vector>
 
 ///This namespace stores everything related to the key actions that can occur at key-press
@@ -46,8 +47,9 @@ namespace MapEditKeyActions
 	///Gets the name of a key-action from the integer
 	const std::string getName(Uint32 action);
 	
-	///Reverses a name of a key action back to its integer
-	const Uint32 getAction(const std::string& name);
+	///Reverses a name of a key action back to its integer.
+	///Returns std::nullopt if the name is not a known key action.
+	std::optional<Uint32> getAction(const std::string& name);
 	
 	///Returns the name of the file for the default configuration
 	std::string getDefaultConfigurationFile();

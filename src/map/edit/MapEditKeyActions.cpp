@@ -79,12 +79,26 @@ namespace MapEditKeyActions
 
 	const std::string getName(Uint32 action)
 	{
-		return names[action];
+		// Defensive bounds check: every current caller passes an id in
+		// [DoNothing, ActionSize), but an out-of-range id must not index
+		// past the vector. Return an empty name for unknown ids.
+		if(action < names.size())
+			return names[action];
+		return std::string();
 	}
 
-	const Uint32 getAction(const std::string& name)
+	std::optional<Uint32> getAction(const std::string& name)
 	{
-		return keys[name];
+		// Pure lookup: returns the action id for a canonical name, or
+		// std::nullopt when the name is unknown (e.g. a typo in the user's
+		// keyboard-mapedit.txt). Uses find() rather than operator[] so an
+		// unknown name is neither silently mapped to DoNothing (id 0) nor
+		// inserted into the static map. The caller decides how to handle
+		// the not-found case.
+		std::map<std::string, Uint32>::const_iterator it = keys.find(name);
+		if(it == keys.end())
+			return std::nullopt;
+		return it->second;
 	}
 	
 	std::string getDefaultConfigurationFile()

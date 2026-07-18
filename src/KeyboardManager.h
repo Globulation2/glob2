@@ -34,8 +34,9 @@ public:
 	///Formats the shortcut
 	std::string format(ShortcutMode mode) const;
 
-	///Interprets a keyboard shortcut from a string
-	void interpret(const std::string& s, ShortcutMode mode);
+	///Interprets a keyboard shortcut from a string. Returns false if the
+	///action name is unknown (the shortcut should then be discarded).
+	bool interpret(const std::string& s, ShortcutMode mode);
 
 	///Formats a translated version, not for serializtaion
 	std::string formatTranslated(ShortcutMode mode) const;

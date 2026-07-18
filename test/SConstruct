@@ -93,6 +93,10 @@ SpriteCenteringTest.cpp
 
 PanelButtonHitTest.cpp
 
+KeyActionLookupTest.cpp
+../src/gui/GameGUIKeyActions.cpp
+../src/map/edit/MapEditKeyActions.cpp
+
 natsort/NatSortTest.cpp
 """)
 

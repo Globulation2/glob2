@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
+#include <iostream>
+#include <optional>
 #include <string>
 #include "FileManager.h"
 #include "GameGUIKeyActions.h"
@@ -47,7 +49,7 @@ std::string KeyboardShortcut::format(ShortcutMode mode) const
 
 
 
-void KeyboardShortcut::interpret(const std::string& as, ShortcutMode mode)
+bool KeyboardShortcut::interpret(const std::string& as, ShortcutMode mode)
 {
 	std::string s = as;
 	std::string left = std::string(s, 0, s.find(">=")+1);
@@ -60,16 +62,31 @@ void KeyboardShortcut::interpret(const std::string& as, ShortcutMode mode)
 		keys.push_back(kp);
 		left=left.substr(end+2, std::string::npos);
 	}
-	
+
 	//Add the key that isn't seperated by a -
 	KeyPress kp;
 	kp.interpret(left);
 	keys.push_back(kp);
-	
+
+	std::optional<Uint32> resolved;
 	if(mode == GameGUIShortcuts)
-		action = GameGUIKeyActions::getAction(right);
-	if(mode == MapEditShortcuts)
-		action = MapEditKeyActions::getAction(right);
+		resolved = GameGUIKeyActions::getAction(right);
+	else if(mode == MapEditShortcuts)
+		resolved = MapEditKeyActions::getAction(right);
+
+	// An unknown action name (config typo, or a name renamed between
+	// versions) has no valid binding. Warn and report failure so the
+	// caller can skip it, rather than silently binding it to DoNothing.
+	if(!resolved)
+	{
+		std::cerr << "KeyboardShortcut::interpret: unknown key action \""
+		          << right << "\" in shortcut \"" << as
+		          << "\"; ignoring binding" << std::endl;
+		return false;
+	}
+
+	action = *resolved;
+	return true;
 }
 
 
@@ -236,8 +253,8 @@ bool KeyboardManager::loadKeyboardLayout(const std::string& file)
 		if(line == "")
 			continue;
 		KeyboardShortcut ks;
-		ks.interpret(line, mode);
-		shortcuts.push_back(ks);
+		if(ks.interpret(line, mode))
+			shortcuts.push_back(ks);
 	}
 
 	delete stream;
