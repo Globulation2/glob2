@@ -99,7 +99,6 @@ Engine.cpp
 EngineInit.cpp
 EngineLoaders.cpp
 EngineRun.cpp
-Fatal.cpp
 FertilityCalculator.cpp
 FertilityCalculatorDialog.cpp
 Game.cpp
