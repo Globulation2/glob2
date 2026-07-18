@@ -436,6 +436,14 @@ namespace GAGGUI
 		if ((index >= -1 ) && (index < static_cast<int>(strings.size())))
 			this->nth = index;
 	}
+
+	void List::setSelection(std::optional<size_t> index)
+	{
+		if (!index)
+			this->nth = -1;
+		else if (*index < strings.size())
+			this->nth = static_cast<Sint32>(*index);
+	}
 	
 	void List::centerOnItem(int index)
 	{

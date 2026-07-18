@@ -173,7 +173,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 				Toolkit::getFileManager()->remove(mapFileName);
 				active->generateList();
 
-				active->setSelectionIndex(std::min(i, active->getCount() - 1));
+				active->setSelection(List::selectionAfterRemoval(i, active->getCount()));
 				active->selectionChanged();
 			}
 		}

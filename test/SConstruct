@@ -72,6 +72,8 @@ ParticleCrossfadeTest.cpp
 
 CortexUpgradeTest.cpp
 
+GUIListSelectionTest.cpp
+
 natsort/NatSortTest.cpp
 """)
 
