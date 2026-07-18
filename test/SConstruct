@@ -150,6 +150,23 @@ CampaignLoadTestStubs.cpp
 campaign_env.Program( target = 'CampaignBoundsHarness', source = campaign_bounds_sources )
 
 
+# Standalone regression harness for the CampaignSelectorScreen description
+# re-parse smell: every selection event used to re-parse the whole campaign
+# file just to show its description. CampaignDescriptionCache parses each
+# file at most once per instance; the harness proves correct lookup, the
+# empty-description behaviour for unreadable files, and (by rewriting the
+# fixture between lookups) that repeated lookups don't touch the disk.
+# Pre-fix tree fails to LINK (the cache class does not exist). Reuses the
+# same env / libgag_server.a / stubs as the other Campaign harnesses.
+campaign_desc_sources = Split("""
+CampaignDescriptionCacheHarness.cpp
+CampaignLoadTestStubs.cpp
+../src/Campaign.cpp
+""")
+
+campaign_env.Program( target = 'CampaignDescriptionCacheHarness', source = campaign_desc_sources )
+
+
 # Standalone regression harness for BH-195 (OrderAlterateArea::setData
 # OOB read on malformed bitmap payload). Builds synthetic Uint8 buffers
 # and checks that setData rejects them. Compiled with YOG_SERVER_ONLY so

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -113,6 +114,28 @@ private:
 	std::string name;
 	std::string playerName;
 	std::string description;
+};
+
+
+///Caches campaign descriptions keyed by campaign file name, for selection
+///UIs that show the description of whichever file is highlighted.
+///
+///The campaign file format stores the description as the *last* field and
+///TextInputStream parses the whole file up front, so there is no cheaper
+///"read only the description" path — the only way to avoid re-parsing the
+///file on every list-selection event is to remember the result. The cache
+///is meant to live as long as its owning screen; campaign files don't
+///change while a selector is open, so there is no invalidation.
+class CampaignDescriptionCache
+{
+public:
+	///Returns the description of the campaign stored in fileName, loading
+	///and caching it on first request. Unreadable or corrupt files yield ""
+	///(cached too), matching what Campaign::load leaves behind on failure.
+	const std::string& getDescription(const std::string& fileName);
+
+private:
+	std::map<std::string, std::string> descriptions;
 };
 
 

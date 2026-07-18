@@ -381,3 +381,21 @@ const std::string& Campaign::getDescription() const
 	return description;
 }
 
+
+
+const std::string& CampaignDescriptionCache::getDescription(const std::string& fileName)
+{
+	auto it = descriptions.find(fileName);
+	if (it == descriptions.end())
+	{
+		// On load failure the campaign's description stays "", and that empty
+		// string is cached deliberately: an unreadable file shows an empty
+		// description either way, and caching it avoids re-hitting the disk
+		// (and re-printing the load error) on every selection event.
+		Campaign campaign;
+		campaign.load(fileName);
+		it = descriptions.emplace(fileName, campaign.getDescription()).first;
+	}
+	return it->second;
+}
+

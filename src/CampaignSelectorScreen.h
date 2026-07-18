@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "Campaign.h"
 #include "Glob2Screen.h"
 #include "GUIText.h"
 #include "GUIButton.h"
@@ -36,6 +37,9 @@ private:
 	FileList *fileList;
 	/// The description
 	TextArea* description;
+	/// Descriptions already read from disk, so highlighting the same file
+	/// twice doesn't re-parse the whole campaign file each time
+	CampaignDescriptionCache descriptionCache;
 };
 
 
