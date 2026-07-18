@@ -17,7 +17,7 @@ class CampaignSelectorScreen : public Glob2Screen
 public:
 	CampaignSelectorScreen(bool isSelectingSave=false);
 	void onAction(Widget *source, Action action, int par1, int par2);
-	std::string getCampaignName();
+	std::string getCampaignName() const;
 
 	enum
 	{

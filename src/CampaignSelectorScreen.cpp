@@ -59,7 +59,7 @@ void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, i
 
 
 
-std::string CampaignSelectorScreen::getCampaignName()
+std::string CampaignSelectorScreen::getCampaignName() const
 {
 	auto sel = fileList->selection();
 	assert(sel);
