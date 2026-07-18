@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#include <string>
+
 #include <SDL_net.h>
 
 #include <boost/random/mersenne_twister.hpp>
@@ -106,6 +108,17 @@ namespace Utilities
 	
 	//! tokenize the string into 32 static char[256] strings. Returns the number of tokens. All tokens are valids
 	int staticTokenize(const char *s, int n, char token[32][256]);
+
+	//! If s starts with prefix, return s without that prefix; otherwise return s
+	//! unchanged. Never throws. Used by the LoadSaveScreen filename-to-display-name
+	//! callbacks to remove the listing-root directory (e.g. "replays/") from a full
+	//! virtual path while leaving unexpected names intact.
+	std::string stripPrefix(const std::string& s, const std::string& prefix);
+	//! If s ends with suffix, return s without that suffix; otherwise return s
+	//! unchanged. Never throws. Counterpart of stripPrefix for file extensions
+	//! (e.g. ".replay"): a stray file without the expected extension passes
+	//! through instead of crashing the dialog.
+	std::string stripSuffix(const std::string& s, const std::string& suffix);
 	
 	//! helpers for fixed points manipulation
 	inline int intToFixed(int i, const int precision = 256) {return  i * precision; }

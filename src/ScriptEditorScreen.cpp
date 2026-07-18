@@ -519,20 +519,17 @@ void ScriptEditorScreen::onTimer(Uint32 timer)
 }
 
 
+//! LoadSaveScreen name-extractor callback for the script load/save dialog:
+//! turn a full virtual path like "scripts/My_Map.usl" (or .sgsl, depending on
+//! the map-edit language option) into the display name "My Map". Directory
+//! prefix and extension are only removed when actually present, so a stray
+//! file in scripts/ degrades to showing its raw name instead of throwing
+//! (erase(npos) used to crash the dialog).
 std::string filenameToName(const std::string& fullfilename)
 {
-	std::string filename = fullfilename;
-	filename.erase(0, 8);
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0)
-	{
-		// USL
-		filename.erase(filename.find(".usl"));
-	}
-	else
-	{
-		// SGSL
-		filename.erase(filename.find(".sgsl"));
-	}
+	const bool useUSL = (globalContainer->settings.optionFlags & GlobalContainer::OPTION_MAP_EDIT_USE_USL) != 0;
+	std::string filename = Utilities::stripSuffix(
+		Utilities::stripPrefix(fullfilename, "scripts/"), useUSL ? ".usl" : ".sgsl");
 	std::replace(filename.begin(), filename.end(), '_', ' ');
 	return filename;
 }

@@ -18,6 +18,7 @@
 #include "GameGUILoadSave.h"
 #include "ReplayWriter.h"
 #include "SDLCompat.h"
+#include "Utilities.h"
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -524,11 +525,15 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 	}
 }
 
+//! LoadSaveScreen name-extractor callback for the save-replay dialog: turn a
+//! full virtual path like "replays/My_Game.replay" into the display name
+//! "My Game". Directory prefix and extension are only removed when actually
+//! present, so a stray file in replays/ degrades to showing its raw name
+//! instead of throwing (erase(npos) used to crash the dialog).
 std::string replayFilenameToName(const std::string& fullfilename)
 {
-	std::string filename = fullfilename;
-	filename.erase(0, 8);
-	filename.erase(filename.find(".replay"));
+	std::string filename = Utilities::stripSuffix(
+		Utilities::stripPrefix(fullfilename, "replays/"), ".replay");
 	std::replace(filename.begin(), filename.end(), '_', ' ');
 	return filename;
 }

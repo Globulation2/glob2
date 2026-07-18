@@ -456,7 +456,22 @@ namespace Utilities
 		}
 		return tokenNumber;
 	}
-	
+
+	std::string stripPrefix(const std::string& s, const std::string& prefix)
+	{
+		if (s.compare(0, prefix.size(), prefix) == 0)
+			return s.substr(prefix.size());
+		return s;
+	}
+
+	std::string stripSuffix(const std::string& s, const std::string& suffix)
+	{
+		if (s.size() >= suffix.size()
+			&& s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0)
+			return s.substr(0, s.size() - suffix.size());
+		return s;
+	}
+
 	void read(int fd, void *buf, size_t count)
 	{
 		char *ptr = (char *)buf;
