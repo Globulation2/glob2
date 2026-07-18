@@ -10,6 +10,23 @@
 #include <optional>
 #include <sstream>
 
+namespace
+{
+	/// Ally team numbers in GameHeader are 1-based (its constructor assigns
+	/// team i the value i+1), while the ally-team widget rows are 0-based.
+	/// A malformed or uninitialized header can carry values outside
+	/// [1, teamCount] -- notably 0, which would underflow to setIndex(-1)
+	/// and throw inside MultiTextButton::setIndex. Map any such value to a
+	/// defined widget state: the first entry (index 0).
+	int allyTeamNumberToWidgetIndex(Uint8 allyTeamNumber, int teamCount)
+	{
+		const int index = static_cast<int>(allyTeamNumber) - 1;
+		if (index < 0 || index >= teamCount)
+			return 0;
+		return index;
+	}
+}
+
 CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)
 	:	gameHeader(gameHeader), oldGameHeader(gameHeader)
 {
@@ -37,7 +54,9 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 			s<<j+1;
 			allyTeamNumbers[i]->addText(s.str());
 		}
-		allyTeamNumbers[i]->setIndex(gameHeader.getAllyTeamNumber(gameHeader.getBasePlayer(i).teamNumber)-1);
+		allyTeamNumbers[i]->setIndex(allyTeamNumberToWidgetIndex(
+			gameHeader.getAllyTeamNumber(gameHeader.getBasePlayer(i).teamNumber),
+			mapHeader.getNumberOfTeams()));
 
 		color[i]->clearColors();
 		color[i]->addColor(mapHeader.getBaseTeam(gameHeader.getBasePlayer(i).teamNumber).color);
