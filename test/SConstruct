@@ -89,6 +89,8 @@ OverlayFillTest.cpp
 MessageRecipientsTest.cpp
 ../src/net/message/MessageRecipients.cpp
 
+SpriteCenteringTest.cpp
+
 natsort/NatSortTest.cpp
 """)
 

@@ -14,6 +14,7 @@
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
+#include "SpriteCentering.h"
 
 namespace {
 
@@ -78,17 +79,16 @@ void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& t
 			imgid = bt->gameSpriteImage;
 		}
 
-		const int decX = (width - buildingSprite->getW(imgid)) >> 1;
-		const int decY = (CHOICE_ROW_HEIGHT_PX - buildingSprite->getW(imgid)) >> 1;
+		const SpriteCenterOffset off = centerSprite(width, CHOICE_ROW_HEIGHT_PX, buildingSprite, imgid);
 
 		buildingSprite->setBaseColor(localTeam->color);
-		globalContainer->gfx->drawSprite(x + decX, y + decY, buildingSprite, imgid);
+		globalContainer->gfx->drawSprite(x + off.dx, y + off.dy, buildingSprite, imgid);
 		globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
 		globalContainer->gfx->setClipRect();
 		if (hilights.find(HilightBuildingOnPanel + IntBuildingType::shortNumberFromType(type)) != hilights.end())
 		{
-			arrowPositions.push_back(HilightArrowPosition(x + decX - 36, y - 6 + decY, 38));
+			arrowPositions.push_back(HilightArrowPosition(x + off.dx - 36, y - 6 + off.dy, 38));
 		}
 	}
 }

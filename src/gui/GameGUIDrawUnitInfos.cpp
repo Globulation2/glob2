@@ -10,6 +10,7 @@
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "Player.h"
+#include "SpriteCentering.h"
 #include "TeamDisplay.h"
 #include "Unit.h"
 #include "UnitDisplayNames.h"
@@ -88,10 +89,11 @@ void GameGUI::drawUnitInfos(void)
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(unit->owner->color);
-	int decX = (32-unitSprite->getW(imgid))>>1;
-	int decY = (32-unitSprite->getH(imgid))>>1;
+	// The unit icon is centered in a 32x32 tile-sized frame.
+	constexpr int UNIT_ICON_BOX_PX = 32;
+	const SpriteCenterOffset off = centerSprite(UNIT_ICON_BOX_PX, UNIT_ICON_BOX_PX, unitSprite, imgid);
 	int ddx = (RIGHT_MENU_HALF_WIDTH - 56) / 2 + 2;
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx+12+decX, ypos+7+4+decY, unitSprite, imgid);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx+12+off.dx, ypos+7+4+off.dy, unitSprite, imgid);
 
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx, ypos+4, globalContainer->gamegui, 18);
 

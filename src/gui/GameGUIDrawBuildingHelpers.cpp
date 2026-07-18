@@ -12,6 +12,7 @@
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
+#include "SpriteCentering.h"
 #include "TeamDisplay.h"
 #include "Unit.h"
 #include "UnitDisplayNames.h"
@@ -85,11 +86,13 @@ void GameGUI::drawBuildingIcon(Building* selBuild, BuildingType* buildingType, i
 		miniSprite = buildingType->gameSpritePtr;
 		imgid = buildingType->gameSpriteImage;
 	}
-	int dx = (56-miniSprite->getW(imgid))>>1;
-	int dy = (46-miniSprite->getH(imgid))>>1;
+	// The building icon is centered in a 56 (wide) x 46 (tall) frame.
+	constexpr int BUILDING_ICON_BOX_W_PX = 56;
+	constexpr int BUILDING_ICON_BOX_H_PX = 46;
+	const SpriteCenterOffset off = centerSprite(BUILDING_ICON_BOX_W_PX, BUILDING_ICON_BOX_H_PX, miniSprite, imgid);
 	int ddx = (RIGHT_MENU_HALF_WIDTH - 56) / 2 + 2;
 	miniSprite->setBaseColor(selBuild->owner->color);
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx+dx, ypos+4+dy, miniSprite, imgid);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx+off.dx, ypos+4+off.dy, miniSprite, imgid);
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+ddx, ypos+4, globalContainer->gamegui, 18);
 	globalContainer->gfx->finishDrawingSprite(miniSprite, 255);
 }
