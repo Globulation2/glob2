@@ -863,12 +863,23 @@ bool Story::testCondition(GameGUI *gui)
 
 				Building *b = game->addBuilding(x, y, typeNum, team);
 
-				b->unitStayRange = r;
-				b->maxUnitWorking = unitCount;
-				b->maxUnitWorkingPreferred = unitCount;
-				b->update();
+				// addBuilding returns NULL when the team already holds
+				// Building::MAX_COUNT buildings (no free slot). Skip the flag
+				// rather than dereferencing NULL; report it like S_DESTROYFLAG
+				// does for its own error case.
+				if (b)
+				{
+					b->unitStayRange = r;
+					b->maxUnitWorking = unitCount;
+					b->maxUnitWorkingPreferred = unitCount;
+					b->update();
 
-				mapscript->flags[flagName] = b;
+					mapscript->flags[flagName] = b;
+				}
+				else
+				{
+					std::cerr << "SGSL : Could not summon flag " << flagName << " : team " << team << " building limit reached !" << std::endl;
+				}
 
 				return true;
 			}
