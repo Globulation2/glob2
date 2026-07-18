@@ -66,7 +66,7 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	{
 		stream->readEnterSection(i);
 		teams[i].load(stream, versionMinor);
-		stream->readLeaveSection(i);
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();

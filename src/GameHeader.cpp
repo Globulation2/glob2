@@ -53,7 +53,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		{
 			if (!players[i].load(stream, versionMinor))
 			{
-				stream->readLeaveSection(i);
+				stream->readLeaveSection();
 				stream->readLeaveSection();
 				stream->readLeaveSection();
 				return false;
@@ -67,7 +67,7 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			// crash hazard. Discard validation failures.
 			scratch.load(stream, versionMinor);
 		}
-		stream->readLeaveSection(i);
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
@@ -211,7 +211,7 @@ bool GameHeader::loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMino
 		{
 			if (!players[i].load(stream, versionMinor))
 			{
-				stream->readLeaveSection(i);
+				stream->readLeaveSection();
 				stream->readLeaveSection();
 				stream->readLeaveSection();
 				return false;
@@ -225,7 +225,7 @@ bool GameHeader::loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMino
 			// hazard. Discard validation failures.
 			scratch.load(stream, versionMinor);
 		}
-		stream->readLeaveSection(i);
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();

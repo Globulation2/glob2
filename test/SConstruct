@@ -264,6 +264,26 @@ baseplayer_objs = [
 wcdecode_env.Program( target = 'BasePlayerSaveLoadTest', source = baseplayer_objs )
 
 
+# Standalone regression harness for GameHeader section handling on text
+# streams (load/loadPlayerInfo used to pass the player-loop index into
+# readLeaveSection(size_t count), popping `i` nesting levels instead of 1 —
+# masked by BinaryInputStream's no-op but assert-fatal on TextInputStream).
+# Checks full and player-info round-trips through TextOutputStream /
+# TextInputStream. Reuses the wcdecode env's libgag_server.a link surface
+# plus the WinningConditions objects (GameHeader saves/loads winning
+# conditions) and the BasePlayer object. Distinct object name for
+# GameHeader.cpp because the main build compiles it with different flags.
+gameheader_objs = [
+  wcdecode_env.Object('GameHeaderTextSaveLoadTest.o', 'GameHeaderTextSaveLoadTest.cpp'),
+  wcdecode_env.Object('GameHeader-saveload.o', '../src/GameHeader.cpp'),
+]
+wcdecode_env.Program( target = 'GameHeaderTextSaveLoadTest',
+                      source = gameheader_objs + [
+                        wcdecode_objs[1], wcdecode_objs[2],
+                        baseplayer_objs[1],
+                      ] )
+
+
 # Standalone regression harness for the BaseTeam "colorPAD" wire byte
 # (load() pins color.a to ALPHA_OPAQUE but save() used to write the live
 # alpha, so save->load->save drifted when alpha was non-opaque). Checks
