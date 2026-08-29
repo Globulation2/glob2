@@ -40,13 +40,6 @@ Identical `addListener`/`removeListener` implementations across:
 
 **Rust port note:** Not needed in Rust -- use channels or a simple callback vec utility.
 
-### YOG Admin Destructors
-
-Identical destructors in:
-- YOGClientCommandManager.cpp:35
-- YOGServerAdministrator.cpp:46
-- YOGServerRouterAdministrator.cpp:39
-
 ### Login / Register Screens
 
 `onTimer` is identical in:

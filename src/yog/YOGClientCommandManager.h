@@ -4,6 +4,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <vector>
 
 class YOGClient;
@@ -25,7 +26,7 @@ public:
 	
 private:
 	YOGClient* client;
-	std::vector<YOGClientCommand*> commands;
+	std::vector<std::unique_ptr<YOGClientCommand>> commands;
 };
 
 

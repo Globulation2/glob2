@@ -34,7 +34,7 @@ public:
 
 private:
 	YOGServerRouter* router;
-	std::vector<YOGServerRouterAdministratorCommand*> commands;
+	std::vector<std::unique_ptr<YOGServerRouterAdministratorCommand>> commands;
 	std::string allText;
 };
 

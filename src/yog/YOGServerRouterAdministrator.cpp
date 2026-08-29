@@ -13,20 +13,14 @@
 YOGServerRouterAdministrator::YOGServerRouterAdministrator(YOGServerRouter* router)
 	: router(router)
 {
-	commands.push_back(new YOGServerRouterShutdownCommand);
-	commands.push_back(new YOGServerRouterAbortCommand);
-	commands.push_back(new YOGServerRouterStatusCommand);
+	commands.push_back(std::make_unique<YOGServerRouterShutdownCommand>());
+	commands.push_back(std::make_unique<YOGServerRouterAbortCommand>());
+	commands.push_back(std::make_unique<YOGServerRouterStatusCommand>());
 }
 
 
 
-YOGServerRouterAdministrator::~YOGServerRouterAdministrator()
-{
-	for(unsigned int i=0; i<commands.size(); ++i)
-	{
-		delete commands[i];
-	}
-}
+YOGServerRouterAdministrator::~YOGServerRouterAdministrator() = default;
 
 
 

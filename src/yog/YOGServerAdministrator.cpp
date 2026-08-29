@@ -11,30 +11,24 @@
 YOGServerAdministrator::YOGServerAdministrator(YOGServer* server)
 	: server(server)
 {
-	commands.push_back(new YOGServerRestart);
-	commands.push_back(new YOGMutePlayer);
-	commands.push_back(new YOGUnmutePlayer);
-	commands.push_back(new YOGResetPassword);
-	commands.push_back(new YOGBanPlayer);
-	commands.push_back(new YOGUnbanPlayer);
-	commands.push_back(new YOGShowBannedPlayers);
-	commands.push_back(new YOGBanIP);
-	commands.push_back(new YOGAddAdministrator);
-	commands.push_back(new YOGRemoveAdministrator);
-	commands.push_back(new YOGAddModerator);
-	commands.push_back(new YOGRemoveModerator);
-	commands.push_back(new YOGRemoveMap);
+	commands.push_back(std::make_unique<YOGServerRestart>());
+	commands.push_back(std::make_unique<YOGMutePlayer>());
+	commands.push_back(std::make_unique<YOGUnmutePlayer>());
+	commands.push_back(std::make_unique<YOGResetPassword>());
+	commands.push_back(std::make_unique<YOGBanPlayer>());
+	commands.push_back(std::make_unique<YOGUnbanPlayer>());
+	commands.push_back(std::make_unique<YOGShowBannedPlayers>());
+	commands.push_back(std::make_unique<YOGBanIP>());
+	commands.push_back(std::make_unique<YOGAddAdministrator>());
+	commands.push_back(std::make_unique<YOGRemoveAdministrator>());
+	commands.push_back(std::make_unique<YOGAddModerator>());
+	commands.push_back(std::make_unique<YOGRemoveModerator>());
+	commands.push_back(std::make_unique<YOGRemoveMap>());
 }
 
 
 
-YOGServerAdministrator::~YOGServerAdministrator()
-{
-	for(unsigned int i=0; i<commands.size(); ++i)
-	{
-		delete commands[i];
-	}
-}
+YOGServerAdministrator::~YOGServerAdministrator() = default;
 
 	
 

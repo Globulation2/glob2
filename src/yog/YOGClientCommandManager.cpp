@@ -11,18 +11,12 @@ using namespace GAGCore;
 YOGClientCommandManager::YOGClientCommandManager(YOGClient* client)
 	: client(client)
 {
-	commands.push_back(new YOGClientBlockPlayerCommand);
+	commands.push_back(std::make_unique<YOGClientBlockPlayerCommand>());
 }
 
 
-	
-YOGClientCommandManager::~YOGClientCommandManager()
-{
-	for(unsigned int i=0; i<commands.size(); ++i)
-	{
-		delete commands[i];
-	}
-}
+
+YOGClientCommandManager::~YOGClientCommandManager() = default;
 
 
 

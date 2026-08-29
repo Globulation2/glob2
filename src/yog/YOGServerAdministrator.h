@@ -33,6 +33,6 @@ private:
 
 	YOGServer* server;
 	
-	std::vector<YOGServerAdministratorCommand*> commands;
+	std::vector<std::unique_ptr<YOGServerAdministratorCommand>> commands;
 };
 
