@@ -1,8 +1,6 @@
 Globulation 2 -- Authors
 
-Original authors of Globulation 2. Their contact information was previously
-included in per-file source headers; sources now carry SPDX short-form
-license identifiers (see COPYING for the full GPL v3 text).
+Core authors of Globulation 2:
 
 Stephane Magnenat <stephane@magnenat.net>          (2001-2008)
 Luc-Olivier de Charrière <NuageBleu@gmail.com>     (2001-2008)

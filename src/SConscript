@@ -191,6 +191,10 @@ map/edit/MapEditIO.cpp
 map/edit/MapEditDraw.cpp
 map/edit/MapEditEvents.cpp
 map/edit/MapEditAction.cpp
+map/edit/MapEditActionView.cpp
+map/edit/MapEditActionTerrain.cpp
+map/edit/MapEditActionUnit.cpp
+map/edit/MapEditActionBuilding.cpp
 map/edit/MapEditDelegate.cpp
 map/edit/MapEditClicks.cpp
 map/edit/MapEditDialog.cpp

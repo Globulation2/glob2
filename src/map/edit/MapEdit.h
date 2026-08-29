@@ -470,6 +470,14 @@ private:
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
 	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
+	///Handles view, scrolling, minimap and screen/dialog actions. Returns true if the action was handled.
+	bool performViewAction(const std::string& action, int relMouseX, int relMouseY);
+	///Handles building placement, terrain, zone, area and team-selection actions. Returns true if the action was handled.
+	bool performTerrainAction(const std::string& action, int relMouseX, int relMouseY);
+	///Handles unit placement and unit-editor actions. Returns true if the action was handled.
+	bool performUnitAction(const std::string& action, int relMouseX, int relMouseY);
+	///Handles the building-editor actions. Returns true if the action was handled.
+	bool performBuildingAction(const std::string& action, int relMouseX, int relMouseY);
 	///This delegates a sdl event to one of the menus, if they are open, and handle end codes of the menus appropriettly
 	void delegateMenu(SDL_Event& event);
 	///Handles the scrolling of the map, by arrow keys and by putting the mouse near the edge of the screen
