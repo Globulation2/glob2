@@ -3,12 +3,26 @@
 
 #include <math.h>
 
+#include <algorithm>
+
 #include "BuildingType.h"
 #include "FixedPoint.h"
 #include "Game.h"
 #include "Map.h"
 #include "Team.h"
 #include "Unit.h"
+
+namespace {
+
+// How far a unit can travel before starving. unit->race is its own team's
+// race here (Unit ctor sets race=&team->race), so this covers both the
+// race.hungryness and unit->race->hungryness spellings the callers used.
+Sint32 maxTravelDistance(const Unit *unit)
+{
+	return std::max(0, unit->hungry) / unit->race->hungryness + unit->hp;
+}
+
+} // namespace
 
 Building *Team::findNearestHeal(Unit *unit)
 {
@@ -18,7 +32,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		Sint32 x = unit->posX;
 		Sint32 y = unit->posY;
-		Sint32 maxDist = unit->hungry / unit->race->hungryness + unit->hp;
+		Sint32 maxDist = maxTravelDistance(unit);
 		Building *choosen = NULL;
 		Sint32 bestDist2 = maxDist * maxDist;
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
@@ -37,7 +51,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		Sint32 x = unit->posX;
 		Sint32 y = unit->posY;
-		Sint32 maxDist = unit->hungry / race.hungryness + unit->hp;
+		Sint32 maxDist = maxTravelDistance(unit);
 		bool canSwim = unit->performance[SWIM];
 		Building *choosen=  NULL;
 		Sint32 bestDist = maxDist;
@@ -71,7 +85,7 @@ Building *Team::findNearestFood(Unit *unit)
 
 	// first, we check for the best food an enemy can offer:
 	Sint32 bestEnemyHappyness = 0;
-	Sint32 maxDist = std::max(0, unit->hungry) / unit->race->hungryness + unit->hp;
+	Sint32 maxDist = maxTravelDistance(unit);
 	Building *bestEnemyFood = NULL;
 	if (concurency)
 	{
@@ -213,26 +227,24 @@ Building *Team::findBestUpgrade(Unit *unit)
 	//to be the last, this code will fail.
 	for (int ability=(int)WALK; ability<(int)ARMOR; ability++)
 	{
-		if (unit->canLearn[ability])
+		if (!unit->canLearn[ability])
+			continue;
+		if (unit->verbose)
+			printf("guid=(%d) unit->canLearn[ability=%d]\n", unit->gid, ability);
+		int actLevel=unit->level[ability];
+		for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); ++bi)
 		{
+			Building *b=(*bi);
 			if (unit->verbose)
-				printf("guid=(%d) unit->canLearn[ability=%d]\n", unit->gid, ability);
-			int actLevel=unit->level[ability];
-			for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); ++bi)
+				printf("guid=(%d)  b->gid=%d, b->type->level=%d, actLevel=%d\n", unit->gid, b->gid, b->type->level, actLevel);
+			if (b->type->level < actLevel)
+				continue;
+			Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<Q8_FIXED_POINT_SHIFT)/(b->maxUnitInside-b->unitsInside.size());
+			if (newScore<score)
 			{
-				Building *b=(*bi);
-				if (unit->verbose)
-					printf("guid=(%d)  b->gid=%d, b->type->level=%d, actLevel=%d\n", unit->gid, b->gid, b->type->level, actLevel);
-				if (b->type->level >= actLevel)
-				{
-					Sint32 newScore=(map->warpDistSquare(b->posX, b->posY, x, y)<<Q8_FIXED_POINT_SHIFT)/(b->maxUnitInside-b->unitsInside.size());
-					if (newScore<score)
-					{
-						unit->destinationPurpose=(Sint32)ability;
-						choosen=b;
-						score=newScore;
-					}
-				}
+				unit->destinationPurpose=(Sint32)ability;
+				choosen=b;
+				score=newScore;
 			}
 		}
 	}
