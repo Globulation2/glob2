@@ -87,15 +87,15 @@ magicAlga, armor, hp}`):
   harvest=0. → WARRIOR canLearn = **WALK, SWIM, ATTACK_SPEED, ATTACK_STRENGTH**.
 
 **Building `upgrade[]` arrays** (1 = this building trains that ability index):
-- Racetrack / WALKSPEED_BUILDING: `upgrade[WALK]=1` (`src/game/entities/BuildingsPartA.cpp:184,207,230`).
+- Racetrack / WALKSPEED_BUILDING: `upgrade[WALK]=1` (`src/game/entities/BuildingTypesUpgrade.cpp:27,50,73`).
   Single-ability (no `upgradeInParallel`).
-- Swimmingpool: `upgrade[SWIM]=1` (`src/game/entities/BuildingsPartA.cpp:252,275,298`).
+- Swimmingpool: `upgrade[SWIM]=1` (`src/game/entities/BuildingTypesUpgrade.cpp:95,118,141`).
   Single-ability.
 - Barracks / ATTACK_BUILDING: `upgrade[ATTACK_SPEED]=1, upgrade[ATTACK_STRENGTH]=1`,
-  `upgradeInParallel=1` (`src/game/entities/BuildingsPartB.cpp:27-29,51-53,75-77`).
+  `upgradeInParallel=1` (`src/game/entities/BuildingTypesUpgrade.cpp:164-166,188-190,212-214`).
 - School / SCIENCE_BUILDING: `upgrade[BUILD]=1, upgrade[HARVEST]=1`, `upgradeInParallel=1`
-  (`src/game/entities/BuildingsPartB.cpp:99-101,122-124`). At LEVEL 2 the school ALSO
-  adds `upgrade[MAGIC_ATTACK_GROUND]=1` (`src/game/entities/BuildingsPartB.cpp:146`).
+  (`src/game/entities/BuildingTypesUpgrade.cpp:236-238,259-261`). At LEVEL 2 the school ALSO
+  adds `upgrade[MAGIC_ATTACK_GROUND]=1` (`src/game/entities/BuildingTypesUpgrade.cpp:283`).
 
 **Cross product (who actually trains where), combining canLearn × upgrade[]:**
 - Racetrack (WALK): **workers AND warriors** (both canLearn WALK). Explorers do not.
@@ -147,9 +147,9 @@ and paints a forbidden upgrade zone (`:412-415`); when the larger footprint is c
 it converts to a real building SITE of `nextLevel`. The SITE only completes in
 `Building::updateBuildingSite` `src/building/Update.cpp:24-83`: completion is gated on
 **`isRessourceFull()`** (`:28`) — the site must be hauled full of the next level's
-`maxRessource` (wood/stone, e.g. inn L0→L1 needs 8 wood `BuildingsPartA.cpp:65`;
-barracks L0→L1 needs 3 wood + 10 stone `BuildingsPartB.cpp:42`; school L0→L1 needs
-5 wood + 5 stone + 12 alga `BuildingsPartB.cpp:113`). Only then does it consume the
+`maxRessource` (wood/stone, e.g. inn L0→L1 needs 8 wood `BuildingTypesColony.cpp:70`;
+barracks L0→L1 needs 3 wood + 10 stone `BuildingTypesUpgrade.cpp:179`; school L0→L1 needs
+5 wood + 5 stone + 12 alga `BuildingTypesUpgrade.cpp:250`). Only then does it consume the
 resources (`:31-32`), flip `type=nextLevel`, restore `maxUnitInside`/feeding/training,
 and re-enter the call lists (`:35-81`).
 
@@ -169,19 +169,19 @@ barracks blackout. A single barracks mid-upgrade trains zero warriors that whole
 
 Inn feeding capacity = `type->maxUnitInside` (trainee/feeding slots) gated by
 `ressources[CORN] > unitsInside.size()` (`src/building/Construction.cpp:344`). Per
-level (`src/game/entities/BuildingsPartA.cpp`):
+level (`src/game/entities/BuildingTypesColony.cpp`):
 
 | Inn level | maxUnitInside | maxUnitWorking | CORN maxRessource | timeToFeedUnit | cite |
 |-----------|---------------|----------------|-------------------|----------------|------|
-| 0 (#3)    | 4             | 1              | 10                | 24             | `:55-57,51,53` |
-| 1 (#5)    | 7             | 1              | 30                | 15             | `:78-79,74,76` |
-| 2 (#7)    | 17            | 1              | 50                | 9              | `:99-104,101` |
+| 0 (#3)    | 4             | 1              | 10                | 24             | `:60-62,56,58` |
+| 1 (#5)    | 7             | 1              | 30                | 15             | `:83-84,79,81` |
+| 2 (#7)    | 17            | 1              | 50                | 9              | `:104-109,106` |
 
 While an inn is mid-UPGRADE its feeding capacity is REMOVED entirely:
 `launchConstruction` pulls it from `canFeedUnit` via `removeFromAbilitiesLists`
 (`src/building/Construction.cpp:110`) and sets `maxUnitInside=0` (`:137`); the
 construction-site inn variants (#4 inn1c, #6 inn2c) have no `foodable`/`canFeedUnit`
-flag (`src/game/entities/BuildingsPartA.cpp:60-68,84-93`), so they cannot feed.
+flag (`src/game/entities/BuildingTypesColony.cpp:65-73,89-98`), so they cannot feed.
 Upgrading the colony's only/last inn while `feedCapacity` barely covers population
 deletes that capacity for the full blackout window (section 4) → starvation. This is
 the engine basis for a "build a spare inn first, then upgrade" gate.
@@ -190,18 +190,18 @@ Training-building inside caps (units training at once) and worker request, by le
 
 | Building | level | maxUnitInside | maxUnitWorking | cite |
 |----------|-------|---------------|----------------|------|
-| Racetrack | 0 (#15) | 2 | 1 | `BuildingsPartA.cpp:187,176` |
-| Racetrack | 1 (#17) | 4 | 1 | `BuildingsPartA.cpp:210` |
-| Racetrack | 2 (#19) | 6 | 1 | `BuildingsPartA.cpp:233` |
-| Swimmingpool | 0 (#21) | 2 | 1 | `BuildingsPartA.cpp:255` |
-| Swimmingpool | 1 (#23) | 4 | 1 | `BuildingsPartA.cpp:278` |
-| Swimmingpool | 2 (#25) | 6 | 1 | `BuildingsPartA.cpp:296+` |
-| Barracks | 0 (#27) | 2 | 1 | `BuildingsPartB.cpp:31` |
-| Barracks | 1 (#29) | 4 | 1 | `BuildingsPartB.cpp:55` |
-| Barracks | 2 (#31) | 5 | 1 | `BuildingsPartB.cpp:79` |
-| School | 0 (#33) | 4 | 1 | `BuildingsPartB.cpp:103` |
-| School | 1 (#35) | 7 | 1 | `BuildingsPartB.cpp:126` |
-| School | 2 (#37) | 9 | 1 | `BuildingsPartB.cpp:150` |
+| Racetrack | 0 (#15) | 2 | 1 | `BuildingTypesUpgrade.cpp:30,19` |
+| Racetrack | 1 (#17) | 4 | 1 | `BuildingTypesUpgrade.cpp:53` |
+| Racetrack | 2 (#19) | 6 | 1 | `BuildingTypesUpgrade.cpp:76` |
+| Swimmingpool | 0 (#21) | 2 | 1 | `BuildingTypesUpgrade.cpp:98` |
+| Swimmingpool | 1 (#23) | 4 | 1 | `BuildingTypesUpgrade.cpp:121` |
+| Swimmingpool | 2 (#25) | 6 | 1 | `BuildingTypesUpgrade.cpp:139+` |
+| Barracks | 0 (#27) | 2 | 1 | `BuildingTypesUpgrade.cpp:168` |
+| Barracks | 1 (#29) | 4 | 1 | `BuildingTypesUpgrade.cpp:192` |
+| Barracks | 2 (#31) | 5 | 1 | `BuildingTypesUpgrade.cpp:216` |
+| School | 0 (#33) | 4 | 1 | `BuildingTypesUpgrade.cpp:240` |
+| School | 1 (#35) | 7 | 1 | `BuildingTypesUpgrade.cpp:263` |
+| School | 2 (#37) | 9 | 1 | `BuildingTypesUpgrade.cpp:287` |
 
 (`maxUnitWorking` is the builder/repair request while a SITE, always 1 — it is NOT the
 trainee throughput. Trainee throughput is `maxUnitInside`.)

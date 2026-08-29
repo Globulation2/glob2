@@ -92,7 +92,7 @@ namespace Cortex
 
 	/// Fills (w, h) with the LARGEST footprint a building of type `bt` can grow into
 	/// by walking its upgrade chain (BuildingType::nextLevel). For an inn this yields
-	/// 3 x 3 (the top-level inn2 footprint, BuildingsPartA.cpp); for a type that never
+	/// 3 x 3 (the top-level inn2 footprint, BuildingTypesColony.cpp); for a type that never
 	/// grows it returns its own width/height. Growth is anchored at the top-left
 	/// corner (decLeft/decTop are constant across inn levels, so the footprint expands
 	/// toward +x/+y), so the grown footprint shares the placed building's (posX, posY).

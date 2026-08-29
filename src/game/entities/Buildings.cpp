@@ -2,15 +2,21 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 // Umbrella file for the static building-type table (was data/buildings.txt +
-// data/buildings.default.txt parsed at startup). The 51-entry table is split
-// across two siblings:
-//   - buildings_part_a.cpp : entries 0..25  (swarm/inn/hospital/racetrack/swimmingpool)
-//   - buildings_part_b.cpp : entries 26..50 (barracks/school/defencetower/flags/stonewall/market)
-// each declaring a non-static BuildingType[] array; this file stitches them
-// together via extern declarations and exposes the BuildingsTypes accessor
-// surface. The split is purely a file-size accommodation (each part stays
-// well under 500 lines); the resulting table is logically a single flat
-// vector indexed 0..50, in the same order data/buildings.txt declared.
+// data/buildings.default.txt parsed at startup). The 51 entries are grouped
+// by role across four siblings, following the grouping IntBuildingType::Number
+// already uses:
+//   - BuildingTypesColony.cpp  : swarm, inn, hospital, market
+//   - BuildingTypesUpgrade.cpp : racetrack, swimmingpool, barracks, school
+//   - BuildingTypesDefence.cpp : defencetower, stonewall
+//   - BuildingTypesFlags.cpp   : exploration, war and clearing flags
+// each declaring one or more non-static BuildingType[] arrays; this file
+// splices them into a single flat vector indexed 0..50, in the same order
+// data/buildings.txt declared.
+//
+// Role grouping and ID order do not agree — market sits at the end of the
+// table and the flags sit between the defencetower and the stonewall — so a
+// role file may hold more than one array. g_tableParts below is the single
+// authoritative statement of ID order.
 //
 // The order is the in-game integer ID and is persisted in saves, replays
 // and network traffic — reordering is a behavioral change.
@@ -26,23 +32,56 @@
 
 using namespace GAGCore;
 
-// Defined in buildings_part_a.cpp / buildings_part_b.cpp.
-extern BuildingType g_buildingsPartA[];
-extern const std::size_t g_buildingsPartACount;
-extern BuildingType g_buildingsPartB[];
-extern const std::size_t g_buildingsPartBCount;
+// Defined in the four BuildingTypes*.cpp siblings.
+extern BuildingType g_buildingTypesColony[];
+extern const std::size_t g_buildingTypesColonyCount;
+extern BuildingType g_buildingTypesUpgrade[];
+extern const std::size_t g_buildingTypesUpgradeCount;
+extern BuildingType g_buildingTypesDefenceTower[];
+extern const std::size_t g_buildingTypesDefenceTowerCount;
+extern BuildingType g_buildingTypesFlags[];
+extern const std::size_t g_buildingTypesFlagsCount;
+extern BuildingType g_buildingTypesStoneWall[];
+extern const std::size_t g_buildingTypesStoneWallCount;
+extern BuildingType g_buildingTypesMarket[];
+extern const std::size_t g_buildingTypesMarketCount;
 
-// Resolve table[i] for a flat 0..(N-1) index across the two parts.
+struct TablePart
+{
+	BuildingType *entries;
+	const std::size_t &count;
+};
+
+// Listed in flat-index order — this is the in-game building ID order and is
+// persisted in saves, replays and network traffic.
+static const TablePart g_tableParts[] = {
+	{ g_buildingTypesColony,       g_buildingTypesColonyCount },        //  0..13
+	{ g_buildingTypesUpgrade,      g_buildingTypesUpgradeCount },       // 14..37
+	{ g_buildingTypesDefenceTower, g_buildingTypesDefenceTowerCount },  // 38..43
+	{ g_buildingTypesFlags,        g_buildingTypesFlagsCount },         // 44..46
+	{ g_buildingTypesStoneWall,    g_buildingTypesStoneWallCount },     // 47..48
+	{ g_buildingTypesMarket,       g_buildingTypesMarketCount },        // 49..50
+};
+
+// Resolve table[i] for a flat 0..(N-1) index across the parts.
 static BuildingType *entry(std::size_t i)
 {
-	if (i < g_buildingsPartACount)
-		return &g_buildingsPartA[i];
-	return &g_buildingsPartB[i - g_buildingsPartACount];
+	for (const TablePart &part : g_tableParts)
+	{
+		if (i < part.count)
+			return &part.entries[i];
+		i -= part.count;
+	}
+	assert(false && "building type index out of range");
+	return nullptr;
 }
 
 static std::size_t entryCount()
 {
-	return g_buildingsPartACount + g_buildingsPartBCount;
+	std::size_t total = 0;
+	for (const TablePart &part : g_tableParts)
+		total += part.count;
+	return total;
 }
 
 // Mirror of the legacy ConfigVector::checkIntegrity assertions.

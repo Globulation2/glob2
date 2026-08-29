@@ -203,7 +203,7 @@ namespace Cortex
 	// The economy is a closed loop on each wheat-fed building's own CORN buffer.
 	// The lever is per-building maxUnitWorking, set via OrderModifyBuilding (the
 	// same lever AICastor uses, ai/castor/Control.cpp:227-272). Engine facts the
-	// thresholds are derived from (game/entities/BuildingsPartA.cpp):
+	// thresholds are derived from (game/entities/BuildingTypesColony.cpp):
 	//   Swarm L0: holds 20 CORN, costs ressourceForOneUnit==5 per unit, makes one
 	//             unit / unitProductionTime==150 ticks, and STALLS outright when
 	//             ressources[CORN] < 5 (building/TypeSteps.cpp:31). Worker count only

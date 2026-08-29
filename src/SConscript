@@ -77,8 +77,10 @@ building/Step.cpp
 building/TypeSteps.cpp
 building/Misc.cpp
 game/entities/Buildings.cpp
-game/entities/BuildingsPartA.cpp
-game/entities/BuildingsPartB.cpp
+game/entities/BuildingTypesColony.cpp
+game/entities/BuildingTypesDefence.cpp
+game/entities/BuildingTypesFlags.cpp
+game/entities/BuildingTypesUpgrade.cpp
 ChecksumSidecar.cpp
 DatasetWriter.cpp
 building/BuildingUtils.cpp
