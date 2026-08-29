@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <SDL_stdinc.h>
 #include <string>
 #include "YOGPlayerID.h"
 
