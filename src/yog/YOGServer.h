@@ -78,10 +78,10 @@ public:
 	void setPlayerStoredInfo(const std::string& name, const YOGPlayerStoredInfo& info);
 
 	///Tells the server that a player has logged in with the given information,
-	void playerHasLoggedIn(const std::string& username, Uint16 id);
+	void playerHasLoggedIn(const std::string& username, YOGPlayerID id);
 
 	///Tells the server that the player has logged out and disconnected
-	void playerHasLoggedOut(Uint16 playerID);
+	void playerHasLoggedOut(YOGPlayerID playerID);
 
 	///Returns the chat channel manager
 	YOGServerChatChannelManager& getChatChannelManager();
@@ -102,7 +102,7 @@ public:
 	std::shared_ptr<YOGServerGame> getGame(Uint16 gameID);
 
 	///Returns the player assocciatted with the given ID
-	std::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
+	std::shared_ptr<YOGServerPlayer> getPlayer(YOGPlayerID playerID);
 
 	///Returns the player assocciatted with the given name
 	std::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
@@ -147,7 +147,7 @@ public:
 	YOGServerPlayerScoreCalculator& getPlayerScoreCalculator();
 private:
 	///This looks for a free player id to assign to the player
-	Uint16 chooseNewPlayerID();
+	YOGPlayerID chooseNewPlayerID();
 
 	///Removes the GameInfo with the given ID
 	void removeGameInfo(Uint16 gameID);
@@ -160,7 +160,7 @@ private:
 	std::shared_ptr<NetBroadcaster> broadcaster;
 	std::shared_ptr<NetConnection> new_connection;
 	
-	std::map<Uint16, std::shared_ptr<YOGServerPlayer> > players;
+	std::map<YOGPlayerID, std::shared_ptr<YOGServerPlayer> > players;
 	std::map<Uint16, std::shared_ptr<YOGServerGame> > games;
 	std::list<YOGGameInfo> gameList;
 	std::list<YOGPlayerSessionInfo> playerList;
@@ -182,4 +182,3 @@ private:
 	YOGServerFileDistributationManager fileDistributionManager;
 	YOGServerPlayerScoreCalculator scoreCalculator;
 };
-

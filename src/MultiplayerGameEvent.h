@@ -4,7 +4,7 @@
 #pragma once
 
 #include <string>
-#include "SDL_net.h"
+#include "YOGPlayerID.h"
 
 enum MultiplayerGameEventType
 {
@@ -105,7 +105,7 @@ class MGPlayerReadyStatusChanged : public MultiplayerGameEvent
 {
 public:
 	///Creates a MGPlayerReadyStatusChanged event
-	MGPlayerReadyStatusChanged(Uint16 playerID);
+	MGPlayerReadyStatusChanged(YOGPlayerID playerID);
 
 	///Returns MGEPlayerReadyStatusChanged
 	Uint8 getEventType() const;
@@ -117,12 +117,11 @@ public:
 	bool operator==(const MultiplayerGameEvent& rhs) const;
 
 	///Retrieves playerID
-	Uint16 getPlayerID() const;
+	YOGPlayerID getPlayerID() const;
 private:
-	Uint16 playerID;
+	YOGPlayerID playerID;
 };
 
 
 
 //event_append_marker
-

@@ -5,6 +5,7 @@
 
 #include <string>
 #include "SDL_net.h"
+#include "YOGPlayerID.h"
 
 ///New YOG constants
 extern const Uint16 YOG_SERVER_PORT;
@@ -159,4 +160,3 @@ enum YOGMapUploadRefusalReason
 	///This represent an unknown reas
 	YOGMapUploadReasonUnknown,
 };
-

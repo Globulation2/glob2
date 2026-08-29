@@ -4,7 +4,7 @@
 #pragma once
 
 #include <string>
-#include "SDL_net.h"
+#include "YOGPlayerID.h"
 #include "YOGPlayerStoredInfo.h"
 
 namespace GAGCore
@@ -22,7 +22,7 @@ public:
 	YOGPlayerSessionInfo();
 
 	///Construct a YOGPlayerSessionInfo
-	YOGPlayerSessionInfo(const std::string& playerName, Uint16 id);
+	YOGPlayerSessionInfo(const std::string& playerName, YOGPlayerID id);
 
 	///Sets the name of the player
 	void setPlayerName(const std::string& playerName);
@@ -31,10 +31,10 @@ public:
 	std::string getPlayerName() const;
 
 	///Sets the unique player ID
-	void setPlayerID(Uint16 id);
+	void setPlayerID(YOGPlayerID id);
 	
 	///Returns the unique player ID
-	Uint16 getPlayerID() const;
+	YOGPlayerID getPlayerID() const;
 	
 	///Returns the players stored info
 	const YOGPlayerStoredInfo& getPlayerStoredInfo() const;
@@ -52,8 +52,7 @@ public:
 	bool operator==(const YOGPlayerSessionInfo& rhs) const;
 	bool operator!=(const YOGPlayerSessionInfo& rhs) const;
 private:
-	Uint16 playerID;
+	YOGPlayerID playerID;
 	std::string playerName;
 	YOGPlayerStoredInfo stored;
 };
-

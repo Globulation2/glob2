@@ -23,7 +23,7 @@
 using std::shared_ptr;
 using std::static_pointer_cast;
 
-YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
+YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, YOGPlayerID id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
 {
 	connectionState = WaitingForClientInformation;
@@ -337,14 +337,14 @@ void YOGServerPlayer::sendMessage(shared_ptr<NetMessage> message)
 
 
 
-void YOGServerPlayer::setPlayerID(Uint16 id)
+void YOGServerPlayer::setPlayerID(YOGPlayerID id)
 {
 	playerID=id;
 }
 
 
 
-Uint16 YOGServerPlayer::getPlayerID()
+YOGPlayerID YOGServerPlayer::getPlayerID() const
 {
 	return playerID;
 }
@@ -547,5 +547,4 @@ void YOGServerPlayer::handleJoinGame(Uint16 ngameID)
 		connection->sendMessage(message);
 	}
 }
-
 

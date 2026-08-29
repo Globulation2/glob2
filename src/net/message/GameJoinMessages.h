@@ -74,7 +74,7 @@ class NetPlayerJoinsGame : public NetMessage
 {
 public:
 	NetPlayerJoinsGame();
-	NetPlayerJoinsGame(Uint16 playerID, std::string playerName);
+	NetPlayerJoinsGame(YOGPlayerID playerID, std::string playerName);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -82,10 +82,10 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 
-	Uint16 getPlayerID() const;
+	YOGPlayerID getPlayerID() const;
 	std::string getPlayerName() const;
 private:
-	Uint16 playerID;
+	YOGPlayerID playerID;
 	std::string playerName;
 };
 

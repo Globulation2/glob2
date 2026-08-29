@@ -89,7 +89,8 @@ public:
 	Uint32 quitUStep;
 	//TODO: Explain
 	Uint32 lastUStepToExecute;
-	///Used to identify the player over the internet
+	/// YOG player ID copied into the game header. Live YOGPlayerID values are
+	/// Uint16; this field stays Uint32 for version-86 saved-game compatibility.
 	Uint32 playerID;
 
 public:
@@ -130,4 +131,3 @@ public:
 	//TODO: Explain
 	bool disableRecursiveDestruction;
 };
-

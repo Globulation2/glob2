@@ -34,7 +34,7 @@ public:
 	void removeListener(YOGClientPlayerListListener* listener);
 
 	///This will find the name of the player with the given ID
-	std::string findPlayerName(Uint16 playerID);
+	std::string findPlayerName(YOGPlayerID playerID);
 	
 	///Returns true if a player with the given name exists
 	bool doesPlayerExist(const std::string& name);
@@ -48,4 +48,3 @@ private:
 	std::list<YOGPlayerSessionInfo> players;
 	std::list<YOGClientPlayerListListener*> listeners;
 };
-

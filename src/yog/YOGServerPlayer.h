@@ -22,7 +22,7 @@ class YOGServerPlayer
 {
 public:
 	///Establishes a YOGServerPlayer on the given connection.
-	YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server);
+	YOGServerPlayer(shared_ptr<NetConnection> connection, YOGPlayerID id, YOGServer& server);
 
 	///Updates the YOGServerPlayer. This deals with all incoming messages.
 	void update();
@@ -36,10 +36,10 @@ public:
 	void sendMessage(shared_ptr<NetMessage> message);
 
 	///Sets the player ID for this connection
-	void setPlayerID(Uint16 id);
+	void setPlayerID(YOGPlayerID id);
 
 	///Returns the ID for this player
-	Uint16 getPlayerID();
+	YOGPlayerID getPlayerID() const;
 	
 	///Returns the game id
 	Uint16 getGameID();
@@ -129,7 +129,7 @@ private:
 	///This is a synchronized list of what the client has
 	std::list<YOGPlayerSessionInfo> playersPlayerList;
 	///The playerID, used to identify the assocciatted YOGPlayerSessionInfo
-	Uint16 playerID;
+	YOGPlayerID playerID;
 	///the name of the player after logging in
 	std::string playerName;
 	///This is the local p2p port that the player is using for incoming p2p connections
@@ -148,7 +148,6 @@ private:
 	std::list<Uint64> pings;
 	
 };
-
 
 
 

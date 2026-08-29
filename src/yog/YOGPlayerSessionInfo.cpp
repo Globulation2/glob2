@@ -13,7 +13,7 @@ YOGPlayerSessionInfo::YOGPlayerSessionInfo()
 
 
 
-YOGPlayerSessionInfo::YOGPlayerSessionInfo(const std::string& playerName, Uint16 playerID)
+YOGPlayerSessionInfo::YOGPlayerSessionInfo(const std::string& playerName, YOGPlayerID playerID)
 	: playerID(playerID), playerName(playerName)
 {
 
@@ -35,14 +35,14 @@ std::string YOGPlayerSessionInfo::getPlayerName() const
 
 
 
-void YOGPlayerSessionInfo::setPlayerID(Uint16 id)
+void YOGPlayerSessionInfo::setPlayerID(YOGPlayerID id)
 {
 	playerID=id;
 }
 
 
 
-Uint16 YOGPlayerSessionInfo::getPlayerID() const
+YOGPlayerID YOGPlayerSessionInfo::getPlayerID() const
 {
 	return playerID;
 }

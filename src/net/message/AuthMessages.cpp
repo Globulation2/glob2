@@ -70,7 +70,7 @@ Uint16 NetSendClientInformation::getNetVersion() const
 
 
 
-NetSendServerInformation::NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, Uint16 playerID)
+NetSendServerInformation::NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, YOGPlayerID playerID)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), playerID(playerID)
 {
 
@@ -164,7 +164,7 @@ YOGGamePolicy NetSendServerInformation::getGamePolicy() const
 
 
 
-Uint16 NetSendServerInformation::getPlayerID() const
+YOGPlayerID NetSendServerInformation::getPlayerID() const
 {
 	return playerID;
 }

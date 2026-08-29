@@ -28,7 +28,7 @@ class NetKickPlayer : public NetMessage
 {
 public:
 	NetKickPlayer();
-	NetKickPlayer(Uint16 playerID, YOGKickReason reason);
+	NetKickPlayer(YOGPlayerID playerID, YOGKickReason reason);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -36,10 +36,10 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 
-	Uint16 getPlayerID();
+	YOGPlayerID getPlayerID() const;
 	YOGKickReason getReason();
 private:
-	Uint16 playerID;
+	YOGPlayerID playerID;
 	YOGKickReason reason;
 };
 
@@ -50,7 +50,7 @@ class NetReadyToLaunch : public NetMessage
 {
 public:
 	NetReadyToLaunch();
-	NetReadyToLaunch(Uint16 playerID);
+	NetReadyToLaunch(YOGPlayerID playerID);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -58,9 +58,9 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 
-	Uint16 getPlayerID() const;
+	YOGPlayerID getPlayerID() const;
 private:
-	Uint16 playerID;
+	YOGPlayerID playerID;
 };
 
 
@@ -69,7 +69,7 @@ class NetNotReadyToLaunch : public NetMessage
 {
 public:
 	NetNotReadyToLaunch();
-	NetNotReadyToLaunch(Uint16 playerID);
+	NetNotReadyToLaunch(YOGPlayerID playerID);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -77,9 +77,9 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 
-	Uint16 getPlayerID() const;
+	YOGPlayerID getPlayerID() const;
 private:
-	Uint16 playerID;
+	YOGPlayerID playerID;
 };
 
 
