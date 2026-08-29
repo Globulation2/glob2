@@ -46,19 +46,18 @@ private:
 		STARTED=2
 	};
 
-	void onAction(Widget *source, Action action, int par1, int par2);
+	void onAction(Widget *source, Action action, int par1, int par2) override;
 
 	///Responds to YOG events
-	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event);
+	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event) override;
 
-	///Attempt a login with the entered information
-	void attemptLogin();
+	///Submit a login using the entered credentials
+	void submitLoginCredentials();
 
-	///Opens the lobby screen
-	void runLobby();
+	///Show the lobby screen
+	void showLobby();
 
 	TextInput *login, *password;
 	OnOffButton *rememberYogPassword;
 	Text *rememberYogPasswordText;
 };
-

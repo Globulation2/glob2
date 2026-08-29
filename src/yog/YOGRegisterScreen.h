@@ -33,15 +33,14 @@ private:
 		REGISTER,
 	};
 
-	void onAction(Widget *source, Action action, int par1, int par2);
+	void onAction(Widget *source, Action action, int par1, int par2) override;
 
 	///Responds to YOG events
-	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event);
+	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event) override;
 
 
-	///Attempt a registration with the entered information
-	void attemptRegistration();
+	///Submit a registration using the entered credentials
+	void submitRegistrationCredentials();
 
 	TextInput *login, *password, *passwordRepeat;
 };
-

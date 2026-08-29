@@ -78,7 +78,7 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 			
 			client->connect(YOG_SERVER_IP);
-			wasConnecting = true;
+			connectionAttemptPending = true;
 		}
 		else if (par1==REGISTER)
 		{
@@ -92,7 +92,7 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 			}
 			else if(rc == YOGRegisterScreen::Connected)
 			{
-				runLobby();
+				showLobby();
 			}
 		}
 	}
@@ -105,17 +105,17 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	if (action==TEXT_TABBED)
 	{
-		if (login->isActivated() && changeTabAgain)
+		if (login->isActivated() && tabChangeAllowed)
 		{
 			login->deactivate();
 			password->activate();
-			changeTabAgain=false;
+			tabChangeAllowed=false;
 		}
-		else if (password->isActivated() && changeTabAgain)
+		else if (password->isActivated() && tabChangeAllowed)
 		{
 			password->deactivate();
 			login->activate();
-			changeTabAgain=false;
+			tabChangeAllowed=false;
 		}
 	}
 }
@@ -126,7 +126,7 @@ void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 	Uint8 type = event->getEventType();
 	if(type == YEConnected)
 	{
-		attemptLogin();
+		submitLoginCredentials();
 	}
 	else if(type == YEConnectionLost)
 	{ 
@@ -138,7 +138,7 @@ void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 	{
 		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
 		animation->visible=false;
-		runLobby();
+		showLobby();
 	}
 	else if(type == YELoginRefused)
 	{
@@ -187,7 +187,7 @@ void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 
 
 
-void YOGLoginScreen::attemptLogin()
+void YOGLoginScreen::submitLoginCredentials()
 {
 	//Save the password
 	if(rememberYogPassword->getState())
@@ -196,13 +196,13 @@ void YOGLoginScreen::attemptLogin()
 		globalContainer->settings.setUsername(login->getText());
 		globalContainer->settings.save();
 	}
-	//Attempt the login
+	//Submit the login credentials
 	client->attemptLogin(login->getText(), password->getText());
 }
 
 
 
-void YOGLoginScreen::runLobby()
+void YOGLoginScreen::showLobby()
 {
 	Glob2TabScreen screen(true);
 	YOGClientLobbyScreen lobby(&screen, client);
@@ -216,5 +216,3 @@ void YOGLoginScreen::runLobby()
 	else
 		endExecute(LoggedIn);
 }
-
-

@@ -11,22 +11,22 @@
 using namespace GAGCore;
 
 YOGConnectionScreen::YOGConnectionScreen(std::shared_ptr<YOGClient> client)
-	: statusText(nullptr), animation(nullptr), wasConnecting(false), changeTabAgain(true), client(client)
+	: statusText(nullptr), animation(nullptr), connectionAttemptPending(false), tabChangeAllowed(true), client(client)
 {
 }
 
 void YOGConnectionScreen::onTimer(Uint32 tick)
 {
-	if(wasConnecting && !client->isConnecting())
+	if(connectionAttemptPending && !client->isConnecting())
 	{
 		if(!client->isConnected())
 		{
 			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
 			animation->visible=false;
 		}
-		wasConnecting = false;
+		connectionAttemptPending = false;
 	}
 
 	client->update();
-	changeTabAgain=true;
+	tabChangeAllowed=true;
 }

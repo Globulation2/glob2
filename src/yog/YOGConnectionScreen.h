@@ -26,11 +26,11 @@ public:
 protected:
 	///Polls the client connection each tick, updating the status text and
 	///animation when a connection attempt finishes.
-	void onTimer(Uint32 tick);
+	void onTimer(Uint32 tick) override;
 
 	TextArea *statusText;
 	Animation *animation;
-	bool wasConnecting;
-	bool changeTabAgain;
+	bool connectionAttemptPending;
+	bool tabChangeAllowed;
 	std::shared_ptr<YOGClient> client;
 };

@@ -80,7 +80,7 @@ void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int pa
 				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
 				
 				client->connect(YOG_SERVER_IP);
-				wasConnecting = true;
+				connectionAttemptPending = true;
 			}
 		}
 	}
@@ -104,23 +104,23 @@ void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int pa
 	}
 	if (action==TEXT_TABBED)
 	{
-		if (login->isActivated() && changeTabAgain)
+		if (login->isActivated() && tabChangeAllowed)
 		{
 			login->deactivate();
 			password->activate();
-			changeTabAgain=false;
+			tabChangeAllowed=false;
 		}
-		else if (password->isActivated() && changeTabAgain)
+		else if (password->isActivated() && tabChangeAllowed)
 		{
 			password->deactivate();
 			passwordRepeat->activate();
-			changeTabAgain=false;
+			tabChangeAllowed=false;
 		}
-		else if (passwordRepeat->isActivated() && changeTabAgain)
+		else if (passwordRepeat->isActivated() && tabChangeAllowed)
 		{
 			passwordRepeat->deactivate();
 			login->activate();
-			changeTabAgain=false;
+			tabChangeAllowed=false;
 		}
 	}
 }
@@ -133,7 +133,7 @@ void YOGRegisterScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> eve
 	Uint8 type = event->getEventType();
 	if(type == YEConnected)
 	{
-		attemptRegistration();
+		submitRegistrationCredentials();
 	}
 	else if(type == YEConnectionLost)
 	{ 
@@ -196,11 +196,9 @@ void YOGRegisterScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> eve
 
 
 
-void YOGRegisterScreen::attemptRegistration()
+void YOGRegisterScreen::submitRegistrationCredentials()
 {
-	//Attempt the registration
+	//Submit the registration credentials
 	client->attemptRegistration(login->getText(), password->getText());
 }
-
-
 
