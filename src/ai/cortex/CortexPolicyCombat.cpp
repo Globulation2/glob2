@@ -394,8 +394,16 @@ namespace Cortex
 	// behind the first inn) and canExpand-checked here, exactly like the other builds.
 	ScoredAction CortexPolicy::scoreForwardBase(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// A STAGED long campaign (forward rally or amphibious landing) also earns the
+		// forward base even when a target sits inside the warp-distance envelope: the
+		// envelope reasons in warp distance, but the staged campaign's true path is
+		// long by construction (that is why a staging point exists), so the wave must
+		// eat at the staging point or hunger-commute home across the whole march. The
+		// observation anchors the candidate on the staging point in that state.
+		const bool staged = (obs.campaignAmphibious && obs.landingZoneValid)
+		                 || obs.forwardRallyValid;
 		if (!f.combatPhase || !f.canExpand || !obs.flagTargets[0].valid
-		 || cortexInRangeTargetSlot(obs) >= 0)
+		 || (cortexInRangeTargetSlot(obs) >= 0 && !staged))
 			return cortexDecline();
 		if (obs.forwardInn.valid && !obs.forwardInnUnderway)
 			return { SCORE_FORWARD_BASE, makeBuildForwardAction(CORTEX_BUILD_FOOD) };

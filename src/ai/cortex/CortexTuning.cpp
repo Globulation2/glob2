@@ -40,6 +40,7 @@ namespace Cortex
 		{ "crossTimeoutTicks",    &CortexTuning::crossTimeoutTicks,    1 },
 		{ "fleetReleaseArrived",  &CortexTuning::fleetReleaseArrived,  1 },
 		{ "amphibiousMinSwimWarriors", &CortexTuning::amphibiousMinSwimWarriors, 0 },
+		{ "forwardRallyPathDist", &CortexTuning::forwardRallyPathDist, 0 }, // 0 == disabled
 		{ "tierMidDiv",           &CortexTuning::tierMidDiv,           1 },
 		{ "workerRatioTier2",     &CortexTuning::workerRatioTier2,     1 },
 	};

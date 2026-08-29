@@ -131,14 +131,16 @@ private:
 		POSTURE_DEFENSE = Cortex::CORTEX_POSTURE_DEFENSE
 	};
 
-	/// Explicit phase of an offense wave. A land campaign runs MUSTER -> ASSAULT
-	/// (exactly the historical muster-then-march); an amphibious campaign inserts a
-	/// CROSS phase (mass swimmers at the landing zone) between the two. WAVE_NONE is the
-	/// empty-slot sentinel (replaces the old "gid == NOGBID && musterUntil == 0" test).
+	/// Explicit phase of an offense wave. A short land campaign runs MUSTER -> ASSAULT
+	/// (exactly the historical muster-then-march); a STAGED campaign — amphibious, or a
+	/// long land march past forwardRallyPathDist — inserts a CROSS phase (mass at the
+	/// staging point: the landing zone or the forward rally) between the two. WAVE_NONE
+	/// is the empty-slot sentinel (replaces the old "gid == NOGBID && musterUntil == 0"
+	/// test).
 	enum WavePhase {
 		WAVE_NONE    = 0, ///< empty slot: no wave here.
 		WAVE_MUSTER  = 1, ///< gathering at the home rally (NORMAL priority, recruits fresh warriors).
-		WAVE_CROSS   = 2, ///< amphibious only: massing swimmers at the landing zone (LOW priority).
+		WAVE_CROSS   = 2, ///< staged campaigns only: massing at the staging point — the amphibious landing zone or the long-march forward rally (LOW priority).
 		WAVE_ASSAULT = 3  ///< marching/holding on the enemy target (LOW priority).
 	};
 
@@ -147,14 +149,19 @@ private:
 	/// (WAVE_NONE == empty slot). `phaseDeadline` is the timeout tick of the current
 	/// timed phase — the muster timeout in WAVE_MUSTER, the cross timeout in WAVE_CROSS
 	/// — and 0 in WAVE_ASSAULT / WAVE_NONE (no deadline). `landingX/landingY` are the
-	/// CROSS-phase landing-zone tile (-1 when none). `createCooldown` gates re-issuing
-	/// this slot's OrderCreate until the flag registers (an OrderCreate takes several
-	/// ticks to land). Iterated by array index — deterministic, never a set.
+	/// CROSS-phase staging tile (the amphibious landing zone or the long-march forward
+	/// rally; -1 when none — the established field names predate the forward rally and
+	/// are kept). `musterBestArrived` is the muster's arrival high-water mark: each net
+	/// increase restarts the muster timeout, so a still-filling muster is never released
+	/// at 2-of-20 (see manageOffenseWaves). `createCooldown` gates re-issuing this
+	/// slot's OrderCreate until the flag registers (an OrderCreate takes several ticks
+	/// to land). Iterated by array index — deterministic, never a set.
 	struct OffenseWave {
 		Uint16 gid;
 		Sint32 phase;
 		Sint32 phaseDeadline;
 		Sint32 landingX, landingY;
+		Sint32 musterBestArrived;
 		Sint32 createCooldown;
 	};
 
@@ -283,12 +290,15 @@ private:
 	/// live wave (advance phases, retire spent assaulters) and, if a slot is free and
 	/// spare warriors exist, (keep) mustering the next wave at the home rally. `warriors`
 	/// is the colony's current warrior count (whether there is anything left to muster).
-	/// `amphibious` (with a valid landing zone at landingX/landingY) inserts the CROSS
-	/// phase between MUSTER and ASSAULT so the army masses on the far shore before the
-	/// inland push; a land campaign (amphibious false) runs MUSTER -> ASSAULT unchanged.
-	/// See MAX_OFFENSE_FLAGS and the OffenseWave doc.
+	/// `staged` (with a valid staging point at stagingX/stagingY — the amphibious
+	/// landing zone or the long-land-march forward rally) inserts the CROSS phase
+	/// between MUSTER and ASSAULT so the army masses at the staging point before the
+	/// final push; a short land campaign (staged false) runs MUSTER -> ASSAULT
+	/// unchanged. `amphibious` additionally gates the swim-specific behavior (the
+	/// swim-staging muster hold) — a forward-rally campaign is staged but NOT
+	/// amphibious. See MAX_OFFENSE_FLAGS and the OffenseWave doc.
 	void manageOffenseWaves(int targetX, int targetY, int radius, int warriors,
-	                        bool amphibious, int landingX, int landingY,
+	                        bool staged, int stagingX, int stagingY, bool amphibious,
 	                        const Cortex::CortexObservation& obs);
 
 	/// Warriors of `flag`'s bound cohort (unitsWorking) currently ARRIVED — within the

@@ -53,7 +53,8 @@ namespace Cortex
 	SwimAssessment assessSwim(Player* player, bool wantSwimReach);
 
 	/// Result of the amphibious-campaign assessment for one (rally -> target) push.
-	/// POD; the caller copies it into the observation (obs.campaign*/landingZone*).
+	/// POD; the caller copies it into the observation (obs.campaign*/landingZone*/
+	/// forwardRally*).
 	struct AmphibiousAssessment
 	{
 		Sint32 amphibious;   ///< 1 if the shortest path to the target's land region crosses water.
@@ -62,6 +63,9 @@ namespace Cortex
 		Sint32 landingValid; ///< 1 if a landing zone was found (only meaningful when amphibious==1).
 		Sint32 landingX;     ///< Landing-zone tile x (a shore tile in the target's land component). Valid iff landingValid.
 		Sint32 landingY;     ///< Landing-zone tile y.
+		Sint32 forwardRallyValid; ///< 1 if a LONG LAND campaign (not amphibious, landDist > forwardRallyPathDist) found a forward rally staging tile.
+		Sint32 forwardRallyX;     ///< Forward-rally tile x (a corridor tile on the shortest land path, at the landing standoff from every discovered enemy building). Valid iff forwardRallyValid.
+		Sint32 forwardRallyY;     ///< Forward-rally tile y.
 	};
 
 	/// Classify the (rally -> target) offense campaign and, when it crosses water,
@@ -88,10 +92,27 @@ namespace Cortex
 	/// the component has no reachable shore tile at all, landingValid stays 0 (the campaign
 	/// cannot be amphibious-assaulted and the caller falls back to today's behavior).
 	///
-	/// The third BFS + landing scan run ONLY on the amphibious branch, so a land campaign
-	/// costs exactly two BFS. Deterministic and safe inside lockstep. Returns all-zero /
-	/// unreachable when the player/team/game/map is unavailable or the team has no anchor.
+	/// FORWARD RALLY (the long-land-march counterpart of the landing zone): when the
+	/// campaign is NOT amphibious but the true land-path distance exceeds
+	/// `forwardRallyPathDist` (0 disables), the same third BFS from the target isolates
+	/// the target's land component and the same standoff scan picks a STAGING tile for
+	/// the CROSS phase instead: a corridor tile reachable from the rally by land, at
+	/// least `landingStandoffTiles` (warp-safe Chebyshev) from every discovered enemy
+	/// building, minimizing the BFS distance to the target (so it sits as far forward
+	/// as the standoff allows — the standoff itself guarantees that distance is >= the
+	/// standoff, since the target is one of the standoff buildings), tie-broken by
+	/// lowest land-BFS distance from the rally (a tile minimizing rally-dist at fixed
+	/// target-dist lies ON a shortest path — the corridor), then lowest flattened index.
+	/// If no tile clears the building standoff, the fallback scan keeps only the
+	/// explicit target-distance >= standoff bound; if even that fails, forwardRallyValid
+	/// stays 0 and the caller runs today's straight MUSTER -> ASSAULT.
+	///
+	/// The third BFS + staging scan run ONLY on the amphibious or long-land branch, so a
+	/// short land campaign costs exactly two BFS. Deterministic and safe inside lockstep.
+	/// Returns all-zero / unreachable when the player/team/game/map is unavailable or the
+	/// team has no anchor.
 	AmphibiousAssessment assessAmphibious(Player* player, int targetX, int targetY,
 	                                      const Sint32* standoffX, const Sint32* standoffY,
-	                                      int standoffCount, int landingStandoffTiles);
+	                                      int standoffCount, int landingStandoffTiles,
+	                                      int forwardRallyPathDist);
 }

@@ -296,7 +296,8 @@ namespace Cortex
 
 	AmphibiousAssessment assessAmphibious(Player* player, int targetX, int targetY,
 	                                      const Sint32* standoffX, const Sint32* standoffY,
-	                                      int standoffCount, int landingStandoffTiles)
+	                                      int standoffCount, int landingStandoffTiles,
+	                                      int forwardRallyPathDist)
 	{
 		AmphibiousAssessment out;
 		out.amphibious   = 0;
@@ -305,6 +306,9 @@ namespace Cortex
 		out.landingValid = 0;
 		out.landingX     = -1;
 		out.landingY     = -1;
+		out.forwardRallyValid = 0;
+		out.forwardRallyX     = -1;
+		out.forwardRallyY     = -1;
 
 		if (player == NULL || player->team == NULL)
 			return out;
@@ -364,7 +368,101 @@ namespace Cortex
 			          << " amphibious=" << (amphibious ? 1 : 0) << "\n";
 		}
 		if (!amphibious)
-			return out; // land campaign: caller keeps today's (non-amphibious) behavior.
+		{
+			// LAND campaign. Short march: keep today's straight MUSTER -> ASSAULT.
+			// LONG march (true land-path distance beyond the knob): pick a FORWARD
+			// RALLY staging tile so the waves stage through CROSS anyway — the phase
+			// machine's anchor just stops being water-specific.
+			if (forwardRallyPathDist <= 0 || out.landDist < 0
+			 || out.landDist <= forwardRallyPathDist)
+				return out;
+
+			// Third BFS (long-land branch only): the hop-distance field FROM the
+			// target over land (canSwim=false) — each tile's true path distance to
+			// the target, the "how far forward is this tile" metric the staging
+			// selection minimizes.
+			std::vector<int> targetLand;
+			bfsGroundField(map, me, targetX, targetY, /*canSwim=*/false, targetLand);
+
+			// Corridor scan. A staging tile must be reachable from the rally by LAND
+			// (the marchers can't swim) and from the target's side (targetLand). Rank:
+			// (1) LOWEST BFS distance to the target — as far forward as the standoff
+			//     allows; the building-standoff filter below already guarantees that
+			//     distance >= landingStandoffTiles, since the target IS one of the
+			//     standoff buildings and BFS hops >= warp Chebyshev.
+			// (2) tie -> LOWEST land-BFS distance from the rally: at fixed target
+			//     distance, minimizing rally distance puts the tile ON a shortest
+			//     rally->target path — the corridor the waves march anyway.
+			// (3) tie -> lowest flattened index (the landing picker's tie-break).
+			// Never-fail fallback (no tile clears the building standoff): same rank
+			// over tiles with the explicit targetDist >= standoff bound instead.
+			int bestIdx = -1, bestTgt = 0, bestRally = 0;
+			int bestIdxAny = -1, bestTgtAny = 0, bestRallyAny = 0;
+			for (int y = 0; y < h; y++)
+				for (int x = 0; x < w; x++)
+				{
+					const size_t idx = static_cast<size_t>(y) * w + x;
+					const int tgtD = targetLand[idx];
+					const int rallyD = landField[idx];
+					if (tgtD < 0 || rallyD < 0)
+						continue; // not a corridor tile.
+
+					if (tgtD >= landingStandoffTiles
+					 && (bestIdxAny < 0 || tgtD < bestTgtAny
+					     || (tgtD == bestTgtAny && (rallyD < bestRallyAny
+					         || (rallyD == bestRallyAny
+					             && static_cast<int>(idx) < bestIdxAny)))))
+					{
+						bestTgtAny = tgtD;
+						bestRallyAny = rallyD;
+						bestIdxAny = static_cast<int>(idx);
+					}
+
+					// Standoff: stage clear of every discovered enemy building, so the
+					// wave masses out of shelling range before the final push (the same
+					// bound the landing zone keeps).
+					bool tooClose = false;
+					for (int s = 0; s < standoffCount && !tooClose; s++)
+						if (map.warpDistMax(x, y, standoffX[s], standoffY[s]) < landingStandoffTiles)
+							tooClose = true;
+					if (tooClose)
+						continue;
+
+					if (bestIdx < 0 || tgtD < bestTgt
+					 || (tgtD == bestTgt && (rallyD < bestRally
+					     || (rallyD == bestRally && static_cast<int>(idx) < bestIdx))))
+					{
+						bestTgt = tgtD;
+						bestRally = rallyD;
+						bestIdx = static_cast<int>(idx);
+					}
+				}
+
+			const int chosen = (bestIdx >= 0) ? bestIdx : bestIdxAny;
+			if (chosen >= 0)
+			{
+				out.forwardRallyValid = 1;
+				out.forwardRallyX = chosen % w;
+				out.forwardRallyY = chosen / w;
+			}
+			// DIAGNOSTIC (gated): the staging pick alongside the trigger inputs.
+			if (getenv("CORTEX_DUMP_AMPHIB"))
+			{
+				std::cerr << "CORTEX_FWDRALLY tgt=" << targetX << "," << targetY
+				          << " landDist=" << out.landDist
+				          << " pathKnob=" << forwardRallyPathDist
+				          << " rally=";
+				if (out.forwardRallyValid)
+					std::cerr << out.forwardRallyX << "," << out.forwardRallyY
+					          << " tgtD=" << ((bestIdx >= 0) ? bestTgt : bestTgtAny)
+					          << " rallyD=" << ((bestIdx >= 0) ? bestRally : bestRallyAny)
+					          << " standoffOk=" << (bestIdx >= 0 ? 1 : 0);
+				else
+					std::cerr << "none";
+				std::cerr << "\n";
+			}
+			return out;
+		}
 		out.amphibious = 1;
 
 		// Third BFS (amphibious branch only): the TARGET's own land COMPONENT (canSwim=

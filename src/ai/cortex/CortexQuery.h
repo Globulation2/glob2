@@ -167,6 +167,9 @@ namespace Cortex
 		obs.landingZoneValid = 0;
 		obs.landingZoneX = -1;
 		obs.landingZoneY = -1;
+		obs.forwardRallyValid = 0;
+		obs.forwardRallyX = -1;
+		obs.forwardRallyY = -1;
 
 		// Neutral defaults; AICortex overwrites these with its live RAM-only
 		// hysteresis state after observe() returns, before policy.decide() (the

@@ -329,13 +329,17 @@ namespace Cortex
 				const Cortex::AmphibiousAssessment amp = Cortex::assessAmphibious(
 					player, obs.flagTargets[0].x, obs.flagTargets[0].y,
 					standoffX, standoffY, standoffCount,
-					Cortex::cortexTuning().landingStandoffTiles);
+					Cortex::cortexTuning().landingStandoffTiles,
+					Cortex::cortexTuning().forwardRallyPathDist);
 				obs.campaignAmphibious = amp.amphibious;
 				obs.campaignLandDist   = amp.landDist;
 				obs.campaignSwimDist   = amp.swimDist;
 				obs.landingZoneValid   = amp.landingValid;
 				obs.landingZoneX       = amp.landingX;
 				obs.landingZoneY       = amp.landingY;
+				obs.forwardRallyValid  = amp.forwardRallyValid;
+				obs.forwardRallyX      = amp.forwardRallyX;
+				obs.forwardRallyY      = amp.forwardRallyY;
 			}
 
 			// FORWARD-BASE candidates (v18): computed only in the state they cure —
@@ -349,22 +353,44 @@ namespace Cortex
 			// suppresses double-ordering. Candidates are surfaced whenever the
 			// out-of-range state holds.
 			{
+				// STAGING-POINT ANCHOR (v20): a long campaign — a forward rally or an
+				// amphibious landing — stages its waves at a point the warp-distance
+				// envelope never reasoned about, so the candidate anchors THERE and the
+				// window shrinks to "near the staging point" (the wave must eat where it
+				// masses). The staging point already stands off every discovered enemy
+				// building by landingStandoffTiles, so the enemy-distance floor drops to
+				// 0. Without a staging point the v18 behavior is unchanged: candidates
+				// only in the every-target-out-of-envelope state, anchored on the target.
 				const int range = cortexAttackRange(obs);
+				const bool staged = (obs.campaignAmphibious && obs.landingZoneValid)
+				                 || obs.forwardRallyValid;
 				if (range > 0 && obs.warriors > 0 && obs.flagTargets[0].valid
-				 && cortexInRangeTargetSlot(obs) < 0)
+				 && (cortexInRangeTargetSlot(obs) < 0 || staged))
 				{
-					const int maxD = range - CORTEX_FORWARD_RANGE_SLACK;
-					const int tx = obs.flagTargets[0].x;
-					const int ty = obs.flagTargets[0].y;
+					int tx, ty, minD, maxD;
+					if (staged)
+					{
+						tx = obs.campaignAmphibious ? obs.landingZoneX : obs.forwardRallyX;
+						ty = obs.campaignAmphibious ? obs.landingZoneY : obs.forwardRallyY;
+						minD = 0;
+						maxD = CORTEX_FORWARD_STAGING_MAX_DIST;
+					}
+					else
+					{
+						tx = obs.flagTargets[0].x;
+						ty = obs.flagTargets[0].y;
+						minD = CORTEX_FORWARD_MIN_ENEMY_DIST;
+						maxD = range - CORTEX_FORWARD_RANGE_SLACK;
+					}
 					placeForwardCandidate(game, team, IntBuildingType::FOOD_BUILDING,
-					                      tx, ty, CORTEX_FORWARD_MIN_ENEMY_DIST, maxD,
+					                      tx, ty, minD, maxD,
 					                      obs.forwardInn);
 					// A forward hospital is surfaced only when a finished hospital
 					// already exists (advisory support; the inn binds the envelope);
 					// the forward inn always leads.
 					if (cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL) > 0)
 						placeForwardCandidate(game, team, IntBuildingType::HEAL_BUILDING,
-						                      tx, ty, CORTEX_FORWARD_MIN_ENEMY_DIST, maxD,
+						                      tx, ty, minD, maxD,
 						                      obs.forwardHeal);
 				}
 			}

@@ -144,7 +144,15 @@ namespace Cortex
 	/// zone (landingZoneValid/landingZoneX/landingZoneY) where swimmers form up before the
 	/// inland assault. All precomputed on the observation side (CortexObservationObserve)
 	/// like rangeGateWaived/support distances, so the pure policy only reads scalars.
-	static const Uint32 OBSERVATION_VERSION = 19;
+	/// v20 (2026-07-17, forward-rally increment) added the long-land-march staging
+	/// signals: forwardRallyValid/forwardRallyX/forwardRallyY — the CortexWater
+	/// classifier's CROSS-phase staging tile for a LAND campaign whose true BFS path
+	/// distance to the primary target exceeds forwardRallyPathDist (a corridor tile on
+	/// the shortest land path, at the landing standoff from every discovered enemy
+	/// building). The forward-inn candidate anchor now prefers the staging point
+	/// (forward rally or amphibious landing) so warriors eat forward instead of
+	/// hunger-commuting home across the long march.
+	static const Uint32 OBSERVATION_VERSION = 20;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -515,6 +523,17 @@ namespace Cortex
 		Sint32 landingZoneValid;
 		Sint32 landingZoneX;
 		Sint32 landingZoneY;
+		// --- forward rally (v20, the long-land-march staging point) ---
+		// Filled only for a LAND campaign (campaignAmphibious == 0) whose true BFS
+		// land-path distance to the primary target exceeds forwardRallyPathDist: a
+		// corridor tile on the shortest rally->target land path, at the landing
+		// standoff from every discovered enemy building, where the waves stage
+		// (the CROSS phase's anchor — no longer water-specific) and near which the
+		// forward inn is ordered. valid==0 on a short march, an amphibious campaign,
+		// or when no corridor tile clears the standoff bound.
+		Sint32 forwardRallyValid;
+		Sint32 forwardRallyX;
+		Sint32 forwardRallyY;
 
 		// --- opponents ---
 		Sint32 enemyCount;    ///< Number of active slots below.

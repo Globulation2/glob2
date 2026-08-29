@@ -64,6 +64,7 @@ void AICortex::init(Player* player)
 		offenseWaves[i].phaseDeadline = 0;
 		offenseWaves[i].landingX = -1;
 		offenseWaves[i].landingY = -1;
+		offenseWaves[i].musterBestArrived = 0;
 		offenseWaves[i].createCooldown = 0;
 	}
 	for (int i = 0; i < Cortex::CORTEX_MAX_DEFENSE_FLAGS; i++)
@@ -115,6 +116,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 		offenseWaves[i].phaseDeadline = stream->readSint32("phaseDeadline");
 		offenseWaves[i].landingX = stream->readSint32("landingX");
 		offenseWaves[i].landingY = stream->readSint32("landingY");
+		offenseWaves[i].musterBestArrived = stream->readSint32("musterBestArrived");
 		offenseWaves[i].createCooldown = stream->readSint32("createCooldown");
 		stream->readLeaveSection();
 	}
@@ -169,6 +171,7 @@ void AICortex::save(GAGCore::OutputStream* stream)
 		stream->writeSint32(offenseWaves[i].phaseDeadline, "phaseDeadline");
 		stream->writeSint32(offenseWaves[i].landingX, "landingX");
 		stream->writeSint32(offenseWaves[i].landingY, "landingY");
+		stream->writeSint32(offenseWaves[i].musterBestArrived, "musterBestArrived");
 		stream->writeSint32(offenseWaves[i].createCooldown, "createCooldown");
 		stream->writeLeaveSection();
 	}
@@ -716,6 +719,9 @@ shared_ptr<Order> AICortex::getOrder(void)
 			          << " swimWarriors=" << obs.swimWarriors
 			          << " landing=" << (obs.landingZoneValid
 			               ? (std::to_string(obs.landingZoneX) + "," + std::to_string(obs.landingZoneY))
+			               : std::string("none"))
+			          << " fwdRally=" << (obs.forwardRallyValid
+			               ? (std::to_string(obs.forwardRallyX) + "," + std::to_string(obs.forwardRallyY))
 			               : std::string("none"));
 			for (int i = 0; i < Cortex::CORTEX_FLAG_TARGETS; i++)
 				if (obs.flagTargets[i].valid)

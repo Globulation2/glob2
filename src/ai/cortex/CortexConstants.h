@@ -162,6 +162,15 @@ namespace Cortex
 	/// this margin (candidate-to-target distance <= range - slack), so the finished
 	/// forward base doesn't leave the target teetering exactly on the range edge.
 	static const int CORTEX_FORWARD_RANGE_SLACK = 4;
+	/// When a long campaign has a STAGING point (a forward rally or an amphibious
+	/// landing zone), the forward-inn candidate anchors on it instead of on the
+	/// out-of-envelope target: the best legal spot within this Chebyshev distance of
+	/// the staging tile, so the massing wave eats at the front (within its own flag
+	/// radius — OFFENSE_FLAG_RADIUS is 8) instead of hunger-commuting home. The
+	/// staging point itself already stands off every discovered enemy building by
+	/// landingStandoffTiles, and the compactness score still prefers the home side
+	/// of the disc, so no separate enemy-distance floor is applied here.
+	static const int CORTEX_FORWARD_STAGING_MAX_DIST = 8;
 
 	// --- wheat-protection tuning (all tunable AI design choices) -----------
 	// Cortex paints a checkerboard `forbidden` pattern over its wheat (CORN) so

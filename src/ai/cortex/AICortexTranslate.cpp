@@ -227,14 +227,18 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 	// manageOffenseWaves. Count/minLevel are owned by the pipeline (full waves, minLevel
 	// 0 so the whole army marches as one); we pass it the target, flag radius, and our
 	// warrior count (whether there is anything left to muster).
-	// AMPHIBIOUS campaign: the observation classified the PRIMARY target (flagTargets[0])
-	// and, when its shortest path crosses water, picked a landing zone. Apply the CROSS
-	// phase only when we are marching on THAT classified target (slot 0) and a landing
-	// zone exists; any other committed slot (a nearer in-range land target) runs the plain
-	// MUSTER -> ASSAULT pipeline exactly as before.
+	// STAGED campaign: the observation classified the PRIMARY target (flagTargets[0])
+	// and picked a staging point — the landing zone when the shortest path crosses
+	// water (amphibious), or the forward rally when the land path is long
+	// (forwardRallyPathDist). Apply the CROSS phase only when we are marching on THAT
+	// classified target (slot 0) and a staging point exists; any other committed slot
+	// (a nearer in-range land target) runs the plain MUSTER -> ASSAULT pipeline
+	// exactly as before.
 	const bool amphibious = (slot == 0) && obs.campaignAmphibious && obs.landingZoneValid;
-	const int landingX = amphibious ? obs.landingZoneX : -1;
-	const int landingY = amphibious ? obs.landingZoneY : -1;
+	const bool forwardRally = (slot == 0) && !amphibious && obs.forwardRallyValid;
+	const bool staged = amphibious || forwardRally;
+	const int stagingX = amphibious ? obs.landingZoneX : (forwardRally ? obs.forwardRallyX : -1);
+	const int stagingY = amphibious ? obs.landingZoneY : (forwardRally ? obs.forwardRallyY : -1);
 
 	if (flagPosture != POSTURE_OFFENSE)
 	{
@@ -245,15 +249,16 @@ void AICortex::translateActionPlaceWarFlag(const Cortex::CortexAction& action, c
 			          << " commit target=(" << target.x << "," << target.y << ")"
 			          << " warriors=" << obs.warriors
 			          << " amphibious=" << (amphibious ? 1 : 0)
+			          << " forwardRally=" << (forwardRally ? 1 : 0)
 			          << " swimWarriors=" << obs.swimWarriors;
-			if (amphibious)
-				std::cerr << " landing=(" << landingX << "," << landingY << ")";
+			if (staged)
+				std::cerr << " staging=(" << stagingX << "," << stagingY << ")";
 			std::cerr << "\n";
 		}
 	}
 	flagPosture = POSTURE_OFFENSE;
 	manageOffenseWaves(target.x, target.y, action.flagRadius, obs.warriors,
-	                   amphibious, landingX, landingY, obs);
+	                   staged, stagingX, stagingY, amphibious, obs);
 }
 
 void AICortex::translateActionPlaceDefenseFlag(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)

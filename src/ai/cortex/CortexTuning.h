@@ -120,6 +120,15 @@ namespace Cortex
 		/// "flag-bound from birth so never learns to swim" loop. Default mirrors the
 		/// ATTACK_MIN_WARRIORS commit bar (8) in CortexPolicyCombat.cpp.
 		int amphibiousMinSwimWarriors = 8;
+		/// Forward-rally trigger for LONG LAND marches: when a land campaign's true
+		/// BFS path distance (rally -> primary target) exceeds this, the waves stage
+		/// through the CROSS phase at a FORWARD RALLY corridor tile (picked at the
+		/// landing standoff from every discovered enemy building) instead of marching
+		/// straight onto the target — so the army masses forward and fights as a
+		/// fleet rather than trickling in over a march the warp-distance envelope
+		/// never saw (the Mazury seed-3 hunger-commute loss). 0 disables (straight
+		/// MUSTER -> ASSAULT on every land campaign, the pre-forward-rally behavior).
+		int forwardRallyPathDist = 30;
 
 		// --- production-mix worker-target tiers (the expansion-tax side) ------
 		/// Divisor D in mid = base + (needs - base)/D: how far past the hauler

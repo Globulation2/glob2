@@ -223,6 +223,7 @@ void AICortex::clearAllOffenseFlags()
 		offenseWaves[i].phase = WAVE_NONE;
 		offenseWaves[i].phaseDeadline = 0;
 		offenseWaves[i].landingX = offenseWaves[i].landingY = -1;
+		offenseWaves[i].musterBestArrived = 0;
 		offenseWaves[i].createCooldown = 0;
 	}
 }
@@ -347,12 +348,12 @@ void AICortex::sweepOrphanWarFlags(const Cortex::CortexObservation& obs)
 }
 
 void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warriors,
-                                  bool amphibious, int landingX, int landingY,
+                                  bool staged, int stagingX, int stagingY, bool amphibious,
                                   const Cortex::CortexObservation& obs)
 {
 	// The offense WAVE PIPELINE. Each slot in offenseWaves[] is empty (WAVE_NONE),
-	// MUSTERING at the home rally, CROSSING to an amphibious landing zone, or ASSAULTING
-	// the enemy target. Run once per offense decision cycle:
+	// MUSTERING at the home rally, CROSSING to the campaign's staging point, or
+	// ASSAULTING the enemy target. Run once per offense decision cycle:
 	//   1. Reconcile every live wave: advance its phase (MUSTER -> [CROSS ->] ASSAULT)
 	//      when it is "massed enough" or times out; retire an ASSAULT wave ground down to
 	//      OFFENSE_WAVE_SPENT_WARRIORS.
@@ -363,10 +364,12 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 	// engine never poaches a flag-bound warrior) but pull no solo replacements, so a wave
 	// stays cohesive and a fresh wave forms behind it — continuous pressure, no downtime.
 	//
-	// A LAND campaign (amphibious false) runs MUSTER -> ASSAULT exactly as before; the
-	// ONE intentional change everywhere is that the muster "massed" test now counts
-	// ARRIVED warriors (countArrivedAtFlag), not the bound cohort, so a wave marches only
-	// once its warriors have actually gathered rather than merely been assigned.
+	// A STAGED campaign (amphibious landing zone, or a long land march's forward rally)
+	// routes each wave through CROSS at the staging point (stagingX/stagingY) so the
+	// army masses forward and releases as one fleet; the CROSS anchor is no longer
+	// water-specific. A short land campaign (staged false) runs MUSTER -> ASSAULT
+	// exactly as before. The swim-staging muster hold below stays gated on `amphibious`
+	// — a forward-rally campaign's marchers need no SWIM training.
 	int rallyX = 0, rallyY = 0;
 	const bool haveRally = computeRallyPoint(rallyX, rallyY);
 
@@ -398,6 +401,7 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 			w.phase = WAVE_NONE;
 			w.phaseDeadline = 0;
 			w.landingX = w.landingY = -1;
+			w.musterBestArrived = 0;
 		}
 		flags[i] = flag;
 		if (w.phase == WAVE_NONE)
@@ -405,9 +409,9 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 		cohort[i]  = flag ? static_cast<int>(flag->unitsWorking.size()) : 0;
 		arrived[i] = countArrivedAtFlag(flag);
 		// Fleet aggregate: warriors arrived across every wave CROSSing to THIS cycle's
-		// landing zone, so a large combined force releases together as one assault.
-		if (w.phase == WAVE_CROSS && amphibious
-		 && w.landingX == landingX && w.landingY == landingY)
+		// staging point, so a large combined force releases together as one assault.
+		if (w.phase == WAVE_CROSS && staged
+		 && w.landingX == stagingX && w.landingY == stagingY)
 			crossArrivedAtLanding += arrived[i];
 	}
 	const bool fleetReleaseNow = crossArrivedAtLanding >= fleetRelease;
@@ -423,22 +427,39 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 
 		if (w.phase == WAVE_MUSTER)
 		{
+			// TIMEOUT RESTART while the muster is still FILLING: each new arrival
+			// high-water mark re-arms the deadline. The fixed timeout alone released
+			// the home muster at 2-3 of 20 arrived (measured, Mazury seed 3): warriors
+			// pop from ~6 scattered swarms and are still commuting to the rally when
+			// OFFENSE_MUSTER_TIMEOUT_TICKS lapses. Restarting on a net increase keeps
+			// the muster alive exactly while warriors are still gathering, and the
+			// moment arrivals stall (deaths matching births, or nothing inbound) the
+			// unmoved deadline releases the wave as before — so a stalled muster still
+			// cannot hang the offense. High-water (not last-seen) so an oscillating
+			// arrived count cannot re-arm forever. No new knob: the per-increase window
+			// IS the existing muster timeout.
+			if (arrived[i] > w.musterBestArrived)
+			{
+				w.musterBestArrived = arrived[i];
+				w.phaseDeadline = obs.tick + OFFENSE_MUSTER_TIMEOUT_TICKS;
+			}
 			// March once the ARRIVED cohort is near full, or on the muster timeout.
 			const bool massed   = arrived[i] >= musterReady;
 			const bool timedOut = obs.tick >= w.phaseDeadline;
 			if (massed || timedOut)
 			{
-				if (amphibious)
+				if (staged)
 				{
-					// -> CROSS: move the flag to the landing zone; the bound cohort
-					// crosses the water to it. Do NOT evaluate the cross-release this
+					// -> CROSS: move the flag to the staging point (the amphibious
+					// landing zone or the long-march forward rally); the bound cohort
+					// marches/crosses to it. Do NOT evaluate the cross-release this
 					// cycle — arrived is still measured at the RALLY, so re-checking now
-					// would instantly re-release and skip the crossing. The move happens
+					// would instantly re-release and skip the staging. The move happens
 					// here; the release test runs from next cycle, once arrived reflects
-					// the landing.
+					// the staging point.
 					w.phase = WAVE_CROSS;
-					w.landingX = landingX;
-					w.landingY = landingY;
+					w.landingX = stagingX;
+					w.landingY = stagingY;
 					w.phaseDeadline = obs.tick + crossTimeout;
 					ensureFlagAt(w.gid, w.createCooldown, w.landingX, w.landingY, radius,
 					             Cortex::CORTEX_MAX_FLAG_UNITS, 0, Cortex::CORTEX_PRIORITY_LOW, obs);
@@ -460,16 +481,17 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 
 		if (w.phase == WAVE_CROSS)
 		{
-			// Release to the ASSAULT when this wave has massed on the far shore, when the
-			// whole crossing fleet has (fleetReleaseNow), or on the cross timeout — or
-			// immediately if the campaign is no longer amphibious (target became land-
-			// reachable, or the landing vanished), so a stranded CROSS wave never hangs.
+			// Release to the ASSAULT when this wave has massed at the staging point,
+			// when the whole staged fleet has (fleetReleaseNow), or on the cross
+			// timeout — or immediately if the campaign is no longer staged (target
+			// became close/land-reachable, or the staging point vanished), so a
+			// stranded CROSS wave never hangs.
 			int crossReady = cohort[i] * OFFENSE_MUSTER_READY_NUM / OFFENSE_MUSTER_READY_DEN;
 			if (crossReady < 1)
 				crossReady = 1;
 			const bool massed   = arrived[i] >= crossReady;
 			const bool timedOut = obs.tick >= w.phaseDeadline;
-			if (!amphibious || fleetReleaseNow || massed || timedOut)
+			if (!staged || fleetReleaseNow || massed || timedOut)
 			{
 				// -> ASSAULT: fall through to place on the target below.
 				w.phase = WAVE_ASSAULT;
@@ -494,6 +516,7 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 			w.phase = WAVE_NONE;
 			w.phaseDeadline = 0;
 			w.landingX = w.landingY = -1;
+			w.musterBestArrived = 0;
 			w.createCooldown = 0;
 			continue;
 		}
@@ -522,6 +545,7 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 			w.phase = WAVE_MUSTER;
 			w.phaseDeadline = obs.tick + OFFENSE_MUSTER_TIMEOUT_TICKS;
 			w.landingX = w.landingY = -1;
+			w.musterBestArrived = 0; // fresh muster: arrival high-water starts empty.
 			ensureFlagAt(w.gid, w.createCooldown, rallyX, rallyY, radius,
 			             Cortex::CORTEX_MAX_FLAG_UNITS, 0, Cortex::CORTEX_PRIORITY_NORMAL, obs);
 			break; // one new musterer per cycle.
