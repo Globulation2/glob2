@@ -9,6 +9,33 @@
 #include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
+void MapEdit::selectZone(BrushType type)
+{
+	performAction("unselect");
+	brushType = type;
+	selectionMode=PlaceZone;
+	if (brush.getType() == BrushTool::MODE_NONE)
+		brush.defaultSelection();
+	brush.setAddRemoveEnabledState(true);
+}
+
+void MapEdit::selectTerrain(TerrainSelector::TerrainType type, bool paintable)
+{
+	performAction("unselect");
+	terrainType=type;
+	selectionMode=PlaceTerrain;
+	if (!paintable || brush.getType() == BrushTool::MODE_NONE)
+		brush.defaultSelection();
+	brush.setAddRemoveEnabledState(paintable);
+}
+
+void MapEdit::resetPlacementTracking()
+{
+	lastPlacementX=-1;
+	lastPlacementY=-1;
+	firstPlacement.reset();
+}
+
 bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int relMouseY)
 {
 	if(action.substr(0, 29)=="set place building selection ")
@@ -69,30 +96,15 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	}
 	else if(action=="select forbidden zone")
 	{
-		performAction("unselect");
-		brushType = ForbiddenBrush;
-		selectionMode=PlaceZone;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectZone(ForbiddenBrush);
 	}
 	else if(action=="select clearing zone")
 	{
-		performAction("unselect");
-		brushType = ClearAreaBrush;
-		selectionMode=PlaceZone;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectZone(ClearAreaBrush);
 	}
 	else if(action=="select guard zone")
 	{
-		performAction("unselect");
-		brushType = GuardAreaBrush;
-		selectionMode=PlaceZone;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectZone(GuardAreaBrush);
 	}
 	else if(action=="handle zone click")
 	{
@@ -117,108 +129,51 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="zone drag end")
 	{
 		isDraggingZone=false;
-		lastPlacementX=-1;
-		lastPlacementY=-1;
-		firstPlacement.reset();
+		resetPlacementTracking();
 	}
 	else if(action=="select grass")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::Grass;
-		selectionMode=PlaceTerrain;
-
-		brush.defaultSelection();
-		brush.setAddRemoveEnabledState(false);
+		selectTerrain(TerrainSelector::Grass, false);
 	}
 	else if(action=="select sand")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::Sand;
-		selectionMode=PlaceTerrain;
-
-		brush.defaultSelection();
-		brush.setAddRemoveEnabledState(false);
+		selectTerrain(TerrainSelector::Sand, false);
 	}
 	else if(action=="select water")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::Water;
-		selectionMode=PlaceTerrain;
-
-		brush.defaultSelection();
-		brush.setAddRemoveEnabledState(false);
+		selectTerrain(TerrainSelector::Water, false);
 	}
 	else if(action=="select wheat")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::Wheat;
-		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectTerrain(TerrainSelector::Wheat, true);
 	}
 	else if(action=="select trees")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::Trees;
-		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectTerrain(TerrainSelector::Trees, true);
 	}
 	else if(action=="select stone")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::Stone;
-		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectTerrain(TerrainSelector::Stone, true);
 	}
 	else if(action=="select algae")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::Algae;
-		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectTerrain(TerrainSelector::Algae, true);
 	}
 	else if(action=="select papyrus")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::Papyrus;
-		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectTerrain(TerrainSelector::Papyrus, true);
 	}
 	else if(action=="select cherry tree")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::CherryTree;
-		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectTerrain(TerrainSelector::CherryTree, true);
 	}
 	else if(action=="select orange tree")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::OrangeTree;
-		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectTerrain(TerrainSelector::OrangeTree, true);
 	}
 	else if(action=="select prune tree")
 	{
-		performAction("unselect");
-		terrainType=TerrainSelector::PruneTree;
-		selectionMode=PlaceTerrain;
-		if (brush.getType() == BrushTool::MODE_NONE)
-			brush.defaultSelection();
-		brush.setAddRemoveEnabledState(true);
+		selectTerrain(TerrainSelector::PruneTree, true);
 	}
 	else if(action=="select delete objects")
 	{
@@ -258,9 +213,7 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="terrain drag end")
 	{
 		isDraggingTerrain=false;
-		lastPlacementX=-1;
-		lastPlacementY=-1;
-		firstPlacement.reset();
+		resetPlacementTracking();
 	}
 	else if(action=="delete drag start")
 	{
@@ -276,9 +229,7 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="delete drag end")
 	{
 		isDraggingDelete=false;
-		lastPlacementX=-1;
-		lastPlacementY=-1;
-		firstPlacement.reset();
+		resetPlacementTracking();
 	}
 	else if(action=="select change areas")
 	{
@@ -303,9 +254,7 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="area drag end")
 	{
 		isDraggingArea=false;
-		lastPlacementX=-1;
-		lastPlacementY=-1;
-		firstPlacement.reset();
+		resetPlacementTracking();
 	}
 	else if(action=="no ressource growth area drag start")
 	{
@@ -321,9 +270,7 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="no ressource growth area drag end")
 	{
 		isDraggingNoRessourceGrowthArea=false;
-		lastPlacementX=-1;
-		lastPlacementY=-1;
-		firstPlacement.reset();
+		resetPlacementTracking();
 	}
 	else if(action=="add team")
 	{

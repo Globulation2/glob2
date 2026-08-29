@@ -7,6 +7,14 @@
 #include "UnitType.h"
 #include "Utilities.h"
 
+void MapEdit::updateUnitLevel(int stat)
+{
+	Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
+	UnitType *ut = u->race->getUnitType(u->typeNum, u->level[stat]);
+	u->performance[stat] = ut->performance[stat];
+	hasMapBeenModified = true;
+}
+
 bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int relMouseY)
 {
 	if(action=="select worker")
@@ -150,52 +158,31 @@ bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int re
 	}
 	else if(action=="update unit walk level")
 	{
-		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
-		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[WALK]);
-		u->performance[WALK] = ut->performance[WALK];
-		hasMapBeenModified = true;
+		updateUnitLevel(WALK);
 	}
 	else if(action=="update unit swim level")
 	{
-		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
-		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[SWIM]);
-		u->performance[SWIM] = ut->performance[SWIM];
-		hasMapBeenModified = true;
+		updateUnitLevel(SWIM);
 	}
 	else if(action=="update unit harvest level")
 	{
-		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
-		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[HARVEST]);
-		u->performance[HARVEST] = ut->performance[HARVEST];
-		hasMapBeenModified = true;
+		updateUnitLevel(HARVEST);
 	}
 	else if(action=="update unit build level")
 	{
-		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
-		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[BUILD]);
-		u->performance[BUILD] = ut->performance[BUILD];
-		hasMapBeenModified = true;
+		updateUnitLevel(BUILD);
 	}
 	else if(action=="update unit attack speed level")
 	{
-		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
-		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[ATTACK_SPEED]);
-		u->performance[ATTACK_SPEED] = ut->performance[ATTACK_SPEED];
-		hasMapBeenModified = true;
+		updateUnitLevel(ATTACK_SPEED);
 	}
 	else if(action=="update unit attack strength level")
 	{
-		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
-		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[ATTACK_STRENGTH]);
-		u->performance[ATTACK_STRENGTH] = ut->performance[ATTACK_STRENGTH];
-		hasMapBeenModified = true;
+		updateUnitLevel(ATTACK_STRENGTH);
 	}
 	else if(action=="update unit magic ground attack level")
 	{
-		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
-		UnitType *ut = u->race->getUnitType(u->typeNum, u->level[MAGIC_ATTACK_GROUND]);
-		u->performance[MAGIC_ATTACK_GROUND] = ut->performance[MAGIC_ATTACK_GROUND];
-		hasMapBeenModified = true;
+		updateUnitLevel(MAGIC_ATTACK_GROUND);
 	}
 	else if(action=="update unit")
 	{

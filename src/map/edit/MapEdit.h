@@ -759,6 +759,17 @@ private:
 
 	void handleClick(int mx, int my, BrushTool::ClickType clickType);
 
+	///Selects a zone brush (forbidden/guard/clear-area) for placement
+	void selectZone(BrushType type);
+	///Selects a terrain type for painting. paintable=false paints the terrain directly with add/remove disabled; paintable=true treats it as an add/removable resource
+	void selectTerrain(TerrainSelector::TerrainType type, bool paintable);
+	///Resets drag placement tracking when a brush/terrain/delete/area drag ends
+	void resetPlacementTracking();
+	///Recomputes the selected unit's performance for the given stat after its level changed
+	void updateUnitLevel(int stat);
+	///Positions a building-editor row (label + scroll box) at ypos and advances ypos when shown, or hides both when not
+	void placeOrHideRow(FractionValueText* label, ValueScrollBox* scrollBox, bool shown, int& ypos);
+
 	///This vector of the keys on the team view. It allows one to choose between AI and human teams for campaign games
 	std::vector<std::string> teamViewSelectorKeys;
 

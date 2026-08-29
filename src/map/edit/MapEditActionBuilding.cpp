@@ -5,6 +5,21 @@
 #include "MapEdit.h"
 #include "Unit.h"
 
+void MapEdit::placeOrHideRow(FractionValueText* label, ValueScrollBox* scrollBox, bool shown, int& ypos)
+{
+	if(!shown)
+	{
+		label->disable();
+		scrollBox->disable();
+	}
+	else
+	{
+		label->area.y=ypos;
+		scrollBox->area.y=ypos+16;
+		ypos+=32;
+	}
+}
+
 bool MapEdit::performBuildingAction(const std::string& action, int relMouseX, int relMouseY)
 {
 	if(action=="select map building")
@@ -162,161 +177,19 @@ bool MapEdit::performBuildingAction(const std::string& action, int relMouseX, in
 			}
 
 			int ypos=252;
-			if(!hpLabel)
-			{
-				buildingHPLabel->disable();
-				buildingHPScrollBox->disable();
-			}
-			else
-			{
-				buildingHPLabel->area.y=ypos;
-				buildingHPScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!foodLabel)
-			{
-				buildingFoodQuantityLabel->disable();
-				buildingFoodQuantityScrollBox->disable();
-			}
-			else
-			{
-				buildingFoodQuantityLabel->area.y=ypos;
-				buildingFoodQuantityScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!assignedLabel)
-			{
-				buildingAssignedLabel->disable();
-				buildingAssignedScrollBox->disable();
-			}
-			else
-			{
-				buildingAssignedLabel->area.y=ypos;
-				buildingAssignedScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!workerRatioLabel)
-			{
-				buildingWorkerRatioLabel->disable();
-				buildingWorkerRatioScrollBox->disable();
-			}
-			else
-			{
-				buildingWorkerRatioLabel->area.y=ypos;
-				buildingWorkerRatioScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!explorerRatioLabel)
-			{
-				buildingExplorerRatioLabel->disable();
-				buildingExplorerRatioScrollBox->disable();
-			}
-			else
-			{
-				buildingExplorerRatioLabel->area.y=ypos;
-				buildingExplorerRatioScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!warriorRatioLabel)
-			{
-				buildingWarriorRatioLabel->disable();
-				buildingWarriorRatioScrollBox->disable();
-			}
-			else
-			{
-				buildingWarriorRatioLabel->area.y=ypos;
-				buildingWarriorRatioScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!cherryLabel)
-			{
-				buildingCherryLabel->disable();
-				buildingCherryScrollBox->disable();
-			}
-			else
-			{
-				buildingCherryLabel->area.y=ypos;
-				buildingCherryScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!orangeLabel)
-			{
-				buildingOrangeLabel->disable();
-				buildingOrangeScrollBox->disable();
-			}
-			else
-			{
-				buildingOrangeLabel->area.y=ypos;
-				buildingOrangeScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!pruneLabel)
-			{
-				buildingPruneLabel->disable();
-				buildingPruneScrollBox->disable();
-			}
-			else
-			{
-				buildingPruneLabel->area.y=ypos;
-				buildingPruneScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!stoneLabel)
-			{
-				buildingStoneLabel->disable();
-				buildingStoneScrollBox->disable();
-			}
-			else
-			{
-				buildingStoneLabel->area.y=ypos;
-				buildingStoneScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!bulletsLabel)
-			{
-				buildingBulletsLabel->disable();
-				buildingBulletsScrollBox->disable();
-			}
-			else
-			{
-				buildingBulletsLabel->area.y=ypos;
-				buildingBulletsScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!minimumLevel)
-			{
-				buildingMinimumLevelLabel->disable();
-				buildingMinimumLevelScrollBox->disable();
-			}
-			else
-			{
-				buildingMinimumLevelLabel->area.y=ypos;
-				buildingMinimumLevelScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
-
-			if(!radius)
-			{
-				buildingRadiusLabel->disable();
-				buildingRadiusScrollBox->disable();
-			}
-			else
-			{
-				buildingRadiusLabel->area.y=ypos;
-				buildingRadiusScrollBox->area.y=ypos+16;
-				ypos+=32;
-			}
+			placeOrHideRow(buildingHPLabel, buildingHPScrollBox, hpLabel, ypos);
+			placeOrHideRow(buildingFoodQuantityLabel, buildingFoodQuantityScrollBox, foodLabel, ypos);
+			placeOrHideRow(buildingAssignedLabel, buildingAssignedScrollBox, assignedLabel, ypos);
+			placeOrHideRow(buildingWorkerRatioLabel, buildingWorkerRatioScrollBox, workerRatioLabel, ypos);
+			placeOrHideRow(buildingExplorerRatioLabel, buildingExplorerRatioScrollBox, explorerRatioLabel, ypos);
+			placeOrHideRow(buildingWarriorRatioLabel, buildingWarriorRatioScrollBox, warriorRatioLabel, ypos);
+			placeOrHideRow(buildingCherryLabel, buildingCherryScrollBox, cherryLabel, ypos);
+			placeOrHideRow(buildingOrangeLabel, buildingOrangeScrollBox, orangeLabel, ypos);
+			placeOrHideRow(buildingPruneLabel, buildingPruneScrollBox, pruneLabel, ypos);
+			placeOrHideRow(buildingStoneLabel, buildingStoneScrollBox, stoneLabel, ypos);
+			placeOrHideRow(buildingBulletsLabel, buildingBulletsScrollBox, bulletsLabel, ypos);
+			placeOrHideRow(buildingMinimumLevelLabel, buildingMinimumLevelScrollBox, minimumLevel, ypos);
+			placeOrHideRow(buildingRadiusLabel, buildingRadiusScrollBox, radius, ypos);
 		}
 	}
 	else if(action=="update building")
