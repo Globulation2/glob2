@@ -25,27 +25,27 @@ using std::shared_ptr;
 
 
 // Choose this tick's sim interval and GUI-draw cadence. Caller has already
-// decremented nextGuiStep for this iteration; this resets it back to the
+// decremented st.nextGuiStep for this iteration; this resets it back to the
 // per-mode reload value once it has run down to (or below) zero.
-void Engine::selectReplaySpeed(int& speed, int& nextGuiStep)
+void Engine::selectReplaySpeed(MainLoopState& st)
 {
 	if (globalContainer->replaying)
 	{
 		if (globalContainer->replayFastForward && !gui.gamePaused)
 		{
-			speed = REPLAY_FAST_FORWARD_MS;
-			if (nextGuiStep < 0) nextGuiStep = REPLAY_FAST_FORWARD_DRAW_RATIO - 1;
+			st.speed = REPLAY_FAST_FORWARD_MS;
+			if (st.nextGuiStep < 0) st.nextGuiStep = REPLAY_FAST_FORWARD_DRAW_RATIO - 1;
 		}
 		else
 		{
-			speed = GAME_TICK_MS;
-			if (nextGuiStep < 0) nextGuiStep = 0;
+			st.speed = GAME_TICK_MS;
+			if (st.nextGuiStep < 0) st.nextGuiStep = 0;
 		}
 	}
 	else
 	{
 		// Process the GUI as usual, every step
-		nextGuiStep = 0;
+		st.nextGuiStep = 0;
 	}
 }
 
@@ -57,30 +57,20 @@ void Engine::pollAutomaticEndingConditions()
 	if (!globalContainer->automaticEndingGame)
 		return;
 
+	auto endGame = [this](const char* reason) {
+		printf("nox::%s\n", reason);
+		gui.isRunning = false;
+		automaticGameEndTick = SDL_GetTicks64();
+	};
+
 	if (!gui.getLocalTeam()->isAlive && !globalContainer->automaticGameGlobalEndConditions)
-	{
-		printf("nox::gui.localTeam is dead\n");
-		gui.isRunning = false;
-		automaticGameEndTick = SDL_GetTicks64();
-	}
+		endGame("gui.localTeam is dead");
 	else if (gui.getLocalTeam()->hasWon && !globalContainer->automaticGameGlobalEndConditions)
-	{
-		printf("nox::gui.localTeam has won\n");
-		gui.isRunning = false;
-		automaticGameEndTick = SDL_GetTicks64();
-	}
+		endGame("gui.localTeam has won");
 	else if (gui.game.totalPrestigeReached)
-	{
-		printf("nox::gui.game.totalPrestigeReached\n");
-		gui.isRunning = false;
-		automaticGameEndTick = SDL_GetTicks64();
-	}
+		endGame("gui.game.totalPrestigeReached");
 	else if (gui.game.isGameEnded)
-	{
-		printf("nox::gui.game.isGameEnded\n");
-		gui.isRunning = false;
-		automaticGameEndTick = SDL_GetTicks64();
-	}
+		endGame("gui.game.isGameEnded");
 }
 
 // Push this tick's local + AI orders into the network layer. AI poll,
@@ -207,14 +197,12 @@ void Engine::executeOrdersAndStep(bool readyNow)
 
 // Draw the frame (skipped during replay fast-forward when not at a cadence
 // boundary), save a videoshot if requested, then sleep to maintain wall-clock
-// pacing relative to startTime. Mutates needToBeTime (accumulated tick budget)
-// and frameNumber (videoshot index) across iterations.
-void Engine::frameTimingAndDraw(int speed, int nextGuiStep, Sint64& needToBeTime,
-                                unsigned& frameNumber, Uint64 startTime)
+// pacing relative to st.startTime. Mutates st.needToBeTime (accumulated tick
+// budget) and st.frameNumber (videoshot index) across iterations.
+void Engine::frameTimingAndDraw(MainLoopState& st)
 {
-	if (nextGuiStep == 0)
+	if (st.nextGuiStep == 0)
 	{
-		// we draw
 		gui.drawAll(gui.localTeamNo);
 		globalContainer->gfx->nextFrame();
 	}
@@ -224,29 +212,28 @@ void Engine::frameTimingAndDraw(int speed, int nextGuiStep, Sint64& needToBeTime
 		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		)
 	{
-		FormatableString fileName = FormatableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(frameNumber++, 10, 10, '0');
+		FormatableString fileName = FormatableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(st.frameNumber++, 10, 10, '0');
 		printf("printing video shot %s\n", fileName.c_str());
 		globalContainer->gfx->printScreen(fileName.c_str());
 	}
 
 	// we compute timing
-	needToBeTime += speed;
-	Sint64 currentTime = static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(startTime);
+	st.needToBeTime += st.speed;
+	Sint64 currentTime = static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(st.startTime);
 	//if we are more than MAX_CATCHUP_MS milliseconds behind where we should be,
 	//then truncate it. This is to avoid playing "catchup" for long
 	//periods of time if Glob2 recieved allmost no cpu time
-	if ((currentTime - needToBeTime) > MAX_CATCHUP_MS)
-		needToBeTime = currentTime - MAX_CATCHUP_MS;
+	if ((currentTime - st.needToBeTime) > MAX_CATCHUP_MS)
+		st.needToBeTime = currentTime - MAX_CATCHUP_MS;
 
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
-	Uint64 delay = std::max<Sint64>(0, needToBeTime - currentTime);
+	Uint64 delay = std::max<Sint64>(0, st.needToBeTime - currentTime);
 	SDL_Delay(delay);
 
 	// we set CPU stats
 	// net->setLeftTicks(computationAvailableTicks); //We may have to tell others IP players to wait for our slow computer.
 	// delay is the slept-ms; reported load is the complementary % of the
-	// GAME_TICK_MS budget that was spent doing work this tick. Algebraically
-	// identical to the prior literal form (4000 - delay*100)/40.
+	// GAME_TICK_MS budget that was spent doing work this tick.
 	const int loadPercent = static_cast<int>(
 		(GAME_TICK_MS * 100 - delay * 100) / GAME_TICK_MS);
 	gui.setCpuLoad(loadPercent);
@@ -496,45 +483,44 @@ void Engine::armReloadOrExit(bool& doRunOnceAgain)
 //   8. frameTimingAndDraw         - draw, videoshot, sleep
 //   9. flushOutgoingAndExit       - drain on exit request
 //
-// `wasReadyLastTick` and `readyNow` make the two semantic phases of network
-// readiness explicit (was CS-131 — the same boolean used to mean both).
+// `wasReadyLastTick` and `readyNow` are the two semantic phases of network
+// readiness: whether the previous tick committed (drives order gathering) vs.
+// whether this tick's orders are all in (drives execution).
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
-	int speed = GAME_TICK_MS;
-	bool wasReadyLastTick = true;
-
+	MainLoopState st;
+	st.speed = GAME_TICK_MS;
+	st.wasReadyLastTick = true;
 	// If playing in fast-forward, we process the GUI and draw everything only
 	// once every 3 game-steps so the overall fps stays about the same.
-	int nextGuiStep = 1;
-
-	Sint64 needToBeTime = 0;
-	Uint64 startTime = SDL_GetTicks64();
-	unsigned frameNumber = 0;
+	st.nextGuiStep = 1;
+	st.needToBeTime = 0;
+	st.startTime = SDL_GetTicks64();
+	st.frameNumber = 0;
 
 	while (gui.isRunning)
 	{
-		nextGuiStep--;
-		selectReplaySpeed(speed, nextGuiStep);
+		st.nextGuiStep--;
+		selectReplaySpeed(st);
 
-		// We always allow the user to use the gui:
 		pollAutomaticEndingConditions();
 
-		if (!globalContainer->runNoX && nextGuiStep == 0)
+		// We always allow the user to use the gui (except headless / off-cadence):
+		if (!globalContainer->runNoX && st.nextGuiStep == 0)
 			gui.step();
 
 		// readyNow defaults to wasReadyLastTick so that a hardPause iteration
 		// (which skips the gate flip below) carries the previous tick's
-		// network-readiness through into the next iteration's wasReadyLastTick
-		// — matching the original semantics where networkReadyToExecute was
-		// simply left untouched under hardPause.
-		bool readyNow = wasReadyLastTick;
+		// network-readiness through unchanged into the next iteration's
+		// wasReadyLastTick.
+		bool readyNow = st.wasReadyLastTick;
 
 		if (!gui.hardPause)
 		{
 			if (multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
 				gui.isRunning = false;
 
-			gatherAndAdvanceOrders(wasReadyLastTick);
+			gatherAndAdvanceOrders(st.wasReadyLastTick);
 
 			// Gate flip: from "previous tick committed" to "all orders for
 			// this tick are now in." Downstream helpers take readyNow, not
@@ -555,12 +541,12 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		}
 
 		if (!globalContainer->runNoX)
-			frameTimingAndDraw(speed, nextGuiStep, needToBeTime, frameNumber, startTime);
+			frameTimingAndDraw(st);
 
 		if (flushOutgoingAndExit())
 			break;
 
-		wasReadyLastTick = readyNow;
+		st.wasReadyLastTick = readyNow;
 	}
 
 	if (globalContainer->automaticEndingGame)

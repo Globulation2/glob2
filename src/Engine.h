@@ -142,15 +142,26 @@ private:
 
 	// --- runOneGameSession phase helpers ---
 	//
-	// The single 380-line body was decomposed into the helpers below. Each
-	// helper is one phase of the main loop or the post-loop teardown. They
+	// Each helper is one phase of the main loop or the post-loop teardown. They
 	// must be called in the order they appear here; the comments at each
 	// definition site name preconditions and which caller state each one
 	// mutates. See EngineRun.cpp.
 
+	/// Mutable per-iteration state of the runOneGameSession main loop, shared
+	/// among the phase helpers below so it need not be threaded call-by-call.
+	struct MainLoopState
+	{
+		int speed;              ///< this tick's sim interval, in ms
+		int nextGuiStep;        ///< draw-cadence countdown (fast-forward draws 1-in-N)
+		Sint64 needToBeTime;    ///< accumulated tick budget vs. wall clock, in ms
+		Uint64 startTime;       ///< wall-clock origin for pacing
+		unsigned frameNumber;   ///< next videoshot index
+		bool wasReadyLastTick;  ///< did the previous tick commit its orders?
+	};
+
 	/// Choose this tick's sim interval (GAME_TICK_MS / REPLAY_FAST_FORWARD_MS)
-	/// and the GUI-draw cadence. Caller has already decremented nextGuiStep.
-	void selectReplaySpeed(int& speed, int& nextGuiStep);
+	/// and the GUI-draw cadence. Caller has already decremented st.nextGuiStep.
+	void selectReplaySpeed(MainLoopState& st);
 
 	/// Headless / scripted-test polling: under --nox automaticEndingGame, flip
 	/// gui.isRunning=false once a local end condition fires. Records
@@ -169,9 +180,8 @@ private:
 
 	/// Draw the frame (subject to the fast-forward cadence), save a videoshot
 	/// if requested, then SDL_Delay to maintain wall-clock pacing. Updates
-	/// needToBeTime + frameNumber across iterations.
-	void frameTimingAndDraw(int speed, int nextGuiStep, Sint64& needToBeTime,
-	                        unsigned& frameNumber, Uint64 startTime);
+	/// st.needToBeTime + st.frameNumber across iterations.
+	void frameTimingAndDraw(MainLoopState& st);
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.
