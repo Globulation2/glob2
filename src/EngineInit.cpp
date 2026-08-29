@@ -284,32 +284,24 @@ void Engine::createRandomGame()
 	// above before save.
 	const char* dumpPath = getenv("GLOB2_DUMP_GAME");
 	if (dumpPath)
-	{
-		OutputStream* dumpStream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(dumpPath));
-		if (dumpStream->isEndOfStream())
-		{
-			std::cerr << "GLOB2_DUMP_GAME: cannot open " << dumpPath << " for writing" << std::endl;
-			delete dumpStream;
-			exit(1);
-		}
-		gui.save(dumpStream, map.getMapName());
-		delete dumpStream;
-		std::cout << "GLOB2_DUMP_GAME: wrote " << dumpPath << std::endl;
-	}
+		dumpGameState(dumpPath, "GLOB2_DUMP_GAME", map.getMapName());
 	if (!globalContainer->testGamesSaveGameAs.empty())
+		dumpGameState(globalContainer->testGamesSaveGameAs, "--save-game-as", map.getMapName());
+}
+
+// Write the complete tick-0 game state to `path` via gui.save(), or exit(1)
+// with a `label`-prefixed diagnostic if the file can't be opened. `label`
+// identifies the entry point (env var or CLI flag) in messages.
+void Engine::dumpGameState(const std::string& path, const std::string& label, const std::string& mapName)
+{
+	BinaryOutputStream stream(Toolkit::getFileManager()->openOutputStreamBackend(path));
+	if (stream.isEndOfStream())
 	{
-		const std::string& path = globalContainer->testGamesSaveGameAs;
-		OutputStream* dumpStream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(path));
-		if (dumpStream->isEndOfStream())
-		{
-			std::cerr << "--save-game-as: cannot open " << path << " for writing" << std::endl;
-			delete dumpStream;
-			exit(1);
-		}
-		gui.save(dumpStream, map.getMapName());
-		delete dumpStream;
-		std::cout << "--save-game-as: wrote " << path << std::endl;
+		std::cerr << label << ": cannot open " << path << " for writing" << std::endl;
+		exit(1);
 	}
+	gui.save(&stream, mapName);
+	std::cout << label << ": wrote " << path << std::endl;
 }
 
 
@@ -437,22 +429,16 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& 
 
 bool Engine::loadGame(const std::string &filename)
 {
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
-	if (stream->isEndOfStream())
+	BinaryInputStream stream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (stream.isEndOfStream())
 	{
 		std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't open file." << std::endl;
-		delete stream;
 		return false;
 	}
-	else
+	if (!gui.load(&stream))
 	{
-		bool res = gui.load(stream);
-		delete stream;
-		if (!res)
-		{
-			std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't load game." << std::endl;
-			return false;
-		}
+		std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't load game." << std::endl;
+		return false;
 	}
 
 	if (verbose)

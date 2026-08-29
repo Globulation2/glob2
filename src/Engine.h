@@ -122,6 +122,9 @@ private:
 	void finalAdjustements(void);
 	//! Show the "can't load map" message box, unless running headless
 	void showCantLoadMapError();
+	//! Save the current tick-0 game state to `path`, or exit(1) on open failure.
+	//! `label` names the entry point (env var / CLI flag) in diagnostics.
+	void dumpGameState(const std::string& path, const std::string& label, const std::string& mapName);
 
 	/// Choose a random map from the available maps. Returns std::nullopt
 	/// if maps/ is empty or unreadable (caller must surface this as a
