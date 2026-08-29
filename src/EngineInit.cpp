@@ -284,15 +284,12 @@ void Engine::createRandomGame()
 	// above before save.
 	const char* dumpPath = getenv("GLOB2_DUMP_GAME");
 	if (dumpPath)
-		dumpGameState(dumpPath, "GLOB2_DUMP_GAME", map.getMapName());
+		saveInitialGameStateOrExit(dumpPath, "GLOB2_DUMP_GAME", map.getMapName());
 	if (!globalContainer->testGamesSaveGameAs.empty())
-		dumpGameState(globalContainer->testGamesSaveGameAs, "--save-game-as", map.getMapName());
+		saveInitialGameStateOrExit(globalContainer->testGamesSaveGameAs, "--save-game-as", map.getMapName());
 }
 
-// Write the complete tick-0 game state to `path` via gui.save(), or exit(1)
-// with a `label`-prefixed diagnostic if the file can't be opened. `label`
-// identifies the entry point (env var or CLI flag) in messages.
-void Engine::dumpGameState(const std::string& path, const std::string& label, const std::string& mapName)
+void Engine::saveInitialGameStateOrExit(const std::string& path, const std::string& label, const std::string& mapName)
 {
 	BinaryOutputStream stream(Toolkit::getFileManager()->openOutputStreamBackend(path));
 	if (stream.isEndOfStream())
@@ -329,7 +326,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		error = true;
 	}
 	if (error) {
-		showCantLoadMapError();
+		showMapLoadError();
 		return EE_CANT_LOAD_MAP;
 	}
 
@@ -457,7 +454,7 @@ int Engine::loadReplay(const std::string &fileName)
 
 	if (!replayLoaded)
 	{
-		showCantLoadMapError();
+		showMapLoadError();
 		clearReplayState();
 		return EE_CANT_LOAD_MAP;
 	}
@@ -506,7 +503,7 @@ void Engine::clearReplayState()
 	globalContainer->replayReader.reset();
 }
 
-void Engine::showCantLoadMapError()
+void Engine::showMapLoadError()
 {
 	if (!globalContainer->runNoX)
 		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));

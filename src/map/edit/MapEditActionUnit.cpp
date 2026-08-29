@@ -7,7 +7,7 @@
 #include "UnitType.h"
 #include "Utilities.h"
 
-void MapEdit::updateUnitLevel(int stat)
+void MapEdit::refreshSelectedUnitPerformance(int stat)
 {
 	Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 	UnitType *ut = u->race->getUnitType(u->typeNum, u->level[stat]);
@@ -158,31 +158,31 @@ bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int re
 	}
 	else if(action=="update unit walk level")
 	{
-		updateUnitLevel(WALK);
+		refreshSelectedUnitPerformance(WALK);
 	}
 	else if(action=="update unit swim level")
 	{
-		updateUnitLevel(SWIM);
+		refreshSelectedUnitPerformance(SWIM);
 	}
 	else if(action=="update unit harvest level")
 	{
-		updateUnitLevel(HARVEST);
+		refreshSelectedUnitPerformance(HARVEST);
 	}
 	else if(action=="update unit build level")
 	{
-		updateUnitLevel(BUILD);
+		refreshSelectedUnitPerformance(BUILD);
 	}
 	else if(action=="update unit attack speed level")
 	{
-		updateUnitLevel(ATTACK_SPEED);
+		refreshSelectedUnitPerformance(ATTACK_SPEED);
 	}
 	else if(action=="update unit attack strength level")
 	{
-		updateUnitLevel(ATTACK_STRENGTH);
+		refreshSelectedUnitPerformance(ATTACK_STRENGTH);
 	}
 	else if(action=="update unit magic ground attack level")
 	{
-		updateUnitLevel(MAGIC_ATTACK_GROUND);
+		refreshSelectedUnitPerformance(MAGIC_ATTACK_GROUND);
 	}
 	else if(action=="update unit")
 	{

@@ -9,7 +9,7 @@
 #include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
-void MapEdit::selectZone(BrushType type)
+void MapEdit::beginZonePlacement(BrushType type)
 {
 	performAction("unselect");
 	brushType = type;
@@ -19,14 +19,15 @@ void MapEdit::selectZone(BrushType type)
 	brush.setAddRemoveEnabledState(true);
 }
 
-void MapEdit::selectTerrain(TerrainSelector::TerrainType type, bool paintable)
+void MapEdit::beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPlacementMode mode)
 {
 	performAction("unselect");
 	terrainType=type;
 	selectionMode=PlaceTerrain;
-	if (!paintable || brush.getType() == BrushTool::MODE_NONE)
+	const bool isResource = mode == TerrainPlacementMode::Resource;
+	if (!isResource || brush.getType() == BrushTool::MODE_NONE)
 		brush.defaultSelection();
-	brush.setAddRemoveEnabledState(paintable);
+	brush.setAddRemoveEnabledState(isResource);
 }
 
 void MapEdit::resetPlacementTracking()
@@ -96,15 +97,15 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	}
 	else if(action=="select forbidden zone")
 	{
-		selectZone(ForbiddenBrush);
+		beginZonePlacement(ForbiddenBrush);
 	}
 	else if(action=="select clearing zone")
 	{
-		selectZone(ClearAreaBrush);
+		beginZonePlacement(ClearAreaBrush);
 	}
 	else if(action=="select guard zone")
 	{
-		selectZone(GuardAreaBrush);
+		beginZonePlacement(GuardAreaBrush);
 	}
 	else if(action=="handle zone click")
 	{
@@ -133,47 +134,47 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	}
 	else if(action=="select grass")
 	{
-		selectTerrain(TerrainSelector::Grass, false);
+		beginTerrainPlacement(TerrainSelector::Grass, TerrainPlacementMode::BaseTerrain);
 	}
 	else if(action=="select sand")
 	{
-		selectTerrain(TerrainSelector::Sand, false);
+		beginTerrainPlacement(TerrainSelector::Sand, TerrainPlacementMode::BaseTerrain);
 	}
 	else if(action=="select water")
 	{
-		selectTerrain(TerrainSelector::Water, false);
+		beginTerrainPlacement(TerrainSelector::Water, TerrainPlacementMode::BaseTerrain);
 	}
 	else if(action=="select wheat")
 	{
-		selectTerrain(TerrainSelector::Wheat, true);
+		beginTerrainPlacement(TerrainSelector::Wheat, TerrainPlacementMode::Resource);
 	}
 	else if(action=="select trees")
 	{
-		selectTerrain(TerrainSelector::Trees, true);
+		beginTerrainPlacement(TerrainSelector::Trees, TerrainPlacementMode::Resource);
 	}
 	else if(action=="select stone")
 	{
-		selectTerrain(TerrainSelector::Stone, true);
+		beginTerrainPlacement(TerrainSelector::Stone, TerrainPlacementMode::Resource);
 	}
 	else if(action=="select algae")
 	{
-		selectTerrain(TerrainSelector::Algae, true);
+		beginTerrainPlacement(TerrainSelector::Algae, TerrainPlacementMode::Resource);
 	}
 	else if(action=="select papyrus")
 	{
-		selectTerrain(TerrainSelector::Papyrus, true);
+		beginTerrainPlacement(TerrainSelector::Papyrus, TerrainPlacementMode::Resource);
 	}
 	else if(action=="select cherry tree")
 	{
-		selectTerrain(TerrainSelector::CherryTree, true);
+		beginTerrainPlacement(TerrainSelector::CherryTree, TerrainPlacementMode::Resource);
 	}
 	else if(action=="select orange tree")
 	{
-		selectTerrain(TerrainSelector::OrangeTree, true);
+		beginTerrainPlacement(TerrainSelector::OrangeTree, TerrainPlacementMode::Resource);
 	}
 	else if(action=="select prune tree")
 	{
-		selectTerrain(TerrainSelector::PruneTree, true);
+		beginTerrainPlacement(TerrainSelector::PruneTree, TerrainPlacementMode::Resource);
 	}
 	else if(action=="select delete objects")
 	{

@@ -14,10 +14,7 @@
 
 namespace {
 
-// How far a unit can travel before starving. unit->race is its own team's
-// race here (Unit ctor sets race=&team->race), so this covers both the
-// race.hungryness and unit->race->hungryness spellings the callers used.
-Sint32 maxTravelDistance(const Unit *unit)
+Sint32 starvationLimitedTravelDistance(const Unit *unit)
 {
 	return std::max(0, unit->hungry) / unit->race->hungryness + unit->hp;
 }
@@ -32,7 +29,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		Sint32 x = unit->posX;
 		Sint32 y = unit->posY;
-		Sint32 maxDist = maxTravelDistance(unit);
+		Sint32 maxDist = starvationLimitedTravelDistance(unit);
 		Building *choosen = NULL;
 		Sint32 bestDist2 = maxDist * maxDist;
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
@@ -51,7 +48,7 @@ Building *Team::findNearestHeal(Unit *unit)
 	{
 		Sint32 x = unit->posX;
 		Sint32 y = unit->posY;
-		Sint32 maxDist = maxTravelDistance(unit);
+		Sint32 maxDist = starvationLimitedTravelDistance(unit);
 		bool canSwim = unit->performance[SWIM];
 		Building *choosen=  NULL;
 		Sint32 bestDist = maxDist;
@@ -85,7 +82,7 @@ Building *Team::findNearestFood(Unit *unit)
 
 	// first, we check for the best food an enemy can offer:
 	Sint32 bestEnemyHappyness = 0;
-	Sint32 maxDist = maxTravelDistance(unit);
+	Sint32 maxDist = starvationLimitedTravelDistance(unit);
 	Building *bestEnemyFood = NULL;
 	if (concurency)
 	{

@@ -712,7 +712,7 @@ namespace GAGGUI
 		return Screen::execute(this->gfx, stepLength);
 	}
 	
-	void postQuitApplicationEvent()
+	void repostQuitEvent()
 	{
 		SDL_Event quitEvent;
 		SDL_zero(quitEvent);
@@ -722,9 +722,7 @@ namespace GAGGUI
 
 	int OverlayScreen::executeModal(GraphicContext *parentCtx)
 	{
-		// Snapshot the frozen screen behind us into a backing surface. nextFrame()
-		// swaps GL buffers, so each frame's back buffer is stale and the whole
-		// backdrop must be re-blitted before the overlay is drawn on top.
+		// Preserve the backdrop because nextFrame() leaves the GL back buffer stale.
 		parentCtx->setClipRect();
 		DrawableSurface *background = new DrawableSurface(parentCtx->getW(), parentCtx->getH());
 		background->drawSurface(0, 0, parentCtx);
@@ -745,7 +743,6 @@ namespace GAGGUI
 					quitApplication = true;
 					break;
 				}
-				// Manual integration of cmd+Q and Alt+F4.
 				if (event.type == SDL_KEYDOWN)
 				{
 #					ifdef USE_OSX
@@ -788,7 +785,7 @@ namespace GAGGUI
 		delete background;
 		if (quitApplication)
 		{
-			postQuitApplicationEvent();
+			repostQuitEvent();
 			return QUIT_APPLICATION;
 		}
 		return endValue;

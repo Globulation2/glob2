@@ -137,7 +137,7 @@ namespace GAGGUI
 		int retVal;
 		if (quitApplication)
 		{
-			postQuitApplicationEvent();
+			repostQuitEvent();
 			retVal=-1;
 		}
 		else if (mbs->endValue>=0)

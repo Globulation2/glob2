@@ -120,11 +120,8 @@ private:
 	bool loadGame(const std::string &filename);
 	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
 	void finalAdjustements(void);
-	//! Show the "can't load map" message box, unless running headless
-	void showCantLoadMapError();
-	//! Save the current tick-0 game state to `path`, or exit(1) on open failure.
-	//! `label` names the entry point (env var / CLI flag) in diagnostics.
-	void dumpGameState(const std::string& path, const std::string& label, const std::string& mapName);
+	void showMapLoadError();
+	void saveInitialGameStateOrExit(const std::string& path, const std::string& label, const std::string& mapName);
 
 	/// Choose a random map from the available maps. Returns std::nullopt
 	/// if maps/ is empty or unreadable (caller must surface this as a
@@ -140,28 +137,19 @@ private:
 	/// Sets doRunOnceAgain=true to loop again (e.g. user picked a new save), false to return.
 	void runOneGameSession(bool& doRunOnceAgain);
 
-	// --- runOneGameSession phase helpers ---
-	//
-	// Each helper is one phase of the main loop or the post-loop teardown. They
-	// must be called in the order they appear here; the comments at each
-	// definition site name preconditions and which caller state each one
-	// mutates. See EngineRun.cpp.
+	// runOneGameSession phases
 
-	/// Mutable per-iteration state of the runOneGameSession main loop, shared
-	/// among the phase helpers below so it need not be threaded call-by-call.
 	struct MainLoopState
 	{
-		int speed;              ///< this tick's sim interval, in ms
-		int nextGuiStep;        ///< draw-cadence countdown (fast-forward draws 1-in-N)
-		Sint64 needToBeTime;    ///< accumulated tick budget vs. wall clock, in ms
-		Uint64 startTime;       ///< wall-clock origin for pacing
-		unsigned frameNumber;   ///< next videoshot index
-		bool wasReadyLastTick;  ///< did the previous tick commit its orders?
+		int speed;
+		int nextGuiStep;      ///< Fast-forward draw countdown
+		Sint64 needToBeTime;  ///< Expected elapsed time for pacing, in ms
+		Uint64 startTime;
+		unsigned frameNumber;
+		bool wasReadyLastTick;
 	};
 
-	/// Choose this tick's sim interval (GAME_TICK_MS / REPLAY_FAST_FORWARD_MS)
-	/// and the GUI-draw cadence. Caller has already decremented st.nextGuiStep.
-	void selectReplaySpeed(MainLoopState& st);
+	void updateTickSpeedAndDrawCadence(MainLoopState& st);
 
 	/// Headless / scripted-test polling: under --nox automaticEndingGame, flip
 	/// gui.isRunning=false once a local end condition fires. Records
@@ -178,14 +166,11 @@ private:
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
 
-	/// Draw the frame (subject to the fast-forward cadence), save a videoshot
-	/// if requested, then SDL_Delay to maintain wall-clock pacing. Updates
-	/// st.needToBeTime + st.frameNumber across iterations.
-	void frameTimingAndDraw(MainLoopState& st);
+	void drawAndPaceFrame(MainLoopState& st);
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.
-	bool flushOutgoingAndExit();
+	bool handleExitRequest();
 
 	/// Print the headless end-of-game summary plus the GLOB2_GAME_END
 	/// key=value line that the AI-trainer pipeline scrapes. Caller checks
@@ -203,13 +188,13 @@ private:
 
 	/// Close cross-replay sinks (sidecar, dataset) and tear down the network
 	/// + multiplayer state. The Engine itself stays alive for a possible
-	/// reload (see armReloadOrExit).
+	/// reload (see prepareNextGameSession).
 	void teardownSession();
 
 	/// Decide whether run() should loop back into runOneGameSession (a
 	/// load-game request was armed in the GUI) or return to the menu. Always
 	/// clears toLoadGameFileName so a follow-up pass doesn't re-trigger it.
-	void armReloadOrExit(bool& doRunOnceAgain);
+	void prepareNextGameSession(bool& doRunOnceAgain);
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;
@@ -226,4 +211,3 @@ private:
 
 	static const bool verbose = false;
 };
-

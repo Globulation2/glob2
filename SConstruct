@@ -146,9 +146,7 @@ def configure(env, server_only):
         if isDarwinPlatform:
             print("Using Apple's OpenGL framework")
             env.Append(FRAMEWORKS=["OpenGL", "CoreFoundation"])
-            # Apple deprecated the whole OpenGL API in 10.14 in favour of Metal.
-            # This is their own opt-out macro; the alternative is a few hundred
-            # warnings per GL-touching translation unit.
+            # Silence Apple's hundreds of OpenGL deprecation warnings.
             env.Append(CPPDEFINES=["GL_SILENCE_DEPRECATION"])
         elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h"):
             gl_libraries.append("GL")

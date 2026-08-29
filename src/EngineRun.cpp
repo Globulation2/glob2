@@ -24,10 +24,7 @@
 using std::shared_ptr;
 
 
-// Choose this tick's sim interval and GUI-draw cadence. Caller has already
-// decremented st.nextGuiStep for this iteration; this resets it back to the
-// per-mode reload value once it has run down to (or below) zero.
-void Engine::selectReplaySpeed(MainLoopState& st)
+void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st)
 {
 	if (globalContainer->replaying)
 	{
@@ -195,11 +192,7 @@ void Engine::executeOrdersAndStep(bool readyNow)
 	}
 }
 
-// Draw the frame (skipped during replay fast-forward when not at a cadence
-// boundary), save a videoshot if requested, then sleep to maintain wall-clock
-// pacing relative to st.startTime. Mutates st.needToBeTime (accumulated tick
-// budget) and st.frameNumber (videoshot index) across iterations.
-void Engine::frameTimingAndDraw(MainLoopState& st)
+void Engine::drawAndPaceFrame(MainLoopState& st)
 {
 	if (st.nextGuiStep == 0)
 	{
@@ -232,8 +225,7 @@ void Engine::frameTimingAndDraw(MainLoopState& st)
 
 	// we set CPU stats
 	// net->setLeftTicks(computationAvailableTicks); //We may have to tell others IP players to wait for our slow computer.
-	// delay is the slept-ms; reported load is the complementary % of the
-	// GAME_TICK_MS budget that was spent doing work this tick.
+	// Convert slept time into CPU load for one game tick.
 	const int loadPercent = static_cast<int>(
 		(GAME_TICK_MS * 100 - delay * 100) / GAME_TICK_MS);
 	gui.setCpuLoad(loadPercent);
@@ -241,7 +233,7 @@ void Engine::frameTimingAndDraw(MainLoopState& st)
 
 // If the GUI requested a clean exit, drain remaining local orders into the
 // network layer and flush. Returns true if the engine loop should break.
-bool Engine::flushOutgoingAndExit()
+bool Engine::handleExitRequest()
 {
 	if (!gui.flushOutgoingAndExit)
 		return false;
@@ -438,7 +430,7 @@ void Engine::teardownSession()
 // Decide whether run() should loop back into runOneGameSession (e.g. the GUI
 // armed a load-game request) or return to the menu. Always clears
 // toLoadGameFileName afterwards so the next pass doesn't re-trigger it.
-void Engine::armReloadOrExit(bool& doRunOnceAgain)
+void Engine::prepareNextGameSession(bool& doRunOnceAgain)
 {
 	if (gui.exitGlobCompletely)
 	{
@@ -473,19 +465,17 @@ void Engine::armReloadOrExit(bool& doRunOnceAgain)
 // (e.g. user picked a save during play); false means run() returns.
 //
 // Phases of one main-loop iteration:
-//   1. selectReplaySpeed         - choose this tick's interval + draw cadence
+//   1. updateTickSpeedAndDrawCadence - choose this tick's interval + draw cadence
 //   2. pollAutomaticEndingConditions - headless end-condition tripwire
 //   3. gui.step                   - GUI input (skipped under --nox / off-cadence)
 //   4. gatherAndAdvanceOrders     - push local+AI orders, advance net (if prev tick committed)
 //   5. (gate flip) readyNow = net->allOrdersRecieved()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
-//   8. frameTimingAndDraw         - draw, videoshot, sleep
-//   9. flushOutgoingAndExit       - drain on exit request
+//   8. drawAndPaceFrame            - draw, videoshot, sleep
+//   9. handleExitRequest           - drain on exit request
 //
-// `wasReadyLastTick` and `readyNow` are the two semantic phases of network
-// readiness: whether the previous tick committed (drives order gathering) vs.
-// whether this tick's orders are all in (drives execution).
+// Track order readiness separately for the previous and current ticks.
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
 	MainLoopState st;
@@ -501,18 +491,14 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 	while (gui.isRunning)
 	{
 		st.nextGuiStep--;
-		selectReplaySpeed(st);
+		updateTickSpeedAndDrawCadence(st);
 
 		pollAutomaticEndingConditions();
 
-		// We always allow the user to use the gui (except headless / off-cadence):
 		if (!globalContainer->runNoX && st.nextGuiStep == 0)
 			gui.step();
 
-		// readyNow defaults to wasReadyLastTick so that a hardPause iteration
-		// (which skips the gate flip below) carries the previous tick's
-		// network-readiness through unchanged into the next iteration's
-		// wasReadyLastTick.
+		// Hard pause skips the readiness update, so carry the previous value forward.
 		bool readyNow = st.wasReadyLastTick;
 
 		if (!gui.hardPause)
@@ -541,9 +527,9 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		}
 
 		if (!globalContainer->runNoX)
-			frameTimingAndDraw(st);
+			drawAndPaceFrame(st);
 
-		if (flushOutgoingAndExit())
+		if (handleExitRequest())
 			break;
 
 		st.wasReadyLastTick = readyNow;
@@ -557,5 +543,5 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 
 	teardownSession();
 
-	armReloadOrExit(doRunOnceAgain);
+	prepareNextGameSession(doRunOnceAgain);
 }
