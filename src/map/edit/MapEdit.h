@@ -5,11 +5,10 @@
 #pragma once
 
 #include "Brush.h"
+#include "GAGSys.h"
 #include "GameGUILoadSave.h"
 #include "Game.h"
-#include "GUIBase.h"
 #include "KeyboardManager.h"
-#include <map>
 #include "MapEditDialog.h"
 #include <optional>
 #include "render/Minimap.h"
