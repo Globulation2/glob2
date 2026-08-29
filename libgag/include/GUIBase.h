@@ -362,6 +362,12 @@ namespace GAGGUI
 	
 		//! Run the OverlayScreen, call Screen::execute with the correct DrawableSurface
 		virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);
+		//! Run this overlay as a modal loop, compositing it over the live parent
+		//! context each frame until endValue becomes non-negative. Returns endValue,
+		//! or QUIT_APPLICATION if the application itself was quit (window close,
+		//! Cmd+Q on macOS, Alt+F4 on Windows). Subclasses drive the loop by
+		//! overriding onTimer() to advance their work and set endValue when done.
+		int executeModal(GAGCore::GraphicContext *parentCtx);
 		//! Call thisinstead of dispatch event
 		virtual void translateAndProcessEvent(SDL_Event *event);
 		//! Paint a part of the background of screen

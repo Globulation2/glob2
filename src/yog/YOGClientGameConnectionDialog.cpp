@@ -5,7 +5,6 @@
 #include "GUIText.h"
 #include "StringTable.h"
 #include "Toolkit.h"
-#include "SDLCompat.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;
@@ -33,54 +32,13 @@ void YOGClientGameConnectionDialog::onAction(Widget *source, Action action, int 
 
 void YOGClientGameConnectionDialog::execute()
 {
-	// save screen in a temporary surface
-	parentCtx->setClipRect();
-	DrawableSurface *background = new DrawableSurface(parentCtx->getW(), parentCtx->getH());
-	background->drawSurface(0, 0, parentCtx);
+	executeModal(parentCtx);
+}
 
-	dispatchPaint();
 
-	SDL_Event event;
-	while(endValue<0)
-	{
-		Uint64 time = SDL_GetTicks64();
-		while (SDL_PollEvent(&event))
-		{
-			if (event.type==SDL_QUIT)
-				break;
-			//Manual integration of cmd+q and alt f4
-			if(event.type == SDL_KEYDOWN)
-			{
-#					ifdef USE_OSX
-				SDL_Keymod modState = SDL_GetModState();
-				if(event.key.keysym.sym == SDLK_q && modState & KMOD_GUI)
-				{
-					break;
-				}
-#					else
-				SDL_GetModState();
-#					endif
-#					ifdef USE_WIN32
-				SDL_Keymod modState = SDL_GetModState();
-				if(event.key.keysym.sym == SDLK_F4 && modState & KMOD_ALT)
-				{
-					break;
-				}
-#					endif
-			}
-
-			translateAndProcessEvent(&event);
-		}
-		dispatchPaint();
-		parentCtx->drawSurface((int)0, (int)0, background);
-		parentCtx->drawSurface(decX, decY, getSurface());
-		parentCtx->nextFrame();
-		updateGame();
-		Uint64 newTime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time), 0));
-	}
-	
-	delete background;
+void YOGClientGameConnectionDialog::onTimer(Uint32)
+{
+	updateGame();
 }
 
 

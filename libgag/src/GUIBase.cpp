@@ -712,6 +712,70 @@ namespace GAGGUI
 		return Screen::execute(this->gfx, stepLength);
 	}
 	
+	int OverlayScreen::executeModal(GraphicContext *parentCtx)
+	{
+		// Snapshot the frozen screen behind us into a backing surface. nextFrame()
+		// swaps GL buffers, so each frame's back buffer is stale and the whole
+		// backdrop must be re-blitted before the overlay is drawn on top.
+		parentCtx->setClipRect();
+		DrawableSurface *background = new DrawableSurface(parentCtx->getW(), parentCtx->getH());
+		background->drawSurface(0, 0, parentCtx);
+
+		dispatchPaint();
+		run = true;
+
+		while (endValue < 0 && run)
+		{
+			const Uint64 frameStart = SDL_GetTicks64();
+
+			SDL_Event event;
+			while (SDL_PollEvent(&event))
+			{
+				if (event.type == SDL_QUIT)
+				{
+					run = false;
+					returnCode = QUIT_APPLICATION;
+					continue;
+				}
+				// Manual integration of cmd+Q and Alt+F4.
+				if (event.type == SDL_KEYDOWN)
+				{
+#					ifdef USE_OSX
+					if (event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
+					{
+						run = false;
+						returnCode = QUIT_APPLICATION;
+						continue;
+					}
+#					endif
+#					ifdef USE_WIN32
+					if (event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
+					{
+						run = false;
+						returnCode = QUIT_APPLICATION;
+						continue;
+					}
+#					endif
+				}
+				translateAndProcessEvent(&event);
+			}
+
+			dispatchTimer(frameStart);
+
+			dispatchPaint();
+			parentCtx->drawSurface(0, 0, background);
+			parentCtx->drawSurface(decX, decY, getSurface());
+			parentCtx->nextFrame();
+
+			const Uint64 frameEnd = SDL_GetTicks64();
+			const Sint64 elapsed = static_cast<Sint64>(frameEnd) - static_cast<Sint64>(frameStart);
+			SDL_Delay(static_cast<Uint32>(std::max<Sint64>(40 - elapsed, 0)));
+		}
+
+		delete background;
+		return run ? endValue : QUIT_APPLICATION;
+	}
+
 	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 	{
 		int newX, newY;

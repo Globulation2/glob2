@@ -26,6 +26,7 @@ public:
 	FertilityCalculatorDialog(GAGCore::GraphicContext* parentCtx, Map& map);
 	~FertilityCalculatorDialog() override = default;
 	void onAction(GAGGUI::Widget* source, GAGGUI::Action action, int par1, int par2) override;
+	void onTimer(Uint32 tick) override;
 
 	/// Modal: blocks until the background computation finishes.
 	void runModal();
