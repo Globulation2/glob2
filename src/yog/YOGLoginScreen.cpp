@@ -24,7 +24,7 @@
 using std::static_pointer_cast;
 
 YOGLoginScreen::YOGLoginScreen(std::shared_ptr<YOGClient> client)
-	: client(client)
+	: YOGConnectionScreen(client)
 {
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
@@ -51,10 +51,7 @@ YOGLoginScreen::YOGLoginScreen(std::shared_ptr<YOGClient> client)
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
-	
-	wasConnecting = false;
-	changeTabAgain=true;
-	
+
 	client->addEventListener(this);
 }
 
@@ -122,24 +119,6 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 	}
 }
-
-void YOGLoginScreen::onTimer(Uint32 tick)
-{
-	if(wasConnecting && !client->isConnecting())
-	{
-		if(!client->isConnected())
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
-			animation->visible=false;
-		}
-		wasConnecting = false;
-	}
-
-	client->update();
-	changeTabAgain=true;
-}
-
-
 
 void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {

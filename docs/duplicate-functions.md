@@ -40,14 +40,6 @@ Identical `addListener`/`removeListener` implementations across:
 
 **Rust port note:** Not needed in Rust -- use channels or a simple callback vec utility.
 
-### Login / Register Screens
-
-`onTimer` is identical in:
-- YOGLoginScreen.cpp:145
-- YOGRegisterScreen.cpp:79
-
-**Rust port note:** Extract shared login/register timer logic.
-
 ### KeyActions Classes
 
 `getName` and `getAction` are identical in:

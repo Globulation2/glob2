@@ -20,7 +20,7 @@
 using std::static_pointer_cast;
 
 YOGRegisterScreen::YOGRegisterScreen(std::shared_ptr<YOGClient> client)
-	: client(client)
+	: YOGConnectionScreen(client)
 {
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]")));
 	
@@ -45,10 +45,7 @@ YOGRegisterScreen::YOGRegisterScreen(std::shared_ptr<YOGClient> client)
 	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
 	animation->visible=false;
 	addWidget(animation);
-	
-	wasConnecting=false;
-	changeTabAgain=true;
-	
+
 	client->addEventListener(this);
 }
 
@@ -57,24 +54,6 @@ YOGRegisterScreen::YOGRegisterScreen(std::shared_ptr<YOGClient> client)
 YOGRegisterScreen::~YOGRegisterScreen()
 {
 	client->removeEventListener(this);
-}
-
-
-
-void YOGRegisterScreen::onTimer(Uint32 tick)
-{
-	if(wasConnecting && !client->isConnecting())
-	{
-		if(!client->isConnected())
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_UNABLE_TO_CONNECT]"));
-			animation->visible=false;
-		}
-		wasConnecting = false;
-	}
-
-	client->update();
-	changeTabAgain=true;
 }
 
 

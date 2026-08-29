@@ -323,6 +323,7 @@ yog/YOGClientPlayerListListener.cpp
 yog/YOGClientPlayerListManager.cpp
 yog/YOGClientRatedMapList.cpp
 yog/YOGClientRouterAdministrator.cpp
+yog/YOGConnectionScreen.cpp
 yog/YOGConsts.cpp
 yog/YOGDownloadableMapInfo.cpp
 yog/YOGGameInfo.cpp
