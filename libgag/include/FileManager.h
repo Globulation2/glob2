@@ -74,6 +74,8 @@ namespace GAGCore
 		void remove(const std::string filename);
 		//! Returns true if filename is a directory
 		bool isDir(const std::string filename);
+		//! Returns true if filename exists in the virtual filesystem
+		bool exists(const std::string filename);
 		
 		//! Compress source to dest uzing gzip, returns true on success
 		bool gzip(const std::string &source, const std::string &dest);

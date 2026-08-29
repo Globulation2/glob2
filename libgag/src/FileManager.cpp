@@ -476,6 +476,26 @@ namespace GAGCore
 		return (s.st_mode & S_IFDIR) != 0;
 	}
 	
+	bool FileManager::exists(const std::string filename)
+	{
+		if (isAbsolutePath(filename))
+		{
+			struct stat stats;
+			return stat(filename.c_str(), &stats) == 0;
+		}
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+
+			struct stat stats;
+			if (stat(path.c_str(), &stats) == 0)
+				return true;
+		}
+		return false;
+	}
+
 	bool FileManager::gzip(const std::string &source, const std::string &dest)
 	{
 		// Open streams
