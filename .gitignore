@@ -3,9 +3,6 @@ options_cache.py
 libgag.a
 libusl.a
 src/glob2
-test/TestsRunner
-test/WinningConditionsHarness
-test/CampaignLoadHarness
 testResults.xml
 .sconf_temp
 .sconsign.dblite
@@ -21,7 +18,4 @@ compile_commands.json
 .cache/
 Glob2.app/
 Glob2-*.dmg
-test/CampaignSelectionHarness
-test/NetSendOrderDecodeTest
-test/OrderAlterateAreaTest
 /.tmp
