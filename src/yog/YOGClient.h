@@ -87,7 +87,7 @@ public:
 	YOGGamePolicy getGamePolicy() const;
 	
 	///This will return the playerID of the current connection
-	Uint16 getPlayerID() const;
+	YOGPlayerID getPlayerID() const;
 
 	///This will attempt a login with the provided login information. The password is not
 	///mandatory. If the login policy is YOGAnonymousLogin, then the password will simply
@@ -220,7 +220,7 @@ protected:
 
 private:
 	std::string username;
-	Uint16 playerID;
+	YOGPlayerID playerID;
 
 	bool wasConnected;
 	bool wasConnecting;
@@ -252,6 +252,5 @@ private:
 
 
 };
-
 
 

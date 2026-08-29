@@ -57,7 +57,7 @@ public:
 
 	template<typename container> void applyDifferences(container& original) const;
 private:
-	std::vector<Uint16> removedPlayers;
+	std::vector<YOGPlayerID> removedPlayers;
 	std::vector<YOGPlayerSessionInfo> updatedPlayers;
 };
 
@@ -253,7 +253,7 @@ template<typename container> void NetUpdatePlayerList::updateDifferences(const c
 template<typename container> void NetUpdatePlayerList::applyDifferences(container& original) const
 {
 	// Remove removed players
-	for(std::vector<Uint16>::const_iterator i = removedPlayers.begin(); i!=removedPlayers.end(); ++i)
+	for(std::vector<YOGPlayerID>::const_iterator i = removedPlayers.begin(); i!=removedPlayers.end(); ++i)
 	{
 		for(typename container::iterator j=original.begin(); j!=original.end(); ++j)
 		{

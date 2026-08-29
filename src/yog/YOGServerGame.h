@@ -69,10 +69,10 @@ public:
 	Uint16 getGameID() const;
 
 	///Sends that a player is ready to start
-	void setReadyToStart(int playerID);
+	void setReadyToStart(YOGPlayerID playerID);
 
 	///Sends that a player is not ready to start
-	void setNotReadyToStart(int playerID);
+	void setNotReadyToStart(YOGPlayerID playerID);
 
 	///Recieves a game start request, refuses to the host if not all the players are ready
 	///While the host is normally updated with this information, lag from the connection
@@ -89,7 +89,7 @@ public:
 	bool hasGameStarted() const;
 
 	///Returns the hosts ID
-	Uint16 getHostPlayerID() const;
+	YOGPlayerID getHostPlayerID() const;
 
 	///This chooses a latency mode and sends it to all the players
 	void chooseLatencyMode();
@@ -127,5 +127,4 @@ private:
 	YOGServer& server;
 	YOGGameResults gameResults;
 };
-
 

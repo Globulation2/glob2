@@ -730,7 +730,7 @@ void MultiplayerGame::setGameResult(YOGGameResult result)
 
 
 
-bool MultiplayerGame::isReadyToStart(int playerID)
+bool MultiplayerGame::isReadyToStart(YOGPlayerID playerID)
 {
 	return playerManager.isReadyToGo(playerID);
 }
@@ -748,4 +748,3 @@ bool MultiplayerGame::isFullyInGame()
 		return false;
 	return true;
 }
-

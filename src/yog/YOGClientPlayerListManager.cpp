@@ -54,7 +54,7 @@ void YOGClientPlayerListManager::removeListener(YOGClientPlayerListListener* lis
 
 
 
-std::string YOGClientPlayerListManager::findPlayerName(Uint16 playerID)
+std::string YOGClientPlayerListManager::findPlayerName(YOGPlayerID playerID)
 {
 	for(std::list<YOGPlayerSessionInfo>::iterator i = players.begin(); i != players.end(); ++i)
 	{
@@ -97,6 +97,5 @@ void YOGClientPlayerListManager::sendToListeners()
 		(*i)->playerListUpdated();
 	}
 }
-
 
 

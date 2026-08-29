@@ -87,7 +87,7 @@ Uint8 MGDownloadPercentUpdate::getPercentFinished() const
 
 
 
-MGPlayerReadyStatusChanged::MGPlayerReadyStatusChanged(Uint16 playerID)
+MGPlayerReadyStatusChanged::MGPlayerReadyStatusChanged(YOGPlayerID playerID)
 	: playerID(playerID)
 {
 }
@@ -122,7 +122,7 @@ bool MGPlayerReadyStatusChanged::operator==(const MultiplayerGameEvent& rhs) con
 }
 
 
-Uint16 MGPlayerReadyStatusChanged::getPlayerID() const
+YOGPlayerID MGPlayerReadyStatusChanged::getPlayerID() const
 {
 	return playerID;
 }

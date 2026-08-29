@@ -229,7 +229,7 @@ NetPlayerJoinsGame::NetPlayerJoinsGame()
 
 
 
-NetPlayerJoinsGame::NetPlayerJoinsGame(Uint16 playerID, std::string playerName)
+NetPlayerJoinsGame::NetPlayerJoinsGame(YOGPlayerID playerID, std::string playerName)
 	:playerID(playerID), playerName(playerName)
 {
 }
@@ -284,7 +284,7 @@ bool NetPlayerJoinsGame::operator==(const NetMessage& rhs) const
 }
 
 
-Uint16 NetPlayerJoinsGame::getPlayerID() const
+YOGPlayerID NetPlayerJoinsGame::getPlayerID() const
 {
 	return playerID;
 }

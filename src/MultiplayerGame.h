@@ -168,7 +168,7 @@ public:
 	void setGameResult(YOGGameResult result);
 	
 	///Returns true if the given player is ready to start
-	bool isReadyToStart(int playerID);
+	bool isReadyToStart(YOGPlayerID playerID);
 	
 	///Sets whether the player (as in the actual person) is ready, usually by clicking a check box
 	void setHumanReady(bool isReady);
@@ -231,5 +231,4 @@ private:
 	NetGamePlayerManager playerManager;
 	std::list<MultiplayerGameEventListener*> listeners;
 };
-
 

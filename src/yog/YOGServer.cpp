@@ -37,13 +37,13 @@ void YOGServer::update()
 	//First attempt connections with new players
 	while(nl.attemptConnection(*new_connection))
 	{
-		Uint16 id = chooseNewPlayerID();
+		YOGPlayerID id = chooseNewPlayerID();
 		players[id]=shared_ptr<YOGServerPlayer>(new YOGServerPlayer(new_connection, id, *this));
 		new_connection.reset(new NetConnection);
 	}
 
 	//Call update to all of the players
-	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+	for(std::map<YOGPlayerID, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 	{
 		i->second->update();
 	}
@@ -55,12 +55,12 @@ void YOGServer::update()
 	}
 
 	//Remove all of the players that have disconnected.
-	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end();)
+	for(std::map<YOGPlayerID, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end();)
 	{
 		if(!i->second->isConnected())
 		{
 			playerHasLoggedOut(i->second->getPlayerID());
-			std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator to_erase=i;
+			std::map<YOGPlayerID, shared_ptr<YOGServerPlayer> >::iterator to_erase=i;
 			i++;
 			players.erase(to_erase);
 		}
@@ -115,7 +115,7 @@ void YOGServer::update()
 			s << "An organized game will occur in "<<std::to_string(organized_game_time.hours())<<" hours and "<<std::to_string(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
 			std::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
 			std::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
-			for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+			for(std::map<YOGPlayerID, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 			{
 				i->second->sendMessage(send);
 			}
@@ -184,7 +184,7 @@ YOGLoginState YOGServer::verifyLoginInformation(const std::string& username, con
 	}
 
 	///check if the player is already logged in
-	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::map<YOGPlayerID, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(i->second->getPlayerName() == username)
 		{
@@ -240,7 +240,7 @@ void YOGServer::setPlayerStoredInfo(const std::string& name, const YOGPlayerStor
 
 
 
-void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
+void YOGServer::playerHasLoggedIn(const std::string& username, YOGPlayerID id)
 {
 	playerInfos.insureStoredInfoExists(username);
 	YOGPlayerSessionInfo info(username, id);
@@ -251,7 +251,7 @@ void YOGServer::playerHasLoggedIn(const std::string& username, Uint16 id)
 
 
 
-void YOGServer::playerHasLoggedOut(Uint16 playerID)
+void YOGServer::playerHasLoggedOut(YOGPlayerID playerID)
 {
 	chatChannelManager.getChannel(LOBBY_CHAT_CHANNEL)->removePlayer(getPlayer(playerID));
 	for(std::list<YOGPlayerSessionInfo>::iterator i=playerList.begin(); i!=playerList.end(); ++i)
@@ -335,7 +335,7 @@ shared_ptr<YOGServerGame> YOGServer::getGame(Uint16 gameID)
 
 
 
-shared_ptr<YOGServerPlayer> YOGServer::getPlayer(Uint16 playerID)
+shared_ptr<YOGServerPlayer> YOGServer::getPlayer(YOGPlayerID playerID)
 {
 	return players[playerID];
 }
@@ -344,7 +344,7 @@ shared_ptr<YOGServerPlayer> YOGServer::getPlayer(Uint16 playerID)
 
 std::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
 {
-	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::map<YOGPlayerID, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(i->second->getPlayerName() == name)
 		{
@@ -461,10 +461,10 @@ YOGServerGameLog& YOGServer::getGameLog()
 
 
 
-Uint16 YOGServer::chooseNewPlayerID()
+YOGPlayerID YOGServer::chooseNewPlayerID()
 {
 	//choose the new player ID.
-	Uint16 newID=1;
+	YOGPlayerID newID=1;
 	while(true)
 	{
 		bool found=false;

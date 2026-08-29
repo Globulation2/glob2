@@ -429,7 +429,7 @@ YOGGamePolicy YOGClient::getGamePolicy() const
 
 
 
-Uint16 YOGClient::getPlayerID() const
+YOGPlayerID YOGClient::getPlayerID() const
 {
 	return playerID;
 }
@@ -699,6 +699,5 @@ std::shared_ptr<YOGClientPlayerListManager> YOGClient::getPlayerListManager()
 {
 	return playerListManager;
 }
-
 
 

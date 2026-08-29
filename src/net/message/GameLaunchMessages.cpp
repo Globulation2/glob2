@@ -65,7 +65,7 @@ NetKickPlayer::NetKickPlayer()
 
 
 
-NetKickPlayer::NetKickPlayer(Uint16 playerID, YOGKickReason reason)
+NetKickPlayer::NetKickPlayer(YOGPlayerID playerID, YOGKickReason reason)
 	: playerID(playerID), reason(reason)
 {
 }
@@ -121,7 +121,7 @@ bool NetKickPlayer::operator==(const NetMessage& rhs) const
 
 
 
-Uint16 NetKickPlayer::getPlayerID()
+YOGPlayerID NetKickPlayer::getPlayerID() const
 {
 	return playerID;
 }
@@ -143,7 +143,7 @@ NetReadyToLaunch::NetReadyToLaunch()
 
 
 
-NetReadyToLaunch::NetReadyToLaunch(Uint16 playerID)
+NetReadyToLaunch::NetReadyToLaunch(YOGPlayerID playerID)
 	: playerID(playerID)
 {
 }
@@ -196,7 +196,7 @@ bool NetReadyToLaunch::operator==(const NetMessage& rhs) const
 }
 
 
-Uint16 NetReadyToLaunch::getPlayerID() const
+YOGPlayerID NetReadyToLaunch::getPlayerID() const
 {
 	return playerID;
 }
@@ -212,7 +212,7 @@ NetNotReadyToLaunch::NetNotReadyToLaunch()
 
 
 
-NetNotReadyToLaunch::NetNotReadyToLaunch(Uint16 playerID)
+NetNotReadyToLaunch::NetNotReadyToLaunch(YOGPlayerID playerID)
 	:playerID(playerID)
 {
 }
@@ -265,7 +265,7 @@ bool NetNotReadyToLaunch::operator==(const NetMessage& rhs) const
 }
 
 
-Uint16 NetNotReadyToLaunch::getPlayerID() const
+YOGPlayerID NetNotReadyToLaunch::getPlayerID() const
 {
 	return playerID;
 }

@@ -18,7 +18,7 @@ NetGamePlayerManager::NetGamePlayerManager(GameHeader& gameHeader)
 	numberOfTeams = 0;
 }
 
-void NetGamePlayerManager::addPerson(Uint16 playerID, const std::string& name)
+void NetGamePlayerManager::addPerson(YOGPlayerID playerID, const std::string& name)
 {
 	int team_number;
 	if(reteamInfo.doesPlayerHaveTeam(name))
@@ -73,7 +73,7 @@ void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 
 
 
-void NetGamePlayerManager::removePerson(Uint16 playerID)
+void NetGamePlayerManager::removePerson(YOGPlayerID playerID)
 {
 	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
@@ -125,12 +125,12 @@ void NetGamePlayerManager::changeTeamNumber(int playerNumber, int newTeamNumber)
 
 
 
-void NetGamePlayerManager::setReadyToGo(int playerID, bool isReady)
+void NetGamePlayerManager::setReadyToGo(YOGPlayerID playerID, bool isReady)
 {
 	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if((int)bp.playerID == playerID)
+		if(bp.playerID == playerID)
 		{
 			readyToStart[x] = isReady;
 			break;
@@ -154,12 +154,12 @@ bool NetGamePlayerManager::isEveryoneReadyToGo()
 
 
 
-bool NetGamePlayerManager::isReadyToGo(int playerID)
+bool NetGamePlayerManager::isReadyToGo(YOGPlayerID playerID)
 {
 	for(int x=0; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
-		if((int)bp.playerID == playerID)
+		if(bp.playerID == playerID)
 		{
 			return readyToStart[x];
 		}
@@ -214,6 +214,5 @@ int NetGamePlayerManager::chooseTeamNumber()
 	}
 	return team_number;
 }
-
 
 

@@ -5,6 +5,7 @@
 
 #include "GameHeader.h"
 #include "NetReteamingInformation.h"
+#include "YOGPlayerID.h"
 
 //! "Plus-infinity" initializer for the min-search loop in
 //! NetGamePlayerManager::chooseTeamNumber(). Any non-empty team count must
@@ -24,21 +25,21 @@ public:
 	///Constructs the player manager
 	NetGamePlayerManager(GameHeader& gameHeader);
 	///Adds a person to the gameHeader
-	void addPerson(Uint16 playerID, const std::string& name);
+	void addPerson(YOGPlayerID playerID, const std::string& name);
 	///This is intended to add an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
 	///Removes a person from the gameHeader
-	void removePerson(Uint16 playerID);
+	void removePerson(YOGPlayerID playerID);
 	///Removes a player, human or AI
 	void removePlayer(int playerNumber);
 	///Changes the team number of the player
 	void changeTeamNumber(int playerNumber, int newTeamNumber);
 	///Tells whether a particular player is ready to go
-	void setReadyToGo(int playerID, bool isReady);
+	void setReadyToGo(YOGPlayerID playerID, bool isReady);
 	///Tells whether all players are ready to go
 	bool isEveryoneReadyToGo();
 	///Returns true if a particular player is ready to go
-	bool isReadyToGo(int playerID);
+	bool isReadyToGo(YOGPlayerID playerID);
 	///Sets the number of teams
 	void setNumberOfTeams(int numberOfTeams);
 	///Sets the reteaming information. Reteaming is when you reload a YOG save
@@ -57,5 +58,4 @@ private:
 	int numberOfTeams;
 	NetReteamingInformation reteamInfo;
 };
-
 

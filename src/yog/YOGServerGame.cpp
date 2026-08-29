@@ -270,7 +270,7 @@ Uint16 YOGServerGame::getGameID() const
 
 
 
-void YOGServerGame::setReadyToStart(int playerID)
+void YOGServerGame::setReadyToStart(YOGPlayerID playerID)
 {
 	playerManager.setReadyToGo(playerID, true);
 	std::shared_ptr<NetReadyToLaunch> message(new NetReadyToLaunch(playerID));
@@ -283,7 +283,7 @@ void YOGServerGame::setReadyToStart(int playerID)
 
 
 
-void YOGServerGame::setNotReadyToStart(int playerID)
+void YOGServerGame::setNotReadyToStart(YOGPlayerID playerID)
 {
 	playerManager.setReadyToGo(playerID, false);
 	std::shared_ptr<NetNotReadyToLaunch> message(new NetNotReadyToLaunch(playerID));
@@ -337,7 +337,7 @@ bool YOGServerGame::hasGameStarted() const
 
 
 
-Uint16 YOGServerGame::getHostPlayerID() const
+YOGPlayerID YOGServerGame::getHostPlayerID() const
 {
 	return host->getPlayerID();
 }
@@ -408,5 +408,4 @@ Uint16 YOGServerGame::getFileID() const
 {
 	return mapFile;
 }
-
 

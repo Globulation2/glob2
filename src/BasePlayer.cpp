@@ -88,7 +88,7 @@ bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	const Uint32 rawType = stream->readUint32("type");
 	number = stream->readSint32("number");
 	numberMask = stream->readUint32("numberMask");
-	// The field is Uint32 (YOG identifier); pre-86 saves truncated it to Uint16.
+	// The saved field is Uint32; pre-86 saves encoded the live Uint16 YOG ID.
 	if (versionMinor >= 86)
 		playerID = stream->readUint32("playerID");
 	else
@@ -161,4 +161,3 @@ void BasePlayer::makeItAI(AI::ImplementitionID aiType)
 {
 	type=playerTypeFromImplementitionID(aiType);
 }
-

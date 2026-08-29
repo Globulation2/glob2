@@ -33,7 +33,7 @@ private:
 class NetSendServerInformation : public NetMessage
 {
 public:
-	NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, Uint16 playerID);
+	NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, YOGPlayerID playerID);
 	NetSendServerInformation();
 
 	Uint8 getMessageType() const;
@@ -44,11 +44,11 @@ public:
 
 	YOGLoginPolicy getLoginPolicy() const;
 	YOGGamePolicy getGamePolicy() const;
-	Uint16 getPlayerID() const;
+	YOGPlayerID getPlayerID() const;
 private:
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
-	Uint16 playerID;
+	YOGPlayerID playerID;
 };
 
 
