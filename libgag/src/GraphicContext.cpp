@@ -269,7 +269,8 @@ namespace GAGCore
 		optionFlags = flags;
 		Uint32 sdlFlags = 0;
 		if (flags & FULLSCREEN)
-			sdlFlags |= SDL_WINDOW_FULLSCREEN;
+			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.
+			sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		// FIXME: window resize is broken
 		// if (flags & RESIZABLE)
 		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;

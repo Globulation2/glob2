@@ -69,8 +69,8 @@ namespace GAGCore
 	FileManager::FileManager(const std::string gameName)
 	{
 		#ifndef WIN32
-		const std::string homeDir = getenv("HOME");
-		if (!homeDir.empty())
+		const char* homeDir = getenv("HOME");
+		if (homeDir && *homeDir)
 		{
 			std::string gameLocal(homeDir);
 			gameLocal += "/.";

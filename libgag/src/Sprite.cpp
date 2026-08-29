@@ -170,6 +170,8 @@ namespace GAGCore
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &texCoordBuffer);
 		return true; // Success
+#else
+		return false;
 #endif
 	}
 	

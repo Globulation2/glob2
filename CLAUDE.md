@@ -141,6 +141,8 @@ Server/client architecture for online play. `YOGServer` handles matchmaking, cha
 
 **Unused includes:** remove them with the compile-gated `clang-tidy misc-include-cleaner` pipeline in [`docs/unused-include-cleanup.md`](docs/unused-include-cleanup.md) — never hand-guess or `--fix` blindly. Verify with a fixed-tick replay A/B, not the stale byte baseline.
 
+**Comments:** match the surrounding terse style — don't annotate every fix. The *why* of a change goes in the commit message, not bolted onto the line. Add a comment only when the code genuinely can't carry the reasoning itself (a non-obvious platform quirk, a subtle invariant); skip it when the line explains itself.
+
 ## Logging is dead — do not restore
 
 `glob2/src/LogFileManager.h` defines `#define fprintf if(false)fprintf`. Every translation unit that includes that header gets all `fprintf` calls rewritten to a runtime `if(false)` branch the compiler dead-code-eliminates. ~60 files include `LogFileManager.h`. Original devs disabled logging "for bugs" (per the deprecation comment) and never came back; the infrastructure has been load-bearing in constructors but doing nothing for 15+ years.
