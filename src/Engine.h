@@ -120,6 +120,8 @@ private:
 	bool loadGame(const std::string &filename);
 	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
 	void finalAdjustements(void);
+	//! Show the "can't load map" message box, unless running headless
+	void showCantLoadMapError();
 
 	/// Choose a random map from the available maps. Returns std::nullopt
 	/// if maps/ is empty or unreadable (caller must surface this as a

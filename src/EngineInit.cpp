@@ -337,21 +337,13 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		error = true;
 	}
 	if (error) {
-		if (!globalContainer->runNoX)
-		{
-			// Display an error message
-			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
-		}
+		showCantLoadMapError();
 		return EE_CANT_LOAD_MAP;
 	}
 
-	// We remove uncontrolled stuff from map
 	gui.game.clearingUncontrolledTeams();
-
-	// We do some cosmetic fix
 	finalAdjustements();
 
-	// we create the net game
 	net = std::make_unique<NetEngine>(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
 	// Initialise the replay writer, unless we're showing a replay.
@@ -477,15 +469,9 @@ int Engine::loadReplay(const std::string &fileName)
 	auto replayReader = std::make_unique<ReplayReader>();
 	bool replayLoaded = replayReader->loadReplay(fileName);
 
-	// If the reader found that the replay isn't valid, show an error message and return
 	if (!replayLoaded)
 	{
-		if (!globalContainer->runNoX)
-		{
-			// Display an error message
-			GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
-		}
-
+		showCantLoadMapError();
 		clearReplayState();
 		return EE_CANT_LOAD_MAP;
 	}
@@ -505,11 +491,10 @@ int Engine::loadReplay(const std::string &fileName)
 	globalContainer->replayVisibleTeams = REPLAY_VISIBLE_TEAMS_ALL;
 	globalContainer->replayFastForward = false;
 
-	// Load the map and settings.
 	MapHeader mapHeader = loadMapHeader(fileName);
 	GameHeader gameHeader = loadGameHeader(fileName);
 
-	// Set all players to a AINone
+	// A replay drives players from recorded orders, so no live AI runs.
 	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
 	{
 		gameHeader.getBasePlayer(p).makeItAI(AI::NONE);
@@ -533,6 +518,12 @@ void Engine::clearReplayState()
 	globalContainer->replaying = false;
 	globalContainer->replayFileName.clear();
 	globalContainer->replayReader.reset();
+}
+
+void Engine::showCantLoadMapError()
+{
+	if (!globalContainer->runNoX)
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 }
 
 void Engine::finalAdjustements(void)
