@@ -278,6 +278,13 @@ namespace GAGGUI
 		virtual void onSDLMouseMotion(SDL_Event *event);
 	};
 	
+	//! Push an SDL_QUIT onto the event queue. Modal loops that consume a quit
+	//! request cannot reach the top-level menu loop by return value alone --
+	//! several of their callers are deep inside non-GUI code such as Game::load()
+	//! -- so they re-post the event instead and let the enclosing loop quit the
+	//! way it does for a quit received outside a modal.
+	void postQuitApplicationEvent();
+
 	//! The screen is the widget container and has a background
 	class Screen
 	{
@@ -365,8 +372,10 @@ namespace GAGGUI
 		//! Run this overlay as a modal loop, compositing it over the live parent
 		//! context each frame until endValue becomes non-negative. Returns endValue,
 		//! or QUIT_APPLICATION if the application itself was quit (window close,
-		//! Cmd+Q on macOS, Alt+F4 on Windows). Subclasses drive the loop by
-		//! overriding onTimer() to advance their work and set endValue when done.
+		//! Cmd+Q on macOS, Alt+F4 on Windows), in which case the quit is re-posted
+		//! for the enclosing event loop via postQuitApplicationEvent(). Subclasses
+		//! drive the loop by overriding onTimer() to advance their work and set
+		//! endValue when done.
 		int executeModal(GAGCore::GraphicContext *parentCtx);
 		//! Call thisinstead of dispatch event
 		virtual void translateAndProcessEvent(SDL_Event *event);

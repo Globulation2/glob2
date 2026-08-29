@@ -712,6 +712,14 @@ namespace GAGGUI
 		return Screen::execute(this->gfx, stepLength);
 	}
 	
+	void postQuitApplicationEvent()
+	{
+		SDL_Event quitEvent;
+		SDL_zero(quitEvent);
+		quitEvent.type = SDL_QUIT;
+		SDL_PushEvent(&quitEvent);
+	}
+
 	int OverlayScreen::executeModal(GraphicContext *parentCtx)
 	{
 		// Snapshot the frozen screen behind us into a backing surface. nextFrame()
@@ -723,6 +731,7 @@ namespace GAGGUI
 
 		dispatchPaint();
 		run = true;
+		bool quitApplication = false;
 
 		while (endValue < 0 && run)
 		{
@@ -733,9 +742,8 @@ namespace GAGGUI
 			{
 				if (event.type == SDL_QUIT)
 				{
-					run = false;
-					returnCode = QUIT_APPLICATION;
-					continue;
+					quitApplication = true;
+					break;
 				}
 				// Manual integration of cmd+Q and Alt+F4.
 				if (event.type == SDL_KEYDOWN)
@@ -743,21 +751,26 @@ namespace GAGGUI
 #					ifdef USE_OSX
 					if (event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
 					{
-						run = false;
-						returnCode = QUIT_APPLICATION;
-						continue;
+						quitApplication = true;
+						break;
 					}
 #					endif
 #					ifdef USE_WIN32
 					if (event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 					{
-						run = false;
-						returnCode = QUIT_APPLICATION;
-						continue;
+						quitApplication = true;
+						break;
 					}
 #					endif
 				}
 				translateAndProcessEvent(&event);
+			}
+
+			if (quitApplication)
+			{
+				run = false;
+				returnCode = QUIT_APPLICATION;
+				break;
 			}
 
 			dispatchTimer(frameStart);
@@ -773,7 +786,12 @@ namespace GAGGUI
 		}
 
 		delete background;
-		return run ? endValue : QUIT_APPLICATION;
+		if (quitApplication)
+		{
+			postQuitApplicationEvent();
+			return QUIT_APPLICATION;
+		}
+		return endValue;
 	}
 
 	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
