@@ -419,21 +419,18 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 			else
 				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
 			
-			// We look for its maximum extension size
-			// we find last's level type num:
-			BuildingType *lastbt=globalContainer->buildingsTypes.getLastLevel(typeNum);
-				
-			int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
-			bool isExtendedRoom = game.checkHardRoomForBuilding(mapX, mapY, lastbt, &exMapX, &exMapY);
-			int exBatX=((exMapX-viewportX)&(game.map.wMask)) * 32;
-			int exBatY=((exMapY-viewportY)&(game.map.hMask)) * 32;
-			int exBatW=(lastbt->width) * 32;
-			int exBatH=(lastbt->height) * 32;
+			BuildingType *upgradedType=globalContainer->buildingsTypes.getLastLevel(typeNum);
+			int upgradedMapX, upgradedMapY;
+			bool isUpgradedRoom = game.checkHardRoomForBuilding(mapX, mapY, upgradedType, &upgradedMapX, &upgradedMapY);
+			int upgradedBatX=((upgradedMapX-viewportX)&(game.map.wMask)) * 32;
+			int upgradedBatY=((upgradedMapY-viewportY)&(game.map.hMask)) * 32;
+			int upgradedBatW=(upgradedType->width) * 32;
+			int upgradedBatH=(upgradedType->height) * 32;
 
-			if (isRoom && isExtendedRoom)
-				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 255, 255, 127);
+			if (isRoom && isUpgradedRoom)
+				globalContainer->gfx->drawRect(upgradedBatX-1, upgradedBatY-1, upgradedBatW+2, upgradedBatH+2, 255, 255, 255, 127);
 			else
-				globalContainer->gfx->drawRect(exBatX-1, exBatY-1, exBatW+2, exBatH+2, 255, 0, 0, 127);
+				globalContainer->gfx->drawRect(upgradedBatX-1, upgradedBatY-1, upgradedBatW+2, upgradedBatH+2, 255, 0, 0, 127);
 		}
 	}
 }
