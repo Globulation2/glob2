@@ -421,20 +421,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 			
 			// We look for its maximum extension size
 			// we find last's level type num:
-			BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
-			int lastTypeNum=typeNum;
-			int max=0;
-			while (lastbt->nextLevel>=0)
-			{
-				lastTypeNum=lastbt->nextLevel;
-				lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
-				if (max++>200)
-				{
-					printf("GameGUI: Error: nextLevel architecture is broken.\n");
-					assert(false);
-					break;
-				}
-			}
+			BuildingType *lastbt=globalContainer->buildingsTypes.getLastLevel(typeNum);
 				
 			int exMapX, exMapY; // ex prefix means EXtended building; the last level building type.
 			bool isExtendedRoom = game.checkHardRoomForBuilding(mapX, mapY, lastbt, &exMapX, &exMapY);

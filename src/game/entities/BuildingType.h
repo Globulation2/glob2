@@ -125,6 +125,11 @@ public:
 	BuildingType *get(std::size_t id);
 	std::size_t size() const;
 
+	// Walk the upgrade chain from typeNum to its top level. Used by the
+	// placement previews, which outline the footprint the building will
+	// occupy once fully upgraded.
+	BuildingType *getLastLevel(Sint32 typeNum);
+
 	Sint32 getTypeNum(const char *type, int level, bool isBuildingSite);
 	Sint32 getTypeNum(const std::string &s, int level, bool isBuildingSite);
 	// Resolve the variant a new player placement of `name` creates: the

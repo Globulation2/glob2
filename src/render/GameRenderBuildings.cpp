@@ -104,23 +104,9 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	{
 		int batW=(type->width )<<5;
 		int batH=(type->height)<<5;
-		int typeNum=building->typeNum;
 		globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
 
-		BuildingType *lastbt=globalContainer->buildingsTypes.get(typeNum);
-		int lastTypeNum=typeNum;
-		int max=0;
-		while(lastbt->nextLevel>=0)
-		{
-			lastTypeNum=lastbt->nextLevel;
-			lastbt=globalContainer->buildingsTypes.get(lastTypeNum);
-			if (max++>200)
-			{
-				printf("GameGUI: Error: nextLevelTypeNum architecture is broken.\n");
-				assert(false);
-				break;
-			}
-		}
+		BuildingType *lastbt=globalContainer->buildingsTypes.getLastLevel(building->typeNum);
 		int exBatX=x+((lastbt->decLeft-type->decLeft)<<5);
 		int exBatY=y+((lastbt->decTop-type->decTop)<<5);
 		int exBatW=(lastbt->width)<<5;

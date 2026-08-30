@@ -249,6 +249,24 @@ std::size_t BuildingsTypes::size() const
 	return entryCount();
 }
 
+BuildingType *BuildingsTypes::getLastLevel(Sint32 typeNum)
+{
+	BuildingType *bt = get(typeNum);
+	int max = 0;
+	while (bt->nextLevel >= 0)
+	{
+		bt = get(bt->nextLevel);
+		if (max++ > 200)
+		{
+			// Only reachable if nextLevel forms a cycle.
+			std::cerr << "BuildingsTypes::getLastLevel() : error : nextLevel architecture is broken" << std::endl;
+			assert(false);
+			break;
+		}
+	}
+	return bt;
+}
+
 Sint32 BuildingsTypes::getTypeNum(const char *type, int level, bool isBuildingSite)
 {
 	assert(type);
