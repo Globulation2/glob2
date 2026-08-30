@@ -152,6 +152,8 @@ Server/client architecture for online play. `YOGServer` handles matchmaking, cha
 
 **Comments:** match the surrounding terse style — don't annotate every fix. The *why* of a change goes in the commit message, not bolted onto the line. Add a comment only when the code genuinely can't carry the reasoning itself (a non-obvious platform quirk, a subtle invariant); skip it when the line explains itself.
 
+**Never document the past.** How code used to look, why it changed, what was moved/removed/renamed, or where something "used to live" belongs in the commit message and nowhere else — not in code comments, not in doc files, not in prose to the user. When you remove something, remove it completely: no tombstone comments, no "moved to X" pointers, no reference docs preserving deleted code "for context." Describe only what the code does *now*. The same applies to your replies — don't recount the history of a change unless explicitly asked.
+
 ## Logging is dead — do not restore
 
 `glob2/src/LogFileManager.h` defines `#define fprintf if(false)fprintf`. Every translation unit that includes that header gets all `fprintf` calls rewritten to a runtime `if(false)` branch the compiler dead-code-eliminates. ~60 files include `LogFileManager.h`. Original devs disabled logging "for bugs" (per the deprecation comment) and never came back; the infrastructure has been load-bearing in constructors but doing nothing for 15+ years.

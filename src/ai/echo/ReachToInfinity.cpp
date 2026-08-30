@@ -73,9 +73,6 @@ void ReachToInfinity::tick(Echo& echo)
 	timer++;
 
 	tick_initial_setup(echo);
-	// Demonstration of the Conditions/Constraints API previously inlined
-	// here as a /* ... */ block has been moved to doc/aiEchoExamples.txt.
-
 	tick_explorer_flags_fruit(echo);
 	tick_explorer_flags_enemies(echo);
 	tick_inns_near_wheat(echo);
