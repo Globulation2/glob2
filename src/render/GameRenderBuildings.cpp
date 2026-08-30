@@ -58,27 +58,21 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		// crossConnectMultiImage, and non-virtual buildings can never be
 		// moved by the player, so the authoritative posX/posY is correct
 		// here — no pending shadow to consult.
+		auto sameTypeNeighbour = [&](int nx, int ny)
+		{
+			Uint16 b = map.getBuilding(nx, ny);
+			return (b != NOGBID)
+				&& (Building::GIDtoTeam(b) == team->teamNumber)
+				&& (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type);
+		};
 		int add = 0;
-		Uint16 b;
-		// Up
-		b = map.getBuilding(building->posX, building->posY-1);
-		if ((b != NOGBID) &&
-			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+		if (sameTypeNeighbour(building->posX, building->posY-1))               // up
 			add |= (1<<3);
-		// Bottom
-		b = map.getBuilding(building->posX, building->posY+building->type->height);
-		if ((b != NOGBID) &&
-			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+		if (sameTypeNeighbour(building->posX, building->posY+type->height))    // bottom
 			add |= (1<<2);
-		// Left
-		b = map.getBuilding(building->posX-1, building->posY);
-		if ((b != NOGBID) &&
-			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+		if (sameTypeNeighbour(building->posX-1, building->posY))               // left
 			add |= (1<<1);
-		// Right
-		b = map.getBuilding(building->posX+building->type->width, building->posY);
-		if ((b != NOGBID) &&
-			(Building::GIDtoTeam(b) == team->teamNumber) && (teams[Building::GIDtoTeam(b)]->myBuildings[Building::GIDtoID(b)]->type == type))
+		if (sameTypeNeighbour(building->posX+type->width, building->posY))     // right
 			add |= (1<<0);
 		imgid = type->gameSpriteImage + add;
 	}
