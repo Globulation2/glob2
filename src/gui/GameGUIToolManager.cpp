@@ -387,15 +387,15 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 		hilightStrength = std::max(hilightStrength - 0.1f, 0.0f);
 		
 	// we get the screen dimensions of the building
-	int batW = (bt->width) * 32;
-	int batH = sprite->getH(bt->gameSpriteImage);
-	int batX = (((tempX-viewportX)&(game.map.wMask)) * 32);
-	int batY = (((tempY-viewportY)&(game.map.hMask)) * 32)-(batH-(bt->height * 32));
+	int rectW = (bt->width) * 32;
+	int rectH = sprite->getH(bt->gameSpriteImage);
+	int rectX = (((tempX-viewportX)&(game.map.wMask)) * 32);
+	int rectY = (((tempY-viewportY)&(game.map.hMask)) * 32)-(rectH-(bt->height * 32));
 	
 	// Draw the building
 	sprite->setBaseColor(game.teams[localteam]->color);
 	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, hilightStrength));
-	globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
+	globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
 	globalContainer->gfx->finishDrawingSprite(sprite, spriteIntensity);
 
 	if (!bt->isVirtual)
@@ -403,34 +403,34 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 		// Count down whether a building site can be placed
 		if (game.teams[localteam]->noMoreBuildingSitesCountdown>0)
 		{
-			globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-			globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
-			globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
+			globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
+			globalContainer->gfx->drawLine(rectX, rectY, rectX+rectW-1, rectY+rectH-1, 255, 0, 0, 127);
+			globalContainer->gfx->drawLine(rectX+rectW-1, rectY, rectX, rectY+rectH-1, 255, 0, 0, 127);
 			
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-			globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
+			globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
 			globalContainer->littleFont->popStyle();
 		}
 		else
 		{
 			// Draw the square arround the building, denoting its size when upgraded
 			if (isRoom)
-				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
+				globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 255, 255, 127);
 			else
-				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+				globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 			
 			BuildingType *upgradedType=globalContainer->buildingsTypes.getLastLevel(typeNum);
 			int upgradedMapX, upgradedMapY;
 			bool isUpgradedRoom = game.checkHardRoomForBuilding(mapX, mapY, upgradedType, &upgradedMapX, &upgradedMapY);
-			int upgradedBatX=((upgradedMapX-viewportX)&(game.map.wMask)) * 32;
-			int upgradedBatY=((upgradedMapY-viewportY)&(game.map.hMask)) * 32;
-			int upgradedBatW=(upgradedType->width) * 32;
-			int upgradedBatH=(upgradedType->height) * 32;
+			int upgradedRectX=((upgradedMapX-viewportX)&(game.map.wMask)) * 32;
+			int upgradedRectY=((upgradedMapY-viewportY)&(game.map.hMask)) * 32;
+			int upgradedRectW=(upgradedType->width) * 32;
+			int upgradedRectH=(upgradedType->height) * 32;
 
 			if (isRoom && isUpgradedRoom)
-				globalContainer->gfx->drawRect(upgradedBatX-1, upgradedBatY-1, upgradedBatW+2, upgradedBatH+2, 255, 255, 255, 127);
+				globalContainer->gfx->drawRect(upgradedRectX-1, upgradedRectY-1, upgradedRectW+2, upgradedRectH+2, 255, 255, 255, 127);
 			else
-				globalContainer->gfx->drawRect(upgradedBatX-1, upgradedBatY-1, upgradedBatW+2, upgradedBatH+2, 255, 0, 0, 127);
+				globalContainer->gfx->drawRect(upgradedRectX-1, upgradedRectY-1, upgradedRectW+2, upgradedRectH+2, 255, 0, 0, 127);
 		}
 	}
 }

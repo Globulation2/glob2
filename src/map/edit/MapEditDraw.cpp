@@ -124,49 +124,49 @@ void MapEdit::drawBuildingSelectionOnMap()
 //  			highlightSelection = std::max(highlightSelection - 0.1f, 0.0f);
 		
 		// we get the screen dimensions of the building
-		int batW = (bt->width)<<5;
-		int batH = sprite->getH(bt->gameSpriteImage);
-		int batX = (((mapX-viewportX)&(game.map.wMask))<<5);
-		int batY = (((mapY-viewportY)&(game.map.hMask))<<5)-(batH-(bt->height<<5));
+		int rectW = (bt->width)<<5;
+		int rectH = sprite->getH(bt->gameSpriteImage);
+		int rectX = (((mapX-viewportX)&(game.map.wMask))<<5);
+		int rectY = (((mapY-viewportY)&(game.map.hMask))<<5)-(rectH-(bt->height<<5));
 		
 		// we draw the building
 		sprite->setBaseColor(game.teams[team]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 // 		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
 	 	int spriteIntensity = 127;
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, spriteIntensity);
+		globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
 		
 		if (!bt->isVirtual)
 		{
 			if (game.teams[team]->noMoreBuildingSitesCountdown>0)
 			{
-				globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
-				globalContainer->gfx->drawLine(batX, batY, batX+batW-1, batY+batH-1, 255, 0, 0, 127);
-				globalContainer->gfx->drawLine(batX+batW-1, batY, batX, batY+batH-1, 255, 0, 0, 127);
+				globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
+				globalContainer->gfx->drawLine(rectX, rectY, rectX+rectW-1, rectY+rectH-1, 255, 0, 0, 127);
+				globalContainer->gfx->drawLine(rectX+rectW-1, rectY, rectX, rectY+rectH-1, 255, 0, 0, 127);
 				
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-				globalContainer->gfx->drawString(batX, batY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
+				globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
 				globalContainer->littleFont->popStyle();
 			}
 			else
 			{
 				if (isRoom)
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 255, 255, 127);
+					globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 255, 255, 127);
 				else
-					globalContainer->gfx->drawRect(batX, batY, batW, batH, 255, 0, 0, 127);
+					globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 				
 				BuildingType *upgradedType=globalContainer->buildingsTypes.getLastLevel(typeNum);
 				int upgradedMapX, upgradedMapY;
 				bool isUpgradedRoom = game.checkHardRoomForBuilding(tempX, tempY, upgradedType, &upgradedMapX, &upgradedMapY);
-				int upgradedBatX=((upgradedMapX-viewportX)&(game.map.wMask))<<5;
-				int upgradedBatY=((upgradedMapY-viewportY)&(game.map.hMask))<<5;
-				int upgradedBatW=(upgradedType->width)<<5;
-				int upgradedBatH=(upgradedType->height)<<5;
+				int upgradedRectX=((upgradedMapX-viewportX)&(game.map.wMask))<<5;
+				int upgradedRectY=((upgradedMapY-viewportY)&(game.map.hMask))<<5;
+				int upgradedRectW=(upgradedType->width)<<5;
+				int upgradedRectH=(upgradedType->height)<<5;
 
 				if (isRoom && isUpgradedRoom)
-					globalContainer->gfx->drawRect(upgradedBatX-1, upgradedBatY-1, upgradedBatW+2, upgradedBatH+2, 255, 255, 255, 127);
+					globalContainer->gfx->drawRect(upgradedRectX-1, upgradedRectY-1, upgradedRectW+2, upgradedRectH+2, 255, 255, 255, 127);
 				else
-					globalContainer->gfx->drawRect(upgradedBatX-1, upgradedBatY-1, upgradedBatW+2, upgradedBatH+2, 255, 0, 0, 127);
+					globalContainer->gfx->drawRect(upgradedRectX-1, upgradedRectY-1, upgradedRectW+2, upgradedRectH+2, 255, 0, 0, 127);
 			}
 		}
 

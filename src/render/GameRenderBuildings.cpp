@@ -102,17 +102,17 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 
 	if ((drawOptions & DRAW_BUILDING_RECT) != 0)
 	{
-		int batW=(type->width )<<5;
-		int batH=(type->height)<<5;
-		globalContainer->gfx->drawRect(x, y, batW, batH, 255, 255, 255, 127);
+		int rectW=(type->width )<<5;
+		int rectH=(type->height)<<5;
+		globalContainer->gfx->drawRect(x, y, rectW, rectH, 255, 255, 255, 127);
 
 		BuildingType *upgradedType=globalContainer->buildingsTypes.getLastLevel(building->typeNum);
-		int upgradedBatX=x+((upgradedType->decLeft-type->decLeft)<<5);
-		int upgradedBatY=y+((upgradedType->decTop-type->decTop)<<5);
-		int upgradedBatW=(upgradedType->width)<<5;
-		int upgradedBatH=(upgradedType->height)<<5;
+		int upgradedRectX=x+((upgradedType->decLeft-type->decLeft)<<5);
+		int upgradedRectY=y+((upgradedType->decTop-type->decTop)<<5);
+		int upgradedRectW=(upgradedType->width)<<5;
+		int upgradedRectH=(upgradedType->height)<<5;
 
-		globalContainer->gfx->drawRect(upgradedBatX, upgradedBatY, upgradedBatW, upgradedBatH, 255, 255, 255, 127);
+		globalContainer->gfx->drawRect(upgradedRectX, upgradedRectY, upgradedRectW, upgradedRectH, 255, 255, 255, 127);
 	}
 
 	Uint32 visibleTeams = teams[localTeam]->me;

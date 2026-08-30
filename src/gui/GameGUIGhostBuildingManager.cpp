@@ -73,10 +73,10 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int loca
 		//footprint: its width always matches the footprint, but it may be taller
 		//(roofs, flag poles), so only Y is pulled up by the overhang.
 		int spriteH = sprite->getH(bt->gameSpriteImage);
-		int batX = ((ghost.x - viewportX) & game.map.wMask) * Map::TILE_PX;
-		int batY = (((ghost.y - viewportY) & game.map.hMask) * Map::TILE_PX) - (spriteH - bt->height * Map::TILE_PX);
+		int rectX = ((ghost.x - viewportX) & game.map.wMask) * Map::TILE_PX;
+		int rectY = (((ghost.y - viewportY) & game.map.hMask) * Map::TILE_PX) - (spriteH - bt->height * Map::TILE_PX);
 
 		//Draw
-		globalContainer->gfx->drawSprite(batX, batY, sprite, bt->gameSpriteImage, GHOST_SPRITE_ALPHA);
+		globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, GHOST_SPRITE_ALPHA);
 	}
 }
