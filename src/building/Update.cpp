@@ -323,6 +323,7 @@ bool Building::tryToBuildingSiteRoom(void)
 					if (verbose)
 						printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
 					hp+=res*type->hpInc;
+					hp = std::min(hp, type->hpMax);
 				}
 			}
 

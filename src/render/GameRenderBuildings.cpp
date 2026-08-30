@@ -84,12 +84,11 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	}
 	else
 	{
-		// FIXME : why building->hp is > type->hpMax ?
-		int hp = std::min(building->hp, type->hpMax);
 		// hpMax+1 (not hpMax) so that at full HP the integer division stays strictly
 		// below gameSpriteCount, leaving damageImgShift == 0 (pristine sprite). Using
 		// plain hpMax would yield shift == -1 at hp == hpMax and trip the assert below.
-		int damageImgShift = type->gameSpriteCount - ((hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
+		assert(building->hp <= type->hpMax);
+		int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
 		assert(damageImgShift >= 0);
 		imgid = type->gameSpriteImage + damageImgShift;
 	}
