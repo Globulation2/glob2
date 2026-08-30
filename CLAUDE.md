@@ -40,7 +40,16 @@ DET_INIT=pattern scons -j16  # compile with -ftrivial-auto-var-init=pattern
 
 ## Running Tests
 
-Tests live in `glob2/test/` and are built as part of the SCons build. After `scons -j16`, run the resulting binaries (`TestsRunner`, `WinningConditionsHarness`).
+Tests live in `glob2/test/` and have their own `test/SConstruct` — they are **not** built by the top-level `scons`. Build and run them from that directory:
+
+```bash
+cd glob2/test
+scons -j16
+./TestsRunner
+./WinningConditionsHarness
+```
+
+The binaries are written in-tree (`test/TestsRunner`), not under `build/`. A top-level `scons` reports "up to date" without rebuilding them, so a stale binary will happily keep passing against deleted or changed assertions — rebuild from `test/` before trusting a run.
 
 See [`test/README.md`](test/README.md) for the **Map subclass test pattern** — the trick used in `MapQueryTest.cpp` to unit-test Map predicates without pulling in `globalContainer`, `Bullet`, `Team`, or the full simulation surface.
 

@@ -1,6 +1,6 @@
 # glob2/test/
 
-CppUnit-based test fixtures for the C++ codebase. Built as part of the SCons build; run the resulting `TestsRunner` (and `WinningConditionsHarness`) binaries after `scons -j16`.
+CppUnit-based test fixtures for the C++ codebase. These have their own `SConstruct` and are **not** built by the top-level `scons` — run `scons -j16` from this directory, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. A top-level build reports "up to date" without touching them, so rebuild here before trusting a result.
 
 ## Map subclass test pattern
 
