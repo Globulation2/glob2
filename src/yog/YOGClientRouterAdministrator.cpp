@@ -97,7 +97,7 @@ int YOGClientRouterAdministrator::execute()
 			std::cout<<std::endl;
 			return 0;
 		}
-		std::shared_ptr<NetRouterAdministratorSendCommand> cmd(new NetRouterAdministratorSendCommand(command));
+		std::shared_ptr<NetRouterAdministratorCommandRequest> cmd(new NetRouterAdministratorCommandRequest(command));
 		connect.sendMessage(cmd);
 		
 		//Parse incoming messages and generate events
@@ -112,10 +112,10 @@ int YOGClientRouterAdministrator::execute()
 		while(message)
 		{
 			Uint8 type = message->getMessageType();
-			if(type == MNetRouterAdministratorSendText)
+			if(type == MNetRouterAdministratorCommandResponse)
 			{
-				std::shared_ptr<NetRouterAdministratorSendText> info = static_pointer_cast<NetRouterAdministratorSendText>(message);
-				std::cout<<info->getText()<<std::endl;
+				std::shared_ptr<NetRouterAdministratorCommandResponse> info = static_pointer_cast<NetRouterAdministratorCommandResponse>(message);
+				std::cout<<info->getResponse()<<std::endl;
 			}
 			message = connect.getMessage();
 		}

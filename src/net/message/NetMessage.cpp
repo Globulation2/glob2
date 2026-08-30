@@ -50,14 +50,14 @@ std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stre
 		case MNetDisconnect:
 		message.reset(new NetDisconnect);
 		break;
-		case MNetAttemptRegistration:
-		message.reset(new NetAttemptRegistration);
+		case MNetRegistrationRequest:
+		message.reset(new NetRegistrationRequest);
 		break;
-		case MNetAcceptRegistration:
-		message.reset(new NetAcceptRegistration);
+		case MNetRegistrationAccepted:
+		message.reset(new NetRegistrationAccepted);
 		break;
-		case MNetRefuseRegistration:
-		message.reset(new NetRefuseRegistration);
+		case MNetRegistrationRefused:
+		message.reset(new NetRegistrationRefused);
 		break;
 		case MNetUpdatePlayerList:
 		message.reset(new NetUpdatePlayerList);
@@ -170,11 +170,11 @@ std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stre
 		case MNetRouterAdministratorLogin:
 		message.reset(new NetRouterAdministratorLogin);
 		break;
-		case MNetRouterAdministratorSendCommand:
-		message.reset(new NetRouterAdministratorSendCommand);
+		case MNetRouterAdministratorCommandRequest:
+		message.reset(new NetRouterAdministratorCommandRequest);
 		break;
-		case MNetRouterAdministratorSendText:
-		message.reset(new NetRouterAdministratorSendText);
+		case MNetRouterAdministratorCommandResponse:
+		message.reset(new NetRouterAdministratorCommandResponse);
 		break;
 		case MNetRouterAdministratorLoginAccepted:
 		message.reset(new NetRouterAdministratorLoginAccepted);
@@ -222,8 +222,6 @@ std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stre
 	message->decodeData(stream);
 	return message;
 }
-
-
 
 bool NetMessage::operator!=(const NetMessage& rhs) const
 {

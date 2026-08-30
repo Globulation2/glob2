@@ -14,21 +14,15 @@ NetRequestMapUpload::NetRequestMapUpload()
 
 }
 
-
-
 NetRequestMapUpload::NetRequestMapUpload(YOGDownloadableMapInfo mapInfo)
 	:mapInfo(mapInfo)
 {
 }
 
-
-
 Uint8 NetRequestMapUpload::getMessageType() const
 {
 	return MNetRequestMapUpload;
 }
-
-
 
 void NetRequestMapUpload::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -37,8 +31,6 @@ void NetRequestMapUpload::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRequestMapUpload::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRequestMapUpload");
@@ -46,16 +38,12 @@ void NetRequestMapUpload::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetRequestMapUpload::format() const
 {
 	std::ostringstream s;
 	s<<"NetRequestMapUpload("<<"""="<<""<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetRequestMapUpload::operator==(const NetMessage& rhs) const
 {
@@ -68,14 +56,10 @@ bool NetRequestMapUpload::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 YOGDownloadableMapInfo NetRequestMapUpload::getMapInfo() const
 {
 	return mapInfo;
 }
-
-
-
 
 NetAcceptMapUpload::NetAcceptMapUpload()
 	: fileID(0)
@@ -83,21 +67,15 @@ NetAcceptMapUpload::NetAcceptMapUpload()
 
 }
 
-
-
 NetAcceptMapUpload::NetAcceptMapUpload(Uint16 fileID)
 	:fileID(fileID)
 {
 }
 
-
-
 Uint8 NetAcceptMapUpload::getMessageType() const
 {
 	return MNetAcceptMapUpload;
 }
-
-
 
 void NetAcceptMapUpload::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -106,8 +84,6 @@ void NetAcceptMapUpload::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetAcceptMapUpload::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetAcceptMapUpload");
@@ -115,16 +91,12 @@ void NetAcceptMapUpload::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetAcceptMapUpload::format() const
 {
 	std::ostringstream s;
 	s<<"NetAcceptMapUpload("<<"fileID="<<fileID<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetAcceptMapUpload::operator==(const NetMessage& rhs) const
 {
@@ -137,14 +109,10 @@ bool NetAcceptMapUpload::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 Uint16 NetAcceptMapUpload::getFileID() const
 {
 	return fileID;
 }
-
-
-
 
 NetRefuseMapUpload::NetRefuseMapUpload()
 	: reason(YOGMapUploadReasonUnknown)
@@ -152,21 +120,15 @@ NetRefuseMapUpload::NetRefuseMapUpload()
 
 }
 
-
-
 NetRefuseMapUpload::NetRefuseMapUpload(YOGMapUploadRefusalReason reason)
 	:reason(reason)
 {
 }
 
-
-
 Uint8 NetRefuseMapUpload::getMessageType() const
 {
 	return MNetRefuseMapUpload;
 }
-
-
 
 void NetRefuseMapUpload::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -175,8 +137,6 @@ void NetRefuseMapUpload::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRefuseMapUpload::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRefuseMapUpload");
@@ -184,16 +144,12 @@ void NetRefuseMapUpload::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetRefuseMapUpload::format() const
 {
 	std::ostringstream s;
 	s<<"NetRefuseMapUpload("<<"reason="<<reason<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetRefuseMapUpload::operator==(const NetMessage& rhs) const
 {
@@ -205,7 +161,6 @@ bool NetRefuseMapUpload::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
 
 YOGMapUploadRefusalReason NetRefuseMapUpload::getReason() const
 {

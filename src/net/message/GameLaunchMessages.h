@@ -22,7 +22,6 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 };
 
-
 /// Host -> server -> target: kick a player from the game with a reason.
 class NetKickPlayer : public NetMessage
 {
@@ -43,7 +42,6 @@ private:
 	YOGKickReason reason;
 };
 
-
 /// Player -> host: this player's launch checklist has cleared. The host waits
 /// for all players to be ready before issuing a NetStartGame.
 class NetReadyToLaunch : public NetMessage
@@ -63,7 +61,6 @@ private:
 	YOGPlayerID playerID;
 };
 
-
 /// Player -> host: previous "ready" was retracted (e.g. host changed map).
 class NetNotReadyToLaunch : public NetMessage
 {
@@ -82,7 +79,6 @@ private:
 	YOGPlayerID playerID;
 };
 
-
 /// Host -> server: ask the server to start the game.
 class NetRequestGameStart : public NetMessage
 {
@@ -95,7 +91,6 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 };
-
 
 /// Server -> host: refused to start the game (e.g. not all players ready).
 class NetRefuseGameStart : public NetMessage

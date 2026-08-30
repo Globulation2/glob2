@@ -27,7 +27,6 @@ private:
 	Uint16 netVersion;
 };
 
-
 /// Server -> client information sent on connect: login policy (anonymous /
 /// password required), game policy, and the connection's playerID.
 class NetSendServerInformation : public NetMessage
@@ -51,7 +50,6 @@ private:
 	YOGPlayerID playerID;
 };
 
-
 /// Client -> server login attempt with username and password.
 class NetAttemptLogin : public NetMessage
 {
@@ -72,7 +70,6 @@ private:
 	std::string password;
 };
 
-
 /// Tells the client that login succeeded.
 class NetLoginSuccessful : public NetMessage
 {
@@ -85,7 +82,6 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 };
-
 
 /// Tells the client that login was refused, carrying the reason.
 class NetRefuseLogin : public NetMessage
@@ -104,7 +100,6 @@ public:
 private:
 	YOGLoginState reason;
 };
-
 
 /// Notifies the peer that this side is disconnecting.
 class NetDisconnect : public NetMessage

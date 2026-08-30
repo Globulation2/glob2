@@ -59,14 +59,14 @@ public:
 	///Tests NetDisconnect
 	int testNetDisconnect();
 
-	///Tests NetAttemptRegistration
-	int testNetAttemptRegistration();
+	///Tests NetRegistrationRequest
+	int testNetRegistrationRequest();
 
-	///Tests NetAcceptRegistration
-	int testNetAcceptRegistration();
+	///Tests NetRegistrationAccepted
+	int testNetRegistrationAccepted();
 
-	///Tests NetRefuseRegistration
-	int testNetRefuseRegistration();
+	///Tests NetRegistrationRefused
+	int testNetRegistrationRefused();
 
 	///Tests the YOGGameInfo class and its serialization
 	int testYOGGameInfo();

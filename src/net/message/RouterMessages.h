@@ -21,7 +21,6 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 };
 
-
 /// Matchmaker -> router: registration acknowledged.
 class NetAcknowledgeRouter : public NetMessage
 {
@@ -34,7 +33,6 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 };
-
 
 /// Matchmaker -> router: assign a specific gameID to this router connection.
 class NetSetGameInRouter : public NetMessage

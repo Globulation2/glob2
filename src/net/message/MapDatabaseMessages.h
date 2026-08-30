@@ -29,7 +29,6 @@ private:
 	std::vector<YOGDownloadableMapInfo> maps;
 };
 
-
 /// Client -> server: please send the current downloadable-maps list.
 class NetRequestDownloadableMapList : public NetMessage
 {
@@ -42,7 +41,6 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 };
-
 
 /// Client -> server: send the thumbnail for the given map.
 class NetRequestMapThumbnail : public NetMessage
@@ -61,7 +59,6 @@ public:
 private:
 	Uint16 mapID;
 };
-
 
 /// Server -> client: thumbnail bitmap for the previously-requested map.
 class NetSendMapThumbnail : public NetMessage
@@ -82,7 +79,6 @@ private:
 	Uint16 mapID;
 	MapThumbnail thumbnail;
 };
-
 
 /// Client -> server: submit the user's rating (1-5) for a map.
 class NetSubmitRatingOnMap : public NetMessage

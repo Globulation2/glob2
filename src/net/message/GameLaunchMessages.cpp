@@ -12,14 +12,10 @@ NetStartGame::NetStartGame()
 
 }
 
-
-
 Uint8 NetStartGame::getMessageType() const
 {
 	return MNetStartGame;
 }
-
-
 
 void NetStartGame::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -27,15 +23,11 @@ void NetStartGame::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetStartGame::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetStartGame");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetStartGame::format() const
 {
@@ -43,8 +35,6 @@ std::string NetStartGame::format() const
 	s<<"NetStartGame()";
 	return s.str();
 }
-
-
 
 bool NetStartGame::operator==(const NetMessage& rhs) const
 {
@@ -56,28 +46,20 @@ bool NetStartGame::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetKickPlayer::NetKickPlayer()
 	: playerID(0), reason(YOGUnknownKickReason)
 {
 }
-
-
 
 NetKickPlayer::NetKickPlayer(YOGPlayerID playerID, YOGKickReason reason)
 	: playerID(playerID), reason(reason)
 {
 }
 
-
-
 Uint8 NetKickPlayer::getMessageType() const
 {
 	return MNetKickPlayer;
 }
-
-
 
 void NetKickPlayer::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -87,8 +69,6 @@ void NetKickPlayer::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetKickPlayer::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetKickPlayer");
@@ -97,16 +77,12 @@ void NetKickPlayer::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetKickPlayer::format() const
 {
 	std::ostringstream s;
 	s<<"NetKickPlayer(playerID="<<playerID<<"; reason="<<reason<<")";
 	return s.str();
 }
-
-
 
 bool NetKickPlayer::operator==(const NetMessage& rhs) const
 {
@@ -119,21 +95,15 @@ bool NetKickPlayer::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 YOGPlayerID NetKickPlayer::getPlayerID() const
 {
 	return playerID;
 }
 
-
-
 YOGKickReason NetKickPlayer::getReason()
 {
 	return reason;
 }
-
-
 
 NetReadyToLaunch::NetReadyToLaunch()
 	: playerID(0)
@@ -141,21 +111,15 @@ NetReadyToLaunch::NetReadyToLaunch()
 
 }
 
-
-
 NetReadyToLaunch::NetReadyToLaunch(YOGPlayerID playerID)
 	: playerID(playerID)
 {
 }
 
-
-
 Uint8 NetReadyToLaunch::getMessageType() const
 {
 	return MNetReadyToLaunch;
 }
-
-
 
 void NetReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -164,8 +128,6 @@ void NetReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetReadyToLaunch::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetReadyToLaunch");
@@ -173,16 +135,12 @@ void NetReadyToLaunch::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetReadyToLaunch::format() const
 {
 	std::ostringstream s;
 	s<<"NetReadyToLaunch("<<"playerID="<<playerID<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetReadyToLaunch::operator==(const NetMessage& rhs) const
 {
@@ -195,14 +153,10 @@ bool NetReadyToLaunch::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 YOGPlayerID NetReadyToLaunch::getPlayerID() const
 {
 	return playerID;
 }
-
-
-
 
 NetNotReadyToLaunch::NetNotReadyToLaunch()
 	: playerID(0)
@@ -210,21 +164,15 @@ NetNotReadyToLaunch::NetNotReadyToLaunch()
 
 }
 
-
-
 NetNotReadyToLaunch::NetNotReadyToLaunch(YOGPlayerID playerID)
 	:playerID(playerID)
 {
 }
 
-
-
 Uint8 NetNotReadyToLaunch::getMessageType() const
 {
 	return MNetNotReadyToLaunch;
 }
-
-
 
 void NetNotReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -233,8 +181,6 @@ void NetNotReadyToLaunch::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetNotReadyToLaunch::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetNotReadyToLaunch");
@@ -242,16 +188,12 @@ void NetNotReadyToLaunch::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetNotReadyToLaunch::format() const
 {
 	std::ostringstream s;
 	s<<"NetNotReadyToLaunch("<<"playerID="<<playerID<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetNotReadyToLaunch::operator==(const NetMessage& rhs) const
 {
@@ -264,27 +206,20 @@ bool NetNotReadyToLaunch::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 YOGPlayerID NetNotReadyToLaunch::getPlayerID() const
 {
 	return playerID;
 }
-
-
 
 NetRequestGameStart::NetRequestGameStart()
 {
 
 }
 
-
-
 Uint8 NetRequestGameStart::getMessageType() const
 {
 	return MNetRequestGameStart;
 }
-
-
 
 void NetRequestGameStart::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -292,15 +227,11 @@ void NetRequestGameStart::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRequestGameStart::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRequestGameStart");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetRequestGameStart::format() const
 {
@@ -308,8 +239,6 @@ std::string NetRequestGameStart::format() const
 	s<<"NetRequestGameStart()";
 	return s.str();
 }
-
-
 
 bool NetRequestGameStart::operator==(const NetMessage& rhs) const
 {
@@ -321,29 +250,21 @@ bool NetRequestGameStart::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetRefuseGameStart::NetRefuseGameStart()
 	: refusalReason(YOGUnknownStartRefusalReason)
 {
 
 }
 
-
-
 NetRefuseGameStart::NetRefuseGameStart(YOGServerGameStartRefusalReason refusalReason)
 	:refusalReason(refusalReason)
 {
 }
 
-
-
 Uint8 NetRefuseGameStart::getMessageType() const
 {
 	return MNetRefuseGameStart;
 }
-
-
 
 void NetRefuseGameStart::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -352,8 +273,6 @@ void NetRefuseGameStart::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRefuseGameStart::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRefuseGameStart");
@@ -361,16 +280,12 @@ void NetRefuseGameStart::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetRefuseGameStart::format() const
 {
 	std::ostringstream s;
 	s<<"NetRefuseGameStart("<<"refusalReason="<<refusalReason<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetRefuseGameStart::operator==(const NetMessage& rhs) const
 {
@@ -382,7 +297,6 @@ bool NetRefuseGameStart::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
 
 YOGServerGameStartRefusalReason NetRefuseGameStart::getRefusalReason() const
 {

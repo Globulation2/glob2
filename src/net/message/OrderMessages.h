@@ -51,7 +51,6 @@ private:
 	std::shared_ptr<Order> order;
 };
 
-
 /// Latency probe sent periodically to measure round-trip time.
 class NetPing : public NetMessage
 {
@@ -65,7 +64,6 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 };
 
-
 /// Reply to NetPing.
 class NetPingReply : public NetMessage
 {
@@ -78,7 +76,6 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 };
-
 
 /// Server -> all clients: change the order-pipeline latency adjustment, used
 /// to keep all clients deterministically in sync under variable network conditions.

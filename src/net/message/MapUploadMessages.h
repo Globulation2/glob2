@@ -29,7 +29,6 @@ private:
 	YOGDownloadableMapInfo mapInfo;
 };
 
-
 /// Server -> uploader: upload accepted; here is the fileID to push chunks to.
 class NetAcceptMapUpload : public NetMessage
 {
@@ -47,7 +46,6 @@ public:
 private:
 	Uint16 fileID;
 };
-
 
 /// Server -> uploader: upload refused, carrying the reason.
 class NetRefuseMapUpload : public NetMessage

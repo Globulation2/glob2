@@ -14,22 +14,16 @@ NetRequestFile::NetRequestFile()
 
 }
 
-
-
 NetRequestFile::NetRequestFile(Uint16 fileID)
 	: fileID(fileID)
 {
 
 }
 
-
-
 Uint8 NetRequestFile::getMessageType() const
 {
 	return MNetRequestFile;
 }
-
-
 
 void NetRequestFile::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -38,8 +32,6 @@ void NetRequestFile::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRequestFile::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRequestFile");
@@ -47,16 +39,12 @@ void NetRequestFile::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetRequestFile::format() const
 {
 	std::ostringstream s;
 	s<<"NetRequestFile(fileID="<<fileID<<")";
 	return s.str();
 }
-
-
 
 bool NetRequestFile::operator==(const NetMessage& rhs) const
 {
@@ -69,14 +57,10 @@ bool NetRequestFile::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 Uint16 NetRequestFile::getFileID()
 {
 	return fileID;
 }
-
-
 
 NetSendFileInformation::NetSendFileInformation()
 	: size(0), fileID(0)
@@ -84,20 +68,15 @@ NetSendFileInformation::NetSendFileInformation()
 
 }
 
-
 NetSendFileInformation::NetSendFileInformation(Uint32 filesize, Uint16 fileID)
 	: size(filesize), fileID(fileID)
 {
 }
 
-
-
 Uint8 NetSendFileInformation::getMessageType() const
 {
 	return MNetSendFileInformation;
 }
-
-
 
 void NetSendFileInformation::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -107,8 +86,6 @@ void NetSendFileInformation::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendFileInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendFileInformation");
@@ -117,16 +94,12 @@ void NetSendFileInformation::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendFileInformation::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendFileInformation(size="<<size<<",fileID="<<fileID<<")";
 	return s.str();
 }
-
-
 
 bool NetSendFileInformation::operator==(const NetMessage& rhs) const
 {
@@ -139,21 +112,15 @@ bool NetSendFileInformation::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 Uint32 NetSendFileInformation::getFileSize() const
 {
 	return size;
 }
 
-
-
 Uint16 NetSendFileInformation::getFileID() const
 {
 	return fileID;
 }
-
-
 
 NetSendFileChunk::NetSendFileChunk()
 {
@@ -161,8 +128,6 @@ NetSendFileChunk::NetSendFileChunk()
 	size=0;
 	fileID=0;
 }
-
-
 
 NetSendFileChunk::NetSendFileChunk(std::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID)
 	: fileID(fileID)
@@ -181,14 +146,10 @@ NetSendFileChunk::NetSendFileChunk(std::shared_ptr<GAGCore::InputStream> stream,
 	}
 }
 
-
-
 Uint8 NetSendFileChunk::getMessageType() const
 {
 	return MNetSendFileChunk;
 }
-
-
 
 void NetSendFileChunk::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -199,8 +160,6 @@ void NetSendFileChunk::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendFileChunk");
@@ -210,16 +169,12 @@ void NetSendFileChunk::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendFileChunk::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendFileChunk(size="<<size<<",fileID="<<fileID<<")";
 	return s.str();
 }
-
-
 
 bool NetSendFileChunk::operator==(const NetMessage& rhs) const
 {
@@ -238,28 +193,20 @@ bool NetSendFileChunk::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 const Uint8* NetSendFileChunk::getBuffer() const
 {
 	return data;
 }
-
-
 
 Uint32 NetSendFileChunk::getChunkSize() const
 {
 	return size;
 }
 
-
-
 Uint16 NetSendFileChunk::getFileID() const
 {
 	return fileID;
 }
-
-
 
 NetCancelSendingFile::NetCancelSendingFile()
 	: fileID(0)
@@ -267,21 +214,15 @@ NetCancelSendingFile::NetCancelSendingFile()
 
 }
 
-
-
 NetCancelSendingFile::NetCancelSendingFile(Uint16 fileID)
 	:fileID(fileID)
 {
 }
 
-
-
 Uint8 NetCancelSendingFile::getMessageType() const
 {
 	return MNetCancelSendingFile;
 }
-
-
 
 void NetCancelSendingFile::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -290,8 +231,6 @@ void NetCancelSendingFile::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetCancelSendingFile::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCancelSendingFile");
@@ -299,16 +238,12 @@ void NetCancelSendingFile::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetCancelSendingFile::format() const
 {
 	std::ostringstream s;
 	s<<"NetCancelSendingFile("<<"fileID="<<fileID<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetCancelSendingFile::operator==(const NetMessage& rhs) const
 {
@@ -321,14 +256,10 @@ bool NetCancelSendingFile::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 Uint16 NetCancelSendingFile::getFileID() const
 {
 	return fileID;
 }
-
-
-
 
 NetCancelRecievingFile::NetCancelRecievingFile()
 	: fileID(0)
@@ -336,21 +267,15 @@ NetCancelRecievingFile::NetCancelRecievingFile()
 
 }
 
-
-
 NetCancelRecievingFile::NetCancelRecievingFile(Uint16 fileID)
 	:fileID(fileID)
 {
 }
 
-
-
 Uint8 NetCancelRecievingFile::getMessageType() const
 {
 	return MNetCancelRecievingFile;
 }
-
-
 
 void NetCancelRecievingFile::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -359,8 +284,6 @@ void NetCancelRecievingFile::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetCancelRecievingFile::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCancelRecievingFile");
@@ -368,16 +291,12 @@ void NetCancelRecievingFile::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetCancelRecievingFile::format() const
 {
 	std::ostringstream s;
 	s<<"NetCancelRecievingFile("<<"fileID="<<fileID<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetCancelRecievingFile::operator==(const NetMessage& rhs) const
 {
@@ -389,7 +308,6 @@ bool NetCancelRecievingFile::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
 
 Uint16 NetCancelRecievingFile::getFileID() const
 {

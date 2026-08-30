@@ -114,7 +114,7 @@ void YOGServerRouterAdministrator::sendTextMessage(const std::string& message, Y
 
 void YOGServerRouterAdministrator::flushTexts(YOGServerRouterPlayer* admin)
 {
-	std::shared_ptr<NetRouterAdministratorSendText> text(new NetRouterAdministratorSendText(allText));
+	std::shared_ptr<NetRouterAdministratorCommandResponse> text(new NetRouterAdministratorCommandResponse(allText));
 	admin->sendNetMessage(text);
 	allText.clear();
 }

@@ -28,7 +28,6 @@ private:
 	Uint8 type;
 };
 
-
 /// Host -> server -> all: remove the AI in the given player slot.
 class NetRemoveAI : public NetMessage
 {
@@ -46,7 +45,6 @@ public:
 private:
 	Uint8 playerNum;
 };
-
 
 /// Reassigns a player to a different team.
 class NetChangePlayersTeam : public NetMessage
@@ -68,7 +66,6 @@ private:
 	Uint8 team;
 };
 
-
 /// Carries reteaming information used to balance teams in a rematched game.
 class NetSendReteamingInformation : public NetMessage
 {
@@ -86,7 +83,6 @@ public:
 private:
 	NetReteamingInformation reteamingInfo;
 };
-
 
 /// Reports the result of a finished game (used by ratings/stats tracking).
 class NetSendGameResult : public NetMessage

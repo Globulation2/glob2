@@ -12,23 +12,16 @@ NetCreateGame::NetCreateGame()
 
 }
 
-
-
 NetCreateGame::NetCreateGame(const std::string& gameName)
 	: gameName(gameName)
 {
 
 }
 
-
-
-
 Uint8 NetCreateGame::getMessageType() const
 {
 	return MNetCreateGame;
 }
-
-
 
 void NetCreateGame::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -37,8 +30,6 @@ void NetCreateGame::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetCreateGame::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCreateGame");
@@ -46,16 +37,12 @@ void NetCreateGame::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetCreateGame::format() const
 {
 	std::ostringstream s;
 	s<<"NetCreateGame(gameName=\""<<gameName<<"\")";
 	return s.str();
 }
-
-
 
 bool NetCreateGame::operator==(const NetMessage& rhs) const
 {
@@ -68,14 +55,10 @@ bool NetCreateGame::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 const std::string& NetCreateGame::getGameName() const
 {
 	return gameName;
 }
-
-
 
 NetCreateGameAccepted::NetCreateGameAccepted()
 {
@@ -85,21 +68,16 @@ NetCreateGameAccepted::NetCreateGameAccepted()
 	fileID = 0;
 }
 
-
 NetCreateGameAccepted::NetCreateGameAccepted(Uint32 chatChannel, Uint16 gameID, const std::string& routerIP, Uint16 fileID)
 	: chatChannel(chatChannel), gameID(gameID), routerIP(routerIP), fileID(fileID)
 {
 
 }
 
-
-
 Uint8 NetCreateGameAccepted::getMessageType() const
 {
 	return MNetCreateGameAccepted;
 }
-
-
 
 void NetCreateGameAccepted::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -111,8 +89,6 @@ void NetCreateGameAccepted::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCreateGameAccepted");
@@ -123,16 +99,12 @@ void NetCreateGameAccepted::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetCreateGameAccepted::format() const
 {
 	std::ostringstream s;
 	s<<"NetCreateGameAccepted(chatChannel="<<chatChannel<<",gameID="<<gameID<<",routerIP="<<routerIP<<",fileID="<<fileID<<")";
 	return s.str();
 }
-
-
 
 bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 {
@@ -148,42 +120,30 @@ bool NetCreateGameAccepted::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 Uint32 NetCreateGameAccepted::getChatChannel() const
 {
 	return chatChannel;
 }
-
-
 
 Uint16 NetCreateGameAccepted::getGameID() const
 {
 	return gameID;
 }
 
-
-
 const std::string NetCreateGameAccepted::getGameRouterIP() const
 {
 	return routerIP;
 }
-
-
 
 Uint16 NetCreateGameAccepted::getFileID() const
 {
 	return fileID;
 }
 
-
-
 NetCreateGameRefused::NetCreateGameRefused()
 {
 	reason = YOGCreateRefusalUnknown;
 }
-
-
 
 NetCreateGameRefused::NetCreateGameRefused(YOGServerGameCreateRefusalReason reason)
 	: reason(reason)
@@ -191,14 +151,10 @@ NetCreateGameRefused::NetCreateGameRefused(YOGServerGameCreateRefusalReason reas
 
 }
 
-
-
 Uint8 NetCreateGameRefused::getMessageType() const
 {
 	return MNetCreateGameRefused;
 }
-
-
 
 void NetCreateGameRefused::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -207,8 +163,6 @@ void NetCreateGameRefused::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetCreateGameRefused::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCreateGameRefused");
@@ -216,16 +170,12 @@ void NetCreateGameRefused::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetCreateGameRefused::format() const
 {
 	std::ostringstream s;
 	s<<"NetCreateGameRefused(reason="<<reason<<")";
 	return s.str();
 }
-
-
 
 bool NetCreateGameRefused::operator==(const NetMessage& rhs) const
 {
@@ -238,27 +188,20 @@ bool NetCreateGameRefused::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 YOGServerGameCreateRefusalReason NetCreateGameRefused::getRefusalReason() const
 {
 	return reason;
 }
-
-
 
 NetLeaveGame::NetLeaveGame()
 {
 
 }
 
-
-
 Uint8 NetLeaveGame::getMessageType() const
 {
 	return MNetLeaveGame;
 }
-
-
 
 void NetLeaveGame::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -266,15 +209,11 @@ void NetLeaveGame::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetLeaveGame::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetLeaveGame");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetLeaveGame::format() const
 {
@@ -282,8 +221,6 @@ std::string NetLeaveGame::format() const
 	s<<"NetLeaveGame()";
 	return s.str();
 }
-
-
 
 bool NetLeaveGame::operator==(const NetMessage& rhs) const
 {

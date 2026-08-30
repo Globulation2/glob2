@@ -13,21 +13,15 @@ NetRouterAdministratorLogin::NetRouterAdministratorLogin()
 
 }
 
-
-
 NetRouterAdministratorLogin::NetRouterAdministratorLogin(std::string password)
 	:password(password)
 {
 }
 
-
-
 Uint8 NetRouterAdministratorLogin::getMessageType() const
 {
 	return MNetRouterAdministratorLogin;
 }
-
-
 
 void NetRouterAdministratorLogin::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -36,8 +30,6 @@ void NetRouterAdministratorLogin::encodeData(GAGCore::OutputStream* stream) cons
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRouterAdministratorLogin::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRouterAdministratorLogin");
@@ -45,16 +37,12 @@ void NetRouterAdministratorLogin::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetRouterAdministratorLogin::format() const
 {
 	std::ostringstream s;
 	s<<"NetRouterAdministratorLogin("<<"password="<<password<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetRouterAdministratorLogin::operator==(const NetMessage& rhs) const
 {
@@ -67,166 +55,126 @@ bool NetRouterAdministratorLogin::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 std::string NetRouterAdministratorLogin::getPassword() const
 {
 	return password;
 }
 
-
-
-
-NetRouterAdministratorSendCommand::NetRouterAdministratorSendCommand()
+NetRouterAdministratorCommandRequest::NetRouterAdministratorCommandRequest()
 	: command("")
 {
 
 }
 
-
-
-NetRouterAdministratorSendCommand::NetRouterAdministratorSendCommand(std::string command)
+NetRouterAdministratorCommandRequest::NetRouterAdministratorCommandRequest(std::string command)
 	:command(command)
 {
 }
 
-
-
-Uint8 NetRouterAdministratorSendCommand::getMessageType() const
+Uint8 NetRouterAdministratorCommandRequest::getMessageType() const
 {
-	return MNetRouterAdministratorSendCommand;
+	return MNetRouterAdministratorCommandRequest;
 }
 
-
-
-void NetRouterAdministratorSendCommand::encodeData(GAGCore::OutputStream* stream) const
+void NetRouterAdministratorCommandRequest::encodeData(GAGCore::OutputStream* stream) const
 {
-	stream->writeEnterSection("NetRouterAdministratorSendCommand");
+	stream->writeEnterSection("NetRouterAdministratorCommandRequest");
 	stream->writeText(command, "command");
 	stream->writeLeaveSection();
 }
 
-
-
-void NetRouterAdministratorSendCommand::decodeData(GAGCore::InputStream* stream)
+void NetRouterAdministratorCommandRequest::decodeData(GAGCore::InputStream* stream)
 {
-	stream->readEnterSection("NetRouterAdministratorSendCommand");
+	stream->readEnterSection("NetRouterAdministratorCommandRequest");
 	command = stream->readText("command");
 	stream->readLeaveSection();
 }
 
-
-
-std::string NetRouterAdministratorSendCommand::format() const
+std::string NetRouterAdministratorCommandRequest::format() const
 {
 	std::ostringstream s;
-	s<<"NetRouterAdministratorSendCommand("<<"command="<<command<<"; "<<")";
+	s<<"NetRouterAdministratorCommandRequest("<<"command="<<command<<"; "<<")";
 	return s.str();
 }
 
-
-
-bool NetRouterAdministratorSendCommand::operator==(const NetMessage& rhs) const
+bool NetRouterAdministratorCommandRequest::operator==(const NetMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NetRouterAdministratorSendCommand))
+	if(typeid(rhs)==typeid(NetRouterAdministratorCommandRequest))
 	{
-		const NetRouterAdministratorSendCommand& r = dynamic_cast<const NetRouterAdministratorSendCommand&>(rhs);
+		const NetRouterAdministratorCommandRequest& r = dynamic_cast<const NetRouterAdministratorCommandRequest&>(rhs);
 		if(r.command == command)
 			return true;
 	}
 	return false;
 }
 
-
-std::string NetRouterAdministratorSendCommand::getCommand() const
+std::string NetRouterAdministratorCommandRequest::getCommand() const
 {
 	return command;
 }
 
-
-
-
-NetRouterAdministratorSendText::NetRouterAdministratorSendText()
-	: text("")
+NetRouterAdministratorCommandResponse::NetRouterAdministratorCommandResponse()
+	: response("")
 {
 
 }
 
-
-
-NetRouterAdministratorSendText::NetRouterAdministratorSendText(std::string text)
-	:text(text)
+NetRouterAdministratorCommandResponse::NetRouterAdministratorCommandResponse(std::string response)
+	:response(response)
 {
 }
 
-
-
-Uint8 NetRouterAdministratorSendText::getMessageType() const
+Uint8 NetRouterAdministratorCommandResponse::getMessageType() const
 {
-	return MNetRouterAdministratorSendText;
+	return MNetRouterAdministratorCommandResponse;
 }
 
-
-
-void NetRouterAdministratorSendText::encodeData(GAGCore::OutputStream* stream) const
+void NetRouterAdministratorCommandResponse::encodeData(GAGCore::OutputStream* stream) const
 {
-	stream->writeEnterSection("NetRouterAdministratorSendText");
-	stream->writeText(text, "text");
+	stream->writeEnterSection("NetRouterAdministratorCommandResponse");
+	stream->writeText(response, "response");
 	stream->writeLeaveSection();
 }
 
-
-
-void NetRouterAdministratorSendText::decodeData(GAGCore::InputStream* stream)
+void NetRouterAdministratorCommandResponse::decodeData(GAGCore::InputStream* stream)
 {
-	stream->readEnterSection("NetRouterAdministratorSendText");
-	text = stream->readText("text");
+	stream->readEnterSection("NetRouterAdministratorCommandResponse");
+	response = stream->readText("response");
 	stream->readLeaveSection();
 }
 
-
-
-std::string NetRouterAdministratorSendText::format() const
+std::string NetRouterAdministratorCommandResponse::format() const
 {
 	std::ostringstream s;
-	s<<"NetRouterAdministratorSendText("<<"text="<<text<<"; "<<")";
+	s<<"NetRouterAdministratorCommandResponse("<<"response="<<response<<"; "<<")";
 	return s.str();
 }
 
-
-
-bool NetRouterAdministratorSendText::operator==(const NetMessage& rhs) const
+bool NetRouterAdministratorCommandResponse::operator==(const NetMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NetRouterAdministratorSendText))
+	if(typeid(rhs)==typeid(NetRouterAdministratorCommandResponse))
 	{
-		const NetRouterAdministratorSendText& r = dynamic_cast<const NetRouterAdministratorSendText&>(rhs);
-		if(r.text == text)
+		const NetRouterAdministratorCommandResponse& r = dynamic_cast<const NetRouterAdministratorCommandResponse&>(rhs);
+		if(r.response == response)
 			return true;
 	}
 	return false;
 }
 
-
-std::string NetRouterAdministratorSendText::getText() const
+std::string NetRouterAdministratorCommandResponse::getResponse() const
 {
-	return text;
+	return response;
 }
-
-
-
 
 NetRouterAdministratorLoginAccepted::NetRouterAdministratorLoginAccepted()
 {
 
 }
 
-
-
 Uint8 NetRouterAdministratorLoginAccepted::getMessageType() const
 {
 	return MNetRouterAdministratorLoginAccepted;
 }
-
-
 
 void NetRouterAdministratorLoginAccepted::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -234,15 +182,11 @@ void NetRouterAdministratorLoginAccepted::encodeData(GAGCore::OutputStream* stre
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRouterAdministratorLoginAccepted::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRouterAdministratorLoginAccepted");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetRouterAdministratorLoginAccepted::format() const
 {
@@ -250,8 +194,6 @@ std::string NetRouterAdministratorLoginAccepted::format() const
 	s<<"NetRouterAdministratorLoginAccepted()";
 	return s.str();
 }
-
-
 
 bool NetRouterAdministratorLoginAccepted::operator==(const NetMessage& rhs) const
 {
@@ -263,29 +205,21 @@ bool NetRouterAdministratorLoginAccepted::operator==(const NetMessage& rhs) cons
 	return false;
 }
 
-
-
 NetRouterAdministratorLoginRefused::NetRouterAdministratorLoginRefused()
 	: reason(YOGRouterLoginUnknown)
 {
 
 }
 
-
-
 NetRouterAdministratorLoginRefused::NetRouterAdministratorLoginRefused(YOGRouterAdministratorLoginRefusalReason reason)
 	:reason(reason)
 {
 }
 
-
-
 Uint8 NetRouterAdministratorLoginRefused::getMessageType() const
 {
 	return MNetRouterAdministratorLoginRefused;
 }
-
-
 
 void NetRouterAdministratorLoginRefused::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -294,8 +228,6 @@ void NetRouterAdministratorLoginRefused::encodeData(GAGCore::OutputStream* strea
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRouterAdministratorLoginRefused::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRouterAdministratorLoginRefused");
@@ -303,16 +235,12 @@ void NetRouterAdministratorLoginRefused::decodeData(GAGCore::InputStream* stream
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetRouterAdministratorLoginRefused::format() const
 {
 	std::ostringstream s;
 	s<<"NetRouterAdministratorLoginRefused("<<"reason="<<reason<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetRouterAdministratorLoginRefused::operator==(const NetMessage& rhs) const
 {
@@ -324,7 +252,6 @@ bool NetRouterAdministratorLoginRefused::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
 
 YOGRouterAdministratorLoginRefusalReason NetRouterAdministratorLoginRefused::getReason() const
 {

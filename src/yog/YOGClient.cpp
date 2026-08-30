@@ -162,9 +162,9 @@ void YOGClient::update()
 			sendToListeners(event);
 		}
 		//This recieves a registration acceptance message
-		if(type==MNetAcceptRegistration)
+		if(type==MNetRegistrationAccepted)
 		{
-			shared_ptr<NetAcceptRegistration> info = static_pointer_cast<NetAcceptRegistration>(message);
+			shared_ptr<NetRegistrationAccepted> info = static_pointer_cast<NetRegistrationAccepted>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
 			ratedMapList = std::shared_ptr<YOGClientRatedMapList>(new YOGClientRatedMapList(username));
@@ -173,9 +173,9 @@ void YOGClient::update()
 			sendToListeners(event);
 		}
 		//This recieves a regisration refusal message
-		if(type==MNetRefuseRegistration)
+		if(type==MNetRegistrationRefused)
 		{
-			shared_ptr<NetRefuseRegistration> info = static_pointer_cast<NetRefuseRegistration>(message);
+			shared_ptr<NetRegistrationRefused> info = static_pointer_cast<NetRegistrationRefused>(message);
 			connectionState = WaitingForLoginInformation;
 			loginState = info->getRefusalReason();
 			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
@@ -448,7 +448,7 @@ void YOGClient::attemptLogin(const std::string& nusername, const std::string& pa
 void YOGClient::attemptRegistration(const std::string& nusername, const std::string& password)
 {
 	username = nusername;
-	shared_ptr<NetAttemptRegistration> message(new NetAttemptRegistration(username, password));
+	shared_ptr<NetRegistrationRequest> message(new NetRegistrationRequest(username, password));
 	nc.sendMessage(message);
 	connectionState = WaitingForRegistrationReply;
 }

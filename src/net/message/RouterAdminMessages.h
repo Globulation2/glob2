@@ -27,13 +27,12 @@ private:
 	std::string password;
 };
 
-
 /// Admin -> router: send an administrative command (kick, ban, status, etc).
-class NetRouterAdministratorSendCommand : public NetMessage
+class NetRouterAdministratorCommandRequest : public NetMessage
 {
 public:
-	NetRouterAdministratorSendCommand();
-	NetRouterAdministratorSendCommand(std::string command);
+	NetRouterAdministratorCommandRequest();
+	NetRouterAdministratorCommandRequest(std::string command);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -46,13 +45,12 @@ private:
 	std::string command;
 };
 
-
 /// Router -> admin: textual response to an administrative command.
-class NetRouterAdministratorSendText : public NetMessage
+class NetRouterAdministratorCommandResponse : public NetMessage
 {
 public:
-	NetRouterAdministratorSendText();
-	NetRouterAdministratorSendText(std::string text);
+	NetRouterAdministratorCommandResponse();
+	NetRouterAdministratorCommandResponse(std::string response);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -60,11 +58,10 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 
-	std::string getText() const;
+	std::string getResponse() const;
 private:
-	std::string text;
+	std::string response;
 };
-
 
 /// Router -> admin: login accepted.
 class NetRouterAdministratorLoginAccepted : public NetMessage
@@ -78,7 +75,6 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 };
-
 
 /// Router -> admin: login refused, carrying the reason.
 class NetRouterAdministratorLoginRefused : public NetMessage

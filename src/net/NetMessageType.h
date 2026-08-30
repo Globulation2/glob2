@@ -10,15 +10,15 @@
 enum NetMessageType
 {
 	// These must be kept in this order to maintain compatibility with future versions of glob2
-	MNetAcceptRegistration,
+	MNetRegistrationAccepted,
 	MNetAttemptLogin,
-	MNetAttemptRegistration,
+	MNetRegistrationRequest,
 	MNetDisconnect,
 	MNetLoginSuccessful,
 	MNetPing,
 	MNetPingReply,
 	MNetRefuseLogin,
-	MNetRefuseRegistration,
+	MNetRegistrationRefused,
 	MNetSendClientInformation,
 	MNetSendServerInformation,
 
@@ -47,8 +47,8 @@ enum NetMessageType
 	MNetRouterAdministratorLogin,
 	MNetRouterAdministratorLoginAccepted,
 	MNetRouterAdministratorLoginRefused,
-	MNetRouterAdministratorSendCommand,
-	MNetRouterAdministratorSendText,
+	MNetRouterAdministratorCommandRequest,
+	MNetRouterAdministratorCommandResponse,
 	MNetSendAfterJoinGameInformation,
 	MNetSendFileChunk,
 	MNetSendFileInformation,

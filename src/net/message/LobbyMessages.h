@@ -39,7 +39,6 @@ private:
 	std::vector<YOGGameInfo> updatedGames;
 };
 
-
 /// Same diff-update mechanism as NetUpdateGameList, but for the connected
 /// players list (YOGPlayerSessionInfo).
 class NetUpdatePlayerList : public NetMessage
@@ -61,7 +60,6 @@ private:
 	std::vector<YOGPlayerSessionInfo> updatedPlayers;
 };
 
-
 /// Carries a chat message for a YOG channel (lobby chat, in-game chat, etc.).
 class NetSendYOGMessage : public NetMessage
 {
@@ -82,7 +80,6 @@ private:
 	std::shared_ptr<YOGMessage> message;
 };
 
-
 /// Tells the client that their username has been banned by an administrator.
 class NetPlayerIsBanned : public NetMessage
 {
@@ -96,7 +93,6 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 };
 
-
 /// Tells the client that their IP address has been banned by an administrator.
 class NetIPIsBanned : public NetMessage
 {
@@ -109,7 +105,6 @@ public:
 	std::string format() const;
 	bool operator==(const NetMessage& rhs) const;
 };
-
 
 // ---------------------------------------------------------------------------
 // Template definitions
@@ -168,7 +163,6 @@ template<typename container> void NetUpdateGameList::updateDifferences(const con
 	}
 }
 
-
 template<typename container> void NetUpdateGameList::applyDifferences(container& original) const
 {
 	// Remove the removed games
@@ -205,7 +199,6 @@ template<typename container> void NetUpdateGameList::applyDifferences(container&
 		}
 	}
 }
-
 
 template<typename container> void NetUpdatePlayerList::updateDifferences(const container& original, const container& updated)
 {
@@ -248,7 +241,6 @@ template<typename container> void NetUpdatePlayerList::updateDifferences(const c
 			updatedPlayers.push_back(*i);
 	}
 }
-
 
 template<typename container> void NetUpdatePlayerList::applyDifferences(container& original) const
 {

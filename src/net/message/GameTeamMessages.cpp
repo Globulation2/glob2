@@ -13,21 +13,15 @@ NetRemoveAI::NetRemoveAI()
 
 }
 
-
-
 NetRemoveAI::NetRemoveAI(Uint8 playerNum)
 	:playerNum(playerNum)
 {
 }
 
-
-
 Uint8 NetRemoveAI::getMessageType() const
 {
 	return MNetRemoveAI;
 }
-
-
 
 void NetRemoveAI::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -36,8 +30,6 @@ void NetRemoveAI::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRemoveAI::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRemoveAI");
@@ -45,16 +37,12 @@ void NetRemoveAI::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetRemoveAI::format() const
 {
 	std::ostringstream s;
 	s<<"NetRemoveAI("<<"playerNum="<<playerNum<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetRemoveAI::operator==(const NetMessage& rhs) const
 {
@@ -67,14 +55,10 @@ bool NetRemoveAI::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 Uint8 NetRemoveAI::getPlayerNumber() const
 {
 	return playerNum;
 }
-
-
-
 
 NetChangePlayersTeam::NetChangePlayersTeam()
 	: player(0), team(0)
@@ -82,21 +66,15 @@ NetChangePlayersTeam::NetChangePlayersTeam()
 
 }
 
-
-
 NetChangePlayersTeam::NetChangePlayersTeam(Uint8 player, Uint8 team)
 	:player(player), team(team)
 {
 }
 
-
-
 Uint8 NetChangePlayersTeam::getMessageType() const
 {
 	return MNetChangePlayersTeam;
 }
-
-
 
 void NetChangePlayersTeam::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -106,8 +84,6 @@ void NetChangePlayersTeam::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetChangePlayersTeam::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetChangePlayersTeam");
@@ -116,16 +92,12 @@ void NetChangePlayersTeam::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetChangePlayersTeam::format() const
 {
 	std::ostringstream s;
 	s<<"NetChangePlayersTeam("<<"player="<<player<<"; "<<"team="<<team<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetChangePlayersTeam::operator==(const NetMessage& rhs) const
 {
@@ -138,20 +110,15 @@ bool NetChangePlayersTeam::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 Uint8 NetChangePlayersTeam::getPlayer() const
 {
 	return player;
 }
 
-
-
 Uint8 NetChangePlayersTeam::getTeam() const
 {
 	return team;
 }
-
-
 
 NetAddAI::NetAddAI()
 	: type(0)
@@ -159,21 +126,15 @@ NetAddAI::NetAddAI()
 
 }
 
-
-
 NetAddAI::NetAddAI(Uint8 type)
 	:type(type)
 {
 }
 
-
-
 Uint8 NetAddAI::getMessageType() const
 {
 	return MNetAddAI;
 }
-
-
 
 void NetAddAI::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -182,8 +143,6 @@ void NetAddAI::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetAddAI::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetAddAI");
@@ -191,16 +150,12 @@ void NetAddAI::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetAddAI::format() const
 {
 	std::ostringstream s;
 	s<<"NetAddAI("<<"type="<<type<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetAddAI::operator==(const NetMessage& rhs) const
 {
@@ -213,35 +168,25 @@ bool NetAddAI::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 Uint8 NetAddAI::getType() const
 {
 	return type;
 }
-
-
-
 
 NetSendReteamingInformation::NetSendReteamingInformation()
 {
 
 }
 
-
-
 NetSendReteamingInformation::NetSendReteamingInformation(NetReteamingInformation reteamingInfo)
 	:reteamingInfo(reteamingInfo)
 {
 }
 
-
-
 Uint8 NetSendReteamingInformation::getMessageType() const
 {
 	return MNetSendReteamingInformation;
 }
-
-
 
 void NetSendReteamingInformation::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -250,8 +195,6 @@ void NetSendReteamingInformation::encodeData(GAGCore::OutputStream* stream) cons
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendReteamingInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendReteamingInformation");
@@ -259,16 +202,12 @@ void NetSendReteamingInformation::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendReteamingInformation::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendReteamingInformation()";
 	return s.str();
 }
-
-
 
 bool NetSendReteamingInformation::operator==(const NetMessage& rhs) const
 {
@@ -281,14 +220,10 @@ bool NetSendReteamingInformation::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 NetReteamingInformation NetSendReteamingInformation::getReteamingInfo() const
 {
 	return reteamingInfo;
 }
-
-
-
 
 NetSendGameResult::NetSendGameResult()
 	: result(YOGGameResultUnknown)
@@ -296,21 +231,15 @@ NetSendGameResult::NetSendGameResult()
 
 }
 
-
-
 NetSendGameResult::NetSendGameResult(YOGGameResult result)
 	:result(result)
 {
 }
 
-
-
 Uint8 NetSendGameResult::getMessageType() const
 {
 	return MNetSendGameResult;
 }
-
-
 
 void NetSendGameResult::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -319,8 +248,6 @@ void NetSendGameResult::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendGameResult::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendGameResult");
@@ -328,16 +255,12 @@ void NetSendGameResult::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendGameResult::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendGameResult("<<"result="<<result<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetSendGameResult::operator==(const NetMessage& rhs) const
 {
@@ -349,7 +272,6 @@ bool NetSendGameResult::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
 
 YOGGameResult NetSendGameResult::getGameResult() const
 {

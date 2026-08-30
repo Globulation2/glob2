@@ -27,7 +27,6 @@ private:
 	std::string gameName;
 };
 
-
 /// Server -> creator: game created successfully. Carries the new game's chat
 /// channel id, game id, the address of the assigned game-router, and the
 /// fileID for the map distribution.
@@ -54,7 +53,6 @@ private:
 	Uint16 fileID;
 };
 
-
 /// Server -> creator: game creation refused, carrying the reason.
 class NetCreateGameRefused : public NetMessage
 {
@@ -72,7 +70,6 @@ public:
 private:
 	YOGServerGameCreateRefusalReason reason;
 };
-
 
 /// Client -> server: leave the currently-joined game.
 class NetLeaveGame : public NetMessage

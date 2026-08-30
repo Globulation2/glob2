@@ -13,35 +13,25 @@ NetSendOrder::NetSendOrder()
 {
 }
 
-
-
 NetSendOrder::NetSendOrder(std::shared_ptr<Order> newOrder)
 {
 	order=newOrder;
 }
-
-
 
 void NetSendOrder::changeOrder(std::shared_ptr<Order> newOrder)
 {
 	order = newOrder;
 }
 
-
-
 std::shared_ptr<Order> NetSendOrder::getOrder()
 {
 	return order;
 }
 
-
-
 Uint8 NetSendOrder::getMessageType() const
 {
 	return MNetSendOrder;
 }
-
-
 
 void NetSendOrder::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -54,8 +44,6 @@ void NetSendOrder::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeUint32(order->gameCheckSum, "checksum");
 	stream->writeLeaveSection();
 }
-
-
 
 void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 {
@@ -88,8 +76,6 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	order->gameCheckSum = stream->readUint32("checksum");
 }
 
-
-
 std::string NetSendOrder::format() const
 {
 	std::stringstream s;
@@ -103,8 +89,6 @@ std::string NetSendOrder::format() const
 	}
 	return s.str();
 }
-
-
 
 bool NetSendOrder::operator==(const NetMessage& rhs) const
 {
@@ -123,21 +107,15 @@ bool NetSendOrder::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetPing::NetPing()
 {
 
 }
 
-
-
 Uint8 NetPing::getMessageType() const
 {
 	return MNetPing;
 }
-
-
 
 void NetPing::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -145,15 +123,11 @@ void NetPing::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetPing::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetPing");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetPing::format() const
 {
@@ -161,8 +135,6 @@ std::string NetPing::format() const
 	s<<"NetPing()";
 	return s.str();
 }
-
-
 
 bool NetPing::operator==(const NetMessage& rhs) const
 {
@@ -174,21 +146,15 @@ bool NetPing::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetPingReply::NetPingReply()
 {
 
 }
 
-
-
 Uint8 NetPingReply::getMessageType() const
 {
 	return MNetPingReply;
 }
-
-
 
 void NetPingReply::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -196,15 +162,11 @@ void NetPingReply::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetPingReply::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetPingReply");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetPingReply::format() const
 {
@@ -212,8 +174,6 @@ std::string NetPingReply::format() const
 	s<<"NetPingReply()";
 	return s.str();
 }
-
-
 
 bool NetPingReply::operator==(const NetMessage& rhs) const
 {
@@ -225,29 +185,21 @@ bool NetPingReply::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetSetLatencyMode::NetSetLatencyMode()
 	: latencyAdjustment(0)
 {
 
 }
 
-
-
 NetSetLatencyMode::NetSetLatencyMode(Uint8 latencyAdjustment)
 	:latencyAdjustment(latencyAdjustment)
 {
 }
 
-
-
 Uint8 NetSetLatencyMode::getMessageType() const
 {
 	return MNetSetLatencyMode;
 }
-
-
 
 void NetSetLatencyMode::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -256,8 +208,6 @@ void NetSetLatencyMode::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSetLatencyMode::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSetLatencyMode");
@@ -265,16 +215,12 @@ void NetSetLatencyMode::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSetLatencyMode::format() const
 {
 	std::ostringstream s;
 	s<<"NetSetLatencyMode("<<"latencyAdjustment="<<static_cast<int>(latencyAdjustment)<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetSetLatencyMode::operator==(const NetMessage& rhs) const
 {
@@ -286,7 +232,6 @@ bool NetSetLatencyMode::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
 
 Uint8 NetSetLatencyMode::getLatencyAdjustment() const
 {

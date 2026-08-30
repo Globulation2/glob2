@@ -12,14 +12,10 @@ NetUpdateGameList::NetUpdateGameList()
 
 }
 
-
-
 Uint8 NetUpdateGameList::getMessageType() const
 {
 	return MNetUpdateGameList;
 }
-
-
 
 void NetUpdateGameList::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -42,8 +38,6 @@ void NetUpdateGameList::encodeData(GAGCore::OutputStream* stream) const
 
 	stream->writeLeaveSection();
 }
-
-
 
 void NetUpdateGameList::decodeData(GAGCore::InputStream* stream)
 {
@@ -70,16 +64,12 @@ void NetUpdateGameList::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetUpdateGameList::format() const
 {
 	std::ostringstream s;
 	s<<"NetUpdateGameList(removedGames "<<removedGames.size()<<", updatedGames "<<updatedGames.size()<<")";
 	return s.str();
 }
-
-
 
 bool NetUpdateGameList::operator==(const NetMessage& rhs) const
 {
@@ -94,21 +84,15 @@ bool NetUpdateGameList::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetUpdatePlayerList::NetUpdatePlayerList()
 {
 
 }
 
-
-
 Uint8 NetUpdatePlayerList::getMessageType() const
 {
 	return MNetUpdatePlayerList;
 }
-
-
 
 void NetUpdatePlayerList::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -131,8 +115,6 @@ void NetUpdatePlayerList::encodeData(GAGCore::OutputStream* stream) const
 
 	stream->writeLeaveSection();
 }
-
-
 
 void NetUpdatePlayerList::decodeData(GAGCore::InputStream* stream)
 {
@@ -159,16 +141,12 @@ void NetUpdatePlayerList::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetUpdatePlayerList::format() const
 {
 	std::ostringstream s;
 	s<<"NetUpdatePlayerList(updatedPlayers "<<updatedPlayers.size()<<", removedPlayers "<<removedPlayers.size()<<")";
 	return s.str();
 }
-
-
 
 bool NetUpdatePlayerList::operator==(const NetMessage& rhs) const
 {
@@ -181,15 +159,11 @@ bool NetUpdatePlayerList::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetSendYOGMessage::NetSendYOGMessage(Uint32 channel, std::shared_ptr<YOGMessage> message)
 	: channel(channel), message(message)
 {
 
 }
-
-
 
 NetSendYOGMessage::NetSendYOGMessage()
 	: channel(0)
@@ -197,14 +171,10 @@ NetSendYOGMessage::NetSendYOGMessage()
 
 }
 
-
-
 Uint8 NetSendYOGMessage::getMessageType() const
 {
 	return MNetSendYOGMessage;
 }
-
-
 
 void NetSendYOGMessage::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -213,8 +183,6 @@ void NetSendYOGMessage::encodeData(GAGCore::OutputStream* stream) const
 	message->encodeData(stream);
 	stream->writeLeaveSection();
 }
-
-
 
 void NetSendYOGMessage::decodeData(GAGCore::InputStream* stream)
 {
@@ -225,16 +193,12 @@ void NetSendYOGMessage::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendYOGMessage::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendYOGMessage(channel="<<channel<<")";
 	return s.str();
 }
-
-
 
 bool NetSendYOGMessage::operator==(const NetMessage& rhs) const
 {
@@ -255,35 +219,25 @@ bool NetSendYOGMessage::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 Uint32 NetSendYOGMessage::getChannel() const
 {
 	return channel;
 }
-
-
 
 std::shared_ptr<YOGMessage> NetSendYOGMessage::getMessage() const
 {
 	return message;
 }
 
-
-
 NetPlayerIsBanned::NetPlayerIsBanned()
 {
 
 }
 
-
-
 Uint8 NetPlayerIsBanned::getMessageType() const
 {
 	return MNetPlayerIsBanned;
 }
-
-
 
 void NetPlayerIsBanned::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -291,15 +245,11 @@ void NetPlayerIsBanned::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetPlayerIsBanned::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetPlayerIsBanned");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetPlayerIsBanned::format() const
 {
@@ -307,8 +257,6 @@ std::string NetPlayerIsBanned::format() const
 	s<<"NetPlayerIsBanned()";
 	return s.str();
 }
-
-
 
 bool NetPlayerIsBanned::operator==(const NetMessage& rhs) const
 {
@@ -320,21 +268,15 @@ bool NetPlayerIsBanned::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetIPIsBanned::NetIPIsBanned()
 {
 
 }
 
-
-
 Uint8 NetIPIsBanned::getMessageType() const
 {
 	return MNetIPIsBanned;
 }
-
-
 
 void NetIPIsBanned::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -342,15 +284,11 @@ void NetIPIsBanned::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetIPIsBanned::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetIPIsBanned");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetIPIsBanned::format() const
 {
@@ -358,8 +296,6 @@ std::string NetIPIsBanned::format() const
 	s<<"NetIPIsBanned()";
 	return s.str();
 }
-
-
 
 bool NetIPIsBanned::operator==(const NetMessage& rhs) const
 {

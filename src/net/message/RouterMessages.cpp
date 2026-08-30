@@ -12,14 +12,10 @@ NetRegisterRouter::NetRegisterRouter()
 
 }
 
-
-
 Uint8 NetRegisterRouter::getMessageType() const
 {
 	return MNetRegisterRouter;
 }
-
-
 
 void NetRegisterRouter::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -27,15 +23,11 @@ void NetRegisterRouter::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRegisterRouter::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRegisterRouter");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetRegisterRouter::format() const
 {
@@ -43,8 +35,6 @@ std::string NetRegisterRouter::format() const
 	s<<"NetRegisterRouter()";
 	return s.str();
 }
-
-
 
 bool NetRegisterRouter::operator==(const NetMessage& rhs) const
 {
@@ -56,21 +46,15 @@ bool NetRegisterRouter::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetAcknowledgeRouter::NetAcknowledgeRouter()
 {
 
 }
 
-
-
 Uint8 NetAcknowledgeRouter::getMessageType() const
 {
 	return MNetAcknowledgeRouter;
 }
-
-
 
 void NetAcknowledgeRouter::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -78,15 +62,11 @@ void NetAcknowledgeRouter::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetAcknowledgeRouter::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetAcknowledgeRouter");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetAcknowledgeRouter::format() const
 {
@@ -94,8 +74,6 @@ std::string NetAcknowledgeRouter::format() const
 	s<<"NetAcknowledgeRouter()";
 	return s.str();
 }
-
-
 
 bool NetAcknowledgeRouter::operator==(const NetMessage& rhs) const
 {
@@ -107,29 +85,21 @@ bool NetAcknowledgeRouter::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 NetSetGameInRouter::NetSetGameInRouter()
 	: gameID(0)
 {
 
 }
 
-
-
 NetSetGameInRouter::NetSetGameInRouter(Uint16 gameID)
 	:gameID(gameID)
 {
 }
 
-
-
 Uint8 NetSetGameInRouter::getMessageType() const
 {
 	return MNetSetGameInRouter;
 }
-
-
 
 void NetSetGameInRouter::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -138,8 +108,6 @@ void NetSetGameInRouter::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSetGameInRouter::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSetGameInRouter");
@@ -147,16 +115,12 @@ void NetSetGameInRouter::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSetGameInRouter::format() const
 {
 	std::ostringstream s;
 	s<<"NetSetGameInRouter("<<"gameID="<<gameID<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetSetGameInRouter::operator==(const NetMessage& rhs) const
 {
@@ -168,7 +132,6 @@ bool NetSetGameInRouter::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
 
 Uint16 NetSetGameInRouter::getGameID() const
 {

@@ -9,12 +9,11 @@
 #include "NetMessageType.h"
 #include "YOGConsts.h"
 
-/// Client -> server account registration request.
-class NetAttemptRegistration : public NetMessage
+class NetRegistrationRequest : public NetMessage
 {
 public:
-	NetAttemptRegistration();
-	NetAttemptRegistration(const std::string& username, const std::string& password);
+	NetRegistrationRequest();
+	NetRegistrationRequest(const std::string& username, const std::string& password);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -29,12 +28,10 @@ private:
 	std::string password;
 };
 
-
-/// Server -> client: registration accepted.
-class NetAcceptRegistration : public NetMessage
+class NetRegistrationAccepted : public NetMessage
 {
 public:
-	NetAcceptRegistration();
+	NetRegistrationAccepted();
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -43,13 +40,11 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 };
 
-
-/// Server -> client: registration denied, carrying the reason.
-class NetRefuseRegistration : public NetMessage
+class NetRegistrationRefused : public NetMessage
 {
 public:
-	NetRefuseRegistration();
-	NetRefuseRegistration(YOGLoginState reason);
+	NetRegistrationRefused();
+	NetRegistrationRefused(YOGLoginState reason);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;

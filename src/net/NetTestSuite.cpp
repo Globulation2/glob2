@@ -119,26 +119,26 @@ int NetTestSuite::testNetMessages()
 	}
 
 	
-	n = testNetAttemptRegistration();
+	n = testNetRegistrationRequest();
 	if(n != 0)
 	{
-		std::cout<<"testNetAttemptRegistration() test # "<<n<<" failed."<<std::endl;
+		std::cout<<"testNetRegistrationRequest() test # "<<n<<" failed."<<std::endl;
 		return 8;
 	}
 
 	
-	n = testNetAcceptRegistration();
+	n = testNetRegistrationAccepted();
 	if(n != 0)
 	{
-		std::cout<<"testNetAcceptRegistration() test # "<<n<<" failed."<<std::endl;
+		std::cout<<"testNetRegistrationAccepted() test # "<<n<<" failed."<<std::endl;
 		return 9;
 	}
 
 	
-	n = testNetRefuseRegistration();
+	n = testNetRegistrationRefused();
 	if(n != 0)
 	{
-		std::cout<<"testNetRefuseRegistration() test # "<<n<<" failed."<<std::endl;
+		std::cout<<"testNetRegistrationRefused() test # "<<n<<" failed."<<std::endl;
 		return 10;
 	}
 		
@@ -488,17 +488,17 @@ int NetTestSuite::testNetDisconnect()
 
 
 
-int NetTestSuite::testNetAttemptRegistration()
+int NetTestSuite::testNetRegistrationRequest()
 {	
-	///Test NetAttemptRegistration
-	if(!testInitial<NetAttemptRegistration>())
+	///Test NetRegistrationRequest
+	if(!testInitial<NetRegistrationRequest>())
 		return 1;
 	
-	shared_ptr<NetAttemptRegistration> registration1(new NetAttemptRegistration("joe", "bob"));
+	shared_ptr<NetRegistrationRequest> registration1(new NetRegistrationRequest("joe", "bob"));
 	if(!testSerialize(registration1))
 		return 2;
 	
-	shared_ptr<NetAttemptRegistration> registration2(new NetAttemptRegistration("joe bob", ""));
+	shared_ptr<NetRegistrationRequest> registration2(new NetRegistrationRequest("joe bob", ""));
 	if(!testSerialize(registration2))
 		return 3;
 	return 0;
@@ -506,13 +506,13 @@ int NetTestSuite::testNetAttemptRegistration()
 
 
 
-int NetTestSuite::testNetAcceptRegistration()
+int NetTestSuite::testNetRegistrationAccepted()
 {	
-	///Test NetAcceptRegistration
-	if(!testInitial<NetAcceptRegistration>())
+	///Test NetRegistrationAccepted
+	if(!testInitial<NetRegistrationAccepted>())
 		return 1;
 		
-	shared_ptr<NetAcceptRegistration> acceptRegistration1(new NetAcceptRegistration);
+	shared_ptr<NetRegistrationAccepted> acceptRegistration1(new NetRegistrationAccepted);
 	if(!testSerialize(acceptRegistration1))
 		return 2;
 	return 0;
@@ -520,13 +520,13 @@ int NetTestSuite::testNetAcceptRegistration()
 
 
 
-int NetTestSuite::testNetRefuseRegistration()
+int NetTestSuite::testNetRegistrationRefused()
 {	
-	//Test NetRefuseRegistration
-	if(!testInitial<NetRefuseRegistration>())
+	//Test NetRegistrationRefused
+	if(!testInitial<NetRegistrationRefused>())
 		return 1;
 
-	shared_ptr<NetRefuseRegistration> refuseRegistration1(new NetRefuseRegistration(YOGPasswordIncorrect));
+	shared_ptr<NetRegistrationRefused> refuseRegistration1(new NetRegistrationRefused(YOGPasswordIncorrect));
 	if(!testSerialize(refuseRegistration1))
 		return 2;
 	return 0;

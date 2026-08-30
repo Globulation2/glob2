@@ -12,22 +12,16 @@ NetAttemptJoinGame::NetAttemptJoinGame()
 	gameID = 0;
 }
 
-
-
 NetAttemptJoinGame::NetAttemptJoinGame(Uint16 gameID)
 	: gameID(gameID)
 {
 
 }
 
-
-
 Uint8 NetAttemptJoinGame::getMessageType() const
 {
 	return MNetAttemptJoinGame;
 }
-
-
 
 void NetAttemptJoinGame::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -36,8 +30,6 @@ void NetAttemptJoinGame::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetAttemptJoinGame::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetAttemptJoinGame");
@@ -45,16 +37,12 @@ void NetAttemptJoinGame::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetAttemptJoinGame::format() const
 {
 	std::ostringstream s;
 	s<<"NetAttemptJoinGame(gameID="<<gameID<<")";
 	return s.str();
 }
-
-
 
 bool NetAttemptJoinGame::operator==(const NetMessage& rhs) const
 {
@@ -67,21 +55,15 @@ bool NetAttemptJoinGame::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 Uint16 NetAttemptJoinGame::getGameID() const
 {
 	return gameID;
 }
 
-
-
 NetGameJoinAccepted::NetGameJoinAccepted()
 {
 	chatChannel = 0;
 }
-
-
 
 NetGameJoinAccepted::NetGameJoinAccepted(Uint32 chatChannel)
 	: chatChannel(chatChannel)
@@ -89,14 +71,10 @@ NetGameJoinAccepted::NetGameJoinAccepted(Uint32 chatChannel)
 
 }
 
-
-
 Uint8 NetGameJoinAccepted::getMessageType() const
 {
 	return MNetGameJoinAccepted;
 }
-
-
 
 void NetGameJoinAccepted::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -105,8 +83,6 @@ void NetGameJoinAccepted::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetGameJoinAccepted::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetGameJoinAccepted");
@@ -114,16 +90,12 @@ void NetGameJoinAccepted::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetGameJoinAccepted::format() const
 {
 	std::ostringstream s;
 	s<<"NetGameJoinAccepted(chatChannel="<<chatChannel<<")";
 	return s.str();
 }
-
-
 
 bool NetGameJoinAccepted::operator==(const NetMessage& rhs) const
 {
@@ -139,21 +111,15 @@ bool NetGameJoinAccepted::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 Uint32 NetGameJoinAccepted::getChatChannel() const
 {
 	return chatChannel;
 }
 
-
-
 NetGameJoinRefused::NetGameJoinRefused()
 {
 	reason = YOGJoinRefusalUnknown;
 }
-
-
 
 NetGameJoinRefused::NetGameJoinRefused(YOGServerGameJoinRefusalReason reason)
 	: reason(reason)
@@ -161,14 +127,10 @@ NetGameJoinRefused::NetGameJoinRefused(YOGServerGameJoinRefusalReason reason)
 
 }
 
-
-
 Uint8 NetGameJoinRefused::getMessageType() const
 {
 	return MNetGameJoinRefused;
 }
-
-
 
 void NetGameJoinRefused::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -177,16 +139,12 @@ void NetGameJoinRefused::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetGameJoinRefused::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetGameJoinRefused");
 	reason=static_cast<YOGServerGameJoinRefusalReason>(stream->readUint8("reason"));
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetGameJoinRefused::format() const
 {
@@ -197,8 +155,6 @@ std::string NetGameJoinRefused::format() const
 	s<<"NetGameJoinRefused(reason="<<sreason<<")";
 	return s.str();
 }
-
-
 
 bool NetGameJoinRefused::operator==(const NetMessage& rhs) const
 {
@@ -211,15 +167,10 @@ bool NetGameJoinRefused::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
-
 YOGServerGameJoinRefusalReason NetGameJoinRefused::getRefusalReason() const
 {
 	return reason;
 }
-
-
 
 NetPlayerJoinsGame::NetPlayerJoinsGame()
 	: playerID(0), playerName("")
@@ -227,21 +178,15 @@ NetPlayerJoinsGame::NetPlayerJoinsGame()
 
 }
 
-
-
 NetPlayerJoinsGame::NetPlayerJoinsGame(YOGPlayerID playerID, std::string playerName)
 	:playerID(playerID), playerName(playerName)
 {
 }
 
-
-
 Uint8 NetPlayerJoinsGame::getMessageType() const
 {
 	return MNetPlayerJoinsGame;
 }
-
-
 
 void NetPlayerJoinsGame::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -251,8 +196,6 @@ void NetPlayerJoinsGame::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetPlayerJoinsGame::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetPlayerJoinsGame");
@@ -261,16 +204,12 @@ void NetPlayerJoinsGame::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetPlayerJoinsGame::format() const
 {
 	std::ostringstream s;
 	s<<"NetPlayerJoinsGame("<<"playerID="<<playerID<<"; "<<"playerName="<<playerName<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetPlayerJoinsGame::operator==(const NetMessage& rhs) const
 {
@@ -283,20 +222,15 @@ bool NetPlayerJoinsGame::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 YOGPlayerID NetPlayerJoinsGame::getPlayerID() const
 {
 	return playerID;
 }
 
-
-
 std::string NetPlayerJoinsGame::getPlayerName() const
 {
 	return playerName;
 }
-
-
 
 NetSendAfterJoinGameInformation::NetSendAfterJoinGameInformation()
 	: info()
@@ -304,21 +238,15 @@ NetSendAfterJoinGameInformation::NetSendAfterJoinGameInformation()
 
 }
 
-
-
 NetSendAfterJoinGameInformation::NetSendAfterJoinGameInformation(YOGAfterJoinGameInformation info)
 	:info(info)
 {
 }
 
-
-
 Uint8 NetSendAfterJoinGameInformation::getMessageType() const
 {
 	return MNetSendAfterJoinGameInformation;
 }
-
-
 
 void NetSendAfterJoinGameInformation::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -327,8 +255,6 @@ void NetSendAfterJoinGameInformation::encodeData(GAGCore::OutputStream* stream) 
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendAfterJoinGameInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendAfterJoinGameInformation");
@@ -336,16 +262,12 @@ void NetSendAfterJoinGameInformation::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendAfterJoinGameInformation::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendAfterJoinGameInformation("<<"="<<"; "<<")";
 	return s.str();
 }
-
-
 
 bool NetSendAfterJoinGameInformation::operator==(const NetMessage& rhs) const
 {
@@ -357,7 +279,6 @@ bool NetSendAfterJoinGameInformation::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
 
 YOGAfterJoinGameInformation NetSendAfterJoinGameInformation::getAfterJoinGameInformation() const
 {

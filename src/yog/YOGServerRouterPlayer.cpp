@@ -71,9 +71,9 @@ void YOGServerRouterPlayer::update()
 				sendNetMessage(m);
 			}
 		}
-		else if(type==MNetRouterAdministratorSendCommand)
+		else if(type==MNetRouterAdministratorCommandRequest)
 		{
-			shared_ptr<NetRouterAdministratorSendCommand> info = static_pointer_cast<NetRouterAdministratorSendCommand>(message);
+			shared_ptr<NetRouterAdministratorCommandRequest> info = static_pointer_cast<NetRouterAdministratorCommandRequest>(message);
 			std::string command = info->getCommand();
 			if(isAdmin)
 			{

@@ -27,7 +27,6 @@ private:
 	Uint16 fileID;
 };
 
-
 /// Server -> client: announces an upcoming file transfer (size + fileID).
 class NetSendFileInformation : public NetMessage
 {
@@ -47,7 +46,6 @@ private:
 	Uint32 size;
 	Uint16 fileID;
 };
-
 
 /// One chunk of a streamed file transfer. Each message holds up to 4096 bytes
 /// drained from the supplied input stream.
@@ -74,7 +72,6 @@ private:
 	Uint16 fileID;
 };
 
-
 /// Sender -> receiver: aborts an in-flight outbound file transfer.
 class NetCancelSendingFile : public NetMessage
 {
@@ -92,7 +89,6 @@ public:
 private:
 	Uint16 fileID;
 };
-
 
 /// Receiver -> sender: aborts an in-flight inbound file transfer.
 class NetCancelRecievingFile : public NetMessage

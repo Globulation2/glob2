@@ -29,7 +29,6 @@ private:
 	MapHeader mapHeader;
 };
 
-
 /// Sends the game header WITHOUT player info — player data is sent separately
 /// via NetSendGamePlayerInfo so each piece can be updated independently.
 class NetSendGameHeader : public NetMessage
@@ -48,7 +47,6 @@ public:
 private:
 	GameHeader gameHeader;
 };
-
 
 /// Sends the BasePlayer portion of GameHeader (the player slots and their
 /// settings). Companion to NetSendGameHeader.

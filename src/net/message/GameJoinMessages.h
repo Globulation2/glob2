@@ -29,7 +29,6 @@ private:
 	Uint16 gameID;
 };
 
-
 /// Server -> client: join request accepted; the player is now in the game.
 /// Carries the chat channel for the joined game.
 class NetGameJoinAccepted : public NetMessage
@@ -49,7 +48,6 @@ private:
 	Uint32 chatChannel;
 };
 
-
 /// Server -> client: join attempt refused, carrying the reason.
 class NetGameJoinRefused : public NetMessage
 {
@@ -67,7 +65,6 @@ public:
 private:
 	YOGServerGameJoinRefusalReason reason;
 };
-
 
 /// Server -> game members: a new player just joined the game.
 class NetPlayerJoinsGame : public NetMessage
@@ -88,7 +85,6 @@ private:
 	YOGPlayerID playerID;
 	std::string playerName;
 };
-
 
 /// Server -> joiner: post-join handoff information (game data not part of
 /// the initial accept).

@@ -13,14 +13,10 @@ NetSendClientInformation::NetSendClientInformation()
 	netVersion=NET_PROTOCOL_VERSION;
 }
 
-
-
 Uint8 NetSendClientInformation::getMessageType() const
 {
 	return MNetSendClientInformation;
 }
-
-
 
 void NetSendClientInformation::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -29,8 +25,6 @@ void NetSendClientInformation::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendClientInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendClientInformation");
@@ -38,16 +32,12 @@ void NetSendClientInformation::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendClientInformation::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendClientInformation(netVersion="<<netVersion<<")";
 	return s.str();
 }
-
-
 
 bool NetSendClientInformation::operator==(const NetMessage& rhs) const
 {
@@ -62,13 +52,10 @@ bool NetSendClientInformation::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 Uint16 NetSendClientInformation::getNetVersion() const
 {
 	return netVersion;
 }
-
-
 
 NetSendServerInformation::NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, YOGPlayerID playerID)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), playerID(playerID)
@@ -76,22 +63,16 @@ NetSendServerInformation::NetSendServerInformation(YOGLoginPolicy loginPolicy, Y
 
 }
 
-
-
 NetSendServerInformation::NetSendServerInformation()
 	: loginPolicy(YOGRequirePassword), gamePolicy(YOGSingleGame), playerID(0)
 {
 
 }
 
-
-
 Uint8 NetSendServerInformation::getMessageType() const
 {
 	return MNetSendServerInformation;
 }
-
-
 
 void NetSendServerInformation::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -102,7 +83,6 @@ void NetSendServerInformation::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
 void NetSendServerInformation::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendServerInformation");
@@ -111,8 +91,6 @@ void NetSendServerInformation::decodeData(GAGCore::InputStream* stream)
 	playerID=stream->readUint16("playerID");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetSendServerInformation::format() const
 {
@@ -133,8 +111,6 @@ std::string NetSendServerInformation::format() const
 	return s.str();
 }
 
-
-
 bool NetSendServerInformation::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetSendServerInformation))
@@ -148,28 +124,20 @@ bool NetSendServerInformation::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 YOGLoginPolicy NetSendServerInformation::getLoginPolicy() const
 {
 	return loginPolicy;
 }
-
-
 
 YOGGamePolicy NetSendServerInformation::getGamePolicy() const
 {
 	return gamePolicy;
 }
 
-
-
 YOGPlayerID NetSendServerInformation::getPlayerID() const
 {
 	return playerID;
 }
-
-
 
 NetAttemptLogin::NetAttemptLogin(const std::string& username, const std::string& password)
 	: username(username), password(password)
@@ -177,21 +145,15 @@ NetAttemptLogin::NetAttemptLogin(const std::string& username, const std::string&
 
 }
 
-
-
 NetAttemptLogin::NetAttemptLogin()
 {
 
 }
 
-
-
 Uint8 NetAttemptLogin::getMessageType() const
 {
 	return MNetAttemptLogin;
 }
-
-
 
 void NetAttemptLogin::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -201,8 +163,6 @@ void NetAttemptLogin::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetAttemptLogin::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetAttemptLogin");
@@ -211,16 +171,12 @@ void NetAttemptLogin::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetAttemptLogin::format() const
 {
 	std::ostringstream s;
 	s<<"NetAttemptLogin("<<"username=\""<<username<<"\"; password=\""<<password<<"\")";
 	return s.str();
 }
-
-
 
 bool NetAttemptLogin::operator==(const NetMessage& rhs) const
 {
@@ -235,43 +191,31 @@ bool NetAttemptLogin::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 const std::string& NetAttemptLogin::getUsername() const
 {
 	return username;
 }
-
-
 
 const std::string& NetAttemptLogin::getPassword() const
 {
 	return password;
 }
 
-
-
 NetLoginSuccessful::NetLoginSuccessful()
 {
 
 }
-
-
 
 Uint8 NetLoginSuccessful::getMessageType() const
 {
 	return MNetLoginSuccessful;
 }
 
-
-
 void NetLoginSuccessful::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetLoginSuccessful");
 	stream->writeLeaveSection();
 }
-
-
 
 void NetLoginSuccessful::decodeData(GAGCore::InputStream* stream)
 {
@@ -280,16 +224,12 @@ void NetLoginSuccessful::decodeData(GAGCore::InputStream* stream)
 
 }
 
-
-
 std::string NetLoginSuccessful::format() const
 {
 	std::ostringstream s;
 	s<<"NetLoginSuccessful()";
 	return s.str();
 }
-
-
 
 bool NetLoginSuccessful::operator==(const NetMessage& rhs) const
 {
@@ -301,14 +241,11 @@ bool NetLoginSuccessful::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 NetRefuseLogin::NetRefuseLogin()
 	: reason(YOGLoginSuccessful)
 {
 
 }
-
-
 
 NetRefuseLogin::NetRefuseLogin(YOGLoginState reason)
 	: reason(reason)
@@ -316,14 +253,10 @@ NetRefuseLogin::NetRefuseLogin(YOGLoginState reason)
 
 }
 
-
-
 Uint8 NetRefuseLogin::getMessageType() const
 {
 	return MNetRefuseLogin;
 }
-
-
 
 void NetRefuseLogin::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -332,16 +265,12 @@ void NetRefuseLogin::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetRefuseLogin::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetRefuseLogin");
 	reason=static_cast<YOGLoginState>(stream->readUint8("reason"));
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetRefuseLogin::format() const
 {
@@ -361,8 +290,6 @@ std::string NetRefuseLogin::format() const
 	return s.str();
 }
 
-
-
 bool NetRefuseLogin::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetRefuseLogin))
@@ -376,28 +303,20 @@ bool NetRefuseLogin::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 YOGLoginState NetRefuseLogin::getRefusalReason() const
 {
 	return reason;
 }
-
-
 
 NetDisconnect::NetDisconnect()
 {
 
 }
 
-
-
 Uint8 NetDisconnect::getMessageType() const
 {
 	return MNetDisconnect;
 }
-
-
 
 void NetDisconnect::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -405,14 +324,11 @@ void NetDisconnect::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
 void NetDisconnect::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetDisconnect");
 	stream->readLeaveSection();
 }
-
-
 
 std::string NetDisconnect::format() const
 {
@@ -420,8 +336,6 @@ std::string NetDisconnect::format() const
 	s<<"NetDisconnect()";
 	return s.str();
 }
-
-
 
 bool NetDisconnect::operator==(const NetMessage& rhs) const
 {

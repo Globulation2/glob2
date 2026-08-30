@@ -13,22 +13,16 @@ NetSendMapHeader::NetSendMapHeader()
 
 }
 
-
-
 NetSendMapHeader::NetSendMapHeader(const MapHeader& mapHeader)
 	: mapHeader(mapHeader)
 {
 
 }
 
-
-
 Uint8 NetSendMapHeader::getMessageType() const
 {
 	return MNetSendMapHeader;
 }
-
-
 
 void NetSendMapHeader::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -37,8 +31,6 @@ void NetSendMapHeader::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendMapHeader::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendMapHeader");
@@ -46,16 +38,12 @@ void NetSendMapHeader::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendMapHeader::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendMapHeader(mapname="+mapHeader.getMapName()+")";
 	return s.str();
 }
-
-
 
 bool NetSendMapHeader::operator==(const NetMessage& rhs) const
 {
@@ -67,19 +55,15 @@ bool NetSendMapHeader::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
 const MapHeader& NetSendMapHeader::getMapHeader() const
 {
 	return mapHeader;
 }
 
-
-
 NetSendGameHeader::NetSendGameHeader()
 {
 
 }
-
 
 NetSendGameHeader::NetSendGameHeader(const GameHeader& gameHeader)
 	:	gameHeader(gameHeader)
@@ -87,14 +71,10 @@ NetSendGameHeader::NetSendGameHeader(const GameHeader& gameHeader)
 
 }
 
-
-
 Uint8 NetSendGameHeader::getMessageType() const
 {
 	return MNetSendGameHeader;
 }
-
-
 
 void NetSendGameHeader::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -103,8 +83,6 @@ void NetSendGameHeader::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendGameHeader::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendGameHeader");
@@ -112,16 +90,12 @@ void NetSendGameHeader::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendGameHeader::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendGameHeader()";
 	return s.str();
 }
-
-
 
 bool NetSendGameHeader::operator==(const NetMessage& rhs) const
 {
@@ -134,8 +108,6 @@ bool NetSendGameHeader::operator==(const NetMessage& rhs) const
 	return false;
 }
 
-
-
 void NetSendGameHeader::downloadToGameHeader(GameHeader& newGameHeader)
 {
 	//This is a special trick used to avoid having to manually copy over every
@@ -143,7 +115,6 @@ void NetSendGameHeader::downloadToGameHeader(GameHeader& newGameHeader)
 	MemoryStreamBackend* obackend = new MemoryStreamBackend;
 	GAGCore::BinaryOutputStream* ostream = new BinaryOutputStream(obackend);
 	gameHeader.saveWithoutPlayerInfo(ostream);
-
 
 	obackend->seekFromStart(0);
 	MemoryStreamBackend* ibackend = new MemoryStreamBackend(*obackend);
@@ -154,30 +125,20 @@ void NetSendGameHeader::downloadToGameHeader(GameHeader& newGameHeader)
 	delete istream;
 }
 
-
-
-
 NetSendGamePlayerInfo::NetSendGamePlayerInfo()
 {
 
 }
-
-
-
 
 NetSendGamePlayerInfo::NetSendGamePlayerInfo(GameHeader& gameHeader)
 	:	gameHeader(gameHeader)
 {
 }
 
-
-
 Uint8 NetSendGamePlayerInfo::getMessageType() const
 {
 	return MNetSendGamePlayerInfo;
 }
-
-
 
 void NetSendGamePlayerInfo::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -186,8 +147,6 @@ void NetSendGamePlayerInfo::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeLeaveSection();
 }
 
-
-
 void NetSendGamePlayerInfo::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetSendGamePlayerInfo");
@@ -195,16 +154,12 @@ void NetSendGamePlayerInfo::decodeData(GAGCore::InputStream* stream)
 	stream->readLeaveSection();
 }
 
-
-
 std::string NetSendGamePlayerInfo::format() const
 {
 	std::ostringstream s;
 	s<<"NetSendGamePlayerInfo()";
 	return s.str();
 }
-
-
 
 bool NetSendGamePlayerInfo::operator==(const NetMessage& rhs) const
 {
@@ -215,8 +170,6 @@ bool NetSendGamePlayerInfo::operator==(const NetMessage& rhs) const
 	}
 	return false;
 }
-
-
 
 void NetSendGamePlayerInfo::downloadToGameHeader(GameHeader& header)
 {
