@@ -310,7 +310,7 @@ void Unit::handleMovementAttackingAround()
 					if (owner->map->getGuardAreasGradient(posX + cdx, posY + cdy, performance[SWIM]>0, owner->teamNumber) != GRADIENT_AT_GOAL)
 						continue;
 				}
-				Uint8 explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);
+				int explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);
 				explored += owner->map->getExplored(posX + 2*cdx - cdy, posY + 2*cdy + cdx, owner->teamNumber);
 				explored += owner->map->getExplored(posX + 2*cdx + cdy, posY + 2*cdy - cdx, owner->teamNumber);
 				if (bestExplored > explored)
