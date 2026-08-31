@@ -14,39 +14,17 @@ Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Pl
 	Entity* entity = NULL;
 	switch(type)
 	{
-		case Entities::EBuilding:
-			entity = new Entities::Building;
-			entity->load(stream, player, versionMinor);
-		break;
-		case Entities::EAnyTeamBuilding:
-			entity = new Entities::AnyTeamBuilding;
-			entity->load(stream, player, versionMinor);
-		break;
-		case Entities::EAnyBuilding:
-			entity = new Entities::AnyBuilding;
-			entity->load(stream, player, versionMinor);
-		break;
-		case Entities::ERessource:
-			entity = new Entities::Ressource;
-			entity->load(stream, player, versionMinor);
-		break;
-		case Entities::EAnyRessource:
-			entity = new Entities::AnyRessource;
-			entity->load(stream, player, versionMinor);
-		break;
-		case Entities::EWater:
-			entity = new Entities::Water;
-			entity->load(stream, player, versionMinor);
-		break;
-		case Entities::EPosition:
-			entity = new Entities::Position;
-			entity->load(stream, player, versionMinor);
-		break;
-		case Entities::ESand:
-			entity = new Entities::Sand;
-			entity->load(stream, player, versionMinor);
-		break;
+		case Entities::EBuilding:        entity = new Entities::Building; break;
+		case Entities::EAnyTeamBuilding: entity = new Entities::AnyTeamBuilding; break;
+		case Entities::EAnyBuilding:     entity = new Entities::AnyBuilding; break;
+		case Entities::ERessource:       entity = new Entities::Ressource; break;
+		case Entities::EAnyRessource:    entity = new Entities::AnyRessource; break;
+		case Entities::EWater:           entity = new Entities::Water; break;
+		case Entities::EPosition:        entity = new Entities::Position; break;
+		case Entities::ESand:            entity = new Entities::Sand; break;
 	};
+	if(entity)
+		entity->load(stream, player, versionMinor);
 	stream->readLeaveSection();
 	return entity;
 }

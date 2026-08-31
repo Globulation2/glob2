@@ -11,53 +11,38 @@ using namespace AIEcho::Gradients;
 
 Entities::Building::Building(int building_type, int team, bool under_construction) : building_type(building_type), team(team), under_construction(under_construction)
 {
-
 }
-
 
 bool Entities::Building::is_entity(Map* map, int posx, int posy)
 {
 	int building_id=map->getBuilding(posx, posy);
-	if(building_id!=NOGBID)
-	{
-		int team_id=::Building::GIDtoTeam(building_id);
-		if(team_id==team &&
-		   map->game->teams[team_id]->myBuildings[::Building::GIDtoID(building_id)]->typeNum==building_type &&
-		   (map->game->teams[team_id]->myBuildings[::Building::GIDtoID(building_id)]->constructionResultState==::Building::NO_CONSTRUCTION || under_construction)
-		   )
-		{
-			return true;
-		}
-	}
-	return false;
+	if(building_id==NOGBID)
+		return false;
+	int team_id=::Building::GIDtoTeam(building_id);
+	if(team_id!=team)
+		return false;
+	::Building* b = map->game->teams[team_id]->myBuildings[::Building::GIDtoID(building_id)];
+	return b->typeNum==building_type &&
+	       (b->constructionResultState==::Building::NO_CONSTRUCTION || under_construction);
 }
 
 bool Entities::Building::operator==(const Entity& rhs) const
 {
-	if(typeid(rhs)==typeid(Entities::Building) &&
-	   static_cast<const Entities::Building&>(rhs).building_type==building_type &&
-	   static_cast<const Entities::Building&>(rhs).team==team &&
-	   static_cast<const Entities::Building&>(rhs).under_construction==under_construction
-	    )
-		return true;
-	return false;
+	if(typeid(rhs)!=typeid(Entities::Building))
+		return false;
+	const Entities::Building& o = static_cast<const Entities::Building&>(rhs);
+	return o.building_type==building_type && o.team==team && o.under_construction==under_construction;
 }
-
-
 
 bool Entities::Building::can_change()
 {
 	return true;
 }
 
-
-
 Entities::EntityType Entities::Building::get_type()
 {
 	return Entities::EBuilding;
 }
-
-
 
 bool Entities::Building::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -69,8 +54,6 @@ bool Entities::Building::load(GAGCore::InputStream *stream, Player *player, Sint
 	return true;
 }
 
-
-
 void Entities::Building::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("Building");
@@ -81,57 +64,39 @@ void Entities::Building::save(GAGCore::OutputStream *stream)
 }
 
 
-
 Entities::AnyTeamBuilding::AnyTeamBuilding(int team, bool under_construction) : team(team), under_construction(under_construction)
 {
-
 }
-
-
 
 bool Entities::AnyTeamBuilding::is_entity(Map* map, int posx, int posy)
 {
 	int building_id=map->getBuilding(posx, posy);
-	if(building_id!=NOGBID)
-	{
-		int team_id=::Building::GIDtoTeam(building_id);
-		if(team_id==team &&
-		   (map->game->teams[team_id]->myBuildings[::Building::GIDtoID(building_id)]->constructionResultState==::Building::NO_CONSTRUCTION || under_construction)
-		   )
-		{
-			return true;
-		}
-	}
-	return false;
+	if(building_id==NOGBID)
+		return false;
+	int team_id=::Building::GIDtoTeam(building_id);
+	if(team_id!=team)
+		return false;
+	::Building* b = map->game->teams[team_id]->myBuildings[::Building::GIDtoID(building_id)];
+	return b->constructionResultState==::Building::NO_CONSTRUCTION || under_construction;
 }
-
-
 
 bool Entities::AnyTeamBuilding::operator==(const Entity& rhs) const
 {
-	if(typeid(rhs)==typeid(Entities::AnyTeamBuilding) &&
-	   static_cast<const Entities::AnyTeamBuilding&>(rhs).team==team &&
-	   static_cast<const Entities::AnyTeamBuilding&>(rhs).under_construction==under_construction
-	    )
-		return true;
-	return false;
+	if(typeid(rhs)!=typeid(Entities::AnyTeamBuilding))
+		return false;
+	const Entities::AnyTeamBuilding& o = static_cast<const Entities::AnyTeamBuilding&>(rhs);
+	return o.team==team && o.under_construction==under_construction;
 }
-
-
 
 bool Entities::AnyTeamBuilding::can_change()
 {
 	return true;
 }
 
-
-
 Entities::EntityType Entities::AnyTeamBuilding::get_type()
 {
 	return Entities::EAnyTeamBuilding;
 }
-
-
 
 bool Entities::AnyTeamBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -142,8 +107,6 @@ bool Entities::AnyTeamBuilding::load(GAGCore::InputStream *stream, Player *playe
 	return true;
 }
 
-
-
 void Entities::AnyTeamBuilding::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AnyTeamBuilding");
@@ -153,51 +116,36 @@ void Entities::AnyTeamBuilding::save(GAGCore::OutputStream *stream)
 }
 
 
-
 Entities::AnyBuilding::AnyBuilding(bool under_construction) : under_construction(under_construction)
 {
 }
 
-
-
 bool Entities::AnyBuilding::is_entity(Map* map, int posx, int posy)
 {
 	int building_id=map->getBuilding(posx, posy);
-	if(building_id!=NOGBID)
-	{
-		int team_id=::Building::GIDtoTeam(building_id);
-		if(map->game->teams[team_id]->myBuildings[::Building::GIDtoID(building_id)]->constructionResultState==::Building::NO_CONSTRUCTION || under_construction)
-			return true;
-	}
-	return false;
+	if(building_id==NOGBID)
+		return false;
+	int team_id=::Building::GIDtoTeam(building_id);
+	::Building* b = map->game->teams[team_id]->myBuildings[::Building::GIDtoID(building_id)];
+	return b->constructionResultState==::Building::NO_CONSTRUCTION || under_construction;
 }
-
-
 
 bool Entities::AnyBuilding::operator==(const Entity& rhs) const
 {
-	if(typeid(rhs)==typeid(Entities::AnyBuilding) &&
-	   static_cast<const Entities::AnyBuilding&>(rhs).under_construction==under_construction
-           )
-		return true;
-	return false;
+	if(typeid(rhs)!=typeid(Entities::AnyBuilding))
+		return false;
+	return static_cast<const Entities::AnyBuilding&>(rhs).under_construction==under_construction;
 }
-
-
 
 bool Entities::AnyBuilding::can_change()
 {
 	return true;
 }
 
-
-
 Entities::EntityType Entities::AnyBuilding::get_type()
 {
 	return Entities::EAnyBuilding;
 }
-
-
 
 bool Entities::AnyBuilding::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -207,12 +155,9 @@ bool Entities::AnyBuilding::load(GAGCore::InputStream *stream, Player *player, S
 	return true;
 }
 
-
-
 void Entities::AnyBuilding::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AnyBuilding");
 	stream->writeUint8(under_construction, "under_construction");
 	stream->writeLeaveSection();
 }
-

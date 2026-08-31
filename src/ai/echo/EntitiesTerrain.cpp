@@ -9,44 +9,27 @@ using namespace AIEcho::Gradients;
 
 Entities::Water::Water()
 {
-
 }
-
-
 
 bool Entities::Water::is_entity(Map* map, int posx, int posy)
 {
-	if(map->isWater(posx, posy))
-	{
-		return true;
-	}
-	return false;
+	return map->isWater(posx, posy);
 }
-
-
 
 bool Entities::Water::operator==(const Entity& rhs) const
 {
-	if(typeid(rhs)==typeid(Entities::Water))
-		return true;
-	return false;
+	return typeid(rhs)==typeid(Entities::Water);
 }
-
-
 
 bool Entities::Water::can_change()
 {
 	return false;
 }
 
-
-
 Entities::EntityType Entities::Water::get_type()
 {
 	return Entities::EWater;
 }
-
-
 
 bool Entities::Water::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -54,8 +37,6 @@ bool Entities::Water::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	stream->readLeaveSection();
 	return true;
 }
-
-
 
 void Entities::Water::save(GAGCore::OutputStream *stream)
 {
@@ -66,41 +47,30 @@ void Entities::Water::save(GAGCore::OutputStream *stream)
 
 Entities::Position::Position(int x, int y) : x(x), y(y)
 {
-
 }
-
 
 bool Entities::Position::is_entity(Map* map, int posx, int posy)
 {
-	if(x==posx && y==posy)
-	{
-		return true;
-	}
-	return false;
+	return x==posx && y==posy;
 }
-
 
 bool Entities::Position::operator==(const Entity& rhs) const
 {
-	if(typeid(rhs)==typeid(Entities::Position) &&
-	   static_cast<const Entities::Position&>(rhs).x==x &&
-	   static_cast<const Entities::Position&>(rhs).y==y)
-		return true;
-	return false;
+	if(typeid(rhs)!=typeid(Entities::Position))
+		return false;
+	const Entities::Position& o = static_cast<const Entities::Position&>(rhs);
+	return o.x==x && o.y==y;
 }
-
 
 bool Entities::Position::can_change()
 {
 	return false;
 }
 
-
 Entities::EntityType Entities::Position::get_type()
 {
 	return Entities::EPosition;
 }
-
 
 bool Entities::Position::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -111,7 +81,6 @@ bool Entities::Position::load(GAGCore::InputStream *stream, Player *player, Sint
 	return false;
 }
 
-
 void Entities::Position::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("Position");
@@ -121,47 +90,29 @@ void Entities::Position::save(GAGCore::OutputStream *stream)
 }
 
 
-
 Entities::Sand::Sand()
 {
-
 }
-
-
 
 bool Entities::Sand::is_entity(Map* map, int posx, int posy)
 {
-	if(map->hasSand(posx, posy))
-	{
-		return true;
-	}
-	return false;
+	return map->hasSand(posx, posy);
 }
-
-
 
 bool Entities::Sand::operator==(const Entity& rhs) const
 {
-	if(typeid(rhs)==typeid(Entities::Sand))
-		return true;
-	return false;
+	return typeid(rhs)==typeid(Entities::Sand);
 }
-
-
 
 bool Entities::Sand::can_change()
 {
 	return false;
 }
 
-
-
 Entities::EntityType Entities::Sand::get_type()
 {
 	return Entities::ESand;
 }
-
-
 
 bool Entities::Sand::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
@@ -170,11 +121,8 @@ bool Entities::Sand::load(GAGCore::InputStream *stream, Player *player, Sint32 v
 	return true;
 }
 
-
-
 void Entities::Sand::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("Sand");
 	stream->writeLeaveSection();
 }
-
