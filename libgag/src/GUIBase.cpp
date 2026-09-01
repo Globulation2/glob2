@@ -436,6 +436,7 @@ namespace GAGGUI
 			bool wasWindowEvent=false;
 			while (SDL_PollEvent(&event))
 			{
+				GAGCore::GraphicContext::translateMouseEvent(&event);
 				switch (event.type)
 				{
 					case SDL_QUIT:
@@ -720,6 +721,7 @@ namespace GAGGUI
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
 			{
+				GAGCore::GraphicContext::translateMouseEvent(&event);
 				if (event.type == SDL_QUIT)
 				{
 					quitApplication = true;
