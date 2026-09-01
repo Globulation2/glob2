@@ -553,6 +553,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		Uint64 time = SDL_GetTicks64();
 		while (SDL_PollEvent(&event))
 		{
+			GAGCore::GraphicContext::translateMouseEvent(&event);
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
 		loadSaveScreen->dispatchPaint();

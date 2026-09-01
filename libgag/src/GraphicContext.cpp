@@ -249,6 +249,48 @@ namespace GAGCore
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
 	}
 
+	bool GraphicContext::isScalingActive(void)
+	{
+		return windowW && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h);
+	}
+
+	void GraphicContext::windowToLogical(Sint32 &x, Sint32 &y)
+	{
+		if (!isScalingActive())
+			return;
+		x = x * sdlsurface->w / windowW;
+		y = y * sdlsurface->h / windowH;
+	}
+
+	void GraphicContext::translateMouseEvent(SDL_Event *event)
+	{
+		if (!_gc)
+			return;
+		switch (event->type)
+		{
+			case SDL_MOUSEMOTION:
+				_gc->windowToLogical(event->motion.x, event->motion.y);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONUP:
+				_gc->windowToLogical(event->button.x, event->button.y);
+				break;
+			default:
+				break;
+		}
+	}
+
+	void GraphicContext::translateMouseCoordinates(int &x, int &y)
+	{
+		if (_gc)
+		{
+			Sint32 sx = x, sy = y;
+			_gc->windowToLogical(sx, sy);
+			x = sx;
+			y = sy;
+		}
+	}
+
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
 		// check dimension
@@ -298,10 +340,19 @@ namespace GAGCore
 			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
 			return false;
 		}
+		// With SDL_WINDOW_FULLSCREEN_DESKTOP the window keeps the desktop size,
+		// so the actual pixel size can differ from the requested logical w x h.
+		SDL_GetWindowSize(window, &windowW, &windowH);
 		// SDL_GetWindowSurface is incompatible with SDL_WINDOW_OPENGL;
 		// in GPU mode, create a small dummy surface so format-dependent code works.
 		if (optionFlags & USEGPU)
 		{
+			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		}
+		else if (windowW != w || windowH != h)
+		{
+			// Render to a logical-size offscreen surface; nextFrame scales it to the window.
 			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
 				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 		}
@@ -322,6 +373,11 @@ namespace GAGCore
 			{
 				SDL_GLContext context = SDL_GL_CreateContext(window);
 				SDL_GL_MakeCurrent(window, context);
+				#ifdef HAVE_OPENGL
+				// Map the logical projection onto the full drawable so fullscreen scales.
+				SDL_GL_GetDrawableSize(window, &windowW, &windowH);
+				glViewport(0, 0, windowW, windowH);
+				#endif
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
@@ -417,6 +473,7 @@ namespace GAGCore
 			{
 				int mx, my;
 				unsigned b = SDL_GetMouseState(&mx, &my);
+				translateMouseCoordinates(mx, my);
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
 				setClipRect();
 				cursorManager.draw(this, mx, my);
@@ -432,6 +489,12 @@ namespace GAGCore
 			else
 			#endif
 			{
+				if (isScalingActive())
+				{
+					SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
+					if (windowSurface)
+						SDL_BlitScaled(sdlsurface, NULL, windowSurface, NULL);
+				}
 				SDL_UpdateWindowSurface(window);
 			}
 		}

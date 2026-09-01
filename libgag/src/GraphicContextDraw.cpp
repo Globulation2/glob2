@@ -13,7 +13,16 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glState.doScissor(true);
-			glScissor(clipRect.x, getH() - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
+			// glScissor operates in window pixels; scale from logical coordinates when fullscreen scaling is active
+			int sx = clipRect.x, sy = getH() - clipRect.y - clipRect.h, sw = clipRect.w, sh = clipRect.h;
+			if (isScalingActive())
+			{
+				sx = sx * windowW / getW();
+				sy = sy * windowH / getH();
+				sw = sw * windowW / getW();
+				sh = sh * windowH / getH();
+			}
+			glScissor(sx, sy, sw, sh);
 		}
 		#endif
 	}

@@ -324,6 +324,8 @@ namespace GAGCore
 	protected:
 		//! the minimum acceptable resolution
 		int minW, minH;
+		//! actual window size in pixels; differs from the logical resolution when fullscreen scaling is active
+		int windowW = 0, windowH = 0;
 		SDL_Window *window = nullptr;
 		friend class DrawableSurface;
 		//! option flags
@@ -340,6 +342,14 @@ namespace GAGCore
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+		//! true when the window pixel size differs from the logical resolution, so output is scaled
+		bool isScalingActive(void);
+		//! convert window pixel coordinates (as delivered by SDL) to logical coordinates
+		void windowToLogical(Sint32 &x, Sint32 &y);
+		//! translate SDL_GetMouseState coordinates through the active context's scaling
+		static void translateMouseCoordinates(int &x, int &y);
+		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
+		static void translateMouseEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);

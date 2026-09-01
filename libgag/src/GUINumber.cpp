@@ -69,6 +69,7 @@ namespace GAGGUI
 		int mouse_x, mouse_y;
 		getScreenPos(&x, &y, &w, &h);
 		SDL_GetMouseState(&mouse_x, &mouse_y);
+		GAGCore::GraphicContext::translateMouseCoordinates(mouse_x, mouse_y);
 		bool inc = false;
 		bool dec = false;
 		if (isPtInRect(mouse_x, mouse_y, x, y, w, h))
