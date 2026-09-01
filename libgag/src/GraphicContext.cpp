@@ -492,7 +492,10 @@ namespace GAGCore
 				if (isScalingActive())
 				{
 					SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
-					if (windowSurface)
+					// nearest-neighbor SDL_BlitScaled turns hairline UI details (tile
+					// seams, sub-pixel alpha-blended bars) into blocky artifacts at
+					// non-integer scale factors; bilinear avoids that.
+					if (windowSurface && SDL_SoftStretchLinear(sdlsurface, NULL, windowSurface, NULL) != 0)
 						SDL_BlitScaled(sdlsurface, NULL, windowSurface, NULL);
 				}
 				SDL_UpdateWindowSurface(window);
