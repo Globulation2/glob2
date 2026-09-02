@@ -13,6 +13,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Both ends of the supported toolchain range: 22.04 is g++ 11 / Boost
+        # 1.74 (catches C++20 features the oldest supported compiler lacks),
+        # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
+        # that no longer come in transitively).
         image: [ubuntu:22.04, ubuntu:24.04]
     steps:
       - name: Install dependencies

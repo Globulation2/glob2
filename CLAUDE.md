@@ -20,27 +20,28 @@ scons -c
 scons release=1          # Optimized release build
 scons server=1           # Build YOG server only (no GUI/sound)
 scons --build=/tmp/out   # Out-of-source build
-scons mingw=true         # Windows cross-compile
+scons mingw=1            # Native Windows build (MSYS2/mingw-w64)
+scons mingwcross=1       # Cross-compile for Windows from Linux
 
 # Custom paths
 scons BINDIR=/path/bin INSTALLDIR=/path/share
 ```
 
-**Dependencies:** SDL2, SDL2_net, SDL2_ttf, SDL2_image, libvorbis, libogg, speex, OpenGL, GLU, libepoxy, Boost (thread, date_time, system), zlib, fribidi, pcre. Optional: portaudio (voice chat). See `vcpkg.json` for the full list.
+**Dependencies:** SDL2, SDL2_net, SDL2_ttf, SDL2_image, libvorbis, libogg, speex, OpenGL, GLU, libepoxy, Boost (date_time; system is header-only from 1.69 on and only linked when present), zlib, fribidi, pcre. Optional: portaudio (voice chat). See `vcpkg.json` for the full list.
 
 ## Running Tests
 
+Tests have their own `test/SConstruct` and are **not** built by the top-level `scons`:
+
 ```bash
-# Tests are in test/ - built as part of scons, run the test binary after build
+cd test
+scons -j16
+./TestsRunner
 ```
 
 ## Build System Internals
 
 SCons-based. `SConstruct` is the main build script with platform detection (Linux, Darwin, Windows/MinGW). Library checks are done via custom configure functions in `scons/`. Build options are cached in `options_cache.py`.
-
-## CI
-
-Travis CI runs Docker-based builds on Ubuntu 18.04–21.04. See `.travis.yml` in the repo root.
 
 ## Architecture
 
