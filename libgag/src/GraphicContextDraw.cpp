@@ -157,6 +157,19 @@ namespace GAGCore
 			glState.doBlend(true);
 			glState.doTexture(false);
 
+			// GL line width is fixed in framebuffer pixels and doesn't grow
+			// with the viewport the way filled geometry does, so fullscreen
+			// scaling leaves hairline UI elements (progress bar markers, etc.)
+			// looking thinner than the rest of the scaled-up interface.
+			if (isScalingActive())
+			{
+				float scale = static_cast<float>(windowW) / getW();
+				float scaleH = static_cast<float>(windowH) / getH();
+				if (scaleH > scale)
+					scale = scaleH;
+				glLineWidth(scale);
+			}
+
 			// draw
 			glBegin(GL_LINES);
 			if (color.a < 255)
@@ -166,6 +179,9 @@ namespace GAGCore
 			glVertex2f(x1, y1);
 			glVertex2f(x2, y2);
 			glEnd();
+
+			if (isScalingActive())
+				glLineWidth(1);
 		}
 		else
 		#endif
