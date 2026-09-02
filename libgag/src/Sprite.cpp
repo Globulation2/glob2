@@ -36,11 +36,11 @@ using boost::make_unique;
 #define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
 #else
 #include <epoxy/gl.h>
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include <epoxy/wgl.h>
 #else
 #include <epoxy/glx.h>
-#endif // _MSC_VER
+#endif // _WIN32
 #endif // defined(__APPLE__)
 #endif // ifdef HAVE_OPENGL
 
