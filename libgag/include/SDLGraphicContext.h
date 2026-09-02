@@ -347,6 +347,8 @@ namespace GAGCore
 		Uint32 optionFlags;
 		std::string windowTitle;
 		std::string appIcon;
+		//! Release sdlsurface if this mode allocated it rather than SDL
+		void freeDummySurface(void);
 		
 	public:
 		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)
