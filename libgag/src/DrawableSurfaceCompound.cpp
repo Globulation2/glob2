@@ -116,12 +116,12 @@ namespace GAGCore
 			{
 				if ((x == 0) && (y == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
 				{
-					// The framebuffer has the window's pixel size, which fullscreen
-					// scaling makes larger than the logical surface. Read it whole and
-					// average each logical pixel's block of window pixels, so thin
-					// antialiased lines survive; identity when the sizes match.
-					const int fbW = _gc->windowW;
-					const int fbH = _gc->windowH;
+					// The framebuffer has the drawable's pixel size, which fullscreen
+					// scaling and HiDPI make larger than the logical surface. Read it
+					// whole and average each logical pixel's block of drawable pixels,
+					// so thin antialiased lines survive.
+					const int fbW = _gc->drawableW ? _gc->drawableW : sw;
+					const int fbH = _gc->drawableH ? _gc->drawableH : sh;
 					std::valarray<unsigned char> tempPixels(4*fbW*fbH);
 					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
 					glReadPixels(0, 0, fbW, fbH, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);

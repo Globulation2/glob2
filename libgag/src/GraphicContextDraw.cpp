@@ -9,14 +9,12 @@
 
 namespace GAGCore
 {
-	// GL rasterises lines at a width in window pixels, which the viewport
+	// GL rasterises lines at a width in drawable pixels, which the viewport
 	// transform does not scale the way it scales filled geometry.
 	void GraphicContext::setScaledLineWidth(float width)
 	{
 		#ifdef HAVE_OPENGL
-		if (isScalingActive())
-			width *= std::min(static_cast<float>(windowW) / getW(), static_cast<float>(windowH) / getH());
-		glLineWidth(width);
+		glLineWidth(width * drawableScale());
 		#endif
 	}
 
@@ -27,14 +25,14 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glState.doScissor(true);
-			// glScissor operates in window pixels; scale from logical coordinates when fullscreen scaling is active
+			// glScissor operates in drawable pixels; scale from logical coordinates
 			int sx = clipRect.x, sy = getH() - clipRect.y - clipRect.h, sw = clipRect.w, sh = clipRect.h;
-			if (isScalingActive())
+			if (drawableW && (drawableW != getW() || drawableH != getH()))
 			{
-				sx = sx * windowW / getW();
-				sy = sy * windowH / getH();
-				sw = sw * windowW / getW();
-				sh = sh * windowH / getH();
+				sx = sx * drawableW / getW();
+				sy = sy * drawableH / getH();
+				sw = sw * drawableW / getW();
+				sh = sh * drawableH / getH();
 			}
 			glScissor(sx, sy, sw, sh);
 		}
@@ -174,9 +172,7 @@ namespace GAGCore
 
 			// Drivers only antialias 1 px lines, so a scaled line is built from
 			// several 1 px smooth lines spread across the scaled thickness.
-			float scale = 1.0f;
-			if (isScalingActive())
-				scale = std::min(static_cast<float>(windowW) / getW(), static_cast<float>(windowH) / getH());
+			const float scale = drawableScale();
 			const int passes = std::max(1, static_cast<int>(std::ceil(scale)));
 			float nx = 0.0f, ny = 0.0f;
 			if (passes > 1)
