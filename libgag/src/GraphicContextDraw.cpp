@@ -2,10 +2,22 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#include <algorithm>
 #include <math.h>
 
 namespace GAGCore
 {
+	// GL rasterises lines at a width in window pixels, which the viewport
+	// transform does not scale the way it scales filled geometry.
+	void GraphicContext::setScaledLineWidth(float width)
+	{
+		#ifdef HAVE_OPENGL
+		if (isScalingActive())
+			width *= std::min(static_cast<float>(windowW) / getW(), static_cast<float>(windowH) / getH());
+		glLineWidth(width);
+		#endif
+	}
+
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
 		DrawableSurface::setClipRect(x, y, w, h);
@@ -78,6 +90,7 @@ namespace GAGCore
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glState.doBlend(true);
 			glState.doTexture(false);
+			setScaledLineWidth(1.0f);
 
 			// draw
 			glBegin(GL_LINES);
@@ -157,18 +170,7 @@ namespace GAGCore
 			glState.doBlend(true);
 			glState.doTexture(false);
 
-			// GL line width is fixed in framebuffer pixels and doesn't grow
-			// with the viewport the way filled geometry does, so fullscreen
-			// scaling leaves hairline UI elements (progress bar markers, etc.)
-			// looking thinner than the rest of the scaled-up interface.
-			if (isScalingActive())
-			{
-				float scale = static_cast<float>(windowW) / getW();
-				float scaleH = static_cast<float>(windowH) / getH();
-				if (scaleH > scale)
-					scale = scaleH;
-				glLineWidth(scale);
-			}
+			setScaledLineWidth(1.0f);
 
 			// draw
 			glBegin(GL_LINES);
@@ -179,9 +181,6 @@ namespace GAGCore
 			glVertex2f(x1, y1);
 			glVertex2f(x2, y2);
 			glEnd();
-
-			if (isScalingActive())
-				glLineWidth(1);
 		}
 		else
 		#endif
@@ -206,7 +205,7 @@ namespace GAGCore
 		{
 			glState.doBlend(true);
 			glState.doTexture(false);
-			glLineWidth(2);
+			setScaledLineWidth(2.0f);
 
 			double tot = radius;
 			double fx = x;
@@ -226,7 +225,7 @@ namespace GAGCore
 				glVertex2d(fx+fray*sin(angle1), fy+fray*cos(angle1));
 			}
 			glEnd();
-			glLineWidth(1);
+			setScaledLineWidth(1.0f);
 		}
 		else
 		#endif
