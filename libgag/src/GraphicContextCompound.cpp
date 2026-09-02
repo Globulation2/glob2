@@ -73,6 +73,15 @@ namespace GAGCore
 			glState.doTexture(true);
 			glColor4ub(255, 255, 255, alpha);
 
+			// Sample texel centres: sprites share an atlas, so reaching the outer
+			// texel edge blends in the neighbouring frame and seams every tile.
+			const float insetX = 0.5f * surface->texMultX;
+			const float insetY = 0.5f * surface->texMultY;
+			const float u0 = static_cast<float>(sx) * surface->texMultX + insetX;
+			const float u1 = static_cast<float>(sx + sw) * surface->texMultX - insetX;
+			const float v0 = static_cast<float>(sy) * surface->texMultY + insetY;
+			const float v1 = static_cast<float>(sy + sh) * surface->texMultY - insetY;
+
 			// draw
 			glState.setTexture(surface->texture);
 			if (surface->textureInfo && surface->textureInfo->sprite)
@@ -91,10 +100,10 @@ namespace GAGCore
 				// Queue this draw call until finishDrawingSprite is called.
 				sprite->vertices.insert(sprite->vertices.end(), { x, y, x + w, y, x + w, y + h, x, y + h });
 				sprite->texCoords.insert(sprite->texCoords.end(), {
-					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
-					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY,
-					static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY,
-					static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY
+					u0, v0,
+					u1, v0,
+					u1, v1,
+					u0, v1
 				});
 				if (alpha != Color::ALPHA_OPAQUE)
 				{
@@ -106,13 +115,13 @@ namespace GAGCore
 			else
 			{
 				glBegin(GL_QUADS);
-				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
+				glTexCoord2f(u0, v0);
 				glVertex2f(x, y);
-				glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
+				glTexCoord2f(u1, v0);
 				glVertex2f(x + w, y);
-				glTexCoord2f(static_cast<float>(sx + sw) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
+				glTexCoord2f(u1, v1);
 				glVertex2f(x + w, y + h);
-				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy + sh) * surface->texMultY);
+				glTexCoord2f(u0, v1);
 				glVertex2f(x, y + h);
 				glEnd();
 			}
