@@ -332,8 +332,14 @@ bool Game::integrity(void)
 				checkInvariant(teams[tid]);
 				const auto unit = teams[tid]->myUnits[Unit::GIDtoID(c.airUnit)];
 				checkInvariant(unit);
-				checkInvariant(unit->posX == x);
-				checkInvariant(unit->posY == y);
+				// A unit on its final step into a building (DIS_ENTERING_BUILDING)
+				// already has the building's position but stays registered on the
+				// cell it came from until it is inside (see UnitDisplacement.cpp).
+				const bool entering = unit->displacement == Unit::DIS_ENTERING_BUILDING;
+				const int expectedX = entering ? ((unit->posX - unit->dx) & map.wMask) : unit->posX;
+				const int expectedY = entering ? ((unit->posY - unit->dy) & map.hMask) : unit->posY;
+				checkInvariant(expectedX == x);
+				checkInvariant(expectedY == y);
 			}
 		}
 	return true;
