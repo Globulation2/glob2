@@ -308,14 +308,14 @@ bool Game::integrity(void)
 					}
 				};
 
+				// Footprints may straddle the map edge (posX can be -1), so
+				// measure the cell's offset from the building with wrap-around.
 				const auto buildingEndX = building->posX + building->type->width;
-				healOutsideCoord(x >= building->posX || x < (buildingEndX & map.wMask),
+				healOutsideCoord(((x - building->posX) & map.wMask) < building->type->width,
 				                 "X", x, building->posX, buildingEndX);
-				healOutsideCoord(x < buildingEndX, "X", x, building->posX, buildingEndX);
 				const auto buildingEndY = building->posY + building->type->height;
-				healOutsideCoord(y >= building->posY || y < (buildingEndY & map.hMask),
+				healOutsideCoord(((y - building->posY) & map.hMask) < building->type->height,
 				                 "Y", y, building->posY, buildingEndY);
-				healOutsideCoord(y < buildingEndY, "Y", y, building->posY, buildingEndY);
 			}
 			if (c.groundUnit != NOGUID)
 			{
