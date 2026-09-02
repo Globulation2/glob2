@@ -346,6 +346,8 @@ namespace GAGCore
 		bool isScalingActive(void);
 		//! convert window pixel coordinates (as delivered by SDL) to logical coordinates
 		void windowToLogical(Sint32 &x, Sint32 &y);
+		//! set a GL line width in logical pixels; GL rasterises lines in window pixels, which the viewport does not scale
+		void setScaledLineWidth(float width);
 		//! translate SDL_GetMouseState coordinates through the active context's scaling
 		static void translateMouseCoordinates(int &x, int &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
