@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <cmath>
+#include <algorithm>
 #include "GraphicContextPrivate.h"
 #include <algorithm>
 #include <math.h>
@@ -170,7 +172,24 @@ namespace GAGCore
 			glState.doBlend(true);
 			glState.doTexture(false);
 
-			setScaledLineWidth(1.0f);
+			// Drivers only antialias 1 px lines, so a scaled line is built from
+			// several 1 px smooth lines spread across the scaled thickness.
+			float scale = 1.0f;
+			if (isScalingActive())
+				scale = std::min(static_cast<float>(windowW) / getW(), static_cast<float>(windowH) / getH());
+			const int passes = std::max(1, static_cast<int>(std::ceil(scale)));
+			float nx = 0.0f, ny = 0.0f;
+			if (passes > 1)
+			{
+				const float ddx = x2 - x1, ddy = y2 - y1;
+				const float len = std::sqrt(ddx * ddx + ddy * ddy);
+				if (len > 0.0f)
+				{
+					nx = -ddy / len;
+					ny = ddx / len;
+				}
+			}
+			glLineWidth(1.0f);
 
 			// draw
 			glBegin(GL_LINES);
@@ -178,8 +197,13 @@ namespace GAGCore
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
-			glVertex2f(x1, y1);
-			glVertex2f(x2, y2);
+			for (int i = 0; i < passes; ++i)
+			{
+				// offsets in window pixels from -(scale-1)/2 to +(scale-1)/2, mapped back to logical units
+				const float off = passes > 1 ? ((scale - 1.0f) * (static_cast<float>(i) / (passes - 1) - 0.5f)) / scale : 0.0f;
+				glVertex2f(x1 + nx * off, y1 + ny * off);
+				glVertex2f(x2 + nx * off, y2 + ny * off);
+			}
 			glEnd();
 		}
 		else
