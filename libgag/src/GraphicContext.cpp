@@ -241,6 +241,7 @@ namespace GAGCore
 
 	GraphicContext::~GraphicContext(void)
 	{
+		freeOwnedSurface();
 		TTF_Quit();
 		SDL_Quit();
 		sdlsurface = NULL;
@@ -252,6 +253,14 @@ namespace GAGCore
 	bool GraphicContext::isScalingActive(void)
 	{
 		return windowW && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h);
+	}
+
+	void GraphicContext::freeOwnedSurface(void)
+	{
+		if (ownsSurface && sdlsurface)
+			SDL_FreeSurface(sdlsurface);
+		sdlsurface = NULL;
+		ownsSurface = false;
 	}
 
 	float GraphicContext::drawableScale(void)
@@ -335,6 +344,7 @@ namespace GAGCore
 		#endif
 
 		// if window exists, delete it
+		freeOwnedSurface();
 		if (window) {
 			SDL_DestroyWindow(window);
 			window = nullptr;
@@ -358,12 +368,14 @@ namespace GAGCore
 		{
 			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
 				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			ownsSurface = true;
 		}
 		else if (windowW != w || windowH != h)
 		{
 			// Render to a logical-size offscreen surface; nextFrame scales it to the window.
 			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
 				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			ownsSurface = true;
 		}
 		else
 		{

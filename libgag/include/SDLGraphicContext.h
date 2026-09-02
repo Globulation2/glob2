@@ -330,6 +330,10 @@ namespace GAGCore
 		int drawableW = 0, drawableH = 0;
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
+		//! true when sdlsurface was allocated here rather than fetched from SDL
+		bool ownsSurface = false;
+		//! release sdlsurface when this context allocated it
+		void freeOwnedSurface(void);
 		SDL_Window *window = nullptr;
 		friend class DrawableSurface;
 		//! option flags
