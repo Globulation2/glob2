@@ -190,7 +190,11 @@ namespace GAGCore
 			// draw
 			glBegin(GL_LINES);
 			if (color.a < 255)
-				glColor4ub(color.r, color.g, color.b, color.a);
+			{
+				// the passes overlap, so each carries the alpha that composes back to the requested one
+				const float a = 1.0f - std::pow(1.0f - color.a / 255.0f, 1.0f / passes);
+				glColor4ub(color.r, color.g, color.b, static_cast<Uint8>(a * 255.0f + 0.5f));
+			}
 			else
 				glColor3ub(color.r, color.g, color.b);
 			for (int i = 0; i < passes; ++i)
