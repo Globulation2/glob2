@@ -98,14 +98,15 @@ void TerrainSelector::draw()
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 59);
 	if(terrainType==PruneTree)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 64);
-	if(me.terrainType==terrainType)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
 	if (terrainType == Grass || terrainType == Sand || terrainType == Water)
 		globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
 	else
 		globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
 	if (me.terrainType == terrainType)
+	{
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
+	}
 }
 
 
