@@ -4,8 +4,6 @@
 #include <cmath>
 #include <algorithm>
 #include "GraphicContextPrivate.h"
-#include <algorithm>
-#include <math.h>
 
 namespace GAGCore
 {
