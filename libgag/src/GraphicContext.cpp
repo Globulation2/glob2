@@ -254,6 +254,13 @@ namespace GAGCore
 		return windowW && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h);
 	}
 
+	float GraphicContext::drawableScale(void)
+	{
+		if (!drawableW || !sdlsurface)
+			return 1.0f;
+		return std::min(static_cast<float>(drawableW) / sdlsurface->w, static_cast<float>(drawableH) / sdlsurface->h);
+	}
+
 	void GraphicContext::windowToLogical(Sint32 &x, Sint32 &y)
 	{
 		if (!isScalingActive())
@@ -343,6 +350,8 @@ namespace GAGCore
 		// With SDL_WINDOW_FULLSCREEN_DESKTOP the window keeps the desktop size,
 		// so the actual pixel size can differ from the requested logical w x h.
 		SDL_GetWindowSize(window, &windowW, &windowH);
+		drawableW = windowW;
+		drawableH = windowH;
 		// SDL_GetWindowSurface is incompatible with SDL_WINDOW_OPENGL;
 		// in GPU mode, create a small dummy surface so format-dependent code works.
 		if (optionFlags & USEGPU)
@@ -375,8 +384,9 @@ namespace GAGCore
 				SDL_GL_MakeCurrent(window, context);
 				#ifdef HAVE_OPENGL
 				// Map the logical projection onto the full drawable so fullscreen scales.
-				SDL_GL_GetDrawableSize(window, &windowW, &windowH);
-				glViewport(0, 0, windowW, windowH);
+				// The drawable is in pixels; on HiDPI it is larger than the window points mouse events use.
+				SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
+				glViewport(0, 0, drawableW, drawableH);
 				#endif
 			}
 			// set _glFormat

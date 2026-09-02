@@ -324,8 +324,12 @@ namespace GAGCore
 	protected:
 		//! the minimum acceptable resolution
 		int minW, minH;
-		//! actual window size in pixels; differs from the logical resolution when fullscreen scaling is active
+		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
 		int windowW = 0, windowH = 0;
+		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
+		int drawableW = 0, drawableH = 0;
+		//! ratio of GL drawable pixels to logical pixels
+		float drawableScale(void);
 		SDL_Window *window = nullptr;
 		friend class DrawableSurface;
 		//! option flags
