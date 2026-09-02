@@ -3,7 +3,7 @@ import sys
 env = Environment()
 
 if sys.platform.startswith("linux"):
-  ccflags = '-Wall -ansi -g'
+  ccflags = '-Wall -g'
 else:
   ccflags = '/EHsc /MD /GR'
 

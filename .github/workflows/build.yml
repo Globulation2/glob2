@@ -1,0 +1,83 @@
+name: build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  linux:
+    name: linux (${{ matrix.image }})
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [ubuntu:22.04, ubuntu:24.04]
+    steps:
+      - name: Install dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends \
+            ca-certificates git g++ python3 scons pkg-config \
+            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            libvorbis-dev libogg-dev libspeex-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
+            libcppunit-dev
+
+      - uses: actions/checkout@v4
+
+      - name: Build glob2
+        run: scons -j$(nproc) release=1
+
+      - name: Build the YOG server
+        run: scons -j$(nproc) release=1 server=1 --build=build-server
+
+      - name: Build and run the tests
+        working-directory: test
+        run: |
+          scons -j$(nproc)
+          ./TestsRunner
+
+  windows:
+    name: windows (mingw-w64)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-scons
+            mingw-w64-x86_64-SDL2
+            mingw-w64-x86_64-SDL2_image
+            mingw-w64-x86_64-SDL2_net
+            mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-libvorbis
+            mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-speex
+            mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-fribidi
+            mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-libepoxy
+            mingw-w64-x86_64-libsystre
+
+      - uses: actions/checkout@v4
+
+      - name: Build glob2
+        run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Build the YOG server
+        run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
