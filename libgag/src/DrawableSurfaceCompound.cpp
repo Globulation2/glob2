@@ -4,6 +4,7 @@
 #include "GraphicContextPrivate.h"
 #include <Toolkit.h>
 #include <FileManager.h>
+#include <algorithm>
 #include <assert.h>
 #include <iostream>
 #include <map>
@@ -115,27 +116,44 @@ namespace GAGCore
 			{
 				if ((x == 0) && (y == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
 				{
-					std::valarray<unsigned> tempPixels(sw*sh);
+					// The framebuffer has the window's pixel size, which fullscreen
+					// scaling makes larger than the logical surface. Read it whole and
+					// average each logical pixel's block of window pixels, so thin
+					// antialiased lines survive; identity when the sizes match.
+					const int fbW = _gc->windowW;
+					const int fbH = _gc->windowH;
+					std::valarray<unsigned char> tempPixels(4*fbW*fbH);
 					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					glReadPixels(0, 0, fbW, fbH, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#else
-					glReadPixels(sx, sy, sdlsurface->w, sdlsurface->h, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					glReadPixels(0, 0, fbW, fbH, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#endif
 					for (int y = 0; y<sh; y++)
 					{
-						unsigned *srcPtr = (unsigned *)&tempPixels[y*sw];
-						unsigned *destPtr = &(((unsigned *)sdlsurface->pixels)[(sh-y-1)*sw]);
+						// GL rows run bottom-up, so logical row y covers window rows [y0, y1[ from the top
+						const int y0 = fbH - ((y+1)*fbH)/sh;
+						const int y1 = std::max(y0+1, fbH - (y*fbH)/sh);
+						unsigned *destPtr = &(((unsigned *)sdlsurface->pixels)[y*sw]);
 						for (int x = 0; x<sw; x++)
-						#if SDL_BYTEORDER == SDL_BIG_ENDIAN
 						{
-							*destPtr++ = (*srcPtr >> 8) | (*srcPtr << 24);
-							srcPtr++;
+							const int x0 = (x*fbW)/sw;
+							const int x1 = std::max(x0+1, ((x+1)*fbW)/sw);
+							unsigned sum[4] = {0, 0, 0, 0};
+							for (int fy = y0; fy<y1; fy++)
+								for (int fx = x0; fx<x1; fx++)
+									for (int c = 0; c<4; c++)
+										sum[c] += tempPixels[4*(fy*fbW+fx)+c];
+							const unsigned n = (y1-y0)*(x1-x0);
+							unsigned char *dest = reinterpret_cast<unsigned char *>(destPtr++);
+							#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+							// RGBA bytes read back to ARGB
+							dest[0] = sum[3]/n; dest[1] = sum[0]/n; dest[2] = sum[1]/n; dest[3] = sum[2]/n;
+							#else
+							for (int c = 0; c<4; c++)
+								dest[c] = sum[c]/n;
+							#endif
 						}
-						#else
-							*destPtr++ = *srcPtr++;
-						#endif
 					}
-
 				}
 				else
 				{
