@@ -117,7 +117,15 @@ def configure(env, server_only):
             print("Could not find libz or zlib1.dll")
             missing.append("zlib")
     
-    if ((env['mingw'] or env['mingwcross'] or isWindowsPlatform) and not conf.CheckLib("regex")) or not conf.CheckCXXHeader("regex.h"):
+    if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
+        if conf.CheckLib("regex"):
+            env.Append(LIBS=["regex"])
+        elif conf.CheckLib("systre"):
+            env.Append(LIBS=["systre", "tre", "intl", "iconv"])
+        else:
+            print("Could not find libregex or libsystre")
+            missing.append("regex")
+    if not conf.CheckCXXHeader("regex.h"):
         print("Could not find regex.h")
         missing.append("regex")
 
@@ -130,6 +138,8 @@ def configure(env, server_only):
         print("Could not find libboost_date_time or libboost_date_time-mt or boost/date_time/posix_time/posix_time.hpp")
         missing.append("libboost_date_time")
     env.Append(LIBS=[boost_date_time])
+    # Optional, unlike the checks above: Boost.System is header-only from 1.69 on,
+    # so there is nothing to link against on a modern Boost.
     if conf.CheckLib("boost_system"):
         env.Append(LIBS=["boost_system"])
     env.Append(LIBS=["pthread"])
@@ -235,22 +245,23 @@ def main():
     env = Environment()
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
-    
+
+    if env['mingw'] or env['mingwcross']:
+        Tool('mingw')(env)
+
     if env['mingwcross']:
             env.Platform('cygwin')
-            env['CC']  = 'i586-mingw32msvc-gcc'
-            env['CXX'] = 'i586-mingw32msvc-g++'
-            env['AR']  = 'i586-mingw32msvc-ar'
-            env['RANLIB'] = 'i586-mingw32msvc-ranlib'
+            env['CC']  = 'x86_64-w64-mingw32-gcc'
+            env['CXX'] = 'x86_64-w64-mingw32-g++'
+            env['AR']  = 'x86_64-w64-mingw32-ar'
+            env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
     
     
     
     # Add specific paths.
     if env['mingw'] or isWindowsPlatform:
-        env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
         env.Append(LIBPATH=['/usr/local/lib'])
-        env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
-        env.Append(CPPPATH=['/usr/local/include/SDL'])
+        env.Append(CPPPATH=['/usr/local/include'])
     if isDarwinPlatform:
         import subprocess
         try:
@@ -269,9 +280,8 @@ def main():
             crossroot_abs = env['crossroot']
         else:
             crossroot_abs = os.getcwd() + '/' + env['crossroot']
-        env.Append(LIBPATH=['/usr/i586-mingw32msvc/lib', crossroot_abs + '/lib'])
-        env.Append(CPPPATH=['/usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/include/c++', '/usr/i586-mingw32msvc/include'])
-        env.Append(CPPPATH=[crossroot_abs + '/include', crossroot_abs + '/include/SDL'])
+        env.Append(LIBPATH=[crossroot_abs + '/lib'])
+        env.Append(CPPPATH=[crossroot_abs + '/include'])
 
     server_only = False
     if env['server']:
@@ -297,10 +307,8 @@ def main():
         env.Append(LINKFLAGS='-O3')
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
         # TODO: Remove unneccessary dependencies for server.
-        env.Append(LIBS=['vorbis', 'ogg', 'regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
+        env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
-        env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
-    elif isDarwinPlatform:
         env.ParseConfig("pkg-config sdl2 --cflags --libs")
     else:
         env.ParseConfig("pkg-config sdl2 --cflags --libs")
