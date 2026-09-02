@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
-"""Regenerate data/gfx/terrain0..15 (the 16 grass variants) so they tile without seams.
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Make the 16 grass variants data/gfx/terrain0..15 tile without seams.
 
-The original tiles were smoothed noise without wrap-around, so adjacent pixels
-differ by ~2.4 levels inside a tile but ~5 across any tile boundary, which draws
-a faint 32 px grid over every grass field. This script builds one toroidal
-master tile (terrain0 blended with its half-offset copy, so the edges come from
-the continuous interior) and fades every variant into that master over its
-outer four pixels. Any two variants then meet with interior-level continuity
-while their centres stay distinct.
+Builds one toroidal master tile from terrain0 blended with its half-offset
+copy, so the master's edges come from the continuous interior, then fades
+every variant into that master over its outer four pixels. Any two variants
+meet with interior-level continuity while their centres stay distinct, and
+the script prints the mean interior and cross-tile pixel steps to confirm it.
 
 Run from the repository root; reads and overwrites data/gfx/terrain{0..15}.png.
-Pass --src DIR to read originals from elsewhere (e.g. a git worktree of the
-commit before this tool was introduced).
+--src DIR reads the input tiles from elsewhere, --dst DIR writes elsewhere.
 """
 import argparse
 import numpy as np
