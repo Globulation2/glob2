@@ -253,11 +253,14 @@ namespace GAGCore
 		drawLine(x1, y1, x2, y2, Color(r, g, b, a));
 	}
 
+	// Axis-aligned 1 px lines are drawn as exact 1x l quads in GL mode: a GL_LINES
+	// primitive keeps an integer device width, so at a fractional fullscreen scale
+	// adjacent lines (charts, sliders, training bars) leave gaps between them.
 	void GraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-			drawLine(x, y, x, y+l, Color(r, g, b, a));
+			drawFilledRect(x, y, 1, l, Color(r, g, b, a));
 		else
 		#endif
 			 _drawVertLine(x, y, l, Color(r, g, b, a));
@@ -267,7 +270,7 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-			drawLine(x, y, x, y+l, color);
+			drawFilledRect(x, y, 1, l, color);
 		else
 		#endif
 			 _drawVertLine(x, y, l, color);
@@ -277,7 +280,7 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-			drawLine(x, y, x+l, y, Color(r, g, b, a));
+			drawFilledRect(x, y, l, 1, Color(r, g, b, a));
 		else
 		#endif
 			_drawHorzLine(x, y, l, Color(r, g, b, a));
@@ -287,7 +290,7 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-			drawLine(x, y, x+l, y, color);
+			drawFilledRect(x, y, l, 1, color);
 		else
 		#endif
 			_drawHorzLine(x, y, l, color);
