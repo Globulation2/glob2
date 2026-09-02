@@ -161,7 +161,7 @@ void EndGameStat::paint(void)
 				{
 					double value = getValue(double(px) / double(e_width-2), team, type);
 					int ny = e_height - int(double(e_height) * value / double(maxValue));
-					parent->getSurface()->drawLine(x + px + 1, y + previous_y, x + px, y + ny, color);
+					parent->getSurface()->drawLine(x + px, y + previous_y, x + px + 1, y + ny, color);
 					previous_y = ny;
 					int dist = (mouse_y-ny)*(mouse_y-ny) + (mouse_x-px-1)*(mouse_x-px-1);
 					if(dist < closest_position)
