@@ -75,8 +75,10 @@ namespace GAGCore
 
 			// Sample texel centres: sprites share an atlas, so reaching the outer
 			// texel edge blends in the neighbouring frame and seams every tile.
-			const float insetX = 0.5f * surface->texMultX;
-			const float insetY = 0.5f * surface->texMultY;
+			// With nearest filtering a tiny inset is enough to keep pixel centres
+			// off the boundary; a half-texel inset would shrink the edge texels.
+			const float insetX = (1.0f / 64.0f) * surface->texMultX;
+			const float insetY = (1.0f / 64.0f) * surface->texMultY;
 			const float u0 = static_cast<float>(sx) * surface->texMultX + insetX;
 			const float u1 = static_cast<float>(sx + sw) * surface->texMultX - insetX;
 			const float v0 = static_cast<float>(sy) * surface->texMultY + insetY;
