@@ -333,14 +333,16 @@ namespace GAGCore
 		int drawableW = 0, drawableH = 0;
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
+		//! true when sdlsurface was allocated here rather than fetched from SDL
+		bool ownsSurface = false;
+		//! release sdlsurface when this context allocated it
+		void freeOwnedSurface(void);
 		SDL_Window *window = nullptr;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
 		std::string windowTitle;
 		std::string appIcon;
-		//! Release sdlsurface if this mode allocated it rather than SDL
-		void freeDummySurface(void);
 		
 	public:
 		//! Constructor. Create a new window of size (w,h). If useGPU is true, use GPU for accelerated 2D (OpenGL or DX)
