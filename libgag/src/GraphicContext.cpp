@@ -270,6 +270,31 @@ namespace GAGCore
 		return std::min(static_cast<float>(drawableW) / sdlsurface->w, static_cast<float>(drawableH) / sdlsurface->h);
 	}
 
+	void GraphicContext::updateWindowSize(void)
+	{
+		if (!window)
+			return;
+		SDL_GetWindowSize(window, &windowW, &windowH);
+		drawableW = windowW;
+		drawableH = windowH;
+		#ifdef HAVE_OPENGL
+		if (optionFlags & USEGPU)
+		{
+			SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
+			glViewport(0, 0, drawableW, drawableH);
+		}
+		else
+		#endif
+		if (!ownsSurface && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h))
+		{
+			// the window surface no longer matches the logical size: render offscreen and scale on nextFrame
+			const int w = sdlsurface->w, h = sdlsurface->h;
+			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			ownsSurface = true;
+		}
+	}
+
 	void GraphicContext::windowToLogical(Sint32 &x, Sint32 &y)
 	{
 		if (!isScalingActive())
@@ -290,6 +315,10 @@ namespace GAGCore
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
 				_gc->windowToLogical(event->button.x, event->button.y);
+				break;
+			case SDL_WINDOWEVENT:
+				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+					_gc->updateWindowSize();
 				break;
 			default:
 				break;

@@ -334,6 +334,8 @@ namespace GAGCore
 		bool ownsSurface = false;
 		//! release sdlsurface when this context allocated it
 		void freeOwnedSurface(void);
+		//! refresh the window and drawable sizes after the window was resized
+		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
 		friend class DrawableSurface;
 		//! option flags
