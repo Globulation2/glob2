@@ -130,6 +130,10 @@ std::string YOGServerPasswordRegistry::transform(const std::string& username, co
 	SHA1Final(digest, &context);
 	std::string final = "";
 	for(int i=0; i<20; ++i)
-		final += std::to_string(static_cast<int>(digest[i])) + "-";
+	{
+		// stored hashes encode each digest byte as a raw character, not as decimal
+		final += static_cast<char>(digest[i]);
+		final += '-';
+	}
 	return final;
 }

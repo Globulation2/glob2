@@ -90,6 +90,10 @@ bool YOGMutePlayer::doesMatch(const std::vector<std::string>& tokens)
 		{
 			return false;
 		}
+		catch(const std::out_of_range&)
+		{
+			return false;
+		}
 		return true;
 	}
 	return false;

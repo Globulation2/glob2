@@ -21,6 +21,7 @@
 
 #include "IRCTextMessageHandler.h"
 #include "IRCThreadMessage.h"
+#include <algorithm>
 #include <functional>
 #include <StringTable.h>
 #include <Toolkit.h>
