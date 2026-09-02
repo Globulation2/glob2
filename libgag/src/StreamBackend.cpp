@@ -64,7 +64,7 @@ namespace GAGCore
 				return;
 			}
 			int written = gzwrite(fp, buffer->getBuffer(), size);
-			if (written == 0)
+			if (written != static_cast<int>(size))
 				std::cerr << "ZLibStreamBackend: error writing " << file << std::endl;
 			if (gzclose(fp) != Z_OK)
 				std::cerr << "ZLibStreamBackend: error closing " << file << std::endl;

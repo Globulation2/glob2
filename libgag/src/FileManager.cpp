@@ -434,15 +434,17 @@ namespace GAGCore
 			return false;
 		}
 		int written = gzwrite(gzStream, &buffer[0], fileLength);
-		if (written == 0)
+		bool complete = (written == static_cast<int>(fileLength));
+		if (!complete)
 			std::cerr << "FileManager::gzip: gzwrite failed for " << dest << std::endl;
 
-		// Close
-		if (gzclose(gzStream) != Z_OK)
+		// Close, which flushes the deflate stream: a failure here means truncated output
+		bool closed = (gzclose(gzStream) == Z_OK);
+		if (!closed)
 			std::cerr << "FileManager::gzip: gzclose failed for " << dest << std::endl;
 		delete srcStream;
 
-		return (written > 0);
+		return complete && closed;
 	}
 	
 	bool FileManager::gunzip(const std::string &source, const std::string &dest)
@@ -488,11 +490,12 @@ namespace GAGCore
 		destStream->write(buffer.c_str(), len);
 
 		// Close
-		if (gzclose(gzStream) != Z_OK)
+		bool closed = (gzclose(gzStream) == Z_OK);
+		if (!closed)
 			std::cerr << "FileManager::gunzip: gzclose error for " << source << std::endl;
 		delete destStream;
 
-		return (bytesRead >= 0);
+		return (bytesRead >= 0) && closed;
 	}
 
 	bool FileManager::addListingForDir(const std::string realDir, const std::string extension, const bool dirs)
