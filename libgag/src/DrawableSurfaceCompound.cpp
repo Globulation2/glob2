@@ -13,6 +13,7 @@
 #include <string>
 #include <tuple>
 #include <valarray>
+#include <cstring>
 #include <vector>
 
 namespace GAGCore
@@ -128,6 +129,25 @@ namespace GAGCore
 					#else
 					glReadPixels(0, 0, fbW, fbH, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#endif
+					if (fbW == sw && fbH == sh)
+					{
+						// same size: plain row copy, flipping GL's bottom-up rows
+						for (int y = 0; y<sh; y++)
+						{
+							unsigned *destPtr = &(((unsigned *)sdlsurface->pixels)[y*sw]);
+							const unsigned char *src = &tempPixels[4*(sh-1-y)*sw];
+							#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+							for (int x = 0; x<sw; x++, src += 4)
+							{
+								unsigned char *dest = reinterpret_cast<unsigned char *>(destPtr++);
+								dest[0] = src[3]; dest[1] = src[0]; dest[2] = src[1]; dest[3] = src[2];
+							}
+							#else
+							memcpy(destPtr, src, 4*sw);
+							#endif
+						}
+					}
+					else
 					for (int y = 0; y<sh; y++)
 					{
 						// GL rows run bottom-up, so logical row y covers window rows [y0, y1[ from the top
