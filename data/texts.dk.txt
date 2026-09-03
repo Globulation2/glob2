@@ -41,7 +41,7 @@ V : Vis alle dine bygninger
 [add map]
 Tilføj kort
 [add shortcut]
-Tilf�j genvejstast
+Tilføj genvejstast
 [Add]
 
 [AI Descriptions]
