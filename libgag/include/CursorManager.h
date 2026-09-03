@@ -45,24 +45,23 @@ namespace GAGCore
 		CursorType nextType;
 		//! the current frame of cursor sprite.
 		int currentFrame;
-		//! draw color of the cursors, packed so update() can tell it changed
-		//! without needing Color's full definition here
-		Uint32 packedDrawColor;
-		//! the native cursor currently installed via SDL_SetCursor, owned by us
-		SDL_Cursor *activeCursor;
-		//! (type, frame, color, scale) that activeCursor was built from
+		//! one native cursor per (type, frame), built on first use and owned by us
+		std::vector<std::vector<SDL_Cursor *> > nativeCursors;
+		//! the scale the cached cursors were built at
+		float cacheScale;
+		//! (type, frame) of the cursor currently installed via SDL_SetCursor
 		CursorType activeType;
 		int activeFrame;
-		Uint32 activePackedColor;
-		float activeScale;
 		bool activeValid;
+		//! build the native cursor for a (type, frame) at the given scale
+		SDL_Cursor *createNativeCursor(CursorType type, int frame, float scale);
 
 	public:
 		//! Constructor, set default values
 		CursorManager();
 		//! Frees the native cursor, if any
 		~CursorManager();
-		//! Releases the native cursor, if any. Must be called before SDL_Quit();
+		//! Releases the native cursors, which reverts to the system one. Must be called before SDL_Quit();
 		//! ~CursorManager() runs too late for that (after ~GraphicContext()'s body).
 		void releaseNativeCursor(void);
 		//! Load the cursor sprites
@@ -75,11 +74,11 @@ namespace GAGCore
 		void setDrawColor(const Color& color);
 		//! Sets the default draw color
 		void setDefaultColor();
-		//! Advance the cursor animation and, if the type/frame/color/scale
-		//! changed, install a native cursor for it via SDL_SetCursor. The OS
-		//! then moves and composites it independent of our own render/tick
-		//! rate. scale is GraphicContext::drawableScale(), so the cursor
-		//! matches the rest of a scaled-up window instead of rendering at 1x.
+		//! Advance the cursor animation and, if the type or frame changed,
+		//! install the native cursor for it via SDL_SetCursor. The OS then
+		//! moves and composites it independent of our own render/tick rate.
+		//! scale is GraphicContext::drawableScale(), so the cursor matches
+		//! the rest of a scaled-up window instead of rendering at 1x.
 		void update(float scale);
 	};
 }
