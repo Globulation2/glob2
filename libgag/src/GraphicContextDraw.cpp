@@ -1,11 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <cmath>
+#include <algorithm>
 #include "GraphicContextPrivate.h"
-#include <math.h>
 
 namespace GAGCore
 {
+	// GL rasterises lines at a width in drawable pixels, which the viewport
+	// transform does not scale the way it scales filled geometry.
+	void GraphicContext::setScaledLineWidth(float width)
+	{
+		#ifdef HAVE_OPENGL
+		glLineWidth(width * drawableScale());
+		#endif
+	}
+
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
 		DrawableSurface::setClipRect(x, y, w, h);
@@ -13,7 +23,16 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glState.doScissor(true);
-			glScissor(clipRect.x, getH() - clipRect.y - clipRect.h, clipRect.w, clipRect.h);
+			// glScissor operates in drawable pixels; scale from logical coordinates
+			int sx = clipRect.x, sy = getH() - clipRect.y - clipRect.h, sw = clipRect.w, sh = clipRect.h;
+			if (drawableW && (drawableW != getW() || drawableH != getH()))
+			{
+				sx = sx * drawableW / getW();
+				sy = sy * drawableH / getH();
+				sw = sw * drawableW / getW();
+				sh = sh * drawableH / getH();
+			}
+			glScissor(sx, sy, sw, sh);
 		}
 		#endif
 	}
@@ -69,6 +88,7 @@ namespace GAGCore
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glState.doBlend(true);
 			glState.doTexture(false);
+			setScaledLineWidth(1.0f);
 
 			// draw
 			glBegin(GL_LINES);
@@ -148,14 +168,40 @@ namespace GAGCore
 			glState.doBlend(true);
 			glState.doTexture(false);
 
+			// Drivers only antialias 1 px lines, so a scaled line is built from
+			// several 1 px smooth lines spread across the scaled thickness.
+			const float scale = drawableScale();
+			const int passes = std::max(1, static_cast<int>(std::ceil(scale)));
+			float nx = 0.0f, ny = 0.0f;
+			if (passes > 1)
+			{
+				const float ddx = x2 - x1, ddy = y2 - y1;
+				const float len = std::sqrt(ddx * ddx + ddy * ddy);
+				if (len > 0.0f)
+				{
+					nx = -ddy / len;
+					ny = ddx / len;
+				}
+			}
+			glLineWidth(1.0f);
+
 			// draw
 			glBegin(GL_LINES);
 			if (color.a < 255)
-				glColor4ub(color.r, color.g, color.b, color.a);
+			{
+				// the passes overlap, so each carries the alpha that composes back to the requested one
+				const float a = 1.0f - std::pow(1.0f - color.a / 255.0f, 1.0f / passes);
+				glColor4ub(color.r, color.g, color.b, static_cast<Uint8>(a * 255.0f + 0.5f));
+			}
 			else
 				glColor3ub(color.r, color.g, color.b);
-			glVertex2f(x1, y1);
-			glVertex2f(x2, y2);
+			for (int i = 0; i < passes; ++i)
+			{
+				// offsets in window pixels from -(scale-1)/2 to +(scale-1)/2, mapped back to logical units
+				const float off = passes > 1 ? ((scale - 1.0f) * (static_cast<float>(i) / (passes - 1) - 0.5f)) / scale : 0.0f;
+				glVertex2f(x1 + nx * off, y1 + ny * off);
+				glVertex2f(x2 + nx * off, y2 + ny * off);
+			}
 			glEnd();
 		}
 		else
@@ -181,7 +227,7 @@ namespace GAGCore
 		{
 			glState.doBlend(true);
 			glState.doTexture(false);
-			glLineWidth(2);
+			setScaledLineWidth(2.0f);
 
 			double tot = radius;
 			double fx = x;
@@ -201,7 +247,7 @@ namespace GAGCore
 				glVertex2d(fx+fray*sin(angle1), fy+fray*cos(angle1));
 			}
 			glEnd();
-			glLineWidth(1);
+			setScaledLineWidth(1.0f);
 		}
 		else
 		#endif
@@ -229,11 +275,14 @@ namespace GAGCore
 		drawLine(x1, y1, x2, y2, Color(r, g, b, a));
 	}
 
+	// Axis-aligned 1 px lines are drawn as exact 1x l quads in GL mode: a GL_LINES
+	// primitive keeps an integer device width, so at a fractional fullscreen scale
+	// adjacent lines (charts, sliders, training bars) leave gaps between them.
 	void GraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-			drawLine(x, y, x, y+l, Color(r, g, b, a));
+			drawFilledRect(x, y, 1, l, Color(r, g, b, a));
 		else
 		#endif
 			 _drawVertLine(x, y, l, Color(r, g, b, a));
@@ -243,7 +292,7 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-			drawLine(x, y, x, y+l, color);
+			drawFilledRect(x, y, 1, l, color);
 		else
 		#endif
 			 _drawVertLine(x, y, l, color);
@@ -253,7 +302,7 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-			drawLine(x, y, x+l, y, Color(r, g, b, a));
+			drawFilledRect(x, y, l, 1, Color(r, g, b, a));
 		else
 		#endif
 			_drawHorzLine(x, y, l, Color(r, g, b, a));
@@ -263,7 +312,7 @@ namespace GAGCore
 	{
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
-			drawLine(x, y, x+l, y, color);
+			drawFilledRect(x, y, l, 1, color);
 		else
 		#endif
 			_drawHorzLine(x, y, l, color);

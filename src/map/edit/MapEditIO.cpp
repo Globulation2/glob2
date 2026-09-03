@@ -147,6 +147,7 @@ int MapEdit::run(void)
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
+			GAGCore::GraphicContext::translateMouseEvent(&event);
  			processEvent(event);
 		}
 

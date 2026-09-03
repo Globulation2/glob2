@@ -241,12 +241,102 @@ namespace GAGCore
 
 	GraphicContext::~GraphicContext(void)
 	{
+		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
+		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
+		cursorManager.releaseNativeCursor();
+		freeOwnedSurface();
 		TTF_Quit();
 		SDL_Quit();
 		sdlsurface = NULL;
 
 		if (verbose)
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
+	}
+
+	bool GraphicContext::isScalingActive(void)
+	{
+		return windowW && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h);
+	}
+
+	void GraphicContext::freeOwnedSurface(void)
+	{
+		if (ownsSurface && sdlsurface)
+			SDL_FreeSurface(sdlsurface);
+		sdlsurface = NULL;
+		ownsSurface = false;
+	}
+
+	float GraphicContext::drawableScale(void)
+	{
+		if (!drawableW || !sdlsurface)
+			return 1.0f;
+		return std::min(static_cast<float>(drawableW) / sdlsurface->w, static_cast<float>(drawableH) / sdlsurface->h);
+	}
+
+	void GraphicContext::updateWindowSize(void)
+	{
+		if (!window)
+			return;
+		SDL_GetWindowSize(window, &windowW, &windowH);
+		drawableW = windowW;
+		drawableH = windowH;
+		#ifdef HAVE_OPENGL
+		if (optionFlags & USEGPU)
+		{
+			SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
+			glViewport(0, 0, drawableW, drawableH);
+		}
+		else
+		#endif
+		if (!ownsSurface && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h))
+		{
+			// the window surface no longer matches the logical size: render offscreen and scale on nextFrame
+			const int w = sdlsurface->w, h = sdlsurface->h;
+			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			ownsSurface = true;
+		}
+	}
+
+	void GraphicContext::windowToLogical(Sint32 &x, Sint32 &y)
+	{
+		if (!isScalingActive())
+			return;
+		x = x * sdlsurface->w / windowW;
+		y = y * sdlsurface->h / windowH;
+	}
+
+	void GraphicContext::translateMouseEvent(SDL_Event *event)
+	{
+		if (!_gc)
+			return;
+		switch (event->type)
+		{
+			case SDL_MOUSEMOTION:
+				_gc->windowToLogical(event->motion.x, event->motion.y);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONUP:
+				_gc->windowToLogical(event->button.x, event->button.y);
+				break;
+			case SDL_WINDOWEVENT:
+				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+					_gc->updateWindowSize();
+				break;
+			default:
+				break;
+		}
+	}
+
+	void GraphicContext::translateMouseCoordinates(int &x, int &y)
+	{
+		if (_gc)
+		{
+			Sint32 sx = x, sy = y;
+			_gc->windowToLogical(sx, sy);
+			x = sx;
+			y = sy;
+		}
 	}
 
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
@@ -286,6 +376,7 @@ namespace GAGCore
 		#endif
 
 		// if window exists, delete it
+		freeOwnedSurface();
 		if (window) {
 			SDL_DestroyWindow(window);
 			window = nullptr;
@@ -298,12 +389,25 @@ namespace GAGCore
 			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
 			return false;
 		}
+		// With SDL_WINDOW_FULLSCREEN_DESKTOP the window keeps the desktop size,
+		// so the actual pixel size can differ from the requested logical w x h.
+		SDL_GetWindowSize(window, &windowW, &windowH);
+		drawableW = windowW;
+		drawableH = windowH;
 		// SDL_GetWindowSurface is incompatible with SDL_WINDOW_OPENGL;
 		// in GPU mode, create a small dummy surface so format-dependent code works.
 		if (optionFlags & USEGPU)
 		{
 			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
 				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			ownsSurface = true;
+		}
+		else if (windowW != w || windowH != h)
+		{
+			// Render to a logical-size offscreen surface; nextFrame scales it to the window.
+			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			ownsSurface = true;
 		}
 		else
 		{
@@ -322,6 +426,12 @@ namespace GAGCore
 			{
 				SDL_GLContext context = SDL_GL_CreateContext(window);
 				SDL_GL_MakeCurrent(window, context);
+				#ifdef HAVE_OPENGL
+				// Map the logical projection onto the full drawable so fullscreen scales.
+				// The drawable is in pixels; on HiDPI it is larger than the window points mouse events use.
+				SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
+				glViewport(0, 0, drawableW, drawableH);
+				#endif
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
@@ -377,14 +487,12 @@ namespace GAGCore
 
 			setClipRect();
 			if (flags & CUSTOMCURSOR)
-			{
-				// disable system cursor
-				SDL_ShowCursor(SDL_DISABLE);
-				// load custom cursors
+				// cursorManager installs its cursors as native ones (see
+				// CursorManager::update()), so the system cursor stays on
 				cursorManager.load();
-			}
 			else
-				SDL_ShowCursor(SDL_ENABLE);
+				cursorManager.releaseNativeCursor();
+			SDL_ShowCursor(SDL_ENABLE);
 
 			if (verbose)
 				fprintf(stderr,
@@ -417,9 +525,9 @@ namespace GAGCore
 			{
 				int mx, my;
 				unsigned b = SDL_GetMouseState(&mx, &my);
+				translateMouseCoordinates(mx, my);
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
-				setClipRect();
-				cursorManager.draw(this, mx, my);
+				cursorManager.update(drawableScale());
 			}
 
 
@@ -432,6 +540,12 @@ namespace GAGCore
 			else
 			#endif
 			{
+				if (isScalingActive())
+				{
+					SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
+					if (windowSurface)
+						SDL_BlitScaled(sdlsurface, NULL, windowSurface, NULL);
+				}
 				SDL_UpdateWindowSurface(window);
 			}
 		}

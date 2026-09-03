@@ -325,7 +325,9 @@ void SettingsScreen::retranslateUiStrings()
 
 void SettingsScreen::setVisibilityFromGraphicType(void)
 {
-	rebootWarning->visible = globalContainer->settings.screenFlags & GraphicContext::USEGPU;
+	// a change either into or out of the GL renderer only takes effect on restart
+	rebootWarning->visible = (globalContainer->settings.screenFlags & GraphicContext::USEGPU)
+		|| (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU);
 }
 
 void SettingsScreen::setVisibilityFromAudioSettings(void)
@@ -338,7 +340,11 @@ void SettingsScreen::setVisibilityFromAudioSettings(void)
 
 void SettingsScreen::updateGfxCtx(void)
 {
-	if ((globalContainer->settings.screenFlags & GraphicContext::USEGPU) == 0)
+	// Only reconfigure live while the renderer stays software: a window created for
+	// OpenGL cannot serve SDL_GetWindowSurface, so switching away from GL in place
+	// leaves the old context's contents on screen until the game is restarted.
+	if (((globalContainer->settings.screenFlags & GraphicContext::USEGPU) == 0)
+		&& ((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU) == 0))
 		globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenFlags);
 	setVisibilityFromGraphicType();
 	actDisplay->setText(actDisplayModeToString().c_str());

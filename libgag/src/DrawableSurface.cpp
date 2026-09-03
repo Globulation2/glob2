@@ -98,7 +98,7 @@ namespace GAGCore
 			{
 				// TODO : if anyone has a better way to do it, please tell :-)
 				glState.setTexture(texture);
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
 				int w = getMinPowerOfTwo(sdlsurface->w);
@@ -148,6 +148,10 @@ namespace GAGCore
 			if (glState.isTextureSRectangle)
 			{
 				glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA, sdlsurface->w, sdlsurface->h, 0, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
+				// Magnify with nearest-neighbour so a scaled fullscreen looks like the
+				// software renderer's block scaling instead of a bilinear blur.
+				glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_RECTANGLE_NV, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			}
 			else
 			{

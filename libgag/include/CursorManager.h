@@ -4,13 +4,14 @@
 #pragma once
 
 #include <vector>
+#include "SDL.h"
 
 namespace GAGCore
 {
 	class Sprite;
 	class DrawableSurface;
 	struct Color;
-	
+
 	//! A support class to manage cursors
 	class CursorManager
 	{
@@ -34,7 +35,7 @@ namespace GAGCore
 			CURSOR_MARK = 11,
 			CURSOR_COUNT
 		};
-	
+
 	protected:
 		//! a vector of loaded cursors
 		std::vector<Sprite *> cursors;
@@ -44,10 +45,25 @@ namespace GAGCore
 		CursorType nextType;
 		//! the current frame of cursor sprite.
 		int currentFrame;
-		
+		//! one native cursor per (type, frame), built on first use and owned by us
+		std::vector<std::vector<SDL_Cursor *> > nativeCursors;
+		//! the scale the cached cursors were built at
+		float cacheScale;
+		//! (type, frame) of the cursor currently installed via SDL_SetCursor
+		CursorType activeType;
+		int activeFrame;
+		bool activeValid;
+		//! build the native cursor for a (type, frame) at the given scale
+		SDL_Cursor *createNativeCursor(CursorType type, int frame, float scale);
+
 	public:
 		//! Constructor, set default values
 		CursorManager();
+		//! Frees the native cursor, if any
+		~CursorManager();
+		//! Releases the native cursors, which reverts to the system one. Must be called before SDL_Quit();
+		//! ~CursorManager() runs too late for that (after ~GraphicContext()'s body).
+		void releaseNativeCursor(void);
 		//! Load the cursor sprites
 		void load(void);
 		//! Select the next type given the mouse position
@@ -58,7 +74,11 @@ namespace GAGCore
 		void setDrawColor(const Color& color);
 		//! Sets the default draw color
 		void setDefaultColor();
-		//! Draw the current cursor with its current frame at a given pos
-		void draw(DrawableSurface *ds, int x, int y);
+		//! Advance the cursor animation and, if the type or frame changed,
+		//! install the native cursor for it via SDL_SetCursor. The OS then
+		//! moves and composites it independent of our own render/tick rate.
+		//! scale is GraphicContext::drawableScale(), so the cursor matches
+		//! the rest of a scaled-up window instead of rendering at 1x.
+		void update(float scale);
 	};
 }

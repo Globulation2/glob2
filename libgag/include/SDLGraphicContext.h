@@ -212,6 +212,8 @@ namespace GAGCore
 		// accessors
 		virtual int getW(void) { if (textureInfo) return textureInfo->w; return sdlsurface->w; }
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
+		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
+		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
 		virtual int getTexY(void) { if (textureInfo) { return textureInfo->texY; } return 0; }
@@ -324,6 +326,18 @@ namespace GAGCore
 	protected:
 		//! the minimum acceptable resolution
 		int minW, minH;
+		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
+		int windowW = 0, windowH = 0;
+		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
+		int drawableW = 0, drawableH = 0;
+		//! ratio of GL drawable pixels to logical pixels
+		float drawableScale(void);
+		//! true when sdlsurface was allocated here rather than fetched from SDL
+		bool ownsSurface = false;
+		//! release sdlsurface when this context allocated it
+		void freeOwnedSurface(void);
+		//! refresh the window and drawable sizes after the window was resized
+		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
 		friend class DrawableSurface;
 		//! option flags
@@ -340,6 +354,16 @@ namespace GAGCore
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+		//! true when the window pixel size differs from the logical resolution, so output is scaled
+		bool isScalingActive(void);
+		//! convert window pixel coordinates (as delivered by SDL) to logical coordinates
+		void windowToLogical(Sint32 &x, Sint32 &y);
+		//! set a GL line width in logical pixels; GL rasterises lines in window pixels, which the viewport does not scale
+		void setScaledLineWidth(float width);
+		//! translate SDL_GetMouseState coordinates through the active context's scaling
+		static void translateMouseCoordinates(int &x, int &y);
+		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
+		static void translateMouseEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);
