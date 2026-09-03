@@ -306,6 +306,8 @@ end
 ﺇﺩﺧﺎﻝ
 [equals]
 ﻳﺴﺎﻭﻱ
+[ERROR_CANT_LOAD_MAP]
+تعذّر تحميل الخريطة لأن الملف تالف أو من إصدار غير متوافق.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -368,8 +370,6 @@ F9
 ﺳﻠﻴﻢ
 [free]
 free
-[free]
-ﺑﺪﻭﻥ ﻋﻤﻞ
 [from:]
 ﻣﻦ:
 [fruit]
@@ -424,8 +424,6 @@ home
 ﺿﻴِّﻒ ﻟﻌﺒﺔ
 [hp]
 ﻥﻕ
-[hp]
-ﻧﻘﺎﻁ ﺍﻟﻘﻮﺓ
 [Human]
 ﺇﻧﺴﺎﻥ
 [human]
@@ -1040,8 +1038,6 @@ tab
 ﺑﺪِّﻝ ﻋﺮﺽ ﺷﺎﺷﺔ ﺍﻟﻘﺎﺋﻤﺔ
 [toggle recording voice]
 ﺍﺑﺪﺃ ﺗﺴﺠﻴﻞ ﺍﻟﺼﻮﺕ
-[toggle recording voice]
-ﺑﺪِّﻝ ﺣﺎﻟﺔ ﺗﺴﺠﻴﻞ ﺍﻟﺼﻮﺕ
 [Total Attack Power]
 ﻣﺠﻤﻮﻉ ﻗﻮﺓ ﺍﻟﻬﺠﻮﻡ
 [Total Defence Power]
@@ -1148,8 +1144,6 @@ View History
 ﻋﺎﻣﻞ
 [workers]
 ﺍﻟﻌﻤﺎﻝ
-[workers]
-ﻋﻤﺎﻝ
 [working]
 ﺍﻟﻌﺎﻣﻠﻮﻥ
 [wounded]

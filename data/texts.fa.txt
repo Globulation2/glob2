@@ -203,7 +203,7 @@ caps lock
 [closed]
 بسته
 [combined vision]
-
+دید ترکیبی
 [compile]
 کمپایل برنامه
 [compose]
@@ -306,6 +306,8 @@ end
 enter
 [equals]
 equals
+[ERROR_CANT_LOAD_MAP]
+نقشه بارگذاری نشد، زیرا فایل آسیب دیده یا نسخه‌ی آن ناسازگار است.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -359,14 +361,12 @@ f9
 [flag settings explanation]
 اندازه‌ی پیشفرض شعاع منطقه‌ی پرچم:
 [fog of war]
-
+مه جنگ
 [food]
 تغذیه
 [forbidden area]
 منطقه‌ی ممنوعه
 [Free]
-آزاد
-[free]
 آزاد
 [free]
 آزاد
@@ -422,8 +422,6 @@ home
 بیمارستان
 [host]
 میزبانی بازی
-[hp]
-سلامتی
 [hp]
 سلامتی
 [Human]
@@ -497,7 +495,7 @@ test
 [load map]
 بازکردن نقشه
 [load replay]
-
+بارگذاری بازپخش
 [load script]
 بازکردن برنامه
 [load]
@@ -509,7 +507,7 @@ test
 [login]
 واردشدن
 [look around]
-
+نگاه به اطراف
 [Lost : %0 has more prestige than you]
 باختی: %0 اعتبار بیشتری از تو دارد.
 [Lost : your colony is dead]
@@ -661,7 +659,7 @@ pause
 [player rating %0]
 نمره‌ی بازیکن: %0
 [players]
-
+بازیکنان
 [please wait]
 لطفاً صبر کن...
 [power]
@@ -687,7 +685,7 @@ print screen
 [quit the game]
 بیرون‌رفتن از بازی
 [quit the replay]
-
+خروج از بازپخش
 [quit]
 خروج
 [racetrack explanation 2]
@@ -727,7 +725,7 @@ print screen
 [Repeat your password :]
 رمزت را دوباره بنویس:
 [replay ended]
-
+بازپخش پایان یافت
 [restore default shortcuts]
 برگرداندن دکمه‌های پیشفرض
 [return to editor]
@@ -735,7 +733,7 @@ print screen
 [return to game]
 برگشتن به بازی
 [return to replay]
-
+بازگشت به بازپخش
 [return]
 enter
 [right meta]
@@ -757,7 +755,7 @@ windows راست
 [save map]
 ذخیره‌ی نقشه
 [save replay]
-
+ذخیره‌ی بازپخش
 [save script]
 ذخیره‌ی برنامه
 [Save]
@@ -849,9 +847,9 @@ shift-%0
 [shortcut explanation v]
 -برای صحبت با میکروفون، دکمه‌ی V را پایین نگه‌دار
 [show areas]
-
+نمایش نواحی
 [show flags]
-
+نمایش پرچم‌ها
 [show main menu]
 نشان‌دادن منوی اصلی
 [skin]
@@ -893,7 +891,7 @@ space
 [stone]
 مقدار سنگ
 [stonewall explanation 2]
-
+غیرفعال
 [stonewall explanation]
 برای دفاع از قلمرو
 [stonewall]
@@ -1005,7 +1003,7 @@ tab
 [the racetrack is under attack]
 به پیست مسابقه حمله شده!
 [the replays]
-
+بازپخش‌ها
 [the school is finished]
 ساخت مدرسه تمام شد.
 [the school is under attack]
@@ -1040,8 +1038,6 @@ tab
 نشان‌دادن/مخفی‌کردن صفحه‌ی منو
 [toggle recording voice]
 شروع ضبط صدا
-[toggle recording voice]
-شروع/قطع ضبط صدا
 [Total Attack Power]
 کل قدرت حمله
 [Total Defence Power]
@@ -1125,9 +1121,9 @@ tab
 [warriors]
 جنگجو
 [watch again]
-
+دوباره تماشا کن
 [watching:]
-
+در حال تماشا:
 [water]
 مقدار آب
 [Wheat]
@@ -1148,8 +1144,6 @@ tab
 کارگر
 [workers]
 کارگر
-[workers]
-کارگرها
 [working]
 درحال کار
 [wounded]
