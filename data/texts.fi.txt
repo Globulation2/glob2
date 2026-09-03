@@ -203,7 +203,7 @@ Keräämislippu
 [closed]
 Ei käytössä
 [combined vision]
-
+Yhdistetty näkyvyys
 [compile]
 Kääntämisskripti
 [compose]
@@ -306,6 +306,8 @@ Salasanasi:
 enter
 [equals]
 equals
+[ERROR_CANT_LOAD_MAP]
+Karttaa ei voitu ladata, koska tiedosto on vioittunut tai sen versio ei ole yhteensopiva.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -359,7 +361,7 @@ Lippuasetukset
 [flag settings explanation]
 Lipun säteen oletuspituus
 [fog of war]
-
+Sodan sumu
 [food]
 Ruoka
 [forbidden area]
@@ -368,8 +370,6 @@ Kielletty alue
 Ok
 [free]
 on vapaana
-[free]
-vapaana
 [from:]
 from:
 [fruit]
@@ -424,8 +424,6 @@ Sairaala
 Isännöi peli
 [hp]
 HP
-[hp]
-Kestopisteet
 [Human]
 Human
 [human]
@@ -497,7 +495,7 @@ Lataa tallennettu peli
 [load map]
 Avaa kartta
 [load replay]
-
+Lataa toisto
 [load script]
 Avaa skripti
 [load]
@@ -509,7 +507,7 @@ Aula
 [login]
 Kirjaudu sisään
 [look around]
-
+Katsele ympärillesi
 [Lost : %0 has more prestige than you]
 Hävisit: %0:lla on enemmän Mainetta, kuin sinulla
 [Lost : your colony is dead]
@@ -661,7 +659,7 @@ Player name
 [player rating %0]
 Pelaajan Sijoitus: %0
 [players]
-
+Pelaajat
 [please wait]
 Odota hetki
 [power]
@@ -687,7 +685,7 @@ Poistu editorista
 [quit the game]
 Poistu pelistä
 [quit the replay]
-
+Poistu toistosta
 [quit]
 Lopeta
 [racetrack explanation 2]
@@ -727,7 +725,7 @@ kertaa sama maisema
 [Repeat your password :]
 Toista salasanasi:
 [replay ended]
-
+Toisto päättyi
 [restore default shortcuts]
 Palauta oletuspikanäppäimet
 [return to editor]
@@ -735,7 +733,7 @@ Palaa editoriin
 [return to game]
 Palaa peliin
 [return to replay]
-
+Palaa toistoon
 [return]
 enter
 [right meta]
@@ -757,7 +755,7 @@ Tallenna peli
 [save map]
 Tallenna kartta
 [save replay]
-
+Tallenna toisto
 [save script]
 Tallenna skripti
 [Save]
@@ -849,9 +847,9 @@ Enter: lähetä chat-viesti
 [shortcut explanation v]
 V: pidä pohjassa puhuaksesi
 [show areas]
-
+Näytä alueet
 [show flags]
-
+Näytä liput
 [show main menu]
 Näytä päävalikko
 [skin]
@@ -1005,7 +1003,7 @@ Kilparata on valmis
 [the racetrack is under attack]
 Kilparatasi kimppuun hyökätään
 [the replays]
-
+Toistot
 [the school is finished]
 Koulu on valmis
 [the school is under attack]
@@ -1040,8 +1038,6 @@ Piirrä yksiköiden polut
 Toggle Menu Screen
 [toggle recording voice]
 Initiate Voice Recording
-[toggle recording voice]
-Käynnistä äänen nauhoitus
 [Total Attack Power]
 Total Attack Power
 [Total Defence Power]
@@ -1127,9 +1123,9 @@ Soturi
 [warriors]
 soturia
 [watch again]
-
+Katso uudelleen
 [watching:]
-
+Katsotaan:
 [water]
 vesi
 [Wheat]
@@ -1150,8 +1146,6 @@ Työläisten suhde
 Työläinen
 [workers]
 Työläistä
-[workers]
-työläistä
 [working]
 Työskentelemässä
 [wounded]

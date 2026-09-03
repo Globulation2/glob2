@@ -5,7 +5,7 @@
 [%0 units can't access building]
 %0 单位无法进入建筑物
 [%0 units can't access flag]
-
+%0 个单位无法到达旗帜
 [%0 units can't access fruit]
 %0 单位无法得到水果
 [%0 units can't access resource]
@@ -15,7 +15,7 @@
 [%0 units too far from building]
 %0 单位远离建筑
 [%0 units too far from flag]
-
+%0 个单位离旗帜太远
 [%0 units too far from fruit]
 %0 单位远离水果
 [%0 units too far from resource]
@@ -203,7 +203,7 @@ caps lock
 [closed]
 已关闭
 [combined vision]
-
+联合视野
 [compile]
 编译
 [compose]
@@ -306,6 +306,8 @@ ctrl - line
 输入
 [equals]
 相当于
+[ERROR_CANT_LOAD_MAP]
+无法加载地图，因为文件已损坏或版本不兼容。
 [escape]
 ESC 退出
 [explorationflag explanation 2]
@@ -359,14 +361,12 @@ f9
 [flag settings explanation]
 令旗设置说明
 [fog of war]
-
+战争迷雾
 [food]
 食物
 [forbidden area]
 禁区
 [Free]
-自由
-[free]
 自由
 [free]
 自由
@@ -424,8 +424,6 @@ home
 建立游戏
 [hp]
 HP
-[hp]
-生命值
 [Human]
 人类玩家
 [human]
@@ -479,11 +477,11 @@ zh-tw
 [Leave Game]
 离开游戏
 [left meta]
-
+左Meta键
 [left super]
-
+左Windows键
 [left]
-
+左
 [level]
 等级
 [levels]
@@ -495,7 +493,7 @@ zh-tw
 [load map]
 载入游戏
 [load replay]
-
+加载录像
 [load script]
 载入脚本
 [load]
@@ -507,7 +505,7 @@ zh-tw
 [login]
 登入
 [look around]
-
+环顾四周
 [Lost : %0 has more prestige than you]
 败: %0 的声望比你还高
 [Lost : your colony is dead]
@@ -577,7 +575,7 @@ meta %0
 [nick taken]
 我们非常抱歉但是你的选的名字已经在freenode上被用过，你将只能透过 YOG 交谈
 [no fullscreen]
-
+* 仅限窗口模式
 [No Hints]
 没有提示
 [no key]
@@ -659,7 +657,7 @@ OpenGL
 [player rating %0]
 玩家评价 %0
 [players]
-
+玩家
 [please wait]
 请稍等
 [power]
@@ -685,7 +683,7 @@ OpenGL
 [quit the game]
 离开游戏
 [quit the replay]
-
+退出录像
 [quit]
 离开
 [racetrack explanation 2]
@@ -725,7 +723,7 @@ OpenGL
 [Repeat your password :]
 重复你的密码：
 [replay ended]
-
+录像结束
 [restore default shortcuts]
 还原预设键盘快捷键
 [return to editor]
@@ -733,15 +731,15 @@ OpenGL
 [return to game]
 返回游戏
 [return to replay]
-
+返回录像
 [return]
 返回
 [right meta]
-
+右Meta键
 [right super]
-
+右Windows键
 [right]
-
+右
 [river diameter]
 河流宽度
 [river terrain]
@@ -755,7 +753,7 @@ OpenGL
 [save map]
 储存地图
 [save replay]
-
+保存录像
 [save script]
 保存脚本
 [Save]
@@ -847,9 +845,9 @@ Enter: 传送讯息
 [shortcut explanation v]
 V: 持键以传送讯息
 [show areas]
-
+显示区域
 [show flags]
-
+显示旗帜
 [show main menu]
 显示主菜单
 [skin]
@@ -1003,7 +1001,7 @@ tab
 [the racetrack is under attack]
 跑道正遭受攻击
 [the replays]
-
+录像
 [the school is finished]
 学校已完成
 [the school is under attack]
@@ -1049,13 +1047,13 @@ tab
 [Total]
 总共
 [tutorial text 1]
-
+欢迎来到《globulation 2》基础教程！本教程将涵盖从建造旅店、探索区域到消灭敌人的一切内容！这里有丰富实用的知识等着你！
 [tutorial text 2]
-
+既然你已经掌握了基础知识，是时候熟悉赛马场、泳池和学校等其他建筑了。
 [tutorial text 3]
-
+你已经做得很好了。现在让我们进入战士、训练营和升级的内容。
 [tutorial text 4]
-
+你快完成了。只剩下旗帜和攻击了。之后你就掌握了足够的知识，可以进入自定义游戏，并最终在线对战《globulation 2》最厉害的一些玩家。
 [tutorial]
 教学指导
 [Uncontrolled]
@@ -1121,9 +1119,9 @@ tab
 [warriors]
 士兵
 [watch again]
-
+再看一次
 [watching:]
-
+正在观看：
 [water]
 水
 [Wheat]
@@ -1141,8 +1139,6 @@ tab
 [Worker Ratio]
 工人比例
 [Worker]
-工人
-[workers]
 工人
 [workers]
 工人
