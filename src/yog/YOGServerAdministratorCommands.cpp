@@ -73,6 +73,11 @@ void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, co
 			admin->sendTextMessage("Could not parse mute duration: "+tokens[2], player);
 			return;
 		}
+		catch(const std::out_of_range&)
+		{
+			admin->sendTextMessage("Could not parse mute duration: "+tokens[2], player);
+			return;
+		}
 	}
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{

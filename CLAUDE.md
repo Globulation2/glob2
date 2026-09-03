@@ -20,7 +20,8 @@ scons -c
 scons release=1          # Optimized release build
 scons server=1           # Build YOG server only (no GUI/sound)
 scons --build=/tmp/out   # Out-of-source build
-scons mingw=true         # Windows cross-compile
+scons mingw=1            # Native Windows build (MSYS2/mingw-w64)
+scons mingwcross=1       # Cross-compile for Windows from Linux
 
 # Custom paths
 scons BINDIR=/path/bin INSTALLDIR=/path/share
@@ -32,7 +33,7 @@ DET_INIT=pattern scons -j16  # compile with -ftrivial-auto-var-init=pattern
 
 **`DET_INIT` — hunting uninitialized-read nondeterminism.** Valgrind/MSan don't work on modern macOS, so instead build twice (`DET_INIT=zero` and `DET_INIT=pattern`) and hammer one seed serially per build (run `MallocPreScribble=1 MallocScribble=1` to also scribble the heap). If each build is internally stable but the two disagree, an uninitialized stack read is confirmed; if a scribbled build is still unstable run-to-run, the cause is not uninitialized memory. Rebuild affected objects when toggling — the env var is invisible to scons's dependency tracking.
 
-**Dependencies:** SDL2, SDL2_net, SDL2_ttf, SDL2_image, libvorbis, libogg, speex, OpenGL, GLU, libepoxy, Boost (thread, date_time, system), zlib, fribidi, pcre. Optional: portaudio (voice chat). See `vcpkg.json` for the full list.
+**Dependencies:** SDL2, SDL2_net, SDL2_ttf, SDL2_image, libvorbis, libogg, speex, OpenGL, GLU, libepoxy, Boost (date_time; system is header-only from 1.69 on and only linked when present), zlib, fribidi, pcre. Optional: portaudio (voice chat). See `vcpkg.json` for the full list.
 
 **Server build gotcha:** Always build the YOG server with `scons server=1` — never with a bare `scons build/src/glob2-server`. The `server=1` flag both selects the server target and defines `YOG_SERVER_ONLY` (which strips out GUI/audio code via `#ifndef` guards) and switches `libgag` to its stripped `libgag_server.a` variant. Without the flag, the .o files are compiled with the full GUI code path but link against the stripped libgag, producing dozens of misleading "undefined symbol" errors that look like fundamental rot. SCons also caches the option in `options_cache.py`, so once you've run `server=1`, subsequent `scons` invocations stay in server mode — pass `server=0` explicitly to switch back.
 
@@ -56,10 +57,6 @@ See [`test/README.md`](test/README.md) for the **Map subclass test pattern** —
 ## Build System Internals
 
 SCons-based. `SConstruct` is the main build script with platform detection (Linux, Darwin, Windows/MinGW). Library checks are done via custom configure functions in `scons/`. Build options are cached in `options_cache.py`.
-
-## CI
-
-Travis CI runs Docker-based builds on Ubuntu 18.04–21.04. See `.travis.yml` in the repo root.
 
 ## Architecture
 
