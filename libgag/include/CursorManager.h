@@ -6,8 +6,6 @@
 #include <vector>
 #include "SDL.h"
 
-struct SDL_Cursor;
-
 namespace GAGCore
 {
 	class Sprite;
