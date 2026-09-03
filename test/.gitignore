@@ -1,7 +1,8 @@
 # Build artifacts produced by test/SConstruct — never commit these.
 
-# Object files and scons bookkeeping
+# Object files, static libraries, and scons bookkeeping
 *.o
+*.a
 *.dblite
 .sconsign.dblite
 .sconf_temp/

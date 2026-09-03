@@ -32,6 +32,22 @@ elif sys.platform == "darwin":
 else:
   env.Append(CCFLAGS = Split('/EHsc /MD /GR'))
 
+# Server-mode libgag, built here rather than picked up from ../build: the main
+# scons only emits libgagserver.a under `server=1`, so a plain client build
+# leaves the harnesses below unlinkable. YOG_SERVER_ONLY strips the OpenGL /
+# SDL_ttf / SDL_image / fribidi surface the harnesses never touch.
+gag_env = env.Clone()
+gag_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  gag_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+gag_server = gag_env.StaticLibrary('gagserver', [
+  gag_env.Object('gagserver-' + name + '.o', '../libgag/src/' + name + '.cpp')
+  for name in Split("""
+    BinaryStream FileManager FormatableString Stream StreamBackend
+    StreamFilter StringTable TextStream Toolkit
+  """)])
+
 sources = Split("""
 TestsRunner.cpp
 
@@ -124,16 +140,13 @@ env.Program( target = 'WinningConditionsHarness', source = harness_sources )
 # Verifies that load() correctly distinguishes valid campaigns from missing,
 # empty, garbage, and bogus-version files. Pre-fix tree silently returns true
 # for the four broken cases; post-fix tree returns false. Self-contained:
-# synthesizes its own /tmp fixture files. Links libgag.a (built by the main
-# scons) for FileManager / TextStream / Toolkit; a small stubs file covers
-# the unused glob2NameToFilename symbol that Campaign::save references.
+# synthesizes its own /tmp fixture files. Links the server-mode libgag for
+# FileManager / Toolkit / TextStream / StreamBackend; a small stubs file
+# covers the unused glob2NameToFilename symbol that Campaign::save
+# references.
 campaign_env = env.Clone()
-# Use the server-mode libgag (libgag_server.a) so we don't drag in OpenGL /
-# SDL_ttf / SDL_image / fribidi etc. Campaign loading only needs FileManager
-# / Toolkit / TextStream / StreamBackend, all of which are server-safe.
 campaign_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
-campaign_env.Append(LIBPATH = ['../build/libgag/src'])
-campaign_env.Append(LIBS = ['gag_server', 'z'])
+campaign_env.Append(LIBS = [gag_server, 'z'])
 if sys.platform == "darwin" or sys.platform.startswith("linux"):
   campaign_env.ParseConfig("pkg-config sdl2 --cflags --libs")
 
@@ -151,7 +164,7 @@ campaign_env.Program( target = 'CampaignLoadHarness', source = campaign_sources 
 # proves the old `campaign.getMap(displayedIndex)` algorithm picks the
 # wrong map, and proves `Campaign::findUnlockedMap(name)` picks the right
 # one. Pre-fix tree fails to LINK (helper does not exist); post-fix tree
-# builds and exits 0. Reuses the same env / libgag_server.a / stubs as
+# builds and exits 0. Reuses the same env / libgagserver.a / stubs as
 # CampaignLoadHarness because Campaign.cpp's link surface is identical.
 campaign_sel_sources = Split("""
 CampaignSelectionHarness.cpp
@@ -164,7 +177,7 @@ campaign_env.Program( target = 'CampaignSelectionHarness', source = campaign_sel
 
 # Standalone regression harness for the Campaign map-list bounds fixes:
 # removeMap ignoring out-of-range indices and getMap failing deterministically
-# instead of invoking UB. Reuses the same env / libgag_server.a / stubs as the
+# instead of invoking UB. Reuses the same env / libgagserver.a / stubs as the
 # other Campaign harnesses because Campaign.cpp's link surface is identical.
 campaign_bounds_sources = Split("""
 CampaignBoundsHarness.cpp
@@ -182,7 +195,7 @@ campaign_env.Program( target = 'CampaignBoundsHarness', source = campaign_bounds
 # empty-description behaviour for unreadable files, and (by rewriting the
 # fixture between lookups) that repeated lookups don't touch the disk.
 # Pre-fix tree fails to LINK (the cache class does not exist). Reuses the
-# same env / libgag_server.a / stubs as the other Campaign harnesses.
+# same env / libgagserver.a / stubs as the other Campaign harnesses.
 campaign_desc_sources = Split("""
 CampaignDescriptionCacheHarness.cpp
 CampaignLoadTestStubs.cpp
@@ -220,11 +233,10 @@ alterate_env.Program( target = 'OrderAlterateAreaTest', source = alterate_objs )
 # escape, while callers — loadReplay / retrieveOrder / getNetMessage — only
 # catch std::ios_base::failure). The harness stubs Order::getOrder so it
 # doesn't need to link the full Order class hierarchy; it just needs
-# OrderMessages.cpp + libgag_server.a (for BinaryStream + MemoryStreamBackend).
+# OrderMessages.cpp + the server-mode libgag (BinaryStream + MemoryStreamBackend).
 netsend_env = env.Clone()
 netsend_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
-netsend_env.Append(LIBPATH = ['../build/libgag/src'])
-netsend_env.Append(LIBS = ['gag_server', 'z'])
+netsend_env.Append(LIBS = [gag_server, 'z'])
 if sys.platform == "darwin" or sys.platform.startswith("linux"):
   netsend_env.ParseConfig("pkg-config sdl2 --cflags --libs")
 
@@ -240,12 +252,11 @@ netsend_env.Program( target = 'NetSendOrderDecodeTest', source = netsend_objs )
 # input). Exercises WinningCondition::loadWinningConditions -- the shared
 # read loop both GameHeader loaders now go through -- against a round-trip,
 # an unknown type tag, and a truncated stream. Reuses the harness stubs for
-# MapHeader/SGSL and links libgag_server.a for BinaryStream +
+# MapHeader/SGSL and links the server-mode libgag for BinaryStream +
 # MemoryStreamBackend. Distinct object names: pkg-config sdl2 cflags differ
 # from the main env's compile action.
 wcdecode_env = env.Clone()
-wcdecode_env.Append(LIBPATH = ['../build/libgag/src'])
-wcdecode_env.Append(LIBS = ['gag_server', 'z'])
+wcdecode_env.Append(LIBS = [gag_server, 'z'])
 if sys.platform == "darwin" or sys.platform.startswith("linux"):
   wcdecode_env.ParseConfig("pkg-config sdl2 --cflags --libs")
 
@@ -276,7 +287,7 @@ wcdecode_env.Program( target = 'WinningConditionPrestigeToggleTest', source = pr
 # ballistic-arc rendering of in-flight bullets after a reload). Checks a
 # version-85 round-trip and the pre-85 default (ticksInitial = ticksLeft).
 # Bullet.cpp only needs Stream, so it reuses the wcdecode env's
-# libgag_server.a link surface. Distinct object name for Bullet.cpp because
+# libgagserver.a link surface. Distinct object name for Bullet.cpp because
 # the main build compiles it with different flags.
 bullet_objs = [
   wcdecode_env.Object('BulletSaveLoadTest.o', 'BulletSaveLoadTest.cpp'),
@@ -290,7 +301,7 @@ wcdecode_env.Program( target = 'BulletSaveLoadTest', source = bullet_objs )
 # identifiers above 0xFFFF). Checks a version-86 round-trip with a wide
 # playerID and the pre-86 Uint16 wire layout. BasePlayer.cpp only needs
 # Stream plus inline Team helpers, so it reuses the wcdecode env's
-# libgag_server.a link surface. Distinct object name for BasePlayer.cpp
+# libgagserver.a link surface. Distinct object name for BasePlayer.cpp
 # because the main build compiles it with different flags.
 baseplayer_objs = [
   wcdecode_env.Object('BasePlayerSaveLoadTest.o', 'BasePlayerSaveLoadTest.cpp'),
@@ -304,7 +315,7 @@ wcdecode_env.Program( target = 'BasePlayerSaveLoadTest', source = baseplayer_obj
 # readLeaveSection(size_t count), popping `i` nesting levels instead of 1 —
 # masked by BinaryInputStream's no-op but assert-fatal on TextInputStream).
 # Checks full and player-info round-trips through TextOutputStream /
-# TextInputStream. Reuses the wcdecode env's libgag_server.a link surface
+# TextInputStream. Reuses the wcdecode env's libgagserver.a link surface
 # plus the WinningConditions objects (GameHeader saves/loads winning
 # conditions) and the BasePlayer object. Distinct object name for
 # GameHeader.cpp because the main build compiles it with different flags.
@@ -343,7 +354,7 @@ wcdecode_env.Program( target = 'GameHeaderDefaultAlliancesTest',
 # alpha, so save->load->save drifted when alpha was non-opaque). Checks
 # that a round-trip pins alpha opaque and that the byte stream is stable.
 # Race is stubbed in the test file (only reached for pre-73 streams), so
-# BaseTeam.cpp reuses the wcdecode env's libgag_server.a link surface.
+# BaseTeam.cpp reuses the wcdecode env's libgagserver.a link surface.
 # Distinct object name for BaseTeam.cpp because the main build compiles
 # it with different flags.
 baseteam_objs = [
@@ -358,7 +369,7 @@ wcdecode_env.Program( target = 'BaseTeamSaveLoadTest', source = baseteam_objs )
 # used to invoke UB on out-of-range indices, and scriptNumber (an int in
 # memory) is serialized as Uint8, so the entry points clamp to the [0..255]
 # wire domain. GameObjectives.cpp only needs Stream, so it reuses the
-# wcdecode env's libgag_server.a link surface. Distinct object name because
+# wcdecode env's libgagserver.a link surface. Distinct object name because
 # the main build compiles it with different flags.
 gameobjectives_objs = [
   wcdecode_env.Object('GameObjectivesTest.o', 'GameObjectivesTest.cpp'),
@@ -370,7 +381,7 @@ wcdecode_env.Program( target = 'GameObjectivesTest', source = gameobjectives_obj
 # Standalone regression harness for GameHints scriptNumber serialization:
 # the value is an int in memory but serialized as Uint8, so the entry points
 # clamp to the [0..255] wire domain, mirroring GameObjectives. GameHints.cpp
-# only needs Stream, so it reuses the wcdecode env's libgag_server.a link
+# only needs Stream, so it reuses the wcdecode env's libgagserver.a link
 # surface. Distinct object name because the main build compiles it with
 # different flags.
 gamehints_objs = [
@@ -388,7 +399,7 @@ wcdecode_env.Program( target = 'GameHintsTest', source = gamehints_objs )
 # and version floor/ceiling rejection. GameGUI and the Order hierarchy are
 # stubbed in the test file (same trick as NetSendOrderDecodeTest.cpp);
 # reuses the YOG_SERVER_ONLY OrderMessages object and the wcdecode env's
-# libgag_server.a link surface. Distinct object names for Replay*.cpp
+# libgagserver.a link surface. Distinct object names for Replay*.cpp
 # because the main build compiles them with different flags.
 replay_objs = [
   wcdecode_env.Object('ReplayStepCounterTest.o', 'ReplayStepCounterTest.cpp'),
