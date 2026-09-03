@@ -13,12 +13,9 @@ namespace GAGCore
 	{
 		nextType = currentType = CURSOR_NORMAL;
 		currentFrame = 0;
-		packedDrawColor = 0;
-		activeCursor = NULL;
+		cacheScale = 0.0f;
 		activeType = CURSOR_NORMAL;
 		activeFrame = 0;
-		activePackedColor = 0;
-		activeScale = 0.0f;
 		activeValid = false;
 	}
 
@@ -29,12 +26,13 @@ namespace GAGCore
 
 	void CursorManager::releaseNativeCursor(void)
 	{
-		if (activeCursor)
-		{
-			SDL_FreeCursor(activeCursor);
-			activeCursor = NULL;
-			activeValid = false;
-		}
+		// freeing the installed cursor makes SDL revert to the default one
+		for (auto& frames : nativeCursors)
+			for (SDL_Cursor *cursor : frames)
+				if (cursor)
+					SDL_FreeCursor(cursor);
+		nativeCursors.clear();
+		activeValid = false;
 	}
 
 	void CursorManager::load(void)
@@ -53,7 +51,6 @@ namespace GAGCore
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/wait"));
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/mark"));
 		setDefaultColor();
-		activeValid = false;
 	}
 	
 	void CursorManager::nextTypeFromMouse(DrawableSurface *ds, int x, int y, bool button)
@@ -114,7 +111,8 @@ namespace GAGCore
 		{
 			cursors[i]->setBaseColor(color);
 		}
-		packedDrawColor = color.pack();
+		// the cached cursors carry the old tint
+		releaseNativeCursor();
 	}
 
 
@@ -126,27 +124,13 @@ namespace GAGCore
 
 
 
-	void CursorManager::update(float scale)
+	SDL_Cursor *CursorManager::createNativeCursor(CursorType type, int frame, float scale)
 	{
-		if (currentFrame >= cursors[static_cast<int>(currentType)]->getFrameCount())
-		{
-			currentType = nextType;
-			currentFrame = 0;
-		}
-
-		// nothing to do if the native cursor already matches this state
-		if (activeValid && activeType == currentType && activeFrame == currentFrame
-			&& activePackedColor == packedDrawColor && activeScale == scale)
-		{
-			currentFrame++;
-			return;
-		}
-
-		Sprite *sprite = cursors[static_cast<int>(currentType)];
-		int w = sprite->getW(currentFrame);
-		int h = sprite->getH(currentFrame);
-		DrawableSurface frame(w, h);
-		frame.drawSprite(0, 0, sprite, currentFrame);
+		Sprite *sprite = cursors[static_cast<int>(type)];
+		int w = sprite->getW(frame);
+		int h = sprite->getH(frame);
+		DrawableSurface image(w, h);
+		image.drawSprite(0, 0, sprite, frame);
 
 		// A native cursor renders at its own pixel size regardless of window
 		// scaling, unlike the old blit-into-the-logical-framebuffer approach
@@ -155,7 +139,7 @@ namespace GAGCore
 		// the rest of a scaled-up window (nearest-neighbour, matching how the
 		// rest of the engine scales -- see DrawableSurface.cpp's GL upload
 		// and GraphicContext::nextFrame()'s software SDL_BlitScaled).
-		SDL_Surface *cursorSurface = frame.getSDLSurface();
+		SDL_Surface *cursorSurface = image.getSDLSurface();
 		std::unique_ptr<DrawableSurface> scaled;
 		int sw = w, sh = h;
 		if (scale > 0.0f && scale != 1.0f)
@@ -168,18 +152,41 @@ namespace GAGCore
 			SDL_BlitScaled(cursorSurface, NULL, scaled->getSDLSurface(), &dst);
 			cursorSurface = scaled->getSDLSurface();
 		}
+		return SDL_CreateColorCursor(cursorSurface, sw>>1, sh>>1);
+	}
 
-		SDL_Cursor *newCursor = SDL_CreateColorCursor(cursorSurface, sw>>1, sh>>1);
-		if (newCursor)
+	void CursorManager::update(float scale)
+	{
+		if (currentFrame >= cursors[static_cast<int>(currentType)]->getFrameCount())
 		{
-			SDL_SetCursor(newCursor);
-			if (activeCursor)
-				SDL_FreeCursor(activeCursor);
-			activeCursor = newCursor;
+			currentType = nextType;
+			currentFrame = 0;
+		}
+		if (scale != cacheScale)
+		{
+			releaseNativeCursor();
+			cacheScale = scale;
+		}
+		// nothing to do if the installed cursor already matches this frame
+		if (activeValid && activeType == currentType && activeFrame == currentFrame)
+		{
+			currentFrame++;
+			return;
+		}
+
+		// the (type, frame) space is small, so every native cursor is built once and kept
+		if (nativeCursors.size() != cursors.size())
+			nativeCursors.assign(cursors.size(), std::vector<SDL_Cursor *>());
+		std::vector<SDL_Cursor *>& frames = nativeCursors[static_cast<int>(currentType)];
+		if (frames.size() < static_cast<size_t>(currentFrame + 1))
+			frames.resize(currentFrame + 1, NULL);
+		if (!frames[currentFrame])
+			frames[currentFrame] = createNativeCursor(currentType, currentFrame, scale);
+		if (frames[currentFrame])
+		{
+			SDL_SetCursor(frames[currentFrame]);
 			activeType = currentType;
 			activeFrame = currentFrame;
-			activePackedColor = packedDrawColor;
-			activeScale = scale;
 			activeValid = true;
 		}
 		currentFrame++;
