@@ -490,6 +490,8 @@ namespace GAGCore
 				// cursorManager installs its cursors as native ones (see
 				// CursorManager::update()), so the system cursor stays on
 				cursorManager.load();
+			else
+				cursorManager.releaseNativeCursor();
 			SDL_ShowCursor(SDL_ENABLE);
 
 			if (verbose)
