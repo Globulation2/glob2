@@ -4,6 +4,8 @@
 #include <CursorManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
+#include <algorithm>
+#include <memory>
 
 namespace GAGCore
 {
@@ -11,8 +13,30 @@ namespace GAGCore
 	{
 		nextType = currentType = CURSOR_NORMAL;
 		currentFrame = 0;
+		packedDrawColor = 0;
+		activeCursor = NULL;
+		activeType = CURSOR_NORMAL;
+		activeFrame = 0;
+		activePackedColor = 0;
+		activeScale = 0.0f;
+		activeValid = false;
 	}
-	
+
+	CursorManager::~CursorManager()
+	{
+		releaseNativeCursor();
+	}
+
+	void CursorManager::releaseNativeCursor(void)
+	{
+		if (activeCursor)
+		{
+			SDL_FreeCursor(activeCursor);
+			activeCursor = NULL;
+			activeValid = false;
+		}
+	}
+
 	void CursorManager::load(void)
 	{
 		cursors.clear();
@@ -29,6 +53,7 @@ namespace GAGCore
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/wait"));
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/mark"));
 		setDefaultColor();
+		activeValid = false;
 	}
 	
 	void CursorManager::nextTypeFromMouse(DrawableSurface *ds, int x, int y, bool button)
@@ -89,26 +114,74 @@ namespace GAGCore
 		{
 			cursors[i]->setBaseColor(color);
 		}
+		packedDrawColor = color.pack();
 	}
-	
-	
-	
+
+
+
 	void CursorManager::setDefaultColor()
 	{
 		setDrawColor(Color(255, 0, 0));
 	}
-	
-	
-	
-	void CursorManager::draw(DrawableSurface *ds, int x, int y)
+
+
+
+	void CursorManager::update(float scale)
 	{
 		if (currentFrame >= cursors[static_cast<int>(currentType)]->getFrameCount())
 		{
 			currentType = nextType;
 			currentFrame = 0;
 		}
+
+		// nothing to do if the native cursor already matches this state
+		if (activeValid && activeType == currentType && activeFrame == currentFrame
+			&& activePackedColor == packedDrawColor && activeScale == scale)
+		{
+			currentFrame++;
+			return;
+		}
+
 		Sprite *sprite = cursors[static_cast<int>(currentType)];
-		ds->drawSprite(x-(sprite->getW(currentFrame)>>1), y-(sprite->getH(currentFrame)>>1), sprite, currentFrame);
+		int w = sprite->getW(currentFrame);
+		int h = sprite->getH(currentFrame);
+		DrawableSurface frame(w, h);
+		frame.drawSprite(0, 0, sprite, currentFrame);
+
+		// A native cursor renders at its own pixel size regardless of window
+		// scaling, unlike the old blit-into-the-logical-framebuffer approach
+		// which inherited GraphicContext::nextFrame()'s scaled blit for free.
+		// Scale the composited image ourselves so the cursor still matches
+		// the rest of a scaled-up window (nearest-neighbour, matching how the
+		// rest of the engine scales -- see DrawableSurface.cpp's GL upload
+		// and GraphicContext::nextFrame()'s software SDL_BlitScaled).
+		SDL_Surface *cursorSurface = frame.getSDLSurface();
+		std::unique_ptr<DrawableSurface> scaled;
+		int sw = w, sh = h;
+		if (scale > 0.0f && scale != 1.0f)
+		{
+			sw = std::max(1, static_cast<int>(w * scale + 0.5f));
+			sh = std::max(1, static_cast<int>(h * scale + 0.5f));
+			scaled = std::make_unique<DrawableSurface>(sw, sh);
+			SDL_SetSurfaceBlendMode(cursorSurface, SDL_BLENDMODE_NONE);
+			SDL_Rect dst = {0, 0, sw, sh};
+			SDL_BlitScaled(cursorSurface, NULL, scaled->getSDLSurface(), &dst);
+			cursorSurface = scaled->getSDLSurface();
+		}
+
+		SDL_Cursor *newCursor = SDL_CreateColorCursor(cursorSurface, sw>>1, sh>>1);
+		if (newCursor)
+		{
+			SDL_SetCursor(newCursor);
+			if (activeCursor)
+				SDL_FreeCursor(activeCursor);
+			activeCursor = newCursor;
+			activeType = currentType;
+			activeFrame = currentFrame;
+			activePackedColor = packedDrawColor;
+			activeScale = scale;
+			activeValid = true;
+		}
 		currentFrame++;
 	}
 }

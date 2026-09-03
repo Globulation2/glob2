@@ -241,6 +241,9 @@ namespace GAGCore
 
 	GraphicContext::~GraphicContext(void)
 	{
+		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
+		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
+		cursorManager.releaseNativeCursor();
 		freeOwnedSurface();
 		TTF_Quit();
 		SDL_Quit();
@@ -484,14 +487,10 @@ namespace GAGCore
 
 			setClipRect();
 			if (flags & CUSTOMCURSOR)
-			{
-				// disable system cursor
-				SDL_ShowCursor(SDL_DISABLE);
-				// load custom cursors
+				// cursorManager installs its cursors as native ones (see
+				// CursorManager::update()), so the system cursor stays on
 				cursorManager.load();
-			}
-			else
-				SDL_ShowCursor(SDL_ENABLE);
+			SDL_ShowCursor(SDL_ENABLE);
 
 			if (verbose)
 				fprintf(stderr,
@@ -526,8 +525,7 @@ namespace GAGCore
 				unsigned b = SDL_GetMouseState(&mx, &my);
 				translateMouseCoordinates(mx, my);
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
-				setClipRect();
-				cursorManager.draw(this, mx, my);
+				cursorManager.update(drawableScale());
 			}
 
 
