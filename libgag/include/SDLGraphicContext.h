@@ -229,6 +229,8 @@ namespace GAGCore
 		// accessors
 		virtual int getW(void) { if (textureInfo) return textureInfo->w; return sdlsurface->w; }
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
+		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
+		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
 		virtual int getTexY(void) { if (textureInfo) { return textureInfo->texY; } return 0; }

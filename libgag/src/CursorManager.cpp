@@ -27,8 +27,29 @@ namespace GAGCore
 	{
 		nextType = currentType = CURSOR_NORMAL;
 		currentFrame = 0;
+		packedDrawColor = 0;
+		activeCursor = NULL;
+		activeType = CURSOR_NORMAL;
+		activeFrame = 0;
+		activePackedColor = 0;
+		activeValid = false;
 	}
-	
+
+	CursorManager::~CursorManager()
+	{
+		releaseNativeCursor();
+	}
+
+	void CursorManager::releaseNativeCursor(void)
+	{
+		if (activeCursor)
+		{
+			SDL_FreeCursor(activeCursor);
+			activeCursor = NULL;
+			activeValid = false;
+		}
+	}
+
 	void CursorManager::load(void)
 	{
 		cursors.clear();
@@ -45,6 +66,7 @@ namespace GAGCore
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/wait"));
 		cursors.push_back(Toolkit::getSprite("data/gfx/cursor/mark"));
 		setDefaultColor();
+		activeValid = false;
 	}
 	
 	void CursorManager::nextTypeFromMouse(DrawableSurface *ds, int x, int y, bool button)
@@ -105,26 +127,51 @@ namespace GAGCore
 		{
 			cursors[i]->setBaseColor(color);
 		}
+		packedDrawColor = color.pack();
 	}
-	
-	
-	
+
+
+
 	void CursorManager::setDefaultColor()
 	{
 		setDrawColor(Color(255, 0, 0));
 	}
-	
-	
-	
-	void CursorManager::draw(DrawableSurface *ds, int x, int y)
+
+
+
+	void CursorManager::update(void)
 	{
 		if (currentFrame >= cursors[static_cast<int>(currentType)]->getFrameCount())
 		{
 			currentType = nextType;
 			currentFrame = 0;
 		}
+
+		// nothing to do if the native cursor already matches this state
+		if (activeValid && activeType == currentType && activeFrame == currentFrame
+			&& activePackedColor == packedDrawColor)
+		{
+			currentFrame++;
+			return;
+		}
+
 		Sprite *sprite = cursors[static_cast<int>(currentType)];
-		ds->drawSprite(x-(sprite->getW(currentFrame)>>1), y-(sprite->getH(currentFrame)>>1), sprite, currentFrame);
+		int w = sprite->getW(currentFrame);
+		int h = sprite->getH(currentFrame);
+		DrawableSurface frame(w, h);
+		frame.drawSprite(0, 0, sprite, currentFrame);
+		SDL_Cursor *newCursor = SDL_CreateColorCursor(frame.getSDLSurface(), w>>1, h>>1);
+		if (newCursor)
+		{
+			SDL_SetCursor(newCursor);
+			if (activeCursor)
+				SDL_FreeCursor(activeCursor);
+			activeCursor = newCursor;
+			activeType = currentType;
+			activeFrame = currentFrame;
+			activePackedColor = packedDrawColor;
+			activeValid = true;
+		}
 		currentFrame++;
 	}
 }

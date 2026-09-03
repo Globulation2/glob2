@@ -21,13 +21,16 @@
 #define __CURSOR_MANAGER_H
 
 #include <vector>
+#include "SDL.h"
+
+struct SDL_Cursor;
 
 namespace GAGCore
 {
 	class Sprite;
 	class DrawableSurface;
 	struct Color;
-	
+
 	//! A support class to manage cursors
 	class CursorManager
 	{
@@ -51,7 +54,7 @@ namespace GAGCore
 			CURSOR_MARK = 11,
 			CURSOR_COUNT
 		};
-	
+
 	protected:
 		//! a vector of loaded cursors
 		std::vector<Sprite *> cursors;
@@ -61,10 +64,25 @@ namespace GAGCore
 		CursorType nextType;
 		//! the current frame of cursor sprite.
 		int currentFrame;
-		
+		//! draw color of the cursors, packed so update() can tell it changed
+		//! without needing Color's full definition here
+		Uint32 packedDrawColor;
+		//! the native cursor currently installed via SDL_SetCursor, owned by us
+		SDL_Cursor *activeCursor;
+		//! (type, frame, color) that activeCursor was built from
+		CursorType activeType;
+		int activeFrame;
+		Uint32 activePackedColor;
+		bool activeValid;
+
 	public:
 		//! Constructor, set default values
 		CursorManager();
+		//! Frees the native cursor, if any
+		~CursorManager();
+		//! Releases the native cursor, if any. Must be called before SDL_Quit();
+		//! ~CursorManager() runs too late for that (after ~GraphicContext()'s body).
+		void releaseNativeCursor(void);
 		//! Load the cursor sprites
 		void load(void);
 		//! Select the next type given the mouse position
@@ -75,8 +93,10 @@ namespace GAGCore
 		void setDrawColor(const Color& color);
 		//! Sets the default draw color
 		void setDefaultColor();
-		//! Draw the current cursor with its current frame at a given pos
-		void draw(DrawableSurface *ds, int x, int y);
+		//! Advance the cursor animation and, if the type/frame/color changed,
+		//! install a native cursor for it via SDL_SetCursor. The OS then moves
+		//! and composites it independent of our own render/tick rate.
+		void update(void);
 	};
 }
 
