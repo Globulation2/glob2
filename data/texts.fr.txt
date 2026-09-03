@@ -765,7 +765,7 @@ Sauvegarder jeu
 [save map]
 Sauvegarder la carte
 [save replay]
-Enregistrer le replay
+Sauvegarder replay
 [save script]
 Sauvegarder le script
 [Save]
@@ -857,9 +857,9 @@ touche enter : envoyer un message
 [shortcut explanation v]
 touche v : presser pour parler
 [show areas]
-Afficher les zones
+Zones
 [show flags]
-Afficher les drapeaux
+Drapeaux
 [show main menu]
 Montrer le menu principal
 [skin]
@@ -1131,9 +1131,9 @@ Guerrière
 [warriors]
 guerrières
 [watch again]
-Regarder à nouveau
+Revoir
 [watching:]
-En train de regarder :
+Regarde :
 [water]
 Eau
 [Wheat]

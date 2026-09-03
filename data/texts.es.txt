@@ -667,7 +667,7 @@ poder
 [press space]
 Presione la barra espaciadora para continuar.
 [Prestige Score]
-Puntuación de prestigio
+Prestigio
 [Prestige Win Enabled]
 Victoria por Prestigio Activado
 [Prestige]
@@ -727,7 +727,7 @@ veces el mismo camino
 [Repeat your password :]
 Repite tu contraseña:
 [replay ended]
-Repetición finalizada
+Fin de repetición
 [restore default shortcuts]
 Restaurar Atajos del Teclado
 [return to editor]
@@ -1005,7 +1005,7 @@ La construcción del circuito de entrenamiento ha finalizado
 [the racetrack is under attack]
 El circuito de entrenamiento está siendo atacado
 [the replays]
-Las repeticiones
+Repeticiones
 [the school is finished]
 La construcción de la escuela ha finalizado
 [the school is under attack]

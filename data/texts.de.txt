@@ -847,9 +847,9 @@ Enter: Chatnachricht senden
 [shortcut explanation v]
 V: gedrückt halten, um zu sprechen
 [show areas]
-Bereiche anzeigen
+Bereiche
 [show flags]
-Flaggen anzeigen
+Flaggen
 [show main menu]
 Zeige Hauptmenü
 [skin]
