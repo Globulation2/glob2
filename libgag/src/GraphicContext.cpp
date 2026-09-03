@@ -241,12 +241,20 @@ namespace GAGCore
 
 	GraphicContext::~GraphicContext(void)
 	{
+		freeDummySurface();
 		TTF_Quit();
 		SDL_Quit();
-		sdlsurface = NULL;
 
 		if (verbose)
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
+	}
+
+	void GraphicContext::freeDummySurface(void)
+	{
+		// SDL owns the window surface used outside GPU mode; the GPU-mode dummy is ours
+		if (sdlsurface && (optionFlags & USEGPU))
+			SDL_FreeSurface(sdlsurface);
+		sdlsurface = NULL;
 	}
 
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
@@ -264,6 +272,10 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Screen height %d is too small, set to min %d\n", h, minH);
 			h = minH;
 		}
+
+		// releases the previous mode's surface, so it has to run while optionFlags
+		// still describes that mode
+		freeDummySurface();
 
 		// set flags
 		optionFlags = flags;
