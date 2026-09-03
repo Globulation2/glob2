@@ -19,7 +19,7 @@
 #ifndef YOGClientGameListManager_h
 #define YOGClientGameListManager_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include <list>
 #include "YOGGameInfo.h"
 
@@ -35,7 +35,7 @@ public:
 	YOGClientGameListManager(YOGClient* client);
 
 	///Recieves an incoming message
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void recieveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This will return the list of games on hosted on the server.
 	const std::list<YOGGameInfo>& getGameList() const;

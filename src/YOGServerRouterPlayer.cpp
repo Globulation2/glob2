@@ -23,23 +23,23 @@
 #include "YOGServerGameRouter.h"
 #include "YOGServerRouter.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-YOGServerRouterPlayer::YOGServerRouterPlayer(boost::shared_ptr<NetConnection> connection, YOGServerRouter* router)
+YOGServerRouterPlayer::YOGServerRouterPlayer(std::shared_ptr<NetConnection> connection, YOGServerRouter* router)
 	: connection(connection), router(router), isAdmin(false)
 {
 }
 
 
 
-void YOGServerRouterPlayer::setPointer(boost::weak_ptr<YOGServerRouterPlayer> npointer)
+void YOGServerRouterPlayer::setPointer(std::weak_ptr<YOGServerRouterPlayer> npointer)
 {
 	pointer = npointer;
 }
 
 
 
-void YOGServerRouterPlayer::sendNetMessage(boost::shared_ptr<NetMessage> message)
+void YOGServerRouterPlayer::sendNetMessage(std::shared_ptr<NetMessage> message)
 {
 	connection->sendMessage(message);
 }
@@ -67,7 +67,7 @@ void YOGServerRouterPlayer::update()
 		{
 			shared_ptr<NetSetGameInRouter> info = static_pointer_cast<NetSetGameInRouter>(message);
 			game = router->getGame(info->getGameID());
-			game->addPlayer(boost::shared_ptr<YOGServerRouterPlayer>(pointer));
+			game->addPlayer(std::shared_ptr<YOGServerRouterPlayer>(pointer));
 		}
 		else if(type==MNetRouterAdministratorLogin)
 		{
@@ -76,12 +76,12 @@ void YOGServerRouterPlayer::update()
 			if(router->isAdministratorPasswordCorrect(password))
 			{
 				isAdmin=true;
-				boost::shared_ptr<NetRouterAdministratorLoginAccepted> m = boost::shared_ptr<NetRouterAdministratorLoginAccepted>(new NetRouterAdministratorLoginAccepted);
+				std::shared_ptr<NetRouterAdministratorLoginAccepted> m = std::shared_ptr<NetRouterAdministratorLoginAccepted>(new NetRouterAdministratorLoginAccepted);
 				sendNetMessage(m);
 			}
 			else
 			{
-				boost::shared_ptr<NetRouterAdministratorLoginRefused> m = boost::shared_ptr<NetRouterAdministratorLoginRefused>(new NetRouterAdministratorLoginRefused(YOGRouterLoginWrongPassword));
+				std::shared_ptr<NetRouterAdministratorLoginRefused> m = std::shared_ptr<NetRouterAdministratorLoginRefused>(new NetRouterAdministratorLoginRefused(YOGRouterLoginWrongPassword));
 				sendNetMessage(m);
 			}
 		}

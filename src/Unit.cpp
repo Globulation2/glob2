@@ -489,7 +489,7 @@ void Unit::syncStep(void)
 			
 			enemy->underAttackTimer = 240;
 
-			boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
+			std::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
 			enemy->owner->pushGameEvent(event);
 
 			incrementExperience(degats);
@@ -509,7 +509,7 @@ void Unit::syncStep(void)
 			
 				enemy->underAttackTimer = 240;
 
-				boost::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
+				std::shared_ptr<GameEvent> event(new BuildingUnderAttackEvent(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
 				enemy->owner->pushGameEvent(event);
 
 				if (enemy->hp<0)
@@ -695,7 +695,7 @@ void Unit::handleMagic(void)
 							{
 								enemyUnit->hp -= damage;
 								
-								boost::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
+								std::shared_ptr<GameEvent> event(new UnitUnderAttackEvent(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
 								enemyUnit->owner->pushGameEvent(event);
 								
 								incrementExperience(damage);
@@ -898,11 +898,11 @@ void Unit::handleActivity(void)
 					// Unit conversion code
 					
 					// Send events and keep track of number of unit converted
-					boost::shared_ptr<GameEvent> event(new UnitLostConversionEvent(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
+					std::shared_ptr<GameEvent> event(new UnitLostConversionEvent(owner->game->stepCounter, posX, posY, targetTeam->getFirstPlayerName()));
 					currentTeam->pushGameEvent(event);
 					currentTeam->unitConversionLost++;
 					
-					boost::shared_ptr<GameEvent> event2(new UnitGainedConversionEvent(owner->game->stepCounter, posX, posY, currentTeam->getFirstPlayerName()));
+					std::shared_ptr<GameEvent> event2(new UnitGainedConversionEvent(owner->game->stepCounter, posX, posY, currentTeam->getFirstPlayerName()));
 					targetTeam->pushGameEvent(event2);
 					targetTeam->unitConversionGained++;
 					

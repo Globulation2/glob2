@@ -32,12 +32,20 @@ namespace GAGCore
 		if(isRead && isValid())
 		{
 			gzFile fp = gzopen(file.c_str(), "rb");
-			while(!gzeof(fp))
+			if (fp == NULL)
 			{
-				unsigned char b[1024];
-				long ammount = gzread(fp, b, 1024);
-				buffer->write(b, ammount);
+				std::cerr << "ZLibStreamBackend: failed to open " << file << " for reading" << std::endl;
+				return;
 			}
+			unsigned char b[1024];
+			int amount;
+			while ((amount = gzread(fp, b, sizeof(b))) > 0)
+			{
+				buffer->write(b, amount);
+			}
+			if (amount < 0)
+				std::cerr << "ZLibStreamBackend: error reading " << file << std::endl;
+			gzclose(fp);
 			buffer->seekFromStart(0);
 		}
 	}
@@ -50,8 +58,16 @@ namespace GAGCore
 			long size = buffer->getPosition();
 			buffer->seekFromStart(0);
 			gzFile fp = gzopen(file.c_str(), "wb9");
-			gzwrite(fp, buffer->getBuffer(), size);
-			gzclose(fp);
+			if (fp == NULL)
+			{
+				std::cerr << "ZLibStreamBackend: failed to open " << file << " for writing" << std::endl;
+				return;
+			}
+			int written = gzwrite(fp, buffer->getBuffer(), size);
+			if (written != static_cast<int>(size))
+				std::cerr << "ZLibStreamBackend: error writing " << file << std::endl;
+			if (gzclose(fp) != Z_OK)
+				std::cerr << "ZLibStreamBackend: error closing " << file << std::endl;
 		}
 	}
 		

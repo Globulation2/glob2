@@ -19,7 +19,7 @@ def generate(env) :
     def winToLocalReformat(path) :
         return os.path.join(*path.split("\\"))
     def scanNsisContent(node, env, path, arg):
-        contents = node.get_contents()
+        contents = node.get_text_contents()
         includes = nsisFiles_re.findall(contents)
         includes = [ winToLocalReformat(include) for include in includes ]
         return [x for x in includes if x.rfind('*')==-1]

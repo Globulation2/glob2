@@ -19,7 +19,7 @@
 #ifndef YOGClientPlayerListManager_h
 #define YOGClientPlayerListManager_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include <list>
 #include "YOGPlayerSessionInfo.h"
 
@@ -35,7 +35,7 @@ public:
 	YOGClientPlayerListManager(YOGClient* client);
 
 	///Recieves an incoming message
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void recieveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This will return the list of players on hosted on the server.
 	const std::list<YOGPlayerSessionInfo>& getPlayerList() const;

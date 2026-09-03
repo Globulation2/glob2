@@ -19,7 +19,7 @@
 #ifndef YOGClientDownloadableMapList_h
 #define YOGClientDownloadableMapList_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "YOGDownloadableMapInfo.h"
 #include <vector>
 #include <list>
@@ -43,7 +43,7 @@ public:
 	void requestMapListUpdate();
 	
 	///Recieves a message from the server
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void recieveMessage(std::shared_ptr<NetMessage> message);
 	
 	///Returns the list of downloadable games
 	std::vector<YOGDownloadableMapInfo>& getDownloadableMapList();

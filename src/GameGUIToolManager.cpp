@@ -267,15 +267,15 @@ void GameGUIToolManager::handleMouseDrag(int mouseX, int mouseY, int localteam, 
 
 
 
-boost::shared_ptr<Order> GameGUIToolManager::getOrder()
+std::shared_ptr<Order> GameGUIToolManager::getOrder()
 {
 	if(!orders.empty())
 	{
-		boost::shared_ptr<Order> order = orders.front();
+		std::shared_ptr<Order> order = orders.front();
 		orders.pop();
 		return order;
 	}
-	return boost::shared_ptr<Order>();
+	return std::shared_ptr<Order>();
 }
 
 
@@ -346,15 +346,15 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 	{
 		if (zoneType == Forbidden)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Guard)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Clearing)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else
 			assert(false);
@@ -401,7 +401,7 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 			if(bt->isVirtual)
 				r = globalContainer->settings.defaultFlagRadius[bt->shortTypeNum - IntBuildingType::EXPLORATION_FLAG];
 			ghostManager.addBuilding(building, mapX, mapY);
-			orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
+			orders.push(std::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
 		}
 	}
 }

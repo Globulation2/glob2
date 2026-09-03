@@ -17,7 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#include "boost/lexical_cast.hpp"
+#include <string>
 #include "GameGUIDialog.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -545,7 +545,7 @@ InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
 			text = gui->game.gameHints.getGameHintText(i);
 			if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
 				text = Toolkit::getStringTable()->getString(text.c_str());
-			text = boost::lexical_cast<std::string>(n+1) + ") " + text;
+			text = std::to_string(n+1) + ") " + text;
 			hintsWidgets.push_back(new Text(50, 70 + 25*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
 			n+=1;
 		}

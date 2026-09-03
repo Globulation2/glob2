@@ -34,7 +34,7 @@
 #define BUILDING_DELAY 30
 #define AREAS_DELAY 50
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 void AIWarrush::init(Player *player)
 {
@@ -307,7 +307,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 	return num_worked_buildings * 100 >= num_buildings * percentage;
 }
 
-boost::shared_ptr<Order> AIWarrush::getOrder(void)
+std::shared_ptr<Order> AIWarrush::getOrder(void)
 {
 	// reduce delays
 	if (buildingDelay > 0)
@@ -429,7 +429,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 	return shared_ptr<Order>(new NullOrder);
 }
 
-boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
+std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 {
 	//If we have any guard areas that aren't adjacent to an enemy building, we remove them.
 	BrushAccumulator acc;
@@ -470,7 +470,7 @@ boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 	else return shared_ptr<Order>(new NullOrder);
 }
 	
-boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
+std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 {
 	BrushAccumulator guard_add_acc;
 	//Place guard area on an enemy building if there is one...
@@ -523,7 +523,7 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	else return shared_ptr<Order>(new NullOrder);
 }
 	
-boost::shared_ptr<Order> AIWarrush::farm()
+std::shared_ptr<Order> AIWarrush::farm()
 {
 	// Algorithm initially stolen from Nicowar.
 	DynamicGradientMapArray water_gradient(map->w,map->h);
@@ -661,7 +661,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 }
 
 //Simple hack to place explore flags on opponents' starting swarms.
-boost::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
+std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 {
 	if(verbose)std::cout << "looking for swarms:\n";
 	for(int j=0;j<Building::MAX_COUNT;j++)
@@ -760,7 +760,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 	}
 }
 
-boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
+std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 {
 	
 	// set delay

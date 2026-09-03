@@ -35,7 +35,7 @@
 #include "SoundMixer.h"
 #include <ostream>
 #include <algorithm>
-#include "boost/lexical_cast.hpp"
+#include <string>
 #include "GameGUIKeyActions.h"
 #include "MapEditKeyActions.h"
 #include "FormatableString.h"

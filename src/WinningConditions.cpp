@@ -21,10 +21,10 @@
 #include <algorithm>
 #include "Stream.h"
 
-boost::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCore::InputStream* stream, Uint32 versionMinor)
+std::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
 	if (stream->isEndOfStream())
-		return boost::shared_ptr<WinningCondition>();
+		return std::shared_ptr<WinningCondition>();
 	
 	Uint8 type = stream->readUint8("type");
 	
@@ -32,35 +32,35 @@ boost::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCor
 	{
 		case WCDeath:
 		{
-			boost::shared_ptr<WinningConditionDeath> condition(new WinningConditionDeath);
+			std::shared_ptr<WinningConditionDeath> condition(new WinningConditionDeath);
 			condition->decodeData(stream, versionMinor);
 			return condition;
 		}
 		break;
 		case WCAllies:
 		{
-			boost::shared_ptr<WinningConditionAllies> condition(new WinningConditionAllies);
+			std::shared_ptr<WinningConditionAllies> condition(new WinningConditionAllies);
 			condition->decodeData(stream, versionMinor);
 			return condition;
 		}
 		break;
 		case WCPrestige:
 		{
-			boost::shared_ptr<WinningConditionPrestige> condition(new WinningConditionPrestige);
+			std::shared_ptr<WinningConditionPrestige> condition(new WinningConditionPrestige);
 			condition->decodeData(stream, versionMinor);
 			return condition;
 		}
 		break;
 		case WCScript:
 		{
-			boost::shared_ptr<WinningConditionScript> condition(new WinningConditionScript);
+			std::shared_ptr<WinningConditionScript> condition(new WinningConditionScript);
 			condition->decodeData(stream, versionMinor);
 			return condition;
 		}
 		break;
 		case WCOpponentsDefeated:
 		{
-			boost::shared_ptr<WinningConditionOpponentsDefeated> condition(new WinningConditionOpponentsDefeated);
+			std::shared_ptr<WinningConditionOpponentsDefeated> condition(new WinningConditionOpponentsDefeated);
 			condition->decodeData(stream, versionMinor);
 			return condition;
 		}
@@ -70,18 +70,18 @@ boost::shared_ptr<WinningCondition> WinningCondition::getWinningCondition(GAGCor
 			break;
 	}
 	assert(false);
-	return boost::shared_ptr<WinningCondition>();//to satisfy -Wall
+	return std::shared_ptr<WinningCondition>();//to satisfy -Wall
 }
 
 
-std::list<boost::shared_ptr<WinningCondition> > WinningCondition::getDefaultWinningConditions()
+std::list<std::shared_ptr<WinningCondition> > WinningCondition::getDefaultWinningConditions()
 {
-	std::list<boost::shared_ptr<WinningCondition> > conditions;
-	conditions.push_back(boost::shared_ptr<WinningCondition>(new WinningConditionDeath));
-	conditions.push_back(boost::shared_ptr<WinningCondition>(new WinningConditionAllies));
-	conditions.push_back(boost::shared_ptr<WinningCondition>(new WinningConditionPrestige));
-	conditions.push_back(boost::shared_ptr<WinningCondition>(new WinningConditionScript));
-	conditions.push_back(boost::shared_ptr<WinningCondition>(new WinningConditionOpponentsDefeated));
+	std::list<std::shared_ptr<WinningCondition> > conditions;
+	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionDeath));
+	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionAllies));
+	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionPrestige));
+	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionScript));
+	conditions.push_back(std::shared_ptr<WinningCondition>(new WinningConditionOpponentsDefeated));
 	return conditions;
 }
 

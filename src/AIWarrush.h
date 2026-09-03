@@ -77,7 +77,7 @@ public:
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
-	boost::shared_ptr<Order> getOrder(void);
+	std::shared_ptr<Order> getOrder(void);
 private:
 	void init(Player *player);
 	//implementation functions to make the code more like the pseudocode;
@@ -96,13 +96,13 @@ private:
 	Building *getSwarmAtRandom()const;
 	//functions called by getOrder, filled with pseudocode and its product,
 	//real code.
-	boost::shared_ptr<Order> placeGuardAreas(void);
-	boost::shared_ptr<Order> pruneGuardAreas(void);
-	boost::shared_ptr<Order> farm(void);
-	boost::shared_ptr<Order> setupExploreFlagForTeam(Team *enemy_team);
+	std::shared_ptr<Order> placeGuardAreas(void);
+	std::shared_ptr<Order> pruneGuardAreas(void);
+	std::shared_ptr<Order> farm(void);
+	std::shared_ptr<Order> setupExploreFlagForTeam(Team *enemy_team);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
 	void initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type);
-	boost::shared_ptr<Order> buildBuildingOfType(Sint32 shortTypeNum);
+	std::shared_ptr<Order> buildBuildingOfType(Sint32 shortTypeNum);
 };
 
 #endif

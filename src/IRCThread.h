@@ -20,9 +20,8 @@
 #define IRCThread_h
 
 #include "IRC.h"
-#include <boost/shared_ptr.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/thread/recursive_mutex.hpp>
+#include <memory>
+#include <mutex>
 #include <queue>
 
 class IRCThreadMessage;
@@ -31,27 +30,27 @@ class IRCThreadMessage;
 class IRCThread
 {
 public:
-	IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex);
+	IRCThread(std::queue<std::shared_ptr<IRCThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex);
 	
 	///Runs the IRC thread
 	void operator()();
 
 	///Sends this IRC thread a message
-	void sendMessage(boost::shared_ptr<IRCThreadMessage> message);
+	void sendMessage(std::shared_ptr<IRCThreadMessage> message);
 
 	///This returns whether the thread has exited
 	bool hasThreadExited();
 private:
 	///Sends this IRC message back to the main thread
-	void sendToMainThread(boost::shared_ptr<IRCThreadMessage> message);
+	void sendToMainThread(std::shared_ptr<IRCThreadMessage> message);
 
 	IRC irc;
 	std::string channel;
 	
-	std::queue<boost::shared_ptr<IRCThreadMessage> > incoming;
-	std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing;
-	boost::recursive_mutex incomingMutex;
-	boost::recursive_mutex& outgoingMutex;
+	std::queue<std::shared_ptr<IRCThreadMessage> > incoming;
+	std::queue<std::shared_ptr<IRCThreadMessage> >& outgoing;
+	std::recursive_mutex incomingMutex;
+	std::recursive_mutex& outgoingMutex;
 	bool hasExited;
 };
 

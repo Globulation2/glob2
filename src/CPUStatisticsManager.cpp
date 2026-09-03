@@ -19,7 +19,7 @@
 #include "CPUStatisticsManager.h"
 #include "Stream.h"
 #include "Toolkit.h"
-#include "boost/lexical_cast.hpp"
+#include <string>
 #include "GlobalContainer.h"
 
 using namespace GAGCore;
@@ -63,11 +63,11 @@ void CPUStatisticsManager::format()
 		int total_time = frame_number * time_per_frame * (i+1) / 20;
 		int seconds = (total_time / 1000) % 60;
 		int minutes = (total_time / 1000) / 60;
-		line+=boost::lexical_cast<std::string>(minutes) + ":";
+		line+=std::to_string(minutes) + ":";
 		if(seconds < 10)
-			line+= "0" + boost::lexical_cast<std::string>(seconds);
+			line+= "0" + std::to_string(seconds);
 		else
-			line+= boost::lexical_cast<std::string>(seconds);
+			line+= std::to_string(seconds);
 		
 		while(line.size() < 10)
 			line += " ";
@@ -81,7 +81,7 @@ void CPUStatisticsManager::format()
 		}
 		
 		float cpu_usage = (float)(total_cpu_time_consumed) / (float)(total_recorded * time_per_frame);
-		line += boost::lexical_cast<std::string>(cpu_usage);
+		line += std::to_string(cpu_usage);
 		
 		stream->writeLine(line);
 	}

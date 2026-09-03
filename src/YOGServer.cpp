@@ -128,9 +128,9 @@ void YOGServer::update()
 			boost::posix_time::time_duration organized_game_time = boost::posix_time::second_clock::local_time().time_of_day();
 			organized_game_time = boost::posix_time::seconds(7200 - organized_game_time.total_seconds() % 7200);
 			std::stringstream s;
-			s << "An organized game will occur in "<<boost::lexical_cast<std::string>(organized_game_time.hours())<<" hours and "<<boost::lexical_cast<std::string>(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
-			boost::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
-			boost::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
+			s << "An organized game will occur in "<<std::to_string(organized_game_time.hours())<<" hours and "<<std::to_string(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
+			std::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
+			std::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
 			for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 			{
 				i->second->sendMessage(send);
@@ -358,7 +358,7 @@ shared_ptr<YOGServerPlayer> YOGServer::getPlayer(Uint16 playerID)
 
 
 
-boost::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
+std::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
 {
 	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
@@ -367,7 +367,7 @@ boost::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
 			return i->second;
 		}
 	}
-	return boost::shared_ptr<YOGServerPlayer>();
+	return std::shared_ptr<YOGServerPlayer>();
 }
 
 

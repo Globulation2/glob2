@@ -238,21 +238,21 @@ NetSendOrder::NetSendOrder()
 
 
 	
-NetSendOrder::NetSendOrder(boost::shared_ptr<Order> newOrder)
+NetSendOrder::NetSendOrder(std::shared_ptr<Order> newOrder)
 {
 	order=newOrder;
 }
 
 
 	
-void NetSendOrder::changeOrder(boost::shared_ptr<Order> newOrder)
+void NetSendOrder::changeOrder(std::shared_ptr<Order> newOrder)
 {
 	order = newOrder;
 }
 
 
 	
-boost::shared_ptr<Order> NetSendOrder::getOrder()
+std::shared_ptr<Order> NetSendOrder::getOrder()
 {
 	return order;
 }
@@ -291,7 +291,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	order = Order::getOrder(buffer, size, VERSION_MINOR);
 
 	// If this couldn't be interpreted return it returned a NULL order, so we throw.
-	if (order == boost::shared_ptr<Order>())
+	if (order == std::shared_ptr<Order>())
 		throw std::ios_base::failure("Couldn't decode data stream to an Order: bad format.");
 
 	order->sender = stream->readUint8("sender");
@@ -1432,7 +1432,7 @@ YOGServerGameJoinRefusalReason NetGameJoinRefused::getRefusalReason() const
 
 
 
-NetSendYOGMessage::NetSendYOGMessage(Uint32 channel, boost::shared_ptr<YOGMessage> message)
+NetSendYOGMessage::NetSendYOGMessage(Uint32 channel, std::shared_ptr<YOGMessage> message)
 	: channel(channel), message(message)
 {
 
@@ -1513,7 +1513,7 @@ Uint32 NetSendYOGMessage::getChannel() const
 
 
 
-boost::shared_ptr<YOGMessage> NetSendYOGMessage::getMessage() const
+std::shared_ptr<YOGMessage> NetSendYOGMessage::getMessage() const
 {
 	return message;
 }
@@ -2125,7 +2125,7 @@ NetSendFileChunk::NetSendFileChunk()
 
 
 
-NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID)
+NetSendFileChunk::NetSendFileChunk(std::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID)
 	: fileID(fileID)
 {
 	size=0;

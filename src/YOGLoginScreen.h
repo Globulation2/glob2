@@ -43,7 +43,7 @@ class YOGLoginScreen : public Glob2Screen, public YOGClientEventListener
 public:
 	///Construct with the given YOG client.
 	///The provided client should not yet be connected to YOG.
-	YOGLoginScreen(boost::shared_ptr<YOGClient> client);
+	YOGLoginScreen(std::shared_ptr<YOGClient> client);
 	virtual ~YOGLoginScreen();
 
 	enum
@@ -73,7 +73,7 @@ private:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	
 	///Responds to YOG events
-	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
+	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event);
 
 	///Attempt a login with the entered information
 	void attemptLogin();
@@ -89,7 +89,7 @@ private:
 	
 	bool wasConnecting;
 	
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	bool changeTabAgain;
 };
 

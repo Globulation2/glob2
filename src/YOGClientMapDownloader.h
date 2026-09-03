@@ -20,7 +20,7 @@
 #define YOGClientMapDownloader_h
 
 #include "YOGDownloadableMapInfo.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include <string>
 
 class YOGClient;
@@ -31,7 +31,7 @@ class YOGClientMapDownloader
 {
 public:
 	///Constructs a map uploader
-	YOGClientMapDownloader(boost::shared_ptr<YOGClient> client);
+	YOGClientMapDownloader(std::shared_ptr<YOGClient> client);
 	
 	///Removes the map uploader
 	~YOGClientMapDownloader();
@@ -43,7 +43,7 @@ public:
 	void cancelDownload();
 	
 	///This recieves a message from the server
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void recieveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This updates the downloader
 	void update();
@@ -61,7 +61,7 @@ public:
 	int getPercentUploaded();
 private:
 	DownloadingState state;
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	Uint16 fileID;
 	std::string mapFile;
 };

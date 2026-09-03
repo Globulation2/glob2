@@ -23,7 +23,8 @@
 #define __IRCTextMessageHandler_H
 
 #include "IRCThread.h"
-#include "boost/shared_ptr.hpp"
+#include <thread>
+#include <memory>
 
 
 ///This class represents an object that can listen for text messages from IRC
@@ -72,10 +73,11 @@ private:
 	void sendToAllListeners(const std::string& message);
 
 	IRCThread irc;
+	std::thread ircThread;
 	std::vector<IRCTextMessageListener* > listeners;
 
-	std::queue<boost::shared_ptr<IRCThreadMessage> > incoming;
-	boost::recursive_mutex incomingMutex;
+	std::queue<std::shared_ptr<IRCThreadMessage> > incoming;
+	std::recursive_mutex incomingMutex;
 	std::vector<std::string> users;
 
 

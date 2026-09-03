@@ -2,8 +2,8 @@ import sys
 
 env = Environment()
 
-if sys.platform == "linux2":
-  ccflags = '-Wall -ansi -g'
+if sys.platform.startswith("linux"):
+  ccflags = '-Wall -g'
 else:
   ccflags = '/EHsc /MD /GR'
 

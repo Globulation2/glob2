@@ -18,14 +18,16 @@
 
 #include "NetConnection.h"
 #include <algorithm>
+#include <string>
+#include <functional>
 #include <iostream>
 #include "StreamBackend.h"
 #include "BinaryStream.h"
 #include "NetMessage.h"
 
 using namespace GAGCore;
-using boost::static_pointer_cast;
-using boost::shared_ptr;
+using std::static_pointer_cast;
+using std::shared_ptr;
 
 
 	
@@ -35,7 +37,7 @@ using boost::shared_ptr;
 NetConnection::NetConnection(const std::string& naddress, Uint16 port)
 	: connect(incoming, incomingMutex)
 {
-	boost::thread thread(boost::ref(connect));
+	connectThread = std::thread(std::ref(connect));
 	connecting=false;
 	openConnection(naddress, port);
 }
@@ -45,16 +47,17 @@ NetConnection::NetConnection(const std::string& naddress, Uint16 port)
 NetConnection::NetConnection()
 	: connect(incoming, incomingMutex)
 {
-	boost::thread thread(boost::ref(connect));
+	connectThread = std::thread(std::ref(connect));
 }
 
 
 
 NetConnection::~NetConnection()
 {
-	boost::shared_ptr<NTExitThread> exitthread(new NTExitThread);
+	std::shared_ptr<NTExitThread> exitthread(new NTExitThread);
 	connect.sendMessage(exitthread);
-	while(!connect.hasThreadExited());
+	if (connectThread.joinable())
+		connectThread.join();
 }
 
 
@@ -63,7 +66,7 @@ void NetConnection::openConnection(const std::string& connectaddress, Uint16 por
 {
 	address = connectaddress;
 	connecting=true;
-	boost::shared_ptr<NTConnect> toconnect(new NTConnect(connectaddress, port));
+	std::shared_ptr<NTConnect> toconnect(new NTConnect(connectaddress, port));
 	connect.sendMessage(toconnect);
 }
 
@@ -71,7 +74,7 @@ void NetConnection::openConnection(const std::string& connectaddress, Uint16 por
 
 void NetConnection::closeConnection()
 {
-	boost::shared_ptr<NTCloseConnection> close(new NTCloseConnection);
+	std::shared_ptr<NTCloseConnection> close(new NTCloseConnection);
 	connect.sendMessage(close);
 }
 
@@ -93,24 +96,24 @@ bool NetConnection::isConnecting()
 
 void NetConnection::update()
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	while(!incoming.empty())
 	{
-		boost::shared_ptr<NetConnectionThreadMessage> message = incoming.front();
+		std::shared_ptr<NetConnectionThreadMessage> message = incoming.front();
 		incoming.pop();
 		Uint8 type = message->getMessageType();
 		switch(type)
 		{
 			case NTMCouldNotConnect:
 			{
-				boost::shared_ptr<NTCouldNotConnect> info = static_pointer_cast<NTCouldNotConnect>(message);
+				std::shared_ptr<NTCouldNotConnect> info = static_pointer_cast<NTCouldNotConnect>(message);
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 				connecting=false;
 			}
 			break;
 			case NTMConnected:
 			{
-				boost::shared_ptr<NTConnected> info = static_pointer_cast<NTConnected>(message);
+				std::shared_ptr<NTConnected> info = static_pointer_cast<NTConnected>(message);
 				address = info->getIPAddress();
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 				connecting=false;
@@ -118,13 +121,13 @@ void NetConnection::update()
 			break;
 			case NTMLostConnection:
 			{
-				boost::shared_ptr<NTLostConnection> info = static_pointer_cast<NTLostConnection>(message);
+				std::shared_ptr<NTLostConnection> info = static_pointer_cast<NTLostConnection>(message);
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 			}
 			break;
 			case NTMRecievedMessage:
 			{
-				boost::shared_ptr<NTRecievedMessage> info = static_pointer_cast<NTRecievedMessage>(message);
+				std::shared_ptr<NTRecievedMessage> info = static_pointer_cast<NTRecievedMessage>(message);
 				recieved.push(info->getMessage());
 				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 				//std::cout<<"Recieved: "<<info->getMessage()->format()<<std::endl;
@@ -159,7 +162,7 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 {
 	//std::cout<<"Sending: "<<message->format()<<std::endl;
-	boost::shared_ptr<NTSendMessage> close(new NTSendMessage(message));
+	std::shared_ptr<NTSendMessage> close(new NTSendMessage(message));
 	connect.sendMessage(close);
 }
 
@@ -179,11 +182,11 @@ bool NetConnection::attemptConnection(TCPsocket& serverSocket)
 	if(socket)
 	{
 		IPaddress ip = *SDLNet_TCP_GetPeerAddress(socket);
-		address = boost::lexical_cast<std::string>((ip.host >> 0 ) & 0xff) + "." +
-		                 boost::lexical_cast<std::string>((ip.host >> 8 ) & 0xff) + "." +
-		                 boost::lexical_cast<std::string>((ip.host >> 16) & 0xff) + "." +
-		                 boost::lexical_cast<std::string>((ip.host >> 24) & 0xff);
-		boost::shared_ptr<NTAcceptConnection> accept(new NTAcceptConnection(socket));
+		address = std::to_string((ip.host >> 0 ) & 0xff) + "." +
+		                 std::to_string((ip.host >> 8 ) & 0xff) + "." +
+		                 std::to_string((ip.host >> 16) & 0xff) + "." +
+		                 std::to_string((ip.host >> 24) & 0xff);
+		std::shared_ptr<NTAcceptConnection> accept(new NTAcceptConnection(socket));
 		connect.sendMessage(accept);
 		while(connect.isConnected() == false)
 			SDL_Delay(5);

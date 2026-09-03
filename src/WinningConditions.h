@@ -19,7 +19,7 @@
 #ifndef WinningConditions_h
 #define WinningConditions_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "SDL_net.h"
 #include <list>
 
@@ -64,9 +64,9 @@ public:
 	virtual void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)=0;
 	
 	///This will reconstruct a winning condition from serialized data
-	static boost::shared_ptr<WinningCondition> getWinningCondition(GAGCore::InputStream* stream, Uint32 versionMinor);
+	static std::shared_ptr<WinningCondition> getWinningCondition(GAGCore::InputStream* stream, Uint32 versionMinor);
 	///This will set the given list to the default set of winning conditions, in their default order
-	static std::list<boost::shared_ptr<WinningCondition> > getDefaultWinningConditions();
+	static std::list<std::shared_ptr<WinningCondition> > getDefaultWinningConditions();
 	
 };
 

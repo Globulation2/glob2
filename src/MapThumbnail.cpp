@@ -170,7 +170,9 @@ void MapThumbnail::encodeData(GAGCore::OutputStream* stream) const
 	//According to zlib documentation, the out buffer must be 0.1% larger than in buffer + 12 bytes
 	unsigned long compressedLength = (128 * 128 * 3 * 1001) / 1000 + 13;
 	Uint8* compressed = new Uint8[compressedLength];
-	compress2(compressed, &compressedLength, buffer, 128 * 128 * 3, 9);
+	int zret = compress2(compressed, &compressedLength, buffer, 128 * 128 * 3, 9);
+	if (zret != Z_OK)
+		std::cerr << "MapThumbnail::encodeData: compress2 failed with error " << zret << std::endl;
 	stream->writeUint32(compressedLength, "compressedLength");
 	stream->write(compressed, compressedLength, "compressed");
 	stream->writeLeaveSection();
@@ -189,7 +191,9 @@ void MapThumbnail::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 	stream->read(compressed, compressedLength, "compressed");
 	//uncompress with zlib
 	unsigned long uncompLen = 128 * 128 * 3;
-	uncompress(buffer, &uncompLen, compressed, compressedLength);
+	int zret = uncompress(buffer, &uncompLen, compressed, compressedLength);
+	if (zret != Z_OK)
+		std::cerr << "MapThumbnail::decodeData: uncompress failed with error " << zret << std::endl;
 	stream->readLeaveSection();
 	delete[] compressed;
 	loaded=true;

@@ -44,7 +44,7 @@ protected:
 	void init(Player *player);
 	
 	//! Create a building if possible
-	boost::shared_ptr<Order> getOrderBuildingStep(void);
+	std::shared_ptr<Order> getOrderBuildingStep(void);
 	//! Compute internal stats used by other parts of the code
 	void computeMyStatsStep(void);
 	
@@ -64,7 +64,7 @@ public:
 	void save(GAGCore::OutputStream *stream);
 	
 	//! return a new order in response to last events
-	boost::shared_ptr<Order> getOrder(void);
+	std::shared_ptr<Order> getOrder(void);
 	
 private:
 	/*

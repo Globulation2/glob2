@@ -93,7 +93,7 @@ void YOGClientPlayerList::drawItem(int x, int y, size_t element)
 
 
 
-YOGClientLobbyScreen::YOGClientLobbyScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client)
+YOGClientLobbyScreen::YOGClientLobbyScreen(TabScreen* parent, std::shared_ptr<YOGClient> client)
 	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Lobby]")), client(client)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[yog]")));
@@ -191,7 +191,7 @@ void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int
 			}
 			else
 			{
-				boost::shared_ptr<YOGMessage> message(new YOGMessage);
+				std::shared_ptr<YOGMessage> message(new YOGMessage);
 				message->setSender(client->getUsername());
 				message->setMessage(textInput->getText());
 				message->setMessageType(YOGNormalMessage);
@@ -223,7 +223,7 @@ void YOGClientLobbyScreen::onTimer(Uint32 tick)
 		int rc = parent->getReturnCode(gameScreen);
 		if(rc!=-1)
 		{
-			boost::shared_ptr<MultiplayerGame> game(client->getMultiplayerGame());
+			std::shared_ptr<MultiplayerGame> game(client->getMultiplayerGame());
 			if(rc == MultiplayerGameScreen::Kicked)
 				recieveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
 			else if(rc == MultiplayerGameScreen::GameCancelled)
@@ -239,7 +239,7 @@ void YOGClientLobbyScreen::onTimer(Uint32 tick)
 				else if(game->getGameCreationState() == YOGCreateRefusalUnknown)
 					recieveInternalMessage("Game was refused by server");
 			}
-			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
+			client->setMultiplayerGame(std::shared_ptr<MultiplayerGame>());
 			gameScreen=-1;
 			updateButtonVisibility();
 		}
@@ -256,7 +256,7 @@ void YOGClientLobbyScreen::onTimer(Uint32 tick)
 
 
 
-void YOGClientLobbyScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
+void YOGClientLobbyScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
 	//std::cout<<"YOGClientLobbyScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
@@ -287,7 +287,7 @@ void YOGClientLobbyScreen::handleIRCTextMessage(const std::string& message)
 
 
 
-void YOGClientLobbyScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
+void YOGClientLobbyScreen::recieveTextMessage(std::shared_ptr<YOGMessage> message)
 {
 	chatWindow->addText(message->formatForReading());
 	chatWindow->addImage(0);
@@ -330,7 +330,7 @@ void YOGClientLobbyScreen::hostGame()
 	int rc = cms.execute(globalContainer->gfx, 40);
 	if(rc == ChooseMapScreen::OK)
 	{
-		boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+		std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 		client->setMultiplayerGame(game);
 		std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
 		game->createNewGame(name);
@@ -352,7 +352,7 @@ void YOGClientLobbyScreen::joinGame()
 {
 	if(gameList->getSelectionIndex() != -1)
 	{
-		boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+		std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 		client->setMultiplayerGame(game);
 		Uint16 id = 0;
 		for (std::list<YOGGameInfo>::const_iterator game=client->getGameListManager()->getGameList().begin(); game!=client->getGameListManager()->getGameList().end(); ++game)
@@ -398,7 +398,7 @@ void YOGClientLobbyScreen::updateGameList(void)
 void YOGClientLobbyScreen::updatePlayerList(void)
 {
 
-//	boost::shared_ptr<IRC> irc = ircChat->getIRC();
+//	std::shared_ptr<IRC> irc = ircChat->getIRC();
 	// update YOG one
 	playerList->clear();
 	for (std::list<YOGPlayerSessionInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)

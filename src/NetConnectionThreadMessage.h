@@ -22,7 +22,7 @@
 #include <string>
 #include "SDL_net.h"
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class NetMessage;
 
@@ -189,7 +189,7 @@ class NTRecievedMessage : public NetConnectionThreadMessage
 {
 public:
 	///Creates a NTRecievedMessage event
-	NTRecievedMessage(boost::shared_ptr<NetMessage> message);
+	NTRecievedMessage(std::shared_ptr<NetMessage> message);
 
 	///Returns NTMRecievedMessage
 	Uint8 getMessageType() const;
@@ -201,9 +201,9 @@ public:
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
 	///Retrieves message
-	boost::shared_ptr<NetMessage> getMessage() const;
+	std::shared_ptr<NetMessage> getMessage() const;
 private:
-	boost::shared_ptr<NetMessage> message;
+	std::shared_ptr<NetMessage> message;
 };
 
 
@@ -214,7 +214,7 @@ class NTSendMessage : public NetConnectionThreadMessage
 {
 public:
 	///Creates a NTSendMessage event
-	NTSendMessage(boost::shared_ptr<NetMessage> message);
+	NTSendMessage(std::shared_ptr<NetMessage> message);
 
 	///Returns NTMSendMessage
 	Uint8 getMessageType() const;
@@ -226,9 +226,9 @@ public:
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
 	///Retrieves message
-	boost::shared_ptr<NetMessage> getMessage() const;
+	std::shared_ptr<NetMessage> getMessage() const;
 private:
-	boost::shared_ptr<NetMessage> message;
+	std::shared_ptr<NetMessage> message;
 };
 
 

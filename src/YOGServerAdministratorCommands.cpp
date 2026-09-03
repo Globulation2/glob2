@@ -21,7 +21,8 @@
 #include "YOGServer.h"
 #include "NetMessage.h"
 #include "YOGServerPlayer.h"
-#include "boost/lexical_cast.hpp"
+#include <string>
+#include <stdexcept>
 
 std::string YOGServerRestart::getHelpMessage()
 {
@@ -53,7 +54,7 @@ bool YOGServerRestart::allowedForModerator()
 
 
 
-void YOGServerRestart::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerRestart::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	exit(0);
 }
@@ -83,9 +84,13 @@ bool YOGMutePlayer::doesMatch(const std::vector<std::string>& tokens)
 	{
 		try
 		{
-			boost::lexical_cast<int>(tokens[2]);
+			std::stoi(tokens[2]);
 		}
-		catch(boost::bad_lexical_cast& error)
+		catch(const std::invalid_argument&)
+		{
+			return false;
+		}
+		catch(const std::out_of_range&)
 		{
 			return false;
 		}
@@ -103,12 +108,12 @@ bool YOGMutePlayer::allowedForModerator()
 
 
 
-void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	int time = 10;
 	if(tokens.size() == 3)
-		time = boost::lexical_cast<int>(tokens[2]);
+		time = std::stoi(tokens[2]);
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
 		boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(time);
@@ -153,7 +158,7 @@ bool YOGUnmutePlayer::allowedForModerator()
 
 
 
-void YOGUnmutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGUnmutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
@@ -199,7 +204,7 @@ bool YOGResetPassword::allowedForModerator()
 
 
 
-void YOGResetPassword::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGResetPassword::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	server->getServerPasswordRegistry().resetPlayersPassword(name);
@@ -236,7 +241,7 @@ bool YOGBanPlayer::allowedForModerator()
 
 
 
-void YOGBanPlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGBanPlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
@@ -244,10 +249,10 @@ void YOGBanPlayer::execute(YOGServer* server, YOGServerAdministrator* admin, con
 		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
 		i.setBanned();
 		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
-		boost::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
+		std::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
 		if(nplayer)
 		{
-			boost::shared_ptr<NetPlayerIsBanned> send(new NetPlayerIsBanned);
+			std::shared_ptr<NetPlayerIsBanned> send(new NetPlayerIsBanned);
 			nplayer->sendMessage(send);
 			nplayer->closeConnection();
 		}
@@ -289,7 +294,7 @@ bool YOGUnbanPlayer::allowedForModerator()
 
 
 
-void YOGUnbanPlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGUnbanPlayer::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
@@ -335,7 +340,7 @@ bool YOGShowBannedPlayers::allowedForModerator()
 
 
 
-void YOGShowBannedPlayers::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGShowBannedPlayers::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::list<std::string> bannedPlayers = server->getPlayerStoredInfoManager().getBannedPlayers();
 	std::string line;
@@ -381,15 +386,15 @@ bool YOGBanIP::allowedForModerator()
 
 
 
-void YOGBanIP::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGBanIP::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
-	boost::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
+	std::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
 	if(nplayer)
 	{
 		boost::posix_time::ptime unban_time = boost::posix_time::second_clock::local_time() + boost::posix_time::hours(24);
 		server->getServerBannedIPListManager().addBannedIP(nplayer->getPlayerIP(), unban_time);
-		boost::shared_ptr<NetIPIsBanned> send(new NetIPIsBanned);
+		std::shared_ptr<NetIPIsBanned> send(new NetIPIsBanned);
 		nplayer->sendMessage(send);
 		nplayer->closeConnection();
 		admin->sendTextMessage("Player "+name+"'s IP "+nplayer->getPlayerIP()+" has been banned.", player);
@@ -430,7 +435,7 @@ bool YOGAddAdministrator::allowedForModerator()
 
 
 
-void YOGAddAdministrator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGAddAdministrator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	
@@ -475,7 +480,7 @@ bool YOGRemoveAdministrator::allowedForModerator()
 
 
 
-void YOGRemoveAdministrator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGRemoveAdministrator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	if(server->getAdministratorList().isAdministrator(name))
@@ -519,7 +524,7 @@ bool YOGAddModerator::allowedForModerator()
 
 
 
-void YOGAddModerator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGAddModerator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
@@ -565,7 +570,7 @@ bool YOGRemoveModerator::allowedForModerator()
 
 
 
-void YOGRemoveModerator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGRemoveModerator::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
@@ -611,7 +616,7 @@ bool YOGRemoveMap::allowedForModerator()
 
 
 
-void YOGRemoveMap::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, boost::shared_ptr<YOGServerPlayer> player)
+void YOGRemoveMap::execute(YOGServer* server, YOGServerAdministrator* admin, const std::vector<std::string>& tokens, std::shared_ptr<YOGServerPlayer> player)
 {
 	std::string name = tokens[1];
 	if(server->getMapDatabank().doesMapExist(name))

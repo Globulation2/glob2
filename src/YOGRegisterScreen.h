@@ -39,7 +39,7 @@ class YOGRegisterScreen : public Glob2Screen, public YOGClientEventListener
 public:
 	///Construct with the given YOG client.
 	///The provided client should not yet be connected to YOG.
-	YOGRegisterScreen(boost::shared_ptr<YOGClient> client);
+	YOGRegisterScreen(std::shared_ptr<YOGClient> client);
 	///Destroy the screen
 	~YOGRegisterScreen();
 	enum
@@ -60,7 +60,7 @@ private:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	
 	///Responds to YOG events
-	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
+	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event);
 
 
 	///Attempt a registration with the entered information
@@ -73,7 +73,7 @@ private:
 	bool changeTabAgain;
 	
 
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 };
 
 #endif

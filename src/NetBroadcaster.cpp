@@ -23,7 +23,7 @@
 #include "StreamBackend.h"
 #include "SDLCompat.h" // for SDL_GetTicks64 fallback
 #include <iostream>
-#include "boost/lexical_cast.hpp"
+#include <string>
 
 using namespace GAGCore;
 

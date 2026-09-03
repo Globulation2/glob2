@@ -34,7 +34,7 @@
 #include "YOGClientGameListManager.h"
 
 using namespace GAGGUI;
-using boost::shared_ptr;
+using std::shared_ptr;
 
 LANFindScreen::LANFindScreen()
 {
@@ -119,7 +119,7 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			while(client->getConnectionState() != YOGClient::ClientOnStandby)
 				client->update();
 				
-			boost::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+			std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 			client->setMultiplayerGame(game);
 
 			while (client->getGameListManager()->getGameList().size() == 0)
@@ -138,7 +138,7 @@ void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
 			listener.disableListening();
 			int rc = screen.execute(globalContainer->gfx, 40);
 			listener.enableListening();
-			client->setMultiplayerGame(boost::shared_ptr<MultiplayerGame>());
+			client->setMultiplayerGame(std::shared_ptr<MultiplayerGame>());
 			if(rc == -1)
 				endExecute(-1);
 		}

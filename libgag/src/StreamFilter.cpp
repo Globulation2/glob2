@@ -42,7 +42,9 @@ namespace GAGCore
 		delete stream;
 		
 		// decompress
-		uncompress(&dest[0], &destLength, &source[0], compressedLength);
+		int zret = uncompress(&dest[0], &destLength, &source[0], compressedLength);
+		if (zret != Z_OK)
+			std::cerr << "CompressedInputStreamBackendFilter: uncompress failed with error " << zret << std::endl;
 		assert(destLength == uncompressedLength);
 		
 		this->write(&dest[0], uncompressedLength);
@@ -67,7 +69,9 @@ namespace GAGCore
 		std::valarray<unsigned char> dest(compressedLength);
 		
 		this->read(&source[0], uncompressedLength);
-		compress(&dest[0], (uLongf *)&compressedLength, &source[0], uncompressedLength);
+		int zret = compress2(&dest[0], (uLongf *)&compressedLength, &source[0], uncompressedLength, Z_DEFAULT_COMPRESSION);
+		if (zret != Z_OK)
+			std::cerr << "CompressedOutputStreamBackendFilter: compress2 failed with error " << zret << std::endl;
 		std::cout << "Compressing " << uncompressedLength <<  " bytes into " << compressedLength << " bytes." << std::endl;
 		
 		BinaryOutputStream *stream = new BinaryOutputStream(backend);

@@ -19,7 +19,7 @@
 #ifndef __NetMessage_h
 #define __NetMessage_h
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "GameHeader.h"
 #include "MapHeader.h"
 #include "MapThumbnail.h"
@@ -37,7 +37,7 @@
 #include "YOGAfterJoinGameInformation.h"
 
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 ///This is the enum of message types
 enum NetMessageType
@@ -159,17 +159,17 @@ public:
 	
 	///Creates a NetSendOrder message with the provided Order.
 	///This will assume ownership of the Order.
-	NetSendOrder(boost::shared_ptr<Order> newOrder);
+	NetSendOrder(std::shared_ptr<Order> newOrder);
 	
 	///Changes the Order that NetSendOrder holds. This will
 	///delete an Order that was already present.
-	void addOrder(boost::shared_ptr<Order> newOrder);
+	void addOrder(std::shared_ptr<Order> newOrder);
 	
 	///Returns the Order that NetSendOrder holds
-	boost::shared_ptr<Order> getOrder();
+	std::shared_ptr<Order> getOrder();
 
 	///Changes the Order that NetSendOrder holds
-	void changeOrder(boost::shared_ptr<Order> newOrder);
+	void changeOrder(std::shared_ptr<Order> newOrder);
 
 	///Returns MNetSendOrder
 	Uint8 getMessageType() const;
@@ -187,7 +187,7 @@ public:
 	///Compares with another NetSendOrder
 	bool operator==(const NetMessage& rhs) const;
 private:
-	boost::shared_ptr<Order> order;
+	std::shared_ptr<Order> order;
 };
 
 
@@ -723,7 +723,7 @@ class NetSendYOGMessage : public NetMessage
 {
 public:
 	///Creates a NetSendYOGMessage message
-	NetSendYOGMessage(Uint32 channel, boost::shared_ptr<YOGMessage> message);
+	NetSendYOGMessage(Uint32 channel, std::shared_ptr<YOGMessage> message);
 
 	///Creates a NetSendYOGMessage message
 	NetSendYOGMessage();
@@ -748,10 +748,10 @@ public:
 	Uint32 getChannel() const;
 	
 	///Returns the YOG message
-	boost::shared_ptr<YOGMessage> getMessage() const;
+	std::shared_ptr<YOGMessage> getMessage() const;
 private:
 	Uint32 channel;
-	boost::shared_ptr<YOGMessage> message;
+	std::shared_ptr<YOGMessage> message;
 };
 
 
@@ -1056,7 +1056,7 @@ public:
 
 	///Creates a NetSendFileChunk message to read off of the given stream,
 	///either untill the stream ends or the chunk size limit is reached
-	NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID);
+	NetSendFileChunk(std::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID);
 
 	///Returns MNetSendFileChunk
 	Uint8 getMessageType() const;

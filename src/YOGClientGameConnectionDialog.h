@@ -21,7 +21,7 @@
 
 #include "GUIBase.h"
 #include "MultiplayerGame.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "MultiplayerGameEvent.h"
 #include "MultiplayerGameEventListener.h"
 
@@ -40,7 +40,7 @@ namespace GAGCore
 class YOGClientGameConnectionDialog:public GAGGUI::OverlayScreen, public MultiplayerGameEventListener
 {
 public:
-	YOGClientGameConnectionDialog(GAGCore::GraphicContext *parentCtx, boost::shared_ptr<MultiplayerGame> game);
+	YOGClientGameConnectionDialog(GAGCore::GraphicContext *parentCtx, std::shared_ptr<MultiplayerGame> game);
 	virtual ~YOGClientGameConnectionDialog();
 	virtual void onAction(GAGGUI::Widget *source, GAGGUI::Action action, int par1, int par2);
 	
@@ -57,11 +57,11 @@ private:
 	///This function updates the multiplayer game
 	void updateGame();
 	///This handles an event from the multiplayer game
-	void handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event);
+	void handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event);
 
 	GAGGUI::Text* information;
 	GAGCore::GraphicContext *parentCtx;
-	boost::shared_ptr<MultiplayerGame> game;
+	std::shared_ptr<MultiplayerGame> game;
 };
 
 

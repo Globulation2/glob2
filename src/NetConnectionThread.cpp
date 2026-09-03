@@ -21,12 +21,12 @@
 #include "BinaryStream.h"
 #include "NetMessage.h"
 #include "SDLCompat.h"
-#include "boost/lexical_cast.hpp"
+#include <string>
 
 using namespace GAGCore;
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-NetConnectionThread::NetConnectionThread(std::queue<boost::shared_ptr<NetConnectionThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
+NetConnectionThread::NetConnectionThread(std::queue<std::shared_ptr<NetConnectionThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
 	: outgoing(outgoing),  outgoingMutex(outgoingMutex)
 {
 	set=SDLNet_AllocSocketSet(1);
@@ -52,9 +52,9 @@ void NetConnectionThread::operator()()
 			//First parse incoming thread messages
 			while(true)
 			{
-				boost::shared_ptr<NetConnectionThreadMessage> message;
+				std::shared_ptr<NetConnectionThreadMessage> message;
 				{
-					boost::recursive_mutex::scoped_lock lock(incomingMutex);
+					std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 					if(!incoming.empty())
 					{
 						message = incoming.front();
@@ -70,13 +70,13 @@ void NetConnectionThread::operator()()
 				{
 					case NTMConnect:
 					{
-						boost::shared_ptr<NTConnect> info = static_pointer_cast<NTConnect>(message);
+						std::shared_ptr<NTConnect> info = static_pointer_cast<NTConnect>(message);
 						if(!connected)
 						{
 							//Resolve the address
 							if(SDLNet_ResolveHost(&address, info->getServer().c_str(), info->getPort()) == -1)
 							{
-								boost::shared_ptr<NTCouldNotConnect> error(new NTCouldNotConnect(SDLNet_GetError()));
+								std::shared_ptr<NTCouldNotConnect> error(new NTCouldNotConnect(SDLNet_GetError()));
 								sendToMainThread(error);
 							}
 							else
@@ -85,14 +85,14 @@ void NetConnectionThread::operator()()
 								socket=SDLNet_TCP_Open(&address);
 								if(!socket)
 								{
-									boost::shared_ptr<NTCouldNotConnect> error(new NTCouldNotConnect(SDLNet_GetError()));
+									std::shared_ptr<NTCouldNotConnect> error(new NTCouldNotConnect(SDLNet_GetError()));
 									sendToMainThread(error);
 								}
 								else
 								{
 									SDLNet_TCP_AddSocket(set, socket);
 									connected=true;
-									boost::shared_ptr<NTConnected> connected(new NTConnected(info->getServer()));
+									std::shared_ptr<NTConnected> connected(new NTConnected(info->getServer()));
 									sendToMainThread(connected);
 								}
 							}
@@ -101,7 +101,7 @@ void NetConnectionThread::operator()()
 					break;
 					case NTMCloseConnection:
 					{
-						boost::shared_ptr<NTCloseConnection> info = static_pointer_cast<NTCloseConnection>(message);
+						std::shared_ptr<NTCloseConnection> info = static_pointer_cast<NTCloseConnection>(message);
 						if(connected)
 						{
 							closeConnection();
@@ -110,10 +110,10 @@ void NetConnectionThread::operator()()
 					break;
 					case NTMSendMessage:
 					{
-						boost::shared_ptr<NTSendMessage> info = static_pointer_cast<NTSendMessage>(message);
+						std::shared_ptr<NTSendMessage> info = static_pointer_cast<NTSendMessage>(message);
 						if(connected)
 						{
-							boost::shared_ptr<NetMessage> message = info->getMessage();
+							std::shared_ptr<NetMessage> message = info->getMessage();
 							//std::cout<<"Sending: "<<message->format()<<std::endl;
 							MemoryStreamBackend* msb = new MemoryStreamBackend;
 							BinaryOutputStream* bos = new BinaryOutputStream(msb);
@@ -131,7 +131,7 @@ void NetConnectionThread::operator()()
 							Uint32 result=SDLNet_TCP_Send(socket, newData, length+2);
 							if(result<(length+2))
 							{
-								boost::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
+								std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
 								sendToMainThread(error);
 								closeConnection();
 							}
@@ -154,7 +154,7 @@ void NetConnectionThread::operator()()
 					break;
 					case NTMAcceptConnection:
 					{
-						boost::shared_ptr<NTAcceptConnection> info = static_pointer_cast<NTAcceptConnection>(message);
+						std::shared_ptr<NTAcceptConnection> info = static_pointer_cast<NTAcceptConnection>(message);
 						if(!connected)
 						{
 							connected=true;
@@ -185,7 +185,7 @@ void NetConnectionThread::operator()()
 				//SDLNet_CheckSockets is used because it is non-blocking
 				if(numReady==-1)
 				{
-					boost::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
+					std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
 					sendToMainThread(error);
 					perror("SDLNet_CheckSockets");
 					if(connected)
@@ -199,7 +199,7 @@ void NetConnectionThread::operator()()
 					int amount = SDLNet_TCP_Recv(socket, lengthData, 2);
 					if(amount <= 0)
 					{
-						boost::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
+						std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
 						sendToMainThread(error);
 						closeConnection();
 					}
@@ -214,7 +214,7 @@ void NetConnectionThread::operator()()
 							amount = SDLNet_TCP_Recv(socket, data+i, 1);
 							if(amount <= 0)
 							{
-								boost::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
+								std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
 								sendToMainThread(error);
 								closeConnection();
 							}
@@ -238,7 +238,7 @@ void NetConnectionThread::operator()()
 
 							//Now interpret the message from the data, and add it to the queue
 							shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
-							boost::shared_ptr<NTRecievedMessage> recieved(new NTRecievedMessage(message));
+							std::shared_ptr<NTRecievedMessage> recieved(new NTRecievedMessage(message));
 							sendToMainThread(recieved);
 
 							//std::cout<<"Recieved: "<<message->format()<<std::endl;
@@ -260,9 +260,9 @@ void NetConnectionThread::operator()()
 
 
 
-void NetConnectionThread::sendMessage(boost::shared_ptr<NetConnectionThreadMessage> message)
+void NetConnectionThread::sendMessage(std::shared_ptr<NetConnectionThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	incoming.push(message);
 }
 
@@ -291,9 +291,9 @@ void NetConnectionThread::closeConnection()
 
 
 
-void NetConnectionThread::sendToMainThread(boost::shared_ptr<NetConnectionThreadMessage> message)
+void NetConnectionThread::sendToMainThread(std::shared_ptr<NetConnectionThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(outgoingMutex);
+	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
 	outgoing.push(message);
 }
 

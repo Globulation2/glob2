@@ -40,9 +40,9 @@
 #include "YOGLoginScreen.h"
 #include "YOGRegisterScreen.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-YOGLoginScreen::YOGLoginScreen(boost::shared_ptr<YOGClient> client)
+YOGLoginScreen::YOGLoginScreen(std::shared_ptr<YOGClient> client)
 	: client(client)
 {
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
@@ -160,7 +160,7 @@ void YOGLoginScreen::onTimer(Uint32 tick)
 
 
 
-void YOGLoginScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
+void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
 	//std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();

@@ -22,7 +22,7 @@
 
 #include <SDL_rwops.h>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 namespace GAGCore
 {
 	class InputStream;
@@ -77,7 +77,7 @@ public:
 
 	static std::string getAIText(int id);
 
-	boost::shared_ptr<Order> getOrder(bool paused);
+	std::shared_ptr<Order> getOrder(bool paused);
 
 //	Uint32 step;
 };

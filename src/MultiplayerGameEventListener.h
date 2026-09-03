@@ -20,7 +20,7 @@
 #define __MultiplayerGameEventListener_h
 
 #include "MultiplayerGameEvent.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 /// This is a mix-in class. Classes that want to respond to 
 /// MultiplayerGameEvents should derive from this class
@@ -30,7 +30,7 @@ public:
 	virtual ~MultiplayerGameEventListener() {}
 
 	///This responds to a Multiplayer Game event
-	virtual void handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event) = 0;
+	virtual void handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event) = 0;
 };
 
 

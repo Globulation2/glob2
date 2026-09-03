@@ -40,7 +40,7 @@ using namespace GAGGUI;
 #include "MapScript.h"
 
 #include <algorithm>
-#include "boost/lexical_cast.hpp"
+#include <string>
 
 
 ScriptEditorScreen::ScriptEditorScreen(Game *game)
@@ -87,13 +87,13 @@ ScriptEditorScreen::ScriptEditorScreen(Game *game)
 		primaryObjectives[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		objectivesWidgets.push_back(primaryObjectives[i]);
 		
-		primaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
+		primaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", std::to_string(i+1));
 		objectivesWidgets.push_back(primaryObjectiveLabels[i]);
 		
 		secondaryObjectives[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		objectivesWidgets.push_back(secondaryObjectives[i]);
 		
-		secondaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+9));
+		secondaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", std::to_string(i+9));
 		objectivesWidgets.push_back(secondaryObjectiveLabels[i]);
 	}
 	
@@ -107,7 +107,7 @@ ScriptEditorScreen::ScriptEditorScreen(Game *game)
 		hints[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		hintWidgets.push_back(hints[i]);
 		
-		hintLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
+		hintLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", std::to_string(i+1));
 		hintWidgets.push_back(hintLabels[i]);
 	}	
 	

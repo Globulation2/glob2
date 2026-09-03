@@ -121,7 +121,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("winningConditions");
 	stream->writeUint32(winningConditions.size(), "size");
 	int n=0;
-	for(std::list<boost::shared_ptr<WinningCondition> >::const_iterator i=winningConditions.begin(); i!=winningConditions.end(); ++i)
+	for(std::list<std::shared_ptr<WinningCondition> >::const_iterator i=winningConditions.begin(); i!=winningConditions.end(); ++i)
 	{
 		stream->writeEnterSection(n);
 		(*i)->encodeData(stream);
@@ -187,7 +187,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("winningConditions");
 	stream->writeUint32(winningConditions.size(), "size");
 	int n=0;
-	for(std::list<boost::shared_ptr<WinningCondition> >::const_iterator i=winningConditions.begin(); i!=winningConditions.end(); ++i)
+	for(std::list<std::shared_ptr<WinningCondition> >::const_iterator i=winningConditions.begin(); i!=winningConditions.end(); ++i)
 	{
 		stream->writeEnterSection(n);
 		(*i)->encodeData(stream);

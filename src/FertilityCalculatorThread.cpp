@@ -21,7 +21,7 @@
 
 #include "FertilityCalculatorThreadMessage.h"
 
-FertilityCalculatorThread::FertilityCalculatorThread(Map& map, std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
+FertilityCalculatorThread::FertilityCalculatorThread(Map& map, std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
 	: outgoing(outgoing), outgoingMutex(outgoingMutex), map(map)
 {
 }
@@ -74,15 +74,15 @@ void FertilityCalculatorThread::operator()()
 	}
 	
 	
-	boost::shared_ptr<FCTFertilityCompleted> message(new FCTFertilityCompleted);
+	std::shared_ptr<FCTFertilityCompleted> message(new FCTFertilityCompleted);
 	sendToMainThread(message);
 }
 
 
 
-void FertilityCalculatorThread::sendMessage(boost::shared_ptr<FertilityCalculatorThreadMessage> message)
+void FertilityCalculatorThread::sendMessage(std::shared_ptr<FertilityCalculatorThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	incoming.push(message);
 }
 
@@ -95,9 +95,9 @@ bool FertilityCalculatorThread::hasThreadExited()
 
 
 
-void FertilityCalculatorThread::sendToMainThread(boost::shared_ptr<FertilityCalculatorThreadMessage> message)
+void FertilityCalculatorThread::sendToMainThread(std::shared_ptr<FertilityCalculatorThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(outgoingMutex);
+	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
 	outgoing.push(message);
 }
 
@@ -189,7 +189,7 @@ void FertilityCalculatorThread::computeRessourcesGradient()
 
 void FertilityCalculatorThread::updatePercentComplete(float percent)
 {
-	boost::shared_ptr<FCTUpdateCompletionPercent> message(new FCTUpdateCompletionPercent(percent));
+	std::shared_ptr<FCTUpdateCompletionPercent> message(new FCTUpdateCompletionPercent(percent));
 	sendToMainThread(message);
 }
 

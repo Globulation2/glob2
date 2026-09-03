@@ -22,7 +22,7 @@
 #include <vector>
 #include <list>
 #include "boost/date_time/posix_time/posix_time.hpp"
-#include "boost/tuple/tuple.hpp"
+#include <tuple>
 #include "SDL_net.h"
 
 class YOGClient;
@@ -36,7 +36,7 @@ class YOGClientChatChannel
 public:
 	///Creates a new YOGClientChatChannel, with its channel id and then YOGClient to listen from
 	///Adds itself to the YOGClient to listen for chat events
-	YOGClientChatChannel(Uint32 channelID, boost::shared_ptr<YOGClient> client);
+	YOGClientChatChannel(Uint32 channelID, std::shared_ptr<YOGClient> client);
 
 	///Destroys the YOGClientChatChannel
 	~YOGClientChatChannel();
@@ -45,13 +45,13 @@ public:
 	Uint32 getHistorySize() const;
 
 	///Retrieves YOG message x, where 0 is the first message recieved, and higher gets more recent	
-	const boost::shared_ptr<YOGMessage> getMessage(Uint32 n) const;
+	const std::shared_ptr<YOGMessage> getMessage(Uint32 n) const;
 
 	///Retrieves the local time that YOG message x was recieved, where higher x gets more recent
 	boost::posix_time::ptime getMessageTime(Uint32 n) const;
 
 	///Sends a message through this channel
-	void sendMessage(boost::shared_ptr<YOGMessage> message);
+	void sendMessage(std::shared_ptr<YOGMessage> message);
 
 	///Returns the channel ID of this channel
 	Uint32 getChannelID() const;
@@ -69,15 +69,15 @@ protected:
 	friend class YOGClient;
 
 	///Recieves a message from the network (called by YOGClient)
-	void recieveMessage(boost::shared_ptr<YOGMessage> message);
+	void recieveMessage(std::shared_ptr<YOGMessage> message);
 
 	///This sends the message to all listeners
-	void sendToListeners(boost::shared_ptr<YOGMessage> message);
+	void sendToListeners(std::shared_ptr<YOGMessage> message);
 
 private:
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	Uint32 channelID;
-	std::vector<boost::tuple<boost::shared_ptr<YOGMessage>, boost::posix_time::ptime> > messageHistory;
+	std::vector<std::tuple<std::shared_ptr<YOGMessage>, boost::posix_time::ptime> > messageHistory;
 	std::list<YOGClientChatListener*> listeners;
 };
 

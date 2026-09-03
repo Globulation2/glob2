@@ -30,7 +30,7 @@
 #include <sstream>
 
 using namespace GAGCore;
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 YOGServerRouter::YOGServerRouter()
 	: nl(YOG_ROUTER_PORT), admin(this)
@@ -63,7 +63,7 @@ void YOGServerRouter::update()
 	}
 	
 	//Call update to all of the players
-	for(std::vector<boost::shared_ptr<YOGServerRouterPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+	for(std::vector<std::shared_ptr<YOGServerRouterPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 	{
 		(*i)->update();
 	}
@@ -75,7 +75,7 @@ void YOGServerRouter::update()
 	}
 
 	//Removes all players that have disconnected
-	for(std::vector<boost::shared_ptr<YOGServerRouterPlayer> >::iterator i = players.begin(); i!=players.end();)
+	for(std::vector<std::shared_ptr<YOGServerRouterPlayer> >::iterator i = players.begin(); i!=players.end();)
 	{
 		if(!(*i)->isConnected())
 		{
@@ -151,7 +151,7 @@ int YOGServerRouter::run()
 
 
 
-boost::shared_ptr<YOGServerGameRouter> YOGServerRouter::getGame(Uint16 gameID)
+std::shared_ptr<YOGServerGameRouter> YOGServerRouter::getGame(Uint16 gameID)
 {
 	if(games.find(gameID) == games.end())
 		games[gameID].reset(new YOGServerGameRouter);

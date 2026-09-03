@@ -25,7 +25,7 @@
 #include <queue>
 #include <SDL.h>
 #include <SDL_thread.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "config.h"
 
 #ifdef HAVE_PORTAUDIO
@@ -52,7 +52,7 @@ public:
 	//! Mutex for orders
 	SDL_mutex *ordersMutex;
 	//! Queue of orders to be sent through the network
-	std::queue<boost::shared_ptr<OrderVoiceData> > orders;
+	std::queue<std::shared_ptr<OrderVoiceData> > orders;
 	//! True when recording
 	bool recordingNow;
 	
@@ -81,6 +81,6 @@ public:
 	//! Stop recording
 	void stopRecording(void);
 	//! Return the next voice data order from the internal queue
-	boost::shared_ptr<OrderVoiceData> getNextOrder(void);
+	std::shared_ptr<OrderVoiceData> getNextOrder(void);
 };
 #endif

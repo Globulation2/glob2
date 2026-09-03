@@ -20,7 +20,7 @@
 #include "YOGClientPlayerListListener.h"
 #include "NetMessage.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 YOGClientPlayerListManager::YOGClientPlayerListManager(YOGClient* client)
 	: client(client)
@@ -30,7 +30,7 @@ YOGClientPlayerListManager::YOGClientPlayerListManager(YOGClient* client)
 
 
 
-void YOGClientPlayerListManager::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientPlayerListManager::recieveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	if(type==MNetUpdatePlayerList)

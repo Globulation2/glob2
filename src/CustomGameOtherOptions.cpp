@@ -171,11 +171,11 @@ void CustomGameOtherOptions::onAction(Widget *source, Action action, int par1, i
 
 void CustomGameOtherOptions::updateGameHeaderWinningConditions()
 {
-	std::list<boost::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
+	std::list<std::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
 	winningConditions = WinningCondition::getDefaultWinningConditions();
 	
 	//Update the prestige condition
-	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
+	for(std::list<std::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
 	{
 		if((*i)->getType() == WCPrestige)
 		{
@@ -198,11 +198,11 @@ void CustomGameOtherOptions::updateGameHeaderWinningConditions()
 
 void CustomGameOtherOptions::updateScreenWinningConditions()
 {
-	std::list<boost::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
+	std::list<std::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
 	
 	//Update the prestige condition
 	prestigeWinEnabled->setState(false);
-	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
+	for(std::list<std::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
 	{
 		if((*i)->getType() == WCPrestige)
 		{

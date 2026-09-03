@@ -19,7 +19,7 @@
 #ifndef __YOGClientEventListener_h
 #define __YOGClientEventListener_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 class YOGClientEvent;
 
@@ -31,7 +31,7 @@ public:
 	virtual ~YOGClientEventListener() {}
 
 	///This responds to a YOG event
-	virtual void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event) = 0;
+	virtual void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event) = 0;
 };
 
 

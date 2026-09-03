@@ -20,8 +20,7 @@
 #ifndef YOGServerRouterPlayer_h
 #define YOGServerRouterPlayer_h
 
-#include "boost/shared_ptr.hpp"
-#include "boost/weak_ptr.hpp"
+#include <memory>
 #include "YOGServerRouterAdministrator.h"
 
 class NetConnection;
@@ -34,13 +33,13 @@ class YOGServerRouterPlayer
 {
 public:
 	///Constructs a YOGServerRouterPlayer to use the given net connection
-	YOGServerRouterPlayer(boost::shared_ptr<NetConnection> connection, YOGServerRouter* router);
+	YOGServerRouterPlayer(std::shared_ptr<NetConnection> connection, YOGServerRouter* router);
 
 	///Provides a weak pointer to this class
-	void setPointer(boost::weak_ptr<YOGServerRouterPlayer> pointer);
+	void setPointer(std::weak_ptr<YOGServerRouterPlayer> pointer);
 
 	///Sends a message to the player
-	void sendNetMessage(boost::shared_ptr<NetMessage> message);
+	void sendNetMessage(std::shared_ptr<NetMessage> message);
 
 	///Updates this player
 	void update();
@@ -52,10 +51,10 @@ public:
 	bool isAdministrator();
 
 private:
-	boost::shared_ptr<NetConnection> connection;
-	boost::shared_ptr<YOGServerGameRouter> game;
+	std::shared_ptr<NetConnection> connection;
+	std::shared_ptr<YOGServerGameRouter> game;
 	YOGServerRouter* router;
-	boost::weak_ptr<YOGServerRouterPlayer> pointer;
+	std::weak_ptr<YOGServerRouterPlayer> pointer;
 	bool isAdmin;
 };
 

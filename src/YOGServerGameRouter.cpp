@@ -28,7 +28,7 @@ YOGServerGameRouter::YOGServerGameRouter()
 
 
 
-void YOGServerGameRouter::addPlayer(boost::shared_ptr<YOGServerRouterPlayer> player)
+void YOGServerGameRouter::addPlayer(std::shared_ptr<YOGServerRouterPlayer> player)
 {
 	players.push_back(player);
 }
@@ -37,7 +37,7 @@ void YOGServerGameRouter::addPlayer(boost::shared_ptr<YOGServerRouterPlayer> pla
 
 void YOGServerGameRouter::update()
 {
-	for(std::vector<boost::shared_ptr<YOGServerRouterPlayer> >::iterator i=players.begin(); i!=players.end();)
+	for(std::vector<std::shared_ptr<YOGServerRouterPlayer> >::iterator i=players.begin(); i!=players.end();)
 	{
 		if(!(*i)->isConnected())
 		{
@@ -63,9 +63,9 @@ bool YOGServerGameRouter::isEmpty()
 
 
 
-void YOGServerGameRouter::routeMessage(boost::shared_ptr<NetMessage> message, YOGServerRouterPlayer* sender)
+void YOGServerGameRouter::routeMessage(std::shared_ptr<NetMessage> message, YOGServerRouterPlayer* sender)
 {
-	for(std::vector<boost::shared_ptr<YOGServerRouterPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
+	for(std::vector<std::shared_ptr<YOGServerRouterPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 	{
 		if(i->get() != sender)
 		{

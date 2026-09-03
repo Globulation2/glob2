@@ -4,7 +4,7 @@ Import("env")
 Import("PackTar")
     
     
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     any=False
     for file in os.listdir("."):
         if file.find(".spec")!=-1:

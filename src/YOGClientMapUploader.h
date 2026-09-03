@@ -19,7 +19,7 @@
 #ifndef YOGClientMapUploader_h
 #define YOGClientMapUploader_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "YOGConsts.h"
 #include <string>
 
@@ -31,7 +31,7 @@ class YOGClientMapUploader
 {
 public:
 	///Constructs a map uploader
-	YOGClientMapUploader(boost::shared_ptr<YOGClient> client);
+	YOGClientMapUploader(std::shared_ptr<YOGClient> client);
 	
 	///Removes the map uploader
 	~YOGClientMapUploader();
@@ -43,7 +43,7 @@ public:
 	void cancelUpload();
 	
 	///This recieves a message from the server
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void recieveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This updates the uploader
 	void update();
@@ -68,7 +68,7 @@ public:
 	int getCompressedSize(const std::string& mapName);
 private:
 	UploadingState state;
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	Uint16 fileID;
 	YOGMapUploadRefusalReason reason;
 	std::string mapFile;

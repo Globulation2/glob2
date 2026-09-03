@@ -19,8 +19,7 @@
 #ifndef __YOGServerPlayer_h
 #define __YOGServerPlayer_h
 
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 #include <list>
 #include "NetConnection.h"
 #include "YOGConsts.h"
@@ -33,7 +32,7 @@ class YOGServerGame;
 class NetMessage;
 class P2PManager;
 
-using boost::weak_ptr;
+using std::weak_ptr;
 ///This represents a connected user on the YOG server.
 class YOGServerPlayer
 {
@@ -68,7 +67,7 @@ public:
 	std::string getPlayerIP();
 
 	///Returns the game the player is connected to
-	boost::shared_ptr<YOGServerGame> getGame();
+	std::shared_ptr<YOGServerGame> getGame();
 
 	///Returns the players ping such that, statistically, 99.7% of all pings from this client
 	///would be under this amount, so long as pings are normally distributed, which I've

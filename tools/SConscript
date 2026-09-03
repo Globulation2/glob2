@@ -9,7 +9,7 @@ if "mksprite" in COMMAND_LINE_TARGETS:
 Import("env")
 Import("PackTar")
     
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "mksprite.cpp")
     PackTar(env["TARFILE"], "README")
     

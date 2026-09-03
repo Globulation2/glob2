@@ -24,7 +24,7 @@
 #include "../gnupg/sha1.c"
 #include "Version.h"
 
-#include <boost/lexical_cast.hpp>
+#include <string>
 
 #include <iostream>
 
@@ -118,7 +118,7 @@ std::string YOGServerPasswordRegistry::transform(const std::string& username, co
 	int i=1;
 	while(salted.size() < 50)
 	{
-		salted+=boost::lexical_cast<std::string>(i);
+		salted+=std::to_string(i);
 		i+=1;
 	}
 	///Perform SHA1, a cast must be performed to get the data to the right type, but
@@ -130,6 +130,10 @@ std::string YOGServerPasswordRegistry::transform(const std::string& username, co
 	SHA1Final(digest, &context);
 	std::string final = "";
 	for(int i=0; i<20; ++i)
-		final += boost::lexical_cast<std::string>(digest[i]) + "-";
+	{
+		// stored hashes encode each digest byte as a raw character, not as decimal
+		final += static_cast<char>(digest[i]);
+		final += '-';
+	}
 	return final;
 }

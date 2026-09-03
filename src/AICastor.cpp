@@ -34,7 +34,7 @@
 #define AI_FILE_MIN_VERSION 1
 #define AI_FILE_VERSION 2
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 // AICastor::Project part:
 
@@ -380,7 +380,7 @@ void AICastor::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
-boost::shared_ptr<Order>AICastor::getOrder()
+std::shared_ptr<Order>AICastor::getOrder()
 {
 	timer++;
 	
@@ -476,7 +476,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 	
 	/*// Defense, we check it first, because it will only return true if there is an attack and free warriors
 	{
-		boost::shared_ptr<Order>order = controlBaseDefense();
+		std::shared_ptr<Order>order = controlBaseDefense();
 		if (order)
 			return order;
 	}*/
@@ -509,7 +509,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 	{
 		computeWarLevel();
 		controlSwarmsTimer=timer+256; // each 10s
-		boost::shared_ptr<Order>order=controlSwarms();
+		std::shared_ptr<Order>order=controlSwarms();
 		if (order)
 			return order;
 	}
@@ -533,7 +533,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 			int real=buildingSum[(*pi)->shortTypeNum][0];
 			if (real<=minReal)
 			{
-				boost::shared_ptr<Order>order=continueProject(*pi);
+				std::shared_ptr<Order>order=continueProject(*pi);
 				if (order)
 					return order;
 			}
@@ -544,7 +544,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 			int real=buildingSum[(*pi)->shortTypeNum][0];
 			if (real>minReal)
 			{
-				boost::shared_ptr<Order>order=continueProject(*pi);
+				std::shared_ptr<Order>order=continueProject(*pi);
 				if (order)
 					return order;
 			}
@@ -553,7 +553,7 @@ boost::shared_ptr<Order>AICastor::getOrder()
 	if (priority>0 && timer>expandFoodTimer)
 	{
 		expandFoodTimer=timer+256; // each 10s
-		boost::shared_ptr<Order>order=expandFood();
+		std::shared_ptr<Order>order=expandFood();
 		if (order)
 			return order;
 	}
@@ -580,21 +580,21 @@ boost::shared_ptr<Order>AICastor::getOrder()
 	
 	if (priority>0)
 	{
-		boost::shared_ptr<Order>order=controlFood();
+		std::shared_ptr<Order>order=controlFood();
 		if (order)
 			return order;
 	}
 	
 	if (priority>0)
 	{
-		boost::shared_ptr<Order>order=controlUpgrades();
+		std::shared_ptr<Order>order=controlUpgrades();
 		if (order)
 			return order;
 	}
 	
 	if (timer>controlStrikesTimer)
 	{
-		boost::shared_ptr<Order>order=controlStrikes();
+		std::shared_ptr<Order>order=controlStrikes();
 		if (order)
 			return order;
 	}
@@ -707,7 +707,7 @@ void AICastor::defineStrategy()
 	strategy.maxAmountGoal=10;
 }
 
-boost::shared_ptr<Order>AICastor::controlSwarms()
+std::shared_ptr<Order>AICastor::controlSwarms()
 {
 	Sint32 warriorGoal=warLevel;
 	
@@ -834,7 +834,7 @@ boost::shared_ptr<Order>AICastor::controlSwarms()
 	return shared_ptr<Order>();
 }
 
-boost::shared_ptr<Order>AICastor::expandFood()
+std::shared_ptr<Order>AICastor::expandFood()
 {
 	if (foodSurplus
 		|| (!foodWarning && !enoughFreeWorkers())
@@ -860,7 +860,7 @@ boost::shared_ptr<Order>AICastor::expandFood()
 	return findGoodBuilding(typeNum, true, false, false);
 }
 
-boost::shared_ptr<Order>AICastor::controlFood()
+std::shared_ptr<Order>AICastor::controlFood()
 {
 	//int w=map->w;
 	//int h=map->h;
@@ -967,7 +967,7 @@ boost::shared_ptr<Order>AICastor::controlFood()
 	return shared_ptr<Order>();
 }
 
-boost::shared_ptr<Order>AICastor::controlUpgrades()
+std::shared_ptr<Order>AICastor::controlUpgrades()
 {
 	//printf("controlUpgrades(), controlUpgradeTimer=%d, controlUpgradeDelay=%d, buildsAmount=%d\n",
 	//	controlUpgradeTimer, controlUpgradeDelay, buildsAmount);
@@ -1065,7 +1065,7 @@ boost::shared_ptr<Order>AICastor::controlUpgrades()
 
 
 // WARNING : Using wasEvent is *NOT* safe, and will *NOT* work through the network
-/*boost::shared_ptr<Order>AICastor::controlBaseDefense()
+/*std::shared_ptr<Order>AICastor::controlBaseDefense()
 {
 	int freeWarriors = team->stats.getFreeUnits(WARRIOR);
 	if (team->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) && (freeWarriors>0))
@@ -1081,7 +1081,7 @@ boost::shared_ptr<Order>AICastor::controlUpgrades()
 }*/
 
 
-boost::shared_ptr<Order>AICastor::controlStrikes()
+std::shared_ptr<Order>AICastor::controlStrikes()
 {
 	controlStrikesTimer=timer+64;
 	
@@ -1465,7 +1465,7 @@ void AICastor::addProjects()
 	}
 }
 
-boost::shared_ptr<Order>AICastor::continueProject(Project *project)
+std::shared_ptr<Order>AICastor::continueProject(Project *project)
 {
 	// Phase alpha will make a new Food Building at any price.
 	//printf("(%s)(stn=%d, f=%d, w=[%d, %d, %d], ms=%d, wf=%d), sp=%d\n",
@@ -1518,7 +1518,7 @@ boost::shared_ptr<Order>AICastor::continueProject(Project *project)
 		computeWorkRangeMap();
 		computeWorkAbilityMap();
 		
-		boost::shared_ptr<Order>gfbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
+		std::shared_ptr<Order>gfbm=findGoodBuilding(typeNum, project->food, project->defense, project->critical);
 		project->timer=timer;
 		if (gfbm)
 		{
@@ -2729,7 +2729,7 @@ void AICastor::computeEnemyWarriorsMap()
 	map->updateGlobalGradientSlow(gradient);
 }
 
-boost::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical)
+std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical)
 {
 	int w=map->w;
 	int h=map->h;

@@ -87,7 +87,7 @@ class YOGClientLobbyScreen : public TabScreenWindow, public YOGClientEventListen
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
-	YOGClientLobbyScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
+	YOGClientLobbyScreen(TabScreen* parent, std::shared_ptr<YOGClient> client);
 
 	virtual ~YOGClientLobbyScreen();
 	
@@ -96,11 +96,11 @@ public:
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
 	///Responds to YOG events
-	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
+	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event);
 	///Handle text message events from IRCTextMessageHandler
 	void handleIRCTextMessage(const std::string& message);
 	///Handles text message events from the YOGClientChatChannel
-	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
+	void recieveTextMessage(std::shared_ptr<YOGMessage> message);
 	///Handles an internal message
 	void recieveInternalMessage(const std::string& message);
 	///Handles when the game list has been updated from YOGClientGameListManager
@@ -154,9 +154,9 @@ private:
 	TextButton *joinButton;
 	TextButton *hostButton;
 
-	boost::shared_ptr<YOGClient> client;
-	boost::shared_ptr<YOGClientChatChannel> lobbyChat;
-	boost::shared_ptr<IRCTextMessageHandler> ircChat;
+	std::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClientChatChannel> lobbyChat;
+	std::shared_ptr<IRCTextMessageHandler> ircChat;
 	
 	int gameScreen;
 

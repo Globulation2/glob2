@@ -20,7 +20,7 @@
 #define __YOGServerAdministrator_h
 
 #include <string>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include <vector>
 
 class YOGServer;
@@ -40,10 +40,10 @@ public:
 	///Interprets whether the given message is an administrative command,
 	///and if so, executes it. If it was, returns true, otherwise, returns
 	///false
-	bool executeAdministrativeCommand(const std::string& message, boost::shared_ptr<YOGServerPlayer> player, bool moderator);
+	bool executeAdministrativeCommand(const std::string& message, std::shared_ptr<YOGServerPlayer> player, bool moderator);
 	
 	///This sends a message to the player from the administrator engine
-	void sendTextMessage(const std::string& message, boost::shared_ptr<YOGServerPlayer> player);
+	void sendTextMessage(const std::string& message, std::shared_ptr<YOGServerPlayer> player);
 
 private:
 

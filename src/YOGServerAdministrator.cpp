@@ -53,7 +53,7 @@ YOGServerAdministrator::~YOGServerAdministrator()
 
 	
 
-bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message, boost::shared_ptr<YOGServerPlayer> player, bool moderator)
+bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message, std::shared_ptr<YOGServerPlayer> player, bool moderator)
 {
 	std::vector<std::string> tokens;
 	std::string token;
@@ -132,10 +132,10 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 }
 
 
-void YOGServerAdministrator::sendTextMessage(const std::string& message, boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerAdministrator::sendTextMessage(const std::string& message, std::shared_ptr<YOGServerPlayer> player)
 {
-	boost::shared_ptr<YOGMessage> m(new YOGMessage(message, "admin", YOGAdministratorMessage));
-	boost::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
+	std::shared_ptr<YOGMessage> m(new YOGMessage(message, "admin", YOGAdministratorMessage));
+	std::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
 	player->sendMessage(send);
 }
 

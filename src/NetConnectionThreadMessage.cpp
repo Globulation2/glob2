@@ -229,7 +229,7 @@ std::string NTLostConnection::getError() const
 
 
 
-NTRecievedMessage::NTRecievedMessage(boost::shared_ptr<NetMessage> message)
+NTRecievedMessage::NTRecievedMessage(std::shared_ptr<NetMessage> message)
 	: message(message)
 {
 }
@@ -264,14 +264,14 @@ bool NTRecievedMessage::operator==(const NetConnectionThreadMessage& rhs) const
 }
 
 
-boost::shared_ptr<NetMessage> NTRecievedMessage::getMessage() const
+std::shared_ptr<NetMessage> NTRecievedMessage::getMessage() const
 {
 	return message;
 }
 
 
 
-NTSendMessage::NTSendMessage(boost::shared_ptr<NetMessage> message)
+NTSendMessage::NTSendMessage(std::shared_ptr<NetMessage> message)
 	: message(message)
 {
 }
@@ -306,7 +306,7 @@ bool NTSendMessage::operator==(const NetConnectionThreadMessage& rhs) const
 }
 
 
-boost::shared_ptr<NetMessage> NTSendMessage::getMessage() const
+std::shared_ptr<NetMessage> NTSendMessage::getMessage() const
 {
 	return message;
 }

@@ -18,7 +18,7 @@
 
 
 #include <string>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include <vector>
 #include "NetMessage.h"
 #include "YOGServerRouterAdministrator.h"
@@ -136,7 +136,7 @@ void YOGServerRouterAdministrator::sendTextMessage(const std::string& message, Y
 
 void YOGServerRouterAdministrator::flushTexts(YOGServerRouterPlayer* admin)
 {
-	boost::shared_ptr<NetRouterAdministratorSendText> text(new NetRouterAdministratorSendText(allText));
+	std::shared_ptr<NetRouterAdministratorSendText> text(new NetRouterAdministratorSendText(allText));
 	admin->sendNetMessage(text);
 	allText.clear();
 }

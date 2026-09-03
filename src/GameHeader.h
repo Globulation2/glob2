@@ -102,7 +102,7 @@ public:
 	
 	///Returns the list of winning conditions. This list can be modified. Mind, though, the pecking order of winning conditions.
 	///Ones first on the list are considered first.
-	inline std::list<boost::shared_ptr<WinningCondition> >& getWinningConditions() { return winningConditions; }
+	inline std::list<std::shared_ptr<WinningCondition> >& getWinningConditions() { return winningConditions; }
 	
 	///Returns the random generator seed thats being used
 	inline Uint32 getRandomSeed() const { return seed; }
@@ -136,7 +136,7 @@ private:
 	bool allyTeamsFixed;
 	
 	///Represents the winning conditions of the game.
-	std::list<boost::shared_ptr<WinningCondition> > winningConditions;
+	std::list<std::shared_ptr<WinningCondition> > winningConditions;
 
 	///Represents the random seed used for the game
 	Uint32 seed;

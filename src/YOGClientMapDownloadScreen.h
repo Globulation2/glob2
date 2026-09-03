@@ -20,7 +20,7 @@
 #define YOGClientMapDownloadScreen_h
 
 #include "GUITabScreenWindow.h"
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "YOGClientDownloadableMapListener.h"
 
 namespace GAGGUI
@@ -44,7 +44,7 @@ using namespace GAGGUI;
 class YOGClientMapDownloadScreen : public TabScreenWindow, public YOGClientDownloadableMapListener
 {
 public:
-	YOGClientMapDownloadScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
+	YOGClientMapDownloadScreen(TabScreen* parent, std::shared_ptr<YOGClient> client);
 	~YOGClientMapDownloadScreen();
 	///Responds to timer events
 	virtual void onTimer(Uint32 tick);
@@ -79,7 +79,7 @@ private:
 	void updateMapPreview();
 
 
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	List* mapList;
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;

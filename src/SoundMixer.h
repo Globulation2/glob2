@@ -27,7 +27,7 @@
 #include <vector>
 #include <queue>
 #include <map>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 class OrderVoiceData;
 
@@ -89,7 +89,7 @@ public:
 	bool isPlayerTransmittingVoice(int player);
 	
 	//! Add voice data from order. Data should be copied as order will be destroyed after this call
-	void addVoiceData(boost::shared_ptr<OrderVoiceData> order);
+	void addVoiceData(std::shared_ptr<OrderVoiceData> order);
 };
 
 #endif

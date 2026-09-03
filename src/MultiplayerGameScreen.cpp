@@ -40,9 +40,9 @@
 #include "YOGMessage.h"
 #include "CustomGameOtherOptions.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
+MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat)
 	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
@@ -199,7 +199,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	{
 		if(textInput->getText() != "")
 		{
-			boost::shared_ptr<YOGMessage> message(new YOGMessage(textInput->getText(), game->getUsername(), YOGNormalMessage));
+			std::shared_ptr<YOGMessage> message(new YOGMessage(textInput->getText(), game->getUsername(), YOGNormalMessage));
 			gameChat->sendMessage(message);
 			textInput->setText("");
 		}
@@ -208,7 +208,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 
 
 
-void MultiplayerGameScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
+void MultiplayerGameScreen::recieveTextMessage(std::shared_ptr<YOGMessage> message)
 {
 	chatWindow->addText(message->formatForReading());
 	chatWindow->addText("\n");
@@ -217,7 +217,7 @@ void MultiplayerGameScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> mes
 
 
 
-void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event)
+void MultiplayerGameScreen::handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event)
 {
 	Uint8 type = event->getEventType();
 	if(type == MGEPlayerListChanged)
