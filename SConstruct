@@ -303,7 +303,7 @@ def main():
 
     if env['release']:
         env.Append(CXXFLAGS=' -O3 -s')
-        env.Append(LINKFLAGS=' -O3 -s --fwhole-program')
+        env.Append(LINKFLAGS=' -O3 -s -fwhole-program')
     if env['profile']:
         env.Append(CXXFLAGS=' -pg')
         env.Append(LINKFLAGS='-pg')
