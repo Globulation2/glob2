@@ -60,12 +60,17 @@ SettingsScreen::SettingsScreen()
 	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
 	addWidgetToGroup(language, generalGroup);
 	languageList=new List(20, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	Font *listFont = Toolkit::getFont("standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 	{
-		if(!Toolkit::getStringTable()->isLangComplete(i))
-			languageList->addText(Toolkit::getStringTable()->getStringInLang("[language incomplete]", i));
-		else
-			languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
+		bool complete = Toolkit::getStringTable()->isLangComplete(i);
+		std::string label = Toolkit::getStringTable()->getStringInLang(complete ? "[language]" : "[language incomplete]", i);
+		// The language's own name can use glyphs this font doesn't have (e.g.
+		// Chinese in the bundled sans-serif), which would otherwise render as
+		// a row of tofu boxes. Fall back to the (always-Latin) language code.
+		if (!listFont->hasGlyphsFor(label))
+			label = Toolkit::getStringTable()->getStringInLang("[language-code]", i) + " - missing font";
+		languageList->addText(label);
 	}
 	addWidgetToGroup(languageList, generalGroup);
 

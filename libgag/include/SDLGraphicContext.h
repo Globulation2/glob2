@@ -133,7 +133,10 @@ namespace GAGCore
 	public:
 		//! Destructor
 		virtual ~Font() { }
-	
+
+		//! Whether every character of this UTF-8 string has a glyph in this font
+		virtual bool hasGlyphsFor(const std::string &utf8Text) { return true; }
+
 		// width and height
 		virtual int getStringWidth(const std::string string) = 0;
 		virtual int getStringWidth(const std::string string, int len);

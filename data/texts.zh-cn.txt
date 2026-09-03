@@ -469,7 +469,7 @@ LAN 游戏
 [language incomplete]
 繁体中文 - Incomplete
 [language-code]
-zh-tw
+zh-cn
 [language-tr]
 语言
 [language]
