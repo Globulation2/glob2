@@ -52,93 +52,84 @@ void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order>& order)
 {
 	// When an order executes that updates the authoritative Building state,
 	// drop the corresponding pending shadow so the display falls back to
-	// authoritative. For the LOCAL player's own orders during live play we
-	// leave pending alone — the user may have already queued a newer change
-	// past the one that just landed, and we want the display to track the
-	// latest user intent, not flicker back to the now-stale authoritative
-	// value. Replays clear pending unconditionally because every order
-	// represents the authoritative timeline.
+	// authoritative. For the LOCAL player's own orders during live play the
+	// shadow is only dropped when the order carries the pending value: a
+	// newer change the user queued past the one that just landed stays
+	// visible, while a landed request no longer masks later changes the
+	// simulation makes on its own, such as a finished construction site
+	// taking its finished-building count. Replays clear pending
+	// unconditionally because every order represents the authoritative
+	// timeline.
 	const bool replaying = globalContainer->replaying;
+	auto landed = [&](const Order& o) { return o.sender != localPlayer || replaying; };
 	switch (order->getOrderType())
 	{
 		case ORDER_MOVE_FLAG:
 		{
 			auto omf = std::static_pointer_cast<OrderMoveFlag>(order);
-			if (omf->sender != localPlayer || replaying)
+			auto it = buildingGuiState.find(omf->gid);
+			if (it != buildingGuiState.end()
+				&& (landed(*omf) || (it->second.pendingPosX == omf->x && it->second.pendingPosY == omf->y)))
 			{
-				auto it = buildingGuiState.find(omf->gid);
-				if (it != buildingGuiState.end())
-				{
-					it->second.pendingPosX.reset();
-					it->second.pendingPosY.reset();
-				}
+				it->second.pendingPosX.reset();
+				it->second.pendingPosY.reset();
 			}
 			break;
 		}
 		case ORDER_MODIFY_BUILDING:
 		{
 			auto omb = std::static_pointer_cast<OrderModifyBuilding>(order);
-			if (omb->sender != localPlayer || replaying)
-			{
-				auto it = buildingGuiState.find(omb->gid);
-				if (it != buildingGuiState.end())
-					it->second.pendingMaxUnitWorking.reset();
-			}
+			auto it = buildingGuiState.find(omb->gid);
+			if (it != buildingGuiState.end()
+				&& (landed(*omb) || it->second.pendingMaxUnitWorking == omb->numberRequested))
+				it->second.pendingMaxUnitWorking.reset();
 			break;
 		}
 		case ORDER_MODIFY_FLAG:
 		{
 			auto omf = std::static_pointer_cast<OrderModifyFlag>(order);
-			if (omf->sender != localPlayer || replaying)
-			{
-				auto it = buildingGuiState.find(omf->gid);
-				if (it != buildingGuiState.end())
-					it->second.pendingUnitStayRange.reset();
-			}
+			auto it = buildingGuiState.find(omf->gid);
+			if (it != buildingGuiState.end()
+				&& (landed(*omf) || it->second.pendingUnitStayRange == omf->range))
+				it->second.pendingUnitStayRange.reset();
 			break;
 		}
 		case ORDER_CHANGE_PRIORITY:
 		{
 			auto ocp = std::static_pointer_cast<OrderChangePriority>(order);
-			if (ocp->sender != localPlayer || replaying)
-			{
-				auto it = buildingGuiState.find(ocp->gid);
-				if (it != buildingGuiState.end())
-					it->second.pendingPriority.reset();
-			}
+			auto it = buildingGuiState.find(ocp->gid);
+			if (it != buildingGuiState.end()
+				&& (landed(*ocp) || it->second.pendingPriority == ocp->priority))
+				it->second.pendingPriority.reset();
 			break;
 		}
 		case ORDER_MODIFY_CLEARING_FLAG:
 		{
 			auto omcf = std::static_pointer_cast<OrderModifyClearingFlag>(order);
-			if (omcf->sender != localPlayer || replaying)
-			{
-				auto it = buildingGuiState.find(omcf->gid);
-				if (it != buildingGuiState.end())
-					it->second.pendingClearingRessources.reset();
-			}
+			auto it = buildingGuiState.find(omcf->gid);
+			if (it != buildingGuiState.end()
+				&& (landed(*omcf) || (it->second.pendingClearingRessources
+					&& std::equal(omcf->clearingRessources, omcf->clearingRessources + BASIC_COUNT, it->second.pendingClearingRessources->begin()))))
+				it->second.pendingClearingRessources.reset();
 			break;
 		}
 		case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
 		{
 			auto omw = std::static_pointer_cast<OrderModifyMinLevelToFlag>(order);
-			if (omw->sender != localPlayer || replaying)
-			{
-				auto it = buildingGuiState.find(omw->gid);
-				if (it != buildingGuiState.end())
-					it->second.pendingMinLevelToFlag.reset();
-			}
+			auto it = buildingGuiState.find(omw->gid);
+			if (it != buildingGuiState.end()
+				&& (landed(*omw) || it->second.pendingMinLevelToFlag == omw->minLevelToFlag))
+				it->second.pendingMinLevelToFlag.reset();
 			break;
 		}
 		case ORDER_MODIFY_SWARM:
 		{
 			auto oms = std::static_pointer_cast<OrderModifySwarm>(order);
-			if (oms->sender != localPlayer || replaying)
-			{
-				auto it = buildingGuiState.find(oms->gid);
-				if (it != buildingGuiState.end())
-					it->second.pendingRatio.reset();
-			}
+			auto it = buildingGuiState.find(oms->gid);
+			if (it != buildingGuiState.end()
+				&& (landed(*oms) || (it->second.pendingRatio
+					&& std::equal(oms->ratio, oms->ratio + NB_UNIT_TYPE, it->second.pendingRatio->begin()))))
+				it->second.pendingRatio.reset();
 			break;
 		}
 		default:
