@@ -87,6 +87,11 @@ inline float hoverDistance(float anchorV) {
     // opposite side cannot get between the camera and the selected location.
     return 1.5f+16.5f*smooth((std::cos(latitude(anchorV,1))+1)*0.5f);
 }
+// Keep focal length constant while the camera approaches the inner wall.
+// Otherwise preserving the same on-surface scale widens the lens to ~140 degrees.
+inline float hoverScale(float anchorV) {
+    return hoverDistance(0.5f)/hoverDistance(anchorV);
+}
 // Fade from native 2D map dimensions to the uniform 3D ring mapping.
 inline float verticalScale(float, float, float roll, float aspect) {
     return std::exp((1-smooth(roll))*std::log(4/aspect));

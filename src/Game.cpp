@@ -2914,7 +2914,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	// compute and draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		ds.compute(viewportX, viewportY, sw, sh, time);
+		ds.compute(viewportX, viewportY, sw, sh, SDL_GetTicks()/40, map.getW(), map.getH());
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 

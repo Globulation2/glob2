@@ -33,7 +33,8 @@ buildings and painting areas. The game keeps running in either view. The center 
 that will fill the 2D view when you return. The map has a fixed placement on the
 ring: navigation moves a hovering camera along its surface. The camera follows
 the local tangent orientation and moves closer inside the hole to keep the
-selected patch visible. Returning to 2D unfolds around that new position.
+selected patch visible. The focal length stays constant as it approaches the
+inner wall, producing a closer view instead of a widening, distorted lens. Returning to 2D unfolds around that new position.
 
 The launcher stores all preferences, saves and replays in
 `experiment/profile`, avoiding the regular `~/.glob2` directory. The build,
@@ -57,7 +58,9 @@ This prototype requires OpenGL and a framebuffer-capable compatibility
 context. Sprite artwork lies on the surface; buildings are not extruded 3D
 models. The normal animated cloud and shadow layers are included in 3D when high-quality
 graphics are enabled, at the atlas refresh rate. A map-discovery mask keeps
-clouds off unrevealed terrain. Viewport particles and ghosts
+clouds off unrevealed terrain. Cloud magnification uses world coordinates on a
+shared sample grid; animation uses elapsed time rather than render counts, so
+switching views preserves cloud positions. Viewport particles and ghosts
 are omitted in 3D. Large worlds
 lose detail in the bounded atlas and cost more to capture. The regular 2D
 view retains its normal rendering and controls.
@@ -116,3 +119,10 @@ c++ -std=c++14 -O3 -Wno-deprecated-declarations test/AlphaMapRenderBenchmark.cpp
 The geometry regression also verifies that the hovering camera is equivalent to
 transforming a fixed torus into the selected point's tangent frame, and that
 unfolding preserves that point and its orientation across both world seams.
+
+Cloud coordinate regression:
+
+```sh
+c++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/glob2-cloud-field-test
+/tmp/glob2-cloud-field-test
+```

@@ -77,7 +77,8 @@ class DynamicClouds
 	/// screen height/granularity+1
 	int hGrid;
 	///cloud/shadow density
-	std::valarray<unsigned char> alphaMap;
+	std::valarray<unsigned char> alphaMap, cloudMap;
+    int renderOffsetX, renderOffsetY;
 public:
 	 ///render() distinguishes between CLOUD and SHADOW
 	enum Layer {
@@ -107,7 +108,7 @@ public:
 	 * @param h height of the alphaMap
 	 * @param time time
 	 */
-	void compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeght, const int time);
+	void compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeght, const int time, const int worldWidth, const int worldHeight);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
 };
 

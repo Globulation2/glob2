@@ -327,14 +327,15 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float aspect = float(game.map.getW())/game.map.getH();
     // One direct, restrained pullback. There is no intermediate zoom to a
     // distant full-map sheet, then zoom back in to the torus.
-    float scale = std::min(width/10.0f, height/9.0f) * mix(1, zoom, roll);
+    float anchorU=focusU+travelU, anchorV=focusV+travelV;
+    float cameraDistance=TorusGeometry::hoverDistance(anchorV);
+    float scale = std::min(width/10.0f, height/9.0f) * mix(1, zoom, roll)
+        * TorusGeometry::hoverScale(anchorV);
     float sx = std::exp(mix(std::log(game.map.getW()*32/(8*pi)), std::log(scale), pull));
     float sy = sx*TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
     float cx = width*0.5f, cy = (height+16)*0.5f;
     float major = smooth(roll), minor = smooth(roll/0.85f);
-    float anchorU=focusU+travelU, anchorV=focusV+travelV;
     float ya=-(anchorU-0.5f)*2*pi, pa=TorusGeometry::latitude(anchorV,aspect);
-    float cameraDistance=TorusGeometry::hoverDistance(anchorV);
     drawSky(ya, pa, pull, width, height);
     if (material) {
         glActiveTexture(GL_TEXTURE1);

@@ -100,5 +100,11 @@ int main() {
             assert(std::abs(dy.x)+std::abs(dy.z)<.00002f);
         }
     }
+    // Moving inside changes distance, not the camera's field of view.
+    for(int i=-100;i<=200;++i) {
+        float v=i/100.0f;
+        assert(std::abs(hoverScale(v)*hoverDistance(v)-hoverDistance(.5f))<.00001f);
+        assert(std::abs(hoverScale(v)-hoverScale(v+1))<.00002f);
+    }
     std::cout << "Planar endpoints, both periodic seams, torus radii continuous finite transition, and anchored viewport endpoints, uniform ring geometry, locked screen orientation, and shared wrapped navigation, and fixed-world hovering camera passed\n";
 }
