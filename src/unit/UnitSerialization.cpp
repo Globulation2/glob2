@@ -71,7 +71,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	hungry = stream->readSint32("hungry");
 	hungryness = stream->readSint32("hungryness");
 	trigHungry = stream->readSint32("trigHungry");
-	trigHungryCarying = (trigHungry*4)/10;
+	trigHungryCarying = HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_CARRYING;
 	fruitMask = stream->readUint32("fruitMask");
 	fruitCount = stream->readUint32("fruitCount");
 
