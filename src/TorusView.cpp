@@ -47,7 +47,7 @@ const std::vector<SkyPoint> &skyPoints(bool haze) {
     }
     return points;
 }
-void drawSky(float yaw, float pitch, float fade, int width, int height) {
+void drawSky(float yaw, float pitch, float fade, int width, int height, int renderWidth) {
     glUseProgram(0);
     glDisable(GL_TEXTURE_2D); glDisable(GL_TEXTURE_RECTANGLE_ARB);
     glDisable(GL_DEPTH_TEST); glEnable(GL_BLEND);
@@ -61,7 +61,7 @@ void drawSky(float yaw, float pitch, float fade, int width, int height) {
         if (zz<0.15f) return false;
         x=width*0.5f+xx/zz*height*0.65f;
         y=height*0.5f+yy/zz*height*0.65f;
-        return x>-80 && x<width+80 && y>-80 && y<height+80;
+        return x>-80 && x<renderWidth+80 && y>-80 && y<height+80;
     };
     glPointSize(48);
     glBegin(GL_POINTS);
@@ -310,7 +310,9 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
     glEnable(GL_SCISSOR_TEST);
-    glScissor(0, 0, width, height-16);
+    // The sidebar is translucent: render beneath it, while retaining the
+    // playable-area camera center and input bounds.
+    glScissor(0, 0, gfx->getW(), height-16);
     glClearColor(0.025f, 0.037f, 0.06f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST); glDepthFunc(GL_LEQUAL);
@@ -337,7 +339,7 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float major = smooth(roll), minor = smooth(roll/0.85f);
     float ya=-(anchorU-0.5f)*2*pi, pa=TorusGeometry::latitude(anchorV,aspect);
     float viewPitch=pa+TorusGeometry::overviewTilt(anchorV,roll);
-    drawSky(ya, viewPitch, pull, width, height);
+    drawSky(ya, viewPitch, pull, width, height, gfx->getW());
     if (material) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D,visibility);
