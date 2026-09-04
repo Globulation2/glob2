@@ -106,7 +106,7 @@ GLuint createMaterial() {
         " vec2 grid=abs(fract(uv*vec2(48.0,24.0)-0.5)-0.5);\n"
         " float line=1.0-smoothstep(0.0,0.035,min(grid.x,grid.y));\n"
         " vec3 unknown=vec3(0.22,0.31,0.41)+line*vec3(0.035,0.045,0.055);\n"
-        " vec3 surface=mix(unknown*fold,terrain,seen);\n"
+        " vec3 surface=mix(terrain,unknown,(1.0-seen)*fold);\n"
         " gl_FragColor=vec4(surface*light,1.0);\n"
         "}\n";
     GLuint vs=glCreateShader(GL_VERTEX_SHADER), fs=glCreateShader(GL_FRAGMENT_SHADER);
