@@ -64,6 +64,8 @@ GameGUI::~GameGUI()
 {
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
+	if (globalContainer->settings.rememberUnit)
+		globalContainer->settings.save();
 }
 
 Sint32 GameGUI::displayedPosX(const Building& b) const { return ::displayedPosX(buildingGuiState, b); }
