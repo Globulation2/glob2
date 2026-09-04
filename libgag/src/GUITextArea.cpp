@@ -110,24 +110,14 @@ namespace GAGGUI
 		
 		for (unsigned i=0;(i<areaHeight)&&((signed)i<(signed)(lines.size()-areaPos));i++)
 		{
-			assert(i+areaPos<lines.size());
-			if (i+areaPos<lines.size()-1)
+			size_t row = i+areaPos;
+			assert(row<lines.size());
+			std::string::size_type len = row+1<lines.size() ? lines[row+1]-lines[row] : std::string::npos;
+			std::string substr = text.substr(lines[row], len);
+			parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
+			if (sprite && show_image[row] && row<lines_frames.size() && lines_frames[row]>=0)
 			{
-				const std::string &substr = text.substr(lines[i+areaPos], lines[i+areaPos+1]-lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
-				if (sprite && show_image[i + areaPos] && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
-				{
-					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);
-				}
-			}
-			else
-			{
-				const std::string &substr = text.substr(lines[i+areaPos]);
-				parent->getSurface()->drawString(x+4+spriteWidth, y+4+(charHeight*i), font, substr.c_str(), w-8-spriteWidth);
-				if (sprite && show_image[i + areaPos] && i+areaPos<lines_frames.size() && lines_frames[i+areaPos]>=0)
-				{
-					parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[i+areaPos]);	
-				}
+				parent->getSurface()->drawSprite(x+2, y+4+(charHeight*i), sprite, lines_frames[row]);
 			}
 		}
 	
