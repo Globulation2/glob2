@@ -33,7 +33,7 @@ constexpr int minigradIndex(int rx, int ry)
 // tie-break outcomes and diverge replays; preserve the original layout.
 //   centre        : inner-ring cell (one step from grid centre) whose own
 //                   gradient seeds the direction's score.
-//   far / farCount: outer-ring arc beyond `centre`.  A diagonal walks a
+//   farCells / farCount: outer-ring arc beyond `centre`.  A diagonal walks a
 //                   5-cell L; a cardinal walks a 3-cell row.
 //   canonicalDir  : value passed to Unit::dxDyFromDirection when this
 //                   direction wins.  Matches the original maxd->stdd map:
@@ -42,7 +42,7 @@ struct MinigradDirection {
 	int centreCol;
 	int centreRow;
 	int farCount;
-	int far[MINIGRAD_DIAGONAL_FAR][2];
+	int farCells[MINIGRAD_DIAGONAL_FAR][2];
 	int canonicalDir;
 };
 
