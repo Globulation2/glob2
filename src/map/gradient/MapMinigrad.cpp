@@ -79,7 +79,7 @@ inline Uint32 scoreMinigradDirection(const Uint8 miniGrad[MINIGRAD_AREA],
 	{
 		max = 1;
 		for (int i = 0; i < dir.farCount; ++i)
-			UPDATE_MAX(max, miniGrad[dir.far[i][0] + dir.far[i][1] * MINIGRAD_W]);
+			UPDATE_MAX(max, miniGrad[dir.farCells[i][0] + dir.farCells[i][1] * MINIGRAD_W]);
 	}
 	return (static_cast<Uint32>(max) << 8) | mxd;
 }
