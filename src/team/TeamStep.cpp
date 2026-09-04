@@ -10,7 +10,7 @@
 #include "Team.h"
 #include "Unit.h"
 
-bool Team::prioritize_building(Building* lhs, Building* rhs)
+bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 {
 	if(lhs->priority != rhs->priority)
 		return lhs->priority > rhs->priority;
@@ -59,14 +59,14 @@ bool Team::prioritize_building(Building* lhs, Building* rhs)
 }
 
 
-void Team::add_building_needing_work(Building* b, Sint32 priority)
+void Team::addBuildingNeedingWork(Building* b, Sint32 priority)
 {
 	bool did_find_position=false;
 	Sint32 p = priority;
 	std::vector<Building*>& blist = buildingsNeedingUnits[p];
 	for(std::vector<Building*>::iterator i=blist.begin(); i!=blist.end(); ++i)
 	{
-		if(prioritize_building(b, *i))
+		if(buildingHasHigherPriority(b, *i))
 		{
 			buildingsNeedingUnits[p].insert(i, b);
 			did_find_position=true;
@@ -78,7 +78,7 @@ void Team::add_building_needing_work(Building* b, Sint32 priority)
 }
 
 
-void Team::remove_building_needing_work(Building* b, Sint32 priority)
+void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
 {
 	Sint32 p = priority;
 	buildingsNeedingUnits[p].erase(std::find(buildingsNeedingUnits[p].begin(), buildingsNeedingUnits[p].end(), b));
@@ -90,7 +90,7 @@ void Team::updateAllBuildingTasks()
 {
 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
-		std::sort(i->second.begin(), i->second.end(), Team::prioritize_building);
+		std::sort(i->second.begin(), i->second.end(), Team::buildingHasHigherPriority);
 		bool cont=true;
 		std::vector<bool> foundPer(i->second.size(), true);
 		while(cont)
@@ -161,7 +161,8 @@ void Team::syncStep(void)
 				if (!building->type->isVirtual)
 				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
-					map->dirtyLocalGradient(building->posX-Team::GRADIENT_DIRTY_PADDING, building->posY-Team::GRADIENT_DIRTY_PADDING, Team::GRADIENT_DIRTY_SIZE_OFFSET+building->type->width, Team::GRADIENT_DIRTY_SIZE_OFFSET+building->type->height, teamNumber);
+					// One tile narrower than the Game_orders.cpp rects; part of the replay-verified behaviour.
+					map->dirtyLocalGradient(building->posX-GRADIENT_DIRTY_BORDER_TILES, building->posY-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->width, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->height, teamNumber);
 					isDirtyGlobalGradient=true;
 				}
 				building->buildingState=Building::DEAD;

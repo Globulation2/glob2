@@ -63,20 +63,20 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 				game.addBuilding(x, y, typeNum, team, 0, 0);
 			if (selectionName=="swarm")
 			{
-				if (game.teams[team]->startPosSet<3)
+				if (game.teams[team]->startPosSet<Team::START_POS_FROM_SWARM)
 				{
 					game.teams[team]->startPosX=tempX;
 					game.teams[team]->startPosY=tempY;
-					game.teams[team]->startPosSet=3;
+					game.teams[team]->startPosSet=Team::START_POS_FROM_SWARM;
 				}
 			}
 			else
 			{
-				if (game.teams[team]->startPosSet<2)
+				if (game.teams[team]->startPosSet<Team::START_POS_FROM_BUILDING)
 				{
 					game.teams[team]->startPosX=tempX;
 					game.teams[team]->startPosY=tempY;
-					game.teams[team]->startPosSet=2;
+					game.teams[team]->startPosSet=Team::START_POS_FROM_BUILDING;
 				}
 			}
 			game.regenerateDiscoveryMap();

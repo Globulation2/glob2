@@ -62,7 +62,7 @@ void Team::init(void)
 		myBuildings[i]=NULL;
 
 	startPosX=startPosY=0;
-	startPosSet=0;
+	startPosSet=START_POS_UNSET;
 
 	isAlive=true;
 	hasWon=false;

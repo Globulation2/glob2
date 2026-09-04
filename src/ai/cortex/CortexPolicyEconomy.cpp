@@ -488,7 +488,7 @@ namespace Cortex
 		// Construction priority: pin EVERY construction site (new build or
 		// in-progress upgrade) to LOW engine priority. The engine serves
 		// worker-assignment buckets highest-priority-first
-		// (Team::prioritize_building, TeamStep.cpp), so a LOW site only draws
+		// (Team::buildingHasHigherPriority, TeamStep.cpp), so a LOW site only draws
 		// workers once every NORMAL/HIGH building (feeding inns, producing swarms)
 		// is satisfied — construction can never out-recruit feeding or production.
 		// This is orthogonal to the worker-cap pour below (which only RAISES the

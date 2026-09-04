@@ -29,49 +29,33 @@ class Game;
 
 class Team:public BaseTeam
 {
-	static const bool verbose = false;
 public:
-	//! In-memory cap on simultaneous teams (and players). All gameplay arrays
-	//! and loops over active teams use this value. The engine has never been
-	//! tested above 12 — see `docs/replay-verification.md`.
+	//! In-memory cap on simultaneous teams and players. The engine has never
+	//! been tested above this — see `docs/replay-verification.md`.
 	static const int MAX_COUNT=12;
 
-	//! Legacy on-disk slot count baked into the GameHeader player/ally
-	//! arrays. Every `.map`, `.game`, `.replay`, and save file written by
-	//! pre-2026 builds reserves this many BasePlayer + allyTeamNumber
-	//! entries in the GameHeader section, even though only the first
-	//! MAX_COUNT are ever populated with real data. GameHeader::load reads
-	//! all MAX_COUNT_ON_DISK entries (discarding the trailing tail) and
-	//! GameHeader::save writes them back (padded with default values), so
-	//! the on-disk format stays byte-equal with the existing content
-	//! library. Do not change without a file-format version bump.
+	//! Slot count of the GameHeader player/ally arrays. Only the first
+	//! MAX_COUNT are populated; the rest are padding that keeps the file
+	//! format byte-identical. Changing it requires a format version bump.
 	static const int MAX_COUNT_ON_DISK=32;
 
-	//! Tile-padding added around a dirty rect when invalidating gradients
-	//! that need to be recomputed on the next pass. Shared between team
-	//! routing and building gradient propagation. See TeamStep.cpp:163.
-	static constexpr int GRADIENT_DIRTY_PADDING = 16;
-
-	//! Width/height added to a building's footprint when marking the
-	//! surrounding tiles dirty: pad on each side then subtract 1 so the
-	//! resulting rect ends one tile inside the second padding band, matching
-	//! the original literal `31+building->type->width` at TeamStep.cpp:165.
-	static constexpr int GRADIENT_DIRTY_SIZE_OFFSET = 2 * GRADIENT_DIRTY_PADDING - 1;
-
-	//! Initial value for the "no candidate found yet" score in upgrade
-	//! pathing (Team::findBestUpgrade): every real score compares less.
-	//! Equal to INT32_MAX; named at the call site so the intent is clear.
+	//! "No candidate found yet" score in findBestUpgrade; every real score is lower.
 	static constexpr Sint32 UPGRADE_SCORE_NONE = INT32_MAX;
 
-	//! HSV saturation/value used to derive default team colours from a
-	//! hue (see Team::setCorrectColor(float)). Saturation 0.8 keeps the
-	//! palette readable; value 0.9 keeps it bright but not blown out.
+	//! HSV saturation/value for default team colours derived from a hue.
 	static constexpr float TEAM_COLOR_SATURATION = 0.8f;
 	static constexpr float TEAM_COLOR_VALUE = 0.9f;
-
-	//! Float multiplier used to convert a 0..1 HSV channel into a 0..255
-	//! 8-bit colour value (see Team::setCorrectColor).
 	static constexpr float COLOR_CHANNEL_MAX = 255.0f;
+
+	//! Where startPosX/Y came from. A source only overwrites a lower one.
+	enum StartPosSource : Sint32
+	{
+		START_POS_UNSET = 0,
+		START_POS_FROM_UNIT = 1,
+		START_POS_FROM_BUILDING = 2,
+		START_POS_FROM_SWARM = 3,
+	};
+
 	Team(Game *game);
 	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 
@@ -81,91 +65,77 @@ public:
 	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 
-	//! Used by MapRandomGenerator to fill correctly the list usually filled by load(stream).
+	//! Rebuild the per-building lists from myBuildings (map generators, in place of load()).
 	void createLists(void);
-
-	//! Used to clear all call lists,
 	void clearLists(void);
-	//! Used to clear all buildings and units of this team on the map
+	//! Remove every unit and building of this team from the map grid.
 	void clearMap(void);
+	//! Delete every unit and building of this team.
 	void clearMem(void);
 
-	//! Check some available integrity constraints
 	bool integrity(void);
 
-	//! remove the building from all lists not realated to the upgrade/destroying systems
+	//! Building lists indexed by what the building offers (canUpgrade, canFeedUnit, ...).
 	void removeFromAbilitiesLists(Building *building);
-	//! add the building from all lists not realated to the upgrade/destroying systems
 	void addToStaticAbilitiesLists(Building *building);
 
-	//! Do a step for each unit, building and bullet in team.
+	//! Step every unit, building and bullet of the team.
 	void syncStep(void);
-	//! Check if there is still players controlling this team, if not, it is dead
+	//! A team with no controlling player left is dead.
 	void checkControllingPlayers(void);
 
-	///Push a new game event into the queue
 	void pushGameEvent(GameEvent event);
-
-	///Return the top-most event from the queue and remove it
+	//! Pop the oldest event, if any.
 	std::optional<GameEvent> getEvent();
-
-	///This returns whether an event of the given type had occurred on the last tick
+	//! Whether an event of this type occurred on the last tick.
 	bool wasRecentEvent(GameEventType type);
-
-	///Updates the list of events. This automatically clears events that get too old,
-	///and decrements the cooldown timers for each event type
+	//! Drop stale events and tick down the per-type cooldowns.
 	void updateEvents();
 
 	void setCorrectMasks(void);
 	void setCorrectColor(const GAGCore::Color& color);
 	void setCorrectColor(float value);
-	/// Bit for team `team` in team-mask bitfields (Case::forbidden, discovery
-	/// masks, alliance masks, ...). Valid range: [0, MAX_COUNT), i.e. up to 31.
-	/// The unsigned one matters: `1<<31` on signed int is UB.
+	/// Bit for `team` in team-mask bitfields (allies, sharedVision*, Case::forbidden, ...).
+	/// Masks have MAX_COUNT_ON_DISK bits; `1<<31` on a signed int would be UB.
 	inline static Uint32 teamNumberToMask(int team) { return Uint32(1)<<team; }
 
 	void update();
+	//! Whether any other team shares its market vision with us.
 	bool openMarket();
 
 	Building *findNearestHeal(Unit *unit);
 	Building *findNearestFood(Unit *unit);
 	Building *findBestUpgrade(Unit *unit);
 
-	///This function decides whether the lhs building is a higher priority
-	///than the rhs building and returns true.
-	static bool prioritize_building(Building* lhs, Building* rhs);
-	///This function adds the given building to the needing-unit call lists
-	void add_building_needing_work(Building* b, Sint32 priority);
-	///This function removes the given building from the needing-unit call lists
-	void remove_building_needing_work(Building* b, Sint32 priority);
-	///This function updates all of the buildings in order of highest priority to lowest
+	//! Strict ordering of buildings competing for units: true if lhs should be served first.
+	static bool buildingHasHigherPriority(Building* lhs, Building* rhs);
+	void addBuildingNeedingWork(Building* b, Sint32 priority);
+	void removeBuildingNeedingWork(Building* b, Sint32 priority);
+	//! Update every building in buildingsNeedingUnits, highest priority first.
 	void updateAllBuildingTasks();
 
-	//! Return the maximum build level (need at least 1 unit of this level)
+	//! Highest build level any unit of the team has.
 	int maxBuildLevel(void);
 
-	//! Pathfinding related methods:
+	// Pathfinding
 	void computeForbiddenArea();
 	void dirtyGlobalGradient();
 	void dirtyWarFlagGradient();
 
-	//! Compute team checksum
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL);
 
-	//! Return the name of the first human/AI player on this team, or an
-	//! empty string if no player owns the team (uncontrolled). Locale-
-	//! agnostic; UI callers wanting the localized "[Uncontrolled]"
-	//! placeholder must use displayPlayerName() (gui/TeamDisplay.h).
+	//! Name of the first human/AI player on this team, or "" if none controls it.
+	//! Locale-agnostic; UI wanting the localized "[Uncontrolled]" placeholder
+	//! must use displayPlayerName() (gui/TeamDisplay.h).
 	std::string getFirstPlayerName(void) const;
 
-	//!  This checks all of the win conditions and updates hasWon, hasLost and winCondition
+	//! Evaluate all win conditions and update hasWon, hasLost and winCondition.
 	void checkWinConditions();
 
 private:
 	void init(void);
 
 public:
-	// game is the basic (structural) pointer. Map is used for direct access.
 	Game *game;
 	Map *map;
 
@@ -173,77 +143,62 @@ public:
 
 	Building **myBuildings;
 
-	///This stores the buildings that need units, listed into their hard priorities. They are sorted based on priority.
+	//! Buildings that want units, keyed by priority, highest first.
 	std::map<int, std::vector<Building*>, std::greater<int> > buildingsNeedingUnits;
 
-	// those where the 4 "call-lists" (lists of flags or buildings for units to work on/in) :
-	std::list<Building *> upgrade[NB_ABILITY]; //to upgrade the units' abilities.
-
-	// The list of building which have one specific ability.
-	std::list<Building *> canFeedUnit; // The buildings with not enough food are not in this list.
+	// Buildings offering a service to units, by service.
+	std::list<Building *> canUpgrade[NB_ABILITY];
+	std::list<Building *> canFeedUnit; // excludes buildings that are out of food
 	std::list<Building *> canHealUnit;
 	std::list<Building *> canExchange;
 
-	// The lists of building which needs specials updates:
+	// Buildings in a transitional state.
 	std::list<Building *> buildingsWaitingForDestruction;
 	std::list<Building *> buildingsToBeDestroyed;
 	std::list<Building *> buildingsTryToBuildingSiteRoom;
 
-	// The lists of building which needs specials steps() to be called.
-	std::list<Building *> swarms; // Have to increments "productionTimeout" every step, and maybe produce an unit.
-	std::list<Building *> turrets; // Waiting for "shootingCooldown" or "enemy unit" events to shoot.
-	std::list<Building *> clearingFlags; // Have to update the clearing gradient time to time, and request worker if there is something to clear.
+	// Buildings that need their own step() every tick.
+	std::list<Building *> swarms; // unit production
+	std::list<Building *> turrets; // shooting
+	std::list<Building *> clearingFlags; // clearing-gradient refresh and worker requests
 
 	std::list<Building *> virtualBuildings;
 
-	Uint32 allies; // Who do I trust and don't fire on. mask
-	Uint32 enemies; // Who I don't trust and fire on. mask
-	Uint32 sharedVisionExchange; // Who does I share the vision of Exchange building to. mask
-	Uint32 sharedVisionFood; // Who does I share the vision of Food building to. mask
-	Uint32 sharedVisionOther; // Who does I share the vision to. mask
-	Uint32 me; // Who am I. mask.
+	// Team masks (see teamNumberToMask).
+	Uint32 allies; // teams we never fire on
+	Uint32 enemies; // teams we fire on
+	Uint32 sharedVisionExchange; // teams that see our markets
+	Uint32 sharedVisionFood; // teams that see our food buildings
+	Uint32 sharedVisionOther; // teams that see everything else of ours
+	Uint32 me; // this team's own bit
 
 	Sint32 startPosX, startPosY;
-	Sint32 startPosSet; // {0=unset, 1=any unit, 2=any building, 3=swarm building}
+	Sint32 startPosSet; // a StartPosSource
 	Sint32 prestige;
 
-	// Number of unit lost due to conversion
 	Sint32 unitConversionLost;
-	// Number of unit gained due to conversion
 	Sint32 unitConversionGained;
 
-	/// The amount of ressources the team has globally, for markets
+	/// Team-wide resource totals, for markets.
 	Sint32 teamRessources[MAX_NB_RESSOURCES];
 
 private:
-	///Queue of game events
 	std::queue<GameEvent> events;
-	///These timers indicate the cooldown for a particular event type,
-	///This keeps too many events from being pumped at once. If the
-	///timer isn't at 0 when a new event is received, the new event
-	///is ignored.
+	/// While the timer for a type is non-zero, new events of that type are dropped.
 	Uint8 eventCooldownTimers[GESize];
 
-
 public:
-	///This is the teams race, which defines its properties
 	Race race;
-	//! If you try to build buildings in the enemy territory, you will be prevented to build any new buildings for a given time.
-	//! This is the time left you can't build for. time in ticks.
+	//! Ticks left during which the team may not place building sites,
+	//! after trying to build in enemy territory.
 	int noMoreBuildingSitesCountdown;
-	static const int noMoreBuildingSitesCountdownMax=200; // We set 5s as default
-	//! Represents if this team is alive or not
+	static const int noMoreBuildingSitesCountdownMax=200; // 5 s at 40 ticks/s
 	bool isAlive;
-	//! Set to true if this team has won
 	bool hasWon;
-	//! Set to true if this team has lost
 	bool hasLost;
-	///This is the winningCondition that caused this team to win/lose
+	/// Condition that made the team win or lose.
 	WinningConditionType winCondition;
 
-	//! the stat for this team. It is computed every step, so it is always updated.
-	// TeamStat latestStat; this has been moved to *stats.getLatestStat();
+	//! Recomputed every step.
 	TeamStats stats;
 };
-
-

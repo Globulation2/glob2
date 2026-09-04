@@ -173,7 +173,7 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			// Set the initial viewport location
 			game.teams[i]->startPosX=b->posX;
 			game.teams[i]->startPosY=b->posY;
-			game.teams[i]->startPosSet=3;
+			game.teams[i]->startPosSet=Team::START_POS_FROM_SWARM;
 			
 			// Place units around the swarm
 			std::vector<MapGeneratorPoint> unitLocations = baseLocations;

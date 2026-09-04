@@ -229,7 +229,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 		if (unit->verbose)
 			printf("guid=(%d) unit->canLearn[ability=%d]\n", unit->gid, ability);
 		int actLevel=unit->level[ability];
-		for (std::list<Building *>::iterator bi=upgrade[ability].begin(); bi!=upgrade[ability].end(); ++bi)
+		for (std::list<Building *>::iterator bi=canUpgrade[ability].begin(); bi!=canUpgrade[ability].end(); ++bi)
 		{
 			Building *b=(*bi);
 			if (unit->verbose)

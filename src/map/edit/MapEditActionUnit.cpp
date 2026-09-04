@@ -69,11 +69,11 @@ bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int re
 		Unit *unit=game.addUnit(x, y, team, type, level, rand()%256, 0, 0);
 		if (unit)
 		{
-			if (game.teams[team]->startPosSet<1)
+			if (game.teams[team]->startPosSet<Team::START_POS_FROM_UNIT)
 			{
 				game.teams[team]->startPosX=viewportX;
 				game.teams[team]->startPosY=viewportY;
-				game.teams[team]->startPosSet=1;
+				game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
 			}
 			game.regenerateDiscoveryMap();
 			hasMapBeenModified = true;

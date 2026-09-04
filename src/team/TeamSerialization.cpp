@@ -279,7 +279,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	for (int i=0; i<NB_ABILITY; i++)
 	{
-		cs^=upgrade[i].size();
+		cs^=canUpgrade[i].size();
 		cs=rotr1(cs);
 	}
 	if (checkSumsVector)

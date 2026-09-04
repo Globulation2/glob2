@@ -283,7 +283,7 @@ void Building::updateCallLists(void)
 		// remove me
 		if(callListState != 0)
 		{
-			owner->remove_building_needing_work(this, oldPriority);
+			owner->removeBuildingNeedingWork(this, oldPriority);
 			callListState=0;
 			oldPriority = priority;
 		}
@@ -296,7 +296,7 @@ void Building::updateCallLists(void)
 			// I need units, if I am not in the call lists, add me
 			if(callListState != 1)
 			{
-				owner->add_building_needing_work(this, priority);
+				owner->addBuildingNeedingWork(this, priority);
 				callListState = 1;
 				oldPriority = priority;
 			}
@@ -308,8 +308,8 @@ void Building::updateCallLists(void)
 			// mutates the bucket mid-iteration.
 			else
 			{
-				owner->remove_building_needing_work(this, oldPriority);
-				owner->add_building_needing_work(this, priority);
+				owner->removeBuildingNeedingWork(this, oldPriority);
+				owner->addBuildingNeedingWork(this, priority);
 				oldPriority = priority;
 			}
 		}
@@ -318,7 +318,7 @@ void Building::updateCallLists(void)
 	{
 		if(callListState != 0)
 		{
-			owner->remove_building_needing_work(this, oldPriority);
+			owner->removeBuildingNeedingWork(this, oldPriority);
 			callListState=0;
 			oldPriority = priority;
 		}
@@ -330,7 +330,7 @@ void Building::updateCallLists(void)
 		for (int i=0; i<NB_ABILITY; i++)
 			if (inUpgrade[i]!=LS_IN && type->upgrade[i])
 			{
-				owner->upgrade[i].push_front(this);
+				owner->canUpgrade[i].push_front(this);
 				inUpgrade[i]=LS_IN;
 			}
 
@@ -370,7 +370,7 @@ void Building::updateCallLists(void)
 		for (int i=0; i<NB_ABILITY; i++)
 			if (inUpgrade[i]!=LS_OUT && type->upgrade[i])
 			{
-				owner->upgrade[i].remove(this);
+				owner->canUpgrade[i].remove(this);
 				inUpgrade[i]=LS_OUT;
 			}
 

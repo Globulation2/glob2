@@ -37,7 +37,7 @@ void Team::createLists(void)
 void Team::clearLists(void)
 {
 	for (int i=0; i<NB_ABILITY; i++)
-		upgrade[i].clear();
+		canUpgrade[i].clear();
 	canFeedUnit.clear();
 	canHealUnit.clear();
 	canExchange.clear();
@@ -115,7 +115,7 @@ void Team::removeFromAbilitiesLists(Building *building)
 {
 	for (int ui=0; ui<NB_ABILITY; ui++)
 		if (building->type->upgrade[ui])
-			upgrade[ui].remove(building);
+			canUpgrade[ui].remove(building);
 
 	if (building->type->canFeedUnit)
 		canFeedUnit.remove(building);
