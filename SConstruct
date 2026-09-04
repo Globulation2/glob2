@@ -330,6 +330,8 @@ def main():
         env.Append(CXXFLAGS=' -O3')
         env.Append(LINKFLAGS='-O3')
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
+        # -std=c++20 sets __STRICT_ANSI__, which hides M_PI in mingw's math.h
+        env.Append(CPPDEFINES=["_USE_MATH_DEFINES"])
         # TODO: Remove unneccessary dependencies for server.
         env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])

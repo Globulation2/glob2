@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "boost/integer_traits.hpp"
+#include <boost/random/uniform_int_distribution.hpp>
 //also the Perlin Noise stuff uses random that is not based on syncRand
 #include "Game.h"
 #include "MapGenerator.h"
@@ -147,10 +148,14 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 				return 0;
 		}
 	}
-	// std::random_shuffle was removed in C++17; std::shuffle takes a URBG directly,
-	// which boost::mt19937 satisfies. Note this is map-generation RNG (not syncRand),
-	// so cross-machine determinism does not apply here.
-	std::shuffle(points.begin(), points.end(), randomGenerator);
+	// Fisher-Yates with one draw per element, same as the former
+	// std::random_shuffle + boost::random_number_generator pairing.
+	for (size_t i = 1; i < points.size(); ++i)
+	{
+		size_t j = boost::random::uniform_int_distribution<size_t>(0, i)(randomGenerator);
+		if (i != j)
+			std::swap(points[i], points[j]);
+	}
 	return int(std::sqrt(double(minDist)));
 }
 
