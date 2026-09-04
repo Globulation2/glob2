@@ -126,7 +126,7 @@ GLuint createMaterial() {
 #endif
 }
 
-TorusView::TorusView() : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0),
+TorusView::TorusView() : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0), surfaceScaleX(1), surfaceScaleY(1),
     baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
     lastFrame(0), lastCapture(0), texture(0), visibility(0), framebuffer(0), material(0), meshBuffer(0), indexBuffer(0), meshKey{}, failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f) {}
 TorusView::~TorusView()
@@ -172,9 +172,9 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
         if (!(e.motion.state & (SDL_BUTTON_LMASK | SDL_BUTTON_MMASK))) dragging = false;
         if (dragging && target && worldW && worldH) {
             // Move the camera focus across the fixed world surface.
-            float pixelsPerWorld = std::max(1.0f,width*0.85f*zoom);
-            travelU -= e.motion.xrel/pixelsPerWorld;
-            travelV -= e.motion.yrel/pixelsPerWorld*float(worldW)/worldH;
+            auto movement=TorusGeometry::surfaceDrag(e.motion.xrel,e.motion.yrel,
+                surfaceScaleX,surfaceScaleY,smooth(amount),focusV+travelV);
+            travelU+=movement.x; travelV+=movement.y;
             travelU -= std::floor(travelU); travelV -= std::floor(travelV);
             auto position=TorusGeometry::destination(baseViewportX,baseViewportY,travelU,travelV,worldW,worldH);
             vx=position.x; vy=position.y;
@@ -329,14 +329,15 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     // distant full-map sheet, then zoom back in to the torus.
     float anchorU=focusU+travelU, anchorV=focusV+travelV;
     float cameraDistance=TorusGeometry::hoverDistance(anchorV);
-    float scale = std::min(width/10.0f, height/9.0f) * mix(1, zoom, roll)
-        * TorusGeometry::hoverScale(anchorV);
+    float scale = std::min(width/10.0f, height/9.0f) * mix(1, zoom, roll);
     float sx = std::exp(mix(std::log(game.map.getW()*32/(8*pi)), std::log(scale), pull));
     float sy = sx*TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
+    surfaceScaleX=sx; surfaceScaleY=sy;
     float cx = width*0.5f, cy = (height+16)*0.5f;
     float major = smooth(roll), minor = smooth(roll/0.85f);
     float ya=-(anchorU-0.5f)*2*pi, pa=TorusGeometry::latitude(anchorV,aspect);
-    drawSky(ya, pa, pull, width, height);
+    float viewPitch=pa+TorusGeometry::overviewTilt(anchorV,roll);
+    drawSky(ya, viewPitch, pull, width, height);
     if (material) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D,visibility);
@@ -359,11 +360,11 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         std::vector<MeshVertex> vertices((U+1)*(V+1));
         for (int j=0;j<=V;++j) for (int i=0;i<=U;++i) {
             float du=float(i)/U-0.5f, dv=float(j)/V-0.5f;
-            auto p=TorusGeometry::focusedPoint(du,dv,roll,anchorV);
+            auto p=TorusGeometry::overviewPoint(du,dv,roll,anchorV);
             float a=du*2*pi*major, b=pa+dv*2*pi*minor;
             float nx=std::sin(a)*std::cos(b), ny=std::sin(b), nz=std::cos(a)*std::cos(b);
-            float ry=ny*std::cos(pa)-nz*std::sin(pa);
-            float rz=ny*std::sin(pa)+nz*std::cos(pa);
+            float ry=ny*std::cos(viewPitch)-nz*std::sin(viewPitch);
+            float rz=ny*std::sin(viewPitch)+nz*std::cos(viewPitch);
             float light=mix(1,0.48f+0.52f*clamp(-nx*0.35f-ry*0.45f+rz*0.82f,0,1),roll);
             float w=1-p.z*roll/cameraDistance;
             vertices[j*(U+1)+i]={{cx*w+p.x*sx,cy*w+p.y*sy,p.z*scale,w},

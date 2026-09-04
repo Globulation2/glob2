@@ -21,6 +21,7 @@ private:
     bool target, dragging;
     float amount, zoom;
     float travelU, travelV;
+    float surfaceScaleX, surfaceScaleY;
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
     Uint32 lastFrame, lastCapture;

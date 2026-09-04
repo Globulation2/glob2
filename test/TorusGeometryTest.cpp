@@ -100,11 +100,32 @@ int main() {
             assert(std::abs(dy.x)+std::abs(dy.z)<.00002f);
         }
     }
-    // Moving inside changes distance, not the camera's field of view.
+    // Navigation cannot change distance, magnification, or produce a lens
+    // singularity. The inner-wall tilt remains periodic and below 90 degrees.
     for(int i=-100;i<=200;++i) {
         float v=i/100.0f;
-        assert(std::abs(hoverScale(v)*hoverDistance(v)-hoverDistance(.5f))<.00001f);
-        assert(std::abs(hoverScale(v)-hoverScale(v+1))<.00002f);
+        assert(hoverDistance(v)==18);
+        assert(std::abs(overviewTilt(v,1)-overviewTilt(v+1,1))<.00001f);
+        assert(std::abs(overviewTilt(v,1))<=pi/3+.00001f);
+        assert(length(overviewPoint(0,0,1,v))<.00001f);
+        auto north=overviewPoint(0,.0001f,1,v);
+        assert(north.y>0);
+        for(float du : {-.5f,-.25f,0.0f,.25f,.5f})
+        for(float dv : {-.5f,-.25f,0.0f,.25f,.5f}) {
+            auto p=overviewPoint(du,dv,1,v);
+            assert(1-p.z/hoverDistance(v)>.5f);
+            assert(distance(overviewPoint(du,dv,0,v),{du*8*pi,dv*2*pi,0})<.00002f);
+            assert(distance(p,overviewPoint(du,dv,1,v+.0001f))<.02f);
+        }
+    }
+    for(float v : {0.0f,.25f,.5f,.75f,1.0f}) for(float roll : {0.0f,.5f,1.0f}) {
+        auto movement=surfaceDrag(.1f,.1f,100,100,roll,v);
+        assert(movement.x<0 && movement.y<0);
+        // Small pointer movements produce matching local screen distances.
+        auto px=overviewPoint(movement.x,0,roll,v);
+        auto py=overviewPoint(0,movement.y,roll,v);
+        assert(std::abs(px.x*100+.1f)<.001f);
+        assert(std::abs(py.y*100+.1f)<.001f);
     }
     std::cout << "Planar endpoints, both periodic seams, torus radii continuous finite transition, and anchored viewport endpoints, uniform ring geometry, locked screen orientation, and shared wrapped navigation, and fixed-world hovering camera passed\n";
 }

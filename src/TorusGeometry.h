@@ -82,15 +82,23 @@ inline Point focusedPoint(float du, float dv, float roll, float anchorV) {
     }
     return {x,y*std::cos(phi)-z*std::sin(phi),y*std::sin(phi)+z*std::cos(phi)};
 }
-inline float hoverDistance(float anchorV) {
-    // Stay inside the hole when looking down on its inner wall, so the
-    // opposite side cannot get between the camera and the selected location.
-    return 1.5f+16.5f*smooth((std::cos(latitude(anchorV,1))+1)*0.5f);
+// Keep the overview outside the ring at a fixed distance. Tilt over its
+// inner wall rather than diving into the hole or changing the lens.
+inline float hoverDistance(float) { return 18.0f; }
+inline float overviewTilt(float anchorV, float roll) {
+    float inner=std::max(0.0f,-std::cos(latitude(anchorV,1)));
+    return -(pi/3)*smooth(inner)*smooth(roll);
 }
-// Keep focal length constant while the camera approaches the inner wall.
-// Otherwise preserving the same on-surface scale widens the lens to ~140 degrees.
-inline float hoverScale(float anchorV) {
-    return hoverDistance(0.5f)/hoverDistance(anchorV);
+inline Point overviewPoint(float du,float dv,float roll,float anchorV) {
+    return rotate(focusedPoint(du,dv,roll,anchorV),{0,overviewTilt(anchorV,roll)});
+}
+// Scale direct manipulation by the projected tangent at the current focus.
+// A narrower inner circumference must not make the map suddenly drag faster.
+inline Point surfaceDrag(float dx,float dy,float sx,float sy,float roll,float anchorV) {
+    const float e=.0001f;
+    float tx=overviewPoint(e,0,roll,anchorV).x/e;
+    float ty=overviewPoint(0,e,roll,anchorV).y/e;
+    return {-dx/std::max(1.0f,sx*tx),-dy/std::max(1.0f,sy*ty),0};
 }
 // Fade from native 2D map dimensions to the uniform 3D ring mapping.
 inline float verticalScale(float, float, float roll, float aspect) {

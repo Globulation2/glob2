@@ -31,10 +31,12 @@ hidden terrain or units. Replay visibility controls
 can show the whole map. The torus is an inspection view: use 2D for placing
 buildings and painting areas. The game keeps running in either view. The center marker identifies the patch
 that will fill the 2D view when you return. The map has a fixed placement on the
-ring: navigation moves a hovering camera along its surface. The camera follows
-the local tangent orientation and moves closer inside the hole to keep the
-selected patch visible. The focal length stays constant as it approaches the
-inner wall, producing a closer view instead of a widening, distorted lens. Returning to 2D unfolds around that new position.
+ring: navigation moves a surface-orbit focus, followed by the camera. Dragging
+uses the projected local surface scale for consistent sensitivity across the
+inner and outer walls. The camera stays 18 world units from the selected point with a fixed lens.
+It tilts up to 60 degrees over the inner wall instead of entering the hole.
+The rim can naturally occlude the selected patch; navigation does not force a
+close-up or widen the projection to keep that patch visible. Returning to 2D unfolds around that new position.
 
 The launcher stores all preferences, saves and replays in
 `experiment/profile`, avoiding the regular `~/.glob2` directory. The build,
