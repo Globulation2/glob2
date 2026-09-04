@@ -314,6 +314,8 @@ Voer wachtwoord in:
 Enter
 [equals]
 is gelijk aan
+[ERROR_CANT_LOAD_MAP]
+De kaart kon niet worden geladen omdat het bestand beschadigd is of een niet-ondersteunde versie heeft.
 [escape]
 Esc
 [explorationflag explanation 2]
@@ -376,8 +378,6 @@ Verboden zone
 Ok
 [free]
 vrij
-[free]
-vrij
 [from:]
 van:
 [fruit]
@@ -430,8 +430,6 @@ Geneest je eenheden
 Ziekenhuis
 [host]
 Start een server
-[hp]
-Sterkte
 [hp]
 Sterkte
 [Human]
@@ -1168,8 +1166,6 @@ Werker ratio
 Werker
 [workers]
 Werkers
-[workers]
-werkers
 [working]
 Werkend
 [wounded]

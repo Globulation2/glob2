@@ -5,7 +5,7 @@
 [%0 units can't access building]
 %0 unidades sin acceso
 [%0 units can't access flag]
-
+%0 unidades sin acceso
 [%0 units can't access fruit]
 %0 unidades sin acceso
 [%0 units can't access resource]
@@ -15,7 +15,7 @@
 [%0 units too far from building]
 %0 unidades demasiado lejos del edificio
 [%0 units too far from flag]
-
+%0 unidades demasiado lejos de la bandera
 [%0 units too far from fruit]
 %0 unidades demasiado lejos de las frutas
 [%0 units too far from resource]
@@ -143,7 +143,7 @@ Edificios
 [building site]
 sitio de construcción
 [Building Tool Box Explanation]
-
+Mayús + Arrastrar = Caja
 [Building Tool Line Explanation]
 Ctrl + Arrastrar = Línea
 [Buildings]
@@ -199,7 +199,7 @@ Bandera de Limpieza
 [closed]
 Cerrado
 [combined vision]
-
+Visión combinada
 [compile]
 Compilar script
 [compose]
@@ -302,6 +302,8 @@ Introduzca su password:
 entrar
 [equals]
 iguales
+[ERROR_CANT_LOAD_MAP]
+No se pudo cargar el mapa porque el archivo está dañado o tiene una versión incompatible.
 [escape]
 escapar
 [explorationflag explanation 2]
@@ -355,7 +357,7 @@ Banderas
 [flag settings explanation]
 Radio por defecto de la bandera
 [fog of war]
-
+Niebla de guerra
 [food]
 Alimento
 [forbidden area]
@@ -364,8 +366,6 @@ Alimento
 Aceptar
 [free]
 libre
-[free]
-libres
 [from:]
 desde:
 [fruit]
@@ -420,8 +420,6 @@ Hospital
 Iniciar partida
 [hp]
 HP
-[hp]
-Puntos de daño
 [Human]
 Humano
 [human]
@@ -493,7 +491,7 @@ Cargar partida
 [load map]
 Cargar Mapa
 [load replay]
-
+Cargar repetición
 [load script]
 Cargar Script
 [load]
@@ -505,7 +503,7 @@ Sala
 [login]
 Conectar
 [look around]
-
+Mirar alrededor
 [Lost : %0 has more prestige than you]
 Has perdido: %0 tiene más prestigio que tú
 [Lost : your colony is dead]
@@ -591,7 +589,7 @@ No hay suficiente radio
 [not ready]
 no listo
 [Number Of Buildings]
-
+Número de edificios
 [number of players: %0 (%1 AI)]
 %0 jugadores (%1 AI)
 [number of teams: %0]
@@ -599,13 +597,13 @@ no listo
 [number of teams]
 número de equipos
 [Number Of Units]
-
+Número de unidades
 [numlock]
 Bloq Num
 [objectives]
 Objetivos
 [of which]
-
+de las cuales
 [ok]
 Aceptar
 [old islands terrain]
@@ -657,7 +655,7 @@ Nombre del jugador
 [player rating %0]
 Puntaje del Jugador: %0
 [players]
-
+Jugadores
 [please wait]
 Por favor espere
 [power]
@@ -665,7 +663,7 @@ poder
 [press space]
 Presione la barra espaciadora para continuar.
 [Prestige Score]
-
+Prestigio
 [Prestige Win Enabled]
 Victoria por Prestigio Activado
 [Prestige]
@@ -683,7 +681,7 @@ Quitar el editor
 [quit the game]
 Quitar el juego
 [quit the replay]
-
+Salir de la repetición
 [quit]
 Quitar
 [racetrack explanation 2]
@@ -705,7 +703,7 @@ Actualizar Lista de Mapas
 [Register a new YOG user with password]
 Registrar un nuevo nombre de usuario YOG.
 [Register]
-
+Registrarse
 [remember unit]
 Recordar unidad
 [Remember YOG password localy]
@@ -723,9 +721,9 @@ Reparar
 [repeat area]
 veces el mismo camino
 [Repeat your password :]
-
+Repite tu contraseña:
 [replay ended]
-
+Fin de repetición
 [restore default shortcuts]
 Restaurar Atajos del Teclado
 [return to editor]
@@ -733,7 +731,7 @@ Regresar al editor
 [return to game]
 Regresar al juego
 [return to replay]
-
+Volver a la repetición
 [return]
 intro
 [right meta]
@@ -755,7 +753,7 @@ Guardar partida
 [save map]
 Guardar Mapa
 [save replay]
-
+Guardar repetición
 [save script]
 Guardar Script
 [Save]
@@ -847,9 +845,9 @@ Intro: Envía un mensaje
 [shortcut explanation v]
 V: presione para hablar
 [show areas]
-
+Mostrar áreas
 [show flags]
-
+Mostrar banderas
 [show main menu]
 Mostrar Menú Principal
 [skin]
@@ -1003,7 +1001,7 @@ La construcción del circuito de entrenamiento ha finalizado
 [the racetrack is under attack]
 El circuito de entrenamiento está siendo atacado
 [the replays]
-
+Repeticiones
 [the school is finished]
 La construcción de la escuela ha finalizado
 [the school is under attack]
@@ -1025,7 +1023,7 @@ La piscina está siendo atacada
 [the warflag is under attack]
 ?? la bandera de guerra está siendo atacada ??
 [time]
-
+Tiempo
 [to:]
 hacia:
 [toggle draw accessibility aids]
@@ -1038,14 +1036,12 @@ Activar Mostrar Caminos de Unidades
 Activar Menu Pantalla
 [toggle recording voice]
 Activar Grabación de Voz
-[toggle recording voice]
-Iniciar Grabación de Voz
 [Total Attack Power]
-
+Poder de ataque total
 [Total Defence Power]
-
+Poder de defensa total
 [Total Hitpoints]
-
+Puntos de vida totales
 [Total prestige reached]
 Total de prestigio necesario alcanzado
 [Total]
@@ -1123,9 +1119,9 @@ Guerrero
 [warriors]
 guerreros
 [watch again]
-
+Ver de nuevo
 [watching:]
-
+Viendo:
 [water]
 Agua
 [Wheat]
@@ -1146,8 +1142,6 @@ Radio de Trabajador
 Trabajador
 [workers]
 Trabajadores
-[workers]
-trabajadores
 [working]
 Trabajando
 [wounded]
@@ -1179,7 +1173,7 @@ YOG ha rechazado la conexión por que  el nombre de usuario elegido es inválido
 [YESTS_CREATED]
 El sistema de conexión está preparado.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Las contraseñas proporcionadas no coinciden. Vuelve a escribirlas.
 [YESTS_UNABLE_TO_CONNECT]
 No se pudo conectar. Aparentemente el servidor YOG está caido.
 [yog block command help]

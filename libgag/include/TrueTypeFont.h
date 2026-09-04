@@ -30,7 +30,9 @@ namespace GAGCore
 		int getStringWidth(const std::string string);
 		//! Get the height of string with shape. If string is NULL, return base value, else update cache
 		int getStringHeight(const std::string string);
-		
+		//! Whether every character of this UTF-8 string has a glyph in the loaded font
+		virtual bool hasGlyphsFor(const std::string &utf8Text);
+
 		// Style and color
 		virtual void setStyle(Style style);
 		virtual Style getStyle(void) const;
