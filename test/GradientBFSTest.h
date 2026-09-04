@@ -16,8 +16,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef GRADIENTBFSTEST_H_
-#define GRADIENTBFSTEST_H_
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -58,4 +57,3 @@ public:
 	                                   const std::vector<AIEcho::position>& obstacles);
 };
 
-#endif

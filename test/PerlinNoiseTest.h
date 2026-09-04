@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2010 Leo Wandersleb
 
-#ifndef PERLINNOISETEST_H_
-#define PERLINNOISETEST_H_
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -33,4 +32,3 @@ public:
 	void testnoise3d();
 };
 
-#endif /* PERLINNOISETEST_H_ */
