@@ -40,6 +40,7 @@ FertilityCalculatorThreadMessage.cpp
 Game.cpp
 GameEvent.cpp
 GameGUI.cpp
+TorusView.cpp
 GameGUIDefaultAssignManager.cpp
 GameGUIDialog.cpp
 GameGUIGhostBuildingManager.cpp

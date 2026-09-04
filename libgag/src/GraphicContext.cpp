@@ -26,12 +26,17 @@
 #include <sstream>
 #include <iostream>
 #ifdef HAVE_OPENGL
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#else
 #include <epoxy/gl.h>
 #ifdef _MSC_VER
 #include <epoxy/wgl.h>
 #else
 #include <epoxy/glx.h>
 #endif // _MSC_VER
+#endif // __APPLE__
 #endif // HAVE_OPENGL
 #include "SDL_ttf.h"
 #include <SDL_image.h>
@@ -2073,7 +2078,7 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
 		}
 
-		TTF_Init();
+        TTF_Init();
 
 		///If setting the given resolution fails, default to 800x600
 		if(!setRes(w, h, flags))
@@ -2124,6 +2129,7 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
@@ -2138,7 +2144,11 @@ namespace GAGCore
 		}
 		// create the new window and the surface
 		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
-		sdlsurface = window != nullptr ? SDL_GetWindowSurface(window) : nullptr;
+		// SDL_GetWindowSurface may create a Metal renderer and invalidate an
+        // OpenGL window on macOS. GPU mode only needs a CPU format/size holder.
+        sdlsurface = !window ? nullptr : ((flags & USEGPU)
+            ? SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_ARGB8888)
+            : SDL_GetWindowSurface(window));
 
 		// check surface
 		if (!sdlsurface)
@@ -2154,7 +2164,10 @@ namespace GAGCore
 			if (flags & USEGPU)
 			{
 				SDL_GLContext context = SDL_GL_CreateContext(window);
-				SDL_GL_MakeCurrent(window, context);
+				if (!context || SDL_GL_MakeCurrent(window, context) != 0) {
+                    fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
+                    return false;
+                }
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))

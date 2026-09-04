@@ -26,6 +26,7 @@
 #include <valarray>
 
 #include "Game.h"
+#include "TorusView.h"
 #include "Brush.h"
 #include "Campaign.h"
 #include "MapHeader.h"
@@ -66,6 +67,7 @@ class MapMarkOrder;
 */
 class GameGUI
 {
+    TorusView torusView;
 public:
 	///Constructs a GameGUI
 	GameGUI();

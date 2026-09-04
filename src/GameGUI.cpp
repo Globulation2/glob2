@@ -345,6 +345,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
+    if (torusView.active()) return;
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
 		dragging from correctly going through intermediate cells.
@@ -383,6 +384,7 @@ Uint16 lastMouseButtonState = 0;
 
 void GameGUI::step(void)
 {
+    const int stableViewportX = viewportX, stableViewportY = viewportY;
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
@@ -481,6 +483,7 @@ void GameGUI::step(void)
 		processEvent(&windowEvent);
 
 	flushScrollWheelOrders();
+    if (torusView.active()) { viewportX = stableViewportX; viewportY = stableViewportY; }
 
 	int oldViewportX = viewportX;
 	int oldViewportY = viewportY;
@@ -488,8 +491,8 @@ void GameGUI::step(void)
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
 	handleKeyAlways();
-	viewportX += viewportSpeedX;
-	viewportY += viewportSpeedY;
+	viewportX += torusView.active() ? 0 : viewportSpeedX;
+	viewportY += torusView.active() ? 0 : viewportSpeedY;
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 
@@ -876,6 +879,23 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText) {
+        int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
+        bool button = (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP)
+            && event->button.button == SDL_BUTTON_LEFT && event->button.x >= 12
+            && event->button.x < 160 && event->button.y >= 28 && event->button.y < 58;
+        bool shortcut = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_F8 && !event->key.repeat;
+        if ((button || shortcut) && torusView.available()) {
+            if (shortcut || event->type == SDL_MOUSEBUTTONDOWN) {
+                torusView.toggle();
+                selectionPushed = false; panPushed = false; miniMapPushed = false;
+                viewportSpeedX = viewportSpeedY = 0;
+            }
+            return;
+        }
+        if (torusView.event(*event, width)) return;
+    }
+
 	// handle typing
 	if (typingInputScreen)
 	{
@@ -4395,7 +4415,12 @@ void GameGUI::drawAll(int team)
 	
 	updateHilightInGame();
 	arrowPositions.clear();
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (torusView.active())
+    {
+        torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
+            globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+    }
+    else if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
 		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);
@@ -4414,7 +4439,7 @@ void GameGUI::drawAll(int team)
 	}
 
 	///Draw ghost buildings
-	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+	if (!torusView.active() && !globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 	
 	// if paused, tint the game area
 	if (gamePaused)
@@ -4454,7 +4479,19 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
 
-	// draw menu if any
+	// A persistent, single-click presentation toggle, below the resource bar.
+    if (torusView.available() && !typingInputScreen && !scrollableText) {
+        globalContainer->gfx->setClipRect();
+        globalContainer->gfx->drawFilledRect(12, 28, 148, 30, 20, 38, 57, 240);
+        globalContainer->gfx->drawRect(12, 28, 148, 30, 88, 181, 204);
+        globalContainer->gfx->drawString(22, 35, globalContainer->standardFont,
+            torusView.enabled() ? "2D map  [F8]" : "3D world  [F8]");
+        if (torusView.active())
+            globalContainer->gfx->drawString(16, globalContainer->gfx->getH()-28,
+                globalContainer->standardFont, "Drag: orbit   Wheel: zoom   Right-click: reset");
+    }
+
+    // draw menu if any
 	if (inGameMenu)
 	{
 		globalContainer->gfx->setClipRect();
