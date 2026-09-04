@@ -272,7 +272,14 @@ SettingsScreen.cpp
 SettingsScreenGeneral.cpp
 SettingsScreenBuildings.cpp
 SettingsScreenKeyboard.cpp
-SGSL.cpp
+sgsl/Lexer.cpp
+sgsl/Parser.cpp
+sgsl/ParserSummon.cpp
+sgsl/ParserWait.cpp
+sgsl/SGSL.cpp
+sgsl/StoryActions.cpp
+sgsl/StoryConditions.cpp
+sgsl/StoryExecute.cpp
 SimplexNoise.cpp
 PlayerVoice.cpp
 SoundMixer.cpp

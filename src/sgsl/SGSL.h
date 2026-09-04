@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <optional>
 #include <string>
 #include <vector>
 #include <map>
@@ -132,6 +133,8 @@ class Story;
 class MapScriptSGSL;
 class GameGUI;
 class Game;
+struct SGSLParseContext;
+enum class SGSLParseStatus;
 
 //! The implementation of a generic function
 typedef void (Story::*FunctionImplementation)(GameGUI*);
@@ -280,6 +283,12 @@ private:
 	
 	
 	bool testCondition(GameGUI *gui);
+	void setAlliance(Game *game);
+	void summonUnits(Game *game);
+	void summonFlag(Game *game);
+	void destroyFlag();
+	bool waitConditionMet(Game *game);
+	bool areaContainsUnit(const Game *game, int &execLine) const;
 	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
 	
 	MapScriptSGSL *mapscript;
@@ -293,6 +302,9 @@ struct Area
 };
 
 class Building;
+
+//! Number of the editor-set map area called name, or nullopt when no area has that name
+std::optional<int> mapAreaNumber(const Game *game, const std::string &name);
 
 typedef std::map<std::string, Area> AreaMap;
 typedef std::map<std::string, Building *> BuildingMap;
@@ -336,6 +348,21 @@ private:
 	friend class Story;
 
 	ErrorReport parseScript(Aquisition *donnees, Game *game);
+	SGSLParseStatus parseStatement(SGSLParseContext &ctx);
+	SGSLParseStatus parseFunctionCall(SGSLParseContext &ctx);
+	SGSLParseStatus parseSummonUnits(SGSLParseContext &ctx);
+	SGSLParseStatus parseSetArea(SGSLParseContext &ctx);
+	SGSLParseStatus parseSummonFlag(SGSLParseContext &ctx);
+	SGSLParseStatus parseDestroyFlag(SGSLParseContext &ctx);
+	SGSLParseStatus parseAlliance(SGSLParseContext &ctx);
+	SGSLParseStatus parseShowLabelJump(SGSLParseContext &ctx);
+	SGSLParseStatus parseWait(SGSLParseContext &ctx);
+	SGSLParseStatus parseWaitArea(SGSLParseContext &ctx);
+	SGSLParseStatus parseWaitComparison(SGSLParseContext &ctx, bool only);
+	SGSLParseStatus parseTimer(SGSLParseContext &ctx);
+	SGSLParseStatus parseGUIChoice(SGSLParseContext &ctx);
+	SGSLParseStatus parseWinLoose(SGSLParseContext &ctx);
+	bool areaNameDefined(const Game *game, const std::string &name) const;
 	bool testMainTimer(void) const;
 
 	Functions functions;

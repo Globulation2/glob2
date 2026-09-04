@@ -10,7 +10,7 @@ common_cpppath = ['..', '../src', '../src/ai',
                   '../src/building', '../src/game/entities',
                   '../src/gui', '../src/team', '../src/unit',
                   '../src/net', '../src/net/irc', '../src/net/message',
-                  '../src/yog',
+                  '../src/yog', '../src/sgsl',
                   '../src/map', '../src/map/edit', '../src/map/generator',
                   '../src/map/gradient', '../src/map/io', '../src/map/pathfind',
                   '../libgag/include', '../libusl/src']
