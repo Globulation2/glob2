@@ -14,11 +14,14 @@ public:
     bool available() const;
     void toggle();
     void resetCamera();
-    bool event(const SDL_Event &event, int width);
-    void draw(Game &game, int team, unsigned options, int viewportX, int viewportY, int width, int height);
+    bool event(const SDL_Event &event, int width, int &viewportX, int &viewportY);
+    void setViewport(int x, int y);
+    void draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width, int height);
 private:
     bool target, dragging;
-    float amount, yaw, pitch, zoom;
+    float amount, zoom;
+    float travelU, travelV;
+    int baseViewportX, baseViewportY, worldW, worldH;
     Uint32 lastFrame, lastCapture;
     unsigned texture, framebuffer, material;
     bool failed;

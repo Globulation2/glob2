@@ -122,7 +122,8 @@ GLuint createMaterial() {
 #endif
 }
 
-TorusView::TorusView() : target(false), dragging(false), amount(0), yaw(0), pitch(TorusGeometry::defaultTilt), zoom(1),
+TorusView::TorusView() : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0),
+    baseViewportX(0), baseViewportY(0), worldW(0), worldH(0),
     lastFrame(0), lastCapture(0), texture(0), framebuffer(0), material(0), failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f) {}
 TorusView::~TorusView()
 {
@@ -148,14 +149,29 @@ void TorusView::toggle() {
         target = !target; dragging = false; lastFrame = SDL_GetTicks();
     }
 }
-void TorusView::resetCamera() { yaw = 0; pitch = TorusGeometry::defaultTilt; zoom = 1; }
-bool TorusView::event(const SDL_Event &e, int width)
+void TorusView::resetCamera() { zoom = 1; }
+void TorusView::setViewport(int x, int y) {
+    if (!worldW || !worldH || !active()) return;
+    auto current=TorusGeometry::destination(baseViewportX,baseViewportY,travelU,travelV,worldW,worldH);
+    travelU += float(TorusGeometry::wrappedDelta(current.x,x,worldW))/worldW;
+    travelV += float(TorusGeometry::wrappedDelta(current.y,y,worldH))/worldH;
+    travelU -= std::floor(travelU); travelV -= std::floor(travelV);
+}
+bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
 {
     if (!active()) return false;
     if (e.type == SDL_MOUSEBUTTONUP && dragging) { dragging = false; return true; }
     if (e.type == SDL_MOUSEMOTION) {
         if (!(e.motion.state & (SDL_BUTTON_LMASK | SDL_BUTTON_MMASK))) dragging = false;
-        if (dragging) { yaw += e.motion.xrel*0.008f; pitch += e.motion.yrel*0.008f; }
+        if (dragging && target && worldW && worldH) {
+            // Drag the world beneath a fixed map focus, just like panning 2D.
+            float pixelsPerWorld = std::max(1.0f,width*0.85f*zoom);
+            travelU -= e.motion.xrel/pixelsPerWorld;
+            travelV -= e.motion.yrel/pixelsPerWorld*float(worldW)/worldH;
+            travelU -= std::floor(travelU); travelV -= std::floor(travelV);
+            auto position=TorusGeometry::destination(baseViewportX,baseViewportY,travelU,travelV,worldW,worldH);
+            vx=position.x; vy=position.y;
+        }
         return dragging || e.motion.x < width;
     }
     if (e.type == SDL_MOUSEBUTTONDOWN && e.button.x < width) {
@@ -167,14 +183,18 @@ bool TorusView::event(const SDL_Event &e, int width)
     if (e.type == SDL_MOUSEWHEEL) {
         int x, y; SDL_GetMouseState(&x, &y);
         if (x < width) {
-            zoom = clamp(zoom * std::pow(1.12f, float(e.wheel.y * (e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1))), 0.4f, 3.0f);
+            int direction=e.wheel.y*(e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1);
+            if (target) {
+                zoom=clamp(zoom*std::pow(1.12f,float(direction)),0.4f,2.0f);
+                if (direction>0 && zoom>=2.0f) toggle();
+            }
             return true;
         }
     }
     return false;
 }
 
-void TorusView::draw(Game &game, int team, unsigned options, int vx, int vy, int width, int height)
+void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height)
 {
 #ifdef HAVE_OPENGL
     Uint32 now = SDL_GetTicks();
@@ -187,9 +207,21 @@ void TorusView::draw(Game &game, int team, unsigned options, int vx, int vy, int
             game.map.getW(), game.map.getH(), vx, vy, width, height);
         originX = focus.originX; originY = focus.originY;
         focusU = focus.u; focusV = focus.v;
+        baseViewportX=vx; baseViewportY=vy;
+        worldW=game.map.getW(); worldH=game.map.getH();
+        travelU=travelV=0;
         lastCapture = 0;
     }
     amount = clamp(amount + (target ? dt : -dt)/1.8f, 0, 1);
+    // The ordinary map and minimap track the same destination as the torus.
+    // Ease the sub-tile remainder away while returning to the tile-based 2D camera.
+    if (!target) {
+        float settle=amount==0 ? 1 : 1-std::exp(-16*dt);
+        travelU=mix(travelU,std::round(travelU*worldW)/worldW,settle);
+        travelV=mix(travelV,std::round(travelV*worldH)/worldH,settle);
+    }
+    auto destination=TorusGeometry::destination(baseViewportX,baseViewportY,travelU,travelV,worldW,worldH);
+    vx=destination.x; vy=destination.y;
     auto gfx = globalContainer->gfx;
     gfx->setClipRect();
     GLint oldViewport[4], oldMatrixMode, oldProgram;
@@ -232,12 +264,9 @@ void TorusView::draw(Game &game, int team, unsigned options, int vx, int vy, int
         glViewport(0, 0, size, size);
         glOrtho(0, game.map.getW()*32, game.map.getH()*32, 0, -1, 1);
         glClear(GL_COLOR_BUFFER_BIT);
-        // Clouds and offscreen selection arrows are viewport effects; exclude
-        // them from the atlas. Fog remains governed by the normal draw options.
-        unsigned saved = globalContainer->settings.optionFlags;
-        globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
+        // Capture the normal cloud and shadow layers along with the world,
+        // respecting the same graphics-quality setting as the 2D view.
         game.drawMap(0, 0, game.map.getW()*32, game.map.getH()*32, 0, 0, originX, originY, team, options);
-        globalContainer->settings.optionFlags = saved;
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         lastCapture = now;
     }
@@ -270,8 +299,8 @@ void TorusView::draw(Game &game, int team, unsigned options, int vx, int vy, int
     float cx = width*0.5f, cy = (height+16)*0.5f;
     float major = smooth(roll), minor = smooth(roll/0.85f);
     TorusGeometry::CameraAngles camera = TorusGeometry::lockedCamera(focusU, focusV, roll, aspect);
-    float ya = camera.yaw+yaw*roll;
-    float pa = camera.pitch+(pitch-TorusGeometry::defaultTilt)*roll;
+    float ya = camera.yaw;
+    float pa = camera.pitch;
     TorusGeometry::Point focus = TorusGeometry::point(focusU, focusV, roll, aspect);
     drawSky(ya, pa, pull, width, height);
     if (material) {
@@ -299,7 +328,7 @@ void TorusView::draw(Game &game, int team, unsigned options, int vx, int vy, int
         rz = ny*std::sin(pa)+rz*std::cos(pa);
         float light = mix(1, 0.48f+0.52f*clamp(-rx*0.35f-ry*0.45f+rz*0.82f, 0, 1), roll);
         glColor3f(light, light, light);
-        glTexCoord2f(u, 1-v);
+        glTexCoord2f(u+travelU, 1-v-travelV);
         glVertex3f(cx+xx*sx*perspective, cy+yy*sy*perspective, zz*scale);
     };
     for (int j=0; j<V; ++j) {

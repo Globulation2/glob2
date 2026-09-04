@@ -41,14 +41,9 @@ int main() {
             float v=j/100.0f;
             assert(distance(point(0,v,1,aspect),point(1,v,1,aspect))<0.0001f);
             assert(distance(point(v,0,1,aspect),point(v,1,1,aspect))<0.0001f);
-            if (j>0 && j<100) {
-                const float e=0.001f;
-                auto du=subtract(point(0.3f+e,v,1,aspect),point(0.3f-e,v,1,aspect));
-                auto dv=subtract(point(0.3f,v+e,1,aspect),point(0.3f,v-e,1,aspect));
-                assert(std::abs(length(du)/(aspect*length(dv))-1)<0.015f);
-                float dot=du.x*dv.x+du.y*dv.y+du.z*dv.z;
-                assert(std::abs(dot)/(length(du)*length(dv))<0.01f);
-            }
+            auto p=point(0.3f,v,1,aspect);
+            float radial=std::sqrt(p.x*p.x+p.z*p.z)-3;
+            assert(std::abs(radial*radial+p.y*p.y-1)<0.0001f);
             float mapped=meshV(v,aspect);
             assert(mapped>=0 && mapped<=1);
             if(j) assert(mapped>=meshV((j-1)/100.0f,aspect));
@@ -65,5 +60,25 @@ int main() {
         assert(std::abs(du.y)/length(du)<0.002f && std::abs(du.z)/length(du)<0.002f);
         assert(std::abs(dv.x)/length(dv)<0.002f && std::abs(dv.z)/length(dv)<0.002f);
     }
-    std::cout << "Planar endpoints, both periodic seams, torus radii continuous finite transition, and anchored viewport endpoints, conformal tile proportions, and locked screen orientation passed\n";
+    // Navigation uses the same wrapped tile viewport in both presentations.
+    for(int w : {64,128,256}) for(int h : {64,128,256})
+    for(int bx : {0,w-1,17}) for(int by : {0,h-1,23}) {
+        float du=0.237f,dv=0.815f;
+        auto old=destination(bx,by,du,dv,w,h);
+        int wantedX=(old.x+13)&(w-1), wantedY=(old.y-7)&(h-1);
+        du+=float(wrappedDelta(old.x,wantedX,w))/w;
+        dv+=float(wrappedDelta(old.y,wantedY,h))/h;
+        du-=std::floor(du); dv-=std::floor(dv);
+        auto moved=destination(bx,by,du,dv,w,h);
+        assert(moved.x==wantedX && moved.y==wantedY);
+        du=std::round(du*w)/w; dv=std::round(dv*h)/h;
+        auto flat=destination(bx,by,du,dv,w,h);
+        assert(flat.x==moved.x && flat.y==moved.y);
+        auto focus=mapFocus(w,h,bx,by,1119,799);
+        float mapX=focus.originX+(focus.u+du)*w-1119/64.0f;
+        float mapY=focus.originY+(focus.v+dv)*h-(799+16)/64.0f;
+        assert((int(std::round(mapX))&(w-1))==flat.x);
+        assert((int(std::round(mapY))&(h-1))==flat.y);
+    }
+    std::cout << "Planar endpoints, both periodic seams, torus radii continuous finite transition, and anchored viewport endpoints, uniform ring geometry, locked screen orientation, and shared wrapped navigation passed\n";
 }

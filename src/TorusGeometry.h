@@ -5,6 +5,13 @@
 namespace TorusGeometry {
 constexpr float pi = 3.14159265358979323846f;
 struct Point { float x, y, z; };
+inline int wrappedDelta(int from, int to, int size) {
+    return ((to-from+size/2)&(size-1))-size/2;
+}
+struct Viewport { int x, y; };
+inline Viewport destination(int baseX, int baseY, float du, float dv, int w, int h) {
+    return {(baseX+int(std::round(du*w)))&(w-1), (baseY+int(std::round(dv*h)))&(h-1)};
+}
 struct MapFocus { int originX, originY; float u, v; };
 inline MapFocus mapFocus(int mapW, int mapH, int vx, int vy, int width, int height) {
     float cx=width*0.5f, cy=(height+16)*0.5f;
@@ -16,33 +23,14 @@ inline MapFocus mapFocus(int mapW, int mapH, int vx, int vy, int width, int heig
     return f;
 }
 inline float smooth(float x) { x = std::max(0.0f, std::min(1.0f, x)); return x*x*(3-2*x); }
-// Isothermal coordinates: sqrt((R/r)^2-1) = map width / map height.
-// This preserves local tile aspect ratios; area necessarily varies on a torus.
-constexpr float defaultTilt = -0.95f;
-inline float radiusRatio(float aspect) { return std::sqrt(1+aspect*aspect); }
-inline float tubeRadius(float aspect) { return 4/(radiusRatio(aspect)+1); }
-inline float revealTilt(float aspect) {
-    // Thicker rings need a higher viewing angle to see into their aperture.
-    return -std::min(1.53f,std::max(0.85f,std::asin(1/radiusRatio(aspect))+0.20f));
+// Classic ring geometry and uniform texture coordinates. Map aspect ratio
+// does not change the shape or compress artwork toward the inner rim.
+constexpr float defaultTilt = -0.65f;
+inline float tubeRadius(float) { return 1; }
+inline float latitude(float v, float, float roll=1) {
+    return (v-0.5f)*2*pi+defaultTilt*smooth(roll);
 }
-inline float phase(float aspect) {
-    float q=radiusRatio(aspect);
-    return std::atan2(std::sqrt(q-1)*std::sin(revealTilt(aspect)/2),
-                      std::sqrt(q+1)*std::cos(revealTilt(aspect)/2))/pi;
-}
-inline float latitude(float v, float aspect, float roll=1) {
-    float q=radiusRatio(aspect), t=pi*(v-0.5f+phase(aspect));
-    float target=2*std::atan2(std::sqrt(q+1)*std::sin(t), std::sqrt(q-1)*std::cos(t));
-    float flat=(v-0.5f)*2*pi;
-    return flat+(target-flat)*smooth(roll);
-}
-// Even angular tessellation keeps the silhouette smooth despite uneven UVs.
-inline float meshV(float row, float aspect) {
-    float q=radiusRatio(aspect), angle=latitude(0,aspect)+2*pi*row;
-    float t=std::atan2(std::sqrt(q-1)*std::sin(angle/2),
-                       std::sqrt(q+1)*std::cos(angle/2))/pi;
-    return std::max(0.0f,std::min(1.0f,t-phase(aspect)+0.5f));
-}
+inline float meshV(float row, float) { return row; }
 inline Point point(float u, float v, float roll, float aspect=1) {
     float minor=smooth(roll/0.85f), major=smooth(roll), tube=tubeRadius(aspect);
     float theta=latitude(v,aspect,roll);
@@ -72,14 +60,9 @@ inline Point rotate(Point p, CameraAngles camera) {
 }
 inline float length(Point p) { return std::sqrt(p.x*p.x+p.y*p.y+p.z*p.z); }
 inline Point subtract(Point a, Point b) { return {a.x-b.x,a.y-b.y,a.z-b.z}; }
-// Match the two tangent scales at the camera anchor during the morph as well.
-inline float verticalScale(float u, float v, float roll, float aspect) {
-    if (roll==0) return 4/(tubeRadius(aspect)*aspect);
-    if (roll==1) return 1;
-    const float e=0.001f;
-    Point du=subtract(point(u+e,v,roll,aspect),point(u-e,v,roll,aspect));
-    Point dv=subtract(point(u,v+e,roll,aspect),point(u,v-e,roll,aspect));
-    return length(du)/(aspect*length(dv));
+// Fade from native 2D map dimensions to the uniform 3D ring mapping.
+inline float verticalScale(float, float, float roll, float aspect) {
+    return std::exp((1-smooth(roll))*std::log(4/aspect));
 }
 }
 #endif

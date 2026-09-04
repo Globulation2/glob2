@@ -384,7 +384,6 @@ Uint16 lastMouseButtonState = 0;
 
 void GameGUI::step(void)
 {
-    const int stableViewportX = viewportX, stableViewportY = viewportY;
 	SDL_Event event, mouseMotionEvent, windowEvent;
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
@@ -483,7 +482,6 @@ void GameGUI::step(void)
 		processEvent(&windowEvent);
 
 	flushScrollWheelOrders();
-    if (torusView.active()) { viewportX = stableViewportX; viewportY = stableViewportY; }
 
 	int oldViewportX = viewportX;
 	int oldViewportY = viewportY;
@@ -495,6 +493,7 @@ void GameGUI::step(void)
 	viewportY += torusView.active() ? 0 : viewportSpeedY;
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
+    if (torusView.active()) torusView.setViewport(viewportX,viewportY);
 
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
@@ -893,7 +892,7 @@ void GameGUI::processEvent(SDL_Event *event)
             }
             return;
         }
-        if (torusView.event(*event, width)) return;
+        if (torusView.event(*event, width, viewportX, viewportY)) return;
     }
 
 	// handle typing
@@ -4486,9 +4485,13 @@ void GameGUI::drawAll(int team)
         globalContainer->gfx->drawRect(12, 28, 148, 30, 88, 181, 204);
         globalContainer->gfx->drawString(22, 35, globalContainer->standardFont,
             torusView.enabled() ? "2D map  [F8]" : "3D world  [F8]");
-        if (torusView.active())
+        if (torusView.active()) {
+            int cx=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
+            int cy=(globalContainer->gfx->getH()+16)/2;
+            globalContainer->gfx->drawCircle(cx,cy,7,180,225,235,180);
             globalContainer->gfx->drawString(16, globalContainer->gfx->getH()-28,
-                globalContainer->standardFont, "Drag: orbit   Wheel: zoom   Right-click: reset");
+                globalContainer->standardFont, "Arrows / drag: move map   Wheel in / F8: return to 2D");
+        }
     }
 
     // draw menu if any
