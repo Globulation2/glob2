@@ -80,5 +80,25 @@ int main() {
         assert((int(std::round(mapX))&(w-1))==flat.x);
         assert((int(std::round(mapY))&(h-1))==flat.y);
     }
-    std::cout << "Planar endpoints, both periodic seams, torus radii continuous finite transition, and anchored viewport endpoints, uniform ring geometry, locked screen orientation, and shared wrapped navigation passed\n";
+    // Moving the camera preserves the absolute embedding of every map point,
+    // including travel around the tube and across both periodic seams.
+    for(float u : {-0.2f,0.0f,0.4f,0.9f,1.2f})
+    for(float v : {-0.3f,0.0f,0.25f,0.5f,0.85f,1.3f})
+    for(float du : {-0.45f,-0.1f,0.0f,0.37f}) for(float dv : {-0.45f,-0.1f,0.0f,0.37f}) {
+        auto expected=rotate(subtract(point(u+du,v+dv,1),point(u,v,1)),lockedCamera(u,v,1,1));
+        assert(distance(focusedPoint(du,dv,1,v),expected)<0.00002f);
+        assert(distance(focusedPoint(du,dv,0,v),{du*8*pi,dv*2*pi,0})<0.00002f);
+        assert(distance(focusedPoint(du,dv,1,v),focusedPoint(du,dv,1,v+1))<0.00002f);
+        for(float roll : {0.0f,0.1f,0.4f,0.7f,1.0f}) {
+            assert(length(focusedPoint(0,0,roll,v))<0.00001f);
+            assert(distance(focusedPoint(du,dv,roll,v),focusedPoint(du,dv,roll,v+1))<0.00004f);
+            if (roll<1) assert(distance(focusedPoint(du,dv,roll,v),focusedPoint(du,dv,roll+.001f,v))<.1f);
+            auto dx=subtract(focusedPoint(.001f,0,roll,v),focusedPoint(-.001f,0,roll,v));
+            auto dy=subtract(focusedPoint(0,.001f,roll,v),focusedPoint(0,-.001f,roll,v));
+            assert(dx.x>0 && dy.y>0);
+            assert(std::abs(dx.y)+std::abs(dx.z)<.00002f);
+            assert(std::abs(dy.x)+std::abs(dy.z)<.00002f);
+        }
+    }
+    std::cout << "Planar endpoints, both periodic seams, torus radii continuous finite transition, and anchored viewport endpoints, uniform ring geometry, locked screen orientation, and shared wrapped navigation, and fixed-world hovering camera passed\n";
 }

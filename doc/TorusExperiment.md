@@ -30,7 +30,10 @@ material with a subtle grid, keeping the shape readable without revealing
 hidden terrain or units. Replay visibility controls
 can show the whole map. The torus is an inspection view: use 2D for placing
 buildings and painting areas. The game keeps running in either view. The center marker identifies the patch
-that will fill the 2D view when you return.
+that will fill the 2D view when you return. The map has a fixed placement on the
+ring: navigation moves a hovering camera along its surface. The camera follows
+the local tangent orientation and moves closer inside the hole to keep the
+selected patch visible. Returning to 2D unfolds around that new position.
 
 The launcher stores all preferences, saves and replays in
 `experiment/profile`, avoiding the regular `~/.glob2` directory. The build,
@@ -75,3 +78,41 @@ The test checks exact flat endpoints, both closed seams, the torus equation,
 finite continuous positions across the animation, sub-tile viewport alignment,
 uniform ring geometry, fixed screen orientation throughout the reveal, and
 shared navigation/2D return positions across wrapped map boundaries.
+
+## Performance checks
+
+The cloud renderer now submits at most 4096 patches per batch, preserving the
+original four triangles and integer-rounded opacity at each patch center.
+The torus uses an indexed GPU mesh, cached until latitude, zoom, viewport size,
+or unfolding amount changes. Longitude navigation updates a texture-coordinate
+uniform because the ring is rotationally symmetric; geometry and map coordinates
+still describe the same fixed world surface.
+
+On the Apple M3, a deterministic cloud rendering benchmark measured these median
+times (five measured runs after warmup, including `glFinish`, 512×512 output):
+
+| Cloud grid | Original | Batched |
+| --- | ---: | ---: |
+| 128×128 patches | 26.66 ms | 2.46 ms |
+| 256×256 patches | 85.90 ms | 13.58 ms |
+| 512×512 patches | 247.05 ms | 22.37 ms |
+
+Framebuffer comparisons differed by at most 1/255 per channel. They cover odd
+cell sizes, negative offsets, opacity interpolation, and multiple grid sizes.
+Separate eight-second live game samples put cloud drawing at 65% before batching
+and 7% afterward. Those live runs use different generated maps and are bottleneck
+checks, not a controlled whole-game FPS comparison. High-resolution atlas
+capture, simulation, and presentation still contribute to frame cost.
+
+Run the cloud regression/benchmark on macOS:
+
+```sh
+c++ -std=c++14 -O3 -Wno-deprecated-declarations test/AlphaMapRenderBenchmark.cpp \
+  -I/opt/homebrew/include/SDL2 -L/opt/homebrew/lib -lSDL2 -framework OpenGL \
+  -o /tmp/glob2-cloud-benchmark
+/tmp/glob2-cloud-benchmark
+```
+
+The geometry regression also verifies that the hovering camera is equivalent to
+transforming a fixed torus into the selected point's tangent frame, and that
+unfolding preserves that point and its orientation across both world seams.

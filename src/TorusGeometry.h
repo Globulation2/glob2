@@ -60,6 +60,33 @@ inline Point rotate(Point p, CameraAngles camera) {
 }
 inline float length(Point p) { return std::sqrt(p.x*p.x+p.y*p.y+p.z*p.z); }
 inline Point subtract(Point a, Point b) { return {a.x-b.x,a.y-b.y,a.z-b.z}; }
+// A camera-local chart around a point on a fixed torus. At full roll this
+// is exactly the original world surface transformed into the local tangent
+// frame; moving the anchor changes the camera, never a tile's place on the ring.
+// At zero roll it is the ordinary flat map centered on that same tile.
+inline Point focusedPoint(float du, float dv, float roll, float anchorV) {
+    float minor=smooth(roll/0.85f), major=smooth(roll);
+    float phi=latitude(anchorV,1), arc=dv*2*pi;
+    float y=arc*std::cos(phi), z=-arc*std::sin(phi);
+    if (minor>0.000001f) {
+        float half=arc*minor/2, chord=2*std::sin(half)/minor;
+        y=chord*std::cos(phi+half);
+        z=-chord*std::sin(phi+half);
+    }
+    float x=du*8*pi;
+    if (major>0.000001f) {
+        float a=du*2*pi*major, radius=(4+(std::cos(phi)-1)*major)/major;
+        x=(radius+z)*std::sin(a);
+        float half=std::sin(a/2);
+        z=z*std::cos(a)-2*radius*half*half;
+    }
+    return {x,y*std::cos(phi)-z*std::sin(phi),y*std::sin(phi)+z*std::cos(phi)};
+}
+inline float hoverDistance(float anchorV) {
+    // Stay inside the hole when looking down on its inner wall, so the
+    // opposite side cannot get between the camera and the selected location.
+    return 1.5f+16.5f*smooth((std::cos(latitude(anchorV,1))+1)*0.5f);
+}
 // Fade from native 2D map dimensions to the uniform 3D ring mapping.
 inline float verticalScale(float, float, float roll, float aspect) {
     return std::exp((1-smooth(roll))*std::log(4/aspect));

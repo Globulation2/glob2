@@ -25,6 +25,8 @@ private:
     int atlasW, atlasH;
     Uint32 lastFrame, lastCapture;
     unsigned texture, visibility, framebuffer, material;
+    unsigned meshBuffer, indexBuffer;
+    float meshKey[8];
     bool failed;
     int originX, originY;
     float focusU, focusV;

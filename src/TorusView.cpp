@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
+#include <cstring>
+#include <cstddef>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -92,7 +94,8 @@ GLuint createMaterial() {
     const char *vertex =
         "#version 120\n"
         "varying vec2 uv; varying vec3 light;\n"
-        "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy;light=gl_Color.rgb;}\n";
+        "uniform vec2 mapOffset;\n"
+        "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;}\n";
     const char *fragment =
         "#version 120\n"
         "uniform sampler2D world; uniform sampler2D visibility; uniform float fold;\n"
@@ -125,11 +128,13 @@ GLuint createMaterial() {
 
 TorusView::TorusView() : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0),
     baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
-    lastFrame(0), lastCapture(0), texture(0), visibility(0), framebuffer(0), material(0), failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f) {}
+    lastFrame(0), lastCapture(0), texture(0), visibility(0), framebuffer(0), material(0), meshBuffer(0), indexBuffer(0), meshKey{}, failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f) {}
 TorusView::~TorusView()
 {
 #ifdef HAVE_OPENGL
     if (SDL_GL_GetCurrentContext()) {
+        if (meshBuffer) glDeleteBuffers(1,&meshBuffer);
+        if (indexBuffer) glDeleteBuffers(1,&indexBuffer);
         if (material) glDeleteProgram(material);
         if (texture) glDeleteTextures(1, &texture);
         if (visibility) glDeleteTextures(1, &visibility);
@@ -166,7 +171,7 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
     if (e.type == SDL_MOUSEMOTION) {
         if (!(e.motion.state & (SDL_BUTTON_LMASK | SDL_BUTTON_MMASK))) dragging = false;
         if (dragging && target && worldW && worldH) {
-            // Drag the world beneath a fixed map focus, just like panning 2D.
+            // Move the camera focus across the fixed world surface.
             float pixelsPerWorld = std::max(1.0f,width*0.85f*zoom);
             travelU -= e.motion.xrel/pixelsPerWorld;
             travelV -= e.motion.yrel/pixelsPerWorld*float(worldW)/worldH;
@@ -207,8 +212,9 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         // its sub-tile offset, so even the first/last frame matches normal 2D.
         TorusGeometry::MapFocus focus = TorusGeometry::mapFocus(
             game.map.getW(), game.map.getH(), vx, vy, width, height);
-        originX = focus.originX; originY = focus.originY;
-        focusU = focus.u; focusV = focus.v;
+        if (!worldW || !worldH) { originX=focus.originX; originY=focus.originY; }
+        focusU=(((vx-originX)&game.map.getMaskW())+width/64.0f)/game.map.getW();
+        focusV=(((vy-originY)&game.map.getMaskH())+(height+16)/64.0f)/game.map.getH();
         baseViewportX=vx; baseViewportY=vy;
         worldW=game.map.getW(); worldH=game.map.getH();
         travelU=travelV=0;
@@ -326,10 +332,9 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float sy = sx*TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
     float cx = width*0.5f, cy = (height+16)*0.5f;
     float major = smooth(roll), minor = smooth(roll/0.85f);
-    TorusGeometry::CameraAngles camera = TorusGeometry::lockedCamera(focusU, focusV, roll, aspect);
-    float ya = camera.yaw;
-    float pa = camera.pitch;
-    TorusGeometry::Point focus = TorusGeometry::point(focusU, focusV, roll, aspect);
+    float anchorU=focusU+travelU, anchorV=focusV+travelV;
+    float ya=-(anchorU-0.5f)*2*pi, pa=TorusGeometry::latitude(anchorV,aspect);
+    float cameraDistance=TorusGeometry::hoverDistance(anchorV);
     drawSky(ya, pa, pull, width, height);
     if (material) {
         glActiveTexture(GL_TEXTURE1);
@@ -339,35 +344,65 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glUniform1i(glGetUniformLocation(material, "world"), 0);
         glUniform1i(glGetUniformLocation(material, "visibility"), 1);
         glUniform1f(glGetUniformLocation(material, "fold"), pull);
+        glUniform2f(glGetUniformLocation(material, "mapOffset"),anchorU,1-anchorV);
     }
-    const int U = 160, V = 160;
-    auto vertex = [&](int i, int j) {
-        float u = float(i)/U, v = TorusGeometry::meshV(float(j)/V, aspect);
-        TorusGeometry::Point point = TorusGeometry::point(u, v, roll, aspect);
-        // Subtract before rotating: the same game-world patch remains under
-        // the center of the camera throughout rolling and unrolling.
-        float x = point.x-focus.x, y = point.y-focus.y, z = point.z-focus.z;
-        float xx = x*std::cos(ya)+z*std::sin(ya);
-        float zz = -x*std::sin(ya)+z*std::cos(ya);
-        float yy = y*std::cos(pa)-zz*std::sin(pa);
-        zz = y*std::sin(pa)+zz*std::cos(pa);
-        float perspective = 18/(18-zz*roll);
-        float a = (u-0.5f)*2*pi*major, b = TorusGeometry::latitude(v, aspect, roll)*minor;
-        float nx = std::sin(a)*std::cos(b), ny = std::sin(b), nz = std::cos(a)*std::cos(b);
-        float rx = nx*std::cos(ya)+nz*std::sin(ya);
-        float rz = -nx*std::sin(ya)+nz*std::cos(ya);
-        float ry = ny*std::cos(pa)-rz*std::sin(pa);
-        rz = ny*std::sin(pa)+rz*std::cos(pa);
-        float light = mix(1, 0.48f+0.52f*clamp(-rx*0.35f-ry*0.45f+rz*0.82f, 0, 1), roll);
-        glColor3f(light, light, light);
-        glTexCoord2f(u+travelU, 1-v-travelV);
-        glVertex3f(cx+xx*sx*perspective, cy+yy*sy*perspective, zz*scale);
-    };
-    for (int j=0; j<V; ++j) {
-        glBegin(GL_QUAD_STRIP);
-        for (int i=0; i<=U; ++i) { vertex(i,j); vertex(i,j+1); }
-        glEnd();
+    const int U=160,V=160;
+    struct MeshVertex { float position[4],color[3],uv[2]; };
+    float key[8]={roll,anchorV,sx,sy,cx,cy,scale,cameraDistance};
+    GLint oldArrayBuffer,oldIndexBuffer;
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING,&oldArrayBuffer);
+    glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING,&oldIndexBuffer);
+    glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+    if (!meshBuffer || std::memcmp(key,meshKey,sizeof(key))!=0) {
+        if (!meshBuffer) glGenBuffers(1,&meshBuffer);
+        std::vector<MeshVertex> vertices((U+1)*(V+1));
+        for (int j=0;j<=V;++j) for (int i=0;i<=U;++i) {
+            float du=float(i)/U-0.5f, dv=float(j)/V-0.5f;
+            auto p=TorusGeometry::focusedPoint(du,dv,roll,anchorV);
+            float a=du*2*pi*major, b=pa+dv*2*pi*minor;
+            float nx=std::sin(a)*std::cos(b), ny=std::sin(b), nz=std::cos(a)*std::cos(b);
+            float ry=ny*std::cos(pa)-nz*std::sin(pa);
+            float rz=ny*std::sin(pa)+nz*std::cos(pa);
+            float light=mix(1,0.48f+0.52f*clamp(-nx*0.35f-ry*0.45f+rz*0.82f,0,1),roll);
+            float w=1-p.z*roll/cameraDistance;
+            vertices[j*(U+1)+i]={{cx*w+p.x*sx,cy*w+p.y*sy,p.z*scale,w},
+                {light,light,light},{du,-dv}};
+        }
+        glBindBuffer(GL_ARRAY_BUFFER,meshBuffer);
+        glBufferData(GL_ARRAY_BUFFER,vertices.size()*sizeof(MeshVertex),vertices.data(),GL_DYNAMIC_DRAW);
+        std::memcpy(meshKey,key,sizeof(key));
     }
+    if (!indexBuffer) {
+        std::vector<unsigned> indices;
+        indices.reserve(U*V*6);
+        for (int j=0;j<V;++j) for (int i=0;i<U;++i) {
+            unsigned a=j*(U+1)+i,b=a+U+1;
+            indices.insert(indices.end(),{a,b,a+1,a+1,b,b+1});
+        }
+        glGenBuffers(1,&indexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size()*sizeof(unsigned),indices.data(),GL_STATIC_DRAW);
+    }
+    glBindBuffer(GL_ARRAY_BUFFER,meshBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBuffer);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glClientActiveTexture(GL_TEXTURE0);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glVertexPointer(4,GL_FLOAT,sizeof(MeshVertex),reinterpret_cast<void*>(offsetof(MeshVertex,position)));
+    glColorPointer(3,GL_FLOAT,sizeof(MeshVertex),reinterpret_cast<void*>(offsetof(MeshVertex,color)));
+    glTexCoordPointer(2,GL_FLOAT,sizeof(MeshVertex),reinterpret_cast<void*>(offsetof(MeshVertex,uv)));
+    // Geometry stays on the GPU while stationary. Longitude navigation only
+    // changes a uniform; latitude or unfolding rebuilds one shared vertex grid.
+    if (!material) {
+        glMatrixMode(GL_TEXTURE); glPushMatrix(); glLoadIdentity();
+        glTranslatef(anchorU,1-anchorV,0);
+    }
+    glDrawElements(GL_TRIANGLES,U*V*6,GL_UNSIGNED_INT,nullptr);
+    if (!material) { glMatrixMode(GL_TEXTURE); glPopMatrix(); glMatrixMode(GL_MODELVIEW); }
+    glPopClientAttrib();
+    glBindBuffer(GL_ARRAY_BUFFER,oldArrayBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,oldIndexBuffer);
     glUseProgram(oldProgram);
     glPopAttrib();
     glMatrixMode(GL_MODELVIEW); glPopMatrix();
