@@ -1,12 +1,8 @@
-# glob2 (Legacy C++ Codebase)
-
-This is the original Globulation 2 C++ codebase. It is legacy code and is not under active development.
+# glob2
 
 ## Build Commands
 
 ```bash
-cd glob2
-
 # Build (requires SCons, Python 3)
 scons -j16
 
