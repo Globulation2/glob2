@@ -309,7 +309,7 @@ def main():
                         '#src/net', '#src/net/irc', '#src/net/message',
                         '#src/team',
                         '#src/unit'])
-    env.Append(CXXFLAGS=' -std=c++20 -Wall -fPIC')
+    env.Append(CXXFLAGS=' -std=gnu++20 -Wall -fPIC')
     # Uninitialized-read diagnostics: DET_INIT=zero|pattern forces deterministic
     # stack initialization (see CLAUDE.md). Env var, not a cached scons option.
     _detinit = os.environ.get('DET_INIT')
@@ -330,8 +330,6 @@ def main():
         env.Append(CXXFLAGS=' -O3')
         env.Append(LINKFLAGS='-O3')
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
-        # -std=c++20 sets __STRICT_ANSI__, which hides M_PI in mingw's math.h
-        env.Append(CPPDEFINES=["_USE_MATH_DEFINES"])
         # TODO: Remove unneccessary dependencies for server.
         env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
