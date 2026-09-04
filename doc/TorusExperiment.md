@@ -43,7 +43,8 @@ keeps both map axes periodic, with major radius 3 and tube radius 1. The world
 uses uniform texture coordinates. The earlier conformal/aspect-ratio correction
 has been removed, so the inner rim no longer compresses the artwork through
 that remapping. Curvature and perspective naturally affect apparent proportions.
-`TorusView` captures the world into a 2048×2048 OpenGL framebuffer at up to
+`TorusView` captures the world into an OpenGL framebuffer at native map resolution (32 pixels per tile),
+capped at 8192 pixels per axis and the GPU limit, at up to
 10 Hz and renders a 160×160 mesh. Camera animation renders independently of
 the atlas refresh rate. A deterministic spherical starfield with a faint galactic band rotates with
 the camera behind the world. It is an artistic sky, not a star catalog.
@@ -52,7 +53,8 @@ The existing 2D HUD is drawn afterward.
 This prototype requires OpenGL and a framebuffer-capable compatibility
 context. Sprite artwork lies on the surface; buildings are not extruded 3D
 models. The normal animated cloud and shadow layers are included in 3D when high-quality
-graphics are enabled, at the atlas refresh rate. Viewport particles and ghosts
+graphics are enabled, at the atlas refresh rate. A map-discovery mask keeps
+clouds off unrevealed terrain. Viewport particles and ghosts
 are omitted in 3D. Large worlds
 lose detail in the bounded atlas and cost more to capture. The regular 2D
 view retains its normal rendering and controls.

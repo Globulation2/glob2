@@ -22,8 +22,9 @@ private:
     float amount, zoom;
     float travelU, travelV;
     int baseViewportX, baseViewportY, worldW, worldH;
+    int atlasW, atlasH;
     Uint32 lastFrame, lastCapture;
-    unsigned texture, framebuffer, material;
+    unsigned texture, visibility, framebuffer, material;
     bool failed;
     int originX, originY;
     float focusU, focusV;

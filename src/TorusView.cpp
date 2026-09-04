@@ -1,6 +1,7 @@
 #include "TorusView.h"
 #include "TorusGeometry.h"
 #include "Game.h"
+#include "Team.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
 #include <algorithm>
@@ -94,15 +95,15 @@ GLuint createMaterial() {
         "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy;light=gl_Color.rgb;}\n";
     const char *fragment =
         "#version 120\n"
-        "uniform sampler2D world; uniform float fold;\n"
+        "uniform sampler2D world; uniform sampler2D visibility; uniform float fold;\n"
         "varying vec2 uv; varying vec3 light;\n"
         "void main(){\n"
         " vec3 terrain=texture2D(world,uv).rgb;\n"
-        " float seen=smoothstep(0.008,0.045,max(terrain.r,max(terrain.g,terrain.b)));\n"
+        " float seen=texture2D(visibility,uv).r;\n"
         " vec2 grid=abs(fract(uv*vec2(48.0,24.0)-0.5)-0.5);\n"
         " float line=1.0-smoothstep(0.0,0.035,min(grid.x,grid.y));\n"
         " vec3 unknown=vec3(0.22,0.31,0.41)+line*vec3(0.035,0.045,0.055);\n"
-        " vec3 surface=mix(terrain,unknown,(1.0-seen)*fold);\n"
+        " vec3 surface=mix(unknown*fold,terrain,seen);\n"
         " gl_FragColor=vec4(surface*light,1.0);\n"
         "}\n";
     GLuint vs=glCreateShader(GL_VERTEX_SHADER), fs=glCreateShader(GL_FRAGMENT_SHADER);
@@ -123,14 +124,15 @@ GLuint createMaterial() {
 }
 
 TorusView::TorusView() : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0),
-    baseViewportX(0), baseViewportY(0), worldW(0), worldH(0),
-    lastFrame(0), lastCapture(0), texture(0), framebuffer(0), material(0), failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f) {}
+    baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
+    lastFrame(0), lastCapture(0), texture(0), visibility(0), framebuffer(0), material(0), failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f) {}
 TorusView::~TorusView()
 {
 #ifdef HAVE_OPENGL
     if (SDL_GL_GetCurrentContext()) {
         if (material) glDeleteProgram(material);
         if (texture) glDeleteTextures(1, &texture);
+        if (visibility) glDeleteTextures(1, &visibility);
         if (framebuffer) glDeleteFramebuffers(1, &framebuffer);
     }
 #endif
@@ -233,15 +235,23 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
 
     // Render the actual world (terrain, resources, buildings, units and fog) to
     // a bounded offscreen texture. Camera frames are independent of capture rate.
-    const int size = 2048;
-    if (!texture) {
+    GLint maximumTexture=0, maximumViewport[2]={0,0};
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maximumTexture);
+    glGetIntegerv(GL_MAX_VIEWPORT_DIMS,maximumViewport);
+    int nextW=std::min(worldW*32,std::min(8192,std::min(maximumTexture,maximumViewport[0])));
+    int nextH=std::min(worldH*32,std::min(8192,std::min(maximumTexture,maximumViewport[1])));
+    if (!texture || atlasW!=nextW || atlasH!=nextH) {
+        if (texture) glDeleteTextures(1,&texture);
+        if (framebuffer) glDeleteFramebuffers(1,&framebuffer);
+        atlasW=nextW; atlasH=nextH;
+        lastCapture=0;
         glPushAttrib(GL_TEXTURE_BIT);
         glGenTextures(1, &texture); glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasW, atlasH, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
@@ -257,17 +267,35 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
             glMatrixMode(oldMatrixMode);
             return;
         }
-        material = createMaterial();
+        if (!material) material = createMaterial();
     }
     if (!lastCapture || now-lastCapture >= 100) {
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glViewport(0, 0, size, size);
+        glViewport(0, 0, atlasW, atlasH);
         glOrtho(0, game.map.getW()*32, game.map.getH()*32, 0, -1, 1);
         glClear(GL_COLOR_BUFFER_BIT);
         // Capture the normal cloud and shadow layers along with the world,
         // respecting the same graphics-quality setting as the 2D view.
         game.drawMap(0, 0, game.map.getW()*32, game.map.getH()*32, 0, 0, originX, originY, team, options);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // Discovery comes from the map, independently of cloud brightness.
+        // The flipped rows and half-tile sample centers match the world atlas.
+        std::vector<unsigned char> discovered(worldW*worldH*4);
+        Uint32 visibleTeams=globalContainer->replaying ? globalContainer->replayVisibleTeams : game.teams[team]->me;
+        for (int y=0;y<worldH;++y) for (int x=0;x<worldW;++x) {
+            unsigned char value=(options & Game::DRAW_WHOLE_MAP) ||
+                game.map.isMapDiscovered(originX+x,originY+y,visibleTeams) ? 255 : 0;
+            for (int c=0;c<4;++c) discovered[((worldH-1-y)*worldW+x)*4+c]=value;
+        }
+        glPushAttrib(GL_TEXTURE_BIT);
+        if (!visibility) glGenTextures(1,&visibility);
+        glBindTexture(GL_TEXTURE_2D,visibility);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,worldW,worldH,0,GL_RGBA,GL_UNSIGNED_BYTE,discovered.data());
+        glPopAttrib();
         lastCapture = now;
     }
 
@@ -304,8 +332,12 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     TorusGeometry::Point focus = TorusGeometry::point(focusU, focusV, roll, aspect);
     drawSky(ya, pa, pull, width, height);
     if (material) {
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D,visibility);
+        glActiveTexture(GL_TEXTURE0);
         glUseProgram(material);
         glUniform1i(glGetUniformLocation(material, "world"), 0);
+        glUniform1i(glGetUniformLocation(material, "visibility"), 1);
         glUniform1f(glGetUniformLocation(material, "fold"), pull);
     }
     const int U = 160, V = 160;
