@@ -457,11 +457,6 @@ static constexpr int AI_CASTOR_SCORE_NORMAL_GROWTH_SHIFT = 8;
 static constexpr int AI_CASTOR_SCORE_NORMAL_NEIGHBOUR_BIAS = 8;
 static constexpr int AI_CASTOR_SCORE_NEIGHBOUR_DIRECT_SHIFT = 2; // (direct << 2)
 
-// Defense-score normalisation: clamp `score >> 12` into [0, 255].
-// C++: Placement.cpp:159-162.
-static constexpr int AI_CASTOR_DEFENSE_SCORE_NORMALISE_SHIFT = 12;
-static constexpr int AI_CASTOR_DEFENSE_SCORE_CAP = 255;
-
 
 // ---------------------------------------------------------------------------
 // computeRessourcesCluster

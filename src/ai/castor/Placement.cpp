@@ -76,8 +76,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	//printf(" (scaled) minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
 	
 	Uint8 *wheatGradientMap=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
-	memset(goodBuildingMap, 0, size);
-	
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
@@ -92,17 +90,14 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 				&& (mapDiscovered[corner2]&me)==0
 				&& (mapDiscovered[corner3]&me)==0)
 				continue;
-			//goodBuildingMap[corner0]=1;
 			
 			Uint8 space=spaceForBuildingMap[corner0];
 			if (space<bw)
 				continue;
-			//goodBuildingMap[corner0]=2;
 			
 			Sint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
 			if (work<minWork)
 				continue;
-			//goodBuildingMap[corner0]=3;
 			
 			Uint32 wheatGradient=wheatGradientMap[corner0]+wheatGradientMap[corner1]+wheatGradientMap[corner2]+wheatGradientMap[corner3];
 			if (!defense)
@@ -122,12 +117,10 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 					//	continue;
 				}
 			}
-			//goodBuildingMap[corner0]=4;
 			
 			Uint32 enemyRange=enemyRangeMap[corner0]+enemyRangeMap[corner1]+enemyRangeMap[corner2]+enemyRangeMap[corner3];
 			if (enemyRange>AI_CASTOR_CORNERS*(AI_CASTOR_WHEAT_GRADIENT_PEAK-AI_CASTOR_ENEMY_RANGE_REJECT_OFFSET))
 				continue;
-			//goodBuildingMap[corner0]=5;
 
 			Sint32 wheatGrowth=wheatGrowthMap[corner0]+wheatGrowthMap[corner1]+wheatGrowthMap[corner2]+wheatGrowthMap[corner3];
 
@@ -137,7 +130,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 			if ((neighbour&AI_CASTOR_NEIGHBOUR_DIRTY_BIT)||(directNeighboursCount>AI_CASTOR_NEIGHBOUR_MAX_DIRECT))
 				continue;
 
-			//goodBuildingMap[corner0]=6;
 
 			Sint32 score;
 			if (defense)
@@ -147,16 +139,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 			else
 				score=(AI_CASTOR_SCORE_NORMAL_BIAS+work-(wheatGrowth<<AI_CASTOR_SCORE_NORMAL_GROWTH_SHIFT)-enemyRange)*(AI_CASTOR_SCORE_NORMAL_NEIGHBOUR_BIAS+(directNeighboursCount<<AI_CASTOR_SCORE_NEIGHBOUR_DIRECT_SHIFT)+farNeighboursCount);
 
-			if (defense)
-			{
-				if (score<0)
-					goodBuildingMap[corner0]=0;
-				else if ((score>>AI_CASTOR_DEFENSE_SCORE_NORMALISE_SHIFT)>=AI_CASTOR_DEFENSE_SCORE_CAP)
-					goodBuildingMap[corner0]=AI_CASTOR_DEFENSE_SCORE_CAP;
-				else
-					goodBuildingMap[corner0]=(score>>AI_CASTOR_DEFENSE_SCORE_NORMALISE_SHIFT);
-			}
-			
 			if (bestScore<score)
 			{
 				bestScore=score;

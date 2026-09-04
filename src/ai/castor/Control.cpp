@@ -361,20 +361,6 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 }
 
 
-// WARNING : Using wasEvent is *NOT* safe, and will *NOT* work through the network
-/*std::shared_ptr<Order>AICastor::controlBaseDefense()
-{
-	int freeWarriors = team->stats.getFreeUnits(WARRIOR);
-	if (team->wasEvent(Team::BUILDING_UNDER_ATTACK_EVENT) && (freeWarriors>0))
-	{
-		int x, y;
-		team->getEventPos(&x, &y);
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::WAR_FLAG, 0, false);
-		onStrike = true;
-		return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum));
-	}
-	return NULL;
-}*/
 
 
 std::shared_ptr<Order>AICastor::controlStrikes()

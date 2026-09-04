@@ -98,8 +98,6 @@ void AICastor::firstInit()
 	for (int i=0; i<2; i++)
 		wheatCareMap[i]=NULL;
 	
-	goodBuildingMap=NULL;
-	
 	enemyWarriorsMap=NULL;
 	enemyPowerMap=NULL;
 	enemyRangeMap=NULL;
@@ -230,10 +228,6 @@ void AICastor::init(Player *player)
 		wheatCareMap[i]=new Uint8[size];
 	}
 	
-	if (goodBuildingMap!=NULL)
-		delete[] goodBuildingMap;
-	goodBuildingMap=new Uint8[size];
-	
 	if (enemyPowerMap!=NULL)
 		delete[] enemyPowerMap;
 	enemyPowerMap=new Uint8[size];
@@ -291,9 +285,6 @@ AICastor::~AICastor()
 	for (int i=0; i<2; i++)
 		if (wheatCareMap[i]!=NULL)
 			delete[] wheatCareMap[i];
-	
-	if (goodBuildingMap!=NULL)
-		delete[] goodBuildingMap;
 	
 	if (enemyPowerMap!=NULL)
 		delete[] enemyPowerMap;

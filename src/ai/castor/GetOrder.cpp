@@ -108,12 +108,6 @@ std::shared_ptr<Order>AICastor::getOrder()
 		computeWheatCareMap();
 	}
 	
-	/*// Defense, we check it first, because it will only return true if there is an attack and free warriors
-	{
-		std::shared_ptr<Order>order = controlBaseDefense();
-		if (order)
-			return order;
-	}*/
 		
 	//printf("getOrder(), %d projects\n", projects.size());
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end();)

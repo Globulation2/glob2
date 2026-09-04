@@ -4,13 +4,12 @@
 #pragma once
 
 #include <list>
+#include <memory>
 #include <string>
 
 #include "IntBuildingType.h"
 #include "AIImplementation.h"
 #include "AICastorTuning.h"
-
-#include <memory>
 
 struct Case;
 class Game;
@@ -26,52 +25,28 @@ class AICastor : public AIImplementation
 public:
 	static const int NB_HARD_BUILDING=8;
 
-	// "Never run yet" sentinel for AICastor's per-map computation timers
-	// (lastFreeWorkersComputed, lastWheatGrowthMapComputed, lastEnemy*MapComputed,
-	// and Project::timer). Stored as Uint32, compared as ">timer+N" so the
-	// all-ones bit pattern always reads as "in the distant future" until first set.
-	// C++: Lifecycle.cpp:68, 135-139.
+	// "Never run yet" for the per-map computation timers. All-ones compares as
+	// "in the future" against ">timer+N", so a zero would not do.
 	static constexpr Uint32 AI_CASTOR_TIMER_NEVER = static_cast<Uint32>(-1);
 
-	// "Unset" sentinel for Project worker counts (mainWorkers, foodWorkers,
-	// otherWorkers, finalWorkers). A negative value means "this project does
-	// not override this worker class"; continueProject only writes worker
-	// counts when the field is >= 0.
-	// C++: Lifecycle.cpp:58-64.
+	// Project worker counts below zero mean "this project does not override that worker class".
 	static constexpr Sint32 AI_CASTOR_WORKERS_UNSET = -1;
 
-	// "No critical project found" sentinel for the lower-is-better project
-	// priority scan in getOrder(). Set to INT32_MAX so the first real
-	// project priority always wins the min-search.
-	// C++: GetOrder.cpp:143.
+	// Initial value for the lower-is-better project priority min-search.
 	static constexpr Sint32 AI_CASTOR_PRIORITY_NONE = 0x7FFFFFFF;
 
-	// "No enemy building seen yet" sentinel in controlStrikes() while
-	// scanning for the highest enemy building level.
-	// C++: Control.cpp:391.
+	// Initial values for the controlStrikes() max-searches; levels and scores are non-negative.
 	static constexpr int AI_CASTOR_LEVEL_NONE = -1;
-
-	// "No candidate target team yet" sentinel for the controlStrikes()
-	// per-team score search. Score is non-negative; -1 forces the first
-	// real score to win.
-	// C++: Control.cpp:410.
 	static constexpr int AI_CASTOR_SCORE_NONE = -1;
 
-	// Project::subPhase state-machine values. The original code uses raw
-	// ints 0,1,2,3,5,6 — value 4 is intentionally absent (a retired phase
-	// that was never renumbered). Names mirror the comments at each
-	// branch in continueProject() (Projects.cpp:258 onward).
-	// C++: Projects.cpp:258-499.
 	enum SubPhase : int
 	{
-		AI_CASTOR_SUBPHASE_BOOT           = 0, // initial / boot
-		AI_CASTOR_SUBPHASE_FIND_PLACE     = 1, // find good building place
-		AI_CASTOR_SUBPHASE_CHECK_SITES    = 2, // do we have enough building sites?
-		AI_CASTOR_SUBPHASE_BALANCE_MAIN   = 3, // balance workers across building/food/other
-		// value 4 unused — retired phase, intentionally skipped to preserve
-		// numeric values of the surviving phases.
-		AI_CASTOR_SUBPHASE_WAIT_FINISHED  = 5, // wait for buildings to finish
-		AI_CASTOR_SUBPHASE_BALANCE_FINAL  = 6, // balance final workers
+		AI_CASTOR_SUBPHASE_BOOT,
+		AI_CASTOR_SUBPHASE_FIND_PLACE,
+		AI_CASTOR_SUBPHASE_CHECK_SITES,   // do we have enough building sites?
+		AI_CASTOR_SUBPHASE_BALANCE_MAIN,  // balance workers across building/food/other
+		AI_CASTOR_SUBPHASE_WAIT_FINISHED,
+		AI_CASTOR_SUBPHASE_BALANCE_FINAL,
 	};
 
 	class Project
@@ -84,18 +59,18 @@ public:
 	public:
 		IntBuildingType::Number shortTypeNum;
 		int amount; // number of buildings wanted
-		bool food; // place closer to wheat of further
-		bool defense; // place at incpoming places.
+		bool food; // place closer to wheat
+		bool defense; // place at incoming places
 		
 		std::string debugStdName;
 		const char *debugName;
 		
 		int subPhase;
 		
-		Uint32 successWait; // wait a number of success in the hope to find a better one just a bit later.
-		bool blocking; // if true, no other project can be added..
-		bool critical; // if true, place building at any cost.
-		Sint32 priority; // the lower is the number, the higher is the priority
+		Uint32 successWait; // wait a number of successes in the hope of finding a better one a bit later
+		bool blocking; // if true, no other project can be added
+		bool critical; // if true, place building at any cost
+		Sint32 priority; // lower is higher priority
 		Uint32 triesLeft;
 		
 		Sint32 mainWorkers;
@@ -175,7 +150,6 @@ private:
 	std::shared_ptr<Order>controlFood();
 	std::shared_ptr<Order>controlUpgrades();
 	std::shared_ptr<Order>controlStrikes();
-//	std::shared_ptr<Order>controlBaseDefense();
 	
 	bool addProject(Project *project);
 	void addProjects();
@@ -233,7 +207,7 @@ public:
 	bool strikeTeamSelected;
 	int strikeTeam;
 	
-	bool foodWarning; // true if wwe are aproaching a foodLock
+	bool foodWarning; // true if we are approaching a foodLock
 	bool foodLock; // we stop producing any unit until we get more food buildings
 	bool foodSurplus; // we have too many food buildings
 	Uint32 foodLockStats[2];
@@ -241,7 +215,6 @@ public:
 	bool starvingWarning;
 	Uint32 starvingWarningStats[2];
 	int buildsAmount;
-	int freeWorkers; // plz use getFreeWorkers() to raise computation trigger.
 	
 	Uint32 lastFreeWorkersComputed;
 	Uint32 lastWheatGrowthMapComputed;
@@ -264,8 +237,8 @@ public:
 public:
 	Uint8 *obstacleUnitMap; // where units can go. included in {0, 1}
 	Uint8 *obstacleBuildingMap; // where buildings can be built. included in {0, 1}
-	Uint8 *spaceForBuildingMap; // where building can be built, of size X*X. included in {0, 1, 2}. More iterations can provide arbitrary size.
-	Uint8 *buildingNeighbourMap; // bit 0: bad flag, bits [1, 3]: direct neighbours count, bit 4: zero, bits [5, 7]; far neighbours count.
+	Uint8 *spaceForBuildingMap; // where a building of size X*X can be built. included in {0, 1, 2}. More iterations can provide arbitrary size.
+	Uint8 *buildingNeighbourMap; // bit 0: bad flag, bits [1, 3]: direct neighbours count, bit 4: zero, bits [5, 7]: far neighbours count.
 	
 	Uint8 *workPowerMap;
 	Uint8 *workRangeMap;
@@ -273,10 +246,8 @@ public:
 	Uint8 *hydratationMap;
 	Uint8 *notGrassMap;
 	Uint8 *wheatGrowthMap;
-	Uint8 *oldWheatGradient[4];  // [0] is the most recent
+	Uint8 *oldWheatGradient[4]; // [0] is the most recent
 	Uint8 *wheatCareMap[2];
-	
-	Uint8 *goodBuildingMap; // TODO: remove.
 	
 	Uint8 *enemyPowerMap;
 	Uint8 *enemyRangeMap;
@@ -284,7 +255,3 @@ public:
 	
 	Uint16 *ressourcesCluster;
 };
-
-
- 
-
