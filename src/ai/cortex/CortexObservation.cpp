@@ -4,8 +4,6 @@
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
 #include "CortexPlacementGeo.h"
-#include "CortexWheat.h"
-#include "CortexWater.h"
 
 #include "Player.h"
 #include "Game.h"

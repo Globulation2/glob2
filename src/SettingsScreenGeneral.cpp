@@ -21,7 +21,6 @@
 #include <GUISelector.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <GraphicContext.h>
 
 
 void SettingsScreen::buildOkCancelButtons()

@@ -5,11 +5,8 @@
 
 #include "CortexPlacementGeo.h"
 #include "Game.h"
-#include "GlobalContainer.h"
-#include "IntBuildingType.h"
 #include "Utilities.h"
 #include "building/Building.h"
-#include "game/entities/BuildingType.h"
 #include "map/Map.h"
 #include "team/Team.h"
 

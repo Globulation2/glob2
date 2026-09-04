@@ -145,7 +145,7 @@ Server/client architecture for online play. `YOGServer` handles matchmaking, cha
 
 **macOS rename caveat:** Case-only filename renames need `git mv -f Foo.cpp foo_tmp.cpp && git mv -f foo_tmp.cpp Foo.cpp` — plain `git mv foo.cpp Foo.cpp` may silently no-op on a case-insensitive filesystem.
 
-**Unused includes:** remove them with the compile-gated `clang-tidy misc-include-cleaner` pipeline in [`docs/unused-include-cleanup.md`](docs/unused-include-cleanup.md) — never hand-guess or `--fix` blindly. Verify with a fixed-tick replay A/B, not the stale byte baseline.
+**Unused includes:** run `tools/remove-unused-includes.py` after `scons compile_commands.json` — it drives `clang-tidy misc-include-cleaner` with a per-file compile gate. Never hand-guess or `clang-tidy --fix` blindly. Afterwards rebuild both `scons` and `scons server=1`, then verify with Workflow 1 in [`../docs/replay-verification.md`](../docs/replay-verification.md).
 
 **Comments:** match the surrounding terse style — don't annotate every fix. The *why* of a change goes in the commit message, not bolted onto the line. Add a comment only when the code genuinely can't carry the reasoning itself (a non-obvious platform quirk, a subtle invariant); skip it when the line explains itself.
 

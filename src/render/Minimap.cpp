@@ -9,7 +9,6 @@
 #include "RessourceType.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
-#include <iostream>
 
 
 using namespace GAGCore;

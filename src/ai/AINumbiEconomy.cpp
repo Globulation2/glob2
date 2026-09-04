@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <Stream.h>
-#include <array>
-#include <sstream>
 
 #include "AINumbi.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
-#include "Utilities.h"
 #include "Unit.h"
 
 using std::shared_ptr;

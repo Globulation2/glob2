@@ -19,7 +19,6 @@
 #include "Brush.h"
 #include "Utilities.h"
 #include "TeamStat.h"
-#include <Stream.h>
 #include <iostream>
 #include <cstdlib>
 

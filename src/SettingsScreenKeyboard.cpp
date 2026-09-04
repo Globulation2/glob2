@@ -9,7 +9,6 @@
 // individual shortcuts.
 
 #include "SettingsScreen.h"
-#include <GUIText.h>
 #include <GUIList.h>
 #include <GUIButton.h>
 #include <Toolkit.h>

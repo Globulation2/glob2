@@ -8,8 +8,6 @@
 #include "Order.h"
 #include "Player.h"
 #include "team/Team.h"
-#include "GlobalContainer.h"
-#include "Settings.h"
 #include "IntBuildingType.h"
 #include "BuildingType.h"
 #include "building/Building.h"

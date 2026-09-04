@@ -8,7 +8,6 @@
 #include <sstream>
 
 #include <Toolkit.h>
-#include <GAG.h>
 
 #include "AINames.h"
 #include "FileManager.h"

@@ -5,21 +5,14 @@
 #include "CortexObservation.h"
 #include "CortexWheat.h"
 
-#include "Order.h"
 #include "Player.h"
 #include "team/Team.h"
-#include "GlobalContainer.h"
-#include "Settings.h"
-#include "IntBuildingType.h"
-#include "BuildingType.h"
 #include "building/Building.h"
 #include "unit/UnitConsts.h"
 #include "Game.h"
 #include "map/Map.h"
-#include "Brush.h"
 #include "Utilities.h"
 #include "TeamStat.h"
-#include <Stream.h>
 #include <iostream>
 #include <sstream>
 #include <string>

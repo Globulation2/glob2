@@ -5,44 +5,25 @@
 #include <stdarg.h>
 #include <math.h>
 
-#include <sstream>
 #include <iostream>
-#include <algorithm>
-#include <optional>
 
 #include <FileManager.h>
-#include <GUITextInput.h>
-#include <GUIList.h>
-#include <GUIStyle.h>
-#include <GraphicContext.h>
-#include <StringTable.h>
-#include <SupportFunctions.h>
 #include <Toolkit.h>
 #include <Stream.h>
 #include <BinaryStream.h>
-#include <TextStream.h>
-#include <FormatableString.h>
 
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
-#include "GameGUIInternal.h"
-#include "GameGUILoadSave.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "IRC.h"
-#include "SoundMixer.h"
-#include "VoiceRecorder.h"
-#include "GameGUIKeyActions.h"
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "config.h"
-#include "Order.h"
 
-#include <SDL_keycode.h>
 
 bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
 {

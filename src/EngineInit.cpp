@@ -5,7 +5,6 @@
 #include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
-#include <Stream.h>
 #include <BinaryStream.h>
 
 #include "AINames.h"

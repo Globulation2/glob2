@@ -7,7 +7,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include "Order.h"
-#include "Utilities.h"
 
 #ifdef HAVE_CONFIG_H
 	#include <config.h>

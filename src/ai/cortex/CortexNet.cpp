@@ -4,7 +4,6 @@
 #include "CortexNet.h"
 #include "CortexConstants.h"
 
-#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
