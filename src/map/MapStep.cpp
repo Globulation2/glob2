@@ -258,21 +258,20 @@ void Map::initExploredArea(int teamNumber)
 	std::fill(exploredArea[teamNumber], exploredArea[teamNumber] + size, 0);
 }
 
-void Map::makeDiscoveredAreasExplored (int teamNumber)
+// Seed a team's explored area from its discovery map. Used when the file
+// carries no explored area (map files, saves older than
+// EXPLORED_AREA_SAVED_VERSION_MINOR): every discovered tile is stamped as
+// freshly explored so explorers head outward from the start area instead of
+// treating the whole map as unexplored.
+void Map::makeDiscoveredAreasExplored(int teamNumber)
 {
-  /* FIXME: This function is a stupid hack to make up for the fact that
-     exploredArea is not saved in saved games.  It allows doing
-     something less awful than simply making everything considered
-     unexplored (which completely messes up explorer behavior and
-     makes them explore the entire world all over again) when games
-     are reloaded. */
-  assert(game->teams[teamNumber]);
-  assert(game->teams[teamNumber]->me);
-  assert(exploredArea[teamNumber]);
-  for (int x = 0; x < getW(); x++) {
-    for (int y = 0; y < getH(); y++) {
-      if (isMapDiscovered (x, y, game->teams[teamNumber]->me)) {
-        setMapExploredByUnit (x, y, 1, 1, teamNumber); }}}
+	assert(game->teams[teamNumber]);
+	assert(game->teams[teamNumber]->me);
+	assert(exploredArea[teamNumber]);
+	for (int x = 0; x < getW(); x++)
+		for (int y = 0; y < getH(); y++)
+			if (isMapDiscovered(x, y, game->teams[teamNumber]->me))
+				setMapExploredByUnit(x, y, 1, 1, teamNumber);
 }
 
 void Map::updateExploredArea(int teamNumber)

@@ -113,6 +113,12 @@ public:
 	bool load(GAGCore::InputStream *stream, MapHeader& header, Game *game=NULL);
 	//! Save a map
 	void save(GAGCore::OutputStream *stream);
+	//! Write the per-team explored area. Saved games only; save() decides.
+	void saveExploredArea(GAGCore::OutputStream *stream, int numberOfTeams);
+	//! Read the section written by saveExploredArea into freshly allocated
+	//! exploredArea arrays. With keep=false the data is consumed and dropped,
+	//! for loads that have no game to attach it to.
+	void loadExploredArea(GAGCore::InputStream *stream, int numberOfTeams, bool keep);
 	
 	// add & remove teams, used by the map editor and the random map generator
 	// Have to be called *after* session.numberOfTeam has been changed.

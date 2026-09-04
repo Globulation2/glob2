@@ -71,6 +71,10 @@ constexpr int ENEMY_TOUCH_SCORE_BUILDING_FALLBACK = 255;
 constexpr std::uint8_t EXPLORED_FRESH           = 255;
 constexpr std::uint8_t EXPLORED_BY_BUILDING_MIN = 2;
 
+// Saved games written at this VERSION_MINOR or later carry exploredArea; map
+// files and older saves reseed it from the discovery map on load.
+constexpr int EXPLORED_AREA_SAVED_VERSION_MINOR = 88;
+
 // Initial Ressource::amount when a fresh resource is seeded onto a tile.
 constexpr int RESSOURCE_INITIAL_AMOUNT = 1;
 

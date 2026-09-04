@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "MapInternal.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -91,6 +92,10 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		setAreaName(n, stream->readText("areaname"));
 		stream->readLeaveSection();
 	}
+
+	const bool restoreExploredArea = header.getIsSavedGame() && versionMinor >= EXPLORED_AREA_SAVED_VERSION_MINOR;
+	if (restoreExploredArea)
+		loadExploredArea(stream, header.getNumberOfTeams(), game != NULL);
 	
 	if (game)
 	{
@@ -133,10 +138,14 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 			}
 		for (int t=0; t<header.getNumberOfTeams(); t++)
 		{
-			assert(exploredArea[t] == NULL);
-			exploredArea[t] = new Uint8[size];
-			initExploredArea(t);
-			makeDiscoveredAreasExplored(t);
+			if (!restoreExploredArea)
+			{
+				assert(exploredArea[t] == NULL);
+				exploredArea[t] = new Uint8[size];
+				initExploredArea(t);
+				makeDiscoveredAreasExplored(t);
+			}
+			assert(exploredArea[t]);
 			
 			clearingAreaClaims[t] = new Uint16[size];
 			memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
@@ -226,6 +235,10 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeText(getAreaName(n), "areaname");
 		stream->writeLeaveSection();
 	}
+
+	assert(game);
+	if (game->mapHeader.getIsSavedGame())
+		saveExploredArea(stream, game->mapHeader.getNumberOfTeams());
 
 	// We save sectors:
 	stream->writeSint32(wSector, "wSector");

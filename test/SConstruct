@@ -296,6 +296,28 @@ bullet_objs = [
 wcdecode_env.Program( target = 'BulletSaveLoadTest', source = bullet_objs )
 
 
+# Standalone harness for the per-team Map::exploredArea section of saved
+# games: a keep=true round-trip restores every team byte-for-byte and leaves
+# the stream aligned; keep=false consumes the section without allocating.
+# Uses the Map-subclass fixture (test/README.md) with the MapQuery Sector
+# stubs, so the link surface is Map.cpp's own dependencies plus
+# libgagserver.a for the streams. Distinct object names because the same
+# sources are also compiled into TestsRunner under the plain env.
+explored_area_objs = [
+  wcdecode_env.Object('MapExploredAreaSaveLoadTest.o', 'MapExploredAreaSaveLoadTest.cpp'),
+  wcdecode_env.Object('MapExploredAreaIO-saveload.o', '../src/map/io/MapExploredAreaIO.cpp'),
+  wcdecode_env.Object('Map-saveload.o', '../src/map/Map.cpp'),
+  wcdecode_env.Object('MapQuery-saveload.o', '../src/map/MapQuery.cpp'),
+  wcdecode_env.Object('MapTerrain-saveload.o', '../src/map/MapTerrain.cpp'),
+  wcdecode_env.Object('BitArray-saveload.o', '../src/BitArray.cpp'),
+  wcdecode_env.Object('Utilities-saveload.o', '../src/Utilities.cpp'),
+  wcdecode_env.Object('BuildingUtils-saveload.o', '../src/building/BuildingUtils.cpp'),
+  wcdecode_env.Object('UnitUtils-saveload.o', '../src/unit/UnitUtils.cpp'),
+  wcdecode_env.Object('MapQueryTestStubs-saveload.o', 'MapQueryTestStubs.cpp'),
+]
+wcdecode_env.Program( target = 'MapExploredAreaSaveLoadTest', source = explored_area_objs )
+
+
 # Standalone regression harness for BasePlayer::playerID serialization
 # (the field is Uint32 but save/load moved it as Uint16, truncating YOG
 # identifiers above 0xFFFF). Checks a version-86 round-trip with a wide
