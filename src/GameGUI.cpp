@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -128,8 +112,8 @@
 #define REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE 55
 #define REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE 54
 
-using boost::shared_ptr;
-using boost::static_pointer_cast;
+using std::shared_ptr;
+using std::static_pointer_cast;
 
 enum GameGUIGfxId
 {
@@ -502,7 +486,7 @@ void GameGUI::step(void)
 	}
 
 	assert(localTeam);
-	boost::shared_ptr<GameEvent> gevent = localTeam->getEvent();
+	std::shared_ptr<GameEvent> gevent = localTeam->getEvent();
 	while(gevent)
 	{
 		Color c = gevent->formatColor();
@@ -514,7 +498,7 @@ void GameGUI::step(void)
 	}
 	
 	// voice step
-	boost::shared_ptr<OrderVoiceData> orderVoiceData;
+	std::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
 		orderVoiceData->recepientsMask = chatMask ^ (chatMask & (1<<localPlayer));
@@ -559,7 +543,7 @@ void GameGUI::step(void)
 	// music step
 	musicStep();
 
-	boost::shared_ptr<Order> order = toolManager.getOrder();
+	std::shared_ptr<Order> order = toolManager.getOrder();
 	while(order)
 	{
 		orderQueue.push_back(order);
@@ -2590,9 +2574,9 @@ void GameGUI::handleReplayProgressBarClick(int mx, int my, int button)
 	}
 }
 
-boost::shared_ptr<Order> GameGUI::getOrder(void)
+std::shared_ptr<Order> GameGUI::getOrder(void)
 {
-	boost::shared_ptr<Order> order;
+	std::shared_ptr<Order> order;
 	if (orderQueue.size()==0)
 		order=shared_ptr<Order>(new NullOrder());
 	else
@@ -4573,13 +4557,13 @@ void GameGUI::showEndOfReplayScreen()
 	}
 }
 
-void GameGUI::executeOrder(boost::shared_ptr<Order> order)
+void GameGUI::executeOrder(std::shared_ptr<Order> order)
 {
 	switch (order->getOrderType())
 	{
 		case ORDER_TEXT_MESSAGE :
 		{
-			boost::shared_ptr<MessageOrder> mo=static_pointer_cast<MessageOrder>(order);
+			std::shared_ptr<MessageOrder> mo=static_pointer_cast<MessageOrder>(order);
 			int sp=mo->sender;
 			Uint32 messageOrderType=mo->messageOrderType;
 
@@ -4615,7 +4599,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 		break;
 		case ORDER_VOICE_DATA:
 		{
-			boost::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
+			std::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
 			if (ov->recepientsMask & (1<<localPlayer))
 				globalContainer->mix->addVoiceData(ov);
 			game.executeOrder(order, localPlayer);
@@ -4633,7 +4617,7 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 		
 		case ORDER_MAP_MARK:
 		{
-			boost::shared_ptr<MapMarkOrder> mmo=static_pointer_cast<MapMarkOrder>(order);
+			std::shared_ptr<MapMarkOrder> mmo=static_pointer_cast<MapMarkOrder>(order);
 
 			assert(game.teams[mmo->teamNumber]->teamNumber<game.mapHeader.getNumberOfTeams());
 			if (game.teams[mmo->teamNumber]->allies & (game.teams[localTeamNo]->me))
@@ -4642,13 +4626,13 @@ void GameGUI::executeOrder(boost::shared_ptr<Order> order)
 		break;
 		case ORDER_PAUSE_GAME:
 		{
-			boost::shared_ptr<PauseGameOrder> pgo=static_pointer_cast<PauseGameOrder>(order);
+			std::shared_ptr<PauseGameOrder> pgo=static_pointer_cast<PauseGameOrder>(order);
 			gamePaused=pgo->pause;
 		}
 		break;
 		case ORDER_CREATE:
 		{
-			boost::shared_ptr<OrderCreate> pgo=static_pointer_cast<OrderCreate>(order);
+			std::shared_ptr<OrderCreate> pgo=static_pointer_cast<OrderCreate>(order);
 			if(pgo->teamNumber == localTeamNo)
 				ghostManager.removeBuilding(pgo->posX, pgo->posY);
 			game.executeOrder(order, localPlayer);

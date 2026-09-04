@@ -1,23 +1,6 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #ifndef __GAME_GUI_H
 #define __GAME_GUI_H
@@ -83,14 +66,14 @@ public:
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
 	//! Get order from gui, return NullOrder if
-	boost::shared_ptr<Order> getOrder(void);
+	std::shared_ptr<Order> getOrder(void);
 	//! Return position on x
 	int getViewportX() { return viewportX; }
 	//! Return position on y
 	int getViewportY() { return viewportY; }
 
 	void drawAll(int team);
-	void executeOrder(boost::shared_ptr<Order> order);
+	void executeOrder(std::shared_ptr<Order> order);
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
@@ -398,7 +381,7 @@ private:
 
 	Uint32 chatMask;
 
-	std::list<boost::shared_ptr<Order> > orderQueue;
+	std::list<std::shared_ptr<Order> > orderQueue;
 
 	Minimap minimap;
 
@@ -449,7 +432,7 @@ private:
 	MarkManager markManager;
 	
 	//! add a minimap mark
-	void addMark(boost::shared_ptr<MapMarkOrder> mmo);
+	void addMark(std::shared_ptr<MapMarkOrder> mmo);
 	
 	// records CPU usage percentages 
 	static const unsigned SMOOTHED_CPU_SIZE=32;

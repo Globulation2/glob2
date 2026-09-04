@@ -1,26 +1,10 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #ifndef __YOGServerPlayer_h
 #define __YOGServerPlayer_h
 
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 #include <list>
 #include "NetConnection.h"
 #include "YOGConsts.h"
@@ -33,7 +17,7 @@ class YOGServerGame;
 class NetMessage;
 class P2PManager;
 
-using boost::weak_ptr;
+using std::weak_ptr;
 ///This represents a connected user on the YOG server.
 class YOGServerPlayer
 {
@@ -68,7 +52,7 @@ public:
 	std::string getPlayerIP();
 
 	///Returns the game the player is connected to
-	boost::shared_ptr<YOGServerGame> getGame();
+	std::shared_ptr<YOGServerGame> getGame();
 
 	///Returns the players ping such that, statistically, 99.7% of all pings from this client
 	///would be under this amount, so long as pings are normally distributed, which I've

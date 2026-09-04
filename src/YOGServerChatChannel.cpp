@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "YOGServerChatChannel.h"
 #include "YOGServerPlayer.h"
@@ -31,24 +15,24 @@ YOGServerChatChannel::YOGServerChatChannel(Uint32 channel)
 
 
 
-void YOGServerChatChannel::addPlayer(boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerChatChannel::addPlayer(std::shared_ptr<YOGServerPlayer> player)
 {
 	players.push_back(player);
 }
 
 
 
-void YOGServerChatChannel::removePlayer(boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerChatChannel::removePlayer(std::shared_ptr<YOGServerPlayer> player)
 {
 	players.remove(player);
 }
 
 
 
-void YOGServerChatChannel::routeMessage(boost::shared_ptr<YOGMessage> message, boost::shared_ptr<YOGServerPlayer> sender)
+void YOGServerChatChannel::routeMessage(std::shared_ptr<YOGMessage> message, std::shared_ptr<YOGServerPlayer> sender)
 {
-	boost::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channel, message));
-	for(std::list<boost::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
+	std::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channel, message));
+	for(std::list<std::shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(*i != sender)
 			(*i)->sendMessage(netmessage);

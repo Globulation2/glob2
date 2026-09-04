@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #ifndef __AI_CASTOR_H
 #define __AI_CASTOR_H
@@ -26,7 +10,7 @@
 #include "IntBuildingType.h"
 #include "AIImplementation.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 struct Case;
 class Game;
@@ -132,25 +116,25 @@ public:
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
-	boost::shared_ptr<Order>getOrder(void);
+	std::shared_ptr<Order>getOrder(void);
 	
 private:
 	void init(Player *player);
 	void defineStrategy();
 	
-	boost::shared_ptr<Order>controlSwarms();
-	boost::shared_ptr<Order>expandFood();
-	boost::shared_ptr<Order>controlFood();
-	boost::shared_ptr<Order>controlUpgrades();
-	boost::shared_ptr<Order>controlStrikes();
-//	boost::shared_ptr<Order>controlBaseDefense();
+	std::shared_ptr<Order>controlSwarms();
+	std::shared_ptr<Order>expandFood();
+	std::shared_ptr<Order>controlFood();
+	std::shared_ptr<Order>controlUpgrades();
+	std::shared_ptr<Order>controlStrikes();
+//	std::shared_ptr<Order>controlBaseDefense();
 	
 	bool addProject(Project *project);
 	void addProjects();
 	
 	void choosePhase();
 	
-	boost::shared_ptr<Order>continueProject(Project *project);
+	std::shared_ptr<Order>continueProject(Project *project);
 	
 	bool enoughFreeWorkers();
 	void computeCanSwim();
@@ -176,7 +160,7 @@ private:
 	void computeEnemyRangeMap();
 	void computeEnemyWarriorsMap();
 
-	boost::shared_ptr<Order>findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
+	std::shared_ptr<Order>findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
 	
 	void computeRessourcesCluster();
 	

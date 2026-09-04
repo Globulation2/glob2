@@ -1,26 +1,11 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #ifndef __YOGServerGame_h
 #define __YOGServerGame_h
 
 #include "MapHeader.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
 #include "YOGGameResults.h"
@@ -45,13 +30,13 @@ public:
 	void update();
 
 	///Adds the player to the game
-	void addPlayer(boost::shared_ptr<YOGServerPlayer> player);
+	void addPlayer(std::shared_ptr<YOGServerPlayer> player);
 
 	///Adds an AI to the game
 	void addAIPlayer(AI::ImplementitionID type);
 
 	///Removes the player from the game
-	void removePlayer(boost::shared_ptr<YOGServerPlayer> player);
+	void removePlayer(std::shared_ptr<YOGServerPlayer> player);
 
 	///Removes the AI from the game
 	void removeAIPlayer(int playerNum);
@@ -60,7 +45,7 @@ public:
 	void setTeam(int playerNum, int teamNum);
 
 	///Sets the host of the game
-	void setHost(boost::shared_ptr<YOGServerPlayer> player);
+	void setHost(std::shared_ptr<YOGServerPlayer> player);
 
 	///Sets the map header of the game
 	void setMapHeader(const MapHeader& mapHeader);
@@ -73,10 +58,10 @@ public:
 
 	///Routes the given message to all players except for the sender,
 	///unless sender is null
-	void routeMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> sender=boost::shared_ptr<YOGServerPlayer>());
+	void routeMessage(std::shared_ptr<NetMessage> message, std::shared_ptr<YOGServerPlayer> sender=std::shared_ptr<YOGServerPlayer>());
 	
 	///Kicks the player and sends a kick message to the player
-	void kickPlayer(boost::shared_ptr<NetKickPlayer> message);
+	void kickPlayer(std::shared_ptr<NetKickPlayer> message);
 	
 	///Returns whether there are no players left in the game
 	bool isEmpty() const;
@@ -111,7 +96,7 @@ public:
 	void chooseLatencyMode();
 	
 	///This sets a players game result
-	void setPlayerGameResult(boost::shared_ptr<YOGServerPlayer> sender, YOGGameResult result);
+	void setPlayerGameResult(std::shared_ptr<YOGServerPlayer> sender, YOGGameResult result);
 
 	///This sends the games results to the game log, if this game actually went through
 	void sendGameResultsToGameLog();
@@ -127,7 +112,7 @@ private:
 	bool oldReadyToLaunch;
 	bool recievedMapHeader;
 	bool requested;
-	boost::shared_ptr<YOGServerPlayer> host;
+	std::shared_ptr<YOGServerPlayer> host;
 	GameHeader gameHeader;
 	int latencyMode;
 	Uint64 latencyUpdateTimer;
@@ -135,7 +120,7 @@ private:
 	MapHeader mapHeader;
 	NetGamePlayerManager playerManager;
 	NetReteamingInformation reteamingInfo;
-	std::vector<boost::shared_ptr<YOGServerPlayer> > players;
+	std::vector<std::shared_ptr<YOGServerPlayer> > players;
 	Uint16 gameID;
 	Uint32 chatChannel;
 	Uint8 aiNum;

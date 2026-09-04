@@ -1,24 +1,9 @@
-/*
-  Copyright (C) 2007-2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007-2008 Bradley Arsenault
 
 #include "FertilityCalculatorDialog.h"
 #include "FertilityCalculatorThreadMessage.h"
+#include <functional>
 #include "GUIProgressBar.h"
 #include "GUIText.h"
 #include <iomanip>
@@ -30,7 +15,7 @@
 
 using namespace GAGCore;
 using namespace GAGGUI;
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 FertilityCalculatorDialog::FertilityCalculatorDialog(GraphicContext *parentCtx, Map& map)
 	: OverlayScreen(parentCtx, 200, 100), map(map), parentCtx(parentCtx), thread(map, incoming, incomingMutex)
@@ -59,7 +44,7 @@ void FertilityCalculatorDialog::execute()
 	background->drawSurface(0, 0, parentCtx);
 
 	// start computing
-	boost::thread new_thread(boost::ref(thread));
+	computeThread = std::thread(std::ref(thread));
 
 	dispatchPaint();
 
@@ -99,6 +84,8 @@ void FertilityCalculatorDialog::execute()
 		SDL_Delay(std::max<Sint64>(40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time), 0));
 	}
 	
+	if (computeThread.joinable())
+		computeThread.join();
 	delete background;
 }
 
@@ -107,17 +94,17 @@ void FertilityCalculatorDialog::execute()
 void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
 {
 	//First parse incoming thread messages
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	while(!incoming.empty())
 	{
-		boost::shared_ptr<FertilityCalculatorThreadMessage> message = incoming.front();
+		std::shared_ptr<FertilityCalculatorThreadMessage> message = incoming.front();
 		incoming.pop();
 		Uint8 type = message->getMessageType();
 		switch(type)
 		{
 			case FCTMUpdateCompletionPercent:
 			{
-					boost::shared_ptr<FCTUpdateCompletionPercent> info = static_pointer_cast<FCTUpdateCompletionPercent>(message);
+					std::shared_ptr<FCTUpdateCompletionPercent> info = static_pointer_cast<FCTUpdateCompletionPercent>(message);
 					std::stringstream s;
 					s<<std::setprecision(3)<<(info->getPercent() * 100.0)<<"%"<<std::endl;
 					percentDone->setText(s.str());
@@ -126,7 +113,7 @@ void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
 			break;
 			case FCTMFertilityCompleted:
 			{
-					boost::shared_ptr<FCTFertilityCompleted> info = static_pointer_cast<FCTFertilityCompleted>(message);
+					std::shared_ptr<FCTFertilityCompleted> info = static_pointer_cast<FCTFertilityCompleted>(message);
 					endValue = 1;
 			}
 			break;

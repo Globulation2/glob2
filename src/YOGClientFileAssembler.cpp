@@ -1,20 +1,5 @@
-/*
-  Copyright 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include "BinaryStream.h"
 #include "FileManager.h"
@@ -26,9 +11,9 @@
 #include "YOGClient.h"
 
 using namespace GAGCore;
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-YOGClientFileAssembler::YOGClientFileAssembler(boost::weak_ptr<YOGClient> client, Uint16 fileID)
+YOGClientFileAssembler::YOGClientFileAssembler(std::weak_ptr<YOGClient> client, Uint16 fileID)
 	: client(client), fileID(fileID)
 {
 	obackend = NULL;
@@ -57,7 +42,7 @@ void YOGClientFileAssembler::update()
 
 void YOGClientFileAssembler::startSendingFile(std::string mapname)
 {
-	boost::shared_ptr<YOGClient> nclient(client);
+	std::shared_ptr<YOGClient> nclient(client);
 	Toolkit::getFileManager()->gzip(mapname, mapname+".gz");
 	finished=0;
 	istream.reset(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapname+".gz")));
@@ -82,7 +67,7 @@ void YOGClientFileAssembler::startRecievingFile(std::string mapname)
 
 
 
-void YOGClientFileAssembler::handleMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientFileAssembler::handleMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	if(type == MNetSendFileInformation)
@@ -119,7 +104,7 @@ void YOGClientFileAssembler::handleMessage(boost::shared_ptr<NetMessage> message
 
 void YOGClientFileAssembler::cancelSendingFile()
 {
-	boost::shared_ptr<YOGClient> nclient(client);
+	std::shared_ptr<YOGClient> nclient(client);
 	shared_ptr<NetCancelSendingFile> message(new NetCancelSendingFile(fileID));
 	nclient->sendNetMessage(message);
 	size = 0;
@@ -133,7 +118,7 @@ void YOGClientFileAssembler::cancelSendingFile()
 
 void YOGClientFileAssembler::cancelRecievingFile()
 {
-	boost::shared_ptr<YOGClient> nclient(client);
+	std::shared_ptr<YOGClient> nclient(client);
 	shared_ptr<NetCancelRecievingFile> message(new NetCancelRecievingFile(fileID));
 	nclient->sendNetMessage(message);
 	size = 0;
@@ -166,7 +151,7 @@ bool YOGClientFileAssembler::fileInformationRecieved()
 
 void YOGClientFileAssembler::sendNextChunk()
 {
-	boost::shared_ptr<YOGClient> nclient(client);
+	std::shared_ptr<YOGClient> nclient(client);
 	shared_ptr<NetSendFileChunk> message(new NetSendFileChunk(istream, fileID));
 	finished += message->getChunkSize();
 	nclient->sendNetMessage(message);

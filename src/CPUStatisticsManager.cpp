@@ -1,25 +1,10 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include "CPUStatisticsManager.h"
 #include "Stream.h"
 #include "Toolkit.h"
-#include "boost/lexical_cast.hpp"
+#include <string>
 #include "GlobalContainer.h"
 
 using namespace GAGCore;
@@ -63,11 +48,11 @@ void CPUStatisticsManager::format()
 		int total_time = frame_number * time_per_frame * (i+1) / 20;
 		int seconds = (total_time / 1000) % 60;
 		int minutes = (total_time / 1000) / 60;
-		line+=boost::lexical_cast<std::string>(minutes) + ":";
+		line+=std::to_string(minutes) + ":";
 		if(seconds < 10)
-			line+= "0" + boost::lexical_cast<std::string>(seconds);
+			line+= "0" + std::to_string(seconds);
 		else
-			line+= boost::lexical_cast<std::string>(seconds);
+			line+= std::to_string(seconds);
 		
 		while(line.size() < 10)
 			line += " ";
@@ -81,7 +66,7 @@ void CPUStatisticsManager::format()
 		}
 		
 		float cpu_usage = (float)(total_cpu_time_consumed) / (float)(total_recorded * time_per_frame);
-		line += boost::lexical_cast<std::string>(cpu_usage);
+		line += std::to_string(cpu_usage);
 		
 		stream->writeLine(line);
 	}

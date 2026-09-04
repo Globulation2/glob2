@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <Stream.h>
 
@@ -27,7 +11,7 @@
 #include "Utilities.h"
 #include "Unit.h"
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 AINumbi::AINumbi(Player *player)
 {
@@ -115,7 +99,7 @@ void AINumbi::save(GAGCore::OutputStream *stream)
 }
 
 
-boost::shared_ptr<Order>AINumbi::getOrder(void)
+std::shared_ptr<Order>AINumbi::getOrder(void)
 {
 	timer++;
 
@@ -387,7 +371,7 @@ int AINumbi::countUnits(const int medicalState)
 	return 0;
 }
 
-boost::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors)
+std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors)
 {
 	std::list<Building *> swarms=team->swarms;
 	int ss=swarms.size();
@@ -771,7 +755,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	return false;
 }
 
-boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested)
+std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested)
 {
 	Unit **myUnits=team->myUnits;
 	int ft=0;
@@ -896,7 +880,7 @@ boost::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeo
 	
 }
 
-boost::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType)
+std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType)
 {
 	Building **myBuildings=team->myBuildings;
 	//Unit **myUnits=player->team->myUnits;
@@ -938,7 +922,7 @@ boost::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int nu
 		return shared_ptr<Order>(new NullOrder);
 }
 
-boost::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int workers)
+std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int workers)
 {
 	//std::list<Building *> swarms=team->swarms;
 	//int ss=swarms.size();
@@ -970,7 +954,7 @@ boost::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int wo
 		return shared_ptr<Order>(new NullOrder);
 }
 
-boost::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
+std::shared_ptr<Order>AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
 	Building **myBuildings=team->myBuildings;
 	int numberFood[4]={0, 0, 0, 0}; // number of food buildings

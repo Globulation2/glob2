@@ -1,23 +1,5 @@
-/*
-  This file is part of Globulation 2, a free software real-time strategy game
-  http://www.globulation2.org
-  Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
 
 #include <Stream.h>
 
@@ -25,7 +7,7 @@
 #include "Order.h"
 #include "Player.h"
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 AIToubib::AIToubib(Player *player)
 {
@@ -84,7 +66,7 @@ void AIToubib::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(now, "now");
 }
 
-boost::shared_ptr<Order> AIToubib::getOrderBuildingStep(void)
+std::shared_ptr<Order> AIToubib::getOrderBuildingStep(void)
 {
 	return shared_ptr<Order>(new NullOrder());
 }
@@ -94,7 +76,7 @@ void AIToubib::computeMyStatsStep(void)
 
 }
 
-boost::shared_ptr<Order> AIToubib::getOrder(void)
+std::shared_ptr<Order> AIToubib::getOrder(void)
 {
 	now++;
 	

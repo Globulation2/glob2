@@ -1,25 +1,10 @@
-/*
-  Copyright (C) 2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
 
 #ifndef YOGClientMapUploader_h
 #define YOGClientMapUploader_h
 
-#include "boost/shared_ptr.hpp"
+#include <memory>
 #include "YOGConsts.h"
 #include <string>
 
@@ -31,7 +16,7 @@ class YOGClientMapUploader
 {
 public:
 	///Constructs a map uploader
-	YOGClientMapUploader(boost::shared_ptr<YOGClient> client);
+	YOGClientMapUploader(std::shared_ptr<YOGClient> client);
 	
 	///Removes the map uploader
 	~YOGClientMapUploader();
@@ -43,7 +28,7 @@ public:
 	void cancelUpload();
 	
 	///This recieves a message from the server
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void recieveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This updates the uploader
 	void update();
@@ -68,7 +53,7 @@ public:
 	int getCompressedSize(const std::string& mapName);
 private:
 	UploadingState state;
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	Uint16 fileID;
 	YOGMapUploadRefusalReason reason;
 	std::string mapFile;

@@ -13,7 +13,12 @@ BasePlayer.cpp
 BaseTeam.cpp
 BitArray.cpp
 Brush.cpp
-Building.cpp
+building/Lifecycle.cpp
+building/Construction.cpp
+building/Update.cpp
+building/Step.cpp
+building/TypeSteps.cpp
+building/Misc.cpp
 BuildingsTypes.cpp
 BuildingType.cpp
 BuildingUtils.cpp
@@ -253,8 +258,6 @@ YOGServerRouterPlayer.cpp
 """)
 Import('env')
 local = env.Clone()
-if env["mingw"] or env['PLATFORM'] == 'win32':
-    source_files.extend(["C:/msys/1.0/local/lib/libvorbisfile.a", "C:/msys/1.0/local/lib/libvorbis.a", "C:/msys/1.0/local/lib/libogg.a"])
 #Add libgag and USL, not as a library, but as an object
 source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
@@ -272,7 +275,7 @@ else:
 Import('env')
 Import("PackTar")
     
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     env.Install(env["BINDIR"], "glob2")
     env.Alias("install", env["BINDIR"])
     

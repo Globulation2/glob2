@@ -1,23 +1,6 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
@@ -35,7 +18,7 @@
 #include "SoundMixer.h"
 #include <ostream>
 #include <algorithm>
-#include "boost/lexical_cast.hpp"
+#include <string>
 #include "GameGUIKeyActions.h"
 #include "MapEditKeyActions.h"
 #include "FormatableString.h"
@@ -60,12 +43,17 @@ SettingsScreen::SettingsScreen()
 	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
 	addWidgetToGroup(language, generalGroup);
 	languageList=new List(20, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	Font *listFont = Toolkit::getFont("standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 	{
-		if(!Toolkit::getStringTable()->isLangComplete(i))
-			languageList->addText(Toolkit::getStringTable()->getStringInLang("[language incomplete]", i));
-		else
-			languageList->addText(Toolkit::getStringTable()->getStringInLang("[language]", i));
+		bool complete = Toolkit::getStringTable()->isLangComplete(i);
+		std::string label = Toolkit::getStringTable()->getStringInLang(complete ? "[language]" : "[language incomplete]", i);
+		// The language's own name can use glyphs this font doesn't have (e.g.
+		// Chinese in the bundled sans-serif), which would otherwise render as
+		// a row of tofu boxes. Fall back to the (always-Latin) language code.
+		if (!listFont->hasGlyphsFor(label))
+			label = Toolkit::getStringTable()->getStringInLang("[language-code]", i) + " - missing font";
+		languageList->addText(label);
 	}
 	addWidgetToGroup(languageList, generalGroup);
 

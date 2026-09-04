@@ -1,23 +1,6 @@
-/*
-Copyright (C) 2007 Bradley Arsenault
-
-Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GameGUIToolManager.h"
 #include "GlobalContainer.h"
@@ -267,15 +250,15 @@ void GameGUIToolManager::handleMouseDrag(int mouseX, int mouseY, int localteam, 
 
 
 
-boost::shared_ptr<Order> GameGUIToolManager::getOrder()
+std::shared_ptr<Order> GameGUIToolManager::getOrder()
 {
 	if(!orders.empty())
 	{
-		boost::shared_ptr<Order> order = orders.front();
+		std::shared_ptr<Order> order = orders.front();
 		orders.pop();
 		return order;
 	}
-	return boost::shared_ptr<Order>();
+	return std::shared_ptr<Order>();
 }
 
 
@@ -346,15 +329,15 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 	{
 		if (zoneType == Forbidden)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Guard)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Clearing)
 		{
-			orders.push(boost::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else
 			assert(false);
@@ -401,7 +384,7 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 			if(bt->isVirtual)
 				r = globalContainer->settings.defaultFlagRadius[bt->shortTypeNum - IntBuildingType::EXPLORATION_FLAG];
 			ghostManager.addBuilding(building, mapX, mapY);
-			orders.push(boost::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
+			orders.push(std::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
 		}
 	}
 }

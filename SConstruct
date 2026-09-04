@@ -1,4 +1,4 @@
-EnsureSConsVersion(0, 96, 92)
+EnsureSConsVersion(3, 0, 0)
 import sys
 import os
 import glob
@@ -9,7 +9,7 @@ import dmg
 import nsis
 
 isWindowsPlatform = sys.platform=='win32'
-isLinuxPlatform = sys.platform=='linux2'
+isLinuxPlatform = sys.platform.startswith('linux')
 isDarwinPlatform = sys.platform=='darwin'
 
 
@@ -18,7 +18,7 @@ def establish_options(env):
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-        opts.Add("INSTALLDIR", "Installation Directory", "./")
+        opts.Add(PathVariable("INSTALLDIR", "Installation Directory", "./"))
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
@@ -111,54 +111,44 @@ def configure(env, server_only):
         missing.append("zlib")
     else:
         if conf.CheckLib("z"):
-            env.Append(LIBS="z")
+            env.Append(LIBS=["z"])
         elif conf.CheckLib("zlib1"):
-            env.Append(LIBS="zlib1")
+            env.Append(LIBS=["zlib1"])
         else:
             print("Could not find libz or zlib1.dll")
             missing.append("zlib")
     
-    if ((env['mingw'] or env['mingwcross'] or isWindowsPlatform) and not conf.CheckLib("regex")) or not conf.CheckCXXHeader("regex.h"):
+    if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
+        if conf.CheckLib("regex"):
+            env.Append(LIBS=["regex"])
+        elif conf.CheckLib("systre"):
+            env.Append(LIBS=["systre", "tre", "intl", "iconv"])
+        else:
+            print("Could not find libregex or libsystre")
+            missing.append("regex")
+    if not conf.CheckCXXHeader("regex.h"):
         print("Could not find regex.h")
         missing.append("regex")
 
-    boost_thread = ''
-    if conf.CheckLib("boost_thread") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
-        boost_thread="boost_thread"
-    elif conf.CheckLib("boost_thread-mt") and conf.CheckCXXHeader("boost/thread/thread.hpp"):
-        boost_thread="boost_thread-mt"
-    else:
-        print("Could not find libboost_thread or libboost_thread-mt or boost/thread/thread.hpp")
-        missing.append("libboost_thread")
-    env.Append(LIBS=[boost_thread])
-    
     boost_date_time = ''
     if conf.CheckLib("boost_date_time") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_thread="boost_thread"
+        boost_date_time="boost_date_time"
     elif conf.CheckLib("boost_date_time-mt") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_thread="boost_thread-mt"
+        boost_date_time="boost_date_time-mt"
     else:
-        print("Could not find libboost_date_time or libboost_date_time-mt or boost/thread/thread.hpp")
+        print("Could not find libboost_date_time or libboost_date_time-mt or boost/date_time/posix_time/posix_time.hpp")
         missing.append("libboost_date_time")
     env.Append(LIBS=[boost_date_time])
+    # Optional, unlike the checks above: Boost.System is header-only from 1.69 on,
+    # so there is nothing to link against on a modern Boost.
+    if conf.CheckLib("boost_system"):
+        env.Append(LIBS=["boost_system"])
     env.Append(LIBS=["pthread"])
     
 
-    if not conf.CheckCXXHeader("boost/shared_ptr.hpp"):
-        print("Could not find boost/shared_ptr.hpp")
-        missing.append("boost/shared_ptr.hpp")
-    if not conf.CheckCXXHeader("boost/tuple/tuple.hpp"):
-        print("Could not find boost/tuple/tuple.hpp")
-        missing.append("boost/tuple/tuple.hpp")
-    if not conf.CheckCXXHeader("boost/tuple/tuple_comparison.hpp"):
-        print("Could not find boost/tuple/tuple_comparison.hpp")
-        missing.append("boost/tuple/tuple_comparison.hpp")
     if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):
         print("Could not find boost/logic/tribool.hpp")
         missing.append("boost/logic/tribool.hpp")
-    if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
-        print("Could not find boost/lexical_cast.hpp")
-        missing.append("boost/lexical_cast.hpp")
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
@@ -166,7 +156,7 @@ def configure(env, server_only):
         has_gl = True
         if isDarwinPlatform:
             print("Using Apple's OpenGL framework")
-            env.Append(FRAMEWORKS="OpenGL")
+            env.Append(FRAMEWORKS=["OpenGL", "CoreFoundation"])
         elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h"):
             gl_libraries.append("GL")
         elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h"):
@@ -194,9 +184,7 @@ def configure(env, server_only):
         
         #Do checks for epoxy, which handles OpenGL 2+ function pointer loading.
         has_epoxy = True
-        if isDarwinPlatform:
-            pass
-        elif conf.CheckLib('epoxy') and conf.CheckCXXHeader('epoxy/gl.h'):
+        if conf.CheckLib('epoxy') and conf.CheckCXXHeader('epoxy/gl.h'):
             gl_libraries.append("epoxy")
         else:
             print("Could not find libepoxy, or could not find epoxy/gl.h")
@@ -244,7 +232,11 @@ def configure(env, server_only):
        
     conf.Finish()
     contents = configfile.f.getvalue()
-    if not os.path.exists("config.h") or open("config.h").read() != contents:
+    previous = None
+    if os.path.exists("config.h"):
+        with open("config.h") as source:
+            previous = source.read()
+    if previous != contents:
         with open("config.h", "w") as output:
             output.write(contents)
 
@@ -259,40 +251,46 @@ def main():
     AddOption('--build',
               default='build',
               help='build directory')
-    env = Environment(ENV=os.environ.copy())
+    env = Environment()
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
-    
+
+    if env['mingw'] or env['mingwcross']:
+        Tool('mingw')(env)
+
     if env['mingwcross']:
             env.Platform('cygwin')
-            env['CC']  = 'i586-mingw32msvc-gcc'
-            env['CXX'] = 'i586-mingw32msvc-g++'
-            env['AR']  = 'i586-mingw32msvc-ar'
-            env['RANLIB'] = 'i586-mingw32msvc-ranlib'
+            env['CC']  = 'x86_64-w64-mingw32-gcc'
+            env['CXX'] = 'x86_64-w64-mingw32-g++'
+            env['AR']  = 'x86_64-w64-mingw32-ar'
+            env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
     
-    try:
-        env.Clone()
-    except AttributeError:
-        env.Clone = env.Copy
     
     
     # Add specific paths.
     if env['mingw'] or isWindowsPlatform:
-        env.Append(LIBPATH=["C:/msys/1.0/local/lib", "C:/msys/1.0/lib"])
         env.Append(LIBPATH=['/usr/local/lib'])
-        env.Append(CPPPATH=["C:/msys/1.0/local/include/SDL", "C:/msys/1.0/local/include", "C:/msys/1.0/include/SDL", "C:/msys/1.0/include"])
-        env.Append(CPPPATH=['/usr/local/include/SDL'])
+        env.Append(CPPPATH=['/usr/local/include'])
     if isDarwinPlatform:
-        env.Append(LIBPATH=["/opt/homebrew/lib"])
-        env.Append(CPPPATH=["/opt/homebrew/include"])
+        import subprocess
+        try:
+            brew_prefix = subprocess.check_output(["brew", "--prefix"], text=True).strip()
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            brew_prefix = None
+        if brew_prefix:
+            env.Append(LIBPATH=[brew_prefix + "/lib"])
+            env.Append(CPPPATH=[brew_prefix + "/include"])
+            env['ENV']['PATH'] = brew_prefix + "/bin:" + env['ENV'].get('PATH', '')
+        else:
+            env.Append(LIBPATH=["/opt/local/lib"])
+            env.Append(CPPPATH=["/opt/local/include"])
     if env['mingwcross']:
         if os.path.isabs(env['crossroot']):
             crossroot_abs = env['crossroot']
         else:
             crossroot_abs = os.getcwd() + '/' + env['crossroot']
-        env.Append(LIBPATH=['/usr/i586-mingw32msvc/lib', crossroot_abs + '/lib'])
-        env.Append(CPPPATH=['/usr/lib/gcc/i586-mingw32msvc/4.2.1-sjlj/include/c++', '/usr/i586-mingw32msvc/include'])
-        env.Append(CPPPATH=[crossroot_abs + '/include', crossroot_abs + '/include/SDL'])
+        env.Append(LIBPATH=[crossroot_abs + '/lib'])
+        env.Append(CPPPATH=[crossroot_abs + '/include'])
 
     server_only = False
     if env['server']:
@@ -303,6 +301,7 @@ def main():
 
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
+    env.Append(CPPPATH=['#src'])
     env.Append(CXXFLAGS=["-Wall", "-fPIC"])
     env.Append(LINKFLAGS=' -Wall')
     env.Append(LIBS=['SDL2_net'])
@@ -311,23 +310,22 @@ def main():
 
     if env['release']:
         env.Append(CXXFLAGS=["-O3"])
-        env.Append(LINKFLAGS=' -O3')
+        env.Append(LINKFLAGS=["-O3"])
+        if not isDarwinPlatform:
+            env.Append(CXXFLAGS=["-s"])
+            env.Append(LINKFLAGS=["-s", "-fwhole-program"])
     if env['profile']:
         env.Append(CXXFLAGS=' -pg')
         env.Append(LINKFLAGS='-pg')
-        env.Append(CXXFLAGS=["-O3"])
+        env.Append(CXXFLAGS=' -O3')
         env.Append(LINKFLAGS='-O3')
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
         # TODO: Remove unneccessary dependencies for server.
-        env.Append(LIBS=['vorbis', 'ogg', 'regex', 'wsock32', 'winmm', 'mingw32', 'SDLmain', 'SDL'])
+        env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
-        env.Append(CPPDEFINES=['-D_GNU_SOURCE=1', '-Dmain=SDL_main'])
-    elif isDarwinPlatform:
-        env.ParseConfig("/opt/homebrew/bin/sdl2-config --cflags")
-        env.ParseConfig("/opt/homebrew/bin/sdl2-config --libs")
+        env.ParseConfig("pkg-config sdl2 --cflags --libs")
     else:
-        env.ParseConfig("sdl2-config --cflags")
-        env.ParseConfig("sdl2-config --libs")
+        env.ParseConfig("pkg-config sdl2 --cflags --libs")
     
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
@@ -364,7 +362,8 @@ def main():
         dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
          
         #TODO mac_bundle should be dependency of Dmg:    
-        arch = os.popen("uname -p").read().strip()
+        import subprocess
+        arch = subprocess.check_output(["uname", "-p"], text=True).strip()
 #        mac_packages = env.Dmg('Glob2-%s-%s.dmg'% (fullVersion, arch),  env.Dir('Glob2.app/') )
 #        env.Alias("package", mac_packages)
 

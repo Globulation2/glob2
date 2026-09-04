@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2006 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2006 Bradley Arsenault
 
 #include "AIEcho.h"
 #include "Building.h"
@@ -30,7 +15,7 @@
 #include "Order.h"
 #include <iterator>
 #include "Utilities.h"
-#include "boost/tuple/tuple_io.hpp"
+#include <tuple>
 #include "Brush.h"
 
 using namespace AIEcho;
@@ -40,7 +25,7 @@ using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
 using namespace boost::logic;
-using boost::shared_ptr;
+using std::shared_ptr;
 
 
 
@@ -639,13 +624,13 @@ GradientInfo::~GradientInfo()
 
 void GradientInfo::add_source(Entities::Entity* source)
 {
-	sources.push_back(boost::shared_ptr<Entities::Entity>(source));
+	sources.push_back(std::shared_ptr<Entities::Entity>(source));
 }
 
 
 void GradientInfo::add_obstacle(Entities::Entity* obstacle)
 {
-	obstacles.push_back(boost::shared_ptr<Entities::Entity>(obstacle));
+	obstacles.push_back(std::shared_ptr<Entities::Entity>(obstacle));
 }
 
 
@@ -729,7 +714,7 @@ bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 ver
 	for(int n=0; n<size; ++n)
 	{
 		stream->readEnterSection(n);
-		sources[n]=boost::shared_ptr<Entities::Entity>(Entities::Entity::load_entity(stream, player, versionMinor));
+		sources[n]=std::shared_ptr<Entities::Entity>(Entities::Entity::load_entity(stream, player, versionMinor));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -740,7 +725,7 @@ bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 ver
 	for(int n=0; n<size; ++n)
 	{
 		stream->readEnterSection(n);
-		obstacles[n]=boost::shared_ptr<Entities::Entity>(Entities::Entity::load_entity(stream, player, versionMinor));
+		obstacles[n]=std::shared_ptr<Entities::Entity>(Entities::Entity::load_entity(stream, player, versionMinor));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -938,7 +923,7 @@ GradientManager::GradientManager(Map* map) : map(map), cur_update(0), timer(0)
 
 Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 {
-	for(std::vector<boost::shared_ptr<Gradient> >::iterator i=gradients.begin(); i!=gradients.end(); ++i)
+	for(std::vector<std::shared_ptr<Gradient> >::iterator i=gradients.begin(); i!=gradients.end(); ++i)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
@@ -952,7 +937,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 	}
 
 	//Did not find a matching gradient
-	gradients.push_back(boost::shared_ptr<Gradient>(new Gradient(gi)));
+	gradients.push_back(std::shared_ptr<Gradient>(new Gradient(gi)));
 	(*(gradients.end()-1))->recalculate(map);
 	ticks_since_update.push_back(0);
 	return **(gradients.end()-1);
@@ -973,7 +958,7 @@ void GradientManager::queue_gradient(const GradientInfo& gi)
 		}
 	}
 	//Did not find a matching gradient
-	gradients.push_back(boost::shared_ptr<Gradient>(new Gradient(gi)));
+	gradients.push_back(std::shared_ptr<Gradient>(new Gradient(gi)));
 	ticks_since_update.push_back(200);
 	queuedGradients.push(gradients.size()-1);
 }
@@ -981,7 +966,7 @@ void GradientManager::queue_gradient(const GradientInfo& gi)
 
 bool GradientManager::is_updated(const GradientInfo& gi)
 {
-	for(std::vector<boost::shared_ptr<Gradient> >::iterator i=gradients.begin(); i!=gradients.end(); ++i)
+	for(std::vector<std::shared_ptr<Gradient> >::iterator i=gradients.begin(); i!=gradients.end(); ++i)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
@@ -1397,7 +1382,7 @@ bool BuildingOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 ve
 	for(unsigned x=0; x<size; ++x)
 	{
 		stream->readEnterSection(x);
-		constraints[x] = boost::shared_ptr<Constraint>(Constraint::load_constraint(stream, player, versionMinor));
+		constraints[x] = std::shared_ptr<Constraint>(Constraint::load_constraint(stream, player, versionMinor));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1409,7 +1394,7 @@ bool BuildingOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 ve
 	for(unsigned x=0; x<size; ++x)
 	{
 		stream->readEnterSection(x);
-		conditions[x] = boost::shared_ptr<Condition>(Condition::load_condition(stream, player, versionMinor));
+		conditions[x] = std::shared_ptr<Condition>(Condition::load_condition(stream, player, versionMinor));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1453,13 +1438,13 @@ void BuildingOrder::save(GAGCore::OutputStream *stream)
 
 void BuildingOrder::add_constraint(Constraint* constraint)
 {
-	constraints.push_back(boost::shared_ptr<Constraint>(constraint));
+	constraints.push_back(std::shared_ptr<Constraint>(constraint));
 }
 
 
 void BuildingOrder::add_condition(Condition* condition)
 {
-	conditions.push_back(boost::shared_ptr<Condition>(condition));
+	conditions.push_back(std::shared_ptr<Condition>(condition));
 }
 
 
@@ -1489,7 +1474,7 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 				continue;
 			int score=0;
 			bool passes=true;
-			for(std::vector<boost::shared_ptr<Constraint> >::iterator i=constraints.begin(); i!=constraints.end(); ++i)
+			for(std::vector<std::shared_ptr<Constraint> >::iterator i=constraints.begin(); i!=constraints.end(); ++i)
 			{
 				for(int x2=0; x2<type->width && passes; ++x2)
 					for(int y2=0; y2<type->height && passes; ++y2)
@@ -1645,7 +1630,7 @@ void BuildingRegister::initiate()
 		Building* b=player->team->myBuildings[i];
 		if(b!=NULL)
 		{
-			found_buildings[building_id++]=boost::make_tuple(b->posX, b->posY, b->type->shortTypeNum, b->gid, false);
+			found_buildings[building_id++]=std::make_tuple(b->posX, b->posY, b->type->shortTypeNum, b->gid, false);
 		}
 	}
 }
@@ -1654,7 +1639,7 @@ void BuildingRegister::initiate()
 
 unsigned int BuildingRegister::register_building()
 {
-	pending_buildings[building_id]=boost::make_tuple(-1, -1, -1, -1);
+	pending_buildings[building_id]=std::make_tuple(-1, -1, -1, -1);
 	return building_id++;
 }
 
@@ -1662,7 +1647,7 @@ unsigned int BuildingRegister::register_building()
 
 void BuildingRegister::issue_order(int id, int x, int y, int building_type)
 {
-	pending_buildings[id]=boost::make_tuple(x, y, building_type, 0);
+	pending_buildings[id]=std::make_tuple(x, y, building_type, 0);
 }
 
 
@@ -1688,7 +1673,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 y=stream->readSint32("ypos");
 		Uint32 type=stream->readSint32("building_type");
 		Uint32 ticks=stream->readSint32("ticks_since_registered");
-		pending_buildings[id]=boost::make_tuple(x, y, type, ticks);
+		pending_buildings[id]=std::make_tuple(x, y, type, ticks);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1711,7 +1696,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 			t=true;
 		else
 			t=indeterminate;
-		found_buildings[id]=boost::make_tuple(xpos, ypos, building_type, gid, t);
+		found_buildings[id]=std::make_tuple(xpos, ypos, building_type, gid, t);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -1734,10 +1719,10 @@ void BuildingRegister::save(GAGCore::OutputStream *stream)
 	{
 		stream->writeEnterSection(pending_size);
 		stream->writeSint32(i->first, "echo_building_id");
-		stream->writeSint32(i->second.get<0>(), "xpos");
-		stream->writeSint32(i->second.get<1>(), "ypos");
-		stream->writeSint32(i->second.get<2>(), "building_type");
-		stream->writeSint32(i->second.get<3>(), "ticks_since_registered");
+		stream->writeSint32(std::get<0>(i->second), "xpos");
+		stream->writeSint32(std::get<1>(i->second), "ypos");
+		stream->writeSint32(std::get<2>(i->second), "building_type");
+		stream->writeSint32(std::get<3>(i->second), "ticks_since_registered");
 		stream->writeLeaveSection();
 		pending_size++;
 	}
@@ -1750,13 +1735,13 @@ void BuildingRegister::save(GAGCore::OutputStream *stream)
 	{
 		stream->writeEnterSection(found_size);
 		stream->writeUint32(i->first, "echo_building_id");
-		stream->writeUint32(i->second.get<0>(), "xpos");
-		stream->writeUint32(i->second.get<1>(), "ypos");
-		stream->writeUint32(i->second.get<2>(), "building_type");
-		stream->writeUint32(i->second.get<3>(), "gid");
-		if(i->second.get<4>())
+		stream->writeUint32(std::get<0>(i->second), "xpos");
+		stream->writeUint32(std::get<1>(i->second), "ypos");
+		stream->writeUint32(std::get<2>(i->second), "building_type");
+		stream->writeUint32(std::get<3>(i->second), "gid");
+		if(std::get<4>(i->second))
 			stream->writeUint8(1, "upgrade_status");
-		else if(!i->second.get<4>())
+		else if(!std::get<4>(i->second))
 			stream->writeUint8(0, "upgrade_status");
 		else
 			stream->writeUint8(2, "upgrade_status");
@@ -1773,7 +1758,7 @@ void BuildingRegister::save(GAGCore::OutputStream *stream)
 
 void BuildingRegister::set_upgrading(unsigned int id)
 {
-	found_buildings[id].get<4>()=indeterminate;
+	std::get<4>(found_buildings[id])=indeterminate;
 }
 
 
@@ -1785,10 +1770,10 @@ void BuildingRegister::tick()
 	{
 		//When get<3>() is -1, it means that the building order hasen't been sent to the glob2 engine yet.
 		//This is used when the building is registered, but awaiting conditions to be satisfied.
-		if(i->second.get<3>()!=-1)
+		if(std::get<3>(i->second)!=-1)
 		{
-			i->second.get<3>()++;
-			if(i->second.get<3>() > 300)
+			std::get<3>(i->second)++;
+			if(std::get<3>(i->second) > 300)
 			{
 				pending_iterator current=i;
 				++i;
@@ -1796,21 +1781,21 @@ void BuildingRegister::tick()
 				continue;
 			}
 			int gbid=NOGBID;
-			if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
+			if(std::get<2>(i->second) > IntBuildingType::DEFENSE_BUILDING && std::get<2>(i->second) < IntBuildingType::STONE_WALL)
 			{
-				gbid=is_flag(echo, i->second.get<0>(), i->second.get<1>());
+				gbid=is_flag(echo, std::get<0>(i->second), std::get<1>(i->second));
 			}
 			else
 			{
-				gbid=player->map->getBuilding(i->second.get<0>(), i->second.get<1>());
+				gbid=player->map->getBuilding(std::get<0>(i->second), std::get<1>(i->second));
 			}
 			if(gbid!=NOGBID)
 			{
-				if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
+				if(std::get<2>(i->second) > IntBuildingType::DEFENSE_BUILDING && std::get<2>(i->second) < IntBuildingType::STONE_WALL)
 				{
-					echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), gbid);
+					echo.get_flag_map().set_flag(std::get<0>(i->second), std::get<1>(i->second), gbid);
 				}
-				found_buildings[i->first]=boost::make_tuple(i->second.get<0>(), i->second.get<1>(), i->second.get<2>(), gbid, false);
+				found_buildings[i->first]=std::make_tuple(std::get<0>(i->second), std::get<1>(i->second), std::get<2>(i->second), gbid, false);
 				pending_iterator current=i;
 				++i;
 				pending_buildings.erase(current);
@@ -1821,18 +1806,18 @@ void BuildingRegister::tick()
 	}
 	for(found_iterator i = found_buildings.begin(); i!=found_buildings.end();)
 	{
-		if(i->second.get<2>() > IntBuildingType::DEFENSE_BUILDING && i->second.get<2>() < IntBuildingType::STONE_WALL)
+		if(std::get<2>(i->second) > IntBuildingType::DEFENSE_BUILDING && std::get<2>(i->second) < IntBuildingType::STONE_WALL)
 		{
-			if(echo.get_flag_map().get_flag(i->second.get<0>(), i->second.get<1>())==NOGBID)
+			if(echo.get_flag_map().get_flag(std::get<0>(i->second), std::get<1>(i->second))==NOGBID)
 			{
 				found_iterator current=i;
 				++i;
 				found_buildings.erase(current);
 				continue;
 			}
-			if(player->team->myBuildings[::Building::GIDtoID(i->second.get<3>())]==NULL)
+			if(player->team->myBuildings[::Building::GIDtoID(std::get<3>(i->second))]==NULL)
 			{
-				echo.get_flag_map().set_flag(i->second.get<0>(), i->second.get<1>(), NOGBID);
+				echo.get_flag_map().set_flag(std::get<0>(i->second), std::get<1>(i->second), NOGBID);
 				found_iterator current=i;
 				++i;
 				found_buildings.erase(current);
@@ -1841,8 +1826,8 @@ void BuildingRegister::tick()
 		}
 		else
 		{
-			const int gbid=player->map->getBuilding(i->second.get<0>(), i->second.get<1>());
-			if(gbid==NOGBID || gbid != i->second.get<3>())
+			const int gbid=player->map->getBuilding(std::get<0>(i->second), std::get<1>(i->second));
+			if(gbid==NOGBID || gbid != std::get<3>(i->second))
 			{
 				found_iterator current=i;
 				++i;
@@ -1858,17 +1843,17 @@ void BuildingRegister::tick()
 				continue;
 			}
 			//True
-			if(i->second.get<4>())
+			if(std::get<4>(i->second))
 			{
-				i->second.get<0>()=b->posX;
-				i->second.get<1>()=b->posY;
+				std::get<0>(i->second)=b->posX;
+				std::get<1>(i->second)=b->posY;
 				if(b->constructionResultState==::Building::NO_CONSTRUCTION)
 				{
-					i->second.get<4>()=false;
+					std::get<4>(i->second)=false;
 				}
 			}
 			//False
-			else if(!i->second.get<4>())
+			else if(!std::get<4>(i->second))
 			{
 
 			}
@@ -1877,7 +1862,7 @@ void BuildingRegister::tick()
 			{
 				if(b->constructionResultState!=::Building::NO_CONSTRUCTION)
 				{
-					i->second.get<4>()=true;
+					std::get<4>(i->second)=true;
 				}
 			}
 		}
@@ -1915,7 +1900,7 @@ bool BuildingRegister::is_building_upgrading(unsigned int id)
 		return false;
 	}
 	
-	tribool v=found_buildings[id].get<4>();
+	tribool v=std::get<4>(found_buildings[id]);
 	if(v)
 		return true;
 	else if(!v)
@@ -1931,7 +1916,7 @@ Building* BuildingRegister::get_building(unsigned int id)
 	{
 		return NULL;
 	}
-	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())];
+	return player->team->myBuildings[::Building::GIDtoID(std::get<3>(found_buildings[id]))];
 }
 
 
@@ -1942,7 +1927,7 @@ BuildingType* BuildingRegister::get_building_type(unsigned int id)
 	{
 		return NULL;
 	}
-	return player->team->myBuildings[::Building::GIDtoID(found_buildings[id].get<3>())]->type;
+	return player->team->myBuildings[::Building::GIDtoID(std::get<3>(found_buildings[id]))]->type;
 }
 
 
@@ -1953,7 +1938,7 @@ int BuildingRegister::get_type(unsigned int id)
 	{
 		return 0;
 	}
-	return found_buildings[id].get<2>();
+	return std::get<2>(found_buildings[id]);
 }
 
 
@@ -2934,7 +2919,7 @@ bool ManagementOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	for(unsigned x=0; x<size; ++x)
 	{
 		stream->readEnterSection(x);
-		conditions[x] = boost::shared_ptr<Condition>(Condition::load_condition(stream, player, versionMinor));
+		conditions[x] = std::shared_ptr<Condition>(Condition::load_condition(stream, player, versionMinor));
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -2963,7 +2948,7 @@ void ManagementOrder::save(GAGCore::OutputStream *stream)
 
 void ManagementOrder::add_condition(Condition* condition)
 {
-	conditions.push_back(boost::shared_ptr<Condition>(condition));
+	conditions.push_back(std::shared_ptr<Condition>(condition));
 }
 
 
@@ -4213,7 +4198,7 @@ BuildingSearch::BuildingSearch(Echo& echo) : echo(echo)
 
 void BuildingSearch::add_condition(Conditions::BuildingCondition* condition)
 {
-	conditions.push_back(boost::shared_ptr<Conditions::BuildingCondition>(condition));
+	conditions.push_back(std::shared_ptr<Conditions::BuildingCondition>(condition));
 }
 
 
@@ -4249,7 +4234,7 @@ building_search_iterator BuildingSearch::end()
 
 bool BuildingSearch::passes_conditions(int b)
 {
-	for(std::vector<boost::shared_ptr<Conditions::BuildingCondition> >::iterator i = conditions.begin();  i!=conditions.end(); ++i)
+	for(std::vector<std::shared_ptr<Conditions::BuildingCondition> >::iterator i = conditions.begin();  i!=conditions.end(); ++i)
 	{
 		if(!(*i)->passes(echo, b))
 			return false;
@@ -4570,7 +4555,7 @@ Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(
 
 unsigned int Echo::add_building_order(Construction::BuildingOrder* bo)
 {
-	building_orders.push_back(boost::shared_ptr<Construction::BuildingOrder>(bo));
+	building_orders.push_back(std::shared_ptr<Construction::BuildingOrder>(bo));
 	bo->queue_gradients(get_gradient_manager());
 	unsigned int id=br.register_building();
 	bo->id=id;
@@ -4580,13 +4565,13 @@ unsigned int Echo::add_building_order(Construction::BuildingOrder* bo)
 
 void Echo::add_management_order(Management::ManagementOrder* mo)
 {
-	management_orders.push_back(boost::shared_ptr<Management::ManagementOrder>(mo));
+	management_orders.push_back(std::shared_ptr<Management::ManagementOrder>(mo));
 }
 
 
 void Echo::update_management_orders()
 {
-	for(std::vector<boost::shared_ptr<Management::ManagementOrder> >::iterator i=management_orders.begin(); i!=management_orders.end();)
+	for(std::vector<std::shared_ptr<Management::ManagementOrder> >::iterator i=management_orders.begin(); i!=management_orders.end();)
 	{
 		boost::logic::tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
@@ -4615,49 +4600,49 @@ void Echo::update_management_orders()
 
 void Echo::add_ressource_tracker(Management::RessourceTracker* rt, int building_id)
 {
-	ressource_trackers[building_id]=boost::make_tuple(boost::shared_ptr<RessourceTracker>(rt), true);
+	ressource_trackers[building_id]=std::make_tuple(std::shared_ptr<RessourceTracker>(rt), true);
 }
 
 
 
-boost::shared_ptr<Management::RessourceTracker> Echo::get_ressource_tracker(int building_id)
+std::shared_ptr<Management::RessourceTracker> Echo::get_ressource_tracker(int building_id)
 {
 	if(ressource_trackers.find(building_id)==ressource_trackers.end())
-		return boost::shared_ptr<Management::RessourceTracker>();
-	return ressource_trackers[building_id].get<0>();
+		return std::shared_ptr<Management::RessourceTracker>();
+	return std::get<0>(ressource_trackers[building_id]);
 }
 
 
 
 void Echo::pause_ressource_tracker(int building_id)
 {
-	ressource_trackers[building_id].get<1>()=false;
+	std::get<1>(ressource_trackers[building_id])=false;
 }
 
 
 
 void Echo::unpause_ressource_tracker(int building_id)
 {
-	ressource_trackers[building_id].get<1>()=true;
+	std::get<1>(ressource_trackers[building_id])=true;
 }
 
 
 
 void Echo::update_ressource_trackers()
 {
-	for(std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator i = ressource_trackers.begin(); i!=ressource_trackers.end();)
+	for(std::map<int, std::tuple<std::shared_ptr<Management::RessourceTracker>, bool> >::iterator i = ressource_trackers.begin(); i!=ressource_trackers.end();)
 	{
 		if(!br.is_building_found(i->first) && !br.is_building_pending(i->first))
 		{
-			std::map<int, boost::tuple<boost::shared_ptr<Management::RessourceTracker>, bool> >::iterator current=i;
+			std::map<int, std::tuple<std::shared_ptr<Management::RessourceTracker>, bool> >::iterator current=i;
 			++i;
 			ressource_trackers.erase(current);
 			continue;
 		}
 		else if(br.is_building_found(i->first))
 		{
-			if(i->second.get<1>())
-				i->second.get<0>()->tick();
+			if(std::get<1>(i->second))
+				std::get<0>(i->second)->tick();
 		}
 		++i;
 	}
@@ -4667,7 +4652,7 @@ void Echo::update_ressource_trackers()
 
 void Echo::update_building_orders()
 {
-	for(std::vector<boost::shared_ptr<Construction::BuildingOrder> >::iterator i=building_orders.begin(); i!=building_orders.end();)
+	for(std::vector<std::shared_ptr<Construction::BuildingOrder> >::iterator i=building_orders.begin(); i!=building_orders.end();)
 	{
 		boost::logic::tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
@@ -4793,7 +4778,7 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 		stream->readEnterSection(managementIndex);
 		signature_check(stream, player, versionMinor);
 		signature_check(stream, player, versionMinor);
-		boost::shared_ptr<ManagementOrder> mo=boost::shared_ptr<ManagementOrder>(ManagementOrder::load_order(stream, player, versionMinor));
+		std::shared_ptr<ManagementOrder> mo=std::shared_ptr<ManagementOrder>(ManagementOrder::load_order(stream, player, versionMinor));
 		management_orders.push_back(mo);
 		signature_check(stream, player, versionMinor);
 		signature_check(stream, player, versionMinor);
@@ -4809,7 +4794,7 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	for(Uint32 buildingIndex = 0; buildingIndex < buildingSize; ++buildingIndex)
 	{
 		stream->readEnterSection(buildingIndex);
-		building_orders[buildingIndex]=boost::shared_ptr<BuildingOrder>(new BuildingOrder);
+		building_orders[buildingIndex]=std::shared_ptr<BuildingOrder>(new BuildingOrder);
 		building_orders[buildingIndex]->load(stream, player, versionMinor);
 		stream->readLeaveSection();
 	}
@@ -4824,9 +4809,9 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	{
 		stream->readEnterSection(ressourceTrackerIndex);
 		int id=stream->readUint32("echo_building_id");
-		boost::shared_ptr<RessourceTracker> rt(new RessourceTracker(*this, stream, player, versionMinor));
+		std::shared_ptr<RessourceTracker> rt(new RessourceTracker(*this, stream, player, versionMinor));
 		bool activated=stream->readUint8("active");
-		ressource_trackers[id]=boost::make_tuple(rt, activated);
+		ressource_trackers[id]=std::make_tuple(rt, activated);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -4880,7 +4865,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("orders");
 	stream->writeUint32((Uint32)orders.size(), "size");
 	Uint32 ordersIndex = 0;
-	for (std::list<boost::shared_ptr<Order> >::iterator i = orders.begin(); i!=orders.end(); ++i)
+	for (std::list<std::shared_ptr<Order> >::iterator i = orders.begin(); i!=orders.end(); ++i)
 	{
 		stream->writeEnterSection(ordersIndex);
 		stream->writeUint32((*i)->getDataLength(), "size");
@@ -4938,8 +4923,8 @@ void Echo::save(GAGCore::OutputStream *stream)
 	{
 		stream->writeEnterSection(ressourceTrackerIndex);
 		stream->writeUint32(i->first, "echo_building_id");
-		i->second.get<0>()->save(stream);
-		stream->writeUint8(i->second.get<1>(), "active");
+		std::get<0>(i->second)->save(stream);
+		stream->writeUint8(std::get<1>(i->second), "active");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -4981,7 +4966,7 @@ void Echo::save(GAGCore::OutputStream *stream)
 
 #include "TextStream.h"
 
-boost::shared_ptr<Order> Echo::getOrder(void)
+std::shared_ptr<Order> Echo::getOrder(void)
 {
 //	for(int x=0; x<player->map->getW(); ++x)
 //	{
@@ -5041,7 +5026,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 
 	if(!orders.empty())
 	{
-		boost::shared_ptr<Order> order=orders.front();
+		std::shared_ptr<Order> order=orders.front();
 		orders.erase(orders.begin());
 		return order;
 	}
@@ -5055,7 +5040,7 @@ boost::shared_ptr<Order> Echo::getOrder(void)
 	update_building_orders();
 	timer++;
 	from_load_timer++;
-	return boost::shared_ptr<Order>(new NullOrder());
+	return std::shared_ptr<Order>(new NullOrder());
 }
 
 
@@ -5799,7 +5784,7 @@ void ReachToInfinity::tick(Echo& echo)
 		inns.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=inns.begin(); i!=inns.end(); ++i)
 		{
-			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
+			std::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
 			if(rt)
 			{
 				if(rt->get_age()>1500)
@@ -5819,7 +5804,7 @@ void ReachToInfinity::tick(Echo& echo)
 		swarms.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
 		{
-			boost::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
+			std::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
 			if(rt)
 			{
 				if(rt->get_age()>2500)

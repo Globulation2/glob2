@@ -1,28 +1,13 @@
-/*
-  Copyright (C) 2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
 
 #include "IRCThread.h"
 #include "IRCThreadMessage.h"
 #include <iostream>
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-IRCThread::IRCThread(std::queue<boost::shared_ptr<IRCThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
+IRCThread::IRCThread(std::queue<std::shared_ptr<IRCThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
 	: outgoing(outgoing), outgoingMutex(outgoingMutex)
 {
 	hasExited = false;
@@ -37,35 +22,35 @@ void IRCThread::operator()()
 		SDL_Delay(20);
 		{
 			//First parse incoming thread messages
-			boost::recursive_mutex::scoped_lock lock(incomingMutex);
+			std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 			while(!incoming.empty())
 			{
-				boost::shared_ptr<IRCThreadMessage> message = incoming.front();
+				std::shared_ptr<IRCThreadMessage> message = incoming.front();
 				incoming.pop();
 				Uint8 type = message->getMessageType();
 				switch(type)
 				{
 					case ITMConnect:
 					{
-						boost::shared_ptr<ITConnect> info = static_pointer_cast<ITConnect>(message);
+						std::shared_ptr<ITConnect> info = static_pointer_cast<ITConnect>(message);
 						irc.connect(info->getServer(), info->getServerPort(), info->getNick());
 					}
 					break;
 					case ITMDisconnect:
 					{
-						boost::shared_ptr<ITDisconnect> info = static_pointer_cast<ITDisconnect>(message);
+						std::shared_ptr<ITDisconnect> info = static_pointer_cast<ITDisconnect>(message);
 						irc.disconnect();
 					}
 					break;
 					case ITMSendMessage:
 					{
-						boost::shared_ptr<ITSendMessage> info = static_pointer_cast<ITSendMessage>(message);
+						std::shared_ptr<ITSendMessage> info = static_pointer_cast<ITSendMessage>(message);
 						irc.sendCommand(info->getText());
 					}
 					break;
 					case ITMJoinChannel:
 					{
-						boost::shared_ptr<ITJoinChannel> info = static_pointer_cast<ITJoinChannel>(message);
+						std::shared_ptr<ITJoinChannel> info = static_pointer_cast<ITJoinChannel>(message);
 						irc.joinChannel(info->getChannel());
 						irc.setChatChannel(info->getChannel());
 						channel = info->getChannel();
@@ -73,7 +58,7 @@ void IRCThread::operator()()
 					break;
 					case ITMExitThread:
 					{
-						boost::shared_ptr<ITExitThread> info = static_pointer_cast<ITExitThread>(message);
+						std::shared_ptr<ITExitThread> info = static_pointer_cast<ITExitThread>(message);
 						irc.disconnect();
 						hasExited = true;
 						return;
@@ -87,7 +72,7 @@ void IRCThread::operator()()
 		irc.step();
 		if(irc.isChannelUserBeenModified())
 		{
-			boost::shared_ptr<ITUserListModified> m(new ITUserListModified);
+			std::shared_ptr<ITUserListModified> m(new ITUserListModified);
 
 			if (irc.initChannelUserListing(channel))
 			{
@@ -107,7 +92,7 @@ void IRCThread::operator()()
 			message+=irc.getChatMessageSource();
 			message+=">";
 			message+=irc.getChatMessage();
-			boost::shared_ptr<ITRecieveMessage> m(new ITRecieveMessage(message));
+			std::shared_ptr<ITRecieveMessage> m(new ITRecieveMessage(message));
 			sendToMainThread(m);
 			irc.freeChatMessage();
 		}
@@ -157,7 +142,7 @@ void IRCThread::operator()()
 				message += " : ";
 				message += irc.getInfoMessageText();
 			}
-			boost::shared_ptr<ITRecieveMessage> m(new ITRecieveMessage(message));
+			std::shared_ptr<ITRecieveMessage> m(new ITRecieveMessage(message));
 			sendToMainThread(m);
 			irc.freeInfoMessage();
 		}
@@ -166,9 +151,9 @@ void IRCThread::operator()()
 
 
 
-void IRCThread::sendMessage(boost::shared_ptr<IRCThreadMessage> message)
+void IRCThread::sendMessage(std::shared_ptr<IRCThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	incoming.push(message);
 }
 
@@ -181,9 +166,9 @@ bool IRCThread::hasThreadExited()
 
 
 
-void IRCThread::sendToMainThread(boost::shared_ptr<IRCThreadMessage> message)
+void IRCThread::sendToMainThread(std::shared_ptr<IRCThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(outgoingMutex);
+	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
 	outgoing.push(message);
 }
 

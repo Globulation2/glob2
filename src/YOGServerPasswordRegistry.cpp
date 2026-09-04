@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include "YOGServerPasswordRegistry.h"
 #include "Stream.h"
@@ -24,7 +9,7 @@
 #include "../gnupg/sha1.c"
 #include "Version.h"
 
-#include <boost/lexical_cast.hpp>
+#include <string>
 
 #include <iostream>
 
@@ -118,7 +103,7 @@ std::string YOGServerPasswordRegistry::transform(const std::string& username, co
 	int i=1;
 	while(salted.size() < 50)
 	{
-		salted+=boost::lexical_cast<std::string>(i);
+		salted+=std::to_string(i);
 		i+=1;
 	}
 	///Perform SHA1, a cast must be performed to get the data to the right type, but
@@ -130,6 +115,10 @@ std::string YOGServerPasswordRegistry::transform(const std::string& username, co
 	SHA1Final(digest, &context);
 	std::string final = "";
 	for(int i=0; i<20; ++i)
-		final += boost::lexical_cast<std::string>(digest[i]) + "-";
+	{
+		// stored hashes encode each digest byte as a raw character, not as decimal
+		final += static_cast<char>(digest[i]);
+		final += '-';
+	}
 	return final;
 }

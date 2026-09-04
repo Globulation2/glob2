@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #ifndef __NetConnection_h
 #define __NetConnection_h
@@ -22,9 +7,10 @@
 #include "SDL_net.h"
 #include "NetConnectionThread.h"
 #include <queue>
-#include <boost/shared_ptr.hpp>
+#include <thread>
+#include <memory>
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 class NetListener;
 class NetMessage;
@@ -77,9 +63,10 @@ protected:
 	
 private:
 	NetConnectionThread connect;
-	
-	std::queue<boost::shared_ptr<NetConnectionThreadMessage> > incoming;
-	boost::recursive_mutex incomingMutex;
+	std::thread connectThread;
+
+	std::queue<std::shared_ptr<NetConnectionThreadMessage> > incoming;
+	std::recursive_mutex incomingMutex;
 	std::queue<shared_ptr<NetMessage> > recieved;
 	
 	std::string address;

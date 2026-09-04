@@ -207,7 +207,7 @@ caps lock
 [compile]
 Компил. скрипт
 [compose]
-
+составить
 [Computing Fertility]
 Вычисление плодородия
 [concrete islands terrain]
@@ -306,6 +306,8 @@ end
 enter
 [equals]
 равно
+[ERROR_CANT_LOAD_MAP]
+Карту не удалось загрузить, так как файл повреждён или имеет несовместимую версию.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -368,8 +370,6 @@ f9
 Ok
 [free]
 свободны
-[free]
-свободны
 [from:]
 от:
 [fruit]
@@ -424,8 +424,6 @@ home
 Стать хостом игры
 [hp]
 Зд.
-[hp]
-Здоровье
 [Human]
 Человек
 [human]
@@ -893,7 +891,7 @@ space
 [stone]
 камень
 [stonewall explanation 2]
-
+пассивный
 [stonewall explanation]
 Пассивная защита
 [stonewall]
@@ -1040,8 +1038,6 @@ tab
 Показать меню
 [toggle recording voice]
 Записать голос
-[toggle recording voice]
-Начать запись голоса
 [Total Attack Power]
 Общая атака
 [Total Defence Power]
@@ -1148,8 +1144,6 @@ up
 Рабочий
 [workers]
 Рабочие
-[workers]
-рабочих
 [working]
 Работает
 [wounded]

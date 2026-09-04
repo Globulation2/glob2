@@ -5,7 +5,7 @@
 [%0 units can't access building]
 %0 j. nie może się dost. do bud.
 [%0 units can't access flag]
-
+%0 j. nie może się dost. do flagi.
 [%0 units can't access fruit]
 %0 j. nie może się dost. do owo.
 [%0 units can't access resource]
@@ -15,7 +15,7 @@
 [%0 units too far from building]
 %0 j. za daleko od bud.
 [%0 units too far from flag]
-
+%0 j. za daleko od flagi.
 [%0 units too far from fruit]
 %0 j. za daleko od owo.
 [%0 units too far from resource]
@@ -147,9 +147,9 @@ Wł. Budynków
 [building site]
 plac budowy
 [Building Tool Box Explanation]
-
+Shift + przeciągnij = pole
 [Building Tool Line Explanation]
-
+Ctrl + przeciągnij = linia
 [Buildings]
 Budowle
 [Bullets]
@@ -203,7 +203,7 @@ Flaga oczyszczania
 [closed]
 Zamknięte
 [combined vision]
-
+Połączony wgląd
 [compile]
 Kompiluj skrypt
 [compose]
@@ -306,6 +306,8 @@ Wpisz swoje hasło:
 wejście
 [equals]
 równa się
+[ERROR_CANT_LOAD_MAP]
+Nie udało się wczytać mapy, ponieważ plik jest uszkodzony lub ma niezgodną wersję.
 [escape]
 ucieczka
 [explorationflag explanation 2]
@@ -359,7 +361,7 @@ Flagi
 [flag settings explanation]
 Domyślny promień flagi
 [fog of war]
-
+Mgła wojny
 [food]
 Jedzenie
 [forbidden area]
@@ -368,8 +370,6 @@ Zakazany obszar
 Ok
 [free]
 wolne
-[free]
-wolnych
 [from:]
 od:
 [fruit]
@@ -424,8 +424,6 @@ Szpital
 Załórz serwer gry
 [hp]
 Punkty życia
-[hp]
-Życie
 [Human]
 Człowiek
 [human]
@@ -495,7 +493,7 @@ Wczytaj Grę
 [load map]
 Wczytaj Mapę
 [load replay]
-
+Wczytaj powtórkę
 [load script]
 Wczytaj Skrypt
 [load]
@@ -507,7 +505,7 @@ Korytarz
 [login]
 Login
 [look around]
-
+Rozejrzyj się
 [Lost : %0 has more prestige than you]
 Przegrałeś: %0 ma większy prestiż od Twojego
 [Lost : your colony is dead]
@@ -577,7 +575,7 @@ Nowa Mapa
 [nick taken]
 Niestety, twoje imię zostało już wybrane na freenode, możesz tylko rozmawiać przez YOG.
 [no fullscreen]
-
+* tylko w trybie okienkowym
 [No Hints]
 Brak Podpowiedzi
 [no key]
@@ -593,7 +591,7 @@ Za Mało Ocen
 [not ready]
 nie gotowy
 [Number Of Buildings]
-
+Liczba budynków
 [number of players: %0 (%1 AI)]
 %0 graczy (%1 Wszystkich)
 [number of players: %0]
@@ -603,7 +601,7 @@ nie gotowy
 [number of teams]
 Ilość drużyn
 [Number Of Units]
-
+Liczba jednostek
 [numlock]
 numlock
 [objectives]
@@ -661,7 +659,7 @@ Nazwa Gracza
 [player rating %0]
 Gracz, Ocena: %0
 [players]
-
+Gracze
 [please wait]
 Proszę czekaj
 [power]
@@ -669,7 +667,7 @@ moc
 [press space]
 Naciśnij spację aby kontynuować
 [Prestige Score]
-
+Wynik prestiżu
 [Prestige Win Enabled]
 Prestyżowa Wygrana Aktywna
 [Prestige]
@@ -687,7 +685,7 @@ Zakończ edytor
 [quit the game]
 Zakończ grę
 [quit the replay]
-
+Zakończ powtórkę
 [quit]
 Zakończ
 [racetrack explanation 2]
@@ -709,7 +707,7 @@ Odśwież Listę Map
 [Register a new YOG user with password]
 Rejestruj nowego użytkownika YOG z hasłem. (niebezpieczne)
 [Register]
-
+Zarejestruj
 [remember unit]
 Zapamiętaj Jednostkę
 [Remember YOG password localy]
@@ -727,9 +725,9 @@ Napraw
 [repeat area]
 razy ten sam teren
 [Repeat your password :]
-
+Powtórz hasło:
 [replay ended]
-
+Powtórka zakończona
 [restore default shortcuts]
 Przywróć Domyślne Skróty
 [return to editor]
@@ -737,7 +735,7 @@ Powróć do edytora
 [return to game]
 Powrót do gry
 [return to replay]
-
+Wróć do powtórki
 [return]
 enter
 [right meta]
@@ -759,7 +757,7 @@ Zapisz grę
 [save map]
 Sapisz Mapę
 [save replay]
-
+Zapisz powtórkę
 [save script]
 Sapisz skrypt
 [Save]
@@ -851,9 +849,9 @@ Enter: wyślij wiadomość
 [shortcut explanation v]
 V: przytrzymaj aby rozmawiać
 [show areas]
-
+Pokaż obszary
 [show flags]
-
+Pokaż flagi
 [show main menu]
 Pokaż Główne Menu
 [skin]
@@ -1007,7 +1005,7 @@ Zbudowano tor wyścigowy
 [the racetrack is under attack]
 Tor wyścigowy został zaatakowany
 [the replays]
-
+Powtórki
 [the school is finished]
 Zbudowano szkołę
 [the school is under attack]
@@ -1029,7 +1027,7 @@ Postawiono flagę wojenną
 [the warflag is under attack]
 Flaga wojenna została zaatakowana
 [time]
-
+Czas
 [to:]
 do:
 [toggle draw accessibility aids]
@@ -1043,11 +1041,11 @@ Przełącz Ekran Menu
 [toggle recording voice]
 Przełącz Nagrywanie Dźwięku
 [Total Attack Power]
-
+Łączna siła ataku
 [Total Defence Power]
-
+Łączna siła obrony
 [Total Hitpoints]
-
+Łączne punkty życia
 [Total prestige reached]
 Osiągnięty prestiż
 [Total]
@@ -1125,9 +1123,9 @@ Wojownik
 [warriors]
 Wojownicy
 [watch again]
-
+Obejrzyj ponownie
 [watching:]
-
+Oglądasz:
 [water]
 Woda
 [Wheat]
@@ -1146,8 +1144,6 @@ drewno
 Współczynnik Robotników
 [Worker]
 Robotnik
-[workers]
-Robotnicy
 [workers]
 Robotnicy
 [working]
@@ -1181,7 +1177,7 @@ Metaserwer YOG odmówił połączenia, ponieważ podane imię gracza jest niepop
 [YESTS_CREATED]
 System jest gotowy do połączenia z metaserwerem YOG.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Podane hasła nie są zgodne. Wpisz je ponownie.
 [YESTS_UNABLE_TO_CONNECT]
 Nie można się połączyć. Prawdopodobnie metaserwer YOG jest nieaktywny.
 [yog block command help]

@@ -1,22 +1,6 @@
- /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  Copyright (C) 2005 Eli Dupree
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+// Copyright (C) 2005 Eli Dupree
 
 #include "AIWarrush.h"
 #include "Building.h"
@@ -34,7 +18,7 @@
 #define BUILDING_DELAY 30
 #define AREAS_DELAY 50
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 void AIWarrush::init(Player *player)
 {
@@ -307,7 +291,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 	return num_worked_buildings * 100 >= num_buildings * percentage;
 }
 
-boost::shared_ptr<Order> AIWarrush::getOrder(void)
+std::shared_ptr<Order> AIWarrush::getOrder(void)
 {
 	// reduce delays
 	if (buildingDelay > 0)
@@ -429,7 +413,7 @@ boost::shared_ptr<Order> AIWarrush::getOrder(void)
 	return shared_ptr<Order>(new NullOrder);
 }
 
-boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
+std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 {
 	//If we have any guard areas that aren't adjacent to an enemy building, we remove them.
 	BrushAccumulator acc;
@@ -470,7 +454,7 @@ boost::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 	else return shared_ptr<Order>(new NullOrder);
 }
 	
-boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
+std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 {
 	BrushAccumulator guard_add_acc;
 	//Place guard area on an enemy building if there is one...
@@ -523,7 +507,7 @@ boost::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	else return shared_ptr<Order>(new NullOrder);
 }
 	
-boost::shared_ptr<Order> AIWarrush::farm()
+std::shared_ptr<Order> AIWarrush::farm()
 {
 	// Algorithm initially stolen from Nicowar.
 	DynamicGradientMapArray water_gradient(map->w,map->h);
@@ -661,7 +645,7 @@ boost::shared_ptr<Order> AIWarrush::farm()
 }
 
 //Simple hack to place explore flags on opponents' starting swarms.
-boost::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
+std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
 {
 	if(verbose)std::cout << "looking for swarms:\n";
 	for(int j=0;j<Building::MAX_COUNT;j++)
@@ -760,7 +744,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 	}
 }
 
-boost::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
+std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 {
 	
 	// set delay

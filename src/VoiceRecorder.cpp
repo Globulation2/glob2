@@ -1,23 +1,5 @@
-/*
-  This file is part of Globulation 2, a free software real-time strategy game
-  http://www.globulation2.org
-  Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
 
 #include "VoiceRecorder.h"
 #include <assert.h>
@@ -75,7 +57,7 @@ void PaFlushVoiceData(VoiceRecorder* recorder)
 	SpeexBits& bits = recorder->bits;
 	int byteLength = speex_bits_nbytes(&bits);
 	
-	boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, recorder->frameCount, NULL));
+	std::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, recorder->frameCount, NULL));
 	int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 	assert(byteLength == nbBytes);
 	
@@ -295,7 +277,7 @@ int record(void *pointer)
 			int byteLength = speex_bits_nbytes(&bits);
 			if (byteLength > MAX_VOICE_MULTI_FRAME_LENGTH || totalRead > MAX_VOICE_MULTI_FRAME_SAMPLE_COUNT)
 			{
-				boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
+				std::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
 				int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 				assert(byteLength == nbBytes);
 				
@@ -314,7 +296,7 @@ int record(void *pointer)
 		int byteLength = speex_bits_nbytes(&bits);
 		if (byteLength > 0)
 		{
-			boost::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
+			std::shared_ptr<OrderVoiceData> order(new OrderVoiceData(0, byteLength, frameCount, NULL));
 			int nbBytes = speex_bits_write(&bits, (char *)order->getFramesData(), byteLength);
 			assert(byteLength == nbBytes);
 			
@@ -449,13 +431,13 @@ void VoiceRecorder::stopRecording(void)
 	#endif
 }
 
-boost::shared_ptr<OrderVoiceData> VoiceRecorder::getNextOrder(void)
+std::shared_ptr<OrderVoiceData> VoiceRecorder::getNextOrder(void)
 {
-	boost::shared_ptr<OrderVoiceData> order;
+	std::shared_ptr<OrderVoiceData> order;
 	SDL_LockMutex(ordersMutex);
 	if (orders.empty())
 	{
-		order = boost::shared_ptr<OrderVoiceData>();
+		order = std::shared_ptr<OrderVoiceData>();
 	}
 	else
 	{

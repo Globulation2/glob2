@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdlib.h>
 
@@ -30,65 +14,65 @@ Order::Order(void)
 	gameCheckSum=static_cast<unsigned int>(-1);
 }
 
-boost::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)
+std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)
 {
 	if (netDataLength<1 || netData==NULL)
-		return boost::shared_ptr<Order>();
+		return std::shared_ptr<Order>();
 
 	switch (netData[0])
 	{
 	case ORDER_CREATE:
-		return boost::shared_ptr<Order>(new OrderCreate(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderCreate(netData+1, netDataLength-1, versionMinor));
 	case ORDER_DELETE:
-		return boost::shared_ptr<Order>(new OrderDelete(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderDelete(netData+1, netDataLength-1, versionMinor));
 	case ORDER_CANCEL_DELETE:
-		return boost::shared_ptr<Order>(new OrderCancelDelete(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderCancelDelete(netData+1, netDataLength-1, versionMinor));
 	case ORDER_CONSTRUCTION:
-		return boost::shared_ptr<Order>(new OrderConstruction(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderConstruction(netData+1, netDataLength-1, versionMinor));
 	case ORDER_CANCEL_CONSTRUCTION:
-		return boost::shared_ptr<Order>(new OrderCancelConstruction(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderCancelConstruction(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MODIFY_BUILDING:
-		return boost::shared_ptr<Order>(new OrderModifyBuilding(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderModifyBuilding(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MODIFY_EXCHANGE:
-		return boost::shared_ptr<Order>(new OrderModifyExchange(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderModifyExchange(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MODIFY_SWARM:
-		return boost::shared_ptr<Order>(new OrderModifySwarm(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderModifySwarm(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MODIFY_FLAG:
-		return boost::shared_ptr<Order>(new OrderModifyFlag(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderModifyFlag(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MODIFY_CLEARING_FLAG:
-		return boost::shared_ptr<Order>(new OrderModifyClearingFlag(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderModifyClearingFlag(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
-		return boost::shared_ptr<Order>(new OrderModifyMinLevelToFlag(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MOVE_FLAG:
-		return boost::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderMoveFlag(netData+1, netDataLength-1, versionMinor));
 	case ORDER_CHANGE_PRIORITY:
-		return boost::shared_ptr<Order>(new OrderChangePriority(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderChangePriority(netData+1, netDataLength-1, versionMinor));
 	case ORDER_ALTERATE_FORBIDDEN:
-		return boost::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderAlterateForbidden(netData+1, netDataLength-1, versionMinor));
 	case ORDER_ALTERATE_GUARD_AREA:
-		return boost::shared_ptr<Order>(new OrderAlterateGuardArea(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderAlterateGuardArea(netData+1, netDataLength-1, versionMinor));
 	case ORDER_ALTERATE_CLEAR_AREA:
-		return boost::shared_ptr<Order>(new OrderAlterateClearArea(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderAlterateClearArea(netData+1, netDataLength-1, versionMinor));
 	case ORDER_NULL:
-		return boost::shared_ptr<Order>(new NullOrder());
+		return std::shared_ptr<Order>(new NullOrder());
 	case ORDER_TEXT_MESSAGE:
-		return boost::shared_ptr<Order>(new MessageOrder(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new MessageOrder(netData+1, netDataLength-1, versionMinor));
 	case ORDER_VOICE_DATA:
-		return boost::shared_ptr<Order>(new OrderVoiceData(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new OrderVoiceData(netData+1, netDataLength-1, versionMinor));
 	case ORDER_SET_ALLIANCE:
-		return boost::shared_ptr<Order>(new SetAllianceOrder(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new SetAllianceOrder(netData+1, netDataLength-1, versionMinor));
 	case ORDER_MAP_MARK:
-		return boost::shared_ptr<Order>(new MapMarkOrder(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new MapMarkOrder(netData+1, netDataLength-1, versionMinor));
 	case ORDER_PAUSE_GAME:
-		return boost::shared_ptr<Order>(new PauseGameOrder(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new PauseGameOrder(netData+1, netDataLength-1, versionMinor));
 	case ORDER_PLAYER_QUIT_GAME :
-		return boost::shared_ptr<Order>(new PlayerQuitsGameOrder(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new PlayerQuitsGameOrder(netData+1, netDataLength-1, versionMinor));
 	case ORDER_ADJUST_LATENCY :
-		return boost::shared_ptr<Order>(new AdjustLatency(netData+1, netDataLength-1, versionMinor));
+		return std::shared_ptr<Order>(new AdjustLatency(netData+1, netDataLength-1, versionMinor));
 	default:
 		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
 	}
-	return boost::shared_ptr<Order>();
+	return std::shared_ptr<Order>();
 }
 
 // OrderCreate's code

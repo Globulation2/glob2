@@ -1,22 +1,7 @@
- /*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  Copyright (C) 2005 Eli Dupree
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+// Copyright (C) 2005 Eli Dupree
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
  
 #ifndef __AI_WARRUSH_H
 #define __AI_WARRUSH_H
@@ -77,7 +62,7 @@ public:
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	
-	boost::shared_ptr<Order> getOrder(void);
+	std::shared_ptr<Order> getOrder(void);
 private:
 	void init(Player *player);
 	//implementation functions to make the code more like the pseudocode;
@@ -96,13 +81,13 @@ private:
 	Building *getSwarmAtRandom()const;
 	//functions called by getOrder, filled with pseudocode and its product,
 	//real code.
-	boost::shared_ptr<Order> placeGuardAreas(void);
-	boost::shared_ptr<Order> pruneGuardAreas(void);
-	boost::shared_ptr<Order> farm(void);
-	boost::shared_ptr<Order> setupExploreFlagForTeam(Team *enemy_team);
+	std::shared_ptr<Order> placeGuardAreas(void);
+	std::shared_ptr<Order> pruneGuardAreas(void);
+	std::shared_ptr<Order> farm(void);
+	std::shared_ptr<Order> setupExploreFlagForTeam(Team *enemy_team);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
 	void initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type);
-	boost::shared_ptr<Order> buildBuildingOfType(Sint32 shortTypeNum);
+	std::shared_ptr<Order> buildBuildingOfType(Sint32 shortTypeNum);
 };
 
 #endif

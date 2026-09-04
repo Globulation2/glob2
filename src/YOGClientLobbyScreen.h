@@ -1,23 +1,6 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #ifndef __YOGSCREEN_H
 #define __YOGSCREEN_H
@@ -87,7 +70,7 @@ class YOGClientLobbyScreen : public TabScreenWindow, public YOGClientEventListen
 {
 public:
 	///This takes a YOGClient. The client must be logged in when this is called.
-	YOGClientLobbyScreen(TabScreen* parent, boost::shared_ptr<YOGClient> client);
+	YOGClientLobbyScreen(TabScreen* parent, std::shared_ptr<YOGClient> client);
 
 	virtual ~YOGClientLobbyScreen();
 	
@@ -96,11 +79,11 @@ public:
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
 	///Responds to YOG events
-	void handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event);
+	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event);
 	///Handle text message events from IRCTextMessageHandler
 	void handleIRCTextMessage(const std::string& message);
 	///Handles text message events from the YOGClientChatChannel
-	void recieveTextMessage(boost::shared_ptr<YOGMessage> message);
+	void recieveTextMessage(std::shared_ptr<YOGMessage> message);
 	///Handles an internal message
 	void recieveInternalMessage(const std::string& message);
 	///Handles when the game list has been updated from YOGClientGameListManager
@@ -154,9 +137,9 @@ private:
 	TextButton *joinButton;
 	TextButton *hostButton;
 
-	boost::shared_ptr<YOGClient> client;
-	boost::shared_ptr<YOGClientChatChannel> lobbyChat;
-	boost::shared_ptr<IRCTextMessageHandler> ircChat;
+	std::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClientChatChannel> lobbyChat;
+	std::shared_ptr<IRCTextMessageHandler> ircChat;
 	
 	int gameScreen;
 

@@ -1,27 +1,12 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include "NetEngine.h"
 #include <iostream>
 #include "NetMessage.h"
 
 
-NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, boost::shared_ptr<NetConnection> router)
+NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate, std::shared_ptr<NetConnection> router)
 	: numberOfPlayers(numberOfPlayers), localPlayer(localPlayer), router(router), networkOrderRate(networkOrderRate)
 {
 	step=0;
@@ -32,7 +17,7 @@ NetEngine::NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate,
 
 
 
-void NetEngine::setNetworkInfo(int nnetworkOrderRate, boost::shared_ptr<NetConnection> nrouter)
+void NetEngine::setNetworkInfo(int nnetworkOrderRate, std::shared_ptr<NetConnection> nrouter)
 {
 	networkOrderRate = nnetworkOrderRate;
 	router = nrouter;
@@ -45,7 +30,7 @@ void NetEngine::advanceStep(Uint32 checksum)
 	step+=1;
 	if(localOrderSendCountdown == 0)
 	{
-		boost::shared_ptr<Order> localOrder;
+		std::shared_ptr<Order> localOrder;
 
 		if(outgoing.empty())
 		{
@@ -79,11 +64,11 @@ void NetEngine::clearTopOrders()
 {
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
-		boost::shared_ptr<Order> o = orders[p].front();
+		std::shared_ptr<Order> o = orders[p].front();
 		///Handle latency adjustment order
 		if(o->getOrderType() == ORDER_ADJUST_LATENCY)
 		{
-			boost::shared_ptr<AdjustLatency> al = boost::static_pointer_cast<AdjustLatency>(o);
+			std::shared_ptr<AdjustLatency> al = std::static_pointer_cast<AdjustLatency>(o);
 			int diff = (al->latencyAdjustment) - currentLatency;
 			if(diff>0)
 			{
@@ -91,7 +76,7 @@ void NetEngine::clearTopOrders()
 				{
 					for(unsigned int p=0; p<orders.size(); ++p)
 					{
-						boost::shared_ptr<Order> order = boost::shared_ptr<Order>(new NullOrder);
+						std::shared_ptr<Order> order = std::shared_ptr<Order>(new NullOrder);
 						order->sender=p;
 						orders[p].insert(orders[p].begin(), order);
 					}
@@ -105,7 +90,7 @@ void NetEngine::clearTopOrders()
 
 
 
-void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool isAI)
+void NetEngine::pushOrder(std::shared_ptr<Order> order, int playerNumber, bool isAI)
 {
 	assert(playerNumber>=0);
 	order->sender=playerNumber;
@@ -125,14 +110,14 @@ void NetEngine::pushOrder(boost::shared_ptr<Order> order, int playerNumber, bool
 
 
 
-boost::shared_ptr<Order> NetEngine::retrieveOrder(int playerNumber)
+std::shared_ptr<Order> NetEngine::retrieveOrder(int playerNumber)
 {
   return *orders[playerNumber].begin();
 }
 
 
 
-void NetEngine::addLocalOrder(boost::shared_ptr<Order> order)
+void NetEngine::addLocalOrder(std::shared_ptr<Order> order)
 {
 	if(order->getOrderType() != ORDER_NULL)
 	{
@@ -167,7 +152,7 @@ void NetEngine::flushAllOrders()
 {
 	while(!outgoing.empty())
 	{
-		boost::shared_ptr<Order> localOrder;
+		std::shared_ptr<Order> localOrder;
 		localOrder = outgoing.front();
 		outgoing.pop();
 		localOrder->gameCheckSum = static_cast<unsigned int>(-1);
@@ -191,7 +176,7 @@ void NetEngine::prepareForLatency(int playerNumber, int latency)
 	currentLatency = latency;
 	for(int s=0; s<latency; ++s)
 	{
-		pushOrder(boost::shared_ptr<Order>(new NullOrder), playerNumber, true);
+		pushOrder(std::shared_ptr<Order>(new NullOrder), playerNumber, true);
 	}
 }
 
@@ -247,7 +232,7 @@ bool NetEngine::matchCheckSums()
 
 void NetEngine::increaseLatencyAdjustment()
 {
-	boost::shared_ptr<AdjustLatency> latency(new AdjustLatency(currentLatency+1));
+	std::shared_ptr<AdjustLatency> latency(new AdjustLatency(currentLatency+1));
 	addLocalOrder(latency);
 }
 

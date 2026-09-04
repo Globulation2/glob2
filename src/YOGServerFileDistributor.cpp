@@ -1,20 +1,5 @@
-/*
-  Copyright 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include "BinaryStream.h"
 #include "FileManager.h"
@@ -26,7 +11,7 @@
 #include "YOGServerPlayer.h"
 
 using namespace GAGCore;
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 YOGServerFileDistributor::YOGServerFileDistributor(Uint16 fileID)
 	: fileID(fileID), startedLoading(false), downloadFromPlayerCanceled(false)
@@ -43,7 +28,7 @@ void YOGServerFileDistributor::loadFromLocally(const std::string& file)
 
 
 
-void YOGServerFileDistributor::loadFromPlayer(boost::shared_ptr<YOGServerPlayer> nplayer)
+void YOGServerFileDistributor::loadFromPlayer(std::shared_ptr<YOGServerPlayer> nplayer)
 {
 	player = nplayer;
 }
@@ -52,7 +37,7 @@ void YOGServerFileDistributor::loadFromPlayer(boost::shared_ptr<YOGServerPlayer>
 
 void YOGServerFileDistributor::saveToFile(const std::string& file)
 {
-	boost::shared_ptr<BinaryOutputStream> stream(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(file+".gz")));
+	std::shared_ptr<BinaryOutputStream> stream(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(file+".gz")));
 	for(unsigned int i=0; i<chunks.size(); ++i)
 	{
 		stream->write(chunks[i]->getBuffer(), chunks[i]->getChunkSize(), "");
@@ -90,28 +75,28 @@ bool YOGServerFileDistributor::wasUploadingCanceled()
 void YOGServerFileDistributor::update()
 {
 	boost::posix_time::ptime localtime = boost::posix_time::second_clock::local_time();
-	for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> >::iterator i = players.begin(); i!=players.end();)
+	for(std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> >::iterator i = players.begin(); i!=players.end();)
 	{
-		if(!i->get<0>()->isConnected())
+		if(!std::get<0>(*i)->isConnected())
 		{
 			i = players.erase(i);
 			continue;
 		}
 
-		if(i->get<2>() == 0 && fileInfo)
+		if(std::get<2>(*i) == 0 && fileInfo)
 		{
-			i->get<0>()->sendMessage(fileInfo);
-			i->get<2>() = 1;
+			std::get<0>(*i)->sendMessage(fileInfo);
+			std::get<2>(*i) = 1;
 		}
-		else if(i->get<2>() == 0) {
+		else if(std::get<2>(*i) == 0) {
 			// WORKAROUND
 			continue;
 		}
-		else if(i->get<2>()-1 < (int)chunks.size() && i->get<1>() < localtime)
+		else if(std::get<2>(*i)-1 < (int)chunks.size() && std::get<1>(*i) < localtime)
 		{
-			i->get<0>()->sendMessage(chunks[i->get<2>()-1]);
-			i->get<2>() += 1;
-			i->get<1>() = localtime + boost::posix_time::microseconds(100);
+			std::get<0>(*i)->sendMessage(chunks[std::get<2>(*i)-1]);
+			std::get<2>(*i) += 1;
+			std::get<1>(*i) = localtime + boost::posix_time::microseconds(100);
 		}
 		++i;
 	}
@@ -119,19 +104,19 @@ void YOGServerFileDistributor::update()
 
 
 
-void YOGServerFileDistributor::addMapRequestee(boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerFileDistributor::addMapRequestee(std::shared_ptr<YOGServerPlayer> player)
 {
 	garunteeDataRequested();
-	players.push_back(boost::make_tuple(player, boost::posix_time::second_clock::local_time(), 0));
+	players.push_back(std::make_tuple(player, boost::posix_time::second_clock::local_time(), 0));
 }
 
 
 
-void YOGServerFileDistributor::removeMapRequestee(boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerFileDistributor::removeMapRequestee(std::shared_ptr<YOGServerPlayer> player)
 {
-	for(std::vector<boost::tuple<boost::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
-		if(i->get<0>() == player)
+		if(std::get<0>(*i) == player)
 		{
 			players.erase(i);
 			return;
@@ -141,7 +126,7 @@ void YOGServerFileDistributor::removeMapRequestee(boost::shared_ptr<YOGServerPla
 
 
 
-void YOGServerFileDistributor::handleMessage(boost::shared_ptr<NetMessage> message, boost::shared_ptr<YOGServerPlayer> nplayer)
+void YOGServerFileDistributor::handleMessage(std::shared_ptr<NetMessage> message, std::shared_ptr<YOGServerPlayer> nplayer)
 {
 	///This ignores certain messages that must come from the person uploading the map
 	Uint8 messageType = message->getMessageType();
@@ -168,16 +153,16 @@ void YOGServerFileDistributor::loadDataFromFile()
 	{
 		startedLoading=true;
 		Toolkit::getFileManager()->gzip(fileName, fileName+".gz");
-		boost::shared_ptr<BinaryInputStream> istream(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName+".gz")));
+		std::shared_ptr<BinaryInputStream> istream(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName+".gz")));
 		istream->seekFromEnd(0);
 		int size=istream->getPosition();
 		istream->seekFromStart(0);
-		fileInfo = boost::shared_ptr<NetSendFileInformation>(new NetSendFileInformation(size, fileID));
+		fileInfo = std::shared_ptr<NetSendFileInformation>(new NetSendFileInformation(size, fileID));
 		
 		int ammount=0;
 		while(ammount < size)
 		{
-			boost::shared_ptr<NetSendFileChunk> message(new NetSendFileChunk(istream, fileID));
+			std::shared_ptr<NetSendFileChunk> message(new NetSendFileChunk(istream, fileID));
 			ammount += message->getChunkSize();
 			chunks.push_back(message);
 		}

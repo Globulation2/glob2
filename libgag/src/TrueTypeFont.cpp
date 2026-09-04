@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "TrueTypeFont.h"
 #include <Toolkit.h>
@@ -125,7 +109,31 @@ namespace GAGCore
 		}
 		return h;
 	}
-	
+
+	bool TrueTypeFont::hasGlyphsFor(const std::string &utf8Text)
+	{
+		const unsigned char *s = reinterpret_cast<const unsigned char *>(utf8Text.c_str());
+		while (*s)
+		{
+			Uint32 codepoint;
+			int len;
+			if ((*s & 0x80) == 0x00) { codepoint = *s; len = 1; }
+			else if ((*s & 0xE0) == 0xC0) { codepoint = *s & 0x1F; len = 2; }
+			else if ((*s & 0xF0) == 0xE0) { codepoint = *s & 0x0F; len = 3; }
+			else if ((*s & 0xF8) == 0xF0) { codepoint = *s & 0x07; len = 4; }
+			else { s++; continue; } // not a valid UTF-8 lead byte, skip it
+
+			for (int i = 1; i < len && s[i]; i++)
+				codepoint = (codepoint << 6) | (s[i] & 0x3F);
+
+			if (!TTF_GlyphIsProvided32(font, codepoint))
+				return false;
+
+			s += len;
+		}
+		return true;
+	}
+
 	void TrueTypeFont::setStyle(Style style)
 	{
 		assert(font);

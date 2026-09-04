@@ -6,7 +6,7 @@ Import('env')
 Import('PackTar')
 
 
-if 'dist' or 'install' in COMMAND_LINE_TARGETS:
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     files = Split("""changelog  glob2.6             glob2.docs         glob2-server.install  README.source
                      compat     glob2-data.dirs     glob2.install      glob2.sgml            rules
                      control    glob2-data.install  glob2.menu                               SConscript
@@ -34,7 +34,7 @@ if 'dist' in COMMAND_LINE_TARGETS and os.path.exists('/etc/debian_version'):
     env.Alias('dist', 'debmove')
 
     if env.GetOption('clean'):
-        env.Execute('dpkg-buildpackage -Tclean', chdir='..')
+        env.Execute('cd .. && dpkg-buildpackage -Tclean')
         env.Execute('rm -f glob2*.deb glob2*.changes')
 
 

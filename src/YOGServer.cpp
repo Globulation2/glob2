@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include <algorithm>
 #include "Version.h"
@@ -128,9 +113,9 @@ void YOGServer::update()
 			boost::posix_time::time_duration organized_game_time = boost::posix_time::second_clock::local_time().time_of_day();
 			organized_game_time = boost::posix_time::seconds(7200 - organized_game_time.total_seconds() % 7200);
 			std::stringstream s;
-			s << "An organized game will occur in "<<boost::lexical_cast<std::string>(organized_game_time.hours())<<" hours and "<<boost::lexical_cast<std::string>(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
-			boost::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
-			boost::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
+			s << "An organized game will occur in "<<std::to_string(organized_game_time.hours())<<" hours and "<<std::to_string(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
+			std::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
+			std::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
 			for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)
 			{
 				i->second->sendMessage(send);
@@ -358,7 +343,7 @@ shared_ptr<YOGServerPlayer> YOGServer::getPlayer(Uint16 playerID)
 
 
 
-boost::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
+std::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
 {
 	for(std::map<Uint16, shared_ptr<YOGServerPlayer> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
@@ -367,7 +352,7 @@ boost::shared_ptr<YOGServerPlayer> YOGServer::getPlayer(const std::string& name)
 			return i->second;
 		}
 	}
-	return boost::shared_ptr<YOGServerPlayer>();
+	return std::shared_ptr<YOGServerPlayer>();
 }
 
 

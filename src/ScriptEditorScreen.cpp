@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "ScriptEditorScreen.h"
 #include "GlobalContainer.h"
@@ -40,7 +24,7 @@ using namespace GAGGUI;
 #include "MapScript.h"
 
 #include <algorithm>
-#include "boost/lexical_cast.hpp"
+#include <string>
 
 
 ScriptEditorScreen::ScriptEditorScreen(Game *game)
@@ -87,13 +71,13 @@ ScriptEditorScreen::ScriptEditorScreen(Game *game)
 		primaryObjectives[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		objectivesWidgets.push_back(primaryObjectives[i]);
 		
-		primaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
+		primaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", std::to_string(i+1));
 		objectivesWidgets.push_back(primaryObjectiveLabels[i]);
 		
 		secondaryObjectives[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		objectivesWidgets.push_back(secondaryObjectives[i]);
 		
-		secondaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+9));
+		secondaryObjectiveLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", std::to_string(i+9));
 		objectivesWidgets.push_back(secondaryObjectiveLabels[i]);
 	}
 	
@@ -107,7 +91,7 @@ ScriptEditorScreen::ScriptEditorScreen(Game *game)
 		hints[i] = new TextInput(30, 68 + 35*i, 560, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 		hintWidgets.push_back(hints[i]);
 		
-		hintLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", boost::lexical_cast<std::string>(i+1));
+		hintLabels[i] = new Text(10, 68 + 35*i, ALIGN_LEFT, ALIGN_TOP, "standard", std::to_string(i+1));
 		hintWidgets.push_back(hintLabels[i]);
 	}	
 	

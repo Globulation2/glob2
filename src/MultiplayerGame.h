@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #ifndef __MultiplayerGame_h
 #define __MultiplayerGame_h
@@ -34,7 +19,7 @@ class MultiplayerGame
 {
 public:
 	///Creates a game instance and links it with the provided YOGClient
-	MultiplayerGame(boost::shared_ptr<YOGClient> client);
+	MultiplayerGame(std::shared_ptr<YOGClient> client);
 	
 	~MultiplayerGame();
 	
@@ -162,7 +147,7 @@ protected:
 	friend class YOGClient;
 
 	///This receives a message that is sent to the game
-	void recieveMessage(boost::shared_ptr<NetMessage> message);
+	void recieveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This will start the game
 	void startEngine();
@@ -171,14 +156,14 @@ protected:
 	void setDefaultGameHeaderValues();
 	
 	///Sends the event to all listeners
-	void sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event);
+	void sendToListeners(std::shared_ptr<MultiplayerGameEvent> event);
 	
 	///Puts together reteaming information from the game header in the file
 	NetReteamingInformation constructReteamingInformation(const std::string& file);
 	
 	int getLocalPlayer();
 private:
-	boost::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClient> client;
 	
 	//These are various states of the system
 	MultiplayerMode mode;

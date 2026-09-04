@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
 
 #include "YOGServerAdministrator.h"
 #include "YOGServerAdministratorCommands.h"
@@ -53,7 +38,7 @@ YOGServerAdministrator::~YOGServerAdministrator()
 
 	
 
-bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message, boost::shared_ptr<YOGServerPlayer> player, bool moderator)
+bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& message, std::shared_ptr<YOGServerPlayer> player, bool moderator)
 {
 	std::vector<std::string> tokens;
 	std::string token;
@@ -132,10 +117,10 @@ bool YOGServerAdministrator::executeAdministrativeCommand(const std::string& mes
 }
 
 
-void YOGServerAdministrator::sendTextMessage(const std::string& message, boost::shared_ptr<YOGServerPlayer> player)
+void YOGServerAdministrator::sendTextMessage(const std::string& message, std::shared_ptr<YOGServerPlayer> player)
 {
-	boost::shared_ptr<YOGMessage> m(new YOGMessage(message, "admin", YOGAdministratorMessage));
-	boost::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
+	std::shared_ptr<YOGMessage> m(new YOGMessage(message, "admin", YOGAdministratorMessage));
+	std::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
 	player->sendMessage(send);
 }
 

@@ -1,27 +1,11 @@
-/*
-  Copyright (C) 2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
 
 #include "YOGClientDownloadableMapList.h"
 #include "YOGClient.h"
 #include "NetMessage.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 YOGClientDownloadableMapList::YOGClientDownloadableMapList(YOGClient* client)
 	: client(client)
@@ -42,19 +26,19 @@ void YOGClientDownloadableMapList::requestMapListUpdate()
 {
 	maps.clear();
 	thumbnails.clear();
-	boost::shared_ptr<NetRequestDownloadableMapList> request(new NetRequestDownloadableMapList);
+	std::shared_ptr<NetRequestDownloadableMapList> request(new NetRequestDownloadableMapList);
 	client->sendNetMessage(request);
 	waitingForList=true;
 }
 
 
 
-void YOGClientDownloadableMapList::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientDownloadableMapList::recieveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	if(type == MNetDownloadableMapInfos)
 	{
-		boost::shared_ptr<NetDownloadableMapInfos> info = static_pointer_cast<NetDownloadableMapInfos>(message);
+		std::shared_ptr<NetDownloadableMapInfos> info = static_pointer_cast<NetDownloadableMapInfos>(message);
 		maps = info->getMaps();
 		thumbnails.resize(maps.size());
 		sendUpdateToListeners();
@@ -62,7 +46,7 @@ void YOGClientDownloadableMapList::recieveMessage(boost::shared_ptr<NetMessage> 
 	}
 	if(type == MNetSendMapThumbnail)
 	{
-		boost::shared_ptr<NetSendMapThumbnail> info = static_pointer_cast<NetSendMapThumbnail>(message);
+		std::shared_ptr<NetSendMapThumbnail> info = static_pointer_cast<NetSendMapThumbnail>(message);
 		for(unsigned int i=0; i<maps.size(); ++i)
 		{
 			if(maps[i].getMapID() == info->getMapID())
@@ -104,7 +88,7 @@ void YOGClientDownloadableMapList::requestThumbnail(const std::string& name)
 	{
 		if(i->getMapHeader().getMapName() == name)
 		{
-			boost::shared_ptr<NetRequestMapThumbnail> request(new NetRequestMapThumbnail(i->getMapID()));
+			std::shared_ptr<NetRequestMapThumbnail> request(new NetRequestMapThumbnail(i->getMapID()));
 			client->sendNetMessage(request);
 		}
 	}
@@ -133,7 +117,7 @@ void YOGClientDownloadableMapList::submitRating(const std::string& name, Uint8 r
 	{
 		if(i->getMapHeader().getMapName() == name)
 		{
-			boost::shared_ptr<NetSubmitRatingOnMap> request(new NetSubmitRatingOnMap(i->getMapID(), rating));
+			std::shared_ptr<NetSubmitRatingOnMap> request(new NetSubmitRatingOnMap(i->getMapID(), rating));
 			client->sendNetMessage(request);
 			i->setNumberOfRatings(i->getNumberOfRatings() + 1);
 			i->setRatingTotal(i->getRatingTotal() + rating);

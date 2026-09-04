@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #ifndef __TEAM_H
 #define __TEAM_H
@@ -30,7 +14,7 @@
 #include "TeamStat.h"
 #include "GameEvent.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "BaseTeam.h"
 #include "WinningConditions.h"
@@ -79,10 +63,10 @@ public:
 	void checkControllingPlayers(void);
 
 	///Push a new game event into the queue
-	void pushGameEvent(boost::shared_ptr<GameEvent> event);
+	void pushGameEvent(std::shared_ptr<GameEvent> event);
 	
 	///Return the top-most event from the queue and remove it
-	boost::shared_ptr<GameEvent> getEvent();
+	std::shared_ptr<GameEvent> getEvent();
 	
 	///This returns whether an event of the given type had occurred on the last tick
 	bool wasRecentEvent(GameEventType type);
@@ -186,7 +170,7 @@ public:
 
 private:
 	///Queue of game events
-	std::queue<boost::shared_ptr<GameEvent> > events;
+	std::queue<std::shared_ptr<GameEvent> > events;
 	///These timers indicate the cooldown for a particular event type,
 	///This keeps too many events from being pumped at once. If the
 	///timer isn't at 0 when a new event is received, the new event

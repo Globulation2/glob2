@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <climits>
 //#include <float.h>
@@ -1124,7 +1108,7 @@ void Team::checkControllingPlayers(void)
 
 
 
-void Team::pushGameEvent(boost::shared_ptr<GameEvent> event)
+void Team::pushGameEvent(std::shared_ptr<GameEvent> event)
 {
 	///Ignore events when the cooldown is above 0
 	if(eventCooldownTimers[event->getEventType()] == 0)
@@ -1136,12 +1120,12 @@ void Team::pushGameEvent(boost::shared_ptr<GameEvent> event)
 	
 
 
-boost::shared_ptr<GameEvent> Team::getEvent()
+std::shared_ptr<GameEvent> Team::getEvent()
 {
 	if(events.empty())
-		return boost::shared_ptr<GameEvent>();
+		return std::shared_ptr<GameEvent>();
 
-	boost::shared_ptr<GameEvent> event = events.front();
+	std::shared_ptr<GameEvent> event = events.front();
 	events.pop();
 	return event;
 }
@@ -1160,7 +1144,7 @@ void Team::updateEvents()
 	bool testAnother=true;
 	while(testAnother && !events.empty())
 	{
-		boost::shared_ptr<GameEvent> event = events.front();
+		std::shared_ptr<GameEvent> event = events.front();
 		if((game->stepCounter - event->getStep()) > 100)
 		{
 			events.pop();
@@ -1332,8 +1316,8 @@ std::string Team::getFirstPlayerName(void) const
 
 void Team::checkWinConditions()
 {
-	std::list<boost::shared_ptr<WinningCondition> >& conditions = game->gameHeader.getWinningConditions();
-	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
+	std::list<std::shared_ptr<WinningCondition> >& conditions = game->gameHeader.getWinningConditions();
+	for(std::list<std::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
 	{
 		if((*i)->hasTeamWon(teamNumber, game))
 		{

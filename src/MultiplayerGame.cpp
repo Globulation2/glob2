@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include "MultiplayerGame.h"
 #include <iostream>
@@ -26,10 +11,10 @@
 #include "NetMessage.h"
 #include "YOGClientGameListManager.h"
 
-using boost::shared_ptr;
-using boost::static_pointer_cast;
+using std::shared_ptr;
+using std::static_pointer_cast;
 
-MultiplayerGame::MultiplayerGame(boost::shared_ptr<YOGClient> client)
+MultiplayerGame::MultiplayerGame(std::shared_ptr<YOGClient> client)
 	: client(client), creationState(YOGCreateRefusalUnknown), joinState(YOGJoinRefusalUnknown), playerManager(gameHeader)
 {
 	netEngine=NULL;
@@ -81,7 +66,7 @@ void MultiplayerGame::update()
 		}
 		if(!client->getGameConnection())
 		{
-			client->setGameConnection(boost::shared_ptr<NetConnection>(new NetConnection(gameRouterIP, YOG_ROUTER_PORT)));
+			client->setGameConnection(std::shared_ptr<NetConnection>(new NetConnection(gameRouterIP, YOG_ROUTER_PORT)));
 		}
 		if(!client->getGameConnection()->isConnected() && !client->getGameConnection()->isConnecting())
 		{
@@ -400,7 +385,7 @@ int MultiplayerGame::getLocalPlayerNumber()
 
 
 
-void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
+void MultiplayerGame::recieveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	//This recieves responces to creating a game
@@ -486,7 +471,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 		{
 			shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 			client->sendNetMessage(message);
-			boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
+			std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 			assembler->startRecievingFile(mapHeader.getFileName());
 			client->setYOGClientFileAssembler(fileID, assembler);
 		}
@@ -532,7 +517,7 @@ void MultiplayerGame::recieveMessage(boost::shared_ptr<NetMessage> message)
 	}
 	if(type==MNetRequestFile)
 	{
-		boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
+		std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 		assembler->startSendingFile(mapHeader.getFileName());
 		client->setYOGClientFileAssembler(fileID,assembler);
 	}
@@ -665,7 +650,7 @@ void MultiplayerGame::setDefaultGameHeaderValues()
 
 
 
-void MultiplayerGame::sendToListeners(boost::shared_ptr<MultiplayerGameEvent> event)
+void MultiplayerGame::sendToListeners(std::shared_ptr<MultiplayerGameEvent> event)
 {
 	for(std::list<MultiplayerGameEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
 	{

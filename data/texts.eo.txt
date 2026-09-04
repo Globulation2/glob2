@@ -203,7 +203,7 @@ Viŝmarkilo
 [closed]
 Fermita
 [combined vision]
-
+Kombinita vido
 [compile]
 Skripton Kompili
 [compose]
@@ -306,6 +306,8 @@ Enigu vian pasvorton:
 enigklavo de numerklavaro
 [equals]
 egalas je
+[ERROR_CANT_LOAD_MAP]
+La mapo ne povis esti ŝargita, ĉar la dosiero estas difektita aŭ havas malkongruan version.
 [escape]
 eskapklavo
 [explorationflag explanation 2]
@@ -359,7 +361,7 @@ Antaŭemetaĵoj pri Markiloj
 [flag settings explanation]
 Antaŭemetita radiuso de Markilo
 [fog of war]
-
+Milita nebulo
 [food]
 Nutraĵo
 [forbidden area]
@@ -368,8 +370,6 @@ Malpermesata areo
 sana
 [free]
 libera
-[free]
-libera(j)
 [from:]
 de:
 [fruit]
@@ -424,8 +424,6 @@ Malsanejo
 Gastigi Ludon
 [hp]
 VPo
-[hp]
-Vivpunkto
 [Human]
 Homo
 [human]
@@ -497,7 +495,7 @@ Niveloj
 [load map]
 Ŝargi Karton
 [load replay]
-
+Ŝargi Replay-on
 [load script]
 Ŝargi Skripton
 [load]
@@ -509,7 +507,7 @@ Atendejo
 [login]
 Eniri
 [look around]
-
+Ĉirkaŭrigardi
 [Lost : %0 has more prestige than you]
 Vi malgajnis: %0a prestiĝo estas pli ol via!
 [Lost : your colony is dead]
@@ -661,7 +659,7 @@ Ludantnomo
 [player rating %0]
 Taksigo de Ludanto: %0
 [players]
-
+Ludantoj
 [please wait]
 Bv. atendi...
 [power]
@@ -687,7 +685,7 @@ Eliri la Redaktilon
 [quit the game]
 Eliri la Ludon
 [quit the replay]
-
+Forlasi la replay-on
 [quit]
 Eliri
 [racetrack explanation 2]
@@ -727,7 +725,7 @@ Rebonigi
 [Repeat your password :]
 Reenigu vian pasvorton:
 [replay ended]
-
+Replay Finiĝis
 [restore default shortcuts]
 Remeti antaŭemetitajn Taskklavojn
 [return to editor]
@@ -735,7 +733,7 @@ Reveni al Redaktilon
 [return to game]
 Reveni Luden
 [return to replay]
-
+Reveni al la replay
 [return]
 enigklavo
 [right meta]
@@ -757,7 +755,7 @@ Konservi ludon
 [save map]
 Konservi Karton
 [save replay]
-
+Konservi Replay-on
 [save script]
 Konservi Skripton
 [Save]
@@ -849,9 +847,9 @@ Uzu enigklavon por babili.
 [shortcut explanation v]
 Tenu na V suben por paroli.
 [show areas]
-
+Montri areojn
 [show flags]
-
+Montri flagojn
 [show main menu]
 Montri ĉefmenuon
 [skin]
@@ -1005,7 +1003,7 @@ La kuregejo ĵus finiĝis.
 [the racetrack is under attack]
 La kuregejo estas atakata!
 [the replays]
-
+Replay-oj
 [the school is finished]
 La lernejo ĵus finiĝis.
 [the school is under attack]
@@ -1040,8 +1038,6 @@ Montri/kaŝi irvojojn de globuloj
 Montri/kaŝi ĉefmenuon
 [toggle recording voice]
 Ŝalti mikrofonon
-[toggle recording voice]
-Ŝalti/malŝalti mikrofonon
 [Total Attack Power]
 Tuta Atakpovo
 [Total Defence Power]
@@ -1125,9 +1121,9 @@ Militisto
 [warriors]
 militistoj
 [watch again]
-
+Rigardi denove
 [watching:]
-
+Rigardante:
 [water]
 Akvo
 [Wheat]
@@ -1148,8 +1144,6 @@ Laboristprocento
 Laboristo
 [workers]
 Laboristoj
-[workers]
-laboristoj
 [working]
 Laboranta(j)
 [wounded]

@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2010 Michiel De Muynck
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2010 Michiel De Muynck
 
 #include "ReplayWriter.h"
 
@@ -30,7 +15,7 @@
 #include <stdio.h>
 
 // Write an Order to the stream, with the given checksum
-inline void writeOrder(GAGCore::OutputStream *stream, boost::shared_ptr<Order> order, Uint32 checksum = 0)
+inline void writeOrder(GAGCore::OutputStream *stream, std::shared_ptr<Order> order, Uint32 checksum = 0)
 {
 	// Write the checksum
 	order->gameCheckSum = checksum;
@@ -101,7 +86,7 @@ void ReplayWriter::setCheckSum(Uint32 checksum)
 	this->checksum = checksum;
 }
 
-void ReplayWriter::pushOrder(boost::shared_ptr<Order> order)
+void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 {
 	if (!isValid()) return;
 	if (order->getOrderType() == ORDER_VOICE_DATA || order->getOrderType() == ORDER_NULL) return;
@@ -125,7 +110,7 @@ void ReplayWriter::finish()
 	buffer->writeUint16(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
 	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
-	writeOrder(buffer, boost::shared_ptr<Order>(new NullOrder()), 0);
+	writeOrder(buffer, std::shared_ptr<Order>(new NullOrder()), 0);
 
 	// Flush the buffer now
 	buffer->flush();
@@ -166,7 +151,7 @@ bool ReplayWriter::write(const std::string &filename) const
 	file->writeUint16(0, "replayStepsSinceLastOrder");
 
 	// Write a NullOrder to the file to make sure it's a NullOrder-terminated replay
-	writeOrder(file, boost::shared_ptr<Order>(new NullOrder()), 0);
+	writeOrder(file, std::shared_ptr<Order>(new NullOrder()), 0);
 
 	// Flush the file
 	file->flush();

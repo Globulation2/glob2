@@ -1,26 +1,11 @@
-/*
-  Copyright 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #ifndef __YOGClientFileAssembler_h
 #define __YOGClientFileAssembler_h
 
 #include "boost/date_time/posix_time/posix_time.hpp"
-#include "boost/weak_ptr.hpp"
+#include <memory>
 #include "SDL_net.h"
 #include <string>
 
@@ -39,7 +24,7 @@ class YOGClientFileAssembler
 {
 public:
 	///Contructs a YOGClientFileAssembler connected to the given client, and the given fileID
-	YOGClientFileAssembler(boost::weak_ptr<YOGClient> client, Uint16 fileID);
+	YOGClientFileAssembler(std::weak_ptr<YOGClient> client, Uint16 fileID);
 	
 	///Updates the map assembler
 	void update();
@@ -51,7 +36,7 @@ public:
 	void startRecievingFile(std::string mapname);
 	
 	///This recieves a message from YOG
-	void handleMessage(boost::shared_ptr<NetMessage> message);
+	void handleMessage(std::shared_ptr<NetMessage> message);
 
 	///This cancels the sending of a file
 	void cancelSendingFile();
@@ -77,10 +62,10 @@ private:
 	TransferMode mode;
 	Uint32 size;
 	Uint32 finished;
-	boost::weak_ptr<YOGClient> client;
+	std::weak_ptr<YOGClient> client;
 	GAGCore::MemoryStreamBackend* obackend;
-	boost::shared_ptr<GAGCore::BinaryOutputStream> ostream;
-	boost::shared_ptr<GAGCore::BinaryInputStream> istream;
+	std::shared_ptr<GAGCore::BinaryOutputStream> ostream;
+	std::shared_ptr<GAGCore::BinaryInputStream> istream;
 	std::string filename;
 	Uint16 fileID;
 	boost::posix_time::ptime sendTime;

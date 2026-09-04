@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
 
 #include "Engine.h"
 #include "NetMessage.h"
@@ -28,9 +13,9 @@
 #include "Stream.h"
 #include "BinaryStream.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-YOGClientMapUploader::YOGClientMapUploader(boost::shared_ptr<YOGClient> client)
+YOGClientMapUploader::YOGClientMapUploader(std::shared_ptr<YOGClient> client)
 	: state(Nothing), client(client)
 {
 	client->setMapUploader(this);
@@ -58,7 +43,7 @@ void YOGClientMapUploader::startUploading(const std::string& nmapFile, const std
 	info.setAuthorName(authorName);
 	info.setDimensions(w, h);
 	info.setSize(getCompressedSize(nmapFile));
-	boost::shared_ptr<NetRequestMapUpload> message(new NetRequestMapUpload(info));
+	std::shared_ptr<NetRequestMapUpload> message(new NetRequestMapUpload(info));
 	client->sendNetMessage(message);
 	state = WaitingForUploadReply;
 }
@@ -76,7 +61,7 @@ void YOGClientMapUploader::cancelUpload()
 
 
 
-void YOGClientMapUploader::recieveMessage(boost::shared_ptr<NetMessage> message)
+void YOGClientMapUploader::recieveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	//This recieves the server information
@@ -86,7 +71,7 @@ void YOGClientMapUploader::recieveMessage(boost::shared_ptr<NetMessage> message)
 		fileID = info->getFileID();
 		state = UploadingMap;
 		
-		boost::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
+		std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
 		assembler->startSendingFile(mapFile);
 		client->setYOGClientFileAssembler(fileID, assembler);
 	}

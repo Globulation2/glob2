@@ -1,25 +1,10 @@
-/*
-  Copyright (C) 2010 Michiel De Muynck
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2010 Michiel De Muynck
 
 #ifndef __ReplayReader_h
 #define __ReplayReader_h
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <assert.h>
 #include <string>
 #include "Types.h"
@@ -77,7 +62,7 @@ public:
 	void setCheckSum(Uint32 checksum = 0);
 
 	/// Get the next order on the current step
-	boost::shared_ptr<Order> retrieveOrder();
+	std::shared_ptr<Order> retrieveOrder();
 
 	/// Get the stream that this reader uses, or NULL if there is none
 	GAGCore::InputStream *getStream() const;

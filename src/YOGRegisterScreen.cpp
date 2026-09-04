@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
 
 #include "YOGRegisterScreen.h"
 
@@ -32,9 +17,9 @@
 #include "GlobalContainer.h"
 
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-YOGRegisterScreen::YOGRegisterScreen(boost::shared_ptr<YOGClient> client)
+YOGRegisterScreen::YOGRegisterScreen(std::shared_ptr<YOGClient> client)
 	: client(client)
 {
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]")));
@@ -163,7 +148,7 @@ void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int pa
 
 
 
-void YOGRegisterScreen::handleYOGClientEvent(boost::shared_ptr<YOGClientEvent> event)
+void YOGRegisterScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
 	//std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();

@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <FileManager.h>
 #include <assert.h>
@@ -428,13 +412,25 @@ namespace GAGCore
 		// Compress
 		srcStream->read(&buffer[0], fileLength);
 		gzFile gzStream = gzdopen(fileno(destStream), "wb");
-		gzwrite(gzStream, &buffer[0], fileLength);
-		
-		// Close
-		gzclose(gzStream);
+		if (gzStream == NULL)
+		{
+			std::cerr << "FileManager::gzip: gzdopen failed for " << dest << std::endl;
+			fclose(destStream);
+			delete srcStream;
+			return false;
+		}
+		int written = gzwrite(gzStream, &buffer[0], fileLength);
+		bool complete = (written == static_cast<int>(fileLength));
+		if (!complete)
+			std::cerr << "FileManager::gzip: gzwrite failed for " << dest << std::endl;
+
+		// Close, which flushes the deflate stream: a failure here means truncated output
+		bool closed = (gzclose(gzStream) == Z_OK);
+		if (!closed)
+			std::cerr << "FileManager::gzip: gzclose failed for " << dest << std::endl;
 		delete srcStream;
-		
-		return true;
+
+		return complete && closed;
 	}
 	
 	bool FileManager::gunzip(const std::string &source, const std::string &dest)
@@ -450,29 +446,42 @@ namespace GAGCore
 			return false;
 		}
 		
-		// Preapare source
+		// Prepare source
 		gzFile gzStream = gzdopen(fileno(srcStream), "rb");
-		#define BLOCK_SIZE 1024*1024
+		if (gzStream == NULL)
+		{
+			std::cerr << "FileManager::gunzip: gzdopen failed for " << source << std::endl;
+			fclose(srcStream);
+			delete destStream;
+			return false;
+		}
+		#define BLOCK_SIZE (1024*1024)
 		std::string buffer;
 		size_t len = 0;
-		size_t bufferLength = 0;
-		
+
 		// Uncompress
-		while (gzeof(gzStream) == 0)
+		int bytesRead;
+		do
 		{
-			buffer.resize(bufferLength + BLOCK_SIZE);
-			len += gzread(gzStream, const_cast<void *>(static_cast<const void *>(buffer.data() + bufferLength)), BLOCK_SIZE);
-			bufferLength += BLOCK_SIZE;
-		}
-		
+			buffer.resize(len + BLOCK_SIZE);
+			bytesRead = gzread(gzStream, &buffer[len], BLOCK_SIZE);
+			if (bytesRead > 0)
+				len += bytesRead;
+		} while (bytesRead > 0);
+
+		if (bytesRead < 0)
+			std::cerr << "FileManager::gunzip: gzread error for " << source << std::endl;
+
 		// Write
 		destStream->write(buffer.c_str(), len);
-		
+
 		// Close
-		gzclose(gzStream);
+		bool closed = (gzclose(gzStream) == Z_OK);
+		if (!closed)
+			std::cerr << "FileManager::gunzip: gzclose error for " << source << std::endl;
 		delete destStream;
-		
-		return true;
+
+		return (bytesRead >= 0) && closed;
 	}
 
 	bool FileManager::addListingForDir(const std::string realDir, const std::string extension, const bool dirs)

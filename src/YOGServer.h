@@ -1,25 +1,10 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #ifndef __YOGServer_h
 #define __YOGServer_h
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "NetListener.h"
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
@@ -115,13 +100,13 @@ public:
 	YOGServerGameJoinRefusalReason canJoinGame(Uint16 gameID);
 	
 	///Returns the game assocciatted with the given ID
-	boost::shared_ptr<YOGServerGame> getGame(Uint16 gameID);
+	std::shared_ptr<YOGServerGame> getGame(Uint16 gameID);
 
 	///Returns the player assocciatted with the given ID
-	boost::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
+	std::shared_ptr<YOGServerPlayer> getPlayer(Uint16 playerID);
 
 	///Returns the player assocciatted with the given name
-	boost::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
+	std::shared_ptr<YOGServerPlayer> getPlayer(const std::string& name);
 	
 	///This starts LAN broadcasting of the first game, if it exists
 	void enableLANBroadcasting();
@@ -173,11 +158,11 @@ private:
 	static const bool organizedGameTimeEnabled = false;
 
 	NetListener nl;
-	boost::shared_ptr<NetBroadcaster> broadcaster;
-	boost::shared_ptr<NetConnection> new_connection;
+	std::shared_ptr<NetBroadcaster> broadcaster;
+	std::shared_ptr<NetConnection> new_connection;
 	
-	std::map<Uint16, boost::shared_ptr<YOGServerPlayer> > players;
-	std::map<Uint16, boost::shared_ptr<YOGServerGame> > games;
+	std::map<Uint16, std::shared_ptr<YOGServerPlayer> > players;
+	std::map<Uint16, std::shared_ptr<YOGServerGame> > games;
 	std::list<YOGGameInfo> gameList;
 	std::list<YOGPlayerSessionInfo> playerList;
 	

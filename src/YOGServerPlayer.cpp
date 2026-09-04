@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include "NetMessage.h"
 #include "YOGServerChatChannel.h"
@@ -24,7 +9,7 @@
 #include "YOGServerPlayer.h"
 #include "SDLCompat.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
 YOGServerPlayer::YOGServerPlayer(shared_ptr<NetConnection> connection, Uint16 id, YOGServer& server)
  : connection(connection), server(server), playerID(id)
@@ -56,10 +41,10 @@ void YOGServerPlayer::update()
 		pingCountdown = 0;
 	}
 
-	boost::shared_ptr<YOGServerGame> ngame;
+	std::shared_ptr<YOGServerGame> ngame;
 	if(!game.expired())
 	{
-		ngame = boost::shared_ptr<YOGServerGame>(game);
+		ngame = std::shared_ptr<YOGServerGame>(game);
 	}
 
 	//Parse incoming messages.
@@ -283,12 +268,12 @@ void YOGServerPlayer::update()
 		if(reason == YOGMapUploadReasonUnknown)
 		{
 			Uint16 fileID =  server.getMapDatabank().recieveMapFromPlayer(info->getMapInfo(), server.getPlayer(playerID));
-			boost::shared_ptr<NetAcceptMapUpload> info = boost::shared_ptr<NetAcceptMapUpload>(new NetAcceptMapUpload(fileID));
+			std::shared_ptr<NetAcceptMapUpload> info = std::shared_ptr<NetAcceptMapUpload>(new NetAcceptMapUpload(fileID));
 			sendMessage(info);
 		}
 		else
 		{
-			boost::shared_ptr<NetRefuseMapUpload> info = boost::shared_ptr<NetRefuseMapUpload>(new NetRefuseMapUpload(reason));
+			std::shared_ptr<NetRefuseMapUpload> info = std::shared_ptr<NetRefuseMapUpload>(new NetRefuseMapUpload(reason));
 			sendMessage(info);
 		}
 	}
@@ -375,9 +360,9 @@ std::string YOGServerPlayer::getPlayerIP()
 
 
 
-boost::shared_ptr<YOGServerGame> YOGServerPlayer::getGame()
+std::shared_ptr<YOGServerGame> YOGServerPlayer::getGame()
 {
-	return boost::shared_ptr<YOGServerGame>(game);
+	return std::shared_ptr<YOGServerGame>(game);
 }
 
 
@@ -515,9 +500,9 @@ void YOGServerPlayer::handleCreateGame(const std::string& gameName)
 	{
 		gameID = server.createNewGame(gameName);
 		game = server.getGame(gameID);
-		boost::shared_ptr<YOGServerGame> ngame(game);
+		std::shared_ptr<YOGServerGame> ngame(game);
 		updateGamePlayerLists();
-		std::string ip = boost::shared_ptr<YOGServerGame>(game)->getRouterIP();
+		std::string ip = std::shared_ptr<YOGServerGame>(game)->getRouterIP();
 		shared_ptr<NetCreateGameAccepted> message(new NetCreateGameAccepted(ngame->getChatChannel(), gameID, ip, ngame->getFileID()));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));
@@ -538,7 +523,7 @@ void YOGServerPlayer::handleJoinGame(Uint16 ngameID)
 	{	
 		gameID = ngameID;
 		game = server.getGame(gameID);
-		boost::shared_ptr<YOGServerGame> ngame(game);
+		std::shared_ptr<YOGServerGame> ngame(game);
 		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted(ngame->getChatChannel()));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));

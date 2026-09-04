@@ -1,25 +1,10 @@
-/*
-  Copyright (C) 2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
 
 #ifndef YOGServerMapDatabank_h
 #define YOGServerMapDatabank_h
 
-#include "boost/tuple/tuple.hpp"
+#include <tuple>
 #include "MapThumbnail.h"
 #include <vector>
 #include "YOGDownloadableMapInfo.h"
@@ -48,13 +33,13 @@ public:
 	YOGMapUploadRefusalReason canRecieveFromPlayer(const YOGDownloadableMapInfo& map);
 
 	///Starts recieving a map from the given player, and returns the file ID for the transfer
-	Uint16 recieveMapFromPlayer(const YOGDownloadableMapInfo& map, boost::shared_ptr<YOGServerPlayer> player);
+	Uint16 recieveMapFromPlayer(const YOGDownloadableMapInfo& map, std::shared_ptr<YOGServerPlayer> player);
 	
 	///Sends the list of maps to the given player
-	void sendMapListToPlayer(boost::shared_ptr<YOGServerPlayer> player);
+	void sendMapListToPlayer(std::shared_ptr<YOGServerPlayer> player);
 	
 	///Sends a map thumbnail to the given player
-	void sendMapThumbnailToPlayer(Uint16 mapID, boost::shared_ptr<YOGServerPlayer> player);
+	void sendMapThumbnailToPlayer(Uint16 mapID, std::shared_ptr<YOGServerPlayer> player);
 	
 	///Submits a rating for a given player.
 	void submitRating(Uint16 mapID, Uint8 rating);
@@ -79,7 +64,7 @@ private:
 	
 	std::vector<YOGDownloadableMapInfo> maps;
 	///List of maps currently being uploaded
-	std::vector<boost::tuple<YOGDownloadableMapInfo, int> > uploadingMaps;
+	std::vector<std::tuple<YOGDownloadableMapInfo, int> > uploadingMaps;
 };
 
 #endif

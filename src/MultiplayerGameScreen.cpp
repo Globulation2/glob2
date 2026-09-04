@@ -1,23 +1,6 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "MultiplayerGameScreen.h"
 #include "AINames.h"
@@ -40,9 +23,9 @@
 #include "YOGMessage.h"
 #include "CustomGameOtherOptions.h"
 
-using boost::static_pointer_cast;
+using std::static_pointer_cast;
 
-MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, boost::shared_ptr<MultiplayerGame> game, boost::shared_ptr<YOGClient> client, boost::shared_ptr<IRCTextMessageHandler> ircChat)
+MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat)
 	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
@@ -199,7 +182,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	{
 		if(textInput->getText() != "")
 		{
-			boost::shared_ptr<YOGMessage> message(new YOGMessage(textInput->getText(), game->getUsername(), YOGNormalMessage));
+			std::shared_ptr<YOGMessage> message(new YOGMessage(textInput->getText(), game->getUsername(), YOGNormalMessage));
 			gameChat->sendMessage(message);
 			textInput->setText("");
 		}
@@ -208,7 +191,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 
 
 
-void MultiplayerGameScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> message)
+void MultiplayerGameScreen::recieveTextMessage(std::shared_ptr<YOGMessage> message)
 {
 	chatWindow->addText(message->formatForReading());
 	chatWindow->addText("\n");
@@ -217,7 +200,7 @@ void MultiplayerGameScreen::recieveTextMessage(boost::shared_ptr<YOGMessage> mes
 
 
 
-void MultiplayerGameScreen::handleMultiplayerGameEvent(boost::shared_ptr<MultiplayerGameEvent> event)
+void MultiplayerGameScreen::handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event)
 {
 	Uint8 type = event->getEventType();
 	if(type == MGEPlayerListChanged)

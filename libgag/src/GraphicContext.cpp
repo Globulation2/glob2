@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <GraphicContext.h>
 #include <Toolkit.h>
@@ -29,14 +13,16 @@
 #if defined(__APPLE__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#define GL_TEXTURE_RECTANGLE_NV GL_TEXTURE_RECTANGLE_EXT
 #else
 #include <epoxy/gl.h>
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include <epoxy/wgl.h>
 #else
 #include <epoxy/glx.h>
-#endif // _MSC_VER
-#endif // __APPLE__
+#endif
+#endif // defined(__APPLE__)
 #endif // HAVE_OPENGL
 #ifdef HAVE_OPENGL
 #include <AlphaMapRender.h>
@@ -1321,7 +1307,7 @@ namespace GAGCore
 					int width=font->getStringWidth(i->first.c_str());
 					int height=font->getStringHeight(i->first.c_str());
 					int startx=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
-					drawSquares.push_back(boost::make_tuple(SRectangle(x+startx, y, width, height), i->second, this));
+					drawSquares.push_back(std::make_tuple(SRectangle(x+startx, y, width, height), i->second, this));
 					wroteTexts.insert(i->second);
 					texts.erase(i);
 					break;
@@ -1351,7 +1337,7 @@ namespace GAGCore
 					int width=font->getStringWidth(i->first.c_str());
 					int height=font->getStringHeight(i->first.c_str());
 					int startx=font->getStringWidth(output.substr(0, output.find(i->first)).c_str());
-					drawSquares.push_back(boost::make_tuple(SRectangle(int(x+startx), int(y), width, height), i->second, this));
+					drawSquares.push_back(std::make_tuple(SRectangle(int(x+startx), int(y), width, height), i->second, this));
 					wroteTexts.insert(i->second);
 					texts.erase(i);
 					break;
@@ -1391,20 +1377,20 @@ namespace GAGCore
 	//This code is for the textshot code
 	std::map<std::string, std::string> DrawableSurface::texts;
 	std::set<std::string> DrawableSurface::wroteTexts;
-	std::vector<boost::tuple<DrawableSurface::SRectangle, std::string, GAGCore::DrawableSurface*> > DrawableSurface::drawSquares;
+	std::vector<std::tuple<DrawableSurface::SRectangle, std::string, GAGCore::DrawableSurface*> > DrawableSurface::drawSquares;
 	std::string DrawableSurface::translationPicturesDirectory;
 
 	void DrawableSurface::flushTextPictures()
 	{
 		using namespace GAGCore;
-		for(std::vector<boost::tuple<SRectangle, std::string, DrawableSurface*> >::iterator i=drawSquares.begin(); i!=drawSquares.end();)
+		for(std::vector<std::tuple<SRectangle, std::string, DrawableSurface*> >::iterator i=drawSquares.begin(); i!=drawSquares.end();)
 		{
-			DrawableSurface toPrint(i->get<2>()->getW(), i->get<2>()->getH());
-			toPrint.drawSurface(0, 0, i->get<2>());
-			int x=i->get<0>().x;
-			int y=i->get<0>().y;
-			int width=i->get<0>().w;
-			int height=i->get<0>().h;
+			DrawableSurface toPrint(std::get<2>(*i)->getW(), std::get<2>(*i)->getH());
+			toPrint.drawSurface(0, 0, std::get<2>(*i));
+			int x=std::get<0>(*i).x;
+			int y=std::get<0>(*i).y;
+			int width=std::get<0>(*i).w;
+			int height=std::get<0>(*i).h;
 
 			toPrint.drawRect(x-2, y-2, width+4, height+4, Color(255, 126, 21));
 			toPrint.drawRect(x-3, y-3, width+6, height+6, Color(255, 126, 21));
@@ -1415,7 +1401,7 @@ namespace GAGCore
 			// Print it using virtual filesystem
 			for (size_t i2 = 0; i2 < Toolkit::getFileManager()->getDirCount(); i2++)
 			{
-				std::string fullFileName = translationPicturesDirectory + DIR_SEPARATOR_S + "text-" + i->get<1>();
+				std::string fullFileName = translationPicturesDirectory + DIR_SEPARATOR_S + "text-" + std::get<1>(*i);
 				if (SDL_SaveBMP(toPrint.sdlsurface, (fullFileName+".bmp").c_str()) == 0)
 				{
 					break;
@@ -1911,7 +1897,7 @@ namespace GAGCore
 			} else {
 				glState.doBlend(true);
 				glState.doTexture(false);
-                drawAlphaMapBatched(map,mapW,mapH,x,y,cellW,cellH,color.r,color.g,color.b);
+				drawAlphaMapBatched(map, mapW, mapH, x, y, cellW, cellH, color.r, color.g, color.b);
 			}
 		}
 		else
@@ -2053,7 +2039,7 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
 		}
 
-        TTF_Init();
+		TTF_Init();
 
 		///If setting the given resolution fails, default to 800x600
 		if(!setRes(w, h, flags))
@@ -2068,12 +2054,20 @@ namespace GAGCore
 
 	GraphicContext::~GraphicContext(void)
 	{
+		freeDummySurface();
 		TTF_Quit();
 		SDL_Quit();
-		sdlsurface = NULL;
 
 		if (verbose)
 			fprintf(stderr, "Toolkit : Graphic Context destroyed\n");
+	}
+
+	void GraphicContext::freeDummySurface(void)
+	{
+		// SDL owns the window surface used outside GPU mode; the GPU-mode dummy is ours
+		if (sdlsurface && (optionFlags & USEGPU))
+			SDL_FreeSurface(sdlsurface);
+		sdlsurface = NULL;
 	}
 
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
@@ -2092,6 +2086,10 @@ namespace GAGCore
 			h = minH;
 		}
 
+		// releases the previous mode's surface, so it has to run while optionFlags
+		// still describes that mode
+		freeDummySurface();
+
 		// set flags
 		optionFlags = flags;
 		Uint32 sdlFlags = 0;
@@ -2104,7 +2102,7 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
@@ -2119,28 +2117,39 @@ namespace GAGCore
 		}
 		// create the new window and the surface
 		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, sdlFlags);
-		// SDL_GetWindowSurface may create a Metal renderer and invalidate an
-        // OpenGL window on macOS. GPU mode only needs a CPU format/size holder.
-        sdlsurface = !window ? nullptr : ((flags & USEGPU)
-            ? SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_ARGB8888)
-            : SDL_GetWindowSurface(window));
-
-		// check surface
-		if (!sdlsurface)
+		if (!window)
 		{
-			fprintf(stderr, "Toolkit : can't set screen to %dx%d at 32 bpp\n", w, h);
+			fprintf(stderr, "Toolkit : can't create window %dx%d\n", w, h);
 			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
 			return false;
 		}
+		// SDL_GetWindowSurface is incompatible with SDL_WINDOW_OPENGL;
+		// in GPU mode, create a small dummy surface so format-dependent code works.
+		if (optionFlags & USEGPU)
+		{
+			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		}
 		else
+		{
+			sdlsurface = SDL_GetWindowSurface(window);
+		}
+		if (!sdlsurface)
+		{
+			fprintf(stderr, "Toolkit : can't get surface for %dx%d at 32 bpp\n", w, h);
+			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
+			return false;
+		}
 		{
 			_gc = this;
 			// enable GL context
 			if (flags & USEGPU)
 			{
 				SDL_GLContext context = SDL_GL_CreateContext(window);
-				if (!context || SDL_GL_MakeCurrent(window, context) != 0) {
+				if (!context || SDL_GL_MakeCurrent(window, context) != 0)
+                {
                     fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
+                    if (context) SDL_GL_DeleteContext(context);
                     return false;
                 }
 			}

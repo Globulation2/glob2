@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2010 Michiel De Muynck
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2010 Michiel De Muynck
 
 #include "ReplayReader.h"
 
@@ -113,7 +98,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 	size_t pos = stream->getPosition();
 
 	// Calculate the length of this replay
-	boost::shared_ptr<Order> order;
+	std::shared_ptr<Order> order;
 	numSteps = 0;
 	numOrders = 0;
 	stepsUntilNextOrder = stream->readUint16("replayStepCounter");
@@ -146,7 +131,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 			else
 			{
 				// Overwrite the order as if it were a NullOrder
-				order = boost::shared_ptr<Order>(new NullOrder());
+				order = std::shared_ptr<Order>(new NullOrder());
 			}
 		}
 
@@ -213,12 +198,12 @@ void ReplayReader::setCheckSum(Uint32 checksum)
 	this->checksum = checksum;
 }
 
-boost::shared_ptr<Order> ReplayReader::retrieveOrder()
+std::shared_ptr<Order> ReplayReader::retrieveOrder()
 {
-	if (!hasMoreOrdersThisStep()) return boost::shared_ptr<Order>(new NullOrder());
+	if (!hasMoreOrdersThisStep()) return std::shared_ptr<Order>(new NullOrder());
 	assert(isValid());
 
-	boost::shared_ptr<Order> order;
+	std::shared_ptr<Order> order;
 
 	try
 	{
@@ -239,7 +224,7 @@ boost::shared_ptr<Order> ReplayReader::retrieveOrder()
 
 			delete stream;
 			stream = NULL;
-			return boost::shared_ptr<Order>(new NullOrder());
+			return std::shared_ptr<Order>(new NullOrder());
 		}
 	}
 	catch (const std::ios_base::failure &e)

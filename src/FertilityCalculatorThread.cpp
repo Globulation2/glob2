@@ -1,27 +1,12 @@
-/*
-  Copyright (C) 2007-2008 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007-2008 Bradley Arsenault
 
 #include "FertilityCalculatorThread.h"
 #include "Map.h"
 
 #include "FertilityCalculatorThreadMessage.h"
 
-FertilityCalculatorThread::FertilityCalculatorThread(Map& map, std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, boost::recursive_mutex& outgoingMutex)
+FertilityCalculatorThread::FertilityCalculatorThread(Map& map, std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
 	: outgoing(outgoing), outgoingMutex(outgoingMutex), map(map)
 {
 }
@@ -74,15 +59,15 @@ void FertilityCalculatorThread::operator()()
 	}
 	
 	
-	boost::shared_ptr<FCTFertilityCompleted> message(new FCTFertilityCompleted);
+	std::shared_ptr<FCTFertilityCompleted> message(new FCTFertilityCompleted);
 	sendToMainThread(message);
 }
 
 
 
-void FertilityCalculatorThread::sendMessage(boost::shared_ptr<FertilityCalculatorThreadMessage> message)
+void FertilityCalculatorThread::sendMessage(std::shared_ptr<FertilityCalculatorThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(incomingMutex);
+	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
 	incoming.push(message);
 }
 
@@ -95,9 +80,9 @@ bool FertilityCalculatorThread::hasThreadExited()
 
 
 
-void FertilityCalculatorThread::sendToMainThread(boost::shared_ptr<FertilityCalculatorThreadMessage> message)
+void FertilityCalculatorThread::sendToMainThread(std::shared_ptr<FertilityCalculatorThreadMessage> message)
 {
-	boost::recursive_mutex::scoped_lock lock(outgoingMutex);
+	std::lock_guard<std::recursive_mutex> lock(outgoingMutex);
 	outgoing.push(message);
 }
 
@@ -189,7 +174,7 @@ void FertilityCalculatorThread::computeRessourcesGradient()
 
 void FertilityCalculatorThread::updatePercentComplete(float percent)
 {
-	boost::shared_ptr<FCTUpdateCompletionPercent> message(new FCTUpdateCompletionPercent(percent));
+	std::shared_ptr<FCTUpdateCompletionPercent> message(new FCTUpdateCompletionPercent(percent));
 	sendToMainThread(message);
 }
 

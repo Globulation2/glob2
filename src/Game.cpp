@@ -1,21 +1,5 @@
-/*
-  Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-  for any question or comment contact us at <stephane at magnenat dot net> or <NuageBleu at gmail dot com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <iostream>
 #include <fstream>
@@ -214,7 +198,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	anyPlayerWaited=false;
 }
 
-void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
+void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 {
 	assert(order->sender>=0);
 	assert(order->sender<Team::MAX_COUNT);
@@ -234,7 +218,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 	{
 		case ORDER_CREATE:
 		{
-			boost::shared_ptr<OrderCreate> oc=boost::static_pointer_cast<OrderCreate>(order);
+			std::shared_ptr<OrderCreate> oc=std::static_pointer_cast<OrderCreate>(order);
 			if (!isPlayerAlive)
 				break;
 
@@ -291,7 +275,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderModifyBuilding> omb=boost::static_pointer_cast<OrderModifyBuilding>(order);
+			std::shared_ptr<OrderModifyBuilding> omb=std::static_pointer_cast<OrderModifyBuilding>(order);
 			Uint16 gid=omb->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -312,7 +296,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderModifyExchange> ome=boost::static_pointer_cast<OrderModifyExchange>(order);
+			std::shared_ptr<OrderModifyExchange> ome=std::static_pointer_cast<OrderModifyExchange>(order);
 			Uint16 gid=ome->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -335,7 +319,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderModifyFlag> omf=boost::static_pointer_cast<OrderModifyFlag>(order);
+			std::shared_ptr<OrderModifyFlag> omf=std::static_pointer_cast<OrderModifyFlag>(order);
 			Uint16 gid=omf->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -382,7 +366,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderModifyClearingFlag> omcf=boost::static_pointer_cast<OrderModifyClearingFlag>(order);
+			std::shared_ptr<OrderModifyClearingFlag> omcf=std::static_pointer_cast<OrderModifyClearingFlag>(order);
 			Uint16 gid=omcf->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -403,7 +387,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderModifyMinLevelToFlag> omwf=boost::static_pointer_cast<OrderModifyMinLevelToFlag>(order);
+			std::shared_ptr<OrderModifyMinLevelToFlag> omwf=std::static_pointer_cast<OrderModifyMinLevelToFlag>(order);
 			int team=Building::GIDtoTeam(omwf->gid);
 			int id=Building::GIDtoID(omwf->gid);
 			Building *b=teams[team]->myBuildings[id];
@@ -431,7 +415,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderMoveFlag> omf=boost::static_pointer_cast<OrderMoveFlag> (order);
+			std::shared_ptr<OrderMoveFlag> omf=std::static_pointer_cast<OrderMoveFlag> (order);
 			Uint16 gid=omf->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -484,7 +468,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		case ORDER_ALTERATE_FORBIDDEN:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_FORBIDDEN");
-			boost::shared_ptr<OrderAlterateForbidden> oaa = boost::static_pointer_cast<OrderAlterateForbidden>(order);
+			std::shared_ptr<OrderAlterateForbidden> oaa = std::static_pointer_cast<OrderAlterateForbidden>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -537,7 +521,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		case ORDER_ALTERATE_GUARD_AREA:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_GUARD_AREA");
-			boost::shared_ptr<OrderAlterateGuardArea> oaa = boost::static_pointer_cast<OrderAlterateGuardArea>(order);
+			std::shared_ptr<OrderAlterateGuardArea> oaa = std::static_pointer_cast<OrderAlterateGuardArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -584,7 +568,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		case ORDER_ALTERATE_CLEAR_AREA:
 		{
 			fprintf(logFile, "ORDER_ALTERATE_CLEAR_AREA");
-			boost::shared_ptr<OrderAlterateClearArea> oaa = boost::static_pointer_cast<OrderAlterateClearArea>(order);
+			std::shared_ptr<OrderAlterateClearArea> oaa = std::static_pointer_cast<OrderAlterateClearArea>(order);
 			if (oaa->type == BrushTool::MODE_ADD)
 			{
 				Uint32 teamMask = Team::teamNumberToMask(oaa->teamNumber);
@@ -632,7 +616,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderModifySwarm> oms=boost::static_pointer_cast<OrderModifySwarm>(order);
+			std::shared_ptr<OrderModifySwarm> oms=std::static_pointer_cast<OrderModifySwarm>(order);
 			Uint16 gid=oms->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -652,7 +636,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_DELETE:
 		{
-			Uint16 gid=boost::static_pointer_cast<OrderDelete>(order)->gid;
+			Uint16 gid=std::static_pointer_cast<OrderDelete>(order)->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
@@ -672,8 +656,8 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_CHANGE_PRIORITY:
 		{
-			Uint16 gid=boost::static_pointer_cast<OrderChangePriority>(order)->gid;
-			Sint32 priority=boost::static_pointer_cast<OrderChangePriority>(order)->priority;
+			Uint16 gid=std::static_pointer_cast<OrderChangePriority>(order)->gid;
+			Sint32 priority=std::static_pointer_cast<OrderChangePriority>(order)->priority;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
@@ -687,7 +671,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_CANCEL_DELETE:
 		{
-			Uint16 gid=boost::static_pointer_cast<OrderCancelDelete>(order)->gid;
+			Uint16 gid=std::static_pointer_cast<OrderCancelDelete>(order)->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
 			Building *b=teams[team]->myBuildings[id];
@@ -702,7 +686,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderConstruction> oc = boost::static_pointer_cast<OrderConstruction>(order);
+			std::shared_ptr<OrderConstruction> oc = std::static_pointer_cast<OrderConstruction>(order);
 			Uint16 gid = oc->gid;
 
 			int team=Building::GIDtoTeam(gid);
@@ -720,7 +704,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		{
 			if (!isPlayerAlive)
 				break;
-			boost::shared_ptr<OrderConstruction> oc = boost::static_pointer_cast<OrderConstruction>(order);
+			std::shared_ptr<OrderConstruction> oc = std::static_pointer_cast<OrderConstruction>(order);
 			Uint16 gid=oc->gid;
 			int team=Building::GIDtoTeam(gid);
 			int id=Building::GIDtoID(gid);
@@ -735,7 +719,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_SET_ALLIANCE:
 		{
-			boost::shared_ptr<SetAllianceOrder> sao=boost::static_pointer_cast<SetAllianceOrder>(order);
+			std::shared_ptr<SetAllianceOrder> sao=std::static_pointer_cast<SetAllianceOrder>(order);
 			Uint32 team=sao->teamNumber;
 			teams[team]->allies=sao->alliedMask;
 			teams[team]->enemies=sao->enemyMask;
@@ -747,7 +731,7 @@ void Game::executeOrder(boost::shared_ptr<Order> order, int localPlayer)
 		break;
 		case ORDER_PLAYER_QUIT_GAME:
 		{
-			boost::shared_ptr<PlayerQuitsGameOrder> pqgo=boost::static_pointer_cast<PlayerQuitsGameOrder>(order);
+			std::shared_ptr<PlayerQuitsGameOrder> pqgo=std::static_pointer_cast<PlayerQuitsGameOrder>(order);
 
 			bool found = false;
 			for(int i=0; i<Team::MAX_COUNT; ++i)
@@ -976,8 +960,8 @@ bool Game::load(GAGCore::InputStream *stream)
 	{
 	    if(globalContainer->runNoX)
 	    {
-    	    std::queue<boost::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
-    	    boost::recursive_mutex incomingMutex;
+    	    std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
+    	    std::recursive_mutex incomingMutex;
     	    FertilityCalculatorThread calculator(map, incoming, incomingMutex);
     	    calculator();
 	    }
@@ -1258,7 +1242,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 void Game::wonSyncStep(void)
 {
 	//TODO: sideeffects? 
-	//std::list<boost::shared_ptr<WinningCondition> >& conditions = 
+	//std::list<std::shared_ptr<WinningCondition> >& conditions = 
 	gameHeader.getWinningConditions();
 
 	bool areAllDecided=true;
@@ -3177,8 +3161,8 @@ Team *Game::getTeamWithMostPrestige(void)
 
 bool Game::isPrestigeWinCondition(void)
 {
-	std::list<boost::shared_ptr<WinningCondition> >& conditions = gameHeader.getWinningConditions();
-	for(std::list<boost::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
+	std::list<std::shared_ptr<WinningCondition> >& conditions = gameHeader.getWinningConditions();
+	for(std::list<std::shared_ptr<WinningCondition> >::iterator i = conditions.begin(); i!=conditions.end(); ++i)
 	{
 		if((*i)->getType() == WCPrestige)
 			return true;

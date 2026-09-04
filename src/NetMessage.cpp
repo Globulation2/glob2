@@ -1,20 +1,5 @@
-/*
-  Copyright (C) 2007 Bradley Arsenault
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
 
 #include "NetMessage.h"
 #include <algorithm>
@@ -238,21 +223,21 @@ NetSendOrder::NetSendOrder()
 
 
 	
-NetSendOrder::NetSendOrder(boost::shared_ptr<Order> newOrder)
+NetSendOrder::NetSendOrder(std::shared_ptr<Order> newOrder)
 {
 	order=newOrder;
 }
 
 
 	
-void NetSendOrder::changeOrder(boost::shared_ptr<Order> newOrder)
+void NetSendOrder::changeOrder(std::shared_ptr<Order> newOrder)
 {
 	order = newOrder;
 }
 
 
 	
-boost::shared_ptr<Order> NetSendOrder::getOrder()
+std::shared_ptr<Order> NetSendOrder::getOrder()
 {
 	return order;
 }
@@ -291,7 +276,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	order = Order::getOrder(buffer, size, VERSION_MINOR);
 
 	// If this couldn't be interpreted return it returned a NULL order, so we throw.
-	if (order == boost::shared_ptr<Order>())
+	if (order == std::shared_ptr<Order>())
 		throw std::ios_base::failure("Couldn't decode data stream to an Order: bad format.");
 
 	order->sender = stream->readUint8("sender");
@@ -1432,7 +1417,7 @@ YOGServerGameJoinRefusalReason NetGameJoinRefused::getRefusalReason() const
 
 
 
-NetSendYOGMessage::NetSendYOGMessage(Uint32 channel, boost::shared_ptr<YOGMessage> message)
+NetSendYOGMessage::NetSendYOGMessage(Uint32 channel, std::shared_ptr<YOGMessage> message)
 	: channel(channel), message(message)
 {
 
@@ -1513,7 +1498,7 @@ Uint32 NetSendYOGMessage::getChannel() const
 
 
 
-boost::shared_ptr<YOGMessage> NetSendYOGMessage::getMessage() const
+std::shared_ptr<YOGMessage> NetSendYOGMessage::getMessage() const
 {
 	return message;
 }
@@ -2125,7 +2110,7 @@ NetSendFileChunk::NetSendFileChunk()
 
 
 
-NetSendFileChunk::NetSendFileChunk(boost::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID)
+NetSendFileChunk::NetSendFileChunk(std::shared_ptr<GAGCore::InputStream> stream, Uint16 fileID)
 	: fileID(fileID)
 {
 	size=0;
