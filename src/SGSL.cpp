@@ -1180,17 +1180,6 @@ Aquisition::Aquisition(const Functions& functions) :
 #define HANDLE_ERROR_POS(c) { actPos++; if (c=='\n') { actLine++; actCol=0; } else { actCol++; } }
 #undef getc
 
-#ifdef WIN32 
-const char *index(const char *str, char f)
-{
-	for(const char *a=str;*a;a++)
-	{
-		if(*a==f)
-			return a;
-	}
-	return NULL;
-}
-#endif
 
 //Tokenizer
 void Aquisition::nextToken()
@@ -1212,8 +1201,8 @@ void Aquisition::nextToken()
 			}
 		}
 		newLine=false;
-		//if (index(" \t\r\n().,", c)==NULL)
-		if (index(" \t\r\n", c)==NULL)
+		//if (strchr(" \t\r\n().,", c)==NULL)
+		if (strchr(" \t\r\n", c)==NULL)
 		{
 			this->ungetChar(c);
 			break;
@@ -1240,7 +1229,7 @@ void Aquisition::nextToken()
 			isInString=!isInString;
 		if (isInString)
 		{
-			if (index("\t\r\n", c)!=NULL)
+			if (strchr("\t\r\n", c)!=NULL)
 			{
 				if (c == '\n')
 					newLine=true;
@@ -1250,8 +1239,8 @@ void Aquisition::nextToken()
 		}
 		else
 		{
-			//if (index(" \t\r\n().,", c)!=NULL)
-			if (index(" \t\r\n", c)!=NULL)
+			//if (strchr(" \t\r\n().,", c)!=NULL)
+			if (strchr(" \t\r\n", c)!=NULL)
 			{
 				if (c == '\n')
 					newLine=true;
@@ -1259,7 +1248,7 @@ void Aquisition::nextToken()
 				this->ungetChar(c);
 				break;
 			}
-			else if (index("().,", c)!=NULL)
+			else if (strchr("().,", c)!=NULL)
 			{
 				if (isInMot)
 					this->ungetChar(c);

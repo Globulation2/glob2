@@ -6,7 +6,7 @@ env = Environment()
 # echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
 # which need libgag and SDL2 headers visible at parse time even when the
 # test itself never references those types.
-common_cpppath = ['..', '../src', '../src/AI',
+common_cpppath = ['..', '../src', '../src/ai',
                   '../src/building', '../src/game/entities',
                   '../src/gui', '../src/team', '../src/unit',
                   '../src/net', '../src/net/irc', '../src/net/message',
