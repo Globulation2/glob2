@@ -15,6 +15,8 @@
 #include "Unit.h"
 #include "GameGUIKeyActions.h"
 #include "CloudField.h"
+#include "GameGUIDialog.h"
+#include "GUIButton.h"
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -79,7 +81,30 @@ int main(int argc, char **argv)
         for (const auto &shortcut : keyboard.getKeyboardShortcuts())
             hasToggle |= shortcut.format(GameGUIShortcuts) == "<g>=toggle torus view";
         assert(hasToggle);
+        assert(!Settings().automaticTorus);
+        globalContainer->settings.automaticTorus = false;
+        {
+            InGameOptionScreen options(&gui);
+            const int oldMute = globalContainer->settings.mute;
+            assert(!options.automaticTorus->getState());
+            options.automaticTorus->setState(true);
+            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, InGameOptionScreen::AUTOMATIC_TORUS, 0);
+            assert(globalContainer->settings.automaticTorus);
+            assert(globalContainer->settings.mute == oldMute);
+            globalContainer->settings.save("torus-option-test.txt");
+            Settings restored;
+            restored.load("torus-option-test.txt");
+            assert(restored.automaticTorus);
+            options.automaticTorus->setState(false);
+            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, InGameOptionScreen::AUTOMATIC_TORUS, 0);
+            assert(!globalContainer->settings.automaticTorus);
+        }
+        Settings restored;
+        restored.load();
+        assert(!restored.automaticTorus);
         TorusView view;
+        view.notifyMove();
+        assert(!view.active());
         for (int i = 0; i < 100; ++i)
         {
             view.setViewport(i, i / 2);
@@ -89,8 +114,11 @@ int main(int argc, char **argv)
         assert(view.available() == gpu);
         if (!gpu)
         {
+            globalContainer->settings.automaticTorus = true;
+            view.notifyMove();
             view.toggle();
             assert(!view.active());
+            globalContainer->settings.automaticTorus = false;
             int x = 0, y = 0, px, py;
             assert(!view.draw(gui.game, 0, 0, x, y, 960, 720));
             assert(!view.pick(480, 560, px, py));
@@ -193,8 +221,47 @@ int main(int argc, char **argv)
             view.amount = .04f;
             assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
             assert(!view.active());
+            // Automatic motion opens slowly and returns quickly after inactivity.
+            globalContainer->settings.automaticTorus = true;
+            view.notifyMove();
+            assert(view.active() && !view.enabled());
+            draw(0);
+            view.amount = .25f;
+            view.lastMove = SDL_GetTicks();
+            view.lastFrame = SDL_GetTicks() - 100;
+            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            assert(view.amount > .25f && view.amount <= .28f);
+            // Neither folding nor automatic return changes an active gesture's projection.
+            view.setPointerHeld(true);
+            float heldAmount = view.amount;
+            view.lastMove = SDL_GetTicks() - 300;
+            view.lastFrame = SDL_GetTicks() - 100;
+            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            assert(view.amount == heldAmount);
+            view.setPointerHeld(false);
+            view.lastFrame = SDL_GetTicks() - 100;
+            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            assert(view.amount < heldAmount - .2f);
+            // G pins the overview even when no movement notifications arrive.
+            view.toggle();
+            view.lastMove = SDL_GetTicks() - 300;
+            draw(1);
+            assert(view.enabled() && view.amount == 1);
+            view.toggle();
+            view.amount = .1f;
+            view.lastFrame = SDL_GetTicks() - 100;
+            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            assert(!view.active());
+            // Disabling the preference clears an automatic reveal before its first frame.
+            view.notifyMove();
+            globalContainer->settings.automaticTorus = false;
+            assert(!view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            assert(!view.active());
+            view.notifyMove();
+            assert(!view.active());
             globalContainer->gfx->setClipRect();
             gui.drawAll(0);
+            std::cout << "Manual/automatic modes, saved option and pointer hold passed\n";
             std::cout << "Navigation, GL state, picking and reload lifecycle passed\n";
 #endif
         }

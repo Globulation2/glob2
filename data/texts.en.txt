@@ -1219,3 +1219,10 @@ Your username was banned. Please contact the administrators to have this changed
 
 [toggle torus view]
 Toggle 2D / torus view
+
+[automatic torus view]
+Automatic torus view
+[automatic torus scrolling]
+Fold while scrolling; return when stopped.
+[automatic torus pin]
+OpenGL only. G keeps the torus open.

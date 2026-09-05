@@ -235,7 +235,7 @@ bool TorusView::prepareRenderTarget()
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
-            target = false;
+            target = moving = false;
             amount = 0;
             failed = true;
             fprintf(stderr, "Torus view: offscreen framebuffer is unavailable\n");
@@ -300,7 +300,16 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     Uint32 now = SDL_GetTicks();
     float dt = std::min(0.1f, float(now - lastFrame) / 1000.0f);
     lastFrame = now;
-    if (!amount && target)
+    const bool automatic = globalContainer->settings.automaticTorus;
+    if (!automatic || now - lastMove > 250)
+        moving = false;
+    const bool pullBack = target || moving;
+    if (!pullBack && amount == 0)
+    {
+        reset();
+        return false;
+    }
+    if (!amount && pullBack)
     {
         // Put the current viewport center on the front of the torus. Preserve
         // its sub-tile offset, so even the first/last frame matches normal 2D.
@@ -319,11 +328,14 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         worldH = game.map.getH();
         travelU = travelV = cameraU = cameraV = 0;
     }
-    // Enter and leave the overview deliberately, with the same gentle transition.
-    amount = clamp(amount + (target ? dt : -dt) / 1.8f, 0, 1);
+    // Manual switching is symmetric. Automatic movement unfolds gradually,
+    // then returns quickly; pointer gestures keep their current projection.
+    const float pace = automatic && !target ? (moving ? 4.0f : 0.45f) : 1.8f;
+    if (!pointerHeld)
+        amount = clamp(amount + (pullBack ? dt : -dt) / pace, 0, 1);
     // The ordinary map and minimap track the same destination as the torus.
     // Ease the sub-tile remainder away while returning to the tile-based 2D camera.
-    if (!target)
+    if (!pullBack && !pointerHeld)
     {
         float settle = amount == 0 ? 1 : 1 - std::exp(-16 * dt);
         travelU = mix(travelU, std::round(travelU * worldW) / worldW, settle);
@@ -363,7 +375,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
         glMatrixMode(oldMatrixMode);
-        target = false;
+        target = moving = false;
         amount = 0;
         vertices.clear();
         pickWidth = pickHeight = 0;

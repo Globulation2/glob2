@@ -35,9 +35,18 @@ settings. Existing customized layouts gain missing default actions only when the
 | Left-click / left-drag | Select, place buildings and flags, or paint areas |
 | Right-click | Normal game cancellation / deselection |
 
-The modes are separate. Scrolling and middle-dragging never change modes,
-and stopping movement never folds or unfolds the map. Only the G shortcut
-starts a 1.8-second transition in either direction. Ordinary 2D frames use the
+By default, the modes are separate. Scrolling and middle-dragging never change
+modes, and only G starts a 1.8-second transition in either direction.
+
+To opt into movement-triggered folding, open the in-game menu, choose **Options**,
+and enable **Automatic torus view**. The setting takes effect immediately and is
+saved locally. Scrolling with direction keys, screen edges or middle-drag then
+folds out gradually (4 seconds for a full transition). After movement stops for
+250 ms, it returns to 2D quickly (0.45 seconds for a full transition). G keeps
+the overview open; press it again to release it. Selection and painting gestures
+hold their projection until release, and ordinary 2D painting never starts an
+automatic fold. With software rendering, the option does not activate the torus.
+ Ordinary 2D frames use the
 normal viewport renderer, without full-world texture captures or torus mesh
 updates. In 3D, both axes slide the map around a ring whose orientation stays
 fixed. The star field follows horizontal navigation only; vertical navigation
@@ -70,7 +79,8 @@ creation remain in the existing game logic. Building previews and pending
 buildings are captured onto the surface. Empty sky is not a map target;
 releasing there cancels building placement and finishes any area painting.
 Middle-drag follows the ordinary map panning path. An explicit view toggle
-finishes any active painting gesture before changing the projection.
+finishes any active painting gesture before changing the projection. Automatic
+transitions wait for pointer gestures to finish.
 
 The torus has uniform angular texture coordinates, major radius 3 and minor
 radius 1. A flat toroidal map cannot be embedded in an ordinary ring torus
@@ -220,7 +230,9 @@ still needed to determine whether his separate startup/display issue remains.
 
 ### Navigation experiment
 
-The movement-triggered folding from `feat/torus-pan` was removed after playtesting:
-it interrupted ordinary scrolling. The fixed-axis 3D geometry, wrapped-building
-fix, and shared cloud rendering remain. The experiment keeps 2D gameplay
-and the optional torus view separate.
+Movement-triggered folding from `feat/torus-pan` interrupted ordinary scrolling
+in playtesting, so explicit mode switching remains the default. The in-game
+option supports the automatic behavior for players who prefer it. Both modes
+share the fixed-axis geometry, rendering fixes and large-map optimizations.
+This preference does not require rebasing onto the separate fullscreen-scaling
+or AI trainer/refactoring PRs.

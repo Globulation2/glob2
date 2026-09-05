@@ -59,6 +59,7 @@ public:
 	int screenHeight;
 	Uint32 screenFlags;
 	Uint32 optionFlags;
+	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.
 	std::string language;
 	Uint32 musicVolume;
 	Uint32 voiceVolume;

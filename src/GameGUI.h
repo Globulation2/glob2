@@ -480,8 +480,8 @@ private:
 	
 	//! Generate new particles if required
 	void generateNewParticles(std::set<Building*> *visibleBuildings);
-	//! Move all particles by a certain amount of pixels
-	void moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
+	//! Update overview navigation and particle offsets after viewport movement
+	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
 
 #endif

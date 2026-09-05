@@ -13,8 +13,8 @@ class TorusView
   public:
     TorusView();
     ~TorusView();
-    // Only an explicit view toggle starts the transition. Scrolling stays in its current view.
-    bool active() const { return target || amount > 0; }
+    // Manual mode stays flat until toggled; automatic mode can follow movement.
+    bool active() const { return target || moving || amount > 0; }
     // Switched on by hand: the wheel zooms the ring.
     bool enabled() const { return target; }
     bool available() const;
@@ -25,6 +25,9 @@ class TorusView
     bool event(const SDL_Event &event, int width);
     bool pick(int x, int y, int &worldPixelX, int &worldPixelY) const;
     void setViewport(int x, int y);
+    void notifyMove();
+    void stopMoving() { moving = false; }
+    void setPointerHeld(bool held) { pointerHeld = held; }
     // False requests the ordinary 2D renderer on this same frame.
     bool draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width,
               int height);
@@ -41,6 +44,8 @@ class TorusView
     float pickU = 0, pickV = 0;
     int pickWidth = 0, pickHeight = 0;
     bool target;
+    bool moving = false, pointerHeld = false;
+    Uint32 lastMove = 0;
     float amount, zoom;
     float travelU, travelV;
     float cameraU = 0, cameraV = 0, cameraZoom = 1;

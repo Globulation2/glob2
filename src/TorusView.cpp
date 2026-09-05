@@ -25,7 +25,8 @@ TorusView::~TorusView() { releaseResources(); }
 void TorusView::reset()
 {
     releaseResources();
-    target = failed = false;
+    target = moving = pointerHeld = failed = false;
+    lastMove = 0;
     amount = travelU = travelV = cameraU = cameraV = 0;
     worldW = worldH = 0;
     lastFrame = 0;
@@ -59,10 +60,25 @@ void TorusView::toggle()
         if (!active())
             resetCamera();
         target = !target;
+        moving = pointerHeld = false;
         lastFrame = SDL_GetTicks();
     }
 }
 void TorusView::resetCamera() { zoom = cameraZoom = 1; }
+void TorusView::notifyMove()
+{
+    // The default 2D path does not query the GPU or allocate overview resources.
+    if (!globalContainer->settings.automaticTorus || target || pointerHeld || !available())
+        return;
+    Uint32 now = SDL_GetTicks();
+    if (!active())
+    {
+        resetCamera();
+        lastFrame = now;
+    }
+    lastMove = now;
+    moving = true;
+}
 void TorusView::setViewport(int x, int y)
 {
     if (!worldW || !worldH || !active())
