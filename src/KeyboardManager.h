@@ -77,6 +77,8 @@ public:
 	
 	///Loads the keyboard layout, returns false in unsuccessfull
 	bool loadKeyboardLayout(const std::string& file);
+	///Adds the default shortcut of every action the loaded layout leaves unbound
+	void addMissingDefaults(const std::string& file);
 
 	///Clears all current shortcuts and loads the defaults
 	void loadDefaultShortcuts();
