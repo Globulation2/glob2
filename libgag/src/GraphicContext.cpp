@@ -1609,10 +1609,11 @@ namespace GAGCore
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
+			constexpr double pi = 3.14159265358979323846;
 			for (int i=0; i<tot; i++)
 			{
-				double angle0 = (2*M_PI*(double)i)/((double)tot);
-				double angle1 = (2*M_PI*(double)(i+1))/((double)tot);
+				double angle0 = (2*pi*(double)i)/((double)tot);
+				double angle1 = (2*pi*(double)(i+1))/((double)tot);
 				glVertex2d(fx+fray*sin(angle0), fy+fray*cos(angle0));
 				glVertex2d(fx+fray*sin(angle1), fy+fray*cos(angle1));
 			}

@@ -17,15 +17,14 @@ The launcher keeps preferences, saves and replays under `experiment/profile`.
 That directory and build products are ignored by Git. `GLOB2_USER_DIR` can also
 select another profile on Unix systems.
 
-Start a custom game, or load a replay. Click **3D world** or press **G**.
+Start a custom game, or load a replay. Press **G**.
 The shortcut appears as **Toggle 2D / torus view** in the standard keyboard
 settings. Existing customized layouts retain their bindings; add the action in
-the configurator or restore defaults to get G. The button displays the currently
-configured binding. Holding the shortcut does not repeatedly reverse the view.
+the configurator or restore defaults to get G. Holding the shortcut does not repeatedly reverse the view.
 
 | Control | Action |
 | --- | --- |
-| G / view button | Switch views; reverse an animation already in progress |
+| G | Switch views; reverse an animation already in progress |
 | Arrow keys / Ctrl+arrows / minimap | Move the shared map focus |
 | Middle-drag in 3D | Move the camera over the torus surface |
 | Mouse wheel in 3D | Zoom; continue zooming in to return to 2D |

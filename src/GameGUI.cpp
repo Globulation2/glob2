@@ -866,13 +866,6 @@ void GameGUI::processEvent(SDL_Event *event)
 {
     if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText) {
         int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
-        bool button = (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP)
-            && event->button.button == SDL_BUTTON_LEFT && event->button.x >= 12
-            && event->button.x < 12 + torusButtonWidth() && event->button.y >= 28 && event->button.y < 58;
-        if (button && torusView.available()) {
-            if (event->type == SDL_MOUSEBUTTONDOWN) toggleTorusView();
-            return;
-        }
         if (event->type == SDL_MOUSEMOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
         if (torusView.event(*event, width, viewportX, viewportY)) return;
         if (torusView.active() && handleTorusPointer(*event)) return;
@@ -1224,26 +1217,6 @@ void GameGUI::toggleTorusView()
     torusView.toggle();
     selectionPushed = panPushed = miniMapPushed = false;
     viewportSpeedX = viewportSpeedY = 0;
-}
-
-std::string GameGUI::torusButtonText() const
-{
-    std::string label = torusView.enabled() ? "2D map" : "3D world";
-    for (const auto &shortcut : keyboardManager.getKeyboardShortcuts()) {
-        if (shortcut.getAction() != GameGUIKeyActions::ToggleTorusView || !shortcut.isShortcutValid()) continue;
-        label += " [";
-        for (size_t i = 0; i < shortcut.getKeyPressCount(); ++i) {
-            if (i) label += ", ";
-            label += shortcut.getKeyPress(i).getTranslated();
-        }
-        return label + "]";
-    }
-    return label;
-}
-
-int GameGUI::torusButtonWidth() const
-{
-    return globalContainer->standardFont->getStringWidth(torusButtonText()) + 20;
 }
 
 void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
@@ -4501,20 +4474,12 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
 
-	// A persistent, single-click presentation toggle, below the resource bar.
-    if (torusView.available() && !typingInputScreen && !scrollableText) {
-        globalContainer->gfx->setClipRect();
-        globalContainer->gfx->drawFilledRect(12, 28, torusButtonWidth(), 30, 20, 38, 57, 240);
-        globalContainer->gfx->drawRect(12, 28, torusButtonWidth(), 30, 88, 181, 204);
-        globalContainer->gfx->drawString(22, 35, globalContainer->standardFont,
-            torusButtonText());
-        if (torusView.active()) {
-            int cx=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
-            int cy=(globalContainer->gfx->getH()+16)/2;
-            globalContainer->gfx->drawCircle(cx,cy,7,180,225,235,180);
-            globalContainer->gfx->drawString(16, globalContainer->gfx->getH()-28,
-                globalContainer->standardFont, "Arrows / middle-drag: move map   Wheel in: return to 2D");
-        }
+    if (torusView.active() && !typingInputScreen && !scrollableText) {
+        int cx=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
+        int cy=(globalContainer->gfx->getH()+16)/2;
+        globalContainer->gfx->drawCircle(cx,cy,7,180,225,235,180);
+        globalContainer->gfx->drawString(16, globalContainer->gfx->getH()-28,
+            globalContainer->standardFont, "Arrows / middle-drag: move map   Wheel in: return to 2D");
     }
 
     // draw menu if any

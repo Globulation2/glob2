@@ -2822,6 +2822,7 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 	// Draw the code
 	//globalContainer->gfx->drawFilledRect(bx, by, 40, 40, 0,0,0,128);
 	//globalContainer->gfx->drawCircle(bx+20, by+20, 20, Color::white);
+	constexpr double pi = 3.14159265358979323846;
 	Color transpWhite = Color(255, 255, 255, 192);
 	globalContainer->gfx->drawLine(
 		bx+20+cosf(angle)*5,
@@ -2832,14 +2833,14 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 	globalContainer->gfx->drawLine(
 		bx+20+cosf(angle)*17,
 		by+20+sinf(angle)*17,
-		bx+20+cosf(angle-M_PI/6)*10,
-		by+20+sinf(angle-M_PI/6)*10,
+		bx+20+cosf(angle-pi/6)*10,
+		by+20+sinf(angle-pi/6)*10,
 		Color::white);
 	globalContainer->gfx->drawLine(
 		bx+20+cosf(angle)*17,
 		by+20+sinf(angle)*17,
-		bx+20+cosf(angle+M_PI/6)*10,
-		by+20+sinf(angle+M_PI/6)*10,
+		bx+20+cosf(angle+pi/6)*10,
+		by+20+sinf(angle+pi/6)*10,
 		Color::white);
 	globalContainer->gfx->drawSprite(bx+decX+4, by+decY+4, unitSprite, imgid, 160);
 }

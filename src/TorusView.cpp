@@ -66,7 +66,8 @@ const std::vector<SkyPoint> &skyPoints(bool haze)
     }
     return points;
 }
-void drawSky(float yaw, float pitch, float fade, int width, int height, int renderWidth)
+void drawSky(float yaw, float pitch, float fade, float sx, float sy, float distance,
+             int width, int height, int renderWidth)
 {
     glUseProgram(0);
     glDisable(GL_TEXTURE_2D);
@@ -77,14 +78,11 @@ void drawSky(float yaw, float pitch, float fade, int width, int height, int rend
     glEnable(GL_POINT_SMOOTH);
     auto project = [&](const SkyPoint &p, float &x, float &y)
     {
-        float xx = p.x * std::cos(yaw) + p.z * std::sin(yaw);
-        float zz = -p.x * std::sin(yaw) + p.z * std::cos(yaw);
-        float yy = p.y * std::cos(pitch) - zz * std::sin(pitch);
-        zz = p.y * std::sin(pitch) + zz * std::cos(pitch);
-        if (zz < 0.15f)
+        TorusGeometry::Point screen;
+        if (!TorusGeometry::projectSkyDirection({p.x,p.y,p.z}, {yaw,pitch}, fade, sx, sy, distance, screen))
             return false;
-        x = width * 0.5f + xx / zz * height * 0.65f;
-        y = height * 0.5f + yy / zz * height * 0.65f;
+        x = width * 0.5f + screen.x;
+        y = (height + 16) * 0.5f + screen.y;
         return x > -80 && x < renderWidth + 80 && y > -80 && y < height + 80;
     };
     glPointSize(48);
@@ -461,7 +459,7 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float major = smooth(roll), minor = smooth(roll / 0.85f);
     float ya = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(anchorV, aspect);
     float viewPitch = pa + TorusGeometry::overviewTilt(anchorV, roll);
-    drawSky(ya, viewPitch, pull, width, height, gfx->getW());
+    drawSky(ya, viewPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
     if (material)
     {
         glActiveTexture(GL_TEXTURE1);

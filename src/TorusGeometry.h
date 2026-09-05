@@ -126,6 +126,19 @@ inline Point overviewPoint(float du, float dv, float roll, float anchorV)
 {
     return rotate(focusedPoint(du, dv, roll, anchorV), {0, overviewTilt(anchorV, roll)});
 }
+// A direction at infinity uses the same camera rotation and perspective as
+// the world mesh, without camera translation. The camera looks along -Z.
+inline bool projectSkyDirection(Point direction, CameraAngles camera, float roll,
+                                float sx, float sy, float distance, Point &screen)
+{
+    if (roll <= 0) return false;
+    Point view = rotate(direction, camera);
+    float depth = -view.z;
+    if (depth <= 0.0001f) return false;
+    screen = {view.x * sx * distance / (roll * depth),
+              view.y * sy * distance / (roll * depth), 0};
+    return true;
+}
 // Scale direct manipulation by the projected tangent at the current focus.
 // A narrower inner circumference must not make the map suddenly drag faster.
 inline Point surfaceDrag(float dx, float dy, float sx, float sy, float roll, float anchorV)

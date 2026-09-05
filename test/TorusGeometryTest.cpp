@@ -133,6 +133,30 @@ int main()
                         assert(std::abs(dy.x) + std::abs(dy.z) < .00002f);
                     }
                 }
+    // Stars must project like distant world geometry: same handedness, lens,
+    // camera rotation, inner-wall tilt and zoom. Points behind the eye vanish.
+    Point sky;
+    assert(!projectSkyDirection({0,0,1}, {0,0}, 1, 80,80,18,sky));
+    assert(!projectSkyDirection({0,0,-1}, {0,0}, 0, 80,80,18,sky));
+    for (float yaw : {-.7f, 0.f, .7f})
+        for (float pitch : {-.5f, 0.f, .5f})
+            for (float roll : {.1f,.5f,1.f}) {
+                Point worldDirection = {.12f,.08f,-1};
+                CameraAngles camera = {yaw,pitch};
+                assert(projectSkyDirection(worldDirection,camera,roll,80,65,18,sky));
+                auto view=rotate(worldDirection,camera);
+                float far=1000000000;
+                float w=1-view.z*far*roll/18;
+                assert(std::abs(sky.x-view.x*far*80/w)<.2f);
+                assert(std::abs(sky.y-view.y*far*65/w)<.2f);
+                Point zoomed;
+                assert(projectSkyDirection(worldDirection,camera,roll,160,130,18,zoomed));
+                assert(distance(zoomed,{sky.x*2,sky.y*2,0})<.001f);
+            }
+    // Turning toward screen-right makes fixed stars move left; pitch toward
+    // screen-down makes them move up in our downward-positive screen space.
+    assert(projectSkyDirection({0,0,-1},{.1f,0},1,80,80,18,sky) && sky.x<0);
+    assert(projectSkyDirection({0,0,-1},{0,-.1f},1,80,80,18,sky) && sky.y<0);
     // Navigation cannot change distance, magnification, or produce a lens
     // singularity. The inner-wall tilt remains periodic and below 90 degrees.
     for (int i = -100; i <= 200; ++i)

@@ -209,8 +209,6 @@ private:
 	void handleRightClick(void);
 	void handleKey(SDL_Keysym key, bool pressed, bool repeat = false);
 	void toggleTorusView();
-	std::string torusButtonText() const;
-	int torusButtonWidth() const;
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
 	void handleMouseMotion(int mx, int my, int button);
