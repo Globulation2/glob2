@@ -1210,3 +1210,6 @@ YOG мета-сервер је одбио везу јер корисничко �
 Ваша јединица је пребегла %0
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

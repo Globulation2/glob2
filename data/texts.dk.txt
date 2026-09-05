@@ -1286,3 +1286,6 @@ Dine %0 er under angreb
 En af dine enheder blev konverteret til et %0 hold
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

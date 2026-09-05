@@ -1272,3 +1272,6 @@ Il tuo %0 è sotto attacco
 La tua unità è stata convertita alla squadra di %0
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

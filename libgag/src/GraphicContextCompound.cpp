@@ -2,6 +2,9 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#ifdef HAVE_OPENGL
+#include "AlphaMapRender.h"
+#endif
 #include <assert.h>
 #include <valarray>
 #include <vector>
@@ -292,35 +295,7 @@ namespace GAGCore
 			} else {
 				glState.doBlend(true);
 				glState.doTexture(false);
-				for (int dy=0; dy < mapH-1; dy++)
-				{
-					int midy = y + dy * cellH + cellH/2;
-					for (int dx=0; dx < mapW-1; dx++)
-					{
-
-						glBegin(GL_TRIANGLE_FAN);
-						//This interpolates to find the center color, then fans out to the four corners.
-						int midx = x + dx * cellW + cellW/2;
-						int mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-						int mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-						glColor4ub(color.r, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-						glVertex2f(midx, midy);
-						//Touch each of the four corners
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
-						glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
-
-						glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
-
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glEnd();
-					}
-				}
+				drawAlphaMapBatched(map, mapW, mapH, x, y, cellW, cellH, color.r, color.g, color.b);
 			}
 		}
 		else

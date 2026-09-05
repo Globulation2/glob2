@@ -245,6 +245,7 @@ namespace GAGCore
 		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
 		cursorManager.releaseNativeCursor();
 		freeOwnedSurface();
+		if (glContext) SDL_GL_DeleteContext(glContext);
 		TTF_Quit();
 		SDL_Quit();
 		sdlsurface = NULL;
@@ -368,6 +369,7 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
@@ -375,6 +377,12 @@ namespace GAGCore
 		optionFlags &= ~USEGPU;
 		#endif
 
+		// SDL windows do not own their GL contexts. Release the old context
+		// explicitly, including all renderer resources attached to it.
+		if (glContext) {
+			SDL_GL_DeleteContext(glContext);
+			glContext = nullptr;
+		}
 		// if window exists, delete it
 		freeOwnedSurface();
 		if (window) {
@@ -421,11 +429,18 @@ namespace GAGCore
 		}
 		{
 			_gc = this;
-			// enable GL context
-			if (flags & USEGPU)
+			// Use the effective flags: software-only builds clear USEGPU above.
+			if (optionFlags & USEGPU)
 			{
-				SDL_GLContext context = SDL_GL_CreateContext(window);
-				SDL_GL_MakeCurrent(window, context);
+				glContext = SDL_GL_CreateContext(window);
+				if (!glContext || SDL_GL_MakeCurrent(window, glContext) != 0)
+				{
+					fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
+					if (glContext) SDL_GL_DeleteContext(glContext);
+					glContext = nullptr;
+					return false;
+				}
+				++glContextGeneration;
 				#ifdef HAVE_OPENGL
 				// Map the logical projection onto the full drawable so fullscreen scales.
 				// The drawable is in pixels; on HiDPI it is larger than the window points mouse events use.

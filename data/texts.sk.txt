@@ -1218,3 +1218,6 @@ Tvoji %0 čelia útoku
 Tvoja jednotka konvertovala k tímu %0
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

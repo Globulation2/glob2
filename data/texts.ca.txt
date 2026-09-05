@@ -1218,3 +1218,6 @@ El teu %0  està sent atacat
 Una unitat teva s'ha convertit a l'equip de %0
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

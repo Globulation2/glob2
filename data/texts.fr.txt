@@ -1212,3 +1212,6 @@ Votre adresse IP est temporairement bannis
 Votre unité est passée à l'équipe %0
 [Your username was banned]
 Votre pseudo est bannis
+
+[toggle torus view]
+Toggle 2D / torus view

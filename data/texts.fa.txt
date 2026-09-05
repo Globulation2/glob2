@@ -1210,3 +1210,6 @@ tab
 یکی از افراد تو جزو تیم %0 شد.
 [Your username was banned]
 این نام‌کاربری تحریم شده! میتوانی با مدیران ایساگون تماس بگیری.
+
+[toggle torus view]
+Toggle 2D / torus view

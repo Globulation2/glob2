@@ -1284,3 +1284,6 @@ Ysagoon Online Gaming
 Η μονάδα σας άλλαξε σε %0 ομάδα
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

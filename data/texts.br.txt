@@ -1208,3 +1208,6 @@ Seu número ip foi temporariamente banido
 Sua unidade foi convertido para o time do %0
 [Your username was banned]
 Seu nome de usuário foi banido
+
+[toggle torus view]
+Toggle 2D / torus view

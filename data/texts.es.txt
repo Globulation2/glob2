@@ -1212,3 +1212,6 @@ Tu dirección IP está baneada temporalmente. Espere o contacte con los administ
 Tu unidad ha sido convertida por el jugador %0
 [Your username was banned]
 Tu nombre de usuario ha sido baneado. Contacte con los administradores.
+
+[toggle torus view]
+Toggle 2D / torus view

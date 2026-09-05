@@ -1234,3 +1234,6 @@ Dit IP-adres werd tijdelijk verbannen. Gelieve te wachten tot dit IP-adres weer 
 Een van jouw globs is overgelopen naar %0's team
 [Your username was banned]
 Uw username werd verbannen. Neem contact op met de beheerders om dit te veranderen.
+
+[toggle torus view]
+Toggle 2D / torus view

@@ -1220,3 +1220,6 @@ Zure %0ak erasopean daude
 Zure unitatea %0(r)en taldera pasatu da
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

@@ -79,6 +79,8 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 
 void GameGUI::init()
 {
+	torusView.reset();
+	torusPointerDown = false;
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;

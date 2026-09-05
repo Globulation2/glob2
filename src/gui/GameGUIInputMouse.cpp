@@ -39,6 +39,14 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
+	if (torusView.active() && !miniMapPushed)
+	{
+		view.mouseX=mouseX=mx;
+		view.mouseY=mouseY=my;
+		viewportSpeedX=viewportSpeedY=0;
+		dragStep(mx, my, button);
+		return;
+	}
 	const int scrollZoneWidth = 10;
 	view.mouseX=mouseX=mx;
 	view.mouseY=mouseY=my;

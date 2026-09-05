@@ -1,0 +1,61 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#ifndef GLOB2_TORUS_VIEW_H
+#define GLOB2_TORUS_VIEW_H
+#include "TorusPicking.h"
+#include "Game.h"
+#include "BuildingGuiState.h"
+#include <SDL.h>
+
+// Presentation-only state. Never serialized or sent to other players.
+class TorusView
+{
+  public:
+    TorusView();
+    ~TorusView();
+    bool active() const { return target || amount > 0; }
+    bool enabled() const { return target; }
+    bool available() const;
+    // Drop camera, picking and GPU state before loading another game.
+    void reset();
+    void toggle();
+    void resetCamera();
+    bool event(const SDL_Event &event, int width, int &viewportX, int &viewportY);
+    bool pick(int x, int y, int &worldPixelX, int &worldPixelY) const;
+    void setViewport(int x, int y);
+    // False requests the ordinary 2D renderer on this same frame.
+    bool draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width,
+              int height, Game::ViewState &view, const BuildingGuiStateMap *buildingGuiState);
+
+  private:
+    void releaseResources();
+    bool prepareRenderTarget();
+    void updateDiscovery(Game &game, int team, unsigned options);
+    static constexpr int meshColumns = 160, meshRows = 160;
+    std::vector<TorusPicking::Vertex> vertices;
+    mutable int cachedPickX = -1, cachedPickY = -1;
+    mutable bool cachedPickFound = false;
+    mutable TorusPicking::Hit cachedPick;
+    float pickU = 0, pickV = 0;
+    int pickWidth = 0, pickHeight = 0;
+    bool target, dragging;
+    float amount, zoom;
+    float travelU, travelV;
+    float cameraU = 0, cameraV = 0, cameraZoom = 1;
+    float surfaceScaleX, surfaceScaleY;
+    int baseViewportX, baseViewportY, worldW, worldH;
+    int atlasW, atlasH;
+    Uint32 lastFrame;
+    std::vector<unsigned char> discoveryPixels, discoveryScratch;
+    SDL_GLContext graphicsContext = nullptr;
+    unsigned graphicsGeneration = 0;
+    unsigned texture, visibility, framebuffer, material;
+    unsigned meshBuffer, indexBuffer;
+    float meshKey[8];
+    bool failed;
+    int originX, originY;
+    float focusU, focusV;
+    TorusView(const TorusView &) = delete;
+    TorusView &operator=(const TorusView &) = delete;
+};
+#endif

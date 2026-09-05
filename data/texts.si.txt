@@ -1210,3 +1210,6 @@ Tvoji %0 so napadeni
 Tvoje enote so bile spreobrnjene %0
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

@@ -1216,3 +1216,6 @@ Seus %0 estão sendo atacados
 Uma unidade tem se passado ao bando de %0
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

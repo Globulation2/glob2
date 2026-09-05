@@ -1210,3 +1210,6 @@ View History
 ﺗﺤﻮﻟﺖ ﻭﺣﺪﺗﻚ ﺇﻟﻰ ﻓﺮﻳﻖ %0
 [Your username was banned]
 ﺣُﻈﺮ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺍﻟﺨﺎﺹ ﺑﻚ. ﻳُﺮﺟﻰ ﺍﻟﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء ﻟﺘﻐﻴﻴﺮ ﻫﺬﺍ.
+
+[toggle torus view]
+Toggle 2D / torus view

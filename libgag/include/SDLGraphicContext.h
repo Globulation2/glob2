@@ -339,6 +339,8 @@ namespace GAGCore
 		//! refresh the window and drawable sizes after the window was resized
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
+		SDL_GLContext glContext = nullptr;
+		unsigned glContextGeneration = 0;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -351,6 +353,8 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+		unsigned getGLContextGeneration() const { return glContextGeneration; }
+
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }

@@ -1210,3 +1210,6 @@ Tvoji %0 jsou pod útokem
 Tva jednotka změnila víru v jiného hráče %0
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

@@ -70,7 +70,7 @@ void GameGUI::handleKeySelectPlaceArea(GameGUIToolManager::ZoneType zone)
 	toolManager.activateZoneTool(zone);
 }
 
-void GameGUI::handleKey(SDL_Keysym key, bool pressed)
+void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 {
 	if (typingInputScreen == NULL)
 	{
@@ -87,6 +87,10 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 				}
 				break;
+				case GameGUIKeyActions::ToggleTorusView:
+					if (!repeat)
+						toggleTorusView();
+					break;
 				case GameGUIKeyActions::ShowMainMenu:
 				{
 					if (inGameMenu==IGM_NONE)

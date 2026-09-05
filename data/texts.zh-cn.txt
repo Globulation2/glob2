@@ -1206,3 +1206,6 @@ Ysagoon 线上游戏
 你的单位被 %0  转化为敌人
 [Your username was banned]
 你的用户名被禁用
+
+[toggle torus view]
+Toggle 2D / torus view

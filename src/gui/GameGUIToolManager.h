@@ -70,6 +70,9 @@ public:
 	///Handles a mouse up
 	void handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
 	
+	///Ends a pointer gesture without placing a building; keeps painted zones.
+	void finishPointerGesture(int localteam);
+
 	///Handles the dragging of the mouse
 	void handleMouseDrag(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
 

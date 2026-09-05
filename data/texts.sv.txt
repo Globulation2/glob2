@@ -1220,3 +1220,6 @@ Din %0 är under attack
 Din enhet blev omvänd till %0s lag
 [Your username was banned]
 
+
+[toggle torus view]
+Toggle 2D / torus view

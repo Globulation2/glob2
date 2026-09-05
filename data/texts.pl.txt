@@ -1210,3 +1210,6 @@ Twój adres IP został zablokowany. Proszę cierpliwie czekać aż zostanie odbl
 Twoja jednostka została przeciągnięta na stronę wroga %0
 [Your username was banned]
 Twoja imię gracza zostało zablokowane. Skontaktuj się z administratorami aby to zmienić.
+
+[toggle torus view]
+Toggle 2D / torus view

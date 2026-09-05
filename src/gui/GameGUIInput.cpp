@@ -116,6 +116,20 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+	if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText)
+	{
+		int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
+		if (event->type == SDL_MOUSEMOTION)
+		{
+			view.mouseX=mouseX=event->motion.x;
+			view.mouseY=mouseY=event->motion.y;
+		}
+		if (torusView.event(*event, width, viewportX, viewportY))
+			return;
+		if (torusView.active() && handleTorusPointer(*event))
+			return;
+	}
+
 	// handle typing
 	if (processTypingInput(event))
 		return;
@@ -154,7 +168,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		if (event->type==SDL_KEYDOWN)
 		{
-			handleKey(event->key.keysym, true);
+			handleKey(event->key.keysym, true, event->key.repeat != 0);
 		}
 		else if (event->type==SDL_KEYUP)
 		{

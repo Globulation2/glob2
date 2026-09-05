@@ -360,6 +360,8 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
+	if (!torusView.active())
+	{
 	if (selectionMode==TOOL_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
@@ -410,6 +412,7 @@ void GameGUI::drawOverlayInfos(void)
 		int px, py;
 		game.map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
+	}
 	}
 
 	// draw message List
@@ -621,26 +624,32 @@ void GameGUI::drawAll(int team)
 
 	updateHilightInGame();
 	arrowPositions.clear();
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	const bool drewTorus = torusView.active() &&
+		torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
+			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), view, &buildingGuiState);
+	if (!drewTorus)
 	{
-		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState);
-	}
-	else
-	{
-		std::set<Building*> visibleBuildings;
+		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+		{
+			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
+			game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState);
+		}
+		else
+		{
+			std::set<Building*> visibleBuildings;
 
-		globalContainer->gfx->setClipRect();
+			globalContainer->gfx->setClipRect();
 
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState);
+			game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState);
 
-		// generate and draw particles
-		generateNewParticles(&visibleBuildings);
-		drawParticles();
+			// generate and draw particles
+			generateNewParticles(&visibleBuildings);
+			drawParticles();
+		}
 	}
 
 	///Draw ghost buildings
-	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+	if (!torusView.active() && !globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 
 	// if paused, tint the game area
 	if (gamePaused)
@@ -679,6 +688,13 @@ void GameGUI::drawAll(int team)
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
+
+	if (torusView.active() && !typingInputScreen && !scrollableText)
+	{
+		int cx=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
+		int cy=(globalContainer->gfx->getH()+16)/2;
+		globalContainer->gfx->drawCircle(cx, cy, 7, 180, 225, 235, 180);
+	}
 
 	// draw menu if any
 	if (inGameMenu)

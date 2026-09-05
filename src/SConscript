@@ -95,6 +95,7 @@ CreditScreen.cpp
 CustomGameOtherOptions.cpp
 CustomGameScreen.cpp
 DynamicClouds.cpp
+TorusView.cpp
 EditorMainMenu.cpp
 EndGameScreen.cpp
 Engine.cpp
@@ -143,6 +144,7 @@ gui/GameGUIScript.cpp
 gui/GameGUISelection.cpp
 gui/GameGUIStep.cpp
 gui/GameGUIToolManager.cpp
+gui/GameGUITorus.cpp
 gui/TeamDisplay.cpp
 gui/UnitDisplayNames.cpp
 GameHeader.cpp

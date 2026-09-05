@@ -84,6 +84,11 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
+	if (torusView.active())
+	{
+		if (!torusPointerDown || !torusMapPointer(mx, my, mx, my))
+			return;
+	}
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
 		dragging from correctly going through intermediate cells.
@@ -94,7 +99,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 	// int mx, my;
 	// Uint8 button = SDL_GetMouseState(&mx, &my);
         // fprintf (stderr, "enter dragStep: button: %d, mx: %d, selectionMode: %d\n", button, mx, selectionMode);
-	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
@@ -228,10 +233,12 @@ void GameGUI::step(void)
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
 	handleKeyAlways();
-	viewportX += viewportSpeedX;
-	viewportY += viewportSpeedY;
+	viewportX += torusView.active() ? 0 : viewportSpeedX;
+	viewportY += torusView.active() ? 0 : viewportSpeedY;
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
+	if (torusView.active())
+		torusView.setViewport(viewportX, viewportY);
 
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{

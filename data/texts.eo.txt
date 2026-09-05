@@ -1210,3 +1210,6 @@ Via IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus 
 Teamo %0 konvertigis globulon de vi al sia!
 [Your username was banned]
 Via uzulnomo estas malpermesata. Bv. kontakti la administristojn.
+
+[toggle torus view]
+Toggle 2D / torus view
