@@ -57,7 +57,9 @@ jobs:
           ./TestsRunner
 
       - name: Build without OpenGL
-        run: scons -j$(nproc) release=1 server=0 opengl=0 --build=build-software
+        run: |
+          scons -j$(nproc) release=1 server=0 opengl=0 --build=build-software
+          python3 test/SoftwareStartupTest.py build-software/src/glob2
 
   windows:
     name: windows (mingw-w64)

@@ -14,7 +14,8 @@ scons release=1 opengl=1 -j4 build/src/glob2
 ```
 
 A software-only build can be checked with `scons release=1 opengl=0`; this
-configuration is also built in Linux CI. Build options are cached by SCons, so
+configuration is built and startup-tested with SDL dummy drivers in Linux CI,
+including GPU mode requested by preferences or the command line. Build options are cached by SCons, so
 pass `opengl=1` when switching back to the GPU build.
 
 The launcher keeps preferences, saves and replays under `experiment/profile`.

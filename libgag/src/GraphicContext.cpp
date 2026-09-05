@@ -2150,8 +2150,8 @@ namespace GAGCore
 		}
 		{
 			_gc = this;
-			// enable GL context
-			if (flags & USEGPU)
+			// Use the effective flags: software-only builds clear USEGPU above.
+			if (optionFlags & USEGPU)
 			{
 				glContext = SDL_GL_CreateContext(window);
 				if (!glContext || SDL_GL_MakeCurrent(window, glContext) != 0)
