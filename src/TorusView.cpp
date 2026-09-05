@@ -211,7 +211,7 @@ void TorusView::toggle()
         lastFrame = SDL_GetTicks();
     }
 }
-void TorusView::resetCamera() { zoom = 1; }
+void TorusView::resetCamera() { zoom = cameraZoom = 1; }
 void TorusView::setViewport(int x, int y)
 {
     if (!worldW || !worldH || !active())
@@ -239,7 +239,7 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
         {
             // Move the camera focus across the fixed world surface.
             auto movement = TorusGeometry::surfaceDrag(e.motion.xrel, e.motion.yrel, surfaceScaleX,
-                                                       surfaceScaleY, smooth(amount), focusV + travelV);
+                                                       surfaceScaleY, smooth(amount), focusV + cameraV);
             travelU += movement.x;
             travelV += movement.y;
             travelU -= std::floor(travelU);
@@ -301,7 +301,7 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         baseViewportY = vy;
         worldW = game.map.getW();
         worldH = game.map.getH();
-        travelU = travelV = 0;
+        travelU = travelV = cameraU = cameraV = 0;
     }
     amount = clamp(amount + (target ? dt : -dt) / 1.8f, 0, 1);
     // The ordinary map and minimap track the same destination as the torus.
@@ -311,6 +311,17 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         float settle = amount == 0 ? 1 : 1 - std::exp(-16 * dt);
         travelU = mix(travelU, std::round(travelU * worldW) / worldW, settle);
         travelV = mix(travelV, std::round(travelV * worldH) / worldH, settle);
+    }
+    // Input remains the logical map destination; render the mesh, picking and
+    // distant sky through one smoothly following camera. Never filter the sky
+    // separately, which would make the universe drift relative to the surface.
+    cameraU = TorusGeometry::follow(cameraU, travelU, dt, true);
+    cameraV = TorusGeometry::follow(cameraV, travelV, dt, true);
+    cameraZoom = TorusGeometry::follow(cameraZoom, zoom, dt);
+    if (amount == 0)
+    {
+        cameraU = travelU;
+        cameraV = travelV;
     }
     auto destination =
         TorusGeometry::destination(baseViewportX, baseViewportY, travelU, travelV, worldW, worldH);
@@ -455,9 +466,9 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float aspect = float(game.map.getW()) / game.map.getH();
     // One direct, restrained pullback. There is no intermediate zoom to a
     // distant full-map sheet, then zoom back in to the torus.
-    float anchorU = focusU + travelU, anchorV = focusV + travelV;
+    float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
     float cameraDistance = TorusGeometry::hoverDistance(anchorV);
-    float scale = std::min(width / 10.0f, height / 9.0f) * mix(1, zoom, roll);
+    float scale = std::min(width / 10.0f, height / 9.0f) * mix(1, cameraZoom, roll);
     float sx = std::exp(mix(std::log(game.map.getW() * 32 / (8 * pi)), std::log(scale), pull));
     float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
     surfaceScaleX = sx;

@@ -157,6 +157,15 @@ int main()
     // screen-down makes them move up in our downward-positive screen space.
     assert(projectSkyDirection({0,0,-1},{.1f,0},1,80,80,18,sky) && sky.x<0);
     assert(projectSkyDirection({0,0,-1},{0,-.1f},1,80,80,18,sky) && sky.y<0);
+    // Camera response is frame-rate independent, monotonic, and crosses map
+    // seams by the shortest arc instead of rotating through a whole world.
+    float fine = 0, coarse = 0;
+    for (int i=0; i<100; ++i) fine=follow(fine,.25f,.01f);
+    for (int i=0; i<25; ++i) coarse=follow(coarse,.25f,.04f);
+    assert(std::abs(fine-coarse)<.000001f);
+    assert(follow(.99f,.01f,.04f,true)>.99f);
+    assert(follow(.01f,.99f,.04f,true)<.01f);
+    assert(follow(1,2,.04f)>1 && follow(1,2,.04f)<2);
     // The inner-wall correction must never stall or reverse the orbit.
     for (int i=0; i<1000; ++i)
         for (float roll : {0.f,.5f,1.f}) {

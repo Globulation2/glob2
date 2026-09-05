@@ -43,6 +43,15 @@ inline float smooth(float x)
     x = std::max(0.0f, std::min(1.0f, x));
     return x * x * (3 - 2 * x);
 }
+// Follow wrapped map coordinates without taking the long way across a seam.
+// Exponential response gives the same settling time at different frame rates.
+inline float follow(float current, float target, float dt, bool wrapped = false)
+{
+    float delta = target - current;
+    if (wrapped)
+        delta -= std::round(delta);
+    return current + delta * -std::expm1(-16.0f * dt);
+}
 // Classic ring geometry and uniform texture coordinates. Map aspect ratio
 // does not change the shape or compress artwork toward the inner rim.
 constexpr float defaultTilt = -0.65f;

@@ -60,6 +60,10 @@ radius 1. A flat toroidal map cannot be embedded in an ordinary ring torus
 without stretching: the inner circumference compresses and the outer one
 expands. There is deliberately no conformal UV correction.
 
+Keyboard steps and wheel zoom use a shared exponential camera response (about
+63 ms time constant). Mesh projection, picking, and the distant sky use the same
+rendered focus; wrapped coordinates interpolate across the shortest seam.
+
 ## Performance
 
 The atlas refreshes on every rendered game frame; camera animation uses cached

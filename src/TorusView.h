@@ -33,6 +33,7 @@ class TorusView
     bool target, dragging;
     float amount, zoom;
     float travelU, travelV;
+    float cameraU = 0, cameraV = 0, cameraZoom = 1;
     float surfaceScaleX, surfaceScaleY;
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
