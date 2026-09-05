@@ -14,6 +14,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "GameGUIKeyActions.h"
+#include "CloudField.h"
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -99,6 +100,59 @@ int main(int argc, char **argv)
         else
         {
 #ifdef HAVE_OPENGL
+            // Variable-size resource batching must preserve pixels, frame bounds,
+            // transparency and ordering at native and overview scales.
+            Sprite resources;
+            assert(resources.load("data/gfx/ressource"));
+            GLint viewport[4];
+            glGetIntegerv(GL_VIEWPORT, viewport);
+            auto captureResources = [&](float scale, Uint8 alpha)
+            {
+                globalContainer->gfx->setClipRect();
+                glClearColor(.17f, .29f, .43f, 1);
+                glClear(GL_COLOR_BUFFER_BIT);
+                for (int i = 0; i < resources.getFrameCount(); ++i)
+                    globalContainer->gfx->drawSprite(30.f + (i % 8) * 52, 30.f + (i / 8) * 52,
+                        resources.getW(i) * scale, resources.getH(i) * scale, &resources, i, alpha);
+                globalContainer->gfx->finishDrawingSprite(&resources, alpha);
+                std::vector<unsigned char> pixels(viewport[2] * viewport[3] * 4);
+                glReadPixels(0, 0, viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+                return pixels;
+            };
+            std::vector<std::vector<unsigned char>> reference;
+            for (float scale : {1.f, .5f, .75f})
+                for (Uint8 alpha : {Uint8(255), Uint8(127)})
+                    reference.push_back(captureResources(scale, alpha));
+            std::vector<std::pair<int, int>> sizes;
+            for (int i = 0; i < resources.getFrameCount(); ++i)
+                sizes.emplace_back(resources.getW(i), resources.getH(i));
+            assert(resources.createTextureAtlas(true));
+            int sample = 0, maximumDifference = 0;
+            for (float scale : {1.f, .5f, .75f})
+                for (Uint8 alpha : {Uint8(255), Uint8(127)})
+                {
+                    auto actual = captureResources(scale, alpha);
+                    for (size_t i = 0; i < actual.size(); ++i)
+                        maximumDifference = std::max(maximumDifference,
+                            std::abs(int(actual[i]) - reference[sample][i]));
+                    ++sample;
+                }
+            for (int i = 0; i < resources.getFrameCount(); ++i)
+                assert(sizes[i] == std::make_pair(resources.getW(i), resources.getH(i)));
+            std::cout << "Resource atlas maximum pixel difference: " << maximumDifference << "/255\n";
+            assert(maximumDifference <= 1);
+            DynamicClouds clouds(&globalContainer->settings);
+            std::valarray<unsigned char> pixels;
+            int gridW, gridH;
+            clouds.computeWorld(256, 256, 250, pixels, gridW, gridH, 128);
+            assert(gridW == 128 && gridH == 128);
+            const auto &settings = globalContainer->settings;
+            CloudField field(8192, 8192, 250, settings.cloudSize, settings.cloudStability,
+                settings.cloudMaxSpeed, settings.cloudWindStability, settings.cloudMaxAlpha);
+            for (int row = 0; row < gridH; ++row)
+                for (int col = 0; col < gridW; ++col)
+                    assert(pixels[row * gridW + col] == field.opacity(col * 64, row * 64,
+                        std::max(.01f, settings.cloudHeight / 100.f)));
             int x = 11, y = 13;
             auto draw = [&](float amount)
             {

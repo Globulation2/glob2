@@ -95,10 +95,55 @@ returns to the normal 2D renderer on the same frame.
 The atlas refreshes on every rendered game frame; camera animation uses cached
 indexed GPU geometry at the same cadence. Fog of war is captured by the shared
 map renderer; CPU cloud pixels and mesh buffers are reused. Its resolution is 32 pixels per tile, capped at
-8192 pixels per dimension and the GPU's texture/viewport limits. Larger maps
+4096 pixels per dimension and the GPU's texture/viewport limits. Larger maps
 therefore downsample. Small distant tiles also lose detail through projection.
 Picking caches stationary pointer hits and rejects triangles outside the
 pointer's bounding box.
+
+The overview samples clouds and shadows on a world-anchored lattice of at most
+128 cells per axis. The normal 2D viewport retains its configured sampling
+quality. The atlas capture computes only shadows; the elevated cloud layer is
+sampled once, rather than also computing an unused flat cloud layer.
+Resource sprites opt into a padded atlas despite their differing frame sizes.
+This preserves draw order and allows the shared renderer to submit them in a
+batch. Queuing a batched sprite does not change GPU state; submission does.
+The software path continues to draw the original surfaces.
+
+### Large-map profiling
+
+A loaded-game benchmark is available with
+`scons release=1 opengl=1 torus-render-benchmark`. Run from the repository root:
+
+```sh
+GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy \
+  GLOB2_BENCH_MAP=maps/Oazis.map GLOB2_BENCH_FRAMES=100 \
+  build/src/torus-render-benchmark -g -F -m -s 1280x800
+```
+
+The benchmark compares 2D and the torus with and without clouds on the same
+loaded map, with full visibility and diagonal panning. It measures rendering
+only, with GPU completion included, and reports median and 95th-percentile
+frame times after warmup. It excludes simulation, HUD drawing and frame pacing;
+these numbers are not whole-game FPS. `GLOB2_BENCH_MODE="Torus clouds"` isolates
+that case for a sampling profiler. `GLOB2_BENCH_CAPTURE` optionally saves a PPM
+of the final overview. The benchmark uses a hidden window and generates no
+input events.
+
+On the Apple M3, Oazis (256 × 256) took about 130 ms per torus frame before these
+changes. CPU sampling identified whole-world cloud noise generation first,
+then individual resource draws and redundant state changes in sprite batching.
+Optimized runs measured 12–16 ms with clouds, depending on concurrent desktop
+load; ordinary 2D remained around 2 ms. The overview's color texture falls from
+256 MiB to 64 MiB, and cloud-noise evaluations fall from about 3.15 million to
+132,100 per frame with default settings. Geometry and the live map still update
+on every rendered frame. The larger map receives 16 texture pixels per tile;
+normal 2D retains its native detail.
+
+The GPU integration check compares all resource frames before and after atlas
+creation at three scales and two opacity levels, including frame dimensions.
+On macOS, the maximum pixel difference was zero.
+
+### Earlier cloud submission benchmark
 
 Clouds now sample a periodic world-coordinate field driven by elapsed time,
 so capture cadence and viewport changes do not change their position or speed.

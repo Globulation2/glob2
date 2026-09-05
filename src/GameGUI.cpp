@@ -2955,6 +2955,7 @@ void GameGUI::drawUnitInfos(void)
 			unsigned resImg = r->gfxId + r->sizesCount - 1;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8-rdec, ypos, globalContainer->ressources, resImg);
+			globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
 		}
 		else
 		{
@@ -3724,6 +3725,7 @@ void GameGUI::drawRessourceInfos(void)
 		if (!rt->eternal)
 			resImg--;
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+16, ypos, globalContainer->ressources, resImg);
+		globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
 		
 		// Draw ressource count
 		if (rt->granular)

@@ -28,6 +28,8 @@
 
 namespace
 {
+// Bound overview detail independently of map area. Normal 2D keeps native detail.
+const int atlasLimit = 4096, cloudGridLimit = 128;
 const float pi = 3.14159265358979323846f;
 float clamp(float x, float a, float b) { return std::max(a, std::min(b, x)); }
 float smooth(float x)
@@ -210,8 +212,8 @@ bool TorusView::prepareRenderTarget()
     GLint maximumTexture = 0, maximumViewport[2] = {0, 0};
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maximumTexture);
     glGetIntegerv(GL_MAX_VIEWPORT_DIMS, maximumViewport);
-    int nextW = std::min(worldW * 32, std::min(8192, std::min(maximumTexture, maximumViewport[0])));
-    int nextH = std::min(worldH * 32, std::min(8192, std::min(maximumTexture, maximumViewport[1])));
+    int nextW = std::min(worldW * 32, std::min(atlasLimit, std::min(maximumTexture, maximumViewport[0])));
+    int nextH = std::min(worldH * 32, std::min(atlasLimit, std::min(maximumTexture, maximumViewport[1])));
     if (!texture || atlasW != nextW || atlasH != nextH)
     {
         if (texture)
@@ -257,7 +259,7 @@ void TorusView::updateClouds()
 {
 #ifdef HAVE_OPENGL
     int gridW, gridH;
-    clouds.computeWorld(worldW, worldH, SDL_GetTicks64() / 40, cloudPixels, gridW, gridH);
+    clouds.computeWorld(worldW, worldH, SDL_GetTicks64() / 40, cloudPixels, gridW, gridH, cloudGridLimit);
     glPushAttrib(GL_TEXTURE_BIT);
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
     if (!cloudTexture || gridW != cloudW || gridH != cloudH)
@@ -383,7 +385,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         // Capture the normal map and cloud shadows,
         // respecting the same graphics-quality setting as the 2D view.
         game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0, originX, originY, team,
-                     options | Game::DRAW_NO_CLOUD_LAYER);
+                     options | Game::DRAW_NO_CLOUD_LAYER, nullptr, cloudGridLimit);
         if (game.gui)
             game.gui->drawTorusMapOverlay(originX, originY);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

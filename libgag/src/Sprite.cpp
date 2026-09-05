@@ -113,10 +113,14 @@ namespace GAGCore
 	// Create texture atlas for images array
 	// Using a sprite sheet lets us efficiently drawn terrain and water with a few calls
 	// to glDrawArrays, rather than 272 individual calls to glBegin...glEnd.
-	bool Sprite::createTextureAtlas()
+	bool Sprite::createTextureAtlas(bool allowVariableSizes)
 	{
 #ifdef HAVE_OPENGL
 		if (!Toolkit::gc || !(Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU))
+			return false;
+		if (atlas)
+			return true;
+		if (images.empty())
 			return false;
 #ifdef DEBUG_SPRITE_NOT_DRAWN
 		sprites.push_back(this);
@@ -129,7 +133,8 @@ namespace GAGCore
 			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 			assert(maxTextureSize);
 		}
-		// Check all tiles have the same size
+		// The normal automatic path retains its equal-size requirement. Resource
+		// rendering explicitly opts into padded cells for variable-size frames.
 		for (auto image : images)
 		{
 			if (!image)
@@ -139,9 +144,14 @@ namespace GAGCore
 				tileWidth = image->getW();
 				tileHeight = image->getH();
 			}
-			if (image->getW() != tileWidth || image->getH() != tileHeight)
-				return false; // One of them has a different size
+			if (!allowVariableSizes && (image->getW() != tileWidth || image->getH() != tileHeight))
+				return false;
+			tileWidth = std::max(tileWidth, image->getW());
+			tileHeight = std::max(tileHeight, image->getH());
 		}
+		const int padding = allowVariableSizes ? 1 : 0;
+		tileWidth += 2 * padding;
+		tileHeight += 2 * padding;
 		int sheetWidth = tileWidth * (static_cast<int>(sqrt(numImages)) + 1);
 		int sheetHeight = tileHeight * (static_cast<int>(sqrt(numImages)) + 1);
 		if (sheetWidth > maxTextureSize || sheetHeight > maxTextureSize)
@@ -151,17 +161,38 @@ namespace GAGCore
 			return false; // We can't continue, falling back to glBegin/glEnd rendering.
 		}
 		std::unique_ptr<DrawableSurface> atlas = make_unique<DrawableSurface>(sheetWidth, sheetHeight);
-		int x = 0, y = 0;
+		int x = padding, y = padding;
 		for (auto image: images)
 		{
-			atlas->drawSurface(x, y, image);
-			TextureInfo info = { this, x, y, tileWidth, tileHeight };
+			const int width = image->getW(), height = image->getH();
+			if (padding)
+			{
+				// Copy straight RGBA and extrude the border so linear filtering
+				// matches each standalone texture, without bleeding adjacent frames.
+				SDL_BlendMode blend;
+				SDL_GetSurfaceBlendMode(image->sdlsurface, &blend);
+				SDL_SetSurfaceBlendMode(image->sdlsurface, SDL_BLENDMODE_NONE);
+				int sx[3] = {0, 0, width - 1}, sy[3] = {0, 0, height - 1};
+				int dx[3] = {x - 1, x, x + width}, dy[3] = {y - 1, y, y + height};
+				int widths[3] = {1, width, 1}, heights[3] = {1, height, 1};
+				for (int row = 0; row < 3; ++row)
+					for (int col = 0; col < 3; ++col)
+					{
+						SDL_Rect src = {sx[col], sy[row], widths[col], heights[row]};
+						SDL_Rect dest = {dx[col], dy[row], widths[col], heights[row]};
+						SDL_BlitSurface(image->sdlsurface, &src, atlas->sdlsurface, &dest);
+					}
+				SDL_SetSurfaceBlendMode(image->sdlsurface, blend);
+			}
+			else
+				atlas->drawSurface(x, y, image);
+			TextureInfo info = { this, x, y, width, height };
 			image->textureInfo = info;
 			image->texMultX = 1.f;
 			image->texMultY = 1.f;
 			x += tileWidth;
-			if (tileWidth + x > sheetWidth) {
-				x = 0;
+			if (tileWidth + x - padding > sheetWidth) {
+				x = padding;
 				y += tileHeight;
 			}
 		}

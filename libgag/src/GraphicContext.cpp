@@ -1684,14 +1684,6 @@ namespace GAGCore
 			if (surface->dirty)
 				surface->uploadToTexture();
 
-			// state change
-			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(true);
-			glState.doTexture(true);
-			glColor4ub(255, 255, 255, alpha);
-
-			// draw
-			glState.setTexture(surface->texture);
 			if (surface->textureInfo && surface->textureInfo->sprite)
 			{
 				Sprite* sprite = surface->textureInfo->sprite;
@@ -1722,6 +1714,13 @@ namespace GAGCore
 			}
 			else
 			{
+				// Atlas frames only queue geometry; finishDrawingSprite sets their
+				// state once for the batch. Immediate draws need it here.
+				glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glState.doBlend(true);
+				glState.doTexture(true);
+				glColor4ub(255, 255, 255, alpha);
+				glState.setTexture(surface->texture);
 				glBegin(GL_QUADS);
 				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
 				glVertex2f(x, y);

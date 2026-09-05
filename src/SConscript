@@ -270,6 +270,10 @@ if not env['server']:
         [source for source in source_files if source != "Glob2.cpp"] +
         [local.Object("TorusRenderIntegrationTest", "#test/TorusRenderIntegrationTest.cpp")])
     local.Alias("torus-render-test", render_test)
+    render_benchmark = local.Program("torus-render-benchmark",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("TorusRenderBenchmark", "#test/TorusRenderBenchmark.cpp")])
+    local.Alias("torus-render-benchmark", render_benchmark)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")

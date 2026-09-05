@@ -52,7 +52,7 @@ class DynamicClouds
 	int hGrid;
 	///cloud/shadow density
 	std::valarray<unsigned char> alphaMap, cloudMap;
-    int renderOffsetX, renderOffsetY;
+    int renderOffsetX, renderOffsetY, renderCellSize;
 public:
 	 ///render() distinguishes between CLOUD and SHADOW
 	enum Layer {
@@ -80,12 +80,16 @@ public:
 	 * @param w width of the alphaMap
 	 * @param h height of the alphaMap
 	 * @param time time
+	 * @param includeCloudLayer false when only shadows will be rendered
+	 * @param maxGridSize overview sampling budget per world axis; zero keeps native detail
 	 */
-	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time, const int worldWidth, const int worldHeight);
+	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time, const int worldWidth, const int worldHeight,
+                 bool includeCloudLayer = true, int maxGridSize = 0);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
 	/**
 	 * Samples the cloud layer over the whole world at a coarse lattice.
 	 * @param out receives gridW*gridH opacities, row-major from the map origin
 	 */
-	void computeWorld(const int worldWidth, const int worldHeight, const int time, std::valarray<unsigned char> &out, int &gridW, int &gridH) const;
+	void computeWorld(const int worldWidth, const int worldHeight, const int time, std::valarray<unsigned char> &out, int &gridW, int &gridH,
+                      int maxGridSize = 2048) const;
 };
