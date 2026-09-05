@@ -20,9 +20,18 @@ jobs:
         image: [ubuntu:22.04, ubuntu:24.04]
     steps:
       - name: Install dependencies
+        timeout-minutes: 15
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          cat > /etc/apt/apt.conf.d/80-ci-network <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
           apt-get update -qq
           apt-get install -y --no-install-recommends \
             ca-certificates git g++ python3 scons pkg-config \
