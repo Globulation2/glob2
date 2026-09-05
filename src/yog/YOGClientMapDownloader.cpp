@@ -57,7 +57,7 @@ void YOGClientMapDownloader::recieveMessage(std::shared_ptr<NetMessage> message)
 
 void YOGClientMapDownloader::update()
 {
-	if(client->getYOGClientFileAssembler(fileID)->fileInformationRecieved() && state == DownloadingMap && getPercentUploaded()==100)
+	if(client->getYOGClientFileAssembler(fileID)->fileInformationRecieved() && state == DownloadingMap && getPercentDownloaded()==100)
 	{
 		state = Finished;
 	}
@@ -72,7 +72,7 @@ YOGClientMapDownloader::DownloadingState YOGClientMapDownloader::getDownloadingS
 
 
 
-int YOGClientMapDownloader::getPercentUploaded()
+int YOGClientMapDownloader::getPercentDownloaded()
 {
 	return client->getYOGClientFileAssembler(fileID)->getPercentage();
 }

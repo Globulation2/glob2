@@ -85,7 +85,7 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 	if(downloader.getDownloadingState() == YOGClientMapDownloader::DownloadingMap)
 	{
 		downloadStatus->visible = true;
-		int p = downloader.getPercentUploaded();
+		int p = downloader.getPercentDownloaded();
 		if( p == 100)
 			p = 0;
 		downloadStatus->setValue(p);

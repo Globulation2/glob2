@@ -42,7 +42,7 @@ public:
 	DownloadingState getDownloadingState();
 	
 	///Returns the percent downloaded
-	int getPercentUploaded();
+	int getPercentDownloaded();
 private:
 	DownloadingState state;
 	std::shared_ptr<YOGClient> client;
