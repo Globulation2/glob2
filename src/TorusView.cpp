@@ -287,7 +287,7 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
         {
             // Move the camera focus across the fixed world surface.
             auto movement = TorusGeometry::surfaceDrag(e.motion.xrel, e.motion.yrel, surfaceScaleX,
-                                                       surfaceScaleY, smooth(amount), focusV + cameraV);
+                                                       surfaceScaleY, smooth(amount), 0.5f);
             travelU += movement.x;
             travelV += movement.y;
             travelU -= std::floor(travelU);
@@ -568,9 +568,10 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     surfaceScaleY = sy;
     float cx = width * 0.5f, cy = (height + 16) * 0.5f;
     float major = smooth(roll), minor = smooth(roll / 0.85f);
-    float ya = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(anchorV, aspect);
-    float viewPitch = pa + TorusGeometry::overviewTilt(anchorV, roll);
-    drawSky(ya, viewPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
+    float ya = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, aspect);
+    float viewPitch = pa + TorusGeometry::overviewTilt(ringV, roll);
+    float skyPitch = viewPitch + (anchorV - 0.5f) * pi * 0.5f;
+    drawSky(ya, skyPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
     if (material)
     {
         glActiveTexture(GL_TEXTURE1);
@@ -588,7 +589,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     pickV = anchorV;
     pickWidth = width;
     pickHeight = height;
-    float key[8] = {roll, anchorV, sx, sy, cx, cy, scale, cameraDistance};
+    float key[8] = {roll, ringV, sx, sy, cx, cy, scale, cameraDistance};
     GLint oldArrayBuffer, oldIndexBuffer;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldArrayBuffer);
     glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &oldIndexBuffer);
@@ -603,7 +604,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
             for (int i = 0; i <= U; ++i)
             {
                 float du = float(i) / U - 0.5f, dv = float(j) / V - 0.5f;
-                auto p = TorusGeometry::overviewPoint(du, dv, roll, anchorV);
+                auto p = TorusGeometry::overviewPoint(du, dv, roll, ringV);
                 float a = du * 2 * pi * major, b = pa + dv * 2 * pi * minor;
                 float nx = std::sin(a) * std::cos(b), ny = std::sin(b), nz = std::cos(a) * std::cos(b);
                 float ry = ny * std::cos(viewPitch) - nz * std::sin(viewPitch);
