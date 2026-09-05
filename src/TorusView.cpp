@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "TorusView.h"
+#include "BinaryStream.h"
+#include "Toolkit.h"
+#include "FileManager.h"
+#include <cstdlib>
+#include <memory>
 #include "Game.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -411,6 +416,45 @@ void TorusView::updateClouds()
 #endif
 }
 
+// GLOB2_TORUS_DUMP=<seconds> writes the world texture, reduced 8 times, to
+// torus-atlas.ppm in the user directory at that interval, and names the GL
+// driver once, so a stale ring can be told from a stale texture.
+void TorusView::dumpAtlas(Uint32 now)
+{
+#ifdef HAVE_OPENGL
+    const char *every = getenv("GLOB2_TORUS_DUMP");
+    if (!every)
+        return;
+    if (!lastDump)
+        fprintf(stderr, "Torus view: GL %s, %s, %s\n", glGetString(GL_VENDOR), glGetString(GL_RENDERER),
+                glGetString(GL_VERSION));
+    if (lastDump && now - lastDump < Uint32(std::max(1, atoi(every))) * 1000)
+        return;
+    lastDump = now;
+    std::vector<unsigned char> pixels(size_t(atlasW) * atlasH * 3);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glReadPixels(0, 0, atlasW, atlasH, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
+    const int step = 8, w = atlasW / step, h = atlasH / step;
+    std::unique_ptr<GAGCore::OutputStream> out(new GAGCore::BinaryOutputStream(
+        GAGCore::Toolkit::getFileManager()->openOutputStreamBackend("torus-atlas.ppm")));
+    if (out->isEndOfStream())
+        return;
+    std::string header = "P6\n" + std::to_string(w) + " " + std::to_string(h) + "\n255\n";
+    out->write(header.data(), header.size(), "header");
+    std::vector<unsigned char> row(size_t(w) * 3);
+    for (int y = 0; y < h; ++y)
+    {
+        // GL rows run bottom-up; the map's top row goes first
+        const unsigned char *src = &pixels[size_t(atlasH - 1 - y * step) * atlasW * 3];
+        for (int x = 0; x < w; ++x)
+            for (int c = 0; c < 3; ++c)
+                row[x * 3 + c] = src[size_t(x) * step * 3 + c];
+        out->write(row.data(), row.size(), "row");
+    }
+    fprintf(stderr, "Torus view: wrote torus-atlas.ppm (%dx%d) at %u ms\n", w, h, now);
+#endif
+}
+
 bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height,
                      Game::ViewState &view, const BuildingGuiStateMap *buildingGuiState)
 {
@@ -503,6 +547,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                      options | Game::DRAW_NO_CLOUD_LAYER, nullptr, buildingGuiState);
         if (game.gui)
             game.gui->drawTorusMapOverlay(originX, originY);
+        dumpAtlas(now);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     const bool drawClouds =

@@ -36,6 +36,7 @@ class TorusView
     void releaseResources();
     bool prepareRenderTarget();
     void updateClouds();
+    void dumpAtlas(Uint32 now);
     static constexpr int meshColumns = 160, meshRows = 160;
     std::vector<TorusPicking::Vertex> vertices;
     mutable int cachedPickX = -1, cachedPickY = -1;
@@ -46,6 +47,7 @@ class TorusView
     bool target, dragging;
     bool moving = false;
     Uint32 lastMove = 0;
+    Uint32 lastDump = 0;
     float amount, zoom;
     float travelU, travelV;
     float cameraU = 0, cameraV = 0, cameraZoom = 1;
