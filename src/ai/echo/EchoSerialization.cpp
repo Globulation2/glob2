@@ -23,7 +23,7 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 		Uint8* buffer = new Uint8[size+1];
 		stream->read(buffer, size+1, "data");
 		orders.push_back(Order::getOrder(buffer, size+1, versionMinor));
-		// FIXME : clear the container before load
+		delete[] buffer;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
