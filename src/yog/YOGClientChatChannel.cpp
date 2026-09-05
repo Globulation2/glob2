@@ -74,7 +74,7 @@ void YOGClientChatChannel::setChannelID(Uint32 channel)
 
 void YOGClientChatChannel::addListener(YOGClientChatListener* listener)
 {
-	listeners.push_back(listener);
+	listeners.add(listener);
 }
 
 
@@ -96,10 +96,7 @@ void YOGClientChatChannel::recieveMessage(std::shared_ptr<YOGMessage> message)
 
 void YOGClientChatChannel::sendToListeners(std::shared_ptr<YOGMessage> message)
 {
-	for(std::list<YOGClientChatListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
-	{
-		(*i)->recieveTextMessage(message);
-	}
+	listeners.notify(&YOGClientChatListener::recieveTextMessage, message);
 }
 
 

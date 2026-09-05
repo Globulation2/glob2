@@ -6,6 +6,7 @@
 #include <memory>
 #include <list>
 #include "YOGGameInfo.h"
+#include "ListenerList.h"
 
 class NetMessage;
 class YOGClient;
@@ -41,6 +42,6 @@ private:
 	void sendToListeners();
 
 	std::list<YOGGameInfo> games;
-	std::list<YOGClientGameListListener*> listeners;
+	ListenerList<YOGClientGameListListener> listeners;
 };
 

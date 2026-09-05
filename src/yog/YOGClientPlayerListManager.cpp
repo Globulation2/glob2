@@ -42,7 +42,7 @@ std::list<YOGPlayerSessionInfo>& YOGClientPlayerListManager::getPlayerList()
 
 void YOGClientPlayerListManager::addListener(YOGClientPlayerListListener* listener)
 {
-	listeners.push_back(listener);
+	listeners.add(listener);
 }
 
 
@@ -92,10 +92,7 @@ YOGPlayerSessionInfo& YOGClientPlayerListManager::getPlayerInfo(const std::strin
 
 void YOGClientPlayerListManager::sendToListeners()
 {
-	for(std::list<YOGClientPlayerListListener*>::iterator i = listeners.begin(); i != listeners.end(); ++i)
-	{
-		(*i)->playerListUpdated();
-	}
+	listeners.notify(&YOGClientPlayerListListener::playerListUpdated);
 }
 
 

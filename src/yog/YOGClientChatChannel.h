@@ -4,10 +4,10 @@
 #pragma once
 
 #include <vector>
-#include <list>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include <tuple>
 #include "SDL_net.h"
+#include "ListenerList.h"
 
 class YOGClient;
 class YOGMessage;
@@ -62,7 +62,7 @@ private:
 	std::shared_ptr<YOGClient> client;
 	Uint32 channelID;
 	std::vector<std::tuple<std::shared_ptr<YOGMessage>, boost::posix_time::ptime> > messageHistory;
-	std::list<YOGClientChatListener*> listeners;
+	ListenerList<YOGClientChatListener> listeners;
 };
 
 

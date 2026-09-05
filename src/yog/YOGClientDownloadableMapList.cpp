@@ -129,7 +129,7 @@ void YOGClientDownloadableMapList::submitRating(const std::string& name, Uint8 r
 
 void YOGClientDownloadableMapList::addListener(YOGClientDownloadableMapListener* listener)
 {
-	listeners.push_back(listener);
+	listeners.add(listener);
 }
 
 
@@ -143,18 +143,12 @@ void YOGClientDownloadableMapList::removeListener(YOGClientDownloadableMapListen
 
 void YOGClientDownloadableMapList::sendUpdateToListeners()
 {
-	for(std::list<YOGClientDownloadableMapListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
-	{
-		(*i)->mapListUpdated();
-	}
+	listeners.notify(&YOGClientDownloadableMapListener::mapListUpdated);
 }
 
 
 void YOGClientDownloadableMapList::sendThumbnailToListeners()
 {
-	for(std::list<YOGClientDownloadableMapListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
-	{
-		(*i)->mapThumbnailsUpdated();
-	}
+	listeners.notify(&YOGClientDownloadableMapListener::mapThumbnailsUpdated);
 }
 

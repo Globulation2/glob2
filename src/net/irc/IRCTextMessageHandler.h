@@ -5,6 +5,7 @@
 #pragma once
 
 #include "IRCThread.h"
+#include "ListenerList.h"
 #include <thread>
 #include <memory>
 
@@ -56,7 +57,7 @@ private:
 
 	IRCThread irc;
 	std::thread ircThread;
-	std::vector<IRCTextMessageListener* > listeners;
+	ListenerList<IRCTextMessageListener> listeners;
 
 	std::queue<std::shared_ptr<IRCThreadMessage> > incoming;
 	std::recursive_mutex incomingMutex;

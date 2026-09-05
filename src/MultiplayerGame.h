@@ -8,7 +8,7 @@
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGameEventListener.h"
-#include <list>
+#include "ListenerList.h"
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
 
@@ -226,6 +226,6 @@ private:
 	//API/engine stuff
 	NetEngine* netEngine;
 	NetGamePlayerManager playerManager;
-	std::list<MultiplayerGameEventListener*> listeners;
+	ListenerList<MultiplayerGameEventListener> listeners;
 };
 

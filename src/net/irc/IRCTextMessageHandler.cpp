@@ -4,7 +4,6 @@
 
 #include "IRCTextMessageHandler.h"
 #include "IRCThreadMessage.h"
-#include <algorithm>
 #include <functional>
 #include <StringTable.h>
 #include "YOGConsts.h"
@@ -86,14 +85,14 @@ void IRCTextMessageHandler::update()
 
 void IRCTextMessageHandler::addTextMessageListener(IRCTextMessageListener* listener)
 {
-	listeners.push_back(listener);
+	listeners.add(listener);
 }
 
 
 
 void IRCTextMessageHandler::removeTextMessageListener(IRCTextMessageListener* listener)
 {
-	listeners.erase(std::find(listeners.begin(), listeners.end(), listener));
+	listeners.remove(listener);
 }
 
 
@@ -127,9 +126,6 @@ std::vector<std::string>& IRCTextMessageHandler::getUsers()
 
 void IRCTextMessageHandler::sendToAllListeners(const std::string& message)
 {
-	for(unsigned i=0; i<listeners.size(); ++i)
-	{
-		listeners[i]->handleIRCTextMessage(message);
-	}
+	listeners.notify(&IRCTextMessageListener::handleIRCTextMessage, message);
 }
 

@@ -5,8 +5,8 @@
 
 #include "NetConnection.h"
 #include "YOGConsts.h"
-#include <list>
 #include <map>
+#include "ListenerList.h"
 
 class MultiplayerGame;
 class YOGClientFileAssembler;
@@ -248,7 +248,7 @@ private:
 	YOGClientMapUploader* uploader;
 	YOGClientMapDownloader* downloader;
 	std::shared_ptr<YOGServer> server;
-	std::list<YOGClientEventListener*> listeners;
+	ListenerList<YOGClientEventListener> listeners;
 
 
 };

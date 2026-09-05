@@ -59,7 +59,7 @@ YOGGameInfo YOGClientGameListManager::getGameInfo(Uint16 gameID)
 
 void YOGClientGameListManager::addListener(YOGClientGameListListener* listener)
 {
-	listeners.push_back(listener);
+	listeners.add(listener);
 }
 
 
@@ -73,9 +73,6 @@ void YOGClientGameListManager::removeListener(YOGClientGameListListener* listene
 
 void YOGClientGameListManager::sendToListeners()
 {
-	for(std::list<YOGClientGameListListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
-	{
-		(*i)->gameListUpdated();
-	}
+	listeners.notify(&YOGClientGameListListener::gameListUpdated);
 }
 

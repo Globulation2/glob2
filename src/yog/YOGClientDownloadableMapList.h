@@ -6,9 +6,9 @@
 #include <memory>
 #include "YOGDownloadableMapInfo.h"
 #include <vector>
-#include <list>
 #include "YOGClientDownloadableMapListener.h"
 #include "MapThumbnail.h"
+#include "ListenerList.h"
 
 class YOGClient;
 class NetMessage;
@@ -58,7 +58,7 @@ private:
 	std::vector<YOGDownloadableMapInfo> maps;
 	std::vector<MapThumbnail> thumbnails;
 	YOGClient* client;
-	std::list<YOGClientDownloadableMapListener*> listeners;
+	ListenerList<YOGClientDownloadableMapListener> listeners;
 	bool waitingForList;
 };
 

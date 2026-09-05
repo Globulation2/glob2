@@ -532,10 +532,7 @@ void YOGClient::removeYOGClientChatChannel(YOGClientChatChannel* channel)
 
 void YOGClient::sendToListeners(std::shared_ptr<YOGClientEvent> event)
 {
-	for(std::list<YOGClientEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
-	{
-		(*i)->handleYOGClientEvent(event);
-	}
+	listeners.notify(&YOGClientEventListener::handleYOGClientEvent, event);
 }
 
 
@@ -556,7 +553,7 @@ std::shared_ptr<YOGClientFileAssembler> YOGClient::getYOGClientFileAssembler(Uin
 
 void YOGClient::addEventListener(YOGClientEventListener* listener)
 {
-	listeners.push_back(listener);
+	listeners.add(listener);
 }
 
 

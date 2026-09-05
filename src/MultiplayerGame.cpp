@@ -368,7 +368,7 @@ YOGKickReason MultiplayerGame::getKickReason() const
 
 void MultiplayerGame::addEventListener(MultiplayerGameEventListener* alistener)
 {
-	listeners.push_back(alistener);
+	listeners.add(alistener);
 }
 
 
@@ -649,10 +649,7 @@ void MultiplayerGame::setDefaultGameHeaderValues()
 
 void MultiplayerGame::sendToListeners(std::shared_ptr<MultiplayerGameEvent> event)
 {
-	for(std::list<MultiplayerGameEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
-	{
-		(*i)->handleMultiplayerGameEvent(event);
-	}
+	listeners.notify(&MultiplayerGameEventListener::handleMultiplayerGameEvent, event);
 }
 
 
