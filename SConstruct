@@ -297,6 +297,10 @@ def main():
         env.Append(CPPDEFINES=["YOG_SERVER_ONLY"])
         server_only = True
     env.Append(CXXFLAGS=["-std=c++14"])
+    # Strict C++ mode omits MinGW's nonstandard WIN32 alias. Legacy platform
+    # guards rely on it (including disabling the Unix OSS audio backend).
+    if env['mingw'] or isWindowsPlatform or env['mingwcross']:
+        env.Append(CPPDEFINES=["WIN32"])
     configure(env, server_only)
 
     env.Append(CPPPATH=['#libgag/include', '#'])
