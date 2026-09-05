@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "SDL_net.h"
+#include "ScriptNumber.h"
 
 namespace GAGCore
 {
@@ -32,11 +33,8 @@ public:
 	///an objective a script can reference.
 	static constexpr int InvalidScriptNumber = 0;
 
-	///Script numbers travel as a single byte on the wire (encodeData writes
-	///Uint8), so the storable domain is [0..MaxScriptNumber]. addNewObjective
-	///and setScriptNumber clamp to this range so the in-memory value always
-	///matches what a save/load round-trip yields. Stock content uses 1..16.
-	static constexpr int MaxScriptNumber = 255;
+	///Upper bound of the storable script number domain. Stock content uses 1..16.
+	static constexpr int MaxScriptNumber = ScriptNumber::Max;
 
 	///This gets the number of objectives there are
 	int getNumberOfObjectives();

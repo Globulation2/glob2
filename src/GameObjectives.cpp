@@ -3,17 +3,9 @@
 
 #include "GameObjectives.h"
 #include "FileFormatVersions.h"
+#include "ScriptNumber.h"
 #include "Stream.h"
-#include <algorithm>
 #include <cassert>
-
-
-///Clamps a script number to the [0..MaxScriptNumber] domain the Uint8 wire
-///format can carry, so memory and a save/load round-trip can never diverge.
-static int clampScriptNumberToWireDomain(int scriptNumber)
-{
-	return std::clamp(scriptNumber, 0, GameObjectives::MaxScriptNumber);
-}
 
 
 GameObjectives::GameObjectives() :
@@ -43,7 +35,7 @@ void GameObjectives::addNewObjective(const std::string& objective, bool ishidden
 	completed.push_back(complete);
 	failed.push_back(nfailed);
 	types.push_back(type);
-	scriptNumbers.push_back(clampScriptNumberToWireDomain(scriptNumber));
+	scriptNumbers.push_back(ScriptNumber::clampToWireDomain(scriptNumber));
 }
 
 
@@ -195,7 +187,7 @@ GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
 void GameObjectives::setScriptNumber(int n, int scriptNumber)
 {
 	if (isValidObjectiveIndex(n))
-		scriptNumbers[n] = clampScriptNumberToWireDomain(scriptNumber);
+		scriptNumbers[n] = ScriptNumber::clampToWireDomain(scriptNumber);
 }
 
 

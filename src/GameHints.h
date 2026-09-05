@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "SDL_net.h"
+#include "ScriptNumber.h"
 
 namespace GAGCore
 {
@@ -18,13 +19,9 @@ class GameHints
 public:
 	GameHints();
 
-	///Script numbers travel as a single byte on the wire (encodeData writes
-	///Uint8), so the storable domain is [0..MaxScriptNumber]. addNewHint and
-	///setScriptNumber clamp to this range so the in-memory value always
-	///matches what a save/load round-trip yields. Stock content uses 1..8
-	///(the script editor has eight hint slots). Mirrors
-	///GameObjectives::MaxScriptNumber.
-	static constexpr int MaxScriptNumber = 255;
+	///Upper bound of the storable script number domain. Stock content uses
+	///1..8 (the script editor has eight hint slots).
+	static constexpr int MaxScriptNumber = ScriptNumber::Max;
 
 	///Returns the number of hints. The count is returned as int (not size_t)
 	///because every caller indexes hints with int (script numbers, UI loops)

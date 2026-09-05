@@ -2,17 +2,9 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "GameHints.h"
+#include "ScriptNumber.h"
 #include "Stream.h"
-#include <algorithm>
 #include <cassert>
-
-
-///Clamps a script number to the [0..MaxScriptNumber] domain the Uint8 wire
-///format can carry, so memory and a save/load round-trip can never diverge.
-static int clampScriptNumberToWireDomain(int scriptNumber)
-{
-	return std::clamp(scriptNumber, 0, GameHints::MaxScriptNumber);
-}
 
 GameHints::GameHints()
 {
@@ -32,7 +24,7 @@ void GameHints::addNewHint(const std::string& hint, bool nhidden, int scriptNumb
 {
 	texts.push_back(hint);
 	hidden.push_back(nhidden);
-	scriptNumbers.push_back(clampScriptNumberToWireDomain(scriptNumber));
+	scriptNumbers.push_back(ScriptNumber::clampToWireDomain(scriptNumber));
 }
 
 
@@ -91,7 +83,7 @@ bool GameHints::isHintVisible(int n) const
 void GameHints::setScriptNumber(int n, int scriptNumber)
 {
 	assert(n < (int)scriptNumbers.size());
-	scriptNumbers[n]=clampScriptNumberToWireDomain(scriptNumber);
+	scriptNumbers[n]=ScriptNumber::clampToWireDomain(scriptNumber);
 }
 
 
