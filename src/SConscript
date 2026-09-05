@@ -108,6 +108,7 @@ Game_orders.cpp
 Game_io.cpp
 Game_sync.cpp
 Game_editor.cpp
+Game_tiling.cpp
 render/GameRender.cpp
 render/GameRenderUnits.cpp
 render/GameRenderBuildings.cpp
@@ -176,6 +177,7 @@ map/gradient/MapGradientLocal.cpp
 map/io/MapIO.cpp
 map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
+map/MapTile.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindBuilding.cpp
 map/pathfind/MapPathfindRessource.cpp
@@ -215,6 +217,7 @@ map/generator/MapOldIslands.cpp
 map/generator/MapOldIslandsRessources.cpp
 map/generator/GameMaps.cpp
 map/io/MapHeader.cpp
+MapTiling.cpp
 MapScript.cpp
 MapScriptError.cpp
 MapScriptUSL.cpp

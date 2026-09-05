@@ -601,6 +601,9 @@ private:
 
 	// units: scratch counters for subscription / priority diff
 	Sint32 maxUnitWorkingFuture;
+public:
+	Sint32 getMaxUnitWorkingFuture() const { return maxUnitWorkingFuture; }
+private:
 	Sint32 maxUnitWorkingPrevious;
 	///The subscribeToBringRessourcesStep and subscribeForFlagingStep operate every 32 ticks
 	Sint32 subscriptionWorkingTimer;

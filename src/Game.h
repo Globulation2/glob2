@@ -203,6 +203,8 @@ public:
 	//! If a team is uncontrolled (playerMask == 0), remove units and buildings from map
 	void clearingUncontrolledTeams(void);
 	void regenerateDiscoveryMap(void);
+	///Repeats the loaded map rx by ry times and deals its colonies round robin to teamCount fresh teams, see MapTiling.h
+	bool tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam);
 
 	//void addUnit(int x, int y, int team, int type, int level);
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
