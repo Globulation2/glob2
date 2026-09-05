@@ -376,7 +376,7 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 			isRoom = false;
 		
 		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
+		int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(globalContainer->buildingsTypes.getTypeNum(building, 0, false));
 		
 		if (isRoom)
 		{
