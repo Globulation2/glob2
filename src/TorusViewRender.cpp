@@ -616,4 +616,3 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     return false;
 #endif
 }
-

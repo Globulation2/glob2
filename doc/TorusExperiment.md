@@ -75,7 +75,7 @@ Keyboard steps and wheel zoom use a shared exponential camera response (about
 63 ms time constant). Mesh projection, picking, and the distant sky use the same
 rendered focus; wrapped coordinates interpolate across the shortest seam.
 
-GPU setup and discovery uploads are separate from frame drawing. Loading a game
+GPU setup is separate from frame drawing. Loading a game
 resets the camera, picking cache, textures and buffers together. GPU objects are
 recreated when a resolution/fullscreen change replaces the OpenGL context. The
 shared renderer explicitly releases old contexts, and a generation counter
@@ -86,8 +86,8 @@ returns to the normal 2D renderer on the same frame.
 ## Performance
 
 The atlas refreshes on every rendered game frame; camera animation uses cached
-indexed GPU geometry at the same cadence. Discovery uploads occur only when the
-visibility mask changes; CPU cloud and discovery buffers are reused. Its resolution is 32 pixels per tile, capped at
+indexed GPU geometry at the same cadence. Fog of war is captured by the shared
+map renderer; CPU cloud pixels and mesh buffers are reused. Its resolution is 32 pixels per tile, capped at
 8192 pixels per dimension and the GPU's texture/viewport limits. Larger maps
 therefore downsample. Small distant tiles also lose detail through projection.
 Picking caches stationary pointer hits and rejects triangles outside the
