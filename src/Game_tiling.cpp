@@ -16,14 +16,17 @@ namespace
 	// positions are offsets from the colony's anchor, the shortest way round the source torus
 	struct BuildingTemplate
 	{
-		int x, y, typeNum, hp, bullets, maxUnitWorking, maxUnitWorkingFuture, priority, unitStayRange;
+		int x, y, typeNum, hp, bullets, maxUnitWorking, maxUnitWorkingFuture, maxUnitInside, priority, unitStayRange, minLevelToFlag;
+		Uint32 receiveRessourceMask, sendRessourceMask;
 		Sint32 ressources[MAX_NB_RESSOURCES];
 		Sint32 ratio[NB_UNIT_TYPE];
 	};
 
 	struct UnitTemplate
 	{
-		int x, y, typeNum, hp;
+		int x, y, typeNum, hp, hungry, hungryness, experience, experienceLevel;
+		Uint32 fruitMask, fruitCount;
+		Unit::Medical medical;
 		Sint32 level[NB_ABILITY];
 	};
 
@@ -90,7 +93,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 			const Building* b = teams[t]->myBuildings[i];
 			if (!b || b->buildingState != Building::ALIVE)
 				continue;
-			BuildingTemplate bt = { wrapOffset(b->posX, colony.anchorX, w0), wrapOffset(b->posY, colony.anchorY, h0), b->typeNum, b->hp, b->bullets, b->maxUnitWorking, b->getMaxUnitWorkingFuture(), b->priority, b->unitStayRange, {}, {} };
+			BuildingTemplate bt = { wrapOffset(b->posX, colony.anchorX, w0), wrapOffset(b->posY, colony.anchorY, h0), b->typeNum, b->hp, b->bullets, b->maxUnitWorking, b->getMaxUnitWorkingFuture(), b->maxUnitInside, b->priority, b->unitStayRange, b->minLevelToFlag, b->receiveRessourceMask, b->sendRessourceMask, {}, {} };
 			for (int r = 0; r < MAX_NB_RESSOURCES; r++)
 				bt.ressources[r] = b->ressources[r];
 			for (int u = 0; u < NB_UNIT_TYPE; u++)
@@ -105,7 +108,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 			// units inside a building are not on the map and are not carried over
 			if (map.getGroundUnit(u->posX, u->posY) != u->gid && map.getAirUnit(u->posX, u->posY) != u->gid)
 				continue;
-			UnitTemplate ut = { wrapOffset(u->posX, colony.anchorX, w0), wrapOffset(u->posY, colony.anchorY, h0), u->typeNum, u->hp, {} };
+			UnitTemplate ut = { wrapOffset(u->posX, colony.anchorX, w0), wrapOffset(u->posY, colony.anchorY, h0), u->typeNum, u->hp, u->hungry, u->hungryness, u->experience, u->experienceLevel, u->fruitMask, u->fruitCount, u->medical, {} };
 			for (int a = 0; a < NB_ABILITY; a++)
 				ut.level[a] = u->level[a];
 			colonies[t].units.push_back(ut);
@@ -143,6 +146,10 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 						continue;
 					b->hp = bt.hp;
 					b->bullets = bt.bullets;
+					b->maxUnitInside = bt.maxUnitInside;
+					b->minLevelToFlag = bt.minLevelToFlag;
+					b->receiveRessourceMask = bt.receiveRessourceMask;
+					b->sendRessourceMask = bt.sendRessourceMask;
 					b->priority = bt.priority;
 					b->unitStayRange = bt.unitStayRange;
 					for (int r = 0; r < MAX_NB_RESSOURCES; r++)
@@ -167,6 +174,13 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 						u->performance[a] = teams[k]->race.getUnitType(ut.typeNum, ut.level[a])->performance[a];
 					}
 					u->hp = ut.hp;
+					u->hungry = ut.hungry;
+					u->hungryness = ut.hungryness;
+					u->experience = ut.experience;
+					u->experienceLevel = ut.experienceLevel;
+					u->fruitMask = ut.fruitMask;
+					u->fruitCount = ut.fruitCount;
+					u->medical = ut.medical;
 				}
 			}
 
