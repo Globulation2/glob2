@@ -548,7 +548,14 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         return false;
     }
     // Keep terrain, units, clouds and pointer previews on the normal render cadence.
+    // The whole texture is redrawn: no scissor, program or depth test may be left
+    // over from the ring, whatever the driver restored.
     {
+        glUseProgram(0);
+        glActiveTexture(GL_TEXTURE0);
+        glDisable(GL_SCISSOR_TEST);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glViewport(0, 0, atlasW, atlasH);
         glOrtho(0, game.map.getW() * 32, game.map.getH() * 32, 0, -1, 1);
