@@ -145,6 +145,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (button==SDL_BUTTON_MIDDLE)
 		{
 			panPushed=false;
+			torusView.setHeld(false);
 		}
 	}
 
@@ -348,6 +349,7 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 		{
 			// Enable panning
 			panPushed=true;
+			torusView.setHeld(true);
 			panMouseX=mouseEvent.x;
 			panMouseY=mouseEvent.y;
 			panViewX=viewportX;
@@ -385,6 +387,7 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 	miniMapPushed=false;
 	selectionPushed=false;
 	panPushed=false;
+	torusView.setHeld(false);
 	// showUnitWorkingToBuilding=false;
 }
 

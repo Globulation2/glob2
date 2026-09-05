@@ -15,11 +15,13 @@ class TorusView
     TorusView();
     ~TorusView();
     // Drawn as a torus: switched on, pulled back by movement, or still unfolding.
-    bool active() const { return target || moving || amount > 0; }
+    bool active() const { return target || moving || held || amount > 0; }
     // Switched on by hand: the 2D scrolling rests and the wheel zooms the ring.
     bool enabled() const { return target; }
     // The 2D view moved this frame: pull back slowly while it keeps moving.
     void notifyMove();
+    // A pan button is held: pull back for as long as it stays down, even without movement.
+    void setHeld(bool down);
     bool available() const;
     // Drop camera, picking and GPU state before loading another game.
     void reset();
@@ -46,6 +48,7 @@ class TorusView
     int pickWidth = 0, pickHeight = 0;
     bool target, dragging;
     bool moving = false;
+    bool held = false;
     Uint32 lastMove = 0;
     Uint32 lastDump = 0;
     float amount, zoom;

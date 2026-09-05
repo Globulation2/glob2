@@ -246,6 +246,18 @@ void TorusView::toggle()
     }
 }
 void TorusView::resetCamera() { zoom = cameraZoom = 1; }
+void TorusView::setHeld(bool down)
+{
+    if (!available())
+        return;
+    if (down && !active())
+    {
+        resetCamera();
+        lastFrame = SDL_GetTicks();
+    }
+    held = down;
+}
+
 void TorusView::notifyMove()
 {
     if (!available())
@@ -465,7 +477,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     // A pause in the movement ends the pull-back.
     if (moving && now - lastMove > 250)
         moving = false;
-    const bool pullBack = target || moving;
+    const bool pullBack = target || moving || held;
     if (!amount && pullBack)
     {
         // Put the current viewport center on the front of the torus. Preserve
@@ -486,7 +498,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         travelU = travelV = cameraU = cameraV = 0;
     }
     // Movement pulls back slowly; the return is quick. The hand switch keeps its own pace.
-    const float pace = target ? 1.8f : (moving ? 4.0f : 0.45f);
+    const float pace = target ? 1.8f : ((moving || held) ? 4.0f : 0.45f);
     amount = clamp(amount + (pullBack ? dt : -dt) / pace, 0, 1);
     // The ordinary map and minimap track the same destination as the torus.
     // Ease the sub-tile remainder away while returning to the tile-based 2D camera.
