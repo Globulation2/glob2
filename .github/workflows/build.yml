@@ -8,8 +8,7 @@ on:
 jobs:
   linux:
     name: linux (${{ matrix.image }})
-    runs-on: ubuntu-latest
-    container: ${{ matrix.image }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
@@ -17,7 +16,13 @@ jobs:
         # 1.74 (catches C++20 features the oldest supported compiler lacks),
         # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
         # that no longer come in transitively).
-        image: [ubuntu:22.04, ubuntu:24.04]
+        include:
+          - image: ubuntu:22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
     steps:
       - name: Install dependencies
         timeout-minutes: 15
@@ -26,15 +31,15 @@ jobs:
         run: |
           # Fetch immutable package indexes to avoid mirror-sync mismatches,
           # and bound network stalls without weakening signature verification.
-          cat > /etc/apt/apt.conf.d/80-ci-network <<'EOF'
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
           Acquire::By-Hash "force";
           Acquire::Retries "3";
           Acquire::http::Timeout "30";
           Acquire::https::Timeout "30";
           EOF
-          apt-get update -qq
-          apt-get install -y --no-install-recommends \
-            ca-certificates git g++ python3 scons pkg-config \
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev \
@@ -45,29 +50,29 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build glob2
-        run: scons -j$(nproc) release=1
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
 
       - name: Test torus geometry, picking and cloud coordinates
         run: |
-          g++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
           /tmp/torus-geometry
-          g++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
           /tmp/torus-picking
-          g++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+          ${{ matrix.compiler }} -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
           /tmp/cloud-field
 
       - name: Build the YOG server
-        run: scons -j$(nproc) release=1 server=1 --build=build-server
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
 
       - name: Build and run the tests
         working-directory: test
         run: |
-          scons -j$(nproc)
+          scons CXX=${{ matrix.compiler }} -j$(nproc)
           ./TestsRunner
 
       - name: Build without OpenGL
         run: |
-          scons -j$(nproc) release=1 server=0 opengl=0 --build=build-software
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software
           python3 test/SoftwareStartupTest.py build-software/src/glob2
 
   windows:
