@@ -32,7 +32,7 @@ int main()
                 for (int i = 0; i <= n; ++i)
                 {
                     float u = float(i) / n - .5f, v = float(j) / n - .5f;
-                    auto p = TorusGeometry::overviewPoint(u, v, roll, focus);
+                    auto p = TorusGeometry::overviewPoint(u, v, roll, focus, 1.6f);
                     float w = 1 - p.z * roll / 18;
                     vertices.push_back(
                         {{500 * w + p.x * 80, 400 * w + p.y * 80, p.z * 80, w}, {1, 1, 1}, {u, -v}});
