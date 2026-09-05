@@ -39,7 +39,7 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
-	if (torusView.active() && !miniMapPushed)
+	if (torusView.enabled() && !miniMapPushed)
 	{
 		view.mouseX=mouseX=mx;
 		view.mouseY=mouseY=my;

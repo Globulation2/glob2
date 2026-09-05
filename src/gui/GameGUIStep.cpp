@@ -233,10 +233,12 @@ void GameGUI::step(void)
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
 	handleKeyAlways();
-	viewportX += torusView.active() ? 0 : viewportSpeedX;
-	viewportY += torusView.active() ? 0 : viewportSpeedY;
+	viewportX += torusView.enabled() ? 0 : viewportSpeedX;
+	viewportY += torusView.enabled() ? 0 : viewportSpeedY;
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
+	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
+		torusView.notifyMove();
 	if (torusView.active())
 		torusView.setViewport(viewportX, viewportY);
 

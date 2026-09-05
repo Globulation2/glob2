@@ -247,6 +247,18 @@ void TorusView::toggle()
     }
 }
 void TorusView::resetCamera() { zoom = cameraZoom = 1; }
+void TorusView::notifyMove()
+{
+    if (!available())
+        return;
+    if (!active())
+    {
+        resetCamera();
+        lastFrame = SDL_GetTicks();
+    }
+    lastMove = SDL_GetTicks();
+    moving = true;
+}
 void TorusView::setViewport(int x, int y)
 {
     if (!worldW || !worldH || !active())
@@ -425,7 +437,11 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     Uint32 now = SDL_GetTicks();
     float dt = std::min(0.1f, float(now - lastFrame) / 1000.0f);
     lastFrame = now;
-    if (!amount && target)
+    // A pause in the movement ends the pull-back.
+    if (moving && now - lastMove > 250)
+        moving = false;
+    const bool pullBack = target || moving;
+    if (!amount && pullBack)
     {
         // Put the current viewport center on the front of the torus. Preserve
         // its sub-tile offset, so even the first/last frame matches normal 2D.
@@ -444,10 +460,12 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         worldH = game.map.getH();
         travelU = travelV = cameraU = cameraV = 0;
     }
-    amount = clamp(amount + (target ? dt : -dt) / 1.8f, 0, 1);
+    // Movement pulls back slowly; the return is quick. The hand switch keeps its own pace.
+    const float pace = target ? 1.8f : (moving ? 4.0f : 0.45f);
+    amount = clamp(amount + (pullBack ? dt : -dt) / pace, 0, 1);
     // The ordinary map and minimap track the same destination as the torus.
     // Ease the sub-tile remainder away while returning to the tile-based 2D camera.
-    if (!target)
+    if (!pullBack)
     {
         float settle = amount == 0 ? 1 : 1 - std::exp(-16 * dt);
         travelU = mix(travelU, std::round(travelU * worldW) / worldW, settle);
@@ -538,7 +556,11 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     // One direct, restrained pullback. There is no intermediate zoom to a
     // distant full-map sheet, then zoom back in to the torus.
     float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
-    float cameraDistance = TorusGeometry::hoverDistance(anchorV);
+    // The ring keeps one attitude on screen: the surface slides around the
+    // tube as the view pans, and turns about the axis as it scrolls, while
+    // the sky drifts with both so the movement stays readable.
+    const float ringV = 0.5f;
+    float cameraDistance = TorusGeometry::hoverDistance(ringV);
     float scale = std::min(width / 10.0f, height / 9.0f) * mix(1, cameraZoom, roll);
     float sx = std::exp(mix(std::log(game.map.getW() * 32 / (8 * pi)), std::log(scale), pull));
     float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);

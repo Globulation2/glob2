@@ -13,8 +13,12 @@ class TorusView
   public:
     TorusView();
     ~TorusView();
-    bool active() const { return target || amount > 0; }
+    // Drawn as a torus: switched on, pulled back by movement, or still unfolding.
+    bool active() const { return target || moving || amount > 0; }
+    // Switched on by hand: the 2D scrolling rests and the wheel zooms the ring.
     bool enabled() const { return target; }
+    // The 2D view moved this frame: pull back slowly while it keeps moving.
+    void notifyMove();
     bool available() const;
     // Drop camera, picking and GPU state before loading another game.
     void reset();
@@ -39,6 +43,8 @@ class TorusView
     float pickU = 0, pickV = 0;
     int pickWidth = 0, pickHeight = 0;
     bool target, dragging;
+    bool moving = false;
+    Uint32 lastMove = 0;
     float amount, zoom;
     float travelU, travelV;
     float cameraU = 0, cameraV = 0, cameraZoom = 1;
