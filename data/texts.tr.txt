@@ -1218,3 +1218,9 @@ Kazandiniz!
 Bir biriminiz %0 'nin tarafina gecti
 [Your username was banned]
 
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

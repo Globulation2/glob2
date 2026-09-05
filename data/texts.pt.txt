@@ -1216,3 +1216,9 @@ Seus %0 estão sendo atacados
 Uma unidade tem se passado ao bando de %0
 [Your username was banned]
 
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team
