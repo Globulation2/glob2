@@ -9,6 +9,7 @@
 #include "Toolkit.h"
 #include "FileManager.h"
 #include <memory>
+#include <cstring>
 
 namespace MapTiling
 {
@@ -47,6 +48,57 @@ namespace MapTiling
 				break;
 		}
 		return -1;
+	}
+
+	MapInfo readMapInfo(const std::string& fileName)
+	{
+		MapInfo info;
+		std::unique_ptr<GAGCore::InputStream> in(new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(fileName)));
+		if (in->isEndOfStream() || !info.header.load(in.get()) || !in->canSeek())
+			return info;
+		// the map section starts with its signature and the size shifts, see Map::load
+		in->seekFromStart(info.header.getMapOffset());
+		in->readEnterSection("Map");
+		char signature[4];
+		in->read(signature, 4, "signatureStart");
+		if (memcmp(signature, "MapB", 4) != 0)
+			return info;
+		info.w = 1 << in->readSint32("wDec");
+		info.h = 1 << in->readSint32("hDec");
+		info.valid = info.header.getNumberOfTeams() > 0 && info.w > 0 && info.h > 0;
+		return info;
+	}
+
+	bool fits(const MapInfo& map, int rx, int ry, int teams, int swarms)
+	{
+		if (!map.valid || map.w * rx > MAX_MAP_SIDE || map.h * ry > MAX_MAP_SIDE)
+			return false;
+		const int colonies = colonyCount(map.header.getNumberOfTeams(), rx, ry);
+		return teams >= 1 && teams <= colonies && swarms >= 1 && swarms * teams <= colonies;
+	}
+
+	void adjust(const MapInfo& map, int& rx, int& ry, int& teams, int& swarms)
+	{
+		if (!map.valid)
+			return;
+		const int mapTeams = map.header.getNumberOfTeams();
+		while (map.w * rx > MAX_MAP_SIDE && rx > 1) rx /= 2;
+		while (map.h * ry > MAX_MAP_SIDE && ry > 1) ry /= 2;
+		// no colony count chosen yet: one per colony of the repeated map
+		if (teams < 1)
+			teams = std::min<int>(Team::MAX_COUNT, colonyCount(mapTeams, rx, ry));
+		// grow the repeat, shorter side first, until the colonies wanted fit
+		while (colonyCount(mapTeams, rx, ry) < teams)
+		{
+			const bool canX = map.w * rx * 2 <= MAX_MAP_SIDE, canY = map.h * ry * 2 <= MAX_MAP_SIDE;
+			if (!canX && !canY)
+				break;
+			if ((map.w * rx <= map.h * ry && canX) || !canY) rx *= 2; else ry *= 2;
+		}
+		teams = std::max(1, std::min<int>(teams, std::min<int>(Team::MAX_COUNT, colonyCount(mapTeams, rx, ry))));
+		if (swarms < 1)
+			swarms = colonyCount(mapTeams, rx, ry) / teams;
+		swarms = std::max(1, std::min(swarms, colonyCount(mapTeams, rx, ry) / teams));
 	}
 
 	MapHeader writeTiledMap(const MapHeader& source, int rx, int ry, int teams, int perTeam)
