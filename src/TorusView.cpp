@@ -517,10 +517,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glEnable(GL_SCISSOR_TEST);
     // The sidebar is translucent: render beneath it, while retaining the
     // playable-area camera center and input bounds. The scissor box is in
-    // drawable pixels, which exceed the logical size under fullscreen scaling.
-    int drawableW = gfx->getW(), drawableH = gfx->getH();
-    SDL_GL_GetDrawableSize(SDL_GL_GetCurrentWindow(), &drawableW, &drawableH);
-    glScissor(0, 0, drawableW, (height - 16) * drawableH / gfx->getH());
+    // framebuffer pixels: the viewport the 2D view draws through maps the
+    // logical size onto them, whatever the window system reports.
+    glScissor(oldViewport[0], oldViewport[1], oldViewport[2], (height - 16) * oldViewport[3] / gfx->getH());
     glClearColor(0.025f, 0.037f, 0.06f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
