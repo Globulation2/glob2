@@ -298,7 +298,7 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
         {
             // Move the camera focus across the fixed world surface.
             auto movement = TorusGeometry::surfaceDrag(e.motion.xrel, e.motion.yrel, surfaceScaleX,
-                                                       surfaceScaleY, smooth(amount), 0.5f);
+                                                       surfaceScaleY, smooth(amount), 0.5f, viewAspect);
             travelU += movement.x;
             travelV += movement.y;
             travelU -= std::floor(travelU);
@@ -498,7 +498,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         travelU = travelV = cameraU = cameraV = 0;
     }
     // Movement pulls back slowly; the return is quick. The hand switch keeps its own pace.
-    const float pace = target ? 1.8f : ((moving || held) ? 4.0f : 0.45f);
+    const float pace = target ? 1.8f : (moving ? 4.0f : 0.45f);
     amount = clamp(amount + (pullBack ? dt : -dt) / pace, 0, 1);
     // The ordinary map and minimap track the same destination as the torus.
     // Ease the sub-tile remainder away while returning to the tile-based 2D camera.
@@ -611,15 +611,36 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     // the sky drifts with both so the movement stays readable.
     const float ringV = 0.5f;
     float cameraDistance = TorusGeometry::hoverDistance(ringV);
-    float scale = std::min(width / 10.0f, height / 9.0f) * mix(1, cameraZoom, roll);
+    viewAspect = float(width) / std::max(1, height - 16);
+    float scale = std::min(width / 5.0f, height / 4.5f) * mix(1, cameraZoom, roll);
     float sx = std::exp(mix(std::log(game.map.getW() * 32 / (8 * pi)), std::log(scale), pull));
     float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
     surfaceScaleX = sx;
     surfaceScaleY = sy;
-    float cx = width * 0.5f, cy = (height + 16) * 0.5f;
+    // The folded ring sits centred in the view; the flat map keeps its focus there.
+    // The ring's silhouette is measured once per view shape in camera units.
+    if (ringAspect != viewAspect)
+    {
+        float minX = 1e9f, maxX = -1e9f, minY = 1e9f, maxY = -1e9f;
+        for (int j = 0; j <= 40; ++j)
+            for (int i = 0; i <= 40; ++i)
+            {
+                auto p = TorusGeometry::overviewPoint(i / 40.0f - 0.5f, j / 40.0f - 0.5f, 1, ringV, viewAspect);
+                float w = 1 - p.z / cameraDistance;
+                minX = std::min(minX, p.x / w);
+                maxX = std::max(maxX, p.x / w);
+                minY = std::min(minY, p.y / w);
+                maxY = std::max(maxY, p.y / w);
+            }
+        ringCentreX = (minX + maxX) * 0.5f;
+        ringCentreY = (minY + maxY) * 0.5f;
+        ringAspect = viewAspect;
+    }
+    float cx = width * 0.5f - ringCentreX * scale * smooth(roll);
+    float cy = (height + 16) * 0.5f - ringCentreY * scale * smooth(roll);
     float major = smooth(roll), minor = smooth(roll / 0.85f);
     float ya = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, aspect);
-    float viewPitch = pa + TorusGeometry::overviewTilt(ringV, roll);
+    float viewPitch = pa + TorusGeometry::overviewTilt(ringV, roll, viewAspect);
     float skyPitch = viewPitch + (anchorV - 0.5f) * pi * 0.5f;
     drawSky(ya, skyPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
     if (material)
@@ -655,9 +676,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
             for (int i = 0; i <= U; ++i)
             {
                 float du = float(i) / U - 0.5f, dv = float(j) / V - 0.5f;
-                auto p = TorusGeometry::overviewPoint(du, dv, roll, ringV);
-                auto pu = TorusGeometry::overviewPoint(du + e, dv, roll, ringV);
-                auto pv = TorusGeometry::overviewPoint(du, dv + e, roll, ringV);
+                auto p = TorusGeometry::overviewPoint(du, dv, roll, ringV, viewAspect);
+                auto pu = TorusGeometry::overviewPoint(du + e, dv, roll, ringV, viewAspect);
+                auto pv = TorusGeometry::overviewPoint(du, dv + e, roll, ringV, viewAspect);
                 TorusGeometry::Point tu = TorusGeometry::subtract(pu, p), tv = TorusGeometry::subtract(pv, p);
                 TorusGeometry::Point n = {tu.y * tv.z - tu.z * tv.y, tu.z * tv.x - tu.x * tv.z,
                                           tu.x * tv.y - tu.y * tv.x};

@@ -55,6 +55,7 @@ class TorusView
     float travelU, travelV;
     float cameraU = 0, cameraV = 0, cameraZoom = 1;
     float surfaceScaleX, surfaceScaleY;
+    float viewAspect = 1.6f, ringAspect = 0, ringCentreX = 0, ringCentreY = 0;
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
     Uint32 lastFrame;
