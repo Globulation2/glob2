@@ -3552,9 +3552,9 @@ void GameGUI::drawBuildingInfos(void)
 					else if(j == Building::UnitCantAccessResource)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access resource]")).arg(n);
 					else if(j == Building::UnitCantAccessFruit)
-						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from resource]")).arg(n);
-					else if(j == Building::UnitTooFarFromResource)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units can't access fruit]")).arg(n);
+					else if(j == Building::UnitTooFarFromResource)
+						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from resource]")).arg(n);
 					else if(j == Building::UnitTooFarFromFruit)
 						s = FormatableString(Toolkit::getStringTable()->getString("[%0 units too far from fruit]")).arg(n);
 					globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos, globalContainer->littleFont, s.c_str());
