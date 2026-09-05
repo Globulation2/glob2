@@ -143,6 +143,12 @@ namespace GameGUIKeyActions
 		
 		names[SwitchToAreaBrush8] = "switch to area brush 8";
 		keys["switch to area brush 8"] = SwitchToAreaBrush8;
+
+		names[IncreaseGameSpeed] = "increase game speed";
+		keys["increase game speed"] = IncreaseGameSpeed;
+
+		names[DecreaseGameSpeed] = "decrease game speed";
+		keys["decrease game speed"] = DecreaseGameSpeed;
 	}
 
 	const std::string getName(Uint32 action)

@@ -285,11 +285,11 @@ int Engine::run(void)
 	
 	while (doRunOnceAgain)
 	{
-		int speed=40;
+		int speed=globalContainer->settings.getGameSpeedStepDuration();
 		bool networkReadyToExecute = true;
 		
-		// If playing in fast-forward, we process the GUI and draw everything only once every 3 game-steps
-		// This way, the overall fps stays about the same
+		// At higher game-speed presets (and during replay fast-forward), render
+		// less frequently so simulation can use the available CPU.
 		int nextGuiStep = 1;
 		
 		cpuStats.reset(speed);
@@ -302,26 +302,32 @@ int Engine::run(void)
 		while (gui.isRunning)
 		{
 			nextGuiStep--;
-			
-			// Set the replay speed
-			if (globalContainer->replaying)
+			const int previousSpeed=speed;
+
+			int renderInterval=globalContainer->settings.getGameSpeedRenderInterval();
+			speed=globalContainer->settings.getGameSpeedStepDuration();
+
+			// Replay fast-forward uses the uncapped preset.
+			if (globalContainer->replaying && globalContainer->replayFastForward
+				&& !gui.gamePaused && !gui.hardPause)
 			{
-				if (globalContainer->replayFastForward && !gui.gamePaused)
-				{
-					speed = 12;
-					if (nextGuiStep < 0) nextGuiStep = 2;
-				}
-				else
-				{
-					speed = 40;
-					if (nextGuiStep < 0) nextGuiStep = 0;
-				}
+				speed=0;
+				renderInterval=16;
 			}
-			else
+
+			// Pausing must not turn an uncapped preset into a busy loop, and GUI
+			// input should be rendered on every paused frame.
+			if(gui.gamePaused || gui.hardPause)
 			{
-				// Process the GUI as usual, every step
-				nextGuiStep = 0;
+				speed=40;
+				renderInterval=1;
 			}
+			if(nextGuiStep<0 || nextGuiStep>=renderInterval)
+				nextGuiStep=renderInterval-1;
+
+			// A preset change or pause starts a fresh timing budget.
+			if(speed!=previousSpeed)
+				needToBeTime=static_cast<Sint64>(SDL_GetTicks64()-startTime);
 			
 			// We always allow the user to use the gui:
 			if (globalContainer->automaticEndingGame)
@@ -489,7 +495,8 @@ int Engine::run(void)
 			}
 			if(!globalContainer->runNoX)
 			{
-				if (nextGuiStep == 0)
+				const bool renderedFrame=nextGuiStep==0;
+				if (renderedFrame)
 				{
 					// we draw
 					gui.drawAll(gui.localTeamNo);
@@ -497,7 +504,7 @@ int Engine::run(void)
 				}
 				
 				// if required, save videoshot
-				if (!(globalContainer->videoshotName.empty()) && 
+				if (renderedFrame && !(globalContainer->videoshotName.empty()) &&
 					!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 					)
 				{
@@ -517,11 +524,17 @@ int Engine::run(void)
 
 				//Any inconsistancies in the delays will be smoothed throughout the following frames,
 				Uint64 delay = std::max<Sint64>(0, needToBeTime - currentTime);
-				SDL_Delay(delay);
+				if(delay>0)
+					SDL_Delay(delay);
+				else if(!networkReadyToExecute)
+					SDL_Delay(1);
 				
 				// we set CPU stats
 //				net->setLeftTicks(computationAvailableTicks);//We may have to tell others IP players to wait for our slow computer.
-				gui.setCpuLoad((4000-(delay*100)) / 40);
+				gui.setCpuLoad(speed>0
+					? static_cast<int>((std::max<Sint64>(0,
+						static_cast<Sint64>(speed)-static_cast<Sint64>(delay))*100)/speed)
+					: 100);
 				if (networkReadyToExecute && !gui.gamePaused)
 				{
 					cpuStats.addFrameData(delay);

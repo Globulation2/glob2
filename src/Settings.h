@@ -66,6 +66,24 @@ public:
 	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
+	/// Simulation speed preset. Zero is the original 25 ticks/second;
+	/// higher values progressively reduce delays and then skip rendered frames.
+	int gameSpeed;
+
+	enum
+	{
+		GAME_SPEED_NORMAL = 0,
+		GAME_SPEED_MAXIMUM = 10,
+	};
+
+	/// Milliseconds allotted to each simulation step for the selected preset.
+	int getGameSpeedStepDuration(void) const;
+	/// Number of simulation steps between rendered frames for the selected preset.
+	int getGameSpeedRenderInterval(void) const;
+	/// Human-readable multiplier used by settings, in-game options and notifications.
+	std::string getGameSpeedText(void) const;
+	/// Change presets while keeping the value within the supported range.
+	void changeGameSpeed(int amount);
 
 	
 
