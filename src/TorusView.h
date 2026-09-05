@@ -36,7 +36,8 @@ class TorusView
     float surfaceScaleX, surfaceScaleY;
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
-    Uint32 lastFrame, lastCapture;
+    Uint32 lastFrame;
+    std::vector<unsigned char> discoveryPixels;
     unsigned texture, visibility, framebuffer, material;
     unsigned meshBuffer, indexBuffer;
     float meshKey[8];

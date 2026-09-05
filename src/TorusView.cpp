@@ -167,7 +167,7 @@ GLuint createMaterial()
 TorusView::TorusView()
     : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0), surfaceScaleX(1),
       surfaceScaleY(1), baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
-      lastFrame(0), lastCapture(0), texture(0), visibility(0), framebuffer(0), material(0), meshBuffer(0),
+      lastFrame(0), texture(0), visibility(0), framebuffer(0), material(0), meshBuffer(0),
       indexBuffer(0), meshKey{}, failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f)
 {
 }
@@ -302,7 +302,6 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         worldW = game.map.getW();
         worldH = game.map.getH();
         travelU = travelV = 0;
-        lastCapture = 0;
     }
     amount = clamp(amount + (target ? dt : -dt) / 1.8f, 0, 1);
     // The ordinary map and minimap track the same destination as the torus.
@@ -345,7 +344,6 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
             glDeleteFramebuffers(1, &framebuffer);
         atlasW = nextW;
         atlasH = nextH;
-        lastCapture = 0;
         glPushAttrib(GL_TEXTURE_BIT);
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -378,7 +376,7 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         if (!material)
             material = createMaterial();
     }
-    if (!lastCapture || now - lastCapture >= 100)
+    // Keep terrain, units, clouds and pointer previews on the normal render cadence.
     {
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glViewport(0, 0, atlasW, atlasH);
@@ -405,18 +403,27 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 for (int c = 0; c < 4; ++c)
                     discovered[((worldH - 1 - y) * worldW + x) * 4 + c] = value;
             }
-        glPushAttrib(GL_TEXTURE_BIT);
-        if (!visibility)
-            glGenTextures(1, &visibility);
-        glBindTexture(GL_TEXTURE_2D, visibility);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, worldW, worldH, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                     discovered.data());
-        glPopAttrib();
-        lastCapture = now;
+        // Discovery usually remains unchanged. Avoid reallocating or uploading
+        // its texture on frames that only animate the world.
+        if (discovered != discoveryPixels) {
+            glPushAttrib(GL_TEXTURE_BIT);
+            if (!visibility) {
+                glGenTextures(1, &visibility);
+                glBindTexture(GL_TEXTURE_2D, visibility);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, worldW, worldH, 0, GL_RGBA,
+                             GL_UNSIGNED_BYTE, discovered.data());
+            } else {
+                glBindTexture(GL_TEXTURE_2D, visibility);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, worldW, worldH, GL_RGBA,
+                                GL_UNSIGNED_BYTE, discovered.data());
+            }
+            discoveryPixels.swap(discovered);
+            glPopAttrib();
+        }
     }
 
     // Save GL state AFTER the game renderer: its state cache must still match

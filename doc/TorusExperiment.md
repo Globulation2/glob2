@@ -62,8 +62,9 @@ expands. There is deliberately no conformal UV correction.
 
 ## Performance
 
-The atlas refreshes at 10 Hz; camera animation uses cached indexed GPU geometry
-at the normal render rate. Its resolution is 32 pixels per tile, capped at
+The atlas refreshes on every rendered game frame; camera animation uses cached
+indexed GPU geometry at the same cadence. Discovery uploads occur only when the
+visibility mask changes. Its resolution is 32 pixels per tile, capped at
 8192 pixels per dimension and the GPU's texture/viewport limits. Larger maps
 therefore downsample. Small distant tiles also lose detail through projection.
 Picking caches stationary pointer hits and rejects triangles outside the
@@ -106,7 +107,8 @@ it needs SDL2, OpenGL and a display.
 
 The experiment is implemented with compatibility OpenGL, and has been built on
 macOS. It needs further platform and gameplay testing. Buildings and units are
-sprites on the surface, previews refresh with the atlas, and unit selection
+sprites on the surface, unit selection
 uses the picked map cell rather than individual sprite pixels. Very large maps
-still have substantial atlas cost. Software rendering retains the normal 2D
+still have substantial atlas cost, so matching the normal update cadence does
+not guarantee identical measured FPS on every map and GPU. Software rendering retains the normal 2D
 view. No torus camera state is serialized or sent over the network.
