@@ -8,6 +8,8 @@
 #include "Map.h"
 #include "MapHeader.h"
 #include "MapThumbnail.h"
+#include "Unit.h"
+#include "Building.h"
 #include "Stream.h"
 #include "Toolkit.h"
 #include "Utilities.h"
@@ -103,6 +105,7 @@ void MapThumbnail::loadFromMap(const std::string& map)
 				for (int i=0; i<7; i++)
 					pcol[i]=0;
 				nCount=0;
+				int team=-1;
 
 				// compute
 				for (minidx=(dMx*dx); minidx<=(dMx*(dx+1)); minidx++)
@@ -126,6 +129,12 @@ void MapThumbnail::loadFromMap(const std::string& map)
 
 						pcol[pcolIndex]+=pcolAddValue;
 						nCount++;
+
+						// a building or unit paints the whole pixel in its team's colour
+						if (map.getBuilding((int)minidx, (int)minidy) != NOGBID)
+							team = Building::GIDtoTeam(map.getBuilding((int)minidx, (int)minidy));
+						else if (team < 0 && map.getGroundUnit((int)minidx, (int)minidy) != NOGUID)
+							team = Unit::GIDtoTeam(map.getGroundUnit((int)minidx, (int)minidy));
 					}
 				}
 
@@ -133,6 +142,14 @@ void MapThumbnail::loadFromMap(const std::string& map)
 				r=(int)((H[0]*pcol[GRASS]+E[0]*pcol[WATER]+S[0]*pcol[SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
 				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
 				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
+
+				if (team >= 0 && team < header.getNumberOfTeams())
+				{
+					const GAGCore::Color& c = header.getBaseTeam(team).color;
+					r = c.r;
+					g = c.g;
+					b = c.b;
+				}
 
 				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 0] = r;
 				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 1] = g;
