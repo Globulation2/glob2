@@ -13,11 +13,11 @@ Captured from the native build on this branch. Unexplored terrain remains dark.
 
 Zoomed out:
 
-![Zoomed-out 3D game world](images/glob-3d/zoomed-out.png)
+![Zoomed-out 3D game world](images/glob-3d/zoomed-out.jpg)
 
 Rotated view:
 
-![Rotated 3D game world](images/glob-3d/rotated.png)
+![Rotated 3D game world](images/glob-3d/rotated.jpg)
 
 ## Run
 
