@@ -157,6 +157,15 @@ int main()
     // screen-down makes them move up in our downward-positive screen space.
     assert(projectSkyDirection({0,0,-1},{.1f,0},1,80,80,18,sky) && sky.x<0);
     assert(projectSkyDirection({0,0,-1},{0,-.1f},1,80,80,18,sky) && sky.y<0);
+    // The inner-wall correction must never stall or reverse the orbit.
+    for (int i=0; i<1000; ++i)
+        for (float roll : {0.f,.5f,1.f}) {
+            float v=float(i)/1000, step=.0001f;
+            float a=latitude(v,1)+overviewTilt(v,roll);
+            float b=latitude(v+step,1)+overviewTilt(v+step,roll);
+            float slope=(b-a)/(step*2*pi);
+            assert(slope>0.47f && slope<1.53f);
+        }
     // Navigation cannot change distance, magnification, or produce a lens
     // singularity. The inner-wall tilt remains periodic and below 90 degrees.
     for (int i = -100; i <= 200; ++i)

@@ -119,8 +119,11 @@ inline Point focusedPoint(float du, float dv, float roll, float anchorV)
 inline float hoverDistance(float) { return 18.0f; }
 inline float overviewTilt(float anchorV, float roll)
 {
-    float inner = std::max(0.0f, -std::cos(latitude(anchorV, 1)));
-    return -(pi / 3) * smooth(inner) * smooth(roll);
+    // Spread the inner-wall correction across the whole orbit. Its angular
+    // derivative is bounded by pi/6 < 1, so it cannot cancel or reverse the
+    // base latitude rotation (the old clamped smoothstep could do both).
+    float inner = 0.5f * (1 - std::cos(latitude(anchorV, 1)));
+    return -(pi / 3) * inner * smooth(roll);
 }
 inline Point overviewPoint(float du, float dv, float roll, float anchorV)
 {
