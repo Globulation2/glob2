@@ -329,6 +329,7 @@ namespace GAGCore
 		//! the minimum acceptable resolution
 		int minW, minH;
 		SDL_Window *window = nullptr;
+		SDL_GLContext glContext = nullptr;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -413,6 +414,8 @@ namespace GAGCore
 		
 		//! Return the option flags
 		Uint32 getOptionFlags(void) { return optionFlags; }
+		// Restore the sprite state cache after an external OpenGL render pass.
+		void restore2DState();
 	};
 	
 	//! A sprite is a collection of images (frames) that can be displayed one after another to make an animation
@@ -449,6 +452,7 @@ namespace GAGCore
 #endif
 		static void checkAllSpritesDrawn();
 		Color actColor;
+		std::map<int, SDL_Rect> visibleBounds;
 	
 		friend class DrawableSurface;
 		// Support functions
@@ -478,6 +482,8 @@ namespace GAGCore
 		virtual int getW(int index);
 		//! Return the height of index frame of the sprite
 		virtual int getH(int index);
+		//! Opaque artwork bounds, excluding transparent padding and faint shadows.
+		SDL_Rect getVisibleBounds(int index);
 		//! Return the number of frame in this sprite
 		virtual int getFrameCount(void);
 	};

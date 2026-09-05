@@ -43,6 +43,7 @@ FertilityCalculatorDialog.cpp
 FertilityCalculatorThread.cpp
 FertilityCalculatorThreadMessage.cpp
 Game.cpp
+World3D.cpp
 GameEvent.cpp
 GameGUI.cpp
 GameGUIDefaultAssignManager.cpp

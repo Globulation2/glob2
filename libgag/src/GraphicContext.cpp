@@ -2080,6 +2080,8 @@ namespace GAGCore
 	GraphicContext::~GraphicContext(void)
 	{
 		freeDummySurface();
+		if (glContext) SDL_GL_DeleteContext(glContext);
+		if (window) SDL_DestroyWindow(window);
 		TTF_Quit();
 		SDL_Quit();
 
@@ -2127,6 +2129,7 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+			SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
@@ -2134,6 +2137,8 @@ namespace GAGCore
 		optionFlags &= ~USEGPU;
 		#endif
 
+		// Release the context before replacing its window.
+		if (glContext) {SDL_GL_DeleteContext(glContext); glContext=nullptr;}
 		// if window exists, delete it
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -2169,8 +2174,11 @@ namespace GAGCore
 			// enable GL context
 			if (flags & USEGPU)
 			{
-				SDL_GLContext context = SDL_GL_CreateContext(window);
-				SDL_GL_MakeCurrent(window, context);
+				glContext = SDL_GL_CreateContext(window);
+				if (!glContext || SDL_GL_MakeCurrent(window, glContext) != 0) {
+					fprintf(stderr, "Toolkit: OpenGL context creation failed: %s\n", SDL_GetError());
+					return false;
+				}
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))
@@ -2258,6 +2266,19 @@ namespace GAGCore
 
 			return true;
 		}
+	}
+
+	void GraphicContext::restore2DState()
+	{
+#ifdef HAVE_OPENGL
+		if (optionFlags & USEGPU) {
+			glDisable(GL_TEXTURE_2D);
+			if (glState.isTextureSRectangle) glDisable(GL_TEXTURE_RECTANGLE_NV);
+			glDisable(GL_BLEND); glDisable(GL_SCISSOR_TEST);
+			glState.resetCache();
+			setClipRect(clipRect.x, clipRect.y, clipRect.w, clipRect.h);
+		}
+#endif
 	}
 
 	void GraphicContext::nextFrame(void)

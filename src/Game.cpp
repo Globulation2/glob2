@@ -1787,6 +1787,98 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 		assert(false);
 }
 
+// Shared by the original 2D renderer and the 3D presentation. Keep the
+// original dot-bar style and values in one place.
+void Game::drawUnitStatus(Unit* unit,int px,int py,int resourceY,Uint32 drawOptions)
+{
+	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
+	{
+		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, (unit->hungry*10)/Unit::HUNGRY_MAX, 80, 179, 223);
+
+		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
+		if (hpRatio>0.6)
+			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 78, 187, 78);
+		else if (hpRatio>0.3)
+			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 255, 0);
+		else
+			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
+
+		if ((unit->performance[HARVEST]) && (unit->carriedRessource>=0))
+			globalContainer->gfx->drawSprite(px+24, resourceY, globalContainer->ressourceMini, unit->carriedRessource);
+		globalContainer->gfx->finishDrawingSprite(globalContainer->ressourceMini, 255);
+	}
+
+}
+
+void Game::drawBuildingStatus(Building* building,int x,int y,int width,int height,Uint32 visibleTeams,Uint32 drawOptions)
+{
+	BuildingType* type=building->type;
+	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & visibleTeams))
+	{
+		//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
+		// TODO : find better color for this
+		// health
+		if (type->hpMax)
+		{
+			int maxWidth, actWidth, addDec;
+			float hpRatio=(float)building->hp/(float)type->hpMax;
+			if (type->width==1)
+			{
+				maxWidth=8;
+				actWidth=1+(int)(7.0f*hpRatio);
+				addDec=2;
+			}
+			else
+			{
+				maxWidth=16;
+				actWidth=1+(int)(15.0f*hpRatio);
+				addDec=7;
+			}
+			int decy=height;
+			int healDecx=width/2-(maxWidth>>3)*16+addDec;
+
+			if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
+			{
+				if (hpRatio>0.6)
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
+				else if (hpRatio>0.3)
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
+				else
+					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
+			}
+		}
+
+		// units
+		if (building->maxUnitInside>0)
+			drawPointBar(x+width-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+		if (building->maxUnitWorking>0)
+			drawPointBar(x+width/2-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
+
+		// food (for inns)
+		if ((type->canFeedUnit) || (type->unitProductionTime))
+		{
+			// compute bar size, prevent oversize
+			int bDiv=1;
+			assert(type->height!=0);
+			while ( ((type->maxRessource[CORN]*3+1)/bDiv)>(std::max(12,height)-10))
+				bDiv++;
+			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
+		}
+
+		// bullets (for defence towers)
+		if (type->maxBullets)
+		{
+			// compute bar size, prevent oversize
+			int bDiv=1;
+			assert(type->height!=0);
+			while ( ((type->maxBullets*3+1)/bDiv)>(std::max(12,height)-10))
+				bDiv++;
+			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxBullets/bDiv, building->bullets/bDiv, 200, 200, 200, 1+bDiv);
+		}
+	}
+
+}
+
 void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions)
 {
 	int id=Unit::GIDtoID(gid);
@@ -1896,22 +1988,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if ((px<mouseX)&&((px+32)>mouseX)&&(py<mouseY)&&((py+32)>mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
 		mouseUnit=unit;
 
-	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
-	{
-		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, (unit->hungry*10)/Unit::HUNGRY_MAX, 80, 179, 223);
-
-		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
-		if (hpRatio>0.6)
-			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 78, 187, 78);
-		else if (hpRatio>0.3)
-			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 255, 0);
-		else
-			drawPointBar(px+1, py+25+3, LEFT_TO_RIGHT, 10, 1+(int)(9*hpRatio), 255, 0, 0);
-
-		if ((unit->performance[HARVEST]) && (unit->carriedRessource>=0))
-			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->carriedRessource);
-		globalContainer->gfx->finishDrawingSprite(globalContainer->ressourceMini, 255);
-	}
+	drawUnitStatus(unit,px,py,py,drawOptions);
 
 	if (drawOptions & DRAW_ACCESSIBILITY)
 	{
@@ -2245,69 +2322,7 @@ inline void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int view
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
-	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & visibleTeams))
-	{
-		//int unitDecx=(building->type->width*16)-((3*building->maxUnitInside)>>1);
-		// TODO : find better color for this
-		// health
-		if (type->hpMax)
-		{
-			int maxWidth, actWidth, addDec;
-			float hpRatio=(float)building->hp/(float)type->hpMax;
-			if (type->width==1)
-			{
-				maxWidth=8;
-				actWidth=1+(int)(7.0f*hpRatio);
-				addDec=2;
-			}
-			else
-			{
-				maxWidth=16;
-				actWidth=1+(int)(15.0f*hpRatio);
-				addDec=7;
-			}
-			int decy=(type->height*32);
-			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
-
-			if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
-			{
-				if (hpRatio>0.6)
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 78, 187, 78);
-				else if (hpRatio>0.3)
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 255, 0);
-				else
-					drawPointBar(x+healDecx, y+decy-4, LEFT_TO_RIGHT, maxWidth, actWidth, 255, 0, 0);
-			}
-		}
-
-		// units
-		if (building->maxUnitInside>0)
-			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
-		if (building->maxUnitWorking>0)
-			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
-
-		// food (for inns)
-		if ((type->canFeedUnit) || (type->unitProductionTime))
-		{
-			// compute bar size, prevent oversize
-			int bDiv=1;
-			assert(type->height!=0);
-			while ( ((type->maxRessource[CORN]*3+1)/bDiv)>((type->height*32)-10))
-				bDiv++;
-			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxRessource[CORN]/bDiv, building->ressources[CORN]/bDiv, 255, 255, 120, 1+bDiv);
-		}
-
-		// bullets (for defence towers)
-		if (type->maxBullets)
-		{
-			// compute bar size, prevent oversize
-			int bDiv=1;
-			assert(type->height!=0);
-			while ( ((type->maxBullets*3+1)/bDiv)>((type->height*32)-10))
-				bDiv++;
-			drawPointBar(x+1, y+1, BOTTOM_TO_TOP, type->maxBullets/bDiv, building->bullets/bDiv, 200, 200, 200, 1+bDiv);
-		}
-	}
+	drawBuildingStatus(building,x,y,type->width*32,type->height*32,visibleTeams,drawOptions);
 
 	if (drawOptions & DRAW_ACCESSIBILITY)
 	{

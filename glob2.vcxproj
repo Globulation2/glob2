@@ -371,6 +371,7 @@
     <ClCompile Include="src\FertilityCalculatorThread.cpp" />
     <ClCompile Include="src\FertilityCalculatorThreadMessage.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\World3D.cpp" />
     <ClCompile Include="src\GameEvent.cpp" />
     <ClCompile Include="src\GameGUI.cpp" />
     <ClCompile Include="src\GameGUIDefaultAssignManager.cpp" />
@@ -566,6 +567,9 @@
     <ClInclude Include="src\EntityType.h" />
     <ClInclude Include="src\Fatal.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\World3D.h" />
+    <ClInclude Include="src\World3DCamera.h" />
+    <ClInclude Include="src\World3DPlacement.h" />
     <ClInclude Include="src\GameGUI.h" />
     <ClInclude Include="src\GameGUIDialog.h" />
     <ClInclude Include="src\GameGUILoadSave.h" />

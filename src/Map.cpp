@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "World3D.h"
+#include <cmath>
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -2145,6 +2147,9 @@ void Map::setAreaName(int n, std::string name)
 
 void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
 {
+#ifndef YOG_SERVER_ONLY
+	if(World3D::active(this)) {World3D::mapToScreen(*this,mx,my,viewportX,viewportY,px,py);return;}
+#endif
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
 	if (x > (w - 16))
@@ -2169,18 +2174,27 @@ void Map::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewp
 
 void Map::displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
 {
+#ifndef YOG_SERVER_ONLY
+	if(World3D::active(this)) {World3D::screenToMap(*this,mx,my,viewportX,viewportY,px,py);return;}
+#endif
 	*px=((mx>>5)+viewportX)&getMaskW();
 	*py=((my>>5)+viewportY)&getMaskH();
 }
 
 void Map::displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
 {
+#ifndef YOG_SERVER_ONLY
+	if(World3D::active(this)) {World3D::screenToMap(*this,mx,my,viewportX,viewportY,px,py,true);return;}
+#endif
 	*px=(((mx+16)>>5)+viewportX)&getMaskW();
 	*py=(((my+16)>>5)+viewportY)&getMaskH();
 }
 
 void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHeight, int *px, int *py, int viewportX, int viewportY) const
 {
+#ifndef YOG_SERVER_ONLY
+	if(World3D::active(this)) {float x,y;World3D::screenToGround(mx,my,x,y);mx=static_cast<int>(std::floor(x));my=static_cast<int>(std::floor(y));}
+#endif
 	int tempX, tempY;
 	if (buildingWidth&0x1)
 		tempX=((mx)>>5)+viewportX;
@@ -2198,6 +2212,9 @@ void Map::cursorToBuildingPos(int mx, int my, int buildingWidth, int buildingHei
 
 void Map::buildingPosToCursor(int px, int py, int buildingWidth, int buildingHeight, int *mx, int *my, int viewportX, int viewportY) const
 {
+#ifndef YOG_SERVER_ONLY
+	if(World3D::active(this)) {World3D::mapToScreen(*this,px+buildingWidth*.5f,py+buildingHeight*.5f,viewportX,viewportY,mx,my);return;}
+#endif
 	mapCaseToDisplayable(px, py, mx, my, viewportX, viewportY);
 	*mx+=buildingWidth*16;
 	*my+=buildingHeight*16;

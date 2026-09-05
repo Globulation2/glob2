@@ -254,6 +254,18 @@ int Glob2::run(int argc, char *argv[])
 	}
 
 	isRunning=true;
+	if (const char* trialSave = std::getenv("GLOB2_3D_SAVE"))
+	{
+		Engine engine;
+		if (engine.initCustom(trialSave) == Engine::EE_NO_ERROR)
+			isRunning = (engine.run() != -1);
+	}
+	else if (const char* trialMap = std::getenv("GLOB2_3D_MAP"))
+	{
+		Engine engine;
+		if (engine.init3DTrial(trialMap) == Engine::EE_NO_ERROR)
+			isRunning = (engine.run() != -1);
+	}
 
 	// Replay the game specified by the command line
 	if (globalContainer->replaying)

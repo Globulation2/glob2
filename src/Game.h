@@ -163,6 +163,9 @@ private:
 	void clearGame();
 
 public:
+	/// Original status graphics, also used at projected coordinates by the 3D renderer.
+	void drawUnitStatus(Unit* unit,int x,int y,int resourceY,Uint32 drawOptions);
+	void drawBuildingStatus(Building* building,int x,int y,int width,int height,Uint32 visibleTeams,Uint32 drawOptions);
 	bool anyPlayerWaited;
 	int anyPlayerWaitedTimeFor;
 	Uint32 maskAwayPlayer;

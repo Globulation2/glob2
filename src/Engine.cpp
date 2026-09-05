@@ -142,6 +142,25 @@ int Engine::initCustom(const std::string &gameName)
 	return EE_NO_ERROR;
 }
 
+int Engine::init3DTrial(const std::string &mapName)
+{
+	MapHeader mapHeader = loadMapHeader(mapName);
+	if (mapHeader.getNumberOfTeams() < 1)
+		return EE_CANT_LOAD_MAP;
+	GameHeader gameHeader;
+	for (int team = 0; team < mapHeader.getNumberOfTeams(); ++team)
+	{
+		gameHeader.getBasePlayer(team) = BasePlayer(team,
+			team == 0 ? globalContainer->settings.getUsername() : "Trial opponent",
+			team, team == 0 ? BasePlayer::P_LOCAL : Player::playerTypeFromImplementitionID(AI::NUMBI));
+		gameHeader.setAllyTeamNumber(team, team);
+	}
+	gameHeader.setNumberOfPlayers(mapHeader.getNumberOfTeams());
+	gui.localPlayer = 0;
+	gui.localTeamNo = 0;
+	return initGame(mapHeader, gameHeader, true, true, true);
+}
+
 int Engine::initLoadGame()
 {
 	ChooseMapScreen loadGameScreen("games", "game", true, "replays", "replay", false);

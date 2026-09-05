@@ -49,7 +49,9 @@ namespace GAGCore
 	FileManager::FileManager(const std::string gameName)
 	{
 		#ifndef WIN32
-		const std::string homeDir = getenv("HOME");
+		const char* trialHome = getenv("GLOB2_USER_DIR");
+		const char* defaultHome = getenv("HOME");
+		const std::string homeDir = trialHome ? trialHome : (defaultHome ? defaultHome : "");
 		if (!homeDir.empty())
 		{
 			std::string gameLocal(homeDir);

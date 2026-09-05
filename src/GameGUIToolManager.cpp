@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "World3D.h"
 #include "GameGUIToolManager.h"
 #include "GlobalContainer.h"
 #include "GUIBase.h"
@@ -133,7 +134,8 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		case BrushTool::MODE_ADD:
 			break;
 		}
-		brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY, firstPlacementX, firstPlacementY);
+		if(World3D::active(&game.map)) World3D::brushPreview(game,mouseX,mouseY,viewportX,viewportY,brush.getFigure(),firstPlacementX,firstPlacementY,c);
+		else brush.drawBrush(mouseX, mouseY, c, viewportX, viewportY, firstPlacementX, firstPlacementY);
 	}
 }
 
@@ -409,6 +411,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	if(ghostManager.isGhostBuilding(tempX, tempY, bt->width, bt->height))
 		isRoom = false;
 	
+	if(World3D::active(&game.map)) {World3D::preview(game,bt,tempX,tempY,viewportX,viewportY,localteam,isRoom);return;}
 	// Increase/Decrease hilight strength, given whether there is room or not
 	if (isRoom)
 		hilightStrength = std::min(hilightStrength + 0.1f, 1.0f);

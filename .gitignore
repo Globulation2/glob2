@@ -12,3 +12,10 @@ src/glob2
 __pycache__/
 build/
 vcpkg_installed/
+
+# Local 3D trial profile, tools and application bundles
+.trial-tools/
+.trial-user/
+trial/
+Glob2.app/
+Glob2-*.dmg

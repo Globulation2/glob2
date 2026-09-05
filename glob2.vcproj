@@ -267,6 +267,9 @@
 				RelativePath="src\Game.cpp">
 			</File>
 			<File
+				RelativePath="src\World3D.cpp">
+			</File>
+			<File
 				RelativePath="src\GameGUI.cpp">
 			</File>
 			<File
@@ -611,6 +614,15 @@
 			</File>
 			<File
 				RelativePath="src\Game.h">
+			</File>
+			<File
+				RelativePath="src\World3D.h">
+			</File>
+			<File
+				RelativePath="src\World3DCamera.h">
+			</File>
+			<File
+				RelativePath="src\World3DPlacement.h">
 			</File>
 			<File
 				RelativePath="src\GameGUI.h">

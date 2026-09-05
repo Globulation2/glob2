@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
 
+#include "World3D.h"
 #include "GameGUIGhostBuildingManager.h"
 
 #include "GlobalContainer.h"
@@ -93,6 +94,7 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int loca
 		Sprite *sprite = bt->gameSpritePtr;
 		sprite->setBaseColor(game.teams[localTeam]->color);
 
+		if(World3D::active(&game.map)) {World3D::preview(game,bt,px,py,viewportX,viewportY,localTeam,true,140);continue;}
 		//Find position to draw
 		int batW = (bt->width) * 32;
 		int batH = sprite->getH(bt->gameSpriteImage);

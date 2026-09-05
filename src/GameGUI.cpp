@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "World3D.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -173,6 +174,7 @@ GameGUI::GameGUI()
 
 GameGUI::~GameGUI()
 {
+	World3D::detach(&game.map);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 }
@@ -472,8 +474,12 @@ void GameGUI::step(void)
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
 	handleKeyAlways();
-	viewportX += viewportSpeedX;
-	viewportY += viewportSpeedY;
+	if(World3D::active(&game.map))
+		World3D::panBy(viewportSpeedX*32,viewportSpeedY*32,&viewportX,&viewportY);
+	else {
+		viewportX += viewportSpeedX;
+		viewportY += viewportSpeedY;
+	}
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 
@@ -1090,7 +1096,9 @@ void GameGUI::processEvent(SDL_Event *event)
 		else if (event->type==SDL_MOUSEWHEEL)
 		{
 			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
-			scrollWheelChanges += event->wheel.y * factor;
+			if(World3D::active(&game.map) && mouseX<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)
+				World3D::zoomBy(event->wheel.y * factor);
+			else scrollWheelChanges += event->wheel.y * factor;
 		}
 	}
 
@@ -1200,6 +1208,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 
 void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 {
+	if(pressed && typingInputScreen==NULL && !inGameMenu && World3D::key(key)) return;
 
 	int modifier;
 
@@ -1737,6 +1746,7 @@ void GameGUI::handleKeyDump(SDL_KeyboardEvent key)
 
 void GameGUI::handleKeyAlways(void)
 {
+	const int startViewportX=viewportX,startViewportY=viewportY;
 	SDL_PumpEvents();
 	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
 	if (notmenu == false)
@@ -1817,6 +1827,11 @@ void GameGUI::handleKeyAlways(void)
 			viewportY += yMotion;
 		}
 	}
+	if(World3D::active(&game.map)) {
+		const int dx=viewportX-startViewportX,dy=viewportY-startViewportY;
+		viewportX=startViewportX;viewportY=startViewportY;
+		World3D::panBy(dx*32,dy*32,&viewportX,&viewportY);
+	}
 }
 
 void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreenViewport)
@@ -1865,10 +1880,14 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	if (panPushed)
 	{
 		// handle paning
-		int dx = (mx-panMouseX)>>1;
-		int dy = (my-panMouseY)>>1;
-		viewportX = (panViewX+dx)&game.map.getMaskW();
-		viewportY = (panViewY+dy)&game.map.getMaskH();
+		if(World3D::active(&game.map))
+			World3D::panFrom(mx-panMouseX,my-panMouseY,panViewX,panViewY,&viewportX,&viewportY);
+		else {
+			viewportX = panViewX+((mx-panMouseX)>>1);
+			viewportY = panViewY+((my-panMouseY)>>1);
+		}
+		viewportX &= game.map.getMaskW();
+		viewportY &= game.map.getMaskH();
 	}
 	
 	moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
@@ -1913,6 +1932,12 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					return;
 				}
 			}
+		if(World3D::active(&game.map) && World3D::hoveredBuilding())
+		{
+			setSelection(BUILDING_SELECTION, World3D::hoveredBuilding());
+			selectionPushed=true;
+			return;
+		}
 		// then for unit
 		if (game.mouseUnit)
 		{
@@ -4365,6 +4390,7 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+	World3D::configure(&game.map, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
@@ -4379,7 +4405,9 @@ void GameGUI::drawAll(int team)
 	
 	updateHilightInGame();
 	arrowPositions.clear();
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	if (World3D::active(&game.map))
+		World3D::draw(game, viewportX, viewportY, localTeamNo, drawOptions);
+	else if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
 		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);

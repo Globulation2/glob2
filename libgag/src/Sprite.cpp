@@ -58,6 +58,7 @@ namespace GAGCore
 	
 	bool Sprite::load(const std::string filename)
 	{
+		visibleBounds.clear();
 		SDL_RWops *frameStream;
 		SDL_RWops *rotatedStream;
 		unsigned i = 0;
@@ -116,6 +117,11 @@ namespace GAGCore
 	bool Sprite::createTextureAtlas()
 	{
 #ifdef HAVE_OPENGL
+		// The macOS trial uses individual textures to avoid atlas seams.
+#ifdef __APPLE__
+		return false;
+#endif
+		if (!SDL_GL_GetCurrentContext()) return false;
 #ifdef DEBUG_SPRITE_NOT_DRAWN
 		sprites.push_back(this);
 #endif
@@ -259,6 +265,32 @@ namespace GAGCore
 			return 0;
 	}
 	
+	SDL_Rect Sprite::getVisibleBounds(int index)
+	{
+		auto cached=visibleBounds.find(index);
+		if(cached!=visibleBounds.end())return cached->second;
+		if(!checkBound(index))return SDL_Rect{0,0,0,0};
+		int left=getW(index),top=getH(index),right=-1,bottom=-1;
+		DrawableSurface* layers[]={images[index],rotated[index]?rotated[index]->orig:nullptr};
+		for(auto layer:layers) {
+			if(!layer || !layer->sdlsurface)continue;
+			SDL_Surface* pixels=SDL_ConvertSurfaceFormat(layer->sdlsurface,SDL_PIXELFORMAT_RGBA32,0);
+			if(!pixels)continue;
+			for(int y=0;y<pixels->h;y++)for(int x=0;x<pixels->w;x++) {
+				const auto* p=static_cast<const Uint8*>(pixels->pixels)+y*pixels->pitch+x*4;
+				// Baked building shadows reach half opacity; they must not
+				// pull the ground pivot away from the solid building itself.
+				if(p[3]<200)continue;
+				left=std::min(left,x);right=std::max(right,x);
+				top=std::min(top,y);bottom=std::max(bottom,y);
+			}
+			SDL_FreeSurface(pixels);
+		}
+		SDL_Rect bounds=right>=left?SDL_Rect{left,top,right-left+1,bottom-top+1}:SDL_Rect{0,0,getW(index),getH(index)};
+		visibleBounds[index]=bounds;
+		return bounds;
+	}
+
 	int Sprite::getFrameCount(void)
 	{
 		return std::max(images.size(), rotated.size());

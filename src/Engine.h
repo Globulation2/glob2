@@ -45,6 +45,8 @@ public:
 
 	/// Initiate a custom game from the provided game, without adjusting settings from the user
 	int initCustom(const std::string &gameName);
+	/// Start a human-versus-AI trial directly on an existing map.
+	int init3DTrial(const std::string &mapName);
 
 	/// Show the load/save dialoge, and use initCustom(gameName) to load the game
 	int initLoadGame();
