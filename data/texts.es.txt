@@ -1212,3 +1212,9 @@ Tu dirección IP está baneada temporalmente. Espere o contacte con los administ
 Tu unidad ha sido convertida por el jugador %0
 [Your username was banned]
 Tu nombre de usuario ha sido baneado. Contacte con los administradores.
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

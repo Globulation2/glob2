@@ -1208,3 +1208,9 @@ Seu número ip foi temporariamente banido
 Sua unidade foi convertido para o time do %0
 [Your username was banned]
 Seu nome de usuário foi banido
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

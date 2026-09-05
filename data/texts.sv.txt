@@ -1220,3 +1220,9 @@ Din %0 är under attack
 Din enhet blev omvänd till %0s lag
 [Your username was banned]
 
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

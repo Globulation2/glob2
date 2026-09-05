@@ -1210,3 +1210,9 @@ YOG мета-сервер је одбио везу јер корисничко �
 Ваша јединица је пребегла %0
 [Your username was banned]
 
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

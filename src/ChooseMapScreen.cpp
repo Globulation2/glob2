@@ -2,6 +2,9 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "ChooseMapScreen.h"
+#include <algorithm>
+#include "Team.h"
+#include "MapTiling.h"
 #include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
 #include "GlobalContainer.h"
@@ -69,6 +72,15 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 	addWidget(mapSize);
 	mapDate=new Text(440, 60+128+125, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapDate);
+	repeatX=new Number(440, 60+128+150, 44, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 8, "standard", Toolkit::getStringTable()->getString("[repeat map horizontally]"), "standard");
+	addWidget(repeatX);
+	repeatY=new Number(484, 60+128+150, 44, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 8, "standard", Toolkit::getStringTable()->getString("[repeat map vertically]"), "standard");
+	addWidget(repeatY);
+	teamCount=new Number(528, 60+128+150, 44, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 8, "standard", Toolkit::getStringTable()->getString("[number of teams]"), "standard");
+	addWidget(teamCount);
+	coloniesPerTeam=new Number(572, 60+128+150, 44, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 8, "standard", Toolkit::getStringTable()->getString("[colonies per team]"), "standard");
+	addWidget(coloniesPerTeam);
+	repeatX->visible = repeatY->visible = teamCount->visible = coloniesPerTeam->visible = false;
 
 	if(alternateDirectory)
 	{
@@ -113,18 +125,16 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 					if (verbose)
 						std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName << std::endl;
 					validMapSelected = mapHeader.load(stream.get());
-
 					if (!validMapSelected) selectedType = NONE;
-
 					mapHeader.setMapName(glob2FilenameToName(mapFileName));
 					if (validMapSelected)
 					{
-						updateMapInformation();
-
+						selectedType = activeType();
+						sourceMapHeader = mapHeader;
+						updateTilingControls();
+						applyTiling();
 						time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
 						mapDate->setText(ctime(&mtime));
-
-						selectedType = activeType();
 					}
 					else
 						std::cerr << "ChooseMapScreen::onAction : invalid map header for map " << mapFileName << std::endl;
@@ -147,15 +157,42 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			mapName->setText("");
 			mapPreview->setMapThumbnail("");
 			validMapSelected = false;
+			repeatX->visible = repeatY->visible = teamCount->visible = coloniesPerTeam->visible = false;
 		}
+	}
+	else if (action == NUMBER_ELEMENT_SELECTED && (source == repeatX || source == repeatY || source == teamCount || source == coloniesPerTeam))
+	{
+		if (source == repeatX)
+			tileX = repeatX->get();
+		else if (source == repeatY)
+			tileY = repeatY->get();
+		else if (source == teamCount)
+			tileTeams = teamCount->get();
+		else
+			tileColonies = coloniesPerTeam->get();
+		if (source != coloniesPerTeam)
+			updateTilingControls();
+		applyTiling();
 	}
 	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{
 		if (source == ok)
 		{
 			// we accept only if a valid map is selected
-			if (validMapSelected)
-				endExecute(OK);
+			if (!validMapSelected)
+				return;
+			if (tilingActive())
+			{
+				// the repeated map becomes a map file of its own, so the game and its clients see an ordinary map
+				MapHeader written = MapTiling::writeTiledMap(sourceMapHeader, tileX, tileY, tileTeams, tileColonies);
+				if (written.getNumberOfTeams() < 1)
+				{
+					GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+					return;
+				}
+				mapHeader = written;
+			}
+			endExecute(OK);
 		}
 		else if (source == cancel)
 		{
@@ -194,13 +231,77 @@ void ChooseMapScreen::updateMapInformation()
 	mapInfo->setText(textTemp);
 	textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
 	mapVersion->setText(textTemp);
-	textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+	if (tileX > 1 || tileY > 1)
+		textTemp = FormatableString("%0 x %1 (%2 x %3)").arg(mapPreview->getLastWidth() * tileX).arg(mapPreview->getLastHeight() * tileY).arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+	else
+		textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
 	mapSize->setText(textTemp);
 	
 	// call subclass handler
 	validMapSelectedhandler();
 }
 
+
+void ChooseMapScreen::updateTilingControls()
+{
+	const bool tileable = validMapSelected && selectedType == MAP && sourceMapHeader.getNumberOfTeams() > 0;
+	repeatX->visible = repeatY->visible = teamCount->visible = coloniesPerTeam->visible = tileable;
+	if (!tileable)
+	{
+		tileX = tileY = 1;
+		tileTeams = 0;
+		tileColonies = 0;
+		return;
+	}
+	// a cleared Number keeps its old index, so it is reset before the value is picked
+	repeatX->clear();
+	for (int f : MapTiling::repeatOptions(mapPreview->getLastWidth()))
+		repeatX->add(f);
+	repeatX->setNth(0);
+	repeatX->set(tileX);
+	tileX = repeatX->get();
+	repeatY->clear();
+	for (int f : MapTiling::repeatOptions(mapPreview->getLastHeight()))
+		repeatY->add(f);
+	repeatY->setNth(0);
+	repeatY->set(tileY);
+	tileY = repeatY->get();
+	// the team count follows the colonies until the user picks one
+	const int colonies = MapTiling::colonyCount(sourceMapHeader.getNumberOfTeams(), tileX, tileY);
+	const int maxTeams = std::min<int>(Team::MAX_COUNT, colonies);
+	const int wanted = (tileTeams > 0 && tileTeams != teamCountFollowingColonies) ? tileTeams : maxTeams;
+	teamCount->clear();
+	for (int t = 1; t <= maxTeams; t++)
+		teamCount->add(t);
+	teamCount->setNth(0);
+	teamCount->set(std::min(wanted, maxTeams));
+	tileTeams = teamCount->get();
+	teamCountFollowingColonies = (tileTeams == maxTeams) ? maxTeams : 0;
+	// colonies per team: as many as fit unless the user asked for fewer
+	const int maxColonies = colonies / tileTeams;
+	const int wantedColonies = (tileColonies > 0 && tileColonies != coloniesFollowingMax) ? tileColonies : maxColonies;
+	coloniesPerTeam->clear();
+	for (int c = 1; c <= maxColonies; c++)
+		coloniesPerTeam->add(c);
+	coloniesPerTeam->setNth(0);
+	coloniesPerTeam->set(std::min(wantedColonies, maxColonies));
+	tileColonies = coloniesPerTeam->get();
+	coloniesFollowingMax = (tileColonies == maxColonies) ? maxColonies : 0;
+}
+
+bool ChooseMapScreen::tilingActive() const
+{
+	return selectedType == MAP && MapTiling::isActive(tileX, tileY, tileTeams, sourceMapHeader.getNumberOfTeams());
+}
+
+void ChooseMapScreen::applyTiling()
+{
+	if (!validMapSelected)
+		return;
+	if (selectedType == MAP)
+		mapHeader = MapTiling::tiledHeader(sourceMapHeader, tileX, tileY, tileTeams);
+	updateMapInformation();
+}
 
 MapHeader& ChooseMapScreen::getMapHeader()
 {

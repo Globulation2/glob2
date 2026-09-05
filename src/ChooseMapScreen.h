@@ -100,6 +100,22 @@ private:
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
 	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
+	//! Repeat factors and team count for a map, see MapTiling.h; hidden for games and replays
+	Number *repeatX, *repeatY, *teamCount, *coloniesPerTeam;
+	//! The header of the selected map as it is in the file; mapHeader describes the repeated map
+	MapHeader sourceMapHeader;
+	//! Fill the repeat and team controls for the selected map
+	void updateTilingControls();
+	//! The repeat factors and team count currently chosen; the widgets only mirror them
+	int tileX = 1, tileY = 1, tileTeams = 0, tileColonies = 0;
+	//! The team count the controls last set on their own, 0 once the user picked one
+	int teamCountFollowingColonies = 0;
+	//! The colonies per team the controls last set on their own, 0 once the user picked one
+	int coloniesFollowingMax = 0;
+	//! Derive mapHeader from the controls
+	void applyTiling();
+	//! True when the controls ask for a repeated map
+	bool tilingActive() const;
 	//! True when the selected map is valid
 	bool validMapSelected;
 	//! Default type

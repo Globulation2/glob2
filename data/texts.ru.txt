@@ -1210,3 +1210,9 @@ Ysagoon-игра в Интернете
 Ваш юнит перешёл к врагу %0
 [Your username was banned]
 Ваше имя пользователя запрещено. Пожалуйста свяжитесь с администраторами, чтобы это изменить.
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team
