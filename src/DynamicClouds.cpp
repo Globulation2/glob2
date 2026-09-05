@@ -38,8 +38,10 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 void DynamicClouds::computeWorld(const int worldWidth, const int worldHeight, const int time,
                                  std::valarray<unsigned char> &out, int &gridW, int &gridH) const
 {
+    // The same lattice as the 2D layer, coarsened only for maps whose
+    // lattice would not fit a texture.
     int cell = granularity;
-    while (std::max(worldWidth, worldHeight) * 32 / cell > 128)
+    while (std::max(worldWidth, worldHeight) * 32 / cell > 2048)
         cell *= 2;
     gridW = worldWidth * 32 / cell;
     gridH = worldHeight * 32 / cell;
