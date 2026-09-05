@@ -3,7 +3,6 @@
 
 #include "NetGamePlayerManager.h"
 #include "FormatableString.h"
-#include "YOGServerGame.h"
 #include "Player.h"
 #include "AINames.h"
 
@@ -98,8 +97,7 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
 		if(bp.type != Player::P_NONE)
 		{
-			bp.number -= 1;
-			bp.numberMask = 1u>>bp.number;
+			bp.setNumber(bp.number - 1);
 			if(bp.type >= Player::P_AI)
 			{
 				FormatableString name("%0 %1");
