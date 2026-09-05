@@ -12,7 +12,6 @@
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "KeyboardManager.h"
-#include "LogFileManager.h"
 #include "MapEditKeyActions.h"
 #include "Race.h"
 #include "SoundMixer.h"
@@ -49,7 +48,6 @@ GlobalContainer::GlobalContainer(void)
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
-	logFileManager = std::make_unique<LogFileManager>(fileManager);
 
 	// load user preference
 	settings.load();
@@ -122,8 +120,7 @@ GlobalContainer::~GlobalContainer(void)
 	// release resources
 	Toolkit::close();
 
-	// Remaining owned members (logFileManager, replayReader, replayWriter,
-	// datasetWriter) are destroyed by the implicit member destruction that
+	// Remaining owned members (replayReader, replayWriter, datasetWriter) are destroyed by the implicit member destruction that
 	// runs after this body — no manual cleanup needed.
 }
 

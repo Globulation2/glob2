@@ -166,7 +166,6 @@ KeyboardManager.cpp
 LANFindScreen.cpp
 LANGameInformation.cpp
 LANMenuScreen.cpp
-LogFileManager.cpp
 MainMenuScreen.cpp
 map/Map.cpp
 map/gradient/MapGradientArea.cpp
@@ -374,7 +373,6 @@ BaseTeam.cpp
 BitArray.cpp
 GameHeader.cpp
 LANGameInformation.cpp
-LogFileManager.cpp
 map/io/MapHeader.cpp
 net/NetBroadcaster.cpp
 net/NetConnection.cpp

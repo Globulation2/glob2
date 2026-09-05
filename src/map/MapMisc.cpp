@@ -4,7 +4,6 @@
 #include "Map.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "MapInternal.h"
 
 #include <FileManager.h>

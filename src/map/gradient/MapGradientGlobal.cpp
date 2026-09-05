@@ -6,15 +6,6 @@
 #include "Unit.h"
 #include "MapInternal.h"
 
-
-
-// LogFileManager.h does `#define fprintf if(false)fprintf` to silence stale
-// log code project-wide. The convergence-failure dump below needs real
-// fprintf, so undo the macro for this TU.
-#ifdef fprintf
-#undef fprintf
-#endif
-
 // Chamfer distance transform with orthogonal=1, diagonal=1 weights (Chebyshev
 // distance) on a toroidal grid. Two sweeps per pass — forward (NW, N, NE, W)
 // then backward (SE, S, SW, E) — repeated until a full pass writes nothing.

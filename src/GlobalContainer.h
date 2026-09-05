@@ -22,7 +22,6 @@ using namespace GAGCore;
 
 class SoundMixer;
 class VoiceRecorder;
-class LogFileManager;
 class ReplayReader;
 class ReplayWriter;
 class DatasetWriter;
@@ -51,7 +50,6 @@ public:
 
 public:
 	FileManager *fileManager; //!< Borrowed from Toolkit; not owned by GlobalContainer.
-	std::unique_ptr<LogFileManager> logFileManager; //!< Owned.
 
 #ifndef YOG_SERVER_ONLY
 	GraphicContext *gfx; //!< Borrowed from Toolkit; not owned by GlobalContainer.

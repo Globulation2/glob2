@@ -74,7 +74,7 @@ AI implementations live under `src/ai/`: Castor, Cortex, Echo, Nicowar, Numbi, W
 
 ## Logging
 
-`src/LogFileManager.h` defines `#define fprintf if(false)fprintf`, so every `fprintf` in a translation unit that includes it is dead. If you genuinely need output there, use `fputs` or `std::cerr`. Do not propose adding a logging library; nothing consumes the data.
+There is no logging facility; diagnostics go to `std::cerr`. Do not propose adding a logging library; nothing consumes the data.
 
 ## Pathfinding: chamfer pass cap
 

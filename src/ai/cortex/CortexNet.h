@@ -44,7 +44,7 @@ namespace Cortex
 
 		/// Load a cortex-i16f16-v1 blob for the WORKER-CAP net. Returns true on
 		/// success. On failure leaves the net unloaded and writes one diagnostic to
-		/// std::cerr (never fprintf — LogFileManager.h no-ops it). The architecture
+		/// std::cerr. The architecture
 		/// is validated against the worker-cap contract (16 -> 32 -> 32 -> 20).
 		bool load(const std::string& path);
 

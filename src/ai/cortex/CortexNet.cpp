@@ -9,9 +9,7 @@
 #include <iostream>
 
 // Integer I16F16 inference for the Cortex swarm worker-tuning net. See
-// CortexNet.h and tools/cortex-ml-infer/FORMAT.md for the contract. NOTE: this TU
-// does NOT use fprintf for diagnostics — LogFileManager.h rewrites fprintf to a
-// dead no-op across ~60 TUs (glob2/CLAUDE.md). Use std::cerr / fputs instead.
+// CortexNet.h and tools/cortex-ml-infer/FORMAT.md for the contract.
 
 namespace Cortex
 {

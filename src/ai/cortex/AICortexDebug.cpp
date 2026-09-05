@@ -168,9 +168,6 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 // action already computed for gameplay; opening/writing a file never touches RNG,
 // orders, or persisted state, so the lockstep sync stream is unaffected. One file
 // per AI instance avoids interleaving and lets each write its own header once.
-//
-// NOTE: fputs (not fprintf) — LogFileManager.h rewrites every fprintf in this TU to
-// a dead-code no-op (see glob2/CLAUDE.md), which would silently drop the trace.
 void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
                                const Cortex::CortexAction& tune)
 {
@@ -242,9 +239,6 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 // already produced for gameplay; opening/writing a file never touches RNG, orders, or
 // persisted state, so the lockstep sync stream is unaffected. SEPARATE file handle +
 // open-attempt guard from the worker trace (distinct CSV, distinct schema).
-//
-// NOTE: fputs (not fprintf) — LogFileManager.h rewrites every fprintf in this TU to a
-// dead-code no-op (see glob2/CLAUDE.md), which would silently drop the trace.
 void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
                                const Cortex::DecideTrace& trace)
 {
@@ -316,9 +310,6 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 // for gameplay; opening/writing a file never touches RNG, orders, or persisted state,
 // so the lockstep sync stream is unaffected. SEPARATE FILE* handle + open-attempt
 // guard from the worker/decision traces (distinct CSV, distinct schema).
-//
-// NOTE: fputs (not fprintf) — LogFileManager.h rewrites every fprintf in this TU to a
-// dead-code no-op (see glob2/CLAUDE.md), which would silently drop the trace.
 void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
                             const Cortex::CortexAction& tune)
 {
