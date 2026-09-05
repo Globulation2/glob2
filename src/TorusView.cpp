@@ -133,22 +133,22 @@ GLuint createMaterial()
         "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
         "uniform vec2 mapOffset;\n"
         "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;normal=gl_Normal;}\n";
-    // Two high suns, one each side, mirror images of each other. Each lights the
-    // inner wall of the far quarter opposite it, so the glare shows top left and
-    // top right of the ring and never on the front or the back quarter. Water
-    // flashes sharply like a sea seen from orbit; dry land barely sheens;
-    // undiscovered black stays black.
+    // One high sun off to the left. A torus shows every normal twice, so the
+    // sun glares on the outer top of the far left quarter and on the inner wall
+    // of the right quarter, top left and top right of the ring; standing high,
+    // the second glare clears the front half. Water flashes sharply like a sea
+    // seen from orbit, dry land barely sheens, undiscovered black stays black.
     const char *fragment = "#version 120\n"
                            "uniform sampler2D world; uniform vec3 sunHalf; uniform float specular;\n"
                            "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
                            "void main(){\n"
                            "  vec3 c = texture2D(world, uv).rgb;\n"
                            "  vec3 n = normalize(normal);\n"
-                           "  float facing = max(max(dot(n, sunHalf), dot(n, sunHalf * vec3(-1.0, 1.0, 1.0))), 0.0);\n"
+                           "  float facing = max(dot(n, sunHalf), 0.0);\n"
                            "  float water = smoothstep(0.08, 0.25, c.b - max(c.r, c.g));\n"
                            "  float lit = smoothstep(0.03, 0.15, max(c.r, max(c.g, c.b)));\n"
                            "  float s = mix(0.12 * pow(facing, 40.0), pow(facing, 40.0), water) * lit * specular;\n"
-                           "  gl_FragColor = vec4(c * light + vec3(1.0, 0.95, 0.85) * s, 1.0);}\n";
+                           "  gl_FragColor = vec4(c * light + vec3(1.0, 0.62, 0.38) * s, 1.0);}\n";
     GLuint vs = glCreateShader(GL_VERTEX_SHADER), fs = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vs, 1, &vertex, 0);
     glCompileShader(vs);
@@ -647,10 +647,10 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glUseProgram(material);
         glUniform1i(glGetUniformLocation(material, "world"), 0);
         glUniform2f(glGetUniformLocation(material, "mapOffset"), anchorU, 1 - anchorV);
-        // One of the two suns, high above the far rim and off to one side; the
-        // other is its mirror image. The normal's y axis runs down the screen,
-        // the eye looks along +z. The half vector between sun and eye marks the glare.
-        float lx = 0.62f, ly = -0.74f, lz = -0.26f;
+        // The sun: high above the far rim, off to the left. The normal's y axis
+        // runs down the screen, the eye looks along +z. The half vector between
+        // sun and eye marks the glare.
+        float lx = -0.62f, ly = -0.74f, lz = -0.26f;
         const float ll = std::sqrt(lx * lx + ly * ly + lz * lz);
         lx /= ll, ly /= ll, lz = lz / ll + 1;
         const float hl = std::sqrt(lx * lx + ly * ly + lz * lz);
