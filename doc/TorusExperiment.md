@@ -22,24 +22,25 @@ The launcher keeps preferences, saves and replays under `experiment/profile`.
 That directory and build products are ignored by Git. `GLOB2_USER_DIR` can also
 select another profile on Unix systems.
 
-Start a custom game, or load a replay. Scroll with an arrow key or a screen edge to gradually reveal the torus, or press **G** to keep it open.
+Start a custom game, or load a replay. Press **G** to switch between 2D and the torus.
 The shortcut appears as **Toggle 2D / torus view** in the standard keyboard
 settings. Existing customized layouts gain missing default actions only when their keys do not conflict with a custom binding or sequence. Holding the shortcut does not repeatedly reverse the view.
 
 | Control | Action |
 | --- | --- |
 | G | Switch views; reverse an animation already in progress |
-| Arrow keys / Ctrl+arrows / screen edges / minimap | Move the shared map focus and gradually pull back |
-| Hold / drag middle button | Quickly reveal the torus and pan at the normal 2D speed |
-| Mouse wheel with G enabled | Zoom; continue zooming in to return to 2D |
+| Arrow keys / Ctrl+arrows / screen edges / minimap | Move within the current view |
+| Middle-drag | Pan within the current view |
+| Mouse wheel in torus mode | Zoom within 3D; press G to return to 2D |
 | Left-click / left-drag | Select, place buildings and flags, or paint areas |
 | Right-click | Normal game cancellation / deselection |
 
-Scrolling pulls back over four seconds while movement continues. After a
-250 ms pause it returns to 2D within 450 ms. Holding the middle button pulls
-back within 450 ms; the explicit G toggle opens over 1.8 seconds. Both axes
-slide the map around a ring whose orientation stays fixed. The overview fits
-inside the playable area with a margin and adapts its tilt to the window shape.
+The modes are separate. Scrolling and middle-dragging never change modes,
+and stopping movement never folds or unfolds the map. Only the G shortcut
+starts a 1.8-second transition in either direction. Ordinary 2D frames use the
+normal viewport renderer, without full-world texture captures or torus mesh
+updates. In 3D, both axes slide the map around a ring whose orientation stays
+fixed. The overview fits the playable area and adapts its tilt to the window.
 
 ## Rendering and interaction
 
@@ -63,8 +64,8 @@ those coordinates, so their placement validation, modifier gestures and order
 creation remain in the existing game logic. Building previews and pending
 buildings are captured onto the surface. Empty sky is not a map target;
 releasing there cancels building placement and finishes any area painting.
-Middle-drag follows the ordinary map panning path. Automatic return to 2D
-waits for an active selection or painting gesture to finish.
+Middle-drag follows the ordinary map panning path. An explicit view toggle
+finishes any active painting gesture before changing the projection.
 
 The torus has uniform angular texture coordinates, major radius 3 and minor
 radius 1. A flat toroidal map cannot be embedded in an ordinary ring torus
@@ -165,3 +166,10 @@ The fixed-axis navigation and elevated cloud layer were adapted from Giszmo's
 Bob. This PR keeps its master baseline; it does not merge the separate AI trainer
 and fullscreen-scaling branches. Native testing on Giszmo's display setup is
 still needed to determine whether his separate startup/display issue remains.
+
+### Navigation experiment
+
+The movement-triggered folding from `feat/torus-pan` was removed after playtesting:
+it interrupted ordinary scrolling. The fixed-axis 3D geometry, wrapped-building
+fix, and shared cloud rendering remain. This local experiment keeps 2D gameplay
+and the optional torus view separate.

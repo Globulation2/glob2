@@ -61,12 +61,15 @@ int main(int argc, char **argv)
             hasToggle |= shortcut.format(GameGUIShortcuts) == "<g>=toggle torus view";
         assert(hasToggle);
         TorusView view;
+        for (int i = 0; i < 100; ++i)
+        {
+            view.setViewport(i, i / 2);
+            assert(!view.active());
+        }
         const bool gpu = globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU;
         assert(view.available() == gpu);
         if (!gpu)
         {
-            view.notifyMove();
-            view.setHeld(true);
             view.toggle();
             assert(!view.active());
             int x = 0, y = 0, px, py;
@@ -86,7 +89,7 @@ int main(int argc, char **argv)
                 assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
                 assert(glGetError() == GL_NO_ERROR);
             };
-            view.notifyMove();
+            view.toggle();
             assert(view.active());
             draw(0);
             for (float phase : {.01f, .25f, .5f, .75f, 1.f})
@@ -95,34 +98,27 @@ int main(int argc, char **argv)
             globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
             for (int i = 0; i < 20; ++i)
             {
-                view.notifyMove();
                 view.setViewport((x + 3) & gui.game.map.getMaskW(), (y + 5) & gui.game.map.getMaskH());
                 draw(1);
                 int px, py;
                 assert(view.pick(480, 560, px, py));
             }
-            view.setHeld(true);
             view.reset();
             assert(!view.active());
             int px, py;
             assert(!view.pick(480, 560, px, py));
             for (int i = 0; i < 3; ++i)
             {
-                view.notifyMove();
+                view.toggle();
                 draw(0);
                 draw(1);
                 view.reset();
             }
-            view.notifyMove();
+            view.toggle();
             draw(0);
-            view.lastMove = SDL_GetTicks() - 1000;
+            view.toggle();
             view.lastFrame = SDL_GetTicks() - 100;
-            view.amount = .1f;
-            view.setPointerHeld(true);
-            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
-            assert(view.amount == .1f);
-            view.setPointerHeld(false);
-            view.lastFrame = SDL_GetTicks() - 100;
+            view.amount = .04f;
             assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
             assert(!view.active());
             globalContainer->gfx->setClipRect();

@@ -25,8 +25,7 @@ TorusView::~TorusView() { releaseResources(); }
 void TorusView::reset()
 {
     releaseResources();
-    target = moving = held = pointerHeld = failed = false;
-    lastMove = 0;
+    target = failed = false;
     amount = travelU = travelV = cameraU = cameraV = 0;
     worldW = worldH = 0;
     lastFrame = 0;
@@ -64,30 +63,6 @@ void TorusView::toggle()
     }
 }
 void TorusView::resetCamera() { zoom = cameraZoom = 1; }
-void TorusView::setHeld(bool down)
-{
-    if (down && !available())
-        return;
-    if (down && !active())
-    {
-        resetCamera();
-        lastFrame = SDL_GetTicks();
-    }
-    held = down;
-}
-
-void TorusView::notifyMove()
-{
-    if (!available())
-        return;
-    if (!active())
-    {
-        resetCamera();
-        lastFrame = SDL_GetTicks();
-    }
-    lastMove = SDL_GetTicks();
-    moving = true;
-}
 void TorusView::setViewport(int x, int y)
 {
     if (!worldW || !worldH || !active())
@@ -113,8 +88,6 @@ bool TorusView::event(const SDL_Event &e, int width)
         {
             int direction = e.wheel.y * (e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1);
             zoom = clamp(zoom * std::pow(1.12f, float(direction)), 0.4f, 2.0f);
-            if (direction > 0 && zoom >= 2.0f)
-                toggle();
             return true;
         }
     }
