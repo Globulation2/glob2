@@ -41,6 +41,12 @@ int GameGUIDefaultAssignManager::getDefaultAssignedUnits(int typenum)
 void GameGUIDefaultAssignManager::setDefaultAssignedUnits(int typenum, int value)
 {
 	unitCount[typenum] = value;
+	if (!globalContainer->settings.rememberUnit)
+		return;
+	// carry the choice over to the next game through the settings
+	const BuildingType* type = globalContainer->buildingsTypes.get(typenum);
+	if (type)
+		globalContainer->settings.defaultUnitsAssigned[type->shortTypeNum][type->level*2 + (type->isBuildingSite ? 0 : 1)] = value;
 }
 
 

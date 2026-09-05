@@ -175,6 +175,8 @@ GameGUI::~GameGUI()
 {
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
+	if (globalContainer->settings.rememberUnit)
+		globalContainer->settings.save();
 }
 
 void GameGUI::init()
