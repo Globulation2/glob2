@@ -26,8 +26,6 @@ void fillGradientRectangle(Uint8* gradient, int posW, int posH) {
 
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
-	//fprintf(logFile, "updatingLocalGradient (gbid=%d)...\n", building->gid);
-	//printf("updatingLocalGradient (gbid=%d)...\n", building->gid);
 	assert(building);
 	assert(building->type);
 	building->dirtyLocalGradient[canSwim]=false;

@@ -746,8 +746,6 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	{
 		Sint32 x,y;
 		Sint32 x_temp,y_temp;
-		//map->dumpGradient(gradient.c_array(), "gradient.pgm");
-		//map->dumpGradient(availability_gradient.c_array(), "availability_gradient.pgm");
 		
 		x = swarm->posX; y = swarm->posY;
 		

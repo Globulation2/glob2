@@ -268,7 +268,6 @@ void Team::dirtyGlobalGradient()
 			for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
 				if (b->globalGradient[canSwim])
 				{
-					//printf("freeing globalGradient for gbid=%d (%p)\n", b->gid, b->globalGradient[canSwim]);
 					delete[] b->globalGradient[canSwim];
 					b->globalGradient[canSwim]=NULL;
 					b->locked[canSwim]=false;

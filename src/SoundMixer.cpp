@@ -272,18 +272,6 @@ SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 		this->voiceVolume = 0;
 	}
 	openAudio();
-/*
-	if (mute)
-	{
-		soundEnabled = false;
-		std::cout << "SoundMixer : No volume, audio has been disabled !" << std::endl;
-		return;
-	}
-	else
-	{
-		openAudio();
-	}
-*/
 }
 
 SoundMixer::~SoundMixer()

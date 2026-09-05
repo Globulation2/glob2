@@ -71,7 +71,6 @@ void GameGUI::drawReplayPanel(void)
 	for (int i = 0; i < game.teamsCount(); i++)
 	{
 		// I know this is a matter of taste, but I prefer checkboxes here. Radio buttons are a totally different style
-		//drawRadioButton(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, game.teams[i]->getFirstPlayerName().c_str(), localTeamNo == i);
 		drawRadioButton(x + 1, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc + 1, localTeamNo == i);
 		globalContainer->gfx->drawString(x + 20, y + REPLAY_PANEL_PLAYERLIST_YOFFSET + (i+1)*inc, font, displayPlayerName(*game.teams[i]).c_str());
 	}

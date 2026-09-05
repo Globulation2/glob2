@@ -168,17 +168,14 @@ void GameGUI::iterateSelection(void)
 			beginning of our pieces of that type. */
 		Sint32 id = ((Unit::GIDtoTeam(gid) == localTeamNo) ? Unit::GIDtoID(gid) : 0);
 		id %= Unit::MAX_COUNT; /* just in case! */
-		// std::cerr << "starting id: " << id << std::endl;
 		Sint32 i = id;
 		while (1)
 		{
 			i = ((i + 1) % Unit::MAX_COUNT);
 			if (i == id) break;
-			// std::cerr << "trying id: " << i << std::endl;
 			Unit * u = game.teams[localTeamNo]->myUnits[i];
 			if (u && (u->typeNum == selUnit->typeNum))
 			{
-				// std::cerr << "found id: " << i << std::endl;
 				setSelection(UNIT_SELECTION, u);
 				centerViewportOnSelection();
 				break;

@@ -133,10 +133,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	//Now, we have to find suitable places for teams:
 	int nbTeams=descriptor.nbTeams;
 	int minDistSquare=(int)((double)w*h/(double)nbTeams/5);
-	//std::cout << "minDistSquare=" << minDistSquare << " (" << sqrt((double)minDistSquare) << ").\n";
 	if (minDistSquare<=0)
 	{
-		//std::cout << "debugoutput 1\n";
 		return false;
 	}
 	assert(minDistSquare>0);
@@ -198,7 +196,6 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		
 		if (maxSurface<=0)
 		{
-			//std::cout << "debugoutput 2\n";
 			return false;
 		}
 		assert(maxSurface);

@@ -33,7 +33,6 @@ void MapThumbnail::loadFromMap(const std::string& map)
 	loaded = true;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(map));
-	//InputStream *stream = new BinaryInputStream(new CompressedInputStreamBackendFilter(Toolkit::getFileManager()->openInputStreamBackend(mapName)));
 	if (stream->isEndOfStream())
 	{
 		delete stream;

@@ -146,9 +146,7 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 			gfx->drawSprite(x, y, terrain, index);
 		}
 	gfx->finishDrawingSprite(terrain, 255);
-	//gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color::black);
 	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title.get());
-	//gfx->drawFilledRect(((gfx->getW()-400)>>1), (gfx->getH()>>1)+11+180, (value)<<2, 20, 10, 50, 255, 80);
 	gfx->nextFrame();
 }
 
@@ -160,7 +158,6 @@ void GlobalContainer::loadClient(void)
 		// create graphic context
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
 		gfx->setMinRes(640, 480);
-		//gfx->setQuality((settings.optionFlags & OPTION_LOW_SPEED_GFX) != 0 ? GraphicContext::LOW_QUALITY : GraphicContext::HIGH_QUALITY);
 		
 		// load data required for drawing progress screen
 		title = std::make_unique<DrawableSurface>("data/gfx/title.png");
@@ -229,7 +226,6 @@ void GlobalContainer::loadClient(void)
 
 		updateLoadProgressScreen(50);
 		// load terrain data
-		//terrain = Toolkit::getSprite("data/gfx/terrain"); // terrain is already loaded as it is required to display progress screen
 		terrainWater = Toolkit::getSprite("data/gfx/water");
 		terrainCloud = Toolkit::getSprite("data/gfx/cloud");
 		

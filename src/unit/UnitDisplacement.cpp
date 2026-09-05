@@ -308,7 +308,6 @@ void Unit::handleDisplacement(void)
 				// we stay inside while the unit upgrades.
 				if (insideTimeout>=0)
 				{
-					//printf("Exiting building\n");
 					displacement=DIS_EXITING_BUILDING;
 					validTarget=false;
 
@@ -321,7 +320,6 @@ void Unit::handleDisplacement(void)
 					else if (destinationPurpose==HEAL)
 					{
 						hp=performance[HP];
-						//printf("I'm healed : healt h %d/%d\n", hp, performance[HP]);
 						needToRecheckMedical=true;
 					}
 					else
@@ -338,12 +336,10 @@ void Unit::handleDisplacement(void)
 						}
 						else
 						{
-							//printf("Ability %d got level %d\n", destinationPurpose, attachedBuilding->type->level+1);
 							assert(canLearn[destinationPurpose]);
 							level[destinationPurpose] = attachedBuilding->type->level + 1;
 							UnitType *ut = race->getUnitType(typeNum, level[destinationPurpose]);
 							performance[destinationPurpose] = ut->performance[destinationPurpose];
-							//printf("New performance[%d]=%d\n", destinationPurpose, performance[destinationPurpose]);
 						}
 
 

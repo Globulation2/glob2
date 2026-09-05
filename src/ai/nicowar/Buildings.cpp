@@ -113,7 +113,6 @@ void NewNicowar::queue_racetracks(Echo& echo)
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int racetrack_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularRacetrack];
-	//const int total_unit = echo.player->team->stats.getLatestStat()->totalUnit;
 	int demand=0;
 	if(skilled_work_phase)
 	{
@@ -138,7 +137,6 @@ void NewNicowar::queue_swimmingpools(Echo& echo)
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int swimmingpool_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularSwimmingpool];
-	//const int total_unit = echo.player->team->stats.getLatestStat()->totalUnit;
 	int demand=0;
 	if(skilled_work_phase)
 	{
@@ -163,7 +161,6 @@ void NewNicowar::queue_schools(Echo& echo)
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int school_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularSchool];
-	//const int total_unit = echo.player->team->stats.getLatestStat()->totalUnit;
 	int demand=0;
 	if(skilled_work_phase)
 	{

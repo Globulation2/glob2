@@ -285,7 +285,6 @@ namespace AIEcho
 			int get_pos(int x, int y) const { return y*width + x; }
 			GradientInfo gradient_info;
 			std::vector<Sint16> gradient;
-//			Sint16* gradient;
 		};
 
 		///The gradient manager is a very important part of the system, just like the gradient itself is. The gradient manager takes upon the task

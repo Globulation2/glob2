@@ -136,7 +136,6 @@ void Unit::handleActionEnteringBuilding()
 {
 	// NOTE : this is a hack : We don't delete the unit on the map
 	// because we have to draw it while it is entering.
-	// owner->map->setUnit(posX, posY, NOUID);
 	wrapPosition();
 	directionFromDxDy();
 	selectPreferredMovement();

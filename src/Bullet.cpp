@@ -71,7 +71,6 @@ void Bullet::step(void)
 {
 	if (ticksLeft>0)
 	{
-		//printf("bullet %d stepped to p=(%d, %d), tl=%d\n", (int)this, px, py, ticksLeft);
 		px+=speedX;
 		py+=speedY;
 		ticksLeft--;

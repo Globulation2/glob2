@@ -12,9 +12,6 @@ using std::shared_ptr;
 
 
 	
-//Uint32 NetConnection::lastTime = 0;
-//Uint32 NetConnection::amount = 0;
-
 NetConnection::NetConnection(const std::string& naddress, Uint16 port)
 	: connect(incoming, incomingMutex)
 {
@@ -88,7 +85,6 @@ void NetConnection::update()
 			case NTMCouldNotConnect:
 			{
 				std::shared_ptr<NTCouldNotConnect> info = static_pointer_cast<NTCouldNotConnect>(message);
-				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 				connecting=false;
 			}
 			break;
@@ -96,22 +92,18 @@ void NetConnection::update()
 			{
 				std::shared_ptr<NTConnected> info = static_pointer_cast<NTConnected>(message);
 				address = info->getIPAddress();
-				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 				connecting=false;
 			}
 			break;
 			case NTMLostConnection:
 			{
 				std::shared_ptr<NTLostConnection> info = static_pointer_cast<NTLostConnection>(message);
-				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
 			}
 			break;
 			case NTMRecievedMessage:
 			{
 				std::shared_ptr<NTRecievedMessage> info = static_pointer_cast<NTRecievedMessage>(message);
 				recieved.push(info->getMessage());
-				//std::cout<<"NetConnection::getMessage(): "<<info->format()<<std::endl;
-				//std::cout<<"Recieved: "<<info->getMessage()->format()<<std::endl;
 			}
 			break;
 		}
@@ -142,7 +134,6 @@ shared_ptr<NetMessage> NetConnection::getMessage()
 	
 void NetConnection::sendMessage(shared_ptr<NetMessage> message)
 {
-	//std::cout<<"Sending: "<<message->format()<<std::endl;
 	std::shared_ptr<NTSendMessage> close(new NTSendMessage(message));
 	connect.sendMessage(close);
 }

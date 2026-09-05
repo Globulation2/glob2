@@ -16,8 +16,6 @@ using namespace GAGGUI;
 
 NewMapScreen::NewMapScreen()
 {
-	//defaultTerrainTypeButton[0]=new OnOffButton(400, 110, 20, 20, true, 30);
-	
 	mapSizeX=new Number(20, 50, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	mapSizeX->add(64);
 	mapSizeX->add(128);
@@ -81,12 +79,6 @@ NewMapScreen::NewMapScreen()
 	nbTeams->add(10);
 	nbTeams->add(11);
 	nbTeams->add(12);
-	/*
-	nbTeams->add(13);
-	nbTeams->add(14);
-	nbTeams->add(15);
-	nbTeams->add(16);
-	*/
 	nbTeams->setNth(descriptor.nbTeams-1);
 	nbTeams->visible=false;
 	addWidget(nbTeams);

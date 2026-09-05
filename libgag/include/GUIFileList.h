@@ -50,7 +50,9 @@ namespace GAGGUI
 		virtual void sort(void); 
 	
 	public:
-		//! Regenerate the list content from the current directory
+		//! Regenerate the list content from the current directory.
+		//! Dispatches through the virtual fileToList/listToFile, so the
+		//! constructors do not call it; call it once the subclass is built.
 		void generateList();
 		//! Called when selection changes. Override List behaviour, enter subfolder if enabled and possible and signal parent otherwise
 		void selectionChanged();

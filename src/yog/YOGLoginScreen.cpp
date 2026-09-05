@@ -122,7 +122,6 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
-	//std::cout<<"YOGLoginScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
 	if(type == YEConnected)
 	{
@@ -130,13 +129,11 @@ void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 	}
 	else if(type == YEConnectionLost)
 	{ 
-		//shared_ptr<YOGConnectionLostEvent> info = static_pointer_cast<YOGConnectionLostEvent>(event);
 		animation->visible=false;
 		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));
 	}
 	else if(type == YELoginAccepted)
 	{
-		//shared_ptr<YOGLoginAcceptedEvent> info = static_pointer_cast<YOGLoginAcceptedEvent>(event);
 		animation->visible=false;
 		showLobby();
 	}

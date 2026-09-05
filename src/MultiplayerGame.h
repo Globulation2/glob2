@@ -136,9 +136,6 @@ public:
 	///This updates the team for a player
 	void changeTeam(int playerNum, int teamNum);
 	
-	///Sends a message to other players in the game
-//	void sendMessage(const std::string& message);
-	
 	///Returns the reason for being kicked
 	YOGKickReason getKickReason() const;
 	

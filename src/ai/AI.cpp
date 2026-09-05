@@ -20,13 +20,6 @@
 
 using std::shared_ptr;
 
-/*AI::AI(Player *player)
-{
-	aiImplementation=new AICastor(player);
-	this->implementitionID=NUMBI;
-	this->player=player;
-}*/
-
 AI::AI(ImplementitionID implementitionID, Player *player)
 {
 	aiImplementation=NULL;

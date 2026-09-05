@@ -141,17 +141,6 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 //				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((Nicowar::AINicowar*)players[3]->ai->aiImplementation)->getGradientManager().getGradient(Nicowar::Gradient::VillageCenter, Nicowar::Gradient::Resource).getHeight(x+viewportX, y+viewportY));
 				//((AICastor *)players[0].ai->aiImplementation)->wheatCareMap
 			}
-				//if (map.getForbidden(x+viewportX, y+viewportY))
-				//{
-					//if (!map.isFreeForGroundUnit(x+viewportX, y+viewportY, 1, 1))
-					//	globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 16, 32);
-					//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 16, 32);
-					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(1, 5, 0, x+viewportX, y+viewportY));
-					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.getGradient(0, STONE, 1, x+viewportX, y+viewportY));
-					//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.forbiddenGradient[0][0][(x+viewportX)+(y+viewportY)*map.w]);
-					//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, ((x+viewportX)&(map.getMaskW())));
-					//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, ((y+viewportY)&(map.getMaskH())));
-				//}
 
 	// We draw debug area:
 	if (DEBUG_RENDER_GRADIENTS)
@@ -185,11 +174,7 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 	if (DEBUG_RENDER_GRADIENTS)
 		if (view.selectedUnit && view.selectedUnit->verbose)
 		{
-			//assert(teams[0]);
 			Building *b=view.selectedUnit->attachedBuilding;
-			//b=teams[0]->myBuildings[21];
-			//if (teams[0]->virtualBuildings.size())
-			//	b=*teams[0]->virtualBuildings.begin();
 			if (b && b->localRessources[1])
 				for (int y=top-1; y<=bot; y++)
 					for (int x=left-1; x<=right; x++)
@@ -202,17 +187,9 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 		}
 
 	// We draw debug area:
-	//if (selectedUnit && selectedUnit->verbose)
 	if (view.selectedBuilding && view.selectedBuilding->verbose)
 	{
-		//Building *b=NULL;
 		Building *b=view.selectedBuilding;
-		//Building *b=selectedUnit->attachedBuilding;
-
-		//assert(teams[0]);
-		//Building *b=teams[0]->myBuildings[0];
-		//if (teams[0]->virtualBuildings.size())
-		//	b=*teams[0]->virtualBuildings.begin();
 
 		int w=map.getW();
 		if (b)
@@ -264,7 +241,6 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 						globalContainer->gfx->drawLine((x<<5), 8+(y<<5), 32+(x<<5), 8+(y<<5), 128, 64, 0);
 						globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 32+(x<<5), 16+(y<<5), 128, 64, 0);
 						globalContainer->gfx->drawLine((x<<5), 24+(y<<5), 32+(x<<5), 24+(y<<5), 128, 64, 0);
-//						globalContainer->gfx->drawLine((x<<5), 32+(y<<5), 32+(x<<5), 32+(y<<5), 128, 64, 0);
 
 						if (map.canRessourcesGrow(x+viewportX, y+viewportY-1))
 							globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 128, 0);

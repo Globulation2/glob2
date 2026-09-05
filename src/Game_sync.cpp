@@ -91,10 +91,6 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 
 void Game::wonSyncStep(void)
 {
-	//TODO: sideeffects? 
-	//std::list<std::shared_ptr<WinningCondition> >& conditions = 
-	gameHeader.getWinningConditions();
-
 	bool areAllDecided=true;
 	//We do this twice, because some win conditions depend on other win conditions
 	for(int i=0; i<mapHeader.getNumberOfTeams(); ++i)

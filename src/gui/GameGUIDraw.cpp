@@ -667,8 +667,6 @@ void GameGUI::drawAll(int team)
 
 	// draw the minimap
 	drawOptions = 0;
-	//globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 0, 128, 128);
-	//game.drawMiniMap(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 0, 128, 128, viewportX, viewportY, team, drawOptions);
 
 	globalContainer->gfx->setClipRect();
 	minimap.draw(localTeamNo, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );

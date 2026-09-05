@@ -12,11 +12,6 @@
 
 void Unit::handleActivity(void)
 {
-        if ((displacement==DIS_EXITING_BUILDING)
-            && (typeNum == EXPLORER)) {
-          // fprintf (stderr, "exiting explorer: gid: %d, medical: %d, destinationPurpose: %d\n", gid, medical, destinationPurpose);
-        }
-
 	// freeze unit health when inside a building
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE)
             || ((displacement==DIS_EXITING_BUILDING)

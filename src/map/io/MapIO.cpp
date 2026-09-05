@@ -306,23 +306,12 @@ void Map::addTeam(void)
 void Map::removeTeam(void)
 {
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
-//	int oldNumberOfTeam=numberOfTeam+1;
 	assert(numberOfTeam<Team::MAX_COUNT);
-	
-//	for (int t=0; t<oldNumberOfTeam; t++)
-//		for (int r=0; r<MAX_RESSOURCES; r++)
-//			for (int s=0; s<2; s++)
-//				assert(ressourcesGradient[t][r][s]);
-//	for (int t=oldNumberOfTeam; t<Team::MAX_COUNT; t++)
-//		for (int r=0; r<MAX_RESSOURCES; r++)
-//			for (int s=0; s<2; s++)
-//				assert(ressourcesGradient[t][r][s]==NULL);
 	
 	int t=numberOfTeam;
 	for (int r=0; r<MAX_RESSOURCES; r++)
 		for (int s=0; s<2; s++)
 		{
-//			assert(ressourcesGradient[t][r][s]);
 			if(ressourcesGradient[t][r][s])
 				delete[] ressourcesGradient[t][r][s];
 			ressourcesGradient[t][r][s]=NULL;

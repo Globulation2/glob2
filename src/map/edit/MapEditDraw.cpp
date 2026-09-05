@@ -13,10 +13,8 @@
 #include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
-void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode)
+void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 {
-// 	Utilities::rectClipRect(sx, sy, sw, sh, mapClip);
-
 	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
 
 	Uint32 drawOptions = Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESSOURCE_GROWTH_AREAS;
@@ -26,8 +24,6 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 	}
 
 	game.drawMap(sx, sy, sw, sh, RIGHT_MENU_WIDTH, 16, viewportX, viewportY, team, view, drawOptions);
-// 	if (doPaintEditMode)
-// 		paintEditMode(false, false);
 
 	if(widgetRectangle(sx, sy, sw, sh).is_in(mouseX, mouseY))
 	{
@@ -76,7 +72,6 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPa
 void MapEdit::drawMiniMap(void)
 {
 	minimap.draw(team, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );
-// 	paintCoordinates();
 }
 
 
@@ -116,13 +111,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, team);
 		else
 			isRoom = game.checkHardRoomForBuilding(tempX, tempY, bt, &mapX, &mapY);
-			
-		// modifiy highlight given room
-// 		if (isRoom)
-// 			highlightSelection = std::min(highlightSelection + 0.1f, 1.0f);
-// / 		else
-//  			highlightSelection = std::max(highlightSelection - 0.1f, 0.0f);
-		
+
 		// we get the screen dimensions of the building
 		int rectW = (bt->width)<<5;
 		int rectH = sprite->getH(bt->gameSpriteImage);
@@ -132,8 +121,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 		// we draw the building
 		sprite->setBaseColor(game.teams[team]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-// 		int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightSelection));
-	 	int spriteIntensity = 127;
+		int spriteIntensity = 127;
 		globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
 		
 		if (!bt->isVirtual)

@@ -18,11 +18,8 @@ using std::shared_ptr;
 
 void AICastor::computeObstacleUnitMap()
 {
-	//printf("computeObstacleUnitMap()...\n");
 	int w=map->w;
 	int h=map->h;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
 	size_t size=w*h;
 	const auto& cases=map->cases;
 	Uint32 teamMask=team->me;
@@ -40,19 +37,13 @@ void AICastor::computeObstacleUnitMap()
 		else
 			obstacleUnitMap[i]=1;
 	}
-	//printf("...computeObstacleUnitMap() done\n");
 }
 
 
 void AICastor::computeObstacleBuildingMap()
 {
-	//printf("computeObstacleBuildingMap()...\n");
 	int w=map->w;
 	int h=map->h;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
-	//int hDec=map->hDec;
-	//int wDec=map->wDec;
 	size_t size=w*h;
 	const auto& cases=map->cases;
 	for (size_t i=0; i<size; i++)
@@ -67,18 +58,14 @@ void AICastor::computeObstacleBuildingMap()
 		else
 			obstacleBuildingMap[i]=1;
 	}
-	//printf("...computeObstacleBuildingMap() done\n");
 }
 
 void AICastor::computeSpaceForBuildingMap(int max)
 {
-	//printf("computeSpaceForBuildingMap()...\n");
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
-	//int wDec=map->wDec;
 	size_t size=w*h;
 	
 	memcpy(spaceForBuildingMap, obstacleBuildingMap, size);
@@ -109,28 +96,18 @@ void AICastor::computeSpaceForBuildingMap(int max)
 			}
 		}
 	}
-	//printf("...computeSpaceForBuildingMap() done\n");
 }
 
 void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int bh, int dw, int dh)
 {
-	//int w=map->w;
-	//int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	
-	//size_t size=w*h;
 	Uint8 *gradient=buildingNeighbourMap;
 	const auto& cases=map->cases;
 	
 	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
-	
-	/*int bx=b->posX;
-	int by=b->posY;
-	int bw=b->type->width;
-	int bh=b->type->height;*/
 	
 	// we skip building with already a neighbour:
 	bool neighbour=false;
@@ -245,16 +222,13 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 {
 	int w=map->w;
 	int h=map->h;
-	//size_t size=w*h;
 	
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	
 	int wMask=map->wMask;
 	int hMask=map->hMask;
 	
 	Uint8 *gradient=buildingNeighbourMap;
-	//memset(gradient, 0, size);
 	Uint32 visionMask=team->me;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -298,7 +272,6 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 	{
 		int bx=bpi->posX&map->getMaskW();
 		int by=bpi->posY&map->getMaskH();
-		//int teamNumber=bpi->teamNumber;
 		Sint32 typeNum=(bpi->typeNum);
 		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
 		int bw=bt->width;
@@ -313,7 +286,6 @@ void AICastor::computeWorkPowerMap()
 	int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=workPowerMap;
@@ -334,7 +306,6 @@ void AICastor::computeWorkPowerMap()
 			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungryness;
 			if (range<0)
 				continue;
-			//printf(" range=%d\n", range);
 			if (range>maxRange)
 				range=maxRange;
 			int ux=u->posX;
@@ -393,7 +364,6 @@ void AICastor::computeWorkRangeMap()
 	int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=workRangeMap;
@@ -409,7 +379,6 @@ void AICastor::computeWorkRangeMap()
 			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungryness;
 			if (range<0)
 				continue;
-			//printf(" range=%d\n", range);
 			if (range>GRADIENT_AT_GOAL)
 				range=GRADIENT_AT_GOAL;
 			int index=(u->posX&wMask)+((u->posY&hMask)<<wDec);
@@ -425,10 +394,6 @@ void AICastor::computeWorkAbilityMap()
 {
 	int w=map->w;
 	int h=map->h;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
-	//int hDec=map->hDec;
-	//int wDec=map->wDec;
 	size_t size=w*h;
 	
 	for (size_t i=0; i<size; i++)
@@ -450,7 +415,6 @@ void AICastor::computeHydratationMap()
 	int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	size_t size=w*h;
 	
@@ -502,8 +466,6 @@ void AICastor::computeNotGrassMap()
 {
 	int w=map->w;
 	int h=map->h;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
 	size_t size=w*h;
 	
 	memset(notGrassMap, 0, size);
@@ -524,15 +486,9 @@ void AICastor::computeWheatCareMap()
 {
 	int w=map->w;
 	int h=map->h;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
-	//int hDec=map->hDec;
-	//int wDec=map->wDec;
 	size_t size=w*h;
 	size_t sizeMask=(size-1);
 	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
-	//Case *cases=map->cases;
-	//Uint32 teamMask=team->me;
 	
 	Uint8 *temp=wheatCareMap[1];
 	wheatCareMap[1]=wheatCareMap[0];
@@ -559,10 +515,6 @@ void AICastor::computeWheatGrowthMap()
 	
 	int w=map->w;
 	int h=map->h;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
-	//int hDec=map->hDec;
-	//int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	
@@ -600,7 +552,6 @@ void AICastor::computeEnemyPowerMap()
 	int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=enemyPowerMap;
@@ -679,7 +630,6 @@ void AICastor::computeEnemyRangeMap()
 	int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=enemyRangeMap;
@@ -722,10 +672,6 @@ void AICastor::computeEnemyWarriorsMap()
 	
 	int w=map->w;
 	int h=map->h;
-	//int wMask=map->wMask;
-	//int hMask=map->hMask;
-	//int hDec=map->hDec;
-	//int wDec=map->wDec;
 	size_t size=w*h;
 	Uint8 *gradient=enemyWarriorsMap;
 	

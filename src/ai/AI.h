@@ -43,11 +43,9 @@ public:
 	static const ImplementitionID toggleAI=CASTOR;
 
 public:
-	//AI(Player *player); //TODO: remove this constructor, and choose the AI the user wants.
 	AI(ImplementitionID implementitionID, Player *player);
 	AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AI();
-	//void init(ImplementitionID ImplementitionID, Player *player);
 
 	AIImplementation *aiImplementation;
 	ImplementitionID implementitionID;
@@ -61,6 +59,5 @@ public:
 
 	std::shared_ptr<Order> getOrder(bool paused);
 
-//	Uint32 step;
 };
 

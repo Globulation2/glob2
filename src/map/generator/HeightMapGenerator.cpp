@@ -310,7 +310,6 @@ void HeightMap::normalize()
 	}
 	min-=.01;
 	max+=.01;
-	//std::cout << "min, max=" << min << ", " << max << "\n";
 	float range=max-min;
 	for(unsigned int i=0; i<_w*_h; i++)
 		_map[i]=(_map[i]-min)/range;

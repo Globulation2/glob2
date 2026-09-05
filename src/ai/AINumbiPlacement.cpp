@@ -267,8 +267,6 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 			maxr=AI_NUMBI_SWARM_SEARCH_RADIUS;
 		else
 			maxr=AI_NUMBI_NONSWARM_SEARCH_RADIUS;
-		//for (int r=0; r<=maxr; r++)
-		//	for (int d=0; d<8; d++)
 
 		int dx, dy, sx, sy, px, py, mx, my;
 		int margin;
@@ -300,13 +298,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		for (int i=0; i<AI_NUMBI_SCAN_ITERATIONS; i++)
 		{
 			squareCircleScann(dx, dy, sx, sy, px, py, mx, my);
-			//printf("AI:i=%d, d=(%d, %d), s=(%d, %d), p=(%d, %d), m=(%d, %d).\n", i, dx, dy, sx, sy, px, py, mx, my);
 
-			//int dx, dy;
-			//Unit::dxDyFromDirection(d, &dx, &dy);
-
-			//int px=b->posX+dx*(width+r);
-			//int py=b->posY+dy*(height+r);
 			if (map->isFreeForBuilding(px, py, width, height))
 			{
 				int valid=nbFreeAround(buildingType, px, py, width, height);
@@ -316,7 +308,6 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 					bool nr=map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
 					if (nr)
 					{
-						//int dist=map->warpDistSquare(px+1, py+1, rx, ry);
 						if (((dist<=(AI_NUMBI_CORN_DISTANCE_BIAS+width*height))&&(buildingType<=AI_NUMBI_NEAR_CORN_TYPE_CUTOFF))||((dist>=(AI_NUMBI_CORN_DISTANCE_BIAS+width*height))&&(buildingType>AI_NUMBI_NEAR_CORN_TYPE_CUTOFF)))
 						{
 							//printf("AI: findNewEmplacement d=%d valid=%d.\n", d, valid);

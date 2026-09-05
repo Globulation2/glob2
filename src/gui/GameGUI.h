@@ -206,7 +206,6 @@ public:
 	bool flushOutgoingAndExit;
 	//! if this is not empty, then Engine should load the map with this filename.
 	std::string toLoadGameFileName;
-	//bool showExtendedInformation;
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer, localTeamNo;
 	int viewportX, viewportY;

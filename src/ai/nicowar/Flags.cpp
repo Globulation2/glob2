@@ -105,8 +105,6 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 		int max_x = maxPos / h;
 		int max_y = maxPos % h;
 
-		//test(echo, counts, w, h, squareProtected, locations);
-		
 		//For all units and buildings that are under attack and within the radius of the flag, 
 		//decrement the values surrounding them. At the same time, count the number of enemy
 		//warriors in this zone

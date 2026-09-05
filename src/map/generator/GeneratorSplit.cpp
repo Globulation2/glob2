@@ -116,7 +116,6 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 					}
 					if(invalid)
 						continue;
-					//std::cout<<"dx="<<dx<<", dy="<<dy<<": score="<<score<<std::endl;
 					
 					if(score>best)
 					{

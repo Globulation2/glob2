@@ -539,7 +539,6 @@ void YOGServerPlayer::handleJoinGame(Uint16 ngameID)
 		shared_ptr<NetGameJoinAccepted> message(new NetGameJoinAccepted(ngame->getChatChannel()));
 		connection->sendMessage(message);
 		ngame->addPlayer(server.getPlayer(playerID));
-		//gameListState = NeedToSendGameList;
 	}
 	else
 	{

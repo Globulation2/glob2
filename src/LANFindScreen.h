@@ -36,7 +36,6 @@ public:
 	};
 
 private:
-	//Sprite *arch;
 	Text *serverText;
 	TextInput *serverName;
 	Text *playerText;

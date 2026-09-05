@@ -120,14 +120,9 @@ int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 
 int MapEdit::run(void)
 {
-	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
-
-// 	regenerateClipRect();
-
-		
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
-	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), true, true);
+	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 	drawMiniMap();
 	drawMenu();
 	
@@ -140,7 +135,6 @@ int MapEdit::run(void)
 	Uint64 startTick, endTick, deltaTick;
 	while (isRunning)
 	{
-		//SDL_Event event;
 		startTick=SDL_GetTicks64();
 	
 		// we get all pending events but for mousemotion we only keep the last one
@@ -182,7 +176,7 @@ int MapEdit::run(void)
 				performAction("no ressource growth area drag motion");
 		}
 		
-		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH(), true, true);
+		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH());
 		
 		drawMenu();
 		drawMiniMap();
@@ -276,7 +270,6 @@ int MapEdit::run(void)
 		}
 	}
 
-	//globalContainer->gfx->setRes(globalContainer->graphicWidth, globalContainer->graphicHeight , 32, globalContainer->graphicFlags, (DrawableSurface::GraphicContextType)globalContainer->settings.graphicType);
 	return returnCode;
 }
 

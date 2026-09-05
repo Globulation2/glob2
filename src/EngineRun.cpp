@@ -224,7 +224,6 @@ void Engine::drawAndPaceFrame(MainLoopState& st)
 	SDL_Delay(delay);
 
 	// we set CPU stats
-	// net->setLeftTicks(computationAvailableTicks); //We may have to tell others IP players to wait for our slow computer.
 	// Convert slept time into CPU load for one game tick.
 	const int loadPercent = static_cast<int>(
 		(GAME_TICK_MS * 100 - delay * 100) / GAME_TICK_MS);

@@ -44,8 +44,6 @@ bool AICastor::addProject(Project *project)
 
 void AICastor::addProjects()
 {
-	//printf(" canFeedUnit=%d, swarms=%d, pool=%d+%d, attaque=%d+%d, speed=%d+%d\n",
-	//	canFeedUnit, swarms, pool, poolSite, attaque, attaqueSite, speed, speedSite);
 	
 	buildsAmount=-1;
 	
@@ -142,7 +140,6 @@ void AICastor::addProjects()
 	// all critical projects succeded.
 	
 	// enough workers
-	//Strategy::Builds buildsCurrent=strategy.buildsBase;
 	buildsAmount=0;
 	if (!enoughFreeWorkers())
 		return;
@@ -231,11 +228,6 @@ void AICastor::addProjects()
 std::shared_ptr<Order>AICastor::continueProject(Project *project)
 {
 	// Phase alpha will make a new Food Building at any price.
-	//printf("(%s)(stn=%d, f=%d, w=[%d, %d, %d], ms=%d, wf=%d), sp=%d\n",
-	//	project->debugName,
-	//	project->shortTypeNum, project->food,
-	//	project->mainWorkers, project->foodWorkers, project->otherWorkers,
-	//	project->multipleStart, project->waitFinished, project->subPhase);
 	
 	if (timer<project->timer+AI_CASTOR_PROJECT_STEP_INTERVAL)
 		return shared_ptr<Order>();
@@ -457,8 +449,6 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 				Building *b=myBuildings[i];
 				if (b && b->type->shortTypeNum==project->shortTypeNum && b->maxUnitWorking<project->mainWorkers)
 				{
-					//printf("(%s) (incrementing workers) isFree=%d, current=%d\n",
-					//	project->debugName, isFree, b->maxUnitWorking);
 					b->maxUnitWorking++;
 					b->update();
 					project->timer=timer;

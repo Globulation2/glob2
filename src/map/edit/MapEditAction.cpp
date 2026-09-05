@@ -7,7 +7,6 @@
 
 void MapEdit::performAction(const std::string& action, int relMouseX, int relMouseY)
 {
-//	std::cout<<action<<std::endl;
 	if(action.find("&")!=std::string::npos)
 	{
 		int pos=action.find("&");

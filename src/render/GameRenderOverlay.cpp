@@ -41,7 +41,6 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 	// TODO : optimise : test only possible sectors to show bullets.
 
 	Sprite *bulletSprite = globalContainer->bullet;
-	// FIXME : have team in bullets to have the correct color
 
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
@@ -73,7 +72,6 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 				balisticShift = static_cast<int>(K * ((-1.0f * time * time) / duration + time));
 			}
 
-			//printf("px=(%d, %d) vp=(%d, %d)\n", (*it)->px, (*it)->py, viewportX, viewportY);
 			if ( (x<=sw) && (y<=sh) )
 			{
 				globalContainer->gfx->drawSprite(x, y-balisticShift, bulletSprite, BULLET_IMGID);
@@ -124,15 +122,6 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 			for (int x=left-1; x<=right; x++)
 			{
 				unsigned i0, i1, i2, i3;
-
-				/*if ( (!map.isMapDiscovered(x+viewportX, y+viewportY, teams[localTeam]->me)))
-				{
-					globalContainer->gfx->drawFilledRect(x<<5, y<<5, 32, 32, 10, 10, 10);
-				}
-				else if ( (!map.isFOW(x+viewportX, y+viewportY, teams[localTeam]->me)))
-				{
-					globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrainShader, 0);
-				}*/
 
 				Uint32 visibleTeams = teams[localTeam]->me;
 				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;

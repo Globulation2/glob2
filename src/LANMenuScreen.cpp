@@ -28,8 +28,6 @@ LANMenuScreen::LANMenuScreen()
 
 LANMenuScreen::~LANMenuScreen()
 {
-	/*delete font;
-	delete arch;*/
 }
 
 void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)

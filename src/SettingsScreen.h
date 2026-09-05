@@ -80,7 +80,6 @@ private:
 	Number* flagRadii[3];
 	Text* flagRadiusTexts[3];
 	int flagRadiusGroupNumbers[3];
-//	Text *title;
 	Text *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
 	Text *actDisplay;

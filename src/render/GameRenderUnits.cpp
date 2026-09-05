@@ -289,8 +289,6 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	if(rel_cy == 0)
 		rel_cy = 1;
 
-	//globalContainer->gfx->drawLine(sx + sw/2, sy + sh/2, px, py, Color::white);
-
 	// Decide which edge of the screen the box is on, and compute its center cordinates
 	int bx = 0;
 	int by = 0;

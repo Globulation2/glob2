@@ -240,7 +240,6 @@ void YOGClientLobbyScreen::onTimer(Uint32 tick)
 
 void YOGClientLobbyScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
-	//std::cout<<"YOGClientLobbyScreen: recieved event "<<event->format()<<std::endl;
 	Uint8 type = event->getEventType();
 	if(type == YEConnectionLost)
 	{
@@ -380,7 +379,6 @@ void YOGClientLobbyScreen::updateGameList(void)
 void YOGClientLobbyScreen::updatePlayerList(void)
 {
 
-//	std::shared_ptr<IRC> irc = ircChat->getIRC();
 	// update YOG one
 	playerList->clear();
 	for (std::list<YOGPlayerSessionInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)

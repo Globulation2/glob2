@@ -94,7 +94,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=1; i<NB_UNIT_TYPE; i++)
 	{
 		ratio[i]=0;
-		//totalRatio++;
 		percentUsed[i]=0;
 	}
 
@@ -270,7 +269,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	bullets = stream->readSint32("bullets");
 
 	// type
-	// FIXME : do not save typenum but name/isBuildingSite/level
 	typeNum = stream->readSint32("typeNum");
 	type = types->get(typeNum);
 	assert(type);

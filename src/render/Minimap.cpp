@@ -85,7 +85,6 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	// top side
 	globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, 0, width, yOffset, borderR, borderG, borderB, borderA);
 	// bottom side not needed, because the menu draws up to it
-	//globalContainer->gfx->drawFilledRect(gameWidth-menuWidth+xOffset, yOffset+height, width, 0, borderR, borderG, borderB, borderA);
   
   // calculate the offset for the viewport square
 	offset_x = game->teams[localteam]->startPosX - game->map.getW() / 2;

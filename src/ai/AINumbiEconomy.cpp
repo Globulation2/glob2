@@ -143,7 +143,6 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 
 		if (numberRequestedLoca!=numberRequestedTemp)
 		{
-			//printf("AI: (%d) numberRequested changed to (nrt=%d) (nrl=%d)(f=%d) (nbu=%d).\n", b->UID, numberRequestedTemp, numberRequestedLoca, f, nbu);
 			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequestedTemp));
 		}
 	}
@@ -190,7 +189,6 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 
 	if (fb<((wr/numbers)+numbersInc))
 	{
-		//printf("AI: findNewEmplacement(%d), fb=%d, wr=%d, numbers=%d, numbersInc=%d, nn=%d.\n", buildingType, fb, wr, numbers, numbersInc, ((wr/numbers)+numbersInc));
 		int x, y;
 		if (findNewEmplacement(buildingType, &x, &y))
 		{
@@ -198,7 +196,6 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 			int teamNumber=team->teamNumber;
 			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum, AI_NUMBI_BUILD_ORDER_UNITS_WORKING, AI_NUMBI_BUILD_ORDER_FLAG_RADIUS));
 		}
-		//printf("AI: findNewEmplacement(%d) failed.\n", buildingType);
 		return shared_ptr<Order>(new NullOrder);
 	}
 	else
@@ -207,8 +204,6 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 
 std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int workers)
 {
-	//std::list<Building *> swarms=team->swarms;
-	//int ss=swarms.size();
 
 	Building **myBuildings=team->myBuildings;
 	int ss=0;

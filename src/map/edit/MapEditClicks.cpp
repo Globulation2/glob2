@@ -89,11 +89,6 @@ void MapEdit::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 
 void MapEdit::handleBrushClick(int mx, int my)
 {
-	// if we have an area over 32x32, which mean over 128 bytes, send it
-// 	if (brushAccumulator.getAreaSurface() > 32*32)
-// 	{
-// 		sendBrushOrders();
-// 	}
 	// we add brush to accumulator
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY,  viewportX, viewportY);
@@ -160,11 +155,6 @@ MapEdit::AreaBrushTarget MapEdit::areaBrushTarget()
 
 void MapEdit::handleTerrainClick(int mx, int my)
 {
-	// if we have an area over 32x32, which mean over 128 bytes, send it
-// 	if (brushAccumulator.getAreaSurface() > 32*32)
-// 	{
-// 		sendBrushOrders();
-// 	}
 	// we add brush to accumulator
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mx+(terrainType>TerrainSelector::Water ? 0 : 16), my+(terrainType>TerrainSelector::Water ? 0 : 16), &mapX, &mapY,  viewportX, viewportY);

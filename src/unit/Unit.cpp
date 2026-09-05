@@ -181,8 +181,6 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 				{
 					displacement=DIS_GOING_TO_FLAG;
 					assert(targetBuilding==attachedBuilding);
-					//targetX=attachedBuilding->getMidX();
-					//targetY=attachedBuilding->getMidY();
 					validTarget=true;
 				}
 				break;
@@ -190,8 +188,6 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 				{
 					displacement=DIS_GOING_TO_BUILDING;
 					assert(targetBuilding==attachedBuilding);
-					//targetX=targetBuilding->getMidX();
-					//targetY=targetBuilding->getMidY();
 					validTarget=true;
 				}
 				break;
@@ -202,8 +198,6 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					{
 						displacement=DIS_GOING_TO_BUILDING;
 						setTargetBuilding(attachedBuilding);
-						//targetX=targetBuilding->getMidX();
-						//targetY=targetBuilding->getMidY();
 						validTarget=true;
 					}
 					else
@@ -298,7 +292,6 @@ void Unit::syncStep(void)
 	else
 #endif
 	{
-		//printf("action=%d, speed=%d, perf[a]=%d, t->perf[a]=%d\n", action, speed, performance[action], race->getUnitType(typeNum, 0)->performance[action]);
 		delta+=(speed-UNIT_DELTA_QUANTUM);
 
 		endOfAction();

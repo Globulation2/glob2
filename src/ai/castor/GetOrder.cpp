@@ -67,7 +67,6 @@ std::shared_ptr<Order>AICastor::getOrder()
 			computeHydratationMap();
 			break;
 			case 12:
-			//computeWheatCareMap();
 			{
 				size_t size=map->w*map->h;
 				Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
@@ -141,11 +140,6 @@ std::shared_ptr<Order>AICastor::getOrder()
 		if (order)
 			return order;
 	}
-	
-	//bool critical=false;
-	//for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
-	//	if ((*pi)->critical)
-	//		critical=true;
 	
 	int minReal=Building::MAX_COUNT;
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)

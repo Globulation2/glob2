@@ -171,14 +171,12 @@ void Unit::handleMedical(void)
 		medical=MED_FREE;
 		if ((destinationPurpose == HEAL) && (hungry < ((HUNGRY_MAX * EXPLORER_FORCE_FEED_RATIO_NUM) / EXPLORER_FORCE_FEED_RATIO_DEN)))
 		{
-			// fprintf (stderr, "forcing explorer hunger: gid: %d, hungry: %d\n", gid, hungry);
 			needToRecheckMedical = 1;
 			medical = MED_HUNGRY;
 			return;
 		}
 		else if ((destinationPurpose == FEED) && (hp < (((performance[HP]) * EXPLORER_FORCE_FEED_RATIO_NUM) / EXPLORER_FORCE_FEED_RATIO_DEN)))
 		{
-			// fprintf (stderr, "forcing explorer healing: gid: %d, hp: %d\n", gid, hp);
 			needToRecheckMedical = 1;
 			medical = MED_DAMAGED;
 			return;
@@ -214,8 +212,6 @@ void Unit::handleMedical(void)
 				ownExchangeBuilding=NULL;
 			}
 			setTargetBuilding(NULL);
-            // //TODO: in beta4 this line was ommitted. delete?
-			// ownExchangeBuilding=NULL;
 
 			activity=ACT_RANDOM;
 			validTarget=false;

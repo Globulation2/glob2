@@ -150,7 +150,6 @@ void EndGameStat::paint(void)
 			{
 				if(!isTeamEnabled[team])
 				{
-					//std::cout<<"team disabled "<<team<<std::endl;
 					continue;
 				}
 				const Color& color = game->teams[team]->color;
@@ -271,18 +270,6 @@ std::string EndGameStat::getStatLabel()
 			assert(false);
 			return "No clue how we got here.";
 	}
-	/*if(type == EndOfGameStat::TYPE_UNITS)
-		return Toolkit::getStringTable()->getString("[Number Of Units]");
-	if(type == EndOfGameStat::TYPE_BUILDINGS)
-		return Toolkit::getStringTable()->getString("[Number Of Buildings]");
-	if(type == EndOfGameStat::TYPE_PRESTIGE)
-		return Toolkit::getStringTable()->getString("[Prestige Score]");
-	if(type == EndOfGameStat::TYPE_HP)
-		return Toolkit::getStringTable()->getString("[Total Hitpoints]");
-	if(type == EndOfGameStat::TYPE_ATTACK)
-		return Toolkit::getStringTable()->getString("[Total Attack Power]");
-	if(type == EndOfGameStat::TYPE_DEFENSE)
-		return Toolkit::getStringTable()->getString("[Total Defence Power]");*/
 }
 
 void EndGameStat::onSDLMouseMotion(SDL_Event* event)

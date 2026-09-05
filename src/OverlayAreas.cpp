@@ -17,8 +17,6 @@ OverlayArea::OverlayArea()
 {
 	lasttype = None;
 	overlaymax = 0;
-//	fertilitymax = 0;
-//	fertilityComputed = 0;
 }
 
 

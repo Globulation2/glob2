@@ -204,7 +204,6 @@ public:
 	void clearingUncontrolledTeams(void);
 	void regenerateDiscoveryMap(void);
 
-	//void addUnit(int x, int y, int team, int type, int level);
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
 	Building *addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking = 1, Sint32 unitWorkingFuture = 1);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.

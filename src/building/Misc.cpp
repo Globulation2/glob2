@@ -43,7 +43,6 @@ void Building::kill(void)
 				owner->map->setAirUnit(u->posX-u->dx, u->posY-u->dy, NOGUID);
 			else
 				owner->map->setGroundUnit(u->posX-u->dx, u->posY-u->dy, NOGUID);
-			//printf("(%x)Building:: Unit(uid%d)(id%d) killed while entering. dis=%d, mov=%d, ab=%x, ito=%d \n",this, u->gid, Unit::UIDtoID(u->gid), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
 			u->isDead=true;
 		}
 		u->standardRandomActivity();

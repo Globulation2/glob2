@@ -42,7 +42,6 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(std::shared_ptr<YOGClient> cl
 	authorName=new TextInput(173, 60+150, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 255);
 	addWidget(authorName);
 	
-	//uploadStatus=new Text(248, 60+300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", "", 180);
 	uploadStatus = new ProgressBar(20, 300, 600, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	uploadStatus->visible = false;
 	addWidget(uploadStatus);
@@ -136,7 +135,6 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 			uploadStatus->visible = true;
 			uploadStatus->setValue(uploader.getPercentUploaded());
 			uploadStatusText->setText("");
-			//uploadStatus->setText(FormatableString(Toolkit::getStringTable()->getString("[%0% Uploaded]")).arg(uploader.getPercentUploaded()));
 		}
 	}
 }

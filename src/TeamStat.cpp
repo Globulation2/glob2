@@ -305,8 +305,7 @@ void TeamStats::drawText(int posx, int posy)
 	TeamStat &newStats=stats[statsIndex];
 	
 	// general
-	//gfx->drawString(textStartPosX, textStartPosY, font, strings->getString("[Statistics]"));
-	textStartPosY -= 5; // this is to correct for the removal of the title
+	textStartPosY -= 5;
 	gfx->drawString(textStartPosX, textStartPosY+15, font, FormatableString("%0 %1").arg(newStats.totalUnit).arg(strings->getString("[Units]")).c_str());
 	if (newStats.totalUnit)
 	{
@@ -368,14 +367,6 @@ void TeamStats::drawStat(int posx, int posy)
 	int textStartPos=posx+4;
 	int startPoxY=posy;
 	
-	// compute total units
-	/*int maxUnit=0;
-	int i;
-	for (i=0; i<STATS_SIZE; i++)
-	{
-		if (stats[i].totalUnit>maxUnit)
-			maxUnit=stats[i].totalUnit;
-	}*/
 	int maxWorker=0;
 	for (int i=0; i<STATS_SIZE; i++)
 		if (stats[i].numberUnitPerType[WORKER]>maxWorker)
@@ -386,8 +377,7 @@ void TeamStats::drawStat(int posx, int posy)
 
 	// captions
 	{
-		//gfx->drawString(textStartPos, startPoxY, font, strings->getString("[Statistics]"));
-		startPoxY -= 10; // this is to correct for the removal of the title
+		startPoxY -= 10;
 		
 		int dec=0;
 		std::string Total=strings->getString("[Total]");
@@ -426,25 +416,13 @@ void TeamStats::drawStat(int posx, int posy)
 		gfx->drawString(textStartPos, startPoxY+104, font, Free);
 		font->popStyle();
 
-		/*dec+=font->getStringWidth(Free);
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;*/
-
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 224, 210, 17));
 		gfx->drawString(textStartPos+64, startPoxY+104, font, hungry);
 		font->popStyle();
 
-		/*dec+=font->getStringWidth(hungry);
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;*/
-
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 249, 167, 14));
 		gfx->drawString(textStartPos, startPoxY+104+12, font, starving);
 		font->popStyle();
-
-		/*dec+=font->getStringWidth(starving);
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;*/
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 250, 25, 25));
 		gfx->drawString(textStartPos+64, startPoxY+104+12, font, wounded);

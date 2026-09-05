@@ -85,7 +85,6 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		assert(damageImgShift >= 0);
 		imgid = type->gameSpriteImage + damageImgShift;
 	}
-//	int x, y;
 	int dx, dy;
 
 
@@ -187,9 +186,6 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 			Uint16 gid=map.getBuilding(x+viewportX, y+viewportY);
 			if (gid!=NOGBID) // Then this is a building
 			{
-				//globalContainer->gfx->drawRect(x<<5, y<<5, 32, 32, 255, 128, 0);
-				//globalContainer->gfx->drawRect(2+(x<<5), 2+(y<<5), 28, 28, 255, 128, 0);
-
 				int id = Building::GIDtoID(gid);
 				int team = Building::GIDtoTeam(gid);
 

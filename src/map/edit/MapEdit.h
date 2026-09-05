@@ -433,7 +433,7 @@ private:
 	bool doQuitAfterLoadSave;
 
 	///This draws the map and various on-map elements
-	void drawMap(int sx, int sy, int sw, int sh, bool needUpdate, bool doPaintEditMode);
+	void drawMap(int sx, int sy, int sw, int sh);
 
 	///This draws the minimap
 	void drawMiniMap(void);

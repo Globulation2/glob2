@@ -259,7 +259,6 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 		if (targetGBID != NOGBID)
 		{
 			Sint32 otherTeam = Building::GIDtoTeam(targetGBID);
-			//int otherID = Building::GIDtoID(targetGBID);
 			Uint32 otherTeamMask = 1<<otherTeam;
 			if (enemies & otherTeamMask)
 			{
@@ -317,10 +316,8 @@ Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int 
 	sol.originY = ((posY)<<Map::TILE_PIXEL_SHIFT)+halfHeightPx;
 
 	// TODO : shall we really uses shootSpeed ?
-	// FIXME : is it correct this way ? Is there a function for this ?
 	int dpx=(targetX*Map::TILE_PX)+Map::HALF_TILE_PX-BULLET_HALF_SIZE_PX-sol.originX;
 	int dpy=(targetY*Map::TILE_PX)+Map::HALF_TILE_PX-BULLET_HALF_SIZE_PX-sol.originY;
-	//printf("%d insert: dp=(%d, %d).\n", gid, dpx, dpy);
 	// toroidal wrap: if the target is more than half the map away, aim the short way around
 	const int mapWidthPx = map->getW()<<Map::TILE_PIXEL_SHIFT;
 	const int mapHeightPx = map->getH()<<Map::TILE_PIXEL_SHIFT;
@@ -359,7 +356,6 @@ Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int 
 
 void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 {
-	//printf("%d found target found: (%d, %d) \n", gid, target.x, target.y);
 	Sector *s=owner->map->getSector(getMidX(), getMidY());
 
 	TurretFiringSolution sol = computeFiringSolution(target.x, target.y);

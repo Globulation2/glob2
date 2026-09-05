@@ -51,7 +51,6 @@ int Engine::run(void)
 		}
 
 		// select a music randomly
-		// FIXME: implement more intelligent music choosing policy
 		if (!musicDirs.empty())
 		{
 			size_t musicIndex(rand() % musicDirs.size());

@@ -80,9 +80,6 @@ void GameGUI::dragStep(int mx, int my, int button)
 		it was at the time in the middle of the event stream, not
 		as it is now.  So instead we make sure the correct data is
 		passed to us as a parameter. */
-	// int mx, my;
-	// Uint8 button = SDL_GetMouseState(&mx, &my);
-        // fprintf (stderr, "enter dragStep: button: %d, mx: %d, selectionMode: %d\n", button, mx, selectionMode);
 	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
 		// Update flag
@@ -98,7 +95,6 @@ void GameGUI::dragStep(int mx, int my, int button)
 			toolManager.handleMouseDrag(mx, my, localTeamNo, viewportX, viewportY);
 		}
 	}
-        // fprintf (stderr, "exit dragStep\n");
 }
 
 /* We need to keep track of the last recorded mouse position for use
@@ -145,7 +141,6 @@ void GameGUI::step(void)
 				mouseMapX = -1;
 				mouseMapY = -1;
 			}
-			// fprintf (stderr, "mouse motion: (lastMouseX,lastMouseY): (%d,%d), (mouseMapX,mouseMapY): (%d,%d), (oldMouseMapX,oldMouseMapY): (%d,%d)\n", lastMouseX, lastMouseY, mouseMapX, mouseMapY, oldMouseMapX, oldMouseMapY);
 			/* Make sure dragging does not skip over map cells by
 				processing the old stored event rather than throwing
 				it away. */
@@ -155,7 +150,6 @@ void GameGUI::step(void)
 					|| (mouseMapY != oldMouseMapY))
 			)
 			{
-				// fprintf (stderr, "processing old event instead of discarding it\n");
 				processEvent(&mouseMotionEvent);
 			}
 			oldMouseMapX = mouseMapX;

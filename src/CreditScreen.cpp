@@ -12,17 +12,9 @@ using namespace GAGGUI;
 #include <Stream.h>
 #include <FileManager.h>
 using namespace GAGCore;
-// using namespace std;
 
 
 // New class for an auto-scrolling credit screen.
-
-// INCLUDE part
-// #ifndef __SCROLLINGTEXT_H
-// #define __SCROLLINGTEXT_H
-// 
-// #include "GUIBase.h"
-// #include <string>
 
 // Lines marked with a '*' in the credits file are decorated with a walking
 // worker taken from the shared units sprite. The worker walk cycle starts at
@@ -53,8 +45,6 @@ public:
 	virtual void paint(void);
 	virtual void onTimer(Uint32 tick);
 };
-
-// #endif
 
 ////////////////////////////////////////////////
 ////////////////////////////////////////////////
@@ -120,7 +110,6 @@ void ScrollingText::internalInit(void)
 		{
 			std::string::size_type f = s.find('<');
 			std::string::size_type l = s.rfind('>');
-			// std::string::size_type deco = s.find('*');
 			// If we can find a "<" and a ">" in this line
 			if ((f != std::string::npos) && (l != std::string::npos))
 			{

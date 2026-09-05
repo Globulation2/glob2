@@ -171,13 +171,9 @@ std::shared_ptr<Order>AICastor::expandFood()
 
 std::shared_ptr<Order>AICastor::controlFood()
 {
-	//int w=map->w;
-	//int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
-	//size_t size=w*h;
 	
 	int bi=(controlFoodTimer++)&(Building::MAX_COUNT-1);
 	Building **myBuildings=team->myBuildings;
@@ -274,8 +270,6 @@ std::shared_ptr<Order>AICastor::controlFood()
 
 std::shared_ptr<Order>AICastor::controlUpgrades()
 {
-	//printf("controlUpgrades(), controlUpgradeTimer=%d, controlUpgradeDelay=%d, buildsAmount=%d\n",
-	//	controlUpgradeTimer, controlUpgradeDelay, buildsAmount);
 	if (controlUpgradeDelay!=0)
 	{
 		controlUpgradeDelay--;
@@ -428,11 +422,8 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 
 	// We choose the best buildings to attack:
 	
-	//int w=map->w;
-	//int h=map->h;
 	int wMask=map->wMask;
 	int hMask=map->hMask;
-	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	
 	Uint32 bestScore=0;

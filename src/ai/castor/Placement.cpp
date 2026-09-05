@@ -72,9 +72,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	size_t bestIndex=0;
 	Sint32 bestScore=0;
 	
-	//wheatLimit=(wheatLimit<<2);
-	//printf(" (scaled) minWork=%d, wheatLimit=%d\n", minWork, wheatLimit);
-	
 	Uint8 *wheatGradientMap=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -106,15 +103,11 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 				{
 					if (wheatGradient<wheatGradientLimit)
 						continue;
-					//if (wheatGrowth<wheatGrowthLimit)
-					//	continue;
 				}
 				else
 				{
 					if (wheatGradient>wheatGradientLimit)
 						continue;
-					//if (wheatGrowth>wheatGrowthLimit)
-					//	continue;
 				}
 			}
 			
@@ -166,7 +159,6 @@ void AICastor::computeRessourcesCluster()
 	
 	memset(ressourcesCluster, 0, size*2);
 	
-	//int i=0;
 	Uint8 old=NO_RES_TYPE;
 	Uint16 id=0;
 	bool usedid[AI_CASTOR_CLUSTER_ID_SPACE];

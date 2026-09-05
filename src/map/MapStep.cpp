@@ -22,9 +22,7 @@ void Map::growRessources(void)
 	for (int y=dy; y<h; y+=4)
 	{
 		for (int x=(syncRand()&0xF); x<w; x+=(syncRand()&0x1F))
-		//for (int x=0; x<w; x++)
 		{
-			//int y=syncRand()&hMask;
 			const Ressource &r = getRessource(x, y);
 			if (r.type!=NO_RES_TYPE)
 			{
@@ -40,9 +38,6 @@ void Map::growRessources(void)
 
 				int wax3=x-dwax;
 				int way3=y-dway;
-
-				//int wax4=x+dway*2;
-				//int way4=y-dwax*2;
 
 				// alga, wood and corn are limited by near underground. Others are not.
 				bool expand=true;

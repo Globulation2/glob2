@@ -57,8 +57,6 @@ namespace Utilities
 	// rectangle
 	//! return true if (x,y) is in r
 	bool ptInRect(int x, int y, SDL_Rect *r);
-	// FIXME : please Luc document this :
-	void rectClipRect(int &x, int &y, int &w, int &h, SDL_Rect &r);
 	void rectExtendRect(SDL_Rect *rs, SDL_Rect *rd);
 	void rectExtendRect(int xs, int ys, int ws, int hs, int *xd, int *yd, int *wd, int *hd);
 	void sdcRects(SDL_Rect *source, SDL_Rect *destination, SDL_Rect clipping);

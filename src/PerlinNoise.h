@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdlib.h>
-//#include "Vector.h"
 
 // It must be true that (x % NOISE_WRAP_INDEX) == (x & NOISE_MOD_MASK)
 // so NOISE_WRAP_INDEX must be a power of two, and NOISE_MOD_MASK must be
@@ -45,8 +44,6 @@ public:
   float Noise( float );             
   float Noise( float, float );        
   float Noise( float, float, float );   
-
-//  float Turbulence( Vec3f &p, int oct, bool hard = false );
 
 };
 

@@ -99,7 +99,6 @@ void NetConnectionThread::operator()()
 						if(connected)
 						{
 							std::shared_ptr<NetMessage> message = info->getMessage();
-							//std::cout<<"Sending: "<<message->format()<<std::endl;
 							MemoryStreamBackend* msb = new MemoryStreamBackend;
 							BinaryOutputStream* bos = new BinaryOutputStream(msb);
 							bos->writeUint8(message->getMessageType(), "messageType");
@@ -120,17 +119,6 @@ void NetConnectionThread::operator()()
 								sendToMainThread(error);
 								closeConnection();
 							}
-							
-							/*
-							amount += length;
-							if(amount >= 1024)
-							{
-								Uint32 newTime = SDL_GetTicks();
-								std::cout<<"bandwidth usage: " << float(amount * 1000) / float(newTime - lastTime) <<std::endl;
-								lastTime = newTime;
-								amount = 0;
-							}
-							*/
 							
 							delete bos;
 							delete[] newData;
@@ -206,16 +194,6 @@ void NetConnectionThread::operator()()
 						}
 						if(connected)
 						{
-						/*
-							amount += length;
-							if(amount >= 1024)
-							{
-								Uint32 newTime = SDL_GetTicks();
-								std::cout<<"bandwidth usage: " << float(amount * 1000) / float(newTime - lastTime) <<std::endl;
-								lastTime = newTime;
-								amount = 0;
-							}
-						*/
 										
 							MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
 							msb->seekFromStart(0);
@@ -226,8 +204,6 @@ void NetConnectionThread::operator()()
 							std::shared_ptr<NTRecievedMessage> recieved(new NTRecievedMessage(message));
 							sendToMainThread(recieved);
 
-							//std::cout<<"Recieved: "<<message->format()<<std::endl;
-							
 							delete bis;
 						}
 						delete[] data;

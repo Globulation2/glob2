@@ -279,7 +279,6 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 {
 	int button=mouseEvent.button;
-	//int state=mouseEvent.state;
 
 	if (button==SDL_BUTTON_RIGHT)
 	{

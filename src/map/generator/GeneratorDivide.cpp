@@ -73,7 +73,6 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			// Place wood
 			std::vector<MapGeneratorPoint> wheatWoodPoints;
 			std::vector<MapGeneratorPoint> wheatPoints;
-			//std::vector<MapGeneratorPoint> woodPoints;
 			getAllPoints(game, grid, areaNumbers[3], wheatWoodPoints);
 			getAllPoints(game, grid, areaNumbers[4], wheatWoodPoints);
 			getAllPoints(game, grid, areaNumbers[5], wheatWoodPoints);
@@ -84,7 +83,6 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 				if(h > 50)
 				{
 					game.map.setRessource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
-					//woodPoints.push_back(wheatWoodPoints[j]);
 				}
 			}
 			wheatWoodPoints.clear();
