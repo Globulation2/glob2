@@ -204,6 +204,7 @@ private:
 	void handleKey(SDL_Keysym key, bool pressed);
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
+	void changeGameSpeed(int amount);
 	void handleMouseMotion(int mx, int my, int button);
 	void handleMapClick(int mx, int my, int button);
 	void handleMenuClick(int mx, int my, int button);

@@ -116,6 +116,13 @@ SettingsScreen::SettingsScreen()
 	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
 	addWidgetToGroup(scrollwheelText, generalGroup);
 
+	gameSpeedText=new Text(230, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
+	addWidgetToGroup(gameSpeedText, generalGroup);
+	gameSpeed=new Selector(230, 285, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180,
+		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
+	addWidgetToGroup(gameSpeed, generalGroup);
+	updateGameSpeedText();
+
 	
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	//TODO: warning style should be defined centrally.
@@ -333,6 +340,15 @@ void SettingsScreen::addNumbersFor(int low, int high, Number* widget)
 }
 
 
+void SettingsScreen::updateGameSpeedText(void)
+{
+	gameSpeedText->setText(FormatableString("%0: %1")
+		.arg(Toolkit::getStringTable()->getString("[game speed]"))
+		.arg(globalContainer->settings.getGameSpeedText()));
+}
+
+
+
 void SettingsScreen::setFullscreen()
 {
     if(fullscreen->getState()){
@@ -474,6 +490,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
 			scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
+			updateGameSpeedText();
 
 			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
 			audioMuteText->setText(Toolkit::getStringTable()->getString("[mute]"));
@@ -529,9 +546,17 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	else if (action==VALUE_CHANGED)
 	{
-		globalContainer->settings.musicVolume = musicVol->getValue();
-		globalContainer->settings.voiceVolume = voiceVol->getValue();
-		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
+		if(source==gameSpeed)
+		{
+			globalContainer->settings.gameSpeed=gameSpeed->getValue();
+			updateGameSpeedText();
+		}
+		else
+		{
+			globalContainer->settings.musicVolume = musicVol->getValue();
+			globalContainer->settings.voiceVolume = voiceVol->getValue();
+			globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
+		}
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{

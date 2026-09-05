@@ -248,6 +248,8 @@ Custom cursor
 Damage
 [Damaged Map]
 Damaged Map
+[decrease game speed]
+Decrease Game Speed
 [decrease units working]
 Decrease Units Working
 [Defeat Your Oppenents]
@@ -382,6 +384,8 @@ Fullscreen
 Game full
 [game shortcuts]
 Game Shortcuts
+[game speed]
+Game speed
 [Game]
 Game
 [general settings]
@@ -438,6 +442,8 @@ hungry
 Hungriness
 [In way]
 On the way
+[increase game speed]
+Increase Game Speed
 [increase units working]
 Increase Units Working
 [inn explanation 2]

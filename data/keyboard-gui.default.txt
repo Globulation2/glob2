@@ -20,6 +20,12 @@
 <shift><v>=toggle recording voice
 <[-]>=decrease units working
 <[+]>=increase units working
+<control><+>=increase game speed
+<control><=>=increase game speed
+<control><shift><=>=increase game speed
+<control><[+]>=increase game speed
+<control><->=decrease game speed
+<control><[-]>=decrease game speed
 <home>=go to home
 <scroll lock>=hard pause
 <a>-<1>=switch to area brush 1

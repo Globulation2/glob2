@@ -1217,6 +1217,18 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 		else
 		{
 			Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
+			// Older personal shortcut files do not contain the new speed actions.
+			// Provide a fallback when the configurable shortcut system did not
+			// resolve an action; configured actions still take precedence.
+			if(action_t==GameGUIKeyActions::DoNothing && pressed
+				&& (key.mod&KMOD_CTRL))
+			{
+				if(key.sym==SDLK_PLUS || key.sym==SDLK_EQUALS
+					|| key.sym==SDLK_KP_PLUS)
+					action_t=GameGUIKeyActions::IncreaseGameSpeed;
+				else if(key.sym==SDLK_MINUS || key.sym==SDLK_KP_MINUS)
+					action_t=GameGUIKeyActions::DecreaseGameSpeed;
+			}
 			switch(action_t)
 			{
 				case GameGUIKeyActions::DoNothing:
@@ -1330,7 +1342,17 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 					hardPause=!hardPause;
 				}
-				break;
+					break;
+				case GameGUIKeyActions::IncreaseGameSpeed:
+				{
+					changeGameSpeed(1);
+				}
+					break;
+				case GameGUIKeyActions::DecreaseGameSpeed:
+				{
+					changeGameSpeed(-1);
+				}
+					break;
 				case GameGUIKeyActions::ToggleDrawUnitPaths:
 				{
 					drawPathLines=!drawPathLines;
@@ -1708,6 +1730,19 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 			}
 		}
 	}
+}
+
+
+
+void GameGUI::changeGameSpeed(int amount)
+{
+	const int oldSpeed=globalContainer->settings.gameSpeed;
+	globalContainer->settings.changeGameSpeed(amount);
+	if(oldSpeed!=globalContainer->settings.gameSpeed)
+		globalContainer->settings.save();
+	addMessage(Color(230, 230, 230), FormatableString("%0: %1")
+		.arg(Toolkit::getStringTable()->getString("[game speed]"))
+		.arg(globalContainer->settings.getGameSpeedText()), false);
 }
 
 void GameGUI::handleKeyDump(SDL_KeyboardEvent key)
