@@ -5,7 +5,7 @@
 #define _DYNAMICCLOUDS_H
 
 #include "Settings.h"
-#include <math.h>
+#include <algorithm>
 #include <valarray>
 
 namespace GAGCore
@@ -47,9 +47,6 @@ class DynamicClouds
 	 * this value is set in preferences.txt: cloudHeight=150
 	 */
 	float cloudHeight;
-	/**
-	 * helper variable (sqrt(maxAlpha))
-	 */
 	/// screen width/granularity+1
 	int wGrid;
 	/// screen height/granularity+1
@@ -68,7 +65,7 @@ public:
 	///initializes DynamicClouds using the settings file (preferences.txt)
 	DynamicClouds(Settings * settings)
 	{
-		granularity=settings->cloudPatchSize;
+		granularity=std::max(1, settings->cloudPatchSize);
 		maxAlpha=(unsigned char)settings->cloudMaxAlpha;
 		maxCloudSpeed=settings->cloudMaxSpeed;
 		windStability=settings->cloudWindStability;

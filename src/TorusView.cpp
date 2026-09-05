@@ -66,8 +66,8 @@ const std::vector<SkyPoint> &skyPoints(bool haze)
     }
     return points;
 }
-void drawSky(float yaw, float pitch, float fade, float sx, float sy, float distance,
-             int width, int height, int renderWidth)
+void drawSky(float yaw, float pitch, float fade, float sx, float sy, float distance, int width, int height,
+             int renderWidth)
 {
     glUseProgram(0);
     glDisable(GL_TEXTURE_2D);
@@ -79,7 +79,8 @@ void drawSky(float yaw, float pitch, float fade, float sx, float sy, float dista
     auto project = [&](const SkyPoint &p, float &x, float &y)
     {
         TorusGeometry::Point screen;
-        if (!TorusGeometry::projectSkyDirection({p.x,p.y,p.z}, {yaw,pitch}, fade, sx, sy, distance, screen))
+        if (!TorusGeometry::projectSkyDirection({p.x, p.y, p.z}, {yaw, pitch}, fade, sx, sy, distance,
+                                                screen))
             return false;
         x = width * 0.5f + screen.x;
         y = (height + 16) * 0.5f + screen.y;
@@ -167,11 +168,13 @@ GLuint createMaterial()
 TorusView::TorusView()
     : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0), surfaceScaleX(1),
       surfaceScaleY(1), baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
-      lastFrame(0), texture(0), visibility(0), framebuffer(0), material(0), meshBuffer(0),
-      indexBuffer(0), meshKey{}, failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f)
+      lastFrame(0), texture(0), visibility(0), framebuffer(0), material(0), meshBuffer(0), indexBuffer(0),
+      meshKey{}, failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f)
 {
 }
-TorusView::~TorusView()
+TorusView::~TorusView() { releaseResources(); }
+
+void TorusView::releaseResources()
 {
 #ifdef HAVE_OPENGL
     if (SDL_GL_GetCurrentContext())
@@ -190,12 +193,40 @@ TorusView::~TorusView()
             glDeleteFramebuffers(1, &framebuffer);
     }
 #endif
+    texture = visibility = framebuffer = material = meshBuffer = indexBuffer = 0;
+    atlasW = atlasH = 0;
+    discoveryPixels.clear();
+    discoveryScratch.clear();
+    vertices.clear();
+    cachedPickX = cachedPickY = -1;
+    cachedPickFound = false;
+    pickWidth = pickHeight = 0;
 }
+
+void TorusView::reset()
+{
+    releaseResources();
+    target = dragging = failed = false;
+    amount = travelU = travelV = cameraU = cameraV = 0;
+    worldW = worldH = 0;
+    lastFrame = 0;
+    resetCamera();
+}
+
 bool TorusView::available() const
 {
 #ifdef HAVE_OPENGL
-    return !failed && globalContainer->gfx &&
-           (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU);
+    if (failed || !globalContainer->gfx ||
+        !(globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU) ||
+        !SDL_GL_GetCurrentContext())
+        return false;
+    int major = 0;
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
+#ifdef __APPLE__
+    return major >= 2 && SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object");
+#else
+    return major >= 2 && (major >= 3 || SDL_GL_ExtensionSupported("GL_ARB_framebuffer_object"));
+#endif
 #else
     return false;
 #endif
@@ -216,7 +247,8 @@ void TorusView::setViewport(int x, int y)
 {
     if (!worldW || !worldH || !active())
         return;
-    auto current = TorusGeometry::destination(baseViewportX, baseViewportY, travelU, travelV, worldW, worldH);
+    auto current =
+        TorusGeometry::destination(baseViewportX, baseViewportY, travelU, travelV, worldW, worldH);
     travelU += float(TorusGeometry::wrappedDelta(current.x, x, worldW)) / worldW;
     travelV += float(TorusGeometry::wrappedDelta(current.y, y, worldH)) / worldH;
     travelU -= std::floor(travelU);
@@ -251,7 +283,7 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
         }
         return dragging;
     }
-    if (e.type == SDL_MOUSEBUTTONDOWN && e.button.x < width)
+    if (e.type == SDL_MOUSEBUTTONDOWN && e.button.x >= 0 && e.button.x < width && e.button.y >= 16)
     {
         if (e.button.button == SDL_BUTTON_MIDDLE)
         {
@@ -263,7 +295,7 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
     {
         int x, y;
         SDL_GetMouseState(&x, &y);
-        if (x < width)
+        if (x >= 0 && x < width && y >= 16)
         {
             int direction = e.wheel.y * (e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1);
             if (target)
@@ -278,7 +310,101 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
     return false;
 }
 
-void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height)
+bool TorusView::prepareRenderTarget()
+{
+#ifdef HAVE_OPENGL
+    GLint maximumTexture = 0, maximumViewport[2] = {0, 0};
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maximumTexture);
+    glGetIntegerv(GL_MAX_VIEWPORT_DIMS, maximumViewport);
+    int nextW = std::min(worldW * 32, std::min(8192, std::min(maximumTexture, maximumViewport[0])));
+    int nextH = std::min(worldH * 32, std::min(8192, std::min(maximumTexture, maximumViewport[1])));
+    if (!texture || atlasW != nextW || atlasH != nextH)
+    {
+        if (texture)
+            glDeleteTextures(1, &texture);
+        if (framebuffer)
+            glDeleteFramebuffers(1, &framebuffer);
+        atlasW = nextW;
+        atlasH = nextH;
+        glPushAttrib(GL_TEXTURE_BIT);
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasW, atlasH, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glGenFramebuffers(1, &framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            target = false;
+            amount = 0;
+            failed = true;
+            fprintf(stderr, "Torus view: offscreen framebuffer is unavailable\n");
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glPopAttrib();
+        if (!failed && !material)
+            material = createMaterial();
+        if (!material)
+            failed = true;
+    }
+    return !failed;
+#else
+    return false;
+#endif
+}
+
+void TorusView::updateDiscovery(Game &game, int team, unsigned options)
+{
+#ifdef HAVE_OPENGL
+    // Discovery comes from the map, independently of cloud brightness.
+    // The flipped rows and half-tile sample centers match the world atlas.
+    discoveryScratch.resize(worldW * worldH * 4);
+    auto &discovered = discoveryScratch;
+    Uint32 visibleTeams =
+        globalContainer->replaying ? globalContainer->replayVisibleTeams : game.teams[team]->me;
+    for (int y = 0; y < worldH; ++y)
+        for (int x = 0; x < worldW; ++x)
+        {
+            unsigned char value = (options & Game::DRAW_WHOLE_MAP) ||
+                                          game.map.isMapDiscovered(originX + x, originY + y, visibleTeams)
+                                      ? 255
+                                      : 0;
+            for (int c = 0; c < 4; ++c)
+                discovered[((worldH - 1 - y) * worldW + x) * 4 + c] = value;
+        }
+    // Discovery usually remains unchanged. Avoid reallocating or uploading
+    // its texture on frames that only animate the world.
+    if (discovered != discoveryPixels)
+    {
+        glPushAttrib(GL_TEXTURE_BIT);
+        if (!visibility)
+        {
+            glGenTextures(1, &visibility);
+            glBindTexture(GL_TEXTURE_2D, visibility);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, worldW, worldH, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                         discovered.data());
+        }
+        else
+        {
+            glBindTexture(GL_TEXTURE_2D, visibility);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, worldW, worldH, GL_RGBA, GL_UNSIGNED_BYTE,
+                            discovered.data());
+        }
+        discoveryPixels.swap(discovered);
+        glPopAttrib();
+    }
+#endif
+}
+
+bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height)
 {
 #ifdef HAVE_OPENGL
     Uint32 now = SDL_GetTicks();
@@ -340,52 +466,16 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glPushMatrix();
     glLoadIdentity();
 
-    // Render the actual world (terrain, resources, buildings, units and fog) to
-    // a bounded offscreen texture. Camera frames are independent of capture rate.
-    GLint maximumTexture = 0, maximumViewport[2] = {0, 0};
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maximumTexture);
-    glGetIntegerv(GL_MAX_VIEWPORT_DIMS, maximumViewport);
-    int nextW = std::min(worldW * 32, std::min(8192, std::min(maximumTexture, maximumViewport[0])));
-    int nextH = std::min(worldH * 32, std::min(8192, std::min(maximumTexture, maximumViewport[1])));
-    if (!texture || atlasW != nextW || atlasH != nextH)
+    if (!prepareRenderTarget())
     {
-        if (texture)
-            glDeleteTextures(1, &texture);
-        if (framebuffer)
-            glDeleteFramebuffers(1, &framebuffer);
-        atlasW = nextW;
-        atlasH = nextH;
-        glPushAttrib(GL_TEXTURE_BIT);
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasW, atlasH, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glGenFramebuffers(1, &framebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        {
-            target = false;
-            amount = 0;
-            failed = true;
-            fprintf(stderr, "Torus view: offscreen framebuffer is unavailable\n");
-        }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glPopAttrib();
-        if (failed)
-        {
-            glMatrixMode(GL_MODELVIEW);
-            glPopMatrix();
-            glMatrixMode(GL_PROJECTION);
-            glPopMatrix();
-            glMatrixMode(oldMatrixMode);
-            return;
-        }
-        if (!material)
-            material = createMaterial();
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(oldMatrixMode);
+        target = false;
+        amount = 0;
+        return false;
     }
     // Keep terrain, units, clouds and pointer previews on the normal render cadence.
     {
@@ -395,46 +485,12 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glClear(GL_COLOR_BUFFER_BIT);
         // Capture the normal cloud and shadow layers along with the world,
         // respecting the same graphics-quality setting as the 2D view.
-        game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0, originX, originY, team, options);
+        game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0, originX, originY, team,
+                     options);
         if (game.gui)
             game.gui->drawTorusMapOverlay(originX, originY);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // Discovery comes from the map, independently of cloud brightness.
-        // The flipped rows and half-tile sample centers match the world atlas.
-        std::vector<unsigned char> discovered(worldW * worldH * 4);
-        Uint32 visibleTeams =
-            globalContainer->replaying ? globalContainer->replayVisibleTeams : game.teams[team]->me;
-        for (int y = 0; y < worldH; ++y)
-            for (int x = 0; x < worldW; ++x)
-            {
-                unsigned char value = (options & Game::DRAW_WHOLE_MAP) ||
-                                              game.map.isMapDiscovered(originX + x, originY + y, visibleTeams)
-                                          ? 255
-                                          : 0;
-                for (int c = 0; c < 4; ++c)
-                    discovered[((worldH - 1 - y) * worldW + x) * 4 + c] = value;
-            }
-        // Discovery usually remains unchanged. Avoid reallocating or uploading
-        // its texture on frames that only animate the world.
-        if (discovered != discoveryPixels) {
-            glPushAttrib(GL_TEXTURE_BIT);
-            if (!visibility) {
-                glGenTextures(1, &visibility);
-                glBindTexture(GL_TEXTURE_2D, visibility);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, worldW, worldH, 0, GL_RGBA,
-                             GL_UNSIGNED_BYTE, discovered.data());
-            } else {
-                glBindTexture(GL_TEXTURE_2D, visibility);
-                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, worldW, worldH, GL_RGBA,
-                                GL_UNSIGNED_BYTE, discovered.data());
-            }
-            discoveryPixels.swap(discovered);
-            glPopAttrib();
-        }
+        updateDiscovery(game, team, options);
     }
 
     // Save GL state AFTER the game renderer: its state cache must still match
@@ -518,11 +574,13 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 float light =
                     mix(1, 0.48f + 0.52f * clamp(-nx * 0.35f - ry * 0.45f + rz * 0.82f, 0, 1), roll);
                 float w = 1 - p.z * roll / cameraDistance;
-                vertices[j * (U + 1) + i] = {
-                    {cx * w + p.x * sx, cy * w + p.y * sy, p.z * scale, w}, {light, light, light}, {du, -dv}};
+                vertices[j * (U + 1) + i] = {{cx * w + p.x * sx, cy * w + p.y * sy, p.z * scale, w},
+                                             {light, light, light},
+                                             {du, -dv}};
             }
         glBindBuffer(GL_ARRAY_BUFFER, meshBuffer);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(MeshVertex), vertices.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(MeshVertex), vertices.data(),
+                     GL_DYNAMIC_DRAW);
         std::memcpy(meshKey, key, sizeof(key));
     }
     if (!indexBuffer)
@@ -552,20 +610,7 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
     // Geometry stays on the GPU while stationary. Longitude navigation only
     // changes a uniform; latitude or unfolding rebuilds one shared vertex grid.
-    if (!material)
-    {
-        glMatrixMode(GL_TEXTURE);
-        glPushMatrix();
-        glLoadIdentity();
-        glTranslatef(anchorU, 1 - anchorV, 0);
-    }
     glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
-    if (!material)
-    {
-        glMatrixMode(GL_TEXTURE);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-    }
     glPopClientAttrib();
     glBindBuffer(GL_ARRAY_BUFFER, oldArrayBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldIndexBuffer);
@@ -577,12 +622,15 @@ void TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glPopMatrix();
     glMatrixMode(oldMatrixMode);
     glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
+    return true;
+#else
+    return false;
 #endif
 }
 
 bool TorusView::pick(int x, int y, int &px, int &py) const
 {
-    if (!active() || !worldW || !worldH || x < 0 || y < 0 || x >= pickWidth || y >= pickHeight)
+    if (!active() || !worldW || !worldH || x < 0 || y < 16 || x >= pickWidth || y >= pickHeight)
         return false;
     if (x != cachedPickX || y != cachedPickY)
     {

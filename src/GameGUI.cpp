@@ -179,6 +179,8 @@ GameGUI::~GameGUI()
 
 void GameGUI::init()
 {
+	torusView.reset();
+	torusPointerDown = false;
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;
@@ -4410,29 +4412,30 @@ void GameGUI::drawAll(int team)
 	
 	updateHilightInGame();
 	arrowPositions.clear();
-	if (torusView.active())
-    {
-        torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
-            globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-    }
-    else if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	const bool drewTorus = torusView.active() &&
+		torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
+			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+	if (!drewTorus)
 	{
-		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);
-	}
-	else
-	{
-		std::set<Building*> visibleBuildings;
+		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+		{
+			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
+			game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);
+		}
+		else
+		{
+			std::set<Building*> visibleBuildings;
 		
-		globalContainer->gfx->setClipRect();
+			globalContainer->gfx->setClipRect();
 		
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
+			game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
 		
-		// generate and draw particles
-		generateNewParticles(&visibleBuildings);
-		drawParticles();
-	}
+			// generate and draw particles
+			generateNewParticles(&visibleBuildings);
+			drawParticles();
+		}
 
+	}
 	///Draw ghost buildings
 	if (!torusView.active() && !globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 	
@@ -5409,7 +5412,8 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
         return false;
     if (event.button.button != SDL_BUTTON_LEFT)
         return false;
-    bool onMap = event.button.x < globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
+    bool onMap = event.button.x >= 0 && event.button.y >= 16 &&
+        event.button.x < globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
     if (!onMap && !torusPointerDown)
         return false;
     int mx, my;

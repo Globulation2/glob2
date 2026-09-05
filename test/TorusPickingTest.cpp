@@ -44,7 +44,8 @@ int main()
             assert(!mesh(vertices, n, n, -10000, -10000, outside));
             for (int index : {87, 330, 899, 1200})
             {
-                const Vertex &v0 = vertices[index], &v1 = vertices[index + 1], &v2 = vertices[index + n + 1];
+                const Vertex &v0 = vertices[index], &v1 = vertices[index + 1],
+                             &v2 = vertices[index + n + 1];
                 float x = (v0.position[0] + v1.position[0] + v2.position[0]) / 3;
                 float y = (v0.position[1] + v1.position[1] + v2.position[1]) / 3;
                 float w = (v0.position[3] + v1.position[3] + v2.position[3]) / 3;
@@ -57,5 +58,6 @@ int main()
                 assert(front.depth >= recovered.depth - .001f);
             }
         }
-    std::cout << "Perspective picking, nearest surface, empty sky, seams and unfolding round trips passed\n";
+    std::cout
+        << "Perspective picking, nearest surface, empty sky, seams and unfolding round trips passed\n";
 }

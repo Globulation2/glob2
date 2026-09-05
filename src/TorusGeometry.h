@@ -55,40 +55,14 @@ inline float follow(float current, float target, float dt, bool wrapped = false)
 // Classic ring geometry and uniform texture coordinates. Map aspect ratio
 // does not change the shape or compress artwork toward the inner rim.
 constexpr float defaultTilt = -0.65f;
-inline float tubeRadius(float) { return 1; }
 inline float latitude(float v, float, float roll = 1)
 {
     return (v - 0.5f) * 2 * pi + defaultTilt * smooth(roll);
-}
-inline float meshV(float row, float) { return row; }
-inline Point point(float u, float v, float roll, float aspect = 1)
-{
-    float minor = smooth(roll / 0.85f), major = smooth(roll), tube = tubeRadius(aspect);
-    float theta = latitude(v, aspect, roll);
-    Point p = {(u - 0.5f) * 8 * pi, tube * theta, 0};
-    if (minor > 0.000001f)
-    {
-        p.y = tube * std::sin(theta * minor) / minor;
-        float half = std::sin(theta * minor / 2);
-        p.z = -2 * tube * half * half / minor;
-    }
-    if (major > 0.000001f)
-    {
-        float a = (u - 0.5f) * 2 * pi * major, r = 4 / major;
-        p.x = (r + p.z) * std::sin(a);
-        float half = std::sin(a / 2);
-        p.z = -2 * r * half * half + p.z * std::cos(a) + 4 * major;
-    }
-    return p;
 }
 struct CameraAngles
 {
     float yaw, pitch;
 };
-inline CameraAngles lockedCamera(float u, float v, float roll, float aspect)
-{
-    return {-(u - 0.5f) * 2 * pi * smooth(roll), latitude(v, aspect, roll) * smooth(roll / 0.85f)};
-}
 inline Point rotate(Point p, CameraAngles camera)
 {
     float x = p.x * std::cos(camera.yaw) + p.z * std::sin(camera.yaw);
@@ -140,15 +114,16 @@ inline Point overviewPoint(float du, float dv, float roll, float anchorV)
 }
 // A direction at infinity uses the same camera rotation and perspective as
 // the world mesh, without camera translation. The camera looks along -Z.
-inline bool projectSkyDirection(Point direction, CameraAngles camera, float roll,
-                                float sx, float sy, float distance, Point &screen)
+inline bool projectSkyDirection(Point direction, CameraAngles camera, float roll, float sx, float sy,
+                                float distance, Point &screen)
 {
-    if (roll <= 0) return false;
+    if (roll <= 0)
+        return false;
     Point view = rotate(direction, camera);
     float depth = -view.z;
-    if (depth <= 0.0001f) return false;
-    screen = {view.x * sx * distance / (roll * depth),
-              view.y * sy * distance / (roll * depth), 0};
+    if (depth <= 0.0001f)
+        return false;
+    screen = {view.x * sx * distance / (roll * depth), view.y * sy * distance / (roll * depth), 0};
     return true;
 }
 // Scale direct manipulation by the projected tangent at the current focus.

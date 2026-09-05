@@ -7,7 +7,7 @@ int main()
 {
     for (int width : {2048, 4096, 8192})
         for (int height : {2048, 4096})
-            for (int time : {0, 250, 10000})
+            for (int time : {0, 250, 10000, 9000000})
             {
                 CloudField field(width, height, time, 300, 1300, 3, 3550, 120);
                 for (float magnification : {1.0f, 1.5f, 2.0f})

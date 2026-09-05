@@ -19,7 +19,7 @@ struct CloudField
         offsetY = speed * (.2f * time + .2f * wind * std::sin(phase + 1.6f));
         frequency = 256 / std::max(1.0f, size);
         amplitude = std::sqrt(float(alpha)) * 1.8f;
-        timeCoordinate = int(time * 256 / std::max(1.0f, stability));
+        timeCoordinate = int(float(time) * 256 / std::max(1.0f, stability));
     }
     unsigned char opacity(int x, int y, float magnification = 1) const
     {

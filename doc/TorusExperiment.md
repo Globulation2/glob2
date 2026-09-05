@@ -64,11 +64,16 @@ Keyboard steps and wheel zoom use a shared exponential camera response (about
 63 ms time constant). Mesh projection, picking, and the distant sky use the same
 rendered focus; wrapped coordinates interpolate across the shortest seam.
 
+GPU setup and discovery uploads are separate from frame drawing. Loading a game
+resets the camera, picking cache, textures and buffers together. The view requires
+OpenGL 2 shaders and framebuffer objects; framebuffer or shader creation failure
+returns to the normal 2D renderer on the same frame.
+
 ## Performance
 
 The atlas refreshes on every rendered game frame; camera animation uses cached
 indexed GPU geometry at the same cadence. Discovery uploads occur only when the
-visibility mask changes. Its resolution is 32 pixels per tile, capped at
+visibility mask changes; CPU cloud and discovery buffers are reused. Its resolution is 32 pixels per tile, capped at
 8192 pixels per dimension and the GPU's texture/viewport limits. Larger maps
 therefore downsample. Small distant tiles also lose detail through projection.
 Picking caches stationary pointer hits and rejects triangles outside the
@@ -110,7 +115,9 @@ occlusion, empty-sky misses, world-pixel wrapping, and cloud sampling invariance
 it needs SDL2, OpenGL and a display.
 
 The experiment is implemented with compatibility OpenGL, and has been built on
-macOS. It needs further platform and gameplay testing. Buildings and units are
+macOS, Linux (Ubuntu 22.04 and 24.04), and Windows (MinGW-w64).
+Native rendering has been exercised on macOS; other platforms still need visual
+and gameplay testing. Buildings and units are
 sprites on the surface, unit selection
 uses the picked map cell rather than individual sprite pixels. Very large maps
 still have substantial atlas cost, so matching the normal update cadence does

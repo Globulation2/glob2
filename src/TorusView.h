@@ -15,14 +15,21 @@ class TorusView
     bool active() const { return target || amount > 0; }
     bool enabled() const { return target; }
     bool available() const;
+    // Drop camera, picking and GPU state before loading another game.
+    void reset();
     void toggle();
     void resetCamera();
     bool event(const SDL_Event &event, int width, int &viewportX, int &viewportY);
     bool pick(int x, int y, int &worldPixelX, int &worldPixelY) const;
     void setViewport(int x, int y);
-    void draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width, int height);
+    // False requests the ordinary 2D renderer on this same frame.
+    bool draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width,
+              int height);
 
   private:
+    void releaseResources();
+    bool prepareRenderTarget();
+    void updateDiscovery(Game &game, int team, unsigned options);
     static constexpr int meshColumns = 160, meshRows = 160;
     std::vector<TorusPicking::Vertex> vertices;
     mutable int cachedPickX = -1, cachedPickY = -1;
@@ -38,14 +45,14 @@ class TorusView
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
     Uint32 lastFrame;
-    std::vector<unsigned char> discoveryPixels;
+    std::vector<unsigned char> discoveryPixels, discoveryScratch;
     unsigned texture, visibility, framebuffer, material;
     unsigned meshBuffer, indexBuffer;
     float meshKey[8];
     bool failed;
     int originX, originY;
     float focusU, focusV;
-    TorusView(const TorusView &);
-    TorusView &operator=(const TorusView &);
+    TorusView(const TorusView &) = delete;
+    TorusView &operator=(const TorusView &) = delete;
 };
 #endif
