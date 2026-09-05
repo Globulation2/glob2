@@ -16,6 +16,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstring>
+#include <string>
 #include <vector>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
@@ -132,14 +133,20 @@ GLuint createMaterial()
         "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
         "uniform vec2 mapOffset;\n"
         "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;normal=gl_Normal;}\n";
-    // A sun off to the left: its highlight lies on the ring's left flank, where
-    // the surface normal bisects the sun and the eye, never on the front face.
+    // The sun sits behind the ring, far to the left and above, so its glint
+    // only reaches surfaces turned away from the eye near the rim, never the
+    // front face. Water flashes sharply like a sea seen from orbit; dry land
+    // barely sheens; undiscovered black stays black.
     const char *fragment = "#version 120\n"
                            "uniform sampler2D world; uniform vec3 sunHalf; uniform float specular;\n"
                            "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
                            "void main(){\n"
-                           "  float s = pow(max(dot(normalize(normal), sunHalf), 0.0), 36.0) * specular;\n"
-                           "  gl_FragColor=vec4(texture2D(world,uv).rgb*light + vec3(1.0, 0.96, 0.85) * s, 1.0);}\n";
+                           "  vec3 c = texture2D(world, uv).rgb;\n"
+                           "  float facing = max(dot(normalize(normal), sunHalf), 0.0);\n"
+                           "  float water = smoothstep(0.08, 0.25, c.b - max(c.r, c.g));\n"
+                           "  float lit = smoothstep(0.03, 0.15, max(c.r, max(c.g, c.b)));\n"
+                           "  float s = mix(0.10 * pow(facing, 10.0), 1.0 * pow(facing, 60.0), water) * lit * specular;\n"
+                           "  gl_FragColor = vec4(c * light + vec3(1.0, 0.95, 0.85) * s, 1.0);}\n";
     GLuint vs = glCreateShader(GL_VERTEX_SHADER), fs = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vs, 1, &vertex, 0);
     glCompileShader(vs);
@@ -402,6 +409,22 @@ void TorusView::updateClouds()
 // GLOB2_TORUS_DUMP=<seconds> writes the world texture, reduced 8 times, to
 // torus-atlas.ppm in the user directory at that interval, and names the GL
 // driver once, so a stale ring can be told from a stale texture.
+// With GLOB2_TORUS_DUMP set, name the first GL error seen at each place once.
+static void reportErrors(const char *place)
+{
+#ifdef HAVE_OPENGL
+    static std::vector<std::string> reported;
+    for (GLenum error = glGetError(); error != GL_NO_ERROR; error = glGetError())
+    {
+        std::string key = place + std::to_string(error);
+        if (std::find(reported.begin(), reported.end(), key) != reported.end())
+            continue;
+        reported.push_back(key);
+        fprintf(stderr, "Torus view: GL error 0x%x %s\n", error, place);
+    }
+#endif
+}
+
 void TorusView::dumpAtlas(Uint32 now)
 {
 #ifdef HAVE_OPENGL
@@ -496,6 +519,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     vy = destination.y;
     auto gfx = globalContainer->gfx;
     gfx->setClipRect();
+    const bool diagnose = getenv("GLOB2_TORUS_DUMP") != nullptr;
+    if (diagnose)
+        reportErrors("before the ring, in the 2D view or the interface");
     GLint oldViewport[4], oldMatrixMode, oldProgram;
     glGetIntegerv(GL_CURRENT_PROGRAM, &oldProgram);
     glGetIntegerv(GL_VIEWPORT, oldViewport);
@@ -538,9 +564,8 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         if (game.gui)
             game.gui->drawTorusMapOverlay(originX, originY);
         dumpAtlas(now);
-        if (getenv("GLOB2_TORUS_DUMP"))
-            for (GLenum error = glGetError(); error != GL_NO_ERROR; error = glGetError())
-                fprintf(stderr, "Torus view: GL error 0x%x after the world render\n", error);
+        if (diagnose)
+            reportErrors("in the world render");
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     const bool drawClouds =
@@ -620,14 +645,14 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glUseProgram(material);
         glUniform1i(glGetUniformLocation(material, "world"), 0);
         glUniform2f(glGetUniformLocation(material, "mapOffset"), anchorU, 1 - anchorV);
-        // A low sun far to the left and a little above; the eye looks along +z.
-        // The highlight sits where the normal bisects the two, on the left flank.
-        float lx = -1.0f, ly = 0.25f, lz = 0.15f;
+        // The sun on the far plane, left and above; the eye looks along +z.
+        // The highlight lies where the normal bisects the two directions.
+        float lx = -0.55f, ly = 0.45f, lz = -0.7f;
         const float ll = std::sqrt(lx * lx + ly * ly + lz * lz);
         lx /= ll, ly /= ll, lz = lz / ll + 1;
         const float hl = std::sqrt(lx * lx + ly * ly + lz * lz);
         glUniform3f(glGetUniformLocation(material, "sunHalf"), lx / hl, ly / hl, lz / hl);
-        glUniform1f(glGetUniformLocation(material, "specular"), 0.9f * roll);
+        glUniform1f(glGetUniformLocation(material, "specular"), roll);
     }
     const int U = meshColumns, V = meshRows;
     using MeshVertex = TorusPicking::Vertex;
@@ -746,8 +771,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glDisable(GL_BLEND);
     }
     glPopClientAttrib();
-    if (getenv("GLOB2_TORUS_DUMP"))
+    if (diagnose)
     {
+        reportErrors("in the ring");
         // The whole world texture as an inset, so one screenshot shows what the ring samples.
         glUseProgram(0);
         glDisable(GL_DEPTH_TEST);
