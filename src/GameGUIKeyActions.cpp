@@ -8,6 +8,8 @@ namespace GameGUIKeyActions
 	void init()
 	{
 		names.resize(ActionSize);
+		names[ToggleTorusView] = "toggle torus view";
+		keys["toggle torus view"] = ToggleTorusView;
 	
 		names[DoNothing] = "do nothing";
 		keys["do nothing"] = DoNothing;

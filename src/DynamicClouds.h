@@ -4,7 +4,6 @@
 #ifndef _DYNAMICCLOUDS_H
 #define _DYNAMICCLOUDS_H
 
-#include "PerlinNoise.h"
 #include "Settings.h"
 #include <math.h>
 #include <valarray>
@@ -51,7 +50,6 @@ class DynamicClouds
 	/**
 	 * helper variable (sqrt(maxAlpha))
 	 */
-	float rootOfMaxAlpha;
 	/// screen width/granularity+1
 	int wGrid;
 	/// screen height/granularity+1
@@ -72,7 +70,6 @@ public:
 	{
 		granularity=settings->cloudPatchSize;
 		maxAlpha=(unsigned char)settings->cloudMaxAlpha;
-		rootOfMaxAlpha=sqrt((float)maxAlpha);
 		maxCloudSpeed=settings->cloudMaxSpeed;
 		windStability=settings->cloudWindStability;
 		cloudStability=settings->cloudStability;
@@ -88,7 +85,7 @@ public:
 	 * @param h height of the alphaMap
 	 * @param time time
 	 */
-	void compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeght, const int time, const int worldWidth, const int worldHeight);
+	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time, const int worldWidth, const int worldHeight);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
 };
 

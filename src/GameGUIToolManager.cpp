@@ -663,3 +663,9 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 		x=game.map.normalizeX(x+dirx);
 	}
 }
+
+void GameGUIToolManager::finishPointerGesture(int localteam)
+{
+    if (mode == PlaceZone) flushBrushOrders(localteam);
+    firstPlacementX = firstPlacementY = -1;
+}

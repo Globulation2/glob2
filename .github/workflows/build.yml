@@ -38,6 +38,15 @@ jobs:
       - name: Build glob2
         run: scons -j$(nproc) release=1
 
+      - name: Test torus geometry, picking and cloud coordinates
+        run: |
+          g++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+          /tmp/torus-geometry
+          g++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+          /tmp/torus-picking
+          g++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+          /tmp/cloud-field
+
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 server=1 --build=build-server
 
@@ -82,6 +91,15 @@ jobs:
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Test torus geometry, picking and cloud coordinates
+        run: |
+          g++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+          /tmp/torus-geometry
+          g++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+          /tmp/torus-picking
+          g++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+          /tmp/cloud-field
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server

@@ -303,7 +303,7 @@ def main():
     env.Append(CPPPATH=['#libusl/src', '#'])
     env.Append(CPPPATH=['#src'])
     env.Append(CXXFLAGS=["-Wall", "-fPIC"])
-    env.Append(LINKFLAGS=' -Wall')
+    env.Append(LINKFLAGS=["-Wall"])
     env.Append(LIBS=['SDL2_net'])
     if not server_only:
         env.Append(LIBS=['vorbisfile', 'SDL2_ttf', 'SDL2_image', 'speex'])
@@ -315,10 +315,10 @@ def main():
             env.Append(CXXFLAGS=["-s"])
             env.Append(LINKFLAGS=["-s", "-fwhole-program"])
     if env['profile']:
-        env.Append(CXXFLAGS=' -pg')
-        env.Append(LINKFLAGS='-pg')
-        env.Append(CXXFLAGS=' -O3')
-        env.Append(LINKFLAGS='-O3')
+        env.Append(CXXFLAGS=["-pg"])
+        env.Append(LINKFLAGS=["-pg"])
+        env.Append(CXXFLAGS=["-O3"])
+        env.Append(LINKFLAGS=["-O3"])
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
         # TODO: Remove unneccessary dependencies for server.
         env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])

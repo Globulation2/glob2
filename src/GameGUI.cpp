@@ -329,7 +329,9 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
-    if (torusView.active()) return;
+    if (torusView.active()) {
+        if (!torusPointerDown || !torusMapPointer(mx, my, mx, my)) return;
+    }
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
 		dragging from correctly going through intermediate cells.
@@ -340,7 +342,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 	// int mx, my;
 	// Uint8 button = SDL_GetMouseState(&mx, &my);
         // fprintf (stderr, "enter dragStep: button: %d, mx: %d, selectionMode: %d\n", button, mx, selectionMode);
-	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
@@ -866,17 +868,14 @@ void GameGUI::processEvent(SDL_Event *event)
         int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
         bool button = (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP)
             && event->button.button == SDL_BUTTON_LEFT && event->button.x >= 12
-            && event->button.x < 160 && event->button.y >= 28 && event->button.y < 58;
-        bool shortcut = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_F8 && !event->key.repeat;
-        if ((button || shortcut) && torusView.available()) {
-            if (shortcut || event->type == SDL_MOUSEBUTTONDOWN) {
-                torusView.toggle();
-                selectionPushed = false; panPushed = false; miniMapPushed = false;
-                viewportSpeedX = viewportSpeedY = 0;
-            }
+            && event->button.x < 12 + torusButtonWidth() && event->button.y >= 28 && event->button.y < 58;
+        if (button && torusView.available()) {
+            if (event->type == SDL_MOUSEBUTTONDOWN) toggleTorusView();
             return;
         }
+        if (event->type == SDL_MOUSEMOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
         if (torusView.event(*event, width, viewportX, viewportY)) return;
+        if (torusView.active() && handleTorusPointer(*event)) return;
     }
 
 	// handle typing
@@ -1019,7 +1018,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		if (event->type==SDL_KEYDOWN)
 		{
-			handleKey(event->key.keysym, true);
+			handleKey(event->key.keysym, true, event->key.repeat != 0);
 		}
 		else if (event->type==SDL_KEYUP)
 		{
@@ -1217,7 +1216,37 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	}
 }
 
-void GameGUI::handleKey(SDL_Keysym key, bool pressed)
+void GameGUI::toggleTorusView()
+{
+    if (!torusView.available() || typingInputScreen || inGameMenu != IGM_NONE || scrollableText) return;
+    if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
+    torusPointerDown=false;
+    torusView.toggle();
+    selectionPushed = panPushed = miniMapPushed = false;
+    viewportSpeedX = viewportSpeedY = 0;
+}
+
+std::string GameGUI::torusButtonText() const
+{
+    std::string label = torusView.enabled() ? "2D map" : "3D world";
+    for (const auto &shortcut : keyboardManager.getKeyboardShortcuts()) {
+        if (shortcut.getAction() != GameGUIKeyActions::ToggleTorusView || !shortcut.isShortcutValid()) continue;
+        label += " [";
+        for (size_t i = 0; i < shortcut.getKeyPressCount(); ++i) {
+            if (i) label += ", ";
+            label += shortcut.getKeyPress(i).getTranslated();
+        }
+        return label + "]";
+    }
+    return label;
+}
+
+int GameGUI::torusButtonWidth() const
+{
+    return globalContainer->standardFont->getStringWidth(torusButtonText()) + 20;
+}
+
+void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 {
 
 	int modifier;
@@ -1242,6 +1271,9 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 				}
 				break;
+                case GameGUIKeyActions::ToggleTorusView:
+                    if (!repeat) toggleTorusView();
+                    break;
 				case GameGUIKeyActions::ShowMainMenu:
 				{
 					if (inGameMenu==IGM_NONE)
@@ -1853,6 +1885,11 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
+    if (torusView.active() && !miniMapPushed) {
+        mouseX=mx; mouseY=my; viewportSpeedX=viewportSpeedY=0;
+        dragStep(mx, my, button);
+        return;
+    }
 	const int scrollZoneWidth = 10;
 	game.mouseX=mouseX=mx;
 	game.mouseY=mouseY=my;
@@ -4141,6 +4178,7 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
+    if (!torusView.active()) {
 	if (selectionMode==TOOL_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
@@ -4192,6 +4230,7 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
 	}
 
+    }
 	// draw message List
 	if (game.anyPlayerWaited && game.maskAwayPlayer && game.anyPlayerWaitedTimeFor>2)
 	{
@@ -4465,16 +4504,16 @@ void GameGUI::drawAll(int team)
 	// A persistent, single-click presentation toggle, below the resource bar.
     if (torusView.available() && !typingInputScreen && !scrollableText) {
         globalContainer->gfx->setClipRect();
-        globalContainer->gfx->drawFilledRect(12, 28, 148, 30, 20, 38, 57, 240);
-        globalContainer->gfx->drawRect(12, 28, 148, 30, 88, 181, 204);
+        globalContainer->gfx->drawFilledRect(12, 28, torusButtonWidth(), 30, 20, 38, 57, 240);
+        globalContainer->gfx->drawRect(12, 28, torusButtonWidth(), 30, 88, 181, 204);
         globalContainer->gfx->drawString(22, 35, globalContainer->standardFont,
-            torusView.enabled() ? "2D map  [F8]" : "3D world  [F8]");
+            torusButtonText());
         if (torusView.active()) {
             int cx=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
             int cy=(globalContainer->gfx->getH()+16)/2;
             globalContainer->gfx->drawCircle(cx,cy,7,180,225,235,180);
             globalContainer->gfx->drawString(16, globalContainer->gfx->getH()-28,
-                globalContainer->standardFont, "Arrows / drag: move map   Wheel in / F8: return to 2D");
+                globalContainer->standardFont, "Arrows / middle-drag: move map   Wheel in: return to 2D");
         }
     }
 
@@ -5387,4 +5426,93 @@ void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, i
 		p->x -= dx * 32;
 		p->y -= dy * 32;
 	}
+}
+
+// Adapt the rendered surface to the normal tool coordinate system, retaining
+// sub-tile precision for even-sized buildings and wrapping at the map seams.
+bool GameGUI::torusMapPointer(int x, int y, int &mx, int &my) const
+{
+    int px, py;
+    if (!torusView.pick(x, y, px, py))
+        return false;
+    mx = (px - viewportX * 32) & (game.map.getW() * 32 - 1);
+    my = (py - viewportY * 32) & (game.map.getH() * 32 - 1);
+    return true;
+}
+
+bool GameGUI::handleTorusPointer(const SDL_Event &event)
+{
+    if (event.type != SDL_MOUSEBUTTONDOWN && event.type != SDL_MOUSEBUTTONUP)
+        return false;
+    if (event.button.button != SDL_BUTTON_LEFT)
+        return false;
+    bool onMap = event.button.x < globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
+    if (!onMap && !torusPointerDown)
+        return false;
+    int mx, my;
+    bool hit = onMap && torusMapPointer(event.button.x, event.button.y, mx, my);
+    mouseX = event.button.x;
+    mouseY = event.button.y;
+    if (event.type == SDL_MOUSEBUTTONDOWN)
+    {
+        torusPointerDown = hit;
+        if (hit)
+        {
+            // The atlas renderer's mouse hit refers to a previous capture.
+            // Resolve units at the picked map cell, with normal visibility rules.
+            game.mouseUnit = NULL;
+            int x = ((mx >> 5) + viewportX) & game.map.getMaskW();
+            int y = ((my >> 5) + viewportY) & game.map.getMaskH();
+            Uint16 gid = game.map.getAirUnit(x, y);
+            if (gid == NOGUID)
+                gid = game.map.getGroundUnit(x, y);
+            if (gid != NOGUID &&
+                (Unit::GIDtoTeam(gid) == localTeamNo || game.map.isFOWDiscovered(x, y, localTeam->me) ||
+                 globalContainer->replaying))
+                game.mouseUnit = game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
+            handleMapClick(mx, my, SDL_BUTTON_LEFT);
+        }
+    }
+    else
+    {
+        if (torusPointerDown)
+        {
+            if (hit && selectionMode == BUILDING_SELECTION && selectionPushed &&
+                selection.building->type->isVirtual)
+                moveFlag(mx, my, true);
+            else if (selectionMode == BRUSH_SELECTION || selectionMode == TOOL_SELECTION)
+            {
+                if (hit)
+                    toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
+                else
+                    toolManager.finishPointerGesture(localTeamNo);
+            }
+        }
+        torusPointerDown = false;
+        miniMapPushed = selectionPushed = panPushed = false;
+    }
+    return true;
+}
+
+void GameGUI::drawTorusMapOverlay(int originX, int originY)
+{
+    if (globalContainer->replaying)
+        return;
+    ghostManager.drawAll(originX, originY, localTeamNo);
+    int px, py;
+    if ((selectionMode == TOOL_SELECTION || selectionMode == BRUSH_SELECTION) &&
+        torusView.pick(mouseX, mouseY, px, py))
+    {
+        int mx = (px - originX * 32) & (game.map.getW() * 32 - 1);
+        int my = (py - originY * 32) & (game.map.getH() * 32 - 1);
+        toolManager.drawTool(mx, my, localTeamNo, originX, originY);
+    }
+    if (selectionMode == BUILDING_SELECTION)
+    {
+        Building *b = selection.building;
+        int x, y;
+        game.map.buildingPosToCursor(b->posXLocal, b->posYLocal, b->type->width, b->type->height, &x, &y,
+                                     originX, originY);
+        globalContainer->gfx->drawCircle(x, y, b->type->width * 16, 0, 0, 190);
+    }
 }

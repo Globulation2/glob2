@@ -2147,11 +2147,11 @@ namespace GAGCore
 			{
 				SDL_GLContext context = SDL_GL_CreateContext(window);
 				if (!context || SDL_GL_MakeCurrent(window, context) != 0)
-                {
-                    fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
-                    if (context) SDL_GL_DeleteContext(context);
-                    return false;
-                }
+				{
+					fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
+					if (context) SDL_GL_DeleteContext(context);
+					return false;
+				}
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))

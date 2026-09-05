@@ -1,130 +1,113 @@
-# Live toroidal world experiment
+# A fun experiment: an explorable toroidal world
 
-Branch: `codex/toroidal-world`, based on committed `master` (`14b99bc8`).
-No uncommitted changes from the original checkout are included.
+Glob2's map wraps in both directions. This experiment makes that topology
+visible: the live map unfolds into a 3D torus against a star field, then returns
+to the familiar 2D view at the camera's current map position.
 
-Build and launch from this worktree:
+## Try it
+
+Build with OpenGL enabled and launch:
 
 ```sh
 scons release=1 -j4 build/src/glob2
 ./tools/run_torus.sh
 ```
 
-Start a custom game (or load a replay). Click **3D world [F8]** in the upper
-left. The camera pulls back to the complete map, rolls it into a tube while
-joining the ends in one overlapping motion. Click **2D map [F8]** to reverse the 1.8-second transition.
-Toggling during an animation reverses it from its current position. The
-transition stays anchored on the center of your current map view, with one
-gentle pullback instead of a separate zoom to the full flat map. The anchor's
-horizontal and vertical tangent directions stay aligned with screen right/down
-throughout the reveal. Starting a fresh reveal resets the zoom level while retaining the current map position.
+The launcher keeps preferences, saves and replays under `experiment/profile`.
+That directory and build products are ignored by Git. `GLOB2_USER_DIR` can also
+select another profile on Unix systems.
 
-- Arrow keys, Ctrl+arrows, minimap, or left/middle drag: move the shared map position.
-- Mouse wheel: zoom; keep scrolling in to return to 2D at the new position.
-- Right-click: reset zoom, keeping the current map position.
-- F8: keyboard alternative to the view button.
+Start a custom game, or load a replay. Click **3D world** or press **G**.
+The shortcut appears as **Toggle 2D / torus view** in the standard keyboard
+settings. Existing customized layouts retain their bindings; add the action in
+the configurator or restore defaults to get G. The button displays the currently
+configured binding. Holding the shortcut does not repeatedly reverse the view.
 
-The 3D surface contains the live terrain, resources, buildings and units from
-`Game::drawMap`. Fog follows the normal visibility rules. Unexplored areas use a lit slate-blue
-material with a subtle grid, keeping the shape readable without revealing
-hidden terrain or units. Replay visibility controls
-can show the whole map. The torus is an inspection view: use 2D for placing
-buildings and painting areas. The game keeps running in either view. The center marker identifies the patch
-that will fill the 2D view when you return. The map has a fixed placement on the
-ring: navigation moves a surface-orbit focus, followed by the camera. Dragging
-uses the projected local surface scale for consistent sensitivity across the
-inner and outer walls. The camera stays 18 world units from the selected point with a fixed lens.
-It tilts up to 60 degrees over the inner wall instead of entering the hole.
-The rim can naturally occlude the selected patch; navigation does not force a
-close-up or widen the projection to keep that patch visible. Returning to 2D unfolds around that new position.
+| Control | Action |
+| --- | --- |
+| G / view button | Switch views; reverse an animation already in progress |
+| Arrow keys / Ctrl+arrows / minimap | Move the shared map focus |
+| Middle-drag in 3D | Move the camera over the torus surface |
+| Mouse wheel in 3D | Zoom; continue zooming in to return to 2D |
+| Left-click / left-drag | Select, place buildings and flags, or paint areas |
+| Right-click | Normal game cancellation / deselection |
 
-The launcher stores all preferences, saves and replays in
-`experiment/profile`, avoiding the regular `~/.glob2` directory. The build,
-launcher, and runtime files are local to this worktree.
+The 1.8-second transition uses overlapping bends and a restrained pullback.
+The focus's local horizontal and vertical directions stay aligned with the
+screen. Navigation moves the camera around a fixed world, including its inner
+side, without an automatic dive into the central hole. The center marker shows
+the map position that will fill the 2D view.
 
-## Implementation and limits
+## Rendering and interaction
 
-`TorusGeometry.h` rolls a parameterized sheet with two overlapping bends. The final surface
-keeps both map axes periodic, with major radius 3 and tube radius 1. The world
-uses uniform texture coordinates. The earlier conformal/aspect-ratio correction
-has been removed, so the inner rim no longer compresses the artwork through
-that remapping. Curvature and perspective naturally affect apparent proportions.
-`TorusView` captures the world into an OpenGL framebuffer at native map resolution (32 pixels per tile),
-capped at 8192 pixels per axis and the GPU limit, at up to
-10 Hz and renders a 160×160 mesh. Camera animation renders independently of
-the atlas refresh rate. A deterministic spherical starfield with a faint galactic band rotates with
-the camera behind the world. It is an artistic sky, not a star catalog.
-The existing 2D HUD is drawn afterward.
+`TorusView` captures the normal renderer's terrain, resources, buildings, units,
+clouds and shadows into a repeating texture. Unknown terrain becomes a lit
+slate-blue grid, preserving the ring's silhouette without exposing the map.
+Clouds in unknown areas fade with the transition. The sky and surface extend
+beneath the translucent sidebar. Stars and the faint Milky Way are artistic,
+not an astronomical catalog.
 
-This prototype requires OpenGL and a framebuffer-capable compatibility
-context. Sprite artwork lies on the surface; buildings are not extruded 3D
-models. The normal animated cloud and shadow layers are included in 3D when high-quality
-graphics are enabled, at the atlas refresh rate. A map-discovery mask keeps
-clouds off unrevealed terrain. Cloud magnification uses world coordinates on a
-shared sample grid; animation uses elapsed time rather than render counts, so
-switching views preserves cloud positions. Viewport particles and ghosts
-are omitted in 3D. Large worlds
-lose detail in the bounded atlas and cost more to capture. The regular 2D
-view retains its normal rendering and controls.
+Picking uses the same triangles and homogeneous coordinates as the GPU. It
+selects the nearest visible surface, interpolates UVs with perspective
+correction, then converts them to wrapped world pixels. Native tools receive
+those coordinates, so their placement validation, modifier gestures and order
+creation remain in the existing game logic. Building previews and pending
+buildings are captured onto the surface. Empty sky is not a map target;
+releasing there cancels building placement and finishes any area painting.
+Middle-drag is reserved for camera movement.
 
-The branch also contains the build/runtime compatibility fixes needed to run
-the committed source on Apple Silicon with Homebrew and current SCons:
-C++14 flags, Homebrew discovery, native Apple OpenGL headers, and an SDL
-OpenGL window that does not create a competing software window surface.
+The torus has uniform angular texture coordinates, major radius 3 and minor
+radius 1. A flat toroidal map cannot be embedded in an ordinary ring torus
+without stretching: the inner circumference compresses and the outer one
+expands. There is deliberately no conformal UV correction.
 
-Geometry regression check:
+## Performance
 
-```sh
-c++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/glob2-torus-test
-/tmp/glob2-torus-test
-```
+The atlas refreshes at 10 Hz; camera animation uses cached indexed GPU geometry
+at the normal render rate. Its resolution is 32 pixels per tile, capped at
+8192 pixels per dimension and the GPU's texture/viewport limits. Larger maps
+therefore downsample. Small distant tiles also lose detail through projection.
+Picking caches stationary pointer hits and rejects triangles outside the
+pointer's bounding box.
 
-The test checks exact flat endpoints, both closed seams, the torus equation,
-finite continuous positions across the animation, sub-tile viewport alignment,
-uniform ring geometry, fixed screen orientation throughout the reveal, and
-shared navigation/2D return positions across wrapped map boundaries.
+Clouds now sample a periodic world-coordinate field driven by elapsed time,
+so capture cadence and viewport changes do not change their position or speed.
+The existing cloud triangles are submitted in batches instead of thousands of
+individual GL calls. On an Apple M3, the standalone benchmark measured:
 
-## Performance checks
-
-The cloud renderer now submits at most 4096 patches per batch, preserving the
-original four triangles and integer-rounded opacity at each patch center.
-The torus uses an indexed GPU mesh, cached until latitude, zoom, viewport size,
-or unfolding amount changes. Longitude navigation updates a texture-coordinate
-uniform because the ring is rotationally symmetric; geometry and map coordinates
-still describe the same fixed world surface.
-
-On the Apple M3, a deterministic cloud rendering benchmark measured these median
-times (five measured runs after warmup, including `glFinish`, 512×512 output):
-
-| Cloud grid | Original | Batched |
+| Cloud grid | Previous submission | Batched submission |
 | --- | ---: | ---: |
-| 128×128 patches | 26.66 ms | 2.46 ms |
-| 256×256 patches | 85.90 ms | 13.58 ms |
-| 512×512 patches | 247.05 ms | 22.37 ms |
+| 128 × 128 | 26.66 ms | 2.46 ms |
+| 256 × 256 | 85.90 ms | 13.58 ms |
+| 512 × 512 | 247.05 ms | 22.37 ms |
 
-Framebuffer comparisons differed by at most 1/255 per channel. They cover odd
-cell sizes, negative offsets, opacity interpolation, and multiple grid sizes.
-Separate eight-second live game samples put cloud drawing at 65% before batching
-and 7% afterward. Those live runs use different generated maps and are bottleneck
-checks, not a controlled whole-game FPS comparison. High-resolution atlas
-capture, simulation, and presentation still contribute to frame cost.
+These are cloud-rendering measurements, not whole-game FPS. Maximum pixel
+channel difference was 1/255. Live samples also identified cloud submission as
+the original dominant hotspot; changing maps makes those samples unsuitable
+for a controlled frame-rate comparison.
 
-Run the cloud regression/benchmark on macOS:
+## Validation and remaining limits
 
-```sh
-c++ -std=c++14 -O3 -Wno-deprecated-declarations test/AlphaMapRenderBenchmark.cpp \
-  -I/opt/homebrew/include/SDL2 -L/opt/homebrew/lib -lSDL2 -framework OpenGL \
-  -o /tmp/glob2-cloud-benchmark
-/tmp/glob2-cloud-benchmark
-```
-
-The geometry regression also verifies that the hovering camera is equivalent to
-transforming a fixed torus into the selected point's tangent frame, and that
-unfolding preserves that point and its orientation across both world seams.
-
-Cloud coordinate regression:
+Standalone CPU checks (also included in Linux and Windows CI):
 
 ```sh
-c++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/glob2-cloud-field-test
-/tmp/glob2-cloud-field-test
+c++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+/tmp/torus-geometry
+c++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+/tmp/torus-picking
+c++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+/tmp/cloud-field
 ```
+
+Checks cover flat endpoints, periodic seams, bounded camera distance, shared
+navigation, projection/picking round trips during unfolding, nearest-surface
+occlusion, empty-sky misses, world-pixel wrapping, and cloud sampling invariance.
+`test/AlphaMapRenderBenchmark.cpp` compares legacy and batched GL cloud paths;
+it needs SDL2, OpenGL and a display.
+
+The experiment is implemented with compatibility OpenGL, and has been built on
+macOS. It needs further platform and gameplay testing. Buildings and units are
+sprites on the surface, previews refresh with the atlas, and unit selection
+uses the picked map cell rather than individual sprite pixels. Very large maps
+still have substantial atlas cost. Software rendering retains the normal 2D
+view. No torus camera state is serialized or sent over the network.
