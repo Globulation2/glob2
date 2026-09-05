@@ -124,7 +124,7 @@ TeamColorSelector::TeamColorSelector(MapEdit& me, const widgetRectangle& area, c
 
 void TeamColorSelector::draw()
 {
-	for(int n=0; n<16; ++n)
+	for(int n=0; n<Team::MAX_COUNT; ++n)
 	{
 		const int xpos = area.x + (n%6)*16;
 		const int ypos = area.y + (n/6)*16;
