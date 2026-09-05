@@ -46,6 +46,8 @@ class TorusView
     int atlasW, atlasH;
     Uint32 lastFrame;
     std::vector<unsigned char> discoveryPixels, discoveryScratch;
+    SDL_GLContext graphicsContext = nullptr;
+    unsigned graphicsGeneration = 0;
     unsigned texture, visibility, framebuffer, material;
     unsigned meshBuffer, indexBuffer;
     float meshKey[8];

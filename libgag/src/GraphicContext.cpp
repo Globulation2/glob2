@@ -2056,6 +2056,7 @@ namespace GAGCore
 	GraphicContext::~GraphicContext(void)
 	{
 		freeDummySurface();
+		if (glContext) SDL_GL_DeleteContext(glContext);
 		TTF_Quit();
 		SDL_Quit();
 
@@ -2111,6 +2112,12 @@ namespace GAGCore
 		optionFlags &= ~USEGPU;
 		#endif
 
+		// SDL windows do not own their GL contexts. Release the old context
+		// explicitly, including all renderer resources attached to it.
+		if (glContext) {
+			SDL_GL_DeleteContext(glContext);
+			glContext = nullptr;
+		}
 		// if window exists, delete it
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -2146,13 +2153,15 @@ namespace GAGCore
 			// enable GL context
 			if (flags & USEGPU)
 			{
-				SDL_GLContext context = SDL_GL_CreateContext(window);
-				if (!context || SDL_GL_MakeCurrent(window, context) != 0)
+				glContext = SDL_GL_CreateContext(window);
+				if (!glContext || SDL_GL_MakeCurrent(window, glContext) != 0)
 				{
 					fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
-					if (context) SDL_GL_DeleteContext(context);
+					if (glContext) SDL_GL_DeleteContext(glContext);
+					glContext = nullptr;
 					return false;
 				}
+				++glContextGeneration;
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))

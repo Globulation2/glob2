@@ -177,7 +177,8 @@ TorusView::~TorusView() { releaseResources(); }
 void TorusView::releaseResources()
 {
 #ifdef HAVE_OPENGL
-    if (SDL_GL_GetCurrentContext())
+    if (graphicsContext && graphicsContext == SDL_GL_GetCurrentContext() &&
+        graphicsGeneration == globalContainer->gfx->getGLContextGeneration())
     {
         if (meshBuffer)
             glDeleteBuffers(1, &meshBuffer);
@@ -193,6 +194,7 @@ void TorusView::releaseResources()
             glDeleteFramebuffers(1, &framebuffer);
     }
 #endif
+    graphicsContext = nullptr;
     texture = visibility = framebuffer = material = meshBuffer = indexBuffer = 0;
     atlasW = atlasH = 0;
     discoveryPixels.clear();
@@ -216,9 +218,11 @@ void TorusView::reset()
 bool TorusView::available() const
 {
 #ifdef HAVE_OPENGL
-    if (failed || !globalContainer->gfx ||
+    if (!globalContainer->gfx ||
         !(globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU) ||
         !SDL_GL_GetCurrentContext())
+        return false;
+    if (failed && graphicsGeneration == globalContainer->gfx->getGLContextGeneration())
         return false;
     int major = 0;
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
@@ -313,6 +317,16 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
 bool TorusView::prepareRenderTarget()
 {
 #ifdef HAVE_OPENGL
+    // Resolution/fullscreen changes can replace SDL's GL context. Object names
+    // belong to their creating context; never delete or reuse them in another.
+    if (graphicsContext != SDL_GL_GetCurrentContext() ||
+        graphicsGeneration != globalContainer->gfx->getGLContextGeneration())
+    {
+        releaseResources();
+        graphicsContext = SDL_GL_GetCurrentContext();
+        graphicsGeneration = globalContainer->gfx->getGLContextGeneration();
+        failed = false;
+    }
     GLint maximumTexture = 0, maximumViewport[2] = {0, 0};
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maximumTexture);
     glGetIntegerv(GL_MAX_VIEWPORT_DIMS, maximumViewport);

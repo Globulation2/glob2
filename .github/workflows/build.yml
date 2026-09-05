@@ -56,6 +56,9 @@ jobs:
           scons -j$(nproc)
           ./TestsRunner
 
+      - name: Build without OpenGL
+        run: scons -j$(nproc) release=1 server=0 opengl=0 --build=build-software
+
   windows:
     name: windows (mingw-w64)
     runs-on: windows-latest

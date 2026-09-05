@@ -24,6 +24,7 @@ def establish_options(env):
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add(BoolVariable("opengl", "Enable OpenGL detection; set to 0 for software rendering only", 1))
     opts.Add(BoolVariable("profile", "Build with profiling on", 0))
     opts.Add(BoolVariable("mingw", "Build with mingw enabled if not auto-detected", 0))
     opts.Add(BoolVariable("mingwcross", "Cross-compile with mingw for Win32", 0))
@@ -152,7 +153,7 @@ def configure(env, server_only):
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
-    if not server_only:
+    if not server_only and env["opengl"]:
         has_gl = True
         if isDarwinPlatform:
             print("Using Apple's OpenGL framework")

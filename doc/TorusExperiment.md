@@ -9,9 +9,13 @@ to the familiar 2D view at the camera's current map position.
 Build with OpenGL enabled and launch:
 
 ```sh
-scons release=1 -j4 build/src/glob2
+scons release=1 opengl=1 -j4 build/src/glob2
 ./tools/run_torus.sh
 ```
+
+A software-only build can be checked with `scons release=1 opengl=0`; this
+configuration is also built in Linux CI. Build options are cached by SCons, so
+pass `opengl=1` when switching back to the GPU build.
 
 The launcher keeps preferences, saves and replays under `experiment/profile`.
 That directory and build products are ignored by Git. `GLOB2_USER_DIR` can also
@@ -65,7 +69,10 @@ Keyboard steps and wheel zoom use a shared exponential camera response (about
 rendered focus; wrapped coordinates interpolate across the shortest seam.
 
 GPU setup and discovery uploads are separate from frame drawing. Loading a game
-resets the camera, picking cache, textures and buffers together. The view requires
+resets the camera, picking cache, textures and buffers together. GPU objects are
+recreated when a resolution/fullscreen change replaces the OpenGL context. The
+shared renderer explicitly releases old contexts, and a generation counter
+prevents stale object reuse if a driver recycles a context address. The view requires
 OpenGL 2 shaders and framebuffer objects; framebuffer or shader creation failure
 returns to the normal 2D renderer on the same frame.
 
