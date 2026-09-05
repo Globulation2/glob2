@@ -43,8 +43,8 @@ void DynamicClouds::computeWorld(const int worldWidth, const int worldHeight, co
     int cell = granularity;
     while (std::max(worldWidth, worldHeight) * 32 / cell > 2048)
         cell *= 2;
-    gridW = worldWidth * 32 / cell;
-    gridH = worldHeight * 32 / cell;
+    gridW = std::max(1, worldWidth * 32 / cell);
+    gridH = std::max(1, worldHeight * 32 / cell);
     if (out.size() != static_cast<size_t>(gridW * gridH))
         out.resize(gridW * gridH);
     CloudField field(worldWidth * 32, worldHeight * 32, time, cloudSize, cloudStability, maxCloudSpeed,

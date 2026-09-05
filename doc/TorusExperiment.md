@@ -22,34 +22,39 @@ The launcher keeps preferences, saves and replays under `experiment/profile`.
 That directory and build products are ignored by Git. `GLOB2_USER_DIR` can also
 select another profile on Unix systems.
 
-Start a custom game, or load a replay. Press **G**.
+Start a custom game, or load a replay. Scroll with an arrow key or a screen edge to gradually reveal the torus, or press **G** to keep it open.
 The shortcut appears as **Toggle 2D / torus view** in the standard keyboard
-settings. Existing customized layouts retain their bindings; add the action in
-the configurator or restore defaults to get G. Holding the shortcut does not repeatedly reverse the view.
+settings. Existing customized layouts gain missing default actions only when their keys do not conflict with a custom binding or sequence. Holding the shortcut does not repeatedly reverse the view.
 
 | Control | Action |
 | --- | --- |
 | G | Switch views; reverse an animation already in progress |
-| Arrow keys / Ctrl+arrows / minimap | Move the shared map focus |
-| Middle-drag in 3D | Move the camera over the torus surface |
-| Mouse wheel in 3D | Zoom; continue zooming in to return to 2D |
+| Arrow keys / Ctrl+arrows / screen edges / minimap | Move the shared map focus and gradually pull back |
+| Hold / drag middle button | Quickly reveal the torus and pan at the normal 2D speed |
+| Mouse wheel with G enabled | Zoom; continue zooming in to return to 2D |
 | Left-click / left-drag | Select, place buildings and flags, or paint areas |
 | Right-click | Normal game cancellation / deselection |
 
-The 1.8-second transition uses overlapping bends and a restrained pullback.
-The focus's local horizontal and vertical directions stay aligned with the
-screen. Navigation moves the camera around a fixed world, including its inner
-side, without an automatic dive into the central hole. The center marker shows
-the map position that will fill the 2D view.
+Scrolling pulls back over four seconds while movement continues. After a
+250 ms pause it returns to 2D within 450 ms. Holding the middle button pulls
+back within 450 ms; the explicit G toggle opens over 1.8 seconds. Both axes
+slide the map around a ring whose orientation stays fixed. The overview fits
+inside the playable area with a margin and adapts its tilt to the window shape.
 
 ## Rendering and interaction
 
-`TorusView` captures the normal renderer's terrain, resources, buildings, units,
-clouds and shadows into a repeating texture. Unknown terrain becomes a lit
-slate-blue grid, preserving the ring's silhouette without exposing the map.
-Clouds in unknown areas fade with the transition. The sky and surface extend
-beneath the translucent sidebar. Stars and the faint Milky Way are artistic,
-not an astronomical catalog.
+`TorusView.cpp` owns camera and input state. `TorusViewRender.cpp` owns the
+OpenGL drawing and resources. It captures the normal renderer's terrain,
+resources, buildings, units, cloud shadows and fog of war into a repeating
+texture. Clouds use a separate surface above the terrain, returning to ground
+level as the view flattens. Both views sample the same world cloud field;
+texture coordinates include the capture origin and texel-center offset.
+The sky and surface extend beneath the translucent sidebar.
+
+The shared building renderer draws every wrapped copy intersecting its viewport,
+including sprite overhang at map seams. This fixes buildings disappearing from
+the full-world texture and applies to software rendering as well. There is no
+separate implementation of building or unit drawing for the torus.
 
 Picking uses the same triangles and homogeneous coordinates as the GPU. It
 selects the nearest visible surface, interpolates UVs with perspective
@@ -58,7 +63,8 @@ those coordinates, so their placement validation, modifier gestures and order
 creation remain in the existing game logic. Building previews and pending
 buildings are captured onto the surface. Empty sky is not a map target;
 releasing there cancels building placement and finishes any area painting.
-Middle-drag is reserved for camera movement.
+Middle-drag follows the ordinary map panning path. Automatic return to 2D
+waits for an active selection or painting gesture to finish.
 
 The torus has uniform angular texture coordinates, major radius 3 and minor
 radius 1. A flat toroidal map cannot be embedded in an ordinary ring torus
@@ -114,6 +120,8 @@ c++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
 /tmp/torus-picking
 c++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
 /tmp/cloud-field
+c++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+/tmp/map-render-geometry
 ```
 
 Checks cover flat endpoints, periodic seams, bounded camera distance, shared
@@ -131,3 +139,29 @@ uses the picked map cell rather than individual sprite pixels. Very large maps
 still have substantial atlas cost, so matching the normal update cadence does
 not guarantee identical measured FPS on every map and GPU. Software rendering retains the normal 2D
 view. No torus camera state is serialized or sent over the network.
+
+### Rendering regression
+
+Build the optional integration executable with
+`scons release=1 opengl=1 torus-render-test`. From the repository root, run:
+
+```sh
+mkdir -p experiment/test-profile
+GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy \
+  build/src/torus-render-test -g -F -m -s 1120x720
+GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+  build/src/torus-render-test -G -F -m -s 1120x720
+```
+
+The first needs a display with compatibility OpenGL; Linux can use Xvfb. The
+second renders a loaded game through software and checks that torus inputs stay
+inactive. The same executable can be built with `opengl=0`, including a run with
+`-g` requested to exercise the software fallback. The GPU test covers cloud
+transitions, both navigation axes, picking, return to 2D, and repeated teardown
+and recreation. No desktop input is generated.
+
+The fixed-axis navigation and elevated cloud layer were adapted from Giszmo's
+`feat/torus-pan` branch (through `b838f8de`), whose implementation was authored by
+Bob. This PR keeps its master baseline; it does not merge the separate AI trainer
+and fullscreen-scaling branches. Native testing on Giszmo's display setup is
+still needed to determine whether his separate startup/display issue remains.

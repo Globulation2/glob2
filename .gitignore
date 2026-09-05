@@ -11,6 +11,7 @@ src/glob2
 .directory
 __pycache__/
 build/
+build-software/
 vcpkg_installed/
 
 experiment/

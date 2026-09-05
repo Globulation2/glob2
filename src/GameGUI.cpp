@@ -228,7 +228,7 @@ void GameGUI::init()
 
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
-            torusView.setHeld(false);
+	torusView.setHeld(false);
 
 	buildingsChoiceName.clear();
 	buildingsChoiceName.push_back("swarm");
@@ -482,13 +482,12 @@ void GameGUI::step(void)
 	viewportY += viewportSpeedY;
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
-    if (viewportX != oldViewportX || viewportY != oldViewportY) torusView.notifyMove();
     if (torusView.active()) torusView.setViewport(viewportX,viewportY);
 
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		handleViewportChange(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 
 	assert(localTeam);
@@ -868,10 +867,19 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    if ((event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_MIDDLE) ||
+        (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST))
+    {
+        panPushed = false;
+        torusView.setHeld(false);
+    }
+    if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+        viewportSpeedX = viewportSpeedY = 0;
+
     if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText) {
         int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
         if (event->type == SDL_MOUSEMOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
-        if (torusView.event(*event, width, viewportX, viewportY)) return;
+        if (torusView.event(*event, width)) return;
         if (torusView.active() && handleTorusPointer(*event)) return;
     }
 
@@ -930,17 +938,6 @@ void GameGUI::processEvent(SDL_Event *event)
 		handleKeyDump(event->key);
 	
 	
-	if (event->type==SDL_MOUSEBUTTONUP)
-	{
-		int button=event->button.button;
-		if (button==SDL_BUTTON_MIDDLE)
-		{
-			panPushed=false;
-            torusView.setHeld(false);
-		}
-	}
-
-
 	if (event->type == SDL_MOUSEBUTTONDOWN)
 	{
 		int butx = event->button.x;
@@ -1066,7 +1063,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				{
 					// Enable panning
 					panPushed=true;
-                    torusView.setHeld(true);
+					torusView.setHeld(true);
 					panMouseX=event->button.x;
 					panMouseY=event->button.y;
 					panViewX=viewportX;
@@ -1102,7 +1099,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
-            torusView.setHeld(false);
+			torusView.setHeld(false);
 			// showUnitWorkingToBuilding=false;
 		}
 		else if (event->type==SDL_MOUSEWHEEL)
@@ -1221,6 +1218,7 @@ void GameGUI::toggleTorusView()
     if (!torusView.available() || typingInputScreen || inGameMenu != IGM_NONE || scrollableText) return;
     if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
     torusPointerDown=false;
+    torusView.setPointerHeld(false);
     torusView.toggle();
     selectionPushed = panPushed = miniMapPushed = false;
     viewportSpeedX = viewportSpeedY = 0;
@@ -1333,7 +1331,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 					viewportX = evX-((sw-RIGHT_MENU_WIDTH)>>6);
 					viewportY = evY-(sh>>6);
 					
-					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+					handleViewportChange(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::GoToHome:
@@ -1349,7 +1347,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 					viewportX = evX-((sw-RIGHT_MENU_WIDTH)>>6);
 					viewportY = evY-(sh>>6);
 					
-					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+					handleViewportChange(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::PauseGame:
@@ -1902,7 +1900,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 		viewportY = (panViewY+dy)&game.map.getMaskH();
 	}
 	
-	moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+	handleViewportChange(oldViewportX, viewportX, oldViewportY, viewportY);
 
 	dragStep(mx, my, button);
 }
@@ -2043,7 +2041,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int oldViewportX = viewportX;
 			int oldViewportY = viewportY;
 			minimapMouseToPos(globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + mx, my, &viewportX, &viewportY, true);
-			moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+			handleViewportChange(oldViewportX, viewportX, oldViewportY, viewportY);
 		}
 	}
 	// Check if one of the panel buttons has been clicked
@@ -4477,12 +4475,6 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
 
-    if (torusView.active() && !typingInputScreen && !scrollableText) {
-        int cx=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
-        int cy=(globalContainer->gfx->getH()+16)/2;
-        globalContainer->gfx->drawCircle(cx,cy,7,180,225,235,180);
-    }
-
     // draw menu if any
 	if (inGameMenu)
 	{
@@ -5044,7 +5036,7 @@ void GameGUI::centerViewportOnSelection(void)
 		viewportX = viewportX & game.map.getMaskW();
 		viewportY = viewportY & game.map.getMaskH();
 		
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		handleViewportChange(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 }
 
@@ -5369,11 +5361,12 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 	}
 }
 
-void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
+void GameGUI::handleViewportChange(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
 {
 	if ((viewportX==oldViewportX) && (viewportY==oldViewportY))
 		return;
 	
+	torusView.notifyMove();
 	int dx = viewportX - oldViewportX;
 	if (dx > game.map.getW() / 2)
 		dx -= game.map.getW();
@@ -5423,6 +5416,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
     if (event.type == SDL_MOUSEBUTTONDOWN)
     {
         torusPointerDown = hit;
+        torusView.setPointerHeld(hit);
         if (hit)
         {
             // The atlas renderer's mouse hit refers to a previous capture.
@@ -5456,6 +5450,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
             }
         }
         torusPointerDown = false;
+        torusView.setPointerHeld(false);
         miniMapPushed = selectionPushed = panPushed = false;
     }
     return true;

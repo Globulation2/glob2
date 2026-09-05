@@ -23,6 +23,7 @@
 #include "BuildingType.h"
 #include "Game.h"
 #include "GameUtilities.h"
+#include "MapRenderGeometry.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include "Order.h"
@@ -2356,9 +2357,17 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 						|| (building->seenByMask & visibleTeams)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
-						int px,py;
-						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
-					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						const BuildingType *type = building->type;
+						const int frame = type->gameSpriteImage;
+						const int spriteW = type->gameSpritePtr->getW(frame);
+						const int spriteH = type->gameSpritePtr->getH(frame);
+						const int width = type->width * 32, height = type->height * 32;
+						MapRenderGeometry::wrappedCopies(
+						    (building->posXLocal - viewportX) * 32,
+						    (building->posYLocal - viewportY) * 32,
+						    std::min(0, width - spriteW) - 64, std::min(0, height - spriteH) - 64,
+						    width + 64, height + 64, map.getW() * 32, map.getH() * 32, sw, sh,
+						    [&](int px, int py) { drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions); });
 						drawnBuildings.insert(building);
 					}
 				}

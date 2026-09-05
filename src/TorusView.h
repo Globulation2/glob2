@@ -21,12 +21,14 @@ class TorusView
     void notifyMove();
     // A pan button is held: pull back for as long as it stays down, even without movement.
     void setHeld(bool down);
+    // Keep a selection/painting gesture on the same projection until release.
+    void setPointerHeld(bool down) { pointerHeld = down; }
     bool available() const;
     // Drop camera, picking and GPU state before loading another game.
     void reset();
     void toggle();
     void resetCamera();
-    bool event(const SDL_Event &event, int width, int &viewportX, int &viewportY);
+    bool event(const SDL_Event &event, int width);
     bool pick(int x, int y, int &worldPixelX, int &worldPixelY) const;
     void setViewport(int x, int y);
     // False requests the ordinary 2D renderer on this same frame.
@@ -38,7 +40,7 @@ class TorusView
     bool prepareRenderTarget();
     void updateClouds();
     static constexpr int meshColumns = 160, meshRows = 160;
-    std::vector<TorusPicking::Vertex> vertices;
+    std::vector<TorusPicking::Vertex> vertices, cloudVertices;
     mutable int cachedPickX = -1, cachedPickY = -1;
     mutable bool cachedPickFound = false;
     mutable TorusPicking::Hit cachedPick;
@@ -47,11 +49,13 @@ class TorusView
     bool target;
     bool moving = false;
     bool held = false;
+    bool pointerHeld = false;
     Uint32 lastMove = 0;
     float amount, zoom;
     float travelU, travelV;
     float cameraU = 0, cameraV = 0, cameraZoom = 1;
     float viewAspect = 1.6f, ringAspect = 0, ringCentreX = 0, ringCentreY = 0;
+    float ringWidth = 1, ringHeight = 1;
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
     Uint32 lastFrame;

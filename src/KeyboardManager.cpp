@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include <string>
+#include <algorithm>
 #include "FileManager.h"
 #include "FormatableString.h"
 #include "GameGUIKeyActions.h"
@@ -171,8 +172,17 @@ void KeyboardManager::addMissingDefaults(const std::string& file)
 	{
 		bool bound = false;
 		for(const KeyboardShortcut& ks : shortcuts)
+		{
 			if(ks.getAction() == d.getAction())
 				bound = true;
+			// A default must not compete with a custom key or sequence prefix.
+			bool samePrefix = true;
+			for(size_t i = 0; i < std::min(ks.getKeyPressCount(), d.getKeyPressCount()); ++i)
+				if(ks.getKeyPress(i) != d.getKeyPress(i))
+					samePrefix = false;
+			if(samePrefix)
+				bound = true;
+		}
 		if(!bound)
 			shortcuts.push_back(d);
 	}

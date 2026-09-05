@@ -44,7 +44,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
 
       - uses: actions/checkout@v4
@@ -60,6 +60,17 @@ jobs:
           /tmp/torus-picking
           ${{ matrix.compiler }} -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
           /tmp/cloud-field
+          ${{ matrix.compiler }} -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+          /tmp/map-render-geometry
+
+      - name: Exercise GPU and software game rendering
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 torus-render-test
+          mkdir -p /tmp/glob2-render-profile
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            xvfb-run -a build/src/torus-render-test -g -F -m -s 1120x720
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            build/src/torus-render-test -G -F -m -s 1120x720
 
       - name: Build the YOG server
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
@@ -74,6 +85,9 @@ jobs:
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software
           python3 test/SoftwareStartupTest.py build-software/src/glob2
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software torus-render-test
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            build-software/src/torus-render-test -g -F -m -s 1120x720
 
   windows:
     name: windows (mingw-w64)
@@ -119,6 +133,8 @@ jobs:
           /tmp/torus-picking
           g++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
           /tmp/cloud-field
+          g++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+          /tmp/map-render-geometry
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
