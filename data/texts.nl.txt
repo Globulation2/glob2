@@ -70,10 +70,6 @@ Numbi
 ReachToInfinity valt niet aan, maar probeert in evenwicht met de natuur enorme steden op te bouwen. Let wel op, want met zijn vele herbergen lopen jouw globs al snel over. Moeilijkheidsgraad: Gemakkelijk.
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Toubib
-[AIToubib]
-Toubib
 [AIWarrush-Description]
 Warrush is snel en onverbiddelijk. Voor je het weet staan zijn legers aan jouw deur en moet je verdedigen alsof je leven er van afhangt, want dat is ook zo. Moeilijkheidsgraad: Gemiddeld.
 [AIWarrush]

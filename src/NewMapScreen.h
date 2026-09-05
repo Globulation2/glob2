@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __NEWMAPSCREEN_H
-#define __NEWMAPSCREEN_H
+#pragma once
 
 #include "Glob2Screen.h"
 #include "MapGenerationDescriptor.h"
@@ -53,4 +52,3 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 };
 
-#endif

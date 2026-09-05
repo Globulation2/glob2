@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#ifndef __MultiplayerGameEventListener_h
-#define __MultiplayerGameEventListener_h
+#pragma once
 
 #include "MultiplayerGameEvent.h"
 #include <memory>
@@ -19,4 +18,3 @@ public:
 };
 
 
-#endif

@@ -1,5 +1,4 @@
-#ifndef NATIVE_H
-#define NATIVE_H
+#pragma once
 
 #include "usl.h"
 #include "interpreter.h"
@@ -30,7 +29,7 @@ template<typename This>
 struct NativeValuePrototype: Prototype
 {
 	NativeValuePrototype():
-		Prototype(heap)
+		Prototype(nullptr) // heap is set later by NativeValue ctor; can't use the inherited member here, it's not constructed yet
 	{
 	}
 	
@@ -315,4 +314,3 @@ inline void NativeValuePrototype<int>::initialize()
 	addMethod<bool(int, int)>("!=", boost::lambda::_1 != boost::lambda::_2);
 }
 
-#endif // ndef NATIVE_H

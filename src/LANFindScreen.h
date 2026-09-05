@@ -2,8 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __LAN_FIND_SCREEN_H
-#define __LAN_FIND_SCREEN_H
+#pragma once
 
 #include "Glob2Screen.h"
 #include "NetBroadcastListener.h"
@@ -37,7 +36,6 @@ public:
 	};
 
 private:
-	//Sprite *arch;
 	Text *serverText;
 	TextInput *serverName;
 	Text *playerText;
@@ -51,4 +49,3 @@ private:
 	NetBroadcastListener listener;
 };
 
-#endif

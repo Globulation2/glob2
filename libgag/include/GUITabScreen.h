@@ -2,8 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef GUITabScreen_h
-#define GUITabScreen_h
+#pragma once
 
 #include "GUIBase.h"
 #include <map>
@@ -83,5 +82,3 @@ namespace GAGGUI
 		bool longerButtons;
 	};
 };
-
-#endif

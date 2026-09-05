@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __STRINGTABLE_H
-#define __STRINGTABLE_H
+#pragma once
 
 #include <vector>
 #include <bitset>
@@ -49,6 +48,4 @@ namespace GAGCore
 	};
 
 }
-
-#endif
 

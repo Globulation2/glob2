@@ -26,14 +26,22 @@ void MapScript::encodeData(GAGCore::OutputStream* stream) const
 
 
 
-void MapScript::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
+bool MapScript::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 {
 	stream->readEnterSection("MapScript");
 	script = stream->readText("script");
-	mode = static_cast<MapScriptMode>(stream->readUint8("mode"));
+	const Uint8 rawMode = stream->readUint8("mode");
+	if (rawMode != static_cast<Uint8>(USL))
+	{
+		std::cerr << "MapScript::decodeData(): unknown map script mode " << static_cast<unsigned>(rawMode) << " (corrupt or newer-version file)." << std::endl;
+		stream->readLeaveSection();
+		return false;
+	}
+	mode = static_cast<MapScriptMode>(rawMode);
 	usl.compileCode(script);
 	usl.decodeData(stream, versionMinor);
 	stream->readLeaveSection();
+	return true;
 }
 
 
@@ -70,25 +78,9 @@ bool MapScript::compileCode()
 	{
 		return usl.compileCode(script);
 	}
-	else
-	{
-		std::cerr << "mode unknown." << std::endl;
-		assert(false);
-	}
-}
-
-
-bool MapScript::testCompileCode(const std::string& testScript)
-{
-	if(mode == USL)
-	{
-		return usl.compileCode(testScript);
-	}
-	else
-	{
-		std::cerr << "mode unknown." << std::endl;
-		assert(false);
-	}
+	std::cerr << "MapScript::compileCode(): mode unknown." << std::endl;
+	assert(false);
+	return false;
 }
 
 

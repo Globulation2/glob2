@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __RESSOURCE_H
-#define __RESSOURCE_H
+#pragma once
 
 #include <SDL.h>
 
@@ -20,7 +19,6 @@ struct Ressource
 	Uint8 animation = 0;
 	
 	void clear() {type=NO_RES_TYPE; variety = 0;  amount = 0;  animation = 0; }
-	//void setUint32(Uint32 i) { animation=i&0xFF; amount=(i>>8)&0xFF; variety=(i>>16)&0xFF; type=(i>>24)&0xFF; }
 	Uint32 getUint32() const { return animation | (amount<<8) | (variety<<16) | (type<<24); }
 };
 
@@ -41,4 +39,3 @@ std::string getRessourceName(int type);
 #define HAPPYNESS_BASE 5
 #define HAPPYNESS_COUNT (MAX_RESSOURCES-BASIC_COUNT)
 
-#endif

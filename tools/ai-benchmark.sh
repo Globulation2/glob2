@@ -1,0 +1,287 @@
+#!/usr/bin/env bash
+#
+# ai-benchmark.sh — head-to-head AI win-rate harness for Globulation 2.
+#
+# Runs N headless games of a fixed map + matchup and reports win rate with a
+# 95% confidence interval. This is the fitness function for hand-crafted AI
+# work: "better than Nicowar" is only meaningful as a measured win rate over
+# many games.
+#
+# It drives the C++ binary's existing headless flags (no Rust involved):
+#   glob2 -test-games-nox 1 --map <name> --matchup <a,b,...>
+# pins the per-game RNG via GLOB2_TEST_SEED, and scrapes the
+# "GLOB2_GAME_END ... winner_team=N ..." line from stdout. See
+# glob2/docs/headless-replays.md for the flag/format reference.
+#
+# Seeds are deterministic (seed = --seed-base + game index), so a benchmark
+# is reproducible: re-running compares a *new* AI against the *same* set of
+# game scenarios an old one faced, and any single game can be replayed for
+# debugging. Without a pinned seed, back-to-back sub-second games collide on
+# the wall-clock seed and you get duplicate, non-independent samples.
+#
+# --swap-sides (2-AI matchups only) runs each seed under BOTH team orderings
+# and aggregates by AI identity, cancelling map/start-position bias. A
+# Nicowar-vs-Nicowar mirror on SmallForTwo comes out ~35/65 by side, so the
+# side a bot spawns on confounds any single-ordering result. Use it for any
+# "is X better than Y" measurement.
+#
+# Games are independent processes with their own RNG, replay, and log paths,
+# so they parallelize cleanly: --jobs runs that many concurrently. The win
+# rate is identical regardless of --jobs (the seed->scenario mapping is fixed);
+# only wall-clock time changes. Because completion order is nondeterministic
+# under parallelism, per-seed progress lines are printed after the run, in
+# seed order, rather than streaming as each game finishes.
+#
+# Build the binary with `scons release=1 -j16` first — the default debug
+# build runs ~10x slower.
+#
+# Usage:
+#   tools/ai-benchmark.sh --map SmallForTwo --matchup nicowar,nicowar --games 40
+#   tools/ai-benchmark.sh --map SmallForTwo --matchup cortex,nicowar --games 100 --swap-sides
+#
+# Options:
+#   --map <name>       Map filename without .map (resolved as maps/<name>.map). Required.
+#   --matchup <list>   Comma-separated AI per team; matchup[k] plays team k. Required.
+#   --games <N>        Games to run (default: 40). With --swap-sides this is
+#                      seed count; total games played is 2*N.
+#   --swap-sides       Run each seed under both orderings; report by AI identity.
+#                      Requires a 2-entry matchup.
+#   --jobs <N>         Concurrent games to run (default: CPU cores minus 2, min 1).
+#                      --jobs 1 runs them one at a time. Results are independent
+#                      of this value; only wall-clock time changes.
+#   --seed-base <N>    First GLOB2_TEST_SEED (default: 1). Seeds run base..base+games-1.
+#   --bin <path>       glob2 binary (default: build/src/glob2 under the repo).
+#   --out <dir>        Per-game logs/replays dir (default: temp dir, cleaned on exit).
+#   --keep             Keep per-game logs/replays.
+#
+# A 90k-tick timeout (winner_team=-1) is a draw: counted, but a win for no one.
+
+set -u
+
+# --- internal single-game worker (re-invoked by the parallel pool) ----------
+# Invoked as: "$SELF" --__run_one <seed> <matchup> <tag>
+# Reads RUN_BIN / RUN_MAP / RUN_OUT from the environment (exported by the
+# parent). Kept self-contained so xargs -P can fan it out across processes.
+if [ "${1:-}" = "--__run_one" ]; then
+	seed="$2"; matchup="$3"; tag="$4"
+	GLOB2_TEST_SEED="$seed" GLOB2_REPLAY_PATH="$RUN_OUT/game-$tag.replay" \
+		"$RUN_BIN" -test-games-nox 1 --map "$RUN_MAP" --matchup "$matchup" \
+		>"$RUN_OUT/game-$tag.log" 2>&1
+	exit 0
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"   # tools/ -> glob2/
+SELF="$SCRIPT_DIR/$(basename "${BASH_SOURCE[0]}")"
+
+MAP=""
+MATCHUP=""
+GAMES=40
+SWAP=0
+JOBS=""
+SEED_BASE=1
+BIN="$REPO_DIR/build/src/glob2"
+OUT=""
+KEEP=0
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--map)        MAP="$2"; shift 2 ;;
+		--matchup)    MATCHUP="$2"; shift 2 ;;
+		--games)      GAMES="$2"; shift 2 ;;
+		--swap-sides) SWAP=1; shift ;;
+		--jobs)       JOBS="$2"; shift 2 ;;
+		--seed-base)  SEED_BASE="$2"; shift 2 ;;
+		--bin)        BIN="$2"; shift 2 ;;
+		--out)        OUT="$2"; shift 2 ;;
+		--keep)       KEEP=1; shift ;;
+		-h|--help)    sed -n '2,/^$/p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+		*)            echo "error: unknown argument '$1' (try --help)" >&2; exit 2 ;;
+	esac
+done
+
+# --- validation -------------------------------------------------------------
+if [ -z "$MAP" ] || [ -z "$MATCHUP" ]; then
+	echo "error: --map and --matchup are required (try --help)" >&2; exit 2
+fi
+if [ ! -x "$BIN" ]; then
+	echo "error: glob2 binary not found or not executable: $BIN" >&2
+	echo "       build it with: (cd '$REPO_DIR' && scons release=1 -j16)" >&2
+	exit 2
+fi
+case "$GAMES" in ''|*[!0-9]*) echo "error: --games must be a positive integer" >&2; exit 2 ;; esac
+case "$SEED_BASE" in ''|*[!0-9]*) echo "error: --seed-base must be a non-negative integer" >&2; exit 2 ;; esac
+[ "$GAMES" -lt 1 ] && { echo "error: --games must be >= 1" >&2; exit 2; }
+if [ -n "$JOBS" ]; then
+	case "$JOBS" in ''|*[!0-9]*) echo "error: --jobs must be a positive integer" >&2; exit 2 ;; esac
+	[ "$JOBS" -lt 1 ] && { echo "error: --jobs must be >= 1" >&2; exit 2; }
+fi
+
+NTEAMS=$(printf '%s' "$MATCHUP" | awk -F, '{print NF}')
+if [ "$SWAP" -eq 1 ] && [ "$NTEAMS" -ne 2 ]; then
+	echo "error: --swap-sides requires a 2-entry --matchup (got $NTEAMS)" >&2; exit 2
+fi
+
+# --- resolve concurrency (default: CPU cores minus 2, min 1) ----------------
+detect_cores() {
+	if command -v nproc >/dev/null 2>&1; then nproc
+	elif command -v sysctl >/dev/null 2>&1; then sysctl -n hw.ncpu 2>/dev/null
+	else echo 1; fi
+}
+if [ -z "$JOBS" ]; then
+	cores="$(detect_cores)"
+	case "$cores" in ''|*[!0-9]*) cores=1 ;; esac
+	JOBS=$((cores - 2)); [ "$JOBS" -lt 1 ] && JOBS=1
+fi
+
+# --- output dir -------------------------------------------------------------
+CLEANUP=0
+if [ -z "$OUT" ]; then
+	OUT="$(mktemp -d "${TMPDIR:-/tmp}/glob2-bench.XXXXXX")"
+	[ "$KEEP" -eq 0 ] && CLEANUP=1
+fi
+mkdir -p "$OUT"
+cleanup() { [ "$CLEANUP" -eq 1 ] && rm -rf "$OUT"; }
+trap cleanup EXIT
+
+# --- run all queued games through a bounded parallel pool -------------------
+# Jobs file: "seed matchup tag" per line; none of the fields contain spaces, so
+# xargs -n3 word-splits each line back into the three worker arguments and -P
+# runs JOBS of them at once. The workers only ever write to their own per-tag
+# log/replay, so concurrent games never collide.
+run_pool() {  # run_pool <jobs-file>
+	export RUN_BIN="$BIN" RUN_MAP="$MAP" RUN_OUT="$OUT"
+	xargs -n 3 -P "$JOBS" "$SELF" --__run_one < "$1"
+}
+
+# --- parse one finished game: parse_log <tag>; sets $WINNER and $TICKS -------
+WINNER=""; TICKS=""
+parse_log() {
+	local tag="$1" log="$OUT/game-$1.log" line
+	line="$(grep -m1 '^GLOB2_GAME_END' "$log" 2>/dev/null)"
+	if [ -z "$line" ]; then WINNER="ERR"; TICKS=""; return 1; fi
+	WINNER="$(printf '%s\n' "$line" | sed -n 's/.*winner_team=\(-\{0,1\}[0-9]\{1,\}\).*/\1/p')"
+	TICKS="$(printf '%s\n' "$line" | sed -n 's/.*ticks=\([0-9]\{1,\}\).*/\1/p')"
+	return 0
+}
+
+# print a win-rate line with a 95% Wald CI: report_rate <label> <wins> <denom>
+report_rate() {
+	awk -v lbl="$1" -v w="$2" -v n="$3" 'BEGIN {
+		if (n == 0) { printf "  %-28s   (no completed games)\n", lbl; exit }
+		p = w / n; se = sqrt(p * (1 - p) / n);
+		lo = p - 1.96*se; if (lo < 0) lo = 0;
+		hi = p + 1.96*se; if (hi > 1) hi = 1;
+		printf "  %-28s %3d/%-3d  %5.1f%%  (95%% CI %4.1f%%-%4.1f%%)\n",
+			lbl, w, n, 100*p, 100*lo, 100*hi;
+	}'
+}
+
+TOTAL=$([ "$SWAP" -eq 1 ] && echo $((GAMES * 2)) || echo "$GAMES")
+
+echo "glob2 AI benchmark"
+echo "  binary : $BIN"
+echo "  map    : $MAP"
+echo "  matchup: $MATCHUP  (${NTEAMS} teams)"
+echo "  seeds  : ${SEED_BASE}..$((SEED_BASE + GAMES - 1))$([ "$SWAP" -eq 1 ] && echo ', both orderings')"
+echo "  jobs   : $JOBS"
+echo "  logs   : $OUT"
+echo
+
+JOBSFILE="$OUT/.jobs"
+errors=0
+
+if [ "$SWAP" -eq 1 ]; then
+	# ---- side-swapped 2-AI mode: aggregate by AI identity --------------------
+	OLDIFS="$IFS"; IFS=','; set -- $MATCHUP; IFS="$OLDIFS"
+	AI_A="$1"; AI_B="$2"
+	rev="$AI_B,$AI_A"
+
+	# enqueue both orderings of every seed, then run the pool
+	: > "$JOBSFILE"
+	i=0
+	while [ "$i" -lt "$GAMES" ]; do
+		seed=$((SEED_BASE + i)); tag="$(printf '%04d' "$i")"
+		printf '%s %s %s\n' "$seed" "$MATCHUP" "$tag-fwd" >> "$JOBSFILE"
+		printf '%s %s %s\n' "$seed" "$rev"     "$tag-rev" >> "$JOBSFILE"
+		i=$((i+1))
+	done
+	echo "running $TOTAL games across $JOBS job(s)..."
+	run_pool "$JOBSFILE"
+	echo
+
+	# tally in seed order: fwd maps team0->A team1->B, rev maps team0->B team1->A
+	a_wins=0; b_wins=0; draws=0; completed=0
+	i=0
+	while [ "$i" -lt "$GAMES" ]; do
+		seed=$((SEED_BASE + i)); tag="$(printf '%04d' "$i")"
+		if parse_log "$tag-fwd"; then
+			completed=$((completed+1))
+			case "$WINNER" in
+				0) a_wins=$((a_wins+1)) ;;
+				1) b_wins=$((b_wins+1)) ;;
+				-1) draws=$((draws+1)) ;;
+			esac
+		else errors=$((errors+1)); fi
+		if parse_log "$tag-rev"; then
+			completed=$((completed+1))
+			case "$WINNER" in
+				0) b_wins=$((b_wins+1)) ;;
+				1) a_wins=$((a_wins+1)) ;;
+				-1) draws=$((draws+1)) ;;
+			esac
+		else errors=$((errors+1)); fi
+		printf '  seed %6d: %s=%d %s=%d draws=%d\n' "$seed" "$AI_A" "$a_wins" "$AI_B" "$b_wins" "$draws"
+		i=$((i+1))
+	done
+	echo
+	echo "results over $((GAMES*2)) games ($completed completed, $errors errored, side bias cancelled):"
+	report_rate "$AI_A (either side)" "$a_wins" "$completed"
+	report_rate "$AI_B (either side)" "$b_wins" "$completed"
+	report_rate "draws (timeouts)"    "$draws"  "$completed"
+else
+	# ---- per-team mode: tally by team index ---------------------------------
+	: > "$JOBSFILE"
+	i=0
+	while [ "$i" -lt "$GAMES" ]; do
+		seed=$((SEED_BASE + i)); tag="$(printf '%04d' "$i")"
+		printf '%s %s %s\n' "$seed" "$MATCHUP" "$tag" >> "$JOBSFILE"
+		i=$((i+1))
+	done
+	echo "running $TOTAL games across $JOBS job(s)..."
+	run_pool "$JOBSFILE"
+	echo
+
+	t=0; while [ "$t" -lt "$NTEAMS" ]; do wins[$t]=0; t=$((t+1)); done
+	draws=0; completed=0
+	i=0
+	while [ "$i" -lt "$GAMES" ]; do
+		seed=$((SEED_BASE + i)); tag="$(printf '%04d' "$i")"
+		if parse_log "$tag"; then
+			completed=$((completed+1))
+			if [ "$WINNER" = "-1" ]; then
+				draws=$((draws+1))
+				printf '  seed %6d: draw   (timeout, %s ticks)\n' "$seed" "${TICKS:-?}"
+			else
+				wins[$WINNER]=$(( ${wins[$WINNER]} + 1 ))
+				printf '  seed %6d: team %s wins (%s ticks)\n' "$seed" "$WINNER" "${TICKS:-?}"
+			fi
+		else
+			errors=$((errors+1))
+			printf '  seed %6d: ERROR (no GLOB2_GAME_END; see %s)\n' "$seed" "$OUT/game-$tag.log"
+		fi
+		i=$((i+1))
+	done
+	echo
+	echo "results over $GAMES games ($completed completed, $errors errored):"
+	if [ "$completed" -eq 0 ]; then echo "  no games completed" >&2; exit 1; fi
+	OLDIFS="$IFS"; IFS=','; set -- $MATCHUP; IFS="$OLDIFS"
+	t=0
+	for ai in "$@"; do
+		report_rate "team $t ($ai)" "${wins[$t]}" "$completed"
+		t=$((t+1))
+	done
+	report_rate "draws (timeouts)" "$draws" "$completed"
+fi
+
+rm -f "$JOBSFILE"

@@ -2,122 +2,68 @@
 // Copyright (C) 2007-2008 Bradley Arsenault
 
 #include "FertilityCalculatorDialog.h"
-#include "FertilityCalculatorThreadMessage.h"
-#include <functional>
+
+#include "FertilityCalculator.h"
 #include "GUIProgressBar.h"
 #include "GUIText.h"
-#include <iomanip>
 #include "Map.h"
-#include <sstream>
 #include "StringTable.h"
 #include "Toolkit.h"
-#include "SDLCompat.h"
+
+#include <iomanip>
+#include <sstream>
 
 using namespace GAGCore;
 using namespace GAGGUI;
-using std::static_pointer_cast;
 
-FertilityCalculatorDialog::FertilityCalculatorDialog(GraphicContext *parentCtx, Map& map)
-	: OverlayScreen(parentCtx, 200, 100), map(map), parentCtx(parentCtx), thread(map, incoming, incomingMutex)
+namespace
 {
-		addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[Computing Fertility]")));
-		percentDone = new Text(0, 40, ALIGN_FILL, ALIGN_LEFT, "menu");
-		progress = new ProgressBar(0, 70, 0, ALIGN_FILL, ALIGN_TOP, 1000);
-		addWidget(percentDone);
-		addWidget(progress);
-		dispatchInit();
+	constexpr int kProgressResolution = 1000;
 }
 
-
-
-void FertilityCalculatorDialog::onAction(Widget *source, Action action, int par1, int par2)
+FertilityCalculatorDialog::FertilityCalculatorDialog(GraphicContext* parentCtx, Map& map)
+	: OverlayScreen(parentCtx, 200, 100), map(map), parentCtx(parentCtx)
 {
-
+	addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, "standard",
+	                   Toolkit::getStringTable()->getString("[Computing Fertility]")));
+	percentDone = new Text(0, 40, ALIGN_FILL, ALIGN_LEFT, "menu");
+	progress = new ProgressBar(0, 70, 0, ALIGN_FILL, ALIGN_TOP, kProgressResolution);
+	addWidget(percentDone);
+	addWidget(progress);
+	dispatchInit();
 }
 
-
-void FertilityCalculatorDialog::execute()
+void FertilityCalculatorDialog::onAction(Widget*, Action, int, int)
 {
-	// save screen in a temporary surface
-	parentCtx->setClipRect();
-	DrawableSurface *background = new DrawableSurface(parentCtx->getW(), parentCtx->getH());
-	background->drawSurface(0, 0, parentCtx);
+}
 
-	// start computing
-	computeThread = std::thread(std::ref(thread));
+void FertilityCalculatorDialog::onTimer(Uint32)
+{
+	refreshProgressDisplay();
+	if (computeDone.load(std::memory_order_acquire))
+		endValue = 1;
+}
 
-	dispatchPaint();
+void FertilityCalculatorDialog::runModal()
+{
+	computeThread = std::thread([this]() {
+		FertilityCalculator::compute(map, [this](float p) {
+			progressFraction.store(p, std::memory_order_relaxed);
+		});
+		computeDone.store(true, std::memory_order_release);
+	});
 
-	SDL_Event event;
-	while(endValue<0)
-	{
-		Uint64 time = SDL_GetTicks64();
-		while (SDL_PollEvent(&event))
-		{
-			if (event.type==SDL_QUIT)
-				break;
-			//Manual integration of cmd+q and alt f4
-			if(event.type == SDL_KEYDOWN)
-			{
-#ifdef USE_OSX
-				if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
-				{
-					break;
-				}
-#endif
-#ifdef USE_WIN32
-				if(event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
-				{
-					break;
-				}
-#endif
-			}
+	executeModal(parentCtx);
 
-			translateAndProcessEvent(&event);
-		}
-		proccessIncoming(background);
-		dispatchPaint();
-		parentCtx->drawSurface((int)0, (int)0, background);
-		parentCtx->drawSurface(decX, decY, getSurface());
-		parentCtx->nextFrame();
-		Uint64 newTime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time), 0));
-	}
-	
 	if (computeThread.joinable())
 		computeThread.join();
-	delete background;
 }
 
-
-
-void FertilityCalculatorDialog::proccessIncoming(DrawableSurface *background)
+void FertilityCalculatorDialog::refreshProgressDisplay()
 {
-	//First parse incoming thread messages
-	std::lock_guard<std::recursive_mutex> lock(incomingMutex);
-	while(!incoming.empty())
-	{
-		std::shared_ptr<FertilityCalculatorThreadMessage> message = incoming.front();
-		incoming.pop();
-		Uint8 type = message->getMessageType();
-		switch(type)
-		{
-			case FCTMUpdateCompletionPercent:
-			{
-					std::shared_ptr<FCTUpdateCompletionPercent> info = static_pointer_cast<FCTUpdateCompletionPercent>(message);
-					std::stringstream s;
-					s<<std::setprecision(3)<<(info->getPercent() * 100.0)<<"%"<<std::endl;
-					percentDone->setText(s.str());
-					progress->setValue((int)(info->getPercent()*1000.0));
-			}
-			break;
-			case FCTMFertilityCompleted:
-			{
-					std::shared_ptr<FCTFertilityCompleted> info = static_pointer_cast<FCTFertilityCompleted>(message);
-					endValue = 1;
-			}
-			break;
-		}
-	}
+	const float p = progressFraction.load(std::memory_order_relaxed);
+	std::stringstream s;
+	s << std::setprecision(3) << (p * 100.0) << "%";
+	percentDone->setText(s.str());
+	progress->setValue(static_cast<int>(p * kProgressResolution));
 }
-

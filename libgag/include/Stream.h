@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __STREAM_H
-#define __STREAM_H
+#pragma once
 
 // For U/SintNN
 #include "Types.h"
@@ -67,6 +66,14 @@ namespace GAGCore
 		
 		virtual void readEnterSection(const std::string name) = 0;
 		virtual void readEnterSection(unsigned id) = 0;
+		//! Pops `count` nesting levels from the section stack. NOTE the
+		//! asymmetry with readEnterSection(unsigned id): the parameter is a
+		//! level count, NOT a section id — after readEnterSection(i), the
+		//! matching call is readLeaveSection() (pop one), never
+		//! readLeaveSection(i). Multi-level pops (e.g. count=3 on an error
+		//! path unwinding nested sections) are the only reason to pass an
+		//! argument. BinaryInputStream implements this as a no-op;
+		//! TextInputStream asserts count <= current depth.
 		virtual void readLeaveSection(size_t count = 1) = 0;
 	};
 	
@@ -99,5 +106,3 @@ namespace GAGCore
 		bool isEndOfStream(void);
 	};
 }
-
-#endif

@@ -2,13 +2,17 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "MultiplayerGame.h"
-#include <iostream>
 #include "Engine.h"
+#include "Player.h"
 #include "YOGClientFileAssembler.h"
-#include "FormatableString.h"
-#include "Toolkit.h"
-#include "StringTable.h"
-#include "NetMessage.h"
+#include "FileTransferMessages.h"
+#include "GameCreateMessages.h"
+#include "GameHeaderMessages.h"
+#include "GameJoinMessages.h"
+#include "GameLaunchMessages.h"
+#include "GameTeamMessages.h"
+#include "OrderMessages.h"
+#include "RouterMessages.h"
 #include "YOGClientGameListManager.h"
 
 using std::shared_ptr;
@@ -32,7 +36,7 @@ MultiplayerGame::MultiplayerGame(std::shared_ptr<YOGClient> client)
 	
 	isStarting=false;
 	needToSendMapHeader=false;
-	previousPercentage = 255;
+	previousPercentage = MP_DOWNLOAD_PCT_UNREPORTED;
 	numberOfConnectionAttempts=0;
 }
 
@@ -53,8 +57,7 @@ void MultiplayerGame::update()
 		sendToListeners(event);
 		mode = NoMode;
 		state=NothingYet;
-		if(client->getGameConnection())
-			client->getGameConnection()->closeConnection();
+		client->closeGameConnection();
 	}
 	
 	if(state == ConnectingToGameRouter)
@@ -163,10 +166,9 @@ void MultiplayerGame::leaveGame()
 {	
 	shared_ptr<NetLeaveGame> message(new NetLeaveGame);
 	client->sendNetMessage(message);
-	
-	if(client->getGameConnection())
-		client->getGameConnection()->closeConnection();
-		
+
+	client->closeGameConnection();
+
 	mode = NoMode;
 	state=NothingYet;
 }
@@ -300,7 +302,7 @@ void MultiplayerGame::updateReadyState()
 
 	if(client->getYOGClientFileAssembler(fileID))
 	{
-		if(client->getYOGClientFileAssembler(fileID)->getPercentage() != 100)
+		if(client->getYOGClientFileAssembler(fileID)->getPercentage() != DOWNLOAD_PCT_COMPLETE)
 			ready = false;
 	}
 	
@@ -366,7 +368,7 @@ YOGKickReason MultiplayerGame::getKickReason() const
 
 void MultiplayerGame::addEventListener(MultiplayerGameEventListener* alistener)
 {
-	listeners.push_back(alistener);
+	listeners.add(alistener);
 }
 
 
@@ -490,12 +492,10 @@ void MultiplayerGame::recieveMessage(std::shared_ptr<NetMessage> message)
 	}
 	if(type==MNetStartGame)
 	{
-		//shared_ptr<NetStartGame> info = static_pointer_cast<NetStartGame>(message);
 		startEngine();
 	}
 	if(type==MNetRefuseGameStart)
 	{
-		//shared_ptr<NetRefuseGameStart> info = static_pointer_cast<NetRefuseGameStart>(message);
 		isStarting=false;
 		
 		shared_ptr<MGGameStartRefused> event(new MGGameStartRefused);
@@ -511,7 +511,7 @@ void MultiplayerGame::recieveMessage(std::shared_ptr<NetMessage> message)
 			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);
 			shared_ptr<Order> order = info->getOrder();
 			if(order->getOrderType() == ORDER_PLAYER_QUIT_GAME)
-				order->gameCheckSum = static_cast<unsigned int>(-1);
+				order->gameCheckSum = ORDER_CHECKSUM_NONE;
 			netEngine->pushOrder(order, order->sender, false);
 		}
 	}
@@ -568,7 +568,6 @@ void MultiplayerGame::recieveMessage(std::shared_ptr<NetMessage> message)
 	{
 		shared_ptr<NetSetLatencyMode> info = static_pointer_cast<NetSetLatencyMode>(message);
 		gameHeader.setGameLatency(info->getLatencyAdjustment());
-		//std::cout<<"info->getLatencyAdjustment()="<<(int)(info->getLatencyAdjustment())<<std::endl;
 	}
 	if(type==MNetPlayerJoinsGame)
 	{
@@ -634,8 +633,6 @@ void MultiplayerGame::startEngine()
 			sendToListeners(event);	
 		}
 	}
-//	else if (rc==-1)
-//		executionMode=-1;
 	// redraw all stuff
 	netEngine = NULL;
 }
@@ -644,18 +641,15 @@ void MultiplayerGame::startEngine()
 
 void MultiplayerGame::setDefaultGameHeaderValues()
 {
-	gameHeader.setGameLatency(12);
-	gameHeader.setOrderRate(6);
+	gameHeader.setGameLatency(MP_DEFAULT_GAME_LATENCY_TICKS);
+	gameHeader.setOrderRate(MP_DEFAULT_ORDER_RATE_TICKS);
 }
 
 
 
 void MultiplayerGame::sendToListeners(std::shared_ptr<MultiplayerGameEvent> event)
 {
-	for(std::list<MultiplayerGameEventListener*>::iterator i = listeners.begin(); i!=listeners.end(); ++i)
-	{
-		(*i)->handleMultiplayerGameEvent(event);
-	}
+	listeners.notify(&MultiplayerGameEventListener::handleMultiplayerGameEvent, event);
 }
 
 
@@ -685,7 +679,7 @@ int MultiplayerGame::getLocalPlayer()
 			return gameHeader.getBasePlayer(i).number;
 		}
 	}
-	return -1;
+	return LOCAL_PLAYER_NONE;
 }
 
 
@@ -707,7 +701,7 @@ Uint32 MultiplayerGame::getChatChannel() const
 Uint8 MultiplayerGame::percentageDownloadFinished()
 {
 	if(!client->getYOGClientFileAssembler(fileID))
-		return 100;
+		return DOWNLOAD_PCT_COMPLETE;
 	return client->getYOGClientFileAssembler(fileID)->getPercentage();
 }
 
@@ -728,7 +722,7 @@ void MultiplayerGame::setGameResult(YOGGameResult result)
 
 
 
-bool MultiplayerGame::isReadyToStart(int playerID)
+bool MultiplayerGame::isReadyToStart(YOGPlayerID playerID)
 {
 	return playerManager.isReadyToGo(playerID);
 }
@@ -746,4 +740,3 @@ bool MultiplayerGame::isFullyInGame()
 		return false;
 	return true;
 }
-

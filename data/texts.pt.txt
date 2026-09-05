@@ -70,10 +70,6 @@ IANumbi
 
 [AIReachToInfinity]
 
-[AIToubib-Description]
-
-[AIToubib]
-IAToubib
 [AIWarrush-Description]
 
 [AIWarrush]

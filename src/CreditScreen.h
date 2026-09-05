@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __CREDIT_SCREEN_H
-#define __CREDIT_SCREEN_H
+#pragma once
 
 #include "Glob2Screen.h"
 
@@ -14,4 +13,3 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 };
 
-#endif

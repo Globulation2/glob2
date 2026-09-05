@@ -7,24 +7,15 @@
 
 #ifndef YOG_SERVER_ONLY
 
-#include "CampaignEditor.h"
 #include "CampaignMenuScreen.h"
 #include "CampaignMainMenu.h"
-#include "CampaignSelectorScreen.h"
-#include "ChooseMapScreen.h"
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Game.h"
-#include "GUIMessageBox.h"
-#include "Header.h"
-#include "LANFindScreen.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
-#include "MapEdit.h"
-#include "NetBroadcastListener.h"
 #include "MapGenerator.h"
-#include "NewMapScreen.h"
 #include "SettingsScreen.h"
 #include <StringTable.h>
 #include "Utilities.h"
@@ -36,15 +27,21 @@
 
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <Toolkit.h>
+#include <FileManager.h>
+#include "map/Map.h"
+#include "team/Team.h"
+#include "building/Building.h"
+#include "BuildingType.h"
+#include "ai/cortex/CortexWheat.h"
 
 #include <stdio.h>
-#include <sys/types.h>
+#include <stdlib.h>
 
 #endif  // !YOG_SERVER_ONLY
 
 #ifndef WIN32
 #	include <unistd.h>
-#	include <sys/time.h>
 #else
 #	include <time.h>
 #endif
@@ -129,14 +126,30 @@ int Glob2::runNoX()
 int Glob2::runTestGames()
 {
 	globalContainer->automaticEndingSteps=90000;
-	while(true)
+	int maxRuns = globalContainer->runTestGamesCount;
+	int run = 0;
+	while(maxRuns == 0 || run < maxRuns)
 	{
-		long t = time(NULL);
+		// GLOB2_TEST_SEED overrides the wall-clock seed for deterministic
+		// regression testing. With a fixed seed (and unchanged maps/), two
+		// runs produce byte-identical replays — the basis for the
+		// behavior-preservation harness used by C++ cleanup work.
+		const char* envSeed = getenv("GLOB2_TEST_SEED");
+		long t = envSeed ? atol(envSeed) : time(NULL);
 		setSyncRandSeed(t);
+		// Capture the seed so createRandomGame can mirror it into
+		// GameHeader::seed — otherwise a saved .game file (from
+		// --save-game-as or GLOB2_DUMP_GAME) would carry the wall-clock
+		// time(NULL) that GameHeader's default ctor wrote, not the seed
+		// that actually drove this run, and reloading via --nox would
+		// diverge from the original.
+		globalContainer->testGamesSeed = (Uint32)t;
+		globalContainer->testGamesSeedSet = true;
 		std::cout<<"Random Seed initial: "<<t<<std::endl;
 		Engine engine;
 		engine.createRandomGame();
 		engine.run();
+		run++;
 	}
 	return 0;
 }
@@ -196,6 +209,211 @@ int Glob2::runTestMapGeneration()
 #endif  // !YOG_SERVER_ONLY
 
 
+#ifndef YOG_SERVER_ONLY
+// Headless tooling: dump a map's CORN (wheat) layout and team start positions as
+// ASCII, to sanity-check AI wheat-protection field geometry. Reuses the real
+// Game::load path so the data matches what the engine sees. Not a gameplay feature.
+static int dumpResources(const std::string& mapName)
+{
+	using namespace GAGCore;
+	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "dump-resources: cannot open " << mapName << std::endl;
+		delete stream;
+		return 1;
+	}
+	Game game(NULL);
+	bool ok = game.load(stream);
+	delete stream;
+	if (!ok)
+	{
+		std::cerr << "dump-resources: failed to load " << mapName << std::endl;
+		return 1;
+	}
+
+	Map& map = game.map;
+	const int w = map.getW();
+	const int h = map.getH();
+	int cornCount = 0;
+	int minX = w, minY = h, maxX = -1, maxY = -1;
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++)
+			if (map.getRessource(x, y).type == CORN)
+			{
+				cornCount++;
+				if (x < minX) minX = x; if (x > maxX) maxX = x;
+				if (y < minY) minY = y; if (y > maxY) maxY = y;
+			}
+
+	const int teamCount = game.mapHeader.getNumberOfTeams();
+	std::cout << "Map " << mapName << " : " << w << "x" << h
+	          << ", teams=" << teamCount << ", CORN tiles=" << cornCount;
+	if (cornCount > 0)
+		std::cout << ", CORN bbox=(" << minX << "," << minY << ")-(" << maxX << "," << maxY << ")";
+	std::cout << std::endl;
+	for (int t = 0; t < teamCount; t++)
+		if (game.teams[t])
+			std::cout << "  team " << t << " start=(" << game.teams[t]->startPosX
+			          << "," << game.teams[t]->startPosY << ")" << std::endl;
+	std::cout << "  legend: C=corn ~=water #=non-walkable .=land  digit=team start" << std::endl;
+
+	for (int y = 0; y < h; y++)
+	{
+		std::string row;
+		for (int x = 0; x < w; x++)
+		{
+			char c;
+			if (map.getRessource(x, y).type == CORN)      c = 'C';
+			else if (map.isWater(x, y))                    c = '~';
+			else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
+			else                                           c = '.';
+			for (int t = 0; t < teamCount; t++)
+				if (game.teams[t] && game.teams[t]->startPosX == x && game.teams[t]->startPosY == y)
+					c = (char)('0' + t);
+			row += c;
+		}
+		std::cout << row << std::endl;
+	}
+	return 0;
+}
+
+// Headless tooling (AI wheat-protection eyeball): run the Cortex wheat scan over
+// one team's territory on a freshly-loaded map and print the checkerboard it
+// WOULD paint, swept over the open-margin range N=0..2. No Orders are emitted —
+// this is the isolated geometry/reconcile core (ai/cortex/CortexWheat.*).
+//
+// A loaded .map has no colony and is fully fogged, so this differs from the live
+// path in two debug-only ways, both documented inline: fog is bypassed
+// (ignoreFOW), and the territory region is faked as the start/colony bounding box
+// padded generously (the live path uses the real colony bbox + margin).
+static int dumpWheatPlan(const std::string& mapName, int team)
+{
+	using namespace GAGCore;
+	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "dump-wheat: cannot open " << mapName << std::endl;
+		delete stream;
+		return 1;
+	}
+	Game game(NULL);
+	bool ok = game.load(stream);
+	delete stream;
+	if (!ok)
+	{
+		std::cerr << "dump-wheat: failed to load " << mapName << std::endl;
+		return 1;
+	}
+
+	Map& map = game.map;
+	const int w = map.getW();
+	const int h = map.getH();
+	const int teamCount = game.mapHeader.getNumberOfTeams();
+	if (team < 0 || team >= teamCount || game.teams[team] == NULL)
+	{
+		std::cerr << "dump-wheat: team " << team << " out of range (teams=" << teamCount << ")" << std::endl;
+		return 1;
+	}
+
+	Team* tm = game.teams[team];
+	const Uint32 teamMask = Team::teamNumberToMask(team);
+
+	// Consumer seeds = feeding-building (inn) tiles; the colony bounding box grows
+	// over every real building. A freshly-loaded .map usually has no buildings, so
+	// fall back to the team start position as the single consumer seed.
+	std::vector<int> seeds;
+	std::vector<bool> seedBit(static_cast<size_t>(w) * h, false);
+	int bbMinX = w, bbMinY = h, bbMaxX = -1, bbMaxY = -1;
+	for (int i = 0; i < Building::MAX_COUNT; i++)
+	{
+		Building* b = tm->myBuildings[i];
+		if (b == NULL || b->buildingState == Building::DEAD)
+			continue;
+		if (b->posX < bbMinX) bbMinX = b->posX;
+		if (b->posX > bbMaxX) bbMaxX = b->posX;
+		if (b->posY < bbMinY) bbMinY = b->posY;
+		if (b->posY > bbMaxY) bbMaxY = b->posY;
+		if (b->type && b->type->canFeedUnit)
+		{
+			const int idx = static_cast<int>(map.coordToIndex(b->posX, b->posY));
+			seeds.push_back(idx);
+			seedBit[idx] = true;
+		}
+	}
+	const int startX = tm->startPosX;
+	const int startY = tm->startPosY;
+	if (startX < bbMinX) bbMinX = startX;
+	if (startX > bbMaxX) bbMaxX = startX;
+	if (startY < bbMinY) bbMinY = startY;
+	if (startY > bbMaxY) bbMaxY = startY;
+	if (seeds.empty())
+	{
+		const int idx = static_cast<int>(map.coordToIndex(startX, startY));
+		seeds.push_back(idx);
+		seedBit[idx] = true;
+	}
+
+	// Fake territory region: the start/colony bbox padded enough to reach a
+	// starter field across its land gap (live path uses the colony bbox + a
+	// smaller WHEAT_REGION_MARGIN instead).
+	const int DEBUG_REGION_HALF = 18;
+	int boxMinX = bbMinX - DEBUG_REGION_HALF;
+	int boxMinY = bbMinY - DEBUG_REGION_HALF;
+	int boxMaxX = bbMaxX + DEBUG_REGION_HALF;
+	int boxMaxY = bbMaxY + DEBUG_REGION_HALF;
+	if (boxMinX < 0) boxMinX = 0;
+	if (boxMinY < 0) boxMinY = 0;
+	if (boxMaxX > w - 1) boxMaxX = w - 1;
+	if (boxMaxY > h - 1) boxMaxY = h - 1;
+
+	std::cout << "Wheat-plan dump " << mapName << " : " << w << "x" << h
+	          << ", team " << team << " start=(" << startX << "," << startY << ")"
+	          << ", consumer seeds=" << seeds.size()
+	          << ", region=(" << boxMinX << "," << boxMinY << ")-(" << boxMaxX << "," << boxMaxY << ")"
+	          << " [fog bypassed]" << std::endl;
+	std::cout << "  legend: ~=water #=blocked .=land c=corn(unreached) o=open-margin"
+	             " +=harvest-half X=forbidden S=seed " << team << "=start" << std::endl;
+
+	for (int N = 0; N <= 2; N++)
+	{
+		Cortex::WheatScanResult r = Cortex::scanWheatForbidden(
+			map, teamMask, team, seeds,
+			boxMinX, boxMinY, boxMaxX, boxMaxY,
+			/*openMargin=*/N, /*ignoreFOW=*/true, /*wantDebug=*/true);
+
+		std::cout << "=== team " << team << ", N=" << N << " ===  field=" << r.fieldTileCount
+		          << " components=" << r.componentCount << " open=" << r.openCount
+		          << " forbidden=" << r.forbiddenCount
+		          << " add=" << r.addCount << " del=" << r.delCount << std::endl;
+
+		for (int y = boxMinY; y <= boxMaxY; y++)
+		{
+			std::string row;
+			for (int x = boxMinX; x <= boxMaxX; x++)
+			{
+				const int idx = static_cast<int>(map.coordToIndex(x, y));
+				const Uint8 cls = r.classOf.empty() ? (Uint8)Cortex::WC_NONE : r.classOf[idx];
+				char c;
+				if (x == startX && y == startY)            c = (char)('0' + team);
+				else if (seedBit[idx])                     c = 'S';
+				else if (cls == Cortex::WC_OPEN_MARGIN)    c = 'o';
+				else if (cls == Cortex::WC_FORBIDDEN)      c = 'X';
+				else if (cls == Cortex::WC_CHECKER_OPEN)   c = '+';
+				else if (map.getRessource(x, y).type == CORN) c = 'c';
+				else if (map.isWater(x, y))                c = '~';
+				else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
+				else                                       c = '.';
+				row += c;
+			}
+			std::cout << row << std::endl;
+		}
+		std::cout << std::endl;
+	}
+	return 0;
+}
+#endif  // !YOG_SERVER_ONLY
+
 int Glob2::run(int argc, char *argv[])
 {
 	srand(time(NULL));
@@ -203,6 +421,27 @@ int Glob2::run(int argc, char *argv[])
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
+
+#ifndef YOG_SERVER_ONLY
+	// Headless tooling hook (AI wheat-protection sanity check): -dump-resources <map>
+	for (int ai = 1; ai + 1 < argc; ai++)
+		if (strcmp(argv[ai], "-dump-resources") == 0)
+		{
+			int ret = dumpResources(argv[ai + 1]);
+			delete globalContainer;
+			return ret;
+		}
+		else if (strcmp(argv[ai], "-dump-wheat") == 0)
+		{
+			// -dump-wheat <map> [team]; team defaults to 0.
+			int team = 0;
+			if (ai + 2 < argc && argv[ai + 2][0] >= '0' && argv[ai + 2][0] <= '9')
+				team = atoi(argv[ai + 2]);
+			int ret = dumpWheatPlan(argv[ai + 1], team);
+			delete globalContainer;
+			return ret;
+		}
+#endif  // !YOG_SERVER_ONLY
 
 	if ( SDLNet_Init() < 0 )
 	{
@@ -279,7 +518,7 @@ int Glob2::run(int argc, char *argv[])
 			{
 				CampaignMainMenu ccs;
 				int rccs=ccs.execute(globalContainer->gfx, 40);
-				if(rccs == -1)
+				if(rccs == Screen::QUIT_APPLICATION)
 				{
 					isRunning = false;
 				}
@@ -402,7 +641,14 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-#ifdef __APPLE__
+	// Line-buffer stderr/stdout so abort() and assert failures don't swallow
+	// the last log line. macOS block-buffers redirected stdio, and abort()
+	// is not required to flush — without this, "fprintf(stderr, ...) ; abort()"
+	// loses the message whenever stderr is a redirected file.
+	setvbuf(stderr, NULL, _IOLBF, 0);
+	setvbuf(stdout, NULL, _IOLBF, 0);
+
+#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY)
 	/* SDL has this annoying "feature" of setting working directory to parent
 	   of bundle during static initialization.  We want to set it back to the
 	   main bundle directory so we can find our Resources directory. */
@@ -412,11 +658,11 @@ int main(int argc, char *argv[])
 	assert(mainBundleURL);
 	CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
 	assert(cfStringRef);
-	
+
 	char path[MAXPATHLEN];
 	CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
 	chdir(path);
-	
+
 	CFRelease(mainBundleURL);
 	CFRelease(cfStringRef);
 #endif

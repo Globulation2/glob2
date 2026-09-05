@@ -92,25 +92,31 @@ namespace GAGGUI
 		mbs->dispatchPaint();
 	
 		SDL_Event event;
-		while(mbs->endValue<0)
+		bool quitApplication = false;
+		while(mbs->endValue<0 && !quitApplication)
 		{
 			Uint64 time = SDL_GetTicks64();
 			while (SDL_PollEvent(&event))
 			{
 				if (event.type==SDL_QUIT)
+				{
+					quitApplication = true;
 					break;
+				}
 				//Manual integration of cmd+q and alt f4
 				if(event.type == SDL_KEYDOWN)
 				{
 #					ifdef USE_OSX
 					if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
 					{
+						quitApplication = true;
 						break;
 					}
 #					endif
 #					ifdef USE_WIN32
 					if(event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 					{
+						quitApplication = true;
 						break;
 					}
 #					endif
@@ -118,6 +124,8 @@ namespace GAGGUI
 
 				mbs->translateAndProcessEvent(&event);
 			}
+			if (quitApplication)
+				break;
 			mbs->dispatchPaint();
 			parentCtx->drawSurface((int)0, (int)0, background);
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
@@ -127,11 +135,16 @@ namespace GAGGUI
 		}
 	
 		int retVal;
-		if (mbs->endValue>=0)
+		if (quitApplication)
+		{
+			repostQuitEvent();
+			retVal=-1;
+		}
+		else if (mbs->endValue>=0)
 			retVal=mbs->endValue;
 		else
 			retVal=-1;
-	
+
 		// clean up
 		delete mbs;
 		

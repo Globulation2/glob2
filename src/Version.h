@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __VERSION_H
-#define __VERSION_H
+#pragma once
 
 // This is the version of map and savegame format, and all of the recorded datas on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 83
+#define VERSION_MINOR 88
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -86,6 +85,11 @@
 //beta5:
 // version 82 integrated new map script system
 // version 83 added a description to campaigns
+// version 84 dropped per-unit skinName (skin is now derived from typeNum)
+// version 85 added Bullet::ticksInitial to the saved file
+// version 86 widened BasePlayer::playerID from Uint16 to Uint32 in the saved file
+// version 87 widened the replay inter-order step counter from Uint16 to Uint32
+// version 88 added the per-team Map::exploredArea to saved games
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parrallel to change of the VERSION_MINOR above
@@ -101,4 +105,3 @@
 // version 27 reordered the NetMessages so that reverse compatibility with future game versions can be done, added random seed in GameHeader
 // version 28 Nicowar's behavior was changed
 
-#endif

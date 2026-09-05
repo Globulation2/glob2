@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
-#ifndef CAMPAIGN_MENU_SCREEN_H
-#define CAMPAIGN_MENU_SCREEN_H
+#pragma once
 
 #include "Campaign.h"
 #include "Glob2Screen.h"
@@ -20,7 +19,6 @@ class CampaignMenuScreen : public Glob2Screen
 public:
 	CampaignMenuScreen(const std::string& name);
 	void onAction(Widget *source, Action action, int par1, int par2);
-	std::string getMissionName();
 	void setNewCampaign();
 	enum
 	{
@@ -33,7 +31,7 @@ private:
 	/// Title of the screen
 	Text* title;
 	/// The exit to menuscreen button
-	Button* exit;
+	Button* exitButton;
 	/// The "start mission" buttion
 	Button* startMission;
 
@@ -49,7 +47,12 @@ private:
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 
+	//! Rebuild the displayed mission list from the current campaign state.
+	void repopulateAvailableMissions();
+
+	//! The campaign entry for the currently selected list row, or nullptr when
+	//! nothing is selected (or the selected name no longer maps to an unlocked map).
+	CampaignMapEntry* getSelectedMission();
 };
 
 
-#endif

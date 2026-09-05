@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __MARSHALING_H
-#define __MARSHALING_H
+#pragma once
 
 #include <SDL.h>
 #include <SDL_endian.h>
@@ -82,5 +81,4 @@ inline Sint8 getSint8(const Uint8 *data, int pos)
 	return *(((Sint8 *)data)+pos);
 }
 
-#endif
  

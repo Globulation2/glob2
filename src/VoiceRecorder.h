@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
 
-#ifndef __VOICE_RECORDER_H
-#define __VOICE_RECORDER_H
+// This file is part of Globulation 2, a free software real-time strategy game
+
+#pragma once
 
 #include <queue>
 #include <SDL.h>
@@ -65,4 +66,3 @@ public:
 	//! Return the next voice data order from the internal queue
 	std::shared_ptr<OrderVoiceData> getNextOrder(void);
 };
-#endif

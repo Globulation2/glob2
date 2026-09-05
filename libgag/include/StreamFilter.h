@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __STREAMFILTER_H
-#define __STREAMFILTER_H
+#pragma once
 
 #include "StreamBackend.h"
 
@@ -35,5 +34,3 @@ namespace GAGCore
 		virtual bool isEndOfStream() { return false; }
 	};
 }
-
-#endif

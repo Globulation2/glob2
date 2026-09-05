@@ -27,7 +27,14 @@ format_variables = assemble_format_variables(variables)
 compare_variables = assemble_compare_variables(variables)
 get_function_defines = assemble_get_function_definitions(variables)
 
-hcode = """
+# Payload-free events collapse to the DECLARE/DEFINE_EMPTY_MULTIPLAYER_GAME_EVENT
+# macros so the whole skeleton stays a single (class, enum tag) row — see CS-340.
+# Events that carry data still emit the full hand-written skeleton.
+if vn == 0:
+    hcode = "DECLARE_EMPTY_MULTIPLAYER_GAME_EVENT(mname)\n"
+    scode = "DEFINE_EMPTY_MULTIPLAYER_GAME_EVENT(mname, tname)\n"
+else:
+    hcode = """
 ///mname
 class mname : public MultiplayerGameEvent
 {
@@ -40,24 +47,24 @@ public:
 
     ///Returns a formatted version of the event
     std::string format() const;
-    
+
     ///Compares two MultiplayerGameEvent
     bool operator==(const MultiplayerGameEvent& rhs) const;
 """
-hcode+=declare_functions
-hcode+=declare_variables
-hcode+="""};
+    hcode+=declare_functions
+    hcode+=declare_variables
+    hcode+="""};
 
 
 
 """
 
-scode=""
+    scode=""
 
-scode+="mname::%s\n" % constructor
-scode+=initialize_variables
-scode+="{\n}\n\n\n\n"
-scode+="""Uint8 mname::getEventType() const
+    scode+="mname::%s\n" % constructor
+    scode+=initialize_variables
+    scode+="{\n}\n\n\n\n"
+    scode+="""Uint8 mname::getEventType() const
 {
     return tname;
 }
@@ -84,7 +91,7 @@ bool mname::operator==(const MultiplayerGameEvent& rhs) const
 
 """
 
-scode += get_function_defines
+    scode += get_function_defines
 
 
 lines = readLines("MultiplayerGameEvent.h")

@@ -7,11 +7,28 @@
 #include <StringTable.h>
 #include <GUIButton.h>
 #include <GUIText.h>
-#include <GUINumber.h>
+#include <optional>
 #include <sstream>
 
+namespace
+{
+	/// Ally team numbers in GameHeader are 1-based (its constructor assigns
+	/// team i the value i+1), while the ally-team widget rows are 0-based.
+	/// A malformed or uninitialized header can carry values outside
+	/// [1, teamCount] -- notably 0, which would underflow to setIndex(-1)
+	/// and throw inside MultiTextButton::setIndex. Map any such value to a
+	/// defined widget state: the first entry (index 0).
+	int allyTeamNumberToWidgetIndex(Uint8 allyTeamNumber, int teamCount)
+	{
+		const int index = static_cast<int>(allyTeamNumber) - 1;
+		if (index < 0 || index >= teamCount)
+			return 0;
+		return index;
+	}
+}
+
 CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)
-	:	gameHeader(gameHeader), oldGameHeader(gameHeader), mapHeader(mapHeader)
+	:	gameHeader(gameHeader), oldGameHeader(gameHeader)
 {
 	ok = new TextButton(440, (readOnly ? 420 : 360), 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
@@ -25,15 +42,6 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Other Options]"));
 	addWidget(title);
 
-	playerNames=new Text*[32];
-	color=new ColorButton*[32];
-	allyTeamNumbers=new MultiTextButton*[32];
-	for(int i=0; i<Team::MAX_COUNT; ++i)
-	{
-		playerNames[i] = NULL;
-		color[i] = NULL;
-	}
-	
 	for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 	{
 		playerNames[i] = new Text(125, 60+25*i, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", gameHeader.getBasePlayer(i).name);
@@ -46,7 +54,9 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 			s<<j+1;
 			allyTeamNumbers[i]->addText(s.str());
 		}
-		allyTeamNumbers[i]->setIndex(gameHeader.getAllyTeamNumber(gameHeader.getBasePlayer(i).teamNumber)-1);
+		allyTeamNumbers[i]->setIndex(allyTeamNumberToWidgetIndex(
+			gameHeader.getAllyTeamNumber(gameHeader.getBasePlayer(i).teamNumber),
+			mapHeader.getNumberOfTeams()));
 
 		color[i]->clearColors();
 		color[i]->addColor(mapHeader.getBaseTeam(gameHeader.getBasePlayer(i).teamNumber).color);
@@ -113,29 +123,32 @@ void CustomGameOtherOptions::onAction(Widget *source, Action action, int par1, i
 	{
 		if(par1>=200 && par1<300)
 		{
-			int team = -1;
-			int nth = 0;
-			int n = 0;
-			///Find which team number this widget is for
+			///Find which player row this widget is for. The lookup can
+			///genuinely fail (e.g. a stale event for a widget of a player
+			///slot that no longer exists); there is nothing to update then.
+			std::optional<int> playerRow;
 			for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 			{
 				if(allyTeamNumbers[i] == source)
 				{
-					team = gameHeader.getBasePlayer(i).teamNumber;
-					nth = allyTeamNumbers[i]->getIndex();
-					n = nth+1;
+					playerRow = i;
 					break;
 				}
 			}
+			if(!playerRow)
+				return;
+			const int team = gameHeader.getBasePlayer(*playerRow).teamNumber;
+			const int allyIndex = allyTeamNumbers[*playerRow]->getIndex();
 			///Adjust all widgets that have this team number
 			for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 			{
 				if(gameHeader.getBasePlayer(i).teamNumber == team)
 				{
-					allyTeamNumbers[i]->setIndex(nth);
+					allyTeamNumbers[i]->setIndex(allyIndex);
 				}
 			}
-			gameHeader.setAllyTeamNumber(team, n);
+			///Widget indices are 0-based; ally team numbers are 1-based
+			gameHeader.setAllyTeamNumber(team, allyIndex+1);
 		}
 		else if(par1 == TEAMSFIXED)
 		{
@@ -156,27 +169,7 @@ void CustomGameOtherOptions::onAction(Widget *source, Action action, int par1, i
 
 void CustomGameOtherOptions::updateGameHeaderWinningConditions()
 {
-	std::list<std::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
-	winningConditions = WinningCondition::getDefaultWinningConditions();
-	
-	//Update the prestige condition
-	for(std::list<std::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
-	{
-		if((*i)->getType() == WCPrestige)
-		{
-			//If we need to remove it, do so
-			if(!prestigeWinEnabled->getState())
-			{
-				winningConditions.erase(i);
-				break;
-			}
-			//Otherwise update it
-			else
-			{
-				break;
-			}
-		}
-	}
+	WinningCondition::setPrestigeWinCondition(gameHeader.getWinningConditions(), prestigeWinEnabled->getState());
 }
 
 

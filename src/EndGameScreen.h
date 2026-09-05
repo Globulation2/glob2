@@ -2,8 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
-#ifndef __END_GAME_SCREEN_H
-#define __END_GAME_SCREEN_H
+#pragma once
 
 #include "GameGUI.h"
 #include "Glob2Screen.h"
@@ -64,6 +63,18 @@ struct TeamEntry
 
 class EndGameScreen : public Glob2Screen
 {
+public:
+	//! Return values passed by the screen's buttons to onAction
+	enum ButtonId
+	{
+		//! stat selector buttons use their EndOfGameStat::Type as id
+		STAT_BUTTON_FIRST = 0,
+		//! per-team toggle buttons use TEAM_TOGGLE_FIRST + row index
+		TEAM_TOGGLE_FIRST = EndOfGameStat::TYPE_NB_STATS,
+		QUIT = 38,
+		SAVE_REPLAY = 39
+	};
+
 protected:
 	std::vector<Text*> names;
 	std::vector<TeamEntry> teams;
@@ -74,6 +85,9 @@ protected:
 protected:
 	//! resort players
 	void sortAndSet(EndOfGameStat::Type type);
+
+	//! Translated short name of a stat type, used for its selector button and the graph label
+	static std::string statTypeName(EndOfGameStat::Type type);
 	
 	//! pointer to the game, necessary for correctly saving replays
 	Game *game;
@@ -87,4 +101,3 @@ private:
 	void saveReplay(const char *dir, const char *ext);
 };
 
-#endif

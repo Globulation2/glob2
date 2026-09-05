@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __MAIN_MENU_SCREEN_H
-#define __MAIN_MENU_SCREEN_H
+#pragma once
 
 #include "Glob2Screen.h"
 
@@ -30,4 +29,3 @@ public:
 	static int menu(void);
 };
 
-#endif

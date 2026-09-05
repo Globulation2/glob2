@@ -1,6 +1,0 @@
-# Legacy macOS bundle tool definitions.
-# These functions (TOOL_BUNDLE, TOOL_WRITE_VAL) are unused — actual bundle
-# building is handled by scons/bundle.py, called from SConstruct.
-# The original code used deprecated SCons APIs (SharedCheck, ProgScan,
-# SCons.Util.is_List, SCons.Node.FS.default_fs) that no longer exist in
-# modern SCons, so the dead code has been removed to avoid import errors.

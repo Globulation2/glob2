@@ -2,8 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __LAN_MENU_SCREEN_H
-#define __LAN_MENU_SCREEN_H
+#pragma once
 
 #include "Glob2Screen.h"
 
@@ -15,7 +14,6 @@ public:
 	LANMenuScreen();
 	virtual ~LANMenuScreen();
 	void onAction(Widget *source, Action action, int par1, int par2);
-	void paint(int x, int y, int w, int h);
 	static int menu(void);
 	
 	enum
@@ -36,4 +34,3 @@ public:
 	};
 };
 
-#endif

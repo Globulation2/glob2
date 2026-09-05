@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GLOB2_SCREEN_H
-#define __GLOB2_SCREEN_H
+#pragma once
 
 #include <GUIBase.h>
 #include <GUITabScreen.h>
@@ -34,5 +33,4 @@ private:
 	int randomSeed;
 };
 
-#endif
 

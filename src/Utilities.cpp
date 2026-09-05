@@ -54,7 +54,6 @@ void setSyncRandSeed()
 {
 	///Sets the default seed
 	randomGenerator.seed();
-	//printf("ini rand=(%d, %d, %d).\n", randa, randb, randc);
 }
 void setSyncRandSeed(Uint32 seed)
 {
@@ -71,28 +70,6 @@ namespace Utilities
 	bool ptInRect(int x, int y, SDL_Rect *r)
 	{
 		return ( (x>=r->x) && (y>=r->y) && (x<=r->x+r->w) && (y<=r->y+r->h) );
-	}
-
-	void rectClipRect(int &x, int &y, int &w, int &h, SDL_Rect &r)
-	{
-		if (x<r.x)
-		{
-			w-=r.x-x;
-			x=r.x;
-		}
-		if (y<r.y)
-		{
-			h-=r.y-y;
-			y=r.y;
-		}
-		if (w+x>r.x+r.w)
-			w=r.x+r.w-x;
-		if (h+y>r.y+r.h)
-			h=r.y+r.h-y;
-		if (w<0)
-			w=0;
-		if (h<0)
-			h=0;
 	}
 
 	void rectExtendRect(SDL_Rect *rs, SDL_Rect *rd)
@@ -456,7 +433,22 @@ namespace Utilities
 		}
 		return tokenNumber;
 	}
-	
+
+	std::string stripPrefix(const std::string& s, const std::string& prefix)
+	{
+		if (s.compare(0, prefix.size(), prefix) == 0)
+			return s.substr(prefix.size());
+		return s;
+	}
+
+	std::string stripSuffix(const std::string& s, const std::string& suffix)
+	{
+		if (s.size() >= suffix.size()
+			&& s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0)
+			return s.substr(0, s.size() - suffix.size());
+		return s;
+	}
+
 	void read(int fd, void *buf, size_t count)
 	{
 		char *ptr = (char *)buf;

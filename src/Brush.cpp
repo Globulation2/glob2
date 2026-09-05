@@ -5,7 +5,6 @@
 #include "BitArray.h"
 #include "GlobalContainer.h"
 #include "Map.h"
-#include <GraphicContext.h>
 
 BrushTool::BrushTool()
 {
@@ -18,15 +17,16 @@ void BrushTool::draw(int x, int y)
 {
 	if(addRemoveEnabled)
 	{
-		globalContainer->gfx->drawSprite(x+16, y, globalContainer->brush, 0);
-		globalContainer->gfx->drawSprite(x+64+16, y, globalContainer->brush, 1);
+		globalContainer->gfx->drawSprite(x+MODE_BUTTON_SPRITE_INSET, y, globalContainer->brush, 0);
+		globalContainer->gfx->drawSprite(x+MODE_BUTTON_WIDTH+MODE_BUTTON_SPRITE_INSET, y, globalContainer->brush, 1);
 		if (mode)
-			globalContainer->gfx->drawSprite(x+(static_cast<int>(mode)-1)*64+16, y, globalContainer->gamegui, 22);
+			globalContainer->gfx->drawSprite(x+(static_cast<int>(mode)-1)*MODE_BUTTON_WIDTH+MODE_BUTTON_SPRITE_INSET, y, globalContainer->gamegui, 22);
 	}
-	for (unsigned i=0; i<8; i++)
+	for (unsigned i=0; i<BRUSH_COUNT; i++)
 	{
-		int decX = (i%4)*32;
-		int decY = 32*(i/4)+36;
+		// The inverse of hitTest's figure-grid mapping.
+		int decX = (static_cast<int>(i)%FIGURE_COLUMNS)*FIGURE_CELL_SIZE;
+		int decY = (static_cast<int>(i)/FIGURE_COLUMNS)*FIGURE_CELL_SIZE+MODE_ROW_HEIGHT;
 		globalContainer->gfx->drawSprite(x+decX, y+decY, globalContainer->brush, 2+i);
 		if ((mode != MODE_NONE) && (figure == i))
 			globalContainer->gfx->drawSprite(x+decX, y+decY, globalContainer->gamegui, 22);
@@ -39,18 +39,17 @@ void BrushTool::handleClick(int x, int y)
 {
 	if (mode == MODE_NONE)
 		mode = MODE_ADD;
-	if (y>0 && x>0 && x<128)
+	const std::optional<Hit> hit = hitTest(x, y);
+	if (!hit)
+		return;
+	if (hit->kind == Hit::ModeButton)
 	{
-		if (y<36)
-		{
-			if(addRemoveEnabled)
-				mode = static_cast<Mode>((x/64)+1);
-		}
-		else if (y<36+64)
-		{
-			y -= 36;
-			figure = (y/32)*4 + ((x/32)%4);
-		}
+		if (addRemoveEnabled)
+			mode = static_cast<Mode>(hit->value);
+	}
+	else
+	{
+		setFigure(hit->value);
 	}
 }
 
@@ -125,134 +124,101 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 	*/
 }
 
-#define BRUSH_COUNT 8
-
 void BrushTool::setFigure(unsigned f)
 {
-	assert (figure < BRUSH_COUNT);
+	assert(f < BRUSH_COUNT);
 	figure = f;
 }
 
+//! Side length of each (square) brush figure, in map cells.
+static constexpr int BRUSH_DIM[BrushTool::BRUSH_COUNT] = { 1, 3, 3, 3, 4, 4, 3, 5 };
+
 int BrushTool::getBrushWidth(unsigned figure)
 {
-	int dim[BRUSH_COUNT] = { 1, 3, 3, 3, 4, 4, 3, 5};
 	assert(figure < BRUSH_COUNT);
-	return dim[figure];
+	return BRUSH_DIM[figure];
 }
 
 int BrushTool::getBrushHeight(unsigned figure)
 {
-	int dim[BRUSH_COUNT] = { 1, 3, 3, 3, 4, 4, 3, 5};
 	assert(figure < BRUSH_COUNT);
-	return dim[figure];
+	return BRUSH_DIM[figure];
 }
 
-int BrushTool::getBrushDimXMinus(unsigned figure)
-{
-	if (getBrushWidth(figure) % 2)
-		return getBrushWidth(figure) / 2;
-	else
-		return getBrushWidth(figure) / 2;
-}
-
-int BrushTool::getBrushDimXPlus(unsigned figure)
-{
-	if (getBrushWidth(figure) % 2)
-		return (getBrushWidth(figure) / 2) + 1;
-	else
-		return getBrushWidth(figure) / 2;
-}
-
-int BrushTool::getBrushDimYMinus(unsigned figure)
-{
-	if (getBrushHeight(figure) % 2)
-		return getBrushHeight(figure) / 2;
-	else
-		return getBrushHeight(figure) / 2;
-}
-
-int BrushTool::getBrushDimYPlus(unsigned figure)
-{
-	if (getBrushHeight(figure) % 2)
-		return (getBrushHeight(figure) / 2) + 1;
-	else
-		return getBrushHeight(figure) / 2;
-}
-/*
-int BrushTool::getBrushDimX(unsigned figure)
-{
-	if (getBrushWidth(figure) % 2)
-		return (getBrushWidth(figure) - 1) >> 1;
-	else
-		return getBrushWidth(figure) >> 1;
-}
-
-int BrushTool::getBrushDimY(unsigned figure)
-{
-	if (getBrushHeight(figure) % 2)
-		return (getBrushHeight(figure) - 1) >> 1;
-	else
-		return getBrushHeight(figure) >> 1;
-}*/
+// For odd widths the center cell counts on the Plus side, so Plus = ceil(w/2)
+// and Minus = floor(w/2). For even widths the brush is symmetric.
+int BrushTool::getBrushDimXMinus(unsigned figure) { return getBrushWidth(figure) / 2; }
+int BrushTool::getBrushDimXPlus(unsigned figure)  { return (getBrushWidth(figure) + 1) / 2; }
+int BrushTool::getBrushDimYMinus(unsigned figure) { return getBrushHeight(figure) / 2; }
+int BrushTool::getBrushDimYPlus(unsigned figure)  { return (getBrushHeight(figure) + 1) / 2; }
 
 
 bool BrushTool::getBrushValue(unsigned figure, int x, int y, int centerX, int centerY, int originalX, int originalY)
 {
-	int brush0[] = { 	1 };
-	int brush1[] = { 	0, 1, 0,
-						1, 1, 1,
-						0, 1, 0 };
-	int brush2[] = {	1, 0, 0,
-						0, 1, 0,
-						0, 0, 1, };
-	int brush3[] = {	0, 0, 1,
-						0, 1, 0,
-						1, 0, 0, };
-	/*int brush4[] = { 	1, 0, 1, 0, 1,
-						0, 1, 0, 1, 0,
-						1, 0, 1, 0, 1,
-						0, 1, 0, 1, 0,
-						1, 0, 1, 0, 1 };
-	int brush5[] = { 	1, 0, 1, 0, 1,
-						0, 0, 0, 0, 0,
-						1, 0, 1, 0, 1,
-						0, 0, 0, 0, 0,
-						1, 0, 1, 0, 1 };
-						*/
-	int brush4[] = { 	1, 0, 1, 0,
-						0, 1, 0, 1,
-						1, 0, 1, 0,
-						0, 1, 0, 1 };
-	int brush5[] = { 	1, 0, 1, 0,
-						0, 0, 0, 0,
-						1, 0, 1, 0,
-						0, 0, 0, 0 };
-	int brush6[] = { 	1, 1, 1,
-						1, 1, 1,
-						1, 1, 1 };
-	int brush7[] = {	1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1,
-						1, 1, 1, 1, 1 };
-	int *brushes[BRUSH_COUNT] = { brush0, brush1, brush2, brush3, brush4, brush5, brush6, brush7 };
-	
+	static constexpr int brush0[] = { 1 };
+	static constexpr int brush1[] = {
+		0, 1, 0,
+		1, 1, 1,
+		0, 1, 0,
+	};
+	static constexpr int brush2[] = {
+		1, 0, 0,
+		0, 1, 0,
+		0, 0, 1,
+	};
+	static constexpr int brush3[] = {
+		0, 0, 1,
+		0, 1, 0,
+		1, 0, 0,
+	};
+	static constexpr int brush4[] = {
+		1, 0, 1, 0,
+		0, 1, 0, 1,
+		1, 0, 1, 0,
+		0, 1, 0, 1,
+	};
+	static constexpr int brush5[] = {
+		1, 0, 1, 0,
+		0, 0, 0, 0,
+		1, 0, 1, 0,
+		0, 0, 0, 0,
+	};
+	static constexpr int brush6[] = {
+		1, 1, 1,
+		1, 1, 1,
+		1, 1, 1,
+	};
+	static constexpr int brush7[] = {
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1,
+	};
+	static constexpr const int* brushes[BRUSH_COUNT] = {
+		brush0, brush1, brush2, brush3, brush4, brush5, brush6, brush7,
+	};
+	// Brushes 4 and 5 are checkerboard patterns: their cells must be aligned to
+	// the parity of the stroke origin so neighbouring strokes tile seamlessly.
+	static constexpr bool needsParityAlignment[BRUSH_COUNT] = {
+		false, false, false, false, true, true, false, false,
+	};
+
 	assert(figure < BRUSH_COUNT);
 	int w = getBrushWidth(figure);
 	int h = getBrushHeight(figure);
 	assert(x < w);
 	assert(y < h);
-	
-	if ((figure == 4) || (figure == 5))
+
+	if (needsParityAlignment[figure])
 	{
-		// do alignment on specific brush (4 and 5)
-		if (centerX % 2 == originalX%2)
+		if (centerX % 2 == originalX % 2)
 			x++;
-		if (centerY % 2 == originalY%2)
+		if (centerY % 2 == originalY % 2)
 			y++;
 	}
-	
-	return (brushes[figure][(y%h) * getBrushWidth(figure) + (x%w)] != 0);
+
+	return (brushes[figure][(y % h) * getBrushWidth(figure) + (x % w)] != 0);
 }
 
 void BrushTool::setAddRemoveEnabledState(bool value)
@@ -267,8 +233,23 @@ BrushAccumulator::BrushAccumulator()
 	firstY=0;
 }
 
+//! Wrap a coordinate delta across the torus seam to the representative
+//! closest to zero. A single correction is enough because both operands
+//! are map coordinates, so the raw delta lies within (-mapDim, mapDim).
+static int wrapDeltaToNearest(int delta, int mapDim)
+{
+	if (delta < -(mapDim / 2))
+		return delta + mapDim;
+	if (delta > mapDim / 2)
+		return delta - mapDim;
+	return delta;
+}
+
 void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 {
+	// the first application defines the center, so its offset is zero
+	int px = 0;
+	int py = 0;
 	if (applications.size() == 0)
 	{
 		// init dimensions
@@ -282,28 +263,18 @@ void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 	else
 	{
 		// consider brush relative to center
-		int px = brush.x - dim.centerX;
-		int py = brush.y - dim.centerY;
-		int mapW = map->getW();
-		int mapH = map->getH();
-		if (px < -(mapW/2))
-			px += mapW;
-		else if (px > (mapW/2))
-			px -= mapW;
-		if (py < -(mapH/2))
-			py += mapH;
-		else if (py > (mapH/2))
-			py -= mapH;
-		
+		px = wrapDeltaToNearest(brush.x - dim.centerX, map->getW());
+		py = wrapDeltaToNearest(brush.y - dim.centerY, map->getH());
+
 		// extend dimensions
 		dim.minX = std::min(dim.minX, px - BrushTool::getBrushDimXMinus(brush.figure));
 		dim.maxX = std::max(dim.maxX, px + BrushTool::getBrushDimXPlus(brush.figure));
 		dim.minY = std::min(dim.minY, py - BrushTool::getBrushDimYMinus(brush.figure));
 		dim.maxY = std::max(dim.maxY, py + BrushTool::getBrushDimYPlus(brush.figure));
 	}
-	
+
 	// and add to vector
-	applications.push_back(brush);
+	applications.push_back(AppliedBrush{brush, px, py});
 }
 
 bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim, const Map *map)
@@ -324,28 +295,22 @@ bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim
 		// fill array
 		for (size_t i=0; i<applications.size(); ++i)
 		{
-			for (int y=0; y<BrushTool::getBrushHeight(applications[i].figure); y++)
+			const BrushApplication &brush = applications[i].brush;
+			const int brushW = BrushTool::getBrushWidth(brush.figure);
+			const int brushH = BrushTool::getBrushHeight(brush.figure);
+			// Array position of the brush's top-left cell, from the offset
+			// stored when this application grew the bounding box — so the
+			// whole brush footprint is inside the array by construction.
+			const int arrayX0 = applications[i].offsetX - dim->minX - BrushTool::getBrushDimXMinus(brush.figure);
+			const int arrayY0 = applications[i].offsetY - dim->minY - BrushTool::getBrushDimYMinus(brush.figure);
+			assert(arrayX0 >= 0 && arrayX0 + brushW <= arrayW);
+			assert(arrayY0 >= 0 && arrayY0 + brushH <= arrayH);
+			for (int y=0; y<brushH; y++)
 			{
-				for (int x=0; x<BrushTool::getBrushWidth(applications[i].figure); x++)
+				for (int x=0; x<brushW; x++)
 				{
-					int px = applications[i].x - dim->centerX;
-					int py = applications[i].y - dim->centerY;
-					int mapW = map->getW();
-					int mapH = map->getH();
-					if (px < -(mapW/2))
-						px += mapW;
-					else if (px > (mapW/2))
-						px -= mapW;
-					if (py < -(mapH/2))
-						py += mapH;
-					else if (py > (mapH/2))
-						py -= mapH;
-					
-					int arrayX = px - dim->minX - BrushTool::getBrushDimXMinus(applications[i].figure) + x;
-					int arrayY = py - dim->minY - BrushTool::getBrushDimYMinus(applications[i].figure) + y;
-					
-					size_t arrayPos = static_cast<size_t>(arrayY * arrayW + arrayX);
-					if (BrushTool::getBrushValue(applications[i].figure, x, y, applications[i].x, applications[i].y, firstX, firstY))
+					size_t arrayPos = static_cast<size_t>((arrayY0 + y) * arrayW + (arrayX0 + x));
+					if (BrushTool::getBrushValue(brush.figure, x, y, brush.x, brush.y, firstX, firstY))
 						array->set(arrayPos, true);
 				}
 			}

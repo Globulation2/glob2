@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GUIBASE_H
-#define __GUIBASE_H
+#pragma once
 
 #include "GAGSys.h"
 #include "GraphicContext.h"
@@ -40,7 +39,6 @@ namespace GAGGUI
 	{
 		SCREEN_CREATED,	// after first draw
 		SCREEN_DESTROYED,	// after endExectue
-		SCREEN_RESIZED,
 	
 		BUTTON_GOT_MOUSEOVER,
 		BUTTON_LOST_MOUSEOVER,
@@ -179,11 +177,6 @@ namespace GAGGUI
 		 */
 
 		virtual void onSDLMouseWheel(SDL_Event* event) {assert(event->type == SDL_MOUSEWHEEL); }
-		/*! Called when an SDL_VIDEOEXPOSE event occurs.
-		 * \param event Caught SDL event
-		 */
-		virtual void onSDLVideoExpose(SDL_Event *event) { assert(event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_EXPOSED); }
-
 		/*! Called when an SDL_TEXTINPUT event occurs.
 		 * \param event Caught SDL event
 		 */
@@ -246,7 +239,10 @@ namespace GAGGUI
 	protected:
 		//! Compute the actual position from the layout informations
 		virtual void getScreenPos(int *sx, int *sy, int *sw, int *sh);
-		bool isPtInRect(int px, int py, int x, int y, int w, int h) { if ((px>x) && (py>y) && (px<x+w) && (py<y+h)) return true; else return false; }
+		//! Half-open on both axes: the top and left edges are inside, the bottom
+		//! and right edges are not. This makes abutting rectangles tile without
+		//! either overlapping or leaving a dead pixel line between them.
+		bool isPtInRect(int px, int py, int x, int y, int w, int h) { return (px>=x) && (py>=y) && (px<x+w) && (py<y+h); }
 		//! Screen that contains the widget
 	};
 	
@@ -276,6 +272,8 @@ namespace GAGGUI
 		virtual void onSDLMouseMotion(SDL_Event *event);
 	};
 	
+	void repostQuitEvent();
+
 	//! The screen is the widget container and has a background
 	class Screen
 	{
@@ -297,8 +295,16 @@ namespace GAGGUI
 		static bool scrollWheelEnabled;
 		
 	public:
+		//! Returned by execute() when the application itself is being quit
+		//! (window close, Cmd+Q on macOS, Alt+F4 on Windows). Produced by the
+		//! execute() event loop, not by endExecute(). Screens that run nested
+		//! screens must propagate it to their own caller so every menu level
+		//! unwinds and the process can exit.
+		static constexpr int QUIT_APPLICATION = -1;
+
+	public:
 		Screen();
-	
+
 		virtual ~Screen();
 	
 		//! Method called for each timer's tick
@@ -352,11 +358,12 @@ namespace GAGGUI
 	
 		//! Run the OverlayScreen, call Screen::execute with the correct DrawableSurface
 		virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);
+		//! Run modally, returning endValue or QUIT_APPLICATION.
+		//! Quit requests are re-posted for the enclosing event loop.
+		int executeModal(GAGCore::GraphicContext *parentCtx);
 		//! Call thisinstead of dispatch event
 		virtual void translateAndProcessEvent(SDL_Event *event);
 		//! Paint a part of the background of screen
 		virtual void paint(void);
 	};
 }
-
-#endif

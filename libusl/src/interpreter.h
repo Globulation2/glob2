@@ -1,5 +1,4 @@
-#ifndef INTERPRETER_H
-#define INTERPRETER_H
+#pragma once
 
 #include <stack>
 #include <vector>
@@ -53,4 +52,3 @@ struct Thread
 	void markForGC();
 };
 
-#endif // ndef INTERPRETER_H

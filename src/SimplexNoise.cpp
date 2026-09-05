@@ -39,9 +39,6 @@ namespace SimplexNoise {
 	};
 	*/
 
-	static const int F3D = (int)(256 * 1.0/3.0); // 1/3 in 256ths
-	static const int G3D = (int)(256 * 1.0/6.0); // 1/6 in 256ths
-
 	typedef unsigned char byte;
 #define FLOOR_MASK (~255)
 #define FRAC_MASK (255)

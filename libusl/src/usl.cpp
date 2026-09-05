@@ -1,7 +1,7 @@
 #include "usl.h"
 #include "code.h"
 #include "parser.h"
-#include "error.h"
+#include "position.h"
 #include "interpreter.h"
 #include "native.h"
 #include <iostream>
@@ -249,7 +249,8 @@ Scope* Usl::compile(const std::string& name, std::istream& stream)
 	#endif
 	
 	ScopePrototype* prototype = new ScopePrototype(&heap, root->prototype);
-	block.generateMembers(prototype, &debug, &heap);
+	CodeGen cg{&debug, &heap};
+	block.generateMembers(prototype, cg);
 	
 	Scope* scope = new Scope(&heap, prototype, root.get());
 	return scope;

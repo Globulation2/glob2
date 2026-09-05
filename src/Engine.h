@@ -2,18 +2,19 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __ENGINE_H
-#define __ENGINE_H
+#pragma once
 
 #include "Header.h"
 #include "GameGUI.h"
+#include <memory>
+#include <optional>
 #include <string>
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGame.h"
-#include "CPUStatisticsManager.h"
+#include "ChecksumSidecar.h"
 
 
 class MultiplayersJoin;
@@ -28,8 +29,15 @@ class Engine
 public:
 	//! Constructor
 	Engine();
-	//! Destructor
+	//! Destructor. Also finalizes globalContainer->replayWriter (which
+	//! initGame allocated), writing the replay file's NullOrder terminator.
 	~Engine();
+
+	// Engine uniquely owns its net engine and checksum sidecar (unique_ptr
+	// members already make the class non-copyable); deleted explicitly for
+	// documentation value.
+	Engine(const Engine&) = delete;
+	Engine& operator=(const Engine&) = delete;
 
 	/// Initiates a campaign map. This first loads the MapHeader, and then generates a GameHeader for
 	/// the campaign map. It then informs GameGUI that this map is a campaign, and if the player wins
@@ -55,7 +63,11 @@ public:
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
 
-	/// Load a replay
+	/// Load a replay. Commits the global "we are replaying" state
+	/// (globalContainer->replaying, replayFileName, replayReader) only after
+	/// the replay file has been successfully parsed; on any failure the
+	/// global replay state is cleared so the next game starts as a normal
+	/// game. Returns EE_NO_ERROR or EE_CANT_LOAD_MAP.
 	int loadReplay(const std::string &fileName);
 	
 	///Tells whether a map matching mapHeader is located on this system
@@ -91,6 +103,12 @@ private:
 	/// needed for when your loading a save game over the internet
 	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false);
 
+	/// Reset globalContainer's replay state (replaying flag, replay file name,
+	/// replay reader) so the next game session starts as a normal game.
+	/// Called on every loadReplay failure path — including when the caller
+	/// (e.g. the -replay command line path) set `replaying` before calling.
+	void clearReplayState();
+
 	/// Prepares a GameHeader for the given mapHeader as a campaign map
 	/// Campaign maps have one player per team, and the player can be
 	/// either a human or an AI. AI's are all AINull. When the human
@@ -102,27 +120,94 @@ private:
 	bool loadGame(const std::string &filename);
 	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
 	void finalAdjustements(void);
+	void showMapLoadError();
+	void saveInitialGameStateOrExit(const std::string& path, const std::string& label, const std::string& mapName);
 
-	///This function will choose a random map from the available maps
-	MapHeader chooseRandomMap();
+	/// Choose a random map from the available maps. Returns std::nullopt
+	/// if maps/ is empty or unreadable (caller must surface this as a
+	/// fatal config error). Throws std::ios_base::failure if a randomly
+	/// selected .map file is malformed (caller's retry loop picks again).
+	/// See definition in EngineLoaders.cpp for the full behavior contract.
+	std::optional<MapHeader> chooseRandomMap();
 	
 	///This function prepares a random set of AI's in a GameHeader, first player is always human + ai team
 	GameHeader createRandomGame(int numberOfTeams);
 
+	/// Body of the outer "play one game and possibly load another" loop in run().
+	/// Sets doRunOnceAgain=true to loop again (e.g. user picked a new save), false to return.
+	void runOneGameSession(bool& doRunOnceAgain);
+
+	// runOneGameSession phases
+
+	struct MainLoopState
+	{
+		int speed;
+		int nextGuiStep;      ///< Fast-forward draw countdown
+		Sint64 needToBeTime;  ///< Expected elapsed time for pacing, in ms
+		Uint64 startTime;
+		unsigned frameNumber;
+		bool wasReadyLastTick;
+	};
+
+	void updateTickSpeedAndDrawCadence(MainLoopState& st);
+
+	/// Headless / scripted-test polling: under --nox automaticEndingGame, flip
+	/// gui.isRunning=false once a local end condition fires. Records
+	/// automaticGameEndTick.
+	void pollAutomaticEndingConditions();
+
+	/// Push this tick's local + AI orders into the net layer and (if the
+	/// previous tick committed) call advanceStep + write the checksum sidecar.
+	/// Called only from inside the !hardPause branch.
+	void gatherAndAdvanceOrders(bool wasReadyLastTick);
+
+	/// Once allOrdersRecieved() is true for this tick, validate checksums,
+	/// execute the matched orders, pump the replay reader, and run
+	/// game.syncStep. Called only from inside the !hardPause branch.
+	void executeOrdersAndStep(bool readyNow);
+
+	void drawAndPaceFrame(MainLoopState& st);
+
+	/// If the GUI requested a clean exit, drain remaining local orders and
+	/// flush the net layer. Returns true if the engine loop should break.
+	bool handleExitRequest();
+
+	/// Print the headless end-of-game summary plus the GLOB2_GAME_END
+	/// key=value line that the AI-trainer pipeline scrapes. Caller checks
+	/// automaticEndingGame.
+	void printAutomaticEndingSummary();
+
+	/// Dump each team's 512-tick economic/military timeline plus a final
+	/// detailed snapshot. Gated by GLOB2_TEAM_TIMELINE; used to compare two
+	/// AIs' trajectories after a single headless game.
+	void printTeamTimeline();
+
+	/// Tell the YOG multiplayer session how this match ended (won, lost,
+	/// quit). Caller checks `multiplayer` is non-null.
+	void reportMultiplayerResult();
+
+	/// Close cross-replay sinks (sidecar, dataset) and tear down the network
+	/// + multiplayer state. The Engine itself stays alive for a possible
+	/// reload (see prepareNextGameSession).
+	void teardownSession();
+
+	/// Decide whether run() should loop back into runOneGameSession (a
+	/// load-game request was armed in the GUI) or return to the menu. Always
+	/// clears toLoadGameFileName so a follow-up pass doesn't re-trigger it.
+	void prepareNextGameSession(bool& doRunOnceAgain);
+
 	//! The GUI, contains the whole game also
 	GameGUI gui;
 	//! The netGame, take care of order queuing and dispatching
-	NetEngine *net;
+	std::unique_ptr<NetEngine> net;
+	//! Checksum sidecar writer for cross-replay debugging. Destroying it
+	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
+	//! flushed even when run() is never reached after initGame allocated it.
+	std::unique_ptr<ChecksumSidecarWriter> checksumSidecar;
 	//! The MultiplayerGame, recieves orders from across a network
 	shared_ptr<MultiplayerGame> multiplayer;
 
-	CPUStatisticsManager cpuStats;
-
 	Uint64 automaticGameStartTick, automaticGameEndTick;
-
-	FILE *logFile;
 
 	static const bool verbose = false;
 };
-
-#endif

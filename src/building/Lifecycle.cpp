@@ -3,38 +3,32 @@
 
 #include <list>
 #include <math.h>
+#include <sstream>
 #include <Stream.h>
 #include <stdlib.h>
-#include <algorithm>
-#include <climits>
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "EngineTiming.h"
+#include "FileFormatVersions.h"
 #include "Game.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "Order.h"
 #include "Bullet.h"
-#include "Integrity.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
-	for (int i=0; i<2; i++)
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
 		localRessources[i]=NULL;
 	}
-	logFile = globalContainer->logFileManager->getFile("Building.log");
 	load(stream, types, owner, versionMinor);
 }
 
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
-	logFile = globalContainer->logFileManager->getFile("Building.log");
-
 	// identity
 	this->gid=gid;
 	owner=team;
@@ -59,34 +53,27 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	shortTypeNum = type->shortTypeNum;
 	maxUnitInside = type->maxUnitInside;
 	maxUnitWorking = unitWorking;
-	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = maxUnitWorking;
 	maxUnitWorkingFuture = unitWorkingFuture;
 	maxUnitWorkingPrevious = 0;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
 	priority = 0;
-	priorityLocal = 0;
 	oldPriority = 0;
 
 	// position
 	posX=x;
 	posY=y;
-	posXLocal=posX;
-	posYLocal=posY;
 
 	underAttackTimer=0;
 	canNotConvertUnitTimer=0;
 
 	// flag usefull :
 	unitStayRange=type->defaultUnitStayRange;
-	unitStayRangeLocal=unitStayRange;
 	for(int i=0; i<BASIC_COUNT; i++)
 		clearingRessources[i]=true;
 	clearingRessources[STONE]=false;
-	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
 	minLevelToFlag=0;
-	minLevelToFlagLocal=minLevelToFlag;
 
 	// building specific :
 	for(int i=0; i<MAX_NB_RESSOURCES; i++)
@@ -101,20 +88,17 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	productionTimeout=type->unitProductionTime;
 
 	totalRatio=0;
-	ratioLocal[0]=ratio[0]=1;
+	ratio[0]=1;
 	totalRatio++;
 	percentUsed[0]=0;
 	for (int i=1; i<NB_UNIT_TYPE; i++)
 	{
-		ratioLocal[i]=ratio[i]=0;
-		//totalRatio++;
+		ratio[i]=0;
 		percentUsed[i]=0;
 	}
 
 	receiveRessourceMask=0;
 	sendRessourceMask=0;
-	receiveRessourceMaskLocal=0;
-	sendRessourceMaskLocal=0;
 
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
@@ -129,7 +113,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<NB_ABILITY; i++)
 		inUpgrade[i]=LS_UNKNOWN;
 
-	for (int i=0; i<2; i++)
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
 		localRessources[i]=NULL;
@@ -144,7 +128,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	verbose=false;
 
-	lastShootStep = 0xFFFFFFFF;
+	lastShootStep = LAST_SHOOT_STEP_NEVER;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
 
@@ -160,24 +144,36 @@ Building::~Building()
 	freeGradients();
 }
 
-void Building::freeGradients()
+void Building::resetLocalRessources()
 {
-	for (int i=0; i<2; i++)
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
-		if (globalGradient[i])
-		{
-			delete[] globalGradient[i];
-			globalGradient[i] = NULL;
-		}
-		if (localRessources[i])
-		{
-			delete[] localRessources[i];
-			localRessources[i] = NULL;
-		}
 		dirtyLocalGradient[i] = true;
 		locked[i] = false;
-		lastGlobalGradientUpdateStepCounter[i] = 0;
+		delete[] localRessources[i];
+		localRessources[i] = NULL;
+	}
+}
 
+void Building::resetPathfindGradients()
+{
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
+	{
+		dirtyLocalGradient[i] = true;
+		locked[i] = false;
+		delete[] globalGradient[i];
+		globalGradient[i] = NULL;
+		delete[] localRessources[i];
+		localRessources[i] = NULL;
+	}
+}
+
+void Building::freeGradients()
+{
+	resetPathfindGradients();
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
+	{
+		lastGlobalGradientUpdateStepCounter[i] = 0;
 		localRessourcesCleanTime[i] = 0;
 		anyRessourceToClear[i] = 0;
 	}
@@ -198,35 +194,34 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	// position
 	posX = stream->readSint32("posX");
 	posY = stream->readSint32("posY");
-	posXLocal = posX;
-	posYLocal = posY;
 
-	if(versionMinor>=61)
+	if(versionMinor>=FILE_FORMAT_VERSION_UNDER_ATTACK_TIMER)
 		underAttackTimer = stream->readUint8("underAttackTimer");
 	else
 		underAttackTimer = 0;
-	if(versionMinor>=81)
+	if(versionMinor>=FILE_FORMAT_VERSION_CANNOT_CONVERT_TIMER)
 		canNotConvertUnitTimer = stream->readUint8("canNotConvertUnitTimer");
 	else
-		canNotConvertUnitTimer = 150;
+		canNotConvertUnitTimer = CANNOT_CONVERT_TIMER_INIT;
 
 	// priority
-	if(versionMinor>=79)
+	if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_PRIORITY_FIELD)
 	{
 		priority = stream->readSint32("priority");
-		priorityLocal = stream->readSint32("priorityLocal");
+		// Legacy "priorityLocal" slot — was a per-viewer GUI shadow that now
+		// lives in BuildingGuiState. Read and discard to keep the on-disk
+		// format byte-equivalent for replay-baseline determinism.
+		(void)stream->readSint32("priorityLocal");
 		oldPriority = priority;
 	}
 	else
 	{
 		priority = 0;
-		priorityLocal = 0;
 		oldPriority = 0;
 	}
 
 	// Flag specific
 	unitStayRange = stream->readUint32("unitStayRange");
-	unitStayRangeLocal = unitStayRange;
 
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
@@ -236,10 +231,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	}
 	assert(clearingRessources[STONE] == false);
 
-	memcpy(clearingRessourcesLocal, clearingRessources, sizeof(bool)*BASIC_COUNT);
-
 	minLevelToFlag = stream->readSint32("minLevelToFlag");
-	minLevelToFlagLocal = minLevelToFlag;
 
 	// Building Specific
 	for (int i=0; i<MAX_NB_RESSOURCES; i++)
@@ -260,7 +252,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		{
 			std::ostringstream oss;
 			oss << "ratio[" << i << "]";
-			ratioLocal[i] = ratio[i] = stream->readSint32(oss.str().c_str());
+			ratio[i] = stream->readSint32(oss.str().c_str());
 		}
 		{
 			std::ostringstream oss;
@@ -271,15 +263,12 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	receiveRessourceMask = stream->readUint32("receiveRessourceMask");
 	sendRessourceMask = stream->readUint32("sendRessourceMask");
-	receiveRessourceMaskLocal = receiveRessourceMask;
-	sendRessourceMaskLocal = sendRessourceMask;
 
 	shootingStep = stream->readUint32("shootingStep");
 	shootingCooldown = stream->readSint32("shootingCooldown");
 	bullets = stream->readSint32("bullets");
 
 	// type
-	// FIXME : do not save typenum but name/isBuildingSite/level
 	typeNum = stream->readSint32("typeNum");
 	type = types->get(typeNum);
 	assert(type);
@@ -291,7 +280,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	maxUnitWorking = type->maxUnitWorking;
 
 	// init data not loaded
-	maxUnitWorkingLocal = maxUnitWorking;
 	maxUnitWorkingPreferred = 1;
 	maxUnitWorkingFuture = 1;
 	desiredMaxUnitWorking = maxUnitWorking;
@@ -299,7 +287,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	owner->prestige += type->prestige;
 
-	seenByMask = stream->readUint32("seenByMaskk");
+	seenByMask = stream->readUint32("seenByMask");
 
 	inCanFeedUnit=LS_UNKNOWN;
 	inCanHealUnit=LS_UNKNOWN;
@@ -313,7 +301,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	verbose = false;
 	stream->readLeaveSection();
 
-	lastShootStep = 0xFFFFFFFF;
+	lastShootStep = LAST_SHOOT_STEP_NEVER;
 	lastShootSpeedX = 0;
 	lastShootSpeedY = 0;
 
@@ -345,7 +333,12 @@ void Building::save(GAGCore::OutputStream *stream)
 
 	// priority
 	stream->writeSint32(priority, "priority");
-	stream->writeSint32(priorityLocal, "priorityLocal");
+	// Legacy "priorityLocal" slot, preserved for save-format compatibility.
+	// The per-viewer GUI shadow lives in BuildingGuiState now; the slot is
+	// filled with `priority` so on-disk bytes are unchanged during headless
+	// determinism baselines (no GUI is ever attached, so the old value would
+	// always have equalled `priority` anyway).
+	stream->writeSint32(priority, "priorityLocal");
 
 	// Flag specific
 	stream->writeUint32(unitStayRange, "unitStayRange");
@@ -404,14 +397,12 @@ void Building::save(GAGCore::OutputStream *stream)
 void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	stream->readEnterSection("Building");
-	fprintf(logFile, "loadCrossRef (%d)\n", gid);
 
 	// units
 	maxUnitInside = stream->readSint32("maxUnitInside");
-	assert(maxUnitInside < 65536);
+	assert(maxUnitInside < MAX_UNIT_INSIDE_LIMIT);
 
 	unsigned nbWorking = stream->readUint32("nbWorking");
-	fprintf(logFile, " nbWorking=%d\n", nbWorking);
 	unitsWorking.clear();
 	for (unsigned i=0; i<nbWorking; i++)
 	{
@@ -425,20 +416,19 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
-	if(versionMinor>=65)
+	if(versionMinor>=FILE_FORMAT_VERSION_MAX_UNIT_WORKING_PREVIOUS)
 		maxUnitWorkingPrevious = stream->readSint32("maxUnitWorkingPrevious");
 	else
 		maxUnitWorkingPrevious = maxUnitWorkingPreferred;
-	if(versionMinor>=70)
+	if(versionMinor>=FILE_FORMAT_VERSION_MAX_UNIT_WORKING_FUTURE)
 		maxUnitWorkingFuture = stream->readSint32("maxUnitWorkingFuture");
-	maxUnitWorkingLocal = maxUnitWorking;
 	desiredMaxUnitWorking = maxUnitWorking;
 
-	if(versionMinor>=74 && versionMinor<77)
+	if(versionMinor>=FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_INT && versionMinor<FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_ARRAY)
 	{
 		stream->readSint32("unitsFailingRequirements");
 	}
-	else if(versionMinor>=77)
+	else if(versionMinor>=FILE_FORMAT_VERSION_UNITS_FAILING_REQUIREMENTS_ARRAY)
 	{
 		stream->readEnterSection("unitsFailingRequirements");
 		for(int i=0; i<UnitCantWorkReasonSize; ++i)
@@ -451,7 +441,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	}
 
 	unsigned nbInside = stream->readUint32("nbInside");
-	fprintf(logFile, " nbInside=%d\n", nbInside);
 	unitsInside.clear();
 	for (unsigned i=0; i<nbInside; i++)
 	{
@@ -462,10 +451,9 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		unitsInside.push_front(unit);
 	}
 	
-	if (versionMinor>=80)
+	if (versionMinor>=FILE_FORMAT_VERSION_UNITS_HARVESTING_LIST)
 	{
 		unsigned nbHarvesting = stream->readUint32("nbHarvesting");
-		fprintf(logFile, " nbHarvesting=%d\n", nbHarvesting);
 		unitsHarvesting.clear();
 		for (unsigned i=0; i<nbHarvesting; i++)
 		{
@@ -485,7 +473,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	unsigned i;
 
 	stream->writeEnterSection("Building");
-	fprintf(logFile, "saveCrossRef (%d)\n", gid);
 
 	// units
 	stream->writeSint32(maxUnitInside, "maxUnitInside");
@@ -494,7 +481,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	//steph and nuage suggested to store and update size in a variable
 	//what is faster but also more error prone.
 	stream->writeUint32(unitsWorking.size(), "nbWorking");
-	fprintf(logFile, " nbWorking=%zd\n", unitsWorking.size());
 	i = 0;
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
@@ -522,7 +508,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 
 
 	stream->writeUint32(unitsInside.size(), "nbInside");
-	fprintf(logFile, " nbInside=%zd\n", unitsInside.size());
 	i = 0;
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
@@ -534,7 +519,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	}
 	
 	stream->writeUint32(unitsHarvesting.size(), "nbHarvesting");
-	fprintf(logFile, " nbHarvesting=%zd\n", unitsHarvesting.size());
 	i = 0;
 	for (std::list<Unit *>::iterator  it=unitsHarvesting.begin(); it!=unitsHarvesting.end(); ++it)
 	{

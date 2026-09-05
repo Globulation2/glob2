@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GUISTYLE_H
-#define __GUISTYLE_H
+#pragma once
 
 #include "GraphicContext.h"
 
@@ -47,5 +46,3 @@ namespace GAGGUI
 	
 	extern Style defaultStyle;
 }
-
-#endif

@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
+
+#pragma once
+
+#include "YOGPlayerStoredInfo.h"
+#include <string>
+#include <map>
+#include "SDL_net.h"
+#include <list>
+
+class YOGServer;
+
+///This class stores and records YOGPlayerStoredInfo for the server
+class YOGServerPlayerStoredInfoManager
+{
+public:
+	///Constructs a YOGServerPlayerStoredInfoManager, reads from the database
+	YOGServerPlayerStoredInfoManager(YOGServer* server);
+
+	///Updates this YOGServerPlayerStoredInfoManager, periodically saving
+	void update();
+
+	///Insure that a YOGPlayerStoredInfo exists for the given username, if it doesn't, this creates one
+	void insureStoredInfoExists(const std::string& username);
+	
+	///Returns true if a player info with the given username exists
+	bool doesStoredInfoExist(const std::string& username);
+	
+	///Returns the player info
+	const YOGPlayerStoredInfo& getPlayerStoredInfo(const std::string& username);
+
+	///Sets the player info
+	void setPlayerStoredInfo(const std::string& username, const YOGPlayerStoredInfo& info);
+
+	///Returns a list of the banned players
+	std::list<std::string> getBannedPlayers();
+	
+	///This stores the player infos in a file
+	void savePlayerInfos();
+
+	///This loads the player infos from a file
+	void loadPlayerInfos();
+private:
+	bool modified;
+	int saveCountdown;
+	std::map<std::string, YOGPlayerStoredInfo> playerInfos;
+	YOGServer* server;
+};
+
+
+

@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#ifndef __GAMEHEADER_H
-#define __GAMEHEADER_H
+#pragma once
 
 #include "BasePlayer.h"
 #include "Stream.h"
 #include <list>
+#include <optional>
+#include <vector>
 #include "WinningConditions.h"
 #include <assert.h>
 
@@ -72,12 +73,45 @@ public:
 		assert(n<Team::MAX_COUNT && n>=0);
 		return players[n];
 	}
-	
-	///Returns the ally-team number for the given team for pre-game alliances
-	inline Uint8 getAllyTeamNumber(int teamNumber) { return allyTeamNumbers[teamNumber]; }
-	
-	///Sets the ally-team number for the given team
-	inline void setAllyTeamNumber(int teamNumber, Uint8 allyTeam) { allyTeamNumbers[teamNumber]=allyTeam; }
+
+	///True if any player in this game is a live network peer (BasePlayer::P_IP,
+	///covering both YOG and LAN). Used to disable local-only controls such as
+	///hard-pause that would desync a networked game if one client toggled them.
+	inline bool hasNetworkPlayer() const
+	{
+		for (int n=0; n<numberOfPlayers; n++)
+			if (players[n].type==BasePlayer::P_IP)
+				return true;
+		return false;
+	}
+
+	///Returns the ally-team number for the given team for pre-game alliances.
+	///Ally team numbers are 1-based (the constructor assigns team i the value
+	///i+1); 0 only appears in a malformed or hand-edited header.
+	inline Uint8 getAllyTeamNumber(int teamNumber)
+	{
+		assert(teamNumber >= 0 && teamNumber < Team::MAX_COUNT);
+		return allyTeamNumbers[teamNumber];
+	}
+
+	///Sets the ally-team number (1-based, see getAllyTeamNumber) for the given
+	///team. The header is replicated to all clients, so an out-of-range write
+	///here would silently corrupt shared state -- hence the assert.
+	inline void setAllyTeamNumber(int teamNumber, Uint8 allyTeam)
+	{
+		assert(teamNumber >= 0 && teamNumber < Team::MAX_COUNT);
+		allyTeamNumbers[teamNumber]=allyTeam;
+	}
+
+	///Applies the custom-game default alliance layout. All ally-team numbers
+	///are first reset to the free-for-all default (team i on singleton group
+	///i+1, as in reset()), then the human's team joins ally team 1 and every
+	///AI team with a different color joins ally team 2. An AI sharing the
+	///human's color shares its team -- alliances are per-team -- so it stays
+	///on the human's ally group. With no human selection (humanColor empty)
+	///the free-for-all layout is kept: a human-vs-AI split is meaningless
+	///without a human. Colors are team indices, [0, Team::MAX_COUNT).
+	void setDefaultAlliances(std::optional<int> humanColor, const std::vector<int>& aiColors);
 	
 	///Returns whether allying and de-allying are allowed mid-game
 	inline bool areAllyTeamsFixed() { return allyTeamsFixed; }
@@ -131,4 +165,3 @@ private:
 };
 
 
-#endif

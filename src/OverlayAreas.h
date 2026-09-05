@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#ifndef OverlayAreas_h
-#define OverlayAreas_h
+#pragma once
 
 #include <vector>
 #include "Types.h"
@@ -33,10 +32,10 @@ public:
 	void compute(Game& game, OverlayType type, int localteam);
 
 	///Gets the value of the overlay for a given position
-	Uint16 getValue(int x, int y);
-	
+	Uint32 getValue(int x, int y);
+
 	///Gets the maximum value of overlay
-	Uint16 getMaximum();
+	Uint32 getMaximum();
 	
 	///Returns the last computed overlay type
 	OverlayType getOverlayType();
@@ -49,11 +48,7 @@ protected:
 	OverlayType lasttype;
 	int height;
 	int width;
-	std::vector<Uint16> overlay;
-	Uint16 overlaymax;
-	
-	void increasePoint(int x, int y, int distance, std::vector<Uint16>& field, Uint16& max);
-	void spreadPoint(int x, int y, int value, int distance, std::vector<Uint16>& field, Uint16& msx);
+	std::vector<Uint32> overlay;
+	Uint32 overlaymax;
 };
 
-#endif

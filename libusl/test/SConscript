@@ -1,10 +1,13 @@
 Import("env")
 Import("PackTar")
 import os
-    
+
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
         if file.find(".usl") != -1:
             PackTar(env["TARFILE"], file)
     PackTar(env["TARFILE"], "SConscript")
-    
+
+env.Program("usl_runner", ["usl_runner.cpp"],
+            LIBS=["usl"],
+            LIBPATH=["#build/libusl/src"])

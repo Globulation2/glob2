@@ -57,31 +57,12 @@ void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
 	float value = 0;
 	for (std::map<int, PlayerVoice>::iterator i = voices.begin(); i != voices.end();)
 	{
-		struct PlayerVoice &pv = i->second;
-		value += (1-pv.voiceSubIndex) * pv.voiceVal0 + pv.voiceSubIndex * pv.voiceVal1;
-	
-		// increment index, keep track of stereo
-		pv.voiceSubIndex += (8000.0f/44100.0f)*0.5f;
-		if (pv.voiceSubIndex > 1)
-		{
-			pv.voiceSubIndex -= 1;
-			pv.voiceVal0 = pv.voiceVal1;
-			pv.voiceDatas.pop();
-			pv.voiceVal1 = pv.voiceDatas.front();
-			
-			// if there is no more data in this voice, remove it
-			if (pv.voiceDatas.empty())
-			{
-				// go to next voice
-				std::map<int, PlayerVoice>::iterator j = i;
-				++i;
-				voices.erase(j);
-				continue;
-			}
-		}
-		
-		// go to next voice
-		++i;
+		bool exhausted = false;
+		value += i->second.advanceOutputSample(exhausted);
+		if (exhausted)
+			i = voices.erase(i);
+		else
+			++i;
 	}
 	// saturate
 	value = std::min(value, 32767.0f);
@@ -291,18 +272,6 @@ SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 		this->voiceVolume = 0;
 	}
 	openAudio();
-/*
-	if (mute)
-	{
-		soundEnabled = false;
-		std::cout << "SoundMixer : No volume, audio has been disabled !" << std::endl;
-		return;
-	}
-	else
-	{
-		openAudio();
-	}
-*/
 }
 
 SoundMixer::~SoundMixer()
@@ -330,28 +299,32 @@ int SoundMixer::loadTrack(const std::string name, int index)
 		return -1;
 	}
 
-	OggVorbis_File *oggFile = new OggVorbis_File;
+	// Hold the OggVorbis_File in a unique_ptr until ownership transfers into
+	// `tracks` via release(). If ov_open fails, the unique_ptr's destructor frees
+	// it on return — fixing the leak that existed when this was raw `new`.
+	auto oggFile = std::make_unique<OggVorbis_File>();
 #ifdef _MSC_VER
-	if (ov_open_callbacks(fp, oggFile, NULL, 0, OV_CALLBACKS_DEFAULT) < 0)
+	if (ov_open_callbacks(fp, oggFile.get(), NULL, 0, OV_CALLBACKS_DEFAULT) < 0)
 #else
-	if (ov_open(fp, oggFile, NULL, 0) < 0)
+	if (ov_open(fp, oggFile.get(), NULL, 0) < 0)
 #endif
 	{
 		std::cerr << "SoundMixer : File " << name << " does not appear to be an Ogg bitstream." << std::endl;
 		fclose(fp);
 		return -2;
 	}
+	// ov_open succeeded: the OggVorbis_File now owns `fp` and will close it via ov_clear.
 
 	SDL_LockAudio();
 	if (index >= 0 && index< (int)tracks.size())
 	{
 		ov_clear(tracks[index]);
 		delete tracks[index];
-		tracks[index] = oggFile;
+		tracks[index] = oggFile.release();
 	}
 	else
 	{
-		tracks.push_back(oggFile);
+		tracks.push_back(oggFile.release());
 		index = (int)tracks.size()-1;
 	}
 	SDL_UnlockAudio();
@@ -364,13 +337,13 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	if ((soundEnabled) && (i<tracks.size()))
 	{
 		SDL_LockAudio();
-		
+
 		// Select next tracks
 		if (actTrack >= 0)
 			nextTrack = i;
 		else
 			nextTrack = actTrack = i;
-		
+
 		// Select mode
 		if (mode == MODE_STOPPED)
 		{
@@ -381,27 +354,36 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		{
 			mode = MODE_EARLY_CHANGE;
 		}
-		
+
 		SDL_UnlockAudio();
 	}
 }
 
+int SoundMixer::loadTrack(const std::string name, MusicTrack track)
+{
+	return loadTrack(name, static_cast<int>(track));
+}
+
+void SoundMixer::setNextTrack(MusicTrack track, bool earlyChange)
+{
+	setNextTrack(static_cast<unsigned>(track), earlyChange);
+}
+
+// All writes to musicVolume/voiceVolume must hold SDL_LockAudio — mixaudio()
+// reads them on the audio thread. openAudio() is called *before* taking the
+// lock: SDL_OpenAudio opens the device in the paused state, so the callback
+// cannot fire until SDL_PauseAudio(0) is called from setNextTrack().
 void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute)
 {
 	if (!soundEnabled)
 	{
-		if (!mute)
-		{
-			openAudio();
-			this->musicVolume = musicVolume;
-			this->voiceVolume = voiceVolume;
-		}
-		else
-		{
+		if (mute)
 			return;
-		}
+		openAudio();
 	}
-	else if (mute)
+
+	SDL_LockAudio();
+	if (mute)
 	{
 		this->musicVolume = 0;
 		this->voiceVolume = 0;
@@ -411,11 +393,15 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 		this->musicVolume = musicVolume;
 		this->voiceVolume = voiceVolume;
 	}
+	SDL_UnlockAudio();
 }
 
+// mode is read by mixaudio() on the audio thread; the write must hold the lock.
 void SoundMixer::stopMusic(void)
 {
+	SDL_LockAudio();
 	mode = MODE_STOP;
+	SDL_UnlockAudio();
 }
 
 

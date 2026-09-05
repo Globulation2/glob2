@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007-2008 Bradley Arsenault
 
-#ifndef FertilityCalculatorDialog_h
-#define FertilityCalculatorDialog_h
+#pragma once
 
 #include "GUIBase.h"
-#include "FertilityCalculatorThread.h"
+#include <atomic>
 #include <thread>
 
 class Map;
@@ -19,31 +18,29 @@ namespace GAGCore
 	class DrawableSurface;
 }
 
-///This dialog shows progress of the fertility computation
-class FertilityCalculatorDialog:public GAGGUI::OverlayScreen
+/// Modal dialog that shows fertility-computation progress while the work runs
+/// on a background thread.
+class FertilityCalculatorDialog : public GAGGUI::OverlayScreen
 {
 public:
-	FertilityCalculatorDialog(GAGCore::GraphicContext *parentCtx, Map& map);
-	virtual ~FertilityCalculatorDialog() { }
-	virtual void onAction(GAGGUI::Widget *source, GAGGUI::Action action, int par1, int par2);
-	
-	///This screen is modal, this executes it
-	void execute();
+	FertilityCalculatorDialog(GAGCore::GraphicContext* parentCtx, Map& map);
+	~FertilityCalculatorDialog() override = default;
+	void onAction(GAGGUI::Widget* source, GAGGUI::Action action, int par1, int par2) override;
+	void onTimer(Uint32 tick) override;
+
+	/// Modal: blocks until the background computation finishes.
+	void runModal();
+
 private:
-	///This proccesses an incoming event from the fertility calculator thread
-	void proccessIncoming(GAGCore::DrawableSurface *background);
-	
+	void refreshProgressDisplay();
+
 	Map& map;
-	GAGCore::GraphicContext *parentCtx;
-	
+	GAGCore::GraphicContext* parentCtx;
+
 	GAGGUI::Text* percentDone;
 	GAGGUI::ProgressBar* progress;
-	
-	FertilityCalculatorThread thread;
+
 	std::thread computeThread;
-	std::queue<std::shared_ptr<FertilityCalculatorThreadMessage> > incoming;
-	std::recursive_mutex incomingMutex;
+	std::atomic<float> progressFraction{0.f};
+	std::atomic<bool> computeDone{false};
 };
-
-
-#endif

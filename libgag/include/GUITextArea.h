@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GUITEXTAREA_H
-#define __GUITEXTAREA_H
+#pragma once
 
 #include "GUIBase.h"
 #include <vector>
@@ -107,7 +106,21 @@ namespace GAGGUI
 		virtual void onSDLKeyDown(SDL_Event *event);
 		virtual void onSDLMouseButtonDown(SDL_Event *event);
 		virtual void onSDLTextInput(SDL_Event *event);
+		
+		static bool isWordBreak(char c);
+		void notifyCursorMoved(void);
+		//! Characters in line, excluding its trailing newline
+		size_t lineLength(size_t line) const;
+		size_t cursorColumn(void) const;
+		//! Move cursor to an earlier line, keeping the column where it fits
+		void moveCursorUpTo(size_t newPosY);
+		void deleteForward(void);
+		void deleteBackward(void);
+		void moveToLineStart(void);
+		void moveToLineEnd(void);
+		void pageUp(void);
+		void pageDown(void);
+		void moveLeft(bool wordwise);
+		void moveRight(bool wordwise);
 	};
 }
-
-#endif

@@ -9,16 +9,16 @@
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <GraphicContext.h>
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
 #include "GlobalContainer.h"
 #include "Team.h"
+#include "TeamDisplay.h"
 #include "GameGUILoadSave.h"
-#include "StreamBackend.h"
 #include "ReplayWriter.h"
 #include "SDLCompat.h"
+#include "Utilities.h"
 
 EndGameStat::EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game)
 {
@@ -150,7 +150,6 @@ void EndGameStat::paint(void)
 			{
 				if(!isTeamEnabled[team])
 				{
-					//std::cout<<"team disabled "<<team<<std::endl;
 					continue;
 				}
 				const Color& color = game->teams[team]->color;
@@ -271,18 +270,6 @@ std::string EndGameStat::getStatLabel()
 			assert(false);
 			return "No clue how we got here.";
 	}
-	/*if(type == EndOfGameStat::TYPE_UNITS)
-		return Toolkit::getStringTable()->getString("[Number Of Units]");
-	if(type == EndOfGameStat::TYPE_BUILDINGS)
-		return Toolkit::getStringTable()->getString("[Number Of Buildings]");
-	if(type == EndOfGameStat::TYPE_PRESTIGE)
-		return Toolkit::getStringTable()->getString("[Prestige Score]");
-	if(type == EndOfGameStat::TYPE_HP)
-		return Toolkit::getStringTable()->getString("[Total Hitpoints]");
-	if(type == EndOfGameStat::TYPE_ATTACK)
-		return Toolkit::getStringTable()->getString("[Total Attack Power]");
-	if(type == EndOfGameStat::TYPE_DEFENSE)
-		return Toolkit::getStringTable()->getString("[Total Defence Power]");*/
 }
 
 void EndGameStat::onSDLMouseMotion(SDL_Event* event)
@@ -344,8 +331,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 			else
 				strText = Toolkit::getStringTable()->getString("[Lost : %0 has more prestige than you]");
 
-			std::string playerText = t->getFirstPlayerName();
-			strText.arg(playerText);
+			strText.arg(displayPlayerName(*t));
 			titleText = strText;
 		}
 	}
@@ -366,26 +352,31 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	statWidget=new EndGameStat(20, 80, 180, 120, ALIGN_FILL, ALIGN_FILL, &(gui->game));
 	addWidget(statWidget);
 
-	graphLabel=new Text(25, 85, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Units]"));
+	graphLabel=new Text(25, 85, ALIGN_LEFT, ALIGN_TOP, "menu", statTypeName(EndOfGameStat::TYPE_UNITS));
 	addWidget(graphLabel);
 	
-	// add buttons
-	// FIXME: magic numbers!
-	addWidget(new TextButton(90, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Units]"), 0, '1'));
-	addWidget(new TextButton(190, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Buildings]"), 1, '2'));
-	addWidget(new TextButton(290, 65, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Prestige]"), 2, '3'));
-	addWidget(new TextButton(90, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[hp]"), 3, '4'));
-	addWidget(new TextButton(190, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Attack]"), 4, '5'));
-	addWidget(new TextButton(290, 40, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard", Toolkit::getStringTable()->getString("[Defense]"), 5, '6'));
+	// stat selector buttons, laid out in a 3x2 grid above the bottom edge
+	const int statButtonX = 90, statButtonColumnStep = 100, statButtonWidth = 80;
+	const int statButtonY = 65, statButtonRowStep = 25, statButtonHeight = 20;
+	const int statButtonColumns = 3;
+	for (int i = 0; i < EndOfGameStat::TYPE_NB_STATS; i++)
+	{
+		EndOfGameStat::Type type = (EndOfGameStat::Type)i;
+		int column = i % statButtonColumns;
+		int row = i / statButtonColumns;
+		addWidget(new TextButton(statButtonX + column * statButtonColumnStep, statButtonY - row * statButtonRowStep,
+			statButtonWidth, statButtonHeight, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "standard",
+			statTypeName(type), STAT_BUTTON_FIRST + type, '1' + i));
+	}
 
 	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
-		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), 39, 's'));
-		addWidget(new TextButton(15, 15, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
+		addWidget(new TextButton(15, 65, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[save replay]"), SAVE_REPLAY, 's'));
+		addWidget(new TextButton(15, 15, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 13));
 	}
 	else
 	{
-		addWidget(new TextButton(15, 40, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), 38, 13));
+		addWidget(new TextButton(15, 40, 250, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 13));
 	}
 
 	// add players name
@@ -410,7 +401,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	// add widgets
 	for (unsigned i=0; i<teams.size(); i++)
 	{
-		OnOffButton* enabled_button = new OnOffButton(10, 80+(i*inc), inc, inc, ALIGN_RIGHT, ALIGN_TOP, true, 6+i);
+		OnOffButton* enabled_button = new OnOffButton(10, 80+(i*inc), inc, inc, ALIGN_RIGHT, ALIGN_TOP, true, TEAM_TOGGLE_FIRST+i);
 		team_enabled_buttons.push_back(enabled_button);
 		addWidget(enabled_button);
 		
@@ -438,33 +429,22 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
-		if(par1==38)
+		if(par1==QUIT)
 		{
 			endExecute(par1);
 		}
 		///This is a change in the graph type
-		else if (par1<6)
+		else if (par1 >= STAT_BUTTON_FIRST && par1 < STAT_BUTTON_FIRST + EndOfGameStat::TYPE_NB_STATS)
 		{
-			EndOfGameStat::Type type = (EndOfGameStat::Type)par1;
+			EndOfGameStat::Type type = (EndOfGameStat::Type)(par1 - STAT_BUTTON_FIRST);
 			statWidget->setStatType(type);
 			sortAndSet(type);
-			if(type==EndOfGameStat::TYPE_UNITS)
-				graphLabel->setText(Toolkit::getStringTable()->getString("[Units]"));
-			else if(type==EndOfGameStat::TYPE_BUILDINGS)
-				graphLabel->setText(Toolkit::getStringTable()->getString("[Buildings]"));
-			else if(type==EndOfGameStat::TYPE_PRESTIGE)
-				graphLabel->setText(Toolkit::getStringTable()->getString("[Prestige]"));
-			else if(type==EndOfGameStat::TYPE_HP)
-				graphLabel->setText(Toolkit::getStringTable()->getString("[hp]"));
-			else if(type==EndOfGameStat::TYPE_ATTACK)
-				graphLabel->setText(Toolkit::getStringTable()->getString("[Attack]"));
-			else if(type==EndOfGameStat::TYPE_DEFENSE)
-				graphLabel->setText(Toolkit::getStringTable()->getString("[Defense]"));
+			graphLabel->setText(statTypeName(type));
 		}
 		///One of the buttons beside the team names where selected
-		else if(par1 >= 6 && par1 < static_cast<int>(6+teams.size()))
+		else if(par1 >= TEAM_TOGGLE_FIRST && par1 < static_cast<int>(TEAM_TOGGLE_FIRST+teams.size()))
 		{
-			int n=par1-6;
+			int n=par1-TEAM_TOGGLE_FIRST;
 			statWidget->setEnabledState(teams[n].teamNum, team_enabled_buttons[n]->getState());
 			for (unsigned i=0; i<teams.size(); i++)
 			{
@@ -475,7 +455,7 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 			}
 		}
 		/// The "Save Replay" button was pressed
-		else if (par1 == 39)
+		else if (par1 == SAVE_REPLAY)
 		{
 			saveReplay("replays","replay");
 		}
@@ -483,6 +463,28 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 	}
 }
 
+
+std::string EndGameScreen::statTypeName(EndOfGameStat::Type type)
+{
+	switch(type)
+	{
+		case EndOfGameStat::TYPE_UNITS:
+			return Toolkit::getStringTable()->getString("[Units]");
+		case EndOfGameStat::TYPE_BUILDINGS:
+			return Toolkit::getStringTable()->getString("[Buildings]");
+		case EndOfGameStat::TYPE_PRESTIGE:
+			return Toolkit::getStringTable()->getString("[Prestige]");
+		case EndOfGameStat::TYPE_HP:
+			return Toolkit::getStringTable()->getString("[hp]");
+		case EndOfGameStat::TYPE_ATTACK:
+			return Toolkit::getStringTable()->getString("[Attack]");
+		case EndOfGameStat::TYPE_DEFENSE:
+			return Toolkit::getStringTable()->getString("[Defense]");
+		default:
+			assert(false);
+			return "";
+	}
+}
 
 void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 {
@@ -526,11 +528,15 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 	}
 }
 
+//! LoadSaveScreen name-extractor callback for the save-replay dialog: turn a
+//! full virtual path like "replays/My_Game.replay" into the display name
+//! "My Game". Directory prefix and extension are only removed when actually
+//! present, so a stray file in replays/ degrades to showing its raw name
+//! instead of throwing (erase(npos) used to crash the dialog).
 std::string replayFilenameToName(const std::string& fullfilename)
 {
-	std::string filename = fullfilename;
-	filename.erase(0, 8);
-	filename.erase(filename.find(".replay"));
+	std::string filename = Utilities::stripSuffix(
+		Utilities::stripPrefix(fullfilename, "replays/"), ".replay");
 	std::replace(filename.begin(), filename.end(), '_', ' ');
 	return filename;
 }

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __CUSTOM_GAME_SCREEN_H
-#define __CUSTOM_GAME_SCREEN_H
+#pragma once
 
 #include "AI.h"
 #include "ChooseMapScreen.h"
+#include "Team.h"
 #include <GUIBase.h>
 using namespace GAGGUI;
 
@@ -20,8 +20,6 @@ namespace GAGGUI
 }
 class Glob2FileList;
 class MapPreview;
-
-const int NumberOfPlayerSelectors=12;
 
 //! This screen is used to setup a custom game. AI can be set. Map choosing functionnalities are inherited from ChooseMapScreen
 class CustomGameScreen : public ChooseMapScreen
@@ -48,13 +46,13 @@ private:
 	void updatePlayers();
 
 	//! Player enable/disable buttons
-	OnOffButton *isPlayerActive[NumberOfPlayerSelectors];
+	OnOffButton *isPlayerActive[Team::MAX_COUNT];
 	//! Team color buttons
-	ColorButton *color[NumberOfPlayerSelectors];
+	ColorButton *color[Team::MAX_COUNT];
 	//! Text shown when entry is disabled
-	Text *closedText[NumberOfPlayerSelectors];
+	Text *closedText[Team::MAX_COUNT];
 	//! Multi-text button containing names of available Players
-	MultiTextButton *aiSelector[NumberOfPlayerSelectors];
+	MultiTextButton *aiSelector[Team::MAX_COUNT];
 	//! Text button that links to the custom game other settings screen
 	TextButton* otherOptions;
 	//! Text button that links to the ai descriptions
@@ -62,4 +60,3 @@ private:
 
 };
 
-#endif

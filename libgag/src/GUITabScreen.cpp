@@ -197,12 +197,8 @@ namespace GAGGUI
 		
 		void TabScreen::onTimer(Uint32 tick)
 		{
-			int last = -1;
-			int first = -1;
 			for(std::map<int, TabScreenWindow*>::iterator i = windows.begin(); i!=windows.end();)
 			{
-				if(first == -1)
-					first = i->first;
 				if(!i->second->isStillExecuting())
 				{
 					std::map<int, TabScreenWindow*>::iterator ni = i;
@@ -217,15 +213,14 @@ namespace GAGGUI
 					}
 					else if(n == activated)
 					{
-						if(first!=-1)
-						{
-							activateGroup(first);
-						}
+						// Fall back to the leftmost surviving tab. Looked up
+						// after removeGroup so it can never be the just-erased
+						// key.
+						activateGroup(windows.begin()->first);
 					}
 				}
 				else
 				{
-					last=i->first;
 					i->second->onTimer(tick);
 					i++;
 				}

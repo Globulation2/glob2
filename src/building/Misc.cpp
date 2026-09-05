@@ -3,36 +3,37 @@
 
 #include <list>
 #include <math.h>
-#include <Stream.h>
 #include <stdlib.h>
 #include <algorithm>
-#include <climits>
 
 #include "Building.h"
 #include "BuildingType.h"
 #include "Game.h"
-#include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Team.h"
 #include "Unit.h"
-#include "Utilities.h"
 #include "Order.h"
-#include "Bullet.h"
 #include "Integrity.h"
+
+void Building::releaseAllWorkers()
+{
+	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
+	{
+		assert(*it);
+		(*it)->standardRandomActivity();
+	}
+	unitsWorking.clear();
+}
 
 void Building::kill(void)
 {
-	fprintf(logFile, "kill gid=%d buildingState=%d\n", gid, buildingState);
 	if (buildingState==DEAD)
 		return;
 
 
-	fprintf(logFile, " still %zd unitsInside\n", unitsInside.size());
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		//TODO: We should somehow try to save their lives. In training buildings they should just drop out untrained etc.
 		Unit *u=*it;
-		fprintf(logFile, "  guid=%d\n", u->gid);
 		if (u->displacement==Unit::DIS_INSIDE)
 			u->isDead=true;
 
@@ -42,27 +43,25 @@ void Building::kill(void)
 				owner->map->setAirUnit(u->posX-u->dx, u->posY-u->dy, NOGUID);
 			else
 				owner->map->setGroundUnit(u->posX-u->dx, u->posY-u->dy, NOGUID);
-			//printf("(%x)Building:: Unit(uid%d)(id%d) killed while entering. dis=%d, mov=%d, ab=%x, ito=%d \n",this, u->gid, Unit::UIDtoID(u->gid), u->displacement, u->movement, (int)u->attachedBuilding, u->insideTimeout);
 			u->isDead=true;
 		}
 		u->standardRandomActivity();
 	}
 	unitsInside.clear();
 
-	fprintf(logFile, " still %zd unitsWorking\n", unitsInside.size());
-	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-	{
-		assert(*it);
-		(*it)->standardRandomActivity();
-	}
-	unitsWorking.clear();
+	releaseAllWorkers();
 
 	maxUnitWorking=0;
-	maxUnitWorkingLocal=0;
 	maxUnitInside=0;
 	desiredMaxUnitWorking = 0;
 	updateCallLists();
 
+	// A building waiting for upgrade room has a forbidden zone stamped over
+	// its would-be footprint (addForbiddenZoneToUpgradeArea). The other exits
+	// from that state (tryToBuildingSiteRoom, cancelConstruction) remove it;
+	// dying must too, or the zone leaks and corrupts the team's pathfinding.
+	if (buildingState==WAITING_FOR_CONSTRUCTION_ROOM && constructionResultState==UPGRADE)
+		removeForbiddenZoneFromUpgradeArea();
 
 	if (!type->isVirtual)
 	{
@@ -196,8 +195,11 @@ void Building::addRessourceIntoBuilding(int ressourceType)
 			int totRessources=0;
 			for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
 				totRessources+=type->maxRessource[i];
-			hp += type->hpMax/totRessources;
-			hp = std::min(hp, type->hpMax);
+			if (totRessources>0)
+			{
+				hp += type->hpMax/totRessources;
+				hp = std::min(hp, type->hpMax);
+			}
 		}
 		break;
 
@@ -237,28 +239,28 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 
 	// TODO: Introduce a border iterator for rectangles
 
-	// if (exitQuality<4)
+	// if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		testY=this->posY-1;
 		oldQuality=0;
 		for (testX=this->posX-1; testX<=this->posX+type->width ; testX++)
 			checkGroundExitQuality(testX,testY,testX,testY-1,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
-	if (exitQuality<4)
+	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		testY=this->posY+type->height;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
 			checkGroundExitQuality(testX,testY,testX,testY+1,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
-	if (exitQuality<4)
+	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		oldQuality=0;
 		testX=this->posX-1;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
 			checkGroundExitQuality(testX,testY,testX-1,testY,exitX,exitY,exitQuality,oldQuality,canSwim);
 	}
-	if (exitQuality<4)
+	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		oldQuality=0;
 		testX=this->posX+type->width;
@@ -267,10 +269,10 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 	}
 	if (exitQuality>0)
 	{
-		bool shouldBeTrue=owner->map->doesPosTouchBuilding(exitX, exitY, gid, dx, dy);
-		assert(shouldBeTrue);
-		*dx=-*dx;
-		*dy=-*dy;
+		auto off = owner->map->doesPosTouchBuilding(exitX, exitY, gid);
+		assert(off);
+		*dx=-off->dx;
+		*dy=-off->dy;
 		*posX=exitX & owner->map->getMaskW();
 		*posY=exitY & owner->map->getMaskH();
 		return true;
@@ -296,9 +298,9 @@ void Building::checkGroundExitQuality(
 			oldQuality++;
 		if (owner->map->isRessource(testX, testY-1))
 		{
-			if (exitQuality<1+oldQuality)
+			if (exitQuality<EXIT_QUALITY_NEAR_RESSOURCE+oldQuality)
 			{
-				exitQuality=1+oldQuality;
+				exitQuality=EXIT_QUALITY_NEAR_RESSOURCE+oldQuality;
 				exitX=testX;
 				exitY=testY;
 			}
@@ -306,13 +308,13 @@ void Building::checkGroundExitQuality(
 		}
 		else
 		{
-			if (exitQuality<2+oldQuality)
+			if (exitQuality<EXIT_QUALITY_OPEN_GROUND+oldQuality)
 			{
-				exitQuality=2+oldQuality;
+				exitQuality=EXIT_QUALITY_OPEN_GROUND+oldQuality;
 				exitX=testX;
 				exitY=testY;
 			}
-			oldQuality=1;
+			oldQuality=EXIT_QUALITY_NEAR_RESSOURCE;
 		}
 	}
 }
@@ -349,23 +351,6 @@ int Building::getLongLevel(void)
 {
 	return ((type->level)<<1)+1-type->isBuildingSite;
 }
-
-void Building::computeFlagStatLocal(int *goingTo, int *onSpot)
-{
-	*goingTo = 0;
-	*onSpot = 0;
-
-	Sint32 unitStayRangeLocalSquare = (1+unitStayRangeLocal)*(1+unitStayRangeLocal);
-	for (std::list<Unit *>::iterator ui=unitsWorking.begin(); ui!=unitsWorking.end(); ++ui)
-	{
-		Sint32 distSquareLocal = owner->map->warpDistSquare(posXLocal, posYLocal, (*ui)->posX, (*ui)->posY);
-		if (distSquareLocal < unitStayRangeLocalSquare)
-			(*onSpot)++;
-		else
-			(*goingTo)++;
-	}
-}
-
 
 Uint32 Building::eatOnce(Uint32 *mask)
 {
@@ -411,7 +396,6 @@ bool Building::canConvertUnit(void)
 
 bool Building::integrity()
 {
-	checkInvariant(unitsWorking.size()>=0);
 	checkInvariant((int)unitsWorking.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
@@ -420,7 +404,6 @@ bool Building::integrity()
 		checkInvariant((*it)->attachedBuilding==this);
 	}
 
-	checkInvariant(unitsInside.size()>=0);
 	checkInvariant((int)unitsInside.size()<=Unit::MAX_COUNT);
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
@@ -438,6 +421,13 @@ bool Building::integrity()
 
 Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 {
+	// `cs` is signed `int` so the open-coded `(cs<<31)|(cs>>1)` rotates
+	// use arithmetic right-shift (sign-extending). Do NOT replace these
+	// with the unsigned `rotr1(Uint32)` helper in Utilities.h: when XOR
+	// mixing leaves bit 31 set, signed `>>1` and unsigned `>>1` produce
+	// different bit patterns, and the network checksum diverges. The
+	// Rust port should preserve the arithmetic-shift behavior — i.e.
+	// `((cs as i32) >> 1) as u32` — not `cs.rotate_right(1)`.
 	int cs=0;
 
 	cs^=typeNum;
@@ -468,56 +458,56 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 
 	cs^=maxUnitWorkingPrevious;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [7]
+		checkSumsVector->push_back(cs);// [6]
 
 	cs^=desiredMaxUnitWorking;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [8]
+		checkSumsVector->push_back(cs);// [7]
 
 	cs^=unitsWorking.size();
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [9]
+		checkSumsVector->push_back(cs);// [8]
 
 	cs^=subscriptionWorkingTimer;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [10]
+		checkSumsVector->push_back(cs);// [9]
 
 	cs^=unitsInside.size();
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [11]
+		checkSumsVector->push_back(cs);// [10]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=posX;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [12]
+		checkSumsVector->push_back(cs);// [11]
 
 	cs^=posY;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [13]
+		checkSumsVector->push_back(cs);// [12]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=unitStayRange;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [14]
+		checkSumsVector->push_back(cs);// [13]
 
 	for (int i=0; i<MAX_RESSOURCES; i++)
 		cs^=localRessource[i];
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [15]
+		checkSumsVector->push_back(cs);// [14]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=hp;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [16]
+		checkSumsVector->push_back(cs);// [15]
 
 	cs^=productionTimeout;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [17]
+		checkSumsVector->push_back(cs);// [16]
 
 
 	cs^=totalRatio;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [18]
+		checkSumsVector->push_back(cs);// [17]
 
 
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -527,35 +517,35 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [19]
+		checkSumsVector->push_back(cs);// [18]
 
 	cs^=shootingStep;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [20]
+		checkSumsVector->push_back(cs);// [19]
 
 
 	cs^=shootingCooldown;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [21]
+		checkSumsVector->push_back(cs);// [20]
 
 
 	cs^=bullets;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [22]
+		checkSumsVector->push_back(cs);// [21]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=seenByMask;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [23]
+		checkSumsVector->push_back(cs);// [22]
 
 	cs^=gid;
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [24]
+		checkSumsVector->push_back(cs);// [23]
 
 	
 	cs^=unitsHarvesting.size();
 	if (checkSumsVector)
-		checkSumsVector->push_back(cs);// [25]
+		checkSumsVector->push_back(cs);// [24]
 	
 	return cs;
 }

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __BINARYSTREAM_H
-#define __BINARYSTREAM_H
+#pragma once
 
 #include <Stream.h>
 #include <StreamBackend.h>
@@ -94,5 +93,3 @@ namespace GAGCore
 		virtual bool isValid(void) { return backend->isValid(); }
 	};
 }
-
-#endif

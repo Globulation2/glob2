@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GAGSYS_H
-#define __GAGSYS_H
+#pragma once
 
 #ifndef MAX_SINT32
 #define MAX_SINT32 0x7FFFFFFF
@@ -55,5 +54,3 @@
 #define VARARRAY(t,n,s) t n[s]
 #endif
 #endif
-
-#endif 

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#ifndef __KEYBOARD_MANAGER_H
-#define __KEYBOARD_MANAGER_H
+#pragma once
 
 #include <map>
 #include <list>
@@ -35,8 +34,9 @@ public:
 	///Formats the shortcut
 	std::string format(ShortcutMode mode) const;
 
-	///Interprets a keyboard shortcut from a string
-	void interpret(const std::string& s, ShortcutMode mode);
+	///Interprets a keyboard shortcut from a string. Returns false if the
+	///action name is unknown (the shortcut should then be discarded).
+	bool interpret(const std::string& s, ShortcutMode mode);
 
 	///Formats a translated version, not for serializtaion
 	std::string formatTranslated(ShortcutMode mode) const;
@@ -93,4 +93,3 @@ private:
 	ShortcutMode mode;
 };
 
-#endif

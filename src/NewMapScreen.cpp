@@ -5,7 +5,6 @@
 #include <assert.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <GraphicContext.h>
 using namespace GAGCore;
 #include <GUIText.h>
 #include <GUINumber.h>
@@ -17,8 +16,6 @@ using namespace GAGGUI;
 
 NewMapScreen::NewMapScreen()
 {
-	//defaultTerrainTypeButton[0]=new OnOffButton(400, 110, 20, 20, true, 30);
-	
 	mapSizeX=new Number(20, 50, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	mapSizeX->add(64);
 	mapSizeX->add(128);
@@ -82,12 +79,6 @@ NewMapScreen::NewMapScreen()
 	nbTeams->add(10);
 	nbTeams->add(11);
 	nbTeams->add(12);
-	/*
-	nbTeams->add(13);
-	nbTeams->add(14);
-	nbTeams->add(15);
-	nbTeams->add(16);
-	*/
 	nbTeams->setNth(descriptor.nbTeams-1);
 	nbTeams->visible=false;
 	addWidget(nbTeams);
@@ -182,7 +173,7 @@ NewMapScreen::NewMapScreen()
 	extraIslands->add(6);
 	extraIslands->add(7);
 	extraIslands->add(8);
-	extraIslands->setNth(descriptor.extraIslands+1);
+	extraIslands->setNth(descriptor.extraIslands);
 	extraIslands->visible=false;
 	addWidget(extraIslands);
  
@@ -298,19 +289,28 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.nbWorkers=nbWorkers->getNth()+1;
 
 		descriptor.logRepeatAreaTimes=logRepeatAreaTimes->getNth();
+
+		// eISLANDS
+		descriptor.extraIslands=extraIslands->getNth();
 	}
 	else if (action==LIST_ELEMENT_SELECTED)
 	{
 		// eUNIFORM
 		if (source==terrains)
-			descriptor.terrainType=(TerrainType)terrains->getSelectionIndex();
-		
+		{
+			if (auto sel = terrains->selection())
+				descriptor.terrainType = (TerrainType)*sel;
+		}
+
 		// all
 		if (source==methodes)
 		{
+			auto sel = methodes->selection();
+			if (!sel)
+				return;
 			MapGenerationDescriptor::Methode old=descriptor.methode;
-			descriptor.methode=(MapGenerationDescriptor::Methode)methodes->getSelectionIndex();
-			
+			descriptor.methode=(MapGenerationDescriptor::Methode)*sel;
+
 			if (old!=descriptor.methode)
 			{
 				terrains->visible=false;
@@ -463,7 +463,6 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		descriptor.fruitRatio=fruitRatio->get();
 		descriptor.riverDiameter=riverDiameter->get();
 		descriptor.craterDensity=craterDensity->get();
-		descriptor.extraIslands=extraIslands->get();
 		//eISLANDS
 		descriptor.oldIslandSize=oldIslandSize->get();
 	}

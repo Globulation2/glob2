@@ -5,7 +5,6 @@
 #include "ChooseMapScreen.h"
 #include "FormatableString.h"
 #include "GlobalContainer.h"
-#include <GraphicContext.h>
 #include <GUIButton.h>
 #include "GUIMessageBox.h"
 #include <GUIText.h>
@@ -14,6 +13,7 @@
 #include "MultiplayerGameScreen.h"
 #include <StringTable.h>
 #include <Toolkit.h>
+#include "YOGClientBringup.h"
 #include "YOGServer.h"
 
 using std::shared_ptr;
@@ -28,8 +28,6 @@ LANMenuScreen::LANMenuScreen()
 
 LANMenuScreen::~LANMenuScreen()
 {
-	/*delete font;
-	delete arch;*/
 }
 
 void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
@@ -47,7 +45,7 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if(par1 == HOST)
 		{
-			ChooseMapScreen cms("maps", "map", false, "games", "game", NULL);
+			ChooseMapScreen cms("maps", "map", false, "games", "game", false);
 			int rc = cms.execute(globalContainer->gfx, 40);
 			if(rc == ChooseMapScreen::OK)
 			{
@@ -63,12 +61,20 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 					server->enableLANBroadcasting();
 					client->attachGameServer(server);
 					client->connect("127.0.0.1");
-					while(client->getConnectionState() != YOGClient::WaitingForLoginInformation)
-						client->update();
+					if(LANBringup::waitForConnectionState(*client, YOGClient::WaitingForLoginInformation) != LANBringup::Result::Reached)
+					{
+						MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
+						endExecute(QuitMenu);
+						return;
+					}
 					client->attemptLogin(globalContainer->settings.getUsername());
-					while(client->getConnectionState() != YOGClient::ClientOnStandby)
-						client->update();
-			
+					if(LANBringup::waitForConnectionState(*client, YOGClient::ClientOnStandby) != LANBringup::Result::Reached)
+					{
+						MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Can't connect, can't find host]"), Toolkit::getStringTable()->getString("[ok]"));
+						endExecute(QuitMenu);
+						return;
+					}
+
 					std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
 					client->setMultiplayerGame(game);
 					std::string name = FormatableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(globalContainer->settings.getUsername());
@@ -97,12 +103,6 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 			endExecute(QuitMenu);
 		}
 	}
-}
-
-void LANMenuScreen::paint(int x, int y, int w, int h)
-{
-	gfx->drawFilledRect(x, y, w, h, 0, 0, 0);
-	//gfxCtx->drawSprite(0, 0, arch, 0);
 }
 
 int LANMenuScreen::menu(void)

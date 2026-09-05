@@ -2,8 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef BaseTeam_h
-#define BaseTeam_h
+#pragma once
 
 #include "GraphicContext.h"
 
@@ -48,4 +47,3 @@ public:
 	Uint32 checkSum();
 };
 
-#endif

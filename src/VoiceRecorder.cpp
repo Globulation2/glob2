@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charriere and other contributors
 
+// This file is part of Globulation 2, a free software real-time strategy game
+
 #include "VoiceRecorder.h"
 #include <assert.h>
 #include <stdio.h>
-#include <iostream>
 #include "Order.h"
 #include "Utilities.h"
 

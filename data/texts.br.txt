@@ -70,10 +70,6 @@ Numbi
 ReachToInfinity - Não ataca. Porém constrói enormes bases e tenta converter muitas unidades. Dificuldade Fácil.
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Toubib
-[AIToubib]
-Toubib
 [AIWarrush-Description]
 Warrush - Ataca rápido e com força, costuma fazer com que o jogador defensor seja levado ao limite. Dificuldade Média.
 [AIWarrush]

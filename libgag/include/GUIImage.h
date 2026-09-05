@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2008 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GUIIMAGE_H
-#define __GUIIMAGE_H
+#pragma once
 
 #include "GUIBase.h"
 #include "GraphicContext.h"
@@ -22,5 +21,3 @@ namespace GAGGUI
 		virtual void paint(void);
 	};
 }
-
-#endif

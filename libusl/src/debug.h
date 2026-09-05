@@ -1,5 +1,4 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#pragma once
 
 #include "position.h"
 
@@ -32,4 +31,3 @@ struct DebugInfo
 
 std::string unmangle(const std::string& name);
 
-#endif // ndef DEBUG_H

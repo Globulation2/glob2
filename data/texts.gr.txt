@@ -70,10 +70,6 @@ AINumbi
 
 [AIReachToInfinity]
 ΦτάσεΣτοΆπειρο
-[AIToubib-Description]
-
-[AIToubib]
-AIToubib
 [AIWarrush-Description]
 
 [AIWarrush]

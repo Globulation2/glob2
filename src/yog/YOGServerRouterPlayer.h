@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
+
+#pragma once
+
+#include <memory>
+#include "YOGServerRouterAdministrator.h"
+
+class NetConnection;
+class NetMessage;
+class YOGServerGameRouter;
+class YOGServerRouter;
+
+///This represents a single connectee to the YOGServerRouterPlayer
+class YOGServerRouterPlayer
+{
+public:
+	///Constructs a YOGServerRouterPlayer to use the given net connection
+	YOGServerRouterPlayer(std::shared_ptr<NetConnection> connection, YOGServerRouter* router);
+
+	///Provides a weak pointer to this class
+	void setPointer(std::weak_ptr<YOGServerRouterPlayer> pointer);
+
+	///Sends a message to the player
+	void sendNetMessage(std::shared_ptr<NetMessage> message);
+
+	///Updates this player
+	void update();
+	
+	///Returns true if this player is still connected
+	bool isConnected();
+	
+	///Returns true if this player is an admin
+	bool isAdministrator();
+
+private:
+	std::shared_ptr<NetConnection> connection;
+	std::shared_ptr<YOGServerGameRouter> game;
+	YOGServerRouter* router;
+	std::weak_ptr<YOGServerRouterPlayer> pointer;
+	bool isAdmin;
+};
+

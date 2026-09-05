@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __BULLET_H
-#define __BULLET_H
+#pragma once
 
 #define SHOOTING_COOLDOWN_MAX 65536
 //! Number of bit before any significant one, to avoid overflow while computing totalDefensePower in TeamStat.cpp
@@ -35,10 +34,3 @@ public:
 	void step(void);
 };
 
-struct BulletExplosion
-{
-	int x, y, ticksLeft;
-};
-
-#endif
- 

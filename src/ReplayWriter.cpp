@@ -6,7 +6,7 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "Order.h"
-#include "NetMessage.h"
+#include "OrderMessages.h"
 #include "GameGUI.h"
 #include "Version.h"
 #include "Toolkit.h"
@@ -33,6 +33,7 @@ ReplayWriter::ReplayWriter()
 	buffer = NULL;
 	stepsSinceLastOrder = 0;
 	checksum = 0;
+	ordersWritten = 0;
 }
 
 ReplayWriter::~ReplayWriter()
@@ -47,10 +48,19 @@ void ReplayWriter::init(const std::string &backend, GameGUI &gui)
 	// Avoid trouble
 	checksum = 0;
 
-	// Initialise the buffer backend
+	// Initialise the buffer backend.
+	// Absolute paths (leading '/') bypass FileManager — its dirList prepend
+	// turns "/tmp/foo.replay" into "~/.glob2//tmp/foo.replay" and fails. The
+	// AI-trainer pipeline relies on this path being arbitrary (via
+	// GLOB2_REPLAY_PATH), so absolute paths must work as written.
 	if (backend == "")
 	{
 		bufferBackend = new MemoryStreamBackend();
+	}
+	else if (!backend.empty() && backend[0] == '/')
+	{
+		FILE* fp = fopen(backend.c_str(), "w+");
+		bufferBackend = new FileStreamBackend(fp);
 	}
 	else
 	{
@@ -92,12 +102,13 @@ void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 	if (order->getOrderType() == ORDER_VOICE_DATA || order->getOrderType() == ORDER_NULL) return;
 
 	// Write the number of steps since last order to this order (can be 0)
-	buffer->writeUint16(stepsSinceLastOrder, "replayStepsSinceLastOrder");
+	buffer->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
 	// Write the Order to the file
 	writeOrder(buffer, order, checksum);
 
 	stepsSinceLastOrder = 0;
+	ordersWritten++;
 
 	// Don't flush the buffer. That is done when writing the last Order, in ReplayWriter::finish().
 }
@@ -107,7 +118,7 @@ void ReplayWriter::finish()
 	if (!isValid()) return;
 
 	// Write the number of steps since last order to the end of the replay
-	buffer->writeUint16(stepsSinceLastOrder, "replayStepsSinceLastOrder");
+	buffer->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
 
 	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
 	writeOrder(buffer, std::shared_ptr<Order>(new NullOrder()), 0);
@@ -148,7 +159,7 @@ bool ReplayWriter::write(const std::string &filename) const
 	}
 
 	// Write the number of steps since last order to the end of the replay
-	file->writeUint16(0, "replayStepsSinceLastOrder");
+	file->writeUint32(0, "replayStepsSinceLastOrder");
 
 	// Write a NullOrder to the file to make sure it's a NullOrder-terminated replay
 	writeOrder(file, std::shared_ptr<Order>(new NullOrder()), 0);

@@ -33,9 +33,8 @@ is licensed under the GPLv2.
 
 Other parts are copyrighted to:
 ./libgag/:    Copyright Kevlin Henney, 1997. All rights reserved.
-./libwee/:  Copyright (C) 2004 Martin Voelkle <martin.voelkle@epfl.ch>
-./src/AIWarrush.cpp:  Copyright (C) 2005 Eli Dupree
-./src/AIWarrush.h:  Copyright (C) 2005 Eli Dupree
+./src/AI/AIWarrush.cpp:  Copyright (C) 2005 Eli Dupree
+./src/AI/AIWarrush.h:  Copyright (C) 2005 Eli Dupree
 ./src/DynamicClouds.cpp: *  Copyright  2007  Leo Wandersleb
 ./src/DynamicClouds.h: *  Copyright  2007  Leo Wandersleb
 ./src/HeightMapGenerator.cpp: *  Copyright  2006  Leo Wandersleb
