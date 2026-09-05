@@ -129,13 +129,17 @@ GLuint createMaterial()
 {
     const char *vertex =
         "#version 120\n"
-        "varying vec2 uv; varying vec3 light;\n"
+        "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
         "uniform vec2 mapOffset;\n"
-        "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;}\n";
+        "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;normal=gl_Normal;}\n";
+    // A sun off to the left: its highlight lies on the ring's left flank, where
+    // the surface normal bisects the sun and the eye, never on the front face.
     const char *fragment = "#version 120\n"
-                           "uniform sampler2D world;\n"
-                           "varying vec2 uv; varying vec3 light;\n"
-                           "void main(){gl_FragColor=vec4(texture2D(world,uv).rgb*light,1.0);}\n";
+                           "uniform sampler2D world; uniform vec3 sunHalf; uniform float specular;\n"
+                           "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
+                           "void main(){\n"
+                           "  float s = pow(max(dot(normalize(normal), sunHalf), 0.0), 36.0) * specular;\n"
+                           "  gl_FragColor=vec4(texture2D(world,uv).rgb*light + vec3(1.0, 0.96, 0.85) * s, 1.0);}\n";
     GLuint vs = glCreateShader(GL_VERTEX_SHADER), fs = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vs, 1, &vertex, 0);
     glCompileShader(vs);
@@ -613,6 +617,14 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glUseProgram(material);
         glUniform1i(glGetUniformLocation(material, "world"), 0);
         glUniform2f(glGetUniformLocation(material, "mapOffset"), anchorU, 1 - anchorV);
+        // A low sun far to the left and a little above; the eye looks along +z.
+        // The highlight sits where the normal bisects the two, on the left flank.
+        float lx = -1.0f, ly = 0.25f, lz = 0.15f;
+        const float ll = std::sqrt(lx * lx + ly * ly + lz * lz);
+        lx /= ll, ly /= ll, lz = lz / ll + 1;
+        const float hl = std::sqrt(lx * lx + ly * ly + lz * lz);
+        glUniform3f(glGetUniformLocation(material, "sunHalf"), lx / hl, ly / hl, lz / hl);
+        glUniform1f(glGetUniformLocation(material, "specular"), 0.9f * roll);
     }
     const int U = meshColumns, V = meshRows;
     using MeshVertex = TorusPicking::Vertex;
@@ -636,7 +648,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         std::vector<MeshVertex> cloudVertices(vertices.size());
         // The cloud ring floats above the ground by a fixed share of the tube
         // radius; it settles onto the flat map as the fold opens.
-        const float cloudHeight = 0.12f * roll + 0.003f, e = 0.001f;
+        const float cloudHeight = 0.036f * roll + 0.003f, e = 0.001f;
         for (int j = 0; j <= V; ++j)
             for (int i = 0; i <= U; ++i)
             {
@@ -659,11 +671,13 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 float w = 1 - p.z * roll / cameraDistance;
                 vertices[j * (U + 1) + i] = {{cx * w + p.x * sx, cy * w + p.y * sy, p.z * scale, w},
                                              {light, light, light},
-                                             {du, -dv}};
+                                             {du, -dv},
+                                             {nx, ry, rz}};
                 float cw = 1 - c.z * roll / cameraDistance;
                 cloudVertices[j * (U + 1) + i] = {{cx * cw + c.x * sx, cy * cw + c.y * sy, c.z * scale, cw},
                                                   {light, light, light},
-                                                  {du, -dv}};
+                                                  {du, -dv},
+                                                  {nx, ry, rz}};
             }
         glBindBuffer(GL_ARRAY_BUFFER, meshBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(MeshVertex), vertices.data(),
@@ -694,10 +708,12 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glEnableClientState(GL_COLOR_ARRAY);
     glClientActiveTexture(GL_TEXTURE0);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
     glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
                     reinterpret_cast<void *>(offsetof(MeshVertex, position)));
     glColorPointer(3, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, color)));
     glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
+    glNormalPointer(GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, normal)));
     // Geometry stays on the GPU while stationary. Longitude navigation only
     // changes a uniform; latitude or unfolding rebuilds one shared vertex grid.
     glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
