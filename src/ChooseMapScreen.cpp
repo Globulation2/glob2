@@ -183,10 +183,15 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 	}
 	else if (action == NUMBER_ELEMENT_SELECTED && (source == repeatX || source == repeatY || source == teamCount || source == coloniesPerTeam))
 	{
-		if (source == repeatX)
+		if (source == repeatX || source == repeatY)
+		{
 			tileX = repeatX->get();
-		else if (source == repeatY)
 			tileY = repeatY->get();
+			// a smaller repeat holds fewer bases: the counts picked before shrink to what fits
+			const int colonies = MapTiling::colonyCount(sourceMapHeader.getNumberOfTeams(), tileX, tileY);
+			tileTeams = std::max(1, std::min(tileTeams, std::min<int>(Team::MAX_COUNT, colonies)));
+			tileColonies = std::max(1, std::min(tileColonies, colonies / tileTeams));
+		}
 		else if (source == teamCount)
 		{
 			tileTeams = teamCount->get();
