@@ -457,17 +457,6 @@ namespace GAGGUI
 						wasWindowEvent=true;
 					}
 					break;
-					case SDL_WINDOWEVENT_RESIZED:
-					{
-						// FIXME: window resize is broken
-						// gfx->setRes(event.window.data1, event.window.data2);
-					}
-					break;
-					case SDL_WINDOWEVENT_SIZE_CHANGED:
-					{
-						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
-					}
-					break;
 					case SDL_KEYDOWN:
 					{
 						//Manual integration of cmd+q and alt f4
@@ -591,13 +580,6 @@ namespace GAGGUI
 				{
 					if ((*it)->visible)
 						(*it)->onSDLMouseButtonDown(event);
-				}
-				break;
-			case SDL_WINDOWEVENT_EXPOSED:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLVideoExpose(event);
 				}
 				break;
 			case SDL_TEXTINPUT:

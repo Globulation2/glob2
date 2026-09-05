@@ -39,7 +39,6 @@ namespace GAGGUI
 	{
 		SCREEN_CREATED,	// after first draw
 		SCREEN_DESTROYED,	// after endExectue
-		SCREEN_RESIZED,
 	
 		BUTTON_GOT_MOUSEOVER,
 		BUTTON_LOST_MOUSEOVER,
@@ -178,11 +177,6 @@ namespace GAGGUI
 		 */
 
 		virtual void onSDLMouseWheel(SDL_Event* event) {assert(event->type == SDL_MOUSEWHEEL); }
-		/*! Called when an SDL_VIDEOEXPOSE event occurs.
-		 * \param event Caught SDL event
-		 */
-		virtual void onSDLVideoExpose(SDL_Event *event) { assert(event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_EXPOSED); }
-
 		/*! Called when an SDL_TEXTINPUT event occurs.
 		 * \param event Caught SDL event
 		 */
