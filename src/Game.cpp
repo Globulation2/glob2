@@ -1050,12 +1050,12 @@ bool Game::integrity(void)
 						map.getCase(x, y).building = NOGBID; \
 					}
 
+				// Footprints may straddle the map edge (posX can be -1), so
+				// measure the cell's offset from the building with wrap-around.
 				const auto buildingEndX = building->posX + building->type->width;
-				healBuildingOutsideCoord(x >= building->posX || x < (buildingEndX & map.wMask), x, X);
-				healBuildingOutsideCoord(x < buildingEndX, x, X);
+				healBuildingOutsideCoord(((x - building->posX) & map.wMask) < building->type->width, x, X);
 				const auto buildingEndY = building->posY + building->type->height;
-				healBuildingOutsideCoord(y >= building->posY || y < (buildingEndY & map.hMask), y, Y);
-				healBuildingOutsideCoord(y < buildingEndY, y, Y);
+				healBuildingOutsideCoord(((y - building->posY) & map.hMask) < building->type->height, y, Y);
 			}
 			if (c.groundUnit != NOGUID)
 			{
