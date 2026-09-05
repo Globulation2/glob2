@@ -121,8 +121,8 @@ MapGenerationDescriptor::controls(Method method)
 const std::vector<MapGenerationDescriptor::Control> &MapGenerationDescriptor::sharedControls()
 {
 	static const std::vector<Control> shared = {
-		{"Width", &D::wDec, 6, 9, 1, 7, G::Shared, true},
-		{"Height", &D::hDec, 6, 9, 1, 7, G::Shared, true},
+		{"Width", &D::wDec, 5, 9, 1, 7, G::Shared, true},
+		{"Height", &D::hDec, 5, 9, 1, 7, G::Shared, true},
 		{"Colonies", &D::nbTeams, 1, Team::MAX_COUNT, 1, 4, G::Shared},
 		{"Starting workers", &D::nbWorkers, 1, 8, 1, 4, G::Shared}};
 	return shared;
