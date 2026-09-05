@@ -4478,8 +4478,6 @@ void GameGUI::drawAll(int team)
         int cx=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
         int cy=(globalContainer->gfx->getH()+16)/2;
         globalContainer->gfx->drawCircle(cx,cy,7,180,225,235,180);
-        globalContainer->gfx->drawString(16, globalContainer->gfx->getH()-28,
-            globalContainer->standardFont, "Arrows / middle-drag: move map   Wheel in: return to 2D");
     }
 
     // draw menu if any
