@@ -498,7 +498,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         travelU = travelV = cameraU = cameraV = 0;
     }
     // Movement pulls back slowly; the return is quick. The hand switch keeps its own pace.
-    const float pace = target ? 1.8f : (moving ? 4.0f : 0.45f);
+    const float pace = target ? 1.8f : (held ? 0.45f : (moving ? 4.0f : 0.45f));
     amount = clamp(amount + (pullBack ? dt : -dt) / pace, 0, 1);
     // The ordinary map and minimap track the same destination as the torus.
     // Ease the sub-tile remainder away while returning to the tile-based 2D camera.
