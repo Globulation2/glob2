@@ -203,11 +203,17 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 						|| (building->seenByMask & visibleTeams)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
-						int px,py;
 						const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, *building) : building->posX;
 						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, *building) : building->posY;
-						map.mapCaseToDisplayable(dispX, dispY, &px, &py, viewportX, viewportY);
-					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						// Every wrapped copy whose sprite reaches into the view: a view as wide
+						// as the map, or a building on a seam, needs both sides drawn.
+						const int mapW = map.getW()<<5, mapH = map.getH()<<5, overhang = 64;
+						const int px = ((dispX - viewportX) & map.getMaskW())<<5;
+						const int py = ((dispY - viewportY) & map.getMaskH())<<5;
+						for (int cy = py - mapH; cy < sh + overhang; cy += mapH)
+							for (int cx = px - mapW; cx < sw + overhang; cx += mapW)
+								if (cx + (building->type->width<<5) + overhang > 0 && cy + (building->type->height<<5) + overhang > 0)
+									drawMapBuilding(cx, cy, gid, viewportX, viewportY, localTeam, drawOptions);
 						drawnBuildings.insert(building);
 					}
 				}

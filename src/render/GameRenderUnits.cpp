@@ -60,8 +60,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action<NB_MOVE);
 	const UnitSkin &skin = g_unitSkins[unit->typeNum];
 	imgid=skin.startImage[unit->action];
-	int px, py;
-	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+	// The traversal already visits the visible wrapped cell; the screen-relative
+	// wrap would fold the last tiles of a whole-map capture off its edge.
+	int px=x<<5, py=y<<5;
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
