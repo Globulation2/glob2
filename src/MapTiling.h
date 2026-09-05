@@ -6,6 +6,8 @@
 
 #include "MapHeader.h"
 
+class MapThumbnail;
+
 //! Repeating a map in x and y at game setup. The map is copied rx by ry
 //! times over the torus, every copy keeps its colonies, and the colonies
 //! are dealt round robin to the chosen number of teams; colonies beyond an
@@ -32,7 +34,7 @@ namespace MapTiling
 	};
 	//! Reads the header and the map size of a map file; valid is false when the file cannot be read.
 	MapInfo readMapInfo(const std::string& fileName);
-	//! True when the map can be repeated rx by ry with `teams` colonies of `swarms` swarms each.
+	//! True when the map can be repeated rx by ry with `teams` colonies of `swarms` bases each; 0 for either means not chosen.
 	bool fits(const MapInfo& map, int rx, int ry, int teams, int swarms);
 	//! Adjusts rx, ry, teams and swarms to the map, keeping the colony count whenever any
 	//! repeat within the size limit reaches it, then the swarms per colony.
@@ -40,6 +42,9 @@ namespace MapTiling
 	//! Writes the repeated map as a map file next to the user's own maps and returns its header,
 	//! or a header with no teams when the map could not be read or written.
 	MapHeader writeTiledMap(const MapHeader& source, int rx, int ry, int teams, int perTeam);
+	//! Renders the preview of the repeated map into `thumbnail`, with buildings and units in the colours
+	//! of the teams they are dealt to; false when the map could not be read or repeated.
+	bool tiledThumbnail(const MapHeader& source, int rx, int ry, int teams, int perTeam, MapThumbnail& thumbnail);
 	//! Repeat factors usable for a side of `side` tiles: powers of two within MAX_MAP_SIDE.
 	std::vector<int> repeatOptions(int side);
 	//! The header of the tiled map: `teams` teams whose type follows the

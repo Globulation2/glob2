@@ -63,31 +63,30 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose game]"));
 	}
 	addWidget(title);
-	mapName=new Text(440, 60+128+25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapName);
-	mapInfo=new Text(440, 60+128+50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
+	// the right column, under the preview: the map's teams or bases, its size, then the repeat controls
+	const int infoTop = 60+128+22;
+	mapInfo=new Text(440, infoTop, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapInfo);
-	mapVersion=new Text(440, 60+128+75, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapVersion);
-	mapSize=new Text(440, 60+128+100, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
+	mapSize=new Text(440, infoTop+22, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapSize);
-	mapDate=new Text(440, 60+128+125, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
+	mapDate=new Text(440, infoTop+44, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapDate);
-	repeatXText=new Text(440, 60+128+128, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "little", Toolkit::getStringTable()->getString("[tile x]"), 44);
+	const int controlTop = infoTop+48, controlPitch = 26;
+	repeatXText=new Text(440, controlTop+2, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[tile x]"), 100);
 	addWidget(repeatXText);
-	repeatYText=new Text(484, 60+128+128, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "little", Toolkit::getStringTable()->getString("[tile y]"), 44);
-	addWidget(repeatYText);
-	teamCountText=new Text(528, 60+128+128, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "little", Toolkit::getStringTable()->getString("[colonies]"), 44);
-	addWidget(teamCountText);
-	coloniesPerTeamText=new Text(572, 60+128+128, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "little", Toolkit::getStringTable()->getString("[swarms]"), 44);
-	addWidget(coloniesPerTeamText);
-	repeatX=new Number(440, 60+128+142, 44, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 8, "standard", Toolkit::getStringTable()->getString("[repeat map horizontally]"), "standard");
+	repeatX=new Number(540, controlTop, 80, 22, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 16, "standard", Toolkit::getStringTable()->getString("[repeat map horizontally]"), "standard");
 	addWidget(repeatX);
-	repeatY=new Number(484, 60+128+142, 44, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 8, "standard", Toolkit::getStringTable()->getString("[repeat map vertically]"), "standard");
+	repeatYText=new Text(440, controlTop+controlPitch+2, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[tile y]"), 100);
+	addWidget(repeatYText);
+	repeatY=new Number(540, controlTop+controlPitch, 80, 22, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 16, "standard", Toolkit::getStringTable()->getString("[repeat map vertically]"), "standard");
 	addWidget(repeatY);
-	teamCount=new Number(528, 60+128+142, 44, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 8, "standard", Toolkit::getStringTable()->getString("[number of colonies]"), "standard");
+	teamCountText=new Text(440, controlTop+2*controlPitch+2, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[colonies]"), 100);
+	addWidget(teamCountText);
+	teamCount=new Number(540, controlTop+2*controlPitch, 80, 22, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 16, "standard", Toolkit::getStringTable()->getString("[number of colonies]"), "standard");
 	addWidget(teamCount);
-	coloniesPerTeam=new Number(572, 60+128+142, 44, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 8, "standard", Toolkit::getStringTable()->getString("[swarms per colony]"), "standard");
+	coloniesPerTeamText=new Text(440, controlTop+3*controlPitch+2, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[bases]"), 100);
+	addWidget(coloniesPerTeamText);
+	coloniesPerTeam=new Number(540, controlTop+3*controlPitch, 80, 22, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 16, "standard", Toolkit::getStringTable()->getString("[bases per colony]"), "standard");
 	addWidget(coloniesPerTeam);
 	repeatX->visible = repeatY->visible = teamCount->visible = coloniesPerTeam->visible = false;
 	repeatXText->visible = repeatYText->visible = teamCountText->visible = coloniesPerTeamText->visible = false;
@@ -123,7 +122,9 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 
 			try
 			{
+				selectedMapFile = mapFileName;
 				mapPreview->setMapThumbnail(mapFileName.c_str());
+				previewTiled = false;
 
 				auto stream = std::unique_ptr<InputStream>(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapFileName)));
 				if (stream->isEndOfStream())
@@ -145,7 +146,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 						{
 							if (!teamsPicked)
 								tileTeams = 0;
-							if (!swarmsPicked)
+							if (!basesPicked)
 								tileColonies = 0;
 							MapTiling::adjust(infoOfMap(mapFileName), tileX, tileY, tileTeams, tileColonies);
 						}
@@ -170,11 +171,11 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		else 
 		{
 			mapDate->setText("");
-			mapVersion->setText("");
 			mapInfo->setText("");
 			mapSize->setText("");
-			mapName->setText("");
+			selectedMapFile.clear();
 			mapPreview->setMapThumbnail("");
+			previewTiled = false;
 			validMapSelected = false;
 			repeatX->visible = repeatY->visible = teamCount->visible = coloniesPerTeam->visible = false;
 			repeatXText->visible = repeatYText->visible = teamCountText->visible = coloniesPerTeamText->visible = false;
@@ -194,7 +195,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		else
 		{
 			tileColonies = coloniesPerTeam->get();
-			swarmsPicked = true;
+			basesPicked = true;
 		}
 		if (source == teamCount)
 		{
@@ -259,17 +260,19 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 
 void ChooseMapScreen::updateMapInformation()
 {
-	// update map name & info
-	mapName->setText(mapHeader.getMapName());
+	// games and replays report their teams; a map reports the bases it holds once repeated
 	std::string textTemp;
-	textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
-	mapInfo->setText(textTemp);
-	textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
-	mapVersion->setText(textTemp);
-	if (tileX > 1 || tileY > 1)
-		textTemp = FormatableString("%0 x %1 (%2 x %3)").arg(mapPreview->getLastWidth() * tileX).arg(mapPreview->getLastHeight() * tileY).arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+	const MapTiling::MapInfo& source = infoOfMap(selectedMapFile);
+	if (selectedType == MAP && source.valid)
+		textTemp = FormatableString("%0 %1").arg(MapTiling::colonyCount(source.header.getNumberOfTeams(), tileX, tileY)).arg(Toolkit::getStringTable()->getString("[bases]"));
 	else
-		textTemp = FormatableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+		textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
+	mapInfo->setText(textTemp);
+	const int w = source.valid ? source.w : mapPreview->getLastWidth(), h = source.valid ? source.h : mapPreview->getLastHeight();
+	if (tileX > 1 || tileY > 1)
+		textTemp = FormatableString("%0 x %1 (%2 x %3)").arg(w * tileX).arg(h * tileY).arg(w).arg(h);
+	else
+		textTemp = FormatableString("%0 x %1").arg(w).arg(h);
 	mapSize->setText(textTemp);
 	
 	// call subclass handler
@@ -292,13 +295,14 @@ void ChooseMapScreen::updateTilingControls()
 	}
 	// a cleared Number keeps its old index, so it is reset before the value is picked
 	repeatX->clear();
-	for (int f : MapTiling::repeatOptions(mapPreview->getLastWidth()))
+	const MapTiling::MapInfo& source = infoOfMap(selectedMapFile);
+	for (int f : MapTiling::repeatOptions(source.w))
 		repeatX->add(f);
 	repeatX->setNth(0);
 	repeatX->set(tileX);
 	tileX = repeatX->get();
 	repeatY->clear();
-	for (int f : MapTiling::repeatOptions(mapPreview->getLastHeight()))
+	for (int f : MapTiling::repeatOptions(source.h))
 		repeatY->add(f);
 	repeatY->setNth(0);
 	repeatY->set(tileY);
@@ -314,9 +318,9 @@ void ChooseMapScreen::updateTilingControls()
 	teamCount->setNth(0);
 	teamCount->set(tileTeams);
 	tileTeams = teamCount->get();
-	// swarms per colony: as many as fit unless the user asked for fewer
+	// bases per colony: as many as fit unless the user asked for fewer
 	const int maxSwarms = std::max(1, colonies / std::min(tileTeams, maxTeams));
-	if (!swarmsPicked || tileColonies < 1)
+	if (!basesPicked || tileColonies < 1)
 		tileColonies = maxSwarms;
 	coloniesPerTeam->clear();
 	for (int c = 1; c <= maxSwarms; c++)
@@ -346,7 +350,7 @@ void ChooseMapScreen::sortMapList()
 		const std::string& entry = list->getText(i);
 		if (!entry.empty() && entry[entry.size()-1] == '/')
 			dirs.push_back(entry);
-		else if (MapTiling::fits(infoOfMap(list->listToFile(entry)), tileX, tileY, tileTeams, tileColonies))
+		else if (MapTiling::fits(infoOfMap(list->listToFile(entry)), tileX, tileY, teamsPicked ? tileTeams : 0, basesPicked ? tileColonies : 0))
 			fitting.push_back(entry);
 		else
 			others.push_back(entry);
@@ -376,7 +380,28 @@ void ChooseMapScreen::applyTiling()
 		const int teamsHeld = std::min(tileTeams, std::min<int>(Team::MAX_COUNT, MapTiling::colonyCount(sourceMapHeader.getNumberOfTeams(), tileX, tileY)));
 		mapHeader = MapTiling::tiledHeader(sourceMapHeader, tileX, tileY, teamsHeld);
 	}
+	updatePreview();
 	updateMapInformation();
+}
+
+void ChooseMapScreen::updatePreview()
+{
+	if (tilingActive())
+	{
+		const int teamsHeld = std::min(tileTeams, std::min<int>(Team::MAX_COUNT, MapTiling::colonyCount(sourceMapHeader.getNumberOfTeams(), tileX, tileY)));
+		MapThumbnail thumbnail;
+		if (MapTiling::tiledThumbnail(sourceMapHeader, tileX, tileY, teamsHeld, tileColonies, thumbnail))
+		{
+			mapPreview->setMapThumbnail(thumbnail);
+			previewTiled = true;
+			return;
+		}
+	}
+	if (previewTiled)
+	{
+		mapPreview->setMapThumbnail(selectedMapFile);
+		previewTiled = false;
+	}
 }
 
 MapHeader& ChooseMapScreen::getMapHeader()

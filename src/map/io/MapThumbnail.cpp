@@ -63,98 +63,106 @@ void MapThumbnail::loadFromMap(const std::string& map)
 		delete stream;
 		if (!good)
 			return;
-		
-		// set values
-		lastW = map.getW();
-		lastH = map.getH();
+		loadFromMap(map, header);
+	}
+}
 
-		// TODO : put this thumbnail code in a function
-		int H[3]= { 0, 90, 0 };
-		int E[3]= { 0, 40, 120 };
-		int S[3]= { 170, 170, 0 };
-		int wood[3]= { 0, 60, 0 };
-		int corn[3]= { 211, 207, 167 };
-		int stone[3]= { 104, 112, 124 };
-		int alga[3]= { 41, 157, 165 };
-		int pcol[7];
-		int pcolIndex, pcolAddValue;
 
-		int dx, dy;
-		int nCount;
-		float dMx, dMy;
-		float minidx, minidy;
-		int r, b, g;
-		// get data
-		int mMax;
-		int szX, szY;
-		int decX, decY;
-		Utilities::computeMinimapData(128, map.getW(), map.getH(), &mMax, &szX, &szY, &decX, &decY);
 
-		dMx=(float)mMax/128.0f;
-		dMy=(float)mMax/128.0f;
-		
-		for(int i=0; i<(128*128*3); ++i)
+void MapThumbnail::loadFromMap(const Map& map, const MapHeader& header)
+{
+	loaded = true;
+
+	// set values
+	lastW = map.getW();
+	lastH = map.getH();
+
+	// TODO : put this thumbnail code in a function
+	int H[3]= { 0, 90, 0 };
+	int E[3]= { 0, 40, 120 };
+	int S[3]= { 170, 170, 0 };
+	int wood[3]= { 0, 60, 0 };
+	int corn[3]= { 211, 207, 167 };
+	int stone[3]= { 104, 112, 124 };
+	int alga[3]= { 41, 157, 165 };
+	int pcol[7];
+	int pcolIndex, pcolAddValue;
+
+	int dx, dy;
+	int nCount;
+	float dMx, dMy;
+	float minidx, minidy;
+	int r, b, g;
+	// get data
+	int mMax;
+	int szX, szY;
+	int decX, decY;
+	Utilities::computeMinimapData(128, map.getW(), map.getH(), &mMax, &szX, &szY, &decX, &decY);
+
+	dMx=(float)mMax/128.0f;
+	dMy=(float)mMax/128.0f;
+	
+	for(int i=0; i<(128*128*3); ++i)
+	{
+		buffer[i]=0;
+	}
+
+	for (dy=0; dy<szY; dy++)
+	{
+		for (dx=0; dx<szX; dx++)
 		{
-			buffer[i]=0;
-		}
+			for (int i=0; i<7; i++)
+				pcol[i]=0;
+			nCount=0;
+			int team=-1;
 
-		for (dy=0; dy<szY; dy++)
-		{
-			for (dx=0; dx<szX; dx++)
+			// compute
+			for (minidx=(dMx*dx); minidx<=(dMx*(dx+1)); minidx++)
 			{
-				for (int i=0; i<7; i++)
-					pcol[i]=0;
-				nCount=0;
-				int team=-1;
-
-				// compute
-				for (minidx=(dMx*dx); minidx<=(dMx*(dx+1)); minidx++)
+				for (minidy=(dMy*dy); minidy<=(dMy*(dy+1)); minidy++)
 				{
-					for (minidy=(dMy*dy); minidy<=(dMy*(dy+1)); minidy++)
-					{
-						// get color to add
-						if (map.isRessourceTakeable((int)minidx, (int)minidy, WOOD))
-							pcolIndex=3;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, CORN))
-							pcolIndex=4;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, STONE))
-							pcolIndex=5;
-						else if (map.isRessourceTakeable((int)minidx, (int)minidy, ALGA))
-							pcolIndex=6;
-						else
-							pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
+					// get color to add
+					if (map.isRessourceTakeable((int)minidx, (int)minidy, WOOD))
+						pcolIndex=3;
+					else if (map.isRessourceTakeable((int)minidx, (int)minidy, CORN))
+						pcolIndex=4;
+					else if (map.isRessourceTakeable((int)minidx, (int)minidy, STONE))
+						pcolIndex=5;
+					else if (map.isRessourceTakeable((int)minidx, (int)minidy, ALGA))
+						pcolIndex=6;
+					else
+						pcolIndex=map.getUMTerrain((int)minidx,(int)minidy);
 
-						// get weight to add
-						pcolAddValue=5;
+					// get weight to add
+					pcolAddValue=5;
 
-						pcol[pcolIndex]+=pcolAddValue;
-						nCount++;
+					pcol[pcolIndex]+=pcolAddValue;
+					nCount++;
 
-						// a building or unit paints the whole pixel in its team's colour
-						if (map.getBuilding((int)minidx, (int)minidy) != NOGBID)
-							team = Building::GIDtoTeam(map.getBuilding((int)minidx, (int)minidy));
-						else if (team < 0 && map.getGroundUnit((int)minidx, (int)minidy) != NOGUID)
-							team = Unit::GIDtoTeam(map.getGroundUnit((int)minidx, (int)minidy));
-					}
+					// a building or unit paints the whole pixel in its team's colour
+					if (map.getBuilding((int)minidx, (int)minidy) != NOGBID)
+						team = Building::GIDtoTeam(map.getBuilding((int)minidx, (int)minidy));
+					else if (team < 0 && map.getGroundUnit((int)minidx, (int)minidy) != NOGUID)
+						team = Unit::GIDtoTeam(map.getGroundUnit((int)minidx, (int)minidy));
 				}
-
-				nCount*=5;
-				r=(int)((H[0]*pcol[GRASS]+E[0]*pcol[WATER]+S[0]*pcol[SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
-				g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
-				b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
-
-				if (team >= 0 && team < header.getNumberOfTeams())
-				{
-					const GAGCore::Color& c = header.getBaseTeam(team).color;
-					r = c.r;
-					g = c.g;
-					b = c.b;
-				}
-
-				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 0] = r;
-				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 1] = g;
-				buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 2] = b;
 			}
+
+			nCount*=5;
+			r=(int)((H[0]*pcol[GRASS]+E[0]*pcol[WATER]+S[0]*pcol[SAND]+wood[0]*pcol[3]+corn[0]*pcol[4]+stone[0]*pcol[5]+alga[0]*pcol[6])/(nCount));
+			g=(int)((H[1]*pcol[GRASS]+E[1]*pcol[WATER]+S[1]*pcol[SAND]+wood[1]*pcol[3]+corn[1]*pcol[4]+stone[1]*pcol[5]+alga[1]*pcol[6])/(nCount));
+			b=(int)((H[2]*pcol[GRASS]+E[2]*pcol[WATER]+S[2]*pcol[SAND]+wood[2]*pcol[3]+corn[2]*pcol[4]+stone[2]*pcol[5]+alga[2]*pcol[6])/(nCount));
+
+			if (team >= 0 && team < header.getNumberOfTeams())
+			{
+				const GAGCore::Color& c = header.getBaseTeam(team).color;
+				r = c.r;
+				g = c.g;
+				b = c.b;
+			}
+
+			buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 0] = r;
+			buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 1] = g;
+			buffer[(dx+decX) * 128 * 3 + (dy+decY) * 3 + 2] = b;
 		}
 	}
 }

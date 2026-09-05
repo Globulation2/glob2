@@ -1214,17 +1214,15 @@ Via uzulnomo estas malpermesata. Bv. kontakti la administristojn.
 Repeat map horizontally
 [repeat map vertically]
 Repeat map vertically
-[colonies per team]
-Colonies per team
 [tile x]
 tile x
 [tile y]
 tile y
 [colonies]
 colonies
-[swarms]
-swarms
+[bases]
+bases
 [number of colonies]
-Number of colonies, one per player
-[swarms per colony]
-Swarms per colony
+Number of colonies, one per player; raising it repeats the map until they fit
+[bases per colony]
+Bases per colony; a base is one team of the map as drawn, its buildings and units
