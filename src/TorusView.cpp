@@ -538,6 +538,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         if (game.gui)
             game.gui->drawTorusMapOverlay(originX, originY);
         dumpAtlas(now);
+        if (getenv("GLOB2_TORUS_DUMP"))
+            for (GLenum error = glGetError(); error != GL_NO_ERROR; error = glGetError())
+                fprintf(stderr, "Torus view: GL error 0x%x after the world render\n", error);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     const bool drawClouds =
@@ -743,6 +746,26 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glDisable(GL_BLEND);
     }
     glPopClientAttrib();
+    if (getenv("GLOB2_TORUS_DUMP"))
+    {
+        // The whole world texture as an inset, so one screenshot shows what the ring samples.
+        glUseProgram(0);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        const float size = std::min(width, height) * 0.3f, x0 = 8, y0 = 24;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 1);
+        glVertex2f(x0, y0);
+        glTexCoord2f(1, 1);
+        glVertex2f(x0 + size, y0);
+        glTexCoord2f(1, 0);
+        glVertex2f(x0 + size, y0 + size);
+        glTexCoord2f(0, 0);
+        glVertex2f(x0, y0 + size);
+        glEnd();
+    }
     glBindBuffer(GL_ARRAY_BUFFER, oldArrayBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldIndexBuffer);
     glUseProgram(oldProgram);
