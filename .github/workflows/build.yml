@@ -31,7 +31,7 @@ jobs:
             libboost-date-time-dev libboost-thread-dev libboost-system-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
-            libcppunit-dev
+            libcppunit-dev xvfb xauth libgl1-mesa-dri
 
       - uses: actions/checkout@v4
 
@@ -46,6 +46,11 @@ jobs:
         run: |
           scons -j$(nproc)
           ./TestsRunner
+
+      - name: Test game speed controls and playback
+        run: |
+          scons -j$(nproc) release=1 speed-tests
+          xvfb-run -a python3 test/run-game-speed-tests.py
 
   windows:
     name: windows (mingw-w64)

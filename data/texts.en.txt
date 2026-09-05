@@ -1222,3 +1222,9 @@ Your IP address was temporarily banned. Please wait patiently until it is unbann
 Your unit got converted to %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
+[game speed help]
+Single-player and replays only. Multiplayer runs at 1x.
+[maximum game speed]
+Maximum
+[multiplayer game speed]
+Game speed: 1x (multiplayer)

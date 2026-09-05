@@ -1220,3 +1220,11 @@ Votre adresse IP est temporairement bannis
 Votre unité est passée à l'équipe %0
 [Your username was banned]
 Votre pseudo est bannis
+[game speed]
+Vitesse du jeu
+[maximum game speed]
+Maximale
+[game speed help]
+Parties solo et replays uniquement. Multijoueur : 1x.
+[multiplayer game speed]
+Vitesse : 1x (multijoueur)

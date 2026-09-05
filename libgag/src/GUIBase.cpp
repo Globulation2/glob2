@@ -92,6 +92,15 @@ namespace GAGGUI
 		return last;
 	}
 	
+	void Widget::setTooltip(const std::string &text, const std::string &font)
+	{
+		tooltip=text;
+		tooltipFont=font;
+		tooltipFontPtr=Toolkit::getFont(font.c_str());
+		lastIdleTick=currentTick=0;
+		mx=my=-1;
+	}
+
 	Widget::Widget()
 	{
 		this->tooltipFontPtr = NULL;

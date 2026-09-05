@@ -208,6 +208,7 @@ void GameGUI::init()
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
+	lastViewportStep=SDL_GetTicks64();
 
 	showStarvingMap=false;
 	showDamagedMap=false;
@@ -471,9 +472,17 @@ void GameGUI::step(void)
 	
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
-	handleKeyAlways();
-	viewportX += viewportSpeedX;
-	viewportY += viewportSpeedY;
+	// Continuous scrolling keeps its normal 25 Hz cadence at every game speed.
+	const Uint64 now=SDL_GetTicks64();
+	const unsigned viewportSteps=std::min<Uint64>((now-lastViewportStep)/40, 5);
+	if(viewportSteps)
+		lastViewportStep=now-(now-lastViewportStep)%40;
+	for(unsigned i=0; i<viewportSteps; ++i)
+	{
+		handleKeyAlways();
+		viewportX += viewportSpeedX;
+		viewportY += viewportSpeedY;
+	}
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 
@@ -1734,8 +1743,20 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 
 
 
+bool GameGUI::canChangeGameSpeed() const
+{
+	if(globalContainer->replaying)
+		return true;
+	for(int p=0; p<game.gameHeader.getNumberOfPlayers(); ++p)
+		if(game.gameHeader.getBasePlayer(p).type==BasePlayer::P_IP)
+			return false;
+	return true;
+}
+
 void GameGUI::changeGameSpeed(int amount)
 {
+	if(!canChangeGameSpeed())
+		return;
 	const int oldSpeed=globalContainer->settings.gameSpeed;
 	globalContainer->settings.changeGameSpeed(amount);
 	if(oldSpeed!=globalContainer->settings.gameSpeed)

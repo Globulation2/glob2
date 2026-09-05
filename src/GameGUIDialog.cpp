@@ -348,6 +348,7 @@ Uint32 InGameAllianceScreen::getChatMask(void)
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 :OverlayScreen(globalContainer->gfx, 320, 360)
 {
+	adjustableGameSpeed=gameGUI->canChangeGameSpeed();
 	Text *audioMuteText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Mute]"), 200);
 	addWidget(audioMuteText);
 
@@ -371,6 +372,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	gameSpeed=new Selector(19, 225, ALIGN_LEFT, ALIGN_TOP, 256,
 		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
 	addWidget(gameSpeed);
+	gameSpeed->visible=adjustableGameSpeed;
 	updateGameSpeedText();
 
 	if(globalContainer->settings.mute)
@@ -413,6 +415,8 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	{
 		if(source==gameSpeed)
 		{
+			if(!adjustableGameSpeed)
+				return;
 			globalContainer->settings.gameSpeed=gameSpeed->getValue();
 			updateGameSpeedText();
 		}
@@ -438,6 +442,11 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 
 void InGameOptionScreen::updateGameSpeedText(void)
 {
+	if(!adjustableGameSpeed)
+	{
+		gameSpeedText->setText(Toolkit::getStringTable()->getString("[multiplayer game speed]"));
+		return;
+	}
 	gameSpeedText->setText(FormatableString("%0: %1")
 		.arg(Toolkit::getStringTable()->getString("[game speed]"))
 		.arg(globalContainer->settings.getGameSpeedText()));

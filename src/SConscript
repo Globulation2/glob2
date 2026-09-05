@@ -262,6 +262,11 @@ source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+# Integration checks reuse the client objects, with an isolated test profile.
+speed_test_sources = [source for source in source_files if source != "Glob2.cpp"]
+speed_tests = local.Program("game-speed-tests", speed_test_sources + [File('#test/GameSpeedTest.cpp')])
+local.Alias("speed-tests", speed_tests)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)

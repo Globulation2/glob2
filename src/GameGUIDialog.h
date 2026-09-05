@@ -107,6 +107,7 @@ public:
 	Text *musicVolText;
 	Text *voiceVolText;
 	Text *gameSpeedText;
+	bool adjustableGameSpeed;
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
 	~InGameOptionScreen();

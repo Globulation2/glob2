@@ -285,7 +285,8 @@ int Engine::run(void)
 	
 	while (doRunOnceAgain)
 	{
-		int speed=globalContainer->settings.getGameSpeedStepDuration();
+		const bool adjustableGameSpeed=gui.canChangeGameSpeed();
+		int speed=adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : 40;
 		bool networkReadyToExecute = true;
 		
 		// At higher game-speed presets (and during replay fast-forward), render
@@ -304,8 +305,8 @@ int Engine::run(void)
 			nextGuiStep--;
 			const int previousSpeed=speed;
 
-			int renderInterval=globalContainer->settings.getGameSpeedRenderInterval();
-			speed=globalContainer->settings.getGameSpeedStepDuration();
+			int renderInterval=adjustableGameSpeed ? globalContainer->settings.getGameSpeedRenderInterval() : 1;
+			speed=adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : 40;
 
 			// Replay fast-forward uses the uncapped preset.
 			if (globalContainer->replaying && globalContainer->replayFastForward

@@ -7,6 +7,7 @@
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <GAG.h>
+#include <StringTable.h>
 #include <string>
 #include <algorithm>
 
@@ -241,7 +242,7 @@ int Settings::getGameSpeedRenderInterval(void) const
 std::string Settings::getGameSpeedText(void) const
 {
 	if(gameSpeed>=GAME_SPEED_MAXIMUM)
-		return "Maximum";
+		return Toolkit::getStringTable()->getString("[maximum game speed]");
 
 	static const char *multipliers[GAME_SPEED_MAXIMUM] =
 		{"1x", "1.25x", "1.6x", "2x", "2.5x", "4x", "5x", "8x", "13x", "40x"};
